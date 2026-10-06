@@ -40,9 +40,8 @@ jobs:
         env: { BODY: '${{ github.event.issue.body }}' }
       - name: Branch und PR
         env:
-          # BOT_TOKEN = Token einer separaten Bot-Identität (GitHub App oder Fine-grained PAT).
-          # Nötig, damit (a) CI auf dem PR läuft (GITHUB_TOKEN löst keine Workflows aus) und
-          # (b) Marc den PR approven kann (eigene PRs kann man nicht approven).
+          # Eigener Token startet CI/Preview ohne zusätzliche Workflow-Freigabe.
+          # Ein Token von Marc genügt; Pflichtreviews brauchen eine getrennte Bot-Identität.
           GH_TOKEN: ${{ secrets.BOT_TOKEN || github.token }}
           FILE: ${{ steps.gen.outputs.file }}
           N: ${{ github.event.issue.number }}
@@ -63,7 +62,7 @@ jobs:
           git push -u origin "$BR"
           gh pr create --base main --head "$BR" \
             --title "Content: $TITLE" \
-            --body "Automatisch aus Issue #$N erzeugt (Spur A, deterministisch). Datei: \`$FILE\`. Status \`draft: true\`, beim Review auf \`false\` setzen oder Preview prüfen und mergen. Closes #$N" \
+            --body "Automatisch aus Issue #$N erzeugt (Spur A, deterministisch). Datei: \`$FILE\`. Inhalt erscheint in der Preview. Merge = Freigabe zur Veröffentlichung; kein zusätzliches Umschalten von \`draft\` nötig. Closes #$N" \
             --label content
       - name: Fehler ins Issue melden
         if: failure()
