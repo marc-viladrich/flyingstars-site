@@ -1,17 +1,24 @@
 name: Content-Intake (deterministisch)
 # Spur A: Issue Form → Content-Datei → PR. Kein LLM beteiligt.
-# Trigger: Issue bekommt eines der Labels content:blogpost / content:projekt / content:faq
-# (werden von den Issue Forms automatisch gesetzt).
+# Trigger: Issue wird mit einem der Labels content:blogpost / content:projekt / content:faq
+# eröffnet (Issue Forms setzen es automatisch; GitHub feuert dann nur `opened`, kein `labeled`)
+# oder bekommt das Label nachträglich.
 on:
   issues:
-    types: [labeled]
+    types: [opened, labeled]
 permissions:
   contents: write
   issues: write
   pull-requests: write
+# Ein Lauf pro Issue; doppelte Label-Events warten statt zu kollidieren.
+concurrency:
+  group: intake-${{ github.event.issue.number }}
+  cancel-in-progress: false
 jobs:
   intake:
-    if: startsWith(github.event.label.name, 'content:')
+    if: >-
+      (github.event.action == 'labeled' && startsWith(github.event.label.name, 'content:')) ||
+      (github.event.action == 'opened' && contains(join(github.event.issue.labels.*.name, ','), 'content:'))
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -20,8 +27,10 @@ jobs:
         with: { node-version-file: .nvmrc }
       - name: Typ aus Label ableiten
         id: t
-        run: echo "type=${LABEL#content:}" >> "$GITHUB_OUTPUT"
-        env: { LABEL: '${{ github.event.label.name }}' }
+        env: { LABELS: '${{ join(github.event.issue.labels.*.name, '','') }}' }
+        run: |
+          LABEL=$(tr ',' '\n' <<< "$LABELS" | grep '^content:' | head -1)
+          echo "type=${LABEL#content:}" >> "$GITHUB_OUTPUT"
       - name: Content-Datei erzeugen
         id: gen
         run: |
@@ -42,6 +51,12 @@ jobs:
           git config user.name "content-intake[bot]"
           git config user.email "content-intake@users.noreply.github.com"
           BR="content/issue-$N"
+          # Idempotent: existiert Branch oder PR schon, nur melden statt scheitern.
+          if git ls-remote --exit-code --heads origin "$BR" >/dev/null 2>&1; then
+            PR=$(gh pr list --head "$BR" --json url --jq '.[0].url')
+            gh issue comment "$N" --body "Für dieses Issue gibt es bereits einen Branch \`$BR\`${PR:+ und einen PR: $PR}. Kein zweiter Lauf nötig."
+            exit 0
+          fi
           git checkout -b "$BR"
           git add "$FILE"
           git commit -m "content: $TITLE (#$N)"
