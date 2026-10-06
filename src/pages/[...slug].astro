@@ -9,6 +9,6 @@ export async function getStaticPaths() {
 }
 const { page } = Astro.props;
 ---
-<Base title={page.data.title} description={page.data.description} noindex={page.data.noindex}>
+<Base title={page.data.title} description={page.data.description} noindex={page.data.noindex} image={page.data.image}>
   <SectionRenderer sections={page.data.sections} />
 </Base>

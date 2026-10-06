@@ -71,7 +71,7 @@ const count = (n: number) => String(n).padStart(2, '0');
 
   {nextData && nextImage && <a class="c-next" href={`/${nextData.route}/`}>
     <img class="next-poster" src={nextImage.src} {...nextImage.attributes} width={nextImage.width} height={nextImage.height} alt="" loading="lazy" decoding="async" />
-    <div class="shade" aria-hidden="true"></div><div class="in"><span class="k mono">Nächstes Projekt · {count(nextData.order)} / 04 · {nextData.drones} Drohnen</span><b style={`--chars:${nextData.name.length}`}>{nextData.name} <i aria-hidden="true">→</i></b></div>
+    <div class="shade" aria-hidden="true"></div><div class="in"><span class="k mono">Nächstes Projekt · {count(nextData.order)} / 04 · {nextData.drones} Drohnen</span><b style={`--chars:${Math.max(...nextData.name.split(/\s+/).map((word) => word.length))}`}>{nextData.name} <i aria-hidden="true">→</i></b></div>
   </a>}
   <section class="section" aria-labelledby="cta-h"><div class="promise"><div style="display:grid;gap:12px"><h2 id="cta-h">{data.cta.title}</h2><p>{data.cta.text}</p></div><a class="btn primary" href="/#anfrage">Show anfragen</a></div></section>
 </div>

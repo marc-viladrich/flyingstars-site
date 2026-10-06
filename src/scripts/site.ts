@@ -2,16 +2,25 @@
 // @ts-nocheck
 (() => {
   "use strict";
-  let paused = false;
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  paused = reduce;
+  // A pause chosen on one page stays in effect while the visitor moves through the site.
+  const stored = (() => { try { return sessionStorage.getItem('flyingstars:motion'); } catch { return null; } })();
+  let paused = stored ? stored === 'paused' : reduce;
   const motionButton = document.querySelector('[data-motion-toggle]');
   function setMotion() {
     document.documentElement.classList.toggle('motion-paused', paused);
     document.dispatchEvent(new Event('flyingstars:motion-change'));
-    if (motionButton) { motionButton.textContent = paused ? 'Bewegung fortsetzen' : 'Bewegung pausieren'; motionButton.setAttribute('aria-pressed', String(paused)); }
+    if (motionButton) {
+      const label = paused ? 'Bewegung fortsetzen' : 'Bewegung pausieren';
+      motionButton.setAttribute('aria-label', label); motionButton.title = label;
+      motionButton.setAttribute('aria-pressed', String(paused));
+    }
   }
-  motionButton?.addEventListener('click', () => { paused = !paused; setMotion(); });
+  motionButton?.addEventListener('click', () => {
+    paused = !paused;
+    try { sessionStorage.setItem('flyingstars:motion', paused ? 'paused' : 'running'); } catch {}
+    setMotion();
+  });
   setMotion();
   const nav = document.querySelector("header.nav");
   const sentinel = document.querySelector(".nav-sentinel");

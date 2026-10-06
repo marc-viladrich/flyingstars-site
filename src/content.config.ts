@@ -174,6 +174,8 @@ const pages = defineCollection({
     title: z.string().min(1),
     description: z.string().min(50).max(160),
     noindex: z.boolean().default(false),
+    // Optional preview image for social shares; must come from an approved media host.
+    image: z.url().optional(),
     sections: z.array(sectionSchema).min(1),
   }),
 });

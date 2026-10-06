@@ -17,6 +17,10 @@
     "route": "exploring-reinvented-der-neue-ford-explorer",
     "order": 3,
     "name": "Ford Explorer",
+    "meta": {
+      "title": "Exploring Reinvented: 350 Drohnen für den neuen Ford Explorer",
+      "description": "Launch-Clip für den elektrischen Ford Explorer: 350 Drohnen über dem Ford Electric Vehicle Center in Köln, gedreht mit Cinequads für die Agentur Envy Create."
+    },
     "cardTitle": "Exploring Reinvented: der neue Ford Explorer",
     "category": "Automotive · Launch",
     "kicker": "Automotive · Köln · Juni 2024",

@@ -17,6 +17,10 @@
     "route": "musikalischer-teaser-bokkenrijders",
     "order": 1,
     "name": "Bokkenrijders",
+    "meta": {
+      "title": "Bokkenrijders: 600 Drohnen im Musical in Maastricht",
+      "description": "Unsere bisher größte Show: 600 Drohnen für das Freiluft-Musical Bokkenrijders der Toneelgroep Maastricht – als Teaser 2025 und in den Aufführungen 2026."
+    },
     "cardTitle": "Bokkenrijders: unsere bisher größte Show",
     "category": "Musical · Maastricht",
     "kicker": "Musical · Maastricht · 2025/26",

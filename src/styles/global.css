@@ -61,7 +61,7 @@ p { margin: 0; }
 .logo svg { width: 32px; height: 32px; }
 .logo span { font: 600 13px/1 "Montserrat", var(--body); letter-spacing: 0.24em; }
 .nav nav { margin-left: auto; display: flex; gap: 28px; font-size: 14px; color: rgba(246, 241, 232, 0.78); }
-.nav nav a:hover, .nav nav a[aria-current="page"] { color: var(--text); }
+.nav nav a:hover, .nav nav a[aria-current] { color: var(--text); }
 .lang { font: 400 12px/1 var(--mono); letter-spacing: 0.1em; color: var(--faint); display: flex; gap: 10px; }
 .lang a[aria-current="true"] { color: var(--text); }
 .menu-btn { display: none; margin-left: auto; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line-strong); background: rgba(15, 13, 12, 0.5); color: var(--text); cursor: pointer; place-items: center; }
@@ -353,8 +353,13 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
 .c-media .meta { position: absolute; left: 16px; right: 16px; bottom: 14px; display: flex; justify-content: space-between; color: rgba(246, 241, 232, 0.78); z-index: 2; }
 .c-media::after { content: ""; position: absolute; inset: auto 0 0 0; height: 30%; background: linear-gradient(0deg, rgba(8, 7, 6, 0.8), transparent); pointer-events: none; }
 .c-steps { display: grid; }
-.c-step { min-height: 78vh; display: grid; align-content: center; gap: 16px; opacity: 0.28; transition: opacity 0.5s; }
-.c-step.on { opacity: 1; }
+.c-step { min-height: 78vh; display: grid; align-content: center; gap: 16px; }
+/* Inactive story steps recede like in the reference, but every line keeps WCAG AA contrast:
+   large headings >= 3:1, body text and the small accent label >= 4.5:1 on --ground. */
+.c-step > .k, .c-step > h2, .c-step > p { transition: opacity 0.5s; }
+.c-step:not(.on) > .k { opacity: 0.88; }
+.c-step:not(.on) > h2 { opacity: 0.42; }
+.c-step:not(.on) > p { opacity: 0.74; }
 .c-step .k { color: var(--accent); }
 .c-step h2 { font-size: clamp(32px, 3.6vw, 54px); line-height: 1.04; }
 .c-step p { color: var(--muted); font-size: clamp(17px, 1.3vw, 19px); max-width: 44ch; }
@@ -418,7 +423,8 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
   .c-num + .c-num { padding-left: 0; border-left: 0; padding-top: 28px; border-top: 1px solid var(--line); }
   .c-story { grid-template-columns: 1fr; }
   .c-media { display: none; }
-  .c-step { min-height: 0; opacity: 1; padding: 20px 0 36px; }
+  .c-step { min-height: 0; padding: 20px 0 36px; }
+  .c-step:not(.on) > .k, .c-step:not(.on) > h2, .c-step:not(.on) > p { opacity: 1; }
   .c-step figure { display: block; border-radius: 14px; overflow: hidden; aspect-ratio: 16 / 10; }
   .c-step figure.tall { aspect-ratio: 4 / 5; max-width: 420px; }
   .c-step figure img { width: 100%; height: 100%; object-fit: cover; }
@@ -433,7 +439,7 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
   .c-reel-head .ctrl { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .c-media figure, .c-step { transition: none; }
+  .c-media figure, .c-step > * { transition: none; }
   .c-hero video { transform: none; }
 }
 
@@ -619,11 +625,17 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
 .form-status { color:var(--text);font-size:15px;line-height:1.6; }
 .honeypot { position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden; }
 .form button:disabled { opacity:.6;cursor:wait; }
-.c-step { opacity:1; }
 .hero .hero-media { isolation:auto; }
 .hero:has(.video-active) .hero-copy,.hero:has(.video-active)>.shade,.hero:has(.video-active)>.frame,.hero:has(.video-active)>.spec { opacity:0;pointer-events:none; }
 .c-hero:has(.video-active)>.shade,.c-hero:has(.video-active)>.c-title,.c-hero:has(.video-active)>.c-top,.c-hero:has(.video-active)>.c-credits { opacity:0;pointer-events:none; }
-.motion-control { position:fixed;bottom:12px;left:12px;z-index:15;border:1px solid var(--line-strong);border-radius:6px;background:var(--ground);color:var(--muted);padding:7px 10px;font:400 11px/1.4 var(--body);cursor:pointer; }
+/* Global motion pause (WCAG 2.2.2) lives in the header so it never covers page content. */
+.motion-btn { flex:none;width:40px;height:40px;border-radius:50%;border:1px solid var(--line-strong);background:rgba(15,13,12,.5);color:var(--text);cursor:pointer;display:grid;place-items:center;padding:0; }
+.motion-btn svg { width:16px;height:16px; }
+.motion-btn .i-play,.motion-btn[aria-pressed="true"] .i-pause { display:none; }
+.motion-btn[aria-pressed="true"] .i-play { display:block; }
+.motion-btn:hover { border-color:var(--text); }
+.motion-btn:focus-visible { outline:3px solid var(--cyan);outline-offset:3px; }
+@media (max-width:1000px) { .nav { gap:10px; } .motion-btn { margin-left:auto;width:44px;height:44px; } .motion-btn ~ .menu-btn { margin-left:0; } }
 .motion-paused * { animation-play-state:paused !important; }
 /* Keyboard focus must remain visible over light gradient buttons. */
 .btn:focus-visible { outline:3px solid var(--cyan);outline-offset:4px; }

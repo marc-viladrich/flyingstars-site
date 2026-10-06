@@ -9,6 +9,6 @@ export async function getStaticPaths() {
 }
 const { project } = Astro.props;
 ---
-<Base title={project.data.title} description={project.data.summary}>
+<Base title={project.data.showcase!.meta.title} description={project.data.showcase!.meta.description} image={project.data.cover?.src} navSection="/projekte/">
   <CaseStudy project={project} />
 </Base>

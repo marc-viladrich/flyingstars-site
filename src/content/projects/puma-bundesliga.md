@@ -17,6 +17,10 @@
     "route": "puma-bundesliga",
     "order": 4,
     "name": "PUMA",
+    "meta": {
+      "title": "PUMA: 100 Drohnen zum Anstoß eines Bundesliga-Derbys",
+      "description": "Überraschung vor dem Anpfiff: 100 Drohnen zeigten beim Derby Gladbach gegen Dortmund über dem Borussia-Park PUMAs Botschaft „Stronger Together“."
+    },
     "cardTitle": "PUMA zum Anstoß des Derbys",
     "category": "Sport · Bundesliga",
     "kicker": "Sport · Mönchengladbach · November 2022",

@@ -4,10 +4,14 @@ import '../styles/global.css';
 import { site } from '../site.config';
 import Logo from '../components/Logo.astro';
 import { optimizedImage } from '../lib/media';
-interface Props { title: string; description: string; noindex?: boolean; canonicalPath?: string; }
-const { title, description, noindex = false, canonicalPath } = Astro.props;
+interface Props { title: string; description: string; noindex?: boolean; canonicalPath?: string; image?: string; navSection?: string; }
+const { title, description, noindex = false, canonicalPath, image, navSection } = Astro.props;
 const canonical = new URL(canonicalPath ?? Astro.url.pathname, Astro.site);
 const current = Astro.url.pathname;
+// Case pages and project details belong to the "Projekte" area of the main navigation.
+const section = navSection ?? (current.startsWith('/projekte/') ? '/projekte/' : undefined);
+const navState = (href: string) => current === href ? 'page' : section === href ? 'true' : undefined;
+const social = image ? await optimizedImage(image, 960, undefined, 'jpg') : undefined;
 const fullBleed = ['/', '/drohnenshow-preise/', '/musikalischer-teaser-bokkenrijders/', '/nfl-berlin-game/', '/exploring-reinvented-der-neue-ford-explorer/', '/puma-bundesliga/'].includes(current) || current.startsWith('/projekte/');
 const eco = await optimizedImage('https://flyingstars.art/wp-content/uploads/2024/10/NATURSTROM-Logo_weiss.png', 160);
 ---
@@ -24,6 +28,9 @@ const eco = await optimizedImage('https://flyingstars.art/wp-content/uploads/202
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
+    {social && <meta property="og:image" content={new URL(social.src, Astro.site)} />}
+    {social && <meta property="og:image:width" content={String(social.width)} />}
+    {social && <meta property="og:image:height" content={String(social.height)} />}
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
@@ -32,8 +39,9 @@ const eco = await optimizedImage('https://flyingstars.art/wp-content/uploads/202
     <div class="nav-sentinel" aria-hidden="true"></div>
     <header class="nav">
       <Logo />
-      <nav aria-label="Hauptnavigation">{site.nav.map((item) => <a href={item.href} aria-current={current === item.href ? 'page' : undefined}>{item.label}</a>)}</nav>
+      <nav aria-label="Hauptnavigation">{site.nav.map((item) => <a href={item.href} aria-current={navState(item.href)}>{item.label}</a>)}</nav>
       <span class="lang" aria-label="Sprache Deutsch">DE</span>
+      <button class="motion-btn" type="button" data-motion-toggle aria-pressed="false" aria-label="Bewegung pausieren" title="Bewegung pausieren"><svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="7" y="6" width="3.2" height="12" rx="1" /><rect x="13.8" y="6" width="3.2" height="12" rx="1" /></svg><svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 6.2v11.6a.8.8 0 0 0 1.2.7l9-5.8a.8.8 0 0 0 0-1.4l-9-5.8a.8.8 0 0 0-1.2.7z" /></svg></button>
       <a class="btn small primary" href={site.cta.href}>{site.cta.label}</a>
       <button class="menu-btn" type="button" data-menu-open aria-controls="mobile-menu" aria-expanded="false" aria-label="Menü öffnen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg></button>
     </header>
@@ -43,7 +51,6 @@ const eco = await optimizedImage('https://flyingstars.art/wp-content/uploads/202
       <span class="lang">DE · Deutsch</span>
     </dialog>
     <main id="main" class:list={{ 'content-page': !fullBleed }}><slot /></main>
-    <button type="button" class="motion-control" data-motion-toggle aria-pressed="false">Bewegung pausieren</button>
     <footer class="footer">
       <div class="cols">
         <div class="footer-brand"><Logo /><p>Drohnenshows seit 2022. Über 150 Shows in Deutschland und Europa.</p><div class="eco"><img src={eco.src} width={eco.width} height={eco.height} alt="naturstrom" loading="lazy" /><span>100 % Ökostrom</span></div></div>

@@ -12,6 +12,8 @@ export const projectShowcaseSchema = z.object({
   route: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
   order: z.number().int().positive(),
   name: z.string().min(1),
+  // Search/social title and description of the case page, without the site name.
+  meta: z.object({ title: z.string().min(1).max(70), description: z.string().min(50).max(160) }),
   cardTitle: z.string().min(1),
   category: z.string().min(1),
   kicker: z.string().min(1),

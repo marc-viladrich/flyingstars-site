@@ -17,6 +17,10 @@
     "route": "nfl-berlin-game",
     "order": 2,
     "name": "NFL Berlin Game",
+    "meta": {
+      "title": "NFL Berlin Game: 300 Drohnen für die Indianapolis Colts",
+      "description": "Hufeisen, Berlin-Game-Logo und NFL-Shield über dem Olympiastadion: 300 Drohnen für die Indianapolis Colts zum NFL Berlin Game 2025."
+    },
     "cardTitle": "NFL Berlin Game: das Wappen über dem Stadion",
     "category": "Sport · Berlin",
     "kicker": "Sport · Berlin · November 2025",

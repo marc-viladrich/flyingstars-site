@@ -9,11 +9,11 @@ async function sourceSize(src: string) {
   return dimensions.get(src)!;
 }
 /** Infer source dimensions first: inferSize plus width alone retains the source height in Astro 7. */
-export async function optimizedImage(src: string, width = 960, height?: number) {
+export async function optimizedImage(src: string, width = 960, height?: number, format: 'webp' | 'jpg' = 'webp') {
   const size = await sourceSize(src);
   const targetWidth = Math.min(width, 960, size.width);
   const targetHeight = height ?? Math.round(targetWidth * size.height / size.width);
-  const image = await getImage({src,width:targetWidth,height:targetHeight,fit:'cover',format:'webp',quality:65});
+  const image = await getImage({src,width:targetWidth,height:targetHeight,fit:'cover',format,quality:format === 'jpg' ? 78 : 65});
   return {src:image.src,width:Number(image.attributes.width),height:Number(image.attributes.height),attributes:image.attributes};
 }
 /** Keep the full logo and size it by its rendered height, including portrait marks. */
