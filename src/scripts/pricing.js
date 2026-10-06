@@ -238,7 +238,7 @@ import { SHOW_PACKAGES, PACKAGE_NAMES, priceFor, recommendPackage } from '../con
         if (!on[i] && p.ta) { const a = rnd() * 6.283, r = 1.4 + rnd() * 0.5; p.tx = Math.cos(a) * r; p.ty = (rnd() - 0.5) * 1.3; p.tz = Math.sin(a) * r * 0.5; p.ta = 0; }
       }
       if (reduce || !unitShown) unitShown = unit;
-      if (reduce || animationPaused) { for (const p of P) { p.x = p.tx; p.y = p.ty; p.z = p.tz; p.al = p.ta; } cur = col.slice(); draw(0, 0); }
+      if (held()) { for (const p of P) { p.x = p.tx; p.y = p.ty; p.z = p.tz; p.al = p.ta; } cur = col.slice(); draw(0, 0); }
     }
     // dimension lines: width below and height beside the whole picture, in metres (Flo: "mit Höhe und Breite des
     // gesamten Motivs"); eased with the picture so they grow and shrink with it
@@ -328,6 +328,8 @@ import { SHOW_PACKAGES, PACKAGE_NAMES, priceFor, recommendPackage } from '../con
     const resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(cv);
     let frame = 0, last = 0, animationPaused = false, pageActive = true;
+    // Local pause, global pause and reduced motion all show the finished picture instead of a frozen or empty frame.
+    function held() { return reduce || animationPaused || document.documentElement.classList.contains("motion-paused"); }
     const motionButton = $("#swarm-motion");
     function stopAnimation() { if (frame) cancelAnimationFrame(frame); frame = 0; last = 0; }
     function loop(now) {
@@ -353,7 +355,7 @@ import { SHOW_PACKAGES, PACKAGE_NAMES, priceFor, recommendPackage } from '../con
     const intersectionObserver = new IntersectionObserver((entries) => { visible = entries[0].isIntersecting; syncAnimation(); });
     intersectionObserver.observe(cv);
     document.addEventListener("visibilitychange", syncAnimation);
-    document.addEventListener("flyingstars:motion-change", syncAnimation);
+    document.addEventListener("flyingstars:motion-change", () => { if (held()) settle(); syncAnimation(); });
     window.addEventListener("pagehide", () => { pageActive = false; stopAnimation(); clearTimeout(text.timer); ++text.job; });
     window.addEventListener("pageshow", () => { pageActive = true; syncAnimation(); });
     motionQuery.addEventListener("change", () => { reduce = motionQuery.matches; if (reduce) settle(); updateMotionButton(); syncAnimation(); });
@@ -371,7 +373,7 @@ import { SHOW_PACKAGES, PACKAGE_NAMES, priceFor, recommendPackage } from '../con
         else if (p.ta) { const a = rnd() * 6.283, rr = 1.4 + rnd() * 0.5; p.tx = Math.cos(a) * rr; p.ty = (rnd() - 0.5) * 1.3; p.tz = Math.sin(a) * rr * 0.5; p.ta = 0; }
       }
       if (reduce || !unitShown) unitShown = unit;
-      if (reduce || animationPaused) { for (const p of P) { p.x = p.tx; p.y = p.ty; p.z = p.tz; p.al = p.ta; } cur = col.slice(); draw(0, 0); }
+      if (held()) { for (const p of P) { p.x = p.tx; p.y = p.ty; p.z = p.tz; p.al = p.ta; } cur = col.slice(); draw(0, 0); }
       syncAnimation();
     }
     return { setTarget, setText, resize, info, loadHearts(data) {

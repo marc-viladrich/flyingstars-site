@@ -78,3 +78,24 @@ test('Scrollstory hebt auf breiten Bildschirmen nur den aktiven Abschnitt hervor
   await expect.poll(() => opacity(1)).toBe(1);
   await expect.poll(() => opacity(0)).toBeLessThan(1);
 });
+
+/** Counts coloured formation pixels; the grey dimension lines do not count. */
+const colouredPixels = (page: Page, selector: string) => page.locator(selector).evaluate((node) => {
+  const canvas = node as HTMLCanvasElement;
+  const d = canvas.getContext('2d')!.getImageData(0, 0, canvas.width, canvas.height).data;
+  let n = 0;
+  for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 40 && Math.max(d[i], d[i + 1], d[i + 2]) - Math.min(d[i], d[i + 1], d[i + 2]) > 60) n++;
+  return n;
+});
+
+test('Formationen erscheinen fertig, wenn die Bewegung schon pausiert ist', async ({ page }) => {
+  await page.addInitScript(() => sessionStorage.setItem('flyingstars:motion', 'paused'));
+  await page.goto('/nfl-berlin-game/');
+  await page.locator('.c-play').scrollIntoViewIfNeeded();
+  await expect(page.locator('[data-tally]')).toContainText('289 Drohnen');
+  await expect.poll(() => colouredPixels(page, 'canvas[data-formation]')).toBeGreaterThan(500);
+  await page.goto('/drohnenshow-preise/');
+  await page.getByLabel('Dein Text am Himmel').fill('ANNA');
+  await expect(page.locator('#text-read')).toContainText('Zeichen', { ignoreCase: true, timeout: 15_000 });
+  await expect.poll(() => colouredPixels(page, '#swarm')).toBeGreaterThan(500);
+});

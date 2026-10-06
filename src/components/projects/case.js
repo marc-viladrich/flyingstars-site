@@ -84,6 +84,9 @@
       const wide = W > 900, room = wide ? [W * 0.62, H * 0.78] : [W * 0.86, H * 0.56];
       fit = { hx: (wide ? W * 0.6 : W * 0.5) * DPR, hy: (wide ? H * 0.46 : H * 0.36) * DPR, s: Math.min(room[0] / bw, room[1] / bh) * DPR, cx: (wide ? W * 0.6 : W * 0.5) * DPR - ((Math.max(...xs) + Math.min(...xs)) / 2) * Math.min(room[0] / bw, room[1] / bh) * DPR, cy: (wide ? H * 0.46 : H * 0.36) * DPR + ((Math.max(...ys) + Math.min(...ys)) / 2) * Math.min(room[0] / bw, room[1] / bh) * DPR };
     };
+    const held = () => paused || document.documentElement.classList.contains("motion-paused");
+    // Shows the finished formation, e.g. when it appears while motion is paused.
+    const settle = () => { D.forEach((d) => { d.x = d.tx; d.y = d.ty; d.z = d.tz; d.vx = d.vy = 0; d.delay = 0; }); started = true; draw(0, 0); };
     const launch = () => { // all drones start on the ground and take off in waves, like at a real show
       started = true;
       D.forEach((d, i) => { d.x = (Math.random() - 0.5) * 2.4; d.y = -1.25 - Math.random() * 0.15; d.z = 0; d.vx = d.vy = 0; d.delay = (i / D.length) * 1.2 + Math.random() * 0.4; });
@@ -103,7 +106,7 @@
       if (replay) replay.disabled = reduce;
       if (reduce) D.forEach((d) => { d.z = d.tz; });
       if (reduce) { started = true; draw(0, 0); }
-      else launch();
+      else { launch(); if (held()) settle(); }
     }).catch(() => { if (tally) tally.textContent = "Die Formation konnte nicht geladen werden."; });
     }, { rootMargin: "100px", threshold: 0 });
     replay?.addEventListener("click", () => { if (!reduce && D.length) { paused = false; pause?.setAttribute("aria-pressed", "false"); if (pause) pause.textContent = "Animation pausieren"; launch(); } });
@@ -112,7 +115,7 @@
     host.addEventListener("pointermove", (e) => { if (e.pointerType === "touch") return; const r = cv.getBoundingClientRect(); mouse = [(e.clientX - r.left) * DPR, (e.clientY - r.top) * DPR]; });
     host.addEventListener("pointerleave", () => { mouse = null; });
     new IntersectionObserver((es) => { visible = es[0].isIntersecting; }).observe(cv);
-    if ("ResizeObserver" in window) new ResizeObserver(() => { resize(); if (reduce && started) draw(0, 0); }).observe(cv);
+    if ("ResizeObserver" in window) new ResizeObserver(() => { resize(); if ((reduce || held()) && started) draw(0, 0); }).observe(cv);
 
     const draw = (dt, t) => {
       ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height);
