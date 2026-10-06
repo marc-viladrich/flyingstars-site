@@ -20,7 +20,7 @@ Statische Astro-Site. Inhalte liegen als Dateien in `src/content/` und werden du
 - Keine neuen Abhängigkeiten (`package.json`), keine externen Ressourcen (Fonts, Skripte, iframes, Tracking). Der Test `tests/network-allowlist.spec.ts` schlägt sonst fehl, und das soll er.
 - Keine Änderungen an `.github/`, `scripts/`, `tests/`, `playwright.config.ts`, `lighthouserc.json`, `astro.config.mjs`, `AGENTS.md`.
 - Keine Bilder ins Repo. Bilder sind URLs auf `MEDIA_HOST` mit `alt`, `width`, `height`.
-- Kein `draft: false` setzen, das entscheidet der Mensch im Review.
+- Neue Intake-Inhalte enthalten `draft: false`, damit sie nach dem menschlichen PR-Merge veröffentlicht werden. Der offene PR ist der redaktionelle Entwurf. Bestehende Inhalte mit `draft: true` bleiben verborgen; deren Veröffentlichung braucht einen ausdrücklichen Auftrag des Menschen.
 - Nicht auf `main` pushen, nicht mergen, keine Secrets lesen oder ausgeben.
 
 ## Arbeitsweise

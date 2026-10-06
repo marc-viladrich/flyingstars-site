@@ -5,6 +5,9 @@ on:
   pull_request:
   push:
     branches: [main]
+concurrency:
+  group: deploy-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,8 +28,6 @@ jobs:
   # --- HOST-SPEZIFISCH: Cloudflare Pages (Direct Upload) ------------------------------
   upload:
     needs: build
-    # Läuft erst, wenn das Pages-Projekt konfiguriert ist (Variable gesetzt). Vorher kein roter Check.
-    if: vars.CF_PAGES_PROJECT != ''
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -34,6 +35,20 @@ jobs:
       deployments: write
       pull-requests: write
     steps:
+      - name: Cloudflare-Konfiguration prüfen
+        env:
+          CF_PAGES_PROJECT: ${{ vars.CF_PAGES_PROJECT }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          missing=0
+          for key in CF_PAGES_PROJECT CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID; do
+            if [ -z "${!key}" ]; then
+              echo "::error::Cloudflare-Konfiguration fehlt: $key"
+              missing=1
+            fi
+          done
+          exit "$missing"
       - uses: actions/checkout@v6   # für functions/ (Pages Functions werden aus dem Repo mitgebündelt)
       - uses: actions/download-artifact@v4
         with: { name: dist, path: dist }

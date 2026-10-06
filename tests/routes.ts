@@ -1,2 +1,7 @@
-// Gemeinsame Routenliste für alle Gates. Pro Kundensite ergänzen.
-export const routes = ['/danke/', '/leistungen/', '/impressum/', '/datenschutz/', '/', '/kontakt/', '/projekte/', '/faq/', '/blog/', '/blog/2026-10-06-beispielbeitrag/', '/projekte/beispielprojekt/'];
+import { readdirSync } from 'node:fs';
+
+// Alle tatsächlich gebauten HTML-Seiten prüfen, auch automatisch erzeugte Inhalte.
+export const routes = readdirSync(new URL('../dist/', import.meta.url), { recursive: true })
+  .filter((file) => typeof file === 'string' && file.endsWith('.html'))
+  .map((file) => `/${String(file).replaceAll('\\', '/')}`.replace(/\/index\.html$/, '/'))
+  .sort();

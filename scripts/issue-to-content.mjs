@@ -30,7 +30,7 @@ if (type === 'blogpost') {
   const date = /^\d{4}-\d{2}-\d{2}$/.test(f.date ?? '') ? f.date : today;
   dir = 'src/content/posts';
   file = `${dir}/${date}-${slugify(f.title)}.md`;
-  content = `---\ntitle: ${yamlString(f.title)}\ndescription: ${yamlString(f.description)}\ndate: ${date}\ntags: [${listFromCsv(f.tags ?? '').map(yamlString).join(', ')}]\ndraft: true\nsourceIssue: ${issue}\n---\n\n${f.body}\n`;
+  content = `---\ntitle: ${yamlString(f.title)}\ndescription: ${yamlString(f.description)}\ndate: ${date}\ntags: [${listFromCsv(f.tags ?? '').map(yamlString).join(', ')}]\ndraft: false\nsourceIssue: ${issue}\n---\n\n${f.body}\n`;
 } else if (type === 'projekt') {
   if (!f.title) fail('Titel fehlt');
   if (!f.summary || f.summary.length < 30 || f.summary.length > 200) fail('Kurzbeschreibung muss 30 bis 200 Zeichen haben');
@@ -38,14 +38,14 @@ if (type === 'blogpost') {
   dir = 'src/content/projects';
   file = `${dir}/${slugify(f.title)}.md`;
   const featured = /\[x\]/i.test(f.featured ?? '');
-  content = `---\ntitle: ${yamlString(f.title)}\n${f.client ? `client: ${yamlString(f.client)}\n` : ''}date: ${date}\n${f.location ? `location: ${yamlString(f.location)}\n` : ''}summary: ${yamlString(f.summary)}\nfeatured: ${featured}\ndraft: true\nsourceIssue: ${issue}\n---\n\n${f.body ?? ''}\n`;
+  content = `---\ntitle: ${yamlString(f.title)}\n${f.client ? `client: ${yamlString(f.client)}\n` : ''}date: ${date}\n${f.location ? `location: ${yamlString(f.location)}\n` : ''}summary: ${yamlString(f.summary)}\nfeatured: ${featured}\ndraft: false\nsourceIssue: ${issue}\n---\n\n${f.body ?? ''}\n`;
 } else {
   if (!f.question || f.question.length < 5) fail('Frage fehlt');
   if (!f.answer) fail('Antwort fehlt');
   dir = 'src/content/faq';
   file = `${dir}/${slugify(f.question)}.md`;
   const order = Number.isInteger(Number(f.order)) && f.order !== '' ? Number(f.order) : 100;
-  content = `---\nquestion: ${yamlString(f.question)}\ntags: [${listFromCsv(f.tags ?? '').map(yamlString).join(', ')}]\norder: ${order}\ndraft: true\nsourceIssue: ${issue}\n---\n\n${f.answer}\n`;
+  content = `---\nquestion: ${yamlString(f.question)}\ntags: [${listFromCsv(f.tags ?? '').map(yamlString).join(', ')}]\norder: ${order}\ndraft: false\nsourceIssue: ${issue}\n---\n\n${f.answer}\n`;
 }
 
 if (!existsSync(dir)) mkdirSync(dir, { recursive: true });

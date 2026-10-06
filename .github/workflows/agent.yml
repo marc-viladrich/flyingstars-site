@@ -21,7 +21,18 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with: { fetch-depth: 1 }
-      - uses: anthropics/claude-code-action@v1
+      - name: Auftraggeber vor Secret-Nutzung prüfen
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const actors = new Set([context.actor, process.env.GITHUB_TRIGGERING_ACTOR]);
+            for (const username of actors) {
+              const { data } = await github.rest.repos.getCollaboratorPermissionLevel({ ...context.repo, username });
+              if (!['admin', 'maintain', 'write'].includes(data.permission)) {
+                throw new Error(`Agent-Auftrag nicht freigegeben: ${username} hat kein Schreibrecht.`);
+              }
+            }
+      - uses: anthropics/claude-code-action@86d88e619d8e6caf07b5c3944dd14f441c533718 # v1, geprüft am 2026-10-06
         id: claude
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
@@ -51,7 +62,18 @@ jobs:
                Wenn du den Wunsch nicht umsetzen kannst, erkläre den Grund. Antworte nie still.
           claude_args: >-
             --max-turns 40
-            --allowedTools "Bash(npm ci),Bash(npx astro check),Bash(npx astro build),Bash(git:*),Bash(gh pr create:*),Bash(gh pr view:*),Bash(gh issue view:*),Bash(gh issue comment:*),Read,Edit,Write,Glob,Grep"
+            --allowedTools "Bash(npm ci),Bash(npx astro check),Bash(npx astro build),Bash(git:*),Bash(gh pr view:*),Bash(gh issue view:*),Bash(gh issue comment:*),Read,Edit,Write,Glob,Grep"
+      - name: Agent-Diff vor dem PR prüfen
+        if: steps.claude.outputs.branch_name != ''
+        env:
+          BR: ${{ steps.claude.outputs.branch_name }}
+          BASE_SHA: ${{ github.sha }}
+        run: |
+          # Den Prüfer aus dem vertrauenswürdigen Start-Commit laden, nicht aus Agent-Änderungen.
+          git reset --hard "$BASE_SHA"
+          git check-ref-format --branch "$BR"
+          git fetch origin "refs/heads/main:refs/remotes/origin/main" "refs/heads/$BR:refs/remotes/origin/agent-candidate"
+          node scripts/check-agent-diff.mjs origin/main origin/agent-candidate
       - name: PR aus dem Agent-Branch öffnen (deterministisch)
         if: steps.claude.outputs.branch_name != ''
         env:
