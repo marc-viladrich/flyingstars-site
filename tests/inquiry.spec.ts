@@ -8,6 +8,8 @@ test('Anfrage behält Paketauswahl, alle Showdetails und ehrlichen Versandstatus
   });
   await page.goto('/?paket=HORIZON&drohnen=220#anfrage');
   await expect(page.getByLabel('Drohnen / Paket')).toHaveValue('HORIZON · 200 Drohnen');
+  await page.evaluate(() => document.fonts.ready);
+  await expect.poll(() => page.locator('#anfrage-h').evaluate(node => node.getBoundingClientRect().top)).toBeGreaterThan(70);
   await page.getByRole('button',{name:'Weiter',exact:true}).click();
   await expect(page.getByText('Bitte wähle einen Anlass.')).toBeVisible();
   await page.getByText('Firmenevent',{exact:true}).click();

@@ -309,4 +309,4 @@ sections:
       Ort aufbaut und fliegt.
     cta:
       label: Lern uns kennen
-      href: "#anfrage"
+      href: "/#anfrage"

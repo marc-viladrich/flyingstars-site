@@ -22,7 +22,7 @@ Brevo bleibt auf Marcs Wunsch unkonfiguriert. Ohne die drei Versandwerte bestät
 
 Ein globaler Pausenschalter erreicht die gemeinsamen Effekte und beide Formationsmodule. Zusätzlich stehen lokale Pausen-/Replay-Tasten und eine statische Darstellung bei reduzierter Bewegung zur Verfügung. Die Galerie ist per Tastatur scrollbar; das mobile Menü verwendet einen nativen Dialog mit Fokus-Rückgabe. Schriftkontraste und Überschriften wurden gegen die bestehenden Gates geprüft.
 
-`npm run gates` prüft Astro, Build, Node-Tests und Desktop/Mobil-Browsertests. Die vorhandenen axe-, HTML-, Netzwerk- und Veröffentlichungsprüfungen bleiben aktiv. Zusätzliche Tests sichern Paketgrenzen, Textplanung im gebauten Bundle, echte Formationsdaten, Tastaturgalerie, globale Pause und die vollständigen Anfragefelder. `lhci autorun` prüft das unveränderte Performancebudget. Der Medienproxy wird zusätzlich in der tatsächlichen Cloudflare-Pages-Laufzeit geprüft.
+`npm run gates` prüft Astro, Build, Node-Tests und Desktop/Mobil-Browsertests. Die vorhandenen axe-, HTML-, Netzwerk- und Veröffentlichungsprüfungen bleiben aktiv. Zusätzliche Tests sichern Paketgrenzen, Textplanung im gebauten Bundle, echte Formationsdaten, Tastaturgalerie, globale Pause und die vollständigen Anfragefelder. `lhci autorun` prüft das unveränderte Performancebudget. Der Offline-Linkcheck löst Verzeichnislinks über `--index-files index.html` auf, damit er Anker wie `/#anfrage` in der erzeugten Startseite prüft ([Lychee-Dokumentation](https://lychee.cli.rs/guides/cli/#--index-files)). Der Medienproxy wird zusätzlich in der tatsächlichen Cloudflare-Pages-Laufzeit geprüft.
 
 ## Quellen
 

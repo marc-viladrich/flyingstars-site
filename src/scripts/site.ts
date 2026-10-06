@@ -24,6 +24,13 @@
     menu.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => menu.close()));
     menu.addEventListener("close", () => { document.body.style.overflow = ""; opener.setAttribute("aria-expanded", "false"); opener.focus(); });
   }
+  // Enhancement and font loading can change the height above an incoming hash link.
+  // Align it after layout settles so calculator inquiries stay below the fixed nav.
+  if (location.hash) window.addEventListener('load', () => {
+    document.fonts.ready.then(() => requestAnimationFrame(() => {
+      document.getElementById(location.hash.slice(1))?.scrollIntoView({block:'start',behavior:'instant'});
+    }));
+  }, {once:true});
   // slogan: rotating word (Neu. / Einzigartig. / Anders. / Spektakulär.)
   const word = document.querySelector("[data-rotate]");
   if (word && !reduce) {
