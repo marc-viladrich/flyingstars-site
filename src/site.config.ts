@@ -1,22 +1,14 @@
-// Zentrale Site-Konfiguration. Pro Kundensite anpassen, nicht in Komponenten hartkodieren.
 export const site = {
-  name: 'Beispiel GmbH',
-  locale: 'de',
-  description: 'Platzhalter-Beschreibung der Site.',
+  name: 'FlyingStars', locale: 'de',
+  description: 'Drohnenshows für Marken, Städte und große Momente. Von der ersten Idee bis zur Landung aus einer Hand.',
   nav: [
-    { label: 'Leistungen', href: '/leistungen/' },
+    { label: 'Anlässe', href: '/#anlaesse' },
+    { label: 'Preise', href: '/drohnenshow-preise/' },
     { label: 'Projekte', href: '/projekte/' },
-    { label: 'Blog', href: '/blog/' },
+    { label: 'Ablauf', href: '/#ablauf' },
     { label: 'FAQ', href: '/faq/' },
   ],
-  cta: { label: 'Anfragen', href: '/kontakt/' },
-  footer: {
-    legal: [
-      { label: 'Impressum', href: '/impressum/' },
-      { label: 'Datenschutz', href: '/datenschutz/' },
-    ],
-  },
-  // Formular-Endpoint. Default: Pages Function unter /api/contact (functions/api/contact.ts).
-  // Für einen externen Dienst PUBLIC_FORM_ENDPOINT auf dessen URL setzen; das HTML bleibt gleich.
+  cta: { label: 'Show anfragen', href: '/#anfrage' },
+  footer: { legal: [{label:'Impressum',href:'/impressum/'},{label:'Datenschutz',href:'/datenschutz/'}] },
   formEndpoint: import.meta.env.PUBLIC_FORM_ENDPOINT || '/api/contact',
 } as const;

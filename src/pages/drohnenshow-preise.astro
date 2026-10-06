@@ -1,0 +1,91 @@
+---
+import Base from '../layouts/Base.astro';
+import Calculator from '../components/pricing/Calculator.astro';
+import PackageDetails from '../components/pricing/PackageDetails.astro';
+---
+<Base title="Drohnenshow Preise – Pakete ab 7.900 €" description="Drei Drohnenshow-Pakete ab 7.900 €, Preisrechner für 100 bis 1.000 Drohnen, Genehmigung und Team inklusive. Alle Preise netto zzgl. Anfahrt.">
+  <Calculator />
+  <PackageDetails />
+
+  <section class="section" aria-labelledby="incl-h">
+    <div class="sec-head">
+      <div><span class="kicker mono">Immer inklusive</span><h2 id="incl-h">Wofür du eigentlich bezahlst.</h2></div>
+      <p>Der größte Aufwand einer Drohnenshow steckt nicht in den Drohnen, sondern in Design, Genehmigung und einer reibungslosen Durchführung. Das ist bei jedem Paket dabei:</p>
+    </div>
+    <div class="inclusive">
+      <div><span class="k mono" style="color:var(--faint)">Design</span><b>Programmierung für deinen Ort</b><p>Deine Show wird für deinen Showbereich, deine Musik und deine Motive programmiert.</p></div>
+      <div><span class="k mono" style="color:var(--faint)">Genehmigung</span><b>Genehmigung & Sicherheitskonzept</b><p>Luftrechtliche Genehmigung, Sicherheitszonen und Haftpflichtversicherung sind in jedem Paket enthalten.</p></div>
+      <div><span class="k mono" style="color:var(--faint)">Freigabe</span><b>Freigabe vorab</b><p>Deine eigenen Motive siehst du vor der Show und gibst sie frei – ab HORIZON als Video-Vorschau.</p></div>
+      <div><span class="k mono" style="color:var(--faint)">Showtag</span><b>Team vor Ort</b><p>Pilot:innen und Techniker:innen bauen in rund drei Stunden auf und fliegen deine Show.</p></div>
+    </div>
+  </section>
+
+  <!-- extras -->
+  <section class="section alt" aria-labelledby="extras-h">
+    <div class="sec-head">
+      <div><span class="kicker mono">Extras & Upgrades</span><h2 id="extras-h">Mehr geht immer.</h2></div>
+      <p>Für besondere Anforderungen erweitern wir jedes Paket. Die Preise stehen vorab im Angebot.</p>
+    </div>
+    <div class="extras">
+      <div class="extra"><span class="k mono">Express</span><h3>Show in unter zwei Wochen</h3><p>Wir priorisieren dein Projekt bei Design und Genehmigung.</p><span class="price mono">Aufpreis nach Aufwand</span></div>
+      <div class="extra"><span class="k mono">Film</span><h3>Professionelle Filmaufnahmen</h3><p>Rohaufnahmen mit Kameradrohne für Aftermovie und Social Media.</p><span class="price mono">900 € · bei ODYSSEY inklusive</span></div>
+      <div class="extra"><span class="k mono">Behörden</span><h3>Erweiterter Behördensupport</h3><p>Wir übernehmen die komplette Kommunikation mit Ämtern und Behörden.</p><span class="price mono">Preis auf Anfrage</span></div>
+      <div class="extra"><span class="k mono">Sondergenehmigung</span><h3>Kontrollzonen & Flughafennähe</h3><p>Besondere Flächen brauchen Sondergenehmigungen – die holen wir ein.</p><span class="price mono">Preis auf Anfrage</span></div>
+      <div class="extra"><span class="k mono">Indoor</span><h3>Indoor-Drohnenshows</h3><p>Für Messen, Hallen und Bühnen. Jede Indoor-Show kalkulieren wir individuell.</p><span class="price mono">Individuelles Angebot</span></div>
+      <div class="extra"><span class="k mono">Schweiz</span><h3>Shows in der Schweiz</h3><p>BAZL-Antrag und Zollabwicklung für unsere Flotte übernehmen wir.</p><span class="price mono">+1.900 € netto</span></div>
+    </div>
+  </section>
+
+  <!-- price promise -->
+  <section class="section" aria-labelledby="promise-h">
+    <div class="promise">
+      <div style="display:grid;gap:12px">
+        <span class="kicker mono" style="margin:0">Preisversprechen</span>
+        <h2 id="promise-h">Günstigeres Angebot mit gleicher Leistung? Wir unterbieten es.</h2>
+        <p>Schick uns das Vergleichsangebot – bei gleichem Leistungsumfang machen wir dir einen besseren Preis.</p>
+      </div>
+      <a class="btn primary" href="/#anfrage">Angebot prüfen lassen</a>
+    </div>
+  </section>
+
+  <!-- pricing faq -->
+  <section class="section alt" id="faq" aria-labelledby="faq-h">
+    <div class="faq-grid">
+      <div class="intro">
+        <span class="kicker mono" style="margin:0">Fragen zum Preis</span>
+        <h2 id="faq-h">Was kostet eine Drohnenshow wirklich?</h2>
+        <p>Paketpreis plus Anfahrt – mehr nicht. Hier die Details, die in den meisten Gesprächen auftauchen.</p>
+        <a class="link" href="https://calendly.com/team-flyingstars/beratung" target="_blank" rel="noopener">Videocall buchen <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="faq">
+        <details open><summary>Was kommt zum Paketpreis noch dazu?</summary><div class="answer"><p>Nur die Anfahrt und die Mehrwertsteuer. Die Anfahrt berechnen wir ab Gelsenkirchen nach Strecke, Teamgröße und nötigen Übernachtungen – sie steht transparent im Angebot.</p></div></details>
+        <details><summary>Wie funktioniert die Bezahlung?</summary><div class="answer"><p>Mit der Auftragsbestätigung wird eine Anzahlung von 30 % fällig – dann starten Design und Genehmigung. Den Rest überweist du innerhalb von zwei Wochen nach der Show.</p></div></details>
+        <details><summary>Was passiert, wenn die Show ausfällt?</summary><div class="answer"><p>Ist schlechtes Wetter absehbar, verschieben wir ohne Aufpreis – nur eine bereits angefallene Anfahrt wird berechnet. Fällt die Show komplett aus, behalten wir die Anzahlung ein, weil Design und Genehmigung dann schon erledigt sind.</p></div></details>
+        <details><summary>Welches Paket passt zu mir?</summary><div class="answer"><p>Als Faustregel: SPARK bis 150 Drohnen mit Motiven aus unserem Katalog, HORIZON für individuelle Animationen und Logos, ODYSSEY für große Kampagnen mit 3D und Storytelling. Im Zweifel beraten wir dich im Videocall.</p></div></details>
+        <details><summary>Geht es auch größer?</summary><div class="answer"><p>Ja. Unsere bisher größte Show hatte 600 Drohnen – auch 1.000 und mehr planen wir gemeinsam mit dir und bestätigen die Flotte im Angebot.</p></div></details>
+        <details><summary>Kostet eine Show im Ausland mehr?</summary><div class="answer"><p>In der EU planen wir mit denselben Paketen; je nach Land kommen Antragsfristen, eine längere Anfahrt und ggf. Antragskosten dazu – alles transparent im Angebot. Für die Schweiz fallen zusätzlich 1.900 € netto für BAZL-Antrag und Zoll an.</p></div></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="cta-h">
+    <div class="promise" style="background:var(--surface)">
+      <div style="display:grid;gap:12px"><h2 id="cta-h">Paket gefunden? Erzähl uns von deinem Termin.</h2><p>Wir melden uns innerhalb von 48 Stunden – meist deutlich schneller.</p></div>
+      <a class="btn primary" href="/#anfrage">Show anfragen</a>
+    </div>
+  </section>
+
+<script is:inline type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Was kommt zum Paketpreis noch dazu?","acceptedAnswer":{"@type":"Answer","text":"Nur die Anfahrt und die Mehrwertsteuer. Die Anfahrt berechnen wir ab Gelsenkirchen nach Strecke, Teamgröße und nötigen Übernachtungen – sie steht transparent im Angebot."}},
+{"@type":"Question","name":"Wie funktioniert die Bezahlung?","acceptedAnswer":{"@type":"Answer","text":"Mit der Auftragsbestätigung wird eine Anzahlung von 30 % fällig. Den Rest überweist du innerhalb von zwei Wochen nach der Show."}},
+{"@type":"Question","name":"Was passiert, wenn die Show ausfällt?","acceptedAnswer":{"@type":"Answer","text":"Ist schlechtes Wetter absehbar, verschieben wir ohne Aufpreis, nur eine bereits angefallene Anfahrt wird berechnet. Fällt die Show komplett aus, behalten wir die Anzahlung ein."}},
+{"@type":"Question","name":"Welches Paket passt zu mir?","acceptedAnswer":{"@type":"Answer","text":"SPARK bis 150 Drohnen mit Motiven aus dem Katalog, HORIZON für individuelle Animationen und Logos, ODYSSEY für große Kampagnen mit 3D und Storytelling."}},
+{"@type":"Question","name":"Geht es auch größer?","acceptedAnswer":{"@type":"Answer","text":"Ja. Unsere bisher größte Show hatte 600 Drohnen, auch 1.000 und mehr planen wir gemeinsam."}},
+{"@type":"Question","name":"Kostet eine Show im Ausland mehr?","acceptedAnswer":{"@type":"Answer","text":"In der EU planen wir mit denselben Paketen, je nach Land kommen Antragsfristen, Anfahrt und ggf. Antragskosten dazu. Für die Schweiz fallen zusätzlich 1.900 € netto für BAZL-Antrag und Zoll an."}}
+]}
+</script>
+</Base>
+<script>
+  import '../scripts/pricing.js';
+</script>

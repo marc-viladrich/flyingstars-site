@@ -1,0 +1,59 @@
+---
+import { SHOW_PACKAGES } from "../../content/show-packages";
+const money = (value: number) => value.toLocaleString("de-DE");
+---
+
+  <section class="section alt" id="pakete" aria-labelledby="pakete-h">
+    <div class="sec-head">
+      <div><span class="kicker mono">Pakete</span><h2 id="pakete-h">Drei Pakete. Die Preise rechnen mit.</h2></div>
+      <p>Die Preise unten gelten für die Drohnenzahl, die du oben eingestellt hast. Jedes Paket lässt sich mit mehr Drohnen und Extras erweitern.</p>
+    </div>
+    <div class="tiers-grid">
+      <article class="tier" data-card="SPARK" style="--dot:#ff9e29">
+        <canvas data-orb="ring" data-n={SHOW_PACKAGES.SPARK.base} data-color={SHOW_PACKAGES.SPARK.color.join(",")} aria-hidden="true"></canvas>
+        <div class="head"><h3>SPARK</h3><span class="badge">Einstieg</span></div>
+        <p class="tag">Der funkelnde Einstieg für Hochzeiten, Jubiläen und kleinere Firmen- und Kulturfeiern.</p>
+        <div class="p" data-live><b>ab {money(SHOW_PACKAGES.SPARK.price)} €</b><span class="mono">für 100 Drohnen · ca. 10 Min</span></div>
+        <h4>Design & Inhalt</h4>
+        <ul><li>Auswahl aus vordefinierten Premium-Formationen wie Herzen oder Ringe</li><li>Bis zu vier eigene Elemente: Initialen, Logo, Stadtwappen</li></ul>
+        <h4>Musik</h4>
+        <ul><li>Professionelle GEMA-freie Musikuntermalung</li><li>GEMA-Musik bei Anmeldung der Veranstaltung möglich</li></ul>
+        <h4>Service & Extras</h4>
+        <ul><li>Eigene Elemente vorab zur Freigabe</li><li>Standard-Genehmigungsverfahren</li><li>Komplettes Team vor Ort</li><li>Sicherheitskonzept und Haftpflichtversicherung</li></ul>
+        <span class="scale-note mono">+900 € je 10 Drohnen · bis 150 Drohnen</span>
+        <a class="btn" href="/?paket=SPARK#anfrage">SPARK anfragen</a>
+      </article>
+
+      <article class="tier is-rec" data-card="HORIZON" style="--dot:#db64e8">
+        <canvas data-orb="sphere" data-n={SHOW_PACKAGES.HORIZON.base} data-color={SHOW_PACKAGES.HORIZON.color.join(",")} aria-hidden="true"></canvas>
+        <div class="head"><h3>HORIZON</h3><span class="badge">Bestseller</span></div>
+        <p class="tag">Die individuelle Inszenierung für Produktpräsentationen, große Firmenevents und Stadtmarketing.</p>
+        <div class="p" data-live><b>ab {money(SHOW_PACKAGES.HORIZON.price)} €</b><span class="mono">für 200 Drohnen · ca. 13 Min</span></div>
+        <span class="plus">Alles aus SPARK, plus:</span>
+        <h4>Design & Inhalt</h4>
+        <ul><li>Vollständig individuelle 2D-Animationen und einfache 3D-Elemente</li><li>Präzise Logointegration und komplexe Schriftzüge</li></ul>
+        <h4>Musik</h4>
+        <ul><li>Perfekte Synchronisation auf deine Wunschmusik</li></ul>
+        <h4>Service & Extras</h4>
+        <ul><li>Persönlicher Kreativ-Workshop mit Storyboard</li><li>Komplexere Genehmigungen, z. B. in Flughafennähe</li><li>Vorschau als Video inklusive Feedbackschleife</li><li>Hilfe bei der Zustimmung der Grundstückseigentümer:innen</li></ul>
+        <span class="scale-note mono">+4.900 € je 50 Drohnen</span>
+        <a class="btn primary" href="/?paket=HORIZON#anfrage">HORIZON anfragen</a>
+      </article>
+
+      <article class="tier" data-card="ODYSSEY" style="--dot:#33edf2">
+        <canvas data-orb="torus" data-n={SHOW_PACKAGES.ODYSSEY.base} data-color={SHOW_PACKAGES.ODYSSEY.color.join(",")} aria-hidden="true"></canvas>
+        <div class="head"><h3>ODYSSEY</h3><span class="badge">300+ Drohnen</span></div>
+        <p class="tag">Das immersive Erlebnis für große Kampagnen, Festivals und Events mit maximaler Reichweite.</p>
+        <div class="p" data-live><b>ab {money(SHOW_PACKAGES.ODYSSEY.price)} €</b><span class="mono">für 300 Drohnen · 15+ Min</span></div>
+        <span class="plus">Alles aus HORIZON, plus:</span>
+        <h4>Design & Inhalt</h4>
+        <ul><li>Komplexe 3D-Animationen und volumetrische Effekte</li><li>Narratives Storytelling mit dramaturgischer Kurve</li></ul>
+        <h4>Musik</h4>
+        <ul><li>Timecode-Synchronisation vor Ort möglich</li></ul>
+        <h4>Service & Extras</h4>
+        <ul><li>Mehrere Feedbackschleifen mit Zufriedenheitsgarantie</li><li>Eigener Projektmanager</li><li>Professionelle Videodokumentation (Rohmaterial)</li><li>Auf Wunsch Vor-Ort-Termin inklusive</li></ul>
+        <span class="scale-note mono">+9.900 € je 100 Drohnen</span>
+        <a class="btn" href="/?paket=ODYSSEY#anfrage">ODYSSEY anfragen</a>
+      </article>
+    </div>
+  </section>

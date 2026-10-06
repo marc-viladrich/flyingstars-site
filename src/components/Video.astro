@@ -1,0 +1,32 @@
+---
+import { optimizedImage } from '../lib/media';
+import { videoPath } from '../lib/videos';
+interface Props { src: string; poster?: string; class?: string; loop?: boolean; label?: string; hero?: boolean; }
+const { src, poster, class: className = '', loop = false, label = 'Showvideo ansehen', hero = false } = Astro.props;
+const image = poster ? await optimizedImage(poster, hero ? 960 : 720) : undefined;
+---
+<div class:list={['video-player', className]} data-video-player>
+  {image && <img src={image.src} width={image.width} height={image.height} alt="" loading={hero ? 'eager' : 'lazy'} fetchpriority={hero ? 'high' : 'auto'} />}
+  <video data-src={videoPath(src)} controls playsinline preload="none" loop={loop} aria-label={label} hidden></video>
+  <button class="video-play btn" type="button" data-video-play aria-label={label}><span aria-hidden="true">▶</span> {label}</button>
+  <p class="video-error" role="status" hidden>Das Video ist gerade nicht verfügbar. Bitte versuche es später erneut.</p>
+</div>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-video-player]').forEach((player) => {
+    const video = player.querySelector('video')!;
+    const button = player.querySelector<HTMLButtonElement>('[data-video-play]')!;
+    const error = player.querySelector<HTMLElement>('.video-error')!;
+    button.addEventListener('click', async () => {
+      video.src ||= video.dataset.src!;
+      video.hidden = false;
+      player.classList.add('video-active');
+      button.hidden = true;
+      error.hidden = true;
+      try { await video.play(); video.focus(); }
+      catch { button.hidden = false; error.hidden = false; }
+    });
+    video.addEventListener('error', () => { error.hidden = false; button.hidden = false; });
+    new IntersectionObserver(([entry]) => { if (!entry.isIntersecting) video.pause(); }).observe(player);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) video.pause(); });
+  });
+</script>

@@ -1,31 +1,15 @@
 ---
-import Picture from '../Picture.astro';
 import type { Section } from '../../content.config';
+import { optimizedImage } from '../../lib/media';
 type Props = Extract<Section, { type: 'team' }> & { index: number };
-const { headline, text, members, index } = Astro.props;
-const id = `s${index}-h`;
+const { headline, text, members, kicker, note, cta, id = `s${Astro.props.index}`, index } = Astro.props;
+const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
-// Initialen aus erstem und letztem Namensteil, nur für den Platzhalter ohne Bild.
-const initials = (name: string) => {
-  const parts = name.trim().split(/\s+/);
-  return ((parts[0]?.[0] ?? '') + (parts.length > 1 ? parts[parts.length - 1][0] : '')).toUpperCase();
-};
+const initials = (name: string) => name.trim().split(/\s+/).filter((_,i,a)=>i===0||i===a.length-1).map(part=>part[0]).join('').toUpperCase();
+const crew = await Promise.all(members.map(async member => ({...member, media: member.image ? await optimizedImage(member.image.src, 640) : undefined})));
 ---
-<section class="section section--band" aria-labelledby={id}>
-  <div class="wrap">
-    <H id={id}>{headline}</H>
-    {text && <p class="muted measure">{text}</p>}
-    <div class="team">
-      {members.map((m) => (
-        <article class="member">
-          {m.image
-            ? <Picture {...m.image} class="member__photo" sizes="(min-width: 48rem) 20vw, 40vw" />
-            : <div class="member__photo member__photo--placeholder" aria-hidden="true">{initials(m.name)}</div>}
-          <h3>{m.name}</h3>
-          <p class="muted member__role">{m.role}</p>
-          {m.bio && <p>{m.bio}</p>}
-        </article>
-      ))}
-    </div>
-  </div>
+<section class="team-sec" id={id} aria-labelledby={headingId}>
+  <div class="sec-head"><div>{kicker && <span class="kicker mono">{kicker}</span>}<H id={headingId}>{headline}</H></div>{text && <p>{text}</p>}</div>
+  <div class="crew">{crew.map((member,i) => <article class="member" style={`--i:${i}`}><div class="portrait">{member.image && member.media ? <img src={member.media.src} width={member.media.width} height={member.media.height} alt={member.image.alt} loading="lazy" decoding="async" /> : <><span class="ini" aria-hidden="true">{initials(member.name)}</span><span class="soon mono">Foto folgt</span></>}</div><span class="role mono">{member.role}</span><h3>{member.name}</h3>{member.bio && <p>{member.bio}</p>}</article>)}</div>
+  {(note || cta) && <p class="crew-note">{note && <span>{note}</span>}{cta && <a class="link" href={cta.href}>{cta.label} <span aria-hidden="true">→</span></a>}</p>}
 </section>

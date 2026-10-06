@@ -2,7 +2,7 @@
 
 Website: **[flyingstars-site.pages.dev](https://flyingstars-site.pages.dev/)** · [Blog](https://flyingstars-site.pages.dev/blog/) · [Design-Referenz](https://flyingstars-relaunch.vercel.app/)
 
-Astro-Instanz des `astro-site-template` für den Flying-Stars-Relaunch. Die veröffentlichte Seite ist derzeit ein technischer Prototyp mit Platzhaltergestaltung. [Vergleich mit der gewünschten Vercel-Vorlage](docs/flyingstars-reference.md) und [Brevo-/Credential-Anleitung](docs/credentials.md).
+Astro-Instanz des `astro-site-template` für den Flying-Stars-Relaunch. Dieser Branch setzt die Kundenreferenz mit Startseite, Preisrechner und vier Case-Seiten um. Die Produktionsseite aktualisiert sich erst nach dem freigegebenen Merge. [Umsetzung und Unterschiede zur Vercel-Vorlage](docs/flyingstars-reference.md) und [Brevo-/CLI-Anleitung](docs/credentials.md).
 
 ## Das Modell
 
@@ -92,7 +92,7 @@ Vor dem Claude-Start prüft der Workflow Schreibrechte des ursprünglichen und g
 
 ## Kontaktformular
 
-`src/components/sections/ContactForm.astro` postet ohne JavaScript an `site.formEndpoint`, standardmäßig `/api/contact`. Dahinter liegt `functions/api/contact.ts`, eine Cloudflare Pages Function nur aus Web-Standard-APIs (Request, FormData, fetch): validiert, prüft Honeypot und optional Turnstile, sendet per Brevo, speichert nichts, leitet auf `/danke/` weiter. Lokal testen mit `npx wrangler pages dev dist`.
+`src/components/sections/ContactForm.astro` postet ohne JavaScript an `site.formEndpoint`, standardmäßig `/api/contact`. Dahinter liegt `functions/api/contact.ts`, eine Cloudflare Pages Function nur aus Web-Standard-APIs (Request, FormData, fetch): validiert, prüft Honeypot und optional Turnstile, sendet per Brevo, speichert nichts, leitet auf `/danke/` weiter. Der Versand bleibt bis zur Brevo-Einrichtung deaktiviert und meldet dies ehrlich. Lokal testen mit `flyingstars-cf wrangler pages dev dist` (auf Marcs Mac eingerichtet).
 
 Hot-Swap: Entweder die Function auf eine andere Runtime kopieren (Deno, Node, EU-Worker) und `PUBLIC_FORM_ENDPOINT` auf deren URL setzen, oder einen externen Dienst eintragen (EU-Kandidat laut Recherche: Form.taxi). Das Formular-HTML bleibt gleich.
 
@@ -109,7 +109,7 @@ Build, Gates, Intake und Agent bleiben erhalten. Das Kontaktformular nutzt aktue
 
 ## Medien
 
-Bilder, Video, PDFs liegen in einem S3-kompatiblen Speicher unter einer eigenen Domain (`MEDIA_HOST`, z. B. `media.<kunde>.de`), damit der Speicheranbieter wechselbar bleibt, ohne URLs im Content zu ändern. Astro `<Image>` optimiert Remote-Bilder beim Build (`image.remotePatterns`). Content referenziert immer `src`, `alt`, `width`, `height`.
+Kundenbilder stammen derzeit von `flyingstars.art` und der geteilten Vercel-Referenz; der konfigurierte `MEDIA_HOST` bleibt ebenfalls erlaubt. Astro optimiert die Remote-Bilder beim Build. Videos werden über die feste Registrierung in `src/lib/videos.ts` erst auf Klick geladen. Lokale Fontlizenzen, das Technik-PDF und Formations-JSON liegen unter `public/`. Ein eigener S3-kompatibler Medienspeicher kann später die Kundenquellen ersetzen.
 
 ## Lokal
 

@@ -1,0 +1,9 @@
+---
+import layout from '../data/logo-dots.json';
+---
+<a class="logo" href="/" aria-label="FlyingStars – Startseite">
+  <svg viewBox="-1.08 -1.08 2.16 2.16" aria-hidden="true">
+    {layout.dots.map(([x, y, r, g, b]) => <circle cx={x} cy={-y} r={layout.dotRadius} fill={`rgb(${r},${g},${b})`} />)}
+  </svg>
+  <span>FLYINGSTARS</span>
+</a>

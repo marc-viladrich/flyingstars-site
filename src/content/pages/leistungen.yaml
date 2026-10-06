@@ -1,104 +1,312 @@
-title: Leistungen
-description: Pakete, Ablauf und Vergleich der Beispielsite. Platzhalterseite des Templates, beim Anlegen einer Kundensite mit echten Inhalten ersetzen.
+title: Leistungen – FlyingStars
+description: Drei Pakete, feste Preise und ein Team für Design, Genehmigung und
+  Flug. Erfahre, wie FlyingStars deine Drohnenshow von der Idee bis zur Landung
+  umsetzt.
 sections:
-  - type: textMedia
-    headline: Leistungen
-    body: |
-      Platzhalter. Diese Seite zeigt jeden Section-Typ für Preise, Ablauf, Vergleich, Team und Referenzen einmal. Die Inhalte sind erfundene Beispieldaten.
+  - type: hero
+    headline: Drohnenshows aus einer Hand
+    text: Von der ersten Skizze über die Genehmigung bis zur Landung. Entdecke unsere Pakete, unseren Ablauf und die Menschen hinter der Show.
+    cta: { label: Show anfragen, href: /kontakt/ }
+    secondary: { label: Preisrechner öffnen, href: /drohnenshow-preise/ }
+  - type: logoBar
+    headline: Geflogen für
+    press: tagesschau · ZDF · WDR · Tagesspiegel · WAZ
+    logos:
+      - name: Spotify
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/07/spotify_logo_white.png
+          alt: Spotify
+          width: 400
+          height: 200
+        tall: false
+      - name: NFL
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png
+          alt: NFL
+          width: 400
+          height: 200
+        tall: true
+      - name: Ford
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/Ford_logo_weiss.png
+          alt: Ford
+          width: 400
+          height: 200
+        tall: false
+      - name: Volkswagen
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/Volkswagen_logo_2019_weiss.png
+          alt: Volkswagen
+          width: 400
+          height: 200
+        tall: true
+      - name: L'Oréal
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/LOreal_logo_weiss.png
+          alt: L'Oréal
+          width: 400
+          height: 200
+        tall: false
+      - name: Prada
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/Prada-Logo_weiss.png
+          alt: Prada
+          width: 400
+          height: 200
+        tall: false
+      - name: PUMA
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/Puma_Logo_weiss.png
+          alt: PUMA
+          width: 400
+          height: 200
+        tall: false
+      - name: Siemens
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/10/siemens_logo_weiss.png
+          alt: Siemens
+          width: 400
+          height: 200
+        tall: false
+      - name: Red Bull
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/10/RED-BULL_white.png
+          alt: Red Bull
+          width: 400
+          height: 200
+        tall: false
+      - name: Bulgari
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/Bulgari_logo_weiss.png
+          alt: Bulgari
+          width: 400
+          height: 200
+        tall: false
+      - name: AIRPOWER
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/10/airpower-logo-weiss.png
+          alt: AIRPOWER
+          width: 400
+          height: 200
+        tall: false
   - type: pricing
-    headline: Drei Pakete
-    text: Alle Preise netto zuzüglich Anfahrt. Jedes Paket lässt sich mit zusätzlichen Drohnen erweitern.
+    id: pakete
+    kicker: Pakete
+    headline: Transparente Preise. Keine Überraschungen.
+    text: Drei Pakete als Startpunkt – mehr Drohnen, eigene Motive und Extras gehen
+      jederzeit.
     tiers:
       - name: SPARK
         price: ab 7.900 €
-        unit: für 100 Drohnen
-        description: Einstieg für Hochzeiten, Jubiläen und kleinere Feiern.
-        features:
-          - 100 Drohnen, ca. 10 Minuten Show
-          - Auswahl aus vorgefertigten Formationen
-          - Bis zu vier eigene Elemente, etwa Initialen oder Logo
-          - Standard-Genehmigungsverfahren
-        cta: { label: SPARK anfragen, href: /kontakt/ }
+        unit: 100 Drohnen · ca. 10 Min
+        highlight: false
+        cta:
+          label: Paket ansehen
+          href: /drohnenshow-preise/
+        orb:
+          shape: ring
+          color: 255,158,41
+          count: 100
       - name: HORIZON
         price: ab 15.900 €
-        unit: für 200 Drohnen
-        description: Individuelle Inszenierung für Produktpräsentationen und große Firmenevents.
+        unit: 200 Drohnen · ca. 13 Min
         highlight: true
-        features:
-          - 200 Drohnen, ca. 13 Minuten Show
-          - Individuelle 2D-Animationen und einfache 3D-Elemente
-          - Synchronisation auf die Wunschmusik
-          - Video-Vorschau mit Feedbackschleife
-        cta: { label: HORIZON anfragen, href: /kontakt/ }
+        cta:
+          label: Paket ansehen
+          href: /drohnenshow-preise/
+        orb:
+          shape: sphere
+          color: 219,100,232
+          count: 200
+        badge: Bestseller
       - name: ODYSSEY
         price: ab 34.900 €
-        unit: für 300 Drohnen
-        description: Große Kampagnen, Festivals und Events mit maximaler Reichweite.
-        features:
-          - 300 und mehr Drohnen, über 15 Minuten Show
-          - Komplexe 3D-Animationen mit dramaturgischem Aufbau
-          - Eigene Projektleitung
-          - Videodokumentation als Rohmaterial
-        cta: { label: ODYSSEY anfragen, href: /kontakt/ }
-    note: Beispielpreise des Templates. Genehmigung, Sicherheitskonzept und Haftpflichtversicherung sind in jedem Paket enthalten.
+        unit: 300+ Drohnen · 15+ Min
+        highlight: false
+        cta:
+          label: Paket ansehen
+          href: /drohnenshow-preise/
+        orb:
+          shape: torus
+          color: 51,237,242
+          count: 300
+    note: Alle Preise netto zzgl. Anfahrt
+    cta:
+      label: Alle Leistungen und Preisrechner
+      href: /drohnenshow-preise/
   - type: steps
-    headline: Von der Anfrage bis zur Landung
-    text: Sie sind so viel oder so wenig eingebunden, wie Sie möchten.
+    id: ablauf
+    kicker: Ablauf
+    headline: Von der Idee bis zur Landung.
+    text: Du bist so viel oder so wenig eingebunden, wie du möchtest. Wir kommen mit
+      Lösungen, nicht mit Problemen.
     steps:
       - title: Anfrage
-        text: Datum, Ort und Anlass genügen. Wir melden uns innerhalb von 48 Stunden.
+        text: Erzähl uns Datum, Ort und Anlass. Wir melden uns innerhalb von 48 Stunden
+          – meist deutlich schneller.
         duration: 48 h Antwortzeit
-      - title: Standort und Angebot
-        text: Wir prüfen den Showbereich und senden ein Festpreis-Angebot.
+      - title: Standort & Angebot
+        text: Wir prüfen den Showbereich von rund 100 × 100 Metern und schicken dir ein
+          Festpreis-Angebot, das du online annimmst.
         duration: Festpreis
       - title: Genehmigung
-        text: Wir holen die luftrechtlichen Genehmigungen ein. Von Ihnen brauchen wir die Zustimmung der Grundstückseigentümer.
-        duration: 2 bis 6 Wochen
+        text: Wir holen alle luftrechtlichen Genehmigungen ein. Von dir brauchen wir nur
+          die Zustimmung der Grundstückseigentümer:innen.
+        duration: LBA · EASA
       - title: Design
-        text: Motive, Ablauf und Musik entstehen gemeinsam, erst als Rohanimation, dann mit Farben und Licht.
-        duration: Entwürfe und Feedback
+        text: "Motive, Storyline und Musik entwickeln wir gemeinsam: erst als
+          Rohanimation, dann mit Farben und Lichteffekten im Takt."
+        duration: Entwürfe & Feedback
       - title: Showtag
-        text: Aufbau, Flug und Abbau übernimmt unser Team vor Ort.
+        text: Rund drei Stunden Aufbau, ein Team aus Pilot:innen und Techniker:innen vor
+          Ort – du genießt mit deinen Gästen.
         duration: ca. 3 h Aufbau
   - type: comparison
-    headline: Drohnenshow, Feuerwerk oder Lasershow
-    text: Jede Technik hat ihre Stärken. Die Tabelle zeigt, worin sie sich unterscheiden.
+    id: vergleich
+    kicker: Ehrlicher Vergleich
+    headline: Drohne, Feuerwerk oder Laser?
+    text: Jede Technik hat ihre Stärken. Hier siehst du, wann eine Drohnenshow die
+      beste Wahl ist – und wann nicht.
     rowHeader: Kriterium
-    columns: [Drohnenshow, Feuerwerk, Lasershow]
+    columns:
+      - Drohnenshow
+      - Feuerwerk
+      - Lasershow
     rows:
-      - label: Logos und Schriftzüge
-        values: [Ja (auch in 3D), Nein, Teils (nur auf Flächen oder Dunst)]
+      - label: Logos und Schriftzüge am Himmel
+        values:
+          - Ja auch in 3D
+          - Nein
+          - Teils nur auf Flächen oder Dunst
+        cells:
+          - label: Ja
+            text: auch in 3D
+            tone: y
+          - label: Nein
+            text: ""
+            tone: n
+          - label: Teils
+            text: nur auf Flächen oder Dunst
+            tone: p
       - label: Lautstärke
-        values: [Leise, Sehr laut, Leise]
-      - label: Rauch, Feinstaub und Müll
-        values: [Keine, Viel, Dunst für sichtbare Strahlen]
+        values:
+          - Leise Musik nach Wahl
+          - Sehr laut
+          - Leise
+        cells:
+          - label: Leise
+            text: Musik nach Wahl
+            tone: y
+          - label: Sehr laut
+            text: ""
+            tone: n
+          - label: Leise
+            text: ""
+            tone: y
+      - label: Rauch, Feinstaub, Müll
+        values:
+          - Nichts
+          - Viel
+          - Dunst für sichtbare Strahlen nötig
+        cells:
+          - label: Nichts
+            text: ""
+            tone: y
+          - label: Viel
+            text: ""
+            tone: n
+          - label: Dunst
+            text: für sichtbare Strahlen nötig
+            tone: p
       - label: Brandgefahr
-        values: [Keine, Verbote bei Trockenheit, Keine]
+        values:
+          - Keine
+          - Ja Verbote bei Trockenheit
+          - Keine
+        cells:
+          - label: Keine
+            text: ""
+            tone: y
+          - label: Ja
+            text: Verbote bei Trockenheit
+            tone: n
+          - label: Keine
+            text: ""
+            tone: y
       - label: Wind und Wetter
-        values: [Bis Windstärke 5 und ohne Starkregen, Bei Sturm abgesagt, Robust und auch drinnen]
-    note: Beispielinhalt. Vor dem Veröffentlichen fachlich prüfen.
+        values:
+          - Grenze bis Windstärke 5, kein Starkregen
+          - Grenze bei Sturm abgesagt
+          - Robust auch drinnen
+        cells:
+          - label: Grenze
+            text: bis Windstärke 5, kein Starkregen
+            tone: p
+          - label: Grenze
+            text: bei Sturm abgesagt
+            tone: p
+          - label: Robust
+            text: auch drinnen
+            tone: y
+      - label: Sichtbar aus der Ferne
+        values:
+          - Kilometerweit
+          - Kilometerweit
+          - Begrenzt wirkt am besten nah
+        cells:
+          - label: Kilometerweit
+            text: ""
+            tone: y
+          - label: Kilometerweit
+            text: ""
+            tone: y
+          - label: Begrenzt
+            text: wirkt am besten nah
+            tone: p
+    note: Entwurf · fachliche Prüfung ausstehend
   - type: team
-    headline: Das Team
-    text: Design, Technik und Genehmigungen kommen aus einem Haus. Sie haben von der Anfrage bis zur Landung dieselben Ansprechpersonen.
+    id: team
+    kicker: Team
+    headline: Die Menschen hinter dem Himmel.
+    text: 2022 gegründet, zu Hause im Triple Z auf Zeche Zollverein in Essen.
+      Design, Technik und Genehmigungen machen wir selbst – du hast von der
+      ersten Idee bis zur Landung dieselben Ansprechpartner:innen.
     members:
-      - name: Anna Beispiel
-        role: Geschäftsführung
-        bio: Kundenkontakt und Design, vom ersten Gespräch bis zum fertigen Konzept.
-      - name: Ben Muster
-        role: Recht und Genehmigungen
-        bio: Spricht mit den Behörden, damit die Show abheben darf.
-      - name: Carla Probe
-        role: Technik
-        bio: Hält Flotte und Ausrüstung startklar.
-  - type: logoBar
-    headline: Geflogen für
-    logos:
-      - { name: Beispiel Automobil }
-      - { name: Muster Sportswear }
-      - { name: Probe Kosmetik }
-      - { name: Stadt Beispielstadt }
-      - { name: Demo Festival }
-      - { name: Platzhalter Energie }
-  - type: cta
-    headline: Passt das zu Ihrem Vorhaben?
-    button: { label: Anfrage senden, href: /kontakt/ }
+      - name: Ronja Donsbach
+        role: Mitgründerin · GF
+        bio: "Kundenkontakt und Design: vom ersten Gespräch bis zum fertigen
+          Showkonzept."
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/08/Ronja_Teamfoto.jpg
+          alt: Ronja Donsbach
+          width: 800
+          height: 1000
+      - name: Erwin Wilms
+        role: Mitgründer · GF
+        bio: "Recht und Genehmigungen: spricht mit LBA und Flugbehörden, damit deine
+          Show abheben darf."
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/08/Erwin_Teamfoto.jpg
+          alt: Erwin Wilms
+          width: 800
+          height: 1000
+      - name: Florian Becker
+        role: Mitgründer · GF
+        bio: "Finanzen, Personal und Prozesse: sorgt dafür, dass im Hintergrund alles
+          läuft."
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/08/Florian_Teamfoto.jpg
+          alt: Florian Becker
+          width: 800
+          height: 1000
+      - name: Patrick
+        role: Head of Technik
+        bio: "Technik, Flotte und Einkauf: hält jede Drohne startklar."
+      - name: Alejandro Muñoz
+        role: Head of Design
+        bio: Entwirft alle Shows und Choreografien – Bild für Bild, im Takt der Musik.
+    note: Dazu unsere Crew aus Pilot:innen und Techniker:innen, die jede Show vor
+      Ort aufbaut und fliegt.
+    cta:
+      label: Lern uns kennen
+      href: "#anfrage"

@@ -23,7 +23,11 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
   if (get('website')) return ok(request);
 
   const name = get('name'), email = get('email'), message = get('message');
-  if (!name || !email || !message) return problem(400, 'Name, E-Mail und Nachricht sind Pflicht.');
+  const extra = Object.fromEntries(['anlass', 'datum', 'ort', 'paket', 'telefon', 'drohnen'].map((key) => [key, get(key)]));
+  if (!name || !email || (!message && !extra.anlass)) return problem(400, 'Name, E-Mail und Anlass oder Nachricht sind Pflicht.');
+  if (Object.values(extra).some((value) => value.length > 200 || /[\r\n]/.test(value))) return problem(400, 'Ungültige Zusatzangaben.');
+  if (extra.anlass && !['firma', 'stadt', 'agentur', 'privat', 'indoor', 'sonstiges'].includes(extra.anlass)) return problem(400, 'Anlass ungültig.');
+  if (extra.drohnen && (!/^\d+$/.test(extra.drohnen) || Number(extra.drohnen) < 100 || Number(extra.drohnen) > 1000)) return problem(400, 'Drohnenanzahl ungültig.');
   if (name.length > MAX.name || email.length > MAX.email || message.length > MAX.message) return problem(400, 'Eingabe zu lang.');
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return problem(400, 'E-Mail-Adresse ungültig.');
   if (/[\r\n]/.test(name) || /[\r\n]/.test(email)) return problem(400, 'Ungültige Zeichen.');
@@ -53,7 +57,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
       to: [{ email: env.CONTACT_TO }],
       replyTo: { email, name },
       subject: `Anfrage über ${site}: ${name}`,
-      textContent: `Name: ${name}\nE-Mail: ${email}\n\n${message}\n`,
+      textContent: `Name: ${name}\nE-Mail: ${email}\n${Object.entries(extra).filter(([, value]) => value).map(([key, value]) => `${key}: ${value}`).join('\n')}\n\n${message}\n`,
     }),
   });
   if (!res.ok) return problem(502, 'Versand fehlgeschlagen. Bitte später erneut versuchen oder direkt per E-Mail.');

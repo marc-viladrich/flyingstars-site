@@ -1,0 +1,87 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
+import Video from '../Video.astro';
+import { optimizedImage } from '../../lib/media';
+
+interface Props { project: CollectionEntry<'projects'> }
+const { project } = Astro.props;
+const data = project.data.showcase;
+if (!data) throw new Error(`Project ${project.id} has no showcase content`);
+const available = (await getCollection('projects', (p) => !p.data.draft && Boolean(p.data.showcase)))
+  .sort((a, b) => a.data.showcase!.order - b.data.showcase!.order);
+// A deliberately hidden case also disappears from related-project navigation.
+const next = available.find((p) => p.data.showcase!.route === data.nextRoute)
+  ?? available.find((p) => p.id !== project.id);
+const nextData = next?.data.showcase;
+const uniqueImages = [...new Set([...data.story.map((s) => s.image.src), ...data.gallery.map((p) => p.src)])];
+const images = new Map(await Promise.all(uniqueImages.map(async (src) => [src, await optimizedImage(src)] as const)));
+const nextImage = next?.data.cover ? await optimizedImage(next.data.cover.src) : undefined;
+const count = (n: number) => String(n).padStart(2, '0');
+---
+<div class="case" style={`--accent:${data.accent}`}>
+  <section class="c-hero" aria-labelledby="case-h">
+    <Video src={data.heroVideo} poster={project.data.cover?.src} label={`${data.name}: Showvideo abspielen`} class="case-video" loop hero />
+    <div class="shade" aria-hidden="true"></div>
+    <div class="c-top mono">
+      <nav class="crumbs" aria-label="Brotkrumen"><a href="/">Start</a><span aria-hidden="true">/</span><a href="/projekte/">Projekte</a><span aria-hidden="true">/</span><span aria-current="page">{data.name}</span></nav>
+      <span class="idx">Projekt {count(data.order)} / 04</span>
+    </div>
+    <div class="c-title">
+      <span class="c-kick mono">{data.kicker}</span>
+      <h1 id="case-h" class="c-h1"><span class="sr-only">{data.name}: </span><span class="c-name" style={`--chars:${data.titleChars}`} aria-hidden="true">{data.titleLines.map((line) => <span>{line}</span>)}</span><span class="c-tag">{data.tagline}</span></h1>
+    </div>
+    <dl class="c-credits mono">{data.credits.map((credit) => <div><dt>{credit.label}</dt><dd>{credit.value}</dd></div>)}</dl>
+  </section>
+
+  <section class="c-numbers" aria-label="In Zahlen">
+    {data.numbers.map((number) => <div class="c-num"><b data-count={number.value}>{number.value.toLocaleString('de-DE')}</b><span>{number.label}</span></div>)}
+  </section>
+
+  <section class="c-story" aria-label="Die Geschichte">
+    <div class="c-media" aria-hidden="true">
+      {data.story.map((step, index) => <figure data-scene class:list={{ on: index === 0 }}><img src={images.get(step.image.src)!.src} {...images.get(step.image.src)!.attributes} width={images.get(step.image.src)!.width} height={images.get(step.image.src)!.height} alt="" loading="lazy" decoding="async" /></figure>)}
+      <div class="meta mono"><span>{data.name}</span><span data-progress>01 / {count(data.story.length)}</span></div>
+    </div>
+    <div class="c-steps">
+      {data.story.map((step) => <article class="c-step on" data-step>
+        <figure class:list={{ tall: data.portrait }}><img src={images.get(step.image.src)!.src} {...images.get(step.image.src)!.attributes} width={images.get(step.image.src)!.width} height={images.get(step.image.src)!.height} alt={step.image.alt} loading="lazy" decoding="async" /></figure>
+        <span class="k mono">{step.kicker}</span><h2>{step.title}</h2><p>{step.text}</p>
+      </article>)}
+    </div>
+  </section>
+
+  <section class="c-play" aria-labelledby="play-h">
+    <canvas data-formation={data.formation.src} aria-hidden="true"></canvas>
+    <div class="c-play-copy">
+      <span class="mono acc">Zum Anfassen</span><h2 id="play-h">{data.formation.title}</h2><p>{data.formation.text}</p>
+      <div class="row"><button class="btn small" type="button" data-replay disabled>Noch mal starten</button><button class="btn small" type="button" data-formation-pause aria-pressed="false">Animation pausieren</button><span class="tally mono" data-tally role="status"></span></div>
+    </div>
+  </section>
+
+  <section class="c-reel" aria-labelledby="reel-h">
+    <div class="c-reel-head"><div><span class="kicker mono acc">Bilder der Nacht</span><h2 id="reel-h">Die Show in {data.gallery.length} Bildern.</h2></div><div class="ctrl"><button type="button" data-prev aria-label="Vorheriges Bild">←</button><button type="button" data-next aria-label="Nächstes Bild">→</button></div></div>
+    <div class:list={['c-track', { tall: data.portrait }]} tabindex="0" role="region" aria-label={`${data.name}: Bildergalerie`}>
+      {data.gallery.map((picture, index) => <figure><div class="img"><img src={images.get(picture.src)!.src} {...images.get(picture.src)!.attributes} width={images.get(picture.src)!.width} height={images.get(picture.src)!.height} alt={picture.alt} loading="lazy" decoding="async" draggable="false" /></div><figcaption class="mono"><b>{count(index + 1)}</b>{picture.caption}</figcaption></figure>)}
+    </div>
+  </section>
+
+  <section class="c-setlist" aria-labelledby="set-h"><span class="kicker mono acc">Die Choreografie</span><h2 id="set-h">Was am Himmel zu sehen war.</h2><div class="groups">{data.setlist.map((group) => <div><h3>{group.title}</h3><ol>{group.items.map((item) => <li>{item}</li>)}</ol></div>)}</div></section>
+  {data.press.length > 0 && <section class="c-press" aria-label="Presse">{data.press.map((clip) => <article class="clip"><div class="mast">{clip.publication}<span>{clip.date}</span></div><b>{clip.title}</b><p>{clip.text}</p></article>)}</section>}
+
+  {nextData && nextImage && <a class="c-next" href={`/${nextData.route}/`}>
+    <img class="next-poster" src={nextImage.src} {...nextImage.attributes} width={nextImage.width} height={nextImage.height} alt="" loading="lazy" decoding="async" />
+    <div class="shade" aria-hidden="true"></div><div class="in"><span class="k mono">Nächstes Projekt · {count(nextData.order)} / 04 · {nextData.drones} Drohnen</span><b style={`--chars:${nextData.name.length}`}>{nextData.name} <i aria-hidden="true">→</i></b></div>
+  </a>}
+  <section class="section" aria-labelledby="cta-h"><div class="promise"><div style="display:grid;gap:12px"><h2 id="cta-h">{data.cta.title}</h2><p>{data.cta.text}</p></div><a class="btn primary" href="/#anfrage">Show anfragen</a></div></section>
+</div>
+<script>import './case.js';</script>
+<style>
+  .c-hero :global(.case-video) { position: absolute; inset: 0; width: 100%; height: 100%; isolation: auto; }
+  .c-hero :global(.case-video > video) { z-index: 0; }
+  .c-hero :global(.case-video > .video-play) { top: 150px; bottom: auto; right: var(--pad); z-index: 4; }
+  .next-poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.75; transition: opacity 0.6s, transform 1.2s; }
+  .c-next:hover .next-poster { opacity: 1; transform: scale(1.03); }
+  .c-hero > .shade { pointer-events: none; }
+  @media (prefers-reduced-motion: reduce) { .next-poster { transition: none; } .c-next:hover .next-poster { transform: none; } }
+</style>

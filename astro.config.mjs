@@ -14,7 +14,7 @@ export default defineConfig({
   integrations: [sitemap()],
   image: {
     // Nur der zentrale Medienspeicher darf als Remote-Bildquelle dienen.
-    remotePatterns: [{ protocol: 'https', hostname: mediaHost }],
+    remotePatterns: [...new Set([mediaHost, 'flyingstars.art', 'flyingstars-relaunch.vercel.app'])].map((hostname) => ({ protocol: 'https', hostname })),
   },
   build: { inlineStylesheets: 'auto' },
 });

@@ -42,3 +42,19 @@ Für gewöhnliche CI empfiehlt OpenAI API-Authentifizierung. Die offizielle Code
 OpenAI dokumentiert außerdem einen fortgeschrittenen Weg mit ChatGPT-Anmeldung für vertrauenswürdige private CI. Dafür muss die von Codex aktualisierte `auth.json` sicher zwischen Läufen erhalten bleiben und ihre Nutzung serialisiert werden. Ein einmal kopierter OAuth-Token reicht dafür nicht dauerhaft. Dieselbe Session darf nicht parallel zwischen lokalen Geräten und CI geteilt werden. OpenAI schließt diesen Accountauth-Weg für öffentliche und Open-Source-Repositories ausdrücklich aus. Unsere beiden Repositories sind derzeit öffentlich, deshalb verwenden wir ihn hier nicht. API-Authentifizierung bleibt die Empfehlung für die meisten CI-Aufgaben. [Codex-Kontoauthentifizierung in CI](https://learn.chatgpt.com/docs/auth/ci-cd-auth)
 
 Für dieses Projekt den unterstützten Claude-Weg zunächst beibehalten. Codex anschließend getrennt testen und erst nach dem Vergleich als auswählbare Engine integrieren. Dafür einen eigenen, passenden CI-Zugang einrichten, statt die lokale Codex-Session zu exportieren.
+
+## Cloudflare direkt per CLI/API
+
+Auf Marcs Mac ist Wrangler 4.147.0 unter `~/.local/share/flyingstars-cloudflare` eingerichtet. Der Befehl `~/.local/bin/flyingstars-cf` verwendet den vorhandenen, auf das FlyingStars-Konto begrenzten Pages-Token und die Account-ID aus der ignorierten Hub-`.env`. Er lädt ausschließlich diese beiden Werte und verwendet Node 22. Zugangsdaten werden nicht ausgegeben.
+
+```sh
+flyingstars-cf status
+flyingstars-cf deployments
+flyingstars-cf secrets
+flyingstars-cf secret-put BREVO_API_KEY
+flyingstars-cf wrangler pages dev dist --port 4400
+```
+
+`secret-put` nimmt den Wert über Wranglers geschützte Eingabe entgegen. Für einen anderen lokalen Worktree: `flyingstars-cf wrangler --cwd /pfad/zum/worktree pages dev dist --port 4400`. Browserzugriff ist für laufende Deployments, Projektabfragen und Secrets nicht erforderlich. Die Produktionsveröffentlichung erfolgt nach freigegebenem Merge über GitHub Actions; dieser Wrapper ersetzt die vorhandenen GitHub-Secrets nicht.
+
+Brevo wird später eingerichtet. Dann außerdem `CONTACT_FROM`, `CONTACT_TO` und `SITE_NAME` konfigurieren, die statische Danke-Seite auf den Versandzustand abstimmen und einen tatsächlichen Zustelltest ausführen. Verschiedene Preview-/Produktionswerte können über die Pages-Projekt-API gesetzt werden; keine Zugangsdaten in Kommandozeilenargumente schreiben.

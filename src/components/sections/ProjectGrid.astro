@@ -1,27 +1,29 @@
 ---
 import { getCollection } from 'astro:content';
-import Picture from '../Picture.astro';
+import { optimizedImage } from '../../lib/media';
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'projectGrid' }> & { index: number };
-const { headline = 'Projekte', limit, index } = Astro.props;
-const id = `s${index}-h`;
+const { headline = 'Ein paar Nächte, die wir nicht vergessen.', limit, index } = Astro.props;
+const id = index === 0 ? 'projekte-h' : `s${index}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const projects = (await getCollection('projects', (p) => !p.data.draft))
-  .sort((a, b) => Number(b.data.featured) - Number(a.data.featured) || b.data.date.valueOf() - a.data.date.valueOf())
+  .sort((a, b) => (a.data.showcase?.order ?? 999) - (b.data.showcase?.order ?? 999) || Number(b.data.featured) - Number(a.data.featured) || b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, limit);
+const images = new Map(await Promise.all(projects.filter((p) => p.data.cover).map(async (p) => [p.id, await optimizedImage(p.data.cover!.src)] as const)));
+const home = Astro.url.pathname === '/';
 ---
-<section class="section section--band" aria-labelledby={id}>
-  <div class="wrap">
-    <H id={id}>{headline}</H>
-    <div class="cards">
-      {projects.map((p) => (
-        <article class="card">
-          {p.data.cover && <Picture {...p.data.cover} sizes="(min-width: 48rem) 33vw, 100vw" />}
-          <h3><a href={`/projekte/${p.id}/`}>{p.data.title}</a></h3>
-          <p class="muted">{[p.data.client, p.data.location].filter(Boolean).join(' · ')}</p>
-          <p>{p.data.summary}</p>
-        </article>
-      ))}
-    </div>
+<section class="section" id={home ? 'projekte' : undefined} aria-labelledby={id}>
+  <div class="sec-head"><div>{home && <span class="kicker mono">Projekte</span>}<H id={id}>{headline}</H></div><p>Über 30 Shows im Jahr, von 100 bis 600 Drohnen. Eine kleine Auswahl:</p></div>
+  <div class="projects">
+    {projects.map((project) => {
+      const showcase = project.data.showcase;
+      const image = images.get(project.id);
+      return <a class="proj" href={showcase ? `/${showcase.route}/` : `/projekte/${project.id}/`}>
+        {image && <div class="img"><img src={image.src} {...image.attributes} width={image.width} height={image.height} alt={project.data.cover!.alt} loading="lazy" decoding="async" />{showcase && <span class="count mono">{showcase.drones} Drohnen</span>}</div>}
+        <span class="kick mono">{showcase?.category ?? [project.data.client, project.data.location].filter(Boolean).join(' · ')}</span><h3>{showcase?.cardTitle ?? project.data.title}</h3>
+        {!showcase && <p>{project.data.summary}</p>}
+      </a>;
+    })}
   </div>
+  {home && <div class="more"><a class="link" href="/projekte/">Alle Projekte <span aria-hidden="true">→</span></a></div>}
 </section>
