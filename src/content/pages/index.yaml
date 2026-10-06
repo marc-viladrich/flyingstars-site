@@ -2,10 +2,10 @@ title: Startseite
 description: Beispiel-Startseite des Templates. Zeigt alle Section-Typen einmal, damit Build und Tests etwas zu prüfen haben.
 sections:
   - type: hero
-    headline: Ein Satz, der sagt, was wir tun.
-    text: Ein zweiter Satz, der sagt, für wen und mit welchem Ergebnis.
-    cta: { label: Anfragen, href: /kontakt/ }
-    secondary: { label: Projekte ansehen, href: /projekte/ }
+    headline: Wir gestalten dein Stück Himmel.
+    text: Über 150 Drohnenshows seit 2022 für Marken, Städte und große Momente. Genehmigung, Technik und Flug aus einer Hand.
+    cta: { label: Show anfragen, href: /kontakt/ }
+    secondary: { label: Pakete ab 7.900 €, href: /leistungen/ }
   - type: textMedia
     headline: Warum das hier anders ist
     body: |
