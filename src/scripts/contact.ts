@@ -45,6 +45,10 @@ if (form) {
     const input = document.createElement('input'); input.type = 'hidden'; input.name = 'drohnen'; input.value = String(drones); form.append(input);
   }
   select.addEventListener('change', () => form.querySelector('[name=drohnen]')?.remove());
+  // Text typed into the price calculator's sky preview, written into the message as an editable draft.
+  const skyText = params.get('text')?.replace(/\s+/g, ' ').trim().slice(0, 60);
+  const message = form.querySelector<HTMLTextAreaElement>('[name=message]');
+  if (skyText && message && !message.value) message.value = `Text am Himmel: ${skyText}`;
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const invalid = steps.findIndex((fieldset) => !validate(fieldset));

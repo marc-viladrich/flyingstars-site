@@ -20,6 +20,8 @@ import { SHOW_PACKAGES, PACKAGE_NAMES, priceFor, recommendPackage } from '../con
   if (!range) return;
   let n = +range.value, pkg = recommend(n), locked = false;
 
+  // Inquiry links carry package, drone count and the sky text into the contact form.
+  const inquiryHref = (k, count) => `/?${new URLSearchParams({ paket: k, drohnen: String(count), ...(text.value ? { text: text.value } : {}) })}#anfrage`;
   function update(fromSlider, computeText = true) {
     const need = textMin();
     if (+range.value < need) { range.value = need; fromSlider = true; } // under 10 drones per character the text gets hard to read; the package follows the new count
@@ -44,7 +46,7 @@ import { SHOW_PACKAGES, PACKAGE_NAMES, priceFor, recommendPackage } from '../con
     if (text.value && text.shown && text.shown.n === n && text.shown.used < n) note = `Dein Text braucht höchstens ${text.shown.used.toLocaleString("de-DE")} Drohnen (80 m hoch) – die übrigen ${(n - text.shown.used).toLocaleString("de-DE")} zeigen wir als Reserve darunter; im Angebot ergänzen wir sie gern um Motive.`;
     noteEl.textContent = note;
     cta.textContent = `Mit ${nTxt} Drohnen anfragen`;
-    cta.href = `/?paket=${pkg}&drohnen=${n}#anfrage`;
+    cta.href = inquiryHref(pkg, n);
     const share = (n - +range.min) / (+range.max - +range.min); // the coloured part ends under the thumb centre
     range.style.setProperty("--fill", `calc(13px + ${share.toFixed(4)} * (100% - 26px))`);
     const col = `rgb(${p.color.join(",")})`;
@@ -56,7 +58,7 @@ import { SHOW_PACKAGES, PACKAGE_NAMES, priceFor, recommendPackage } from '../con
       const c = cards[k]; if (!c) return;
       const v = priceFor(k, n), box = c.querySelector("[data-live]");
       c.classList.toggle("is-rec", k === pkg);
-      c.querySelector("a.btn").href = `/?paket=${k}&drohnen=${Math.max(PKG[k].base, Math.min(n, PKG[k].max))}#anfrage`;
+      c.querySelector("a.btn").href = inquiryHref(k, Math.max(PKG[k].base, Math.min(n, PKG[k].max)));
       c.querySelector(".badge").textContent = k === pkg ? "Passt zu deiner Auswahl" : k === "HORIZON" ? "Bestseller" : k === "SPARK" ? "Einstieg" : "300+ Drohnen";
       if (v === null) box.innerHTML = `<span class="na">Nur bis 150 Drohnen</span><span class="mono">darüber: HORIZON</span>`;
       else {

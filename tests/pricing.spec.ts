@@ -41,7 +41,7 @@ test('Eigener Text lädt den lokalen Formationsplaner und passt die Mindestzahl 
   await expect(page.getByRole('slider', { name: 'Anzahl Drohnen' })).toHaveValue('220');
   await expect(page.locator('#text-read')).toContainText('Einstrich-Schrift', { timeout: 15_000 });
   await expect(page.locator('#calc-read')).toContainText('Motivgröße');
-  await expect(page.locator('#calc-cta')).toHaveAttribute('href', '/?paket=HORIZON&drohnen=220#anfrage');
+  await expect(page.locator('#calc-cta')).toHaveAttribute('href', '/?paket=HORIZON&drohnen=220&text=FLYINGSTARS+FLYINGSTARS#anfrage');
   await page.getByLabel('Dein Text am Himmel').fill('');
   await expect(page.locator('#text-read')).toHaveText('Wir zeigen ihn mit deiner Drohnenzahl in unserer Show-Schrift.');
   expect(errors).toEqual([]);
