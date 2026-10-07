@@ -28,19 +28,26 @@ test('Gleichmäßige Teilmenge behält die ganze Form', () => {
 });
 
 test('Motivformen haben genau die verlangte Punktzahl', () => {
-  for (const n of [100, 200, 300]) for (const name of ['twoRings', 'shield', 'shield3d', 'tower', 'tower3d', 'waves', 'gate3d', 'rocket', 'rocket3d', 'maskPair', 'maskPair3d', 'mask3d', 'curtain', 'burst2d', 'bursts3d', 'sparkleShell']) {
+  for (const n of [100, 200, 300]) for (const name of ['twoRings', 'shield', 'shield3d', 'tower', 'tower3d', 'waves', 'gate3d', 'rocket', 'rocket3d', 'maskPair', 'maskPair3d', 'mask3d', 'curtain', 'burst2d', 'bursts3d', 'sparkleShell', 'hand3d', 'hand2d', 'flute2d', 'flute3d', 'bubbles', 'trophy2d', 'trophy3d', 'bulb2d', 'bulbGlass', 'filament', 'notes2d', 'notes3d', 'clover2d', 'clover3d']) {
     const raw = shapes[name](n), pts = name.startsWith('maskPair') ? raw.flat() : raw;
     assert.equal(pts.length, n, `${name} ${n}`);
     assert.ok(pts.every((p) => p.every(Number.isFinite)), `${name} ${n} has non-finite coordinates`);
   }
   assert.equal(shapes.curtain(150, 1).length, 150);
   assert.equal(shapes.clockFace(200, 6, 0.3).length, 200);
+  for (const n of [90, 100, 200, 300]) {
+    assert.equal(shapes.engagementRing(n).flat().length, n, `engagementRing ${n}`);
+    assert.equal(shapes.bulb3d(n).flat().length, n, `bulb3d ${n}`);
+    assert.equal(shapes.trophy3d(n, 0.2).length, n, `trophy3d base ${n}`);
+    assert.equal(shapes.clover3d(n, 3).length, n, `clover3d three leaves ${n}`);
+    const m = shapes.melody(n); assert.equal(m.staff.length + m.notes.flat().length, n, `melody ${n}`);
+  }
 });
 
-test('Jeder Anlass hat zwei Motive mit je einer Fassung pro Paket', () => {
+test('Jeder Anlass spielt drei Motive mit je einer Fassung pro Paket', () => {
   assert.deepEqual(STEPS.map((s) => s.pkg), PACKAGE_ORDER);
   for (const occasion of OCCASIONS) {
-    assert.equal(occasion.motifs.length, 2, occasion.id);
+    assert.equal(occasion.motifs.length, 3, occasion.id);
     for (const motif of occasion.motifs) {
       const builds = PACKAGE_ORDER.map((pkg) => motif.tiers[pkg]?.build);
       assert.ok(builds.every(Boolean), `${occasion.id}/${motif.id} misses a version`);

@@ -8,7 +8,8 @@
 // drones whose part ends or begins are reassigned, by optimal assignment. live(base, index, t, out) moves a drone
 // around its resting place and sets its light; out = [x, y, z, alpha]. Transitions follow the client's Vercel
 // prototype: staggered starts, drones joining fly in from outside like shooting stars, drones leaving fly out.
-// The render loop stops when nothing moves; paused or reduced motion shows a beat at rest.
+// A sequence of motifs is one scene: beats carry their motif as segment (one scale per motif, optionally split by a
+// named frame). The render loop stops when nothing moves; paused or reduced motion shows the motif at rest.
 import { assign, flightTime, along, ease } from "./show-flight.js";
 
 const MAX = 1000;
@@ -51,13 +52,21 @@ export function createField(canvas, { onBeat } = {}) {
     return glow.get(key);
   }
 
-  /** One scale for all beats of a scene, so the story keeps its proportions. */
+  /** One scale per motif (beats with the same segment, optionally split by a named frame), so a story keeps its
+   * proportions and every motif of a sequence fills the stage. */
   function fit(beats) {
-    let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
-    for (const b of beats) for (const p of b.pts) { x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]); }
-    fitX = (x0 + x1) / 2; fitY = (y0 + y1) / 2;
-    fitK = (beats.some((b) => b.live) ? 0.9 : 1) / Math.max((x1 - x0) / 2 / 1.15, (y1 - y0) / 2 / 0.75, 1e-6);
+    const segments = new Map();
+    for (const b of beats) { const key = `${b.segment ?? 0}|${b.frame ?? ""}`; if (!segments.has(key)) segments.set(key, []); segments.get(key).push(b); }
+    for (const list of segments.values()) {
+      let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+      for (const b of list) for (const p of b.pts) { x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]); }
+      const f = { x: (x0 + x1) / 2, y: (y0 + y1) / 2, k: (list.some((b) => b.live) ? 0.9 : 1) / Math.max((x1 - x0) / 2 / 1.15, (y1 - y0) / 2 / 0.75, 1e-6) };
+      for (const b of list) b.fit = f;
+    }
   }
+  const useFit = (b) => { fitK = b.fit.k; fitX = b.fit.x; fitY = b.fit.y; };
+  /** The last beat of the motif that beat k belongs to: where a paused view rests. */
+  const motifEnd = (k) => { let e = k; while (e + 1 < scene.beats.length && (scene.beats[e + 1].segment ?? 0) === (scene.beats[k].segment ?? 0)) e++; return e; };
   const groupsOf = (b) => b.groups ?? [{ name: "*", count: b.pts.length }];
 
   /** Where drone i of the current beat rests at time t (live motion and shimmer included), display units → rest. */
@@ -110,6 +119,7 @@ export function createField(canvas, { onBeat } = {}) {
     if (lastT && t > lastT) { for (let q = 0; q < MAX * 3; q++) pos[q] += vel[q] * (t - lastT); lastT = t; }
     beat = k; beatAt = t;
     const b = scene.beats[k], n = b.pts.length, target = new Float64Array(n * 3);
+    useFit(b);
     for (let j = 0; j < n; j++) { const p = b.pts[j]; target[j * 3] = (p[0] - fitX) * fitK * size; target[j * 3 + 1] = (p[1] - fitY) * fitK * size; target[j * 3 + 2] = (p[2] || 0) * fitK * size; }
     // drones joining come from outside (dark there); every drone beyond this beat that is still lit flies out
     for (let i = active; i < n; i++) if (alpha[i] < 0.02) { outside(i, spot); pos.set(spot, i * 3); vel.fill(0, i * 3, i * 3 + 3); groupOf[i] = ""; }
@@ -135,9 +145,10 @@ export function createField(canvas, { onBeat } = {}) {
   }
 
   /** Shows beat k formed and at rest (paused, reduced motion, first view). */
-  function settle(t, k = scene.beats.length - 1) {
+  function settle(t, k = motifEnd(beat)) {
     beat = k;
     const b = scene.beats[k], n = b.pts.length;
+    useFit(b);
     order = Int32Array.from({ length: n }, (_, i) => i); active = n;
     let start = 0;
     for (const g of groupsOf(b)) { for (let q = 0; q < g.count; q++) { groupOf[start + q] = g.name; localOf[start + q] = q; flowOf[start + q] = g.rigid ? 0 : 1; } start += g.count; }
@@ -148,11 +159,13 @@ export function createField(canvas, { onBeat } = {}) {
     canvas.dataset.beat = String(k); canvas.dataset.points = String(n); onBeat?.(k, b, scene.beats.length);
   }
 
-  /** Shows a scene at a size factor (1 = fills the stage); instant: already formed (first view of the page). */
-  function show(next, droneCount, sizeFactor = 1, { instant = false } = {}) {
+  /** Shows a scene at a size factor (1 = fills the stage), starting at beat at; instant: already formed (first view
+   * of the page). Paused or reduced motion shows the motif of that beat at rest. */
+  function show(next, droneCount, sizeFactor = 1, { instant = false, at = 0 } = {}) {
     scene = next; size = sizeFactor; fit(scene.beats);
     groupOf.fill(""); // a new scene: every drone is free to take any place
-    if (instant || held()) settle(now()); else startBeat(0, now());
+    const k = Math.max(0, Math.min(scene.beats.length - 1, at));
+    if (instant || held()) settle(now(), motifEnd(k)); else startBeat(k, now());
     render(); sync();
   }
   /** Jumps to act k of the current scene (back/forward buttons). */

@@ -10,6 +10,7 @@ import logo from "../data/logo-dots.json";
 import { heartPicture } from "./heart-formation.js";
 import { loadTextEngine, textFormation } from "./text-formation.js";
 import { burstSphere, star, extrude, evenSubset, sampleOutline, circle, torusPair, heartOutline } from "./show-geometry.js";
+import { engagementRing, ringSeat, hand3d, flute2d, flute3d, bubbles, trophy2d, trophy3d, bulb2d, bulb3d, bulbGlass, filament, notes2d, notes3d, notePath1, melody, clover2d, clover3d, extrudePaths } from "./show-shapes.js";
 import { share, twoRings, shield, shield3d, crestStar3d, CREST_NUMBER, inCrestFlag, crown, rocket, rocket3d, flame, maskPair, maskPair3d, mask3d, MASKS, curtain, clockRim, clockDial, hand, burst2d, sparkleShell, tower, tower3d, waves, TOWER_SPHERE, gate3d, arrowPaths, inside, bottle3d, cork } from "./show-shapes.js";
 
 let hearts = null, figure = null;
@@ -18,6 +19,7 @@ const loadFigure = () => (figure ||= fetch("/media/projekte/bokkenrijders/format
 /** Loads the larger formation sources ahead of need, e.g. on the first interaction with the configurator. */
 export function preloadScenes() { loadHearts().catch(() => {}); loadFigure().catch(() => {}); loadTextEngine().catch(() => {}); }
 
+const DIAMOND = [200, 235, 255], GREEN = [90, 222, 120];
 const WARM = [246, 241, 232], GOLD = [255, 196, 92], PINK = [255, 92, 138], VIOLET = [219, 100, 232], CYAN = [51, 237, 242], BLUE = [90, 120, 255], ORANGE = [255, 140, 50], RED = [220, 60, 70], MOON = [235, 232, 210];
 const TAU = Math.PI * 2;
 const mix = (a, b, u) => { const k = Math.max(0, Math.min(1, u)); return a.map((v, i) => Math.round(v + (b[i] - v) * k)); };
@@ -149,63 +151,175 @@ const rain = (k, top = 0.78) => paint(columns(k, RAIN_XS, -0.8, top, (c) => Math
 /** Fernsehturm colours, and its red warning light that blinks at the top. */
 const towerPaint = (p) => (p[1] > 1.15 ? RED : p[1] > 0.25 && p[1] < 0.62 ? mix(WARM, CYAN, 0.35) : WARM);
 const warning = (t) => 0.75 + 0.6 * Math.exp(-(((frac(t / 1.6) - 0.1) / 0.06) ** 2));
+/** The two glasses touch rims now and then: each tips a little towards the other, around its foot. */
+const clink = (o, t, side) => roll(o, side * 0.07 * Math.sin((Math.PI * t) / 3) ** 8, side * 0.47, -0.78);
 const flameColour = (top) => (p) => mix(GOLD, ORANGE, (top - p[1]) / 0.42);
 
-/** Pictures for one motif version (name from show-configurator.js) at the given drone count. Every version gets the
- * soft light shimmer (Marc: "Lichtschimmer ist eine sehr gute Interaktion"); from round 8 on SPARK moves gently too. */
-export async function buildScene(version, n) {
-  const scene = await buildBeats(version, n);
-  for (const b of scene.beats) b.shimmer ??= true;
-  return scene;
+/** How long the last picture of a motif stays before the next motif forms, per package. */
+const HOLD = { SPARK: 3.5, HORIZON: 5, ODYSSEY: 3.5 };
+const nearWhite = (r, g, b) => Math.min(r, g, b) > 190 && Math.max(r, g, b) - Math.min(r, g, b) < 45;
+/**
+ * The show for one occasion and package: the occasion's motifs in order, each in its version for the package, as one
+ * scene that starts again after the last motif. Every beat carries its motif (segment) for the controller. Drones that
+ * would light warm white take the package's colour (Marc, round 9: SPARK orange, HORIZON pink, ODYSSEY blue); motifs
+ * with their own colours keep them. Every version gets the soft light shimmer.
+ */
+export async function buildSequence(motifs, pkg, n, tint) {
+  const beats = [];
+  for (const [segment, m] of motifs.entries()) {
+    const scene = await buildBeats(m.tiers[pkg], n);
+    scene.beats.forEach((b, i, all) => {
+      b.segment = segment; b.motif = m.label; b.shimmer ??= true;
+      if (i === all.length - 1) b.hold ??= HOLD[pkg];
+      if (tint) b.pts = b.pts.map((p) => (nearWhite(p[3], p[4], p[5]) ? [p[0], p[1], p[2], ...mix(WARM, tint, 0.7)] : p));
+      beats.push(b);
+    });
+  }
+  return { beats, loopTo: 0 };
 }
 async function buildBeats(version, n) {
   const caption = version.caption;
   switch (version.build) {
-    // ---- Hochzeit · Herz ----
-    case "heart2d": return still(paint(heartLine(n), PINK), caption);
-    case "heart3d": return { beats: [{ pts: paint(await heart3d(n), heartColour), caption, live: (b, j, t, o) => { o[3] = breathe(t); sway(o, t); } }] };
-    case "heartsStory": {
-      const [h, a] = share(n, [5, 1]), [m, s1, s2, s3] = share(h, [7, 1, 1, 1]);
-      // the classic illustration: Amor's arrow through the heart, tip at the lower left, fletching out at the upper right
-      const arrowPts = (dx, dy) => sampleOutline(arrowPaths(-1.05 + dx, -0.6 + dy, 1.4 + dx, 0.82 + dy), a).map(([x, y]) => [x, y, 0.05]);
-      const outsideHeart = (k) => evenSubset(sampleOutline(arrowPaths(-1.05, -0.6, 1.4, 0.82), k * 5).filter(([x, y]) => !inside(HEART_POLY, x, y)).map(([x, y]) => [x, y, 0.05]), k);
-      const arrow = (pts, rigid = true) => part("arrow", paint(pts, GOLD), { rigid });
-      const pierced = outsideHeart(a), big = await heart3d(h), small = await heart3d(Math.max(s1, s2, s3));
-      const sats = [s1, s2, s3].flatMap((k, q) => place(small.slice(0, k), 0.28, Math.cos((q / 3) * TAU) * 1.45, 0.15, Math.sin((q / 3) * TAU) * 1.45));
-      return { beats: [
-        act([part("heart", paint(heartLine(h), PINK)), arrow(arrowPts(0.75, 0.45))], { caption: "Ein Herz, Amor zielt", hold: 0.8 }),
-        act([part("heart", paint(heartLine(h), PINK)), arrow(arrowPts(0, 0))], { caption: "der Pfeil fliegt", hold: 0, lift: [-0.04, 0.16] }),
-        act([part("heart", paint(heartLine(h), PINK)), arrow(pierced, false)], { caption: "und trifft", hold: 1.6 }),
-        act([part("heart", paint(big, heartColour)), arrow(pierced)], { caption: "das Herz wird voll und leuchtet im Takt", hold: 2.4, live: (b, j, t, o) => { if (j < h) { o[3] = breathe(t); sway(o, t, 0.25); } } }),
-        act([part("heart", paint(evenSubset(big, m), heartColour)), part("small", paint(sats, PINK)), arrow(pierced)], { caption: "…und kleine Herzen kreisen im Takt", live: (b, j, t, o) => {
-          if (j < m) { o[3] = breathe(t); sway(o, t, 0.25); }
-          else if (j < h) { yaw(o, t * 0.18); o[3] = breathe(t, 2.6, 0.6); } // the small hearts orbit the big one, slowly
-        } }),
-      ] };
-    }
-    // ---- Hochzeit · Ringe ----
+    // ---- Hochzeit · Ring ----
     case "rings2d": {
-      const per = Math.floor(n / 2); // a light runs around each ring, in opposite directions
-      return { beats: [{ pts: paint(twoRings(n), GOLD), caption, live: (b, j, t, o) => { const side = j < per ? -1 : 1; o[3] = 0.85 + 0.45 * Math.max(0, Math.cos(Math.atan2(b[1], b[0] - side * 0.42) - t * 1.2 * side)) ** 3; } }] };
+      const per = Math.floor(n / 2); // each ring turns about its own axis, the two in opposite directions
+      return { beats: [{ pts: paint(twoRings(n), GOLD), caption, live: (b, j, t, o) => {
+        const side = j < per ? -1 : 1;
+        o[3] = 0.85 + 0.45 * Math.max(0, Math.cos(Math.atan2(b[1], b[0] - side * 0.42) - t * 1.2 * side)) ** 3;
+        yaw(o, Math.sin((t * TAU) / 7) * 0.7 * side, side * 0.42, 0);
+      } }] };
     }
     case "rings3d": {
-      const per = Math.floor(n / 2), pts = paint(torusPair(n), (p) => mix(GOLD, WARM, (p[2] + 1) / 2));
-      return { beats: [{ pts, caption, live: (b, j, t, o) => {
-        const ang = j < per ? Math.atan2(b[1], b[0] + 0.6) : Math.atan2(b[2], b[0] - 0.6); // light runs around each ring
-        o[3] = 0.8 + 0.5 * Math.max(0, Math.cos(ang - t * 1.6 * (j < per ? 1 : -1))) ** 3;
-        sway(o, t, 0.35);
+      const [band, stone] = engagementRing(n, 0.75), k = band.length;
+      return { beats: [{ pts: [...paint(band, (p) => mix(GOLD, WARM, (p[1] + 0.75) / 3)), ...paint(stone, DIAMOND)], caption, live: (b, j, t, o) => {
+        yaw(o, t * 0.45); if (j >= k) o[3] = sparkle(j, t, 0.95, 1.4);
       } }] };
     }
     case "ringsStory": {
-      const [rp, sp] = share(n, [3, 1]), per = Math.floor(rp / 2);
+      const ringN = Math.round(n * 0.3), [band, stone] = engagementRing(ringN, 0.55), [h, g] = share(n - ringN, [6, 1]);
+      const ringPts = [...paint(band, (p) => mix(GOLD, WARM, (p[1] + 0.55) / 2.2)), ...paint(stone, DIAMOND)];
+      const seat = ringSeat(0.2), r = seat.h + 0.035, s = r / 0.55, onFinger = (up, tip = 0.3) => ringPts.map(([x, y, z, ...c]) => {
+        // the band lies around the finger: picture plane → horizontal ring, the stone towards the audience; tipped
+        // towards the audience by tip, so that it reads as a ring while it hovers
+        const X = x * s, Y0 = z * s, Z0 = y * s, Y = Y0 * Math.cos(tip) + Z0 * Math.sin(tip), Z = -Y0 * Math.sin(tip) + Z0 * Math.cos(tip);
+        return [seat.c[0] + seat.d[0] * up + X, seat.c[1] + seat.d[1] * up + Y, Z, ...c];
+      });
+      const handPts = paint(hand3d(h), WARM), glitter = (k, R, cy = 0) => paint(sparkleShell(k, R).map(([x, y, z]) => [x, y + cy, z]), WARM);
+      const burst = Array.from({ length: g }, (_, i) => { const a = (i / g) * TAU, R = 0.16 + 0.08 * (i % 2); return [seat.c[0] + Math.cos(a) * R, seat.c[1] + Math.sin(a) * R * 0.8, 0.25]; });
+      const spin = (b, j, t, o) => { if (j < ringN) yaw(o, t * 0.5, 0, 0); else o[3] = sparkle(j, t); };
       return { beats: [
-        { pts: paint(sampleOutline([circle(0, 0, 0.62, 120)], n).map(([x, y]) => [x, y, 0]), GOLD), caption: "Ein Ring", hold: 1.2 },
-        { pts: paint(twoRings(n), GOLD), caption: "findet den zweiten", hold: 1.6 },
-        { pts: [...paint(torusPair(rp), (p) => mix(GOLD, WARM, (p[2] + 1) / 2)), ...paint(sparkleShell(sp, 1.9), WARM)], caption: "…und sie verschlingen sich in 3D, umgeben von Funkeln", live: (b, j, t, o) => {
-          if (j < rp) { const ang = j < per ? Math.atan2(b[1], b[0] + 0.6) : Math.atan2(b[2], b[0] - 0.6); o[3] = 0.8 + 0.5 * Math.max(0, Math.cos(ang - t * 1.6)) ** 3; }
-          else o[3] = sparkle(j, t);
-          sway(o, t, 0.3);
-        } },
+        act([part("ring", ringPts.map(([x, y, z, ...c]) => [x, y + 0.1, z, ...c]), { rigid: true }), part("glitter", glitter(n - ringN, 0.95, 0.1))], { caption: "Ein Ring funkelt", hold: 1.6, live: spin }),
+        act([part("ring", onFinger(0.82, 1.1), { rigid: true }), part("hand", handPts), part("glitter", glitter(g, 0.95))], { caption: "eine Hand, der Ring schwebt darüber", hold: 0.6, live: (b, j, t, o) => { if (j < ringN) o[1] += Math.sin(t * 1.1) * 0.02; else if (j >= ringN + h) o[3] = sparkle(j, t); } }),
+        act([part("ring", onFinger(0), { rigid: true }), part("hand", handPts), part("glitter", glitter(g, 0.95))], { caption: "er gleitet auf den Ringfinger", hold: 1, live: (b, j, t, o) => { if (j >= ringN + h) o[3] = sparkle(j, t); } }),
+        act([part("ring", onFinger(0), { rigid: true }), part("hand", handPts), part("glitter", paint(burst, DIAMOND))], { caption: "…und der Stein funkelt", live: (b, j, t, o) => {
+          if (j >= ringN + h) { o[3] = sparkle(j, t, 0.9, 1.5); const k = 1 + 0.12 * Math.sin(t * 1.4 + j); o[0] = seat.c[0] + (b[0] - seat.c[0]) * k; o[1] = seat.c[1] + (b[1] - seat.c[1]) * k; } // sparks around the stone breathe outward
+          else if (j >= ringN - stone.length && j < ringN) o[3] = sparkle(j, t, 1, 1.5);
+        } }),
+      ] };
+    }
+    // ---- Hochzeit · Herz ----
+    case "heart2d": return { beats: [{ pts: paint(heartLine(n), PINK), caption, live: (b, j, t, o) => { o[3] = breathe(t); } }] };
+    case "heart3d": return { beats: [{ pts: paint(await heart3d(n), heartColour), caption, live: (b, j, t, o) => { o[3] = breathe(t); sway(o, t); } }] };
+    case "heartsStory": {
+      const [h, a] = share(n, [5, 1]);
+      // Amor's arrow flies through the heart in one piece and on out of it; the heart takes its drones in and fills
+      const arrow = (hx, hy) => part("arrow", paint(sampleOutline(arrowPaths(hx, hy, hx + 1.13, hy + 0.65), a).map(([x, y]) => [x, y, 0.05]), GOLD), { rigid: true });
+      // FlyingStars' 3D heart is a formation for 290 drones: the arrow's drones become a ring of sparks around it
+      const full = await heart3d(h), half = await heart3d(Math.ceil(n / 2)), ring = paint(sparkleShell(a, 1.3), GOLD);
+      const couple = [...place(half.slice(0, Math.floor(n / 2)), 0.62, -0.58, 0, 0), ...place(half.slice(0, Math.ceil(n / 2)), 0.62, 0.58, 0, 0)];
+      return { beats: [
+        act([part("heart", paint(heartLine(h), PINK)), arrow(0.9, 0.55)], { caption: "Ein Herz, Amor zielt", hold: 0.6, frame: "aim" }),
+        act([part("heart", paint(heartLine(h), PINK)), arrow(-2.0, -1.15)], { caption: "der Pfeil fliegt mitten hindurch", hold: 0.2, frame: "aim" }),
+        act([part("heart", paint(full, heartColour)), part("arrow", ring)], { caption: "das Herz wird voll und atmet", hold: 2, live: (b, j, t, o) => { if (j < h) { o[3] = breathe(t); sway(o, t, 0.25); } else { yaw(o, t * 0.2); o[3] = sparkle(j, t); } } }),
+        act([part("heart", paint(couple, heartColour))], { caption: "…und wird zu zwei Herzen, die sich umkreisen", live: (b, j, t, o) => { yaw(o, t * 0.35); o[3] = breathe(t, 2.6, j < n / 2 ? 0 : 1.3); } }),
+      ] };
+    }
+    // ---- Hochzeit · Sektgläser ----
+    case "flutes2d": {
+      const per = Math.floor(n / 2), glass = (k, side) => place(flute2d(k), 1, side * 0.3, 0, 0, side * 0.22);
+      return { beats: [{ pts: paint([...glass(per, -1), ...glass(n - per, 1)], WARM), caption, live: (b, j, t, o) => clink(o, t, j < per ? -1 : 1) }] };
+    }
+    case "flutes3d": {
+      // each glass: its wireframe, then the bubbles inside; the light rises along the bubbles
+      const per = Math.floor(n / 2), glasses = [[per, -1], [n - per, 1]].map(([k, side]) => { const [g, q] = share(k, [4, 1]); return { g, pts: place([...paint(flute3d(g), WARM), ...paint(bubbles(q), GOLD)], 1, side * 0.3, 0, 0, side * 0.22) }; });
+      const isBubble = (j) => (j < per ? j >= glasses[0].g : j - per >= glasses[1].g);
+      return { beats: [{ pts: [...glasses[0].pts, ...glasses[1].pts], caption, live: (b, j, t, o) => { if (isBubble(j)) o[3] = chase(b[1], t, 0.35, 0.22, 0.7, 1.4); clink(o, t, j < per ? -1 : 1); sway(o, t, 0.3); } }] };
+    }
+    case "flutesStory": {
+      const [gl, gr, q] = share(n, [2, 2, 1.1]), glass = (k, side, apart) => paint(place(flute3d(k), 1, side * (apart ? 0.75 : 0.3), 0, 0, apart ? 0 : side * 0.22), WARM);
+      const inside = (k, apart) => [-1, 1].flatMap((side, i) => place(bubbles(share(k, [1, 1])[i]), 1, side * (apart ? 0.75 : 0.3), 0, 0, apart ? 0 : side * 0.22));
+      const rising = place(heartLine(q), 0.42, 0, 1.0);
+      const fizz = (b, j, t, o) => { if (j >= gl + gr) o[3] = chase(b[1], t, 0.35, 0.22, 0.7, 1.4); };
+      return { beats: [
+        act([part("left", glass(gl, -1, true), { rigid: true }), part("right", glass(gr, 1, true), { rigid: true }), part("bubbles", paint(inside(q, true), GOLD))], { caption: "Zwei Gläser", hold: 1, live: fizz }),
+        act([part("left", glass(gl, -1, false), { rigid: true }), part("right", glass(gr, 1, false), { rigid: true }), part("bubbles", paint(inside(q, false), GOLD))], { caption: "sie stoßen an", hold: 1.4, live: (b, j, t, o) => { fizz(b, j, t, o); if (j < gl + gr) clink(o, t, j < gl ? -1 : 1); } }),
+        act([part("left", glass(gl, -1, false), { rigid: true }), part("right", glass(gr, 1, false), { rigid: true }), part("bubbles", paint(rising, PINK))], { caption: "…und die Perlen steigen als Herz auf", live: (b, j, t, o) => { if (j >= gl + gr) o[3] = breathe(t); else clink(o, t, j < gl ? -1 : 1); sway(o, t, 0.2); } }),
+      ] };
+    }
+    // ---- Jubiläum · Pokal ----
+    case "trophy2d": {
+      const [a, s] = share(n, [6, 1]), stars = Array.from({ length: s }, (_, i) => { const u = (i + 0.5) / s, ang = Math.PI * (0.15 + 0.7 * u); return [Math.cos(ang) * 0.95, 0.35 + Math.sin(ang) * 0.75, 0]; });
+      return { beats: [{ pts: [...paint(trophy2d(a), WARM), ...paint(stars, GOLD)], caption, live: (b, j, t, o) => { o[3] = j >= a ? sparkle(j, t, 0.85, 1.4) : glint(b[0] + b[1] * 0.4, t, 4, 0.35); } }] };
+    }
+    case "trophy3d": return { beats: [{ pts: paint(trophy3d(n), (p) => (p[1] > 0.55 ? GOLD : WARM)), caption, live: (b, j, t, o) => { o[3] = glint(b[1], t, 4, 0.4, -1.2, 1.2); yaw(o, t * 0.3); } }] };
+    case "trophyStory": {
+      const [a, b, s] = share(n, [5, 1.4, 1.2]), number = await words("125", b, 0.42, 0, 1.05, 0);
+      const cloud = (k, cy, R) => paint(fib(k, R, 0, cy).map(([x, y, z], i) => [x, y, z + (hash(i) - 0.5) * 0.1]), GOLD);
+      const confetti = (k) => paint(sparkleShell(k, 1.25).map(([x, y, z]) => [x, y + 0.15, z]), (p) => [GOLD, PINK, CYAN][Math.floor(hash(p[0] * 31) * 3)]);
+      return { beats: [
+        act([part("trophy", paint(trophy3d(a, 0.2), WARM)), part("sparks", cloud(n - a, 0.35, 0.5))], { caption: "Der Sockel, darüber sammeln sich Funken", hold: 0.8, live: (bs, j, t, o) => { if (j >= a) { yaw(o, t * 0.4); o[3] = sparkle(j, t); } } }),
+        act([part("trophy", paint(trophy3d(a), (p) => (p[1] > 0.55 ? GOLD : WARM))), part("sparks", cloud(n - a, 1.05, 0.38))], { caption: "der Pokal wächst aus den Funken", hold: 1.2, live: (bs, j, t, o) => { if (j >= a) { yaw(o, t * 0.4); o[3] = sparkle(j, t); } else yaw(o, t * 0.25); } }),
+        act([part("trophy", paint(trophy3d(a), (p) => (p[1] > 0.55 ? GOLD : WARM))), part("number", paint(number, GOLD)), part("sparks", confetti(s))], { caption: "…und eure Zahl steigt heraus, Konfetti funkelt", live: (bs, j, t, o) => {
+          if (j >= a + b) { yaw(o, t * 0.15); o[3] = sparkle(j, t, 0.85, 1.4); } else if (j < a) yaw(o, t * 0.25); else o[3] = glint(bs[0], t, 3, 0.4);
+        } }),
+      ] };
+    }
+    // ---- Launch · Glühbirne ----
+    case "bulb2d": {
+      const [g] = share(n, [4, 1.2]); // the filament glows, light runs over the glass
+      return { beats: [{ pts: paint(bulb2d(n), (p) => (Math.abs(p[0]) < 0.09 && p[1] > -0.43 && p[1] < 0.12 ? GOLD : WARM)), caption, live: (b, j, t, o) => { o[3] = j >= g ? breathe(t, 1.8) + 0.15 : glint(b[0] - b[1] * 0.3, t, 4, 0.3); } }] };
+    }
+    case "bulb3d": {
+      const [glass, fil] = bulb3d(n);
+      return { beats: [{ pts: [...paint(glass, WARM), ...paint(fil, GOLD)], caption, live: (b, j, t, o) => { yaw(o, t * 0.3); if (j >= glass.length) o[3] = breathe(t, 1.8) + 0.2; } }] };
+    }
+    case "bulbStory": {
+      const [g, f, r] = share(n, [3.4, 0.8, 1.6]), glassAll = bulbGlass(g + r), glass = bulbGlass(g);
+      const wire = paint(filament(f), GOLD), spark = paint(fib(g + r, 0.3, 0, -0.15).map(([x, y, z], i) => [x * (0.6 + hash(i) * 0.6), y, z]), GOLD);
+      const RAYS = 12, rays = Array.from({ length: r }, (_, i) => { const k = i % RAYS, u = Math.floor(i / RAYS) / Math.max(1, Math.ceil(r / RAYS) - 1), a = (k / RAYS) * TAU + 0.13; return [Math.cos(a) * (0.62 + 0.38 * u), 0.15 + Math.sin(a) * (0.62 + 0.38 * u), 0]; });
+      return { beats: [
+        act([part("filament", wire), part("glass", spark)], { caption: "Ein Funke", hold: 1, live: (b, j, t, o) => { if (j >= f) { yaw(o, t * 0.5); o[3] = sparkle(j, t); } else o[3] = breathe(t, 1.6) + 0.2; } }),
+        act([part("filament", wire), part("glass", paint(glassAll, WARM))], { caption: "um ihn formt sich die Glühbirne", hold: 1, live: (b, j, t, o) => { if (j < f) o[3] = breathe(t, 1.6) + 0.2; yaw(o, t * 0.25); } }),
+        act([part("filament", wire), part("glass", paint(glass, WARM)), part("rays", paint(rays, GOLD))], { caption: "…und sie strahlt", live: (b, j, t, o) => {
+          if (j < f) o[3] = 1.35;
+          else if (j >= f + g) { const k = 1 + 0.1 * Math.sin(t * 1.3 - Math.hypot(b[0], b[1] - 0.15) * 4); o[0] = b[0] * k; o[1] = 0.15 + (b[1] - 0.15) * k; o[3] = 1.1; } // the rays reach out and back
+        } }),
+      ] };
+    }
+    // ---- Kultur · Noten ----
+    case "notes2d": return { beats: [{ pts: paint(notes2d(n), GOLD), caption, live: (b, j, t, o) => roll(o, Math.sin((t * TAU) / 2.4) * 0.07, 0.17, 0.1) }] };
+    case "notes3d": return { beats: [{ pts: paint(notes3d(n), GOLD), caption, live: (b, j, t, o) => { roll(o, Math.sin((t * TAU) / 2.4) * 0.07, 0.17, 0.1); sway(o, t, 0.4); o[3] = glint(b[0], t, 3.2, 0.35); } }] };
+    case "notesStory": {
+      const { staff, notes } = melody(n), starts = [staff.length]; for (const q of notes) starts.push(starts[starts.length - 1] + q.length);
+      const noteOf = (j) => starts.findIndex((s, k) => j >= s && j < (starts[k + 1] ?? Infinity));
+      return { beats: [
+        act([part("notes", paint(extrudePaths(notePath1(), n, 0.2), GOLD))], { caption: "Ein Ton", hold: 1, live: (b, j, t, o) => sway(o, t, 0.4) }),
+        act([part("notes", paint(notes3d(n), GOLD))], { caption: "zwei Töne", hold: 1, live: (b, j, t, o) => { roll(o, Math.sin((t * TAU) / 2.4) * 0.07, 0.17, 0.1); sway(o, t, 0.4); } }),
+        act([part("staff", paint(staff, WARM)), part("notes", paint(notes.flat(), GOLD))], { caption: "…eine Melodie, die Noten hüpfen nacheinander", live: (b, j, t, o) => {
+          if (j >= staff.length) { const k = noteOf(j), u = frac(t / 3 - k * 0.12); o[1] += 0.12 * Math.sin(Math.PI * Math.min(1, u / 0.25)) ** 2; } // one note after the other hops and lands
+          sway(o, t, 0.25);
+        } }),
+      ] };
+    }
+    // ---- Silvester · Kleeblatt ----
+    case "clover2d": return { beats: [{ pts: paint(clover2d(n), GREEN), caption, live: (b, j, t, o) => { roll(o, t * 0.12); o[3] = glint(b[0] + b[1], t, 4, 0.3); } }] };
+    case "clover3d": return { beats: [{ pts: paint(clover3d(n), GREEN), caption, live: (b, j, t, o) => { yaw(o, t * 0.35); o[3] = glint(b[1], t, 3.6, 0.35); } }] };
+    case "cloverStory": {
+      const [a, r] = share(n, [4, 1]);
+      return { beats: [
+        act([part("clover", paint(clover3d(n, 3), GREEN))], { caption: "Ein Kleeblatt mit drei Blättern", hold: 1, live: (b, j, t, o) => sway(o, t, 0.35) }),
+        act([part("clover", paint(clover3d(n), GREEN))], { caption: "ein viertes kommt dazu: Glück", hold: 1.2, live: (b, j, t, o) => sway(o, t, 0.35) }),
+        act([part("clover", paint(clover3d(a), GREEN)), part("rain", paint(sparkleShell(r, 1.35), GOLD))], { caption: "…für das neue Jahr, umringt von Funken", live: (b, j, t, o) => { if (j < a) yaw(o, t * 0.35); else { yaw(o, -t * 0.12); o[3] = sparkle(j, t, 0.85, 1.4); } } }),
       ] };
     }
     // ---- Jubiläum · Wappen ----
@@ -242,8 +356,11 @@ async function buildBeats(version, n) {
       const [a, w] = share(n, [2, 1]);
       return { beats: [
         { pts: paint(tower3d(n), towerPaint), caption: "Der Fernsehturm", hold: 1.4, live: (b, j, t, o) => { if (b[1] > 1.15) o[3] = warning(t); sway(o, t, 0.3); } },
-        { pts: [...paint(tower3d(a), towerPaint), ...paint(waves(w), CYAN)], caption: "sendet über die Stadt", hold: 3, live: (b, j, t, o) => {
-          if (j >= a) o[3] = chase(Math.hypot(b[0] - TOWER_SPHERE[0], b[1] - TOWER_SPHERE[1]), t, 0.25, 0.6); // waves spread outward in light
+        { pts: [...paint(tower3d(a), towerPaint), ...paint(waves(w), CYAN)], caption: "sendet über die Stadt", hold: 4.5, live: (b, j, t, o) => {
+          if (j >= a) { // each wave arc moves slowly outward and back again, one after the other
+            const dx = b[0] - TOWER_SPHERE[0], dy = b[1] - TOWER_SPHERE[1], r0 = Math.hypot(dx, dy), k = 1 + 0.2 * Math.sin((t * TAU) / 4.5 - r0 * 5);
+            o[0] = TOWER_SPHERE[0] + dx * k; o[1] = TOWER_SPHERE[1] + dy * k;
+          } else if (b[1] > 1.15) o[3] = warning(t);
           sway(o, t, 0.25);
         } },
         { pts: paint(gate3d(n), (p) => (p[1] > 0.56 ? GOLD : WARM)), caption: "…und wird zum Brandenburger Tor", live: (b, j, t, o) => { o[3] = glint(b[0], t, 4, 0.35); sway(o, t, 0.3); } },
@@ -322,7 +439,7 @@ async function buildBeats(version, n) {
       const spin = (t) => (t <= 0 ? t : t + 0.35 * Math.min(t, 2.6) ** 2 + 0.7 * 2.6 * Math.max(0, t - 2.6));
       const vortex = (caption) => ({ pts: disk, caption, hold: 2.4, live: (b, j, t, o) => roll(o, spin(t) * (0.24 / (0.3 + Math.hypot(b[0], b[1])))) });
       const ring = paint(torusSurface(n, 0.95, 0.3), (p) => mix(CYAN, VIOLET, (p[1] + 0.6) / 1.2));
-      return { loopTo: 0, beats: [
+      return { beats: [
         vortex("Ein Funkenwirbel"),
         { pts: logo3d(n), caption: "…dreht sich ein und wird zu eurem Logo", swirl: -0.9, hold: 3.4, live: (b, j, t, o) => sway(o, t, 0.3) },
         vortex("…löst sich wieder in einen Wirbel"),
@@ -339,11 +456,16 @@ async function buildBeats(version, n) {
       } }] };
     }
     case "masks3d": { const [trag, com] = maskPair3d(n); return { beats: [{ pts: [...paint(trag, RED), ...paint(com, GOLD)], caption, live: (b, j, t, o) => sway(o, t, 0.35) }] }; }
-    case "maskStory": return { beats: [
-      { pts: paint(mask3d(n, false), GOLD), caption: "Die Komödie", hold: 1.6, live: (b, j, t, o) => sway(o, t, 0.3) },
-      { pts: paint(mask3d(n, true), RED), caption: "wird zur Tragödie", hold: 1.6, live: (b, j, t, o) => sway(o, t, 0.3) },
-      { pts: await devil(n), caption: "…und zum Teufel aus unserer Show Bokkenrijders", live: (b, j, t, o) => { if (b[3] > 200 && b[4] > 100) o[3] = 0.8 + 0.5 * Math.abs(Math.sin(t * 1.5)); sway(o, t, 0.35); } },
-    ] };
+    case "maskStory": {
+      const [trag, com] = maskPair3d(n), pair = (t, c) => [part("tragedy", paint(t, RED), { rigid: true }), part("comedy", paint(c, GOLD), { rigid: true })];
+      const apart = [trag.map(([x, y, z]) => [x - 0.62, y - 0.05, z + 0.25]), com.map(([x, y, z]) => [x + 0.55, y + 0.05, z - 0.15])];
+      return { beats: [
+        act([part("comedy", paint(mask3d(n, false), GOLD))], { caption: "Die Komödie", hold: 1.2, live: (b, j, t, o) => sway(o, t, 0.3) }),
+        act(pair(...apart), { caption: "die Tragödie tritt dazu", hold: 1, live: (b, j, t, o) => sway(o, t, 0.3) }),
+        act(pair(trag, com), { caption: "sie verbinden sich zum Theaterzeichen", hold: 1.6, live: (b, j, t, o) => { sway(o, t, 0.3); o[3] = glint(b[0], t, 3.4, 0.35); } }),
+        { pts: await devil(n), caption: "…und werden zum Teufel aus unserer Show Bokkenrijders", live: (b, j, t, o) => { if (b[3] > 200 && b[4] > 100) o[3] = 0.8 + 0.5 * Math.abs(Math.sin(t * 1.5)); sway(o, t, 0.35); } },
+      ] };
+    }
     // ---- Kultur · Vorhang ----
     case "curtain": return { beats: [{ pts: paint(curtain(n, 0), RED), caption, live: (b, j, t, o) => billow(b, t, o) }] };
     case "curtainStar": {

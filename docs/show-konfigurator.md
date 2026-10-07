@@ -1,17 +1,17 @@
 # Show-Konfigurator (Prototyp)
 
-Stand: 7. Oktober 2026, siebte Fassung. Die sechste Fassung ist als Tag `konfigurator-v6` erhalten. Die Route ist `/show-konfigurator/`, nicht verlinkt und mit `noindex`. Der Konfigurator ist ein Vorschlag an FlyingStars und ersetzt den Preisrechner der Referenz nicht.
+Stand: 7. Oktober 2026, neunte Fassung. Frühere Stände sind als Tags erhalten: `konfigurator-v6`, `konfigurator-v8`. Die Route ist `/show-konfigurator/`, nicht verlinkt und mit `noindex`. Der Konfigurator ist ein Vorschlag an FlyingStars und ersetzt den Preisrechner der Referenz nicht.
 
 ## Das Modell: zwei Entscheidungen, die sich nicht gegenseitig verändern
 
-- **Anlass** (Hochzeit, Jubiläum, Launch, Kultur, Silvester) bestimmt, **was** am Himmel steht: zwei Beispielmotive und den Anlass in der Anfrage. Er verändert weder den Regler noch den Preis.
-- **Wie aufwendig?** hat eine Stufe je Paket und bestimmt, **wie**: Paket, Drohnenzahl, Art der Bewegung und damit den Preis. Der Preis ändert sich genau dann, wenn der Regler sich bewegt.
+- **Anlass** (Hochzeit, Jubiläum, Launch, Kultur, Silvester) bestimmt, **was** am Himmel steht: drei Motive, die als kleine Show nacheinander laufen, und den Anlass in der Anfrage. Er verändert weder Paket noch Preis.
+- **Wie aufwendig?** hat drei Knöpfe, einen je Paket, in der Paketfarbe. Er bestimmt, **wie**: Paket, Drohnenzahl, Art der Bewegung und damit den Preis. Der Preis ändert sich genau dann, wenn ein anderer Knopf gewählt wird.
 
 | Stufe | Paket | Drohnen | Preis | Enthalten (Wortlaut der Paketbeschreibungen) |
 |---|---|---|---|---|
 | Klassisch in 2D | SPARK | 100 | ab 7.900 € | vordefinierte Formationen wie Herzen oder Ringe und bis zu vier eigene Elemente |
-| Mit 3D | HORIZON | 200 | ab 15.900 € | alles aus SPARK plus individuelle 2D-Animationen und einfache 3D-Elemente |
-| Komplexes 3D | ODYSSEY | 300 | ab 34.900 € | alles aus HORIZON plus komplexe 3D-Animationen und volumetrische Effekte |
+| 3D in Bewegung | HORIZON | 200 | ab 15.900 € | alles aus SPARK plus individuelle 2D-Animationen und einfache 3D-Elemente |
+| Erzählte 3D-Show | ODYSSEY | 300 | ab 34.900 € | alles aus HORIZON plus komplexe 3D-Animationen und volumetrische Effekte |
 
 Die Preise kommen unverändert aus `priceFor()` in `src/content/show-packages.ts`. Publikum, Musik, Storytelling, Film und eigener Text sind bewusst nicht enthalten. Sie kommen später als sichtbare, eigene Preistreiber zurück, zum Beispiel hinter einem Aufklapper.
 
@@ -25,28 +25,42 @@ Die Preise kommen unverändert aus `priceFor()` in `src/content/show-packages.ts
    - Der Sternenhimmel kam bei allen Anlässen vor.
    - Der 3-2-1-Countdown war zu schnell, um realistisch zu sein.
    - Die Mausreaktion brachte nichts und kostete Leistung.
-   - Daraus folgte die vierte Fassung (diese): **ein Motiv, drei Ausbaustufen**. Bilder statt Text, keine automatische Schleife.
+   - Daraus folgte die vierte Fassung: **ein Motiv, drei Ausbaustufen**. Bilder statt Text, keine automatische Schleife.
+4. **Neunte Fassung (Marc, nach der achten):** Die Motive werden nicht mehr gewählt, sondern laufen als Folge durch. Begründung: Schon eine SPARK-Show dauert rund zehn Minuten und zeigt viele Bilder, die ineinander übergehen. Genau diese Übergänge zeigen, was eine Show ist. Die Grenze zur dritten Fassung: Die Folge besteht aus drei Bildmotiven desselben Anlasses, nicht aus Textmotiven, und ein Paketwechsel bleibt beim Motiv auf der Bühne. So bleibt der Vergleich „dasselbe Motiv, größeres Paket“ erhalten. ODYSSEY behält sein Alleinstellungsmerkmal: Jedes Motiv bekommt eine eigene Geschichte in Akten.
+   - Der Regler wurde zu drei Knöpfen wie im Preisrechner des Vercel-Prototyps. Ein Regler versprach Zwischenstufen, die es nicht gibt.
+   - Warmweiße Drohnen leuchten in der Paketfarbe (SPARK Orange, HORIZON Pink, ODYSSEY Blau). Motive mit eigenen Farben behalten sie (Herz, Klee, Gold, Vorhang).
+   - Herz-Geschichte neu: Der Pfeil fliegt durch das Herz hindurch, statt stehen zu bleiben. Danach werden daraus zwei Herzen, die sich umkreisen. Die kreisenden kleinen Herzen sind weg.
+   - Ringe neu: SPARK zwei Ringe, die sich um die eigene Achse drehen. HORIZON ein Verlobungsring in 3D. ODYSSEY eine Hand, über der der Ring schwebt, bis er auf den Ringfinger gleitet.
+   - Masken-Geschichte neu: Komödie, dann tritt die Tragödie dazu, beide verbinden sich zum Theaterzeichen, daraus wird der Bokkenrijders-Teufel.
+   - Die Funkwellen des Fernsehturms bewegen sich langsam nach außen und zurück, unabhängig vom Warnlicht.
 
-## Die Vorschau: ein Motiv, drei Ausbaustufen
+## Die Vorschau: drei Motive je Anlass, drei Ausbaustufen
 
-Jeder Anlass hat zwei Motive (Knöpfe unter „Anlass“ in der linken Spalte, seit der achten Fassung alles an einem Ort). Der Regler verwandelt dasselbe Motiv in seine Fassung für das Paket:
+Jeder Anlass spielt drei Motive nacheinander, danach beginnt die Folge von vorn. ‹ › schalten Bild für Bild vor und zurück, im Kreis, ↻ beginnt die Show von vorn. Ein Paketwechsel verwandelt das Motiv auf der Bühne in seine Fassung für das neue Paket und spielt von dort weiter. Pausiert oder bei reduzierter Bewegung steht das aktuelle Motiv in Ruhe.
 
-- **SPARK:** ein 2D-Bild mit sanfter Bewegung: der Stern dreht sich, die Masken wiegen sich, die Rakete hat eine flackernde Flamme, die Zeiger laufen, Lichtschimmer auf allem.
-- **HORIZON:** ein 3D-Objekt, das sich weiter selbst bewegt.
-- **ODYSSEY:** eine kurze Geschichte in Akten mit komplexer 3D-Animation und fließenden Effekten. Das entspricht „Narratives Storytelling mit dramaturgischer Kurve“ aus der ODYSSEY-Beschreibung.
+- **SPARK:** 2D-Bilder mit sanfter Bewegung. Sie drehen sich, wiegen sich oder flackern.
+- **HORIZON:** 3D-Objekte, die sich weiter selbst bewegen.
+- **ODYSSEY:** Jedes Motiv ist eine kurze Geschichte in Akten. Das entspricht „Narratives Storytelling mit dramaturgischer Kurve“ aus der ODYSSEY-Beschreibung.
 
-| Anlass | Motiv | SPARK (100 Drohnen) | HORIZON (200), Eigenbewegung | ODYSSEY (300), Akte |
+Jedes Motiv hat einen eigenen Maßstab, sodass es die Bühne füllt. Innerhalb einer Geschichte bleibt der Maßstab gleich; nur Amors Anflug hat einen eigenen Ausschnitt (`frame` am Akt).
+
+| Anlass | Folge | SPARK (100 Drohnen) | HORIZON (200) | ODYSSEY (300), Akte |
 |---|---|---|---|---|
-| Hochzeit | Herz | Herz als Umriss | volles 3D-Herz, leuchtet ruhig atmend auf | ein Herz → Amors Pfeil fliegt im Bogen hinein und bleibt stehen wie in der klassischen Illustration → das Herz wird voll → kleine Herzen kreisen |
-| | Ringe | zwei Ringe ineinander (wie ein Venn-Diagramm), Lichtlauf | verschlungene 3D-Ringe mit Lichtlauf | ein Ring → findet den zweiten → sie verschlingen sich in 3D, umgeben von Funkeln |
-| Jubiläum | Wappen | eigenes Vereinswappen: Fluss, wehende Fahne, Stern | 3D-Wappen mit eurer Zahl, die Fahne weht | aus dem Stern im Wappen wird eure Zahl → Krone und langsam kreisender Sternenkranz |
-| | Wahrzeichen | Beispiel: Berliner Fernsehturm, rotes Warnlicht blinkt | 3D-Fernsehturm, Licht läuft um die Kugel, rotes Warnlicht | der Turm → sendet (Wellen breiten sich in Licht aus) → wird zum Brandenburger Tor |
-| Launch | Rakete | Rakete mit flackernder Flamme, schwebt | 3D-Rakete mit Flamme schwebt und dreht sich | startklar → hebt ab und zieht ihre funkelnde Spur → aus der Spur wird ein 3D-Mond, die Rakete landet → sie fliegt weiter um die Sonne, Planeten ziehen ihre Bahnen |
-| | Logo | Beispiel-Logo, Licht läuft um den Ring | 3D-Logo mit Lichtschimmer | ein Funkenwirbel dreht sich schneller und das Logo entsteht in derselben Drehrichtung → Wirbel → Ring aus Licht → … (Schleife) |
-| Kultur | Maske | die klassischen Theatermasken, sie wiegen sich gegeneinander | die Masken in 3D | Komödie → Tragödie → Teufel aus der echten Bokkenrijders-Show-Datei |
-| | Vorhang | Vorhang im Luftzug | der Vorhang öffnet sich sichtbar → ein 3D-Stern löst sich heraus | der Vorhang öffnet sich → aus dem Vorhang fällt Goldregen → ein Stern steigt über dem Regen auf |
-| Silvester | Feuerwerk | Feuerwerksstern, der sich dreht | drei 3D-Feuerwerkskugeln öffnen sich nacheinander | Feuerwerk → die Funken sammeln sich zur Silvesterkugel → sie sinkt → Ring → Knoten aus Licht |
-| | Uhr | die Zeiger laufen auf zwölf | 3D-Uhr, die Zeiger laufen | fünf vor zwölf → die Funken schwärmen aus → sie schreiben das neue Jahr → wirbeln auf zwei Bahnen um die Uhr → die Uhr wird zur Champagnerflasche, der Korken knallt und fliegt mit Schaumspur wie die Rakete |
+| Hochzeit | Ring | zwei Ringe drehen sich um die eigene Achse | Verlobungsring in 3D dreht sich, der Stein funkelt | ein Ring funkelt → eine Hand, der Ring schwebt darüber → er gleitet auf den Ringfinger → der Stein funkelt |
+| | Herz | Herz, atmet in Licht | volles 3D-Herz, ruhig atmend | Amor zielt → der Pfeil fliegt durch das Herz → das Herz wird voll → zwei Herzen umkreisen sich |
+| | Sektgläser | zwei Gläser stoßen an | 3D-Gläser, die Perlen steigen in Licht | zwei Gläser → sie stoßen an → die Perlen steigen als Herz auf |
+| Jubiläum | Wappen | eigenes Vereinswappen: Fluss, wehende Fahne, Stern | 3D-Wappen mit Zahl, die Fahne weht | aus dem Stern wird eure Zahl → Krone und Sternenkranz |
+| | Wahrzeichen | Berliner Fernsehturm, Warnlicht blinkt | 3D, Licht läuft um die Kugel | der Turm → die Funkwellen bewegen sich hinaus und zurück → Brandenburger Tor |
+| | Pokal | Pokal, Sterne funkeln darüber | 3D-Pokal dreht sich | der Sockel, Funken sammeln sich → der Pokal wächst → eure Zahl steigt heraus, Konfetti |
+| Launch | Glühbirne | Glühbirne, der Faden glimmt | 3D-Glühbirne dreht sich | ein Funke → um ihn formt sich die Glühbirne → sie strahlt (Strahlen reichen hinaus und zurück) |
+| | Rakete | Rakete mit flackernder Flamme | 3D-Rakete mit Flamme | startklar → Flug mit Spur → 3D-Mond, Landung → Sonnensystem |
+| | Logo | Beispiel-Logo, Licht läuft um den Ring | 3D-Logo mit Lichtschimmer | Funkenwirbel → Logo → Wirbel → Ring aus Licht |
+| Kultur | Vorhang | Vorhang im Luftzug | Vorhang öffnet sich, ein 3D-Stern löst sich heraus | Vorhang öffnet sich → Goldregen → ein Stern steigt auf |
+| | Masken | die Masken wiegen sich gegeneinander | die Masken in 3D | Komödie → die Tragödie tritt dazu → beide verbinden sich → Bokkenrijders-Teufel |
+| | Noten | zwei Noten wiegen sich im Takt | die Noten in 3D | ein Ton → zwei Töne → Melodie auf fünf Linien, die Noten hüpfen nacheinander |
+| Silvester | Uhr | Zeiger laufen auf zwölf | 3D-Uhr, die Zeiger laufen | fünf vor zwölf → Funken schwärmen aus → das neue Jahr → Bahnen um die Uhr → Champagnerkorken |
+| | Feuerwerk | Feuerwerksstern dreht sich | drei 3D-Kugeln öffnen sich nacheinander | Feuerwerk → Silvesterkugel → sie sinkt → Ring → Knoten |
+| | Kleeblatt | Glücksklee dreht sich | Glücksklee in 3D | drei Blätter → ein viertes kommt dazu → Klee in 3D, umringt von Funken |
 
 ### Objektpermanenz und fließende Übergänge (siebte Fassung)
 
@@ -110,7 +124,7 @@ Gemessen auf den drei aufwendigsten Geschichten mit 300 Drohnen in Bewegung, 2×
 | Browser | Bildrate |
 |---|---|
 | Chromium | 60 fps |
-| Chromium mit 6-fach gedrosselter CPU | 48–53 fps (achte Fassung, vorher 56–59) |
+| Chromium mit 6-fach gedrosselter CPU | 53–58 fps (neunte Fassung) |
 | WebKit (Safari-Engine) | 60 fps |
 
 - Beim Wechsel der Szene gibt es einen einzelnen längeren Frame: etwa 40 ms normal, etwa 250 ms bei 6-facher Drosselung. Er fällt, bevor sich die Drohnen bewegen.
@@ -131,7 +145,7 @@ Der Anfrageknopf übergibt Paket, Drohnenzahl und Anlass sowie eine Zusammenfass
 
 ## Prüfen
 
-- `tests/show-physics.spec.ts` prüft alle 30 Fassungen auf Geschwindigkeit und Beschleunigung jeder Drohne.
+- `tests/show-physics.spec.ts` spielt jede Show in allen drei Paketen ganz durch (bis zurück zum ersten Motiv) und prüft Geschwindigkeit und Beschleunigung jeder Drohne.
 - `scripts/show-flight.test.mjs` prüft:
   - Die Zuordnung ist optimal.
   - Die Ankunft ist exakt.
@@ -139,11 +153,13 @@ Der Anfrageknopf übergibt Paket, Drohnenzahl und Anlass sowie eine Zusammenfass
   - Das Strömungsfeld ist divergenzfrei.
 - `scripts/show-geometry.test.mjs` prüft:
   - exakte Punktzahlen aller Formen
-  - zwei Motive je Anlass mit je drei Fassungen
+  - drei Motive je Anlass mit je drei Fassungen
 - `tests/show-configurator.spec.ts` prüft:
   - Paket, Preis und Drohnenzahl
-  - SPARK und HORIZON bewegen sich nach dem Aufbau weiter.
-  - Die Akte laufen im Kreis vor und zurück.
+  - Jeder Anlass zeigt drei Motive, jedes Bild hat genau die Drohnen des Pakets.
+  - Die Motive laufen von selbst durch, ein Paketwechsel bleibt beim Motiv.
+  - Jedes Paket bewegt sich nach dem Aufbau weiter.
+  - Die Bilder laufen im Kreis vor und zurück.
   - ODYSSEY erzählt in Akten und lässt sich wiederholen.
   - Nach schnellem Umschalten leuchten nie zu viele Drohnen.
   - Tastatur, erster Bildschirm, Übergabe ins Formular

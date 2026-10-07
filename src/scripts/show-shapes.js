@@ -238,3 +238,108 @@ export function bottle3d(n) {
 }
 /** The cork: a small mushroom shape around its centre. */
 export const cork = (n) => lathe([[0.04, -0.05], [0.05, 0.0], [0.07, 0.04], [0.05, 0.08]], n);
+
+// ---------- Hochzeit: hand, engagement ring, flutes ----------
+/** One finger as an open outline (right side up, round tip, left side down), base centre (cx, cy), tilt a. */
+function finger(cx, cy, w, len, a) {
+  const d = [Math.sin(a), Math.cos(a)], nrm = [Math.cos(a), -Math.sin(a)], h = w / 2, top = [cx + d[0] * (len - h), cy + d[1] * (len - h)];
+  const pts = [[cx + nrm[0] * h, cy + nrm[1] * h], [top[0] + nrm[0] * h, top[1] + nrm[1] * h]];
+  for (let i = 1; i < 12; i++) { const u = (i / 12) * Math.PI, c = Math.cos(u), s = Math.sin(u); pts.push([top[0] + (nrm[0] * c + d[0] * s) * h, top[1] + (nrm[1] * c + d[1] * s) * h]); }
+  pts.push([top[0] - nrm[0] * h, top[1] - nrm[1] * h], [cx - nrm[0] * h, cy - nrm[1] * h]);
+  return pts;
+}
+/** Fingers of the hand: [base x, width, length, tilt]; index, middle, ring, little finger from the left. */
+export const FINGERS = [[-0.33, 0.19, 0.62, -0.1], [-0.11, 0.2, 0.74, -0.03], [0.11, 0.19, 0.68, 0.04], [0.31, 0.16, 0.52, 0.13]];
+const FINGER_BASE = 0.05;
+/** A raised open hand, palm towards the audience, thumb on the left: one outline from the wrist around to the wrist. */
+export function handPath() {
+  const pts = [[0.3, -0.95], [0.38, -0.6], [0.41, -0.25], [0.4, -0.02]];
+  for (let k = FINGERS.length - 1; k >= 0; k--) { const [x, w, len, a] = FINGERS[k]; pts.push(...finger(x, FINGER_BASE, w, len, a)); }
+  pts.push([-0.43, 0.0], [-0.44, -0.16]);
+  // the thumb, pointing up and out to the left: out along its inner side, back along its outer side
+  pts.push(...finger(-0.53, -0.44, 0.21, 0.5, -0.8), [-0.44, -0.66], [-0.34, -0.82], [-0.3, -0.95]);
+  return line(...pts);
+}
+/** Where the ring sits on the ring finger: centre, finger direction and half width. */
+export function ringSeat(up = 0.2) { const [x, w, , a] = FINGERS[2]; return { c: [x + Math.sin(a) * up, FINGER_BASE + Math.cos(a) * up], d: [Math.sin(a), Math.cos(a)], h: w / 2 }; }
+export const hand3d = (n) => extrudePaths([handPath()], n, 0.16);
+export const hand2d = (n) => flat(sampleOutline([handPath()], n));
+/** Engagement ring: a band (circle in the picture plane, radius R) and a stone on top; returns [band, stone]. */
+export function engagementRing(n, R = 0.5) {
+  const [band, stone] = share(n, [4, 1]), out = [];
+  for (let i = 0; i < band; i++) { const a = (i / band) * TAU, layer = i % 2 ? 0.045 : -0.045; out.push([Math.sin(a) * R, Math.cos(a) * R, layer]); }
+  // the stone: a small brilliant sitting on the band, front and back layer
+  const k = R / 0.5, gem = poly([0, R + 0.02 * k], [0.12 * k, R + 0.13 * k], [0.07 * k, R + 0.2 * k], [-0.07 * k, R + 0.2 * k], [-0.12 * k, R + 0.13 * k]);
+  const [front, back] = share(stone, [1, 1]);
+  out.push(...flat(sampleOutline([gem], front), 0.05 * k), ...flat(sampleOutline([gem], back), -0.05 * k));
+  return [out.slice(0, band), out.slice(band)];
+}
+const fluteProfile = [[0.22, -0.8], [0.04, -0.76], [0.025, -0.68], [0.025, -0.28], [0.1, -0.22], [0.15, 0.0], [0.165, 0.3], [0.16, 0.55]];
+/** Champagne flute outline (2D), foot at y = −0.8, rim at y = 0.55. */
+export const flutePath = () => line(...fluteProfile.slice().reverse().map(([r, y]) => [-r, y]), ...fluteProfile.map(([r, y]) => [r, y]));
+export const flute2d = (n) => flat(sampleOutline([flutePath()], n));
+/** Champagne flute as a wireframe (six profile lines and the rim). */
+export function flute3d(n) {
+  const M = 6, [body, rim] = share(n, [5, 1]), per = share(body, Array(M).fill(1)), profile = line(...fluteProfile.map(([r, y]) => [r, y]));
+  const meridians = per.flatMap((m, k) => { const a = (k / M) * TAU; return sampleOutline([profile], m).map(([r, y]) => [Math.cos(a) * r, y, Math.sin(a) * r]); });
+  return [...meridians, ...lathe([[0.16, 0.55]], rim)];
+}
+/** Bubbles inside a flute: columns of points in the bowl (the light rises along them). */
+export const bubbles = (n) => Array.from({ length: n }, (_, i) => { const c = i % 3, k = Math.floor(i / 3), per = Math.ceil((n - c) / 3); return [(c - 1) * 0.06, -0.18 + (0.68 * (k + 0.5)) / per, (c - 1) * 0.03]; });
+
+// ---------- Jubiläum: trophy ----------
+const trophyProfile = [[0.32, -0.92], [0.3, -0.82], [0.1, -0.76], [0.06, -0.5], [0.12, -0.42], [0.07, -0.32], [0.18, -0.2], [0.34, 0.05], [0.42, 0.35], [0.45, 0.62]];
+const trophyHandles = [1, -1].map((s) => line([s * 0.43, 0.52], [s * 0.62, 0.55], [s * 0.7, 0.42], [s * 0.64, 0.24], [s * 0.48, 0.12], [s * 0.36, 0.06]));
+export const trophyPath = () => line(...trophyProfile.slice().reverse().map(([r, y]) => [-r, y]), ...trophyProfile.map(([r, y]) => [r, y]));
+export const trophy2d = (n) => flat(sampleOutline([trophyPath(), ...trophyHandles, line([-0.45, 0.62], [0.45, 0.62])], n));
+/** Trophy as a wireframe (eight profile lines, rim ring) with both handles; upTo cuts it at a height (it grows). */
+export function trophy3d(n, upTo = 1) {
+  const M = 8, [body, rim, handles] = share(n, [6, 1.2, 1.4]), per = share(body, Array(M).fill(1)), prof = trophyProfile.filter(([, y]) => y <= upTo - 0.38 || upTo >= 1);
+  const profile = line(...prof.map(([r, y]) => [r, y]));
+  const meridians = per.flatMap((m, k) => { const a = (k / M) * TAU + 0.2; return sampleOutline([profile], m).map(([r, y]) => [Math.cos(a) * r, y, Math.sin(a) * r]); });
+  const top = prof[prof.length - 1];
+  return [...meridians, ...lathe([[top[0], top[1]]], rim), ...flat(sampleOutline(upTo >= 1 ? trophyHandles : [line([-0.3, -0.85], [0.3, -0.85])], handles))];
+}
+
+// ---------- Launch: light bulb ----------
+const bulbProfile = [[0.12, -0.82], [0.13, -0.6], [0.15, -0.45], [0.3, -0.18], [0.42, 0.12], [0.45, 0.36], [0.38, 0.6], [0.22, 0.76], [0.0, 0.81]];
+export const bulbPath = () => line(...bulbProfile.slice().reverse().map(([r, y]) => [-r, y]), ...bulbProfile.map(([r, y]) => [r, y]));
+const thread = line(...Array.from({ length: 9 }, (_, i) => [i % 2 ? 0.13 : -0.13, -0.8 + i * 0.04]));
+/** The filament: two posts and a zigzag coil, in the middle of the bulb. */
+export const filamentPath = () => line([-0.08, -0.42], [-0.08, 0.02], ...Array.from({ length: 7 }, (_, i) => [-0.08 + (i * 0.16) / 6, i % 2 ? 0.1 : 0.02]), [0.08, -0.42]);
+export const bulb2d = (n) => { const [g, f] = share(n, [4, 1.2]); return [...flat(sampleOutline([bulbPath(), thread], g)), ...flat(sampleOutline([filamentPath()], f))]; };
+/** Bulb as a wireframe (six profile lines) plus the filament; returns [glass, filament]. */
+export function bulb3d(n) {
+  const [g, f] = share(n, [4, 1]), M = 6, per = share(g, Array(M).fill(1)), profile = line(...bulbProfile.map(([r, y]) => [r, y]));
+  const glass = per.flatMap((m, k) => { const a = (k / M) * TAU; return sampleOutline([profile], m).map(([r, y]) => [Math.cos(a) * r, y, Math.sin(a) * r]); });
+  return [glass, flat(sampleOutline([filamentPath()], f))];
+}
+
+// ---------- Kultur: notes ----------
+const head = (cx, cy) => ({ pts: Array.from({ length: 20 }, (_, i) => { const a = (i / 20) * TAU, x = Math.cos(a) * 0.15, y = Math.sin(a) * 0.1; return [cx + x * 0.94 - y * 0.34, cy + x * 0.34 + y * 0.94]; }) });
+/** Two beamed eighth notes (♫). */
+export const notePaths = () => [head(-0.32, -0.5), head(0.38, -0.3), line([-0.18, -0.46], [-0.18, 0.5]), line([0.52, -0.26], [0.52, 0.7]), line([-0.18, 0.5], [0.52, 0.7]), line([-0.18, 0.38], [0.52, 0.58])];
+/** One eighth note (♪) with its flag. */
+export const notePath1 = () => [head(-0.05, -0.45), line([0.09, -0.41], [0.09, 0.6]), line([0.09, 0.6], [0.2, 0.45], [0.32, 0.3], [0.3, 0.12])];
+export const notes2d = (n) => flat(sampleOutline(notePaths(), n));
+export const notes3d = (n) => extrudePaths(notePaths(), n, 0.2);
+
+// ---------- Silvester: four-leaf clover ----------
+const leaf = (rot) => { const pts = Array.from({ length: 60 }, (_, i) => { const t = (i / 60) * TAU, x = 16 * Math.sin(t) ** 3, y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t); return [x / 40, (y + 17) / 40]; }); return { pts: pts.map(([x, y]) => [x * Math.cos(rot) - y * Math.sin(rot), x * Math.sin(rot) + y * Math.cos(rot)]) }; };
+/** Leaves of the clover (heart-shaped, tips in the middle) and the stem, as separate paths. */
+export const cloverLeaves = (k = 4) => Array.from({ length: k }, (_, i) => leaf((i * TAU) / k));
+/** The stem, leaving the middle in direction a (radians) with a slight bend. */
+export const cloverStem = (a = -Math.PI / 4) => line(...Array.from({ length: 5 }, (_, i) => { const r = 0.05 + i * 0.22, b = a - 0.15 * (i / 4); return [Math.cos(b) * r, Math.sin(b) * r]; }));
+export const clover2d = (n) => flat(sampleOutline([...cloverLeaves(), cloverStem()], n));
+export const clover3d = (n, k = 4) => extrudePaths([...cloverLeaves(k), cloverStem(k === 4 ? -Math.PI / 4 : -Math.PI / 2)], n, 0.18);
+/** A short melody: five staff lines and five notes (head and stem); returns { staff, notes: [pts per note] }. */
+export function melody(n) {
+  const [st, nt] = share(n, [2, 3]), per = share(nt, Array(5).fill(1)), ys = [-0.5, -0.2, 0.1, -0.1, 0.2];
+  const staff = flat(sampleOutline([0, 1, 2, 3, 4].map((k) => line([-1.3, -0.5 + k * 0.2], [1.3, -0.5 + k * 0.2])), st));
+  const notes = ys.map((y, k) => { const x = -1.0 + k * 0.5; return flat(sampleOutline([head(x, y), line([x + 0.14, y + 0.05], [x + 0.14, y + 0.62])], per[k])); });
+  return { staff, notes };
+}
+export const MELODY_X = [-1.0, -0.5, 0, 0.5, 1.0];
+/** Only the glass of the bulb (six profile lines). */
+export function bulbGlass(n) { const M = 6, per = share(n, Array(M).fill(1)), profile = line(...bulbProfile.map(([r, y]) => [r, y])); return per.flatMap((m, k) => { const a = (k / M) * TAU; return sampleOutline([profile], m).map(([r, y]) => [Math.cos(a) * r, y, Math.sin(a) * r]); }); }
+export const filament = (n) => flat(sampleOutline([filamentPath()], n));
