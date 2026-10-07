@@ -9,6 +9,9 @@ let hearts = null, figure = null;
 const loadHearts = () => (hearts ||= import("./pricing-formations.js").then((m) => m.default));
 const loadFigure = () => (figure ||= fetch("/media/projekte/bokkenrijders/formation.json").then((r) => { if (!r.ok) throw new Error(`Formation HTTP ${r.status}`); return r.json(); }));
 
+/** Loads the larger formation sources ahead of need, e.g. on the first interaction with the configurator. */
+export function preloadScenes() { loadHearts().catch(() => {}); loadFigure().catch(() => {}); }
+
 const seeded = (seed) => () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
 const WARM = [246, 241, 232], GOLD = [255, 196, 92], PINK = [255, 92, 138], VIOLET = [219, 100, 232], CYAN = [51, 237, 242];
 const mix = (a, b, u) => { const k = Math.max(0, Math.min(1, u)); return a.map((v, i) => Math.round(v + (b[i] - v) * k)); };

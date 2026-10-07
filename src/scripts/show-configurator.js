@@ -2,7 +2,7 @@
 import { ADVENTURES, AUDIENCE, COMPLEXITY, MUSIC, MOTIF_RANGE, configure } from "../content/show-configurator";
 import { SHOW_PACKAGES } from "../content/show-packages";
 import { createField } from "./show-field.js";
-import { buildScene } from "./show-scenes.js";
+import { buildScene, preloadScenes } from "./show-scenes.js";
 
 const form = document.querySelector("#cfg");
 if (form) {
@@ -119,6 +119,9 @@ if (form) {
   filmIn.addEventListener("change", () => update("keep"));
   let typing = 0;
   textIn.addEventListener("input", () => { clearTimeout(typing); typing = setTimeout(() => update("text"), 250); });
+
+  // heart data (≈ 137 KB gzip) and the 3D figure load on the first interaction, not for every visitor
+  for (const type of ["pointerdown", "focusin"]) form.addEventListener(type, preloadScenes, { once: true });
 
   applyPreset();
   update();
