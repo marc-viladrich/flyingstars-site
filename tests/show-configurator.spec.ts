@@ -38,7 +38,7 @@ test('Preis nur über den Aufwand; jedes Motiv hat je Paket eine eigene Fassung 
       }
     }
   }
-  expect(captions.size).toBe(OCCASIONS.length * 2 * 3); // 30 distinct versions
+  expect(captions.size).toBe(OCCASIONS.length * 2 * 3); // 30 distinct versions (last act of a story when paused)
   expect(errors).toEqual([]);
 });
 
@@ -58,21 +58,35 @@ test('Dasselbe Motiv wird mit dem Paket größer', async ({ page }) => {
   const widths: number[] = [];
   for (const k of ['0', '2']) {
     await page.locator('#cfg-step').fill(k);
-    await expect(page.locator('#cfg-scene')).toHaveText(k === '0' ? 'Herz als Umriss' : '3D-Herz mit kleinen Herzen');
+    await expect(page.locator('#cfg-scene')).toHaveText(k === '0' ? 'Herz als Umriss' : '3/3 · …und kleine Herzen kreisen im Takt');
     await page.waitForTimeout(300);
     widths.push(await pictureWidth(page));
   }
   expect(widths[1] / widths[0]).toBeGreaterThan(1.4);
 });
 
-test('Ein 3D-Motiv dreht sich einmal und die Animation kommt danach zur Ruhe', async ({ page }) => {
+test('SPARK steht nach dem Aufbau still, HORIZON bewegt sich weiter', async ({ page }) => {
   await page.goto('/show-konfigurator/');
   await occasion(page, 'launch');
+  await page.locator('#cfg-step').fill('0');
+  await expect(field(page)).toHaveAttribute('data-running', 'false', { timeout: 12_000 }); // a still picture: no more frames
   await page.locator('#cfg-step').fill('1');
-  await expect(page.locator('#cfg-scene')).toHaveText('3D-Rakete');
-  await expect(field(page)).toHaveAttribute('data-running', 'true');
-  // forming (~2 s) + one turn (5.5 s): afterwards no frames are drawn any more
-  await expect(field(page)).toHaveAttribute('data-running', 'false', { timeout: 15_000 });
+  await expect(page.locator('#cfg-scene')).toHaveText('3D-Rakete schwebt und rollt');
+  await page.waitForTimeout(6000);
+  await expect(field(page)).toHaveAttribute('data-running', 'true'); // the 3D rocket keeps moving
+  const frame = () => field(page).evaluate((c) => (c as HTMLCanvasElement).toDataURL());
+  const before = await frame(); await page.waitForTimeout(400);
+  expect(await frame()).not.toBe(before);
+});
+
+test('ODYSSEY erzählt in Akten und lässt sich wiederholen', async ({ page }) => {
+  await page.goto('/show-konfigurator/');
+  await occasion(page, 'silvester'); await page.locator('#cfg-motifs button', { hasText: 'Uhr' }).click();
+  await page.locator('#cfg-step').fill('2');
+  await expect(page.locator('#cfg-scene')).toHaveText('1/2 · Kurz vor zwölf');
+  await expect(page.locator('#cfg-scene')).toHaveText('2/2 · …Mitternacht: die Uhr sprüht Funken', { timeout: 15_000 });
+  await page.locator('#cfg-replay').click();
+  await expect(page.locator('#cfg-scene')).toHaveText('1/2 · Kurz vor zwölf');
 });
 
 test('Motive lassen sich per Tastatur wechseln', async ({ page }) => {
@@ -83,9 +97,9 @@ test('Motive lassen sich per Tastatur wechseln', async ({ page }) => {
   await page.locator('#cfg-motifs button', { hasText: 'Vorhang' }).focus();
   await page.keyboard.press('Enter');
   await expect(page.locator('#cfg-motifs button', { hasText: 'Vorhang' })).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.locator('#cfg-scene')).toHaveText('Vorhang auf für 3D-Sternenregen');
+  await expect(page.locator('#cfg-scene')).toHaveText('3/3 · …und ein Stern steigt daraus auf');
   await page.locator('#cfg-motifs button', { hasText: 'Maske' }).click();
-  await expect(page.locator('#cfg-scene')).toHaveText('3D-Maske aus unserer Musical-Show Bokkenrijders');
+  await expect(page.locator('#cfg-scene')).toHaveText('3/3 · …und zum Teufel aus unserer Show Bokkenrijders');
   await expect.poll(() => pictureWidth(page)).toBeGreaterThan(100);
 });
 
@@ -106,4 +120,17 @@ test('Die Anfrage übernimmt Anlass, Motiv und Paket', async ({ page }) => {
   await expect(form.locator('[name=paket]')).toHaveValue(/SPARK/);
   await expect(form.locator('[name=anlass][value=firma]')).toBeChecked();
   await expect(form.locator('[name=message]')).toHaveValue('Anlass: Launch\nBeispielmotiv: Rakete – Rakete als Umriss\nAufwand: Klassisch in 2D (SPARK, ab 7.900 € netto, Einstiegspreis laut Konfigurator)');
+});
+
+test('Nach schnellem Umschalten leuchten nie mehr Drohnen, als das Paket hat', async ({ page }) => {
+  await page.goto('/show-konfigurator/');
+  await occasion(page, 'kultur'); await page.locator('#cfg-motifs button').nth(1).click();
+  await page.locator('#cfg-step').fill('2'); await page.waitForTimeout(400);
+  for (const [id, k] of [['silvester', '0'], ['launch', '1'], ['hochzeit', '0'], ['jubilaeum', '1']]) {
+    await occasion(page, id); await page.locator('#cfg-step').fill(k); await page.waitForTimeout(250);
+  }
+  await page.waitForTimeout(6500); // every landing drone has landed
+  const [lit, points] = await field(page).evaluate((c) => [Number(c.dataset.lit), Number(c.dataset.points)]);
+  expect(points).toBe(200);
+  expect(lit).toBeLessThanOrEqual(points);
 });

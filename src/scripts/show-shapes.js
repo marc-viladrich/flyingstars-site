@@ -86,16 +86,42 @@ export function exhaust(n, top) {
 }
 
 // ---------- Kultur ----------
-/** Theatre mask: oval face with a slightly pointed chin, brows, curved eyes; comedy smiles, tragedy frowns. */
-const mask = (cx, sad) => {
-  const face = poly(...Array.from({ length: 48 }, (_, i) => { const a = (i / 48) * TAU, c = Math.cos(a), sn = Math.sin(a); const w = c > 0 ? 0.4 : 0.4 * (1 + c * 0.22); return [cx + sn * w, 0.05 + c * (c > 0 ? 0.46 : 0.56)]; }));
-  const eye = (dx) => (sad ? arc(cx + dx, 0.12, 0.08, 0.15, Math.PI - 0.15, 8) : arc(cx + dx, 0.06, 0.08, Math.PI + 0.15, TAU - 0.15, 8));
-  const brow = (dx) => line([cx + dx - 0.1, 0.27 + (sad ? -Math.sign(dx) * 0.04 : 0)], [cx + dx + 0.1, 0.27 + (sad ? Math.sign(dx) * 0.04 : 0)]);
-  const mouth = sad ? arc(cx, -0.42, 0.17, 0.35, Math.PI - 0.35, 14) : arc(cx, -0.14, 0.2, Math.PI + 0.25, TAU - 0.25, 14);
-  return [face, eye(-0.15), eye(0.15), brow(-0.15), brow(0.15), mouth];
-};
-export const masks = (n) => flat(sampleOutline([...mask(-0.45, false), ...mask(0.45, true)], n));
-export const mask3d = (n) => extrudePaths(mask(0, false), n, 0.3);
+/** Rotates 2D paths about (cx, cy). */
+const turn2d = (paths, cx, cy, a) => paths.map((path) => ({ ...path, pts: path.pts.map(([x, y]) => [cx + (x - cx) * Math.cos(a) - (y - cy) * Math.sin(a), cy + (x - cx) * Math.sin(a) + (y - cy) * Math.cos(a)]) }));
+/** Closed crescent between two arcs over the same chord: the eye and mouth shapes of the classic theatre masks. */
+function crescent(cx, cy, w, bulge, thickness, down) {
+  const k = 12, s = down ? -1 : 1, pts = [];
+  for (let i = 0; i <= k; i++) { const u = i / k, x = cx - w + 2 * w * u, b = Math.sin(Math.PI * u); pts.push([x, cy + s * b * bulge]); }
+  for (let i = k; i >= 0; i--) { const u = i / k, x = cx - w + 2 * w * u, b = Math.sin(Math.PI * u); pts.push([x, cy + s * b * (bulge - thickness)]); }
+  return poly(...pts);
+}
+/** One theatre mask: almond face, crescent eyes and mouth; comedy laughs (∩ eyes, ∪ mouth), tragedy weeps. */
+export function maskPaths(cx, cy, tilt, sad) {
+  const face = poly(...Array.from({ length: 48 }, (_, i) => { const a = (i / 48) * TAU, c = Math.cos(a), sn = Math.sin(a); const w = c > 0 ? 0.4 : 0.4 * (1 + c * 0.3); return [cx + sn * w, cy + c * (c > 0 ? 0.42 : 0.56)]; }));
+  const eyes = [-0.15, 0.15].map((dx) => (sad ? crescent(cx + dx, cy + 0.12, 0.1, -0.07, 0.04, false) : crescent(cx + dx, cy + 0.08, 0.1, 0.08, 0.045, false)));
+  const brows = [-0.15, 0.15].map((dx) => line([cx + dx - 0.11, cy + 0.27 + (sad ? -Math.sign(dx) * 0.05 : 0.02)], [cx + dx + 0.11, cy + 0.27 + (sad ? Math.sign(dx) * 0.05 : 0.02)]));
+  const mouth = sad ? crescent(cx, cy - 0.36, 0.2, 0.12, 0.07, false) : crescent(cx, cy - 0.2, 0.22, -0.16, 0.09, false);
+  return turn2d([face, ...eyes, ...brows, mouth], cx, cy, tilt);
+}
+/** Ribbon hanging from a mask: a gentle S-curve. */
+export const ribbon = (x, y, side) => line(...Array.from({ length: 14 }, (_, i) => { const u = i / 13; return [x + side * (0.08 + Math.sin(u * Math.PI * 1.6) * 0.12), y - u * 0.75]; }));
+/** The mask pair side by side in 2D (comedy left, tragedy right): the same layout as the 3D version, without
+ * brows and ribbons, so few drones still show eyes and mouth. */
+export function masks(n) {
+  const [com, trag] = share(n, [1, 1]), plain = (paths) => paths.filter((_, i) => i !== 3 && i !== 4);
+  return [...flat(sampleOutline(plain(maskPaths(-0.5, 0, 0.1, false)), com)), ...flat(sampleOutline(plain(maskPaths(0.5, 0.05, -0.1, true)), trag))];
+}
+/** A mask as a 3D body: all features on the front, only the face rim repeated behind it, so eyes and mouth stay
+ * readable while the rim shows the depth. */
+export function mask3d(n, sad = false, cx = 0, cy = 0, tilt = 0, depth = 0.24) {
+  const [front, back] = share(n, [3, 1]), paths = maskPaths(cx, cy, tilt, sad);
+  return [...flat(sampleOutline(paths, front), depth / 2), ...flat(sampleOutline([paths[0]], back), -depth / 2)];
+}
+/** The mask pair side by side in 3D (comedy left, tragedy right), each hanging from a ribbon. */
+export function masks3d(n) {
+  const [trag, com, rib] = share(n, [4, 4, 1.2]);
+  return [...mask3d(trag, true, 0.5, 0.05, -0.1), ...mask3d(com, false, -0.5, 0, 0.1), ...flat(sampleOutline([ribbon(-0.93, 0.1, -1), ribbon(0.95, 0.15, 1)], rib))];
+}
 
 /** Stage curtain: two drapes under a scalloped valance; open = 0 closed, 1 gathered and tied back at the sides. */
 export function curtain(n, open = 0) {
@@ -136,3 +162,22 @@ export function sparkleShell(n, R = 1.25) {
   return Array.from({ length: n }, (_, i) => { const y = 1 - ((i + 0.5) / n) * 2, r = Math.sqrt(1 - y * y), t = GA * i; return [Math.cos(t) * r * R, y * R * 0.8, Math.sin(t) * r * R]; });
 }
 export { evenSubset };
+
+// ---------- parts that move on their own ----------
+/** One ring as a torus (three strands around the tube). */
+export function torusRing(n, R = 1, tube = 0.12) {
+  const strands = 3, around = Math.ceil(n / strands);
+  return Array.from({ length: n }, (_, i) => { const u = (Math.floor(i / strands) / around) * TAU, v = ((i % strands) / strands) * TAU, r = R + tube * Math.cos(v); return [r * Math.cos(u), r * Math.sin(u), tube * Math.sin(v)]; });
+}
+/** Headframe without its sheave wheels (they turn separately). */
+export const frame3d = (n) => extrudePaths(headframe.filter((p) => p.closed === false), n, 0.35);
+export const WHEELS = [[-0.17, 0.72, 0.17], [0.17, 0.72, 0.17]];
+/** A sheave wheel: rim and three spokes, so its turning shows. */
+export const wheel = (n, cx, cy, r) => flat(sampleOutline([circle(cx, cy, r, 40), ...[0, 1, 2].map((k) => { const a = (k / 3) * Math.PI; return line([cx - Math.cos(a) * r, cy - Math.sin(a) * r], [cx + Math.cos(a) * r, cy + Math.sin(a) * r]); })], n));
+/** Clock rim and ticks without hands, as a 3D body. */
+export function clockRim(n, depth) {
+  const ticks = Array.from({ length: 12 }, (_, i) => { const t = (i / 12) * TAU; return line([Math.sin(t) * 0.78, Math.cos(t) * 0.78], [Math.sin(t) * 0.9, Math.cos(t) * 0.9]); });
+  return depth ? extrudePaths([circle(0, 0, 1, 120), ...ticks], n, depth) : flat(sampleOutline([circle(0, 0, 1, 120), ...ticks], n));
+}
+/** A clock hand pointing at twelve, n drones from the centre outwards; turned by the live motion. */
+export const hand = (n, length, z = 0) => Array.from({ length: n }, (_, i) => [0, (length * (i + 0.5)) / n, z]);

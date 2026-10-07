@@ -1,6 +1,7 @@
-// Show configurator prototype v4: Anlass offers two motifs, Aufwand picks the package. Moving the slider turns the
-// chosen motif into its version for that package (2D template → one 3D object → several 3D objects or a 3D
-// animation), so the same subject shows what the higher package adds. No autoplay: every change plays once.
+// Show configurator prototype v5: Anlass offers two motifs, Aufwand picks the package. Moving the slider turns the
+// chosen motif into its version for that package (still 2D picture → one 3D object that moves on its own → a short
+// story in acts), so the same subject shows what the higher package adds. Every change plays once; HORIZON and
+// ODYSSEY keep moving afterwards, the story can be replayed.
 import { OCCASIONS, STEPS } from "../content/show-configurator.js";
 import { SHOW_PACKAGES, priceFor } from "../content/show-packages";
 import { createField } from "./show-field.js";
@@ -10,7 +11,14 @@ const form = document.querySelector("#cfg");
 if (form) {
   const $ = (s) => document.querySelector(s);
   const stepIn = $("#cfg-step"), tabs = $("#cfg-motifs");
-  const field = createField($("#cfg-field"));
+  // the caption follows the acts of an ODYSSEY story: "1/3 Amors Pfeil"
+  const field = createField($("#cfg-field"), { onBeat: (k, beat) => {
+    const beats = current?.beats.length ?? 1;
+    $("#cfg-scene").textContent = beats > 1 ? `${k + 1}/${beats} · ${beat.caption}` : beat.caption;
+    $("#cfg-replay").hidden = !(beats > 1 && k === beats - 1);
+  } });
+  let current = null;
+  $("#cfg-replay").addEventListener("click", () => field.replay());
   const eur = (v) => `ab ${v.toLocaleString("de-DE")} €`;
   let occasion = OCCASIONS[0], motifIndex = 0, job = 0;
 
@@ -33,7 +41,7 @@ if (form) {
     tabs.querySelectorAll("button").forEach((b, k) => b.setAttribute("aria-pressed", String(k === motifIndex)));
     try {
       const built = await pictures(version);
-      if (id === job) field.show(built, pkg().base, size());
+      if (id === job) { current = built; field.show(built, pkg().base, size()); }
     } catch {
       if (id === job) $("#cfg-scene").textContent = `${version.caption} (Vorschau gerade nicht verfügbar)`;
     }

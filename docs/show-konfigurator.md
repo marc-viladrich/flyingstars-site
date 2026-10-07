@@ -1,6 +1,6 @@
 # Show-Konfigurator (Prototyp)
 
-Stand: 7. Oktober 2026, vierte Fassung. Die Route ist `/show-konfigurator/`, nicht verlinkt und mit `noindex`. Der Konfigurator ist ein Vorschlag an FlyingStars und ersetzt den Preisrechner der Referenz nicht.
+Stand: 7. Oktober 2026, fünfte Fassung. Die Route ist `/show-konfigurator/`, nicht verlinkt und mit `noindex`. Der Konfigurator ist ein Vorschlag an FlyingStars und ersetzt den Preisrechner der Referenz nicht.
 
 ## Das Modell: zwei Entscheidungen, die sich nicht gegenseitig verändern
 
@@ -29,35 +29,56 @@ Die Preise kommen unverändert aus `priceFor()` in `src/content/show-packages.ts
 
 ## Die Vorschau: ein Motiv, drei Ausbaustufen
 
-Jeder Anlass hat zwei Motive. Die Knöpfe unter dem Bild wechseln zwischen ihnen. Jedes Motiv hat je Paket eine eigene Fassung, und der Regler verwandelt dasselbe Motiv in seine nächste Fassung:
+Jeder Anlass hat zwei Motive (Knöpfe unter dem Bild). Der Regler verwandelt dasselbe Motiv in seine Fassung für das Paket:
 
-- **SPARK** = Vorlage in 2D
-- **HORIZON** = ein volles 3D-Objekt
-- **ODYSSEY** = mehrere 3D-Objekte oder eine 3D-Animation
+- **SPARK:** ein ruhiges 2D-Bild. Wenn es steht, bewegt sich nichts mehr.
+- **HORIZON:** ein 3D-Objekt, das sich weiter selbst bewegt.
+- **ODYSSEY:** eine kurze Geschichte in Akten mit komplexer 3D-Animation und fließenden Effekten. Das entspricht „Narratives Storytelling mit dramaturgischer Kurve“ aus der ODYSSEY-Beschreibung.
 
-| Anlass | Motiv | SPARK (100 Drohnen) | HORIZON (200) | ODYSSEY (300) |
+| Anlass | Motiv | SPARK (100 Drohnen) | HORIZON (200), Eigenbewegung | ODYSSEY (300), Akte |
 |---|---|---|---|---|
-| Hochzeit | Herz | Herz als Umriss | volles 3D-Herz | 3D-Herz mit kleinen Herzen (FlyingStars' eigene Herzformation) |
-| | Ringe | Antrag (nach FlyingStars' Antragsformation), daraus werden zwei Ringe | ineinander verschlungene 3D-Ringe | 3D-Ringe im Funkenregen |
-| Jubiläum | Wappen | Wappenschild | 3D-Wappen mit eurer Zahl | 3D-Wappen mit Krone und Sternenkranz |
-| | Wahrzeichen | Beispiel: Doppelbock-Fördergerüst von Zeche Zollverein | Fördergerüst in 3D | 3D-Fördergerüst mit aufsteigenden Funken |
-| Launch | Rakete | Rakete als Umriss | 3D-Rakete (Drahtgitter) | 3D-Rakete hebt mit Abgaswolke ab |
-| | Logo | Beispiel-Logo (FlyingStars-Zeichen) | Beispiel-Logo in 3D | Beispiel-Logo entsteht aus einer Funkenkugel |
-| Kultur | Maske | Theatermasken Komödie/Tragödie | 3D-Maske | 3D-Maske aus der echten Bokkenrijders-Show-Datei |
-| | Vorhang | Vorhang zu | Vorhang auf für einen 3D-Stern | Vorhang auf für 3D-Sternenregen |
-| Silvester | Feuerwerk | Feuerwerksstern | 3D-Feuerwerkskugel | drei 3D-Feuerwerke |
-| | Uhr | Uhr läuft ruhig auf zwölf | 3D-Uhr schlägt zwölf | 3D-Uhr zerfällt in Feuerwerk |
+| Hochzeit | Herz | Herz als Umriss | volles 3D-Herz, schlägt und wiegt sich | Amors Pfeil fliegt ins Herz → das Herz wird voll und schlägt → kleine Herzen kreisen im Takt |
+| | Ringe | Antrag, aus dem Ring werden zwei | verschlungene 3D-Ringe mit Lichtlauf | Antrag → der Ring steigt auf → zwei Ringe im Funkenregen |
+| Jubiläum | Wappen | Wappenschild | 3D-Wappen mit eurer Zahl, Lichtschimmer | Wappen → die Zahl tritt hervor → Krone und kreisender Sternenkranz |
+| | Wahrzeichen | Fördergerüst Zeche Zollverein | 3D-Gerüst, die Seilscheiben drehen | Gerüst → Funken steigen auf → ein Stern über der Zeche |
+| Launch | Rakete | Rakete als Umriss | 3D-Rakete schwebt und rollt | Zündung → Start mit Abgasstrahl → Flug zu den Sternen |
+| | Logo | Beispiel-Logo | 3D-Logo mit Lichtschimmer | ein Funkenwirbel verdichtet sich zum Logo, eine Lichtwelle läuft durch |
+| Kultur | Maske | Komödie und Tragödie | die Masken in 3D, an Bändern schwingend | Komödie → Tragödie → Teufel aus der echten Bokkenrijders-Show-Datei |
+| | Vorhang | Vorhang zu | Vorhang auf für einen 3D-Stern | Vorhang auf, wehender Stoff, Goldregen → ein Stern steigt auf |
+| Silvester | Feuerwerk | Feuerwerksstern | eine 3D-Kugel explodiert immer wieder aus der Mitte | drei Raketen steigen auf → Kugel, Ring, Kugel zünden nacheinander |
+| | Uhr | fünf vor zwölf | 3D-Uhr, die Zeiger laufen | die Zeiger laufen auf zwölf → die Uhr sprüht Funken (sie bleibt eine Uhr) |
 
-- **Bewegung:** Jede Änderung spielt einmal ab. Mehrteilige Fassungen, etwa der Antrag oder der Vorhang, verwandeln sich ruhig (2 bis 2,6 s Pause je Bild). 3D-Fassungen drehen sich danach einmal in 5,5 s um ihre eigene Achse und kommen zur Ruhe. Bühne und Vorhang bleiben dabei stehen, nur das Objekt dreht sich.
-- **Leistung:** Sobald nichts mehr in Bewegung ist, zeichnet die Fläche keine Frames mehr (`data-running="false"`). Es gibt keine Mausreaktion, Leuchthöfe sind vorgerendert, die Pixeldichte ist auf 1,5 begrenzt. Gemessen bei 300 Drohnen während der Drehung, mit 2× Pixeldichte:
-  - Chromium: 60 fps
-  - Chromium mit 6-fach gedrosselter CPU: 58 fps
-  - WebKit (Safari-Engine): 60 fps
-- **Drohnenzahl sichtbar:** Jede Fassung nutzt genau die Drohnen ihres Pakets. Die Bildbreite wächst mit der Wurzel der Drohnenzahl, sodass 100 Drohnen das Bild bei 58 % der Größe von 300 zeigen.
-- **Herkunft der Formen:**
-  - Herzen stammen aus FlyingStars' Herzformationen, die Maske aus der echten Bokkenrijders-Show-Datei, das Logo ist das FlyingStars-Zeichen.
-  - Antrag, Ringe, Wappen, Fördergerüst, Rakete, Masken, Vorhang, Uhr und Feuerwerk sind Linienzeichnungen und daraus gebaute 3D-Körper (extrudierte Umrisse, Drehkörper, Drahtgitter) in `src/scripts/show-shapes.js`, ohne Zufall.
-  - Pausiert oder bei reduzierter Bewegung erscheint direkt das fertige Bild.
+### Wie die Drohnen fliegen (`src/scripts/show-flight.js`)
+
+Echte Shows fliegen anders als eine Animation, bei der jeder Punkt irgendwohin springt:
+
+- **Zuordnung:** Jede Drohne bekommt ihren Platz über eine optimale Zuordnung (Ungarische Methode, kleinste Summe der quadrierten Wege). Ganze Schwärme kreuzen sich deshalb nicht. Für 300 Drohnen dauert das etwa 8 ms.
+- **Takt:** Alle starten und landen gleichzeitig. Die Flugdauer ergibt sich aus dem längsten Weg bei begrenzter Geschwindigkeit und liegt zwischen 2,4 und 5 s. Die Bewegung ist am Anfang und Ende sanft (Smootherstep).
+- **Strömung:** Unterwegs folgen die Bahnen einem divergenzfreien Strömungsfeld (ABC-Flow, eine stationäre Lösung der Euler-Gleichungen). Benachbarte Drohnen ziehen dadurch in gemeinsamen Strömen wie ein Schwarm.
+- **Licht:** Während des Flugs dimmen die Lichter auf die Hälfte, wie in FlyingStars' eigenen Videos.
+- **Mehr oder weniger Drohnen:** Kommen Drohnen hinzu, steigen sie vom Boden auf. Werden es weniger, landen alle überzähligen, auch die einer Szene, die mitten im Flug abgewählt wurde.
+
+Kalibriert ist das an FlyingStars-Videos (Heiratsantrag, Hochzeitsüberraschung, 75 Jahre Eisenhüttenstadt, Extraschicht Duisburg):
+
+- Linienzeichnungen mit wenigen Farben
+- 2D-Animation als bewegter Bildteil, etwa Amors Pfeil, der ins Herz fliegt
+- Volumen als Gitterkörper
+- ruhige Übergänge
+
+### Leistung
+
+Gemessen auf den drei aufwendigsten Geschichten mit 300 Drohnen in Bewegung, 2× Pixeldichte:
+
+| Browser | Bildrate |
+|---|---|
+| Chromium | 60 fps |
+| Chromium mit 6-fach gedrosselter CPU | 56–59 fps |
+| WebKit (Safari-Engine) | 60 fps |
+
+- Beim Wechsel der Szene gibt es einen einzelnen längeren Frame: etwa 40 ms normal, etwa 250 ms bei 6-facher Drosselung. Er fällt, bevor sich die Drohnen bewegen.
+- Es gibt keine Mausreaktion, Leuchthöfe sind vorgerendert, die Pixeldichte ist auf 1,5 begrenzt.
+- SPARK zeichnet nach dem Aufbau keine Frames mehr.
+- Pausiert oder bei reduzierter Bewegung erscheint direkt der letzte Akt in Ruhe. „Nochmal ansehen“ spielt eine Geschichte erneut ab.
 
 ## Die Anfrage
 
@@ -72,15 +93,18 @@ Der Anfrageknopf übergibt Paket, Drohnenzahl und Anlass sowie eine Zusammenfass
 
 ## Prüfen
 
+- `scripts/show-flight.test.mjs` prüft:
+  - Die Zuordnung ist optimal (Vergleich mit allen Permutationen) und für 300 Drohnen schnell.
+  - Die Ankunft ist exakt und gleichzeitig.
+  - Das Strömungsfeld ist divergenzfrei.
 - `scripts/show-geometry.test.mjs` prüft:
-  - exakte Punktzahlen aller Formen bei 100, 200 und 300 Drohnen
+  - exakte Punktzahlen aller Formen
   - zwei Motive je Anlass mit je drei eigenen Fassungen
-  - keine geteilten Fassungen zwischen den Anlässen
 - `tests/show-configurator.spec.ts` prüft:
   - alle 30 Fassungen: Paket, Preis und genaue Drohnenzahl
   - Der Anlass ändert weder Regler noch Preis.
   - Dasselbe Motiv wird mit dem Paket größer.
-  - Die Animation kommt nach der Drehung zur Ruhe.
-  - Motivwechsel per Tastatur
-  - Anfrageknopf im ersten Bildschirm
-  - Übergabe ins Formular
+  - SPARK steht still, HORIZON bewegt sich weiter.
+  - ODYSSEY erzählt in Akten und lässt sich wiederholen.
+  - Nach schnellem Umschalten leuchten nie mehr Drohnen, als das Paket hat. Ohne die Korrektur schlägt der Test mit 300 statt 200 fehl.
+  - Tastaturbedienung, Anfrageknopf im ersten Bildschirm, Übergabe ins Formular
