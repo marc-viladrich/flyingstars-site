@@ -1,18 +1,22 @@
 ---
 import Base from '../layouts/Base.astro';
-import { ADVENTURES, AUDIENCE, COMPLEXITY, MUSIC, MOTIF_RANGE, FILM_PRICE } from '../content/show-configurator';
+import { occasions, STEPS } from '../content/show-configurator.js';
+import { SHOW_PACKAGES } from '../content/show-packages';
 
 // Prototype for FlyingStars: not linked in the navigation and not indexed until FlyingStars approves the mapping.
-// Disclosure budget: occasion, one effort slider, price and inquiry are visible; everything else sits behind
-// "Anpassen" and "Warum dieses Paket?".
-const first = ADVENTURES[0];
+// Two choices only: Anlass (what is in the sky) and Aufwand (one step per package, so the price follows the slider).
+const list = occasions();
+const start = 1;
+const money = (v: number) => `ab ${v.toLocaleString('de-DE')} €`;
+const first = SHOW_PACKAGES[STEPS[start].pkg as keyof typeof SHOW_PACKAGES];
 ---
-<Base title="Show-Konfigurator (Prototyp)" description="Prototyp: Show nach Anlass und Aufwand zusammenstellen. Paket, Drohnenzahl und Preis ergeben sich aus den Angaben." noindex fullBleed>
+<Base title="Show-Konfigurator (Prototyp)" description="Prototyp: Show nach Anlass und Aufwand zusammenstellen. Paket, Drohnenzahl und Preis ergeben sich aus den beiden Angaben." noindex fullBleed>
   <section class="cfg" aria-labelledby="cfg-h">
     <div class="cfg-stage" aria-label="Vorschau der Show">
       <canvas id="cfg-field" aria-hidden="true"></canvas>
-      <span class="cfg-now mono" id="cfg-scene" aria-hidden="true">Eure Initialen</span>
-      <button class="btn small cfg-play" type="button" id="cfg-play">▶ Show abspielen</button>
+      <div class="cfg-caption"><span id="cfg-scene">Herz</span><em id="cfg-new" hidden></em></div>
+      <span class="cfg-count mono" id="cfg-count">{first.base} Drohnen</span>
+      <ol class="cfg-dots" id="cfg-dots" aria-label="Motive der Vorschau"></ol>
     </div>
 
     <form class="cfg-panel" id="cfg">
@@ -21,61 +25,26 @@ const first = ADVENTURES[0];
       <fieldset class="cfg-block">
         <legend>Anlass</legend>
         <div class="cfg-occasions">
-          {ADVENTURES.map((a, i) => <label><input type="radio" name="adventure" value={a.id} checked={i === 0} /><span>{a.short}</span></label>)}
+          {list.map((o, i) => <label><input type="radio" name="occasion" value={o.id} checked={i === 0} /><span>{o.label}</span></label>)}
         </div>
       </fieldset>
 
       <div class="cfg-block">
-        <label for="cfg-tier">Wie aufwendig? <b id="cfg-tier-label">{COMPLEXITY[first.preset.tier].label}</b></label>
-        <input class="range" id="cfg-tier" type="range" min="1" max="5" step="1" value={first.preset.tier} />
-        <div class="cfg-ends mono" aria-hidden="true"><span>schlicht</span><span>komplexes 3D</span></div>
+        <label for="cfg-step">Wie aufwendig? <b id="cfg-step-label">{STEPS[start].label}</b></label>
+        <input class="range" id="cfg-step" type="range" min="0" max={STEPS.length - 1} step="1" value={start} />
+        <div class="cfg-stops mono" aria-hidden="true">{STEPS.map((s, i) => <span data-stop={i} class:list={{ on: i === start }}>{s.pkg}</span>)}</div>
       </div>
 
       <div class="cfg-result" aria-live="polite">
-        <div class="cfg-price"><b id="cfg-result-pkg">SPARK</b><span id="cfg-result-price">ab 7.900 €</span></div>
-        <p class="cfg-meta mono" id="cfg-result-meta">100 Drohnen · ca. 10 Min · netto zzgl. Anfahrt</p>
-        <p class="cfg-why" id="cfg-why"></p>
+        <div class="cfg-price"><b id="cfg-pkg">{STEPS[start].pkg}</b><span id="cfg-price">{money(first.price)}</span></div>
+        <p class="cfg-meta mono" id="cfg-meta">{first.base} Drohnen · {first.dur} · netto zzgl. Anfahrt</p>
+        <p class="cfg-includes" id="cfg-includes">Enthalten: {STEPS[start].includes}.</p>
       </div>
       <a class="btn primary cfg-cta" id="cfg-cta" href="/#anfrage">Mit dieser Show anfragen</a>
-
-      <details class="cfg-more" id="cfg-more">
-        <summary>Anpassen <span>Text, Publikum, Musik, Extras</span></summary>
-        <div class="cfg-more-body">
-          <div class="cfg-block field">
-            <label for="cfg-text" id="cfg-text-label">{first.textLabel}</label>
-            <input id="cfg-text" type="text" maxlength="24" autocomplete="off" spellcheck="false" placeholder="z. B. A & T" />
-          </div>
-          <div class="cfg-block">
-            <label for="cfg-audience">Erwartete Zuschauer*innen <b id="cfg-audience-label">{AUDIENCE[first.preset.audience].label}</b></label>
-            <input class="range" id="cfg-audience" type="range" min="0" max={AUDIENCE.length - 1} step="1" value={first.preset.audience} />
-          </div>
-          <fieldset class="cfg-block">
-            <legend>Musik</legend>
-            <div class="tiers">
-              {Object.entries(MUSIC).map(([k, m]) => <label class="cfg-opt"><input type="radio" name="music" value={k} checked={k === first.preset.music} /><span>{m.label}</span></label>)}
-            </div>
-          </fieldset>
-          <div class="cfg-block">
-            <label for="cfg-motifs">Anzahl Motive <b id="cfg-motifs-label">{first.preset.motifs}</b></label>
-            <input class="range" id="cfg-motifs" type="range" min={MOTIF_RANGE.min} max={MOTIF_RANGE.max} step="1" value={first.preset.motifs} />
-          </div>
-          <div class="cfg-block cfg-toggles">
-            <label class="cfg-switch"><input type="checkbox" id="cfg-story" /><span>Erzählte Geschichte</span></label>
-            <label class="cfg-switch"><input type="checkbox" id="cfg-film" /><span>Filmaufnahmen <small>+{FILM_PRICE} €, bei ODYSSEY inklusive</small></span></label>
-          </div>
-        </div>
-      </details>
-
-      <details class="cfg-more">
-        <summary>Warum dieses Paket?</summary>
-        <div class="cfg-more-body">
-          <ul class="cfg-reasons" id="cfg-reasons"></ul>
-        </div>
-      </details>
-      <p class="cfg-note">Prototyp: Die Zuordnung zu den Paketen ist aus den Paketbeschreibungen und den veröffentlichten Projekten abgeleitet und noch nicht von FlyingStars bestätigt. Die Drohnenzahl je Publikum ist ein Richtwert. Die Vorschau ersetzt keine Flugplanung.</p>
+      <p class="cfg-note">Prototyp: Die Vorschau zeigt Beispiele, den Ablauf eurer Show entwickeln wir gemeinsam. Die Zuordnung zu den Paketen ist aus den Paketbeschreibungen abgeleitet und noch nicht von FlyingStars bestätigt. Alle Preise sind Einstiegspreise.</p>
     </form>
 
-    <div class="cfg-bar" aria-hidden="true"><span><b id="cfg-bar-pkg">SPARK</b> <span id="cfg-bar-price">ab 7.900 €</span></span><a class="btn small primary" href="/#anfrage" id="cfg-bar-cta" tabindex="-1">Anfragen</a></div>
+    <div class="cfg-bar" aria-hidden="true"><span><b id="cfg-bar-pkg">{STEPS[start].pkg}</b> <span id="cfg-bar-price">{money(first.price)}</span></span><a class="btn small primary" href="/#anfrage" id="cfg-bar-cta" tabindex="-1">Anfragen</a></div>
   </section>
   <noscript><p class="section">Der Show-Konfigurator benötigt JavaScript. Die Pakete findest du unter <a href="/drohnenshow-preise/">Preise</a>.</p></noscript>
 </Base>
@@ -88,57 +57,43 @@ const first = ADVENTURES[0];
   .cfg { display: grid; grid-template-columns: minmax(320px, 0.62fr) minmax(0, 1.38fr); gap: clamp(24px, 4vw, 56px); padding: 92px var(--pad) var(--section); align-items: start; }
   .cfg-stage { order: 2; position: sticky; top: 92px; height: calc(100svh - 116px); min-height: 460px; border-radius: var(--radius); background: radial-gradient(ellipse at 50% 120%, rgba(51, 237, 242, 0.06), transparent 60%), #0a0908; border: 1px solid var(--line); overflow: hidden; }
   .cfg-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .cfg-now { position: absolute; left: 20px; top: 20px; right: 190px; color: var(--muted); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
-  .cfg-play { position: absolute; right: 14px; top: 10px; background: rgba(15, 13, 12, 0.7); }
-  .cfg-panel { order: 1; display: grid; gap: 28px; }
-  .cfg-h { font-size: clamp(34px, 3.6vw, 56px); line-height: 1.02; letter-spacing: -0.03em; }
+  .cfg-caption { position: absolute; left: 20px; top: 18px; right: 140px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
+  .cfg-caption em { font: 500 11px/1 var(--mono); font-style: normal; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ground); background: var(--pkg, var(--amber)); padding: 5px 8px; border-radius: 4px; }
+  .cfg-count { position: absolute; right: 20px; top: 20px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text); }
+  .cfg-dots { position: absolute; left: 0; right: 0; bottom: 14px; display: flex; justify-content: center; gap: 4px; margin: 0; padding: 0; list-style: none; }
+  .cfg-dots :global(button) { width: 28px; height: 28px; border: 0; background: transparent; cursor: pointer; display: grid; place-items: center; padding: 0; }
+  .cfg-dots :global(button)::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: rgba(246, 241, 232, 0.25); transition: background 0.2s, transform 0.2s; }
+  .cfg-dots :global(button.new)::before { box-shadow: 0 0 0 2px var(--pkg, var(--amber)); }
+  .cfg-dots :global(button[aria-current="true"])::before { background: var(--text); transform: scale(1.3); }
+  .cfg-dots :global(button:focus-visible) { outline: 3px solid var(--cyan); outline-offset: -2px; border-radius: 50%; }
+  .cfg-panel { order: 1; display: grid; gap: 22px; }
+  .cfg-h { font-size: clamp(30px, 3vw, 46px); line-height: 1.04; letter-spacing: -0.03em; }
   .cfg-block { display: grid; gap: 12px; border: 0; margin: 0; padding: 0; min-width: 0; }
-  .cfg-block > label, .cfg-block legend { font-size: 15px; color: var(--text); padding: 0; margin-bottom: 12px; }
+  .cfg-block > label, .cfg-block legend { font-size: 15px; color: var(--text); padding: 0; margin-bottom: 10px; }
   .cfg-block > label b { margin-left: 8px; color: var(--amber); font-weight: 500; }
-  .cfg-block.field > label { margin-bottom: 0; }
   .cfg-occasions { display: flex; flex-wrap: wrap; gap: 8px; }
   .cfg-occasions label { position: relative; cursor: pointer; }
-  .cfg-occasions input, .cfg-opt input, .cfg-switch input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
+  .cfg-occasions input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
   .cfg-occasions span { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--line-strong); font-size: 15px; color: var(--muted); }
   .cfg-occasions input:checked + span { color: var(--ground); background: var(--text); border-color: var(--text); }
-  .cfg-occasions input:focus-visible + span, .cfg-opt input:focus-visible + span, .cfg-switch input:focus-visible + span::before { outline: 3px solid var(--cyan); outline-offset: 2px; }
-  .cfg-ends { display: flex; justify-content: space-between; font-size: 11px; letter-spacing: 0.06em; color: var(--faint); text-transform: uppercase; margin-top: -4px; }
-  .cfg-result { display: grid; gap: 6px; padding-top: 22px; border-top: 1px solid var(--line); }
+  .cfg-occasions input:focus-visible + span { outline: 3px solid var(--cyan); outline-offset: 2px; }
+  .cfg-stops { display: flex; justify-content: space-between; font-size: 11px; letter-spacing: 0.08em; color: var(--faint); margin-top: -4px; }
+  .cfg-stops span.on { color: var(--text); }
+  .cfg-result { display: grid; gap: 6px; padding-top: 18px; border-top: 1px solid var(--line); }
   .cfg-price { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
   .cfg-price b { font: 600 clamp(24px, 2.2vw, 30px)/1 var(--display); letter-spacing: 0.02em; }
   .cfg-price span { font: 500 clamp(24px, 2.2vw, 30px)/1 var(--display); color: var(--text); }
   .cfg-meta { margin: 0; font-size: 12px; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; }
-  .cfg-why { margin: 6px 0 0; color: var(--muted); font-size: 15px; min-height: 1.5em; }
+  .cfg-includes { margin: 6px 0 0; color: var(--muted); font-size: 15px; }
   .cfg-cta { justify-self: start; }
-  .cfg-more { border-top: 1px solid var(--line); padding-top: 4px; }
-  .cfg-more summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 15px; }
-  .cfg-more summary::-webkit-details-marker { display: none; }
-  .cfg-more summary::after { content: "+"; margin-left: auto; font: 400 20px/1 var(--body); color: var(--muted); }
-  .cfg-more[open] summary::after { content: "–"; }
-  .cfg-more summary span { color: var(--faint); font-size: 13px; }
-  .cfg-more summary:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
-  .cfg-more-body { display: grid; gap: 26px; padding: 14px 0 8px; }
-  .cfg-opt { position: relative; cursor: pointer; }
-  .cfg-opt span { display: grid; place-content: center; text-align: center; min-height: 44px; padding: 6px; border-radius: 9px; border: 1px solid transparent; color: var(--muted); font: 500 13px/1.2 var(--body); }
-  .cfg-opt input:checked + span { color: var(--text); background: rgba(246, 241, 232, 0.07); border-color: var(--line-strong); }
-  .cfg-toggles { gap: 14px; }
-  .cfg-switch { position: relative; display: block; cursor: pointer; }
-  .cfg-switch span { display: flex; align-items: center; gap: 14px; font-size: 15px; flex-wrap: wrap; }
-  .cfg-switch span::before { content: ""; flex: none; width: 44px; height: 24px; border-radius: 12px; border: 1px solid var(--line-strong); background: radial-gradient(circle at 12px 50%, var(--muted) 7px, transparent 8px); }
-  .cfg-switch input:checked + span::before { background: radial-gradient(circle at 31px 50%, var(--ground) 7px, transparent 8px), var(--text); border-color: var(--text); }
-  .cfg-switch small { color: var(--faint); font-size: 12.5px; }
-  .cfg-reasons { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 14.5px; color: var(--muted); }
-  .cfg-reasons :global(li) { display: flex; gap: 10px; justify-content: space-between; }
-  .cfg-reasons :global(li.decisive) { color: var(--text); }
-  .cfg-reasons :global(li .mono) { font-size: 11px; letter-spacing: 0.08em; color: var(--faint); white-space: nowrap; }
-  .cfg-reasons :global(li.decisive .mono) { color: var(--amber); }
   .cfg-note { margin: 0; font-size: 12.5px; color: var(--faint); line-height: 1.5; }
   .cfg-bar { display: none; }
   @media (max-width: 1000px) {
     .cfg { grid-template-columns: 1fr; padding-top: 64px; gap: 22px; padding-bottom: 120px; }
-    .cfg-stage { order: 0; top: 64px; z-index: 5; height: 38svh; min-height: 240px; margin: 0 calc(var(--pad) * -1); border-radius: 0; border-left: 0; border-right: 0; }
+    .cfg-stage { order: 0; top: 64px; z-index: 5; height: 40svh; min-height: 250px; margin: 0 calc(var(--pad) * -1); border-radius: 0; border-left: 0; border-right: 0; }
     .cfg-h { font-size: clamp(26px, 7vw, 36px); }
     .cfg-panel { gap: 22px; }
+    .cfg-caption { font-size: 13px; right: 110px; }
     /* price and inquiry stay in reach while the visitor slides */
     .cfg-bar { position: fixed; z-index: 15; inset: auto 0 0 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px var(--pad) calc(12px + env(safe-area-inset-bottom, 0px)); background: rgba(15, 13, 12, 0.94); border-top: 1px solid var(--line); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); font-size: 15px; }
     .cfg-bar b { letter-spacing: 0.06em; margin-right: 6px; }

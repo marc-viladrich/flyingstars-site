@@ -1,7 +1,8 @@
-// Drone field of the show configurator: one dot per drone. A scene is a list of points [x, y, z, r, g, b] in any unit;
-// the field fits it into view, flies every drone to its place and parks the drones the scene does not need in a dim
-// row below, the way FlyingStars keeps spare drones under a figure. Motion: twinkle, burst, beat, spin, sway and the
-// transformation between two pictures. Paused or reduced motion shows the finished picture.
+// Drone field of the show configurator: one dot per drone. A scene is { pictures: [pts, …], anim, hold } with points
+// [x, y, z, r, g, b] in any unit. The field fits the scene into view, scales it with the drone count (the same spacing
+// between drones means more drones make a bigger picture) and flies every drone to its place. Several pictures play
+// once, one after another (a transformation). Motion: twinkle, burst, burst3d, beat, spin, sway. Paused or reduced
+// motion shows the finished, last picture.
 
 const MAX = 1000;
 
@@ -29,14 +30,11 @@ export function createField(canvas) {
   }
 
   function target(pts) {
-    const used = Math.min(pts.length, drones), spare = Math.max(0, drones - used), cols = Math.max(1, Math.min(spare, 60));
+    const used = Math.min(pts.length, drones);
     for (let i = 0; i < MAX; i++) {
       const d = P[i];
       if (i < used) { const p = pts[i]; d.tx = p[0]; d.ty = p[1]; d.tz = p[2]; d.ta = 1; d.tr = p[3]; d.tg = p[4]; d.tb = p[5]; }
-      else if (i < drones) { // spare drones wait in rows under the picture
-        const k = i - used, row = Math.floor(k / cols), col = k % cols, inRow = Math.min(cols, spare - row * cols);
-        d.tx = (col - (inRow - 1) / 2) * 0.045; d.ty = -1.02 - row * 0.045; d.tz = 0; d.ta = 0.22; d.tr = 246; d.tg = 241; d.tb = 232;
-      } else { d.ta = 0; }
+      else { d.ta = 0; }
       if (d.a < 0.05 && d.ta > 0) { d.x = d.tx * 0.2 + Math.sin(i) * 0.6; d.y = -1.25; d.z = 0; }
       d.delay = held() ? 0 : (i / Math.max(1, drones)) * 0.35;
     }
@@ -44,12 +42,13 @@ export function createField(canvas) {
 
   function settle() { for (const d of P) { d.x = d.tx; d.y = d.ty; d.z = d.tz; d.a = d.ta; d.r = d.tr; d.g = d.tg; d.b = d.tb; d.vx = d.vy = d.vz = 0; d.delay = 0; } }
 
-  /** Shows a scene: { pictures: [pts, …], anim, spin }. More than one picture = transformation. */
-  function show(next, droneCount) {
+  /** Shows a scene at a size factor (1 = fills the stage). Held: the finished, last picture right away. */
+  function show(next, droneCount, size = 1) {
     drones = Math.min(MAX, droneCount);
-    scene = { ...next, pictures: fit(next.pictures) };
-    phase = 0; phaseAt = performance.now() / 1000;
-    target(scene.pictures[0]);
+    if (next.fullSize) size = 1;
+    scene = { ...next, pictures: fit(next.pictures).map((pts) => pts.map((p) => [p[0] * size, p[1] * size, p[2] * size, p[3], p[4], p[5]])) };
+    phase = held() ? scene.pictures.length - 1 : 0; phaseAt = performance.now() / 1000;
+    target(scene.pictures[phase]);
     if (held()) settle();
     draw(0, phaseAt);
     sync();
@@ -58,9 +57,10 @@ export function createField(canvas) {
   function draw(dt, t) {
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (!scene) return;
-    if (dt && scene.pictures.length > 1 && t - phaseAt > 2.6) { phase = (phase + 1) % scene.pictures.length; phaseAt = t; target(scene.pictures[phase]); }
+    const hold = (scene.hold && scene.hold[phase]) || 1.7;
+    if (dt && phase < scene.pictures.length - 1 && t - phaseAt > hold) { phase++; phaseAt = t; target(scene.pictures[phase]); }
     const anim = scene.anim, k = 9, c = 2 * Math.sqrt(k) * 0.85;
-    const yaw = anim === "spin" ? t * 0.55 : anim === "sway" ? Math.sin(t * 0.45) * 0.55 + (mouse ? mouse[0] * 0.4 : 0) : (mouse ? mouse[0] * 0.25 : 0);
+    const yaw = anim === "spin" || anim === "burst3d" ? t * 0.55 : anim === "sway" ? Math.sin(t * 0.45) * 0.55 + (mouse ? mouse[0] * 0.4 : 0) : (mouse ? mouse[0] * 0.25 : 0);
     const cy = Math.cos(yaw), sy = Math.sin(yaw), tilt = 0.12, ct = Math.cos(tilt), st = Math.sin(tilt);
     const beat = anim === "beat" ? 1 + 0.07 * Math.pow(Math.max(0, Math.sin(t * 5.2)), 6) + 0.035 * Math.pow(Math.max(0, Math.sin(t * 5.2 - 0.9)), 6) : 1;
     const S = Math.min(W * 0.36, H * 0.62) * DPR, ox = W * 0.5 * DPR, oy = H * 0.53 * DPR, list = [];
@@ -81,6 +81,7 @@ export function createField(canvas) {
       const inPicture = d.ta === 1;
       if (inPicture) {
         if (anim === "beat") { x *= beat; y *= beat; }
+        if (anim === "burst3d") { const u = ((t * 0.35 + (d.ph / 6.283) * 0.1) % 1); const f = 0.35 + u * 0.75; x *= f; y *= f; z *= f; a *= 1 - u * 0.7; }
         if (anim === "burst") { const u = ((t * 0.42 + (d.ph / 6.283) * 0.15) % 1); const f = 0.55 + u * 0.6; x *= f; y *= f; a *= 1 - u * 0.75; }
         if (anim === "twinkle") a *= 0.55 + 0.45 * Math.sin(t * 2.1 + d.ph * 3);
         x += Math.sin(t * 1.3 + d.ph) * 0.004; y += Math.cos(t * 1.1 + d.ph) * 0.004;
@@ -104,7 +105,7 @@ export function createField(canvas) {
   }
   function sync() {
     if (visible && !held()) { if (!frame) { last = 0; frame = requestAnimationFrame(loop); } }
-    else { if (frame) cancelAnimationFrame(frame); frame = 0; settle(); draw(0, performance.now() / 1000); }
+    else { if (frame) cancelAnimationFrame(frame); frame = 0; if (scene) { phase = scene.pictures.length - 1; target(scene.pictures[phase]); } settle(); draw(0, performance.now() / 1000); }
   }
 
   canvas.parentElement.addEventListener("pointermove", (e) => { if (e.pointerType === "touch") return; const r = canvas.getBoundingClientRect(); mouse = [((e.clientX - r.left) / r.width - 0.5) * 2, 0]; });
