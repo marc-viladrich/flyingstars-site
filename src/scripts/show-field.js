@@ -97,7 +97,8 @@ export function createField(canvas) {
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (!scene) return;
     const yaw = yawAt(t), cy = Math.cos(yaw), sy = Math.sin(yaw), tilt = 0.14, ct = Math.cos(tilt), st = Math.sin(tilt);
-    const S = Math.min(W * 0.36, H * 0.6) * DPR, ox = W * 0.5 * DPR, oy = H * 0.5 * DPR, list = [];
+    // narrow stages carry a two-line caption on top: keep the picture clear of it
+    const narrow = W < 600, S = Math.min(W * 0.36, H * (narrow ? 0.38 : 0.6)) * DPR, ox = W * 0.5 * DPR, oy = H * (narrow ? 0.52 : 0.5) * DPR, list = [];
     for (let i = 0; i < MAX; i++) {
       const d = P[i];
       if (d.a < 0.01) continue;
