@@ -40,7 +40,7 @@ async function heart3d(n) {
 async function words(value, n) {
   await loadTextEngine();
   const r = textFormation(value, n);
-  if (!r) return [];
+  if (!r) return paint(sampleOutline([circle(0, 0, 1, 180)], n), GOLD); // a text the planner rejects still shows the package's drones
   const pts = r.pts.slice(0, n), rest = n - pts.length;
   if (rest <= 0) return paint(pts, WARM);
   const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
