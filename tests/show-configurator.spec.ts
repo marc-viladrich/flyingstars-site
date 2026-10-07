@@ -29,33 +29,45 @@ for (const [id, pkg, price, drones] of [
   });
 }
 
+test('Auf den ersten Blick nur Anlass, Aufwand, Preis und Anfrage', async ({ page }, info) => {
+  await page.goto('/show-konfigurator/');
+  await expect(page.locator('#cfg-more')).not.toHaveAttribute('open', '');
+  for (const id of ['#cfg-text', '#cfg-audience', '#cfg-motifs', '#cfg-story', '#cfg-film']) await expect(page.locator(id)).toBeHidden();
+  await expect(page.locator('#cfg-tier')).toBeVisible();
+  // desktop: the inquiry button sits in the first screen; mobile: the fixed bar carries price and inquiry
+  if (info.project.name === 'mobile') { await expect(page.locator('#cfg-bar-cta')).toBeInViewport(); await expect(page.locator('#cfg-bar-price')).toHaveText('ab 7.900 €'); }
+  else await expect(page.locator('#cfg-cta')).toBeInViewport();
+});
+
 test('Jede Einstellung ändert Paket und Begründung sichtbar', async ({ page }) => {
   await page.goto('/show-konfigurator/');
-  const r = result(page), decisive = page.locator('#cfg-reasons li.decisive');
+  const r = result(page), why = page.locator('#cfg-why');
   await expect(r.pkg).toHaveText('SPARK');
+  await expect(why).toHaveText('Alles steckt im Einstiegspaket.');
   await page.locator('#cfg-tier').fill('3');
   await expect(r.pkg).toHaveText('HORIZON');
-  await expect(decisive.first()).toContainText('Es bewegt sich');
+  await expect(why).toHaveText('HORIZON, weil sich ein Motiv bewegt.');
   await expect(page.locator('#cfg-scene')).toHaveText('Schlagendes Herz');
   await page.locator('#cfg-tier').fill('5');
   await expect(r.pkg).toHaveText('ODYSSEY');
   await page.locator('#cfg-tier').fill('2');
+  await page.locator('#cfg-more summary').click();
   await page.locator('label:has([name=music][value=live])').click();
   await expect(r.pkg).toHaveText('ODYSSEY');
-  await expect(decisive.first()).toContainText('Timecode');
+  await expect(why).toHaveText('ODYSSEY, weil die Show live per Timecode läuft.');
   await page.locator('label:has([name=music][value=katalog])').click();
   await page.locator('label:has(#cfg-film)').click();
   await expect(r.price).toHaveText('ab 8.800 €');
   await page.locator('#cfg-audience').fill('2');
   await expect(r.pkg).toHaveText('HORIZON');
-  await expect(decisive.first()).toContainText('SPARK fliegt bis 150');
+  await expect(why).toHaveText('HORIZON, weil 300 Drohnen für bis 20.000 Zuschauer*innen empfohlen sind.');
 });
 
 test('Eigener Text, Ablauf und Anfrage hängen zusammen', async ({ page }) => {
   await page.goto('/show-konfigurator/');
+  await page.locator('#cfg-more summary').click();
   await page.getByLabel('Eure Initialen').fill('M & J');
   await expect(page.locator('#cfg-scene')).toHaveText('Eure Initialen: M & J');
-  await expect(page.locator('#cfg-scenes')).toContainText('M & J');
   await page.locator('#cfg-play').click();
   await expect(page.locator('#cfg-scene')).toHaveText('Sternenhimmel');
   await expect(page.locator('#cfg-scene')).toHaveText('Eure Initialen: M & J', { timeout: 5000 });

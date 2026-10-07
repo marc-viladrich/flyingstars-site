@@ -8,9 +8,16 @@ Für Laien sagt die Drohnenzahl wenig aus. Im Rechner der Referenz bewegt der Re
 
 ## Bedienung
 
-Fünf Ausgangspunkte setzen alle Regler. Danach lässt sich alles anpassen, und das Drohnenfeld zeigt jede Änderung sofort.
+Marcs Rückmeldung zur ersten Fassung (acht Bedienblöcke auf einmal): viel zu komplex, radikal reduzieren, progressive disclosure. Für Laien gilt deshalb dieses Budget:
 
-| Regler | Bedeutung | Wirkung auf das Paket |
+- **Auf den ersten Blick:** Drohnenfeld, Anlass (Hochzeit, Jubiläum, Launch, Kultur, Silvester), ein Regler „Wie aufwendig?“, Paket mit Preis, ein Satz zum Grund („HORIZON, weil sich ein Motiv bewegt.“) und „Mit dieser Show anfragen“.
+- **Ein Klick entfernt („Anpassen“):** eigener Text, Publikum, Musik, Anzahl Motive, erzählte Geschichte, Filmaufnahmen.
+- **Ein Klick entfernt („Warum dieses Paket?“):** alle Gründe mit dem Paket, das sie verlangen.
+- **Mobil:** Das Drohnenfeld bleibt oben stehen, Paket, Preis und „Anfragen“ stehen in einer festen Leiste unten.
+
+Die Aufklapper sind native `<details>`-Elemente, damit Tastatur und Screenreader ohne Zusatzlogik funktionieren. Der Anlass setzt alle übrigen Werte, das Drohnenfeld zeigt jede Änderung sofort. Verworfen: ein Schritt-für-Schritt-Assistent, weil er den Zusammenhang von Wahl und Preis verdeckt, um den es geht.
+
+| Einstellung | Bedeutung | Wirkung auf das Paket |
 |---|---|---|
 | Wie aufwendig sind die Motive? (5 Stufen mit Bild) | Klassiker · Eure Zeichen · Es bewegt sich · Einfaches 3D · Komplexes 3D | 1–2 SPARK, 3–4 HORIZON, 5 ODYSSEY |
 | Wie viele Motive? | Auswahl aus den Szenen des Ausgangspunkts bis zur gewählten Stufe | mehr als vier eigene Motive → HORIZON |
@@ -63,7 +70,8 @@ Ford, NFL und PUMA sind als Formationen vorhanden, werden aber bewusst nicht als
 `tests/show-configurator.spec.ts` prüft auf Desktop und Mobil:
 
 - alle fünf Ausgangspunkte gegen die Preisregeln
-- die Wirkung jedes Reglers samt entscheidender Begründung
+- dass auf den ersten Blick nur Anlass, Aufwand, Preis und Anfrage zu sehen sind (Desktop: Anfrageknopf im ersten Bildschirm, mobil: feste Leiste)
+- die Wirkung jeder Einstellung samt Begründungssatz
 - eigenen Text, Ablauf und Übergabe ins Formular
 - das fertige Bild bei pausierter Bewegung
 

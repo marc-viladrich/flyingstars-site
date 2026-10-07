@@ -37,7 +37,6 @@ if (form) {
     current = scene;
     const own = choice().text;
     $("#cfg-scene").textContent = scene.editable && own ? `${scene.label}: ${own.toUpperCase()}` : scene.label;
-    form.querySelectorAll("#cfg-scenes button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.scene === scene.id)));
     const pictures = await buildScene(scene, result.drones, choice().text);
     if (id === job) field.show(pictures, result.drones);
   }
@@ -55,29 +54,19 @@ if (form) {
     [tierIn, motifIn, audienceIn].forEach(fill);
     const tier = COMPLEXITY[c.tier];
     $("#cfg-tier-label").textContent = tier.label;
-    $("#cfg-tier-hint").textContent = tier.example;
     tierIn.setAttribute("aria-valuetext", `${tier.label}: ${tier.example}`);
-    form.querySelectorAll("[data-stop]").forEach((s) => s.classList.toggle("on", +s.dataset.stop === c.tier));
     $("#cfg-motifs-label").textContent = String(result.scenes.length);
     motifIn.setAttribute("aria-valuetext", `${result.scenes.length} Motive`);
     const aud = AUDIENCE[c.audience];
     $("#cfg-audience-label").textContent = aud.label;
     audienceIn.setAttribute("aria-valuetext", `${aud.label} Zuschauer*innen, ${aud.hint}`);
 
-    // motifs of the show, in order; a click shows that motif
-    $("#cfg-scenes").innerHTML = "";
-    for (const scene of result.scenes) {
-      const li = document.createElement("li"), b = document.createElement("button");
-      b.type = "button"; b.dataset.scene = scene.id; b.setAttribute("aria-pressed", "false");
-      b.append(scene.editable && c.text ? `${scene.label}: ${c.text.toUpperCase()}` : scene.label);
-      if (scene.tier >= 3) { const tag = document.createElement("i"); tag.textContent = scene.tier === 3 ? "bewegt" : "3D"; b.append(tag); }
-      b.addEventListener("click", () => render(scene));
-      li.append(b); $("#cfg-scenes").append(li);
-    }
-
     const pkg = SHOW_PACKAGES[result.package];
     document.documentElement.style.setProperty("--pkg", `rgb(${pkg.color.join(",")})`);
-    for (const [sel, txt] of [["#cfg-pkg", result.package], ["#cfg-result-pkg", result.package], ["#cfg-price", eur(result.total)], ["#cfg-result-price", eur(result.total)], ["#cfg-drones", `${result.drones.toLocaleString("de-DE")} Drohnen`]]) $(sel).textContent = txt;
+    for (const [sel, txt] of [["#cfg-result-pkg", result.package], ["#cfg-bar-pkg", result.package], ["#cfg-result-price", eur(result.total)], ["#cfg-bar-price", eur(result.total)]]) $(sel).textContent = txt;
+    // one sentence for the deciding reason; the full list stays behind "Warum dieses Paket?"
+    const because = result.reasons.filter((r) => r.decisive && r.because).map((r) => r.because).slice(0, 2);
+    $("#cfg-why").textContent = because.length ? `${result.package}, weil ${because.join(" und ")}.` : "Alles steckt im Einstiegspaket.";
     $("#cfg-result-meta").textContent = `${result.drones.toLocaleString("de-DE")} Drohnen · ${pkg.dur} · netto zzgl. Anfahrt${result.film ? " · inkl. Filmaufnahmen" : ""}`;
     $("#cfg-reasons").innerHTML = "";
     for (const r of result.reasons) {
@@ -89,7 +78,8 @@ if (form) {
 
     // the inquiry carries the show so the team sees what the visitor put together
     const summary = [`Show: ${adventure.label}`, `Motive: ${result.scenes.map((s) => (s.editable && c.text ? c.text.toUpperCase() : s.label)).join(" → ")}`, `Musik: ${MUSIC[c.music].label}`, `Publikum: ${aud.label}`, c.story ? "Erzählte Geschichte" : "", c.film ? "Filmaufnahmen" : ""].filter(Boolean).join("\n");
-    $("#cfg-cta").href = `/?${new URLSearchParams({ paket: result.package, drohnen: String(result.drones), anlass: adventure.anlass, show: summary })}#anfrage`;
+    const inquiry = `/?${new URLSearchParams({ paket: result.package, drohnen: String(result.drones), anlass: adventure.anlass, show: summary })}#anfrage`;
+    $("#cfg-cta").href = inquiry; $("#cfg-bar-cta").href = inquiry;
 
     const editable = result.scenes.find((s) => s.editable);
     const next = focus === "text" && editable ? editable : focus === "keep" && current && result.scenes.some((s) => s.id === current.id) ? current : keyScene(result.scenes);

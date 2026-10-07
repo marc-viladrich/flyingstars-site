@@ -66,6 +66,8 @@ const figur = s('figur', 'figur3d', '3D-Figur (Beispiel: Bokkenrijders)', 5, 9);
 export interface Adventure {
   id: string;
   label: string;
+  /** Occasion in one word, shown on the chooser. */
+  short: string;
   occasion: string;
   /** Inquiry form value for the occasion. */
   anlass: 'firma' | 'stadt' | 'agentur' | 'privat' | 'indoor' | 'sonstiges';
@@ -76,7 +78,7 @@ export interface Adventure {
 
 export const ADVENTURES: Adventure[] = [
   {
-    id: 'ja', label: 'Das Ja', occasion: 'Hochzeit & Privat', anlass: 'privat', textLabel: 'Eure Initialen',
+    id: 'ja', label: 'Das Ja', short: 'Hochzeit', occasion: 'Hochzeit & Privat', anlass: 'privat', textLabel: 'Eure Initialen',
     scenes: [
       s('sterne', 'sterne', 'Sternenhimmel', 1, 3),
       s('initialen', 'text', 'Eure Initialen', 2, 6, { own: true, text: 'A & T', editable: true }),
@@ -91,7 +93,7 @@ export const ADVENTURES: Adventure[] = [
     preset: { tier: 2, motifs: 4, music: 'katalog', audience: 0, story: false, film: false },
   },
   {
-    id: 'jubilaeum', label: 'Unser Jubiläum', occasion: 'Städte & Festivals', anlass: 'stadt', textLabel: 'Jubiläumszahl',
+    id: 'jubilaeum', label: 'Unser Jubiläum', short: 'Jubiläum', occasion: 'Städte & Festivals', anlass: 'stadt', textLabel: 'Jubiläumszahl',
     scenes: [
       s('sterne', 'sterne', 'Sternenhimmel', 1, 2),
       s('zahl', 'text', 'Jubiläumszahl', 2, 7, { own: true, text: '125', editable: true }),
@@ -105,7 +107,7 @@ export const ADVENTURES: Adventure[] = [
     preset: { tier: 4, motifs: 5, music: 'synchron', audience: 2, story: false, film: false },
   },
   {
-    id: 'launch', label: 'Der Launch', occasion: 'Firmen & Marken', anlass: 'firma', textLabel: 'Euer Claim',
+    id: 'launch', label: 'Der Launch', short: 'Launch', occasion: 'Firmen & Marken', anlass: 'firma', textLabel: 'Euer Claim',
     scenes: [
       s('sterne', 'sterne', 'Sternenhimmel', 1, 2),
       s('claim', 'text', 'Euer Claim', 2, 4, { own: true, text: 'NEU', editable: true }),
@@ -119,7 +121,7 @@ export const ADVENTURES: Adventure[] = [
     preset: { tier: 3, motifs: 4, music: 'synchron', audience: 1, story: false, film: true },
   },
   {
-    id: 'geschichte', label: 'Die Geschichte', occasion: 'Kultur & Kampagnen', anlass: 'sonstiges', textLabel: 'Euer Titel',
+    id: 'geschichte', label: 'Die Geschichte', short: 'Kultur', occasion: 'Kultur & Kampagnen', anlass: 'sonstiges', textLabel: 'Euer Titel',
     scenes: [
       s('sterne', 'sterne', 'Sternenhimmel', 1, 3),
       s('titel', 'text', 'Euer Titel', 2, 6, { own: true, text: 'DIE LEGENDE', editable: true }),
@@ -133,7 +135,7 @@ export const ADVENTURES: Adventure[] = [
     preset: { tier: 5, motifs: 6, music: 'live', audience: 3, story: true, film: true },
   },
   {
-    id: 'silvester', label: '#Böllerciao', occasion: 'Silvester ohne Knall', anlass: 'stadt', textLabel: 'Jahreszahl',
+    id: 'silvester', label: '#Böllerciao', short: 'Silvester', occasion: 'Silvester ohne Knall', anlass: 'stadt', textLabel: 'Jahreszahl',
     scenes: [
       s('funken', 'funken', 'Funken', 1, 7),
       s('sterne', 'sterne', 'Sternenhimmel', 1, 4),
@@ -151,7 +153,8 @@ export const ADVENTURES: Adventure[] = [
 export const MOTIF_RANGE = { min: 2, max: 7 } as const;
 
 export interface Choice { adventure: Adventure; tier: Tier; motifs: number; music: Music; audience: number; story: boolean; film: boolean; text: string }
-export interface Reason { text: string; package: ShowPackage | null; decisive?: boolean }
+/** `because` completes "<PACKAGE>, weil …" for the one-line explanation. */
+export interface Reason { text: string; package: ShowPackage | null; because?: string; decisive?: boolean }
 export interface Result { scenes: Scene[]; package: ShowPackage; drones: number; price: number; film: number; total: number; reasons: Reason[]; ownCount: number }
 
 const rank = (p: ShowPackage) => ['SPARK', 'HORIZON', 'ODYSSEY'].indexOf(p);
@@ -173,14 +176,15 @@ export function configure(choice: Choice): Result {
   const scenes = pickScenes(choice.adventure, choice.tier, choice.motifs);
   const reasons: Reason[] = [];
   let pkg = 'SPARK' as ShowPackage; // widened on purpose: raise() changes it inside a closure
-  const raise = (to: ShowPackage, text: string) => { reasons.push({ text, package: to }); pkg = higher(pkg, to); };
+  const raise = (to: ShowPackage, text: string, because: string) => { reasons.push({ text, package: to, because }); pkg = higher(pkg, to); };
 
   const top = Math.max(...scenes.map((scene) => scene.tier)) as Tier;
-  raise(COMPLEXITY[top].minimum, `Aufwendigstes Motiv: ${COMPLEXITY[top].label}`);
+  const motifBecause: Record<Tier, string> = { 1: 'die Motive aus dem Katalog kommen', 2: 'eure eigenen Zeichen enthalten sind', 3: 'sich ein Motiv bewegt', 4: 'ein Motiv in 3D steht', 5: 'ein Motiv komplexes 3D ist' };
+  raise(COMPLEXITY[top].minimum, `Aufwendigstes Motiv: ${COMPLEXITY[top].label}`, motifBecause[top]);
   const ownCount = scenes.filter((scene) => scene.own).length;
-  if (ownCount > 4) raise('HORIZON', `${ownCount} eigene Motive, SPARK enthält bis zu vier`);
-  if (choice.music !== 'katalog') raise(MUSIC[choice.music].minimum, MUSIC[choice.music].reason);
-  if (choice.story) raise('ODYSSEY', 'Erzählte Geschichte mit dramaturgischer Kurve');
+  if (ownCount > 4) raise('HORIZON', `${ownCount} eigene Motive, SPARK enthält bis zu vier`, `ihr ${ownCount} eigene Motive habt`);
+  if (choice.music !== 'katalog') raise(MUSIC[choice.music].minimum, MUSIC[choice.music].reason, choice.music === 'live' ? 'die Show live per Timecode läuft' : 'die Show synchron zu eurer Musik läuft');
+  if (choice.story) raise('ODYSSEY', 'Erzählte Geschichte mit dramaturgischer Kurve', 'die Show eine Geschichte erzählt');
 
   const audience = AUDIENCE[choice.audience];
   // a text needs about 10 drones per character to stay readable (same rule as the price calculator)
@@ -188,7 +192,7 @@ export function configure(choice: Choice): Result {
   const wanted = Math.max(audience.drones, textChars * 10);
   const forAudience = `${wanted.toLocaleString('de-DE')} Drohnen für ${audience.label} Zuschauer*innen`;
   // the drone count only counts as a reason when it is what lifts the show out of SPARK
-  if (wanted > SHOW_PACKAGES.SPARK.max && pkg === 'SPARK') raise('HORIZON', `${forAudience}, SPARK fliegt bis ${SHOW_PACKAGES.SPARK.max}`);
+  if (wanted > SHOW_PACKAGES.SPARK.max && pkg === 'SPARK') raise('HORIZON', `${forAudience}, SPARK fliegt bis ${SHOW_PACKAGES.SPARK.max}`, `${wanted.toLocaleString('de-DE')} Drohnen für ${audience.label} Zuschauer*innen empfohlen sind`);
   else reasons.push({ text: wanted >= SHOW_PACKAGES[pkg].base ? forAudience : `${SHOW_PACKAGES[pkg].base.toLocaleString('de-DE')} Drohnen sind in ${pkg} enthalten`, package: null });
   const drones = Math.max(SHOW_PACKAGES[pkg].base, wanted);
 

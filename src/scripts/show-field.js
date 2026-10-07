@@ -23,7 +23,7 @@ export function createField(canvas) {
   function fit(pictures) {
     let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
     for (const pts of pictures) for (const p of pts) { x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]); }
-    const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, k = 1 / Math.max((x1 - x0) / 2 / 1.2, (y1 - y0) / 2 / 0.8, 1e-6);
+    const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, k = 1 / Math.max((x1 - x0) / 2 / 1.2, (y1 - y0) / 2 / 0.7, 1e-6);
     // left to right order: from one picture to the next every drone flies to a nearby place instead of across the sky
     return pictures.map((pts) => pts.map((p) => [(p[0] - cx) * k, (p[1] - cy) * k, (p[2] || 0) * k, p[3], p[4], p[5]]).sort((a, b) => a[0] - b[0] || a[1] - b[1]));
   }
@@ -63,7 +63,7 @@ export function createField(canvas) {
     const yaw = anim === "spin" ? t * 0.55 : anim === "sway" ? Math.sin(t * 0.45) * 0.55 + (mouse ? mouse[0] * 0.4 : 0) : (mouse ? mouse[0] * 0.25 : 0);
     const cy = Math.cos(yaw), sy = Math.sin(yaw), tilt = 0.12, ct = Math.cos(tilt), st = Math.sin(tilt);
     const beat = anim === "beat" ? 1 + 0.07 * Math.pow(Math.max(0, Math.sin(t * 5.2)), 6) + 0.035 * Math.pow(Math.max(0, Math.sin(t * 5.2 - 0.9)), 6) : 1;
-    const S = Math.min(W * 0.36, H * 0.62) * DPR, ox = W * 0.5 * DPR, oy = H * 0.47 * DPR, list = [];
+    const S = Math.min(W * 0.36, H * 0.62) * DPR, ox = W * 0.5 * DPR, oy = H * 0.53 * DPR, list = [];
     for (let i = 0; i < MAX; i++) {
       const d = P[i];
       if (d.ta === 0 && d.a < 0.01) continue;
