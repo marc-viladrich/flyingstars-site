@@ -2,9 +2,10 @@ import { test, expect, type Page } from '@playwright/test';
 
 // Every motif version may only do what real show drones can do: fly smoothly within speed and acceleration limits,
 // never jump (also not in the dark). Effects such as sparks, rain or a heartbeat must be made with light.
-// Display units: one unit ≈ 22 m in a 300-drone picture, so the limits are about 11 m/s and 10 m/s²
-// (flight planning in show-flight.js aims lower; the margin covers the flow drift).
-const LIMITS = { speed: 0.5, accel: 0.45 };
+// Display units. The preview runs as a time-lapse at the pace of the client's Vercel prototype (a real show takes
+// about three times as long); the limits guarantee smooth, bounded motion without jumps. Flight planning in
+// show-flight.js aims lower (1.3 and 2.2); the margin covers the flow drift and staggered starts.
+const LIMITS = { speed: 1.9, accel: 4 };
 const MOTIFS = ['hochzeit', 'jubilaeum', 'launch', 'kultur', 'silvester'].flatMap((o) => [[o, 0], [o, 1]] as const);
 
 /** Highest speed and acceleration of any drone over the recorded frames (regular frame intervals only). */

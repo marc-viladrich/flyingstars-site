@@ -5,13 +5,14 @@
 // Pure functions without DOM, unit-tested in scripts/show-flight.test.mjs.
 
 /**
- * Optimal assignment (Hungarian method, O(n³)) minimising the sum of squared distances.
- * from, to: flat Float64Arrays [x0, y0, z0, x1, …] of equal length. Returns Int32Array: drone i → target index.
+ * Optimal assignment (Hungarian method, O(n²m)) minimising the sum of squared distances, for n rows ≤ m columns.
+ * from: flat [x0, y0, z0, x1, …] with n points, to: flat with m ≥ n points. Returns Int32Array: row i → column.
  */
 export function assign(from, to) {
-  const n = from.length / 3, INF = Infinity;
-  const u = new Float64Array(n + 1), v = new Float64Array(n + 1), minv = new Float64Array(n + 1);
-  const p = new Int32Array(n + 1), way = new Int32Array(n + 1), used = new Uint8Array(n + 1);
+  const n = from.length / 3, m = to.length / 3, INF = Infinity;
+  if (n > m) throw new Error("assign: more rows than columns");
+  const u = new Float64Array(n + 1), v = new Float64Array(m + 1), minv = new Float64Array(m + 1);
+  const p = new Int32Array(m + 1), way = new Int32Array(m + 1), used = new Uint8Array(m + 1);
   for (let i = 1; i <= n; i++) {
     p[0] = i; let j0 = 0;
     minv.fill(INF); used.fill(0);
@@ -19,14 +20,14 @@ export function assign(from, to) {
       used[j0] = 1;
       const i0 = p[j0], ax = from[(i0 - 1) * 3], ay = from[(i0 - 1) * 3 + 1], az = from[(i0 - 1) * 3 + 2], ui = u[i0];
       let delta = INF, j1 = 0;
-      for (let j = 1; j <= n; j++) {
+      for (let j = 1; j <= m; j++) {
         if (used[j]) continue;
         const k = (j - 1) * 3, dx = ax - to[k], dy = ay - to[k + 1], dz = az - to[k + 2];
         const cur = dx * dx + dy * dy + dz * dz - ui - v[j];
         if (cur < minv[j]) { minv[j] = cur; way[j] = j0; }
         if (minv[j] < delta) { delta = minv[j]; j1 = j; }
       }
-      for (let j = 0; j <= n; j++) {
+      for (let j = 0; j <= m; j++) {
         if (used[j]) { u[p[j]] += delta; v[j] -= delta; } else minv[j] -= delta;
       }
       j0 = j1;
@@ -34,19 +35,21 @@ export function assign(from, to) {
     do { const j1 = way[j0]; p[j0] = p[j1]; j0 = j1; } while (j0);
   }
   const out = new Int32Array(n);
-  for (let j = 1; j <= n; j++) out[p[j] - 1] = j - 1;
+  for (let j = 1; j <= m; j++) if (p[j]) out[p[j] - 1] = j - 1;
   return out;
 }
 
 /**
- * Limits of real show drones in display units (one unit ≈ 22 m in a 300-drone picture): about 8 m/s and
- * 5 m/s². show-physics.spec.ts holds every scene to them (plus a margin for the flow drift and frame jitter).
+ * Motion limits in display units. The preview runs as a time-lapse (Marc, 7 October 2026: transitions at the pace of
+ * the client's Vercel prototype): a real show takes about three times as long for the same change. What the limits
+ * guarantee is the character of real flight: smooth paths, bounded speed and acceleration, no jumps.
+ * show-physics.spec.ts holds every scene to them (plus a margin for the flow drift and frame jitter).
  */
-export const LIMITS = { speed: 0.38, accel: 0.22 };
+export const LIMITS = { speed: 1.3, accel: 2.2 };
 
 /** Flight time for the longest path, so that no drone exceeds the speed and acceleration limits on a smootherstep
  * profile (peak speed 1.875·d/T, peak acceleration 5.77·d/T²); short hops still take a calm moment. */
-export function flightTime(from, to, order, min = 2.4, max = 12) {
+export function flightTime(from, to, order, min = 1.2, max = 5) {
   let longest = 0;
   for (let i = 0; i < order.length; i++) {
     const a = i * 3, b = order[i] * 3;
@@ -76,9 +79,9 @@ const tmp = [0, 0, 0];
  * Position of one drone at flight progress u ∈ [0, 1] between a and b (arrays or offsets). The flow lifts the path
  * sideways in the middle of the flight only (sin² πu: zero and flat at both ends), scaled with the distance.
  */
-export function along(ax, ay, az, bx, by, bz, u, t, out) {
+export function along(ax, ay, az, bx, by, bz, u, t, out, scale = 1) {
   const e = ease(u), x = ax + (bx - ax) * e, y = ay + (by - ay) * e, z = az + (bz - az) * e;
-  const d = Math.hypot(bx - ax, by - ay, bz - az), amp = Math.sin(Math.PI * Math.min(1, Math.max(0, u))) ** 2 * Math.min(0.14, 0.04 + d * 0.07); // sin²: no sideways kick at take-off or arrival
+  const d = Math.hypot(bx - ax, by - ay, bz - az), amp = scale * Math.sin(Math.PI * Math.min(1, Math.max(0, u))) ** 2 * Math.min(0.14, 0.04 + d * 0.07); // sin²: no sideways kick at take-off or arrival
   flow(x, y, z, t, tmp);
   out[0] = x + tmp[0] * amp; out[1] = y + tmp[1] * amp * 0.8; out[2] = z + tmp[2] * amp;
   return out;

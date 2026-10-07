@@ -19,7 +19,11 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
       <canvas id="cfg-field" aria-hidden="true"></canvas>
       <div class="cfg-caption"><em id="cfg-new">{STEPS[start].pkg}</em><span id="cfg-scene">{firstCaption}</span></div>
       <span class="cfg-count mono" id="cfg-count">{first.base} Drohnen</span>
-      <button class="btn small cfg-replay" type="button" id="cfg-replay" hidden>↻ Nochmal ansehen</button>
+      <div class="cfg-acts" id="cfg-acts" role="group" aria-label="Akte der Geschichte" hidden>
+        <button type="button" id="cfg-prev" aria-label="Vorheriger Akt">‹</button>
+        <button type="button" id="cfg-replay" aria-label="Von vorn ansehen">↻</button>
+        <button type="button" id="cfg-next" aria-label="Nächster Akt">›</button>
+      </div>
       <div class="cfg-motifs" id="cfg-motifs" role="group" aria-label="Motiv">{list[0].motifs.map((m, i) => <button type="button" data-motif={i} aria-pressed={i === 0 ? 'true' : 'false'}>{m.label}</button>)}</div>
     </div>
 
@@ -63,8 +67,13 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
   .cfg-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
   .cfg-caption { position: absolute; left: 20px; top: 18px; right: 140px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
   .cfg-caption em { font: 500 11px/1 var(--mono); font-style: normal; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ground); background: var(--pkg, var(--amber)); padding: 5px 8px; border-radius: 4px; }
-  .cfg-replay { position: absolute; right: 14px; bottom: 14px; background: rgba(15, 13, 12, 0.7); }
-  @media (max-width: 1000px) { .cfg-replay { bottom: 64px; } }
+  .cfg-acts { position: absolute; right: 14px; bottom: 14px; display: flex; gap: 2px; padding: 3px; border: 1px solid var(--line); border-radius: 999px; background: rgba(15, 13, 12, 0.72); }
+  .cfg-acts[hidden] { display: none; }
+  .cfg-acts button { width: 40px; height: 40px; border: 0; border-radius: 50%; background: transparent; color: var(--text); font: 400 20px/1 var(--body); cursor: pointer; }
+  .cfg-acts button:hover:not(:disabled) { background: rgba(246, 241, 232, 0.1); }
+  .cfg-acts button:disabled { color: var(--faint); cursor: default; }
+  .cfg-acts button:focus-visible { outline: 3px solid var(--cyan); outline-offset: -2px; }
+  @media (max-width: 1000px) { .cfg-acts { bottom: 64px; } }
   .cfg-count { position: absolute; right: 20px; top: 20px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text); }
   .cfg-motifs { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); display: flex; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 999px; background: rgba(15, 13, 12, 0.72); }
   .cfg-motifs :global(button) { min-height: 40px; padding: 0 18px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); font: 500 14px/1 var(--body); cursor: pointer; }

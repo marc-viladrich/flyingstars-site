@@ -28,15 +28,15 @@ export const OCCASIONS = [
     motif('wahrzeichen', 'Wahrzeichen', v('tower', 'Beispiel: Berliner Fernsehturm'), v('tower3d', 'Der Fernsehturm in 3D, Licht läuft um die Kugel'), v('towerStory', 'Der Fernsehturm sendet und wird zum Brandenburger Tor')),
   ] },
   { id: 'launch', label: 'Launch', anlass: 'firma', motifs: [
-    motif('rakete', 'Rakete', v('rocket', 'Rakete als Umriss'), v('rocket3d', '3D-Rakete schwebt und dreht sich'), v('rocketStory', 'Startklar, Abheben mit funkelnder Spur, Landung auf dem Mond')),
-    motif('logo', 'Logo', v('logo', 'Beispiel-Logo'), v('logo3d', 'Beispiel-Logo in 3D mit Lichtschimmer'), v('logoStory', 'Ein Funkenwirbel dreht sich ein und wird zum Beispiel-Logo')),
+    motif('rakete', 'Rakete', v('rocket', 'Rakete als Umriss'), v('rocket3d', '3D-Rakete schwebt und dreht sich'), v('rocketStory', 'Die Rakete hebt ab, aus ihrer Spur wird der Mond')),
+    motif('logo', 'Logo', v('logo', 'Beispiel-Logo'), v('logo3d', 'Beispiel-Logo in 3D mit Lichtschimmer'), v('logoStory', 'Ein Funkenwirbel wird zum Logo, wieder zum Wirbel und zum Ring in 3D')),
   ] },
   { id: 'kultur', label: 'Kultur', anlass: 'sonstiges', motifs: [
     motif('maske', 'Maske', v('masks', 'Theatermasken: Komödie und Tragödie'), v('masks3d', 'Die Masken in 3D'), v('maskStory', 'Komödie wird Tragödie, dann der Teufel aus der Show Bokkenrijders')),
     motif('vorhang', 'Vorhang', v('curtain', 'Vorhang zu'), v('curtainStar', 'Vorhang auf für einen 3D-Stern'), v('curtainStory', 'Vorhang auf, Goldregen, ein Stern steigt auf')),
   ] },
   { id: 'silvester', label: 'Silvester', anlass: 'stadt', motifs: [
-    motif('feuerwerk', 'Feuerwerk', v('burst2d', 'Feuerwerksstern'), v('burst3d', 'Eine 3D-Feuerwerkskugel öffnet sich immer wieder'), v('fireworkStory', 'Drei Raketen steigen auf und öffnen sich nacheinander')),
+    motif('feuerwerk', 'Feuerwerk', v('burst2d', 'Feuerwerksstern'), v('burst3d', 'Eine 3D-Feuerwerkskugel öffnet sich immer wieder'), v('ballStory', 'Die Silvesterkugel sinkt, öffnet sich zum Ring und verschlingt sich zum Knoten')),
     motif('uhr', 'Uhr', v('clock', 'Fünf vor zwölf'), v('clock3d', '3D-Uhr, die Zeiger laufen'), v('clockStory', 'Die Zeiger laufen auf zwölf, dann funkelt die Uhr')),
   ] },
 ];

@@ -12,13 +12,15 @@ if (form) {
   const $ = (s) => document.querySelector(s);
   const stepIn = $("#cfg-step"), tabs = $("#cfg-motifs");
   // the caption follows the acts of an ODYSSEY story: "1/3 Amors Pfeil"
-  const field = createField($("#cfg-field"), { onBeat: (k, beat) => {
-    const beats = current?.beats.length ?? 1;
+  const field = createField($("#cfg-field"), { onBeat: (k, beat, beats) => {
     $("#cfg-scene").textContent = beats > 1 ? `${k + 1}/${beats} · ${beat.caption}` : beat.caption;
-    $("#cfg-replay").hidden = !(beats > 1 && k === beats - 1);
+    $("#cfg-acts").hidden = beats < 2;
+    $("#cfg-prev").disabled = k === 0; $("#cfg-next").disabled = k === beats - 1 && current?.loopTo === undefined;
   } });
   let current = null, first = true;
   $("#cfg-replay").addEventListener("click", () => field.replay());
+  $("#cfg-prev").addEventListener("click", () => field.goto(field.beat() - 1));
+  $("#cfg-next").addEventListener("click", () => { const k = field.beat() + 1, n = current?.beats.length ?? 1; field.goto(k < n ? k : current?.loopTo ?? n - 1); });
   const eur = (v) => `ab ${v.toLocaleString("de-DE")} €`;
   let occasion = OCCASIONS[0], motifIndex = 0, job = 0;
 

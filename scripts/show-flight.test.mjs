@@ -36,7 +36,7 @@ test('Alle Drohnen kommen gleichzeitig und exakt an', () => {
   const a = flat([[0, 0, 0]]), b = flat([[1.5, 0, 0]]);
   const T = flightTime(a, b, [0]);
   assert.ok((1.875 * 1.5) / T <= LIMITS.speed + 1e-9 && (5.7735 * 1.5) / T ** 2 <= LIMITS.accel + 1e-9, 'peak speed and acceleration within limits');
-  assert.equal(flightTime(a, a, [0]), 2.4);
+  assert.equal(flightTime(a, a, [0]), 1.2);
 });
 
 test('Das Strömungsfeld ist divergenzfrei', () => {
@@ -47,4 +47,9 @@ test('Das Strömungsfeld ist divergenzfrei', () => {
     const dz = (flow(x, y, z + h, 2, o1)[2] - flow(x, y, z - h, 2, o2)[2]) / (2 * h);
     assert.ok(Math.abs(dx + dy + dz) < 1e-6);
   }
+});
+
+test('Rechteckige Zuordnung: weniger Drohnen als Plätze', () => {
+  const a = flat([[0, 0, 0], [2, 0, 0]]), b = flat([[2.1, 0, 0], [5, 5, 5], [0.1, 0, 0]]);
+  assert.deepEqual([...assign(a, b)], [2, 0]);
 });
