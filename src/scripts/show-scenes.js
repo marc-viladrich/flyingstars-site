@@ -35,10 +35,18 @@ async function heart3d(n) {
   // FlyingStars' own heart formation for this drone count: from 300 drones small hearts join the big one
   return paint(evenSubset(pic.hearts.flatMap((h) => h.pts), n), (p) => mix(PINK, VIOLET, (p[2] + 20) / 40));
 }
+/** Text with exactly n drones. A text stays at most 80 m high (FlyingStars' rule in the text planner); the drones it
+ * cannot use form a ring around it, so the picture still shows the whole package. */
 async function words(value, n) {
   await loadTextEngine();
   const r = textFormation(value, n);
-  return r ? paint(r.pts, WARM) : [];
+  if (!r) return [];
+  const pts = r.pts.slice(0, n), rest = n - pts.length;
+  if (rest <= 0) return paint(pts, WARM);
+  const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
+  const cx = (Math.min(...xs) + Math.max(...xs)) / 2, cy = (Math.min(...ys) + Math.max(...ys)) / 2;
+  const radius = 0.62 * Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys));
+  return [...paint(pts, WARM), ...paint(sampleOutline([circle(cx, cy, radius, 180)], rest), GOLD)];
 }
 /** The FlyingStars mark inside a ring of the remaining drones, so every drone of the package is in the picture. */
 function logoFramed(n) {
@@ -71,6 +79,7 @@ export async function buildScene(scene, n) {
     case "text": return { pictures: [await words(scene.text, n)], anim: null };
     case "text3d": {
       const front = (await words(scene.text, Math.floor(n / 2))).map((p) => [p[0], p[1], 0]);
+      if (!front.length) return { pictures: [globe(n)], anim: "spin" };
       const depth = Math.max(...front.map((p) => Math.abs(p[1]))) * 0.35;
       return { pictures: [globe(n), paint(extrude(front, n, depth), GOLD)], anim: "sway", hold: [1.6, 4] };
     }

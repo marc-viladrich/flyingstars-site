@@ -31,6 +31,7 @@ export function createField(canvas) {
 
   function target(pts) {
     const used = Math.min(pts.length, drones);
+    canvas.dataset.points = String(used); // drones in the picture, read by the tests
     for (let i = 0; i < MAX; i++) {
       const d = P[i];
       if (i < used) { const p = pts[i]; d.tx = p[0]; d.ty = p[1]; d.tz = p[2]; d.ta = 1; d.tr = p[3]; d.tg = p[4]; d.tb = p[5]; }

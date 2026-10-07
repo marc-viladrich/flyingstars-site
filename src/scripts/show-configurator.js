@@ -39,7 +39,8 @@ if (form) {
     if (held()) return; // paused or reduced motion: stay on this motif, the dots step through by hand
     const phases = built.hold || built.pictures.map(() => 1.7);
     const seconds = phases.slice(0, -1).reduce((a, b) => a + b, 0) + 3;
-    timer = setTimeout(() => play((index + 1) % playlist.length), seconds * 1000);
+    // the timer belongs to this playback: a newer selection invalidates it through `job`
+    timer = setTimeout(() => { if (id === job) play((i + 1) % playlist.length); }, seconds * 1000);
   }
 
   function update({ fromStep = false } = {}) {

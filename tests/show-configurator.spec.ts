@@ -93,3 +93,27 @@ test('Die Anfrage übernimmt Anlass, Paket und Beispielmotive', async ({ page })
   await expect(form.locator('[name=anlass][value=firma]')).toBeChecked();
   await expect(form.locator('[name=message]')).toHaveValue(/Anlass: Launch\nAufwand: Klassische Bilder \(SPARK, ab 7\.900 € netto, Einstiegspreis laut Konfigurator\)\nBeispielmotive: Sternenhimmel → /);
 });
+
+test('Jedes Motiv nutzt genau die Drohnenzahl seines Pakets', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop', 'Gleiche Szenendaten wie auf Mobil; einmal reicht.');
+  test.setTimeout(120_000);
+  await paused(page);
+  await page.goto('/show-konfigurator/');
+  const wrong: string[] = [];
+  for (const id of OCCASIONS) {
+    await occasion(page, id);
+    for (const [k, [, , drones]] of STEPS.entries()) {
+      await page.locator('#cfg-step').fill(String(k));
+      const dots = page.locator('#cfg-dots button');
+      for (let i = 0; i < await dots.count(); i++) {
+        await dots.nth(i).click();
+        await expect(dots.nth(i)).toHaveAttribute('aria-current', 'true');
+        await expect.poll(() => page.locator('#cfg-field').getAttribute('data-points')).not.toBeNull();
+        await page.waitForTimeout(150);
+        const got = await page.locator('#cfg-field').getAttribute('data-points');
+        if (got !== drones) wrong.push(`${id} ${drones} ${await dots.nth(i).getAttribute('aria-label')}: ${got}`);
+      }
+    }
+  }
+  expect(wrong).toEqual([]);
+});

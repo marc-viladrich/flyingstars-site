@@ -46,6 +46,7 @@ export function clock(n) {
 
 /** Two layers of the same picture, front and back: the simplest volume. */
 export function extrude(pts2d, n, depth) {
+  if (!pts2d.length) return [];
   const half = Math.ceil(n / 2), front = evenSubset(pts2d, half);
   const out = [];
   for (let i = 0; i < n; i++) { const p = front[i % front.length]; out.push([p[0], p[1], i < half ? depth / 2 : -depth / 2]); }
