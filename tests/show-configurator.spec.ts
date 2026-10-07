@@ -54,11 +54,11 @@ test('Jede Einstellung ändert Paket und Begründung sichtbar', async ({ page })
 test('Eigener Text, Ablauf und Anfrage hängen zusammen', async ({ page }) => {
   await page.goto('/show-konfigurator/');
   await page.getByLabel('Eure Initialen').fill('M & J');
-  await expect(page.locator('#cfg-scene')).toHaveText('Eure Initialen');
+  await expect(page.locator('#cfg-scene')).toHaveText('Eure Initialen: M & J');
   await expect(page.locator('#cfg-scenes')).toContainText('M & J');
   await page.locator('#cfg-play').click();
   await expect(page.locator('#cfg-scene')).toHaveText('Sternenhimmel');
-  await expect(page.locator('#cfg-scene')).toHaveText('Eure Initialen', { timeout: 5000 });
+  await expect(page.locator('#cfg-scene')).toHaveText('Eure Initialen: M & J', { timeout: 5000 });
   await page.locator('#cfg-play').click();
   await page.locator('#cfg-cta').click();
   await expect(page).toHaveURL(/#anfrage$/);

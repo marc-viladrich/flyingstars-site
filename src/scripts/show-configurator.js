@@ -35,7 +35,8 @@ if (form) {
   async function render(scene) {
     const id = ++job;
     current = scene;
-    $("#cfg-scene").textContent = scene.label;
+    const own = choice().text;
+    $("#cfg-scene").textContent = scene.editable && own ? `${scene.label}: ${own.toUpperCase()}` : scene.label;
     form.querySelectorAll("#cfg-scenes button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.scene === scene.id)));
     const pictures = await buildScene(scene, result.drones, choice().text);
     if (id === job) field.show(pictures, result.drones);

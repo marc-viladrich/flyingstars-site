@@ -61,7 +61,7 @@ export const FILM_PRICE = 900;
 
 const s = (id: string, kind: SceneKind, label: string, tier: Tier, priority: number, extra: Partial<Scene> = {}): Scene =>
   ({ id, kind, label, tier, priority, own: false, ...extra });
-const figur = s('figur', 'figur3d', '3D-Figur (Beispiel: Teufelskopf aus der Bokkenrijders-Show)', 5, 9);
+const figur = s('figur', 'figur3d', '3D-Figur (Beispiel: Bokkenrijders)', 5, 9);
 
 export interface Adventure {
   id: string;
@@ -124,7 +124,7 @@ export const ADVENTURES: Adventure[] = [
       s('sterne', 'sterne', 'Sternenhimmel', 1, 3),
       s('titel', 'text', 'Euer Titel', 2, 6, { own: true, text: 'DIE LEGENDE', editable: true }),
       s('unheil', 'funken', 'Wachsendes Unheil', 1, 4),
-      s('figur', 'figur3d', '3D-Figur (Teufelskopf aus der Bokkenrijders-Show)', 5, 9),
+      s('figur', 'figur3d', '3D-Figur (Bokkenrijders-Teufel)', 5, 9),
       s('herzschlag', 'herzschlag', 'Schlagendes Herz', 3, 7),
       s('herz3d', 'herz3d', 'Drehendes 3D-Herz', 4, 2),
       s('ende', 'text', 'Schlussbild', 2, 5, { own: true, text: 'ENDE' }),
