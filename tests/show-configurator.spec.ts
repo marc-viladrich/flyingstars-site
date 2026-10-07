@@ -58,7 +58,7 @@ test('Dasselbe Motiv wird mit dem Paket größer', async ({ page }) => {
   const widths: number[] = [];
   for (const k of ['0', '2']) {
     await page.locator('#cfg-step').fill(k);
-    await expect(page.locator('#cfg-scene')).toHaveText(k === '0' ? 'Herz als Umriss' : '3/3 · …und kleine Herzen kreisen im Takt');
+    await expect(page.locator('#cfg-scene')).toHaveText(k === '0' ? 'Herz als Umriss' : '4/4 · …und kleine Herzen kreisen im Takt');
     await page.waitForTimeout(300);
     widths.push(await pictureWidth(page));
   }
@@ -71,7 +71,7 @@ test('SPARK steht nach dem Aufbau still, HORIZON bewegt sich weiter', async ({ p
   await page.locator('#cfg-step').fill('0');
   await expect(field(page)).toHaveAttribute('data-running', 'false', { timeout: 12_000 }); // a still picture: no more frames
   await page.locator('#cfg-step').fill('1');
-  await expect(page.locator('#cfg-scene')).toHaveText('3D-Rakete schwebt und rollt');
+  await expect(page.locator('#cfg-scene')).toHaveText('3D-Rakete schwebt und dreht sich');
   await page.waitForTimeout(6000);
   await expect(field(page)).toHaveAttribute('data-running', 'true'); // the 3D rocket keeps moving
   const frame = () => field(page).evaluate((c) => (c as HTMLCanvasElement).toDataURL());
@@ -83,10 +83,10 @@ test('ODYSSEY erzählt in Akten und lässt sich wiederholen', async ({ page }) =
   await page.goto('/show-konfigurator/');
   await occasion(page, 'silvester'); await page.locator('#cfg-motifs button', { hasText: 'Uhr' }).click();
   await page.locator('#cfg-step').fill('2');
-  await expect(page.locator('#cfg-scene')).toHaveText('1/2 · Kurz vor zwölf');
-  await expect(page.locator('#cfg-scene')).toHaveText('2/2 · …Mitternacht: die Uhr sprüht Funken', { timeout: 15_000 });
+  await expect(page.locator('#cfg-scene')).toHaveText('1/2 · Fünf vor zwölf');
+  await expect(page.locator('#cfg-scene')).toHaveText('2/2 · …Mitternacht: die Uhr funkelt', { timeout: 20_000 });
   await page.locator('#cfg-replay').click();
-  await expect(page.locator('#cfg-scene')).toHaveText('1/2 · Kurz vor zwölf');
+  await expect(page.locator('#cfg-scene')).toHaveText('1/2 · Fünf vor zwölf');
 });
 
 test('Motive lassen sich per Tastatur wechseln', async ({ page }) => {

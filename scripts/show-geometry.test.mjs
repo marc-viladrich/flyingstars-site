@@ -28,8 +28,8 @@ test('Gleichmäßige Teilmenge behält die ganze Form', () => {
 });
 
 test('Motivformen haben genau die verlangte Punktzahl', () => {
-  for (const n of [100, 200, 300]) for (const name of ['proposal', 'twoRings', 'shield', 'shield3d', 'zollverein', 'zollverein3d', 'rocket', 'rocket3d', 'masks', 'masks3d', 'mask3d', 'curtain', 'burst2d', 'bursts3d', 'sparkleShell']) {
-    const pts = shapes[name](n);
+  for (const n of [100, 200, 300]) for (const name of ['twoRings', 'shield', 'shield3d', 'tower', 'tower3d', 'waves', 'gate3d', 'rocket', 'rocket3d', 'maskPair', 'maskPair3d', 'mask3d', 'curtain', 'burst2d', 'bursts3d', 'sparkleShell']) {
+    const raw = shapes[name](n), pts = name.startsWith('maskPair') ? raw.flat() : raw;
     assert.equal(pts.length, n, `${name} ${n}`);
     assert.ok(pts.every((p) => p.every(Number.isFinite)), `${name} ${n} has non-finite coordinates`);
   }

@@ -17,7 +17,7 @@ if (form) {
     $("#cfg-scene").textContent = beats > 1 ? `${k + 1}/${beats} · ${beat.caption}` : beat.caption;
     $("#cfg-replay").hidden = !(beats > 1 && k === beats - 1);
   } });
-  let current = null;
+  let current = null, first = true;
   $("#cfg-replay").addEventListener("click", () => field.replay());
   const eur = (v) => `ab ${v.toLocaleString("de-DE")} €`;
   let occasion = OCCASIONS[0], motifIndex = 0, job = 0;
@@ -41,7 +41,8 @@ if (form) {
     tabs.querySelectorAll("button").forEach((b, k) => b.setAttribute("aria-pressed", String(k === motifIndex)));
     try {
       const built = await pictures(version);
-      if (id === job) { current = built; field.show(built, pkg().base, size()); }
+      // the first picture of the page stands already, like a show that is already in the sky
+      if (id === job) { current = built; field.show(built, pkg().base, size(), { instant: first }); first = false; }
     } catch {
       if (id === job) $("#cfg-scene").textContent = `${version.caption} (Vorschau gerade nicht verfügbar)`;
     }
@@ -73,6 +74,8 @@ if (form) {
     render();
   }
 
+  // only the untouched first view of the page appears already formed; a choice made before it loaded plays normally
+  for (const type of ["input", "click"]) form.addEventListener(type, () => { first = false; }, { capture: true });
   form.addEventListener("submit", (e) => e.preventDefault());
   stepIn.addEventListener("input", update);
   form.querySelectorAll("[name=occasion]").forEach((r) => r.addEventListener("change", () => { occasion = OCCASIONS.find((o) => o.id === r.value); motifIndex = 0; renderTabs(); update(); }));

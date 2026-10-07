@@ -1,6 +1,6 @@
 # Show-Konfigurator (Prototyp)
 
-Stand: 7. Oktober 2026, fünfte Fassung. Die Route ist `/show-konfigurator/`, nicht verlinkt und mit `noindex`. Der Konfigurator ist ein Vorschlag an FlyingStars und ersetzt den Preisrechner der Referenz nicht.
+Stand: 7. Oktober 2026, sechste Fassung. Die Route ist `/show-konfigurator/`, nicht verlinkt und mit `noindex`. Der Konfigurator ist ein Vorschlag an FlyingStars und ersetzt den Preisrechner der Referenz nicht.
 
 ## Das Modell: zwei Entscheidungen, die sich nicht gegenseitig verändern
 
@@ -37,16 +37,28 @@ Jeder Anlass hat zwei Motive (Knöpfe unter dem Bild). Der Regler verwandelt das
 
 | Anlass | Motiv | SPARK (100 Drohnen) | HORIZON (200), Eigenbewegung | ODYSSEY (300), Akte |
 |---|---|---|---|---|
-| Hochzeit | Herz | Herz als Umriss | volles 3D-Herz, schlägt und wiegt sich | Amors Pfeil fliegt ins Herz → das Herz wird voll und schlägt → kleine Herzen kreisen im Takt |
-| | Ringe | Antrag, aus dem Ring werden zwei | verschlungene 3D-Ringe mit Lichtlauf | Antrag → der Ring steigt auf → zwei Ringe im Funkenregen |
-| Jubiläum | Wappen | Wappenschild | 3D-Wappen mit eurer Zahl, Lichtschimmer | Wappen → die Zahl tritt hervor → Krone und kreisender Sternenkranz |
-| | Wahrzeichen | Fördergerüst Zeche Zollverein | 3D-Gerüst, die Seilscheiben drehen | Gerüst → Funken steigen auf → ein Stern über der Zeche |
-| Launch | Rakete | Rakete als Umriss | 3D-Rakete schwebt und rollt | Zündung → Start mit Abgasstrahl → Flug zu den Sternen |
-| | Logo | Beispiel-Logo | 3D-Logo mit Lichtschimmer | ein Funkenwirbel verdichtet sich zum Logo, eine Lichtwelle läuft durch |
-| Kultur | Maske | Komödie und Tragödie | die Masken in 3D, an Bändern schwingend | Komödie → Tragödie → Teufel aus der echten Bokkenrijders-Show-Datei |
-| | Vorhang | Vorhang zu | Vorhang auf für einen 3D-Stern | Vorhang auf, wehender Stoff, Goldregen → ein Stern steigt auf |
-| Silvester | Feuerwerk | Feuerwerksstern | eine 3D-Kugel explodiert immer wieder aus der Mitte | drei Raketen steigen auf → Kugel, Ring, Kugel zünden nacheinander |
-| | Uhr | fünf vor zwölf | 3D-Uhr, die Zeiger laufen | die Zeiger laufen auf zwölf → die Uhr sprüht Funken (sie bleibt eine Uhr) |
+| Hochzeit | Herz | Herz als Umriss | volles 3D-Herz, leuchtet im Takt auf | ein Herz → Amors Pfeil fliegt im Bogen hinein und bleibt stehen wie in der klassischen Illustration → das Herz wird voll → kleine Herzen kreisen |
+| | Ringe | zwei Ringe ineinander (wie ein Venn-Diagramm) | verschlungene 3D-Ringe mit Lichtlauf | ein Ring → findet den zweiten → sie verschlingen sich in 3D, umgeben von Funkeln |
+| Jubiläum | Wappen | Wappenschild | 3D-Wappen mit eurer Zahl, Lichtschimmer | Wappen → die Zahl tritt hervor → Krone und langsam kreisender Sternenkranz |
+| | Wahrzeichen | Beispiel: Berliner Fernsehturm | 3D-Fernsehturm, Licht läuft um die Kugel, rotes Warnlicht | der Turm → sendet (Wellen breiten sich in Licht aus) → wird zum Brandenburger Tor |
+| Launch | Rakete | Rakete als Umriss | 3D-Rakete schwebt und dreht sich | startklar mit funkelnder Flamme → hebt nach rechts oben ab, die Spur bleibt stehen und funkelt → landet auf dem Mond |
+| | Logo | Beispiel-Logo | 3D-Logo mit Lichtschimmer | ein langsamer Funkenwirbel dreht sich ein und wird zum Logo |
+| Kultur | Maske | die klassischen Theatermasken: Tragödie hinten, Komödie davor | die Masken in 3D | Komödie → Tragödie → Teufel aus der echten Bokkenrijders-Show-Datei |
+| | Vorhang | Vorhang zu | Vorhang auf für einen 3D-Stern | Vorhang auf, der Stoff bewegt sich leicht, Goldregen fällt in Licht → ein Stern steigt auf |
+| Silvester | Feuerwerk | Feuerwerksstern | eine 3D-Kugel öffnet sich immer wieder | drei Raketenspuren leuchten auf → Kugel, Ring, Kugel öffnen sich nacheinander |
+| | Uhr | fünf vor zwölf | 3D-Uhr, die Zeiger laufen | die Zeiger laufen auf zwölf → die Uhr funkelt |
+
+### Nur, was echte Drohnen können
+
+Marcs Rückmeldung zur fünften Fassung: Ein Herz kann nicht im Takt pulsieren, ein Logo kann sich nicht verbiegen, Drohnen können nicht aus dem Nichts aufleuchten und mit Abgas- oder Funkentempo davonschießen. Deshalb gilt jetzt:
+
+- **Bewegung:** Drohnen bewegen sich nur glatt, mit begrenzter Geschwindigkeit und Beschleunigung. Sie springen nie, auch nicht im Dunkeln.
+- **Effekte mit Licht:** Herzschlag, Funkeln, Regen, Flamme und Wellen entstehen nur mit Licht auf Drohnen, die an ihrem Platz bleiben: Lichtlauf, Funkeln, Aufleuchten. So machen es echte Shows.
+- **Feuerwerk:** Es öffnet und schließt sich langsam aus einer kompakten Kugel. Das Schließen geschieht dunkel.
+- **Unbenutzte Drohnen** warten dunkel in einer Ebene hinter dem Bild und fliegen dorthin und zurück. Sie starten nicht mehr vom Boden.
+- **Fortlaufende Bewegung:** Eine neue Flugbahn übernimmt die aktuelle Geschwindigkeit jeder Drohne, statt sie schlagartig zu stoppen.
+- **Grenzen:** Die Flugdauer ergibt sich aus Geschwindigkeits- und Beschleunigungsgrenzen (`LIMITS` in `show-flight.js`, etwa 8 m/s und 5 m/s² bei einem 300-Drohnen-Bild).
+- **Test:** `tests/show-physics.spec.ts` spielt alle 30 Fassungen mit simulierter Zeit ab und misst jede Drohne in jedem Frame. Der alte pulsierende Herzschlag fällt damit nachweislich durch (0,9 statt höchstens 0,5).
 
 ### Wie die Drohnen fliegen (`src/scripts/show-flight.js`)
 
@@ -56,7 +68,7 @@ Echte Shows fliegen anders als eine Animation, bei der jeder Punkt irgendwohin s
 - **Takt:** Alle starten und landen gleichzeitig. Die Flugdauer ergibt sich aus dem längsten Weg bei begrenzter Geschwindigkeit und liegt zwischen 2,4 und 5 s. Die Bewegung ist am Anfang und Ende sanft (Smootherstep).
 - **Strömung:** Unterwegs folgen die Bahnen einem divergenzfreien Strömungsfeld (ABC-Flow, eine stationäre Lösung der Euler-Gleichungen). Benachbarte Drohnen ziehen dadurch in gemeinsamen Strömen wie ein Schwarm.
 - **Licht:** Während des Flugs dimmen die Lichter auf die Hälfte, wie in FlyingStars' eigenen Videos.
-- **Mehr oder weniger Drohnen:** Kommen Drohnen hinzu, steigen sie vom Boden auf. Werden es weniger, landen alle überzähligen, auch die einer Szene, die mitten im Flug abgewählt wurde.
+- **Mehr oder weniger Drohnen:** Kommen Drohnen hinzu, kommen sie dunkel aus der Warteposition hinter dem Bild. Werden es weniger, fliegen alle überzähligen dorthin zurück, auch die einer Szene, die mitten im Flug abgewählt wurde.
 
 Kalibriert ist das an FlyingStars-Videos (Heiratsantrag, Hochzeitsüberraschung, 75 Jahre Eisenhüttenstadt, Extraschicht Duisburg):
 
@@ -93,18 +105,20 @@ Der Anfrageknopf übergibt Paket, Drohnenzahl und Anlass sowie eine Zusammenfass
 
 ## Prüfen
 
+- `tests/show-physics.spec.ts` prüft alle 30 Fassungen auf Geschwindigkeit und Beschleunigung jeder Drohne.
 - `scripts/show-flight.test.mjs` prüft:
-  - Die Zuordnung ist optimal (Vergleich mit allen Permutationen) und für 300 Drohnen schnell.
-  - Die Ankunft ist exakt und gleichzeitig.
+  - Die Zuordnung ist optimal.
+  - Die Ankunft ist exakt.
+  - Flugzeiten halten die Grenzen ein.
   - Das Strömungsfeld ist divergenzfrei.
 - `scripts/show-geometry.test.mjs` prüft:
   - exakte Punktzahlen aller Formen
-  - zwei Motive je Anlass mit je drei eigenen Fassungen
+  - zwei Motive je Anlass mit je drei Fassungen
 - `tests/show-configurator.spec.ts` prüft:
-  - alle 30 Fassungen: Paket, Preis und genaue Drohnenzahl
-  - Der Anlass ändert weder Regler noch Preis.
-  - Dasselbe Motiv wird mit dem Paket größer.
+  - Paket, Preis und Drohnenzahl
   - SPARK steht still, HORIZON bewegt sich weiter.
   - ODYSSEY erzählt in Akten und lässt sich wiederholen.
-  - Nach schnellem Umschalten leuchten nie mehr Drohnen, als das Paket hat. Ohne die Korrektur schlägt der Test mit 300 statt 200 fehl.
-  - Tastaturbedienung, Anfrageknopf im ersten Bildschirm, Übergabe ins Formular
+  - Nach schnellem Umschalten leuchten nie zu viele Drohnen.
+  - Tastatur, erster Bildschirm, Übergabe ins Formular
+
+Offen: Die optimale Zuordnung für 300 Drohnen kostet beim Umschalten einmalig etwa 70 ms auf einem schnellen Rechner (vor dem Flug, kein Ruckeln währenddessen). Auf schwachen Geräten wäre ein Web Worker der nächste Schritt.

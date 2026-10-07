@@ -28,18 +28,6 @@ export function lathe(profile, n) {
 }
 
 // ---------- Hochzeit ----------
-/** Kneeling figure holding up a ring, after FlyingStars' own proposal formation. */
-export function proposal(n) {
-  const paths = [
-    circle(-0.25, 0.78, 0.13, 40), // head
-    line([-0.25, 0.64], [-0.3, 0.12]), // back
-    line([-0.3, 0.12], [-0.05, 0.1], [-0.02, -0.45]), // front leg, knee up
-    line([-0.3, 0.12], [-0.55, -0.2], [-0.2, -0.45]), // kneeling leg
-    line([-0.26, 0.5], [0.08, 0.55], [0.42, 0.78]), // arm reaching out
-    circle(0.5, 0.86, 0.08, 30), // the ring
-  ];
-  return flat(sampleOutline(paths, n));
-}
 export const twoRings = (n) => flat(sampleOutline([circle(-0.42, 0, 0.62), circle(0.42, 0, 0.62)], n));
 
 // ---------- Jubiläum ----------
@@ -50,18 +38,6 @@ export function crown(n, y = 1.18) {
   const p = poly([-0.45, y], [-0.45, y + 0.22], [-0.3, y + 0.1], [-0.15, y + 0.3], [0, y + 0.12], [0.15, y + 0.3], [0.3, y + 0.1], [0.45, y + 0.22], [0.45, y]);
   return extrudePaths([p], n, 0.16);
 }
-/** Zeche Zollverein, shaft XII: the double-trestle headframe with its two sheave wheels. */
-const headframe = [
-  line([-0.85, -0.9], [-0.25, 0.55]), line([0.85, -0.9], [0.25, 0.55]), // the two inclined legs
-  line([-0.25, -0.9], [-0.25, 0.55]), line([0.25, -0.9], [0.25, 0.55]), // the shaft tower
-  line([-0.62, -0.35], [0.62, -0.35]), line([-0.45, 0.1], [0.45, 0.1]), // cross beams
-  line([-0.3, 0.55], [0.3, 0.55]),
-  circle(-0.17, 0.72, 0.17, 40), circle(0.17, 0.72, 0.17, 40), // sheave wheels
-  line([-0.9, -0.9], [0.9, -0.9]),
-];
-export const zollverein = (n) => flat(sampleOutline(headframe, n));
-export const zollverein3d = (n) => extrudePaths(headframe, n, 0.35);
-
 // ---------- Launch ----------
 const rocketProfile = [[0, 0.95], [0.08, 0.82], [0.15, 0.65], [0.19, 0.45], [0.2, 0.2], [0.2, -0.05], [0.2, -0.3], [0.18, -0.5], [0.12, -0.58]];
 const rocketOutline = [
@@ -86,41 +62,48 @@ export function exhaust(n, top) {
 }
 
 // ---------- Kultur ----------
-/** Rotates 2D paths about (cx, cy). */
-const turn2d = (paths, cx, cy, a) => paths.map((path) => ({ ...path, pts: path.pts.map(([x, y]) => [cx + (x - cx) * Math.cos(a) - (y - cy) * Math.sin(a), cy + (x - cx) * Math.sin(a) + (y - cy) * Math.cos(a)]) }));
-/** Closed crescent between two arcs over the same chord: the eye and mouth shapes of the classic theatre masks. */
-function crescent(cx, cy, w, bulge, thickness, down) {
-  const k = 12, s = down ? -1 : 1, pts = [];
-  for (let i = 0; i <= k; i++) { const u = i / k, x = cx - w + 2 * w * u, b = Math.sin(Math.PI * u); pts.push([x, cy + s * b * bulge]); }
-  for (let i = k; i >= 0; i--) { const u = i / k, x = cx - w + 2 * w * u, b = Math.sin(Math.PI * u); pts.push([x, cy + s * b * (bulge - thickness)]); }
+/** Closed crescent between two arcs over the same chord: eye and mouth shapes of the classic theatre masks. */
+function crescent(cx, cy, w, bulge, thickness) {
+  const k = 12, pts = [];
+  for (let i = 0; i <= k; i++) { const u = i / k; pts.push([cx - w + 2 * w * u, cy + Math.sin(Math.PI * u) * bulge]); }
+  for (let i = k; i >= 0; i--) { const u = i / k; pts.push([cx - w + 2 * w * u, cy + Math.sin(Math.PI * u) * (bulge - Math.sign(bulge) * thickness)]); }
   return poly(...pts);
 }
-/** One theatre mask: almond face, crescent eyes and mouth; comedy laughs (∩ eyes, ∪ mouth), tragedy weeps. */
+/** Rotates 2D paths about (cx, cy). */
+const turn2d = (paths, cx, cy, a) => paths.map((path) => ({ ...path, pts: path.pts.map(([x, y]) => [cx + (x - cx) * Math.cos(a) - (y - cy) * Math.sin(a), cy + (x - cx) * Math.sin(a) + (y - cy) * Math.cos(a)]) }));
+/** The classic theatre mask: wide, slightly arched brow, cheeks narrowing to a rounded chin. */
+function maskFace(cx, cy) {
+  const right = [[0.47, 0.42], [0.46, 0.2], [0.42, -0.05], [0.35, -0.28], [0.24, -0.47], [0.1, -0.6], [0, -0.63]];
+  const brow = Array.from({ length: 9 }, (_, i) => { const u = i / 8; return [-0.47 + 0.94 * u, 0.42 + Math.sin(Math.PI * u) * 0.08]; });
+  const pts = [...brow, ...right.slice(1), ...right.slice(0, -1).reverse().map(([x, y]) => [-x, y]).slice(0, -1)];
+  return poly(...pts.map(([x, y]) => [cx + x, cy + y]));
+}
+/** Comedy laughs (arched eyes, wide grin); tragedy weeps (drooping eyes and brows, open frown). */
 export function maskPaths(cx, cy, tilt, sad) {
-  const face = poly(...Array.from({ length: 48 }, (_, i) => { const a = (i / 48) * TAU, c = Math.cos(a), sn = Math.sin(a); const w = c > 0 ? 0.4 : 0.4 * (1 + c * 0.3); return [cx + sn * w, cy + c * (c > 0 ? 0.42 : 0.56)]; }));
-  const eyes = [-0.15, 0.15].map((dx) => (sad ? crescent(cx + dx, cy + 0.12, 0.1, -0.07, 0.04, false) : crescent(cx + dx, cy + 0.08, 0.1, 0.08, 0.045, false)));
-  const brows = [-0.15, 0.15].map((dx) => line([cx + dx - 0.11, cy + 0.27 + (sad ? -Math.sign(dx) * 0.05 : 0.02)], [cx + dx + 0.11, cy + 0.27 + (sad ? Math.sign(dx) * 0.05 : 0.02)]));
-  const mouth = sad ? crescent(cx, cy - 0.36, 0.2, 0.12, 0.07, false) : crescent(cx, cy - 0.2, 0.22, -0.16, 0.09, false);
-  return turn2d([face, ...eyes, ...brows, mouth], cx, cy, tilt);
+  const face = maskFace(cx, cy);
+  const feats = sad
+    ? [crescent(cx - 0.17, cy + 0.12, 0.11, -0.06, 0.035), crescent(cx + 0.17, cy + 0.12, 0.11, -0.06, 0.035), line([cx - 0.29, cy + 0.25], [cx - 0.08, cy + 0.32]), line([cx + 0.29, cy + 0.25], [cx + 0.08, cy + 0.32]), crescent(cx, cy - 0.36, 0.2, 0.15, 0.09)]
+    : [crescent(cx - 0.17, cy + 0.12, 0.11, 0.08, 0.04), crescent(cx + 0.17, cy + 0.12, 0.11, 0.08, 0.04), crescent(cx, cy - 0.14, 0.27, -0.22, 0.12)];
+  return turn2d([face, ...feats], cx, cy, tilt);
 }
-/** Ribbon hanging from a mask: a gentle S-curve. */
-export const ribbon = (x, y, side) => line(...Array.from({ length: 14 }, (_, i) => { const u = i / 13; return [x + side * (0.08 + Math.sin(u * Math.PI * 1.6) * 0.12), y - u * 0.75]; }));
-/** The mask pair side by side in 2D (comedy left, tragedy right): the same layout as the 3D version, without
- * brows and ribbons, so few drones still show eyes and mouth. */
-export function masks(n) {
-  const [com, trag] = share(n, [1, 1]), plain = (paths) => paths.filter((_, i) => i !== 3 && i !== 4);
-  return [...flat(sampleOutline(plain(maskPaths(-0.5, 0, 0.1, false)), com)), ...flat(sampleOutline(plain(maskPaths(0.5, 0.05, -0.1, true)), trag))];
+const inside = (poly2, x, y) => { let c = false; for (let i = 0, j = poly2.length - 1; i < poly2.length; j = i++) { const [xi, yi] = poly2[i], [xj, yj] = poly2[j]; if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) c = !c; } return c; };
+export const MASKS = { tragedy: [-0.33, -0.12, -0.28], comedy: [0.3, 0.12, 0.22] };
+/** The pair as in the classic icon: tragedy behind on the left, comedy overlapping it on the right; whatever of the
+ * tragedy lies behind the comedy stays out of the picture. Returns [tragedy points, comedy points]. */
+export function maskPair(n) {
+  const [trag, com] = share(n, [1, 1.15]), front = maskPaths(...MASKS.comedy, false);
+  const hidden = front[0].pts, back = sampleOutline(maskPaths(...MASKS.tragedy, true), trag * 2).filter(([x, y]) => !inside(hidden, x, y));
+  return [flat(evenSubset(back.map(([x, y]) => [x, y, 0]), trag).map(([x, y]) => [x, y])), flat(sampleOutline(front, com))];
 }
-/** A mask as a 3D body: all features on the front, only the face rim repeated behind it, so eyes and mouth stay
- * readable while the rim shows the depth. */
+/** A mask as a 3D body: features on the front, the face rim repeated behind it to show the depth. */
 export function mask3d(n, sad = false, cx = 0, cy = 0, tilt = 0, depth = 0.24) {
   const [front, back] = share(n, [3, 1]), paths = maskPaths(cx, cy, tilt, sad);
   return [...flat(sampleOutline(paths, front), depth / 2), ...flat(sampleOutline([paths[0]], back), -depth / 2)];
 }
-/** The mask pair side by side in 3D (comedy left, tragedy right), each hanging from a ribbon. */
-export function masks3d(n) {
-  const [trag, com, rib] = share(n, [4, 4, 1.2]);
-  return [...mask3d(trag, true, 0.5, 0.05, -0.1), ...mask3d(com, false, -0.5, 0, 0.1), ...flat(sampleOutline([ribbon(-0.93, 0.1, -1), ribbon(0.95, 0.15, 1)], rib))];
+/** The pair in 3D: tragedy further back, comedy in front. Returns [tragedy points, comedy points]. */
+export function maskPair3d(n) {
+  const [trag, com] = share(n, [1, 1.15]);
+  return [mask3d(trag, true, ...MASKS.tragedy).map(([x, y, z]) => [x - 0.08, y, z - 0.25]), mask3d(com, false, ...MASKS.comedy).map(([x, y, z]) => [x + 0.05, y, z + 0.15])];
 }
 
 /** Stage curtain: two drapes under a scalloped valance; open = 0 closed, 1 gathered and tied back at the sides. */
@@ -169,11 +152,6 @@ export function torusRing(n, R = 1, tube = 0.12) {
   const strands = 3, around = Math.ceil(n / strands);
   return Array.from({ length: n }, (_, i) => { const u = (Math.floor(i / strands) / around) * TAU, v = ((i % strands) / strands) * TAU, r = R + tube * Math.cos(v); return [r * Math.cos(u), r * Math.sin(u), tube * Math.sin(v)]; });
 }
-/** Headframe without its sheave wheels (they turn separately). */
-export const frame3d = (n) => extrudePaths(headframe.filter((p) => p.closed === false), n, 0.35);
-export const WHEELS = [[-0.17, 0.72, 0.17], [0.17, 0.72, 0.17]];
-/** A sheave wheel: rim and three spokes, so its turning shows. */
-export const wheel = (n, cx, cy, r) => flat(sampleOutline([circle(cx, cy, r, 40), ...[0, 1, 2].map((k) => { const a = (k / 3) * Math.PI; return line([cx - Math.cos(a) * r, cy - Math.sin(a) * r], [cx + Math.cos(a) * r, cy + Math.sin(a) * r]); })], n));
 /** Clock rim and ticks without hands, as a 3D body. */
 export function clockRim(n, depth) {
   const ticks = Array.from({ length: 12 }, (_, i) => { const t = (i / 12) * TAU; return line([Math.sin(t) * 0.78, Math.cos(t) * 0.78], [Math.sin(t) * 0.9, Math.cos(t) * 0.9]); });
@@ -181,3 +159,44 @@ export function clockRim(n, depth) {
 }
 /** A clock hand pointing at twelve, n drones from the centre outwards; turned by the live motion. */
 export const hand = (n, length, z = 0) => Array.from({ length: n }, (_, i) => [0, (length * (i + 0.5)) / n, z]);
+
+// ---------- Berlin: Fernsehturm and Brandenburger Tor ----------
+const towerProfile = [[0.09, -0.95], [0.075, -0.4], [0.06, 0.2], [0.13, 0.25], [0.2, 0.33], [0.225, 0.42], [0.2, 0.51], [0.13, 0.59], [0.05, 0.63], [0.035, 0.68]];
+export const TOWER_SPHERE = [0, 0.42, 0.225];
+/** Berliner Fernsehturm, front view: shaft, sphere with its band, antenna. */
+export function tower(n) {
+  const shaft = [line([-0.09, -0.95], [-0.06, 0.24]), line([0.09, -0.95], [0.06, 0.24])];
+  const paths = [...shaft, circle(0, 0.42, 0.225, 60), line([-0.225, 0.4], [0.225, 0.4]), line([-0.2, 0.47], [0.2, 0.47]), line([-0.05, 0.63], [-0.035, 0.7]), line([0.05, 0.63], [0.035, 0.7]), line([0, 0.7], [0, 1.25]), line([-0.15, -0.95], [0.15, -0.95])];
+  return flat(sampleOutline(paths, n));
+}
+/** The tower as a 3D wireframe: six profile lines, rings around the sphere, the antenna. */
+export function tower3d(n) {
+  const M = 6, [body, rings, ant] = share(n, [5, 2.4, 1]);
+  const per = share(body, Array(M).fill(1)), profile = line(...towerProfile.map(([r, y]) => [r, y]));
+  const meridians = per.flatMap((m, k) => { const a = (k / M) * TAU; return sampleOutline([profile], m).map(([r, y]) => [Math.cos(a) * r, y, Math.sin(a) * r]); });
+  const lat = lathe([[0.16, 0.3], [0.215, 0.37], [0.225, 0.42], [0.215, 0.47], [0.16, 0.54]], rings);
+  const antenna = Array.from({ length: ant }, (_, i) => [0, 0.7 + (0.55 * (i + 0.5)) / ant, 0]);
+  return [...meridians, ...lat, ...antenna];
+}
+/** Radio waves around the sphere: three arcs open towards the ground. */
+export const waves = (n) => flat(sampleOutline([0.42, 0.62, 0.82].map((r) => arc(0, 0.42, r, -0.5, Math.PI + 0.5, 30)), n));
+/** Brandenburger Tor: six columns, entablature, attic and the quadriga on top. */
+export function gatePaths() {
+  const cols = [-0.9, -0.56, -0.2, 0.2, 0.56, 0.9].map((x) => line([x, -0.7], [x, 0.18]));
+  const quadriga = [arc(-0.18, 0.62, 0.07, 0, Math.PI, 6), arc(-0.06, 0.64, 0.07, 0, Math.PI, 6), arc(0.06, 0.64, 0.07, 0, Math.PI, 6), arc(0.18, 0.62, 0.07, 0, Math.PI, 6), line([0, 0.6], [0, 0.86]), circle(0, 0.9, 0.05, 10)];
+  return [line([-1.05, -0.7], [1.05, -0.7]), ...cols, poly([-1.05, 0.18], [1.05, 0.18], [1.05, 0.38], [-1.05, 0.38]), poly([-0.45, 0.38], [0.45, 0.38], [0.45, 0.56], [-0.45, 0.56]), ...quadriga];
+}
+export const gate3d = (n) => extrudePaths(gatePaths(), n, 0.35);
+
+// ---------- Launch: rocket to the moon ----------
+/** The moon: a disc rim and three craters. */
+export const moon = (n, cx, cy, r) => flat(sampleOutline([circle(cx, cy, r, 80), circle(cx - r * 0.35, cy + r * 0.25, r * 0.18, 20), circle(cx + r * 0.3, cy - r * 0.15, r * 0.24, 24), circle(cx - r * 0.1, cy - r * 0.5, r * 0.12, 16)], n));
+
+// ---------- Hochzeit: heart with Amor's arrow ----------
+/** Amor's arrow from (x0, y0) (head) to (x1, y1) (fletching), as one line of drones with head and feathers. */
+export function arrowPaths(x0, y0, x1, y1) {
+  const a = Math.atan2(y1 - y0, x1 - x0), c = Math.cos(a), s2 = Math.sin(a), at = (u, v) => [x0 + c * u - s2 * v, y0 + s2 * u + c * v];
+  const L = Math.hypot(x1 - x0, y1 - y0);
+  return [line(at(0, 0), at(L, 0)), poly(at(0, 0), at(0.14, 0.07), at(0.14, -0.07)), ...[0, 0.08].flatMap((d) => [line(at(L - 0.12 - d, 0), at(L - d, 0.08)), line(at(L - 0.12 - d, 0), at(L - d, -0.08))])];
+}
+export { inside };

@@ -20,23 +20,23 @@ const v = (build, caption) => ({ build, caption });
 
 export const OCCASIONS = [
   { id: 'hochzeit', label: 'Hochzeit', anlass: 'privat', motifs: [
-    motif('herz', 'Herz', v('heart2d', 'Herz als Umriss'), v('heart3d', 'Volles 3D-Herz, das schlägt'), v('heartsStory', 'Amors Pfeil, ein schlagendes 3D-Herz und kreisende Herzen')),
-    motif('ringe', 'Ringe', v('proposal', 'Antrag: aus dem Ring werden zwei'), v('rings3d', 'Verschlungene 3D-Ringe mit Lichtlauf'), v('ringsStory', 'Antrag, aufsteigender Ring, zwei Ringe im Funkenregen')),
+    motif('herz', 'Herz', v('heart2d', 'Herz als Umriss'), v('heart3d', 'Volles 3D-Herz, das im Takt aufleuchtet'), v('heartsStory', 'Amors Pfeil trifft, das Herz wird voll, kleine Herzen kreisen')),
+    motif('ringe', 'Ringe', v('rings2d', 'Zwei Ringe'), v('rings3d', 'Verschlungene 3D-Ringe mit Lichtlauf'), v('ringsStory', 'Ein Ring findet den zweiten, sie verschlingen sich in 3D')),
   ] },
   { id: 'jubilaeum', label: 'Jubiläum', anlass: 'sonstiges', motifs: [
     motif('wappen', 'Wappen', v('shield', 'Wappenschild'), v('shield3d', '3D-Wappen mit eurer Zahl und Lichtschimmer'), v('shieldStory', 'Wappen, eure Zahl tritt hervor, Krone und kreisender Sternenkranz')),
-    motif('wahrzeichen', 'Wahrzeichen', v('zollverein', 'Beispiel: Fördergerüst von Zeche Zollverein'), v('zollverein3d', 'Das Fördergerüst in 3D, die Seilscheiben drehen'), v('zollvereinStory', 'Fördergerüst, aufsteigende Funken, ein Stern über der Zeche')),
+    motif('wahrzeichen', 'Wahrzeichen', v('tower', 'Beispiel: Berliner Fernsehturm'), v('tower3d', 'Der Fernsehturm in 3D, Licht läuft um die Kugel'), v('towerStory', 'Der Fernsehturm sendet und wird zum Brandenburger Tor')),
   ] },
   { id: 'launch', label: 'Launch', anlass: 'firma', motifs: [
-    motif('rakete', 'Rakete', v('rocket', 'Rakete als Umriss'), v('rocket3d', '3D-Rakete schwebt und rollt'), v('rocketStory', 'Zündung, Start und Flug zu den Sternen')),
-    motif('logo', 'Logo', v('logo', 'Beispiel-Logo'), v('logo3d', 'Beispiel-Logo in 3D mit Lichtschimmer'), v('logoStory', 'Ein Funkenwirbel verdichtet sich zum Beispiel-Logo')),
+    motif('rakete', 'Rakete', v('rocket', 'Rakete als Umriss'), v('rocket3d', '3D-Rakete schwebt und dreht sich'), v('rocketStory', 'Startklar, Abheben mit funkelnder Spur, Landung auf dem Mond')),
+    motif('logo', 'Logo', v('logo', 'Beispiel-Logo'), v('logo3d', 'Beispiel-Logo in 3D mit Lichtschimmer'), v('logoStory', 'Ein Funkenwirbel dreht sich ein und wird zum Beispiel-Logo')),
   ] },
   { id: 'kultur', label: 'Kultur', anlass: 'sonstiges', motifs: [
-    motif('maske', 'Maske', v('masks', 'Theatermasken'), v('masks3d', 'Die Masken in 3D, an Bändern schwingend'), v('maskStory', 'Komödie wird Tragödie, dann der Teufel aus der Show Bokkenrijders')),
-    motif('vorhang', 'Vorhang', v('curtain', 'Vorhang zu'), v('curtainStar', 'Vorhang auf für einen 3D-Stern'), v('curtainStory', 'Wehender Vorhang, Goldregen, ein Stern steigt auf')),
+    motif('maske', 'Maske', v('masks', 'Theatermasken: Komödie und Tragödie'), v('masks3d', 'Die Masken in 3D'), v('maskStory', 'Komödie wird Tragödie, dann der Teufel aus der Show Bokkenrijders')),
+    motif('vorhang', 'Vorhang', v('curtain', 'Vorhang zu'), v('curtainStar', 'Vorhang auf für einen 3D-Stern'), v('curtainStory', 'Vorhang auf, Goldregen, ein Stern steigt auf')),
   ] },
   { id: 'silvester', label: 'Silvester', anlass: 'stadt', motifs: [
-    motif('feuerwerk', 'Feuerwerk', v('burst2d', 'Feuerwerksstern'), v('burst3d', 'Eine 3D-Feuerwerkskugel explodiert aus der Mitte'), v('fireworkStory', 'Drei Raketen steigen auf und zünden nacheinander')),
-    motif('uhr', 'Uhr', v('clock', 'Fünf vor zwölf'), v('clock3d', '3D-Uhr, die Zeiger laufen'), v('clockStory', 'Die Zeiger laufen auf zwölf, dann sprüht die Uhr Funken')),
+    motif('feuerwerk', 'Feuerwerk', v('burst2d', 'Feuerwerksstern'), v('burst3d', 'Eine 3D-Feuerwerkskugel öffnet sich immer wieder'), v('fireworkStory', 'Drei Raketen steigen auf und öffnen sich nacheinander')),
+    motif('uhr', 'Uhr', v('clock', 'Fünf vor zwölf'), v('clock3d', '3D-Uhr, die Zeiger laufen'), v('clockStory', 'Die Zeiger laufen auf zwölf, dann funkelt die Uhr')),
   ] },
 ];

@@ -38,14 +38,21 @@ export function assign(from, to) {
   return out;
 }
 
-/** Flight time for the longest path: real drones fly at a capped speed, short hops still take a calm moment. */
-export function flightTime(from, to, order, speed = 0.6, min = 2.4, max = 5) {
+/**
+ * Limits of real show drones in display units (one unit ≈ 22 m in a 300-drone picture): about 8 m/s and
+ * 5 m/s². show-physics.spec.ts holds every scene to them (plus a margin for the flow drift and frame jitter).
+ */
+export const LIMITS = { speed: 0.38, accel: 0.22 };
+
+/** Flight time for the longest path, so that no drone exceeds the speed and acceleration limits on a smootherstep
+ * profile (peak speed 1.875·d/T, peak acceleration 5.77·d/T²); short hops still take a calm moment. */
+export function flightTime(from, to, order, min = 2.4, max = 12) {
   let longest = 0;
   for (let i = 0; i < order.length; i++) {
     const a = i * 3, b = order[i] * 3;
     longest = Math.max(longest, Math.hypot(from[a] - to[b], from[a + 1] - to[b + 1], from[a + 2] - to[b + 2]));
   }
-  return Math.min(max, Math.max(min, longest / speed));
+  return Math.min(max, Math.max(min, (1.875 * longest) / LIMITS.speed, Math.sqrt((5.7735 * longest) / LIMITS.accel)));
 }
 
 /** Smootherstep: zero speed and zero acceleration at take-off and arrival. */
@@ -56,7 +63,7 @@ export const ease = (u) => (u <= 0 ? 0 : u >= 1 ? 1 : u * u * u * (u * (u * 6 - 
  * points get nearly the same velocity, so a swarm sampling it moves in coherent swirling streams. Writes into out.
  */
 export function flow(x, y, z, t, out) {
-  const A = 1, B = 0.82, C = 0.62, s = 2.4, ph = t * 0.35;
+  const A = 1, B = 0.82, C = 0.62, s = 1.6, ph = t * 0.12;
   const X = x * s + ph, Y = y * s - ph * 0.7, Z = z * s + ph * 0.5;
   out[0] = A * Math.sin(Z) + C * Math.cos(Y);
   out[1] = B * Math.sin(X) + A * Math.cos(Z);
@@ -67,11 +74,11 @@ export function flow(x, y, z, t, out) {
 const tmp = [0, 0, 0];
 /**
  * Position of one drone at flight progress u ∈ [0, 1] between a and b (arrays or offsets). The flow lifts the path
- * sideways in the middle of the flight only (sin πu), scaled with the distance, so arrival is exact.
+ * sideways in the middle of the flight only (sin² πu: zero and flat at both ends), scaled with the distance.
  */
 export function along(ax, ay, az, bx, by, bz, u, t, out) {
   const e = ease(u), x = ax + (bx - ax) * e, y = ay + (by - ay) * e, z = az + (bz - az) * e;
-  const d = Math.hypot(bx - ax, by - ay, bz - az), amp = Math.sin(Math.PI * Math.min(1, Math.max(0, u))) * Math.min(0.28, 0.08 + d * 0.16);
+  const d = Math.hypot(bx - ax, by - ay, bz - az), amp = Math.sin(Math.PI * Math.min(1, Math.max(0, u))) ** 2 * Math.min(0.14, 0.04 + d * 0.07); // sin²: no sideways kick at take-off or arrival
   flow(x, y, z, t, tmp);
   out[0] = x + tmp[0] * amp; out[1] = y + tmp[1] * amp * 0.8; out[2] = z + tmp[2] * amp;
   return out;

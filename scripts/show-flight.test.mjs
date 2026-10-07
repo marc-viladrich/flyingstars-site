@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { assign, flightTime, ease, flow, along } from '../src/scripts/show-flight.js';
+import { assign, flightTime, ease, flow, along, LIMITS } from '../src/scripts/show-flight.js';
 
 const flat = (pts) => Float64Array.from(pts.flat());
 const cost = (a, b, order) => { let s = 0; for (let i = 0; i < order.length; i++) for (let k = 0; k < 3; k++) s += (a[i * 3 + k] - b[order[i] * 3 + k]) ** 2; return s; };
@@ -33,8 +33,9 @@ test('Alle Drohnen kommen gleichzeitig und exakt an', () => {
   along(0, 0, 0, 1, 2, 3, 0, 5, out);
   assert.deepEqual(out.map((v) => +v.toFixed(9)), [0, 0, 0]);
   assert.equal(ease(0.5), 0.5);
-  const a = flat([[0, 0, 0]]), b = flat([[3, 0, 0]]);
-  assert.equal(flightTime(a, b, [0]), 5);
+  const a = flat([[0, 0, 0]]), b = flat([[1.5, 0, 0]]);
+  const T = flightTime(a, b, [0]);
+  assert.ok((1.875 * 1.5) / T <= LIMITS.speed + 1e-9 && (5.7735 * 1.5) / T ** 2 <= LIMITS.accel + 1e-9, 'peak speed and acceleration within limits');
   assert.equal(flightTime(a, a, [0]), 2.4);
 });
 
