@@ -45,10 +45,16 @@ if (form) {
     const input = document.createElement('input'); input.type = 'hidden'; input.name = 'drohnen'; input.value = String(drones); form.append(input);
   }
   select.addEventListener('change', () => form.querySelector('[name=drohnen]')?.remove());
-  // Text typed into the price calculator's sky preview, written into the message as an editable draft.
+  // Text typed into the price calculator's sky preview and the show put together in the configurator, written into
+  // the message as an editable draft. Values are only assigned, never parsed as HTML.
   const skyText = params.get('text')?.replace(/\s+/g, ' ').trim().slice(0, 60);
+  const showSummary = params.get('show')?.replace(/\r/g, '').trim().slice(0, 600);
   const message = form.querySelector<HTMLTextAreaElement>('[name=message]');
-  if (skyText && message && !message.value) message.value = `Text am Himmel: ${skyText}`;
+  const draft = [showSummary, skyText && `Text am Himmel: ${skyText}`].filter(Boolean).join('\n');
+  if (draft && message && !message.value) message.value = draft;
+  const occasion = params.get('anlass');
+  const occasionInput = occasion ? [...form.querySelectorAll<HTMLInputElement>('[name=anlass]')].find((input) => input.value === occasion) : undefined;
+  if (occasionInput && !form.querySelector('[name=anlass]:checked')) occasionInput.checked = true;
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const invalid = steps.findIndex((fieldset) => !validate(fieldset));

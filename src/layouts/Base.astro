@@ -4,15 +4,15 @@ import '../styles/global.css';
 import { site } from '../site.config';
 import Logo from '../components/Logo.astro';
 import { optimizedImage } from '../lib/media';
-interface Props { title: string; description: string; noindex?: boolean; canonicalPath?: string; image?: string; navSection?: string; }
-const { title, description, noindex = false, canonicalPath, image, navSection } = Astro.props;
+interface Props { title: string; description: string; noindex?: boolean; canonicalPath?: string; image?: string; navSection?: string; fullBleed?: boolean; }
+const { title, description, noindex = false, canonicalPath, image, navSection, fullBleed: bleed = false } = Astro.props;
 const canonical = new URL(canonicalPath ?? Astro.url.pathname, Astro.site);
 const current = Astro.url.pathname;
 // Case pages and project details belong to the "Projekte" area of the main navigation.
 const section = navSection ?? (current.startsWith('/projekte/') ? '/projekte/' : undefined);
 const navState = (href: string) => current === href ? 'page' : section === href ? 'true' : undefined;
 const social = image ? await optimizedImage(image, 960, undefined, 'jpg') : undefined;
-const fullBleed = ['/', '/drohnenshow-preise/', '/musikalischer-teaser-bokkenrijders/', '/nfl-berlin-game/', '/exploring-reinvented-der-neue-ford-explorer/', '/puma-bundesliga/'].includes(current) || current.startsWith('/projekte/');
+const fullBleed = bleed || ['/', '/drohnenshow-preise/', '/musikalischer-teaser-bokkenrijders/', '/nfl-berlin-game/', '/exploring-reinvented-der-neue-ford-explorer/', '/puma-bundesliga/'].includes(current) || current.startsWith('/projekte/');
 const eco = await optimizedImage('https://flyingstars.art/wp-content/uploads/2024/10/NATURSTROM-Logo_weiss.png', 160);
 ---
 <!doctype html>
