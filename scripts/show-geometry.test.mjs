@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { sampleOutline, circle, heartOutline, rings, clock, star, extrude, torusPair, burstSphere, evenSubset } from '../src/scripts/show-geometry.js';
-import { occasions, showFor, STEPS, PACKAGE_ORDER } from '../src/content/show-configurator.js';
+import { OCCASIONS, STEPS, PACKAGE_ORDER } from '../src/content/show-configurator.js';
+import * as shapes from '../src/scripts/show-shapes.js';
 
 // The drone count of a package must be the drone count in the picture.
 for (const n of [100, 200, 300]) {
@@ -26,21 +27,26 @@ test('Gleichmäßige Teilmenge behält die ganze Form', () => {
   assert.ok(Math.max(...sub.map((p) => p[0])) > 590 && Math.min(...sub.map((p) => p[0])) < 10);
 });
 
-test('Jede höhere Stufe zeigt alles der niedrigeren und mindestens ein neues Motiv', () => {
-  assert.deepEqual(STEPS.map((s) => s.pkg), PACKAGE_ORDER);
-  for (const occasion of occasions()) {
-    for (let k = 1; k < PACKAGE_ORDER.length; k++) {
-      const lower = showFor(occasion, PACKAGE_ORDER[k - 1]).map((s) => s.id), higher = showFor(occasion, PACKAGE_ORDER[k]).map((s) => s.id);
-      assert.ok(lower.every((id) => higher.includes(id)), `${occasion.id}: ${PACKAGE_ORDER[k]} drops a motif`);
-      assert.ok(higher.length > lower.length, `${occasion.id}: ${PACKAGE_ORDER[k]} adds nothing`);
-    }
+test('Motivformen haben genau die verlangte Punktzahl', () => {
+  for (const n of [100, 200, 300]) for (const name of ['proposal', 'twoRings', 'shield', 'shield3d', 'zollverein', 'zollverein3d', 'rocket', 'rocket3d', 'masks', 'mask3d', 'curtain', 'burst2d', 'bursts3d', 'sparkleShell']) {
+    const pts = shapes[name](n);
+    assert.equal(pts.length, n, `${name} ${n}`);
+    assert.ok(pts.every((p) => p.every(Number.isFinite)), `${name} ${n} has non-finite coordinates`);
   }
+  assert.equal(shapes.curtain(150, 1).length, 150);
+  assert.equal(shapes.clockFace(200, 6, 0.3).length, 200);
 });
 
-test('Anlässe zeigen unterschiedliche Motive', () => {
-  const sets = occasions().map((o) => new Set(o.scenes.filter((s) => s.kind !== 'stars' && s.kind !== 'sparks').map((s) => s.kind + (s.text || s.texts?.join('') || ''))));
-  for (let i = 0; i < sets.length; i++) for (let j = i + 1; j < sets.length; j++) {
-    const shared = [...sets[i]].filter((x) => sets[j].has(x));
-    assert.ok(shared.length <= 1, `occasions ${i} and ${j} share ${shared.join(', ')}`);
+test('Jeder Anlass hat zwei Motive mit je einer Fassung pro Paket', () => {
+  assert.deepEqual(STEPS.map((s) => s.pkg), PACKAGE_ORDER);
+  for (const occasion of OCCASIONS) {
+    assert.equal(occasion.motifs.length, 2, occasion.id);
+    for (const motif of occasion.motifs) {
+      const builds = PACKAGE_ORDER.map((pkg) => motif.tiers[pkg]?.build);
+      assert.ok(builds.every(Boolean), `${occasion.id}/${motif.id} misses a version`);
+      assert.equal(new Set(builds).size, 3, `${occasion.id}/${motif.id}: every package needs its own version`);
+    }
   }
+  const all = OCCASIONS.flatMap((o) => o.motifs.flatMap((m) => Object.values(m.tiers).map((t) => t.build)));
+  assert.equal(new Set(all).size, all.length, 'motif versions are not shared between occasions');
 });

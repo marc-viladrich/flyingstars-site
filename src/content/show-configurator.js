@@ -1,82 +1,42 @@
 /**
- * Show configurator prototype v3 (Marc, 7 October 2026): two choices only.
- *   Anlass decides WHAT is in the sky (example motifs).
- *   Aufwand decides HOW much: one step per package, so the price changes exactly when the slider changes.
- * Each occasion lists its motifs with the package they first appear in. The preview of a package plays every motif up
- * to that package, so a higher step always shows everything of the lower ones plus something new (unit-tested).
+ * Show configurator prototype v4 (Marc, 7 October 2026). Two choices:
+ *   Anlass picks two motifs; Aufwand picks the package (one step per package, the only price driver).
+ * Every motif has one version per package, so the slider shows the SAME subject growing:
+ *   SPARK = a 2D template from the catalogue, HORIZON = one full 3D object, ODYSSEY = several 3D objects or a 3D
+ *   animation. `build` names the picture builder in src/scripts/show-scenes.js.
  * Package texts are quoted from the client's reference; prices come from show-packages.ts only.
  */
 
-/** @typedef {'SPARK'|'HORIZON'|'ODYSSEY'} Pkg */
 export const PACKAGE_ORDER = ['SPARK', 'HORIZON', 'ODYSSEY'];
 
 export const STEPS = [
-  { pkg: 'SPARK', label: 'Klassische Bilder', includes: 'vordefinierte Formationen wie Herzen oder Ringe und bis zu vier eigene Elemente' },
-  { pkg: 'HORIZON', label: 'Mit Bewegung', includes: 'alles aus SPARK plus individuelle 2D-Animationen und einfache 3D-Elemente' },
-  { pkg: 'ODYSSEY', label: 'Mit 3D-Animation', includes: 'alles aus HORIZON plus komplexe 3D-Animationen und volumetrische Effekte' },
+  { pkg: 'SPARK', label: 'Klassisch in 2D', includes: 'vordefinierte Formationen wie Herzen oder Ringe und bis zu vier eigene Elemente' },
+  { pkg: 'HORIZON', label: 'Mit 3D', includes: 'alles aus SPARK plus individuelle 2D-Animationen und einfache 3D-Elemente' },
+  { pkg: 'ODYSSEY', label: 'Komplexes 3D', includes: 'alles aus HORIZON plus komplexe 3D-Animationen und volumetrische Effekte' },
 ];
 
-/**
- * @typedef {{ id: string, kind: string, label: string, from: Pkg, text?: string, texts?: string[] }} Scene
- * kind: heart | heartbeat | heart3d | rings | rings3d | stars | sparks | globe | star3d | burst3d | clock | text |
- *       morph (texts one after another) | logo | logo3d | text3d | figure
- */
-const nextYear = () => String(new Date().getFullYear() + 1);
+const motif = (id, label, spark, horizon, odyssey) => ({ id, label, tiers: { SPARK: spark, HORIZON: horizon, ODYSSEY: odyssey } });
+const v = (build, caption) => ({ build, caption });
 
-/** @returns {{ id: string, label: string, anlass: string, scenes: Scene[] }[]} */
-export function occasions() {
-  const year = nextYear();
-  return [
-    { id: 'hochzeit', label: 'Hochzeit', anlass: 'privat', scenes: [
-      { id: 'herz', kind: 'heart', label: 'Herz', from: 'SPARK' },
-      { id: 'initialen', kind: 'text', text: 'A & T', label: 'Beispiel: eure Initialen', from: 'SPARK' },
-      { id: 'herzschlag', kind: 'heartbeat', label: 'Schlagendes Herz', from: 'HORIZON' },
-      { id: 'ringe', kind: 'rings', label: 'Zwei Ringe', from: 'SPARK' },
-      { id: 'herz3d', kind: 'heart3d', label: 'Drehendes 3D-Herz', from: 'HORIZON' },
-      { id: 'ringe3d', kind: 'rings3d', label: 'Ineinander drehende 3D-Ringe', from: 'ODYSSEY' },
-      { id: 'ja', kind: 'text', text: 'JA', label: 'Beispiel: „Ja“', from: 'SPARK' },
-    ] },
-    { id: 'jubilaeum', label: 'Jubiläum', anlass: 'sonstiges', scenes: [
-      { id: 'sterne', kind: 'stars', label: 'Sternenhimmel', from: 'SPARK' },
-      { id: 'zahl', kind: 'text', text: '125', label: 'Beispiel: eure Jubiläumszahl', from: 'SPARK' },
-      { id: 'hochzaehlen', kind: 'morph', texts: ['100', '125'], label: 'Die Zahl zählt hoch', from: 'HORIZON' },
-      { id: 'funken', kind: 'sparks', label: 'Funken', from: 'SPARK' },
-      { id: 'stern3d', kind: 'star3d', label: 'Drehender 3D-Stern', from: 'HORIZON' },
-      { id: 'zahl3d', kind: 'text3d', text: '125', label: 'Aus der Weltkugel wird die 3D-Zahl', from: 'ODYSSEY' },
-      { id: 'danke', kind: 'text', text: 'DANKE', label: 'Beispiel: „Danke“', from: 'SPARK' },
-    ] },
-    { id: 'launch', label: 'Launch', anlass: 'firma', scenes: [
-      { id: 'sterne', kind: 'stars', label: 'Sternenhimmel', from: 'SPARK' },
-      { id: 'claim', kind: 'text', text: 'NEU', label: 'Beispiel: euer Claim', from: 'SPARK' },
-      { id: 'bald', kind: 'morph', texts: ['BALD', 'JETZT'], label: 'Aus „bald“ wird „jetzt“', from: 'HORIZON' },
-      { id: 'funken', kind: 'sparks', label: 'Funken', from: 'SPARK' },
-      { id: 'kugel', kind: 'globe', label: 'Drehende Weltkugel', from: 'HORIZON' },
-      { id: 'logo3d', kind: 'logo3d', label: 'Beispiel-Logo entsteht in 3D', from: 'ODYSSEY' },
-      { id: 'logo', kind: 'logo', label: 'Beispiel-Logo', from: 'SPARK' },
-    ] },
-    { id: 'kultur', label: 'Kultur', anlass: 'sonstiges', scenes: [
-      { id: 'sterne', kind: 'stars', label: 'Sternenhimmel', from: 'SPARK' },
-      { id: 'premiere', kind: 'text', text: 'PREMIERE', label: 'Beispiel: euer Titel', from: 'SPARK' },
-      { id: 'vorhang', kind: 'morph', texts: ['VORHANG', 'AUF'], label: 'Vorhang auf', from: 'HORIZON' },
-      { id: 'funken', kind: 'sparks', label: 'Funken', from: 'SPARK' },
-      { id: 'stern3d', kind: 'star3d', label: 'Drehender 3D-Stern', from: 'HORIZON' },
-      { id: 'figur', kind: 'figure', label: 'Beispiel aus unserer Musical-Show Bokkenrijders', from: 'ODYSSEY' },
-      { id: 'bravo', kind: 'text', text: 'BRAVO', label: 'Beispiel: „Bravo“', from: 'SPARK' },
-    ] },
-    { id: 'silvester', label: 'Silvester', anlass: 'stadt', scenes: [
-      { id: 'uhr', kind: 'clock', label: 'Uhr auf zwölf', from: 'SPARK' },
-      { id: 'countdown', kind: 'morph', texts: ['3', '2', '1'], label: 'Countdown', from: 'HORIZON' },
-      { id: 'jahr', kind: 'text', text: year, label: 'Das neue Jahr', from: 'SPARK' },
-      { id: 'funken', kind: 'sparks', label: 'Funken', from: 'SPARK' },
-      { id: 'stern3d', kind: 'star3d', label: 'Drehender 3D-Stern', from: 'HORIZON' },
-      { id: 'feuerwerk3d', kind: 'burst3d', label: '3D-Feuerwerk ohne Knall', from: 'ODYSSEY' },
-      { id: 'prosit', kind: 'text', text: 'PROSIT', label: 'Beispiel: „Prosit“', from: 'SPARK' },
-    ] },
-  ];
-}
-
-/** Motifs of the preview for a package: every motif up to that package, in show order. */
-export function showFor(occasion, pkg) {
-  const rank = PACKAGE_ORDER.indexOf(pkg);
-  return occasion.scenes.filter((scene) => PACKAGE_ORDER.indexOf(scene.from) <= rank);
-}
+export const OCCASIONS = [
+  { id: 'hochzeit', label: 'Hochzeit', anlass: 'privat', motifs: [
+    motif('herz', 'Herz', v('heart2d', 'Herz als Umriss'), v('heart3d', 'Volles 3D-Herz'), v('hearts3d', '3D-Herz mit kleinen Herzen')),
+    motif('ringe', 'Ringe', v('proposal', 'Antrag: aus dem Ring werden zwei'), v('rings3d', 'Ineinander verschlungene 3D-Ringe'), v('rings3dSparkle', '3D-Ringe im Funkenregen')),
+  ] },
+  { id: 'jubilaeum', label: 'Jubiläum', anlass: 'sonstiges', motifs: [
+    motif('wappen', 'Wappen', v('shield', 'Wappenschild'), v('shield3d', '3D-Wappen mit eurer Zahl'), v('shieldCrown', '3D-Wappen mit Krone und Sternenkranz')),
+    motif('wahrzeichen', 'Wahrzeichen', v('zollverein', 'Beispiel: Fördergerüst von Zeche Zollverein'), v('zollverein3d', 'Das Fördergerüst in 3D'), v('zollvereinSparks', '3D-Fördergerüst mit aufsteigenden Funken')),
+  ] },
+  { id: 'launch', label: 'Launch', anlass: 'firma', motifs: [
+    motif('rakete', 'Rakete', v('rocket', 'Rakete als Umriss'), v('rocket3d', '3D-Rakete'), v('rocketLaunch', '3D-Rakete hebt mit Abgaswolke ab')),
+    motif('logo', 'Logo', v('logo', 'Beispiel-Logo'), v('logo3d', 'Beispiel-Logo in 3D'), v('logoFromSparks', 'Beispiel-Logo entsteht aus einer Funkenkugel')),
+  ] },
+  { id: 'kultur', label: 'Kultur', anlass: 'sonstiges', motifs: [
+    motif('maske', 'Maske', v('masks', 'Theatermasken'), v('mask3d', '3D-Maske'), v('devil', '3D-Maske aus unserer Musical-Show Bokkenrijders')),
+    motif('vorhang', 'Vorhang', v('curtain', 'Vorhang zu'), v('curtainStar', 'Vorhang auf für einen 3D-Stern'), v('curtainShower', 'Vorhang auf für 3D-Sternenregen')),
+  ] },
+  { id: 'silvester', label: 'Silvester', anlass: 'stadt', motifs: [
+    motif('feuerwerk', 'Feuerwerk', v('burst2d', 'Feuerwerksstern'), v('burst3d', '3D-Feuerwerkskugel'), v('bursts3d', 'Drei 3D-Feuerwerke')),
+    motif('uhr', 'Uhr', v('clock', 'Die Uhr läuft auf zwölf'), v('clock3d', '3D-Uhr schlägt zwölf'), v('clockBurst', '3D-Uhr zerfällt in Feuerwerk')),
+  ] },
+];

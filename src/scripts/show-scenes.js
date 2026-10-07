@@ -1,98 +1,86 @@
-// Builds the drone pictures of the configurator scenes with exactly the package's drone count, from FlyingStars' own
-// sources (3D heart formations, text planner, FlyingStars mark, Bokkenrijders show file) and the pure shapes in
-// show-geometry.js. A scene is { pictures: [pts, …], anim }; more than one picture means one transforms into the next.
+// Builds every motif version of the configurator with exactly the package's drone count. Sources: FlyingStars' own
+// heart formations, the FlyingStars mark, the real Bokkenrijders show file, the text planner and the shapes in
+// show-shapes.js. A scene is { pictures: [pts, …], anim, hold }; several pictures play once, one into the next.
+// anim "turn": a 3D object turns once around its own axis after it has formed, then rests.
 import logo from "../data/logo-dots.json";
 import { heartPicture } from "./heart-formation.js";
 import { loadTextEngine, textFormation } from "./text-formation.js";
-import { circle, sampleOutline, heartOutline, rings, clock, star, extrude, torusPair, burstSphere, evenSubset } from "./show-geometry.js";
+import { torusPair, burstSphere, star, extrude, evenSubset, sampleOutline, circle } from "./show-geometry.js";
+import { share, proposal, twoRings, shield, shield3d, crown, zollverein, zollverein3d, rocket, rocket3d, exhaust, masks, mask3d, curtain, clockFace, burst2d, bursts3d, sparkleShell } from "./show-shapes.js";
 
 let hearts = null, figure = null;
-const loadHearts = () => (hearts ||= import("./pricing-formations.js").then((m) => m.default));
-const loadFigure = () => (figure ||= fetch("/media/projekte/bokkenrijders/formation.json").then((r) => { if (!r.ok) throw new Error(`Formation HTTP ${r.status}`); return r.json(); }));
+const loadHearts = () => (hearts ||= import("./pricing-formations.js").then((m) => m.default).catch((e) => { hearts = null; throw e; }));
+const loadFigure = () => (figure ||= fetch("/media/projekte/bokkenrijders/formation.json").then((r) => { if (!r.ok) throw new Error(`Formation HTTP ${r.status}`); return r.json(); }).catch((e) => { figure = null; throw e; }));
 
 /** Loads the larger formation sources ahead of need, e.g. on the first interaction with the configurator. */
-export function preloadScenes() { loadHearts().catch(() => { hearts = null; }); loadFigure().catch(() => { figure = null; }); loadTextEngine().catch(() => {}); }
+export function preloadScenes() { loadHearts().catch(() => {}); loadFigure().catch(() => {}); loadTextEngine().catch(() => {}); }
 
-const seeded = (seed) => () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-const WARM = [246, 241, 232], GOLD = [255, 196, 92], PINK = [255, 92, 138], VIOLET = [219, 100, 232], CYAN = [51, 237, 242], BLUE = [90, 120, 255];
+const WARM = [246, 241, 232], GOLD = [255, 196, 92], PINK = [255, 92, 138], VIOLET = [219, 100, 232], CYAN = [51, 237, 242], BLUE = [90, 120, 255], ORANGE = [255, 140, 50];
 const mix = (a, b, u) => { const k = Math.max(0, Math.min(1, u)); return a.map((v, i) => Math.round(v + (b[i] - v) * k)); };
 const paint = (pts, color) => pts.map((p) => [p[0], p[1], p[2] || 0, ...(typeof color === "function" ? color(p) : color)]);
+const still = (pts) => pts.map((p) => [...p.slice(0, 6), 0]); // these drones stay put while the object turns
+const scale = (pts, s, dx = 0, dy = 0, dz = 0) => pts.map(([x, y, z, ...c]) => [x * s + dx, y * s + dy, (z || 0) * s + dz, ...c]);
 
-function stars(n) {
-  const rnd = seeded(11);
-  return Array.from({ length: n }, () => [(rnd() - 0.5) * 3, (rnd() - 0.5) * 1.6, (rnd() - 0.5) * 0.2, ...(rnd() < 0.2 ? GOLD : WARM)]);
+async function heartsAt(n, depth) {
+  const pic = heartPicture(await loadHearts(), n);
+  const pts = pic.hearts.flatMap((h) => h.pts).map(([x, y, z]) => [x / 30, y / 30, depth ? z / 30 : 0]);
+  return paint(evenSubset(pts, n), (p) => (depth ? mix(PINK, VIOLET, (p[2] + 0.6) / 1.2) : PINK));
 }
-function sparks(n) {
-  const rnd = seeded(23), rays = 18;
-  return Array.from({ length: n }, (_, i) => { const a = ((i % rays) / rays) * 6.283 + (rnd() - 0.5) * 0.08, r = 0.12 + rnd() * 0.88; return [Math.cos(a) * r, Math.sin(a) * r * 0.9, (rnd() - 0.5) * 0.3, ...mix(GOLD, [255, 120, 40], r)]; });
-}
-function globe(n) {
-  const GA = Math.PI * (3 - Math.sqrt(5));
-  return Array.from({ length: n }, (_, i) => { const y = 1 - (i / (n - 1)) * 2, r = Math.sqrt(1 - y * y), t = GA * i; return [Math.cos(t) * r, y, Math.sin(t) * r, ...mix(CYAN, BLUE, (y + 1) / 2)]; });
-}
-async function heart3d(n) {
-  const pic = heartPicture(await loadHearts(), Math.max(160, n));
-  // FlyingStars' own heart formation for this drone count: from 300 drones small hearts join the big one
-  return paint(evenSubset(pic.hearts.flatMap((h) => h.pts), n), (p) => mix(PINK, VIOLET, (p[2] + 20) / 40));
-}
-/** Text with exactly n drones. A text stays at most 80 m high (FlyingStars' rule in the text planner); the drones it
- * cannot use form a ring around it, so the picture still shows the whole package. */
-async function words(value, n) {
+/** Text points fitted into a box of the given half-width, centred on (cx, cy). */
+async function textIn(value, n, halfWidth, cx = 0, cy = 0, z = 0) {
   await loadTextEngine();
   const r = textFormation(value, n);
-  if (!r) return paint(sampleOutline([circle(0, 0, 1, 180)], n), GOLD); // a text the planner rejects still shows the package's drones
-  const pts = r.pts.slice(0, n), rest = n - pts.length;
-  if (rest <= 0) return paint(pts, WARM);
-  const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
-  const cx = (Math.min(...xs) + Math.max(...xs)) / 2, cy = (Math.min(...ys) + Math.max(...ys)) / 2;
-  const radius = 0.62 * Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys));
-  return [...paint(pts, WARM), ...paint(sampleOutline([circle(cx, cy, radius, 180)], rest), GOLD)];
+  if (!r) return paint(sampleOutline([circle(cx, cy, halfWidth * 0.6, 120)], n).map(([x, y]) => [x, y, z]), GOLD);
+  const pts = r.pts.slice(0, n), xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
+  const w = Math.max(...xs) - Math.min(...xs), mx = (Math.max(...xs) + Math.min(...xs)) / 2, my = (Math.max(...ys) + Math.min(...ys)) / 2, k = (halfWidth * 2) / w;
+  const out = pts.map(([x, y]) => [(x - mx) * k + cx, (y - my) * k + cy, z]);
+  return paint(out.concat(sampleOutline([circle(cx, cy, halfWidth * 1.15, 120)], n - out.length).map(([x, y]) => [x, y, z])), GOLD);
 }
-/** The FlyingStars mark inside a ring of the remaining drones, so every drone of the package is in the picture. */
-function logoFramed(n) {
-  const mark = logo.dots.map(([x, y, r, g, b]) => [x, y, 0, r, g, b]), rest = Math.max(0, n - mark.length);
-  return [...mark, ...paint(sampleOutline([circle(0, 0, 1.45, 180)], rest), GOLD)];
-}
+const mark = (z = 0) => logo.dots.map(([x, y, r, g, b]) => [x, y, z, r, g, b]);
+function logoFramed(n) { return [...mark(), ...paint(sampleOutline([circle(0, 0, 1.45, 180)], n - logo.dots.length), GOLD)]; }
 function logo3d(n) {
-  const depth = 0.35, mark = logo.dots, ringCount = Math.max(0, n - mark.length * 2);
-  const layers = [depth, -depth].flatMap((z) => mark.map(([x, y, r, g, b]) => [x, y, z, r, g, b]));
-  const ring = sampleOutline([circle(0, 0, 1.45, 180)], ringCount).map(([x, y]) => [x, y, 0, ...GOLD]);
-  return [...layers, ...ring];
+  const layers = [...mark(0.22), ...mark(-0.22)], rest = n - layers.length;
+  return [...layers, ...paint(sampleOutline([circle(0, 0, 1.45, 180)], rest), GOLD)];
 }
+async function devil(n) {
+  const data = await loadFigure(), mx = Math.max(...data.dots.map((d) => Math.max(Math.abs(d[0]), Math.abs(d[1]))));
+  return evenSubset(data.dots.map(([x, y, r, g, b, , z]) => [x / mx, y / mx, (z ?? 0) / mx, ...(r + g + b === 0 ? [70, 70, 70] : [r, g, b])]), n);
+}
+const star3d = (n, s = 0.5, dy = 0) => scale(paint(extrude(star(n), n, 0.35), GOLD), s, 0, dy);
 
-/** Pictures for one scene at the given drone count. */
-export async function buildScene(scene, n) {
-  switch (scene.kind) {
-    case "stars": return { pictures: [stars(n)], anim: "twinkle", fullSize: true }; // a sky stays sky-sized; more drones = denser
-    case "sparks": return { pictures: [sparks(n)], anim: "burst" };
-    case "heart": return { pictures: [paint(heartOutline(n), PINK)], anim: null };
-    case "heartbeat": return { pictures: [paint(heartOutline(n), PINK)], anim: "beat" };
-    case "heart3d": return { pictures: [await heart3d(n)], anim: "spin" };
-    case "rings": return { pictures: [paint(rings(n), GOLD)], anim: null };
-    case "rings3d": return { pictures: [paint(torusPair(n), (p) => mix(GOLD, WARM, (p[2] + 1) / 2))], anim: "spin" };
-    case "clock": return { pictures: [paint(clock(n), WARM)], anim: null };
-    case "star3d": return { pictures: [paint(extrude(star(n), n, 0.35), GOLD)], anim: "spin" };
-    case "globe": return { pictures: [globe(n)], anim: "spin" };
-    case "burst3d": return { pictures: [paint(burstSphere(n), (p) => mix(GOLD, VIOLET, Math.hypot(p[0], p[1], p[2])))], anim: "burst3d" };
-    case "logo": return { pictures: [logoFramed(n)], anim: null };
-    case "logo3d": return { pictures: [paint(burstSphere(n), GOLD), logo3d(n)], anim: "sway", hold: [1.6, 4] };
-    case "text": return { pictures: [await words(scene.text, n)], anim: null };
-    case "text3d": {
-      const front = (await words(scene.text, Math.floor(n / 2))).map((p) => [p[0], p[1], 0]);
-      if (!front.length) return { pictures: [globe(n)], anim: "spin" };
-      const depth = Math.max(...front.map((p) => Math.abs(p[1]))) * 0.35;
-      // the globe it grows out of is drawn at the text's size (text is in metres, the globe in units)
-      const span = Math.max(...front.map((p) => Math.max(Math.abs(p[0]), Math.abs(p[1])))) * 0.8;
-      const ball = globe(n).map(([x, y, z, r, g, b]) => [x * span, y * span, z * span, r, g, b]);
-      return { pictures: [ball, paint(extrude(front, n, depth), GOLD)], anim: "sway", hold: [1.6, 4] };
-    }
-    case "morph": return { pictures: await Promise.all(scene.texts.map((t) => words(t, n))), anim: null };
-    case "figure": {
-      const data = await loadFigure();
-      const mx = Math.max(...data.dots.map((d) => Math.max(Math.abs(d[0]), Math.abs(d[1]))));
-      const pts = data.dots.map(([x, y, r, g, b, , z]) => [x / mx, y / mx, (z ?? 0) / mx, ...(r + g + b === 0 ? [70, 70, 70] : [r, g, b])]);
-      return { pictures: [stars(n), evenSubset(pts, n)], anim: "sway", hold: [1.4, 4.2] };
-    }
-    default: return { pictures: [[]], anim: null };
+/** Pictures for one motif version at the given drone count. */
+export async function buildScene(version, n) {
+  switch (version.build) {
+    case "heart2d": return { pictures: [await heartsAt(n, false)] };
+    case "heart3d": return { pictures: [await heartsAt(n, true)], anim: "turn" };
+    case "hearts3d": return { pictures: [await heartsAt(n, true)], anim: "turn" };
+    case "proposal": return { pictures: [paint(proposal(n), WARM), paint(twoRings(n), GOLD)], hold: [2.6] };
+    case "rings3d": return { pictures: [paint(torusPair(n), (p) => mix(GOLD, WARM, (p[2] + 1) / 2))], anim: "turn" };
+    case "rings3dSparkle": { const [r, s] = share(n, [3, 1]); return { pictures: [[...paint(torusPair(r), (p) => mix(GOLD, WARM, (p[2] + 1) / 2)), ...paint(sparkleShell(s, 2.1), WARM)]], anim: "turn" }; }
+    case "shield": return { pictures: [paint(shield(n), WARM)] };
+    case "shield3d": { const [a, b] = share(n, [3, 1]); return { pictures: [[...paint(shield3d(a), WARM), ...(await textIn("125", b, 0.38, 0, 0.05, 0.16))]], anim: "turn" }; }
+    case "shieldCrown": { const [a, b, c, d] = share(n, [5, 2, 2, 2]); return { pictures: [[...paint(shield3d(a), WARM), ...(await textIn("125", b, 0.38, 0, 0.05, 0.16)), ...paint(crown(c), GOLD), ...scale(paint(sparkleShell(d, 1), GOLD), 1.5, 0, 0.1)]], anim: "turn" }; }
+    case "zollverein": return { pictures: [paint(zollverein(n), WARM)] };
+    case "zollverein3d": return { pictures: [paint(zollverein3d(n), WARM)], anim: "turn" };
+    case "zollvereinSparks": { const [a, b] = share(n, [3, 1]); return { pictures: [[...paint(zollverein3d(a), WARM), ...scale(paint(sparkleShell(b, 1), (p) => mix(GOLD, ORANGE, p[1] + 0.5)), 0.6, 0, 1.25)]], anim: "turn" }; }
+    case "rocket": return { pictures: [paint(rocket(n), WARM)] };
+    case "rocket3d": return { pictures: [paint(rocket3d(n), (p) => mix(WARM, CYAN, (p[2] + 0.2) / 0.4))], anim: "turn" };
+    case "rocketLaunch": { const [a, b] = share(n, [3, 1]); return { pictures: [paint(rocket3d(n), WARM), [...paint(rocket3d(a, 0.55), WARM), ...paint(exhaust(b, -0.05), (p) => mix(GOLD, ORANGE, -p[1]))]], hold: [2.2], anim: "turn" }; }
+    case "logo": return { pictures: [logoFramed(n)] };
+    case "logo3d": return { pictures: [logo3d(n)], anim: "turn" };
+    case "logoFromSparks": return { pictures: [paint(burstSphere(n), GOLD), logo3d(n)], hold: [1.8], anim: "turn" };
+    case "masks": return { pictures: [paint(masks(n), WARM)] };
+    case "mask3d": return { pictures: [paint(mask3d(n), WARM)], anim: "turn" };
+    case "devil": return { pictures: [paint(sparkleShell(n, 1.2), WARM), await devil(n)], hold: [1.8], anim: "turn" };
+    case "curtain": return { pictures: [paint(curtain(n, 0), [220, 60, 70])] };
+    case "curtainStar": { const [a, b] = share(n, [2, 1]); return { pictures: [paint(curtain(n, 0), [220, 60, 70]), [...still(paint(curtain(a, 1), [220, 60, 70])), ...star3d(b)]], hold: [2], anim: "turn" }; }
+    case "curtainShower": { const [a, b] = share(n, [2, 1]); return { pictures: [paint(curtain(n, 0), [220, 60, 70]), [...still(paint(curtain(a, 1), [220, 60, 70])), ...scale(paint(bursts3d(b, [[-0.25, 0.2, 0.5], [0.3, -0.1, 0.4]]), GOLD), 1, 0, 0)]], hold: [2], anim: "turn" }; }
+    case "burst2d": return { pictures: [paint(burst2d(n), (p) => mix(GOLD, ORANGE, Math.hypot(p[0], p[1])))] };
+    case "burst3d": return { pictures: [paint(burstSphere(n), (p) => mix(GOLD, VIOLET, Math.hypot(p[0], p[1], p[2])))], anim: "turn" };
+    case "bursts3d": return { pictures: [paint(bursts3d(n), (p) => (p[0] < -0.3 ? mix(GOLD, ORANGE, p[2] + 0.5) : p[0] > 0.3 ? mix(VIOLET, PINK, p[2] + 0.5) : mix(CYAN, BLUE, p[2] + 0.5)))], anim: "turn" };
+    case "clock": return { pictures: [paint(clockFace(n, 6), WARM), paint(clockFace(n, 0), WARM)], hold: [2.4] };
+    case "clock3d": return { pictures: [paint(clockFace(n, 6, 0.3), WARM), paint(clockFace(n, 0, 0.3), WARM)], hold: [2.4], anim: "turn" };
+    case "clockBurst": return { pictures: [paint(clockFace(n, 0, 0.3), WARM), paint(bursts3d(n), (p) => (p[0] < -0.3 ? GOLD : p[0] > 0.3 ? VIOLET : CYAN))], hold: [2.2], anim: "turn" };
+    default: return { pictures: [[]] };
   }
 }
