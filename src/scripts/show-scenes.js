@@ -81,7 +81,10 @@ export async function buildScene(scene, n) {
       const front = (await words(scene.text, Math.floor(n / 2))).map((p) => [p[0], p[1], 0]);
       if (!front.length) return { pictures: [globe(n)], anim: "spin" };
       const depth = Math.max(...front.map((p) => Math.abs(p[1]))) * 0.35;
-      return { pictures: [globe(n), paint(extrude(front, n, depth), GOLD)], anim: "sway", hold: [1.6, 4] };
+      // the globe it grows out of is drawn at the text's size (text is in metres, the globe in units)
+      const span = Math.max(...front.map((p) => Math.max(Math.abs(p[0]), Math.abs(p[1])))) * 0.8;
+      const ball = globe(n).map(([x, y, z, r, g, b]) => [x * span, y * span, z * span, r, g, b]);
+      return { pictures: [ball, paint(extrude(front, n, depth), GOLD)], anim: "sway", hold: [1.6, 4] };
     }
     case "morph": return { pictures: await Promise.all(scene.texts.map((t) => words(t, n))), anim: null };
     case "figure": {

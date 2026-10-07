@@ -42,7 +42,7 @@ export function occasions() {
       { id: 'hochzaehlen', kind: 'morph', texts: ['100', '125'], label: 'Die Zahl zählt hoch', from: 'HORIZON' },
       { id: 'funken', kind: 'sparks', label: 'Funken', from: 'SPARK' },
       { id: 'stern3d', kind: 'star3d', label: 'Drehender 3D-Stern', from: 'HORIZON' },
-      { id: 'zahl3d', kind: 'text3d', text: '125', label: 'Die Zahl dreht sich in 3D', from: 'ODYSSEY' },
+      { id: 'zahl3d', kind: 'text3d', text: '125', label: 'Aus der Weltkugel wird die 3D-Zahl', from: 'ODYSSEY' },
       { id: 'danke', kind: 'text', text: 'DANKE', label: 'Beispiel: „Danke“', from: 'SPARK' },
     ] },
     { id: 'launch', label: 'Launch', anlass: 'firma', scenes: [
