@@ -45,11 +45,11 @@ export function assign(from, to) {
  * guarantee is the character of real flight: smooth paths, bounded speed and acceleration, no jumps.
  * show-physics.spec.ts holds every scene to them (plus a margin for the flow drift and frame jitter).
  */
-export const LIMITS = { speed: 1.3, accel: 2.2 };
+export const LIMITS = { speed: 1.8, accel: 3 };
 
 /** Flight time for the longest path, so that no drone exceeds the speed and acceleration limits on a smootherstep
  * profile (peak speed 1.875·d/T, peak acceleration 5.77·d/T²); short hops still take a calm moment. */
-export function flightTime(from, to, order, min = 1.2, max = 5) {
+export function flightTime(from, to, order, min = 1.1, max = 3.2) {
   let longest = 0;
   for (let i = 0; i < order.length; i++) {
     const a = i * 3, b = order[i] * 3;

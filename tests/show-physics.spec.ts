@@ -4,8 +4,8 @@ import { test, expect, type Page } from '@playwright/test';
 // never jump (also not in the dark). Effects such as sparks, rain or a heartbeat must be made with light.
 // Display units. The preview runs as a time-lapse at the pace of the client's Vercel prototype (a real show takes
 // about three times as long); the limits guarantee smooth, bounded motion without jumps. Flight planning in
-// show-flight.js aims lower (1.3 and 2.2); the margin covers the flow drift and staggered starts.
-const LIMITS = { speed: 1.9, accel: 4 };
+// show-flight.js aims lower (1.8 and 3); the margin covers the flow drift and staggered starts.
+const LIMITS = { speed: 2.6, accel: 5.5 };
 const MOTIFS = ['hochzeit', 'jubilaeum', 'launch', 'kultur', 'silvester'].flatMap((o) => [[o, 0], [o, 1]] as const);
 
 /** Highest speed and acceleration of any drone over the recorded frames (regular frame intervals only). */

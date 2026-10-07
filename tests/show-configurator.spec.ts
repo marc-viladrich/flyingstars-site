@@ -65,28 +65,28 @@ test('Dasselbe Motiv wird mit dem Paket größer', async ({ page }) => {
   expect(widths[1] / widths[0]).toBeGreaterThan(1.4);
 });
 
-test('SPARK steht nach dem Aufbau still, HORIZON bewegt sich weiter', async ({ page }) => {
+test('SPARK und HORIZON bewegen sich nach dem Aufbau sanft weiter', async ({ page }) => {
   await page.goto('/show-konfigurator/');
   await occasion(page, 'launch');
-  await page.locator('#cfg-step').fill('0');
-  await expect(field(page)).toHaveAttribute('data-running', 'false', { timeout: 12_000 }); // a still picture: no more frames
-  await page.locator('#cfg-step').fill('1');
-  await expect(page.locator('#cfg-scene')).toHaveText('3D-Rakete schwebt und dreht sich');
-  await page.waitForTimeout(6000);
-  await expect(field(page)).toHaveAttribute('data-running', 'true'); // the 3D rocket keeps moving
   const frame = () => field(page).evaluate((c) => (c as HTMLCanvasElement).toDataURL());
-  const before = await frame(); await page.waitForTimeout(400);
-  expect(await frame()).not.toBe(before);
+  for (const [k, caption] of [['0', 'Rakete mit Flamme'], ['1', '3D-Rakete mit Flamme schwebt und dreht sich']]) {
+    await page.locator('#cfg-step').fill(k);
+    await expect(page.locator('#cfg-scene')).toHaveText(caption);
+    await page.waitForTimeout(5000);
+    await expect(field(page)).toHaveAttribute('data-running', 'true'); // the flame flickers, the rocket hovers
+    const before = await frame(); await page.waitForTimeout(400);
+    expect(await frame()).not.toBe(before);
+  }
 });
 
 test('ODYSSEY erzählt in Akten und lässt sich wiederholen', async ({ page }) => {
   await page.goto('/show-konfigurator/');
   await occasion(page, 'silvester'); await page.locator('#cfg-motifs button', { hasText: 'Uhr' }).click();
   await page.locator('#cfg-step').fill('2');
-  await expect(page.locator('#cfg-scene')).toHaveText('1/2 · Fünf vor zwölf');
-  await expect(page.locator('#cfg-scene')).toHaveText('2/2 · …Mitternacht: die Funken schwärmen aus', { timeout: 20_000 });
+  await expect(page.locator('#cfg-scene')).toHaveText('1/5 · Fünf vor zwölf');
+  await expect(page.locator('#cfg-scene')).toHaveText('2/5 · Mitternacht: die Funken schwärmen aus', { timeout: 20_000 });
   await page.locator('#cfg-replay').click();
-  await expect(page.locator('#cfg-scene')).toHaveText('1/2 · Fünf vor zwölf');
+  await expect(page.locator('#cfg-scene')).toHaveText('1/5 · Fünf vor zwölf');
 });
 
 test('Motive lassen sich per Tastatur wechseln', async ({ page }) => {
@@ -119,7 +119,7 @@ test('Die Anfrage übernimmt Anlass, Motiv und Paket', async ({ page }) => {
   const form = page.locator('#inquiry-form');
   await expect(form.locator('[name=paket]')).toHaveValue(/SPARK/);
   await expect(form.locator('[name=anlass][value=firma]')).toBeChecked();
-  await expect(form.locator('[name=message]')).toHaveValue('Anlass: Launch\nBeispielmotiv: Rakete – Rakete als Umriss\nAufwand: Klassisch in 2D (SPARK, ab 7.900 € netto, Einstiegspreis laut Konfigurator)');
+  await expect(form.locator('[name=message]')).toHaveValue('Anlass: Launch\nBeispielmotiv: Rakete – Rakete mit Flamme\nAufwand: Klassisch in 2D (SPARK, ab 7.900 € netto, Einstiegspreis laut Konfigurator)');
 });
 
 test('Nach schnellem Umschalten leuchten nie mehr Drohnen, als das Paket hat', async ({ page }) => {
@@ -135,19 +135,22 @@ test('Nach schnellem Umschalten leuchten nie mehr Drohnen, als das Paket hat', a
   expect(lit).toBeLessThanOrEqual(points);
 });
 
-test('Die Akte einer Geschichte lassen sich vor und zurück schalten', async ({ page }) => {
+test('Die Akte einer Geschichte lassen sich vor und zurück schalten, im Kreis', async ({ page }) => {
   await page.goto('/show-konfigurator/');
   await occasion(page, 'launch');
   await page.locator('#cfg-step').fill('2');
-  await expect(page.locator('#cfg-scene')).toHaveText('1/3 · Startklar');
-  await expect(page.locator('#cfg-prev')).toBeDisabled();
+  const scene = page.locator('#cfg-scene');
+  await expect(scene).toHaveText('1/4 · Startklar');
+  await page.locator('#cfg-prev').click(); // before the first act comes the last one
+  await expect(scene).toHaveText('4/4 · …und fliegt weiter durchs Sonnensystem');
+  await page.locator('#cfg-next').click(); // after the last act comes the first one
+  await expect(scene).toHaveText('1/4 · Startklar');
   await page.locator('#cfg-next').click();
-  await expect(page.locator('#cfg-scene')).toHaveText('2/3 · die Rakete hebt ab und zieht ihre Spur');
+  await expect(scene).toHaveText('2/4 · die Rakete hebt ab und zieht ihre Spur');
   await page.locator('#cfg-next').click();
-  await expect(page.locator('#cfg-scene')).toHaveText('3/3 · …aus der Spur wird der Mond, die Rakete landet');
-  await expect(page.locator('#cfg-next')).toBeDisabled();
+  await expect(scene).toHaveText('3/4 · aus der Spur wird der Mond, die Rakete landet');
   await page.locator('#cfg-prev').click();
-  await expect(page.locator('#cfg-scene')).toHaveText('2/3 · die Rakete hebt ab und zieht ihre Spur');
+  await expect(scene).toHaveText('2/4 · die Rakete hebt ab und zieht ihre Spur');
   await page.locator('#cfg-step').fill('0');
   await expect(page.locator('#cfg-acts')).toBeHidden(); // a single picture has no acts
 });

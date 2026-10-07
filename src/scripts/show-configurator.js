@@ -15,12 +15,14 @@ if (form) {
   const field = createField($("#cfg-field"), { onBeat: (k, beat, beats) => {
     $("#cfg-scene").textContent = beats > 1 ? `${k + 1}/${beats} · ${beat.caption}` : beat.caption;
     $("#cfg-acts").hidden = beats < 2;
-    $("#cfg-prev").disabled = k === 0; $("#cfg-next").disabled = k === beats - 1 && current?.loopTo === undefined;
+
   } });
   let current = null, first = true;
   $("#cfg-replay").addEventListener("click", () => field.replay());
-  $("#cfg-prev").addEventListener("click", () => field.goto(field.beat() - 1));
-  $("#cfg-next").addEventListener("click", () => { const k = field.beat() + 1, n = current?.beats.length ?? 1; field.goto(k < n ? k : current?.loopTo ?? n - 1); });
+  // the acts loop: after the last one comes the first again, and back the other way
+  const actCount = () => current?.beats.length ?? 1;
+  $("#cfg-prev").addEventListener("click", () => field.goto((field.beat() - 1 + actCount()) % actCount()));
+  $("#cfg-next").addEventListener("click", () => field.goto((field.beat() + 1) % actCount()));
   const eur = (v) => `ab ${v.toLocaleString("de-DE")} €`;
   let occasion = OCCASIONS[0], motifIndex = 0, job = 0;
 

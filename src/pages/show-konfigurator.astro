@@ -24,7 +24,6 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
         <button type="button" id="cfg-replay" aria-label="Von vorn ansehen">↻</button>
         <button type="button" id="cfg-next" aria-label="Nächster Akt">›</button>
       </div>
-      <div class="cfg-motifs" id="cfg-motifs" role="group" aria-label="Motiv">{list[0].motifs.map((m, i) => <button type="button" data-motif={i} aria-pressed={i === 0 ? 'true' : 'false'}>{m.label}</button>)}</div>
     </div>
 
     <form class="cfg-panel" id="cfg">
@@ -35,6 +34,11 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
         <div class="cfg-occasions">
           {list.map((o, i) => <label><input type="radio" name="occasion" value={o.id} checked={i === 0} /><span>{o.label}</span></label>)}
         </div>
+      </fieldset>
+
+      <fieldset class="cfg-block">
+        <legend>Motiv</legend>
+        <div class="cfg-occasions cfg-motifs" id="cfg-motifs">{list[0].motifs.map((m, i) => <button type="button" data-motif={i} aria-pressed={i === 0 ? 'true' : 'false'}>{m.label}</button>)}</div>
       </fieldset>
 
       <div class="cfg-block">
@@ -62,8 +66,8 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
 </script>
 
 <style>
-  .cfg { display: grid; grid-template-columns: minmax(320px, 0.62fr) minmax(0, 1.38fr); gap: clamp(24px, 4vw, 56px); padding: 92px var(--pad) var(--section); align-items: start; }
-  .cfg-stage { order: 2; position: sticky; top: 92px; height: calc(100svh - 116px); min-height: 460px; border-radius: var(--radius); background: radial-gradient(ellipse at 50% 120%, rgba(51, 237, 242, 0.06), transparent 60%), #0a0908; border: 1px solid var(--line); overflow: hidden; }
+  .cfg { display: grid; grid-template-columns: minmax(320px, 0.62fr) minmax(0, 1.38fr); gap: clamp(24px, 4vw, 56px); padding: 84px var(--pad) var(--section); align-items: start; }
+  .cfg-stage { order: 2; position: sticky; top: 84px; height: calc(100svh - 108px); min-height: 460px; border-radius: var(--radius); background: radial-gradient(ellipse at 50% 120%, rgba(51, 237, 242, 0.06), transparent 60%), #0a0908; border: 1px solid var(--line); overflow: hidden; }
   .cfg-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
   .cfg-caption { position: absolute; left: 20px; top: 18px; right: 140px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
   .cfg-caption em { font: 500 11px/1 var(--mono); font-style: normal; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ground); background: var(--pkg, var(--amber)); padding: 5px 8px; border-radius: 4px; }
@@ -73,16 +77,15 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
   .cfg-acts button:hover:not(:disabled) { background: rgba(246, 241, 232, 0.1); }
   .cfg-acts button:disabled { color: var(--faint); cursor: default; }
   .cfg-acts button:focus-visible { outline: 3px solid var(--cyan); outline-offset: -2px; }
-  @media (max-width: 1000px) { .cfg-acts { bottom: 64px; } }
+
   .cfg-count { position: absolute; right: 20px; top: 20px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text); }
-  .cfg-motifs { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); display: flex; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 999px; background: rgba(15, 13, 12, 0.72); }
-  .cfg-motifs :global(button) { min-height: 40px; padding: 0 18px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); font: 500 14px/1 var(--body); cursor: pointer; }
-  .cfg-motifs :global(button[aria-pressed="true"]) { background: var(--text); color: var(--ground); }
+  .cfg-motifs :global(button) { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--line-strong); background: transparent; font: inherit; font-size: 15px; color: var(--muted); cursor: pointer; }
+  .cfg-motifs :global(button[aria-pressed="true"]) { color: var(--ground); background: var(--text); border-color: var(--text); }
   .cfg-motifs :global(button:focus-visible) { outline: 3px solid var(--cyan); outline-offset: 2px; }
-  .cfg-panel { order: 1; display: grid; gap: 22px; }
-  .cfg-h { font-size: clamp(30px, 3vw, 46px); line-height: 1.04; letter-spacing: -0.03em; }
-  .cfg-block { display: grid; gap: 12px; border: 0; margin: 0; padding: 0; min-width: 0; }
-  .cfg-block > label, .cfg-block legend { font-size: 15px; color: var(--text); padding: 0; margin-bottom: 10px; }
+  .cfg-panel { order: 1; display: grid; gap: 16px; }
+  .cfg-h { font-size: clamp(28px, 2.6vw, 40px); line-height: 1.04; letter-spacing: -0.03em; }
+  .cfg-block { display: grid; gap: 8px; border: 0; margin: 0; padding: 0; min-width: 0; }
+  .cfg-block > label, .cfg-block legend { font-size: 15px; color: var(--text); padding: 0; margin-bottom: 6px; }
   .cfg-block > label b { margin-left: 8px; color: var(--amber); font-weight: 500; }
   .cfg-occasions { display: flex; flex-wrap: wrap; gap: 8px; }
   .cfg-occasions label { position: relative; cursor: pointer; }
@@ -92,7 +95,7 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
   .cfg-occasions input:focus-visible + span { outline: 3px solid var(--cyan); outline-offset: 2px; }
   .cfg-stops { display: flex; justify-content: space-between; font-size: 11px; letter-spacing: 0.08em; color: var(--faint); margin-top: -4px; }
   .cfg-stops span.on { color: var(--text); }
-  .cfg-result { display: grid; gap: 6px; padding-top: 18px; border-top: 1px solid var(--line); }
+  .cfg-result { display: grid; gap: 6px; padding-top: 14px; border-top: 1px solid var(--line); }
   .cfg-price { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
   .cfg-price b { font: 600 clamp(24px, 2.2vw, 30px)/1 var(--display); letter-spacing: 0.02em; }
   .cfg-price span { font: 500 clamp(24px, 2.2vw, 30px)/1 var(--display); color: var(--text); }

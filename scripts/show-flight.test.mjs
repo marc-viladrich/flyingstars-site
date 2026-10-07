@@ -36,7 +36,7 @@ test('Alle Drohnen kommen gleichzeitig und exakt an', () => {
   const a = flat([[0, 0, 0]]), b = flat([[1.5, 0, 0]]);
   const T = flightTime(a, b, [0]);
   assert.ok((1.875 * 1.5) / T <= LIMITS.speed + 1e-9 && (5.7735 * 1.5) / T ** 2 <= LIMITS.accel + 1e-9, 'peak speed and acceleration within limits');
-  assert.equal(flightTime(a, a, [0]), 1.2);
+  assert.equal(flightTime(a, a, [0]), 1.1);
 });
 
 test('Das Strömungsfeld ist divergenzfrei', () => {

@@ -29,24 +29,24 @@ Die Preise kommen unverändert aus `priceFor()` in `src/content/show-packages.ts
 
 ## Die Vorschau: ein Motiv, drei Ausbaustufen
 
-Jeder Anlass hat zwei Motive (Knöpfe unter dem Bild). Der Regler verwandelt dasselbe Motiv in seine Fassung für das Paket:
+Jeder Anlass hat zwei Motive (Knöpfe unter „Anlass“ in der linken Spalte, seit der achten Fassung alles an einem Ort). Der Regler verwandelt dasselbe Motiv in seine Fassung für das Paket:
 
-- **SPARK:** ein ruhiges 2D-Bild. Wenn es steht, bewegt sich nichts mehr.
+- **SPARK:** ein 2D-Bild mit sanfter Bewegung: der Stern dreht sich, die Masken wiegen sich, die Rakete hat eine flackernde Flamme, die Zeiger laufen, Lichtschimmer auf allem.
 - **HORIZON:** ein 3D-Objekt, das sich weiter selbst bewegt.
 - **ODYSSEY:** eine kurze Geschichte in Akten mit komplexer 3D-Animation und fließenden Effekten. Das entspricht „Narratives Storytelling mit dramaturgischer Kurve“ aus der ODYSSEY-Beschreibung.
 
 | Anlass | Motiv | SPARK (100 Drohnen) | HORIZON (200), Eigenbewegung | ODYSSEY (300), Akte |
 |---|---|---|---|---|
-| Hochzeit | Herz | Herz als Umriss | volles 3D-Herz, leuchtet im Takt auf | ein Herz → Amors Pfeil fliegt im Bogen hinein und bleibt stehen wie in der klassischen Illustration → das Herz wird voll → kleine Herzen kreisen |
-| | Ringe | zwei Ringe ineinander (wie ein Venn-Diagramm) | verschlungene 3D-Ringe mit Lichtlauf | ein Ring → findet den zweiten → sie verschlingen sich in 3D, umgeben von Funkeln |
-| Jubiläum | Wappen | Wappenschild | 3D-Wappen mit eurer Zahl, Lichtschimmer | Wappen → die Zahl tritt hervor → Krone und langsam kreisender Sternenkranz |
-| | Wahrzeichen | Beispiel: Berliner Fernsehturm | 3D-Fernsehturm, Licht läuft um die Kugel, rotes Warnlicht | der Turm → sendet (Wellen breiten sich in Licht aus) → wird zum Brandenburger Tor |
-| Launch | Rakete | Rakete als Umriss | 3D-Rakete schwebt und dreht sich | startklar mit funkelnder Flamme → hebt nach rechts oben ab, die Spur bleibt stehen und funkelt → landet auf dem Mond |
-| | Logo | Beispiel-Logo | 3D-Logo mit Lichtschimmer | ein langsamer Funkenwirbel dreht sich ein und wird zum Logo |
-| Kultur | Maske | die klassischen Theatermasken: Tragödie hinten, Komödie davor | die Masken in 3D | Komödie → Tragödie → Teufel aus der echten Bokkenrijders-Show-Datei |
-| | Vorhang | Vorhang zu | Vorhang auf für einen 3D-Stern | Vorhang auf, der Stoff bewegt sich leicht, Goldregen fällt in Licht → ein Stern steigt auf |
-| Silvester | Feuerwerk | Feuerwerksstern | eine 3D-Kugel öffnet sich immer wieder | drei Raketenspuren leuchten auf → Kugel, Ring, Kugel öffnen sich nacheinander |
-| | Uhr | fünf vor zwölf | 3D-Uhr, die Zeiger laufen | die Zeiger laufen auf zwölf → die Uhr funkelt |
+| Hochzeit | Herz | Herz als Umriss | volles 3D-Herz, leuchtet ruhig atmend auf | ein Herz → Amors Pfeil fliegt im Bogen hinein und bleibt stehen wie in der klassischen Illustration → das Herz wird voll → kleine Herzen kreisen |
+| | Ringe | zwei Ringe ineinander (wie ein Venn-Diagramm), Lichtlauf | verschlungene 3D-Ringe mit Lichtlauf | ein Ring → findet den zweiten → sie verschlingen sich in 3D, umgeben von Funkeln |
+| Jubiläum | Wappen | eigenes Vereinswappen: Fluss, wehende Fahne, Stern | 3D-Wappen mit eurer Zahl, die Fahne weht | aus dem Stern im Wappen wird eure Zahl → Krone und langsam kreisender Sternenkranz |
+| | Wahrzeichen | Beispiel: Berliner Fernsehturm, rotes Warnlicht blinkt | 3D-Fernsehturm, Licht läuft um die Kugel, rotes Warnlicht | der Turm → sendet (Wellen breiten sich in Licht aus) → wird zum Brandenburger Tor |
+| Launch | Rakete | Rakete mit flackernder Flamme, schwebt | 3D-Rakete mit Flamme schwebt und dreht sich | startklar → hebt ab und zieht ihre funkelnde Spur → aus der Spur wird ein 3D-Mond, die Rakete landet → sie fliegt weiter um die Sonne, Planeten ziehen ihre Bahnen |
+| | Logo | Beispiel-Logo, Licht läuft um den Ring | 3D-Logo mit Lichtschimmer | ein Funkenwirbel dreht sich schneller und das Logo entsteht in derselben Drehrichtung → Wirbel → Ring aus Licht → … (Schleife) |
+| Kultur | Maske | die klassischen Theatermasken, sie wiegen sich gegeneinander | die Masken in 3D | Komödie → Tragödie → Teufel aus der echten Bokkenrijders-Show-Datei |
+| | Vorhang | Vorhang im Luftzug | der Vorhang öffnet sich sichtbar → ein 3D-Stern löst sich heraus | der Vorhang öffnet sich → aus dem Vorhang fällt Goldregen → ein Stern steigt über dem Regen auf |
+| Silvester | Feuerwerk | Feuerwerksstern, der sich dreht | drei 3D-Feuerwerkskugeln öffnen sich nacheinander | Feuerwerk → die Funken sammeln sich zur Silvesterkugel → sie sinkt → Ring → Knoten aus Licht |
+| | Uhr | die Zeiger laufen auf zwölf | 3D-Uhr, die Zeiger laufen | fünf vor zwölf → die Funken schwärmen aus → sie schreiben das neue Jahr → wirbeln auf zwei Bahnen um die Uhr → die Uhr wird zur Champagnerflasche, der Korken knallt und fliegt mit Schaumspur wie die Rakete |
 
 ### Objektpermanenz und fließende Übergänge (siebte Fassung)
 
@@ -62,6 +62,17 @@ Marcs wichtigster Punkt zur sechsten Fassung: Objekte müssen erhalten bleiben, 
 - **Akte:** Pfeile ‹ › und ↻ schalten zwischen den Akten einer Geschichte vor und zurück.
 - **Logo:** Die Geschichte läuft als Schleife: Funkenwirbel → Logo → Wirbel → Ring aus Licht in 3D → …
 - **Silvester:** Die alte Feuerwerksgeschichte ist ersetzt durch eine volumetrische: Die Silvesterkugel sinkt, öffnet sich um Mitternacht zum Ring und verschlingt sich zum Knoten aus Licht.
+
+### Achte Fassung (Marcs Rückmeldung zur siebten)
+
+- **Tempo:** Paketwechsel so schnell wie ein Anlasswechsel. Die Flugzeit liegt jetzt bei 1,1 bis 3,2 Sekunden (vorher bis 5), die Planungsgrenzen bei 1,8 Einheiten/s und 3 Einheiten/s². Der Physiktest prüft mit Reserve gegen 2,6 und 5,5. Neue Drohnen kommen von einem näheren Ring außerhalb des Bildes.
+- **Heller:** Lichteffekte hellen nur noch auf (Schimmer, Funkeln, Lichtlauf zwischen 0,8 und etwa 1,4). Über 1 vergrößert sich der Leuchthof und der Kern wird weißer. Die Tiefenabdunklung ist schwächer (hinten 78 % statt deutlich dunkler).
+- **Herz:** ruhiges Atmen (2,6 s) statt Doppelblitz.
+- **Motivwahl** in der linken Spalte unter „Anlass“.
+- **Akte im Kreis:** Nach dem letzten Akt kommt mit › wieder der erste, mit ‹ vom ersten der letzte.
+- **Vorhang:** Jede Linie des Vorhangs behält ihre Drohnen bei jeder Öffnung, darum gleiten die Drohnen beim Öffnen sichtbar zur Seite (kein Springen zwischen Linien).
+- **Wappen:** eigener Entwurf im Stil eines Vereinswappens (erhöhte Mitte, Fluss, Fahne, Stern), bewusst kein bestehendes Vereinswappen.
+- **Rakete im Sonnensystem:** Aus der Ferne braucht sie weniger Drohnen; die übrigen fliegen zur Sonne. Umlaufbahnen laufen über 2,5 Sekunden sanft an (sonst Beschleunigungsspitze bei der Ankunft).
 
 ### Nur, was echte Drohnen können
 
@@ -99,12 +110,12 @@ Gemessen auf den drei aufwendigsten Geschichten mit 300 Drohnen in Bewegung, 2×
 | Browser | Bildrate |
 |---|---|
 | Chromium | 60 fps |
-| Chromium mit 6-fach gedrosselter CPU | 56–59 fps |
+| Chromium mit 6-fach gedrosselter CPU | 48–53 fps (achte Fassung, vorher 56–59) |
 | WebKit (Safari-Engine) | 60 fps |
 
 - Beim Wechsel der Szene gibt es einen einzelnen längeren Frame: etwa 40 ms normal, etwa 250 ms bei 6-facher Drosselung. Er fällt, bevor sich die Drohnen bewegen.
 - Es gibt keine Mausreaktion, Leuchthöfe sind vorgerendert, die Pixeldichte ist auf 1,5 begrenzt.
-- SPARK zeichnet nach dem Aufbau keine Frames mehr.
+- Seit der achten Fassung bewegt sich auch SPARK sanft weiter und zeichnet darum laufend (100 Drohnen).
 - Pausiert oder bei reduzierter Bewegung erscheint direkt der letzte Akt in Ruhe. „Nochmal ansehen“ spielt eine Geschichte erneut ab.
 
 ## Die Anfrage
@@ -131,7 +142,8 @@ Der Anfrageknopf übergibt Paket, Drohnenzahl und Anlass sowie eine Zusammenfass
   - zwei Motive je Anlass mit je drei Fassungen
 - `tests/show-configurator.spec.ts` prüft:
   - Paket, Preis und Drohnenzahl
-  - SPARK steht still, HORIZON bewegt sich weiter.
+  - SPARK und HORIZON bewegen sich nach dem Aufbau weiter.
+  - Die Akte laufen im Kreis vor und zurück.
   - ODYSSEY erzählt in Akten und lässt sich wiederholen.
   - Nach schnellem Umschalten leuchten nie zu viele Drohnen.
   - Tastatur, erster Bildschirm, Übergabe ins Formular

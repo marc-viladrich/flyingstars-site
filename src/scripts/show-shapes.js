@@ -31,9 +31,23 @@ export function lathe(profile, n) {
 export const twoRings = (n) => flat(sampleOutline([circle(-0.42, 0, 0.62), circle(0.42, 0, 0.62)], n));
 
 // ---------- Jubiläum ----------
-const shieldPath = poly([-0.7, 0.8], [0.7, 0.8], [0.7, 0.1], [0.55, -0.35], [0.28, -0.68], [0, -0.85], [-0.28, -0.68], [-0.55, -0.35], [-0.7, 0.1]);
-export const shield = (n) => flat(sampleOutline([shieldPath, line([-0.7, 0.55], [0.7, -0.25])], n));
-export const shield3d = (n) => extrudePaths([shieldPath], n, 0.28);
+/** A crest in the spirit of club and city crests (own design, no club's): a shield with a raised middle at the top,
+ * a field with a river, a field with a flag and a lower field with a star (or, from HORIZON on, your number). */
+const shieldPath = poly([-0.72, 0.72], [-0.36, 0.78], [0, 0.92], [0.36, 0.78], [0.72, 0.72], [0.72, 0.12], [0.6, -0.3], [0.36, -0.62], [0, -0.88], [-0.36, -0.62], [-0.6, -0.3], [-0.72, 0.12]);
+const wave = (y) => line(...Array.from({ length: 13 }, (_, i) => { const x = -0.6 + i * 0.04; return [x, y + Math.sin(i * 1.05) * 0.035]; }));
+const crestFields = [
+  line([-0.72, 0.28], [0.72, 0.28]), line([0, 0.28], [0, 0.88]), // the band and the upper division
+  wave(0.44), wave(0.6), // left field: a river in two waves
+  line([0.2, 0.34], [0.2, 0.78]), poly([0.2, 0.78], [0.56, 0.68], [0.2, 0.58]), // right field: a flag on its pole
+];
+const crestStar = { pts: Array.from({ length: 10 }, (_, i) => { const a = (i / 10) * TAU, r = i % 2 ? 0.11 : 0.26; return [Math.sin(a) * r, -0.22 + Math.cos(a) * r]; }), closed: true };
+export const shield = (n) => flat(sampleOutline([shieldPath, ...crestFields, crestStar], n));
+export const shield3d = (n) => extrudePaths([shieldPath, ...crestFields], n, 0.28);
+/** Where the number sits in the crest's lower field, and which drones form the flag (they wave in the wind). */
+export const CREST_NUMBER = { cx: 0, cy: -0.25, halfWidth: 0.34 };
+export const inCrestFlag = (x, y) => x > 0.22 && y > 0.56 && y < 0.8;
+/** The crest's star, extruded like the crest, as its own part. */
+export const crestStar3d = (n) => extrudePaths([crestStar], n, 0.28);
 export function crown(n, y = 1.18) {
   const p = poly([-0.45, y], [-0.45, y + 0.22], [-0.3, y + 0.1], [-0.15, y + 0.3], [0, y + 0.12], [0.15, y + 0.3], [0.3, y + 0.1], [0.45, y + 0.22], [0.45, y]);
   return extrudePaths([p], n, 0.16);
@@ -55,6 +69,10 @@ export function rocket3d(n, lift = 0) {
   const fin = sampleOutline([line([0.2, -0.2], [0.44, -0.58], [0.18, -0.5])], Math.ceil(fins / 4));
   const finPts = [0, 1, 2, 3].flatMap((k) => fin.map(([x, y]) => { const a = (k / 4) * TAU + TAU / 12; return [Math.cos(a) * x, y, Math.sin(a) * x]; })).slice(0, fins);
   return [...meridians, ...rings, ...finPts].map(([x, y, z]) => [x, y + lift, z]);
+}
+/** A small flame under the nozzle (top): a narrow teardrop of points, 3D if depth. */
+export function flame(n, top, depth = 0) {
+  return Array.from({ length: n }, (_, i) => { const u = (i + 0.5) / n, a = i * 2.39996, w = 0.11 * Math.sin(Math.PI * Math.min(1, u * 1.15)) ** 0.7 * Math.sqrt(((i * 7) % 10) / 10 + 0.1); return [Math.cos(a) * w, top - u * 0.42, depth ? Math.sin(a) * w : 0]; });
 }
 /** Exhaust cloud under a rising rocket: a widening cone of points. */
 export function exhaust(n, top) {
@@ -107,7 +125,7 @@ export function maskPair3d(n) {
 }
 
 /** Stage curtain: two drapes under a scalloped valance; open = 0 closed, 1 gathered and tied back at the sides. */
-export function curtain(n, open = 0) {
+function curtainPaths(open) {
   const top = 0.72, bottom = -0.85;
   const valance = [line([-1.1, 0.88], [1.1, 0.88]), ...Array.from({ length: 6 }, (_, i) => arc(-0.92 + i * 0.367, 0.88, 0.183, Math.PI, TAU, 8))];
   const drapes = [-1, 1].flatMap((side) => {
@@ -118,7 +136,14 @@ export function curtain(n, open = 0) {
     const folds = [1 / 3, 2 / 3].map((f) => line(...Array.from({ length: 12 }, (_, i) => { const t = i / 11, x0 = inner(t), x = x0 + (side * 1.05 - x0) * f; return [x + Math.sin(t * 5 + f * 3) * 0.025, top - t * (top - bottom)]; })));
     return [edge, outer, hem, ...folds];
   });
-  return flat(sampleOutline([...valance, ...drapes], n));
+  return [...valance, ...drapes];
+}
+const pathLength = ({ pts, closed = true }) => pts.slice(0, closed ? pts.length : -1).reduce((s, a, i) => { const b = pts[(i + 1) % pts.length]; return s + Math.hypot(b[0] - a[0], b[1] - a[1]); }, 0);
+/** Stage curtain, open ∈ [0, 1]. Every path keeps its drones for every opening, so drone j moves smoothly while the
+ * curtain opens: the drapes gather to the sides like cloth instead of drones jumping between lines. */
+export function curtain(n, open = 0) {
+  const counts = share(n, curtainPaths(0.5).map(pathLength));
+  return curtainPaths(open).flatMap((p, i) => flat(sampleOutline([p], counts[i])));
 }
 
 // ---------- Silvester ----------
@@ -128,6 +153,8 @@ export function clockFace(n, minutesToTwelve = 0, depth = 0) {
   const paths = [circle(0, 0, 1, 120), ...ticks, line([0, 0], [-Math.sin(a) * 0.72, Math.cos(a) * 0.72]), line([0, 0], [-Math.sin(a / 12) * 0.48, Math.cos(a / 12) * 0.48])];
   return depth ? extrudePaths(paths, n, depth) : flat(sampleOutline(paths, n));
 }
+/** Clock dial without hands: rim and twelve ticks. */
+export const clockDial = (n) => { const ticks = Array.from({ length: 12 }, (_, i) => { const t = (i / 12) * TAU; return line([Math.sin(t) * 0.78, Math.cos(t) * 0.78], [Math.sin(t) * 0.9, Math.cos(t) * 0.9]); }); return flat(sampleOutline([circle(0, 0, 1, 120), ...ticks], n)); };
 /** 2D firework: rays from the centre. */
 export function burst2d(n) {
   const rays = 16;
@@ -200,3 +227,14 @@ export function arrowPaths(x0, y0, x1, y1) {
   return [line(at(0, 0), at(L, 0)), poly(at(0, 0), at(0.14, 0.07), at(0.14, -0.07)), ...[0, 0.08].flatMap((d) => [line(at(L - 0.12 - d, 0), at(L - d, 0.08)), line(at(L - 0.12 - d, 0), at(L - d, -0.08))])];
 }
 export { inside };
+
+// ---------- Silvester: champagne ----------
+const bottleProfile = [[0.17, -0.62], [0.18, -0.55], [0.18, 0.08], [0.15, 0.2], [0.08, 0.3], [0.055, 0.38], [0.055, 0.52], [0.065, 0.56]];
+/** Champagne bottle as a 3D wireframe (six profile lines, two rings), standing upright, neck top at y ≈ 0.56. */
+export function bottle3d(n) {
+  const M = 6, [body, rings] = share(n, [5, 1.4]), per = share(body, Array(M).fill(1)), profile = line(...bottleProfile.map(([r, y]) => [r, y]));
+  const meridians = per.flatMap((m, k) => { const a = (k / M) * TAU; return sampleOutline([profile], m).map(([r, y]) => [Math.cos(a) * r, y, Math.sin(a) * r]); });
+  return [...meridians, ...lathe([[0.18, -0.35], [0.18, 0.02], [0.06, 0.45]], rings)];
+}
+/** The cork: a small mushroom shape around its centre. */
+export const cork = (n) => lathe([[0.04, -0.05], [0.05, 0.0], [0.07, 0.04], [0.05, 0.08]], n);

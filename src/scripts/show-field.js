@@ -15,8 +15,8 @@ const MAX = 1000;
 const hash = (x) => { const s = Math.sin(x * 12.9898 + 78.233) * 43758.5453; return s - Math.floor(s); };
 /** Outside place of drone i (display units): where drones join from and leave to, dark when idle. */
 const outside = (i, out) => {
-  const a = hash(i) * Math.PI * 2, r = 1.75 + 0.35 * hash(i + 0.5);
-  out[0] = Math.cos(a) * r * 1.15; out[1] = Math.sin(a) * r * 0.62; out[2] = (hash(i + 0.25) - 0.5) * 0.8; return out;
+  const a = hash(i) * Math.PI * 2, r = 1.2 + 0.2 * hash(i + 0.5);
+  out[0] = Math.cos(a) * r * 1.1; out[1] = Math.sin(a) * r * 0.75; out[2] = (hash(i + 0.25) - 0.5) * 0.8; return out;
 };
 
 export function createField(canvas, { onBeat } = {}) {
@@ -67,7 +67,7 @@ export function createField(canvas, { onBeat } = {}) {
     if (b.live) { live[0] = x; live[1] = y; live[2] = z; live[3] = 1; b.live(p, j, t - beatAt - flight - spread, live); x = live[0]; y = live[1]; z = live[2]; a = live[3]; }
     rest[0] = (x - fitX) * fitK * size; rest[1] = (y - fitY) * fitK * size; rest[2] = z * fitK * size;
     // shimmer: a soft band of light travels diagonally across the picture
-    if (b.shimmer) { const c = -1.6 + 3.2 * (((t / 3.6) % 1) + 1) % 1, d = rest[0] + rest[1] * 0.45 - c; a *= 0.72 + 0.28 * Math.exp(-((d / 0.22) ** 2)); }
+    if (b.shimmer) { const c = -1.6 + 3.2 * (((t / 3.6) % 1) + 1) % 1, d = rest[0] + rest[1] * 0.45 - c; a *= 1 + 0.45 * Math.exp(-((d / 0.24) ** 2)); }
     rest[3] = a;
     return rest;
   }
@@ -213,15 +213,16 @@ export function createField(canvas, { onBeat } = {}) {
       const Y = y * ct - z * st, Z = y * st + z * ct, pr = 3.4 / (3.4 - Z);
       // depth shading: drones further back are dimmer, which makes volumes read as volumes
       const depth = Math.max(0, Math.min(1, (Z / (size * fitK || 1) + 0.6) / 1.2));
-      list.push([ox + pos[k] * S * pr, oy - Y * S * pr, Z, pr, alpha[i] * (0.6 + 0.4 * depth), col[k] | 0, col[k + 1] | 0, col[k + 2] | 0]);
+      list.push([ox + pos[k] * S * pr, oy - Y * S * pr, Z, pr, alpha[i] * (0.78 + 0.22 * depth), col[k] | 0, col[k + 1] | 0, col[k + 2] | 0]);
     }
     canvas.dataset.lit = String(list.length); // drones lit right now, read by the tests
     list.sort((a, b) => a[2] - b[2]);
     const core = Math.max(1.2 * DPR, S * 0.0085);
     ctx.globalCompositeOperation = "lighter";
-    for (const [px, py, , pr, a, r, g, b] of list) { const R = core * pr * 3.2; ctx.globalAlpha = Math.min(1, a); ctx.drawImage(sprite(r, g, b), px - R, py - R, R * 2, R * 2); }
+    // light above 1 (shimmer, sparkle) makes a drone brighter: larger glow, whiter core
+    for (const [px, py, , pr, a, r, g, b] of list) { const R = core * pr * 3.2 * (1 + Math.max(0, a - 1) * 0.8); ctx.globalAlpha = Math.min(1, a); ctx.drawImage(sprite(r, g, b), px - R, py - R, R * 2, R * 2); }
     ctx.globalCompositeOperation = "source-over"; ctx.globalAlpha = 1;
-    for (const [px, py, , pr, a, r, g, b] of list) { ctx.fillStyle = `rgba(${Math.min(255, r + 30)},${Math.min(255, g + 30)},${Math.min(255, b + 30)},${Math.min(1, a).toFixed(2)})`; ctx.beginPath(); ctx.arc(px, py, core * pr, 0, 7); ctx.fill(); }
+    for (const [px, py, , pr, a, r, g, b] of list) { const w = Math.min(1, Math.max(0, a - 1) * 1.6), lift = (c) => Math.min(255, c + 30 + (225 - c) * w) | 0; ctx.fillStyle = `rgba(${lift(r)},${lift(g)},${lift(b)},${Math.min(1, a).toFixed(2)})`; ctx.beginPath(); ctx.arc(px, py, core * pr, 0, 7); ctx.fill(); }
   }
 
   function loop(ms) {
