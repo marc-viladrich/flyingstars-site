@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Picture from '../../components/Picture.astro';
+import CaseStudy from '../../components/projects/CaseStudy.astro';
 export async function getStaticPaths() {
   const projects = await getCollection('projects', (p) => !p.data.draft);
   return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
@@ -9,13 +10,13 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 const { Content } = await render(project);
 ---
-<Base title={project.data.title} description={project.data.summary}>
-  <article class="section"><div class="wrap">
+<Base title={project.data.title} description={project.data.summary} canonicalPath={project.data.showcase ? `/${project.data.showcase.route}/` : undefined}>
+  {project.data.showcase ? <CaseStudy project={project} /> : <article class="section"><div class="wrap">
     <div class="prose">
       <h1>{project.data.title}</h1>
       <p class="muted">{[project.data.client, project.data.location, project.data.date.getFullYear()].filter(Boolean).join(' · ')}</p>
       {project.data.cover && <Picture {...project.data.cover} loading="eager" sizes="(min-width: 48rem) 40rem, 100vw" />}
       <Content />
     </div>
-  </div></article>
+  </div></article>}
 </Base>

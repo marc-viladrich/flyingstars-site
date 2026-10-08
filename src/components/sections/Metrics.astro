@@ -1,0 +1,11 @@
+---
+import type { Section } from '../../content.config';
+type Props = Extract<Section, { type: 'metrics' }> & { index: number };
+const { headline, text, kicker, id = 'warum', items, index } = Astro.props;
+const headingId = `${id}-h`;
+const H = index === 0 ? 'h1' : 'h2';
+---
+<section class="section alt" id={id} aria-labelledby={headingId}>
+  <div class="sec-head"><div>{kicker && <span class="kicker mono">{kicker}</span>}<H id={headingId}>{headline}</H></div><p>{text}</p></div>
+  <div class="sheet">{items.map((item,i) => <div class="cell"><span class="k mono"><span>{item.label}</span><span>{String(i+1).padStart(2,'0')}</span></span><span class="v">{item.value}</span><p>{item.text}</p></div>)}</div>
+</section>

@@ -1,18 +1,22 @@
 ---
+import '../styles/fonts.css';
 import '../styles/global.css';
 import { site } from '../site.config';
-
-interface Props {
-  title: string;
-  description: string;
-  noindex?: boolean;
-}
-const { title, description, noindex = false } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site);
+import Logo from '../components/Logo.astro';
+import { optimizedImage } from '../lib/media';
+interface Props { title: string; description: string; noindex?: boolean; canonicalPath?: string; image?: string; navSection?: string; fullBleed?: boolean; }
+const { title, description, noindex = false, canonicalPath, image, navSection, fullBleed: bleed = false } = Astro.props;
+const canonical = new URL(canonicalPath ?? Astro.url.pathname, Astro.site);
 const current = Astro.url.pathname;
+// Case pages and project details belong to the "Projekte" area of the main navigation.
+const section = navSection ?? (current.startsWith('/projekte/') ? '/projekte/' : undefined);
+const navState = (href: string) => current === href ? 'page' : section === href ? 'true' : undefined;
+const social = image ? await optimizedImage(image, 960, undefined, 'jpg') : undefined;
+const fullBleed = bleed || ['/', '/drohnenshow-preise/', '/musikalischer-teaser-bokkenrijders/', '/nfl-berlin-game/', '/exploring-reinvented-der-neue-ford-explorer/', '/puma-bundesliga/'].includes(current) || current.startsWith('/projekte/');
+const eco = await optimizedImage('https://flyingstars.art/wp-content/uploads/2024/10/NATURSTROM-Logo_weiss.png', 160);
 ---
 <!doctype html>
-<html lang={site.locale}>
+<html lang="de">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -20,35 +24,44 @@ const current = Astro.url.pathname;
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex" />}
-    <meta property="og:title" content={title} />
+    <meta property="og:title" content={`${title} | FlyingStars`} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    {social && <meta property="og:image" content={new URL(social.src, Astro.site)} />}
+    {social && <meta property="og:image:width" content={String(social.width)} />}
+    {social && <meta property="og:image:height" content={String(social.height)} />}
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body>
     <a class="skip" href="#main">Zum Inhalt springen</a>
-    <header class="wrap">
-      <nav class="nav" aria-label="Hauptnavigation">
-        <a class="nav__brand" href="/">{site.name}</a>
-        <ul>
-          {site.nav.map((item) => (
-            <li><a href={item.href} aria-current={current === item.href ? 'page' : undefined}>{item.label}</a></li>
-          ))}
-        </ul>
-        <a class="btn" href={site.cta.href}>{site.cta.label}</a>
-      </nav>
+    <div class="nav-sentinel" aria-hidden="true"></div>
+    <header class="nav">
+      <Logo />
+      <nav aria-label="Hauptnavigation">{site.nav.map((item) => <a href={item.href} aria-current={navState(item.href)}>{item.label}</a>)}</nav>
+      <span class="lang" aria-label="Sprache Deutsch">DE</span>
+      <button class="motion-btn" type="button" data-motion-toggle aria-pressed="false" aria-label="Bewegung pausieren" title="Bewegung pausieren"><svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="7" y="6" width="3.2" height="12" rx="1" /><rect x="13.8" y="6" width="3.2" height="12" rx="1" /></svg><svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 6.2v11.6a.8.8 0 0 0 1.2.7l9-5.8a.8.8 0 0 0 0-1.4l-9-5.8a.8.8 0 0 0-1.2.7z" /></svg></button>
+      <a class="btn small primary" href={site.cta.href}>{site.cta.label}</a>
+      <button class="menu-btn" type="button" data-menu-open aria-controls="mobile-menu" aria-expanded="false" aria-label="Menü öffnen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg></button>
     </header>
-    <main id="main">
-      <slot />
-    </main>
+    <dialog class="mobile-menu" id="mobile-menu" aria-label="Hauptnavigation">
+      <div class="top"><Logo /><button class="menu-btn menu-close" type="button" data-menu-close aria-label="Menü schließen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg></button></div>
+      <nav aria-label="Mobile Navigation">{site.nav.map((item) => <a href={item.href}>{item.label}</a>)}<a href="/#team">Über uns</a><a href="/blog/">Blog</a><a href="/#anfrage">Show anfragen</a></nav>
+      <span class="lang">DE · Deutsch</span>
+    </dialog>
+    <main id="main" class:list={{ 'content-page': !fullBleed }}><slot /></main>
     <footer class="footer">
-      <div class="wrap">
-        <ul>
-          {site.footer.legal.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
-        </ul>
-        <p>© {new Date().getFullYear()} {site.name}</p>
+      <div class="cols">
+        <div class="footer-brand"><Logo /><p>Drohnenshows seit 2022. Über 150 Shows in Deutschland und Europa.</p><div class="eco"><img src={eco.src} width={eco.width} height={eco.height} alt="naturstrom" loading="lazy" /><span>100 % Ökostrom</span></div></div>
+        <div><h2 class="footer-heading">Kontakt</h2><address><span>Besucht uns:<br />Triple Z – Gründungszentrum Zeche Zollverein<br />Katernberger Str. 107, 45327 Essen</span><span>Post:<br />FlyingStars GmbH<br />Bulmker Straße 107, 45888 Gelsenkirchen</span><span><a href="mailto:team@flyingstars.art">team@flyingstars.art</a><br /><a href="tel:+4920988306562">0209 883 065 62</a></span></address></div>
+        <div><h2 class="footer-heading">Seiten</h2><ul>{site.nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}<li><a href="/#team">Über uns</a></li><li><a href="/blog/">Blog</a></li></ul></div>
+        <div><h2 class="footer-heading">Folgen</h2><ul><li><a href="https://www.instagram.com/flyingstars.art/" rel="noopener noreferrer" target="_blank">Instagram</a></li><li><a href="https://www.youtube.com/@flyingstars." rel="noopener noreferrer" target="_blank">YouTube</a></li><li><a href="https://www.tiktok.com/@flyingstars_art" rel="noopener noreferrer" target="_blank">TikTok</a></li><li><a href="https://www.facebook.com/FlyingStars.Art/" rel="noopener noreferrer" target="_blank">Facebook</a></li></ul></div>
       </div>
+      <div class="base mono"><span>© {new Date().getFullYear()} FlyingStars GmbH</span><nav aria-label="Rechtliches">{site.footer.legal.map((item) => <a href={item.href}>{item.label}</a>)}</nav><span>Website-Vorschau</span></div>
     </footer>
+    <script>
+      import '../scripts/site';
+    </script>
   </body>
 </html>

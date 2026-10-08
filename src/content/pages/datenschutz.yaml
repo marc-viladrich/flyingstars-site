@@ -1,8 +1,12 @@
 title: Datenschutz
-description: Datenschutzerklärung der Beispielsite. Platzhalter des Templates, vor Livegang durch die geprüfte Erklärung des Unternehmens ersetzen.
+description: "Hinweise zur FlyingStars-Vorschau: selbst gehostete Schriftarten, Medien und Kontaktformular sowie die Datenschutzerklärung der bestehenden Website."
 noindex: true
 sections:
   - type: textMedia
-    headline: Datenschutzerklärung
+    headline: Datenschutz in dieser Vorschau
     body: |
-      **Platzhalter.** Verantwortliche Stelle, Hosting (Anbieter, Standort, Logdaten), Kontaktformular (Dienst, Rechtsgrundlage Art. 6 Abs. 1 lit. b/f DSGVO, Speicherdauer), Medienspeicher, Betroffenenrechte. Keine Cookies, kein Tracking.
+      Die Schriftarten und Vorschaubilder werden über diese Website ausgeliefert. Videos werden erst gestartet, wenn du sie ausdrücklich anklickst. Die Vorschau verwendet kein Analyse-Tracking.
+
+      Der Formularversand ist noch nicht eingerichtet. Ohne diese Einrichtung werden deine Angaben nicht gespeichert oder per E-Mail versendet; du erhältst eine entsprechende Rückmeldung.
+
+      Die veröffentlichten Datenschutzinformationen findest du in der [Datenschutzerklärung der bestehenden FlyingStars-Website](https://flyingstars.art/datenschutz/). Die Erklärung für diese neue Website muss vor ihrer endgültigen Veröffentlichung ergänzt und geprüft werden.

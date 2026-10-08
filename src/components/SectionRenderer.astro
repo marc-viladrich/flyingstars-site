@@ -3,6 +3,10 @@
 // Komponente in sections/, eine Zeile hier. Mehr nicht.
 import type { Section } from '../content.config';
 import Hero from './sections/Hero.astro';
+import FlightHero from './sections/FlightHero.astro';
+import Occasions from './sections/Occasions.astro';
+import Metrics from './sections/Metrics.astro';
+import Sustainability from './sections/Sustainability.astro';
 import TextMedia from './sections/TextMedia.astro';
 import Faq from './sections/Faq.astro';
 import Cta from './sections/Cta.astro';
@@ -17,6 +21,6 @@ import LogoBar from './sections/LogoBar.astro';
 
 interface Props { sections: Section[] }
 const { sections } = Astro.props;
-const map = { hero: Hero, textMedia: TextMedia, faq: Faq, cta: Cta, postList: PostList, projectGrid: ProjectGrid, contactForm: ContactForm, pricing: Pricing, steps: Steps, comparison: Comparison, team: Team, logoBar: LogoBar } as const;
+const map = { showreelHero: FlightHero, occasions: Occasions, metrics: Metrics, sustainability: Sustainability, hero: Hero, textMedia: TextMedia, faq: Faq, cta: Cta, postList: PostList, projectGrid: ProjectGrid, contactForm: ContactForm, pricing: Pricing, steps: Steps, comparison: Comparison, team: Team, logoBar: LogoBar } as const;
 ---
 {sections.map((s, i) => { const C = map[s.type]; return <C {...(s as any)} index={i} />; })}

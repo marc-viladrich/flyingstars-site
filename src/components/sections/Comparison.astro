@@ -1,33 +1,16 @@
 ---
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'comparison' }> & { index: number };
-const { headline, text, rowHeader, columns, rows, note, index } = Astro.props;
-const id = `s${index}-h`;
+const { headline, text, rowHeader, columns, rows, note, kicker, id = `s${Astro.props.index}`, index } = Astro.props;
+const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 ---
-<section class="section" aria-labelledby={id}>
-  <div class="wrap">
-    <H id={id}>{headline}</H>
-    {text && <p class="muted measure">{text}</p>}
-    <div class="table-wrap" role="region" aria-label={`${headline} (Tabelle, horizontal scrollbar)`} tabindex="0">
-      <table class="compare">
-        <caption class="sr-only">{headline}</caption>
-        <thead>
-          <tr>
-            <th scope="col">{rowHeader}</th>
-            {columns.map((c) => <th scope="col">{c}</th>)}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((r) => (
-            <tr>
-              <th scope="row">{r.label}</th>
-              {r.values.map((v) => <td>{v}</td>)}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-    {note && <p class="muted measure"><small>{note}</small></p>}
+<section class="section alt" id={id} aria-labelledby={headingId}>
+  <div class="sec-head"><div>{kicker && <span class="kicker mono">{kicker}</span>}<H id={headingId}>{headline}</H></div>{text && <p>{text}</p>}</div>
+  <div class="table-wrap" role="region" aria-label={`${headline} (Tabelle, horizontal scrollbar)`} tabindex="0">
+    <table><caption class="sr-only">{headline}</caption><thead><tr><th scope="col">{rowHeader}</th>{columns.map((column,i) => <th scope="col" class:list={{us:i===0}}>{column}</th>)}</tr></thead>
+      <tbody>{rows.map(row => <tr><th scope="row">{row.label}</th>{row.values.map((value,i) => <td class:list={{us:i===0}}>{row.cells ? <><span class:list={['m',row.cells[i].tone]}>{row.cells[i].label}</span>{row.cells[i].text && <> {row.cells[i].text}</>}</> : value}</td>)}</tr>)}</tbody>
+    </table>
   </div>
+  {note && <p class="fine mono">{note}</p>}
 </section>

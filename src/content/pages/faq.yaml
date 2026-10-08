@@ -1,5 +1,16 @@
-title: FAQ
-description: Alle häufigen Fragen und Antworten der Beispielsite auf einer Seite, nach Reihenfolge sortiert, ohne Tag-Filter.
+title: Fragen zu Drohnenshows – FlyingStars
+description: "Vorlauf, Platzbedarf, Genehmigungen und Wetter: Antworten auf die
+  häufigsten Fragen zu deiner Drohnenshow mit FlyingStars."
 sections:
   - type: faq
-    headline: Häufige Fragen
+    id: faq
+    kicker: FAQ
+    headline: Was du vor der Buchung wissen solltest.
+    text: "Die häufigsten Fragen, kurz beantwortet. Für alles andere: ruf uns an
+      oder buch dir einen Videocall."
+    cta:
+      label: Videocall buchen
+      href: https://calendly.com/team-flyingstars/beratung
+    openFirst: true
+    tags:
+      - startseite

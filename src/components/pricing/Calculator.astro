@@ -1,0 +1,46 @@
+---
+import { SHOW_PACKAGES } from "../../content/show-packages";
+const money = (value: number) => value.toLocaleString("de-DE");
+---
+
+  <!-- calculator hero -->
+  <section class="calc-hero" aria-labelledby="calc-h">
+    <canvas id="swarm" aria-hidden="true"></canvas>
+    <button class="btn small swarm-motion" id="swarm-motion" type="button" aria-pressed="false">Animation pausieren</button>
+    <div class="calc-copy">
+      <span class="kicker mono" style="margin:0">Preise & Pakete</span>
+      <h1 id="calc-h">Stell dir deine Show zusammen.</h1>
+      <p class="lead">Zieh am Regler: Der Schwarm zeigt deine Drohnen, der Preis rechnet live mit. Alle Preise netto zzgl. Anfahrt – ohne versteckte Kosten.</p>
+      <div class="calc">
+        <div class="calc-top">
+          <div class="count" id="count" aria-hidden="true">{SHOW_PACKAGES.HORIZON.base}<small>Drohnen</small></div>
+          <div class="total" id="total" aria-live="polite"><b>ab {money(SHOW_PACKAGES.HORIZON.price)} €</b><span class="mono">netto zzgl. Anfahrt</span></div>
+        </div>
+        <div>
+          <label class="sr-only" for="drones">Anzahl Drohnen</label>
+          <input class="range" id="drones" type="range" min="100" max="1000" step="10" value={SHOW_PACKAGES.HORIZON.base}>
+          <div class="scale mono" aria-hidden="true"><span style="--p:0">100</span><span style="--p:.1667">250</span><span style="--p:.4444">500</span><span style="--p:.7222">750</span><span style="--p:1">1.000</span></div>
+        </div>
+        <div class="tiers" role="group" aria-label="Paket">
+          <button type="button" data-tier="SPARK" aria-pressed="false">SPARK<span>ab {money(SHOW_PACKAGES.SPARK.price)} €</span></button>
+          <button type="button" data-tier="HORIZON" aria-pressed="true">HORIZON<span>ab {money(SHOW_PACKAGES.HORIZON.price)} €</span></button>
+          <button type="button" data-tier="ODYSSEY" aria-pressed="false">ODYSSEY<span>ab {money(SHOW_PACKAGES.ODYSSEY.price)} €</span></button>
+        </div>
+        <div class="field textin">
+          <label for="showtext">Dein Text am Himmel <span class="mono">optional</span></label>
+          <input id="showtext" type="text" maxlength="60" placeholder="z. B. ANNA &amp; TOM" autocomplete="off" spellcheck="false">
+          <p class="mono" id="text-read" aria-live="polite">Wir zeigen ihn mit deiner Drohnenzahl in unserer Show-Schrift.</p>
+        </div>
+        <div class="readout mono" id="calc-read"><span>Paket <b>HORIZON</b></span><span>Dauer <b>ca. 13 Min</b></span></div>
+        <p class="mono" id="calc-note" aria-live="polite" style="color:var(--amber);min-height:1.5em"></p>
+        <div class="actions"><a class="btn primary" id="calc-cta" href="/?paket=HORIZON&amp;drohnen=200#anfrage">Mit 200 Drohnen anfragen</a><a class="btn" href="#pakete">Pakete vergleichen</a></div>
+      </div>
+    </div>
+  </section>
+
+
+<noscript><p class="section">Der interaktive Preisrechner benötigt JavaScript. Die Paketpreise unten gelten für die jeweilige Basis-Drohnenzahl.</p></noscript>
+<style>
+.swarm-motion { position:absolute; right:var(--pad); top:100px; z-index:2; }
+@media (max-width:1100px) { .swarm-motion { top:85px; } .calc-hero #swarm { position:relative; inset:auto; height:32vh; min-height:230px; order:-1; margin:0 calc(var(--pad) * -1); width:calc(100% + var(--pad) * 2); } .calc-hero { min-height:0; padding-top:76px; gap:8px; } .calc-copy { gap:16px; } .calc-copy h1 { font-size:clamp(34px,9vw,48px); } }
+</style>

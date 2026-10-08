@@ -1,8 +1,8 @@
-title: Danke
-description: Bestätigungsseite nach dem Absenden des Kontaktformulars. Die Anfrage ist eingegangen, eine Antwort folgt per E-Mail innerhalb eines Werktags.
+title: Status deiner Anfrage
+description: Rückmeldung zum Kontaktformular von FlyingStars. Solange der Versand nicht eingerichtet ist, kannst du das Team direkt per E-Mail kontaktieren.
 noindex: true
 sections:
   - type: textMedia
-    headline: Danke, die Anfrage ist angekommen.
+    headline: Status deiner Anfrage
     body: |
-      Wir melden uns in der Regel innerhalb eines Werktags per E-Mail.
+      Der Versand ist in dieser Vorschau noch nicht eingerichtet. Es wurde nichts gesendet oder gespeichert. Bitte kontaktiere uns direkt per E-Mail an [team@flyingstars.art](mailto:team@flyingstars.art).

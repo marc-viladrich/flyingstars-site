@@ -1,0 +1,18 @@
+---
+import type { Section } from '../../content.config';
+import { optimizedImage } from '../../lib/media';
+type Props = Extract<Section, { type: 'sustainability' }> & { index: number };
+const { lines, text, kicker, id = 'nachhaltigkeit', facts, proofImage, proofText, campaign, index } = Astro.props;
+const headingId = `${id}-h`;
+const H = index === 0 ? 'h1' : 'h2';
+const media = await optimizedImage(proofImage.src, 360);
+---
+<section class="eco-sec" id={id} aria-labelledby={headingId}>
+  <div class="eco-head"><div>{kicker && <span class="kicker mono">{kicker}</span>}<H id={headingId} class="eco-title" data-reveal-group>{lines.map((line,i) => <span data-reveal style={`--i:${i}`}>{line}</span>)}</H></div><p>{text}</p></div>
+  <div class="eco-scrolly" data-scrolly><div class="eco-pin">
+    <canvas class="eco-canvas" aria-hidden="true"></canvas>
+    <div class="eco-facts">{facts.map((fact,i) => <div class="fact"><span class="fk mono">{String(i+1).padStart(2,'0')} · {fact.label}</span><b class:list={['fn',fact.tone]}>{fact.tone==='g' ? <span data-to={fact.value}>{fact.value}</span> : fact.value}{fact.unit && <small>{fact.unit}</small>}</b><p>{fact.text}</p></div>)}</div>
+    <ol class="eco-steps mono" aria-hidden="true">{facts.map((fact,i) => <li style={`--k:${i}`}>{fact.label}</li>)}</ol>
+  </div></div>
+  <div class="eco-proof"><img src={media.src} width={media.width} height={media.height} alt={proofImage.alt} loading="lazy" /><p>{proofText} <b>#Böllerciao:</b> {campaign}</p></div>
+</section>

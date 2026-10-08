@@ -1,6 +1,8 @@
-title: Kontakt
-description: Kontaktformular der Beispielsite. Anfragen werden an einen externen Formular-Endpoint in der EU gesendet, nicht gespeichert.
+title: Deine Show anfragen – FlyingStars
+description: Erzähl FlyingStars von deinem Anlass, Ort und Wunschdatum. Wir
+  beraten dich zu deiner Drohnenshow und melden uns innerhalb von 48 Stunden.
 sections:
   - type: contactForm
-    headline: Anfrage senden
-    text: Drei Felder, keine Pflicht zur Telefonnummer. Antwort kommt per E-Mail.
+    headline: Erzähl uns von deinem Stück Himmel.
+    text: Zwei kurze Schritte – was du noch nicht weißt, lässt du einfach offen. Wir
+      melden uns innerhalb von 48 Stunden, meist deutlich schneller.

@@ -1,6 +1,8 @@
-title: Projekte
-description: Übersicht aller Projekte und Referenzen der Beispielsite, sortiert nach Hervorhebung und Datum, neueste zuerst.
+title: Projekte – FlyingStars
+description: "FlyingStars-Drohnenshows für Bokkenrijders, NFL, Ford Explorer und
+  PUMA: ausgewählte Geschichten, Motive und Videos aus 100 bis 600 Drohnen."
 sections:
   - type: projectGrid
-    headline: Projekte
+    headline: Nächte, die wir nicht vergessen.
+    text: "Über 30 Shows im Jahr, von 100 bis 600 Drohnen. Eine kleine Auswahl:"
     limit: 50

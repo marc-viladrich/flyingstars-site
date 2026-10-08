@@ -1,8 +1,12 @@
 title: Impressum
-description: Anbieterkennzeichnung nach § 5 DDG. Platzhalter des Templates, vor Livegang mit den echten Angaben des Unternehmens ersetzen.
+description: Kontakt und Anbieterinformationen der FlyingStars GmbH sowie ein Link zur vollständigen Anbieterkennzeichnung auf der bestehenden Website.
 noindex: true
 sections:
   - type: textMedia
     headline: Impressum
     body: |
-      **Platzhalter.** Angaben gemäß § 5 DDG: Firma, Rechtsform, Anschrift, Vertretungsberechtigte, Kontakt, Registereintrag, USt-IdNr., Verantwortliche*r für den Inhalt.
+      FlyingStars GmbH, Bulmker Straße 107, 45888 Gelsenkirchen.
+
+      E-Mail: [team@flyingstars.art](mailto:team@flyingstars.art), Telefon: [0209 883 065 62](tel:+4920988306562).
+
+      Die vollständigen, aktuell veröffentlichten Anbieterangaben findest du im [Impressum der bestehenden FlyingStars-Website](https://flyingstars.art/impressum/). Diese Vorschau ersetzt die dortige Anbieterkennzeichnung noch nicht.

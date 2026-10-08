@@ -1,29 +1,61 @@
 ---
-// Formular postet an einen externen EU-Dienst (PUBLIC_FORM_ENDPOINT). Kein JS nötig.
-// Honeypot-Feld "website" muss leer bleiben. Felder pro Kundensite anpassen.
 import { site } from '../../site.config';
-import type { Section } from '../../content.config';
-type Props = Extract<Section, { type: 'contactForm' }> & { index: number };
-const { headline, text, index } = Astro.props;
-const id = `s${index}-h`;
+interface Props { headline: string; text?: string; index?: number; }
+const { headline, text, index = 0 } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
-const endpoint = site.formEndpoint;
 ---
-<section class="section" aria-labelledby={id}>
-  <div class="wrap">
-    <H id={id}>{headline}</H>
-    {text && <p class="muted measure">{text}</p>}
-    {endpoint ? (
-      <form class="form" method="post" action={endpoint} accept-charset="UTF-8">
-        <label>Name <input name="name" type="text" required autocomplete="name" /></label>
-        <label>E-Mail <input name="email" type="email" required autocomplete="email" /></label>
-        <label>Nachricht <textarea name="message" rows="6" required></textarea></label>
-        <label class="hp" aria-hidden="true">Website <input name="website" type="text" tabindex="-1" autocomplete="off" /></label>
-        <p><small>Mit dem Absenden werden die Angaben zur Bearbeitung der Anfrage verarbeitet. Details in der <a href="/datenschutz/">Datenschutzerklärung</a>.</small></p>
-        <p><button class="btn" type="submit">Anfrage senden</button></p>
-      </form>
-    ) : (
-      <p class="measure">Formular derzeit nicht verfügbar. Bitte per E-Mail anfragen.</p>
-    )}
-  </div>
+<section aria-labelledby="anfrage-h" class="section alt" id="anfrage">
+<div class="inquiry">
+<div class="intro">
+<span class="kicker mono">Anfrage</span>
+<H id="anfrage-h">{headline}</H>
+<p class="lead">{text}</p>
+<ul class="contact-list">
+<li><span class="k mono">E-Mail</span><a href="mailto:team@flyingstars.art">team@flyingstars.art</a></li>
+<li><span class="k mono">Telefon</span><a href="tel:+4920988306562">0209 883 065 62</a></li>
+<li><span class="k mono">WhatsApp</span><a href="https://wa.me/4915792608672" rel="noopener" target="_blank">01579 260 86 72</a></li>
+<li><span class="k mono">Videocall</span><a href="https://calendly.com/team-flyingstars/beratung" rel="noopener" target="_blank">Termin buchen →</a></li>
+</ul>
+</div>
+<form action={site.formEndpoint} aria-labelledby="anfrage-h" class="form" id="inquiry-form" method="post">
+<div class="progress mono" hidden=""><span data-step-label="">Schritt 1 von 2</span><span>ca. 1 Minute</span></div>
+<div aria-hidden="true" class="bar" hidden=""><i></i></div>
+<fieldset data-step="">
+<legend class="sr-only">Deine Show</legend>
+<div class="field">
+<span id="occasion-label">Anlass</span>
+<div aria-labelledby="occasion-label" class="chips" role="radiogroup">
+<label><input name="anlass" required="" type="radio" value="firma"/><span>Firmenevent</span></label>
+<label><input name="anlass" type="radio" value="stadt"/><span>Stadt &amp; Festival</span></label>
+<label><input name="anlass" type="radio" value="agentur"/><span>Agentur</span></label>
+<label><input name="anlass" type="radio" value="privat"/><span>Hochzeit &amp; Privat</span></label>
+<label><input name="anlass" type="radio" value="indoor"/><span>Indoor</span></label>
+<label><input name="anlass" type="radio" value="sonstiges"/><span>Sonstiges</span></label>
+</div>
+<span class="err" data-err-for="anlass" role="alert"></span>
+</div>
+<div class="fields">
+<div class="field"><label for="f-datum">Datum (falls schon bekannt)</label><input id="f-datum" name="datum" type="date"/></div>
+<div class="field"><label for="f-ort">Ort</label><input autocomplete="address-level2" id="f-ort" maxlength="200" name="ort" placeholder="z. B. 45888 Gelsenkirchen" type="text"/></div>
+<div class="field full"><label for="f-paket">Drohnen / Paket</label>
+<select id="f-paket" name="paket"><option value="">Weiß ich noch nicht</option><option>SPARK · 100 Drohnen</option><option>HORIZON · 200 Drohnen</option><option>ODYSSEY · 300+ Drohnen</option></select>
+</div>
+</div>
+<div class="row"><span class="hint">Nur der Anlass ist nötig – den Rest klären wir gern gemeinsam.</span><button class="btn primary" data-next="" type="button">Weiter</button></div>
+</fieldset>
+<fieldset data-step="">
+<legend class="sr-only">Deine Kontaktdaten</legend>
+<div class="fields">
+<div class="field"><label for="f-name">Name</label><input autocomplete="name" data-msg="Wie dürfen wir dich ansprechen?" id="f-name" maxlength="120" name="name" required="" type="text"/><span class="err" data-err-for="name" role="alert"></span></div>
+<div class="field"><label for="f-mail">E-Mail</label><input autocomplete="email" data-msg="Wohin dürfen wir antworten?" id="f-mail" maxlength="200" name="email" required="" type="email"/><span class="err" data-err-for="email" role="alert"></span></div>
+<div class="field full"><label for="f-tel">Telefon (optional)</label><input autocomplete="tel" id="f-tel" maxlength="200" name="telefon" type="tel"/></div>
+<div class="field full"><label for="f-msg">Nachricht (optional)</label><textarea id="f-msg" maxlength="5000" name="message" placeholder="Motive, Musik, Gästezahl – alles, was du schon weißt"></textarea></div>
+</div>
+<p class="hint">Mit dem Absenden werden deine Angaben zur Bearbeitung der Anfrage verwendet. Mehr dazu in der <a class="link" href="/datenschutz/">Datenschutzerklärung</a>.</p>
+<div class="row"><button class="btn" data-back="" type="button">Zurück</button><button class="btn primary" type="submit">Anfrage senden</button></div>
+<div aria-hidden="true" class="honeypot"><label>Website<input autocomplete="off" name="website" tabindex="-1"/></label></div></fieldset>
+<p class="form-status" data-form-status="" role="status" tabindex="-1"></p></form>
+
+</div>
 </section>
+<script>import '../../scripts/contact';</script>

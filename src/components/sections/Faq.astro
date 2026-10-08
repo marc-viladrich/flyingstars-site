@@ -2,24 +2,15 @@
 import { getCollection, render } from 'astro:content';
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'faq' }> & { index: number };
-const { headline = 'Häufige Fragen', tags, limit, index } = Astro.props;
-const id = `s${index}-h`;
+const { headline = 'Häufige Fragen', text, kicker = 'FAQ', cta, tags, limit, openFirst, id = `s${Astro.props.index}`, index } = Astro.props;
+const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
-let entries = (await getCollection('faq', (e) => !e.data.draft)).sort((a, b) => a.data.order - b.data.order);
-if (tags?.length) entries = entries.filter((e) => e.data.tags.some((t) => tags.includes(t)));
-if (limit) entries = entries.slice(0, limit);
-const rendered = await Promise.all(entries.map(async (e) => ({ e, Content: (await render(e)).Content })));
+let entries = (await getCollection('faq', e => !e.data.draft)).sort((a,b) => a.data.order-b.data.order);
+if(tags?.length) entries = entries.filter(e=>e.data.tags.some(tag=>tags.includes(tag)));
+if(limit) entries = entries.slice(0,limit);
+const rendered = await Promise.all(entries.map(async entry => ({entry, Content:(await render(entry)).Content})));
 ---
-<section class="section section--band" aria-labelledby={id}>
-  <div class="wrap">
-    <H id={id}>{headline}</H>
-    <div class="measure">
-      {rendered.map(({ e, Content }) => (
-        <details>
-          <summary>{e.data.question}</summary>
-          <div class="prose"><Content /></div>
-        </details>
-      ))}
-    </div>
-  </div>
+<section class="section" id={id} aria-labelledby={headingId}>
+  <div class="faq-grid"><div class="intro"><span class="kicker mono" style="margin:0">{kicker}</span><H id={headingId}>{headline}</H>{text && <p>{text}</p>}{cta && <a class="link" href={cta.href} rel={cta.href.startsWith('https://')?'noopener':undefined} target={cta.href.startsWith('https://')?'_blank':undefined}>{cta.label} <span aria-hidden="true">→</span></a>}</div>
+  <div class="faq">{rendered.map(({entry,Content},i) => <details open={openFirst && i===0}><summary>{entry.data.question}</summary><div class="answer"><Content /></div></details>)}</div></div>
 </section>

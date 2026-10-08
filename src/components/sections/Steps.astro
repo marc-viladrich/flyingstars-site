@@ -1,22 +1,11 @@
 ---
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'steps' }> & { index: number };
-const { headline, text, steps, index } = Astro.props;
-const id = `s${index}-h`;
+const { headline, text, steps, kicker, id = `s${Astro.props.index}`, index } = Astro.props;
+const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 ---
-<section class="section section--band" aria-labelledby={id}>
-  <div class="wrap">
-    <H id={id}>{headline}</H>
-    {text && <p class="muted measure">{text}</p>}
-    <ol class="steps" role="list" style={`--steps:${Math.min(steps.length, 5)}`}>
-      {steps.map((s) => (
-        <li class="step">
-          <h3>{s.title}</h3>
-          <p>{s.text}</p>
-          {s.duration && <p class="step__duration muted">{s.duration}</p>}
-        </li>
-      ))}
-    </ol>
-  </div>
+<section class="section" id={id} aria-labelledby={headingId}>
+  <div class="sec-head"><div>{kicker && <span class="kicker mono">{kicker}</span>}<H id={headingId}>{headline}</H></div>{text && <p>{text}</p>}</div>
+  <ol class="steps">{steps.map(step => <li><h3>{step.title}</h3><p>{step.text}</p>{step.duration && <span class="t mono">{step.duration}</span>}</li>)}</ol>
 </section>

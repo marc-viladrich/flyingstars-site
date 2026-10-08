@@ -1,33 +1,21 @@
 ---
 import type { Section } from '../../content.config';
+import { SHOW_PACKAGES, type ShowPackage } from '../../content/show-packages';
 type Props = Extract<Section, { type: 'pricing' }> & { index: number };
-const { headline, text, tiers, note, index } = Astro.props;
-const id = `s${index}-h`;
+const { headline, text, tiers, note, cta, kicker, id = `s${Astro.props.index}`, index } = Astro.props;
+const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
+const money = new Intl.NumberFormat('de-DE', { maximumFractionDigits: 0 });
+const price = (tier: Props['tiers'][number]) => tier.orb && tier.name in SHOW_PACKAGES ? `ab ${money.format(SHOW_PACKAGES[tier.name as ShowPackage].price)} €` : tier.price;
 ---
-<section class="section" aria-labelledby={id}>
-  <div class="wrap">
-    <H id={id}>{headline}</H>
-    {text && <p class="muted measure">{text}</p>}
-    <div class="tiers">
-      {tiers.map((t) => (
-        <article class:list={['tier', { 'tier--highlight': t.highlight }]}>
-          {t.highlight && <p class="tier__badge">Empfohlen</p>}
-          <h3>{t.name}</h3>
-          {t.description && <p class="muted">{t.description}</p>}
-          <p class="tier__price">
-            <strong>{t.price}</strong>
-            {t.unit && <span class="muted"> {t.unit}</span>}
-          </p>
-          {t.features.length > 0 && (
-            <ul class="tier__features" role="list">
-              {t.features.map((f) => <li>{f}</li>)}
-            </ul>
-          )}
-          {t.cta && <p class="tier__cta"><a class:list={['btn', { 'btn--ghost': !t.highlight }]} href={t.cta.href}>{t.cta.label}</a></p>}
-        </article>
-      ))}
-    </div>
-    {note && <p class="muted measure"><small>{note}</small></p>}
-  </div>
+<section class="section alt" id={id} aria-labelledby={headingId}>
+  <div class="sec-head"><div>{kicker && <span class="kicker mono">{kicker}</span>}<H id={headingId}>{headline}</H></div>{text && <p>{text}</p>}</div>
+  <div class="packs">{tiers.map(tier => {
+    const Card = tier.cta ? 'a' : 'article';
+    return <Card class:list={['pack',{featured:tier.highlight}]} href={tier.cta?.href}>
+      {tier.orb && <canvas data-orb={tier.orb.shape} data-color={tier.orb.color} data-n={tier.orb.count} aria-hidden="true"></canvas>}
+      <div><div class="name"><h3>{tier.name}</h3>{tier.badge && <span class="chip">{tier.badge}</span>}</div><div class="price">{price(tier)}</div>{tier.unit && <div class="meta mono">{tier.unit}</div>}{tier.description && <p>{tier.description}</p>}{tier.features.length>0 && <ul class="facts">{tier.features.map(feature => <li>{feature}</li>)}</ul>}</div>
+    </Card>;
+  })}</div>
+  {(note || cta) && <div class="pack-note">{note && <span class="mono">{note}</span>}{cta && <a class="link" href={cta.href}>{cta.label} <span aria-hidden="true">→</span></a>}</div>}
 </section>

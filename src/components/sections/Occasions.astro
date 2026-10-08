@@ -1,0 +1,23 @@
+---
+import type { Section } from '../../content.config';
+import { optimizedImage } from '../../lib/media';
+type Props = Extract<Section, { type: 'occasions' }> & { index: number };
+const { headline, text, kicker, id = 'anlaesse', cards, index } = Astro.props;
+const headingId = `${id}-h`;
+const H = index === 0 ? 'h1' : 'h2';
+const items = await Promise.all(cards.map(async card => ({ ...card, media: await optimizedImage(card.image.src, 640, 480), small: await optimizedImage(card.image.src, 320, 240) })));
+---
+<section class="section" id={id} aria-labelledby={headingId}>
+  <div class="sec-head"><div>{kicker && <span class="kicker mono">{kicker}</span>}<H id={headingId}>{headline}</H></div><p>{text}</p></div>
+  <div class="occasions">
+    {items.map(card => <article class="occ">
+      <div class="img"><img src={card.media.src} srcset={`${card.small.src} 320w, ${card.media.src} 640w`} sizes="(max-width: 640px) calc(100vw - 48px), (max-width: 1100px) 45vw, 23vw" width={card.media.width} height={card.media.height} alt={card.image.alt} loading="lazy" decoding="async" /></div>
+      <div class="body">
+        <span class="mono" style="color:var(--faint)">{card.category}</span><h3>{card.title}</h3><p>{card.text}</p>
+        <ul class="facts">{card.facts.map(fact => <li>{fact}</li>)}</ul>
+        <a class="link" href={card.cta.href}>{card.cta.label} <span aria-hidden="true">→</span></a>
+        {card.download && <a class="dl mono" href={card.download.href} type="application/pdf" target="_blank" rel="noopener">{card.download.label} <span aria-hidden="true">↓</span></a>}
+      </div>
+    </article>)}
+  </div>
+</section>

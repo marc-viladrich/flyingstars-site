@@ -1,0 +1,17 @@
+---
+import type { Section } from '../../content.config';
+import Video from '../Video.astro';
+const { headline, text, eyebrow, words, cta, secondary, poster, video, stats } = Astro.props as Extract<Section, { type: 'showreelHero' }>;
+---
+<section class="hero" aria-labelledby="hero-h">
+  <Video src={video} poster={poster.src} label="Showreel ansehen" hero class="hero-media" />
+  <div class="shade" aria-hidden="true"></div>
+  <div class="frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  <div class="hero-copy">
+    <span class="kicker mono">{eyebrow}</span>
+    <h1 id="hero-h">{headline} <span class="word" data-rotate={words.join('|')}>{words[0]}</span></h1>
+    <p class="lead">{text}</p>
+    <div class="actions"><a class="btn primary" href={cta.href}>{cta.label}</a><a class="btn" href={secondary.href}>{secondary.label}</a></div>
+  </div>
+  <dl class="spec mono" aria-label="Eckdaten">{stats.map((stat) => <><dt>{stat.label}</dt><dd><b>{stat.value}</b></dd></>)}</dl>
+</section>

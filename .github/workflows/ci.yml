@@ -36,7 +36,7 @@ jobs:
       - name: Interne Links (lychee)
         uses: lycheeverse/lychee-action@v2
         with:
-          args: --offline --root-dir "${{ github.workspace }}/dist" --include-fragments --exclude "/api/" "dist/**/*.html"
+          args: --offline --root-dir "${{ github.workspace }}/dist" --include-fragments --index-files index.html --exclude "/api/" "dist/**/*.html"
           fail: true
       - name: Lighthouse-Budgets
         run: |
