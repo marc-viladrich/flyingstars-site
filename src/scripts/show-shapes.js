@@ -343,3 +343,103 @@ export const MELODY_X = [-1.0, -0.5, 0, 0.5, 1.0];
 /** Only the glass of the bulb (six profile lines). */
 export function bulbGlass(n) { const M = 6, per = share(n, Array(M).fill(1)), profile = line(...bulbProfile.map(([r, y]) => [r, y])); return per.flatMap((m, k) => { const a = (k / M) * TAU; return sampleOutline([profile], m).map(([r, y]) => [Math.cos(a) * r, y, Math.sin(a) * r]); }); }
 export const filament = (n) => flat(sampleOutline([filamentPath()], n));
+
+// ---------- tenth version: bodies that read as bodies ----------
+// Real shows draw a 3D object as a few bold rings and silhouettes, not as a dense point cloud (a sphere covered evenly
+// in points reads as noise). The builders below give every body a readable skeleton.
+/** n points spread by length along 3D polylines [[x, y, z], …] (open unless closed: true). */
+export function sample3d(lines, n) {
+  const segs = [];
+  for (const { pts, closed = false } of lines) {
+    const m = closed ? pts.length : pts.length - 1;
+    for (let i = 0; i < m; i++) { const a = pts[i], b = pts[(i + 1) % pts.length]; segs.push([a, b, Math.hypot(b[0] - a[0], b[1] - a[1], b[2] - a[2])]); }
+  }
+  const total = segs.reduce((s, g) => s + g[2], 0), step = total / n, out = [];
+  let seg = 0, along = 0;
+  for (let k = 0; k < n; k++) {
+    const d = (k + 0.5) * step;
+    while (seg < segs.length - 1 && d - along > segs[seg][2]) { along += segs[seg][2]; seg++; }
+    const [a, b, len] = segs[seg], u = len ? Math.min(1, (d - along) / len) : 0;
+    out.push([a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u, a[2] + (b[2] - a[2]) * u]);
+  }
+  return out;
+}
+/** A horizontal ring (circle in the xz plane) of radius r at height y, as a closed 3D polyline. */
+const hoop = (r, y, k = 24, phase = 0) => ({ pts: Array.from({ length: k }, (_, i) => { const a = (i / k) * TAU + phase; return [Math.cos(a) * r, y, Math.sin(a) * r]; }), closed: true });
+/** A vertical ring (circle in the xy plane) around (cx, cy) with the given depth. */
+const halo = (r, cx = 0, cy = 0, z = 0, k = 36) => ({ pts: Array.from({ length: k }, (_, i) => { const a = (i / k) * TAU; return [cx + Math.cos(a) * r, cy + Math.sin(a) * r, z]; }), closed: true });
+
+/**
+ * Brilliant-cut diamond, point down: octagonal table, 16-sided girdle, crown facets table→girdle, pavilion facets
+ * girdle→culet. Girdle radius 0.55·s, total height ≈ 0.72·s, girdle at y = 0.
+ */
+export function brilliant(n, s = 1) {
+  const G = 16, T = 8, g = 0.55 * s, t = 0.3 * s, crown = 0.22 * s, pav = 0.5 * s;
+  const girdle = Array.from({ length: G }, (_, i) => { const a = (i / G) * TAU + TAU / 32; return [Math.cos(a) * g, 0, Math.sin(a) * g]; });
+  const table = Array.from({ length: T }, (_, i) => { const a = (i / T) * TAU + TAU / 32; return [Math.cos(a) * t, crown, Math.sin(a) * t]; });
+  const lines = [{ pts: girdle, closed: true }, { pts: table, closed: true }];
+  for (let i = 0; i < T; i++) { lines.push({ pts: [table[i], girdle[i * 2]] }); lines.push({ pts: [girdle[i * 2 + 1], [0, -pav, 0]] }); }
+  return sample3d(lines, n);
+}
+/** The band of a ring: a torus in the xy plane, three strands around the tube. */
+export const band = (n, R, tube = R * 0.09) => torusRing(n, R, tube);
+/**
+ * Solitaire engagement ring in the picture plane: a torus band of radius R and a brilliant on top, its girdle resting
+ * on the band. Returns [band, stone]; the stone takes about a quarter of n (at least 24 drones).
+ */
+export function solitaire(n, R = 0.8) {
+  const stone = Math.max(24, Math.round(n * 0.26)), s = R * 0.5;
+  const gem = brilliant(stone, s).map(([x, y, z]) => [x, y + R + 0.5 * s * 0.92, z]); // culet sits just inside the band
+  return [band(n - stone, R), gem];
+}
+/** A globe the way shows draw a sphere: its outline circle facing the audience, the equator as a tilted hoop, and two
+ * meridians (the second half of the points), which the scene turns inside the outline. Radius R around (cx, cy, 0). */
+export function globe(n, R = 0.55, cx = 0, cy = 0) {
+  const [stat, mer] = share(n, [1, 1]);
+  const still = sample3d([halo(R, 0, 0, 0, 48), hoop(R * 0.98, 0, 36)], stat);
+  const meridians = sample3d([0, Math.PI / 2].map((a) => ({ pts: Array.from({ length: 36 }, (_, i) => { const b = (i / 36) * TAU; return [Math.cos(a) * Math.cos(b) * R, Math.sin(b) * R, Math.sin(a) * Math.cos(b) * R]; }), closed: true })), mer);
+  return [...still, ...meridians].map(([x, y, z]) => [x + cx, y + cy, z]);
+}
+/**
+ * A rocket as a body: the silhouette in two planes (seen from any side it keeps its outline), three hoops, a window
+ * ring and four fins. Nose at y = 1, nozzle at y ≈ −0.62, radius 0.2. Returns exactly n points.
+ */
+export function rocketSolid(n, planes = 2) {
+  const prof = [[0, 1], [0.07, 0.9], [0.13, 0.76], [0.175, 0.58], [0.2, 0.36], [0.2, 0.0], [0.2, -0.32], [0.18, -0.5], [0.12, -0.62]];
+  const side = (ax, az) => ({ pts: [...prof.map(([r, y]) => [r * ax, y, r * az]), ...prof.slice().reverse().map(([r, y]) => [-r * ax, y, -r * az])] });
+  const fin = (a) => { const c = Math.cos(a), s = Math.sin(a); return { pts: [[0.2 * c, -0.26, 0.2 * s], [0.46 * c, -0.66, 0.46 * s], [0.2 * c, -0.56, 0.2 * s]] }; };
+  // one plane: the silhouette facing the audience with two fins at its sides (a picture that turns in the picture
+  // plane); two planes: a body that can turn about its axis
+  const fins = planes === 1 ? [fin(0), fin(Math.PI)] : [fin(TAU / 8), fin(3 * TAU / 8), fin(5 * TAU / 8), fin(7 * TAU / 8)];
+  const lines = [side(1, 0), ...(planes === 1 ? [] : [side(0, 1)]), hoop(0.2, 0.3, 20), hoop(0.2, -0.05, 20), hoop(0.2, -0.4, 20), { pts: Array.from({ length: 12 }, (_, i) => { const a = (i / 12) * TAU; return [Math.cos(a) * 0.075, 0.5 + Math.sin(a) * 0.075, 0.19]; }), closed: true }, ...fins];
+  return sample3d(lines, n);
+}
+/** The launch pad: a ground line and a gantry tower beside the rocket with rungs towards it. Rocket axis at x = 0. */
+export function launchPad(n, ground = -0.72, top = 0.55, gx = 0.42) {
+  const lines = [{ pts: [[-1.25, ground, 0], [1.1, ground, 0]] }, { pts: [[gx, ground, 0], [gx, top, 0]] }, { pts: [[gx + 0.12, ground, 0], [gx + 0.12, top, 0]] }];
+  for (let k = 0; k < 5; k++) { const y = ground + 0.22 + k * 0.24; lines.push({ pts: [[0.21, y, 0], [gx, y, 0]] }); lines.push({ pts: [[gx, y, 0], [gx + 0.12, y - 0.1, 0]] }); }
+  return sample3d(lines, n);
+}
+/** The moon as a horizon: a wide arc at the bottom of the picture with three craters on it. */
+export function moonHorizon(n, cy = -2.55, R = 2.1) {
+  const arc = { pts: Array.from({ length: 48 }, (_, i) => { const a = Math.PI * (0.3 + 0.4 * (i / 47)); return [Math.cos(a) * R, cy + Math.sin(a) * R, 0]; }) };
+  const crater = (a, w, h) => { const cx = Math.cos(a) * R, cyy = cy + Math.sin(a) * R; return { pts: Array.from({ length: 14 }, (_, i) => { const b = (i / 14) * TAU; return [cx + Math.cos(b) * w, cyy - 0.02 + Math.sin(b) * h, 0]; }), closed: true }; };
+  return sample3d([arc, crater(Math.PI * 0.4, 0.17, 0.06), crater(Math.PI * 0.62, 0.2, 0.07)], n);
+}
+/** A flag on a pole with a star in it; pole foot at (x, y). Returns [pole, cloth] so the cloth can wave. */
+export function flagStar(n, x = 0, y = 0, h = 0.9, w = 0.5) {
+  const pole = Math.round(n * 0.3), top = y + h, cloth = { pts: [[x, top, 0], [x + w, top - 0.03, 0], [x + w, top - 0.33, 0], [x, top - 0.36, 0]], closed: true };
+  const starPts = Array.from({ length: 10 }, (_, i) => { const a = (i / 10) * TAU, r = i % 2 ? 0.045 : 0.1; return [x + w / 2 + Math.sin(a) * r, top - 0.18 + Math.cos(a) * r, 0]; });
+  return [sample3d([{ pts: [[x, y, 0], [x, top, 0]] }], pole), sample3d([cloth, { pts: starPts, closed: true }], n - pole)];
+}
+/** Scattered stars across a box, deterministic, with a little depth. */
+export function starField(n, x0 = -1.4, x1 = 1.4, y0 = -0.9, y1 = 1.0, seed = 3) {
+  const out = []; let s = seed; const rnd = () => ((s = (s * 16807) % 2147483647) / 2147483647);
+  for (let i = 0; i < n; i++) out.push([x0 + rnd() * (x1 - x0), y0 + rnd() * (y1 - y0), (rnd() - 0.5) * 0.5]);
+  return out;
+}
+/** Two interlocked tori in 3D (one in the picture plane, one turned through it), centres ±dx. Returns [a, b]. */
+export function torusLink(n, R = 0.55, dx = 0.42, tube = 0.06) {
+  const [na, nb] = share(n, [1, 1]);
+  return [torusRing(na, R, tube).map(([x, y, z]) => [x - dx, y, z]), torusRing(nb, R, tube).map(([x, y, z]) => [x + dx, z, y])];
+}

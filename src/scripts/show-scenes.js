@@ -10,7 +10,8 @@ import logo from "../data/logo-dots.json";
 import { heartPicture } from "./heart-formation.js";
 import { loadTextEngine, textFormation } from "./text-formation.js";
 import { burstSphere, star, extrude, evenSubset, sampleOutline, circle, torusPair, heartOutline } from "./show-geometry.js";
-import { engagementRing, ringSeat, hand3d, flute2d, flute3d, bubbles, trophy2d, trophy3d, bulb2d, bulb3d, bulbGlass, filament, notes2d, notes3d, notePath1, melody, clover2d, clover3d, extrudePaths } from "./show-shapes.js";
+import { engagementRing, ringSeat, hand3d, hand2d, flute2d, flute3d, bubbles, trophy2d, trophy3d, bulb2d, bulb3d, bulbGlass, filament, notes2d, notes3d, notePath1, melody, clover2d, clover3d, extrudePaths } from "./show-shapes.js";
+import { solitaire, rocketSolid, globe, launchPad, moonHorizon, flagStar, starField, torusLink, brilliant, band } from "./show-shapes.js";
 import { share, twoRings, shield, shield3d, crestStar3d, CREST_NUMBER, inCrestFlag, crown, rocket, rocket3d, flame, maskPair, maskPair3d, mask3d, MASKS, curtain, clockRim, clockDial, hand, burst2d, sparkleShell, tower, tower3d, waves, TOWER_SPHERE, gate3d, arrowPaths, inside, bottle3d, cork } from "./show-shapes.js";
 
 let hearts = null, figure = null;
@@ -34,6 +35,8 @@ const hash = (j) => frac(Math.sin(j * 12.9898) * 43758.5453);
 function yaw(out, a, cx = 0, cz = 0) { const x = out[0] - cx, z = out[2] - cz, c = Math.cos(a), s = Math.sin(a); out[0] = cx + x * c + z * s; out[2] = cz - x * s + z * c; }
 /** Turn in the picture plane about (cx, cy). */
 function roll(out, a, cx = 0, cy = 0) { const x = out[0] - cx, y = out[1] - cy, c = Math.cos(a), s = Math.sin(a); out[0] = cx + x * c - y * s; out[1] = cy + x * s + y * c; }
+/** Turn about the horizontal axis through (cy, cz): tips the object towards or away from the audience. */
+function pitch(out, a, cy = 0, cz = 0) { const y = out[1] - cy, z = out[2] - cz, c = Math.cos(a), s = Math.sin(a); out[1] = cy + y * c - z * s; out[2] = cz + y * s + z * c; }
 /** Slow sway: the object turns a little to each side, which shows its depth. */
 const sway = (out, t, amp = 0.3, period = 10) => yaw(out, Math.sin((t * TAU) / period) * amp);
 
@@ -95,7 +98,8 @@ function bloom(out, base, t, { cx = 0, cy = 0, period = 12, delay = 0, rmin = 0.
 const still = (pts, caption) => ({ beats: [{ pts, caption }] });
 /** A beat from named parts: part(name, pts, { rigid }) keeps its drones from beat to beat (object permanence). */
 const part = (name, pts, opts = {}) => ({ name, pts, ...opts });
-const act = (parts, extra = {}) => ({ pts: parts.flatMap((q) => q.pts), groups: parts.map((q) => ({ name: q.name, count: q.pts.length, rigid: Boolean(q.rigid) })), ...extra });
+/** A part marked offstage (it leaves the picture during the act) does not count for the picture's framing. */
+const act = (parts, extra = {}) => ({ pts: parts.flatMap((q) => q.pts), groups: parts.map((q) => ({ name: q.name, count: q.pts.length, rigid: Boolean(q.rigid) })), ...(parts.some((q) => q.offstage) ? { fitPts: parts.filter((q) => !q.offstage).flatMap((q) => q.pts) } : {}), ...extra });
 const TAU2 = Math.PI * 2;
 /** Volumetric torus surface (as in the client's Vercel prototype), tilted towards the audience. */
 function torusSurface(n, R = 0.75, r = 0.24, tilt = 1.05) {
@@ -190,30 +194,49 @@ async function buildBeats(version, n) {
       } }] };
     }
     case "rings3d": {
-      const [band, stone] = engagementRing(n, 0.75), k = band.length;
-      return { beats: [{ pts: [...paint(band, (p) => mix(GOLD, WARM, (p[1] + 0.75) / 3)), ...paint(stone, DIAMOND)], caption, live: (b, j, t, o) => {
-        yaw(o, t * 0.45); if (j >= k) o[3] = sparkle(j, t, 0.95, 1.4);
+      // a solitaire as a body: torus band and a brilliant-cut stone; it turns about the vertical axis, so the band
+      // foreshortens to a line and opens again, and tips a little towards the audience
+      const [ringBand, stone] = solitaire(n, 0.8), k = ringBand.length;
+      const pts = [...paint(ringBand, (p) => mix(GOLD, WARM, (p[1] + 0.8) / 3.2)), ...paint(stone, DIAMOND)];
+      return { beats: [{ pts, caption, live: (b, j, t, o) => {
+        if (j >= k) o[3] = sparkle(j, t, 0.95, 1.55); else o[3] = glint(Math.atan2(b[1], b[0]), t, 5, 0.45, -Math.PI, Math.PI);
+        yaw(o, t * 0.32); pitch(o, 0.35 + 0.12 * Math.sin(t * 0.4));
       } }] };
     }
     case "ringsStory": {
-      const ringN = Math.round(n * 0.3), [band, stone] = engagementRing(ringN, 0.55), [h, g] = share(n - ringN, [6, 1]);
-      const ringPts = [...paint(band, (p) => mix(GOLD, WARM, (p[1] + 0.55) / 2.2)), ...paint(stone, DIAMOND)];
-      const seat = ringSeat(0.2), r = seat.h + 0.035, s = r / 0.55, onFinger = (up, tip = 0.3) => ringPts.map(([x, y, z, ...c]) => {
-        // the band lies around the finger: picture plane → horizontal ring, the stone towards the audience; tipped
-        // towards the audience by tip, so that it reads as a ring while it hovers
-        const X = x * s, Y0 = z * s, Z0 = y * s, Y = Y0 * Math.cos(tip) + Z0 * Math.sin(tip), Z = -Y0 * Math.sin(tip) + Z0 * Math.cos(tip);
-        return [seat.c[0] + seat.d[0] * up + X, seat.c[1] + seat.d[1] * up + Y, Z, ...c];
-      });
-      const handPts = paint(hand3d(h), WARM), glitter = (k, R, cy = 0) => paint(sparkleShell(k, R).map(([x, y, z]) => [x, y + cy, z]), WARM);
-      const burst = Array.from({ length: g }, (_, i) => { const a = (i / g) * TAU, R = 0.16 + 0.08 * (i % 2); return [seat.c[0] + Math.cos(a) * R, seat.c[1] + Math.sin(a) * R * 0.8, 0.25]; });
-      const spin = (b, j, t, o) => { if (j < ringN) yaw(o, t * 0.5, 0, 0); else o[3] = sparkle(j, t); };
+      // Zwei Ringe → ein Solitär → eine Hand, der Ring gleitet auf den Ringfinger → sie sagt Ja (ein Herz steigt auf).
+      // The ring is a torus with a brilliant on top in every act; sizes are what the drones can draw: the big solitaire
+      // uses most of the fleet, on the finger it is a small ring and the rest of the fleet draws the hand.
+      const SP = 40, [ra, rb] = torusLink(n - SP, 0.55, 0.42, 0.055);
+      const stars = starField(SP, -1.3, 1.3, -0.95, 1.0, 11);
+      const [bigBand, bigStone] = solitaire(n - SP, 0.78);
+      // the hand, large, palm to the audience; the ring finger's seat and width give the small ring its size
+      const HS = 1.3, HX = -0.18, HY = -0.02, handPts = hand2d(n - SP - 84).map(([x, y, z]) => [x * HS + HX, y * HS + HY, z]);
+      const seat = ringSeat(0.2), R = seat.h * HS + 0.03, [smallBand, smallStone] = solitaire(84, R), small = [...smallBand, ...smallStone];
+      const seatC = [seat.c[0] * HS + HX, seat.c[1] * HS + HY], dirF = seat.d, tipC = [seatC[0] + dirF[0] * 0.62, seatC[1] + dirF[1] * 0.62];
+      // the ring on the finger: tipped so that the band circles the finger (axis along the finger) and the stone sits
+      // in front, towards the audience
+      const onFinger = (p, c, tip) => { const [x, y, z] = p, Y = y * Math.cos(tip) - z * Math.sin(tip), Z = y * Math.sin(tip) + z * Math.cos(tip); return [c[0] + x, c[1] + Y, Z]; };
+      const seated = small.map((p) => onFinger(p, seatC, 1.25)), hovering = small.map((p) => onFinger(p, [tipC[0], tipC[1] + 0.3], 0.25));
+      const slide = (t) => smooth((t - 0.6) / 3.2); // the ring waits a moment above the fingertip, then glides down
+      const ringLive = (j, t, o, bandN) => {
+        const u = slide(Math.max(0, t)), a = hovering[j], b = seated[j], tip = 0.25 + (1.25 - 0.25) * u;
+        const [x, y, z] = onFinger(small[j], [a[0] + (seatC[0] - tipC[0]) * u, tipC[1] + 0.3 + (seatC[1] - tipC[1] - 0.3) * u], tip);
+        o[0] = x; o[1] = y; o[2] = z; o[3] = j >= bandN ? sparkle(j, t, 0.95, 1.5) : 1 + 0.25 * Math.max(0, Math.sin(t * 1.3 + j * 0.4)) ** 3;
+      };
+      const heart = heartLine(SP).map(([x, y, z]) => [x * 0.42 + 0.95, y * 0.42 + 0.62, z]);
+      const twinkle = (j, t, o) => { o[3] = sparkle(j, t, 0.6, 1.3); };
       return { beats: [
-        act([part("ring", ringPts.map(([x, y, z, ...c]) => [x, y + 0.1, z, ...c]), { rigid: true }), part("glitter", glitter(n - ringN, 0.95, 0.1))], { caption: "Ein Ring funkelt", hold: 1.6, live: spin }),
-        act([part("ring", onFinger(0.82, 1.1), { rigid: true }), part("hand", handPts), part("glitter", glitter(g, 0.95))], { caption: "eine Hand, der Ring schwebt darüber", hold: 0.6, live: (b, j, t, o) => { if (j < ringN) o[1] += Math.sin(t * 1.1) * 0.02; else if (j >= ringN + h) o[3] = sparkle(j, t); } }),
-        act([part("ring", onFinger(0), { rigid: true }), part("hand", handPts), part("glitter", glitter(g, 0.95))], { caption: "er gleitet auf den Ringfinger", hold: 1, live: (b, j, t, o) => { if (j >= ringN + h) o[3] = sparkle(j, t); } }),
-        act([part("ring", onFinger(0), { rigid: true }), part("hand", handPts), part("glitter", paint(burst, DIAMOND))], { caption: "…und der Stein funkelt", live: (b, j, t, o) => {
-          if (j >= ringN + h) { o[3] = sparkle(j, t, 0.9, 1.5); const k = 1 + 0.12 * Math.sin(t * 1.4 + j); o[0] = seat.c[0] + (b[0] - seat.c[0]) * k; o[1] = seat.c[1] + (b[1] - seat.c[1]) * k; } // sparks around the stone breathe outward
-          else if (j >= ringN - stone.length && j < ringN) o[3] = sparkle(j, t, 1, 1.5);
+        act([part("ringA", paint(ra, GOLD)), part("ringB", paint(rb, (p) => mix(GOLD, WARM, 0.5))), part("stars", paint(stars, WARM))], { caption: "Zwei Ringe, ineinander", hold: 2.4, live: (b, j, t, o) => { if (j >= n - SP) twinkle(j, t, o); else { o[3] = glint(b[0], t, 4, 0.35); yaw(o, t * 0.3); pitch(o, 0.25); } } }),
+        act([part("band", paint(bigBand, (p) => mix(GOLD, WARM, (p[1] + 0.78) / 3.1))), part("stone", paint(bigStone, DIAMOND)), part("stars", paint(stars, WARM))], { caption: "werden zu einem Ring mit Stein", hold: 3.2, live: (b, j, t, o) => {
+          if (j >= n - SP) twinkle(j, t, o); else { o[3] = j >= bigBand.length ? sparkle(j, t, 0.95, 1.55) : glint(Math.atan2(b[1], b[0]), t, 5, 0.45, -Math.PI, Math.PI); yaw(o, t * 0.3); pitch(o, 0.3); }
+        } }),
+        act([part("ring", seated.map((p, j) => [...p, ...(j >= smallBand.length ? DIAMOND : GOLD)]), { rigid: true }), part("hand", paint(handPts, WARM)), part("stars", paint(stars, WARM))], { caption: "eine Hand: der Ring gleitet auf den Ringfinger", hold: 4.6, live: (b, j, t, o) => {
+          if (j < 84) ringLive(j, t, o, smallBand.length); else if (j >= 84 + handPts.length) twinkle(j, t, o);
+        } }),
+        act([part("ring", seated.map((p, j) => [...p, ...(j >= smallBand.length ? DIAMOND : GOLD)]), { rigid: true }), part("hand", paint(handPts, WARM)), part("stars", paint(heart, PINK))], { caption: "…und sie sagt Ja", hold: 3.5, live: (b, j, t, o) => {
+          if (j < 84) { if (j >= smallBand.length) o[3] = sparkle(j, t, 1.0, 1.6); else o[3] = 1 + 0.25 * Math.max(0, Math.sin(t * 1.3 + j * 0.4)) ** 3; }
+          else if (j >= 84 + handPts.length) o[3] = breathe(t);
         } }),
       ] };
     }
@@ -372,58 +395,75 @@ async function buildBeats(version, n) {
       return { beats: [{ pts, caption, live: (b, j, t, o) => { o[1] += Math.sin(t * 0.6) * 0.03; if (j >= r) o[3] = chase(-b[1], t, 0.9, 0.2, 0.75, 1.4); } }] };
     }
     case "rocket3d": {
-      const [r, f] = share(n, [6, 1]), pts = [...paint(rocket3d(r), (p) => mix(WARM, CYAN, (p[2] + 0.2) / 0.4)), ...paint(flame(f, -0.6, 0.08), flameColour(-0.6))];
-      return { beats: [{ pts, caption, live: (b, j, t, o) => { yaw(o, t * 0.25); o[1] += Math.sin(t * 0.6) * 0.04; if (j >= r) o[3] = chase(-b[1], t, 0.9, 0.2, 0.75, 1.4); } }] };
+      // the rocket as a body (silhouette in two planes, hoops, fins) hovers, turns slowly about its axis and tips a
+      // little; the flame is a cone of drones whose light runs downwards
+      const [r, f] = share(n, [3, 1]), pts = [...paint(rocketSolid(r), (p) => mix(WARM, CYAN, (p[2] + 0.2) / 0.4)), ...paint(flame(f, -0.62, 0.12), flameColour(-0.62))];
+      return { beats: [{ pts, caption, live: (b, j, t, o) => {
+        if (j >= r) o[3] = chase(-b[1], t, 0.9, 0.2, 0.7, 1.45); else o[3] = glint(b[1], t, 4.5, 0.35, -0.8, 1.1);
+        o[1] += Math.sin(t * 0.55) * 0.04; yaw(o, t * 0.3); pitch(o, 0.12 * Math.sin(t * 0.33));
+      } }] };
     }
     case "rocketStory": {
-      const [r, f] = share(n, [110, 190]);
-      const P0 = [-0.95, -0.62], P1 = [-0.9, 0.5], P2 = [0.55, 0.78], scale = 0.42;
-      const local = rocket3d(r), body = place(local, scale); // nose up, the nozzle at about y = −0.24
-      const rot = (x, y, a) => [x * Math.cos(a) - y * Math.sin(a), x * Math.sin(a) + y * Math.cos(a)];
-      // the rocket follows its path and straightens up before landing
-      const angle = (s) => { const [dx, dy] = bezDir(P0, P1, P2, s); return -Math.atan2(dx, dy) * (1 - smooth((s - 0.7) / 0.3)); };
-      const tail = (s) => { const [cx, cy] = bez(P0, P1, P2, s), [tx, ty] = rot(0, -0.27, angle(s)); return [cx + tx, cy + ty]; };
-      const travel = (t) => smooth(Math.max(0, t) / 6); // the flight takes six seconds
-      // the trail drones follow the rocket with a lag each: at the start they are its flame, then its sparkling trail
-      const lag = (k) => 0.03 + 0.5 * (k / f), side = (k) => (hash(k) - 0.5) * 0.07;
-      // one smooth formula: the drone's flame offset fades out while the rocket picks it up (soft start, no jolt)
-      const soft = (x) => (x + Math.sqrt(x * x + 0.0036)) / 2, fade = (x) => (x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x));
-      const [d0x, d0y] = bezDir(P0, P1, P2, 0);
-      const trailAt = (k, s) => { const l = lag(k), q = Math.max(0, soft(s - l) - soft(-l)), [x, y] = tail(q), [dx, dy] = bezDir(P0, P1, P2, q), back = l * 0.55 * (1 - fade(s / l)); return [x - dy * side(k) - d0x * back, y + dx * side(k) - d0y * back, (hash(k + 4) - 0.5) * 0.08]; };
-      const rocketAt = (p, s) => { const [x, y] = rot(p[0], p[1], angle(s)), [cx, cy] = bez(P0, P1, P2, s); return [x + cx, y + cy, p[2] || 0]; };
-      const start = [...paint(body.map((p) => rocketAt(p, 0)), WARM)], trail = paint(Array.from({ length: f }, (_, k) => trailAt(k, 0)), (q) => mix(GOLD, ORANGE, hash(q[0] * 97)));
-      const flying = (b, j, t, o) => {
-        const s = travel(t);
-        if (j < r) { const [x, y, z] = rocketAt(body[j], s); o[0] = x; o[1] = y + (s >= 1 ? Math.sin((t - 6) * 0.9) * 0.025 : 0); o[2] = z; }
-        else { const [x, y, z] = trailAt(j - r, s); o[0] = x; o[1] = y; o[2] = z; o[3] = sparkle(j, t); }
-      };
-      // the moon as a sphere with darker craters; the rocket stands on top
-      const M = [0.62, 0.02], MR = 0.42, CRATERS = [[0.4, 0.5, 0.6], [-0.5, 0.1, 0.75], [0.1, -0.55, 0.8]].map((v) => v.map((q) => q / Math.hypot(...v)));
-      const moonPts = paint(fib(f, MR, M[0], M[1]), (p) => { const v = [(p[0] - M[0]) / MR, (p[1] - M[1]) / MR, p[2] / MR]; return CRATERS.some((c) => c[0] * v[0] + c[1] * v[1] + c[2] * v[2] > 0.93) ? mix(MOON, [120, 118, 105], 0.55) : MOON; });
-      const landed = place(local, scale, M[0], M[1] + MR + 0.25);
-      // the solar system: the sun, two tilted orbits, three planets on them; the rocket circles on an outer orbit. Seen
-      // from further away the rocket needs fewer drones (otherwise it becomes a white blot): the others join the sun.
-      const r2 = Math.round(r * 0.55), [sunN, ring1, ring2, pl1, pl2, pl3] = share(n - r2, [80, 44, 60, 16, 16, 14]), far = rocket3d(r2);
-      const S = [0, 0.02], orbit = (R, a, out = [0, 0, 0]) => { out[0] = S[0] + R * Math.cos(a); out[1] = S[1] + R * Math.sin(a) * 0.34; out[2] = R * Math.sin(a) * 0.95; return out; };
-      const ringPts = (k, R) => Array.from({ length: k }, (_, i) => orbit(R, (i / k) * TAU));
-      const PLANETS = [[0.64, 0.4, TAU / 12, 0.085, CYAN, pl1], [1.02, 2.4, TAU / 20, 0.1, ORANGE, pl2], [1.02, 5.2, TAU / 20, 0.075, BLUE, pl3]];
-      const planetLocal = PLANETS.map(([, , , pr, , k]) => fib(k, pr));
-      const planetPts = PLANETS.flatMap(([R, a0, , , colour], q) => paint(planetLocal[q].map(([x, y, z]) => { const c = orbit(R, a0); return [c[0] + x, c[1] + y, c[2] + z]; }), colour));
-      const small = 0.32, R3 = 1.36, A3 = 0.9, W3 = TAU / 16, spot = [0, 0, 0];
-      const orbiting = (p, a) => { orbit(R3, a, spot); const [dx, dy] = [-Math.sin(a) * R3, Math.cos(a) * R3 * 0.34], turn = -Math.atan2(dx, dy), [x, y] = rot(p[0] * small, p[1] * small, turn); return [spot[0] + x, spot[1] + y, spot[2] + (p[2] || 0) * small]; };
-      const cosmos = [part("rocket", paint(far.map((p) => orbiting(p, A3)), WARM)), part("sun", paint(fib(sunN, 0.32, S[0], S[1]), (p) => mix(GOLD, ORANGE, (p[1] - S[1] + 0.32) / 0.64))),
-        part("orbits", paint([...ringPts(ring1, 0.64), ...ringPts(ring2, 1.02)], WARM)), part("planets", planetPts)];
-      const p0 = r2 + sunN + ring1 + ring2, firstOf = [p0, p0 + pl1, p0 + pl1 + pl2];
+      // Startklar auf der Rampe → Zündung, die Rampe fällt weg, die Spur wächst → im Orbit um einen Planeten → Landung
+      // auf dem Mond, Flagge gehisst. The rocket is one rigid body in every act; the plume drones stay the plume (then
+      // comet tail, then dust and flag); the pad drones become the planet and then the moon.
+      const RK = 120, TR = 60, WD = 85, ST = n - RK - TR - WD;
+      const body = rocketSolid(RK, 1), stars = starField(ST, -1.25, 1.25, 0.05, 1.0, 7);
+      const at = (s, cx, cy, heading = 0) => body.map(([x, y, z]) => { const [X, Y] = heading ? [x * Math.cos(heading) - y * Math.sin(heading), x * Math.sin(heading) + y * Math.cos(heading)] : [x, y]; return [X * s + cx, Y * s + cy, z * s]; });
+      const bodyColour = (p) => mix(WARM, CYAN, (p[2] + 0.3) / 0.6), plumeColour = (q) => mix(GOLD, ORANGE, hash(q[0] * 97 + q[1] * 13));
+      // act 1 + 2: the rocket on the pad, then rising; the pad drops out of the picture (the world falls away)
+      const S1 = 0.9, X1 = -0.2, Y0 = -0.72 + 0.62 * S1 + 0.02, RISE = 0.55, DROP = 0.95, T2 = 6;
+      const pad = launchPad(WD, -0.72, 0.62, 0.4).map(([x, y, z]) => [Math.max(-0.8, Math.min(0.8, x)) + X1, y, z]);
+      const idle = Array.from({ length: TR }, (_, k) => { const a = k * 2.39996, r = 0.06 * Math.sqrt((k + 0.5) / TR); return [X1 + Math.cos(a) * r, Y0 - 0.62 * S1 - 0.05 - 0.06 * ((k * 7) % 10) / 10, Math.sin(a) * r * 0.5]; });
+      const lag = (k) => 0.05 + 2.2 * (k / TR), spread = (k) => (hash(k) - 0.5) * (0.14 + 0.3 * (k / TR));
+      // the plume grows with a soft start (smooth), so ignition has no velocity jump
+      const plumeAt = (k, t) => { const u = smooth(Math.max(0, t) / T2), y = Y0 + RISE * u - 0.62 * S1 - 0.04, l = lag(k) * smooth(Math.max(0, t) / 1.2); return [X1 + spread(k) * Math.sqrt(l + 0.05), y - l * (0.3 + RISE / T2), (hash(k + 3) - 0.5) * 0.05 * l]; };
+      const plumeEnd = Array.from({ length: TR }, (_, k) => plumeAt(k, 99));
+      // act 3: the planet and an orbit around it, the rocket smaller and heading along the orbit, the plume as its tail
+      const G = [0.12, 0.05], GR = 0.52, A = 0.9, H = 0.3, W = TAU / 9, S3 = 0.46;
+      const orbit = (ph) => [G[0] + A * Math.cos(ph), G[1] + H * Math.sin(ph), A * Math.sin(ph) * 0.9];
+      // the rocket follows the orbit the way a picture does: it turns in the picture plane along the projected path,
+      // the depth of the orbit (behind and in front of the planet) comes from the orbit itself
+      const inOrbit = (p, ph) => { const c = orbit(ph), a = Math.atan2(H * Math.cos(ph), -A * Math.sin(ph)) - Math.PI / 2, [x, y, z] = p, X = x * Math.cos(a) - y * Math.sin(a), Y = x * Math.sin(a) + y * Math.cos(a); return [c[0] + X * S3, c[1] + Y * S3, c[2] + z * S3]; };
+      const tailAt = (k, ph) => { const c = orbit(ph - 0.08 - 1.1 * (k / TR)); return [c[0] + spread(k) * 0.6, c[1] + (hash(k + 5) - 0.5) * 0.06, c[2]]; };
+      const PH0 = 0.3;
+      // the planet as real shows draw a sphere: its outline, the equator and two meridians that turn inside the outline
+      const planet = globe(WD, GR, G[0], G[1]), planetTurns = (j) => j >= RK + TR + planet.length - 0.5 * WD; // the second half of the points are the meridians
+      // act 4: the moon as a horizon, the rocket lands upright, the plume becomes dust and a flag
+      const S4 = 0.66, XL = -0.05, YTOP = 0.95, YL = -0.45 + 0.62 * S4 + 0.03, T4 = 5;
+      const moon = moonHorizon(WD, -2.35, 1.9), [pole, cloth] = flagStar(40, XL + 0.45, -0.46, 0.85, 0.46); // the crater rims use the fewer pad drones
+      const dust = Array.from({ length: TR - 40 }, (_, k) => { const u = (k + 0.5) / (TR - 40), side = k % 2 ? 1 : -1; return [XL + side * (0.22 + 0.55 * u), -0.44 + 0.03 * Math.sin(u * 9) + 0.015 * (k % 3), (hash(k + 9) - 0.5) * 0.2]; });
+      const trailRest4 = [...pole, ...cloth, ...dust];
+      const descent = (t) => smooth(Math.max(0, t) / T4);
+      const under = (k, t) => { const u = descent(t), y = YTOP + (YL - YTOP) * u - 0.62 * S4 - 0.04, l = lag(k) * 0.25; return [XL + spread(k) * 0.5, y - l * 0.6, (hash(k + 3) - 0.5) * 0.04]; };
       return { beats: [
-        act([part("rocket", start, { rigid: true }), part("trail", trail)], { caption: "Startklar", hold: 1.2, live: (b, j, t, o) => { if (j >= r) o[3] = sparkle(j, t); } }),
-        act([part("rocket", start, { rigid: true }), part("trail", trail)], { caption: "die Rakete hebt ab und zieht ihre Spur", hold: 7, live: flying }),
-        act([part("rocket", paint(landed, WARM), { rigid: true }), part("moon", moonPts)], { caption: "aus der Spur wird der Mond, die Rakete landet", hold: 2.2, live: (b, j, t, o) => { if (j >= r) yaw(o, t * 0.2, M[0], 0); } }),
-        act(cosmos, { caption: "…und fliegt weiter durchs Sonnensystem", live: (b, j, t, o) => {
-          const tt = t <= 0 ? 0 : t < 2.5 ? (t * t) / 5 : t - 1.25; // the orbits speed up gently over 2.5 s
-          if (j < r2) { const [x, y, z] = orbiting(far[j], A3 + W3 * tt); o[0] = x; o[1] = y; o[2] = z; }
-          else if (j < r2 + sunN) { yaw(o, t * 0.25, S[0], 0); o[3] = sparkle(j, t, 0.95, 1.35); }
-          else if (j < p0) o[3] = 0.8;
-          else { const q = j >= firstOf[2] ? 2 : j >= firstOf[1] ? 1 : 0, [R, a0, w] = PLANETS[q], c = orbit(R, a0 + w * tt), lp = planetLocal[q][j - firstOf[q]]; o[0] = c[0] + lp[0]; o[1] = c[1] + lp[1]; o[2] = c[2] + lp[2]; }
+        act([part("rocket", paint(at(S1, X1, Y0), bodyColour), { rigid: true }), part("trail", paint(idle, plumeColour)), part("world", paint(pad, WARM)), part("stars", paint(stars, WARM))], { caption: "Startklar", hold: 1.8, frame: "start", live: (b, j, t, o) => {
+          if (j >= RK && j < RK + TR) o[3] = 0.55 + 0.3 * sparkle(j, t, 0, 1); else if (j >= RK + TR + WD) o[3] = sparkle(j, t, 0.6, 1.3);
+        } }),
+        act([part("rocket", paint(at(S1, X1, Y0 + RISE), bodyColour), { rigid: true }), part("trail", paint(plumeEnd, plumeColour)), part("world", paint(pad.map(([x, y, z]) => [x, y - DROP, z]), WARM), { offstage: true }), part("stars", paint(stars.map(([x, y, z]) => [x, y - 0.25, z]), WARM))], { caption: "Zündung: die Rakete hebt ab, die Rampe fällt weg", hold: 8, frame: "start", live: (b, j, t, o) => {
+          const u = smooth(Math.max(0, t) / T2);
+          if (j < RK) { o[1] = b[1] - RISE * (1 - u); o[3] = glint(b[1] - Y0, t, 4, 0.3, -0.8, 0.9); }
+          else if (j < RK + TR) { const [x, y, z] = plumeAt(j - RK, t); o[0] = x; o[1] = y; o[2] = z; o[3] = (0.5 + 0.9 * Math.max(0, 1 - lag(j - RK) / 2.4)) * sparkle(j, t, 0.75, 1.2) + 0.1; }
+          else if (j < RK + TR + WD) o[1] = b[1] + DROP * (1 - u);
+          else { o[1] = b[1] + 0.25 * (1 - smooth(Math.max(0, t) / 8)); o[3] = sparkle(j, t, 0.6, 1.3); }
+        } }),
+        act([part("rocket", paint(at(S3, 0, 0).map((p, j) => inOrbit(body[j], PH0)), bodyColour), { rigid: true }), part("trail", paint(Array.from({ length: TR }, (_, k) => tailAt(k, PH0)), plumeColour)), part("world", paint(planet, (p) => mix(CYAN, BLUE, (p[1] - G[1] + GR) / (2 * GR)))), part("stars", paint(stars, WARM))], { caption: "im Orbit um einen Planeten", hold: 9.5, live: (b, j, t, o) => {
+          const tt = Math.max(0, t), ph = PH0 + W * (tt < 2 ? (tt * tt) / 4 : tt - 1); // the orbit speeds up gently
+          if (j < RK) { const [x, y, z] = inOrbit(body[j], ph); o[0] = x; o[1] = y; o[2] = z; }
+          else if (j < RK + TR) { const k = j - RK, [x, y, z] = tailAt(k, ph); o[0] = x; o[1] = y; o[2] = z; o[3] = (0.45 + 0.9 * (1 - k / TR)) * sparkle(j, t, 0.8, 1.2); }
+          else if (j < RK + TR + WD) { if (planetTurns(j)) yaw(o, t * 0.3, G[0], 0); o[3] = 0.85 + 0.35 * Math.max(0, (o[2] + GR) / (2 * GR)); }
+          else o[3] = sparkle(j, t, 0.6, 1.3);
+        } }),
+        act([part("rocket", paint(at(S4, XL, YL), bodyColour), { rigid: true }), part("trail", paint(trailRest4, (q, i) => (i < 40 ? WARM : plumeColour(q)))), part("world", paint(moon, MOON)), part("stars", paint(stars, WARM))], { caption: "…und landet auf dem Mond. Flagge gehisst!", hold: 7.5, live: (b, j, t, o) => {
+          const u = descent(t), tt = Math.max(0, t);
+          if (j < RK) { o[1] = b[1] + (YTOP - YL) * (1 - u); o[3] = glint(b[1] - YL, t, 4, 0.3, -0.7, 0.8); }
+          else if (j < RK + TR) {
+            const k = j - RK, w = smooth((tt - T4 + 0.3) / 2.4); // after touchdown the plume settles into flag and dust
+            if (w < 1) { const [x, y, z] = under(k, t); o[0] = x + (b[0] - x) * w; o[1] = y + (b[1] - y) * w; o[2] = z + (b[2] - z) * w; }
+            if (k >= 40) o[3] = (w < 1 ? 1.2 : 0.6) * sparkle(j, t, 0.7, 1.2);
+            else if (k >= 12) { const dx = b[0] - (XL + 0.42); o[2] += w * Math.sin(t * 2.4 - dx * 9) * 0.05 * dx; o[1] += w * Math.sin(t * 2.0 - dx * 9) * 0.015 * dx; o[3] = w < 1 ? sparkle(j, t, 0.8, 1.2) : glint(b[0], t, 3.5, 0.35, XL + 0.3, XL + 0.95); }
+          }
+          else if (j >= RK + TR + WD) o[3] = sparkle(j, t, 0.6, 1.3);
         } }),
       ] };
     }

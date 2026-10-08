@@ -28,7 +28,7 @@ test('Gleichmäßige Teilmenge behält die ganze Form', () => {
 });
 
 test('Motivformen haben genau die verlangte Punktzahl', () => {
-  for (const n of [100, 200, 300]) for (const name of ['twoRings', 'shield', 'shield3d', 'tower', 'tower3d', 'waves', 'gate3d', 'rocket', 'rocket3d', 'maskPair', 'maskPair3d', 'mask3d', 'curtain', 'burst2d', 'bursts3d', 'sparkleShell', 'hand3d', 'hand2d', 'flute2d', 'flute3d', 'bubbles', 'trophy2d', 'trophy3d', 'bulb2d', 'bulbGlass', 'filament', 'notes2d', 'notes3d', 'clover2d', 'clover3d']) {
+  for (const n of [100, 200, 300]) for (const name of ['twoRings', 'shield', 'shield3d', 'tower', 'tower3d', 'waves', 'gate3d', 'rocket', 'rocket3d', 'maskPair', 'maskPair3d', 'mask3d', 'curtain', 'burst2d', 'bursts3d', 'sparkleShell', 'hand3d', 'hand2d', 'flute2d', 'flute3d', 'bubbles', 'trophy2d', 'trophy3d', 'bulb2d', 'bulbGlass', 'filament', 'notes2d', 'notes3d', 'clover2d', 'clover3d', 'brilliant', 'globe', 'rocketSolid', 'launchPad', 'moonHorizon', 'starField']) {
     const raw = shapes[name](n), pts = name.startsWith('maskPair') ? raw.flat() : raw;
     assert.equal(pts.length, n, `${name} ${n}`);
     assert.ok(pts.every((p) => p.every(Number.isFinite)), `${name} ${n} has non-finite coordinates`);
@@ -37,6 +37,9 @@ test('Motivformen haben genau die verlangte Punktzahl', () => {
   assert.equal(shapes.clockFace(200, 6, 0.3).length, 200);
   for (const n of [90, 100, 200, 300]) {
     assert.equal(shapes.engagementRing(n).flat().length, n, `engagementRing ${n}`);
+    assert.equal(shapes.solitaire(n).flat().length, n, `solitaire ${n}`);
+    assert.equal(shapes.torusLink(n).flat().length, n, `torusLink ${n}`);
+    assert.equal(shapes.flagStar(n).flat().length, n, `flagStar ${n}`);
     assert.equal(shapes.bulb3d(n).flat().length, n, `bulb3d ${n}`);
     assert.equal(shapes.trophy3d(n, 0.2).length, n, `trophy3d base ${n}`);
     assert.equal(shapes.clover3d(n, 3).length, n, `clover3d three leaves ${n}`);

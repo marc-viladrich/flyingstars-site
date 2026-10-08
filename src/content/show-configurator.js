@@ -22,7 +22,7 @@ const v = (build, caption) => ({ build, caption });
 /** Motifs in the order they play; after the last one the sequence starts again. */
 export const OCCASIONS = [
   { id: 'hochzeit', label: 'Hochzeit', anlass: 'privat', motifs: [
-    motif('ring', 'Ring', v('rings2d', 'Zwei Ringe drehen sich'), v('rings3d', 'Ein Verlobungsring in 3D, der Stein funkelt'), v('ringsStory', 'Der Ring gleitet auf den Ringfinger')),
+    motif('ring', 'Ring', v('rings2d', 'Zwei Ringe drehen sich'), v('rings3d', 'Ein Solitär in 3D: Ring und Brillant drehen sich'), v('ringsStory', 'Zwei Ringe werden eins, der Ring gleitet auf den Ringfinger')),
     motif('herz', 'Herz', v('heart2d', 'Ein Herz'), v('heart3d', 'Volles 3D-Herz, das sanft aufleuchtet'), v('heartsStory', 'Amors Pfeil fliegt durchs Herz, zwei Herzen umkreisen sich')),
     motif('glaeser', 'Sektgläser', v('flutes2d', 'Zwei Sektgläser stoßen an'), v('flutes3d', 'Sektgläser in 3D, die Perlen steigen'), v('flutesStory', 'Die Gläser stoßen an, die Perlen steigen als Herz auf')),
   ] },
@@ -33,7 +33,7 @@ export const OCCASIONS = [
   ] },
   { id: 'launch', label: 'Launch', anlass: 'firma', motifs: [
     motif('idee', 'Glühbirne', v('bulb2d', 'Eine Glühbirne: die Idee'), v('bulb3d', 'Die Glühbirne in 3D, der Glühfaden leuchtet'), v('bulbStory', 'Aus einem Funken wird eine Glühbirne, die strahlt')),
-    motif('rakete', 'Rakete', v('rocket', 'Rakete mit Flamme'), v('rocket3d', '3D-Rakete mit Flamme schwebt und dreht sich'), v('rocketStory', 'Die Rakete hebt ab, landet auf dem Mond und fliegt durchs Sonnensystem')),
+    motif('rakete', 'Rakete', v('rocket', 'Rakete mit Flamme'), v('rocket3d', 'Die Rakete als Körper schwebt und dreht sich'), v('rocketStory', 'Start von der Rampe, Orbit um einen Planeten, Landung auf dem Mond')),
     motif('logo', 'Logo', v('logo', 'Beispiel-Logo mit Lichtlauf'), v('logo3d', 'Beispiel-Logo in 3D mit Lichtschimmer'), v('logoStory', 'Ein Funkenwirbel wird zum Logo und zum Ring in 3D')),
   ] },
   { id: 'kultur', label: 'Kultur', anlass: 'sonstiges', motifs: [

@@ -1,6 +1,6 @@
 # Show-Konfigurator (Prototyp)
 
-Stand: 7. Oktober 2026, neunte Fassung. Frühere Stände sind als Tags erhalten: `konfigurator-v6`, `konfigurator-v8`. Die Route ist `/show-konfigurator/`, nicht verlinkt und mit `noindex`. Der Konfigurator ist ein Vorschlag an FlyingStars und ersetzt den Preisrechner der Referenz nicht.
+Stand: 8. Oktober 2026, zehnte Fassung. Frühere Stände sind als Tags erhalten: `konfigurator-v6`, `konfigurator-v8`, `konfigurator-v9`. Die Route ist `/show-konfigurator/`, nicht verlinkt und mit `noindex`. Der Konfigurator ist ein Vorschlag an FlyingStars und ersetzt den Preisrechner der Referenz nicht.
 
 ## Das Modell: zwei Entscheidungen, die sich nicht gegenseitig verändern
 
@@ -46,14 +46,14 @@ Jedes Motiv hat einen eigenen Maßstab, sodass es die Bühne füllt. Innerhalb e
 
 | Anlass | Folge | SPARK (100 Drohnen) | HORIZON (200) | ODYSSEY (300), Akte |
 |---|---|---|---|---|
-| Hochzeit | Ring | zwei Ringe drehen sich um die eigene Achse | Verlobungsring in 3D dreht sich, der Stein funkelt | ein Ring funkelt → eine Hand, der Ring schwebt darüber → er gleitet auf den Ringfinger → der Stein funkelt |
+| Hochzeit | Ring | zwei Ringe drehen sich um die eigene Achse | Solitär als Körper: Torus-Band und Brillant, dreht sich und kippt | zwei verschlungene Tori → ein Solitär mit Stein → eine Hand, der Ring kippt und gleitet auf den Ringfinger → der Stein funkelt, ein Herz steigt auf |
 | | Herz | Herz, atmet in Licht | volles 3D-Herz, ruhig atmend | Amor zielt → der Pfeil fliegt durch das Herz → das Herz wird voll → zwei Herzen umkreisen sich |
 | | Sektgläser | zwei Gläser stoßen an | 3D-Gläser, die Perlen steigen in Licht | zwei Gläser → sie stoßen an → die Perlen steigen als Herz auf |
 | Jubiläum | Wappen | eigenes Vereinswappen: Fluss, wehende Fahne, Stern | 3D-Wappen mit Zahl, die Fahne weht | aus dem Stern wird eure Zahl → Krone und Sternenkranz |
 | | Wahrzeichen | Berliner Fernsehturm, Warnlicht blinkt | 3D, Licht läuft um die Kugel | der Turm → die Funkwellen bewegen sich hinaus und zurück → Brandenburger Tor |
 | | Pokal | Pokal, Sterne funkeln darüber | 3D-Pokal dreht sich | der Sockel, Funken sammeln sich → der Pokal wächst → eure Zahl steigt heraus, Konfetti |
 | Launch | Glühbirne | Glühbirne, der Faden glimmt | 3D-Glühbirne dreht sich | ein Funke → um ihn formt sich die Glühbirne → sie strahlt (Strahlen reichen hinaus und zurück) |
-| | Rakete | Rakete mit flackernder Flamme | 3D-Rakete mit Flamme | startklar → Flug mit Spur → 3D-Mond, Landung → Sonnensystem |
+| | Rakete | Rakete mit flackernder Flamme | Rakete als Körper (Silhouette in zwei Ebenen, Reifen, Finnen) schwebt und dreht sich | startklar auf der Rampe → Zündung, die Rampe fällt weg, die Spur wächst → Orbit um einen Planeten, Kometenschweif → Landung auf dem Mond, Flagge |
 | | Logo | Beispiel-Logo, Licht läuft um den Ring | 3D-Logo mit Lichtschimmer | Funkenwirbel → Logo → Wirbel → Ring aus Licht |
 | Kultur | Vorhang | Vorhang im Luftzug | Vorhang öffnet sich, ein 3D-Stern löst sich heraus | Vorhang öffnet sich → Goldregen → ein Stern steigt auf |
 | | Masken | die Masken wiegen sich gegeneinander | die Masken in 3D | Komödie → die Tragödie tritt dazu → beide verbinden sich → Bokkenrijders-Teufel |
@@ -87,6 +87,16 @@ Marcs wichtigster Punkt zur sechsten Fassung: Objekte müssen erhalten bleiben, 
 - **Vorhang:** Jede Linie des Vorhangs behält ihre Drohnen bei jeder Öffnung, darum gleiten die Drohnen beim Öffnen sichtbar zur Seite (kein Springen zwischen Linien).
 - **Wappen:** eigener Entwurf im Stil eines Vereinswappens (erhöhte Mitte, Fluss, Fahne, Stern), bewusst kein bestehendes Vereinswappen.
 - **Rakete im Sonnensystem:** Aus der Ferne braucht sie weniger Drohnen; die übrigen fliegen zur Sonne. Umlaufbahnen laufen über 2,5 Sekunden sanft an (sonst Beschleunigungsspitze bei der Ankunft).
+
+### Zehnte Fassung: Körper als Skelett, Geschichten in Bildausschnitten (8. Oktober)
+
+Marcs Rückmeldung zur neunten: Rakete und Verlobungsring in 3D wirken billig. Als Anker wurden 17 FlyingStars-Shows vom YouTube-Kanal katalogisiert (intern: `freelance/clients/flyingstars/06-show-animationen-2026-10/`, nicht im Repo). Befund: Echte Shows zeichnen 3D als Skelett (Würfelkanten, gestapelte Reifen, ein Globus aus Umriss und Meridianen), nie als Punktkugel; Übergänge sind lose Wolken, in denen das neue Bild schon als Vorform steht; ein kleines Teil darf als Objekt fliegen (der Korken), während der Rest steht.
+
+- **Neue Körper** in `show-shapes.js`: `brilliant` (Brillantschliff), `band`/`solitaire`/`torusLink` (Torus-Ringe), `globe` (Umriss, Äquator, zwei drehbare Meridiane), `rocketSolid` (Silhouette in ein oder zwei Ebenen, Reifen, Fenster, Finnen), `launchPad`, `moonHorizon`, `flagStar`, `starField`; alle über `sample3d` (Punkte nach Länge entlang 3D-Polylinien).
+- **Ring:** HORIZON ein Solitär als Körper; ODYSSEY zwei verschlungene Tori → Solitär → Hand, auf deren Ringfinger der Ring kippt und gleitet → Herz.
+- **Rakete:** HORIZON als Körper; ODYSSEY Rampe → Zündung (die Rampe fällt aus dem Bild, die Welt rückt weg) → Orbit um einen Planeten mit Kometenschweif → Mondlandung mit Flagge. Die Rakete folgt dem Orbit als Bild (dreht sich in der Bildebene entlang der projizierten Bahn), Tiefe kommt aus der Bahn selbst.
+- **Engine:** Ein Teil kann `offstage` sein (es verlässt das Bild, zählt nicht für den Ausschnitt; `fitPts` am Beat). Geschichten dürfen mehrere Ausschnitte haben (`frame`): Start und Zündung teilen einen, Orbit und Landung den zweiten. So bleibt die Rakete auf der Rampe groß.
+- **Drohnenbudget je Akt (300):** Rakete 120, Spur 60, Welt (Rampe/Planet/Mond) 85, Sterne 35. Ring-Geschichte: Ringe 260 + Sterne 40, auf der Hand: Ring 84, Hand 176, Sterne 40.
 
 ### Nur, was echte Drohnen können
 

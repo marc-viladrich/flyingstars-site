@@ -72,7 +72,7 @@ test('Die Motive laufen von selbst durch, ein Paketwechsel bleibt beim Motiv', a
   await expect(scene(page)).toHaveText('Eine Glühbirne: die Idee');
   await expect(scene(page)).toHaveText('Rakete mit Flamme', { timeout: 15_000 }); // the show moves on by itself
   await pkg(page, 1);
-  await expect(scene(page)).toHaveText('3D-Rakete mit Flamme schwebt und dreht sich'); // same motif, next package
+  await expect(scene(page)).toHaveText('Die Rakete als Körper schwebt und dreht sich'); // same motif, next package
   await pkg(page, 2);
   await expect(scene(page)).toHaveText('Startklar'); // its story starts
 });
@@ -167,7 +167,7 @@ test('Die Bilder lassen sich vor und zurück schalten, im Kreis', async ({ page 
   await page.locator('#cfg-next').click();
   await expect(scene(page)).toHaveText('Rakete mit Flamme');
   await pkg(page, 2);
-  await expect(scene(page)).toHaveText('…und fliegt weiter durchs Sonnensystem'); // paused: the motif's story at rest
+  await expect(scene(page)).toHaveText('…und landet auf dem Mond. Flagge gehisst!'); // paused: the motif's story at rest
   await page.locator('#cfg-prev').click();
-  await expect(scene(page)).toHaveText('aus der Spur wird der Mond, die Rakete landet');
+  await expect(scene(page)).toHaveText('im Orbit um einen Planeten');
 });

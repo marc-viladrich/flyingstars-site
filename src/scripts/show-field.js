@@ -8,6 +8,7 @@
 // drones whose part ends or begins are reassigned, by optimal assignment. live(base, index, t, out) moves a drone
 // around its resting place and sets its light; out = [x, y, z, alpha]. Transitions follow the client's Vercel
 // prototype: staggered starts, drones joining fly in from outside like shooting stars, drones leaving fly out.
+// A beat may name fitPts (the points that must stay in view; parts that leave the picture are left out).
 // A sequence of motifs is one scene: beats carry their motif as segment (one scale per motif, optionally split by a
 // named frame). The render loop stops when nothing moves; paused or reduced motion shows the motif at rest.
 import { assign, flightTime, along, ease } from "./show-flight.js";
@@ -59,7 +60,7 @@ export function createField(canvas, { onBeat } = {}) {
     for (const b of beats) { const key = `${b.segment ?? 0}|${b.frame ?? ""}`; if (!segments.has(key)) segments.set(key, []); segments.get(key).push(b); }
     for (const list of segments.values()) {
       let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
-      for (const b of list) for (const p of b.pts) { x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]); }
+      for (const b of list) for (const p of b.fitPts ?? b.pts) { x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]); }
       const f = { x: (x0 + x1) / 2, y: (y0 + y1) / 2, k: (list.some((b) => b.live) ? 0.9 : 1) / Math.max((x1 - x0) / 2 / 1.15, (y1 - y0) / 2 / 0.75, 1e-6) };
       for (const b of list) b.fit = f;
     }
