@@ -47,10 +47,10 @@ test('Motivformen haben genau die verlangte Punktzahl', () => {
   }
 });
 
-test('Jeder Anlass spielt drei Motive mit je einer Fassung pro Paket', () => {
+test('Jeder Anlass spielt vier oder fünf Motive mit je einer Fassung pro Paket', () => {
   assert.deepEqual(STEPS.map((s) => s.pkg), PACKAGE_ORDER);
   for (const occasion of OCCASIONS) {
-    assert.equal(occasion.motifs.length, 3, occasion.id);
+    assert.ok(occasion.motifs.length >= 4 && occasion.motifs.length <= 5, occasion.id);
     for (const motif of occasion.motifs) {
       const builds = PACKAGE_ORDER.map((pkg) => motif.tiers[pkg]?.build);
       assert.ok(builds.every(Boolean), `${occasion.id}/${motif.id} misses a version`);

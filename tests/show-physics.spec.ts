@@ -6,7 +6,7 @@ import { test, expect, type Page } from '@playwright/test';
 // about three times as long); the limits guarantee smooth, bounded motion without jumps. Flight planning in
 // show-flight.js aims lower (1.8 and 3); the margin covers the flow drift and staggered starts.
 const LIMITS = { speed: 2.6, accel: 5.5 };
-const OCCASIONS = ['hochzeit', 'jubilaeum', 'launch', 'kultur', 'silvester'];
+const OCCASIONS = ['hochzeit', 'jubilaeum', 'launch', 'kultur', 'silvester', 'festival'];
 
 /** Highest speed and acceleration of any drone over the recorded frames (regular frame intervals only). */
 const measure = (page: Page) => page.evaluate(() => {
@@ -29,13 +29,13 @@ const measure = (page: Page) => page.evaluate(() => {
 for (const occasion of OCCASIONS) {
   test(`Physikalisch fliegbar: ${occasion}, die ganze Show in allen drei Paketen`, async ({ page }, info) => {
     test.skip(info.project.name !== 'desktop', 'Die Bewegung ist auf allen Geräten dieselbe.');
-    test.setTimeout(420_000);
+    test.setTimeout(900_000);
     await page.clock.install();
     await page.goto('/show-konfigurator/');
     await page.clock.runFor(1000);
     await page.locator(`label:has([name=occasion][value=${occasion}])`).click();
     // long enough for every motif of the sequence to form and play, and for the loop back to the first
-    for (const [k, seconds] of [[0, 24], [1, 32], [2, 100]] as const) {
+    for (const [k, seconds] of [[0, 40], [1, 50], [2, 180]] as const) {
       await page.evaluate(() => { (window as unknown as { __showTrace: unknown[] }).__showTrace = []; });
       await page.locator(`label:has([name=pkg][value="${k}"])`).click();
       await page.clock.runFor(seconds * 1000);

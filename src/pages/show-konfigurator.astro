@@ -43,6 +43,15 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
         </div>
       </fieldset>
 
+      <fieldset class="cfg-block">
+        <legend>Euer Text <span class="cfg-opt">(optional, ohne Aufpreis)</span></legend>
+        <input class="cfg-text" id="cfg-text" name="text" type="text" maxlength="24" autocomplete="off" placeholder="z. B. Anna & Ben" aria-describedby="cfg-text-note" />
+        <div class="cfg-styles" id="cfg-styles" hidden>
+          {[['script', 'Schreibschrift'], ['print', 'Druckschrift'], ['initials', 'Initialen']].map(([v, l], i) => <label><input type="radio" name="textstyle" value={v} checked={i === 0} /><span>{l}</span></label>)}
+        </div>
+        <p class="cfg-text-note" id="cfg-text-note" hidden>Erscheint als Finale der Show. Zählt als eines eurer eigenen Elemente und ändert den Preis nicht.</p>
+      </fieldset>
+
       <div class="cfg-result" aria-live="polite">
         <div class="cfg-price"><b id="cfg-pkg">{STEPS[start].pkg}</b><span id="cfg-price">{money(first.price)}</span></div>
         <p class="cfg-meta mono" id="cfg-meta">{first.base} Drohnen · {first.dur} · netto zzgl. Anfahrt</p>
@@ -90,12 +99,25 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
   .cfg-h { font-size: clamp(28px, 2.6vw, 40px); line-height: 1.04; letter-spacing: -0.03em; }
   .cfg-block { display: grid; gap: 8px; border: 0; margin: 0; padding: 0; min-width: 0; }
   .cfg-block > label, .cfg-block legend { font-size: 15px; color: var(--text); padding: 0; margin-bottom: 6px; }
-  .cfg-occasions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .cfg-occasions { display: flex; flex-wrap: wrap; gap: 6px; }
   .cfg-occasions label { position: relative; cursor: pointer; }
   .cfg-occasions input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
-  .cfg-occasions span { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--line-strong); font-size: 15px; color: var(--muted); }
+  .cfg-occasions span { display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line-strong); font-size: 14px; color: var(--muted); }
   .cfg-occasions input:checked + span { color: var(--ground); background: var(--text); border-color: var(--text); }
   .cfg-occasions input:focus-visible + span { outline: 3px solid var(--cyan); outline-offset: 2px; }
+  .cfg-opt { color: var(--faint); font-size: 13px; }
+  .cfg-text { width: 100%; min-height: 42px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line-strong); background: transparent; color: var(--text); font: inherit; font-size: 16px; }
+  .cfg-text::placeholder { color: var(--faint); }
+  .cfg-text:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+  .cfg-styles { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cfg-styles[hidden] { display: none; }
+  .cfg-styles label { position: relative; cursor: pointer; }
+  .cfg-styles input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
+  .cfg-styles span { display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+  .cfg-styles input:checked + span { color: var(--text); border-color: var(--text); }
+  .cfg-styles input:focus-visible + span { outline: 3px solid var(--cyan); outline-offset: 2px; }
+  .cfg-text-note[hidden] { display: none; }
+  .cfg-text-note { margin: 0; font-size: 12.5px; color: var(--faint); line-height: 1.45; }
   .cfg-result { display: grid; gap: 6px; padding-top: 14px; border-top: 1px solid var(--line); }
   .cfg-price { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
   .cfg-price b { font: 600 clamp(24px, 2.2vw, 30px)/1 var(--display); letter-spacing: 0.02em; }
