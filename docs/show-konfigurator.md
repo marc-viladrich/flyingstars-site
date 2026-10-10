@@ -1,10 +1,10 @@
 # Show-Konfigurator (Prototyp)
 
-Stand: 8. Oktober 2026, zehnte Fassung. Frühere Stände sind als Tags erhalten: `konfigurator-v6`, `konfigurator-v8`, `konfigurator-v9`. Die Route ist `/show-konfigurator/`, nicht verlinkt und mit `noindex`. Der Konfigurator ist ein Vorschlag an FlyingStars und ersetzt den Preisrechner der Referenz nicht.
+Stand: 10. Oktober 2026, elfte Fassung. Frühere Stände sind als Tags erhalten: `konfigurator-v6`, `konfigurator-v8`, `konfigurator-v9`, `konfigurator-v10`. Die Route ist `/show-konfigurator/`, nicht verlinkt und mit `noindex`. Der Konfigurator ist ein Vorschlag an FlyingStars und ersetzt den Preisrechner der Referenz nicht.
 
 ## Das Modell: zwei Entscheidungen, die sich nicht gegenseitig verändern
 
-- **Anlass** (Hochzeit, Jubiläum, Launch, Kultur, Silvester) bestimmt, **was** am Himmel steht: drei Motive, die als kleine Show nacheinander laufen, und den Anlass in der Anfrage. Er verändert weder Paket noch Preis.
+- **Anlass** (Hochzeit, Jubiläum, Launch, Kultur, Winter & Silvester, Stadtfest) bestimmt, **was** am Himmel steht: vier oder fünf Motive, die als kleine Show nacheinander laufen, und den Anlass in der Anfrage. Er verändert weder Paket noch Preis.
 - **Wie aufwendig?** hat drei Knöpfe, einen je Paket, in der Paketfarbe. Er bestimmt, **wie**: Paket, Drohnenzahl, Art der Bewegung und damit den Preis. Der Preis ändert sich genau dann, wenn ein anderer Knopf gewählt wird.
 
 | Stufe | Paket | Drohnen | Preis | Enthalten (Wortlaut der Paketbeschreibungen) |
@@ -97,6 +97,89 @@ Marcs Rückmeldung zur neunten: Rakete und Verlobungsring in 3D wirken billig. A
 - **Rakete:** HORIZON als Körper; ODYSSEY Rampe → Zündung (die Rampe fällt aus dem Bild, die Welt rückt weg) → Orbit um einen Planeten mit Kometenschweif → Mondlandung mit Flagge. Die Rakete folgt dem Orbit als Bild (dreht sich in der Bildebene entlang der projizierten Bahn), Tiefe kommt aus der Bahn selbst.
 - **Engine:** Ein Teil kann `offstage` sein (es verlässt das Bild, zählt nicht für den Ausschnitt; `fitPts` am Beat). Geschichten dürfen mehrere Ausschnitte haben (`frame`): Start und Zündung teilen einen, Orbit und Landung den zweiten. So bleibt die Rakete auf der Rampe groß.
 - **Drohnenbudget je Akt (300):** Rakete 120, Spur 60, Welt (Rampe/Planet/Mond) 85, Sterne 35. Ring-Geschichte: Ringe 260 + Sterne 40, auf der Hand: Ring 84, Hand 176, Sterne 40.
+
+### Elfte Fassung: mehr Motive, eigener Text, Animation nach echten Shows (10. Oktober)
+
+Marcs Auftrag: Motive sammeln, die inhaltlich passen, und vor allem die Art der Animation aus echten Shows übernehmen. Gemeint sind subtile, natürlich wirkende 2D-Bewegungen, Übergänge zwischen Formen und Text und Feuerwerk über Licht. Dazu kommt der eigene Text als Wow-Effekt aus dem Vercel-Prototyp, aber nicht statisch. Grundlage sind elf Videoanalysen, Codex' Auswertung von 20 Referenzclips und zwei Web-Bibliotheken. Alles liegt intern unter `freelance/clients/flyingstars/06-show-animationen-2026-10/anker-runde-2/`, nicht im Repo. Die Referenzen dienen als Denkanstoß; kein Motiv ist nachgebaut.
+
+**Neue Motive (je drei Fassungen)**
+
+| Anlass | Motiv | SPARK | HORIZON | ODYSSEY |
+|---|---|---|---|---|
+| Hochzeit | Ring | zwei Eheringe mit Doppelkontur, Stein funkelt | unverändert (Solitär) | Schmuckkästchen → Ring steigt → Hand → Ring gleitet auf den Ringfinger → Herz |
+| | Herz | unverändert | Herztunnel: fünf Herzen in der Tiefe, Licht fließt nach hinten | unverändert |
+| | Lotusblüten | – (nicht bei SPARK) | zwei 3D-Blüten drehen sich und gleiten ineinander | Knospen → Blüte → ineinander → verdrillte Kugel aus sechs Bändern mit goldenem Herz |
+| | Schmetterling | Lichtschimmer über die Flügel | 3D im Dreiviertelprofil, Flügelschlag ±0,3 rad in 2,6 s | zwei Falter tanzen umeinander → Funken → Herz |
+| Jubiläum | Fußball | Schusspose, das Muster im Ball dreht sich (wie in Eisenhüttenstadt) | Gelenkfigur holt aus und schießt, Ball mit Drall | Funken → Spieler → Schuss ins Tor → „Tor!“ → „25“ |
+| | Kopfsprung | – (nicht bei SPARK) | Springer taucht im Bogen ein, Wasser wogt, Ringe | Sprungbrett → Absprung → Eintauchen → Ringe → Medaille mit „25“ |
+| Launch | QR-Code | Finder-Quadrate und Scanrahmen, Scanlicht | echter Code baut sich Zeile für Zeile auf | Handy mit Nachrichten → Funken → Code im Display → „SCAN ME“, Code steht still |
+| | Spirale | flache Spirale, Licht läuft nach innen | konische Helix, Farbwelle steigt | Helix → Torus-Wicklung → Torus, durch den die Drohnen strömen → Möbius-Schleife |
+| Kultur | Buch | Licht liest die Zeilen | eine Seite wendet sich in 3D | Buch öffnet sich → Feder schreibt → Zeilen steigen auf → Stern |
+| | Musik | unverändert (Noten) | Harfe, Licht zupft die Saiten, Noten kreisen | Glissando → Noten fliegen davon → Notenlinien mit Violinschlüssel |
+| | Tanz | Tänzerin, Rocksaum wiegt | Drehung, der Rock als Kegel mit laufendem Volant | Drehung → Rock wird Blüte → Fächer |
+| Winter & Silvester | Lichterbaum | Schneeflocke dreht sich | Spiralbaum, Licht steigt hinauf, Stern | Schnee fällt → Wolke → Licht zeichnet die Spirale → Stern → Lichterkette |
+| | Feuerwerk | ersetzt: Sterne leuchten nacheinander auf | sechs Sterne blühen und verglühen, nur Licht | Leuchtspur → 3D-Stern → Wellen → Finale → Goldregen |
+| Stadtfest (neu) | Reise | Kompass, Nadel schwingt ein | Kompass kippt in die Frontalansicht | Altstadt → Karte → Pins → Route → Papierflieger → Kompass |
+| | Kolibri | Flügel schwirren über Licht (zwei Posen) | 3D, Flügelschlag ±26° in 2 s plus Lichtschwirren | Anflug → schwebt vor der Blüte → trinkt → steigt auf |
+| | Delfin | Delfin über einer Welle | springt im Bogen, unter Wasser gedimmt | Wellen → Sprung → Ringe → zwei Delfine → Herz |
+| | Drache | – (nicht bei SPARK) | Flügelschlag ±24°, Körperwelle | Funken → steigt auf einer Spirale auf → Runde → Feuer und Feuerwerk |
+
+Nach Marcs Durchsicht am 10. Oktober fehlen drei Motive bei SPARK, weil 100 Drohnen sie nicht lesbar tragen: Lotusblüten (wurden zur Punktkrone), Kopfsprung (der Springer wurde zum schrägen Strich) und Drache. Marc: „Manche Motive sind mit 100–150 Drohnen einfach nicht umsetzbar, das ist vollkommen fine.“ SPARK spielt den Anlass ohne sie, mindestens drei Motive bleiben. Steht ein solches Motiv beim Paketwechsel auf der Bühne, springt die Vorschau zum nächsten Motiv, das das Paket hat. Die Anfrage nennt nur die Motive des gewählten Pakets.
+
+Das Stadtfest liegt bei der Anfrage auf `anlass: stadt`. Die alten Fassungen burst2d/burst3d/ballStory (Feuerwerk), notes3d/notesStory (Noten) und heart3d (Herz in HORIZON) sind entfernt.
+
+**Was aus den echten Shows übernommen ist**
+
+- Feuerwerk ist Licht: Ein Stern ist in unter 0,1 s komplett da, steht gut 3 s an derselben Stelle und hat eine Farbe (Frühlingsnacht 2:10–2:25). Die Drohnen bewegen sich dabei kaum.
+- Aufbau als Licht-Reveal: Die Drohnen stehen schon gedimmt auf den Linien, ein Licht zeichnet die Form (`trace` in `show-motion.js`).
+- Ein ruhiger Kern mit bewegten Enden: Der Körper steht, nur Bein, Flügel oder Schweif bewegt sich, mit kleinem Ausschlag (`rig` für Gelenkfiguren).
+- Langsames Gleiten der ganzen Figur, wie bei den Leipziger Schlitten: Beim eigenen Text in HORIZON sinkt der Schriftzug leicht und kommt zurück.
+- Übergänge über eine lose Wolke, in der die nächste Form schon vorgezeichnet ist (`loosen`).
+
+**Eigener Text** (Block „Euer Text“, optional, ohne Aufpreis)
+
+- Wer tippt, sieht den Text nach 0,45 s als Finale der Show; die Bühne springt direkt dorthin. Die Schrift ist wählbar: Schreibschrift, Druckschrift oder Initialen.
+- Druckschrift kommt aus dem bestehenden Text-Planer von FlyingStars (Einstrich). Die Schreibschrift ist EMS Allure, eine Einstrich-Fassung von Allura unter SIL OFL 1.1 (`src/data/script-allure.json`, Lizenz daneben). Die Punkte liegen in Schreibreihenfolge, so kann Licht den Text Strich für Strich schreiben. Umlaute werden aus Grundbuchstabe und zwei Punkten gebaut, ß wird zu „ss“. Initialen: „Anna und Ben“ → „A & B“, bei Hochzeit im Herz, sonst im Kreis.
+- SPARK: Der Text steht, Licht atmet darüber. HORIZON: Licht schreibt den Text, danach läuft eine Farbwelle, Ornamente funkeln (Herzen bei Hochzeit, sonst Sterne), der Schriftzug gleitet leicht. ODYSSEY: Funken → Licht schreibt → die Buchstaben schwingen als Welle in 3D in einem kreisenden Lichtring → Wechsel zu Initialen oder zur Schreibschrift.
+- Der Text steht in der Anfrage („Eigener Text: „Anna & Ben“ (Schreibschrift)“). Er zählt als eines der eigenen Elemente, die alle Pakete enthalten.
+
+**Ring und Hand neu (zwölfte Runde)**
+
+Marc fand die alte Hand mit Ring (frontale, steife Handfläche) im Vergleich zu den neuen Motiven deutlich schwächer. Codex hat dazu die FlyingStars-Shows Hugenpoet und „Heimlich“ sowie FSR-001 und FSR-002 aus der Bibliothek ausgewertet (`anker-runde-2/codex-hand-ring.md`, intern). Der wichtigste Befund: Bei FlyingStars wandert der Ring tatsächlich zur Hand. Die Hand ist eine schräge Seitenansicht mit leerer Innenfläche, ungleich gebogenen Fingern und einer Manschette.
+
+- **ODYSSEY `ringStory`** (in `scenes/hochzeit.js`): Ein Schmuckkästchen öffnet sich, der Deckel schwenkt um das hintere Scharnier. Der Ring steigt aus dem Polster, erst funkelt der Stein, dann wird der Reif hell. Das Kästchen löst sich in eine Wolke, daraus entsteht die eigene Hand. Der Ring fliegt als starres Teil im Bogen zur Ringfingerspitze, richtet sich entlang des Fingers aus und gleitet zum Ansatz. Seine Achse kippt dabei höchstens 30° aus der Blickrichtung, damit er eine offene Ellipse bleibt. Zum Schluss ein Herz mit Doppelkontur.
+- **SPARK `weddingRings2d`**: Zwei Eheringe mit Innen- und Außenkontur wie bei FlyingStars, dazu ein Stein am linken Ring. Licht läuft gegenläufig um die Ringe, der Stein funkelt.
+- HORIZON behält den Solitär (`rings3d`). Die alten Fassungen `rings2d` und `ringsStory` sind entfernt.
+
+**Übergänge bei SPARK (zwölfte Runde)**
+
+Marc zu den ersten Zwischenbildern: Zu viele (drei bis vier pro Ablauf), und weil sie keinen inhaltlichen Bezug hatten, wirkte das verwirrend. FlyingStars nutzen als Übergang ein formloses Funkeln: eine breite, lose Lichterkette, in der an mehreren Stellen gleichzeitig einzelne Drohnen zufällig aufblitzen, danach eine Art Glitzerregen. Vermutlich ordnen sie dabei die Drohnen für das nächste Bild, ohne dass dessen Form schon zu sehen ist.
+
+Regel (`transitions()` in `src/scripts/scenes/interludes.js`):
+- Pro SPARK-Runde gibt es höchstens zwei Übergänge.
+- Der erste ist immer das Funkeln. Das Band ist breiter als ein normales 100-Drohnen-Bild (`zoom` am Beat, ausgewertet in `show-field.js`).
+- Der zweite ist eine Figur, wenn sie zum Anlass passt. Bei Kultur ist es der Fächer, vor der Musik. Beim Stadtfest ist es das Tor aus Licht, bevor die Runde wieder mit der Reise beginnt. Sonst folgt noch einmal das Funkeln, oder es gibt keinen zweiten Übergang.
+- Die Pfeilfigur ist entfallen, weil sie zu keinem Anlass passte.
+
+Übergänge gehören zum folgenden Motiv. Die Knöpfe ‹ › überspringen sie, und ein Paketwechsel landet auf dem Motiv. Der Unit-Test `SPARK-Übergänge` prüft die Regel für alle Anlässe und Motivzahlen.
+
+**Direktlinks**
+
+`/show-konfigurator/?anlass=festival&paket=ODYSSEY&motiv=reise` öffnet ein Motiv in einem Paket und spielt es von vorn. Erlaubt sind die IDs aus `src/content/show-configurator.js`.
+
+**Struktur**
+
+- `src/scripts/show-motion.js`: gemeinsames Vokabular für Drehung, Licht (`breathe`, `glint`, `sparkle`, `chase`, `trace`), Gelenkfiguren (`rig`), Funkenwolken (`loosen`) und Akte (`part`, `act`).
+- `src/scripts/scenes/<anlass>.js`: neue Motive je Anlass, registriert in `scenes/index.js`. `show-scenes.js` lädt sie nach, wenn eine Fassung dort nicht steht.
+- Schnellprüfung beim Bauen: `node .capture/live-check.mjs <anlass>` misst gegen den Dev-Server die Drohnenzahl je Bild und die Eigenbewegung jeder Drohne. Die Grenzen sind 1,8 für die Geschwindigkeit und 3 für die Beschleunigung. Der verbindliche Test bleibt `tests/show-physics.spec.ts`, der jetzt auch das Stadtfest und längere Laufzeiten abdeckt.
+- Gebaut haben die Motive sieben parallele Opus-Worker mit je einer eigenen Datei. Alle haben Screenshots über mindestens zwei Runden geprüft.
+
+**Bekannte Schwächen**
+
+- Die ODYSSEY-Tunnelwicklung der Spirale sieht stellenweise eher wie eine Blüte aus.
+- Die Zahl „25“ in Fußball und Kopfsprung ist fest eingetragen.
+- Der QR-Code kodiert `HTTPS://FLYINGSTARS.ART`. Für 198 statt 208 dunkle Module ist das Füllbyte nach dem Terminator gewählt; Lesegeräte werten es nicht aus. OpenCV liest den Code aus Bühnen-Screenshots, wenn die Punkte etwas größer gerendert werden. Mit einem echten Handy ist das noch nicht geprüft.
+- Alle Bildunterschriften sind akomo-Entwürfe.
 
 ### Nur, was echte Drohnen können
 
