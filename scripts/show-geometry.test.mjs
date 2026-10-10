@@ -62,3 +62,20 @@ test('Jeder Anlass spielt vier oder fünf Motive mit je einer Fassung pro Paket,
   const all = OCCASIONS.flatMap((o) => o.motifs.flatMap((m) => Object.values(m.tiers).map((t) => t.build)));
   assert.equal(new Set(all).size, all.length, 'motif versions are not shared between occasions');
 });
+
+test('SPARK-Übergänge: höchstens zwei pro Runde, zuerst Funkeln, Figuren nur mit Bezug zum Anlass', async () => {
+  const { transitions } = await import('../src/scripts/scenes/interludes.js');
+  const withFigure = new Set(['kultur', 'festival']); // Marc, round 12: the fan for culture, the gate for a city festival
+  for (const occasion of [...OCCASIONS.map((o) => o.id), 'unbekannt']) for (let k = 1; k <= 6; k++) {
+    const plan = transitions(occasion, k);
+    assert.ok(plan.length <= 2, `${occasion}/${k}: at most two transitions`);
+    assert.ok(plan.every((q) => q.before >= 1 && q.before <= k), `${occasion}/${k}: transitions sit between motifs or before the loop`);
+    const beats = plan.map((q) => q.build(100));
+    if (beats.length) assert.equal(beats[0].caption, 'Übergang: Funkeln', `${occasion}/${k}: glitter comes first`);
+    for (const b of beats) {
+      assert.equal(b.pts.length, 100, `${occasion}/${k}: ${b.caption} has the package's drones`);
+      assert.ok(b.interlude && b.pts.every((p) => p.every(Number.isFinite)));
+      if (b.caption !== 'Übergang: Funkeln') assert.ok(withFigure.has(occasion), `${occasion}: ${b.caption} without a link to the occasion`);
+    }
+  }
+});

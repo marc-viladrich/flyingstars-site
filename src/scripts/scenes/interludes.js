@@ -1,12 +1,34 @@
-// Geometric interludes between the motifs of a SPARK show (Marc, round 11: "der geometrische Torbogen oder diese
-// geometrischen Ornamente für zwischendurch, oder diese Pfeilformen"). Own designs in the spirit of the references
-// FSR-037/038/039: a gate of light, a fan band, a wheel of arrows. Each is drawn by light first (the drones stand
-// on the lines, a reveal runs along them), then breathes once; a real SPARK show also passes through such figures.
+// Transitions between the motifs of a SPARK show (round 12, Marc: "das formlose Funkeln … wie so eine große breite
+// Lichterkette, die an unterschiedlichen Stellen random aufblitzt … wie eine Art Glitter-Rain"). FlyingStars use it
+// between pictures: the drones regroup without the next shape showing yet. A geometric figure only appears where it
+// means something for the occasion (the fan for culture, the gate for a city festival), and a SPARK show passes
+// through at most two transitions per round; more of them, without a link to the story, confused.
 import { sampleOutline } from "../show-geometry.js";
-import { GOLD, WARM, CYAN, TAU, paint, mix, trace, sparkle, share, smooth } from "../show-motion.js";
+import { GOLD, WARM, CYAN, mix, paint, hash, frac, smooth, trace, sparkle, share } from "../show-motion.js";
 
 const arc = (r, a0, a1, cx = 0, cy = 0, k = 40) => ({ pts: Array.from({ length: k + 1 }, (_, i) => { const a = a0 + ((a1 - a0) * i) / k; return [cx + Math.cos(a) * r, cy + Math.sin(a) * r]; }), closed: false });
 const line = (...pts) => ({ pts, closed: false });
+
+/**
+ * Glitter: a wide, loose band of drones (no shape), dim, where single drones flash up at random places, several at
+ * once; after a moment the flashes run downward like glittering rain. The drones drift only a little.
+ */
+function glitter(n) {
+  const cols = Math.ceil(Math.sqrt(n * 3.2)), rows = Math.ceil(n / cols), pts = [];
+  for (let i = 0; i < n; i++) {
+    const c = i % cols, r = Math.floor(i / cols);
+    const x = -1.45 + 2.9 * ((c + 0.2 + 0.6 * hash(i * 1.7)) / cols);
+    const y = 0.42 - 0.84 * ((r + 0.2 + 0.6 * hash(i * 2.9)) / rows) + 0.1 * Math.sin(x * 1.8);
+    pts.push([x, y, (hash(i * 4.3) - 0.5) * 0.8]);
+  }
+  const live = (b, j, t, o) => {
+    o[0] += 0.03 * Math.sin(t * 0.6 + hash(j) * 6.3); o[1] += 0.02 * Math.cos(t * 0.5 + hash(j + 3) * 6.3); // a slow drift
+    const flash = Math.exp(-(((frac(t * (0.55 + 0.6 * hash(j + 11)) + hash(j * 7)) - 0.5) / 0.035) ** 2)); // random flashes
+    const rain = smooth((t - 0.9) / 0.8) * Math.exp(-((((frac((-b[1] + t * 0.9 + hash(Math.round(b[0] * 9)) * 0.6) / 0.55) - 0.5) * 0.55) / 0.05) ** 2));
+    o[3] = 0.14 + 1.3 * Math.max(flash, rain * (0.6 + 0.6 * hash(j + 5)));
+  };
+  return { pts: paint(pts, (p, i) => mix(GOLD, WARM, hash(i * 9.1))), live };
+}
 
 /** A round gate of light: three offset arches on two pillars, revealed from the ground up. */
 function gate(n) {
@@ -14,38 +36,31 @@ function gate(n) {
   const arches = sampleOutline([arc(1, 0, Math.PI, 0, 0), arc(0.78, 0.08, Math.PI - 0.08, 0, 0.06), arc(0.56, 0.16, Math.PI - 0.16, 0, 0.12)], a);
   const pillars = sampleOutline([line([-1, 0], [-1, -0.95]), line([1, 0], [1, -0.95])], p);
   const pts = [...pillars, ...arches].map(([x, y]) => [x, y, 0]);
-  // reveal order: from the ground up along both sides at once
-  const order = pts.map(([x, y]) => (y + 0.95) / 2.1 + 0.02 * Math.abs(x));
-  return { pts: paint(pts, (q) => mix(GOLD, WARM, (q[1] + 0.95) / 2)), order };
+  const order = pts.map(([x, y]) => (y + 0.95) / 2.1 + 0.02 * Math.abs(x)); // from the ground up along both sides
+  return { pts: paint(pts, (q) => mix(GOLD, WARM, (q[1] + 0.95) / 2)), live: (b, j, t, o) => { o[3] = t < 1.6 ? trace(order[j], t, 1.4, { dim: 0.15 }) : sparkle(j, t, 0.85, 1.25); } };
 }
-/** A fan band: five rays from a common foot, their tips joined by small arcs, like an Art Deco sunrise. */
+/** A fan of seven rays from a common foot, their tips joined by arcs: a stage fan or an Art Deco sunrise. */
 function fan(n) {
   const R = 1.05, rays = 7, paths = [];
   for (let i = 0; i < rays; i++) { const a = Math.PI * (0.12 + (0.76 * i) / (rays - 1)); paths.push(line([0, -0.55], [Math.cos(a) * R, -0.55 + Math.sin(a) * R])); }
   paths.push(arc(R, Math.PI * 0.12, Math.PI * 0.88, 0, -0.55, 60), arc(R * 0.55, Math.PI * 0.12, Math.PI * 0.88, 0, -0.55, 40));
   const pts = sampleOutline(paths, n).map(([x, y]) => [x, y, 0]);
   const order = pts.map(([x, y]) => Math.hypot(x, y + 0.55) / R); // from the foot outward
-  return { pts: paint(pts, (q) => mix(CYAN, GOLD, Math.hypot(q[0], q[1] + 0.55) / R)), order };
-}
-/** A wheel of arrows pointing to the centre, around a small ring. */
-function arrows(n) {
-  const k = 8, [ring, rest] = share(n, [1, 4]), paths = [];
-  for (let i = 0; i < k; i++) {
-    const a = (i / k) * TAU, c = Math.cos(a), s = Math.sin(a), at = (r, side = 0) => [c * r - s * side, s * r + c * side];
-    paths.push(line(at(1.05), at(0.42)), line(at(0.58, -0.12), at(0.42), at(0.58, 0.12)));
-  }
-  const pts = [...sampleOutline([{ pts: Array.from({ length: 40 }, (_, i) => [Math.cos((i / 40) * TAU) * 0.2, Math.sin((i / 40) * TAU) * 0.2]) }], ring), ...sampleOutline(paths, rest)].map(([x, y]) => [x, y, 0]);
-  const order = pts.map(([x, y]) => 1 - Math.hypot(x, y) / 1.05); // from the rim to the centre, like the arrows
-  return { pts: paint(pts, (q) => mix(WARM, GOLD, 1 - Math.hypot(q[0], q[1]))), order, ring };
+  return { pts: paint(pts, (q) => mix(CYAN, GOLD, Math.hypot(q[0], q[1] + 0.55) / R)), live: (b, j, t, o) => { o[3] = t < 1.6 ? trace(order[j], t, 1.4, { dim: 0.15 }) : sparkle(j, t, 0.85, 1.25); } };
 }
 
-const FIGURES = [["Zwischenbild: ein Tor aus Licht", gate], ["Zwischenbild: ein Fächer", fan], ["Zwischenbild: Pfeile zur Mitte", arrows]];
+const GLITTER = ["Übergang: Funkeln", (n) => ({ ...glitter(n), zoom: 1.55 })]; // a wide band across the sky, wider than a 100-drone picture
+/** The figure that belongs to an occasion; occasions without one use the glitter only. */
+const FIGURE = { kultur: ["Übergang: ein Fächer", fan], festival: ["Übergang: ein Tor aus Licht", gate] };
 
-/** The k-th interlude of a show with n drones: drawn by light in 1.4 s, then it sparkles and breathes inward. */
-export function interlude(k, n) {
-  const [caption, figure] = FIGURES[k % FIGURES.length], { pts, order, ring = 0 } = figure(n);
-  return { pts, caption, interlude: true, frame: "interlude", hold: 1.6, live: (b, j, t, o) => {
-    o[3] = t < 1.6 ? trace(order[j], t, 1.4, { dim: 0.15 }) : sparkle(j, t, 0.85, 1.25);
-    if (figure === arrows && j >= ring) { const s = 1 - 0.06 * smooth(Math.max(0, t - 1.2) / 1.2); o[0] *= s; o[1] *= s; } // the arrows close in a little
-  } };
+/**
+ * Where a SPARK show of k motifs passes through a transition: glitter before the second motif, and before the fourth
+ * (or, in a show of three, before the loop starts again) the occasion's figure or glitter once more. At most two.
+ * Returns [{ before: index among the shown motifs (k = before the loop), build: (n) => beat }].
+ */
+export function transitions(occasion, k) {
+  const second = k >= 4 ? 3 : k === 3 && FIGURE[occasion] ? 3 : null;
+  return [[1, GLITTER], ...(second !== null ? [[second, FIGURE[occasion] ?? GLITTER]] : [])]
+    .filter(([before]) => before < k || before === k)
+    .map(([before, [caption, figure]]) => ({ before, build: (n) => ({ ...figure(n), caption, interlude: true, frame: "interlude", hold: 2 }) }));
 }

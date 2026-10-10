@@ -10,11 +10,11 @@ import logo from "../data/logo-dots.json";
 import { heartPicture } from "./heart-formation.js";
 import { loadTextEngine, textFormation } from "./text-formation.js";
 import { TAU, DIAMOND, GREEN, WARM, GOLD, PINK, VIOLET, CYAN, BLUE, ORANGE, RED, MOON, mix, paint, place, frac, smooth, hash, yaw, roll, pitch, sway, breathe, glint, sparkle, chase, part, act } from "./show-motion.js";
-import { interlude } from "./scenes/interludes.js";
-import { burstSphere, star, extrude, evenSubset, sampleOutline, circle, torusPair, heartOutline } from "./show-geometry.js";
-import { engagementRing, ringSeat, hand3d, hand2d, flute2d, flute3d, bubbles, trophy2d, trophy3d, bulb2d, bulb3d, bulbGlass, filament, notes2d, notes3d, notePath1, melody, clover2d, clover3d, extrudePaths } from "./show-shapes.js";
-import { solitaire, rocketSolid, globe, launchPad, moonHorizon, flagStar, starField, torusLink, brilliant, band } from "./show-shapes.js";
-import { share, twoRings, shield, shield3d, crestStar3d, CREST_NUMBER, inCrestFlag, crown, rocket, rocket3d, flame, maskPair, maskPair3d, mask3d, MASKS, curtain, clockRim, clockDial, hand, sparkleShell, tower, tower3d, waves, TOWER_SPHERE, gate3d, arrowPaths, inside, bottle3d, cork } from "./show-shapes.js";
+import { transitions } from "./scenes/interludes.js";
+import { star, extrude, evenSubset, sampleOutline, circle, heartOutline } from "./show-geometry.js";
+import { flute2d, flute3d, bubbles, trophy2d, trophy3d, bulb2d, bulb3d, bulbGlass, filament, notes2d, clover2d, clover3d } from "./show-shapes.js";
+import { solitaire, rocketSolid, globe, launchPad, moonHorizon, flagStar, starField } from "./show-shapes.js";
+import { share, shield, shield3d, crestStar3d, CREST_NUMBER, inCrestFlag, crown, rocket, rocket3d, flame, maskPair, maskPair3d, mask3d, MASKS, curtain, clockRim, clockDial, hand, sparkleShell, tower, tower3d, waves, TOWER_SPHERE, gate3d, arrowPaths, inside, bottle3d, cork } from "./show-shapes.js";
 
 let hearts = null, figure = null, extra = null;
 const loadExtra = () => (extra ||= import("./scenes/index.js").then((m) => m.BUILDERS).catch((e) => { extra = null; throw e; }));
@@ -104,35 +104,31 @@ const nearWhite = (r, g, b) => Math.min(r, g, b) > 190 && Math.max(r, g, b) - Ma
  * would light warm white take the package's colour (Marc, round 9: SPARK orange, HORIZON pink, ODYSSEY blue); motifs
  * with their own colours keep them. Every version gets the soft light shimmer.
  */
-export async function buildSequence(motifs, pkg, n, tint) {
-  const beats = [];
-  let shown = 0;
-  for (const [segment, m] of motifs.entries()) {
-    if (!m.tiers[pkg]) continue; // not in this package (too few drones to read); segments keep the occasion's numbering
-    // SPARK passes through a small geometric figure between two motifs (round 11), as part of the next motif
-    if (pkg === "SPARK" && shown++ > 0) beats.push({ ...interlude(shown - 2, n), segment, motif: m.label, shimmer: true });
+export async function buildSequence(motifs, pkg, n, tint, occasion = "") {
+  const beats = [], shown = motifs.map((m, segment) => [m, segment]).filter(([m]) => m.tiers[pkg]); // a motif may skip a package (too few drones to read)
+  // SPARK passes through at most two transitions per round (round 12): glitter, and the occasion's figure if it has one
+  const plan = pkg === "SPARK" ? transitions(occasion, shown.length) : [];
+  const tinted = (pts) => (tint ? pts.map((p) => (nearWhite(p[3], p[4], p[5]) ? [p[0], p[1], p[2], ...mix(WARM, tint, 0.7)] : p)) : pts);
+  const through = (tr, [m, segment]) => { const b = tr.build(n); beats.push({ ...b, pts: tinted(b.pts), segment, motif: m.label, shimmer: true }); };
+  for (const [s, [m, segment]] of shown.entries()) {
+    const tr = s > 0 && plan.find((q) => q.before === s);
+    if (tr) through(tr, [m, segment]); // part of the next motif, so a package switch never lands on it
     const scene = await buildBeats(m.tiers[pkg], n);
     scene.beats.forEach((b, i, all) => {
       b.segment = segment; b.motif = m.label; b.shimmer ??= true;
       if (i === all.length - 1) b.hold ??= HOLD[pkg];
-      if (tint) b.pts = b.pts.map((p) => (nearWhite(p[3], p[4], p[5]) ? [p[0], p[1], p[2], ...mix(WARM, tint, 0.7)] : p));
+      b.pts = tinted(b.pts);
       beats.push(b);
     });
   }
+  const loop = shown.length && plan.find((q) => q.before === shown.length); // before the round starts again
+  if (loop) through(loop, shown[0]);
   return { beats, loopTo: 0 };
 }
 async function buildBeats(version, n) {
   const caption = version.caption;
   switch (version.build) {
     // ---- Hochzeit · Ring ----
-    case "rings2d": {
-      const per = Math.floor(n / 2); // each ring turns about its own axis, the two in opposite directions
-      return { beats: [{ pts: paint(twoRings(n), GOLD), caption, live: (b, j, t, o) => {
-        const side = j < per ? -1 : 1;
-        o[3] = 0.85 + 0.45 * Math.max(0, Math.cos(Math.atan2(b[1], b[0] - side * 0.42) - t * 1.2 * side)) ** 3;
-        yaw(o, Math.sin((t * TAU) / 7) * 0.7 * side, side * 0.42, 0);
-      } }] };
-    }
     case "rings3d": {
       // a solitaire as a body: torus band and a brilliant-cut stone; it turns about the vertical axis, so the band
       // foreshortens to a line and opens again, and tips a little towards the audience
@@ -142,43 +138,6 @@ async function buildBeats(version, n) {
         if (j >= k) o[3] = sparkle(j, t, 0.95, 1.55); else o[3] = glint(Math.atan2(b[1], b[0]), t, 5, 0.45, -Math.PI, Math.PI);
         yaw(o, t * 0.32); pitch(o, 0.35 + 0.12 * Math.sin(t * 0.4));
       } }] };
-    }
-    case "ringsStory": {
-      // Zwei Ringe → ein Solitär → eine Hand, der Ring gleitet auf den Ringfinger → sie sagt Ja (ein Herz steigt auf).
-      // The ring is a torus with a brilliant on top in every act; sizes are what the drones can draw: the big solitaire
-      // uses most of the fleet, on the finger it is a small ring and the rest of the fleet draws the hand.
-      const SP = 40, [ra, rb] = torusLink(n - SP, 0.55, 0.42, 0.055);
-      const stars = starField(SP, -1.3, 1.3, -0.95, 1.0, 11);
-      const [bigBand, bigStone] = solitaire(n - SP, 0.78);
-      // the hand, large, palm to the audience; the ring finger's seat and width give the small ring its size
-      const HS = 1.3, HX = -0.18, HY = -0.02, handPts = hand2d(n - SP - 84).map(([x, y, z]) => [x * HS + HX, y * HS + HY, z]);
-      const seat = ringSeat(0.2), R = seat.h * HS + 0.03, [smallBand, smallStone] = solitaire(84, R), small = [...smallBand, ...smallStone];
-      const seatC = [seat.c[0] * HS + HX, seat.c[1] * HS + HY], dirF = seat.d, tipC = [seatC[0] + dirF[0] * 0.62, seatC[1] + dirF[1] * 0.62];
-      // the ring on the finger: tipped so that the band circles the finger (axis along the finger) and the stone sits
-      // in front, towards the audience
-      const onFinger = (p, c, tip) => { const [x, y, z] = p, Y = y * Math.cos(tip) - z * Math.sin(tip), Z = y * Math.sin(tip) + z * Math.cos(tip); return [c[0] + x, c[1] + Y, Z]; };
-      const seated = small.map((p) => onFinger(p, seatC, 1.25)), hovering = small.map((p) => onFinger(p, [tipC[0], tipC[1] + 0.3], 0.25));
-      const slide = (t) => smooth((t - 0.6) / 3.2); // the ring waits a moment above the fingertip, then glides down
-      const ringLive = (j, t, o, bandN) => {
-        const u = slide(Math.max(0, t)), a = hovering[j], b = seated[j], tip = 0.25 + (1.25 - 0.25) * u;
-        const [x, y, z] = onFinger(small[j], [a[0] + (seatC[0] - tipC[0]) * u, tipC[1] + 0.3 + (seatC[1] - tipC[1] - 0.3) * u], tip);
-        o[0] = x; o[1] = y; o[2] = z; o[3] = j >= bandN ? sparkle(j, t, 0.95, 1.5) : 1 + 0.25 * Math.max(0, Math.sin(t * 1.3 + j * 0.4)) ** 3;
-      };
-      const heart = heartLine(SP).map(([x, y, z]) => [x * 0.42 + 0.95, y * 0.42 + 0.62, z]);
-      const twinkle = (j, t, o) => { o[3] = sparkle(j, t, 0.6, 1.3); };
-      return { beats: [
-        act([part("ringA", paint(ra, GOLD)), part("ringB", paint(rb, (p) => mix(GOLD, WARM, 0.5))), part("stars", paint(stars, WARM))], { caption: "Zwei Ringe, ineinander", hold: 2.4, live: (b, j, t, o) => { if (j >= n - SP) twinkle(j, t, o); else { o[3] = glint(b[0], t, 4, 0.35); yaw(o, t * 0.3); pitch(o, 0.25); } } }),
-        act([part("band", paint(bigBand, (p) => mix(GOLD, WARM, (p[1] + 0.78) / 3.1))), part("stone", paint(bigStone, DIAMOND)), part("stars", paint(stars, WARM))], { caption: "werden zu einem Ring mit Stein", hold: 3.2, live: (b, j, t, o) => {
-          if (j >= n - SP) twinkle(j, t, o); else { o[3] = j >= bigBand.length ? sparkle(j, t, 0.95, 1.55) : glint(Math.atan2(b[1], b[0]), t, 5, 0.45, -Math.PI, Math.PI); yaw(o, t * 0.3); pitch(o, 0.3); }
-        } }),
-        act([part("ring", seated.map((p, j) => [...p, ...(j >= smallBand.length ? DIAMOND : GOLD)]), { rigid: true }), part("hand", paint(handPts, WARM)), part("stars", paint(stars, WARM))], { caption: "eine Hand: der Ring gleitet auf den Ringfinger", hold: 4.6, live: (b, j, t, o) => {
-          if (j < 84) ringLive(j, t, o, smallBand.length); else if (j >= 84 + handPts.length) twinkle(j, t, o);
-        } }),
-        act([part("ring", seated.map((p, j) => [...p, ...(j >= smallBand.length ? DIAMOND : GOLD)]), { rigid: true }), part("hand", paint(handPts, WARM)), part("stars", paint(heart, PINK))], { caption: "…und sie sagt Ja", hold: 3.5, live: (b, j, t, o) => {
-          if (j < 84) { if (j >= smallBand.length) o[3] = sparkle(j, t, 1.0, 1.6); else o[3] = 1 + 0.25 * Math.max(0, Math.sin(t * 1.3 + j * 0.4)) ** 3; }
-          else if (j >= 84 + handPts.length) o[3] = breathe(t);
-        } }),
-      ] };
     }
     // ---- Hochzeit · Herz ----
     case "heart2d": return { beats: [{ pts: paint(heartLine(n), PINK), caption, live: (b, j, t, o) => { o[3] = breathe(t); } }] };

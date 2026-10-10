@@ -106,7 +106,8 @@ Marcs Auftrag: Motive sammeln, die inhaltlich passen, und vor allem die Art der 
 
 | Anlass | Motiv | SPARK | HORIZON | ODYSSEY |
 |---|---|---|---|---|
-| Hochzeit | Herz | unverändert | Herztunnel: fünf Herzen in der Tiefe, Licht fließt nach hinten | unverändert |
+| Hochzeit | Ring | zwei Eheringe mit Doppelkontur, Stein funkelt | unverändert (Solitär) | Schmuckkästchen → Ring steigt → Hand → Ring gleitet auf den Ringfinger → Herz |
+| | Herz | unverändert | Herztunnel: fünf Herzen in der Tiefe, Licht fließt nach hinten | unverändert |
 | | Lotusblüten | – (nicht bei SPARK) | zwei 3D-Blüten drehen sich und gleiten ineinander | Knospen → Blüte → ineinander → verdrillte Kugel aus sechs Bändern mit goldenem Herz |
 | | Schmetterling | Lichtschimmer über die Flügel | 3D im Dreiviertelprofil, Flügelschlag ±0,3 rad in 2,6 s | zwei Falter tanzen umeinander → Funken → Herz |
 | Jubiläum | Fußball | Schusspose, das Muster im Ball dreht sich (wie in Eisenhüttenstadt) | Gelenkfigur holt aus und schießt, Ball mit Drall | Funken → Spieler → Schuss ins Tor → „Tor!“ → „25“ |
@@ -142,9 +143,25 @@ Das Stadtfest liegt bei der Anfrage auf `anlass: stadt`. Die alten Fassungen bur
 - SPARK: Der Text steht, Licht atmet darüber. HORIZON: Licht schreibt den Text, danach läuft eine Farbwelle, Ornamente funkeln (Herzen bei Hochzeit, sonst Sterne), der Schriftzug gleitet leicht. ODYSSEY: Funken → Licht schreibt → die Buchstaben schwingen als Welle in 3D in einem kreisenden Lichtring → Wechsel zu Initialen oder zur Schreibschrift.
 - Der Text steht in der Anfrage („Eigener Text: „Anna & Ben“ (Schreibschrift)“). Er zählt als eines der eigenen Elemente, die alle Pakete enthalten.
 
-**Zwischenbilder bei SPARK**
+**Ring und Hand neu (zwölfte Runde)**
 
-Marc: Torbogen, Ornamente und Pfeilformen „für zwischendurch“. Zwischen zwei SPARK-Motiven erscheint kurz eine geometrische Figur: ein Tor aus Licht, ein Fächer oder Pfeile zur Mitte (`scenes/interludes.js`). Licht zeichnet sie in 1,4 s, danach steht sie 1,6 s. Die Knöpfe ‹ › überspringen Zwischenbilder, ein Paketwechsel landet auf dem Motiv.
+Marc fand die alte Hand mit Ring (frontale, steife Handfläche) im Vergleich zu den neuen Motiven deutlich schwächer. Codex hat dazu die FlyingStars-Shows Hugenpoet und „Heimlich“ sowie FSR-001 und FSR-002 aus der Bibliothek ausgewertet (`anker-runde-2/codex-hand-ring.md`, intern). Der wichtigste Befund: Bei FlyingStars wandert der Ring tatsächlich zur Hand. Die Hand ist eine schräge Seitenansicht mit leerer Innenfläche, ungleich gebogenen Fingern und einer Manschette.
+
+- **ODYSSEY `ringStory`** (in `scenes/hochzeit.js`): Ein Schmuckkästchen öffnet sich, der Deckel schwenkt um das hintere Scharnier. Der Ring steigt aus dem Polster, erst funkelt der Stein, dann wird der Reif hell. Das Kästchen löst sich in eine Wolke, daraus entsteht die eigene Hand. Der Ring fliegt als starres Teil im Bogen zur Ringfingerspitze, richtet sich entlang des Fingers aus und gleitet zum Ansatz. Seine Achse kippt dabei höchstens 30° aus der Blickrichtung, damit er eine offene Ellipse bleibt. Zum Schluss ein Herz mit Doppelkontur.
+- **SPARK `weddingRings2d`**: Zwei Eheringe mit Innen- und Außenkontur wie bei FlyingStars, dazu ein Stein am linken Ring. Licht läuft gegenläufig um die Ringe, der Stein funkelt.
+- HORIZON behält den Solitär (`rings3d`). Die alten Fassungen `rings2d` und `ringsStory` sind entfernt.
+
+**Übergänge bei SPARK (zwölfte Runde)**
+
+Marc zu den ersten Zwischenbildern: Zu viele (drei bis vier pro Ablauf), und weil sie keinen inhaltlichen Bezug hatten, wirkte das verwirrend. FlyingStars nutzen als Übergang ein formloses Funkeln: eine breite, lose Lichterkette, in der an mehreren Stellen gleichzeitig einzelne Drohnen zufällig aufblitzen, danach eine Art Glitzerregen. Vermutlich ordnen sie dabei die Drohnen für das nächste Bild, ohne dass dessen Form schon zu sehen ist.
+
+Regel (`transitions()` in `src/scripts/scenes/interludes.js`):
+- Pro SPARK-Runde gibt es höchstens zwei Übergänge.
+- Der erste ist immer das Funkeln. Das Band ist breiter als ein normales 100-Drohnen-Bild (`zoom` am Beat, ausgewertet in `show-field.js`).
+- Der zweite ist eine Figur, wenn sie zum Anlass passt. Bei Kultur ist es der Fächer, vor der Musik. Beim Stadtfest ist es das Tor aus Licht, bevor die Runde wieder mit der Reise beginnt. Sonst folgt noch einmal das Funkeln, oder es gibt keinen zweiten Übergang.
+- Die Pfeilfigur ist entfallen, weil sie zu keinem Anlass passte.
+
+Übergänge gehören zum folgenden Motiv. Die Knöpfe ‹ › überspringen sie, und ein Paketwechsel landet auf dem Motiv. Der Unit-Test `SPARK-Übergänge` prüft die Regel für alle Anlässe und Motivzahlen.
 
 **Direktlinks**
 

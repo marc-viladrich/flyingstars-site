@@ -26,7 +26,7 @@ const v = (build, caption) => ({ build, caption });
  * (freelance/clients/flyingstars/06-show-animationen-2026-10/anker-runde-2). Motifs are own designs, not copies. */
 export const OCCASIONS = [
   { id: 'hochzeit', label: 'Hochzeit', anlass: 'privat', motifs: [
-    motif('ring', 'Ring', v('rings2d', 'Zwei Ringe drehen sich'), v('rings3d', 'Ein Solitär in 3D: Ring und Brillant drehen sich'), v('ringsStory', 'Zwei Ringe werden eins, der Ring gleitet auf den Ringfinger')),
+    motif('ring', 'Ring', v('weddingRings2d', 'Zwei Eheringe, der Stein funkelt'), v('rings3d', 'Ein Solitär in 3D: Ring und Brillant drehen sich'), v('ringStory', 'Ein Ringkästchen öffnet sich, der Ring findet den Ringfinger')),
     motif('herz', 'Herz', v('heart2d', 'Ein Herz'), v('heartTunnel', 'Ein Tunnel aus Herzen, Licht fließt hindurch'), v('heartsStory', 'Amors Pfeil fliegt durchs Herz, zwei Herzen umkreisen sich')),
     motif('lotus', 'Lotusblüten', null, v('lotus3d', 'Zwei Lotusblüten in 3D drehen sich ineinander'), v('lotusStory', 'Zwei Knospen blühen auf, drehen sich ineinander und werden eine Kugel aus Licht')),
     motif('glaeser', 'Sektgläser', v('flutes2d', 'Zwei Sektgläser stoßen an'), v('flutes3d', 'Sektgläser in 3D, die Perlen steigen'), v('flutesStory', 'Die Gläser stoßen an, die Perlen steigen als Herz auf')),

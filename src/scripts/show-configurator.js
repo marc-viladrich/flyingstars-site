@@ -39,7 +39,7 @@ if (form) {
   const sequence = () => {
     const key = `${occasion.id}|${step().pkg}|${text}|${style}`;
     if (cache.size > 40) cache.clear();
-    if (!cache.has(key)) cache.set(key, buildSequence(motifs(), step().pkg, pkg().base, pkg().color).catch((error) => { cache.delete(key); throw error; }));
+    if (!cache.has(key)) cache.set(key, buildSequence(motifs(), step().pkg, pkg().base, pkg().color, occasion.id).catch((error) => { cache.delete(key); throw error; }));
     return cache.get(key);
   };
 
