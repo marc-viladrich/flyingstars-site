@@ -52,33 +52,6 @@ function petal(s, side, L, W, th0, bend, r0 = 0) {
 }
 const loop = (u) => (u < 0.5 ? [2 * u, -1] : [2 - 2 * u, 1]); // up one edge of the petal, down the other
 
-// 2D lotus seen from the side (SPARK): five clearly separate petals fanning from the base, each a pointed double arc;
-// the middle one upright, the outer ones opened wide. A water line dips into a leaf bowl under each flower and joins
-// the two. [angle from upright, length, half-width, outward bend]
-const PETALS2D = [[-1.08, 0.92, 0.15, -0.34], [-0.52, 1.2, 0.15, -0.1], [0, 1.42, 0.16, 0], [0.52, 1.2, 0.15, 0.1], [1.08, 0.92, 0.15, 0.34]];
-function lotus2dPoint(q, u, open = 0) {
-  // the two arcs stay open at the base: with 100 drones the dots belong on the petals, not in a knot at the stem
-  const [a, L, W, bend] = PETALS2D[q], [s0, side] = loop(u), s = 0.2 + 0.8 * s0, th0 = a + Math.sign(a) * open;
-  const [r, y, w, th] = petal(s, side, L, W, th0, bend);
-  return [Math.sin(a) * 0.13 + r + w * Math.cos(th), Math.cos(a) * 0.04 + y - w * Math.sin(th)];
-}
-const LOTUS_X = 0.84, waterY = (x) => -0.13 - 0.08 * Math.cos((TAU * (x - LOTUS_X)) / (2 * LOTUS_X));
-function lotus2d(n, caption) {
-  const [fl, fr, wv] = share(n, [3.5, 3.5, 1]), info = [], pts = [];
-  [[-LOTUS_X, fl], [LOTUS_X, fr]].forEach(([cx, m]) => {
-    share(m, PETALS2D.map((p) => p[1])).forEach((c, q) => {
-      for (let i = 0; i < c; i++) { const u = (i + 0.5) / c, [x, y] = lotus2dPoint(q, u); info.push([cx, q, u]); pts.push([cx + x, y, 0, ...(q === 2 ? mix(GOLD, PINK, y * 1.2) : Math.abs(q - 2) === 1 ? PINK : mix(PINK, VIOLET, 0.7))]); }
-    });
-  });
-  for (let i = 0; i < wv; i++) { const x = -1.65 + (3.3 * (i + 0.5)) / wv; info.push([0, -1, x]); pts.push([x, waterY(x), 0, ...mix(VIOLET, BLUE, 0.45)]); }
-  return { beats: [{ pts, caption, live: (b, j, t, o) => {
-    const [cx, q, u] = info[j];
-    if (q < 0) { o[3] = chase(Math.abs(u), t, 0.35, 0.62, 0.7, 1.4); return; } // ripples run outward along the water
-    if (q !== 2) { const [x, y] = lotus2dPoint(q, u, 0.05 * (0.5 - 0.5 * Math.cos((t * TAU) / 6))); o[0] = cx + x; o[1] = y; } // the petals open a hair
-    o[3] = q === 2 ? 1 + 0.45 * Math.exp(-(((b[1] - frac(t / 3.2) * 1.9 + 0.3) / 0.2) ** 2)) : breathe(t, 3, Math.abs(q - 2) * 0.7);
-  } }] };
-}
-
 // 3D lotus: an inner ring of three petals and an outer ring of five around an upright axis, a golden ring in the
 // middle. open = 0 is the bud (petals bend inwards), 1 the open flower.
 const RINGS3D = [{ k: 3, L: 0.8, W: 0.26, r0: 0.05, phase: 0, bud: [0.42, -0.86], open: [0.26, 0.4], colour: PINK }, { k: 5, L: 0.96, W: 0.32, r0: 0.08, phase: TAU / 10, bud: [0.5, -0.8], open: [0.98, 0.42], colour: mix(PINK, VIOLET, 0.75) }];
@@ -243,4 +216,4 @@ function butterflyStory(n) {
   ] };
 }
 
-export const builders = { heartTunnel, lotus2d, lotus3d, lotusStory, butterfly2d, butterfly3d, butterflyStory };
+export const builders = { heartTunnel, lotus3d, lotusStory, butterfly2d, butterfly3d, butterflyStory };

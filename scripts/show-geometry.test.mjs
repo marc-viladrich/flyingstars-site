@@ -47,14 +47,16 @@ test('Motivformen haben genau die verlangte Punktzahl', () => {
   }
 });
 
-test('Jeder Anlass spielt vier oder fünf Motive mit je einer Fassung pro Paket', () => {
+test('Jeder Anlass spielt vier oder fünf Motive mit je einer Fassung pro Paket, SPARK mindestens drei', () => {
   assert.deepEqual(STEPS.map((s) => s.pkg), PACKAGE_ORDER);
   for (const occasion of OCCASIONS) {
     assert.ok(occasion.motifs.length >= 4 && occasion.motifs.length <= 5, occasion.id);
+    assert.ok(occasion.motifs.filter((m) => m.tiers.SPARK).length >= 3, `${occasion.id}: SPARK keeps at least three motifs`);
     for (const motif of occasion.motifs) {
-      const builds = PACKAGE_ORDER.map((pkg) => motif.tiers[pkg]?.build);
-      assert.ok(builds.every(Boolean), `${occasion.id}/${motif.id} misses a version`);
-      assert.equal(new Set(builds).size, 3, `${occasion.id}/${motif.id}: every package needs its own version`);
+      // SPARK may leave out a motif that 100–150 drones cannot draw; HORIZON and ODYSSEY have every motif
+      const builds = PACKAGE_ORDER.map((pkg) => motif.tiers[pkg]?.build).filter(Boolean);
+      assert.ok(motif.tiers.HORIZON?.build && motif.tiers.ODYSSEY?.build, `${occasion.id}/${motif.id} misses a version`);
+      assert.equal(new Set(builds).size, builds.length, `${occasion.id}/${motif.id}: every package needs its own version`);
     }
   }
   const all = OCCASIONS.flatMap((o) => o.motifs.flatMap((m) => Object.values(m.tiers).map((t) => t.build)));

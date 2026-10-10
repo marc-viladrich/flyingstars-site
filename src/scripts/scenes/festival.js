@@ -304,20 +304,6 @@ const STILL = [[-1.25, -0.02, 0], [-1.05, -0.3, 0], [-0.7, -0.42, 0], [-0.3, -0.
 const STILL_POSE = { shoulder: 0.75, head: 1.45, headTurn: -1.0, wingScale: 1.12 };
 const STILL3D = STILL.map(([x, y], i) => [x, y, 0.28 * Math.sin(i * 1.1)]);
 
-builders.dragon2d = (n, caption) => {
-  const model = dragonModel(n, { fingers: false, spikes: 3, eye: 1, slim: true }), path = pathOf(STILL), L = path.length;
-  const scaled = { ...model, meta: model.meta.map((m) => (m.kind === "body" ? { ...m, p: [m.p[0] * (L / model.len), m.p[1]] } : m)) };
-  const place = dragonPose(scaled, spineOn(path, L), { ...STILL_POSE, tilt: 0, wingScale: 1.3, fan: 0.45, head: 1.7 }), pts = scaled.meta.map((m) => [...place(m, [0, 0, 0]), ...m.c]);
-  const tailFrom = L * 0.72, tailPivot = path.at(L - tailFrom);
-  return { beats: [{ pts, caption, live: (b, j, t, o) => {
-    const m = scaled.meta[j];
-    if (m.kind === "body") {
-      const s = m.p[0];
-      if (s > tailFrom) roll(o, 0.07 * Math.sin((t * TAU) / 3.2) * smooth((s - tailFrom) / (L - tailFrom)), tailPivot[0], tailPivot[1]); // the tail tip sways a little
-      o[3] = m.tag === "spike" ? 1.1 : 1 + 0.5 * Math.exp(-(((frac(t / 3) * 1.4 * L - s) / 0.18) ** 2)); // a glint runs down the scales
-    } else if (m.tag === "eye") o[3] = 1.3;
-  } }] };
-};
 
 builders.dragon3d = (n, caption) => {
   const model = dragonModel(n, { fingers: true, spikes: 5, eye: 2 }), path = pathOf(STILL3D), L = path.length;

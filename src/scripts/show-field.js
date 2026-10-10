@@ -136,7 +136,12 @@ export function createField(canvas, { onBeat } = {}) {
     let back = 0;
     for (let i = n; i < leaveEnd; i++) { outside(i, spot); back = Math.max(back, Math.hypot(from[i * 3] - spot[0], from[i * 3 + 1] - spot[1], from[i * 3 + 2] - spot[2])); }
     if (back) longest = Math.max(longest, flightTime(Float64Array.of(0, 0, 0), Float64Array.of(back, 0, 0), [0]));
-    flight = held() ? 0 : Math.max(longest, b.minFlight || 0);
+    // drones that still move fast from the last picture's own motion (a leaping dolphin, a beating wing) carry that
+    // velocity into the flight and shed it over the flight (Hermite term in step: peak deceleration 4·v/flight), so
+    // the flight lasts long enough to shed it gently
+    let carried = 0;
+    for (let i = 0; i < leaveEnd; i++) carried = Math.max(carried, Math.hypot(vel[i * 3], vel[i * 3 + 1], vel[i * 3 + 2]));
+    flight = held() ? 0 : Math.max(longest, b.minFlight || 0, 1.1 * carried);
     spread = held() ? 0 : Math.min(0.5, flight * 0.25);
     // staggered starts only for drones that really travel; a drone that stays put has nothing to wait for
     for (let i = 0; i < leaveEnd; i++) { const j = order[i] ?? 0, d = i < n ? Math.hypot(from[i * 3] - target[j * 3], from[i * 3 + 1] - target[j * 3 + 1], from[i * 3 + 2] - target[j * 3 + 2]) : 0; delay[i] = flowOf[i] && i < n ? hash(i * 1.37 + k * 7.1) * spread * Math.min(1, d / 0.3) : 0; }

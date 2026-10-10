@@ -220,18 +220,6 @@ function waterRows(k, rows, x0, x1, wy) {
 /** Drones below the water line glow out: the diver visibly disappears into the water. */
 const underwater = (y, wy) => 1 - 0.97 * smooth((wy - y) / 0.12);
 
-function dive2d(n, caption) {
-  const [dv, w] = share(n, [0.96, 1]), WY = -0.62, S = 1.15, A = -0.8;
-  // in flight; the hands just above the water
-  const r = diverRig(dv, () => ({ ...STRAIGHT, thigh: 0.38, shin: -0.22, foot: -0.25 }), { S, thick: true }); // body as double contour, hips a little piked
-  const tip = [0.4, WY + 0.14], hip = [tip[0] - HAND_TIP * S * Math.cos(A), tip[1] - HAND_TIP * S * Math.sin(A)];
-  const body = r.pts.map((q, j) => diverAt(r, j, 0, hip, A));
-  const rows = [0, 1, 2], counts = share(w, [1, 1, 1]);
-  const water = rows.flatMap((q) => Array.from({ length: counts[q] }, (_, i) => { const x = -1.4 + 0.1 * q + ((2.8 - 0.2 * q) * (i + (q % 2 ? 0.75 : 0.25))) / counts[q]; return [x, WY - q * 0.12 + 0.025 * Math.sin(x * 5 + q * 1.3), 0, q]; }));
-  const pts = [...paint(body, WARM), ...paint(water.map((p) => p.slice(0, 3)), (p, i) => mix(CYAN, BLUE, water[i][3] / 2.5))];
-  // light runs along the rows like ripples; the diver stands still
-  return { beats: [{ pts, caption, live: (b, j, t, o) => { if (j >= dv) { const q = water[j - dv][3]; o[3] = chase(b[0] + q * 0.18, t, 0.32, 0.75, 0.75, 1.5); } } }] };
-}
 
 function diveHorizon(n, caption) {
   const [dv, w] = share(n, [1, 1]), WY = -0.55, P = 7.4, S = 1.15, ROWS = [-0.45, -0.15, 0.15, 0.45];
@@ -338,4 +326,4 @@ async function diveStory(n) {
   ] };
 }
 
-export const builders = { kick2d, kickHorizon, kickStory, dive2d, diveHorizon, diveStory };
+export const builders = { kick2d, kickHorizon, kickStory, diveHorizon, diveStory };

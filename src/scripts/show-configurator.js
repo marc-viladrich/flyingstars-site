@@ -52,10 +52,13 @@ if (form) {
       if (id !== job) return;
       current = built;
       // the first picture of the page stands already, like a show that is already in the sky
-      field.show(built, pkg().base, size(), { instant: first, at: Math.max(0, built.beats.findIndex((b) => b.segment === at && !b.interlude)) });
+      // the motif on stage; if this package does not have it, the next motif that it has (round the loop)
+      const land = (test) => built.beats.findIndex((b) => test(b) && !b.interlude);
+      const k = [land((b) => b.segment === at), land((b) => b.segment > at), land(() => true)].find((q) => q >= 0) ?? 0;
+      field.show(built, pkg().base, size(), { instant: first, at: k });
       first = false;
     } catch {
-      if (id === job) $("#cfg-scene").textContent = `${motifs()[at]?.tiers[step().pkg].caption ?? ""} (Vorschau gerade nicht verfügbar)`;
+      if (id === job) $("#cfg-scene").textContent = `${motifs()[at]?.tiers[step().pkg]?.caption ?? ""} (Vorschau gerade nicht verfügbar)`;
     }
   }
 
@@ -65,7 +68,7 @@ if (form) {
     for (const [sel, txt] of [["#cfg-pkg", s.pkg], ["#cfg-bar-pkg", s.pkg], ["#cfg-price", eur(price)], ["#cfg-bar-price", eur(price)], ["#cfg-count", `${p.base} Drohnen`]]) $(sel).textContent = txt;
     $("#cfg-meta").textContent = `${p.base} Drohnen · ${p.dur} · netto zzgl. Anfahrt`;
     $("#cfg-includes").textContent = `Enthalten: ${s.includes}.`;
-    const summary = [`Anlass: ${occasion.label}`, `Beispielmotive: ${occasion.motifs.map((m) => m.label).join(", ")}`, ...(text ? [`Eigener Text: „${text}“ (${STYLE_LABEL[style]})`] : []), `Aufwand: ${s.label} (${s.pkg}, ${eur(price)} netto, Einstiegspreis laut Konfigurator)`].join("\n");
+    const summary = [`Anlass: ${occasion.label}`, `Beispielmotive: ${occasion.motifs.filter((m) => m.tiers[s.pkg]).map((m) => m.label).join(", ")}`, ...(text ? [`Eigener Text: „${text}“ (${STYLE_LABEL[style]})`] : []), `Aufwand: ${s.label} (${s.pkg}, ${eur(price)} netto, Einstiegspreis laut Konfigurator)`].join("\n");
     const inquiry = `/?${new URLSearchParams({ paket: s.pkg, drohnen: String(p.base), anlass: occasion.anlass, show: summary })}#anfrage`;
     $("#cfg-cta").href = inquiry; $("#cfg-bar-cta").href = inquiry;
     render(keep, to);

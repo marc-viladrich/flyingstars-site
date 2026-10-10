@@ -280,7 +280,7 @@ export const builders = {
       act([water, part("a", asWater(rows([0.21, 1.05], DA))), part("b", asWater(rows([-0.21, -1.05], DB)))], { caption: "Wellen", hold: 2.4, live: (b, j, t, o) => {
         waveLive(b, t, o, 0.04); o[3] = chase(b[0] + b[2] * 0.3, t, 0.5, 0.9, 0.6, 1.35); turn(o);
       } }),
-      act([water, part("a", leapA(0.95)), part("b", asWater(rows([-1.05, 1.05], DB)))], { caption: "ein Delfin springt", hold: T2 + 0.3, live: (b, j, t, o) => {
+      act([water, part("a", leapA(0.95)), part("b", asWater(rows([-1.05, 1.05], DB)))], { caption: "ein Delfin springt", hold: T2 + 0.3, minFlight: 2.6, live: (b, j, t, o) => {
         if (j >= WN && j < WN + DA) { onCircle(la[j - WN], C, R, lerp(-2.2, 0.95, smooth(t / T2)), 1, o); lit(o); }
         else { waveLive(b, t, o); o[3] = 0.85 + 0.25 * Math.sin(2.4 * b[0] - 1.3 * t); }
         turn(o);

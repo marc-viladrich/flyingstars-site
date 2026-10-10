@@ -106,9 +106,11 @@ const nearWhite = (r, g, b) => Math.min(r, g, b) > 190 && Math.max(r, g, b) - Ma
  */
 export async function buildSequence(motifs, pkg, n, tint) {
   const beats = [];
+  let shown = 0;
   for (const [segment, m] of motifs.entries()) {
+    if (!m.tiers[pkg]) continue; // not in this package (too few drones to read); segments keep the occasion's numbering
     // SPARK passes through a small geometric figure between two motifs (round 11), as part of the next motif
-    if (pkg === "SPARK" && segment > 0) beats.push({ ...interlude(segment - 1, n), segment, motif: m.label, shimmer: true });
+    if (pkg === "SPARK" && shown++ > 0) beats.push({ ...interlude(shown - 2, n), segment, motif: m.label, shimmer: true });
     const scene = await buildBeats(m.tiers[pkg], n);
     scene.beats.forEach((b, i, all) => {
       b.segment = segment; b.motif = m.label; b.shimmer ??= true;

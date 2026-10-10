@@ -48,7 +48,7 @@ test('Preis nur über den Aufwand; jeder Anlass zeigt drei Motive, jedes Bild mi
       if (info.project.name !== 'desktop') continue;
       const seen = await walk(page);
       expect(seen.every((s) => s.points === drones), `${id} ${name}: every picture has ${drones} drones`).toBe(true);
-      if (k < 2) { expect(seen.length, `${id} ${name}: four motifs or more`).toBeGreaterThanOrEqual(4); seen.forEach((s) => singles.add(s.caption)); }
+      if (k < 2) { expect(seen.length, `${id} ${name}: three motifs or more`).toBeGreaterThanOrEqual(3); seen.forEach((s) => singles.add(s.caption)); }
       else expect(seen.length, `${id} ODYSSEY tells every motif in acts`).toBeGreaterThanOrEqual(8);
     }
   }
@@ -203,4 +203,13 @@ test('Direktlink öffnet Anlass, Paket und Motiv', async ({ page }) => {
   await expect(page.locator('[name=occasion][value=launch]')).toBeChecked();
   await expect(page.locator('#cfg-pkg')).toHaveText('HORIZON');
   await expect(scene(page)).toHaveText('Die Rakete als Körper schwebt und dreht sich');
+});
+
+test('SPARK lässt Motive aus, die 100 Drohnen nicht tragen; der Paketwechsel springt aufs nächste Motiv', async ({ page }) => {
+  await page.goto('/show-konfigurator/?anlass=festival&paket=HORIZON&motiv=drache');
+  await expect(scene(page)).toHaveText('Ein Drache in 3D, die Flügel schlagen');
+  await pkg(page, 0);
+  await expect(scene(page)).toHaveText('Ein Kompass, die Nadel sucht den Norden'); // the dragon is the last motif: round the loop
+  await page.locator('#cfg-cta').click();
+  await expect(page.locator('#inquiry-form [name=message]')).toHaveValue(/Beispielmotive: Reise, Kolibri, Delfin\n/);
 });

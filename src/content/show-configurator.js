@@ -16,7 +16,9 @@ export const STEPS = [
   { pkg: 'ODYSSEY', label: 'Erzählte 3D-Show', includes: 'alles aus HORIZON plus komplexe 3D-Animationen, volumetrische Effekte und Storytelling mit dramaturgischer Kurve' },
 ];
 
-const motif = (id, label, spark, horizon, odyssey) => ({ id, label, tiers: { SPARK: spark, HORIZON: horizon, ODYSSEY: odyssey } });
+// spark may be null: some motifs need more than 100–150 drones to read (Marc, 10 October 2026: "Manche Motive sind mit
+// 100–150 Drohnen einfach nicht umsetzbar"); SPARK then plays the occasion without them
+const motif = (id, label, spark, horizon, odyssey) => ({ id, label, tiers: { ...(spark ? { SPARK: spark } : {}), HORIZON: horizon, ODYSSEY: odyssey } });
 const v = (build, caption) => ({ build, caption });
 
 /** Motifs in the order they play; after the last one the sequence starts again. Eleventh version (10 October 2026):
@@ -26,7 +28,7 @@ export const OCCASIONS = [
   { id: 'hochzeit', label: 'Hochzeit', anlass: 'privat', motifs: [
     motif('ring', 'Ring', v('rings2d', 'Zwei Ringe drehen sich'), v('rings3d', 'Ein Solitär in 3D: Ring und Brillant drehen sich'), v('ringsStory', 'Zwei Ringe werden eins, der Ring gleitet auf den Ringfinger')),
     motif('herz', 'Herz', v('heart2d', 'Ein Herz'), v('heartTunnel', 'Ein Tunnel aus Herzen, Licht fließt hindurch'), v('heartsStory', 'Amors Pfeil fliegt durchs Herz, zwei Herzen umkreisen sich')),
-    motif('lotus', 'Lotusblüten', v('lotus2d', 'Zwei Lotusblüten öffnen sich'), v('lotus3d', 'Zwei Lotusblüten in 3D drehen sich ineinander'), v('lotusStory', 'Zwei Knospen blühen auf, drehen sich ineinander und werden eine Kugel aus Licht')),
+    motif('lotus', 'Lotusblüten', null, v('lotus3d', 'Zwei Lotusblüten in 3D drehen sich ineinander'), v('lotusStory', 'Zwei Knospen blühen auf, drehen sich ineinander und werden eine Kugel aus Licht')),
     motif('glaeser', 'Sektgläser', v('flutes2d', 'Zwei Sektgläser stoßen an'), v('flutes3d', 'Sektgläser in 3D, die Perlen steigen'), v('flutesStory', 'Die Gläser stoßen an, die Perlen steigen als Herz auf')),
     motif('falter', 'Schmetterling', v('butterfly2d', 'Ein Schmetterling, die Flügel schimmern'), v('butterfly3d', 'Ein Schmetterling in 3D schlägt mit den Flügeln'), v('butterflyStory', 'Zwei Schmetterlinge tanzen umeinander und werden ein Herz')),
   ] },
@@ -34,7 +36,7 @@ export const OCCASIONS = [
     motif('wappen', 'Wappen', v('shield', 'Wappen mit Stern und wehender Fahne'), v('shield3d', '3D-Wappen mit eurer Zahl und wehender Fahne'), v('shieldStory', 'Aus dem Stern im Wappen wird eure Zahl, dazu Krone und Sternenkranz')),
     motif('fussball', 'Fußball', v('kick2d', 'Ein Spieler, der Ball dreht sich über dem Fuß'), v('kickHorizon', 'Der Spieler holt aus und schießt, der Ball fliegt mit Drall'), v('kickStory', 'Aus Funken wird ein Spieler, sein Schuss trifft ins Tor, der Ball wird zu eurer Zahl')),
     motif('wahrzeichen', 'Wahrzeichen', v('tower', 'Beispiel: Berliner Fernsehturm mit Warnlicht'), v('tower3d', 'Der Fernsehturm in 3D, Licht läuft um die Kugel'), v('towerStory', 'Der Fernsehturm sendet und wird zum Brandenburger Tor')),
-    motif('sprung', 'Kopfsprung', v('dive2d', 'Ein Kopfsprung, Licht kräuselt das Wasser'), v('diveHorizon', 'Der Springer taucht ein, das Wasser bewegt sich in Ringen'), v('diveStory', 'Sprungbrett, Absprung, Eintauchen, die Ringe im Wasser werden zu eurer Zahl')),
+    motif('sprung', 'Kopfsprung', null, v('diveHorizon', 'Der Springer taucht ein, das Wasser bewegt sich in Ringen'), v('diveStory', 'Sprungbrett, Absprung, Eintauchen, die Ringe im Wasser werden zu eurer Zahl')),
     motif('pokal', 'Pokal', v('trophy2d', 'Ein Pokal, über ihm funkeln Sterne'), v('trophy3d', 'Der Pokal in 3D, Licht gleitet darüber'), v('trophyStory', 'Der Pokal wächst, eure Zahl steigt heraus')),
   ] },
   { id: 'launch', label: 'Launch', anlass: 'firma', motifs: [
@@ -61,6 +63,6 @@ export const OCCASIONS = [
     motif('reise', 'Reise', v('compass2d', 'Ein Kompass, die Nadel sucht den Norden'), v('compass3d', 'Der Kompass in 3D, die Nadel schwingt ein'), v('travelStory', 'Die Stadt wird zur Karte, Pins leuchten auf, ein Papierflieger fliegt die Route')),
     motif('kolibri', 'Kolibri', v('hummingbird2d', 'Ein Kolibri, die Flügel schwirren im Licht'), v('hummingbird3d', 'Ein Kolibri in 3D, die Flügel schlagen'), v('hummingbirdStory', 'Ein Kolibri fliegt zur Blüte, trinkt und steigt auf')),
     motif('delfin', 'Delfin', v('dolphin2d', 'Ein Delfin über einer Welle'), v('dolphin3d', 'Ein Delfin springt in 3D aus dem Wasser'), v('dolphinStory', 'Wellen, ein Delfin springt, taucht ein, zwei Delfine springen im Bogen')),
-    motif('drache', 'Drache', v('dragon2d', 'Ein Drache, der Schweif schwingt'), v('dragon3d', 'Ein Drache in 3D, die Flügel schlagen'), v('dragonStory', 'Aus Funken steigt ein Drache auf, kreist und speit ein Feuerwerk')),
+    motif('drache', 'Drache', null, v('dragon3d', 'Ein Drache in 3D, die Flügel schlagen'), v('dragonStory', 'Aus Funken steigt ein Drache auf, kreist und speit ein Feuerwerk')),
   ] },
 ];

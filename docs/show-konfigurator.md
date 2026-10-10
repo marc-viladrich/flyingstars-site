@@ -107,10 +107,10 @@ Marcs Auftrag: Motive sammeln, die inhaltlich passen, und vor allem die Art der 
 | Anlass | Motiv | SPARK | HORIZON | ODYSSEY |
 |---|---|---|---|---|
 | Hochzeit | Herz | unverändert | Herztunnel: fünf Herzen in der Tiefe, Licht fließt nach hinten | unverändert |
-| | Lotusblüten | zwei Blüten, die Blätter öffnen sich leicht | zwei 3D-Blüten drehen sich und gleiten ineinander | Knospen → Blüte → ineinander → verdrillte Kugel aus sechs Bändern mit goldenem Herz |
+| | Lotusblüten | – (nicht bei SPARK) | zwei 3D-Blüten drehen sich und gleiten ineinander | Knospen → Blüte → ineinander → verdrillte Kugel aus sechs Bändern mit goldenem Herz |
 | | Schmetterling | Lichtschimmer über die Flügel | 3D im Dreiviertelprofil, Flügelschlag ±0,3 rad in 2,6 s | zwei Falter tanzen umeinander → Funken → Herz |
 | Jubiläum | Fußball | Schusspose, das Muster im Ball dreht sich (wie in Eisenhüttenstadt) | Gelenkfigur holt aus und schießt, Ball mit Drall | Funken → Spieler → Schuss ins Tor → „Tor!“ → „25“ |
-| | Kopfsprung | Springer über dem Wasser, Licht läuft über die Wellen | Springer taucht im Bogen ein, Wasser wogt, Ringe | Sprungbrett → Absprung → Eintauchen → Ringe → Medaille mit „25“ |
+| | Kopfsprung | – (nicht bei SPARK) | Springer taucht im Bogen ein, Wasser wogt, Ringe | Sprungbrett → Absprung → Eintauchen → Ringe → Medaille mit „25“ |
 | Launch | QR-Code | Finder-Quadrate und Scanrahmen, Scanlicht | echter Code baut sich Zeile für Zeile auf | Handy mit Nachrichten → Funken → Code im Display → „SCAN ME“, Code steht still |
 | | Spirale | flache Spirale, Licht läuft nach innen | konische Helix, Farbwelle steigt | Helix → Torus-Wicklung → Torus, durch den die Drohnen strömen → Möbius-Schleife |
 | Kultur | Buch | Licht liest die Zeilen | eine Seite wendet sich in 3D | Buch öffnet sich → Feder schreibt → Zeilen steigen auf → Stern |
@@ -121,7 +121,9 @@ Marcs Auftrag: Motive sammeln, die inhaltlich passen, und vor allem die Art der 
 | Stadtfest (neu) | Reise | Kompass, Nadel schwingt ein | Kompass kippt in die Frontalansicht | Altstadt → Karte → Pins → Route → Papierflieger → Kompass |
 | | Kolibri | Flügel schwirren über Licht (zwei Posen) | 3D, Flügelschlag ±26° in 2 s plus Lichtschwirren | Anflug → schwebt vor der Blüte → trinkt → steigt auf |
 | | Delfin | Delfin über einer Welle | springt im Bogen, unter Wasser gedimmt | Wellen → Sprung → Ringe → zwei Delfine → Herz |
-| | Drache | Linienzeichnung, Schweif schwingt | Flügelschlag ±24°, Körperwelle | Funken → steigt auf einer Spirale auf → Runde → Feuer und Feuerwerk |
+| | Drache | – (nicht bei SPARK) | Flügelschlag ±24°, Körperwelle | Funken → steigt auf einer Spirale auf → Runde → Feuer und Feuerwerk |
+
+Nach Marcs Durchsicht am 10. Oktober fehlen drei Motive bei SPARK, weil 100 Drohnen sie nicht lesbar tragen: Lotusblüten (wurden zur Punktkrone), Kopfsprung (der Springer wurde zum schrägen Strich) und Drache. Marc: „Manche Motive sind mit 100–150 Drohnen einfach nicht umsetzbar, das ist vollkommen fine.“ SPARK spielt den Anlass ohne sie, mindestens drei Motive bleiben. Steht ein solches Motiv beim Paketwechsel auf der Bühne, springt die Vorschau zum nächsten Motiv, das das Paket hat. Die Anfrage nennt nur die Motive des gewählten Pakets.
 
 Das Stadtfest liegt bei der Anfrage auf `anlass: stadt`. Die alten Fassungen burst2d/burst3d/ballStory (Feuerwerk), notes3d/notesStory (Noten) und heart3d (Herz in HORIZON) sind entfernt.
 
@@ -157,7 +159,6 @@ Marc: Torbogen, Ornamente und Pfeilformen „für zwischendurch“. Zwischen zwe
 
 **Bekannte Schwächen**
 
-- SPARK-Lotus und SPARK-Drache: Mit 100 Drohnen lesen sie sich erst auf den zweiten Blick.
 - Die ODYSSEY-Tunnelwicklung der Spirale sieht stellenweise eher wie eine Blüte aus.
 - Die Zahl „25“ in Fußball und Kopfsprung ist fest eingetragen.
 - Der QR-Code kodiert `HTTPS://FLYINGSTARS.ART`. Für 198 statt 208 dunkle Module ist das Füllbyte nach dem Terminator gewählt; Lesegeräte werten es nicht aus. OpenCV liest den Code aus Bühnen-Screenshots, wenn die Punkte etwas größer gerendert werden. Mit einem echten Handy ist das noch nicht geprüft.
