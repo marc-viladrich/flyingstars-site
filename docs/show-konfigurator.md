@@ -258,3 +258,17 @@ Der Anfrageknopf übergibt Paket, Drohnenzahl und Anlass sowie eine Zusammenfass
   - Tastatur, erster Bildschirm, Übergabe ins Formular
 
 Offen: Die optimale Zuordnung für 300 Drohnen kostet beim Umschalten einmalig etwa 70 ms auf einem schnellen Rechner (vor dem Flug, kein Ruckeln währenddessen). Auf schwachen Geräten wäre ein Web Worker der nächste Schritt.
+
+
+## Typografie und ruhige Vorschau, 12.10.2026
+
+Die gesamte Site verwendet nur die lokale variable Space Grotesk, 300–700. Body-, Display- und bisherige Mono-Rollen zeigen auf dieselbe Familie; Inter, JetBrains Mono und Montserrat einschließlich unbenutzter Dateien entfallen. Die im Canvas gezeichnete Schreibschrift ist lokale Geometriedaten und keine zusätzliche Webschrift. Die echte Fontdatei enthält die Gewichtsachse 300–700 und deutsche Umlaute/ß.
+
+Die Vorschau zeigt nur das Paketbadge. Die redundante Drohnenzahl oben rechts entfällt. Bildbeschreibungen sind visuell ausgeblendet, bleiben als Textalternative über `aria-describedby` verfügbar, weil der Canvas selbst für Screenreader verborgen ist. Eine fehlgeschlagene Vorschau hat weiterhin eine sichtbare Fehlermeldung mit nutzbarer Paketauswahl/Anfrage. Technische Paketdaten bleiben im Ergebnisbereich und in der Anfrage.
+
+`tests/network-allowlist.spec.ts` prüft alle tatsächlich gebauten Routen auf genau eine lokale Fontdatei. Der Konfigurator-Test prüft alle Anlässe auf ausgeblendete Beschreibungen, erhaltene Textalternative und entfernten Zähler. Überprüfung: `npm run gates`.
+
+
+## Fließtextschrift wiederhergestellt, 12.10.2026
+
+Nach Ansicht der Ein-Schrift-Fassung bevorzugt Marc Inter für die ursprünglichen Body-Rollen. Deshalb zeigt `--body` wieder auf die vorhandene lokale variable Inter. Überschriften und bisherige Mono-Rollen bleiben Space Grotesk; das Logo verwendet wie ursprünglich den Body-Token. JetBrains Mono und Montserrat bleiben entfernt. Die Fontprüfung erwartet genau die beiden lokalen Dateien auf allen gebauten Routen. Sichtbare Motivbeschreibungen und Preview-Zähler bleiben entfernt. Eine separate kuratierte Fontstudie entscheidet nicht ungefragt über die finale Designsprache.

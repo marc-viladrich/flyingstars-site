@@ -17,7 +17,7 @@
   --grad: linear-gradient(90deg, #ff9e29 0%, #db64e8 50%, #33edf2 100%);
   --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
   --body: "Inter", "Segoe UI", system-ui, sans-serif;
-  --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  --mono: var(--display);
   --pad: clamp(20px, 4vw, 64px);
   --section: clamp(72px, 10vw, 140px);
   --radius: 20px;
@@ -59,7 +59,7 @@ p { margin: 0; }
 .nav.scrolled { background: rgba(15, 13, 12, 0.78); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom-color: var(--line); padding-top: calc(12px + env(safe-area-inset-top, 0px)); padding-bottom: 12px; }
 .logo { display: flex; align-items: center; gap: 12px; }
 .logo svg { width: 32px; height: 32px; }
-.logo span { font: 600 13px/1 "Montserrat", var(--body); letter-spacing: 0.24em; }
+.logo span { font: 600 13px/1 var(--body); letter-spacing: 0.24em; }
 .nav nav { margin-left: auto; display: flex; gap: 28px; font-size: 14px; color: rgba(246, 241, 232, 0.78); }
 .nav nav a:hover, .nav nav a[aria-current] { color: var(--text); }
 .lang { font: 400 12px/1 var(--mono); letter-spacing: 0.1em; color: var(--faint); display: flex; gap: 10px; }
