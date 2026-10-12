@@ -16,7 +16,7 @@
   --bad: #ff6f61;
   --grad: linear-gradient(90deg, #ff9e29 0%, #db64e8 50%, #33edf2 100%);
   --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
-  --body: var(--display);
+  --body: "Inter", "Segoe UI", system-ui, sans-serif;
   --mono: var(--display);
   --pad: clamp(20px, 4vw, 64px);
   --section: clamp(72px, 10vw, 140px);
