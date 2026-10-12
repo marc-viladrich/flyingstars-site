@@ -213,3 +213,22 @@ test('SPARK lässt Motive aus, die 100 Drohnen nicht tragen; der Paketwechsel sp
   await page.locator('#cfg-cta').click();
   await expect(page.locator('#inquiry-form [name=message]')).toHaveValue(/Beispielmotive: Reise, Kolibri, Delfin\n/);
 });
+
+
+test('Die Vorschau zeigt nur das Paket; Bildbeschreibung bleibt für assistive Technik verfügbar', async ({ page }) => {
+  await paused(page);
+  await page.goto('/show-konfigurator/');
+  await expect(page.locator('#cfg-count')).toHaveCount(0);
+  await expect(page.locator('.cfg-caption')).toHaveText('HORIZON');
+  for (const id of OCCASIONS) {
+    await occasion(page, id);
+    await expect(scene(page)).not.toHaveText('');
+    const style = await scene(page).evaluate((node) => {
+      const s = getComputedStyle(node);
+      return { width: s.width, height: s.height, overflow: s.overflow, position: s.position };
+    });
+    expect(style).toEqual({ width: '1px', height: '1px', overflow: 'hidden', position: 'absolute' });
+    await expect(page.locator('.cfg-stage')).toHaveAttribute('aria-describedby', 'cfg-scene');
+    await expect(page.locator('#cfg-error')).toBeHidden();
+  }
+});

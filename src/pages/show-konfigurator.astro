@@ -15,10 +15,11 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
 ---
 <Base title="Show-Konfigurator (Prototyp)" description="Prototyp: Show nach Anlass und Aufwand zusammenstellen. Paket, Drohnenzahl und Preis ergeben sich aus den beiden Angaben." noindex fullBleed>
   <section class="cfg" aria-labelledby="cfg-h">
-    <div class="cfg-stage" aria-label="Vorschau der Show">
+    <div class="cfg-stage" aria-label="Vorschau der Show" aria-describedby="cfg-scene">
       <canvas id="cfg-field" aria-hidden="true"></canvas>
-      <div class="cfg-caption"><em id="cfg-new">{STEPS[start].pkg}</em><span id="cfg-scene">{firstCaption}</span></div>
-      <span class="cfg-count mono" id="cfg-count">{first.base} Drohnen</span>
+      <div class="cfg-caption"><em id="cfg-new">{STEPS[start].pkg}</em></div>
+      <span class="sr-only" id="cfg-scene">{firstCaption}</span>
+      <p class="cfg-error" id="cfg-error" role="status" hidden>Die Vorschau ist gerade nicht verfügbar. Du kannst weiterhin ein Paket wählen und anfragen.</p>
       <div class="cfg-acts" id="cfg-acts" role="group" aria-label="Bilder der Show">
         <button type="button" id="cfg-prev" aria-label="Vorheriges Bild">‹</button>
         <button type="button" id="cfg-replay" aria-label="Show von vorn ansehen">↻</button>
@@ -74,7 +75,7 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
   .cfg { display: grid; grid-template-columns: minmax(320px, 0.62fr) minmax(0, 1.38fr); gap: clamp(24px, 4vw, 56px); padding: 84px var(--pad) var(--section); align-items: start; }
   .cfg-stage { order: 2; position: sticky; top: 84px; height: calc(100svh - 108px); min-height: 460px; border-radius: var(--radius); background: radial-gradient(ellipse at 50% 120%, rgba(51, 237, 242, 0.06), transparent 60%), #0a0908; border: 1px solid var(--line); overflow: hidden; }
   .cfg-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .cfg-caption { position: absolute; left: 20px; top: 18px; right: 140px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
+  .cfg-caption { position: absolute; left: 20px; top: 18px; right: 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
   .cfg-caption em { font: 500 11px/1 var(--mono); font-style: normal; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ground); background: var(--pkg, var(--amber)); padding: 5px 8px; border-radius: 4px; }
   .cfg-acts { position: absolute; right: 14px; bottom: 14px; display: flex; gap: 2px; padding: 3px; border: 1px solid var(--line); border-radius: 999px; background: rgba(15, 13, 12, 0.72); }
   .cfg-acts[hidden] { display: none; }
@@ -83,7 +84,7 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
   .cfg-acts button:disabled { color: var(--faint); cursor: default; }
   .cfg-acts button:focus-visible { outline: 3px solid var(--cyan); outline-offset: -2px; }
 
-  .cfg-count { position: absolute; right: 20px; top: 20px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text); }
+  .cfg-error { position: absolute; inset: auto 20px 76px; color: var(--muted); font-size: 14px; }
   /* package buttons like the pricing calculator: one segment per package, the chosen one in its package colour */
   .cfg-pkgs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 12px; }
   .cfg-pkgs label { position: relative; cursor: pointer; }
@@ -133,7 +134,7 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
     /* on phones the picture is the headline: the question stays for screen readers, the slider moves into view */
     .cfg-h { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
     .cfg-panel { gap: 14px; }
-    .cfg-caption { font-size: 13px; right: 110px; }
+    .cfg-caption { font-size: 13px; }
     /* price and inquiry stay in reach while the visitor slides */
     .cfg-bar { position: fixed; z-index: 15; inset: auto 0 0 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px var(--pad) calc(12px + env(safe-area-inset-bottom, 0px)); background: rgba(15, 13, 12, 0.94); border-top: 1px solid var(--line); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); font-size: 15px; }
     .cfg-bar b { letter-spacing: 0.06em; margin-right: 6px; }

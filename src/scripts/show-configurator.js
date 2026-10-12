@@ -50,6 +50,7 @@ if (form) {
     try {
       const built = await sequence();
       if (id !== job) return;
+      $("#cfg-error").hidden = true;
       current = built;
       // the first picture of the page stands already, like a show that is already in the sky
       // the motif on stage; if this package does not have it, the next motif that it has (round the loop)
@@ -58,14 +59,14 @@ if (form) {
       field.show(built, pkg().base, size(), { instant: first, at: k });
       first = false;
     } catch {
-      if (id === job) $("#cfg-scene").textContent = `${motifs()[at]?.tiers[step().pkg]?.caption ?? ""} (Vorschau gerade nicht verfügbar)`;
+      if (id === job) $("#cfg-error").hidden = false;
     }
   }
 
   function update(keep, to) {
     const s = step(), p = pkg(), price = priceFor(s.pkg, p.base);
     document.documentElement.style.setProperty("--pkg", `rgb(${p.color.join(",")})`);
-    for (const [sel, txt] of [["#cfg-pkg", s.pkg], ["#cfg-bar-pkg", s.pkg], ["#cfg-price", eur(price)], ["#cfg-bar-price", eur(price)], ["#cfg-count", `${p.base} Drohnen`]]) $(sel).textContent = txt;
+    for (const [sel, txt] of [["#cfg-pkg", s.pkg], ["#cfg-bar-pkg", s.pkg], ["#cfg-price", eur(price)], ["#cfg-bar-price", eur(price)]]) $(sel).textContent = txt;
     $("#cfg-meta").textContent = `${p.base} Drohnen · ${p.dur} · netto zzgl. Anfahrt`;
     $("#cfg-includes").textContent = `Enthalten: ${s.includes}.`;
     const summary = [`Anlass: ${occasion.label}`, `Beispielmotive: ${occasion.motifs.filter((m) => m.tiers[s.pkg]).map((m) => m.label).join(", ")}`, ...(text ? [`Eigener Text: „${text}“ (${STYLE_LABEL[style]})`] : []), `Aufwand: ${s.label} (${s.pkg}, ${eur(price)} netto, Einstiegspreis laut Konfigurator)`].join("\n");
