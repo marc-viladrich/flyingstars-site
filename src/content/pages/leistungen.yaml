@@ -5,90 +5,25 @@ description: Drei Pakete, feste Preise und ein Team für Design, Genehmigung und
 sections:
   - type: hero
     headline: Drohnenshows aus einer Hand
-    text: Von der ersten Skizze über die Genehmigung bis zur Landung. Entdecke unsere Pakete, unseren Ablauf und die Menschen hinter der Show.
+    text: Von der ersten Skizze über die Genehmigung bis zur Landung. Entdecke
+      unsere Pakete, unseren Ablauf und die Menschen hinter der Show.
     cta: { label: Show anfragen, href: /kontakt/ }
     secondary: { label: Preisrechner öffnen, href: /drohnenshow-preise/ }
   - type: logoBar
     headline: Geflogen für
     press: tagesschau · ZDF · WDR · Tagesspiegel · WAZ
-    logos:
-      - name: Spotify
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/07/spotify_logo_white.png
-          alt: Spotify
-          width: 400
-          height: 200
-        tall: false
-      - name: NFL
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png
-          alt: NFL
-          width: 400
-          height: 200
-        tall: true
-      - name: Ford
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2023/04/Ford_logo_weiss.png
-          alt: Ford
-          width: 400
-          height: 200
-        tall: false
-      - name: Volkswagen
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2023/04/Volkswagen_logo_2019_weiss.png
-          alt: Volkswagen
-          width: 400
-          height: 200
-        tall: true
-      - name: L'Oréal
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2023/04/LOreal_logo_weiss.png
-          alt: L'Oréal
-          width: 400
-          height: 200
-        tall: false
-      - name: Prada
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2023/04/Prada-Logo_weiss.png
-          alt: Prada
-          width: 400
-          height: 200
-        tall: false
-      - name: PUMA
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2023/04/Puma_Logo_weiss.png
-          alt: PUMA
-          width: 400
-          height: 200
-        tall: false
-      - name: Siemens
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/10/siemens_logo_weiss.png
-          alt: Siemens
-          width: 400
-          height: 200
-        tall: false
-      - name: Red Bull
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/10/RED-BULL_white.png
-          alt: Red Bull
-          width: 400
-          height: 200
-        tall: false
-      - name: Bulgari
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2023/04/Bulgari_logo_weiss.png
-          alt: Bulgari
-          width: 400
-          height: 200
-        tall: false
-      - name: AIRPOWER
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/10/airpower-logo-weiss.png
-          alt: AIRPOWER
-          width: 400
-          height: 200
-        tall: false
+    clientIds:
+      - spotify
+      - nfl
+      - ford
+      - volkswagen
+      - l-oreal
+      - prada
+      - puma
+      - siemens
+      - red-bull
+      - bulgari
+      - airpower
   - type: pricing
     id: pakete
     kicker: Pakete
@@ -271,42 +206,14 @@ sections:
     text: 2022 gegründet, zu Hause im Triple Z auf Zeche Zollverein in Essen.
       Design, Technik und Genehmigungen machen wir selbst – du hast von der
       ersten Idee bis zur Landung dieselben Ansprechpartner:innen.
-    members:
-      - name: Ronja Donsbach
-        role: Mitgründerin · GF
-        bio: "Kundenkontakt und Design: vom ersten Gespräch bis zum fertigen
-          Showkonzept."
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/08/Ronja_Teamfoto.jpg
-          alt: Ronja Donsbach
-          width: 800
-          height: 1000
-      - name: Erwin Wilms
-        role: Mitgründer · GF
-        bio: "Recht und Genehmigungen: spricht mit LBA und Flugbehörden, damit deine
-          Show abheben darf."
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/08/Erwin_Teamfoto.jpg
-          alt: Erwin Wilms
-          width: 800
-          height: 1000
-      - name: Florian Becker
-        role: Mitgründer · GF
-        bio: "Finanzen, Personal und Prozesse: sorgt dafür, dass im Hintergrund alles
-          läuft."
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/08/Florian_Teamfoto.jpg
-          alt: Florian Becker
-          width: 800
-          height: 1000
-      - name: Patrick
-        role: Head of Technik
-        bio: "Technik, Flotte und Einkauf: hält jede Drohne startklar."
-      - name: Alejandro Muñoz
-        role: Head of Design
-        bio: Entwirft alle Shows und Choreografien – Bild für Bild, im Takt der Musik.
     note: Dazu unsere Crew aus Pilot:innen und Techniker:innen, die jede Show vor
       Ort aufbaut und fliegt.
     cta:
       label: Lern uns kennen
       href: "/#anfrage"
+    memberIds:
+      - ronja-donsbach
+      - erwin-wilms
+      - florian-becker
+      - patrick
+      - alejandro-munoz

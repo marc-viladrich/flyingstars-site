@@ -4,8 +4,11 @@ const link = z.object({ label: z.string().min(1), href: z.string().min(1).regex(
 const sectionHeading = { id: z.string().optional(), kicker: z.string().optional() };
 
 export const image = z.object({
-  src: z.url().describe('Absolute URL im zentralen Medienspeicher'),
-  alt: z.string().min(1).describe('Pflicht. Leerer Alt-Text nur für Dekoration, dann alt: ""'),
+  src: z.string().regex(/^(https:\/\/|\/assets\/[a-zA-Z0-9._/-]+$)/).describe('Bildquelle'),
+  alt: z.string().describe('Alternativtext'),
+  assetId: z.string().optional().describe('Medium aus der Bibliothek'),
+  altOverride: z.string().nullable().optional().describe('Alternativtext an dieser Stelle'),
+  decorative: z.boolean().default(false).describe('Dekoratives Bild'),
   width: z.number().int().positive(),
   height: z.number().int().positive(),
 });
@@ -48,7 +51,8 @@ export const sectionSchema = z.discriminatedUnion('type', [
     headline: z.string().min(1).describe('Überschrift'),
     body: z.string().min(1).describe('Markdown erlaubt'),
     image: image.optional(),
-    mediaSide: z.enum(['left', 'right']).default('right'),
+    mediaSide: z.enum(['left', 'right']).default('right').describe('Bildposition'),
+    showImage: z.boolean().default(true).describe('Bild anzeigen'),
   }),
   z.object({
     type: z.literal('faq'), ...sectionHeading,
@@ -82,6 +86,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     tiers: z.array(z.object({
       name: z.string().min(1),
       badge: z.string().optional(),
+      showOrb: z.boolean().default(true).describe('Animation anzeigen'),
       orb: z.object({ shape: z.enum(['ring','sphere','torus']), color: z.string().regex(/^\d{1,3},\d{1,3},\d{1,3}$/), count: z.number().int().positive() }).optional(),
       price: z.string().min(1).describe('Freitext inkl. Währung, z. B. "ab 7.900 €"'),
       unit: z.string().optional().describe('Bezugsgröße zum Preis, z. B. "pro Show" oder "netto"'),
@@ -91,6 +96,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
       cta: link.optional(),
     })).min(1),
     note: z.string().optional().describe('Kleingedrucktes unter den Karten'),
+    columns: z.enum(['three','two','one']).default('three').describe('Spalten'),
   }),
   z.object({
     type: z.literal('steps'), ...sectionHeading,
@@ -130,23 +136,25 @@ export const sectionSchema = z.discriminatedUnion('type', [
     note: z.string().optional(), cta: link.optional(),
     headline: z.string().min(1).describe('Überschrift'),
     text: z.string().optional(),
-    members: z.array(z.object({
-      name: z.string().min(1),
-      role: z.string().min(1),
-      image: image.optional().describe('Ohne Bild erscheint ein Platzhalter mit Initialen'),
-      bio: z.string().optional(),
-    })).min(1),
+    memberIds: z.array(z.string().min(1)).min(1).describe('Teammitglieder'),
+    columns: z.enum(['five','three','two','one']).default('five').describe('Spalten'),
+    showImages: z.boolean().default(true).describe('Bilder anzeigen'),
   }),
   z.object({
     type: z.literal('logoBar'), ...sectionHeading,
     press: z.string().optional(),
     headline: z.string().optional(),
-    logos: z.array(z.object({
-      name: z.string().min(1),
-      image: image.optional().describe('Ohne Bild wird der Name als Text gesetzt'),
-      href: z.string().min(1).optional(),
-      tall: z.boolean().default(false),
-    })).min(1),
+    clientIds: z.array(z.string().min(1)).min(1).describe('Kunden'),
+    showImages: z.boolean().default(true).describe('Logos anzeigen'),
+  }),
+  z.object({
+    type: z.literal('testimonials'), ...sectionHeading,
+    headline: z.string().min(1).describe('Überschrift'),
+    text: z.string().optional().describe('Einleitung'),
+    clientIds: z.array(z.string().min(1)).min(1).describe('Kundenstimmen'),
+    columns: z.enum(['one','two']).default('two').describe('Spalten'),
+    background: z.boolean().default(true).describe('Kartenhintergrund'),
+    showImages: z.boolean().default(true).describe('Kundenlogo anzeigen'),
   }),
   z.object({
     type: z.literal('contactForm'),
@@ -163,4 +171,7 @@ export const pageSchema=z.object({
     // Optional preview image for social shares; must come from an approved media host.
     image: z.url().optional(),
     sections: z.array(sectionSchema).min(1),
+  }).superRefine((page,ctx)=>{
+    const seen=new Set();
+    page.sections.forEach((section,index)=>{if(!section.id)return;if(seen.has(section.id))ctx.addIssue({code:'custom',path:['sections',index,'id'],message:'Abschnitts-IDs müssen innerhalb einer Seite eindeutig sein.'});seen.add(section.id);});
   });

@@ -1,12 +1,12 @@
 ---
-import {nativeField,nativeSection} from "../../lib/native-editor";
+import {nativeField,nativeSection,nativeRecord} from "../../lib/native-editor";
 import { getCollection } from 'astro:content';
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'postList' }> & { index: number };
 const { headline = 'Aktuelles', limit, index } = Astro.props;
 const id = `s${index}-h`;
 const H = index === 0 ? 'h1' : 'h2';
-const posts = (await getCollection('posts', (p) => !p.data.draft))
+const posts = (await getCollection('posts', (p) => process.env.FLYINGSTARS_EDITOR==='1'||!p.data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, limit);
 const fmt = new Intl.DateTimeFormat('de-DE', { dateStyle: 'long' });
@@ -17,9 +17,9 @@ const fmt = new Intl.DateTimeFormat('de-DE', { dateStyle: 'long' });
     <div class="cards">
       {posts.map((p) => (
         <article class="card">
-          <h3><a href={`/blog/${p.id}/`}>{p.data.title}</a></h3>
+          <h3><a href={`/blog/${p.id}/`}><span {...nativeRecord(`post/${p.id}`,["title"])}>{p.data.title}</span></a></h3>
           <p class="muted"><time datetime={p.data.date.toISOString()}>{fmt.format(p.data.date)}</time></p>
-          <p>{p.data.description}</p>
+          <p {...nativeRecord(`post/${p.id}`,["description"])}>{p.data.description}</p>
         </article>
       ))}
     </div>

@@ -1,5 +1,7 @@
 title: Status deiner Anfrage
-description: Rückmeldung zum Kontaktformular von FlyingStars. Solange der Versand nicht eingerichtet ist, kannst du das Team direkt per E-Mail kontaktieren.
+description: Rückmeldung zum Kontaktformular von FlyingStars. Solange der
+  Versand nicht eingerichtet ist, kannst du das Team direkt per E-Mail
+  kontaktieren.
 noindex: true
 sections:
   - type: textMedia

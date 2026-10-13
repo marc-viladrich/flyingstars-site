@@ -10,6 +10,6 @@ const H = index === 0 ? 'h1' : 'h2';
   <div class="wrap measure">
     <H id={id} {...nativeField(Astro.props,["headline"])}>{headline}</H>
     {text && <p class="muted" {...nativeField(Astro.props,["text"])}>{text}</p>}
-    <p><a class="btn" href={button.href}>{button.label}</a></p>
+    <p><a class="btn" href={button.href}><span {...nativeField(Astro.props,["button","label"])}>{button.label}</span></a></p>
   </div>
 </section>

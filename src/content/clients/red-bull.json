@@ -1,0 +1,12 @@
+{
+  "name": "Red Bull",
+  "logo": {
+    "src": "https://flyingstars.art/wp-content/uploads/2024/10/RED-BULL_white.png",
+    "alt": "Red Bull",
+    "width": 400,
+    "height": 200,
+    "assetId": "media/image-17248028eec048e9"
+  },
+  "tall": false,
+  "featured": true
+}

@@ -1,0 +1,12 @@
+{
+  "name": "L'Oréal",
+  "logo": {
+    "src": "https://flyingstars.art/wp-content/uploads/2023/04/LOreal_logo_weiss.png",
+    "alt": "L'Oréal",
+    "width": 400,
+    "height": 200,
+    "assetId": "media/image-1adfd38483900066"
+  },
+  "tall": false,
+  "featured": true
+}

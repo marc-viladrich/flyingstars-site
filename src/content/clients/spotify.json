@@ -1,0 +1,12 @@
+{
+  "name": "Spotify",
+  "logo": {
+    "src": "https://flyingstars.art/wp-content/uploads/2024/07/spotify_logo_white.png",
+    "alt": "Spotify",
+    "width": 400,
+    "height": 200,
+    "assetId": "media/image-f2caa22ea2eee28f"
+  },
+  "tall": false,
+  "featured": true
+}

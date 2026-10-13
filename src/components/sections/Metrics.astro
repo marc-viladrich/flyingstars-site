@@ -8,5 +8,5 @@ const H = index === 0 ? 'h1' : 'h2';
 ---
 <section {...nativeSection(Astro.props)} class="section alt" id={id} aria-labelledby={headingId}>
   <div class="sec-head"><div>{kicker && <span class="kicker mono" {...nativeField(Astro.props,["kicker"])}>{kicker}</span>}<H id={headingId} {...nativeField(Astro.props,["headline"])}>{headline}</H></div><p {...nativeField(Astro.props,["text"])}>{text}</p></div>
-  <div class="sheet">{items.map((item,i) => <div class="cell"><span class="k mono"><span>{item.label}</span><span>{String(i+1).padStart(2,'0')}</span></span><span class="v">{item.value}</span><p>{item.text}</p></div>)}</div>
+  <div class="sheet">{items.map((item,i) => <div class="cell"><span class="k mono"><span {...nativeField(Astro.props,["items",i,"label"])}>{item.label}</span><span>{String(i+1).padStart(2,'0')}</span></span><span class="v" {...nativeField(Astro.props,["items",i,"value"])}>{item.value}</span><p {...nativeField(Astro.props,["items",i,"text"])}>{item.text}</p></div>)}</div>
 </section>

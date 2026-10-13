@@ -9,8 +9,8 @@ const H = index === 0 ? 'h1' : 'h2';
 <section {...nativeSection(Astro.props)} class="section alt" id={id} aria-labelledby={headingId}>
   <div class="sec-head"><div>{kicker && <span class="kicker mono" {...nativeField(Astro.props,["kicker"])}>{kicker}</span>}<H id={headingId} {...nativeField(Astro.props,["headline"])}>{headline}</H></div>{text && <p {...nativeField(Astro.props,["text"])}>{text}</p>}</div>
   <div class="table-wrap" role="region" aria-label={`${headline} (Tabelle, horizontal scrollbar)`} tabindex="0">
-    <table><caption class="sr-only" {...nativeField(Astro.props,["headline"])}>{headline}</caption><thead><tr><th scope="col">{rowHeader}</th>{columns.map((column,i) => <th scope="col" class:list={{us:i===0}}>{column}</th>)}</tr></thead>
-      <tbody>{rows.map(row => <tr><th scope="row">{row.label}</th>{row.values.map((value,i) => <td class:list={{us:i===0}}>{row.cells ? <><span class:list={['m',row.cells[i].tone]}>{row.cells[i].label}</span>{row.cells[i].text && <> {row.cells[i].text}</>}</> : value}</td>)}</tr>)}</tbody>
+    <table><caption class="sr-only" {...nativeField(Astro.props,["headline"])}>{headline}</caption><thead><tr><th scope="col" {...nativeField(Astro.props,["rowHeader"])}>{rowHeader}</th>{columns.map((column,i) => <th scope="col" class:list={{us:i===0}} {...nativeField(Astro.props,["columns",i])}>{column}</th>)}</tr></thead>
+      <tbody>{rows.map((row,r) => <tr><th scope="row" {...nativeField(Astro.props,["rows",r,"label"])}>{row.label}</th>{row.values.map((value,i) => <td class:list={{us:i===0}}>{row.cells ? <><span class:list={['m',row.cells[i].tone]} {...nativeField(Astro.props,["rows",r,"cells",i,"label"])}>{row.cells[i].label}</span>{row.cells[i].text && <> <span {...nativeField(Astro.props,["rows",r,"cells",i,"text"])}>{row.cells[i].text}</span></>}</> : <span {...nativeField(Astro.props,["rows",r,"values",i])}>{value}</span>}</td>)}</tr>)}</tbody>
     </table>
   </div>
   {note && <p class="fine mono" {...nativeField(Astro.props,["note"])}>{note}</p>}

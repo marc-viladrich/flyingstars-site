@@ -4,7 +4,7 @@ import Base from '../layouts/Base.astro';
 import CaseStudy from '../components/projects/CaseStudy.astro';
 
 export async function getStaticPaths() {
-  const projects = await getCollection('projects', (p) => !p.data.draft && Boolean(p.data.showcase));
+  const projects = await getCollection('projects', (p) => (process.env.FLYINGSTARS_EDITOR==='1'||!p.data.draft) && Boolean(p.data.showcase));
   return projects.map((project) => ({ params: { case: project.data.showcase!.route }, props: { project } }));
 }
 const { project } = Astro.props;

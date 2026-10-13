@@ -3,10 +3,11 @@ import { optimizedImage } from '../lib/media';
 import { videoPath } from '../lib/videos';
 interface Props { src: string; poster?: string; class?: string; loop?: boolean; label?: string; hero?: boolean; }
 const { src, poster, class: className = '', loop = false, label = 'Showvideo ansehen', hero = false } = Astro.props;
+const markers=Object.fromEntries(Object.entries(Astro.props).filter(([key])=>key.startsWith('data-native-')));
 const image = poster ? await optimizedImage(poster, hero ? 960 : 720) : undefined;
 ---
 <div class:list={['video-player', className]} data-video-player>
-  {image && <img src={image.src} width={image.width} height={image.height} alt="" loading={hero ? 'eager' : 'lazy'} fetchpriority={hero ? 'high' : 'auto'} />}
+  {image && <img {...markers} src={image.src} width={image.width} height={image.height} alt="" loading={hero ? 'eager' : 'lazy'} fetchpriority={hero ? 'high' : 'auto'} />}
   <video data-src={videoPath(src)} controls playsinline preload="none" loop={loop} aria-label={label} hidden></video>
   <button class="video-play btn" type="button" data-video-play aria-label={label}><span aria-hidden="true">▶</span> {label}</button>
   <p class="video-error" role="status" hidden>Das Video ist gerade nicht verfügbar. Bitte versuche es später erneut.</p>

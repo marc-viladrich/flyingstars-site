@@ -1,0 +1,12 @@
+{
+  "name": "Ford",
+  "logo": {
+    "src": "https://flyingstars.art/wp-content/uploads/2023/04/Ford_logo_weiss.png",
+    "alt": "Ford",
+    "width": 400,
+    "height": 200,
+    "assetId": "media/image-2bcb64dfde4d21fd"
+  },
+  "tall": false,
+  "featured": true
+}

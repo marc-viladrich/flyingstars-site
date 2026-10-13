@@ -1,0 +1,12 @@
+{
+  "name": "AIRPOWER",
+  "logo": {
+    "src": "https://flyingstars.art/wp-content/uploads/2024/10/airpower-logo-weiss.png",
+    "alt": "AIRPOWER",
+    "width": 400,
+    "height": 200,
+    "assetId": "media/image-8d5be8d14abd6014"
+  },
+  "tall": false,
+  "featured": true
+}

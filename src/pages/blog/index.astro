@@ -1,7 +1,8 @@
 ---
+import {nativeRecord} from '../../lib/native-editor';
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-const posts = (await getCollection('posts', (p) => !p.data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const posts = (await getCollection('posts', (p) => process.env.FLYINGSTARS_EDITOR==='1'||!p.data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const fmt = new Intl.DateTimeFormat('de-DE', { dateStyle: 'long' });
 ---
 <Base title="Blog" description="Alle Beiträge in chronologischer Reihenfolge, neueste zuerst. Hintergründe, Projekte und Einblicke.">
@@ -10,9 +11,9 @@ const fmt = new Intl.DateTimeFormat('de-DE', { dateStyle: 'long' });
     <div class="cards">
       {posts.map((p) => (
         <article class="card">
-          <h3><a href={`/blog/${p.id}/`}>{p.data.title}</a></h3>
+          <h3><a href={`/blog/${p.id}/`}><span {...nativeRecord(`post/${p.id}`,["title"])}>{p.data.title}</span></a></h3>
           <p class="muted"><time datetime={p.data.date.toISOString()}>{fmt.format(p.data.date)}</time></p>
-          <p>{p.data.description}</p>
+          <p {...nativeRecord(`post/${p.id}`,["description"])}>{p.data.description}</p>
         </article>
       ))}
     </div>

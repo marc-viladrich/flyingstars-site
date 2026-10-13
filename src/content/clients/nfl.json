@@ -1,0 +1,12 @@
+{
+  "name": "NFL",
+  "logo": {
+    "src": "https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png",
+    "alt": "NFL",
+    "width": 400,
+    "height": 200,
+    "assetId": "media/image-29b794c670aed30d"
+  },
+  "tall": true,
+  "featured": true
+}

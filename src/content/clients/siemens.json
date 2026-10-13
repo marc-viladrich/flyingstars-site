@@ -1,0 +1,12 @@
+{
+  "name": "Siemens",
+  "logo": {
+    "src": "https://flyingstars.art/wp-content/uploads/2024/10/siemens_logo_weiss.png",
+    "alt": "Siemens",
+    "width": 400,
+    "height": 200,
+    "assetId": "media/image-7af0ea3cbcd9f0bd"
+  },
+  "tall": false,
+  "featured": true
+}

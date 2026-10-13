@@ -1,0 +1,12 @@
+{
+  "name": "Bulgari",
+  "logo": {
+    "src": "https://flyingstars.art/wp-content/uploads/2023/04/Bulgari_logo_weiss.png",
+    "alt": "Bulgari",
+    "width": 400,
+    "height": 200,
+    "assetId": "media/image-7bcf9589072f2136"
+  },
+  "tall": false,
+  "featured": true
+}

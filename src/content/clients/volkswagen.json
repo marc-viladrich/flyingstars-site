@@ -1,0 +1,12 @@
+{
+  "name": "Volkswagen",
+  "logo": {
+    "src": "https://flyingstars.art/wp-content/uploads/2023/04/Volkswagen_logo_2019_weiss.png",
+    "alt": "Volkswagen",
+    "width": 400,
+    "height": 200,
+    "assetId": "media/image-a07a6f7485465125"
+  },
+  "tall": true,
+  "featured": true
+}

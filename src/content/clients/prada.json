@@ -1,0 +1,12 @@
+{
+  "name": "Prada",
+  "logo": {
+    "src": "https://flyingstars.art/wp-content/uploads/2023/04/Prada-Logo_weiss.png",
+    "alt": "Prada",
+    "width": 400,
+    "height": 200,
+    "assetId": "media/image-afe83b4eef6ff56c"
+  },
+  "tall": false,
+  "featured": true
+}

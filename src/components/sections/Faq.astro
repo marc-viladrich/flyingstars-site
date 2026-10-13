@@ -1,17 +1,17 @@
 ---
-import {nativeField,nativeSection} from "../../lib/native-editor";
+import {nativeField,nativeSection,nativeRecord} from "../../lib/native-editor";
 import { getCollection, render } from 'astro:content';
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'faq' }> & { index: number };
 const { headline = 'Häufige Fragen', text, kicker = 'FAQ', cta, tags, limit, openFirst, id = `s${Astro.props.index}`, index } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
-let entries = (await getCollection('faq', e => !e.data.draft)).sort((a,b) => a.data.order-b.data.order);
+let entries = (await getCollection('faq', e => process.env.FLYINGSTARS_EDITOR==='1'||!e.data.draft)).sort((a,b) => a.data.order-b.data.order);
 if(tags?.length) entries = entries.filter(e=>e.data.tags.some(tag=>tags.includes(tag)));
 if(limit) entries = entries.slice(0,limit);
 const rendered = await Promise.all(entries.map(async entry => ({entry, Content:(await render(entry)).Content})));
 ---
 <section {...nativeSection(Astro.props)} class="section" id={id} aria-labelledby={headingId}>
-  <div class="faq-grid"><div class="intro"><span class="kicker mono" style="margin:0" {...nativeField(Astro.props,["kicker"])}>{kicker}</span><H id={headingId} {...nativeField(Astro.props,["headline"])}>{headline}</H>{text && <p {...nativeField(Astro.props,["text"])}>{text}</p>}{cta && <a class="link" href={cta.href} rel={cta.href.startsWith('https://')?'noopener':undefined} target={cta.href.startsWith('https://')?'_blank':undefined}>{cta.label} <span aria-hidden="true">→</span></a>}</div>
-  <div class="faq">{rendered.map(({entry,Content},i) => <details open={openFirst && i===0}><summary>{entry.data.question}</summary><div class="answer"><Content /></div></details>)}</div></div>
+  <div class="faq-grid"><div class="intro"><span class="kicker mono" style="margin:0" {...nativeField(Astro.props,["kicker"])}>{kicker}</span><H id={headingId} {...nativeField(Astro.props,["headline"])}>{headline}</H>{text && <p {...nativeField(Astro.props,["text"])}>{text}</p>}{cta && <a class="link" href={cta.href} rel={cta.href.startsWith('https://')?'noopener':undefined} target={cta.href.startsWith('https://')?'_blank':undefined}><span {...nativeField(Astro.props,["cta","label"])}>{cta.label}</span> <span aria-hidden="true">→</span></a>}</div>
+  <div class="faq">{rendered.map(({entry,Content},i) => <details open={openFirst && i===0}><summary {...nativeRecord(`faq/${entry.id}`,["question"])}>{entry.data.question}</summary><div class="answer" {...nativeRecord(`faq/${entry.id}`,["body"])} data-native-markdown={process.env.FLYINGSTARS_EDITOR==='1'?'true':undefined}><Content /></div></details>)}</div></div>
 </section>
