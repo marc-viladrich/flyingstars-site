@@ -3,9 +3,9 @@ description: Beschreibung der neuen Seite. Bitte vor der Veröffentlichung ausar
 noindex: true
 sections:
   - type: hero
-    headline: Editor-Werkstatt
+    headline: Gemeinsam bearbeiten.
   - type: textMedia
     headline: Neuer Abschnitt
-    body: Neuer Text. Bitte vor der Veröffentlichung ausarbeiten.
+    body: Dieser Inhalt bleibt in einer Textdatei.
     mediaSide: right
     showImage: true
