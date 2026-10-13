@@ -2,16 +2,17 @@ import { z } from 'astro/zod';
 
 export const PACKAGE_KEYS = ['SPARK', 'HORIZON', 'ODYSSEY'];
 const text = label => z.string().min(1).describe(label);
-const count = label => z.number().int().positive().describe(label);
+const count = label => z.number().int().positive().max(1000).describe(label);
+const amount = label => z.number().int().positive().max(1000000).describe(label);
 
 /** The same native package schema validates builds and editor changes. */
 export const packageSchema = z.object({
   name: z.enum(['SPARK', 'HORIZON', 'ODYSSEY']).describe('Paketname'),
   base: count('Drohnen im Einstiegspaket'),
   max: count('Maximale Drohnenzahl').nullable().describe('Maximale Drohnenzahl; null bedeutet unbegrenzt'),
-  price: count('Einstiegspreis in Euro, netto'),
+  price: amount('Einstiegspreis in Euro, netto'),
   step: count('Zusätzliche Drohnen je Preisstufe'),
-  add: count('Aufpreis je Preisstufe in Euro'),
+  add: amount('Aufpreis je Preisstufe in Euro'),
   dur: text('Showdauer'),
   color: z.tuple([z.number().int().min(0).max(255), z.number().int().min(0).max(255), z.number().int().min(0).max(255)]).describe('Paketfarbe als RGB'),
   orbShape: z.enum(['ring', 'sphere', 'torus']).describe('Animierte Paketformation'),
