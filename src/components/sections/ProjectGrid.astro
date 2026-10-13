@@ -1,4 +1,5 @@
 ---
+import {nativeField,nativeSection} from "../../lib/native-editor";
 import { getCollection } from 'astro:content';
 import { optimizedImage } from '../../lib/media';
 import type { Section } from '../../content.config';
@@ -12,8 +13,8 @@ const projects = (await getCollection('projects', (p) => !p.data.draft))
 const images = new Map(await Promise.all(projects.filter((p) => p.data.cover).map(async (p) => [p.id, await optimizedImage(p.data.cover!.src)] as const)));
 const home = Astro.url.pathname === '/';
 ---
-<section class="section" id={home ? 'projekte' : undefined} aria-labelledby={id}>
-  <div class="sec-head"><div>{home && <span class="kicker mono">Projekte</span>}<H id={id}>{headline}</H></div><p>Über 30 Shows im Jahr, von 100 bis 600 Drohnen. Eine kleine Auswahl:</p></div>
+<section {...nativeSection(Astro.props)} class="section" id={home ? 'projekte' : undefined} aria-labelledby={id}>
+  <div class="sec-head"><div>{home && <span class="kicker mono">Projekte</span>}<H id={id} {...nativeField(Astro.props,["headline"])}>{headline}</H></div><p>Über 30 Shows im Jahr, von 100 bis 600 Drohnen. Eine kleine Auswahl:</p></div>
   <div class="projects">
     {projects.map((project) => {
       const showcase = project.data.showcase;

@@ -1,4 +1,5 @@
 ---
+import {nativeField,nativeSection} from "../../lib/native-editor";
 import Picture from '../Picture.astro';
 import { marked } from 'marked';
 import type { Section } from '../../content.config';
@@ -8,10 +9,10 @@ const id = `s${index}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const html = await marked.parse(body);
 ---
-<section class="section" aria-labelledby={id}>
+<section {...nativeSection(Astro.props)} class="section" aria-labelledby={id}>
   <div class:list={['wrap', { 'grid-2': image, 'grid-2--media-left': image && mediaSide === 'left' }]}>
     <div class="prose">
-      <H id={id}>{headline}</H>
+      <H id={id} {...nativeField(Astro.props,["headline"])}>{headline}</H>
       <Fragment set:html={html} />
     </div>
     {image && <Picture {...image} />}

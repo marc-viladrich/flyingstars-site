@@ -65,6 +65,7 @@ if (form) {
 
   function update(keep, to) {
     const s = step(), p = pkg(), price = priceFor(s.pkg, p.base);
+    const editorResult=document.querySelector(".cfg-result[data-native-record]");if(editorResult)editorResult.dataset.nativeRecord="package/"+s.pkg.toLowerCase();
     document.documentElement.style.setProperty("--pkg", `rgb(${p.color.join(",")})`);
     for (const [sel, txt] of [["#cfg-pkg", s.pkg], ["#cfg-bar-pkg", s.pkg], ["#cfg-price", eur(price)], ["#cfg-bar-price", eur(price)]]) $(sel).textContent = txt;
     $("#cfg-meta").textContent = `${p.base} Drohnen · ${p.dur} · netto zzgl. Anfahrt`;

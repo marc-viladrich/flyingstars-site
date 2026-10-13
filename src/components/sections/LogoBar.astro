@@ -1,4 +1,5 @@
 ---
+import {nativeField,nativeSection} from "../../lib/native-editor";
 import type { Section } from '../../content.config';
 import { optimizedLogo } from '../../lib/media';
 type Props = Extract<Section, { type: 'logoBar' }> & { index: number };
@@ -6,7 +7,7 @@ const { headline, press, logos } = Astro.props;
 const items = await Promise.all(logos.map(async logo => ({...logo,media:logo.image ? await optimizedLogo(logo.image.src,logo.tall ? 80 : 56) : undefined})));
 ---
 <div class="band" aria-label="Referenzen">
-  <div class="band-head mono">{headline && <span>{headline}</span>}{press && <span>Bekannt aus <b>{press}</b></span>}</div>
+  <div class="band-head mono">{headline && <span {...nativeField(Astro.props,["headline"])}>{headline}</span>}{press && <span>Bekannt aus <b>{press}</b></span>}</div>
   <div class="marquee">{items.map(logo => {
     const content = logo.image && logo.media ? <img src={logo.media.src} width={logo.media.width} height={logo.media.height} alt={logo.name} class:list={{tall:logo.tall}} loading="lazy" decoding="async" /> : <span>{logo.name}</span>;
     return logo.href ? <a href={logo.href}>{content}</a> : content;

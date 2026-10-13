@@ -1,0 +1,45 @@
+{
+  "name": "ODYSSEY",
+  "base": 300,
+  "max": null,
+  "price": 34900,
+  "step": 100,
+  "add": 9900,
+  "dur": "15+ Min",
+  "color": [
+    51,
+    237,
+    242
+  ],
+  "orbShape": "torus",
+  "badge": "300+ Drohnen",
+  "description": "Das immersive Erlebnis für große Kampagnen, Festivals und Events mit maximaler Reichweite.",
+  "inheritsText": "Alles aus HORIZON, plus:",
+  "highlight": false,
+  "featureGroups": [
+    {
+      "title": "Design & Inhalt",
+      "items": [
+        "Komplexe 3D-Animationen und volumetrische Effekte",
+        "Narratives Storytelling mit dramaturgischer Kurve"
+      ]
+    },
+    {
+      "title": "Musik",
+      "items": [
+        "Timecode-Synchronisation vor Ort möglich"
+      ]
+    },
+    {
+      "title": "Service & Extras",
+      "items": [
+        "Mehrere Feedbackschleifen mit Zufriedenheitsgarantie",
+        "Eigener Projektmanager",
+        "Professionelle Videodokumentation (Rohmaterial)",
+        "Auf Wunsch Vor-Ort-Termin inklusive"
+      ]
+    }
+  ],
+  "effortLabel": "Erzählte 3D-Show",
+  "includes": "alles aus HORIZON plus komplexe 3D-Animationen, volumetrische Effekte und Storytelling mit dramaturgischer Kurve"
+}

@@ -1,0 +1,2 @@
+export function nativeField(props:Record<string,any>,path:(string|number)[]) {return process.env.FLYINGSTARS_EDITOR==='1'&&props._nativeRecord?{'data-native-record':props._nativeRecord,'data-native-path':JSON.stringify(['sections',props.index,...path])}:{};}
+export function nativeSection(props:Record<string,any>){return process.env.FLYINGSTARS_EDITOR==='1'&&props._nativeRecord?{'data-native-record':props._nativeRecord,'data-native-section-index':props.index}:{};}

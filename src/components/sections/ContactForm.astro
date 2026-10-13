@@ -1,15 +1,16 @@
 ---
+import {nativeField,nativeSection} from "../../lib/native-editor";
 import { site } from '../../site.config';
 interface Props { headline: string; text?: string; index?: number; }
 const { headline, text, index = 0 } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
 ---
-<section aria-labelledby="anfrage-h" class="section alt" id="anfrage">
+<section {...nativeSection(Astro.props)} aria-labelledby="anfrage-h" class="section alt" id="anfrage">
 <div class="inquiry">
 <div class="intro">
 <span class="kicker mono">Anfrage</span>
-<H id="anfrage-h">{headline}</H>
-<p class="lead">{text}</p>
+<H id="anfrage-h" {...nativeField(Astro.props,["headline"])}>{headline}</H>
+<p class="lead" {...nativeField(Astro.props,["text"])}>{text}</p>
 <ul class="contact-list">
 <li><span class="k mono">E-Mail</span><a href="mailto:team@flyingstars.art">team@flyingstars.art</a></li>
 <li><span class="k mono">Telefon</span><a href="tel:+4920988306562">0209 883 065 62</a></li>

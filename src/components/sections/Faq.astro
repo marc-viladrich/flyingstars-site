@@ -1,4 +1,5 @@
 ---
+import {nativeField,nativeSection} from "../../lib/native-editor";
 import { getCollection, render } from 'astro:content';
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'faq' }> & { index: number };
@@ -10,7 +11,7 @@ if(tags?.length) entries = entries.filter(e=>e.data.tags.some(tag=>tags.includes
 if(limit) entries = entries.slice(0,limit);
 const rendered = await Promise.all(entries.map(async entry => ({entry, Content:(await render(entry)).Content})));
 ---
-<section class="section" id={id} aria-labelledby={headingId}>
-  <div class="faq-grid"><div class="intro"><span class="kicker mono" style="margin:0">{kicker}</span><H id={headingId}>{headline}</H>{text && <p>{text}</p>}{cta && <a class="link" href={cta.href} rel={cta.href.startsWith('https://')?'noopener':undefined} target={cta.href.startsWith('https://')?'_blank':undefined}>{cta.label} <span aria-hidden="true">→</span></a>}</div>
+<section {...nativeSection(Astro.props)} class="section" id={id} aria-labelledby={headingId}>
+  <div class="faq-grid"><div class="intro"><span class="kicker mono" style="margin:0" {...nativeField(Astro.props,["kicker"])}>{kicker}</span><H id={headingId} {...nativeField(Astro.props,["headline"])}>{headline}</H>{text && <p {...nativeField(Astro.props,["text"])}>{text}</p>}{cta && <a class="link" href={cta.href} rel={cta.href.startsWith('https://')?'noopener':undefined} target={cta.href.startsWith('https://')?'_blank':undefined}>{cta.label} <span aria-hidden="true">→</span></a>}</div>
   <div class="faq">{rendered.map(({entry,Content},i) => <details open={openFirst && i===0}><summary>{entry.data.question}</summary><div class="answer"><Content /></div></details>)}</div></div>
 </section>

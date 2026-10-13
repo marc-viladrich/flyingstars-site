@@ -1,14 +1,15 @@
 ---
+import {nativeField,nativeSection} from "../../lib/native-editor";
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'cta' }> & { index: number };
 const { headline, text, button, index } = Astro.props;
 const id = `s${index}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 ---
-<section class="section" aria-labelledby={id}>
+<section {...nativeSection(Astro.props)} class="section" aria-labelledby={id}>
   <div class="wrap measure">
-    <H id={id}>{headline}</H>
-    {text && <p class="muted">{text}</p>}
+    <H id={id} {...nativeField(Astro.props,["headline"])}>{headline}</H>
+    {text && <p class="muted" {...nativeField(Astro.props,["text"])}>{text}</p>}
     <p><a class="btn" href={button.href}>{button.label}</a></p>
   </div>
 </section>

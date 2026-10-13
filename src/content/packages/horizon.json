@@ -1,0 +1,45 @@
+{
+  "name": "HORIZON",
+  "base": 200,
+  "max": null,
+  "price": 15900,
+  "step": 50,
+  "add": 4900,
+  "dur": "ca. 13 Min",
+  "color": [
+    219,
+    100,
+    232
+  ],
+  "orbShape": "sphere",
+  "badge": "Bestseller",
+  "description": "Die individuelle Inszenierung für Produktpräsentationen, große Firmenevents und Stadtmarketing.",
+  "inheritsText": "Alles aus SPARK, plus:",
+  "highlight": true,
+  "featureGroups": [
+    {
+      "title": "Design & Inhalt",
+      "items": [
+        "Vollständig individuelle 2D-Animationen und einfache 3D-Elemente",
+        "Präzise Logointegration und komplexe Schriftzüge"
+      ]
+    },
+    {
+      "title": "Musik",
+      "items": [
+        "Perfekte Synchronisation auf deine Wunschmusik"
+      ]
+    },
+    {
+      "title": "Service & Extras",
+      "items": [
+        "Persönlicher Kreativ-Workshop mit Storyboard",
+        "Komplexere Genehmigungen, z. B. in Flughafennähe",
+        "Vorschau als Video inklusive Feedbackschleife",
+        "Hilfe bei der Zustimmung der Grundstückseigentümer:innen"
+      ]
+    }
+  ],
+  "effortLabel": "3D in Bewegung",
+  "includes": "alles aus SPARK plus individuelle 2D-Animationen und einfache 3D-Elemente"
+}

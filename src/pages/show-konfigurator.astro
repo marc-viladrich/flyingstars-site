@@ -1,4 +1,5 @@
 ---
+import screen from "../content/screens/show-konfigurator.json";
 import Base from '../layouts/Base.astro';
 import { OCCASIONS, STEPS } from '../content/show-configurator.js';
 import { SHOW_PACKAGES } from '../content/show-packages';
@@ -13,7 +14,7 @@ const startPkg = STEPS[start].pkg as keyof typeof SHOW_PACKAGES;
 const first = SHOW_PACKAGES[startPkg];
 const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
 ---
-<Base title="Show-Konfigurator (Prototyp)" description="Prototyp: Show nach Anlass und Aufwand zusammenstellen. Paket, Drohnenzahl und Preis ergeben sich aus den beiden Angaben." noindex fullBleed>
+<Base title={screen.title} description={screen.description} noindex={screen.noindex} fullBleed>
   <section class="cfg" aria-labelledby="cfg-h">
     <div class="cfg-stage" aria-label="Vorschau der Show" aria-describedby="cfg-scene">
       <canvas id="cfg-field" aria-hidden="true"></canvas>
@@ -28,7 +29,7 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
     </div>
 
     <form class="cfg-panel" id="cfg">
-      <h1 id="cfg-h" class="cfg-h">Was soll am Himmel passieren?</h1>
+      <h1 id="cfg-h" class="cfg-h" data-native-record={process.env.FLYINGSTARS_EDITOR==='1'?"screen/show-konfigurator":undefined} data-native-path={process.env.FLYINGSTARS_EDITOR==='1'?'["headline"]':undefined}>{screen.headline}</h1>
 
       <fieldset class="cfg-block">
         <legend>Anlass</legend>
@@ -53,7 +54,7 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
         <p class="cfg-text-note" id="cfg-text-note" hidden>Erscheint als Finale der Show. Zählt als eines eurer eigenen Elemente und ändert den Preis nicht.</p>
       </fieldset>
 
-      <div class="cfg-result" aria-live="polite">
+      <div class="cfg-result" aria-live="polite" data-native-record={process.env.FLYINGSTARS_EDITOR==='1'?"package/"+startPkg.toLowerCase():undefined} data-native-derived={process.env.FLYINGSTARS_EDITOR==='1'?'["price"]':undefined}>
         <div class="cfg-price"><b id="cfg-pkg">{STEPS[start].pkg}</b><span id="cfg-price">{money(first.price)}</span></div>
         <p class="cfg-meta mono" id="cfg-meta">{first.base} Drohnen · {first.dur} · netto zzgl. Anfahrt</p>
         <p class="cfg-includes" id="cfg-includes">Enthalten: {STEPS[start].includes}.</p>

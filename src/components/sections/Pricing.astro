@@ -1,4 +1,5 @@
 ---
+import {nativeField,nativeSection} from "../../lib/native-editor";
 import type { Section } from '../../content.config';
 import { SHOW_PACKAGES, type ShowPackage } from '../../content/show-packages';
 type Props = Extract<Section, { type: 'pricing' }> & { index: number };
@@ -6,16 +7,24 @@ const { headline, text, tiers, note, cta, kicker, id = `s${Astro.props.index}`, 
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const money = new Intl.NumberFormat('de-DE', { maximumFractionDigits: 0 });
-const price = (tier: Props['tiers'][number]) => tier.orb && tier.name in SHOW_PACKAGES ? `ab ${money.format(SHOW_PACKAGES[tier.name as ShowPackage].price)} €` : tier.price;
+const editor = process.env.FLYINGSTARS_EDITOR === '1';
+const native = (name: ShowPackage, path: Array<string | number>, derived = false) => editor ? {
+  'data-native-record': `package/${name.toLowerCase()}`,
+  [derived ? 'data-native-derived' : 'data-native-path']: JSON.stringify(path),
+} : {};
 ---
-<section class="section alt" id={id} aria-labelledby={headingId}>
-  <div class="sec-head"><div>{kicker && <span class="kicker mono">{kicker}</span>}<H id={headingId}>{headline}</H></div>{text && <p>{text}</p>}</div>
+<section {...nativeSection(Astro.props)} class="section alt" id={id} aria-labelledby={headingId}>
+  <div class="sec-head"><div>{kicker && <span class="kicker mono" {...nativeField(Astro.props,["kicker"])}>{kicker}</span>}<H id={headingId} {...nativeField(Astro.props,["headline"])}>{headline}</H></div>{text && <p {...nativeField(Astro.props,["text"])}>{text}</p>}</div>
   <div class="packs">{tiers.map(tier => {
     const Card = tier.cta ? 'a' : 'article';
+    const name = tier.name as ShowPackage;
+    const pkg = tier.orb && Object.hasOwn(SHOW_PACKAGES, tier.name) ? SHOW_PACKAGES[name] : null;
+    const price = pkg ? `ab ${money.format(pkg.price)} €` : tier.price;
+    const unit = pkg ? `${pkg.base}${name === 'ODYSSEY' ? '+' : ''} Drohnen · ${pkg.dur}` : tier.unit;
     return <Card class:list={['pack',{featured:tier.highlight}]} href={tier.cta?.href}>
-      {tier.orb && <canvas data-orb={tier.orb.shape} data-color={tier.orb.color} data-n={tier.orb.count} aria-hidden="true"></canvas>}
-      <div><div class="name"><h3>{tier.name}</h3>{tier.badge && <span class="chip">{tier.badge}</span>}</div><div class="price">{price(tier)}</div>{tier.unit && <div class="meta mono">{tier.unit}</div>}{tier.description && <p>{tier.description}</p>}{tier.features.length>0 && <ul class="facts">{tier.features.map(feature => <li>{feature}</li>)}</ul>}</div>
+      {tier.orb && <canvas data-orb={pkg?.orbShape ?? tier.orb.shape} data-color={pkg?.color.join(',') ?? tier.orb.color} data-n={pkg?.base ?? tier.orb.count} aria-hidden="true"></canvas>}
+      <div><div class="name"><h3 {...(pkg ? native(name, ['name']) : {})}>{pkg?.name ?? tier.name}</h3>{tier.badge && <span class="chip">{tier.badge}</span>}</div><div class="price" {...(pkg ? native(name, ['price'], true) : {})}>{price}</div>{unit && <div class="meta mono" {...(pkg ? native(name, ['base'], true) : {})}>{unit}</div>}{tier.description && <p>{tier.description}</p>}{tier.features.length>0 && <ul class="facts">{tier.features.map(feature => <li>{feature}</li>)}</ul>}</div>
     </Card>;
   })}</div>
-  {(note || cta) && <div class="pack-note">{note && <span class="mono">{note}</span>}{cta && <a class="link" href={cta.href}>{cta.label} <span aria-hidden="true">→</span></a>}</div>}
+  {(note || cta) && <div class="pack-note">{note && <span class="mono" {...nativeField(Astro.props,["note"])}>{note}</span>}{cta && <a class="link" href={cta.href}>{cta.label} <span aria-hidden="true">→</span></a>}</div>}
 </section>

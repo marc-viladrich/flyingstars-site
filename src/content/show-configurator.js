@@ -10,11 +10,8 @@
 
 export const PACKAGE_ORDER = ['SPARK', 'HORIZON', 'ODYSSEY'];
 
-export const STEPS = [
-  { pkg: 'SPARK', label: 'Klassisch in 2D', includes: 'vordefinierte Formationen wie Herzen oder Ringe und bis zu vier eigene Elemente' },
-  { pkg: 'HORIZON', label: '3D in Bewegung', includes: 'alles aus SPARK plus individuelle 2D-Animationen und einfache 3D-Elemente' },
-  { pkg: 'ODYSSEY', label: 'Erzählte 3D-Show', includes: 'alles aus HORIZON plus komplexe 3D-Animationen, volumetrische Effekte und Storytelling mit dramaturgischer Kurve' },
-];
+import { SHOW_PACKAGES } from './show-packages';
+export const STEPS = PACKAGE_ORDER.map(pkg => ({ pkg, label: SHOW_PACKAGES[pkg].effortLabel, includes: SHOW_PACKAGES[pkg].includes }));
 
 // spark may be null: some motifs need more than 100–150 drones to read (Marc, 10 October 2026: "Manche Motive sind mit
 // 100–150 Drohnen einfach nicht umsetzbar"); SPARK then plays the occasion without them

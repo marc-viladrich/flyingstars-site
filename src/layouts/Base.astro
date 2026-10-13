@@ -23,7 +23,7 @@ const eco = await optimizedImage('https://flyingstars.art/wp-content/uploads/202
     <title>{title} | {site.name}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    {noindex && <meta name="robots" content="noindex" />}
+    {(noindex || process.env.FLYINGSTARS_EDITOR==='1') && <meta name="robots" content="noindex" />}
     <meta property="og:title" content={`${title} | FlyingStars`} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />

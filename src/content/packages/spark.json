@@ -1,0 +1,46 @@
+{
+  "name": "SPARK",
+  "base": 100,
+  "max": 150,
+  "price": 7900,
+  "step": 10,
+  "add": 900,
+  "dur": "ca. 10 Min",
+  "color": [
+    255,
+    158,
+    41
+  ],
+  "orbShape": "ring",
+  "badge": "Einstieg",
+  "description": "Der funkelnde Einstieg für Hochzeiten, Jubiläen und kleinere Firmen- und Kulturfeiern.",
+  "inheritsText": "",
+  "highlight": false,
+  "featureGroups": [
+    {
+      "title": "Design & Inhalt",
+      "items": [
+        "Auswahl aus vordefinierten Premium-Formationen wie Herzen oder Ringe",
+        "Bis zu vier eigene Elemente: Initialen, Logo, Stadtwappen"
+      ]
+    },
+    {
+      "title": "Musik",
+      "items": [
+        "Professionelle GEMA-freie Musikuntermalung",
+        "GEMA-Musik bei Anmeldung der Veranstaltung möglich"
+      ]
+    },
+    {
+      "title": "Service & Extras",
+      "items": [
+        "Eigene Elemente vorab zur Freigabe",
+        "Standard-Genehmigungsverfahren",
+        "Komplettes Team vor Ort",
+        "Sicherheitskonzept und Haftpflichtversicherung"
+      ]
+    }
+  ],
+  "effortLabel": "Klassisch in 2D",
+  "includes": "vordefinierte Formationen wie Herzen oder Ringe und bis zu vier eigene Elemente"
+}
