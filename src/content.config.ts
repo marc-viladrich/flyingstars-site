@@ -8,7 +8,7 @@ import { projectShowcaseSchema } from './schemas/project-showcase';
 // Jede Section hat genau einen Typ, typisierte Props und eine Komponente in
 // src/components/sections/. Der Agent darf Seiten nur aus diesen Typen bauen.
 // ---------------------------------------------------------------------------
-import {sectionSchema,pageSchema} from './schemas/page-schema.mjs';
+import {sectionSchema,pageSchema,image} from './schemas/page-schema.mjs';
 export {sectionSchema};
 export type Section = z.infer<typeof sectionSchema>;
 

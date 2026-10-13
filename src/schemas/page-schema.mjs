@@ -2,7 +2,7 @@ import {z} from "astro/zod";
 const link = z.object({ label: z.string().min(1), href: z.string().min(1) });
 const sectionHeading = { id: z.string().optional(), kicker: z.string().optional() };
 
-const image = z.object({
+export const image = z.object({
   src: z.url().describe('Absolute URL im zentralen Medienspeicher'),
   alt: z.string().min(1).describe('Pflicht. Leerer Alt-Text nur für Dekoration, dann alt: ""'),
   width: z.number().int().positive(),
