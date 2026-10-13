@@ -18,9 +18,10 @@ sections:
     mediaSide: left
     showImage: true
   - type: testimonials
-    headline: Neuer Inhalt
+    headline: Unsere Kundenstimmen
     clientIds:
       - airpower
+      - editor-testkunde
     columns: two
     background: true
     showImages: true

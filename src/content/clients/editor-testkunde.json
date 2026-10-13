@@ -1,0 +1,10 @@
+{
+  "name": "Editor-Testkunde",
+  "tall": false,
+  "featured": false,
+  "testimonial": {
+    "quote": "Dieser Text liegt im gemeinsamen Kunden-Datensatz.",
+    "person": "Demo",
+    "role": ""
+  }
+}
