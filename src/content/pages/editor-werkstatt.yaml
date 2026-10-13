@@ -1,0 +1,11 @@
+title: Editor-Werkstatt
+description: Beschreibung der neuen Seite. Bitte vor der Veröffentlichung ausarbeiten.
+noindex: true
+sections:
+  - type: hero
+    headline: Editor-Werkstatt
+  - type: textMedia
+    headline: Neuer Abschnitt
+    body: Neuer Text. Bitte vor der Veröffentlichung ausarbeiten.
+    mediaSide: right
+    showImage: true
