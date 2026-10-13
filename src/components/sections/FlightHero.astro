@@ -3,15 +3,16 @@ import {resolveMedia} from '../../lib/editorial-records';
 import {nativeField,nativeSection,nativeMedia} from "../../lib/native-editor";
 import type { Section } from '../../content.config';
 import Video from '../Video.astro';
+const H=Astro.props.index===0?'h1':'h2',headingId=`hero-${Astro.props.index}-h`;
 const { headline, text, eyebrow, words, cta, secondary, poster, video, stats } = Astro.props as Extract<Section, { type: 'showreelHero' }>;
 ---
-<section {...nativeSection(Astro.props)} class="hero" aria-labelledby="hero-h">
+<section {...nativeSection(Astro.props)} class="hero" aria-labelledby={headingId}>
   <Video src={video} poster={resolveMedia(poster).src} label="Showreel ansehen" hero class="hero-media" {...nativeMedia(Astro.props,["poster"])} />
   <div class="shade" aria-hidden="true"></div>
   <div class="frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
   <div class="hero-copy">
     <span class="kicker mono" {...nativeField(Astro.props,["eyebrow"])}>{eyebrow}</span>
-    <h1 id="hero-h"><span {...nativeField(Astro.props,["headline"])}>{headline}</span> <span class="word" data-rotate={words.join('|')} {...nativeField(Astro.props,["words",0])}>{words[0]}</span></h1>
+    <H id={headingId}><span {...nativeField(Astro.props,["headline"])}>{headline}</span> <span class="word" data-rotate={words.join('|')} {...nativeField(Astro.props,["words",0])}>{words[0]}</span></H>
     <p class="lead" {...nativeField(Astro.props,["text"])}>{text}</p>
     <div class="actions"><a class="btn primary" href={cta.href}><span {...nativeField(Astro.props,["cta","label"])}>{cta.label}</span></a><a class="btn" href={secondary.href}><span {...nativeField(Astro.props,["secondary","label"])}>{secondary.label}</span></a></div>
   </div>

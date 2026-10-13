@@ -1,4 +1,5 @@
 import {z} from "astro/zod";
+import {validateSectionList} from "./section-policy.mjs";
 export const editorialHref=/^(https?:\/\/|\/(?!\/)|#|mailto:|tel:|\.\.?\/)/i;
 const link = z.object({ label: z.string().min(1), href: z.string().min(1).regex(editorialHref,'Nur Web-, E-Mail-, Telefon- oder interne Links sind erlaubt.') });
 const sectionHeading = { id: z.string().optional(), kicker: z.string().optional() };
@@ -15,31 +16,31 @@ export const image = z.object({
 
 export const sectionSchema = z.discriminatedUnion('type', [
   z.object({
-    type: z.literal('showreelHero'),
+    type: z.literal('showreelHero').describe('Showreel-Auftakt'),
     headline: z.string().min(1).describe('Überschrift'), text: z.string().min(1), eyebrow: z.string().min(1),
     words: z.array(z.string().min(1)).min(1), cta: link, secondary: link,
     poster: image, video: z.url(), stats: z.array(z.object({ label: z.string(), value: z.string() })).min(1),
   }),
   z.object({
-    type: z.literal('occasions'), ...sectionHeading,
+    type: z.literal('occasions').describe('Anlässe'), ...sectionHeading,
     headline: z.string().min(1).describe('Überschrift'), text: z.string().min(1),
     cards: z.array(z.object({ category: z.string(), title: z.string(), text: z.string(), image,
       facts: z.array(z.string()).min(1), cta: link, download: link.optional() })).min(1),
   }),
   z.object({
-    type: z.literal('metrics'), ...sectionHeading,
+    type: z.literal('metrics').describe('Kennzahlen'), ...sectionHeading,
     headline: z.string().min(1).describe('Überschrift'), text: z.string().min(1),
     items: z.array(z.object({ label: z.string(), value: z.string(), text: z.string() })).min(1),
   }),
   z.object({
-    type: z.literal('sustainability'), ...sectionHeading,
+    type: z.literal('sustainability').describe('Nachhaltigkeit'), ...sectionHeading,
     headline: z.string().min(1).describe('Überschrift'), lines: z.array(z.string()).length(3), text: z.string().min(1),
     facts: z.array(z.object({ label: z.string(), value: z.string(), unit: z.string().optional(),
       text: z.string(), tone: z.enum(['o','g']).optional() })).length(4),
     proofImage: image, proofText: z.string(), campaign: z.string(),
   }),
   z.object({
-    type: z.literal('hero'),
+    type: z.literal('hero').describe('Auftakt'),
     headline: z.string().min(1).describe('Überschrift'),
     text: z.string().optional(),
     image: image.optional(),
@@ -47,7 +48,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     secondary: link.optional(),
   }),
   z.object({
-    type: z.literal('textMedia'),
+    type: z.literal('textMedia').describe('Text und Bild'),
     headline: z.string().min(1).describe('Überschrift'),
     body: z.string().min(1).describe('Markdown erlaubt'),
     image: image.optional(),
@@ -55,31 +56,31 @@ export const sectionSchema = z.discriminatedUnion('type', [
     showImage: z.boolean().default(true).describe('Bild anzeigen'),
   }),
   z.object({
-    type: z.literal('faq'), ...sectionHeading,
+    type: z.literal('faq').describe('Fragen und Antworten'), ...sectionHeading,
     text: z.string().optional(), cta: link.optional(), openFirst: z.boolean().default(false),
     headline: z.string().optional(),
     tags: z.array(z.string()).optional().describe('Nur FAQ-Einträge mit einem dieser Tags'),
     limit: z.number().int().positive().optional(),
   }),
   z.object({
-    type: z.literal('cta'),
+    type: z.literal('cta').describe('Kontaktaufruf'),
     headline: z.string().min(1).describe('Überschrift'),
     text: z.string().optional(),
     button: link,
   }),
   z.object({
-    type: z.literal('postList'),
+    type: z.literal('postList').describe('Blogartikel'),
     headline: z.string().optional(),
     limit: z.number().int().positive().default(3),
   }),
   z.object({
-    type: z.literal('projectGrid'), ...sectionHeading,
+    type: z.literal('projectGrid').describe('Projekte'), ...sectionHeading,
     text: z.string().optional(), cta: link.optional(),
     headline: z.string().optional(),
     limit: z.number().int().positive().default(6),
   }),
   z.object({
-    type: z.literal('pricing'), ...sectionHeading,
+    type: z.literal('pricing').describe('Show-Pakete'), ...sectionHeading,
     cta: link.optional(),
     headline: z.string().min(1).describe('Überschrift'),
     text: z.string().optional(),
@@ -99,7 +100,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     columns: z.enum(['three','two','one']).default('three').describe('Spalten'),
   }),
   z.object({
-    type: z.literal('steps'), ...sectionHeading,
+    type: z.literal('steps').describe('Ablauf'), ...sectionHeading,
     headline: z.string().min(1).describe('Überschrift'),
     text: z.string().optional(),
     steps: z.array(z.object({
@@ -109,7 +110,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     })).min(2),
   }),
   z.object({
-    type: z.literal('comparison'), ...sectionHeading,
+    type: z.literal('comparison').describe('Vergleich'), ...sectionHeading,
     headline: z.string().min(1).describe('Überschrift'),
     text: z.string().optional(),
     rowHeader: z.string().default('Kriterium').describe('Beschriftung der ersten Spalte'),
@@ -132,7 +133,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     });
   }),
   z.object({
-    type: z.literal('team'), ...sectionHeading,
+    type: z.literal('team').describe('Team'), ...sectionHeading,
     note: z.string().optional(), cta: link.optional(),
     headline: z.string().min(1).describe('Überschrift'),
     text: z.string().optional(),
@@ -141,14 +142,14 @@ export const sectionSchema = z.discriminatedUnion('type', [
     showImages: z.boolean().default(true).describe('Bilder anzeigen'),
   }),
   z.object({
-    type: z.literal('logoBar'), ...sectionHeading,
+    type: z.literal('logoBar').describe('Kundenlogos'), ...sectionHeading,
     press: z.string().optional(),
     headline: z.string().optional(),
     clientIds: z.array(z.string().min(1)).min(1).describe('Kunden'),
     showImages: z.boolean().default(true).describe('Logos anzeigen'),
   }),
   z.object({
-    type: z.literal('testimonials'), ...sectionHeading,
+    type: z.literal('testimonials').describe('Kundenstimmen'), ...sectionHeading,
     headline: z.string().min(1).describe('Überschrift'),
     text: z.string().optional().describe('Einleitung'),
     clientIds: z.array(z.string().min(1)).min(1).describe('Kundenstimmen'),
@@ -157,7 +158,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     showImages: z.boolean().default(true).describe('Kundenlogo anzeigen'),
   }),
   z.object({
-    type: z.literal('contactForm'),
+    type: z.literal('contactForm').describe('Kontaktformular'),
     headline: z.string().min(1).describe('Überschrift'),
     text: z.string().optional(),
   }),
@@ -170,8 +171,5 @@ export const pageSchema=z.object({
     noindex: z.boolean().default(false),
     // Optional preview image for social shares; must come from an approved media host.
     image: z.url().optional(),
-    sections: z.array(sectionSchema).min(1),
-  }).superRefine((page,ctx)=>{
-    const seen=new Set();
-    page.sections.forEach((section,index)=>{if(!section.id)return;if(seen.has(section.id))ctx.addIssue({code:'custom',path:['sections',index,'id'],message:'Abschnitts-IDs müssen innerhalb einer Seite eindeutig sein.'});seen.add(section.id);});
+    sections: z.array(sectionSchema).min(1).superRefine(validateSectionList),
   });

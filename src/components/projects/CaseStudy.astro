@@ -3,6 +3,7 @@ import {nativeRecord,nativeRecordMedia} from '../../lib/native-editor';
 import {resolveMedia} from '../../lib/editorial-records';
 import type { CollectionEntry } from 'astro:content';
 import { getCollection } from 'astro:content';
+import SectionRenderer from '../SectionRenderer.astro';
 import Video from '../Video.astro';
 import { optimizedImage } from '../../lib/media';
 
@@ -79,6 +80,7 @@ const count = (n: number) => String(n).padStart(2, '0');
   </a>}
   <section class="section" aria-labelledby="cta-h"><div class="promise"><div style="display:grid;gap:12px"><h2 id="cta-h"><span {...field(["cta","title"]) }>{data.cta.title}</span></h2><p><span {...field(["cta","text"]) }>{data.cta.text}</span></p></div><a class="btn primary" href="/#anfrage">Show anfragen</a></div></section>
 </div>
+<SectionRenderer sections={project.data.sections} recordId={record} headingOffset={1} />
 <script>import './case.js';</script>
 <style>
   .c-hero :global(.case-video) { position: absolute; inset: 0; width: 100%; height: 100%; isolation: auto; }

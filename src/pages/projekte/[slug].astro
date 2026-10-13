@@ -1,6 +1,7 @@
 ---
 import {nativeRecord,nativeRecordMedia} from '../../lib/native-editor';
 import { getCollection, render } from 'astro:content';
+import SectionRenderer from '../../components/SectionRenderer.astro';
 import Base from '../../layouts/Base.astro';
 import Picture from '../../components/Picture.astro';
 import CaseStudy from '../../components/projects/CaseStudy.astro';
@@ -20,4 +21,5 @@ const { Content } = await render(project);
       <div {...nativeRecord(`project/${project.id}`,["body"])} data-native-markdown={process.env.FLYINGSTARS_EDITOR==='1'?'true':undefined}><Content /></div>
     </div>
   </div></article>}
+{!project.data.showcase&&<SectionRenderer sections={project.data.sections} recordId={`project/${project.id}`} headingOffset={1} />}
 </Base>

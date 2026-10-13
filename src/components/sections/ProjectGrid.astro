@@ -5,8 +5,8 @@ import {resolveMedia} from '../../lib/editorial-records';
 import { optimizedImage } from '../../lib/media';
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'projectGrid' }> & { index: number };
-const { headline = 'Ein paar Nächte, die wir nicht vergessen.', limit, index } = Astro.props;
-const id = index === 0 ? 'projekte-h' : `s${index}-h`;
+const { headline = 'Ein paar Nächte, die wir nicht vergessen.', text, kicker, cta, id:sectionId, limit, index } = Astro.props;
+const id = `${sectionId ?? (index===0?'projekte':`s${index}`)}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const projects = (await getCollection('projects', (p) => process.env.FLYINGSTARS_EDITOR==='1'||!p.data.draft))
   .sort((a, b) => (a.data.showcase?.order ?? 999) - (b.data.showcase?.order ?? 999) || Number(b.data.featured) - Number(a.data.featured) || b.data.date.valueOf() - a.data.date.valueOf())
@@ -14,8 +14,8 @@ const projects = (await getCollection('projects', (p) => process.env.FLYINGSTARS
 const images = new Map(await Promise.all(projects.filter((p) => p.data.cover).map(async (p) => [p.id, await optimizedImage(resolveMedia(p.data.cover).src)] as const)));
 const home = Astro.url.pathname === '/';
 ---
-<section {...nativeSection(Astro.props)} class="section" id={home ? 'projekte' : undefined} aria-labelledby={id}>
-  <div class="sec-head"><div>{home && <span class="kicker mono">Projekte</span>}<H id={id} {...nativeField(Astro.props,["headline"])}>{headline}</H></div><p>Über 30 Shows im Jahr, von 100 bis 600 Drohnen. Eine kleine Auswahl:</p></div>
+<section {...nativeSection(Astro.props)} class="section" id={sectionId ?? `s${index}`} aria-labelledby={id}>
+  <div class="sec-head"><div>{kicker && <span class="kicker mono" {...nativeField(Astro.props,["kicker"])}>{kicker}</span>}<H id={id} {...nativeField(Astro.props,["headline"])}>{headline}</H></div>{text && <p {...nativeField(Astro.props,["text"])}>{text}</p>}</div>
   <div class="projects">
     {projects.map((project) => {
       const showcase = project.data.showcase;
@@ -27,5 +27,5 @@ const home = Astro.url.pathname === '/';
       </a>;
     })}
   </div>
-  {home && <div class="more"><a class="link" href="/projekte/">Alle Projekte <span aria-hidden="true">→</span></a></div>}
+  {cta && <div class="more"><a class="link" href={cta.href}><span {...nativeField(Astro.props,["cta","label"])}>{cta.label}</span> <span aria-hidden="true">→</span></a></div>}
 </section>

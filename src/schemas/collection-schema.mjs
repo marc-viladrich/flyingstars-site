@@ -1,8 +1,10 @@
 import {z} from 'astro/zod';
-import {image} from './page-schema.mjs';
+import {validateSectionList} from './section-policy.mjs';
+import {image,sectionSchema} from './page-schema.mjs';
 import {projectShowcaseSchema} from './project-showcase.mjs';
 export const postSchema = z.object({
     title: z.string().min(1),
+    sections:z.array(sectionSchema).superRefine(validateSectionList).default([]).describe('Zusätzliche Bausteine'),
     description: z.string().min(50).max(160),
     date: z.coerce.date(),
     updated: z.coerce.date().optional(),
@@ -14,6 +16,7 @@ export const postSchema = z.object({
   });
 export const projectSchema = z.object({
     title: z.string().min(1),
+    sections:z.array(sectionSchema).superRefine(validateSectionList).default([]).describe('Zusätzliche Bausteine'),
     client: z.string().optional(),
     showcase: projectShowcaseSchema.optional(),
     date: z.coerce.date(),

@@ -3,12 +3,13 @@ import {nativeField,nativeSection,nativeMedia} from "../../lib/native-editor";
 import Picture from '../Picture.astro';
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'hero' }>;
+const H=Astro.props.index===0?'h1':'h2',headingId=`hero-${Astro.props.index}-h`;
 const { headline, text, image, cta, secondary } = Astro.props;
 ---
-<section {...nativeSection(Astro.props)} class="section" aria-labelledby="hero-h">
+<section {...nativeSection(Astro.props)} class="section" aria-labelledby={headingId}>
   <div class:list={['wrap', { 'grid-2': image }]}>
     <div class="measure">
-      <h1 id="hero-h" {...nativeField(Astro.props,["headline"])}>{headline}</h1>
+      <H id={headingId} {...nativeField(Astro.props,["headline"])}>{headline}</H>
       {text && <p class="muted" {...nativeField(Astro.props,["text"])}>{text}</p>}
       {(cta || secondary) && (
         <p>

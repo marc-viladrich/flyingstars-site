@@ -4,13 +4,13 @@ import {nativeField,nativeSection,nativeMedia} from "../../lib/native-editor";
 import type { Section } from '../../content.config';
 import { optimizedImage } from '../../lib/media';
 type Props = Extract<Section, { type: 'sustainability' }> & { index: number };
-const { lines, text, kicker, id = 'nachhaltigkeit', facts, proofImage, proofText, campaign, index } = Astro.props;
+const { headline, lines, text, kicker, id = 'nachhaltigkeit', facts, proofImage, proofText, campaign, index } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const media = await optimizedImage(resolveMedia(proofImage).src, 360);
 ---
 <section {...nativeSection(Astro.props)} class="eco-sec" id={id} aria-labelledby={headingId}>
-  <div class="eco-head"><div>{kicker && <span class="kicker mono" {...nativeField(Astro.props,["kicker"])}>{kicker}</span>}<H id={headingId} class="eco-title" data-reveal-group>{lines.map((line,i) => <span {...nativeField(Astro.props,["lines",i])} data-reveal style={`--i:${i}`}>{line}</span>)}</H></div><p {...nativeField(Astro.props,["text"])}>{text}</p></div>
+  <div class="eco-head"><div>{kicker && <span class="kicker mono" {...nativeField(Astro.props,["kicker"])}>{kicker}</span>}<H id={headingId} aria-label={headline} class="eco-title" data-reveal-group>{lines.map((line,i) => <span {...nativeField(Astro.props,["lines",i])} data-reveal style={`--i:${i}`}>{line}</span>)}</H></div><p {...nativeField(Astro.props,["text"])}>{text}</p></div>
   <div class="eco-scrolly" data-scrolly><div class="eco-pin">
     <canvas class="eco-canvas" aria-hidden="true"></canvas>
     <div class="eco-facts">{facts.map((fact,i) => <div class="fact"><span class="fk mono">{String(i+1).padStart(2,'0')} · <span {...nativeField(Astro.props,["facts",i,"label"])}>{fact.label}</span></span><b class:list={['fn',fact.tone]}>{fact.tone==='g' ? <span {...nativeField(Astro.props,["facts",i,"value"])} data-to={fact.value}>{fact.value}</span> : <span {...nativeField(Astro.props,["facts",i,"value"])}>{fact.value}</span>}{fact.unit && <small {...nativeField(Astro.props,["facts",i,"unit"])}>{fact.unit}</small>}</b><p {...nativeField(Astro.props,["facts",i,"text"])}>{fact.text}</p></div>)}</div>

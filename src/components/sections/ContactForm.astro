@@ -1,5 +1,6 @@
 ---
 import {nativeField,nativeSection} from "../../lib/native-editor";
+import {SHOW_PACKAGES,PACKAGE_NAMES} from '../../content/show-packages';
 import { site } from '../../site.config';
 interface Props { headline: string; text?: string; index?: number; }
 const { headline, text, index = 0 } = Astro.props;
@@ -39,7 +40,7 @@ const H = index === 0 ? 'h1' : 'h2';
 <div class="field"><label for="f-datum">Datum (falls schon bekannt)</label><input id="f-datum" name="datum" type="date"/></div>
 <div class="field"><label for="f-ort">Ort</label><input autocomplete="address-level2" id="f-ort" maxlength="200" name="ort" placeholder="z. B. 45888 Gelsenkirchen" type="text"/></div>
 <div class="field full"><label for="f-paket">Drohnen / Paket</label>
-<select id="f-paket" name="paket"><option value="">Weiß ich noch nicht</option><option>SPARK · 100 Drohnen</option><option>HORIZON · 200 Drohnen</option><option>ODYSSEY · 300+ Drohnen</option></select>
+<select id="f-paket" name="paket"><option value="">Weiß ich noch nicht</option>{PACKAGE_NAMES.map(name=><option>{name} · {SHOW_PACKAGES[name].base}{name==='ODYSSEY'?'+':''} Drohnen</option>)}</select>
 </div>
 </div>
 <div class="row"><span class="hint">Nur der Anlass ist nötig – den Rest klären wir gern gemeinsam.</span><button class="btn primary" data-next="" type="button">Weiter</button></div>

@@ -73,7 +73,7 @@ if (form) {
     const summary = [`Anlass: ${occasion.label}`, `Beispielmotive: ${occasion.motifs.filter((m) => m.tiers[s.pkg]).map((m) => m.label).join(", ")}`, ...(text ? [`Eigener Text: „${text}“ (${STYLE_LABEL[style]})`] : []), `Aufwand: ${s.label} (${s.pkg}, ${eur(price)} netto, Einstiegspreis laut Konfigurator)`].join("\n");
     const inquiry = `/?${new URLSearchParams({ paket: s.pkg, drohnen: String(p.base), anlass: occasion.anlass, show: summary })}#anfrage`;
     $("#cfg-cta").href = inquiry; $("#cfg-bar-cta").href = inquiry;
-    render(keep, to);
+    return render(keep, to);
   }
 
   // only the untouched first view of the page appears already formed; a choice made before it loaded plays normally
@@ -97,5 +97,28 @@ if (form) {
   textInput.addEventListener("input", () => { clearTimeout(typing); typing = setTimeout(showText, 450); });
   textInput.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); clearTimeout(typing); showText(); } });
   form.querySelectorAll("[name=textstyle]").forEach((r) => r.addEventListener("change", () => { style = r.value; update(true, occasion.motifs.length); }));
+  // A private editor rebuild preserves visitor choices; they never become CMS content.
+  if (document.querySelector('.cfg-result[data-native-record]')) {
+    window.flyingstarsConfigurator = {
+      snapshot: () => ({ occasion: occasion.id, pkg: step().pkg, text: textInput.value, style, segment, beat: field.beat() }),
+      async restore(saved) {
+        const targetOccasion = OCCASIONS.find(o => o.id === saved?.occasion);
+        const targetPackage = STEPS.findIndex(s => s.pkg === saved?.pkg);
+        if (!targetOccasion || targetPackage < 0) return;
+        clearTimeout(typing);
+        occasion = targetOccasion;
+        form.querySelector(`[name=occasion][value="${occasion.id}"]`).checked = true;
+        form.querySelector(`[name=pkg][value="${targetPackage}"]`).checked = true;
+        textInput.value = typeof saved.text === 'string' ? saved.text.slice(0, 120) : '';
+        text = textInput.value.trim();
+        style = ['script', 'print', 'initials'].includes(saved.style) ? saved.style : 'script';
+        form.querySelector(`[name=textstyle][value="${style}"]`).checked = true;
+        styles.hidden = !text; $("#cfg-text-note").hidden = !text;
+        first = true;
+        await update(true, Number.isInteger(saved.segment) ? saved.segment : 0);
+        if (Number.isInteger(saved.beat) && current?.beats[saved.beat]) field.goto(saved.beat);
+      }
+    };
+  }
   update(false, Math.max(0, linkedMotif));
 }

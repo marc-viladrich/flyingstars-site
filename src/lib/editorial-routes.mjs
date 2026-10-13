@@ -1,0 +1,2 @@
+/** Routes derive from actual Astro collection routes, shared by CMS and browser. */
+export function recordRoute({id,data={}}){const [type,...parts]=id.split('/'),slug=parts.join('/');if(type==='page')return slug==='index'?'/':`/${slug}/`;if(type==='screen')return `/${slug}/`;if(type==='post')return `/blog/${slug}/`;if(type==='project')return data.showcase?.route?`/${data.showcase.route}/`:`/projekte/${slug}/`;return null;}

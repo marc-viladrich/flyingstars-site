@@ -2,7 +2,7 @@
 import {nativeField,nativeSection} from "../../lib/native-editor";
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'metrics' }> & { index: number };
-const { headline, text, kicker, id = 'warum', items, index } = Astro.props;
+const { headline, text, kicker, id = `s${Astro.props.index}`, items, index } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 ---

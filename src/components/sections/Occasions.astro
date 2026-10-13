@@ -4,7 +4,7 @@ import {nativeField,nativeSection,nativeMedia} from "../../lib/native-editor";
 import type { Section } from '../../content.config';
 import { optimizedImage } from '../../lib/media';
 type Props = Extract<Section, { type: 'occasions' }> & { index: number };
-const { headline, text, kicker, id = 'anlaesse', cards, index } = Astro.props;
+const { headline, text, kicker, id = `s${Astro.props.index}`, cards, index } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const items = await Promise.all(cards.map(async card => ({ ...card,image:resolveMedia(card.image), media: await optimizedImage(resolveMedia(card.image).src, 640, 480), small: await optimizedImage(resolveMedia(card.image).src, 320, 240) })));

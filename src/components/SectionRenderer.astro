@@ -20,8 +20,8 @@ import Team from './sections/Team.astro';
 import LogoBar from './sections/LogoBar.astro';
 import Testimonials from './sections/Testimonials.astro';
 
-interface Props { sections: Section[]; recordId?: string }
-const { sections, recordId } = Astro.props;
+interface Props { sections: Section[]; recordId?: string; headingOffset?:number }
+const { sections, recordId, headingOffset=0 } = Astro.props;
 const map = { showreelHero: FlightHero, occasions: Occasions, metrics: Metrics, sustainability: Sustainability, hero: Hero, textMedia: TextMedia, faq: Faq, cta: Cta, postList: PostList, projectGrid: ProjectGrid, contactForm: ContactForm, pricing: Pricing, steps: Steps, comparison: Comparison, team: Team, logoBar: LogoBar, testimonials: Testimonials } as const;
 ---
-{sections.map((s, i) => { const C = map[s.type]; return <C {...(s as any)} index={i} _nativeRecord={recordId} />; })}
+{sections.map((s, i) => { const C = map[s.type]; return <C {...(s as any)} index={i+headingOffset} _nativeIndex={i} _nativeRecord={recordId} />; })}

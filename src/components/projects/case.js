@@ -8,11 +8,11 @@
   // big numbers count up once they come into view
   document.querySelectorAll("[data-count]").forEach((el) => {
     const to = +el.dataset.count, fmt = (v) => Math.round(v).toLocaleString("de-DE");
-    if (reduce) { el.textContent = fmt(to); return; }
+    if (reduce || el.isContentEditable) { el.textContent = fmt(to); return; }
     el.textContent = "0";
     onView(el, () => {
       const t0 = performance.now(), dur = 1400 + Math.min(1200, to);
-      const tick = (now) => { const u = Math.min(1, (now - t0) / dur); el.textContent = fmt(to * (1 - (1 - u) ** 3)); if (u < 1) requestAnimationFrame(tick); };
+      const tick = (now) => { if(el.isContentEditable)return; const u = Math.min(1, (now - t0) / dur); el.textContent = fmt(to * (1 - (1 - u) ** 3)); if (u < 1) requestAnimationFrame(tick); };
       requestAnimationFrame(tick);
     });
   });

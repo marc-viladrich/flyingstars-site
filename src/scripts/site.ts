@@ -46,9 +46,9 @@
     const words = word.dataset.rotate.split("|");
     let i = 0;
     setInterval(() => {
-      if (paused || document.hidden) return;
+      if (paused || document.hidden || word.isContentEditable) return;
       word.classList.add("out");
-      setTimeout(() => { i = (i + 1) % words.length; word.textContent = words[i]; word.classList.remove("out"); }, 500);
+      setTimeout(() => { if(word.isContentEditable){word.classList.remove("out");return;} i = (i + 1) % words.length; word.textContent = words[i]; word.classList.remove("out"); }, 500);
     }, 3200);
   }
 
@@ -177,8 +177,8 @@
     let counting = 0;
     const countUp = () => {
       const to = +count.dataset.to, t0 = performance.now(), id = ++counting;
-      const tick = (now) => { if (id !== counting) return; const u = Math.min(1, (now - t0) / 1100); count.textContent = Math.round(to * (1 - (1 - u) ** 3)); if (u < 1) requestAnimationFrame(tick); };
-      count.textContent = "0"; requestAnimationFrame(tick);
+      const tick = (now) => { if (id !== counting || count.isContentEditable) return; const u = Math.min(1, (now - t0) / 1100); count.textContent = Math.round(to * (1 - (1 - u) ** 3)); if (u < 1) requestAnimationFrame(tick); };
+      if(!count.isContentEditable){count.textContent = "0"; requestAnimationFrame(tick);}
     };
     const show = (i) => {
       cur = i; since = 0;
