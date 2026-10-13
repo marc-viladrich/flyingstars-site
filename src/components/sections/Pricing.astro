@@ -1,5 +1,6 @@
 ---
 import {nativeField,nativeSection} from "../../lib/native-editor";
+import {packageForTier} from '../../content/package-ownership.mjs';
 import type { Section } from '../../content.config';
 import { SHOW_PACKAGES, type ShowPackage } from '../../content/show-packages';
 type Props = Extract<Section, { type: 'pricing' }> & { index: number };
