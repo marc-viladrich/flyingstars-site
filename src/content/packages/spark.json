@@ -2,7 +2,7 @@
   "name": "SPARK",
   "base": 100,
   "max": 150,
-  "price": 8123,
+  "price": 7900,
   "step": 10,
   "add": 900,
   "dur": "ca. 10 Min",
@@ -20,7 +20,7 @@
     {
       "title": "Design & Inhalt",
       "items": [
-        "Leistung im Editor getestet.",
+        "Auswahl aus vordefinierten Premium-Formationen wie Herzen oder Ringe",
         "Bis zu vier eigene Elemente: Initialen, Logo, Stadtwappen"
       ]
     },
