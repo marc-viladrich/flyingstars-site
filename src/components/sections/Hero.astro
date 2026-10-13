@@ -2,7 +2,7 @@
 import {nativeField,nativeSection,nativeMedia} from "../../lib/native-editor";
 import Picture from '../Picture.astro';
 import type { Section } from '../../content.config';
-type Props = Extract<Section, { type: 'hero' }>;
+type Props = Extract<Section, { type: 'hero' }> & {index:number};
 const H=Astro.props.index===0?'h1':'h2',headingId=`hero-${Astro.props.index}-h`;
 const { headline, text, image, cta, secondary } = Astro.props;
 ---
