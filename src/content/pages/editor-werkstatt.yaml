@@ -17,3 +17,10 @@ sections:
       height: 900
     mediaSide: left
     showImage: true
+  - type: testimonials
+    headline: Neuer Inhalt
+    clientIds:
+      - airpower
+    columns: two
+    background: true
+    showImages: true
