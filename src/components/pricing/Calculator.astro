@@ -1,4 +1,6 @@
 ---
+import screen from "../../content/screens/drohnenshow-preise.json";
+const native=(path:string[])=>process.env.FLYINGSTARS_EDITOR==='1'?{"data-native-record":"screen/drohnenshow-preise","data-native-path":JSON.stringify(path)}:{};
 import { SHOW_PACKAGES } from "../../content/show-packages";
 const money = (value: number) => value.toLocaleString("de-DE");
 ---
@@ -9,8 +11,8 @@ const money = (value: number) => value.toLocaleString("de-DE");
     <button class="btn small swarm-motion" id="swarm-motion" type="button" aria-pressed="false">Animation pausieren</button>
     <div class="calc-copy">
       <span class="kicker mono" style="margin:0">Preise & Pakete</span>
-      <h1 id="calc-h">Stell dir deine Show zusammen.</h1>
-      <p class="lead">Zieh am Regler: Der Schwarm zeigt deine Drohnen, der Preis rechnet live mit. Alle Preise netto zzgl. Anfahrt – ohne versteckte Kosten.</p>
+      <h1 id="calc-h" {...native(["headline"])}>{screen.headline}</h1>
+      <p class="lead" {...native(["text"])}>{screen.text}</p>
       <div class="calc">
         <div class="calc-top">
           <div class="count" id="count" aria-hidden="true">{SHOW_PACKAGES.HORIZON.base}<small>Drohnen</small></div>

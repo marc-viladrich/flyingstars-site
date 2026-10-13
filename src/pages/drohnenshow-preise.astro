@@ -1,9 +1,10 @@
 ---
+import screen from "../content/screens/drohnenshow-preise.json";
 import Base from '../layouts/Base.astro';
 import Calculator from '../components/pricing/Calculator.astro';
 import PackageDetails from '../components/pricing/PackageDetails.astro';
 ---
-<Base title="Drohnenshow Preise – Pakete ab 7.900 €" description="Drei Drohnenshow-Pakete ab 7.900 €, Preisrechner für 100 bis 1.000 Drohnen, Genehmigung und Team inklusive. Alle Preise netto zzgl. Anfahrt.">
+<Base title={screen.title} description={screen.description} noindex={screen.noindex}>
   <Calculator />
   <PackageDetails />
 

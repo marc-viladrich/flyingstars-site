@@ -1,1 +1,1 @@
-import {z} from "astro/zod";export const screenSchema=z.object({title:z.string().min(1).describe("Meta Title"),description:z.string().min(50).max(160).describe("Meta Description"),headline:z.string().min(1).describe("Überschrift"),noindex:z.boolean()}).strict();
+import {z} from "astro/zod";export const screenSchema=z.object({title:z.string().min(1).describe("Meta Title"),description:z.string().min(50).max(160).describe("Meta Description"),headline:z.string().min(1).describe("Überschrift"),text:z.string().optional().describe("Einleitung"),noindex:z.boolean()}).strict();
