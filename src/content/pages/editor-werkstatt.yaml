@@ -6,6 +6,6 @@ sections:
     headline: Gemeinsam bearbeiten.
   - type: textMedia
     headline: Neuer Abschnitt
-    body: Dieser Inhalt bleibt in einer Textdatei.
+    body: "**Dieser Inhalt bleibt in einer Textdatei.**"
     mediaSide: right
     showImage: true
