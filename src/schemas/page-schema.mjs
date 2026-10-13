@@ -1,5 +1,5 @@
 import {z} from "astro/zod";
-const link = z.object({ label: z.string().min(1), href: z.string().min(1) });
+const link = z.object({ label: z.string().min(1), href: z.string().min(1).regex(/^(https?:\/\/|\/(?!\/)|#|mailto:|tel:|\.\.?\/)/i,'Nur Web-, E-Mail-, Telefon- oder interne Links sind erlaubt.') });
 const sectionHeading = { id: z.string().optional(), kicker: z.string().optional() };
 
 export const image = z.object({
