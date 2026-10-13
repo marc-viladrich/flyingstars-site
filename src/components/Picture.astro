@@ -4,5 +4,7 @@ import {resolveMedia} from '../lib/editorial-records';
 const resolved=resolveMedia(Astro.props);
 const {src,alt,width,height,sizes='(min-width:48rem) 50vw,100vw',loading='lazy',class:cls}=resolved;
 const markers=Object.fromEntries(Object.entries(Astro.props).filter(([key])=>key.startsWith('data-native-')));
+const imageClass=['content-image',cls].filter(Boolean).join(' ');
 ---
-{src.startsWith('/assets/')?<img {...markers} src={src} alt={alt} width={width} height={height} sizes={sizes} loading={loading} class={cls} decoding="async"/>:<Image {...markers} src={src} alt={alt} width={width} height={height} sizes={sizes} loading={loading} class={cls} widths={[480,768,1200,1600].filter(w=>w<=width)}/>}
+{src.startsWith('/assets/')?<img {...markers} src={src} alt={alt} width={width} height={height} sizes={sizes} loading={loading} class={imageClass} decoding="async"/>:<Image {...markers} src={src} alt={alt} width={width} height={height} sizes={sizes} loading={loading} class={imageClass} widths={[480,768,1200,1600].filter(w=>w<=width)}/>}
+<style>.content-image { display:block;max-width:100%;height:auto; }</style>
