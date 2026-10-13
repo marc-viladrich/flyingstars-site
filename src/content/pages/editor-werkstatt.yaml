@@ -15,5 +15,5 @@ sections:
       decorative: false
       width: 1600
       height: 900
-    mediaSide: right
+    mediaSide: left
     showImage: true
