@@ -61,7 +61,7 @@ import { SHOW_PACKAGES, PACKAGE_NAMES, priceFor, recommendPackage } from '../con
       const v = priceFor(k, n), box = c.querySelector("[data-live]");
       c.classList.toggle("is-rec", k === pkg);
       c.querySelector("a.btn").href = inquiryHref(k, Math.max(PKG[k].base, Math.min(n, PKG[k].max)));
-      c.querySelector(".badge").textContent = k === pkg ? "Passt zu deiner Auswahl" : k === "HORIZON" ? "Bestseller" : k === "SPARK" ? "Einstieg" : "300+ Drohnen";
+      c.querySelector(".badge").textContent = k === pkg ? "Passt zu deiner Auswahl" : PKG[k].badge;
       if (v === null) box.innerHTML = `<span class="na">Nur bis 150 Drohnen</span><span class="mono">darüber: HORIZON</span>`;
       else {
         const label = n < PKG[k].base ? `inkl. ${PKG[k].base} Drohnen` : `für ${n.toLocaleString("de-DE")} Drohnen`;

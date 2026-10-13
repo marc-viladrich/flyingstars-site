@@ -19,9 +19,9 @@ const dot = (color: number[]) => '#' + color.map(value => value.toString(16).pad
       const pkg = SHOW_PACKAGES[name];
       return <article class:list={['tier', {'is-rec': pkg.highlight}]} data-card={name} style={`--dot:${dot(pkg.color)}`}>
         <canvas data-orb={pkg.orbShape} data-n={pkg.base} data-color={pkg.color.join(',')} aria-hidden="true"></canvas>
-        <div class="head"><h3 {...native(name, ['name'])}>{pkg.name}</h3><span class="badge" {...native(name, ['badge'])}>{pkg.badge}</span></div>
+        <div class="head"><h3 {...native(name, ['name'])}>{pkg.name}</h3><span class="badge" {...native(name, ['badge'], true)}>{pkg.badge}</span></div>
         <p class="tag" {...native(name, ['description'])}>{pkg.description}</p>
-        <div class="p" data-live><b {...native(name, ['price'], true)}>ab {money(pkg.price)} €</b><span class="mono" {...native(name, ['base'], true)}>für {pkg.base} Drohnen · {pkg.dur}</span></div>
+        <div class="p" data-live {...native(name,["price"],true)}><b {...native(name, ['price'], true)}>ab {money(pkg.price)} €</b><span class="mono" {...native(name, ['base'], true)}>für {pkg.base} Drohnen · {pkg.dur}</span></div>
         {pkg.inheritsText && <span class="plus" {...native(name, ['inheritsText'])}>{pkg.inheritsText}</span>}
         {pkg.featureGroups.map((group, groupIndex) => <>
           <h4 {...native(name, ['featureGroups', groupIndex, 'title'])}>{group.title}</h4>
