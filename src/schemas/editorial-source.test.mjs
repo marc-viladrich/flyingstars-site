@@ -39,3 +39,12 @@ test('singleton native controllers cannot be duplicated while reusable blocks re
  const hero={type:'hero',headline:'Ein Auftakt'};
  assert.equal(pageSchema.safeParse({...base,sections:[hero,hero]}).success,true);
 });
+
+test('public package labels can change without renaming engine identity or allowing HTML readouts',async()=>{
+ const {packageSchema}=await import('../content/package-schema.mjs'),{escapeHTML}=await import('../lib/editorial-text.mjs');
+ const original=JSON.parse(await fs.readFile(new URL('../content/packages/spark.json',import.meta.url),'utf8'));
+ const renamed=packageSchema.parse({...original,displayName:'Funkenflug'});assert.equal(renamed.name,'SPARK');assert.equal(renamed.displayName,'Funkenflug');
+ assert.equal(packageSchema.safeParse({...original,name:'Funkenflug'}).success,false);
+ assert.equal(packageSchema.safeParse({...original,displayName:''}).success,false);
+ assert.equal(escapeHTML('<img src=x onerror="alert(1)">'),'&lt;img src=x onerror=&quot;alert(1)&quot;&gt;');
+});

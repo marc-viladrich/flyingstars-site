@@ -11,7 +11,7 @@ const nativePackage = (input: unknown, expectedName: string) => {
   // validated files without bundling the editor/build schema runtime.
   const data = import.meta.env.SSR ? packageSchema.parse(input) : input as ReturnType<typeof packageSchema.parse>;
   if (data.name !== expectedName) throw new Error(`Paketdatei für ${expectedName} enthält ${data.name}.`);
-  return { ...data, max: data.max ?? Infinity };
+  return { ...data, displayName:data.displayName??data.name, max: data.max ?? Infinity };
 };
 
 export const SHOW_PACKAGES = {

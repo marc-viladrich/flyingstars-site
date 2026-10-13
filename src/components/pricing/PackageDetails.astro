@@ -19,7 +19,7 @@ const dot = (color: number[]) => '#' + color.map(value => value.toString(16).pad
       const pkg = SHOW_PACKAGES[name];
       return <article class:list={['tier', {'is-rec': pkg.highlight}]} data-card={name} style={`--dot:${dot(pkg.color)}`}>
         <canvas data-orb={pkg.orbShape} data-n={pkg.base} data-color={pkg.color.join(',')} aria-hidden="true"></canvas>
-        <div class="head"><h3 {...native(name, ['name'])}>{pkg.name}</h3><span class="badge" {...native(name, ['badge'], true)}>{pkg.badge}</span></div>
+        <div class="head"><h3 {...native(name, ['displayName'])}>{pkg.displayName}</h3><span class="badge" {...native(name, ['badge'], true)}>{pkg.badge}</span></div>
         <p class="tag" {...native(name, ['description'])}>{pkg.description}</p>
         <div class="p" data-live {...native(name,["price"],true)}><b {...native(name, ['price'], true)}>ab {money(pkg.price)} €</b><span class="mono" {...native(name, ['base'], true)}>für {pkg.base} Drohnen · {pkg.dur}</span></div>
         {pkg.inheritsText && <span class="plus" {...native(name, ['inheritsText'])}>{pkg.inheritsText}</span>}
@@ -28,7 +28,7 @@ const dot = (color: number[]) => '#' + color.map(value => value.toString(16).pad
           <ul>{group.items.map((item, itemIndex) => <li {...native(name, ['featureGroups', groupIndex, 'items', itemIndex])}>{item}</li>)}</ul>
         </>)}
         <span class="scale-note mono" {...native(name, ['add'], true)}>+{money(pkg.add)} € je {pkg.step} Drohnen{Number.isFinite(pkg.max) ? ` · bis ${pkg.max} Drohnen` : ''}</span>
-        <a class:list={['btn', {primary: pkg.highlight}]} href={`/?paket=${name}#anfrage`} {...native(name, ['name'], true)}>{pkg.name} anfragen</a>
+        <a class:list={['btn', {primary: pkg.highlight}]} href={`/?paket=${name}#anfrage`} {...native(name, ['displayName'], true)}>{pkg.displayName} anfragen</a>
       </article>;
     })}
   </div>

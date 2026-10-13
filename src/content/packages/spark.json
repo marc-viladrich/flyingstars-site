@@ -42,5 +42,6 @@
     }
   ],
   "effortLabel": "Klassisch in 2D",
-  "includes": "vordefinierte Formationen wie Herzen oder Ringe und bis zu vier eigene Elemente"
+  "includes": "vordefinierte Formationen wie Herzen oder Ringe und bis zu vier eigene Elemente",
+  "displayName": "SPARK"
 }

@@ -41,5 +41,6 @@
     }
   ],
   "effortLabel": "3D in Bewegung",
-  "includes": "alles aus SPARK plus individuelle 2D-Animationen und einfache 3D-Elemente"
+  "includes": "alles aus SPARK plus individuelle 2D-Animationen und einfache 3D-Elemente",
+  "displayName": "HORIZON"
 }

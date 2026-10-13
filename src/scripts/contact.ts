@@ -38,7 +38,7 @@ if (form) {
   const selected = params.get('paket');
   const select = form.querySelector<HTMLSelectElement>('[name=paket]')!;
   if (selected && ['SPARK','HORIZON','ODYSSEY'].includes(selected)) {
-    select.value = [...select.options].find((option) => option.text.startsWith(selected))?.value || '';
+    select.value = [...select.options].find((option) => option.value===selected || option.text.startsWith(selected))?.value || '';
   }
   const drones = Number(params.get('drohnen'));
   if (Number.isInteger(drones) && drones >= 100 && drones <= 1000) {

@@ -46,7 +46,7 @@ if (form) {
   /** keep: stay on the motif on stage (package switch); otherwise start the occasion's show from its first motif. */
   async function render(keep, to) {
     const id = ++job, at = to ?? (keep ? segment : 0);
-    $("#cfg-new").textContent = step().pkg;
+    $("#cfg-new").textContent = pkg().displayName;
     try {
       const built = await sequence();
       if (id !== job) return;
@@ -67,10 +67,10 @@ if (form) {
     const s = step(), p = pkg(), price = priceFor(s.pkg, p.base);
     const editorResult=document.querySelector(".cfg-result[data-native-record]");if(editorResult)editorResult.dataset.nativeRecord="package/"+s.pkg.toLowerCase();
     document.documentElement.style.setProperty("--pkg", `rgb(${p.color.join(",")})`);
-    for (const [sel, txt] of [["#cfg-pkg", s.pkg], ["#cfg-bar-pkg", s.pkg], ["#cfg-price", eur(price)], ["#cfg-bar-price", eur(price)]]) $(sel).textContent = txt;
+    for (const [sel, txt] of [["#cfg-pkg", p.displayName], ["#cfg-bar-pkg", p.displayName], ["#cfg-price", eur(price)], ["#cfg-bar-price", eur(price)]]) $(sel).textContent = txt;
     $("#cfg-meta").textContent = `${p.base} Drohnen · ${p.dur} · netto zzgl. Anfahrt`;
     $("#cfg-includes").textContent = `Enthalten: ${s.includes}.`;
-    const summary = [`Anlass: ${occasion.label}`, `Beispielmotive: ${occasion.motifs.filter((m) => m.tiers[s.pkg]).map((m) => m.label).join(", ")}`, ...(text ? [`Eigener Text: „${text}“ (${STYLE_LABEL[style]})`] : []), `Aufwand: ${s.label} (${s.pkg}, ${eur(price)} netto, Einstiegspreis laut Konfigurator)`].join("\n");
+    const summary = [`Anlass: ${occasion.label}`, `Beispielmotive: ${occasion.motifs.filter((m) => m.tiers[s.pkg]).map((m) => m.label).join(", ")}`, ...(text ? [`Eigener Text: „${text}“ (${STYLE_LABEL[style]})`] : []), `Aufwand: ${s.label} (${p.displayName}, ${eur(price)} netto, Einstiegspreis laut Konfigurator)`].join("\n");
     const inquiry = `/?${new URLSearchParams({ paket: s.pkg, drohnen: String(p.base), anlass: occasion.anlass, show: summary })}#anfrage`;
     $("#cfg-cta").href = inquiry; $("#cfg-bar-cta").href = inquiry;
     return render(keep, to);
