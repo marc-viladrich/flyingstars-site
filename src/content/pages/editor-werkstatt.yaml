@@ -9,3 +9,11 @@ sections:
     body: "**Dieser Inhalt bleibt in einer Textdatei.**"
     mediaSide: right
     showImage: true
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
+      alt: Volkswagen-Logo aus Drohnen über einer Bühne mit Suchscheinwerfern
+      width: 1600
+      height: 900
+      assetId: media/image-129ab7b56d038687
+      altOverride: null
+      decorative: false
