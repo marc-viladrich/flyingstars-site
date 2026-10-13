@@ -10,7 +10,7 @@ const H = index === 0 ? 'h1' : 'h2';
 const visibleImage=showImage?image:undefined;
 const html = await marked.parse(body);
 ---
-<section {...nativeSection(Astro.props)} class="section" aria-labelledby={id}>
+<section {...nativeSection(Astro.props)} class="section text-media" aria-labelledby={id}>
   <div class:list={['wrap', { 'grid-2': visibleImage, 'grid-2--media-left': visibleImage && mediaSide === 'left' }]}>
     <div class="prose">
       <H id={id} {...nativeField(Astro.props,["headline"])}>{headline}</H>
@@ -19,3 +19,13 @@ const html = await marked.parse(body);
     {visibleImage && <Picture {...visibleImage} {...nativeMedia(Astro.props,["image"])} />}
   </div>
 </section>
+<style>
+  .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: center; gap: clamp(24px, 4vw, 64px); }
+  .grid-2 > .prose { min-width: 0; max-width: none; }
+  .grid-2--media-left > .prose { order: 2; }
+  .grid-2--media-left > :global(picture) { order: 1; }
+  @media (max-width: 760px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    .grid-2--media-left > .prose, .grid-2--media-left > :global(picture) { order: initial; }
+  }
+</style>
