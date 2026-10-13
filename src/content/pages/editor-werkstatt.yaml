@@ -25,3 +25,11 @@ sections:
     columns: two
     background: true
     showImages: true
+  - type: testimonials
+    headline: Unsere Kundenstimmen
+    clientIds:
+      - airpower
+      - editor-testkunde
+    columns: two
+    background: true
+    showImages: true
