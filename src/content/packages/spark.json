@@ -1,5 +1,6 @@
 {
   "name": "SPARK",
+  "displayName": "SPARK EDITOR",
   "base": 100,
   "max": 150,
   "price": 7900,
@@ -42,6 +43,5 @@
     }
   ],
   "effortLabel": "Klassisch in 2D",
-  "includes": "vordefinierte Formationen wie Herzen oder Ringe und bis zu vier eigene Elemente",
-  "displayName": "SPARK"
+  "includes": "vordefinierte Formationen wie Herzen oder Ringe und bis zu vier eigene Elemente"
 }
