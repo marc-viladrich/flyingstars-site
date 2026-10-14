@@ -167,7 +167,7 @@ sections:
         price: ab 15.900 €
         unit: 200 Drohnen · ca. 13 Min
         features: []
-        highlight: false
+        highlight: true
         cta:
           label: Paket ansehen
           href: /drohnenshow-preise/
