@@ -144,6 +144,19 @@ sections:
     text: Drei Pakete als Startpunkt – mehr Drohnen, eigene Motive und Extras gehen
       jederzeit.
     tiers:
+      - name: SPARK
+        showOrb: true
+        orb:
+          shape: ring
+          color: 255,158,41
+          count: 100
+        price: ab 7.900 €
+        unit: 100 Drohnen · ca. 10 Min
+        features: []
+        highlight: false
+        cta:
+          label: Paket ansehen
+          href: /drohnenshow-preise/
       - name: HORIZON
         badge: Bestseller
         showOrb: true
@@ -155,19 +168,6 @@ sections:
         unit: 200 Drohnen · ca. 13 Min
         features: []
         highlight: true
-        cta:
-          label: Paket ansehen
-          href: /drohnenshow-preise/
-      - name: SPARK
-        showOrb: true
-        orb:
-          shape: ring
-          color: 255,158,41
-          count: 100
-        price: ab 7.900 €
-        unit: 100 Drohnen · ca. 10 Min
-        features: []
-        highlight: false
         cta:
           label: Paket ansehen
           href: /drohnenshow-preise/
