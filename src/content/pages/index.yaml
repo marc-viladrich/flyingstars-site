@@ -429,6 +429,7 @@ sections:
     headline: Was du vor der Buchung wissen solltest.
     tags:
       - startseite
+      - Neuer Inhalt
   - type: contactForm
     headline: Erzähl uns von deinem Stück Himmel.
     text: Zwei kurze Schritte – was du noch nicht weißt, lässt du einfach offen. Wir
