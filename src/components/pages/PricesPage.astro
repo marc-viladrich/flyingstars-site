@@ -1,5 +1,6 @@
 ---
 import {nativeRecord as uiMarker} from '../../lib/native-editor';
+import {jsonScript} from '../../lib/json-script.mjs';
 import {siteRecord as readUi} from '../../lib/content';
 import {localeFromPath,localizedHref} from '../../lib/localized-routes';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
@@ -87,7 +88,7 @@ const videoCall = siteRecord('contact',locale).videoCall;
     </div>
   </section>
 
-<script is:inline type="application/ld+json" set:html={JSON.stringify(faqJson).replace(/</g,"\u003c")} />
+<script is:inline type="application/ld+json" set:html={jsonScript(faqJson)} />
 </Base>
 <script>
   import '../../scripts/pricing.js';
