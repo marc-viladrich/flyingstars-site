@@ -11,3 +11,6 @@ export function nativeItem(props:Record<string,any>,{record,entry,entryRecord}:{
 // Editor builds keep optional runtime nodes (canvases) in the DOM, hidden, so toggling them is an
 // attribute change the live preview can apply without restarting the section's animations.
 export function editorBuild(){return privateBuild();}
+
+// Query-backed lists use their collection-wide numeric order, never fictitious array entries.
+export function nativeOrder(field:string){return privateBuild()?{'data-native-order-field':field}:{};}

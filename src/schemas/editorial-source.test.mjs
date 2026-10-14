@@ -75,3 +75,23 @@ test('package features have unique stable ids and every selected card feature re
  assert.throws(()=>selectedPackageFeatures(pkg,['missing']),/SPARK.*missing/);
  const duplicate=structuredClone(pkg);duplicate.featureGroups[1].items[0].id=first.id;assert.equal(packageSchema.safeParse(duplicate).success,false);
 });
+
+test('all FAQ records persist a numeric global order and missing order is rejected',async()=>{
+ const {faqSchema}=await import('./collection-schema.mjs');
+ for(const file of await fs.readdir(path.join(root,'faq'))){if(!file.endsWith('.md'))continue;const source=await fs.readFile(path.join(root,'faq',file),'utf8');const frontmatter=parse(source.split('---')[1]);assert.equal(typeof frontmatter.order,'number');faqSchema.parse(frontmatter);}
+ assert.equal(faqSchema.safeParse({question:'Eine Frage?'}).success,false);
+});
+
+async function nativeHelpers(){
+ const {transpileModule}=await import('typescript');
+ const source=await fs.readFile(new URL('../lib/native-editor.ts',import.meta.url),'utf8');
+ return import('data:text/javascript;base64,'+Buffer.from(transpileModule(source,{compilerOptions:{module:99,target:99}}).outputText).toString('base64'));
+}
+test('native order and cross-record entries expose exact owners only in editor builds',async()=>{
+ const helpers=await nativeHelpers(),previous=process.env.FLYINGSTARS_EDITOR;
+ try{
+  process.env.FLYINGSTARS_EDITOR='1';assert.deepEqual(helpers.nativeOrder('order'),{'data-native-order-field':'order'});
+  assert.deepEqual(helpers.nativeItem({_nativeRecord:'page/index',_nativeIndex:3},{record:'package/spark',entry:['tiers',0,'featureIds',1]}),{'data-native-record':'package/spark','data-native-entry':'["sections",3,"tiers",0,"featureIds",1]','data-native-entry-record':'page/index'});
+  process.env.FLYINGSTARS_EDITOR='0';assert.deepEqual(helpers.nativeOrder('order'),{});assert.deepEqual(helpers.nativeItem({},{record:'faq/show-01'}),{});
+ }finally{if(previous===undefined)delete process.env.FLYINGSTARS_EDITOR;else process.env.FLYINGSTARS_EDITOR=previous;}
+});
