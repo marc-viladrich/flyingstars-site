@@ -30,7 +30,7 @@ export const projectSchema = z.object({
 export const faqSchema = z.object({
     question: z.string().min(5),
     tags: z.array(z.string()).default([]),
-    order: z.number().int().describe('Globale FAQ-Reihenfolge'),
+    order: z.number().int().default(100).describe('Globale FAQ-Reihenfolge'),
     draft: z.boolean().default(false),
     sourceIssue: z.number().int().positive().optional(),
   });

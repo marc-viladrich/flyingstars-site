@@ -76,10 +76,10 @@ test('package features have unique stable ids and every selected card feature re
  const duplicate=structuredClone(pkg);duplicate.featureGroups[1].items[0].id=first.id;assert.equal(packageSchema.safeParse(duplicate).success,false);
 });
 
-test('all FAQ records persist a numeric global order and missing order is rejected',async()=>{
+test('all FAQ records persist a numeric global order and new entries receive a numeric default',async()=>{
  const {faqSchema}=await import('./collection-schema.mjs');
  for(const file of await fs.readdir(path.join(root,'faq'))){if(!file.endsWith('.md'))continue;const source=await fs.readFile(path.join(root,'faq',file),'utf8');const frontmatter=parse(source.split('---')[1]);assert.equal(typeof frontmatter.order,'number');faqSchema.parse(frontmatter);}
- assert.equal(faqSchema.safeParse({question:'Eine Frage?'}).success,false);
+ assert.equal(faqSchema.parse({question:'Eine Frage?'}).order,100);
 });
 
 async function nativeHelpers(){
