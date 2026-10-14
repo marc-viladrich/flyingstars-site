@@ -63,7 +63,10 @@ p { margin: 0; }
 .nav nav { margin-left: auto; display: flex; gap: 28px; font-size: 14px; color: rgba(246, 241, 232, 0.78); }
 .nav nav a:hover, .nav nav a[aria-current] { color: var(--text); }
 .lang { font: 400 12px/1 var(--mono); letter-spacing: 0.1em; color: var(--faint); display: flex; gap: 10px; }
-.lang a[aria-current="true"] { color: var(--text); }
+.lang a[aria-current="page"] { color: var(--text); text-decoration: underline; text-underline-offset: 4px; }
+.nav nav.lang { margin-left: 0; gap: 10px; font: 400 12px/1 var(--mono); }
+.mobile-menu nav.lang { display: flex; flex-direction: row; gap: 20px; font: 400 14px/1 var(--mono); }
+.mobile-menu nav.lang a { font: inherit; letter-spacing: 0.1em; }
 .menu-btn { display: none; margin-left: auto; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line-strong); background: rgba(15, 13, 12, 0.5); color: var(--text); cursor: pointer; place-items: center; }
 .menu-btn svg { width: 20px; height: 20px; }
 .mobile-menu { position: fixed; inset: 0; z-index: 30; background: var(--ground); padding: calc(24px + env(safe-area-inset-top, 0px)) var(--pad) calc(24px + env(safe-area-inset-bottom, 0px)); display: grid; grid-template-rows: auto 1fr auto; gap: 24px; }

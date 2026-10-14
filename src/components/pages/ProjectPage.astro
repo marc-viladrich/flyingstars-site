@@ -1,0 +1,23 @@
+---
+import {localeFromPath} from '../../lib/localized-routes';
+import {renderBody} from '../../lib/content';
+const locale = Astro.props.locale ?? localeFromPath(Astro.url.pathname);
+import {nativeRecord,nativeRecordMedia} from '../../lib/native-editor';
+import SectionRenderer from '../SectionRenderer.astro';
+import Base from '../../layouts/Base.astro';
+import Picture from '../Picture.astro';
+import CaseStudy from '../projects/CaseStudy.astro';
+const { project } = Astro.props;
+const {Content,html,lang}=await renderBody(project);
+---
+<Base locale={locale} title={project.data.title} description={project.data.summary} canonicalPath={project.data.showcase ? `/${project.data.showcase.route}/` : undefined}>
+  {project.data.showcase ? <CaseStudy locale={locale} project={project} /> : <article class="section"><div class="wrap">
+    <div class="prose">
+      <h1 {...nativeRecord(`project/${project.id}`,["title"])}>{project.data.title}</h1>
+      <p class="muted">{[project.data.client, project.data.location, project.data.date.getFullYear()].filter(Boolean).join(' · ')}</p>
+      {project.data.cover && <Picture {...project.data.cover} {...nativeRecordMedia(`project/${project.id}`,["cover"])} loading="eager" sizes="(min-width: 48rem) 40rem, 100vw" />}
+      <div {...nativeRecord(`project/${project.id}`,["body"])} lang={lang} data-native-markdown={process.env.FLYINGSTARS_EDITOR==='1'?'true':undefined}>{Content ? <Content /> : <Fragment set:html={html} />}</div>
+    </div>
+  </div></article>}
+{!project.data.showcase&&<SectionRenderer locale={locale} sections={project.data.sections} recordId={`project/${project.id}`} headingOffset={1} />}
+</Base>

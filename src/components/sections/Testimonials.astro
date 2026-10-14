@@ -1,11 +1,13 @@
 ---
+import {localeFromPath} from '../../lib/localized-routes';
+const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 import InlineText from '../InlineText.astro';
 import {nativeField,nativeSection,nativeRecord,nativeRecordMedia,nativeItem} from '../../lib/native-editor';
-import {editorialRecord,resolveMedia} from '../../lib/editorial-records';
+import {editorialRecord,resolveMedia} from '../../lib/content';
 import {optimizedLogo} from '../../lib/media';
 const {headline,text,clientIds,columns='two',background=true,showImages=true,index}=Astro.props;
 const id=`testimonials-${index}`,H=index===0?'h1':'h2';
-const clients=await Promise.all(clientIds.map(async(id:string)=>{const client=editorialRecord('client',id),image=resolveMedia(client.logo);return {...client,id,image,media:showImages&&image?await optimizedLogo(image.src,56):undefined};}));
+const clients=await Promise.all(clientIds.map(async(id:string)=>{const client=editorialRecord('client',id,locale),image=resolveMedia(client.logo,locale);return {...client,id,image,media:showImages&&image?await optimizedLogo(image.src,56):undefined};}));
 ---
 <section {...nativeSection(Astro.props)} class="section" aria-labelledby={id}>
  <div class="sec-head"><H id={id} {...nativeField(Astro.props,['headline'],true)}><InlineText value={headline} /></H>{text&&<p {...nativeField(Astro.props,['text'])}>{text}</p>}</div>

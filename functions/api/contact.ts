@@ -20,7 +20,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
   const get = (k: string) => String(form.get(k) ?? '').trim();
 
   // Honeypot: Bots füllen das versteckte Feld. Bewusst 200 statt Fehler, damit sie nichts lernen.
-  if (get('website')) return ok(request);
+  if (get('website')) return ok(request,'sent',get('locale'));
 
   const name = get('name'), email = get('email'), message = get('message');
   const extra = Object.fromEntries(['anlass', 'datum', 'ort', 'paket', 'telefon', 'drohnen'].map((key) => [key, get(key)]));
@@ -45,7 +45,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
 
   if (!env.BREVO_API_KEY || !env.CONTACT_TO || !env.CONTACT_FROM) {
     // Prototyp ohne Mailversand: nichts speichern, aber ehrlich antworten.
-    return ok(request, 'not-configured');
+    return ok(request, 'not-configured',get('locale'));
   }
 
   const site = env.SITE_NAME ?? 'Website';
@@ -61,20 +61,20 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
     }),
   });
   if (!res.ok) return problem(502, 'Versand fehlgeschlagen. Bitte später erneut versuchen oder direkt per E-Mail.');
-  return ok(request);
+  return ok(request,'sent',get('locale'));
 };
 
 export const onRequestGet = (): Response => problem(405, 'Nur POST.');
 
-function ok(request: Request, state = 'sent'): Response {
+function ok(request: Request, state = 'sent', locale = 'de'): Response {
   // Ohne JS: Redirect auf Danke-Seite. Mit fetch (Accept: application/json): JSON.
   if ((request.headers.get('accept') ?? '').includes('application/json')) {
     return new Response(JSON.stringify({ ok: true, state }), { headers: { 'content-type': 'application/json' } });
   }
-  const url = new URL(request.url); url.pathname = '/danke/'; url.search = state === 'sent' ? '' : `?state=${state}`;
+  const url = new URL(request.url); url.pathname = (['en','nl'].includes(locale)?'/'+locale:'')+'/danke/'; url.search = state === 'sent' ? '' : `?state=${state}`;
   return Response.redirect(url.toString(), 303);
 }
 
 function problem(status: number, detail: string): Response {
-  return new Response(JSON.stringify({ ok: false, detail }), { status, headers: { 'content-type': 'application/json' } });
+  return new Response(JSON.stringify({ok:false,detail,code:status===403?'spam':status===502?'send':status===405||status===415?'method':detail==='E-Mail-Adresse ungültig.'?'email':'invalid'}), { status, headers: { 'content-type': 'application/json' } });
 }

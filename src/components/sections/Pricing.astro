@@ -1,14 +1,19 @@
 ---
+import {localeFromPath,localeFormat,localizedHref} from '../../lib/localized-routes';
+const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 import InlineText from '../InlineText.astro';
 import {nativeField,nativeSection,nativeItem,editorBuild} from "../../lib/native-editor";
 import {selectedPackageFeatures} from '../../content/package-features.mjs';
 import type { Section } from '../../content.config';
-import { SHOW_PACKAGES, type ShowPackage } from '../../content/show-packages';
-type Props = Extract<Section, { type: 'pricing' }> & { index: number };
+import {type ShowPackage} from '../../content/show-packages';
+import {siteRecord,getPackages} from '../../lib/content';
+const SHOW_PACKAGES = getPackages(locale);
+const ui = siteRecord("ui",locale);
+type Props = Extract<Section, { type: 'pricing' }> & { index: number; locale?:string; _locale?:string };
 const { headline, text, tiers, note, cta, kicker, columns='three', id = `s${Astro.props.index}`, index } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
-const money = new Intl.NumberFormat('de-DE', { maximumFractionDigits: 0 });
+const money = new Intl.NumberFormat(localeFormat(locale), { maximumFractionDigits: 0 });
 const editor = process.env.FLYINGSTARS_EDITOR === '1';
 const native = (name: ShowPackage, path: Array<string | number>, derived = false, inline = false) => editor ? {
   'data-native-record': `package/${name.toLowerCase()}`,
@@ -25,14 +30,14 @@ const native = (name: ShowPackage, path: Array<string | number>, derived = false
     if(!pkg) throw new Error(`Unbekanntes Paket: ${tier.packageId}`);
     const record = `package/${tier.packageId}`;
     const features = selectedPackageFeatures(pkg,tier.featureIds);
-    const price = `ab ${money.format(pkg.price)} €`;
-    const unit = `${pkg.base}${name === 'ODYSSEY' ? '+' : ''} Drohnen · ${pkg.dur}`;
-    return <Card class:list={['pack',{featured:pkg.highlight}]} href={tier.cta?.href} {...nativeItem(Astro.props,{record,entry:['tiers',i]})}>
+    const price = `${ui.calculator.ab} ${money.format(pkg.price)} €`;
+    const unit = `${pkg.base}${name === 'ODYSSEY' ? '+' : ''} ${ui.calculator.drohnen} · ${pkg.dur}`;
+    return <Card class:list={['pack',{featured:pkg.highlight}]} href={localizedHref(tier.cta?.href,locale)} {...nativeItem(Astro.props,{record,entry:['tiers',i]})}>
       {(tier.showOrb!==false || editorBuild()) && <canvas hidden={tier.showOrb===false} data-orb={pkg.orbShape} data-color={pkg.color.join(',')} data-n={pkg.base} aria-hidden="true"></canvas>}
       <div><div class="name"><h3 {...native(name, ['displayName'],false,true)}><InlineText value={pkg.displayName} /></h3>{pkg.badge && <span class="chip" {...native(name,['badge'])}>{pkg.badge}</span>}</div><div class="price" {...native(name, ['price'], true)}>{price}</div><div class="meta mono" {...native(name, ['base'], true)}>{unit}</div>{pkg.description && <p {...native(name,['description'])}>{pkg.description}</p>}{features.length>0 && <ul class="facts">{features.map(({feature,path},j) => <li {...nativeItem(Astro.props,{record,entry:["tiers",i,"featureIds",j]})} {...native(name,path)}>{feature.text}</li>)}</ul>}</div>
     </Card>;
   })}</div>
-  {(note || cta) && <div class="pack-note">{note && <span class="mono" {...nativeField(Astro.props,["note"])}>{note}</span>}{cta && <a class="link" href={cta.href}><span {...nativeField(Astro.props,["cta","label"])}>{cta.label}</span> <span aria-hidden="true">→</span></a>}</div>}
+  {(note || cta) && <div class="pack-note">{note && <span class="mono" {...nativeField(Astro.props,["note"])}>{note}</span>}{cta && <a class="link" href={localizedHref(cta.href,locale)}><span {...nativeField(Astro.props,["cta","label"])}>{cta.label}</span> <span aria-hidden="true">→</span></a>}</div>}
 </section>
 
 <style>.packs--two{grid-template-columns:repeat(2,minmax(0,1fr))}.packs--one{grid-template-columns:1fr}@media(max-width:640px){.packs--two{grid-template-columns:1fr}}</style>

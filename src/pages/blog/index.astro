@@ -1,21 +1,4 @@
 ---
-import {nativeRecord,nativeItem} from '../../lib/native-editor';
-import { getCollection } from 'astro:content';
-import Base from '../../layouts/Base.astro';
-const posts = (await getCollection('posts', (p) => process.env.FLYINGSTARS_EDITOR==='1'||!p.data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-const fmt = new Intl.DateTimeFormat('de-DE', { dateStyle: 'long' });
+import View from '../../components/pages/BlogIndex.astro';
 ---
-<Base title="Blog" description="Alle Beiträge in chronologischer Reihenfolge, neueste zuerst. Hintergründe, Projekte und Einblicke.">
-  <section class="section"><div class="wrap">
-    <h1>Blog</h1>
-    <div class="cards">
-      {posts.map((p) => (
-        <article class="card" {...nativeItem(Astro.props,{record:`post/${p.id}`})}>
-          <h3><a href={`/blog/${p.id}/`}><span {...nativeRecord(`post/${p.id}`,["title"])}>{p.data.title}</span></a></h3>
-          <p class="muted"><time datetime={p.data.date.toISOString()}>{fmt.format(p.data.date)}</time></p>
-          <p {...nativeRecord(`post/${p.id}`,["description"])}>{p.data.description}</p>
-        </article>
-      ))}
-    </div>
-  </div></section>
-</Base>
+<View {...Astro.props} locale="de" />

@@ -1,22 +1,26 @@
 ---
+import {localeFromPath,localizedHref} from '../../lib/localized-routes';
+const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 import InlineText from '../InlineText.astro';
 import {nativeField,nativeSection,nativeRecord} from "../../lib/native-editor";
-import {siteRecord,fillText} from "../../lib/editorial-records";
+import {siteRecord,fillText} from "../../lib/content";
 import {inlinePlain} from '../../lib/inline-text';
-import {SHOW_PACKAGES,PACKAGE_NAMES} from '../../content/show-packages';
+import {PACKAGE_NAMES} from '../../content/show-packages';
+import {getPackages} from '../../lib/content';
+const SHOW_PACKAGES = getPackages(locale);
 import { site } from '../../site.config';
-interface Props { headline: string; text?: string; index?: number; }
+interface Props { _locale?:string; locale?:string;  headline: string; text?: string; index?: number; }
 const { headline, text, index = 0 } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
 // Contact values and form texts have one owner each: site/contact and site/inquiry.
-const contact = siteRecord('contact'), form = siteRecord('inquiry');
+const contact = siteRecord('contact',locale), form = siteRecord('inquiry',locale);
 const C = (path: string[]) => nativeRecord('site/contact', path), I = (path: string[]) => nativeRecord('site/inquiry', path);
 const channels = [['email', contact.email], ['phone', contact.phone], ['whatsapp', contact.whatsapp], ['videoCall', contact.videoCall]] as const;
 const external = (href: string) => href.startsWith('https:');
 const occasions = Object.entries(form.occasions) as [string, string][];
 const email = { email: contact.email.value };
 // Texts the script shows later (step counter, validation, send states), already resolved against site/contact.
-const messages = { step: form.progress.step, required: form.messages.required, occasion: form.occasion.error, invalidEmail: form.email.invalid, sending: form.messages.sending, success: form.messages.success, notConfigured: fillText(form.messages.notConfigured, email), sendFailed: form.messages.sendFailed, failed: form.messages.failed, retry: fillText(form.messages.retry, email), submit: form.buttons.submit, skyText: form.message.skyText };
+const messages = { step: form.progress.step, required: form.messages.required, occasion: form.occasion.error, invalidEmail: form.email.invalid, sending: form.messages.sending, success: form.messages.success, notConfigured: fillText(form.messages.notConfigured, email), sendFailed: form.messages.sendFailed, failed: form.messages.failed, retry: fillText(form.messages.retry, email), submit: form.buttons.submit, skyText: form.message.skyText, spam: form.messages.spam };
 ---
 <section {...nativeSection(Astro.props)} aria-labelledby="anfrage-h" class="section alt" id="anfrage">
 <div class="inquiry">
@@ -25,10 +29,11 @@ const messages = { step: form.progress.step, required: form.messages.required, o
 <H id="anfrage-h" {...nativeField(Astro.props,["headline"],true)}><InlineText value={headline} /></H>
 <p class="lead" {...nativeField(Astro.props,["text"])}>{text}</p>
 <ul class="contact-list">
-{channels.map(([key, channel]) => <li><span class="k mono" {...C([key, 'label'])}>{channel.label}</span>{external(channel.href) ? <a href={channel.href} rel="noopener" target="_blank" {...C([key, 'value'])}>{channel.value}</a> : <a href={channel.href} {...C([key, 'value'])}>{channel.value}</a>}</li>)}
+{channels.map(([key, channel]) => <li><span class="k mono" {...C([key, 'label'])}>{channel.label}</span>{external(channel.href) ? <a href={localizedHref(channel.href,locale)} rel="noopener" target="_blank" {...C([key, 'value'])}>{channel.value}</a> : <a href={localizedHref(channel.href,locale)} {...C([key, 'value'])}>{channel.value}</a>}</li>)}
 </ul>
 </div>
-<form action={site.formEndpoint} aria-labelledby="anfrage-h" class="form" id="inquiry-form" method="post" data-messages={JSON.stringify(messages)}>
+<form data-locale={locale} action={site.formEndpoint} aria-labelledby="anfrage-h" class="form" id="inquiry-form" method="post" data-messages={JSON.stringify(messages)}>
+<input type="hidden" name="locale" value={locale} />
 <div class="progress mono" hidden=""><span data-step-label="" {...I(['progress','step'])}>{fillText(form.progress.step, { current: 1, total: 2 })}</span><span {...I(['progress','duration'])}>{form.progress.duration}</span></div>
 <div aria-hidden="true" class="bar" hidden=""><i></i></div>
 <fieldset data-step="">
@@ -57,7 +62,7 @@ const messages = { step: form.progress.step, required: form.messages.required, o
 <div class="field full"><label for="f-tel" {...I(['phone','label'])}>{form.phone.label}</label><input autocomplete="tel" id="f-tel" maxlength="200" name="telefon" type="tel"/></div>
 <div class="field full"><label for="f-msg" {...I(['message','label'])}>{form.message.label}</label><textarea id="f-msg" maxlength="5000" name="message" placeholder={form.message.placeholder} {...I(['message','placeholder'])}></textarea></div>
 </div>
-<p class="hint" {...I(['privacy','before'])}>{form.privacy.before} <a class="link" href="/datenschutz/" {...I(['privacy','link'])}>{form.privacy.link}</a>{form.privacy.after}</p>
+<p class="hint" {...I(['privacy','before'])}>{form.privacy.before} <a class="link" href={localizedHref("/datenschutz/",locale)} {...I(['privacy','link'])}>{form.privacy.link}</a>{form.privacy.after}</p>
 <div class="row"><button class="btn" data-back="" type="button" {...I(['buttons','back'])}>{form.buttons.back}</button><button class="btn primary" type="submit" {...I(['buttons','submit'])}>{form.buttons.submit}</button></div>
 <div aria-hidden="true" class="honeypot"><label>Website<input autocomplete="off" name="website" tabindex="-1"/></label></div></fieldset>
 <p class="form-status" data-form-status="" role="status" tabindex="-1"></p></form>

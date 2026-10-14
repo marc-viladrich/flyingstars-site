@@ -1,0 +1,27 @@
+---
+import {getPages,getPosts,getProjects} from '../../lib/content';
+import ContentPage from '../../components/pages/ContentPage.astro';
+import BlogIndex from '../../components/pages/BlogIndex.astro';
+import PostPage from '../../components/pages/PostPage.astro';
+import ProjectPage from '../../components/pages/ProjectPage.astro';
+import ShowcasePage from '../../components/pages/ShowcasePage.astro';
+import PricesPage from '../../components/pages/PricesPage.astro';
+import ConfiguratorPage from '../../components/pages/ConfiguratorPage.astro';
+export async function getStaticPaths() {
+ const paths:any[]=[];
+ for(const locale of ['en','nl']) {
+  const add=(path:string|undefined,kind:string,props:Record<string,any>={})=>paths.push({params:{locale,path},props:{locale,kind,...props}});
+  for(const page of await getPages(locale))add(page.id==='index'?undefined:page.id,'page',{page});
+  add('blog','blog');add('drohnenshow-preise','prices');add('show-konfigurator','configurator');
+  for(const post of await getPosts(locale))add(`blog/${post.id}`,'post',{post});
+  for(const project of await getProjects(locale)) {
+   add(`projekte/${project.id}`,'project',{project});
+   if(project.data.showcase)add(project.data.showcase.route,'showcase',{project});
+  }
+ }
+ return paths;
+}
+const views={page:ContentPage,blog:BlogIndex,post:PostPage,project:ProjectPage,showcase:ShowcasePage,prices:PricesPage,configurator:ConfiguratorPage};
+const View=views[Astro.props.kind as keyof typeof views];
+---
+<View {...Astro.props} />

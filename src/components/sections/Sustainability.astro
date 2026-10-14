@@ -1,15 +1,17 @@
 ---
+import {localeFromPath} from '../../lib/localized-routes';
+const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 import InlineText from '../InlineText.astro';
 import {inlinePlain} from '../../lib/inline-text';
-import {resolveMedia} from '../../lib/editorial-records';
+import {resolveMedia} from '../../lib/content';
 import {nativeField,nativeSection,nativeMedia,nativeItem} from "../../lib/native-editor";
 import type { Section } from '../../content.config';
 import { optimizedImage } from '../../lib/media';
-type Props = Extract<Section, { type: 'sustainability' }> & { index: number };
+type Props = Extract<Section, { type: 'sustainability' }> & { index: number; locale?:string; _locale?:string };
 const { headline, lines, text, kicker, id = 'nachhaltigkeit', facts, proofImage, proofText, campaign, index } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
-const media = await optimizedImage(resolveMedia(proofImage).src, 360);
+const media = await optimizedImage(resolveMedia(proofImage,locale).src, 360);
 ---
 <section {...nativeSection(Astro.props)} class="eco-sec" id={id} aria-labelledby={headingId}>
   <div class="eco-head"><div>{kicker && <span class="kicker mono" {...nativeField(Astro.props,["kicker"])}>{kicker}</span>}<H id={headingId} aria-label={inlinePlain(headline)} class="eco-title" data-reveal-group>{lines.map((line,i) => <span {...nativeField(Astro.props,["lines",i],true)} {...nativeItem(Astro.props,{entry:["lines",i]})} data-reveal style={`--i:${i}`}><InlineText value={line} /></span>)}</H></div><p {...nativeField(Astro.props,["text"])}>{text}</p></div>
@@ -18,5 +20,5 @@ const media = await optimizedImage(resolveMedia(proofImage).src, 360);
     <div class="eco-facts">{facts.map((fact,i) => <div class="fact" {...nativeItem(Astro.props,{entry:["facts",i]})}><span class="fk mono">{String(i+1).padStart(2,'0')} · <span {...nativeField(Astro.props,["facts",i,"label"],true)}><InlineText value={fact.label} /></span></span><b class:list={['fn',fact.tone]}>{fact.tone==='g' ? <span {...nativeField(Astro.props,["facts",i,"value"],true)} data-to={fact.value===inlinePlain(fact.value)?inlinePlain(fact.value):undefined}><InlineText value={fact.value} /></span> : <span {...nativeField(Astro.props,["facts",i,"value"],true)}><InlineText value={fact.value} /></span>}{fact.unit && <small {...nativeField(Astro.props,["facts",i,"unit"])}>{fact.unit}</small>}</b><p {...nativeField(Astro.props,["facts",i,"text"])}>{fact.text}</p></div>)}</div>
     <ol class="eco-steps mono" aria-hidden="true">{facts.map((fact,i) => <li style={`--k:${i}`} {...nativeField(Astro.props,["facts",i,"label"],true)} {...nativeItem(Astro.props,{entry:["facts",i]})}><InlineText value={fact.label} /></li>)}</ol>
   </div></div>
-  <div class="eco-proof"><img {...nativeMedia(Astro.props,["proofImage"])} src={media.src} width={media.width} height={media.height} alt={resolveMedia(proofImage).alt} loading="lazy" /><p><span {...nativeField(Astro.props,["proofText"])}>{proofText}</span> <b>#Böllerciao:</b> <span {...nativeField(Astro.props,["campaign"])}>{campaign}</span></p></div>
+  <div class="eco-proof"><img {...nativeMedia(Astro.props,["proofImage"])} src={media.src} width={media.width} height={media.height} alt={resolveMedia(proofImage,locale).alt} loading="lazy" /><p><span {...nativeField(Astro.props,["proofText"])}>{proofText}</span> <b>#Böllerciao:</b> <span {...nativeField(Astro.props,["campaign"])}>{campaign}</span></p></div>
 </section>

@@ -1,7 +1,9 @@
 ---
+import {localeFromPath} from '../lib/localized-routes';
+const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 import {Image} from 'astro:assets';
-import {resolveMedia} from '../lib/editorial-records';
-const resolved=resolveMedia(Astro.props);
+import {resolveMedia} from '../lib/content';
+const resolved=resolveMedia(Astro.props,locale);
 const {src,alt,width,height,sizes='(min-width:48rem) 50vw,100vw',loading='lazy',class:cls}=resolved;
 const markers=Object.fromEntries(Object.entries(Astro.props).filter(([key])=>key.startsWith('data-native-')));
 const imageClass=['content-image',cls].filter(Boolean).join(' ');

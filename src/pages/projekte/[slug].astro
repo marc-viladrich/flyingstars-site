@@ -1,25 +1,6 @@
 ---
-import {nativeRecord,nativeRecordMedia} from '../../lib/native-editor';
-import { getCollection, render } from 'astro:content';
-import SectionRenderer from '../../components/SectionRenderer.astro';
-import Base from '../../layouts/Base.astro';
-import Picture from '../../components/Picture.astro';
-import CaseStudy from '../../components/projects/CaseStudy.astro';
-export async function getStaticPaths() {
-  const projects = await getCollection('projects', (p) => process.env.FLYINGSTARS_EDITOR==='1'||!p.data.draft);
-  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
-}
-const { project } = Astro.props;
-const { Content } = await render(project);
+import {getProjects} from '../../lib/content';
+import View from '../../components/pages/ProjectPage.astro';
+export async function getStaticPaths() {return (await getProjects()).map(project=>({params:{slug:project.id},props:{project}}));}
 ---
-<Base title={project.data.title} description={project.data.summary} canonicalPath={project.data.showcase ? `/${project.data.showcase.route}/` : undefined}>
-  {project.data.showcase ? <CaseStudy project={project} /> : <article class="section"><div class="wrap">
-    <div class="prose">
-      <h1 {...nativeRecord(`project/${project.id}`,["title"])}>{project.data.title}</h1>
-      <p class="muted">{[project.data.client, project.data.location, project.data.date.getFullYear()].filter(Boolean).join(' · ')}</p>
-      {project.data.cover && <Picture {...project.data.cover} {...nativeRecordMedia(`project/${project.id}`,["cover"])} loading="eager" sizes="(min-width: 48rem) 40rem, 100vw" />}
-      <div {...nativeRecord(`project/${project.id}`,["body"])} data-native-markdown={process.env.FLYINGSTARS_EDITOR==='1'?'true':undefined}><Content /></div>
-    </div>
-  </div></article>}
-{!project.data.showcase&&<SectionRenderer sections={project.data.sections} recordId={`project/${project.id}`} headingOffset={1} />}
-</Base>
+<View {...Astro.props} locale="de" />

@@ -1,8 +1,10 @@
 ---
+import {localeFromPath,localizedHref} from '../../lib/localized-routes';
+const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 import InlineText from '../InlineText.astro';
 import {nativeField,nativeSection} from "../../lib/native-editor";
 import type { Section } from '../../content.config';
-type Props = Extract<Section, { type: 'cta' }> & { index: number };
+type Props = Extract<Section, { type: 'cta' }> & { index: number; locale?:string; _locale?:string };
 const { headline, text, button, index } = Astro.props;
 const id = `s${index}-h`;
 const H = index === 0 ? 'h1' : 'h2';
@@ -11,6 +13,6 @@ const H = index === 0 ? 'h1' : 'h2';
   <div class="wrap measure">
     <H id={id} {...nativeField(Astro.props,["headline"],true)}><InlineText value={headline} /></H>
     {text && <p class="muted" {...nativeField(Astro.props,["text"])}>{text}</p>}
-    <p><a class="btn" href={button.href}><span {...nativeField(Astro.props,["button","label"])}>{button.label}</span></a></p>
+    <p><a class="btn" href={localizedHref(button.href,locale)}><span {...nativeField(Astro.props,["button","label"])}>{button.label}</span></a></p>
   </div>
 </section>

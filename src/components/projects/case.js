@@ -1,13 +1,17 @@
+import {readRuntime} from '../../lib/ui-runtime.mjs';
+import {localeFormat} from '../../lib/localized-routes.mjs';
 // FlyingStars project pages: count-up numbers, scrollytelling, the real formation to play with, film reel
 // Adapted from the client-supplied reference; no third-party runtime requests.
 (() => {
   "use strict";
+  const data=readRuntime('.case[data-runtime]');if(!data)return;
+  const {t,locale}=data,numberLocale=localeFormat(locale);
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const onView = (el, fn, opts = { threshold: 0.35 }) => { const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { fn(); io.disconnect(); } }), opts); io.observe(el); };
 
   // big numbers count up once they come into view
   document.querySelectorAll("[data-count]").forEach((el) => {
-    const to = +el.dataset.count, fmt = (v) => Math.round(v).toLocaleString("de-DE");
+    const to = +el.dataset.count, fmt = (v) => Math.round(v).toLocaleString(numberLocale);
     if (reduce || el.isContentEditable) { el.textContent = fmt(to); return; }
     el.textContent = "0";
     onView(el, () => {
@@ -101,16 +105,16 @@
       deep = F.dots.some((d) => d[6] !== undefined);
       pivot = deep ? Math.min(...F.dots.map((d) => d[6])) / mx - 0.1 : 0; // just behind the deepest point of the face
       D = F.dots.map(([x, y, r, g, b, v, z], i) => ({ tx: x / mx, ty: y / mx, tz: z !== undefined ? z / mx : (Math.sin(i * 12.9898) * 43758.5453 % 1) * 0.12, r, g, b, v, off: r + g + b === 0, x: x / mx, y: y / mx, z: 0, vx: 0, vy: 0, delay: 0, ph: i * 0.37 }));
-      if (tally) tally.textContent = `${D.length.toLocaleString("de-DE")} Drohnen ${F.source === "show" ? "aus der Show-Datei" : "erkannt"}`;
+      if (tally) tally.textContent = t(F.source==="show"?"formationCount":"detectedCount",{count:D.length.toLocaleString(numberLocale)});
       resize();
       if (replay) replay.disabled = reduce;
       if (reduce) D.forEach((d) => { d.z = d.tz; });
       if (reduce) { started = true; draw(0, 0); }
       else { launch(); if (held()) settle(); }
-    }).catch(() => { if (tally) tally.textContent = "Die Formation konnte nicht geladen werden."; });
+    }).catch(() => { if (tally) tally.textContent = t("formationFailed"); });
     }, { rootMargin: "100px", threshold: 0 });
-    replay?.addEventListener("click", () => { if (!reduce && D.length) { paused = false; pause?.setAttribute("aria-pressed", "false"); if (pause) pause.textContent = "Animation pausieren"; launch(); } });
-    pause?.addEventListener("click", () => { paused = !paused; pause.setAttribute("aria-pressed", String(paused)); pause.textContent = paused ? "Animation fortsetzen" : "Animation pausieren"; });
+    replay?.addEventListener("click", () => { if (!reduce && D.length) { paused = false; pause?.setAttribute("aria-pressed", "false"); if (pause) pause.textContent = t("animation_pausieren"); launch(); } });
+    pause?.addEventListener("click", () => { paused = !paused; pause.setAttribute("aria-pressed", String(paused)); pause.textContent = paused ? t("animationResume") : t("animation_pausieren"); });
     const host = cv.parentElement;
     host.addEventListener("pointermove", (e) => { if (e.pointerType === "touch") return; const r = cv.getBoundingClientRect(); mouse = [(e.clientX - r.left) * DPR, (e.clientY - r.top) * DPR]; });
     host.addEventListener("pointerleave", () => { mouse = null; });

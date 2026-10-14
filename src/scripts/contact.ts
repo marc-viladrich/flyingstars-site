@@ -66,7 +66,7 @@ if (form) {
     try {
       const response = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
       const result = await response.json();
-      if (!response.ok || !result.ok) throw new Error(result.detail || text.sendFailed);
+      if (!response.ok || !result.ok) throw new Error(({invalid:text.required,email:text.invalidEmail,spam:text.spam,send:text.sendFailed,method:text.sendFailed} as Record<string,string>)[result.code] || text.sendFailed);
       if (result.state === 'not-configured') {
         status.textContent = text.notConfigured;
       } else {

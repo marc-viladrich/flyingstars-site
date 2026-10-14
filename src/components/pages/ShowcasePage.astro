@@ -1,0 +1,11 @@
+---
+import {localeFromPath} from '../../lib/localized-routes';
+const locale = Astro.props.locale ?? localeFromPath(Astro.url.pathname);
+import Base from '../../layouts/Base.astro';
+import CaseStudy from '../projects/CaseStudy.astro';
+
+const { project } = Astro.props;
+---
+<Base locale={locale} title={project.data.showcase!.meta.title} description={project.data.showcase!.meta.description} image={project.data.cover?.src} navSection="/projekte/">
+  <CaseStudy locale={locale} project={project} />
+</Base>

@@ -2,7 +2,7 @@
 import InlineText from '../InlineText.astro';
 import {nativeField,nativeSection,nativeItem} from "../../lib/native-editor";
 import type { Section } from '../../content.config';
-type Props = Extract<Section, { type: 'steps' }> & { index: number };
+type Props = Extract<Section, { type: 'steps' }> & { index: number; locale?:string; _locale?:string };
 const { headline, text, steps, kicker, id = `s${Astro.props.index}`, index } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';

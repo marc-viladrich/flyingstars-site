@@ -3,13 +3,17 @@ import {inlinePlain} from '../lib/inline-text.mjs';
 // buttons pick the package. Switching the package turns the motif on stage into its version for that package (2D
 // picture with gentle motion → 3D object that moves on its own → a short story in acts) and plays on from there, so
 // the same subject shows what the higher package adds. ‹ › step through the pictures, ↻ starts the show again.
-import { OCCASIONS, STEPS } from "../content/show-configurator.js";
-import { SHOW_PACKAGES, priceFor } from "../content/show-packages";
+import {makeSteps} from "../content/show-configurator.js";
+import {priceFor as calculatePrice} from "../content/show-packages";
 import { createField } from "./show-field.js";
 import { buildSequence, preloadScenes } from "./show-scenes.js";
 
+import {readRuntime} from '../lib/ui-runtime.mjs';
+import {localeFormat} from '../lib/localized-routes.mjs';
 const form = document.querySelector("#cfg");
 if (form) {
+  const {packages:SHOW_PACKAGES,occasions:OCCASIONS,t,locale,home}=readRuntime('.cfg[data-runtime]');
+  const STEPS=makeSteps(SHOW_PACKAGES),fmt=localeFormat(locale),priceFor=(name,n)=>calculatePrice(name,n,SHOW_PACKAGES);
   const $ = (s) => document.querySelector(s);
   let current = null, first = true, segment = 0;
   const field = createField($("#cfg-field"), { onBeat: (k, beat, beats) => {
@@ -24,13 +28,13 @@ if (form) {
   const stepTo = (dir) => { let k = field.beat(); do k = (k + dir + count()) % count(); while (current?.beats[k]?.interlude && k !== field.beat()); field.goto(k); };
   $("#cfg-prev").addEventListener("click", () => stepTo(-1));
   $("#cfg-next").addEventListener("click", () => stepTo(1));
-  const eur = (v) => `ab ${v.toLocaleString("de-DE")} €`;
+  const eur = (v) => t("fromPrice",{price:v.toLocaleString(fmt)});
   let occasion = OCCASIONS[0], job = 0, text = "", style = "script";
   // the visitor's own text joins the show as its finale (round 11); one version per package like every motif
-  const CAPTIONS = { SPARK: "Euer Text am Himmel", HORIZON: "Licht schreibt euren Text", ODYSSEY: "Euer Text" };
-  const textMotif = () => ({ id: "text", label: "Euer Text", tiers: Object.fromEntries(Object.entries(CAPTIONS).map(([k, caption]) => [k, { build: `text${k}`, caption, value: text, style, occasion: occasion.id }])) });
+  const CAPTIONS = {SPARK:t("captionSpark"),HORIZON:t("captionHorizon"),ODYSSEY:t("captionOdyssey")};
+  const textMotif = () => ({ id: "text", label:t("ownText"), tiers: Object.fromEntries(Object.entries(CAPTIONS).map(([k, caption]) => [k, { build: `text${k}`, caption, value: text, style, occasion: occasion.id }])) });
   const motifs = () => (text ? [...occasion.motifs, textMotif()] : occasion.motifs);
-  const STYLE_LABEL = { script: "Schreibschrift", print: "Druckschrift", initials: "Initialen" };
+  const STYLE_LABEL = {script:t("script"),print:t("print"),initials:t("initials")};
 
   const step = () => STEPS[+form.querySelector("[name=pkg]:checked").value];
   const pkg = () => SHOW_PACKAGES[step().pkg];
@@ -69,10 +73,10 @@ if (form) {
     const editorResult=document.querySelector(".cfg-result[data-native-record]");if(editorResult)editorResult.dataset.nativeRecord="package/"+s.pkg.toLowerCase();
     document.documentElement.style.setProperty("--pkg", `rgb(${p.color.join(",")})`);
     for (const [sel, txt] of [["#cfg-pkg", inlinePlain(p.displayName)], ["#cfg-bar-pkg", inlinePlain(p.displayName)], ["#cfg-price", eur(price)], ["#cfg-bar-price", eur(price)]]) $(sel).textContent = txt;
-    $("#cfg-meta").textContent = `${p.base} Drohnen · ${p.dur} · netto zzgl. Anfahrt`;
-    $("#cfg-includes").textContent = `Enthalten: ${s.includes}.`;
-    const summary = [`Anlass: ${occasion.label}`, `Beispielmotive: ${occasion.motifs.filter((m) => m.tiers[s.pkg]).map((m) => m.label).join(", ")}`, ...(text ? [`Eigener Text: „${text}“ (${STYLE_LABEL[style]})`] : []), `Aufwand: ${s.label} (${inlinePlain(p.displayName)}, ${eur(price)} netto, Einstiegspreis laut Konfigurator)`].join("\n");
-    const inquiry = `/?${new URLSearchParams({ paket: s.pkg, drohnen: String(p.base), anlass: occasion.anlass, show: summary })}#anfrage`;
+    $("#cfg-meta").textContent = t("meta",{count:p.base.toLocaleString(fmt),duration:p.dur});
+    $("#cfg-includes").textContent = t("includes",{text:s.includes});
+    const summary = [t('summaryOccasion',{occasion:occasion.label}),t('summaryMotifs',{motifs:occasion.motifs.filter(m=>m.tiers[s.pkg]).map(m=>m.label).join(', ')}),...(text?[t('summaryText',{text,style:STYLE_LABEL[style]})]:[]),t('summaryEffort',{effort:s.label,name:inlinePlain(p.displayName),price:eur(price)})].join('\n');
+    const inquiry = `${home}?${new URLSearchParams({ paket: s.pkg, drohnen: String(p.base), anlass: occasion.anlass, show: summary })}#anfrage`;
     $("#cfg-cta").href = inquiry; $("#cfg-bar-cta").href = inquiry;
     return render(keep, to);
   }

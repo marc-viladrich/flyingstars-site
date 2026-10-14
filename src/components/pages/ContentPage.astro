@@ -1,0 +1,11 @@
+---
+import {localeFromPath} from '../../lib/localized-routes';
+const locale = Astro.props.locale ?? localeFromPath(Astro.url.pathname);
+import Base from '../../layouts/Base.astro';
+import SectionRenderer from '../SectionRenderer.astro';
+
+const { page } = Astro.props;
+---
+<Base locale={locale} title={page.data.title} description={page.data.description} noindex={page.data.noindex} image={page.data.image}>
+  <SectionRenderer locale={locale} sections={page.data.sections} recordId={"page/"+page.id} />
+</Base>

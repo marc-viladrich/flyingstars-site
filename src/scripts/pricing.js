@@ -3,7 +3,10 @@ import {escapeHTML} from '../lib/editorial-text.mjs';
 import { HEART_CAPACITIES } from './pricing-heart-capacities';
 import { chars, loadTextEngine, textFormation } from './text-formation.js';
 import { heartStep, heartPicture } from './heart-formation.js';
-import { SHOW_PACKAGES, PACKAGE_NAMES, priceFor, recommendPackage } from '../content/show-packages';
+import {PACKAGE_NAMES,priceFor as calculatePrice,recommendPackage} from '../content/show-packages';
+
+import {readRuntime} from '../lib/ui-runtime.mjs';
+import {localeFormat} from '../lib/localized-routes.mjs';
 
 // FlyingStars pricing page: drone-count calculator + live swarm (one dot per drone)
 (() => {
@@ -13,8 +16,11 @@ import { SHOW_PACKAGES, PACKAGE_NAMES, priceFor, recommendPackage } from '../con
 
   // Prototype net prices, excluding travel, from the supplied FlyingStars reference.
   // Shared with the server-rendered package cards through show-packages.ts.
-  const PKG = SHOW_PACKAGES, NAMES = PACKAGE_NAMES, recommend = recommendPackage;
-  const eur = (v) => v.toLocaleString("de-DE") + " €";
+  const data=readRuntime('.calc-hero[data-runtime]');if(!data)return;
+  const {packages:PKG,t,locale,home}=data,fmt=localeFormat(locale);
+  const NAMES=PACKAGE_NAMES,recommend=n=>recommendPackage(n,PKG),priceFor=(name,n)=>calculatePrice(name,n,PKG);
+  const h=(key,values)=>escapeHTML(t(key,values));
+  const eur = (v) => v.toLocaleString(fmt) + " €";
 
   const $ = (s) => document.querySelector(s);
   const range = $("#drones"), countEl = $("#count"), totalEl = $("#total"), noteEl = $("#calc-note"), readEl = $("#calc-read"), cta = $("#calc-cta");
@@ -25,7 +31,7 @@ import { SHOW_PACKAGES, PACKAGE_NAMES, priceFor, recommendPackage } from '../con
   let n = +range.value, pkg = recommend(n), locked = false;
 
   // Inquiry links carry package, drone count and the sky text into the contact form.
-  const inquiryHref = (k, count) => `/?${new URLSearchParams({ paket: k, drohnen: String(count), ...(text.value ? { text: text.value } : {}) })}#anfrage`;
+  const inquiryHref = (k, count) => `${home}?${new URLSearchParams({ paket: k, drohnen: String(count), ...(text.value ? { text: text.value } : {}) })}#anfrage`;
   function update(fromSlider, computeText = true) {
     const need = textMin();
     if (+range.value < need) { range.value = need; fromSlider = true; } // under 10 drones per character the text gets hard to read; the package follows the new count
@@ -35,27 +41,27 @@ import { SHOW_PACKAGES, PACKAGE_NAMES, priceFor, recommendPackage } from '../con
       if (!locked || !ok) { pkg = recommend(n); locked = false; }
     }
     const p = PKG[pkg], price = priceFor(pkg, n);
-    const nTxt = n.toLocaleString("de-DE");
-    countEl.innerHTML = `${nTxt}<small>Drohnen</small>`;
-    totalEl.innerHTML = `<b>ab ${eur(price)}</b><span class="mono">netto zzgl. Anfahrt</span>`;
+    const nTxt = n.toLocaleString(fmt);
+    countEl.innerHTML = `${nTxt}<small>${h("drohnen")}</small>`;
+    totalEl.innerHTML = `<b>${h("fromPrice",{price:eur(price)})}</b><span class="mono">${h("net")}</span>`;
     const pic = text.shown && text.shown.n === n ? { size: text.shown.size, d: text.shown.d } : swarm.info(n), sz = pic ? pic.size : null;
-    const sizeTxt = sz ? `ca. ${Math.round(sz[0])} × ${Math.round(sz[1])} m${sz[2] >= 1 ? `, ${Math.round(sz[2])} m tief` : ""}` : "";
-    readEl.innerHTML = `<span>Paket <b>${escapeHTML(inlinePlain(p.displayName))}</b></span><span>Dauer <b>${escapeHTML(p.dur)}</b></span><span>Motive <b>${pkg === "SPARK" ? "aus dem Katalog + 4 eigene" : pkg === "HORIZON" ? "individuell, 2D + einfaches 3D" : "komplexes 3D + Storytelling"}</b></span>${sz ? `<span title="Größe des ganzen Motivs am Himmel, Drohnen im Abstand von ${String(pic.d).replace(".", ",")} m">Motivgröße <b>${sizeTxt}</b></span>` : ""}`;
+    const sizeTxt = sz ? t("size",{width:Math.round(sz[0]),height:Math.round(sz[1])})+(sz[2]>=1?t("depth",{depth:Math.round(sz[2])}):"") : "";
+    readEl.innerHTML = `<span>${h('packageLabel')} <b>${escapeHTML(inlinePlain(p.displayName))}</b></span><span>${h('duration')} <b>${escapeHTML(p.dur)}</b></span><span>${h('motifs')} <b>${h(pkg==='SPARK'?'catalogue':pkg==='HORIZON'?'individual':'storytelling')}</b></span>${sz?`<span title="${h('motifTitle',{distance:pic.d.toLocaleString(fmt)})}">${h('motifSize')} <b>${escapeHTML(sizeTxt)}</b></span>`:''}`;
     let note = "";
-    if (pkg === "HORIZON" && n < 200) note = `${inlinePlain(PKG.HORIZON.displayName)} enthält bereits ${PKG.HORIZON.base} Drohnen – zum selben Preis.`;
-    else if (pkg === "ODYSSEY" && n < 300) note = `${inlinePlain(PKG.ODYSSEY.displayName)} startet mit ${PKG.ODYSSEY.base} Drohnen.`;
-    else if (n > 600) note = "Über 600 Drohnen ist das ein Richtpreis – die Flotte planen wir gemeinsam und bestätigen sie im Angebot.";
-    else if (pkg === "SPARK" && n === 150) note = `Mehr als ${PKG.SPARK.max} Drohnen? Dann lohnt sich ${inlinePlain(PKG.HORIZON.displayName)} mit individuellen Animationen.`;
-    if (need > 100 && n === need) note = `Unter 10 Drohnen pro Zeichen wird es schlecht lesbar – für deinen Text mindestens ${need.toLocaleString("de-DE")} Drohnen.`;
-    if (text.value && text.shown && text.shown.n === n && text.shown.used < n) note = `Dein Text braucht höchstens ${text.shown.used.toLocaleString("de-DE")} Drohnen (80 m hoch) – die übrigen ${(n - text.shown.used).toLocaleString("de-DE")} zeigen wir als Reserve darunter; im Angebot ergänzen wir sie gern um Motive.`;
+    if (pkg === "HORIZON" && n < 200) note = t("alreadyIncluded",{name:inlinePlain(PKG.HORIZON.displayName),count:PKG.HORIZON.base});
+    else if (pkg === "ODYSSEY" && n < 300) note = t("starts",{name:inlinePlain(PKG.ODYSSEY.displayName),count:PKG.ODYSSEY.base});
+    else if (n > 600) note = t("largeFleet");
+    else if (pkg === "SPARK" && n === 150) note = t("upgrade",{count:PKG.SPARK.max,name:inlinePlain(PKG.HORIZON.displayName)});
+    if (need > 100 && n === need) note = t("minimum",{count:need.toLocaleString(fmt)});
+    if (text.value && text.shown && text.shown.n === n && text.shown.used < n) note = t("reserve",{used:text.shown.used.toLocaleString(fmt),reserve:(n-text.shown.used).toLocaleString(fmt)});
     noteEl.textContent = note;
-    cta.textContent = `Mit ${nTxt} Drohnen anfragen`;
+    cta.textContent = t("inquiry",{count:nTxt});
     cta.href = inquiryHref(pkg, n);
     const share = (n - +range.min) / (+range.max - +range.min); // the coloured part ends under the thumb centre
     range.style.setProperty("--fill", `calc(13px + ${share.toFixed(4)} * (100% - 26px))`);
     const col = `rgb(${p.color.join(",")})`;
     document.documentElement.style.setProperty("--pkg", col);
-    range.setAttribute("aria-valuetext", `${n} Drohnen, ${inlinePlain(p.displayName)}, ab ${eur(price)}`);
+    range.setAttribute("aria-valuetext",t("range",{count:nTxt,name:inlinePlain(p.displayName),price:eur(price)}));
     tierBtns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.tier === pkg)));
     // live prices on the package cards
     NAMES.forEach((k) => {
@@ -63,11 +69,11 @@ import { SHOW_PACKAGES, PACKAGE_NAMES, priceFor, recommendPackage } from '../con
       const v = priceFor(k, n), box = c.querySelector("[data-live]");
       c.classList.toggle("is-rec", k === pkg);
       c.querySelector("a.btn").href = inquiryHref(k, Math.max(PKG[k].base, Math.min(n, PKG[k].max)));
-      c.querySelector(".badge").textContent = k === pkg ? "Passt zu deiner Auswahl" : PKG[k].badge;
-      if (v === null) box.innerHTML = `<span class="na">Nur bis 150 Drohnen</span><span class="mono">darüber: ${escapeHTML(inlinePlain(PKG.HORIZON.displayName))}</span>`;
+      c.querySelector(".badge").textContent = k === pkg ? t("selected") : PKG[k].badge;
+    if (v === null) box.innerHTML = `<span class="na">${h("limit",{count:PKG[k].max})}</span><span class="mono">${h("above",{name:inlinePlain(PKG.HORIZON.displayName)})}</span>`;
       else {
-        const label = n < PKG[k].base ? `inkl. ${PKG[k].base} Drohnen` : `für ${n.toLocaleString("de-DE")} Drohnen`;
-        box.innerHTML = `<b>ab ${eur(v)}</b><span class="mono">${label} · ${escapeHTML(PKG[k].dur)}</span>`;
+        const label = n < PKG[k].base ? t("included",{count:PKG[k].base}) : t("forCount",{count:n.toLocaleString(fmt)});
+        box.innerHTML = `<b>${h("fromPrice",{price:eur(v)})}</b><span class="mono">${escapeHTML(label)} · ${escapeHTML(PKG[k].dur)}</span>`;
       }
     });
     if (text.value) { if (computeText) showText(p.color); } else { ++text.job; clearTimeout(text.timer); text.shown = null; swarm.setTarget(Math.max(n, 1), p.color); }
@@ -89,17 +95,17 @@ import { SHOW_PACKAGES, PACKAGE_NAMES, priceFor, recommendPackage } from '../con
       if (job !== text.job) return;
       const r = textFormation(value, count);
       if (job !== text.job) return;
-      if (!r) { text.shown = null; swarm.setTarget(Math.max(count, 1), col); renderTextRead("Dieser Text lässt sich so nicht darstellen – bitte kürzen."); return; }
+      if (!r) { text.shown = null; swarm.setTarget(Math.max(count, 1), col); renderTextRead(t("tooLong")); return; }
       text.shown = r; swarm.setText(r, col);
       update(false, false); // readout only: do not schedule the same formation again
-    }, () => renderTextRead("Die Schrift konnte nicht geladen werden.")), 220);
+    }, () => renderTextRead(t("fontFailed"))), 220);
   }
   function renderTextRead(msg) {
     if (!textRead) return;
     if (msg) { textRead.textContent = msg; return; }
-    if (!text.value) { textRead.textContent = "Wir zeigen ihn mit deiner Drohnenzahl in unserer Show-Schrift."; return; }
+    if (!text.value) { textRead.textContent = t("wir_zeigen_ihn_mit_deiner_drohnenzahl_in_unserer_s"); return; }
     const cN = chars(text.value), r = text.shown && text.shown.n === n ? text.shown : null;
-    textRead.textContent = `${cN} ${cN === 1 ? "Zeichen" : "Zeichen"} · ${(n / cN).toLocaleString("de-DE", { maximumFractionDigits: 0 })} Drohnen pro Zeichen${r ? " · " + r.style + "-Schrift" + (r.lines.length > 1 ? " · " + r.lines.length + " Zeilen" : "") : ""}${r && r.unknown.length ? " · nicht darstellbar: " + r.unknown.join(" ") : ""}`;
+    textRead.textContent = t("textStats",{characters:cN,perCharacter:(n/cN).toLocaleString(fmt,{maximumFractionDigits:0})})+(r?t("fontStyle",{style:r.style})+(r.lines.length>1?t("lines",{count:r.lines.length}):""):"")+(r?.unknown.length?t("unknown",{characters:r.unknown.join(" ")}):"");
   }
   if (textIn) textIn.addEventListener("input", () => {
     text.value = textIn.value.toUpperCase().replace(/\s+/g, " ").trim();
@@ -284,7 +290,7 @@ import { SHOW_PACKAGES, PACKAGE_NAMES, priceFor, recommendPackage } from '../con
       cur = color.slice(); yaw = 0; tilt = 0; draw(0, 0);
     }
     function updateMotionButton() {
-      motionButton.textContent = reduce ? "Animation reduziert" : animationPaused ? "Animation fortsetzen" : "Animation pausieren";
+      motionButton.textContent = reduce ? t("animationReduced") : animationPaused ? t("animationResume") : t("animation_pausieren");
       motionButton.disabled = reduce;
       motionButton.setAttribute("aria-pressed", String(animationPaused || reduce));
     }

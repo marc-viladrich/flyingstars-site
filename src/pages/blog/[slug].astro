@@ -1,25 +1,6 @@
 ---
-import {nativeRecord,nativeRecordMedia} from '../../lib/native-editor';
-import { getCollection, render } from 'astro:content';
-import SectionRenderer from '../../components/SectionRenderer.astro';
-import Base from '../../layouts/Base.astro';
-import Picture from '../../components/Picture.astro';
-export async function getStaticPaths() {
-  const posts = await getCollection('posts', (p) => process.env.FLYINGSTARS_EDITOR==='1'||!p.data.draft);
-  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
-}
-const { post } = Astro.props;
-const { Content } = await render(post);
-const fmt = new Intl.DateTimeFormat('de-DE', { dateStyle: 'long' });
+import {getPosts} from '../../lib/content';
+import View from '../../components/pages/PostPage.astro';
+export async function getStaticPaths() {return (await getPosts()).map(post=>({params:{slug:post.id},props:{post}}));}
 ---
-<Base title={post.data.title} description={post.data.description}>
-  <article class="section"><div class="wrap">
-    <div class="prose">
-      <h1 {...nativeRecord(`post/${post.id}`,["title"])}>{post.data.title}</h1>
-      <p class="muted"><time datetime={post.data.date.toISOString()}>{fmt.format(post.data.date)}</time></p>
-      {post.data.cover && <Picture {...post.data.cover} {...nativeRecordMedia(`post/${post.id}`,["cover"])} loading="eager" sizes="(min-width: 48rem) 40rem, 100vw" />}
-      <div {...nativeRecord(`post/${post.id}`,["body"])} data-native-markdown={process.env.FLYINGSTARS_EDITOR==='1'?'true':undefined}><Content /></div>
-    </div>
-  </div></article>
-<SectionRenderer sections={post.data.sections} recordId={`post/${post.id}`} headingOffset={1} />
-</Base>
+<View {...Astro.props} locale="de" />

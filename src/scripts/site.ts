@@ -11,7 +11,7 @@
     document.documentElement.classList.toggle('motion-paused', paused);
     document.dispatchEvent(new Event('flyingstars:motion-change'));
     if (motionButton) {
-      const label = paused ? 'Bewegung fortsetzen' : 'Bewegung pausieren';
+      const label = paused ? motionButton.dataset.resume : motionButton.dataset.pause;
       motionButton.setAttribute('aria-label', label); motionButton.title = label;
       motionButton.setAttribute('aria-pressed', String(paused));
     }

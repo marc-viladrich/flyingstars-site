@@ -1,0 +1,25 @@
+---
+import {siteRecord as readUi} from '../../lib/content';
+import {localeFromPath,localeFormat,localizedHref} from '../../lib/localized-routes';
+import {getPosts} from '../../lib/content';
+const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
+const ui = readUi('ui',locale);
+import {nativeRecord,nativeItem} from '../../lib/native-editor';
+import Base from '../../layouts/Base.astro';
+const posts = (await getPosts(locale)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const fmt = new Intl.DateTimeFormat(localeFormat(locale), { dateStyle: 'long' });
+---
+<Base locale={locale} title="Blog" description={ui.blog.alle_beitrage_in_chronologischer_reihenfolge_neues}>
+  <section class="section"><div class="wrap">
+    <h1>Blog</h1>
+    <div class="cards">
+      {posts.map((p) => (
+        <article class="card" {...nativeItem(Astro.props,{record:`post/${p.id}`})}>
+          <h3><a href={localizedHref(`/blog/${p.id}/`,locale)}><span {...nativeRecord(`post/${p.id}`,["title"])}>{p.data.title}</span></a></h3>
+          <p class="muted"><time datetime={p.data.date.toISOString()}>{fmt.format(p.data.date)}</time></p>
+          <p {...nativeRecord(`post/${p.id}`,["description"])}>{p.data.description}</p>
+        </article>
+      ))}
+    </div>
+  </div></section>
+</Base>

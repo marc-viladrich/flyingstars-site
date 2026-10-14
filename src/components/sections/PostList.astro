@@ -1,16 +1,20 @@
 ---
+import {localeFromPath,localeFormat,localizedHref} from '../../lib/localized-routes';
+import {siteRecord as readUi} from '../../lib/content';
+const ui = readUi('ui',Astro.props._locale ?? localeFromPath(Astro.url.pathname));
+const locale = Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 import InlineText from '../InlineText.astro';
 import {nativeField,nativeSection,nativeRecord,nativeItem} from "../../lib/native-editor";
-import { getCollection } from 'astro:content';
+import {getPosts} from '../../lib/content';
 import type { Section } from '../../content.config';
-type Props = Extract<Section, { type: 'postList' }> & { index: number };
-const { headline = 'Aktuelles', limit, index } = Astro.props;
+type Props = Extract<Section, { type: 'postList' }> & { index: number; locale?:string; _locale?:string };
+const { headline = ui.postList.headline, limit, index } = Astro.props;
 const id = `s${index}-h`;
 const H = index === 0 ? 'h1' : 'h2';
-const posts = (await getCollection('posts', (p) => process.env.FLYINGSTARS_EDITOR==='1'||!p.data.draft))
+const posts = (await getPosts(locale))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, limit);
-const fmt = new Intl.DateTimeFormat('de-DE', { dateStyle: 'long' });
+const fmt = new Intl.DateTimeFormat(localeFormat(locale), { dateStyle: 'long' });
 ---
 <section {...nativeSection(Astro.props)} class="section" aria-labelledby={id}>
   <div class="wrap">
@@ -18,7 +22,7 @@ const fmt = new Intl.DateTimeFormat('de-DE', { dateStyle: 'long' });
     <div class="cards">
       {posts.map((p) => (
         <article class="card" {...nativeItem(Astro.props,{record:`post/${p.id}`})}>
-          <h3><a href={`/blog/${p.id}/`}><span {...nativeRecord(`post/${p.id}`,["title"])}>{p.data.title}</span></a></h3>
+          <h3><a href={localizedHref(`/blog/${p.id}/`,locale)}><span {...nativeRecord(`post/${p.id}`,["title"])}>{p.data.title}</span></a></h3>
           <p class="muted"><time datetime={p.data.date.toISOString()}>{fmt.format(p.data.date)}</time></p>
           <p {...nativeRecord(`post/${p.id}`,["description"])}>{p.data.description}</p>
         </article>

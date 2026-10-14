@@ -1,12 +1,16 @@
 ---
+import {siteRecord as readUi} from '../../lib/content';
+import {localeFromPath,localizedHref} from '../../lib/localized-routes';
+const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
+const ui = readUi('ui',locale);
 import InlineText from '../InlineText.astro';
 import {nativeField,nativeSection,nativeRecord,nativeRecordMedia,nativeItem} from '../../lib/native-editor';
-import {editorialRecord,resolveMedia} from '../../lib/editorial-records';
+import {editorialRecord,resolveMedia} from '../../lib/content';
 import {optimizedLogo} from '../../lib/media';
 const {headline,press,clientIds,showImages=true}=Astro.props;
-const items=await Promise.all(clientIds.map(async(id:string)=>{const client=editorialRecord('client',id),image=resolveMedia(client.logo);return {...client,id,image,media:image&&showImages?await optimizedLogo(image.src,client.tall?80:56):undefined};}));
+const items=await Promise.all(clientIds.map(async(id:string)=>{const client=editorialRecord('client',id,locale),image=resolveMedia(client.logo,locale);return {...client,id,image,media:image&&showImages?await optimizedLogo(image.src,client.tall?80:56):undefined};}));
 ---
-<div {...nativeSection(Astro.props)} class="band" aria-label="Referenzen">
-  <div class="band-head mono">{headline&&<span {...nativeField(Astro.props,['headline'],true)}><InlineText value={headline} /></span>}{press&&<span>Bekannt aus <b {...nativeField(Astro.props,['press'])}>{press}</b></span>}</div>
-  <div class="marquee">{items.map((client:any,i:number)=>{const record=`client/${client.id}`;const content=client.image&&client.media?<img {...nativeRecordMedia(record,['logo'])} src={client.media.src} width={client.media.width} height={client.media.height} alt={client.image.alt} class:list={{tall:client.tall}} loading="lazy" decoding="async"/>:<span {...nativeRecord(record,['name'])}>{client.name}</span>;return <span {...nativeItem(Astro.props,{record,entry:['clientIds',i]})}>{client.href?<a {...nativeRecord(record,['href'])} href={client.href}>{content}</a>:content}</span>;})}</div>
+<div {...nativeSection(Astro.props)} class="band" aria-label={ui.logoBar.referenzen}>
+  <div class="band-head mono">{headline&&<span {...nativeField(Astro.props,['headline'],true)}><InlineText value={headline} /></span>}{press&&<span>{ui.logoBar.bekannt_aus} <b {...nativeField(Astro.props,['press'])}>{press}</b></span>}</div>
+  <div class="marquee">{items.map((client:any,i:number)=>{const record=`client/${client.id}`;const content=client.image&&client.media?<img {...nativeRecordMedia(record,['logo'])} src={client.media.src} width={client.media.width} height={client.media.height} alt={client.image.alt} class:list={{tall:client.tall}} loading="lazy" decoding="async"/>:<span {...nativeRecord(record,['name'])}>{client.name}</span>;return <span {...nativeItem(Astro.props,{record,entry:['clientIds',i]})}>{client.href?<a {...nativeRecord(record,['href'])} href={localizedHref(client.href,locale)}>{content}</a>:content}</span>;})}</div>
 </div>

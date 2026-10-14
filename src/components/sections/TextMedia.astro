@@ -1,15 +1,17 @@
 ---
+import {localeFromPath} from '../../lib/localized-routes';
+const locale=Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 import InlineText from '../InlineText.astro';
 import {nativeField,nativeSection,nativeMedia} from "../../lib/native-editor";
 import Picture from '../Picture.astro';
-import { marked } from 'marked';
+import {markdownHtml} from '../../lib/markdown-policy.mjs';
 import type { Section } from '../../content.config';
-type Props = Extract<Section, { type: 'textMedia' }> & { index: number };
+type Props = Extract<Section, { type: 'textMedia' }> & { index: number; locale?:string; _locale?:string };
 const { headline, body, image, mediaSide, showImage=true, index } = Astro.props;
 const id = `s${index}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const visibleImage=showImage?image:undefined;
-const html = await marked.parse(body);
+const html = await markdownHtml(body,locale);
 ---
 <section {...nativeSection(Astro.props)} class="section text-media" aria-labelledby={id}>
   <div class:list={['wrap', { 'grid-2': visibleImage, 'grid-2--media-left': visibleImage && mediaSide === 'left' }]}>

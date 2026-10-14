@@ -1,7 +1,11 @@
 ---
+import {siteRecord as readUi} from '../lib/content';
+import {localeFromPath,localizedHref} from '../lib/localized-routes';
+const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
+const ui = readUi('ui',locale);
 import layout from '../data/logo-dots.json';
 ---
-<a class="logo" href="/" aria-label="FlyingStars – Startseite">
+<a class="logo" href={localizedHref("/",locale)} aria-label={ui.logo.flyingstars_startseite}>
   <svg viewBox="-1.08 -1.08 2.16 2.16" aria-hidden="true">
     {layout.dots.map(([x, y, r, g, b]) => <circle cx={x} cy={-y} r={layout.dotRadius} fill={`rgb(${r},${g},${b})`} />)}
   </svg>
