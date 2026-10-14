@@ -1,4 +1,5 @@
 import {z} from 'astro/zod';
+import {siteUiSchema} from './ui-schema.mjs';
 import {editorialHref} from './page-schema.mjs';
 // Website-wide singleton records (src/content/site/<name>.json): one owner per contact value and form text.
 // Every component that shows a contact value or a form text reads it from here.
@@ -34,6 +35,7 @@ export const siteInquirySchema=z.object({
  buttons:z.object({next:text('Weiter'),back:text('Zurück'),submit:text('Absenden')}).describe('Buttons'),
  messages:z.object({
   required:text('Fehlermeldung Pflichtfeld'),
+  spam:text('Fehlermeldung bei abgelehnter Spam-Prüfung'),
   sending:text('Button während des Versands'),
   success:text('Erfolgsmeldung'),
   notConfigured:text('Meldung wenn der Versand nicht eingerichtet ist ({email} wird ersetzt)'),
@@ -54,4 +56,4 @@ export const siteNavigationSchema=z.object({
   legal:z.array(navigationLink).describe('Rechtliche Seiten'),
  }).describe('Footer'),
 }).describe('Navigation und Footer');
-export const siteSchemas={contact:siteContactSchema,inquiry:siteInquirySchema,navigation:siteNavigationSchema};
+export const siteSchemas={contact:siteContactSchema,inquiry:siteInquirySchema,navigation:siteNavigationSchema,ui:siteUiSchema};

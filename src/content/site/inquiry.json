@@ -67,6 +67,7 @@
     "notConfigured": "Der Formularversand ist noch nicht eingerichtet. Es wurde nichts gesendet oder gespeichert. Bitte schreibe uns direkt an {email}.",
     "sendFailed": "Die Anfrage konnte nicht gesendet werden.",
     "failed": "Versand fehlgeschlagen.",
-    "retry": "Bitte versuche es später erneut oder schreibe direkt an {email}."
+    "retry": "Bitte versuche es später erneut oder schreibe direkt an {email}.",
+    "spam": "Die Spam-Prüfung ist fehlgeschlagen. Bitte versuche es erneut."
   }
 }
