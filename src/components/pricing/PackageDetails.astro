@@ -28,7 +28,7 @@ const dot = (color: number[]) => '#' + color.map(value => value.toString(16).pad
         {pkg.featureGroups.map((group, groupIndex) => {
           const content = <>
           <h4 {...native(name, ['featureGroups', groupIndex, 'title'])}>{group.title}</h4>
-          <ul>{group.items.map((item, itemIndex) => <li {...native(name, ['featureGroups', groupIndex, 'items', itemIndex])} {...nativeItem(Astro.props, {entryRecord: record, entry: ['featureGroups', groupIndex, 'items', itemIndex]})}>{item}</li>)}</ul>
+          <ul>{group.items.map((item, itemIndex) => <li {...native(name, ['featureGroups', groupIndex, 'items', itemIndex, 'text'])} {...nativeItem(Astro.props, {entryRecord: record, entry: ['featureGroups', groupIndex, 'items', itemIndex]})}>{item.text}</li>)}</ul>
         </>, entry = nativeItem(Astro.props, {record, entry: ['featureGroups', groupIndex]});
           return Object.keys(entry).length ? <div style="display:contents" {...entry}>{content}</div> : content;
         })}

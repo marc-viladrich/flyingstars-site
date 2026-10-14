@@ -24,11 +24,13 @@ export const packageSchema = z.object({
   highlight: z.boolean().describe('Paket hervorheben'),
   featureGroups: z.array(z.object({
     title: text('Leistungsgruppe'),
-    items: z.array(text('Leistung')).min(1).describe('Leistungen'),
+    items: z.array(z.object({id:z.string().min(1).max(40).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).describe('Stabile Leistungskennung'),text:text('Leistung')}).strict()).min(1).describe('Leistungen'),
   }).strict()).min(1).describe('Ausführliche Paketleistungen'),
   effortLabel: text('Aufwand im Show-Konfigurator'),
   includes: text('Enthaltene Leistungen im Show-Konfigurator'),
 }).strict().superRefine((value, context) => {
+  const ids=new Set();
+  value.featureGroups.forEach((group,i)=>group.items.forEach((item,j)=>{if(ids.has(item.id))context.addIssue({code:'custom',path:['featureGroups',i,'items',j,'id'],message:`Doppelte Leistungskennung im Paket: ${item.id}`});ids.add(item.id);}));
   if (value.max !== null && value.max < value.base) {
     context.addIssue({ code: 'custom', path: ['max'], message: 'Die maximale Drohnenzahl darf nicht kleiner als die Einstiegszahl sein.' });
   }

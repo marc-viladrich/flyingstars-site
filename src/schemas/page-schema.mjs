@@ -1,4 +1,5 @@
 import {z} from "astro/zod";
+import {PACKAGE_KEYS} from '../content/package-ids.mjs';
 import {validateSectionList} from "./section-policy.mjs";
 export const editorialHref=/^(https?:\/\/|\/(?!\/)|#|mailto:|tel:|\.\.?\/)/i;
 const link = z.object({ label: z.string().min(1), href: z.string().min(1).regex(editorialHref,'Nur Web-, E-Mail-, Telefon- oder interne Links sind erlaubt.') });
@@ -85,15 +86,9 @@ export const sectionSchema = z.discriminatedUnion('type', [
     headline: z.string().min(1).describe('Überschrift'),
     text: z.string().optional(),
     tiers: z.array(z.object({
-      name: z.string().min(1),
-      badge: z.string().optional(),
+      packageId: z.enum(PACKAGE_KEYS.map(name=>name.toLowerCase())).describe('Paket'),
+      featureIds: z.array(z.string().min(1)).default([]).describe('Ausgewählte Paketleistungen in Kartenreihenfolge'),
       showOrb: z.boolean().default(true).describe('Animation anzeigen'),
-      orb: z.object({ shape: z.enum(['ring','sphere','torus']), color: z.string().regex(/^\d{1,3},\d{1,3},\d{1,3}$/), count: z.number().int().positive() }).optional(),
-      price: z.string().min(1).describe('Freitext inkl. Währung, z. B. "ab 7.900 €"'),
-      unit: z.string().optional().describe('Bezugsgröße zum Preis, z. B. "pro Show" oder "netto"'),
-      description: z.string().optional(),
-      features: z.array(z.string().min(1)).default([]),
-      highlight: z.boolean().default(false).describe('Hebt die Karte als Empfehlung hervor'),
       cta: link.optional(),
     })).min(1),
     note: z.string().optional().describe('Kleingedrucktes unter den Karten'),

@@ -20,23 +20,44 @@
     {
       "title": "Design & Inhalt",
       "items": [
-        "Komplexe 3D-Animationen und volumetrische Effekte",
-        "Narratives Storytelling mit dramaturgischer Kurve"
+        {
+          "id": "komplexe-3d-animationen-und-volumetrisch",
+          "text": "Komplexe 3D-Animationen und volumetrische Effekte"
+        },
+        {
+          "id": "narratives-storytelling-mit-dramaturgisc",
+          "text": "Narratives Storytelling mit dramaturgischer Kurve"
+        }
       ]
     },
     {
       "title": "Musik",
       "items": [
-        "Timecode-Synchronisation vor Ort möglich"
+        {
+          "id": "timecode-synchronisation-vor-ort-moglich",
+          "text": "Timecode-Synchronisation vor Ort möglich"
+        }
       ]
     },
     {
       "title": "Service & Extras",
       "items": [
-        "Mehrere Feedbackschleifen mit Zufriedenheitsgarantie",
-        "Eigener Projektmanager",
-        "Professionelle Videodokumentation (Rohmaterial)",
-        "Auf Wunsch Vor-Ort-Termin inklusive"
+        {
+          "id": "mehrere-feedbackschleifen-mit-zufriedenh",
+          "text": "Mehrere Feedbackschleifen mit Zufriedenheitsgarantie"
+        },
+        {
+          "id": "eigener-projektmanager",
+          "text": "Eigener Projektmanager"
+        },
+        {
+          "id": "professionelle-videodokumentation-rohmat",
+          "text": "Professionelle Videodokumentation (Rohmaterial)"
+        },
+        {
+          "id": "auf-wunsch-vor-ort-termin-inklusive",
+          "text": "Auf Wunsch Vor-Ort-Termin inklusive"
+        }
       ]
     }
   ],

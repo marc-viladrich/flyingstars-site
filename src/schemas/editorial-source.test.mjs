@@ -64,3 +64,14 @@ test('all site singletons validate through the registered schemas, including nav
  assert.equal(navigation.header.length,5);assert.equal(navigation.footer.pages.length,7);
  assert.equal(siteNavigationSchema.safeParse({...navigation,header:[{label:'Unsicher',href:'javascript:alert(1)'}]}).success,false);
 });
+
+test('package features have unique stable ids and every selected card feature resolves to its package text',async()=>{
+ const {packageSchema}=await import('../content/package-schema.mjs'),{selectedPackageFeatures}=await import('../content/package-features.mjs');
+ const packages=await readGroup('packages',packageSchema);
+ for(const file of await fs.readdir(path.join(root,'pages'))){if(!file.endsWith('.yaml'))continue;const page=pageSchema.parse(parse(await fs.readFile(path.join(root,'pages',file),'utf8')));for(const section of page.sections)if(section.type==='pricing')for(const tier of section.tiers){assert.ok(packages.has(tier.packageId));selectedPackageFeatures(packages.get(tier.packageId),tier.featureIds);assert.ok(!['name','price','unit','orb','features','badge','description','highlight'].some(key=>key in tier));}}
+ const pkg=packages.get('spark'),first=pkg.featureGroups[0].items[0],last=pkg.featureGroups[2].items[1];
+ assert.deepEqual(selectedPackageFeatures(pkg,[last.id,first.id]).map(x=>x.feature.text),[last.text,first.text]);
+ assert.deepEqual(selectedPackageFeatures(pkg,[first.id])[0].path,['featureGroups',0,'items',0,'text']);
+ assert.throws(()=>selectedPackageFeatures(pkg,['missing']),/SPARK.*missing/);
+ const duplicate=structuredClone(pkg);duplicate.featureGroups[1].items[0].id=first.id;assert.equal(packageSchema.safeParse(duplicate).success,false);
+});

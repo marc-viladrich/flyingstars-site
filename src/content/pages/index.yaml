@@ -144,43 +144,21 @@ sections:
     text: Drei Pakete als Startpunkt – mehr Drohnen, eigene Motive und Extras gehen
       jederzeit.
     tiers:
-      - name: SPARK
+      - packageId: spark
         showOrb: true
-        orb:
-          shape: ring
-          color: 255,158,41
-          count: 100
-        price: ab 7.900 €
-        unit: 100 Drohnen · ca. 10 Min
-        features: []
-        highlight: false
+        featureIds: []
         cta:
           label: Paket ansehen
           href: /drohnenshow-preise/
-      - name: HORIZON
-        badge: Bestseller
+      - packageId: horizon
         showOrb: true
-        orb:
-          shape: sphere
-          color: 219,100,232
-          count: 200
-        price: ab 15.900 €
-        unit: 200 Drohnen · ca. 13 Min
-        features: []
-        highlight: true
+        featureIds: []
         cta:
           label: Paket ansehen
           href: /drohnenshow-preise/
-      - name: ODYSSEY
+      - packageId: odyssey
         showOrb: true
-        orb:
-          shape: torus
-          color: 51,237,242
-          count: 300
-        price: ab 34.900 €
-        unit: 300+ Drohnen · 15+ Min
-        features: []
-        highlight: false
+        featureIds: []
         cta:
           label: Paket ansehen
           href: /drohnenshow-preise/

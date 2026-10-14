@@ -20,23 +20,44 @@
     {
       "title": "Design & Inhalt",
       "items": [
-        "Vollständig individuelle 2D-Animationen und einfache 3D-Elemente",
-        "Präzise Logointegration und komplexe Schriftzüge"
+        {
+          "id": "vollstandig-individuelle-2d-animationen",
+          "text": "Vollständig individuelle 2D-Animationen und einfache 3D-Elemente"
+        },
+        {
+          "id": "prazise-logointegration-und-komplexe-sch",
+          "text": "Präzise Logointegration und komplexe Schriftzüge"
+        }
       ]
     },
     {
       "title": "Musik",
       "items": [
-        "Perfekte Synchronisation auf deine Wunschmusik"
+        {
+          "id": "perfekte-synchronisation-auf-deine-wunsc",
+          "text": "Perfekte Synchronisation auf deine Wunschmusik"
+        }
       ]
     },
     {
       "title": "Service & Extras",
       "items": [
-        "Persönlicher Kreativ-Workshop mit Storyboard",
-        "Komplexere Genehmigungen, z. B. in Flughafennähe",
-        "Vorschau als Video inklusive Feedbackschleife",
-        "Hilfe bei der Zustimmung der Grundstückseigentümer:innen"
+        {
+          "id": "personlicher-kreativ-workshop-mit-storyb",
+          "text": "Persönlicher Kreativ-Workshop mit Storyboard"
+        },
+        {
+          "id": "komplexere-genehmigungen-z-b-in-flughafe",
+          "text": "Komplexere Genehmigungen, z. B. in Flughafennähe"
+        },
+        {
+          "id": "vorschau-als-video-inklusive-feedbacksch",
+          "text": "Vorschau als Video inklusive Feedbackschleife"
+        },
+        {
+          "id": "hilfe-bei-der-zustimmung-der-grundstucks",
+          "text": "Hilfe bei der Zustimmung der Grundstückseigentümer:innen"
+        }
       ]
     }
   ],

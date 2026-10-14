@@ -21,24 +21,48 @@
     {
       "title": "Design & Inhalt",
       "items": [
-        "Auswahl aus vordefinierten Premium-Formationen wie Herzen oder Ringe",
-        "Bis zu vier eigene Elemente: Initialen, Logo, Stadtwappen"
+        {
+          "id": "auswahl-aus-vordefinierten-premium-forma",
+          "text": "Auswahl aus vordefinierten Premium-Formationen wie Herzen oder Ringe"
+        },
+        {
+          "id": "bis-zu-vier-eigene-elemente-initialen-lo",
+          "text": "Bis zu vier eigene Elemente: Initialen, Logo, Stadtwappen"
+        }
       ]
     },
     {
       "title": "Musik",
       "items": [
-        "Professionelle GEMA-freie Musikuntermalung",
-        "GEMA-Musik bei Anmeldung der Veranstaltung möglich"
+        {
+          "id": "professionelle-gema-freie-musikuntermalu",
+          "text": "Professionelle GEMA-freie Musikuntermalung"
+        },
+        {
+          "id": "gema-musik-bei-anmeldung-der-veranstaltu",
+          "text": "GEMA-Musik bei Anmeldung der Veranstaltung möglich"
+        }
       ]
     },
     {
       "title": "Service & Extras",
       "items": [
-        "Eigene Elemente vorab zur Freigabe",
-        "Standard-Genehmigungsverfahren",
-        "Komplettes Team vor Ort",
-        "Sicherheitskonzept und Haftpflichtversicherung"
+        {
+          "id": "eigene-elemente-vorab-zur-freigabe",
+          "text": "Eigene Elemente vorab zur Freigabe"
+        },
+        {
+          "id": "standard-genehmigungsverfahren",
+          "text": "Standard-Genehmigungsverfahren"
+        },
+        {
+          "id": "komplettes-team-vor-ort",
+          "text": "Komplettes Team vor Ort"
+        },
+        {
+          "id": "sicherheitskonzept-und-haftpflichtversic",
+          "text": "Sicherheitskonzept und Haftpflichtversicherung"
+        }
       ]
     }
   ],

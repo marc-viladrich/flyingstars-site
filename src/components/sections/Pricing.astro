@@ -1,5 +1,6 @@
 ---
 import {nativeField,nativeSection,nativeItem,editorBuild} from "../../lib/native-editor";
+import {selectedPackageFeatures} from '../../content/package-features.mjs';
 import type { Section } from '../../content.config';
 import { SHOW_PACKAGES, type ShowPackage } from '../../content/show-packages';
 type Props = Extract<Section, { type: 'pricing' }> & { index: number };
@@ -17,13 +18,16 @@ const native = (name: ShowPackage, path: Array<string | number>, derived = false
   <div class="sec-head"><div>{kicker && <span class="kicker mono" {...nativeField(Astro.props,["kicker"])}>{kicker}</span>}<H id={headingId} {...nativeField(Astro.props,["headline"])}>{headline}</H></div>{text && <p {...nativeField(Astro.props,["text"])}>{text}</p>}</div>
   <div class:list={["packs",{'packs--two':columns==='two','packs--one':columns==='one'}]}>{tiers.map((tier,i) => {
     const Card = tier.cta ? 'a' : 'article';
-    const name = tier.name as ShowPackage;
-    const pkg = tier.orb && Object.hasOwn(SHOW_PACKAGES, tier.name) ? SHOW_PACKAGES[name] : null;
-    const price = pkg ? `ab ${money.format(pkg.price)} €` : tier.price;
-    const unit = pkg ? `${pkg.base}${name === 'ODYSSEY' ? '+' : ''} Drohnen · ${pkg.dur}` : tier.unit;
-    return <Card class:list={['pack',{featured:tier.highlight}]} href={tier.cta?.href} {...nativeItem(Astro.props,{record:pkg?`package/${name.toLowerCase()}`:undefined,entry:['tiers',i]})}>
-      {tier.orb && (tier.showOrb!==false || editorBuild()) && <canvas hidden={tier.showOrb===false} data-orb={pkg?.orbShape ?? tier.orb.shape} data-color={pkg?.color.join(',') ?? tier.orb.color} data-n={pkg?.base ?? tier.orb.count} aria-hidden="true"></canvas>}
-      <div><div class="name"><h3 {...(pkg ? native(name, ['displayName']) : {})}>{pkg?.displayName ?? tier.name}</h3>{tier.badge && <span class="chip" {...nativeField(Astro.props,["tiers",i,"badge"])}>{tier.badge}</span>}</div><div class="price" {...(pkg ? native(name, ['price'], true) : {})}>{price}</div>{unit && <div class="meta mono" {...(pkg ? native(name, ['base'], true) : {})}>{unit}</div>}{tier.description && <p {...nativeField(Astro.props,["tiers",i,"description"])}>{tier.description}</p>}{tier.features.length>0 && <ul class="facts">{tier.features.map((feature,j) => <li {...nativeField(Astro.props,["tiers",i,"features",j])} {...nativeItem(Astro.props,{entry:["tiers",i,"features",j]})}>{feature}</li>)}</ul>}</div>
+    const name = tier.packageId.toUpperCase() as ShowPackage;
+    const pkg = SHOW_PACKAGES[name];
+    if(!pkg) throw new Error(`Unbekanntes Paket: ${tier.packageId}`);
+    const record = `package/${tier.packageId}`;
+    const features = selectedPackageFeatures(pkg,tier.featureIds);
+    const price = `ab ${money.format(pkg.price)} €`;
+    const unit = `${pkg.base}${name === 'ODYSSEY' ? '+' : ''} Drohnen · ${pkg.dur}`;
+    return <Card class:list={['pack',{featured:pkg.highlight}]} href={tier.cta?.href} {...nativeItem(Astro.props,{record,entry:['tiers',i]})}>
+      {(tier.showOrb!==false || editorBuild()) && <canvas hidden={tier.showOrb===false} data-orb={pkg.orbShape} data-color={pkg.color.join(',')} data-n={pkg.base} aria-hidden="true"></canvas>}
+      <div><div class="name"><h3 {...native(name, ['displayName'])}>{pkg.displayName}</h3>{pkg.badge && <span class="chip" {...native(name,['badge'])}>{pkg.badge}</span>}</div><div class="price" {...native(name, ['price'], true)}>{price}</div><div class="meta mono" {...native(name, ['base'], true)}>{unit}</div>{pkg.description && <p {...native(name,['description'])}>{pkg.description}</p>}{features.length>0 && <ul class="facts">{features.map(({feature,path},j) => <li {...nativeItem(Astro.props,{record,entry:["tiers",i,"featureIds",j]})} {...native(name,path)}>{feature.text}</li>)}</ul>}</div>
     </Card>;
   })}</div>
   {(note || cta) && <div class="pack-note">{note && <span class="mono" {...nativeField(Astro.props,["note"])}>{note}</span>}{cta && <a class="link" href={cta.href}><span {...nativeField(Astro.props,["cta","label"])}>{cta.label}</span> <span aria-hidden="true">→</span></a>}</div>}
