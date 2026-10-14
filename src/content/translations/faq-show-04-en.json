@@ -1,0 +1,23 @@
+{
+  "sourceId": "faq/show-04",
+  "locale": "en",
+  "sourceHash": "7cb9bf3369121fe30e297512ebf6c86cb411ecc874e249688599ca58722f5270",
+  "values": [
+    {
+      "path": [
+        "question"
+      ],
+      "text": "What happens in bad weather?",
+      "reviewed": false,
+      "sourceHash": "1388f29db99c82611e62c507a850717cadc7231812673a7c9ab1e252946ad552"
+    },
+    {
+      "path": [
+        "body"
+      ],
+      "text": "In the summer we rarely have n cancellations. We fly n dimensionally stable up to wind force 5 and also in the case of slight drizzling. If bad weather is foreseeable, we postpone the show at no extra charge – only an already incurred journey will be charged. The show is completely out , we keep the down payment of 30%, because the design and approval are already done.\n",
+      "reviewed": false,
+      "sourceHash": "97402e0d93b316f6f4fdbd436cd81f97e2559f5a8ee0ad6463c6571c3a390644"
+    }
+  ]
+}

@@ -1,0 +1,1203 @@
+{
+  "sourceId": "page/leistungen",
+  "locale": "en",
+  "sourceHash": "b5e72a00826fd0d95f408dbd9ccdd429aa09bb581c795fafe3b54d990b324587",
+  "values": [
+    {
+      "path": [
+        "title"
+      ],
+      "text": "Services – FlyingStars",
+      "reviewed": false,
+      "sourceHash": "c45de42891f48fa7cd69e82761495ff6f131bbf5c66df2e792fc2aa55205f72c"
+    },
+    {
+      "path": [
+        "description"
+      ],
+      "text": "Three packages, fixed prices and a team for design, permit and flight. Learn how FlyingStars your drone show from the r Idea implemented until landing.",
+      "reviewed": false,
+      "sourceHash": "ecbbb5aa899af1d6f00cde55ce83f1f51c22da8a4445ccabdde5598a48facffa"
+    },
+    {
+      "path": [
+        "sections",
+        0,
+        "headline"
+      ],
+      "text": "Drone shows from a single source",
+      "reviewed": false,
+      "sourceHash": "22847b4f69303e5b0a050199ce4b2c6916d5605ec8e216f80817c82f05cbd421"
+    },
+    {
+      "path": [
+        "sections",
+        0,
+        "text"
+      ],
+      "text": "From first n sketch of di e Approval until landing. Discover our packages, our process and the people behind the show.",
+      "reviewed": false,
+      "sourceHash": "83fee9ce25efa17db22731942410339b896f3ecf0e3ffeb1f1a5668488efa9f8"
+    },
+    {
+      "path": [
+        "sections",
+        0,
+        "cta",
+        "label"
+      ],
+      "text": "Request a show",
+      "reviewed": false,
+      "sourceHash": "caebcb95411988a688d18bb0492d01c80dc1fab35ec55a8257390e401273eadb"
+    },
+    {
+      "path": [
+        "sections",
+        0,
+        "secondary",
+        "label"
+      ],
+      "text": "Open price calculator",
+      "reviewed": false,
+      "sourceHash": "ec771e67493237caa8c330a356c777bbb6c2be3924e6e877a185c01f9a4bd531"
+    },
+    {
+      "path": [
+        "sections",
+        1,
+        "press"
+      ],
+      "text": "tagesschau · ZDF · WDR · Tagesspiegel · WAZ",
+      "reviewed": false,
+      "sourceHash": "80141b6d14e70327c56075ff83bd4ca5f5a25e15aad74e9f617df72a77b9076d"
+    },
+    {
+      "path": [
+        "sections",
+        1,
+        "headline"
+      ],
+      "text": "Flown for",
+      "reviewed": false,
+      "sourceHash": "d716c707c1604dceb3adf93953f98cec27560cde7ee59009e1c667f2e3cb28b9"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "kicker"
+      ],
+      "text": "Packs",
+      "reviewed": false,
+      "sourceHash": "e1a11ce2f7dc7d1a9fd6de7a8f43fb36bc9ed459afcdcd4831aaef18787ebb36"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cta",
+        "label"
+      ],
+      "text": "All services and price calculators",
+      "reviewed": false,
+      "sourceHash": "35759a1f2f01ef51dbf35dee90aa84ef6c66dd41ab4e8586d109dce9352b7f24"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "headline"
+      ],
+      "text": "Transparent pricing. No surprises.",
+      "reviewed": false,
+      "sourceHash": "17ae4e16905685d5a0d842ef971f601be26a57fc104498e4b8638a8a8686a23b"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "text"
+      ],
+      "text": "Three packages as a starting point – more drones, your own motifs and extras are available at any time.",
+      "reviewed": false,
+      "sourceHash": "a5862fb6ce154bfab441989037d6e6af8dde1260f624979b1de5763a145f0b01"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "tiers",
+        0,
+        "cta",
+        "label"
+      ],
+      "text": "Visit Plan page",
+      "reviewed": false,
+      "sourceHash": "3f3110a37238006e3844be02c5451f1633c31862b6f8f9711f511715cab96d6c"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "tiers",
+        1,
+        "cta",
+        "label"
+      ],
+      "text": "Visit Plan page",
+      "reviewed": false,
+      "sourceHash": "3f3110a37238006e3844be02c5451f1633c31862b6f8f9711f511715cab96d6c"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "tiers",
+        2,
+        "cta",
+        "label"
+      ],
+      "text": "Visit Plan page",
+      "reviewed": false,
+      "sourceHash": "3f3110a37238006e3844be02c5451f1633c31862b6f8f9711f511715cab96d6c"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "note"
+      ],
+      "text": "All prices are net plus",
+      "reviewed": false,
+      "sourceHash": "33fd8170477b8ce9ee150c5d275110d7390ec6cf46bea1543e0479697630de25"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "kicker"
+      ],
+      "text": "Exp",
+      "reviewed": false,
+      "sourceHash": "9fe440fa4dbe876ce7b5c2e24b5ce8715e0d53dab9b0e8dc26026c7615432960"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "headline"
+      ],
+      "text": "From the idea to the landing.",
+      "reviewed": false,
+      "sourceHash": "c48d62ca2de9f89fca8a71094720b04d6b171ff93ca91b2ede658260969f314d"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "text"
+      ],
+      "text": "You are involved as much or as little as you want. We come up with solutions, not problems.",
+      "reviewed": false,
+      "sourceHash": "e9014546eb38dd628a4bf3431d58ff7ebbab5c74e1e2911e55eb1970f1b771a4"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "steps",
+        0,
+        "title"
+      ],
+      "text": "Request",
+      "reviewed": false,
+      "sourceHash": "d131ffcac53b09ae4694f2d732225bac9f6241812c6d21de7e2183989ad4d452"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "steps",
+        0,
+        "text"
+      ],
+      "text": "Tell us the date, place and occasion. We will get back to you within 48 hours – usually much faster.",
+      "reviewed": false,
+      "sourceHash": "e2417b4151e2cf5bc0a4c761c5765268da43981b323582e533bb6c6181b265dc"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "steps",
+        0,
+        "duration"
+      ],
+      "text": "48 hrs response time",
+      "reviewed": false,
+      "sourceHash": "ea835cfdf291bda02d2dc210e0d4d8563d2273f06e1d016a260d5804948f0c60"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "steps",
+        1,
+        "title"
+      ],
+      "text": "Location & Offer",
+      "reviewed": false,
+      "sourceHash": "61dfa467630729b614a06cc295ab35140d0a3127f513a9a31dfbf379b8ec6b8d"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "steps",
+        1,
+        "text"
+      ],
+      "text": "We check the show area of around 100 × 100 meters and send you a fixed price offer, which you accept online.",
+      "reviewed": false,
+      "sourceHash": "ee052e2fe1b405fb12f9ee01c8206624a9562c1109956f8bbb6d1b576e47975b"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "steps",
+        1,
+        "duration"
+      ],
+      "text": "Fixed",
+      "reviewed": false,
+      "sourceHash": "10be4cdfb866845a8ed7913e4eefc4b996b9407df2bdd13c0c80a220b9d335ba"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "steps",
+        2,
+        "title"
+      ],
+      "text": "Approval",
+      "reviewed": false,
+      "sourceHash": "a63a41f66ffeb38b2102b5b1131880b48261fa86f7e0036ac55c3a07d994348e"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "steps",
+        2,
+        "text"
+      ],
+      "text": "We obtain all aviation approvals. All we need from you is the consent of the property owners.",
+      "reviewed": false,
+      "sourceHash": "79aef09d0f1a6e79b32533c890498dc4ca1fe12022576071ca5e501e953d4a2f"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "steps",
+        2,
+        "duration"
+      ],
+      "text": "LBA · EASA",
+      "reviewed": false,
+      "sourceHash": "f80be5a0360713533ad3bc3bcd169f376f6a5c9ce0cde0dcd47b5040845dcb36"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "steps",
+        3,
+        "title"
+      ],
+      "text": "Design",
+      "reviewed": false,
+      "sourceHash": "0072e6b934945d5ba08f9729e00847391922f2f6026a435e704634fb93bf4502"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "steps",
+        3,
+        "text"
+      ],
+      "text": "We develop motifs, storyline and music together: first as raw animation, then with colours and lighting effects in time.",
+      "reviewed": false,
+      "sourceHash": "4f839de9dd9683f27ec3bef05bb51ca8f852a8432864eed433c9ef54c8c0ef80"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "steps",
+        3,
+        "duration"
+      ],
+      "text": "Drafts & Feedback",
+      "reviewed": false,
+      "sourceHash": "004e3e0925d13c7a425dbd607ed9ac7ffe75657a22de9c0c6475c12fbbc5ff04"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "steps",
+        4,
+        "title"
+      ],
+      "text": "Show Day",
+      "reviewed": false,
+      "sourceHash": "2d440010e1434668a6a669951a6abbccf5bdfa74acceb029ac1f9d7d2c4e9e3d"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "steps",
+        4,
+        "text"
+      ],
+      "text": "Around three hours of setup, a team of pilots and technicians on site – you enjoy with your guests.",
+      "reviewed": false,
+      "sourceHash": "ee9d7016b2eb0b67e4ce0a71251a2f46539453a2de1659ec62b1f3ca1e101030"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "steps",
+        4,
+        "duration"
+      ],
+      "text": "approx. 3 hours set-up",
+      "reviewed": false,
+      "sourceHash": "e216e63ed55d887e53712cd818ffb90463a76c3131822f011685bf4e952dc91c"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "kicker"
+      ],
+      "text": "Honest comparison",
+      "reviewed": false,
+      "sourceHash": "c37ef3cbb70a3842638271f9e84814903d13f4c72e0231e17740712e47a1ff22"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "headline"
+      ],
+      "text": "Drone, fireworks or laser?",
+      "reviewed": false,
+      "sourceHash": "dfd6602d80ac640c77dbb099db4a37d4a8a764314765f9904cc2dbe083a224ea"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "text"
+      ],
+      "text": "Every technique has its strengths. Here you can see when a drone show is the best choice – and when not.",
+      "reviewed": false,
+      "sourceHash": "b3b70de30dc1b5db412855b394b3ae74693b118edd2d8efe1d5e9a1d684927a9"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rowHeader"
+      ],
+      "text": "Concentration",
+      "reviewed": false,
+      "sourceHash": "057ac2118a4a70304b0c8d03aeb754304bac6fb9b869d258719fa435b2f16d9a"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "columns",
+        0
+      ],
+      "text": "Drone Show",
+      "reviewed": false,
+      "sourceHash": "2edbebd016f4619b70a8486d3a96c977c8931ef44c6a92d89caa256977fef0c2"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "columns",
+        1
+      ],
+      "text": "Fireworks",
+      "reviewed": false,
+      "sourceHash": "a1e98adb9cb8a8e446da7bc17e00759b49fe9cca0bdd8008a6fb3b5c2c80b377"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "columns",
+        2
+      ],
+      "text": "Laser show",
+      "reviewed": false,
+      "sourceHash": "9b64b08ca0796719a11b7dee3dbe980ae244d8ffaba3b2f14af20b3370a1ee1d"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        0,
+        "label"
+      ],
+      "text": "Logos and lettering in the sky",
+      "reviewed": false,
+      "sourceHash": "fe626478adf2963c47016bf2a9eb26e71fb1ea428de2c4e4aa9be88c01e8fd88"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        0,
+        "cells",
+        0,
+        "label"
+      ],
+      "text": "Yes",
+      "reviewed": false,
+      "sourceHash": "cde9e58a9a4e1f369839d800aebbe5e4c19e2efa9f5791ecda15e9e87eb652e3"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        0,
+        "cells",
+        0,
+        "text"
+      ],
+      "text": "also in 3D",
+      "reviewed": false,
+      "sourceHash": "6e5de700f280f00db0e98704805fcdc239af745aacb7872ef563d300331b12db"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        0,
+        "cells",
+        1,
+        "label"
+      ],
+      "text": "No",
+      "reviewed": false,
+      "sourceHash": "90ebc1bde6f3b1ffd73c3d7db7a421b21d5a4494ef1ce86aee56013edde0a8f7"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        0,
+        "cells",
+        2,
+        "label"
+      ],
+      "text": "Part",
+      "reviewed": false,
+      "sourceHash": "802a7213f9b5595a8be5f5bfec3f847ab64bbcdda8ebc48a44418ce292a335d5"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        0,
+        "cells",
+        2,
+        "text"
+      ],
+      "text": "only on surfaces or haze",
+      "reviewed": false,
+      "sourceHash": "19b32228699f20645ccffbed9101b5c97534ffd7ca514d5a3c06427c1baf621d"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        0,
+        "values",
+        0
+      ],
+      "text": "Also in 3D",
+      "reviewed": false,
+      "sourceHash": "29ee4bebc8c7836dabe184dfc70b3889134ebd6517205d47db7bd87b71949e2a"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        0,
+        "values",
+        1
+      ],
+      "text": "No",
+      "reviewed": false,
+      "sourceHash": "90ebc1bde6f3b1ffd73c3d7db7a421b21d5a4494ef1ce86aee56013edde0a8f7"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        0,
+        "values",
+        2
+      ],
+      "text": "Partly only on surfaces or haze",
+      "reviewed": false,
+      "sourceHash": "e58bebc9381bc64f3962dd6b54dd3777b335450113b12ade68b9e84b6165b94b"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        1,
+        "label"
+      ],
+      "text": "Volume",
+      "reviewed": false,
+      "sourceHash": "3d1236b60cb9f47856355bcbe5cd809e51d90b4fb8b4c7aa5b5869fc921994ee"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        1,
+        "cells",
+        0,
+        "label"
+      ],
+      "text": "Quiet",
+      "reviewed": false,
+      "sourceHash": "a7a240ba87041bd78a3f1a2ee13089ef19faeb03c2e993527ab615d559d7f08e"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        1,
+        "cells",
+        0,
+        "text"
+      ],
+      "text": "Music of choice",
+      "reviewed": false,
+      "sourceHash": "d5d4feb69391071d9d6b5b72f453e733c15279de22344d0118587f6089a98824"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        1,
+        "cells",
+        1,
+        "label"
+      ],
+      "text": "Very loud",
+      "reviewed": false,
+      "sourceHash": "45c068ecf7132766e6fdadcc8cd0ad12df8a86b673124d41cd2ca9a99a20bee0"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        1,
+        "cells",
+        2,
+        "label"
+      ],
+      "text": "Quiet",
+      "reviewed": false,
+      "sourceHash": "a7a240ba87041bd78a3f1a2ee13089ef19faeb03c2e993527ab615d559d7f08e"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        1,
+        "values",
+        0
+      ],
+      "text": "Quiet music of choice",
+      "reviewed": false,
+      "sourceHash": "2d56110db5b4f4a68da8d5332c2f7cb225e525dde17f7826a9d455dec17379e1"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        1,
+        "values",
+        1
+      ],
+      "text": "Very loud",
+      "reviewed": false,
+      "sourceHash": "45c068ecf7132766e6fdadcc8cd0ad12df8a86b673124d41cd2ca9a99a20bee0"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        1,
+        "values",
+        2
+      ],
+      "text": "Quiet",
+      "reviewed": false,
+      "sourceHash": "a7a240ba87041bd78a3f1a2ee13089ef19faeb03c2e993527ab615d559d7f08e"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        2,
+        "label"
+      ],
+      "text": "Smoke, particulate matter, waste",
+      "reviewed": false,
+      "sourceHash": "39d4d3a0571cca3c692fd0a5b562b594e924fef5188f7f1a48723cb96990480a"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        2,
+        "cells",
+        0,
+        "label"
+      ],
+      "text": "Nothing",
+      "reviewed": false,
+      "sourceHash": "257b2b876d415a37d50d4f915b00f1b129df2f352100d537b6a81ba60b3062a3"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        2,
+        "cells",
+        1,
+        "label"
+      ],
+      "text": "Much",
+      "reviewed": false,
+      "sourceHash": "6dd4790231fbc0b1fcfcc99e63c74d70693ffe87aa61e39d10375c7ace8bd690"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        2,
+        "cells",
+        2,
+        "label"
+      ],
+      "text": "Haze",
+      "reviewed": false,
+      "sourceHash": "fbe7c19c4c658a25c5c5b0a4273943b13fc2023d1e2590ebb7798ba9372c1284"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        2,
+        "cells",
+        2,
+        "text"
+      ],
+      "text": "necessary for visible radiation",
+      "reviewed": false,
+      "sourceHash": "645d8443a39795cf60708a066808004a688394d965f906b40768ffeb60647369"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        2,
+        "values",
+        0
+      ],
+      "text": "Nothing",
+      "reviewed": false,
+      "sourceHash": "257b2b876d415a37d50d4f915b00f1b129df2f352100d537b6a81ba60b3062a3"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        2,
+        "values",
+        1
+      ],
+      "text": "Much",
+      "reviewed": false,
+      "sourceHash": "6dd4790231fbc0b1fcfcc99e63c74d70693ffe87aa61e39d10375c7ace8bd690"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        2,
+        "values",
+        2
+      ],
+      "text": "Haze needed for visible rays",
+      "reviewed": false,
+      "sourceHash": "c5d50cc72bde01b6aedb9c29d5e9f52429eb3943f240887c5e00112b05064c00"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        3,
+        "label"
+      ],
+      "text": "Fire hazard",
+      "reviewed": false,
+      "sourceHash": "db923930e77f3adb44d0e721f294d9e973616abff34f9a77628c3363c8cd4ea3"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        3,
+        "cells",
+        0,
+        "label"
+      ],
+      "text": "None",
+      "reviewed": false,
+      "sourceHash": "8a572015c49b2071ebcf52dde28b20d61ba0559b2410e83d41a0a1a14184bf90"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        3,
+        "cells",
+        1,
+        "label"
+      ],
+      "text": "Yes",
+      "reviewed": false,
+      "sourceHash": "cde9e58a9a4e1f369839d800aebbe5e4c19e2efa9f5791ecda15e9e87eb652e3"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        3,
+        "cells",
+        1,
+        "text"
+      ],
+      "text": "Prohibitions in case of drought",
+      "reviewed": false,
+      "sourceHash": "9b924955f7107fdeca4b8b60167b3e2a4a196008f4eb10ab1f861ea22b93b96b"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        3,
+        "cells",
+        2,
+        "label"
+      ],
+      "text": "None",
+      "reviewed": false,
+      "sourceHash": "8a572015c49b2071ebcf52dde28b20d61ba0559b2410e83d41a0a1a14184bf90"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        3,
+        "values",
+        0
+      ],
+      "text": "None",
+      "reviewed": false,
+      "sourceHash": "8a572015c49b2071ebcf52dde28b20d61ba0559b2410e83d41a0a1a14184bf90"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        3,
+        "values",
+        1
+      ],
+      "text": "Yes Prohibitions in Drought",
+      "reviewed": false,
+      "sourceHash": "863537fca192059846f64a53cdbd5672ba65795f3c042356bcfac79802b8de77"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        3,
+        "values",
+        2
+      ],
+      "text": "None",
+      "reviewed": false,
+      "sourceHash": "8a572015c49b2071ebcf52dde28b20d61ba0559b2410e83d41a0a1a14184bf90"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        4,
+        "label"
+      ],
+      "text": "Wind and weather",
+      "reviewed": false,
+      "sourceHash": "542936dcbcd9fef37713f387c275f2b72a64408dd66875ed65a86c6d0f61b476"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        4,
+        "cells",
+        0,
+        "label"
+      ],
+      "text": "Border",
+      "reviewed": false,
+      "sourceHash": "26ee35ba221db5b3a86fd648cbdcf8fdd01af4bf49c0df176e39cb480db64ecb"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        4,
+        "cells",
+        0,
+        "text"
+      ],
+      "text": "up to wind force 5, no heavy rain",
+      "reviewed": false,
+      "sourceHash": "c462fd8e31a2e5796556e1da126e57552b1b49165ee75fa02d13565d86beb3ad"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        4,
+        "cells",
+        1,
+        "label"
+      ],
+      "text": "Border",
+      "reviewed": false,
+      "sourceHash": "26ee35ba221db5b3a86fd648cbdcf8fdd01af4bf49c0df176e39cb480db64ecb"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        4,
+        "cells",
+        1,
+        "text"
+      ],
+      "text": "cancelled by storm",
+      "reviewed": false,
+      "sourceHash": "e2858b6a2f1227830ef465ca6f7182773de72978ee7e68b7865e6f411d67b562"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        4,
+        "cells",
+        2,
+        "label"
+      ],
+      "text": "Robust",
+      "reviewed": false,
+      "sourceHash": "95d3e9d5c35d75d58e7ce3f8f50a0feb922a2dc79babcfb083b3af18a1e9d9cf"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        4,
+        "cells",
+        2,
+        "text"
+      ],
+      "text": "also inside",
+      "reviewed": false,
+      "sourceHash": "30f80013bae3dac33638692d003bc399e71a9071e2f08b761a2c4972c92fa2ec"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        4,
+        "values",
+        0
+      ],
+      "text": "Limit to wind force 5, no heavy rain",
+      "reviewed": false,
+      "sourceHash": "6334ddf851fc3b02ce4c409cf5e79a021e527ebb1ad8279c685617dd3bd93f59"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        4,
+        "values",
+        1
+      ],
+      "text": "Threshold cancelled in storm",
+      "reviewed": false,
+      "sourceHash": "4a56c15d9c48cd62010920371a37f653a5f193fdbac0fafd8d09f76de530b217"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        4,
+        "values",
+        2
+      ],
+      "text": "Robust indoors too",
+      "reviewed": false,
+      "sourceHash": "1c5721c2233a81a12eafd410d419c008a1082d17d965cd6284a51f8dce92a41b"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        5,
+        "label"
+      ],
+      "text": "Visible from a distance",
+      "reviewed": false,
+      "sourceHash": "2efd6a226f288b0fabd95a54a40167eaa161ac131b26ef910f6a2705083fcbfe"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        5,
+        "cells",
+        0,
+        "label"
+      ],
+      "text": "Kilometres",
+      "reviewed": false,
+      "sourceHash": "7a92be464aa993b03545019d6be2134016716d8dab13e69a7252b84fd07e9c3f"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        5,
+        "cells",
+        1,
+        "label"
+      ],
+      "text": "Kilometres",
+      "reviewed": false,
+      "sourceHash": "7a92be464aa993b03545019d6be2134016716d8dab13e69a7252b84fd07e9c3f"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        5,
+        "cells",
+        2,
+        "label"
+      ],
+      "text": "Limited",
+      "reviewed": false,
+      "sourceHash": "ea01f2eeb1275939a204da9de952063f40d04c02483d6667634e09df30acdcfc"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        5,
+        "cells",
+        2,
+        "text"
+      ],
+      "text": "works best close",
+      "reviewed": false,
+      "sourceHash": "f0568a0114fe371215c85d11c69d3e625ab8b3d69afdc4f28b16e441e2337522"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        5,
+        "values",
+        0
+      ],
+      "text": "Kilometres",
+      "reviewed": false,
+      "sourceHash": "7a92be464aa993b03545019d6be2134016716d8dab13e69a7252b84fd07e9c3f"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        5,
+        "values",
+        1
+      ],
+      "text": "Kilometres",
+      "reviewed": false,
+      "sourceHash": "7a92be464aa993b03545019d6be2134016716d8dab13e69a7252b84fd07e9c3f"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "rows",
+        5,
+        "values",
+        2
+      ],
+      "text": "Limited works best close",
+      "reviewed": false,
+      "sourceHash": "2ee3fd92f81f0c83070ff418d669792bc713bfc78468b46440275302190b3f1d"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "note"
+      ],
+      "text": "Draft · technical examination pending",
+      "reviewed": false,
+      "sourceHash": "9a7ff905c7b73940f8e1b0661cd96f3a6a3d23ef16e149690d8c6b0fa94edacc"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "kicker"
+      ],
+      "text": "Team",
+      "reviewed": false,
+      "sourceHash": "5985039f106df054b43c3529139613bf7c2372937539f344c7c5ee47d00a0d63"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "note"
+      ],
+      "text": "Our crew of pilots:inside and technicians:inside, who each e Show set up on site and flies.",
+      "reviewed": false,
+      "sourceHash": "4db7d961de24a40402f1d06a844172775a192c97e68f7f87c401a0200f823367"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "cta",
+        "label"
+      ],
+      "text": "Get to know us",
+      "reviewed": false,
+      "sourceHash": "ac9c67224d3c64ff106d80a30578bfe2d3d99beaf9e0a2923f23ffeb24a8a880"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "headline"
+      ],
+      "text": "The people behind it Heaven.",
+      "reviewed": false,
+      "sourceHash": "8027acbc52435da62d57d9d08c8929f66e41b766d16c8f7851edbe16fc8934b1"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "text"
+      ],
+      "text": "Founded in 2022, at home in Triple Z on Zeche Zollverein in Essen. We make design, technology and permits ourselves – you have heard of the First idea until landing the same contacts: inside.",
+      "reviewed": false,
+      "sourceHash": "3983b0aaca7c284322c870197d97ca53dcaff710b08cb9f2e6049dbcb524b46f"
+    }
+  ]
+}

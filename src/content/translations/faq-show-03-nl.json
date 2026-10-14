@@ -1,0 +1,23 @@
+{
+  "sourceId": "faq/show-03",
+  "locale": "nl",
+  "sourceHash": "b9d1cfceac3b961b1b11038be0a463bf52844fb9b2f8d597d4012e4588c25b0c",
+  "values": [
+    {
+      "path": [
+        "question"
+      ],
+      "text": "Geef je om de vergunningen?",
+      "reviewed": false,
+      "sourceHash": "380ee870340547ecccf05cb34ae0d353fdad6a3caf240e2faa59792bb25d29d4"
+    },
+    {
+      "path": [
+        "body"
+      ],
+      "text": "Ja. We hebben een verregaande goedkeuring van het Federal Aviation Office en een EU-brede exploitatievergunning. Andere aanvragen Zo nemen wij bij de Duitse luchtverkeersleiding het over. Van jou. We hebben alleen de toestemming van de eigenaren nodig: binnen in het geval van openbare grond, de De r Stad of gemeente.\n",
+      "reviewed": false,
+      "sourceHash": "01590a8d09f0b741adb0b0cf6fa9b56b744fb755add1ef267ae5b1a385b9aab2"
+    }
+  ]
+}

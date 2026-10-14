@@ -1,0 +1,23 @@
+{
+  "sourceId": "faq/show-02",
+  "locale": "en",
+  "sourceHash": "7ba315c710ce5787d6edff1ef5ccbd2716cf0bef3b2dd0c0bf98674c5c9fa5cb",
+  "values": [
+    {
+      "path": [
+        "question"
+      ],
+      "text": "How much space does a drone show need?",
+      "reviewed": false,
+      "sourceHash": "feea938aa406304996bad1e1d63d7e46f0d39d19447877ed3935a35bf60f1172"
+    },
+    {
+      "path": [
+        "body"
+      ],
+      "text": "As a rule of thumb, a show area of about 100 × 100 meters in which Percentage stop no uninvolved persons during the show. The The exact size depends on the number of drones and flight altitude. Uncertain? Send us the place – we check it and find an alternative if necessary.\n\nDimensions, zones, structure and approvals at a glance: our [Technology Data Sheet (PDF)](/media/downloads/FlyingStars-Technik-Datenblatt.pdf) .\n",
+      "reviewed": false,
+      "sourceHash": "09a3b238d58bcaf2758a2865a3954c7dce29a30a67045b5263bf02a79a2e6475"
+    }
+  ]
+}

@@ -1,0 +1,181 @@
+{
+  "sourceId": "package/spark",
+  "locale": "nl",
+  "sourceHash": "f5f2df71e3a3b1dae5e2c6fe373db4b3179f58297c2458fbc5cd94e0214994d2",
+  "values": [
+    {
+      "path": [
+        "displayName"
+      ],
+      "text": "SPARK",
+      "reviewed": false,
+      "sourceHash": "5c33a73fa55987ba4cd05848b17468a0bbab3be6d0882b104b4f370f93751188"
+    },
+    {
+      "path": [
+        "dur"
+      ],
+      "text": "ongeveer 10 minuten",
+      "reviewed": false,
+      "sourceHash": "e7be5c173773dfc59129d657913c1af1d8a223bbee5cbfd99e581e7cd7118caa"
+    },
+    {
+      "path": [
+        "badge"
+      ],
+      "text": "Invoer",
+      "reviewed": false,
+      "sourceHash": "f6d1badb525cc04feb3dcd277b18657b2450ec361576a32956c7bbbc908775f5"
+    },
+    {
+      "path": [
+        "description"
+      ],
+      "text": "De sprankelende start voor bruiloften, jubilea en kleinere zakelijke en culturele vieringen.",
+      "reviewed": false,
+      "sourceHash": "fc345ed29d5ac35e48497f4285eed9a72e4f34eaa0fef77b072e9e172f01bdf7"
+    },
+    {
+      "path": [
+        "featureGroups",
+        0,
+        "title"
+      ],
+      "text": "Ontwerp en inhoud",
+      "reviewed": false,
+      "sourceHash": "ee2cd5fa6c2fe3e61deff93760fcf7e8f3358d73ea4edfd87260be6fbc410918"
+    },
+    {
+      "path": [
+        "featureGroups",
+        0,
+        "items",
+        0,
+        "text"
+      ],
+      "text": "Selectie uit vooraf gedefinieerde premium formaties zoals harten of ringen",
+      "reviewed": false,
+      "sourceHash": "1ac36b2bea7bf6df6bcc91dc1c3581eaf0ab416a9f2577e1ead5923757b946bf"
+    },
+    {
+      "path": [
+        "featureGroups",
+        0,
+        "items",
+        1,
+        "text"
+      ],
+      "text": "Maximaal vier eigen elementen: initialen, logo, wapenschild",
+      "reviewed": false,
+      "sourceHash": "b0213742ba4cc190e5306b50a8306b9c120eaf5e210fb179d5567c0975be8584"
+    },
+    {
+      "path": [
+        "featureGroups",
+        1,
+        "title"
+      ],
+      "text": "Muziek",
+      "reviewed": false,
+      "sourceHash": "8ff93160579529e4487f15db8c8e8a1996ba7e1212058e823bcb342038695b06"
+    },
+    {
+      "path": [
+        "featureGroups",
+        1,
+        "items",
+        0,
+        "text"
+      ],
+      "text": "Professionele GEMA-vrije muziekondersteuning",
+      "reviewed": false,
+      "sourceHash": "0d49961ecc46f14affafe89133ecc6c8f348a5f0dc9222ed2de934b5d63699cb"
+    },
+    {
+      "path": [
+        "featureGroups",
+        1,
+        "items",
+        1,
+        "text"
+      ],
+      "text": "GEMA muziek mogelijk na registratie van het evenement",
+      "reviewed": false,
+      "sourceHash": "ad9c9cd19637ed65436ea4100f5ca6a7a04b01063a9b09651da4c10d95ce6af2"
+    },
+    {
+      "path": [
+        "featureGroups",
+        2,
+        "title"
+      ],
+      "text": "Service & Extra's",
+      "reviewed": false,
+      "sourceHash": "2d60e56ccf1a7c47474b3965fd37e70976053d93d19b144ff3e2993a109115eb"
+    },
+    {
+      "path": [
+        "featureGroups",
+        2,
+        "items",
+        0,
+        "text"
+      ],
+      "text": "Eigen elementen vooraf voor vrijgave",
+      "reviewed": false,
+      "sourceHash": "07adc8cdf3c4a1ab4e9f9b726cf0ea8e0ed25cb85eeaa87976840b4678d9aa3e"
+    },
+    {
+      "path": [
+        "featureGroups",
+        2,
+        "items",
+        1,
+        "text"
+      ],
+      "text": "Standaardgoedkeuringsprocedure",
+      "reviewed": false,
+      "sourceHash": "f2482c626076e189c6c5823907e4f110c5d0723197108431bce4679da188e5d4"
+    },
+    {
+      "path": [
+        "featureGroups",
+        2,
+        "items",
+        2,
+        "text"
+      ],
+      "text": "Compleet team ter plaatse",
+      "reviewed": false,
+      "sourceHash": "5f9a65e4ef81119ab5e66e541896e2436d6ba60ffd230de72c3d202e252b7fa1"
+    },
+    {
+      "path": [
+        "featureGroups",
+        2,
+        "items",
+        3,
+        "text"
+      ],
+      "text": "Veiligheidsconcept en aansprakelijkheidsverzekering",
+      "reviewed": false,
+      "sourceHash": "fd60b316047485df6f2e539e6fd7d4e13bd2819fd94f9eb9d95f198973b2bd79"
+    },
+    {
+      "path": [
+        "effortLabel"
+      ],
+      "text": "Klassiek in 2D",
+      "reviewed": false,
+      "sourceHash": "cd255e980c2e278b9e227998a6be4200e1a7e243655f3920787b749694aebb57"
+    },
+    {
+      "path": [
+        "includes"
+      ],
+      "text": "vooraf gedefinieerde formaties zoals harten of ringen en tot vier eigen elementen",
+      "reviewed": false,
+      "sourceHash": "b329215d3df30663dfd4de849cfb6ef7f3abb3d1de9bf36d589508023d0390e1"
+    }
+  ]
+}

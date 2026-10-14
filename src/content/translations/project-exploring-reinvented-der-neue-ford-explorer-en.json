@@ -24,6 +24,580 @@
       "text": "Drohnen",
       "reviewed": false,
       "sourceHash": "9dc7fa597613b82eecbe845291d235cf1c2c3bd2e22984207fad8e0b7fb31dd1"
+    },
+    {
+      "path": [
+        "title"
+      ],
+      "text": "Ford Explorer",
+      "reviewed": false,
+      "sourceHash": "02e90c1d5f305baef9b2363aaea0b7e1cf9e3fe253bdeba6233c989498c35f41"
+    },
+    {
+      "path": [
+        "showcase",
+        "meta",
+        "title"
+      ],
+      "text": "Exploring Reinvented: 350 drones for the new Ford Explorer",
+      "reviewed": false,
+      "sourceHash": "c61ef1f096fbabff54d6b8aa1ade0a16673013ec29aff388afb9598aee86c006"
+    },
+    {
+      "path": [
+        "showcase",
+        "meta",
+        "description"
+      ],
+      "text": "Launch clip for de n Electric Ford Explorer: 350 drones over the Ford Electric Vehicle Center in Cologne, shot with Cinequads for the agency Envy Create.",
+      "reviewed": false,
+      "sourceHash": "8226666c9d01c86a4977fa83b6c993735457290ba64c4b4753ecf6eec7455c83"
+    },
+    {
+      "path": [
+        "showcase",
+        "cardTitle"
+      ],
+      "text": "Exploring Reinvented: the new Ford Explorer",
+      "reviewed": false,
+      "sourceHash": "a4daa7d22158f0e07bbf8c48f48937d99621830d75d239f11250ba4dd4f54a68"
+    },
+    {
+      "path": [
+        "showcase",
+        "category"
+      ],
+      "text": "Automotive · Launch",
+      "reviewed": false,
+      "sourceHash": "caaa095574f0deec24ddc5c5faec996caf4dbf93900cb26e36c718e6ba4bdc81"
+    },
+    {
+      "path": [
+        "showcase",
+        "kicker"
+      ],
+      "text": "Automotive · Cologne · June 2024",
+      "reviewed": false,
+      "sourceHash": "2ceb9fa92de59dbd2864897c5b47a2d03cb22ce8af7269facad47ebe2fe53e18"
+    },
+    {
+      "path": [
+        "showcase",
+        "titleLines",
+        0
+      ],
+      "text": "Exploring",
+      "reviewed": false,
+      "sourceHash": "39c32394761c042bafddebed718e62ebeaa15c090f7ab5ec3f30038a04f8fc5f"
+    },
+    {
+      "path": [
+        "showcase",
+        "titleLines",
+        1
+      ],
+      "text": "Reinvented",
+      "reviewed": false,
+      "sourceHash": "f77a035a0efb39cea8d8af0fa28b72f6df3407e369c8e1968da1f663a3909068"
+    },
+    {
+      "path": [
+        "showcase",
+        "tagline"
+      ],
+      "text": "350 drones for the New Ford Explorer.",
+      "reviewed": false,
+      "sourceHash": "6f67cb613abe2174619d703ddc27076257196dfc5da4e52e666d358d5bec9fb1"
+    },
+    {
+      "path": [
+        "showcase",
+        "credits",
+        0,
+        "label"
+      ],
+      "text": "Customer",
+      "reviewed": false,
+      "sourceHash": "d1da7fb39689c31f757abde23ab1c9985ff8f5dddd935bd8c774cc7ca75c6e7e"
+    },
+    {
+      "path": [
+        "showcase",
+        "credits",
+        0,
+        "value"
+      ],
+      "text": "Ford agency Envy Create",
+      "reviewed": false,
+      "sourceHash": "63cce0cb39714cc4a84bde82cca1f8966b7cc6da225f546c693c6c0e5caf3825"
+    },
+    {
+      "path": [
+        "showcase",
+        "credits",
+        1,
+        "value"
+      ],
+      "text": "Ford Electric Vehicle Center, Cologne",
+      "reviewed": false,
+      "sourceHash": "5aee0ee86dd4043d7b0f08ee53b0a3dadcb5bc042dd1407f32f1b56c232218f1"
+    },
+    {
+      "path": [
+        "showcase",
+        "credits",
+        2,
+        "label"
+      ],
+      "text": "Date",
+      "reviewed": false,
+      "sourceHash": "9135882d323cd839a5239648d28440a256c299c08d108c1b09fc4b9872efcc3a"
+    },
+    {
+      "path": [
+        "showcase",
+        "numbers",
+        0,
+        "label"
+      ],
+      "text": "Drones over the factory",
+      "reviewed": false,
+      "sourceHash": "c89127f0d3058a46fbecb9264512266ca5b8595a9a127458d583d771b8c0c854"
+    },
+    {
+      "path": [
+        "showcase",
+        "numbers",
+        1,
+        "label"
+      ],
+      "text": "complete passes for the camera",
+      "reviewed": false,
+      "sourceHash": "d901eca1af9081786abb987faa5438afc9257d16215059c4ebe063755459eb31"
+    },
+    {
+      "path": [
+        "showcase",
+        "numbers",
+        2,
+        "label"
+      ],
+      "text": "Day before the series start",
+      "reviewed": false,
+      "sourceHash": "e671082a1f97d3b789b3b66b49c9db9d41e020527e0083c2139a8eba52939898"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        0,
+        "kicker"
+      ],
+      "text": "01 · The occasion",
+      "reviewed": false,
+      "sourceHash": "6004f68cde6fa1f022f1a924c0271dcd23af0544e93c89d5769dd431d72d9a78"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        0,
+        "title"
+      ],
+      "text": "Start of series on 4. June 2024",
+      "reviewed": false,
+      "sourceHash": "ed36abfe6a45810552c7bac0b0c788cb727ecfd120641d432145817cb5fb7768"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        0,
+        "text"
+      ],
+      "text": "In Cologne, the series production de s New electric Ford Explorer. Da s Campaign motto Exploring Reinvented. Am Aben d Before that we turned.",
+      "reviewed": false,
+      "sourceHash": "65a729c13860d6775e0aace60e449507f59055f3103d27f62b0d21f3a179382e"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        0,
+        "image",
+        "caption"
+      ],
+      "text": "The Explorer rolls out of the hall",
+      "reviewed": false,
+      "sourceHash": "b7e75970e7f44da18935e0d35d7809808a27cd2f18947bd71a10538f7a7fe687"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        1,
+        "kicker"
+      ],
+      "text": "02 · The choreography",
+      "reviewed": false,
+      "sourceHash": "c7cc1605ac627a158154102d294a81c48e9f5e7c41c9989ef57e927728a7c6f5"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        1,
+        "title"
+      ],
+      "text": "Start at the moment of exit",
+      "reviewed": false,
+      "sourceHash": "1ce75cc6f5726ad78703d403604e564f977419ae516bbcd5f837da781fecd175"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        1,
+        "text"
+      ],
+      "text": "The drones rose n exactly at the moment in which De r Explorer from the r Hall rolled. Then followed starry skies, the explorer as a drone image, the lettering exploring reinvented and there s Ford logo.",
+      "reviewed": false,
+      "sourceHash": "a5db1fef9b0a2b1d15a1d7fa94406ea5afb023b4b987b9be3572b21ce5eebf25"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        1,
+        "image",
+        "caption"
+      ],
+      "text": "Car and drone field",
+      "reviewed": false,
+      "sourceHash": "0dd23297e21975432a12614d75fd7b2446439821b44d994f524f783dea7cf9b2"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        2,
+        "kicker"
+      ],
+      "text": "03 · The spin",
+      "reviewed": false,
+      "sourceHash": "e8f9386ef9f9907a4dede2dbd27fdb72334722e66d3570306fed39b1783937ba"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        2,
+        "title"
+      ],
+      "text": "Twice completely flown",
+      "reviewed": false,
+      "sourceHash": "4ab67251a0b66597ab7377362fe7df4de617a862350682bf82eb93ae7826636b"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        2,
+        "text"
+      ],
+      "text": "For the We have the best prospects for Show flown twice. Cinequads filmed and coordinated the flight routes of the camera drones with us – right through the formation.",
+      "reviewed": false,
+      "sourceHash": "0afe032178c65ef4e4f0fd6e9619c0c0e6b61653883cc5e54accb9d3528a449f"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        2,
+        "image",
+        "caption"
+      ],
+      "text": "Flight over the Rising drones",
+      "reviewed": false,
+      "sourceHash": "d914bc35696247355b9260e1d1d042e67a283c5d277823bd0603f92cc60b6579"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        3,
+        "kicker"
+      ],
+      "text": "04 · The result",
+      "reviewed": false,
+      "sourceHash": "6e1827e17bf884a4c990525708d5bd67bc6c29e60d0c2d3b6d3112da75d0f810"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        3,
+        "title"
+      ],
+      "text": "Much praise from the work",
+      "reviewed": false,
+      "sourceHash": "8c6330a42d2dc57b0f5bff83fc75e8a3b8e4a6dce692e40de7d1efff50429237"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        3,
+        "text"
+      ],
+      "text": "The clip ran on social media and YouTube. From plant management; and Employees were highly praised.",
+      "reviewed": false,
+      "sourceHash": "add1cd22724c2329ec68ecdeb683eecfd0e47cf0fbaaf2c37915e6280e399cd2"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        3,
+        "image",
+        "caption"
+      ],
+      "text": "The Ford logo",
+      "reviewed": false,
+      "sourceHash": "5026ab9e3cd277feb06f877fd9be9e45bcad2b790f874f863886f5dc379046d8"
+    },
+    {
+      "path": [
+        "showcase",
+        "formation",
+        "title"
+      ],
+      "text": "The Ford logo, drone by drone.",
+      "reviewed": false,
+      "sourceHash": "ebcab33f5fa2c138db3788c182a0e263007a22dbabb7ac9157cc822275e3cf43"
+    },
+    {
+      "path": [
+        "showcase",
+        "formation",
+        "text"
+      ],
+      "text": "We read these points from the original video – jed e Drone in its real position. Driving with De r Mouse through.",
+      "reviewed": false,
+      "sourceHash": "124e92b12578314575fd6d4138d3aafda09374596b34dce08334ddce7421dc49"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        0,
+        "altOverride"
+      ],
+      "text": "The explorer rolls out of the Halle – Ford Explorer",
+      "reviewed": false,
+      "sourceHash": "a0830be0320a4825543aabd5d0092b73f1194dfc9016a22a84613b23e986fd91"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        0,
+        "caption"
+      ],
+      "text": "The Explorer rolls out of the hall",
+      "reviewed": false,
+      "sourceHash": "b7e75970e7f44da18935e0d35d7809808a27cd2f18947bd71a10538f7a7fe687"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        1,
+        "altOverride"
+      ],
+      "text": "Car and drone field – Ford Explorer",
+      "reviewed": false,
+      "sourceHash": "1889916c71967e394d5caa66af3ebb91c3689bd975f2d60c1f0debfdf2c73b01"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        1,
+        "caption"
+      ],
+      "text": "Car and drone field",
+      "reviewed": false,
+      "sourceHash": "0dd23297e21975432a12614d75fd7b2446439821b44d994f524f783dea7cf9b2"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        2,
+        "altOverride"
+      ],
+      "text": "Flight over the Rising Drones – Ford Explorer",
+      "reviewed": false,
+      "sourceHash": "c6f01dd5668ab0cc3bd60ba2f5da2e87b76b80a3d08201c2aced01983aa96f3f"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        2,
+        "caption"
+      ],
+      "text": "Flight over the Rising drones",
+      "reviewed": false,
+      "sourceHash": "d914bc35696247355b9260e1d1d042e67a283c5d277823bd0603f92cc60b6579"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        3,
+        "caption"
+      ],
+      "text": "The Explorer from Drones",
+      "reviewed": false,
+      "sourceHash": "ea1d347d56026d4f4197684650641fc9c73209cbf053e431182eb96cd848792d"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        4,
+        "caption"
+      ],
+      "text": "exploring reinvented",
+      "reviewed": false,
+      "sourceHash": "b8805d59a03357d46743e2100bada393bfe2dc79e766d4fd03509fb5ba40cfc9"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        5,
+        "altOverride"
+      ],
+      "text": "The Ford logo – Ford Explorer",
+      "reviewed": false,
+      "sourceHash": "12655e389981552ea308ad8a18427e4707f85b05cbf1565723b41037055f4f0d"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        5,
+        "caption"
+      ],
+      "text": "The Ford logo",
+      "reviewed": false,
+      "sourceHash": "5026ab9e3cd277feb06f877fd9be9e45bcad2b790f874f863886f5dc379046d8"
+    },
+    {
+      "path": [
+        "showcase",
+        "setlist",
+        0,
+        "title"
+      ],
+      "text": "Storyboard",
+      "reviewed": false,
+      "sourceHash": "2b756b1663460f485291aae9e685fde956b7d443b52836dc6bff95fd88635f66"
+    },
+    {
+      "path": [
+        "showcase",
+        "setlist",
+        0,
+        "items",
+        0
+      ],
+      "text": "Starry sky",
+      "reviewed": false,
+      "sourceHash": "c063cc0c21c04dceb24810c1e715290fc7a350b2b76f1d1a35fda11f22624c7c"
+    },
+    {
+      "path": [
+        "showcase",
+        "setlist",
+        0,
+        "items",
+        1
+      ],
+      "text": "The Explorer from Drones",
+      "reviewed": false,
+      "sourceHash": "ea1d347d56026d4f4197684650641fc9c73209cbf053e431182eb96cd848792d"
+    },
+    {
+      "path": [
+        "showcase",
+        "setlist",
+        0,
+        "items",
+        2
+      ],
+      "text": "“exploring reinvented”",
+      "reviewed": false,
+      "sourceHash": "99eb1c89539fa039d1bbcea499b6394673f03d1a41b4b71ebab3e516a3a00088"
+    },
+    {
+      "path": [
+        "showcase",
+        "setlist",
+        0,
+        "items",
+        3
+      ],
+      "text": "Ford logo",
+      "reviewed": false,
+      "sourceHash": "09f9fc5c9480e5b4070d9b0f33d53c86bd35d61ca1dbaac358eb00ac6d2255ff"
+    },
+    {
+      "path": [
+        "showcase",
+        "cta",
+        "title"
+      ],
+      "text": "Your launch, your clip?",
+      "reviewed": false,
+      "sourceHash": "782ca38899dee42a7de5171ddef1b42160b1af336908bf06d1f462bc86117c4a"
+    },
+    {
+      "path": [
+        "showcase",
+        "cta",
+        "text"
+      ],
+      "text": "We fly for camera and audience – and coordinate directly with agency and film team.",
+      "reviewed": false,
+      "sourceHash": "a9894ebe91d1feb78dea3feab158fdeef45f85cb8d562340a93dbd91a23d84bf"
+    },
+    {
+      "path": [
+        "location"
+      ],
+      "text": "Ford Electric Vehicle Center, Cologne",
+      "reviewed": false,
+      "sourceHash": "5aee0ee86dd4043d7b0f08ee53b0a3dadcb5bc042dd1407f32f1b56c232218f1"
+    },
+    {
+      "path": [
+        "summary"
+      ],
+      "text": "350 drones for the n New Ford Explorer. Automotive · Launch.",
+      "reviewed": false,
+      "sourceHash": "c694bc6f78e8791bc160126a0070d6834d0c21c0feee1ac8463ad57936edf4fd"
+    },
+    {
+      "path": [
+        "body"
+      ],
+      "text": "350 drones for the n New Ford Explorer. Automotive · Launch.\n",
+      "reviewed": false,
+      "sourceHash": "33e50b08d5b9da6fb3c7bef575ebf26e06c1911a2b5e24146e7f5b24866a7c9e"
     }
   ]
 }

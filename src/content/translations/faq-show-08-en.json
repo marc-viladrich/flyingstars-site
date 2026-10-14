@@ -1,0 +1,23 @@
+{
+  "sourceId": "faq/show-08",
+  "locale": "en",
+  "sourceHash": "ec7ba86d1df7193a93bffd02d8049b32d18879a43080119d40d45914fb3a3418",
+  "values": [
+    {
+      "path": [
+        "question"
+      ],
+      "text": "When can the Starting the show?",
+      "reviewed": false,
+      "sourceHash": "baad5add2c10e579e514a6c849aa46cee5634927d2ba6e83eb22a360f0816aaa"
+    },
+    {
+      "path": [
+        "body"
+      ],
+      "text": "Aircraft from half an hour after sunset. In mid-summer this is often only around 10 pm – we call you for your place the Exact start time.\n",
+      "reviewed": false,
+      "sourceHash": "a4756bcb9ba9031fe57e73f2cc5f814c61713c10d4fa6ee4727cf7d8b7163e04"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "sourceId": "faq/show-02",
+  "locale": "nl",
+  "sourceHash": "7ba315c710ce5787d6edff1ef5ccbd2716cf0bef3b2dd0c0bf98674c5c9fa5cb",
+  "values": [
+    {
+      "path": [
+        "question"
+      ],
+      "text": "Hoeveel ruimte heeft een drone show nodig?",
+      "reviewed": false,
+      "sourceHash": "feea938aa406304996bad1e1d63d7e46f0d39d19447877ed3935a35bf60f1172"
+    }
+  ]
+}

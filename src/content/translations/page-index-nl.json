@@ -1,0 +1,2240 @@
+{
+  "sourceId": "page/index",
+  "locale": "nl",
+  "sourceHash": "8e27b2771d61a55c3fa83f94678a6e7212bf8c75bbea7b7a4becce18921cd78d",
+  "values": [
+    {
+      "path": [
+        "title"
+      ],
+      "text": "Boek drone toont meer dan 150 shows sinds 2022",
+      "reviewed": false,
+      "sourceHash": "4d6b1af1c2f578c54ccca223676afee1230396dbe464cfacc78c2bcf1036f7e5"
+    },
+    {
+      "path": [
+        "description"
+      ],
+      "text": "Drone toont voor merken, steden en grote momenten: meer dan 15 0 shows sinds 2022, eigen vloot, goedkeuring inbegrepen. Pakketten vanaf € 7.900,- nu aanvraag show.",
+      "reviewed": false,
+      "sourceHash": "3808a9f01c8bfe5452985e7710b73311383df81766863975bd8b1deb1c3da914"
+    },
+    {
+      "path": [
+        "sections",
+        0,
+        "headline"
+      ],
+      "text": "We maken je stukje hemel.",
+      "reviewed": false,
+      "sourceHash": "01559d5a7325907b815c60f3c18863bea254706f2a68e1eec0fc358ee504053e"
+    },
+    {
+      "path": [
+        "sections",
+        0,
+        "text"
+      ],
+      "text": "Meer dan 150 drone shows voor merken, steden en grote momenten van de eerste schets van de vergunning tot de landing van een enkele bron.",
+      "reviewed": false,
+      "sourceHash": "6f185d03d3274713a6a90180993f19f6de5253ec8c2239b6f9a9a444cdce500a"
+    },
+    {
+      "path": [
+        "sections",
+        0,
+        "eyebrow"
+      ],
+      "text": "Drone toont sinds 2022 · DE · AT · CH · Benelux",
+      "reviewed": false,
+      "sourceHash": "40aaa3032ed6181aaf8148001f2ea0848a19bdbb47588caf18c5d2935ead8957"
+    },
+    {
+      "path": [
+        "sections",
+        0,
+        "words",
+        0
+      ],
+      "text": "Nieuw.",
+      "reviewed": false,
+      "sourceHash": "bd47a44f9c75869b6ccf4f0b59972eba5cb042e6b1263295337c680bbdc4258a"
+    },
+    {
+      "path": [
+        "sections",
+        0,
+        "words",
+        1
+      ],
+      "text": "Uniek.",
+      "reviewed": false,
+      "sourceHash": "3017bac8e068e83aa7032abbc77f602590738692460dc82f753c6c38284bbf4e"
+    },
+    {
+      "path": [
+        "sections",
+        0,
+        "words",
+        2
+      ],
+      "text": "Anders.",
+      "reviewed": false,
+      "sourceHash": "734b219971a1ad67bf7f34c5fecec8a4a5f0ff3d88f9b25f8ccd4b255f0ce4c4"
+    },
+    {
+      "path": [
+        "sections",
+        0,
+        "words",
+        3
+      ],
+      "text": "Spectaculair.",
+      "reviewed": false,
+      "sourceHash": "43618b8d465684fbbe1461d946d1c8ac5ee7bbf113c4148facfe4f76813777c6"
+    },
+    {
+      "path": [
+        "sections",
+        0,
+        "cta",
+        "label"
+      ],
+      "text": "Verzoeken tonen",
+      "reviewed": false,
+      "sourceHash": "caebcb95411988a688d18bb0492d01c80dc1fab35ec55a8257390e401273eadb"
+    },
+    {
+      "path": [
+        "sections",
+        0,
+        "secondary",
+        "label"
+      ],
+      "text": "Pakketten vanaf 7.900 €",
+      "reviewed": false,
+      "sourceHash": "48f10a7da0b86f8d165ac5591865632d1259ceaacdfa9fee0bf4c7a0f36484d8"
+    },
+    {
+      "path": [
+        "sections",
+        0,
+        "stats",
+        0,
+        "label"
+      ],
+      "text": "Toont",
+      "reviewed": false,
+      "sourceHash": "e714ae21d3b45d9e8e241b17f2fdd36a75b71cfddf40b30addbf201e1241e26c"
+    },
+    {
+      "path": [
+        "sections",
+        0,
+        "stats",
+        1,
+        "label"
+      ],
+      "text": "Basis",
+      "reviewed": false,
+      "sourceHash": "cb8d295f1603859ad0226452e9d2a5e6b772cba0cc8a94632fe9c4e73e18c09d"
+    },
+    {
+      "path": [
+        "sections",
+        1,
+        "press"
+      ],
+      "text": "tagesschau · ZDF · WDR · Tagesspiegel · WAZ",
+      "reviewed": false,
+      "sourceHash": "80141b6d14e70327c56075ff83bd4ca5f5a25e15aad74e9f617df72a77b9076d"
+    },
+    {
+      "path": [
+        "sections",
+        1,
+        "headline"
+      ],
+      "text": "Gevlogen voor:",
+      "reviewed": false,
+      "sourceHash": "d716c707c1604dceb3adf93953f98cec27560cde7ee59009e1c667f2e3cb28b9"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "kicker"
+      ],
+      "text": "Occasions",
+      "reviewed": false,
+      "sourceHash": "5a781ea9dbd4b305f2e2caf021903f4c745da683fd8bbed2da0d90072ea6c000"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "headline"
+      ],
+      "text": "Voor elke gelegenheid, Een geschikte show.",
+      "reviewed": false,
+      "sourceHash": "d57c3a5734cf8a957166dfe00bf5f7d120895715a9376dfb36f38a1dfe9f36c2"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "text"
+      ],
+      "text": "Of product lancering, stad festival of huwelijksaanzoek: We ontwikkelen een e Show voor uw publiek en d nemen alles wat nodig is voor dit.",
+      "reviewed": false,
+      "sourceHash": "7e6e5666e26e7f841dc5ed9825662a5154721909dbace0ee04119bc4f144fb45"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        0,
+        "category"
+      ],
+      "text": "Bedrijven en merken",
+      "reviewed": false,
+      "sourceHash": "e5ed6d1bafd5ee82ba523e144fc844216455b6bd5a91a089199b72ff675c4fb5"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        0,
+        "title"
+      ],
+      "text": "Uw merk op het grootste doek ter wereld",
+      "reviewed": false,
+      "sourceHash": "391f4d578a8896fc76cc18759702e91e4021ee7573fd45a951405c90db7b8843"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        0,
+        "text"
+      ],
+      "text": "Logo's, claims en producten, precies getekend in de nachthemel voor klanten: insiders, medewerkers en de camera.",
+      "reviewed": false,
+      "sourceHash": "d5c377f1784820ef5fa4e49c9214c33129806f40f6f47d5142559da500fa68b8"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        0,
+        "facts",
+        0
+      ],
+      "text": "Brandveilig: U laat elk motief van tevoren vrij",
+      "reviewed": false,
+      "sourceHash": "924bf7550250fa93d6faa7109fdbc8e2af102e24727976c8ed0a1b1be7823369"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        0,
+        "facts",
+        1
+      ],
+      "text": "Ideaal voor lanceringen, jubilea en social media shoots",
+      "reviewed": false,
+      "sourceHash": "83a8dc47c1e5bdd041d211f072872a184fff1325f6172d69450224e4a7ec25b4"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        0,
+        "facts",
+        2
+      ],
+      "text": "Op verzoek synchroon met speaker:in of muziek",
+      "reviewed": false,
+      "sourceHash": "7a9f39ada779b8e125c4587a73befd5a06b83e7c1f2006bf62860c7a0147a20c"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        0,
+        "cta",
+        "label"
+      ],
+      "text": "Voor ondernemingen",
+      "reviewed": false,
+      "sourceHash": "33dd185f99a0f7d2e1ab84816e815df86025cc551e241b4d4067aa5020352a3d"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        1,
+        "category"
+      ],
+      "text": "Steden en festivals",
+      "reviewed": false,
+      "sourceHash": "dc3d688530793bb257c26b996b7d23ec1fbe47d0edf8311b54281238b97d2a32"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        1,
+        "title"
+      ],
+      "text": "Een hoogtepunt waarover de hele stad spreekt",
+      "reviewed": false,
+      "sourceHash": "c85293f97249f0402ce28a20ffe957deeabe515ee136768208c324342415f59b"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        1,
+        "text"
+      ],
+      "text": "Stadsfeesten, jubilea, festivals en Nieuwjaarsavond: rustig, schoon en zonder brandgevaar zelfs in de droogste zomer.",
+      "reviewed": false,
+      "sourceHash": "9df86f89800d8981af736d45bc8a8101e0790ec196aee22c119b4b214a7377c4"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        1,
+        "facts",
+        0
+      ],
+      "text": "Stadswapenschilden, jubileumnummers, je geschiedenis",
+      "reviewed": false,
+      "sourceHash": "78fcb50d70cbc5dd3219db34ca50707beee4549fcdc05e659c51142d564a5aa7"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        1,
+        "facts",
+        1
+      ],
+      "text": "Geen knal: goed voor bewoners: binnen en dieren",
+      "reviewed": false,
+      "sourceHash": "03dc04d41870cd8cb009f2fdb20f61303d23cfe3d7402fd309f40b1341cb6582"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        1,
+        "facts",
+        2
+      ],
+      "text": "Goedkeuringen bij de autoriteiten die wij overnemen",
+      "reviewed": false,
+      "sourceHash": "3badcf31c2aae3750af6be5de450ef67caffb62156e16f1d0db361c7771cfa78"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        1,
+        "cta",
+        "label"
+      ],
+      "text": "Voor steden en festivals",
+      "reviewed": false,
+      "sourceHash": "6a9969a3982a9b8c34cdd842c7213503139852fa12e4b333d795f7d16e904f70"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        1,
+        "download",
+        "label"
+      ],
+      "text": "Technische gegevens · PDF",
+      "reviewed": false,
+      "sourceHash": "6b4167e2cef5ee2683467e5282bc0362862a54b17eddd274cdc9f9b45ab4654e"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        2,
+        "category"
+      ],
+      "text": "Agentschap",
+      "reviewed": false,
+      "sourceHash": "b6579277347199118f7ec1ee6620be1a34cf517a397546c89a951d4cf563aafe"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        2,
+        "title"
+      ],
+      "text": "We vliegen, jij straalt",
+      "reviewed": false,
+      "sourceHash": "e3616d2f823f0a474a558c1d93db46703f21e9bbaded61f8044a3ce16ff2e55e"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        2,
+        "text"
+      ],
+      "text": "We kennen de rol als dienstverlener en zijn het direct eens met uw klanten op aanvraag.",
+      "reviewed": false,
+      "sourceHash": "9c7ac33b39af1aed9ce22e75e9011803742577f95c4b1e576e87bf990a9f0648"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        2,
+        "facts",
+        0
+      ],
+      "text": "Vergunningen en autoriteiten compleet met ons",
+      "reviewed": false,
+      "sourceHash": "7c4be31ed574dee81716287edb03fe18c36b8784c3c97321b42293025304e71b"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        2,
+        "facts",
+        1
+      ],
+      "text": "NDA op verzoek",
+      "reviewed": false,
+      "sourceHash": "531ed41218aec9aa6f552b391176354caa346c69ed59235ce605db2998eec157"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        2,
+        "facts",
+        2
+      ],
+      "text": "Visualisatie met het logo van uw klant:insides voor de release",
+      "reviewed": false,
+      "sourceHash": "7febd274d0303fbbc88253130ad7b759b05e3d5c97b6f333bcb36caf3be8cbb5"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        2,
+        "cta",
+        "label"
+      ],
+      "text": "Voor agentschappen",
+      "reviewed": false,
+      "sourceHash": "ff9ad8f2f6a9363a49b67f6d600964e9f46dd6cec4c57a3e284cf91cd3e7d895"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        2,
+        "download",
+        "label"
+      ],
+      "text": "Technische gegevens · PDF",
+      "reviewed": false,
+      "sourceHash": "6b4167e2cef5ee2683467e5282bc0362862a54b17eddd274cdc9f9b45ab4654e"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        3,
+        "category"
+      ],
+      "text": "Bruiloft en privé",
+      "reviewed": false,
+      "sourceHash": "7edec0e6eb7cef1e724a0a942f3b0ed1ad76b861ef5e4ffba4e22bc8b1ebe1b2"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        3,
+        "title"
+      ],
+      "text": "Uw moment, geschreven in de lucht",
+      "reviewed": false,
+      "sourceHash": "9c9c3f87d5362fa5acff57074c68e4994789957fd9cbeaa09996d4df127334bf"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        3,
+        "text"
+      ],
+      "text": "Initialen, harten, een \"Ja,\" in lichte letters: Wij maken de bruiloft, aanzoek of verjaardag onvergetelijk.",
+      "reviewed": false,
+      "sourceHash": "937dafe70891ba2fe76dea97951982789b452edb61f6117cb2ac91515ba26b9f"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        3,
+        "facts",
+        0
+      ],
+      "text": "Eigen pakketten voor kleinere feesten",
+      "reviewed": false,
+      "sourceHash": "ebf27f01c84dd4f32a48b6df603fd6a728fd0a4e9124e8c100189a99fbb2aaad"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        3,
+        "facts",
+        1
+      ],
+      "text": "SPARK vanaf 7.900 € inclusief goedkeuring",
+      "reviewed": false,
+      "sourceHash": "46d53fbf77304da0974803b0ca6050cb6d3c1a636282805a96dfb064169b8b70"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        3,
+        "facts",
+        2
+      ],
+      "text": "Motifs uit onze catalogus of uw eigen",
+      "reviewed": false,
+      "sourceHash": "a1b1ccc43c66957e8b0763738423b4a8a4cc8035cbf00f4d8602e466c822e4f0"
+    },
+    {
+      "path": [
+        "sections",
+        2,
+        "cards",
+        3,
+        "cta",
+        "label"
+      ],
+      "text": "Drone Show voor de bruiloft",
+      "reviewed": false,
+      "sourceHash": "b8a74e43d43308dc6e21d7df46acc1fa467ec892f5f1ce75259f9066952952dd"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "kicker"
+      ],
+      "text": "Verpakkingen",
+      "reviewed": false,
+      "sourceHash": "e1a11ce2f7dc7d1a9fd6de7a8f43fb36bc9ed459afcdcd4831aaef18787ebb36"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "cta",
+        "label"
+      ],
+      "text": "Alle diensten en prijscalculator",
+      "reviewed": false,
+      "sourceHash": "35759a1f2f01ef51dbf35dee90aa84ef6c66dd41ab4e8586d109dce9352b7f24"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "headline"
+      ],
+      "text": "Transparante prijzen. Geen verrassingen.",
+      "reviewed": false,
+      "sourceHash": "17ae4e16905685d5a0d842ef971f601be26a57fc104498e4b8638a8a8686a23b"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "text"
+      ],
+      "text": "Drie pakketten als startpunt Meer drones, eigen motieven en extra's gaan altijd.",
+      "reviewed": false,
+      "sourceHash": "a5862fb6ce154bfab441989037d6e6af8dde1260f624979b1de5763a145f0b01"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "tiers",
+        0,
+        "cta",
+        "label"
+      ],
+      "text": "Bekijk het pakket",
+      "reviewed": false,
+      "sourceHash": "3f3110a37238006e3844be02c5451f1633c31862b6f8f9711f511715cab96d6c"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "tiers",
+        1,
+        "cta",
+        "label"
+      ],
+      "text": "Bekijk het pakket",
+      "reviewed": false,
+      "sourceHash": "3f3110a37238006e3844be02c5451f1633c31862b6f8f9711f511715cab96d6c"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "tiers",
+        2,
+        "cta",
+        "label"
+      ],
+      "text": "Bekijk het pakket",
+      "reviewed": false,
+      "sourceHash": "3f3110a37238006e3844be02c5451f1633c31862b6f8f9711f511715cab96d6c"
+    },
+    {
+      "path": [
+        "sections",
+        3,
+        "note"
+      ],
+      "text": "Alle prijzen netto plus. Routebeschrijving",
+      "reviewed": false,
+      "sourceHash": "33fd8170477b8ce9ee150c5d275110d7390ec6cf46bea1543e0479697630de25"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "kicker"
+      ],
+      "text": "Einddatum",
+      "reviewed": false,
+      "sourceHash": "9fe440fa4dbe876ce7b5c2e24b5ce8715e0d53dab9b0e8dc26026c7615432960"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "headline"
+      ],
+      "text": "Van de R Ideas e tot de landing.",
+      "reviewed": false,
+      "sourceHash": "c48d62ca2de9f89fca8a71094720b04d6b171ff93ca91b2ede658260969f314d"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "text"
+      ],
+      "text": "Je bent zo vies L of zo weinig betrokken als Due zou willen. We komen met oplossingen, geen problemen.",
+      "reviewed": false,
+      "sourceHash": "e9014546eb38dd628a4bf3431d58ff7ebbab5c74e1e2911e55eb1970f1b771a4"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "steps",
+        0,
+        "title"
+      ],
+      "text": "Verzoek",
+      "reviewed": false,
+      "sourceHash": "d131ffcac53b09ae4694f2d732225bac9f6241812c6d21de7e2183989ad4d452"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "steps",
+        0,
+        "text"
+      ],
+      "text": "Vertel ons de datum, plaats en reden. We rapporteren ons binnen 48 uur .. meestal veel sneller.",
+      "reviewed": false,
+      "sourceHash": "e2417b4151e2cf5bc0a4c761c5765268da43981b323582e533bb6c6181b265dc"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "steps",
+        0,
+        "duration"
+      ],
+      "text": "48 uur responstijd",
+      "reviewed": false,
+      "sourceHash": "ea835cfdf291bda02d2dc210e0d4d8563d2273f06e1d016a260d5804948f0c60"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "steps",
+        1,
+        "title"
+      ],
+      "text": "Locatie & aanbod",
+      "reviewed": false,
+      "sourceHash": "61dfa467630729b614a06cc295ab35140d0a3127f513a9a31dfbf379b8ec6b8d"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "steps",
+        1,
+        "text"
+      ],
+      "text": "Wij controleren de show van ongeveer 100 × 100 meter en sturen u een vaste prijsaanbieding, die u online accepteert.",
+      "reviewed": false,
+      "sourceHash": "ee052e2fe1b405fb12f9ee01c8206624a9562c1109956f8bbb6d1b576e47975b"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "steps",
+        1,
+        "duration"
+      ],
+      "text": "Vaste prijs",
+      "reviewed": false,
+      "sourceHash": "10be4cdfb866845a8ed7913e4eefc4b996b9407df2bdd13c0c80a220b9d335ba"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "steps",
+        2,
+        "title"
+      ],
+      "text": "Goedkeuring",
+      "reviewed": false,
+      "sourceHash": "a63a41f66ffeb38b2102b5b1131880b48261fa86f7e0036ac55c3a07d994348e"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "steps",
+        2,
+        "text"
+      ],
+      "text": "We krijgen alle luchtvergunningen. Van u We hebben alleen toestemming van eigenaren van onroerend goed nodig:inside.",
+      "reviewed": false,
+      "sourceHash": "79aef09d0f1a6e79b32533c890498dc4ca1fe12022576071ca5e501e953d4a2f"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "steps",
+        2,
+        "duration"
+      ],
+      "text": "LBA · EASA",
+      "reviewed": false,
+      "sourceHash": "f80be5a0360713533ad3bc3bcd169f376f6a5c9ce0cde0dcd47b5040845dcb36"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "steps",
+        3,
+        "title"
+      ],
+      "text": "Ontwerp",
+      "reviewed": false,
+      "sourceHash": "0072e6b934945d5ba08f9729e00847391922f2f6026a435e704634fb93bf4502"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "steps",
+        3,
+        "text"
+      ],
+      "text": "We ontwikkelen samen motieven, verhaallijn en muziek: eerst als een rauwe animatie, dan met kleuren en lichteffecten in de tijd.",
+      "reviewed": false,
+      "sourceHash": "4f839de9dd9683f27ec3bef05bb51ca8f852a8432864eed433c9ef54c8c0ef80"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "steps",
+        3,
+        "duration"
+      ],
+      "text": "Ontwerp en feedback",
+      "reviewed": false,
+      "sourceHash": "004e3e0925d13c7a425dbd607ed9ac7ffe75657a22de9c0c6475c12fbbc5ff04"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "steps",
+        4,
+        "title"
+      ],
+      "text": "Dag tonen",
+      "reviewed": false,
+      "sourceHash": "2d440010e1434668a6a669951a6abbccf5bdfa74acceb029ac1f9d7d2c4e9e3d"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "steps",
+        4,
+        "text"
+      ],
+      "text": "Rond drie uur van de bouw, een team van piloten en technici op het terrein te genieten van uw gasten.",
+      "reviewed": false,
+      "sourceHash": "ee9d7016b2eb0b67e4ce0a71251a2f46539453a2de1659ec62b1f3ca1e101030"
+    },
+    {
+      "path": [
+        "sections",
+        4,
+        "steps",
+        4,
+        "duration"
+      ],
+      "text": "ongeveer 3 uur constructie",
+      "reviewed": false,
+      "sourceHash": "e216e63ed55d887e53712cd818ffb90463a76c3131822f011685bf4e952dc91c"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "kicker"
+      ],
+      "text": "Waarom FlyingStars",
+      "reviewed": false,
+      "sourceHash": "a882a1bd59c298f7abb1cad5f5bd8afd28b5a8c2c5326c25a81e1bf785845092"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "headline"
+      ],
+      "text": "In getallen in plaats van bijvoeglijke naamwoorden.",
+      "reviewed": false,
+      "sourceHash": "155bd290530f5ae0534b38b9934fc3eab2c6c68a1440b09d1bdf59de8a2813eb"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "text"
+      ],
+      "text": "We verklaren geen drone shows meer. We laten n zien, wat natuurlijk een kwestie is na meer dan 150 shows.",
+      "reviewed": false,
+      "sourceHash": "5cfec0339dbe737d26aa32bcd1016587fd2ea5968ab65c9784f20905f14ff746"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "items",
+        0,
+        "label"
+      ],
+      "text": "Ervaring",
+      "reviewed": false,
+      "sourceHash": "dfe794929179b37c8cf6f4d9951c38c157d5401dafd6650d66f8290bca2a1ad8"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "items",
+        0,
+        "value"
+      ],
+      "text": "150+ shows",
+      "reviewed": false,
+      "sourceHash": "a0b54fe470879db98a6c5693b6f49eb6ac38bfc3d7b966e646be85ce14c109b2"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "items",
+        0,
+        "text"
+      ],
+      "text": "Sinds 2022 voor merken, steden, festivals en koppels in Duitsland en heel Europa.",
+      "reviewed": false,
+      "sourceHash": "365817ecc4062225199fa4489e9aa77e5c796d43ce85b136e8d88deace3a92a5"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "items",
+        1,
+        "label"
+      ],
+      "text": "Tijdelijk",
+      "reviewed": false,
+      "sourceHash": "214b5b846cf3925f87ea67310e74493e27d226b85e43eaa96c0a75a7a57b9c63"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "items",
+        1,
+        "value"
+      ],
+      "text": "12 weken",
+      "reviewed": false,
+      "sourceHash": "b34bdff9d069d77f39eaedb937d85e88f178723073f9bd2166e6ac5e57f791ae"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "items",
+        1,
+        "text"
+      ],
+      "text": "Dit is hoe snel een show kan zijn in de express. Ideaal is 1, 2 maanden vooruit.",
+      "reviewed": false,
+      "sourceHash": "a77803cc5b1d385049778947c87b6afa80432d038cbd8fb6515f7064232139f6"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "items",
+        2,
+        "label"
+      ],
+      "text": "Uit één hand",
+      "reviewed": false,
+      "sourceHash": "2c5eb9e86b00b3aad36db7bfaa421996496170b7b987e992931a35aabb7982f1"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "items",
+        2,
+        "value"
+      ],
+      "text": "Ontwerp · Goedkeuring · Vloot",
+      "reviewed": false,
+      "sourceHash": "c55d754209b53c554b8a426f64922e5a0ed8a6cc180ff5cef0b235c8f2c31314"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "items",
+        2,
+        "text"
+      ],
+      "text": "Eigen ontwerpteam, eigen LBA en EASA vergunningen, eigen drones.",
+      "reviewed": false,
+      "sourceHash": "21b2bedafc27a53f21e1fbb064b948da40cac08b72264cdda01710b231a2f253"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "items",
+        3,
+        "label"
+      ],
+      "text": "Prijs",
+      "reviewed": false,
+      "sourceHash": "9883291e666c677170c9ec515026b80bd090db7dce30c8d52cde51ff01ddc79a"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "items",
+        3,
+        "value"
+      ],
+      "text": "vanaf 7.900 €",
+      "reviewed": false,
+      "sourceHash": "48163f0b68622babb8da20aada9aea3d7a39579fef6a6c0188609d699806f253"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "items",
+        3,
+        "text"
+      ],
+      "text": "Drie pakketten met vaste prijzen. Is hetzelfde aanbod goedkoper? We slepen n met.",
+      "reviewed": false,
+      "sourceHash": "4c69a6965a865121ea40ae408706ba3452fc9fe8a42f73c76988e708403653c6"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "items",
+        4,
+        "label"
+      ],
+      "text": "Beveiliging",
+      "reviewed": false,
+      "sourceHash": "4474c752608931d97a7d1471967cee891c712af9ce643adbe7cbfbdbdbce7216"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "items",
+        4,
+        "value"
+      ],
+      "text": "LBA · EASA · TÜV Nord",
+      "reviewed": false,
+      "sourceHash": "8722ad302b950576e8e3692472fff5574a984366ad10be5751c9253c790896d4"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "items",
+        4,
+        "text"
+      ],
+      "text": "Lichte drones met ongeveer 300 g, redundante beveiligingssystemen, aansprakelijkheid in elk pakket.",
+      "reviewed": false,
+      "sourceHash": "bdc60e7c45ca580d98ea85aed3cdd74a50f057484178111dcfd08364452e9af0"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "items",
+        5,
+        "label"
+      ],
+      "text": "Klimaatverandering",
+      "reviewed": false,
+      "sourceHash": "f7a6e5b531e8f88d883a88450bd3f566023d53a8e643dab9283df9e6ede5a147"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "items",
+        5,
+        "value"
+      ],
+      "text": "100 % groene elektriciteit",
+      "reviewed": false,
+      "sourceHash": "53e4d15895a99f3397b302469e674ae95f77f5fd3513c9a72bbcdc4db263f899"
+    },
+    {
+      "path": [
+        "sections",
+        5,
+        "items",
+        5,
+        "text"
+      ],
+      "text": "Geen deeltjes, geen afval, geen knal. Onze drones zullen in de EU gebouwd en vliegende show voor show.",
+      "reviewed": false,
+      "sourceHash": "d658735a4807206b617bf09fbc9f3a5a5ca32990978701df41275331bdf51a45"
+    },
+    {
+      "path": [
+        "sections",
+        6,
+        "kicker"
+      ],
+      "text": "Projecten",
+      "reviewed": false,
+      "sourceHash": "df87bfa7519bb406db71792f7ac863b0c686312b5f35a50068109e03ee6dbcb8"
+    },
+    {
+      "path": [
+        "sections",
+        6,
+        "text"
+      ],
+      "text": "Meer dan 3 0 shows per jaar van 100 tot 600 drones. Een kleine selectie:",
+      "reviewed": false,
+      "sourceHash": "f4bd420169aca03bfae3687c4828fa6961d6e30f599b0df4856cac3b082a6dfd"
+    },
+    {
+      "path": [
+        "sections",
+        6,
+        "cta",
+        "label"
+      ],
+      "text": "Alle projecten",
+      "reviewed": false,
+      "sourceHash": "1e8f7f76eb11077330aec2a635196c8fbe466441901edfb1a3ea1e8686607f35"
+    },
+    {
+      "path": [
+        "sections",
+        6,
+        "headline"
+      ],
+      "text": "Een paar nachten die we niet mogen vergeten.",
+      "reviewed": false,
+      "sourceHash": "a9dac9225312a5fba7d6dbe6b2b822c25ed262c3456fd329cb5dd18a28c9bbc8"
+    },
+    {
+      "path": [
+        "sections",
+        7,
+        "kicker"
+      ],
+      "text": "Duurzaamheid",
+      "reviewed": false,
+      "sourceHash": "e3e9ef30968bea6a4c661ab79766a6729e296d4aaf0fbe2f63f2cfffddc36a33"
+    },
+    {
+      "path": [
+        "sections",
+        7,
+        "headline"
+      ],
+      "text": "Geen knal. Geen rook. Geen onzin.",
+      "reviewed": false,
+      "sourceHash": "695cc838fc1ea55d138ba95139f0091cd0cf270fde3cd6b907ad6413bb49c93d"
+    },
+    {
+      "path": [
+        "sections",
+        7,
+        "lines",
+        0
+      ],
+      "text": "Geen knal.",
+      "reviewed": false,
+      "sourceHash": "397fdf83f219083d1970065cbca2498efc7ae8d607d0e6b2a328d0f19c91a1d1"
+    },
+    {
+      "path": [
+        "sections",
+        7,
+        "lines",
+        1
+      ],
+      "text": "Geen rook.",
+      "reviewed": false,
+      "sourceHash": "1bcc5a4276b1ca1a7b825a4eae4c2b241d54c44f9183f05fc228b39dd46a13f7"
+    },
+    {
+      "path": [
+        "sections",
+        7,
+        "lines",
+        2
+      ],
+      "text": "Geen onzin.",
+      "reviewed": false,
+      "sourceHash": "bbac254c737efe2e14d6f10ae0110dd457e5bdef2616f9a6e44a52fe02f0e135"
+    },
+    {
+      "path": [
+        "sections",
+        7,
+        "text"
+      ],
+      "text": "Na onze show blijft alleen het geheugen over... geen rook boven de stad, niets op de grond. Vie r nummers die: een verschil maken:",
+      "reviewed": false,
+      "sourceHash": "482b51440fa91765c02b0d671d7946af0b701ef4f1cd4f7520249f1570533859"
+    },
+    {
+      "path": [
+        "sections",
+        7,
+        "facts",
+        0,
+        "label"
+      ],
+      "text": "Geen knal",
+      "reviewed": false,
+      "sourceHash": "c4f471228283e3291ed2ea0febf5d8a9d1b7299729e9a8ca4a39917b6d32c544"
+    },
+    {
+      "path": [
+        "sections",
+        7,
+        "facts",
+        0,
+        "value"
+      ],
+      "text": "stil",
+      "reviewed": false,
+      "sourceHash": "72745a9aaa8a0574ebed9ff07427f7ae8809be859cfcd4cb956f387707d3ca8a"
+    },
+    {
+      "path": [
+        "sections",
+        7,
+        "facts",
+        0,
+        "text"
+      ],
+      "text": "In plaats van bang alleen een buzz te sparen bewoners: binnen, huisdieren en wilde dieren.",
+      "reviewed": false,
+      "sourceHash": "96dbcef479089c4c0ef15a3fe58630ac9949dc658b14e9dd5e980da0f53bdc66"
+    },
+    {
+      "path": [
+        "sections",
+        7,
+        "facts",
+        1,
+        "label"
+      ],
+      "text": "Geen rook",
+      "reviewed": false,
+      "sourceHash": "0be76c3e94e8c5d8aac673ce0a9a88b2aae9cdb5293a2071cd0edd540a136351"
+    },
+    {
+      "path": [
+        "sections",
+        7,
+        "facts",
+        1,
+        "text"
+      ],
+      "text": "Deeltjes, stikstofoxiden of zware metalen op het terrein... niets eindigt in lucht, bodem of grondwater.",
+      "reviewed": false,
+      "sourceHash": "6c0a0f1aa877ca8ee55f765fa4caef66a9dc53b77086d8b68696a1b55e6101b6"
+    },
+    {
+      "path": [
+        "sections",
+        7,
+        "facts",
+        2,
+        "label"
+      ],
+      "text": "Geen onzin",
+      "reviewed": false,
+      "sourceHash": "c98dd2938afd4ac6bc5db91c0f7432093ce814cc2785f02f6239ed761c91d1eb"
+    },
+    {
+      "path": [
+        "sections",
+        7,
+        "facts",
+        2,
+        "unit"
+      ],
+      "text": "kg",
+      "reviewed": false,
+      "sourceHash": "131ed734290d30f32aedb3548cc92b420b3760571fb0e655084b48b31043106c"
+    },
+    {
+      "path": [
+        "sections",
+        7,
+        "facts",
+        2,
+        "text"
+      ],
+      "text": "Onzin na Show. Geen mouwen, geen restjes. Dezelfde vloot vliegt na de show.",
+      "reviewed": false,
+      "sourceHash": "8b1a97c7807b09458f98b8f858522a3e6b5e73b8d8f1a317304591ae5ebc18e0"
+    },
+    {
+      "path": [
+        "sections",
+        7,
+        "facts",
+        3,
+        "label"
+      ],
+      "text": "Groene elektriciteit",
+      "reviewed": false,
+      "sourceHash": "e5053a6539458e2a7c42070ee3d100c2e98f40b181962303fd80d6b7b4e10677"
+    },
+    {
+      "path": [
+        "sections",
+        7,
+        "facts",
+        3,
+        "text"
+      ],
+      "text": "Groene elektriciteit van Naturstrom.",
+      "reviewed": false,
+      "sourceHash": "e6e7478fb83a1dcf112e1b07dafe256c64cd06a0393e629098af06813420a476"
+    },
+    {
+      "path": [
+        "sections",
+        7,
+        "proofText"
+      ],
+      "text": "100% van onze elektriciteit komt van naturstrom, en we leveren ook een klimaatbijdrage via ClimatePartner.",
+      "reviewed": false,
+      "sourceHash": "f907406fdf01e03424eaf987ad1f463755b16fe6ac550d46e1fb8dab89c5af67"
+    },
+    {
+      "path": [
+        "sections",
+        7,
+        "campaign"
+      ],
+      "text": "Voor de campagne van de Duitse milieusteun hebben we in november 2023 over het Cantianstadion in Berlijn vliegen 150 drones .",
+      "reviewed": false,
+      "sourceHash": "933648a39e07eba5b176635086620b5af49a012347dddda7764c9d56d951aba7"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "kicker"
+      ],
+      "text": "Eerlijke vergelijking",
+      "reviewed": false,
+      "sourceHash": "c37ef3cbb70a3842638271f9e84814903d13f4c72e0231e17740712e47a1ff22"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "headline"
+      ],
+      "text": "Drone, vuurwerk of laser?",
+      "reviewed": false,
+      "sourceHash": "dfd6602d80ac640c77dbb099db4a37d4a8a764314765f9904cc2dbe083a224ea"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "text"
+      ],
+      "text": "Elke techniek heeft zijn sterke kanten. Hier kunt u zien wanneer een drone show is de beste keuze .",
+      "reviewed": false,
+      "sourceHash": "b3b70de30dc1b5db412855b394b3ae74693b118edd2d8efe1d5e9a1d684927a9"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rowHeader"
+      ],
+      "text": "Concentratie",
+      "reviewed": false,
+      "sourceHash": "057ac2118a4a70304b0c8d03aeb754304bac6fb9b869d258719fa435b2f16d9a"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "columns",
+        0
+      ],
+      "text": "Drone Show",
+      "reviewed": false,
+      "sourceHash": "2edbebd016f4619b70a8486d3a96c977c8931ef44c6a92d89caa256977fef0c2"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "columns",
+        1
+      ],
+      "text": "Vuurwerk",
+      "reviewed": false,
+      "sourceHash": "a1e98adb9cb8a8e446da7bc17e00759b49fe9cca0bdd8008a6fb3b5c2c80b377"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "columns",
+        2
+      ],
+      "text": "Laservoorstelling",
+      "reviewed": false,
+      "sourceHash": "9b64b08ca0796719a11b7dee3dbe980ae244d8ffaba3b2f14af20b3370a1ee1d"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        0,
+        "label"
+      ],
+      "text": "Logos en letters in de lucht",
+      "reviewed": false,
+      "sourceHash": "fe626478adf2963c47016bf2a9eb26e71fb1ea428de2c4e4aa9be88c01e8fd88"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        0,
+        "cells",
+        0,
+        "label"
+      ],
+      "text": "Ja",
+      "reviewed": false,
+      "sourceHash": "cde9e58a9a4e1f369839d800aebbe5e4c19e2efa9f5791ecda15e9e87eb652e3"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        0,
+        "cells",
+        0,
+        "text"
+      ],
+      "text": "ook in 3D",
+      "reviewed": false,
+      "sourceHash": "6e5de700f280f00db0e98704805fcdc239af745aacb7872ef563d300331b12db"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        0,
+        "cells",
+        1,
+        "label"
+      ],
+      "text": "Nee",
+      "reviewed": false,
+      "sourceHash": "90ebc1bde6f3b1ffd73c3d7db7a421b21d5a4494ef1ce86aee56013edde0a8f7"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        0,
+        "cells",
+        2,
+        "label"
+      ],
+      "text": "Deel",
+      "reviewed": false,
+      "sourceHash": "802a7213f9b5595a8be5f5bfec3f847ab64bbcdda8ebc48a44418ce292a335d5"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        0,
+        "cells",
+        2,
+        "text"
+      ],
+      "text": "alleen op oppervlakken of waas",
+      "reviewed": false,
+      "sourceHash": "19b32228699f20645ccffbed9101b5c97534ffd7ca514d5a3c06427c1baf621d"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        0,
+        "values",
+        0
+      ],
+      "text": "Ook in 3D",
+      "reviewed": false,
+      "sourceHash": "29ee4bebc8c7836dabe184dfc70b3889134ebd6517205d47db7bd87b71949e2a"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        0,
+        "values",
+        1
+      ],
+      "text": "Nee",
+      "reviewed": false,
+      "sourceHash": "90ebc1bde6f3b1ffd73c3d7db7a421b21d5a4494ef1ce86aee56013edde0a8f7"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        0,
+        "values",
+        2
+      ],
+      "text": "Gedeeltelijk alleen op oppervlakken of waas",
+      "reviewed": false,
+      "sourceHash": "e58bebc9381bc64f3962dd6b54dd3777b335450113b12ade68b9e84b6165b94b"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        1,
+        "label"
+      ],
+      "text": "Volume",
+      "reviewed": false,
+      "sourceHash": "3d1236b60cb9f47856355bcbe5cd809e51d90b4fb8b4c7aa5b5869fc921994ee"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        1,
+        "cells",
+        0,
+        "label"
+      ],
+      "text": "Rustig",
+      "reviewed": false,
+      "sourceHash": "a7a240ba87041bd78a3f1a2ee13089ef19faeb03c2e993527ab615d559d7f08e"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        1,
+        "cells",
+        0,
+        "text"
+      ],
+      "text": "Keuzemuziek",
+      "reviewed": false,
+      "sourceHash": "d5d4feb69391071d9d6b5b72f453e733c15279de22344d0118587f6089a98824"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        1,
+        "cells",
+        1,
+        "label"
+      ],
+      "text": "Zeer luid",
+      "reviewed": false,
+      "sourceHash": "45c068ecf7132766e6fdadcc8cd0ad12df8a86b673124d41cd2ca9a99a20bee0"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        1,
+        "cells",
+        2,
+        "label"
+      ],
+      "text": "Rustig",
+      "reviewed": false,
+      "sourceHash": "a7a240ba87041bd78a3f1a2ee13089ef19faeb03c2e993527ab615d559d7f08e"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        1,
+        "values",
+        0
+      ],
+      "text": "Rustige muziek van keuze",
+      "reviewed": false,
+      "sourceHash": "2d56110db5b4f4a68da8d5332c2f7cb225e525dde17f7826a9d455dec17379e1"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        1,
+        "values",
+        1
+      ],
+      "text": "Zeer luid",
+      "reviewed": false,
+      "sourceHash": "45c068ecf7132766e6fdadcc8cd0ad12df8a86b673124d41cd2ca9a99a20bee0"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        1,
+        "values",
+        2
+      ],
+      "text": "Rustig",
+      "reviewed": false,
+      "sourceHash": "a7a240ba87041bd78a3f1a2ee13089ef19faeb03c2e993527ab615d559d7f08e"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        2,
+        "label"
+      ],
+      "text": "Rook, deeltjes, afval",
+      "reviewed": false,
+      "sourceHash": "39d4d3a0571cca3c692fd0a5b562b594e924fef5188f7f1a48723cb96990480a"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        2,
+        "cells",
+        0,
+        "label"
+      ],
+      "text": "Niets",
+      "reviewed": false,
+      "sourceHash": "257b2b876d415a37d50d4f915b00f1b129df2f352100d537b6a81ba60b3062a3"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        2,
+        "cells",
+        1,
+        "label"
+      ],
+      "text": "Veel",
+      "reviewed": false,
+      "sourceHash": "6dd4790231fbc0b1fcfcc99e63c74d70693ffe87aa61e39d10375c7ace8bd690"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        2,
+        "cells",
+        2,
+        "label"
+      ],
+      "text": "Waas",
+      "reviewed": false,
+      "sourceHash": "fbe7c19c4c658a25c5c5b0a4273943b13fc2023d1e2590ebb7798ba9372c1284"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        2,
+        "cells",
+        2,
+        "text"
+      ],
+      "text": "noodzakelijk voor zichtbare straling",
+      "reviewed": false,
+      "sourceHash": "645d8443a39795cf60708a066808004a688394d965f906b40768ffeb60647369"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        2,
+        "values",
+        0
+      ],
+      "text": "Niets",
+      "reviewed": false,
+      "sourceHash": "257b2b876d415a37d50d4f915b00f1b129df2f352100d537b6a81ba60b3062a3"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        2,
+        "values",
+        1
+      ],
+      "text": "Veel",
+      "reviewed": false,
+      "sourceHash": "6dd4790231fbc0b1fcfcc99e63c74d70693ffe87aa61e39d10375c7ace8bd690"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        2,
+        "values",
+        2
+      ],
+      "text": "Waas nodig voor zichtbare stralen",
+      "reviewed": false,
+      "sourceHash": "c5d50cc72bde01b6aedb9c29d5e9f52429eb3943f240887c5e00112b05064c00"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        3,
+        "label"
+      ],
+      "text": "Brandgevaar",
+      "reviewed": false,
+      "sourceHash": "db923930e77f3adb44d0e721f294d9e973616abff34f9a77628c3363c8cd4ea3"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        3,
+        "cells",
+        0,
+        "label"
+      ],
+      "text": "Geen",
+      "reviewed": false,
+      "sourceHash": "8a572015c49b2071ebcf52dde28b20d61ba0559b2410e83d41a0a1a14184bf90"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        3,
+        "cells",
+        1,
+        "label"
+      ],
+      "text": "Ja",
+      "reviewed": false,
+      "sourceHash": "cde9e58a9a4e1f369839d800aebbe5e4c19e2efa9f5791ecda15e9e87eb652e3"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        3,
+        "cells",
+        1,
+        "text"
+      ],
+      "text": "Verbodsbepalingen in geval van droogte",
+      "reviewed": false,
+      "sourceHash": "9b924955f7107fdeca4b8b60167b3e2a4a196008f4eb10ab1f861ea22b93b96b"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        3,
+        "cells",
+        2,
+        "label"
+      ],
+      "text": "Geen",
+      "reviewed": false,
+      "sourceHash": "8a572015c49b2071ebcf52dde28b20d61ba0559b2410e83d41a0a1a14184bf90"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        3,
+        "values",
+        0
+      ],
+      "text": "Geen",
+      "reviewed": false,
+      "sourceHash": "8a572015c49b2071ebcf52dde28b20d61ba0559b2410e83d41a0a1a14184bf90"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        3,
+        "values",
+        1
+      ],
+      "text": "Ja Verbodsbepalingen in Droogte",
+      "reviewed": false,
+      "sourceHash": "863537fca192059846f64a53cdbd5672ba65795f3c042356bcfac79802b8de77"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        3,
+        "values",
+        2
+      ],
+      "text": "Geen",
+      "reviewed": false,
+      "sourceHash": "8a572015c49b2071ebcf52dde28b20d61ba0559b2410e83d41a0a1a14184bf90"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        4,
+        "label"
+      ],
+      "text": "Wind en weer",
+      "reviewed": false,
+      "sourceHash": "542936dcbcd9fef37713f387c275f2b72a64408dd66875ed65a86c6d0f61b476"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        4,
+        "cells",
+        0,
+        "label"
+      ],
+      "text": "Rand",
+      "reviewed": false,
+      "sourceHash": "26ee35ba221db5b3a86fd648cbdcf8fdd01af4bf49c0df176e39cb480db64ecb"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        4,
+        "cells",
+        0,
+        "text"
+      ],
+      "text": "tot windkracht 5, geen zware regen",
+      "reviewed": false,
+      "sourceHash": "c462fd8e31a2e5796556e1da126e57552b1b49165ee75fa02d13565d86beb3ad"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        4,
+        "cells",
+        1,
+        "label"
+      ],
+      "text": "Rand",
+      "reviewed": false,
+      "sourceHash": "26ee35ba221db5b3a86fd648cbdcf8fdd01af4bf49c0df176e39cb480db64ecb"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        4,
+        "cells",
+        1,
+        "text"
+      ],
+      "text": "geannuleerd door storm",
+      "reviewed": false,
+      "sourceHash": "e2858b6a2f1227830ef465ca6f7182773de72978ee7e68b7865e6f411d67b562"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        4,
+        "cells",
+        2,
+        "label"
+      ],
+      "text": "Robuust",
+      "reviewed": false,
+      "sourceHash": "95d3e9d5c35d75d58e7ce3f8f50a0feb922a2dc79babcfb083b3af18a1e9d9cf"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        4,
+        "cells",
+        2,
+        "text"
+      ],
+      "text": "ook binnen",
+      "reviewed": false,
+      "sourceHash": "30f80013bae3dac33638692d003bc399e71a9071e2f08b761a2c4972c92fa2ec"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        4,
+        "values",
+        0
+      ],
+      "text": "Maximaal windkracht 5, geen zware regen",
+      "reviewed": false,
+      "sourceHash": "6334ddf851fc3b02ce4c409cf5e79a021e527ebb1ad8279c685617dd3bd93f59"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        4,
+        "values",
+        1
+      ],
+      "text": "Drempelwaarde geannuleerd bij storm",
+      "reviewed": false,
+      "sourceHash": "4a56c15d9c48cd62010920371a37f653a5f193fdbac0fafd8d09f76de530b217"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        4,
+        "values",
+        2
+      ],
+      "text": "Robuust binnen ook",
+      "reviewed": false,
+      "sourceHash": "1c5721c2233a81a12eafd410d419c008a1082d17d965cd6284a51f8dce92a41b"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        5,
+        "label"
+      ],
+      "text": "Zichtbaar vanaf een afstand",
+      "reviewed": false,
+      "sourceHash": "2efd6a226f288b0fabd95a54a40167eaa161ac131b26ef910f6a2705083fcbfe"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        5,
+        "cells",
+        0,
+        "label"
+      ],
+      "text": "Kilometer",
+      "reviewed": false,
+      "sourceHash": "7a92be464aa993b03545019d6be2134016716d8dab13e69a7252b84fd07e9c3f"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        5,
+        "cells",
+        1,
+        "label"
+      ],
+      "text": "Kilometer",
+      "reviewed": false,
+      "sourceHash": "7a92be464aa993b03545019d6be2134016716d8dab13e69a7252b84fd07e9c3f"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        5,
+        "cells",
+        2,
+        "label"
+      ],
+      "text": "Beperkt",
+      "reviewed": false,
+      "sourceHash": "ea01f2eeb1275939a204da9de952063f40d04c02483d6667634e09df30acdcfc"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        5,
+        "cells",
+        2,
+        "text"
+      ],
+      "text": "werkt het best dichtbij",
+      "reviewed": false,
+      "sourceHash": "f0568a0114fe371215c85d11c69d3e625ab8b3d69afdc4f28b16e441e2337522"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        5,
+        "values",
+        0
+      ],
+      "text": "Kilometer",
+      "reviewed": false,
+      "sourceHash": "7a92be464aa993b03545019d6be2134016716d8dab13e69a7252b84fd07e9c3f"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        5,
+        "values",
+        1
+      ],
+      "text": "Kilometer",
+      "reviewed": false,
+      "sourceHash": "7a92be464aa993b03545019d6be2134016716d8dab13e69a7252b84fd07e9c3f"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "rows",
+        5,
+        "values",
+        2
+      ],
+      "text": "Beperkt werkt het best dicht",
+      "reviewed": false,
+      "sourceHash": "2ee3fd92f81f0c83070ff418d669792bc713bfc78468b46440275302190b3f1d"
+    },
+    {
+      "path": [
+        "sections",
+        8,
+        "note"
+      ],
+      "text": "Ontwerp van technisch onderzoek in behandeling",
+      "reviewed": false,
+      "sourceHash": "9a7ff905c7b73940f8e1b0661cd96f3a6a3d23ef16e149690d8c6b0fa94edacc"
+    },
+    {
+      "path": [
+        "sections",
+        9,
+        "kicker"
+      ],
+      "text": "Team",
+      "reviewed": false,
+      "sourceHash": "5985039f106df054b43c3529139613bf7c2372937539f344c7c5ee47d00a0d63"
+    },
+    {
+      "path": [
+        "sections",
+        9,
+        "note"
+      ],
+      "text": "Onze bemanning van piloten: binnen en technici: binnen, die elk e Show opgezet op het terrein en vliegen.",
+      "reviewed": false,
+      "sourceHash": "4db7d961de24a40402f1d06a844172775a192c97e68f7f87c401a0200f823367"
+    },
+    {
+      "path": [
+        "sections",
+        9,
+        "cta",
+        "label"
+      ],
+      "text": "Leer ons kennen",
+      "reviewed": false,
+      "sourceHash": "ac9c67224d3c64ff106d80a30578bfe2d3d99beaf9e0a2923f23ffeb24a8a880"
+    },
+    {
+      "path": [
+        "sections",
+        9,
+        "headline"
+      ],
+      "text": "De mensen achter de hemel.",
+      "reviewed": false,
+      "sourceHash": "8027acbc52435da62d57d9d08c8929f66e41b766d16c8f7851edbe16fc8934b1"
+    },
+    {
+      "path": [
+        "sections",
+        9,
+        "text"
+      ],
+      "text": "Opgericht in 2022, thuis in Triple Z op Zeche Zollverein in Essen. Wij maken ontwerp, technologie en staat onszelf toe .. u hebt gehoord van het Eerste idee tot de landing van dezelfde contacten: binnen.",
+      "reviewed": false,
+      "sourceHash": "3983b0aaca7c284322c870197d97ca53dcaff710b08cb9f2e6049dbcb524b46f"
+    },
+    {
+      "path": [
+        "sections",
+        10,
+        "kicker"
+      ],
+      "text": "VEELGESTELDE VRAGEN",
+      "reviewed": false,
+      "sourceHash": "dbc468a14b601d5d9240aeb72b9fcd2f8aed2f4e30932876edf8d16ec313846b"
+    },
+    {
+      "path": [
+        "sections",
+        10,
+        "text"
+      ],
+      "text": "De meest voorkomende n vragen, kort beantwoord. Voor de rest: bel ons of boek een videogesprek.",
+      "reviewed": false,
+      "sourceHash": "9c3cfdb906b57c05c99173a13f42db964a7df9337cef686ac29f101dd9900e29"
+    },
+    {
+      "path": [
+        "sections",
+        10,
+        "cta",
+        "label"
+      ],
+      "text": "Reserveringsvideogesprek",
+      "reviewed": false,
+      "sourceHash": "41490db6abaa2d4d0bd13cffcececcd6e46308a4bf6fb82bbf402fe93f0a6d5e"
+    },
+    {
+      "path": [
+        "sections",
+        10,
+        "headline"
+      ],
+      "text": "Wat je voor de R Booking weet moet n zijn.",
+      "reviewed": false,
+      "sourceHash": "399065c75f2399af58a7daa65f8f5aa581b0c110379996e74e8bcd0da5a3f676"
+    },
+    {
+      "path": [
+        "sections",
+        11,
+        "headline"
+      ],
+      "text": "Vertel ons over je stukje hemel.",
+      "reviewed": false,
+      "sourceHash": "d3382171c316eb348433913d7943f7f29ed94c126df22889707039083f2ca48a"
+    },
+    {
+      "path": [
+        "sections",
+        11,
+        "text"
+      ],
+      "text": "Twee korte stappen, wat je nog niet weet, laat je gewoon open. We rapporteren ons binnen 48 uur, meestal veel sneller.",
+      "reviewed": false,
+      "sourceHash": "3e656b493056ba141c3fac4c9ce408b2a137898f7e16fe2e339d4a7077497a81"
+    }
+  ]
+}

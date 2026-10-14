@@ -24,6 +24,663 @@
       "text": "Drohnen",
       "reviewed": false,
       "sourceHash": "9dc7fa597613b82eecbe845291d235cf1c2c3bd2e22984207fad8e0b7fb31dd1"
+    },
+    {
+      "path": [
+        "title"
+      ],
+      "text": "NFL Berlin Game",
+      "reviewed": false,
+      "sourceHash": "dd030398f958f673dc2d887f9e003021acbc100553c5a0cdabecf8715bae2b3e"
+    },
+    {
+      "path": [
+        "showcase",
+        "meta",
+        "title"
+      ],
+      "text": "NFL Berlin Game: 300 drones for the Indianapolis Colts",
+      "reviewed": false,
+      "sourceHash": "4eb7bb0cd67e83d37a050ddfcb70f1865e42edd674891c1e244e738d7ce36f94"
+    },
+    {
+      "path": [
+        "showcase",
+        "meta",
+        "description"
+      ],
+      "text": "Horseshoe, Berlin game logo and NFL shield above the Olympic Stadium: 300 drones for the Indianapolis Colts for NFL Berlin Game 2025.",
+      "reviewed": false,
+      "sourceHash": "a5afead9d0d80d1c76c8f4bf5a10651499d96c80bb110eac84dcff548eb94ce0"
+    },
+    {
+      "path": [
+        "showcase",
+        "cardTitle"
+      ],
+      "text": "NFL Berlin Game: there s Coat of arms over the stadium",
+      "reviewed": false,
+      "sourceHash": "fc00959ffd63245e3e785e6c98406285d4222e0f50d7033e21f471d54e7a13d7"
+    },
+    {
+      "path": [
+        "showcase",
+        "category"
+      ],
+      "text": "Sport · Berlin",
+      "reviewed": false,
+      "sourceHash": "0e1fb9d01632e00d6b4633f9c4b60a88e964c1b71fed84019f3e24c6f12d4cdc"
+    },
+    {
+      "path": [
+        "showcase",
+        "kicker"
+      ],
+      "text": "Sport · Berlin · November 2025",
+      "reviewed": false,
+      "sourceHash": "2c89582ac6bc04e89b634c04a4afe904d2f6a9d8d7067def1a13740ca84bf267"
+    },
+    {
+      "path": [
+        "showcase",
+        "titleLines",
+        0
+      ],
+      "text": "NFL",
+      "reviewed": false,
+      "sourceHash": "b217235b16b5defda14c851d8e8161508fa2387026c9eeb904e66a43d3be5d75"
+    },
+    {
+      "path": [
+        "showcase",
+        "titleLines",
+        1
+      ],
+      "text": "Berlin Game",
+      "reviewed": false,
+      "sourceHash": "ee83ec03191fe6595951ec2d06e7846db306b95c3fc26cae85a0e30fc6595b2c"
+    },
+    {
+      "path": [
+        "showcase",
+        "tagline"
+      ],
+      "text": "The Horseshoe of r Colts on de m Olympic Stadium.",
+      "reviewed": false,
+      "sourceHash": "de57cffcf21087ff939ba97150f703178e8f96d559f54b242ac4cd7c229b61b9"
+    },
+    {
+      "path": [
+        "showcase",
+        "credits",
+        0,
+        "label"
+      ],
+      "text": "Customer",
+      "reviewed": false,
+      "sourceHash": "d1da7fb39689c31f757abde23ab1c9985ff8f5dddd935bd8c774cc7ca75c6e7e"
+    },
+    {
+      "path": [
+        "showcase",
+        "credits",
+        0,
+        "value"
+      ],
+      "text": "Indianapolis Colts",
+      "reviewed": false,
+      "sourceHash": "28abeab98c110693bac4fc4804638c5e9e2af140a2052eff4b76d9f79cc13cd7"
+    },
+    {
+      "path": [
+        "showcase",
+        "credits",
+        1,
+        "value"
+      ],
+      "text": "Olympiastadion Berlin",
+      "reviewed": false,
+      "sourceHash": "cb98b1b28c594d48984a178f5f620b257a2485693081ec07a1ed64a5cb012d42"
+    },
+    {
+      "path": [
+        "showcase",
+        "credits",
+        2,
+        "label"
+      ],
+      "text": "Date",
+      "reviewed": false,
+      "sourceHash": "9135882d323cd839a5239648d28440a256c299c08d108c1b09fc4b9872efcc3a"
+    },
+    {
+      "path": [
+        "showcase",
+        "credits",
+        2,
+        "value"
+      ],
+      "text": "November 2025",
+      "reviewed": false,
+      "sourceHash": "afddde14e72cc180e5c15096b1dc3162d4d20a7271b8afb55b3fbf9df95ba017"
+    },
+    {
+      "path": [
+        "showcase",
+        "numbers",
+        0,
+        "label"
+      ],
+      "text": "Drones over The Olympic Stadium",
+      "reviewed": false,
+      "sourceHash": "da737ad0c7a4b7bfa48e13225b9a1ead7eca8e4b7e6df1b43cbcadf5ba61851d"
+    },
+    {
+      "path": [
+        "showcase",
+        "numbers",
+        1,
+        "label"
+      ],
+      "text": "Motifs – from Indiana to Berlin",
+      "reviewed": false,
+      "sourceHash": "30a2e4503e8038fc489eebd2a126ca38db887849f7091c7b7dd5b8eecab8be51"
+    },
+    {
+      "path": [
+        "showcase",
+        "numbers",
+        2,
+        "label"
+      ],
+      "text": "NFL Shows: Munich Game 2024, Berlin Game 2025",
+      "reviewed": false,
+      "sourceHash": "275a9a934115b9749a82c9005f6248cee2169576fb61f2623d7f592d1f6b1118"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        0,
+        "kicker"
+      ],
+      "text": "01 · The story",
+      "reviewed": false,
+      "sourceHash": "2809fede7c99cda9f099598a937e0824b9be6a69b39e2b6ac93ee6ffb61e6f9c"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        0,
+        "title"
+      ],
+      "text": "A team comes to Germany",
+      "reviewed": false,
+      "sourceHash": "592922e14600c08a09f93e0bb00316e9da59071f5a74a13be308c7dd745aa4de"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        0,
+        "text"
+      ],
+      "text": "The show tells the journey of the Colts: from the horseshoe logo to the outlines of Indiana and a plane to Germany, plus the flags of the USA and Germany.",
+      "reviewed": false,
+      "sourceHash": "ec7374ea2a3b2df1612ed5da48ed047706a63f1cd8331ae9f2ecbd6871004fe6"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        0,
+        "image",
+        "caption"
+      ],
+      "text": "The Horseshoe of the Colts",
+      "reviewed": false,
+      "sourceHash": "cf32ca5393718f55b184d95fff7cfb3a40f29e45e038647ce8405d1181938558"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        1,
+        "kicker"
+      ],
+      "text": "02 · The place",
+      "reviewed": false,
+      "sourceHash": "c99fc5fcaa578af64216273cb164853a40d0e0c84d363d54a751acb859365c4f"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        1,
+        "title"
+      ],
+      "text": "The Olympic Stadium as a Stage",
+      "reviewed": false,
+      "sourceHash": "f5c8dfc05651dc931ab254493fde112595670a21d145a97b390a668bb7f1c8ca"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        1,
+        "text"
+      ],
+      "text": "We flew over De m Olympic Stadium, in the da s Berlin Gamma e took place. Da The stadium itself also appears in the show – as a formation of drones.",
+      "reviewed": false,
+      "sourceHash": "ddc3bf8f66d98f4d9c6fad26929bbddb2da3ad52a522890800769de2a20ebebe"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        1,
+        "image",
+        "caption"
+      ],
+      "text": "The Olympic Stadium",
+      "reviewed": false,
+      "sourceHash": "165e981a70cb88f678f8a2694fefefe08cd364d279ec6dbbd3ccfca61254738f"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        2,
+        "kicker"
+      ],
+      "text": "03 · Release",
+      "reviewed": false,
+      "sourceHash": "21656e12b8c7d01daa644f498ad7fdeac666e498ce50da440cab5871dc244b86"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        2,
+        "title"
+      ],
+      "text": "Two permits instead of one",
+      "reviewed": false,
+      "sourceHash": "96a1adcd63707725b2e749d424b43da5d83c50259b2247e5dcfdae3641dedd15"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        2,
+        "text"
+      ],
+      "text": "Drones near an NFL game need their own in addition to the air permit e Release by da s Security Department of the NF L. Both s we have taken over.",
+      "reviewed": false,
+      "sourceHash": "e6af02e7b6f73bedf73b25e9f978bb5ccc95ab804f35f23c808024a59da26c29"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        2,
+        "image",
+        "caption"
+      ],
+      "text": "Shield over the stadium",
+      "reviewed": false,
+      "sourceHash": "ea7755758628b490420a35b24a1956c5099252f439b02ddfd2b8bf49077f5a6c"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        3,
+        "kicker"
+      ],
+      "text": "04 · The experience",
+      "reviewed": false,
+      "sourceHash": "ae541ba12734db75724ed18ed03e30d807fdd66cc333d5b0a6c222ed7a6edee0"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        3,
+        "title"
+      ],
+      "text": "Not our first NFL project",
+      "reviewed": false,
+      "sourceHash": "5dd91d489b10509625193c258b3bca9b8445d91e9fa353edd27fd8bc6d5b5d1c"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        3,
+        "text"
+      ],
+      "text": "Already in January 2024 we announced the Carolina Panthers as host of the Munich Game with 250 drones over the Munich Olympic Lake.",
+      "reviewed": false,
+      "sourceHash": "ed8993b4a0787977a05943b1be00234d659571a50e69c56f91c65e88df24576a"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        3,
+        "image",
+        "caption"
+      ],
+      "text": "The NFL Shield",
+      "reviewed": false,
+      "sourceHash": "0e830abc7333b372d0f739a03bb8dc99d9204ff3b47db5fe96f178b0a875ec0a"
+    },
+    {
+      "path": [
+        "showcase",
+        "formation",
+        "title"
+      ],
+      "text": "The NFL Shield, drone for drone.",
+      "reviewed": false,
+      "sourceHash": "cda3a1ea1fe4cd82d12f4736faff2942826cb7ae8c3453797b94e6a95e8af8b4"
+    },
+    {
+      "path": [
+        "showcase",
+        "formation",
+        "text"
+      ],
+      "text": "We read these points from the original video – jed e Drone in its real position. Driving with De r Mouse through.",
+      "reviewed": false,
+      "sourceHash": "124e92b12578314575fd6d4138d3aafda09374596b34dce08334ddce7421dc49"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        0,
+        "altOverride"
+      ],
+      "text": "The horseshoe of Colts – NFL Berlin Game",
+      "reviewed": false,
+      "sourceHash": "897a77dea536c62bfe44dd3b7f503cd09503b7bc7cc2284b07762acdbb03979f"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        0,
+        "caption"
+      ],
+      "text": "The Horseshoe of the Colts",
+      "reviewed": false,
+      "sourceHash": "cf32ca5393718f55b184d95fff7cfb3a40f29e45e038647ce8405d1181938558"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        1,
+        "caption"
+      ],
+      "text": "Berlin Game 2025",
+      "reviewed": false,
+      "sourceHash": "2d38efc2160b93f30350f2193d2773330e4c0214c8e1c9c5e2dbacfd8162b9e2"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        2,
+        "altOverride"
+      ],
+      "text": "The NFL-Shield – NFL Berlin Game",
+      "reviewed": false,
+      "sourceHash": "c905dde278fd7fdfcd1f8c91c898447c885544637f3c13ebe6191bb13ba0fd55"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        2,
+        "caption"
+      ],
+      "text": "The NFL Shield",
+      "reviewed": false,
+      "sourceHash": "0e830abc7333b372d0f739a03bb8dc99d9204ff3b47db5fe96f178b0a875ec0a"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        3,
+        "altOverride"
+      ],
+      "text": "The shield above Stadium – NFL Berlin Game",
+      "reviewed": false,
+      "sourceHash": "257cfdf02a9e2d72ae1541ce95f5264ec32c80e98677d907a4fea83deab55297"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        3,
+        "caption"
+      ],
+      "text": "Shield over the stadium",
+      "reviewed": false,
+      "sourceHash": "ea7755758628b490420a35b24a1956c5099252f439b02ddfd2b8bf49077f5a6c"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        4,
+        "altOverride"
+      ],
+      "text": "The Olympic Stadium – NFL Berlin Game",
+      "reviewed": false,
+      "sourceHash": "ea4883a57e730f013f823df804f5f5a4e9b9865a2de098946c1b9405a4776e53"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        4,
+        "caption"
+      ],
+      "text": "The Olympic Stadium",
+      "reviewed": false,
+      "sourceHash": "165e981a70cb88f678f8a2694fefefe08cd364d279ec6dbbd3ccfca61254738f"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        5,
+        "caption"
+      ],
+      "text": "The catch",
+      "reviewed": false,
+      "sourceHash": "8dbdd7ddac5ed079ea033569decfef171174f8f03a2fcf2f25b6f2de1c17c8b2"
+    },
+    {
+      "path": [
+        "showcase",
+        "setlist",
+        0,
+        "title"
+      ],
+      "text": "Storyboard",
+      "reviewed": false,
+      "sourceHash": "2b756b1663460f485291aae9e685fde956b7d443b52836dc6bff95fd88635f66"
+    },
+    {
+      "path": [
+        "showcase",
+        "setlist",
+        0,
+        "items",
+        0
+      ],
+      "text": "Horseshoes",
+      "reviewed": false,
+      "sourceHash": "5358120820da9ec742cdde577b8c26ba70882d904e199d2ec630f7cdb268c820"
+    },
+    {
+      "path": [
+        "showcase",
+        "setlist",
+        0,
+        "items",
+        1
+      ],
+      "text": "Berlin Game logo",
+      "reviewed": false,
+      "sourceHash": "eef2a1b434564e90eeb615e2b88245cd829b8660c2103ad72a08601bfb09059c"
+    },
+    {
+      "path": [
+        "showcase",
+        "setlist",
+        0,
+        "items",
+        2
+      ],
+      "text": "Flags of the USA and Germany",
+      "reviewed": false,
+      "sourceHash": "3bcd7369803e36e34d6914a61e355da25e705dd6c35bd5e197d216e34c9cc63c"
+    },
+    {
+      "path": [
+        "showcase",
+        "setlist",
+        0,
+        "items",
+        3
+      ],
+      "text": "Indiana, airplane, Germany",
+      "reviewed": false,
+      "sourceHash": "48c8c1d58ba82cc4ce96d1702b09aa83999305480ef7a4fc606a6dae25389efb"
+    },
+    {
+      "path": [
+        "showcase",
+        "setlist",
+        0,
+        "items",
+        4
+      ],
+      "text": "Olympic Stadium",
+      "reviewed": false,
+      "sourceHash": "b7cef8560c3ccc81358fca5c7dd81438ee210017d80db045bf33721fdc1a6fb4"
+    },
+    {
+      "path": [
+        "showcase",
+        "setlist",
+        0,
+        "items",
+        5
+      ],
+      "text": "Anvil Strike",
+      "reviewed": false,
+      "sourceHash": "9ff81b576ae5747403b3ba8f1451f309ec361a4909124d166512f2e50107ab8b"
+    },
+    {
+      "path": [
+        "showcase",
+        "setlist",
+        0,
+        "items",
+        6
+      ],
+      "text": "“For the Shoe”",
+      "reviewed": false,
+      "sourceHash": "098278b69bb0a58b3d04a114486e1fe8970bd84e7ad71d1280006210da8e0545"
+    },
+    {
+      "path": [
+        "showcase",
+        "setlist",
+        0,
+        "items",
+        7
+      ],
+      "text": "NFL logo",
+      "reviewed": false,
+      "sourceHash": "0ec5f26db406a51d7ba87d0da4dde7c69d7d4c30cde3cc55e118f723501bd6ed"
+    },
+    {
+      "path": [
+        "showcase",
+        "setlist",
+        0,
+        "items",
+        8
+      ],
+      "text": "Football players",
+      "reviewed": false,
+      "sourceHash": "f0273add5ee37dba4c8cf7ce436841437cd8fdd9108ae5e22341b77ca457245b"
+    },
+    {
+      "path": [
+        "showcase",
+        "setlist",
+        0,
+        "items",
+        9
+      ],
+      "text": "Field Goal",
+      "reviewed": false,
+      "sourceHash": "186ed75b4436da26e661a2b9a52c9da22f66ec18aa6d08f5f509e237ac03e3b9"
+    },
+    {
+      "path": [
+        "showcase",
+        "cta",
+        "title"
+      ],
+      "text": "Your stadium, your fans?",
+      "reviewed": false,
+      "sourceHash": "f743491c4acd94ec26548e9d1ef0937a05bf079aec49bad85025e522c68c5f2e"
+    },
+    {
+      "path": [
+        "showcase",
+        "cta",
+        "text"
+      ],
+      "text": "For clubs, leagues and sponsors we plan shows that Work in the stadium and on social media.",
+      "reviewed": false,
+      "sourceHash": "71bc17454d12c0ad89c780690b47f370138b7b6acc2770f73aee453c951235ae"
+    },
+    {
+      "path": [
+        "location"
+      ],
+      "text": "Olympiastadion Berlin",
+      "reviewed": false,
+      "sourceHash": "cb98b1b28c594d48984a178f5f620b257a2485693081ec07a1ed64a5cb012d42"
+    },
+    {
+      "path": [
+        "summary"
+      ],
+      "text": "The Horseshoe of r Colt s over the Olympic Stadium. Sport · Berlin.",
+      "reviewed": false,
+      "sourceHash": "80f6f44473dfa545360cb90eb7a3d727a40afda07b356af22876961edbae7b4c"
+    },
+    {
+      "path": [
+        "body"
+      ],
+      "text": "The Horseshoe of r Colt s over the Olympic Stadium. Sport · Berlin.\n",
+      "reviewed": false,
+      "sourceHash": "14e09a8847fd641c86b04c0cddab6145a3adcac1ce915d2b71ed83a024ce74d8"
     }
   ]
 }

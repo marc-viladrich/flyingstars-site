@@ -1,0 +1,1561 @@
+{
+  "sourceId": "screen/show-konfigurator",
+  "locale": "nl",
+  "sourceHash": "e6e9eff836e604be17caf443bfc3c350d45d6e26d58549871f5ef8431c41c7e2",
+  "values": [
+    {
+      "path": [
+        "title"
+      ],
+      "text": "Configurator tonen (prototype)",
+      "reviewed": false,
+      "sourceHash": "86aec97f4af3d984672fc07f8e90817aba028763c92ac2a71adff18a6cde765e"
+    },
+    {
+      "path": [
+        "description"
+      ],
+      "text": "Prototype: samen te stellen show door gelegenheid en inspanning. Pakket, aantal drones en prijs zijn het resultaat van beide gegevens.",
+      "reviewed": false,
+      "sourceHash": "75fb5535b15171eef777f7c5b3ebd279b3ac916ca33b39acc14e02ef50455477"
+    },
+    {
+      "path": [
+        "headline"
+      ],
+      "text": "Wat gebeurt er in de lucht?",
+      "reviewed": false,
+      "sourceHash": "455922cf4b3b3e425afaf1b1790f935b5f791618d6988c0c45840873d881310a"
+    },
+    {
+      "path": [
+        "occasions",
+        0,
+        "label"
+      ],
+      "text": "Bruiloft",
+      "reviewed": false,
+      "sourceHash": "c24f548b2f1d3467f796383fbc05ed5b477372ef057251f38080b45c3ef16519"
+    },
+    {
+      "path": [
+        "occasions",
+        0,
+        "motifs",
+        0,
+        "label"
+      ],
+      "text": "Ring",
+      "reviewed": false,
+      "sourceHash": "b3f952e8b6787ce08c5b04c6969fa74919a86c47008d9130cce38483541337b1"
+    },
+    {
+      "path": [
+        "occasions",
+        0,
+        "motifs",
+        0,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "Twee trouwringen, de steen schittert",
+      "reviewed": false,
+      "sourceHash": "b1936560d87e0c277d220ac2191fe6c94a4774080a1487b6500d94fb5c68879a"
+    },
+    {
+      "path": [
+        "occasions",
+        0,
+        "motifs",
+        0,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "Een solitaire in 3D: Ring en briljante spin",
+      "reviewed": false,
+      "sourceHash": "f5b3f7243aeb561e1c5222f87d61cae1c46d61d8c657524c48b2d10afe36b31f"
+    },
+    {
+      "path": [
+        "occasions",
+        0,
+        "motifs",
+        0,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "Een ringdoos opent, de ring vindt de ringvinger",
+      "reviewed": false,
+      "sourceHash": "bee001745def3cb9031577261393709dd05c23c4f31ed8f3626b744d9e6fddd4"
+    },
+    {
+      "path": [
+        "occasions",
+        0,
+        "motifs",
+        1,
+        "label"
+      ],
+      "text": "Hart",
+      "reviewed": false,
+      "sourceHash": "45db9ecdfcda3aa4a64559be4120ebf1d5d4841a398f32d0cb564eff572973ac"
+    },
+    {
+      "path": [
+        "occasions",
+        0,
+        "motifs",
+        1,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "Een hart",
+      "reviewed": false,
+      "sourceHash": "25797dbf609894c58d1d8ebddfc3ad02f9ec7ae353d771f228a141fe134abba0"
+    },
+    {
+      "path": [
+        "occasions",
+        0,
+        "motifs",
+        1,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "Een tunnel van harten, licht stroomt door",
+      "reviewed": false,
+      "sourceHash": "86f30fe92f2d4e6c03ed0ac0180a10b52f1983de578bab669052f05c572579b9"
+    },
+    {
+      "path": [
+        "occasions",
+        0,
+        "motifs",
+        1,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "Cupido's pijl vliegt door het hart, twee harten om elkaar heen",
+      "reviewed": false,
+      "sourceHash": "80b8ddd187f71aed862450eef3705ae32a3b1661ba5e8d05e11cf4e441bc9132"
+    },
+    {
+      "path": [
+        "occasions",
+        0,
+        "motifs",
+        2,
+        "label"
+      ],
+      "text": "Bloemen",
+      "reviewed": false,
+      "sourceHash": "4e5457f167a9d9938aa4be921eba321b2e98d95ac984ea3282f901023e1c0cb5"
+    },
+    {
+      "path": [
+        "occasions",
+        0,
+        "motifs",
+        2,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "Twee lotus bloemen in 3D draaien in elkaar",
+      "reviewed": false,
+      "sourceHash": "d52831c2d687de6978f668b4a3e3f6b2c5dbc031fe381bf7134b742741b21563"
+    },
+    {
+      "path": [
+        "occasions",
+        0,
+        "motifs",
+        2,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "Twee knoppen bloeien, draaien in elkaar en worden een bal van licht",
+      "reviewed": false,
+      "sourceHash": "b40d595a2e47ed8dbbde15e8642ffaa78e5ae6153848719566000d3c672b066d"
+    },
+    {
+      "path": [
+        "occasions",
+        0,
+        "motifs",
+        3,
+        "label"
+      ],
+      "text": "Brillenglazen",
+      "reviewed": false,
+      "sourceHash": "27ff74904ffeaa1ef70cec28882b39ff2d168639e0ff6f29319e9fc52ed7cb8f"
+    },
+    {
+      "path": [
+        "occasions",
+        0,
+        "motifs",
+        3,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "Twee glazen champagne",
+      "reviewed": false,
+      "sourceHash": "045e73449be79a0ed298349fbc26c37e73056deaed6a386d6687b2870fc66a31"
+    },
+    {
+      "path": [
+        "occasions",
+        0,
+        "motifs",
+        3,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "Sparkling glazen in 3D, de parels stijgen",
+      "reviewed": false,
+      "sourceHash": "32d736bbcc2767f6dae74dd3039b471444568490d0d9cf866e6db47ac48a408f"
+    },
+    {
+      "path": [
+        "occasions",
+        0,
+        "motifs",
+        3,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "De glazen slaan toe, de parels stijgen als hart",
+      "reviewed": false,
+      "sourceHash": "2919d735b4b6e91a1ef819c36640aca1c429158e6da7683c9418bb675d91f15c"
+    },
+    {
+      "path": [
+        "occasions",
+        0,
+        "motifs",
+        4,
+        "label"
+      ],
+      "text": "Vlinder",
+      "reviewed": false,
+      "sourceHash": "d7e3dabc2c95c4c440ee57fb2883188e7f46a9cf51e94674f0e80f7d6db092c4"
+    },
+    {
+      "path": [
+        "occasions",
+        0,
+        "motifs",
+        4,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "Een vlinder, de vleugels schitteren",
+      "reviewed": false,
+      "sourceHash": "e142684ad1eb2c47ea1aaf8cd2a044b2916cf232f902e7c167da6de82859049b"
+    },
+    {
+      "path": [
+        "occasions",
+        0,
+        "motifs",
+        4,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "Een vlinder in 3D slaat met zijn vleugels",
+      "reviewed": false,
+      "sourceHash": "2b5ca83df336ecfaa92cf64ca9ff29f7e7c017c3943af3c06b89f1b086fef624"
+    },
+    {
+      "path": [
+        "occasions",
+        0,
+        "motifs",
+        4,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "Twee vlinders dansen om elkaar heen en worden één hart",
+      "reviewed": false,
+      "sourceHash": "e0479fb46b0317709105f2056b5aaf241547c406446de23d33f083f1fc56e2fd"
+    },
+    {
+      "path": [
+        "occasions",
+        1,
+        "label"
+      ],
+      "text": "Jubileum",
+      "reviewed": false,
+      "sourceHash": "7b7962ba808c64600455d9c7abd027f9cd1cab4dffdd5ca8a5da55792dee696d"
+    },
+    {
+      "path": [
+        "occasions",
+        1,
+        "motifs",
+        0,
+        "label"
+      ],
+      "text": "Wapens",
+      "reviewed": false,
+      "sourceHash": "2f307b57f2ddd64532f29236795a174eca832115bfa7d6cc16096a068a5981f5"
+    },
+    {
+      "path": [
+        "occasions",
+        1,
+        "motifs",
+        0,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "Wapenjas met ster en vlag",
+      "reviewed": false,
+      "sourceHash": "565c9ccf56df7a775cf11a9ac3ce41907d3c2aa2bc82d6ee29f9445d8503cb54"
+    },
+    {
+      "path": [
+        "occasions",
+        1,
+        "motifs",
+        0,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "3D wapen met uw nummer en zwaaivlag",
+      "reviewed": false,
+      "sourceHash": "81a1c0e8a8db1b5e7c236d5a287551026f15ba2155e4dc236f3c3cb572f61650"
+    },
+    {
+      "path": [
+        "occasions",
+        1,
+        "motifs",
+        0,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "Van de ster in het wapen wordt je nummer, plus kroon en ring van sterren",
+      "reviewed": false,
+      "sourceHash": "07768b6ee7d29516286cdd72f630ae987c98f6002f380f0de2161759d35ac5a1"
+    },
+    {
+      "path": [
+        "occasions",
+        1,
+        "motifs",
+        1,
+        "label"
+      ],
+      "text": "Voetbal",
+      "reviewed": false,
+      "sourceHash": "c920b540a0ed718ea41bd0f8dcce3656dfbb424e0d060bbce995bedc60427065"
+    },
+    {
+      "path": [
+        "occasions",
+        1,
+        "motifs",
+        1,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "Een speler, de bal draait over zijn voet",
+      "reviewed": false,
+      "sourceHash": "0764473f7548a99d9defafcad6b2b3ea98e92e5a194040fa08e950667b8f47ad"
+    },
+    {
+      "path": [
+        "occasions",
+        1,
+        "motifs",
+        1,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "De speler pakt op en schiet, de bal vliegt met spin",
+      "reviewed": false,
+      "sourceHash": "81a22f2079ae2d7669ca57227190f75e01164ac5f6b888501475e652f1bd57f1"
+    },
+    {
+      "path": [
+        "occasions",
+        1,
+        "motifs",
+        1,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "Spark wordt een speler, zijn schot raakt het doel, de bal wordt je nummer",
+      "reviewed": false,
+      "sourceHash": "0f82fc5f2d1a5c0c879e7a2e53e095beac990003a88d9109f3e503f251b32502"
+    },
+    {
+      "path": [
+        "occasions",
+        1,
+        "motifs",
+        2,
+        "label"
+      ],
+      "text": "Markeringen",
+      "reviewed": false,
+      "sourceHash": "1b0c388cc17d4ec9fe79f693857f30a13586565f52363eec6da9c98fd46c8a46"
+    },
+    {
+      "path": [
+        "occasions",
+        1,
+        "motifs",
+        2,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "Voorbeeld: Berlijn TV Toren met waarschuwingslicht",
+      "reviewed": false,
+      "sourceHash": "70b7786df845333c8244bb6ce985b4bb37e3bd18a3283b5284eec1e7fdb38b0d"
+    },
+    {
+      "path": [
+        "occasions",
+        1,
+        "motifs",
+        2,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "De TV toren in 3D, licht loopt rond de bal",
+      "reviewed": false,
+      "sourceHash": "5f5acd00e049df071187da2840328e1de1c9260ad0d016e6cc0ef91c7d73c193"
+    },
+    {
+      "path": [
+        "occasions",
+        1,
+        "motifs",
+        2,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "De TV Tower zendt uit en wordt de Brandenburger Tor",
+      "reviewed": false,
+      "sourceHash": "e2fd88f7da5ef3acf2508f75811c36f75a950c2613c74397db3536d8293d5a27"
+    },
+    {
+      "path": [
+        "occasions",
+        1,
+        "motifs",
+        3,
+        "label"
+      ],
+      "text": "Hoofd",
+      "reviewed": false,
+      "sourceHash": "f638b6be4c39be6048ee0ddb33eae4b2171ec465224eaa4e472820c4e44cf9f7"
+    },
+    {
+      "path": [
+        "occasions",
+        1,
+        "motifs",
+        3,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "De trui druipt erin, het water beweegt in ringen",
+      "reviewed": false,
+      "sourceHash": "f28daad4cd08fe28a7ea86b014c54b32c6bd210057f3f0519ab794a56ebbf527"
+    },
+    {
+      "path": [
+        "occasions",
+        1,
+        "motifs",
+        3,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "Springplank, springen, onderdompelen, de ringen in het water worden je nummer",
+      "reviewed": false,
+      "sourceHash": "4edd1c14681e7880ca03ecda5b9a6fad40009683eff8f788ef0f5203f0293c2a"
+    },
+    {
+      "path": [
+        "occasions",
+        1,
+        "motifs",
+        4,
+        "label"
+      ],
+      "text": "Cup",
+      "reviewed": false,
+      "sourceHash": "b8812920e25fd50396c70539e0954660ae00c8e34dcac57f770768ca6e9a52e2"
+    },
+    {
+      "path": [
+        "occasions",
+        1,
+        "motifs",
+        4,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "Een beker, daarboven sprankelende sterren",
+      "reviewed": false,
+      "sourceHash": "3574f42aa0678d77d2c2f04dd26a716b958a97a75aac464683fa00f666b388c0"
+    },
+    {
+      "path": [
+        "occasions",
+        1,
+        "motifs",
+        4,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "De Beker in 3D, licht glijdt over het",
+      "reviewed": false,
+      "sourceHash": "b105436fdeed970f85e9514cee8cf654a6b03bdf1150b35c5fa9076e410e9d55"
+    },
+    {
+      "path": [
+        "occasions",
+        1,
+        "motifs",
+        4,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "De beker groeit, je aantal stijgt uit",
+      "reviewed": false,
+      "sourceHash": "4261956e559c4046e86b2e14d64abec454c91693caf025e59688dc2a2d092b4b"
+    },
+    {
+      "path": [
+        "occasions",
+        2,
+        "label"
+      ],
+      "text": "Starten",
+      "reviewed": false,
+      "sourceHash": "ccf56ef5db0b82a58fa49a20d4d10c70294b29aab981005fc4e0e49edca9d06f"
+    },
+    {
+      "path": [
+        "occasions",
+        2,
+        "motifs",
+        0,
+        "label"
+      ],
+      "text": "Lamp",
+      "reviewed": false,
+      "sourceHash": "d3362639faf0f4f0fdf9a9b3482a2abd652c2ef31cd4fb65634a1c30c50deb65"
+    },
+    {
+      "path": [
+        "occasions",
+        2,
+        "motifs",
+        0,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "Een gloeilamp: het idee",
+      "reviewed": false,
+      "sourceHash": "f9a0ae7c48040bad12b3d0837051fe3109d25c79c827cef1936619dc28fbb3d4"
+    },
+    {
+      "path": [
+        "occasions",
+        2,
+        "motifs",
+        0,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "De lamp in 3D, de lichtflits N wordt verlicht",
+      "reviewed": false,
+      "sourceHash": "d98ed968d3a669993a7771b435805d175e7aed92f3c02d69137c7e1003a2961c"
+    },
+    {
+      "path": [
+        "occasions",
+        2,
+        "motifs",
+        0,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "Een gloeilamp wordt een vonk, Radiant",
+      "reviewed": false,
+      "sourceHash": "c71b200e4e2826c4d4ab81b33271523fb078e75b90147dec3931ec8ffcb28998"
+    },
+    {
+      "path": [
+        "occasions",
+        2,
+        "motifs",
+        1,
+        "label"
+      ],
+      "text": "QR-code",
+      "reviewed": false,
+      "sourceHash": "1825105041a8e61e5e571dd253de41ca02cedee33f6efd731f868b1a1ca44616"
+    },
+    {
+      "path": [
+        "occasions",
+        2,
+        "motifs",
+        1,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "QR-code met Scan me",
+      "reviewed": false,
+      "sourceHash": "5f2cede279420abcd7b90a3098415cd5951beb32cf103a2622a6fa7cca46b58d"
+    },
+    {
+      "path": [
+        "occasions",
+        2,
+        "motifs",
+        1,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "Een lichtstraal scant, de QR code opbouwt",
+      "reviewed": false,
+      "sourceHash": "e5df358eb9f2e7cc977244ae757a84482cc5687831f6b57268ba86e579bbd09e"
+    },
+    {
+      "path": [
+        "occasions",
+        2,
+        "motifs",
+        1,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "Een bericht arriveert, het wordt een scannable QR code",
+      "reviewed": false,
+      "sourceHash": "a0e24f4b050135462d993c36d644fab4f0026754fbf88f088ef79a548803a42d"
+    },
+    {
+      "path": [
+        "occasions",
+        2,
+        "motifs",
+        2,
+        "label"
+      ],
+      "text": "Raketsla",
+      "reviewed": false,
+      "sourceHash": "4a141e3ef159a39afdd040d4c0bf533bf75110f8abfbd427691a15bb2d8b8d4f"
+    },
+    {
+      "path": [
+        "occasions",
+        2,
+        "motifs",
+        2,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "Raket met vlam",
+      "reviewed": false,
+      "sourceHash": "98b9b50684078c82600926c11b561d20a426394f12a6681f3abffa8ab4221f55"
+    },
+    {
+      "path": [
+        "occasions",
+        2,
+        "motifs",
+        2,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "De raket als een lichaam zweeft en draait",
+      "reviewed": false,
+      "sourceHash": "59950b1a7b6d8442d4987779d32367095b3855fbd5966f18adba7d7ff24294c0"
+    },
+    {
+      "path": [
+        "occasions",
+        2,
+        "motifs",
+        2,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "Lancering van de Ramp, baan rond een planeet, landing op de maan",
+      "reviewed": false,
+      "sourceHash": "cb0c53863cbba3a64a56a827b032515f280d7de4cedde69d763cc2d7fa550b8a"
+    },
+    {
+      "path": [
+        "occasions",
+        2,
+        "motifs",
+        3,
+        "label"
+      ],
+      "text": "Spiraal",
+      "reviewed": false,
+      "sourceHash": "bd32b5d60284941c494fa6a69da5712d1c61b4a7b5920e92dd0821649e1fd120"
+    },
+    {
+      "path": [
+        "occasions",
+        2,
+        "motifs",
+        3,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "Een spiraal, licht dat naar binnen loopt",
+      "reviewed": false,
+      "sourceHash": "5f56d01bbea407a34564fb56355eec7af0d000b125f8667b072ffe66498d6935"
+    },
+    {
+      "path": [
+        "occasions",
+        2,
+        "motifs",
+        3,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "Een spiraal in 3D, licht stijgt de windingen",
+      "reviewed": false,
+      "sourceHash": "2bd9d7ed9a5fe02ab20a430cc2b599d4f5fe0d5e728f85beef3e2137f75470cb"
+    },
+    {
+      "path": [
+        "occasions",
+        2,
+        "motifs",
+        3,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "De spiraal wordt de torus die vanzelf draait",
+      "reviewed": false,
+      "sourceHash": "9be181998d905e6fa0d619fc1e3a2cd8e41bf9977482761242c1195150d43e0b"
+    },
+    {
+      "path": [
+        "occasions",
+        2,
+        "motifs",
+        4,
+        "label"
+      ],
+      "text": "Logo",
+      "reviewed": false,
+      "sourceHash": "d707dc2f1936efd8707060cbe7cdeaba8f250967ecd32fcd56e2491c7f18e52c"
+    },
+    {
+      "path": [
+        "occasions",
+        2,
+        "motifs",
+        4,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "Voorbeeldlogo met licht schaatsen",
+      "reviewed": false,
+      "sourceHash": "4d498d652504d987255fed9e4233ac84d2011dfd3e868c085b9c67e04a299649"
+    },
+    {
+      "path": [
+        "occasions",
+        2,
+        "motifs",
+        4,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "Voorbeeldlogo in 3D met licht glimmer",
+      "reviewed": false,
+      "sourceHash": "d8217ec0a11644f8e7e745127d15d6291daee22d8db728cf207f1bbb6b0f6a48"
+    },
+    {
+      "path": [
+        "occasions",
+        2,
+        "motifs",
+        4,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "Een vonk vortex wordt een logo en ring in 3D",
+      "reviewed": false,
+      "sourceHash": "b64778429fba5c3121daac0161add40b6b4cd7694862c4e99c561ac05a7eebc9"
+    },
+    {
+      "path": [
+        "occasions",
+        3,
+        "label"
+      ],
+      "text": "Cultuur",
+      "reviewed": false,
+      "sourceHash": "3660505a2d5b9cc42c849a79a4e6afbcb912a90ecaaf700c859cae996df4a82c"
+    },
+    {
+      "path": [
+        "occasions",
+        3,
+        "motifs",
+        0,
+        "label"
+      ],
+      "text": "Boek",
+      "reviewed": false,
+      "sourceHash": "5f36321c429928f458b772bbf5d63c4e51236c98f80144303c2541e4a3e1a55c"
+    },
+    {
+      "path": [
+        "occasions",
+        3,
+        "motifs",
+        0,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "Een open boek, licht draait de pagina's",
+      "reviewed": false,
+      "sourceHash": "74fd95f6623271f2761388e8e0c8ffb5d07f383d37828cd08c6da956f164ee5d"
+    },
+    {
+      "path": [
+        "occasions",
+        3,
+        "motifs",
+        0,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "Het boek opent in 3D, een pagina draait",
+      "reviewed": false,
+      "sourceHash": "ccdd8239bb4acd9f2049d1e85bfaf3cf53da1b3ecf435019d77f0eb61da95406"
+    },
+    {
+      "path": [
+        "occasions",
+        3,
+        "motifs",
+        0,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "Het boek opent een pen schrijft, de lijnen stijgen",
+      "reviewed": false,
+      "sourceHash": "a5c209d8325658548eb7f86705da8efe13bc9f432b177a7ebeccd77f30231ba3"
+    },
+    {
+      "path": [
+        "occasions",
+        3,
+        "motifs",
+        1,
+        "label"
+      ],
+      "text": "Gordijn",
+      "reviewed": false,
+      "sourceHash": "9c67387cdb04ef1ef06b502ef90045c49db29be3db83fe661a3aea9db6be690a"
+    },
+    {
+      "path": [
+        "occasions",
+        3,
+        "motifs",
+        1,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "Het gordijn beweegt in de lucht tocht",
+      "reviewed": false,
+      "sourceHash": "1dccc7ef8d5afc5a4253bfe448908bccf801b5bef2ff4017f9bb8e327205fcea"
+    },
+    {
+      "path": [
+        "occasions",
+        3,
+        "motifs",
+        1,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "Gordijn op een 3D ster wordt vrijgegeven",
+      "reviewed": false,
+      "sourceHash": "a5599187597ae1c4dec29cb10db036dbc79311276755a6324127c719c3672933"
+    },
+    {
+      "path": [
+        "occasions",
+        3,
+        "motifs",
+        1,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "Gordijn op gouden regen valt, een ster stijgt",
+      "reviewed": false,
+      "sourceHash": "356f3fcfc601d091cf65a6a80f2b78636fa6c12222ae3622a37b3b2deb24a272"
+    },
+    {
+      "path": [
+        "occasions",
+        3,
+        "motifs",
+        2,
+        "label"
+      ],
+      "text": "Maskers",
+      "reviewed": false,
+      "sourceHash": "05486b42e6b9cf764aac3fa63e083f76cf00c8333c8e0c68db0cd40fec1a1e78"
+    },
+    {
+      "path": [
+        "occasions",
+        3,
+        "motifs",
+        2,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "Theatermaskers: komedie en tragedie wegen zichzelf",
+      "reviewed": false,
+      "sourceHash": "7e35cc1b9643f8b96625840371bbc0038d373b951b141428828820e62e0cbe41"
+    },
+    {
+      "path": [
+        "occasions",
+        3,
+        "motifs",
+        2,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "De maskers in 3D",
+      "reviewed": false,
+      "sourceHash": "4a28bad69675c82b626c5e4489a1e48fffa245b0236cf43eff7259775a805ead"
+    },
+    {
+      "path": [
+        "occasions",
+        3,
+        "motifs",
+        2,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "Comedy and Tragedy Combineer The Devil van Bokkenrijders",
+      "reviewed": false,
+      "sourceHash": "8f96652d614225723c54e8c2536163733f9f29c198433a03e9a7345e272bafca"
+    },
+    {
+      "path": [
+        "occasions",
+        3,
+        "motifs",
+        3,
+        "label"
+      ],
+      "text": "Muziek",
+      "reviewed": false,
+      "sourceHash": "8ff93160579529e4487f15db8c8e8a1996ba7e1212058e823bcb342038695b06"
+    },
+    {
+      "path": [
+        "occasions",
+        3,
+        "motifs",
+        3,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "Twee noten wegen in de tijd",
+      "reviewed": false,
+      "sourceHash": "d426eac9afcedd1d067a3281a63e69c17d6b0d1e13469690494281c760a8f57e"
+    },
+    {
+      "path": [
+        "occasions",
+        3,
+        "motifs",
+        3,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "Een harp, licht trekt de snaren, noten stijgen",
+      "reviewed": false,
+      "sourceHash": "d124d80d037bad385fd53908eec8a473a51a618a716428be5f9752734270bdea"
+    },
+    {
+      "path": [
+        "occasions",
+        3,
+        "motifs",
+        3,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "De snaren klinken n, de noten vliegen n en worden een melodie",
+      "reviewed": false,
+      "sourceHash": "94729cec1d1757d36c0ee911c280d1a6683c2d03fecfce71c481c10cb2e60c77"
+    },
+    {
+      "path": [
+        "occasions",
+        3,
+        "motifs",
+        4,
+        "label"
+      ],
+      "text": "Dansen",
+      "reviewed": false,
+      "sourceHash": "1107b003071336cec6dd701ec361003311e8e3d0694055c350a6a75664315785"
+    },
+    {
+      "path": [
+        "occasions",
+        3,
+        "motifs",
+        4,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "Een danseres, haar schommels",
+      "reviewed": false,
+      "sourceHash": "12293096647d10cc58339e7cc48451cd2a39cc7a5899ee22a54d91e675745fbe"
+    },
+    {
+      "path": [
+        "occasions",
+        3,
+        "motifs",
+        4,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "De danseres draait in 3D, de rock vliegt",
+      "reviewed": false,
+      "sourceHash": "bf564cb4bc707a21bdb4999a09709ba24d319aa1c402977fe18b7968ee8ae06d"
+    },
+    {
+      "path": [
+        "occasions",
+        3,
+        "motifs",
+        4,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "De danseres draait, de rok wordt de bloem, de bloem de ventilator",
+      "reviewed": false,
+      "sourceHash": "04109170facd1b568626dfd82e4bacf31feca38ce6a07f7181e12ab1e42b5d5a"
+    },
+    {
+      "path": [
+        "occasions",
+        4,
+        "label"
+      ],
+      "text": "Winter en nieuwjaar",
+      "reviewed": false,
+      "sourceHash": "9404a2128aafa5e42c5b7ff0e6a0be7d313dd16db6926d59c6ae2bd4a67a65eb"
+    },
+    {
+      "path": [
+        "occasions",
+        4,
+        "motifs",
+        0,
+        "label"
+      ],
+      "text": "Lichte boom",
+      "reviewed": false,
+      "sourceHash": "f5dba233a3a293e0f4f5646444c56d6eea8fb32a8e5770046845449b8b66889b"
+    },
+    {
+      "path": [
+        "occasions",
+        4,
+        "motifs",
+        0,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "Een sneeuwvlok draait",
+      "reviewed": false,
+      "sourceHash": "126845c6b89249725e6ab277574b8105c6c7704f4af7c3121de9032f53fa9755"
+    },
+    {
+      "path": [
+        "occasions",
+        4,
+        "motifs",
+        0,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "Een lichte boom als een spiraal, licht stijgt",
+      "reviewed": false,
+      "sourceHash": "3e850912b6799ee70e818fe12a7d78d90ef3d29e5c344ae6f0793205d3ec16c0"
+    },
+    {
+      "path": [
+        "occasions",
+        4,
+        "motifs",
+        0,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "Sneeuw valt, de vlokken verzamelen zich tot de lichtboom, een ster komt op",
+      "reviewed": false,
+      "sourceHash": "42eeacc4cb67f9340d96f3c3dfa907caee0f95d45d30f5412303576db6247c84"
+    },
+    {
+      "path": [
+        "occasions",
+        4,
+        "motifs",
+        1,
+        "label"
+      ],
+      "text": "Klok",
+      "reviewed": false,
+      "sourceHash": "4221b9b808159cb280f2c4564de85bc47b8bcd51d0e52748e2a1694eb8e76807"
+    },
+    {
+      "path": [
+        "occasions",
+        4,
+        "motifs",
+        1,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "De handen lopen naar twaalf",
+      "reviewed": false,
+      "sourceHash": "db9b9a8f5d10b7273c5373e941a9450d843cf98c854da14a2e6ecbc35a071602"
+    },
+    {
+      "path": [
+        "occasions",
+        4,
+        "motifs",
+        1,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "3D horloge, de handen lopen",
+      "reviewed": false,
+      "sourceHash": "7deaa5b4f5e5436403ebf914a6a8798358b45127d488316bbde7e2ac970e0844"
+    },
+    {
+      "path": [
+        "occasions",
+        4,
+        "motifs",
+        1,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "Middernacht: Vonken schrijven het nieuwe jaar, dan de kurk pop",
+      "reviewed": false,
+      "sourceHash": "976fdced6d152a2592d2a97cf9b78ce4c878231f07d6f447727766693f994803"
+    },
+    {
+      "path": [
+        "occasions",
+        4,
+        "motifs",
+        2,
+        "label"
+      ],
+      "text": "Vuurwerk",
+      "reviewed": false,
+      "sourceHash": "a1e98adb9cb8a8e446da7bc17e00759b49fe9cca0bdd8008a6fb3b5c2c80b377"
+    },
+    {
+      "path": [
+        "occasions",
+        4,
+        "motifs",
+        2,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "Vuurwerk sterren lichten de ene na de andere",
+      "reviewed": false,
+      "sourceHash": "6f8a0853e4d6d83e26557670b82fda380b7c32f3372d2e502ff2d01774aa64c7"
+    },
+    {
+      "path": [
+        "occasions",
+        4,
+        "motifs",
+        2,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "Vuurwerk van Licht: Sterren Bloom en Brand",
+      "reviewed": false,
+      "sourceHash": "5efc18f04d1f6736a37faa93d43c04ce365ad67db2bef0776fe90eccb03c8f89"
+    },
+    {
+      "path": [
+        "occasions",
+        4,
+        "motifs",
+        2,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "Een spoor van licht stijgt, sterren bloeien in golven, de laatste lichten op de hemel",
+      "reviewed": false,
+      "sourceHash": "65f4f301e1fd7d81fdc8df0ea69c7017856e34235689470f0f128fd690fd5e30"
+    },
+    {
+      "path": [
+        "occasions",
+        4,
+        "motifs",
+        3,
+        "label"
+      ],
+      "text": "Klaver",
+      "reviewed": false,
+      "sourceHash": "6e971c97ca4a1629285decc73f5fc32f32c002ee20d2438b02d8cfd776b49a17"
+    },
+    {
+      "path": [
+        "occasions",
+        4,
+        "motifs",
+        3,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "Een gelukkige klaver draait",
+      "reviewed": false,
+      "sourceHash": "f7fbdeb3d61a1d617ac71f65153dcdce5fdb3451f189f4599e7b0e4d7d6ae443"
+    },
+    {
+      "path": [
+        "occasions",
+        4,
+        "motifs",
+        3,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "De gelukkige klaver in 3D",
+      "reviewed": false,
+      "sourceHash": "41c33eb7a8b8bdba661c991be91754bddbefc2891a20f91dc8a6c3f3dd2924ab"
+    },
+    {
+      "path": [
+        "occasions",
+        4,
+        "motifs",
+        3,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "Drie bladeren worden vier: Geluk voor het nieuwe jaar",
+      "reviewed": false,
+      "sourceHash": "432ce0b54dc8a939c81ec81428a94203beca053dce81281ef7f4d4208c0386c9"
+    },
+    {
+      "path": [
+        "occasions",
+        5,
+        "label"
+      ],
+      "text": "Stadsfestival",
+      "reviewed": false,
+      "sourceHash": "19c54552f444f32b224b5817676138f23eac41a6af70d882b2dab0dac1ec7415"
+    },
+    {
+      "path": [
+        "occasions",
+        5,
+        "motifs",
+        0,
+        "label"
+      ],
+      "text": "Reis",
+      "reviewed": false,
+      "sourceHash": "4f55c9699a00636f67b1495897f6c6f4d3555f26e18cb64c103832af86c15160"
+    },
+    {
+      "path": [
+        "occasions",
+        5,
+        "motifs",
+        0,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "Een kompas, de naald zoekt het noorden",
+      "reviewed": false,
+      "sourceHash": "c44a672070eb4b8f139ead98bb83cafd149acc2a16d7580a08431ddfe183fb30"
+    },
+    {
+      "path": [
+        "occasions",
+        5,
+        "motifs",
+        0,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "Het kompas in 3D, de naald zwaait in",
+      "reviewed": false,
+      "sourceHash": "5c81ed0a0df9bf2f118b8f4560ae193a58437dfb62fc053b4fdc105e0987af81"
+    },
+    {
+      "path": [
+        "occasions",
+        5,
+        "motifs",
+        0,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "De stad wordt een kaart, pinnen lichten op, een papieren vliegtuig vliegt de route",
+      "reviewed": false,
+      "sourceHash": "5d07bd13be1ead565ba4cdf1e7a5817c0880934aada2ef1e376cbd9b57c00059"
+    },
+    {
+      "path": [
+        "occasions",
+        5,
+        "motifs",
+        1,
+        "label"
+      ],
+      "text": "Kolibrium",
+      "reviewed": false,
+      "sourceHash": "f50cd09ac2efb95c1284b61744486d326add6c04e4f52b1b8b506efc42497669"
+    },
+    {
+      "path": [
+        "occasions",
+        5,
+        "motifs",
+        1,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "Een kolibrie, de vleugels draaien in het licht",
+      "reviewed": false,
+      "sourceHash": "67ebdc811c798caa50cc08ff33842baccf9d733125369d63a102b695307257bd"
+    },
+    {
+      "path": [
+        "occasions",
+        5,
+        "motifs",
+        1,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "Een kolibrie in 3D die vleugels verslaat",
+      "reviewed": false,
+      "sourceHash": "ec12d978e68be2e5b26d4b007638949889220b239912ceeb19c8b904bd766b11"
+    },
+    {
+      "path": [
+        "occasions",
+        5,
+        "motifs",
+        1,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "Een kolibrie vliegt naar bloem, drank en stijgt",
+      "reviewed": false,
+      "sourceHash": "f08cc5731095540077936a91bb403f5eb68ec78926082266c6966dca8c27ffe7"
+    },
+    {
+      "path": [
+        "occasions",
+        5,
+        "motifs",
+        2,
+        "label"
+      ],
+      "text": "Dolfijn",
+      "reviewed": false,
+      "sourceHash": "ee03863b0151c37e64720f97c26448b432b10f368a3a21f9769088b76676e537"
+    },
+    {
+      "path": [
+        "occasions",
+        5,
+        "motifs",
+        2,
+        "tiers",
+        "SPARK",
+        "caption"
+      ],
+      "text": "Een dolfijn over een golf",
+      "reviewed": false,
+      "sourceHash": "ae8bca037e7dc7fca3d1c5fd643ccad541f48af8ee706e54df187bf6e9f3aa99"
+    },
+    {
+      "path": [
+        "occasions",
+        5,
+        "motifs",
+        2,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "Een dolfijn springt eruit water in 3D",
+      "reviewed": false,
+      "sourceHash": "796431b99282bca658b5991e19a63ddcde1f1842d925bdb35b60e7542422727b"
+    },
+    {
+      "path": [
+        "occasions",
+        5,
+        "motifs",
+        2,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "Golven, een dolfijn sprongen, duiken in , twee dolfijnen springen in de boog",
+      "reviewed": false,
+      "sourceHash": "f79e17739610a972d2913456a1741969a83fdb70a26cffa2cf4cd799dafb45d8"
+    },
+    {
+      "path": [
+        "occasions",
+        5,
+        "motifs",
+        3,
+        "label"
+      ],
+      "text": "Draak",
+      "reviewed": false,
+      "sourceHash": "8adddb6ce2654832ce9aeba2174f7d6ea91512d75582d3a34a5a7b8fe2804dce"
+    },
+    {
+      "path": [
+        "occasions",
+        5,
+        "motifs",
+        3,
+        "tiers",
+        "HORIZON",
+        "caption"
+      ],
+      "text": "Een draak in 3D die vleugels verslaat",
+      "reviewed": false,
+      "sourceHash": "58a2781e0537d6b71b3785ffb75d7a890b1d1598637dc337e3f0844097bd4a79"
+    },
+    {
+      "path": [
+        "occasions",
+        5,
+        "motifs",
+        3,
+        "tiers",
+        "ODYSSEY",
+        "caption"
+      ],
+      "text": "Uit vonken stijgt een draak cirkelen en ademen vuurwerk",
+      "reviewed": false,
+      "sourceHash": "84dffe0ddeff4394e9e9a5f277f999d15ac049816cb8da4b494b28a2e0a28086"
+    }
+  ]
+}

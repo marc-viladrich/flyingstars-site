@@ -101,6 +101,1815 @@
       "text": "Drohnen",
       "reviewed": false,
       "sourceHash": "9dc7fa597613b82eecbe845291d235cf1c2c3bd2e22984207fad8e0b7fb31dd1"
+    },
+    {
+      "path": [
+        "base",
+        "zum_inhalt_springen"
+      ],
+      "text": "Jump to content",
+      "reviewed": false,
+      "sourceHash": "0223fd4834ed4884018d03754afc816c5c9bef8dc3889c54df079fcbf4f928e1"
+    },
+    {
+      "path": [
+        "base",
+        "hauptnavigation"
+      ],
+      "text": "Main navigation",
+      "reviewed": false,
+      "sourceHash": "e8fc666068c9a96611c388d40a4769d4cbf5eee4cbabfdea977e99978de99a61"
+    },
+    {
+      "path": [
+        "base",
+        "sprache_deutsch"
+      ],
+      "text": "Language in German",
+      "reviewed": false,
+      "sourceHash": "7fcc83239718add3072d629f19066983c8b758ffe49e2335810d76eb520e719c"
+    },
+    {
+      "path": [
+        "base",
+        "bewegung_pausieren"
+      ],
+      "text": "Pausing movement",
+      "reviewed": false,
+      "sourceHash": "a0679b0a77b670f3d8bcbda632669b9bf59627aa23c918fca0ae05d1dd5dce76"
+    },
+    {
+      "path": [
+        "base",
+        "menu_offnen"
+      ],
+      "text": "Open menu",
+      "reviewed": false,
+      "sourceHash": "ac3b2ef4fee11ccaa88757a19ef58af60f1274c718dcc0fce27ebdcf9578b38d"
+    },
+    {
+      "path": [
+        "base",
+        "menu_schliessen"
+      ],
+      "text": "Close menu",
+      "reviewed": false,
+      "sourceHash": "48700e16fc0c5527f076dae49bdec8893ac086a668290972b440cd4bf92eef81"
+    },
+    {
+      "path": [
+        "base",
+        "mobile_navigation"
+      ],
+      "text": "Mobile navigation",
+      "reviewed": false,
+      "sourceHash": "ccea17308ebf98790a5d2eb4fd8339108378e12a9ebf079b0b5253d03506c518"
+    },
+    {
+      "path": [
+        "base",
+        "drohnenshows_seit_2022_uber_150_shows_in_deutschla"
+      ],
+      "text": "Drone shows since 2022. Over 150 shows in Germany and Europe.",
+      "reviewed": false,
+      "sourceHash": "35e7071ca2253f21c6727cd748ab9c74d235b4de0ccbfc7124e9356cb19646ae"
+    },
+    {
+      "path": [
+        "base",
+        "rechtliches"
+      ],
+      "text": "Legal basis",
+      "reviewed": false,
+      "sourceHash": "0da5374b4c42aec74f6e173f11d0084f920f53db957524d6df25b34f94918216"
+    },
+    {
+      "path": [
+        "base",
+        "website_vorschau"
+      ],
+      "text": "Website preview",
+      "reviewed": false,
+      "sourceHash": "c8178d4c3258470c21c57fc791f1556c4b2c43413ec70c4bfb02ce3471c4716c"
+    },
+    {
+      "path": [
+        "base",
+        "text_100_okostrom"
+      ],
+      "text": "100 % green electricity",
+      "reviewed": false,
+      "sourceHash": "53e4d15895a99f3397b302469e674ae95f77f5fd3513c9a72bbcdc4db263f899"
+    },
+    {
+      "path": [
+        "base",
+        "language"
+      ],
+      "text": "Language",
+      "reviewed": false,
+      "sourceHash": "f2a1cc71fa59a04b38c226ecc20d57747090ba3b6d6c11d349f5e052cd87aa5a"
+    },
+    {
+      "path": [
+        "base",
+        "motionResume"
+      ],
+      "text": "Continuing movement",
+      "reviewed": false,
+      "sourceHash": "07eada091e44c9e0e2a9358c27d5b61794389bd3c6a80f5c9925e3011cfcb707"
+    },
+    {
+      "path": [
+        "prices",
+        "immer_inklusive"
+      ],
+      "text": "Always included",
+      "reviewed": false,
+      "sourceHash": "b1366d5bcfaac4d98c2bfe9af66f3c13a2850c667e13fa527b37fb154076817e"
+    },
+    {
+      "path": [
+        "prices",
+        "wofur_du_eigentlich_bezahlst"
+      ],
+      "text": "What you're actually paying for.",
+      "reviewed": false,
+      "sourceHash": "e56569aeaafa42f08d92e7813b81878045555bb3517c481ccd92c59ab1bbad3c"
+    },
+    {
+      "path": [
+        "prices",
+        "der_grosste_aufwand_einer_drohnenshow_steckt_nicht"
+      ],
+      "text": "The greatest effort of a drone show is not in the drones, but in the design, approval and a smooth implementation. This is included in every package:",
+      "reviewed": false,
+      "sourceHash": "2696ad5ba4b5ca74adda0438e750d15e62e6e3e2293aa29eb4e28ec4723b6552"
+    },
+    {
+      "path": [
+        "prices",
+        "programmierung_fur_deinen_ort"
+      ],
+      "text": "Programming for your place",
+      "reviewed": false,
+      "sourceHash": "586e4a39d63b1c8f18628ca26c2185fe0971bb46d2399c51e803358af0c2ec02"
+    },
+    {
+      "path": [
+        "prices",
+        "deine_show_wird_fur_deinen_showbereich_deine_musik"
+      ],
+      "text": "Your show is programmed for your show area, your music and your subjects.",
+      "reviewed": false,
+      "sourceHash": "dc858b77483046ac63fcec34910d1cfc57d81c3c158a84ccc1fe0b2c53bfda13"
+    },
+    {
+      "path": [
+        "prices",
+        "genehmigung_sicherheitskonzept"
+      ],
+      "text": "Approval and safety concept",
+      "reviewed": false,
+      "sourceHash": "6de5f5836c34cbeea33ed296f033c8e81a19eb536399b88affed2ee1d1bdeb76"
+    },
+    {
+      "path": [
+        "prices",
+        "luftrechtliche_genehmigung_sicherheitszonen_und_ha"
+      ],
+      "text": "Aircraft approval, safety zones and liability insurance are included in each package.",
+      "reviewed": false,
+      "sourceHash": "6a20eb2bb7ebda15dcd807f0308f8833f28bd8fe597be7251b4c09d5a8f5d049"
+    },
+    {
+      "path": [
+        "prices",
+        "freigabe"
+      ],
+      "text": "Release",
+      "reviewed": false,
+      "sourceHash": "3c540fe0d6fe6146f917fefb625f032bd7977c2e859b8271a4cc7f73ba3baa85"
+    },
+    {
+      "path": [
+        "prices",
+        "freigabe_vorab"
+      ],
+      "text": "Release in advance",
+      "reviewed": false,
+      "sourceHash": "4c8fd996d977011ebd4423839e8ae722c5f29bb7cc6bca8673cbf84dfc0838d2"
+    },
+    {
+      "path": [
+        "prices",
+        "deine_eigenen_motive_siehst_du_vor_der_show_und_gi"
+      ],
+      "text": "You see your own motives before the Show and release them – from HORIZON as a video preview.",
+      "reviewed": false,
+      "sourceHash": "6d816e82c5c2c7f67ef99ce97f4df3fed0ab5c731470b40769edce136916a7e5"
+    },
+    {
+      "path": [
+        "prices",
+        "team_vor_ort"
+      ],
+      "text": "Team on site",
+      "reviewed": false,
+      "sourceHash": "eb7e1ea946d36c15909958bf54132c4b934acad339b16540a8ba7fb3006498be"
+    },
+    {
+      "path": [
+        "prices",
+        "pilot_innen_und_techniker_innen_bauen_in_rund_drei"
+      ],
+      "text": "Pilot:inside and technician:inside build up in about three hours and fly your show.",
+      "reviewed": false,
+      "sourceHash": "dcbee4665c0c4d325b9b9dcbb8fd1c0b475cd0fbea137b0ffe435b5c44b6b691"
+    },
+    {
+      "path": [
+        "prices",
+        "extras_upgrades"
+      ],
+      "text": "Extras & Upgrades",
+      "reviewed": false,
+      "sourceHash": "885e2b6d6917c01694f703a08de333ca2c77c73821503f8a5b1a1cf1dfe88e88"
+    },
+    {
+      "path": [
+        "prices",
+        "mehr_geht_immer"
+      ],
+      "text": "More is always possible.",
+      "reviewed": false,
+      "sourceHash": "dbde72ad5a4e9f1686626093cd461cf0e04dabc731041c7dfe6bfecc1c4df752"
+    },
+    {
+      "path": [
+        "prices",
+        "fur_besondere_anforderungen_erweitern_wir_jedes_pa"
+      ],
+      "text": "For special requirements, we extend each package. The Prices standing n in advance in the offer.",
+      "reviewed": false,
+      "sourceHash": "c7c60d89faafa130261f4a60243465df87fa2082ca7fc6c960f629344b739e95"
+    },
+    {
+      "path": [
+        "prices",
+        "express"
+      ],
+      "text": "Express",
+      "reviewed": false,
+      "sourceHash": "572a14164bde322ae7c975fa7af893bd515736075d4f8521fec88a0e1774d923"
+    },
+    {
+      "path": [
+        "prices",
+        "show_in_unter_zwei_wochen"
+      ],
+      "text": "Show in under two weeks",
+      "reviewed": false,
+      "sourceHash": "8fd681e7bfb0c3bbb80c306ce2509c9b018189899b71e72ec7e6af2a2a8ba57b"
+    },
+    {
+      "path": [
+        "prices",
+        "wir_priorisieren_dein_projekt_bei_design_und_geneh"
+      ],
+      "text": "We prioritize your project in design and approval.",
+      "reviewed": false,
+      "sourceHash": "29485798739631a0d87af28db777880959f6419dae2527bbd4041dd5a884b57f"
+    },
+    {
+      "path": [
+        "prices",
+        "aufpreis_nach_aufwand"
+      ],
+      "text": "Additional charge by effort",
+      "reviewed": false,
+      "sourceHash": "6ef5771faa1feb0d7f136cb57364df7f903bf980059a471ce8b41674e8e6db28"
+    },
+    {
+      "path": [
+        "prices",
+        "film"
+      ],
+      "text": "Film",
+      "reviewed": false,
+      "sourceHash": "113af97940c30181e3251e51d6d091d315c350bdfc3a3f2e0fb09d59ee6ed4e8"
+    },
+    {
+      "path": [
+        "prices",
+        "professionelle_filmaufnahmen"
+      ],
+      "text": "Professional footage",
+      "reviewed": false,
+      "sourceHash": "029ce9b24a41aab032254ff1366a4d824e425759cb2a553c2a1f3eb1808cc3c3"
+    },
+    {
+      "path": [
+        "prices",
+        "rohaufnahmen_mit_kameradrohne_fur_aftermovie_und_s"
+      ],
+      "text": "Raw footage with camera drone for aftermovie and social media.",
+      "reviewed": false,
+      "sourceHash": "fce30ff388f69640732b88abaf5d2e53e55dbd0de033fe012c6e5bd185942230"
+    },
+    {
+      "path": [
+        "prices",
+        "behorden"
+      ],
+      "text": "Authorities",
+      "reviewed": false,
+      "sourceHash": "3a764f1fad5736eb9b085a5f699123ae6d68976907bf789812b6f708ca67b770"
+    },
+    {
+      "path": [
+        "prices",
+        "erweiterter_behordensupport"
+      ],
+      "text": "Extended government support",
+      "reviewed": false,
+      "sourceHash": "02d95da258c0cda468bbb7058924563d6cf6a739b4d6d27a9adf87de7b845071"
+    },
+    {
+      "path": [
+        "prices",
+        "wir_ubernehmen_die_komplette_kommunikation_mit_amt"
+      ],
+      "text": "We take over the complete communication with offices and authorities.",
+      "reviewed": false,
+      "sourceHash": "a7d3a55ac7fa83f0d1303b8592fbe69cf32b56bad1fa1ea9c4c38e16a61d07bc"
+    },
+    {
+      "path": [
+        "prices",
+        "preis_auf_anfrage"
+      ],
+      "text": "Price on request",
+      "reviewed": false,
+      "sourceHash": "3ca83ec890eca6bf5b56f1e7f07bb74d6f1cc66cce889eebfdc9188fc329fa02"
+    },
+    {
+      "path": [
+        "prices",
+        "sondergenehmigung"
+      ],
+      "text": "Specific authorisation",
+      "reviewed": false,
+      "sourceHash": "2aa5f09480705100bd083bdf72471c221e914928b76adef24054ad28b5a75fbb"
+    },
+    {
+      "path": [
+        "prices",
+        "kontrollzonen_flughafennahe"
+      ],
+      "text": "Control zones and airport proximity",
+      "reviewed": false,
+      "sourceHash": "3d007f1abcd825337fc13d94dc55eb9e6c1893d8aa8946a2dd5c56780a32c100"
+    },
+    {
+      "path": [
+        "prices",
+        "besondere_flachen_brauchen_sondergenehmigungen_die"
+      ],
+      "text": "Special areas need special permits – which Hold n we enter.",
+      "reviewed": false,
+      "sourceHash": "1443d094c05f443a6ce14fa5dfb35252d3f6ea1f205eb90846346fb10c56d971"
+    },
+    {
+      "path": [
+        "prices",
+        "indoor_drohnenshows"
+      ],
+      "text": "Indoor drone shows",
+      "reviewed": false,
+      "sourceHash": "52c31eac7f79333cb434d7a6a8bf9b5b00b6e713299110e99ab12392ffbb795a"
+    },
+    {
+      "path": [
+        "prices",
+        "fur_messen_hallen_und_buhnen_jede_indoor_show_kalk"
+      ],
+      "text": "For fairs, halls and stages. Jed e Indoor show we calculate individually.",
+      "reviewed": false,
+      "sourceHash": "25577757b17d34d8c764bd006fa90d8bf8f6e339d2e1cfdbdaefd195f68cc8f0"
+    },
+    {
+      "path": [
+        "prices",
+        "individuelles_angebot"
+      ],
+      "text": "Individual offer",
+      "reviewed": false,
+      "sourceHash": "49e75bc0949ed43bf2681adf44e01851b908e1e74e0d4988da1e03c2833fd859"
+    },
+    {
+      "path": [
+        "prices",
+        "schweiz"
+      ],
+      "text": "Switzerland",
+      "reviewed": false,
+      "sourceHash": "12a3c868aebb375bed46658fc9707afafc1294b2c3fb8dc7a81ea252a9fad2fe"
+    },
+    {
+      "path": [
+        "prices",
+        "shows_in_der_schweiz"
+      ],
+      "text": "Shows in Switzerland",
+      "reviewed": false,
+      "sourceHash": "6de43bf0e3f68379cfd566a4a6b671415251d9a2922f909b78166978f13f885d"
+    },
+    {
+      "path": [
+        "prices",
+        "bazl_antrag_und_zollabwicklung_fur_unsere_flotte_u"
+      ],
+      "text": "BAZL application and customs processing for our e We take over the fleet.",
+      "reviewed": false,
+      "sourceHash": "88e217fadd437475be6f6a2a8f5c3bfb7fbfd689ba12a26e648a669bdbeea8bb"
+    },
+    {
+      "path": [
+        "prices",
+        "preisversprechen"
+      ],
+      "text": "Price promises",
+      "reviewed": false,
+      "sourceHash": "f45d9e2cab803d4620efcfe7ed3dca94ca29d41d405fee52edc88f03247861ae"
+    },
+    {
+      "path": [
+        "prices",
+        "gunstigeres_angebot_mit_gleicher_leistung_wir_unte"
+      ],
+      "text": "Cheaper offer with the same performance? We Undercut it.",
+      "reviewed": false,
+      "sourceHash": "3f8e9c684421ea32c9dbd73f70a82b4345fcc93c11f13f97e941de54e2b41997"
+    },
+    {
+      "path": [
+        "prices",
+        "schick_uns_das_vergleichsangebot_bei_gleichem_leis"
+      ],
+      "text": "Send us the comparison offer – for the same range of services we will make you a better price.",
+      "reviewed": false,
+      "sourceHash": "e20e26759fa0a6b783e14ff0b9cf4fef4b46fdc2641a9703508bbe412da423c7"
+    },
+    {
+      "path": [
+        "prices",
+        "angebot_prufen_lassen"
+      ],
+      "text": "Check the offer",
+      "reviewed": false,
+      "sourceHash": "561a3129aa298c6cddcdef39063e0e863997641771411f5397b60f4a7b5a9e3c"
+    },
+    {
+      "path": [
+        "prices",
+        "fragen_zum_preis"
+      ],
+      "text": "Questions about the price",
+      "reviewed": false,
+      "sourceHash": "eebd33ca491cbdfd64e895e908a801c2a554a3bcabce1c4f72e47d84ad99b5a7"
+    },
+    {
+      "path": [
+        "prices",
+        "was_kostet_eine_drohnenshow_wirklich"
+      ],
+      "text": "What Does a Drone Show Really Cost?",
+      "reviewed": false,
+      "sourceHash": "43b45f02056a78527ac77946a658b9c40ccff2c6fc72d8e02dcc5aa156503308"
+    },
+    {
+      "path": [
+        "prices",
+        "paketpreis_plus_anfahrt_mehr_nicht_hier_die_detail"
+      ],
+      "text": "Package price plus travel – nothing more. Hie r di e Details which: in de n Most n Conversations appear.",
+      "reviewed": false,
+      "sourceHash": "63f0818d41173b3e5e897fe269f4bbf540c1eee0b1c0046f90c59f688fb67214"
+    },
+    {
+      "path": [
+        "prices",
+        "videocall_buchen"
+      ],
+      "text": "Booking video call",
+      "reviewed": false,
+      "sourceHash": "41490db6abaa2d4d0bd13cffcececcd6e46308a4bf6fb82bbf402fe93f0a6d5e"
+    },
+    {
+      "path": [
+        "prices",
+        "was_kommt_zum_paketpreis_noch_dazu"
+      ],
+      "text": "What else is added to the package price?",
+      "reviewed": false,
+      "sourceHash": "30de79052c9293b953e307e0c145c09d2374f3aab2c328ae78b09ee343b7517e"
+    },
+    {
+      "path": [
+        "prices",
+        "nur_die_anfahrt_und_die_mehrwertsteuer_die_anfahrt"
+      ],
+      "text": "Only those approach and which: VAT. We calculate the journey from Gelsenkirchen by route, team size and necessary overnight stays – it is transparent in the offer.",
+      "reviewed": false,
+      "sourceHash": "19142bee64c3e315e6f9f0d467430467a89c1518d2d4cc14a87276fedafa9e9e"
+    },
+    {
+      "path": [
+        "prices",
+        "wie_funktioniert_die_bezahlung"
+      ],
+      "text": "How does the payment work?",
+      "reviewed": false,
+      "sourceHash": "cfb5aaca666584839546d4d4dfcef98f69e499d5d9f2ffc69e62dc0391a4df11"
+    },
+    {
+      "path": [
+        "prices",
+        "mit_der_auftragsbestatigung_wird_eine_anzahlung_vo"
+      ],
+      "text": "With the order confirmation, a deposit of 30% is due – then design and approval start. The rest is transferred within two weeks of the show.",
+      "reviewed": false,
+      "sourceHash": "4106a79f62981944fcc0be95c91b05b04c64e6f6cc8907a69c5aa2e77f1edecb"
+    },
+    {
+      "path": [
+        "prices",
+        "was_passiert_wenn_die_show_ausfallt"
+      ],
+      "text": "What happens if the show goes down?",
+      "reviewed": false,
+      "sourceHash": "c6c2c3e3c3265af1749c930af84654585dd50233a1c75fb463d75020c58f47d7"
+    },
+    {
+      "path": [
+        "prices",
+        "ist_schlechtes_wetter_absehbar_verschieben_wir_ohn"
+      ],
+      "text": "If bad weather is foreseeable, we postpone without additional charge – only an already incurred journey will be charged. The show is completely out , we keep the deposit, because design and approval are then already done.",
+      "reviewed": false,
+      "sourceHash": "45ea26b3e3efc451a1acc6ef7f9b0fb7cd039b283c8ee478fa27b08ac6550b91"
+    },
+    {
+      "path": [
+        "prices",
+        "welches_paket_passt_zu_mir"
+      ],
+      "text": "Which package suits me?",
+      "reviewed": false,
+      "sourceHash": "0657f6b78f3042f0af9fbee417229847156802588170c3a922eca5b2bdbd4bf9"
+    },
+    {
+      "path": [
+        "prices",
+        "als_faustregel_spark_bis_150_drohnen_mit_motiven_a"
+      ],
+      "text": "As a rule of thumb: SPARK up to 150 drones with motifs from our catalogue, HORIZON for individual animations and logos, ODYSSEY for large campaigns with 3D and storytelling. If in doubt, we will advise you in the video call.",
+      "reviewed": false,
+      "sourceHash": "d0bfa555bbe2e24f58bad69c0eba55f998e893705ddbc818702a0ece0ebb5076"
+    },
+    {
+      "path": [
+        "prices",
+        "geht_es_auch_grosser"
+      ],
+      "text": "Does it go bigger?",
+      "reviewed": false,
+      "sourceHash": "687018e2bb675465ac5d9aaa86dec8cdd442f590f5eb8e6f4fbdc6f6fc1b42a5"
+    },
+    {
+      "path": [
+        "prices",
+        "ja_unsere_bisher_grosste_show_hatte_600_drohnen_au"
+      ],
+      "text": "Yes . Our biggest show to date had 600 drones – we also plan 1,000 and more together with you and confirm n the fleet in the offer.",
+      "reviewed": false,
+      "sourceHash": "c4ebf0d0cc19b834cbc60852cac37ed0d559b475f03970eb8abbc89db301d540"
+    },
+    {
+      "path": [
+        "prices",
+        "kostet_eine_show_im_ausland_mehr"
+      ],
+      "text": "Does a show abroad cost more?",
+      "reviewed": false,
+      "sourceHash": "190bd70129949b06e37896d16f2833a1442689ae7e66942412b8b711f5fb8743"
+    },
+    {
+      "path": [
+        "prices",
+        "in_der_eu_planen_wir_mit_denselben_paketen_je_nach"
+      ],
+      "text": "In the EU We plan with same packages; depending on the country, application deadlines, a longer journey and, if applicable, Application costs for this – everything transparent in the offer. For Switzerland, an additional € 1,900 net is incurred for BAZL application and customs.",
+      "reviewed": false,
+      "sourceHash": "1bb060930268eac91eebc130a1bd045c3a4453c4773482a209102ee3b089b502"
+    },
+    {
+      "path": [
+        "prices",
+        "paket_gefunden_erzahl_uns_von_deinem_termin"
+      ],
+      "text": "Package found? Tell us from your Date.",
+      "reviewed": false,
+      "sourceHash": "6ffe419a3c1c08cfe693d7235045afc8c76cd1a784ba10b010dcd683cbd76225"
+    },
+    {
+      "path": [
+        "prices",
+        "wir_melden_uns_innerhalb_von_48_stunden_meist_deut"
+      ],
+      "text": "We report within 48 hours – usually much faster.",
+      "reviewed": false,
+      "sourceHash": "01b313b5f37f4b599f5f0fca2e7860438100d351c801d50f31cb864a5a891501"
+    },
+    {
+      "path": [
+        "prices",
+        "text_900_bei_odyssey_inklusive"
+      ],
+      "text": "900 € · with ODYSSEY included",
+      "reviewed": false,
+      "sourceHash": "1ddec6f32b507c28f342f24672fd847e84ba8ce289a59554bee3f593a846e08c"
+    },
+    {
+      "path": [
+        "prices",
+        "text_1_900_netto"
+      ],
+      "text": "+1.900 € net",
+      "reviewed": false,
+      "sourceHash": "e0e209001779189da27a3c6ea5cd9fab6be9429bf92cc07179861efc1a98d55c"
+    },
+    {
+      "path": [
+        "configurator",
+        "vorschau_der_show"
+      ],
+      "text": "Preview of the show",
+      "reviewed": false,
+      "sourceHash": "3343e9c15805f1dd0b35f288909566346ce8cfa0ee18dfe33a8c10e019f3f4b0"
+    },
+    {
+      "path": [
+        "configurator",
+        "die_vorschau_ist_gerade_nicht_verfugbar_du_kannst_"
+      ],
+      "text": "The preview is not available right now. You can still choose and request a package.",
+      "reviewed": false,
+      "sourceHash": "4be7dd903256b66c514b6bbc7f3007f0da454c51249b46d29634d3b22054c21a"
+    },
+    {
+      "path": [
+        "configurator",
+        "bilder_der_show"
+      ],
+      "text": "Pictures of the show",
+      "reviewed": false,
+      "sourceHash": "34915b005c0f5e9ba8feef58930ef5769eec60822467a606f64e3df0e2ef5f4d"
+    },
+    {
+      "path": [
+        "configurator",
+        "vorheriges_bild"
+      ],
+      "text": "Previous image",
+      "reviewed": false,
+      "sourceHash": "c84c900c0a9fc2624928203e6d053aaa3a5c8a983fdc446e3cd26d4e37e06df4"
+    },
+    {
+      "path": [
+        "configurator",
+        "show_von_vorn_ansehen"
+      ],
+      "text": "Show from before View n",
+      "reviewed": false,
+      "sourceHash": "d5b2c90bc09f547248a67ef9dce504fbbe994d4578f12c5b9ecfaead53fbcfc5"
+    },
+    {
+      "path": [
+        "configurator",
+        "nachstes_bild"
+      ],
+      "text": "Next picture",
+      "reviewed": false,
+      "sourceHash": "9b73c461d24b62163241d8f3acd4fd8aa87b6fb0b1bdb43bfbdee0b17421faf2"
+    },
+    {
+      "path": [
+        "configurator",
+        "wie_aufwendig"
+      ],
+      "text": "How Elaborate?",
+      "reviewed": false,
+      "sourceHash": "d243aaa8d7c2dc6e820dbf611949ba8bf0b704206b570a7c75972ce94b0e00e3"
+    },
+    {
+      "path": [
+        "configurator",
+        "euer_text"
+      ],
+      "text": "Your text",
+      "reviewed": false,
+      "sourceHash": "aaa7770ccf170ffd0925e1c45588e53f5d0d3ea64ce2403e150e1ea24bc2447f"
+    },
+    {
+      "path": [
+        "configurator",
+        "optional_ohne_aufpreis"
+      ],
+      "text": "(optional, without additional charge)",
+      "reviewed": false,
+      "sourceHash": "c844a87b6e2cabb64e3b9ff253716bd466f0944e48fa0d912bd1c7b7b8e55ae6"
+    },
+    {
+      "path": [
+        "configurator",
+        "z_b_anna_ben"
+      ],
+      "text": "z B. Anna & Ben",
+      "reviewed": false,
+      "sourceHash": "4a0a76c795e921bf5c5c80ed5738165aa39f53821b8593f7426f8b195a0c49b6"
+    },
+    {
+      "path": [
+        "configurator",
+        "erscheint_als_finale_der_show_zahlt_als_eines_eure"
+      ],
+      "text": "Appears as the finale of the show . Count as one of your own elements and do not change the price.",
+      "reviewed": false,
+      "sourceHash": "7d269a053f3b5ba42b9657cf89861bb13e86694bb81f4a39ead177b25c421cf7"
+    },
+    {
+      "path": [
+        "configurator",
+        "drohnen"
+      ],
+      "text": "Drones ·",
+      "reviewed": false,
+      "sourceHash": "9813f637216945260cd5d5d27ddccf4bb04294e69803895d155df16dac16c283"
+    },
+    {
+      "path": [
+        "configurator",
+        "netto_zzgl_anfahrt"
+      ],
+      "text": "· Net plus Directions",
+      "reviewed": false,
+      "sourceHash": "af5403fda1a6bc9f60c6935ca3efc9338f52e94cfe293ec3bf9095fbf19aae47"
+    },
+    {
+      "path": [
+        "configurator",
+        "enthalten"
+      ],
+      "text": "Contains:",
+      "reviewed": false,
+      "sourceHash": "3253d5596f2f6592de1d60400d76127b2195aa73bf5f00caea6bc2acc698778e"
+    },
+    {
+      "path": [
+        "configurator",
+        "mit_dieser_show_anfragen"
+      ],
+      "text": "With these r Show request",
+      "reviewed": false,
+      "sourceHash": "56f8234d8cca8b8e8d42e9d1b9af557a5e5ea1d9efb663e9db31b155a43fcf2f"
+    },
+    {
+      "path": [
+        "configurator",
+        "prototyp_die_vorschau_zeigt_beispiele_den_ablauf_e"
+      ],
+      "text": "Prototype: The preview shows examples, we develop the course of your show together. The Assignment to the packages is from the Package descriptions derived and not yet confirmed by FlyingStars. All prices are entry prices.",
+      "reviewed": false,
+      "sourceHash": "e29175ef0b8ba19fb867309e41581c2086cb59eb51e0ceb480b3d4df09bdef5e"
+    },
+    {
+      "path": [
+        "configurator",
+        "anfragen"
+      ],
+      "text": "Requests",
+      "reviewed": false,
+      "sourceHash": "5dfb5bcd667e783065357367768b29286b89556fc3d24585bf87edf9867f0d0e"
+    },
+    {
+      "path": [
+        "configurator",
+        "der_show_konfigurator_benotigt_javascript_die_pake"
+      ],
+      "text": "The show configurator requires JavaScript. The Packages can be found under",
+      "reviewed": false,
+      "sourceHash": "bc65cc8a2fd0c37bdf98483bcf63b1688ef914ea569ce60aaf57c782fb4686e7"
+    },
+    {
+      "path": [
+        "configurator",
+        "preise"
+      ],
+      "text": "Prices",
+      "reviewed": false,
+      "sourceHash": "56e09549c5d674d952efd175cd90367ad2020e07baa0ff3cf32c18152dd27af5"
+    },
+    {
+      "path": [
+        "configurator",
+        "script"
+      ],
+      "text": "Written form",
+      "reviewed": false,
+      "sourceHash": "b7e4ee5c14fea3d01d342a51c3d66b949e03d7f2aceea163bdbc2c6fc7e083a7"
+    },
+    {
+      "path": [
+        "configurator",
+        "print"
+      ],
+      "text": "Printed matter",
+      "reviewed": false,
+      "sourceHash": "d2cda2d9e95cf891987d9dfa79bab7857570e391de199471ba23249faef2bf9b"
+    },
+    {
+      "path": [
+        "configurator",
+        "initials"
+      ],
+      "text": "Initials",
+      "reviewed": false,
+      "sourceHash": "0f15a14d8741532ca4d59bd67679643c84687a0248d2ec6bcbf2f63615403d87"
+    },
+    {
+      "path": [
+        "configurator",
+        "fromPrice"
+      ],
+      "text": "from {price} €",
+      "reviewed": false,
+      "sourceHash": "ce114da8117ec6db7c8865af70bb6f493eae75da8b7e5e70762ce1f89f4d2ce5"
+    },
+    {
+      "path": [
+        "configurator",
+        "meta"
+      ],
+      "text": "{count} Drones · {duration} · net plus Directions",
+      "reviewed": false,
+      "sourceHash": "40318fdee99536238ae7b6c49c504eb23e1030bafcc62db590e79cc0e068413e"
+    },
+    {
+      "path": [
+        "configurator",
+        "includes"
+      ],
+      "text": "Contains: {text}.",
+      "reviewed": false,
+      "sourceHash": "a925844045b9ecc065d12c7277a6307286eddff554cea855635f5a0ae8586177"
+    },
+    {
+      "path": [
+        "configurator",
+        "ownText"
+      ],
+      "text": "Your text",
+      "reviewed": false,
+      "sourceHash": "aaa7770ccf170ffd0925e1c45588e53f5d0d3ea64ce2403e150e1ea24bc2447f"
+    },
+    {
+      "path": [
+        "configurator",
+        "captionSpark"
+      ],
+      "text": "Your text in the sky",
+      "reviewed": false,
+      "sourceHash": "9f59efd98d10cd186c5a146067248552f8b6ac7f23ac817af425dfb50eef2148"
+    },
+    {
+      "path": [
+        "configurator",
+        "captionHorizon"
+      ],
+      "text": "Light writes your text",
+      "reviewed": false,
+      "sourceHash": "646a21ba4d3bfc1d395891a6a94fce63404f7a156ad359411b0c22a3c5ef0a68"
+    },
+    {
+      "path": [
+        "configurator",
+        "captionOdyssey"
+      ],
+      "text": "Your text",
+      "reviewed": false,
+      "sourceHash": "aaa7770ccf170ffd0925e1c45588e53f5d0d3ea64ce2403e150e1ea24bc2447f"
+    },
+    {
+      "path": [
+        "configurator",
+        "summaryOccasion"
+      ],
+      "text": "Reason: {occasion}",
+      "reviewed": false,
+      "sourceHash": "476f33d0ff8cac145413905557d0b0f2470278fbea6811ed227405aeefa82d5a"
+    },
+    {
+      "path": [
+        "configurator",
+        "summaryMotifs"
+      ],
+      "text": "Example motifs: {motifs}",
+      "reviewed": false,
+      "sourceHash": "83542190112bc9bbf37eba184b07668ad0aef66f843755c17fe13b7223c821cc"
+    },
+    {
+      "path": [
+        "configurator",
+        "summaryText"
+      ],
+      "text": "Own text: “{text}” ({style})",
+      "reviewed": false,
+      "sourceHash": "ad2a0c4b5026124531a0fb95bfd80a6c7188ea0103819f671ebcbdea38ad0fa7"
+    },
+    {
+      "path": [
+        "configurator",
+        "summaryEffort"
+      ],
+      "text": "Cost: {effort} ({name}, {price} net, entry price according to configurator)",
+      "reviewed": false,
+      "sourceHash": "bd5d9364ae1f206b6d8c3645f59e44349feb8885af707743408d107df6dff513"
+    },
+    {
+      "path": [
+        "blog",
+        "alle_beitrage_in_chronologischer_reihenfolge_neues"
+      ],
+      "text": "All contributions in chronological order, latest first. Background, projects and insights.",
+      "reviewed": false,
+      "sourceHash": "862f0a7d5d67653786d7c773733ba9667384f310eccb44bd8833624372a4d4ac"
+    },
+    {
+      "path": [
+        "calculator",
+        "animation_pausieren"
+      ],
+      "text": "Pause animation",
+      "reviewed": false,
+      "sourceHash": "a9ece501eea01391925c9f445166f86da7839aeb1711aae1546540f92ff3b6c0"
+    },
+    {
+      "path": [
+        "calculator",
+        "preise_pakete"
+      ],
+      "text": "Prices & Packages",
+      "reviewed": false,
+      "sourceHash": "e9906454606c152e9a5af5bbc0f6dc2880d157e68a4fb64797471d0b5103026f"
+    },
+    {
+      "path": [
+        "calculator",
+        "ab"
+      ],
+      "text": "off",
+      "reviewed": false,
+      "sourceHash": "fb8e20fc2e4c3f248c60c39bd652f3c1347298bb977b8b4d5903b85055620603"
+    },
+    {
+      "path": [
+        "calculator",
+        "netto_zzgl_anfahrt"
+      ],
+      "text": "net plus Directions",
+      "reviewed": false,
+      "sourceHash": "d91c1bc409559ac56094a7cf765e7b795a2ff45f30ff4ce44105661e01cfe0d9"
+    },
+    {
+      "path": [
+        "calculator",
+        "anzahl_drohnen"
+      ],
+      "text": "Number of drones",
+      "reviewed": false,
+      "sourceHash": "b52ad772d6b446439ccbcb3f01327427cf3f87b0d6ea46426d339a5138eaa894"
+    },
+    {
+      "path": [
+        "calculator",
+        "paket"
+      ],
+      "text": "Package",
+      "reviewed": false,
+      "sourceHash": "b58bd16905d210ddad9d1b562a7cbc34b21d106d91ea9aa7bb7fe2aa492d0ff0"
+    },
+    {
+      "path": [
+        "calculator",
+        "dein_text_am_himmel"
+      ],
+      "text": "Your text in the sky",
+      "reviewed": false,
+      "sourceHash": "116fd3e59ba3da5a409a07e70c176b29e4802261cc0f4c675685ec7146b4b0e6"
+    },
+    {
+      "path": [
+        "calculator",
+        "optional"
+      ],
+      "text": "optional",
+      "reviewed": false,
+      "sourceHash": "ec91fdd9256cb75ae611249b50cb7eb16533f0fa91b86239ec1d439a1ea033b8"
+    },
+    {
+      "path": [
+        "calculator",
+        "z_b_anna_tom"
+      ],
+      "text": "e.g. ANNA & TOM",
+      "reviewed": false,
+      "sourceHash": "993711ca02b91ae3886c40e9c1152da202b83dca92c32645dee5d862b608df76"
+    },
+    {
+      "path": [
+        "calculator",
+        "wir_zeigen_ihn_mit_deiner_drohnenzahl_in_unserer_s"
+      ],
+      "text": "We show him with yours r number of drones in our show font.",
+      "reviewed": false,
+      "sourceHash": "17d4880db9dae8227ac07272e45d2fed53bda37d963bbf7b562c278453dbc532"
+    },
+    {
+      "path": [
+        "calculator",
+        "dauer"
+      ],
+      "text": "Duration",
+      "reviewed": false,
+      "sourceHash": "668cbe316167110bd88a29f03832fab7cc99ed14a96900e3be89270fc84c82a4"
+    },
+    {
+      "path": [
+        "calculator",
+        "ca_13_min"
+      ],
+      "text": "ca. 13 minutes",
+      "reviewed": false,
+      "sourceHash": "24841c854c10df8f1c6d0116f89defa572bcc56f6bc4d0b637cc995862d28fa1"
+    },
+    {
+      "path": [
+        "calculator",
+        "mit_200_drohnen_anfragen"
+      ],
+      "text": "Request with 200 drones",
+      "reviewed": false,
+      "sourceHash": "ba478c03c27fbb24aaea92bf6caf7f6dcc147db82122bf38f0662db790564564"
+    },
+    {
+      "path": [
+        "calculator",
+        "pakete_vergleichen"
+      ],
+      "text": "Compare packages",
+      "reviewed": false,
+      "sourceHash": "3f387f2739970e4b6784c3ef3972046c5c9ad38c9743e6b30b91dfc2b69bcdce"
+    },
+    {
+      "path": [
+        "calculator",
+        "der_interaktive_preisrechner_benotigt_javascript_d"
+      ],
+      "text": "The interactive price calculator requires JavaScript. The Package prices below Applicable n for the Basic drone count.",
+      "reviewed": false,
+      "sourceHash": "7e97d4175d7aa07180f1e1b82d51a56c77395ce9241564f29ab6bf66933aacaf"
+    },
+    {
+      "path": [
+        "calculator",
+        "fromPrice"
+      ],
+      "text": "from {price}",
+      "reviewed": false,
+      "sourceHash": "5ebadbff01429fedc191512635d408d0f75837b41e4afa183a2380efeb2d2688"
+    },
+    {
+      "path": [
+        "calculator",
+        "net"
+      ],
+      "text": "net plus Directions",
+      "reviewed": false,
+      "sourceHash": "d91c1bc409559ac56094a7cf765e7b795a2ff45f30ff4ce44105661e01cfe0d9"
+    },
+    {
+      "path": [
+        "calculator",
+        "packageLabel"
+      ],
+      "text": "Package",
+      "reviewed": false,
+      "sourceHash": "b58bd16905d210ddad9d1b562a7cbc34b21d106d91ea9aa7bb7fe2aa492d0ff0"
+    },
+    {
+      "path": [
+        "calculator",
+        "duration"
+      ],
+      "text": "Duration",
+      "reviewed": false,
+      "sourceHash": "668cbe316167110bd88a29f03832fab7cc99ed14a96900e3be89270fc84c82a4"
+    },
+    {
+      "path": [
+        "calculator",
+        "motifs"
+      ],
+      "text": "Motives",
+      "reviewed": false,
+      "sourceHash": "3c304325a9d42f41663bdb512f0d3235fd097b92b99f643f67043a8f77a2aa6d"
+    },
+    {
+      "path": [
+        "calculator",
+        "motifSize"
+      ],
+      "text": "Motive size",
+      "reviewed": false,
+      "sourceHash": "7ffdfc5ce72661d9cdf371d687ff0f627c12b5bd3b0e44b6e08385c6887567be"
+    },
+    {
+      "path": [
+        "calculator",
+        "motifTitle"
+      ],
+      "text": "Size of the whole subject in the sky, drones at a distance of {distance} m",
+      "reviewed": false,
+      "sourceHash": "e38cdc47ec62a3e5e8b362bc31a5266fc07e4cdced0f5952e2fc9a8a6b2f3ceb"
+    },
+    {
+      "path": [
+        "calculator",
+        "size"
+      ],
+      "text": "approx. {width} × {height} m",
+      "reviewed": false,
+      "sourceHash": "0596c528b0e84d625a63ed0777f9112815f4bda49c75847d148afb10f4092af1"
+    },
+    {
+      "path": [
+        "calculator",
+        "depth"
+      ],
+      "text": ", {depth} m deep",
+      "reviewed": false,
+      "sourceHash": "a3d566e5217fd254b389131f462a2807676cecf1e2addaf3c1ea82e51007ed96"
+    },
+    {
+      "path": [
+        "calculator",
+        "inquiry"
+      ],
+      "text": "With {count} request drones",
+      "reviewed": false,
+      "sourceHash": "b51e497de4780862aa79e4192c28069f0f5a274f1eb9ef20b214169f1787d9a9"
+    },
+    {
+      "path": [
+        "calculator",
+        "selected"
+      ],
+      "text": "Suitable for your selection",
+      "reviewed": false,
+      "sourceHash": "57a7c109764afea7a36bd4a5da710ba12787f53223b8aeaca287bf097863abae"
+    },
+    {
+      "path": [
+        "calculator",
+        "limit"
+      ],
+      "text": "Only to {count} drones",
+      "reviewed": false,
+      "sourceHash": "11c79e6113a125d0f5daab088c04852d315e43afee521ed08ea5cad09b30d532"
+    },
+    {
+      "path": [
+        "calculator",
+        "above"
+      ],
+      "text": "about it: {name}",
+      "reviewed": false,
+      "sourceHash": "4d6e108306d3164040c91e598383b3cc53d5e658b684120095f0cae4221b8b2e"
+    },
+    {
+      "path": [
+        "calculator",
+        "included"
+      ],
+      "text": "incl. {count} Drones",
+      "reviewed": false,
+      "sourceHash": "a9e920690bde55eb0f7d244346640890415dce390f7ebf2e332bdade5f679e45"
+    },
+    {
+      "path": [
+        "calculator",
+        "forCount"
+      ],
+      "text": "for {count} drones",
+      "reviewed": false,
+      "sourceHash": "68aad709d690d7377d05f75bdf854afab5e52cf32097dc515c8fb0a0dc0578d6"
+    },
+    {
+      "path": [
+        "calculator",
+        "alreadyIncluded"
+      ],
+      "text": "{name} already contains {count} drones – for the same price.",
+      "reviewed": false,
+      "sourceHash": "a84d4fa6fe1fcc6db3060843b34aba5199dab7f8d187bff8ef50fbbf6f5afd73"
+    },
+    {
+      "path": [
+        "calculator",
+        "starts"
+      ],
+      "text": "{name} starts with {count} drones.",
+      "reviewed": false,
+      "sourceHash": "48660774dbc291f1dfd7ea7817a1b4a86d8d448ea57c484a3ec655450b097745"
+    },
+    {
+      "path": [
+        "calculator",
+        "largeFleet"
+      ],
+      "text": "Over 600 drones are a guide price – we plan the fleet together and confirm it in the offer.",
+      "reviewed": false,
+      "sourceHash": "351688924c2282f0133abe16d986092b895a0e0c02cc2557c0cf0d170d8785a5"
+    },
+    {
+      "path": [
+        "calculator",
+        "minimum"
+      ],
+      "text": "Under 10 drones per character it will be difficult to read – for your text at least {count} drones.",
+      "reviewed": false,
+      "sourceHash": "3f523fccc893efb91e79adf0361b1d19caa5504a32098d215a8c7caff8b7ff1a"
+    },
+    {
+      "path": [
+        "calculator",
+        "reserve"
+      ],
+      "text": "Your text needs at most {used} drones (80 m high) – the We show the remaining {reserve} as a reserve; in the offer we like to supplement them with motifs.",
+      "reviewed": false,
+      "sourceHash": "90405393293674eb3fcc585c8f71f4826b583644a8b5ae0b1566eff76162afaf"
+    },
+    {
+      "path": [
+        "calculator",
+        "tooLong"
+      ],
+      "text": "This text cannot be presented in this way – please shorten it.",
+      "reviewed": false,
+      "sourceHash": "954af00bbef1f41815cd6fb7fd33d92dab8800b14b93c4fa3fe40cba52d9d322"
+    },
+    {
+      "path": [
+        "calculator",
+        "fontFailed"
+      ],
+      "text": "The writing could not be loaded.",
+      "reviewed": false,
+      "sourceHash": "b9a5903e6888eb40ca37290afecaf5355b86e8fe446c0ea916c993ed340d50c8"
+    },
+    {
+      "path": [
+        "calculator",
+        "textStats"
+      ],
+      "text": "{characters} Signs · {perCharacter} Drones per sign",
+      "reviewed": false,
+      "sourceHash": "721802f31c0f3eb46175eadbf121d8b8d6e9d6e9e158cb7b63d4855d770eec9d"
+    },
+    {
+      "path": [
+        "calculator",
+        "fontStyle"
+      ],
+      "text": "· {style} script",
+      "reviewed": false,
+      "sourceHash": "5af57a4f442d95675048f1a8269fcea65f4face86ff8df1c24046baa6a7ebf90"
+    },
+    {
+      "path": [
+        "calculator",
+        "lines"
+      ],
+      "text": "· {count} lines",
+      "reviewed": false,
+      "sourceHash": "009a03899b4ad6a19461aade5e5bb5b4d8384a18c2a161e3e0775203ea6268d6"
+    },
+    {
+      "path": [
+        "calculator",
+        "unknown"
+      ],
+      "text": "· not displayable: {characters}",
+      "reviewed": false,
+      "sourceHash": "169ec0898ce903b28be09dcd416862740ad64a835ba02c3729b3abb6fdbf0c8b"
+    },
+    {
+      "path": [
+        "calculator",
+        "animationResume"
+      ],
+      "text": "Continue animation",
+      "reviewed": false,
+      "sourceHash": "b0c4f63aec9d1b43a39198962a5b60f51a552a66c84ca123a8aac88083c6bb6f"
+    },
+    {
+      "path": [
+        "calculator",
+        "catalogue"
+      ],
+      "text": "from the catalogue + 4 own",
+      "reviewed": false,
+      "sourceHash": "8f2a59826aaa6805e59b90f50e84ef0b58c9830c1d2565ee8c3516d5df69cb88"
+    },
+    {
+      "path": [
+        "calculator",
+        "individual"
+      ],
+      "text": "individual, 2D + simple 3D",
+      "reviewed": false,
+      "sourceHash": "71dad5b27e826642a3ebe901675973daceaf92830b70437b283425f8a706aa86"
+    },
+    {
+      "path": [
+        "calculator",
+        "storytelling"
+      ],
+      "text": "complex 3D + storytelling",
+      "reviewed": false,
+      "sourceHash": "ca510d5f2282539c21f44f59e4cf029c929066ff6817c529b9f2d112aac04db1"
+    },
+    {
+      "path": [
+        "calculator",
+        "animationReduced"
+      ],
+      "text": "Animation reduced",
+      "reviewed": false,
+      "sourceHash": "5d753849c328960b61795fb2d22f4430c4a2917a6b2f4f83eb73231cad6e86bf"
+    },
+    {
+      "path": [
+        "packageDetails",
+        "drei_pakete_die_preise_rechnen_mit"
+      ],
+      "text": "Three packages. The Prices count.",
+      "reviewed": false,
+      "sourceHash": "1daad4538ff696f22b491738994a18371041a5b5fd3cf6c36fbe78421bd3102d"
+    },
+    {
+      "path": [
+        "packageDetails",
+        "die_preise_unten_gelten_fur_die_drohnenzahl_die_du"
+      ],
+      "text": "The prices below apply to the number of drones that you above n has been set. Each package can be expanded with more drones and extras.",
+      "reviewed": false,
+      "sourceHash": "a7ac8247165b1d20a2465af2d7f6c597e9cbac799756f4e54af6c4788444d1f3"
+    },
+    {
+      "path": [
+        "packageDetails",
+        "ab"
+      ],
+      "text": "off",
+      "reviewed": false,
+      "sourceHash": "fb8e20fc2e4c3f248c60c39bd652f3c1347298bb977b8b4d5903b85055620603"
+    },
+    {
+      "path": [
+        "packageDetails",
+        "fur"
+      ],
+      "text": "for",
+      "reviewed": false,
+      "sourceHash": "cd23c4c603b344f63dd96d80bc9a0af209d7380ce4faa01bc350e742c364b490"
+    },
+    {
+      "path": [
+        "packageDetails",
+        "drohnen"
+      ],
+      "text": "Drones ·",
+      "reviewed": false,
+      "sourceHash": "9813f637216945260cd5d5d27ddccf4bb04294e69803895d155df16dac16c283"
+    },
+    {
+      "path": [
+        "packageDetails",
+        "je"
+      ],
+      "text": "eur per year",
+      "reviewed": false,
+      "sourceHash": "7fa375d6db55cd38a856325985a677a86b2938757c25430491e2d53892710dcd"
+    },
+    {
+      "path": [
+        "packageDetails",
+        "anfragen"
+      ],
+      "text": "requests",
+      "reviewed": false,
+      "sourceHash": "3cb45de78871f04041abadff06201d3bb42e3d010413821a7802a7077107acef"
+    },
+    {
+      "path": [
+        "packageDetails",
+        "scale"
+      ],
+      "text": "+{price} € per {step} drone",
+      "reviewed": false,
+      "sourceHash": "f6003c308873bf4c6245a21e1f45991d7c69bd73f8e03b4894f866fcd5792a26"
+    },
+    {
+      "path": [
+        "packageDetails",
+        "maximum"
+      ],
+      "text": "· to {max} drones",
+      "reviewed": false,
+      "sourceHash": "da8a3cdf9b74497d6e1a51055e3601fab32e4abdf292253f8d635eee1042d805"
+    },
+    {
+      "path": [
+        "packageDetails",
+        "inquiry"
+      ],
+      "text": "{name} requests",
+      "reviewed": false,
+      "sourceHash": "48dea24c6121f39fc9fc317a770faf2566f9499b41cdbf1c3155c39fa42e843c"
+    },
+    {
+      "path": [
+        "packageDetails",
+        "base"
+      ],
+      "text": "for {count} drones · {duration}",
+      "reviewed": false,
+      "sourceHash": "3d171869b3ebea1b18b9d3f3eb91e6e025f92e9410aa2ff9f96608ac6f547d71"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "brotkrumen"
+      ],
+      "text": "Bread crumbs",
+      "reviewed": false,
+      "sourceHash": "37b26b61f391d9063a9bb2b332665398e758edbbad665f2758445c5b1196fab4"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "start"
+      ],
+      "text": "Start",
+      "reviewed": false,
+      "sourceHash": "e4bb9f1ece9af9264a3b9e3913bbdb2cf497457167b14ced5f85688bfde74644"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "projekte"
+      ],
+      "text": "Projects",
+      "reviewed": false,
+      "sourceHash": "df87bfa7519bb406db71792f7ac863b0c686312b5f35a50068109e03ee6dbcb8"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "projekt"
+      ],
+      "text": "Project",
+      "reviewed": false,
+      "sourceHash": "40ebf93af8d45215e6ddd544106a2766cf2a6f445edc30f72218b4e044a22c37"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "in_zahlen"
+      ],
+      "text": "In figures",
+      "reviewed": false,
+      "sourceHash": "88f31d0c056c1134f75b89527a31536cf630329cdb017967c50254a9f5fdb00f"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "die_geschichte"
+      ],
+      "text": "The story",
+      "reviewed": false,
+      "sourceHash": "6c658c8497d63735749371e35ed4718ae59dae2a9f7194ca346c3b1d06aa7c04"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "zum_anfassen"
+      ],
+      "text": "To touch",
+      "reviewed": false,
+      "sourceHash": "b314bfdd44cc7b11e304bfaa4e6ff8657cdc853940199f5f56fd23c560f506f3"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "noch_mal_starten"
+      ],
+      "text": "Start again",
+      "reviewed": false,
+      "sourceHash": "3a1abde9fce41d0a7df59dd0930f3dd50d1f1f8e515ccdab842ce533bc31a08a"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "animation_pausieren"
+      ],
+      "text": "Pause animation",
+      "reviewed": false,
+      "sourceHash": "a9ece501eea01391925c9f445166f86da7839aeb1711aae1546540f92ff3b6c0"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "bilder_der_nacht"
+      ],
+      "text": "Pictures of the Night",
+      "reviewed": false,
+      "sourceHash": "f789945f4799bf93a251285f7123b19e42cbb634f069c4bb6e4019a5927f63b9"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "die_show_in"
+      ],
+      "text": "The show in",
+      "reviewed": false,
+      "sourceHash": "94d0f5c0065ea73b9e5db33fcb62a3780c67485240f5d20e4da94301958149a9"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "bildern"
+      ],
+      "text": "Images.",
+      "reviewed": false,
+      "sourceHash": "d4e4524e735702e9bbd3768d9a5d719b54369ef0a843875a51419043d3f3d76d"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "vorheriges_bild"
+      ],
+      "text": "Previous image",
+      "reviewed": false,
+      "sourceHash": "c84c900c0a9fc2624928203e6d053aaa3a5c8a983fdc446e3cd26d4e37e06df4"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "nachstes_bild"
+      ],
+      "text": "Next picture",
+      "reviewed": false,
+      "sourceHash": "9b73c461d24b62163241d8f3acd4fd8aa87b6fb0b1bdb43bfbdee0b17421faf2"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "die_choreografie"
+      ],
+      "text": "The choreography",
+      "reviewed": false,
+      "sourceHash": "190599bfa1f451b860e049095ef7bb14c99896615b1f099b157bf666ad59dee1"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "was_am_himmel_zu_sehen_war"
+      ],
+      "text": "What was seen in the sky.",
+      "reviewed": false,
+      "sourceHash": "4416b4f046cd38ec04353d2ba5bb48c2588520c3a950e716a9e3454c4e9dd73b"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "presse"
+      ],
+      "text": "Press release",
+      "reviewed": false,
+      "sourceHash": "ce91276860064b3cd8edb7b245284a8dff8c6523ba97ddfa7f75ad519d852568"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "nachstes_projekt"
+      ],
+      "text": "Next project ·",
+      "reviewed": false,
+      "sourceHash": "382469049c764c8d0dca4135ea5057d01c0f69ea27215a6d56fc9f17136a9966"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "play"
+      ],
+      "text": "{name}: Playing Show Video",
+      "reviewed": false,
+      "sourceHash": "b0a3a7b7bddb1bf0239ed632386e47ceb4b99236828ed198f298000b611a1f00"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "gallery"
+      ],
+      "text": "{name}: picture gallery",
+      "reviewed": false,
+      "sourceHash": "0d1c22a84a418a267744d5a44a52bcfbc66896ac7a71b98af15e642d873b0c72"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "animationResume"
+      ],
+      "text": "Continue animation",
+      "reviewed": false,
+      "sourceHash": "b0c4f63aec9d1b43a39198962a5b60f51a552a66c84ca123a8aac88083c6bb6f"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "galleryHeading"
+      ],
+      "text": "The Show in {count} pictures.",
+      "reviewed": false,
+      "sourceHash": "1a22050df14f70ee7b9a1ef9bfa3912eca1fe07bd449e0989bb71b04bedf240d"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "nextProject"
+      ],
+      "text": "Next project · {order} / 04 · {drones} Drones",
+      "reviewed": false,
+      "sourceHash": "75cfe9866cf9f86453681c448c4f3d7618fbd54982657c21f478cae2290c222d"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "formationCount"
+      ],
+      "text": "{count} Drones from the show file",
+      "reviewed": false,
+      "sourceHash": "c3fabcf5df9a3484f36fd4e33c7f8716489d069cc20a7242bef5ee1af9c2a4d5"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "detectedCount"
+      ],
+      "text": "{count} Drones detected",
+      "reviewed": false,
+      "sourceHash": "2e5b221e11dc3ab5ef4fc1909704d06450c1e2abbf375134534fca4b1f1422a4"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "formationFailed"
+      ],
+      "text": "The formation could not load become n.",
+      "reviewed": false,
+      "sourceHash": "4373da6c16c9f85e300f95e78a6cf76ceff618a2da8f9f36fbdce81bd1834554"
+    },
+    {
+      "path": [
+        "flightHero",
+        "showreel_ansehen"
+      ],
+      "text": "Watch Showreel",
+      "reviewed": false,
+      "sourceHash": "2fc55843793374f2ed66e8e2449dcb6daae17732d6233c1237b7cbaafa8692ba"
+    },
+    {
+      "path": [
+        "flightHero",
+        "eckdaten"
+      ],
+      "text": "Basic data",
+      "reviewed": false,
+      "sourceHash": "67a804e472fd7f336349275d5174d13e1fdab4e5219493c77af4eb976641f098"
+    },
+    {
+      "path": [
+        "logoBar",
+        "referenzen"
+      ],
+      "text": "References",
+      "reviewed": false,
+      "sourceHash": "d9825991644fde40e065758354a99e8d2fb8fd71a74cf6ced59b8bc8e0df2c3b"
+    },
+    {
+      "path": [
+        "logoBar",
+        "bekannt_aus"
+      ],
+      "text": "Known from",
+      "reviewed": false,
+      "sourceHash": "701baf4989601c5ce5952612656f4b050f41385e5dcd28773c5e0d2d2063cc9b"
+    },
+    {
+      "path": [
+        "projectGrid",
+        "headline"
+      ],
+      "text": "A few nights that Let us not forget.",
+      "reviewed": false,
+      "sourceHash": "a9dac9225312a5fba7d6dbe6b2b822c25ed262c3456fd329cb5dd18a28c9bbc8"
+    },
+    {
+      "path": [
+        "team",
+        "foto_folgt"
+      ],
+      "text": "Photo follows",
+      "reviewed": false,
+      "sourceHash": "acb27172874e071660585c29b0c337fb8d9f1b8101a3d1e2985f56a3a42121af"
+    },
+    {
+      "path": [
+        "logo",
+        "flyingstars_startseite"
+      ],
+      "text": "FlyingStars – homepage",
+      "reviewed": false,
+      "sourceHash": "3d6129fc1ab34f59ef768c03be853d14a609caa516bc889365cec30d4c6c0572"
+    },
+    {
+      "path": [
+        "video",
+        "das_video_ist_gerade_nicht_verfugbar_bitte_versuch"
+      ],
+      "text": "The video is t just not available. Please try e s again later.",
+      "reviewed": false,
+      "sourceHash": "683b3be7a1a1eb92a8b181f200b17e851556c275082a1f4de981e21281eec9e1"
+    },
+    {
+      "path": [
+        "video",
+        "play"
+      ],
+      "text": "Watch the show video",
+      "reviewed": false,
+      "sourceHash": "453aaba521daf15fe08e906f22df5068642553f138aacc9b41c4104c4e7a36bb"
+    },
+    {
+      "path": [
+        "faq",
+        "headline"
+      ],
+      "text": "Frequent questions",
+      "reviewed": false,
+      "sourceHash": "bb8f48ee26d70001c931d41df5748ef11034259ba01658bf0ad9c251b9328693"
+    },
+    {
+      "path": [
+        "postList",
+        "headline"
+      ],
+      "text": "Current situation",
+      "reviewed": false,
+      "sourceHash": "1ed1693b903ff62b2a51879b381b363e62f80a17fde6ae1e9b7e90077fbd2737"
+    },
+    {
+      "path": [
+        "comparison",
+        "scrollLabel"
+      ],
+      "text": "{headline} (table, horizontally scrollable)",
+      "reviewed": false,
+      "sourceHash": "1eeb0c8371b38c917d82f059796b5c34ae974a85cd8d4b591b926cbea2781b49"
     }
   ]
 }

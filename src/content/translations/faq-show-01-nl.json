@@ -1,0 +1,23 @@
+{
+  "sourceId": "faq/show-01",
+  "locale": "nl",
+  "sourceHash": "dd02672bfc0eb903b2e3f20520ce052e78c318c87b2731dbbbcb27c25e721876",
+  "values": [
+    {
+      "path": [
+        "question"
+      ],
+      "text": "Hoeveel voorschot heb je nodig?",
+      "reviewed": false,
+      "sourceHash": "22b52b0dd2c9a899eb9df95546fd95b7ebfe03ff1ee32d65e40f9b918a794f1b"
+    },
+    {
+      "path": [
+        "body"
+      ],
+      "text": "Ideaal is één tot twee maanden. Voor daar Het ontwerp met uw feedback moet ten minste drie weken, in het geval van complexe vergunningen  Als het bruist, een show in de express is ook mogelijk in een tot twee weken.\n",
+      "reviewed": false,
+      "sourceHash": "4d09d7d882aeae727b43e829c22bbacb72d1e9d1b4cd62dbc7809b7dd8202621"
+    }
+  ]
+}

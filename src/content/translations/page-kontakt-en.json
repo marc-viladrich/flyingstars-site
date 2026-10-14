@@ -1,0 +1,43 @@
+{
+  "sourceId": "page/kontakt",
+  "locale": "en",
+  "sourceHash": "ca4c98577456a939600df33d2b36d4b6d1cd7530a18fe0aaf6a392c7bd8fefb3",
+  "values": [
+    {
+      "path": [
+        "title"
+      ],
+      "text": "Request your show – FlyingStars",
+      "reviewed": false,
+      "sourceHash": "009bf9a85ac3d0a10067e74975451749c1854af974025e14dbc7990e74525df8"
+    },
+    {
+      "path": [
+        "description"
+      ],
+      "text": "Tell FlyingStars about your event, location and desired date. We will advise you on your drone show and get back to you within 48 hours.",
+      "reviewed": false,
+      "sourceHash": "b2c94c3f337634e7fd6684b2d7d8e530b1bdc42bb8890e3ccd532ec17176f595"
+    },
+    {
+      "path": [
+        "sections",
+        0,
+        "headline"
+      ],
+      "text": "Tell us about your piece of heaven.",
+      "reviewed": false,
+      "sourceHash": "d3382171c316eb348433913d7943f7f29ed94c126df22889707039083f2ca48a"
+    },
+    {
+      "path": [
+        "sections",
+        0,
+        "text"
+      ],
+      "text": "Two short steps – what you don't know yet, you just leave open. We will get back to you within 48 hours, usually much faster.",
+      "reviewed": false,
+      "sourceHash": "3e656b493056ba141c3fac4c9ce408b2a137898f7e16fe2e339d4a7077497a81"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "sourceId": "post/2026-10-06-testflug-wie-eine-drohnenshow-entsteht",
+  "locale": "en",
+  "sourceHash": "392bd97b3d8ea8646fa8126568e1972dc4967d3928dfd1edb47c10cbf0e07e08",
+  "values": [
+    {
+      "path": [
+        "title"
+      ],
+      "text": "Test flight: How a drone show is created",
+      "reviewed": false,
+      "sourceHash": "c8c48d4f3de62d35f8cfd7ae0734e07e46dc2edc3e5d34aaa7663f4ab8ed87e1"
+    },
+    {
+      "path": [
+        "description"
+      ],
+      "text": "A look behind them Scenes: from the first sketch of permit until landing. Test contribution for: to Intake flow.",
+      "reviewed": false,
+      "sourceHash": "a9fc8ac618d38f1587fd0d8b9458df816bdfdbff1bbe6b16d010f35abc445bde"
+    },
+    {
+      "path": [
+        "body"
+      ],
+      "text": "This is a **Test contribution** that De n deterministic n Intake checks.\n\n## What happens\n\nThis issue automatically creates a file, a branch and a pull request.\n",
+      "reviewed": false,
+      "sourceHash": "f2c6b580a0782e254f7bab6152c3ebde4dfba18a7098c1f0d3404eb8ebbc42f3"
+    }
+  ]
+}

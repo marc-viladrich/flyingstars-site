@@ -1,0 +1,23 @@
+{
+  "sourceId": "team/ronja-donsbach",
+  "locale": "nl",
+  "sourceHash": "30f4bebe404f131bf30a38d65ba2257b0eeba4aaf56c3137d8e22001eb3e43a8",
+  "values": [
+    {
+      "path": [
+        "role"
+      ],
+      "text": "Medeoprichter · GF",
+      "reviewed": false,
+      "sourceHash": "060567b75af213a8d2bcf69950bc80137ee1fdf74d1727aa1a823e5d09b48f60"
+    },
+    {
+      "path": [
+        "bio"
+      ],
+      "text": "Contact en ontwerp van de klant: van het eerste gesprek tot het complete showconcept.",
+      "reviewed": false,
+      "sourceHash": "ccfdafad786e688c24e13042a0cace425689e46243d6adc57fc9c5eee07cd9fc"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "sourceId": "project/beispielprojekt",
+  "locale": "nl",
+  "sourceHash": "b95e0db052207f900adf812312b68d8a819786866dcf72595365d67c67608b07",
+  "values": [
+    {
+      "path": [
+        "title"
+      ],
+      "text": "Voorbeeldproject",
+      "reviewed": false,
+      "sourceHash": "7d3f6a7a8c9d691cb8901977465b1d0e22f3914db56338f1f9661b818129a642"
+    },
+    {
+      "path": [
+        "location"
+      ],
+      "text": "Voedsel",
+      "reviewed": false,
+      "sourceHash": "a212407df28bdad5d6442fffb0c073634f83e176ab488758fc9aa294356e9639"
+    },
+    {
+      "path": [
+        "summary"
+      ],
+      "text": "Korte beschrijving van het project in één tot twee zinnen, verschijnt in kaarten en als een meta beschrijving.",
+      "reviewed": false,
+      "sourceHash": "1d9e8d9440c695dad645a81ffde5e71f181a76771af917671a8fe7507eec4e70"
+    },
+    {
+      "path": [
+        "body"
+      ],
+      "text": "Gedetailleerde projectbeschrijving. Startpunt, nadering, resultaat.\n",
+      "reviewed": false,
+      "sourceHash": "5a45806e6d26512890498996957a281423203bf6c645c1ada3e1311130cd3498"
+    }
+  ]
+}

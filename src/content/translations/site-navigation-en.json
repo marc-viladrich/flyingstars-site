@@ -63,6 +63,207 @@
       "text": "Exp",
       "reviewed": false,
       "sourceHash": "9fe440fa4dbe876ce7b5c2e24b5ce8715e0d53dab9b0e8dc26026c7615432960"
+    },
+    {
+      "path": [
+        "header",
+        1,
+        "label"
+      ],
+      "text": "Prices",
+      "reviewed": false,
+      "sourceHash": "56e09549c5d674d952efd175cd90367ad2020e07baa0ff3cf32c18152dd27af5"
+    },
+    {
+      "path": [
+        "header",
+        2,
+        "label"
+      ],
+      "text": "Projects",
+      "reviewed": false,
+      "sourceHash": "df87bfa7519bb406db71792f7ac863b0c686312b5f35a50068109e03ee6dbcb8"
+    },
+    {
+      "path": [
+        "header",
+        4,
+        "label"
+      ],
+      "text": "FAQ",
+      "reviewed": false,
+      "sourceHash": "dbc468a14b601d5d9240aeb72b9fcd2f8aed2f4e30932876edf8d16ec313846b"
+    },
+    {
+      "path": [
+        "mobileExtras",
+        0,
+        "label"
+      ],
+      "text": "About us",
+      "reviewed": false,
+      "sourceHash": "b7defbf9cff089f6d915b75d10301b31720c03d65461d73f4f95edd68560b8fe"
+    },
+    {
+      "path": [
+        "mobileExtras",
+        1,
+        "label"
+      ],
+      "text": "Blog",
+      "reviewed": false,
+      "sourceHash": "8c6bc099534a0251b576f6b88bd2db124ae9497c64bd9242e92a6aec23e6a73a"
+    },
+    {
+      "path": [
+        "footer",
+        "headings",
+        "contact"
+      ],
+      "text": "Contact details",
+      "reviewed": false,
+      "sourceHash": "325eecf9d30156c2e6f261e611c40f571de28ad8924b6b2167b2aa78a3d9dadb"
+    },
+    {
+      "path": [
+        "footer",
+        "headings",
+        "pages"
+      ],
+      "text": "Pages",
+      "reviewed": false,
+      "sourceHash": "d79c018994cab0f5b28e09f13c803a5ae5ee41d27dcda289c0c281f22d67f4e7"
+    },
+    {
+      "path": [
+        "footer",
+        "headings",
+        "social"
+      ],
+      "text": "Consequences",
+      "reviewed": false,
+      "sourceHash": "f49faf7b70040469d9f1ab76f7c566c8727bdfd37008e79d77e3bd8a1b152485"
+    },
+    {
+      "path": [
+        "footer",
+        "pages",
+        1,
+        "label"
+      ],
+      "text": "Prices",
+      "reviewed": false,
+      "sourceHash": "56e09549c5d674d952efd175cd90367ad2020e07baa0ff3cf32c18152dd27af5"
+    },
+    {
+      "path": [
+        "footer",
+        "pages",
+        2,
+        "label"
+      ],
+      "text": "Projects",
+      "reviewed": false,
+      "sourceHash": "df87bfa7519bb406db71792f7ac863b0c686312b5f35a50068109e03ee6dbcb8"
+    },
+    {
+      "path": [
+        "footer",
+        "pages",
+        4,
+        "label"
+      ],
+      "text": "FAQ",
+      "reviewed": false,
+      "sourceHash": "dbc468a14b601d5d9240aeb72b9fcd2f8aed2f4e30932876edf8d16ec313846b"
+    },
+    {
+      "path": [
+        "footer",
+        "pages",
+        5,
+        "label"
+      ],
+      "text": "About us",
+      "reviewed": false,
+      "sourceHash": "b7defbf9cff089f6d915b75d10301b31720c03d65461d73f4f95edd68560b8fe"
+    },
+    {
+      "path": [
+        "footer",
+        "pages",
+        6,
+        "label"
+      ],
+      "text": "Blog",
+      "reviewed": false,
+      "sourceHash": "8c6bc099534a0251b576f6b88bd2db124ae9497c64bd9242e92a6aec23e6a73a"
+    },
+    {
+      "path": [
+        "footer",
+        "social",
+        0,
+        "label"
+      ],
+      "text": "Instagram",
+      "reviewed": false,
+      "sourceHash": "bad57ef7837c8e6bf99c2a5935cc9d6fe5324a53d88744ad5551db0e46b03cd6"
+    },
+    {
+      "path": [
+        "footer",
+        "social",
+        1,
+        "label"
+      ],
+      "text": "YouTube",
+      "reviewed": false,
+      "sourceHash": "fb7accfff8c6f8ea9b03c91ee5576d0d08080e9ba35918d801aaeb6020dbc88c"
+    },
+    {
+      "path": [
+        "footer",
+        "social",
+        2,
+        "label"
+      ],
+      "text": "TikTok",
+      "reviewed": false,
+      "sourceHash": "1bb6fcfbf1368a7b27a6db04802e2756a9e209eb24f189c3e35be8542f439a2c"
+    },
+    {
+      "path": [
+        "footer",
+        "social",
+        3,
+        "label"
+      ],
+      "text": "Facebook",
+      "reviewed": false,
+      "sourceHash": "d41f5b4977ee05c6b61b3b5f054784628f5cd1cbe06a82a5484d1e6de6eefe85"
+    },
+    {
+      "path": [
+        "footer",
+        "legal",
+        0,
+        "label"
+      ],
+      "text": "Imprint",
+      "reviewed": false,
+      "sourceHash": "b8a6051923e6a6494006784ea7e367dd4cefe964281e8d32a5464f56798a76d2"
+    },
+    {
+      "path": [
+        "footer",
+        "legal",
+        1,
+        "label"
+      ],
+      "text": "Data protection",
+      "reviewed": false,
+      "sourceHash": "f624fcf0dcbb39c0a05062577622a8530ae2b04c335ae657cb19bbda57e90d6b"
     }
   ]
 }

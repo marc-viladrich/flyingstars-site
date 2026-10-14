@@ -1,0 +1,23 @@
+{
+  "sourceId": "faq/show-06",
+  "locale": "nl",
+  "sourceHash": "7fa51434ad9d055d05a66aeabbf7537ac88831effa1f1867673017e46d1edb4f",
+  "values": [
+    {
+      "path": [
+        "question"
+      ],
+      "text": "Hoeveel drones heb ik nodig?",
+      "reviewed": false,
+      "sourceHash": "b47e9c4eff1312470f52e3b830498a299b105ec1b558834cfa11a7d42dadd143"
+    },
+    {
+      "path": [
+        "body"
+      ],
+      "text": "Elke drone is een lichtpunt. Voor een brief duurt het ongeveer 10-20 drones, voor een gedetailleerde Het logo is veel meer. Onze pakketten beginnen bij 100 drones Wij adviseren u Welk nummer past bij uw motieven.\n",
+      "reviewed": false,
+      "sourceHash": "33cdb2548259ef36c42e88552d740a2551d088cb6f77d7338e45f69a647b658a"
+    }
+  ]
+}

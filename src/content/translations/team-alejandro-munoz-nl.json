@@ -1,0 +1,23 @@
+{
+  "sourceId": "team/alejandro-munoz",
+  "locale": "nl",
+  "sourceHash": "0e807a673cef628ea30a87deb1e7436215a6ceacc71e5c0a69a0696cf580edd2",
+  "values": [
+    {
+      "path": [
+        "role"
+      ],
+      "text": "Hoofd van het ontwerp",
+      "reviewed": false,
+      "sourceHash": "d54d1adb6b1e4edd42541bcb62c80a5aef2fe0a9906d0866ee634449110d4b1b"
+    },
+    {
+      "path": [
+        "bio"
+      ],
+      "text": "Ontwerp alle shows en choreographies foto per foto, afgestemd op de muziek.",
+      "reviewed": false,
+      "sourceHash": "c1007db9b4a17784160509f099c0596d732cb9813253ec74d630a8eda813b154"
+    }
+  ]
+}
