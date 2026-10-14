@@ -50,7 +50,7 @@ const messages = { step: form.progress.step, required: form.messages.required, o
 <fieldset data-step="">
 <legend class="sr-only" {...I(['steps','contact'])}>{form.steps.contact}</legend>
 <div class="fields">
-<div class="field"><label for="f-name" {...I(['name','label'])}>{form.name.label}</label><input autocomplete="name" data-msg={form.name.error} id="f-name" maxlength="120" name="name" required="" type="text" {...I(['name','error'])}/><span class="err" data-err-for="name" role="alert"></span></div>
+<div class="field"><label for="f-name" {...I(['fullName','label'])}>{form.fullName.label}</label><input autocomplete="name" data-msg={form.fullName.error} id="f-name" maxlength="120" name="name" required="" type="text" {...I(['fullName','error'])}/><span class="err" data-err-for="name" role="alert"></span></div>
 <div class="field"><label for="f-mail" {...I(['email','label'])}>{form.email.label}</label><input autocomplete="email" data-msg={form.email.error} id="f-mail" maxlength="200" name="email" required="" type="email" {...I(['email','error'])}/><span class="err" data-err-for="email" role="alert"></span></div>
 <div class="field full"><label for="f-tel" {...I(['phone','label'])}>{form.phone.label}</label><input autocomplete="tel" id="f-tel" maxlength="200" name="telefon" type="tel"/></div>
 <div class="field full"><label for="f-msg" {...I(['message','label'])}>{form.message.label}</label><textarea id="f-msg" maxlength="5000" name="message" placeholder={form.message.placeholder} {...I(['message','placeholder'])}></textarea></div>

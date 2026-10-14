@@ -33,7 +33,7 @@
     "suffix": "Drohnen"
   },
   "hint": "Nur der Anlass ist nötig – den Rest klären wir gern gemeinsam.",
-  "name": {
+  "fullName": {
     "label": "Name",
     "error": "Wie dürfen wir dich ansprechen?"
   },

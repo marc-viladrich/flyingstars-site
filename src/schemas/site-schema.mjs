@@ -25,7 +25,7 @@ export const siteInquirySchema=z.object({
  place:z.object({label:text('Beschriftung'),placeholder:text('Platzhalter')}).describe('Ort'),
  package:z.object({label:text('Beschriftung'),unknown:text('Option ohne Paket'),suffix:text('Einheit hinter der Drohnenzahl')}).describe('Paket'),
  hint:text('Hinweis unter Schritt 1'),
- name:z.object({label:text('Beschriftung'),error:text('Fehlermeldung wenn leer')}).describe('Name'),
+ fullName:z.object({label:text('Beschriftung'),error:text('Fehlermeldung wenn leer')}).describe('Name-Feld'),
  email:z.object({label:text('Beschriftung'),error:text('Fehlermeldung wenn leer'),invalid:text('Fehlermeldung bei ungültiger Adresse')}).describe('E-Mail-Feld'),
  phone:z.object({label:text('Beschriftung')}).describe('Telefon-Feld'),
  message:z.object({label:text('Beschriftung'),placeholder:text('Platzhalter'),skyText:text('Vorbelegung aus dem Preisrechner ({text} wird ersetzt)')}).describe('Nachricht'),
