@@ -16,7 +16,8 @@ export async function hostUpdate({source = sourceRoot, state = stateRoot(), remo
   source = path.resolve(source); state = path.resolve(state);
   await assertStateLocation(source,state,webroot);
   if (!restart) throw Error('DEPLOY_RESTART_CMD fehlt. Den Neustartmechanismus zuerst auf dem Hetzner-Konto prüfen.');
-  const selected = await configuredRemote(source, git, remote);
+  // The deploy hook always pulls the release from a remote (origin unless named); pushing from the editor stays opt-in.
+  const selected = await configuredRemote(source, git, remote ?? process.env.FLYINGSTARS_GIT_REMOTE ?? 'origin');
   if (!selected) throw Error('Kein Git-Remote für das Deployment konfiguriert.');
   return withRepositoryLock(source, async () => {
     try{await git(source, ['fetch', selected], {timeout: 30_000});}
