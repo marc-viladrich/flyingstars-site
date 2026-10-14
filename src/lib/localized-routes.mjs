@@ -8,6 +8,6 @@ export const sourcePath = pathname => {
 export function localizedHref(href, locale = 'de') {
   if (typeof href !== 'string' || !href.startsWith('/') || href.startsWith('//')) return href;
   const path = sourcePath(href);
-  if (/^\/(?:assets|media|_astro|api|editor)(?:\/|$)|\.[a-z0-9]+(?:[?#]|$)/i.test(path)) return href;
+  if (/^\/(?:assets|media|_astro|api|editor)(?:\/|[?#]|$)|\.[a-z0-9]+(?:[?#]|$)/i.test(path)) return href;
   return locale === 'de' ? path : `/${locale}${path}`;
 }

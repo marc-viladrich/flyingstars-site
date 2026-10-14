@@ -1,6 +1,6 @@
 ---
 import {inlineHtml} from '../lib/inline-text';
-interface Props { locale?:string; value?: string}
+interface Props {value?: string}
 const {value=''}=Astro.props;
 ---
 <Fragment set:html={inlineHtml(value)} />
