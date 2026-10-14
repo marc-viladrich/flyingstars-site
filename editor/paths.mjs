@@ -8,7 +8,8 @@ export const sourceRoot = path.dirname(editorRoot);
 export const stateRoot = () => path.resolve(process.env.FLYINGSTARS_STATE_DIR || path.join(sourceRoot, '..'));
 export function isMain(metaUrl) {
   if (!process.argv[1]) return false;
-  return realpathSync(process.argv[1]) === realpathSync(fileURLToPath(metaUrl));
+  try{return realpathSync(process.argv[1]) === realpathSync(fileURLToPath(metaUrl));}
+  catch(error){if(error.code==='ENOENT')return false;throw error;}
 }
 async function canonical(file) {
   try {return await fs.realpath(file);}
