@@ -11,7 +11,7 @@ import {uploadNativeMedia} from './native-media.mjs';
 
 test('Real native image metadata and normalized bytes are one retryable commit; invalid bytes leave no record',async t=>{
  const here=path.dirname(fileURLToPath(import.meta.url)),root=await fs.mkdtemp(path.join(os.tmpdir(),'fs-native-media-'));t.after(()=>fs.rm(root,{recursive:true,force:true}));
- await git(here,['clone','--quiet','--no-hardlinks',path.join(here,'..'),root]);await fs.symlink(await fs.realpath(path.join(here,'../node_modules')),path.join(root,'node_modules'));
+ await git(here,['clone','--quiet','--no-hardlinks',path.join(here,'..'),root]);await git(root,['checkout','-B','content/draft']);await fs.symlink(await fs.realpath(path.join(here,'../node_modules')),path.join(root,'node_modules'));
  const store=await new NativeStore(root,{remote:false}).init(),expectedHead=await store.head(),requestId=randomUUID();
  const bytes=await sharp({create:{width:32,height:18,channels:3,background:'#643bae'}}).png().toBuffer();
  const request={bytes,name:'Proof.png',requestId,expectedHead};const uploaded=await uploadNativeMedia(store,request);const record=uploaded.state.records.find(r=>r.id===uploaded.assetId);

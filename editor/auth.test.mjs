@@ -201,13 +201,13 @@ async function cachedArtifact(dir, runtimeName, head, origin, editor) {
 
 test('real HTTP listeners enforce authentication, CSRF and account-authored Git mutations', {timeout: 180_000}, async t => {
   const {dir, file} = await fixture(t), source = path.join(dir, 'source'), [port, publicPort] = await ports(t);
-  await git(here, ['clone', '--quiet', '--no-hardlinks', path.join(here, '..'), source]);
+  await git(here, ['clone', '--quiet', '--no-hardlinks', path.join(here, '..'), source]);await git(source,['checkout','-B','content/draft']);
   await fs.symlink(await fs.realpath(path.join(here, '../node_modules')), path.join(source, 'node_modules'));
   const head = await git(source, ['rev-parse', 'content/draft']), main = head;
   await cachedArtifact(dir, 'runtime', head, 'http://127.0.0.1:' + port, true);
   await cachedArtifact(dir, 'runtime-public', main, 'http://127.0.0.1:' + publicPort, false);
   let now = Date.now();
-  const servers = await startNativeServers({source, runtimeRoot: dir, port, publicPort, listen: !socketless, auth: {file, clock: () => now}});
+  const servers = await startNativeServers({remote:false,source, runtimeRoot: dir, port, publicPort, listen: !socketless, auth: {file, clock: () => now}});
   // Auth integration uses real Git commits and NativeBuilder activation with cached static fixtures.
   // Full Astro compilation is exercised by native-builder.test.mjs, independently of authentication.
   const build = servers.builder.build.bind(servers.builder);
@@ -316,12 +316,12 @@ test('real HTTP listeners enforce authentication, CSRF and account-authored Git 
 
 test('programmatic server default keeps auth off and session bootstrap advertises that mode', async t => {
   const {dir} = await fixture(t), source = path.join(dir, 'source'), [port, publicPort] = await ports(t);
-  await git(here, ['clone', '--quiet', '--no-hardlinks', path.join(here, '..'), source]);
+  await git(here, ['clone', '--quiet', '--no-hardlinks', path.join(here, '..'), source]);await git(source,['checkout','-B','content/draft']);
   await fs.symlink(await fs.realpath(path.join(here, '../node_modules')), path.join(source, 'node_modules'));
   const head = await git(source, ['rev-parse', 'content/draft']), main = head;
   await cachedArtifact(dir, 'runtime', head, 'http://127.0.0.1:' + port, true);
   await cachedArtifact(dir, 'runtime-public', main, 'http://127.0.0.1:' + publicPort, false);
-  const servers = await startNativeServers({source, runtimeRoot: dir, port, publicPort, listen: !socketless});
+  const servers = await startNativeServers({remote:false,source, runtimeRoot: dir, port, publicPort, listen: !socketless});
   t.after(async () => { await Promise.all([servers.editor, servers.publicServer].map(server => new Promise(resolve => server.close(resolve)))); });
   assert.equal((await request(servers.editor, servers.origin, '/editor/api/state')).status, 200);
   assert.deepEqual(await (await request(servers.editor, servers.origin, '/editor/api/session')).json(), {user: null, csrf: null});

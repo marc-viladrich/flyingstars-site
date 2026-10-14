@@ -27,24 +27,33 @@ export class GitSync {
     if (!this.remote || this.closed) return;
     if (this.running) return this.running;
     clearTimeout(this.timer); this.timer = null;
-    this.running = this.store.exclusive(async () => {
+    this.running = (async () => {
+      // Snapshot quickly under the store lock; network I/O must never hold up another save.
+      const snapshot = await this.store.exclusive(async () => {
       const head = await this.store.head(), leaseFile = path.join(this.store.root, '.git', 'flyingstars-draft-lease');
       const lease = await fs.readFile(leaseFile, 'utf8').catch(e => {if (e.code !== 'ENOENT') throw e; return '';});
+      return {head,leaseFile,lease};
+      });
+      const {head,leaseFile,lease}=snapshot;
       const args = ['push'];
       if (/^[a-f0-9]{40}$/.test(lease)) args.push('--force-with-lease=refs/heads/content/draft:' + lease);
       args.push(this.remote, head + ':refs/heads/content/draft');
       await this.git(this.store.root, args, {timeout: 30_000});
-      await fs.rm(leaseFile, {force: true});
-      this.status.pending = false; this.status.lastError = null;
+      await this.store.exclusive(async () => {
+        const currentLease = await fs.readFile(leaseFile, 'utf8').catch(e=>{if(e.code!=='ENOENT')throw e;return '';});
+        if (currentLease === lease) await fs.rm(leaseFile, {force: true});
+        this.status.pending = await this.store.head() !== head;
+      });
+      this.status.lastError = null;
       this.status.lastPushedAt = new Date().toISOString(); this.retry = 0;
-    }).catch(() => {
+    })().catch(() => {
       this.status.pending = true;
       this.status.lastError = 'Git-Sicherung fehlgeschlagen. Der Entwurf ist lokal gespeichert; der Push wird erneut versucht.';
       if (!this.closed) {
         this.timer = setTimeout(() => {this.timer = null; this.flush().catch(() => {});}, Math.min(60_000, 1000 * 2 ** this.retry++));
         this.timer.unref();
       }
-    }).finally(() => {this.running = null;});
+    }).finally(() => {this.running = null;if(this.status.pending&&!this.timer)this.enqueue();});
     return this.running;
   }
   close() {this.closed = true; clearTimeout(this.timer);}

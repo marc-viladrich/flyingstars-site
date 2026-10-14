@@ -5,8 +5,8 @@ import os from 'node:os';
 import {fileURLToPath} from 'node:url';
 import {NativeStore,git} from './native-store.mjs';
 const here=path.dirname(fileURLToPath(import.meta.url));
-export async function i18nFixture(t,{sourceRoot=path.join(here,'..')}={}) {
-  const root=await fs.mkdtemp(path.join(os.tmpdir(),'flyingstars-i18n-')),source=path.join(root,'..');
+export async function i18nFixture(t,{sourceRoot=path.join(here,'..'),forCI=false}={}) {
+  const root=await fs.mkdtemp(path.join(os.tmpdir(),'flyingstars-i18n-')),source=path.join(root,'source');
   if(t)t.after(()=>fs.rm(root,{recursive:true,force:true}));
   await fs.cp(sourceRoot,source,{recursive:true,filter:file=>!['.git','node_modules','.astro','dist'].includes(path.basename(file))&&!path.basename(file).startsWith('.env')});
   await fs.symlink(await fs.realpath(path.join(here,'../node_modules')),path.join(source,'node_modules'));
@@ -14,13 +14,13 @@ export async function i18nFixture(t,{sourceRoot=path.join(here,'..')}={}) {
   const translations=path.join(source,'src/content/translations');
   for(const file of await fs.readdir(translations).catch(()=>[]))if(file.endsWith('.json'))await fs.rm(path.join(translations,file));
   let config=await fs.readFile(path.join(source,'astro.config.mjs'),'utf8');
-  config=config.replace("output: 'static',","output: 'static',\n  cacheDir: './.astro/cache',\n  vite: {cacheDir:'.astro/vite',envDir:'/tmp/flyingstars-no-env'},");
+  config=config.replace("vite: {cacheDir:'.astro/vite'}","vite: {cacheDir:'.astro/vite',envDir:'/tmp/flyingstars-no-env'}");
   config=config.replace('image: {',"image: {service:{entrypoint:'astro/assets/services/noop'},");
   await fs.writeFile(path.join(source,'astro.config.mjs'),config);
   // Image URLs stay visible in HTML; only build-time optimization/probes are bypassed in this fixture.
-  await fs.writeFile(path.join(source,'src/lib/media.ts'),`
+  if(!forCI)await fs.writeFile(path.join(source,'src/lib/media.ts'),`
 import {mediaForSource} from './editorial-records';
-export async function optimizedImage(src:string,width=960,height?:number) {
+export async function optimizedImage(src:string,width=960,height?:number,_format?:'webp'|'jpg') {
  let size;try{size=mediaForSource(src);}catch{size={width:960,height:540};}
  const w=Math.min(width,960,size.width),h=height??Math.round(w*size.height/size.width);
  return {src,width:w,height:h,attributes:{width:w,height:h}};

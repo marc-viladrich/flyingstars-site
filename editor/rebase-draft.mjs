@@ -10,7 +10,10 @@ export async function prepareDraftRebase(root, main, git, remote) {
   if (remote) {
     try {remoteDraft = await git(root, ['rev-parse', 'refs/remotes/' + remote + '/content/draft']);} catch {}
     if (remoteDraft) try {await git(root, ['merge-base', '--is-ancestor', remoteDraft, before]);}
-    catch {throw Error('Der entfernte Entwurf enthält fremde Änderungen. Bitte die Git-Stände manuell zusammenführen.');}
+    catch {
+      const lease=await fs.readFile(path.join(root,'.git','flyingstars-draft-lease'),'utf8').catch(e=>{if(e.code!=='ENOENT')throw e;return '';});
+      if(lease!==remoteDraft)throw Error('Der entfernte Entwurf enthält fremde Änderungen. Bitte die Git-Stände manuell zusammenführen.');
+    }
   }
   const folder = path.join(root, '.git', 'flyingstars-rebase-' + randomUUID());
   await git(root, ['worktree', 'add', '--quiet', '--detach', folder, before]);

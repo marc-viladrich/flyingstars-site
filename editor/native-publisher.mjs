@@ -15,9 +15,11 @@ export class NativePublisher {
    if(published!==expectedPublishedHead&&published!==expectedHead)throw failure('Der veröffentlichte Stand wurde inzwischen geändert.',409);
    let target=expectedHead;
    if(this.store.remote){
-    await git(this.store.root,['fetch',this.store.remote],{timeout:30000});
+    try{await git(this.store.root,['fetch',this.store.remote],{timeout:30000});}
+    catch{throw failure('GitHub konnte nicht erreicht werden. Der Entwurf bleibt gespeichert; bitte später erneut freigeben.',503);}
     const main=await git(this.store.root,['rev-parse','refs/remotes/'+this.store.remote+'/main']);
-    const prepared=await prepareDraftRebase(this.store.root,main,git,this.store.remote);
+    let prepared;try{prepared=await prepareDraftRebase(this.store.root,main,git,this.store.remote);}
+    catch(error){throw failure(error.message,409);}
     target=prepared.head;
     const artifact=await this.builder.prepare(target);
     await applyDraftRebase(this.store.root,prepared,git);

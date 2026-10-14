@@ -4,27 +4,29 @@ Website: **[flyingstars-site.pages.dev](https://flyingstars-site.pages.dev/)** �
 
 Astro-Instanz des `astro-site-template` für den Flying-Stars-Relaunch. Dieser Branch setzt die Kundenreferenz mit Startseite, Preisrechner und vier Case-Seiten um. Die Produktionsseite aktualisiert sich erst nach dem freigegebenen Merge. [Umsetzung und Unterschiede zur Vercel-Vorlage](docs/flyingstars-reference.md) und [Brevo-/CLI-Anleitung](docs/credentials.md).
 
+## Deployment und Editor
+
+Der automatische Zielbetrieb ist jetzt Hetzner Webhosting L: statische Apache-Ausgabe plus private Node-App. Site und Editor liegen in diesem Repository. Branchmodell, Secrets, Einrichtung, Offline-Nachweis und Rückweg stehen in [docs/deployment.md](docs/deployment.md). Cloudflare wird nur noch manuell als Preview ausgeführt.
+
 ## Das Modell
 
 ```
 Issue Form (Inhalt)      ──► content-intake.yml ──► Datei + PR ─┐
 Issue Form (Änderung) ──► Label agent-go (Mensch) ──► agent.yml ──► PR ─┤
-                                                                       ├─► CI-Gates + Preview ──► Mensch merged ──► Deploy main
+                                                                       ├─► CI-Gates + manuelle Preview ──► Mensch merged ──► Deploy main
 ```
 
 - **Spur A, deterministisch:** Blogpost, Projekt, FAQ kommen als Issue Form rein, ein Skript macht daraus eine Content-Datei und einen PR. Kein LLM.
 - **Spur B, Agent:** Änderungswünsche werden erst durch das Label `agent-go` freigegeben (Klick 1). Dann baut Claude Code mit dem Subscription-Token einen PR. Niemand außer dem Label-Setzer verbraucht Kontingent.
-- **Gate:** CI (axe, Request-Allowlist, HTML-Hygiene, Lighthouse-Budgets, Link-Check) und Preview-URL am PR. Merge = Freigabe (Klick 2). `main` deployt in Produktion.
+- **Gate:** CI (axe, Request-Allowlist, HTML-Hygiene, Lighthouse-Budgets, Link-Check) und bei Bedarf eine manuelle Preview. Merge = Freigabe (Klick 2). `main` deployt in Produktion.
 
-Neue Blogposts, Projekte und FAQ werden im PR mit `draft: false` erzeugt. Solange der PR offen ist, erscheinen sie nur in der Branch-Preview. Der Merge ist die Freigabe, danach veröffentlicht der Produktions-Deploy sie automatisch. Absichtlich mit `draft: true` markierte Inhalte bleiben verborgen. Der Test `scripts/issue-to-content.test.mjs` schützt diesen Ablauf für alle drei Inhaltstypen; `tests/publication.spec.ts` prüft den freigegebenen Testbeitrag im gebauten Blog.
+Neue Blogposts, Projekte und FAQ werden im PR mit `draft: false` erzeugt. Solange der PR offen ist, erscheinen sie nur im PR beziehungsweise in einer manuell ausgelösten Preview. Der Merge ist die Freigabe, danach veröffentlicht der Produktions-Deploy sie automatisch. Absichtlich mit `draft: true` markierte Inhalte bleiben verborgen. Der Test `scripts/issue-to-content.test.mjs` schützt diesen Ablauf für alle drei Inhaltstypen; `tests/publication.spec.ts` prüft den freigegebenen Testbeitrag im gebauten Blog.
 
 ## Veröffentlichung und Cache
 
-Ein Merge ändert zuerst den Git-Stand. Erst ein erfolgreicher **Cloudflare-Upload** aktualisiert die Website. Der Deploy-Lauf muss sowohl `build` als auch `upload` erfolgreich abschließen. Eine fehlende Projektvariable oder ein fehlendes Secret führt hier zu einem Fehler, statt den Upload still zu überspringen. Gleichzeitige Deploys desselben Branches werden abgebrochen, damit ein älterer Build nicht den neueren ersetzt.
+Ein Merge ändert zuerst GitHub main. Nach erfolgreicher CI ruft `deploy-hetzner.yml` den SSH-Hook auf. Der Host baut einen festen Git-Stand und wechselt erst nach Erfolg den öffentlichen Webroot. Inhaltsentwürfe auf `content/draft` werden beim Code-Deploy erhalten; freigegeben wird der Inhalt durch den Editor.
 
-Cloudflare Pages aktualisiert seine Auslieferung beim Deployment; HTML wird standardmäßig mit `Cache-Control: public, max-age=0, must-revalidate` ausgeliefert. Ein privates Browserfenster kann eine fehlende Veröffentlichung oder ein noch auf `draft: true` gesetztes Dokument nicht beheben. Cache-Purges sind für den normalen Ablauf nicht nötig. [Cloudflare-Dokumentation](https://developers.cloudflare.com/pages/configuration/serving-pages/).
-
-`main` ist geschützt: PR erforderlich, aktuelle Checks `gates` und `upload` erforderlich, Gespräche müssen aufgelöst sein, Regeln gelten auch für Admins, Force-Push und Branch-Löschen sind gesperrt. Die Zahl erforderlicher fremder Reviews ist vorerst **0**, weil die Intake-PRs mit Marcs Token geöffnet werden. Ein Pflichtreview durch Marc setzt zuerst eine eigenständige Bot-Identität voraus.
+Die bisherige Cloudflare-Konfiguration und der tatsächlich eingerichtete Branch-Schutz gehören zum früheren Pilot. Vor Inbetriebnahme muss Marc den Schutz an das neue Modell anpassen: `gates` bleibt erforderlich für Code-PRs, der manuelle Cloudflare-Job `upload` darf kein Pflichtcheck mehr sein. Der redaktionelle Host-Key muss geprüfte Fast-forward-Pushes auf main durchführen dürfen. Bestehende GitHub-Regeln wurden durch diese lokale Arbeit nicht geändert.
 
 ## Struktur
 
@@ -38,7 +40,8 @@ Cloudflare Pages aktualisiert seine Auslieferung beim Deployment; HTML wird stan
 | `scripts/issue-to-content.mjs` | Intake-Skript (Spur A) mit Tests |
 | `tests/` | Playwright-Gates. `routes.ts` ist die gemeinsame Routenliste |
 | `.github/ISSUE_TEMPLATE/` | Vier Issue Forms: Blogpost, Projekt, FAQ, Änderungswunsch |
-| `.github/workflows/` | `ci.yml` (Gates), `content-intake.yml` (Spur A), `agent.yml` (Spur B), `deploy.yml` (host-spezifisch) |
+| `.github/workflows/` | `ci.yml` (Gates), `content-intake.yml` (Spur A), `agent.yml` (Spur B), `deploy-hetzner.yml` (Produktion), `deploy-cloudflare-preview.yml` (manuell) |
+| `editor/` | Editor-Runtime, Browserdateien, Unit-Tests, CI-Einstieg und Deploy-Hook |
 | `AGENTS.md` | Agent-Vertrag, gilt für Claude Code und Codex |
 
 ## Section-Typen
@@ -74,7 +77,7 @@ Seiten sind Listen dieser Typen. Felder und Pflichtangaben stehen in `src/conten
 3. Repository-Variablen setzen: `SITE_URL`, `PREVIEW_URL`, `MEDIA_HOST`, `PUBLIC_FORM_ENDPOINT`, `CF_PAGES_PROJECT`.
 4. Secrets setzen, siehe unten.
 5. Labels anlegen: `content:blogpost`, `content:projekt`, `content:faq`, `aenderungswunsch`, `agent-go`, `content`.
-6. Branch-Schutz auf `main`: PR erforderlich, Status-Checks `gates` und `upload`, keine Ausnahmen für Admins. Bei eigener Bot-Identität zusätzlich ein Pflichtreview; mit dem eigenen Token vorerst 0 erforderliche Reviews. Braucht GitHub Pro bei privaten Repos.
+6. Branch-Schutz auf `main`: PR erforderlich, Status-Check `gates`; den redaktionellen Host-Key für Fast-forward-Pushes zulassen. Bei eigener Bot-Identität zusätzlich ein Pflichtreview; mit dem eigenen Token vorerst 0 erforderliche Reviews. Braucht GitHub Pro bei privaten Repos.
 7. Kund*innen als Collaborators einladen (Rolle „Triage“ reicht zum Erstellen von Issues, nicht zum Setzen von `agent-go`).
 
 ## Secrets
@@ -98,14 +101,9 @@ Hot-Swap: Entweder die Function auf eine andere Runtime kopieren (Deno, Node, EU
 
 ## Hosting wechseln
 
-Nur `deploy.yml` kennt den Host. Der Job `build` erzeugt ein Artefakt `dist/`, der Job `upload` lädt es hoch. Wechsel = `upload` austauschen:
+Der aktuelle Betriebsvertrag ist [Hetzner Webhosting L](docs/deployment.md), mit SSH-Hook und einem Node-Editor. `deploy-cloudflare-preview.yml` erlaubt ausschließlich eine manuell gestartete Preview. Ein anderer Hoster braucht denselben privaten Node-/Git-/Buildbetrieb und eine geprüfte statische Aktivierung.
 
-- **Cloudflare Pages (Start):** `wrangler pages deploy`, Preview pro Branch automatisch. Preview-Schutz über Cloudflare Access im Dashboard.
-- **IONOS Deploy Now:** eigene GitHub-App, kein eigener `upload`-Job nötig; `deploy.yml` auf Build-only reduzieren. Preview-Schutz per `.htaccess`.
-- **Dokploy/Coolify auf Hetzner:** Webhook-Trigger oder `rsync` des Artefakts; PR-Previews übernimmt Dokploy.
-- **Beliebiger EU-Host per rsync:** `rsync -az --delete dist/ user@host:/srv/sites/<name>/<branch>/` plus Wildcard-Subdomain mit Basic Auth. Ca. ein Tag Eigenbau.
-
-Build, Gates, Intake und Agent bleiben erhalten. Das Kontaktformular nutzt aktuell eine Pages Function; beim Hostwechsel muss diese mit umziehen oder `PUBLIC_FORM_ENDPOINT` auf einen externen Endpunkt zeigen.
+Intake und Agent öffnen weiterhin PRs gegen main. Das Kontaktformular nutzt bisher eine Pages Function; beim Hostwechsel muss diese gesondert umziehen oder `PUBLIC_FORM_ENDPOINT` auf einen externen Endpunkt zeigen.
 
 ## Medien
 

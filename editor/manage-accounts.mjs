@@ -1,3 +1,4 @@
+import {isMain} from './paths.mjs';
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -75,4 +76,4 @@ export async function runAccountsCli() {
   catch (e) { console.error(e.name === 'AbortError' ? 'Abgebrochen.' : e.message); process.exitCode = 1; }
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) await runAccountsCli();
+if (isMain(import.meta.url)) await runAccountsCli();

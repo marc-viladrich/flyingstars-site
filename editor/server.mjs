@@ -11,7 +11,7 @@ import {NativePreview} from './native-preview.mjs';
 import {plan as planTranslation,executeBatched,loadMemory,saveMemory,mergeIntoTranslations} from './translation-core.mjs';
 import {translationProvider} from './translation-providers.mjs';
 import {EditorAuth} from './auth.mjs';
-import {editorRoot as root,sourceRoot,stateRoot} from './paths.mjs';
+import {editorRoot as root,sourceRoot,stateRoot,isMain,assertStateLocation} from './paths.mjs';
 const mime={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.json':'application/json','.svg':'image/svg+xml','.webp':'image/webp','.jpg':'image/jpeg','.jpeg':'image/jpeg','.png':'image/png','.woff2':'font/woff2','.ico':'image/x-icon','.pdf':'application/pdf','.mp4':'video/mp4'};
 export async function serveFile(res,base,relative,enhance=false){
  const decoded=decodeURIComponent(relative);
@@ -26,19 +26,20 @@ const json=(res,status,data)=>{res.writeHead(status,{'content-type':'application
 async function body(req,max=1_000_000){let size=0,parts=[];for await(const piece of req){size+=piece.length;if(size>max)throw failure('Anfrage zu groß.',413);parts.push(piece);}return Buffer.concat(parts);}
 async function jsonBody(req,max){if(!/^application\/json(?:\s*;|$)/i.test(req.headers['content-type']||''))throw failure('JSON erwartet.',415);const bytes=await body(req,max);try{return JSON.parse(bytes.toString());}catch{throw failure('Ungültiges JSON.');}}
 function respondError(res,error){const status=error.status||(error.name==='ZodError'||error.name==='SyntaxError'?400:error.code==='ENOENT'?404:500);if(error.retryAfter)res.setHeader('Retry-After',String(error.retryAfter));json(res,status,{error:status===500?'Interner Serverfehler.':error.message});}
-export async function startNativeServers({auth=false,listen=true,preview:livePreview=false,source=sourceRoot,runtimeRoot=stateRoot(),port=Number(process.env.RELAUNCH_PORT||4542),publicPort=Number(process.env.RELAUNCH_PUBLIC_PORT||4543),editorOrigin=process.env.EDITOR_ORIGIN}={}){
- const origin=editorOrigin||'http://127.0.0.1:'+port,publicOrigin='http://127.0.0.1:'+publicPort;
+export async function startNativeServers({auth=false,listen=true,initialize=true,remote,preview:livePreview=false,source=sourceRoot,runtimeRoot=stateRoot(),port=Number(process.env.PORT||process.env.RELAUNCH_PORT||4542),publicPort=Number(process.env.RELAUNCH_PUBLIC_PORT||4543),editorOrigin=process.env.EDITOR_ORIGIN}={}){
+ await assertStateLocation(source,runtimeRoot,process.env.FLYINGSTARS_PUBLIC_WEBROOT);
+ const origin=editorOrigin||'http://127.0.0.1:'+port,publicOrigin=process.env.SITE_URL||'http://127.0.0.1:'+publicPort;
  const canonicalOrigin=new URL(origin);if(canonicalOrigin.origin!==origin||!['http:','https:'].includes(canonicalOrigin.protocol))throw failure('EDITOR_ORIGIN muss eine vollständige Origin ohne Pfad sein.');
  if(auth&&canonicalOrigin.protocol!=='https:'&&!['127.0.0.1','localhost','[::1]'].includes(canonicalOrigin.hostname))throw failure('Anmeldung benötigt eine HTTPS-Origin.');
  const authentication=auth?await new EditorAuth({secure:canonicalOrigin.protocol==='https:',...(auth===true?{}:auth)}).init({forbiddenRoots:[source,path.join(runtimeRoot,'runtime'),path.join(runtimeRoot,'runtime-public'),path.join(runtimeRoot,'preview')]}):null;
- const store=await new NativeStore(source).init();
- const builder=new NativeBuilder(store,runtimeRoot,{origin});await builder.init();
+ const store=await new NativeStore(source,{remote}).init();
+ const builder=new NativeBuilder(store,runtimeRoot,{origin});if(initialize)await builder.init();
  // Live preview of unsaved drafts (warm astro dev on a worktree); started in the background, optional.
  const preview=livePreview?new NativePreview(store,runtimeRoot,{port:Number(process.env.RELAUNCH_PREVIEW_PORT||port+2),origin}):null;
  if(preview)preview.init().catch(error=>console.error('Live-Vorschau:',error.message));
  const publicBuilder=new NativeBuilder(store,runtimeRoot,{editor:false,origin:publicOrigin,runtimeName:'runtime-public'});
- const publisher=await new NativePublisher(store,publicBuilder).init(),translation=new NativeTranslation();
- const buildSaved=async(saved)=>{try{await builder.build(saved.head);return{...saved,activeHead:builder.current.head};}catch(error){return{...saved,activeHead:builder.current.head,buildError:error.message};}};
+ const publisher=new NativePublisher(store,publicBuilder),translation=new NativeTranslation();if(initialize)await publisher.init();
+ const buildSaved=async(saved)=>store.exclusive(async()=>{try{await builder.build(saved.head);return{...saved,activeHead:builder.current?.head};}catch(error){return{...saved,activeHead:builder.current?.head,buildError:error.message};}});
  const editor=http.createServer(async(req,res)=>{
   res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','same-origin');res.setHeader('Cache-Control','no-store');res.setHeader('Content-Security-Policy',"frame-ancestors 'none'");
   try{
@@ -74,7 +75,7 @@ export async function startNativeServers({auth=false,listen=true,preview:livePre
    if(authentication)res.setHeader('Set-Cookie',authentication.destroySession(req));
    return json(res,200,{ok:true});
   }
-  if(req.method==='GET'&&p==='/editor/api/state')return json(res,200,{...await store.state(),activeHead:builder.current.head});
+  if(req.method==='GET'&&p==='/editor/api/state')return json(res,200,{...await store.state(),activeHead:builder.current?.head});
   if(req.method==='GET'&&p==='/editor/api/media')return json(res,200,{assets:(await store.state()).records.filter(r=>r.id.startsWith('media/'))});
   if(req.method==='GET'&&p==='/editor/api/review')return json(res,200,await publisher.review());
   if(req.method==='GET'&&p==='/editor/api/translation')return json(res,200,translation.status());
@@ -142,7 +143,7 @@ export async function startNativeServers({auth=false,listen=true,preview:livePre
  }catch(error){respondError(res,error);}});
  if(listen){
   await new Promise((resolve,reject)=>{editor.once('error',reject);editor.listen(port,'127.0.0.1',resolve);});
-  try{await new Promise((resolve,reject)=>{publicServer.once('error',reject);publicServer.listen(publicPort,'127.0.0.1',resolve);});}catch(error){editor.close();throw error;}
+  try{if(!process.env.FLYINGSTARS_PUBLIC_WEBROOT)await new Promise((resolve,reject)=>{publicServer.once('error',reject);publicServer.listen(publicPort,'127.0.0.1',resolve);});}catch(error){editor.close();throw error;}
  }
  return{store,builder,publisher,editor,publicServer,origin,publicOrigin,auth:authentication};
 }
@@ -151,4 +152,4 @@ export async function runEditor(){
  catch(error){console.error(error.message);process.exitCode=1;}
 }
 
-if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)) await runEditor();
+if(isMain(import.meta.url)) await runEditor();
