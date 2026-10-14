@@ -310,7 +310,7 @@ sections:
         cells:
           - label: Ja
             text: auch in 3D
-            tone: n
+            tone: y
           - label: Nein
             text: ""
             tone: n
