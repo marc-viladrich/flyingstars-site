@@ -12,18 +12,24 @@
     "astro": "astro",
     "check": "astro check",
     "test": "node --test 'scripts/*.test.mjs' && playwright test",
-    "gates": "astro check && astro build && npm test"
+    "gates": "astro check && astro build && npm test",
+    "editor": "node editor/server.mjs",
+    "ci": "node editor/ci/check.mjs",
+    "test:unit": "node --test 'editor/*.test.mjs' 'editor/test/*.test.mjs' 'scripts/*.test.mjs' src/schemas/editorial-source.test.mjs"
   },
   "dependencies": {
     "astro": "^7.3.6",
-    "marked": "^18.1.0"
+    "marked": "^18.1.0",
+    "@astrojs/sitemap": "^3.7.4",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.5",
+    "sharp": "^0.35.5"
   },
   "allowScripts": {
     "esbuild": true
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
-    "@astrojs/sitemap": "^3.7.4",
     "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.63.0",
     "typescript": "^6.0.3"

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Anmelden · FlyingStars Editor</title>
+    <link rel="stylesheet" href="/editor/editor.css">
+    <script type="module" src="/editor/login.js"></script>
+  </head>
+  <body id="login">
+    <main id="login-card" class="login-card editor-ui">
+      <p class="login-brand">FlyingStars</p>
+      <h1>Anmelden</h1>
+      <p class="login-lead">Zum Bearbeiten der Website.</p>
+      <form id="login-form" action="/editor/api/login" method="post">
+        <label for="username">Benutzername</label>
+        <input id="username" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="64" required>
+        <label for="password">Passwort</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+        <p id="login-error" class="login-error" role="alert" hidden></p>
+        <button type="submit">Anmelden</button>
+      </form>
+      <noscript>Bitte JavaScript aktivieren, um sich anzumelden.</noscript>
+    </main>
+  </body>
+</html>
