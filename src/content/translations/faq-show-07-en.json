@@ -8,7 +8,7 @@
         "question"
       ],
       "text": "Where are you flying?",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "a0f23ffb4494d2401dd94ae4b16f0e219b22fcef884976a0d4f13e2d8254f253"
     },
     {
@@ -16,7 +16,7 @@
         "body"
       ],
       "text": "Throughout Germany, in the EU and beyond – for example in Austria, Switzerland, the Netherlands and Belgium. Because there s Air law is unified in the EU, we also fly with our permission in other member states.\n",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "444b248e4e6e3093d1f8bbbf4a98ac9a67ee97963cf4c01811798695ad6e0a23"
     }
   ]

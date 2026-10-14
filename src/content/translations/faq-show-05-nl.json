@@ -8,7 +8,7 @@
         "question"
       ],
       "text": "Is een drone show veilig?",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "c4a6e7321302d0d303724dcba772ffda502523451fc09436133a7aed50518a0e"
     },
     {
@@ -16,7 +16,7 @@
         "body"
       ],
       "text": "\n- Onze drones wegen maar 300 gram.\n- Een berekende veiligheidszone beschermt mensen, dieren en gebouwen.\n- Redundante automatische en handmatige beveiligingssystemen bewaken elke vlucht.\n- Geen explosies, geen brandgevaar en we vliegen meestal niet hoger dan 120 meter.\n",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "83ce75085bd4dfcdfafbc766202b8b2df38b8acac9da29c4672766f35d29d774"
     }
   ]

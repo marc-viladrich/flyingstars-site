@@ -8,7 +8,7 @@
         "question"
       ],
       "text": "When can the Starting the show?",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "baad5add2c10e579e514a6c849aa46cee5634927d2ba6e83eb22a360f0816aaa"
     },
     {
@@ -16,7 +16,7 @@
         "body"
       ],
       "text": "Aircraft from half an hour after sunset. In mid-summer this is often only around 10 pm – we call you for your place the Exact start time.\n",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "a4756bcb9ba9031fe57e73f2cc5f814c61713c10d4fa6ee4727cf7d8b7163e04"
     }
   ]

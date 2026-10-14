@@ -8,7 +8,7 @@
         "displayName"
       ],
       "text": "SPARK",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "5c33a73fa55987ba4cd05848b17468a0bbab3be6d0882b104b4f370f93751188"
     },
     {
@@ -24,7 +24,7 @@
         "badge"
       ],
       "text": "Entry",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "f6d1badb525cc04feb3dcd277b18657b2450ec361576a32956c7bbbc908775f5"
     },
     {
@@ -32,7 +32,7 @@
         "description"
       ],
       "text": "The sparkling start for weddings, anniversaries and smaller corporate and cultural celebrations.",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "fc345ed29d5ac35e48497f4285eed9a72e4f34eaa0fef77b072e9e172f01bdf7"
     },
     {

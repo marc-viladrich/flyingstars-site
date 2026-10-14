@@ -8,7 +8,7 @@
         "question"
       ],
       "text": "How many drones do I need?",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "b47e9c4eff1312470f52e3b830498a299b105ec1b558834cfa11a7d42dadd143"
     },
     {
@@ -16,7 +16,7 @@
         "body"
       ],
       "text": "Every drone is a point of light. For a letter it takes about 10-20 drones, for a detailed The logo is much more. Our packages start at 100 drones – we advise you What number fits your motives.\n",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "33cdb2548259ef36c42e88552d740a2551d088cb6f77d7338e45f69a647b658a"
     }
   ]

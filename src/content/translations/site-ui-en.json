@@ -108,7 +108,7 @@
         "zum_inhalt_springen"
       ],
       "text": "Jump to content",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "0223fd4834ed4884018d03754afc816c5c9bef8dc3889c54df079fcbf4f928e1"
     },
     {
@@ -171,7 +171,7 @@
         "drohnenshows_seit_2022_uber_150_shows_in_deutschla"
       ],
       "text": "Drone shows since 2022. Over 150 shows in Germany and Europe.",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "35e7071ca2253f21c6727cd748ab9c74d235b4de0ccbfc7124e9356cb19646ae"
     },
     {
@@ -189,7 +189,7 @@
         "website_vorschau"
       ],
       "text": "Website preview",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "c8178d4c3258470c21c57fc791f1556c4b2c43413ec70c4bfb02ce3471c4716c"
     },
     {
@@ -198,7 +198,7 @@
         "text_100_okostrom"
       ],
       "text": "100 % green electricity",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "53e4d15895a99f3397b302469e674ae95f77f5fd3513c9a72bbcdc4db263f899"
     },
     {
@@ -1854,7 +1854,7 @@
         "foto_folgt"
       ],
       "text": "Photo follows",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "acb27172874e071660585c29b0c337fb8d9f1b8101a3d1e2985f56a3a42121af"
     },
     {
@@ -1872,7 +1872,7 @@
         "das_video_ist_gerade_nicht_verfugbar_bitte_versuch"
       ],
       "text": "The video is t just not available. Please try e s again later.",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "683b3be7a1a1eb92a8b181f200b17e851556c275082a1f4de981e21281eec9e1"
     },
     {

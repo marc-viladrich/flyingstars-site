@@ -59,7 +59,7 @@
         "cardTitle"
       ],
       "text": "Bokkenrijders: our biggest show yet",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "afc1a392bcb3b2dbee20d97b9e77cd76eef78b9d7b855ca3f89f4049fb389e69"
     },
     {
@@ -68,7 +68,7 @@
         "category"
       ],
       "text": "Musical · Maastricht",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "001d3ffb68d84b8bcf27fd0c702f91a38cd167c12ad653ee6f9701d5f72c3a42"
     },
     {

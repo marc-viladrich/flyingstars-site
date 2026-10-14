@@ -8,7 +8,7 @@
         "role"
       ],
       "text": "Head of Technology",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "fb89317d3476890a45b9ee70aded713541531cf25c2a4444fcd0d841019a966e"
     },
     {
@@ -16,7 +16,7 @@
         "bio"
       ],
       "text": "Technology, fleet and purchasing: holds jed e Drone ready to go.",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "e9eae621554b367f65d5df691428d242d08ab7fae14c2f4e353e47a185f506fc"
     }
   ]

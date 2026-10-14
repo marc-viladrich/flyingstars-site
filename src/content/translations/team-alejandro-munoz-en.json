@@ -8,7 +8,7 @@
         "role"
       ],
       "text": "Head of Design",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "d54d1adb6b1e4edd42541bcb62c80a5aef2fe0a9906d0866ee634449110d4b1b"
     },
     {
@@ -16,7 +16,7 @@
         "bio"
       ],
       "text": "Design all shows and choreographies – picture by picture, in tune with the music.",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "c1007db9b4a17784160509f099c0596d732cb9813253ec74d630a8eda813b154"
     }
   ]

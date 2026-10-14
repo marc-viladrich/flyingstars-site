@@ -9,7 +9,7 @@
         "label"
       ],
       "text": "Email",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "2fae6fb30b0d0077f771923d6d037d8e43c45e6078e2b3c31637a489c029cee5"
     },
     {
@@ -18,7 +18,7 @@
         "label"
       ],
       "text": "Phone",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "fa6906d76ee94d4e8d05a2424fb89005840522ab6dec0ee8055247424977169e"
     },
     {
@@ -27,7 +27,7 @@
         "label"
       ],
       "text": "WhatsApp",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "6a40edf1fc87a29f243a7eefdbed57d19bfe16ab2e039d7ae1a44c097297e2f3"
     },
     {
@@ -36,7 +36,7 @@
         "label"
       ],
       "text": "Videocall",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "7e0785abf6daea129ac24e22985f4bf9ba39cd253094ec1cd2d2634e2a458f96"
     },
     {
@@ -45,7 +45,7 @@
         "value"
       ],
       "text": "Book Appointment",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "39841ff64ffa23c484c3f43682d32fb95302b3e8aa56c05939a43a887f0805e2"
     },
     {

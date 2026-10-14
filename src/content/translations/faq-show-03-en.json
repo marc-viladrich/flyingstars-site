@@ -8,7 +8,7 @@
         "question"
       ],
       "text": "Do you care about the permits?",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "380ee870340547ecccf05cb34ae0d353fdad6a3caf240e2faa59792bb25d29d4"
     },
     {
@@ -16,7 +16,7 @@
         "body"
       ],
       "text": "Yes. We have a far-reaching approval from the Federal Aviation Office and an EU-wide operating license. Other applications For example, at the r German air traffic control, we take over. From you We just need the Consent of the property owners: inside – in the case of public land, the De r City or municipality.\n",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "01590a8d09f0b741adb0b0cf6fa9b56b744fb755add1ef267ae5b1a385b9aab2"
     }
   ]

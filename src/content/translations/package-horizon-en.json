@@ -8,7 +8,7 @@
         "displayName"
       ],
       "text": "HORIZONE",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "7e4e26183aacdb054b06f550fb2db860b40106ad27aa9d649e101d581f588b56"
     },
     {
@@ -24,7 +24,7 @@
         "badge"
       ],
       "text": "Bestseller",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "ed12ffaf116a193b26948e7fef539468c413d7ab4da14c38581d9125a3701fe1"
     },
     {
@@ -32,7 +32,7 @@
         "description"
       ],
       "text": "The individual staging for product presentations, large company events and city marketing.",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "7b82f04e5944082deb91bcbbe16dee56463b62ca5d48954a72f372a546d87267"
     },
     {

@@ -8,7 +8,7 @@
         "kicker"
       ],
       "text": "Verzoek",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "d131ffcac53b09ae4694f2d732225bac9f6241812c6d21de7e2183989ad4d452"
     },
     {
@@ -17,7 +17,7 @@
         "duration"
       ],
       "text": "ca. 1 minuut",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "85199f0c28766553c78dd120e6d876599dde5fddc4921918e2007a51be915145"
     },
     {
@@ -26,7 +26,7 @@
         "show"
       ],
       "text": "Uw show",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "9b8af4026bbd4962bb40c61fb37ca66779fa2f87839c49889f7fd4ae3fd1b5a0"
     },
     {
@@ -35,7 +35,7 @@
         "contact"
       ],
       "text": "Uw contactgegevens",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "eee7c5ac7eae95270b62c40e6c460df1bfeb85573d12158286751cd589ecadd4"
     },
     {
@@ -44,7 +44,7 @@
         "label"
       ],
       "text": "Reden",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "b9e3e176295d21630a025b672d44f36e29b2274dc5e0c4605bb40145038395b9"
     },
     {
@@ -62,7 +62,7 @@
         "firma"
       ],
       "text": "Bedrijfsevenement",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "de7220c8c767c25ba5831e5e2098f8daf5e80ff7d914f9752ce6520652cbe5f4"
     },
     {
@@ -71,7 +71,7 @@
         "stadt"
       ],
       "text": "Stadsfestival",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "75d43a43a9392a1c89dbcd62ac006e3534725741e9992691dbce628cb02ef34a"
     },
     {
@@ -80,7 +80,7 @@
         "agentur"
       ],
       "text": "Agentschap",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "c8f3ad183dfa6ce766ee34538116f3590ed4302fc3b6a66c99b2b14507410ae2"
     },
     {
@@ -89,7 +89,7 @@
         "privat"
       ],
       "text": "Bruiloft en privé",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "7edec0e6eb7cef1e724a0a942f3b0ed1ad76b861ef5e4ffba4e22bc8b1ebe1b2"
     },
     {
@@ -98,7 +98,7 @@
         "indoor"
       ],
       "text": "Binnen",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "a9cb38b7dd3c8aa64101d74c4f35078242423ff3a7a18e20fcfae693e3bcbec1"
     },
     {
@@ -107,7 +107,7 @@
         "sonstiges"
       ],
       "text": "Andere",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "9f3d5f8d94cf29d7ab98b9d43e94cc0097f5b930adeb8cc327127e396b83d919"
     },
     {
@@ -116,7 +116,7 @@
         "label"
       ],
       "text": "Datum (indien reeds bekend)",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "9ba7fb61f1091e708b3bd54799501528f0d94c4efbf91b2e65bed4d3d80e8235"
     },
     {
@@ -125,7 +125,7 @@
         "label"
       ],
       "text": "Locatie",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "30fb259129e569445f9717f394a344607d61fc3611189c9a44a89d06fe5c20c9"
     },
     {
@@ -143,7 +143,7 @@
         "label"
       ],
       "text": "Drones / Pakket",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "0bd8ac43008a84fc282f61f34e66eef5fbe4ba5fb3e895b6a19d86808ba89909"
     },
     {
@@ -169,7 +169,7 @@
         "hint"
       ],
       "text": "Alleen de gelegenheid is noodzakelijk .",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "a5fcc923884ce6dc8cfc4e6423d278deeaed746aeec2afed66cf4241f266e6b6"
     },
     {
@@ -178,7 +178,7 @@
         "label"
       ],
       "text": "Naam",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "dcd1d5223f73b3a965c07e3ff5dbee3eedcfedb806686a05b9b3868a2c3d6d50"
     },
     {
@@ -196,7 +196,7 @@
         "label"
       ],
       "text": "E-mail",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "2fae6fb30b0d0077f771923d6d037d8e43c45e6078e2b3c31637a489c029cee5"
     },
     {
@@ -223,7 +223,7 @@
         "label"
       ],
       "text": "Telefoon (facultatief)",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "56e9a5d15ca9151eacd2759258e86f640402c8077362b0de2c2252bfa3cfbdfc"
     },
     {
@@ -232,7 +232,7 @@
         "label"
       ],
       "text": "Bericht (facultatief)",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "8127877fe26c70836c648ec82b58405d481ed79d69acf58916bd24c2eb4a600f"
     },
     {
@@ -259,7 +259,7 @@
         "link"
       ],
       "text": "Gegevensbeschermingsverklaring",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "a1235efbc18d60e2359b3257cd79769df0b2fd2f7bb5683e73495bbef69b3282"
     },
     {
@@ -268,7 +268,7 @@
         "next"
       ],
       "text": "Aanvullende informatie",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "1e14bdf34c3bdead780c582d28dc480c41fd5ccff905feece9f57b962f726eb2"
     },
     {
@@ -277,7 +277,7 @@
         "back"
       ],
       "text": "Terug",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "548611ce58f71a173404d9cfc99816457f97ad25b814310374f5c3f096546ee8"
     },
     {
@@ -286,7 +286,7 @@
         "submit"
       ],
       "text": "Verzoek versturen",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "0527c3584b1a437b0f26a67c48d017f8c6da0e1d41924a7be33732709631c44f"
     },
     {

@@ -10,7 +10,7 @@
         "label"
       ],
       "text": "Events",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "5a781ea9dbd4b305f2e2caf021903f4c745da683fd8bbed2da0d90072ea6c000"
     },
     {
@@ -20,7 +20,7 @@
         "label"
       ],
       "text": "Exp",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "9fe440fa4dbe876ce7b5c2e24b5ce8715e0d53dab9b0e8dc26026c7615432960"
     },
     {
@@ -29,7 +29,7 @@
         "label"
       ],
       "text": "Request a show",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "caebcb95411988a688d18bb0492d01c80dc1fab35ec55a8257390e401273eadb"
     },
     {
@@ -39,7 +39,7 @@
         "label"
       ],
       "text": "Request a show",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "caebcb95411988a688d18bb0492d01c80dc1fab35ec55a8257390e401273eadb"
     },
     {
@@ -50,7 +50,7 @@
         "label"
       ],
       "text": "Events",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "5a781ea9dbd4b305f2e2caf021903f4c745da683fd8bbed2da0d90072ea6c000"
     },
     {
@@ -61,7 +61,7 @@
         "label"
       ],
       "text": "Exp",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "9fe440fa4dbe876ce7b5c2e24b5ce8715e0d53dab9b0e8dc26026c7615432960"
     },
     {
@@ -71,7 +71,7 @@
         "label"
       ],
       "text": "Prices",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "56e09549c5d674d952efd175cd90367ad2020e07baa0ff3cf32c18152dd27af5"
     },
     {
@@ -81,7 +81,7 @@
         "label"
       ],
       "text": "Projects",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "df87bfa7519bb406db71792f7ac863b0c686312b5f35a50068109e03ee6dbcb8"
     },
     {
@@ -91,7 +91,7 @@
         "label"
       ],
       "text": "FAQ",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "dbc468a14b601d5d9240aeb72b9fcd2f8aed2f4e30932876edf8d16ec313846b"
     },
     {
@@ -101,7 +101,7 @@
         "label"
       ],
       "text": "About us",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "b7defbf9cff089f6d915b75d10301b31720c03d65461d73f4f95edd68560b8fe"
     },
     {
@@ -111,7 +111,7 @@
         "label"
       ],
       "text": "Blog",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "8c6bc099534a0251b576f6b88bd2db124ae9497c64bd9242e92a6aec23e6a73a"
     },
     {
@@ -121,7 +121,7 @@
         "contact"
       ],
       "text": "Contact details",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "325eecf9d30156c2e6f261e611c40f571de28ad8924b6b2167b2aa78a3d9dadb"
     },
     {
@@ -131,7 +131,7 @@
         "pages"
       ],
       "text": "Pages",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "d79c018994cab0f5b28e09f13c803a5ae5ee41d27dcda289c0c281f22d67f4e7"
     },
     {
@@ -141,7 +141,7 @@
         "social"
       ],
       "text": "Consequences",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "f49faf7b70040469d9f1ab76f7c566c8727bdfd37008e79d77e3bd8a1b152485"
     },
     {
@@ -152,7 +152,7 @@
         "label"
       ],
       "text": "Prices",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "56e09549c5d674d952efd175cd90367ad2020e07baa0ff3cf32c18152dd27af5"
     },
     {
@@ -163,7 +163,7 @@
         "label"
       ],
       "text": "Projects",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "df87bfa7519bb406db71792f7ac863b0c686312b5f35a50068109e03ee6dbcb8"
     },
     {
@@ -174,7 +174,7 @@
         "label"
       ],
       "text": "FAQ",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "dbc468a14b601d5d9240aeb72b9fcd2f8aed2f4e30932876edf8d16ec313846b"
     },
     {
@@ -185,7 +185,7 @@
         "label"
       ],
       "text": "About us",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "b7defbf9cff089f6d915b75d10301b31720c03d65461d73f4f95edd68560b8fe"
     },
     {
@@ -196,7 +196,7 @@
         "label"
       ],
       "text": "Blog",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "8c6bc099534a0251b576f6b88bd2db124ae9497c64bd9242e92a6aec23e6a73a"
     },
     {
@@ -207,7 +207,7 @@
         "label"
       ],
       "text": "Instagram",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "bad57ef7837c8e6bf99c2a5935cc9d6fe5324a53d88744ad5551db0e46b03cd6"
     },
     {
@@ -218,7 +218,7 @@
         "label"
       ],
       "text": "YouTube",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "fb7accfff8c6f8ea9b03c91ee5576d0d08080e9ba35918d801aaeb6020dbc88c"
     },
     {
@@ -229,7 +229,7 @@
         "label"
       ],
       "text": "TikTok",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "1bb6fcfbf1368a7b27a6db04802e2756a9e209eb24f189c3e35be8542f439a2c"
     },
     {
@@ -240,7 +240,7 @@
         "label"
       ],
       "text": "Facebook",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "d41f5b4977ee05c6b61b3b5f054784628f5cd1cbe06a82a5484d1e6de6eefe85"
     },
     {
@@ -251,7 +251,7 @@
         "label"
       ],
       "text": "Imprint",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "b8a6051923e6a6494006784ea7e367dd4cefe964281e8d32a5464f56798a76d2"
     },
     {
@@ -262,7 +262,7 @@
         "label"
       ],
       "text": "Data protection",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "f624fcf0dcbb39c0a05062577622a8530ae2b04c335ae657cb19bbda57e90d6b"
     }
   ]

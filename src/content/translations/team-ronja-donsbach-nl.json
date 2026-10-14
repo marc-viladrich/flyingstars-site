@@ -8,7 +8,7 @@
         "role"
       ],
       "text": "Medeoprichter · GF",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "060567b75af213a8d2bcf69950bc80137ee1fdf74d1727aa1a823e5d09b48f60"
     },
     {
@@ -16,7 +16,7 @@
         "bio"
       ],
       "text": "Contact en ontwerp van de klant: van het eerste gesprek tot het complete showconcept.",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "ccfdafad786e688c24e13042a0cace425689e46243d6adc57fc9c5eee07cd9fc"
     }
   ]

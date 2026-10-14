@@ -8,7 +8,7 @@
         "question"
       ],
       "text": "Wanneer kan de show beginnen?",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "baad5add2c10e579e514a6c849aa46cee5634927d2ba6e83eb22a360f0816aaa"
     },
     {
@@ -16,7 +16,7 @@
         "body"
       ],
       "text": "\nVolgens de luchtvaartvoorschriften vanaf een half uur na zonsondergang. In het hoogseizoen is dat vaak pas rond 22.00 uur – we geven je de exacte starttijd voor jouw locatie door.\n",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "a4756bcb9ba9031fe57e73f2cc5f814c61713c10d4fa6ee4727cf7d8b7163e04"
     }
   ]

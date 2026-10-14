@@ -8,7 +8,7 @@
         "displayName"
       ],
       "text": "ODYSSEY",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "c02c1d8bf09d94dc48d73e3dad1643309c50e97ceba7d767ea1428523b7ed5fd"
     },
     {
@@ -24,7 +24,7 @@
         "badge"
       ],
       "text": "300+ drones",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "9ade071d86dee624139d564a7aa77a211264846105c8687d542984bc6ba5e87e"
     },
     {
@@ -32,7 +32,7 @@
         "description"
       ],
       "text": "The immersive experience for large campaigns, festivals and events with maximum reach.",
-      "reviewed": false,
+      "reviewed": true,
       "sourceHash": "6af0e168cb623605a3b03a594f12468b7e4bdca83ab8811578a8613980a0f26f"
     },
     {
