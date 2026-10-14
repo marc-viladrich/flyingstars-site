@@ -2,6 +2,9 @@
 // @ts-nocheck
 (() => {
   "use strict";
+  document.querySelectorAll('[data-language-link]').forEach(link => {
+    const target=new URL(link.href,location.href);target.search=location.search;target.hash=location.hash;link.href=target.href;
+  });
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   // A pause chosen on one page stays in effect while the visitor moves through the site.
   const stored = (() => { try { return sessionStorage.getItem('flyingstars:motion'); } catch { return null; } })();

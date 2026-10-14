@@ -15,7 +15,7 @@ const MAX = { name: 120, email: 200, message: 5000 };
 
 export const onRequestPost = async ({ request, env }: { request: Request; env: Env }): Promise<Response> => {
   const ct = request.headers.get('content-type') ?? '';
-  if (!ct.includes('form')) return problem(415, 'Nur Formulardaten.');
+  if (!ct.includes('form')) return problem(415, 'Nur Formulardaten.','method');
   const form = await request.formData();
   const get = (k: string) => String(form.get(k) ?? '').trim();
 
@@ -29,7 +29,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
   if (extra.anlass && !['firma', 'stadt', 'agentur', 'privat', 'indoor', 'sonstiges'].includes(extra.anlass)) return problem(400, 'Anlass ungültig.');
   if (extra.drohnen && (!/^\d+$/.test(extra.drohnen) || Number(extra.drohnen) < 100 || Number(extra.drohnen) > 1000)) return problem(400, 'Drohnenanzahl ungültig.');
   if (name.length > MAX.name || email.length > MAX.email || message.length > MAX.message) return problem(400, 'Eingabe zu lang.');
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return problem(400, 'E-Mail-Adresse ungültig.');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return problem(400, 'E-Mail-Adresse ungültig.','email');
   if (/[\r\n]/.test(name) || /[\r\n]/.test(email)) return problem(400, 'Ungültige Zeichen.');
 
   if (env.TURNSTILE_SECRET) {
@@ -40,7 +40,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
       body: JSON.stringify({ secret: env.TURNSTILE_SECRET, response: token, remoteip: ip }),
     });
     const v = (await r.json()) as { success: boolean };
-    if (!v.success) return problem(403, 'Spam-Prüfung fehlgeschlagen.');
+    if (!v.success) return problem(403, 'Spam-Prüfung fehlgeschlagen.','spam');
   }
 
   if (!env.BREVO_API_KEY || !env.CONTACT_TO || !env.CONTACT_FROM) {
@@ -60,11 +60,11 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
       textContent: `Name: ${name}\nE-Mail: ${email}\n${Object.entries(extra).filter(([, value]) => value).map(([key, value]) => `${key}: ${value}`).join('\n')}\n\n${message}\n`,
     }),
   });
-  if (!res.ok) return problem(502, 'Versand fehlgeschlagen. Bitte später erneut versuchen oder direkt per E-Mail.');
+  if (!res.ok) return problem(502, 'Versand fehlgeschlagen. Bitte später erneut versuchen oder direkt per E-Mail.','send');
   return ok(request,'sent',get('locale'));
 };
 
-export const onRequestGet = (): Response => problem(405, 'Nur POST.');
+export const onRequestGet = (): Response => problem(405, 'Nur POST.','method');
 
 function ok(request: Request, state = 'sent', locale = 'de'): Response {
   // Ohne JS: Redirect auf Danke-Seite. Mit fetch (Accept: application/json): JSON.
@@ -75,6 +75,6 @@ function ok(request: Request, state = 'sent', locale = 'de'): Response {
   return Response.redirect(url.toString(), 303);
 }
 
-function problem(status: number, detail: string): Response {
-  return new Response(JSON.stringify({ok:false,detail,code:status===403?'spam':status===502?'send':status===405||status===415?'method':detail==='E-Mail-Adresse ungültig.'?'email':'invalid'}), { status, headers: { 'content-type': 'application/json' } });
+function problem(status: number, detail: string, code='invalid'): Response {
+  return new Response(JSON.stringify({ok:false,detail,code}), { status, headers: { 'content-type': 'application/json' } });
 }

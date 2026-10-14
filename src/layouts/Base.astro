@@ -54,7 +54,7 @@ const eco = await optimizedImage('https://flyingstars.art/wp-content/uploads/202
     <header class="nav">
       <Logo />
       <nav aria-label={ui.base.hauptnavigation}>{navigation.header.map((item:any,i:number) => <a href={localizedHref(item.href,locale)} aria-current={navState(item.href)} {...NI(["header",i])} {...N(["header",i,"label"])}>{item.label}</a>)}</nav>
-      <nav class="lang" aria-label={ui.base.language}>{['de','en','nl'].map(lang=><a href={localizedHref(current,lang)} lang={lang} hreflang={lang} aria-current={locale===lang?'page':undefined}>{lang.toUpperCase()}</a>)}</nav>
+      <nav class="lang" aria-label={ui.base.language}>{['de','en','nl'].map(lang=><a data-language-link href={localizedHref(current,lang)} lang={lang} hreflang={lang} aria-current={locale===lang?'page':undefined}>{lang.toUpperCase()}</a>)}</nav>
       <button class="motion-btn" type="button" data-motion-toggle data-pause={ui.base.bewegung_pausieren} data-resume={ui.base.motionResume} aria-pressed="false" aria-label={ui.base.bewegung_pausieren} title={ui.base.bewegung_pausieren}><svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="7" y="6" width="3.2" height="12" rx="1" /><rect x="13.8" y="6" width="3.2" height="12" rx="1" /></svg><svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 6.2v11.6a.8.8 0 0 0 1.2.7l9-5.8a.8.8 0 0 0 0-1.4l-9-5.8a.8.8 0 0 0-1.2.7z" /></svg></button>
       <a class="btn small primary" href={localizedHref(navigation.cta.href,locale)} {...N(["cta","label"])}>{navigation.cta.label}</a>
       <button class="menu-btn" type="button" data-menu-open aria-controls="mobile-menu" aria-expanded="false" aria-label={ui.base.menu_offnen}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg></button>
@@ -62,7 +62,7 @@ const eco = await optimizedImage('https://flyingstars.art/wp-content/uploads/202
     <dialog class="mobile-menu" id="mobile-menu" aria-label={ui.base.hauptnavigation}>
       <div class="top"><Logo /><button class="menu-btn menu-close" type="button" data-menu-close aria-label={ui.base.menu_schliessen}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg></button></div>
       <nav aria-label={ui.base.mobile_navigation}>{navigation.header.map((item:any,i:number) => <a href={localizedHref(item.href,locale)} {...NI(["header",i])} {...N(["header",i,"label"])}>{item.label}</a>)}{navigation.mobileExtras.map((item:any,i:number) => <a href={localizedHref(item.href,locale)} {...NI(["mobileExtras",i])} {...N(["mobileExtras",i,"label"])}>{item.label}</a>)}</nav>
-      <nav class="lang" aria-label={ui.base.language}>{['de','en','nl'].map(lang=><a href={localizedHref(current,lang)} lang={lang} hreflang={lang} aria-current={locale===lang?'page':undefined}>{lang.toUpperCase()}</a>)}</nav>
+      <nav class="lang" aria-label={ui.base.language}>{['de','en','nl'].map(lang=><a data-language-link href={localizedHref(current,lang)} lang={lang} hreflang={lang} aria-current={locale===lang?'page':undefined}>{lang.toUpperCase()}</a>)}</nav>
     </dialog>
     <main id="main" class:list={{ 'content-page': !fullBleed }}><slot /></main>
     <footer class="footer">

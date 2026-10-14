@@ -63,17 +63,21 @@ if (form) {
     if (invalid >= 0) { show(invalid, false); validate(steps[invalid]); return; }
     const button = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
     button.disabled = true; button.textContent = text.sending; status.textContent = '';
+    let failureMessage = text.failed;
     try {
       const response = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
       const result = await response.json();
-      if (!response.ok || !result.ok) throw new Error(({invalid:text.required,email:text.invalidEmail,spam:text.spam,send:text.sendFailed,method:text.sendFailed} as Record<string,string>)[result.code] || text.sendFailed);
+      if (!response.ok || !result.ok) {
+        failureMessage = ({invalid:text.required,email:text.invalidEmail,spam:text.spam,send:text.sendFailed,method:text.sendFailed} as Record<string,string>)[result.code] || text.sendFailed;
+        throw new Error(failureMessage);
+      }
       if (result.state === 'not-configured') {
         status.textContent = text.notConfigured;
       } else {
         status.textContent = text.success;
         form.reset(); show(0, false);
       }
-    } catch (error) { status.textContent = `${error instanceof Error ? error.message : text.failed} ${text.retry}`; }
+    } catch { status.textContent = `${failureMessage} ${text.retry}`; }
     finally { button.disabled = false; button.textContent = text.submit; status.focus(); }
   });
   show(0, false);

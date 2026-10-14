@@ -19,5 +19,5 @@ const {Content,html,lang}=await renderBody(project);
       <div {...nativeRecord(`project/${project.id}`,["body"])} lang={lang} data-native-markdown={process.env.FLYINGSTARS_EDITOR==='1'?'true':undefined}>{Content ? <Content /> : <Fragment set:html={html} />}</div>
     </div>
   </div></article>}
-{!project.data.showcase&&<SectionRenderer locale={locale} sections={project.data.sections} recordId={`project/${project.id}`} headingOffset={1} />}
+{!project.data.showcase&&<SectionRenderer locale={locale} localization={project.localization} sections={project.data.sections} recordId={`project/${project.id}`} headingOffset={1} />}
 </Base>

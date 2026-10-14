@@ -46,7 +46,7 @@ import {localeFormat} from '../lib/localized-routes.mjs';
     totalEl.innerHTML = `<b>${h("fromPrice",{price:eur(price)})}</b><span class="mono">${h("net")}</span>`;
     const pic = text.shown && text.shown.n === n ? { size: text.shown.size, d: text.shown.d } : swarm.info(n), sz = pic ? pic.size : null;
     const sizeTxt = sz ? t("size",{width:Math.round(sz[0]),height:Math.round(sz[1])})+(sz[2]>=1?t("depth",{depth:Math.round(sz[2])}):"") : "";
-    readEl.innerHTML = `<span>${h('packageLabel')} <b>${escapeHTML(inlinePlain(p.displayName))}</b></span><span>${h('duration')} <b>${escapeHTML(p.dur)}</b></span><span>${h('motifs')} <b>${h(pkg==='SPARK'?'catalogue':pkg==='HORIZON'?'individual':'storytelling')}</b></span>${sz?`<span title="${h('motifTitle',{distance:pic.d.toLocaleString(fmt)})}">${h('motifSize')} <b>${escapeHTML(sizeTxt)}</b></span>`:''}`;
+    readEl.innerHTML = `<span>${h('paket')} <b>${escapeHTML(inlinePlain(p.displayName))}</b></span><span>${h('dauer')} <b>${escapeHTML(p.dur)}</b></span><span>${h('motifs')} <b>${h(pkg==='SPARK'?'catalogue':pkg==='HORIZON'?'individual':'storytelling')}</b></span>${sz?`<span title="${h('motifTitle',{distance:pic.d.toLocaleString(fmt)})}">${h('motifSize')} <b>${escapeHTML(sizeTxt)}</b></span>`:''}`;
     let note = "";
     if (pkg === "HORIZON" && n < 200) note = t("alreadyIncluded",{name:inlinePlain(PKG.HORIZON.displayName),count:PKG.HORIZON.base});
     else if (pkg === "ODYSSEY" && n < 300) note = t("starts",{name:inlinePlain(PKG.ODYSSEY.displayName),count:PKG.ODYSSEY.base});

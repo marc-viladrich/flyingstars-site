@@ -6,7 +6,7 @@ import {nativeField,nativeSection,nativeItem,editorBuild} from "../../lib/native
 import {selectedPackageFeatures} from '../../content/package-features.mjs';
 import type { Section } from '../../content.config';
 import {type ShowPackage} from '../../content/show-packages';
-import {siteRecord,getPackages} from '../../lib/content';
+import {fillText,siteRecord,getPackages} from '../../lib/content';
 const SHOW_PACKAGES = getPackages(locale);
 const ui = siteRecord("ui",locale);
 type Props = Extract<Section, { type: 'pricing' }> & { index: number; locale?:string; _locale?:string };
@@ -30,7 +30,7 @@ const native = (name: ShowPackage, path: Array<string | number>, derived = false
     if(!pkg) throw new Error(`Unbekanntes Paket: ${tier.packageId}`);
     const record = `package/${tier.packageId}`;
     const features = selectedPackageFeatures(pkg,tier.featureIds);
-    const price = `${ui.calculator.ab} ${money.format(pkg.price)} €`;
+    const price = fillText(ui.calculator.fromPrice,{price:money.format(pkg.price)+" €"});
     const unit = `${pkg.base}${name === 'ODYSSEY' ? '+' : ''} ${ui.calculator.drohnen} · ${pkg.dur}`;
     return <Card class:list={['pack',{featured:pkg.highlight}]} href={localizedHref(tier.cta?.href,locale)} {...nativeItem(Astro.props,{record,entry:['tiers',i]})}>
       {(tier.showOrb!==false || editorBuild()) && <canvas hidden={tier.showOrb===false} data-orb={pkg.orbShape} data-color={pkg.color.join(',')} data-n={pkg.base} aria-hidden="true"></canvas>}

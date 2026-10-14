@@ -19,5 +19,5 @@ const fmt = new Intl.DateTimeFormat(localeFormat(locale), { dateStyle: 'long' })
       <div {...nativeRecord(`post/${post.id}`,["body"])} lang={lang} data-native-markdown={process.env.FLYINGSTARS_EDITOR==='1'?'true':undefined}>{Content ? <Content /> : <Fragment set:html={html} />}</div>
     </div>
   </div></article>
-<SectionRenderer locale={locale} sections={post.data.sections} recordId={`post/${post.id}`} headingOffset={1} />
+<SectionRenderer locale={locale} localization={post.localization} sections={post.data.sections} recordId={`post/${post.id}`} headingOffset={1} />
 </Base>

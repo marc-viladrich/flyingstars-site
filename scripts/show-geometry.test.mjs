@@ -1,7 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { sampleOutline, circle, heartOutline, rings, clock, star, extrude, torusPair, burstSphere, evenSubset } from '../src/scripts/show-geometry.js';
-import { OCCASIONS, STEPS, PACKAGE_ORDER } from '../src/content/show-configurator.js';
+import {readFileSync} from 'node:fs';
+import {PACKAGE_ORDER,makeSteps} from '../src/content/show-configurator.js';
+const OCCASIONS=JSON.parse(readFileSync(new URL('../src/content/screens/show-konfigurator.json',import.meta.url))).occasions;
+const packages=Object.fromEntries(PACKAGE_ORDER.map(name=>[name,JSON.parse(readFileSync(new URL('../src/content/packages/'+name.toLowerCase()+'.json',import.meta.url)))]));
+const STEPS=makeSteps(packages);
 import * as shapes from '../src/scripts/show-shapes.js';
 
 // The drone count of a package must be the drone count in the picture.
