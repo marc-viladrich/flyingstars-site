@@ -23,9 +23,10 @@ sections:
     poster:
       src: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
       alt: Drohnenformation über der Skyline von Düsseldorf mit Rheinturm
+      assetId: media/image-0a18e35cfad1ffdc
+      decorative: false
       width: 1600
       height: 900
-      assetId: media/image-0a18e35cfad1ffdc
     video: https://flyingstars.art/wp-content/uploads/2026/05/Flyingstars-Showreel.mp4
     stats:
       - label: Shows
@@ -33,8 +34,8 @@ sections:
       - label: Basis
         value: 51.51° N · 7.10° E
   - type: logoBar
-    headline: Geflogen für
     press: tagesschau · ZDF · WDR · Tagesspiegel · WAZ
+    headline: Geflogen für
     clientIds:
       - spotify
       - nfl
@@ -47,6 +48,7 @@ sections:
       - red-bull
       - bulgari
       - airpower
+    showImages: true
   - type: occasions
     id: anlaesse
     kicker: Anlässe
@@ -61,9 +63,10 @@ sections:
         image:
           src: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
           alt: Volkswagen-Logo aus Drohnen über einer Bühne mit Suchscheinwerfern
+          assetId: media/image-129ab7b56d038687
+          decorative: false
           width: 1600
           height: 900
-          assetId: media/image-129ab7b56d038687
         facts:
           - "Brand-safe: Jedes Motiv gibst du vorab frei"
           - Ideal für Launches, Jubiläen und Social-Media-Drehs
@@ -78,9 +81,10 @@ sections:
         image:
           src: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
           alt: Weltkugel aus Drohnen über dem Rhein bei der Extraschicht in Duisburg
+          assetId: media/image-bd4dc6ffb7da7546
+          decorative: false
           width: 1600
           height: 900
-          assetId: media/image-bd4dc6ffb7da7546
         facts:
           - Stadtwappen, Jubiläumszahlen, eure Geschichte
           - "Kein Knall: gut für Anwohner:innen und Tiere"
@@ -98,9 +102,10 @@ sections:
         image:
           src: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
           alt: Drohnenformation über der Skyline von Düsseldorf mit Rheinturm
+          assetId: media/image-0a18e35cfad1ffdc
+          decorative: false
           width: 1600
           height: 900
-          assetId: media/image-0a18e35cfad1ffdc
         facts:
           - Genehmigungen und Behörden komplett bei uns
           - NDA auf Wunsch
@@ -118,9 +123,10 @@ sections:
         image:
           src: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg
           alt: Drohnenformation zur blauen Stunde bei einem Heiratsantrag
+          assetId: media/image-4e4c9ed0abfe9835
+          decorative: false
           width: 1600
           height: 900
-          assetId: media/image-4e4c9ed0abfe9835
         facts:
           - Eigene Pakete für kleinere Feiern
           - SPARK ab 7.900 € inklusive Genehmigung
@@ -131,48 +137,55 @@ sections:
   - type: pricing
     id: pakete
     kicker: Pakete
+    cta:
+      label: Alle Leistungen und Preisrechner
+      href: /drohnenshow-preise/
     headline: Transparente Preise. Keine Überraschungen.
     text: Drei Pakete als Startpunkt – mehr Drohnen, eigene Motive und Extras gehen
       jederzeit.
     tiers:
-      - name: SPARK
-        price: ab 7.900 €
-        unit: 100 Drohnen · ca. 10 Min
-        highlight: false
-        cta:
-          label: Paket ansehen
-          href: /drohnenshow-preise/
-        orb:
-          shape: ring
-          color: 255,158,41
-          count: 100
       - name: HORIZON
-        price: ab 15.900 €
-        unit: 200 Drohnen · ca. 13 Min
-        highlight: true
-        cta:
-          label: Paket ansehen
-          href: /drohnenshow-preise/
+        badge: Bestseller
+        showOrb: true
         orb:
           shape: sphere
           color: 219,100,232
           count: 200
-        badge: Bestseller
-      - name: ODYSSEY
-        price: ab 34.900 €
-        unit: 300+ Drohnen · 15+ Min
+        price: ab 15.900 €
+        unit: 200 Drohnen · ca. 13 Min
+        features: []
+        highlight: true
+        cta:
+          label: Paket ansehen
+          href: /drohnenshow-preise/
+      - name: SPARK
+        showOrb: true
+        orb:
+          shape: ring
+          color: 255,158,41
+          count: 100
+        price: ab 7.900 €
+        unit: 100 Drohnen · ca. 10 Min
+        features: []
         highlight: false
         cta:
           label: Paket ansehen
           href: /drohnenshow-preise/
+      - name: ODYSSEY
+        showOrb: true
         orb:
           shape: torus
           color: 51,237,242
           count: 300
+        price: ab 34.900 €
+        unit: 300+ Drohnen · 15+ Min
+        features: []
+        highlight: false
+        cta:
+          label: Paket ansehen
+          href: /drohnenshow-preise/
     note: Alle Preise netto zzgl. Anfahrt
-    cta:
-      label: Alle Leistungen und Preisrechner
-      href: /drohnenshow-preise/
+    columns: three
   - type: steps
     id: ablauf
     kicker: Ablauf
@@ -233,12 +246,12 @@ sections:
   - type: projectGrid
     id: projekte
     kicker: Projekte
-    headline: Ein paar Nächte, die wir nicht vergessen.
     text: "Über 30 Shows im Jahr, von 100 bis 600 Drohnen. Eine kleine Auswahl:"
-    limit: 4
     cta:
       label: Alle Projekte
       href: /projekte/
+    headline: Ein paar Nächte, die wir nicht vergessen.
+    limit: 4
   - type: sustainability
     id: nachhaltigkeit
     kicker: Nachhaltigkeit
@@ -255,26 +268,27 @@ sections:
         text: Statt Knall nur ein Summen – schont Anwohner:innen, Haus- und Wildtiere.
       - label: Kein Rauch
         value: "0"
+        unit: g
         text: Feinstaub, Stickoxide oder Schwermetalle vor Ort – nichts landet in Luft,
           Boden oder Grundwasser.
-        unit: g
         tone: o
       - label: Kein Müll
         value: "0"
+        unit: kg
         text: Müll nach der Show. Keine Hülsen, keine Reste – dieselbe Flotte fliegt
           Show für Show.
-        unit: kg
       - label: Ökostrom
         value: "100"
-        text: Ökostrom von naturstrom.
         unit: "%"
+        text: Ökostrom von naturstrom.
         tone: g
     proofImage:
       src: https://flyingstars.art/wp-content/uploads/2024/10/NATURSTROM-Logo_weiss.png
       alt: naturstrom
+      assetId: media/image-432161b9c1257aec
+      decorative: false
       width: 500
       height: 100
-      assetId: media/image-432161b9c1257aec
     proofText: Unser Strom kommt zu 100 % von naturstrom, zusätzlich leisten wir
       über ClimatePartner einen Klimabeitrag.
     campaign: Für die Kampagne der Deutschen Umwelthilfe haben wir im November 2023
@@ -293,10 +307,6 @@ sections:
       - Lasershow
     rows:
       - label: Logos und Schriftzüge am Himmel
-        values:
-          - Ja auch in 3D
-          - Nein
-          - Teils nur auf Flächen oder Dunst
         cells:
           - label: Ja
             text: auch in 3D
@@ -307,11 +317,11 @@ sections:
           - label: Teils
             text: nur auf Flächen oder Dunst
             tone: p
-      - label: Lautstärke
         values:
-          - Leise Musik nach Wahl
-          - Sehr laut
-          - Leise
+          - Ja auch in 3D
+          - Nein
+          - Teils nur auf Flächen oder Dunst
+      - label: Lautstärke
         cells:
           - label: Leise
             text: Musik nach Wahl
@@ -322,11 +332,11 @@ sections:
           - label: Leise
             text: ""
             tone: y
-      - label: Rauch, Feinstaub, Müll
         values:
-          - Nichts
-          - Viel
-          - Dunst für sichtbare Strahlen nötig
+          - Leise Musik nach Wahl
+          - Sehr laut
+          - Leise
+      - label: Rauch, Feinstaub, Müll
         cells:
           - label: Nichts
             text: ""
@@ -337,11 +347,11 @@ sections:
           - label: Dunst
             text: für sichtbare Strahlen nötig
             tone: p
-      - label: Brandgefahr
         values:
-          - Keine
-          - Ja Verbote bei Trockenheit
-          - Keine
+          - Nichts
+          - Viel
+          - Dunst für sichtbare Strahlen nötig
+      - label: Brandgefahr
         cells:
           - label: Keine
             text: ""
@@ -352,11 +362,11 @@ sections:
           - label: Keine
             text: ""
             tone: y
-      - label: Wind und Wetter
         values:
-          - Grenze bis Windstärke 5, kein Starkregen
-          - Grenze bei Sturm abgesagt
-          - Robust auch drinnen
+          - Keine
+          - Ja Verbote bei Trockenheit
+          - Keine
+      - label: Wind und Wetter
         cells:
           - label: Grenze
             text: bis Windstärke 5, kein Starkregen
@@ -367,11 +377,11 @@ sections:
           - label: Robust
             text: auch drinnen
             tone: y
-      - label: Sichtbar aus der Ferne
         values:
-          - Kilometerweit
-          - Kilometerweit
-          - Begrenzt wirkt am besten nah
+          - Grenze bis Windstärke 5, kein Starkregen
+          - Grenze bei Sturm abgesagt
+          - Robust auch drinnen
+      - label: Sichtbar aus der Ferne
         cells:
           - label: Kilometerweit
             text: ""
@@ -382,38 +392,45 @@ sections:
           - label: Begrenzt
             text: wirkt am besten nah
             tone: p
+        values:
+          - Kilometerweit
+          - Kilometerweit
+          - Begrenzt wirkt am besten nah
     note: Entwurf · fachliche Prüfung ausstehend
   - type: team
     id: team
     kicker: Team
-    headline: Die Menschen hinter dem Himmel.
-    text: 2022 gegründet, zu Hause im Triple Z auf Zeche Zollverein in Essen.
-      Design, Technik und Genehmigungen machen wir selbst – du hast von der
-      ersten Idee bis zur Landung dieselben Ansprechpartner:innen.
     note: Dazu unsere Crew aus Pilot:innen und Techniker:innen, die jede Show vor
       Ort aufbaut und fliegt.
     cta:
       label: Lern uns kennen
       href: "#anfrage"
+    headline: Die Menschen hinter dem Himmel.
+    text: 2022 gegründet, zu Hause im Triple Z auf Zeche Zollverein in Essen.
+      Design, Technik und Genehmigungen machen wir selbst – du hast von der
+      ersten Idee bis zur Landung dieselben Ansprechpartner:innen.
     memberIds:
       - ronja-donsbach
       - erwin-wilms
       - florian-becker
       - patrick
       - alejandro-munoz
+    columns: five
+    showImages: true
   - type: faq
     id: faq
     kicker: FAQ
-    headline: Was du vor der Buchung wissen solltest.
     text: "Die häufigsten Fragen, kurz beantwortet. Für alles andere: ruf uns an
       oder buch dir einen Videocall."
     cta:
       label: Videocall buchen
       href: https://calendly.com/team-flyingstars/beratung
     openFirst: true
+    headline: Was du vor der Buchung wissen solltest.
     tags:
       - startseite
   - type: contactForm
     headline: Erzähl uns von deinem Stück Himmel.
     text: Zwei kurze Schritte – was du noch nicht weißt, lässt du einfach offen. Wir
       melden uns innerhalb von 48 Stunden, meist deutlich schneller.
+noindex: false
