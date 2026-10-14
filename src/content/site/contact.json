@@ -1,0 +1,34 @@
+{
+  "email": {
+    "label": "E-Mail",
+    "value": "team@flyingstars.art",
+    "href": "mailto:team@flyingstars.art"
+  },
+  "phone": {
+    "label": "Telefon",
+    "value": "0209 883 065 62",
+    "href": "tel:+4920988306562"
+  },
+  "whatsapp": {
+    "label": "WhatsApp",
+    "value": "01579 260 86 72",
+    "href": "https://wa.me/4915792608672"
+  },
+  "videoCall": {
+    "label": "Videocall",
+    "value": "Termin buchen →",
+    "href": "https://calendly.com/team-flyingstars/beratung"
+  },
+  "address": {
+    "visit": {
+      "label": "Besucht uns:",
+      "name": "Triple Z – Gründungszentrum Zeche Zollverein",
+      "street": "Katernberger Str. 107, 45327 Essen"
+    },
+    "post": {
+      "label": "Post:",
+      "name": "FlyingStars GmbH",
+      "street": "Bulmker Straße 107, 45888 Gelsenkirchen"
+    }
+  }
+}

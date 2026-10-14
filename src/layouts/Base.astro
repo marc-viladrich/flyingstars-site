@@ -4,10 +4,15 @@ import '../styles/global.css';
 import { site } from '../site.config';
 import Logo from '../components/Logo.astro';
 import { optimizedImage } from '../lib/media';
+import { siteRecord } from '../lib/editorial-records';
+import { nativeRecord } from '../lib/native-editor';
 interface Props { title: string; description: string; noindex?: boolean; canonicalPath?: string; image?: string; navSection?: string; fullBleed?: boolean; }
 const { title, description, noindex = false, canonicalPath, image, navSection, fullBleed: bleed = false } = Astro.props;
 const canonical = new URL(canonicalPath ?? Astro.url.pathname, Astro.site);
 const current = Astro.url.pathname;
+// Footer contact values and addresses are owned by site/contact (same record as the contact form).
+const contact = siteRecord('contact'), C = (path: string[]) => nativeRecord('site/contact', path);
+const addresses = contact.address ? (['visit', 'post'] as const).map((key) => [key, contact.address[key]] as const) : [];
 // Case pages and project details belong to the "Projekte" area of the main navigation.
 const section = navSection ?? (current.startsWith('/projekte/') ? '/projekte/' : undefined);
 const navState = (href: string) => current === href ? 'page' : section === href ? 'true' : undefined;
@@ -54,7 +59,7 @@ const eco = await optimizedImage('https://flyingstars.art/wp-content/uploads/202
     <footer class="footer">
       <div class="cols">
         <div class="footer-brand"><Logo /><p>Drohnenshows seit 2022. Über 150 Shows in Deutschland und Europa.</p><div class="eco"><img src={eco.src} width={eco.width} height={eco.height} alt="naturstrom" loading="lazy" /><span>100 % Ökostrom</span></div></div>
-        <div><h2 class="footer-heading">Kontakt</h2><address><span>Besucht uns:<br />Triple Z – Gründungszentrum Zeche Zollverein<br />Katernberger Str. 107, 45327 Essen</span><span>Post:<br />FlyingStars GmbH<br />Bulmker Straße 107, 45888 Gelsenkirchen</span><span><a href="mailto:team@flyingstars.art">team@flyingstars.art</a><br /><a href="tel:+4920988306562">0209 883 065 62</a></span></address></div>
+        <div><h2 class="footer-heading">Kontakt</h2><address>{addresses.map(([key, block]) => <span {...C(["address", key, "label"])}>{block.label}<br />{block.name}<br />{block.street}</span>)}<span><a href={contact.email.href} {...C(["email", "value"])}>{contact.email.value}</a><br /><a href={contact.phone.href} {...C(["phone", "value"])}>{contact.phone.value}</a></span></address></div>
         <div><h2 class="footer-heading">Seiten</h2><ul>{site.nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}<li><a href="/#team">Über uns</a></li><li><a href="/blog/">Blog</a></li></ul></div>
         <div><h2 class="footer-heading">Folgen</h2><ul><li><a href="https://www.instagram.com/flyingstars.art/" rel="noopener noreferrer" target="_blank">Instagram</a></li><li><a href="https://www.youtube.com/@flyingstars." rel="noopener noreferrer" target="_blank">YouTube</a></li><li><a href="https://www.tiktok.com/@flyingstars_art" rel="noopener noreferrer" target="_blank">TikTok</a></li><li><a href="https://www.facebook.com/FlyingStars.Art/" rel="noopener noreferrer" target="_blank">Facebook</a></li></ul></div>
       </div>

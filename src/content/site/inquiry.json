@@ -1,0 +1,72 @@
+{
+  "kicker": "Anfrage",
+  "progress": {
+    "step": "Schritt {current} von {total}",
+    "duration": "ca. 1 Minute"
+  },
+  "steps": {
+    "show": "Deine Show",
+    "contact": "Deine Kontaktdaten"
+  },
+  "occasion": {
+    "label": "Anlass",
+    "error": "Bitte wähle einen Anlass."
+  },
+  "occasions": {
+    "firma": "Firmenevent",
+    "stadt": "Stadt & Festival",
+    "agentur": "Agentur",
+    "privat": "Hochzeit & Privat",
+    "indoor": "Indoor",
+    "sonstiges": "Sonstiges"
+  },
+  "date": {
+    "label": "Datum (falls schon bekannt)"
+  },
+  "place": {
+    "label": "Ort",
+    "placeholder": "z. B. 45888 Gelsenkirchen"
+  },
+  "package": {
+    "label": "Drohnen / Paket",
+    "unknown": "Weiß ich noch nicht",
+    "suffix": "Drohnen"
+  },
+  "hint": "Nur der Anlass ist nötig – den Rest klären wir gern gemeinsam.",
+  "name": {
+    "label": "Name",
+    "error": "Wie dürfen wir dich ansprechen?"
+  },
+  "email": {
+    "label": "E-Mail",
+    "error": "Wohin dürfen wir antworten?",
+    "invalid": "Bitte gib eine gültige E-Mail-Adresse ein."
+  },
+  "phone": {
+    "label": "Telefon (optional)"
+  },
+  "message": {
+    "label": "Nachricht (optional)",
+    "placeholder": "Motive, Musik, Gästezahl – alles, was du schon weißt",
+    "skyText": "Text am Himmel: {text}"
+  },
+  "privacy": {
+    "before": "Mit dem Absenden werden deine Angaben zur Bearbeitung der Anfrage verwendet. Mehr dazu in der",
+    "link": "Datenschutzerklärung",
+    "after": "."
+  },
+  "buttons": {
+    "next": "Weiter",
+    "back": "Zurück",
+    "submit": "Anfrage senden"
+  },
+  "messages": {
+    "required": "Bitte ausfüllen.",
+    "sending": "Wird gesendet …",
+    "success": "Deine Anfrage wurde gesendet. Wir melden uns innerhalb von 48 Stunden.",
+    "notConfigured": "Der Formularversand ist noch nicht eingerichtet. Es wurde nichts gesendet oder gespeichert. Bitte schreibe uns direkt an {email}.",
+    "sendFailed": "Die Anfrage konnte nicht gesendet werden.",
+    "failed": "Versand fehlgeschlagen.",
+    "retry": "Bitte versuche es später erneut oder schreibe direkt an {email}."
+  }
+}

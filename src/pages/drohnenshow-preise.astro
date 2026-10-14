@@ -3,6 +3,9 @@ import screen from "../content/screens/drohnenshow-preise.json";
 import Base from '../layouts/Base.astro';
 import Calculator from '../components/pricing/Calculator.astro';
 import PackageDetails from '../components/pricing/PackageDetails.astro';
+import { siteRecord } from '../lib/editorial-records';
+import { nativeRecord } from '../lib/native-editor';
+const videoCall = siteRecord('contact').videoCall;
 ---
 <Base title={screen.title} description={screen.description} noindex={screen.noindex}>
   <Calculator />
@@ -56,7 +59,7 @@ import PackageDetails from '../components/pricing/PackageDetails.astro';
         <span class="kicker mono" style="margin:0">Fragen zum Preis</span>
         <h2 id="faq-h">Was kostet eine Drohnenshow wirklich?</h2>
         <p>Paketpreis plus Anfahrt – mehr nicht. Hier die Details, die in den meisten Gesprächen auftauchen.</p>
-        <a class="link" href="https://calendly.com/team-flyingstars/beratung" target="_blank" rel="noopener">Videocall buchen <span aria-hidden="true">→</span></a>
+        <a class="link" href={videoCall.href} target="_blank" rel="noopener" {...nativeRecord("site/contact", ["videoCall", "href"])}>Videocall buchen <span aria-hidden="true">→</span></a>
       </div>
       <div class="faq">
         <details open><summary>Was kommt zum Paketpreis noch dazu?</summary><div class="answer"><p>Nur die Anfahrt und die Mehrwertsteuer. Die Anfahrt berechnen wir ab Gelsenkirchen nach Strecke, Teamgröße und nötigen Übernachtungen – sie steht transparent im Angebot.</p></div></details>
