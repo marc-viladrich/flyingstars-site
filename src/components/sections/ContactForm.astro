@@ -1,6 +1,8 @@
 ---
+import InlineText from '../InlineText.astro';
 import {nativeField,nativeSection,nativeRecord} from "../../lib/native-editor";
 import {siteRecord,fillText} from "../../lib/editorial-records";
+import {inlinePlain} from '../../lib/inline-text';
 import {SHOW_PACKAGES,PACKAGE_NAMES} from '../../content/show-packages';
 import { site } from '../../site.config';
 interface Props { headline: string; text?: string; index?: number; }
@@ -20,7 +22,7 @@ const messages = { step: form.progress.step, required: form.messages.required, o
 <div class="inquiry">
 <div class="intro">
 <span class="kicker mono" {...I(['kicker'])}>{form.kicker}</span>
-<H id="anfrage-h" {...nativeField(Astro.props,["headline"])}>{headline}</H>
+<H id="anfrage-h" {...nativeField(Astro.props,["headline"],true)}><InlineText value={headline} /></H>
 <p class="lead" {...nativeField(Astro.props,["text"])}>{text}</p>
 <ul class="contact-list">
 {channels.map(([key, channel]) => <li><span class="k mono" {...C([key, 'label'])}>{channel.label}</span>{external(channel.href) ? <a href={channel.href} rel="noopener" target="_blank" {...C([key, 'value'])}>{channel.value}</a> : <a href={channel.href} {...C([key, 'value'])}>{channel.value}</a>}</li>)}
@@ -42,7 +44,7 @@ const messages = { step: form.progress.step, required: form.messages.required, o
 <div class="field"><label for="f-datum" {...I(['date','label'])}>{form.date.label}</label><input id="f-datum" name="datum" type="date"/></div>
 <div class="field"><label for="f-ort" {...I(['place','label'])}>{form.place.label}</label><input autocomplete="address-level2" id="f-ort" maxlength="200" name="ort" placeholder={form.place.placeholder} type="text" {...I(['place','placeholder'])}/></div>
 <div class="field full"><label for="f-paket" {...I(['package','label'])}>{form.package.label}</label>
-<select id="f-paket" name="paket" {...I(['package','unknown'])}><option value="">{form.package.unknown}</option>{PACKAGE_NAMES.map(name=><option value={name}>{SHOW_PACKAGES[name].displayName} · {SHOW_PACKAGES[name].base}{name==='ODYSSEY'?'+':''} {form.package.suffix}</option>)}</select>
+<select id="f-paket" name="paket" {...I(['package','unknown'])}><option value="">{form.package.unknown}</option>{PACKAGE_NAMES.map(name=><option value={name}>{inlinePlain(SHOW_PACKAGES[name].displayName)} · {SHOW_PACKAGES[name].base}{name==='ODYSSEY'?'+':''} {form.package.suffix}</option>)}</select>
 </div>
 </div>
 <div class="row"><span class="hint" {...I(['hint'])}>{form.hint}</span><button class="btn primary" data-next="" type="button" {...I(['buttons','next'])}>{form.buttons.next}</button></div>

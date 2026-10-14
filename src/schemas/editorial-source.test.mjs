@@ -108,3 +108,40 @@ test('enhanced sustainability facts are inert initially and after scroll except 
   if(!reduce){top=-1600;events.scroll();assert.deepEqual(facts.map(f=>f.inert),[true,true,false,true]);top=0;events.scroll();assert.deepEqual(facts.map(f=>f.inert),[false,true,true,true]);}
  }
 });
+
+test('inline rendering escapes HTML and supports only the five nested text formats',async()=>{
+ const {inlineHtml,inlinePlain}=await import('../lib/inline-text.mjs');
+ const cases=[
+  ['**fett**','<strong>fett</strong>','fett'],['*kursiv*','<em>kursiv</em>','kursiv'],['~~weg~~','<s>weg</s>','weg'],
+  ['{o}Kontur{/o}','<span class="t-outline">Kontur</span>','Kontur'],['{c}groß{/c}','<span class="t-caps">groß</span>','groß'],
+  ['***beides***','<strong><em>beides</em></strong>','beides'],['*innen **fett***','<em>innen <strong>fett</strong></em>','innen fett'],
+  ['**außen *innen***','<strong>außen <em>innen</em></strong>','außen innen'],
+  ['{o}**Hallo *Welt* ~~alt~~** {c}neu{/c}{/o}','<span class="t-outline"><strong>Hallo <em>Welt</em> <s>alt</s></strong> <span class="t-caps">neu</span></span>','Hallo Welt alt neu'],
+  ['**offen','**offen','**offen'],['{o}offen','{o}offen','{o}offen'],['a * b','a * b','a * b'],
+  ['[Link](https://example.com) _normal_','[Link](https://example.com) _normal_','[Link](https://example.com) _normal_'],
+  ['**<img src=x onerror="evil()">**','<strong>&lt;img src=x onerror=&quot;evil()&quot;&gt;</strong>','<img src=x onerror="evil()">'],
+  ['&amp; <script> " \'','&amp;amp; &lt;script&gt; &quot; &#39;','&amp; <script> " \''],
+ ];
+ for(const [source,html,plain] of cases){assert.equal(inlineHtml(source),html,source);assert.equal(inlinePlain(source),plain,source);}
+ const marks=[['**','**'],['*','*'],['~~','~~'],['{o}','{/o}'],['{c}','{/c}']];
+ for(const [a,ac] of marks)for(const[b,bc]of marks){const source=a+'außen '+b+'innen'+bc+' außen'+ac;assert.equal(inlinePlain(source),'außen innen außen',source);assert.doesNotMatch(inlineHtml(source),/[{}~*]/);}
+});
+
+test('inline metadata survives constraints and optional unwrapping in Zod 4.6; non-editorial fields stay plain',async()=>{
+ const {inlineText}=await import('./inline-text.mjs'),{sectionSchema}=await import('./page-schema.mjs'),{packageSchema}=await import('../content/package-schema.mjs'),{projectShowcaseSchema}=await import('./project-showcase.mjs');
+ const inner=s=>s._def.type==='optional'?inner(s._def.innerType):s;
+ assert.equal(inlineText('Kurztext').meta().format,'inline');assert.equal(inner(inlineText('Kurztext').optional()).meta().format,'inline');
+ for(const option of sectionSchema.options){const shape=option.shape;if(shape.headline)assert.equal(inner(shape.headline).meta().format,'inline',shape.type.value);}
+ assert.equal(inner(packageSchema.shape.displayName).meta().format,'inline');assert.equal(projectShowcaseSchema.shape.cardTitle.meta().format,'inline');
+ assert.equal(pageSchema.shape.title.meta()?.format,undefined);assert.equal(pageSchema.shape.description.meta()?.format,undefined);
+ const {nativeField,nativeRecord}=await nativeHelpers(),previous=process.env.FLYINGSTARS_EDITOR;
+ try{process.env.FLYINGSTARS_EDITOR='1';assert.equal(nativeField({_nativeRecord:'page/index',_nativeIndex:0},['headline'],true)['data-native-inline'],'true');assert.equal(nativeRecord('package/spark',['displayName'],true)['data-native-inline'],'true');process.env.FLYINGSTARS_EDITOR='0';assert.deepEqual(nativeRecord('package/spark',['displayName'],true),{});}finally{if(previous===undefined)delete process.env.FLYINGSTARS_EDITOR;else process.env.FLYINGSTARS_EDITOR=previous;}
+});
+
+test('rotating inline words retain safe rendered marks and update the exact word field path',async()=>{
+ const {runInNewContext}=await import('node:vm'),source=await fs.readFile(new URL('../scripts/site.ts',import.meta.url),'utf8'),intervals=[],timeouts=[];
+ const word={dataset:{rotate:'Neu|Anders',nativePath:'["sections",0,"words",0]'},innerHTML:'<strong>Neu</strong>',isContentEditable:false,classList:{add(){},remove(){}}};
+ const document={getElementById(){return null;},hidden:false,documentElement:{classList:{toggle(){}}},querySelector:s=>s==='[data-rotate]'?word:s==='[data-rotate-words]'?{content:{children:[{innerHTML:'<strong>Neu</strong>'},{innerHTML:'<em>Anders</em>'}]}}:null,querySelectorAll:()=>[],dispatchEvent(){}};
+ runInNewContext(source,{document,window:{addEventListener(){}},matchMedia:()=>({matches:false}),sessionStorage:{getItem:()=>null},location:{hash:''},setInterval:fn=>intervals.push(fn),setTimeout:fn=>timeouts.push(fn),Event:class{},requestAnimationFrame(){}});
+ intervals[0]();timeouts.shift()();assert.equal(word.innerHTML,'<em>Anders</em>');assert.equal(word.dataset.nativePath,'["sections",0,"words",1]');
+});

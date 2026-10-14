@@ -1,4 +1,5 @@
 ---
+import InlineText from '../InlineText.astro';
 import {nativeRecord,nativeRecordMedia} from '../../lib/native-editor';
 import {resolveMedia} from '../../lib/editorial-records';
 import type { CollectionEntry } from 'astro:content';
@@ -10,7 +11,7 @@ import { optimizedImage } from '../../lib/media';
 interface Props { project: CollectionEntry<'projects'> }
 const { project } = Astro.props;
 const record=`project/${project.id}`;
-const field=(path:(string|number)[])=>nativeRecord(record,["showcase",...path]);
+const field=(path:(string|number)[],inline=false)=>nativeRecord(record,["showcase",...path],inline);
 const data = project.data.showcase;
 if (!data) throw new Error(`Project ${project.id} has no showcase content`);
 const available = (await getCollection('projects', (p) => (process.env.FLYINGSTARS_EDITOR==='1'||!p.data.draft) && Boolean(p.data.showcase)))
@@ -34,7 +35,7 @@ const count = (n: number) => String(n).padStart(2, '0');
     </div>
     <div class="c-title">
       <span class="c-kick mono"><span {...field(["kicker"]) }>{data.kicker}</span></span>
-      <h1 id="case-h" class="c-h1"><span class="sr-only"><span {...field(["name"]) }>{data.name}</span>: </span><span class="c-name" style={`--chars:${data.titleChars}`} aria-hidden="true">{data.titleLines.map((line,i) => <span {...field(["titleLines",i])}>{line}</span>)}</span><span class="c-tag"><span {...field(["tagline"]) }>{data.tagline}</span></span></h1>
+      <h1 id="case-h" class="c-h1"><span class="sr-only"><span {...field(["name"]) }>{data.name}</span>: </span><span class="c-name" style={`--chars:${data.titleChars}`} aria-hidden="true">{data.titleLines.map((line,i) => <span {...field(["titleLines",i],true)}><InlineText value={line} /></span>)}</span><span class="c-tag"><span {...field(["tagline"]) }>{data.tagline}</span></span></h1>
     </div>
     <dl class="c-credits mono">{data.credits.map((credit,i) => <div><dt {...field(["credits",i,"label"])}>{credit.label}</dt><dd {...field(["credits",i,"value"])}>{credit.value}</dd></div>)}</dl>
   </section>

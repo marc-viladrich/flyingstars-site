@@ -1,4 +1,5 @@
 import { z } from 'astro/zod';
+import {inlineText} from '../schemas/inline-text.mjs';
 
 import {PACKAGE_KEYS} from './package-ids.mjs';
 export {PACKAGE_KEYS};
@@ -9,7 +10,7 @@ const amount = label => z.number().int().positive().max(1000000).describe(label)
 /** The same native package schema validates builds and editor changes. */
 export const packageSchema = z.object({
   name: z.enum(PACKAGE_KEYS).describe('Interne Paketkennung'),
-  displayName: text('Paketname auf der Website').max(80).optional(),
+  displayName: inlineText('Paketname auf der Website').min(1).max(80).optional(),
   base: count('Drohnen im Einstiegspaket'),
   max: count('Maximale Drohnenzahl').nullable().describe('Maximale Drohnenzahl; null bedeutet unbegrenzt'),
   price: amount('Einstiegspreis in Euro, netto'),

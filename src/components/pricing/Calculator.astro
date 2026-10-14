@@ -1,7 +1,9 @@
 ---
+import InlineText from '../InlineText.astro';
+import {inlinePlain} from '../../lib/inline-text';
 import {nativeRecord} from '../../lib/native-editor';
 import screen from "../../content/screens/drohnenshow-preise.json";
-const native=(path:string[])=>process.env.FLYINGSTARS_EDITOR==='1'?{"data-native-record":"screen/drohnenshow-preise","data-native-path":JSON.stringify(path)}:{};
+const native=(path:string[],inline=false)=>nativeRecord('screen/drohnenshow-preise',path,inline);
 import { SHOW_PACKAGES } from "../../content/show-packages";
 const money = (value: number) => value.toLocaleString("de-DE");
 ---
@@ -12,7 +14,7 @@ const money = (value: number) => value.toLocaleString("de-DE");
     <button class="btn small swarm-motion" id="swarm-motion" type="button" aria-pressed="false">Animation pausieren</button>
     <div class="calc-copy">
       <span class="kicker mono" style="margin:0">Preise & Pakete</span>
-      <h1 id="calc-h" {...native(["headline"])}>{screen.headline}</h1>
+      <h1 id="calc-h" {...native(["headline"],true)}><InlineText value={screen.headline} /></h1>
       <p class="lead" {...native(["text"])}>{screen.text}</p>
       <div class="calc">
         <div class="calc-top">
@@ -25,16 +27,16 @@ const money = (value: number) => value.toLocaleString("de-DE");
           <div class="scale mono" aria-hidden="true"><span style="--p:0">100</span><span style="--p:.1667">250</span><span style="--p:.4444">500</span><span style="--p:.7222">750</span><span style="--p:1">1.000</span></div>
         </div>
         <div class="tiers" role="group" aria-label="Paket">
-          <button type="button" data-tier="SPARK" aria-pressed="false"><b style="font:inherit" {...nativeRecord('package/spark',['displayName'])}>{SHOW_PACKAGES.SPARK.displayName}</b><span>ab {money(SHOW_PACKAGES.SPARK.price)} €</span></button>
-          <button type="button" data-tier="HORIZON" aria-pressed="true"><b style="font:inherit" {...nativeRecord('package/horizon',['displayName'])}>{SHOW_PACKAGES.HORIZON.displayName}</b><span>ab {money(SHOW_PACKAGES.HORIZON.price)} €</span></button>
-          <button type="button" data-tier="ODYSSEY" aria-pressed="false"><b style="font:inherit" {...nativeRecord('package/odyssey',['displayName'])}>{SHOW_PACKAGES.ODYSSEY.displayName}</b><span>ab {money(SHOW_PACKAGES.ODYSSEY.price)} €</span></button>
+          <button type="button" data-tier="SPARK" aria-pressed="false"><b style="font:inherit" {...nativeRecord('package/spark',['displayName'],true)}><InlineText value={SHOW_PACKAGES.SPARK.displayName} /></b><span>ab {money(SHOW_PACKAGES.SPARK.price)} €</span></button>
+          <button type="button" data-tier="HORIZON" aria-pressed="true"><b style="font:inherit" {...nativeRecord('package/horizon',['displayName'],true)}><InlineText value={SHOW_PACKAGES.HORIZON.displayName} /></b><span>ab {money(SHOW_PACKAGES.HORIZON.price)} €</span></button>
+          <button type="button" data-tier="ODYSSEY" aria-pressed="false"><b style="font:inherit" {...nativeRecord('package/odyssey',['displayName'],true)}><InlineText value={SHOW_PACKAGES.ODYSSEY.displayName} /></b><span>ab {money(SHOW_PACKAGES.ODYSSEY.price)} €</span></button>
         </div>
         <div class="field textin">
           <label for="showtext">Dein Text am Himmel <span class="mono">optional</span></label>
           <input id="showtext" type="text" maxlength="60" placeholder="z. B. ANNA &amp; TOM" autocomplete="off" spellcheck="false">
           <p class="mono" id="text-read" aria-live="polite">Wir zeigen ihn mit deiner Drohnenzahl in unserer Show-Schrift.</p>
         </div>
-        <div class="readout mono" id="calc-read"><span>Paket <b>{SHOW_PACKAGES.HORIZON.displayName}</b></span><span>Dauer <b>ca. 13 Min</b></span></div>
+        <div class="readout mono" id="calc-read"><span>Paket <b>{inlinePlain(SHOW_PACKAGES.HORIZON.displayName)}</b></span><span>Dauer <b>ca. 13 Min</b></span></div>
         <p class="mono" id="calc-note" aria-live="polite" style="color:var(--amber);min-height:1.5em"></p>
         <div class="actions"><a class="btn primary" id="calc-cta" href="/?paket=HORIZON&amp;drohnen=200#anfrage">Mit 200 Drohnen anfragen</a><a class="btn" href="#pakete">Pakete vergleichen</a></div>
       </div>

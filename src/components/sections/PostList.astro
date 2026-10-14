@@ -1,4 +1,5 @@
 ---
+import InlineText from '../InlineText.astro';
 import {nativeField,nativeSection,nativeRecord,nativeItem} from "../../lib/native-editor";
 import { getCollection } from 'astro:content';
 import type { Section } from '../../content.config';
@@ -13,7 +14,7 @@ const fmt = new Intl.DateTimeFormat('de-DE', { dateStyle: 'long' });
 ---
 <section {...nativeSection(Astro.props)} class="section" aria-labelledby={id}>
   <div class="wrap">
-    <H id={id} {...nativeField(Astro.props,["headline"])}>{headline}</H>
+    <H id={id} {...nativeField(Astro.props,["headline"],true)}><InlineText value={headline} /></H>
     <div class="cards">
       {posts.map((p) => (
         <article class="card" {...nativeItem(Astro.props,{record:`post/${p.id}`})}>

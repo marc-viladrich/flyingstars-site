@@ -1,4 +1,5 @@
 import { z } from 'astro/zod';
+import {inlineText} from './inline-text.mjs';
 
 // Project-specific presentation stays in the content collection, shared by
 // the gallery, canonical case route and existing /projekte/ routes.
@@ -17,10 +18,10 @@ export const projectShowcaseSchema = z.object({
   name: z.string().min(1),
   // Search/social title and description of the case page, without the site name.
   meta: z.object({ title: z.string().min(1).max(70), description: z.string().min(50).max(160) }),
-  cardTitle: z.string().min(1),
+  cardTitle: inlineText('Projekt-Kartentitel').min(1),
   category: z.string().min(1),
   kicker: z.string().min(1),
-  titleLines: z.array(z.string().min(1)).min(1).max(2),
+  titleLines: z.array(inlineText('Hero-Titelzeile').min(1)).min(1).max(2),
   titleChars: z.number().int().positive(),
   tagline: z.string().min(1),
   accent: z.string().regex(/^#[a-fA-F0-9]{6}$/),

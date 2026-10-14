@@ -1,4 +1,5 @@
 import {z} from "astro/zod";
+import {inlineText} from "./inline-text.mjs";
 import {PACKAGE_KEYS} from '../content/package-ids.mjs';
 import {validateSectionList} from "./section-policy.mjs";
 export const editorialHref=/^(https?:\/\/|\/(?!\/)|#|mailto:|tel:|\.\.?\/)/i;
@@ -18,31 +19,31 @@ export const image = z.object({
 export const sectionSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('showreelHero').describe('Showreel-Auftakt'),
-    headline: z.string().min(1).describe('Überschrift'), text: z.string().min(1), eyebrow: z.string().min(1),
-    words: z.array(z.string().min(1)).min(1), cta: link, secondary: link,
+    headline: inlineText('Überschrift').min(1), text: z.string().min(1), eyebrow: z.string().min(1),
+    words: z.array(inlineText('Wechselndes Wort').min(1)).min(1), cta: link, secondary: link,
     poster: image, video: z.url(), stats: z.array(z.object({ label: z.string(), value: z.string() })).min(1),
   }),
   z.object({
     type: z.literal('occasions').describe('Anlässe'), ...sectionHeading,
-    headline: z.string().min(1).describe('Überschrift'), text: z.string().min(1),
-    cards: z.array(z.object({ category: z.string(), title: z.string(), text: z.string(), image,
+    headline: inlineText('Überschrift').min(1), text: z.string().min(1),
+    cards: z.array(z.object({ category: z.string(), title: inlineText('Kartentitel'), text: z.string(), image,
       facts: z.array(z.string()).min(1), cta: link, download: link.optional() })).min(1),
   }),
   z.object({
     type: z.literal('metrics').describe('Kennzahlen'), ...sectionHeading,
-    headline: z.string().min(1).describe('Überschrift'), text: z.string().min(1),
+    headline: inlineText('Überschrift').min(1), text: z.string().min(1),
     items: z.array(z.object({ label: z.string(), value: z.string(), text: z.string() })).min(1),
   }),
   z.object({
     type: z.literal('sustainability').describe('Nachhaltigkeit'), ...sectionHeading,
-    headline: z.string().min(1).describe('Überschrift'), lines: z.array(z.string()).length(3), text: z.string().min(1),
-    facts: z.array(z.object({ label: z.string(), value: z.string(), unit: z.string().optional(),
+    headline: inlineText('Überschrift').min(1), lines: z.array(inlineText('Überschriftszeile')).length(3), text: z.string().min(1),
+    facts: z.array(z.object({ label: inlineText('Bezeichnung der Kennzahl'), value: inlineText('Wert der Kennzahl'), unit: z.string().optional(),
       text: z.string(), tone: z.enum(['o','g']).optional().describe('Darstellung der Kennzahl') })).length(4),
     proofImage: image, proofText: z.string(), campaign: z.string(),
   }),
   z.object({
     type: z.literal('hero').describe('Auftakt'),
-    headline: z.string().min(1).describe('Überschrift'),
+    headline: inlineText('Überschrift').min(1),
     text: z.string().optional(),
     image: image.optional(),
     cta: link.optional(),
@@ -50,7 +51,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
   }),
   z.object({
     type: z.literal('textMedia').describe('Text und Bild'),
-    headline: z.string().min(1).describe('Überschrift'),
+    headline: inlineText('Überschrift').min(1),
     body: z.string().min(1).describe('Markdown erlaubt'),
     image: image.optional(),
     mediaSide: z.enum(['left', 'right']).default('right').describe('Bildposition'),
@@ -59,31 +60,31 @@ export const sectionSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('faq').describe('Fragen und Antworten'), ...sectionHeading,
     text: z.string().optional(), cta: link.optional(), openFirst: z.boolean().default(false),
-    headline: z.string().optional(),
+    headline: inlineText('Überschrift').optional(),
     tags: z.array(z.string()).optional().describe('Nur FAQ-Einträge mit einem dieser Tags'),
     limit: z.number().int().positive().optional(),
   }),
   z.object({
     type: z.literal('cta').describe('Kontaktaufruf'),
-    headline: z.string().min(1).describe('Überschrift'),
+    headline: inlineText('Überschrift').min(1),
     text: z.string().optional(),
     button: link,
   }),
   z.object({
     type: z.literal('postList').describe('Blogartikel'),
-    headline: z.string().optional(),
+    headline: inlineText('Überschrift').optional(),
     limit: z.number().int().positive().default(3),
   }),
   z.object({
     type: z.literal('projectGrid').describe('Projekte'), ...sectionHeading,
     text: z.string().optional(), cta: link.optional(),
-    headline: z.string().optional(),
+    headline: inlineText('Überschrift').optional(),
     limit: z.number().int().positive().default(6),
   }),
   z.object({
     type: z.literal('pricing').describe('Show-Pakete'), ...sectionHeading,
     cta: link.optional(),
-    headline: z.string().min(1).describe('Überschrift'),
+    headline: inlineText('Überschrift').min(1),
     text: z.string().optional(),
     tiers: z.array(z.object({
       packageId: z.enum(PACKAGE_KEYS.map(name=>name.toLowerCase())).describe('Paket'),
@@ -96,17 +97,17 @@ export const sectionSchema = z.discriminatedUnion('type', [
   }),
   z.object({
     type: z.literal('steps').describe('Ablauf'), ...sectionHeading,
-    headline: z.string().min(1).describe('Überschrift'),
+    headline: inlineText('Überschrift').min(1),
     text: z.string().optional(),
     steps: z.array(z.object({
-      title: z.string().min(1),
+      title: inlineText('Schritttitel').min(1),
       text: z.string().min(1),
       duration: z.string().optional().describe('Kurzer Zeitrahmen, z. B. "48 h Antwortzeit"'),
     })).min(2),
   }),
   z.object({
     type: z.literal('comparison').describe('Vergleich'), ...sectionHeading,
-    headline: z.string().min(1).describe('Überschrift'),
+    headline: inlineText('Überschrift').min(1),
     text: z.string().optional(),
     rowHeader: z.string().default('Kriterium').describe('Beschriftung der ersten Spalte'),
     columns: z.array(z.string().min(1)).min(2),
@@ -130,7 +131,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('team').describe('Team'), ...sectionHeading,
     note: z.string().optional(), cta: link.optional(),
-    headline: z.string().min(1).describe('Überschrift'),
+    headline: inlineText('Überschrift').min(1),
     text: z.string().optional(),
     memberIds: z.array(z.string().min(1)).min(1).describe('Teammitglieder'),
     columns: z.enum(['five','three','two','one']).default('five').describe('Spalten'),
@@ -139,13 +140,13 @@ export const sectionSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('logoBar').describe('Kundenlogos'), ...sectionHeading,
     press: z.string().optional(),
-    headline: z.string().optional(),
+    headline: inlineText('Überschrift').optional(),
     clientIds: z.array(z.string().min(1)).min(1).describe('Kunden'),
     showImages: z.boolean().default(true).describe('Logos anzeigen'),
   }),
   z.object({
     type: z.literal('testimonials').describe('Kundenstimmen'), ...sectionHeading,
-    headline: z.string().min(1).describe('Überschrift'),
+    headline: inlineText('Überschrift').min(1),
     text: z.string().optional().describe('Einleitung'),
     clientIds: z.array(z.string().min(1)).min(1).describe('Kundenstimmen'),
     columns: z.enum(['one','two']).default('two').describe('Spalten'),
@@ -154,7 +155,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
   }),
   z.object({
     type: z.literal('contactForm').describe('Kontaktformular'),
-    headline: z.string().min(1).describe('Überschrift'),
+    headline: inlineText('Überschrift').min(1),
     text: z.string().optional(),
   }),
 ]);

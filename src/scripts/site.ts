@@ -44,11 +44,14 @@
   const word = document.querySelector("[data-rotate]");
   if (word && !reduce) {
     const words = word.dataset.rotate.split("|");
+    const richWords = document.querySelector("[data-rotate-words]")?.content.children;
     let i = 0;
     setInterval(() => {
       if (paused || document.hidden || word.isContentEditable) return;
       word.classList.add("out");
-      setTimeout(() => { if(word.isContentEditable){word.classList.remove("out");return;} i = (i + 1) % words.length; word.textContent = words[i]; word.classList.remove("out"); }, 500);
+      setTimeout(() => { if(word.isContentEditable){word.classList.remove("out");return;} i = (i + 1) % words.length; if(richWords?.[i])word.innerHTML=richWords[i].innerHTML;else word.textContent=words[i];
+        if(word.dataset.nativePath){const path=JSON.parse(word.dataset.nativePath);path[path.length-1]=i;word.dataset.nativePath=JSON.stringify(path);}
+        word.classList.remove("out"); }, 500);
     }, 3200);
   }
 

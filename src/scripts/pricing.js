@@ -1,3 +1,4 @@
+import {inlinePlain} from '../lib/inline-text.mjs';
 import {escapeHTML} from '../lib/editorial-text.mjs';
 import { HEART_CAPACITIES } from './pricing-heart-capacities';
 import { chars, loadTextEngine, textFormation } from './text-formation.js';
@@ -39,12 +40,12 @@ import { SHOW_PACKAGES, PACKAGE_NAMES, priceFor, recommendPackage } from '../con
     totalEl.innerHTML = `<b>ab ${eur(price)}</b><span class="mono">netto zzgl. Anfahrt</span>`;
     const pic = text.shown && text.shown.n === n ? { size: text.shown.size, d: text.shown.d } : swarm.info(n), sz = pic ? pic.size : null;
     const sizeTxt = sz ? `ca. ${Math.round(sz[0])} × ${Math.round(sz[1])} m${sz[2] >= 1 ? `, ${Math.round(sz[2])} m tief` : ""}` : "";
-    readEl.innerHTML = `<span>Paket <b>${escapeHTML(p.displayName)}</b></span><span>Dauer <b>${escapeHTML(p.dur)}</b></span><span>Motive <b>${pkg === "SPARK" ? "aus dem Katalog + 4 eigene" : pkg === "HORIZON" ? "individuell, 2D + einfaches 3D" : "komplexes 3D + Storytelling"}</b></span>${sz ? `<span title="Größe des ganzen Motivs am Himmel, Drohnen im Abstand von ${String(pic.d).replace(".", ",")} m">Motivgröße <b>${sizeTxt}</b></span>` : ""}`;
+    readEl.innerHTML = `<span>Paket <b>${escapeHTML(inlinePlain(p.displayName))}</b></span><span>Dauer <b>${escapeHTML(p.dur)}</b></span><span>Motive <b>${pkg === "SPARK" ? "aus dem Katalog + 4 eigene" : pkg === "HORIZON" ? "individuell, 2D + einfaches 3D" : "komplexes 3D + Storytelling"}</b></span>${sz ? `<span title="Größe des ganzen Motivs am Himmel, Drohnen im Abstand von ${String(pic.d).replace(".", ",")} m">Motivgröße <b>${sizeTxt}</b></span>` : ""}`;
     let note = "";
-    if (pkg === "HORIZON" && n < 200) note = `${PKG.HORIZON.displayName} enthält bereits ${PKG.HORIZON.base} Drohnen – zum selben Preis.`;
-    else if (pkg === "ODYSSEY" && n < 300) note = `${PKG.ODYSSEY.displayName} startet mit ${PKG.ODYSSEY.base} Drohnen.`;
+    if (pkg === "HORIZON" && n < 200) note = `${inlinePlain(PKG.HORIZON.displayName)} enthält bereits ${PKG.HORIZON.base} Drohnen – zum selben Preis.`;
+    else if (pkg === "ODYSSEY" && n < 300) note = `${inlinePlain(PKG.ODYSSEY.displayName)} startet mit ${PKG.ODYSSEY.base} Drohnen.`;
     else if (n > 600) note = "Über 600 Drohnen ist das ein Richtpreis – die Flotte planen wir gemeinsam und bestätigen sie im Angebot.";
-    else if (pkg === "SPARK" && n === 150) note = `Mehr als ${PKG.SPARK.max} Drohnen? Dann lohnt sich ${PKG.HORIZON.displayName} mit individuellen Animationen.`;
+    else if (pkg === "SPARK" && n === 150) note = `Mehr als ${PKG.SPARK.max} Drohnen? Dann lohnt sich ${inlinePlain(PKG.HORIZON.displayName)} mit individuellen Animationen.`;
     if (need > 100 && n === need) note = `Unter 10 Drohnen pro Zeichen wird es schlecht lesbar – für deinen Text mindestens ${need.toLocaleString("de-DE")} Drohnen.`;
     if (text.value && text.shown && text.shown.n === n && text.shown.used < n) note = `Dein Text braucht höchstens ${text.shown.used.toLocaleString("de-DE")} Drohnen (80 m hoch) – die übrigen ${(n - text.shown.used).toLocaleString("de-DE")} zeigen wir als Reserve darunter; im Angebot ergänzen wir sie gern um Motive.`;
     noteEl.textContent = note;
@@ -54,7 +55,7 @@ import { SHOW_PACKAGES, PACKAGE_NAMES, priceFor, recommendPackage } from '../con
     range.style.setProperty("--fill", `calc(13px + ${share.toFixed(4)} * (100% - 26px))`);
     const col = `rgb(${p.color.join(",")})`;
     document.documentElement.style.setProperty("--pkg", col);
-    range.setAttribute("aria-valuetext", `${n} Drohnen, ${p.displayName}, ab ${eur(price)}`);
+    range.setAttribute("aria-valuetext", `${n} Drohnen, ${inlinePlain(p.displayName)}, ab ${eur(price)}`);
     tierBtns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.tier === pkg)));
     // live prices on the package cards
     NAMES.forEach((k) => {
@@ -63,7 +64,7 @@ import { SHOW_PACKAGES, PACKAGE_NAMES, priceFor, recommendPackage } from '../con
       c.classList.toggle("is-rec", k === pkg);
       c.querySelector("a.btn").href = inquiryHref(k, Math.max(PKG[k].base, Math.min(n, PKG[k].max)));
       c.querySelector(".badge").textContent = k === pkg ? "Passt zu deiner Auswahl" : PKG[k].badge;
-      if (v === null) box.innerHTML = `<span class="na">Nur bis 150 Drohnen</span><span class="mono">darüber: ${escapeHTML(PKG.HORIZON.displayName)}</span>`;
+      if (v === null) box.innerHTML = `<span class="na">Nur bis 150 Drohnen</span><span class="mono">darüber: ${escapeHTML(inlinePlain(PKG.HORIZON.displayName))}</span>`;
       else {
         const label = n < PKG[k].base ? `inkl. ${PKG[k].base} Drohnen` : `für ${n.toLocaleString("de-DE")} Drohnen`;
         box.innerHTML = `<b>ab ${eur(v)}</b><span class="mono">${label} · ${escapeHTML(PKG[k].dur)}</span>`;

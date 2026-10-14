@@ -1,4 +1,5 @@
 ---
+import InlineText from '../InlineText.astro';
 import {nativeField,nativeSection,nativeItem} from "../../lib/native-editor";
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'steps' }> & { index: number };
@@ -7,6 +8,6 @@ const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 ---
 <section {...nativeSection(Astro.props)} class="section" id={id} aria-labelledby={headingId}>
-  <div class="sec-head"><div>{kicker && <span class="kicker mono" {...nativeField(Astro.props,["kicker"])}>{kicker}</span>}<H id={headingId} {...nativeField(Astro.props,["headline"])}>{headline}</H></div>{text && <p {...nativeField(Astro.props,["text"])}>{text}</p>}</div>
-  <ol class="steps">{steps.map((step,i) => <li {...nativeItem(Astro.props,{entry:["steps",i]})}><h3 {...nativeField(Astro.props,["steps",i,"title"])}>{step.title}</h3><p {...nativeField(Astro.props,["steps",i,"text"])}>{step.text}</p>{step.duration && <span class="t mono" {...nativeField(Astro.props,["steps",i,"duration"])}>{step.duration}</span>}</li>)}</ol>
+  <div class="sec-head"><div>{kicker && <span class="kicker mono" {...nativeField(Astro.props,["kicker"])}>{kicker}</span>}<H id={headingId} {...nativeField(Astro.props,["headline"],true)}><InlineText value={headline} /></H></div>{text && <p {...nativeField(Astro.props,["text"])}>{text}</p>}</div>
+  <ol class="steps">{steps.map((step,i) => <li {...nativeItem(Astro.props,{entry:["steps",i]})}><h3 {...nativeField(Astro.props,["steps",i,"title"],true)}><InlineText value={step.title} /></h3><p {...nativeField(Astro.props,["steps",i,"text"])}>{step.text}</p>{step.duration && <span class="t mono" {...nativeField(Astro.props,["steps",i,"duration"])}>{step.duration}</span>}</li>)}</ol>
 </section>

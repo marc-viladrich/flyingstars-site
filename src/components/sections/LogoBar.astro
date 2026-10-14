@@ -1,4 +1,5 @@
 ---
+import InlineText from '../InlineText.astro';
 import {nativeField,nativeSection,nativeRecord,nativeRecordMedia,nativeItem} from '../../lib/native-editor';
 import {editorialRecord,resolveMedia} from '../../lib/editorial-records';
 import {optimizedLogo} from '../../lib/media';
@@ -6,6 +7,6 @@ const {headline,press,clientIds,showImages=true}=Astro.props;
 const items=await Promise.all(clientIds.map(async(id:string)=>{const client=editorialRecord('client',id),image=resolveMedia(client.logo);return {...client,id,image,media:image&&showImages?await optimizedLogo(image.src,client.tall?80:56):undefined};}));
 ---
 <div {...nativeSection(Astro.props)} class="band" aria-label="Referenzen">
-  <div class="band-head mono">{headline&&<span {...nativeField(Astro.props,['headline'])}>{headline}</span>}{press&&<span>Bekannt aus <b {...nativeField(Astro.props,['press'])}>{press}</b></span>}</div>
+  <div class="band-head mono">{headline&&<span {...nativeField(Astro.props,['headline'],true)}><InlineText value={headline} /></span>}{press&&<span>Bekannt aus <b {...nativeField(Astro.props,['press'])}>{press}</b></span>}</div>
   <div class="marquee">{items.map((client:any,i:number)=>{const record=`client/${client.id}`;const content=client.image&&client.media?<img {...nativeRecordMedia(record,['logo'])} src={client.media.src} width={client.media.width} height={client.media.height} alt={client.image.alt} class:list={{tall:client.tall}} loading="lazy" decoding="async"/>:<span {...nativeRecord(record,['name'])}>{client.name}</span>;return <span {...nativeItem(Astro.props,{record,entry:['clientIds',i]})}>{client.href?<a {...nativeRecord(record,['href'])} href={client.href}>{content}</a>:content}</span>;})}</div>
 </div>

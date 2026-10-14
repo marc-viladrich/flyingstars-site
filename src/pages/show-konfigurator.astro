@@ -1,4 +1,6 @@
 ---
+import InlineText from '../components/InlineText.astro';
+import {inlinePlain} from '../lib/inline-text';
 import {nativeRecord} from '../lib/native-editor';
 import screen from "../content/screens/show-konfigurator.json";
 import Base from '../layouts/Base.astro';
@@ -19,7 +21,7 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
   <section class="cfg" aria-labelledby="cfg-h">
     <div class="cfg-stage" aria-label="Vorschau der Show" aria-describedby="cfg-scene">
       <canvas id="cfg-field" aria-hidden="true"></canvas>
-      <div class="cfg-caption"><em id="cfg-new">{first.displayName}</em></div>
+      <div class="cfg-caption"><em id="cfg-new">{inlinePlain(first.displayName)}</em></div>
       <span class="sr-only" id="cfg-scene">{firstCaption}</span>
       <p class="cfg-error" id="cfg-error" role="status" hidden>Die Vorschau ist gerade nicht verfügbar. Du kannst weiterhin ein Paket wählen und anfragen.</p>
       <div class="cfg-acts" id="cfg-acts" role="group" aria-label="Bilder der Show">
@@ -30,7 +32,7 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
     </div>
 
     <form class="cfg-panel" id="cfg">
-      <h1 id="cfg-h" class="cfg-h" data-native-record={process.env.FLYINGSTARS_EDITOR==='1'?"screen/show-konfigurator":undefined} data-native-path={process.env.FLYINGSTARS_EDITOR==='1'?'["headline"]':undefined}>{screen.headline}</h1>
+      <h1 id="cfg-h" class="cfg-h" {...nativeRecord('screen/show-konfigurator',['headline'],true)}><InlineText value={screen.headline} /></h1>
 
       <fieldset class="cfg-block">
         <legend>Anlass</legend>
@@ -42,7 +44,7 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
       <fieldset class="cfg-block">
         <legend>Wie aufwendig?</legend>
         <div class="cfg-pkgs">
-          {STEPS.map((s, i) => <label style={`--c: rgb(${SHOW_PACKAGES[s.pkg as keyof typeof SHOW_PACKAGES].color.join(',')})`}><input type="radio" name="pkg" value={i} checked={i === start} /><span><b {...nativeRecord(`package/${s.pkg.toLowerCase()}`,["displayName"])}>{SHOW_PACKAGES[s.pkg as keyof typeof SHOW_PACKAGES].displayName}</b><small>{s.label}</small></span></label>)}
+          {STEPS.map((s, i) => <label style={`--c: rgb(${SHOW_PACKAGES[s.pkg as keyof typeof SHOW_PACKAGES].color.join(',')})`}><input type="radio" name="pkg" value={i} checked={i === start} /><span><b {...nativeRecord(`package/${s.pkg.toLowerCase()}`,["displayName"],true)}><InlineText value={SHOW_PACKAGES[s.pkg as keyof typeof SHOW_PACKAGES].displayName} /></b><small>{s.label}</small></span></label>)}
         </div>
       </fieldset>
 
@@ -56,7 +58,7 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
       </fieldset>
 
       <div class="cfg-result" aria-live="polite" data-native-record={process.env.FLYINGSTARS_EDITOR==='1'?"package/"+startPkg.toLowerCase():undefined} data-native-derived={process.env.FLYINGSTARS_EDITOR==='1'?'["price"]':undefined}>
-        <div class="cfg-price"><b id="cfg-pkg">{first.displayName}</b><span id="cfg-price">{money(first.price)}</span></div>
+        <div class="cfg-price"><b id="cfg-pkg">{inlinePlain(first.displayName)}</b><span id="cfg-price">{money(first.price)}</span></div>
         <p class="cfg-meta mono" id="cfg-meta">{first.base} Drohnen · {first.dur} · netto zzgl. Anfahrt</p>
         <p class="cfg-includes" id="cfg-includes">Enthalten: {STEPS[start].includes}.</p>
       </div>
@@ -64,7 +66,7 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
       <p class="cfg-note">Prototyp: Die Vorschau zeigt Beispiele, den Ablauf eurer Show entwickeln wir gemeinsam. Die Zuordnung zu den Paketen ist aus den Paketbeschreibungen abgeleitet und noch nicht von FlyingStars bestätigt. Alle Preise sind Einstiegspreise.</p>
     </form>
 
-    <div class="cfg-bar" aria-hidden="true"><span><b id="cfg-bar-pkg">{first.displayName}</b> <span id="cfg-bar-price">{money(first.price)}</span></span><a class="btn small primary" href="/#anfrage" id="cfg-bar-cta" tabindex="-1">Anfragen</a></div>
+    <div class="cfg-bar" aria-hidden="true"><span><b id="cfg-bar-pkg">{inlinePlain(first.displayName)}</b> <span id="cfg-bar-price">{money(first.price)}</span></span><a class="btn small primary" href="/#anfrage" id="cfg-bar-cta" tabindex="-1">Anfragen</a></div>
   </section>
   <noscript><p class="section">Der Show-Konfigurator benötigt JavaScript. Die Pakete findest du unter <a href="/drohnenshow-preise/">Preise</a>.</p></noscript>
 </Base>
