@@ -1,0 +1,29 @@
+{
+  "sourceId": "project/musikalischer-teaser-bokkenrijders",
+  "locale": "en",
+  "sourceHash": "e8851f44a5a76fdfc11770b79227e01a7fdf9befc60ba1675923310295d135f4",
+  "values": [
+    {
+      "path": [
+        "showcase",
+        "credits",
+        1,
+        "label"
+      ],
+      "text": "Place",
+      "reviewed": false,
+      "sourceHash": "30fb259129e569445f9717f394a344607d61fc3611189c9a44a89d06fe5c20c9"
+    },
+    {
+      "path": [
+        "showcase",
+        "credits",
+        3,
+        "label"
+      ],
+      "text": "Drohnen",
+      "reviewed": false,
+      "sourceHash": "9dc7fa597613b82eecbe845291d235cf1c2c3bd2e22984207fad8e0b7fb31dd1"
+    }
+  ]
+}

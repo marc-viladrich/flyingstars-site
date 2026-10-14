@@ -1,0 +1,106 @@
+{
+  "sourceId": "site/ui",
+  "locale": "en",
+  "sourceHash": "1acbe7ce95f716db04ec3854e67b703fba9a112f12dbcc5b9a2e9bad188c9a62",
+  "values": [
+    {
+      "path": [
+        "prices",
+        "design"
+      ],
+      "text": "Design",
+      "reviewed": false,
+      "sourceHash": "0072e6b934945d5ba08f9729e00847391922f2f6026a435e704634fb93bf4502"
+    },
+    {
+      "path": [
+        "prices",
+        "genehmigung"
+      ],
+      "text": "Approval",
+      "reviewed": false,
+      "sourceHash": "a63a41f66ffeb38b2102b5b1131880b48261fa86f7e0036ac55c3a07d994348e"
+    },
+    {
+      "path": [
+        "prices",
+        "showtag"
+      ],
+      "text": "Show Day",
+      "reviewed": false,
+      "sourceHash": "2d440010e1434668a6a669951a6abbccf5bdfa74acceb029ac1f9d7d2c4e9e3d"
+    },
+    {
+      "path": [
+        "prices",
+        "indoor"
+      ],
+      "text": "Indoors",
+      "reviewed": false,
+      "sourceHash": "a9cb38b7dd3c8aa64101d74c4f35078242423ff3a7a18e20fcfae693e3bcbec1"
+    },
+    {
+      "path": [
+        "prices",
+        "show_anfragen"
+      ],
+      "text": "Request a show",
+      "reviewed": false,
+      "sourceHash": "caebcb95411988a688d18bb0492d01c80dc1fab35ec55a8257390e401273eadb"
+    },
+    {
+      "path": [
+        "calculator",
+        "drohnen"
+      ],
+      "text": "Drohnen",
+      "reviewed": false,
+      "sourceHash": "9dc7fa597613b82eecbe845291d235cf1c2c3bd2e22984207fad8e0b7fb31dd1"
+    },
+    {
+      "path": [
+        "packageDetails",
+        "pakete"
+      ],
+      "text": "Packs",
+      "reviewed": false,
+      "sourceHash": "e1a11ce2f7dc7d1a9fd6de7a8f43fb36bc9ed459afcdcd4831aaef18787ebb36"
+    },
+    {
+      "path": [
+        "packageDetails",
+        "drohnen_2"
+      ],
+      "text": "Drohnen",
+      "reviewed": false,
+      "sourceHash": "9dc7fa597613b82eecbe845291d235cf1c2c3bd2e22984207fad8e0b7fb31dd1"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "drohnen"
+      ],
+      "text": "Drohnen",
+      "reviewed": false,
+      "sourceHash": "9dc7fa597613b82eecbe845291d235cf1c2c3bd2e22984207fad8e0b7fb31dd1"
+    },
+    {
+      "path": [
+        "caseStudy",
+        "show_anfragen"
+      ],
+      "text": "Request a show",
+      "reviewed": false,
+      "sourceHash": "caebcb95411988a688d18bb0492d01c80dc1fab35ec55a8257390e401273eadb"
+    },
+    {
+      "path": [
+        "projectGrid",
+        "drohnen"
+      ],
+      "text": "Drohnen",
+      "reviewed": false,
+      "sourceHash": "9dc7fa597613b82eecbe845291d235cf1c2c3bd2e22984207fad8e0b7fb31dd1"
+    }
+  ]
+}

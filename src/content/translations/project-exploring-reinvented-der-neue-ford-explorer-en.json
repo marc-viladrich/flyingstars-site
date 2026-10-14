@@ -1,0 +1,29 @@
+{
+  "sourceId": "project/exploring-reinvented-der-neue-ford-explorer",
+  "locale": "en",
+  "sourceHash": "68519ec6d5f472e9062dc51ab525e0192ac0ce319462215adc28dd4ecaa5da4e",
+  "values": [
+    {
+      "path": [
+        "showcase",
+        "credits",
+        1,
+        "label"
+      ],
+      "text": "Place",
+      "reviewed": false,
+      "sourceHash": "30fb259129e569445f9717f394a344607d61fc3611189c9a44a89d06fe5c20c9"
+    },
+    {
+      "path": [
+        "showcase",
+        "credits",
+        3,
+        "label"
+      ],
+      "text": "Drohnen",
+      "reviewed": false,
+      "sourceHash": "9dc7fa597613b82eecbe845291d235cf1c2c3bd2e22984207fad8e0b7fb31dd1"
+    }
+  ]
+}

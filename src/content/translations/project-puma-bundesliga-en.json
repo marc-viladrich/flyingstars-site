@@ -1,0 +1,29 @@
+{
+  "sourceId": "project/puma-bundesliga",
+  "locale": "en",
+  "sourceHash": "cf24f5c6b6c6f3ec188adf8f22e3a534fd6cb546992b69327219a8f4fcc55179",
+  "values": [
+    {
+      "path": [
+        "showcase",
+        "credits",
+        1,
+        "label"
+      ],
+      "text": "Place",
+      "reviewed": false,
+      "sourceHash": "30fb259129e569445f9717f394a344607d61fc3611189c9a44a89d06fe5c20c9"
+    },
+    {
+      "path": [
+        "showcase",
+        "credits",
+        3,
+        "label"
+      ],
+      "text": "Drohnen",
+      "reviewed": false,
+      "sourceHash": "9dc7fa597613b82eecbe845291d235cf1c2c3bd2e22984207fad8e0b7fb31dd1"
+    }
+  ]
+}

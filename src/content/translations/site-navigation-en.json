@@ -1,0 +1,68 @@
+{
+  "sourceId": "site/navigation",
+  "locale": "en",
+  "sourceHash": "f9b017e34821bc30fbfcde8019d0382a9a87cc60bacfa09589a957bc5a40d869",
+  "values": [
+    {
+      "path": [
+        "header",
+        0,
+        "label"
+      ],
+      "text": "Events",
+      "reviewed": false,
+      "sourceHash": "5a781ea9dbd4b305f2e2caf021903f4c745da683fd8bbed2da0d90072ea6c000"
+    },
+    {
+      "path": [
+        "header",
+        3,
+        "label"
+      ],
+      "text": "Exp",
+      "reviewed": false,
+      "sourceHash": "9fe440fa4dbe876ce7b5c2e24b5ce8715e0d53dab9b0e8dc26026c7615432960"
+    },
+    {
+      "path": [
+        "cta",
+        "label"
+      ],
+      "text": "Request a show",
+      "reviewed": false,
+      "sourceHash": "caebcb95411988a688d18bb0492d01c80dc1fab35ec55a8257390e401273eadb"
+    },
+    {
+      "path": [
+        "mobileExtras",
+        2,
+        "label"
+      ],
+      "text": "Request a show",
+      "reviewed": false,
+      "sourceHash": "caebcb95411988a688d18bb0492d01c80dc1fab35ec55a8257390e401273eadb"
+    },
+    {
+      "path": [
+        "footer",
+        "pages",
+        0,
+        "label"
+      ],
+      "text": "Events",
+      "reviewed": false,
+      "sourceHash": "5a781ea9dbd4b305f2e2caf021903f4c745da683fd8bbed2da0d90072ea6c000"
+    },
+    {
+      "path": [
+        "footer",
+        "pages",
+        3,
+        "label"
+      ],
+      "text": "Exp",
+      "reviewed": false,
+      "sourceHash": "9fe440fa4dbe876ce7b5c2e24b5ce8715e0d53dab9b0e8dc26026c7615432960"
+    }
+  ]
+}
