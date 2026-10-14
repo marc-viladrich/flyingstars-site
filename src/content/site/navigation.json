@@ -1,0 +1,107 @@
+{
+  "header": [
+    {
+      "label": "Anlässe",
+      "href": "/#anlaesse"
+    },
+    {
+      "label": "Preise",
+      "href": "/drohnenshow-preise/"
+    },
+    {
+      "label": "Projekte",
+      "href": "/projekte/"
+    },
+    {
+      "label": "Ablauf",
+      "href": "/#ablauf"
+    },
+    {
+      "label": "FAQ",
+      "href": "/faq/"
+    }
+  ],
+  "cta": {
+    "label": "Show anfragen",
+    "href": "/#anfrage"
+  },
+  "mobileExtras": [
+    {
+      "label": "Über uns",
+      "href": "/#team"
+    },
+    {
+      "label": "Blog",
+      "href": "/blog/"
+    },
+    {
+      "label": "Show anfragen",
+      "href": "/#anfrage"
+    }
+  ],
+  "footer": {
+    "headings": {
+      "contact": "Kontakt",
+      "pages": "Seiten",
+      "social": "Folgen"
+    },
+    "pages": [
+      {
+        "label": "Anlässe",
+        "href": "/#anlaesse"
+      },
+      {
+        "label": "Preise",
+        "href": "/drohnenshow-preise/"
+      },
+      {
+        "label": "Projekte",
+        "href": "/projekte/"
+      },
+      {
+        "label": "Ablauf",
+        "href": "/#ablauf"
+      },
+      {
+        "label": "FAQ",
+        "href": "/faq/"
+      },
+      {
+        "label": "Über uns",
+        "href": "/#team"
+      },
+      {
+        "label": "Blog",
+        "href": "/blog/"
+      }
+    ],
+    "social": [
+      {
+        "label": "Instagram",
+        "href": "https://www.instagram.com/flyingstars.art/"
+      },
+      {
+        "label": "YouTube",
+        "href": "https://www.youtube.com/@flyingstars."
+      },
+      {
+        "label": "TikTok",
+        "href": "https://www.tiktok.com/@flyingstars_art"
+      },
+      {
+        "label": "Facebook",
+        "href": "https://www.facebook.com/FlyingStars.Art/"
+      }
+    ],
+    "legal": [
+      {
+        "label": "Impressum",
+        "href": "/impressum/"
+      },
+      {
+        "label": "Datenschutz",
+        "href": "/datenschutz/"
+      }
+    ]
+  }
+}

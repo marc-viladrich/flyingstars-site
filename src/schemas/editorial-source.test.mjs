@@ -56,3 +56,11 @@ test('editor field markers never end up inside attribute or template strings',as
  const bad=[];for(const file of files){const text=await fs.readFile(file,'utf8');for(const m of text.matchAll(/[\w-]+=\{`([^`]*)`\}|[\w-]+="([^"]*)"/g))if(/<span \{\.\.\./.test(m[1]??m[2]))bad.push(path.basename(file)+': '+m[0].slice(0,80));}
  assert.deepEqual(bad,[]);
 });
+
+test('all site singletons validate through the registered schemas, including navigation lists',async()=>{
+ const {siteSchemas}=await import('./site-schema.mjs');
+ for(const [id,schema] of Object.entries(siteSchemas))schema.parse(JSON.parse(await fs.readFile(path.join(root,'site',id+'.json'),'utf8')));
+ const {siteNavigationSchema}=await import('./site-schema.mjs'),navigation=JSON.parse(await fs.readFile(path.join(root,'site/navigation.json'),'utf8'));
+ assert.equal(navigation.header.length,5);assert.equal(navigation.footer.pages.length,7);
+ assert.equal(siteNavigationSchema.safeParse({...navigation,header:[{label:'Unsicher',href:'javascript:alert(1)'}]}).success,false);
+});

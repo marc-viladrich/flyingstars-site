@@ -5,13 +5,15 @@ import { site } from '../site.config';
 import Logo from '../components/Logo.astro';
 import { optimizedImage } from '../lib/media';
 import { siteRecord } from '../lib/editorial-records';
-import { nativeRecord } from '../lib/native-editor';
+import { nativeRecord,nativeItem } from '../lib/native-editor';
 interface Props { title: string; description: string; noindex?: boolean; canonicalPath?: string; image?: string; navSection?: string; fullBleed?: boolean; }
 const { title, description, noindex = false, canonicalPath, image, navSection, fullBleed: bleed = false } = Astro.props;
 const canonical = new URL(canonicalPath ?? Astro.url.pathname, Astro.site);
 const current = Astro.url.pathname;
 // Footer contact values and addresses are owned by site/contact (same record as the contact form).
 const contact = siteRecord('contact'), C = (path: string[]) => nativeRecord('site/contact', path);
+const navigation = siteRecord('navigation'), N = (path: (string|number)[]) => nativeRecord('site/navigation', path);
+const NI = (entry: (string|number)[]) => nativeItem({}, {record:'site/navigation',entry});
 const addresses = contact.address ? (['visit', 'post'] as const).map((key) => [key, contact.address[key]] as const) : [];
 // Case pages and project details belong to the "Projekte" area of the main navigation.
 const section = navSection ?? (current.startsWith('/projekte/') ? '/projekte/' : undefined);
@@ -44,26 +46,26 @@ const eco = await optimizedImage('https://flyingstars.art/wp-content/uploads/202
     <div class="nav-sentinel" aria-hidden="true"></div>
     <header class="nav">
       <Logo />
-      <nav aria-label="Hauptnavigation">{site.nav.map((item) => <a href={item.href} aria-current={navState(item.href)}>{item.label}</a>)}</nav>
+      <nav aria-label="Hauptnavigation">{navigation.header.map((item:any,i:number) => <a href={item.href} aria-current={navState(item.href)} {...NI(["header",i])} {...N(["header",i,"label"])}>{item.label}</a>)}</nav>
       <span class="lang" aria-label="Sprache Deutsch">DE</span>
       <button class="motion-btn" type="button" data-motion-toggle aria-pressed="false" aria-label="Bewegung pausieren" title="Bewegung pausieren"><svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="7" y="6" width="3.2" height="12" rx="1" /><rect x="13.8" y="6" width="3.2" height="12" rx="1" /></svg><svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 6.2v11.6a.8.8 0 0 0 1.2.7l9-5.8a.8.8 0 0 0 0-1.4l-9-5.8a.8.8 0 0 0-1.2.7z" /></svg></button>
-      <a class="btn small primary" href={site.cta.href}>{site.cta.label}</a>
+      <a class="btn small primary" href={navigation.cta.href} {...N(["cta","label"])}>{navigation.cta.label}</a>
       <button class="menu-btn" type="button" data-menu-open aria-controls="mobile-menu" aria-expanded="false" aria-label="Menü öffnen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg></button>
     </header>
     <dialog class="mobile-menu" id="mobile-menu" aria-label="Hauptnavigation">
       <div class="top"><Logo /><button class="menu-btn menu-close" type="button" data-menu-close aria-label="Menü schließen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg></button></div>
-      <nav aria-label="Mobile Navigation">{site.nav.map((item) => <a href={item.href}>{item.label}</a>)}<a href="/#team">Über uns</a><a href="/blog/">Blog</a><a href="/#anfrage">Show anfragen</a></nav>
+      <nav aria-label="Mobile Navigation">{navigation.header.map((item:any,i:number) => <a href={item.href} {...NI(["header",i])} {...N(["header",i,"label"])}>{item.label}</a>)}{navigation.mobileExtras.map((item:any,i:number) => <a href={item.href} {...NI(["mobileExtras",i])} {...N(["mobileExtras",i,"label"])}>{item.label}</a>)}</nav>
       <span class="lang">DE · Deutsch</span>
     </dialog>
     <main id="main" class:list={{ 'content-page': !fullBleed }}><slot /></main>
     <footer class="footer">
       <div class="cols">
         <div class="footer-brand"><Logo /><p>Drohnenshows seit 2022. Über 150 Shows in Deutschland und Europa.</p><div class="eco"><img src={eco.src} width={eco.width} height={eco.height} alt="naturstrom" loading="lazy" /><span>100 % Ökostrom</span></div></div>
-        <div><h2 class="footer-heading">Kontakt</h2><address>{addresses.map(([key, block]) => <span {...C(["address", key, "label"])}>{block.label}<br />{block.name}<br />{block.street}</span>)}<span><a href={contact.email.href} {...C(["email", "value"])}>{contact.email.value}</a><br /><a href={contact.phone.href} {...C(["phone", "value"])}>{contact.phone.value}</a></span></address></div>
-        <div><h2 class="footer-heading">Seiten</h2><ul>{site.nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}<li><a href="/#team">Über uns</a></li><li><a href="/blog/">Blog</a></li></ul></div>
-        <div><h2 class="footer-heading">Folgen</h2><ul><li><a href="https://www.instagram.com/flyingstars.art/" rel="noopener noreferrer" target="_blank">Instagram</a></li><li><a href="https://www.youtube.com/@flyingstars." rel="noopener noreferrer" target="_blank">YouTube</a></li><li><a href="https://www.tiktok.com/@flyingstars_art" rel="noopener noreferrer" target="_blank">TikTok</a></li><li><a href="https://www.facebook.com/FlyingStars.Art/" rel="noopener noreferrer" target="_blank">Facebook</a></li></ul></div>
+        <div><h2 class="footer-heading" {...N(["footer","headings","contact"])}>{navigation.footer.headings.contact}</h2><address>{addresses.map(([key, block]) => <span {...C(["address", key, "label"])}>{block.label}<br />{block.name}<br />{block.street}</span>)}<span><a href={contact.email.href} {...C(["email", "value"])}>{contact.email.value}</a><br /><a href={contact.phone.href} {...C(["phone", "value"])}>{contact.phone.value}</a></span></address></div>
+        <div><h2 class="footer-heading" {...N(["footer","headings","pages"])}>{navigation.footer.headings.pages}</h2><ul>{navigation.footer.pages.map((item:any,i:number) => <li {...NI(["footer","pages",i])}><a href={item.href} {...N(["footer","pages",i,"label"])}>{item.label}</a></li>)}</ul></div>
+        <div><h2 class="footer-heading" {...N(["footer","headings","social"])}>{navigation.footer.headings.social}</h2><ul>{navigation.footer.social.map((item:any,i:number) => <li {...NI(["footer","social",i])}><a href={item.href} rel="noopener noreferrer" target="_blank" {...N(["footer","social",i,"label"])}>{item.label}</a></li>)}</ul></div>
       </div>
-      <div class="base mono"><span>© {new Date().getFullYear()} FlyingStars GmbH</span><nav aria-label="Rechtliches">{site.footer.legal.map((item) => <a href={item.href}>{item.label}</a>)}</nav><span>Website-Vorschau</span></div>
+      <div class="base mono"><span>© {new Date().getFullYear()} FlyingStars GmbH</span><nav aria-label="Rechtliches">{navigation.footer.legal.map((item:any,i:number) => <a href={item.href} {...NI(["footer","legal",i])} {...N(["footer","legal",i,"label"])}>{item.label}</a>)}</nav><span>Website-Vorschau</span></div>
     </footer>
     <script>
       import '../scripts/site';

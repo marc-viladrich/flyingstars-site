@@ -1,4 +1,5 @@
 import {z} from 'astro/zod';
+import {editorialHref} from './page-schema.mjs';
 // Website-wide singleton records (src/content/site/<name>.json): one owner per contact value and form text.
 // Every component that shows a contact value or a form text reads it from here.
 const text=label=>z.string().min(1).describe(label);
@@ -41,4 +42,16 @@ export const siteInquirySchema=z.object({
   retry:text('Zusatz nach jedem Fehler ({email} wird ersetzt)'),
  }).describe('Meldungen'),
 }).describe('Anfrageformular');
-export const siteSchemas={contact:siteContactSchema,inquiry:siteInquirySchema};
+const navigationLink=z.object({label:text('Linktext'),href:z.string().min(1).regex(editorialHref,'Nur Web-, E-Mail-, Telefon- oder interne Links sind erlaubt.').describe('Linkziel')}).describe('Navigationslink');
+export const siteNavigationSchema=z.object({
+ header:z.array(navigationLink).describe('Hauptnavigation'),
+ cta:navigationLink.describe('Anfrage-Button im Header'),
+ mobileExtras:z.array(navigationLink).describe('Zusätzliche Links im mobilen Menü'),
+ footer:z.object({
+  headings:z.object({contact:text('Überschrift Kontakt'),pages:text('Überschrift Seiten'),social:text('Überschrift soziale Netzwerke')}).describe('Footer-Überschriften'),
+  pages:z.array(navigationLink).describe('Seiten im Footer'),
+  social:z.array(navigationLink).describe('Soziale Netzwerke'),
+  legal:z.array(navigationLink).describe('Rechtliche Seiten'),
+ }).describe('Footer'),
+}).describe('Navigation und Footer');
+export const siteSchemas={contact:siteContactSchema,inquiry:siteInquirySchema,navigation:siteNavigationSchema};
