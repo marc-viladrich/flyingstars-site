@@ -69,11 +69,15 @@ test('Offline-Pipeline: CI, Code-Deploy, Inhalts-Push/Freigabe, Rebase, Buildfeh
     assert.equal(saved.sync.pending,true);await store.sync.flush();
     assert.equal(store.sync.status.pending,false);assert.ok(store.sync.status.lastPushedAt);
     assert.equal(await git(github,['rev-parse','content/draft']),saved.head);
+    // Publication must also integrate a code release that has not reached the host hook yet.
+    await fs.writeFile(path.join(dev,'src/pages/pipeline-publish.astro'),'<html><body>Code beim Freigeben übernommen</body></html>');
+    await commit(dev,'Code vor redaktioneller Freigabe');await git(dev,['push','origin','main']);
     const builder=new NativeBuilder(store,state,{editor:false,runtimeName:'runtime-public',webroot});
     const publisher=await new NativePublisher(store,builder).init(),review=await publisher.review();
     const published=await publisher.publish({expectedHead:review.draftHead,expectedPublishedHead:review.publishedHead,requestId:randomUUID()});
     assert.equal(await git(github,['rev-parse','main']),published.publishedHead);
     assert.match(await fs.readFile(path.join(webroot,'index.html'),'utf8'),/Redaktioneller Pipeline-Nachweis/);
+    assert.match(await fs.readFile(path.join(webroot,'pipeline-publish/index.html'),'utf8'),/Code beim Freigeben übernommen/);
     await store.sync.flush();
   });
 
@@ -114,6 +118,8 @@ test('Offline-Pipeline: CI, Code-Deploy, Inhalts-Push/Freigabe, Rebase, Buildfeh
     await assert.rejects(run(process.execPath,[path.join(host,'editor/deploy/host-update.mjs')],{cwd:host,env:{...process.env,FLYINGSTARS_STATE_DIR:state,FLYINGSTARS_PUBLIC_WEBROOT:webroot,DEPLOY_RESTART_CMD:restart}}),e=>e.code===1&&/Git-Konflikt/.test(e.stderr));
     assert.equal(await git(host,['rev-parse','HEAD']),before);assert.equal(await git(host,['status','--porcelain']),status);
     assert.deepEqual(await fs.readFile(path.join(host,'src/content/pages/index.yaml')),bytes);
+    const publisher=await new NativePublisher(store,new NativeBuilder(store,state,{editor:false,runtimeName:'runtime-public',webroot})).init(),review=await publisher.review();
+    await assert.rejects(publisher.publish({expectedHead:review.draftHead,expectedPublishedHead:review.publishedHead,requestId:randomUUID()}),e=>e.status===409&&/Git-Konflikt/.test(e.message));
     const app=await startNativeServers({source:host,runtimeRoot:state,listen:false,initialize:false,remote:false});
     try {const response=await handlerRequest(app.editor,app.origin);assert.equal(response.status,200);assert.equal(JSON.parse(response.body).head,before);}
     finally {app.store.sync.close();app.editor.close();app.publicServer.close();}
