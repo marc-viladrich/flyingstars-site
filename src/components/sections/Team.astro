@@ -1,5 +1,5 @@
 ---
-import {nativeField,nativeSection,nativeRecord,nativeRecordMedia} from '../../lib/native-editor';
+import {nativeField,nativeSection,nativeRecord,nativeRecordMedia,nativeItem} from '../../lib/native-editor';
 import {editorialRecord,resolveMedia} from '../../lib/editorial-records';
 import {optimizedImage} from '../../lib/media';
 const {headline,text,memberIds,kicker,note,cta,id=`s${Astro.props.index}`,index,columns='five',showImages=true}=Astro.props;
@@ -9,7 +9,7 @@ const crew=await Promise.all(memberIds.map(async(id:string)=>{const member=edito
 ---
 <section {...nativeSection(Astro.props)} class="team-sec" id={id} aria-labelledby={headingId}>
   <div class="sec-head"><div>{kicker&&<span class="kicker mono" {...nativeField(Astro.props,['kicker'])}>{kicker}</span>}<H id={headingId} {...nativeField(Astro.props,['headline'])}>{headline}</H></div>{text&&<p {...nativeField(Astro.props,['text'])}>{text}</p>}</div>
-  <div class:list={["crew",{'crew--three':columns==='three','crew--two':columns==='two','crew--one':columns==='one'}]}>{crew.map((member:any,i:number)=>{const record=`team/${member.id}`;return <article class="member" style={`--i:${i}`} data-native-item-record={process.env.FLYINGSTARS_EDITOR==='1'?record:undefined}><div class="portrait" hidden={!showImages}>{member.image&&member.media?<img {...nativeRecordMedia(record,['image'])} src={member.media.src} width={member.media.width} height={member.media.height} alt={member.image.alt} loading="lazy" decoding="async"/>:<><span class="ini" aria-hidden="true">{initials(member.name)}</span><span class="soon mono">Foto folgt</span></>}</div><span class="role mono" {...nativeRecord(record,['role'])}>{member.role}</span><h3 {...nativeRecord(record,['name'])}>{member.name}</h3>{member.bio&&<p {...nativeRecord(record,['bio'])}>{member.bio}</p>}</article>;})}</div>
+  <div class:list={["crew",{'crew--three':columns==='three','crew--two':columns==='two','crew--one':columns==='one'}]}>{crew.map((member:any,i:number)=>{const record=`team/${member.id}`;return <article class="member" style={`--i:${i}`} {...nativeItem(Astro.props,{record,entry:['memberIds',i]})}><div class="portrait" hidden={!showImages}>{member.image&&member.media?<img {...nativeRecordMedia(record,['image'])} src={member.media.src} width={member.media.width} height={member.media.height} alt={member.image.alt} loading="lazy" decoding="async"/>:<><span class="ini" aria-hidden="true">{initials(member.name)}</span><span class="soon mono">Foto folgt</span></>}</div><span class="role mono" {...nativeRecord(record,['role'])}>{member.role}</span><h3 {...nativeRecord(record,['name'])}>{member.name}</h3>{member.bio&&<p {...nativeRecord(record,['bio'])}>{member.bio}</p>}</article>;})}</div>
   {(note||cta)&&<p class="crew-note">{note&&<span {...nativeField(Astro.props,['note'])}>{note}</span>}{cta&&<a class="link" href={cta.href} {...nativeField(Astro.props,['cta','label'])}>{cta.label} <span aria-hidden="true">→</span></a>}</p>}
 </section>
 

@@ -1,5 +1,5 @@
 ---
-import {nativeField,nativeSection,nativeRecord} from "../../lib/native-editor";
+import {nativeField,nativeSection,nativeRecord,nativeItem} from "../../lib/native-editor";
 import { getCollection } from 'astro:content';
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'postList' }> & { index: number };
@@ -16,7 +16,7 @@ const fmt = new Intl.DateTimeFormat('de-DE', { dateStyle: 'long' });
     <H id={id} {...nativeField(Astro.props,["headline"])}>{headline}</H>
     <div class="cards">
       {posts.map((p) => (
-        <article class="card">
+        <article class="card" {...nativeItem(Astro.props,{record:`post/${p.id}`})}>
           <h3><a href={`/blog/${p.id}/`}><span {...nativeRecord(`post/${p.id}`,["title"])}>{p.data.title}</span></a></h3>
           <p class="muted"><time datetime={p.data.date.toISOString()}>{fmt.format(p.data.date)}</time></p>
           <p {...nativeRecord(`post/${p.id}`,["description"])}>{p.data.description}</p>
