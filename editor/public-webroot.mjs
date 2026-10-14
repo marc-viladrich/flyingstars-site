@@ -9,21 +9,30 @@ export async function activateWebroot(artifact, webroot) {
   const next = target + '.next-' + randomUUID(), previous = target + '.previous';
   await fs.mkdir(parent, {recursive: true});
   await fs.cp(artifact.site, release, {recursive: true, errorOnExist: true});
-  let movedDirectory = false;
+  let movedDirectory = null;
+  const remember = async oldRelease => {
+    const oldPrevious=await fs.lstat(previous).catch(e=>{if(e.code!=='ENOENT')throw e;return null;});
+    if(oldPrevious?.isDirectory())await fs.rename(previous,previous+'.retained-'+randomUUID());
+    const backup = previous + '-' + randomUUID();
+    try{await fs.symlink(oldRelease, backup);await fs.rename(backup, previous);}
+    finally{await fs.rm(backup,{force:true});}
+  };
   try {
     await fs.access(path.join(release, 'index.html'));
     await fs.symlink(release, next, 'dir');
     const old = await fs.lstat(target).catch(e => {if(e.code !== 'ENOENT')throw e; return null;});
     // Subsequent deploys have one atomic rename. Initial migration from a directory has a short gap.
-    if (old?.isDirectory()) {await fs.rename(target, previous); movedDirectory = true;}
+    if (old?.isDirectory()) {
+      movedDirectory=target+'.initial-'+randomUUID();
+      await fs.rename(target,movedDirectory);await remember(movedDirectory);
+    }
     if (old?.isSymbolicLink()) {
       const oldRelease = await fs.readlink(target);
-      const backup = previous + '-' + randomUUID();
-      await fs.symlink(oldRelease, backup); await fs.rename(backup, previous);
+      await remember(oldRelease);
     }
     await fs.rename(next, target);
   } catch (error) {
-    if (movedDirectory) await fs.rename(previous, target);
+    if (movedDirectory) await fs.rename(movedDirectory, target);
     await fs.rm(release, {recursive: true, force: true}); throw error;
   } finally {await fs.rm(next, {force: true});}
 }
