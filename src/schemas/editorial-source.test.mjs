@@ -48,3 +48,11 @@ test('public package labels can change without renaming engine identity or allow
  assert.equal(packageSchema.safeParse({...original,displayName:''}).success,false);
  assert.equal(escapeHTML('<img src=x onerror="alert(1)">'),'&lt;img src=x onerror=&quot;alert(1)&quot;&gt;');
 });
+
+// Editor markers belong on elements, never inside attribute strings (aria-label, label, alt, title).
+test('editor field markers never end up inside attribute or template strings',async()=>{
+ const files=[];const walk=async dir=>{for(const entry of await fs.readdir(dir,{withFileTypes:true})){const full=path.join(dir,entry.name);if(entry.isDirectory())await walk(full);else if(entry.name.endsWith('.astro'))files.push(full);}};
+ await walk(fileURLToPath(new URL('../',import.meta.url)));
+ const bad=[];for(const file of files){const text=await fs.readFile(file,'utf8');for(const m of text.matchAll(/[\w-]+=\{`([^`]*)`\}|[\w-]+="([^"]*)"/g))if(/<span \{\.\.\./.test(m[1]??m[2]))bad.push(path.basename(file)+': '+m[0].slice(0,80));}
+ assert.deepEqual(bad,[]);
+});

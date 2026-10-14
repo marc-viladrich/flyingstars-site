@@ -26,7 +26,7 @@ const count = (n: number) => String(n).padStart(2, '0');
 ---
 <div class="case" style={`--accent:${data.accent}`}>
   <section class="c-hero" aria-labelledby="case-h">
-    <Video src={data.heroVideo} poster={resolveMedia(project.data.cover)?.src} {...nativeRecordMedia(record,["cover"])} label={`$<span {...field(["name"]) }>{data.name}</span>: Showvideo abspielen`} class="case-video" loop hero />
+    <Video src={data.heroVideo} poster={resolveMedia(project.data.cover)?.src} {...nativeRecordMedia(record,["cover"])} label={`${data.name}: Showvideo abspielen`} class="case-video" loop hero />
     <div class="shade" aria-hidden="true"></div>
     <div class="c-top mono">
       <nav class="crumbs" aria-label="Brotkrumen"><a href="/">Start</a><span aria-hidden="true">/</span><a href="/projekte/">Projekte</a><span aria-hidden="true">/</span><span aria-current="page"><span {...field(["name"]) }>{data.name}</span></span></nav>
@@ -66,7 +66,7 @@ const count = (n: number) => String(n).padStart(2, '0');
 
   <section class="c-reel" aria-labelledby="reel-h">
     <div class="c-reel-head"><div><span class="kicker mono acc">Bilder der Nacht</span><h2 id="reel-h">Die Show in {data.gallery.length} Bildern.</h2></div><div class="ctrl"><button type="button" data-prev aria-label="Vorheriges Bild">←</button><button type="button" data-next aria-label="Nächstes Bild">→</button></div></div>
-    <div class:list={['c-track', { tall: data.portrait }]} tabindex="0" role="region" aria-label={`$<span {...field(["name"]) }>{data.name}</span>: Bildergalerie`}>
+    <div class:list={['c-track', { tall: data.portrait }]} tabindex="0" role="region" aria-label={`${data.name}: Bildergalerie`}>
       {data.gallery.map((picture, index) => <figure><div class="img"><img {...nativeRecordMedia(record,["showcase","gallery",index])} src={images.get(resolveMedia(picture).src)!.src} {...images.get(resolveMedia(picture).src)!.attributes} width={images.get(resolveMedia(picture).src)!.width} height={images.get(resolveMedia(picture).src)!.height} alt={resolveMedia(picture).alt} loading="lazy" decoding="async" draggable="false" /></div><figcaption class="mono"><b>{count(index + 1)}</b><span {...field(["gallery",index,"caption"])}>{picture.caption}</span></figcaption></figure>)}
     </div>
   </section>
