@@ -5,7 +5,9 @@ export async function configuredRemote(root, git, selected = process.env.FLYINGS
   if (selected === false || selected === 'off') return null;
   const names = (await git(root, ['remote'])).split('\n');
   if (selected && !names.includes(selected)) throw Error('FLYINGSTARS_GIT_REMOTE muss einen konfigurierten Git-Remote benennen.');
-  return selected || (names.includes('origin') ? 'origin' : null);
+  // Opt-in: only an explicitly named remote is pushed to (the host sets FLYINGSTARS_GIT_REMOTE=origin).
+  // A developer clone with an unrelated origin must never receive content pushes by accident.
+  return selected || null;
 }
 
 /** A failed push never changes a save response. Pending commits survive process restarts in Git. */
