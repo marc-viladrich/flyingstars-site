@@ -251,7 +251,7 @@ sections:
       label: Alle Projekte
       href: /projekte/
     headline: Ein paar Nächte, die wir nicht vergessen.
-    limit: 3
+    limit: 4
   - type: sustainability
     id: nachhaltigkeit
     kicker: Nachhaltigkeit
