@@ -12,6 +12,8 @@ function render(text, html) {
  const open=mark=>stack.push({mark,text:''});
  const close=()=>{const node=stack.pop(),tags=formats[node.mark];append(html?tags[0]+node.text+tags[1]:node.text);};
  for(let i=0;i<text.length;){
+  // A backslash keeps the next mark character literal (\* \~ \{ \\), written by the editor for typed asterisks.
+  if(text[i]==='\\'&&/[\\*~{]/.test(text[i+1]||'')){append(text[i+1]);i+=2;continue;}
   const brace=/^\{(\/?[oc])\}/.exec(text.slice(i));
   if(brace){const token=brace[0];if(token[1]==='/'){const mark='{'+token[2]+'}';if(stack.at(-1).mark===mark)close();else append(token);}else open(token);i+=token.length;continue;}
   if(text[i]==='*'){

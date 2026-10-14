@@ -145,3 +145,10 @@ test('rotating inline words retain safe rendered marks and update the exact word
  runInNewContext(source,{document,window:{addEventListener(){}},matchMedia:()=>({matches:false}),sessionStorage:{getItem:()=>null},location:{hash:''},setInterval:fn=>intervals.push(fn),setTimeout:fn=>timeouts.push(fn),Event:class{},requestAnimationFrame(){}});
  intervals[0]();timeouts.shift()();assert.equal(word.innerHTML,'<em>Anders</em>');assert.equal(word.dataset.nativePath,'["sections",0,"words",1]');
 });
+
+test('a backslash keeps typed mark characters literal',async()=>{
+ const {inlineHtml,inlinePlain}=await import('../lib/inline-text.mjs');
+ assert.equal(inlineHtml('A \\*\\*literal\\*\\* B'),'A **literal** B');
+ assert.equal(inlinePlain('5\\* und \\~\\~ und \\{o}'),'5* und ~~ und {o}');
+ assert.equal(inlineHtml('\\\\'),'\\');
+});
