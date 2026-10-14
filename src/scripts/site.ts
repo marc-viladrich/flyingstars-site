@@ -182,7 +182,7 @@
     };
     const show = (i) => {
       cur = i; since = 0;
-      facts.forEach((f, k) => { f.classList.toggle("on", k === i); f.classList.toggle("past", k < i); });
+      facts.forEach((f, k) => { f.inert = k !== i; f.classList.toggle("on", k === i); f.classList.toggle("past", k < i); });
       if (count && facts[i].contains(count)) countUp();
     };
     const onScroll = () => {

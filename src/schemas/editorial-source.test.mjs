@@ -95,3 +95,16 @@ test('native order and cross-record entries expose exact owners only in editor b
   process.env.FLYINGSTARS_EDITOR='0';assert.deepEqual(helpers.nativeOrder('order'),{});assert.deepEqual(helpers.nativeItem({},{record:'faq/show-01'}),{});
  }finally{if(previous===undefined)delete process.env.FLYINGSTARS_EDITOR;else process.env.FLYINGSTARS_EDITOR=previous;}
 });
+
+test('enhanced sustainability facts are inert initially and after scroll except the visible fact; reduced motion keeps all interactive',async()=>{
+ const {runInNewContext}=await import('node:vm'),source=await fs.readFile(new URL('../scripts/site.ts',import.meta.url),'utf8');
+ for(const reduce of [false,true]){
+  let top=0;const events={},facts=Array.from({length:4},()=>({inert:false,classList:{toggle(){}},contains(){return false;}}));
+  const canvas={getContext:()=>({}),getBoundingClientRect:()=>({width:1000,height:800})},pin={addEventListener(){}},scrolly={classList:{add(){}},style:{setProperty(){}},querySelectorAll:s=>s==='.fact'?facts:[],querySelector:s=>s==='canvas'?canvas:s==='.eco-pin'?pin:null,getBoundingClientRect:()=>({top,height:4000})};
+  const document={getElementById(){return null;},hidden:false,documentElement:{classList:{toggle(){}}},querySelector:s=>s==='[data-scrolly]'?scrolly:null,querySelectorAll:()=>[],dispatchEvent(){}};
+  class Observer{observe(){}unobserve(){}}
+  runInNewContext(source,{document,window:{addEventListener(){},IntersectionObserver:Observer},IntersectionObserver:Observer,matchMedia:()=>({matches:reduce}),sessionStorage:{getItem:()=>null},location:{hash:''},Event:class{},requestAnimationFrame(){},devicePixelRatio:1,innerHeight:1000,addEventListener:(name,fn)=>events[name]=fn});
+  assert.deepEqual(facts.map(f=>f.inert),reduce?[false,false,false,false]:[false,true,true,true]);
+  if(!reduce){top=-1600;events.scroll();assert.deepEqual(facts.map(f=>f.inert),[true,true,false,true]);top=0;events.scroll();assert.deepEqual(facts.map(f=>f.inert),[false,true,true,true]);}
+ }
+});

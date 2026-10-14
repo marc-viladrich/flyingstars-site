@@ -37,7 +37,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     type: z.literal('sustainability').describe('Nachhaltigkeit'), ...sectionHeading,
     headline: z.string().min(1).describe('Überschrift'), lines: z.array(z.string()).length(3), text: z.string().min(1),
     facts: z.array(z.object({ label: z.string(), value: z.string(), unit: z.string().optional(),
-      text: z.string(), tone: z.enum(['o','g']).optional() })).length(4),
+      text: z.string(), tone: z.enum(['o','g']).optional().describe('Darstellung der Kennzahl') })).length(4),
     proofImage: image, proofText: z.string(), campaign: z.string(),
   }),
   z.object({
