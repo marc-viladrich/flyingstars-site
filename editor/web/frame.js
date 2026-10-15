@@ -660,7 +660,7 @@ function structure(data) {
   else if (data.action === "duplicate" && target) {
     const copy = target.cloneNode(true);
     uniqueCloneIds(copy);
-    prepareClonedSection(copy);
+    prepareClonedSection(copy, { livePreview: hasBaseline });
     inheritMediaBaselines(target, copy);
     for (const bound of copy.querySelectorAll("[data-native-bound]")) delete bound.dataset.nativeBound;
     target.after(copy);
@@ -676,7 +676,7 @@ function structure(data) {
     let copy = source?.cloneNode(true);
     if (copy) {
       uniqueCloneIds(copy);
-      prepareClonedSection(copy);
+      prepareClonedSection(copy, { livePreview: hasBaseline });
       inheritMediaBaselines(source, copy);
       for (const bound of copy.querySelectorAll("[data-native-bound]")) delete bound.dataset.nativeBound;
     } else {
@@ -1408,7 +1408,7 @@ function applyPreview({ html, baseline }) {
     }
     const fresh = document.importNode(node, true);
     keepDisclosureState(current, fresh);
-    if (isRuntime(fresh)) prepareClonedSection(fresh);
+    if (isRuntime(fresh)) prepareClonedSection(fresh, { livePreview: true });
     current.replaceWith(fresh);
     serverOf.set(fresh, node);
     applied++;

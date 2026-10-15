@@ -178,7 +178,8 @@ td.us { color: var(--text); background: rgb(from var(--c-text) r g b / 0.035); }
 .pack:hover { border-color: var(--line-strong); transform: translateY(-2px); }
 .pack.featured { background: var(--surface-2); border-color: transparent; }
 .pack.featured::before { content: ""; position: absolute; inset: 0; border-radius: var(--radius); padding: 1px; background: var(--grad); -webkit-mask: linear-gradient(var(--c-black) 0 0) content-box, linear-gradient(var(--c-black) 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
-.pack canvas { width: 96px; height: 96px; }
+.pack canvas { grid-column: 1; grid-row: 1; width: 96px; height: 96px; }
+.pack > div { grid-column: 2; grid-row: 1; min-width: 0; }
 .pack .name { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .pack .name h3 { letter-spacing: 0.04em; font-weight: 700; font-size: 20px; }
 .chip { font: 500 10.5px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; padding: 6px 8px; border-radius: 999px; border: 1px solid rgb(from var(--c-orchid) r g b / 0.45); color: var(--orchid); }

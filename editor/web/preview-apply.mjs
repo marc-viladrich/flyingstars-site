@@ -40,14 +40,21 @@ function nthOfTag(parent, tagName, index) {
 // Three-way patch: only what differs between the previous and the new server render is applied,
 // so classes and attributes that client scripts added to the live node stay.
 export function patchInPlace(live, before, after, report = { unsafe: false, changed: 0 }) {
+  if (!sameStructure(before, after)) { report.unsafe = true; return report; }
+  return patchNode(live, before, after, report);
+}
+function patchNode(live, before, after, report) {
   const names = new Set([...before.getAttributeNames(), ...after.getAttributeNames()]);
   for (const name of names) {
     const was = before.getAttribute(name),
       now = after.getAttribute(name);
     if (was === now) continue;
     if (live.tagName === "CANVAS" && (name.startsWith("data-") || name === "width" || name === "height" || name === "style")) {
-      if (name.startsWith("data-")) report.unsafe = true;
-      continue;
+      if (!name.startsWith("data-")) continue; // dimensions/styles belong to the renderer
+      if (name === 'data-native-live' || !live.hasAttribute('data-native-live')) {
+        report.unsafe = true;
+        continue;
+      }
     }
     report.changed++;
     if (name === "class") {
@@ -82,7 +89,7 @@ export function patchInPlace(live, before, after, report = { unsafe: false, chan
   for (let i = 0; i < before.children.length; i++) {
     const was = before.children[i],
       target = nthOfTag(live, was.tagName, sameTagIndex(was));
-    if (target) patchInPlace(target, was, after.children[i], report);
+    if (target) patchNode(target, was, after.children[i], report);
   }
   return report;
 }
