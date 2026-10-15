@@ -1,5 +1,6 @@
 // Shared FlyingStars presentation; source: customer Vercel prototype.
 // @ts-nocheck
+import {rgbOf} from '../lib/color-tokens.mjs';
 (() => {
   "use strict";
   document.querySelectorAll('[data-language-link]').forEach(link => {
@@ -70,7 +71,7 @@
     torus: (n) => { const p = [], U = 25, V = Math.round(n / U); for (let i = 0; i < U; i++) for (let j = 0; j < V; j++) { const u = (i / U) * Math.PI * 2, v = (j / V) * Math.PI * 2 + i * 0.13; p.push([(0.68 + 0.28 * Math.cos(v)) * Math.cos(u), 0.28 * Math.sin(v), (0.68 + 0.28 * Math.cos(v)) * Math.sin(u)]); } return p.slice(0, n); },
   };
   const orbs = [...document.querySelectorAll("canvas[data-orb]")].map((c) => ({
-    c, x: c.getContext("2d"), kind: c.dataset.orb, pts: shapes[c.dataset.orb](+c.dataset.n), col: c.dataset.color.split(",").map(Number), vis: false,
+    c, x: c.getContext("2d"), kind: c.dataset.orb, pts: shapes[c.dataset.orb](+c.dataset.n), col: rgbOf(c.dataset.color), vis: false,
   }));
   if (orbs.length) {
     const io = new IntersectionObserver((es) => es.forEach((e) => { const o = orbs.find((q) => q.c === e.target); if (o) o.vis = e.isIntersecting; }));

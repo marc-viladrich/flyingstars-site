@@ -34,7 +34,7 @@
       "titleLines": [ "Bokken", "rijders" ],
       "titleChars": 7,
       "tagline": "600 Drohnen spielen im Musical mit.",
-      "accent": "#ff5a5f",
+      "accent": "project-bokkenrijders",
       "drones": 600,
       "heroVideo": "https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijd\
         ers.mp4",

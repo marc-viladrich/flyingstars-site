@@ -33,7 +33,7 @@
       "titleLines": [ "Stronger", "Together" ],
       "titleChars": 8,
       "tagline": "100 Drohnen für PUMA zum Anstoß des Derbys.",
-      "accent": "#3ddc84",
+      "accent": "project-puma",
       "drones": 100,
       "heroVideo": "https://flyingstars-relaunch.vercel.app/media/projekte/puma.mp4",
       "credits":

@@ -1,4 +1,5 @@
 ---
+import {colorVar} from '../../lib/color-tokens.mjs';
 import {nativeRecord as uiMarker} from '../../lib/native-editor';
 import {siteRecord as readUi} from '../../lib/content';
 import {localeFromPath,localeFormat,localizedHref} from '../../lib/localized-routes';
@@ -17,7 +18,6 @@ const native = (name: ShowPackage, path: Array<string | number>, derived = false
   [derived ? 'data-native-derived' : 'data-native-path']: JSON.stringify(path),
   ...(inline?{'data-native-inline':'true'}:{}),
 } : {};
-const dot = (color: number[]) => '#' + color.map(value => value.toString(16).padStart(2, '0')).join('');
 ---
 
 <section class="section alt" id="pakete" aria-labelledby="pakete-h">
@@ -29,8 +29,8 @@ const dot = (color: number[]) => '#' + color.map(value => value.toString(16).pad
     {PACKAGE_NAMES.map(name => {
       const pkg = SHOW_PACKAGES[name];
       const record = `package/${name.toLowerCase()}`;
-      return <article class:list={['tier', {'is-rec': pkg.highlight}]} data-card={name} style={`--dot:${dot(pkg.color)}`} {...nativeItem(Astro.props, {record})}>
-        <canvas data-orb={pkg.orbShape} data-n={pkg.base} data-color={pkg.color.join(',')} aria-hidden="true"></canvas>
+      return <article class:list={['tier', {'is-rec': pkg.highlight}]} data-card={name} style={`--dot:${colorVar(pkg.color)}`} {...nativeItem(Astro.props, {record})}>
+        <canvas data-orb={pkg.orbShape} data-n={pkg.base} data-color={pkg.color} aria-hidden="true"></canvas>
         <div class="head"><h3 {...native(name, ['displayName'],false,true)}><InlineText value={pkg.displayName} /></h3><span class="badge" {...native(name, ['badge'], true)}>{pkg.badge}</span></div>
         <p class="tag" {...native(name, ['description'])}>{pkg.description}</p>
         <div class="p" data-live {...native(name,["price"],true)}><b {...native(name, ['price'], true)}>{fillText(ui.calculator.fromPrice,{price:money(pkg.price)+" €"})}</b><span class="mono" {...native(name, ['base'], true)}>{fillText(ui.packageDetails.base,{count:pkg.base,duration:pkg.dur})}</span></div>

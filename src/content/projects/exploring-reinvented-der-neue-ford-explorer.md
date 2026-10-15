@@ -33,7 +33,7 @@
       "titleLines": [ "Exploring", "Reinvented" ],
       "titleChars": 10,
       "tagline": "350 Drohnen für den neuen Ford Explorer.",
-      "accent": "#6f9bff",
+      "accent": "project-ford",
       "drones": 350,
       "heroVideo": "https://flyingstars-relaunch.vercel.app/media/projekte/ford.mp4",
       "credits":

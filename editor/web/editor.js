@@ -968,7 +968,7 @@ function fieldControl(item, field, { label } = {}) {
   input.dataset.fieldKey = key;
   input.value = current ?? "";
   const translatable =
-    field.kind === "text" &&
+    field.kind === "text" && field.format !== "color" &&
     /^(page|post|project|faq|client|team|screen|package|site)\//.test(item.id) &&
     !["href", "url", "src", "video"].includes(field.path.at(-1));
   if (translatable && activeLocale !== "de") {

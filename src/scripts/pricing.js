@@ -1,3 +1,4 @@
+import {colorVar, rgbOf} from '../lib/color-tokens.mjs';
 import {inlinePlain} from '../lib/inline-text.mjs';
 import {escapeHTML} from '../lib/editorial-text.mjs';
 import { HEART_CAPACITIES } from './pricing-heart-capacities';
@@ -59,7 +60,7 @@ import {localeFormat} from '../lib/localized-routes.mjs';
     cta.href = inquiryHref(pkg, n);
     const share = (n - +range.min) / (+range.max - +range.min); // the coloured part ends under the thumb centre
     range.style.setProperty("--fill", `calc(13px + ${share.toFixed(4)} * (100% - 26px))`);
-    const col = `rgb(${p.color.join(",")})`;
+    const col = colorVar(p.color);
     document.documentElement.style.setProperty("--pkg", col);
     range.setAttribute("aria-valuetext",t("range",{count:nTxt,name:inlinePlain(p.displayName),price:eur(price)}));
     tierBtns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.tier === pkg)));
@@ -76,7 +77,7 @@ import {localeFormat} from '../lib/localized-routes.mjs';
         box.innerHTML = `<b>${h("fromPrice",{price:eur(v)})}</b><span class="mono">${escapeHTML(label)} · ${escapeHTML(PKG[k].dur)}</span>`;
       }
     });
-    if (text.value) { if (computeText) showText(p.color); } else { ++text.job; clearTimeout(text.timer); text.shown = null; swarm.setTarget(Math.max(n, 1), p.color); }
+    if (text.value) { if (computeText) showText(rgbOf(p.color)); } else { ++text.job; clearTimeout(text.timer); text.shown = null; swarm.setTarget(Math.max(n, 1), rgbOf(p.color)); }
     renderTextRead();
   }
 
@@ -320,7 +321,7 @@ import {localeFormat} from '../lib/localized-routes.mjs';
     }
     return { setTarget, setText, resize, info, loadHearts(data) {
       DATA = data;
-      if (!text.value) setTarget(n, PKG[pkg].color);
+      if (!text.value) setTarget(n, rgbOf(PKG[pkg].color));
       syncAnimation();
     } };
   })();

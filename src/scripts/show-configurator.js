@@ -1,3 +1,4 @@
+import {colorVar, rgbOf} from '../lib/color-tokens.mjs';
 import {inlinePlain} from '../lib/inline-text.mjs';
 // Show configurator prototype v9: Anlass picks a sequence of three motifs that plays like a little show, three package
 // buttons pick the package. Switching the package turns the motif on stage into its version for that package (2D
@@ -44,7 +45,7 @@ if (form) {
   const sequence = () => {
     const key = `${occasion.id}|${step().pkg}|${text}|${style}`;
     if (cache.size > 40) cache.clear();
-    if (!cache.has(key)) cache.set(key, buildSequence(motifs(), step().pkg, pkg().base, pkg().color, occasion.id).catch((error) => { cache.delete(key); throw error; }));
+    if (!cache.has(key)) cache.set(key, buildSequence(motifs(), step().pkg, pkg().base, rgbOf(pkg().color), occasion.id).catch((error) => { cache.delete(key); throw error; }));
     return cache.get(key);
   };
 
@@ -71,7 +72,7 @@ if (form) {
   function update(keep, to) {
     const s = step(), p = pkg(), price = priceFor(s.pkg, p.base);
     const editorResult=document.querySelector(".cfg-result[data-native-record]");if(editorResult)editorResult.dataset.nativeRecord="package/"+s.pkg.toLowerCase();
-    document.documentElement.style.setProperty("--pkg", `rgb(${p.color.join(",")})`);
+    document.documentElement.style.setProperty("--pkg", colorVar(p.color));
     for (const [sel, txt] of [["#cfg-pkg", inlinePlain(p.displayName)], ["#cfg-bar-pkg", inlinePlain(p.displayName)], ["#cfg-price", eur(price)], ["#cfg-bar-price", eur(price)]]) $(sel).textContent = txt;
     $("#cfg-meta").textContent = t("meta",{count:p.base.toLocaleString(fmt),duration:p.dur});
     $("#cfg-includes").textContent = t("includes",{text:s.includes});
