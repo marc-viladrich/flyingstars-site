@@ -31,7 +31,7 @@
       "cardTitle": "Bokkenrijders: unsere bisher größte Show",
       "category": "Musical · Maastricht",
       "kicker": "Musical · Maastricht · 2025/26",
-      "titleLines": [ "Bokken", "rijders" ],
+      "titleLines": [ "Bokken", "{o}rijders{/o}" ],
       "titleChars": 7,
       "tagline": "600 Drohnen spielen im Musical mit.",
       "accent": "#ff5a5f",

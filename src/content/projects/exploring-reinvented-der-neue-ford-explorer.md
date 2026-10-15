@@ -30,7 +30,7 @@
       "cardTitle": "Exploring Reinvented: der neue Ford Explorer",
       "category": "Automotive · Launch",
       "kicker": "Automotive · Köln · Juni 2024",
-      "titleLines": [ "Exploring", "Reinvented" ],
+      "titleLines": [ "Exploring", "{o}Reinvented{/o}" ],
       "titleChars": 10,
       "tagline": "350 Drohnen für den neuen Ford Explorer.",
       "accent": "#6f9bff",

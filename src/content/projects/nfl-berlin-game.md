@@ -31,7 +31,7 @@
       "cardTitle": "NFL Berlin Game: das Wappen über dem Stadion",
       "category": "Sport · Berlin",
       "kicker": "Sport · Berlin · November 2025",
-      "titleLines": [ "NFL", "Berlin Game" ],
+      "titleLines": [ "NFL", "{o}Berlin Game{/o}" ],
       "titleChars": 11,
       "tagline": "Das Hufeisen der Colts über dem Olympiastadion.",
       "accent": "#5b8def",

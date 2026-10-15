@@ -1,7 +1,7 @@
 {
   "sourceId": "page/index",
   "locale": "en",
-  "sourceHash": "8e27b2771d61a55c3fa83f94678a6e7212bf8c75bbea7b7a4becce18921cd78d",
+  "sourceHash": "0b5f18c217ff09a47856611429a0d841c85ef77f06fe7034779c7994bbc34b3c",
   "values": [
     {
       "path": [
@@ -1212,9 +1212,9 @@
         "lines",
         1
       ],
-      "text": "No smoke.",
+      "text": "{o}No smoke.{/o}",
       "reviewed": true,
-      "sourceHash": "1bcc5a4276b1ca1a7b825a4eae4c2b241d54c44f9183f05fc228b39dd46a13f7"
+      "sourceHash": "3a108960e4e2daac775df65543026a6a4475ebd00262994e65b8b52d53e10ed3"
     },
     {
       "path": [

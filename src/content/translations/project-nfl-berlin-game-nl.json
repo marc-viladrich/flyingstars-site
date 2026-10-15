@@ -1,7 +1,7 @@
 {
   "sourceId": "project/nfl-berlin-game",
   "locale": "nl",
-  "sourceHash": "694e631d8a5a08ac4376cbb73bfb4e244f43127920bd2ab0c89997a2336bdb41",
+  "sourceHash": "5d3dfa58aa6ee40cf3c34730e7334bd7daabc2c058ae945d57c047a6141bff59",
   "values": [
     {
       "path": [
@@ -74,9 +74,9 @@
         "titleLines",
         1
       ],
-      "text": "Berlijn spel",
+      "text": "{o}Berlijn spel{/o}",
       "reviewed": false,
-      "sourceHash": "ee83ec03191fe6595951ec2d06e7846db306b95c3fc26cae85a0e30fc6595b2c"
+      "sourceHash": "c68c4c965ced1282f02e77f8ff8ba41f144cd7b5e065b798179961d3ca2db5e7"
     },
     {
       "path": [

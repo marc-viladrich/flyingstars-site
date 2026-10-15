@@ -1,7 +1,7 @@
 {
   "sourceId": "project/musikalischer-teaser-bokkenrijders",
   "locale": "en",
-  "sourceHash": "e8851f44a5a76fdfc11770b79227e01a7fdf9befc60ba1675923310295d135f4",
+  "sourceHash": "8a370962438ff0410c7b835964838b4f1acf1f3aa618b152b9da962a82e843eb",
   "values": [
     {
       "path": [
@@ -96,9 +96,9 @@
         "titleLines",
         1
       ],
-      "text": "rijders",
+      "text": "{o}rijders{/o}",
       "reviewed": false,
-      "sourceHash": "934b716a9531d02e70bc3ed7f6a721228f3b808115e256dc94868257581143e8"
+      "sourceHash": "f430dbf2381bd1356c5c5ba594f5ccacaab8060081b1277048b718546194872f"
     },
     {
       "path": [

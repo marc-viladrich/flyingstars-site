@@ -1,7 +1,7 @@
 {
   "sourceId": "project/puma-bundesliga",
   "locale": "nl",
-  "sourceHash": "cf24f5c6b6c6f3ec188adf8f22e3a534fd6cb546992b69327219a8f4fcc55179",
+  "sourceHash": "692bea8f2b281bbc4bea6c36638f8519e29fd473143ea13d8abb11466efec0b3",
   "values": [
     {
       "path": [
@@ -74,9 +74,9 @@
         "titleLines",
         1
       ],
-      "text": "Samen",
+      "text": "{o}Samen{/o}",
       "reviewed": false,
-      "sourceHash": "330e6de0a0e3008fc7b01075f2723ee7e7c28b509fb95aa418de2748ff667615"
+      "sourceHash": "747be433ca882a5d2948d4ca378aa862027367b5f4e1797ed671ce39f516ad44"
     },
     {
       "path": [

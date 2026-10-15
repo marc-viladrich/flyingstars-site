@@ -30,7 +30,7 @@
       "cardTitle": "PUMA zum Anstoß des Derbys",
       "category": "Sport · Bundesliga",
       "kicker": "Sport · Mönchengladbach · November 2022",
-      "titleLines": [ "Stronger", "Together" ],
+      "titleLines": [ "Stronger", "{o}Together{/o}" ],
       "titleChars": 8,
       "tagline": "100 Drohnen für PUMA zum Anstoß des Derbys.",
       "accent": "#3ddc84",

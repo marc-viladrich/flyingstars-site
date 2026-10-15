@@ -236,7 +236,7 @@ sections:
     headline: Kein Knall. Kein Rauch. Kein Müll.
     lines:
       - Kein Knall.
-      - Kein Rauch.
+      - "{o}Kein Rauch.{/o}"
       - Kein Müll.
     text: "Nach unserer Show bleibt nur die Erinnerung – kein Rauch über der Stadt,
       nichts auf dem Boden. Vier Zahlen, die den Unterschied machen:"
