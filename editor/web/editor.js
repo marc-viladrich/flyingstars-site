@@ -541,10 +541,12 @@ function closeMenu({ restoreFocus = false } = {}) {
   openMenuState = null;
   if (restoreFocus) trigger.focus();
 }
-function openMenu(trigger, items) {
+// Dock menus open above their button and replace the panel; a menu from inside the panel (keepPanel)
+// leaves it open and drops below its button when there is no room above.
+function openMenu(trigger, items, { keepPanel = false } = {}) {
   if (openMenuState?.trigger === trigger) return closeMenu();
   closeMenu();
-  closePanel();
+  if (!keepPanel) closePanel();
   const node = el("div", { class: "editor-ui menu", role: "menu" });
   for (const item of items.filter(Boolean)) {
     if (item === "-") node.append(el("div", { class: "menu-sep", role: "separator" }));
@@ -586,7 +588,8 @@ function openMenu(trigger, items) {
     width = node.offsetWidth,
     height = node.offsetHeight;
   node.style.left = Math.max(12, Math.min(innerWidth - width - 12, box.left)) + "px";
-  node.style.top = Math.max(12, box.top - height - 8) + "px";
+  const above = box.top - height - 8;
+  node.style.top = (keepPanel && above < 12 ? Math.min(box.bottom + 6, innerHeight - height - 12) : Math.max(12, above)) + "px";
   trigger.setAttribute("aria-expanded", "true");
   openMenuState = { node, trigger };
   const rows = () => [...node.querySelectorAll("button:not(:disabled)")];
@@ -602,6 +605,8 @@ function openMenu(trigger, items) {
       (event.key === "Home" ? list[0] : list.at(-1))?.focus();
     } else if (event.key === "Escape" || event.key === "Tab") {
       event.preventDefault();
+      // Escape closes only the menu, not the panel it was opened from.
+      event.stopPropagation();
       closeMenu({ restoreFocus: true });
     }
   });
@@ -684,7 +689,7 @@ function navigate(url, { reload = false, locale } = {}) {
   } catch {}
   ready = false;
   selection = null;
-  closePanel();
+  if (!keepPanel) closePanel();
   closeMenu();
   const next = new URL(url, location.origin);
   const split = splitLocale(next.pathname);
@@ -704,6 +709,9 @@ function navigate(url, { reload = false, locale } = {}) {
   $("#loading").hidden = false;
   history.replaceState(null, "", editorAddress());
   update();
+  // A language switch from inside a panel redraws the same view in the new language at once (it stays
+  // locked until the page has loaded, then it is drawn once more with the new page's markers).
+  if (keepPanel) rerender();
 }
 function frameOffset() {
   const box = frame.getBoundingClientRect();
@@ -920,6 +928,22 @@ function actionRow(label, run, iconName, { danger = false, confirm } = {}) {
   return row;
 }
 
+// Texts of content records have a translation per language; links, files and colours do not.
+const translatableRecord = (id) => /^(page|post|project|faq|client|team|screen|package|site)\//.test(id);
+function isTranslatable(item, field) {
+  return !!field && field.kind === "text" && field.format !== "color" && translatableRecord(item.id) && !["href", "url", "src", "video"].includes(field.path.at(-1));
+}
+// "Übersetzen" for one clicked text: in German it switches to the foreign view with that text focused on
+// the page; in a foreign view it goes back to German and the panel stays.
+function translateAction(item, field) {
+  if (!isTranslatable(item, field)) return null;
+  return activeLocale === "de"
+    ? actionRow("Übersetzen", () => startTranslation({ id: item.id, path: field.path }), "languages")
+    : actionRow("Zurück zu Deutsch", () => switchPanelLocale("de"), "languages");
+}
+// Set while a panel draws when it shows (or holds behind "Weitere Felder") a translatable text: then its
+// head carries the one language control of the panel.
+let panelTranslatable = false;
 // One control per field kind. Text that is visible on the page is edited there, never here.
 function fieldControl(item, field, { label } = {}) {
   const key = fieldKey(item.id, field.path),
@@ -983,15 +1007,14 @@ function fieldControl(item, field, { label } = {}) {
   }
   input.dataset.fieldKey = key;
   input.value = current ?? "";
-  const translatable =
-    field.kind === "text" && field.format !== "color" &&
-    /^(page|post|project|faq|client|team|screen|package|site)\//.test(item.id) &&
-    !["href", "url", "src", "video"].includes(field.path.at(-1));
+  const translatable = isTranslatable(item, field);
+  if (translatable) panelTranslatable = true;
   if (translatable && activeLocale !== "de") {
     // In a foreign-language view this field edits its translation; the German text is the placeholder.
+    // Its language pill switches the language of the whole panel (and the page) in place.
     input.value = translationText(item, field.path) ?? "";
     input.placeholder = current ?? "";
-    labelNode.append(el("span", { class: "locale-badge", text: activeLocale.toUpperCase() }));
+    labelNode.append(localeSwitch("locale-badge"));
     input.addEventListener("change", () => {
       if (input.value.trim()) writeTranslation(item.id, field.path, activeLocale, input.value);
     });
@@ -1335,12 +1358,15 @@ function referenceControl(item, container, source, { part = "all" } = {}) {
   };
   const chosenList = el("ul", { class: "rows", "data-list": listKey, "aria-label": fieldLabel(container) + " (angezeigt)" });
   chosen.forEach((option, index) => chosenList.append(row(option, index)));
-  // Not shown yet: grouped like their owner (e.g. "Musik", "Service & Extras").
+  // Not shown yet: grouped like their owner (e.g. "Musik", "Service & Extras"). Named groups are
+  // disclosures like entries: open in the record overview, closed in contextual panels, choice remembered.
   const groups = [...new Set(others.map((option) => option.group || ""))];
   const otherLists = groups.map((group) => {
+    const members = others.filter((option) => (option.group || "") === group);
     const list = el("ul", { class: "rows muted", "aria-label": group || "Weitere" });
-    others.filter((option) => (option.group || "") === group).forEach((option) => list.append(row(option, null)));
-    return [group ? el("span", { class: "row-sublabel", text: group }) : null, list];
+    members.forEach((option) => list.append(row(option, null)));
+    if (!group) return [list];
+    return [rememberedDisclosure(listKey + "#" + group, el("span", { text: `${group} (${members.length})` }), list, { cls: "ref-group" })];
   });
   const createButton = source.create
     ? button(source.createLabel || source.noun + " hinzufügen", source.create, { icon: source.createLabel ? "pencil" : "plus", cls: "inline-button" })
@@ -1449,6 +1475,13 @@ function tableColumns(item, container) {
 // an explicit toggle is remembered across redraws and follows the entry when it moves.
 function disclosureOpen(key) {
   return openDisclosures.has(key) ? openDisclosures.get(key) : renderMode === "entity";
+}
+// A <details> group whose open state follows disclosureOpen() and survives redraws (also a language switch).
+function rememberedDisclosure(key, summary, content, { cls = "", open = disclosureOpen(key) } = {}) {
+  const details = el("details", { class: cls }, el("summary", {}, summary, icon("chevron-down")), content);
+  details.open = open;
+  details.addEventListener("toggle", () => openDisclosures.set(key, details.open));
+  return details;
 }
 // permutation[newIndex] = oldIndex (missing old indexes were removed); nested keys move with their entry.
 function remapDisclosures(id, listPath, permutation) {
@@ -1984,7 +2017,9 @@ function renderTop({ keepScroll = false, keepPlace = false } = {}) {
     showPanel({ title, iconName, kind, anchor: panelAnchor, docked: !panelAnchor, size: view.scope === "record" ? "overview" : "compact" });
   $("#panel").classList.remove("wide");
   const renderers = { element: elementView, entry: entryView, instance: instanceView, section: sectionView, media: mediaView, record: recordView, page: pageView, field: fieldView };
+  panelTranslatable = false;
   (renderers[view.scope] || elementView)(body, item, view.context, head);
+  if (panelTranslatable) $("#panel-actions").append(localeSwitch("panel-locale"));
   if (!body.children.length) put(body, group(null, el("p", { class: "note", text: "Hier gibt es nichts weiter einzustellen." })));
   $("#panel-back").hidden = panelStack.length < 2;
   update();
@@ -2038,19 +2073,7 @@ function elementView(body, item, context, head) {
     controls.push(...optionalVariants(item, parent, { exact: true }));
   }
   put(body, group(null, controls));
-  const actions = [];
-  if (
-    field?.kind === "text" &&
-    /^(page|post|project|faq|client|team|screen|package|site)\//.test(item.id) &&
-    !["href", "url", "src", "video"].includes(path.at(-1))
-  )
-    actions.push(
-      actionRow(
-        activeLocale === "de" ? "Übersetzen" : "Zurück zu Deutsch",
-        () => (activeLocale === "de" ? startTranslation({ id: item.id, path }) : setLocale("de")),
-        "languages",
-      ),
-    );
+  const actions = [translateAction(item, field)];
   if (groupContainer?.optional)
     actions.push(
       actionRow(`${fieldLabel(groupContainer)} entfernen`, () => removeOptional(item, parent), "trash-2", { danger: true, confirm: "Wirklich entfernen?" }),
@@ -2149,6 +2172,7 @@ function placeFocus(units, focus, ownerId) {
 }
 function moreDisclosure(item, units, prefix, key) {
   if (!units.length) return null;
+  if (units.some((unit) => unit.kind === "field" && isTranslatable(item, fieldsFor(item).find((f) => equal(f.path, unit.path))))) panelTranslatable = true;
   const details = el("details", { class: "more" }, el("summary", {}, el("span", { text: `Weitere Felder (${units.length})` }), icon("chevron-down")));
   // Filled when first opened: the closed disclosure costs nothing to draw.
   const fill = () => details.querySelector(":scope > .group") || put(details, group(null, units.map((unit) => unitControl(item, unit, prefix))));
@@ -2192,7 +2216,10 @@ function instanceView(body, item, context, head) {
       group(`${kindOf(shared.id)[0]} „${recordName(shared)}“`, draw(shared, sharedShown, []), el("p", { class: "note", text: `Gilt überall, wo ${recordName(shared)} erscheint.` })),
     );
   put(body, moreDisclosure(item, own.more, path, "more:" + fieldKey(item.id, path)));
-  if (path.length) put(body, entryActionGroup(item, path, container));
+  // The clicked text can be translated from its card as from its own element panel.
+  const focusOwner = focus?.kind === "field" ? record(focus.id) : null;
+  const translate = focusOwner ? translateAction(focusOwner, fieldsFor(focusOwner).find((f) => equal(f.path, focus.path))) : null;
+  put(body, path.length ? entryActionGroup(item, path, container, [translate]) : actionGroup(null, [translate]));
   put(body, parentLinks(item, context, { from: "entry" }));
   // Keyboard focus goes to the clicked element once, when the card opens.
   if (focus && !context.focused) {
@@ -2208,11 +2235,12 @@ function instanceView(body, item, context, head) {
   }
 }
 // Duplicate/remove of a card opened on its own (from the canvas).
-function entryActionGroup(item, path, container) {
+function entryActionGroup(item, path, container, lead = []) {
   const list = value(item, path.slice(0, -1)) || [];
-  if (positionalList(path.slice(0, -1))) return null;
+  if (positionalList(path.slice(0, -1))) return actionGroup(null, lead);
   const entry = value(item, path);
   return actionGroup(null, [
+    ...lead,
     container?.elementTemplate !== undefined && (container.max === undefined || list.length < container.max)
       ? actionRow(
           "Duplizieren",
@@ -2485,18 +2513,8 @@ function fieldView(body, item, context, head) {
 }
 function appendAdvanced(body, item, fields) {
   if (!fields.length) return;
-  put(
-    body,
-    el(
-      "details",
-      { class: "more" },
-      el("summary", {}, el("span", { text: "Erweitert" }), icon("chevron-down")),
-      group(
-        null,
-        fields.map((f) => fieldControl(item, f)),
-      ),
-    ),
-  );
+  const key = "advanced:" + fieldKey(item.id, fields[0].path.slice(0, -1));
+  put(body, rememberedDisclosure(key, el("span", { text: "Erweitert" }), group(null, fields.map((f) => fieldControl(item, f))), { cls: "more", open: openDisclosures.get(key) === true }));
 }
 // A record with its own page is best edited there: offered at the top of its overview.
 function editOnPage(item) {
@@ -3387,7 +3405,7 @@ async function translateMissing() {
   refresh();
 }
 // Switching the language loads the real language route (html lang, head, scripts); the scroll position stays.
-function setLocale(locale) {
+function setLocale(locale, { keepPanel = false } = {}) {
   if (locale === activeLocale) return;
   stageInputs();
   try {
@@ -3395,11 +3413,41 @@ function setLocale(locale) {
   } catch {}
   const search = new URLSearchParams(frame.contentWindow?.location.search || "");
   for (const key of ["editor", "_editorNavigation", "_editorHead"]) search.delete(key);
-  navigate(route + (search.size ? "?" + search : ""), { locale });
+  navigate(route + (search.size ? "?" + search : ""), { locale, keepPanel });
   if (locale !== "de" && !setLocale.hinted) {
     setLocale.hinted = true;
     toast(`${localeNames[locale]}: Texte direkt auf der Seite überschreiben. Noch nicht übersetzte Texte sind gestrichelt markiert.`);
   }
+}
+// The language control of a panel: in its head (one per panel, when it shows translatable text) and as the
+// pill on every foreign-language field. Same languages and flags as the dock; switching keeps the panel
+// (same record, scroll position and open groups) and the page follows (setLocale, as from the dock).
+function localeSwitch(cls) {
+  const node = el(
+    "button",
+    { type: "button", class: cls, "aria-haspopup": "menu", "aria-expanded": "false", "aria-label": "Sprache wechseln, aktuell " + localeNames[activeLocale], title: "Sprache wechseln" },
+    cls === "panel-locale" ? flagIcon(activeLocale) : null,
+    el("span", { text: activeLocale.toUpperCase() }),
+    icon("chevron-down"),
+  );
+  node.addEventListener("click", (event) => {
+    // Inside a field label the click must not reach the input.
+    event.preventDefault();
+    event.stopPropagation();
+    openMenu(
+      node,
+      [{ heading: "Sprache der Ansicht" }, ...Object.entries(localeNames).map(([code, label]) => ({ label, flag: code, current: code === activeLocale, run: () => switchPanelLocale(code) }))],
+      { keepPanel: true },
+    );
+  });
+  return node;
+}
+let focusLocaleSwitch = false;
+function switchPanelLocale(locale) {
+  if (locale === activeLocale) return;
+  if ($("#panel").hidden) return setLocale(locale);
+  focusLocaleSwitch = true;
+  setLocale(locale, { keepPanel: true });
 }
 function startTranslation(context) {
   closePanel();
@@ -3491,6 +3539,12 @@ window.addEventListener("message", (event) => {
     $("#loading").hidden = true;
     syncFrame();
     update();
+    // A panel kept across a language switch is redrawn with the new page (card markers, inline texts).
+    if (!$("#panel").hidden) {
+      rerender();
+      if (focusLocaleSwitch) $("#panel .panel-locale")?.focus({ preventScroll: true });
+    }
+    focusLocaleSwitch = false;
     startPreview();
     if (activeLocale !== "de") overlayLocale(activeLocale);
     if (frame.dataset.restoreTransient) {
