@@ -5,14 +5,6 @@
   "values": [
     {
       "path": [
-        "displayName"
-      ],
-      "text": "ODYSSEY",
-      "reviewed": true,
-      "sourceHash": "c02c1d8bf09d94dc48d73e3dad1643309c50e97ceba7d767ea1428523b7ed5fd"
-    },
-    {
-      "path": [
         "dur"
       ],
       "text": "15+ min",

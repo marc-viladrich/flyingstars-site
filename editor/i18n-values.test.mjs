@@ -91,3 +91,14 @@ test('Fake provider preserves protected tokens and exact billing; batching exhau
  assert.equal(merged[0].data.values.length,3);for(const entry of merged[0].data.values){assert.equal(entry.reviewed,false);assert.equal(entry.sourceHash,sha256(owner.data[entry.path[0]]));}
  assert.match(merged[0].data.values.find(v=>v.path[0]==='a').text,/\{name\}/);assert.match(merged[0].data.values.find(v=>v.path[0]==='b').text,/\{o\}.*\{\/o\}.*\{c\}.*\{\/c\}/);
 });
+
+test('package names are proper names: never offered for translation, and no translation of them is stored', async () => {
+  const {translatableFields} = await import('../src/lib/translatable-fields.mjs');
+  const {readdir, readFile} = await import('node:fs/promises');
+  const pkg = {id: 'package/horizon', data: {displayName: 'HORIZON', description: 'Die individuelle Inszenierung', badge: 'Bestseller'}};
+  const paths = translatableFields(pkg).map((field) => JSON.stringify(field.path ?? field));
+  assert.ok(!paths.some((p) => p.includes('displayName')), paths.join(' '));
+  const dir = new URL('../src/content/translations/', import.meta.url);
+  for (const file of (await readdir(dir)).filter((name) => name.startsWith('package-')))
+    assert.ok(!JSON.parse(await readFile(new URL(file, dir), 'utf8')).values.some((v) => v.path[0] === 'displayName'), file);
+});

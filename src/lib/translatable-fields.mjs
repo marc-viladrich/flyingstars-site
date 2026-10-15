@@ -1,6 +1,6 @@
 // Shared by public rendering and translation tooling. URLs, identities and references are never prose.
 const owners = /^(page|post|project|faq|client|team|screen|package|site)\//;
-const excluded = new Set(['href','url','src','video','heroVideo','id','assetId','sourceIssue','sourceId','sourceHash','date','updated','route','nextRoute','tags','mime','color','accent','name','client','slug','street','packageId','featureIds','clientIds','memberIds','build','anlass','orbShape']);
+const excluded = new Set(['href','url','src','video','heroVideo','id','assetId','sourceIssue','sourceId','sourceHash','date','updated','route','nextRoute','tags','mime','color','accent','name','client','slug','street','packageId','featureIds','clientIds','memberIds','build','anlass','orbShape','displayName']);
 const looksLikeData = text => !/\p{L}{2}/u.test(text) || /^(https?:|mailto:|tel:|\/|#)/.test(text.trim()) || /^[\w.+-]+@[\w-]+\.[\w.]+$/.test(text.trim());
 export const getPath = (data, path) => path.reduce((value, key) => value?.[key], data);
 // These are the existing fields consumed by the page templates, not separate SEO content.

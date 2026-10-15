@@ -5,14 +5,6 @@
   "values": [
     {
       "path": [
-        "displayName"
-      ],
-      "text": "SPARK",
-      "reviewed": true,
-      "sourceHash": "5c33a73fa55987ba4cd05848b17468a0bbab3be6d0882b104b4f370f93751188"
-    },
-    {
-      "path": [
         "dur"
       ],
       "text": "ca. 10 minutes",
