@@ -929,6 +929,9 @@ function fieldControl(item, field, { label } = {}) {
   // Optional variants (not yet stored) show their schema default and are written on first change.
   const current = value(item, field.path) ?? field.template;
 
+  // Technical source data the schema declares read-only (e.g. a prepared formation file): visible, not editable.
+  if (field.readOnly)
+    return el("label", { class: "stack" }, labelNode, el("input", { type: "text", value: String(current ?? ""), readOnly: true, "aria-label": name }));
   if (field.kind === "boolean") {
     const input = el("input", { type: "checkbox", class: "switch", role: "switch", "aria-label": name });
     input.checked = !!current;
@@ -2124,7 +2127,7 @@ function unitControl(item, unit, prefix) {
     const optional = optionalFieldsFor(item).find((f) => equal(f.path, unit.path));
     const c = containersFor(item).find((x) => equal(x.path, unit.path));
     const template = c ? c.template : optional?.template;
-    const isImage = template && typeof template === "object" && template.src !== undefined;
+    const isImage = (c || optional)?.format === "image";
     return button(
       fieldLabel(c || optional || { path: unit.path }) + (isImage ? " hinzufügen" : " ergänzen"),
       () => (isImage ? openMedia({ id: item.id, path: unit.path }) : (changed(item.id, unit.path, structuredClone(template)), rerender())),
@@ -2340,7 +2343,9 @@ function mediaPathOf(item, path) {
 }
 // Direct children of one object in schema order: fields, images, lists and nested objects (as subheadings).
 function subtreeControls(item, prefix, { skipInline = false } = {}) {
-  const out = [];
+  // A container's own explanation from the schema (help/hint) stands above its fields.
+  const own = containersFor(item).find((c) => equal(c.path, prefix));
+  const out = [own?.help, own?.hint].filter(Boolean).map((text) => el("p", { class: "note wide-row", text }));
   const children = [];
   const seen = new Set();
   const consider = (path, node) => {
@@ -2372,6 +2377,12 @@ function subtreeControls(item, prefix, { skipInline = false } = {}) {
       const inner = subtreeControls(item, c.path, { skipInline });
       if (inner.length) out.push(el("div", { class: "subgroup" }, el("h4", { class: "subgroup-title", text: fieldLabel(c) }), inner));
     }
+  }
+  const advanced = fieldsFor(item).filter((f) => f.path.length === prefix.length + 1 && under(f.path, prefix) && isTechnical(f));
+  if (advanced.length) {
+    const holder = el("div", { class: "wide-row" });
+    appendAdvanced(holder, item, advanced);
+    out.push(holder);
   }
   out.push(...optionalVariants(item, prefix, { exact: true }));
   const additions = additionButtons(item, prefix);

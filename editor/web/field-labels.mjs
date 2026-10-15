@@ -135,5 +135,5 @@ export function choiceLabel(choice) {
 
 export function isTechnical(field) {
   const key = [...(field.path || [])].reverse().find((part) => typeof part !== "number");
-  return technicalKeys.has(key);
+  return field.advanced === true || technicalKeys.has(key);
 }

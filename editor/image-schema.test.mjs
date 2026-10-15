@@ -56,9 +56,10 @@ test('image metadata works without src, dimensions or assets; src-shaped objects
     }
   }
   const checks=[...editorSource.matchAll(/const isImage = ([^;]+);/g)];
-  assert.equal(checks.length,2);
+  // Every image decision in the editor reads the schema's format, wherever it is made (no src guessing).
+  assert.ok(checks.length>=2);
   for(const [,expression]of checks) {
-    const classify=runInNewContext('(optional)=>'+expression);
+    const classify=runInNewContext('(optional,c)=>'+expression);
     assert.equal(classify({format:'image'}),true);
     assert.equal(classify({template:{src:'not-an-image'}}),false);
   }
@@ -78,5 +79,8 @@ test('formation is a named ordinary group with protected JSON source and editabl
   assert.equal(group.properties.src.advanced,true);
   assert.deepEqual(readOnlyPaths({schema,prefix:'project'},data),[['formation','src']]);
   const browser=describe(serialized,data);
-  assert.deepEqual(browser.fields.map(field=>field.path.at(-1)),['title','text']);
+  assert.deepEqual(browser.fields.map(field=>field.path.at(-1)),['src','title','text']);
+  assert.equal(browser.fields[0].readOnly,true);
+  assert.equal(browser.fields[0].advanced,true);
+  assert.ok(describe(serialized,data,{readOnlyPaths:[['formation','src']]}).fields.some(field=>field.readOnly));
 });
