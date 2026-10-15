@@ -726,6 +726,14 @@ dialog.dlg::backdrop {
   padding: 10px 12px 10px 20px;
   border-bottom: 1px solid var(--ui-line);
 }
+/* A stacked view (Mediathek, a form opened from the navigator) returns with the arrow left of its title. */
+.editor-ui .dlg-back {
+  margin-left: -10px;
+}
+.dlg-head:has(.dlg-back) {
+  gap: 6px;
+  padding-left: 14px;
+}
 .dlg-head h2 {
   flex: 1;
   font-size: 18px;
@@ -792,9 +800,12 @@ dialog.dlg.media-wide {
   width: min(1040px, calc(100vw - 32px));
   height: min(84vh, 760px);
 }
+/* Height chain dialog → body → library → grid: only the tile grid (and the collection list) scroll. */
 .dlg.media-wide .dlg-body {
   display: flex;
+  flex: 1;
   flex-direction: column;
+  min-height: 0;
   overflow: hidden;
 }
 .dlg.media-wide .dlg-body > [role="tabpanel"] {
@@ -2111,22 +2122,32 @@ dialog.dlg.navigator {
 .nav-group-body > .inline-button {
   justify-self: start;
 }
+/* One row per record: icon + German name take the row, the language versions sit compact at the right.
+   The generic ".record-list button { width: 100% }" must not reach the chips, or they squeeze the name. */
 .nav-group-body .record-list li {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
 }
 .nav-group-body .record-list .nav-record {
-  flex: 1;
+  flex: 1 1 0;
   min-width: 0;
 }
-.editor-ui .nav-locale {
+.nav-locales {
+  display: flex;
+  flex: none;
+  gap: 2px;
+}
+.editor-ui .record-list .nav-locale {
+  flex: none;
+  width: auto;
   gap: 5px;
   min-height: 28px;
-  padding: 0 6px;
+  padding: 0 7px;
   color: var(--ui-muted);
   font-size: 12px;
   font-weight: 600;
+  letter-spacing: 0.02em;
 }
 .editor-ui .nav-locale .flag {
   width: 16px;

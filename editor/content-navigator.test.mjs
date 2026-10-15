@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { createFlyingStarsAdapter } from './flyingstars-adapter.mjs';
 import { resolveRuntimeOptions } from './runtime-options.mjs';
 import { NativeStore, git } from './native-store.mjs';
-import { navigatorGroups, navigatorTypes } from './web/content-navigator.mjs';
+import { navigatorGroups, navigatorTypes, matchesQuery, localeVersion } from './web/content-navigator.mjs';
 const root = path.dirname(fileURLToPath(import.meta.url));
 
 test('every real record appears once in its type group; translations sit at their source record', async (t) => {
@@ -54,4 +54,27 @@ test('search folds case and umlauts, matches title, address and type; empty grou
   assert.deepEqual(navigatorGroups(records, { query: 'KUNDEN' }).map((g) => g.type), ['client']);
   assert.deepEqual(navigatorGroups(records, { query: 'ueber-uns' }).map((g) => g.items.length), [1]);
   assert.deepEqual(navigatorGroups(records, { query: 'nichts' }), []);
+});
+
+test('one search rule for navigator and Mediathek: a carried search finds the same images', () => {
+  const media = [
+    { id: 'media/nfl-shield', type: 'media', title: 'Shield über dem Stadion', data: { defaultAlt: 'NFL-Logo aus Drohnen' } },
+    { id: 'media/puma', type: 'media', title: 'Der springende Puma', data: { defaultAlt: 'Puma' } },
+    { id: 'media/stadion', type: 'media', title: 'Das Olympiastadion', data: { defaultAlt: 'Stadion beim NFL Berlin Game' } },
+  ];
+  const navigator = navigatorGroups(media, { query: 'nfl', searchText: (r) => r.data.defaultAlt })[0].items.map((i) => i.id);
+  const library = media.filter((a) => matchesQuery([a.title, a.data.defaultAlt, a.id.split('/').slice(1).join('/')], 'nfl')).map((a) => a.id);
+  assert.deepEqual(navigator.sort(), library.sort());
+  assert.deepEqual(library.sort(), ['media/nfl-shield', 'media/stadion']);
+  assert.equal(matchesQuery(['Über uns'], 'UBER'), true);
+  assert.equal(matchesQuery(['Berlin Game'], 'game berlin'), true, 'word order does not matter');
+  assert.equal(matchesQuery(['Berlin'], ''), true);
+  assert.equal(matchesQuery(['Berlin'], 'hamburg'), false);
+  assert.ok(!('text' in navigatorGroups(media, { searchText: () => 'x' })[0].items[0]), 'search text is not part of the row model');
+});
+
+test('language chips say what they open', () => {
+  assert.equal(localeVersion('en'), 'Englische Fassung');
+  assert.equal(localeVersion('nl'), 'Niederländische Fassung');
+  assert.equal(localeVersion('fr'), 'Fassung FR');
 });

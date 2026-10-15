@@ -26,7 +26,9 @@ import { inlinePlain } from "/editor/site-lib/inline-text.mjs";
 import { kindOf, kindPlural } from "./record-kinds.mjs";
 import { mediaLibrary, mediaUsers, collectionOf, ALL as ALL_MEDIA, UNUSED as UNUSED_MEDIA } from "./media-usage.mjs";
 import { splitLocale, localizedPath, frontendTarget, liveURL } from "./frontend-url.mjs";
-import { navigatorGroups } from "./content-navigator.mjs";
+import { navigatorGroups, matchesQuery, localeVersion } from "./content-navigator.mjs";
+import { NavStack } from "./nav-stack.mjs";
+import { overviewPlan, entryCounts } from "./overview-plan.mjs";
 
 // ---------------------------------------------------------------------------
 // State
@@ -34,7 +36,9 @@ import { navigatorGroups } from "./content-navigator.mjs";
 const $ = (selector) => document.querySelector(selector);
 const frame = $("#site-frame"),
   draft = new NativeDraft(),
-  editing = new Map();
+  editing = new Map(),
+  // One back stack for dialogs and the panel (see nav-stack.mjs): what a view opens, Back returns from.
+  nav = new NavStack();
 let state,
   busy = false,
   preview = false,
@@ -99,7 +103,10 @@ function button(label, onclick, { icon: name, cls = "", iconOnly = false, title 
     node.classList.add("icon-only");
     node.setAttribute("aria-label", label);
     node.title = title || label;
-  } else node.append(el("span", { text: label }));
+  } else {
+    node.append(el("span", { text: label }));
+    if (title) node.title = title;
+  }
   return node;
 }
 function flagIcon(locale) {
@@ -703,7 +710,14 @@ function frameOffset() {
 // ---------------------------------------------------------------------------
 // Panel (anchored popover for context, docked sheet for records/settings)
 // ---------------------------------------------------------------------------
+// Closing the panel (X, Escape, a click elsewhere) closes everything it was opened from as well.
 function closePanel() {
+  if ($("#panel").hidden) return;
+  hidePanel();
+  nav.clear();
+}
+// Hides the panel without touching the back stack: another surface (a dialog view) takes over.
+function hidePanel() {
   const panel = $("#panel");
   if (panel.hidden) return;
   const active = document.activeElement;
@@ -713,7 +727,6 @@ function closePanel() {
   overviewObserver?.disconnect();
   overviewObserver = null;
   currentInspector = null;
-  panelStack = [];
 }
 function showPanel({ title, iconName, kind, anchor, docked = false, size = "compact" }) {
   closeMenu();
@@ -1784,8 +1797,7 @@ function sectionActions(item, index) {
 // ---------------------------------------------------------------------------
 // Panel views. One object at a time: element → card → section / record, with Back.
 // ---------------------------------------------------------------------------
-let panelStack = [],
-  panelAnchor = null,
+let panelAnchor = null,
   pendingFocus = null,
   // "entity" (record overview: everything open) or "compact" (contextual panels: entries start closed).
   renderMode = "compact",
@@ -1799,23 +1811,29 @@ function viewExists(view) {
 }
 function rerender() {
   if ($("#panel").hidden) return;
-  panelStack = panelStack.filter(viewExists);
-  if (panelStack.length) renderTop({ keepScroll: true });
-  else closePanel();
+  // Views of a record that is gone (deleted) drop out; what they were opened from comes back.
+  const top = nav.retain((entry) => entry.surface !== "panel" || viewExists(entry));
+  if (top?.surface === "panel") renderTop({ keepScroll: true });
+  else if (top) {
+    hidePanel();
+    showStackDialog();
+  } else closePanel();
 }
+// A view opened on its own (from the canvas, a menu) starts a new back stack.
 function openInspector(context, scope = "element", anchor, { docked = false } = {}) {
   stageInputs();
   const item = record(context?.id) || currentPage();
   if (!item) return;
   context = structuredClone(context || { id: item.id, path: [] });
   if (!context.id) context.id = item.id;
-  panelStack = [{ context, scope }];
+  closeStackDialog();
+  nav.reset({ surface: "panel", context, scope });
   panelAnchor = docked ? null : anchor || null;
   renderTop();
 }
 function pushView(context, scope) {
   stageInputs();
-  panelStack.push({ context: structuredClone(context), scope });
+  nav.push({ surface: "panel", context: structuredClone(context), scope }, { scroll: $("#panel-body").scrollTop });
   renderTop({ keepPlace: true });
 }
 // A step within the same object (an entry → its parent entry, an element → its card) replaces the view in
@@ -1834,14 +1852,34 @@ function revealInPanel(node, { smooth = false } = {}) {
 }
 function revealView(context, scope) {
   stageInputs();
-  panelStack[panelStack.length - 1] = { context: structuredClone(context), scope };
+  nav.replaceTop({ surface: "panel", context: structuredClone(context), scope });
   renderTop({ keepPlace: true });
 }
 function popView() {
-  if (panelStack.length < 2) return closePanel();
+  goBack();
+}
+// Back, from any surface: the previous view comes back as it was left (search, open groups, scroll).
+function goBack() {
   stageInputs();
-  panelStack.pop();
-  renderTop({ keepPlace: true });
+  const previous = nav.back();
+  if (!previous) {
+    closePanel();
+    closeStackDialog();
+    nav.clear();
+    return;
+  }
+  if (previous.surface === "panel") {
+    closeStackDialog();
+    renderTop({ keepPlace: true, restore: previous.state });
+  } else {
+    hidePanel();
+    showStackDialog();
+  }
+}
+// What Back returns to, in words ("Zurück zu „Inhalte verwalten“").
+function backLabel() {
+  const title = nav.previous?.title;
+  return title ? `Zurück zu „${title}“` : "Zurück";
 }
 function recordName(item) {
   return inlinePlain(recordTitle(item));
@@ -1918,13 +1956,13 @@ function fitPanelHead() {
   if (kind.textContent && kind.scrollWidth > kind.clientWidth && kind.clientWidth < 64) kind.hidden = true;
 }
 new ResizeObserver(() => !$("#panel").hidden && fitPanelHead()).observe($(".panel-head"));
-function renderTop({ keepScroll = false, keepPlace = false } = {}) {
-  const view = panelStack.at(-1);
-  const item = record(view.context.id);
+function renderTop({ keepScroll = false, keepPlace = false, restore = null } = {}) {
+  const view = nav.top;
+  const item = view?.surface === "panel" && record(view.context.id);
   if (!item) return closePanel();
   const panel = $("#panel"),
     body = $("#panel-body"),
-    scroll = keepScroll ? body.scrollTop : 0,
+    scroll = keepScroll ? body.scrollTop : restore?.scroll || 0,
     previous = (keepPlace || keepScroll) && !panel.hidden && panel.style.left ? panelPlace() : null;
   currentInspector = { context: view.context, scope: view.scope, anchor: panelAnchor };
   selection = { ...view.context };
@@ -1938,15 +1976,19 @@ function renderTop({ keepScroll = false, keepPlace = false } = {}) {
   panel.scrollLeft = 0;
   $("#panel-actions").replaceChildren();
   overviewObserver?.disconnect();
-  const head = (title, iconName, kind) =>
+  const head = (title, iconName, kind) => {
+    view.title = title;
     showPanel({ title, iconName, kind, anchor: panelAnchor, docked: !panelAnchor, size: view.scope === "record" ? "overview" : "compact" });
+  };
   $("#panel").classList.remove("wide");
   const renderers = { element: elementView, entry: entryView, instance: instanceView, section: sectionView, media: mediaView, record: recordView, page: pageView, field: fieldView };
   panelTranslatable = false;
   (renderers[view.scope] || elementView)(body, item, view.context, head);
   if (panelTranslatable) $("#panel-actions").append(localeSwitch("panel-locale"));
   if (!body.children.length) put(body, group(null, el("p", { class: "note", text: "Hier gibt es nichts weiter einzustellen." })));
-  $("#panel-back").hidden = panelStack.length < 2;
+  $("#panel-back").hidden = !nav.canGoBack();
+  $("#panel-back").setAttribute("aria-label", backLabel());
+  $("#panel-back").title = backLabel();
   update();
   placePanel(panelAnchor, previous);
   fitPanelHead();
@@ -1963,7 +2005,7 @@ function renderTop({ keepScroll = false, keepPlace = false } = {}) {
   if (pendingFocus) {
     body.querySelector(pendingFocus)?.focus({ preventScroll: true });
     pendingFocus = null;
-  } else if (!keepScroll) (panelStack.length > 1 ? $("#panel-back") : panel).focus({ preventScroll: true });
+  } else if (!keepScroll) (nav.canGoBack() ? $("#panel-back") : panel).focus({ preventScroll: true });
 }
 
 // Right-click on one element: only what belongs to that element, then where it belongs.
@@ -2463,7 +2505,8 @@ function recordActions(item) {
           () => {
             stageInputs();
             draft.remove(item.id);
-            closePanel();
+            // Opened from "Inhalte verwalten": the navigator comes back (without the deleted record).
+            rerender();
             syncFrame();
             update();
             toast("„" + item.title + "“ wird beim Speichern gelöscht.", { action: undoLast });
@@ -2801,11 +2844,16 @@ function openSections(id = currentPage()?.id, index) {
 function recordTemplate(prefix) {
   return state?.templates?.collections?.find((t) => t.prefix.replace(/\/?$/, "/") === prefix);
 }
-function openCreate(prefix, reference, preset = {}, after) {
+// host/entry: shown as a view of the stacked "Inhalte verwalten" dialog (Back returns to the navigator).
+function openCreate(prefix, reference, preset = {}, after, { host = null, entry = null } = {}) {
   if (busy || !ready) return;
   const template = recordTemplate(prefix);
   if (!template) return toast("Für diesen Inhaltstyp ist das Anlegen nicht freigegeben.", { error: true });
-  const d = dialog(template.title + " anlegen", { narrow: true });
+  const d = host || dialog(template.title + " anlegen", { narrow: true });
+  if (host) {
+    stackHead(d, entry, template.title + " anlegen");
+    d.classList.add("narrow");
+  }
   const name = el("input", { type: "text", required: true, "aria-label": "Name" });
   const quote = el("textarea", { rows: 3, "aria-label": "Kundenstimme" });
   const person = el("input", { type: "text", "aria-label": "Name der zitierenden Person" });
@@ -2864,53 +2912,140 @@ function openCreate(prefix, reference, preset = {}, after) {
           draft.set(reference.id, reference.path, [...(getPath(owner.data, reference.path) || []), slug.value]);
         }
       });
-      d.close();
+      if (host) {
+        // The new record replaces the form; Back from it returns to the navigator.
+        nav.back();
+        openFromDialog({ id, path: [] });
+      } else d.close();
       syncFrame();
       update();
-      if (after) after(id);
-      else if (reference) rerender();
-      else openInspector({ id, path: [] }, "record", undefined, { docked: true });
+      if (!host && after) after(id);
+      else if (!host && reference) rerender();
+      else if (!host) openInspector({ id, path: [] }, "record", undefined, { docked: true });
       toast(`„${name.value.trim()}“ angelegt. Wird mit den anderen Änderungen gespeichert.`);
     } catch (e) {
       error.textContent = e.message;
     }
   };
   d.addEventListener("keydown", (event) => {
+    if (host && d.shown !== entry) return;
     if (event.key === "Enter" && event.target.tagName === "INPUT") {
       event.preventDefault();
       create();
     }
   });
   d.foot.append(
-    button("Abbrechen", () => d.close(), { cls: "secondary" }),
+    button("Abbrechen", () => (host ? goBack() : d.close()), { cls: "secondary" }),
     button("Anlegen", create, { cls: "primary" }),
   );
   name.focus();
 }
+// ---------------------------------------------------------------------------
+// Dialog views on the back stack: "Inhalte verwalten", Mediathek, "… anlegen". One dialog element shows the
+// top entry; switching views keeps it open, a panel view (a record, an image) replaces it, and Back brings
+// the previous view back with the state it was left in. The back arrow sits left of the title, as in the
+// panel; X and Escape close the whole stack.
+// ---------------------------------------------------------------------------
+let stackDialog = null;
+const dialogViews = {
+  navigator: navigatorView,
+  library: libraryView,
+  create: (d, entry) => openCreate(entry.params.prefix, undefined, {}, undefined, { host: d, entry }),
+};
+function showStackDialog() {
+  const entry = nav.top;
+  if (entry?.surface !== "dialog") return;
+  if (!stackDialog) {
+    const d = (stackDialog = dialog(""));
+    // Escape or X: the whole stack is closed; a switch to a panel view closes the dialog quietly.
+    d.addEventListener("close", () => {
+      if (stackDialog === d) stackDialog = null;
+      if (!d.quiet) nav.clear();
+    });
+  }
+  const d = stackDialog;
+  d.className = "editor-ui dlg";
+  d.body.replaceChildren();
+  d.foot.replaceChildren();
+  d.body.scrollTop = 0;
+  d.shown = entry;
+  entry.capture = dialogViews[entry.kind](d, entry) || null;
+}
+function closeStackDialog() {
+  if (!stackDialog) return;
+  stackDialog.quiet = true;
+  stackDialog.close();
+  stackDialog = null;
+}
+// The head of a stacked dialog view: [Back] title [search] [X].
+function stackHead(d, entry, title, search = null) {
+  entry.title = title;
+  d.setAttribute("aria-label", title);
+  const back = nav.canGoBack() ? button(backLabel(), goBack, { icon: "chevron-left", iconOnly: true, cls: "dlg-back", title: backLabel() }) : null;
+  d.head.replaceChildren(...[back, el("h2", { text: title }), search, button("Schließen", () => d.close(), { icon: "x", iconOnly: true })].filter(Boolean));
+}
+// State of the dialog view that is being left (only when it is the one on screen).
+function leavingDialogState() {
+  const top = nav.top;
+  return top?.surface === "dialog" && stackDialog?.shown === top ? top.capture?.() : undefined;
+}
+function startDialogView(kind, params = {}) {
+  stageInputs();
+  closePanel();
+  closeStackDialog();
+  nav.reset({ surface: "dialog", kind, params });
+  showStackDialog();
+}
+function pushDialogView(kind, params = {}) {
+  stageInputs();
+  nav.push({ surface: "dialog", kind, params }, leavingDialogState());
+  showStackDialog();
+}
+// A record or image opened from a dialog view: it shows in the docked panel, Back returns to the view.
+function openFromDialog(context, scope = "record", { locale } = {}) {
+  stageInputs();
+  nav.push({ surface: "panel", context: structuredClone(context), scope }, leavingDialogState());
+  closeStackDialog();
+  panelAnchor = null;
+  renderTop();
+  if (locale && locale !== activeLocale) switchPanelLocale(locale);
+}
+
 // "Inhalte verwalten": one navigator over every record, grouped by content type (see content-navigator.mjs).
-// Groups start closed (their heading with the count is the overview); a search opens every group with a
-// hit. A record opens in its overview; its language versions are flags on its row and open the same
-// overview in that language.
-const navigatorOpen = new Set();
+// Groups start closed each time it is opened (their heading with the count is the overview); a search opens
+// every group with a hit. A row reads as the record's German name; its language versions are small chips at
+// the right that open the same overview in that language.
 function navigatorName(item) {
   if (item.route && /^(page|screen)\//.test(item.id))
     return normalizedRoute(item.route) === "/" ? "Startseite" : String(inlinePlain(item.data?.title || item.title)).split(" – ")[0];
   return recordName(item);
 }
 function contentLibrary() {
-  stageInputs();
+  startDialogView("navigator");
+}
+function navigatorView(d, entry) {
+  const saved = entry.state || {};
   const search = el("input", { type: "search", placeholder: "Suchen …", "aria-label": "Inhalte durchsuchen", autocomplete: "off" });
-  const d = dialog("Inhalte verwalten", { search });
+  search.value = saved.query || "";
+  stackHead(d, entry, "Inhalte verwalten", search);
   d.classList.add("navigator");
+  // Open groups live as long as this view (also behind a record or the Mediathek), not across openings.
+  const open = new Set(saved.open || []);
+  let target = null;
   const pane = el("div", { class: "nav-groups" });
-  const openRecord = (id, locale) => {
-    d.close();
-    openInspector({ id, path: [] }, "record", undefined, { docked: true });
-    if (locale && locale !== activeLocale) switchPanelLocale(locale);
+  const keyed = (node, key) => ((node.dataset.key = key), node);
+  const leaveTo = (key, run) => {
+    target = key;
+    run();
   };
   const draw = () => {
     const query = search.value.trim();
-    const groups = navigatorGroups(records(), { name: navigatorName, canCreate: (type) => !!recordTemplate(type + "/"), query });
+    const groups = navigatorGroups(records(), {
+      name: navigatorName,
+      canCreate: (type) => !!recordTemplate(type + "/"),
+      query,
+      searchText: (r) => (r.id.startsWith("media/") ? r.data?.defaultAlt : ""),
+    });
     pane.replaceChildren();
     if (!groups.length) pane.append(el("p", { class: "note", text: "Keine Treffer." }));
     for (const g of groups) {
@@ -2922,40 +3057,39 @@ function contentLibrary() {
           el(
             "li",
             {},
-            button(row.title, () => openRecord(row.id), { icon: kindOf(row.id)[1], cls: "nav-record" }),
-            row.locales.map((locale) => {
-              const chip = button(locale.toUpperCase(), () => openRecord(row.id, locale), { cls: "nav-locale" });
-              chip.prepend(flagIcon(locale));
-              chip.setAttribute("aria-label", `${row.title} auf ${localeNames[locale] || locale} öffnen`);
-              chip.title = localeNames[locale] || locale;
-              return chip;
-            }),
+            keyed(button(row.title, () => leaveTo(row.id, () => openFromDialog({ id: row.id, path: [] })), { icon: kindOf(row.id)[1], cls: "nav-record", title: row.title }), row.id),
+            row.locales.length
+              ? el(
+                  "span",
+                  { class: "nav-locales" },
+                  row.locales.map((locale) => {
+                    const chip = button(locale.toUpperCase(), () => leaveTo(row.id + "#" + locale, () => openFromDialog({ id: row.id, path: [] }, "record", { locale })), {
+                      cls: "nav-locale",
+                      title: localeVersion(locale) + " öffnen",
+                    });
+                    chip.prepend(flagIcon(locale));
+                    chip.setAttribute("aria-label", `${localeVersion(locale)} von „${row.title}“ öffnen`);
+                    return keyed(chip, row.id + "#" + locale);
+                  }),
+                )
+              : null,
           ),
         ),
       );
       const create = template
-        ? button(
-            template.title + " anlegen",
-            () => {
-              d.close();
-              openCreate(g.type + "/");
-            },
-            { icon: "plus", cls: "inline-button" },
-          )
+        ? button(template.title + " anlegen", () => leaveTo("create:" + g.type, () => pushDialogView("create", { prefix: g.type + "/" })), {
+            icon: "plus",
+            cls: "inline-button",
+          })
         : null;
-      // Images are browsed in the media library (grid, collections, usage), not as a record list.
+      // Images are browsed in the Mediathek (grid, collections, usage), not as a record list; a search
+      // typed here goes along.
       const isMedia = g.type === "media";
       const library = isMedia
-        ? button(
-            "Mediathek öffnen",
-            () => {
-              d.classList.add("media-wide");
-              pane.replaceChildren(mediaBrowser({ mode: "manage", dialog: d }));
-              search.hidden = true;
-            },
-            { icon: "image", cls: "inline-button" },
-          )
+        ? button("Mediathek öffnen", () => leaveTo("library", () => pushDialogView("library", { query: search.value.trim() })), { icon: "image", cls: "inline-button" })
         : null;
+      if (library) keyed(library, "library");
+      if (create) keyed(create, "create:" + g.type);
       const count = query ? `${g.items.length} von ${g.total}` : String(g.total);
       const details = el(
         "details",
@@ -2963,11 +3097,11 @@ function contentLibrary() {
         el("summary", {}, icon(g.icon), el("span", { class: "nav-group-title", text: g.label }), el("span", { class: "nav-count", text: count }), icon("chevron-down")),
         el("div", { class: "nav-group-body" }, library || create, isMedia ? null : g.items.length ? rows : el("p", { class: "note", text: "Noch keine Einträge." })),
       );
-      details.open = !!query || navigatorOpen.has(g.type);
+      details.open = !!query || open.has(g.type);
       details.addEventListener("toggle", () => {
         if (query) return;
-        if (details.open) navigatorOpen.add(g.type);
-        else navigatorOpen.delete(g.type);
+        if (details.open) open.add(g.type);
+        else open.delete(g.type);
       });
       pane.append(details);
     }
@@ -2975,7 +3109,19 @@ function contentLibrary() {
   search.addEventListener("input", draw);
   d.body.append(pane);
   draw();
-  search.focus();
+  // Back here: the same groups, search and scroll position; focus on what was opened from here.
+  d.body.scrollTop = saved.scroll || 0;
+  const again = saved.target ? pane.querySelector(`[data-key="${CSS.escape(saved.target)}"]`) : null;
+  (again || search).focus({ preventScroll: true });
+  return () => ({ query: search.value, open: [...open], scroll: d.body.scrollTop, target });
+}
+function libraryView(d, entry) {
+  stackHead(d, entry, "Mediathek");
+  d.classList.add("media-wide");
+  const library = mediaBrowser({ mode: "manage", dialog: d, query: entry.params.query, saved: entry.state });
+  d.body.append(library);
+  library.restore();
+  return library.capture;
 }
 
 // ---------------------------------------------------------------------------
@@ -2994,6 +3140,17 @@ function mediaThumb(data, { lazy = true } = {}) {
     el("img", { src: data.src, alt: "", loading: lazy ? "lazy" : null, decoding: "async" }),
   );
 }
+// Scrolls only the nearest scrolling container of node (the tile grid, the collection list) so that node is
+// visible; scrollIntoView would also move the dialog body and push the collections out of view.
+function revealInScroller(node) {
+  let box = node?.parentElement;
+  while (box && !(box.scrollHeight > box.clientHeight && /auto|scroll/.test(getComputedStyle(box).overflowY))) box = box.parentElement;
+  if (!box) return;
+  const outer = box.getBoundingClientRect(),
+    rect = node.getBoundingClientRect();
+  if (rect.top < outer.top) box.scrollTop -= outer.top - rect.top + 8;
+  else if (rect.bottom > outer.bottom) box.scrollTop += rect.bottom - outer.bottom + 8;
+}
 // One tab stop per group; arrow keys move (in a grid also by rows), Home/End jump to the ends.
 function rovingFocus(container, selector, { grid = false } = {}) {
   container.addEventListener("keydown", (event) => {
@@ -3010,37 +3167,35 @@ function rovingFocus(container, selector, { grid = false } = {}) {
     if (target < 0 || target >= items.length) return;
     items.forEach((n) => (n.tabIndex = -1));
     items[target].tabIndex = 0;
-    items[target].focus();
-    items[target].scrollIntoView({ block: "nearest" });
+    items[target].focus({ preventScroll: true });
+    revealInScroller(items[target]);
   });
   container.addEventListener("focusin", (event) => {
     if (!event.target.matches(selector)) return;
     for (const n of container.querySelectorAll(selector)) n.tabIndex = n === event.target ? 0 : -1;
   });
 }
-function mediaBrowser({ mode, dialog: d, context = null }) {
+// query: a search carried over from the navigator; saved: the state the library was left in (Back).
+function mediaBrowser({ mode, dialog: d, context = null, query = "", saved = null }) {
   const picking = mode === "pick";
   const currentId = picking ? mediaSelection(value(record(context.id),context.path)) : null;
   let library = mediaLibrary(records());
   // Choosing a client logo starts in "Kunden", a team portrait in "Team" – when that collection exists.
-  const start = picking ? collectionOf(context.id, records()) : null;
+  const start = saved?.collection ?? (picking ? collectionOf(context.id, records()) : null);
   let selected = library.collections.some((c) => c.id === start) ? start : ALL_MEDIA;
-  let focusId = null;
+  let focusId = saved?.focusId || null;
   const search = el("input", { type: "search", placeholder: "Bilder suchen", "aria-label": "Bilder suchen" });
+  search.value = saved ? saved.search || "" : query || "";
   const input = el("input", { type: "file", accept: "image/png,image/jpeg,image/webp", "aria-label": "Bild hochladen" });
   const upload = el("label", { class: "upload-button" }, icon("upload"), el("span", { text: "Hochladen" }), input);
   const nav = el("div", { class: "media-collections", role: "group", "aria-label": "Sammlungen" });
   const status = el("p", { class: "note media-status", role: "status" });
   const tiles = el("ul", { class: "media-tiles" });
+  const scroller = el("div", { class: "media-scroll" }, status, tiles);
   const root = el(
     "div",
     { class: "media-library" },
-    el(
-      "div",
-      { class: "media-layout" },
-      nav,
-      el("div", { class: "media-main" }, el("div", { class: "media-tools" }, search, upload), el("div", { class: "media-scroll" }, status, tiles)),
-    ),
+    el("div", { class: "media-layout" }, nav, el("div", { class: "media-main" }, el("div", { class: "media-tools" }, search, upload), scroller)),
   );
   const choose = (asset) => {
     const existing = value(record(context.id), context.path) || {};
@@ -3050,9 +3205,10 @@ function mediaBrowser({ mode, dialog: d, context = null }) {
     else openInspector(context, "media");
     toast("Bild übernommen.", { action: undoLast });
   };
+  // The image opens in the panel; Back returns here, to the same collection, search and scroll position.
   const openAsset = (asset) => {
-    d.close();
-    openInspector({ id: asset.id, path: [] }, "record", undefined, { docked: true });
+    focusId = asset.id;
+    openFromDialog({ id: asset.id, path: [] });
   };
   const tile = (asset, tabbable) => {
     const current = asset.id === currentId;
@@ -3087,11 +3243,11 @@ function mediaBrowser({ mode, dialog: d, context = null }) {
     if (hadFocus) nav.querySelector('[aria-pressed="true"]')?.focus();
   };
   const drawTiles = () => {
-    const term = search.value.trim().toLowerCase();
+    const term = search.value.trim();
     const label = library.collections.find((c) => c.id === selected)?.label || "Alle";
     const shown = library.assets
       .filter((a) => selected === ALL_MEDIA || a.collections.includes(selected))
-      .filter((a) => !term || [a.data.title, a.data.defaultAlt].join(" ").toLowerCase().includes(term))
+      .filter((a) => matchesQuery([a.data.title, a.data.defaultAlt, a.id.split("/").slice(1).join("/")], term))
       .sort((a, b) => String(a.data.title || "").localeCompare(String(b.data.title || ""), "de"));
     tiles.setAttribute("aria-label", "Bilder: " + label);
     const active = shown.find((a) => a.id === focusId) || shown.find((a) => a.id === currentId) || shown[0];
@@ -3134,7 +3290,9 @@ function mediaBrowser({ mode, dialog: d, context = null }) {
       focusId = uploadedMediaId(uploaded);
       search.value = "";
       select(library.assets.find((a) => a.id === focusId)?.collections[0] || ALL_MEDIA);
-      tiles.querySelector(`[data-asset="${CSS.escape(focusId)}"]`)?.focus();
+      const added = tiles.querySelector(`[data-asset="${CSS.escape(focusId)}"]`);
+      added?.focus({ preventScroll: true });
+      revealInScroller(added);
       toast(uploaded.reused ? "Dieses Bild ist schon in der Mediathek – es wurde ausgewählt." : "Bild hochgeladen.");
     } catch (e) {
       status.textContent = e.message;
@@ -3146,15 +3304,26 @@ function mediaBrowser({ mode, dialog: d, context = null }) {
   });
   drawNav();
   drawTiles();
-  // The image in use is in view when the picker opens.
-  requestAnimationFrame(() => tiles.querySelector('[aria-current="true"]')?.scrollIntoView({ block: "nearest" }));
+  // Called once the library is in the dialog: the view starts at the top with the collections in view; the
+  // image in use (picker) or the one opened last (Back) is in view; only the tile grid scrolls.
+  root.restore = () => {
+    d.body.scrollTop = 0;
+    scroller.scrollTop = saved?.scroll || 0;
+    const tile = tiles.querySelector(focusId ? `[data-asset="${CSS.escape(focusId)}"]` : '[aria-current="true"]');
+    if (tile && !saved) revealInScroller(tile);
+    if (tile && saved) tile.focus({ preventScroll: true });
+    else search.focus({ preventScroll: true });
+  };
+  root.capture = () => ({ collection: selected, search: search.value, scroll: scroller.scrollTop, focusId });
   return root;
 }
 function openMedia(context) {
   const d = dialog("Bild wählen");
   d.classList.add("media-wide");
-  d.body.append(mediaBrowser({ mode: "pick", dialog: d, context }));
-  d.body.querySelector('input[type="search"]').focus();
+  const library = mediaBrowser({ mode: "pick", dialog: d, context });
+  d.body.append(library);
+  library.restore();
+  d.body.querySelector('input[type="search"]').focus({ preventScroll: true });
 }
 // Media record panel: the image itself, then where it is used (each place opens its record).
 function mediaRecordPreview(item) {
@@ -3693,8 +3862,8 @@ window.addEventListener("message", (event) => {
   } else if (data.type === "preview-applied") {
     // The page was redrawn: a card may render more or less now (a Leistung ticked on), so the open card
     // panel re-reads its markers; it stays put while someone types in it.
-    const view = panelStack.at(-1);
-    if (view?.scope === "instance" && !$("#panel").hidden && !$("#panel").contains(document.activeElement?.matches?.("input,textarea,select") ? document.activeElement : null))
+    const view = nav.top;
+    if (view?.surface === "panel" && view.scope === "instance" && !$("#panel").hidden && !$("#panel").contains(document.activeElement?.matches?.("input,textarea,select") ? document.activeElement : null))
       if (markersKey(occurrenceMarkers(view.context)) !== lastInstanceMarkers) rerender();
   } else if (data.type === "inspect-entry") {
     openInspector({ id: data.id, path: data.path, section: data.section, record: data.record }, "entry", anchorFrom(data));
@@ -3769,6 +3938,10 @@ document.addEventListener("keydown", (event) => {
   } else if ((event.metaKey || event.ctrlKey) && !event.shiftKey && event.key.toLowerCase() === "z" && !typing) {
     event.preventDefault();
     undoLast();
+  } else if (!typing && ((event.altKey && event.key === "ArrowLeft") || (event.metaKey && event.key === "[")) && nav.canGoBack() && (stackDialog || !$("#panel").hidden)) {
+    // The browser's own Back keys (Alt+←, ⌘[) step back through the open views, not away from the editor.
+    event.preventDefault();
+    goBack();
   } else if (event.key === "Escape" && !document.querySelector("dialog[open]")) {
     if (openMenuState) closeMenu({ restoreFocus: true });
     else if (!$("#panel").hidden) {
