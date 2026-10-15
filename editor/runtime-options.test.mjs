@@ -19,6 +19,8 @@ import {createTranslationCore} from './translation-core.mjs';
 import {translationProvider} from './translation-providers.mjs';
 
 const run=promisify(execFile),siteRoot=path.resolve(fileURLToPath(new URL('../',import.meta.url)));
+// The editor reads its draft branch; in a worktree on another branch that is the checked-out one, not the shared content/draft.
+const draftBranch=(await promisify(execFile)('git',['-C',siteRoot,'rev-parse','--abbrev-ref','HEAD'])).stdout.trim();
 async function temporary(t){const dir=await fs.mkdtemp(path.join(os.tmpdir(),'afe-options-'));t.after(()=>fs.rm(dir,{recursive:true,force:true}));return dir;}
 
 test('Runtime paths use the supplied root and cwd; host options stay outside the site adapter',()=>{
@@ -124,7 +126,7 @@ test('Real CLI from /tmp builds WORKTREE and serves authenticated /editor/ with 
  const env=Object.fromEntries(['PATH','HOME','TMPDIR','LANG'].filter(k=>process.env[k]).map(k=>[k,process.env[k]]));
  const child=spawn(process.execPath,[fileURLToPath(new URL('./server.mjs',import.meta.url)),
   '--site-root',siteRoot,'--state-dir',state,'--port',String(port),'--public-port',String(publicPort),
-  '--auth','on','--preview','off','--git-remote','off','--offline-media','1'],{cwd:os.tmpdir(),env,stdio:['ignore','pipe','pipe']});
+  '--auth','on','--preview','off','--git-remote','off','--draft-branch',draftBranch,'--offline-media','1'],{cwd:os.tmpdir(),env,stdio:['ignore','pipe','pipe']});
  let output='';child.stdout.on('data',bytes=>output+=bytes);child.stderr.on('data',bytes=>output+=bytes);
  t.after(async()=>{if(child.exitCode===null&&child.signalCode===null){child.kill('SIGTERM');await once(child,'exit');}});
  const exited=once(child,'exit').then(([code])=>{throw Error('CLI exited '+code+': '+output);});
@@ -168,6 +170,6 @@ test('Composition from /tmp initializes both builds and authenticated editor han
  `;
  const env=Object.fromEntries(['PATH','HOME','TMPDIR','LANG'].filter(k=>process.env[k]).map(k=>[k,process.env[k]]));
  const result=await run(process.execPath,['--input-type=module','--eval',script,'--',
-  '--site-root',siteRoot,'--state-dir',state,'--auth','on','--preview','off','--git-remote','off','--offline-media','1'],{cwd:os.tmpdir(),env,timeout:110000,maxBuffer:1000000});
+  '--site-root',siteRoot,'--state-dir',state,'--auth','on','--preview','off','--git-remote','off','--draft-branch',draftBranch,'--offline-media','1'],{cwd:os.tmpdir(),env,timeout:110000,maxBuffer:1000000});
  assert.match(result.stdout,/Authenticated \/editor\//);
 });
