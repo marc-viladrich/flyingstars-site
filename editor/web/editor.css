@@ -2230,6 +2230,8 @@ dialog.dlg.navigator {
   grid-template-rows: subgrid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
+  /* Same inner gap as a field's subgrid, so its control row starts exactly where theirs does. */
+  row-gap: 6px;
   column-gap: 12px;
 }
 :is(.ov-grid, .entry-grid, .subgroup) > .row > * {
