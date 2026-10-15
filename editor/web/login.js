@@ -20,7 +20,7 @@ form.addEventListener('submit', async event => {
   try {
     const response = await fetch('/editor/api/login', {
       method: 'POST', headers: {'Content-Type': 'application/json'}, credentials: 'same-origin',
-      body: JSON.stringify({username: form.elements.username.value, password: form.elements.password.value}),
+      body: JSON.stringify({username: form.elements.username.value, password: form.elements.password.value, remember: form.elements.remember.checked}),
     });
     const result = await response.json();
     if (!response.ok) throw Error(result.error || 'Anmeldung fehlgeschlagen.');
