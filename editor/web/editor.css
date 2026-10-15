@@ -1661,3 +1661,82 @@ body#login {
   border-radius: 2px;
   background: var(--ui-accent);
 }
+.editor-ui .color-trigger {
+  justify-content: flex-start;
+  gap: 10px;
+  width: 100%;
+  padding: 0 10px;
+  background: var(--ui-field);
+  font-weight: 400;
+  text-align: left;
+}
+.editor-ui .color-trigger .color-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.editor-ui .color-trigger > svg {
+  width: 16px;
+  height: 16px;
+  color: var(--ui-muted);
+}
+.color-field .swatch {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--ui-line);
+}
+.color-field .swatch.empty {
+  background: repeating-conic-gradient(var(--ui-line) 0 25%, transparent 0 50%) 0 0 / 8px 8px;
+}
+.color-palette {
+  display: grid;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--ui-line);
+  border-radius: 8px;
+}
+.color-palette[hidden] {
+  display: none;
+}
+.color-group {
+  display: grid;
+  gap: 4px;
+}
+.color-group > .row-sublabel {
+  margin-top: 0;
+}
+.color-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 2px;
+}
+.editor-ui .color-option {
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-weight: 400;
+  text-align: left;
+}
+.editor-ui .color-option-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.editor-ui .color-option[aria-pressed="true"] {
+  background: var(--ui-tint);
+  color: var(--ui-accent-ink);
+  font-weight: 600;
+}
+.editor-ui .color-option > svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+.color-raw {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

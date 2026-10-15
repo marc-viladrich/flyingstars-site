@@ -933,6 +933,8 @@ function fieldControl(item, field, { label } = {}) {
     return el("label", { class: "row" }, labelNode, input);
   }
 
+  if (field.format === "color") return colorControl(item, field, { labelNode, name, key, isChanged });
+
   if (field.kind === "enum" && (field.choices || []).length && field.choices.length <= 4) {
     const stacked = name.length > 16 || field.choices.length > 3;
     const seg = el("div", { class: "seg", role: "group", "aria-label": name });
@@ -1024,6 +1026,121 @@ function fieldControl(item, field, { label } = {}) {
   if (placeholders.length && !name.includes("{"))
     return el("label", { class: "stack" }, labelNode, input, el("span", { class: "note", text: `${placeholders.join(", ")} wird automatisch eingesetzt.` }));
   return el("label", { class: "stack" }, labelNode, input);
+}
+// Colour fields store a token id from the site's colour registry. Swatch + name open a labelled palette
+// (grouped, selected one marked by a check and its pressed state, arrow keys move, Escape closes).
+// Without the registry the stored value stays editable as text, with its swatch when it is a hex colour.
+let colorRegistry = null;
+function loadColorTokens() {
+  return (colorRegistry ??= import("/editor/site-lib/color-tokens.mjs")
+    .then((module) => (Array.isArray(module.COLOR_TOKENS) ? module.COLOR_TOKENS : null))
+    .catch(() => null));
+}
+const isHexColor = (v) => typeof v === "string" && /^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(v.trim());
+function colorControl(item, field, { labelNode, name, key, isChanged }) {
+  const read = () => value(item, field.path) ?? field.template;
+  const swatch = el("span", { class: "swatch", "aria-hidden": "true" });
+  const label = el("span", { class: "color-name" });
+  const trigger = el("button", { type: "button", class: "color-trigger", "aria-expanded": "false", "data-field-key": key }, swatch, label, icon("chevron-down"));
+  const palette = el("div", { class: "color-palette", role: "group", "aria-label": `${name} wählen` });
+  palette.hidden = true;
+  const wrap = el("div", { class: "stack color-field" }, labelNode, trigger, palette);
+  let tokens = null;
+  const paint = () => {
+    const current = read();
+    const token = tokens?.find((t) => t.id === current);
+    swatch.style.background = token ? token.value : isHexColor(current) ? current : "";
+    swatch.classList.toggle("empty", !token && !isHexColor(current));
+    label.textContent = token ? token.label : current || "Keine Farbe";
+    trigger.setAttribute("aria-label", `${name}: ${label.textContent}`);
+  };
+  const close = (refocus) => {
+    palette.hidden = true;
+    trigger.setAttribute("aria-expanded", "false");
+    if (refocus) trigger.focus();
+  };
+  const choose = (token) => {
+    if (busy) return;
+    if (token.id !== read()) {
+      changed(item.id, field.path, token.id);
+      labelNode.classList.toggle("changed", isChanged());
+      afterPresentationChange();
+    }
+    paint();
+    close(true);
+  };
+  const build = () => {
+    const current = read();
+    const groups = [...new Set(tokens.map((t) => t.group || ""))];
+    palette.replaceChildren(
+      ...groups.map((groupName) =>
+        el(
+          "div",
+          { class: "color-group" },
+          groupName ? el("span", { class: "row-sublabel", text: groupName }) : null,
+          el(
+            "div",
+            { class: "color-options" },
+            tokens
+              .filter((t) => (t.group || "") === groupName)
+              .map((token) => {
+                const selected = token.id === current;
+                const option = el(
+                  "button",
+                  { type: "button", class: "color-option", "aria-pressed": String(selected), "data-token": token.id, onclick: () => choose(token) },
+                  el("span", { class: "swatch", style: `background:${token.value}`, "aria-hidden": "true" }),
+                  el("span", { class: "color-option-label", text: token.label }),
+                );
+                if (selected) option.append(icon("check"));
+                return option;
+              }),
+          ),
+        ),
+      ),
+    );
+  };
+  trigger.addEventListener("click", () => {
+    if (!tokens || busy) return;
+    const opening = palette.hidden;
+    if (!opening) return close(false);
+    build();
+    palette.hidden = false;
+    trigger.setAttribute("aria-expanded", "true");
+    (palette.querySelector('[aria-pressed="true"]') || palette.querySelector(".color-option"))?.focus();
+  });
+  palette.addEventListener("keydown", (event) => {
+    const options = [...palette.querySelectorAll(".color-option")];
+    const at = options.indexOf(document.activeElement);
+    const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[event.key];
+    if (event.key === "Escape") {
+      event.preventDefault();
+      event.stopPropagation();
+      close(true);
+    } else if (step && at >= 0) {
+      event.preventDefault();
+      options[(at + step + options.length) % options.length].focus();
+    } else if (event.key === "Home" || event.key === "End") {
+      event.preventDefault();
+      options[event.key === "Home" ? 0 : options.length - 1]?.focus();
+    }
+  });
+  paint();
+  loadColorTokens().then((list) => {
+    if (list) {
+      tokens = list;
+      paint();
+      return;
+    }
+    // No registry (yet): the raw value, editable as text, with its swatch when it is a hex colour.
+    const input = fieldControl(item, { ...field, format: undefined }, { label: name }).querySelector("input,textarea");
+    trigger.replaceWith(el("div", { class: "color-raw" }, swatch, input || label));
+    palette.remove();
+    input?.addEventListener("input", () => {
+      swatch.style.background = isHexColor(input.value) ? input.value : "";
+      swatch.classList.toggle("empty", !isHexColor(input.value));
+    });
+  });
+  return wrap;
 }
 function afterPresentationChange() {
   // Variants render immediately in the frame; the panel keeps its place.
