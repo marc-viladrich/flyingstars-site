@@ -4,7 +4,7 @@ import {nativeField,nativeSection,nativeRecord,nativeItem,nativeOrder} from "../
 import {getFaq,renderBody} from '../../lib/content';
 import {localeFromPath,localizedHref} from '../../lib/localized-routes';
 import {siteRecord as readUi} from '../../lib/content';
-const ui = readUi('ui',Astro.props._locale ?? localeFromPath(Astro.url.pathname));
+const ui = await readUi('ui',Astro.props._locale ?? localeFromPath(Astro.url.pathname));
 const locale = Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'faq' }> & { index: number; locale?:string; _locale?:string };

@@ -3,7 +3,7 @@ import {siteRecord as readUi} from '../../lib/content';
 import {localeFromPath,localeFormat,localizedHref} from '../../lib/localized-routes';
 import {getPosts} from '../../lib/content';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
-const ui = readUi('ui',locale);
+const ui = await readUi('ui',locale);
 import {nativeRecord,nativeItem} from '../../lib/native-editor';
 import Base from '../../layouts/Base.astro';
 const posts = (await getPosts(locale)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());

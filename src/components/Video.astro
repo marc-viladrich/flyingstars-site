@@ -3,7 +3,7 @@ import {nativeRecord as uiMarker} from '../lib/native-editor';
 import {siteRecord as readUi} from '../lib/content';
 import {localeFromPath} from '../lib/localized-routes';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
-const ui = readUi('ui',locale);
+const ui = await readUi('ui',locale);
 import { optimizedImage } from '../lib/media';
 import { videoPath } from '../lib/videos';
 interface Props { _locale?:string; locale?:string;  src: string; poster?: string; class?: string; loop?: boolean; label?: string; hero?: boolean; }

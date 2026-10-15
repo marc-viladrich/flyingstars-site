@@ -3,15 +3,15 @@ import {nativeRecord as uiMarker} from '../../lib/native-editor';
 import {siteRecord as readUi} from '../../lib/content';
 import {localeFromPath,localeFormat,localizedHref} from '../../lib/localized-routes';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
-const ui = readUi('ui',locale);
+const ui = await readUi('ui',locale);
 import InlineText from '../InlineText.astro';
 import {inlinePlain} from '../../lib/inline-text';
 import {nativeRecord} from '../../lib/native-editor';
 import {getScreen} from '../../lib/content';
-const screen = getScreen('drohnenshow-preise',locale);
+const screen = await getScreen('drohnenshow-preise',locale);
 const native=(path:string[],inline=false)=>nativeRecord('screen/drohnenshow-preise',path,inline);
 import {fillText,getPackages} from '../../lib/content';
-const SHOW_PACKAGES = getPackages(locale);
+const SHOW_PACKAGES = await getPackages(locale);
 const money = (value: number) => value.toLocaleString(localeFormat(locale));
 ---
 

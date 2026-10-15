@@ -2,7 +2,7 @@
 import {siteRecord as readUi} from '../lib/content';
 import {localeFromPath,localizedHref} from '../lib/localized-routes';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
-const ui = readUi('ui',locale);
+const ui = await readUi('ui',locale);
 import layout from '../data/logo-dots.json';
 ---
 <a class="logo" href={localizedHref("/",locale)} aria-label={ui.logo.flyingstars_startseite}>

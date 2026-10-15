@@ -3,7 +3,7 @@ import {nativeRecord as uiMarker} from '../../lib/native-editor';
 import {siteRecord as readUi} from '../../lib/content';
 import {localeFromPath,localizedHref} from '../../lib/localized-routes';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
-const ui = readUi('ui',locale);
+const ui = await readUi('ui',locale);
 import InlineText from '../InlineText.astro';
 import {nativeField,nativeSection,nativeRecord,nativeRecordMedia,nativeItem} from '../../lib/native-editor';
 import {editorialRecord,resolveMedia} from '../../lib/content';
@@ -11,7 +11,7 @@ import {optimizedImage} from '../../lib/media';
 const {headline,text,memberIds,kicker,note,cta,id=`s${Astro.props.index}`,index,columns='five',showImages=true}=Astro.props;
 const headingId=`${id}-h`,H=index===0?'h1':'h2';
 const initials=(name:string)=>name.trim().split(/\s+/).filter((_,i,a)=>i===0||i===a.length-1).map(part=>part[0]).join('').toUpperCase();
-const crew=await Promise.all(memberIds.map(async(id:string)=>{const member=editorialRecord('team',id,locale),image=resolveMedia(member.image,locale);return {...member,id,image,media:image?await optimizedImage(image.src,640):undefined};}));
+const crew=await Promise.all(memberIds.map(async(id:string)=>{const member=await editorialRecord('team',id,locale),image=resolveMedia(member.image,locale);return {...member,id,image,media:image?await optimizedImage(image.src,640):undefined};}));
 ---
 <section {...nativeSection(Astro.props)} class="team-sec" id={id} aria-labelledby={headingId}>
   <div class="sec-head"><div>{kicker&&<span class="kicker mono" {...nativeField(Astro.props,['kicker'])}>{kicker}</span>}<H id={headingId} {...nativeField(Astro.props,['headline'],true)}><InlineText value={headline} /></H></div>{text&&<p {...nativeField(Astro.props,['text'])}>{text}</p>}</div>

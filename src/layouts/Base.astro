@@ -3,7 +3,7 @@ import {nativeRecord as uiMarker} from '../lib/native-editor';
 import {siteRecord as readUi} from '../lib/content';
 import {localeFromPath,localizedHref,sourcePath} from '../lib/localized-routes';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
-const ui = readUi('ui',locale);
+const ui = await readUi('ui',locale);
 import '../styles/fonts.css';
 import '../styles/global.css';
 import { site } from '../site.config';
@@ -16,8 +16,8 @@ const { title, description, noindex = false, canonicalPath, image, navSection, f
 const canonical = new URL(localizedHref(canonicalPath ?? Astro.url.pathname,locale), Astro.site);
 const current = sourcePath(Astro.url.pathname);
 // Footer contact values and addresses are owned by site/contact (same record as the contact form).
-const contact = siteRecord('contact',locale), C = (path: string[]) => nativeRecord('site/contact', path);
-const navigation = siteRecord('navigation',locale), N = (path: (string|number)[]) => nativeRecord('site/navigation', path);
+const contact = await siteRecord('contact',locale), C = (path: string[]) => nativeRecord('site/contact', path);
+const navigation = await siteRecord('navigation',locale), N = (path: (string|number)[]) => nativeRecord('site/navigation', path);
 const NI = (entry: (string|number)[]) => nativeItem({}, {record:'site/navigation',entry});
 const addresses = contact.address ? (['visit', 'post'] as const).map((key) => [key, contact.address[key]] as const) : [];
 // Case pages and project details belong to the "Projekte" area of the main navigation.

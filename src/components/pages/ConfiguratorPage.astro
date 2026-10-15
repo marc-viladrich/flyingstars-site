@@ -3,17 +3,17 @@ import {nativeRecord as uiMarker} from '../../lib/native-editor';
 import {siteRecord as readUi} from '../../lib/content';
 import {localeFromPath,localeFormat,localizedHref} from '../../lib/localized-routes';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
-const ui = readUi('ui',locale);
+const ui = await readUi('ui',locale);
 import InlineText from '../InlineText.astro';
 import {inlinePlain} from '../../lib/inline-text';
 import {nativeRecord} from '../../lib/native-editor';
 import {fillText,getScreen} from '../../lib/content';
-const screen = getScreen('show-konfigurator',locale);
+const screen = await getScreen('show-konfigurator',locale);
 import Base from '../../layouts/Base.astro';
 import {makeSteps} from '../../content/show-configurator.js';
 import type {ShowPackage} from '../../content/show-packages';
 import {getPackages} from '../../lib/content';
-const SHOW_PACKAGES = getPackages(locale);
+const SHOW_PACKAGES = await getPackages(locale);
 
 // Prototype for FlyingStars: not linked in the navigation and not indexed until FlyingStars approves the mapping.
 // Two choices: Anlass (a sequence of three motifs that plays like a little show) and Aufwand (one button per package,

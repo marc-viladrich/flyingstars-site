@@ -4,9 +4,9 @@ import {jsonScript} from '../../lib/json-script.mjs';
 import {siteRecord as readUi} from '../../lib/content';
 import {localeFromPath,localizedHref} from '../../lib/localized-routes';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
-const ui = readUi('ui',locale);
+const ui = await readUi('ui',locale);
 import {getScreen} from '../../lib/content';
-const screen = getScreen('drohnenshow-preise',locale);
+const screen = await getScreen('drohnenshow-preise',locale);
 import Base from '../../layouts/Base.astro';
 import Calculator from '../pricing/Calculator.astro';
 import PackageDetails from '../pricing/PackageDetails.astro';
@@ -14,7 +14,7 @@ import { siteRecord } from '../../lib/content';
 import { nativeRecord } from '../../lib/native-editor';
 const pricingFaq=[{question:ui.prices.was_kommt_zum_paketpreis_noch_dazu,answer:ui.prices.nur_die_anfahrt_und_die_mehrwertsteuer_die_anfahrt},{question:ui.prices.wie_funktioniert_die_bezahlung,answer:ui.prices.mit_der_auftragsbestatigung_wird_eine_anzahlung_vo},{question:ui.prices.was_passiert_wenn_die_show_ausfallt,answer:ui.prices.ist_schlechtes_wetter_absehbar_verschieben_wir_ohn},{question:ui.prices.welches_paket_passt_zu_mir,answer:ui.prices.als_faustregel_spark_bis_150_drohnen_mit_motiven_a},{question:ui.prices.geht_es_auch_grosser,answer:ui.prices.ja_unsere_bisher_grosste_show_hatte_600_drohnen_au},{question:ui.prices.kostet_eine_show_im_ausland_mehr,answer:ui.prices.in_der_eu_planen_wir_mit_denselben_paketen_je_nach}];
 const faqJson={"@context":"https://schema.org","@type":"FAQPage",mainEntity:pricingFaq.map(item=>({"@type":"Question",name:item.question,acceptedAnswer:{"@type":"Answer",text:item.answer}}))};
-const videoCall = siteRecord('contact',locale).videoCall;
+const videoCall = (await siteRecord('contact',locale)).videoCall;
 ---
 <Base locale={locale} title={screen.title} description={screen.description} noindex={screen.noindex}>
   <Calculator />

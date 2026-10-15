@@ -1,7 +1,7 @@
 ---
 import {localeFromPath,localeFormat,localizedHref} from '../../lib/localized-routes';
 import {siteRecord as readUi} from '../../lib/content';
-const ui = readUi('ui',Astro.props._locale ?? localeFromPath(Astro.url.pathname));
+const ui = await readUi('ui',Astro.props._locale ?? localeFromPath(Astro.url.pathname));
 const locale = Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 import InlineText from '../InlineText.astro';
 import {nativeField,nativeSection,nativeRecord,nativeItem} from "../../lib/native-editor";

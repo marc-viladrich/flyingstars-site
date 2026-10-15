@@ -7,13 +7,13 @@ import {siteRecord,fillText} from "../../lib/content";
 import {inlinePlain} from '../../lib/inline-text';
 import {PACKAGE_NAMES} from '../../content/show-packages';
 import {getPackages} from '../../lib/content';
-const SHOW_PACKAGES = getPackages(locale);
+const SHOW_PACKAGES = await getPackages(locale);
 import { site } from '../../site.config';
 interface Props { _locale?:string; locale?:string;  headline: string; text?: string; index?: number; }
 const { headline, text, index = 0 } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
 // Contact values and form texts have one owner each: site/contact and site/inquiry.
-const contact = siteRecord('contact',locale), form = siteRecord('inquiry',locale);
+const contact = await siteRecord('contact',locale), form = await siteRecord('inquiry',locale);
 const C = (path: string[]) => nativeRecord('site/contact', path), I = (path: string[]) => nativeRecord('site/inquiry', path);
 const channels = [['email', contact.email], ['phone', contact.phone], ['whatsapp', contact.whatsapp], ['videoCall', contact.videoCall]] as const;
 const external = (href: string) => href.startsWith('https:');

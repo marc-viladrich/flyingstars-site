@@ -4,7 +4,7 @@ import {fillText} from '../../lib/content';
 import {siteRecord as readUi} from '../../lib/content';
 import {localeFromPath,localeFormat,localizedHref} from '../../lib/localized-routes';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
-const ui = readUi('ui',locale);
+const ui = await readUi('ui',locale);
 import InlineText from '../InlineText.astro';
 import {nativeRecord,nativeRecordMedia} from '../../lib/native-editor';
 import {resolveMedia} from '../../lib/content';

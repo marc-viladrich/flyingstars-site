@@ -2,13 +2,13 @@
 import {siteRecord as readUi} from '../../lib/content';
 import {localeFromPath,localizedHref} from '../../lib/localized-routes';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
-const ui = readUi('ui',locale);
+const ui = await readUi('ui',locale);
 import InlineText from '../InlineText.astro';
 import {nativeField,nativeSection,nativeRecord,nativeRecordMedia,nativeItem} from '../../lib/native-editor';
 import {editorialRecord,resolveMedia} from '../../lib/content';
 import {optimizedLogo} from '../../lib/media';
 const {headline,press,clientIds,showImages=true}=Astro.props;
-const items=await Promise.all(clientIds.map(async(id:string)=>{const client=editorialRecord('client',id,locale),image=resolveMedia(client.logo,locale);return {...client,id,image,media:image&&showImages?await optimizedLogo(image.src,client.tall?80:56):undefined};}));
+const items=await Promise.all(clientIds.map(async(id:string)=>{const client=await editorialRecord('client',id,locale),image=resolveMedia(client.logo,locale);return {...client,id,image,media:image&&showImages?await optimizedLogo(image.src,client.tall?80:56):undefined};}));
 ---
 <div {...nativeSection(Astro.props)} class="band" aria-label={ui.logoBar.referenzen}>
   <div class="band-head mono">{headline&&<span {...nativeField(Astro.props,['headline'],true)}><InlineText value={headline} /></span>}{press&&<span>{ui.logoBar.bekannt_aus} <b {...nativeField(Astro.props,['press'])}>{press}</b></span>}</div>

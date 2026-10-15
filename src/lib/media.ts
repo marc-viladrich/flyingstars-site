@@ -9,13 +9,13 @@ async function sourceSize(src: string) {
   if(src.startsWith('/assets/')) {
     if(!/^\/assets\/[a-zA-Z0-9._/-]+$/.test(src)||src.split('/').includes('..'))throw new Error('Ungültiger Medienpfad');
     await fs.access(path.join(process.cwd(),'public',src));
-    const info=mediaForSource(src);
+    const info=await mediaForSource(src);
     return {width:info.width,height:info.height};
   }
   const url = new URL(src);
   if (url.protocol !== 'https:' || !hosts.has(url.hostname)) throw new Error(`Nicht freigegebene FlyingStars-Medienquelle: ${url.hostname}`);
   if (process.env.FLYINGSTARS_OFFLINE_MEDIA === '1') {
-    const info=mediaForSource(src);
+    const info=await mediaForSource(src);
     return {width:info.width,height:info.height};
   }
   if (!dimensions.has(src)) dimensions.set(src, getImage({src,inferSize:true}).then(image => ({width:Number(image.attributes.width),height:Number(image.attributes.height)})));

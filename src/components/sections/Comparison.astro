@@ -1,7 +1,7 @@
 ---
 import {siteRecord,fillText} from '../../lib/content';
 import {localeFromPath} from '../../lib/localized-routes';
-const ui=siteRecord('ui',Astro.props._locale ?? localeFromPath(Astro.url.pathname));
+const ui=await siteRecord('ui',Astro.props._locale ?? localeFromPath(Astro.url.pathname));
 import InlineText from '../InlineText.astro';
 import {nativeField,nativeSection,nativeItem} from "../../lib/native-editor";
 import {inlinePlain} from '../../lib/inline-text';
