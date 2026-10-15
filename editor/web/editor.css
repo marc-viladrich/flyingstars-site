@@ -866,8 +866,9 @@ dialog.dlg.media-wide {
   flex: 1;
   min-height: 0;
   overflow: auto;
-  /* Room for the focus ring of the outer tiles. */
-  padding: 4px 4px 12px;
+  /* Room for the focus ring of the outer tiles; the tiles stay aligned with the search field. */
+  margin: 0 -8px;
+  padding: 8px 8px 16px;
 }
 .media-status:empty {
   display: none;
@@ -893,14 +894,18 @@ dialog.dlg.media-wide {
   flex-direction: column;
   align-items: stretch;
   gap: 2px;
-  width: 100%;
+  width: calc(100% + 12px);
   min-height: 0;
-  padding: 0;
+  margin: -6px;
+  padding: 6px;
   border: 0;
-  border-radius: 10px;
+  border-radius: 12px;
   background: transparent;
   text-align: left;
   white-space: normal;
+}
+.editor-ui .media-tile:focus-visible {
+  outline-offset: 0;
 }
 .editor-ui .media-tile:hover:not(:disabled) {
   background: transparent;
@@ -935,8 +940,8 @@ dialog.dlg.media-wide {
 }
 .media-badge {
   position: absolute;
-  top: 8px;
-  left: 8px;
+  top: 14px;
+  left: 14px;
   padding: 2px 8px;
   border-radius: 999px;
   background: var(--ui-accent);
@@ -994,13 +999,21 @@ dialog.dlg.media-wide {
   margin: 0;
 }
 .media-record-preview .media-thumb {
+  justify-self: start;
+  max-width: 100%;
   margin: 0;
   aspect-ratio: auto;
 }
-.media-record-preview .media-thumb img {
+.media-record-preview .media-thumb img,
+.media-record-preview .media-thumb.transparent img {
+  width: auto;
+  max-width: 100%;
   height: auto;
   max-height: 320px;
-  object-fit: contain;
+  padding: 0;
+}
+.media-record-preview .media-thumb.transparent {
+  padding: 24px;
 }
 .media-usages {
   display: grid;
