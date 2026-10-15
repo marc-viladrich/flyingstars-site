@@ -21,7 +21,7 @@ const outside = (i, out) => {
   out[0] = Math.cos(a) * r * 1.1; out[1] = Math.sin(a) * r * 0.75; out[2] = (hash(i + 0.25) - 0.5) * 0.8; return out;
 };
 
-export function createField(canvas, { onBeat } = {}) {
+export function createField(canvas, { onBeat, lifecycle } = {}) {
   const ctx = canvas.getContext("2d");
   const reduceQuery = matchMedia("(prefers-reduced-motion: reduce)");
   const pos = new Float64Array(MAX * 3), col = new Float32Array(MAX * 3), alpha = new Float32Array(MAX), vel = new Float64Array(MAX * 3);
@@ -260,11 +260,20 @@ export function createField(canvas, { onBeat } = {}) {
     else { if (frame) cancelAnimationFrame(frame); frame = 0; canvas.dataset.running = "false"; if (scene) { settle(now(), beat); render(); } }
   }
 
-  new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; sync(); }).observe(canvas);
-  if ("ResizeObserver" in window) new ResizeObserver(resize).observe(canvas);
+  const intersection = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; sync(); });
+  intersection.observe(canvas);
+  const sizing = new ResizeObserver(resize); sizing.observe(canvas);
   document.addEventListener("flyingstars:motion-change", sync);
   document.addEventListener("visibilitychange", sync);
   reduceQuery.addEventListener("change", sync);
   resize();
-  return { show, replay: () => goto(0), goto, beat: () => beat };
+  const dispose = () => {
+    if (frame) cancelAnimationFrame(frame); frame = 0;
+    intersection.disconnect(); sizing.disconnect();
+    document.removeEventListener('flyingstars:motion-change', sync);
+    document.removeEventListener('visibilitychange', sync);
+    reduceQuery.removeEventListener('change', sync);
+  };
+  lifecycle?.cleanup(dispose);
+  return { show, replay: () => goto(0), goto, beat: () => beat, dispose };
 }
