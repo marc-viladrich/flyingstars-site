@@ -1412,9 +1412,12 @@ body#login {
 .panel-actions:empty {
   display: none;
 }
-.panel-actions:not(:empty) + #panel-unpin,
-.panel-head:has(.panel-actions:not(:empty)) .panel-kind {
+.panel-actions:not(:empty) + #panel-unpin {
   flex: 0 1 auto;
+}
+/* With actions in the head the kind gives way before the title (and is hidden when crushed, see fitPanelHead). */
+.panel-head:has(.panel-actions:not(:empty)) .panel-kind {
+  flex: 0 100 auto;
 }
 .editor-ui .panel-action {
   min-height: 32px;
@@ -1835,12 +1838,18 @@ details.ref-group[open] > summary svg {
 }
 
 /* "Inhalte verwalten": content types as an accordion, records inside, language versions as flags. */
+/* Fixed height: opening a group or typing a search never moves the dialog. */
+dialog.dlg.navigator {
+  height: min(84vh, 760px);
+}
 .navigator .dlg-body {
+  flex: 1;
   align-content: start;
-  min-height: min(60vh, 520px);
 }
 .nav-groups {
   display: grid;
+}
+.nav-group:first-child {
   border-top: 1px solid var(--ui-line);
 }
 .nav-group {

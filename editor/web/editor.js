@@ -2017,6 +2017,15 @@ function parentLinks(item, context, { from }) {
   return actionGroup(rows.length ? "Gehört zu" : null, rows);
 }
 
+// The title says what the panel is; the kind beside it is context. When the head gets tight (language
+// control, narrow panel) the kind gives way first and is hidden rather than shrunk to "…".
+function fitPanelHead() {
+  const kind = $("#panel-kind");
+  kind.hidden = false;
+  kind.title = kind.textContent;
+  if (kind.textContent && kind.scrollWidth > kind.clientWidth && kind.clientWidth < 64) kind.hidden = true;
+}
+new ResizeObserver(() => !$("#panel").hidden && fitPanelHead()).observe($(".panel-head"));
 function renderTop({ keepScroll = false, keepPlace = false } = {}) {
   const view = panelStack.at(-1);
   const item = record(view.context.id);
@@ -2048,6 +2057,7 @@ function renderTop({ keepScroll = false, keepPlace = false } = {}) {
   $("#panel-back").hidden = panelStack.length < 2;
   update();
   placePanel(panelAnchor, previous);
+  fitPanelHead();
   body.scrollTop = scroll;
   if (reveal && !pendingFocus) {
     let target = body.querySelector(`[data-field-key="${CSS.escape(fieldKey(item.id, reveal))}"]`);
@@ -2786,7 +2796,7 @@ function publishedState(d) {
       { class: "publish-done", role: "status" },
       el("span", { class: "publish-done-mark", "aria-hidden": "true" }, icon("check")),
       el("p", { class: "publish-done-title", text: "Die Website ist aktualisiert." }),
-      el("p", { class: "note", text: `„${label}“${activeLocale === "de" ? "" : ` (${localeNames[activeLocale]})`} ist jetzt in dieser Fassung live.` }),
+      el("p", { class: "note", text: `„${label}“${activeLocale === "de" ? "" : ` (${localeNames[activeLocale]})`} ist jetzt live.` }),
       link,
     ),
   );
