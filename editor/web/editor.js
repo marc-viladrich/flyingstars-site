@@ -2007,13 +2007,15 @@ function pushView(context, scope) {
 // place instead of stacking another one; the target is revealed (opened, scrolled to, focused).
 // Scrolls the panel body vertically only (scrollIntoView would also shift the panel sideways by the
 // resize handles' overhang): the node's top stays visible, as much of the rest as fits.
-function revealInPanel(node, { smooth = false } = {}) {
+// upperThird: a jump target (revealed from elsewhere) is placed in the upper third, with context around it.
+function revealInPanel(node, { smooth = false, upperThird = false } = {}) {
   const body = $("#panel-body");
   if (!node || !body.contains(node)) return;
   const box = body.getBoundingClientRect(),
     rect = node.getBoundingClientRect();
   let top = body.scrollTop;
-  if (rect.top < box.top) top -= box.top - rect.top;
+  if (upperThird) top += rect.top - box.top - Math.max(16, Math.min(box.height / 3, box.height - rect.height - 16));
+  else if (rect.top < box.top) top -= box.top - rect.top;
   else if (rect.bottom > box.bottom) top += Math.min(rect.bottom - box.bottom, rect.top - box.top);
   if (top !== body.scrollTop) body.scrollTo({ top, behavior: smooth && !reducedMotion() ? "smooth" : "auto" });
 }
@@ -2164,9 +2166,10 @@ function renderTop({ keepScroll = false, keepPlace = false, restore = null } = {
     let target = body.querySelector(`[data-field-key="${CSS.escape(fieldKey(item.id, reveal))}"]`);
     for (let i = reveal.length; i > 0 && !target; i--) target = body.querySelector(entryKeySelector(item.id, reveal.slice(0, i)));
     if (target) {
-      revealInPanel(target);
+      const marked = target.closest("[data-entry-key]") || target.closest(".stack") || target;
+      revealInPanel(marked, { upperThird: true });
       (target.matches("input,textarea,select,button") ? target : target.querySelector(".entry-toggle,input,textarea,select,button"))?.focus({ preventScroll: true });
-      markRevealed(target.closest("li.entry, [data-entry-key], .stack") || target);
+      markRevealed(marked);
       return;
     }
   }
@@ -2605,19 +2608,24 @@ function recordView(body, item, context, head) {
   );
   const index = el("nav", { class: "ov-nav", "aria-label": "Bereiche" }, links);
   put(body, el("div", { class: "overview indexed" }, index, main));
-  // The index follows the scroll position (one observer at a time).
+  // The index follows the scroll position: the current block is the last one whose title has passed the
+  // upper third of the sheet; scrolled to the end, it is the last block (a short last block never reaches
+  // the top). One listener at a time.
   overviewObserver?.disconnect();
-  const observer = (overviewObserver = new IntersectionObserver(
-    (entries) => {
-      const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
-      if (!visible) return;
-      const index = sections.indexOf(visible.target);
-      links.forEach((link, i) => link.setAttribute("aria-current", String(i === index)));
-    },
-    { root: body, rootMargin: "0px 0px -70% 0px" },
-  ));
-  sections.forEach((section) => observer.observe(section));
+  const spy = () => {
+    const box = body.getBoundingClientRect();
+    const atEnd = body.scrollTop + body.clientHeight >= body.scrollHeight - 2;
+    let index = 0;
+    sections.forEach((section, i) => {
+      if (section.getBoundingClientRect().top <= box.top + box.height / 3) index = i;
+    });
+    if (atEnd && body.scrollTop > 0) index = sections.length - 1;
+    links.forEach((link, i) => link.setAttribute("aria-current", String(i === index)));
+  };
+  body.addEventListener("scroll", spy, { passive: true });
+  overviewObserver = { disconnect: () => body.removeEventListener("scroll", spy) };
   links[0]?.setAttribute("aria-current", "true");
+  requestAnimationFrame(spy);
 }
 // A page's sections in its overview: one row each that opens the section's own panel (Back returns here).
 // Adding, moving and removing sections stays with the section actions, which keep the page in step.

@@ -320,13 +320,16 @@ body {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+/* The kind always reads right after the title (it gives way first when the head gets tight); whatever
+   follows (actions, language, close) sits at the right edge. */
 .panel-kind {
-  flex: 1 1 0;
+  flex: 0 100 auto;
   min-width: 0;
+  margin-right: auto;
   overflow: hidden;
   color: var(--ui-muted);
   font-size: 13px;
-  text-align: right;
+  text-align: left;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -2257,17 +2260,14 @@ dialog.dlg.navigator {
   line-height: 16px;
 }
 /* One line high while the value fits, growing with it; never a horizontal scroll inside the field. */
-.editor-ui textarea.autogrow {
+.editor-ui textarea.autogrow,
+.editor-ui .rows li > textarea.autogrow {
   overflow-wrap: anywhere;
   resize: none;
 }
 .editor-ui textarea.autogrow.single {
   min-height: 36px;
   max-height: 240px;
-}
-.editor-ui textarea.autogrow:not(.single) {
-  min-height: 80px;
-  max-height: 480px;
 }
 
 /* ---------- R10: pickers (row toggles, own open button), grouped choices, reveal mark ---------- */
