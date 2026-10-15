@@ -107,3 +107,9 @@ The API, operation table and storage limits are in [source-registry.md](source-r
   concerns. Git publishes one candidate tree by an expected-parent ref update.
   Non-cooperating external writers must respect the source lock to eliminate the
   final check/rename race. No stronger crash guarantee is claimed.
+
+## Nachprüfung außerhalb der Sandbox (Claude, 15.10.2026)
+
+- Volle Suite ohne Offline-Modus: **410 bestanden, 0 Fehler, 0 übersprungen**.
+- Echter Server auf einem Wegwerf-Klon (nicht auf dem gemeinsamen `content/draft`), Login, `POST /editor/api/save` mit zwei Änderungen (FAQ-Markdown-Frontmatter + verschachtelte Section-Headline in `pages/index.yaml`): ein Commit, je Datei genau eine geänderte Zeile, Rest bytegleich. Derselbe Auftrag noch einmal auf alter Basis → 409 „Dieser Inhalt wurde inzwischen geändert."
+- Beobachtung für später: Der YAML-Codec setzt geänderte Strings in doppelte Anführungszeichen, auch wenn YAML sie nicht bräuchte (`headline: "Wir gestalten … E2E"`). Gültig und quelltreu für den Rest der Datei, aber nicht minimal; beim Codec-Feinschliff prüfen.
