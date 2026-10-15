@@ -21,6 +21,8 @@ import { fieldLabel, choiceLabel, isTechnical } from "./field-labels.mjs";
 import { sha256 } from "./sha256.mjs";
 import { flags } from "./flags.mjs";
 import { inlinePlain } from "/editor/site-lib/inline-text.mjs";
+import { splitLocale, localizedPath, frontendTarget, liveURL } from "./frontend-url.mjs";
+import { navigatorGroups } from "./content-navigator.mjs";
 
 // ---------------------------------------------------------------------------
 // State
@@ -44,6 +46,8 @@ let state,
   currentInspector = null,
   inlineKeys = new Set(),
   publishPending = false,
+  // Last /editor/api/review answer: saved draft head, active public head, public origin.
+  publication = null,
   toastTimer = null,
   openMenuState = null,
   loadError = false;
@@ -488,6 +492,11 @@ function update() {
   $("#undo").hidden = preview || !draft.history.length;
   $("#undo").disabled = locked;
 
+  // The preview tab (same origin) shows whether the editor holds changes it does not contain.
+  try {
+    if (count) localStorage.setItem("fs-editor-unsaved", String(count));
+    else localStorage.removeItem("fs-editor-unsaved");
+  } catch {}
   const save = $("#save");
   save.hidden = !count && !busy;
   save.disabled = locked || !count;
@@ -520,9 +529,16 @@ $("#more").append(icon("ellipsis"));
 $("#panel-close").append(icon("x"));
 $("#panel-back").append(icon("chevron-left"));
 
+// A preview tab offers to reload once a newer state is saved.
+function rememberSavedHead() {
+  try {
+    localStorage.setItem("fs-editor-head", state.head);
+  } catch {}
+}
 async function refreshPublishState() {
   try {
     const result = await api("/editor/api/review");
+    publication = result;
     publishPending = (result.changed || []).length > 0 || publishNeedsActivation(result);
   } catch {
     publishPending = false;
@@ -564,6 +580,7 @@ function openMenu(trigger, items, { keepPanel = false } = {}) {
         { icon: item.icon, cls: "menu-item " + (item.danger ? "danger" : "") },
       );
       if (item.flag) row.prepend(flagIcon(item.flag));
+      if (item.hint) row.querySelector("span").after(el("small", { class: "menu-hint", text: item.hint }));
       row.setAttribute("role", item.checked !== undefined ? "menuitemcheckbox" : "menuitem");
       if (item.checked !== undefined) {
         row.setAttribute("aria-checked", String(item.checked));
@@ -652,10 +669,9 @@ function moreMenu() {
         syncFrame();
       },
     },
-    { label: "Seite in neuem Tab öffnen", icon: "external-link", run: () => open(route, "_blank", "noopener") },
+    frontendMenuItem(),
     "-",
     count ? { label: "Alle Änderungen verwerfen", icon: "rotate-ccw", danger: true, confirm: "Wirklich alle verwerfen?", run: discardAll } : null,
-    { label: "Alle Inhaltsfelder (Experten)", icon: "list", run: allFields },
     session.user ? "-" : null,
     session.user
       ? count
@@ -665,22 +681,30 @@ function moreMenu() {
   ]);
 }
 
+// This page outside the editor, in the current language: the live site when everything saved is
+// published, otherwise the saved draft under /vorschau/ (with a bar that says so). The label names the
+// target before the click. Unsaved changes are in neither; the preview bar says so, here a toast does.
+function frontendMenuItem() {
+  const target = frontendTarget({ route, locale: activeLocale, publication });
+  const run = () => {
+    open(target.url, "_blank", "noopener");
+    if (target.kind === "live" && changeCount()) toast("Live-Seite geöffnet. Deine ungespeicherten Änderungen sind dort noch nicht enthalten.");
+  };
+  return target.kind === "live"
+    ? { label: "Live ansehen", icon: "external-link", run }
+    : { label: "Vorschau ansehen", hint: "nicht veröffentlicht", icon: "external-link", run };
+}
+
 // ---------------------------------------------------------------------------
 // Navigation and selection
 // ---------------------------------------------------------------------------
 // Languages are real routes (/en/…, /nl/…). `route` always stays the German page the records belong to;
 // the language is kept separately and only the iframe address carries the prefix.
-const localeRoute = /^\/(en|nl)(?=\/|$)/;
-function splitLocale(pathname) {
-  const match = localeRoute.exec(pathname);
-  return match ? { locale: match[1], path: pathname.slice(match[0].length) || "/" } : { locale: "de", path: pathname };
-}
-const localizedPath = (path, locale) => (locale === "de" ? path : "/" + locale + (path.startsWith("/") ? path : "/" + path));
 function editorAddress() {
   const page = localizedPath(route, activeLocale);
   return "/editor/" + (page === "/" ? "" : "?page=" + encodeURIComponent(page));
 }
-function navigate(url, { reload = false, locale } = {}) {
+function navigate(url, { reload = false, locale, keepPanel = false } = {}) {
   nextViewRecordId = null;
   stageInputs();
   send("mode", { preview, busy: true, outlines });
@@ -2543,31 +2567,6 @@ function recordActions(item) {
   ]);
 }
 
-// Developer escape hatch: every schema field, reachable but out of the way.
-function allFields() {
-  stageInputs();
-  const d = dialog("Alle Inhaltsfelder");
-  const items = records();
-  d.body.append(el("p", { class: "note", text: "Technische Gesamtansicht für Entwickler. Redaktionelle Texte bitte direkt auf der Seite bearbeiten." }));
-  const listNode = el("ul", { class: "record-list" });
-  for (const item of items)
-    listNode.append(
-      el(
-        "li",
-        {},
-        button(
-          item.title,
-          () => {
-            d.close();
-            openInspector({ id: item.id, path: [] }, "record", undefined, { docked: true });
-          },
-          { icon: kindOf(item.id)[1] },
-        ),
-      ),
-    );
-  d.body.append(listNode);
-}
-
 // ---------------------------------------------------------------------------
 // Save, undo, discard, publish
 // ---------------------------------------------------------------------------
@@ -2587,6 +2586,7 @@ async function save() {
     const result = await api("/editor/api/save", retry);
     state = result;
     initialHead = result.head;
+    rememberSavedHead();
     draft.accept(result.records);
     retry = null;
     editing.clear();
@@ -2748,9 +2748,11 @@ async function review() {
             expectedPublishedHead: result.publishedHead,
             requestId: crypto.randomUUID(),
           });
-          d.close();
           publishPending = false;
-          toast("Veröffentlicht.", { action: () => open(published.url || "/public/", "_blank", "noopener"), actionLabel: "Ansehen" });
+          const head = published.publishedHead;
+          publication = { ...result, draftHead: head, publishedHead: head, activePublishedHead: head, changed: [], url: published.url || result.url };
+          publishedState(d);
+          refreshPublishState();
         } catch (e) {
           status.textContent = e.message;
           status.classList.add("error");
@@ -2770,6 +2772,26 @@ async function review() {
     status.textContent = e.message;
     status.classList.add("error");
   }
+}
+
+// After a publication the dialog stays as the confirmation, with a lasting link to this page live in
+// the current language (the page the work was done on, not the homepage).
+function publishedState(d) {
+  const label = pageChoices().find((choice) => choice.value === route)?.label || "Diese Seite";
+  d.querySelector(".dlg-head h2").textContent = "Veröffentlicht";
+  const link = el("a", { class: "button primary", href: liveURL(route, activeLocale, publication.url), target: "_blank", rel: "noopener" }, icon("external-link"), el("span", { text: "Live ansehen" }));
+  d.body.replaceChildren(
+    el(
+      "div",
+      { class: "publish-done", role: "status" },
+      el("span", { class: "publish-done-mark", "aria-hidden": "true" }, icon("check")),
+      el("p", { class: "publish-done-title", text: "Die Website ist aktualisiert." }),
+      el("p", { class: "note", text: `„${label}“${activeLocale === "de" ? "" : ` (${localeNames[activeLocale]})`} ist jetzt in dieser Fassung live.` }),
+      link,
+    ),
+  );
+  d.foot.replaceChildren(button("Schließen", () => d.close(), { cls: "secondary" }));
+  link.focus();
 }
 
 // ---------------------------------------------------------------------------
@@ -2955,61 +2977,82 @@ function openCreate(prefix, reference, preset = {}, after) {
   );
   name.focus();
 }
+// "Inhalte verwalten": one navigator over every record, grouped by content type (see content-navigator.mjs).
+// Groups start closed (their heading with the count is the overview); a search opens every group with a
+// hit. A record opens in its overview; its language versions are flags on its row and open the same
+// overview in that language.
+const navigatorOpen = new Set();
+function navigatorName(item) {
+  if (item.route && /^(page|screen)\//.test(item.id))
+    return normalizedRoute(item.route) === "/" ? "Startseite" : String(inlinePlain(item.data?.title || item.title)).split(" – ")[0];
+  return recordName(item);
+}
 function contentLibrary() {
   stageInputs();
-  const tabs = [
-    ["client/", "Kunden"],
-    ["team/", "Team"],
-    ["package/", "Show-Pakete"],
-    ["media/", "Medien"],
-    ["post/", "Blog"],
-    ["project/", "Projekte"],
-    ["faq/", "FAQ"],
-  ].filter(([prefix]) => records().some((r) => r.id.startsWith(prefix)) || recordTemplate(prefix));
-  const d = dialog("Inhalte verwalten");
-  const bar = el("div", { class: "tabs", role: "tablist" });
-  const pane = el("div", { role: "tabpanel" });
-  const show = (prefix) => {
-    for (const tab of bar.children) tab.setAttribute("aria-selected", String(tab.dataset.prefix === prefix));
+  const search = el("input", { type: "search", placeholder: "Suchen …", "aria-label": "Inhalte durchsuchen", autocomplete: "off" });
+  const d = dialog("Inhalte verwalten", { search });
+  d.classList.add("navigator");
+  const pane = el("div", { class: "nav-groups" });
+  const openRecord = (id, locale) => {
+    d.close();
+    openInspector({ id, path: [] }, "record", undefined, { docked: true });
+    if (locale && locale !== activeLocale) switchPanelLocale(locale);
+  };
+  const draw = () => {
+    const query = search.value.trim();
+    const groups = navigatorGroups(records(), { name: navigatorName, canCreate: (type) => !!recordTemplate(type + "/"), query });
     pane.replaceChildren();
-    const template = recordTemplate(prefix);
-    if (template)
-      pane.append(
-        button(
-          template.title + " anlegen",
-          () => {
-            d.close();
-            openCreate(prefix);
-          },
-          { icon: "plus", cls: "inline-button" },
-        ),
-      );
-    const listNode = el("ul", { class: "record-list" });
-    for (const item of records().filter((r) => r.id.startsWith(prefix)))
-      listNode.append(
-        el(
-          "li",
-          {},
-          button(
-            item.data.displayName || item.data.name || item.data.title || item.title,
-            () => {
-              d.close();
-              openInspector({ id: item.id, path: [] }, "record", undefined, { docked: true });
-            },
-            { icon: kindOf(item.id)[1] },
+    if (!groups.length) pane.append(el("p", { class: "note", text: "Keine Treffer." }));
+    for (const g of groups) {
+      const template = g.create && !query ? recordTemplate(g.type + "/") : null;
+      const rows = el(
+        "ul",
+        { class: "record-list" },
+        g.items.map((row) =>
+          el(
+            "li",
+            {},
+            button(row.title, () => openRecord(row.id), { icon: kindOf(row.id)[1], cls: "nav-record" }),
+            row.locales.map((locale) => {
+              const chip = button(locale.toUpperCase(), () => openRecord(row.id, locale), { cls: "nav-locale" });
+              chip.prepend(flagIcon(locale));
+              chip.setAttribute("aria-label", `${row.title} auf ${localeNames[locale] || locale} öffnen`);
+              chip.title = localeNames[locale] || locale;
+              return chip;
+            }),
           ),
         ),
       );
-    pane.append(listNode);
+      const create = template
+        ? button(
+            template.title + " anlegen",
+            () => {
+              d.close();
+              openCreate(g.type + "/");
+            },
+            { icon: "plus", cls: "inline-button" },
+          )
+        : null;
+      const count = query ? `${g.items.length} von ${g.total}` : String(g.total);
+      const details = el(
+        "details",
+        { class: "nav-group" },
+        el("summary", {}, icon(g.icon), el("span", { class: "nav-group-title", text: g.label }), el("span", { class: "nav-count", text: count }), icon("chevron-down")),
+        el("div", { class: "nav-group-body" }, create, g.items.length ? rows : el("p", { class: "note", text: "Noch keine Einträge." })),
+      );
+      details.open = !!query || navigatorOpen.has(g.type);
+      details.addEventListener("toggle", () => {
+        if (query) return;
+        if (details.open) navigatorOpen.add(g.type);
+        else navigatorOpen.delete(g.type);
+      });
+      pane.append(details);
+    }
   };
-  for (const [prefix, label] of tabs) {
-    const tab = button(label + " · " + records().filter((r) => r.id.startsWith(prefix)).length, () => show(prefix));
-    tab.dataset.prefix = prefix;
-    tab.setAttribute("role", "tab");
-    bar.append(tab);
-  }
-  d.body.append(bar, pane);
-  if (tabs.length) show(tabs[0][0]);
+  search.addEventListener("input", draw);
+  d.body.append(pane);
+  draw();
+  search.focus();
 }
 
 // ---------------------------------------------------------------------------
@@ -3677,6 +3720,11 @@ document.addEventListener("keydown", (event) => {
     }
   }
 });
+window.addEventListener("pagehide", () => {
+  try {
+    localStorage.removeItem("fs-editor-unsaved");
+  } catch {}
+});
 window.addEventListener("beforeunload", (event) => {
   if (draft.size || pendingCount() || pendingTranslations.size) {
     event.preventDefault();
@@ -3694,6 +3742,7 @@ window.addEventListener("resize", () => {
     await loadSession();
     state = await api("/editor/api/state");
     initialHead = state.head;
+    rememberSavedHead();
     draft.reset(state.records);
     if (state.activeHead && state.activeHead !== state.head)
       toast("Der letzte gespeicherte Stand konnte nicht aufgebaut werden. Die Seite zeigt einen früheren Stand.", { error: true });
