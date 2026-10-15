@@ -19,6 +19,8 @@ function setPath(data,parts,value){if(!parts.length)return structuredClone(value
 
 export function readOnlyPaths(source,data){const description=describeSchema(source.schema,data);return [...description.fields,...description.containers].filter(field=>field.readOnly).map(field=>field.path);}
 const safeParts=parts=>Array.isArray(parts)&&parts.every(k=>typeof k==='string'&&!['__proto__','constructor','prototype'].includes(k)||Number.isInteger(k)&&k>=0);
+// Policies receive content and revisions; descriptor trees are resolved through sourceFor.
+const transactionIndex=records=>structuredClone(records.map(({id,data,revision})=>({id,data,revision})));
 const sameBytes=(a,b)=>a===null&&b===null||Buffer.isBuffer(a)&&Buffer.isBuffer(b)&&a.equals(b);
 export class NativeStore{
  constructor(root,{remote,site,runtime}={}){this.root=path.resolve(root);this.site=site;this.runtime=runtime;this.remoteOption=remote??runtime?.git.remote;this.draftBranch=runtime?.git.draftBranch||'content/draft';this.env={...gitEnvironment(runtime?.processEnv),...site?.gitIdentity};this.git=(dir,args,options={})=>git(dir,args,{env:this.env,...options});this.lock=Promise.resolve();}
@@ -47,7 +49,7 @@ export class NativeStore{
  for(const deletion of deletes){if(!deletion||typeof deletion!=='object')throw failure('Ungültige Inhaltslöschung.');const source=this.sourceFor(deletion.id),current=state.records.find(r=>r.id===deletion.id);if(!current||!source?.remove||!canOperate(current.schema,'delete')||this.site.extensions.some('preventDelete',deletion.id)||seen.has(deletion.id))throw failure('Dieser Inhalt kann nicht gelöscht werden.');seen.add(deletion.id);if(current.revision!==deletion.expectedRevision)throw failure('Dieser Inhalt wurde inzwischen geändert.',409);const before=Buffer.from(await this.readFile(parent,source.file));if(!sameBytes(await this.sourceAdapter.bytes(source.file),before))throw failure('Diese Datei wurde außerhalb des Editors geändert.',409);updated.push({file:source.file,bytes:null,before});nextRecords.splice(nextRecords.findIndex(r=>r.id===deletion.id),1);}
  for(const deletion of deletes){const target=state.records.find(r=>r.id===deletion.id),references=this.references(nextRecords,target);if(references.length)throw failure('Der Datensatz wird noch verwendet: '+references.join(', '),409);}
  // Extension proposals stay inside this transaction and pass the same authorization/schema gates.
- const proposed=this.site.extensions.collect('prepareTransaction',{state:structuredClone(state),nextRecords:structuredClone(nextRecords),seen:new Set(seen),changes:structuredClone(changes),sourceFor:id=>this.sourceFor(id)}),proposedIds=new Set();
+ const proposed=this.site.extensions.collect('prepareTransaction',{state:{head:state.head,records:transactionIndex(state.records)},nextRecords:transactionIndex(nextRecords),seen:new Set(seen),changes:structuredClone(changes),sourceFor:id=>this.sourceFor(id)}),proposedIds=new Set();
  for(const proposal of proposed){
   if(!proposal||!seen.has(proposal.id)||proposedIds.has(proposal.id))throw failure('Widersprüchliche Extension-Änderung.');
   proposedIds.add(proposal.id);
@@ -58,7 +60,7 @@ export class NativeStore{
   const raw=wire(parseNative(source.schema,proposal.data));this.validateMarkdown(source.schema,raw);this.site.extensions.run('validateRecord',source,raw);
   update.bytes=Buffer.from(this.encode(source,raw,{bytes:update.bytes.toString('utf8')},[{path:[],value:raw}]));record.data=raw;record.revision=hash(update.bytes);
  }
- this.site.extensions.run('validateTransaction',{store:this,nextRecords:structuredClone(nextRecords),seen:new Set(seen)});
+ this.site.extensions.run('validateTransaction',{store:this,nextRecords:transactionIndex(nextRecords),seen:new Set(seen)});
  this.validateReferences(nextRecords);
  for(const write of binaryWrites){const before=await fileBytes(path.join(this.root,write.file));if(before&&!before.equals(write.bytes))throw failure('Eine vorhandene Mediendatei hat andere Bytes.',409);let tracked=null;try{tracked=await run('git',['-C',this.root,'show',parent+':'+write.file],{env:this.env,encoding:'buffer',maxBuffer:20_000_000}).then(r=>r.stdout);}catch{}if(before&&!tracked)throw failure('Der Medienpfad ist durch eine ungesicherte Datei belegt.',409);updated.push({...write,before});}
  const {head:candidate}=await this.sourceAdapter.commit(updated,{parent,requestId,payload,actor});this.sync.enqueue();return{...await this.stateAt(candidate),sync:{...this.sync.status},replayed:false};});}
