@@ -104,11 +104,12 @@ test("a dev server left over from an earlier editor run is restarted on init, a 
     await fs.mkdir(path.join(preview.dir, "node_modules"), { recursive: true });
     preview.restart = async () => calls.push("restart");
     preview.start = async () => calls.push("start");
-    preview.alive = async () => true;
-    await preview.init();
-    preview.alive = async () => false;
-    await preview.init();
-    assert.deepEqual(calls, ["restart", "start"]);
+    for (const state of ["ok", "failing", "absent"]) {
+      preview.probe = async () => state;
+      await preview.init();
+    }
+    // A server answering with an error (stale modules after a code change) counts as left over too.
+    assert.deepEqual(calls, ["restart", "restart", "start"]);
   } finally {
     await done();
   }

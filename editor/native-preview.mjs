@@ -46,21 +46,28 @@ export class NativePreview {
     await this.enqueue(() => this.checkout(head, { force: true }));
     // The dev server is detached and outlives the editor process. One left over from an earlier editor
     // run holds that run's modules (schemas, collections, components), so it starts fresh here.
-    if (await this.alive()) await this.restart();
+    if ((await this.probe()) !== "absent") await this.restart();
     else await this.start();
     return this;
   }
   async alive() {
+    return (await this.probe()) === "ok";
+  }
+  // "ok", "failing" (a server answers, but with an error) or "absent" (nothing listens).
+  async probe() {
     try {
-      return (await fetch(this.base + "/", { signal: AbortSignal.timeout(1500) })).ok;
+      return (await fetch(this.base + "/", { signal: AbortSignal.timeout(1500) })).ok ? "ok" : "failing";
     } catch {
-      return false;
+      return "absent";
     }
   }
   start() {
     if (this.starting) return this.starting;
     this.starting = (async () => {
-      if (await this.alive()) return;
+      const state = await this.probe();
+      if (state === "ok") return;
+      // A failing server still holds the port and Astro's lock; a second one would never come up.
+      if (state === "failing") await this.stop();
       const cli = path.join(this.dir, "node_modules/astro/bin/astro.mjs");
       const log = await fs.open(path.join(path.dirname(this.dir), "dev.log"), "a");
       const child = spawn(this.node, [cli, "dev", "--port", String(this.port), "--host", "127.0.0.1"], {
@@ -86,7 +93,7 @@ export class NativePreview {
       child.on("exit", resolve);
       child.on("error", resolve);
     });
-    for (let i = 0; i < 40 && (await this.alive()); i++) await new Promise((resolve) => setTimeout(resolve, 250));
+    for (let i = 0; i < 40 && (await this.probe()) !== "absent"; i++) await new Promise((resolve) => setTimeout(resolve, 250));
   }
   async restart() {
     await this.stop();
