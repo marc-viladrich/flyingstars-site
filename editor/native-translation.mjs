@@ -2,7 +2,7 @@ import {failure} from './native-store.mjs';
 const languages={en:'English',nl:'Nederlands'};
 /** Optional LibreTranslate-compatible service. No remote service is contacted by default. */
 export class NativeTranslation {
- constructor({url=process.env.EDITOR_TRANSLATION_URL,key=process.env.EDITOR_TRANSLATION_KEY,fetcher=fetch}={}){
+ constructor({url,key,fetcher=fetch}={}){
   this.url=url;this.key=key;this.fetcher=fetcher;
   if(url){const target=new URL(url);if(target.protocol!=='https:'&&!(target.protocol==='http:'&&['127.0.0.1','localhost','[::1]'].includes(target.hostname)))throw Error('Übersetzungsdienst benötigt HTTPS oder Loopback.');}
  }

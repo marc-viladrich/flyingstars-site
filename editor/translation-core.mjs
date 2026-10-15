@@ -3,8 +3,6 @@
 // segments are sent once, and a translation memory (hash + locale) makes repeated runs cost nothing.
 import { createHash } from "node:crypto";
 import { promises as fs } from "node:fs";
-import {translatableFields} from '../src/lib/translatable-fields.mjs';
-export {translatableFields};
 
 export const sha256 = (text) => createHash("sha256").update(String(text), "utf8").digest("hex");
 const getPath = (data, path) => path.reduce((value, key) => value?.[key], data);
@@ -74,7 +72,7 @@ export async function saveMemory(file, memory) {
 const translationIdFor = (ownerId, locale) => "translation/" + ownerId.replaceAll("/", "-") + "-" + locale;
 
 // Which fields need a (new) translation, which segments must actually be sent, and what that costs.
-export function plan({ records, locale, memory, ids }) {
+export function plan({ records, locale, memory, ids }, {translatableFields}) {
   const byId = new Map(records.map((r) => [r.id, r]));
   const owners = (Array.isArray(ids) ? ids.map((id) => byId.get(id)).filter(Boolean) : records).filter((r) => translatableOwners.test(r.id));
   const jobs = [];
@@ -203,7 +201,7 @@ export async function executeBatched(planned, provider, {memory, maxChars=3000, 
 
 // Machine results become unreviewed values of the owner's translation record; reviewed values whose
 // German text is unchanged are kept as they are.
-export function mergeIntoTranslations({ records, locale, values }) {
+export function mergeIntoTranslations({ records, locale, values }, {translatableFields}) {
   const byId = new Map(records.map((r) => [r.id, r]));
   const out = [];
   for (const [ownerId, { revision, entries }] of values) {
@@ -229,4 +227,8 @@ export function mergeIntoTranslations({ records, locale, values }) {
     out.push({ id, data, create: !existing, expectedRevision: existing?.revision });
   }
   return out;
+}
+
+export function createTranslationCore(site) {
+ return {plan:request=>plan(request,site),mergeIntoTranslations:request=>mergeIntoTranslations(request,site)};
 }

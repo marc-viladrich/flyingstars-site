@@ -1,15 +1,15 @@
 import {isMain} from './paths.mjs';
+import {resolveRuntimeOptions} from './runtime-options.mjs';
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
-import {fileURLToPath} from 'node:url';
 import {randomUUID} from 'node:crypto';
 import {createInterface} from 'node:readline/promises';
 import {Writable} from 'node:stream';
-import {accountsPath, assertPrivateAccountsPath, hashPassword, loadAccounts, normalizeUsername, validUsername, validateAccounts} from './auth.mjs';
+import {assertPrivateAccountsPath, hashPassword, loadAccounts, normalizeUsername, validUsername, validateAccounts} from './auth.mjs';
 
-export async function writeAccounts(file, data) {
+export async function writeAccounts(file, data, {forbiddenRoots=resolveRuntimeOptions().auth.forbiddenRoots}={}) {
   validateAccounts(data);
-  file = await assertPrivateAccountsPath(file);
+  file = await assertPrivateAccountsPath(file, forbiddenRoots);
   await fs.mkdir(path.dirname(file), {recursive: true, mode: 0o700});
   const temporary = path.join(path.dirname(file), '.accounts-' + randomUUID() + '.tmp');
   try {
@@ -21,7 +21,8 @@ export async function writeAccounts(file, data) {
 }
 
 async function passwordInput() {
-  if (process.env.EDITOR_NEW_PASSWORD !== undefined) return process.env.EDITOR_NEW_PASSWORD;
+  const password=process.env.AFE_NEW_PASSWORD??process.env.EDITOR_NEW_PASSWORD;
+  if (password !== undefined) return password;
   // A pipe must use EDITOR_NEW_PASSWORD; this avoids accidentally echoing secrets or hanging.
   if (!process.stdin.isTTY) throw Error('Ohne Terminal bitte EDITOR_NEW_PASSWORD verwenden.');
   const muted = new Writable({write(_chunk, _encoding, done) { done(); }});
@@ -39,8 +40,8 @@ async function passwordInput() {
   } finally { reader.close(); muted.end(); }
 }
 
-export async function manageAccounts(args, {file = accountsPath(), password = passwordInput, print = console.log} = {}) {
-  file = await assertPrivateAccountsPath(file);
+export async function manageAccounts(args, {runtime = resolveRuntimeOptions(), file = runtime.auth.file, forbiddenRoots = runtime.auth.forbiddenRoots, password = passwordInput, print = console.log} = {}) {
+  file = await assertPrivateAccountsPath(file, forbiddenRoots);
   const [command, rawUsername, ...options] = args, username = normalizeUsername(rawUsername);
   if (!['add', 'passwd', 'disable', 'list'].includes(command)) throw Error('Verwendung: add <username> --name "Anzeigename" --email x@y | passwd <username> | disable <username> | list');
   if (command === 'list' ? args.length !== 1 : !validUsername(username)) throw Error('Ungültiger Benutzername oder Aufruf.');
@@ -67,7 +68,7 @@ export async function manageAccounts(args, {file = accountsPath(), password = pa
     if (command === 'passwd') { Object.assign(user, await hashPassword(await password())); user.passwordVersion++; }
     else { user.disabled = true; user.passwordVersion++; }
   }
-  await writeAccounts(file, data);
+  await writeAccounts(file, data, {forbiddenRoots});
   print(command === 'add' ? 'Konto angelegt.' : command === 'passwd' ? 'Passwort geändert; bestehende Sitzungen beendet.' : 'Konto deaktiviert; bestehende Sitzungen beendet.');
 }
 

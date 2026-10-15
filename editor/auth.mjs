@@ -1,9 +1,7 @@
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
-import {fileURLToPath} from 'node:url';
 import {scrypt, randomBytes, createHmac, timingSafeEqual} from 'node:crypto';
 
-import {editorRoot as root,sourceRoot,stateRoot} from './paths.mjs';
 export const PASSWORD_PARAMS = Object.freeze({N: 2 ** 15, r: 8, p: 1, keylen: 64});
 export const COOKIE_NAME = '__Host-fs_editor';
 // Without HTTPS (local loopback) browsers like Safari drop Secure cookies, and __Host- requires Secure.
@@ -11,7 +9,6 @@ export const LOCAL_COOKIE_NAME = 'fs_editor';
 const MAXMEM = 64 * 1024 * 1024, IDLE = 2 * 60 * 60 * 1000, ABSOLUTE = 12 * 60 * 60 * 1000;
 const WINDOW = 15 * 60 * 1000, MAX_BUCKETS = 4096;
 const error = (message, status = 400, retryAfter) => Object.assign(new Error(message), {status, retryAfter});
-export const accountsPath = () => path.resolve(process.env.EDITOR_ACCOUNTS || path.join(stateRoot(), 'runtime-private/editor-accounts.json'));
 export const normalizeUsername = value => typeof value === 'string' ? value.trim().toLowerCase() : '';
 export const validUsername = value => typeof value === 'string' && /^[a-z0-9][a-z0-9._-]{0,63}$/.test(value);
 const validIdentity = (name, email) => typeof name === 'string' && name.trim().length > 0 && name.length <= 200 && !/[\x00-\x1f\x7f<>]/.test(name) && typeof email === 'string' && email.length <= 254 && /^[^\s<>\x00-\x1f\x7f@]+@[^\s<>\x00-\x1f\x7f@]+$/.test(email);
@@ -24,7 +21,7 @@ async function canonical(file) {
 }
 export async function assertPrivateAccountsPath(file, forbiddenRoots = []) {
   const actual = await canonical(path.resolve(file));
-  const blocked = ['source', 'web', 'runtime', 'runtime-public', 'preview'].map(dir => path.join(root, dir)).concat([sourceRoot,...['runtime','runtime-public','preview'].map(dir=>path.join(stateRoot(),dir)),process.env.FLYINGSTARS_PUBLIC_WEBROOT].filter(Boolean),forbiddenRoots);
+  const blocked = forbiddenRoots;
   for (const dir of blocked) if (inside(actual, await canonical(path.resolve(dir)))) throw error('Die Kontodatei muss außerhalb von Quellcode und Webroots liegen.');
   return actual;
 }
@@ -37,7 +34,7 @@ export function validateAccounts(data) {
   }
   return data;
 }
-export async function loadAccounts(file = accountsPath()) {
+export async function loadAccounts(file) {
   const contents = await fs.readFile(file, 'utf8');
   let data; try { data = JSON.parse(contents); } catch { throw error('Ungültiges JSON in der Kontodatei.'); }
   return validateAccounts(data);
@@ -74,8 +71,8 @@ export async function verifyPassword(password, user) {
 const equal = (a, b) => typeof a === 'string' && typeof b === 'string' && Buffer.byteLength(a) === Buffer.byteLength(b) && timingSafeEqual(Buffer.from(a), Buffer.from(b));
 
 export class EditorAuth {
-  constructor({file = accountsPath(), secret = process.env.EDITOR_SESSION_SECRET, clock = Date.now, secure = true} = {}) {
-    if (secret !== undefined && Buffer.byteLength(secret) < 32) throw error('EDITOR_SESSION_SECRET braucht mindestens 32 Bytes.');
+  constructor({file, secret, clock = Date.now, secure = true} = {}) {
+    if (secret !== undefined && Buffer.byteLength(secret) < 32) throw error('AFE_SESSION_SECRET (EDITOR_SESSION_SECRET) braucht mindestens 32 Bytes.');
     this.file = file; this.secret = secret === undefined ? randomBytes(32) : secret; this.clock = clock;
     this.cookieName = secure ? COOKIE_NAME : LOCAL_COOKIE_NAME; this.cookieAttributes = 'Path=/; HttpOnly; ' + (secure ? 'Secure; ' : '') + 'SameSite=Strict';
     this.sessions = new Map(); this.userLimits = new Map(); this.ipLimits = new Map();

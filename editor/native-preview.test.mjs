@@ -18,7 +18,7 @@ async function setup() {
     decode: (source, text) => ({ raw: text, doc: null }),
     encode: (source, raw) => String(raw),
   };
-  const preview = new NativePreview(store, root);
+  const preview = new NativePreview(store, root, {site:{contentCollections:["src/content/pages/", "src/content/posts/", "src/content/projects/", "src/content/faq/"],contentRoot:"src/content",assetRoot:"public/assets"}});
   for (const [file, content] of Object.entries(saved)) {
     await fs.mkdir(path.dirname(path.join(preview.dir, file)), { recursive: true });
     await fs.writeFile(path.join(preview.dir, file), content);

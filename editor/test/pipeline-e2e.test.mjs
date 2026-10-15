@@ -1,3 +1,5 @@
+import {createFlyingStarsAdapter} from '../flyingstars-adapter.mjs';
+import {resolveRuntimeOptions} from '../runtime-options.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {promises as fs} from 'node:fs';
@@ -35,7 +37,7 @@ test('Offline-Pipeline: CI, Code-Deploy, Inhalts-Push/Freigabe, Rebase, Buildfeh
   const update = () => hostUpdate({source:host,state,webroot,restart,remote:'origin'});
   let store;
   t.after(() => store?.sync.close());
-  const freshStore = async () => {store?.sync.close();store = await new NativeStore(host,{remote:'origin'}).init();return store;};
+  const freshStore = async () => {store?.sync.close();store = await new NativeStore(host,{remote:'origin',site:await createFlyingStarsAdapter(host),runtime:resolveRuntimeOptions({values:{siteRoot:host}})}).init();return store;};
   const saveTitle = async title => {
     const current = await store.state(), page = current.records.find(r=>r.id==='page/index');
     return store.save({expectedHead:current.head,requestId:randomUUID(),changes:[{id:page.id,expectedRevision:page.revision,patches:[{path:['title'],value:title}]}]});

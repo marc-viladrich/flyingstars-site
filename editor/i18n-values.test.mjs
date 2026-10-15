@@ -1,3 +1,5 @@
+import {createFlyingStarsAdapter as translationSite} from './flyingstars-adapter.mjs';
+import {fileURLToPath as translationRoot} from 'node:url';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {localize,sha256} from '../src/lib/localize.mjs';
@@ -8,8 +10,9 @@ import {localizedHref,localeFromPath,sourcePath} from '../src/lib/localized-rout
 import {markdownHtml} from '../src/lib/markdown-policy.mjs';
 import {jsonScript} from '../src/lib/json-script.mjs';
 import {fake,translationProvider} from './translation-providers.mjs';
-import {plan,executeBatched,mergeIntoTranslations} from './translation-core.mjs';
+import {executeBatched, createTranslationCore} from './translation-core.mjs';
 import {readFile,readdir} from 'node:fs/promises';
+const {plan,mergeIntoTranslations}=createTranslationCore(await translationSite(translationRoot(new URL('../',import.meta.url))));
 const record={id:'page/example',data:{title:'Grüße aus Köln',href:'/kontakt/',date:new Date('2026-10-14'),sections:[{headline:'Unser Himmel'}]},fields:[{path:['title'],kind:'text'},{path:['href'],kind:'text'},{path:['date'],kind:'text'},{path:['sections',0,'headline'],kind:'text'}]};
 const value=(path,text,reviewed=true,sourceHash=sha256(path.reduce((v,k)=>v[k],record.data)))=>({path,text,reviewed,sourceHash});
 const translation=values=>({sourceId:record.id,locale:'en',sourceHash:'0'.repeat(64),values});

@@ -1,13 +1,16 @@
+import {createFlyingStarsAdapter as translationSite} from './flyingstars-adapter.mjs';
+import {fileURLToPath as translationRoot} from 'node:url';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {NativeBuilder} from './native-builder.mjs';
-import {plan,executeBatched,mergeIntoTranslations,sha256} from './translation-core.mjs';
+import {executeBatched, sha256, createTranslationCore} from './translation-core.mjs';
 import {fake} from './translation-providers.mjs';
 import {verifyPricingRuntime} from './i18n-runtime-proof.mjs';
 import {i18nFixture} from './i18n-test-fixture.mjs';
+const {plan,mergeIntoTranslations}=createTranslationCore(await translationSite(translationRoot(new URL('../',import.meta.url))));
 const at=(data,path)=>path.reduce((value,key)=>value[key],data);
 async function suggest(store,locale,ids) {
  let state=await store.state();const memory={entries:{}};

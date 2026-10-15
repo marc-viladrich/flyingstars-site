@@ -1,3 +1,5 @@
+import {createFlyingStarsAdapter} from './flyingstars-adapter.mjs';
+import {resolveRuntimeOptions} from './runtime-options.mjs';
 // Isolated, fully offline Astro fixture. Never changes source media or production image behavior.
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
@@ -32,5 +34,5 @@ export async function optimizedLogo(src:string,height:number) {return optimizedI
   await git(source,['rm','--cached','--ignore-unmatch','node_modules']);
   await git(source,['-c','user.name=Fixture','-c','user.email=test@example.invalid','-c','commit.gpgsign=false','commit','-qm','Isolierte Offline-Fixture']);
   await git(source,['branch','main']);
-  return {root,source,store:await new NativeStore(source,{remote:false}).init()};
+  return {root,source,store:await new NativeStore(source,{remote:false,site:await createFlyingStarsAdapter(source),runtime:resolveRuntimeOptions({values:{siteRoot:source}})}).init()};
 }

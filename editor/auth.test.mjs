@@ -94,9 +94,9 @@ test('account CLI creates mode-0600 files, lists safely, resets passwords and di
 
 test('credentials cannot be stored under source, webroots or symlinks to them; malformed accounts fail closed', async t => {
   const {dir, file} = await fixture(t);
-  for (const blocked of ['source', 'web', 'runtime', 'runtime-public', 'preview']) await assert.rejects(assertPrivateAccountsPath(path.join(here, blocked, 'accounts.json')), /außerhalb/);
+  for (const blocked of ['source', 'web', 'runtime', 'runtime-public', 'preview']) await assert.rejects(assertPrivateAccountsPath(path.join(here, blocked, 'accounts.json'), [path.dirname(here)]), /außerhalb/);
   const link = path.join(dir, 'web-link'); await fs.symlink(path.join(here, 'web'), link);
-  await assert.rejects(assertPrivateAccountsPath(path.join(link, 'accounts.json')), /außerhalb/);
+  await assert.rejects(assertPrivateAccountsPath(path.join(link, 'accounts.json'), [path.dirname(here)]), /außerhalb/);
   const data = await loadAccounts(file); data.users[0].params.N = 2 ** 20;
   await fs.writeFile(file, JSON.stringify(data)); await assert.rejects(new EditorAuth({file}).init(), /Ungültiger Eintrag/);
   await fs.writeFile(file, '{"private-value"'); await assert.rejects(loadAccounts(file), error => error.message === 'Ungültiges JSON in der Kontodatei.');

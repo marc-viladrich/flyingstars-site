@@ -1,6 +1,9 @@
+import {createFlyingStarsAdapter as translationSite} from './flyingstars-adapter.mjs';
+import {fileURLToPath as translationRoot} from 'node:url';
 import test from "node:test";
 import assert from "node:assert/strict";
-import { plan, execute, mergeIntoTranslations, sha256, segmentsOf } from "./translation-core.mjs";
+import {execute, sha256, segmentsOf, createTranslationCore} from "./translation-core.mjs";
+const {plan,mergeIntoTranslations}=createTranslationCore(await translationSite(translationRoot(new URL('../',import.meta.url))));
 
 // A fake provider that records what it was asked to translate.
 function fakeProvider() {

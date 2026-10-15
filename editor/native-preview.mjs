@@ -7,13 +7,15 @@ import { git } from "./native-store.mjs";
 // A warm `astro dev` runs on a detached git worktree of the content branch. Draft records are
 // written there (never committed), Astro re-renders, and the editor swaps the changed sections.
 // Saving, building and publishing stay with NativeStore/NativeBuilder.
-const contentCollections = ["src/content/pages/", "src/content/posts/", "src/content/projects/", "src/content/faq/"];
+
 const devAttributes = / data-astro-source-(?:file|loc)="[^"]*"/g;
 const complete = (html) => /<\/html>\s*$/i.test(html);
 
 export class NativePreview {
-  constructor(store, root, { port = 4544, origin = "http://127.0.0.1:4542", node = process.execPath } = {}) {
+  constructor(store, root, { port = 4544, origin = "http://127.0.0.1:4542", node = process.execPath, site = store.site, env = store.runtime?.processEnv || {} } = {}) {
     this.store = store;
+    this.site = site || {contentCollections:[],contentRoot:"src/content",assetRoot:"public/assets"};
+    this.env = env;
     this.dir = path.join(path.resolve(root), "preview", "worktree");
     this.port = port;
     this.origin = origin;
@@ -23,7 +25,7 @@ export class NativePreview {
     this.written = new Map();
     this.queue = Promise.resolve();
     this.starting = null;
-    this.git = git;
+    this.git = store.git || git;
   }
   enqueue(work) {
     const result = this.queue.then(work);
@@ -36,7 +38,7 @@ export class NativePreview {
   async init() {
     if (!(await this.exists(path.join(this.dir, ".git")))) {
       await fs.mkdir(path.dirname(this.dir), { recursive: true });
-      await git(this.store.root, ["worktree", "add", "--detach", "-f", this.dir, await this.store.head()]);
+      await this.git(this.store.root, ["worktree", "add", "--detach", "-f", this.dir, await this.store.head()]);
     }
     const modules = path.join(this.dir, "node_modules");
     if (!(await this.exists(modules))) await fs.symlink(await fs.realpath(path.join(this.store.root, "node_modules")), modules);
@@ -60,7 +62,7 @@ export class NativePreview {
       const log = await fs.open(path.join(path.dirname(this.dir), "dev.log"), "a");
       const child = spawn(this.node, [cli, "dev", "--port", String(this.port), "--host", "127.0.0.1"], {
         cwd: this.dir,
-        env: { ...process.env, ASTRO_TELEMETRY_DISABLED: "1", FLYINGSTARS_EDITOR: "1", SITE_URL: this.origin },
+        env: { ...this.env, ASTRO_TELEMETRY_DISABLED: "1", FLYINGSTARS_EDITOR: "1", SITE_URL: this.origin },
         stdio: ["ignore", log.fd, log.fd],
         detached: true,
       });
@@ -96,12 +98,12 @@ export class NativePreview {
     if (head === this.head && !force) return;
     const previous = this.head;
     await this.git(this.dir, ["checkout", "--detach", "-f", head]);
-    await this.git(this.dir, ["clean", "-fdq", "--", "src/content", "public/assets"]);
+    await this.git(this.dir, ["clean", "-fdq", "--", this.site.contentRoot, this.site.assetRoot]);
     this.written.clear();
     this.head = head;
     if (previous && previous !== head) {
       const changed = (await this.git(this.dir, ["diff", "--name-only", previous, head])).split("\n").filter(Boolean);
-      if (changed.some((file) => !file.startsWith("src/content/"))) this.codeChanged = true;
+      if (changed.some((file) => !file.startsWith(this.site.contentRoot+"/"))) this.codeChanged = true;
     }
   }
   render(request) {
@@ -160,7 +162,7 @@ export class NativePreview {
         continue;
       }
       anyChanged = true;
-      if (contentCollections.some((prefix) => file.startsWith(prefix))) collectionChanged = true;
+      if (this.site.contentCollections.some((prefix) => file.startsWith(prefix))) collectionChanged = true;
       if (content === null) await fs.rm(target, { force: true });
       else {
         await fs.mkdir(path.dirname(target), { recursive: true });

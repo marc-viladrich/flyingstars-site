@@ -7,7 +7,7 @@ const timeout = (ms) => AbortSignal.timeout(ms);
 
 // MyMemory (Translated, Italy): no key, ~5,000 characters/day anonymously (50,000 with MYMEMORY_EMAIL).
 // For testing the pipeline only: its translation memory can return community matches.
-export function mymemory({ email = process.env.MYMEMORY_EMAIL, fetcher = fetch } = {}) {
+export function mymemory({ email, fetcher = fetch } = {}) {
   return {
     id: "mymemory",
     label: "MyMemory (Test)",
@@ -49,7 +49,7 @@ export function mymemory({ email = process.env.MYMEMORY_EMAIL, fetcher = fetch }
 }
 
 // DeepL REST API. Keys ending in ":fx" use the free host. Up to 50 texts per request.
-export function deepl({ key = process.env.DEEPL_API_KEY, fetcher = fetch } = {}) {
+export function deepl({ key, fetcher = fetch } = {}) {
   if (!key) return null;
   const host = key.endsWith(":fx") ? "https://api-free.deepl.com" : "https://api.deepl.com";
   const targetCode = { en: "EN-GB", nl: "NL", de: "DE" };
@@ -88,7 +88,7 @@ export function deepl({ key = process.env.DEEPL_API_KEY, fetcher = fetch } = {})
 }
 
 // LibreTranslate-compatible endpoint (self-hosted or EU instance), as before.
-export function libretranslate({ url = process.env.EDITOR_TRANSLATION_URL, key = process.env.EDITOR_TRANSLATION_KEY, fetcher = fetch } = {}) {
+export function libretranslate({ url, key, fetcher = fetch } = {}) {
   if (!url) return null;
   return {
     id: "libretranslate",
@@ -140,8 +140,8 @@ export function fake() {
   }};
 }
 const factories = { mymemory, deepl, libretranslate, fake };
-export function translationProvider(name = process.env.EDITOR_TRANSLATION_PROVIDER, options = {}) {
-  const chosen = name || (process.env.EDITOR_TRANSLATION_URL ? "libretranslate" : null);
+export function translationProvider(name, options = {}) {
+  const chosen = name || (options.url ? "libretranslate" : null);
   if (!chosen || chosen === "none") return null;
   const factory = factories[chosen];
   if (!factory) throw Error("Unbekannter Übersetzungsanbieter: " + chosen);

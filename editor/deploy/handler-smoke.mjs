@@ -3,11 +3,11 @@ import http from 'node:http';
 import {Duplex} from 'node:stream';
 import {startNativeServers} from '../server.mjs';
 
-export async function handlerRequest(server, origin, route = '/editor/api/state') {
+export async function handlerRequest(server, origin, route = '/editor/api/state', headers = {}) {
   const chunks = [], socket = new Duplex({read() {}, write(chunk, _encoding, done) {chunks.push(Buffer.from(chunk)); done();}});
   socket.remoteAddress = '127.0.0.1';
   const req = new http.IncomingMessage(socket);
-  Object.assign(req, {method: 'GET', url: route, complete: true, httpVersion: '1.0', httpVersionMajor: 1, httpVersionMinor: 0, headers: {host: new URL(origin).host}});
+  Object.assign(req, {method: 'GET', url: route, complete: true, httpVersion: '1.0', httpVersionMajor: 1, httpVersionMinor: 0, headers: {host: new URL(origin).host,...headers}});
   req.push(null);
   const res = new http.ServerResponse(req); res.assignSocket(socket);
   return new Promise((resolve, reject) => {

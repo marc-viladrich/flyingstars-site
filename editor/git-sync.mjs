@@ -1,10 +1,10 @@
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
 
-export async function configuredRemote(root, git, selected = process.env.FLYINGSTARS_GIT_REMOTE) {
+export async function configuredRemote(root, git, selected) {
   if (selected === false || selected === 'off') return null;
   const names = (await git(root, ['remote'])).split('\n');
-  if (selected && !names.includes(selected)) throw Error('FLYINGSTARS_GIT_REMOTE muss einen konfigurierten Git-Remote benennen.');
+  if (selected && !names.includes(selected)) throw Error('AFE_GIT_REMOTE (FLYINGSTARS_GIT_REMOTE) muss einen konfigurierten Git-Remote benennen.');
   // Opt-in: only an explicitly named remote is pushed to (the host sets FLYINGSTARS_GIT_REMOTE=origin).
   // A developer clone with an unrelated origin must never receive content pushes by accident.
   return selected || null;
@@ -12,8 +12,8 @@ export async function configuredRemote(root, git, selected = process.env.FLYINGS
 
 /** A failed push never changes a save response. Pending commits survive process restarts in Git. */
 export class GitSync {
-  constructor(store, git, remote) {
-    this.store = store; this.git = git; this.remote = remote;
+  constructor(store, git, remote, {draftBranch=store.draftBranch||'content/draft'}={}) {
+    this.draftBranch=draftBranch;this.store = store; this.git = git; this.remote = remote;
     this.status = {enabled: !!remote, pending: false, lastError: null, lastPushedAt: null};
     this.retry = 0; this.running = null; this.timer = null; this.closed = false;
   }
@@ -38,8 +38,8 @@ export class GitSync {
       });
       const {head,leaseFile,lease}=snapshot;
       const args = ['push'];
-      if (/^[a-f0-9]{40}$/.test(lease)) args.push('--force-with-lease=refs/heads/content/draft:' + lease);
-      args.push(this.remote, head + ':refs/heads/content/draft');
+      if (/^[a-f0-9]{40}$/.test(lease)) args.push('--force-with-lease=refs/heads/'+this.draftBranch+':' + lease);
+      args.push(this.remote, head + ':refs/heads/'+this.draftBranch);
       await this.git(this.store.root, args, {timeout: 30_000});
       await this.store.exclusive(async () => {
         const currentLease = await fs.readFile(leaseFile, 'utf8').catch(e=>{if(e.code!=='ENOENT')throw e;return '';});

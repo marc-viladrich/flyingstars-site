@@ -3,12 +3,12 @@ import path from 'node:path';
 import {randomUUID} from 'node:crypto';
 
 /** Rebase in an isolated worktree. Conflict leaves the editor checkout and branch untouched. */
-export async function prepareDraftRebase(root, main, git, remote) {
+export async function prepareDraftRebase(root, main, git, remote, {draftBranch='content/draft'}={}) {
   if (await git(root, ['status', '--porcelain', '--untracked-files=normal'])) throw Error('Der Host-Klon enthält ungespeicherte Dateien. Deployment/Freigabe abgebrochen.');
-  const before = await git(root, ['rev-parse', 'content/draft']);
+  const before = await git(root, ['rev-parse', draftBranch]);
   let remoteDraft = '';
   if (remote) {
-    try {remoteDraft = await git(root, ['rev-parse', 'refs/remotes/' + remote + '/content/draft']);} catch {}
+    try {remoteDraft = await git(root, ['rev-parse', 'refs/remotes/' + remote + '/' + draftBranch]);} catch {}
     if (remoteDraft) try {await git(root, ['merge-base', '--is-ancestor', remoteDraft, before]);}
     catch {
       const lease=await fs.readFile(path.join(root,'.git','flyingstars-draft-lease'),'utf8').catch(e=>{if(e.code!=='ENOENT')throw e;return '';});
@@ -24,9 +24,9 @@ export async function prepareDraftRebase(root, main, git, remote) {
   } finally {await git(root, ['worktree', 'remove', '--force', folder]);}
 }
 
-export async function applyDraftRebase(root, prepared, git) {
-  if (await git(root, ['branch', '--show-current']) !== 'content/draft') throw Error('Der Host-Klon muss auf content/draft stehen.');
-  if (await git(root, ['rev-parse', 'content/draft']) !== prepared.before) throw Error('Der Entwurf wurde gleichzeitig geändert.');
+export async function applyDraftRebase(root, prepared, git, {draftBranch='content/draft'}={}) {
+  if (await git(root, ['branch', '--show-current']) !== draftBranch) throw Error('Der Host-Klon muss auf '+draftBranch+' stehen.');
+  if (await git(root, ['rev-parse', draftBranch]) !== prepared.before) throw Error('Der Entwurf wurde gleichzeitig geändert.');
   if (prepared.head !== prepared.before) {
     await git(root, ['reset', '--hard', prepared.head]);
     // The explicit lease allows replacing only the remote draft we actually rebased.

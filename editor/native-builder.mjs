@@ -6,19 +6,18 @@ import {randomUUID} from 'node:crypto';
 import {activateWebroot} from './public-webroot.mjs';
 import {git} from './native-store.mjs';
 const run=promisify(execFile);
-const required=['index.html','show-konfigurator/index.html','drohnenshow-preise/index.html'];
 
 /** Build an immutable commit. Publication and preview have separate artifacts. */
 export class NativeBuilder {
- constructor(store,root,{editor=true,origin='http://127.0.0.1:4542',runtimeName='runtime',webroot=editor?null:process.env.FLYINGSTARS_PUBLIC_WEBROOT}={}) {
-  this.store=store;this.root=path.resolve(root);this.runtime=path.join(this.root,runtimeName);
+ constructor(store,root,{editor=true,origin='http://127.0.0.1:4542',runtimeName='runtime',webroot=editor?null:store.runtime?.publicWebroot,site=store.site,env=store.runtime?.buildEnv||{}}={}) {
+  this.git=store.git||git;this.required=site?.requiredOutput||['index.html'];this.env=env;this.store=store;this.root=path.resolve(root);this.runtime=path.join(this.root,runtimeName);
   this.webroot=webroot;this.editor=editor;this.origin=origin;this.queue=Promise.resolve();this.current=null;
  }
  async ready(head) {
   const output=path.join(this.runtime,head),site=path.join(output,'site');
   const manifest=JSON.parse(await fs.readFile(path.join(output,'ready.json'),'utf8'));
   if(manifest.head!==head||manifest.editor!==this.editor||manifest.origin!==this.origin)throw Error('Unvollständiger Aufbau.');
-  for(const file of required)await fs.access(path.join(site,file));
+  for(const file of this.required)await fs.access(path.join(site,file));
   return {head,site};
  }
  async init(head) {
@@ -41,17 +40,17 @@ export class NativeBuilder {
    const output=path.join(this.runtime,head),source=path.join(output,'source'),site=path.join(output,'site');
    await fs.rm(source,{recursive:true,force:true});await fs.rm(site,{recursive:true,force:true});
    await fs.mkdir(source,{recursive:true});const tar=path.join(output,'source.tar');
-   await git(this.store.root,['archive','--format=tar','--output='+tar,head]);
+   await this.git(this.store.root,['archive','--format=tar','--output='+tar,head]);
    await run('tar',['-xf',tar,'-C',source]);await fs.rm(tar);
    await fs.symlink(await fs.realpath(path.join(this.store.root,'node_modules')),path.join(source,'node_modules'));
    const pkg=JSON.parse(await fs.readFile(path.join(source,'node_modules/astro/package.json')));
    const cli=path.join(source,'node_modules/astro',typeof pkg.bin==='string'?pkg.bin:pkg.bin.astro);
-   const env=Object.fromEntries(['PATH','HOME','TMPDIR','LANG','FLYINGSTARS_OFFLINE_MEDIA','MEDIA_HOST','PUBLIC_FORM_ENDPOINT'].filter(k=>process.env[k]).map(k=>[k,process.env[k]]));
+
    try{
-    const result=await run(process.execPath,[cli,'build','--outDir',site],{cwd:source,env:{...env,ASTRO_TELEMETRY_DISABLED:'1',...(this.editor?{FLYINGSTARS_EDITOR:'1'}:{}),SITE_URL:this.origin},timeout:180000,maxBuffer:5_000_000});
+    const result=await run(process.execPath,[cli,'build','--outDir',site],{cwd:source,env:{...this.env,ASTRO_TELEMETRY_DISABLED:'1',...(this.editor?{FLYINGSTARS_EDITOR:'1'}:{}),SITE_URL:this.origin},timeout:180000,maxBuffer:5_000_000});
     await fs.writeFile(path.join(output,'build.log'),result.stdout+result.stderr);
    }catch(error){await fs.writeFile(path.join(output,'build.log'),(error.stdout||'')+(error.stderr||''));throw Error('Inhalt gespeichert, Astro-Aufbau fehlgeschlagen. Der vorherige Seitenstand bleibt aktiv.');}
-   for(const file of required)await fs.access(path.join(site,file));
+   for(const file of this.required)await fs.access(path.join(site,file));
    await fs.writeFile(path.join(output,'ready.json'),JSON.stringify({head,editor:this.editor,origin:this.origin}));
    return {head,site};
  }
