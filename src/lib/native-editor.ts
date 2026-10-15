@@ -24,6 +24,9 @@ export function nativeItem(props:Record<string,any>,{record,entry,entryRecord}:{
 // to the section, like nativeField); {record,path} belongs to another record.
 type NativeUse=(string|number)[]|{record:string;path:(string|number)[]};
 export function nativeUses(props:Record<string,any>,uses:NativeUse[]){if(!privateBuild())return {};const list=uses.map(use=>Array.isArray(use)?(props._nativeRecord?[props._nativeRecord,['sections',props._nativeIndex??props.index,...use]]:null):[use.record,use.path]).filter(Boolean);return list.length?{'data-native-uses':JSON.stringify(list)}:{};}
+// A CSS variable fed by a colour field (a token id): the editor sets it the moment a colour is picked,
+// before the server render confirms it.
+export function nativeColor(record:string,path:(string|number)[],cssVar:string){return privateBuild()?{'data-native-color':JSON.stringify({record,path,var:cssVar})}:{};}
 // Editor builds keep optional runtime nodes (canvases) in the DOM, hidden, so toggling them is an
 // attribute change the live preview can apply without restarting the section's animations.
 export function editorBuild(){return privateBuild();}

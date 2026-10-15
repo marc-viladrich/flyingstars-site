@@ -25,7 +25,7 @@ export const projectShowcaseSchema = z.object({
   titleLines: z.array(inlineText('Hero-Titelzeile').min(1)).min(1).max(2),
   titleChars: z.number().int().positive(),
   tagline: z.string().min(1),
-  accent: z.string().refine(isColorToken, 'Unbekannte Farbe').describe('Akzentfarbe').meta({format: 'color'}),
+  accent: z.string().refine(isColorToken, 'Unbekannte Farbe').describe('Akzentfarbe').meta({format: 'color', palette: ['Marke', 'Projekte', 'Pakete']}),
   drones: z.number().int().positive(),
   heroVideo: z.url(),
   credits: z.array(z.object({ label: z.string().min(1), value: z.string().min(1) })).min(1),

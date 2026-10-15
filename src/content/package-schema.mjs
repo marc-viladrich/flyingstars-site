@@ -18,7 +18,7 @@ export const packageSchema = z.object({
   step: count('Zusätzliche Drohnen je Preisstufe'),
   add: amount('Aufpreis je Preisstufe in Euro'),
   dur: text('Showdauer'),
-  color: z.string().refine(isColorToken, 'Unbekannte Farbe').describe('Paketfarbe').meta({format: 'color'}),
+  color: z.string().refine(isColorToken, 'Unbekannte Farbe').describe('Paketfarbe').meta({format: 'color', palette: ['Marke', 'Pakete']}),
   orbShape: z.enum(['ring', 'sphere', 'torus']).describe('Animierte Paketformation'),
   badge: text('Paketkennzeichnung'),
   description: text('Paketbeschreibung'),

@@ -1,5 +1,5 @@
 // Editor hints from the schema (.meta({format, group})); keys only when present, so the description stays JSON-equal.
-const meta=(schema,node,format)=>{const own={...node.meta?.(),...schema.meta?.()},out={};const f=format??own.format;if(f!==undefined)out.format=f;for(const key of ['group','readOnly','advanced','help','hint'])if(own[key]!==undefined)out[key]=own[key];return out;};
+const meta=(schema,node,format)=>{const own={...node.meta?.(),...schema.meta?.()},out={};const f=format??own.format;if(f!==undefined)out.format=f;for(const key of ['group','readOnly','advanced','help','hint','palette'])if(own[key]!==undefined)out[key]=own[key];return out;};
 // The editor reads the same Zod definitions Astro uses; no second form schema.
 export function unwrap(schema){while(['optional','default','nullable','prefault','catch','readonly'].includes(schema._def.type))schema=schema._def.innerType;return schema;}
 export function optional(schema){return schema.isOptional?.()||false;}

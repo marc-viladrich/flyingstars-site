@@ -1082,7 +1082,10 @@ function colorControl(item, field, { labelNode, name, key, isChanged }) {
   };
   const build = () => {
     const current = read();
-    const groups = [...new Set(tokens.map((t) => t.group || ""))];
+    // The schema may limit a field to some palette groups (an accent offers brand/project colours, not surfaces);
+    // the stored colour stays selectable even if it lies outside them.
+    const offered = field.palette?.length ? tokens.filter((t) => field.palette.includes(t.group) || t.id === current) : tokens;
+    const groups = [...new Set(offered.map((t) => t.group || ""))];
     palette.replaceChildren(
       ...groups.map((groupName) =>
         el(
@@ -1092,7 +1095,7 @@ function colorControl(item, field, { labelNode, name, key, isChanged }) {
           el(
             "div",
             { class: "color-options" },
-            tokens
+            offered
               .filter((t) => (t.group || "") === groupName)
               .map((token) => {
                 const selected = token.id === current;

@@ -784,6 +784,17 @@ function restoreStructure(items, id) {
 // Translation is offered in the context panel ("Übersetzen"), not as a floating button per text.
 
 function applyPresentation() {
+  // Colour fields feed CSS variables (marked with nativeColor): a picked colour shows at once.
+  for (const node of document.querySelectorAll("[data-native-color]")) {
+    let spec;
+    try {
+      spec = JSON.parse(node.dataset.nativeColor);
+    } catch {
+      continue;
+    }
+    const id = readPath(records.find((r) => r.id === spec.record)?.data, spec.path);
+    if (typeof id === "string" && /^[a-z0-9-]+$/.test(id)) node.style.setProperty(spec.var, `var(--c-${id})`);
+  }
   for (const node of document.querySelectorAll("[data-native-section-index]")) {
     const owner = records.find((r) => r.id === node.dataset.nativeRecord),
       section = owner?.data.sections?.[Number(node.dataset.nativeSectionIndex)];
