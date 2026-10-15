@@ -40,7 +40,7 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
  const {siteRoot:sourceDir,stateDir,editorOrigin:origin,canonicalOrigin:publicOrigin}=runtime;
  await assertStateLocation(sourceDir,stateDir,runtime.publicWebroot);
  const canonicalOrigin=new URL(origin);
- const authentication=runtime.auth.enabled?await new EditorAuth({...runtime.auth,secure:canonicalOrigin.protocol==='https:',...(typeof auth==='object'?auth:{})}).init({forbiddenRoots:runtime.auth.forbiddenRoots}):null;
+ const authentication=runtime.auth.enabled?await new EditorAuth({...runtime.auth,sessionDir:path.join(stateDir,'runtime-private'),secure:canonicalOrigin.protocol==='https:',...(typeof auth==='object'?auth:{})}).init({forbiddenRoots:runtime.auth.forbiddenRoots}):null;
  const configuredSite=site||await createSiteAdapter(sourceDir);
  const adapter={...configuredSite,extensions:createExtensionRegistry([...configuredSite.extensions.definitions,...runtime.extensions])};
  const languages=adapter.extensions.first('languages')??{source:'de',locales:{}};
@@ -74,6 +74,7 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
     if(page){res.writeHead(302,{location:'/editor/login?next='+encodeURIComponent(loginReturn(url))});return res.end();}
     return json(res,401,{error:'Nicht angemeldet.'});
    }
+   if(session.cookie)res.setHeader('Set-Cookie',session.cookie);
   }
   if(topLevelVisit(req)&&isSitePage(p)){res.writeHead(302,{location:editorEntry(url)});return res.end();}
   if(req.method==='POST'){
@@ -89,7 +90,7 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
   }
   if(req.method==='GET'&&p==='/editor/api/session')return json(res,200,session?{user:{id:session.user.id,username:session.user.username,displayName:session.user.displayName},csrf:session.csrf}:{user:null,csrf:null});
   if(req.method==='POST'&&p==='/editor/api/logout'){
-   if(authentication)res.setHeader('Set-Cookie',authentication.destroySession(req));
+   if(authentication)res.setHeader('Set-Cookie',await authentication.destroySession(req));
    return json(res,200,{ok:true});
   }
   if(req.method==='GET'&&p==='/editor/api/state')return json(res,200,{...await store.state(),activeHead:builder.current?.head});

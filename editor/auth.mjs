@@ -6,7 +6,8 @@ export const PASSWORD_PARAMS = Object.freeze({N: 2 ** 15, r: 8, p: 1, keylen: 64
 export const COOKIE_NAME = '__Host-fs_editor';
 // Without HTTPS (local loopback) browsers like Safari drop Secure cookies, and __Host- requires Secure.
 export const LOCAL_COOKIE_NAME = 'fs_editor';
-const MAXMEM = 64 * 1024 * 1024, IDLE = 2 * 60 * 60 * 1000, ABSOLUTE = 12 * 60 * 60 * 1000;
+const MAXMEM = 64 * 1024 * 1024, IDLE = 12 * 60 * 60 * 1000;
+const DAY = 24 * 60 * 60 * 1000, REMEMBER = 30 * DAY, RENEWAL_GRACE = 30 * 1000;
 const WINDOW = 15 * 60 * 1000, MAX_BUCKETS = 4096;
 const error = (message, status = 400, retryAfter) => Object.assign(new Error(message), {status, retryAfter});
 export const normalizeUsername = value => typeof value === 'string' ? value.trim().toLowerCase() : '';
@@ -70,21 +71,98 @@ export async function verifyPassword(password, user) {
 }
 const equal = (a, b) => typeof a === 'string' && typeof b === 'string' && Buffer.byteLength(a) === Buffer.byteLength(b) && timingSafeEqual(Buffer.from(a), Buffer.from(b));
 
+// Never expose a partly written file, including the first generated signing secret.
+async function writePrivate(file, contents, exclusive = false) {
+  const temporary = path.join(path.dirname(file), '.auth-' + randomBytes(16).toString('hex') + '.tmp');
+  try {
+    const handle = await fs.open(temporary, 'wx', 0o600);
+    try { await handle.writeFile(contents); await handle.sync(); }
+    finally { await handle.close(); }
+    if (exclusive) await fs.link(temporary, file);
+    else await fs.rename(temporary, file);
+  } finally { await fs.rm(temporary, {force: true}); }
+}
+
+function storedSessions(data) {
+  if (data?.version !== 1 || !Array.isArray(data.sessions) || data.sessions.length > MAX_BUCKETS) throw error('Ungültige Sitzungsdatei.');
+  const sessions = new Map();
+  const fields = ['tokenHash', 'userId', 'passwordVersion', 'csrf', 'createdAt', 'lastSeen', 'expiresAt', 'renewedAt', 'remember'];
+  for (const record of data.sessions) {
+    if (!record || Object.keys(record).length !== fields.length || Object.keys(record).some(key => !fields.includes(key))) throw error('Ungültiger Eintrag in der Sitzungsdatei.');
+    const {tokenHash, ...session} = record;
+    if (!/^[a-f0-9]{64}$/.test(tokenHash) || sessions.has(tokenHash) || !/^[a-zA-Z0-9_-]{1,100}$/.test(session.userId) || !/^[a-f0-9]{64}$/.test(session.csrf) || !Number.isSafeInteger(session.passwordVersion) || session.passwordVersion < 1 || typeof session.remember !== 'boolean' || ['createdAt', 'lastSeen', 'expiresAt', 'renewedAt'].some(key => !Number.isSafeInteger(session[key]) || session[key] < 0) || session.createdAt > session.renewedAt || session.renewedAt > session.lastSeen || session.lastSeen >= session.expiresAt) throw error('Ungültiger Eintrag in der Sitzungsdatei.');
+    sessions.set(tokenHash, session);
+  }
+  return sessions;
+}
+
 export class EditorAuth {
-  constructor({file, secret, clock = Date.now, secure = true} = {}) {
+  constructor({file, sessionDir, secret, clock = Date.now, secure = true} = {}) {
     if (secret !== undefined && Buffer.byteLength(secret) < 32) throw error('AFE_SESSION_SECRET (EDITOR_SESSION_SECRET) braucht mindestens 32 Bytes.');
-    this.file = file; this.secret = secret === undefined ? randomBytes(32) : secret; this.clock = clock;
+    this.file = file; this.sessionDir = sessionDir; this.secret = secret; this.clock = clock;
     this.cookieName = secure ? COOKIE_NAME : LOCAL_COOKIE_NAME; this.cookieAttributes = 'Path=/; HttpOnly; ' + (secure ? 'Secure; ' : '') + 'SameSite=Strict';
-    this.sessions = new Map(); this.userLimits = new Map(); this.ipLimits = new Map();
+    this.sessions = new Map(); this.userLimits = new Map(); this.ipLimits = new Map(); this.pending = Promise.resolve();
   }
   async init({forbiddenRoots = []} = {}) {
     this.file = await assertPrivateAccountsPath(this.file, forbiddenRoots);
-    try { await loadAccounts(this.file); }
+    let accounts;
+    try { accounts = await loadAccounts(this.file); }
     catch (e) {
       if (e.code === 'ENOENT') throw error('Kontodatei fehlt. Anlegen mit: node relaunch/manage-accounts.mjs add <username> --name "Anzeigename" --email name@example.org');
       throw e;
     }
+    this.sessionDir = await assertPrivateAccountsPath(this.sessionDir || path.join(path.dirname(this.file), 'editor-session-state'), forbiddenRoots);
+    this.sessionsFile = await assertPrivateAccountsPath(path.join(this.sessionDir, 'editor-sessions.json'), forbiddenRoots);
+    const secretFile = await assertPrivateAccountsPath(path.join(this.sessionDir, 'editor-session-secret'), forbiddenRoots);
+    if ([this.sessionsFile, secretFile].includes(this.file)) throw error('Konten und Sitzungen brauchen getrennte Dateien.');
+    await fs.mkdir(this.sessionDir, {recursive: true, mode: 0o700});
+    await fs.chmod(this.sessionDir, 0o700);
+    if (this.secret === undefined) {
+      try { await writePrivate(secretFile, randomBytes(32).toString('hex') + '\n', true); }
+      catch (e) { if (e.code !== 'EEXIST') throw e; }
+      const secret = await fs.readFile(secretFile, 'utf8');
+      if (!/^[a-f0-9]{64}\n$/.test(secret)) throw error('Ungültiges Sitzungsgeheimnis.');
+      await fs.chmod(secretFile, 0o600);
+      this.secret = secret.trim();
+    }
+    try {
+      const data = JSON.parse(await fs.readFile(this.sessionsFile, 'utf8'));
+      const sessions = storedSessions(data);
+      this.sessions = equal(data.keyId, this.signature('session-store')) ? sessions : new Map();
+    }
+    catch (e) { if (e.code !== 'ENOENT') throw error('Ungültige Sitzungsdatei.'); }
+    this.pruneSessions(accounts);
+    await this.persistSessions();
     return this;
+  }
+  tokenHash(id) { return createHmac('sha256', this.secret).update('session-token:' + id).digest('hex'); }
+  async persistSessions() {
+    await writePrivate(this.sessionsFile, JSON.stringify({version: 1, keyId: this.signature('session-store'), sessions: [...this.sessions].map(([tokenHash, session]) => ({tokenHash, ...session}))}) + '\n');
+  }
+  // A single editor process owns this state directory. Serialize read/modify/write and roll back failed writes.
+  transaction(change) {
+    const result = this.pending.then(async () => {
+      const previous = this.sessions;
+      this.sessions = new Map([...previous].map(([key, session]) => [key, {...session}]));
+      try { const value = await change(); await this.persistSessions(); return value; }
+      catch (e) { this.sessions = previous; throw e; }
+    });
+    this.pending = result.catch(() => {});
+    return result;
+  }
+  pruneSessions(accounts) {
+    const users = new Map(accounts.users.map(user => [user.id, user]));
+    for (const [key, session] of this.sessions) {
+      const user = users.get(session.userId);
+      if (this.expired(session) || !user || user.disabled || user.passwordVersion !== session.passwordVersion) this.sessions.delete(key);
+    }
+  }
+  revoke(id) {
+    const session = id && this.sessions.get(this.tokenHash(id));
+    if (session) for (const [key, candidate] of this.sessions) if (candidate.csrf === session.csrf) this.sessions.delete(key);
+  }
+  sessionCookie(id, remember) {
+    return `${this.cookieName}=${id}.${this.signature(id)}; ${this.cookieAttributes}${remember ? '; Max-Age=' + REMEMBER / 1000 : ''}`;
   }
   signature(id) { return createHmac('sha256', this.secret).update(id).digest('hex'); }
   cookieId(req) {
@@ -95,28 +173,49 @@ export class EditorAuth {
     const [id, signature] = value.split('.');
     return equal(signature, this.signature(id)) ? id : null;
   }
-  expired(session, now = this.clock()) { return now - session.lastSeen >= IDLE || now - session.createdAt >= ABSOLUTE; }
+  expired(session, now = this.clock()) { return now >= session.expiresAt; }
   async session(req) {
-    const id = this.cookieId(req), session = this.sessions.get(id);
-    if (!session) return null;
-    if (this.expired(session)) { this.sessions.delete(id); return null; }
-    // Re-read the tiny, atomically replaced file: disabling/resetting an account revokes sessions immediately.
-    const user = (await loadAccounts(this.file)).users.find(user => user.id === session.userId);
-    if (!user || user.disabled || user.passwordVersion !== session.passwordVersion) { this.sessions.delete(id); return null; }
-    session.lastSeen = this.clock();
-    return {...session, id, user};
+    const id = this.cookieId(req);
+    if (!id) return null;
+    return this.transaction(async () => {
+      // Re-read accounts on every authenticated request, including after a restart.
+      const accounts = await loadAccounts(this.file);
+      this.pruneSessions(accounts);
+      const session = this.sessions.get(this.tokenHash(id));
+      if (!session) return null;
+      const now = this.clock(), user = accounts.users.find(user => user.id === session.userId);
+      session.lastSeen = now;
+      if (!session.remember) session.expiresAt = now + IDLE;
+      let cookie;
+      if (session.remember && now - session.renewedAt >= DAY) {
+        const renewed = {...session, renewedAt: now, expiresAt: now + REMEMBER};
+        const next = randomBytes(32).toString('hex');
+        // Parallel asset/API requests may still carry the old cookie. They cannot renew it again.
+        session.expiresAt = Math.min(session.expiresAt, now + RENEWAL_GRACE); session.renewedAt = now;
+        if (this.sessions.size >= MAX_BUCKETS) this.sessions.delete([...this.sessions.keys()].find(key => key !== this.tokenHash(id)));
+        this.sessions.set(this.tokenHash(next), renewed);
+        cookie = this.sessionCookie(next, true);
+        return {...renewed, id: next, user, cookie};
+      }
+      return {...session, id, user, cookie};
+    });
   }
-  createSession(user, req = {headers: {}}) {
-    const old = this.cookieId(req); if (old) this.sessions.delete(old);
-    for (const [id, session] of this.sessions) if (this.expired(session)) this.sessions.delete(id);
-    if (this.sessions.size >= MAX_BUCKETS) this.sessions.delete(this.sessions.keys().next().value);
-    const id = randomBytes(32).toString('hex'), now = this.clock();
-    const session = {userId: user.id, passwordVersion: user.passwordVersion, csrf: randomBytes(32).toString('hex'), createdAt: now, lastSeen: now};
-    this.sessions.set(id, session);
-    return {session: {...session, id, user}, cookie: `${this.cookieName}=${id}.${this.signature(id)}; ${this.cookieAttributes}; Max-Age=${ABSOLUTE / 1000}`};
+  async createSession(user, req = {headers: {}}, remember = false) {
+    return this.transaction(async () => {
+      const accounts = await loadAccounts(this.file);
+      const current = accounts.users.find(account => account.id === user.id);
+      if (!current || current.disabled || current.passwordVersion !== user.passwordVersion || current.hash !== user.hash) throw error('Benutzername oder Passwort ist falsch.', 401);
+      this.revoke(this.cookieId(req));
+      this.pruneSessions(accounts);
+      if (this.sessions.size >= MAX_BUCKETS) this.sessions.delete(this.sessions.keys().next().value);
+      const id = randomBytes(32).toString('hex'), now = this.clock();
+      const session = {userId: user.id, passwordVersion: user.passwordVersion, csrf: randomBytes(32).toString('hex'), createdAt: now, lastSeen: now, renewedAt: now, expiresAt: now + (remember ? REMEMBER : IDLE), remember};
+      this.sessions.set(this.tokenHash(id), session);
+      return {session: {...session, id, user}, cookie: this.sessionCookie(id, remember)};
+    });
   }
-  destroySession(req) {
-    this.sessions.delete(this.cookieId(req));
+  async destroySession(req) {
+    await this.transaction(() => { this.revoke(this.cookieId(req)); });
     return `${this.cookieName}=; ${this.cookieAttributes}; Max-Age=0`;
   }
   requireCsrf(req, session) {
@@ -147,7 +246,8 @@ export class EditorAuth {
   }
   async login(credentials, req) {
     if (!credentials || typeof credentials !== 'object' || Array.isArray(credentials)) throw error('Benutzername und Passwort erforderlich.');
-    let {username, password} = credentials;
+    let {username, password, remember = false} = credentials;
+    if (typeof remember !== 'boolean') throw error('Ungültige Auswahl für Angemeldet bleiben.');
     username = normalizeUsername(username);
     if (!validUsername(username) || !validPassword(password)) throw error('Benutzername und Passwort erforderlich.');
     // socket.remoteAddress is deliberately used. Forwarded headers are not trusted implicitly.
@@ -160,6 +260,6 @@ export class EditorAuth {
     const current = (await loadAccounts(this.file)).users.find(account => account.id === user.id);
     if (!current || current.disabled || current.passwordVersion !== user.passwordVersion || current.hash !== user.hash) throw error('Benutzername oder Passwort ist falsch.', 401);
     this.userLimits.delete(username);
-    return this.createSession(current, req);
+    return this.createSession(current, req, remember);
   }
 }

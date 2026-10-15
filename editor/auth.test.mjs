@@ -53,27 +53,136 @@ test('scrypt admits one derivation plus eight waiting and rejects excess work', 
 
 test('signed cookies reject malformed, duplicated and tampered values; login rotates and logout revokes', async t => {
   const {file} = await fixture(t), auth = await new EditorAuth({file}).init();
-  const first = auth.createSession(await account()), cookie = cookiePair(first.cookie);
+  const first = await auth.createSession(await account()), cookie = cookiePair(first.cookie);
   assert.match(first.cookie, /Path=\/; HttpOnly; Secure; SameSite=Strict/);
+  assert.doesNotMatch(first.cookie, /Max-Age|Expires/);
   assert.equal((await auth.session(req(cookie))).user.id, identity.id);
   const [key, value] = cookie.split('='), [id, signature] = value.split('.');
   for (const invalid of [`${key}=broken`, `${key}=${id}.${signature.slice(0, -1)}${signature.endsWith('0') ? '1' : '0'}`, `${key}=${'0'.repeat(64)}.${signature}`, `${cookie}; ${cookie}`]) assert.equal(await auth.session(req(invalid)), null);
-  const second = auth.createSession(await account(), req(cookie));
+  const second = await auth.createSession(await account(), req(cookie));
   assert.notEqual(first.session.id, second.session.id); assert.equal(await auth.session(req(cookie)), null);
-  const logout = auth.destroySession(req(cookiePair(second.cookie)));
+  const logout = await auth.destroySession(req(cookiePair(second.cookie)));
   assert.match(logout, /Max-Age=0/); assert.equal(await auth.session(req(cookiePair(second.cookie))), null);
-  const active = cookiePair(auth.createSession(await account()).cookie); assert.ok(await auth.session(req(active)));
-  assert.equal(await new EditorAuth({file, secret: auth.secret}).init().then(fresh => fresh.session(req(active))), null);
+  const active = cookiePair((await auth.createSession(await account())).cookie); assert.ok(await auth.session(req(active)));
+  assert.ok(await new EditorAuth({file}).init().then(fresh => fresh.session(req(active))));
 });
 
-test('clock injection proves the two-hour idle and twelve-hour absolute expiry', async t => {
+test('unchecked sessions expire after twelve idle hours, including across restarts; activity slides the idle expiry', async t => {
   const {file} = await fixture(t); let now = 0;
   const auth = await new EditorAuth({file, clock: () => now}).init(), user = await account();
-  let cookie = cookiePair(auth.createSession(user).cookie);
-  now = 2 * 60 * 60 * 1000; assert.equal(await auth.session(req(cookie)), null);
-  cookie = cookiePair(auth.createSession(user).cookie);
-  for (let hour = 1; hour < 12; hour++) { now += 60 * 60 * 1000; assert.ok(await auth.session(req(cookie))); }
-  now += 60 * 60 * 1000; assert.equal(await auth.session(req(cookie)), null);
+  let cookie = cookiePair((await auth.createSession(user)).cookie);
+  now = 12 * 60 * 60 * 1000; assert.equal(await auth.session(req(cookie)), null);
+  cookie = cookiePair((await auth.createSession(user)).cookie);
+  for (let hour = 1; hour < 24; hour++) { now += 60 * 60 * 1000; assert.ok(await auth.session(req(cookie))); }
+  const fresh = await new EditorAuth({file, clock: () => now}).init();
+  now += 12 * 60 * 60 * 1000; assert.equal(await fresh.session(req(cookie)), null);
+  assert.deepEqual(JSON.parse(await fs.readFile(fresh.sessionsFile, 'utf8')).sessions, []);
+});
+
+test('remember cookies persist for thirty days; daily renewal rotates once, slides expiry and keeps CSRF across restarts', async t => {
+  const {file} = await fixture(t); let now = 0;
+  const day = 24 * 60 * 60 * 1000;
+  let auth = await new EditorAuth({file, clock: () => now}).init();
+  const first = await auth.login({username: 'marc', password, remember: true}, req());
+  assert.match(first.cookie, /Max-Age=2592000/); assert.equal(first.session.remember, true);
+  let cookie = cookiePair(first.cookie);
+  now = day - 1; assert.equal((await auth.session(req(cookie))).cookie, undefined);
+  auth = await new EditorAuth({file, clock: () => now}).init();
+  now = day;
+  const requests = await Promise.all(Array.from({length: 5}, () => auth.session(req(cookie))));
+  assert.ok(requests.every(Boolean)); assert.equal(requests.filter(session => session.cookie).length, 1);
+  const renewed = requests.find(session => session.cookie);
+  assert.notEqual(renewed.id, first.session.id); assert.equal(renewed.csrf, first.session.csrf);
+  assert.match(renewed.cookie, /Max-Age=2592000/); assert.equal(renewed.expiresAt, now + 30 * day);
+  now += 30_000; assert.equal(await auth.session(req(cookie)), null);
+  cookie = cookiePair(renewed.cookie);
+  auth = await new EditorAuth({file, clock: () => now}).init();
+  assert.ok(await auth.session(req(cookie)));
+  now = 31 * day; assert.equal(await auth.session(req(cookie)), null);
+  assert.deepEqual(JSON.parse(await fs.readFile(auth.sessionsFile, 'utf8')).sessions, []);
+});
+
+test('remember is opt-in and must be a JSON boolean; HTTP and HTTPS preserve cookie protections', async t => {
+  const {file} = await fixture(t);
+  for (const secure of [false, true]) {
+    const auth = await new EditorAuth({file, secure}).init();
+    for (const remember of [false, true]) {
+      const result = await auth.login({username: 'marc', password, remember}, req());
+      assert.equal(result.cookie.startsWith(secure ? '__Host-fs_editor=' : 'fs_editor='), true);
+      assert.match(result.cookie, /Path=\/; HttpOnly;/); assert.match(result.cookie, /SameSite=Strict/);
+      assert.equal(/; Secure;/.test(result.cookie), secure); assert.equal(/Max-Age=2592000/.test(result.cookie), remember);
+    }
+    for (const remember of ['true', 1, null, {}, []]) await assert.rejects(auth.login({username: 'marc', password, remember}, req()), error => error.status === 400);
+  }
+});
+
+test('private persistence stores only token hashes and metadata, has restrictive permissions and prunes expired entries on startup', async t => {
+  const {file} = await fixture(t); let now = 0;
+  const auth = await new EditorAuth({file, clock: () => now}).init();
+  const session = await auth.createSession(await account(), req(), true);
+  const contents = await fs.readFile(auth.sessionsFile, 'utf8'), stored = JSON.parse(contents).sessions[0];
+  assert.match(stored.tokenHash, /^[a-f0-9]{64}$/);
+  assert.notEqual(stored.tokenHash, session.session.id);
+  assert.ok(!contents.includes(session.session.id)); assert.ok(!contents.includes(session.cookie.split('=')[1].split(';')[0]));
+  assert.ok(!contents.includes((await account()).hash)); assert.ok(!contents.includes(password));
+  assert.deepEqual(Object.keys(stored).sort(), ['tokenHash', 'userId', 'passwordVersion', 'csrf', 'createdAt', 'lastSeen', 'expiresAt', 'renewedAt', 'remember'].sort());
+  for (const name of ['editor-sessions.json', 'editor-session-secret']) assert.equal((await fs.stat(path.join(auth.sessionDir, name))).mode & 0o777, 0o600);
+  assert.equal((await fs.stat(auth.sessionDir)).mode & 0o777, 0o700);
+  assert.deepEqual((await fs.readdir(auth.sessionDir)).sort(), ['editor-session-secret', 'editor-sessions.json']);
+  now = 30 * 24 * 60 * 60 * 1000;
+  const fresh = await new EditorAuth({file, clock: () => now}).init();
+  assert.equal(await fresh.session(req(cookiePair(session.cookie))), null);
+  assert.deepEqual(JSON.parse(await fs.readFile(fresh.sessionsFile, 'utf8')).sessions, []);
+});
+
+test('logout revokes both sides of renewal durably; changed secrets and removed accounts reject old sessions', async t => {
+  const {file} = await fixture(t); let now = 0;
+  let auth = await new EditorAuth({file, clock: () => now}).init();
+  const first = await auth.createSession(await account(), req(), true);
+  now += 24 * 60 * 60 * 1000;
+  const renewed = await auth.session(req(cookiePair(first.cookie)));
+  await auth.destroySession(req(cookiePair(first.cookie)));
+  auth = await new EditorAuth({file, clock: () => now}).init();
+  assert.equal(await auth.session(req(cookiePair(renewed.cookie))), null);
+  assert.deepEqual(JSON.parse(await fs.readFile(auth.sessionsFile, 'utf8')).sessions, []);
+  const active = await auth.createSession(await account(), req(), true);
+  auth = await new EditorAuth({file, secret: 's'.repeat(32), clock: () => now}).init();
+  assert.equal(await auth.session(req(cookiePair(active.cookie))), null);
+  assert.deepEqual(JSON.parse(await fs.readFile(auth.sessionsFile, 'utf8')).sessions, []);
+  const removed = await auth.createSession(await account(), req(), true);
+  await writeAccounts(file, {version: 1, users: []});
+  auth = await new EditorAuth({file, secret: 's'.repeat(32), clock: () => now}).init();
+  assert.equal(await auth.session(req(cookiePair(removed.cookie))), null);
+  assert.deepEqual(JSON.parse(await fs.readFile(auth.sessionsFile, 'utf8')).sessions, []);
+});
+
+test('session writes are serialized and failed writes leave the previous durable state intact', async t => {
+  const {dir, file} = await fixture(t), auth = await new EditorAuth({file}).init();
+  const user = await account();
+  const sessions = await Promise.all(Array.from({length: 8}, () => auth.createSession(user, req(), true)));
+  let fresh = await new EditorAuth({file}).init();
+  for (const {cookie} of sessions) assert.ok(await fresh.session(req(cookiePair(cookie))));
+  const original = auth.sessionsFile;
+  auth.sessionsFile = path.join(dir, 'missing-parent/sessions.json');
+  await assert.rejects(auth.destroySession(req(cookiePair(sessions[0].cookie))), {code: 'ENOENT'});
+  await assert.rejects(auth.createSession(user), {code: 'ENOENT'});
+  auth.sessionsFile = original;
+  assert.equal(auth.sessions.size, 8);
+  fresh = await new EditorAuth({file}).init();
+  assert.ok(await fresh.session(req(cookiePair(sessions[0].cookie))));
+  assert.equal(JSON.parse(await fs.readFile(original, 'utf8')).sessions.length, 8);
+});
+
+test('session paths reject webroot symlinks and corrupt persisted state fails closed', async t => {
+  const {dir, file} = await fixture(t), web = path.join(dir, 'web');
+  await fs.mkdir(web);
+  await assert.rejects(new EditorAuth({file, sessionDir: web}).init({forbiddenRoots: [web]}), /außerhalb/);
+  const state = path.join(dir, 'state'); await fs.mkdir(state);
+  await fs.symlink(web, path.join(state, 'editor-sessions.json'));
+  await assert.rejects(new EditorAuth({file, sessionDir: state}).init({forbiddenRoots: [web]}), /außerhalb/);
+  const auth = await new EditorAuth({file}).init();
+  await fs.writeFile(auth.sessionsFile, '{invalid');
+  await assert.rejects(new EditorAuth({file}).init(), /Ungültige Sitzungsdatei/);
 });
 
 test('account CLI creates mode-0600 files, lists safely, resets passwords and disables with immediate revocation', async t => {
@@ -83,12 +192,18 @@ test('account CLI creates mode-0600 files, lists safely, resets passwords and di
   assert.equal((await fs.stat(file)).mode & 0o777, 0o600);
   let data = await loadAccounts(file); assert.equal(data.users[0].username, 'marc'); assert.equal(await verifyPassword(password, data.users[0]), true);
   const listing = (await cli(['list'])).stdout; assert.match(listing, /marc\tMarc Viladrich/); assert.ok(!listing.includes(data.users[0].hash));
-  const auth = await new EditorAuth({file}).init(); let cookie = cookiePair(auth.createSession(data.users[0]).cookie);
-  await cli(['passwd', 'marc']); assert.equal(await auth.session(req(cookie)), null);
+  const auth = await new EditorAuth({file}).init(); let cookie = cookiePair((await auth.createSession(data.users[0], req(), true)).cookie);
+  const another = cookiePair((await auth.createSession(data.users[0], req(), true)).cookie);
+  await cli(['passwd', 'marc']);
+  const restarted = await new EditorAuth({file}).init();
+  assert.equal(await restarted.session(req(cookie)), null);
+  assert.equal(await auth.session(req(cookie)), null);
+  assert.equal(await auth.session(req(another)), null);
+  assert.deepEqual(JSON.parse(await fs.readFile(auth.sessionsFile, 'utf8')).sessions, []);
   data = await loadAccounts(file); assert.equal(data.users[0].passwordVersion, 2);
-  cookie = cookiePair(auth.createSession(data.users[0]).cookie); await cli(['disable', 'marc']);
+  cookie = cookiePair((await auth.createSession(data.users[0], req(), true)).cookie); await cli(['disable', 'marc']);
   assert.equal(await auth.session(req(cookie)), null); assert.equal((await loadAccounts(file)).users[0].disabled, true);
-  assert.equal((await fs.readdir(path.dirname(file))).length, 1);
+  assert.equal((await fs.readdir(path.dirname(file))).length, 2);
   await assert.rejects(cli(['add', 'marc', '--name', 'Duplicate', '--email', identity.email]));
 });
 
@@ -131,13 +246,13 @@ test('the actual login script keeps redirects on-origin and reports errors as te
   const script = await fs.readFile(path.join(here, 'web/login.js'), 'utf8');
   for (const [next, expected] of [[null, '/editor/'], ['/editor/?page=%2Fpreise%2F', '/editor/?page=%2Fpreise%2F'], ['https://evil.example/', '/editor/'], ['//evil.example/', '/editor/'], ['/\\evil.example/', '/editor/'], ['/editor/login', '/editor/'], ['/\nevil.example/', '/editor/'], ['/vorschau/en/shows/?a=1', '/vorschau/en/shows/?a=1'], ['/vorschau', '/vorschau'], ['/vorschauen/', '/editor/?page=%2Fvorschauen%2F']]) {
     let submit, assigned;
-    const form = {elements: {username: {value: 'marc'}, password: {value: password, focus() {}}}, querySelector: () => ({}), addEventListener: (_type, callback) => { submit = callback; }};
+    const form = {elements: {username: {value: 'marc'}, password: {value: password, focus() {}}, remember: {checked: true}}, querySelector: () => ({}), addEventListener: (_type, callback) => { submit = callback; }};
     const message = {}, location = {origin: 'https://editor.example', href: 'https://editor.example/editor/login' + (next === null ? '' : '?next=' + encodeURIComponent(next)), assign: value => { assigned = value; }};
-    vm.runInNewContext(script, {URL, location, document: {querySelector: selector => selector === '#login-form' ? form : message}, fetch: async () => ({ok: true, json: async () => ({})})});
+    vm.runInNewContext(script, {URL, location, document: {querySelector: selector => selector === '#login-form' ? form : message}, fetch: async (_url, options) => { assert.equal(JSON.parse(options.body).remember, true); return {ok: true, json: async () => ({})}; }});
     await submit({preventDefault() {}}); assert.equal(assigned, expected); assert.equal(form.elements.password.value, '');
   }
   let submit;
-  const message = {}, form = {elements: {username: {value: 'marc'}, password: {value: password, focus() {}}}, querySelector: () => ({}), addEventListener: (_type, callback) => { submit = callback; }};
+  const message = {}, form = {elements: {username: {value: 'marc'}, password: {value: password, focus() {}}, remember: {checked: false}}, querySelector: () => ({}), addEventListener: (_type, callback) => { submit = callback; }};
   vm.runInNewContext(script, {URL, document: {querySelector: selector => selector === '#login-form' ? form : message}, fetch: async () => ({ok: false, json: async () => ({error: '<script>unsafe</script>'})})});
   await submit({preventDefault() {}}); assert.equal(message.textContent, '<script>unsafe</script>'); assert.equal(message.hidden, false);
 });
@@ -199,6 +314,36 @@ async function cachedArtifact(dir, runtimeName, head, origin, editor) {
   await fs.writeFile(path.join(base, 'ready.json'), JSON.stringify({head, origin, editor}));
 }
 
+test('server restart preserves remember login to /editor/, renews the response cookie and logout survives another restart', async t => {
+  const {dir, file} = await fixture(t), source = path.join(dir, 'source'), [port, publicPort] = await ports(t);
+  await git(here, ['clone', '--quiet', '--no-hardlinks', path.join(here, '..'), source]);
+  await git(source, ['checkout', '-B', 'content/draft']);
+  await fs.symlink(await fs.realpath(path.join(here, '../node_modules')), path.join(source, 'node_modules'));
+  let now = Date.now(), servers;
+  const start = async () => { servers = await startNativeServers({remote: false, source, runtimeRoot: dir, port, publicPort, listen: !socketless, initialize: false, auth: {file, clock: () => now}}); };
+  const stop = async () => { if (servers) { await Promise.all([servers.editor, servers.publicServer].map(server => new Promise(resolve => server.close(resolve)))); servers = null; } };
+  t.after(stop);
+  await start();
+  const call = (route, options = {}) => request(servers.editor, servers.origin, route, options);
+  const post = (route, data, headers = {}) => call(route, {method: 'POST', headers: {'Content-Type': 'application/json', Origin: servers.origin, ...headers}, body: JSON.stringify(data)});
+  const login = await post('/editor/api/login', {username: 'marc', password, remember: true});
+  assert.equal(login.status, 200); assert.match(login.headers.get('set-cookie'), /Max-Age=2592000/);
+  let cookie = cookiePair(login.headers.get('set-cookie'));
+  const {csrf} = await login.json();
+  await stop(); await start();
+  assert.equal((await call('/editor/', {headers: {Cookie: cookie}})).status, 200);
+  now += 24 * 60 * 60 * 1000;
+  const renewal = await call('/editor/api/session', {headers: {Cookie: cookie}});
+  assert.equal(renewal.status, 200); assert.match(renewal.headers.get('set-cookie'), /Max-Age=2592000/);
+  assert.equal((await renewal.json()).csrf, csrf);
+  cookie = cookiePair(renewal.headers.get('set-cookie'));
+  const logout = await post('/editor/api/logout', {}, {Cookie: cookie, 'X-CSRF-Token': csrf});
+  assert.equal(logout.status, 200); assert.match(logout.headers.get('set-cookie'), /Max-Age=0/);
+  await stop(); await start();
+  assert.equal((await call('/editor/', {headers: {Cookie: cookie}})).status, 302);
+  assert.deepEqual(JSON.parse(await fs.readFile(servers.auth.sessionsFile, 'utf8')).sessions, []);
+});
+
 test('real HTTP listeners enforce authentication, CSRF and account-authored Git mutations', {timeout: 180_000}, async t => {
   const {dir, file} = await fixture(t), source = path.join(dir, 'source'), [port, publicPort] = await ports(t);
   await git(here, ['clone', '--quiet', '--no-hardlinks', path.join(here, '..'), source]);await git(source,['checkout','-B','content/draft']);
@@ -241,6 +386,7 @@ test('real HTTP listeners enforce authentication, CSRF and account-authored Git 
   await t.test('login page and essential assets stay accessible, the public listener stays public', async () => {
     const response = await call('/editor/login?next=%2Feditor%2F'); assert.equal(response.status, 200);
     const html = await response.text(); assert.match(html, /id="login"/); assert.match(html, /autocomplete="current-password"/);
+    assert.match(html, /<label for="remember">/); assert.match(html, /id="remember" name="remember" type="checkbox" aria-describedby="remember-hint">/); assert.doesNotMatch(html, /\bchecked\b/);
     assert.equal(response.headers.get('content-security-policy'), "frame-ancestors 'none'");
     for (const asset of ['login.js', 'editor.css', 'ui-tokens.css']) assert.equal((await call('/editor/' + asset)).status, 200);
     assert.equal((await publicCall('/')).status, 200);
@@ -261,6 +407,7 @@ test('real HTTP listeners enforce authentication, CSRF and account-authored Git 
     cookie = cookiePair(response.headers.get('set-cookie')); assert.ok(cookie.startsWith(servers.auth.cookieName + '='));
     // Loopback over http: no Secure (Safari would drop the cookie and the login would loop), still HttpOnly and SameSite=Strict.
     assert.equal(servers.auth.cookieName, 'fs_editor'); assert.match(response.headers.get('set-cookie'), /HttpOnly; SameSite=Strict/); assert.doesNotMatch(response.headers.get('set-cookie'), /Secure/);
+    assert.doesNotMatch(response.headers.get('set-cookie'), /Max-Age|Expires/);
     const result = await response.json(); assert.deepEqual(result.user, {id: identity.id, username: identity.username, displayName: identity.displayName}); csrf = result.csrf;
     const session = await call('/editor/api/session', {headers: {Cookie: cookie}}); assert.equal(session.status, 200); assert.deepEqual(await session.json(), result);
   });
@@ -300,7 +447,7 @@ test('real HTTP listeners enforce authentication, CSRF and account-authored Git 
     const replay = await post('/editor/api/save', request, {Cookie: cookie, 'X-CSRF-Token': csrf}); assert.equal((await replay.json()).replayed, true);
     const data = await loadAccounts(file), other = {...await account(), id: 'test-other', username: 'other', displayName: 'Other editor', email: 'other@example.invalid'};
     data.users.push(other); await writeAccounts(file, data);
-    const otherSession = servers.auth.createSession(other);
+    const otherSession = await servers.auth.createSession(other);
     const foreignReplay = await post('/editor/api/save', request, {Cookie: cookiePair(otherSession.cookie), 'X-CSRF-Token': otherSession.session.csrf});
     assert.equal(foreignReplay.status, 409); assert.equal(await servers.store.head(), saved.head);
   });
@@ -323,7 +470,7 @@ test('real HTTP listeners enforce authentication, CSRF and account-authored Git 
     const response = await post('/editor/api/logout', {}, {Cookie: cookie, 'X-CSRF-Token': csrf}); assert.equal(response.status, 200); assert.match(response.headers.get('set-cookie'), /Max-Age=0/);
     assert.equal((await call('/editor/api/session', {headers: {Cookie: cookie}})).status, 401);
     const login = await post('/editor/api/login', {username: 'marc', password}); cookie = cookiePair(login.headers.get('set-cookie'));
-    now += 2 * 60 * 60 * 1000;
+    now += 12 * 60 * 60 * 1000;
     assert.equal((await call('/editor/api/state', {headers: {Cookie: cookie}})).status, 401);
     assert.equal((await publicCall('/')).status, 200);
   });
