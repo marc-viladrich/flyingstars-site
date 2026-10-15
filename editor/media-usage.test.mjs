@@ -1,3 +1,4 @@
+import {createExtensionRegistry} from './core/extensions.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {promises as fs} from 'node:fs';
@@ -181,8 +182,9 @@ test('uploading the same image again reuses its media record instead of creating
   const { uploadNativeMedia } = await import('./native-media.mjs');
   const existing = { id: 'media/abc', data: { src: '/assets/' + 'f'.repeat(64) + '.png' } };
   let saved = false;
+  const adapter=await createFlyingStarsAdapter(path.join(here,'..')),policy=adapter.extensions.require('mediaPolicy');
   const store = {
-    site: {...await createFlyingStarsAdapter(path.join(here,'..')),extensions:(await import('./core/extensions.mjs')).createExtensionRegistry([{name:'test/uploads',contractVersion:'1.0',hooks:{mediaPolicy:()=>({maxBytes:5*1024*1024,normalize:async()=>({asset:{},output:Buffer.alloc(0)}),write:(_asset,requestId)=>({id:'media/'+requestId,data:{src:existing.data.src},file:'public'+existing.data.src}),find:records=>records.find(r=>r.id===existing.id),response:(state,id,reused)=>({state,assetId:id,reused})})}}])},
+    site: {...adapter,extensions:createExtensionRegistry([{name:'test/uploads',contractVersion:'1.0',hooks:{mediaPolicy:()=>({...policy,write:(_asset,requestId)=>({id:'media/'+requestId,data:{src:existing.data.src},file:'public'+existing.data.src})})}}])},
     state: async () => ({ head: 'a'.repeat(40), records: [existing] }),
     save: async () => { saved = true; return {}; },
   };

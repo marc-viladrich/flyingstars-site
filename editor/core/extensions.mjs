@@ -30,7 +30,7 @@ import {AsyncLocalStorage} from 'node:async_hooks';
  * @property {(id:string)=>string|null} [recordGroup]
  * @property {()=>{source:string,locales:Record<string,string>}} [languages]
  * @property {(records:RecordEntry[],locale?:string)=>object[]} [navigation]
- * @property {()=>{maxBytes:number,mime:RegExp,normalize:Function,write:Function,find:Function}} [mediaPolicy]
+ * @property {()=>{maxBytes:number,mime:RegExp,normalize:Function,write:Function,find:Function,response:Function}} [mediaPolicy]
  * @property {(records:RecordEntry[])=>object} [mediaLibrary]
  * @property {(input:{editor:boolean,origin:string,imageCache:string})=>Record<string,string>} [buildEnvironment]
  * @typedef {object} Extension
