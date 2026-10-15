@@ -6,6 +6,7 @@ const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro
 const ui = await readUi('ui',locale);
 import '../styles/fonts.css';
 import '../styles/global.css';
+import {colorTokenCSS} from '../lib/color-tokens.mjs';
 import { site } from '../site.config';
 import Logo from '../components/Logo.astro';
 import { optimizedImage } from '../lib/media';
@@ -31,6 +32,7 @@ const eco = await optimizedImage('https://flyingstars.art/wp-content/uploads/202
 <html lang={locale}>
   <head>
     <meta charset="utf-8" />
+    <style is:inline set:html={colorTokenCSS()} />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title} | {site.name}</title>
     <meta name="description" content={description} />

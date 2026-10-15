@@ -1,4 +1,5 @@
 ---
+import {colorVar} from '../../lib/color-tokens.mjs';
 import {nativeRecord as uiMarker} from '../../lib/native-editor';
 import {fillText} from '../../lib/content';
 import {siteRecord as readUi} from '../../lib/content';
@@ -31,7 +32,7 @@ const images = new Map(await Promise.all(uniqueImages.map(async (src) => [src, a
 const nextImage = next?.data.cover ? await optimizedImage(resolveMedia(next.data.cover,locale).src) : undefined;
 const count = (n: number) => String(n).padStart(2, '0');
 ---
-<div data-runtime={JSON.stringify({ui:ui.caseStudy,locale})} class="case" style={`--accent:${data.accent}`}>
+<div data-runtime={JSON.stringify({ui:ui.caseStudy,locale})} class="case" style={`--accent:${colorVar(data.accent)}`}>
   <section class="c-hero" aria-labelledby="case-h">
     <Video src={data.heroVideo} poster={resolveMedia(project.data.cover,locale)?.src} {...nativeRecordMedia(record,["cover"])} label={fillText(ui.caseStudy.play,{name:data.name})} class="case-video" loop hero />
     <div class="shade" aria-hidden="true"></div>

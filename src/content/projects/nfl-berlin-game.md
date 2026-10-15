@@ -34,7 +34,7 @@
       "titleLines": [ "NFL", "{o}Berlin Game{/o}" ],
       "titleChars": 11,
       "tagline": "Das Hufeisen der Colts über dem Olympiastadion.",
-      "accent": "#5b8def",
+      "accent": "project-nfl",
       "drones": 300,
       "heroVideo": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl.mp4",
       "credits":

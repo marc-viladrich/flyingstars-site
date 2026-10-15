@@ -6,11 +6,7 @@
   "step": 100,
   "add": 9900,
   "dur": "15+ Min",
-  "color": [
-    51,
-    237,
-    242
-  ],
+  "color": "package-odyssey",
   "orbShape": "torus",
   "badge": "300+ Drohnen",
   "description": "Das immersive Erlebnis für große Kampagnen, Festivals und Events mit maximaler Reichweite.",

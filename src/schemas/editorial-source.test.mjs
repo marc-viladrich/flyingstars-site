@@ -1,3 +1,4 @@
+import {rgbOf} from '../lib/color-tokens.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';import fs from'node:fs/promises';import path from'node:path';import {fileURLToPath}from'node:url';import {parse}from'yaml';import {pageSchema,image}from'./page-schema.mjs';import {clientSchema,teamSchema,mediaSchema}from'./entity-schema.mjs';
 const root=fileURLToPath(new URL('../content/',import.meta.url));
 async function readGroup(name,schema){const out=new Map();for(const file of await fs.readdir(path.join(root,name))){if(!file.endsWith('.json'))continue;out.set(file.slice(0,-5),schema.parse(JSON.parse(await fs.readFile(path.join(root,name,file),'utf8'))));}return out;}
@@ -15,10 +16,10 @@ test('duplicate section anchors and unsafe media URLs are rejected',()=>{
 });
 
 test('native word rotation respects editable ownership and resumes in preview',async()=>{
- const {runInNewContext}=await import('node:vm');const source=await fs.readFile(new URL('../scripts/site.ts',import.meta.url),'utf8');const intervals=[],timeouts=[];
+ const {runInNewContext}=await import('node:vm');const source=(await fs.readFile(new URL('../scripts/site.ts',import.meta.url),'utf8')).replace(/^import .*?;\n/gm,'');const intervals=[],timeouts=[];
  const word={dataset:{rotate:'Neu|Anders'},textContent:'Eigener Entwurf',isContentEditable:true,classList:{add(){},remove(){}}};
  const document={getElementById(){return null;},hidden:false,documentElement:{classList:{toggle(){}}},querySelector(selector){return selector==='[data-rotate]'?word:null;},querySelectorAll(){return[];},dispatchEvent(){}};
- const window={addEventListener(){}};runInNewContext(source,{document,window,matchMedia:()=>({matches:false}),sessionStorage:{getItem:()=>null},location:{hash:''},setInterval:fn=>intervals.push(fn),setTimeout:fn=>timeouts.push(fn),Event:class{},requestAnimationFrame(){}});
+ const window={addEventListener(){}};runInNewContext(source,{rgbOf,document,window,matchMedia:()=>({matches:false}),sessionStorage:{getItem:()=>null},location:{hash:''},setInterval:fn=>intervals.push(fn),setTimeout:fn=>timeouts.push(fn),Event:class{},requestAnimationFrame(){}});
  intervals[0]();assert.equal(timeouts.length,0);assert.equal(word.textContent,'Eigener Entwurf');
  word.isContentEditable=false;intervals[0]();assert.equal(timeouts.length,1);timeouts.shift()();assert.equal(word.textContent,'Anders');
  intervals[0]();word.isContentEditable=true;word.textContent='Neue Eingabe';timeouts.shift()();assert.equal(word.textContent,'Neue Eingabe');
@@ -97,13 +98,13 @@ test('native order and cross-record entries expose exact owners only in editor b
 });
 
 test('enhanced sustainability facts are inert initially and after scroll except the visible fact; reduced motion keeps all interactive',async()=>{
- const {runInNewContext}=await import('node:vm'),source=await fs.readFile(new URL('../scripts/site.ts',import.meta.url),'utf8');
+ const {runInNewContext}=await import('node:vm'),source=(await fs.readFile(new URL('../scripts/site.ts',import.meta.url),'utf8')).replace(/^import .*?;\n/gm,'');
  for(const reduce of [false,true]){
   let top=0;const events={},facts=Array.from({length:4},()=>({inert:false,classList:{toggle(){}},contains(){return false;}}));
   const canvas={getContext:()=>({}),getBoundingClientRect:()=>({width:1000,height:800})},pin={addEventListener(){}},scrolly={classList:{add(){}},style:{setProperty(){}},querySelectorAll:s=>s==='.fact'?facts:[],querySelector:s=>s==='canvas'?canvas:s==='.eco-pin'?pin:null,getBoundingClientRect:()=>({top,height:4000})};
   const document={getElementById(){return null;},hidden:false,documentElement:{classList:{toggle(){}}},querySelector:s=>s==='[data-scrolly]'?scrolly:null,querySelectorAll:()=>[],dispatchEvent(){}};
   class Observer{observe(){}unobserve(){}}
-  runInNewContext(source,{document,window:{addEventListener(){},IntersectionObserver:Observer},IntersectionObserver:Observer,matchMedia:()=>({matches:reduce}),sessionStorage:{getItem:()=>null},location:{hash:''},Event:class{},requestAnimationFrame(){},devicePixelRatio:1,innerHeight:1000,addEventListener:(name,fn)=>events[name]=fn});
+  runInNewContext(source,{rgbOf,document,window:{addEventListener(){},IntersectionObserver:Observer},IntersectionObserver:Observer,matchMedia:()=>({matches:reduce}),sessionStorage:{getItem:()=>null},location:{hash:''},Event:class{},requestAnimationFrame(){},devicePixelRatio:1,innerHeight:1000,addEventListener:(name,fn)=>events[name]=fn});
   assert.deepEqual(facts.map(f=>f.inert),reduce?[false,false,false,false]:[false,true,true,true]);
   if(!reduce){top=-1600;events.scroll();assert.deepEqual(facts.map(f=>f.inert),[true,true,false,true]);top=0;events.scroll();assert.deepEqual(facts.map(f=>f.inert),[false,true,true,true]);}
  }
@@ -139,10 +140,10 @@ test('inline metadata survives constraints and optional unwrapping in Zod 4.6; n
 });
 
 test('rotating inline words retain safe rendered marks and update the exact word field path',async()=>{
- const {runInNewContext}=await import('node:vm'),source=await fs.readFile(new URL('../scripts/site.ts',import.meta.url),'utf8'),intervals=[],timeouts=[];
+ const {runInNewContext}=await import('node:vm'),source=(await fs.readFile(new URL('../scripts/site.ts',import.meta.url),'utf8')).replace(/^import .*?;\n/gm,''),intervals=[],timeouts=[];
  const word={dataset:{rotate:'Neu|Anders',nativePath:'["sections",0,"words",0]'},innerHTML:'<strong>Neu</strong>',isContentEditable:false,classList:{add(){},remove(){}}};
  const document={getElementById(){return null;},hidden:false,documentElement:{classList:{toggle(){}}},querySelector:s=>s==='[data-rotate]'?word:s==='[data-rotate-words]'?{content:{children:[{innerHTML:'<strong>Neu</strong>'},{innerHTML:'<em>Anders</em>'}]}}:null,querySelectorAll:()=>[],dispatchEvent(){}};
- runInNewContext(source,{document,window:{addEventListener(){}},matchMedia:()=>({matches:false}),sessionStorage:{getItem:()=>null},location:{hash:''},setInterval:fn=>intervals.push(fn),setTimeout:fn=>timeouts.push(fn),Event:class{},requestAnimationFrame(){}});
+ runInNewContext(source,{rgbOf,document,window:{addEventListener(){}},matchMedia:()=>({matches:false}),sessionStorage:{getItem:()=>null},location:{hash:''},setInterval:fn=>intervals.push(fn),setTimeout:fn=>timeouts.push(fn),Event:class{},requestAnimationFrame(){}});
  intervals[0]();timeouts.shift()();assert.equal(word.innerHTML,'<em>Anders</em>');assert.equal(word.dataset.nativePath,'["sections",0,"words",1]');
 });
 

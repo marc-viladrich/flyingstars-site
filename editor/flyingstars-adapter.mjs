@@ -30,7 +30,7 @@ export async function createFlyingStarsAdapter(root) {
    'src/content/media/','src/content/site/','src/content/translations/'],
   contentRoot:'src/content',assetRoot:'public/assets',
   recordId,
-  browserFiles:{'/editor/site-lib/inline-text.mjs':'src/lib/inline-text.mjs','/editor/site-lib/editorial-text.mjs':'src/lib/editorial-text.mjs','/editor/package-ids.mjs':'src/content/package-ids.mjs','/editor/package-ownership.mjs':'src/content/package-ownership.mjs'},
+  browserFiles:{'/editor/site-lib/color-tokens.mjs':'src/lib/color-tokens.mjs','/editor/site-lib/inline-text.mjs':'src/lib/inline-text.mjs','/editor/site-lib/editorial-text.mjs':'src/lib/editorial-text.mjs','/editor/package-ids.mjs':'src/content/package-ids.mjs','/editor/package-ownership.mjs':'src/content/package-ownership.mjs'},
   mediaWrite(asset,requestId){return{id:'media/'+requestId,data:{title:asset.title,src:'/'+asset.src,defaultAlt:'',width:asset.width,height:asset.height,mime:asset.mime},file:'public/'+asset.src};},
  };
 }

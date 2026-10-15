@@ -5,7 +5,7 @@ const looksLikeData = text => !/\p{L}{2}/u.test(text) || /^(https?:|mailto:|tel:
 export const getPath = (data, path) => path.reduce((value, key) => value?.[key], data);
 export function translatableFields(record) {
   if (!owners.test(record.id)) return [];
-  return (record.fields || []).filter(field => field.kind === 'text')
+  return (record.fields || []).filter(field => field.kind === 'text' && field.format !== 'color')
     .filter(field => !excluded.has([...field.path].reverse().find(part => typeof part !== 'number')))
     .map(field => ({path:field.path, markdown:field.format === 'markdown' || field.path.at(-1) === 'body', text:getPath(record.data,field.path)}))
     .filter(field => typeof field.text === 'string' && field.text.trim() && (field.markdown || !looksLikeData(field.text)));

@@ -219,7 +219,7 @@ test('real HTTP listeners enforce authentication, CSRF and account-authored Git 
   let cookie, csrf;
 
   await t.test('all private API and asset routes deny anonymous requests; iframe and shell redirect', async () => {
-    for (const route of ['/editor/api/state', '/editor/api/media', '/editor/api/review', '/editor/api/translation', '/editor/api/session', '/editor/editor.js', '/editor/frame.js', '/editor/ui-icons.mjs', '/editor/site-lib/inline-text.mjs', '/editor/site-lib/editorial-text.mjs', '/editor/shared/draft.mjs', '/editor/marked.mjs', '/editor/package-ids.mjs', '/editor/package-ownership.mjs', '/asset.js', '/_image?href=x', '/@fs/private-file']) {
+    for (const route of ['/editor/api/state', '/editor/api/media', '/editor/api/review', '/editor/api/translation', '/editor/api/session', '/editor/editor.js', '/editor/frame.js', '/editor/ui-icons.mjs', '/editor/site-lib/inline-text.mjs','/editor/site-lib/color-tokens.mjs', '/editor/site-lib/editorial-text.mjs', '/editor/shared/draft.mjs', '/editor/marked.mjs', '/editor/package-ids.mjs', '/editor/package-ownership.mjs', '/asset.js', '/_image?href=x', '/@fs/private-file']) {
       const response = await call(route); assert.equal(response.status, 401, route); assert.deepEqual(await response.json(), {error: 'Nicht angemeldet.'});
       assert.equal(response.headers.get('x-content-type-options'), 'nosniff'); assert.equal(response.headers.get('referrer-policy'), 'same-origin'); assert.equal(response.headers.get('cache-control'), 'no-store');
     }
@@ -238,7 +238,7 @@ test('real HTTP listeners enforce authentication, CSRF and account-authored Git 
     const response = await call('/editor/login?next=%2Feditor%2F'); assert.equal(response.status, 200);
     const html = await response.text(); assert.match(html, /id="login"/); assert.match(html, /autocomplete="current-password"/);
     assert.equal(response.headers.get('content-security-policy'), "frame-ancestors 'none'");
-    for (const asset of ['login.js', 'editor.css']) assert.equal((await call('/editor/' + asset)).status, 200);
+    for (const asset of ['login.js', 'editor.css', 'ui-tokens.css']) assert.equal((await call('/editor/' + asset)).status, 200);
     assert.equal((await publicCall('/')).status, 200);
     assert.equal((await publicCall('/', {method: 'POST'})).status, 405);
     const host = await call('/editor/login', {headers: {Host: 'evil.example'}}); assert.equal(host.status, 403); assert.equal(host.headers.get('x-content-type-options'), 'nosniff');

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';import {runInNewContext} from 'node:vm';
 import {escapeHTML} from '../src/lib/editorial-text.mjs';
 import {inlinePlain} from '../src/lib/inline-text.mjs';
+import {colorVar,rgbOf} from '../src/lib/color-tokens.mjs';
 import {readRuntime,fillText} from '../src/lib/ui-runtime.mjs';
 import {localeFormat} from '../src/lib/localized-routes.mjs';
 import {priceFor,recommendPackage,PACKAGE_NAMES} from '../src/content/show-packages.ts';
@@ -16,8 +17,10 @@ export async function verifyPricingRuntime(html) {
  const code=source.slice(begin,end),inquiry=source.match(/^  const inquiryHref = (.*);$/m)[1];
  const node=()=>({innerHTML:'',textContent:'',href:'',classList:{toggle(){}},style:{setProperty(){}},setAttribute(name,value){this[name]=value;}});
  const cards=Object.fromEntries(PACKAGE_NAMES.map(name=>{const nodes={'[data-live]':node(),'.badge':node(),'a.btn':node()};return [name,{classList:{toggle(){}},querySelector:selector=>nodes[selector]}];}));
- const context={PKG:payload.packages,NAMES:PACKAGE_NAMES,cards,pkg:'HORIZON',locked:false,n:250,range:{...node(),value:'250',min:'100',max:'1000'},countEl:node(),totalEl:node(),noteEl:node(),readEl:node(),cta:node(),tierBtns:[],text:{value:'',shown:null},textMin:()=>100,renderTextRead(){},swarm:{info:()=>({size:[120,60,10],d:2}),setTarget(){}},fmt:localeFormat(payload.locale),home:payload.home,URLSearchParams,inlinePlain,escapeHTML,t,h:(key,values)=>escapeHTML(t(key,values)),recommend:n=>recommendPackage(n,payload.packages),priceFor:(name,n)=>priceFor(name,n,payload.packages),eur:value=>value.toLocaleString(localeFormat(payload.locale))+' €',document:{documentElement:{style:{setProperty(){}}}},clearTimeout(){}};
+ let canvasColor,cssColor;
+ const context={colorVar,rgbOf,PKG:payload.packages,NAMES:PACKAGE_NAMES,cards,pkg:'HORIZON',locked:false,n:250,range:{...node(),value:'250',min:'100',max:'1000'},countEl:node(),totalEl:node(),noteEl:node(),readEl:node(),cta:node(),tierBtns:[],text:{value:'',shown:null},textMin:()=>100,renderTextRead(){},swarm:{info:()=>({size:[120,60,10],d:2}),setTarget(_count,color){canvasColor=color;}},fmt:localeFormat(payload.locale),home:payload.home,URLSearchParams,inlinePlain,escapeHTML,t,h:(key,values)=>escapeHTML(t(key,values)),recommend:n=>recommendPackage(n,payload.packages),priceFor:(name,n)=>priceFor(name,n,payload.packages),eur:value=>value.toLocaleString(localeFormat(payload.locale))+' €',document:{documentElement:{style:{setProperty(key,value){if(key==="--pkg")cssColor=value;}}}},clearTimeout(){}};
  runInNewContext(`const inquiryHref=${inquiry};\n${code}\nupdate(true);`,context);
+ assert.equal(cssColor,colorVar(payload.packages.HORIZON.color));assert.deepEqual(canvasColor,rgbOf(payload.packages.HORIZON.color));
  assert.ok(context.countEl.innerHTML.includes('[EN] Drohnen'));assert.ok(context.totalEl.innerHTML.includes('[EN] ab'));
  assert.ok(context.readEl.innerHTML.includes('[EN] Dauer'));assert.ok(context.readEl.innerHTML.includes('[EN] Motive'));
  assert.ok(context.cta.textContent.startsWith('[EN] Mit 250'));assert.ok(context.cta.href.startsWith('/en/?'));

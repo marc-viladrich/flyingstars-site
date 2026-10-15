@@ -11,6 +11,7 @@ import {getScreen} from '../../lib/content';
 const screen = await getScreen('drohnenshow-preise',locale);
 const native=(path:string[],inline=false)=>nativeRecord('screen/drohnenshow-preise',path,inline);
 import {fillText,getPackages} from '../../lib/content';
+// Keep colour token ids in runtime data; browser CSS/canvas resolve through the registry.
 const SHOW_PACKAGES = await getPackages(locale);
 const money = (value: number) => value.toLocaleString(localeFormat(locale));
 ---

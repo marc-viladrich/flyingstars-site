@@ -112,7 +112,6 @@ const technicalKeys = new Set([
   "width",
   "height",
   "mime",
-  "color",
 ]);
 
 function humanize(key) {

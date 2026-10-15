@@ -1,5 +1,6 @@
 // Shared FlyingStars presentation; source: customer Vercel prototype.
 // @ts-nocheck
+import {rgbOf} from '../lib/color-tokens.mjs';
 (() => {
   "use strict";
   document.querySelectorAll('[data-language-link]').forEach(link => {
@@ -70,7 +71,7 @@
     torus: (n) => { const p = [], U = 25, V = Math.round(n / U); for (let i = 0; i < U; i++) for (let j = 0; j < V; j++) { const u = (i / U) * Math.PI * 2, v = (j / V) * Math.PI * 2 + i * 0.13; p.push([(0.68 + 0.28 * Math.cos(v)) * Math.cos(u), 0.28 * Math.sin(v), (0.68 + 0.28 * Math.cos(v)) * Math.sin(u)]); } return p.slice(0, n); },
   };
   const orbs = [...document.querySelectorAll("canvas[data-orb]")].map((c) => ({
-    c, x: c.getContext("2d"), kind: c.dataset.orb, pts: shapes[c.dataset.orb](+c.dataset.n), col: c.dataset.color.split(",").map(Number), vis: false,
+    c, x: c.getContext("2d"), kind: c.dataset.orb, pts: shapes[c.dataset.orb](+c.dataset.n), col: rgbOf(c.dataset.color), vis: false,
   }));
   if (orbs.length) {
     const io = new IntersectionObserver((es) => es.forEach((e) => { const o = orbs.find((q) => q.c === e.target); if (o) o.vis = e.isIntersecting; }));
@@ -155,7 +156,7 @@
     };
 
     // brand gradient across the figure; faint additive halo, cores with normal blending so overlaps never turn white
-    const STOPS = [[255, 158, 41], [219, 100, 232], [51, 237, 242]];
+    const STOPS = ['package-spark', 'package-horizon', 'package-odyssey'].map(rgbOf);
     const colAt = (u) => { u = Math.min(1, Math.max(0, u)) * 2; const a = STOPS[Math.min(1, Math.floor(u))], b = STOPS[Math.min(2, Math.floor(u) + 1)], f = u - Math.min(1, Math.floor(u)); return a.map((v, j) => Math.round(v + (b[j] - v) * f)); };
     const sprites = new Map();
     const sprite = (col) => {

@@ -1,4 +1,5 @@
 import { z } from 'astro/zod';
+import {isColorToken} from '../lib/color-tokens.mjs';
 import {inlineText} from '../schemas/inline-text.mjs';
 
 import {PACKAGE_KEYS} from './package-ids.mjs';
@@ -17,7 +18,7 @@ export const packageSchema = z.object({
   step: count('Zusätzliche Drohnen je Preisstufe'),
   add: amount('Aufpreis je Preisstufe in Euro'),
   dur: text('Showdauer'),
-  color: z.tuple([z.number().int().min(0).max(255), z.number().int().min(0).max(255), z.number().int().min(0).max(255)]).describe('Paketfarbe als RGB'),
+  color: z.string().refine(isColorToken, 'Unbekannte Farbe').describe('Paketfarbe').meta({format: 'color'}),
   orbShape: z.enum(['ring', 'sphere', 'torus']).describe('Animierte Paketformation'),
   badge: text('Paketkennzeichnung'),
   description: text('Paketbeschreibung'),

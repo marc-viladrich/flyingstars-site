@@ -1,29 +1,12 @@
 /* FlyingStars page editor chrome. Same tokens and scale as the c2e WordPress
    frontend editor: one UI font, Etch purple, 14px body, 36px controls. */
-:root {
-  --ui-font: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --ui-surface: #f7f7f8;
-  --ui-raised: #ffffff;
-  --ui-field: #ececee;
-  --ui-hover: #e2e2e6;
-  --ui-line: #d6d6dc;
-  --ui-ink: #1f1f23;
-  --ui-muted: #5b5b62;
-  --ui-accent: #8a4bb0;
-  --ui-accent-hover: #783e9c;
-  --ui-tint: #f2e7f6;
-  --ui-accent-ink: #5e2c78;
-  --ui-danger: #b42338;
-  --ui-danger-tint: #fbe9ec;
-  --ui-shadow: 0 12px 32px #00000033, 0 1px 3px #0000001f;
-  --ui-radius: 10px;
-}
+@import "./ui-tokens.css";
 
 html,
 body {
   margin: 0;
   height: 100%;
-  background: #0a0a0b;
+  background: var(--ui-canvas);
   overflow: hidden;
 }
 
@@ -33,7 +16,7 @@ body {
   width: 100%;
   height: 100dvh;
   border: 0;
-  background: #0a0a0b;
+  background: var(--ui-canvas);
 }
 
 [hidden] {
@@ -117,7 +100,7 @@ body {
 }
 .editor-ui .primary {
   background: var(--ui-accent);
-  color: #fff;
+  color: var(--ui-on-accent);
 }
 .editor-ui .primary:hover:not(:disabled) {
   background: var(--ui-accent-hover);
@@ -169,7 +152,7 @@ body {
   height: 20px;
   padding: 0 6px;
   border-radius: 10px;
-  background: #ffffff38;
+  background: var(--ui-raised-overlay);
   font-size: 12px;
   font-weight: 600;
   line-height: 20px;
@@ -253,7 +236,7 @@ body {
 }
 .editor-ui .danger:hover:not(:disabled) {
   background: var(--ui-danger);
-  color: #fff;
+  color: var(--ui-on-accent);
 }
 
 /* ---------- Panel: anchored popover or docked sheet ---------- */
@@ -476,7 +459,7 @@ body {
   margin: 0;
   flex: none;
   border-radius: 10px;
-  background: #c8c8cf;
+  background: var(--ui-switch-track);
   appearance: none;
   cursor: pointer;
   transition: background 0.15s;
@@ -489,8 +472,8 @@ body {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 1px 2px #0003;
+  background: var(--ui-on-accent);
+  box-shadow: 0 1px 2px var(--ui-shadow-small);
   transition: transform 0.15s;
 }
 .switch:checked {
@@ -554,7 +537,7 @@ label.row {
   padding: 0 !important;
   overflow: hidden;
   border-radius: 8px !important;
-  background: repeating-conic-gradient(#8e8e96 0 25%, #9b9ba3 0 50%) 0 0 / 16px 16px !important;
+  background: repeating-conic-gradient(var(--ui-checker-light) 0 25%, var(--ui-checker-dark) 0 50%) 0 0 / 16px 16px !important;
 }
 .media-preview img {
   max-width: 100%;
@@ -669,7 +652,7 @@ details.more > .group {
   border: 1px solid var(--ui-line) !important;
   border-radius: 8px !important;
   background: var(--ui-surface) !important;
-  box-shadow: 0 2px 8px #0000002e;
+  box-shadow: 0 2px 8px var(--ui-shadow-medium);
 }
 
 /* ---------- Toast ---------- */
@@ -686,8 +669,8 @@ details.more > .group {
   min-height: 44px;
   padding: 6px 6px 6px 16px;
   border-radius: 10px;
-  background: #27272b;
-  color: #f7f7f8;
+  background: var(--ui-toast-surface);
+  color: var(--ui-surface);
   box-shadow: var(--ui-shadow);
 }
 .toast span {
@@ -697,17 +680,17 @@ details.more > .group {
 }
 .toast button {
   min-height: 32px;
-  color: #e9d5f5;
+  color: var(--ui-toast-accent);
   font-weight: 600;
 }
 .toast button:hover:not(:disabled) {
-  background: #ffffff1a !important;
+  background: var(--ui-raised-line) !important;
 }
 .toast.error {
   background: var(--ui-danger);
 }
 .toast.error button {
-  color: #fff;
+  color: var(--ui-on-accent);
 }
 .toast:not(.has-action) {
   padding-right: 16px;
@@ -721,7 +704,7 @@ dialog.dlg {
   border: 1px solid var(--ui-line);
   border-radius: 14px;
   background: var(--ui-surface);
-  box-shadow: 0 24px 80px #0007;
+  box-shadow: 0 24px 80px var(--ui-shadow-modal);
   overflow: hidden;
 }
 dialog.dlg[open] {
@@ -732,7 +715,7 @@ dialog.dlg.narrow {
   width: min(460px, calc(100vw - 32px));
 }
 dialog.dlg::backdrop {
-  background: #16131899;
+  background: var(--ui-backdrop);
   backdrop-filter: blur(2px);
 }
 .dlg-head {
@@ -829,7 +812,7 @@ dialog.dlg::backdrop {
   width: 100%;
   aspect-ratio: 4 / 3;
   border-radius: 6px;
-  background: repeating-conic-gradient(#8e8e96 0 25%, #9b9ba3 0 50%) 0 0 / 14px 14px;
+  background: repeating-conic-gradient(var(--ui-checker-light) 0 25%, var(--ui-checker-dark) 0 50%) 0 0 / 14px 14px;
   object-fit: cover;
 }
 .media-card span {
@@ -917,8 +900,8 @@ dialog.dlg::backdrop {
   z-index: 950;
   display: grid;
   place-items: center;
-  background: #0a0a0b;
-  color: #b4b4bb;
+  background: var(--ui-canvas);
+  color: var(--ui-canvas-muted);
 }
 
 /* ---------- Narrow screens: panel becomes a bottom sheet ---------- */
@@ -1033,7 +1016,7 @@ dialog.dlg::backdrop {
   position: relative;
   z-index: 1;
   background: var(--ui-tint);
-  box-shadow: 0 6px 16px #0002;
+  box-shadow: 0 6px 16px var(--ui-shadow-popover);
 }
 .editor-ui .grip {
   width: 28px;
@@ -1274,7 +1257,7 @@ dialog.dlg::backdrop {
   height: 15px;
   overflow: hidden;
   border-radius: 2px;
-  box-shadow: 0 0 0 1px #00000026;
+  box-shadow: 0 0 0 1px var(--ui-shadow-boundary);
 }
 .editor-ui .flag svg {
   width: 100%;
@@ -1317,7 +1300,7 @@ body#login {
   border: 1px solid var(--ui-line);
   border-radius: 14px;
   background: var(--ui-raised);
-  box-shadow: 0 1px 2px #0000000f;
+  box-shadow: 0 1px 2px var(--ui-shadow-faint);
 }
 .login-brand {
   margin: 0 0 18px;
@@ -1367,7 +1350,7 @@ body#login {
   border: 0;
   border-radius: 8px;
   background: var(--ui-accent);
-  color: #fff;
+  color: var(--ui-on-accent);
   font: 600 14px/1 var(--ui-font);
   cursor: pointer;
 }

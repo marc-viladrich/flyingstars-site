@@ -7,11 +7,7 @@
   "step": 10,
   "add": 900,
   "dur": "ca. 10 Min",
-  "color": [
-    255,
-    158,
-    41
-  ],
+  "color": "package-spark",
   "orbShape": "ring",
   "badge": "Einstieg",
   "description": "Der funkelnde Einstieg für Hochzeiten, Jubiläen und kleinere Firmen- und Kulturfeiern.",
