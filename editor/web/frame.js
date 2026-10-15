@@ -1084,13 +1084,6 @@ function updateFormatState() {
       on = states[button.dataset.command]?.() || false;
     } catch {}
     button.setAttribute("aria-pressed", String(on));
-    // Text the layout already sets in capitals cannot be capitalised further (nor "un-capitalised" here);
-    // an existing caps mark stays removable.
-    if (button.dataset.command === "caps") {
-      const layoutCaps = !on && getComputedStyle(toolOwner).textTransform === "uppercase";
-      button.disabled = layoutCaps;
-      button.title = layoutCaps ? "Dieser Text steht durch die Gestaltung bereits in Versalien." : button.getAttribute("aria-label");
-    }
   }
 }
 // Order: move · variant · formatting · language · options.
