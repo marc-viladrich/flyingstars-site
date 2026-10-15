@@ -92,8 +92,15 @@ test('native order and cross-record entries expose exact owners only in editor b
  const helpers=await nativeHelpers(),previous=process.env.FLYINGSTARS_EDITOR;
  try{
   process.env.FLYINGSTARS_EDITOR='1';assert.deepEqual(helpers.nativeOrder('order'),{'data-native-order-field':'order'});
-  assert.deepEqual(helpers.nativeItem({_nativeRecord:'page/index',_nativeIndex:3},{record:'package/spark',entry:['tiers',0,'featureIds',1]}),{'data-native-record':'package/spark','data-native-entry':'["sections",3,"tiers",0,"featureIds",1]','data-native-entry-record':'page/index'});
-  process.env.FLYINGSTARS_EDITOR='0';assert.deepEqual(helpers.nativeOrder('order'),{});assert.deepEqual(helpers.nativeItem({},{record:'faq/show-01'}),{});
+  assert.deepEqual(helpers.nativeItem({_nativeRecord:'page/index',_nativeIndex:3},{record:'package/spark',entry:['tiers',0,'featureIds',1]}),{'data-native-record':'package/spark','data-native-entry':'["sections",3,"tiers",0,"featureIds",1]','data-native-entry-record':'page/index','data-native-item':''});
+  // Query-backed cards (no entry) are occurrences too; section-owned entries name their owner explicitly.
+  assert.deepEqual(helpers.nativeItem({_nativeRecord:'page/index',_nativeIndex:7},{record:'project/nfl'}),{'data-native-record':'project/nfl','data-native-item':''});
+  assert.deepEqual(helpers.nativeItem({_nativeRecord:'page/index',_nativeIndex:2},{entry:['steps',1]}),{'data-native-entry':'["sections",2,"steps",1]','data-native-entry-record':'page/index','data-native-item':''});
+  assert.deepEqual(helpers.nativeItem({},{record:'package/odyssey',entry:['featureGroups',0]}),{'data-native-record':'package/odyssey','data-native-entry':'["featureGroups",0]','data-native-entry-record':'package/odyssey','data-native-item':''});
+  assert.deepEqual(helpers.nativeItem({_nativeRecord:'page/index',_nativeIndex:2},{}),{});
+  assert.deepEqual(helpers.nativeUses({_nativeRecord:'page/index',_nativeIndex:4},[['tiers',1,'cta','href'],{record:'package/horizon',path:['dur']}]),{'data-native-uses':'[["page/index",["sections",4,"tiers",1,"cta","href"]],["package/horizon",["dur"]]]'});
+  assert.deepEqual(helpers.nativeUses({},[['date']]),{});
+  process.env.FLYINGSTARS_EDITOR='0';assert.deepEqual(helpers.nativeOrder('order'),{});assert.deepEqual(helpers.nativeItem({},{record:'faq/show-01'}),{});assert.deepEqual(helpers.nativeUses({},[{record:'post/a',path:['date']}]),{});
  }finally{if(previous===undefined)delete process.env.FLYINGSTARS_EDITOR;else process.env.FLYINGSTARS_EDITOR=previous;}
 });
 

@@ -9,6 +9,9 @@ import {
   disclosedContainers,
   disclosedOptionalFields,
   restoredInspector,
+  itemSummary,
+  scopeUnits,
+  partitionUnits,
 } from "./view-state.mjs";
 import { packageOwnedPagePath } from "/editor/package-ownership.mjs";
 import { describe } from "./native-schema.mjs";
@@ -264,12 +267,20 @@ function stagedRecords() {
     fields: fieldsFor(item),
   }));
 }
+// Draft records are replaced (never mutated) on every change, so one schema walk per record version is
+// enough; panels ask for fields and containers many times per draw. Results are read-only.
+const described = new WeakMap();
 function describeItem(item) {
-  return describe(item.schema, item.data, {
-    id: item.id,
-    readOnlyPaths: item.readOnlyPaths || [],
-    derivedPath: packageOwnedPagePath,
-  });
+  let result = described.get(item);
+  if (!result) {
+    result = describe(item.schema, item.data, {
+      id: item.id,
+      readOnlyPaths: item.readOnlyPaths || [],
+      derivedPath: packageOwnedPagePath,
+    });
+    described.set(item, result);
+  }
+  return result;
 }
 function fieldsFor(item) {
   if (item.schema) return describeItem(item).fields;
@@ -930,6 +941,8 @@ function fieldControl(item, field, { label } = {}) {
     return el("label", { class: "row" }, labelNode, input);
   }
 
+  if (field.format === "color") return colorControl(item, field, { labelNode, name, key, isChanged });
+
   if (field.kind === "enum" && (field.choices || []).length && field.choices.length <= 4) {
     const stacked = name.length > 16 || field.choices.length > 3;
     const seg = el("div", { class: "seg", role: "group", "aria-label": name });
@@ -1022,6 +1035,127 @@ function fieldControl(item, field, { label } = {}) {
     return el("label", { class: "stack" }, labelNode, input, el("span", { class: "note", text: `${placeholders.join(", ")} wird automatisch eingesetzt.` }));
   return el("label", { class: "stack" }, labelNode, input);
 }
+// Colour fields store a token id from the site's colour registry. Swatch + name open a labelled palette
+// (grouped, selected one marked by a check and its pressed state, arrow keys move, Escape closes).
+// Without the registry the stored value stays editable as text, with its swatch when it is a hex colour.
+let colorRegistry = null;
+function loadColorTokens() {
+  return (colorRegistry ??= import("/editor/site-lib/color-tokens.mjs")
+    .then((module) => (Array.isArray(module.COLOR_TOKENS) ? module.COLOR_TOKENS : null))
+    .catch(() => null));
+}
+const isHexColor = (v) => typeof v === "string" && /^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(v.trim());
+function colorControl(item, field, { labelNode, name, key, isChanged }) {
+  const read = () => value(item, field.path) ?? field.template;
+  const swatch = el("span", { class: "swatch", "aria-hidden": "true" });
+  const label = el("span", { class: "color-name" });
+  const trigger = el("button", { type: "button", class: "color-trigger", "aria-expanded": "false", "data-field-key": key }, swatch, label, icon("chevron-down"));
+  const palette = el("div", { class: "color-palette", role: "group", "aria-label": `${name} wählen` });
+  palette.hidden = true;
+  const wrap = el("div", { class: "stack color-field" }, labelNode, trigger, palette);
+  let tokens = null;
+  const paint = () => {
+    const current = read();
+    const token = tokens?.find((t) => t.id === current);
+    swatch.style.background = token ? token.value : isHexColor(current) ? current : "";
+    swatch.classList.toggle("empty", !token && !isHexColor(current));
+    label.textContent = token ? token.label : current || "Keine Farbe";
+    trigger.setAttribute("aria-label", `${name}: ${label.textContent}`);
+  };
+  const close = (refocus) => {
+    palette.hidden = true;
+    trigger.setAttribute("aria-expanded", "false");
+    if (refocus) trigger.focus({ preventScroll: true });
+  };
+  const choose = (token) => {
+    if (busy) return;
+    if (token.id !== read()) {
+      changed(item.id, field.path, token.id);
+      labelNode.classList.toggle("changed", isChanged());
+      afterPresentationChange();
+    }
+    paint();
+    close(true);
+  };
+  const build = () => {
+    const current = read();
+    const groups = [...new Set(tokens.map((t) => t.group || ""))];
+    palette.replaceChildren(
+      ...groups.map((groupName) =>
+        el(
+          "div",
+          { class: "color-group" },
+          groupName ? el("span", { class: "row-sublabel", text: groupName }) : null,
+          el(
+            "div",
+            { class: "color-options" },
+            tokens
+              .filter((t) => (t.group || "") === groupName)
+              .map((token) => {
+                const selected = token.id === current;
+                const option = el(
+                  "button",
+                  { type: "button", class: "color-option", "aria-pressed": String(selected), "data-token": token.id, onclick: () => choose(token) },
+                  el("span", { class: "swatch", style: `background:${token.value}`, "aria-hidden": "true" }),
+                  el("span", { class: "color-option-label", text: token.label }),
+                );
+                if (selected) option.append(icon("check"));
+                return option;
+              }),
+          ),
+        ),
+      ),
+    );
+  };
+  trigger.addEventListener("click", () => {
+    if (!tokens || busy) return;
+    const opening = palette.hidden;
+    if (!opening) return close(false);
+    build();
+    palette.hidden = false;
+    trigger.setAttribute("aria-expanded", "true");
+    const start = palette.querySelector('[aria-pressed="true"]') || palette.querySelector(".color-option");
+    start?.focus({ preventScroll: true });
+    revealInPanel(start);
+  });
+  palette.addEventListener("keydown", (event) => {
+    const options = [...palette.querySelectorAll(".color-option")];
+    const at = options.indexOf(document.activeElement);
+    const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[event.key];
+    if (event.key === "Escape") {
+      event.preventDefault();
+      event.stopPropagation();
+      close(true);
+    } else if (step && at >= 0) {
+      event.preventDefault();
+      const next = options[(at + step + options.length) % options.length];
+      next.focus({ preventScroll: true });
+      revealInPanel(next);
+    } else if (event.key === "Home" || event.key === "End") {
+      event.preventDefault();
+      const edge = options[event.key === "Home" ? 0 : options.length - 1];
+      edge?.focus({ preventScroll: true });
+      revealInPanel(edge);
+    }
+  });
+  paint();
+  loadColorTokens().then((list) => {
+    if (list) {
+      tokens = list;
+      paint();
+      return;
+    }
+    // No registry (yet): the raw value, editable as text, with its swatch when it is a hex colour.
+    const input = fieldControl(item, { ...field, format: undefined }, { label: name }).querySelector("input,textarea");
+    trigger.replaceWith(el("div", { class: "color-raw" }, swatch, input || label));
+    palette.remove();
+    input?.addEventListener("input", () => {
+      swatch.style.background = isHexColor(input.value) ? input.value : "";
+      swatch.classList.toggle("empty", !isHexColor(input.value));
+    });
+  });
+  return wrap;
+}
 function afterPresentationChange() {
   // Variants render immediately in the frame; the panel keeps its place.
   syncFrame();
@@ -1077,16 +1211,28 @@ function mediaControl(item, path, { title, untitled = false } = {}) {
   }
   return el("div", { class: "media-field" }, parts);
 }
-function listLabel(entry, index) {
-  // An entry that stands for another record (a package card: packageId) is named after that record.
-  if (entry && typeof entry === "object")
-    for (const [key, id] of Object.entries(entry)) {
-      const linked = key.endsWith("Id") && typeof id === "string" && record(key.slice(0, -2) + "/" + id);
-      if (linked) return recordName(linked);
-    }
-  if (entry && typeof entry === "object")
-    return inlinePlain(entry.displayName || entry.title || entry.name || entry.headline || entry.label || entry.question || entry.value || `Eintrag ${index + 1}`);
-  return inlinePlain(String(entry ?? `Eintrag ${index + 1}`));
+// How a list entry is named and pictured wherever it appears (row, drag handle, panel title, "Gehört zu"):
+// an image by caption/alt/library title/file name with a thumbnail, an entry standing for another record
+// (packageId) by that record, others by their own title or name, an entry carrying an image by that image.
+function entrySummary(item, path, entry = value(item, path)) {
+  const containers = containersFor(item);
+  // An id in a picker list (memberIds, featureIds) is named like its option: the record or Leistung it shows.
+  if (entry !== null && entry !== undefined && typeof entry !== "object") {
+    const list = containers.find((c) => equal(c.path, path.slice(0, -1)));
+    const option = list && choiceSource(item, list)?.options.find((o) => o.key === entry || o.alias === entry);
+    if (option) return { label: inlinePlain(option.label), thumb: null };
+  }
+  const own = containers.find((c) => equal(c.path, path));
+  const image = !!own && isMediaContainer(item, own);
+  const child =
+    !image && entry && typeof entry === "object"
+      ? containers.find((c) => c.path.length === path.length + 1 && under(c.path, path) && value(item, c.path) && isMediaContainer(item, c))
+      : null;
+  const summary = itemSummary(entry, path.at(-1), { records: records(), image, imageChild: child ? value(item, child.path) : null, recordName });
+  return { label: inlinePlain(summary.label), thumb: summary.thumb };
+}
+function listLabel(item, path) {
+  return entrySummary(item, path).label;
 }
 // Referenced records (team members, client logos): chosen ones first, in their shown order and
 // reorderable by drag or arrow keys; the others below to tick on.
@@ -1120,14 +1266,16 @@ function choiceSource(item, container) {
           key: feature.id,
           label: inlinePlain(feature.text),
           group: group.title,
-          open: () => pushView({ id: pkg.id, path: ["featureGroups", g, "items", i] }, "entry"),
+          // The text belongs to the package: open its overview with this Leistung revealed.
+          open: () => pushView({ id: pkg.id, path: [], reveal: ["featureGroups", g, "items", i] }, "record"),
         })),
       ),
     };
   }
   return null;
 }
-function referenceControl(item, container, source) {
+// part: "all" (picker with candidates), "chosen" (what the card shows) or "candidates" (the rest to tick on).
+function referenceControl(item, container, source, { part = "all" } = {}) {
   const listKey = fieldKey(item.id, container.path);
   const now = () => value(item, container.path) || [];
   const matches = (option, id) => option.key === id || option.alias === id;
@@ -1157,7 +1305,7 @@ function referenceControl(item, container, source) {
       if (box.checked) next.push(option.key);
       write(next);
     });
-    const li = el("li", { "data-index": index === null ? "" : String(index) });
+    const li = el("li", { "data-index": index === null ? "" : String(index), ...(index === null ? {} : { "data-entry-key": fieldKey(item.id, [...container.path, index]) }) });
     if (index !== null && chosen.length > 1) {
       const grip = button(`„${option.label}“ verschieben`, null, {
         icon: "grip-vertical",
@@ -1188,16 +1336,19 @@ function referenceControl(item, container, source) {
     others.filter((option) => (option.group || "") === group).forEach((option) => list.append(row(option, null)));
     return [group ? el("span", { class: "row-sublabel", text: group }) : null, list];
   });
+  const createButton = source.create
+    ? button(source.createLabel || source.noun + " hinzufügen", source.create, { icon: source.createLabel ? "pencil" : "plus", cls: "inline-button" })
+    : null;
+  if (part === "candidates")
+    return el("div", { class: "stack" }, el("span", { class: "row-label", text: `${fieldLabel(container)} · nicht angezeigt` }), otherLists.flat());
   return el(
     "div",
     { class: "stack" },
     el("span", { class: "row-label", text: fieldLabel(container) }),
     chosen.length ? chosenList : el("p", { class: "note", text: source.empty }),
-    others.length ? el("span", { class: "note", text: "Nicht angezeigt" }) : null,
-    otherLists.flat(),
-    source.create
-      ? button(source.createLabel || source.noun + " hinzufügen", source.create, { icon: source.createLabel ? "pencil" : "plus", cls: "inline-button" })
-      : null,
+    part === "all" && others.length ? el("span", { class: "note", text: "Nicht angezeigt" }) : null,
+    part === "all" ? otherLists.flat() : null,
+    createButton,
   );
 }
 const under = (path, prefix) => prefix.every((part, index) => path[index] === part);
@@ -1287,14 +1438,48 @@ function tableColumns(item, container) {
   if (Object.keys(entries[0]).filter((k) => !isTechnical({ path: [k] })).length !== columns.length) return null;
   return columns.map((f) => ({ key: f.path.at(-1), label: fieldLabel(f) }));
 }
+// Complex entries open in place as disclosures (no new panel): the summary row names and pictures the
+// entry, the body edits it in a column grid. A record overview starts them open, contextual panels closed;
+// an explicit toggle is remembered across redraws and follows the entry when it moves.
+function disclosureOpen(key) {
+  return openDisclosures.has(key) ? openDisclosures.get(key) : renderMode === "entity";
+}
+// permutation[newIndex] = oldIndex (missing old indexes were removed); nested keys move with their entry.
+function remapDisclosures(id, listPath, permutation) {
+  const moved = [];
+  for (const [key, open] of openDisclosures) {
+    const at = key.indexOf("/[");
+    if (at < 0 || key.slice(0, at) !== id) continue;
+    let path;
+    try {
+      path = JSON.parse(key.slice(at + 1));
+    } catch {
+      continue;
+    }
+    if (path.length <= listPath.length || !under(path, listPath) || typeof path[listPath.length] !== "number") continue;
+    openDisclosures.delete(key);
+    const next = permutation.indexOf(path[listPath.length]);
+    if (next < 0) continue;
+    const target = [...path];
+    target[listPath.length] = next;
+    moved.push([fieldKey(id, target), open]);
+  }
+  for (const [key, open] of moved) openDisclosures.set(key, open);
+}
+const range = (length) => Array.from({ length }, (_, i) => i);
+function entryKeySelector(id, path) {
+  return `[data-entry-key="${CSS.escape(fieldKey(id, path))}"]`;
+}
 function listRows(item, container, options = {}) {
   const listKey = fieldKey(item.id, container.path);
   const now = () => value(item, container.path) || [];
   const current = now();
   const columns = tableColumns(item, container);
-  const write = (next, focusIndex) => {
+  const rowSelector = (index) => `[data-list="${CSS.escape(listKey)}"] > [data-index="${index}"]`;
+  const write = (next, focusIndex, permutation) => {
+    if (permutation) remapDisclosures(item.id, container.path, permutation);
     changed(item.id, container.path, next);
-    if (focusIndex !== undefined) pendingFocus = `[data-list="${CSS.escape(listKey)}"] [data-index="${focusIndex}"] .grip`;
+    if (focusIndex !== undefined) pendingFocus = `${rowSelector(focusIndex)} .grip`;
     rerender();
     previewList(item, container.path);
   };
@@ -1304,18 +1489,32 @@ function listRows(item, container, options = {}) {
     const next = structuredClone(now());
     const [moved] = next.splice(from, 1);
     next.splice(to, 0, moved);
-    write(next, to);
+    const permutation = range(now().length);
+    permutation.splice(to, 0, permutation.splice(from, 1)[0]);
+    write(next, to, permutation);
+  };
+  const removeAt = (index) => {
+    stageInputs();
+    const next = structuredClone(now());
+    next.splice(index, 1);
+    write(
+      next,
+      undefined,
+      range(now().length).filter((i) => i !== index),
+    );
   };
   const list = el("ul", { class: "rows" + (columns ? " table" : ""), "data-list": listKey, "aria-label": fieldLabel(container) });
   if (columns) list.style.setProperty("--cols", String(columns.length));
   current.forEach((entry, index) => {
     const entryPath = [...container.path, index];
     const primitive = entry === null || typeof entry !== "object";
-    const row = el("li", { "data-index": String(index) });
+    const summary = primitive ? null : entrySummary(item, entryPath, entry);
+    const row = el("li", { "data-index": String(index), "data-entry-key": fieldKey(item.id, entryPath) });
     // Tags are a set: their order changes nothing on the page.
     const reorderable = current.length > 1 && !positionalList(container.path) && container.path.at(-1) !== "tags";
+    let grip = null;
     if (reorderable) {
-      const grip = button(`„${listLabel(entry, index)}“ verschieben`, null, {
+      grip = button(`„${summary ? summary.label : String(entry ?? "")}“ verschieben`, null, {
         icon: "grip-vertical",
         iconOnly: true,
         cls: "grip",
@@ -1328,59 +1527,47 @@ function listRows(item, container, options = {}) {
         }
       });
       grip.addEventListener("pointerdown", (event) => dragRow(event, list, row, index, moveTo));
-      row.append(grip);
     }
+    const removable = current.length > (container.min || 0) && !positionalList(container.path);
     if (columns) {
+      if (grip) row.append(grip);
       for (const column of columns) {
         const field = fieldsFor(item).find((f) => equal(f.path, [...entryPath, column.key]));
         const control = field && fieldControl(item, field, { label: `${column.label} ${index + 1}` });
         const input = control?.querySelector("input,textarea,select");
         row.append(input || el("span", { class: "row-text", text: String(entry[column.key] ?? "") }));
       }
-      if (current.length > (container.min || 0) && !positionalList(container.path))
-        row.append(
-          button(
-            "Zeile entfernen",
-            () => {
-              stageInputs();
-              const next = structuredClone(now());
-              next.splice(index, 1);
-              write(next);
-            },
-            { icon: "x", iconOnly: true, cls: "row-remove" },
-          ),
-        );
+      if (removable) row.append(button("Zeile entfernen", () => removeAt(index), { icon: "x", iconOnly: true, cls: "row-remove" }));
     } else if (primitive) {
+      if (grip) row.append(grip);
       const field = fieldsFor(item).find((f) => equal(f.path, entryPath));
       const input = field && fieldControl(item, field, { label: `${fieldLabel(container)} ${index + 1}` }).lastChild;
       // A text entry left empty disappears again instead of being saved as a blank value.
       input?.addEventListener("blur", () => {
-        if (input.value.trim() === "" && now()[index] !== undefined && String(now()[index]).trim() === "") {
-          const next = structuredClone(now());
-          next.splice(index, 1);
-          write(next);
-        }
+        if (input.value.trim() === "" && now()[index] !== undefined && String(now()[index]).trim() === "") removeAt(index);
       });
       row.append(input || el("span", { class: "row-text", text: String(entry) }));
-      if (current.length > (container.min || 0) && !positionalList(container.path))
-        row.append(
-          button(
-            "Entfernen",
-            () => {
-              stageInputs();
-              const next = structuredClone(now());
-              next.splice(index, 1);
-              write(next);
-            },
-            { icon: "x", iconOnly: true, cls: "row-remove" },
-          ),
-        );
+      if (removable) row.append(button("Entfernen", () => removeAt(index), { icon: "x", iconOnly: true, cls: "row-remove" }));
     } else {
-      const open = button(listLabel(entry, index), () => pushView({ id: item.id, path: entryPath, section: panelStack.at(-1)?.context.section }, "entry"), {
-        cls: "row-open",
+      row.classList.add("entry");
+      const key = fieldKey(item.id, entryPath),
+        bodyId = "entry-body-" + ++disclosureSeq,
+        open = disclosureOpen(key);
+      const toggle = el("button", { type: "button", class: "entry-toggle", "aria-expanded": String(open), "aria-controls": bodyId });
+      if (summary.thumb) toggle.append(el("img", { class: "entry-thumb", src: summary.thumb, alt: "", loading: "lazy", decoding: "async" }));
+      toggle.append(el("span", { class: "entry-label", text: summary.label }), icon("chevron-down"));
+      const body = el("div", { class: "entry-body", id: bodyId, role: "group", "aria-label": summary.label });
+      body.hidden = !open;
+      const fill = () => body.childElementCount || put(body, entryBody(item, entryPath, container, { removeAt, now, write }));
+      if (open) fill();
+      toggle.addEventListener("click", () => {
+        const next = toggle.getAttribute("aria-expanded") !== "true";
+        openDisclosures.set(key, next);
+        if (next) fill();
+        toggle.setAttribute("aria-expanded", String(next));
+        body.hidden = !next;
       });
-      open.append(icon("chevron-right"));
-      row.append(open);
+      row.append(el("div", { class: "entry-head" }, grip, toggle), body);
     }
     list.append(row);
   });
@@ -1403,19 +1590,69 @@ function listRows(item, container, options = {}) {
           const next = [...now(), isObject ? template : typeof template === "string" ? "" : template];
           changed(item.id, container.path, next);
           previewList(item, container.path);
-          if (isObject && columns) {
-            pendingFocus = `[data-list="${CSS.escape(listKey)}"] [data-index="${next.length - 1}"] input`;
-            rerender();
-          } else if (isObject) pushView({ id: item.id, path: [...container.path, next.length - 1], section: panelStack.at(-1)?.context.section }, "entry");
-          else {
-            pendingFocus = `[data-list="${CSS.escape(listKey)}"] [data-index="${next.length - 1}"] input`;
-            rerender();
-          }
+          const added = rowSelector(next.length - 1);
+          // A new complex entry opens in place with its first field focused; the panel stays where it is.
+          if (isObject && !columns) openDisclosures.set(fieldKey(item.id, [...container.path, next.length - 1]), true);
+          pendingFocus = isObject && !columns ? `${added} .entry-body :is(input,textarea,select)` : `${added} input`;
+          rerender();
         },
         { icon: "plus", cls: "inline-button" },
       ),
     );
-  return el("div", { class: "stack" }, parts);
+  return el("div", { class: "stack list-field" }, parts);
+}
+// Keys the media control owns for an image usage.
+const mediaUsageKeys = new Set(["src", "width", "height", "alt", "altOverride", "decorative", "assetId", "mime"]);
+// The body of an open entry: its fields, images and nested lists in schema order, then duplicate/remove.
+function entryBody(item, path, container, { removeAt, now, write }) {
+  const direct = fieldsFor(item).filter((f) => f.path.length === path.length + 1 && under(f.path, path) && !isTechnical(f));
+  // In contextual panels a larger entry keeps its on-page texts on the page; small ones are edited whole.
+  const skipInline = renderMode !== "entity" && direct.length > 4;
+  const own = containersFor(item).find((c) => equal(c.path, path));
+  // An image entry is edited like every image (preview, replace, inherited alt text), its caption beside it.
+  const controls =
+    own && isMediaContainer(item, own)
+      ? [
+          mediaControl(item, path, { untitled: true }),
+          ...direct
+            .filter((f) => !mediaUsageKeys.has(f.path.at(-1)) && !(skipInline && inlineKeys.has(fieldKey(item.id, f.path))))
+            .map((f) => fieldControl(item, f)),
+        ]
+      : subtreeControls(item, path, { skipInline });
+  const index = path.at(-1);
+  const list = now();
+  const actions = [];
+  if (!positionalList(container.path)) {
+    if (container.elementTemplate !== undefined && (container.max === undefined || list.length < container.max))
+      actions.push(
+        button(
+          "Duplizieren",
+          () => {
+            stageInputs();
+            const next = structuredClone(now());
+            next.splice(index + 1, 0, structuredClone(next[index]));
+            // The copy sits right below and opens; later entries keep their own open state.
+            remapDisclosures(item.id, container.path, range(next.length).map((i) => (i <= index ? i : i === index + 1 ? -1 : i - 1)));
+            openDisclosures.set(fieldKey(item.id, [...container.path, index + 1]), true);
+            write(next);
+            toast("Dupliziert.", { action: undoLast });
+          },
+          { icon: "copy", cls: "inline-button" },
+        ),
+      );
+    if (list.length > (container.min || 0)) {
+      const remove = button("Entfernen", null, { icon: "trash-2", cls: "inline-button danger" });
+      confirmInPlace(remove, "Wirklich entfernen?", () => {
+        removeAt(index);
+        toast("Entfernt.", { action: undoLast });
+      });
+      actions.push(remove);
+    }
+  }
+  return [
+    el("div", { class: "entry-grid" }, controls.length ? controls : el("p", { class: "note", text: "Hier gibt es nichts weiter einzustellen." })),
+    actions.length ? el("div", { class: "entry-actions" }, actions) : null,
+  ];
 }
 function dragRow(event, list, row, from, moveTo) {
   if (event.button !== 0) return;
@@ -1590,8 +1827,12 @@ function sectionActions(item, index) {
 // ---------------------------------------------------------------------------
 let panelStack = [],
   panelAnchor = null,
-  pendingFocus = null;
-const openDisclosures = new Set();
+  pendingFocus = null,
+  // "entity" (record overview: everything open) or "compact" (contextual panels: entries start closed).
+  renderMode = "compact",
+  disclosureSeq = 0;
+// Explicit open/closed choices of entry disclosures and "Weitere Felder", by record + path.
+const openDisclosures = new Map();
 function viewExists(view) {
   const item = record(view.context.id);
   const path = view.context.path || [];
@@ -1616,6 +1857,25 @@ function openInspector(context, scope = "element", anchor, { docked = false } = 
 function pushView(context, scope) {
   stageInputs();
   panelStack.push({ context: structuredClone(context), scope });
+  renderTop({ keepPlace: true });
+}
+// A step within the same object (an entry → its parent entry, an element → its card) replaces the view in
+// place instead of stacking another one; the target is revealed (opened, scrolled to, focused).
+// Scrolls the panel body vertically only (scrollIntoView would also shift the panel sideways by the
+// resize handles' overhang): the node's top stays visible, as much of the rest as fits.
+function revealInPanel(node, { smooth = false } = {}) {
+  const body = $("#panel-body");
+  if (!node || !body.contains(node)) return;
+  const box = body.getBoundingClientRect(),
+    rect = node.getBoundingClientRect();
+  let top = body.scrollTop;
+  if (rect.top < box.top) top -= box.top - rect.top;
+  else if (rect.bottom > box.bottom) top += Math.min(rect.bottom - box.bottom, rect.top - box.top);
+  if (top !== body.scrollTop) body.scrollTo({ top, behavior: smooth && !reducedMotion() ? "smooth" : "auto" });
+}
+function revealView(context, scope) {
+  stageInputs();
+  panelStack[panelStack.length - 1] = { context: structuredClone(context), scope };
   renderTop({ keepPlace: true });
 }
 function popView() {
@@ -1664,8 +1924,8 @@ function parentLinks(item, context, { from }) {
     const container = containersFor(entryOwner).find((c) => equal(c.path, entry.slice(0, -1)));
     rows.push(
       navRow(
-        `${fieldLabel(container || { path: entry.slice(0, -1) })}: „${listLabel(value(entryOwner, entry), entry.at(-1))}“`,
-        () => pushView({ id: entryOwner.id, path: entry, section, record: stamped?.record }, "entry"),
+        `${fieldLabel(container || { path: entry.slice(0, -1) })}: „${listLabel(entryOwner, entry)}“`,
+        () => revealView({ id: entryOwner.id, path: entry, section, record: stamped?.record, reveal: path }, "entry"),
         "layers",
       ),
     );
@@ -1678,7 +1938,7 @@ function parentLinks(item, context, { from }) {
   const parentEntry = from === "entry" ? entryPrefixOf(item, path.slice(0, -1)) : null;
   if (parentEntry)
     rows.push(
-      navRow(`„${listLabel(value(item, parentEntry), parentEntry.at(-1))}“`, () => pushView({ id: item.id, path: parentEntry, section }, "entry"), "layers"),
+      navRow(`„${listLabel(item, parentEntry)}“`, () => revealView({ id: item.id, path: parentEntry, section, reveal: path }, "entry"), "layers"),
     );
   const ownRecord = !item.id.startsWith("page/") && !item.id.startsWith("screen/");
   if (ownRecord && from !== "record")
@@ -1704,19 +1964,35 @@ function renderTop({ keepScroll = false, keepPlace = false } = {}) {
     previous = (keepPlace || keepScroll) && !panel.hidden && panel.style.left ? panelPlace() : null;
   currentInspector = { context: view.context, scope: view.scope, anchor: panelAnchor };
   selection = { ...view.context };
+  renderMode = view.scope === "record" ? "entity" : "compact";
+  // A revealed path opens every entry on the way to it (once, when the view is first drawn).
+  const reveal = !keepScroll && Array.isArray(view.context.reveal) ? view.context.reveal : null;
+  if (reveal)
+    for (let i = 1; i <= reveal.length; i++)
+      if (typeof reveal[i - 1] === "number" && i > (view.context.path || []).length) openDisclosures.set(fieldKey(item.id, reveal.slice(0, i)), true);
   body.replaceChildren();
+  panel.scrollLeft = 0;
   $("#panel-actions").replaceChildren();
   overviewObserver?.disconnect();
   const head = (title, iconName, kind) =>
     showPanel({ title, iconName, kind, anchor: panelAnchor, docked: !panelAnchor, size: view.scope === "record" ? "overview" : "compact" });
   $("#panel").classList.remove("wide");
-  const renderers = { element: elementView, entry: entryView, section: sectionView, media: mediaView, record: recordView, page: pageView, field: fieldView };
+  const renderers = { element: elementView, entry: entryView, instance: instanceView, section: sectionView, media: mediaView, record: recordView, page: pageView, field: fieldView };
   (renderers[view.scope] || elementView)(body, item, view.context, head);
   if (!body.children.length) put(body, group(null, el("p", { class: "note", text: "Hier gibt es nichts weiter einzustellen." })));
   $("#panel-back").hidden = panelStack.length < 2;
   update();
   placePanel(panelAnchor, previous);
   body.scrollTop = scroll;
+  if (reveal && !pendingFocus) {
+    let target = body.querySelector(`[data-field-key="${CSS.escape(fieldKey(item.id, reveal))}"]`);
+    for (let i = reveal.length; i > 0 && !target; i--) target = body.querySelector(entryKeySelector(item.id, reveal.slice(0, i)));
+    if (target) {
+      revealInPanel(target);
+      (target.matches("input,textarea,select,button") ? target : target.querySelector(".entry-toggle,input,textarea,select,button"))?.focus({ preventScroll: true });
+      return;
+    }
+  }
   if (pendingFocus) {
     body.querySelector(pendingFocus)?.focus({ preventScroll: true });
     pendingFocus = null;
@@ -1784,12 +2060,189 @@ function removeOptional(item, path) {
   toast("Entfernt.", { action: undoLast });
 }
 
+// ---------------------------------------------------------------------------
+// Instance: one card on the canvas. First what this card renders (read from the page's markers), its own
+// values and, owned elsewhere, the shared record's (with a note); everything else of the card under one
+// closed "Weitere Felder (N)". The complete record stays an explicit step ("… bearbeiten").
+// ---------------------------------------------------------------------------
+let lastInstanceMarkers = "";
+// A card opened from the canvas; the clicked part is revealed (entries on the way to it open).
+function instanceContext(data) {
+  const focus = data.focus || null;
+  return {
+    id: data.id,
+    path: data.path,
+    record: data.record,
+    section: data.section,
+    occurrence: data.occurrence,
+    focus,
+    reveal: focus && focus.id === data.id ? focus.path : undefined,
+  };
+}
+function occurrenceMarkers(context) {
+  try {
+    return frame.contentWindow.flyingstarsEditorFrame?.occurrenceMarkers?.(context.occurrence) || [];
+  } catch {
+    return [];
+  }
+}
+const markersKey = (markers) => JSON.stringify(markers.map((m) => m.id + JSON.stringify(m.path)).sort());
+function unitsOf(item, prefix) {
+  const inPrefix = (path) => path.length > prefix.length && under(path, prefix);
+  const containers = containersFor(item)
+    .filter((c) => inPrefix(c.path) && !isTechnical(c))
+    .map((c) => {
+      const media = isMediaContainer(item, c);
+      const source = c.kind === "array" && !media ? choiceSource(item, c) : null;
+      const chosen = source ? value(item, c.path) || [] : [];
+      const candidates = source ? source.options.filter((o) => !chosen.some((id) => o.key === id || o.alias === id)).length : 0;
+      return { ...c, media, reference: !!source, candidates };
+    });
+  const fields = fieldsFor(item)
+    .filter((f) => inPrefix(f.path) && !isTechnical(f))
+    .map((f) => ({ ...f, inline: inlineKeys.has(fieldKey(item.id, f.path)) }));
+  const optionalFields = optionalFieldsFor(item).filter((f) => inPrefix(f.path) && !isTechnical(f) && f.path.at(-1) !== "decorative");
+  return scopeUnits({ fields, containers, optionalFields, data: item.data, prefix });
+}
+// One control per unit; labels name the parent group for nested fields ("Link · Ziel").
+function unitControl(item, unit, prefix) {
+  const container = () => containersFor(item).find((c) => equal(c.path, unit.path)) || { path: unit.path };
+  if (unit.kind === "field" || unit.kind === "variant") {
+    const field = (unit.kind === "field" ? fieldsFor(item) : optionalFieldsFor(item)).find((f) => equal(f.path, unit.path));
+    if (!field) return null;
+    const parent = unit.path.length - prefix.length > 1 ? unit.path.at(-2) : null;
+    return fieldControl(item, field, { label: parent !== null && typeof parent !== "number" ? fieldLabel({ path: [parent] }) + " · " + fieldLabel(field) : fieldLabel(field) });
+  }
+  if (unit.kind === "media") return mediaControl(item, unit.path, { title: fieldLabel(container()) });
+  if (unit.kind === "array" || unit.kind === "candidates") {
+    const c = container();
+    const source = choiceSource(item, c);
+    if (source) return referenceControl(item, c, source, { part: unit.kind === "candidates" ? "candidates" : unit.shown ? "chosen" : "all" });
+    return listRows(item, c);
+  }
+  if (unit.kind === "add") {
+    const optional = optionalFieldsFor(item).find((f) => equal(f.path, unit.path));
+    const c = containersFor(item).find((x) => equal(x.path, unit.path));
+    const template = c ? c.template : optional?.template;
+    const isImage = template && typeof template === "object" && template.src !== undefined;
+    return button(
+      fieldLabel(c || optional || { path: unit.path }) + (isImage ? " hinzufügen" : " ergänzen"),
+      () => (isImage ? openMedia({ id: item.id, path: unit.path }) : (changed(item.id, unit.path, structuredClone(template)), rerender())),
+      { icon: isImage ? "image" : "plus", cls: "inline-button" },
+    );
+  }
+  return null;
+}
+// The clicked element's control comes first and is marked; focus moves there when the panel opens.
+function placeFocus(units, focus, ownerId) {
+  if (!focus || focus.id !== ownerId) return units;
+  const index = units.findIndex((u) => u.path.length <= focus.path.length && under(focus.path, u.path));
+  if (index < 0) return units;
+  const marked = { ...units[index], focus: true };
+  return [marked, ...units.slice(0, index), ...units.slice(index + 1)];
+}
+function moreDisclosure(item, units, prefix, key) {
+  if (!units.length) return null;
+  const details = el("details", { class: "more" }, el("summary", {}, el("span", { text: `Weitere Felder (${units.length})` }), icon("chevron-down")));
+  // Filled when first opened: the closed disclosure costs nothing to draw.
+  const fill = () => details.querySelector(":scope > .group") || put(details, group(null, units.map((unit) => unitControl(item, unit, prefix))));
+  if (openDisclosures.get(key) === true) {
+    details.open = true;
+    fill();
+  }
+  details.addEventListener("toggle", () => {
+    if (openDisclosures.get(key) === details.open) return;
+    openDisclosures.set(key, details.open);
+    if (!details.open) return;
+    fill();
+    // The opened fields come into view below the summary that was clicked.
+    revealInPanel(details.querySelector(":scope > .group"), { smooth: true });
+  });
+  return details;
+}
+function instanceView(body, item, context, head) {
+  const path = context.path || [];
+  const shared = context.record && context.record !== item.id ? record(context.record) : null;
+  const markers = occurrenceMarkers(context);
+  lastInstanceMarkers = markersKey(markers);
+  const container = path.length ? containersFor(item).find((c) => equal(c.path, path.slice(0, -1))) : null;
+  if (path.length) head(listLabel(item, path), "layers", fieldLabel(container || { path: path.slice(0, -1) }));
+  else head(recordName(item), kindOf(item.id)[1], kindOf(item.id)[0]);
+  // Small entries (a table row, a step) are edited whole, including their on-page texts.
+  const units = unitsOf(item, path);
+  const own = partitionUnits(units, markers, { id: item.id, path }, { includeInline: path.length > 0 && units.length <= 4 });
+  const sharedShown = shared ? partitionUnits(unitsOf(shared, []), markers, { id: shared.id, path: [] }).shown : [];
+  const focus = context.focus;
+  const draw = (owner, units, prefix) =>
+    placeFocus(units, focus, owner.id).map((unit) => {
+      const control = unitControl(owner, { ...unit, shown: true }, prefix);
+      if (control && unit.focus) control.classList.add("is-focus");
+      return control;
+    });
+  put(body, group(null, draw(item, own.shown, path)));
+  if (sharedShown.length)
+    put(
+      body,
+      group(`${kindOf(shared.id)[0]} „${recordName(shared)}“`, draw(shared, sharedShown, []), el("p", { class: "note", text: `Gilt überall, wo ${recordName(shared)} erscheint.` })),
+    );
+  put(body, moreDisclosure(item, own.more, path, "more:" + fieldKey(item.id, path)));
+  if (path.length) put(body, entryActionGroup(item, path, container));
+  put(body, parentLinks(item, context, { from: "entry" }));
+  // Keyboard focus goes to the clicked element once, when the card opens.
+  if (focus && !context.focused) {
+    context.focused = true;
+    const target = body.querySelector(".is-focus");
+    const row = focus.kind === "entry" ? target?.querySelector(entryKeySelector(focus.id, focus.path)) : null;
+    const scope = row || target;
+    const node = scope?.querySelector("input,textarea,select") || scope?.querySelector(".entry-toggle,button");
+    if (node) {
+      node.dataset.focusTarget = "true";
+      pendingFocus = '[data-focus-target="true"]';
+    }
+  }
+}
+// Duplicate/remove of a card opened on its own (from the canvas).
+function entryActionGroup(item, path, container) {
+  const list = value(item, path.slice(0, -1)) || [];
+  if (positionalList(path.slice(0, -1))) return null;
+  const entry = value(item, path);
+  return actionGroup(null, [
+    container?.elementTemplate !== undefined && (container.max === undefined || list.length < container.max)
+      ? actionRow(
+          "Duplizieren",
+          () => {
+            const next = structuredClone(list);
+            next.splice(path.at(-1) + 1, 0, structuredClone(entry));
+            changed(item.id, path.slice(0, -1), next);
+            popView();
+            toast("Dupliziert.", { action: undoLast });
+          },
+          "copy",
+        )
+      : null,
+    list.length > (container?.min || 0)
+      ? actionRow(
+          "Entfernen",
+          () => {
+            const next = structuredClone(list);
+            next.splice(path.at(-1), 1);
+            changed(item.id, path.slice(0, -1), next);
+            popView();
+            toast("Entfernt.", { action: undoLast });
+          },
+          "trash-2",
+          { danger: true, confirm: "Wirklich entfernen?" },
+        )
+      : null,
+  ]);
+}
+
 // One card / list entry: its variants, its images and lists, then remove; moving happens by drag in the list.
 function entryView(body, item, context, head) {
   const path = context.path;
   const entry = value(item, path);
   const container = containersFor(item).find((c) => equal(c.path, path.slice(0, -1)));
-  head(listLabel(entry, path.at(-1)), "layers", fieldLabel(container || { path: path.slice(0, -1) }));
+  head(listLabel(item, path), "layers", fieldLabel(container || { path: path.slice(0, -1) }));
   const variants = fieldsFor(item).filter(
     (f) => f.path.length === path.length + 1 && under(f.path, path) && ["enum", "boolean"].includes(f.kind) && !isTechnical(f),
   );
@@ -1804,48 +2257,13 @@ function entryView(body, item, context, head) {
       variants.map((f) => fieldControl(item, f)),
       optionalVariants(item, path, { exact: true }),
       shared.map((f) => fieldControl(shown, f)),
-      shared.length ? el("span", { class: "note", text: `Gilt überall, wo ${inlinePlain(listLabel(shown.data, "") || shown.title || shown.id)} erscheint.` }) : null,
+      shared.length ? el("span", { class: "note", text: `Gilt überall, wo ${recordName(shown)} erscheint.` }) : null,
     ),
   );
   // A small entry (a table cell: label, text, rating) is edited as a whole, including its on-page text.
   const direct = fieldsFor(item).filter((f) => f.path.length === path.length + 1 && under(f.path, path) && !isTechnical(f));
   put(body, group("Inhalt", contentControls(item, path, { depthLimit: 1, skipKinds: ["enum", "boolean"], includeInline: direct.length <= 4 })));
-  const list = value(item, path.slice(0, -1)) || [];
-  const fixed = positionalList(path.slice(0, -1));
-  put(
-    body,
-    fixed
-      ? null
-      : actionGroup(null, [
-          container?.elementTemplate !== undefined && (container.max === undefined || list.length < container.max)
-            ? actionRow(
-                "Duplizieren",
-                () => {
-                  const next = structuredClone(list);
-                  next.splice(path.at(-1) + 1, 0, structuredClone(entry));
-                  changed(item.id, path.slice(0, -1), next);
-                  popView();
-                  toast("Dupliziert.", { action: undoLast });
-                },
-                "copy",
-              )
-            : null,
-          list.length > (container?.min || 0)
-            ? actionRow(
-                "Entfernen",
-                () => {
-                  const next = structuredClone(list);
-                  next.splice(path.at(-1), 1);
-                  changed(item.id, path.slice(0, -1), next);
-                  popView();
-                  toast("Entfernt.", { action: undoLast });
-                },
-                "trash-2",
-                { danger: true, confirm: "Wirklich entfernen?" },
-              )
-            : null,
-        ]),
-  );
+  put(body, entryActionGroup(item, path, container));
   put(body, parentLinks(item, context, { from: "entry" }));
 }
 
@@ -1921,7 +2339,7 @@ function mediaPathOf(item, path) {
   return containersFor(item).some((c) => c.path.length < path.length && under(path, c.path) && isMediaContainer(item, c));
 }
 // Direct children of one object in schema order: fields, images, lists and nested objects (as subheadings).
-function subtreeControls(item, prefix) {
+function subtreeControls(item, prefix, { skipInline = false } = {}) {
   const out = [];
   const children = [];
   const seen = new Set();
@@ -1941,7 +2359,7 @@ function subtreeControls(item, prefix) {
     if (c.path.length === prefix.length + 1 && under(c.path, prefix)) consider(c.path, { container: c });
   for (const child of children) {
     if (child.field) {
-      if (!isTechnical(child.field)) out.push(fieldControl(item, child.field));
+      if (!isTechnical(child.field) && !(skipInline && inlineKeys.has(fieldKey(item.id, child.field.path)))) out.push(fieldControl(item, child.field));
       continue;
     }
     const c = child.container;
@@ -1951,7 +2369,7 @@ function subtreeControls(item, prefix) {
       const source = choiceSource(item, c);
       out.push(source ? referenceControl(item, c, source) : listRows(item, c, { includeInline: true }));
     } else if (c.kind === "object" && value(item, c.path) !== undefined) {
-      const inner = subtreeControls(item, c.path);
+      const inner = subtreeControls(item, c.path, { skipInline });
       if (inner.length) out.push(el("div", { class: "subgroup" }, el("h4", { class: "subgroup-title", text: fieldLabel(c) }), inner));
     }
   }
@@ -3099,13 +3517,22 @@ window.addEventListener("message", (event) => {
       changed(data.id, data.path, list);
       rerender();
     }
+  } else if (data.type === "inspect-instance") {
+    openInspector(instanceContext(data), "instance", anchorFrom(data));
+  } else if (data.type === "preview-applied") {
+    // The page was redrawn: a card may render more or less now (a Leistung ticked on), so the open card
+    // panel re-reads its markers; it stays put while someone types in it.
+    const view = panelStack.at(-1);
+    if (view?.scope === "instance" && !$("#panel").hidden && !$("#panel").contains(document.activeElement?.matches?.("input,textarea,select") ? document.activeElement : null))
+      if (markersKey(occurrenceMarkers(view.context)) !== lastInstanceMarkers) rerender();
   } else if (data.type === "inspect-entry") {
     openInspector({ id: data.id, path: data.path, section: data.section, record: data.record }, "entry", anchorFrom(data));
   } else if (data.type === "inspect-record") {
     openInspector({ id: data.id, path: [], section: data.section }, "record", anchorFrom(data));
   } else if (data.type === "select") {
     selection = { id: data.id, path: data.path, derived: data.derived, rich: !!data.rich, inspectionContext: data.inspectionContext };
-    if (data.derived) openInspector({ id: data.id, path: data.path, derived: true, section: data.section }, "element", anchorFrom(data));
+    if (data.derived && data.instance) openInspector(instanceContext(data.instance), "instance", anchorFrom(data));
+    else if (data.derived) openInspector({ id: data.id, path: data.path, derived: true, section: data.section }, "element", anchorFrom(data));
   } else if (data.type === "select-media") {
     selection = { id: data.id, path: data.path, media: true };
   } else if (data.type === "input" && !busy && ready) {

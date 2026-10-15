@@ -3,7 +3,7 @@ import {localeFromPath,localizedHref} from '../../lib/localized-routes';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 import InlineText from '../InlineText.astro';
 import {resolveMedia} from '../../lib/content';
-import {nativeField,nativeSection,nativeMedia,nativeItem} from "../../lib/native-editor";
+import {nativeField,nativeSection,nativeMedia,nativeItem,nativeUses} from "../../lib/native-editor";
 import type { Section } from '../../content.config';
 import { optimizedImage } from '../../lib/media';
 type Props = Extract<Section, { type: 'occasions' }> & { index: number; locale?:string; _locale?:string };
@@ -20,8 +20,8 @@ const items = await Promise.all(cards.map(async card => ({ ...card,image:resolve
       <div class="body">
         <span class="mono" style="color:var(--faint)" {...nativeField(Astro.props,["cards",i,"category"])}>{card.category}</span><h3 {...nativeField(Astro.props,["cards",i,"title"],true)}><InlineText value={card.title} /></h3><p {...nativeField(Astro.props,["cards",i,"text"])}>{card.text}</p>
         <ul class="facts">{card.facts.map((fact,j) => <li {...nativeField(Astro.props,["cards",i,"facts",j])} {...nativeItem(Astro.props,{entry:["cards",i,"facts",j]})}>{fact}</li>)}</ul>
-        <a class="link" href={localizedHref(card.cta.href,locale)}><span {...nativeField(Astro.props,["cards",i,"cta","label"])}>{card.cta.label}</span> <span aria-hidden="true">→</span></a>
-        {card.download && <a class="dl mono" href={localizedHref(card.download.href,locale)} type="application/pdf" target="_blank" rel="noopener"><span {...nativeField(Astro.props,["cards",i,"download","label"])}>{card.download.label}</span> <span aria-hidden="true">↓</span></a>}
+        <a class="link" href={localizedHref(card.cta.href,locale)} {...nativeUses(Astro.props,[["cards",i,"cta","href"]])}><span {...nativeField(Astro.props,["cards",i,"cta","label"])}>{card.cta.label}</span> <span aria-hidden="true">→</span></a>
+        {card.download && <a class="dl mono" href={localizedHref(card.download.href,locale)} {...nativeUses(Astro.props,[["cards",i,"download","href"]])} type="application/pdf" target="_blank" rel="noopener"><span {...nativeField(Astro.props,["cards",i,"download","label"])}>{card.download.label}</span> <span aria-hidden="true">↓</span></a>}
       </div>
     </article>)}
   </div>

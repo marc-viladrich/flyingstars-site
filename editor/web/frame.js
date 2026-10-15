@@ -1,6 +1,6 @@
 import { prepareClonedSection } from "./prepare-cloned-section.mjs";
 import { LiveNodeHistory, remappedReference } from "./live-node-history.mjs";
-import { mediaSourceChanged } from "./view-state.mjs";
+import { mediaSourceChanged, instanceMarkers, sameOccurrence } from "./view-state.mjs";
 import { marked } from "/editor/marked.mjs";
 import { ui } from "./ui-icons.mjs";
 import { fieldLabel, choiceLabel } from "./field-labels.mjs";
@@ -74,6 +74,95 @@ function entryInfo(node) {
 function target(c) {
   return { id: c.id, path: c.path, derived: c.derived, section: sectionInfo(c.node), entry: entryInfo(c.node) };
 }
+// ---------------------------------------------------------------------------
+// Occurrences: every card/list wrapper is stamped data-native-item. The outermost one around a node is the
+// instance the person means ("this card"); nested wrappers (a selected Leistung, a fact) are parts of it.
+// ---------------------------------------------------------------------------
+function itemIdentity(wrapper) {
+  const path = wrapper.dataset.nativeEntry ? parse(wrapper.dataset.nativeEntry) : null;
+  const owner = path && (wrapper.dataset.nativeEntryRecord || sectionInfo(wrapper)?.id || wrapper.closest("[data-native-record]")?.dataset.nativeRecord);
+  const record = wrapper.dataset.nativeRecord || null;
+  return { section: sectionInfo(wrapper), entry: path && owner ? { id: owner, path } : null, record: path ? (record && record !== owner ? record : null) : record };
+}
+function occurrenceOf(node) {
+  let outer = null;
+  for (let n = node?.closest?.("[data-native-item]"); n; n = n.parentElement?.closest("[data-native-item]")) outer = n;
+  if (!outer) return null;
+  const identity = itemIdentity(outer);
+  const id = identity.entry?.id || identity.record;
+  const item = records.find((r) => r.id === id);
+  if (!item || (identity.entry && readPath(item.data, identity.entry.path) === undefined)) return null;
+  return { node: outer, identity, id, path: identity.entry?.path || [], record: identity.entry ? identity.record : null };
+}
+// Everything one occurrence renders: field, derived, media and render-dependency markers of all its wrappers
+// (an entry may be drawn twice), as {id, path, kind}; parts of nested entries stand for those entries.
+function occurrenceMarkers(identity) {
+  const owner = identity.entry?.id || identity.record,
+    raw = [];
+  const wrappers = [...document.querySelectorAll("[data-native-item]")].filter((n) => !n.parentElement?.closest("[data-native-item]") && sameOccurrence(itemIdentity(n), identity));
+  for (const wrapper of wrappers)
+    for (const node of [wrapper, ...wrapper.querySelectorAll("[data-native-path],[data-native-derived],[data-native-media-path],[data-native-uses],[data-native-item]")]) {
+      const nested = node === wrapper ? null : node.closest("[data-native-item]");
+      const via = nested && nested !== wrapper ? itemIdentity(nested).entry : null;
+      for (const derived of [false, true]) {
+        if (!node.hasAttribute(derived ? "data-native-derived" : "data-native-path")) continue;
+        const c = context(node, derived);
+        if (c) raw.push({ id: c.id, path: c.path, kind: derived ? "derived" : "field", via });
+      }
+      const mediaPath = node.dataset.nativeMediaPath && parse(node.dataset.nativeMediaPath),
+        mediaOwner = mediaPath && node.closest("[data-native-record]");
+      if (mediaOwner) raw.push({ id: mediaOwner.dataset.nativeRecord, path: mediaPath, kind: "media", via });
+      if (node.dataset.nativeUses)
+        try {
+          for (const [id, path] of JSON.parse(node.dataset.nativeUses)) raw.push({ id, path, kind: "uses", via });
+        } catch {}
+      if (nested === node) {
+        const entry = itemIdentity(node).entry;
+        if (entry) raw.push({ id: entry.id, path: entry.path, kind: "entry", via: null });
+      }
+    }
+  return instanceMarkers(raw, owner);
+}
+// One inspection for every way in (right-click, toolbar gear, ⇧F10, a click on a price): inside a card the
+// card opens, with the clicked element first; elsewhere the element, list entry, record or section.
+function inspection(node) {
+  if (!node?.closest) return null;
+  const media = node.closest("[data-native-media-path]");
+  const mediaOwner = media?.closest("[data-native-record]"),
+    mediaPath = media && parse(media.dataset.nativeMediaPath);
+  const field = !mediaOwner && node.closest("[data-native-path],[data-native-derived]");
+  const c = field && context(field, field.hasAttribute("data-native-derived"));
+  const occurrence = occurrenceOf(node);
+  if (occurrence) {
+    let focus = mediaOwner && mediaPath ? { id: mediaOwner.dataset.nativeRecord, path: mediaPath, kind: "media" } : c ? { id: c.id, path: c.path, kind: c.derived ? "derived" : "field" } : null;
+    // Inside a nested part of the card (a selected Leistung, a table cell, a fact) the part is what was meant,
+    // also when the click hit its padding rather than its text.
+    const nested = ((focus && (media || field)) || node).closest("[data-native-item]");
+    const part = nested && nested !== occurrence.node && itemIdentity(nested).entry;
+    if (part && part.id === occurrence.id) focus = { id: part.id, path: part.path, kind: "entry" };
+    // A field of some other record embedded in the card keeps its own element panel.
+    if (!focus || focus.id === occurrence.id || focus.id === occurrence.record)
+      return {
+        type: "inspect-instance",
+        data: { id: occurrence.id, path: occurrence.path, record: occurrence.record, section: occurrence.identity.section, occurrence: occurrence.identity, focus, rect: rect(occurrence.node) },
+      };
+  }
+  if (mediaOwner && mediaPath) return { type: "media", data: { id: mediaOwner.dataset.nativeRecord, path: mediaPath, section: sectionInfo(media), entry: entryInfo(media) } };
+  if (c) return { type: "inspect", data: { ...target(c), rect: rect(c.node) } };
+  const entry = entryInfo(node);
+  if (entry) return { type: "inspect-entry", data: { ...entry, section: sectionInfo(node) } };
+  const owner = node.closest("[data-native-record]");
+  const ownerSection = node.closest("[data-native-section-index]");
+  if (owner && owner !== ownerSection && !/^(page|screen)\//.test(owner.dataset.nativeRecord))
+    return { type: "inspect-record", data: { id: owner.dataset.nativeRecord, section: sectionInfo(owner) } };
+  if (ownerSection) return { type: "section", data: { id: ownerSection.dataset.nativeRecord, index: Number(ownerSection.dataset.nativeSectionIndex) } };
+  return null;
+}
+function inspect(node, point) {
+  const found = inspection(node);
+  if (found) send(found.type, { ...found.data, ...(point ? { point } : {}) });
+  return !!found;
+}
 // In a foreign-language view, text shows its translation (or the German original until translated).
 function translatedValue(c) {
   return languageValues.find((value) => value.sourceId === c.id && equal(value.path, c.path))?.text;
@@ -90,12 +179,14 @@ function selection(c) {
   selected = c;
   selectedMedia = null;
   showToolbar(c.node, c.derived ? "derived" : "text", c);
+  const opens = c.derived ? inspection(c.node) : null;
   send("select", {
     id: c.id,
     path: c.path,
     derived: c.derived,
     rich: c.node.dataset.nativeMarkdown === "true" && c.node.hasAttribute("data-native-editable"),
     rect: rect(c.node),
+    ...(opens?.type === "inspect-instance" ? { instance: opens.data } : {}),
   });
 }
 // Short texts with light formatting (data-native-inline): shown as HTML, stored as inline marks.
@@ -174,6 +265,10 @@ window.flyingstarsEditorFrame = {
   // Text fields that are visible on this page (for "confirm all suggestions on this page").
   renderedFields() {
     return [...document.querySelectorAll("[data-native-editable]")].map((n) => bindings.get(n)).filter(Boolean).map((c) => ({ id: c.id, path: c.path }));
+  },
+  // What one occurrence (card) renders, read fresh from the live page each time the panel draws.
+  occurrenceMarkers(identity) {
+    return identity ? occurrenceMarkers(identity) : [];
   },
   // Records whose content is visible on this page (for "translate what is on this page").
   recordsOnPage() {
@@ -380,7 +475,7 @@ document.addEventListener(
           selection(c);
         } else {
           event.preventDefault();
-          send("inspect", { ...target(c), point: { x: event.clientX, y: event.clientY }, rect: rect(node) });
+          inspect(node, { x: event.clientX, y: event.clientY });
         }
       }
     }
@@ -401,45 +496,9 @@ document.addEventListener(
 );
 document.addEventListener("contextmenu", (event) => {
   if (preview || busy) return;
-  const media = event.target.closest("[data-native-media-path]");
-  if (media) {
-    const owner = media.closest("[data-native-record]"),
-      path = parse(media.dataset.nativeMediaPath);
-    if (owner && path) {
-      event.preventDefault();
-      send("media", { id: owner.dataset.nativeRecord, path, section: sectionInfo(media), entry: entryInfo(media), point: { x: event.clientX, y: event.clientY } });
-      return;
-    }
-  }
-  const node = event.target.closest("[data-native-path],[data-native-derived]");
-  const c = node && context(node, node.hasAttribute("data-native-derived"));
-  if (c) {
+  if (inspection(event.target)) {
     event.preventDefault();
-    send("inspect", { ...target(c), point: { x: event.clientX, y: event.clientY }, rect: rect(c.node) });
-    return;
-  }
-  // Empty space on a card opens the card; a card rendered from another record opens that record.
-  const entry = entryInfo(event.target);
-  if (entry) {
-    event.preventDefault();
-    send("inspect-entry", { ...entry, section: sectionInfo(event.target), point: { x: event.clientX, y: event.clientY } });
-    return;
-  }
-  const owner = event.target.closest("[data-native-record]");
-  const ownerSection = event.target.closest("[data-native-section-index]");
-  if (owner && owner !== ownerSection && !/^(page|screen)\//.test(owner.dataset.nativeRecord)) {
-    event.preventDefault();
-    send("inspect-record", { id: owner.dataset.nativeRecord, section: sectionInfo(owner), point: { x: event.clientX, y: event.clientY } });
-    return;
-  }
-  const section = event.target.closest("[data-native-section-index]");
-  if (section) {
-    event.preventDefault();
-    send("section", {
-      id: section.dataset.nativeRecord,
-      index: Number(section.dataset.nativeSectionIndex),
-      point: { x: event.clientX, y: event.clientY },
-    });
+    inspect(event.target, { x: event.clientX, y: event.clientY });
   }
 });
 document.addEventListener("click", (event) => {
@@ -479,7 +538,7 @@ document.addEventListener("keydown", (event) => {
   }
   if (!preview && !busy && event.key === "F10" && event.shiftKey && selected) {
     event.preventDefault();
-    send("inspect", { ...target(selected), rect: rect(selected.node) });
+    inspect(selected.node);
   }
   if (
     (event.metaKey || event.ctrlKey) &&
@@ -974,7 +1033,7 @@ const confirmButton = toolButton("check", "Übersetzung bestätigen", () => {
 }, "confirm");
 toolButton("settings", "Optionen (⇧F10 oder Rechtsklick)", () => {
   if (!toolTarget || !toolOwner) return;
-  send(toolKind === "media" ? "media" : toolKind === "entry" ? "inspect-entry" : "inspect", { ...toolTarget, rect: rect(toolOwner) });
+  inspect(toolOwner);
 });
 // The card/list entry the toolbar acts on: the selected entry itself or the one around the element.
 // Records listed in the order of one of their fields (FAQ by `order`): direct children carrying their
@@ -1349,6 +1408,7 @@ function applyPreview({ html, baseline }) {
   if (applied) {
     bind();
     applyPresentation();
+    send("preview-applied");
     if (languageLocale !== "de") translationOverlay({ locale: languageLocale, values: languageValues });
     refreshToolbar();
   }

@@ -4,7 +4,7 @@ import {localeFromPath,localeFormat,localizedHref} from '../../lib/localized-rou
 import {getPosts} from '../../lib/content';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 const ui = await readUi('ui',locale);
-import {nativeRecord,nativeItem} from '../../lib/native-editor';
+import {nativeRecord,nativeItem,nativeUses} from '../../lib/native-editor';
 import Base from '../../layouts/Base.astro';
 const posts = (await getPosts(locale)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const fmt = new Intl.DateTimeFormat(localeFormat(locale), { dateStyle: 'long' });
@@ -16,7 +16,7 @@ const fmt = new Intl.DateTimeFormat(localeFormat(locale), { dateStyle: 'long' })
       {posts.map((p) => (
         <article class="card" {...nativeItem(Astro.props,{record:`post/${p.id}`})}>
           <h3><a href={localizedHref(`/blog/${p.id}/`,locale)}><span {...nativeRecord(`post/${p.id}`,["title"])}>{p.data.title}</span></a></h3>
-          <p class="muted"><time datetime={p.data.date.toISOString()}>{fmt.format(p.data.date)}</time></p>
+          <p class="muted"><time datetime={p.data.date.toISOString()} {...nativeUses(Astro.props,[{record:`post/${p.id}`,path:['date']}])}>{fmt.format(p.data.date)}</time></p>
           <p {...nativeRecord(`post/${p.id}`,["description"])}>{p.data.description}</p>
         </article>
       ))}
