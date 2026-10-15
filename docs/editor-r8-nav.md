@@ -6,7 +6,7 @@
 
 **Karten-Panel.** „Übersetzen“ bzw. „Zurück zu Deutsch“ für den angeklickten Text. Element- und Karten-Panel nutzen dazu dieselben Funktionen `isTranslatable` und `translateAction`.
 
-**Gruppen.** Gruppierte Auswahllisten (Leistungen eines Pakets nach Gruppe) sind gemerkte Aufklappgruppen (`rememberedDisclosure`). In Kontext-Panels sind sie zu, in der Datensatz-Übersicht offen, wie die Listeneinträge. „Erweitert“ behält seinen Zustand über Neuzeichnungen.
+**Gruppen.** Gruppierte Auswahllisten (Leistungen eines Pakets nach Gruppe) sind gemerkte Aufklappgruppen (`rememberedDisclosure`). In Kontext-Panels sind sie zu, in der Datensatz-Übersicht offen, wie die Listeneinträge. (Überholt durch R9: alle Listen und Gruppen starten zugeklappt, siehe `docs/editor-r9-nav.md`.) „Erweitert“ behält seinen Zustand über Neuzeichnungen.
 
 **Inhalte verwalten.** Ein Navigator statt Tabs und „Alle Inhaltsfelder (Experten)“. Die Gruppen kommen aus `record.type` (`editor/web/content-navigator.mjs`). Die Tabelle dort benennt und sortiert nur. Übersetzungen erscheinen als Flaggen am Ursprungsdatensatz und öffnen dessen Übersicht in der jeweiligen Sprache. Übersetzungen ohne Ursprung bekommen eine eigene Gruppe, damit nichts unerreichbar wird. Suche ohne Rücksicht auf Groß-/Kleinschreibung und Umlaute, über Titel, Adresse, Dateiname und Typ.
 
