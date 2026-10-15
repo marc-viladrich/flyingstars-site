@@ -26,7 +26,7 @@ export function createFlyingStarsExtensions(site) {
   }),
   extension('routing',{
    route:(record,adapter=site)=>adapter.recordRoute(record),
-   recordGroup:id=>/^(page|screen)\//.test(id)?'pages':/^(project|post)\//.test(id)?'stories':id.startsWith('faq/')?'faq':id.startsWith('package/')?'packages':/^(client|team)\//.test(id)?'people':id.startsWith('site/')?'site':null,
+   recordGroup:id=>/^(page|screen)\//.test(id)?'pages':/^(project|post)\//.test(id)?'stories':id.startsWith('faq/')?'faq':/^(package|extra)\//.test(id)?'packages':/^(client|team)\//.test(id)?'people':id.startsWith('site/')?'site':null,
    languages:()=>({source:'de',locales:{en:'English',nl:'Nederlands'}}),
    navigation(records,locale='de'){
     const prefix=locale==='de'?'':'/'+locale;

@@ -8,7 +8,7 @@ const ui = await readUi('ui',Astro.props._locale ?? localeFromPath(Astro.url.pat
 const locale = Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'faq' }> & { index: number; locale?:string; _locale?:string };
-const { headline = ui.faq.headline, text, kicker = 'FAQ', cta, tags, limit, openFirst, id = `s${Astro.props.index}`, index } = Astro.props;
+const { headline = ui.components.faq.headline, text, kicker = 'FAQ', cta, tags, limit, openFirst, id = `s${Astro.props.index}`, index } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 let entries = await getFaq(tags,locale);

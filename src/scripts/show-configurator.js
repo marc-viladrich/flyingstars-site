@@ -30,13 +30,13 @@ registerCanvas("canvas#cfg-field", (canvas, life, saved) => {
   const stepTo = (dir) => { let k = field.beat(); do k = (k + dir + count()) % count(); while (current?.beats[k]?.interlude && k !== field.beat()); field.goto(k); };
   life.listen($("#cfg-prev"), "click", () => stepTo(-1));
   life.listen($("#cfg-next"), "click", () => stepTo(1));
-  const eur = (v) => t("fromPrice",{price:v.toLocaleString(fmt)});
+  const eur = (v) => t("result.fromPrice",{price:v.toLocaleString(fmt)});
   let occasion = OCCASIONS[0], job = 0, text = "", style = "script";
   // the visitor's own text joins the show as its finale (round 11); one version per package like every motif
-  const CAPTIONS = {SPARK:t("captionSpark"),HORIZON:t("captionHorizon"),ODYSSEY:t("captionOdyssey")};
-  const textMotif = () => ({ id: "text", label:t("ownText"), tiers: Object.fromEntries(Object.entries(CAPTIONS).map(([k, caption]) => [k, { build: `text${k}`, caption, value: text, style, occasion: occasion.id }])) });
+  const CAPTIONS = {SPARK:t("preview.captionSpark"),HORIZON:t("preview.captionHorizon"),ODYSSEY:t("preview.captionOdyssey")};
+  const textMotif = () => ({ id: "text", label:t("preview.ownText"), tiers: Object.fromEntries(Object.entries(CAPTIONS).map(([k, caption]) => [k, { build: `text${k}`, caption, value: text, style, occasion: occasion.id }])) });
   const motifs = () => (text ? [...occasion.motifs, textMotif()] : occasion.motifs);
-  const STYLE_LABEL = {script:t("script"),print:t("print"),initials:t("initials")};
+  const STYLE_LABEL = {script:t("textStyles.script"),print:t("textStyles.print"),initials:t("textStyles.initials")};
 
   const step = () => STEPS[+form.querySelector("[name=pkg]:checked").value];
   const pkg = () => SHOW_PACKAGES[step().pkg];
@@ -75,9 +75,9 @@ registerCanvas("canvas#cfg-field", (canvas, life, saved) => {
     const editorResult=document.querySelector(".cfg-result[data-native-record]");if(editorResult)editorResult.dataset.nativeRecord="package/"+s.pkg.toLowerCase();
     document.documentElement.style.setProperty("--pkg", colorVar(p.color));
     for (const [sel, txt] of [["#cfg-pkg", inlinePlain(p.displayName)], ["#cfg-bar-pkg", inlinePlain(p.displayName)], ["#cfg-price", eur(price)], ["#cfg-bar-price", eur(price)]]) $(sel).textContent = txt;
-    $("#cfg-meta").textContent = t("meta",{count:p.base.toLocaleString(fmt),duration:p.dur});
-    $("#cfg-includes").textContent = t("includes",{text:s.includes});
-    const summary = [t('summaryOccasion',{occasion:occasion.label}),t('summaryMotifs',{motifs:occasion.motifs.filter(m=>m.tiers[s.pkg]).map(m=>m.label).join(', ')}),...(text?[t('summaryText',{text,style:STYLE_LABEL[style]})]:[]),t('summaryEffort',{effort:s.label,name:inlinePlain(p.displayName),price:eur(price)})].join('\n');
+    $("#cfg-meta").textContent = t("result.meta",{count:p.base.toLocaleString(fmt),duration:p.dur});
+    $("#cfg-includes").textContent = t("result.includes",{text:s.includes});
+    const summary = [t("summary.occasion",{occasion:occasion.label}),t("summary.motifs",{motifs:occasion.motifs.filter(m=>m.tiers[s.pkg]).map(m=>m.label).join(', ')}),...(text?[t("summary.text",{text,style:STYLE_LABEL[style]})]:[]),t("summary.effort",{effort:s.label,name:inlinePlain(p.displayName),price:eur(price)})].join('\n');
     const inquiry = `${home}?${new URLSearchParams({ paket: s.pkg, drohnen: String(p.base), anlass: occasion.anlass, show: summary })}#anfrage`;
     $("#cfg-cta").href = inquiry; $("#cfg-bar-cta").href = inquiry;
     return render(keep, to);

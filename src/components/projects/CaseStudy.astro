@@ -34,11 +34,11 @@ const count = (n: number) => String(n).padStart(2, '0');
 ---
 <div data-runtime={JSON.stringify({ui:ui.caseStudy,locale})} class="case" style={`--accent:${colorVar(data.accent)}`} {...nativeColor(record,["showcase","accent"],"--accent")}>
   <section class="c-hero" aria-labelledby="case-h">
-    <Video src={data.heroVideo} poster={resolveMedia(project.data.cover,locale)?.src} {...nativeRecordMedia(record,["cover"])} label={fillText(ui.caseStudy.play,{name:data.name})} class="case-video" loop hero />
+    <Video src={data.heroVideo} poster={resolveMedia(project.data.cover,locale)?.src} {...nativeRecordMedia(record,["cover"])} label={fillText(ui.caseStudy.media.playLabel,{name:data.name})} class="case-video" loop hero />
     <div class="shade" aria-hidden="true"></div>
     <div class="c-top mono">
-      <nav class="crumbs" aria-label={ui.caseStudy.brotkrumen}><a href={localizedHref("/",locale)} {...uiMarker('site/ui',["caseStudy","start"])}>{ui.caseStudy.start}</a><span aria-hidden="true">/</span><a href={localizedHref("/projekte/",locale)} {...uiMarker('site/ui',["caseStudy","projekte"])}>{ui.caseStudy.projekte}</a><span aria-hidden="true">/</span><span aria-current="page"><span {...field(["name"]) }>{data.name}</span></span></nav>
-      <span class="idx">{ui.caseStudy.projekt} {count(data.order)} / 04</span>
+      <nav class="crumbs" aria-label={ui.caseStudy.labels.breadcrumbs}><a href={localizedHref("/",locale)} {...uiMarker('site/ui',["caseStudy", "labels", "home"])}>{ui.caseStudy.labels.home}</a><span aria-hidden="true">/</span><a href={localizedHref("/projekte/",locale)} {...uiMarker('site/ui',["caseStudy", "labels", "projects"])}>{ui.caseStudy.labels.projects}</a><span aria-hidden="true">/</span><span aria-current="page"><span {...field(["name"]) }>{data.name}</span></span></nav>
+      <span class="idx">{ui.caseStudy.labels.project} {count(data.order)} / 04</span>
     </div>
     <div class="c-title">
       <span class="c-kick mono"><span {...field(["kicker"]) }>{data.kicker}</span></span>
@@ -47,11 +47,11 @@ const count = (n: number) => String(n).padStart(2, '0');
     <dl class="c-credits mono">{data.credits.map((credit,i) => <div><dt {...field(["credits",i,"label"])}>{credit.label}</dt><dd {...field(["credits",i,"value"])}>{credit.value}</dd></div>)}</dl>
   </section>
 
-  <section class="c-numbers" aria-label={ui.caseStudy.in_zahlen}>
+  <section class="c-numbers" aria-label={ui.caseStudy.labels.numbers}>
     {data.numbers.map((number,i) => <div class="c-num"><b {...field(["numbers",i,"value"])} data-count={number.value}>{number.value.toLocaleString(localeFormat(locale))}</b><span {...field(["numbers",i,"label"])}>{number.label}</span></div>)}
   </section>
 
-  <section class="c-story" aria-label={ui.caseStudy.die_geschichte}>
+  <section class="c-story" aria-label={ui.caseStudy.labels.story}>
     <div class="c-media" aria-hidden="true">
       {data.story.map((step, index) => <figure data-scene class:list={{ on: index === 0 }}><img {...nativeRecordMedia(record,["showcase","story",index,"image"])} src={images.get(resolveMedia(step.image,locale).src)!.src} {...images.get(resolveMedia(step.image,locale).src)!.attributes} width={images.get(resolveMedia(step.image,locale).src)!.width} height={images.get(resolveMedia(step.image,locale).src)!.height} alt="" loading="lazy" decoding="async" /></figure>)}
       <div class="meta mono"><span><span {...field(["name"]) }>{data.name}</span></span><span data-progress>01 / {count(data.story.length)}</span></div>
@@ -67,26 +67,26 @@ const count = (n: number) => String(n).padStart(2, '0');
   <section class="c-play" aria-labelledby="play-h">
     <canvas data-formation={data.formation.src} aria-hidden="true"></canvas>
     <div class="c-play-copy">
-      <span class="mono acc" {...uiMarker('site/ui',["caseStudy","zum_anfassen"])}>{ui.caseStudy.zum_anfassen}</span><h2 id="play-h"><span {...field(["formation","title"]) }>{data.formation.title}</span></h2><p><span {...field(["formation","text"]) }>{data.formation.text}</span></p>
-      <div class="row"><button class="btn small" type="button" data-replay disabled {...uiMarker('site/ui',["caseStudy","noch_mal_starten"])}>{ui.caseStudy.noch_mal_starten}</button><button class="btn small" type="button" data-formation-pause aria-pressed="false" {...uiMarker('site/ui',["caseStudy","animation_pausieren"])}>{ui.caseStudy.animation_pausieren}</button><span class="tally mono" data-tally role="status"></span></div>
+      <span class="mono acc" {...uiMarker('site/ui',["caseStudy", "formation", "label"])}>{ui.caseStudy.formation.label}</span><h2 id="play-h"><span {...field(["formation","title"]) }>{data.formation.title}</span></h2><p><span {...field(["formation","text"]) }>{data.formation.text}</span></p>
+      <div class="row"><button class="btn small" type="button" data-replay disabled {...uiMarker('site/ui',["caseStudy", "formation", "replayButton"])}>{ui.caseStudy.formation.replayButton}</button><button class="btn small" type="button" data-formation-pause aria-pressed="false" {...uiMarker('site/ui',["caseStudy", "formation", "pauseMotion"])}>{ui.caseStudy.formation.pauseMotion}</button><span class="tally mono" data-tally role="status"></span></div>
     </div>
   </section>
 
   <section class="c-reel" aria-labelledby="reel-h">
-    <div class="c-reel-head"><div><span class="kicker mono acc" {...uiMarker('site/ui',["caseStudy","bilder_der_nacht"])}>{ui.caseStudy.bilder_der_nacht}</span><h2 id="reel-h">{fillText(ui.caseStudy.galleryHeading,{count:data.gallery.length})}</h2></div><div class="ctrl"><button type="button" data-prev aria-label={ui.caseStudy.vorheriges_bild}>←</button><button type="button" data-next aria-label={ui.caseStudy.nachstes_bild}>→</button></div></div>
-    <div class:list={['c-track', { tall: data.portrait }]} tabindex="0" role="region" aria-label={fillText(ui.caseStudy.gallery,{name:data.name})}>
+    <div class="c-reel-head"><div><span class="kicker mono acc" {...uiMarker('site/ui',["caseStudy", "gallery", "label"])}>{ui.caseStudy.gallery.label}</span><h2 id="reel-h">{fillText(ui.caseStudy.gallery.headline,{count:data.gallery.length})}</h2></div><div class="ctrl"><button type="button" data-prev aria-label={ui.caseStudy.gallery.previousButton}>←</button><button type="button" data-next aria-label={ui.caseStudy.gallery.nextButton}>→</button></div></div>
+    <div class:list={['c-track', { tall: data.portrait }]} tabindex="0" role="region" aria-label={fillText(ui.caseStudy.media.galleryLabel,{name:data.name})}>
       {data.gallery.map((picture, index) => <figure><div class="img"><img {...nativeRecordMedia(record,["showcase","gallery",index])} src={images.get(resolveMedia(picture,locale).src)!.src} {...images.get(resolveMedia(picture,locale).src)!.attributes} width={images.get(resolveMedia(picture,locale).src)!.width} height={images.get(resolveMedia(picture,locale).src)!.height} sizes={data.portrait?'(max-width: 1000px) 64vw, (min-width: 1467px) 440px, 30vw':'(max-width: 1000px) 84vw, (min-width: 1532px) 980px, 64vw'} alt={resolveMedia(picture,locale).alt} loading="lazy" decoding="async" draggable="false" /></div><figcaption class="mono"><b>{count(index + 1)}</b><span {...field(["gallery",index,"caption"])}>{picture.caption}</span></figcaption></figure>)}
     </div>
   </section>
 
-  <section class="c-setlist" aria-labelledby="set-h"><span class="kicker mono acc" {...uiMarker('site/ui',["caseStudy","die_choreografie"])}>{ui.caseStudy.die_choreografie}</span><h2 id="set-h" {...uiMarker('site/ui',["caseStudy","was_am_himmel_zu_sehen_war"])}>{ui.caseStudy.was_am_himmel_zu_sehen_war}</h2><div class="groups">{data.setlist.map((group,i) => <div><h3 {...field(["setlist",i,"title"])}>{group.title}</h3><ol>{group.items.map((item,j) => <li {...field(["setlist",i,"items",j])}>{item}</li>)}</ol></div>)}</div></section>
-  {data.press.length > 0 && <section class="c-press" aria-label={ui.caseStudy.presse}>{data.press.map((clip,i) => <article class="clip"><div class="mast"><span {...field(["press",i,"publication"]) }>{clip.publication}</span><span><span {...field(["press",i,"date"]) }>{clip.date}</span></span></div><b><span {...field(["press",i,"title"]) }>{clip.title}</span></b><p><span {...field(["press",i,"text"]) }>{clip.text}</span></p></article>)}</section>}
+  <section class="c-setlist" aria-labelledby="set-h"><span class="kicker mono acc" {...uiMarker('site/ui',["caseStudy", "setlist", "label"])}>{ui.caseStudy.setlist.label}</span><h2 id="set-h" {...uiMarker('site/ui',["caseStudy", "setlist", "headline"])}>{ui.caseStudy.setlist.headline}</h2><div class="groups">{data.setlist.map((group,i) => <div><h3 {...field(["setlist",i,"title"])}>{group.title}</h3><ol>{group.items.map((item,j) => <li {...field(["setlist",i,"items",j])}>{item}</li>)}</ol></div>)}</div></section>
+  {data.press.length > 0 && <section class="c-press" aria-label={ui.caseStudy.labels.press}>{data.press.map((clip,i) => <article class="clip"><div class="mast"><span {...field(["press",i,"publication"]) }>{clip.publication}</span><span><span {...field(["press",i,"date"]) }>{clip.date}</span></span></div><b><span {...field(["press",i,"title"]) }>{clip.title}</span></b><p><span {...field(["press",i,"text"]) }>{clip.text}</span></p></article>)}</section>}
 
   {nextData && nextImage && <a class="c-next" href={localizedHref(`/${nextData.route}/`,locale)}>
     <img class="next-poster" src={nextImage.src} {...nextImage.attributes} width={nextImage.width} height={nextImage.height} alt="" loading="lazy" decoding="async" />
-    <div class="shade" aria-hidden="true"></div><div class="in"><span class="k mono">{fillText(ui.caseStudy.nextProject,{order:count(nextData.order),drones:nextData.drones.toLocaleString(localeFormat(locale))})}</span><b style={`--chars:${Math.max(...nextData.name.split(/\s+/).map((word) => word.length))}`}>{nextData.name} <i aria-hidden="true">→</i></b></div>
+    <div class="shade" aria-hidden="true"></div><div class="in"><span class="k mono">{fillText(ui.caseStudy.next.label,{order:count(nextData.order),drones:nextData.drones.toLocaleString(localeFormat(locale))})}</span><b style={`--chars:${Math.max(...nextData.name.split(/\s+/).map((word) => word.length))}`}>{nextData.name} <i aria-hidden="true">→</i></b></div>
   </a>}
-  <section class="section" aria-labelledby="cta-h"><div class="promise"><div style="display:grid;gap:12px"><h2 id="cta-h"><span {...field(["cta","title"]) }>{data.cta.title}</span></h2><p><span {...field(["cta","text"]) }>{data.cta.text}</span></p></div><a class="btn primary" href={localizedHref("/#anfrage",locale)} {...uiMarker('site/ui',["caseStudy","show_anfragen"])}>{ui.caseStudy.show_anfragen}</a></div></section>
+  <section class="section" aria-labelledby="cta-h"><div class="promise"><div style="display:grid;gap:12px"><h2 id="cta-h"><span {...field(["cta","title"]) }>{data.cta.title}</span></h2><p><span {...field(["cta","text"]) }>{data.cta.text}</span></p></div><a class="btn primary" href={localizedHref("/#anfrage",locale)} {...uiMarker('site/ui',["caseStudy", "labels", "inquiryButton"])}>{ui.caseStudy.labels.inquiryButton}</a></div></section>
 </div>
 <SectionRenderer locale={locale} sections={project.data.sections} recordId={record} headingOffset={1} />
 <script>import './case.js';</script>

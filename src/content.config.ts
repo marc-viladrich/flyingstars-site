@@ -5,6 +5,7 @@ import {postSchema,projectSchema,faqSchema} from './schemas/collection-schema.mj
 import {clientSchema,teamSchema,mediaSchema} from './schemas/entity-schema.mjs';
 import {siteSchemas} from './schemas/site-schema.mjs';
 import {translationSchema} from './schemas/translation-schema.mjs';
+import {extraSchema} from './schemas/extra-schema.mjs';
 import {packageSchema} from './content/package-schema.mjs';
 import {screenSchema} from './content/screen-schema.mjs';
 
@@ -43,6 +44,7 @@ const faq = defineCollection({
 // PR 5 uses Astro's loaders directly. Future x-afe annotations are recorded here
 // without changing raw values or importing the product package yet.
 // packages: editable collection/title/operations, readOnly name, feature-list policy.
+const extras = defineCollection({loader:glob({pattern:'**/*.json',base:'./src/content/extras'}),schema:extraSchema});
 const packages = defineCollection({
   loader: glob({pattern:'**/*.json',base:'./src/content/packages'}),
   schema: packageSchema,
@@ -92,5 +94,5 @@ const translations = defineCollection({
   schema: translationSchema,
 });
 
-export const collections = {pages,posts,projects,faq,packages,screens,clients,team,media,
+export const collections = {pages,posts,projects,faq,packages,extras,screens,clients,team,media,
   siteContact,siteInquiry,siteNavigation,siteUi,translations};

@@ -43,26 +43,26 @@ registerCanvas("canvas#swarm", (canvas, life, saved) => {
     }
     const p = PKG[pkg], price = priceFor(pkg, n);
     const nTxt = n.toLocaleString(fmt);
-    countEl.innerHTML = `${nTxt}<small>${h("drohnen")}</small>`;
-    totalEl.innerHTML = `<b>${h("fromPrice",{price:eur(price)})}</b><span class="mono">${h("net")}</span>`;
+    countEl.innerHTML = `${nTxt}<small>${h("controls.dronesLabel")}</small>`;
+    totalEl.innerHTML = `<b>${h("readout.fromPrice",{price:eur(price)})}</b><span class="mono">${h("readout.priceNote")}</span>`;
     const pic = text.shown && text.shown.n === n ? { size: text.shown.size, d: text.shown.d } : swarm.info(n), sz = pic ? pic.size : null;
-    const sizeTxt = sz ? t("size",{width:Math.round(sz[0]),height:Math.round(sz[1])})+(sz[2]>=1?t("depth",{depth:Math.round(sz[2])}):"") : "";
-    readEl.innerHTML = `<span>${h('paket')} <b>${escapeHTML(inlinePlain(p.displayName))}</b></span><span>${h('dauer')} <b>${escapeHTML(p.dur)}</b></span><span>${h('motifs')} <b>${h(pkg==='SPARK'?'catalogue':pkg==='HORIZON'?'individual':'storytelling')}</b></span>${sz?`<span title="${h('motifTitle',{distance:pic.d.toLocaleString(fmt)})}">${h('motifSize')} <b>${escapeHTML(sizeTxt)}</b></span>`:''}`;
+    const sizeTxt = sz ? t("readout.size",{width:Math.round(sz[0]),height:Math.round(sz[1])})+(sz[2]>=1?t("readout.depth",{depth:Math.round(sz[2])}):"") : "";
+    readEl.innerHTML = `<span>${h("controls.packageLabel")} <b>${escapeHTML(inlinePlain(p.displayName))}</b></span><span>${h("result.durationLabel")} <b>${escapeHTML(p.dur)}</b></span><span>${h("readout.motifsLabel")} <b>${h(pkg==='SPARK'?"motifs.catalogue":pkg==='HORIZON'?"motifs.individual":"motifs.storytelling")}</b></span>${sz?`<span title="${h("readout.sizeHint",{distance:pic.d.toLocaleString(fmt)})}">${h("readout.sizeLabel")} <b>${escapeHTML(sizeTxt)}</b></span>`:''}`;
     let note = "";
-    if (pkg === "HORIZON" && n < 200) note = t("alreadyIncluded",{name:inlinePlain(PKG.HORIZON.displayName),count:PKG.HORIZON.base});
-    else if (pkg === "ODYSSEY" && n < 300) note = t("starts",{name:inlinePlain(PKG.ODYSSEY.displayName),count:PKG.ODYSSEY.base});
-    else if (n > 600) note = t("largeFleet");
-    else if (pkg === "SPARK" && n === 150) note = t("upgrade",{count:PKG.SPARK.max,name:inlinePlain(PKG.HORIZON.displayName)});
-    if (need > 100 && n === need) note = t("minimum",{count:need.toLocaleString(fmt)});
-    if (text.value && text.shown && text.shown.n === n && text.shown.used < n) note = t("reserve",{used:text.shown.used.toLocaleString(fmt),reserve:(n-text.shown.used).toLocaleString(fmt)});
+    if (pkg === "HORIZON" && n < 200) note = t("notes.alreadyIncluded",{name:inlinePlain(PKG.HORIZON.displayName),count:PKG.HORIZON.base});
+    else if (pkg === "ODYSSEY" && n < 300) note = t("notes.starts",{name:inlinePlain(PKG.ODYSSEY.displayName),count:PKG.ODYSSEY.base});
+    else if (n > 600) note = t("notes.largeFleet");
+    else if (pkg === "SPARK" && n === 150) note = t("notes.upgrade",{count:PKG.SPARK.max,name:inlinePlain(PKG.HORIZON.displayName)});
+    if (need > 100 && n === need) note = t("notes.minimum",{count:need.toLocaleString(fmt)});
+    if (text.value && text.shown && text.shown.n === n && text.shown.used < n) note = t("notes.reserve",{used:text.shown.used.toLocaleString(fmt),reserve:(n-text.shown.used).toLocaleString(fmt)});
     noteEl.textContent = note;
-    cta.textContent = t("inquiry",{count:nTxt});
+    cta.textContent = t("selection.buttonText",{count:nTxt});
     cta.href = inquiryHref(pkg, n);
     const share = (n - +range.min) / (+range.max - +range.min); // the coloured part ends under the thumb centre
     range.style.setProperty("--fill", `calc(13px + ${share.toFixed(4)} * (100% - 26px))`);
     const col = colorVar(p.color);
     document.documentElement.style.setProperty("--pkg", col);
-    range.setAttribute("aria-valuetext",t("range",{count:nTxt,name:inlinePlain(p.displayName),price:eur(price)}));
+    range.setAttribute("aria-valuetext",t("selection.rangeLabel",{count:nTxt,name:inlinePlain(p.displayName),price:eur(price)}));
     tierBtns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.tier === pkg)));
     // live prices on the package cards
     NAMES.forEach((k) => {
@@ -70,11 +70,11 @@ registerCanvas("canvas#swarm", (canvas, life, saved) => {
       const v = priceFor(k, n), box = c.querySelector("[data-live]");
       c.classList.toggle("is-rec", k === pkg);
       c.querySelector("a.btn").href = inquiryHref(k, Math.max(PKG[k].base, Math.min(n, PKG[k].max)));
-      c.querySelector(".badge").textContent = k === pkg ? t("selected") : PKG[k].badge;
-    if (v === null) box.innerHTML = `<span class="na">${h("limit",{count:PKG[k].max})}</span><span class="mono">${h("above",{name:inlinePlain(PKG.HORIZON.displayName)})}</span>`;
+      c.querySelector(".badge").textContent = k === pkg ? t("selection.selected") : PKG[k].badge;
+    if (v === null) box.innerHTML = `<span class="na">${h("selection.limit",{count:PKG[k].max})}</span><span class="mono">${h("selection.above",{name:inlinePlain(PKG.HORIZON.displayName)})}</span>`;
       else {
-        const label = n < PKG[k].base ? t("included",{count:PKG[k].base}) : t("forCount",{count:n.toLocaleString(fmt)});
-        box.innerHTML = `<b>${h("fromPrice",{price:eur(v)})}</b><span class="mono">${escapeHTML(label)} · ${escapeHTML(PKG[k].dur)}</span>`;
+        const label = n < PKG[k].base ? t("selection.included",{count:PKG[k].base}) : t("selection.forCount",{count:n.toLocaleString(fmt)});
+        box.innerHTML = `<b>${h("readout.fromPrice",{price:eur(v)})}</b><span class="mono">${escapeHTML(label)} · ${escapeHTML(PKG[k].dur)}</span>`;
       }
     });
     if (text.value) { if (computeText) showText(rgbOf(p.color)); } else { ++text.job; clearTimeout(text.timer); text.shown = null; swarm.setTarget(Math.max(n, 1), rgbOf(p.color)); }
@@ -96,17 +96,17 @@ registerCanvas("canvas#swarm", (canvas, life, saved) => {
       if (life.signal.aborted || job !== text.job) return;
       const r = textFormation(value, count);
       if (life.signal.aborted || job !== text.job) return;
-      if (!r) { text.shown = null; swarm.setTarget(Math.max(count, 1), col); renderTextRead(t("tooLong")); return; }
+      if (!r) { text.shown = null; swarm.setTarget(Math.max(count, 1), col); renderTextRead(t("ownTextStatus.tooLong")); return; }
       text.shown = r; swarm.setText(r, col);
       update(false, false); // readout only: do not schedule the same formation again
-    }, () => { if (!life.signal.aborted && job === text.job) renderTextRead(t("fontFailed")); }), 220);
+    }, () => { if (!life.signal.aborted && job === text.job) renderTextRead(t("ownTextStatus.fontFailed")); }), 220);
   }
   function renderTextRead(msg) {
     if (!textRead) return;
     if (msg) { textRead.textContent = msg; return; }
-    if (!text.value) { textRead.textContent = t("wir_zeigen_ihn_mit_deiner_drohnenzahl_in_unserer_s"); return; }
+    if (!text.value) { textRead.textContent = t("ownText.hint"); return; }
     const cN = chars(text.value), r = text.shown && text.shown.n === n ? text.shown : null;
-    textRead.textContent = t("textStats",{characters:cN,perCharacter:(n/cN).toLocaleString(fmt,{maximumFractionDigits:0})})+(r?t("fontStyle",{style:r.style})+(r.lines.length>1?t("lines",{count:r.lines.length}):""):"")+(r?.unknown.length?t("unknown",{characters:r.unknown.join(" ")}):"");
+    textRead.textContent = t("ownTextStatus.statistics",{characters:cN,perCharacter:(n/cN).toLocaleString(fmt,{maximumFractionDigits:0})})+(r?t("ownTextStatus.fontStyle",{style:r.style})+(r.lines.length>1?t("ownTextStatus.lines",{count:r.lines.length}):""):"")+(r?.unknown.length?t("ownTextStatus.unknown",{characters:r.unknown.join(" ")}):"");
   }
   if (textIn) life.listen(textIn, "input", () => {
     text.value = textIn.value.toUpperCase().replace(/\s+/g, " ").trim();
@@ -291,7 +291,7 @@ registerCanvas("canvas#swarm", (canvas, life, saved) => {
       cur = color.slice(); yaw = 0; tilt = 0; draw(0, 0);
     }
     function updateMotionButton() {
-      motionButton.textContent = reduce ? t("animationReduced") : animationPaused ? t("animationResume") : t("animation_pausieren");
+      motionButton.textContent = reduce ? t("hero.reducedMotion") : animationPaused ? t("hero.resumeMotion") : t("hero.pauseMotion");
       motionButton.disabled = reduce;
       motionButton.setAttribute("aria-pressed", String(animationPaused || reduce));
     }

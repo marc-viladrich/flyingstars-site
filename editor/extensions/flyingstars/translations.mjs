@@ -36,7 +36,7 @@ export function validateOverlays({store,nextRecords,seen}){
  }
 }
 
-const translatableOwners = /^(page|post|project|faq|client|team|screen|package|site)\//;
+const translatableOwners = /^(page|post|project|faq|client|team|screen|extra|package|site)\//;
 const translationIdFor = (ownerId, locale) => "translation/" + ownerId.replaceAll("/", "-") + "-" + locale;
 
 // Machine results become unreviewed values of the owner's translation record; reviewed values whose

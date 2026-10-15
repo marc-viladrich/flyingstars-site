@@ -13,7 +13,7 @@ const H=Astro.props.index===0?'h1':'h2',headingId=`hero-${Astro.props.index}-h`;
 const { headline, text, eyebrow, words, cta, secondary, poster, video, stats } = Astro.props as Extract<Section, { type: 'showreelHero' }>;
 ---
 <section {...nativeSection(Astro.props)} class="hero" aria-labelledby={headingId}>
-  <Video src={video} poster={resolveMedia(poster,locale).src} label={ui.flightHero.showreel_ansehen} hero class="hero-media" {...nativeMedia(Astro.props,["poster"])} />
+  <Video src={video} poster={resolveMedia(poster,locale).src} label={ui.components.flightHero.buttonText} hero class="hero-media" {...nativeMedia(Astro.props,["poster"])} />
   <div class="shade" aria-hidden="true"></div>
   <div class="frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
   <div class="hero-copy">
@@ -23,5 +23,5 @@ const { headline, text, eyebrow, words, cta, secondary, poster, video, stats } =
     <p class="lead" {...nativeField(Astro.props,["text"])}>{text}</p>
     <div class="actions"><a class="btn primary" href={localizedHref(cta.href,locale)}><span {...nativeField(Astro.props,["cta","label"])}>{cta.label}</span></a><a class="btn" href={localizedHref(secondary.href,locale)}><span {...nativeField(Astro.props,["secondary","label"])}>{secondary.label}</span></a></div>
   </div>
-  <dl class="spec mono" aria-label={ui.flightHero.eckdaten}>{stats.map((stat,i) => {const pair=<><dt {...nativeField(Astro.props,["stats",i,"label"])}>{stat.label}</dt><dd><b {...nativeField(Astro.props,["stats",i,"value"])}>{stat.value}</b></dd></>,item=nativeItem(Astro.props,{entry:["stats",i]});return Object.keys(item).length?<div style="display:contents" {...item}>{pair}</div>:pair;})}</dl>
+  <dl class="spec mono" aria-label={ui.components.flightHero.factsLabel}>{stats.map((stat,i) => {const pair=<><dt {...nativeField(Astro.props,["stats",i,"label"])}>{stat.label}</dt><dd><b {...nativeField(Astro.props,["stats",i,"value"])}>{stat.value}</b></dd></>,item=nativeItem(Astro.props,{entry:["stats",i]});return Object.keys(item).length?<div style="display:contents" {...item}>{pair}</div>:pair;})}</dl>
 </section>

@@ -10,7 +10,7 @@ import {optimizedLogo} from '../../lib/media';
 const {headline,press,clientIds,showImages=true}=Astro.props;
 const items=await Promise.all(clientIds.map(async(id:string)=>{const client=await editorialRecord('client',id,locale),image=resolveMedia(client.logo,locale);return {...client,id,image,media:image&&showImages?await optimizedLogo(image.src,client.tall?80:56):undefined};}));
 ---
-<div {...nativeSection(Astro.props)} class="band" aria-label={ui.logoBar.referenzen}>
-  <div class="band-head mono">{headline&&<span {...nativeField(Astro.props,['headline'],true)}><InlineText value={headline} /></span>}{press&&<span>{ui.logoBar.bekannt_aus} <b {...nativeField(Astro.props,['press'])}>{press}</b></span>}</div>
+<div {...nativeSection(Astro.props)} class="band" aria-label={ui.components.logoBar.clientLabel}>
+  <div class="band-head mono">{headline&&<span {...nativeField(Astro.props,['headline'],true)}><InlineText value={headline} /></span>}{press&&<span>{ui.components.logoBar.pressLabel} <b {...nativeField(Astro.props,['press'])}>{press}</b></span>}</div>
   <div class="marquee">{items.map((client:any,i:number)=>{const record=`client/${client.id}`;const content=client.image&&client.media?<img {...nativeRecordMedia(record,['logo'])} data-media-single="logo-marquee" src={client.media.src} width={client.media.width} height={client.media.height} alt={client.image.alt} class:list={{tall:client.tall}} {...nativeUses(Astro.props,[{record,path:['tall']}])} loading="lazy" decoding="async"/>:<span {...nativeRecord(record,['name'])}>{client.name}</span>;return <span {...nativeItem(Astro.props,{record,entry:['clientIds',i]})}>{client.href?<a {...nativeRecord(record,['href'])} href={localizedHref(client.href,locale)}>{content}</a>:content}</span>;})}</div>
 </div>

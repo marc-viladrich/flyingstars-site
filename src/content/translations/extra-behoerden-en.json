@@ -1,0 +1,39 @@
+{
+  "sourceId": "extra/behoerden",
+  "locale": "en",
+  "sourceHash": "fd97be30f8839615fb878d21674af10b5ecbe8d0f0da6e37d9f2faf103d9e9b7",
+  "values": [
+    {
+      "path": [
+        "name"
+      ],
+      "text": "Authorities",
+      "reviewed": false,
+      "sourceHash": "3a764f1fad5736eb9b085a5f699123ae6d68976907bf789812b6f708ca67b770"
+    },
+    {
+      "path": [
+        "title"
+      ],
+      "text": "Extended government support",
+      "reviewed": false,
+      "sourceHash": "02d95da258c0cda468bbb7058924563d6cf6a739b4d6d27a9adf87de7b845071"
+    },
+    {
+      "path": [
+        "text"
+      ],
+      "text": "We take over the complete communication with offices and authorities.",
+      "reviewed": false,
+      "sourceHash": "a7d3a55ac7fa83f0d1303b8592fbe69cf32b56bad1fa1ea9c4c38e16a61d07bc"
+    },
+    {
+      "path": [
+        "priceNote"
+      ],
+      "text": "Price on request",
+      "reviewed": false,
+      "sourceHash": "3ca83ec890eca6bf5b56f1e7f07bb74d6f1cc66cce889eebfdc9188fc329fa02"
+    }
+  ]
+}

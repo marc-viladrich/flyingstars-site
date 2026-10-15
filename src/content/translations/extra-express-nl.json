@@ -1,0 +1,39 @@
+{
+  "sourceId": "extra/express",
+  "locale": "nl",
+  "sourceHash": "4d2cde5229106deade81e14a82a39aa648f49d295c396cba07e02bf898192905",
+  "values": [
+    {
+      "path": [
+        "name"
+      ],
+      "text": "Express",
+      "reviewed": false,
+      "sourceHash": "572a14164bde322ae7c975fa7af893bd515736075d4f8521fec88a0e1774d923"
+    },
+    {
+      "path": [
+        "title"
+      ],
+      "text": "Toon in minder dan twee weken",
+      "reviewed": false,
+      "sourceHash": "8fd681e7bfb0c3bbb80c306ce2509c9b018189899b71e72ec7e6af2a2a8ba57b"
+    },
+    {
+      "path": [
+        "text"
+      ],
+      "text": "Wij geven prioriteit aan uw project in ontwerp en goedkeuring.",
+      "reviewed": false,
+      "sourceHash": "29485798739631a0d87af28db777880959f6419dae2527bbd4041dd5a884b57f"
+    },
+    {
+      "path": [
+        "priceNote"
+      ],
+      "text": "Aanvullende belasting door inspanning",
+      "reviewed": false,
+      "sourceHash": "6ef5771faa1feb0d7f136cb57364df7f903bf980059a471ce8b41674e8e6db28"
+    }
+  ]
+}

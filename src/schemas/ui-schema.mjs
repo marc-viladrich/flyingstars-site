@@ -1,252 +1,279 @@
 import {editable,inGroup} from './afe-meta.mjs';
 import {z} from 'astro/zod';
-// Keys are stable; changing German copy only invalidates its own field hash.
+
+// Page → visible section → editorial role. Lists own their item roles.
 export const siteUiSchema=z.object({
-  base:inGroup('Rahmen der Website',z.object({
-    zum_inhalt_springen:z.string().describe("Zum Inhalt springen").meta(editable({"translatable":true})),
-    hauptnavigation:z.string().describe("Hauptnavigation").meta(editable({"translatable":true})),
-    sprache_deutsch:z.string().describe("Sprache Deutsch").meta(editable({"translatable":true})),
-    bewegung_pausieren:z.string().describe("Bewegung pausieren").meta(editable({"translatable":true})),
-    menu_offnen:z.string().describe("Menü öffnen").meta(editable({"translatable":true})),
-    menu_schliessen:z.string().describe("Menü schließen").meta(editable({"translatable":true})),
-    mobile_navigation:z.string().describe("Mobile Navigation").meta(editable({"translatable":true})),
-    drohnenshows_seit_2022_uber_150_shows_in_deutschla:z.string().describe("Drohnenshows seit 2022. Über 150 Shows in Deutschland und Europa.").meta(editable({"translatable":true})),
-    rechtliches:z.string().describe("Rechtliches").meta(editable({"translatable":true})),
-    website_vorschau:z.string().describe("Website-Vorschau").meta(editable({"translatable":true})),
-    text_100_okostrom:z.string().describe("100 % Ökostrom").meta(editable({"translatable":true})),
-    language:z.string().describe("Sprache").meta(editable({"translatable":true})),
-    motionResume:z.string().describe("Bewegung fortsetzen").meta(editable({"translatable":true})),
-  }).describe("Rahmen und Navigation")),
-  prices:inGroup('Preise & Pakete',z.object({
-    immer_inklusive:z.string().describe("Immer inklusive").meta(editable({"translatable":true})),
-    wofur_du_eigentlich_bezahlst:z.string().describe("Wofür du eigentlich bezahlst.").meta(editable({"translatable":true})),
-    der_grosste_aufwand_einer_drohnenshow_steckt_nicht:z.string().describe("Der größte Aufwand einer Drohnenshow steckt nicht in den Drohnen, sondern in Design, Genehmigung und").meta(editable({"translatable":true})),
-    design:z.string().describe("Design").meta(editable({"translatable":true})),
-    programmierung_fur_deinen_ort:z.string().describe("Programmierung für deinen Ort").meta(editable({"translatable":true})),
-    deine_show_wird_fur_deinen_showbereich_deine_musik:z.string().describe("Deine Show wird für deinen Showbereich, deine Musik und deine Motive programmiert.").meta(editable({"translatable":true})),
-    genehmigung:z.string().describe("Genehmigung").meta(editable({"translatable":true})),
-    genehmigung_sicherheitskonzept:z.string().describe("Genehmigung & Sicherheitskonzept").meta(editable({"translatable":true})),
-    luftrechtliche_genehmigung_sicherheitszonen_und_ha:z.string().describe("Luftrechtliche Genehmigung, Sicherheitszonen und Haftpflichtversicherung sind in jedem Paket enthalt").meta(editable({"translatable":true})),
-    freigabe:z.string().describe("Freigabe").meta(editable({"translatable":true})),
-    freigabe_vorab:z.string().describe("Freigabe vorab").meta(editable({"translatable":true})),
-    deine_eigenen_motive_siehst_du_vor_der_show_und_gi:z.string().describe("Deine eigenen Motive siehst du vor der Show und gibst sie frei – ab HORIZON als Video-Vorschau.").meta(editable({"translatable":true})),
-    showtag:z.string().describe("Showtag").meta(editable({"translatable":true})),
-    team_vor_ort:z.string().describe("Team vor Ort").meta(editable({"translatable":true})),
-    pilot_innen_und_techniker_innen_bauen_in_rund_drei:z.string().describe("Pilot:innen und Techniker:innen bauen in rund drei Stunden auf und fliegen deine Show.").meta(editable({"translatable":true})),
-    extras_upgrades:z.string().describe("Extras & Upgrades").meta(editable({"translatable":true})),
-    mehr_geht_immer:z.string().describe("Mehr geht immer.").meta(editable({"translatable":true})),
-    fur_besondere_anforderungen_erweitern_wir_jedes_pa:z.string().describe("Für besondere Anforderungen erweitern wir jedes Paket. Die Preise stehen vorab im Angebot.").meta(editable({"translatable":true})),
-    express:z.string().describe("Express").meta(editable({"translatable":true})),
-    show_in_unter_zwei_wochen:z.string().describe("Show in unter zwei Wochen").meta(editable({"translatable":true})),
-    wir_priorisieren_dein_projekt_bei_design_und_geneh:z.string().describe("Wir priorisieren dein Projekt bei Design und Genehmigung.").meta(editable({"translatable":true})),
-    aufpreis_nach_aufwand:z.string().describe("Aufpreis nach Aufwand").meta(editable({"translatable":true})),
-    film:z.string().describe("Film").meta(editable({"translatable":true})),
-    professionelle_filmaufnahmen:z.string().describe("Professionelle Filmaufnahmen").meta(editable({"translatable":true})),
-    rohaufnahmen_mit_kameradrohne_fur_aftermovie_und_s:z.string().describe("Rohaufnahmen mit Kameradrohne für Aftermovie und Social Media.").meta(editable({"translatable":true})),
-    behorden:z.string().describe("Behörden").meta(editable({"translatable":true})),
-    erweiterter_behordensupport:z.string().describe("Erweiterter Behördensupport").meta(editable({"translatable":true})),
-    wir_ubernehmen_die_komplette_kommunikation_mit_amt:z.string().describe("Wir übernehmen die komplette Kommunikation mit Ämtern und Behörden.").meta(editable({"translatable":true})),
-    preis_auf_anfrage:z.string().describe("Preis auf Anfrage").meta(editable({"translatable":true})),
-    sondergenehmigung:z.string().describe("Sondergenehmigung").meta(editable({"translatable":true})),
-    kontrollzonen_flughafennahe:z.string().describe("Kontrollzonen & Flughafennähe").meta(editable({"translatable":true})),
-    besondere_flachen_brauchen_sondergenehmigungen_die:z.string().describe("Besondere Flächen brauchen Sondergenehmigungen – die holen wir ein.").meta(editable({"translatable":true})),
-    indoor:z.string().describe("Indoor").meta(editable({"translatable":true})),
-    indoor_drohnenshows:z.string().describe("Indoor-Drohnenshows").meta(editable({"translatable":true})),
-    fur_messen_hallen_und_buhnen_jede_indoor_show_kalk:z.string().describe("Für Messen, Hallen und Bühnen. Jede Indoor-Show kalkulieren wir individuell.").meta(editable({"translatable":true})),
-    individuelles_angebot:z.string().describe("Individuelles Angebot").meta(editable({"translatable":true})),
-    schweiz:z.string().describe("Schweiz").meta(editable({"translatable":true})),
-    shows_in_der_schweiz:z.string().describe("Shows in der Schweiz").meta(editable({"translatable":true})),
-    bazl_antrag_und_zollabwicklung_fur_unsere_flotte_u:z.string().describe("BAZL-Antrag und Zollabwicklung für unsere Flotte übernehmen wir.").meta(editable({"translatable":true})),
-    preisversprechen:z.string().describe("Preisversprechen").meta(editable({"translatable":true})),
-    gunstigeres_angebot_mit_gleicher_leistung_wir_unte:z.string().describe("Günstigeres Angebot mit gleicher Leistung? Wir unterbieten es.").meta(editable({"translatable":true})),
-    schick_uns_das_vergleichsangebot_bei_gleichem_leis:z.string().describe("Schick uns das Vergleichsangebot – bei gleichem Leistungsumfang machen wir dir einen besseren Preis.").meta(editable({"translatable":true})),
-    angebot_prufen_lassen:z.string().describe("Angebot prüfen lassen").meta(editable({"translatable":true})),
-    fragen_zum_preis:z.string().describe("Fragen zum Preis").meta(editable({"translatable":true})),
-    was_kostet_eine_drohnenshow_wirklich:z.string().describe("Was kostet eine Drohnenshow wirklich?").meta(editable({"translatable":true})),
-    paketpreis_plus_anfahrt_mehr_nicht_hier_die_detail:z.string().describe("Paketpreis plus Anfahrt – mehr nicht. Hier die Details, die in den meisten Gesprächen auftauchen.").meta(editable({"translatable":true})),
-    videocall_buchen:z.string().describe("Videocall buchen").meta(editable({"translatable":true})),
-    was_kommt_zum_paketpreis_noch_dazu:z.string().describe("Was kommt zum Paketpreis noch dazu?").meta(editable({"translatable":true})),
-    nur_die_anfahrt_und_die_mehrwertsteuer_die_anfahrt:z.string().describe("Nur die Anfahrt und die Mehrwertsteuer. Die Anfahrt berechnen wir ab Gelsenkirchen nach Strecke, Tea").meta(editable({"translatable":true})),
-    wie_funktioniert_die_bezahlung:z.string().describe("Wie funktioniert die Bezahlung?").meta(editable({"translatable":true})),
-    mit_der_auftragsbestatigung_wird_eine_anzahlung_vo:z.string().describe("Mit der Auftragsbestätigung wird eine Anzahlung von 30 % fällig – dann starten Design und Genehmigun").meta(editable({"translatable":true})),
-    was_passiert_wenn_die_show_ausfallt:z.string().describe("Was passiert, wenn die Show ausfällt?").meta(editable({"translatable":true})),
-    ist_schlechtes_wetter_absehbar_verschieben_wir_ohn:z.string().describe("Ist schlechtes Wetter absehbar, verschieben wir ohne Aufpreis – nur eine bereits angefallene Anfahrt").meta(editable({"translatable":true})),
-    welches_paket_passt_zu_mir:z.string().describe("Welches Paket passt zu mir?").meta(editable({"translatable":true})),
-    als_faustregel_spark_bis_150_drohnen_mit_motiven_a:z.string().describe("Als Faustregel: SPARK bis 150 Drohnen mit Motiven aus unserem Katalog, HORIZON für individuelle Anim").meta(editable({"translatable":true})),
-    geht_es_auch_grosser:z.string().describe("Geht es auch größer?").meta(editable({"translatable":true})),
-    ja_unsere_bisher_grosste_show_hatte_600_drohnen_au:z.string().describe("Ja. Unsere bisher größte Show hatte 600 Drohnen – auch 1.000 und mehr planen wir gemeinsam mit dir u").meta(editable({"translatable":true})),
-    kostet_eine_show_im_ausland_mehr:z.string().describe("Kostet eine Show im Ausland mehr?").meta(editable({"translatable":true})),
-    in_der_eu_planen_wir_mit_denselben_paketen_je_nach:z.string().describe("In der EU planen wir mit denselben Paketen; je nach Land kommen Antragsfristen, eine längere Anfahrt").meta(editable({"translatable":true})),
-    paket_gefunden_erzahl_uns_von_deinem_termin:z.string().describe("Paket gefunden? Erzähl uns von deinem Termin.").meta(editable({"translatable":true})),
-    wir_melden_uns_innerhalb_von_48_stunden_meist_deut:z.string().describe("Wir melden uns innerhalb von 48 Stunden – meist deutlich schneller.").meta(editable({"translatable":true})),
-    show_anfragen:z.string().describe("Show anfragen").meta(editable({"translatable":true})),
-    text_900_bei_odyssey_inklusive:z.string().describe("900 € · bei ODYSSEY inklusive").meta(editable({"translatable":true})),
-    text_1_900_netto:z.string().describe("+1.900 € netto").meta(editable({"translatable":true})),
-  }).describe("Preisseite")),
-  configurator:inGroup('Preise & Pakete',z.object({
-    vorschau_der_show:z.string().describe("Vorschau der Show").meta(editable({"translatable":true})),
-    die_vorschau_ist_gerade_nicht_verfugbar_du_kannst_:z.string().describe("Die Vorschau ist gerade nicht verfügbar. Du kannst weiterhin ein Paket wählen und anfragen.").meta(editable({"translatable":true})),
-    bilder_der_show:z.string().describe("Bilder der Show").meta(editable({"translatable":true})),
-    vorheriges_bild:z.string().describe("Vorheriges Bild").meta(editable({"translatable":true})),
-    show_von_vorn_ansehen:z.string().describe("Show von vorn ansehen").meta(editable({"translatable":true})),
-    nachstes_bild:z.string().describe("Nächstes Bild").meta(editable({"translatable":true})),
-    anlass:z.string().describe("Anlass"),
-    wie_aufwendig:z.string().describe("Wie aufwendig?").meta(editable({"translatable":true})),
-    euer_text:z.string().describe("Euer Text").meta(editable({"translatable":true})),
-    optional_ohne_aufpreis:z.string().describe("(optional, ohne Aufpreis)").meta(editable({"translatable":true})),
-    z_b_anna_ben:z.string().describe("z. B. Anna & Ben").meta(editable({"translatable":true})),
-    erscheint_als_finale_der_show_zahlt_als_eines_eure:z.string().describe("Erscheint als Finale der Show. Zählt als eines eurer eigenen Elemente und ändert den Preis nicht.").meta(editable({"translatable":true})),
-    drohnen:z.string().describe("Drohnen ·").meta(editable({"translatable":true})),
-    netto_zzgl_anfahrt:z.string().describe("· netto zzgl. Anfahrt").meta(editable({"translatable":true})),
-    enthalten:z.string().describe("Enthalten:").meta(editable({"translatable":true})),
-    mit_dieser_show_anfragen:z.string().describe("Mit dieser Show anfragen").meta(editable({"translatable":true})),
-    prototyp_die_vorschau_zeigt_beispiele_den_ablauf_e:z.string().describe("Prototyp: Die Vorschau zeigt Beispiele, den Ablauf eurer Show entwickeln wir gemeinsam. Die Zuordnun").meta(editable({"translatable":true})),
-    anfragen:z.string().describe("Anfragen").meta(editable({"translatable":true})),
-    der_show_konfigurator_benotigt_javascript_die_pake:z.string().describe("Der Show-Konfigurator benötigt JavaScript. Die Pakete findest du unter").meta(editable({"translatable":true})),
-    preise:z.string().describe("Preise").meta(editable({"translatable":true})),
-    script:z.string().describe("Schreibschrift").meta(editable({"translatable":true})),
-    print:z.string().describe("Druckschrift").meta(editable({"translatable":true})),
-    initials:z.string().describe("Initialen").meta(editable({"translatable":true})),
-    fromPrice:z.string().describe("ab {price} €").meta(editable({"translatable":true})),
-    meta:z.string().describe("{count} Drohnen · {duration} · netto zzgl. Anfahrt").meta(editable({"translatable":true})),
-    includes:z.string().describe("Enthalten: {text}.").meta(editable({"translatable":true})),
-    ownText:z.string().describe("Euer Text").meta(editable({"translatable":true})),
-    captionSpark:z.string().describe("Euer Text am Himmel").meta(editable({"translatable":true})),
-    captionHorizon:z.string().describe("Licht schreibt euren Text").meta(editable({"translatable":true})),
-    captionOdyssey:z.string().describe("Euer Text").meta(editable({"translatable":true})),
-    summaryOccasion:z.string().describe("Anlass: {occasion}").meta(editable({"translatable":true})),
-    summaryMotifs:z.string().describe("Beispielmotive: {motifs}").meta(editable({"translatable":true})),
-    summaryText:z.string().describe("Eigener Text: „{text}“ ({style})").meta(editable({"translatable":true})),
-    summaryEffort:z.string().describe("Aufwand: {effort} ({name}, {price} netto, Einstiegspreis laut Konfigurator)").meta(editable({"translatable":true})),
-  }).describe("Show-Konfigurator")),
-  blog:inGroup('Listen & Bausteine',z.object({
-    alle_beitrage_in_chronologischer_reihenfolge_neues:z.string().describe("Alle Beiträge in chronologischer Reihenfolge, neueste zuerst. Hintergründe, Projekte und Einblicke.").meta(editable({"translatable":true})),
-  }).describe("Blog")),
-  calculator:inGroup('Preise & Pakete',z.object({
-    animation_pausieren:z.string().describe("Animation pausieren").meta(editable({"translatable":true})),
-    preise_pakete:z.string().describe("Preise & Pakete").meta(editable({"translatable":true})),
-    drohnen:z.string().describe("Drohnen").meta(editable({"translatable":true})),
-    ab:z.string().describe("ab").meta(editable({"translatable":true})),
-    netto_zzgl_anfahrt:z.string().describe("netto zzgl. Anfahrt").meta(editable({"translatable":true})),
-    anzahl_drohnen:z.string().describe("Anzahl Drohnen").meta(editable({"translatable":true})),
-    paket:z.string().describe("Paket").meta(editable({"translatable":true})),
-    dein_text_am_himmel:z.string().describe("Dein Text am Himmel").meta(editable({"translatable":true})),
-    optional:z.string().describe("optional").meta(editable({"translatable":true})),
-    z_b_anna_tom:z.string().describe("z. B. ANNA & TOM").meta(editable({"translatable":true})),
-    wir_zeigen_ihn_mit_deiner_drohnenzahl_in_unserer_s:z.string().describe("Wir zeigen ihn mit deiner Drohnenzahl in unserer Show-Schrift.").meta(editable({"translatable":true})),
-    dauer:z.string().describe("Dauer").meta(editable({"translatable":true})),
-    ca_13_min:z.string().describe("ca. 13 Min").meta(editable({"translatable":true})),
-    mit_200_drohnen_anfragen:z.string().describe("Mit 200 Drohnen anfragen").meta(editable({"translatable":true})),
-    pakete_vergleichen:z.string().describe("Pakete vergleichen").meta(editable({"translatable":true})),
-    der_interaktive_preisrechner_benotigt_javascript_d:z.string().describe("Der interaktive Preisrechner benötigt JavaScript. Die Paketpreise unten gelten für die jeweilige Bas").meta(editable({"translatable":true})),
-    fromPrice:z.string().describe("ab {price}").meta(editable({"translatable":true})),
-    net:z.string().describe("netto zzgl. Anfahrt").meta(editable({"translatable":true})),
-    packageLabel:z.string().describe("Paket").meta(editable({"translatable":true})),
-    duration:z.string().describe("Dauer").meta(editable({"translatable":true})),
-    motifs:z.string().describe("Motive").meta(editable({"translatable":true})),
-    motifSize:z.string().describe("Motivgröße").meta(editable({"translatable":true})),
-    motifTitle:z.string().describe("Größe des ganzen Motivs am Himmel, Drohnen im Abstand von {distance} m").meta(editable({"translatable":true})),
-    size:z.string().describe("ca. {width} × {height} m").meta(editable({"translatable":true})),
-    depth:z.string().describe(", {depth} m tief").meta(editable({"translatable":true})),
-    inquiry:z.string().describe("Mit {count} Drohnen anfragen").meta(editable({"translatable":true})),
-    range:z.string().describe("{count} Drohnen, {name}, ab {price}").meta(editable({"translatable":true})),
-    selected:z.string().describe("Passt zu deiner Auswahl").meta(editable({"translatable":true})),
-    limit:z.string().describe("Nur bis {count} Drohnen").meta(editable({"translatable":true})),
-    above:z.string().describe("darüber: {name}").meta(editable({"translatable":true})),
-    included:z.string().describe("inkl. {count} Drohnen").meta(editable({"translatable":true})),
-    forCount:z.string().describe("für {count} Drohnen").meta(editable({"translatable":true})),
-    alreadyIncluded:z.string().describe("{name} enthält bereits {count} Drohnen – zum selben Preis.").meta(editable({"translatable":true})),
-    starts:z.string().describe("{name} startet mit {count} Drohnen.").meta(editable({"translatable":true})),
-    largeFleet:z.string().describe("Über 600 Drohnen ist das ein Richtpreis – die Flotte planen wir gemeinsam und bestätigen sie im Ange").meta(editable({"translatable":true})),
-    upgrade:z.string().describe("Mehr als {count} Drohnen? Dann lohnt sich {name} mit individuellen Animationen.").meta(editable({"translatable":true})),
-    minimum:z.string().describe("Unter 10 Drohnen pro Zeichen wird es schlecht lesbar – für deinen Text mindestens {count} Drohnen.").meta(editable({"translatable":true})),
-    reserve:z.string().describe("Dein Text braucht höchstens {used} Drohnen (80 m hoch) – die übrigen {reserve} zeigen wir als Reserv").meta(editable({"translatable":true})),
-    tooLong:z.string().describe("Dieser Text lässt sich so nicht darstellen – bitte kürzen.").meta(editable({"translatable":true})),
-    fontFailed:z.string().describe("Die Schrift konnte nicht geladen werden.").meta(editable({"translatable":true})),
-    textStats:z.string().describe("{characters} Zeichen · {perCharacter} Drohnen pro Zeichen").meta(editable({"translatable":true})),
-    fontStyle:z.string().describe(" · {style}-Schrift").meta(editable({"translatable":true})),
-    lines:z.string().describe(" · {count} Zeilen").meta(editable({"translatable":true})),
-    unknown:z.string().describe(" · nicht darstellbar: {characters}").meta(editable({"translatable":true})),
-    animationResume:z.string().describe("Animation fortsetzen").meta(editable({"translatable":true})),
-    catalogue:z.string().describe("aus dem Katalog + 4 eigene").meta(editable({"translatable":true})),
-    individual:z.string().describe("individuell, 2D + einfaches 3D").meta(editable({"translatable":true})),
-    storytelling:z.string().describe("komplexes 3D + Storytelling").meta(editable({"translatable":true})),
-    animationReduced:z.string().describe("Animation reduziert").meta(editable({"translatable":true})),
-  }).describe("Preisrechner")),
-  packageDetails:inGroup('Preise & Pakete',z.object({
-    pakete:z.string().describe("Pakete").meta(editable({"translatable":true})),
-    drei_pakete_die_preise_rechnen_mit:z.string().describe("Drei Pakete. Die Preise rechnen mit.").meta(editable({"translatable":true})),
-    die_preise_unten_gelten_fur_die_drohnenzahl_die_du:z.string().describe("Die Preise unten gelten für die Drohnenzahl, die du oben eingestellt hast. Jedes Paket lässt sich mi").meta(editable({"translatable":true})),
-    ab:z.string().describe("ab").meta(editable({"translatable":true})),
-    fur:z.string().describe("für").meta(editable({"translatable":true})),
-    drohnen:z.string().describe("Drohnen ·").meta(editable({"translatable":true})),
-    je:z.string().describe("€ je").meta(editable({"translatable":true})),
-    drohnen_2:z.string().describe("Drohnen").meta(editable({"translatable":true})),
-    anfragen:z.string().describe("anfragen").meta(editable({"translatable":true})),
-    scale:z.string().describe("+{price} € je {step} Drohnen").meta(editable({"translatable":true})),
-    maximum:z.string().describe(" · bis {max} Drohnen").meta(editable({"translatable":true})),
-    inquiry:z.string().describe("{name} anfragen").meta(editable({"translatable":true})),
-    base:z.string().describe("für {count} Drohnen · {duration}").meta(editable({"translatable":true})),
-  }).describe("Paketdetails")),
-  caseStudy:inGroup('Projekte & Referenzen',z.object({
-    brotkrumen:z.string().describe("Brotkrumen").meta(editable({"translatable":true})),
-    start:z.string().describe("Start").meta(editable({"translatable":true})),
-    projekte:z.string().describe("Projekte").meta(editable({"translatable":true})),
-    projekt:z.string().describe("Projekt").meta(editable({"translatable":true})),
-    in_zahlen:z.string().describe("In Zahlen").meta(editable({"translatable":true})),
-    die_geschichte:z.string().describe("Die Geschichte").meta(editable({"translatable":true})),
-    zum_anfassen:z.string().describe("Zum Anfassen").meta(editable({"translatable":true})),
-    noch_mal_starten:z.string().describe("Noch mal starten").meta(editable({"translatable":true})),
-    animation_pausieren:z.string().describe("Animation pausieren").meta(editable({"translatable":true})),
-    bilder_der_nacht:z.string().describe("Bilder der Nacht").meta(editable({"translatable":true})),
-    die_show_in:z.string().describe("Die Show in").meta(editable({"translatable":true})),
-    bildern:z.string().describe("Bildern.").meta(editable({"translatable":true})),
-    vorheriges_bild:z.string().describe("Vorheriges Bild").meta(editable({"translatable":true})),
-    nachstes_bild:z.string().describe("Nächstes Bild").meta(editable({"translatable":true})),
-    die_choreografie:z.string().describe("Die Choreografie").meta(editable({"translatable":true})),
-    was_am_himmel_zu_sehen_war:z.string().describe("Was am Himmel zu sehen war.").meta(editable({"translatable":true})),
-    presse:z.string().describe("Presse").meta(editable({"translatable":true})),
-    nachstes_projekt:z.string().describe("Nächstes Projekt ·").meta(editable({"translatable":true})),
-    drohnen:z.string().describe("Drohnen").meta(editable({"translatable":true})),
-    show_anfragen:z.string().describe("Show anfragen").meta(editable({"translatable":true})),
-    play:z.string().describe("{name}: Showvideo abspielen").meta(editable({"translatable":true})),
-    gallery:z.string().describe("{name}: Bildergalerie").meta(editable({"translatable":true})),
-    animationResume:z.string().describe("Animation fortsetzen").meta(editable({"translatable":true})),
-    galleryHeading:z.string().describe("Die Show in {count} Bildern.").meta(editable({"translatable":true})),
-    nextProject:z.string().describe("Nächstes Projekt · {order} / 04 · {drones} Drohnen").meta(editable({"translatable":true})),
-    formationCount:z.string().describe("{count} Drohnen aus der Show-Datei").meta(editable({"translatable":true})),
-    detectedCount:z.string().describe("{count} Drohnen erkannt").meta(editable({"translatable":true})),
-    formationFailed:z.string().describe("Die Formation konnte nicht geladen werden.").meta(editable({"translatable":true})),
-  }).describe("Projektgeschichte")),
-  flightHero:inGroup('Rahmen der Website',z.object({
-    showreel_ansehen:z.string().describe("Showreel ansehen").meta(editable({"translatable":true})),
-    eckdaten:z.string().describe("Eckdaten").meta(editable({"translatable":true})),
-  }).describe("Showreel-Auftakt")),
-  logoBar:inGroup('Projekte & Referenzen',z.object({
-    referenzen:z.string().describe("Referenzen").meta(editable({"translatable":true})),
-    bekannt_aus:z.string().describe("Bekannt aus").meta(editable({"translatable":true})),
-  }).describe("Referenzen")),
-  projectGrid:inGroup('Projekte & Referenzen',z.object({
-    drohnen:z.string().describe("Drohnen").meta(editable({"translatable":true})),
-    headline:z.string().describe("Ein paar Nächte, die wir nicht vergessen.").meta(editable({"translatable":true})),
-  }).describe("Projektliste")),
-  team:inGroup('Listen & Bausteine',z.object({
-    foto_folgt:z.string().describe("Foto folgt").meta(editable({"translatable":true})),
-  }).describe("Team")),
-  logo:inGroup('Rahmen der Website',z.object({
-    flyingstars_startseite:z.string().describe("FlyingStars – Startseite").meta(editable({"translatable":true})),
-  }).describe("Logo")),
-  video:inGroup('Rahmen der Website',z.object({
-    das_video_ist_gerade_nicht_verfugbar_bitte_versuch:z.string().describe("Das Video ist gerade nicht verfügbar. Bitte versuche es später erneut.").meta(editable({"translatable":true})),
-    play:z.string().describe("Showvideo ansehen").meta(editable({"translatable":true})),
-  }).describe("Video")),
-  faq:inGroup('Listen & Bausteine',z.object({
-    headline:z.string().describe("Häufige Fragen").meta(editable({"translatable":true})),
-  }).describe("FAQ-Liste")),
-  postList:inGroup('Listen & Bausteine',z.object({
-    headline:z.string().describe("Aktuelles").meta(editable({"translatable":true})),
-  }).describe("Artikelliste")),
-  comparison:inGroup('Listen & Bausteine',z.object({
-    scrollLabel:z.string().describe("{headline} (Tabelle, horizontal scrollbar)").meta(editable({"translatable":true})),
-  }).describe("Vergleich")),
-}).describe('Gemeinsame Oberflächentexte').meta(editable({"collection":{"label":"Gemeinsame Oberflächentexte","title":[],"icon":"mail","group":"Website-Daten","operations":["update"],"placement":"frontend","i18n":{"mode":"overlay"},"policies":["flyingstars/media-ownership"]}}));
+  base: inGroup("Rahmen der Website",z.object({
+    navigation: inGroup("Navigation und Bedienung",z.object({
+      skipLink: z.string().describe("Text des Sprunglinks").meta({...editable({translatable:true})}),
+      ariaLabel: z.string().describe("Barrierefreie Bezeichnung").meta({...editable({translatable:true})}),
+      germanLanguage: z.string().describe("Bezeichnung der deutschen Sprachversion").meta({...editable({translatable:true,visibility:"advanced",help:"Nicht verwendet: Die Sprachauswahl benennt jede Sprache dynamisch über ihren Sprachcode."}),unused:"Die Sprachauswahl benennt jede Sprache dynamisch über ihren Sprachcode."}),
+      pauseMotion: z.string().describe("Button zum Pausieren").meta({...editable({translatable:true})}),
+      openMenu: z.string().describe("Button zum Öffnen").meta({...editable({translatable:true})}),
+      closeMenu: z.string().describe("Button zum Schließen").meta({...editable({translatable:true})}),
+      mobileLabel: z.string().describe("Bezeichnung der mobilen Navigation").meta({...editable({translatable:true})}),
+      languageLabel: z.string().describe("Bezeichnung der Sprachauswahl").meta({...editable({translatable:true})}),
+      resumeMotion: z.string().describe("Button zum Fortsetzen").meta({...editable({translatable:true})})
+    }).strict().describe("Navigation und Bedienung")),
+    footer: inGroup("Footer",z.object({
+      intro: z.string().describe("Einleitung").meta({...editable({translatable:true})}),
+      legalLabel: z.string().describe("Überschrift der rechtlichen Links").meta({...editable({translatable:true})}),
+      previewLabel: z.string().describe("Kennzeichnung der Vorschau").meta({...editable({translatable:true})}),
+      energyLabel: z.string().describe("Stromhinweis").meta({...editable({translatable:true})})
+    }).strict().describe("Footer"))
+  }).strict().describe("Rahmen der Website")),
+  prices: inGroup("Preisseite",z.object({
+    included: inGroup("Immer inklusive",z.object({
+      label: z.string().describe("Abschnittsbezeichnung").meta({...editable({translatable:true})}),
+      headline: z.string().describe("Überschrift").meta({...editable({translatable:true})}),
+      intro: z.string().describe("Einleitung").meta({...editable({translatable:true})}),
+      items: z.array(z.object({
+        label: z.string().describe("Abschnittsbezeichnung").meta({...editable({translatable:true})}),
+        title: z.string().describe("Titel des Eintrags").meta({...editable({translatable:true})}),
+        text: z.string().describe("Beschreibung").meta({...editable({translatable:true})})
+      }).strict().describe("Eintrag")).describe("Enthaltene Leistungen").meta(editable({array:{role:"list",reorderable:true,insertable:true,removable:true,itemLabel:["title"]}}))
+    }).strict().describe("Immer inklusive")),
+    extras: inGroup("Extras & Upgrades",z.object({
+      label: z.string().describe("Abschnittsbezeichnung").meta({...editable({translatable:true})}),
+      headline: z.string().describe("Überschrift").meta({...editable({translatable:true})}),
+      intro: z.string().describe("Einleitung").meta({...editable({translatable:true})})
+    }).strict().describe("Extras & Upgrades")),
+    promise: inGroup("Preisversprechen",z.object({
+      label: z.string().describe("Abschnittsbezeichnung").meta({...editable({translatable:true})}),
+      headline: z.string().describe("Überschrift").meta({...editable({translatable:true})}),
+      text: z.string().describe("Beschreibung").meta({...editable({translatable:true})}),
+      buttonText: z.string().describe("Button-Text").meta({...editable({translatable:true})})
+    }).strict().describe("Preisversprechen")),
+    faq: inGroup("Fragen zum Preis",z.object({
+      label: z.string().describe("Abschnittsbezeichnung").meta({...editable({translatable:true})}),
+      headline: z.string().describe("Überschrift").meta({...editable({translatable:true})}),
+      intro: z.string().describe("Einleitung").meta({...editable({translatable:true})}),
+      buttonText: z.string().describe("Button-Text").meta({...editable({translatable:true})}),
+      items: z.array(z.object({
+        question: z.string().describe("Fragetext").meta({...editable({translatable:true})}),
+        answer: z.string().describe("Antworttext").meta({...editable({translatable:true})})
+      }).strict().describe("Eintrag")).describe("Preisfragen").meta(editable({array:{role:"list",reorderable:true,insertable:true,removable:true,itemLabel:["question"]}}))
+    }).strict().describe("Fragen zum Preis")),
+    cta: inGroup("Anfrage am Seitenende",z.object({
+      headline: z.string().describe("Überschrift").meta({...editable({translatable:true})}),
+      text: z.string().describe("Beschreibung").meta({...editable({translatable:true})}),
+      buttonText: z.string().describe("Button-Text").meta({...editable({translatable:true})})
+    }).strict().describe("Anfrage am Seitenende")),
+    packages: inGroup("Pakete vergleichen",z.object({
+      label: z.string().describe("Abschnittsbezeichnung").meta({...editable({translatable:true})}),
+      headline: z.string().describe("Überschrift").meta({...editable({translatable:true})}),
+      intro: z.string().describe("Einleitung").meta({...editable({translatable:true})}),
+      price: inGroup("Preis und Anfrage",z.object({
+        fromLabel: z.string().describe("Einleitung vor dem Preis").meta({...editable({translatable:true,visibility:"advanced",help:"Nicht verwendet: Der vollständige Preis verwendet calculator.readout.fromPrice."}),unused:"Der vollständige Preis verwendet calculator.readout.fromPrice."}),
+        forLabel: z.string().describe("Einleitung vor der Drohnenzahl").meta({...editable({translatable:true,visibility:"advanced",help:"Nicht verwendet: Die vollständige Basisangabe verwendet price.base."}),unused:"Die vollständige Basisangabe verwendet price.base."}),
+        dronesLabel: z.string().describe("Einheit der Drohnenzahl").meta({...editable({translatable:true,visibility:"advanced",help:"Nicht verwendet: Die vollständige Basisangabe verwendet price.base."}),unused:"Die vollständige Basisangabe verwendet price.base."}),
+        stepLabel: z.string().describe("Preiszusatz je Stufe").meta({...editable({translatable:true,visibility:"advanced",help:"Nicht verwendet: Die Preisstufe verwendet price.scale."}),unused:"Die Preisstufe verwendet price.scale."}),
+        countLabel: z.string().describe("Beschriftung der Drohnenzahl").meta({...editable({translatable:true,visibility:"advanced",help:"Nicht verwendet: Die Preisstufe verwendet price.scale."}),unused:"Die Preisstufe verwendet price.scale."}),
+        buttonText: z.string().describe("Button-Text").meta({...editable({translatable:true,visibility:"advanced",help:"Nicht verwendet: Der vollständige Button verwendet price.inquiry."}),unused:"Der vollständige Button verwendet price.inquiry."}),
+        scale: z.string().describe("Vorlage der Preisstufe").meta({...editable({translatable:true})}),
+        maximum: z.string().describe("Vorlage der Obergrenze").meta({...editable({translatable:true})}),
+        inquiry: z.string().describe("Vorlage des Anfrage-Buttons").meta({...editable({translatable:true})}),
+        base: z.string().describe("Vorlage der Basiseckdaten").meta({...editable({translatable:true})})
+      }).strict().describe("Preis und Anfrage"))
+    }).strict().describe("Pakete vergleichen"))
+  }).strict().describe("Preisseite")),
+  configurator: inGroup("Show-Konfigurator",z.object({
+    preview: inGroup("Vorschau der Show",z.object({
+      ariaLabel: z.string().describe("Barrierefreie Bezeichnung").meta({...editable({translatable:true})}),
+      unavailable: z.string().describe("Fehlermeldung").meta({...editable({translatable:true})}),
+      galleryLabel: z.string().describe("Bezeichnung der Bildergalerie").meta({...editable({translatable:true})}),
+      previousButton: z.string().describe("Bezeichnung des Zurück-Buttons").meta({...editable({translatable:true})}),
+      restartButton: z.string().describe("Bezeichnung des Neustart-Buttons").meta({...editable({translatable:true})}),
+      nextButton: z.string().describe("Bezeichnung des Weiter-Buttons").meta({...editable({translatable:true})}),
+      ownText: z.string().describe("Name des eigenen Textmotivs").meta({...editable({translatable:true})}),
+      captionSpark: z.string().describe("Bildunterschrift für SPARK").meta({...editable({translatable:true})}),
+      captionHorizon: z.string().describe("Bildunterschrift für HORIZON").meta({...editable({translatable:true})}),
+      captionOdyssey: z.string().describe("Bildunterschrift für ODYSSEY").meta({...editable({translatable:true})})
+    }).strict().describe("Vorschau der Show")),
+    steps: inGroup("Anlass und Aufwand",z.object({
+      occasionLabel: z.string().describe("Beschriftung der Anlassauswahl").meta({...editable({translatable:true})}),
+      effortLabel: z.string().describe("Beschriftung der Aufwandwahl").meta({...editable({translatable:true})})
+    }).strict().describe("Anlass und Aufwand")),
+    ownText: inGroup("Eigener Text am Himmel",z.object({
+      label: z.string().describe("Beschriftung des Texteingabefelds").meta({...editable({translatable:true})}),
+      optionalHint: z.string().describe("Zusatz zur Feldbeschriftung").meta({...editable({translatable:true})}),
+      placeholder: z.string().describe("Beispiel im Eingabefeld").meta({...editable({translatable:true})}),
+      hint: z.string().describe("Hinweis zum Eingabefeld").meta({...editable({translatable:true})})
+    }).strict().describe("Eigener Text am Himmel")),
+    result: inGroup("Ergebnis und Anfrage",z.object({
+      dronesLabel: z.string().describe("Einheit der Drohnenzahl").meta({...editable({translatable:true,visibility:"advanced",help:"Nicht verwendet: Die vollständigen Eckdaten verwenden result.meta."}),unused:"Die vollständigen Eckdaten verwenden result.meta."}),
+      priceNote: z.string().describe("Hinweis unter dem Preis").meta({...editable({translatable:true,visibility:"advanced",help:"Nicht verwendet: Die vollständigen Eckdaten verwenden result.meta."}),unused:"Die vollständigen Eckdaten verwenden result.meta."}),
+      includedLabel: z.string().describe("Einleitung der enthaltenen Leistungen").meta({...editable({translatable:true,visibility:"advanced",help:"Nicht verwendet: Die vollständige Leistungsangabe verwendet result.includes."}),unused:"Die vollständige Leistungsangabe verwendet result.includes."}),
+      buttonText: z.string().describe("Button-Text").meta({...editable({translatable:true})}),
+      prototypeHint: z.string().describe("Hinweis zum Prototyp").meta({...editable({translatable:true})}),
+      shortButtonText: z.string().describe("Kurzer Button-Text").meta({...editable({translatable:true})}),
+      fromPrice: z.string().describe("Preisvorlage mit Betrag").meta({...editable({translatable:true})}),
+      meta: z.string().describe("Vorlage der Paketeckdaten").meta({...editable({translatable:true})}),
+      includes: z.string().describe("Vorlage der enthaltenen Leistungen").meta({...editable({translatable:true})})
+    }).strict().describe("Ergebnis und Anfrage")),
+    textStyles: inGroup("Schriftwahl",z.object({
+      script: z.string().describe("Name der Schreibschrift-Option").meta({...editable({translatable:true})}),
+      print: z.string().describe("Name der Druckschrift-Option").meta({...editable({translatable:true})}),
+      initials: z.string().describe("Name der Initialen-Option").meta({...editable({translatable:true})})
+    }).strict().describe("Schriftwahl")),
+    summary: inGroup("Anfragezusammenfassung",z.object({
+      occasion: z.string().describe("Vorlage der Anlasszusammenfassung").meta({...editable({translatable:true})}),
+      motifs: z.string().describe("Vorlage der Motivzusammenfassung").meta({...editable({translatable:true})}),
+      text: z.string().describe("Vorlage der Textzusammenfassung").meta({...editable({translatable:true})}),
+      effort: z.string().describe("Vorlage der Aufwandzusammenfassung").meta({...editable({translatable:true})})
+    }).strict().describe("Anfragezusammenfassung")),
+    fallback: inGroup("Hinweis ohne JavaScript",z.object({
+      noScript: z.string().describe("Hinweis ohne JavaScript").meta({...editable({translatable:true})}),
+      pricesLink: z.string().describe("Text des Preislinks").meta({...editable({translatable:true})})
+    }).strict().describe("Hinweis ohne JavaScript"))
+  }).strict().describe("Show-Konfigurator")),
+  blog: inGroup("Blog",z.object({
+    index: inGroup("Blogübersicht",z.object({
+      description: z.string().describe("Seitenbeschreibung").meta({...editable({translatable:true})})
+    }).strict().describe("Blogübersicht"))
+  }).strict().describe("Blog")),
+  calculator: inGroup("Preisrechner",z.object({
+    hero: inGroup("Auftakt und Animation",z.object({
+      pauseMotion: z.string().describe("Button zum Pausieren").meta({...editable({translatable:true})}),
+      label: z.string().describe("Abschnittsbezeichnung").meta({...editable({translatable:true})}),
+      resumeMotion: z.string().describe("Button zum Fortsetzen").meta({...editable({translatable:true})}),
+      reducedMotion: z.string().describe("Status bei reduzierter Bewegung").meta({...editable({translatable:true})})
+    }).strict().describe("Auftakt und Animation")),
+    controls: inGroup("Drohnen und Paketauswahl",z.object({
+      dronesLabel: z.string().describe("Einheit der Drohnenzahl").meta({...editable({translatable:true})}),
+      fromLabel: z.string().describe("Einleitung vor dem Preis").meta({...editable({translatable:true,visibility:"advanced",help:"Nicht verwendet: Der Preis wird vollständig durch readout.fromPrice ausgegeben."}),unused:"Der Preis wird vollständig durch readout.fromPrice ausgegeben."}),
+      priceNote: z.string().describe("Hinweis unter dem Preis").meta({...editable({translatable:true,visibility:"advanced",help:"Nicht verwendet: Die Ausgabe verwendet readout.priceNote."}),unused:"Die Ausgabe verwendet readout.priceNote."}),
+      countLabel: z.string().describe("Beschriftung der Drohnenzahl").meta({...editable({translatable:true})}),
+      packageLabel: z.string().describe("Beschriftung der Paketauswahl").meta({...editable({translatable:true})})
+    }).strict().describe("Drohnen und Paketauswahl")),
+    ownText: inGroup("Eigener Text am Himmel",z.object({
+      label: z.string().describe("Beschriftung des Texteingabefelds").meta({...editable({translatable:true})}),
+      optionalHint: z.string().describe("Zusatz zur Feldbeschriftung").meta({...editable({translatable:true})}),
+      placeholder: z.string().describe("Beispiel im Eingabefeld").meta({...editable({translatable:true})}),
+      hint: z.string().describe("Hinweis zum Eingabefeld").meta({...editable({translatable:true})})
+    }).strict().describe("Eigener Text am Himmel")),
+    result: inGroup("Ergebnis und Anfrage",z.object({
+      durationLabel: z.string().describe("Beschriftung der Showdauer").meta({...editable({translatable:true})}),
+      initialDuration: z.string().describe("Bisheriger Startwert der Showdauer").meta({...editable({translatable:true,visibility:"advanced",help:"Nicht verwendet: Die Dauer stammt aus dem gewählten Paket."}),unused:"Die Dauer stammt aus dem gewählten Paket."}),
+      initialButton: z.string().describe("Bisheriger Button bei der Startauswahl").meta({...editable({translatable:true,visibility:"advanced",help:"Nicht verwendet: Der Button verwendet selection.buttonText mit der tatsächlichen Drohnenzahl."}),unused:"Der Button verwendet selection.buttonText mit der tatsächlichen Drohnenzahl."}),
+      compareButton: z.string().describe("Text des Vergleichslinks").meta({...editable({translatable:true})}),
+      noScript: z.string().describe("Hinweis ohne JavaScript").meta({...editable({translatable:true})})
+    }).strict().describe("Ergebnis und Anfrage")),
+    readout: inGroup("Eckdaten der Auswahl",z.object({
+      fromPrice: z.string().describe("Preisvorlage mit Betrag").meta({...editable({translatable:true})}),
+      priceNote: z.string().describe("Hinweis unter dem Preis").meta({...editable({translatable:true})}),
+      packageLabel: z.string().describe("Beschriftung der Paketauswahl").meta({...editable({translatable:true,visibility:"advanced",help:"Nicht verwendet: Die Ausgabe verwendet controls.packageLabel."}),unused:"Die Ausgabe verwendet controls.packageLabel."}),
+      durationLabel: z.string().describe("Beschriftung der Showdauer").meta({...editable({translatable:true,visibility:"advanced",help:"Nicht verwendet: Die Ausgabe verwendet result.durationLabel."}),unused:"Die Ausgabe verwendet result.durationLabel."}),
+      motifsLabel: z.string().describe("Beschriftung der Motivart").meta({...editable({translatable:true})}),
+      sizeLabel: z.string().describe("Beschriftung der Motivabmessungen").meta({...editable({translatable:true})}),
+      sizeHint: z.string().describe("Erklärung der Motivabmessungen").meta({...editable({translatable:true})}),
+      size: z.string().describe("Vorlage für Breite und Höhe").meta({...editable({translatable:true})}),
+      depth: z.string().describe("Vorlage für die Tiefe").meta({...editable({translatable:true})})
+    }).strict().describe("Eckdaten der Auswahl")),
+    selection: inGroup("Paketauswahl und Grenzen",z.object({
+      buttonText: z.string().describe("Button-Text").meta({...editable({translatable:true})}),
+      rangeLabel: z.string().describe("Vorlage des Schieberegler-Werts").meta({...editable({translatable:true})}),
+      selected: z.string().describe("Kennzeichnung des gewählten Pakets").meta({...editable({translatable:true})}),
+      limit: z.string().describe("Vorlage der maximalen Drohnenzahl").meta({...editable({translatable:true})}),
+      above: z.string().describe("Vorlage des nächsten Pakets").meta({...editable({translatable:true})}),
+      included: z.string().describe("Vorlage der enthaltenen Drohnenzahl").meta({...editable({translatable:true})}),
+      forCount: z.string().describe("Vorlage der gewählten Drohnenzahl").meta({...editable({translatable:true})})
+    }).strict().describe("Paketauswahl und Grenzen")),
+    notes: inGroup("Hinweise zur Auswahl",z.object({
+      alreadyIncluded: z.string().describe("Hinweis bei unterschrittener Basiszahl").meta({...editable({translatable:true})}),
+      starts: z.string().describe("Hinweis zur Basiszahl").meta({...editable({translatable:true})}),
+      largeFleet: z.string().describe("Hinweis zu großen Flotten").meta({...editable({translatable:true})}),
+      upgrade: z.string().describe("Hinweis auf ein größeres Paket").meta({...editable({translatable:true})}),
+      minimum: z.string().describe("Hinweis zur Mindestdrohnenzahl").meta({...editable({translatable:true})}),
+      reserve: z.string().describe("Hinweis zur Reservemenge").meta({...editable({translatable:true})})
+    }).strict().describe("Hinweise zur Auswahl")),
+    ownTextStatus: inGroup("Textvorschau und Fehlermeldungen",z.object({
+      tooLong: z.string().describe("Fehlermeldung bei zu langem Text").meta({...editable({translatable:true})}),
+      fontFailed: z.string().describe("Fehlermeldung beim Laden der Schrift").meta({...editable({translatable:true})}),
+      statistics: z.string().describe("Vorlage der Textstatistik").meta({...editable({translatable:true})}),
+      fontStyle: z.string().describe("Vorlage des Schriftzusatzes").meta({...editable({translatable:true})}),
+      lines: z.string().describe("Vorlage des Zeilenzusatzes").meta({...editable({translatable:true})}),
+      unknown: z.string().describe("Vorlage unbekannter Zeichen").meta({...editable({translatable:true})})
+    }).strict().describe("Textvorschau und Fehlermeldungen")),
+    motifs: inGroup("Motivarten",z.object({
+      catalogue: z.string().describe("Beschreibung der Katalogmotive").meta({...editable({translatable:true})}),
+      individual: z.string().describe("Beschreibung individueller Motive").meta({...editable({translatable:true})}),
+      storytelling: z.string().describe("Beschreibung der erzählten Motive").meta({...editable({translatable:true})})
+    }).strict().describe("Motivarten"))
+  }).strict().describe("Preisrechner")),
+  caseStudy: inGroup("Projektgeschichte",z.object({
+    labels: inGroup("Navigation und Abschnittsbezeichnungen",z.object({
+      breadcrumbs: z.string().describe("Bezeichnung des Brotkrumenpfads").meta({...editable({translatable:true})}),
+      home: z.string().describe("Text des Startseitenlinks").meta({...editable({translatable:true})}),
+      projects: z.string().describe("Text des Projektübersichtslinks").meta({...editable({translatable:true})}),
+      project: z.string().describe("Einleitung der Projektnummer").meta({...editable({translatable:true})}),
+      numbers: z.string().describe("Bezeichnung des Zahlenabschnitts").meta({...editable({translatable:true})}),
+      story: z.string().describe("Bezeichnung des Geschichtenabschnitts").meta({...editable({translatable:true})}),
+      press: z.string().describe("Bezeichnung des Presseabschnitts").meta({...editable({translatable:true})}),
+      nextProject: z.string().describe("Bisherige Einleitung des Folgeprojekts").meta({...editable({translatable:true,visibility:"advanced",help:"Nicht verwendet: Die vollständige Folgeprojektbezeichnung verwendet next.label."}),unused:"Die vollständige Folgeprojektbezeichnung verwendet next.label."}),
+      drones: z.string().describe("Einheit der Drohnenzahl").meta({...editable({translatable:true,visibility:"advanced",help:"Nicht verwendet: Die Drohnenzahl ist Bestandteil von next.label."}),unused:"Die Drohnenzahl ist Bestandteil von next.label."}),
+      inquiryButton: z.string().describe("Text des Anfrage-Buttons").meta({...editable({translatable:true})})
+    }).strict().describe("Navigation und Abschnittsbezeichnungen")),
+    formation: inGroup("Interaktive Formation",z.object({
+      label: z.string().describe("Abschnittsbezeichnung").meta({...editable({translatable:true})}),
+      replayButton: z.string().describe("Text des Wiederholen-Buttons").meta({...editable({translatable:true})}),
+      pauseMotion: z.string().describe("Button zum Pausieren").meta({...editable({translatable:true})}),
+      resumeMotion: z.string().describe("Button zum Fortsetzen").meta({...editable({translatable:true})}),
+      sourceCount: z.string().describe("Vorlage der Drohnenzahl aus der Show-Datei").meta({...editable({translatable:true})}),
+      detectedCount: z.string().describe("Vorlage der erkannten Drohnenzahl").meta({...editable({translatable:true})}),
+      unavailable: z.string().describe("Fehlermeldung").meta({...editable({translatable:true})})
+    }).strict().describe("Interaktive Formation")),
+    gallery: inGroup("Bilder der Nacht",z.object({
+      label: z.string().describe("Abschnittsbezeichnung").meta({...editable({translatable:true})}),
+      headingPrefix: z.string().describe("Bisheriger Anfang der Galerieüberschrift").meta({...editable({translatable:true,visibility:"advanced",help:"Nicht verwendet: Die vollständige Galerieüberschrift verwendet gallery.headline."}),unused:"Die vollständige Galerieüberschrift verwendet gallery.headline."}),
+      headingSuffix: z.string().describe("Bisheriges Ende der Galerieüberschrift").meta({...editable({translatable:true,visibility:"advanced",help:"Nicht verwendet: Die vollständige Galerieüberschrift verwendet gallery.headline."}),unused:"Die vollständige Galerieüberschrift verwendet gallery.headline."}),
+      previousButton: z.string().describe("Bezeichnung des Zurück-Buttons").meta({...editable({translatable:true})}),
+      nextButton: z.string().describe("Bezeichnung des Weiter-Buttons").meta({...editable({translatable:true})}),
+      headline: z.string().describe("Überschrift").meta({...editable({translatable:true})})
+    }).strict().describe("Bilder der Nacht")),
+    setlist: inGroup("Die Choreografie",z.object({
+      label: z.string().describe("Abschnittsbezeichnung").meta({...editable({translatable:true})}),
+      headline: z.string().describe("Überschrift").meta({...editable({translatable:true})})
+    }).strict().describe("Die Choreografie")),
+    media: inGroup("Video und Galerie",z.object({
+      playLabel: z.string().describe("Vorlage des Video-Buttons").meta({...editable({translatable:true})}),
+      galleryLabel: z.string().describe("Bezeichnung der Bildergalerie").meta({...editable({translatable:true})})
+    }).strict().describe("Video und Galerie")),
+    next: inGroup("Nächstes Projekt",z.object({
+      label: z.string().describe("Vorlage der Folgeprojektbezeichnung").meta({...editable({translatable:true})})
+    }).strict().describe("Nächstes Projekt"))
+  }).strict().describe("Projektgeschichte")),
+  components: inGroup("Wiederverwendbare Bausteine",z.object({
+    flightHero: inGroup("Showreel-Auftakt",z.object({
+      buttonText: z.string().describe("Button-Text").meta({...editable({translatable:true})}),
+      factsLabel: z.string().describe("Bezeichnung der Eckdaten").meta({...editable({translatable:true})})
+    }).strict().describe("Showreel-Auftakt")),
+    logoBar: inGroup("Kunden und Presse",z.object({
+      clientLabel: z.string().describe("Bezeichnung der Kundenlogos").meta({...editable({translatable:true})}),
+      pressLabel: z.string().describe("Bezeichnung der Presselogos").meta({...editable({translatable:true})})
+    }).strict().describe("Kunden und Presse")),
+    projectGrid: inGroup("Projektliste",z.object({
+      dronesLabel: z.string().describe("Einheit der Drohnenzahl").meta({...editable({translatable:true})}),
+      headline: z.string().describe("Überschrift").meta({...editable({translatable:true})})
+    }).strict().describe("Projektliste")),
+    team: inGroup("Teamliste",z.object({
+      placeholder: z.string().describe("Hinweis bei fehlendem Porträt").meta({...editable({translatable:true})})
+    }).strict().describe("Teamliste")),
+    logo: inGroup("Website-Logo",z.object({
+      homeLabel: z.string().describe("Bezeichnung des Logo-Links").meta({...editable({translatable:true})})
+    }).strict().describe("Website-Logo")),
+    video: inGroup("Videoplayer",z.object({
+      unavailable: z.string().describe("Fehlermeldung").meta({...editable({translatable:true})}),
+      buttonText: z.string().describe("Button-Text").meta({...editable({translatable:true})})
+    }).strict().describe("Videoplayer")),
+    faq: inGroup("Fragen zum Preis",z.object({
+      headline: z.string().describe("Überschrift").meta({...editable({translatable:true})})
+    }).strict().describe("Fragen zum Preis")),
+    postList: inGroup("Artikelliste",z.object({
+      headline: z.string().describe("Überschrift").meta({...editable({translatable:true})})
+    }).strict().describe("Artikelliste")),
+    comparison: inGroup("Vergleichstabelle",z.object({
+      scrollLabel: z.string().describe("Vorlage der Tabellenbezeichnung").meta({...editable({translatable:true})})
+    }).strict().describe("Vergleichstabelle"))
+  }).strict().describe("Wiederverwendbare Bausteine"))
+}).strict().describe("Gemeinsame Oberflächentexte").meta(editable({collection:{label:'Gemeinsame Oberflächentexte',title:[],icon:'mail',group:'Website-Daten',operations:['update'],placement:'frontend',i18n:{mode:'overlay'},policies:['flyingstars/media-ownership']}}));

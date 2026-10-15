@@ -7,7 +7,7 @@ const ui = await readUi('ui',locale);
 import { responsiveImage } from '../lib/media';
 import { videoPath } from '../lib/videos';
 interface Props { _locale?:string; locale?:string;  src: string; poster?: string; class?: string; loop?: boolean; label?: string; hero?: boolean; }
-const { src, poster, class: className = '', loop = false, label = ui.video.play, hero = false } = Astro.props;
+const { src, poster, class: className = '', loop = false, label = ui.components.video.buttonText, hero = false } = Astro.props;
 const markers=Object.fromEntries(Object.entries(Astro.props).filter(([key])=>key.startsWith('data-native-')));
 const image = poster ? await responsiveImage(poster, hero ? '100vw' : '(max-width: 760px) calc(100vw - 48px), 46vw') : undefined;
 ---
@@ -15,7 +15,7 @@ const image = poster ? await responsiveImage(poster, hero ? '100vw' : '(max-widt
   {image && <img {...markers} src={image.src} {...image.attributes} width={image.width} height={image.height} alt="" loading={hero ? 'eager' : 'lazy'} fetchpriority={hero ? 'high' : 'auto'} />}
   <video data-src={videoPath(src)} controls playsinline preload="none" loop={loop} aria-label={label} hidden></video>
   <button class="video-play btn" type="button" data-video-play aria-label={label}><span aria-hidden="true">▶</span> {label}</button>
-  <p class="video-error" role="status" hidden {...uiMarker('site/ui',["video","das_video_ist_gerade_nicht_verfugbar_bitte_versuch"])}>{ui.video.das_video_ist_gerade_nicht_verfugbar_bitte_versuch}</p>
+  <p class="video-error" role="status" hidden {...uiMarker('site/ui',["components", "video", "unavailable"])}>{ui.components.video.unavailable}</p>
 </div>
 <script>
   document.querySelectorAll<HTMLElement>('[data-video-player]').forEach((player) => {

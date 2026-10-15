@@ -2,7 +2,7 @@
 // unchanged; collection names are never inferred by pluralizing legacy prefixes.
 export const legacyCollections = Object.freeze({
  page:'pages',post:'posts',project:'projects',faq:'faq',
- package:'packages',screen:'screens',client:'clients',team:'team',media:'media',
+ extra:'extras',package:'packages',screen:'screens',client:'clients',team:'team',media:'media',
  translation:'translations',
 });
 export const siteAddresses = Object.freeze({

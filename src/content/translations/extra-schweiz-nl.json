@@ -1,0 +1,39 @@
+{
+  "sourceId": "extra/schweiz",
+  "locale": "nl",
+  "sourceHash": "d838fa91d7bd95f6c848fcd822d49c133da37e8303b092ee1797452b510f6da8",
+  "values": [
+    {
+      "path": [
+        "name"
+      ],
+      "text": "Zwitserland",
+      "reviewed": false,
+      "sourceHash": "12a3c868aebb375bed46658fc9707afafc1294b2c3fb8dc7a81ea252a9fad2fe"
+    },
+    {
+      "path": [
+        "title"
+      ],
+      "text": "Shows in Zwitserland",
+      "reviewed": false,
+      "sourceHash": "6de43bf0e3f68379cfd566a4a6b671415251d9a2922f909b78166978f13f885d"
+    },
+    {
+      "path": [
+        "text"
+      ],
+      "text": "BAZL aanvraag en douane verwerking voor onze e Wij nemen de vloot over.",
+      "reviewed": false,
+      "sourceHash": "88e217fadd437475be6f6a2a8f5c3bfb7fbfd689ba12a26e648a669bdbeea8bb"
+    },
+    {
+      "path": [
+        "priceNote"
+      ],
+      "text": "+1.900 € netto",
+      "reviewed": false,
+      "sourceHash": "e0e209001779189da27a3c6ea5cd9fab6be9429bf92cc07179861efc1a98d55c"
+    }
+  ]
+}

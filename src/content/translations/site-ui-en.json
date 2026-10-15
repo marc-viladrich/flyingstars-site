@@ -1,12 +1,15 @@
 {
   "sourceId": "site/ui",
   "locale": "en",
-  "sourceHash": "1acbe7ce95f716db04ec3854e67b703fba9a112f12dbcc5b9a2e9bad188c9a62",
+  "sourceHash": "1b99bed7ca1e9c2c19216716cac925f045501f858729a108fe23b3c25a217063",
   "values": [
     {
       "path": [
         "prices",
-        "design"
+        "included",
+        "items",
+        0,
+        "label"
       ],
       "text": "Design",
       "reviewed": false,
@@ -15,7 +18,10 @@
     {
       "path": [
         "prices",
-        "genehmigung"
+        "included",
+        "items",
+        1,
+        "label"
       ],
       "text": "Approval",
       "reviewed": false,
@@ -24,7 +30,10 @@
     {
       "path": [
         "prices",
-        "showtag"
+        "included",
+        "items",
+        3,
+        "label"
       ],
       "text": "Show Day",
       "reviewed": false,
@@ -33,16 +42,8 @@
     {
       "path": [
         "prices",
-        "indoor"
-      ],
-      "text": "Indoors",
-      "reviewed": false,
-      "sourceHash": "a9cb38b7dd3c8aa64101d74c4f35078242423ff3a7a18e20fcfae693e3bcbec1"
-    },
-    {
-      "path": [
-        "prices",
-        "show_anfragen"
+        "cta",
+        "buttonText"
       ],
       "text": "Request a show",
       "reviewed": false,
@@ -51,7 +52,8 @@
     {
       "path": [
         "calculator",
-        "drohnen"
+        "controls",
+        "dronesLabel"
       ],
       "text": "Drohnen",
       "reviewed": false,
@@ -59,8 +61,9 @@
     },
     {
       "path": [
-        "packageDetails",
-        "pakete"
+        "prices",
+        "packages",
+        "label"
       ],
       "text": "Packs",
       "reviewed": false,
@@ -68,8 +71,10 @@
     },
     {
       "path": [
-        "packageDetails",
-        "drohnen_2"
+        "prices",
+        "packages",
+        "price",
+        "countLabel"
       ],
       "text": "Drohnen",
       "reviewed": false,
@@ -78,7 +83,8 @@
     {
       "path": [
         "caseStudy",
-        "drohnen"
+        "labels",
+        "drones"
       ],
       "text": "Drohnen",
       "reviewed": false,
@@ -87,7 +93,8 @@
     {
       "path": [
         "caseStudy",
-        "show_anfragen"
+        "labels",
+        "inquiryButton"
       ],
       "text": "Request a show",
       "reviewed": false,
@@ -95,8 +102,9 @@
     },
     {
       "path": [
+        "components",
         "projectGrid",
-        "drohnen"
+        "dronesLabel"
       ],
       "text": "Drohnen",
       "reviewed": false,
@@ -105,7 +113,8 @@
     {
       "path": [
         "base",
-        "zum_inhalt_springen"
+        "navigation",
+        "skipLink"
       ],
       "text": "Jump to content",
       "reviewed": true,
@@ -114,7 +123,8 @@
     {
       "path": [
         "base",
-        "hauptnavigation"
+        "navigation",
+        "ariaLabel"
       ],
       "text": "Main navigation",
       "reviewed": false,
@@ -123,7 +133,8 @@
     {
       "path": [
         "base",
-        "sprache_deutsch"
+        "navigation",
+        "germanLanguage"
       ],
       "text": "Language in German",
       "reviewed": false,
@@ -132,7 +143,8 @@
     {
       "path": [
         "base",
-        "bewegung_pausieren"
+        "navigation",
+        "pauseMotion"
       ],
       "text": "Pausing movement",
       "reviewed": false,
@@ -141,7 +153,8 @@
     {
       "path": [
         "base",
-        "menu_offnen"
+        "navigation",
+        "openMenu"
       ],
       "text": "Open menu",
       "reviewed": false,
@@ -150,7 +163,8 @@
     {
       "path": [
         "base",
-        "menu_schliessen"
+        "navigation",
+        "closeMenu"
       ],
       "text": "Close menu",
       "reviewed": false,
@@ -159,7 +173,8 @@
     {
       "path": [
         "base",
-        "mobile_navigation"
+        "navigation",
+        "mobileLabel"
       ],
       "text": "Mobile navigation",
       "reviewed": false,
@@ -168,7 +183,8 @@
     {
       "path": [
         "base",
-        "drohnenshows_seit_2022_uber_150_shows_in_deutschla"
+        "footer",
+        "intro"
       ],
       "text": "Drone shows since 2022. Over 150 shows in Germany and Europe.",
       "reviewed": true,
@@ -177,7 +193,8 @@
     {
       "path": [
         "base",
-        "rechtliches"
+        "footer",
+        "legalLabel"
       ],
       "text": "Legal basis",
       "reviewed": false,
@@ -186,7 +203,8 @@
     {
       "path": [
         "base",
-        "website_vorschau"
+        "footer",
+        "previewLabel"
       ],
       "text": "Website preview",
       "reviewed": true,
@@ -195,7 +213,8 @@
     {
       "path": [
         "base",
-        "text_100_okostrom"
+        "footer",
+        "energyLabel"
       ],
       "text": "100 % green electricity",
       "reviewed": true,
@@ -204,7 +223,8 @@
     {
       "path": [
         "base",
-        "language"
+        "navigation",
+        "languageLabel"
       ],
       "text": "Language",
       "reviewed": false,
@@ -213,7 +233,8 @@
     {
       "path": [
         "base",
-        "motionResume"
+        "navigation",
+        "resumeMotion"
       ],
       "text": "Continuing movement",
       "reviewed": false,
@@ -222,7 +243,8 @@
     {
       "path": [
         "prices",
-        "immer_inklusive"
+        "included",
+        "label"
       ],
       "text": "Always included",
       "reviewed": false,
@@ -231,7 +253,8 @@
     {
       "path": [
         "prices",
-        "wofur_du_eigentlich_bezahlst"
+        "included",
+        "headline"
       ],
       "text": "What you're actually paying for.",
       "reviewed": false,
@@ -240,7 +263,8 @@
     {
       "path": [
         "prices",
-        "der_grosste_aufwand_einer_drohnenshow_steckt_nicht"
+        "included",
+        "intro"
       ],
       "text": "The greatest effort of a drone show is not in the drones, but in the design, approval and a smooth implementation. This is included in every package:",
       "reviewed": false,
@@ -249,7 +273,10 @@
     {
       "path": [
         "prices",
-        "programmierung_fur_deinen_ort"
+        "included",
+        "items",
+        0,
+        "title"
       ],
       "text": "Programming for your place",
       "reviewed": false,
@@ -258,7 +285,10 @@
     {
       "path": [
         "prices",
-        "deine_show_wird_fur_deinen_showbereich_deine_musik"
+        "included",
+        "items",
+        0,
+        "text"
       ],
       "text": "Your show is programmed for your show area, your music and your subjects.",
       "reviewed": false,
@@ -267,7 +297,10 @@
     {
       "path": [
         "prices",
-        "genehmigung_sicherheitskonzept"
+        "included",
+        "items",
+        1,
+        "title"
       ],
       "text": "Approval and safety concept",
       "reviewed": false,
@@ -276,7 +309,10 @@
     {
       "path": [
         "prices",
-        "luftrechtliche_genehmigung_sicherheitszonen_und_ha"
+        "included",
+        "items",
+        1,
+        "text"
       ],
       "text": "Aircraft approval, safety zones and liability insurance are included in each package.",
       "reviewed": false,
@@ -285,7 +321,10 @@
     {
       "path": [
         "prices",
-        "freigabe"
+        "included",
+        "items",
+        2,
+        "label"
       ],
       "text": "Release",
       "reviewed": false,
@@ -294,7 +333,10 @@
     {
       "path": [
         "prices",
-        "freigabe_vorab"
+        "included",
+        "items",
+        2,
+        "title"
       ],
       "text": "Release in advance",
       "reviewed": false,
@@ -303,7 +345,10 @@
     {
       "path": [
         "prices",
-        "deine_eigenen_motive_siehst_du_vor_der_show_und_gi"
+        "included",
+        "items",
+        2,
+        "text"
       ],
       "text": "You see your own motives before the Show and release them – from HORIZON as a video preview.",
       "reviewed": false,
@@ -312,7 +357,10 @@
     {
       "path": [
         "prices",
-        "team_vor_ort"
+        "included",
+        "items",
+        3,
+        "title"
       ],
       "text": "Team on site",
       "reviewed": false,
@@ -321,7 +369,10 @@
     {
       "path": [
         "prices",
-        "pilot_innen_und_techniker_innen_bauen_in_rund_drei"
+        "included",
+        "items",
+        3,
+        "text"
       ],
       "text": "Pilot:inside and technician:inside build up in about three hours and fly your show.",
       "reviewed": false,
@@ -330,7 +381,8 @@
     {
       "path": [
         "prices",
-        "extras_upgrades"
+        "extras",
+        "label"
       ],
       "text": "Extras & Upgrades",
       "reviewed": false,
@@ -339,7 +391,8 @@
     {
       "path": [
         "prices",
-        "mehr_geht_immer"
+        "extras",
+        "headline"
       ],
       "text": "More is always possible.",
       "reviewed": false,
@@ -348,7 +401,8 @@
     {
       "path": [
         "prices",
-        "fur_besondere_anforderungen_erweitern_wir_jedes_pa"
+        "extras",
+        "intro"
       ],
       "text": "For special requirements, we extend each package. The Prices standing n in advance in the offer.",
       "reviewed": false,
@@ -357,187 +411,8 @@
     {
       "path": [
         "prices",
-        "express"
-      ],
-      "text": "Express",
-      "reviewed": false,
-      "sourceHash": "572a14164bde322ae7c975fa7af893bd515736075d4f8521fec88a0e1774d923"
-    },
-    {
-      "path": [
-        "prices",
-        "show_in_unter_zwei_wochen"
-      ],
-      "text": "Show in under two weeks",
-      "reviewed": false,
-      "sourceHash": "8fd681e7bfb0c3bbb80c306ce2509c9b018189899b71e72ec7e6af2a2a8ba57b"
-    },
-    {
-      "path": [
-        "prices",
-        "wir_priorisieren_dein_projekt_bei_design_und_geneh"
-      ],
-      "text": "We prioritize your project in design and approval.",
-      "reviewed": false,
-      "sourceHash": "29485798739631a0d87af28db777880959f6419dae2527bbd4041dd5a884b57f"
-    },
-    {
-      "path": [
-        "prices",
-        "aufpreis_nach_aufwand"
-      ],
-      "text": "Additional charge by effort",
-      "reviewed": false,
-      "sourceHash": "6ef5771faa1feb0d7f136cb57364df7f903bf980059a471ce8b41674e8e6db28"
-    },
-    {
-      "path": [
-        "prices",
-        "film"
-      ],
-      "text": "Film",
-      "reviewed": false,
-      "sourceHash": "113af97940c30181e3251e51d6d091d315c350bdfc3a3f2e0fb09d59ee6ed4e8"
-    },
-    {
-      "path": [
-        "prices",
-        "professionelle_filmaufnahmen"
-      ],
-      "text": "Professional footage",
-      "reviewed": false,
-      "sourceHash": "029ce9b24a41aab032254ff1366a4d824e425759cb2a553c2a1f3eb1808cc3c3"
-    },
-    {
-      "path": [
-        "prices",
-        "rohaufnahmen_mit_kameradrohne_fur_aftermovie_und_s"
-      ],
-      "text": "Raw footage with camera drone for aftermovie and social media.",
-      "reviewed": false,
-      "sourceHash": "fce30ff388f69640732b88abaf5d2e53e55dbd0de033fe012c6e5bd185942230"
-    },
-    {
-      "path": [
-        "prices",
-        "behorden"
-      ],
-      "text": "Authorities",
-      "reviewed": false,
-      "sourceHash": "3a764f1fad5736eb9b085a5f699123ae6d68976907bf789812b6f708ca67b770"
-    },
-    {
-      "path": [
-        "prices",
-        "erweiterter_behordensupport"
-      ],
-      "text": "Extended government support",
-      "reviewed": false,
-      "sourceHash": "02d95da258c0cda468bbb7058924563d6cf6a739b4d6d27a9adf87de7b845071"
-    },
-    {
-      "path": [
-        "prices",
-        "wir_ubernehmen_die_komplette_kommunikation_mit_amt"
-      ],
-      "text": "We take over the complete communication with offices and authorities.",
-      "reviewed": false,
-      "sourceHash": "a7d3a55ac7fa83f0d1303b8592fbe69cf32b56bad1fa1ea9c4c38e16a61d07bc"
-    },
-    {
-      "path": [
-        "prices",
-        "preis_auf_anfrage"
-      ],
-      "text": "Price on request",
-      "reviewed": false,
-      "sourceHash": "3ca83ec890eca6bf5b56f1e7f07bb74d6f1cc66cce889eebfdc9188fc329fa02"
-    },
-    {
-      "path": [
-        "prices",
-        "sondergenehmigung"
-      ],
-      "text": "Specific authorisation",
-      "reviewed": false,
-      "sourceHash": "2aa5f09480705100bd083bdf72471c221e914928b76adef24054ad28b5a75fbb"
-    },
-    {
-      "path": [
-        "prices",
-        "kontrollzonen_flughafennahe"
-      ],
-      "text": "Control zones and airport proximity",
-      "reviewed": false,
-      "sourceHash": "3d007f1abcd825337fc13d94dc55eb9e6c1893d8aa8946a2dd5c56780a32c100"
-    },
-    {
-      "path": [
-        "prices",
-        "besondere_flachen_brauchen_sondergenehmigungen_die"
-      ],
-      "text": "Special areas need special permits – which Hold n we enter.",
-      "reviewed": false,
-      "sourceHash": "1443d094c05f443a6ce14fa5dfb35252d3f6ea1f205eb90846346fb10c56d971"
-    },
-    {
-      "path": [
-        "prices",
-        "indoor_drohnenshows"
-      ],
-      "text": "Indoor drone shows",
-      "reviewed": false,
-      "sourceHash": "52c31eac7f79333cb434d7a6a8bf9b5b00b6e713299110e99ab12392ffbb795a"
-    },
-    {
-      "path": [
-        "prices",
-        "fur_messen_hallen_und_buhnen_jede_indoor_show_kalk"
-      ],
-      "text": "For fairs, halls and stages. Jed e Indoor show we calculate individually.",
-      "reviewed": false,
-      "sourceHash": "25577757b17d34d8c764bd006fa90d8bf8f6e339d2e1cfdbdaefd195f68cc8f0"
-    },
-    {
-      "path": [
-        "prices",
-        "individuelles_angebot"
-      ],
-      "text": "Individual offer",
-      "reviewed": false,
-      "sourceHash": "49e75bc0949ed43bf2681adf44e01851b908e1e74e0d4988da1e03c2833fd859"
-    },
-    {
-      "path": [
-        "prices",
-        "schweiz"
-      ],
-      "text": "Switzerland",
-      "reviewed": false,
-      "sourceHash": "12a3c868aebb375bed46658fc9707afafc1294b2c3fb8dc7a81ea252a9fad2fe"
-    },
-    {
-      "path": [
-        "prices",
-        "shows_in_der_schweiz"
-      ],
-      "text": "Shows in Switzerland",
-      "reviewed": false,
-      "sourceHash": "6de43bf0e3f68379cfd566a4a6b671415251d9a2922f909b78166978f13f885d"
-    },
-    {
-      "path": [
-        "prices",
-        "bazl_antrag_und_zollabwicklung_fur_unsere_flotte_u"
-      ],
-      "text": "BAZL application and customs processing for our e We take over the fleet.",
-      "reviewed": false,
-      "sourceHash": "88e217fadd437475be6f6a2a8f5c3bfb7fbfd689ba12a26e648a669bdbeea8bb"
-    },
-    {
-      "path": [
-        "prices",
-        "preisversprechen"
+        "promise",
+        "label"
       ],
       "text": "Price promises",
       "reviewed": false,
@@ -546,7 +421,8 @@
     {
       "path": [
         "prices",
-        "gunstigeres_angebot_mit_gleicher_leistung_wir_unte"
+        "promise",
+        "headline"
       ],
       "text": "Cheaper offer with the same performance? We Undercut it.",
       "reviewed": false,
@@ -555,7 +431,8 @@
     {
       "path": [
         "prices",
-        "schick_uns_das_vergleichsangebot_bei_gleichem_leis"
+        "promise",
+        "text"
       ],
       "text": "Send us the comparison offer – for the same range of services we will make you a better price.",
       "reviewed": false,
@@ -564,7 +441,8 @@
     {
       "path": [
         "prices",
-        "angebot_prufen_lassen"
+        "promise",
+        "buttonText"
       ],
       "text": "Check the offer",
       "reviewed": false,
@@ -573,7 +451,8 @@
     {
       "path": [
         "prices",
-        "fragen_zum_preis"
+        "faq",
+        "label"
       ],
       "text": "Questions about the price",
       "reviewed": false,
@@ -582,7 +461,8 @@
     {
       "path": [
         "prices",
-        "was_kostet_eine_drohnenshow_wirklich"
+        "faq",
+        "headline"
       ],
       "text": "What Does a Drone Show Really Cost?",
       "reviewed": false,
@@ -591,7 +471,8 @@
     {
       "path": [
         "prices",
-        "paketpreis_plus_anfahrt_mehr_nicht_hier_die_detail"
+        "faq",
+        "intro"
       ],
       "text": "Package price plus travel – nothing more. Hie r di e Details which: in de n Most n Conversations appear.",
       "reviewed": false,
@@ -600,7 +481,8 @@
     {
       "path": [
         "prices",
-        "videocall_buchen"
+        "faq",
+        "buttonText"
       ],
       "text": "Booking video call",
       "reviewed": false,
@@ -609,7 +491,10 @@
     {
       "path": [
         "prices",
-        "was_kommt_zum_paketpreis_noch_dazu"
+        "faq",
+        "items",
+        0,
+        "question"
       ],
       "text": "What else is added to the package price?",
       "reviewed": false,
@@ -618,7 +503,10 @@
     {
       "path": [
         "prices",
-        "nur_die_anfahrt_und_die_mehrwertsteuer_die_anfahrt"
+        "faq",
+        "items",
+        0,
+        "answer"
       ],
       "text": "Only those approach and which: VAT. We calculate the journey from Gelsenkirchen by route, team size and necessary overnight stays – it is transparent in the offer.",
       "reviewed": false,
@@ -627,7 +515,10 @@
     {
       "path": [
         "prices",
-        "wie_funktioniert_die_bezahlung"
+        "faq",
+        "items",
+        1,
+        "question"
       ],
       "text": "How does the payment work?",
       "reviewed": false,
@@ -636,7 +527,10 @@
     {
       "path": [
         "prices",
-        "mit_der_auftragsbestatigung_wird_eine_anzahlung_vo"
+        "faq",
+        "items",
+        1,
+        "answer"
       ],
       "text": "With the order confirmation, a deposit of 30% is due – then design and approval start. The rest is transferred within two weeks of the show.",
       "reviewed": false,
@@ -645,7 +539,10 @@
     {
       "path": [
         "prices",
-        "was_passiert_wenn_die_show_ausfallt"
+        "faq",
+        "items",
+        2,
+        "question"
       ],
       "text": "What happens if the show goes down?",
       "reviewed": false,
@@ -654,7 +551,10 @@
     {
       "path": [
         "prices",
-        "ist_schlechtes_wetter_absehbar_verschieben_wir_ohn"
+        "faq",
+        "items",
+        2,
+        "answer"
       ],
       "text": "If bad weather is foreseeable, we postpone without additional charge – only an already incurred journey will be charged. The show is completely out , we keep the deposit, because design and approval are then already done.",
       "reviewed": false,
@@ -663,7 +563,10 @@
     {
       "path": [
         "prices",
-        "welches_paket_passt_zu_mir"
+        "faq",
+        "items",
+        3,
+        "question"
       ],
       "text": "Which package suits me?",
       "reviewed": false,
@@ -672,7 +575,10 @@
     {
       "path": [
         "prices",
-        "als_faustregel_spark_bis_150_drohnen_mit_motiven_a"
+        "faq",
+        "items",
+        3,
+        "answer"
       ],
       "text": "As a rule of thumb: SPARK up to 150 drones with motifs from our catalogue, HORIZON for individual animations and logos, ODYSSEY for large campaigns with 3D and storytelling. If in doubt, we will advise you in the video call.",
       "reviewed": false,
@@ -681,7 +587,10 @@
     {
       "path": [
         "prices",
-        "geht_es_auch_grosser"
+        "faq",
+        "items",
+        4,
+        "question"
       ],
       "text": "Does it go bigger?",
       "reviewed": false,
@@ -690,7 +599,10 @@
     {
       "path": [
         "prices",
-        "ja_unsere_bisher_grosste_show_hatte_600_drohnen_au"
+        "faq",
+        "items",
+        4,
+        "answer"
       ],
       "text": "Yes . Our biggest show to date had 600 drones – we also plan 1,000 and more together with you and confirm n the fleet in the offer.",
       "reviewed": false,
@@ -699,7 +611,10 @@
     {
       "path": [
         "prices",
-        "kostet_eine_show_im_ausland_mehr"
+        "faq",
+        "items",
+        5,
+        "question"
       ],
       "text": "Does a show abroad cost more?",
       "reviewed": false,
@@ -708,7 +623,10 @@
     {
       "path": [
         "prices",
-        "in_der_eu_planen_wir_mit_denselben_paketen_je_nach"
+        "faq",
+        "items",
+        5,
+        "answer"
       ],
       "text": "In the EU We plan with same packages; depending on the country, application deadlines, a longer journey and, if applicable, Application costs for this – everything transparent in the offer. For Switzerland, an additional € 1,900 net is incurred for BAZL application and customs.",
       "reviewed": false,
@@ -717,7 +635,8 @@
     {
       "path": [
         "prices",
-        "paket_gefunden_erzahl_uns_von_deinem_termin"
+        "cta",
+        "headline"
       ],
       "text": "Package found? Tell us from your Date.",
       "reviewed": false,
@@ -726,7 +645,8 @@
     {
       "path": [
         "prices",
-        "wir_melden_uns_innerhalb_von_48_stunden_meist_deut"
+        "cta",
+        "text"
       ],
       "text": "We report within 48 hours – usually much faster.",
       "reviewed": false,
@@ -734,26 +654,9 @@
     },
     {
       "path": [
-        "prices",
-        "text_900_bei_odyssey_inklusive"
-      ],
-      "text": "900 € · with ODYSSEY included",
-      "reviewed": false,
-      "sourceHash": "1ddec6f32b507c28f342f24672fd847e84ba8ce289a59554bee3f593a846e08c"
-    },
-    {
-      "path": [
-        "prices",
-        "text_1_900_netto"
-      ],
-      "text": "+1.900 € net",
-      "reviewed": false,
-      "sourceHash": "e0e209001779189da27a3c6ea5cd9fab6be9429bf92cc07179861efc1a98d55c"
-    },
-    {
-      "path": [
         "configurator",
-        "vorschau_der_show"
+        "preview",
+        "ariaLabel"
       ],
       "text": "Preview of the show",
       "reviewed": false,
@@ -762,7 +665,8 @@
     {
       "path": [
         "configurator",
-        "die_vorschau_ist_gerade_nicht_verfugbar_du_kannst_"
+        "preview",
+        "unavailable"
       ],
       "text": "The preview is not available right now. You can still choose and request a package.",
       "reviewed": false,
@@ -771,7 +675,8 @@
     {
       "path": [
         "configurator",
-        "bilder_der_show"
+        "preview",
+        "galleryLabel"
       ],
       "text": "Pictures of the show",
       "reviewed": false,
@@ -780,7 +685,8 @@
     {
       "path": [
         "configurator",
-        "vorheriges_bild"
+        "preview",
+        "previousButton"
       ],
       "text": "Previous image",
       "reviewed": false,
@@ -789,7 +695,8 @@
     {
       "path": [
         "configurator",
-        "show_von_vorn_ansehen"
+        "preview",
+        "restartButton"
       ],
       "text": "Show from before View n",
       "reviewed": false,
@@ -798,7 +705,8 @@
     {
       "path": [
         "configurator",
-        "nachstes_bild"
+        "preview",
+        "nextButton"
       ],
       "text": "Next picture",
       "reviewed": false,
@@ -807,7 +715,8 @@
     {
       "path": [
         "configurator",
-        "wie_aufwendig"
+        "steps",
+        "effortLabel"
       ],
       "text": "How Elaborate?",
       "reviewed": false,
@@ -816,7 +725,8 @@
     {
       "path": [
         "configurator",
-        "euer_text"
+        "ownText",
+        "label"
       ],
       "text": "Your text",
       "reviewed": false,
@@ -825,7 +735,8 @@
     {
       "path": [
         "configurator",
-        "optional_ohne_aufpreis"
+        "ownText",
+        "optionalHint"
       ],
       "text": "(optional, without additional charge)",
       "reviewed": false,
@@ -834,7 +745,8 @@
     {
       "path": [
         "configurator",
-        "z_b_anna_ben"
+        "ownText",
+        "placeholder"
       ],
       "text": "z B. Anna & Ben",
       "reviewed": false,
@@ -843,7 +755,8 @@
     {
       "path": [
         "configurator",
-        "erscheint_als_finale_der_show_zahlt_als_eines_eure"
+        "ownText",
+        "hint"
       ],
       "text": "Appears as the finale of the show . Count as one of your own elements and do not change the price.",
       "reviewed": false,
@@ -852,7 +765,8 @@
     {
       "path": [
         "configurator",
-        "drohnen"
+        "result",
+        "dronesLabel"
       ],
       "text": "Drones ·",
       "reviewed": false,
@@ -861,7 +775,8 @@
     {
       "path": [
         "configurator",
-        "netto_zzgl_anfahrt"
+        "result",
+        "priceNote"
       ],
       "text": "· Net plus Directions",
       "reviewed": false,
@@ -870,7 +785,8 @@
     {
       "path": [
         "configurator",
-        "enthalten"
+        "result",
+        "includedLabel"
       ],
       "text": "Contains:",
       "reviewed": false,
@@ -879,7 +795,8 @@
     {
       "path": [
         "configurator",
-        "mit_dieser_show_anfragen"
+        "result",
+        "buttonText"
       ],
       "text": "With these r Show request",
       "reviewed": false,
@@ -888,7 +805,8 @@
     {
       "path": [
         "configurator",
-        "prototyp_die_vorschau_zeigt_beispiele_den_ablauf_e"
+        "result",
+        "prototypeHint"
       ],
       "text": "Prototype: The preview shows examples, we develop the course of your show together. The Assignment to the packages is from the Package descriptions derived and not yet confirmed by FlyingStars. All prices are entry prices.",
       "reviewed": false,
@@ -897,7 +815,8 @@
     {
       "path": [
         "configurator",
-        "anfragen"
+        "result",
+        "shortButtonText"
       ],
       "text": "Requests",
       "reviewed": false,
@@ -906,7 +825,8 @@
     {
       "path": [
         "configurator",
-        "der_show_konfigurator_benotigt_javascript_die_pake"
+        "fallback",
+        "noScript"
       ],
       "text": "The show configurator requires JavaScript. The Packages can be found under",
       "reviewed": false,
@@ -915,7 +835,8 @@
     {
       "path": [
         "configurator",
-        "preise"
+        "fallback",
+        "pricesLink"
       ],
       "text": "Prices",
       "reviewed": false,
@@ -924,6 +845,7 @@
     {
       "path": [
         "configurator",
+        "textStyles",
         "script"
       ],
       "text": "Written form",
@@ -933,6 +855,7 @@
     {
       "path": [
         "configurator",
+        "textStyles",
         "print"
       ],
       "text": "Printed matter",
@@ -942,6 +865,7 @@
     {
       "path": [
         "configurator",
+        "textStyles",
         "initials"
       ],
       "text": "Initials",
@@ -951,6 +875,7 @@
     {
       "path": [
         "configurator",
+        "result",
         "fromPrice"
       ],
       "text": "from {price} €",
@@ -960,6 +885,7 @@
     {
       "path": [
         "configurator",
+        "result",
         "meta"
       ],
       "text": "{count} Drones · {duration} · net plus Directions",
@@ -969,6 +895,7 @@
     {
       "path": [
         "configurator",
+        "result",
         "includes"
       ],
       "text": "Contains: {text}.",
@@ -978,6 +905,7 @@
     {
       "path": [
         "configurator",
+        "preview",
         "ownText"
       ],
       "text": "Your text",
@@ -987,6 +915,7 @@
     {
       "path": [
         "configurator",
+        "preview",
         "captionSpark"
       ],
       "text": "Your text in the sky",
@@ -996,6 +925,7 @@
     {
       "path": [
         "configurator",
+        "preview",
         "captionHorizon"
       ],
       "text": "Light writes your text",
@@ -1005,6 +935,7 @@
     {
       "path": [
         "configurator",
+        "preview",
         "captionOdyssey"
       ],
       "text": "Your text",
@@ -1014,7 +945,8 @@
     {
       "path": [
         "configurator",
-        "summaryOccasion"
+        "summary",
+        "occasion"
       ],
       "text": "Reason: {occasion}",
       "reviewed": false,
@@ -1023,7 +955,8 @@
     {
       "path": [
         "configurator",
-        "summaryMotifs"
+        "summary",
+        "motifs"
       ],
       "text": "Example motifs: {motifs}",
       "reviewed": false,
@@ -1032,7 +965,8 @@
     {
       "path": [
         "configurator",
-        "summaryText"
+        "summary",
+        "text"
       ],
       "text": "Own text: “{text}” ({style})",
       "reviewed": false,
@@ -1041,7 +975,8 @@
     {
       "path": [
         "configurator",
-        "summaryEffort"
+        "summary",
+        "effort"
       ],
       "text": "Cost: {effort} ({name}, {price} net, entry price according to configurator)",
       "reviewed": false,
@@ -1050,7 +985,8 @@
     {
       "path": [
         "blog",
-        "alle_beitrage_in_chronologischer_reihenfolge_neues"
+        "index",
+        "description"
       ],
       "text": "All contributions in chronological order, latest first. Background, projects and insights.",
       "reviewed": false,
@@ -1059,7 +995,8 @@
     {
       "path": [
         "calculator",
-        "animation_pausieren"
+        "hero",
+        "pauseMotion"
       ],
       "text": "Pause animation",
       "reviewed": false,
@@ -1068,7 +1005,8 @@
     {
       "path": [
         "calculator",
-        "preise_pakete"
+        "hero",
+        "label"
       ],
       "text": "Prices & Packages",
       "reviewed": false,
@@ -1077,7 +1015,8 @@
     {
       "path": [
         "calculator",
-        "ab"
+        "controls",
+        "fromLabel"
       ],
       "text": "off",
       "reviewed": false,
@@ -1086,7 +1025,8 @@
     {
       "path": [
         "calculator",
-        "netto_zzgl_anfahrt"
+        "controls",
+        "priceNote"
       ],
       "text": "net plus Directions",
       "reviewed": false,
@@ -1095,7 +1035,8 @@
     {
       "path": [
         "calculator",
-        "anzahl_drohnen"
+        "controls",
+        "countLabel"
       ],
       "text": "Number of drones",
       "reviewed": false,
@@ -1104,114 +1045,7 @@
     {
       "path": [
         "calculator",
-        "paket"
-      ],
-      "text": "Package",
-      "reviewed": false,
-      "sourceHash": "b58bd16905d210ddad9d1b562a7cbc34b21d106d91ea9aa7bb7fe2aa492d0ff0"
-    },
-    {
-      "path": [
-        "calculator",
-        "dein_text_am_himmel"
-      ],
-      "text": "Your text in the sky",
-      "reviewed": false,
-      "sourceHash": "116fd3e59ba3da5a409a07e70c176b29e4802261cc0f4c675685ec7146b4b0e6"
-    },
-    {
-      "path": [
-        "calculator",
-        "optional"
-      ],
-      "text": "optional",
-      "reviewed": false,
-      "sourceHash": "ec91fdd9256cb75ae611249b50cb7eb16533f0fa91b86239ec1d439a1ea033b8"
-    },
-    {
-      "path": [
-        "calculator",
-        "z_b_anna_tom"
-      ],
-      "text": "e.g. ANNA & TOM",
-      "reviewed": false,
-      "sourceHash": "993711ca02b91ae3886c40e9c1152da202b83dca92c32645dee5d862b608df76"
-    },
-    {
-      "path": [
-        "calculator",
-        "wir_zeigen_ihn_mit_deiner_drohnenzahl_in_unserer_s"
-      ],
-      "text": "We show him with yours r number of drones in our show font.",
-      "reviewed": false,
-      "sourceHash": "17d4880db9dae8227ac07272e45d2fed53bda37d963bbf7b562c278453dbc532"
-    },
-    {
-      "path": [
-        "calculator",
-        "dauer"
-      ],
-      "text": "Duration",
-      "reviewed": false,
-      "sourceHash": "668cbe316167110bd88a29f03832fab7cc99ed14a96900e3be89270fc84c82a4"
-    },
-    {
-      "path": [
-        "calculator",
-        "ca_13_min"
-      ],
-      "text": "ca. 13 minutes",
-      "reviewed": false,
-      "sourceHash": "24841c854c10df8f1c6d0116f89defa572bcc56f6bc4d0b637cc995862d28fa1"
-    },
-    {
-      "path": [
-        "calculator",
-        "mit_200_drohnen_anfragen"
-      ],
-      "text": "Request with 200 drones",
-      "reviewed": false,
-      "sourceHash": "ba478c03c27fbb24aaea92bf6caf7f6dcc147db82122bf38f0662db790564564"
-    },
-    {
-      "path": [
-        "calculator",
-        "pakete_vergleichen"
-      ],
-      "text": "Compare packages",
-      "reviewed": false,
-      "sourceHash": "3f387f2739970e4b6784c3ef3972046c5c9ad38c9743e6b30b91dfc2b69bcdce"
-    },
-    {
-      "path": [
-        "calculator",
-        "der_interaktive_preisrechner_benotigt_javascript_d"
-      ],
-      "text": "The interactive price calculator requires JavaScript. The Package prices below Applicable n for the Basic drone count.",
-      "reviewed": false,
-      "sourceHash": "7e97d4175d7aa07180f1e1b82d51a56c77395ce9241564f29ab6bf66933aacaf"
-    },
-    {
-      "path": [
-        "calculator",
-        "fromPrice"
-      ],
-      "text": "from {price}",
-      "reviewed": false,
-      "sourceHash": "5ebadbff01429fedc191512635d408d0f75837b41e4afa183a2380efeb2d2688"
-    },
-    {
-      "path": [
-        "calculator",
-        "net"
-      ],
-      "text": "net plus Directions",
-      "reviewed": false,
-      "sourceHash": "d91c1bc409559ac56094a7cf765e7b795a2ff45f30ff4ce44105661e01cfe0d9"
-    },
-    {
-      "path": [
-        "calculator",
+        "controls",
         "packageLabel"
       ],
       "text": "Package",
@@ -1221,7 +1055,48 @@
     {
       "path": [
         "calculator",
-        "duration"
+        "ownText",
+        "label"
+      ],
+      "text": "Your text in the sky",
+      "reviewed": false,
+      "sourceHash": "116fd3e59ba3da5a409a07e70c176b29e4802261cc0f4c675685ec7146b4b0e6"
+    },
+    {
+      "path": [
+        "calculator",
+        "ownText",
+        "optionalHint"
+      ],
+      "text": "optional",
+      "reviewed": false,
+      "sourceHash": "ec91fdd9256cb75ae611249b50cb7eb16533f0fa91b86239ec1d439a1ea033b8"
+    },
+    {
+      "path": [
+        "calculator",
+        "ownText",
+        "placeholder"
+      ],
+      "text": "e.g. ANNA & TOM",
+      "reviewed": false,
+      "sourceHash": "993711ca02b91ae3886c40e9c1152da202b83dca92c32645dee5d862b608df76"
+    },
+    {
+      "path": [
+        "calculator",
+        "ownText",
+        "hint"
+      ],
+      "text": "We show him with yours r number of drones in our show font.",
+      "reviewed": false,
+      "sourceHash": "17d4880db9dae8227ac07272e45d2fed53bda37d963bbf7b562c278453dbc532"
+    },
+    {
+      "path": [
+        "calculator",
+        "result",
+        "durationLabel"
       ],
       "text": "Duration",
       "reviewed": false,
@@ -1230,7 +1105,88 @@
     {
       "path": [
         "calculator",
-        "motifs"
+        "result",
+        "initialDuration"
+      ],
+      "text": "ca. 13 minutes",
+      "reviewed": false,
+      "sourceHash": "24841c854c10df8f1c6d0116f89defa572bcc56f6bc4d0b637cc995862d28fa1"
+    },
+    {
+      "path": [
+        "calculator",
+        "result",
+        "initialButton"
+      ],
+      "text": "Request with 200 drones",
+      "reviewed": false,
+      "sourceHash": "ba478c03c27fbb24aaea92bf6caf7f6dcc147db82122bf38f0662db790564564"
+    },
+    {
+      "path": [
+        "calculator",
+        "result",
+        "compareButton"
+      ],
+      "text": "Compare packages",
+      "reviewed": false,
+      "sourceHash": "3f387f2739970e4b6784c3ef3972046c5c9ad38c9743e6b30b91dfc2b69bcdce"
+    },
+    {
+      "path": [
+        "calculator",
+        "result",
+        "noScript"
+      ],
+      "text": "The interactive price calculator requires JavaScript. The Package prices below Applicable n for the Basic drone count.",
+      "reviewed": false,
+      "sourceHash": "7e97d4175d7aa07180f1e1b82d51a56c77395ce9241564f29ab6bf66933aacaf"
+    },
+    {
+      "path": [
+        "calculator",
+        "readout",
+        "fromPrice"
+      ],
+      "text": "from {price}",
+      "reviewed": false,
+      "sourceHash": "5ebadbff01429fedc191512635d408d0f75837b41e4afa183a2380efeb2d2688"
+    },
+    {
+      "path": [
+        "calculator",
+        "readout",
+        "priceNote"
+      ],
+      "text": "net plus Directions",
+      "reviewed": false,
+      "sourceHash": "d91c1bc409559ac56094a7cf765e7b795a2ff45f30ff4ce44105661e01cfe0d9"
+    },
+    {
+      "path": [
+        "calculator",
+        "readout",
+        "packageLabel"
+      ],
+      "text": "Package",
+      "reviewed": false,
+      "sourceHash": "b58bd16905d210ddad9d1b562a7cbc34b21d106d91ea9aa7bb7fe2aa492d0ff0"
+    },
+    {
+      "path": [
+        "calculator",
+        "readout",
+        "durationLabel"
+      ],
+      "text": "Duration",
+      "reviewed": false,
+      "sourceHash": "668cbe316167110bd88a29f03832fab7cc99ed14a96900e3be89270fc84c82a4"
+    },
+    {
+      "path": [
+        "calculator",
+        "readout",
+        "motifsLabel"
       ],
       "text": "Motives",
       "reviewed": false,
@@ -1239,7 +1195,8 @@
     {
       "path": [
         "calculator",
-        "motifSize"
+        "readout",
+        "sizeLabel"
       ],
       "text": "Motive size",
       "reviewed": false,
@@ -1248,7 +1205,8 @@
     {
       "path": [
         "calculator",
-        "motifTitle"
+        "readout",
+        "sizeHint"
       ],
       "text": "Size of the whole subject in the sky, drones at a distance of {distance} m",
       "reviewed": false,
@@ -1257,6 +1215,7 @@
     {
       "path": [
         "calculator",
+        "readout",
         "size"
       ],
       "text": "approx. {width} × {height} m",
@@ -1266,6 +1225,7 @@
     {
       "path": [
         "calculator",
+        "readout",
         "depth"
       ],
       "text": ", {depth} m deep",
@@ -1275,7 +1235,8 @@
     {
       "path": [
         "calculator",
-        "inquiry"
+        "selection",
+        "buttonText"
       ],
       "text": "With {count} request drones",
       "reviewed": false,
@@ -1284,6 +1245,7 @@
     {
       "path": [
         "calculator",
+        "selection",
         "selected"
       ],
       "text": "Suitable for your selection",
@@ -1293,6 +1255,7 @@
     {
       "path": [
         "calculator",
+        "selection",
         "limit"
       ],
       "text": "Only to {count} drones",
@@ -1302,6 +1265,7 @@
     {
       "path": [
         "calculator",
+        "selection",
         "above"
       ],
       "text": "about it: {name}",
@@ -1311,6 +1275,7 @@
     {
       "path": [
         "calculator",
+        "selection",
         "included"
       ],
       "text": "incl. {count} Drones",
@@ -1320,6 +1285,7 @@
     {
       "path": [
         "calculator",
+        "selection",
         "forCount"
       ],
       "text": "for {count} drones",
@@ -1329,6 +1295,7 @@
     {
       "path": [
         "calculator",
+        "notes",
         "alreadyIncluded"
       ],
       "text": "{name} already contains {count} drones – for the same price.",
@@ -1338,6 +1305,7 @@
     {
       "path": [
         "calculator",
+        "notes",
         "starts"
       ],
       "text": "{name} starts with {count} drones.",
@@ -1347,6 +1315,7 @@
     {
       "path": [
         "calculator",
+        "notes",
         "largeFleet"
       ],
       "text": "Over 600 drones are a guide price – we plan the fleet together and confirm it in the offer.",
@@ -1356,6 +1325,7 @@
     {
       "path": [
         "calculator",
+        "notes",
         "minimum"
       ],
       "text": "Under 10 drones per character it will be difficult to read – for your text at least {count} drones.",
@@ -1365,6 +1335,7 @@
     {
       "path": [
         "calculator",
+        "notes",
         "reserve"
       ],
       "text": "Your text needs at most {used} drones (80 m high) – the We show the remaining {reserve} as a reserve; in the offer we like to supplement them with motifs.",
@@ -1374,6 +1345,7 @@
     {
       "path": [
         "calculator",
+        "ownTextStatus",
         "tooLong"
       ],
       "text": "This text cannot be presented in this way – please shorten it.",
@@ -1383,6 +1355,7 @@
     {
       "path": [
         "calculator",
+        "ownTextStatus",
         "fontFailed"
       ],
       "text": "The writing could not be loaded.",
@@ -1392,7 +1365,8 @@
     {
       "path": [
         "calculator",
-        "textStats"
+        "ownTextStatus",
+        "statistics"
       ],
       "text": "{characters} Signs · {perCharacter} Drones per sign",
       "reviewed": false,
@@ -1401,6 +1375,7 @@
     {
       "path": [
         "calculator",
+        "ownTextStatus",
         "fontStyle"
       ],
       "text": "· {style} script",
@@ -1410,6 +1385,7 @@
     {
       "path": [
         "calculator",
+        "ownTextStatus",
         "lines"
       ],
       "text": "· {count} lines",
@@ -1419,6 +1395,7 @@
     {
       "path": [
         "calculator",
+        "ownTextStatus",
         "unknown"
       ],
       "text": "· not displayable: {characters}",
@@ -1428,7 +1405,8 @@
     {
       "path": [
         "calculator",
-        "animationResume"
+        "hero",
+        "resumeMotion"
       ],
       "text": "Continue animation",
       "reviewed": false,
@@ -1437,6 +1415,7 @@
     {
       "path": [
         "calculator",
+        "motifs",
         "catalogue"
       ],
       "text": "from the catalogue + 4 own",
@@ -1446,6 +1425,7 @@
     {
       "path": [
         "calculator",
+        "motifs",
         "individual"
       ],
       "text": "individual, 2D + simple 3D",
@@ -1455,6 +1435,7 @@
     {
       "path": [
         "calculator",
+        "motifs",
         "storytelling"
       ],
       "text": "complex 3D + storytelling",
@@ -1464,7 +1445,8 @@
     {
       "path": [
         "calculator",
-        "animationReduced"
+        "hero",
+        "reducedMotion"
       ],
       "text": "Animation reduced",
       "reviewed": false,
@@ -1472,8 +1454,9 @@
     },
     {
       "path": [
-        "packageDetails",
-        "drei_pakete_die_preise_rechnen_mit"
+        "prices",
+        "packages",
+        "headline"
       ],
       "text": "Three packages. The Prices count.",
       "reviewed": false,
@@ -1481,8 +1464,9 @@
     },
     {
       "path": [
-        "packageDetails",
-        "die_preise_unten_gelten_fur_die_drohnenzahl_die_du"
+        "prices",
+        "packages",
+        "intro"
       ],
       "text": "The prices below apply to the number of drones that you above n has been set. Each package can be expanded with more drones and extras.",
       "reviewed": false,
@@ -1490,8 +1474,10 @@
     },
     {
       "path": [
-        "packageDetails",
-        "ab"
+        "prices",
+        "packages",
+        "price",
+        "fromLabel"
       ],
       "text": "off",
       "reviewed": false,
@@ -1499,8 +1485,10 @@
     },
     {
       "path": [
-        "packageDetails",
-        "fur"
+        "prices",
+        "packages",
+        "price",
+        "forLabel"
       ],
       "text": "for",
       "reviewed": false,
@@ -1508,8 +1496,10 @@
     },
     {
       "path": [
-        "packageDetails",
-        "drohnen"
+        "prices",
+        "packages",
+        "price",
+        "dronesLabel"
       ],
       "text": "Drones ·",
       "reviewed": false,
@@ -1517,8 +1507,10 @@
     },
     {
       "path": [
-        "packageDetails",
-        "je"
+        "prices",
+        "packages",
+        "price",
+        "stepLabel"
       ],
       "text": "eur per year",
       "reviewed": false,
@@ -1526,8 +1518,10 @@
     },
     {
       "path": [
-        "packageDetails",
-        "anfragen"
+        "prices",
+        "packages",
+        "price",
+        "buttonText"
       ],
       "text": "requests",
       "reviewed": false,
@@ -1535,7 +1529,9 @@
     },
     {
       "path": [
-        "packageDetails",
+        "prices",
+        "packages",
+        "price",
         "scale"
       ],
       "text": "+{price} € per {step} drone",
@@ -1544,7 +1540,9 @@
     },
     {
       "path": [
-        "packageDetails",
+        "prices",
+        "packages",
+        "price",
         "maximum"
       ],
       "text": "· to {max} drones",
@@ -1553,7 +1551,9 @@
     },
     {
       "path": [
-        "packageDetails",
+        "prices",
+        "packages",
+        "price",
         "inquiry"
       ],
       "text": "{name} requests",
@@ -1562,7 +1562,9 @@
     },
     {
       "path": [
-        "packageDetails",
+        "prices",
+        "packages",
+        "price",
         "base"
       ],
       "text": "for {count} drones · {duration}",
@@ -1572,7 +1574,8 @@
     {
       "path": [
         "caseStudy",
-        "brotkrumen"
+        "labels",
+        "breadcrumbs"
       ],
       "text": "Bread crumbs",
       "reviewed": false,
@@ -1581,7 +1584,8 @@
     {
       "path": [
         "caseStudy",
-        "start"
+        "labels",
+        "home"
       ],
       "text": "Start",
       "reviewed": false,
@@ -1590,7 +1594,8 @@
     {
       "path": [
         "caseStudy",
-        "projekte"
+        "labels",
+        "projects"
       ],
       "text": "Projects",
       "reviewed": false,
@@ -1599,7 +1604,8 @@
     {
       "path": [
         "caseStudy",
-        "projekt"
+        "labels",
+        "project"
       ],
       "text": "Project",
       "reviewed": false,
@@ -1608,7 +1614,8 @@
     {
       "path": [
         "caseStudy",
-        "in_zahlen"
+        "labels",
+        "numbers"
       ],
       "text": "In figures",
       "reviewed": false,
@@ -1617,7 +1624,8 @@
     {
       "path": [
         "caseStudy",
-        "die_geschichte"
+        "labels",
+        "story"
       ],
       "text": "The story",
       "reviewed": false,
@@ -1626,7 +1634,8 @@
     {
       "path": [
         "caseStudy",
-        "zum_anfassen"
+        "formation",
+        "label"
       ],
       "text": "To touch",
       "reviewed": false,
@@ -1635,7 +1644,8 @@
     {
       "path": [
         "caseStudy",
-        "noch_mal_starten"
+        "formation",
+        "replayButton"
       ],
       "text": "Start again",
       "reviewed": false,
@@ -1644,7 +1654,8 @@
     {
       "path": [
         "caseStudy",
-        "animation_pausieren"
+        "formation",
+        "pauseMotion"
       ],
       "text": "Pause animation",
       "reviewed": false,
@@ -1653,7 +1664,8 @@
     {
       "path": [
         "caseStudy",
-        "bilder_der_nacht"
+        "gallery",
+        "label"
       ],
       "text": "Pictures of the Night",
       "reviewed": false,
@@ -1662,7 +1674,8 @@
     {
       "path": [
         "caseStudy",
-        "die_show_in"
+        "gallery",
+        "headingPrefix"
       ],
       "text": "The show in",
       "reviewed": false,
@@ -1671,7 +1684,8 @@
     {
       "path": [
         "caseStudy",
-        "bildern"
+        "gallery",
+        "headingSuffix"
       ],
       "text": "Images.",
       "reviewed": false,
@@ -1680,7 +1694,8 @@
     {
       "path": [
         "caseStudy",
-        "vorheriges_bild"
+        "gallery",
+        "previousButton"
       ],
       "text": "Previous image",
       "reviewed": false,
@@ -1689,7 +1704,8 @@
     {
       "path": [
         "caseStudy",
-        "nachstes_bild"
+        "gallery",
+        "nextButton"
       ],
       "text": "Next picture",
       "reviewed": false,
@@ -1698,7 +1714,8 @@
     {
       "path": [
         "caseStudy",
-        "die_choreografie"
+        "setlist",
+        "label"
       ],
       "text": "The choreography",
       "reviewed": false,
@@ -1707,7 +1724,8 @@
     {
       "path": [
         "caseStudy",
-        "was_am_himmel_zu_sehen_war"
+        "setlist",
+        "headline"
       ],
       "text": "What was seen in the sky.",
       "reviewed": false,
@@ -1716,7 +1734,8 @@
     {
       "path": [
         "caseStudy",
-        "presse"
+        "labels",
+        "press"
       ],
       "text": "Press release",
       "reviewed": false,
@@ -1725,7 +1744,8 @@
     {
       "path": [
         "caseStudy",
-        "nachstes_projekt"
+        "labels",
+        "nextProject"
       ],
       "text": "Next project ·",
       "reviewed": false,
@@ -1734,7 +1754,8 @@
     {
       "path": [
         "caseStudy",
-        "play"
+        "media",
+        "playLabel"
       ],
       "text": "{name}: Playing Show Video",
       "reviewed": false,
@@ -1743,7 +1764,8 @@
     {
       "path": [
         "caseStudy",
-        "gallery"
+        "media",
+        "galleryLabel"
       ],
       "text": "{name}: picture gallery",
       "reviewed": false,
@@ -1752,7 +1774,8 @@
     {
       "path": [
         "caseStudy",
-        "animationResume"
+        "formation",
+        "resumeMotion"
       ],
       "text": "Continue animation",
       "reviewed": false,
@@ -1761,7 +1784,8 @@
     {
       "path": [
         "caseStudy",
-        "galleryHeading"
+        "gallery",
+        "headline"
       ],
       "text": "The Show in {count} pictures.",
       "reviewed": false,
@@ -1770,7 +1794,8 @@
     {
       "path": [
         "caseStudy",
-        "nextProject"
+        "next",
+        "label"
       ],
       "text": "Next project · {order} / 04 · {drones} Drones",
       "reviewed": false,
@@ -1779,7 +1804,8 @@
     {
       "path": [
         "caseStudy",
-        "formationCount"
+        "formation",
+        "sourceCount"
       ],
       "text": "{count} Drones from the show file",
       "reviewed": false,
@@ -1788,6 +1814,7 @@
     {
       "path": [
         "caseStudy",
+        "formation",
         "detectedCount"
       ],
       "text": "{count} Drones detected",
@@ -1797,7 +1824,8 @@
     {
       "path": [
         "caseStudy",
-        "formationFailed"
+        "formation",
+        "unavailable"
       ],
       "text": "The formation could not load become n.",
       "reviewed": false,
@@ -1805,8 +1833,9 @@
     },
     {
       "path": [
+        "components",
         "flightHero",
-        "showreel_ansehen"
+        "buttonText"
       ],
       "text": "Watch Showreel",
       "reviewed": false,
@@ -1814,8 +1843,9 @@
     },
     {
       "path": [
+        "components",
         "flightHero",
-        "eckdaten"
+        "factsLabel"
       ],
       "text": "Basic data",
       "reviewed": false,
@@ -1823,8 +1853,9 @@
     },
     {
       "path": [
+        "components",
         "logoBar",
-        "referenzen"
+        "clientLabel"
       ],
       "text": "References",
       "reviewed": false,
@@ -1832,8 +1863,9 @@
     },
     {
       "path": [
+        "components",
         "logoBar",
-        "bekannt_aus"
+        "pressLabel"
       ],
       "text": "Known from",
       "reviewed": false,
@@ -1841,6 +1873,7 @@
     },
     {
       "path": [
+        "components",
         "projectGrid",
         "headline"
       ],
@@ -1850,8 +1883,9 @@
     },
     {
       "path": [
+        "components",
         "team",
-        "foto_folgt"
+        "placeholder"
       ],
       "text": "Photo follows",
       "reviewed": true,
@@ -1859,8 +1893,9 @@
     },
     {
       "path": [
+        "components",
         "logo",
-        "flyingstars_startseite"
+        "homeLabel"
       ],
       "text": "FlyingStars – homepage",
       "reviewed": false,
@@ -1868,8 +1903,9 @@
     },
     {
       "path": [
+        "components",
         "video",
-        "das_video_ist_gerade_nicht_verfugbar_bitte_versuch"
+        "unavailable"
       ],
       "text": "The video is t just not available. Please try e s again later.",
       "reviewed": true,
@@ -1877,8 +1913,9 @@
     },
     {
       "path": [
+        "components",
         "video",
-        "play"
+        "buttonText"
       ],
       "text": "Watch the show video",
       "reviewed": false,
@@ -1886,6 +1923,7 @@
     },
     {
       "path": [
+        "components",
         "faq",
         "headline"
       ],
@@ -1895,6 +1933,7 @@
     },
     {
       "path": [
+        "components",
         "postList",
         "headline"
       ],
@@ -1904,6 +1943,7 @@
     },
     {
       "path": [
+        "components",
         "comparison",
         "scrollLabel"
       ],

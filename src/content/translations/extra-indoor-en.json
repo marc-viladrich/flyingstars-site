@@ -1,0 +1,39 @@
+{
+  "sourceId": "extra/indoor",
+  "locale": "en",
+  "sourceHash": "46663f0d0b0e8599c2b2a173e0ebd41d41af48d0d018cfc69ec2e76ea26eb54f",
+  "values": [
+    {
+      "path": [
+        "name"
+      ],
+      "text": "Indoors",
+      "reviewed": false,
+      "sourceHash": "a9cb38b7dd3c8aa64101d74c4f35078242423ff3a7a18e20fcfae693e3bcbec1"
+    },
+    {
+      "path": [
+        "title"
+      ],
+      "text": "Indoor drone shows",
+      "reviewed": false,
+      "sourceHash": "52c31eac7f79333cb434d7a6a8bf9b5b00b6e713299110e99ab12392ffbb795a"
+    },
+    {
+      "path": [
+        "text"
+      ],
+      "text": "For fairs, halls and stages. Jed e Indoor show we calculate individually.",
+      "reviewed": false,
+      "sourceHash": "25577757b17d34d8c764bd006fa90d8bf8f6e339d2e1cfdbdaefd195f68cc8f0"
+    },
+    {
+      "path": [
+        "priceNote"
+      ],
+      "text": "Individual offer",
+      "reviewed": false,
+      "sourceHash": "49e75bc0949ed43bf2681adf44e01851b908e1e74e0d4988da1e03c2833fd859"
+    }
+  ]
+}

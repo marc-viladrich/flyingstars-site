@@ -4,6 +4,7 @@ import {pageSchema} from '../schemas/page-schema.mjs';
 import {postSchema,projectSchema,faqSchema} from '../schemas/collection-schema.mjs';
 import {clientSchema,teamSchema,mediaSchema} from '../schemas/entity-schema.mjs';
 import {siteSchemas} from '../schemas/site-schema.mjs';
+import {extraSchema} from '../schemas/extra-schema.mjs';
 import {packageSchema} from '../content/package-schema.mjs';
 import {screenSchema} from '../content/screen-schema.mjs';
 import {legacyCollections,siteAddresses} from './content-addresses.mjs';
@@ -49,7 +50,7 @@ export async function getPage(route:string,locale='de') {const id=route.replace(
 export const getPosts = (locale='de') => entries('posts','post',locale);
 export const getProjects = (locale='de') => entries('projects','project',locale);
 export async function getFaq(tags:string[]=[],locale='de') {return (await entries('faq','faq',locale)).filter(entry => !tags.length || entry.data.tags.some((tag:string) => tags.includes(tag))).sort((a,b) => a.data.order-b.data.order);}
-type JsonCollection = 'clients'|'team'|'media'|'packages'|'screens'|'siteContact'|'siteInquiry'|'siteNavigation'|'siteUi';
+type JsonCollection = 'clients'|'team'|'media'|'extras'|'packages'|'screens'|'siteContact'|'siteInquiry'|'siteNavigation'|'siteUi';
 async function read(collection:JsonCollection,id:string,schema:any,owner:string,locale:string) {
   const entry=await getEntry(collection,id);
   if (!entry) throw new Error(`Fehlender ${owner}-Datensatz: ${id}`);
@@ -84,4 +85,9 @@ export async function renderBody(entry:any) {
   if (translated || entry.localization.locale !== 'de') return {html:await markdownHtml(entry.body,entry.localization.locale),Content:undefined,lang:translated?entry.localization.locale:'de'};
   const {Content}=await render(entry.sourceEntry);
   return {Content,html:undefined,lang:'de'};
+}
+
+export async function getExtras(locale='de') {
+  const index=await translations();
+  return (await getCollection('extras')).sort((a,b)=>a.data.order-b.data.order||a.id.localeCompare(b.id)).map(entry=>({id:entry.id,data:localized(`extra/${entry.id}`,entry.data,extraSchema,locale,index).data}));
 }

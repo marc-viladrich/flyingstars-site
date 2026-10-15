@@ -30,8 +30,8 @@ const native = (name: ShowPackage, path: Array<string | number>, derived = false
     if(!pkg) throw new Error(`Unbekanntes Paket: ${tier.packageId}`);
     const record = `package/${tier.packageId}`;
     const features = selectedPackageFeatures(pkg,tier.featureIds);
-    const price = fillText(ui.calculator.fromPrice,{price:money.format(pkg.price)+" €"});
-    const unit = `${pkg.base}${name === 'ODYSSEY' ? '+' : ''} ${ui.calculator.drohnen} · ${pkg.dur}`;
+    const price = fillText(ui.calculator.readout.fromPrice,{price:money.format(pkg.price)+" €"});
+    const unit = `${pkg.base}${name === 'ODYSSEY' ? '+' : ''} ${ui.calculator.controls.dronesLabel} · ${pkg.dur}`;
     return <Card class:list={['pack',{featured:pkg.highlight}]} href={localizedHref(tier.cta?.href,locale)} {...nativeItem(Astro.props,{record,entry:['tiers',i]})} {...nativeUses(Astro.props,[['tiers',i,'packageId'],...(tier.cta?[['tiers',i,'cta','href']]:[]),{record,path:['highlight']}])}>
       {(tier.showOrb!==false || editorBuild()) && <canvas hidden={tier.showOrb===false} data-orb={pkg.orbShape} data-color={pkg.color} data-n={pkg.base} aria-hidden="true" {...nativeUses(Astro.props,[['tiers',i,'showOrb'],{record,path:['orbShape']},{record,path:['color']},{record,path:['base']}])}></canvas>}
       <div><div class="name"><h3 {...native(name, ['displayName'],false,true)}><InlineText value={pkg.displayName} /></h3>{pkg.badge && (pkg.highlight || editorBuild()) && <span class="chip" {...native(name,['badge'])}>{pkg.badge}</span>}</div><div class="price" {...native(name, ['price'], true)}>{price}</div><div class="meta mono" {...native(name, ['base'], true)} {...nativeUses(Astro.props,[{record,path:['dur']}])}>{unit}</div>{pkg.description && <p {...native(name,['description'])}>{pkg.description}</p>}{features.length>0 && <ul class="facts">{features.map(({feature,path},j) => <li {...nativeItem(Astro.props,{record,entry:["tiers",i,"featureIds",j]})} {...native(name,path)}>{feature.text}</li>)}</ul>}</div>

@@ -10,7 +10,7 @@ export function seoFields(record) {
     ? {title:['showcase','meta','title'], description:['showcase','meta','description']}
     : {title:['title'], description:['summary']};
   // The blog index has a language-neutral title and a UI-owned description.
-  if (record.id === 'site/ui') return {description:['blog','alle_beitrage_in_chronologischer_reihenfolge_neues']};
+  if (record.id === 'site/ui') return {description:["blog", "index", "description"]};
   return {};
 }
 export function translatableFields(record) {

@@ -5,6 +5,8 @@ import {siteRecord as readUi} from '../../lib/content';
 import {localeFromPath,localizedHref} from '../../lib/localized-routes';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 const ui = await readUi('ui',locale);
+import {getExtras} from '../../lib/content';
+const extras=await getExtras(locale);
 import {getScreen} from '../../lib/content';
 const screen = await getScreen('drohnenshow-preise',locale);
 import Base from '../../layouts/Base.astro';
@@ -12,7 +14,7 @@ import Calculator from '../pricing/Calculator.astro';
 import PackageDetails from '../pricing/PackageDetails.astro';
 import { siteRecord } from '../../lib/content';
 import { nativeRecord } from '../../lib/native-editor';
-const pricingFaq=[{question:ui.prices.was_kommt_zum_paketpreis_noch_dazu,answer:ui.prices.nur_die_anfahrt_und_die_mehrwertsteuer_die_anfahrt},{question:ui.prices.wie_funktioniert_die_bezahlung,answer:ui.prices.mit_der_auftragsbestatigung_wird_eine_anzahlung_vo},{question:ui.prices.was_passiert_wenn_die_show_ausfallt,answer:ui.prices.ist_schlechtes_wetter_absehbar_verschieben_wir_ohn},{question:ui.prices.welches_paket_passt_zu_mir,answer:ui.prices.als_faustregel_spark_bis_150_drohnen_mit_motiven_a},{question:ui.prices.geht_es_auch_grosser,answer:ui.prices.ja_unsere_bisher_grosste_show_hatte_600_drohnen_au},{question:ui.prices.kostet_eine_show_im_ausland_mehr,answer:ui.prices.in_der_eu_planen_wir_mit_denselben_paketen_je_nach}];
+const pricingFaq: Array<{question:string;answer:string}>=ui.prices.faq.items;
 const faqJson={"@context":"https://schema.org","@type":"FAQPage",mainEntity:pricingFaq.map(item=>({"@type":"Question",name:item.question,acceptedAnswer:{"@type":"Answer",text:item.answer}}))};
 const videoCall = (await siteRecord('contact',locale)).videoCall;
 ---
@@ -22,30 +24,22 @@ const videoCall = (await siteRecord('contact',locale)).videoCall;
 
   <section class="section" aria-labelledby="incl-h">
     <div class="sec-head">
-      <div><span class="kicker mono" {...uiMarker('site/ui',["prices","immer_inklusive"])}>{ui.prices.immer_inklusive}</span><h2 id="incl-h" {...uiMarker('site/ui',["prices","wofur_du_eigentlich_bezahlst"])}>{ui.prices.wofur_du_eigentlich_bezahlst}</h2></div>
-      <p {...uiMarker('site/ui',["prices","der_grosste_aufwand_einer_drohnenshow_steckt_nicht"])}>{ui.prices.der_grosste_aufwand_einer_drohnenshow_steckt_nicht}</p>
+      <div><span class="kicker mono" {...uiMarker('site/ui',["prices", "included", "label"])}>{ui.prices.included.label}</span><h2 id="incl-h" {...uiMarker('site/ui',["prices", "included", "headline"])}>{ui.prices.included.headline}</h2></div>
+      <p {...uiMarker('site/ui',["prices", "included", "intro"])}>{ui.prices.included.intro}</p>
     </div>
     <div class="inclusive">
-      <div><span class="k mono" style="color:var(--faint)" {...uiMarker('site/ui',["prices","design"])}>{ui.prices.design}</span><b {...uiMarker('site/ui',["prices","programmierung_fur_deinen_ort"])}>{ui.prices.programmierung_fur_deinen_ort}</b><p {...uiMarker('site/ui',["prices","deine_show_wird_fur_deinen_showbereich_deine_musik"])}>{ui.prices.deine_show_wird_fur_deinen_showbereich_deine_musik}</p></div>
-      <div><span class="k mono" style="color:var(--faint)" {...uiMarker('site/ui',["prices","genehmigung"])}>{ui.prices.genehmigung}</span><b {...uiMarker('site/ui',["prices","genehmigung_sicherheitskonzept"])}>{ui.prices.genehmigung_sicherheitskonzept}</b><p {...uiMarker('site/ui',["prices","luftrechtliche_genehmigung_sicherheitszonen_und_ha"])}>{ui.prices.luftrechtliche_genehmigung_sicherheitszonen_und_ha}</p></div>
-      <div><span class="k mono" style="color:var(--faint)" {...uiMarker('site/ui',["prices","freigabe"])}>{ui.prices.freigabe}</span><b {...uiMarker('site/ui',["prices","freigabe_vorab"])}>{ui.prices.freigabe_vorab}</b><p {...uiMarker('site/ui',["prices","deine_eigenen_motive_siehst_du_vor_der_show_und_gi"])}>{ui.prices.deine_eigenen_motive_siehst_du_vor_der_show_und_gi}</p></div>
-      <div><span class="k mono" style="color:var(--faint)" {...uiMarker('site/ui',["prices","showtag"])}>{ui.prices.showtag}</span><b {...uiMarker('site/ui',["prices","team_vor_ort"])}>{ui.prices.team_vor_ort}</b><p {...uiMarker('site/ui',["prices","pilot_innen_und_techniker_innen_bauen_in_rund_drei"])}>{ui.prices.pilot_innen_und_techniker_innen_bauen_in_rund_drei}</p></div>
+      {ui.prices.included.items.map((item:{label:string;title:string;text:string},i:number) => <div><span class="k mono" style="color:var(--faint)" {...uiMarker('site/ui',['prices','included','items',i,'label'])}>{item.label}</span><b {...uiMarker('site/ui',['prices','included','items',i,'title'])}>{item.title}</b><p {...uiMarker('site/ui',['prices','included','items',i,'text'])}>{item.text}</p></div>)}
     </div>
   </section>
 
   <!-- extras -->
   <section class="section alt" aria-labelledby="extras-h">
     <div class="sec-head">
-      <div><span class="kicker mono" {...uiMarker('site/ui',["prices","extras_upgrades"])}>{ui.prices.extras_upgrades}</span><h2 id="extras-h" {...uiMarker('site/ui',["prices","mehr_geht_immer"])}>{ui.prices.mehr_geht_immer}</h2></div>
-      <p {...uiMarker('site/ui',["prices","fur_besondere_anforderungen_erweitern_wir_jedes_pa"])}>{ui.prices.fur_besondere_anforderungen_erweitern_wir_jedes_pa}</p>
+      <div><span class="kicker mono" {...uiMarker('site/ui',["prices", "extras", "label"])}>{ui.prices.extras.label}</span><h2 id="extras-h" {...uiMarker('site/ui',["prices", "extras", "headline"])}>{ui.prices.extras.headline}</h2></div>
+      <p {...uiMarker('site/ui',["prices", "extras", "intro"])}>{ui.prices.extras.intro}</p>
     </div>
     <div class="extras">
-      <div class="extra"><span class="k mono" {...uiMarker('site/ui',["prices","express"])}>{ui.prices.express}</span><h3 {...uiMarker('site/ui',["prices","show_in_unter_zwei_wochen"])}>{ui.prices.show_in_unter_zwei_wochen}</h3><p {...uiMarker('site/ui',["prices","wir_priorisieren_dein_projekt_bei_design_und_geneh"])}>{ui.prices.wir_priorisieren_dein_projekt_bei_design_und_geneh}</p><span class="price mono" {...uiMarker('site/ui',["prices","aufpreis_nach_aufwand"])}>{ui.prices.aufpreis_nach_aufwand}</span></div>
-      <div class="extra"><span class="k mono" {...uiMarker('site/ui',["prices","film"])}>{ui.prices.film}</span><h3 {...uiMarker('site/ui',["prices","professionelle_filmaufnahmen"])}>{ui.prices.professionelle_filmaufnahmen}</h3><p {...uiMarker('site/ui',["prices","rohaufnahmen_mit_kameradrohne_fur_aftermovie_und_s"])}>{ui.prices.rohaufnahmen_mit_kameradrohne_fur_aftermovie_und_s}</p><span class="price mono" {...uiMarker('site/ui',["prices","text_900_bei_odyssey_inklusive"])}>{ui.prices.text_900_bei_odyssey_inklusive}</span></div>
-      <div class="extra"><span class="k mono" {...uiMarker('site/ui',["prices","behorden"])}>{ui.prices.behorden}</span><h3 {...uiMarker('site/ui',["prices","erweiterter_behordensupport"])}>{ui.prices.erweiterter_behordensupport}</h3><p {...uiMarker('site/ui',["prices","wir_ubernehmen_die_komplette_kommunikation_mit_amt"])}>{ui.prices.wir_ubernehmen_die_komplette_kommunikation_mit_amt}</p><span class="price mono" {...uiMarker('site/ui',["prices","preis_auf_anfrage"])}>{ui.prices.preis_auf_anfrage}</span></div>
-      <div class="extra"><span class="k mono" {...uiMarker('site/ui',["prices","sondergenehmigung"])}>{ui.prices.sondergenehmigung}</span><h3 {...uiMarker('site/ui',["prices","kontrollzonen_flughafennahe"])}>{ui.prices.kontrollzonen_flughafennahe}</h3><p {...uiMarker('site/ui',["prices","besondere_flachen_brauchen_sondergenehmigungen_die"])}>{ui.prices.besondere_flachen_brauchen_sondergenehmigungen_die}</p><span class="price mono" {...uiMarker('site/ui',["prices","preis_auf_anfrage"])}>{ui.prices.preis_auf_anfrage}</span></div>
-      <div class="extra"><span class="k mono" {...uiMarker('site/ui',["prices","indoor"])}>{ui.prices.indoor}</span><h3 {...uiMarker('site/ui',["prices","indoor_drohnenshows"])}>{ui.prices.indoor_drohnenshows}</h3><p {...uiMarker('site/ui',["prices","fur_messen_hallen_und_buhnen_jede_indoor_show_kalk"])}>{ui.prices.fur_messen_hallen_und_buhnen_jede_indoor_show_kalk}</p><span class="price mono" {...uiMarker('site/ui',["prices","individuelles_angebot"])}>{ui.prices.individuelles_angebot}</span></div>
-      <div class="extra"><span class="k mono" {...uiMarker('site/ui',["prices","schweiz"])}>{ui.prices.schweiz}</span><h3 {...uiMarker('site/ui',["prices","shows_in_der_schweiz"])}>{ui.prices.shows_in_der_schweiz}</h3><p {...uiMarker('site/ui',["prices","bazl_antrag_und_zollabwicklung_fur_unsere_flotte_u"])}>{ui.prices.bazl_antrag_und_zollabwicklung_fur_unsere_flotte_u}</p><span class="price mono" {...uiMarker('site/ui',["prices","text_1_900_netto"])}>{ui.prices.text_1_900_netto}</span></div>
+      {extras.map(extra => <div class="extra"><span class="k mono" {...nativeRecord(`extra/${extra.id}`,['name'])}>{extra.data.name}</span><h3 {...nativeRecord(`extra/${extra.id}`,['title'])}>{extra.data.title}</h3><p {...nativeRecord(`extra/${extra.id}`,['text'])}>{extra.data.text}</p><span class="price mono" {...nativeRecord(`extra/${extra.id}`,['priceNote'])}>{extra.data.priceNote}</span></div>)}
     </div>
   </section>
 
@@ -53,11 +47,11 @@ const videoCall = (await siteRecord('contact',locale)).videoCall;
   <section class="section" aria-labelledby="promise-h">
     <div class="promise">
       <div style="display:grid;gap:12px">
-        <span class="kicker mono" style="margin:0" {...uiMarker('site/ui',["prices","preisversprechen"])}>{ui.prices.preisversprechen}</span>
-        <h2 id="promise-h" {...uiMarker('site/ui',["prices","gunstigeres_angebot_mit_gleicher_leistung_wir_unte"])}>{ui.prices.gunstigeres_angebot_mit_gleicher_leistung_wir_unte}</h2>
-        <p {...uiMarker('site/ui',["prices","schick_uns_das_vergleichsangebot_bei_gleichem_leis"])}>{ui.prices.schick_uns_das_vergleichsangebot_bei_gleichem_leis}</p>
+        <span class="kicker mono" style="margin:0" {...uiMarker('site/ui',["prices", "promise", "label"])}>{ui.prices.promise.label}</span>
+        <h2 id="promise-h" {...uiMarker('site/ui',["prices", "promise", "headline"])}>{ui.prices.promise.headline}</h2>
+        <p {...uiMarker('site/ui',["prices", "promise", "text"])}>{ui.prices.promise.text}</p>
       </div>
-      <a class="btn primary" href={localizedHref("/#anfrage",locale)} {...uiMarker('site/ui',["prices","angebot_prufen_lassen"])}>{ui.prices.angebot_prufen_lassen}</a>
+      <a class="btn primary" href={localizedHref("/#anfrage",locale)} {...uiMarker('site/ui',["prices", "promise", "buttonText"])}>{ui.prices.promise.buttonText}</a>
     </div>
   </section>
 
@@ -65,26 +59,21 @@ const videoCall = (await siteRecord('contact',locale)).videoCall;
   <section class="section alt" id="faq" aria-labelledby="faq-h">
     <div class="faq-grid">
       <div class="intro">
-        <span class="kicker mono" style="margin:0" {...uiMarker('site/ui',["prices","fragen_zum_preis"])}>{ui.prices.fragen_zum_preis}</span>
-        <h2 id="faq-h" {...uiMarker('site/ui',["prices","was_kostet_eine_drohnenshow_wirklich"])}>{ui.prices.was_kostet_eine_drohnenshow_wirklich}</h2>
-        <p {...uiMarker('site/ui',["prices","paketpreis_plus_anfahrt_mehr_nicht_hier_die_detail"])}>{ui.prices.paketpreis_plus_anfahrt_mehr_nicht_hier_die_detail}</p>
-        <a class="link" href={localizedHref(videoCall.href,locale)} target="_blank" rel="noopener" {...nativeRecord("site/contact", ["videoCall", "href"])}>{ui.prices.videocall_buchen} <span aria-hidden="true">→</span></a>
+        <span class="kicker mono" style="margin:0" {...uiMarker('site/ui',["prices", "faq", "label"])}>{ui.prices.faq.label}</span>
+        <h2 id="faq-h" {...uiMarker('site/ui',["prices", "faq", "headline"])}>{ui.prices.faq.headline}</h2>
+        <p {...uiMarker('site/ui',["prices", "faq", "intro"])}>{ui.prices.faq.intro}</p>
+        <a class="link" href={localizedHref(videoCall.href,locale)} target="_blank" rel="noopener" {...nativeRecord("site/contact", ["videoCall", "href"])}>{ui.prices.faq.buttonText} <span aria-hidden="true">→</span></a>
       </div>
       <div class="faq">
-        <details open><summary {...uiMarker('site/ui',["prices","was_kommt_zum_paketpreis_noch_dazu"])}>{ui.prices.was_kommt_zum_paketpreis_noch_dazu}</summary><div class="answer"><p {...uiMarker('site/ui',["prices","nur_die_anfahrt_und_die_mehrwertsteuer_die_anfahrt"])}>{ui.prices.nur_die_anfahrt_und_die_mehrwertsteuer_die_anfahrt}</p></div></details>
-        <details><summary {...uiMarker('site/ui',["prices","wie_funktioniert_die_bezahlung"])}>{ui.prices.wie_funktioniert_die_bezahlung}</summary><div class="answer"><p {...uiMarker('site/ui',["prices","mit_der_auftragsbestatigung_wird_eine_anzahlung_vo"])}>{ui.prices.mit_der_auftragsbestatigung_wird_eine_anzahlung_vo}</p></div></details>
-        <details><summary {...uiMarker('site/ui',["prices","was_passiert_wenn_die_show_ausfallt"])}>{ui.prices.was_passiert_wenn_die_show_ausfallt}</summary><div class="answer"><p {...uiMarker('site/ui',["prices","ist_schlechtes_wetter_absehbar_verschieben_wir_ohn"])}>{ui.prices.ist_schlechtes_wetter_absehbar_verschieben_wir_ohn}</p></div></details>
-        <details><summary {...uiMarker('site/ui',["prices","welches_paket_passt_zu_mir"])}>{ui.prices.welches_paket_passt_zu_mir}</summary><div class="answer"><p {...uiMarker('site/ui',["prices","als_faustregel_spark_bis_150_drohnen_mit_motiven_a"])}>{ui.prices.als_faustregel_spark_bis_150_drohnen_mit_motiven_a}</p></div></details>
-        <details><summary {...uiMarker('site/ui',["prices","geht_es_auch_grosser"])}>{ui.prices.geht_es_auch_grosser}</summary><div class="answer"><p {...uiMarker('site/ui',["prices","ja_unsere_bisher_grosste_show_hatte_600_drohnen_au"])}>{ui.prices.ja_unsere_bisher_grosste_show_hatte_600_drohnen_au}</p></div></details>
-        <details><summary {...uiMarker('site/ui',["prices","kostet_eine_show_im_ausland_mehr"])}>{ui.prices.kostet_eine_show_im_ausland_mehr}</summary><div class="answer"><p {...uiMarker('site/ui',["prices","in_der_eu_planen_wir_mit_denselben_paketen_je_nach"])}>{ui.prices.in_der_eu_planen_wir_mit_denselben_paketen_je_nach}</p></div></details>
+        {pricingFaq.map((item,i) => <details open={i===0}><summary {...uiMarker('site/ui',['prices','faq','items',i,'question'])}>{item.question}</summary><div class="answer"><p {...uiMarker('site/ui',['prices','faq','items',i,'answer'])}>{item.answer}</p></div></details>)}
       </div>
     </div>
   </section>
 
   <section class="section" aria-labelledby="cta-h">
     <div class="promise" style="background:var(--surface)">
-      <div style="display:grid;gap:12px"><h2 id="cta-h" {...uiMarker('site/ui',["prices","paket_gefunden_erzahl_uns_von_deinem_termin"])}>{ui.prices.paket_gefunden_erzahl_uns_von_deinem_termin}</h2><p {...uiMarker('site/ui',["prices","wir_melden_uns_innerhalb_von_48_stunden_meist_deut"])}>{ui.prices.wir_melden_uns_innerhalb_von_48_stunden_meist_deut}</p></div>
-      <a class="btn primary" href={localizedHref("/#anfrage",locale)} {...uiMarker('site/ui',["prices","show_anfragen"])}>{ui.prices.show_anfragen}</a>
+      <div style="display:grid;gap:12px"><h2 id="cta-h" {...uiMarker('site/ui',["prices", "cta", "headline"])}>{ui.prices.cta.headline}</h2><p {...uiMarker('site/ui',["prices", "cta", "text"])}>{ui.prices.cta.text}</p></div>
+      <a class="btn primary" href={localizedHref("/#anfrage",locale)} {...uiMarker('site/ui',["prices", "cta", "buttonText"])}>{ui.prices.cta.buttonText}</a>
     </div>
   </section>
 

@@ -110,16 +110,16 @@ import {localeFormat} from '../../lib/localized-routes.mjs';
       deep = F.dots.some((d) => d[6] !== undefined);
       pivot = deep ? Math.min(...F.dots.map((d) => d[6])) / mx - 0.1 : 0; // just behind the deepest point of the face
       D = F.dots.map(([x, y, r, g, b, v, z], i) => ({ tx: x / mx, ty: y / mx, tz: z !== undefined ? z / mx : (Math.sin(i * 12.9898) * 43758.5453 % 1) * 0.12, r, g, b, v, off: r + g + b === 0, x: x / mx, y: y / mx, z: 0, vx: 0, vy: 0, delay: 0, ph: i * 0.37 }));
-      if (tally) tally.textContent = t(F.source==="show"?"formationCount":"detectedCount",{count:D.length.toLocaleString(numberLocale)});
+      if (tally) tally.textContent = t(F.source==="show"?"formation.sourceCount":"formation.detectedCount",{count:D.length.toLocaleString(numberLocale)});
       resize();
       if (replay) replay.disabled = reduce;
       if (reduce) D.forEach((d) => { d.z = d.tz; });
       if (reduce) { started = true; draw(0, 0); }
       else { launch(); if (held()) settle(); }
-    }).catch(() => { if (!life.signal.aborted && tally) tally.textContent = t("formationFailed"); });
+    }).catch(() => { if (!life.signal.aborted && tally) tally.textContent = t("formation.unavailable"); });
     }, { rootMargin: "100px", threshold: 0 }), cv);
-    life.listen(replay, "click", () => { if (!reduce && D.length) { paused = false; pause?.setAttribute("aria-pressed", "false"); if (pause) pause.textContent = t("animation_pausieren"); launch(); } });
-    life.listen(pause, "click", () => { paused = !paused; pause.setAttribute("aria-pressed", String(paused)); pause.textContent = paused ? t("animationResume") : t("animation_pausieren"); });
+    life.listen(replay, "click", () => { if (!reduce && D.length) { paused = false; pause?.setAttribute("aria-pressed", "false"); if (pause) pause.textContent = t("formation.pauseMotion"); launch(); } });
+    life.listen(pause, "click", () => { paused = !paused; pause.setAttribute("aria-pressed", String(paused)); pause.textContent = paused ? t("formation.resumeMotion") : t("formation.pauseMotion"); });
     const host = cv.parentElement;
     life.listen(host, "pointermove", (e) => { if (e.pointerType === "touch") return; const r = cv.getBoundingClientRect(); mouse = [(e.clientX - r.left) * DPR, (e.clientY - r.top) * DPR]; });
     life.listen(host, "pointerleave", () => { mouse = null; });

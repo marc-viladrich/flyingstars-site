@@ -9,7 +9,7 @@ import Base from '../../layouts/Base.astro';
 const posts = (await getPosts(locale)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const fmt = new Intl.DateTimeFormat(localeFormat(locale), { dateStyle: 'long' });
 ---
-<Base locale={locale} title="Blog" description={ui.blog.alle_beitrage_in_chronologischer_reihenfolge_neues}>
+<Base locale={locale} title="Blog" description={ui.blog.index.description}>
   <section class="section"><div class="wrap">
     <h1>Blog</h1>
     <div class="cards">

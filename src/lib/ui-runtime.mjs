@@ -5,5 +5,5 @@ export function readRuntime(selector) {
   if(!element)return null;
   const data=JSON.parse(element.dataset.runtime);
   if(data.packages)for(const pkg of Object.values(data.packages))if(pkg.max===null)pkg.max=Infinity;
-  return {...data,t:(key,values)=>fillText(data.ui[key],values)};
+  return {...data,t:(key,values)=>fillText(key.split('.').reduce((value,part)=>value?.[part],data.ui),values)};
 }
