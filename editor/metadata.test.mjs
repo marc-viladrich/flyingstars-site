@@ -1,3 +1,4 @@
+import {execFileSync} from 'node:child_process';
 import test from 'node:test';
 import {runInNewContext} from 'node:vm';
 import assert from 'node:assert/strict';
@@ -9,7 +10,7 @@ import {randomUUID,createHash} from 'node:crypto';
 import {z} from 'astro/zod';
 import {validateMeta} from './core/afe-meta-spec.mjs';
 import {assertMetadataWrite} from './core/write-policy.mjs';
-import {listPolicy,nodeAt,recordTitle} from './core/metadata.mjs';
+import {listPolicy,nodeAt,recordTitle,arrayActionAllowed} from './core/metadata.mjs';
 import {createFlyingStarsAdapter} from './flyingstars-adapter.mjs';
 import {describeSchema,schemaDescription,templateFor,wire} from './native-schema.mjs';
 import {NativeStore,git} from './native-store.mjs';
@@ -132,4 +133,20 @@ test('record titles retain the pilot presentation, including optional package na
   const schema=schemaDescription(source.schema),title=site.recordTitle(source,data)||recordTitle({schema,data,id:source.id});
   assert.equal(recordTitle({schema,data,title,id:source.id}),expected,source.id);
  }
+});
+
+test('block action controls and handlers honor the same metadata, including inherited read-only',async()=>{
+ const source=await readFile(new URL('./web/editor.js',import.meta.url),'utf8');
+ const item={data:{sections:[{type:'a'},{type:'a'},{type:'a'}]},schema:{kind:'object',properties:{sections:{kind:'array',min:1,'x-afe':{array:{reorderable:false,insertable:false,removable:false}}}}}};
+ const actions=runInNewContext(source.slice(source.indexOf('function sectionActions('),source.lastIndexOf('// ---------------------------------------------------------------------------',source.indexOf('// Panel views')))+';sectionActions',{state:{templates:{sections:[{type:'a'}]}},nodeAt,listPolicy,actionGroup:(_,actions)=>actions.filter(Boolean),actionRow:label=>label});
+ assert.equal(actions(item,1).length,0);
+ Object.assign(item.schema.properties.sections['x-afe'].array,{reorderable:true,insertable:true,removable:true});assert.equal(actions(item,1).length,5);
+ item.schema.properties.sections.readOnly=true;assert.equal(actions(item,1).length,0);
+ for(const kind of ['insert','duplicate','remove','up','down'])assert.equal(arrayActionAllowed(item.schema.properties.sections,kind),false);
+ const mutate=runInNewContext(source.slice(source.indexOf('function mutateSections('),source.indexOf('function dialog('))+';mutateSections',{busy:false,ready:true,stageInputs:()=>{},record:()=>item,nodeAt,arrayActionAllowed,sectionMutation:()=>assert.fail('locked array must not mutate')});
+ for(const kind of ['duplicate','remove','up','down'])mutate('any',1,kind);
+});
+
+test('complete browser modules parse, beyond isolated panel-function probes',async()=>{
+ for(const file of await readdir(new URL('./web/',import.meta.url)))if(/\.m?js$/.test(file))execFileSync(process.execPath,['--check',fileURLToPath(new URL('./web/'+file,import.meta.url))],{stdio:'pipe'});
 });

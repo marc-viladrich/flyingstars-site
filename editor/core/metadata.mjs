@@ -22,7 +22,8 @@ export function nodeAt(node,data,path) {
   if(node?.kind==='union')node=node.options.find(option=>option.properties?.[node.discriminator]?.value===data?.[node.discriminator]);
   return node;
 }
-export const listPolicy=node=>({reorderable:false,insertable:false,removable:false,...node?.['x-afe']?.array});
+export const listPolicy=node=>({reorderable:false,insertable:false,removable:false,...node?.['x-afe']?.array,...(node?.readOnly||node?.['x-afe']?.readOnly?{reorderable:false,insertable:false,removable:false}:{})});
+export const arrayActionAllowed=(node,action)=>!!listPolicy(node)[{insert:'insertable',duplicate:'insertable',remove:'removable',up:'reorderable',down:'reorderable'}[action]];
 export function referenceFields(schema,data,path=[],out=[]) {
   const node=nodeAt(schema,data,[]);if(!node)return out;
   if(node['x-afe']?.reference&&data!==undefined&&data!==null)out.push({path,value:data,reference:node['x-afe'].reference});

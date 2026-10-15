@@ -10,7 +10,7 @@ Server writes validate the complete candidate against these same serialized perm
 
 ## Parity
 
-`editor/metadata.test.mjs` compares pure `describe()` panels against the captured pre-refactor snapshot, covering 170 actual records and all 17 section variants, grouped into 31 models. It checks labels, kinds, visibility, enum wording and array permissions. Record titles have an additional real-record regression guard. All 290 compact/overview table decisions match the pre-refactor snapshot. All actual translation-eligible field paths match the old resolver exactly.
+`editor/metadata.test.mjs` compares pure `describe()` panels against the captured pre-refactor snapshot, covering 170 actual records and all 17 section variants, grouped into 31 models. It checks labels, kinds, visibility, enum wording and array permissions. Record titles have an additional real-record regression guard. Full browser modules are syntax-checked, and block actions/handlers obey the same array permissions as ordinary lists, including inherited read-only restrictions. All 290 compact/overview table decisions match the pre-refactor snapshot. All actual translation-eligible field paths match the old resolver exactly.
 
 Intentional differences:
 
@@ -22,7 +22,7 @@ Full per-record before/after panel dumps, table snapshots, translation-field sna
 ## Verification
 
 - Baseline editor suite: 490 tests, 488 passed, 1 skipped, 1 failed because this sandbox forbids TCP listening on `127.0.0.1` in the existing media API test. The authenticated server tests already exercise their in-memory HTTP fallback.
-- Final editor suite: recorded in `/tmp/cx12/p6/final-editor.log`.
+- Final editor suite: 501 tests, 499 passed, 1 skipped, the same 1 sandbox TCP-listen failure; no additional failures. Exact requested command, against the committed isolated copy. Log: `/tmp/cx12/p6/complete-editor.log`.
 - Scripts: 33/33 before and after.
 - Astro check: 0 errors, 0 warnings, 207 existing hints.
 - `FLYINGSTARS_OFFLINE_MEDIA=1` build: all 52 pages built.

@@ -1,5 +1,5 @@
 import {siteWidgets,siteChange,referencePrefix,referencedRecords,omitRecordField,mediaUsageKeys,mediaSelection,selectedMedia,uploadedMediaId,optionalFieldAllowed} from './site-adapter.mjs';
-import {nodeAt,listPolicy,recordTitle} from '../core/metadata.mjs';
+import {nodeAt,listPolicy,recordTitle,arrayActionAllowed} from '../core/metadata.mjs';
 import { inspectHorizontalLayout } from "./layout-guard.mjs";
 import {
   normalizedRoute,
@@ -1769,13 +1769,14 @@ function sectionTitle(item, index) {
 function sectionActions(item, index) {
   const sections = item.data.sections || [];
   const template = state.templates?.sections?.find((t) => t.type === sections[index]?.type);
-  const min = item.schema?.properties?.sections?.min || 0;
+  const node=nodeAt(item.schema,item.data,["sections"]),policy=listPolicy(node);
+  const min = node?.min || 0;
   return actionGroup("Abschnitt", [
-    actionRow("Abschnitt darunter einfügen", () => openSections(item.id, index + 1), "plus"),
-    template?.maxInstances === 1 ? null : actionRow("Duplizieren", () => mutateSections(item.id, index, "duplicate"), "copy"),
-    index > 0 ? actionRow("Nach oben", () => mutateSections(item.id, index, "up"), "arrow-up") : null,
-    index < sections.length - 1 ? actionRow("Nach unten", () => mutateSections(item.id, index, "down"), "arrow-down") : null,
-    sections.length > min
+    policy.insertable ? actionRow("Abschnitt darunter einfügen", () => openSections(item.id, index + 1), "plus") : null,
+    !policy.insertable || template?.maxInstances === 1 ? null : actionRow("Duplizieren", () => mutateSections(item.id, index, "duplicate"), "copy"),
+    policy.reorderable && index > 0 ? actionRow("Nach oben", () => mutateSections(item.id, index, "up"), "arrow-up") : null,
+    policy.reorderable && index < sections.length - 1 ? actionRow("Nach unten", () => mutateSections(item.id, index, "down"), "arrow-down") : null,
+    policy.removable && sections.length > min
       ? actionRow("Entfernen", () => mutateSections(item.id, index, "remove"), "trash-2", { danger: true, confirm: "Wirklich entfernen?" })
       : null,
   ]);
@@ -1902,7 +1903,7 @@ function parentLinks(item, context, { from }) {
       navRow(
         `Abschnitt „${sectionTitle(sectionRecord, section.index)}“`,
         () => pushView({ id: section.id, path: ["sections", section.index] }, "section"),
-        sectionIcon(sectionRecord.data.sections?.[section.index)?.type] || "panel-top",
+        sectionIcon(sectionRecord.data.sections?.[section.index]?.type) || "panel-top",
       ),
     );
   return actionGroup(rows.length ? "Gehört zu" : null, rows);
@@ -2707,8 +2708,9 @@ function publishedState(d) {
 function mutateSections(id, index, kind) {
   if (busy || !ready) return;
   stageInputs();
-  const item = record(id),
-    title = sectionTitle(item, index),
+  const item = record(id);
+  if(!arrayActionAllowed(nodeAt(item?.schema,item?.data,["sections"]),kind))return;
+  const title = sectionTitle(item, index),
     next = sectionMutation(item.data.sections, index, kind);
   draft.set(id, ["sections"], next);
   send("sections", { id, index, action: kind, sections: next });
@@ -2759,6 +2761,7 @@ function openSections(id = currentPage()?.id, index) {
     const seen = visibleSection();
     index = seen && seen.id === item.id ? seen.index + 1 : item.data.sections.length;
   }
+  if(!arrayActionAllowed(nodeAt(item.schema,item.data,["sections"]),"insert"))return;
   const target = index;
   const after = target > 0 ? sectionTitle(item, target - 1) : null;
   const d = dialog("Abschnitt hinzufügen");
