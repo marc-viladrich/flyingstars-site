@@ -950,8 +950,12 @@ function fieldControl(item, field, { label } = {}) {
   const current = value(item, field.path) ?? field.template;
 
   // Technical source data the schema declares read-only (e.g. a prepared formation file): visible, not editable.
-  if (field.readOnly)
-    return el("label", { class: "stack" }, labelNode, el("input", { type: "text", value: String(current ?? ""), readOnly: true, "aria-label": name }));
+  if (field.readOnly) {
+    const shown = textBox({ singleLine: true, name });
+    shown.value = String(current ?? "");
+    shown.readOnly = true;
+    return el("label", { class: "stack" }, labelNode, shown);
+  }
   if (field.kind === "boolean") {
     const input = el("input", { type: "checkbox", class: "switch", role: "switch", "aria-label": name });
     input.checked = !!current;
@@ -993,16 +997,12 @@ function fieldControl(item, field, { label } = {}) {
       input.append(option);
     }
   } else if (field.kind === "number") input = el("input", { type: "number", step: "any", "aria-label": name });
-  else {
-    const long = ["multiline","markdown"].includes(field.format);
-    const isLink = field.format === "url";
-    const markdown = field.format === "markdown";
-    input = long
-      ? el("textarea", { rows: markdown ? 10 : 3, class: markdown ? "markdown" : "", "aria-label": name })
-      : el("input", { type: isLink ? "url" : "text", "aria-label": name });
-  }
+  else input = textBox({ format: field.format, name });
   input.dataset.fieldKey = key;
   input.value = current ?? "";
+  // Prose takes the whole row of a multi-column grid. A long short-text value wraps and grows in its own
+  // column, so the grid keeps its order and rhythm.
+  const wide = ["multiline", "markdown"].includes(field.format);
   const translatable = isTranslatable(item, field);
   if (translatable) panelTranslatable = true;
   if (translatable && activeLocale !== "de") {
@@ -1024,7 +1024,8 @@ function fieldControl(item, field, { label } = {}) {
     input.addEventListener("change", () => {
       if (input.value.trim()) writeTranslation(item.id, field.path, activeLocale, input.value);
     });
-    return el("label", { class: "stack" }, labelNode, input);
+    keepSingleLine(input);
+    return el("label", { class: "stack" + (wide ? " long" : "") }, labelNode, input);
   }
   const read = () => (field.kind === "number" ? (input.value.trim() === "" ? null : Number(input.value)) : input.value);
   let baseline;
@@ -1052,20 +1053,74 @@ function fieldControl(item, field, { label } = {}) {
       event.preventDefault();
       event.stopPropagation();
       input.value = baseline ?? "";
+      refit(input);
       editing.delete(key);
       update();
       input.blur();
-    } else if (event.key === "Enter" && !event.shiftKey && input.tagName !== "TEXTAREA") {
+    } else if (event.key === "Enter" && !event.shiftKey && (input.tagName !== "TEXTAREA" || input.dataset.singleLine === "true")) {
       event.preventDefault();
       input.blur();
     }
   });
   input.disabled = busy;
-  // {o}/{c} in formatted short texts are format marks, not placeholders.
+  keepSingleLine(input);
+  // {o}/{c} in formatted short texts are format marks, not placeholders. The hint sits in the label row,
+  // so every control of a grid row starts at the same height.
   const placeholders = typeof current === "string" && field.format !== "inline" ? [...new Set(current.match(/\{\w+\}/g) || [])] : [];
   if (placeholders.length && !name.includes("{"))
-    return el("label", { class: "stack" }, labelNode, input, el("span", { class: "note", text: `${placeholders.join(", ")} wird automatisch eingesetzt.` }));
-  return el("label", { class: "stack" }, labelNode, input);
+    labelNode.append(el("span", { class: "row-hint", text: `${placeholders.join(", ")} wird automatisch eingesetzt` }));
+  return el("label", { class: "stack" + (wide ? " long" : "") }, labelNode, input);
+}
+// Text of any length is edited in one kind of control: a textarea one line high while its value fits,
+// growing with the text (prose starts at three lines). Nothing is cut off at the right edge, and a
+// resized panel re-wraps. A single-line value stays single-line: Enter commits, pasted breaks become spaces.
+function textBox({ format, name, singleLine = !["multiline", "markdown"].includes(format) }) {
+  const markdown = format === "markdown";
+  const box = el("textarea", {
+    rows: singleLine ? 1 : markdown ? 10 : 3,
+    class: markdown ? "markdown" : "autogrow" + (singleLine ? " single" : ""),
+    "aria-label": name,
+    ...(format === "url" ? { spellcheck: "false", autocapitalize: "off", inputmode: "url" } : {}),
+  });
+  if (singleLine) box.dataset.singleLine = "true";
+  if (!markdown) autoGrow(box);
+  return box;
+}
+function keepSingleLine(box) {
+  if (box.dataset?.singleLine !== "true" || box.dataset.lineGuard) return;
+  box.dataset.lineGuard = "true";
+  box.addEventListener("input", () => {
+    if (!/[\r\n]/.test(box.value)) return;
+    const at = box.selectionStart;
+    box.value = box.value.replace(/\r?\n|\r/g, " ");
+    box.setSelectionRange(at, at);
+  });
+}
+// Browsers without field-sizing get the same growth from script: on input and whenever the width changes
+// (first layout, an opened disclosure, a resized panel).
+const sizesItself = typeof CSS !== "undefined" && CSS.supports?.("field-sizing", "content");
+const grownWidth = new WeakMap();
+const fitHeight = (box) => {
+  if (!box.isConnected || !box.clientWidth) return;
+  box.style.height = "auto";
+  const edge = box.offsetHeight - box.clientHeight;
+  box.style.height = box.scrollHeight + edge + "px";
+};
+const growObserver = sizesItself
+  ? null
+  : new ResizeObserver((entries) => {
+      for (const { target } of entries) {
+        const width = target.clientWidth;
+        if (grownWidth.get(target) === width) continue;
+        grownWidth.set(target, width);
+        fitHeight(target);
+      }
+    });
+const refit = (box) => !sizesItself && box.classList?.contains("autogrow") && fitHeight(box);
+function autoGrow(box) {
+  if (sizesItself) return;
+  growObserver.observe(box);
+  box.addEventListener("input", () => fitHeight(box));
 }
 // Colour fields store a token id from the site's colour registry. Swatch + name open a labelled palette
 // (grouped, selected one marked by a check and its pressed state, arrow keys move, Escape closes).
@@ -1084,7 +1139,8 @@ function colorControl(item, field, { labelNode, name, key, isChanged }) {
   const trigger = el("button", { type: "button", class: "color-trigger", "aria-expanded": "false", "data-field-key": key }, swatch, label, icon("chevron-down"));
   const palette = el("div", { class: "color-palette", role: "group", "aria-label": `${name} wählen` });
   palette.hidden = true;
-  const wrap = el("div", { class: "stack color-field" }, labelNode, trigger, palette);
+  // Label row + control row (trigger with its palette below), like every field of a grid.
+  const wrap = el("div", { class: "stack color-field" }, labelNode, el("div", { class: "color-control" }, trigger, palette));
   let tokens = null;
   const paint = () => {
     const current = read();
@@ -1557,7 +1613,7 @@ function listRows(item, container, options = {}) {
     } else if (primitive) {
       if (grip) row.append(grip);
       const field = fieldsFor(item).find((f) => equal(f.path, entryPath));
-      const input = field && fieldControl(item, field, { label: `${fieldLabel(container)} ${index + 1}` }).lastChild;
+      const input = field && fieldControl(item, field, { label: `${fieldLabel(container)} ${index + 1}` }).querySelector("input,textarea,select");
       // A text entry left empty disappears again instead of being saved as a blank value.
       input?.addEventListener("blur", () => {
         if (listPolicy(container).removable && input.value.trim() === "" && now()[index] !== undefined && String(now()[index]).trim() === "") removeAt(index);

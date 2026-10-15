@@ -1480,7 +1480,9 @@ dialog.dlg.media-wide {
   align-items: start;
 }
 /* Long text, lists, images and choice rows use the full width; short fields sit side by side. */
-.ov-grid > .stack:has(textarea),
+.ov-grid > .stack.long,
+.subgroup > .stack.long,
+.subgroup > :not(label):not(.row),
 .ov-grid > :not(label):not(.row) {
   grid-column: 1 / -1;
 }
@@ -1873,7 +1875,7 @@ body#login {
   gap: 12px 16px;
   align-items: start;
 }
-.entry-grid > .stack:has(textarea),
+.entry-grid > .stack.long,
 .entry-grid > :not(label):not(.row) {
   grid-column: 1 / -1;
 }
@@ -1980,6 +1982,10 @@ body#login {
   flex: none;
   width: 16px;
   height: 16px;
+}
+.color-control {
+  display: grid;
+  gap: 6px;
 }
 .color-raw {
   display: flex;
@@ -2196,3 +2202,71 @@ dialog.dlg.navigator {
 .record-list .nav-locale span {
   flex: none;
 }
+
+/* ---------- R10: aligned multi-column field grids ----------
+   Every grid item takes two rows: a label row and a control row. A field (label + control) adopts them
+   as a subgrid, so in one grid row all controls start at the same height however often a label wraps;
+   the label sits right above its control. A switch or segmented row sits in the control row. Items with
+   more parts (lists, images, notes) simply span both rows. */
+:is(.ov-grid, .entry-grid, .subgroup) > * {
+  grid-row: span 2;
+}
+:is(.ov-grid, .entry-grid, .subgroup) > .stack:has(> :nth-child(2):last-child) {
+  display: grid;
+  grid-template-rows: subgrid;
+  row-gap: 6px;
+}
+:is(.ov-grid, .entry-grid, .subgroup) > .stack:has(> :nth-child(2):last-child) > .row-label {
+  align-self: end;
+}
+:is(.ov-grid, .entry-grid, .subgroup) > .stack:has(> :nth-child(2):last-child) > :last-child {
+  align-self: start;
+}
+:is(.ov-grid, .entry-grid, .subgroup) > .row {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 12px;
+}
+:is(.ov-grid, .entry-grid, .subgroup) > .row > * {
+  grid-row: 2;
+  align-self: start;
+}
+:is(.ov-grid, .entry-grid, .subgroup) > .row > .row-label {
+  display: flex;
+  align-items: center;
+  min-height: 36px;
+}
+:is(.ov-grid, .entry-grid, .subgroup) > .row > input.switch {
+  margin-top: 8px;
+}
+:is(.ov-grid, .entry-grid, .subgroup) > :is(.subgroup-title, h4) {
+  grid-row: auto;
+}
+/* A block that opens with a subheading needs no rule above it: the block title already separates. */
+.ov-grid > .subgroup:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+.row-hint {
+  display: block;
+  color: var(--ui-muted);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+}
+/* One line high while the value fits, growing with it; never a horizontal scroll inside the field. */
+.editor-ui textarea.autogrow {
+  overflow-wrap: anywhere;
+  resize: none;
+}
+.editor-ui textarea.autogrow.single {
+  min-height: 36px;
+  max-height: 240px;
+}
+.editor-ui textarea.autogrow:not(.single) {
+  min-height: 80px;
+  max-height: 480px;
+}
+

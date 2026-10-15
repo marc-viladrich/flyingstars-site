@@ -72,7 +72,7 @@ export function mediaControl(item, path, { title, untitled = false } = {}, api) 
             { class: "stack" },
             el("span", { class: "row-label", text: "Alternativtext" }),
             local
-              ? fieldControl(item, override || { path: overridePath, kind: "text" }, { label: "Alternativtext an dieser Stelle" }).lastChild
+              ? fieldControl(item, override || { path: overridePath, kind: "text" }, { label: "Alternativtext an dieser Stelle" }).querySelector("input,textarea")
               : el("p", { class: "inherited-alt", text: inherited || "Noch kein Alternativtext in der Mediathek." }),
           ),
         );
