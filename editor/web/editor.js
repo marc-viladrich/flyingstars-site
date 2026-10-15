@@ -2535,7 +2535,9 @@ function subtreeControls(item, prefix, { skipInline = false } = {}) {
     }
     if (c.kind === "object" && value(item, c.path) !== undefined) {
       const inner = subtreeControls(item, c.path, { skipInline });
-      return inner.length ? el("div", { class: "subgroup" }, el("h4", { class: "subgroup-title", text: fieldLabel(c) }), inner) : null;
+      if (!inner.length) return null;
+      // An object named like the group block it fills (block "Footer" → object "Footer") needs no second heading.
+      return fieldLabel(c) === c.group ? el("div", { class: "subgroup" }, inner) : el("div", { class: "subgroup" }, el("h4", { class: "subgroup-title", text: fieldLabel(c) }), inner);
     }
     return null;
   };
