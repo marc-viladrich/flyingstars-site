@@ -27,7 +27,7 @@ import { sha256 } from "./sha256.mjs";
 import { flags } from "./flags.mjs";
 import { inlinePlain } from "/editor/site-lib/inline-text.mjs";
 import { kindOf, kindPlural } from "./record-kinds.mjs";
-import { mediaLibrary, mediaUsers, collectionOf, ALL as ALL_MEDIA, UNUSED as UNUSED_MEDIA } from "./media-usage.mjs";
+import { mediaLibrary, collectionOf, ALL as ALL_MEDIA, UNUSED as UNUSED_MEDIA } from "./media-usage.mjs";
 import { splitLocale, localizedPath, frontendTarget, liveURL } from "./frontend-url.mjs";
 import { navigatorGroups, matchesQuery, localeVersion } from "./content-navigator.mjs";
 import { NavStack } from "./nav-stack.mjs";
@@ -717,7 +717,7 @@ function frameOffset() {
 function closePanel() {
   if ($("#panel").hidden) return;
   hidePanel();
-  nav.clear();
+  endNavigation();
 }
 // Hides the panel without touching the back stack: another surface (a dialog view) takes over.
 function hidePanel() {
@@ -1840,6 +1840,11 @@ let panelAnchor = null,
   disclosureSeq = 0;
 // Explicit open/closed choices of entry disclosures and "Weitere Felder", by record + path.
 const openDisclosures = new Map();
+// Closing the whole stack ends the visit: the next opening starts with every accordion closed again.
+function endNavigation() {
+  nav.clear();
+  openDisclosures.clear();
+}
 function viewExists(view) {
   const item = record(view.context.id);
   const path = view.context.path || [];
@@ -1901,7 +1906,7 @@ function goBack() {
   if (!previous) {
     closePanel();
     closeStackDialog();
-    nav.clear();
+    endNavigation();
     return;
   }
   if (previous.surface === "panel") {
@@ -2534,7 +2539,8 @@ function editOnPage(item) {
 }
 function recordActions(item) {
   // An image still in use cannot be deleted; the usage list above says where to replace it first.
-  const usedBy = item.id.startsWith("media/") ? mediaUsers(records(), item).length : 0;
+  // Same count as "Verwendet in (N)" above: every place the image appears.
+  const usedBy = item.id.startsWith("media/") ? mediaLibrary(records()).assets.find((a) => a.id === item.id)?.usage.length || 0 : 0;
   if (usedBy)
     return actionGroup(null, [el("p", { class: "note", text: `Löschen ist möglich, sobald das Bild nirgends mehr verwendet wird (${usedBy}× verwendet).` })]);
   return actionGroup(null, [
@@ -2999,7 +3005,7 @@ function showStackDialog() {
     // Escape or X: the whole stack is closed; a switch to a panel view closes the dialog quietly.
     d.addEventListener("close", () => {
       if (stackDialog === d) stackDialog = null;
-      if (!d.quiet) nav.clear();
+      if (!d.quiet) endNavigation();
     });
   }
   const d = stackDialog;
