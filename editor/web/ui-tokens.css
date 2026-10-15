@@ -1,0 +1,47 @@
+/* Shared by editor chrome and its isolated site iframe. */
+:root {
+  --ui-font: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ui-surface: #f7f7f8;
+  --ui-raised: #ffffff;
+  --ui-field: #ececee;
+  --ui-hover: #e2e2e6;
+  --ui-line: #d6d6dc;
+  --ui-ink: #1f1f23;
+  --ui-muted: #5b5b62;
+  --ui-accent: #8a4bb0;
+  --ui-accent-hover: #783e9c;
+  --ui-tint: #f2e7f6;
+  --ui-accent-ink: #5e2c78;
+  --ui-danger: #b42338;
+  --ui-danger-tint: #fbe9ec;
+  --ui-shadow-low: #0000001f;
+  --ui-shadow: 0 12px 32px var(--ui-shadow-small), 0 1px 3px var(--ui-shadow-low);
+  --ui-radius: 10px;
+  --ui-canvas: #0a0a0b;
+  --ui-on-accent: #fff;
+  --ui-switch-track: #c8c8cf;
+  --ui-checker-light: #8e8e96;
+  --ui-checker-dark: #9b9ba3;
+  --ui-toast-surface: #27272b;
+  --ui-toast-accent: #e9d5f5;
+  --ui-canvas-muted: #b4b4bb;
+  --ui-shadow-small: #0003;
+  --ui-shadow-medium: #0000002e;
+  --ui-shadow-modal: #0007;
+  --ui-backdrop: #16131899;
+  --ui-shadow-popover: #0002;
+  --ui-shadow-boundary: #00000026;
+  --ui-shadow-faint: #0000000f;
+  --ui-raised-overlay: #ffffff38;
+  --ui-raised-line: #ffffff1a;
+  --ui-frame-accent: #a46ec5;
+  --ui-frame-hover: #a46ec5b3;
+  --ui-frame-fade: #a46ec500;
+  --ui-frame-tint: #a46ec510;
+  --ui-frame-untranslated: #a46ec5aa;
+  --ui-success: #1a7f37;
+  --ui-warning: #9a6a00;
+  --ui-warning-tint: #fdf3d8;
+  --ui-warning-hover: #f8e4ad;
+  --ui-machine: #e0a526;
+}
