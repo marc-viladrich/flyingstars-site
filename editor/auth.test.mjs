@@ -223,9 +223,11 @@ test('real HTTP listeners enforce authentication, CSRF and account-authored Git 
       const response = await call(route); assert.equal(response.status, 401, route); assert.deepEqual(await response.json(), {error: 'Nicht angemeldet.'});
       assert.equal(response.headers.get('x-content-type-options'), 'nosniff'); assert.equal(response.headers.get('referrer-policy'), 'same-origin'); assert.equal(response.headers.get('cache-control'), 'no-store');
     }
-    for (const route of ['/', '/?editor=1', '/editor/', '/editor/index.html', '/editor/login.html', '/drohnenshow-preise/?editor=1']) {
-      const response = await call(route); assert.equal(response.status, 302, route); assert.equal(response.headers.get('location'), '/editor/login?next=' + encodeURIComponent(route));
+    // The login always leads into the editor: a site page is opened inside it, never on its own.
+    for (const [route, next] of [['/', '/editor/'], ['/?editor=1', '/editor/'], ['/editor/', '/editor/'], ['/editor/index.html', '/editor/'], ['/editor/login.html', '/editor/'], ['/drohnenshow-preise/?editor=1', '/editor/?page=%2Fdrohnenshow-preise%2F']]) {
+      const response = await call(route); assert.equal(response.status, 302, route); assert.equal(response.headers.get('location'), '/editor/login?next=' + encodeURIComponent(next), route);
     }
+    const bare = await call('/editor'); assert.equal(bare.status, 302); assert.equal(bare.headers.get('location'), '/editor/');
     for (const route of ['save', 'publish', 'translate', 'translate-missing', 'preview', 'media', 'logout']) assert.equal((await post('/editor/api/' + route, {})).status, 401, route);
     assert.equal((await call('/editor/api/save', {method: 'POST'})).status, 401);
     assert.equal((await call('/editor/api/state', {method: 'HEAD'})).status, 401);
