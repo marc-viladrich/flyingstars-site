@@ -3,6 +3,7 @@ import http from 'node:http';
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
 import {NativeStore,failure} from './native-store.mjs';
+import {mediaLibrary} from './web/media-usage.mjs';
 import {NativeBuilder} from './native-builder.mjs';
 import {NativePublisher} from './native-publisher.mjs';
 import {uploadNativeMedia} from './native-media.mjs';
@@ -87,7 +88,9 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
    return json(res,200,{ok:true});
   }
   if(req.method==='GET'&&p==='/editor/api/state')return json(res,200,{...await store.state(),activeHead:builder.current?.head});
-  if(req.method==='GET'&&p==='/editor/api/media')return json(res,200,{assets:(await store.state()).records.filter(r=>r.id.startsWith('media/'))});
+  // Media library of the saved draft: collections by directly using record type + usage per asset.
+  // Unsaved draft changes are added in the browser with the same resolver (web/media-usage.mjs).
+  if(req.method==='GET'&&p==='/editor/api/media'){const saved=await store.state();return json(res,200,{head:saved.head,basis:'saved-draft',...mediaLibrary(saved.records)});}
   if(req.method==='GET'&&p==='/editor/api/review')return json(res,200,await publisher.review());
   if(req.method==='GET'&&p==='/editor/api/translation')return json(res,200,translation.status());
   if(req.method==='POST'){
