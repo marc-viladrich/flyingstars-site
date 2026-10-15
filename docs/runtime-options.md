@@ -36,7 +36,7 @@ Explizite API-Werte in `values` gewinnen vor CLI-Argumenten, CLI-Argumente vor U
 | `AFE_PUBLISHED_BRANCH` | keiner | `--published-branch` | `main` |
 | `AFE_AUTH` | `EDITOR_AUTH` | `--auth` | CLI an; `off` deaktiviert |
 | `AFE_ACCOUNTS` | `EDITOR_ACCOUNTS` | `--accounts` | `<state>/runtime-private/editor-accounts.json` |
-| `AFE_SESSION_SECRET` | `EDITOR_SESSION_SECRET` | `--session-secret` | Zufälliges Prozessgeheimnis; gesetzt mindestens 32 Bytes |
+| `AFE_SESSION_SECRET` | `EDITOR_SESSION_SECRET` | `--session-secret` | Ohne Wert dauerhaft privat erzeugt; gesetzt mindestens 32 Bytes |
 | `AFE_TRANSLATION_PROVIDER` | `EDITOR_TRANSLATION_PROVIDER` | `--translation-provider` | Ohne Wert aus; mit URL automatisch LibreTranslate |
 | `AFE_TRANSLATION_URL` | `EDITOR_TRANSLATION_URL` | `--translation-url` | Optionaler LibreTranslate-Endpunkt |
 | `AFE_TRANSLATION_KEY` | `EDITOR_TRANSLATION_KEY` | `--translation-key` | Optionaler Schlüssel dieses Endpunkts |
@@ -64,6 +64,20 @@ node /absolut/site/editor/server.mjs \
 ```
 
 State innerhalb der Site wird vor dem Laden von Konten oder Site-Modulen abgewiesen. State und öffentlicher Webroot dürfen sich weder enthalten noch gleich sein. Auch Site und öffentlicher Webroot müssen getrennt sein. Die Prüfung betrachtet konfigurierte Pfade, Symlink-Ziele und noch nicht vorhandene Nachfahren. Das historische Layout mit State als Elternordner der Site bleibt möglich, sofern der öffentliche Webroot außerhalb dieses State-Ordners liegt. Konten werden zusätzlich gegen Site, Editor-Webdateien, Build-/Preview-Verzeichnisse und den öffentlichen Webroot geprüft.
+
+## Anmeldung und dauerhafte Sitzungen
+
+„Angemeldet bleiben“ ist beim Login ausgeschaltet. Ohne Häkchen setzt der Editor ein Session-Cookie ohne `Max-Age` oder `Expires`. Die serverseitige Sitzung endet nach zwölf Stunden ohne authentifizierte Anfrage. Browser können Session-Cookies bei einer Wiederherstellung übernehmen; das serverseitige Zeitlimit gilt auch dann.
+
+Mit Häkchen gilt das Cookie 30 Tage. Bei erneuter Nutzung nach mindestens 24 Stunden ersetzt der Editor den Token und setzt Cookie und Ablauf auf weitere 30 Tage. Häufigere Anfragen lösen keine weitere Rotation aus. Der alte Token bleibt höchstens 30 Sekunden gültig, damit parallele Asset- und API-Anfragen den Wechsel abschließen können. Der CSRF-Token bleibt dabei erhalten. Abmelden widerruft auch den kurzzeitig noch gültigen Vorgänger.
+
+Der Server speichert Sitzungen atomar unter `<state>/runtime-private/editor-sessions.json`. Gespeichert werden nur HMAC-SHA256-Hashes der Sitzungstokens, Konto-ID und Passwortversion, CSRF-Token, Erstellungs-, Aktivitäts-, Erneuerungs- und Ablaufzeit sowie die Merken-Auswahl. Der Dateikopf enthält Version und eine HMAC-Kennung des Signierschlüssels. Unverschlüsselte Sitzungstokens, Passwörter und Kontohashes stehen nicht in der Sitzungsdatei. Das Verzeichnis hat Modus `0700`, die Auth-Dateien `0600`; sie dürfen weder im Repository noch im Webroot liegen. Auch diese Pfade werden gegen die verbotenen Wurzeln und Symlinks geprüft.
+
+Ohne konfiguriertes `AFE_SESSION_SECRET` erzeugt der Editor einmalig `<state>/runtime-private/editor-session-secret`. Dieses Geheimnis und die Sitzungsdatei bleiben bei Builds und Neustarts erhalten. Bei explizitem Geheimnis muss derselbe Wert bei jedem Start bereitstehen. Ein Wechsel oder Verlust des Geheimnisses verwirft bestehende Sitzungen. Ein beschädigter Sitzungsspeicher verhindert den Start; zur Rücksetzung kann die Sitzungsdatei bei gestopptem Editor entfernt werden. Das meldet alle Konten ab.
+
+Abgelaufene und widerrufene Sitzungen werden beim Start und bei authentifizierten Anfragen entfernt. Die Kontodatei wird erneut gelesen: Passwortwechsel oder Deaktivierung über `manage-accounts.mjs` sowie das Entfernen eines Kontos sperren dessen Sitzungen bei der nächsten Anfrage, auch nach einem Neustart. Logout löscht die zugehörigen gespeicherten Tokens vor der Antwort. Jeder State-Ordner gehört genau einem laufenden Editorprozess. Die dateibasierte Speicherung unterstützt keine mehreren gleichzeitigen Serverinstanzen mit demselben State.
+
+HTTPS verwendet weiterhin `__Host-fs_editor` mit `Secure`, `Path=/`, `HttpOnly` und `SameSite=Strict`. Lokales Loopback-HTTP verwendet `fs_editor` ohne `Secure`, damit auch WebKit das Cookie akzeptiert. Origin-Prüfung, CSRF und Login-Drosselung bleiben aktiv. Für eine direkte Einbettung von `EditorAuth` ohne Server ist der Standard `<Kontenordner>/editor-session-state`; `sessionDir` kann einen anderen privaten Ordner vorgeben. `createSession` und `destroySession` sind jetzt asynchron und müssen vor der Verwendung ihrer Ergebnisse abgewartet werden.
 
 ## Grenze dieser Änderung
 
