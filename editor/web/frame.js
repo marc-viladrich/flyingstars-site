@@ -980,6 +980,26 @@ function rangeAt(root, { start, end }) {
   range.selectNodeContents(root);
   return range;
 }
+// Spaces at the edge of a mark belong between words, not to the mark: WebKit drops a space that ends a
+// mark span once the selection moves ("Berlin Game" became "BerlinGame"). Same rule as the serializer.
+function edgeSpacesOut(root) {
+  for (const span of root.querySelectorAll("span.t-outline, span.t-caps")) {
+    const first = span.firstChild,
+      last = span.lastChild;
+    if (first?.nodeType === 3 && /^[ \u00a0]+/.test(first.data)) {
+      const lead = first.data.match(/^[ \u00a0]+/)[0];
+      first.data = first.data.slice(lead.length);
+      span.before(document.createTextNode(lead));
+    }
+    if (last?.nodeType === 3 && /[ \u00a0]+$/.test(last.data)) {
+      const trail = last.data.match(/[ \u00a0]+$/)[0];
+      last.data = last.data.slice(0, -trail.length);
+      span.after(document.createTextNode(trail));
+    }
+    if (!span.textContent) span.remove();
+  }
+  root.normalize();
+}
 function toggleMark(range, cls) {
   if (markActive(range, cls)) {
     const spans = [...new Set(textNodesIn(range).map((n) => markOf(n, cls)))];
@@ -1026,6 +1046,7 @@ function format(command) {
     // acts on them again instead of on the whole field.
     const offsets = textOffsets(toolOwner, range);
     toggleMark(range, command === "outline" ? "t-outline" : "t-caps");
+    edgeSpacesOut(toolOwner);
     selection.removeAllRanges();
     selection.addRange(rangeAt(toolOwner, offsets));
   } else document.execCommand(command);
