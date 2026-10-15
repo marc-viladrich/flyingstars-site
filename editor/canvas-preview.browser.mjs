@@ -31,14 +31,14 @@ test('patchInPlace updates registered canvas settings and preserves the live nod
   const page = await pageFor(t, '<main></main>');
   const result = await page.evaluate(async () => {
     const { patchInPlace } = await import('/editor/web/preview-apply.mjs');
-    const before = document.createElement('section'); before.innerHTML = '<canvas data-orb="sphere" data-n="200" data-color="package-horizon"></canvas><div>Horizon</div>';
+    const before = document.createElement('section'); before.innerHTML = '<canvas data-orb="sphere" data-n="200" data-color="neon-violet"></canvas><div>Horizon</div>';
     const after = before.cloneNode(true), live = before.cloneNode(true), canvas = live.firstChild;
     canvas.dataset.nativeLive = 'true'; canvas.width = 512;
-    after.firstChild.dataset.orb = 'torus'; after.firstChild.dataset.n = '230'; after.firstChild.dataset.color = 'package-spark';
+    after.firstChild.dataset.orb = 'torus'; after.firstChild.dataset.n = '230'; after.firstChild.dataset.color = 'neon-orange';
     const report = patchInPlace(live, before, after);
     return { report, same: live.firstChild === canvas, n: canvas.dataset.n, orb: canvas.dataset.orb, color: canvas.dataset.color, width: canvas.width };
   });
-  assert.deepEqual(result, { report: { unsafe: false, changed: 3 }, same: true, n: '230', orb: 'torus', color: 'package-spark', width: 512 });
+  assert.deepEqual(result, { report: { unsafe: false, changed: 3 }, same: true, n: '230', orb: 'torus', color: 'neon-orange', width: 512 });
 });
 
 test('unregistered canvas settings and genuine structural changes require replacement without deleting card text', async t => {
@@ -55,7 +55,7 @@ test('unregistered canvas settings and genuine structural changes require replac
 });
 
 test('real orb controller re-reads shape, count and color while paused, and initializes replaced sections', async t => {
-  const page = await pageFor(t, '<main><section><article class="pack"><canvas style="width:96px;height:96px" data-orb="sphere" data-n="200" data-color="package-horizon"></canvas><div>Spark</div></article></section></main>');
+  const page = await pageFor(t, '<main><section><article class="pack"><canvas style="width:96px;height:96px" data-orb="sphere" data-n="200" data-color="neon-violet"></canvas><div>Spark</div></article></section></main>');
   await page.evaluate(() => {
     const original = CanvasRenderingContext2D.prototype.arc;
     window.draws = [];
@@ -66,7 +66,7 @@ test('real orb controller re-reads shape, count and color while paused, and init
   const result = await page.evaluate(async () => {
     const { patchInPlace } = await import('/editor/web/preview-apply.mjs');
     const canvas = document.querySelector('canvas'), before = canvas.cloneNode(), next = before.cloneNode();
-    next.dataset.orb = 'torus'; next.dataset.n = '230'; next.dataset.color = 'package-spark';
+    next.dataset.orb = 'torus'; next.dataset.n = '230'; next.dataset.color = 'neon-orange';
     window.draws = [];
     const report = patchInPlace(canvas, before, next);
     await new Promise(resolve => setTimeout(resolve, 80));

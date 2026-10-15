@@ -13,10 +13,10 @@ function element(tagName, attributes = {}, children = [], textContent = '') {
   children.forEach((child, index) => child.previousElementSibling = children[index - 1] || null);
   return node;
 }
-const section = (settings = {}, live = false) => element('SECTION', {}, [element('CANVAS', { 'data-orb': 'sphere', 'data-n': '200', 'data-color': 'package-horizon', ...settings, ...(live ? { 'data-native-live': 'true' } : {}) }), element('DIV', {}, [], 'Spark')]);
+const section = (settings = {}, live = false) => element('SECTION', {}, [element('CANVAS', { 'data-orb': 'sphere', 'data-n': '200', 'data-color': 'neon-violet', ...settings, ...(live ? { 'data-native-live': 'true' } : {}) }), element('DIV', {}, [], 'Spark')]);
 
 test('registered canvas data attributes patch in place for all settings, keeping runtime dimensions and card text', () => {
-  const before = section(), after = section({ 'data-orb': 'torus', 'data-n': '230', 'data-color': 'package-spark' }), live = section({ width: '512' }, true), canvas = live.children[0];
+  const before = section(), after = section({ 'data-orb': 'torus', 'data-n': '230', 'data-color': 'neon-orange' }), live = section({ width: '512' }, true), canvas = live.children[0];
   assert.equal(sameStructure(before, after), true);
   assert.deepEqual(patchInPlace(live, before, after), { unsafe: false, changed: 3 });
   assert.equal(live.children[0], canvas);

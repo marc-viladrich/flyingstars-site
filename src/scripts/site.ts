@@ -159,7 +159,7 @@ import {rgbOf} from '../lib/color-tokens.mjs';
     };
 
     // brand gradient across the figure; faint additive halo, cores with normal blending so overlaps never turn white
-    const STOPS = ['package-spark', 'package-horizon', 'package-odyssey'].map(rgbOf);
+    const STOPS = ['neon-orange', 'neon-violet', 'cyan'].map(rgbOf);
     const colAt = (u) => { u = Math.min(1, Math.max(0, u)) * 2; const a = STOPS[Math.min(1, Math.floor(u))], b = STOPS[Math.min(2, Math.floor(u) + 1)], f = u - Math.min(1, Math.floor(u)); return a.map((v, j) => Math.round(v + (b[j] - v) * f)); };
     const sprites = new Map();
     const sprite = (col) => {

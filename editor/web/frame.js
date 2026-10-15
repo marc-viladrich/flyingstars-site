@@ -951,6 +951,66 @@ function markActive(range, cls) {
   const nodes = textNodesIn(range);
   return nodes.length > 0 && nodes.every((n) => markOf(n, cls));
 }
+// Character offsets of a range within root (DOM text, not the rendered transform), and back.
+function textOffsets(root, range) {
+  const before = document.createRange();
+  before.selectNodeContents(root);
+  before.setEnd(range.startContainer, range.startOffset);
+  const start = before.toString().length;
+  return { start, end: start + range.toString().length };
+}
+function rangeAt(root, { start, end }) {
+  const range = document.createRange();
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  let pos = 0,
+    started = false,
+    node;
+  while ((node = walker.nextNode())) {
+    const length = node.textContent.length;
+    if (!started && pos + length > start) {
+      range.setStart(node, start - pos);
+      started = true;
+    }
+    if (started && pos + length >= end) {
+      range.setEnd(node, end - pos);
+      return range;
+    }
+    pos += length;
+  }
+  range.selectNodeContents(root);
+  return range;
+}
+// Spaces at the edge of a mark belong between words, not to the mark: WebKit drops a space that ends a
+// mark span once the selection moves ("Berlin Game" became "BerlinGame"). Same rule as the serializer.
+function edgeSpacesOut(root) {
+  for (const span of root.querySelectorAll("span.t-outline, span.t-caps")) {
+    const first = span.firstChild,
+      last = span.lastChild;
+    if (first?.nodeType === 3 && /^[ \u00a0]+/.test(first.data)) {
+      const lead = first.data.match(/^[ \u00a0]+/)[0];
+      first.data = first.data.slice(lead.length);
+      span.before(document.createTextNode(lead));
+    }
+    if (last?.nodeType === 3 && /[ \u00a0]+$/.test(last.data)) {
+      const trail = last.data.match(/[ \u00a0]+$/)[0];
+      last.data = last.data.slice(0, -trail.length);
+      span.after(document.createTextNode(trail));
+    }
+    if (!span.textContent) span.remove();
+  }
+  root.normalize();
+  // Two marks of the same kind separated only by spaces are one mark again ("Berlin Game", not two),
+  // so toggling a word off and on returns to the stored value.
+  for (const span of [...root.querySelectorAll("span.t-outline, span.t-caps")]) {
+    const gap = span.nextSibling,
+      next = gap?.nextSibling;
+    if (gap?.nodeType === 3 && /^[ \u00a0]+$/.test(gap.data) && next?.nodeType === 1 && next.className === span.className) {
+      next.prepend(...span.childNodes, gap);
+      span.remove();
+    }
+  }
+  root.normalize();
+}
 function toggleMark(range, cls) {
   if (markActive(range, cls)) {
     const spans = [...new Set(textNodesIn(range).map((n) => markOf(n, cls)))];
@@ -992,8 +1052,15 @@ function format(command) {
     range = formatRange();
   selection.removeAllRanges();
   selection.addRange(range);
-  if (command === "outline" || command === "caps") toggleMark(range, command === "outline" ? "t-outline" : "t-caps");
-  else document.execCommand(command);
+  if (command === "outline" || command === "caps") {
+    // Splitting or unwrapping marks rebuilds the DOM; the same words stay selected, so a second click
+    // acts on them again instead of on the whole field.
+    const offsets = textOffsets(toolOwner, range);
+    toggleMark(range, command === "outline" ? "t-outline" : "t-caps");
+    edgeSpacesOut(toolOwner);
+    selection.removeAllRanges();
+    selection.addRange(rangeAt(toolOwner, offsets));
+  } else document.execCommand(command);
   // Empty leftovers of toggling (an unwrapped <b></b>) are not content.
   for (const empty of toolOwner.querySelectorAll("b:empty,strong:empty,i:empty,em:empty,s:empty,strike:empty,span:empty")) empty.remove();
   richRange = selection.rangeCount ? selection.getRangeAt(0).cloneRange() : null;
@@ -1017,6 +1084,13 @@ function updateFormatState() {
       on = states[button.dataset.command]?.() || false;
     } catch {}
     button.setAttribute("aria-pressed", String(on));
+    // Text the layout already sets in capitals cannot be capitalised further (nor "un-capitalised" here);
+    // an existing caps mark stays removable.
+    if (button.dataset.command === "caps") {
+      const layoutCaps = !on && getComputedStyle(toolOwner).textTransform === "uppercase";
+      button.disabled = layoutCaps;
+      button.title = layoutCaps ? "Dieser Text steht durch die Gestaltung bereits in Versalien." : button.getAttribute("aria-label");
+    }
   }
 }
 // Order: move · variant · formatting · language · options.
@@ -1259,7 +1333,7 @@ document.addEventListener("selectionchange", () => {
   if (toolKind === "text") placeToolbar();
 });
 style.textContent +=
-  ' .native-toolbar{position:fixed;z-index:99999;display:flex;align-items:center;gap:2px;border:1px solid var(--ui-line);border-radius:10px;background:var(--ui-surface);padding:3px;box-shadow:0 12px 32px var(--ui-shadow-small),0 1px 3px var(--ui-shadow-low);font:500 12px/1 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:normal;text-transform:none}.native-toolbar button{display:grid;place-items:center;width:30px;height:30px;border:0;background:transparent;border-radius:7px;color:var(--ui-ink);cursor:pointer;font:inherit}.native-toolbar button:hover{background:var(--ui-hover)}.native-toolbar button:focus-visible{outline:2px solid var(--ui-accent);outline-offset:1px}.native-toolbar svg{width:16px;height:16px;stroke-width:2}.native-toolbar .grip{cursor:grab;touch-action:none;color:var(--ui-muted)}.native-toolbar .grip:active{cursor:grabbing}.native-toolbar .lang svg{width:20px;height:15px;border-radius:2px;box-shadow:0 0 0 1px var(--ui-shadow-popover)}.native-variant{display:flex;gap:2px;padding:0 4px;margin:0 2px;border-left:1px solid var(--ui-line);border-right:1px solid var(--ui-line)}.native-variant button{width:auto;padding:0 8px;color:var(--ui-ink)}.native-variant button[aria-pressed=true]{background:var(--ui-tint);color:var(--ui-accent-ink);box-shadow:inset 0 0 0 1px var(--ui-accent)}.native-toolbar .fmt[aria-pressed=true]{background:var(--ui-tint);color:var(--ui-accent-ink)}.native-variant button[data-tone]{font:500 10.5px/1 ui-monospace,"SF Mono",Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;height:24px;margin:3px 1px;border-radius:3px;box-shadow:inset 0 0 0 1px currentColor;opacity:.55}.native-variant button[data-tone=y]{color:var(--ui-success)}.native-variant button[data-tone=n]{color:var(--ui-danger)}.native-variant button[data-tone=p]{color:var(--ui-warning)}.native-variant button[data-tone][aria-pressed=true]{opacity:1;color:var(--ui-on-accent);box-shadow:none}.native-variant button[data-tone=y][aria-pressed=true]{background:var(--ui-success)}.native-variant button[data-tone=n][aria-pressed=true]{background:var(--ui-danger)}.native-variant button[data-tone=p][aria-pressed=true]{background:var(--ui-warning)}.native-toolbar .confirm{color:var(--ui-warning);background:var(--ui-warning-tint)}.native-toolbar .confirm:hover{background:var(--ui-warning-hover)}.native-toolbar .fmt-last{margin-right:5px;position:relative}.native-toolbar .fmt-last::after{content:"";position:absolute;right:-4px;top:7px;bottom:7px;width:1px;background:var(--ui-line)}.native-toolbar [hidden],.native-toolbar[hidden],.native-editor-preview .native-toolbar{display:none!important}html.native-language-draft:not(.native-editor-preview) [data-native-untranslated]{outline:1px dashed var(--ui-frame-untranslated);outline-offset:4px}html.native-language-draft:not(.native-editor-preview) [data-native-machine]{outline:1px dashed var(--ui-machine);outline-offset:4px}.native-dragging{outline:2px solid var(--ui-frame-accent)!important;outline-offset:2px;opacity:.9;transition:none!important}html:not(.native-editor-preview) .native-entry-selected{outline:2px solid var(--ui-frame-accent)!important;outline-offset:-2px}';
+  ' .native-toolbar{position:fixed;z-index:99999;display:flex;align-items:center;gap:2px;border:1px solid var(--ui-line);border-radius:10px;background:var(--ui-surface);padding:3px;box-shadow:0 12px 32px var(--ui-shadow-small),0 1px 3px var(--ui-shadow-low);font:500 12px/1 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:normal;text-transform:none}.native-toolbar button{display:grid;place-items:center;width:30px;height:30px;border:0;background:transparent;border-radius:7px;color:var(--ui-ink);cursor:pointer;font:inherit}.native-toolbar button:hover{background:var(--ui-hover)}.native-toolbar button:disabled{opacity:.35;cursor:not-allowed;background:transparent}.native-toolbar button:focus-visible{outline:2px solid var(--ui-accent);outline-offset:1px}.native-toolbar svg{width:16px;height:16px;stroke-width:2}.native-toolbar .grip{cursor:grab;touch-action:none;color:var(--ui-muted)}.native-toolbar .grip:active{cursor:grabbing}.native-toolbar .lang svg{width:20px;height:15px;border-radius:2px;box-shadow:0 0 0 1px var(--ui-shadow-popover)}.native-variant{display:flex;gap:2px;padding:0 4px;margin:0 2px;border-left:1px solid var(--ui-line);border-right:1px solid var(--ui-line)}.native-variant button{width:auto;padding:0 8px;color:var(--ui-ink)}.native-variant button[aria-pressed=true]{background:var(--ui-tint);color:var(--ui-accent-ink);box-shadow:inset 0 0 0 1px var(--ui-accent)}.native-toolbar .fmt[aria-pressed=true]{background:var(--ui-tint);color:var(--ui-accent-ink)}.native-variant button[data-tone]{font:500 10.5px/1 ui-monospace,"SF Mono",Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;height:24px;margin:3px 1px;border-radius:3px;box-shadow:inset 0 0 0 1px currentColor;opacity:.55}.native-variant button[data-tone=y]{color:var(--ui-success)}.native-variant button[data-tone=n]{color:var(--ui-danger)}.native-variant button[data-tone=p]{color:var(--ui-warning)}.native-variant button[data-tone][aria-pressed=true]{opacity:1;color:var(--ui-on-accent);box-shadow:none}.native-variant button[data-tone=y][aria-pressed=true]{background:var(--ui-success)}.native-variant button[data-tone=n][aria-pressed=true]{background:var(--ui-danger)}.native-variant button[data-tone=p][aria-pressed=true]{background:var(--ui-warning)}.native-toolbar .confirm{color:var(--ui-warning);background:var(--ui-warning-tint)}.native-toolbar .confirm:hover{background:var(--ui-warning-hover)}.native-toolbar .fmt-last{margin-right:5px;position:relative}.native-toolbar .fmt-last::after{content:"";position:absolute;right:-4px;top:7px;bottom:7px;width:1px;background:var(--ui-line)}.native-toolbar [hidden],.native-toolbar[hidden],.native-editor-preview .native-toolbar{display:none!important}html.native-language-draft:not(.native-editor-preview) [data-native-untranslated]{outline:1px dashed var(--ui-frame-untranslated);outline-offset:4px}html.native-language-draft:not(.native-editor-preview) [data-native-machine]{outline:1px dashed var(--ui-machine);outline-offset:4px}.native-dragging{outline:2px solid var(--ui-frame-accent)!important;outline-offset:2px;opacity:.9;transition:none!important}html:not(.native-editor-preview) .native-entry-selected{outline:2px solid var(--ui-frame-accent)!important;outline-offset:-2px}';
 
 function safeMarkdown(source) {
   const holder = document.createElement("template");
