@@ -79,7 +79,7 @@ test('Offline real Astro: EN/NL saved translations, review, public/editor eligib
  artifact=await publicBuilder.build(state.head);const faqHtml=await fs.readFile(path.join(artifact.site,'en/faq/index.html'),'utf8');
  assert.match(faqHtml,/<strong>Reviewed FAQ Markdown I3<\/strong>/);
  assert.match(faqHtml,/href="\/en\/kontakt\/"/);
- state=await review(store,'translation/site-ui-en',['prices','was_kommt_zum_paketpreis_noch_dazu'],'</script><script>alert("I3 reviewed copy")</script>');
+ state=await review(store,'translation/site-ui-en',['prices','faq','items',0,'question'],'</script><script>alert("I3 reviewed copy")</script>');
  artifact=await publicBuilder.build(state.head);
  const safePrice=await fs.readFile(path.join(artifact.site,'en/drohnenshow-preise/index.html'),'utf8');
  assert.ok(!safePrice.includes('<script>alert("I3 reviewed copy")'));

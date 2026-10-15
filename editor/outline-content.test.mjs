@@ -18,13 +18,14 @@ test('outlined project titles and sustainability heading retain fresh EN/NL mark
   assert.equal(sources.length,5);
   for(const {id,data,path}of sources){
     const source=path.reduce((v,k)=>v[k],data);
-    assert.match(inlineHtml(source),/^<span class="t-outline">[^]*<\/span>$/);
+    const caps=id.startsWith('project/');
+    assert.match(inlineHtml(source),caps?/^<span class="t-caps"><span class="t-outline">[^]*<\/span><\/span>$/:/^<span class="t-outline">[^]*<\/span>$/);
     for(const locale of ['en','nl']){
       const translation=JSON.parse(await fs.readFile(new URL('translations/'+id.replace('/','-')+'-'+locale+'.json',root)));
       const entry=translation.values.find(value=>JSON.stringify(value.path)===JSON.stringify(path));
       assert.ok(entry,id+' '+locale);
       assert.equal(entry.sourceHash,sha256(source));
-      assert.match(entry.text,/^\{o\}[^]*\{\/o\}$/);
+      assert.match(entry.text,caps?/^\{c\}\{o\}[^]*\{\/o\}\{\/c\}$/:/^\{o\}[^]*\{\/o\}$/);
       const record={id,data,fields:[{path,kind:'text', 'x-afe': {translatable:true},format:'inline'}]};
       const edited=localize(record,locale,{editor:true,translation});
       assert.equal(path.reduce((v,k)=>v[k],edited.data),entry.text);

@@ -162,3 +162,81 @@ test('a backslash keeps typed mark characters literal',async()=>{
  assert.equal(inlinePlain('5\\* und \\~\\~ und \\{o}'),'5* und ~~ und {o}');
  assert.equal(inlineHtml('\\\\'),'\\');
 });
+
+test('UI fields use editorial roles and every section has at most ten direct fields',async()=>{
+ const {siteUiSchema}=await import('./ui-schema.mjs'),{describeSchema,unwrap}=await import('../../editor/native-schema.mjs');
+ const data=JSON.parse(await fs.readFile(path.join(root,'site/ui.json'),'utf8'));
+ const description=describeSchema(siteUiSchema,data);
+ for(const field of description.fields)assert.notEqual(field.label,field.value,field.path.join('.'));
+ const walk=(schema,parts=[])=>{const node=unwrap(schema);if(node.shape){const children=Object.values(node.shape),direct=children.filter(child=>!['object','array'].includes(unwrap(child)._def.type));assert.ok(direct.length<=10,parts.join('.')+': '+direct.length);for(const[key,child]of Object.entries(node.shape))walk(child,[...parts,key]);}else if(node.element)walk(node.element,[...parts,'[]']);};walk(siteUiSchema);
+});
+
+test('every UI text has a public consumer or an explicit unused reason',async()=>{
+ const {siteUiSchema}=await import('./ui-schema.mjs'),{schemaAt,describeSchema}=await import('../../editor/native-schema.mjs');
+ const ui=JSON.parse(await fs.readFile(path.join(root,'site/ui.json'),'utf8'));
+ const files=[];const walk=async dir=>{for(const entry of await fs.readdir(dir,{withFileTypes:true})){const full=path.join(dir,entry.name);if(entry.isDirectory())await walk(full);else if(/\.(astro|js|mjs|ts)$/.test(full)&&!full.includes('/schemas/')&&!full.includes('/content/'))files.push(full);}};
+ await walk(fileURLToPath(new URL('../',import.meta.url)));
+ const source=(await Promise.all(files.map(file=>fs.readFile(file,'utf8')))).join('\n');
+ const missing=[];for(const field of describeSchema(siteUiSchema,ui).fields){
+  const dotted='ui.'+field.path.join('.'),runtime=field.path.slice(1).join('.');
+  const item=field.path.indexOf('items'),listUse=item>=0&&source.includes('ui.'+field.path.slice(0,item+1).join('.')+'.map')&&source.includes('item.'+field.path.at(-1));
+  // FAQ aliases feed both rendered details and structured data from the same list.
+  const faqUse=item>=0&&field.path[1]==='faq'&&source.includes('=ui.prices.faq.items')&&source.includes('pricingFaq.map')&&source.includes('item.'+field.path.at(-1));
+  const runtimeUse=['calculator','configurator','caseStudy'].includes(field.path[0])&&(source.includes('"'+runtime+'"')||source.includes("'"+runtime+"'"));
+  if(!(source.includes(dotted)||listUse||faqUse||runtimeUse||schemaAt(siteUiSchema,ui,field.path)?.meta()?.unused))missing.push(field.path.join('.'));
+ }assert.deepEqual(missing,[]);
+});
+
+test('all project, next-project and package-upgrade relationships resolve to stored records',async()=>{
+ const {projectSchema}=await import('./collection-schema.mjs'),{packageSchema}=await import('../content/package-schema.mjs'),{extraSchema}=await import('./extra-schema.mjs'),{describeSchema}=await import('../../editor/native-schema.mjs');
+ const records=[];
+ for(const[collection,schema]of [['projects',projectSchema],['packages',packageSchema],['extras',extraSchema],['clients',clientSchema],['media',mediaSchema]])for(const file of await fs.readdir(path.join(root,collection))){if(!/\.(md|json)$/.test(file))continue;const source=await fs.readFile(path.join(root,collection,file),'utf8'),raw=file.endsWith('.md')?parse(source.split('---')[1]):JSON.parse(source),data=schema.parse(raw);records.push({collection,id:file.replace(/\.(md|json)$/,''),data,schema});}
+ for(const record of records)for(const field of describeSchema(record.schema,record.data).fields){const ref=field['x-afe']?.reference;if(ref&&field.value!==undefined)assert.ok(records.some(target=>target.collection===ref.collection&&target.id===field.value.replace(/^media\//,'')),`${record.collection}/${record.id}: ${field.path.join('.')} → ${field.value}`);}
+});
+
+test('nested runtime text paths resolve without changing configurator style or deep-link identities',async()=>{
+ const {readRuntime}=await import('../lib/ui-runtime.mjs');
+ const ui=JSON.parse(await fs.readFile(path.join(root,'site/ui.json'),'utf8'));
+ const previous=globalThis.document;
+ try{for(const[group,file]of [['calculator','../scripts/pricing.js'],['configurator','../scripts/show-configurator.js'],['caseStudy','../components/projects/case.js']]){
+  globalThis.document={querySelector:()=>({dataset:{runtime:JSON.stringify({ui:ui[group]})}})};
+  const {t}=readRuntime('test'),source=await fs.readFile(new URL(file,import.meta.url),'utf8');
+  for(const [,key]of source.matchAll(/\b(?:t|h)\(\s*["']([\w.]+)["']/g))assert.equal(typeof t(key),'string',group+'.'+key);
+ }}finally{globalThis.document=previous;}
+ const script=await fs.readFile(new URL('../scripts/show-configurator.js',import.meta.url),'utf8');
+ assert.match(script,/style = "script"/);assert.match(script,/params.get\("anlass"\)/);
+ assert.match(script,/\['script', 'print', 'initials'\]\.includes\(saved.style\)/);
+});
+
+test('Astro references derive from native relationship metadata and retain package refinements',async()=>{
+ const {createReference}=await import('astro/content/runtime'),{astroReferences}=await import('./astro-references.mjs'),{projectSchema}=await import('./collection-schema.mjs'),{packageSchema}=await import('../content/package-schema.mjs');
+ const project=astroReferences(projectSchema,createReference());
+ const value=project.parse({title:'Projekt',date:'2026-10-13',summary:'Ein Projektbericht mit einer bestehenden Kundenbeziehung.',client:'nfl',package:'spark'});
+ assert.deepEqual(value.client,{collection:'clients',id:'nfl'});assert.deepEqual(value.package,{collection:'packages',id:'spark'});
+ assert.equal(project.parse({title:'Projekt',date:'2026-10-13',summary:'Ein Projektbericht ohne eine bestehende Kundenbeziehung.'}).client,undefined);
+ const raw=JSON.parse(await fs.readFile(path.join(root,'packages/odyssey.json'),'utf8')),schema=astroReferences(packageSchema,createReference());
+ assert.deepEqual(schema.parse(raw).featureGroups[2].items[2].extraId,{collection:'extras',id:'film'});
+ const invalid=structuredClone(raw);invalid.featureGroups[2].items[1].id=invalid.featureGroups[2].items[0].id;assert.equal(schema.safeParse(invalid).success,false);
+});
+
+test('migrated UI and upgrade translations retain valid paths and current per-field source hashes',async()=>{
+ const {siteUiSchema}=await import('./ui-schema.mjs'),{extraSchema}=await import('./extra-schema.mjs'),{schemaAt}=await import('../../editor/native-schema.mjs'),{sha256}=await import('../lib/localize.mjs');
+ for(const file of await fs.readdir(path.join(root,'translations'))){if(!/^(site-ui|extra-).+\.json$/.test(file))continue;const translation=JSON.parse(await fs.readFile(path.join(root,'translations',file),'utf8')),extra=translation.sourceId.startsWith('extra/'),data=JSON.parse(await fs.readFile(path.join(root,extra?'extras/'+translation.sourceId.slice(6)+'.json':'site/ui.json'),'utf8')),schema=extra?extraSchema:siteUiSchema;
+  assert.equal(translation.sourceHash,sha256(await fs.readFile(path.join(root,extra?'extras/'+translation.sourceId.slice(6)+'.json':'site/ui.json'),'utf8')));
+  for(const value of translation.values){assert.ok(schemaAt(schema,data,value.path),file+': '+value.path.join('.'));const german=value.path.reduce((v,k)=>v?.[k],data);assert.equal(value.sourceHash,sha256(german),file+': '+value.path.join('.'));}
+ }
+});
+
+test('all stored case titles and their translated lines carry caps with current source hashes',async()=>{
+ const {sha256}=await import('../lib/localize.mjs');
+ const projects=new Map();for(const file of await fs.readdir(path.join(root,'projects'))){if(!file.endsWith('.md'))continue;const data=parse((await fs.readFile(path.join(root,'projects',file),'utf8')).split('---')[1]);projects.set(file.slice(0,-3),data);for(const line of data.showcase?.titleLines??[])assert.match(line,/^\{c\}[\s\S]+\{\/c\}$/);}
+ for(const file of await fs.readdir(path.join(root,'translations'))){if(!file.startsWith('project-'))continue;const translation=JSON.parse(await fs.readFile(path.join(root,'translations',file),'utf8'));for(const value of translation.values.filter(value=>value.path[0]==='showcase'&&value.path[1]==='titleLines')){assert.match(value.text,/^\{c\}[\s\S]+\{\/c\}$/);assert.equal(value.sourceHash,sha256(value.path.reduce((v,k)=>v[k],projects.get(translation.sourceId.slice(8)))));}}
+ const css=await fs.readFile(new URL('../styles/global.css',import.meta.url),'utf8');assert.doesNotMatch(css.match(/\.c-name\s*\{([^}]+)\}/)?.[1]??'',/text-transform/);assert.match(css,/\.t-caps\s*\{\s*text-transform:\s*uppercase/);
+});
+
+test('UI edit markers resolve to active fields rather than unused extraction fragments',async()=>{
+ const {siteUiSchema}=await import('./ui-schema.mjs'),{schemaAt}=await import('../../editor/native-schema.mjs');
+ const ui=JSON.parse(await fs.readFile(path.join(root,'site/ui.json'),'utf8'));
+ const walk=async dir=>{for(const entry of await fs.readdir(dir,{withFileTypes:true})){const file=path.join(dir,entry.name);if(entry.isDirectory()){await walk(file);continue;}if(!file.endsWith('.astro'))continue;const source=await fs.readFile(file,'utf8');for(const [,literal]of source.matchAll(/uiMarker\(['"]site\/ui['"],(\[[^\]]+\])\)/g)){const parts=JSON.parse(literal.replaceAll("'",'"').replace(/\bi\b/g,'0')),field=schemaAt(siteUiSchema,ui,parts);assert.ok(field,file+': '+literal);assert.ok(!field.meta()?.unused,file+': inactive '+literal);}}};
+ await walk(fileURLToPath(new URL('../components/',import.meta.url)));await walk(fileURLToPath(new URL('../layouts/',import.meta.url)));
+});

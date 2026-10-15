@@ -551,120 +551,6 @@
   "page/leistungen/[\"sections\",5,\"memberIds\"]/compact": null,
   "page/projekte/[\"sections\"]/overview": null,
   "page/projekte/[\"sections\"]/compact": null,
-  "package/horizon/[\"featureGroups\"]/overview": null,
-  "package/horizon/[\"featureGroups\",0,\"items\"]/overview": [
-    {
-      "key": "text",
-      "label": "Leistung"
-    }
-  ],
-  "package/horizon/[\"featureGroups\",1,\"items\"]/overview": [
-    {
-      "key": "text",
-      "label": "Leistung"
-    }
-  ],
-  "package/horizon/[\"featureGroups\",2,\"items\"]/overview": [
-    {
-      "key": "text",
-      "label": "Leistung"
-    }
-  ],
-  "package/horizon/[\"featureGroups\"]/compact": null,
-  "package/horizon/[\"featureGroups\",0,\"items\"]/compact": [
-    {
-      "key": "text",
-      "label": "Leistung"
-    }
-  ],
-  "package/horizon/[\"featureGroups\",1,\"items\"]/compact": [
-    {
-      "key": "text",
-      "label": "Leistung"
-    }
-  ],
-  "package/horizon/[\"featureGroups\",2,\"items\"]/compact": [
-    {
-      "key": "text",
-      "label": "Leistung"
-    }
-  ],
-  "package/odyssey/[\"featureGroups\"]/overview": null,
-  "package/odyssey/[\"featureGroups\",0,\"items\"]/overview": [
-    {
-      "key": "text",
-      "label": "Leistung"
-    }
-  ],
-  "package/odyssey/[\"featureGroups\",1,\"items\"]/overview": [
-    {
-      "key": "text",
-      "label": "Leistung"
-    }
-  ],
-  "package/odyssey/[\"featureGroups\",2,\"items\"]/overview": [
-    {
-      "key": "text",
-      "label": "Leistung"
-    }
-  ],
-  "package/odyssey/[\"featureGroups\"]/compact": null,
-  "package/odyssey/[\"featureGroups\",0,\"items\"]/compact": [
-    {
-      "key": "text",
-      "label": "Leistung"
-    }
-  ],
-  "package/odyssey/[\"featureGroups\",1,\"items\"]/compact": [
-    {
-      "key": "text",
-      "label": "Leistung"
-    }
-  ],
-  "package/odyssey/[\"featureGroups\",2,\"items\"]/compact": [
-    {
-      "key": "text",
-      "label": "Leistung"
-    }
-  ],
-  "package/spark/[\"featureGroups\"]/overview": null,
-  "package/spark/[\"featureGroups\",0,\"items\"]/overview": [
-    {
-      "key": "text",
-      "label": "Leistung"
-    }
-  ],
-  "package/spark/[\"featureGroups\",1,\"items\"]/overview": [
-    {
-      "key": "text",
-      "label": "Leistung"
-    }
-  ],
-  "package/spark/[\"featureGroups\",2,\"items\"]/overview": [
-    {
-      "key": "text",
-      "label": "Leistung"
-    }
-  ],
-  "package/spark/[\"featureGroups\"]/compact": null,
-  "package/spark/[\"featureGroups\",0,\"items\"]/compact": [
-    {
-      "key": "text",
-      "label": "Leistung"
-    }
-  ],
-  "package/spark/[\"featureGroups\",1,\"items\"]/compact": [
-    {
-      "key": "text",
-      "label": "Leistung"
-    }
-  ],
-  "package/spark/[\"featureGroups\",2,\"items\"]/compact": [
-    {
-      "key": "text",
-      "label": "Leistung"
-    }
-  ],
   "faq/show-01/[\"tags\"]/overview": null,
   "faq/show-01/[\"tags\"]/compact": null,
   "faq/show-02/[\"tags\"]/overview": null,
@@ -682,5 +568,123 @@
   "faq/show-08/[\"tags\"]/overview": null,
   "faq/show-08/[\"tags\"]/compact": null,
   "faq/show-09/[\"tags\"]/overview": null,
-  "faq/show-09/[\"tags\"]/compact": null
+  "faq/show-09/[\"tags\"]/compact": null,
+  "site/ui/[\"prices\",\"included\",\"items\"]/overview": null,
+  "site/ui/[\"prices\",\"included\",\"items\"]/compact": null,
+  "site/ui/[\"prices\",\"faq\",\"items\"]/overview": null,
+  "site/ui/[\"prices\",\"faq\",\"items\"]/compact": null,
+  "package/horizon/[\"featureGroups\"]/overview": null,
+  "package/horizon/[\"featureGroups\"]/compact": null,
+  "package/horizon/[\"featureGroups\",0,\"items\"]/overview": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/horizon/[\"featureGroups\",0,\"items\"]/compact": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/horizon/[\"featureGroups\",1,\"items\"]/overview": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/horizon/[\"featureGroups\",1,\"items\"]/compact": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/horizon/[\"featureGroups\",2,\"items\"]/overview": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/horizon/[\"featureGroups\",2,\"items\"]/compact": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/odyssey/[\"featureGroups\"]/overview": null,
+  "package/odyssey/[\"featureGroups\"]/compact": null,
+  "package/odyssey/[\"featureGroups\",0,\"items\"]/overview": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/odyssey/[\"featureGroups\",0,\"items\"]/compact": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/odyssey/[\"featureGroups\",1,\"items\"]/overview": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/odyssey/[\"featureGroups\",1,\"items\"]/compact": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/odyssey/[\"featureGroups\",2,\"items\"]/overview": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/odyssey/[\"featureGroups\",2,\"items\"]/compact": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/spark/[\"featureGroups\"]/overview": null,
+  "package/spark/[\"featureGroups\"]/compact": null,
+  "package/spark/[\"featureGroups\",0,\"items\"]/overview": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/spark/[\"featureGroups\",0,\"items\"]/compact": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/spark/[\"featureGroups\",1,\"items\"]/overview": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/spark/[\"featureGroups\",1,\"items\"]/compact": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/spark/[\"featureGroups\",2,\"items\"]/overview": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/spark/[\"featureGroups\",2,\"items\"]/compact": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ]
 }

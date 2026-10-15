@@ -33,7 +33,7 @@ test('Public eligibility is per-value review AND exact UTF-8 source hash; editor
 test('New navigation/UI and package feature text paths use schemas; identifiers and link targets stay German-owned',async()=>{
  for(const [id,schema,file,required,excluded]of[
   ['site/navigation',siteSchemas.navigation,'site/navigation.json',['header',0,'label'],['header',0,'href']],
-  ['site/ui',siteSchemas.ui,'site/ui.json',['base','language'],[]],
+  ['site/ui',siteSchemas.ui,'site/ui.json',['base','navigation','languageLabel'],[]],
   ['package/spark',packageSchema,'packages/spark.json',['featureGroups',0,'items',0,'text'],['featureGroups',0,'items',0,'id']],
  ]){
   const data=schema.parse(JSON.parse(await readFile(new URL('../src/content/'+file,import.meta.url))));

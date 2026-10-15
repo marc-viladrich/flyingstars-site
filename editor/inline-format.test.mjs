@@ -26,6 +26,9 @@ test("stored marks survive the trip through the page HTML and back", () => {
     "Wir {o}gestalten{/o} dein **Stück** Himmel.",
     "{c}NFL{/c} {o}Berlin *Game*{/o}",
     "~~alt~~ **neu**",
+    "{c}{o}Berlin Game{/o}{/c}",
+    "{o}{c}Berlin Game{/c}{/o}",
+    "{c}Exploring{/c}",
     "Preis ab 10 000 € <ohne> & mit",
   ])
     assert.equal(inlineText(tree(inlineHtml(value))), value);

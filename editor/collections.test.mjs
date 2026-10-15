@@ -15,8 +15,8 @@ const root=fileURLToPath(new URL('../',import.meta.url)),run=promisify(execFile)
 const migrationBase='81caa685216019e118a94acbfafd28010ed55b71';
 // Deliberately independent of the implementation's identity table.
 const expected={
-  packages:['package',3],screens:['screen',2],clients:['client',11],
-  team:['team',5],media:['media',45],translations:['translation',76],
+  extras:['extra',6],packages:['package',3],screens:['screen',2],clients:['client',11],
+  team:['team',5],media:['media',45],translations:['translation',88],
   siteContact:['site',1,'contact'],siteInquiry:['site',1,'inquiry'],
   siteNavigation:['site',1,'navigation'],siteUi:['site',1,'ui'],
 };
@@ -34,7 +34,9 @@ test('NativeStore preserves the PR 3 records and whole-file revisions under Astr
   const revision=await git(root,['rev-parse','HEAD']);
   const baseline=await before.stateAt(revision),current=await after.stateAt(revision);
   const values=state=>state.records.map(({id,data,file,revision})=>({id,data,file,revision}));
-  assert.deepEqual(values(current),values(baseline));
+  // The six upgrade records were added after PR 3; all pre-existing owners still agree.
+  assert.deepEqual(values(current).filter(record=>!record.id.startsWith('extra/')),values(baseline));
+  assert.equal(current.records.filter(record=>record.type==='extra').length,6);
   for (const record of current.records) {
     const source=after.sourceFor(record.id);
     const collection=Object.entries(expected).find(([, [prefix,,singleton]])=>
@@ -86,7 +88,8 @@ export async function GET() {
   for (const [collection,[prefix,count,singleton]] of Object.entries(expected)) {
     const records=state.records.filter(record=>record.type===prefix&&(!singleton||record.id===`site/${singleton}`));
     assert.equal(actual[collection].length,count,collection);
-    const normalize=entries=>entries.sort((a,b)=>a.id.localeCompare(b.id));
+    const nativeIds=value=>Array.isArray(value)?value.map(nativeIds):value&&typeof value==='object'?value.collection&&value.id&&Object.keys(value).length===2?value.id:Object.fromEntries(Object.entries(value).map(([k,v])=>[k,nativeIds(v)])):value;
+    const normalize=entries=>nativeIds(entries).sort((a,b)=>a.id.localeCompare(b.id));
     assert.deepEqual(normalize(actual[collection]),normalize(records.map(record=>
       ({id:record.id.slice(prefix.length+1),data:record.data}))),collection);
   }
