@@ -1,3 +1,4 @@
+import {editorEntry,isSitePage,topLevelVisit} from './entry.mjs';
 import http from 'node:http';
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
@@ -56,6 +57,7 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
   if(req.headers.host!==new URL(origin).host)throw failure('Host nicht erlaubt.',403);
   const url=new URL(req.url,origin),p=url.pathname;
   if(p!=='/editor'&&!p.startsWith('/editor/'))res.setHeader('Content-Security-Policy',"frame-ancestors 'self'");
+  if(req.method==='GET'&&p==='/editor'){res.writeHead(302,{location:editorEntry(url)});return res.end();}
   const publicLoginGet=req.method==='GET'&&['/editor/login','/editor/login.js','/editor/editor.css'].includes(p);
   const publicLoginPost=req.method==='POST'&&p==='/editor/api/login';
   let session=null;
@@ -63,10 +65,11 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
    session=await authentication.session(req);
    if(!session){
     const page=req.method==='GET'&&!p.startsWith('/editor/api/')&&!p.startsWith('/_')&&!p.startsWith('/@')&&(path.extname(p)==='.html'||!path.extname(p)&&(!p.startsWith('/editor/')||p==='/editor/'));
-    if(page){res.writeHead(302,{location:'/editor/login?next='+encodeURIComponent(p+url.search)});return res.end();}
+    if(page){res.writeHead(302,{location:'/editor/login?next='+encodeURIComponent(editorEntry(url)||'/editor/')});return res.end();}
     return json(res,401,{error:'Nicht angemeldet.'});
    }
   }
+  if(topLevelVisit(req)&&isSitePage(p)){res.writeHead(302,{location:editorEntry(url)});return res.end();}
   if(req.method==='POST'){
    if(req.headers.origin!==origin)throw failure('Origin nicht erlaubt.',403);
    if(session)authentication.requireCsrf(req,session);

@@ -7,7 +7,9 @@ function nextPath() {
   if (!next || !next.startsWith('/') || next.startsWith('//') || /[\\\x00-\x1f\x7f]/.test(next)) return '/editor/';
   const target = new URL(next, location.origin);
   if (target.origin !== location.origin || target.pathname === '/editor/login') return '/editor/';
-  return target.pathname + target.search + target.hash;
+  // A login always leads into the editor; a site page opens there instead of on its own.
+  if (target.pathname === '/editor' || target.pathname.startsWith('/editor/')) return '/editor/' + target.search;
+  return target.pathname === '/' ? '/editor/' : '/editor/?page=' + encodeURIComponent(target.pathname);
 }
 
 form.addEventListener('submit', async event => {
