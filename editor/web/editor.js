@@ -1065,7 +1065,7 @@ function colorControl(item, field, { labelNode, name, key, isChanged }) {
   const close = (refocus) => {
     palette.hidden = true;
     trigger.setAttribute("aria-expanded", "false");
-    if (refocus) trigger.focus();
+    if (refocus) trigger.focus({ preventScroll: true });
   };
   const choose = (token) => {
     if (busy) return;
@@ -1114,7 +1114,9 @@ function colorControl(item, field, { labelNode, name, key, isChanged }) {
     build();
     palette.hidden = false;
     trigger.setAttribute("aria-expanded", "true");
-    (palette.querySelector('[aria-pressed="true"]') || palette.querySelector(".color-option"))?.focus();
+    const start = palette.querySelector('[aria-pressed="true"]') || palette.querySelector(".color-option");
+    start?.focus({ preventScroll: true });
+    revealInPanel(start);
   });
   palette.addEventListener("keydown", (event) => {
     const options = [...palette.querySelectorAll(".color-option")];
@@ -1126,10 +1128,14 @@ function colorControl(item, field, { labelNode, name, key, isChanged }) {
       close(true);
     } else if (step && at >= 0) {
       event.preventDefault();
-      options[(at + step + options.length) % options.length].focus();
+      const next = options[(at + step + options.length) % options.length];
+      next.focus({ preventScroll: true });
+      revealInPanel(next);
     } else if (event.key === "Home" || event.key === "End") {
       event.preventDefault();
-      options[event.key === "Home" ? 0 : options.length - 1]?.focus();
+      const edge = options[event.key === "Home" ? 0 : options.length - 1];
+      edge?.focus({ preventScroll: true });
+      revealInPanel(edge);
     }
   });
   paint();
@@ -1856,6 +1862,18 @@ function pushView(context, scope) {
 }
 // A step within the same object (an entry → its parent entry, an element → its card) replaces the view in
 // place instead of stacking another one; the target is revealed (opened, scrolled to, focused).
+// Scrolls the panel body vertically only (scrollIntoView would also shift the panel sideways by the
+// resize handles' overhang): the node's top stays visible, as much of the rest as fits.
+function revealInPanel(node, { smooth = false } = {}) {
+  const body = $("#panel-body");
+  if (!node || !body.contains(node)) return;
+  const box = body.getBoundingClientRect(),
+    rect = node.getBoundingClientRect();
+  let top = body.scrollTop;
+  if (rect.top < box.top) top -= box.top - rect.top;
+  else if (rect.bottom > box.bottom) top += Math.min(rect.bottom - box.bottom, rect.top - box.top);
+  if (top !== body.scrollTop) body.scrollTo({ top, behavior: smooth && !reducedMotion() ? "smooth" : "auto" });
+}
 function revealView(context, scope) {
   stageInputs();
   panelStack[panelStack.length - 1] = { context: structuredClone(context), scope };
@@ -1954,6 +1972,7 @@ function renderTop({ keepScroll = false, keepPlace = false } = {}) {
     for (let i = 1; i <= reveal.length; i++)
       if (typeof reveal[i - 1] === "number" && i > (view.context.path || []).length) openDisclosures.set(fieldKey(item.id, reveal.slice(0, i)), true);
   body.replaceChildren();
+  panel.scrollLeft = 0;
   $("#panel-actions").replaceChildren();
   overviewObserver?.disconnect();
   const head = (title, iconName, kind) =>
@@ -1970,7 +1989,7 @@ function renderTop({ keepScroll = false, keepPlace = false } = {}) {
     let target = body.querySelector(`[data-field-key="${CSS.escape(fieldKey(item.id, reveal))}"]`);
     for (let i = reveal.length; i > 0 && !target; i--) target = body.querySelector(entryKeySelector(item.id, reveal.slice(0, i)));
     if (target) {
-      target.scrollIntoView({ block: "nearest" });
+      revealInPanel(target);
       (target.matches("input,textarea,select,button") ? target : target.querySelector(".entry-toggle,input,textarea,select,button"))?.focus({ preventScroll: true });
       return;
     }
@@ -2138,7 +2157,7 @@ function moreDisclosure(item, units, prefix, key) {
     if (!details.open) return;
     fill();
     // The opened fields come into view below the summary that was clicked.
-    details.querySelector(":scope > .group")?.scrollIntoView({ block: "nearest", behavior: reducedMotion() ? "auto" : "smooth" });
+    revealInPanel(details.querySelector(":scope > .group"), { smooth: true });
   });
   return details;
 }
