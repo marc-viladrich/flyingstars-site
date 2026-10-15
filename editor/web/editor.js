@@ -3191,6 +3191,8 @@ function mediaPlace(owner, path, markdown) {
   if (markdown) parts.push("im Text");
   return parts.join(" · ");
 }
+// A page is named as in the page menu ("Startseite"), not by its SEO title.
+const pageName = (page) => pageChoices().find((choice) => page.route && choice.value === normalizedRoute(page.route))?.label || recordName(page);
 function mediaUsageBlock(item) {
   const usage = mediaLibrary(records()).assets.find((a) => a.id === item.id)?.usage || [];
   if (!usage.length) return { title: "Verwendet in", controls: [el("p", { class: "note", text: "Dieses Bild wird noch nirgends verwendet." })] };
@@ -3205,7 +3207,7 @@ function mediaUsageBlock(item) {
       "button",
       { type: "button", class: "action nav media-usage", onclick: open },
       icon(kindOf(owner.id)[1]),
-      el("span", { class: "media-usage-text" }, el("span", { class: "media-usage-name", text: recordName(owner) }), el("small", { text: [kindOf(owner.id)[0], mediaPlace(owner, ownPath, use.markdown)].filter(Boolean).join(" · ") })),
+      el("span", { class: "media-usage-text" }, el("span", { class: "media-usage-name", text: /^(page|screen)\//.test(owner.id) ? pageName(owner) : recordName(owner) }), el("small", { text: [kindOf(owner.id)[0], mediaPlace(owner, ownPath, use.markdown)].filter(Boolean).join(" · ") })),
       icon("chevron-right"),
     );
   });
