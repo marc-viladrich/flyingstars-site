@@ -32,6 +32,10 @@ test('all policies and collected proposals run once in deterministic name order;
  assert.equal(empty.first('route',{}),undefined);assert.equal(empty.some('preventDelete','x'),false);
  assert.deepEqual(empty.collect('references',[],{}),[]);assert.equal(empty.run('validateRecords',[]),undefined);
  assert.throws(()=>empty.require('mediaPolicy'),/missing/);
+ assert.throws(()=>empty.runRequired('validateBinaryWrite',{}),/missing/);
+ const writes=[];
+ const mandatory=createExtensionRegistry([extension('site/a',{validateBinaryWrite:()=>{writes.push('a');return true;}}),extension('site/z',{validateBinaryWrite:()=>{writes.push('z');throw Error('binary policy');}})]);
+ assert.throws(()=>mandatory.runRequired('validateBinaryWrite',{}),/binary policy/);assert.deepEqual(writes,['a','z']);
  assert.throws(()=>empty.first('typo'),/Unknown/);
 });
 

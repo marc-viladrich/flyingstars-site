@@ -43,6 +43,7 @@ import {AsyncLocalStorage} from 'node:async_hooks';
  * @property {<K extends keyof ServerHooks>(name:K, ...args:Parameters<NonNullable<ServerHooks[K]>>)=>ReturnType<NonNullable<ServerHooks[K]>>|undefined} first
  * @property {<K extends keyof ServerHooks>(name:K, ...args:Parameters<NonNullable<ServerHooks[K]>>)=>ReturnType<NonNullable<ServerHooks[K]>>} require
  * @property {<K extends keyof ServerHooks>(name:K, ...args:Parameters<NonNullable<ServerHooks[K]>>)=>void} run
+ * @property {<K extends keyof ServerHooks>(name:K, ...args:Parameters<NonNullable<ServerHooks[K]>>)=>void} runRequired
  * @property {<K extends keyof ServerHooks>(name:K, ...args:Parameters<NonNullable<ServerHooks[K]>>)=>Promise<void>} runAsync
  * @property {<K extends keyof ServerHooks>(name:K, ...args:Parameters<NonNullable<ServerHooks[K]>>)=>boolean} some
  * @property {<K extends keyof ServerHooks>(name:K, ...args:Parameters<NonNullable<ServerHooks[K]>>)=>(ReturnType<NonNullable<ServerHooks[K]>> extends (infer T)[] ? T : never)[]} collect
@@ -76,6 +77,7 @@ export function createExtensionRegistry(definitions=[]) {
   some:(name,...args)=>invoke(name,args,'some'),
   collect:(name,...args)=>invoke(name,args,'collect'),
   run:(name,...args)=>invoke(name,args,'run'),
+  runRequired(name,...args){if(!hooks(name).length)throw Error('Required extension hook is missing: '+name);return invoke(name,args,'run');},
   require(name,...args){if(!hooks(name).length)throw Error('Required extension hook is missing: '+name);return invoke(name,args,'first');},
   async runAsync(name,...args){const list=hooks(name);return enter(async()=>{for(const hook of list)await hook(...args);});},
  });

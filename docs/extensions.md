@@ -38,6 +38,7 @@ Die Ausführung folgt der aufsteigenden Zeichenreihenfolge der Extension-Namen, 
 | `some(name, ...args)` | `false` | Erster wahrer Wert beendet die Suche |
 | `collect(name, ...args)` | `[]` | Hängt Ergebnislisten in Ausführungsreihenfolge aneinander |
 | `run(name, ...args)` | Kein Eingriff | Führt jeden synchronen Validator einmal aus |
+| `runRequired(name, ...args)` | Fehler | Führt jeden Validator aus und ignoriert Rückgabewerte |
 | `runAsync(name, ...args)` | Kein Eingriff | Wartet nacheinander auf jeden Validator |
 
 Ein Fehler beendet den Aufruf. Synchrone Aufrufe akzeptieren keine Promise-Ergebnisse. Rekursive Aufrufe derselben Registry sind verboten; unabhängige parallele Requests haben getrennte Aufrufkontexte. Die Registry stellt keine Schreibmethode bereit.

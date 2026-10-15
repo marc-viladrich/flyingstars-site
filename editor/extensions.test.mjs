@@ -75,14 +75,15 @@ test('extension policy errors, duplicate proposals and invalid proposed identiti
  const adapter=await createFlyingStarsAdapter(directory),store=await new NativeStore(directory,{site:adapter,remote:false}).init(),state=await store.state(),record=state.records.find(r=>r.id==='package/spark');
  const request=()=>({expectedHead:state.head,requestId:randomUUID(),changes:[{id:record.id,expectedRevision:record.revision,patches:[{path:['price'],value:record.data.price+1}]}]});
  const invalidIdentity={id:record.id,data:{...record.data,name:'HORIZON'}};
- for(const hooks of [
-  {validateRecords:()=>{throw Error('test policy rejected');}},
-  {prepareTransaction:()=>[invalidIdentity]},
-  {prepareTransaction:()=>[invalidIdentity,invalidIdentity]},
-  {prepareTransaction:()=>[{id:'page/index',data:{}}]},
+ const validProposal={id:record.id,data:{...record.data,price:record.data.price+2}};
+ for(const [hooks,reason] of [
+  [{validateRecords:()=>{throw Error('test policy rejected');}},/test policy rejected/],
+  [{prepareTransaction:()=>[invalidIdentity]},/schreibgeschützt: name/],
+  [{prepareTransaction:()=>[validProposal,validProposal]},/Widersprüchliche Extension/],
+  [{prepareTransaction:()=>[{id:'page/index',data:{}}]},/Widersprüchliche Extension/],
  ]){
   adapter.extensions=createExtensionRegistry([...site.extensions.definitions,{name:'test/rejection',contractVersion:'1.0',hooks}]);
-  await assert.rejects(store.save(request()));assert.equal(await store.head(),state.head);
+  await assert.rejects(store.save(request()),reason);assert.equal(await store.head(),state.head);
   assert.equal(await git(directory,['status','--porcelain','--untracked-files=no']),'');
  }
 });
