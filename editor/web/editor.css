@@ -1696,7 +1696,7 @@ body#login {
 }
 .color-options {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 184px), 1fr));
   gap: 2px;
 }
 .editor-ui .color-option {
@@ -1709,10 +1709,10 @@ body#login {
   text-align: left;
   white-space: normal;
 }
-/* Token names wrap rather than being cut off in a narrow panel. */
+/* Token names stay whole; only a name longer than the whole column breaks. */
 .editor-ui .color-option-label {
   flex: 1;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 .editor-ui .color-option[aria-pressed="true"] {
   background: var(--ui-tint);
