@@ -21,7 +21,7 @@ export class NativeDraft {
  accept(records){this.reset(records);}
 }
 export function sectionMutation(sections,index,action,template){const next=clone(sections);if(action==='insert'){const inserted=uniqueSection(clone(template),next);next.splice(index,0,inserted);return next;}if(index<0||index>=next.length)throw Error('Abschnitt nicht mehr vorhanden.');if(action==='remove')next.splice(index,1);else if(action==='duplicate')next.splice(index+1,0,uniqueSection(clone(next[index]),next));else if(action==='up'&&index>0)[next[index-1],next[index]]=[next[index],next[index-1]];else if(action==='down'&&index<next.length-1)[next[index+1],next[index]]=[next[index],next[index+1]];return next;}
-export function referencePrefix(path){const key=path.at(-1);return key==='clientIds'?'client/':key==='memberIds'?'team/':key==='packageIds'?'package/':null;}
+
 
 function uniqueSection(section,existing){if(section.id){const base=section.id.replace(/-kopie(?:-\d+)?$/,'');let index=1,candidate=base+'-kopie';while(existing.some(s=>s.id===candidate))candidate=base+'-kopie-'+(++index);section.id=candidate;}return section;}
 

@@ -1,3 +1,5 @@
+import {siteWidgets,siteChange,referencePrefix,referencedRecords,omitRecordField,mediaUsageKeys,mediaSelection,selectedMedia,uploadedMediaId,optionalFieldAllowed} from './site-adapter.mjs';
+import {nodeAt,listPolicy,recordTitle} from '../core/metadata.mjs';
 import { inspectHorizontalLayout } from "./layout-guard.mjs";
 import {
   normalizedRoute,
@@ -15,7 +17,7 @@ import {
 } from "./view-state.mjs";
 import { packageOwnedPagePath } from "/editor/package-ownership.mjs";
 import { describe } from "./native-schema.mjs";
-import { NativeDraft, getPath, same, sectionMutation, referencePrefix, newRecordData } from "./native-draft.mjs";
+import { NativeDraft, getPath, same, sectionMutation, newRecordData } from "./native-draft.mjs";
 import { ui } from "./ui-icons.mjs";
 import { fieldLabel, choiceLabel, isTechnical } from "./field-labels.mjs";
 import { sha256 } from "./sha256.mjs";
@@ -62,25 +64,7 @@ const record = (id) => records().find((item) => item.id === id);
 const value = (item, path) => getPath(draft.get(item.id)?.data, path);
 const reducedMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-const sectionIcons = {
-  showreelHero: "clapperboard",
-  occasions: "party-popper",
-  metrics: "chart-no-axes-column",
-  sustainability: "leaf",
-  hero: "panel-top",
-  textMedia: "panels-left-bottom",
-  faq: "circle-help",
-  cta: "mouse-pointer-2",
-  postList: "newspaper",
-  projectGrid: "layout-grid",
-  pricing: "package",
-  steps: "list-ordered",
-  comparison: "table-2",
-  team: "users",
-  logoBar: "building-2",
-  testimonials: "quote",
-  contactForm: "mail",
-};
+const sectionIcon=type=>state?.templates?.sections?.find(t=>t.type===type)?.schema?.['x-afe']?.block?.icon||'layers';
 
 // ---------------------------------------------------------------------------
 // DOM helpers
@@ -269,6 +253,7 @@ function describeItem(item) {
       id: item.id,
       readOnlyPaths: item.readOnlyPaths || [],
       derivedPath: packageOwnedPagePath,
+      omitPath:(data,path)=>omitRecordField(item,data,path),
     });
     described.set(item, result);
   }
@@ -417,22 +402,8 @@ function stageInputs() {
 function changed(id, path, newValue) {
   if (busy || !ready) return;
   stageInputs();
-  // A card that switches to another package keeps only Leistungen that exist in the new package.
-  if (path.at(-1) === "packageId") {
-    const card = path.slice(0, -1);
-    const pkg = record("package/" + newValue);
-    const known = new Set((pkg?.data.featureGroups || []).flatMap((g) => (g.items || []).map((f) => f.id)));
-    const selected = getPath(record(id)?.data, [...card, "featureIds"]);
-    draft.group(() => {
-      draft.set(id, path, newValue);
-      if (Array.isArray(selected)) draft.set(id, [...card, "featureIds"], selected.filter((f) => known.has(f)));
-    });
-    editing.clear();
-    retry = null;
-    syncFrame();
-    update();
-    rerender();
-    return;
+  if (siteChange(id,path,newValue,{record,draft})) {
+    editing.clear();retry=null;syncFrame();update();rerender();return;
   }
   draft.set(id, path, newValue);
   editing.clear();
@@ -941,10 +912,7 @@ function actionRow(label, run, iconName, { danger = false, confirm } = {}) {
 }
 
 // Texts of content records have a translation per language; links, files and colours do not.
-const translatableRecord = (id) => /^(page|post|project|faq|client|team|screen|package|site)\//.test(id);
-function isTranslatable(item, field) {
-  return !!field && field.kind === "text" && field.format !== "color" && translatableRecord(item.id) && !["href", "url", "src", "video"].includes(field.path.at(-1));
-}
+function isTranslatable(item,field){return field?.kind==='text'&&field['x-afe']?.translatable===true;}
 // "Übersetzen" for one clicked text: in German it switches to the foreign view with that text focused on
 // the page; in a foreign view it goes back to German and the panel stays.
 function translateAction(item, field) {
@@ -987,7 +955,7 @@ function fieldControl(item, field, { label } = {}) {
     const seg = el("div", { class: "seg", role: "group", "aria-label": name });
     for (const choice of field.choices) {
       const val = typeof choice === "object" ? choice.value : choice;
-      const option = button(choiceLabel(choice), () => {
+      const option = button(choiceLabel(choice,field), () => {
         if (busy) return;
         changed(item.id, field.path, val);
         for (const other of seg.children) other.setAttribute("aria-pressed", String(other === option));
@@ -1004,15 +972,15 @@ function fieldControl(item, field, { label } = {}) {
   if (field.kind === "enum") {
     input = el("select", { "aria-label": name });
     for (const choice of field.choices || []) {
-      const option = el("option", { text: choiceLabel(choice) });
+      const option = el("option", { text: choiceLabel(choice,field) });
       option.value = typeof choice === "object" ? choice.value : choice;
       input.append(option);
     }
   } else if (field.kind === "number") input = el("input", { type: "number", step: "any", "aria-label": name });
   else {
-    const long = String(current ?? "").length > 60 || field.format === "markdown" || field.path.at(-1) === "body";
-    const isLink = ["href", "url"].includes(field.path.at(-1));
-    const markdown = field.format === "markdown" || field.path.at(-1) === "body";
+    const long = ["multiline","markdown"].includes(field.format);
+    const isLink = field.format === "url";
+    const markdown = field.format === "markdown";
     input = long
       ? el("textarea", { rows: markdown ? 10 : 3, class: markdown ? "markdown" : "", "aria-label": name })
       : el("input", { type: isLink ? "url" : "text", "aria-label": name });
@@ -1204,60 +1172,16 @@ function afterPresentationChange() {
 }
 
 // Images: preview, replace, alt text inherited from the media record with an explicit local override.
-function mediaControl(item, path, { title, untitled = false } = {}) {
-  const usage = value(item, path) || {};
-  const asset = usage.assetId && (record(usage.assetId) || record("media/" + usage.assetId));
-  const src = asset?.data.src || usage.src;
-  const preview = el(
-    "button",
-    { type: "button", class: "media-preview", "aria-label": "Bild ersetzen", onclick: () => openMedia({ id: item.id, path }) },
-    src ? el("img", { src, alt: "" }) : el("span", { class: "empty", text: "Kein Bild gewählt" }),
-  );
-  const parts = [
-    untitled ? null : el("span", { class: "row-label", text: title || fieldLabel({ path }) }),
-    preview,
-    button(src ? "Bild ersetzen" : "Bild wählen", () => openMedia({ id: item.id, path }), { icon: "image", cls: "inline-button" }),
-  ];
-  const fields = fieldsFor(item).filter((f) => f.path.length === path.length + 1 && path.every((p, i) => f.path[i] === p));
-  const decorative = fields.find((f) => f.path.at(-1) === "decorative");
-  const override = fields.find((f) => f.path.at(-1) === "altOverride");
-  const altField = fields.find((f) => f.path.at(-1) === "alt");
-  if (src) {
-    if (decorative) parts.push(fieldControl(item, decorative, { label: "Dekoratives Bild" }));
-    if (!usage.decorative) {
-      const overridePath = [...path, "altOverride"];
-      if (override || usage.assetId) {
-        const inherited = asset?.data.defaultAlt || "";
-        const local = usage.altOverride !== null && usage.altOverride !== undefined;
-        const toggle = el("input", { type: "checkbox", class: "switch", role: "switch", "aria-label": "Alternativtext nur hier abweichend" });
-        toggle.checked = local;
-        toggle.addEventListener("change", () => {
-          changed(item.id, overridePath, toggle.checked ? inherited : null);
-          rerender();
-        });
-        parts.push(
-          el(
-            "div",
-            { class: "stack" },
-            el("span", { class: "row-label", text: "Alternativtext" }),
-            local
-              ? fieldControl(item, override || { path: overridePath, kind: "text" }, { label: "Alternativtext an dieser Stelle" }).lastChild
-              : el("p", { class: "inherited-alt", text: inherited || "Noch kein Alternativtext in der Mediathek." }),
-          ),
-        );
-        parts.push(el("label", { class: "row" }, el("span", { class: "row-label", text: "Nur hier abweichend" }), toggle));
-        if (asset) parts.push(navRow("Mediathek-Eintrag bearbeiten", () => pushView({ id: asset.id, path: [] }, "record"), "image"));
-      } else if (altField) parts.push(fieldControl(item, altField, { label: "Alternativtext" }));
-    }
-  }
-  return el("div", { class: "media-field" }, parts);
+function mediaControl(item,path,options={}) {
+ const container=containersFor(item).find(c=>equal(c.path,path));
+ return siteWidgets[container?.['x-afe']?.widget]?.render?.(item,path,options,{value,record,el,openMedia,fieldLabel,button,fieldsFor,fieldControl,changed,rerender,navRow,pushView});
 }
 // How a list entry is named and pictured wherever it appears (row, drag handle, panel title, "Gehört zu"):
 // an image by caption/alt/library title/file name with a thumbnail, an entry standing for another record
-// (packageId) by that record, others by their own title or name, an entry carrying an image by that image.
+// by the declared item label and reference; an entry carrying an image can use its image summary.
 function entrySummary(item, path, entry = value(item, path)) {
   const containers = containersFor(item);
-  // An id in a picker list (memberIds, featureIds) is named like its option: the record or Leistung it shows.
+  // A picker entry is named like its declared option.
   if (entry !== null && entry !== undefined && typeof entry !== "object") {
     const list = containers.find((c) => equal(c.path, path.slice(0, -1)));
     const option = list && choiceSource(item, list)?.options.find((o) => o.key === entry || o.alias === entry);
@@ -1269,7 +1193,8 @@ function entrySummary(item, path, entry = value(item, path)) {
     !image && entry && typeof entry === "object"
       ? containers.find((c) => c.path.length === path.length + 1 && under(c.path, path) && value(item, c.path) && isMediaContainer(item, c))
       : null;
-  const summary = itemSummary(entry, path.at(-1), { records: records(), image, imageChild: child ? value(item, child.path) : null, recordName });
+  const listNode=nodeAt(item.schema,item.data,path.slice(0,-1));
+  const summary = itemSummary(entry, path.at(-1), { records: records(), image, imageChild: child ? value(item, child.path) : null, recordName,itemLabel:listNode?.['x-afe']?.array?.itemLabel,element:listNode?.element });
   return { label: inlinePlain(summary.label), thumb: summary.thumb };
 }
 function listLabel(item, path) {
@@ -1281,38 +1206,19 @@ function listLabel(item, path) {
 // package's own Leistungen on its homepage card. Chosen ones first, in their shown order and reorderable
 // by drag or arrow keys; the others below to tick on. The text always stays with its owner.
 function choiceSource(item, container) {
-  const prefix = referencePrefix(container.path);
-  if (prefix) {
-    const all = records().filter((r) => r.id.startsWith(prefix));
+  const ref = nodeAt(item.schema,item.data,[...container.path,0])?.['x-afe']?.reference;
+  const prefix = referencePrefix(ref);
+  const all = ref ? referencedRecords(records(),ref) : [];
+  if (ref) {
     return {
-      noun: prefix === "client/" ? "Kunde" : prefix === "team/" ? "Teammitglied" : kindOf(prefix)[0],
+      noun: all[0]?.schema?.['x-afe']?.collection?.label||"Eintrag",
       empty: "Noch niemand ausgewählt.",
       create: recordTemplate(prefix) ? () => openCreate(prefix, { id: item.id, path: container.path }) : null,
       options: all.map((r) => ({ key: r.id.slice(prefix.length), alias: r.id, label: recordName(r), open: () => pushView({ id: r.id, path: [] }, "record") })),
     };
   }
-  // A package card shows a selection of the package's Leistungen (featureIds of package featureGroups).
-  if (container.path.at(-1) === "featureIds") {
-    const owner = getPath(item.data, container.path.slice(0, -1));
-    const pkg = owner?.packageId && record("package/" + owner.packageId);
-    if (!pkg) return { options: [], empty: "Erst ein Paket wählen." };
-    return {
-      noun: "Leistung",
-      empty: "Noch keine Leistung auf der Karte.",
-      owner: pkg,
-      create: () => pushView({ id: pkg.id, path: [] }, "record"),
-      createLabel: `Leistungen von ${recordName(pkg)} bearbeiten`,
-      options: (pkg.data.featureGroups || []).flatMap((group, g) =>
-        (group.items || []).map((feature, i) => ({
-          key: feature.id,
-          label: inlinePlain(feature.text),
-          group: group.title,
-          // The text belongs to the package: open its overview with this Leistung revealed.
-          open: () => pushView({ id: pkg.id, path: [], reveal: ["featureGroups", g, "items", i] }, "record"),
-        })),
-      ),
-    };
-  }
+  const widget=siteWidgets[container['x-afe']?.widget];
+  if(widget?.choices)return widget.choices(item,container,{record,recordName,pushView,inlinePlain});
   return null;
 }
 // part: "all" (picker with candidates), "chosen" (what the card shows) or "candidates" (the rest to tick on).
@@ -1340,6 +1246,7 @@ function referenceControl(item, container, source, { part = "all" } = {}) {
   const row = (option, index) => {
     const box = el("input", { type: "checkbox", "aria-label": `${option.label} anzeigen` });
     box.checked = index !== null;
+    box.disabled = index===null?!listPolicy(container).insertable:!listPolicy(container).removable;
     box.addEventListener("change", () => {
       stageInputs();
       const next = now().filter((id) => !matches(option, id));
@@ -1347,7 +1254,7 @@ function referenceControl(item, container, source, { part = "all" } = {}) {
       write(next);
     });
     const li = el("li", { "data-index": index === null ? "" : String(index), ...(index === null ? {} : { "data-entry-key": fieldKey(item.id, [...container.path, index]) }) });
-    if (index !== null && chosen.length > 1) {
+    if (index !== null && chosen.length > 1 && listPolicy(container).reorderable) {
       const grip = button(`„${option.label}“ verschieben`, null, {
         icon: "grip-vertical",
         iconOnly: true,
@@ -1471,6 +1378,7 @@ function contentControls(item, prefix, options = {}) {
 // Every write reads the current draft value, never a copy from when the panel opened.
 // Small object entries (label + value, number + label) are edited as a table, one row per entry.
 function tableColumns(item, container) {
+  if(!siteWidgets[container['x-afe']?.widget]?.table)return null;
   const entries = value(item, container.path);
   if (!Array.isArray(entries) || !entries.length || entries.some((e) => !e || typeof e !== "object" || Array.isArray(e))) return null;
   const first = [...container.path, 0];
@@ -1479,7 +1387,6 @@ function tableColumns(item, container) {
   const columns = fieldsFor(item).filter((f) => f.path.length === first.length + 1 && under(f.path, first) && !isTechnical(f));
   const max = $("#panel").dataset.size === "overview" ? 3 : 2;
   if (!columns.length || columns.length > max || columns.some((f) => !["text", "number"].includes(f.kind))) return null;
-  if (Object.keys(entries[0]).filter((k) => !isTechnical({ path: [k] })).length !== columns.length) return null;
   return columns.map((f) => ({ key: f.path.at(-1), label: fieldLabel(f) }));
 }
 // Complex entries open in place as disclosures (no new panel): the summary row names and pictures the
@@ -1562,7 +1469,7 @@ function listRows(item, container, options = {}) {
     const summary = primitive ? null : entrySummary(item, entryPath, entry);
     const row = el("li", { "data-index": String(index), "data-entry-key": fieldKey(item.id, entryPath) });
     // Tags are a set: their order changes nothing on the page.
-    const reorderable = current.length > 1 && !positionalList(container.path) && container.path.at(-1) !== "tags";
+    const reorderable = current.length > 1 && listPolicy(container).reorderable;
     let grip = null;
     if (reorderable) {
       grip = button(`„${summary ? summary.label : String(entry ?? "")}“ verschieben`, null, {
@@ -1579,7 +1486,7 @@ function listRows(item, container, options = {}) {
       });
       grip.addEventListener("pointerdown", (event) => dragRow(event, list, row, index, moveTo));
     }
-    const removable = current.length > (container.min || 0) && !positionalList(container.path);
+    const removable = current.length > (container.min || 0) && listPolicy(container).removable;
     if (columns) {
       if (grip) row.append(grip);
       for (const column of columns) {
@@ -1595,7 +1502,7 @@ function listRows(item, container, options = {}) {
       const input = field && fieldControl(item, field, { label: `${fieldLabel(container)} ${index + 1}` }).lastChild;
       // A text entry left empty disappears again instead of being saved as a blank value.
       input?.addEventListener("blur", () => {
-        if (input.value.trim() === "" && now()[index] !== undefined && String(now()[index]).trim() === "") removeAt(index);
+        if (listPolicy(container).removable && input.value.trim() === "" && now()[index] !== undefined && String(now()[index]).trim() === "") removeAt(index);
       });
       row.append(input || el("span", { class: "row-text", text: String(entry) }));
       if (removable) row.append(button("Entfernen", () => removeAt(index), { icon: "x", iconOnly: true, cls: "row-remove" }));
@@ -1629,7 +1536,7 @@ function listRows(item, container, options = {}) {
     options.bare ? null : el("span", { class: "row-label", text: fieldLabel(container) }),
     current.length ? [head, list] : el("p", { class: "note", text: "Noch keine Einträge." }),
   ].flat().filter(Boolean);
-  if (container.elementTemplate !== undefined && (container.max === undefined || current.length < container.max) && !positionalList(container.path))
+  if (listPolicy(container).insertable && container.elementTemplate !== undefined && (container.max === undefined || current.length < container.max))
     parts.push(
       button(
         "Eintrag hinzufügen",
@@ -1653,7 +1560,7 @@ function listRows(item, container, options = {}) {
   return el("div", { class: "stack list-field" }, parts);
 }
 // Keys the media control owns for an image usage.
-const mediaUsageKeys = new Set(["src", "width", "height", "alt", "altOverride", "decorative", "assetId", "mime"]);
+
 // The body of an open entry: its fields, images and nested lists in schema order, then duplicate/remove.
 function entryBody(item, path, container, { removeAt, now, write }) {
   const direct = fieldsFor(item).filter((f) => f.path.length === path.length + 1 && under(f.path, path) && !isTechnical(f));
@@ -1673,8 +1580,8 @@ function entryBody(item, path, container, { removeAt, now, write }) {
   const index = path.at(-1);
   const list = now();
   const actions = [];
-  if (!positionalList(container.path)) {
-    if (container.elementTemplate !== undefined && (container.max === undefined || list.length < container.max))
+  if (listPolicy(container).insertable || listPolicy(container).removable) {
+    if (listPolicy(container).insertable && container.elementTemplate !== undefined && (container.max === undefined || list.length < container.max))
       actions.push(
         button(
           "Duplizieren",
@@ -1691,7 +1598,7 @@ function entryBody(item, path, container, { removeAt, now, write }) {
           { icon: "copy", cls: "inline-button" },
         ),
       );
-    if (list.length > (container.min || 0)) {
+    if (listPolicy(container).removable && list.length > (container.min || 0)) {
       const remove = button("Entfernen", null, { icon: "trash-2", cls: "inline-button danger" });
       confirmInPlace(remove, "Wirklich entfernen?", () => {
         removeAt(index);
@@ -1852,7 +1759,7 @@ function optionalVariants(item, prefix, { exact = false } = {}) {
     .filter(
       (f) => (f.kind === "boolean" || (f.kind === "enum" && f.choices?.length)) && under(f.path, prefix) && (!exact || f.path.length === prefix.length + 1),
     )
-    .filter((f) => value(item, f.path) === undefined && !isTechnical(f) && f.path.at(-1) !== "decorative")
+    .filter((f) => value(item, f.path) === undefined && !isTechnical(f) && optionalFieldAllowed(f))
     .map((f) => fieldControl(item, f));
 }
 function sectionTitle(item, index) {
@@ -1936,7 +1843,7 @@ function popView() {
   renderTop({ keepPlace: true });
 }
 function recordName(item) {
-  return inlinePlain(item?.data?.displayName || item?.data?.name || item?.data?.title || item?.data?.question || item?.title || "Inhalt");
+  return inlinePlain(recordTitle(item));
 }
 function navRow(label, run, iconName) {
   const row = button(label, run, { icon: iconName, cls: "action nav" });
@@ -1949,10 +1856,6 @@ function sectionOf(context) {
   return path[0] === "sections" && Number.isInteger(path[1]) ? { id: context.id, index: path[1] } : null;
 }
 // Lists whose order is bound to something else (table cells follow their columns) never move or shrink alone.
-function positionalList(path) {
-  const key = path.at(-1);
-  return ["cells", "values", "columns"].includes(key);
-}
 function entryPrefixOf(item, path) {
   // Deepest array entry above the clicked field: sections,3,tiers,1,name → sections,3,tiers,1.
   let found = null;
@@ -1999,7 +1902,7 @@ function parentLinks(item, context, { from }) {
       navRow(
         `Abschnitt „${sectionTitle(sectionRecord, section.index)}“`,
         () => pushView({ id: section.id, path: ["sections", section.index] }, "section"),
-        sectionIcons[sectionRecord.data.sections?.[section.index]?.type] || "panel-top",
+        sectionIcon(sectionRecord.data.sections?.[section.index)?.type] || "panel-top",
       ),
     );
   return actionGroup(rows.length ? "Gehört zu" : null, rows);
@@ -2152,7 +2055,7 @@ function unitsOf(item, prefix) {
   const fields = fieldsFor(item)
     .filter((f) => inPrefix(f.path) && !isTechnical(f))
     .map((f) => ({ ...f, inline: inlineKeys.has(fieldKey(item.id, f.path)) }));
-  const optionalFields = optionalFieldsFor(item).filter((f) => inPrefix(f.path) && !isTechnical(f) && f.path.at(-1) !== "decorative");
+  const optionalFields = optionalFieldsFor(item).filter((f) => inPrefix(f.path) && !isTechnical(f) && optionalFieldAllowed(f));
   return scopeUnits({ fields, containers, optionalFields, data: item.data, prefix });
 }
 // One control per unit; labels name the parent group for nested fields ("Link · Ziel").
@@ -2259,11 +2162,11 @@ function instanceView(body, item, context, head) {
 // Duplicate/remove of a card opened on its own (from the canvas).
 function entryActionGroup(item, path, container, lead = []) {
   const list = value(item, path.slice(0, -1)) || [];
-  if (positionalList(path.slice(0, -1))) return actionGroup(null, lead);
+
   const entry = value(item, path);
   return actionGroup(null, [
     ...lead,
-    container?.elementTemplate !== undefined && (container.max === undefined || list.length < container.max)
+    listPolicy(container).insertable && container?.elementTemplate !== undefined && (container.max === undefined || list.length < container.max)
       ? actionRow(
           "Duplizieren",
           () => {
@@ -2276,7 +2179,7 @@ function entryActionGroup(item, path, container, lead = []) {
           "copy",
         )
       : null,
-    list.length > (container?.min || 0)
+    listPolicy(container).removable && list.length > (container?.min || 0)
       ? actionRow(
           "Entfernen",
           () => {
@@ -2327,7 +2230,7 @@ function sectionView(body, item, context, head) {
   const index = context.path[1];
   const base = ["sections", index];
   const section = item.data.sections?.[index];
-  head(sectionTitle(item, index), sectionIcons[section?.type] || "panel-top", "Abschnitt");
+  head(sectionTitle(item, index), sectionIcon(section?.type) || "panel-top", "Abschnitt");
   const variants = fieldsFor(item).filter((f) => f.path.length === 3 && under(f.path, base) && ["enum", "boolean"].includes(f.kind) && !isTechnical(f));
   put(
     body,
@@ -2881,7 +2784,7 @@ function openSections(id = currentPage()?.id, index) {
           toast(`„${template.title || template.type}“ hinzugefügt.`, { action: undoLast });
         },
       },
-      icon(sectionIcons[template.type] || "panel-top"),
+      icon(sectionIcon(template.type) || "panel-top"),
       el("span", { class: "card-text" }, el("span", { text: template.title || template.type }), full ? el("small", { text: "Schon auf dieser Seite" }) : null),
     );
     grid.append(card);
@@ -3114,8 +3017,7 @@ function rovingFocus(container, selector, { grid = false } = {}) {
 }
 function mediaBrowser({ mode, dialog: d, context = null }) {
   const picking = mode === "pick";
-  const currentRef = picking ? value(record(context.id), context.path)?.assetId : null;
-  const currentId = currentRef ? (currentRef.startsWith("media/") ? currentRef : "media/" + currentRef) : null;
+  const currentId = picking ? mediaSelection(value(record(context.id),context.path)) : null;
   let library = mediaLibrary(records());
   // Choosing a client logo starts in "Kunden", a team portrait in "Team" – when that collection exists.
   const start = picking ? collectionOf(context.id, records()) : null;
@@ -3139,16 +3041,7 @@ function mediaBrowser({ mode, dialog: d, context = null }) {
   );
   const choose = (asset) => {
     const existing = value(record(context.id), context.path) || {};
-    changed(context.id, context.path, {
-      ...existing,
-      src: asset.data.src,
-      alt: asset.data.defaultAlt || "",
-      width: asset.data.width,
-      height: asset.data.height,
-      assetId: asset.id,
-      altOverride: null,
-      decorative: false,
-    });
+    changed(context.id, context.path, selectedMedia(existing,asset));
     d.close();
     if (currentInspector) rerender();
     else openInspector(context, "media");
@@ -3235,7 +3128,7 @@ function mediaBrowser({ mode, dialog: d, context = null }) {
       for (const r of state.records) if (!draft.base.has(r.id)) draft.base.set(r.id, r);
       // The new image is not used anywhere yet: it waits in "Nicht verwendet", ready to be chosen.
       library = mediaLibrary(records());
-      focusId = uploaded.assetId;
+      focusId = uploadedMediaId(uploaded);
       search.value = "";
       select(library.assets.find((a) => a.id === focusId)?.collections[0] || ALL_MEDIA);
       tiles.querySelector(`[data-asset="${CSS.escape(focusId)}"]`)?.focus();

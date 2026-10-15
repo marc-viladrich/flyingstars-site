@@ -1,3 +1,5 @@
+import {nodeAt} from '../core/metadata.mjs';
+import {resolveReference,imageSummary,mediaSource} from './site-adapter.mjs';
 import {describe} from './native-schema.mjs';
 export function normalizedRoute(path){const clean=String(path||'/').split(/[?#]/,1)[0];return clean==='/'?'/':'/'+clean.replace(/^\/+|\/+$/g,'')+'/';}
 export function navigationChoices(records){const choices=new Map([['/','Startseite'],['/drohnenshow-preise/','Preise & Pakete'],['/show-konfigurator/','Show-Konfigurator']]);for(const item of records){const path=item.route||(item.id.startsWith('page/')?(item.id==='page/index'?'/':'/'+item.id.slice(5)+'/'):null);if(path)choices.set(normalizedRoute(path),item.title);}return [...choices].map(([value,label])=>({value,label}));}
@@ -11,8 +13,7 @@ export function sourceMediaSources(records){
   const containers=record.schema?describe(record.schema,record.data).containers:record.containers||[];
   for(const container of containers.filter(c=>c.format==='image')){
    const value=container.path.reduce((value,key)=>value?.[key],record.data);if(!value)continue;
-   const asset=value.assetId&&records.find(r=>r.id===value.assetId||r.id==='media/'+value.assetId)?.data;
-   sources[record.id+'/'+JSON.stringify(container.path)]=asset?.src||value.src;
+   sources[record.id+'/'+JSON.stringify(container.path)]=mediaSource(value,records);
   }
  }
  return sources;
@@ -29,53 +30,21 @@ export function restoredInspector(inspector,records,operation){if(!inspector||in
 // ---------------------------------------------------------------------------
 // Item summaries: one resolver for list rows, drag labels, inspector headings and parent navigation.
 // ---------------------------------------------------------------------------
-const filled = (value) => (typeof value === "string" ? value.trim() : typeof value === "number" ? String(value) : "");
-// A media usage points at its library record by full id ("media/x") or, in older content, by the bare id.
-export function mediaRecordFor(records, assetId) {
-  if (typeof assetId !== "string" || !assetId) return null;
-  return records.find((r) => r.id === assetId) || records.find((r) => r.id === "media/" + assetId) || null;
+const filled=value=>typeof value==='string'?value.trim():typeof value==='number'?String(value):'';
+export {mediaRecordFor,imageSummary} from './site-adapter.mjs';
+export function linkedRecordFor(records,entry,{itemLabel,element}={}) {
+ if(!entry||typeof entry!=='object'||!itemLabel)return null;
+ const reference=nodeAt(element,entry,itemLabel)?.['x-afe']?.reference;
+ return resolveReference(records,pathValue(entry,itemLabel),reference);
 }
-// An entry standing for another record (packageId: horizon → package/horizon). A value that already is a
-// full record id ("media/x") is used as it is, never prefixed a second time.
-export function linkedRecordFor(records, entry) {
-  if (!entry || typeof entry !== "object" || Array.isArray(entry)) return null;
-  for (const [key, id] of Object.entries(entry)) {
-    if (!key.endsWith("Id") || typeof id !== "string" || !id) continue;
-    const found = key === "assetId" ? mediaRecordFor(records, id) : records.find((r) => r.id === (id.includes("/") ? id : key.slice(0, -2) + "/" + id));
-    if (found) return found;
-  }
-  return null;
-}
-const fileName = (src) => {
-  if (typeof src !== "string" || !src) return "";
-  const last = src.split(/[?#]/, 1)[0].split("/").filter(Boolean).at(-1) || "";
-  try {
-    return decodeURIComponent(last);
-  } catch {
-    return last;
-  }
-};
-// Image usage: caption → effective alt (local override, own alt, library default) → library title → file name.
-export function imageSummary(usage, records = []) {
-  const asset = mediaRecordFor(records, usage?.assetId)?.data;
-  const override = usage?.altOverride === null || usage?.altOverride === undefined ? "" : filled(usage.altOverride);
-  const label = filled(usage?.caption) || override || filled(usage?.alt) || filled(asset?.defaultAlt) || filled(asset?.title) || fileName(asset?.src || usage?.src);
-  return { label, thumb: asset?.src || (typeof usage?.src === "string" && usage.src) || null };
-}
-const ownNames = ["displayName", "title", "name", "headline", "label", "question", "value"];
-// image: the entry itself is an image; imageChild: the image an entry carries (a member's portrait).
-export function itemSummary(entry, index, { records = [], image = false, imageChild = null, recordName = (r) => r?.title || r?.id } = {}) {
-  const fallback = `Eintrag ${Number(index) + 1 || 1}`;
-  if (entry === null || entry === undefined || typeof entry !== "object") return { label: filled(entry) || fallback, thumb: null };
-  if (image) {
-    const summary = imageSummary(entry, records);
-    return { label: summary.label || fallback, thumb: summary.thumb };
-  }
-  const linked = linkedRecordFor(records, entry);
-  if (linked) return { label: recordName(linked) || fallback, thumb: null };
-  const own = ownNames.map((key) => filled(entry[key])).find(Boolean);
-  const child = imageChild ? imageSummary(imageChild, records) : null;
-  return { label: own || child?.label || fallback, thumb: child?.thumb || null };
+export function itemSummary(entry,index,{records=[],image=false,imageChild=null,recordName=r=>r?.title||r?.id,itemLabel,element}={}) {
+ const fallback=`Eintrag ${Number(index)+1||1}`;
+ if(entry==null||typeof entry!=='object')return {label:filled(entry)||fallback,thumb:null};
+ if(image){const summary=imageSummary(entry,records);return {label:summary.label||fallback,thumb:summary.thumb};}
+ const linked=linkedRecordFor(records,entry,{itemLabel,element});
+ if(linked)return {label:recordName(linked)||fallback,thumb:null};
+ const child=imageChild?imageSummary(imageChild,records):null;
+ return {label:(itemLabel&&filled(pathValue(entry,itemLabel)))||child?.label||fallback,thumb:child?.thumb||null};
 }
 
 // ---------------------------------------------------------------------------
