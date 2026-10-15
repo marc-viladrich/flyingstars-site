@@ -267,12 +267,20 @@ function stagedRecords() {
     fields: fieldsFor(item),
   }));
 }
+// Draft records are replaced (never mutated) on every change, so one schema walk per record version is
+// enough; panels ask for fields and containers many times per draw. Results are read-only.
+const described = new WeakMap();
 function describeItem(item) {
-  return describe(item.schema, item.data, {
-    id: item.id,
-    readOnlyPaths: item.readOnlyPaths || [],
-    derivedPath: packageOwnedPagePath,
-  });
+  let result = described.get(item);
+  if (!result) {
+    result = describe(item.schema, item.data, {
+      id: item.id,
+      readOnlyPaths: item.readOnlyPaths || [],
+      derivedPath: packageOwnedPagePath,
+    });
+    described.set(item, result);
+  }
+  return result;
 }
 function fieldsFor(item) {
   if (item.schema) return describeItem(item).fields;
