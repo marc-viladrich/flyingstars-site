@@ -11,7 +11,8 @@
       "alt": "NFL Berlin Game – Drohnenshow von FlyingStars",
       "width": 1600,
       "height": 900,
-      assetId: media/image-db731f9101117f27
+      assetId: media/image-db731f9101117f27,
+      "decorative": false
     },
   "featured": true,
   "draft": false,
@@ -62,7 +63,8 @@
                   "src": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl/01.jpg",
                   "alt": "Das Hufeisen der Colts",
                   "caption": "Das Hufeisen der Colts",
-                  assetId: media/image-86ddd0e6394099fb
+                  assetId: media/image-86ddd0e6394099fb,
+                  "decorative": false
                 }
             },
           {
@@ -76,7 +78,8 @@
                   "src": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl/05.jpg",
                   "alt": "Das Olympiastadion",
                   "caption": "Das Olympiastadion",
-                  assetId: media/image-b403070787f648ef
+                  assetId: media/image-b403070787f648ef,
+                  "decorative": false
                 }
             },
           {
@@ -90,7 +93,8 @@
                   "src": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl/04.jpg",
                   "alt": "Shield über dem Stadion",
                   "caption": "Shield über dem Stadion",
-                  assetId: media/image-fc3e154a3ef4ac04
+                  assetId: media/image-fc3e154a3ef4ac04,
+                  "decorative": false
                 }
             },
           {
@@ -104,7 +108,8 @@
                   "src": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl/03.jpg",
                   "alt": "Das NFL-Shield",
                   "caption": "Das NFL-Shield",
-                  assetId: media/image-5593a9780e00d3d7
+                  assetId: media/image-5593a9780e00d3d7,
+                  "decorative": false
                 }
             }
         ],
@@ -118,44 +123,50 @@
       "gallery":
         [
           {
-              "src": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl/01.jpg",
-              "alt": "Das Hufeisen der Colts – NFL Berlin Game",
-              "caption": "Das Hufeisen der Colts",
-              assetId: media/image-86ddd0e6394099fb,
-              altOverride: Das Hufeisen der Colts – NFL Berlin Game
-            },
-          {
               "src": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl/02.jpg",
               "alt": "Berlin Game 2025 – NFL Berlin Game",
               "caption": "Berlin Game 2025",
-              assetId: media/image-0a2e64e7612526b9
+              assetId: "media/image-0a2e64e7612526b9",
+              "decorative": false
+            },
+          {
+              "src": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl/01.jpg",
+              "alt": "Das Hufeisen der Colts – NFL Berlin Game",
+              "caption": "Das Hufeisen der Colts",
+              assetId: "media/image-86ddd0e6394099fb",
+              "altOverride": "Das Hufeisen der Colts – NFL Berlin Game",
+              "decorative": false
             },
           {
               "src": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl/03.jpg",
               "alt": "Das NFL-Shield – NFL Berlin Game",
               "caption": "Das NFL-Shield",
               assetId: media/image-5593a9780e00d3d7,
-              altOverride: Das NFL-Shield – NFL Berlin Game
+              altOverride: Das NFL-Shield – NFL Berlin Game,
+              "decorative": false
             },
           {
               "src": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl/04.jpg",
               "alt": "Shield über dem Stadion – NFL Berlin Game",
               "caption": "Shield über dem Stadion",
               assetId: media/image-fc3e154a3ef4ac04,
-              altOverride: Shield über dem Stadion – NFL Berlin Game
+              altOverride: Shield über dem Stadion – NFL Berlin Game,
+              "decorative": false
             },
           {
               "src": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl/05.jpg",
               "alt": "Das Olympiastadion – NFL Berlin Game",
               "caption": "Das Olympiastadion",
               assetId: media/image-b403070787f648ef,
-              altOverride: Das Olympiastadion – NFL Berlin Game
+              altOverride: Das Olympiastadion – NFL Berlin Game,
+              "decorative": false
             },
           {
               "src": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl/06.jpg",
               "alt": "Der Catch – NFL Berlin Game",
               "caption": "Der Catch",
-              assetId: media/image-cf4999dff6864090
+              assetId: media/image-cf4999dff6864090,
+              "decorative": false
             }
         ],
       "portrait": true,
@@ -186,7 +197,8 @@
           "text": "Für Vereine, Ligen und Sponsoren planen wir Shows, die im Stadion und
             auf Social Media funktionieren."
         }
-    }
+    },
+  "sections": []
 }
 ---
 
