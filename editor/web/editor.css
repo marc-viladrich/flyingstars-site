@@ -2249,11 +2249,6 @@ dialog.dlg.navigator {
   padding-top: 0;
   border-top: 0;
 }
-/* A block that opens with a subheading needs no rule above it: the block title already separates. */
-.ov-grid > .subgroup:first-child {
-  padding-top: 0;
-  border-top: 0;
-}
 .row-hint {
   display: block;
   color: var(--ui-muted);
@@ -2275,3 +2270,80 @@ dialog.dlg.navigator {
   max-height: 480px;
 }
 
+/* ---------- R10: pickers (row toggles, own open button), grouped choices, reveal mark ---------- */
+.editor-ui .row-choice {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 0 8px 0 10px;
+  cursor: pointer;
+}
+.rows li:has(.grip) .row-choice {
+  padding-left: 2px;
+}
+.row-choice > input[type="checkbox"] {
+  flex: none;
+  margin: 0;
+  accent-color: var(--ui-accent);
+}
+.row-choice-text {
+  overflow-wrap: anywhere;
+  line-height: 18px;
+  padding: 10px 0;
+}
+.editor-ui .row-go {
+  width: 36px;
+  min-height: 40px;
+  padding: 0;
+  color: var(--ui-muted);
+}
+.editor-ui .row-go svg {
+  width: 16px;
+  height: 16px;
+}
+.editor-ui .row-go:hover:not(:disabled) {
+  color: var(--ui-ink);
+}
+.rows li.unchosen {
+  background: transparent;
+  border: 1px dashed var(--ui-line);
+}
+.choice-group-block {
+  display: grid;
+  gap: 4px;
+}
+.choice-group-block + .choice-group-block {
+  margin-top: 6px;
+}
+.choice-group-block > .row-sublabel {
+  margin-top: 0;
+}
+.rows li > textarea {
+  flex: 1;
+  background: transparent;
+}
+.rows li > textarea:focus {
+  background: var(--ui-raised);
+}
+.revealed {
+  border-radius: 8px;
+  animation: revealed 2s ease-out;
+}
+@keyframes revealed {
+  0%,
+  35% {
+    box-shadow: 0 0 0 2px var(--ui-accent);
+    background-color: var(--ui-tint);
+  }
+  100% {
+    box-shadow: 0 0 0 2px transparent;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .revealed {
+    animation: none;
+    box-shadow: 0 0 0 2px var(--ui-accent);
+  }
+}

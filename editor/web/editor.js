@@ -17,6 +17,9 @@ import {
   stablePartition,
   pinnedChoices,
   reorderVisible,
+  groupedChoices,
+  groupedSelection,
+  moveChoice,
 } from "./view-state.mjs";
 import { packageOwnedPagePath } from "/editor/package-ownership.mjs";
 import { describe } from "./native-schema.mjs";
@@ -1296,27 +1299,62 @@ function choiceSource(item, container) {
       noun: all[0]?.schema?.['x-afe']?.collection?.label||"Eintrag",
       empty: "Noch niemand ausgewählt.",
       create: recordTemplate(prefix) ? () => openCreate(prefix, { id: item.id, path: container.path }) : null,
-      options: all.map((r) => ({ key: r.id.slice(prefix.length), alias: r.id, label: recordName(r), open: () => pushView({ id: r.id, path: [] }, "record") })),
+      options: all.map((r) => ({
+        key: r.id.slice(prefix.length),
+        alias: r.id,
+        label: recordName(r),
+        open: () => pushView({ id: r.id, path: [] }, "record"),
+        openLabel: `${kindOf(r.id)[0]} öffnen`,
+      })),
     };
   }
   const widget=siteWidgets[container['x-afe']?.widget];
   if(widget?.choices)return widget.choices(item,container,{record,recordName,pushView,inlinePlain});
   return null;
 }
+// One row of a picker: clicking the row ticks or unticks it (the whole row is the checkbox's label); opening
+// what the row stands for is its own, labelled button at the end, never the row itself.
+function choiceRow(option, { checked, disabled, onToggle, grip = null, attrs = {} }) {
+  const box = el("input", { type: "checkbox", "aria-label": `${option.label} anzeigen` });
+  box.checked = checked;
+  box.disabled = disabled;
+  box.addEventListener("change", () => onToggle(box.checked));
+  const li = el("li", { "data-option": option.key, ...attrs }, grip, el("label", { class: "row-choice" }, box, el("span", { class: "row-choice-text", text: option.label })));
+  if (option.open) {
+    const label = option.openLabel || "Öffnen";
+    li.append(button(`„${option.label}“: ${label}`, option.open, { icon: option.openIcon || "chevron-right", iconOnly: true, cls: "row-go", title: label }));
+  }
+  return li;
+}
+function choiceGrip(option, onKey, onPointer) {
+  const grip = button(`„${option.label}“ verschieben`, null, { icon: "grip-vertical", iconOnly: true, cls: "grip", title: "Ziehen oder mit Pfeiltasten verschieben" });
+  grip.addEventListener("keydown", (event) => {
+    if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
+    event.preventDefault();
+    onKey(event.key === "ArrowUp" ? -1 : 1);
+  });
+  grip.addEventListener("pointerdown", onPointer);
+  return grip;
+}
 // part: "all" (picker with candidates), "chosen" (what the card shows) or "candidates" (the rest to tick on).
 function referenceControl(item, container, source, { part = "all" } = {}) {
   const listKey = fieldKey(item.id, container.path);
   const now = () => value(item, container.path) || [];
   const matches = (option, id) => option.key === id || option.alias === id;
-  // Rows stay where they were while the panel is open: a ticked candidate stays among the candidates
-  // (checked), an unticked chosen one stays in the chosen list (unchecked) until the panel opens again.
-  const rows = pinnedChoices(source.options, now(), matches, viewMemo("choices:" + listKey));
-  const storedId = (option) => now().find((id) => matches(option, id));
+  const policy = listPolicy(container);
   const write = (next, focusKey) => {
     changed(item.id, container.path, next);
     if (focusKey !== undefined) pendingFocus = `[data-list="${CSS.escape(listKey)}"] [data-option="${CSS.escape(focusKey)}"] .grip`;
     rerender();
   };
+  const createButton = source.create
+    ? button(source.createLabel || source.noun + " hinzufügen", source.create, { icon: source.createLabel ? "pencil" : "plus", cls: "inline-button" })
+    : null;
+  if (source.options.some((option) => option.group)) return groupedChoiceControl(item, container, source, { part, listKey, now, matches, policy, write, createButton });
+  // Rows stay where they were while the panel is open: a ticked candidate stays among the candidates
+  // (checked), an unticked chosen one stays in the chosen list (unchecked) until the panel opens again.
+  const rows = pinnedChoices(source.options, now(), matches, viewMemo("choices:" + listKey));
+  const storedId = (option) => now().find((id) => matches(option, id));
   // Moving changes the order of the chosen rows on screen; ticked candidates keep their place in the list.
   const chosenShown = rows.chosen.filter((row) => row.checked).map((row) => row.option);
   const moveTo = (visible, focusKey) => {
@@ -1324,81 +1362,102 @@ function referenceControl(item, container, source, { part = "all" } = {}) {
     const next = reorderVisible(now(), visible.map(storedId));
     if (!equal(next, now())) write(next, focusKey);
   };
-  const row = ({ option, checked }, inChosen) => {
-    const box = el("input", { type: "checkbox", "aria-label": `${option.label} anzeigen` });
-    box.checked = checked;
-    box.disabled = checked ? !listPolicy(container).removable : !listPolicy(container).insertable;
-    box.addEventListener("change", () => {
-      stageInputs();
-      const next = now().filter((id) => !matches(option, id));
-      if (box.checked) next.push(option.key);
-      write(next);
-    });
+  const toggle = (option) => (on) => {
+    stageInputs();
+    const next = now().filter((id) => !matches(option, id));
+    if (on) next.push(option.key);
+    write(next);
+  };
+  const row = ({ option, checked }, inChosen, at) => {
     const index = checked ? now().findIndex((id) => matches(option, id)) : -1;
-    const li = el("li", {
-      "data-option": option.key,
-      "data-index": index < 0 ? "" : String(index),
-      ...(index < 0 ? {} : { "data-entry-key": fieldKey(item.id, [...container.path, index]) }),
-    });
     const position = chosenShown.indexOf(option);
-    if (inChosen && checked && chosenShown.length > 1 && listPolicy(container).reorderable) {
-      const grip = button(`„${option.label}“ verschieben`, null, {
-        icon: "grip-vertical",
-        iconOnly: true,
-        cls: "grip",
-        title: "Ziehen oder mit Pfeiltasten verschieben",
-      });
-      grip.addEventListener("keydown", (event) => {
-        if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
-        event.preventDefault();
-        const to = position + (event.key === "ArrowUp" ? -1 : 1);
-        if (to < 0 || to >= chosenShown.length) return;
-        const visible = [...chosenShown];
-        visible.splice(to, 0, visible.splice(position, 1)[0]);
-        moveTo(visible, option.key);
-      });
-      // After a drag the list's DOM order is the new order of the chosen rows.
-      grip.addEventListener("pointerdown", (event) =>
-        dragRow(event, chosenList, li, position, () =>
-          moveTo(
-            [...chosenList.children].map((n) => source.options.find((o) => o.key === n.dataset.option)).filter((o) => chosenShown.includes(o)),
-            option.key,
+    let grip = null;
+    let li;
+    if (inChosen && checked && chosenShown.length > 1 && policy.reorderable)
+      grip = choiceGrip(
+        option,
+        (step) => {
+          const to = position + step;
+          if (to < 0 || to >= chosenShown.length) return;
+          const visible = [...chosenShown];
+          visible.splice(to, 0, visible.splice(position, 1)[0]);
+          moveTo(visible, option.key);
+        },
+        // After a drag the list's DOM order is the new order of the chosen rows.
+        (event) =>
+          dragRow(event, chosenList, li, at, () =>
+            moveTo([...chosenList.children].map((n) => source.options.find((o) => o.key === n.dataset.option)).filter((o) => chosenShown.includes(o)), option.key),
           ),
-        ),
       );
-      li.append(grip);
-    }
-    const open = button(option.label, option.open, { cls: "row-open" });
-    open.append(icon("chevron-right"));
-    li.append(el("label", { class: "row-check" }, box), open);
+    li = choiceRow(option, {
+      checked,
+      disabled: checked ? !policy.removable : !policy.insertable,
+      onToggle: toggle(option),
+      grip,
+      attrs: { "data-index": index < 0 ? "" : String(index), ...(index < 0 ? {} : { "data-entry-key": fieldKey(item.id, [...container.path, index]) }) },
+    });
     return li;
   };
   const chosenList = el("ul", { class: "rows", "data-list": listKey, "aria-label": fieldLabel(container) + " (angezeigt)" });
-  rows.chosen.forEach((entry) => chosenList.append(row(entry, true)));
-  // Not shown yet: grouped like their owner (e.g. "Musik", "Service & Extras"), each group one accordion.
-  const groups = [...new Set(rows.others.map(({ option }) => option.group || ""))];
-  const otherLists = groups.map((group) => {
-    const members = rows.others.filter(({ option }) => (option.group || "") === group);
-    const list = el("ul", { class: "rows muted", "aria-label": group || "Weitere" });
-    members.forEach((entry) => list.append(row(entry, false)));
-    if (!group) return [list];
-    return [fold(listKey + "#" + group, group, String(members.length), list)];
-  });
-  const createButton = source.create
-    ? button(source.createLabel || source.noun + " hinzufügen", source.create, { icon: source.createLabel ? "pencil" : "plus", cls: "inline-button" })
-    : null;
-  if (part === "candidates")
-    return el("div", { class: "stack" }, el("span", { class: "row-label", text: `${fieldLabel(container)} · nicht angezeigt` }), otherLists.flat());
+  rows.chosen.forEach((entry, at) => chosenList.append(row(entry, true, at)));
+  // Not shown yet: grouped like their owner, each group one accordion.
+  const otherList = el("ul", { class: "rows muted", "aria-label": "Weitere" });
+  rows.others.forEach((entry) => otherList.append(row(entry, false)));
+  if (part === "candidates") return el("div", { class: "stack" }, el("span", { class: "row-label", text: `${fieldLabel(container)} · nicht angezeigt` }), otherList);
   return el(
     "div",
     { class: "stack" },
     el("span", { class: "row-label", text: fieldLabel(container) }),
     // Still one line when the only chosen ones were ticked among the candidates below (nothing shifts).
     rows.chosen.length ? chosenList : el("p", { class: "note", text: now().length ? `${now().length} ausgewählt` : source.empty }),
-    part === "all" && rows.others.length ? el("span", { class: "note", text: "Nicht angezeigt" }) : null,
-    part === "all" ? otherLists.flat() : null,
+    part === "all" && rows.others.length ? [el("span", { class: "note", text: "Nicht angezeigt" }), otherList] : null,
     createButton,
   );
+}
+// A picker whose options carry groups shows them as the card does: one list per group under its title, in
+// the options' order. Rows keep their place while the view is open (groupedChoices); chosen rows move
+// within their group by drag or arrow keys; the stored list is what is shown, group by group.
+function groupedChoiceControl(item, container, source, { part, listKey, now, matches, policy, write, createButton }) {
+  if (part === "candidates") return null;
+  const memo = viewMemo("grouped:" + listKey);
+  const groups = groupedChoices(source.options, now(), matches, memo);
+  const lists = groups.map(({ group, rows }) => {
+    const checked = rows.filter((r) => r.checked);
+    const list = el("ul", { class: "rows choice-group", "data-list": listKey, "data-group": group, "aria-label": group || fieldLabel(container) });
+    rows.forEach(({ option, checked: on }, at) => {
+      let li;
+      const grip =
+        on && checked.length > 1 && policy.reorderable
+          ? choiceGrip(
+              option,
+              (step) => {
+                stageInputs();
+                if (moveChoice(memo, group, { key: option.key, step, checked: new Set(checked.map((r) => r.option.key)) }))
+                  write(groupedSelection(groupedChoices(source.options, now(), matches, memo)), option.key);
+              },
+              (event) =>
+                dragRow(event, list, li, at, () => {
+                  stageInputs();
+                  if (moveChoice(memo, group, { order: [...list.children].map((n) => n.dataset.option) }))
+                    write(groupedSelection(groupedChoices(source.options, now(), matches, memo)), option.key);
+                }),
+            )
+          : null;
+      li = choiceRow(option, {
+        checked: on,
+        disabled: on ? !policy.removable : !policy.insertable,
+        grip,
+        onToggle: (next) => {
+          stageInputs();
+          write(groupedSelection(groups, { key: option.key, checked: next }));
+        },
+      });
+      if (!on) li.classList.add("unchosen");
+      list.append(li);
+    });
+    return el("div", { class: "choice-group-block" }, group ? el("span", { class: "row-sublabel", text: group }) : null, list);
+  });
+  return el("div", { class: "stack" }, el("span", { class: "row-label", text: fieldLabel(container) }), lists, now().length ? null : el("p", { class: "note", text: source.empty }), createButton);
 }
 // Per-view memory for layout that must not shift while the view is open (see view-state.mjs).
 function viewMemo(key) {
@@ -2106,6 +2165,7 @@ function renderTop({ keepScroll = false, keepPlace = false, restore = null } = {
     if (target) {
       revealInPanel(target);
       (target.matches("input,textarea,select,button") ? target : target.querySelector(".entry-toggle,input,textarea,select,button"))?.focus({ preventScroll: true });
+      markRevealed(target.closest("li.entry, [data-entry-key], .stack") || target);
       return;
     }
   }
@@ -2115,6 +2175,14 @@ function renderTop({ keepScroll = false, keepPlace = false, restore = null } = {
   } else if (!keepScroll) (nav.canGoBack() ? $("#panel-back") : panel).focus({ preventScroll: true });
 }
 
+// What a jump revealed (e.g. a Leistung's text opened from a card's picker) is marked briefly, so the eye
+// lands on it in a long sheet. The mark is a ring that fades; with reduced motion it simply stays a moment.
+function markRevealed(node) {
+  node.classList.remove("revealed");
+  void node.offsetWidth;
+  node.classList.add("revealed");
+  setTimeout(() => node.classList.remove("revealed"), 2200);
+}
 // Right-click on one element: only what belongs to that element, then where it belongs.
 function elementView(body, item, context, head) {
   const path = context.path || [];
@@ -2199,7 +2267,8 @@ function unitsOf(item, prefix) {
       const media = isMediaContainer(item, c);
       const source = c.kind === "array" && !media ? choiceSource(item, c) : null;
       const chosen = source ? value(item, c.path) || [] : [];
-      const candidates = source ? source.options.filter((o) => !chosen.some((id) => o.key === id || o.alias === id)).length : 0;
+      // A grouped picker is always drawn whole (chosen and the rest per group), so it has no separate candidates.
+      const candidates = source && !source.options.some((o) => o.group) ? source.options.filter((o) => !chosen.some((id) => o.key === id || o.alias === id)).length : 0;
       return { ...c, media, reference: !!source, candidates };
     });
   const fields = fieldsFor(item)

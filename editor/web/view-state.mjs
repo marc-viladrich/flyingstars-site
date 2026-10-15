@@ -188,3 +188,48 @@ export function reorderVisible(current, visible) {
   slots.forEach((slot, k) => (next[slot] = visible[k]));
   return next;
 }
+// Choices that carry a group (a package's Leistungen under "Musik", "Service & Extras"): one list per group
+// in the options' order, as the card shows them. Within a group the chosen ones come first in their stored
+// order, then the rest. The row order is kept in memo while the view is open: ticking or unticking leaves a
+// row where it was clicked, only moving it changes its place (moveChoice). The stored list is derived from
+// what is shown (groupedSelection): group by group, chosen rows in the order shown.
+export function groupedChoices(options, chosen, matches, memo) {
+  const isChosen = (option) => chosen.some((id) => matches(option, id));
+  memo.order ||= {};
+  return [...new Set(options.map((o) => o.group || ""))].map((group) => {
+    const members = options.filter((o) => (o.group || "") === group);
+    if (!memo.order[group]) {
+      const picked = chosen.map((id) => members.find((o) => matches(o, id))).filter(Boolean);
+      memo.order[group] = [...picked, ...members.filter((o) => !picked.includes(o))].map((o) => o.key);
+    }
+    // A Leistung that appeared meanwhile joins at the end; one that is gone drops out.
+    const known = memo.order[group].filter((key) => members.some((o) => o.key === key));
+    memo.order[group] = [...known, ...members.filter((o) => !known.includes(o.key)).map((o) => o.key)];
+    return { group, rows: memo.order[group].map((key) => members.find((o) => o.key === key)).map((option) => ({ option, checked: isChosen(option) })) };
+  });
+}
+export function groupedSelection(groups, toggle = null) {
+  return groups.flatMap((g) => g.rows.filter((r) => (toggle && r.option.key === toggle.key ? toggle.checked : r.checked)).map((r) => r.option.key));
+}
+// Moves a chosen row within its group: to an explicit row order (after a drag, the DOM order) or past the
+// neighbouring chosen row (step -1/+1, arrow keys). Unchosen rows keep their places. Returns whether the
+// order changed.
+export function moveChoice(memo, group, { key, step, order, checked = new Set() }) {
+  const rows = memo.order?.[group];
+  if (!rows) return false;
+  if (order) {
+    if (order.length !== rows.length || order.some((k) => !rows.includes(k))) return false;
+    const changed = order.some((k, i) => k !== rows[i]);
+    memo.order[group] = [...order];
+    return changed;
+  }
+  const from = rows.indexOf(key);
+  if (from < 0 || !step) return false;
+  let to = from + step;
+  while (to >= 0 && to < rows.length && !checked.has(rows[to])) to += step;
+  if (to < 0 || to >= rows.length) return false;
+  const next = [...rows];
+  [next[from], next[to]] = [next[to], next[from]];
+  memo.order[group] = next;
+  return true;
+}
