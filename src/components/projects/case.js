@@ -1,3 +1,4 @@
+import {registerCanvas} from '../../scripts/canvas-runtime.mjs';
 import {readRuntime} from '../../lib/ui-runtime.mjs';
 import {localeFormat} from '../../lib/localized-routes.mjs';
 // FlyingStars project pages: count-up numbers, scrollytelling, the real formation to play with, film reel
@@ -48,11 +49,12 @@ import {localeFormat} from '../../lib/localized-routes.mjs';
 
   // the formation: real drone positions read from the footage, or taken from the show file (then with real depth as
   // 7th value) – they take off when the section comes into view
-  const cv = document.querySelector("canvas[data-formation]");
-  if (cv) {
-    const ctx = cv.getContext("2d"), tally = document.querySelector("[data-tally]"), replay = document.querySelector("[data-replay]");
-    let D = [], W = 0, H = 0, DPR = 1, mouse = null, visible = false, started = false, tilt = 0, nod = 0, deep = false, paused = false;
-    const pause = document.querySelector("[data-formation-pause]");
+  registerCanvas('canvas[data-formation]', (cv, life, saved) => {
+    const root = cv.closest('.c-play');
+    const ctx = cv.getContext("2d"), tally = root.querySelector("[data-tally]"), replay = root.querySelector("[data-replay]");
+    let D = [], W = 0, H = 0, DPR = 1, mouse = null, visible = false, started = false, tilt = 0, nod = 0, deep = false, paused = saved?.paused ?? false;
+    life.preserve(() => ({ paused }));
+    const pause = root.querySelector("[data-formation-pause]");
     if (reduce && pause) pause.hidden = true;
     const sprites = new Map();
     const sprite = (r, g, b) => {
@@ -95,11 +97,14 @@ import {localeFormat} from '../../lib/localized-routes.mjs';
       started = true;
       D.forEach((d, i) => { d.x = (Math.random() - 0.5) * 2.4; d.y = -1.25 - Math.random() * 0.15; d.z = 0; d.vx = d.vy = 0; d.delay = (i / D.length) * 1.2 + Math.random() * 0.4; });
     };
-    onView(cv, () => {
-    fetch(cv.dataset.formation).then((r) => {
+    life.observe(new IntersectionObserver((entries, observer) => {
+      if (!entries[0].isIntersecting) return;
+      observer.disconnect();
+    fetch(cv.dataset.formation, { signal: life.signal }).then((r) => {
       if (!r.ok) throw new Error(`Formation HTTP ${r.status}`);
       return r.json();
     }).then((F) => {
+      if (life.signal.aborted) return;
       if (!Array.isArray(F.dots) || !F.dots.length || F.dots.some((dot) => !Array.isArray(dot) || dot.length < 6 || dot.some((value) => !Number.isFinite(value)))) throw new Error("Invalid formation");
       const mx = Math.max(...F.dots.map((d) => Math.abs(d[0])), ...F.dots.map((d) => Math.abs(d[1])));
       deep = F.dots.some((d) => d[6] !== undefined);
@@ -111,15 +116,15 @@ import {localeFormat} from '../../lib/localized-routes.mjs';
       if (reduce) D.forEach((d) => { d.z = d.tz; });
       if (reduce) { started = true; draw(0, 0); }
       else { launch(); if (held()) settle(); }
-    }).catch(() => { if (tally) tally.textContent = t("formationFailed"); });
-    }, { rootMargin: "100px", threshold: 0 });
-    replay?.addEventListener("click", () => { if (!reduce && D.length) { paused = false; pause?.setAttribute("aria-pressed", "false"); if (pause) pause.textContent = t("animation_pausieren"); launch(); } });
-    pause?.addEventListener("click", () => { paused = !paused; pause.setAttribute("aria-pressed", String(paused)); pause.textContent = paused ? t("animationResume") : t("animation_pausieren"); });
+    }).catch(() => { if (!life.signal.aborted && tally) tally.textContent = t("formationFailed"); });
+    }, { rootMargin: "100px", threshold: 0 }), cv);
+    life.listen(replay, "click", () => { if (!reduce && D.length) { paused = false; pause?.setAttribute("aria-pressed", "false"); if (pause) pause.textContent = t("animation_pausieren"); launch(); } });
+    life.listen(pause, "click", () => { paused = !paused; pause.setAttribute("aria-pressed", String(paused)); pause.textContent = paused ? t("animationResume") : t("animation_pausieren"); });
     const host = cv.parentElement;
-    host.addEventListener("pointermove", (e) => { if (e.pointerType === "touch") return; const r = cv.getBoundingClientRect(); mouse = [(e.clientX - r.left) * DPR, (e.clientY - r.top) * DPR]; });
-    host.addEventListener("pointerleave", () => { mouse = null; });
-    new IntersectionObserver((es) => { visible = es[0].isIntersecting; }).observe(cv);
-    if ("ResizeObserver" in window) new ResizeObserver(() => { resize(); if ((reduce || held()) && started) draw(0, 0); }).observe(cv);
+    life.listen(host, "pointermove", (e) => { if (e.pointerType === "touch") return; const r = cv.getBoundingClientRect(); mouse = [(e.clientX - r.left) * DPR, (e.clientY - r.top) * DPR]; });
+    life.listen(host, "pointerleave", () => { mouse = null; });
+    life.observe(new IntersectionObserver((es) => { visible = es[0].isIntersecting; }), cv);
+    if ("ResizeObserver" in window) life.observe(new ResizeObserver(() => { resize(); if ((reduce || held()) && started) draw(0, 0); }), cv);
 
     const draw = (dt, t) => {
       ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height);
@@ -161,8 +166,8 @@ import {localeFormat} from '../../lib/localized-routes.mjs';
     };
     if (!reduce) {
       let last = 0;
-      const loop = (now) => { const t = now / 1000, dt = Math.min(0.05, last ? t - last : 0.016); last = t; if (visible && !paused && !document.documentElement.classList.contains("motion-paused") && !document.hidden) draw(dt, t); requestAnimationFrame(loop); };
-      requestAnimationFrame(loop);
+      const loop = (now) => { const t = now / 1000, dt = Math.min(0.05, last ? t - last : 0.016); last = t; if (visible && !paused && !document.documentElement.classList.contains("motion-paused") && !document.hidden) draw(dt, t); life.raf(loop); };
+      life.raf(loop);
     }
-  }
+  }, { attributes: ['data-formation'] });
 })();

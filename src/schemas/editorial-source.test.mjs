@@ -19,7 +19,7 @@ test('native word rotation respects editable ownership and resumes in preview',a
  const {runInNewContext}=await import('node:vm');const source=(await fs.readFile(new URL('../scripts/site.ts',import.meta.url),'utf8')).replace(/^import .*?;\n/gm,'');const intervals=[],timeouts=[];
  const word={dataset:{rotate:'Neu|Anders'},textContent:'Eigener Entwurf',isContentEditable:true,classList:{add(){},remove(){}}};
  const document={getElementById(){return null;},hidden:false,documentElement:{classList:{toggle(){}}},querySelector(selector){return selector==='[data-rotate]'?word:null;},querySelectorAll(){return[];},dispatchEvent(){}};
- const window={addEventListener(){}};runInNewContext(source,{rgbOf,document,window,matchMedia:()=>({matches:false}),sessionStorage:{getItem:()=>null},location:{hash:''},setInterval:fn=>intervals.push(fn),setTimeout:fn=>timeouts.push(fn),Event:class{},requestAnimationFrame(){}});
+ const window={addEventListener(){}};runInNewContext(source,{registerCanvas(){},rgbOf,document,window,matchMedia:()=>({matches:false}),sessionStorage:{getItem:()=>null},location:{hash:''},setInterval:fn=>intervals.push(fn),setTimeout:fn=>timeouts.push(fn),Event:class{},requestAnimationFrame(){}});
  intervals[0]();assert.equal(timeouts.length,0);assert.equal(word.textContent,'Eigener Entwurf');
  word.isContentEditable=false;intervals[0]();assert.equal(timeouts.length,1);timeouts.shift()();assert.equal(word.textContent,'Anders');
  intervals[0]();word.isContentEditable=true;word.textContent='Neue Eingabe';timeouts.shift()();assert.equal(word.textContent,'Neue Eingabe');
@@ -108,10 +108,12 @@ test('enhanced sustainability facts are inert initially and after scroll except 
  const {runInNewContext}=await import('node:vm'),source=(await fs.readFile(new URL('../scripts/site.ts',import.meta.url),'utf8')).replace(/^import .*?;\n/gm,'');
  for(const reduce of [false,true]){
   let top=0;const events={},facts=Array.from({length:4},()=>({inert:false,classList:{toggle(){}},contains(){return false;}}));
-  const canvas={getContext:()=>({}),getBoundingClientRect:()=>({width:1000,height:800})},pin={addEventListener(){}},scrolly={classList:{add(){}},style:{setProperty(){}},querySelectorAll:s=>s==='.fact'?facts:[],querySelector:s=>s==='canvas'?canvas:s==='.eco-pin'?pin:null,getBoundingClientRect:()=>({top,height:4000})};
+  const canvas={closest:()=>scrolly,getContext:()=>({}),getBoundingClientRect:()=>({width:1000,height:800})},pin={addEventListener(){}},scrolly={classList:{add(){}},style:{setProperty(){}},querySelectorAll:s=>s==='.fact'?facts:[],querySelector:s=>s==='canvas'?canvas:s==='.eco-pin'?pin:null,getBoundingClientRect:()=>({top,height:4000})};
   const document={getElementById(){return null;},hidden:false,documentElement:{classList:{toggle(){}}},querySelector:s=>s==='[data-scrolly]'?scrolly:null,querySelectorAll:()=>[],dispatchEvent(){}};
   class Observer{observe(){}unobserve(){}}
-  runInNewContext(source,{rgbOf,document,window:{addEventListener(){},IntersectionObserver:Observer},IntersectionObserver:Observer,matchMedia:()=>({matches:reduce}),sessionStorage:{getItem:()=>null},location:{hash:''},Event:class{},requestAnimationFrame(){},devicePixelRatio:1,innerHeight:1000,addEventListener:(name,fn)=>events[name]=fn});
+  const window={addEventListener:(name,fn)=>events[name]=fn,IntersectionObserver:Observer};
+  const registerCanvas=(selector,initialize)=>{if(selector==='[data-scrolly] canvas')initialize(canvas,{listen:(target,name,fn)=>target.addEventListener(name,fn),observe:(observer,target)=>observer.observe(target),raf(){}});};
+  runInNewContext(source,{registerCanvas,rgbOf,document,window,IntersectionObserver:Observer,matchMedia:()=>({matches:reduce}),sessionStorage:{getItem:()=>null},location:{hash:''},Event:class{},requestAnimationFrame(){},devicePixelRatio:1,innerHeight:1000,addEventListener:(name,fn)=>events[name]=fn});
   assert.deepEqual(facts.map(f=>f.inert),reduce?[false,false,false,false]:[false,true,true,true]);
   if(!reduce){top=-1600;events.scroll();assert.deepEqual(facts.map(f=>f.inert),[true,true,false,true]);top=0;events.scroll();assert.deepEqual(facts.map(f=>f.inert),[false,true,true,true]);}
  }
@@ -150,7 +152,7 @@ test('rotating inline words retain safe rendered marks and update the exact word
  const {runInNewContext}=await import('node:vm'),source=(await fs.readFile(new URL('../scripts/site.ts',import.meta.url),'utf8')).replace(/^import .*?;\n/gm,''),intervals=[],timeouts=[];
  const word={dataset:{rotate:'Neu|Anders',nativePath:'["sections",0,"words",0]'},innerHTML:'<strong>Neu</strong>',isContentEditable:false,classList:{add(){},remove(){}}};
  const document={getElementById(){return null;},hidden:false,documentElement:{classList:{toggle(){}}},querySelector:s=>s==='[data-rotate]'?word:s==='[data-rotate-words]'?{content:{children:[{innerHTML:'<strong>Neu</strong>'},{innerHTML:'<em>Anders</em>'}]}}:null,querySelectorAll:()=>[],dispatchEvent(){}};
- runInNewContext(source,{rgbOf,document,window:{addEventListener(){}},matchMedia:()=>({matches:false}),sessionStorage:{getItem:()=>null},location:{hash:''},setInterval:fn=>intervals.push(fn),setTimeout:fn=>timeouts.push(fn),Event:class{},requestAnimationFrame(){}});
+ runInNewContext(source,{registerCanvas(){},rgbOf,document,window:{addEventListener(){}},matchMedia:()=>({matches:false}),sessionStorage:{getItem:()=>null},location:{hash:''},setInterval:fn=>intervals.push(fn),setTimeout:fn=>timeouts.push(fn),Event:class{},requestAnimationFrame(){}});
  intervals[0]();timeouts.shift()();assert.equal(word.innerHTML,'<em>Anders</em>');assert.equal(word.dataset.nativePath,'["sections",0,"words",1]');
 });
 

@@ -1,3 +1,4 @@
+import {registerCanvas} from './canvas-runtime.mjs';
 import {colorVar, rgbOf} from '../lib/color-tokens.mjs';
 import {inlinePlain} from '../lib/inline-text.mjs';
 import {escapeHTML} from '../lib/editorial-text.mjs';
@@ -10,7 +11,7 @@ import {readRuntime} from '../lib/ui-runtime.mjs';
 import {localeFormat} from '../lib/localized-routes.mjs';
 
 // FlyingStars pricing page: drone-count calculator + live swarm (one dot per drone)
-(() => {
+registerCanvas("canvas#swarm", (canvas, life, saved) => {
   "use strict";
   const motionQuery = matchMedia("(prefers-reduced-motion: reduce)");
   let reduce = motionQuery.matches;
@@ -26,7 +27,6 @@ import {localeFormat} from '../lib/localized-routes.mjs';
   const $ = (s) => document.querySelector(s);
   const range = $("#drones"), countEl = $("#count"), totalEl = $("#total"), noteEl = $("#calc-note"), readEl = $("#calc-read"), cta = $("#calc-cta");
   const tierBtns = [...document.querySelectorAll("[data-tier]")];
-  const cards = Object.fromEntries(NAMES.map((k) => [k, document.querySelector(`[data-card="${k}"]`)]));
 
   if (!range) return;
   let n = +range.value, pkg = recommend(n), locked = false;
@@ -66,7 +66,7 @@ import {localeFormat} from '../lib/localized-routes.mjs';
     tierBtns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.tier === pkg)));
     // live prices on the package cards
     NAMES.forEach((k) => {
-      const c = cards[k]; if (!c) return;
+      const c = document.querySelector(`[data-card="${k}"]`); if (!c) return;
       const v = priceFor(k, n), box = c.querySelector("[data-live]");
       c.classList.toggle("is-rec", k === pkg);
       c.querySelector("a.btn").href = inquiryHref(k, Math.max(PKG[k].base, Math.min(n, PKG[k].max)));
@@ -93,13 +93,13 @@ import {localeFormat} from '../lib/localized-routes.mjs';
     const job = ++text.job, value = text.value, count = n;
     clearTimeout(text.timer);
     text.timer = setTimeout(() => loadTextEngine().then(() => {
-      if (job !== text.job) return;
+      if (life.signal.aborted || job !== text.job) return;
       const r = textFormation(value, count);
-      if (job !== text.job) return;
+      if (life.signal.aborted || job !== text.job) return;
       if (!r) { text.shown = null; swarm.setTarget(Math.max(count, 1), col); renderTextRead(t("tooLong")); return; }
       text.shown = r; swarm.setText(r, col);
       update(false, false); // readout only: do not schedule the same formation again
-    }, () => renderTextRead(t("fontFailed"))), 220);
+    }, () => { if (!life.signal.aborted && job === text.job) renderTextRead(t("fontFailed")); }), 220);
   }
   function renderTextRead(msg) {
     if (!textRead) return;
@@ -108,14 +108,14 @@ import {localeFormat} from '../lib/localized-routes.mjs';
     const cN = chars(text.value), r = text.shown && text.shown.n === n ? text.shown : null;
     textRead.textContent = t("textStats",{characters:cN,perCharacter:(n/cN).toLocaleString(fmt,{maximumFractionDigits:0})})+(r?t("fontStyle",{style:r.style})+(r.lines.length>1?t("lines",{count:r.lines.length}):""):"")+(r?.unknown.length?t("unknown",{characters:r.unknown.join(" ")}):"");
   }
-  if (textIn) textIn.addEventListener("input", () => {
+  if (textIn) life.listen(textIn, "input", () => {
     text.value = textIn.value.toUpperCase().replace(/\s+/g, " ").trim();
     update(false);
   });
 
   // ---------- swarm: one heart that grows with the drone count ----------
   const swarm = (() => {
-    const cv = $("#swarm"), ctx = cv.getContext("2d");
+    const cv = canvas, ctx = cv.getContext("2d");
     // The pictures come from the Formations-Werkzeug (tools/build-hearts.js -> herz-formationen.js): the FS heart with a
     // drone on tip and dent, equal spacing, one spacing per picture (2D 2,0 m, 3D 3,0 m), exact drone count, never
     // closer than 1,0 m, at most 80 m high. 100–140 outline · 150 double heart · 160–290 3D heart (honeycomb half-shell)
@@ -136,8 +136,8 @@ import {localeFormat} from '../lib/localized-routes.mjs';
 
     // drones dodge the mouse pointer and fly back into formation
     const host = cv.parentElement;
-    host.addEventListener("pointermove", (e) => { if (e.pointerType === "touch") return; const r = cv.getBoundingClientRect(); mouse = [(e.clientX - r.left) * DPR, (e.clientY - r.top) * DPR]; });
-    host.addEventListener("pointerleave", () => { mouse = null; });
+    life.listen(host, "pointermove", (e) => { if (e.pointerType === "touch") return; const r = cv.getBoundingClientRect(); mouse = [(e.clientX - r.left) * DPR, (e.clientY - r.top) * DPR]; });
+    life.listen(host, "pointerleave", () => { mouse = null; });
 
     function resize() {
       DPR = Math.min(2, devicePixelRatio || 1);
@@ -269,21 +269,21 @@ import {localeFormat} from '../lib/localized-routes.mjs';
       dims(dt);
     }
     const resizeObserver = new ResizeObserver(resize);
-    resizeObserver.observe(cv);
-    let frame = 0, last = 0, animationPaused = false, pageActive = true;
+    life.observe(resizeObserver, cv);
+    let frame = 0, last = 0, animationPaused = saved?.paused ?? false, pageActive = true;
     // Local pause, global pause and reduced motion all show the finished picture instead of a frozen or empty frame.
     function held() { return reduce || animationPaused || document.documentElement.classList.contains("motion-paused"); }
     const motionButton = $("#swarm-motion");
-    function stopAnimation() { if (frame) cancelAnimationFrame(frame); frame = 0; last = 0; }
+    function stopAnimation() { if (frame) life.cancelFrame(frame); frame = 0; last = 0; }
     function loop(now) {
       frame = 0;
       if (!visible || document.hidden || reduce || animationPaused || document.documentElement.classList.contains("motion-paused") || !pageActive) return;
       const t = now / 1000, dt = Math.min(0.05, last ? t - last : 0.016); last = t;
-      draw(dt, t); frame = requestAnimationFrame(loop);
+      draw(dt, t); frame = life.raf(loop);
     }
     function syncAnimation() {
       if (sizeM && visible && !document.hidden && !reduce && !animationPaused && !document.documentElement.classList.contains("motion-paused") && pageActive) {
-        if (!frame) frame = requestAnimationFrame(loop);
+        if (!frame) frame = life.raf(loop);
       } else stopAnimation();
     }
     function settle() {
@@ -296,13 +296,13 @@ import {localeFormat} from '../lib/localized-routes.mjs';
       motionButton.setAttribute("aria-pressed", String(animationPaused || reduce));
     }
     const intersectionObserver = new IntersectionObserver((entries) => { visible = entries[0].isIntersecting; syncAnimation(); });
-    intersectionObserver.observe(cv);
-    document.addEventListener("visibilitychange", syncAnimation);
-    document.addEventListener("flyingstars:motion-change", () => { if (held()) settle(); syncAnimation(); });
-    window.addEventListener("pagehide", () => { pageActive = false; stopAnimation(); clearTimeout(text.timer); ++text.job; });
-    window.addEventListener("pageshow", () => { pageActive = true; syncAnimation(); });
-    motionQuery.addEventListener("change", () => { reduce = motionQuery.matches; if (reduce) settle(); updateMotionButton(); syncAnimation(); });
-    motionButton.addEventListener("click", () => { animationPaused = !animationPaused; if (animationPaused) settle(); updateMotionButton(); syncAnimation(); });
+    life.observe(intersectionObserver, cv);
+    life.listen(document, "visibilitychange", syncAnimation);
+    life.listen(document, "flyingstars:motion-change", () => { if (held()) settle(); syncAnimation(); });
+    life.listen(window, "pagehide", () => { pageActive = false; stopAnimation(); clearTimeout(text.timer); ++text.job; });
+    life.listen(window, "pageshow", () => { pageActive = true; syncAnimation(); });
+    life.listen(motionQuery, "change", () => { reduce = motionQuery.matches; if (reduce) settle(); updateMotionButton(); syncAnimation(); });
+    life.listen(motionButton, "click", () => { animationPaused = !animationPaused; if (animationPaused) settle(); updateMotionButton(); syncAnimation(); });
     updateMotionButton(); syncAnimation();
     // a text picture (from the page's text engine): flat, no swing and no beat, drones 0..n-1
     function setText(r, col) {
@@ -319,28 +319,34 @@ import {localeFormat} from '../lib/localized-routes.mjs';
       if (held()) { for (const p of P) { p.x = p.tx; p.y = p.ty; p.z = p.tz; p.al = p.ta; } cur = col.slice(); draw(0, 0); }
       syncAnimation();
     }
-    return { setTarget, setText, resize, info, loadHearts(data) {
+    return { setTarget, setText, resize, info, paused: () => animationPaused, loadHearts(data) {
       DATA = data;
       if (!text.value) setTarget(n, rgbOf(PKG[pkg].color));
       syncAnimation();
     } };
   })();
 
-  range.addEventListener("input", () => update(true));
-  tierBtns.forEach((b) => b.addEventListener("click", () => {
+  life.listen(range, "input", () => update(true));
+  tierBtns.forEach((b) => life.listen(b, "click", () => {
     const k = b.dataset.tier, p = PKG[k];
     pkg = k; locked = true;
     if (+range.value < p.base) range.value = p.base;
     if (+range.value > p.max) range.value = p.max;
     update(false);
   }));
+  life.preserve(() => ({ n: range.value, pkg, locked, paused: swarm.paused(), text: textIn?.value || '' }));
+  life.cleanup(() => { clearTimeout(text.timer); ++text.job; });
+  if (saved) { range.value = saved.n; pkg = saved.pkg; locked = saved.locked; textIn.value = saved.text; }
+  text.value = textIn?.value.toUpperCase().replace(/\s+/g, ' ').trim() || '';
   swarm.resize();
-  update(true);
+  update(!saved);
   // Geometry is a separate chunk. Prices and package selection are ready immediately.
   import('./pricing-formations.js').then(({ default: data }) => {
+    if (life.signal.aborted) return;
     swarm.loadHearts(data);
     update(false, false);
   }, () => {
+    if (life.signal.aborted) return;
     noteEl.textContent = "Die Herzvisualisierung konnte nicht geladen werden. Der Preisrechner funktioniert weiterhin.";
   });
-})();
+}, { scope: ".calc-hero[data-runtime]" });

@@ -1,3 +1,4 @@
+import {registerCanvas} from './canvas-runtime.mjs';
 import {colorVar, rgbOf} from '../lib/color-tokens.mjs';
 import {inlinePlain} from '../lib/inline-text.mjs';
 // Show configurator prototype v9: Anlass picks a sequence of three motifs that plays like a little show, three package
@@ -11,24 +12,24 @@ import { buildSequence, preloadScenes } from "./show-scenes.js";
 
 import {readRuntime} from '../lib/ui-runtime.mjs';
 import {localeFormat} from '../lib/localized-routes.mjs';
-const form = document.querySelector("#cfg");
-if (form) {
+registerCanvas("canvas#cfg-field", (canvas, life, saved) => {
+  const form = life.scope.querySelector("#cfg");
   const {packages:SHOW_PACKAGES,occasions:OCCASIONS,t,locale,home}=readRuntime('.cfg[data-runtime]');
   const STEPS=makeSteps(SHOW_PACKAGES),fmt=localeFormat(locale),priceFor=(name,n)=>calculatePrice(name,n,SHOW_PACKAGES);
   const $ = (s) => document.querySelector(s);
   let current = null, first = true, segment = 0;
-  const field = createField($("#cfg-field"), { onBeat: (k, beat, beats) => {
+  const field = createField(canvas, { lifecycle: life, onBeat: (k, beat, beats) => {
     $("#cfg-scene").textContent = beat.caption;
     $("#cfg-acts").hidden = beats < 2;
     segment = beat.segment ?? 0;
   } });
-  $("#cfg-replay").addEventListener("click", () => field.replay());
+  life.listen($("#cfg-replay"), "click", () => field.replay());
   // the pictures loop: after the last one comes the first again, and back the other way
   const count = () => current?.beats.length ?? 1;
   // manual steps skip the small interludes between SPARK motifs: one click, one picture
   const stepTo = (dir) => { let k = field.beat(); do k = (k + dir + count()) % count(); while (current?.beats[k]?.interlude && k !== field.beat()); field.goto(k); };
-  $("#cfg-prev").addEventListener("click", () => stepTo(-1));
-  $("#cfg-next").addEventListener("click", () => stepTo(1));
+  life.listen($("#cfg-prev"), "click", () => stepTo(-1));
+  life.listen($("#cfg-next"), "click", () => stepTo(1));
   const eur = (v) => t("fromPrice",{price:v.toLocaleString(fmt)});
   let occasion = OCCASIONS[0], job = 0, text = "", style = "script";
   // the visitor's own text joins the show as its finale (round 11); one version per package like every motif
@@ -55,7 +56,7 @@ if (form) {
     $("#cfg-new").textContent = inlinePlain(pkg().displayName);
     try {
       const built = await sequence();
-      if (id !== job) return;
+      if (life.signal.aborted || id !== job) return;
       $("#cfg-error").hidden = true;
       current = built;
       // the first picture of the page stands already, like a show that is already in the sky
@@ -65,7 +66,7 @@ if (form) {
       field.show(built, pkg().base, size(), { instant: first, at: k });
       first = false;
     } catch {
-      if (id === job) $("#cfg-error").hidden = false;
+      if (!life.signal.aborted && id === job) $("#cfg-error").hidden = false;
     }
   }
 
@@ -83,11 +84,11 @@ if (form) {
   }
 
   // only the untouched first view of the page appears already formed; a choice made before it loaded plays normally
-  for (const type of ["input", "click"]) form.addEventListener(type, () => { first = false; }, { capture: true });
-  form.addEventListener("submit", (e) => e.preventDefault());
-  form.querySelectorAll("[name=pkg]").forEach((r) => r.addEventListener("change", () => update(true)));
-  form.querySelectorAll("[name=occasion]").forEach((r) => r.addEventListener("change", () => { occasion = OCCASIONS.find((o) => o.id === r.value); update(false); }));
-  for (const type of ["pointerdown", "focusin"]) form.addEventListener(type, preloadScenes, { once: true });
+  for (const type of ["input", "click"]) life.listen(form, type, () => { first = false; }, { capture: true });
+  life.listen(form, "submit", (e) => e.preventDefault());
+  form.querySelectorAll("[name=pkg]").forEach((r) => life.listen(r, "change", () => update(true)));
+  form.querySelectorAll("[name=occasion]").forEach((r) => life.listen(r, "change", () => { occasion = OCCASIONS.find((o) => o.id === r.value); update(false); }));
+  for (const type of ["pointerdown", "focusin"]) life.listen(form, type, preloadScenes, { once: true });
   // deep links (?anlass=hochzeit&paket=ODYSSEY&motiv=lotus): open the configurator on a motif, e.g. to send it on
   const params = new URLSearchParams(location.search), linked = OCCASIONS.find((o) => o.id === params.get("anlass"));
   if (linked) { occasion = linked; form.querySelector(`[name=occasion][value="${linked.id}"]`).checked = true; }
@@ -100,12 +101,11 @@ if (form) {
   let typing = 0;
   const textInput = $("#cfg-text"), styles = $("#cfg-styles");
   const showText = () => { text = textInput.value.trim(); styles.hidden = !text; $("#cfg-text-note").hidden = !text; update(true, text ? occasion.motifs.length : Math.min(segment, occasion.motifs.length - 1)); };
-  textInput.addEventListener("input", () => { clearTimeout(typing); typing = setTimeout(showText, 450); });
-  textInput.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); clearTimeout(typing); showText(); } });
-  form.querySelectorAll("[name=textstyle]").forEach((r) => r.addEventListener("change", () => { style = r.value; update(true, occasion.motifs.length); }));
+  life.listen(textInput, "input", () => { clearTimeout(typing); typing = setTimeout(showText, 450); });
+  life.listen(textInput, "keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); clearTimeout(typing); showText(); } });
+  form.querySelectorAll("[name=textstyle]").forEach((r) => life.listen(r, "change", () => { style = r.value; update(true, occasion.motifs.length); }));
   // A private editor rebuild preserves visitor choices; they never become CMS content.
-  if (document.querySelector('.cfg-result[data-native-record]')) {
-    window.flyingstarsConfigurator = {
+  const controller = {
       snapshot: () => ({ occasion: occasion.id, pkg: step().pkg, text: textInput.value, style, segment, beat: field.beat() }),
       async restore(saved) {
         const targetOccasion = OCCASIONS.find(o => o.id === saved?.occasion);
@@ -122,9 +122,13 @@ if (form) {
         styles.hidden = !text; $("#cfg-text-note").hidden = !text;
         first = true;
         await update(true, Number.isInteger(saved.segment) ? saved.segment : 0);
+        if (life.signal.aborted) return;
         if (Number.isInteger(saved.beat) && current?.beats[saved.beat]) field.goto(saved.beat);
       }
-    };
-  }
-  update(false, Math.max(0, linkedMotif));
-}
+  };
+  if (document.querySelector('.cfg-result[data-native-record]')) window.flyingstarsConfigurator = controller;
+  life.preserve(() => controller.snapshot());
+  life.cleanup(() => { clearTimeout(typing); ++job; });
+  if (saved) controller.restore(saved);
+  else update(false, Math.max(0, linkedMotif));
+}, { scope: ".cfg[data-runtime]" });

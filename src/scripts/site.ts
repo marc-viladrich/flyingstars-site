@@ -1,5 +1,6 @@
 // Shared FlyingStars presentation; source: customer Vercel prototype.
 // @ts-nocheck
+import {registerCanvas} from './canvas-runtime.mjs';
 import {rgbOf} from '../lib/color-tokens.mjs';
 (() => {
   "use strict";
@@ -68,14 +69,12 @@ import {rgbOf} from '../lib/color-tokens.mjs';
   const shapes = {
     ring: (n) => Array.from({ length: n }, (_, i) => { const a = (i / n) * Math.PI * 2; return [Math.cos(a) * 0.9, Math.sin(a) * 0.9, 0]; }),
     sphere: (n) => Array.from({ length: n }, (_, i) => { const y = 1 - (i / (n - 1)) * 2, r = Math.sqrt(1 - y * y), t = GA * i; return [Math.cos(t) * r * 0.95, y * 0.95, Math.sin(t) * r * 0.95]; }),
-    torus: (n) => { const p = [], U = 25, V = Math.round(n / U); for (let i = 0; i < U; i++) for (let j = 0; j < V; j++) { const u = (i / U) * Math.PI * 2, v = (j / V) * Math.PI * 2 + i * 0.13; p.push([(0.68 + 0.28 * Math.cos(v)) * Math.cos(u), 0.28 * Math.sin(v), (0.68 + 0.28 * Math.cos(v)) * Math.sin(u)]); } return p.slice(0, n); },
+    torus: (n) => { const p = [], U = 25, V = Math.ceil(n / U); for (let i = 0; i < U; i++) for (let j = 0; j < V; j++) { const u = (i / U) * Math.PI * 2, v = (j / V) * Math.PI * 2 + i * 0.13; p.push([(0.68 + 0.28 * Math.cos(v)) * Math.cos(u), 0.28 * Math.sin(v), (0.68 + 0.28 * Math.cos(v)) * Math.sin(u)]); } return p.slice(0, n); },
   };
-  const orbs = [...document.querySelectorAll("canvas[data-orb]")].map((c) => ({
-    c, x: c.getContext("2d"), kind: c.dataset.orb, pts: shapes[c.dataset.orb](+c.dataset.n), col: rgbOf(c.dataset.color), vis: false,
-  }));
-  if (orbs.length) {
-    const io = new IntersectionObserver((es) => es.forEach((e) => { const o = orbs.find((q) => q.c === e.target); if (o) o.vis = e.isIntersecting; }));
-    orbs.forEach((o) => io.observe(o.c));
+  registerCanvas('canvas[data-orb]', (c, life) => {
+    const n = Math.max(2, Number(c.dataset.n) || 100), kind = c.dataset.orb;
+    const o = { c, x: c.getContext('2d'), kind, pts: (shapes[kind] || shapes.sphere)(n), col: rgbOf(c.dataset.color), vis: false };
+    life.observe(new IntersectionObserver(es => { o.vis = es[0].isIntersecting; }), c);
     const draw = (o, t) => {
       const r = o.c.getBoundingClientRect(), d = Math.min(2, devicePixelRatio || 1), w = Math.round(r.width * d), h = Math.round(r.height * d);
       if (!w || !h) return;
@@ -91,9 +90,12 @@ import {rgbOf} from '../lib/color-tokens.mjs';
         x.beginPath(); x.arc(ox + X * s * pr, oy - Y * s * pr, (0.55 + 1.1 * dep) * d, 0, 7); x.fill();
       }
     };
-    if (reduce) orbs.forEach((o) => draw(o, 0.8));
-    else { const loop = (now) => { orbs.forEach((o) => o.vis && !paused && !document.hidden && draw(o, now / 1000)); requestAnimationFrame(loop); }; requestAnimationFrame(loop); }
-  }
+    // Paint a finished frame even while motion is paused or the canvas was hidden.
+    draw(o, 0.8);
+    life.observe(new ResizeObserver(() => draw(o, 0.8)), c);
+    const loop = now => { if (o.vis && !paused && !document.hidden) draw(o, now / 1000); life.raf(loop); };
+    if (!reduce) life.raf(loop);
+  }, { attributes: ['data-orb', 'data-n', 'data-color'] });
 
   // headline lines and team cards come in once they scroll into view (without JS everything is simply visible)
   const reveals = document.querySelectorAll("[data-reveal-group], .member");
@@ -107,10 +109,11 @@ import {rgbOf} from '../lib/color-tokens.mjs';
   }
 
   // sustainability: the stage stays pinned while four numbers take over the screen; drones in the background fly a matching figure
-  const scrolly = document.querySelector("[data-scrolly]");
-  if (scrolly && !reduce && "IntersectionObserver" in window) {
+  registerCanvas("[data-scrolly] canvas", (cv, life) => {
+    const scrolly = cv.closest("[data-scrolly]");
+    if (reduce) return;
     const facts = [...scrolly.querySelectorAll(".fact")], steps = [...scrolly.querySelectorAll(".eco-steps li")], pin = scrolly.querySelector(".eco-pin");
-    const cv = scrolly.querySelector("canvas"), g = cv.getContext("2d"), count = scrolly.querySelector("[data-to]");
+    const g = cv.getContext("2d"), count = scrolly.querySelector("[data-to]");
     scrolly.classList.add("is-scrolly"); scrolly.style.setProperty("--steps", facts.length);
     let W = 1, H = 1, DPR = 1, cur = -1, since = 0, t = 0, seen = false, launched = false, mouse = null, fit = { cx: 0, cy: 0, s: 1 };
     const size = () => {
@@ -184,8 +187,8 @@ import {rgbOf} from '../lib/color-tokens.mjs';
     let counting = 0;
     const countUp = () => {
       const to = +count.dataset.to, t0 = performance.now(), id = ++counting;
-      const tick = (now) => { if (id !== counting || count.isContentEditable) return; const u = Math.min(1, (now - t0) / 1100); count.textContent = Math.round(to * (1 - (1 - u) ** 3)); if (u < 1) requestAnimationFrame(tick); };
-      if(!count.isContentEditable){count.textContent = "0"; requestAnimationFrame(tick);}
+      const tick = (now) => { if (id !== counting || count.isContentEditable) return; const u = Math.min(1, (now - t0) / 1100); count.textContent = Math.round(to * (1 - (1 - u) ** 3)); if (u < 1) life.raf(tick); };
+      if(!count.isContentEditable){count.textContent = "0"; life.raf(tick);}
     };
     const show = (i) => {
       cur = i; since = 0;
@@ -197,18 +200,18 @@ import {rgbOf} from '../lib/color-tokens.mjs';
       steps.forEach((li, k) => { li.style.setProperty("--fill", Math.min(1, Math.max(0, p * n - k)).toFixed(3)); li.classList.toggle("on", k === i); });
       if (i !== cur) show(i);
     };
-    addEventListener("scroll", onScroll, { passive: true });
+    life.listen(window, "scroll", onScroll, { passive: true });
     onScroll();
-    pin.addEventListener("pointermove", (e) => { if (e.pointerType === "touch") return; const r = cv.getBoundingClientRect(); mouse = [e.clientX - r.left, e.clientY - r.top]; });
-    pin.addEventListener("pointerleave", () => { mouse = null; });
-    if ("ResizeObserver" in window) new ResizeObserver(() => { size(); onScroll(); }).observe(cv);
-    new IntersectionObserver((es) => { seen = es[0].isIntersecting; if (seen && !launched) launch(); }).observe(scrolly);
+    life.listen(pin, "pointermove", (e) => { if (e.pointerType === "touch") return; const r = cv.getBoundingClientRect(); mouse = [e.clientX - r.left, e.clientY - r.top]; });
+    life.listen(pin, "pointerleave", () => { mouse = null; });
+    if ("ResizeObserver" in window) life.observe(new ResizeObserver(() => { size(); onScroll(); }), cv);
+    life.observe(new IntersectionObserver((es) => { seen = es[0].isIntersecting; if (seen && !launched) launch(); }), scrolly);
     let last = 0;
     const frame = (dt) => { step(dt); draw(); };
-    const loop = (now) => { const s = now / 1000, dt = Math.min(0.05, last ? s - last : 0.016); last = s; if (seen && !paused && !document.hidden) frame(dt); requestAnimationFrame(loop); };
-    requestAnimationFrame(loop);
+    const loop = (now) => { const s = now / 1000, dt = Math.min(0.05, last ? s - last : 0.016); last = s; if (seen && !paused && !document.hidden) frame(dt); life.raf(loop); };
+    life.raf(loop);
 
-  }
+  });
 
 
 })();
