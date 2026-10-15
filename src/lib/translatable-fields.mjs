@@ -3,6 +3,18 @@ const owners = /^(page|post|project|faq|client|team|screen|package|site)\//;
 const excluded = new Set(['href','url','src','video','heroVideo','id','assetId','sourceIssue','sourceId','sourceHash','date','updated','route','nextRoute','tags','mime','color','accent','name','client','slug','street','packageId','featureIds','clientIds','memberIds','build','anlass','orbShape']);
 const looksLikeData = text => !/\p{L}{2}/u.test(text) || /^(https?:|mailto:|tel:|\/|#)/.test(text.trim()) || /^[\w.+-]+@[\w-]+\.[\w.]+$/.test(text.trim());
 export const getPath = (data, path) => path.reduce((value, key) => value?.[key], data);
+// These are the existing fields consumed by the page templates, not separate SEO content.
+// Shared with the build report so review/hash eligibility stays in localize().
+export function seoFields(record) {
+  const owner = record.id.split('/')[0];
+  if (['page','screen','post'].includes(owner)) return {title:['title'], description:['description']};
+  if (owner === 'project') return record.data.showcase
+    ? {title:['showcase','meta','title'], description:['showcase','meta','description']}
+    : {title:['title'], description:['summary']};
+  // The blog index has a language-neutral title and a UI-owned description.
+  if (record.id === 'site/ui') return {description:['blog','alle_beitrage_in_chronologischer_reihenfolge_neues']};
+  return {};
+}
 export function translatableFields(record) {
   if (!owners.test(record.id)) return [];
   return (record.fields || []).filter(field => field.kind === 'text' && field.format !== 'color')

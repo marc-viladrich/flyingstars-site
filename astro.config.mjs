@@ -4,6 +4,7 @@ import sitemap from '@astrojs/sitemap';
 import fs from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
+import {writeSeoFallbackReport} from './scripts/seo-fallback-report.mjs';
 
 // SITE_URL und MEDIA_HOST kommen aus der Umgebung (lokal .env, in CI als Variable),
 // damit dieselbe Codebasis für Preview und Produktion gebaut werden kann.
@@ -12,7 +13,7 @@ const mediaHost = process.env.MEDIA_HOST ?? 'media.example.invalid';
 const excluded = new Set();
 // Derive exclusions from the actual HTML (also honors editor noindex), not a second content list.
 /** @type {import('astro').AstroIntegration} */
-const sitemapExclusions = {name:'flyingstars-sitemap-exclusions',hooks:{'astro:build:done':({dir})=>{
+const sitemapExclusions = {name:'flyingstars-sitemap-exclusions',hooks:{'astro:build:done':async({dir})=>{
   excluded.clear();
   /** @param {string} folder */
   const walk=folder=>{for(const entry of fs.readdirSync(folder,{withFileTypes:true})){const file=path.join(folder,entry.name);if(entry.isDirectory())walk(file);else if(entry.name==='index.html'){
@@ -20,6 +21,7 @@ const sitemapExclusions = {name:'flyingstars-sitemap-exclusions',hooks:{'astro:b
     const pathname=route.replace(/^\/\/$/,'/'),canonical=html.match(/<link[^>]*rel="canonical"[^>]*href="([^"]+)"/);
     if(/<meta[^>]*name="robots"[^>]*content="[^"]*noindex/.test(html)||canonical&&new URL(canonical[1]).pathname!==pathname)excluded.add(pathname);
   }}};walk(fileURLToPath(dir));
+  await writeSeoFallbackReport(process.cwd(),fileURLToPath(dir));
 }}};
 
 export default defineConfig({

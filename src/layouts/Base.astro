@@ -47,7 +47,7 @@ const eco = await optimizedImage('https://flyingstars.art/wp-content/uploads/202
     {social && <meta property="og:image" content={new URL(social.src, Astro.site)} />}
     {social && <meta property="og:image:width" content={String(social.width)} />}
     {social && <meta property="og:image:height" content={String(social.height)} />}
-    <link rel="sitemap" href={localizedHref("/sitemap-index.xml",locale)} />
+    <link rel="sitemap" href={new URL("/sitemap-index.xml",Astro.site)} />
     <link rel="icon" href={localizedHref("/favicon.svg",locale)} type="image/svg+xml" />
   </head>
   <body>

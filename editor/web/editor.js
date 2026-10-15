@@ -2728,8 +2728,8 @@ function overlayLocale(locale) {
 // Machine translation: languages, this page or the whole site (all kinds of content ticked by default),
 // costs before sending, a real progress bar while it runs, suggestions into the draft.
 const translationKinds = [
-  ["pages", "Seiten"],
-  ["stories", "Projekte & Blog"],
+  ["pages", "Seiten inkl. SEO-Titel und Beschreibung"],
+  ["stories", "Projekte & Blog inkl. SEO"],
   ["faq", "Häufige Fragen"],
   ["packages", "Pakete & Preise"],
   ["people", "Kunden & Team"],
