@@ -1298,29 +1298,24 @@ dialog.dlg.media-wide {
   width: 15px;
   height: 15px;
 }
-/* Language of a panel: one control in its head, and the pill on each foreign-language field. Both
-   open the same language menu; the pill stays as small as the label it sits in. */
-.editor-ui .locale-badge {
-  display: inline-flex;
-  gap: 2px;
-  min-height: 0;
+/* Language of a panel: one control, in its head. A foreign-language field only carries a quiet,
+   non-interactive tag; empty (untranslated) it is dashed like untranslated text on the page. */
+.editor-ui .locale-tag {
+  display: inline-block;
   margin-left: 6px;
-  padding: 1px 3px 1px 5px;
+  padding: 0 4px;
   border-radius: 4px;
   background: var(--ui-tint);
   color: var(--ui-accent-ink);
   font-size: 11px;
   font-weight: 600;
   line-height: 16px;
-  letter-spacing: 0.04em !important;
+  letter-spacing: 0.04em;
   vertical-align: 1px;
+  cursor: default;
 }
-.editor-ui .locale-badge:hover:not(:disabled) {
-  background: var(--ui-hover);
-}
-.editor-ui .locale-badge svg {
-  width: 12px;
-  height: 12px;
+.editor-ui :is(input, textarea).untranslated:not(:focus) {
+  border: 1px dashed var(--ui-muted);
 }
 .editor-ui .panel-locale {
   gap: 6px;
@@ -1330,7 +1325,7 @@ dialog.dlg.media-wide {
   font-size: 13px;
   font-weight: 600;
 }
-.editor-ui .panel-locale svg:last-child {
+.editor-ui .panel-locale > svg:last-child {
   width: 14px;
   height: 14px;
 }
@@ -1516,9 +1511,11 @@ dialog.dlg.media-wide {
   border-radius: 2px;
   box-shadow: 0 0 0 1px var(--ui-shadow-boundary);
 }
-.editor-ui .flag svg {
-  width: 100%;
-  height: 100%;
+/* The flag fills its frame exactly, whatever icon size the host button gives its other svgs. */
+.editor-ui .flag > svg {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
 }
 #language {
   gap: 6px;

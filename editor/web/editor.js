@@ -930,12 +930,12 @@ function actionRow(label, run, iconName, { danger = false, confirm } = {}) {
 // Texts of content records have a translation per language; links, files and colours do not.
 function isTranslatable(item,field){return field?.kind==='text'&&field['x-afe']?.translatable===true;}
 // "Übersetzen" for one clicked text: in German it switches to the foreign view with that text focused on
-// the page; in a foreign view it goes back to German and the panel stays.
+// the page. Switching the language itself is the panel head's job alone (one control, same place in every
+// language), so a foreign view offers no second "back to German" here; the panel still gets that control.
 function translateAction(item, field) {
   if (!isTranslatable(item, field)) return null;
-  return activeLocale === "de"
-    ? actionRow("Übersetzen", () => startTranslation({ id: item.id, path: field.path }), "languages")
-    : actionRow("Zurück zu Deutsch", () => switchPanelLocale("de"), "languages");
+  panelTranslatable = true;
+  return activeLocale === "de" ? actionRow("Übersetzen", () => startTranslation({ id: item.id, path: field.path }), "languages") : null;
 }
 // Set while a panel draws when it shows (or holds behind "Weitere Felder") a translatable text: then its
 // head carries the one language control of the panel.
@@ -1007,10 +1007,20 @@ function fieldControl(item, field, { label } = {}) {
   if (translatable) panelTranslatable = true;
   if (translatable && activeLocale !== "de") {
     // In a foreign-language view this field edits its translation; the German text is the placeholder.
-    // Its language pill switches the language of the whole panel (and the page) in place.
+    // A quiet tag says which language the field holds (other fields of the panel are shared by all
+    // languages); an empty one is dashed like untranslated text on the page. Switching stays in the head.
     input.value = translationText(item, field.path) ?? "";
     input.placeholder = current ?? "";
-    labelNode.append(localeSwitch("locale-badge"));
+    const missing = () => input.classList.toggle("untranslated", !input.value.trim());
+    missing();
+    labelNode.append(
+      el("span", {
+        class: "locale-tag",
+        text: activeLocale.toUpperCase(),
+        title: `${localeNames[activeLocale]} – ohne eigenen Text erscheint der deutsche (als Platzhalter zu sehen)`,
+      }),
+    );
+    input.addEventListener("input", missing);
     input.addEventListener("change", () => {
       if (input.value.trim()) writeTranslation(item.id, field.path, activeLocale, input.value);
     });
@@ -2025,7 +2035,7 @@ function renderTop({ keepScroll = false, keepPlace = false, restore = null } = {
   const renderers = { element: elementView, entry: entryView, instance: instanceView, section: sectionView, media: mediaView, record: recordView, page: pageView, field: fieldView };
   panelTranslatable = false;
   (renderers[view.scope] || elementView)(body, item, view.context, head);
-  if (panelTranslatable) $("#panel-actions").append(localeSwitch("panel-locale"));
+  if (panelTranslatable) $("#panel-actions").append(localeSwitch());
   if (!body.children.length) put(body, group(null, el("p", { class: "note", text: "Hier gibt es nichts weiter einzustellen." })));
   $("#panel-back").hidden = !nav.canGoBack();
   $("#panel-back").setAttribute("aria-label", backLabel());
@@ -3736,19 +3746,18 @@ function setLocale(locale, { keepPanel = false } = {}) {
     toast(`${localeNames[locale]}: Texte direkt auf der Seite überschreiben. Noch nicht übersetzte Texte sind gestrichelt markiert.`);
   }
 }
-// The language control of a panel: in its head (one per panel, when it shows translatable text) and as the
-// pill on every foreign-language field. Same languages and flags as the dock; switching keeps the panel
-// (same record, scroll position and open groups) and the page follows (setLocale, as from the dock).
-function localeSwitch(cls) {
+// The language control of a panel: one, in its head, whenever the panel concerns translatable text, in
+// every language alike (so it stays under the pointer for quick switching). Same languages and flags as
+// the dock; switching keeps the panel (same record, scroll position and open groups) and the page follows.
+function localeSwitch() {
   const node = el(
     "button",
-    { type: "button", class: cls, "aria-haspopup": "menu", "aria-expanded": "false", "aria-label": "Sprache wechseln, aktuell " + localeNames[activeLocale], title: "Sprache wechseln" },
-    cls === "panel-locale" ? flagIcon(activeLocale) : null,
+    { type: "button", class: "panel-locale", "aria-haspopup": "menu", "aria-expanded": "false", "aria-label": "Sprache wechseln, aktuell " + localeNames[activeLocale], title: "Sprache wechseln" },
+    flagIcon(activeLocale),
     el("span", { text: activeLocale.toUpperCase() }),
     icon("chevron-down"),
   );
   node.addEventListener("click", (event) => {
-    // Inside a field label the click must not reach the input.
     event.preventDefault();
     event.stopPropagation();
     openMenu(
