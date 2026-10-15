@@ -1,5 +1,6 @@
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
+import {LegacySourceAdapter} from './legacy-source-adapter.mjs';
 import {unwrap} from './native-schema.mjs';
 
 /** Only this adapter loads the pilot's schemas and source services.
@@ -15,13 +16,16 @@ export async function createFlyingStarsAdapter(root) {
 
  const {translatableFields}=await load('src/lib/translatable-fields.mjs');
  const {validateMarkdown:validateTranslatedMarkdown}=await load('src/lib/markdown-policy.mjs');
- return {types,editorialHref,sectionSchema,sectionPolicy,recordRoute,packageOwnership,translatableFields,validateTranslatedMarkdown,
+ const recordId=/^(page|package|screen|post|project|faq|client|team|media|site|translation)\/([a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)*)$/;
+ const sourceFor=id=>{const match=recordId.exec(id);if(!match)return null;const type=types.find(t=>t.prefix===match[1]);if(!type||type.schemas&&!Object.hasOwn(type.schemas,match[2]))return null;return {...type,id,address:{collection:type.prefix,id:match[2]},locator:{kind:'document'},...type.schemas?{schema:type.schemas[match[2]]}:{},file:'src/content/'+type.directory+'/'+match[2]+'.'+type.extension,identity:type.prefix==='package'?match[2].toUpperCase():undefined};};
+ const sourcesFromFiles=files=>files.flatMap(file=>{const type=types.find(t=>file.startsWith('src/content/'+t.directory+'/')&&file.endsWith('.'+t.extension));if(!type)return [];const name=file.slice(('src/content/'+type.directory+'/').length,-(type.extension.length+1));const source=sourceFor(type.prefix+'/'+name);return source?[source]:[];});
+ return {sourceFor,sourcesFromFiles,createSourceAdapter:options=>new LegacySourceAdapter(options),types,editorialHref,sectionSchema,sectionPolicy,recordRoute,packageOwnership,translatableFields,validateTranslatedMarkdown,
   gitIdentity:{GIT_AUTHOR_NAME:'FlyingStars local editor',GIT_AUTHOR_EMAIL:'editor@example.invalid',GIT_COMMITTER_NAME:'FlyingStars Editor',GIT_COMMITTER_EMAIL:'editor@example.invalid'},
   mediaOrigin:'https://flyingstars.art',mediaHosts:['flyingstars.art','flyingstars-relaunch.vercel.app'],
   requiredOutput:['index.html','show-konfigurator/index.html','drohnenshow-preise/index.html'],
   contentCollections:['src/content/pages/','src/content/posts/','src/content/projects/','src/content/faq/'],
   contentRoot:'src/content',assetRoot:'public/assets',
-  recordId:/^(page|package|screen|post|project|faq|client|team|media|site|translation)\/([a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)*)$/,
+  recordId,
   browserFiles:{'/editor/site-lib/inline-text.mjs':'src/lib/inline-text.mjs','/editor/site-lib/editorial-text.mjs':'src/lib/editorial-text.mjs','/editor/package-ids.mjs':'src/content/package-ids.mjs','/editor/package-ownership.mjs':'src/content/package-ownership.mjs'},
   mediaWrite(asset,requestId){return{id:'media/'+requestId,data:{title:asset.title,src:'/'+asset.src,defaultAlt:'',width:asset.width,height:asset.height,mime:asset.mime},file:'public/'+asset.src};},
  };
