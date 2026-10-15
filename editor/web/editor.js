@@ -31,7 +31,7 @@ import { mediaLibrary, collectionOf, ALL as ALL_MEDIA, UNUSED as UNUSED_MEDIA } 
 import { splitLocale, localizedPath, frontendTarget, liveURL } from "./frontend-url.mjs";
 import { navigatorGroups, matchesQuery, localeVersion } from "./content-navigator.mjs";
 import { NavStack } from "./nav-stack.mjs";
-import { overviewPlan, entryCounts } from "./overview-plan.mjs";
+import { overviewPlan, entryCounts, directChildren, chunkByGroup } from "./overview-plan.mjs";
 
 // ---------------------------------------------------------------------------
 // State
@@ -2424,37 +2424,27 @@ function subtreeControls(item, prefix, { skipInline = false } = {}) {
   // A container's own explanation from the schema (help/hint) stands above its fields.
   const own = containersFor(item).find((c) => equal(c.path, prefix));
   const out = [own?.help, own?.hint].filter(Boolean).map((text) => el("p", { class: "note wide-row", text }));
-  const children = [];
-  const seen = new Set();
-  const consider = (path, node) => {
-    const key = pathKey(path.slice(0, prefix.length + 1));
-    if (seen.has(key)) return;
-    seen.add(key);
-    children.push(node);
-  };
-  for (const f of fieldsFor(item)) {
-    if (!under(f.path, prefix) || f.path.length <= prefix.length) continue;
-    const childPath = f.path.slice(0, prefix.length + 1);
-    const container = f.path.length > prefix.length + 1 ? containersFor(item).find((c) => equal(c.path, childPath)) : null;
-    consider(childPath, container ? { container } : { field: f });
-  }
-  for (const c of containersFor(item))
-    if (c.path.length === prefix.length + 1 && under(c.path, prefix)) consider(c.path, { container: c });
-  for (const child of children) {
-    if (child.field) {
-      if (!isTechnical(child.field) && !(skipInline && inlineKeys.has(fieldKey(item.id, child.field.path)))) out.push(fieldControl(item, child.field));
-      continue;
-    }
+  const controlOf = (child) => {
+    if (child.field) return !isTechnical(child.field) && !(skipInline && inlineKeys.has(fieldKey(item.id, child.field.path))) ? fieldControl(item, child.field) : null;
     const c = child.container;
-    if (isMediaContainer(item, c)) {
-      if (value(item, c.path) !== undefined) out.push(mediaControl(item, c.path, { title: fieldLabel(c) }));
-    } else if (c.kind === "array") {
+    if (isMediaContainer(item, c)) return value(item, c.path) !== undefined ? mediaControl(item, c.path, { title: fieldLabel(c) }) : null;
+    if (c.kind === "array") {
       const source = choiceSource(item, c);
-      out.push(source ? referenceControl(item, c, source) : listRows(item, c, { includeInline: true }));
-    } else if (c.kind === "object" && value(item, c.path) !== undefined) {
-      const inner = subtreeControls(item, c.path, { skipInline });
-      if (inner.length) out.push(el("div", { class: "subgroup" }, el("h4", { class: "subgroup-title", text: fieldLabel(c) }), inner));
+      return source ? referenceControl(item, c, source) : listRows(item, c, { includeInline: true });
     }
+    if (c.kind === "object" && value(item, c.path) !== undefined) {
+      const inner = subtreeControls(item, c.path, { skipInline });
+      return inner.length ? el("div", { class: "subgroup" }, el("h4", { class: "subgroup-title", text: fieldLabel(c) }), inner) : null;
+    }
+    return null;
+  };
+  // Children naming a schema group gather under that subheading (e.g. "Meldungen": Versand, Fehlermeldungen).
+  const children = directChildren({ fields: fieldsFor(item), containers: containersFor(item), prefix });
+  for (const chunk of chunkByGroup(children, (child) => (child.field || child.container).group, { ignore: own?.group })) {
+    const controls = chunk.items.map(controlOf).filter(Boolean);
+    if (!controls.length) continue;
+    if (chunk.title) out.push(el("div", { class: "subgroup" }, el("h4", { class: "subgroup-title", text: chunk.title }), controls));
+    else out.push(...controls);
   }
   const advanced = fieldsFor(item).filter((f) => f.path.length === prefix.length + 1 && under(f.path, prefix) && isTechnical(f));
   if (advanced.length) {

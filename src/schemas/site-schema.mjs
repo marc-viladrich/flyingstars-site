@@ -33,16 +33,17 @@ export const siteInquirySchema=z.object({
  phone:inGroup('Kontaktdaten',z.object({label:text('Beschriftung').meta(editable({"translatable":true}))}).describe('Telefon-Feld')),
  message:inGroup('Kontaktdaten',z.object({label:text('Beschriftung').meta(editable({"translatable":true})),placeholder:text('Platzhalter').meta(editable({"translatable":true})),skyText:text('Vorbelegung aus dem Preisrechner ({text} wird ersetzt)').meta(editable({"translatable":true}))}).describe('Nachricht')),
  privacy:inGroup('Kontaktdaten',z.object({before:text('Text vor dem Link').meta(editable({"translatable":true})),link:text('Linktext').meta(editable({"translatable":true})),after:z.string().describe('Text nach dem Link').meta(editable({"translatable":true}))}).describe('Datenschutzhinweis')),
- buttons:inGroup('Ablauf',z.object({next:text('Weiter').meta(editable({"translatable":true})),back:text('Zurück').meta(editable({"translatable":true})),submit:text('Absenden').meta(editable({"translatable":true}))}).describe('Buttons')),
+ buttons:inGroup('Ablauf',z.object({next:text('Button zum nächsten Schritt').meta(editable({"translatable":true})),back:text('Button zum vorigen Schritt').meta(editable({"translatable":true})),submit:text('Button zum Absenden').meta(editable({"translatable":true}))}).describe('Buttons')),
+ // Eight texts read as two kinds in the editor: what the visitor sees while and after sending, and errors.
  messages:z.object({
-  required:text('Fehlermeldung Pflichtfeld').meta(editable({"translatable":true})),
-  spam:text('Fehlermeldung bei abgelehnter Spam-Prüfung').meta(editable({"translatable":true})),
-  sending:text('Button während des Versands').meta(editable({"translatable":true})),
-  success:text('Erfolgsmeldung').meta(editable({"translatable":true})),
-  notConfigured:text('Meldung wenn der Versand nicht eingerichtet ist ({email} wird ersetzt)').meta(editable({"translatable":true})),
-  sendFailed:text('Fehler vom Server ohne Details').meta(editable({"translatable":true})),
-  failed:text('Fehler ohne Verbindung').meta(editable({"translatable":true})),
-  retry:text('Zusatz nach jedem Fehler ({email} wird ersetzt)').meta(editable({"translatable":true})),
+  required:inGroup('Fehlermeldungen',text('Fehlermeldung Pflichtfeld').meta(editable({"translatable":true}))),
+  spam:inGroup('Fehlermeldungen',text('Fehlermeldung bei abgelehnter Spam-Prüfung').meta(editable({"translatable":true}))),
+  sending:inGroup('Versand',text('Button während des Versands').meta(editable({"translatable":true}))),
+  success:inGroup('Versand',text('Erfolgsmeldung').meta(editable({"translatable":true}))),
+  notConfigured:inGroup('Fehlermeldungen',text('Meldung wenn der Versand nicht eingerichtet ist ({email} wird ersetzt)').meta(editable({"translatable":true}))),
+  sendFailed:inGroup('Fehlermeldungen',text('Fehler vom Server ohne Details').meta(editable({"translatable":true}))),
+  failed:inGroup('Fehlermeldungen',text('Fehler ohne Verbindung').meta(editable({"translatable":true}))),
+  retry:inGroup('Fehlermeldungen',text('Zusatz nach jedem Fehler ({email} wird ersetzt)').meta(editable({"translatable":true}))),
  }).describe('Meldungen'),
 }).describe('Anfrageformular').meta(editable({"collection":{"label":"Anfrageformular","title":[],"icon":"mail","group":"Website-Daten","operations":["update"],"placement":"frontend","i18n":{"mode":"overlay"},"policies":["flyingstars/media-ownership"]}}));
 const navigationLink=z.object({label:text('Linktext').meta(editable({"translatable":true})),href:z.string().min(1).regex(editorialHref,'Nur Web-, E-Mail-, Telefon- oder interne Links sind erlaubt.').describe('Linkziel').meta(editable({"format":"url"}))}).describe('Navigationslink');

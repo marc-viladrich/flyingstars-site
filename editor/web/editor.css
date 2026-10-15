@@ -2249,6 +2249,11 @@ dialog.dlg.navigator {
   padding-top: 0;
   border-top: 0;
 }
+/* A block that opens with a subheading needs no rule above it: the block title already separates. */
+.ov-grid > .subgroup:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
 .row-hint {
   display: block;
   color: var(--ui-muted);
