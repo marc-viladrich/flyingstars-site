@@ -149,3 +149,9 @@ Zwei EU-Optionen zur Entscheidung, keine Buchung oder Einrichtung:
 - [Scaleway Object Storage](https://www.scaleway.com/en/object-storage/) mit ausdrücklich gewählter EU-Region. Separater Anbieter für die Medien. Scaleway veröffentlicht [Umweltkennzahlen und Energieangaben je Rechenzentrum](https://www.scaleway.com/en/environmental-leadership/); diese auf die tatsächlich gewählte Region beziehen. Ein Herkunftsnachweis für Strom ist keine Zusage emissionsfreien Betriebs.
 
 Ein eigener Medienhostname auf dem vorhandenen Hetzner-Webhosting ist ebenfalls möglich, wenn die Originale in einem dauerhaften, vom ausgetauschten Webroot getrennten Verzeichnis liegen und Backup sowie HTTPS dafür eingerichtet werden. Ob Bucket oder Medienverzeichnis: Marc muss den dauerhaften Zielort wählen; der Bildcache ist keiner.
+
+### Nachmessung außerhalb der Sandbox (Claude, 15.10.2026)
+
+- `scripts/fetch-legacy-media.mjs /tmp/…/staging`: **50 von 50 Originalen geladen und geprüft** (20 WordPress, 30 Vercel-Prototyp), 14 MB. Auch die 30 Dateien auf `flyingstars-relaunch.vercel.app` müssen vor dem Umzug in den endgültigen Medienspeicher.
+- Produktionsbuild mit echten Remote-Bildern (`SITE_URL=https://flyingstars.art`, eigener `FLYINGSTARS_IMAGE_CACHE_DIR`, `/usr/bin/time -l`, MacBook): **kalt 7,5 s / 547 MB Spitze, warm 4,6 s / 479 MB**; Bild-Cache 4,3 MB. Vorher ohne responsive Varianten 440–465 MB. Ob die Kaltspitze ins Speicherlimit von Hetzner L passt, zeigt erst `hosting-probe.mjs` auf dem Konto; der dauerhafte Cache hält Folgebuilds bei der Warmspitze.
+- 364 Bilder, davon 243 mit `srcset` + `sizes` (vorher 12), 121 begründete Ausnahmen (kleine Logos/SVG).
