@@ -132,3 +132,59 @@ export function partitionUnits(units, markers, { id, path: prefix = [] }, { incl
   }
   return { shown, more, count: more.length };
 }
+
+// ---------------------------------------------------------------------------
+// Stable layout while a panel stays open: what the user just clicked never jumps to another zone. A card's
+// split between its main area and "Weitere Felder", and which choices stand in the chosen list or among the
+// candidates, are fixed when the view is first drawn and re-derived only when it is opened again. memo is
+// one plain object per open view (and per control); the first call fills it.
+// ---------------------------------------------------------------------------
+const unitKey = (unit) => (unit.kind === "candidates" ? "candidates:" : "") + JSON.stringify(unit.path);
+export function stablePartition(part, memo) {
+  if (!memo.zones) {
+    memo.zones = new Map([...part.shown.map((unit) => [unitKey(unit), { zone: "shown", unit }]), ...part.more.map((unit) => [unitKey(unit), { zone: "more", unit }])]);
+    return part;
+  }
+  const fresh = new Map([...part.shown, ...part.more].map((unit) => [unitKey(unit), unit]));
+  const freshZone = (key) => (part.shown.some((unit) => unitKey(unit) === key) ? "shown" : "more");
+  for (const key of fresh.keys()) if (!memo.zones.has(key)) memo.zones.set(key, { zone: freshZone(key), unit: fresh.get(key) });
+  const zones = { shown: [], more: [] };
+  for (const [key, { zone, unit }] of memo.zones) {
+    const base = key.startsWith("candidates:") ? key.slice("candidates:".length) : null;
+    // A list kept whole in "Weitere Felder" already shows its candidates.
+    if (base && memo.zones.get(base)?.zone === "more") continue;
+    if (fresh.has(key)) zones[zone].push(fresh.get(key));
+    // All candidates ticked: the candidates stay where they were clicked, now checked.
+    else if (base && fresh.has(base)) zones[zone].push(unit);
+  }
+  return { shown: zones.shown, more: zones.more, count: zones.more.length };
+}
+// options: [{ key, … }]; chosen: the stored ids; matches(option, id). Returns the rows of the chosen list
+// (first-drawn chosen ones, an unticked one keeping its place) and of the candidates, each with its
+// current state. A choice that did not exist when the view was drawn (just created) goes by its state.
+export function pinnedChoices(options, chosen, matches, memo) {
+  const isChosen = (option) => chosen.some((id) => matches(option, id));
+  if (!memo.pins) {
+    memo.pins = new Map(options.map((option) => [option.key, isChosen(option) ? "chosen" : "other"]));
+    memo.order = chosen.map((id) => options.find((option) => matches(option, id))?.key).filter((key) => key !== undefined);
+  }
+  const pin = (option) => memo.pins.get(option.key) ?? (isChosen(option) ? "chosen" : "other");
+  const list = chosen.map((id) => options.find((option) => matches(option, id))).filter((option) => option && pin(option) === "chosen");
+  for (const key of memo.order) {
+    const option = options.find((o) => o.key === key);
+    if (option && !isChosen(option)) list.splice(Math.min(memo.order.indexOf(key), list.length), 0, option);
+  }
+  return {
+    chosen: list.map((option) => ({ option, checked: isChosen(option) })),
+    others: options.filter((option) => pin(option) === "other").map((option) => ({ option, checked: isChosen(option) })),
+  };
+}
+// Reorders the visible chosen ids (the order shown after a drag) inside the stored list: ids that are not
+// visible (ticked among the candidates) keep their index.
+export function reorderVisible(current, visible) {
+  const wanted = new Set(visible);
+  const slots = current.map((id, index) => (wanted.has(id) ? index : -1)).filter((index) => index >= 0);
+  const next = [...current];
+  slots.forEach((slot, k) => (next[slot] = visible[k]));
+  return next;
+}

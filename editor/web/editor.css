@@ -641,6 +641,10 @@ details.more[open] > summary svg {
 details.more > .group {
   padding-top: 0;
 }
+/* "Weitere Felder" of a card panel reads as a zone of its own: a very light tint, nothing else special. */
+details.more.more-zone {
+  background: color-mix(in srgb, var(--ui-field) 38%, var(--ui-surface));
+}
 
 /* ---------- Selection gear on the canvas ---------- */
 .sel-gear {

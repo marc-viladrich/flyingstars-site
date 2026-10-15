@@ -14,6 +14,9 @@ import {
   itemSummary,
   scopeUnits,
   partitionUnits,
+  stablePartition,
+  pinnedChoices,
+  reorderVisible,
 } from "./view-state.mjs";
 import { packageOwnedPagePath } from "/editor/package-ownership.mjs";
 import { describe } from "./native-schema.mjs";
@@ -1239,35 +1242,40 @@ function referenceControl(item, container, source, { part = "all" } = {}) {
   const listKey = fieldKey(item.id, container.path);
   const now = () => value(item, container.path) || [];
   const matches = (option, id) => option.key === id || option.alias === id;
-  const chosen = now()
-    .map((id) => source.options.find((option) => matches(option, id)))
-    .filter(Boolean);
-  const others = source.options.filter((option) => !chosen.includes(option));
-  const write = (next, focusIndex) => {
+  // Rows stay where they were while the panel is open: a ticked candidate stays among the candidates
+  // (checked), an unticked chosen one stays in the chosen list (unchecked) until the panel opens again.
+  const rows = pinnedChoices(source.options, now(), matches, viewMemo("choices:" + listKey));
+  const storedId = (option) => now().find((id) => matches(option, id));
+  const write = (next, focusKey) => {
     changed(item.id, container.path, next);
-    if (focusIndex !== undefined) pendingFocus = `[data-list="${CSS.escape(listKey)}"] [data-index="${focusIndex}"] .grip`;
+    if (focusKey !== undefined) pendingFocus = `[data-list="${CSS.escape(listKey)}"] [data-option="${CSS.escape(focusKey)}"] .grip`;
     rerender();
   };
-  const moveTo = (from, to) => {
+  // Moving changes the order of the chosen rows on screen; ticked candidates keep their place in the list.
+  const chosenShown = rows.chosen.filter((row) => row.checked).map((row) => row.option);
+  const moveTo = (visible, focusKey) => {
     stageInputs();
-    const next = [...now()];
-    if (from === to || to < 0 || to >= next.length) return;
-    const [moved] = next.splice(from, 1);
-    next.splice(to, 0, moved);
-    write(next, to);
+    const next = reorderVisible(now(), visible.map(storedId));
+    if (!equal(next, now())) write(next, focusKey);
   };
-  const row = (option, index) => {
+  const row = ({ option, checked }, inChosen) => {
     const box = el("input", { type: "checkbox", "aria-label": `${option.label} anzeigen` });
-    box.checked = index !== null;
-    box.disabled = index===null?!listPolicy(container).insertable:!listPolicy(container).removable;
+    box.checked = checked;
+    box.disabled = checked ? !listPolicy(container).removable : !listPolicy(container).insertable;
     box.addEventListener("change", () => {
       stageInputs();
       const next = now().filter((id) => !matches(option, id));
       if (box.checked) next.push(option.key);
       write(next);
     });
-    const li = el("li", { "data-index": index === null ? "" : String(index), ...(index === null ? {} : { "data-entry-key": fieldKey(item.id, [...container.path, index]) }) });
-    if (index !== null && chosen.length > 1 && listPolicy(container).reorderable) {
+    const index = checked ? now().findIndex((id) => matches(option, id)) : -1;
+    const li = el("li", {
+      "data-option": option.key,
+      "data-index": index < 0 ? "" : String(index),
+      ...(index < 0 ? {} : { "data-entry-key": fieldKey(item.id, [...container.path, index]) }),
+    });
+    const position = chosenShown.indexOf(option);
+    if (inChosen && checked && chosenShown.length > 1 && listPolicy(container).reorderable) {
       const grip = button(`„${option.label}“ verschieben`, null, {
         icon: "grip-vertical",
         iconOnly: true,
@@ -1275,12 +1283,23 @@ function referenceControl(item, container, source, { part = "all" } = {}) {
         title: "Ziehen oder mit Pfeiltasten verschieben",
       });
       grip.addEventListener("keydown", (event) => {
-        if (event.key === "ArrowUp" || event.key === "ArrowDown") {
-          event.preventDefault();
-          moveTo(index, index + (event.key === "ArrowUp" ? -1 : 1));
-        }
+        if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
+        event.preventDefault();
+        const to = position + (event.key === "ArrowUp" ? -1 : 1);
+        if (to < 0 || to >= chosenShown.length) return;
+        const visible = [...chosenShown];
+        visible.splice(to, 0, visible.splice(position, 1)[0]);
+        moveTo(visible, option.key);
       });
-      grip.addEventListener("pointerdown", (event) => dragRow(event, chosenList, li, index, moveTo));
+      // After a drag the list's DOM order is the new order of the chosen rows.
+      grip.addEventListener("pointerdown", (event) =>
+        dragRow(event, chosenList, li, position, () =>
+          moveTo(
+            [...chosenList.children].map((n) => source.options.find((o) => o.key === n.dataset.option)).filter((o) => chosenShown.includes(o)),
+            option.key,
+          ),
+        ),
+      );
       li.append(grip);
     }
     const open = button(option.label, option.open, { cls: "row-open" });
@@ -1289,14 +1308,13 @@ function referenceControl(item, container, source, { part = "all" } = {}) {
     return li;
   };
   const chosenList = el("ul", { class: "rows", "data-list": listKey, "aria-label": fieldLabel(container) + " (angezeigt)" });
-  chosen.forEach((option, index) => chosenList.append(row(option, index)));
-  // Not shown yet: grouped like their owner (e.g. "Musik", "Service & Extras"). Named groups are
-  // disclosures like entries: open in the record overview, closed in contextual panels, choice remembered.
-  const groups = [...new Set(others.map((option) => option.group || ""))];
+  rows.chosen.forEach((entry) => chosenList.append(row(entry, true)));
+  // Not shown yet: grouped like their owner (e.g. "Musik", "Service & Extras"), each group one accordion.
+  const groups = [...new Set(rows.others.map(({ option }) => option.group || ""))];
   const otherLists = groups.map((group) => {
-    const members = others.filter((option) => (option.group || "") === group);
+    const members = rows.others.filter(({ option }) => (option.group || "") === group);
     const list = el("ul", { class: "rows muted", "aria-label": group || "Weitere" });
-    members.forEach((option) => list.append(row(option, null)));
+    members.forEach((entry) => list.append(row(entry, false)));
     if (!group) return [list];
     return [fold(listKey + "#" + group, group, String(members.length), list)];
   });
@@ -1309,11 +1327,20 @@ function referenceControl(item, container, source, { part = "all" } = {}) {
     "div",
     { class: "stack" },
     el("span", { class: "row-label", text: fieldLabel(container) }),
-    chosen.length ? chosenList : el("p", { class: "note", text: source.empty }),
-    part === "all" && others.length ? el("span", { class: "note", text: "Nicht angezeigt" }) : null,
+    // Still one line when the only chosen ones were ticked among the candidates below (nothing shifts).
+    rows.chosen.length ? chosenList : el("p", { class: "note", text: now().length ? `${now().length} ausgewählt` : source.empty }),
+    part === "all" && rows.others.length ? el("span", { class: "note", text: "Nicht angezeigt" }) : null,
     part === "all" ? otherLists.flat() : null,
     createButton,
   );
+}
+// Per-view memory for layout that must not shift while the view is open (see view-state.mjs).
+function viewMemo(key) {
+  const entry = nav.top;
+  if (!entry) return {};
+  entry.memo ||= new Map();
+  if (!entry.memo.has(key)) entry.memo.set(key, {});
+  return entry.memo.get(key);
 }
 const under = (path, prefix) => prefix.every((part, index) => path[index] === part);
 function isMediaContainer(item, container) {
@@ -2150,7 +2177,8 @@ function placeFocus(units, focus, ownerId) {
 function moreDisclosure(item, units, prefix, key) {
   if (!units.length) return null;
   if (units.some((unit) => unit.kind === "field" && isTranslatable(item, fieldsFor(item).find((f) => equal(f.path, unit.path))))) panelTranslatable = true;
-  const details = el("details", { class: "more" }, el("summary", {}, el("span", { text: `Weitere Felder (${units.length})` }), icon("chevron-down")));
+  // Its own zone (quietly tinted); inside, the same controls and accordions as everywhere else.
+  const details = el("details", { class: "more more-zone" }, el("summary", {}, el("span", { text: `Weitere Felder (${units.length})` }), icon("chevron-down")));
   // Filled when first opened: the closed disclosure costs nothing to draw.
   const fill = () => details.querySelector(":scope > .group") || put(details, group(null, units.map((unit) => unitControl(item, unit, prefix))));
   if (openDisclosures.get(key) === true) {
@@ -2177,8 +2205,13 @@ function instanceView(body, item, context, head) {
   else head(recordName(item), kindOf(item.id)[1], kindOf(item.id)[0]);
   // Small entries (a table row, a step) are edited whole, including their on-page texts.
   const units = unitsOf(item, path);
-  const own = partitionUnits(units, markers, { id: item.id, path }, { includeInline: path.length > 0 && units.length <= 4 });
-  const sharedShown = shared ? partitionUnits(unitsOf(shared, []), markers, { id: shared.id, path: [] }).shown : [];
+  // The split is fixed while the card panel is open: ticking a Leistung renders it on the card, but its
+  // control stays in "Weitere Felder" where it was clicked; the next opening re-derives the split.
+  const own = stablePartition(
+    partitionUnits(units, markers, { id: item.id, path }, { includeInline: path.length > 0 && units.length <= 4 }),
+    viewMemo("partition:" + fieldKey(item.id, path)),
+  );
+  const sharedShown = shared ? stablePartition(partitionUnits(unitsOf(shared, []), markers, { id: shared.id, path: [] }), viewMemo("partition:" + shared.id)).shown : [];
   const focus = context.focus;
   const draw = (owner, units, prefix) =>
     placeFocus(units, focus, owner.id).map((unit) => {
