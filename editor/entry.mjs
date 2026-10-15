@@ -1,6 +1,9 @@
+import { previewSitePath } from "./web/frontend-url.mjs";
+
 // Every way into the editor ends in the editor: the login, a bookmark of a site page on the editor
-// host, "/editor" without slash. The site itself is only shown top-level on the public host.
-const framePages = /^\/(?!editor(?:\/|$)|_|@)/;
+// host, "/editor" without slash. The site itself is only shown top-level on the public host, and as the
+// saved draft under /vorschau/ (plain pages, no editor chrome), which is therefore not a frame page.
+const framePages = /^\/(?!editor(?:\/|$)|vorschau(?:\/|$)|_|@)/;
 
 // The editor address that shows `target` (a URL on the editor host), or null when it is not a page.
 export function editorEntry(target) {
@@ -14,6 +17,12 @@ export function isSitePage(pathname) {
   if (!framePages.test(pathname)) return false;
   const last = pathname.split("/").pop();
   return !last.includes(".") || last.endsWith(".html");
+}
+
+// Where the login returns to: a preview address stays the preview, everything else enters the editor.
+export function loginReturn(target) {
+  if (previewSitePath(target.pathname) !== null) return target.pathname + target.search;
+  return editorEntry(target) || "/editor/";
 }
 
 // Only a top-level visit is redirected; the editor's own iframe loads the same pages (Sec-Fetch-Dest: iframe).

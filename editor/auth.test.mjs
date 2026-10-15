@@ -129,7 +129,7 @@ test('CLI startup with auth enabled refuses missing credentials before starting 
 
 test('the actual login script keeps redirects on-origin and reports errors as text', async () => {
   const script = await fs.readFile(path.join(here, 'web/login.js'), 'utf8');
-  for (const [next, expected] of [[null, '/editor/'], ['/editor/?page=%2Fpreise%2F', '/editor/?page=%2Fpreise%2F'], ['https://evil.example/', '/editor/'], ['//evil.example/', '/editor/'], ['/\\evil.example/', '/editor/'], ['/editor/login', '/editor/'], ['/\nevil.example/', '/editor/']]) {
+  for (const [next, expected] of [[null, '/editor/'], ['/editor/?page=%2Fpreise%2F', '/editor/?page=%2Fpreise%2F'], ['https://evil.example/', '/editor/'], ['//evil.example/', '/editor/'], ['/\\evil.example/', '/editor/'], ['/editor/login', '/editor/'], ['/\nevil.example/', '/editor/'], ['/vorschau/en/shows/?a=1', '/vorschau/en/shows/?a=1'], ['/vorschau', '/vorschau'], ['/vorschauen/', '/editor/?page=%2Fvorschauen%2F']]) {
     let submit, assigned;
     const form = {elements: {username: {value: 'marc'}, password: {value: password, focus() {}}}, querySelector: () => ({}), addEventListener: (_type, callback) => { submit = callback; }};
     const message = {}, location = {origin: 'https://editor.example', href: 'https://editor.example/editor/login' + (next === null ? '' : '?next=' + encodeURIComponent(next)), assign: value => { assigned = value; }};
@@ -227,6 +227,10 @@ test('real HTTP listeners enforce authentication, CSRF and account-authored Git 
     for (const [route, next] of [['/', '/editor/'], ['/?editor=1', '/editor/'], ['/editor/', '/editor/'], ['/editor/index.html', '/editor/'], ['/editor/login.html', '/editor/'], ['/drohnenshow-preise/?editor=1', '/editor/?page=%2Fdrohnenshow-preise%2F']]) {
       const response = await call(route); assert.equal(response.status, 302, route); assert.equal(response.headers.get('location'), '/editor/login?next=' + encodeURIComponent(next), route);
     }
+    // The preview of the saved draft is private too; the login returns to it, not into the editor.
+    for (const route of ['/vorschau/', '/vorschau/en/', '/vorschau/drohnenshow-preise/']) {
+      const response = await call(route, {headers: {'Sec-Fetch-Dest': 'document'}}); assert.equal(response.status, 302, route); assert.equal(response.headers.get('location'), '/editor/login?next=' + encodeURIComponent(route), route);
+    }
     const bare = await call('/editor'); assert.equal(bare.status, 302); assert.equal(bare.headers.get('location'), '/editor/');
     for (const route of ['save', 'publish', 'translate', 'translate-missing', 'preview', 'media', 'logout']) assert.equal((await post('/editor/api/' + route, {})).status, 401, route);
     assert.equal((await call('/editor/api/save', {method: 'POST'})).status, 401);
@@ -275,6 +279,13 @@ test('real HTTP listeners enforce authentication, CSRF and account-authored Git 
   await t.test('authenticated shell and iframe have distinct frame-ancestors policies, API session exposes no credentials', async () => {
     const shell = await call('/editor/', {headers: {Cookie: cookie}}); assert.equal(shell.status, 200); assert.equal(shell.headers.get('content-security-policy'), "frame-ancestors 'none'");
     const frame = await call('/?editor=1', {headers: {Cookie: cookie}}); assert.equal(frame.status, 200); assert.equal(frame.headers.get('content-security-policy'), "frame-ancestors 'self'"); assert.match(await frame.text(), /\/editor\/frame.js/);
+    // Signed in, a top-level visit of /vorschau/ shows the saved draft as a plain page with the bar, not the editor.
+    for (const route of ['/vorschau/', '/vorschau/drohnenshow-preise/']) {
+      const preview = await call(route, {headers: {Cookie: cookie, 'Sec-Fetch-Dest': 'document'}}); assert.equal(preview.status, 200, route);
+      const html = await preview.text(); assert.match(html, /<fs-preview-bar/); assert.match(html, /<b>Vorschau<\/b> · entspricht der Live-Version/); assert.doesNotMatch(html, /\/editor\/frame\.js/);
+      assert.match(html, new RegExp('<a href="' + servers.publicOrigin.replaceAll('.', '\\.') + route.slice('/vorschau'.length) + '">Live ansehen</a>'));
+    }
+    assert.equal((await call('/vorschau', {headers: {Cookie: cookie}})).headers.get('location'), '/vorschau/');
     const result = await (await call('/editor/api/session', {headers: {Cookie: cookie}})).json(); assert.deepEqual(Object.keys(result).sort(), ['csrf', 'user']); assert.deepEqual(Object.keys(result.user).sort(), ['displayName', 'id', 'username']);
   });
 
@@ -283,6 +294,8 @@ test('real HTTP listeners enforce authentication, CSRF and account-authored Git 
     const request = {expectedHead: state.head, requestId: randomUUID(), actor: {name: 'Spoofed', email: 'spoofed@example.invalid'}, changes: [{id: pkg.id, expectedRevision: pkg.revision, patches: [{path: ['price'], value: pkg.data.price + 1}]}]};
     const response = await post('/editor/api/save', request, {Cookie: cookie, 'X-CSRF-Token': csrf}); assert.equal(response.status, 200);
     const saved = await response.json(); assert.notEqual(saved.head, state.head); assert.equal(saved.activeHead, saved.head); assert.equal(saved.buildError, undefined);
+    const preview = await (await call('/vorschau/', {headers: {Cookie: cookie, 'Sec-Fetch-Dest': 'document'}})).text();
+    assert.match(preview, /<b>Vorschau<\/b> · noch nicht veröffentlicht/); assert.match(preview, new RegExp('data-draft-head="' + saved.head + '"'));
     assert.equal(await git(source, ['show', '-s', '--format=%an <%ae>%n%cn', saved.head]), 'Marc Viladrich <marc@example.invalid>\nFlyingStars Editor');
     const replay = await post('/editor/api/save', request, {Cookie: cookie, 'X-CSRF-Token': csrf}); assert.equal((await replay.json()).replayed, true);
     const data = await loadAccounts(file), other = {...await account(), id: 'test-other', username: 'other', displayName: 'Other editor', email: 'other@example.invalid'};
