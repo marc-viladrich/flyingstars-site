@@ -1,0 +1,2729 @@
+{
+  "asOf": "2026-10-15",
+  "period": "2023-07-28 bis 2026-09-17",
+  "sourceDirectory": "freelance/clients/flyingstars/03-datenbriefing-2026-09/google-analytics-bestandsaufnahme-2026-09/additional-exports/",
+  "sources": {
+    "landingActiveUsers": "ga4-search-console-organic-landing-pages__2023-07-28_to_2026-09-17.csv",
+    "views": "ga4-pages-and-screens-generate-lead__2023-07-28_to_2026-09-17.csv"
+  },
+  "sourceSha256": {
+    "landingActiveUsers": "3b3dda41fa274e9f1b77252ceb88296670b4dade7b07fb2e95584b1675428ce6",
+    "views": "66a705a554bdfa58eb0164b408d631d25f310e3cafed64a9c9b9e2c5df9d8bbb"
+  },
+  "normalization": "Querystrings einschließlich fehlerhaft kodierter %3F-Anhängsel für die Inhaltsinventur entfernt; abschließender Slash bei Inhaltsrouten vereinheitlicht, Dateipfade beibehalten. Werte je Export summiert, nicht über Exporte addiert. encodedQueryRows zählt fehlerhafte URL-Zeilen, deren Auslieferung nicht als abgedeckt behauptet wird.",
+  "liveSitemap": "GET wp-sitemap.xml lieferte keine XML-Daten; weiterer GET auf sitemap_index.xml scheiterte an DNS. Vor Freigabe erneut abgleichen. Keine WordPress-XML-Exporte im untersuchten Kunden-Dateibaum gefunden (relaunch/source ausgelassen).",
+  "entries": [
+    {
+      "path": "/",
+      "views": 128541.0,
+      "landingActiveUsers": 63377.0,
+      "organicClicks": 1511.0,
+      "encodedQueryRows": 2643,
+      "status": "retained",
+      "target": "/",
+      "reason": "Gleicher öffentlicher Pfad im Relaunch"
+    },
+    {
+      "path": "/100-drohnen-fur-puma-zum-anstoss-eines-bundesliga-derbys/",
+      "views": 21.0,
+      "landingActiveUsers": 3.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/puma-bundesliga/",
+      "reason": "Gleicher PUMA-Derby-Fall, 100 Drohnen"
+    },
+    {
+      "path": "/100-jahriges-westfalen-ag/",
+      "views": 111.0,
+      "landingActiveUsers": 22.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/404/",
+      "views": 79.0,
+      "landingActiveUsers": 10.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/50-jahre-golf-an-der-scalaria-am-wolfgangsee/",
+      "views": 214.0,
+      "landingActiveUsers": 33.0,
+      "organicClicks": 11.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/50-jahre-vw-golf/",
+      "views": 12.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/75-jahre-eisenhuettenstadt-jubilaumsshows-beim-stadtfest/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/75-jahre-eisenhuttenstadt-jubilaumsshows-beim-stadtfest/",
+      "views": 68.0,
+      "landingActiveUsers": 13.0,
+      "organicClicks": 1.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/AGB/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/ab-wann-braucht-man-einen-drohnenfuhrerschein/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/abschluss-highlight-des-movie-parks-germany-zum-hollywood-christmas/",
+      "views": 20.0,
+      "landingActiveUsers": 3.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/admin.php",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/admin/",
+      "views": 6.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/agb/",
+      "views": 333.0,
+      "landingActiveUsers": 100.0,
+      "organicClicks": 4.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/agentur/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/airpower-drohnenshow/",
+      "views": 9.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/alternative-zu-feuerwer/",
+      "views": 12.0,
+      "landingActiveUsers": 2.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/alternative-zu-feuerwerk/",
+      "views": 257.0,
+      "landingActiveUsers": 72.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/aussergewoehnlicher-einsatz-bei-der-airpower24/",
+      "views": 109.0,
+      "landingActiveUsers": 10.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/author/azad/",
+      "views": 4.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/author/hamza/",
+      "views": 6.0,
+      "landingActiveUsers": 4.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/author/kathi/",
+      "views": 7.0,
+      "landingActiveUsers": 3.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/bctAYpXJgwbnecx/",
+      "views": 1.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/beitrag-test-2/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/beitrag-test/",
+      "views": 49.0,
+      "landingActiveUsers": 7.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/besondere-hochzeitsueberraschung-fuer-brautpaar-und-gaestinnen/",
+      "views": 177.0,
+      "landingActiveUsers": 27.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/blog grundlagen/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/blog/",
+      "views": 965.0,
+      "landingActiveUsers": 168.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 1,
+      "status": "retained",
+      "target": "/blog/",
+      "reason": "Gleicher öffentlicher Pfad im Relaunch"
+    },
+    {
+      "path": "/category/100-drohnen/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/como-funciona-el-servicio-de-atencion-al-cliente-en-farmacia-francesa/",
+      "views": 4.0,
+      "landingActiveUsers": 2.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/como-monurol-se-compara-con-otros-tratamientos-disponibles-en-farmacia-rincon-de-seca/",
+      "views": 4.0,
+      "landingActiveUsers": 2.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/consejos-para-identificar-productos-legitimos-de-femara-en-parafarmacia-la-vega/",
+      "views": 4.0,
+      "landingActiveUsers": 2.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/contact/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/kontakt/",
+      "reason": "Kontaktseite"
+    },
+    {
+      "path": "/danke/",
+      "views": 394.0,
+      "landingActiveUsers": 20.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "retained",
+      "target": "/danke/",
+      "reason": "Gleicher öffentlicher Pfad im Relaunch"
+    },
+    {
+      "path": "/datenschutz/",
+      "views": 654.0,
+      "landingActiveUsers": 187.0,
+      "organicClicks": 1.0,
+      "encodedQueryRows": 0,
+      "status": "retained",
+      "target": "/datenschutz/",
+      "reason": "Gleicher öffentlicher Pfad im Relaunch"
+    },
+    {
+      "path": "/de/",
+      "views": 10.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/",
+      "reason": "Deutsche Startseite ohne Sprachpräfix"
+    },
+    {
+      "path": "/demo/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/deutsche-umwelthilfe-fur-die-kampagne-bollerciao-in-berlin/",
+      "views": 38.0,
+      "landingActiveUsers": 6.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/deutsche-umwelthilfe-kampagne/",
+      "views": 198.0,
+      "landingActiveUsers": 47.0,
+      "organicClicks": 24.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohenshow berlin/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohne-fliegen-in-deutschland/",
+      "views": 1233.0,
+      "landingActiveUsers": 552.0,
+      "organicClicks": 475.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohne-kosten/",
+      "views": 112.0,
+      "landingActiveUsers": 35.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohne-spanien/",
+      "views": 205.0,
+      "landingActiveUsers": 84.0,
+      "organicClicks": 79.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnen-aufbau-funktionshinweise/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnen-aufbau-funktionswei-se/",
+      "views": 8.0,
+      "landingActiveUsers": 2.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnen-aufbau-funktionsweise/",
+      "views": 4089.0,
+      "landingActiveUsers": 1577.0,
+      "organicClicks": 1254.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnen-aufbau-wie-funktioniert-eine-drohne/",
+      "views": 1.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnen-feuerwerk-als-alternative (oder ähnliche Seiten wie Showmatrix/TenMedia/",
+      "views": 3.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnen-feuerwerk-als-alternative-2/",
+      "views": 1.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnen-feuerwerk-als-alternative/",
+      "views": 465.0,
+      "landingActiveUsers": 103.0,
+      "organicClicks": 75.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnen-fliegen-nachts-dunkel/",
+      "views": 1060.0,
+      "landingActiveUsers": 496.0,
+      "organicClicks": 503.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnen-im-dunkeln-fliegen-was-du-wissen-musst/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnen-kennzeichen-2/",
+      "views": 4.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnen-kennzeichen/",
+      "views": 72.0,
+      "landingActiveUsers": 6.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnen-versicherung/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenfuehrerschein-ab-wann-ist-er-pflicht/",
+      "views": 560.0,
+      "landingActiveUsers": 222.0,
+      "organicClicks": 211.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow hochzeit kosten/",
+      "views": 1.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-bad-salzuflen/",
+      "views": 24.0,
+      "landingActiveUsers": 2.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-berlin/",
+      "views": 46.0,
+      "landingActiveUsers": 7.0,
+      "organicClicks": 1.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-buchen/",
+      "views": 34.0,
+      "landingActiveUsers": 4.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-chemnitz/",
+      "views": 16.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-china-weltrekorde-technik-magische-lichtshows/",
+      "views": 12.0,
+      "landingActiveUsers": 2.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-china-weltrekorde-technik/",
+      "views": 985.0,
+      "landingActiveUsers": 342.0,
+      "organicClicks": 242.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-dresden/",
+      "views": 20.0,
+      "landingActiveUsers": 6.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-dubai/",
+      "views": 26.0,
+      "landingActiveUsers": 2.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-duesseldorf/",
+      "views": 26.0,
+      "landingActiveUsers": 2.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-duisburg/",
+      "views": 22.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-frankfurt/",
+      "views": 18.0,
+      "landingActiveUsers": 2.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-hannover/",
+      "views": 34.0,
+      "landingActiveUsers": 2.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-hochzeit-kosten/",
+      "views": 20.0,
+      "landingActiveUsers": 3.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-hochzeit/",
+      "views": 2546.0,
+      "landingActiveUsers": 921.0,
+      "organicClicks": 116.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-hofer-volksfest/",
+      "views": 14.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-indoor/",
+      "views": 2258.0,
+      "landingActiveUsers": 206.0,
+      "organicClicks": 26.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-koblenz-rhein-in-flammen-setzt-neue-massstaebe-am-deutschen-eckdrohnenshow-duisburg/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-koblenz/",
+      "views": 28.0,
+      "landingActiveUsers": 2.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-leipzig/",
+      "views": 153.0,
+      "landingActiveUsers": 33.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-magdeburg/",
+      "views": 26.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-merzig/",
+      "views": 40.0,
+      "landingActiveUsers": 6.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-moers/",
+      "views": 12.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-nrw/",
+      "views": 14.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-oberhausen/",
+      "views": 61.0,
+      "landingActiveUsers": 11.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-preise/",
+      "views": 16983.0,
+      "landingActiveUsers": 2308.0,
+      "organicClicks": 395.0,
+      "encodedQueryRows": 0,
+      "status": "retained",
+      "target": "/drohnenshow-preise/",
+      "reason": "Gleicher öffentlicher Pfad im Relaunch"
+    },
+    {
+      "path": "/drohnenshow-stuttgart/",
+      "views": 14.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-telekom/",
+      "views": 28.0,
+      "landingActiveUsers": 3.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-tollwood/",
+      "views": 18.0,
+      "landingActiveUsers": 3.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-wacken/",
+      "views": 14.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drohnenshow-werbung/",
+      "views": 1123.0,
+      "landingActiveUsers": 84.0,
+      "organicClicks": 13.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/drone-show-booking/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/elektrofestival-sonnemondsterne/",
+      "views": 126.0,
+      "landingActiveUsers": 21.0,
+      "organicClicks": 5.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/",
+      "views": 24734.0,
+      "landingActiveUsers": 9357.0,
+      "organicClicks": 568.0,
+      "encodedQueryRows": 282,
+      "status": "retained",
+      "target": "/en/",
+      "reason": "Gleicher öffentlicher Pfad im Relaunch"
+    },
+    {
+      "path": "/en/100-drones-for-puma-at-the-start-of-a-bundesliga-derby/",
+      "views": 59.0,
+      "landingActiveUsers": 27.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/en/puma-bundesliga/",
+      "reason": "Gleicher PUMA-Derby-Fall, englisch"
+    },
+    {
+      "path": "/en/100th-anniversary-of-westfalen-ag/",
+      "views": 112.0,
+      "landingActiveUsers": 46.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/50-years-of-golf-at-the-scalaria-on-lake-wolfgang-austria/",
+      "views": 121.0,
+      "landingActiveUsers": 50.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/50-years-vw-golf/",
+      "views": 3.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/75-years-of-eisenhuettenstadt-anniversary-shows-at-the-city-festival/",
+      "views": 27.0,
+      "landingActiveUsers": 8.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/agb/",
+      "views": 14.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/airpower-droneshow/",
+      "views": 3.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/blog-en/",
+      "views": 240.0,
+      "landingActiveUsers": 82.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/en/blog/",
+      "reason": "Englischer Blogindex"
+    },
+    {
+      "path": "/en/blog/",
+      "views": 28.0,
+      "landingActiveUsers": 4.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "retained",
+      "target": "/en/blog/",
+      "reason": "Gleicher öffentlicher Pfad im Relaunch"
+    },
+    {
+      "path": "/en/blog/articles/how-to-program-a-drone-show-process-and-costs/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/blog/drones-as-an-alternative-to-fireworks-eco-friendly-light-show/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/category/100-199-drones/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/category/250-drones/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/category/350-drones/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/category/400-drones/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/contact/",
+      "views": 1274.0,
+      "landingActiveUsers": 159.0,
+      "organicClicks": 1.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/en/kontakt/",
+      "reason": "Englische Kontaktseite"
+    },
+    {
+      "path": "/en/data-protection-policy/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/en/datenschutz/",
+      "reason": "Englische Datenschutzerklärung"
+    },
+    {
+      "path": "/en/datenschutz/",
+      "views": 6.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "retained",
+      "target": "/en/datenschutz/",
+      "reason": "Gleicher öffentlicher Pfad im Relaunch"
+    },
+    {
+      "path": "/en/drohnenshow-koblenz-rhein-in-flammen-setzt-neue-massstaebe-am-deutschen-eck/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/drohnenshow/",
+      "views": 4.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/drone-cost/",
+      "views": 152.0,
+      "landingActiveUsers": 71.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/drone-license-when-do-you-need-one/",
+      "views": 7.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/drone-show-advertising/",
+      "views": 250.0,
+      "landingActiveUsers": 22.0,
+      "organicClicks": 1.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/drone-show-china/",
+      "views": 74.0,
+      "landingActiveUsers": 28.0,
+      "organicClicks": 4.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/drones-as-an-alternative-to-fireworks-an-eco-friendly-light-spectacle-2/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/drones-as-an-alternative-to-fireworks-an-eco-friendly-light-spectacle/",
+      "views": 1.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/drones-as-an-alternative-to-fireworks/",
+      "views": 684.0,
+      "landingActiveUsers": 298.0,
+      "organicClicks": 175.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/droneshows-indoor/",
+      "views": 190.0,
+      "landingActiveUsers": 20.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/elementor-2966/",
+      "views": 1.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/exceptional-deployment-at-airpower24/",
+      "views": 116.0,
+      "landingActiveUsers": 53.0,
+      "organicClicks": 1.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/exploring-reinvented-the-new-ford-explorer/",
+      "views": 124.0,
+      "landingActiveUsers": 53.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/en/exploring-reinvented-der-neue-ford-explorer/",
+      "reason": "Gleicher Ford-Explorer-Launch-Fall, englisch"
+    },
+    {
+      "path": "/en/extra-shift-duisburg/",
+      "views": 43.0,
+      "landingActiveUsers": 14.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/final-highlight-of-movie-park-germany-at-hollywood-christmas/",
+      "views": 8.0,
+      "landingActiveUsers": 3.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/first-drone-show-at-the-sonnemondsterne-electro-festival/",
+      "views": 7.0,
+      "landingActiveUsers": 2.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/flying-drones-in-the-dark-what-you-need-to-know/",
+      "views": 1.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/flying-drones-in-the-dark/",
+      "views": 468.0,
+      "landingActiveUsers": 221.0,
+      "organicClicks": 189.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/ford-droneshow/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/en/exploring-reinvented-der-neue-ford-explorer/",
+      "reason": "Gleicher Ford-Explorer-Launch-Fall, englisch"
+    },
+    {
+      "path": "/en/general-terms-and-conditions-gtc/",
+      "views": 136.0,
+      "landingActiveUsers": 61.0,
+      "organicClicks": 1.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/german-environmental-aid-for-the-bollerciao-campaign-in-berlin/",
+      "views": 4.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/german-environmental-campaign/",
+      "views": 126.0,
+      "landingActiveUsers": 60.0,
+      "organicClicks": 2.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/home-test/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/home/",
+      "views": 1852.0,
+      "landingActiveUsers": 938.0,
+      "organicClicks": 59.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/en/",
+      "reason": "Englische Startseite"
+    },
+    {
+      "path": "/en/how-do-they-do-the-drone-light-show/",
+      "views": 195.0,
+      "landingActiveUsers": 90.0,
+      "organicClicks": 55.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/how-do-you-program-a-drone-show/",
+      "views": 469.0,
+      "landingActiveUsers": 190.0,
+      "organicClicks": 117.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/how-does-a-drone-show-work/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/how-does-a-drone-work/",
+      "views": 130.0,
+      "landingActiveUsers": 62.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/how-much-does-drone-insurance-cost/",
+      "views": 31.0,
+      "landingActiveUsers": 5.0,
+      "organicClicks": 1.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/impressionen/",
+      "views": 269.0,
+      "landingActiveUsers": 11.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/en/projekte/",
+      "reason": "Englische Projektübersicht"
+    },
+    {
+      "path": "/en/impressum/",
+      "views": 32.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "retained",
+      "target": "/en/impressum/",
+      "reason": "Gleicher öffentlicher Pfad im Relaunch"
+    },
+    {
+      "path": "/en/indoor-drone-show/",
+      "views": 271.0,
+      "landingActiveUsers": 37.0,
+      "organicClicks": 7.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/legal-notice/",
+      "views": 233.0,
+      "landingActiveUsers": 93.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/en/impressum/",
+      "reason": "Englisches Impressum"
+    },
+    {
+      "path": "/en/loreal-perfume-prada-paradoxe/",
+      "views": 116.0,
+      "landingActiveUsers": 46.0,
+      "organicClicks": 4.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/marriage-proposal-she-said-yes-🤍/",
+      "views": 4.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/marriage-proposal-she-said-yes/",
+      "views": 40.0,
+      "landingActiveUsers": 13.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/movie-park-germany-christmas/",
+      "views": 130.0,
+      "landingActiveUsers": 59.0,
+      "organicClicks": 7.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/musical-teaser-bokkenrijders/",
+      "views": 69.0,
+      "landingActiveUsers": 17.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/en/musikalischer-teaser-bokkenrijders/",
+      "reason": "Gleicher Bokkenrijders-Fall, englisch"
+    },
+    {
+      "path": "/en/netherlands-fireworks-ban-impact-on-new-years-celebrations-2026-new/",
+      "views": 230.0,
+      "landingActiveUsers": 90.0,
+      "organicClicks": 23.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/netherlands-fireworks-ban/",
+      "views": 41.0,
+      "landingActiveUsers": 15.0,
+      "organicClicks": 3.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/nfl-announcement-munich/",
+      "views": 130.0,
+      "landingActiveUsers": 43.0,
+      "organicClicks": 7.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/nfl-announcement-of-the-home-team-in-munich/",
+      "views": 76.0,
+      "landingActiveUsers": 37.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/portfolio/",
+      "views": 22.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/en/projekte/",
+      "reason": "Englische Projektübersicht"
+    },
+    {
+      "path": "/en/post-test/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/powerpoint-in-the-year-2024-drone-show-for-the-speech-by-the-ceo-of-siemens-mobility/",
+      "views": 130.0,
+      "landingActiveUsers": 58.0,
+      "organicClicks": 2.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/preise/",
+      "views": 518.0,
+      "landingActiveUsers": 34.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/en/drohnenshow-preise/",
+      "reason": "Englische Preisübersicht"
+    },
+    {
+      "path": "/en/preise2/",
+      "views": 239.0,
+      "landingActiveUsers": 12.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/en/drohnenshow-preise/",
+      "reason": "Englische Preisübersicht"
+    },
+    {
+      "path": "/en/preise3/",
+      "views": 1433.0,
+      "landingActiveUsers": 174.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/en/drohnenshow-preise/",
+      "reason": "Englische Preisübersicht"
+    },
+    {
+      "path": "/en/prices/",
+      "views": 5142.0,
+      "landingActiveUsers": 824.0,
+      "organicClicks": 29.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/en/drohnenshow-preise/",
+      "reason": "Englische Preisübersicht"
+    },
+    {
+      "path": "/en/privacy-policy/",
+      "views": 250.0,
+      "landingActiveUsers": 104.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/en/datenschutz/",
+      "reason": "Englische Datenschutzerklärung"
+    },
+    {
+      "path": "/en/projects/",
+      "views": 964.0,
+      "landingActiveUsers": 164.0,
+      "organicClicks": 9.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/en/projekte/",
+      "reason": "Englische Projektübersicht"
+    },
+    {
+      "path": "/en/puma-bundesliga-2/",
+      "views": 75.0,
+      "landingActiveUsers": 24.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/en/puma-bundesliga/",
+      "reason": "Gleicher PUMA-Derby-Fall, englisch"
+    },
+    {
+      "path": "/en/siemens-mobility-2/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/sonnemondsterne-electro-festival/",
+      "views": 115.0,
+      "landingActiveUsers": 52.0,
+      "organicClicks": 3.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/special-wedding-surprise-for-the-bride-groom-and-all-their-guests/",
+      "views": 90.0,
+      "landingActiveUsers": 40.0,
+      "organicClicks": 1.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/spotify-luciano-x-apache-207-2/",
+      "views": 48.0,
+      "landingActiveUsers": 11.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/spring-festival-special/",
+      "views": 37.0,
+      "landingActiveUsers": 8.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/tag/100-drones/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/tag/150-drones/",
+      "views": 6.0,
+      "landingActiveUsers": 3.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/tag/200-drones/",
+      "views": 4.0,
+      "landingActiveUsers": 2.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/tag/220-drones/",
+      "views": 6.0,
+      "landingActiveUsers": 3.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/tag/250-drones/",
+      "views": 4.0,
+      "landingActiveUsers": 2.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/tag/350-drones/",
+      "views": 6.0,
+      "landingActiveUsers": 3.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/tag/400-drones/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/tag/600-drones/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/thank-you/",
+      "views": 208.0,
+      "landingActiveUsers": 40.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/en/danke/",
+      "reason": "Englische Bestätigung"
+    },
+    {
+      "path": "/en/wedding-show/",
+      "views": 1.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/en/why-us/",
+      "views": 126.0,
+      "landingActiveUsers": 25.0,
+      "organicClicks": 4.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/erste-drohnen-show-auf-dem-elektrofestival-sonnemondsterne/",
+      "views": 20.0,
+      "landingActiveUsers": 4.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/exploring-reinvented-der-neue-ford-explorer/",
+      "views": 100.0,
+      "landingActiveUsers": 11.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "retained",
+      "target": "/exploring-reinvented-der-neue-ford-explorer/",
+      "reason": "Gleicher öffentlicher Pfad im Relaunch"
+    },
+    {
+      "path": "/extraschicht-duisburg/",
+      "views": 48.0,
+      "landingActiveUsers": 8.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/ford-drohnenshow/",
+      "views": 26.0,
+      "landingActiveUsers": 3.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/exploring-reinvented-der-neue-ford-explorer/",
+      "reason": "Gleicher Ford-Explorer-Launch-Fall"
+    },
+    {
+      "path": "/fruehlingsfest-special/",
+      "views": 107.0,
+      "landingActiveUsers": 9.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/heiratsantrag-sie-hat-ja-gesagt-🤍/",
+      "views": 4.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/heiratsantrag-sie-hat-ja-gesagt/",
+      "views": 124.0,
+      "landingActiveUsers": 8.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/hello-world-302902/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/hello-world-3350/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/hello-world-825186/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/help/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/hilfe/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/historia-y-evolucion-de-elmiron-en-la-farmacia-gil-vela/",
+      "views": 3.0,
+      "landingActiveUsers": 2.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/hochzeit-drohnenshow/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/hochzeit/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/hochzeiten/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/hochzeitsshow/",
+      "views": 30.0,
+      "landingActiveUsers": 6.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/impressionen/",
+      "views": 3001.0,
+      "landingActiveUsers": 157.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 25,
+      "status": "redirect",
+      "target": "/projekte/",
+      "reason": "Projektübersicht als Nachfolger der Portfolio-/Impressionen-Übersicht"
+    },
+    {
+      "path": "/impressum/",
+      "views": 2438.0,
+      "landingActiveUsers": 348.0,
+      "organicClicks": 41.0,
+      "encodedQueryRows": 7,
+      "status": "retained",
+      "target": "/impressum/",
+      "reason": "Gleicher öffentlicher Pfad im Relaunch"
+    },
+    {
+      "path": "/indoor-drohnenshows/",
+      "views": 1.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/indoor-drone-shows/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/ki-test/",
+      "views": 4.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/kontakt ; Angebot s. hier/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/kontakt ; angefragt/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/kontakt/",
+      "views": 4567.0,
+      "landingActiveUsers": 239.0,
+      "organicClicks": 15.0,
+      "encodedQueryRows": 0,
+      "status": "retained",
+      "target": "/kontakt/",
+      "reason": "Gleicher öffentlicher Pfad im Relaunch"
+    },
+    {
+      "path": "/landingpage-hochzeit/",
+      "views": 54.0,
+      "landingActiveUsers": 7.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/landingpage-marketing/",
+      "views": 152.0,
+      "landingActiveUsers": 6.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/llms.text",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/llms.txt",
+      "views": 4.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/login.php",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/loreal-prada-paradoxe/",
+      "views": 296.0,
+      "landingActiveUsers": 61.0,
+      "organicClicks": 28.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/movie-parks-germany-christmas/",
+      "views": 148.0,
+      "landingActiveUsers": 36.0,
+      "organicClicks": 19.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/musikalischer-teaser-bokkenrijders/",
+      "views": 91.0,
+      "landingActiveUsers": 8.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "retained",
+      "target": "/musikalischer-teaser-bokkenrijders/",
+      "reason": "Gleicher öffentlicher Pfad im Relaunch"
+    },
+    {
+      "path": "/neue-preisseite/",
+      "views": 31.0,
+      "landingActiveUsers": 5.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/drohnenshow-preise/",
+      "reason": "Preisübersicht und Pakete"
+    },
+    {
+      "path": "/nfl-announcement-des-hometeams-in-munchen/",
+      "views": 52.0,
+      "landingActiveUsers": 7.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/nfl-announcement-muenchen/",
+      "views": 394.0,
+      "landingActiveUsers": 48.0,
+      "organicClicks": 1.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/niederlande-feuerwerk-verbot-auswirkungen-auf-silvesterfeiern-2026/",
+      "views": 4.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/niederlande-feuerwerk-verbot/",
+      "views": 1355.0,
+      "landingActiveUsers": 581.0,
+      "organicClicks": 598.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/nl/",
+      "views": 79.0,
+      "landingActiveUsers": 5.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "retained",
+      "target": "/nl/",
+      "reason": "Gleicher öffentlicher Pfad im Relaunch"
+    },
+    {
+      "path": "/nl/algemene-voorwaarden/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/nl/bedankt/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/nl/danke/",
+      "reason": "Niederländische Bestätigung"
+    },
+    {
+      "path": "/nl/blog-2/",
+      "views": 4.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/nl/blog/",
+      "reason": "Niederländischer Blogindex"
+    },
+    {
+      "path": "/nl/blog-nl/",
+      "views": 6.0,
+      "landingActiveUsers": 2.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/nl/blog/",
+      "reason": "Niederländischer Blogindex"
+    },
+    {
+      "path": "/nl/contact-2/",
+      "views": 12.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/nl/kontakt/",
+      "reason": "Niederländische Kontaktseite"
+    },
+    {
+      "path": "/nl/contact-nl/",
+      "views": 16.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/nl/kontakt/",
+      "reason": "Niederländische Kontaktseite"
+    },
+    {
+      "path": "/nl/droneshows-binnenshuis/",
+      "views": 14.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/nl/juridische-kennisgeving/",
+      "views": 4.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/nl/impressum/",
+      "reason": "Niederländisches Impressum"
+    },
+    {
+      "path": "/nl/prijzen/",
+      "views": 22.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/nl/drohnenshow-preise/",
+      "reason": "Niederländische Preisübersicht"
+    },
+    {
+      "path": "/nl/projecten/",
+      "views": 8.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/nl/projekte/",
+      "reason": "Niederländische Projektübersicht"
+    },
+    {
+      "path": "/nl/reclame-via-droneshows/",
+      "views": 12.0,
+      "landingActiveUsers": 2.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/nl/waarom-wij/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/pagead/aclk/",
+      "views": 1.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/portfolio/",
+      "views": 3.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/projekte/",
+      "reason": "Projektübersicht als Nachfolger der Portfolio-/Impressionen-Übersicht"
+    },
+    {
+      "path": "/post/drohnen-corgi-f%C3%BCr-die-queen/",
+      "views": 3.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/post/fanliebe-spannende-stranger-things-und-ghostbusters-show-zu-halloween-in-den-usa/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/powerpoint-im-jahr-2024-drohnenshow-zur-ansprache-des-ceos-von-siemens-mobility/",
+      "views": 119.0,
+      "landingActiveUsers": 26.0,
+      "organicClicks": 7.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/preise-neu/",
+      "views": 13.0,
+      "landingActiveUsers": 6.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/drohnenshow-preise/",
+      "reason": "Preisübersicht und Pakete"
+    },
+    {
+      "path": "/preise/",
+      "views": 13497.0,
+      "landingActiveUsers": 2793.0,
+      "organicClicks": 10.0,
+      "encodedQueryRows": 352,
+      "status": "redirect",
+      "target": "/drohnenshow-preise/",
+      "reason": "Preisübersicht und Pakete"
+    },
+    {
+      "path": "/preise2/",
+      "views": 505.0,
+      "landingActiveUsers": 32.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/drohnenshow-preise/",
+      "reason": "Preisübersicht und Pakete"
+    },
+    {
+      "path": "/preise3/",
+      "views": 1732.0,
+      "landingActiveUsers": 301.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/drohnenshow-preise/",
+      "reason": "Preisübersicht und Pakete"
+    },
+    {
+      "path": "/pricing/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/drohnenshow-preise/",
+      "reason": "Preisübersicht und Pakete"
+    },
+    {
+      "path": "/program-a-drone-show-process-and-costs/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/projects/",
+      "views": 109.0,
+      "landingActiveUsers": 6.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/projekte/",
+      "reason": "Projektübersicht als Nachfolger der Portfolio-/Impressionen-Übersicht"
+    },
+    {
+      "path": "/projekte/",
+      "views": 5868.0,
+      "landingActiveUsers": 351.0,
+      "organicClicks": 59.0,
+      "encodedQueryRows": 0,
+      "status": "retained",
+      "target": "/projekte/",
+      "reason": "Gleicher öffentlicher Pfad im Relaunch"
+    },
+    {
+      "path": "/projekte/100-drohnen-für-puma-zum-anstoß-eines-bundesliga-derbys/",
+      "views": 63.0,
+      "landingActiveUsers": 2.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "redirect",
+      "target": "/puma-bundesliga/",
+      "reason": "Gleicher PUMA-Derby-Fall, 100 Drohnen"
+    },
+    {
+      "path": "/projekte/100-jähriges-westfalen-ag-/",
+      "views": 59.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/projekte/abschluss-highlight-des-movie-parks-germany-zum-hollywood-christmas/",
+      "views": 43.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/projekte/deutsche-umwelthilfe-f%c3%bcr-die-kampagne-/",
+      "views": 6.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/projekte/deutsche-umwelthilfe-für-die-kampagne-/",
+      "views": 38.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/projekte/erste-drohnen-show-auf-dem-elektrofestival-sonnemondsterne/",
+      "views": 36.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/projekte/influencer-event-von-l’oréal-für-das-parfüm-prada-paradoxe-mitten-in-düsseldorf/",
+      "views": 104.0,
+      "landingActiveUsers": 3.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/projekte/nfl-announcement-des-hometeams-in-münchen-/",
+      "views": 230.0,
+      "landingActiveUsers": 8.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/puma-bundesliga/",
+      "views": 199.0,
+      "landingActiveUsers": 25.0,
+      "organicClicks": 6.0,
+      "encodedQueryRows": 0,
+      "status": "retained",
+      "target": "/puma-bundesliga/",
+      "reason": "Gleicher öffentlicher Pfad im Relaunch"
+    },
+    {
+      "path": "/sasalele/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/siemens-mobility/",
+      "views": 3.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/spotify-luciano-x-apache-207/",
+      "views": 262.0,
+      "landingActiveUsers": 20.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/support/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/100-drohnen/",
+      "views": 6.0,
+      "landingActiveUsers": 3.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/150-drohnen/",
+      "views": 4.0,
+      "landingActiveUsers": 2.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/200-drohnen/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/220-drohnen/",
+      "views": 4.0,
+      "landingActiveUsers": 2.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/250-drohnen/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/350-drohnen/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/400-drohnen/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/600-drohnen/",
+      "views": 4.0,
+      "landingActiveUsers": 2.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/automobile/",
+      "views": 14.0,
+      "landingActiveUsers": 7.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/berlin/",
+      "views": 23.0,
+      "landingActiveUsers": 12.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/bottrop/",
+      "views": 24.0,
+      "landingActiveUsers": 12.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/drohnen-show/",
+      "views": 27.0,
+      "landingActiveUsers": 14.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/drohnen-show/feed/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/drohnenshow/",
+      "views": 42.0,
+      "landingActiveUsers": 23.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/duesseldorf/",
+      "views": 18.0,
+      "landingActiveUsers": 9.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/ebersdorf/",
+      "views": 12.0,
+      "landingActiveUsers": 6.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/koeln/",
+      "views": 14.0,
+      "landingActiveUsers": 7.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/loreal/",
+      "views": 22.0,
+      "landingActiveUsers": 11.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/moenchengladbach/",
+      "views": 19.0,
+      "landingActiveUsers": 9.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/moenchengladbach/feed/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/muenchen/",
+      "views": 19.0,
+      "landingActiveUsers": 10.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/muenster/",
+      "views": 26.0,
+      "landingActiveUsers": 13.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/nfl/",
+      "views": 25.0,
+      "landingActiveUsers": 13.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/prada/",
+      "views": 18.0,
+      "landingActiveUsers": 9.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/puma/",
+      "views": 11.0,
+      "landingActiveUsers": 6.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/puma/feed/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/sports/",
+      "views": 24.0,
+      "landingActiveUsers": 13.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tag/westfalen/",
+      "views": 24.0,
+      "landingActiveUsers": 12.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/team/",
+      "views": 14.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/test/",
+      "views": 3.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/tjbeOEENNfzMShv/",
+      "views": 1.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/warum-wir/",
+      "views": 422.0,
+      "landingActiveUsers": 32.0,
+      "organicClicks": 4.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/was-kostet-drohnen-versicherung/",
+      "views": 127.0,
+      "landingActiveUsers": 18.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/werbung/",
+      "views": 4.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/wie-fundiert-eine-drohnenshow-drohne/",
+      "views": 2.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 1.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/wie-funktichatg/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/wie-funktioniert-drohnenshow-drohne/",
+      "views": 938.0,
+      "landingActiveUsers": 326.0,
+      "organicClicks": 84.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/wie-programmiert-man-drohnenshow/",
+      "views": 0,
+      "landingActiveUsers": 0.0,
+      "organicClicks": 1.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/wie-programmiert-man-eine-drohnenshow/",
+      "views": 1956.0,
+      "landingActiveUsers": 761.0,
+      "organicClicks": 742.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/wp-content/themes/hub/assets/vendors/bootstrap/js/bootstrap.bundle.min.js.map",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/wp-content/uploads/2022/12/drone-show-2.jpg",
+      "views": 1.0,
+      "landingActiveUsers": 1.0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    },
+    {
+      "path": "/wp/",
+      "views": 2.0,
+      "landingActiveUsers": 0,
+      "organicClicks": 0.0,
+      "encodedQueryRows": 0,
+      "status": "unmapped",
+      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+    }
+  ]
+}

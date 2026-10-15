@@ -58,8 +58,11 @@ test('Offline real Astro: EN/NL saved translations, review, public/editor eligib
  const sitemap=await fs.readFile(path.join(artifact.site,'sitemap-0.xml'),'utf8');
  assert.match(sitemap,/hreflang="en"/);assert.match(sitemap,/hreflang="nl"/);assert.match(sitemap,/hreflang="x-default"/);assert.doesNotMatch(sitemap,/show-konfigurator/);
  const showcase=state.records.find(record=>record.id.startsWith('project/')&&record.data.showcase),slug=showcase.id.slice(8);
- const alias=await fs.readFile(path.join(artifact.site,'en/projekte',slug,'index.html'),'utf8');
- assert.ok(alias.includes(`rel="canonical" href="https://fixture.example/en/${showcase.data.showcase.route}/"`));
+ await assert.rejects(fs.access(path.join(artifact.site,'en/projekte',slug,'index.html')));
+ const canonical=await fs.readFile(path.join(artifact.site,'en',showcase.data.showcase.route,'index.html'),'utf8');
+ assert.ok(canonical.includes(`rel="canonical" href="https://fixture.example/en/${showcase.data.showcase.route}/"`));
+ const htaccess=await fs.readFile(path.join(artifact.site,'.htaccess'),'utf8');
+ assert.ok(htaccess.includes(`RewriteRule ^en/projekte/${slug}/?$ /en/${showcase.data.showcase.route}/ [R=301,L]`));
  assert.ok(!sitemap.includes(`/projekte/${slug}/`));
  const source=state.records.find(r=>r.id==='page/index');
  state=await store.save({expectedHead:state.head,requestId:randomUUID(),changes:[{id:source.id,expectedRevision:source.revision,patches:[{path:field,value:'Geänderte deutsche Startüberschrift I3'}]}]});

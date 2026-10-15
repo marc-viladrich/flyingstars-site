@@ -1,6 +1,6 @@
 ---
 import {getProjects} from '../../lib/content';
 import View from '../../components/pages/ProjectPage.astro';
-export async function getStaticPaths() {return (await getProjects()).map(project=>({params:{slug:project.id},props:{project}}));}
+export async function getStaticPaths() {return (await getProjects()).filter(project=>!project.data.showcase).map(project=>({params:{slug:project.id},props:{project}}));}
 ---
 <View {...Astro.props} locale="de" />

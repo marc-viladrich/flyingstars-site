@@ -15,8 +15,8 @@ export async function getStaticPaths() {
   add('blog','blog');add('drohnenshow-preise','prices');add('show-konfigurator','configurator');
   for(const post of await getPosts(locale))add(`blog/${post.id}`,'post',{post});
   for(const project of await getProjects(locale)) {
-   add(`projekte/${project.id}`,'project',{project});
    if(project.data.showcase)add(project.data.showcase.route,'showcase',{project});
+   else add(`projekte/${project.id}`,'project',{project});
   }
  }
  return paths;
