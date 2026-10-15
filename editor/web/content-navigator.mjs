@@ -4,7 +4,7 @@
 import { recordKinds } from "./record-kinds.mjs";
 
 // Names and icons come from the one record-kind table; only the order of the groups is the navigator's.
-const order = ["page", "screen", "post", "project", "package", "client", "team", "faq", "media", "site"];
+const order = ["page", "screen", "post", "project", "package", "extra", "client", "team", "faq", "media", "site"];
 export const navigatorTypes = Object.fromEntries(
   order.filter((type) => recordKinds[type + "/"]).map((type) => [type, { label: recordKinds[type + "/"][2], icon: recordKinds[type + "/"][1] }]),
 );

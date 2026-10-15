@@ -4,6 +4,7 @@
 export const recordKinds = {
   "client/": ["Kunde", "building-2", "Kunden"],
   "team/": ["Teammitglied", "user", "Team"],
+  "extra/": ["Paket-Upgrade", "package", "Paket-Upgrades"],
   "package/": ["Show-Paket", "package", "Show-Pakete"],
   "post/": ["Blogartikel", "newspaper", "Blog"],
   "project/": ["Projekt", "folder-open", "Projekte"],
