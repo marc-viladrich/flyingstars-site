@@ -14,7 +14,7 @@
   --cyan: var(--c-cyan);
   --good: var(--c-good);
   --bad: var(--c-bad);
-  --grad: linear-gradient(90deg, var(--c-package-spark) 0%, var(--c-package-horizon) 50%, var(--c-cyan) 100%);
+  --grad: linear-gradient(90deg, var(--c-neon-orange) 0%, var(--c-neon-violet) 50%, var(--c-cyan) 100%);
   --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
   --body: "Inter", "Segoe UI", system-ui, sans-serif;
   --mono: var(--display);
@@ -180,6 +180,9 @@ td.us { color: var(--text); background: rgb(from var(--c-text) r g b / 0.035); }
 .pack.featured::before { content: ""; position: absolute; inset: 0; border-radius: var(--radius); padding: 1px; background: var(--grad); -webkit-mask: linear-gradient(var(--c-black) 0 0) content-box, linear-gradient(var(--c-black) 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
 .pack canvas { grid-column: 1; grid-row: 1; width: 96px; height: 96px; }
 .pack > div { grid-column: 2; grid-row: 1; min-width: 0; }
+/* Without a visible animation (switched off, or absent in the public build) the text takes the whole card. */
+.pack:not(:has(> canvas:not([hidden]))) { grid-template-columns: minmax(0, 1fr); }
+.pack:not(:has(> canvas:not([hidden]))) > div { grid-column: 1; }
 .pack .name { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .pack .name h3 { letter-spacing: 0.04em; font-weight: 700; font-size: 20px; }
 .chip { font: 500 10.5px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; padding: 6px 8px; border-radius: 999px; border: 1px solid rgb(from var(--c-orchid) r g b / 0.45); color: var(--orchid); }
@@ -244,11 +247,11 @@ td.us { color: var(--text); background: rgb(from var(--c-text) r g b / 0.035); }
 .calc .total b { display: block; font: 500 clamp(28px, 3vw, 40px)/1.05 var(--display); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 .calc .total span { color: var(--faint); }
 .range { -webkit-appearance: none; appearance: none; width: 100%; height: 28px; background: transparent; cursor: pointer; }
-.range::-webkit-slider-runnable-track { height: 4px; border-radius: 4px; background: linear-gradient(90deg, var(--pkg, var(--c-package-horizon)) var(--fill, 20%), rgb(from var(--c-text) r g b / 0.14) var(--fill, 20%)); }
+.range::-webkit-slider-runnable-track { height: 4px; border-radius: 4px; background: linear-gradient(90deg, var(--pkg, var(--c-neon-violet)) var(--fill, 20%), rgb(from var(--c-text) r g b / 0.14) var(--fill, 20%)); }
 .range::-moz-range-track { height: 4px; border-radius: 4px; background: rgb(from var(--c-text) r g b / 0.14); }
-.range::-moz-range-progress { height: 4px; border-radius: 4px; background: var(--pkg, var(--c-package-horizon)); }
-.range::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 26px; margin-top: -11px; border-radius: 50%; background: var(--text); border: 6px solid var(--ground); box-shadow: 0 0 0 1px var(--pkg, var(--c-package-horizon)), 0 0 18px var(--pkg, var(--c-package-horizon)); }
-.range::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--text); border: 5px solid var(--ground); box-shadow: 0 0 0 1px var(--pkg, var(--c-package-horizon)); }
+.range::-moz-range-progress { height: 4px; border-radius: 4px; background: var(--pkg, var(--c-neon-violet)); }
+.range::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 26px; margin-top: -11px; border-radius: 50%; background: var(--text); border: 6px solid var(--ground); box-shadow: 0 0 0 1px var(--pkg, var(--c-neon-violet)), 0 0 18px var(--pkg, var(--c-neon-violet)); }
+.range::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--text); border: 5px solid var(--ground); box-shadow: 0 0 0 1px var(--pkg, var(--c-neon-violet)); }
 .scale { position: relative; height: 1.5em; color: var(--faint); margin-top: -8px; }
 /* each value sits under the thumb centre for that value: 13 px (half the thumb) + share × (track − thumb) */
 .scale span { position: absolute; top: 0; left: calc(13px + var(--p, 0) * (100% - 26px)); transform: translateX(-50%); white-space: nowrap; }
@@ -491,7 +494,7 @@ td.us { color: var(--text); background: rgb(from var(--c-text) r g b / 0.035); }
 .eco-proof b { color: var(--text); font-weight: 500; }
 
 /* homepage: team – colour portraits that rise in one after another and open like a curtain */
-.team-sec { padding: var(--section) var(--pad); background: radial-gradient(70% 45% at 50% 0%, rgb(from var(--c-package-horizon) r g b / 0.07), transparent 70%), var(--c-media-ground); border-bottom: 1px solid var(--line); }
+.team-sec { padding: var(--section) var(--pad); background: radial-gradient(70% 45% at 50% 0%, rgb(from var(--c-neon-violet) r g b / 0.07), transparent 70%), var(--c-media-ground); border-bottom: 1px solid var(--line); }
 .crew { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 22px); }
 .member { display: grid; gap: 10px; align-content: start; transition: opacity 0.8s ease, transform 1.1s cubic-bezier(0.2, 0.7, 0.2, 1); transition-delay: calc(var(--i, 0) * 120ms); }
 .member.pre { opacity: 0; transform: translateY(80px); }
@@ -501,7 +504,7 @@ td.us { color: var(--text); background: rgb(from var(--c-text) r g b / 0.035); }
 .member.pre .portrait img { transform: scale(1.28); }
 .member.shown, .member.shown .portrait, .member.shown .portrait img { transition-delay: 0s; }
 .member:hover .portrait img, .member:focus-within .portrait img { transform: scale(1.05); transition-duration: 0.8s; }
-.portrait .ini { position: absolute; inset: 0; display: grid; place-items: center; font: 700 clamp(84px, 9.5vw, 160px)/1 var(--display); letter-spacing: -0.05em; color: transparent; -webkit-text-stroke: 1.5px rgb(from var(--c-text) r g b / 0.55); background: radial-gradient(90% 70% at 50% 30%, rgb(from var(--c-package-horizon) r g b / 0.14), transparent 70%), radial-gradient(80% 60% at 50% 100%, rgb(from var(--c-package-spark) r g b / 0.1), transparent 70%); }
+.portrait .ini { position: absolute; inset: 0; display: grid; place-items: center; font: 700 clamp(84px, 9.5vw, 160px)/1 var(--display); letter-spacing: -0.05em; color: transparent; -webkit-text-stroke: 1.5px rgb(from var(--c-text) r g b / 0.55); background: radial-gradient(90% 70% at 50% 30%, rgb(from var(--c-neon-violet) r g b / 0.14), transparent 70%), radial-gradient(80% 60% at 50% 100%, rgb(from var(--c-neon-orange) r g b / 0.1), transparent 70%); }
 .portrait .soon { position: absolute; left: 12px; bottom: 12px; z-index: 2; color: rgb(from var(--c-text) r g b / 0.65); }
 .member .role { color: var(--amber); }
 .member h3 { font-size: clamp(19px, 1.5vw, 22px); width: fit-content; padding-bottom: 2px; background: var(--grad) no-repeat 0 100% / 0% 2px; transition: background-size 0.5s; }
@@ -648,4 +651,7 @@ td.us { color: var(--text); background: rgb(from var(--c-text) r g b / 0.035); }
 @media (max-width: 640px) {
   .t-outline { -webkit-text-stroke-width: 1px; }
 }
-.t-caps { text-transform: uppercase; letter-spacing: 0.02em; }
+/* Caps keep the surrounding tracking, so a capitalised word matches uppercase set by the layout. */
+.t-caps { text-transform: uppercase; }
+/* A strike inside outline text needs a visible line: the outline has a transparent text colour. */
+.t-outline, .t-outline * { text-decoration-color: color-mix(in srgb, var(--text) 90%, transparent); }

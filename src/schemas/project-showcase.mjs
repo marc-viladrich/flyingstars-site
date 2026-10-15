@@ -26,7 +26,7 @@ export const projectShowcaseSchema = z.object({
   titleLines: z.array(inlineText('Hero-Titelzeile').min(1).meta(editable({translatable:true}))).min(1).max(2).describe("Title Lines").meta(editable({"visibility":"advanced","array":{"role":"list","reorderable":true,"insertable":true,"removable":true}})),
   titleChars: z.number().int().positive().describe("Title Chars").meta(editable({"visibility":"advanced"})),
   tagline: z.string().min(1).describe("Claim").meta(editable({"translatable":true})),
-  accent: z.string().refine(isColorToken, 'Unbekannte Farbe').describe('Akzentfarbe').meta({format: 'color', palette: ['Marke', 'Projekte', 'Pakete']}),
+  accent: z.string().refine(isColorToken, 'Unbekannte Farbe').describe('Akzentfarbe').meta({format: 'color', palette: ['Projekte', 'Akzente (gedämpft)', 'Neon (Verlauf)']}),
   drones: z.number().int().positive().describe("Drohnen"),
   heroVideo: z.url().describe("Video im Auftakt"),
   credits: z.array(z.object({ label: z.string().min(1).describe("Beschriftung").meta(editable({"translatable":true})), value: z.string().min(1).describe("Wert").meta(editable({"translatable":true})) }).describe("Mitwirkende")).min(1).describe("Mitwirkende").meta(editable({"array":{"role":"list","reorderable":true,"insertable":true,"removable":true,"itemLabel":["label"]},"widget":"flyingstars/compact-table"})),

@@ -68,7 +68,7 @@ test('actual site orb script re-reads shape, count and color on the same paused 
   const controllers = [];
   t.after(() => controllers.forEach(stop => stop()));
   const dom = environment(t), draws = [], context = { clearRect() {}, beginPath() {}, fill() {}, arc(...args) { draws.push({ color: this.fillStyle, args }); } };
-  Object.assign(dom.canvas, { dataset: { orb: 'sphere', n: '200', color: 'package-horizon' }, width: 96, height: 96,
+  Object.assign(dom.canvas, { dataset: { orb: 'sphere', n: '200', color: 'neon-violet' }, width: 96, height: 96,
     getBoundingClientRect: () => ({ width: 96, height: 96 }), getContext: () => context });
   const source = (await readFile(new URL('../src/scripts/site.ts', import.meta.url), 'utf8')).replace(/^import .+;$/gm, '');
   runInNewContext(source, {
@@ -80,7 +80,7 @@ test('actual site orb script re-reads shape, count and color on the same paused 
   assert.equal(draws.length, 200);
   const previousGeometry = draws.map(draw => draw.args.slice(0, 2));
   draws.length = 0;
-  Object.assign(dom.canvas.dataset, { orb: 'torus', n: '230', color: 'package-spark' });
+  Object.assign(dom.canvas.dataset, { orb: 'torus', n: '230', color: 'neon-orange' });
   dom.attributes(dom.canvas, 'data-orb');
   assert.equal(draws.length, 230); // includes nonmultiples of 25, previously rounded down
   assert.ok(draws.every(draw => draw.color.startsWith('rgba(255,158,41,')));

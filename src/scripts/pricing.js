@@ -130,7 +130,7 @@ registerCanvas("canvas#swarm", (canvas, life, saved) => {
     const info = (m) => { const st = stepFor(m); return st ? st[1] : null; };
 
     const P = Array.from({ length: MAX }, () => { const a = rnd() * 6.283, r = 1.3 + rnd() * 0.6; return { x: Math.cos(a) * r, y: (rnd() - 0.5) * 1.4, z: Math.sin(a) * r * 0.6, vx: 0, vy: 0, vz: 0, tx: 0, ty: 0, tz: 0, al: 0, ta: 0, ph: rnd() * 6.28, delay: 0 }; });
-    let shape = "", color = rgbOf('package-horizon'), cur = rgbOf('package-horizon'), count = 0, yaw = 0, tilt = 0, sprite = null, spriteKey = "";
+    let shape = "", color = rgbOf('neon-violet'), cur = rgbOf('neon-violet'), count = 0, yaw = 0, tilt = 0, sprite = null, spriteKey = "";
     let unit = 0.03, unitShown = 0, sizeM = null, pulseAmp = 0, dText = 0, spareN = 0; // display units per metre (the picture fills about ±1), eased for the scale bar; dText = spacing of a shown text, spareN = its reserve drones
     let W = 0, H = 0, DPR = 1, cx = 0, cy = 0, S = 0, visible = true, mouse = null;
 

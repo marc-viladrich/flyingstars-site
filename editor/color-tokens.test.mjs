@@ -24,9 +24,9 @@ test('colour registry has immutable unique identifiers, German labels and six-di
     assert.ok(colorTokenCSS().includes(`--c-${token.id}:${token.value}`));
   }
   assert.deepEqual(rgbOf('project-nfl'), [91,141,239]);
-  assert.deepEqual(rgbOf('package-spark'), [255,158,41]);
-  assert.deepEqual(rgbOf('package-horizon'), [219,100,232]);
-  assert.deepEqual(rgbOf('package-odyssey'), [51,237,242]);
+  assert.deepEqual(rgbOf('neon-orange'), [255,158,41]);
+  assert.deepEqual(rgbOf('neon-violet'), [219,100,232]);
+  assert.deepEqual(rgbOf('cyan'), [51,237,242]);
   for (const invalid of ['no-such-colour', '#5b8def', 'var(--amber)', '', null, ['amber']]) {
     assert.equal(isColorToken(invalid), false);
     assert.throws(() => colorVar(invalid), RangeError);
@@ -53,7 +53,7 @@ test('colour metadata excludes future fields from translation regardless of thei
     {path:['paint'],kind:'text', 'x-afe': {translatable:true},format:'color'}, {path:['caption'],kind:'text', 'x-afe': {translatable:true}}
   ]};
   assert.deepEqual(translatableFields(record).map(f => f.path), [['caption']]);
-  assert.equal(textFields(packageSchema,{color:'package-spark'}).find(f => f.path[0] === 'color').format, 'color');
+  assert.equal(textFields(packageSchema,{color:'neon-orange'}).find(f => f.path[0] === 'color').format, 'color');
 });
 
 async function filesAt(relative) {
