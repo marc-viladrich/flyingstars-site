@@ -238,7 +238,7 @@ test('real HTTP listeners enforce authentication, CSRF and account-authored Git 
     const response = await call('/editor/login?next=%2Feditor%2F'); assert.equal(response.status, 200);
     const html = await response.text(); assert.match(html, /id="login"/); assert.match(html, /autocomplete="current-password"/);
     assert.equal(response.headers.get('content-security-policy'), "frame-ancestors 'none'");
-    for (const asset of ['login.js', 'editor.css']) assert.equal((await call('/editor/' + asset)).status, 200);
+    for (const asset of ['login.js', 'editor.css', 'ui-tokens.css']) assert.equal((await call('/editor/' + asset)).status, 200);
     assert.equal((await publicCall('/')).status, 200);
     assert.equal((await publicCall('/', {method: 'POST'})).status, 405);
     const host = await call('/editor/login', {headers: {Host: 'evil.example'}}); assert.equal(host.status, 403); assert.equal(host.headers.get('x-content-type-options'), 'nosniff');

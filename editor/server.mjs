@@ -58,7 +58,7 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
   const url=new URL(req.url,origin),p=url.pathname;
   if(p!=='/editor'&&!p.startsWith('/editor/'))res.setHeader('Content-Security-Policy',"frame-ancestors 'self'");
   if(req.method==='GET'&&p==='/editor'){res.writeHead(302,{location:editorEntry(url)});return res.end();}
-  const publicLoginGet=req.method==='GET'&&['/editor/login','/editor/login.js','/editor/editor.css'].includes(p);
+  const publicLoginGet=req.method==='GET'&&['/editor/login','/editor/login.js','/editor/editor.css','/editor/ui-tokens.css'].includes(p);
   const publicLoginPost=req.method==='POST'&&p==='/editor/api/login';
   let session=null;
   if(authentication&&!publicLoginGet&&!publicLoginPost){

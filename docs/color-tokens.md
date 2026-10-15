@@ -8,7 +8,7 @@ CSS-Verbraucher verwenden `colorVar(id)`. Die Canvas-Verbraucher verwenden `rgbO
 
 Die sieben migrierten Inhaltswerte behalten ihre Farben. Spark unterscheidet sich weiterhin von Amber, Horizon von Orchidee. Unbekannte Kennungen scheitern bei der Schema-Prüfung und bei beiden Resolvern.
 
-`editor/web/ui-tokens.css` enthält die Variablen des Editors. `editor.css` importiert sie und `frame.js` lädt dieselbe Datei für die iframe-Werkzeuge. Die Dateien enthalten keine gegenseitigen Resets. Die Registry wird wie `inline-text.mjs` über die Browser-Dateiliste des Site-Adapters bereitgestellt; die Anmeldung schützt beide Module.
+`editor/web/ui-tokens.css` enthält die Variablen des Editors. `editor.css` importiert sie und `frame.js` lädt dieselbe Datei für die iframe-Werkzeuge. Die Dateien enthalten keine gegenseitigen Resets. Die Registry wird wie `inline-text.mjs` über die Browser-Dateiliste des Site-Adapters bereitgestellt; die Anmeldung schützt beide Module. Die reine UI-Variablendatei ist wie `editor.css` auch für die Anmeldeseite erreichbar.
 
 Prüfung mit Node 22:
 

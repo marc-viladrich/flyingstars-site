@@ -130,7 +130,7 @@ import {localeFormat} from '../lib/localized-routes.mjs';
     const info = (m) => { const st = stepFor(m); return st ? st[1] : null; };
 
     const P = Array.from({ length: MAX }, () => { const a = rnd() * 6.283, r = 1.3 + rnd() * 0.6; return { x: Math.cos(a) * r, y: (rnd() - 0.5) * 1.4, z: Math.sin(a) * r * 0.6, vx: 0, vy: 0, vz: 0, tx: 0, ty: 0, tz: 0, al: 0, ta: 0, ph: rnd() * 6.28, delay: 0 }; });
-    let shape = "", color = [219, 100, 232], cur = [219, 100, 232], count = 0, yaw = 0, tilt = 0, sprite = null, spriteKey = "";
+    let shape = "", color = rgbOf('package-horizon'), cur = rgbOf('package-horizon'), count = 0, yaw = 0, tilt = 0, sprite = null, spriteKey = "";
     let unit = 0.03, unitShown = 0, sizeM = null, pulseAmp = 0, dText = 0, spareN = 0; // display units per metre (the picture fills about ±1), eased for the scale bar; dText = spacing of a shown text, spareN = its reserve drones
     let W = 0, H = 0, DPR = 1, cx = 0, cy = 0, S = 0, visible = true, mouse = null;
 
@@ -193,14 +193,14 @@ import {localeFormat} from '../lib/localized-routes.mjs';
       const above = shape === "text" && spareN > 0; // a reserve stands below the text: the width line goes above it
       const ye = above ? y0 - 4 * DPR : y1 + 4 * DPR, yb = above ? Math.max(20 * DPR, y0 - 22 * DPR) : Math.min(cv.height - 20 * DPR, y1 + 22 * DPR), xr = Math.min(cv.width - 34 * DPR, x1 + 22 * DPR);
       ctx.save();
-      ctx.strokeStyle = "rgba(246,241,232,0.42)"; ctx.lineWidth = 1 * DPR;
+      ctx.strokeStyle = `rgba(${rgbOf('text').join(',')},0.42)`; ctx.lineWidth = 1 * DPR;
       ctx.setLineDash([2 * DPR, 3 * DPR]);
       ctx.beginPath(); ctx.moveTo(x0, ye); ctx.lineTo(x0, yb); ctx.moveTo(x1, ye); ctx.lineTo(x1, yb); ctx.moveTo(x1 + 4 * DPR, y0); ctx.lineTo(xr, y0); ctx.moveTo(x1 + 4 * DPR, y1); ctx.lineTo(xr, y1); ctx.stroke();
-      ctx.setLineDash([]); ctx.strokeStyle = "rgba(246,241,232,0.6)";
+      ctx.setLineDash([]); ctx.strokeStyle = `rgba(${rgbOf('text').join(',')},0.6)`;
       ctx.beginPath(); ctx.moveTo(x0, yb); ctx.lineTo(x1, yb); ctx.moveTo(x0, yb - t); ctx.lineTo(x0, yb + t); ctx.moveTo(x1, yb - t); ctx.lineTo(x1, yb + t);
       ctx.moveTo(xr, y0); ctx.lineTo(xr, y1); ctx.moveTo(xr - t, y0); ctx.lineTo(xr + t, y0); ctx.moveTo(xr - t, y1); ctx.lineTo(xr + t, y1); ctx.stroke();
-      ctx.font = `500 ${11 * DPR}px "JetBrains Mono", ui-monospace, monospace`; ctx.fillStyle = "rgba(246,241,232,0.8)";
-      const label = (txt, x, y, rot) => { ctx.save(); ctx.translate(x, y); if (rot) ctx.rotate(-Math.PI / 2); const tw = ctx.measureText(txt).width; ctx.fillStyle = "rgba(15,13,12,0.85)"; ctx.fillRect(-tw / 2 - 5 * DPR, -8 * DPR, tw + 10 * DPR, 16 * DPR); ctx.fillStyle = "rgba(246,241,232,0.85)"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(txt, 0, 0); ctx.restore(); };
+      ctx.font = `500 ${11 * DPR}px "JetBrains Mono", ui-monospace, monospace`; ctx.fillStyle = `rgba(${rgbOf('text').join(',')},0.8)`;
+      const label = (txt, x, y, rot) => { ctx.save(); ctx.translate(x, y); if (rot) ctx.rotate(-Math.PI / 2); const tw = ctx.measureText(txt).width; ctx.fillStyle = `rgba(${rgbOf('ground').join(',')},0.85)`; ctx.fillRect(-tw / 2 - 5 * DPR, -8 * DPR, tw + 10 * DPR, 16 * DPR); ctx.fillStyle = `rgba(${rgbOf('text').join(',')},0.85)`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(txt, 0, 0); ctx.restore(); };
       label(`${Math.round(sizeM[0])} m`, cx, yb);
       label(`${Math.round(sizeM[1])} m`, xr, cy, true);
       ctx.restore();
