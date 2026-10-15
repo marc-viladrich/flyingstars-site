@@ -61,7 +61,7 @@ function panelSnapshot(records){
  const out={};
  for(const record of records){const model=/^(site|variant)\//.test(record.id)?record.id:record.type;const panels=out[model]||=(Object.fromEntries(['fields','containers','optionalFields'].map(k=>[k,new Map()])));
   const description=describe(record.schema,record.data,{id:record.id,omitPath:(data,p)=>omitRecordField(record,data,p)});
-  for(const [kind,nodes]of Object.entries(description))for(const f of nodes){const descriptor={path:f.path.map(p=>typeof p==='number'?'*':p),label:fieldLabel(f),kind:f.kind,advanced:isTechnical(f),...(f.choices?{choices:f.choices.map(c=>choiceLabel(c,f))}:{}),...(f.kind==='array'?{array:Object.fromEntries(['reorderable','insertable','removable'].map(k=>[k,listPolicy(f)[k]]))}:{})};panels[kind].set(JSON.stringify(descriptor,Object.keys(descriptor).sort()),descriptor);}
+  for(const [kind,nodes]of Object.entries(description))for(const f of nodes){const descriptor={path:f.path.map(p=>typeof p==='number'?'*':p),label:fieldLabel(f),kind:f.kind,advanced:isTechnical(f),...(f.choices?{choices:f.choices.map(c=>choiceLabel(c,f))}:{}),...(f.kind==='array'?{array:Object.fromEntries(['reorderable','insertable','removable'].map(k=>[k,listPolicy(f)[k]]))}:{})};panels[kind].set(JSON.stringify(descriptor),descriptor);}
  }
  // Stable canonical ordering independent of file enumeration or concrete list lengths.
  const canonical=value=>JSON.stringify(value,Object.keys(value).sort());
@@ -105,14 +105,19 @@ test('browser dispatch resolves declared references and widgets, including compa
  const describeRecord=item=>describe(item.schema,item.data,{omitPath:(data,path)=>omitRecordField(item,data,path)});
  const context={nodeAt,referencePrefix,referencedRecords,siteWidgets,records:()=>records,record:id=>records.find(r=>r.id===id),recordName:recordTitle,recordTemplate:()=>null,pushView:()=>{},inlinePlain:v=>v,getPath:(data,path)=>path.reduce((v,k)=>v?.[k],data)};
  const choices=runInNewContext(source.slice(source.indexOf('function choiceSource('),source.indexOf('// part: "all"'))+';choiceSource',context);
- const columns=runInNewContext(source.slice(source.indexOf('function tableColumns('),source.indexOf('// Complex entries'))+';tableColumns',{...context,value:(item,path)=>path.reduce((v,k)=>v?.[k],item.data),containersFor:item=>describeRecord(item).containers,fieldsFor:item=>describeRecord(item).fields,under:(path,prefix)=>prefix.every((part,i)=>path[i]===part),isTechnical,fieldLabel,$:()=>({dataset:{size:'overview'}})});
- let refs=0,features=0,tables=0;
+ let size='overview';
+ const columns=runInNewContext(source.slice(source.indexOf('function tableColumns('),source.indexOf('// Complex entries'))+';tableColumns',{...context,value:(item,path)=>path.reduce((v,k)=>v?.[k],item.data),containersFor:item=>describeRecord(item).containers,fieldsFor:item=>describeRecord(item).fields,under:(path,prefix)=>prefix.every((part,i)=>path[i]===part),isTechnical,fieldLabel,$:()=>({dataset:{size}})});
+ const expectedTables=JSON.parse(await readFile(new URL('./test/p6-tables-before.json',import.meta.url),'utf8'));
+ let refs=0,features=0,tables=0,decisions=0;
  for(const record of records)for(const container of describeRecord(record).containers.filter(c=>c.kind==='array')){
   const result=choices(record,container);
   if(nodeAt(record.schema,record.data,[...container.path,0])?.['x-afe']?.reference){assert.ok(result?.options.length,record.id);refs++;}
   if(container['x-afe']?.widget==='flyingstars/package-features'){assert.ok(result?.options.length,record.id);features++;}
   if(columns(record,container))tables++;
+  if(!record.id.startsWith('variant/')&&record.type!=='translation')for(size of ['overview','compact']){const key=record.id+'/'+JSON.stringify(container.path)+'/'+size;assert.equal(JSON.stringify(columns(record,container)),JSON.stringify(expectedTables[key]),key);decisions++;}
+  size='overview';
  }
+ assert.equal(decisions,Object.keys(expectedTables).length);
  assert.ok(refs>=3);assert.ok(features>=3);assert.ok(tables>=10);
  const staged={id:'client/new-client',schema:{'x-afe':{collection:{label:'Kunde',title:['name']}}},data:{name:'Neuer Kunde'}};
  assert.ok(referencedRecords([...records,staged],{collection:'clients',encoding:'id'}).includes(staged));

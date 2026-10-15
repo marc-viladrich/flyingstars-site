@@ -30,7 +30,8 @@ const editor = () => process.env.FLYINGSTARS_EDITOR === '1';
 const schemas = {page:pageSchema,post:postSchema,project:projectSchema,faq:faqSchema,client:clientSchema,team:teamSchema,media:mediaSchema,package:packageSchema};
 function localized(id:string,data:any,schema:any,locale:string,translationIndex:Map<string,any>) {
   const fields = textFields(schema,data);
-  if (typeof data.body === 'string' && !fields.some((field:any) => field.path.length === 1 && field.path[0] === 'body')) fields.push({path:['body'],kind:'text',format:'markdown'});
+  const body = schema.meta?.()?.['x-afe']?.collection?.body;
+  if (body && typeof data.body === 'string' && !fields.some((field:any) => field.path.length === 1 && field.path[0] === 'body')) fields.push({path:['body'],label:body.label,kind:'text',format:'markdown','x-afe':{translatable:body.translatable === true}});
   return localize({id,data},locale,{editor:editor(),fields,translation:translationIndex.get(id+':'+locale)});
 }
 async function entries(collection:'pages'|'posts'|'projects'|'faq',owner:keyof typeof schemas,locale:string) {

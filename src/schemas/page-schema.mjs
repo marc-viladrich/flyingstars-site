@@ -39,7 +39,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     type: z.literal('sustainability').describe('Nachhaltigkeit'), ...sectionHeading,
     headline: inlineText('Überschrift').min(1).meta(editable({"translatable":true})), lines: z.array(inlineText('Überschriftszeile').meta(editable({translatable:true}))).length(3).describe("Zeilen").meta(editable({"array":{"role":"list","reorderable":true,"insertable":true,"removable":true}})), text: z.string().min(1).describe("Text").meta(editable({"format":"multiline","translatable":true})),
     facts: z.array(z.object({ label: inlineText('Bezeichnung der Kennzahl').meta(editable({"translatable":true})), value: inlineText('Wert der Kennzahl').meta(editable({"translatable":true})), unit: z.string().optional().describe("Einheit").meta(editable({"translatable":true})),
-      text: z.string().describe("Text").meta(editable({"format":"multiline","translatable":true})), tone: z.enum(['o','g']).optional().describe('Darstellung der Kennzahl').meta(editable({"choices":{"o":{"label":"Kontur"},"g":{"label":"Farbverlauf"}}})) }).describe("Fakten")).length(4).meta(editable({"array":{"role":"list","reorderable":true,"insertable":true,"removable":true,"itemLabel":["label"]}})).describe("Fakten"),
+      text: z.string().describe("Text").meta(editable({"format":"multiline","translatable":true})), tone: z.enum(['o','g']).optional().describe('Darstellung der Kennzahl').meta(editable({"choices":{"o":{"label":"Kontur"},"g":{"label":"Farbverlauf"}}})) }).describe("Fakten")).length(4).meta(editable({"widget":"flyingstars/compact-table","array":{"role":"list","reorderable":true,"insertable":true,"removable":true,"itemLabel":["label"]}})).describe("Fakten"),
     proofImage: image.describe("Nachweis-Bild"), proofText: z.string().describe("Nachweis-Text").meta(editable({"format":"multiline","translatable":true})), campaign: z.string().describe("Kampagne").meta(editable({"translatable":true})),
   }).meta(editable({"block":{"label":"Nachhaltigkeit","icon":"leaf","maxInstances":1}})).describe('Abschnitte'),
   z.object({
@@ -104,7 +104,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
       title: inlineText('Schritttitel').min(1).meta(editable({"translatable":true})),
       text: z.string().min(1).describe("Text").meta(editable({"format":"multiline","translatable":true})),
       duration: z.string().optional().describe('Kurzer Zeitrahmen, z. B. "48 h Antwortzeit"').meta(editable({"translatable":true})),
-    }).describe("Schritte")).min(2).meta(editable({"array":{"role":"list","reorderable":true,"insertable":true,"removable":true,"itemLabel":["title"]}})).describe("Schritte"),
+    }).describe("Schritte")).min(2).meta(editable({"widget":"flyingstars/compact-table","array":{"role":"list","reorderable":true,"insertable":true,"removable":true,"itemLabel":["title"]}})).describe("Schritte"),
   }).meta(editable({"block":{"label":"Ablauf","icon":"list-ordered"}})).describe('Abschnitte'),
   z.object({
     type: z.literal('comparison').describe('Vergleich'), ...sectionHeading,
@@ -128,7 +128,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
         });
       }
     });
-  }),
+  }).describe('Abschnitte').meta(editable({block:{label:'Vergleich',icon:'table-2'},widget:'flyingstars/comparison'})),
   z.object({
     type: z.literal('team').describe('Team'), ...sectionHeading,
     note: z.string().optional().describe("Hinweis").meta(editable({"translatable":true})), cta: link.optional().describe("Button"),

@@ -1,0 +1,686 @@
+{
+  "site/navigation/[\"header\"]/overview": [
+    {
+      "key": "label",
+      "label": "Linktext"
+    },
+    {
+      "key": "href",
+      "label": "Linkziel"
+    }
+  ],
+  "site/navigation/[\"mobileExtras\"]/overview": [
+    {
+      "key": "label",
+      "label": "Linktext"
+    },
+    {
+      "key": "href",
+      "label": "Linkziel"
+    }
+  ],
+  "site/navigation/[\"footer\",\"pages\"]/overview": [
+    {
+      "key": "label",
+      "label": "Linktext"
+    },
+    {
+      "key": "href",
+      "label": "Linkziel"
+    }
+  ],
+  "site/navigation/[\"footer\",\"social\"]/overview": [
+    {
+      "key": "label",
+      "label": "Linktext"
+    },
+    {
+      "key": "href",
+      "label": "Linkziel"
+    }
+  ],
+  "site/navigation/[\"footer\",\"legal\"]/overview": [
+    {
+      "key": "label",
+      "label": "Linktext"
+    },
+    {
+      "key": "href",
+      "label": "Linkziel"
+    }
+  ],
+  "site/navigation/[\"header\"]/compact": [
+    {
+      "key": "label",
+      "label": "Linktext"
+    },
+    {
+      "key": "href",
+      "label": "Linkziel"
+    }
+  ],
+  "site/navigation/[\"mobileExtras\"]/compact": [
+    {
+      "key": "label",
+      "label": "Linktext"
+    },
+    {
+      "key": "href",
+      "label": "Linkziel"
+    }
+  ],
+  "site/navigation/[\"footer\",\"pages\"]/compact": [
+    {
+      "key": "label",
+      "label": "Linktext"
+    },
+    {
+      "key": "href",
+      "label": "Linkziel"
+    }
+  ],
+  "site/navigation/[\"footer\",\"social\"]/compact": [
+    {
+      "key": "label",
+      "label": "Linktext"
+    },
+    {
+      "key": "href",
+      "label": "Linkziel"
+    }
+  ],
+  "site/navigation/[\"footer\",\"legal\"]/compact": [
+    {
+      "key": "label",
+      "label": "Linktext"
+    },
+    {
+      "key": "href",
+      "label": "Linkziel"
+    }
+  ],
+  "screen/drohnenshow-preise/[\"occasions\"]/overview": null,
+  "screen/drohnenshow-preise/[\"occasions\"]/compact": null,
+  "screen/show-konfigurator/[\"occasions\"]/overview": null,
+  "screen/show-konfigurator/[\"occasions\",0,\"motifs\"]/overview": null,
+  "screen/show-konfigurator/[\"occasions\",1,\"motifs\"]/overview": null,
+  "screen/show-konfigurator/[\"occasions\",2,\"motifs\"]/overview": null,
+  "screen/show-konfigurator/[\"occasions\",3,\"motifs\"]/overview": null,
+  "screen/show-konfigurator/[\"occasions\",4,\"motifs\"]/overview": null,
+  "screen/show-konfigurator/[\"occasions\",5,\"motifs\"]/overview": null,
+  "screen/show-konfigurator/[\"occasions\"]/compact": null,
+  "screen/show-konfigurator/[\"occasions\",0,\"motifs\"]/compact": null,
+  "screen/show-konfigurator/[\"occasions\",1,\"motifs\"]/compact": null,
+  "screen/show-konfigurator/[\"occasions\",2,\"motifs\"]/compact": null,
+  "screen/show-konfigurator/[\"occasions\",3,\"motifs\"]/compact": null,
+  "screen/show-konfigurator/[\"occasions\",4,\"motifs\"]/compact": null,
+  "screen/show-konfigurator/[\"occasions\",5,\"motifs\"]/compact": null,
+  "project/beispielprojekt/[\"sections\"]/overview": null,
+  "project/beispielprojekt/[\"showcase\",\"titleLines\"]/overview": null,
+  "project/beispielprojekt/[\"showcase\",\"credits\"]/overview": null,
+  "project/beispielprojekt/[\"showcase\",\"numbers\"]/overview": null,
+  "project/beispielprojekt/[\"showcase\",\"story\"]/overview": null,
+  "project/beispielprojekt/[\"showcase\",\"gallery\"]/overview": null,
+  "project/beispielprojekt/[\"showcase\",\"setlist\"]/overview": null,
+  "project/beispielprojekt/[\"showcase\",\"press\"]/overview": null,
+  "project/beispielprojekt/[\"sections\"]/compact": null,
+  "project/beispielprojekt/[\"showcase\",\"titleLines\"]/compact": null,
+  "project/beispielprojekt/[\"showcase\",\"credits\"]/compact": null,
+  "project/beispielprojekt/[\"showcase\",\"numbers\"]/compact": null,
+  "project/beispielprojekt/[\"showcase\",\"story\"]/compact": null,
+  "project/beispielprojekt/[\"showcase\",\"gallery\"]/compact": null,
+  "project/beispielprojekt/[\"showcase\",\"setlist\"]/compact": null,
+  "project/beispielprojekt/[\"showcase\",\"press\"]/compact": null,
+  "project/exploring-reinvented-der-neue-ford-explorer/[\"sections\"]/overview": null,
+  "project/exploring-reinvented-der-neue-ford-explorer/[\"showcase\",\"titleLines\"]/overview": null,
+  "project/exploring-reinvented-der-neue-ford-explorer/[\"showcase\",\"credits\"]/overview": [
+    {
+      "key": "label",
+      "label": "Beschriftung"
+    },
+    {
+      "key": "value",
+      "label": "Wert"
+    }
+  ],
+  "project/exploring-reinvented-der-neue-ford-explorer/[\"showcase\",\"numbers\"]/overview": [
+    {
+      "key": "value",
+      "label": "Wert"
+    },
+    {
+      "key": "label",
+      "label": "Beschriftung"
+    }
+  ],
+  "project/exploring-reinvented-der-neue-ford-explorer/[\"showcase\",\"story\"]/overview": null,
+  "project/exploring-reinvented-der-neue-ford-explorer/[\"showcase\",\"gallery\"]/overview": null,
+  "project/exploring-reinvented-der-neue-ford-explorer/[\"showcase\",\"setlist\"]/overview": null,
+  "project/exploring-reinvented-der-neue-ford-explorer/[\"showcase\",\"setlist\",0,\"items\"]/overview": null,
+  "project/exploring-reinvented-der-neue-ford-explorer/[\"showcase\",\"press\"]/overview": null,
+  "project/exploring-reinvented-der-neue-ford-explorer/[\"sections\"]/compact": null,
+  "project/exploring-reinvented-der-neue-ford-explorer/[\"showcase\",\"titleLines\"]/compact": null,
+  "project/exploring-reinvented-der-neue-ford-explorer/[\"showcase\",\"credits\"]/compact": [
+    {
+      "key": "label",
+      "label": "Beschriftung"
+    },
+    {
+      "key": "value",
+      "label": "Wert"
+    }
+  ],
+  "project/exploring-reinvented-der-neue-ford-explorer/[\"showcase\",\"numbers\"]/compact": [
+    {
+      "key": "value",
+      "label": "Wert"
+    },
+    {
+      "key": "label",
+      "label": "Beschriftung"
+    }
+  ],
+  "project/exploring-reinvented-der-neue-ford-explorer/[\"showcase\",\"story\"]/compact": null,
+  "project/exploring-reinvented-der-neue-ford-explorer/[\"showcase\",\"gallery\"]/compact": null,
+  "project/exploring-reinvented-der-neue-ford-explorer/[\"showcase\",\"setlist\"]/compact": null,
+  "project/exploring-reinvented-der-neue-ford-explorer/[\"showcase\",\"setlist\",0,\"items\"]/compact": null,
+  "project/exploring-reinvented-der-neue-ford-explorer/[\"showcase\",\"press\"]/compact": null,
+  "project/musikalischer-teaser-bokkenrijders/[\"sections\"]/overview": null,
+  "project/musikalischer-teaser-bokkenrijders/[\"showcase\",\"titleLines\"]/overview": null,
+  "project/musikalischer-teaser-bokkenrijders/[\"showcase\",\"credits\"]/overview": [
+    {
+      "key": "label",
+      "label": "Beschriftung"
+    },
+    {
+      "key": "value",
+      "label": "Wert"
+    }
+  ],
+  "project/musikalischer-teaser-bokkenrijders/[\"showcase\",\"numbers\"]/overview": [
+    {
+      "key": "value",
+      "label": "Wert"
+    },
+    {
+      "key": "label",
+      "label": "Beschriftung"
+    }
+  ],
+  "project/musikalischer-teaser-bokkenrijders/[\"showcase\",\"story\"]/overview": null,
+  "project/musikalischer-teaser-bokkenrijders/[\"showcase\",\"gallery\"]/overview": null,
+  "project/musikalischer-teaser-bokkenrijders/[\"showcase\",\"setlist\"]/overview": null,
+  "project/musikalischer-teaser-bokkenrijders/[\"showcase\",\"setlist\",0,\"items\"]/overview": null,
+  "project/musikalischer-teaser-bokkenrijders/[\"showcase\",\"setlist\",1,\"items\"]/overview": null,
+  "project/musikalischer-teaser-bokkenrijders/[\"showcase\",\"press\"]/overview": null,
+  "project/musikalischer-teaser-bokkenrijders/[\"sections\"]/compact": null,
+  "project/musikalischer-teaser-bokkenrijders/[\"showcase\",\"titleLines\"]/compact": null,
+  "project/musikalischer-teaser-bokkenrijders/[\"showcase\",\"credits\"]/compact": [
+    {
+      "key": "label",
+      "label": "Beschriftung"
+    },
+    {
+      "key": "value",
+      "label": "Wert"
+    }
+  ],
+  "project/musikalischer-teaser-bokkenrijders/[\"showcase\",\"numbers\"]/compact": [
+    {
+      "key": "value",
+      "label": "Wert"
+    },
+    {
+      "key": "label",
+      "label": "Beschriftung"
+    }
+  ],
+  "project/musikalischer-teaser-bokkenrijders/[\"showcase\",\"story\"]/compact": null,
+  "project/musikalischer-teaser-bokkenrijders/[\"showcase\",\"gallery\"]/compact": null,
+  "project/musikalischer-teaser-bokkenrijders/[\"showcase\",\"setlist\"]/compact": null,
+  "project/musikalischer-teaser-bokkenrijders/[\"showcase\",\"setlist\",0,\"items\"]/compact": null,
+  "project/musikalischer-teaser-bokkenrijders/[\"showcase\",\"setlist\",1,\"items\"]/compact": null,
+  "project/musikalischer-teaser-bokkenrijders/[\"showcase\",\"press\"]/compact": null,
+  "project/nfl-berlin-game/[\"sections\"]/overview": null,
+  "project/nfl-berlin-game/[\"showcase\",\"titleLines\"]/overview": null,
+  "project/nfl-berlin-game/[\"showcase\",\"credits\"]/overview": [
+    {
+      "key": "label",
+      "label": "Beschriftung"
+    },
+    {
+      "key": "value",
+      "label": "Wert"
+    }
+  ],
+  "project/nfl-berlin-game/[\"showcase\",\"numbers\"]/overview": [
+    {
+      "key": "value",
+      "label": "Wert"
+    },
+    {
+      "key": "label",
+      "label": "Beschriftung"
+    }
+  ],
+  "project/nfl-berlin-game/[\"showcase\",\"story\"]/overview": null,
+  "project/nfl-berlin-game/[\"showcase\",\"gallery\"]/overview": null,
+  "project/nfl-berlin-game/[\"showcase\",\"setlist\"]/overview": null,
+  "project/nfl-berlin-game/[\"showcase\",\"setlist\",0,\"items\"]/overview": null,
+  "project/nfl-berlin-game/[\"showcase\",\"press\"]/overview": null,
+  "project/nfl-berlin-game/[\"sections\"]/compact": null,
+  "project/nfl-berlin-game/[\"showcase\",\"titleLines\"]/compact": null,
+  "project/nfl-berlin-game/[\"showcase\",\"credits\"]/compact": [
+    {
+      "key": "label",
+      "label": "Beschriftung"
+    },
+    {
+      "key": "value",
+      "label": "Wert"
+    }
+  ],
+  "project/nfl-berlin-game/[\"showcase\",\"numbers\"]/compact": [
+    {
+      "key": "value",
+      "label": "Wert"
+    },
+    {
+      "key": "label",
+      "label": "Beschriftung"
+    }
+  ],
+  "project/nfl-berlin-game/[\"showcase\",\"story\"]/compact": null,
+  "project/nfl-berlin-game/[\"showcase\",\"gallery\"]/compact": null,
+  "project/nfl-berlin-game/[\"showcase\",\"setlist\"]/compact": null,
+  "project/nfl-berlin-game/[\"showcase\",\"setlist\",0,\"items\"]/compact": null,
+  "project/nfl-berlin-game/[\"showcase\",\"press\"]/compact": null,
+  "project/puma-bundesliga/[\"sections\"]/overview": null,
+  "project/puma-bundesliga/[\"showcase\",\"titleLines\"]/overview": null,
+  "project/puma-bundesliga/[\"showcase\",\"credits\"]/overview": [
+    {
+      "key": "label",
+      "label": "Beschriftung"
+    },
+    {
+      "key": "value",
+      "label": "Wert"
+    }
+  ],
+  "project/puma-bundesliga/[\"showcase\",\"numbers\"]/overview": [
+    {
+      "key": "value",
+      "label": "Wert"
+    },
+    {
+      "key": "label",
+      "label": "Beschriftung"
+    }
+  ],
+  "project/puma-bundesliga/[\"showcase\",\"story\"]/overview": null,
+  "project/puma-bundesliga/[\"showcase\",\"gallery\"]/overview": null,
+  "project/puma-bundesliga/[\"showcase\",\"setlist\"]/overview": null,
+  "project/puma-bundesliga/[\"showcase\",\"setlist\",0,\"items\"]/overview": null,
+  "project/puma-bundesliga/[\"showcase\",\"press\"]/overview": null,
+  "project/puma-bundesliga/[\"sections\"]/compact": null,
+  "project/puma-bundesliga/[\"showcase\",\"titleLines\"]/compact": null,
+  "project/puma-bundesliga/[\"showcase\",\"credits\"]/compact": [
+    {
+      "key": "label",
+      "label": "Beschriftung"
+    },
+    {
+      "key": "value",
+      "label": "Wert"
+    }
+  ],
+  "project/puma-bundesliga/[\"showcase\",\"numbers\"]/compact": [
+    {
+      "key": "value",
+      "label": "Wert"
+    },
+    {
+      "key": "label",
+      "label": "Beschriftung"
+    }
+  ],
+  "project/puma-bundesliga/[\"showcase\",\"story\"]/compact": null,
+  "project/puma-bundesliga/[\"showcase\",\"gallery\"]/compact": null,
+  "project/puma-bundesliga/[\"showcase\",\"setlist\"]/compact": null,
+  "project/puma-bundesliga/[\"showcase\",\"setlist\",0,\"items\"]/compact": null,
+  "project/puma-bundesliga/[\"showcase\",\"press\"]/compact": null,
+  "post/2026-10-06-beispielbeitrag/[\"sections\"]/overview": null,
+  "post/2026-10-06-beispielbeitrag/[\"tags\"]/overview": null,
+  "post/2026-10-06-beispielbeitrag/[\"sections\"]/compact": null,
+  "post/2026-10-06-beispielbeitrag/[\"tags\"]/compact": null,
+  "post/2026-10-06-testflug-wie-eine-drohnenshow-entsteht/[\"sections\"]/overview": null,
+  "post/2026-10-06-testflug-wie-eine-drohnenshow-entsteht/[\"tags\"]/overview": null,
+  "post/2026-10-06-testflug-wie-eine-drohnenshow-entsteht/[\"sections\"]/compact": null,
+  "post/2026-10-06-testflug-wie-eine-drohnenshow-entsteht/[\"tags\"]/compact": null,
+  "page/danke/[\"sections\"]/overview": null,
+  "page/danke/[\"sections\"]/compact": null,
+  "page/datenschutz/[\"sections\"]/overview": null,
+  "page/datenschutz/[\"sections\"]/compact": null,
+  "page/faq/[\"sections\"]/overview": null,
+  "page/faq/[\"sections\",0,\"tags\"]/overview": null,
+  "page/faq/[\"sections\"]/compact": null,
+  "page/faq/[\"sections\",0,\"tags\"]/compact": null,
+  "page/impressum/[\"sections\"]/overview": null,
+  "page/impressum/[\"sections\"]/compact": null,
+  "page/index/[\"sections\"]/overview": null,
+  "page/index/[\"sections\",0,\"words\"]/overview": null,
+  "page/index/[\"sections\",0,\"stats\"]/overview": [
+    {
+      "key": "label",
+      "label": "Beschriftung"
+    },
+    {
+      "key": "value",
+      "label": "Wert"
+    }
+  ],
+  "page/index/[\"sections\",1,\"clientIds\"]/overview": null,
+  "page/index/[\"sections\",2,\"cards\"]/overview": null,
+  "page/index/[\"sections\",2,\"cards\",0,\"facts\"]/overview": null,
+  "page/index/[\"sections\",2,\"cards\",1,\"facts\"]/overview": null,
+  "page/index/[\"sections\",2,\"cards\",2,\"facts\"]/overview": null,
+  "page/index/[\"sections\",2,\"cards\",3,\"facts\"]/overview": null,
+  "page/index/[\"sections\",3,\"tiers\"]/overview": null,
+  "page/index/[\"sections\",3,\"tiers\",0,\"featureIds\"]/overview": null,
+  "page/index/[\"sections\",3,\"tiers\",1,\"featureIds\"]/overview": null,
+  "page/index/[\"sections\",3,\"tiers\",2,\"featureIds\"]/overview": null,
+  "page/index/[\"sections\",4,\"steps\"]/overview": [
+    {
+      "key": "title",
+      "label": "Schritttitel"
+    },
+    {
+      "key": "text",
+      "label": "Text"
+    },
+    {
+      "key": "duration",
+      "label": "Kurzer Zeitrahmen, z. B. \"48 h Antwortzeit\""
+    }
+  ],
+  "page/index/[\"sections\",5,\"items\"]/overview": [
+    {
+      "key": "label",
+      "label": "Beschriftung"
+    },
+    {
+      "key": "value",
+      "label": "Wert"
+    },
+    {
+      "key": "text",
+      "label": "Text"
+    }
+  ],
+  "page/index/[\"sections\",7,\"lines\"]/overview": null,
+  "page/index/[\"sections\",7,\"facts\"]/overview": [
+    {
+      "key": "label",
+      "label": "Bezeichnung der Kennzahl"
+    },
+    {
+      "key": "value",
+      "label": "Wert der Kennzahl"
+    },
+    {
+      "key": "text",
+      "label": "Text"
+    }
+  ],
+  "page/index/[\"sections\",8,\"columns\"]/overview": null,
+  "page/index/[\"sections\",8,\"rows\"]/overview": null,
+  "page/index/[\"sections\",8,\"rows\",0,\"cells\"]/overview": null,
+  "page/index/[\"sections\",8,\"rows\",0,\"values\"]/overview": null,
+  "page/index/[\"sections\",8,\"rows\",1,\"cells\"]/overview": null,
+  "page/index/[\"sections\",8,\"rows\",1,\"values\"]/overview": null,
+  "page/index/[\"sections\",8,\"rows\",2,\"cells\"]/overview": null,
+  "page/index/[\"sections\",8,\"rows\",2,\"values\"]/overview": null,
+  "page/index/[\"sections\",8,\"rows\",3,\"cells\"]/overview": null,
+  "page/index/[\"sections\",8,\"rows\",3,\"values\"]/overview": null,
+  "page/index/[\"sections\",8,\"rows\",4,\"cells\"]/overview": null,
+  "page/index/[\"sections\",8,\"rows\",4,\"values\"]/overview": null,
+  "page/index/[\"sections\",8,\"rows\",5,\"cells\"]/overview": null,
+  "page/index/[\"sections\",8,\"rows\",5,\"values\"]/overview": null,
+  "page/index/[\"sections\",9,\"memberIds\"]/overview": null,
+  "page/index/[\"sections\",10,\"tags\"]/overview": null,
+  "page/index/[\"sections\"]/compact": null,
+  "page/index/[\"sections\",0,\"words\"]/compact": null,
+  "page/index/[\"sections\",0,\"stats\"]/compact": [
+    {
+      "key": "label",
+      "label": "Beschriftung"
+    },
+    {
+      "key": "value",
+      "label": "Wert"
+    }
+  ],
+  "page/index/[\"sections\",1,\"clientIds\"]/compact": null,
+  "page/index/[\"sections\",2,\"cards\"]/compact": null,
+  "page/index/[\"sections\",2,\"cards\",0,\"facts\"]/compact": null,
+  "page/index/[\"sections\",2,\"cards\",1,\"facts\"]/compact": null,
+  "page/index/[\"sections\",2,\"cards\",2,\"facts\"]/compact": null,
+  "page/index/[\"sections\",2,\"cards\",3,\"facts\"]/compact": null,
+  "page/index/[\"sections\",3,\"tiers\"]/compact": null,
+  "page/index/[\"sections\",3,\"tiers\",0,\"featureIds\"]/compact": null,
+  "page/index/[\"sections\",3,\"tiers\",1,\"featureIds\"]/compact": null,
+  "page/index/[\"sections\",3,\"tiers\",2,\"featureIds\"]/compact": null,
+  "page/index/[\"sections\",4,\"steps\"]/compact": null,
+  "page/index/[\"sections\",5,\"items\"]/compact": null,
+  "page/index/[\"sections\",7,\"lines\"]/compact": null,
+  "page/index/[\"sections\",7,\"facts\"]/compact": null,
+  "page/index/[\"sections\",8,\"columns\"]/compact": null,
+  "page/index/[\"sections\",8,\"rows\"]/compact": null,
+  "page/index/[\"sections\",8,\"rows\",0,\"cells\"]/compact": null,
+  "page/index/[\"sections\",8,\"rows\",0,\"values\"]/compact": null,
+  "page/index/[\"sections\",8,\"rows\",1,\"cells\"]/compact": null,
+  "page/index/[\"sections\",8,\"rows\",1,\"values\"]/compact": null,
+  "page/index/[\"sections\",8,\"rows\",2,\"cells\"]/compact": null,
+  "page/index/[\"sections\",8,\"rows\",2,\"values\"]/compact": null,
+  "page/index/[\"sections\",8,\"rows\",3,\"cells\"]/compact": null,
+  "page/index/[\"sections\",8,\"rows\",3,\"values\"]/compact": null,
+  "page/index/[\"sections\",8,\"rows\",4,\"cells\"]/compact": null,
+  "page/index/[\"sections\",8,\"rows\",4,\"values\"]/compact": null,
+  "page/index/[\"sections\",8,\"rows\",5,\"cells\"]/compact": null,
+  "page/index/[\"sections\",8,\"rows\",5,\"values\"]/compact": null,
+  "page/index/[\"sections\",9,\"memberIds\"]/compact": null,
+  "page/index/[\"sections\",10,\"tags\"]/compact": null,
+  "page/kontakt/[\"sections\"]/overview": null,
+  "page/kontakt/[\"sections\"]/compact": null,
+  "page/leistungen/[\"sections\"]/overview": null,
+  "page/leistungen/[\"sections\",1,\"clientIds\"]/overview": null,
+  "page/leistungen/[\"sections\",2,\"tiers\"]/overview": null,
+  "page/leistungen/[\"sections\",2,\"tiers\",0,\"featureIds\"]/overview": null,
+  "page/leistungen/[\"sections\",2,\"tiers\",1,\"featureIds\"]/overview": null,
+  "page/leistungen/[\"sections\",2,\"tiers\",2,\"featureIds\"]/overview": null,
+  "page/leistungen/[\"sections\",3,\"steps\"]/overview": [
+    {
+      "key": "title",
+      "label": "Schritttitel"
+    },
+    {
+      "key": "text",
+      "label": "Text"
+    },
+    {
+      "key": "duration",
+      "label": "Kurzer Zeitrahmen, z. B. \"48 h Antwortzeit\""
+    }
+  ],
+  "page/leistungen/[\"sections\",4,\"columns\"]/overview": null,
+  "page/leistungen/[\"sections\",4,\"rows\"]/overview": null,
+  "page/leistungen/[\"sections\",4,\"rows\",0,\"cells\"]/overview": null,
+  "page/leistungen/[\"sections\",4,\"rows\",0,\"values\"]/overview": null,
+  "page/leistungen/[\"sections\",4,\"rows\",1,\"cells\"]/overview": null,
+  "page/leistungen/[\"sections\",4,\"rows\",1,\"values\"]/overview": null,
+  "page/leistungen/[\"sections\",4,\"rows\",2,\"cells\"]/overview": null,
+  "page/leistungen/[\"sections\",4,\"rows\",2,\"values\"]/overview": null,
+  "page/leistungen/[\"sections\",4,\"rows\",3,\"cells\"]/overview": null,
+  "page/leistungen/[\"sections\",4,\"rows\",3,\"values\"]/overview": null,
+  "page/leistungen/[\"sections\",4,\"rows\",4,\"cells\"]/overview": null,
+  "page/leistungen/[\"sections\",4,\"rows\",4,\"values\"]/overview": null,
+  "page/leistungen/[\"sections\",4,\"rows\",5,\"cells\"]/overview": null,
+  "page/leistungen/[\"sections\",4,\"rows\",5,\"values\"]/overview": null,
+  "page/leistungen/[\"sections\",5,\"memberIds\"]/overview": null,
+  "page/leistungen/[\"sections\"]/compact": null,
+  "page/leistungen/[\"sections\",1,\"clientIds\"]/compact": null,
+  "page/leistungen/[\"sections\",2,\"tiers\"]/compact": null,
+  "page/leistungen/[\"sections\",2,\"tiers\",0,\"featureIds\"]/compact": null,
+  "page/leistungen/[\"sections\",2,\"tiers\",1,\"featureIds\"]/compact": null,
+  "page/leistungen/[\"sections\",2,\"tiers\",2,\"featureIds\"]/compact": null,
+  "page/leistungen/[\"sections\",3,\"steps\"]/compact": null,
+  "page/leistungen/[\"sections\",4,\"columns\"]/compact": null,
+  "page/leistungen/[\"sections\",4,\"rows\"]/compact": null,
+  "page/leistungen/[\"sections\",4,\"rows\",0,\"cells\"]/compact": null,
+  "page/leistungen/[\"sections\",4,\"rows\",0,\"values\"]/compact": null,
+  "page/leistungen/[\"sections\",4,\"rows\",1,\"cells\"]/compact": null,
+  "page/leistungen/[\"sections\",4,\"rows\",1,\"values\"]/compact": null,
+  "page/leistungen/[\"sections\",4,\"rows\",2,\"cells\"]/compact": null,
+  "page/leistungen/[\"sections\",4,\"rows\",2,\"values\"]/compact": null,
+  "page/leistungen/[\"sections\",4,\"rows\",3,\"cells\"]/compact": null,
+  "page/leistungen/[\"sections\",4,\"rows\",3,\"values\"]/compact": null,
+  "page/leistungen/[\"sections\",4,\"rows\",4,\"cells\"]/compact": null,
+  "page/leistungen/[\"sections\",4,\"rows\",4,\"values\"]/compact": null,
+  "page/leistungen/[\"sections\",4,\"rows\",5,\"cells\"]/compact": null,
+  "page/leistungen/[\"sections\",4,\"rows\",5,\"values\"]/compact": null,
+  "page/leistungen/[\"sections\",5,\"memberIds\"]/compact": null,
+  "page/projekte/[\"sections\"]/overview": null,
+  "page/projekte/[\"sections\"]/compact": null,
+  "package/horizon/[\"featureGroups\"]/overview": null,
+  "package/horizon/[\"featureGroups\",0,\"items\"]/overview": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/horizon/[\"featureGroups\",1,\"items\"]/overview": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/horizon/[\"featureGroups\",2,\"items\"]/overview": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/horizon/[\"featureGroups\"]/compact": null,
+  "package/horizon/[\"featureGroups\",0,\"items\"]/compact": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/horizon/[\"featureGroups\",1,\"items\"]/compact": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/horizon/[\"featureGroups\",2,\"items\"]/compact": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/odyssey/[\"featureGroups\"]/overview": null,
+  "package/odyssey/[\"featureGroups\",0,\"items\"]/overview": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/odyssey/[\"featureGroups\",1,\"items\"]/overview": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/odyssey/[\"featureGroups\",2,\"items\"]/overview": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/odyssey/[\"featureGroups\"]/compact": null,
+  "package/odyssey/[\"featureGroups\",0,\"items\"]/compact": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/odyssey/[\"featureGroups\",1,\"items\"]/compact": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/odyssey/[\"featureGroups\",2,\"items\"]/compact": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/spark/[\"featureGroups\"]/overview": null,
+  "package/spark/[\"featureGroups\",0,\"items\"]/overview": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/spark/[\"featureGroups\",1,\"items\"]/overview": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/spark/[\"featureGroups\",2,\"items\"]/overview": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/spark/[\"featureGroups\"]/compact": null,
+  "package/spark/[\"featureGroups\",0,\"items\"]/compact": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/spark/[\"featureGroups\",1,\"items\"]/compact": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "package/spark/[\"featureGroups\",2,\"items\"]/compact": [
+    {
+      "key": "text",
+      "label": "Leistung"
+    }
+  ],
+  "faq/show-01/[\"tags\"]/overview": null,
+  "faq/show-01/[\"tags\"]/compact": null,
+  "faq/show-02/[\"tags\"]/overview": null,
+  "faq/show-02/[\"tags\"]/compact": null,
+  "faq/show-03/[\"tags\"]/overview": null,
+  "faq/show-03/[\"tags\"]/compact": null,
+  "faq/show-04/[\"tags\"]/overview": null,
+  "faq/show-04/[\"tags\"]/compact": null,
+  "faq/show-05/[\"tags\"]/overview": null,
+  "faq/show-05/[\"tags\"]/compact": null,
+  "faq/show-06/[\"tags\"]/overview": null,
+  "faq/show-06/[\"tags\"]/compact": null,
+  "faq/show-07/[\"tags\"]/overview": null,
+  "faq/show-07/[\"tags\"]/compact": null,
+  "faq/show-08/[\"tags\"]/overview": null,
+  "faq/show-08/[\"tags\"]/compact": null,
+  "faq/show-09/[\"tags\"]/overview": null,
+  "faq/show-09/[\"tags\"]/compact": null
+}
