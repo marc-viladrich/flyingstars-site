@@ -135,7 +135,9 @@ function inspection(node) {
   const occurrence = occurrenceOf(node);
   if (occurrence) {
     let focus = mediaOwner && mediaPath ? { id: mediaOwner.dataset.nativeRecord, path: mediaPath, kind: "media" } : c ? { id: c.id, path: c.path, kind: c.derived ? "derived" : "field" } : null;
-    const nested = focus && (media || field).closest("[data-native-item]");
+    // Inside a nested part of the card (a selected Leistung, a table cell, a fact) the part is what was meant,
+    // also when the click hit its padding rather than its text.
+    const nested = ((focus && (media || field)) || node).closest("[data-native-item]");
     const part = nested && nested !== occurrence.node && itemIdentity(nested).entry;
     if (part && part.id === occurrence.id) focus = { id: part.id, path: part.path, kind: "entry" };
     // A field of some other record embedded in the card keeps its own element panel.

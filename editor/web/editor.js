@@ -1202,6 +1202,12 @@ function mediaControl(item, path, { title, untitled = false } = {}) {
 // (packageId) by that record, others by their own title or name, an entry carrying an image by that image.
 function entrySummary(item, path, entry = value(item, path)) {
   const containers = containersFor(item);
+  // An id in a picker list (memberIds, featureIds) is named like its option: the record or Leistung it shows.
+  if (entry !== null && entry !== undefined && typeof entry !== "object") {
+    const list = containers.find((c) => equal(c.path, path.slice(0, -1)));
+    const option = list && choiceSource(item, list)?.options.find((o) => o.key === entry || o.alias === entry);
+    if (option) return { label: inlinePlain(option.label), thumb: null };
+  }
   const own = containers.find((c) => equal(c.path, path));
   const image = !!own && isMediaContainer(item, own);
   const child =
@@ -1582,11 +1588,24 @@ function listRows(item, container, options = {}) {
     );
   return el("div", { class: "stack list-field" }, parts);
 }
+// Keys the media control owns for an image usage.
+const mediaUsageKeys = new Set(["src", "width", "height", "alt", "altOverride", "decorative", "assetId", "mime"]);
 // The body of an open entry: its fields, images and nested lists in schema order, then duplicate/remove.
 function entryBody(item, path, container, { removeAt, now, write }) {
   const direct = fieldsFor(item).filter((f) => f.path.length === path.length + 1 && under(f.path, path) && !isTechnical(f));
   // In contextual panels a larger entry keeps its on-page texts on the page; small ones are edited whole.
-  const controls = subtreeControls(item, path, { skipInline: renderMode !== "entity" && direct.length > 4 });
+  const skipInline = renderMode !== "entity" && direct.length > 4;
+  const own = containersFor(item).find((c) => equal(c.path, path));
+  // An image entry is edited like every image (preview, replace, inherited alt text), its caption beside it.
+  const controls =
+    own && isMediaContainer(item, own)
+      ? [
+          mediaControl(item, path, { untitled: true }),
+          ...direct
+            .filter((f) => !mediaUsageKeys.has(f.path.at(-1)) && !(skipInline && inlineKeys.has(fieldKey(item.id, f.path))))
+            .map((f) => fieldControl(item, f)),
+        ]
+      : subtreeControls(item, path, { skipInline });
   const index = path.at(-1);
   const list = now();
   const actions = [];
@@ -2021,6 +2040,19 @@ function removeOptional(item, path) {
 // closed "Weitere Felder (N)". The complete record stays an explicit step ("… bearbeiten").
 // ---------------------------------------------------------------------------
 let lastInstanceMarkers = "";
+// A card opened from the canvas; the clicked part is revealed (entries on the way to it open).
+function instanceContext(data) {
+  const focus = data.focus || null;
+  return {
+    id: data.id,
+    path: data.path,
+    record: data.record,
+    section: data.section,
+    occurrence: data.occurrence,
+    focus,
+    reveal: focus && focus.id === data.id ? focus.path : undefined,
+  };
+}
 function occurrenceMarkers(context) {
   try {
     return frame.contentWindow.flyingstarsEditorFrame?.occurrenceMarkers?.(context.occurrence) || [];
@@ -2093,8 +2125,12 @@ function moreDisclosure(item, units, prefix, key) {
     fill();
   }
   details.addEventListener("toggle", () => {
+    if (openDisclosures.get(key) === details.open) return;
     openDisclosures.set(key, details.open);
-    if (details.open) fill();
+    if (!details.open) return;
+    fill();
+    // The opened fields come into view below the summary that was clicked.
+    details.querySelector(":scope > .group")?.scrollIntoView({ block: "nearest", behavior: reducedMotion() ? "auto" : "smooth" });
   });
   return details;
 }
@@ -2106,9 +2142,9 @@ function instanceView(body, item, context, head) {
   const container = path.length ? containersFor(item).find((c) => equal(c.path, path.slice(0, -1))) : null;
   if (path.length) head(listLabel(item, path), "layers", fieldLabel(container || { path: path.slice(0, -1) }));
   else head(recordName(item), kindOf(item.id)[1], kindOf(item.id)[0]);
-  // Small entries (a table cell, a fact) are edited whole, including their on-page texts.
-  const direct = fieldsFor(item).filter((f) => f.path.length === path.length + 1 && under(f.path, path) && !isTechnical(f));
-  const own = partitionUnits(unitsOf(item, path), markers, { id: item.id, path }, { includeInline: path.length > 0 && direct.length <= 4 });
+  // Small entries (a table row, a step) are edited whole, including their on-page texts.
+  const units = unitsOf(item, path);
+  const own = partitionUnits(units, markers, { id: item.id, path }, { includeInline: path.length > 0 && units.length <= 4 });
   const sharedShown = shared ? partitionUnits(unitsOf(shared, []), markers, { id: shared.id, path: [] }).shown : [];
   const focus = context.focus;
   const draw = (owner, units, prefix) =>
@@ -2131,7 +2167,8 @@ function instanceView(body, item, context, head) {
     context.focused = true;
     const target = body.querySelector(".is-focus");
     const row = focus.kind === "entry" ? target?.querySelector(entryKeySelector(focus.id, focus.path)) : null;
-    const node = (row || target)?.querySelector("input,textarea,select,.entry-toggle,button");
+    const scope = row || target;
+    const node = scope?.querySelector("input,textarea,select") || scope?.querySelector(".entry-toggle,button");
     if (node) {
       node.dataset.focusTarget = "true";
       pendingFocus = '[data-focus-target="true"]';
@@ -3455,7 +3492,7 @@ window.addEventListener("message", (event) => {
       rerender();
     }
   } else if (data.type === "inspect-instance") {
-    openInspector({ id: data.id, path: data.path, record: data.record, section: data.section, occurrence: data.occurrence, focus: data.focus }, "instance", anchorFrom(data));
+    openInspector(instanceContext(data), "instance", anchorFrom(data));
   } else if (data.type === "preview-applied") {
     // The page was redrawn: a card may render more or less now (a Leistung ticked on), so the open card
     // panel re-reads its markers; it stays put while someone types in it.
@@ -3468,8 +3505,7 @@ window.addEventListener("message", (event) => {
     openInspector({ id: data.id, path: [], section: data.section }, "record", anchorFrom(data));
   } else if (data.type === "select") {
     selection = { id: data.id, path: data.path, derived: data.derived, rich: !!data.rich, inspectionContext: data.inspectionContext };
-    if (data.derived && data.instance)
-      openInspector({ ...data.instance, occurrence: data.instance.occurrence, focus: data.instance.focus }, "instance", anchorFrom(data));
+    if (data.derived && data.instance) openInspector(instanceContext(data.instance), "instance", anchorFrom(data));
     else if (data.derived) openInspector({ id: data.id, path: data.path, derived: true, section: data.section }, "element", anchorFrom(data));
   } else if (data.type === "select-media") {
     selection = { id: data.id, path: data.path, media: true };
