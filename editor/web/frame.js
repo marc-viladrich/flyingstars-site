@@ -999,6 +999,17 @@ function edgeSpacesOut(root) {
     if (!span.textContent) span.remove();
   }
   root.normalize();
+  // Two marks of the same kind separated only by spaces are one mark again ("Berlin Game", not two),
+  // so toggling a word off and on returns to the stored value.
+  for (const span of [...root.querySelectorAll("span.t-outline, span.t-caps")]) {
+    const gap = span.nextSibling,
+      next = gap?.nextSibling;
+    if (gap?.nodeType === 3 && /^[ \u00a0]+$/.test(gap.data) && next?.nodeType === 1 && next.className === span.className) {
+      next.prepend(...span.childNodes, gap);
+      span.remove();
+    }
+  }
+  root.normalize();
 }
 function toggleMark(range, cls) {
   if (markActive(range, cls)) {
