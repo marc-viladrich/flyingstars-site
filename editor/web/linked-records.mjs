@@ -1,11 +1,10 @@
 // Relationships both ways: which records point at a record through a schema reference (x-afe `reference`
-// in the record's schema description), derived over all draft records. No per-type code: a new reference
-// declared in a schema (project → client, package → extra) shows up here by itself.
+// in the record's schema description), derived over all draft records. New declared references appear automatically.
 import { referenceFields } from "../core/metadata.mjs";
-import { resolveReference } from "./site-adapter.mjs";
+import { extensions,resolveReference } from "./site-adapter.mjs";
 
 // Overlay documents (translations) belong to their source record and are not relationships of their own.
-const ownerless = (id) => id.startsWith("translation/");
+const ownerless=id=>extensions.some('ownerless',id);
 
 /** Returns [{ owner, paths: [path, …] }] in record order, one entry per referencing record. */
 export function incomingReferences(records, target, { resolve = resolveReference } = {}) {

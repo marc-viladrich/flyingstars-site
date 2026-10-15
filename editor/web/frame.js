@@ -1,21 +1,24 @@
 import { prepareClonedSection } from "./prepare-cloned-section.mjs";
 import { LiveNodeHistory, remappedReference } from "./live-node-history.mjs";
-import { mediaSourceChanged, instanceMarkers, sameOccurrence } from "./view-state.mjs";
+import { instanceMarkers, sameOccurrence } from "./view-state.mjs";
 import { marked } from "/editor/marked.mjs";
 import { ui } from "./ui-icons.mjs";
 import { fieldLabel, choiceLabel } from "./field-labels.mjs";
 import { regions, isRuntime, sameStructure, patchInPlace } from "./preview-apply.mjs";
 import { domTree, markdownSupported, markdownText } from "./inline-markdown.mjs";
 import { inlineText, inlineSupported } from "./inline-format.mjs";
-import { inlineHtml } from "/editor/site-lib/inline-text.mjs";
+import {inlineHtml} from './inline-format.mjs';
+import {extensions} from './site-adapter.mjs';
 // Editor-only enhancement. The public page keeps its native scripts and canvas controls.
+const translations=extensions.require('translationStorage');
+const sourceLocale=extensions.require('languages').source;
 let sourceMediaMap = {};
 let records = [],
   preview = false,
   busy = false,
   outlines = false,
   selected = null,
-  languageLocale = "de",
+  languageLocale = sourceLocale,
   languageValues = [];
 const liveNodeHistory = new LiveNodeHistory();
 let cloneSequence = 0;
@@ -26,7 +29,7 @@ const baselines = new WeakMap(),
 const equal = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const send = (type, data = {}) =>
   parent.postMessage(
-    { source: "flyingstars-frame", type, frameURL: location.pathname + location.search, ...data },
+    { source: "afe-frame", type, frameURL: location.pathname + location.search, ...data },
     location.origin,
   );
 const readPath = (data, path) => path.reduce((value, key) => value?.[key], data);
@@ -46,7 +49,6 @@ function context(node, derived = false) {
   const section = node.closest("[data-native-section-index]");
   const sectionOwned =
     section &&
-    owner.dataset.nativeRecord.startsWith("page/") &&
     section.dataset.nativeRecord === owner.dataset.nativeRecord;
   const fullPath =
     sectionOwned && path[0] !== "sections" ? ["sections", Number(section.dataset.nativeSectionIndex), ...path] : path;
@@ -153,7 +155,7 @@ function inspection(node) {
   if (entry) return { type: "inspect-entry", data: { ...entry, section: sectionInfo(node) } };
   const owner = node.closest("[data-native-record]");
   const ownerSection = node.closest("[data-native-section-index]");
-  if (owner && owner !== ownerSection && !/^(page|screen)\//.test(owner.dataset.nativeRecord))
+  if (owner && owner !== ownerSection && !extensions.some('isPage',{id:owner.dataset.nativeRecord}))
     return { type: "inspect-record", data: { id: owner.dataset.nativeRecord, section: sectionInfo(owner) } };
   if (ownerSection) return { type: "section", data: { id: ownerSection.dataset.nativeRecord, index: Number(ownerSection.dataset.nativeSectionIndex) } };
   return null;
@@ -165,10 +167,10 @@ function inspect(node, point) {
 }
 // In a foreign-language view, text shows its translation (or the German original until translated).
 function translatedValue(c) {
-  return languageValues.find((value) => value.sourceId === c.id && equal(value.path, c.path))?.text;
+  return translations.find(languageValues,c.id,c.path)?.text;
 }
 function displayValue(c) {
-  if (languageLocale === "de" || c.field.kind !== "text") return currentValue(c);
+  if (languageLocale === sourceLocale || c.field.kind !== "text") return currentValue(c);
   return translatedValue(c) ?? currentValue(c);
 }
 function rect(node) {
@@ -218,7 +220,7 @@ function stage(node, emit = true) {
   const c = bindings.get(node);
   if (!c) return null;
   const patch = { id: c.id, path: c.path, value: read(c) };
-  if (languageLocale !== "de") {
+  if (languageLocale !== sourceLocale) {
     // Untouched text in a foreign view is not a translation; only real edits are written.
     if (equal(patch.value, baselines.get(node))) return null;
     patch.locale = languageLocale;
@@ -236,14 +238,13 @@ function flush() {
   }
   return [];
 }
-window.flyingstarsEditorFrame = {
+extensions.connect({frame: {
   flush,
   transient,
   freeze() {
     busy = true;
     mode();
   },
-  // Records a section lists in the order of one of their fields (FAQ by `order`), as rendered.
   orderedRecords(id, index) {
     const section = [...document.querySelectorAll("[data-native-section-index]")].find(
       (n) => n.dataset.nativeRecord === id && Number(n.dataset.nativeSectionIndex) === index,
@@ -293,7 +294,7 @@ window.flyingstarsEditorFrame = {
     }
     return best;
   },
-};
+}});
 const uiTokens = document.createElement("link");
 uiTokens.rel = "stylesheet";
 uiTokens.href = "/editor/ui-tokens.css";
@@ -302,6 +303,7 @@ const style = document.createElement("style");
 style.dataset.nativeEditor = "true";
 style.textContent = `html:not(.native-editor-preview) [data-native-editable]{outline:2px solid transparent;outline-offset:4px;cursor:text;pointer-events:auto!important}html:not(.native-editor-preview) [data-native-editable]:hover{outline:1px solid var(--ui-frame-hover)}html:not(.native-editor-preview) [data-native-editable]:focus{outline:2px solid var(--ui-frame-accent);caret-color:var(--ui-frame-accent)}html.native-editor-outlines:not(.native-editor-preview) [data-native-editable],html.native-editor-outlines:not(.native-editor-preview) [data-native-derived]{outline:1px dashed var(--ui-frame-accent);outline-offset:4px}html:not(.native-editor-preview) [data-native-derived]:hover{outline:1px solid var(--ui-frame-hover);outline-offset:4px;cursor:pointer}html:not(.native-editor-preview) [data-native-derived]:focus-visible{outline:2px solid var(--ui-frame-accent);outline-offset:4px}html.native-editor-busy [data-native-editable]{cursor:wait}`;
 document.head.append(style);
+style.textContent += extensions.collect('frameStyles').join('');
 function mode() {
   if (preview || busy) hideToolbar();
   document.documentElement.classList.toggle("native-editor-preview", preview);
@@ -309,7 +311,7 @@ function mode() {
   document.documentElement.classList.toggle("native-editor-busy", busy);
   for (const node of document.querySelectorAll("[data-native-editable]")) {
     const c = bindings.get(node);
-    const locked = preview || busy || (languageLocale !== "de" && c?.field.kind !== "text");
+    const locked = preview || busy || (languageLocale !== sourceLocale && c?.field.kind !== "text");
     node.contentEditable = locked ? "false" : node.dataset.nativeMarkdown === "true" || isInline(node) ? "true" : "plaintext-only";
     if (preview) {
       node.removeAttribute("role");
@@ -373,7 +375,7 @@ function bind() {
       });
     node.addEventListener("input", () => {
       const binding = bindings.get(node);
-      send(languageLocale === "de" ? "input" : "input-translation", { id: binding.id, path: binding.path, value: read(binding), locale: languageLocale });
+      send(languageLocale === sourceLocale ? "input" : "input-translation", { id: binding.id, path: binding.path, value: read(binding), locale: languageLocale });
     });
     node.addEventListener("blur", () => {
       if (!preview && !busy) stage(node);
@@ -555,7 +557,7 @@ const updateRect = () => placeToolbar();
 window.addEventListener("scroll", updateRect, { passive: true });
 window.addEventListener("resize", updateRect);
 window.addEventListener("message", (event) => {
-  if (event.source !== parent || event.origin !== location.origin || event.data?.source !== "flyingstars-editor")
+  if (event.source !== parent || event.origin !== location.origin || event.data?.source !== "afe-editor")
     return;
   const data = event.data;
   if (data.type === "state") {
@@ -611,7 +613,7 @@ addEventListener("pageshow", (event) => {
 // Native visitor controls are transient and never written into content files.
 function transient() {
   return {
-    configurator: window.flyingstarsConfigurator?.snapshot(),
+    extensions: extensions.snapshotFrame({window,document}),
     inputs: [...document.querySelectorAll("input[id],textarea[id],select[id],input[name]")]
       .filter((node) => node.type !== "password" && node.type !== "file" && !node.closest("[data-native-editor]"))
       .map((node) => ({ id: node.id, name: node.name, type: node.type, value: node.value, checked: node.checked })),
@@ -619,13 +621,12 @@ function transient() {
   };
 }
 async function restoreTransient(value) {
-  if (value?.configurator && window.flyingstarsConfigurator?.restore)
-    await window.flyingstarsConfigurator.restore(value.configurator);
+  await extensions.restoreFrame(value?.extensions,{window,document});
   for (const field of value?.inputs || []) {
     const node = field.id
       ? document.getElementById(field.id)
       : [...document.querySelectorAll("input[name]")].find((n) => n.name === field.name && n.value === field.value);
-    if (!node || node.type !== field.type || (value?.configurator && node.closest("#cfg"))) continue;
+    if (!node || node.type !== field.type || extensions.ownsTransientInput(node,value?.extensions)) continue;
     if (field.type === "radio" || field.type === "checkbox") {
       node.checked = field.checked;
       if (field.checked) node.dispatchEvent(new Event("change", { bubbles: true }));
@@ -730,13 +731,13 @@ function revealSection(data) {
   });
 }
 function translationOverlay(data) {
-  languageLocale = data.locale || "de";
+  languageLocale = data.locale || sourceLocale;
   languageValues = data.values || [];
   document.documentElement.dataset.editorLocale = languageLocale;
   for (const node of document.querySelectorAll("[data-native-path]")) {
     const c = context(node);
     if (!c || c.field.kind !== "text") continue;
-    const translated = data.values?.find((value) => value.sourceId === c.id && equal(value.path, c.path));
+    const translated = translations.find(data.values,c.id,c.path);
     if (node.matches("input,textarea") && node.hasAttribute("placeholder")) node.placeholder = translated?.text ?? currentValue(c) ?? "";
     else if (node.matches("option")) node.textContent = translated?.text ?? currentValue(c) ?? "";
     if (node.hasAttribute("data-native-editable") && document.activeElement !== node) {
@@ -748,10 +749,10 @@ function translationOverlay(data) {
     // Addresses, numbers and links are data, not text to translate.
     const german = currentValue(c);
     const dataLike = typeof german !== "string" || !/\p{L}{2}/u.test(german) || /^(https?:|mailto:|tel:|\/|#)|^[\w.+-]+@[\w-]+\.[\w.]+$/.test(german.trim());
-    node.toggleAttribute("data-native-untranslated", languageLocale !== "de" && !translated && !dataLike);
-    node.toggleAttribute("data-native-machine", languageLocale !== "de" && !!translated && !translated.reviewed);
+    node.toggleAttribute("data-native-untranslated", languageLocale !== sourceLocale && !translated && !dataLike);
+    node.toggleAttribute("data-native-machine", languageLocale !== sourceLocale && translations.suggested(translated));
   }
-  document.documentElement.classList.toggle("native-language-draft", languageLocale !== "de");
+  document.documentElement.classList.toggle("native-language-draft", languageLocale !== sourceLocale);
   mode();
 }
 style.textContent +=
@@ -778,130 +779,13 @@ function restoreStructure(items, id) {
   selected = null;
   bind();
   applyPresentation();
-  if (languageLocale !== "de") translationOverlay({ locale: languageLocale, values: languageValues });
+  if (languageLocale !== sourceLocale) translationOverlay({ locale: languageLocale, values: languageValues });
 }
 
 // Translation is offered in the context panel ("Übersetzen"), not as a floating button per text.
 
 function applyPresentation() {
-  // Colour fields feed CSS variables (marked with nativeColor): a picked colour shows at once.
-  for (const node of document.querySelectorAll("[data-native-color]")) {
-    let spec;
-    try {
-      spec = JSON.parse(node.dataset.nativeColor);
-    } catch {
-      continue;
-    }
-    const id = readPath(records.find((r) => r.id === spec.record)?.data, spec.path);
-    if (typeof id === "string" && /^[a-z0-9-]+$/.test(id)) node.style.setProperty(spec.var, `var(--c-${id})`);
-  }
-  for (const node of document.querySelectorAll("[data-native-section-index]")) {
-    const owner = records.find((r) => r.id === node.dataset.nativeRecord),
-      section = owner?.data.sections?.[Number(node.dataset.nativeSectionIndex)];
-    if (!section) continue;
-    if (section.columns) {
-      const grid = node.querySelector(".packs,.crew,.testimonials");
-      if (grid) {
-        grid.style.removeProperty("grid-template-columns");
-        const base = grid.classList.contains("packs")
-            ? "packs"
-            : grid.classList.contains("crew")
-              ? "crew"
-              : "testimonials",
-          variants = base === "packs" ? ["one", "two"] : base === "crew" ? ["one", "two", "three"] : ["one"];
-        for (const variant of variants) grid.classList.toggle(base + "--" + variant, section.columns === variant);
-      }
-    }
-    if (section.type === "testimonials") {
-      const grid = node.querySelector(".testimonials");
-      grid?.classList.toggle("testimonials--plain", section.background === false);
-    }
-    if (section.showImages !== undefined) {
-      for (const img of node.querySelectorAll("img")) img.hidden = !section.showImages;
-      if (section.type === "team")
-        for (const portrait of node.querySelectorAll(".portrait")) portrait.hidden = !section.showImages;
-    }
-    if (section.type === "pricing")
-      for (const [index, card] of [...node.querySelectorAll(".pack")].entries()) {
-        const canvas = card.querySelector("canvas");
-        if (canvas)
-          canvas.hidden = node.classList.contains("native-copy-pending") || section.tiers?.[index]?.showOrb === false;
-        // Immediate feedback; the server render confirms it a moment later.
-        // The recommendation belongs to the package (shown wherever it appears), not to this card.
-        const pack = section.tiers?.[index] && records.find((r) => r.id === "package/" + section.tiers[index].packageId);
-        if (pack) card.classList.toggle("featured", !!pack.data.highlight);
-      }
-    if (section.type === "textMedia") {
-      const image = node.querySelector("figure,img");
-      if (image) image.hidden = section.showImage === false;
-      const grid = node.querySelector(".wrap");
-      if (grid) {
-        grid.classList.toggle("grid-2", section.showImage !== false && !!section.image);
-        grid.classList.toggle("grid-2--media-left", section.showImage !== false && section.mediaSide === "left");
-      }
-    }
-  }
-  for (const node of document.querySelectorAll("[data-native-media-path]")) {
-    const owner = node.closest("[data-native-record]"),
-      item = records.find((r) => r.id === owner?.dataset.nativeRecord),
-      path = parse(node.dataset.nativeMediaPath),
-      usage = path && readPath(item?.data, path);
-    if (!usage) continue;
-    const asset =
-        usage.assetId && records.find((r) => r.id === usage.assetId || r.id === "media/" + usage.assetId)?.data,
-      media = asset
-        ? {
-            ...usage,
-            src: asset.src,
-            width: asset.width,
-            height: asset.height,
-            alt: usage.decorative ? "" : (usage.altOverride ?? asset.defaultAlt ?? ""),
-          }
-        : usage;
-    const img = node.matches("img") ? node : node.querySelector("img");
-    if (img) {
-      let baseline = mediaBaselines.get(img);
-      if (!baseline) {
-        const saved = initialMediaSource(owner?.dataset.nativeRecord, path) || media.src;
-        baseline = {
-          source: saved,
-          src: img.getAttribute("src"),
-          srcset: img.getAttribute("srcset"),
-          width: img.getAttribute("width"),
-          height: img.getAttribute("height"),
-          sources: [...(img.closest("picture")?.querySelectorAll("source") || [])].map((node) => ({
-            node,
-            srcset: node.getAttribute("srcset"),
-          })),
-          replaced: false,
-        };
-        mediaBaselines.set(img, baseline);
-      }
-      if (mediaSourceChanged(baseline.source, media.src)) {
-        if (!baseline.replaced || img.getAttribute("src") !== media.src) {
-          for (const entry of baseline.sources) entry.node.removeAttribute("srcset");
-          img.removeAttribute("srcset");
-          img.src = media.src;
-          if (media.width) img.width = media.width;
-          if (media.height) img.height = media.height;
-          baseline.replaced = true;
-        }
-      } else if (baseline.replaced) {
-        for (const [name, newValue] of [
-          ["src", baseline.src],
-          ["srcset", baseline.srcset],
-          ["width", baseline.width],
-          ["height", baseline.height],
-        ])
-          if (newValue === null) img.removeAttribute(name);
-          else img.setAttribute(name, newValue);
-        for (const entry of baseline.sources)
-          if (entry.srcset !== null) entry.node.setAttribute("srcset", entry.srcset);
-        baseline.replaced = false;
-      }
-      img.alt = media.decorative ? "" : (media.altOverride ?? media.alt ?? "");
-    }
-  }
+  extensions.run('presentFrame',{document,records,mediaBaselines,initialMediaSource});
 }
 
 // One small toolbar for the selected element: formatting (only for a text selection), translate, options.
@@ -983,7 +867,7 @@ function rangeAt(root, { start, end }) {
 // Spaces at the edge of a mark belong between words, not to the mark: WebKit drops a space that ends a
 // mark span once the selection moves ("Berlin Game" became "BerlinGame"). Same rule as the serializer.
 function edgeSpacesOut(root) {
-  for (const span of root.querySelectorAll("span.t-outline, span.t-caps")) {
+  for (const span of root.querySelectorAll(extensions.inlineCodec.markSelector)) {
     const first = span.firstChild,
       last = span.lastChild;
     if (first?.nodeType === 3 && /^[ \u00a0]+/.test(first.data)) {
@@ -1001,7 +885,7 @@ function edgeSpacesOut(root) {
   root.normalize();
   // Two marks of the same kind separated only by spaces are one mark again ("Berlin Game", not two),
   // so toggling a word off and on returns to the stored value.
-  for (const span of [...root.querySelectorAll("span.t-outline, span.t-caps")]) {
+  for (const span of [...root.querySelectorAll(extensions.inlineCodec.markSelector)]) {
     const gap = span.nextSibling,
       next = gap?.nextSibling;
     if (gap?.nodeType === 3 && /^[ \u00a0]+$/.test(gap.data) && next?.nodeType === 1 && next.className === span.className) {
@@ -1052,11 +936,11 @@ function format(command) {
     range = formatRange();
   selection.removeAllRanges();
   selection.addRange(range);
-  if (command === "outline" || command === "caps") {
+  if (extensions.inlineCodec.marks?.[command]) {
     // Splitting or unwrapping marks rebuilds the DOM; the same words stay selected, so a second click
     // acts on them again instead of on the whole field.
     const offsets = textOffsets(toolOwner, range);
-    toggleMark(range, command === "outline" ? "t-outline" : "t-caps");
+    toggleMark(range, extensions.inlineCodec.marks?.[command]);
     edgeSpacesOut(toolOwner);
     selection.removeAllRanges();
     selection.addRange(rangeAt(toolOwner, offsets));
@@ -1075,8 +959,7 @@ function updateFormatState() {
     bold: () => document.queryCommandState("bold"),
     italic: () => document.queryCommandState("italic"),
     strikeThrough: () => document.queryCommandState("strikeThrough"),
-    outline: () => markActive(range, "t-outline"),
-    caps: () => markActive(range, "t-caps"),
+    ...Object.fromEntries(Object.entries(extensions.inlineCodec.marks||{}).map(([command,cls])=>[command,()=>markActive(range,cls)])),
   };
   for (const button of formatButtons) {
     let on = false;
@@ -1096,8 +979,7 @@ const formatButtons = [
   ["bold", "Fett", "bold"],
   ["italic", "Kursiv", "italic"],
   ["strikethrough", "Durchgestrichen", "strikeThrough"],
-  ["type-outline", "Kontur (hohle Schrift)", "outline"],
-  ["case-upper", "Versalien", "caps"],
+  ...(extensions.inlineCodec.buttons||[]),
 ].map(([iconName, label, command]) => {
   const button = toolButton(iconName, label, () => format(command), "fmt");
   button.dataset.command = command;
@@ -1114,7 +996,6 @@ toolButton("settings", "Optionen (⇧F10 oder Rechtsklick)", () => {
   inspect(toolOwner);
 });
 // The card/list entry the toolbar acts on: the selected entry itself or the one around the element.
-// Records listed in the order of one of their fields (FAQ by `order`): direct children carrying their
 // record inside a container marked data-native-order-field. Moving them rewrites that field.
 const orderItem = (node) => node?.closest?.("[data-native-order-field] > [data-native-record]") || null;
 // Ordered records follow their order values in the draft (Undo of a move, also without live preview).
@@ -1156,8 +1037,7 @@ function renderVariant(entryNode) {
     const chip = document.createElement("button");
     chip.type = "button";
     chip.textContent = choiceLabel(choice);
-    // Ratings look like the badge they produce on the page (Ja green, Nein red, Teilweise amber).
-    if (field.path.at(-1) === "tone" && ["y", "n", "p"].includes(value)) chip.dataset.tone = value;
+    extensions.run('variantPresentation',field,value,chip);
     chip.title = fieldLabel(field) + ": " + choiceLabel(choice);
     chip.setAttribute("aria-pressed", String(equal(readPath(item.data, field.path), value)));
     chip.addEventListener("mousedown", (event) => event.preventDefault());
@@ -1193,7 +1073,7 @@ function placeToolbar() {
   const markdown = toolKind === "text" && toolOwner.dataset.nativeMarkdown === "true";
   const inline = toolKind === "text" && isInline(toolOwner) && toolOwner.hasAttribute("data-native-editable");
   const selected = markdown && richRange && !richRange.collapsed && toolOwner.contains(richRange.commonAncestorContainer);
-  for (const button of formatButtons) button.hidden = !(inline || (selected && !["outline", "caps"].includes(button.dataset.command)));
+  for (const button of formatButtons) button.hidden = !(inline || (selected && !Object.hasOwn(extensions.inlineCodec.marks||{},button.dataset.command)));
   const visible = formatButtons.filter((button) => !button.hidden);
   for (const button of formatButtons) button.classList.toggle("fmt-last", button === visible.at(-1));
   if (visible.length) updateFormatState();
@@ -1326,7 +1206,7 @@ document.addEventListener("selectionchange", () => {
   if (toolKind === "text") placeToolbar();
 });
 style.textContent +=
-  ' .native-toolbar{position:fixed;z-index:99999;display:flex;align-items:center;gap:2px;border:1px solid var(--ui-line);border-radius:10px;background:var(--ui-surface);padding:3px;box-shadow:0 12px 32px var(--ui-shadow-small),0 1px 3px var(--ui-shadow-low);font:500 12px/1 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:normal;text-transform:none}.native-toolbar button{display:grid;place-items:center;width:30px;height:30px;border:0;background:transparent;border-radius:7px;color:var(--ui-ink);cursor:pointer;font:inherit}.native-toolbar button:hover{background:var(--ui-hover)}.native-toolbar button:disabled{opacity:.35;cursor:not-allowed;background:transparent}.native-toolbar button:focus-visible{outline:2px solid var(--ui-accent);outline-offset:1px}.native-toolbar svg{width:16px;height:16px;stroke-width:2}.native-toolbar .grip{cursor:grab;touch-action:none;color:var(--ui-muted)}.native-toolbar .grip:active{cursor:grabbing}.native-toolbar .lang svg{width:20px;height:15px;border-radius:2px;box-shadow:0 0 0 1px var(--ui-shadow-popover)}.native-variant{display:flex;gap:2px;padding:0 4px;margin:0 2px;border-left:1px solid var(--ui-line);border-right:1px solid var(--ui-line)}.native-variant button{width:auto;padding:0 8px;color:var(--ui-ink)}.native-variant button[aria-pressed=true]{background:var(--ui-tint);color:var(--ui-accent-ink);box-shadow:inset 0 0 0 1px var(--ui-accent)}.native-toolbar .fmt[aria-pressed=true]{background:var(--ui-tint);color:var(--ui-accent-ink)}.native-variant button[data-tone]{font:500 10.5px/1 ui-monospace,"SF Mono",Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;height:24px;margin:3px 1px;border-radius:3px;box-shadow:inset 0 0 0 1px currentColor;opacity:.55}.native-variant button[data-tone=y]{color:var(--ui-success)}.native-variant button[data-tone=n]{color:var(--ui-danger)}.native-variant button[data-tone=p]{color:var(--ui-warning)}.native-variant button[data-tone][aria-pressed=true]{opacity:1;color:var(--ui-on-accent);box-shadow:none}.native-variant button[data-tone=y][aria-pressed=true]{background:var(--ui-success)}.native-variant button[data-tone=n][aria-pressed=true]{background:var(--ui-danger)}.native-variant button[data-tone=p][aria-pressed=true]{background:var(--ui-warning)}.native-toolbar .confirm{color:var(--ui-warning);background:var(--ui-warning-tint)}.native-toolbar .confirm:hover{background:var(--ui-warning-hover)}.native-toolbar .fmt-last{margin-right:5px;position:relative}.native-toolbar .fmt-last::after{content:"";position:absolute;right:-4px;top:7px;bottom:7px;width:1px;background:var(--ui-line)}.native-toolbar [hidden],.native-toolbar[hidden],.native-editor-preview .native-toolbar{display:none!important}html.native-language-draft:not(.native-editor-preview) [data-native-untranslated]{outline:1px dashed var(--ui-frame-untranslated);outline-offset:4px}html.native-language-draft:not(.native-editor-preview) [data-native-machine]{outline:1px dashed var(--ui-machine);outline-offset:4px}.native-dragging{outline:2px solid var(--ui-frame-accent)!important;outline-offset:2px;opacity:.9;transition:none!important}html:not(.native-editor-preview) .native-entry-selected{outline:2px solid var(--ui-frame-accent)!important;outline-offset:-2px}';
+  ' .native-toolbar{position:fixed;z-index:99999;display:flex;align-items:center;gap:2px;border:1px solid var(--ui-line);border-radius:10px;background:var(--ui-surface);padding:3px;box-shadow:0 12px 32px var(--ui-shadow-small),0 1px 3px var(--ui-shadow-low);font:500 12px/1 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:normal;text-transform:none}.native-toolbar button{display:grid;place-items:center;width:30px;height:30px;border:0;background:transparent;border-radius:7px;color:var(--ui-ink);cursor:pointer;font:inherit}.native-toolbar button:hover{background:var(--ui-hover)}.native-toolbar button:disabled{opacity:.35;cursor:not-allowed;background:transparent}.native-toolbar button:focus-visible{outline:2px solid var(--ui-accent);outline-offset:1px}.native-toolbar svg{width:16px;height:16px;stroke-width:2}.native-toolbar .grip{cursor:grab;touch-action:none;color:var(--ui-muted)}.native-toolbar .grip:active{cursor:grabbing}.native-toolbar .lang svg{width:20px;height:15px;border-radius:2px;box-shadow:0 0 0 1px var(--ui-shadow-popover)}.native-variant{display:flex;gap:2px;padding:0 4px;margin:0 2px;border-left:1px solid var(--ui-line);border-right:1px solid var(--ui-line)}.native-variant button{width:auto;padding:0 8px;color:var(--ui-ink)}.native-variant button[aria-pressed=true]{background:var(--ui-tint);color:var(--ui-accent-ink);box-shadow:inset 0 0 0 1px var(--ui-accent)}.native-toolbar .fmt[aria-pressed=true]{background:var(--ui-tint);color:var(--ui-accent-ink)}.native-toolbar .confirm{color:var(--ui-warning);background:var(--ui-warning-tint)}.native-toolbar .confirm:hover{background:var(--ui-warning-hover)}.native-toolbar .fmt-last{margin-right:5px;position:relative}.native-toolbar .fmt-last::after{content:"";position:absolute;right:-4px;top:7px;bottom:7px;width:1px;background:var(--ui-line)}.native-toolbar [hidden],.native-toolbar[hidden],.native-editor-preview .native-toolbar{display:none!important}html.native-language-draft:not(.native-editor-preview) [data-native-untranslated]{outline:1px dashed var(--ui-frame-untranslated);outline-offset:4px}html.native-language-draft:not(.native-editor-preview) [data-native-machine]{outline:1px dashed var(--ui-machine);outline-offset:4px}.native-dragging{outline:2px solid var(--ui-frame-accent)!important;outline-offset:2px;opacity:.9;transition:none!important}html:not(.native-editor-preview) .native-entry-selected{outline:2px solid var(--ui-frame-accent)!important;outline-offset:-2px}';
 
 function safeMarkdown(source) {
   const holder = document.createElement("template");
@@ -1487,7 +1367,7 @@ function applyPreview({ html, baseline }) {
     bind();
     applyPresentation();
     send("preview-applied");
-    if (languageLocale !== "de") translationOverlay({ locale: languageLocale, values: languageValues });
+    if (languageLocale !== sourceLocale) translationOverlay({ locale: languageLocale, values: languageValues });
     refreshToolbar();
   }
 }
@@ -1500,13 +1380,12 @@ document.addEventListener("focusout", () => {
   }, 0);
 });
 
-// Expanded FAQ answers and other <details> stay open when their region is re-rendered.
 function keepDisclosureState(from, to) {
   const key = (node, index) => node.closest("[data-native-record]")?.dataset.nativeRecord + "|" + (node.dataset.nativeEntry || index);
   const open = new Set([...from.querySelectorAll("details")].map((node, index) => node.open && key(node, index)).filter(Boolean));
   [...to.querySelectorAll("details")].forEach((node, index) => (node.open = open.has(key(node, index))));
 }
-// Cards of an animated section (pricing orbs …) that only changed order move as live nodes,
+// Cards of an animated section that only changed order move as live nodes,
 // so their running canvases move with them. Field paths inside are renumbered.
 function entryKey(node) {
   return node.dataset.nativeRecord || node.outerHTML.replace(/\[&quot;sections&quot;,\d+(,&quot;[^&]+&quot;,\d+)?/g, "#");

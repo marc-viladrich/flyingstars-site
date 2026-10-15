@@ -2,8 +2,7 @@
 // Regions are the children of <main>. Unchanged regions are left alone. Regions whose client
 // scripts hold state (canvas animations, marquees, forms) are patched in place — classes, attributes
 // and leaf text — so running animations survive; any other region is replaced by the new render.
-const runtimeTypes = new Set(["showreelHero", "pricing", "sustainability", "logoBar", "team", "contactForm"]);
-const runtimeSelector = "canvas,video,form,[data-scrolly],[data-rotate]";
+import {extensions} from './site-adapter.mjs';
 
 export function regionKey(node, index) {
   return node.dataset?.nativeSectionIndex !== undefined ? "s" + node.dataset.nativeSectionIndex : "i" + index;
@@ -20,7 +19,7 @@ export function regions(root) {
   return map;
 }
 export function isRuntime(node) {
-  return runtimeTypes.has(node.dataset?.nativeSectionType) || !!node.querySelector?.(runtimeSelector) || node.matches?.(runtimeSelector);
+  return extensions.some('isRuntime',node);
 }
 export function sameStructure(a, b) {
   if (a.tagName !== b.tagName || a.children.length !== b.children.length) return false;
@@ -49,13 +48,9 @@ function patchNode(live, before, after, report) {
     const was = before.getAttribute(name),
       now = after.getAttribute(name);
     if (was === now) continue;
-    if (live.tagName === "CANVAS" && (name.startsWith("data-") || name === "width" || name === "height" || name === "style")) {
-      if (!name.startsWith("data-")) continue; // dimensions/styles belong to the renderer
-      if (name === 'data-native-live' || !live.hasAttribute('data-native-live')) {
-        report.unsafe = true;
-        continue;
-      }
-    }
+    const policy=extensions.first('attributePolicy',live,name);
+    if(policy==='skip')continue;
+    if(policy==='unsafe'){report.unsafe=true;continue;}
     report.changed++;
     if (name === "class") {
       const old = new Set((was || "").split(/\s+/).filter(Boolean)),

@@ -10,7 +10,7 @@ before(async () => {
     try {
       const path = new URL(req.url, 'http://localhost').pathname;
       if (path === '/') { res.end('<!doctype html><main></main>'); return; }
-      if (!/^\/(src\/(scripts|lib)\/|editor\/web\/)/.test(path) || path.includes('..')) { res.writeHead(404).end(); return; }
+      if (!/^\/(src\/(scripts|lib|content)\/|editor\/(web|extensions)\/|editor\/browser-site\.mjs)/.test(path) || path.includes('..')) { res.writeHead(404).end(); return; }
       const source = await readFile(new URL('..' + path, import.meta.url), 'utf8');
       res.setHeader('Content-Type', path.endsWith('.css') ? 'text/css' : 'text/javascript'); res.end(source);
     } catch { res.writeHead(404).end(); }

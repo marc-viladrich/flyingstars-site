@@ -1,4 +1,4 @@
-import {siteWidgets,siteChange,referencePrefix,referencedRecords,omitRecordField,mediaUsageKeys,mediaSelection,selectedMedia,uploadedMediaId,optionalFieldAllowed} from './site-adapter.mjs';
+import {extensions,siteWidgets,siteChange,referencePrefix,referencedRecords,omitRecordField,mediaUsageKeys,mediaSelection,selectedMedia,uploadedMediaId,optionalFieldAllowed} from './site-adapter.mjs';
 import {nodeAt,listPolicy,recordTitle,arrayActionAllowed} from '../core/metadata.mjs';
 import { inspectHorizontalLayout } from "./layout-guard.mjs";
 import {
@@ -21,14 +21,13 @@ import {
   groupedSelection,
   moveChoice,
 } from "./view-state.mjs";
-import { packageOwnedPagePath } from "/editor/package-ownership.mjs";
+const derivedPath=(...args)=>extensions.first('derivedPath',...args);
 import { describe } from "./native-schema.mjs";
 import { NativeDraft, getPath, same, sectionMutation, newRecordData } from "./native-draft.mjs";
 import { ui } from "./ui-icons.mjs";
 import { fieldLabel, choiceLabel, isTechnical } from "./field-labels.mjs";
-import { sha256 } from "./sha256.mjs";
 import { flags } from "./flags.mjs";
-import { inlinePlain } from "/editor/site-lib/inline-text.mjs";
+import {inlinePlain} from './inline-format.mjs';
 import { kindOf, kindPlural } from "./record-kinds.mjs";
 import { mediaLibrary, collectionOf, ALL as ALL_MEDIA, UNUSED as UNUSED_MEDIA } from "./media-usage.mjs";
 import { splitLocale, localizedPath, frontendTarget, liveURL } from "./frontend-url.mjs";
@@ -40,6 +39,8 @@ import { incomingReferences } from "./linked-records.mjs";
 // ---------------------------------------------------------------------------
 // State
 // ---------------------------------------------------------------------------
+const {source:sourceLocale,locales:targetLanguages}=extensions.require('languages');
+const targetLocales=Object.keys(targetLanguages);
 const $ = (selector) => document.querySelector(selector);
 const frame = $("#site-frame"),
   draft = new NativeDraft(),
@@ -51,7 +52,7 @@ let state,
   preview = false,
   outlines = false,
   ready = false,
-  activeLocale = "de",
+  activeLocale = sourceLocale,
   route = "/",
   selection = null,
   retry = null,
@@ -219,7 +220,7 @@ async function logout() {
   location.assign("/editor/login");
 }
 function send(type, data = {}) {
-  if (ready) frame.contentWindow.postMessage({ source: "flyingstars-editor", type, ...data }, location.origin);
+  if (ready) frame.contentWindow.postMessage({ source: "afe-editor", type, ...data }, location.origin);
 }
 function toast(message, { error = false, action, actionLabel = "Rückgängig" } = {}) {
   // While the sign-in dialog is open it already says what happened.
@@ -266,7 +267,7 @@ function describeItem(item) {
     result = describe(item.schema, item.data, {
       id: item.id,
       readOnlyPaths: item.readOnlyPaths || [],
-      derivedPath: packageOwnedPagePath,
+      derivedPath,
       omitPath:(data,path)=>omitRecordField(item,data,path),
     });
     described.set(item, result);
@@ -358,7 +359,7 @@ function syncFrame() {
     busy,
     outlines,
   });
-  if (activeLocale !== "de") overlayLocale(activeLocale);
+  if (activeLocale !== sourceLocale) overlayLocale(activeLocale);
 }
 function pendingCount() {
   return [...editing.values()].filter((item) => {
@@ -369,26 +370,13 @@ function pendingCount() {
 function changeCount() {
   return draft.size + pendingCount() + pendingTranslations.size;
 }
-// A visible e-mail address or phone number and its mailto:/tel: link always change together.
-function linkedHref(item, path, newValue) {
-  if (path.at(-1) !== "value" || typeof newValue !== "string") return null;
-  const hrefPath = [...path.slice(0, -1), "href"];
-  const href = getPath(item.data, hrefPath);
-  if (typeof href !== "string") return null;
-  if (href.startsWith("mailto:")) return [hrefPath, "mailto:" + newValue.trim()];
-  if (href.startsWith("tel:")) {
-    const digits = newValue.replace(/[^\d+]/g, "");
-    return [hrefPath, "tel:" + (digits.startsWith("+") ? digits : digits.startsWith("0") ? "+49" + digits.slice(1) : digits)];
-  }
-  return null;
-}
 function stage(id, path, newValue) {
   const item = record(id);
   if (!item || !fieldsFor(item).some((field) => equal(field.path, path))) return;
-  const link = linkedHref(item, path, newValue);
+  const proposals=extensions.first('normalize',{id,path,value:newValue,data:item.data})??[];
   draft.group(() => {
     draft.set(id, path, newValue);
-    if (link) draft.set(id, link[0], link[1]);
+    for(const proposal of proposals)draft.set(id,proposal.path,proposal.value);
   });
   editing.delete(fieldKey(id, path));
   retry = null;
@@ -398,7 +386,7 @@ function stage(id, path, newValue) {
 function stageInputs() {
   if (document.activeElement === frame)
     try {
-      for (const patch of frame.contentWindow.flyingstarsEditorFrame?.flush() || [])
+      for (const patch of frame.contentWindow.afeExtensions?.frame?.flush() || [])
         if (patch.locale) {
           pendingTranslations.delete(fieldKey(patch.id, patch.path) + "@" + patch.locale);
           writeTranslation(patch.id, patch.path, patch.locale, patch.value);
@@ -433,7 +421,7 @@ function currentPage() {
   const routed = records().find((item) => item.route && normalizedRoute(item.route) === route);
   if (routed) return routed;
   const slug = route === "/" ? "index" : route.replace(/^\/+|\/+$/g, "");
-  return record("page/" + slug) || record("screen/" + slug) || record(selection?.id);
+  return extensions.first('currentPage',records(),slug) || record(selection?.id);
 }
 function pageHasSections() {
   return !!currentPage()?.schema?.properties?.sections;
@@ -454,7 +442,7 @@ function update() {
 
   // Language of the view: translate icon + flag, so the current language is visible at a glance.
   $("#language").replaceChildren(icon("languages"), flagIcon(activeLocale), el("span", { class: "label-wide", text: activeLocale.toUpperCase() }));
-  $("#language").setAttribute("aria-pressed", String(activeLocale !== "de"));
+  $("#language").setAttribute("aria-pressed", String(activeLocale !== sourceLocale));
   $("#language").setAttribute("aria-label", "Sprache der Ansicht: " + localeNames[activeLocale]);
   $("#language").disabled = locked;
   $("#add-section").hidden = preview || !pageHasSections();
@@ -603,29 +591,19 @@ function openMenu(trigger, items, { keepPanel = false } = {}) {
 }
 // Short, human page names: the SEO title minus the brand suffix; the root is always "Startseite".
 function pageChoices() {
-  const groups = { "page/": "Seiten", "screen/": "Seiten", "project/": "Projekte", "post/": "Blog" };
-  const seen = new Map();
-  for (const choice of navigationChoices(records())) seen.set(choice.value, { ...choice, group: "Seiten" });
-  for (const item of records()) {
-    const prefix = item.id.split("/")[0] + "/";
-    if (!item.route || !groups[prefix]) continue;
-    const value = normalizedRoute(item.route);
-    const label = value === "/" ? "Startseite" : String(item.data?.title || item.title).split(" – ")[0];
-    seen.set(value, { value, label, group: groups[prefix] });
-  }
-  if (seen.has("/")) seen.get("/").label = "Startseite";
-  return [...seen.values()];
+  return extensions.first('pageChoices',records())??[];
 }
 function pageMenu() {
   const items = [];
-  for (const groupName of ["Seiten", "Projekte", "Blog"]) {
+  for (const groupName of extensions.first('pageGroups')??[]) {
     const choices = pageChoices().filter((choice) => choice.group === groupName);
     if (!choices.length) continue;
     if (items.length) items.push("-");
     items.push({ heading: groupName });
     for (const choice of choices) items.push({ label: choice.label, current: choice.value === route, run: () => navigate(choice.value) });
   }
-  if (recordTemplate("page/")) items.push("-", { label: "Neue Seite anlegen", icon: "plus", run: () => openCreate("page/") });
+  const creation=extensions.first('newPage');
+  if (creation&&recordTemplate(creation.prefix)) items.push('-', {label:creation.label,icon:'plus',run:()=>openCreate(creation.prefix)});
   openMenu($("#page-button"), items);
 }
 function moreMenu() {
@@ -682,7 +660,7 @@ function navigate(url, { reload = false, locale, keepPanel = false } = {}) {
   stageInputs();
   send("mode", { preview, busy: true, outlines });
   try {
-    frame.contentWindow.flyingstarsEditorFrame?.freeze();
+    frame.contentWindow.afeExtensions?.frame?.freeze();
   } catch {}
   ready = false;
   selection = null;
@@ -691,11 +669,11 @@ function navigate(url, { reload = false, locale, keepPanel = false } = {}) {
   const next = new URL(url, location.origin);
   const split = splitLocale(next.pathname);
   // A German address keeps the current language (page menu, "Auf der Seite ansehen", reload after saving).
-  const target = locale || (split.locale !== "de" ? split.locale : activeLocale);
+  const target = locale || (split.locale !== sourceLocale ? split.locale : activeLocale);
   route = normalizedRoute(split.path);
   if (target !== activeLocale) {
     activeLocale = target;
-    if (target !== "de") lastForeignLocale = target;
+    if (target !== sourceLocale) lastForeignLocale = target;
   }
   next.pathname = localizedPath(split.path, target);
   next.searchParams.set("editor", "1");
@@ -939,7 +917,7 @@ function isTranslatable(item,field){return field?.kind==='text'&&field['x-afe']?
 function translateAction(item, field) {
   if (!isTranslatable(item, field)) return null;
   panelTranslatable = true;
-  return activeLocale === "de" ? actionRow("Übersetzen", () => startTranslation({ id: item.id, path: field.path }), "languages") : null;
+  return activeLocale === sourceLocale ? actionRow("Übersetzen", () => startTranslation({ id: item.id, path: field.path }), "languages") : null;
 }
 // Set while a panel draws when it shows (or holds behind "Weitere Felder") a translatable text: then its
 // head carries the one language control of the panel.
@@ -1009,7 +987,7 @@ function fieldControl(item, field, { label } = {}) {
   const wide = ["multiline", "markdown"].includes(field.format);
   const translatable = isTranslatable(item, field);
   if (translatable) panelTranslatable = true;
-  if (translatable && activeLocale !== "de") {
+  if (translatable && activeLocale !== sourceLocale) {
     // In a foreign-language view this field edits its translation; the German text is the placeholder.
     // A quiet tag says which language the field holds (other fields of the panel are shared by all
     // languages); an empty one is dashed like untranslated text on the page. Switching stays in the head.
@@ -1130,11 +1108,7 @@ function autoGrow(box) {
 // (grouped, selected one marked by a check and its pressed state, arrow keys move, Escape closes).
 // Without the registry the stored value stays editable as text, with its swatch when it is a hex colour.
 let colorRegistry = null;
-function loadColorTokens() {
-  return (colorRegistry ??= import("/editor/site-lib/color-tokens.mjs")
-    .then((module) => (Array.isArray(module.COLOR_TOKENS) ? module.COLOR_TOKENS : null))
-    .catch(() => null));
-}
+function loadColorTokens(){return colorRegistry??=Promise.resolve(extensions.first('colorTokens')).catch(()=>null);}
 const isHexColor = (v) => typeof v === "string" && /^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(v.trim());
 function colorControl(item, field, { labelNode, name, key, isChanged }) {
   const read = () => value(item, field.path) ?? field.template;
@@ -1286,11 +1260,7 @@ function entrySummary(item, path, entry = value(item, path)) {
 function listLabel(item, path) {
   return entrySummary(item, path).label;
 }
-// Referenced records (team members, client logos): chosen ones first, in their shown order and
-// reorderable by drag or arrow keys; the others below to tick on.
-// Lists of ids that point at something else: referenced records (team members, client logos) or a
-// package's own Leistungen on its homepage card. Chosen ones first, in their shown order and reorderable
-// by drag or arrow keys; the others below to tick on. The text always stays with its owner.
+// Selected options keep their stored order. Unselected options follow them.
 function choiceSource(item, container) {
   const ref = nodeAt(item.schema,item.data,[...container.path,0])?.['x-afe']?.reference;
   const prefix = referencePrefix(ref);
@@ -1827,30 +1797,17 @@ function flip(nodes, mutate) {
 function previewList() {
   // Filled in by the instant-preview mechanism.
 }
-// Sections that list a collection by query (FAQ by tags, projects, blog) create a matching record.
 function collectionActions(item, index) {
   const section = item.data.sections?.[index];
-  const kinds = { faq: ["faq/", "Frage hinzufügen"], projectGrid: ["project/", "Projekt hinzufügen"], postList: ["post/", "Blogartikel hinzufügen"] };
-  const kind = kinds[section?.type];
-  if (!kind || !recordTemplate(kind[0])) return null;
-  const [prefix, label] = kind;
+  const query=extensions.first('sectionQuery',section);
+  if(!query||!recordTemplate(query.prefix))return null;
+  const {prefix,label}=query;
   return button(
     label,
     () => {
       stageInputs();
       const section = record(item.id)?.data.sections?.[index] || {};
-      const preset = {};
-      if (prefix === "faq/") {
-        // Same tags as the section filter, ordered last, so the question appears in this section.
-        if (section.tags?.length) preset.tags = [...section.tags];
-        preset.order =
-          Math.max(
-            0,
-            ...records()
-              .filter((r) => r.id.startsWith("faq/"))
-              .map((r) => Number(r.data.order) || 0),
-          ) + 1;
-      }
+      const preset=query.create?.({records:records(),section})??{};
       openCreate(prefix, null, preset, (id) => {
         pushView({ id, path: [] }, "record");
         const limit = section.limit;
@@ -1866,38 +1823,23 @@ function collectionActions(item, index) {
   );
 }
 
-// Records ordered by a numeric field (FAQ `order`, global across sections): the moved records swap their
-// values among themselves, all others keep theirs. One undo step.
-function reorderRecords(ids, field) {
+// A query proposes reorder patches. Apply them as one undo step.
+function reorderRecords(ids,query) {
   stageInputs();
-  const items = ids.map(record).filter(Boolean);
-  const values = items.map((r) => Number(getPath(r.data, [field]))).sort((a, b) => a - b);
-  if (!items.length || values.some((v) => !Number.isFinite(v))) return;
-  if (new Set(values).size === values.length) {
-    draft.group(() => items.forEach((r, i) => draft.set(r.id, [field], values[i])));
-  } else {
-    // Equal values cannot be swapped: renumber the whole collection in steps of 10, keeping every other
-    // record where it was and the moved ones in their new order.
-    const prefix = items[0].id.split("/")[0] + "/";
-    const all = records()
-      .filter((r) => r.id.startsWith(prefix))
-      .sort((a, b) => (Number(getPath(a.data, [field])) || 0) - (Number(getPath(b.data, [field])) || 0) || a.id.localeCompare(b.id));
-    const moved = new Set(items.map((r) => r.id));
-    let next = 0;
-    const order = all.map((r) => (moved.has(r.id) ? items[next++] : r));
-    draft.group(() => order.forEach((r, i) => getPath(r.data, [field]) !== (i + 1) * 10 && draft.set(r.id, [field], (i + 1) * 10)));
-  }
-  syncFrame();
-  update();
-  rerender();
+  const changes=query.reorder({records:records(),ids});
+  draft.group(()=>{for(const change of changes)for(const patch of change.patches)draft.set(change.id,patch.path,patch.value);});
+  syncFrame();update();rerender();
 }
-// The questions a FAQ section shows, in the order the page renders them, reorderable like any list.
 function orderedRecordsControl(item, index) {
   let shown = null;
   try {
-    shown = frame.contentWindow.flyingstarsEditorFrame?.orderedRecords?.(item.id, index);
+    shown = frame.contentWindow.afeExtensions?.frame?.orderedRecords?.(item.id, index);
   } catch {}
-  if (!shown?.ids.length) return null;
+  const query=extensions.first('sectionQuery',item.data.sections?.[index]);
+  if (!shown?.ids.length||!query?.reorder) return null;
+  const rendered=new Set(shown.ids);
+  shown.ids=query.list({records:records(),section:item.data.sections[index]}).filter(id=>rendered.has(id));
+  if(!shown.ids.length)return null;
   const list = el("ul", { class: "rows", "aria-label": "Reihenfolge" });
   const moveTo = (from, to) => {
     if (from === to || to < 0 || to >= shown.ids.length) return;
@@ -1905,10 +1847,10 @@ function orderedRecordsControl(item, index) {
     const [moved] = ids.splice(from, 1);
     ids.splice(to, 0, moved);
     try {
-      frame.contentWindow.flyingstarsEditorFrame.orderRecords(item.id, index, ids);
+      frame.contentWindow.afeExtensions?.frame.orderRecords(item.id, index, ids);
     } catch {}
     pendingFocus = `.rows [data-index="${to}"] .grip`;
-    reorderRecords(ids, shown.field);
+    reorderRecords(ids, query);
   };
   shown.ids.forEach((id, i) => {
     const linked = record(id);
@@ -1927,7 +1869,7 @@ function orderedRecordsControl(item, index) {
     row.append(grip, open);
     list.append(row);
   });
-  return el("div", { class: "stack" }, el("span", { class: "row-label", text: kindOf(shown.ids[0])[0] === "FAQ" ? "Fragen in diesem Abschnitt" : "Einträge in diesem Abschnitt" }), list);
+  return el("div", { class: "stack" }, el("span", { class: "row-label", text: query.orderLabel || "Einträge in diesem Abschnitt" }), list);
 }
 function optionalVariants(item, prefix, { exact = false } = {}) {
   return optionalFieldsFor(item)
@@ -2065,7 +2007,7 @@ function sectionOf(context) {
 }
 // Lists whose order is bound to something else (table cells follow their columns) never move or shrink alone.
 function entryPrefixOf(item, path) {
-  // Deepest array entry above the clicked field: sections,3,tiers,1,name → sections,3,tiers,1.
+  // Deepest array entry above the clicked field.
   let found = null;
   for (let i = 0; i < path.length - 1; i++) {
     if (typeof path[i + 1] !== "number") continue;
@@ -2102,7 +2044,7 @@ function parentLinks(item, context, { from }) {
     rows.push(
       navRow(`„${listLabel(item, parentEntry)}“`, () => revealView({ id: item.id, path: parentEntry, section, reveal: path }, "entry"), "layers"),
     );
-  const ownRecord = !item.id.startsWith("page/") && !item.id.startsWith("screen/");
+  const ownRecord = !extensions.some('isPage',item);
   if (ownRecord && from !== "record")
     rows.push(navRow(`${kindOf(item.id)[0]} „${recordName(item)}“ bearbeiten`, () => pushView({ id: item.id, path: [] }, "record"), kindOf(item.id)[1]));
   if (sectionRecord && from !== "section")
@@ -2257,7 +2199,7 @@ function instanceContext(data) {
 }
 function occurrenceMarkers(context) {
   try {
-    return frame.contentWindow.flyingstarsEditorFrame?.occurrenceMarkers?.(context.occurrence) || [];
+    return frame.contentWindow.afeExtensions?.frame?.occurrenceMarkers?.(context.occurrence) || [];
   } catch {
     return [];
   }
@@ -2355,8 +2297,7 @@ function moreChunks(item, units, prefix) {
   const titleOf = (unit) => plan.blocks.find((block) => block.members.some((m) => under(unit.path, m.path) || under(m.path, unit.path)))?.title || null;
   const chunks = chunkByGroup(units, titleOf);
   if (chunks.filter((c) => c.title).length < 2) return controls(units);
-  // Under a heading the wrapper object (project → showcase) and an object that is the block itself
-  // (Eckdaten = meta) go unsaid.
+  // Under a heading, wrappers and objects that form the whole block need no repeated label.
   const objectBlocks = plan.blocks.filter((b) => b.members.length === 1 && b.members[0].kind === "object").map((b) => b.members[0].path);
   const quietParents = [plan.base, ...objectBlocks];
   return chunks.map((chunk) => {
@@ -2462,8 +2403,7 @@ function entryView(body, item, context, head) {
   const variants = fieldsFor(item).filter(
     (f) => f.path.length === path.length + 1 && under(f.path, path) && ["enum", "boolean"].includes(f.kind) && !isTechnical(f),
   );
-  // A card showing another record (a package on the homepage) also offers that record's own switches,
-  // e.g. the recommendation; they apply wherever the record appears, which the note says.
+  // Shared record switches apply wherever that record appears.
   const shown = context.record && context.record !== item.id ? record(context.record) : null;
   const shared = shown ? fieldsFor(shown).filter((f) => f.path.length === 1 && f.kind === "boolean" && !isTechnical(f)) : [];
   put(
@@ -2580,7 +2520,7 @@ function additionButtons(item, prefix) {
 }
 function recordView(body, item, context, head) {
   const [kindName, kindIcon] = kindOf(item.id);
-  head(/^(page|screen)\//.test(item.id) ? navigatorName(item) : recordName(item), kindIcon, kindName);
+  head(extensions.some('isPage',item) ? navigatorName(item) : recordName(item), kindIcon, kindName);
   if (item.route) $("#panel-actions").append(button("Auf der Seite bearbeiten", () => editOnPage(item), { icon: "pencil", cls: "primary panel-action" }));
   const plan = overviewPlan({
     fields: fieldsFor(item),
@@ -2615,10 +2555,10 @@ function recordView(body, item, context, head) {
   const rootAdditions = [...additionButtons(item, []), ...(plan.base.length ? additionButtons(item, plan.base) : [])];
   const extras = [...optionalVariants(item, [], { exact: true }), rootAdditions.length ? el("div", { class: "seg wide-row" }, rootAdditions) : null].filter(Boolean);
   let general = blocks.find((b) => b.general) || blocks[0];
-  if (!general && (extras.length || item.id.startsWith("media/"))) blocks.unshift((general = { title: "Allgemein", general: true, controls: [] }));
+  if (!general && (extras.length || extensions.some('isMedia',item))) blocks.unshift((general = { title: "Allgemein", general: true, controls: [] }));
   if (general) general.controls.push(...extras);
-  if (item.id.startsWith("media/")) general.controls.unshift(mediaRecordPreview(item));
-  if (item.id.startsWith("media/")) blocks.push(mediaUsageBlock(item));
+  if (extensions.some('isMedia',item)) general.controls.unshift(mediaRecordPreview(item));
+  if (extensions.some('isMedia',item)) blocks.push(mediaUsageBlock(item));
   else {
     const linked = linkedFromBlock(item);
     if (linked) blocks.push(linked);
@@ -2710,11 +2650,11 @@ function editOnPage(item) {
 function recordActions(item) {
   // An image still in use cannot be deleted; the usage list above says where to replace it first.
   // Same count as "Verwendet in (N)" above: every place the image appears.
-  const usedBy = item.id.startsWith("media/") ? mediaLibrary(records()).assets.find((a) => a.id === item.id)?.usage.length || 0 : 0;
+  const usedBy = extensions.some('isMedia',item) ? mediaLibrary(records()).assets.find((a) => a.id === item.id)?.usage.length || 0 : 0;
   if (usedBy)
     return actionGroup(null, [el("p", { class: "note", text: `Löschen ist möglich, sobald das Bild nirgends mehr verwendet wird (${usedBy}× verwendet).` })]);
   return actionGroup(null, [
-    !["page/", "screen/", "package/", "site/"].some((p) => item.id.startsWith(p))
+    extensions.some('canDelete',item)
       ? actionRow(
           kindOf(item.id)[0] + " löschen",
           () => {
@@ -2766,7 +2706,7 @@ async function save() {
       sameView = normalizedRoute(nextRoute) === previousRoute,
       scroll = sameView ? frame.contentWindow.scrollY : 0;
     try {
-      if (sameView) frame.dataset.restoreTransient = JSON.stringify(frame.contentWindow.flyingstarsEditorFrame?.transient());
+      if (sameView) frame.dataset.restoreTransient = JSON.stringify(frame.contentWindow.afeExtensions?.frame?.transient());
     } catch {}
     busy = false;
     navigate(nextRoute + (sameView ? frame.contentWindow.location.search + frame.contentWindow.location.hash : ""), { reload: true });
@@ -2809,15 +2749,8 @@ function discardAll() {
 }
 // Publication overview: changes grouped by the kind of content they belong to, newest first within a
 // group. Code of the site (components, scripts, schemas) is one collapsed group at the end.
-const changeKinds = [
-  { test: (id) => /^(page|screen)\//.test(id), title: "Seiten", icon: "file-text" },
-  { test: (id) => /^(project|post)\//.test(id), title: "Projekte & Blog", icon: "newspaper" },
-  { test: (id) => id.startsWith("faq/"), title: "Häufige Fragen", icon: "circle-help" },
-  { test: (id) => id.startsWith("package/"), title: "Pakete & Preise", icon: "package" },
-  { test: (id) => /^(client|team)\//.test(id), title: "Kunden & Team", icon: "users" },
-  { test: (id) => id.startsWith("site/"), title: "Website-Daten (Kontakt, Formular, Navigation, Texte)", icon: "building-2" },
-  { test: (id) => id.startsWith("media/"), title: "Bilder & Medien", icon: "image" },
-];
+const changeKinds=extensions.first('changeKinds')??[];
+
 function since(at) {
   const minutes = Math.round((Date.now() - at) / 60000);
   if (minutes < 1) return "gerade eben";
@@ -2840,9 +2773,10 @@ function changeGroups(files) {
       continue;
     }
     const id = owner?.id || "";
-    if (id.startsWith("translation/")) {
-      const source = record(owner.data.sourceId);
-      const locale = owner.data.locale;
+    const association=translations.metadata(owner);
+    if (association) {
+      const source = record(association.ownerId);
+      const locale = association.locale;
       const kindIndex = source ? changeKinds.findIndex((k) => k.test(source.id)) : 99;
       add("translation-" + locale, { title: `Übersetzungen ${localeNames[locale] || locale}`, icon: "languages", order: 8 }, { ...entry, title: source ? recordName(source) : owner.title, kindIndex });
       continue;
@@ -2952,7 +2886,7 @@ function publishedState(d) {
       { class: "publish-done", role: "status" },
       el("span", { class: "publish-done-mark", "aria-hidden": "true" }, icon("check")),
       el("p", { class: "publish-done-title", text: "Die Website ist aktualisiert." }),
-      el("p", { class: "note", text: `„${label}“${activeLocale === "de" ? "" : ` (${localeNames[activeLocale]})`} ist jetzt live.` }),
+      el("p", { class: "note", text: `„${label}“${activeLocale === sourceLocale ? "" : ` (${localeNames[activeLocale]})`} ist jetzt live.` }),
       link,
     ),
   );
@@ -3003,7 +2937,7 @@ function dialog(title, { narrow = false, search } = {}) {
 }
 function visibleSection() {
   try {
-    return frame.contentWindow.flyingstarsEditorFrame?.visibleSection?.() || null;
+    return frame.contentWindow.afeExtensions?.frame?.visibleSection?.() || null;
   } catch {
     return null;
   }
@@ -3070,15 +3004,13 @@ function openCreate(prefix, reference, preset = {}, after, { host = null, entry 
     d.classList.add("narrow");
   }
   const name = el("input", { type: "text", required: true, "aria-label": "Name" });
-  const quote = el("textarea", { rows: 3, "aria-label": "Kundenstimme" });
-  const person = el("input", { type: "text", "aria-label": "Name der zitierenden Person" });
-  const role = el("input", { type: "text", "aria-label": "Rolle" });
+  const form=extensions.first('creationForm',prefix)??{label:'Name',fields:[]};
+  const inputs=Object.fromEntries(form.fields.map(field=>[field.key,el(field.multiline?'textarea':'input',{type:'text',rows:field.multiline?3:undefined,'aria-label':field.aria||field.label})]));
   const slug = el("input", { type: "text", "aria-label": "Dateiname" });
   const slugNote = el("span", { class: "note" });
   const stack = (label, input) => el("label", { class: "stack" }, el("span", { class: "row-label", text: label }), input);
-  d.body.append(stack({ "page/": "Titel der Seite", "faq/": "Frage", "post/": "Titel", "project/": "Titel" }[prefix] || "Name", name));
-  if (prefix === "team/") d.body.append(stack("Rolle", role));
-  if (prefix === "client/") d.body.append(stack("Kundenstimme (optional)", quote), stack("Name der zitierten Person", person), stack("Rolle", role));
+  d.body.append(stack(form.label,name));
+  for(const field of form.fields)d.body.append(stack(field.label,inputs[field.key]));
   d.body.append(el("details", { class: "more" }, el("summary", {}, slugNote, icon("chevron-down")), el("div", { class: "group" }, stack("Dateiname", slug))));
   const deriveSlug = () =>
     name.value
@@ -3103,11 +3035,10 @@ function openCreate(prefix, reference, preset = {}, after, { host = null, entry 
       if (!slug.value.match(/^[a-z0-9][a-z0-9-]*$/)) throw Error("Der Dateiname darf nur Kleinbuchstaben, Ziffern und Bindestriche enthalten.");
       const id = prefix + slug.value,
         data = Object.assign(
-          newRecordData(prefix, template.data, name.value.trim(), { quote: quote.value, person: person.value, role: role.value }),
+          newRecordData(prefix, template.data, name.value.trim(), Object.fromEntries(Object.entries(inputs).map(([key,input])=>[key,input.value]))),
           structuredClone(preset),
         );
-      if (prefix === "client/" && !quote.value.trim() && reference && getPath(record(reference.id).data, reference.path.slice(0, -1))?.type === "testimonials")
-        throw Error("Für die Kundenstimmen bitte ein Zitat eingeben.");
+      extensions.run('validateCreation',{prefix,data,reference,record});
       const exemplar = records().find((r) => r.id.startsWith(prefix));
       draft.group(() => {
         draft.create({
@@ -3121,7 +3052,7 @@ function openCreate(prefix, reference, preset = {}, after, { host = null, entry 
           containers: structuredClone(template.containers || exemplar?.containers || []),
           optionalFields: structuredClone(template.optionalFields || exemplar?.optionalFields || []),
         });
-        if (["page/", "post/", "project/"].includes(prefix)) nextViewRecordId = id;
+        if (extensions.some('navigateCreated',prefix)) nextViewRecordId = id;
         if (reference) {
           const owner = record(reference.id);
           draft.set(reference.id, reference.path, [...(getPath(owner.data, reference.path) || []), slug.value]);
@@ -3231,9 +3162,7 @@ function openFromDialog(context, scope = "record", { locale } = {}) {
 // every group with a hit. A row reads as the record's German name; its language versions are small chips at
 // the right that open the same overview in that language.
 function navigatorName(item) {
-  if (item.route && /^(page|screen)\//.test(item.id))
-    return normalizedRoute(item.route) === "/" ? "Startseite" : String(inlinePlain(item.data?.title || item.title)).split(" – ")[0];
-  return recordName(item);
+  return extensions.first('navigatorName',item)||recordName(item);
 }
 function contentLibrary() {
   startDialogView("navigator");
@@ -3259,7 +3188,7 @@ function navigatorView(d, entry) {
       name: navigatorName,
       canCreate: (type) => !!recordTemplate(type + "/"),
       query,
-      searchText: (r) => (r.id.startsWith("media/") ? r.data?.defaultAlt : ""),
+      searchText: (r) => extensions.first('mediaSearchText',r),
     });
     pane.replaceChildren();
     if (!groups.length) pane.append(el("p", { class: "note", text: "Keine Treffer." }));
@@ -3346,7 +3275,7 @@ function libraryView(d, entry) {
 // /editor/api/media gives the same view of the saved draft.
 // ---------------------------------------------------------------------------
 const usageCountLabel = (n) => (n ? `${n}× verwendet` : "Nicht verwendet");
-const isPhoto = (data) => /jpe?g/.test(data?.mime || "");
+const isPhoto=data=>extensions.some('isPhoto',data);
 function mediaThumb(data, { lazy = true } = {}) {
   // Logos are mostly white on transparent: shown whole on the checkerboard, photos fill the tile.
   return el(
@@ -3395,7 +3324,6 @@ function mediaBrowser({ mode, dialog: d, context = null, query = "", saved = nul
   const picking = mode === "pick";
   const currentId = picking ? mediaSelection(value(record(context.id),context.path)) : null;
   let library = mediaLibrary(records());
-  // Choosing a client logo starts in "Kunden", a team portrait in "Team" – when that collection exists.
   const start = saved?.collection ?? (picking ? collectionOf(context.id, records()) : null);
   let selected = library.collections.some((c) => c.id === start) ? start : ALL_MEDIA;
   let focusId = saved?.focusId || null;
@@ -3462,7 +3390,7 @@ function mediaBrowser({ mode, dialog: d, context = null, query = "", saved = nul
     const label = library.collections.find((c) => c.id === selected)?.label || "Alle";
     const shown = library.assets
       .filter((a) => selected === ALL_MEDIA || a.collections.includes(selected))
-      .filter((a) => matchesQuery([a.data.title, a.data.defaultAlt, a.id.split("/").slice(1).join("/")], term))
+      .filter((a) => matchesQuery(extensions.first('mediaAssetSearch',a), term))
       .sort((a, b) => String(a.data.title || "").localeCompare(String(b.data.title || ""), "de"));
     tiles.setAttribute("aria-label", "Bilder: " + label);
     const active = shown.find((a) => a.id === focusId) || shown.find((a) => a.id === currentId) || shown[0];
@@ -3571,28 +3499,26 @@ function mediaUsageBlock(item) {
   const rows = usage.map((use) => {
     const user = record(use.recordId);
     // A translation's image belongs to its source record.
-    const owner = use.recordId.startsWith("translation/") ? record(user?.data.sourceId) || user : user;
+    const owner = translations.owner(user,record);
     const ownPath = owner === user ? use.path : [];
-    const pageImage = /^(page|screen)\//.test(owner.id) && !use.markdown && ownPath.length;
+    const pageImage = extensions.some('isPage',owner) && !use.markdown && ownPath.length;
     const open = () => (pageImage ? pushView({ id: owner.id, path: ownPath }, "media") : pushView({ id: owner.id, path: [], reveal: ownPath.length ? ownPath : undefined }, "record"));
     return el(
       "button",
       { type: "button", class: "action nav media-usage", onclick: open },
       icon(kindOf(owner.id)[1]),
-      el("span", { class: "media-usage-text" }, el("span", { class: "media-usage-name", text: /^(page|screen)\//.test(owner.id) ? pageName(owner) : recordName(owner) }), el("small", { text: [kindOf(owner.id)[0], mediaPlace(owner, ownPath, use.markdown)].filter(Boolean).join(" · ") })),
+      el("span", { class: "media-usage-text" }, el("span", { class: "media-usage-name", text: extensions.some('isPage',owner) ? pageName(owner) : recordName(owner) }), el("small", { text: [kindOf(owner.id)[0], mediaPlace(owner, ownPath, use.markdown)].filter(Boolean).join(" · ") })),
       icon("chevron-right"),
     );
   });
   return { title: `Verwendet in (${usage.length})`, controls: [el("div", { class: "media-usages" }, rows)] };
 }
-// "Verknüpft mit": the records that point at this one (a page section listing this client, a card showing
-// this package), read-only, each a jump that Back returns from. Derived from the schemas' reference
-// metadata over all draft records (linked-records.mjs); images keep their own "Verwendet in".
+// Incoming references come from metadata over all draft records (linked-records.mjs).
 function linkedFromBlock(item) {
   const incoming = incomingReferences(records(), item);
   if (!incoming.length) return null;
   const rows = incoming.flatMap(({ owner, paths }) => {
-    const page = /^(page|screen)\//.test(owner.id);
+    const page = extensions.some('isPage',owner);
     // One row per place: a page names the section, any other record the field (first reference there).
     const places = new Map();
     for (const path of paths) {
@@ -3619,25 +3545,13 @@ function linkedFromBlock(item) {
 // Languages: the whole page switches instantly; in EN/NL, text is overwritten in place
 // and stored as a translation draft. Untranslated text stays German and is marked dashed.
 // ---------------------------------------------------------------------------
-const localeNames = { de: "Deutsch", en: "English", nl: "Nederlands" };
-let lastForeignLocale = "en",
+const localeNames=extensions.first('localeNames')??{};
+let lastForeignLocale = Object.keys(localeNames).find(code=>code!==sourceLocale),
   translationCapabilities = null;
 const pendingTranslations = new Map();
-const translationId = (ownerId, locale) => "translation/" + ownerId.replaceAll("/", "-") + "-" + locale;
-// A translated field is current when its sourceHash matches the German text it was made from.
-// Older values without a field hash fall back to the record-level hash.
-function valueFresh(owner, translation, value) {
-  if (!value || !owner) return false;
-  const german = getPath(owner.data, value.path);
-  if (typeof german !== "string") return false;
-  // Fresh means exactly: written for the current German text. Old values without a field hash are not shown.
-  return !!value.sourceHash && value.sourceHash === sha256(german);
-}
-function translationValue(owner, path, locale = activeLocale) {
-  const translation = record(translationId(owner.id, locale));
-  const value = translation?.data.values?.find((v) => same(v.path, path));
-  return valueFresh(owner, translation, value) ? value : undefined;
-}
+const translations=extensions.require('translationStorage');
+const translationId=translations.id;
+function translationValue(owner,path,locale=activeLocale){return translations.value(owner,path,locale,record);}
 function translationText(owner, path, locale = activeLocale) {
   return translationValue(owner, path, locale)?.text;
 }
@@ -3647,34 +3561,7 @@ function writeTranslation(ownerId, path, locale, text) {
     toast("Bitte zuerst den deutschen Stand speichern; Übersetzungen beziehen sich auf den gespeicherten Text.", { error: true });
     return false;
   }
-  const id = translationId(owner.id, locale),
-    existing = record(id),
-    data = existing ? structuredClone(existing.data) : { sourceId: owner.id, locale, sourceHash: owner.revision, values: [] };
-  if (data.sourceHash !== owner.revision) {
-    // Values keep their own field hash, so they stay valid for German texts that did not change.
-    data.values = data.values
-      .filter((v) => getPath(owner.data, v.path) !== undefined)
-      .map((v) => (v.sourceHash ? v : { ...v, sourceHash: sha256(""), reviewed: false }));
-    data.sourceHash = owner.revision;
-  }
-  const index = data.values.findIndex((v) => same(v.path, path)),
-    next = { path, text, reviewed: true, sourceHash: sha256(getPath(owner.data, path) ?? "") };
-  if (index < 0) data.values.push(next);
-  else data.values[index] = next;
-  if (existing) draft.set(id, [], data);
-  else {
-    const t = recordTemplate("translation/");
-    draft.create({
-      id,
-      title: owner.title + " · " + locale,
-      file: id,
-      revision: null,
-      data,
-      schema: t?.schema,
-      fields: t?.fields || [],
-      containers: t?.containers || [],
-    });
-  }
+  translations.write({owner,path,locale,text,record,draft,recordTemplate});
   retry = null;
   overlayLocale(locale);
   update();
@@ -3682,79 +3569,27 @@ function writeTranslation(ownerId, path, locale, text) {
 }
 function overlayLocale(locale) {
   activeLocale = locale;
-  const values = records()
-    .filter((r) => r.id.startsWith("translation/") && r.data.locale === locale)
-    .flatMap((r) => {
-      const source = record(r.data.sourceId);
-      return r.data.values.filter((v) => valueFresh(source, r, v)).map((v) => ({ ...v, sourceId: r.data.sourceId }));
-    });
+  const values=translations.overlay(records(),locale);
   send("translations", { locale, values });
 }
 // Machine translation of everything on this page that has no current translation yet.
 // Machine translation: languages, this page or the whole site (all kinds of content ticked by default),
 // costs before sending, a real progress bar while it runs, suggestions into the draft.
-const translationKinds = [
-  ["pages", "Seiten inkl. SEO-Titel und Beschreibung"],
-  ["stories", "Projekte & Blog inkl. SEO"],
-  ["faq", "Häufige Fragen"],
-  ["packages", "Pakete & Preise"],
-  ["people", "Kunden & Team"],
-  ["site", "Website-Daten (Kontakt, Formular, Navigation, Texte)"],
-];
-const translationKindOf = (id) =>
-  /^(page|screen)\//.test(id) ? "pages" : /^(project|post)\//.test(id) ? "stories" : id.startsWith("faq/") ? "faq" : id.startsWith("package/") ? "packages" : /^(client|team)\//.test(id) ? "people" : id.startsWith("site/") ? "site" : null;
+const translationKinds=extensions.first('translationKinds')??[];
+const translationKindOf=id=>extensions.first('recordGroup',id);
 // "Without review": every current suggestion in the chosen scope counts as reviewed, also older ones.
-function acceptSuggestions(ownerIds, locales) {
-  for (const ownerId of ownerIds)
-    for (const locale of locales) {
-      const owner = record(ownerId),
-        translation = owner && record(translationId(owner.id, locale));
-      if (!translation) continue;
-      const data = structuredClone(translation.data);
-      let changedAny = false;
-      for (const v of data.values)
-        if (!v.reviewed && valueFresh(owner, translation, v)) {
-          v.reviewed = true;
-          changedAny = true;
-        }
-      if (changedAny) draft.set(translation.id, [], data);
-    }
-}
-function mergeTranslationRecords(items, accept) {
-  draft.group(() => {
-    for (const item of items) {
-      const current = record(item.id);
-      if (current) {
-        // A reviewed, current translation in the draft is never replaced by a suggestion.
-        const owner = record(item.data.sourceId);
-        const data = structuredClone(current.data);
-        for (const value of item.data.values) {
-          const index = data.values.findIndex((v) => same(v.path, value.path));
-          const existing = index >= 0 ? data.values[index] : null;
-          if (existing?.reviewed && valueFresh(owner, current, existing)) continue;
-          if (index < 0) data.values.push(value);
-          else data.values[index] = value;
-        }
-        data.sourceHash = item.data.sourceHash;
-        draft.set(item.id, [], data);
-      } else {
-        const t = recordTemplate("translation/");
-        draft.create({ id: item.id, title: item.id, file: item.id, revision: null, data: item.data, schema: t?.schema, fields: t?.fields || [], containers: t?.containers || [] });
-      }
-    }
-    if (accept) acceptSuggestions(accept.ids, accept.locales);
-  });
-}
+const acceptSuggestions=(ids,locales)=>translations.accept(ids,locales,{record,draft});
+const mergeTranslationRecords=(items,accept)=>translations.merge(items,accept,{record,draft,recordTemplate});
 async function translateMissing() {
   stageInputs();
   let pageIds = [];
   try {
-    pageIds = frame.contentWindow.flyingstarsEditorFrame?.recordsOnPage?.() || [];
+    pageIds = frame.contentWindow.afeExtensions?.frame?.recordsOnPage?.() || [];
   } catch {}
   pageIds = [...new Set([currentPage()?.id, ...pageIds].filter(Boolean))];
   const d = dialog("Übersetzen");
   const choice = {
-    locales: new Set(activeLocale === "de" ? ["en", "nl"] : [activeLocale]),
+    locales: new Set(activeLocale === sourceLocale ? targetLocales : [activeLocale]),
     scope: "page",
     kinds: new Set(translationKinds.map(([k]) => k)),
     accept: false,
@@ -3777,7 +3612,7 @@ async function translateMissing() {
   };
   d.body.append(
     el("section", { class: "tr-block" }, el("h3", { class: "tr-title", text: "Sprachen" }),
-      el("div", { class: "tr-row" }, ...["en", "nl"].map((l) => { const row = check(localeNames[l], choice.locales.has(l), (on) => (on ? choice.locales.add(l) : choice.locales.delete(l), refresh())); row.querySelector("input").after(flagIcon(l)); return row; }))),
+      el("div", { class: "tr-row" }, ...targetLocales.map((l) => { const row = check(localeNames[l], choice.locales.has(l), (on) => (on ? choice.locales.add(l) : choice.locales.delete(l), refresh())); row.querySelector("input").after(flagIcon(l)); return row; }))),
     el("section", { class: "tr-block" }, el("h3", { class: "tr-title", text: "Umfang" }),
       el("div", { class: "tr-row" }, radio("Diese Seite", "page"), radio("Ganze Website", "site")), kindsBox),
     el("section", { class: "tr-block" }, summary, status,
@@ -3827,7 +3662,7 @@ async function translateMissing() {
           summary.append(button(`${open} ungeprüfte Vorschläge übernehmen`, () => {
             draft.group(() => acceptSuggestions(ids, [...choice.locales]));
             d.close();
-            if (activeLocale !== "de") overlayLocale(activeLocale);
+            if (activeLocale !== sourceLocale) overlayLocale(activeLocale);
             update();
             toast(`${open} Vorschläge übernommen. Gespeichert wird mit „Speichern“.`);
           }, { icon: "check", cls: "secondary" }));
@@ -3930,7 +3765,7 @@ function setLocale(locale, { keepPanel = false } = {}) {
   const search = new URLSearchParams(frame.contentWindow?.location.search || "");
   for (const key of ["editor", "_editorNavigation", "_editorHead"]) search.delete(key);
   navigate(route + (search.size ? "?" + search : ""), { locale, keepPanel });
-  if (locale !== "de" && !setLocale.hinted) {
+  if (locale !== sourceLocale && !setLocale.hinted) {
     setLocale.hinted = true;
     toast(`${localeNames[locale]}: Texte direkt auf der Seite überschreiben. Noch nicht übersetzte Texte sind gestrichelt markiert.`);
   }
@@ -3966,26 +3801,22 @@ function switchPanelLocale(locale) {
 }
 function startTranslation(context) {
   closePanel();
-  setLocale(activeLocale === "de" ? lastForeignLocale : "de");
+  setLocale(activeLocale === sourceLocale ? lastForeignLocale : sourceLocale);
   if (context) send("focus-field", { id: context.id, path: context.path });
 }
 // Fresh machine suggestions for the records on this page in the current language.
 // Only fields that are actually visible on this page (a project card does not confirm the article body).
 function unconfirmedOnPage() {
-  if (activeLocale === "de") return [];
+  if (activeLocale === sourceLocale) return [];
   let shown = [];
   try {
-    shown = frame.contentWindow.flyingstarsEditorFrame?.renderedFields?.() || [];
+    shown = frame.contentWindow.afeExtensions?.frame?.renderedFields?.() || [];
   } catch {}
   const visible = new Set(shown.map((f) => fieldKey(f.id, f.path)));
   return [...new Set(shown.map((f) => f.id))].flatMap((ownerId) => {
     const owner = record(ownerId),
       translation = owner && record(translationId(owner.id, activeLocale));
-    return translation
-      ? translation.data.values
-          .filter((v) => !v.reviewed && valueFresh(owner, translation, v) && visible.has(fieldKey(ownerId, v.path)))
-          .map((v) => ({ ownerId, value: v }))
-      : [];
+    return translations.pending(owner,translation).filter(v=>visible.has(fieldKey(ownerId,v.path))).map(v=>({ownerId,value:v}));
   });
 }
 function confirmAllOnPage() {
@@ -4046,7 +3877,7 @@ function adoptFrame(frameURL) {
   return true;
 }
 window.addEventListener("message", (event) => {
-  if (event.origin !== location.origin || event.source !== frame.contentWindow || event.data?.source !== "flyingstars-frame") return;
+  if (event.origin !== location.origin || event.source !== frame.contentWindow || event.data?.source !== "afe-frame") return;
   if (event.data.frameURL !== expectedFrameURL && !(event.data.type === "ready" && adoptFrame(event.data.frameURL))) return;
   const data = event.data;
   if (data.type === "ready") {
@@ -4061,7 +3892,7 @@ window.addEventListener("message", (event) => {
     }
     focusLocaleSwitch = false;
     startPreview();
-    if (activeLocale !== "de") overlayLocale(activeLocale);
+    if (activeLocale !== sourceLocale) overlayLocale(activeLocale);
     if (frame.dataset.restoreTransient) {
       try {
         send("restore-transient", { value: JSON.parse(frame.dataset.restoreTransient) });
@@ -4086,7 +3917,8 @@ window.addEventListener("message", (event) => {
   } else if (data.type === "confirm-translation" && !busy && ready) {
     if (writeTranslation(data.id, data.path, data.locale, data.value)) toast("Übersetzung bestätigt.");
   } else if (data.type === "reorder-records" && !busy && ready) {
-    reorderRecords(data.ids || [], data.field);
+    const query=extensions.first('orderedQuery',data);
+    if(query?.reorder)reorderRecords(data.ids||[],query);
   } else if (data.type === "set-field" && !busy && ready) {
     changed(data.id, data.path, data.value);
     rerender();
@@ -4191,7 +4023,7 @@ document.addEventListener("keydown", (event) => {
       closePanel();
       frame.focus();
       try {
-        frame.contentWindow.flyingstarsEditorFrame?.refocus();
+        frame.contentWindow.afeExtensions?.frame?.refocus();
       } catch {}
     }
   }
@@ -4235,8 +4067,8 @@ window.addEventListener("resize", () => {
   }
 })();
 
-window.flyingstarsEditorLayout = () =>
+extensions.connect({layout: () =>
   [...document.querySelectorAll("#panel:not([hidden]),dialog[open]")].map((element) => ({
     surface: element.id || "dialog",
     ...inspectHorizontalLayout(element),
-  }));
+  }))});

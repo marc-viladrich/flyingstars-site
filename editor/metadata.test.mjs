@@ -37,7 +37,7 @@ test('core has no field-name tables, reference guesses or positional-list name r
  for(const file of files){const source=await readFile(new URL(file,import.meta.url),'utf8');for(const pattern of forbidden)assert.doesNotMatch(source,pattern,file);}
  // Scan every runtime server module, including newly added core/deploy modules. Browser modules
  // and site proof/fixture/CI tools have separate ownership and retain their existing checks above.
- const serverFiles=(await readdir(new URL('./',import.meta.url),{recursive:true})).filter(file=>file.endsWith('.mjs')&&!/(?:^|\/)(?:web|extensions|test|ci)\//.test(file)&&!/(?:\.test|\.browser|-fixture|-proof)\.mjs$/.test(file)&&!['flyingstars-adapter.mjs','pr5-compare.mjs'].includes(file));
+ const serverFiles=(await readdir(new URL('./',import.meta.url),{recursive:true})).filter(file=>file.endsWith('.mjs')&&!/(?:^|\/)(?:web|extensions|test|ci)\//.test(file)&&!/(?:\.test|\.browser|-fixture|-proof)\.mjs$/.test(file)&&!['flyingstars-adapter.mjs','browser-site.mjs','pr5-compare.mjs'].includes(file));
  const domain=[/FlyingStars|flyingstars/i,/\b(?:SPARK|HORIZON|ODYSSEY)\b/,/\b(?:packageId|featureIds|memberIds|clientIds|assetId)\b/,/["'](?:page|package|screen|post|project|faq|client|team|media|site|translation)\//,/\^\((?:page|package|screen|post|project|faq|client|team)\|/,/t-outline|t-caps|data-card|cfg-field/,/['"](?:packages|clients|team|screens|siteContact|siteInquiry|siteNavigation|siteUi|pricing|logoBar|projectGrid|postList)['"]/ ,/\b(?:packageOwnership|sourceId)\b/];
  for(const file of serverFiles){
   let source=await readFile(new URL(file,import.meta.url),'utf8');

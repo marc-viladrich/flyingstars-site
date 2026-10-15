@@ -1,8 +1,8 @@
 import {nodeAt} from '../core/metadata.mjs';
-import {resolveReference,imageSummary,mediaSource} from './site-adapter.mjs';
+import {extensions,resolveReference,imageSummary,mediaSource} from './site-adapter.mjs';
 import {describe} from './native-schema.mjs';
 export function normalizedRoute(path){const clean=String(path||'/').split(/[?#]/,1)[0];return clean==='/'?'/':'/'+clean.replace(/^\/+|\/+$/g,'')+'/';}
-export function navigationChoices(records){const choices=new Map([['/','Startseite'],['/drohnenshow-preise/','Preise & Pakete'],['/show-konfigurator/','Show-Konfigurator']]);for(const item of records){const path=item.route||(item.id.startsWith('page/')?(item.id==='page/index'?'/':'/'+item.id.slice(5)+'/'):null);if(path)choices.set(normalizedRoute(path),item.title);}return [...choices].map(([value,label])=>({value,label}));}
+export const navigationChoices=records=>extensions.first('navigation',records)??[];
 export function savedRecordRoute(records,id){return records.find(item=>item.id===id)?.route||'/';}
 export function publishNeedsActivation(review){return !!review.publishedHead&&review.activePublishedHead!==review.publishedHead;}
 export function mediaSourceChanged(originalSource,currentSource){return originalSource!==currentSource;}
@@ -48,17 +48,14 @@ export function itemSummary(entry,index,{records=[],image=false,imageChild=null,
 }
 
 // ---------------------------------------------------------------------------
-// Instance scope: a card on the canvas is one occurrence of an owner (a list entry, or a whole record for
-// query-backed cards), optionally rendering a second, shared record (the package of a pricing card).
+// Instance scope: a card on the canvas is one occurrence of an owner, a list entry or a queried record.
 // What it renders is read from the editor markers inside the occurrence; everything else of the owner
 // stays reachable under one "Weitere Felder (N)".
 // ---------------------------------------------------------------------------
 const startsWith = (prefix, path) => prefix.length <= path.length && prefix.every((part, index) => path[index] === part);
 // A marker on a container covers its fields; a marker on a field covers the containing unit.
 export const covers = (marker, path) => startsWith(marker, path) || startsWith(path, marker);
-// Raw frame markers → unique {id, path, kind}. A marker inside a nested entry of the same owner (a selected
-// Leistung inside a pricing card, a fact inside an occasion card) stands for that entry, not for the text of
-// the record it happens to show.
+// Raw frame markers → unique {id, path, kind}. A nested entry stands for itself, independent of its rendered record.
 export function instanceMarkers(raw, ownerId) {
   const out = [],
     seen = new Set();
@@ -71,8 +68,7 @@ export function instanceMarkers(raw, ownerId) {
   }
   return out;
 }
-// Two wrappers are the same occurrence when they stamp the same owner entry (or, without entry, the same
-// record) in the same section: a fact rendered twice is one instance, two cards of one package are two.
+// Two wrappers identify the same occurrence when their owner, entry and section match.
 export function sameOccurrence(a, b) {
   if (!a || !b) return false;
   const section = (s) => (s ? s.id + "#" + s.index : "");
@@ -188,8 +184,7 @@ export function reorderVisible(current, visible) {
   slots.forEach((slot, k) => (next[slot] = visible[k]));
   return next;
 }
-// Choices that carry a group (a package's Leistungen under "Musik", "Service & Extras"): one list per group
-// in the options' order, as the card shows them. Within a group the chosen ones come first in their stored
+// Grouped options follow the card's group order. Within a group the chosen ones come first in their stored
 // order, then the rest. The row order is kept in memo while the view is open: ticking or unticking leaves a
 // row where it was clicked, only moving it changes its place (moveChoice). The stored list is derived from
 // what is shown (groupedSelection): group by group, chosen rows in the order shown.

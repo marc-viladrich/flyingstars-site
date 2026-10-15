@@ -22,7 +22,7 @@ export function overviewPlan({ fields = [], containers = [], isMedia = (c) => c.
   const visible = fields.filter((f) => !isTechnical(f) && outside(f));
   const own = containers.filter((c) => c.path.length && outside(c));
   const editable = (c) => (c.kind === "object" || c.kind === "array") && !isMedia(c) && !isTechnical(c);
-  // A record that wraps nearly everything in one object (project → showcase) is grouped one level deeper.
+  // A record that wraps nearly everything in one object is grouped one level deeper.
   let base = [];
   for (;;) {
     const inner = own.find(

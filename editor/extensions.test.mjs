@@ -19,13 +19,11 @@ test('server creation factories and unique section lifecycle match existing brow
 });
 
 test('contact normalization proposes exactly the current browser-linked changes, with no mutation',async()=>{
- const browser=await readFile(new URL('./web/editor.js',import.meta.url),'utf8');
- const fn=browser.slice(browser.indexOf('function linkedHref('),browser.indexOf('\nfunction stage(',browser.indexOf('function linkedHref(')));
- const linked=runInNewContext('('+fn+')',{getPath:(data,path)=>path.reduce((v,k)=>v?.[k],data)});
+ const {extensions:browser}=await import('./web/site-adapter.mjs');
  for(const [href,value] of [['mailto:old@example.org',' new@example.org '],['tel:+49541','0541 123-45'],['tel:+49','+31 20 123'],['https://example.org','unchanged']]){
-  const data={phone:{value:'old',href}},path=['phone','value'],expected=linked({data},path,value);
+  const data={phone:{value:'old',href}},path=['phone','value'],expected=browser.first('normalize',{id:'site/contact',path,value,data});
   const result=extensions.first('normalize',{id:'site/contact',path,value,data});
-  assert.deepEqual(result,expected?[{path:Array.from(expected[0]),value:expected[1]}]:undefined);
+  assert.deepEqual(result,expected);
   assert.equal(data.phone.href,href);
  }
 });

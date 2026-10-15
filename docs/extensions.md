@@ -27,7 +27,7 @@ extensions.run('validateRecords', records);
 const route = extensions.first('route', record) ?? null;
 ```
 
-Die Registry kopiert und friert Definitionen und Hook-Zuordnungen ein. Sie prüft alle Namen, Hook-Funktionen und Vertragsversionen vor dem ersten Hook-Aufruf. Doppelte Namen, unbekannte Hooks und jede andere Vertragsversion werden abgewiesen. Versionsbereiche und Browser-Manifeste kommen mit der Produktintegration hinzu.
+Die Registry kopiert und friert Definitionen und Hook-Zuordnungen ein. Sie prüft alle Namen, Hook-Funktionen und Vertragsversionen vor dem ersten Hook-Aufruf. Doppelte Namen, unbekannte Hooks und jede andere Vertragsversion werden abgewiesen. Versionsbereiche kommen mit der Produktintegration hinzu; der Browservertrag von PR 7b steht weiter unten.
 
 Die Ausführung folgt der aufsteigenden Zeichenreihenfolge der Extension-Namen, unabhängig von der Reihenfolge der Registrierung:
 
@@ -85,20 +85,47 @@ Die Vergleichstabellen- und Singleton-Invarianten bleiben in den tatsächlichen 
 
 Uploads werden weiterhin dekodiert und neu kodiert, bevor Daten und Bytes gemeinsam gespeichert werden. Speicherpfad, Medienrecord und Wiederverwendung stammen aus der registrierten Medienpolicy. Host-Aliase, Buildvariablen und bestehende private Dateinamen liegen in `runtime-compatibility.mjs`. Der Runtime-Composition-Root reicht diese Kompatibilitätswerte weiter; bestehende Locks und Leases behalten ihre Namen.
 
-Die Overlay-Ablage behält `sourceId`, `sourceHash`, `values` und die bisherigen IDs bei. Die kollisionsfreie Tupelidentität und eine Formatmigration gehören zu PR 10. Maschinenübersetzungen bleiben ungeprüft, bis sie explizit akzeptiert werden. Der Inline-Codec arbeitet auf dem gespeicherten Stringformat, erhält dessen Bytes beim Roundtrip und bietet zusätzlich den kanonischen HTML-Renderer an. Die DOM-Serialisierung bleibt vorerst im Browser.
+Die Overlay-Ablage behält `sourceId`, `sourceHash`, `values` und die bisherigen IDs bei. Die kollisionsfreie Tupelidentität und eine Formatmigration gehören zu PR 10. Maschinenübersetzungen bleiben ungeprüft, bis sie explizit akzeptiert werden. Der Inline-Codec arbeitet auf dem gespeicherten Stringformat, erhält dessen Bytes beim Roundtrip und bietet zusätzlich den kanonischen HTML-Renderer an. Die DOM-Serialisierung liegt in der registrierten Browser-Extension.
 
-## Browser-Folgerunde
+## Browser-Registry, PR 7b
 
-Kein File unter `editor/web/` wird in PR 7 geändert. Folgende Anbindungen stehen noch aus:
+`editor/web/extensions.mjs` definiert eine browserfähige Registry ohne Node- oder Site-Imports. `editor/web/site-adapter.mjs` lädt beim Modulstart die Definitionen aus `../browser-site.mjs` und erstellt genau eine Registry pro JavaScript-Realm. Der Site-Adapter liefert dieses Modul unter `/browser-site.mjs` aus. Die Node-Komposition und der ausgelieferte Browser verwenden denselben Modulgraphen. Alle weiteren Modulpfade stehen explizit in `adapter.browserFiles`; ein Request kann keine Extension registrieren.
 
-- Widget-Registrierung für Paketleistungen, Vergleichstabellen, kompakte Tabellen und Mediennutzung.
-- Erstellung und Duplizierung über `createRecord` und `uniqueSection`; Kontaktinputs über die Vorschläge von `normalize`.
-- Query-Listen, Erstellungspresets und FAQ-Reorder über die registrierten Queries.
-- Navigationsauswahl, Record-Gruppen und Locale-Menüs über die Serverdeskriptoren.
-- Registrierung des Inline-Codecs einschließlich DOM-Serialisierung; bestehende Outline-/Caps-Darstellung beibehalten.
-- Frame-Lifecycles und bisherige Selector-/Preview-Sonderfälle in Browser-Extensions überführen.
+```js
+const extensions = createBrowserExtensionRegistry([{
+  name: 'example/catalog',
+  contractVersion: '1.0',
+  hooks: {
+    query: name => name === 'example/products' ? productsQuery : undefined,
+    createRecord: (prefix, template, name, options) => factory(template, name, options),
+  },
+  widgets: {'example/picker': {choices: (item, container, ui) => choices}},
+  codecs: {'example/short': {decode, encode, plainText, html, fromDOM, supportsDOM}},
+}]);
 
-Bis dahin bleiben die bisherigen Browserfunktionen und die unabhängigen serverseitigen Medienhelfer bestehen. Paritätstests vergleichen Erstellung, Kontaktvorschläge und die reale Medienbibliothek mit den unveränderten Browserfunktionen. Diese Zwischenstufe beansprucht noch keinen vollständig generischen Browser.
+const query = extensions.require('query', 'example/products');
+const ids = query.list({records, section, editor: true});
+```
+
+Die Registrierung prüft Namen, exakte Vertragsversion, bekannte Hook-Namen, Hook-Funktionen, Widget- und Codec-Mitglieder sowie doppelte Capability-IDs vor dem ersten Aufruf. Definitionen, Hook-Tabellen und Capability-Beschreibungen werden kopiert und eingefroren. Die Dispatch-Methoden `first`, `require`, `some`, `collect`, `run`, `runRequired` und `runAsync` entsprechen den Servermethoden. Extension-Namen bestimmen die Reihenfolge. Fehler beenden den Aufruf; synchrone Resolver lehnen Promises ab. Während eines Hook-Aufrufs ist erneuter Dispatch verboten. Asynchrone Hooks werden nacheinander erwartet; Browsercode besitzt keinen Node-AsyncLocalStorage-Kontext über `await` hinweg.
+
+| Bereich | Browservertrag |
+| --- | --- |
+| Widgets | `widgets[id]`: `render(item, path, options, ui)`, `choices(item, container, ui)`, `table` oder `layout`. Der Schlüssel kommt aus `x-afe.widget`. |
+| Erstellung | `createRecord(prefix, template, name, options)` und `uniqueSection(section, existing)` liefern Daten. `creationForm(prefix)` beschreibt Zusatzinputs; `validateCreation(context)` prüft vor dem Anlegen im Draft. |
+| Queries | `query(name)` und `sectionQuery(section)` liefern `list({records, section, editor})`, `create({records, section})` und optional `reorder({records, ids})`. Reorder liefert dieselben Feldpatches wie auf dem Server. `orderedQuery({ids, field})` bindet das Canvas-Protokoll an die Query. |
+| Feldvorschläge | `normalize({id, data, path, value})` liefert Zusatzpatches; `siteChange(id, path, value, {record, draft})` bündelt zusammengehörige Änderungen. Der NativeStore validiert jeden späteren Save weiterhin vollständig. |
+| Navigation | `navigation(records)`, `pageChoices(records)`, `pageGroups()`, `currentPage(records, slug)`, `navigatorName(record)`, `recordKinds()`, `navigatorOrder()`, `changeKinds()`, `recordGroup(id)`, `languages()`, `localeNames()` und `routeTools()` liefern Routen, Gruppen und Sprachen. |
+| Inline-Codec | `inlineCodec()` wählt eine registrierte Codec-ID. `extensions.inlineCodec` liefert deren geprüfte Beschreibung einschließlich DOM-Serializer und optionaler Markierungsbuttons. Die gespeicherten Bytes und Outline-/Caps-Darstellung bleiben erhalten. |
+| Frame | `presentFrame({document, records, mediaBaselines, initialMediaSource})`, `prepareClone(copy, options)`, `isRuntime(node)` und `attributePolicy(node, attribute)` kapseln Selektoren, Bild-/Canvas-Vorschau und Controller-Regeln. |
+| Transienter Zustand | `snapshotFrame(context)`, `restoreFrame(state, context)` und `ownsTransientInput(node, state)` sind Hooks. Die gleichnamigen Registry-Methoden sammeln bzw. verteilen den Zustand nach Extension-Namen, damit mehrere Controller unabhängig bleiben. |
+| Referenzen, Medien und Übersetzungen | Resolver für deklarierte Referenzen, Medienbibliothek/-auswahl/-nutzung und `translationStorage()` kapseln die bisherigen Site-Formate. Die spätere Übersetzungsmigration gehört weiter zu PR 10. |
+
+`window.afeExtensions` ist die einzige Editor-Globale. Die bereits vorhandene Frame-Brücke und die Layoutdiagnose liegen unter `registry.frame` bzw. `registry.layout` und werden einmal mit `connect()` angeschlossen. Inhaltsänderungen durchlaufen weiterhin den Draft und die Server-Schreibgrenze.
+
+Die FlyingStars-Registrierung und alle Site-Regeln liegen in `editor/extensions/flyingstars/web/`. Server und Browser verwenden dieselben Record-/Section-Factories, Queries, Kontaktvorschläge und Medienresolver. Generische Browsermodule enthalten keine FlyingStars-IDs, Inhaltsfeldnamen oder Site-Selektoren. Ein Guard scannt alle `.mjs`- und `.js`-Dateien unter `editor/web/`.
+
+Die gewählte Schnittstelle trennt UI-Mechanik und Site-Regeln. Eine Alternative wäre gewesen, alle Browsermodule in einen Site-Controller mit Zugriff auf den gesamten Editorzustand zu verschieben. Das hätte weniger Hooks benötigt, aber der Site die generische Inspector-, Draft- und Navigationslogik übertragen. Die Registry erhält diese Zuständigkeiten im Editor und nimmt nur Datenvorschläge und klar begrenzte DOM-Lifecycles entgegen.
 
 ## Verifikation
 
