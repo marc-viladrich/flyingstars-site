@@ -9,7 +9,8 @@ export async function uploadNativeMedia(store,{bytes,name,requestId,expectedHead
  const {id,data,file}=store.site.mediaWrite(asset,requestId);
  // The file name is the hash of the normalised bytes: the same image uploaded again reuses its media record.
  const current=await store.state(),existing=current.records.find(record=>record.id.startsWith('media/')&&record.data?.src===data.src);
- if(existing)return{state:current,assetId:existing.id,reused:true};
+ // A retried request (same id) stays a replay of its own commit; a new request for the same file reuses it.
+ if(existing&&existing.id!==id)return{state:current,assetId:existing.id,reused:true};
  const saved=await store.save({expectedHead,requestId,changes:[],creates:[{id,data}]},{actor,binaryWrites:[{file,bytes:output}]});
  return{state:saved,assetId:id};
 }
