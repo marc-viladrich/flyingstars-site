@@ -44,3 +44,10 @@ Weitere Prüfungen:
 Die Sandbox verweigert das Anlegen von `source/.git/worktrees/afe-pr2/index.lock` trotz des für diese Aufgabe vorgesehenen Metadatenpfads. Deshalb konnten die Änderungen nicht im ursprünglichen Worktree committed werden. Die drei fokussierten Commits werden in einem unabhängigen temporären Klon derselben Basis vorbereitet und als `git format-patch`-Serie bereitgestellt. Jeder Commit endet mit `Co-Authored-By: Codex <noreply@openai.com>`. Es gibt keinen Push und keinen PR.
 
 PR 3 übernimmt generische Source-Codecs und die transaktionale Registry hinter dem Legacy-Adapter: Shared-File-Locator, Ganzdatei-Konfliktschutz und quelltreue No-op-/Edit-Roundtrips. Store-Referenzregeln, Paketlogik, Browser-Heuristiken und Übersetzungs-ID-Migration bleiben bei den späteren Architektur-PRs. Dieser PR verschiebt keine Runtime-Logik ins Produktrepository und behauptet keine zweite Site-Adoption.
+
+## Nachprüfung außerhalb der Sandbox (Claude, 15.10.2026)
+
+- `node --test 'editor/*.test.mjs' 'editor/test/*.test.mjs'` ohne Offline-Modus: **141 bestanden, 0 Fehler, 0 übersprungen**; der Socket-Test läuft hier mit echtem Loopback-Listener.
+- Manueller Start aus `cwd=/tmp` mit `--site-root`/`--state-dir` (State außerhalb des Repos, frisches Konto über `manage-accounts.mjs` mit `AFE_SITE_ROOT`): `/editor/` leitet auf den Login um, Login → 200, `/editor/` und `/editor/api/state` nach Login → 200, öffentliche Simulation → 200.
+- State-Verzeichnis im Repo wird beim Start abgelehnt: „AFE_STATE_DIR (FLYINGSTARS_STATE_DIR) muss außerhalb des Repository-Klons liegen."
+- Hinweis: Die Konten-CLI nimmt ohne `AFE_SITE_ROOT` das Arbeitsverzeichnis als Site-Wurzel; aus `/tmp` heraus lehnt sie einen State unter `/tmp` deshalb zu Recht ab.
