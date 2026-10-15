@@ -23,6 +23,9 @@ function decodeUpload({name,base64,requestId}){
  return {name:name.trim().normalize('NFC'),input,format,requestId};
 }
 
+// The library shows titles, not file names: "testbild-violett_2.png" → "Testbild violett 2".
+export function mediaTitle(name){const words=String(name||'').replace(/\.[a-z0-9]{2,5}$/i,'').replace(/[-_.\s]+/g,' ').trim();return words?words[0].toLocaleUpperCase('de')+words.slice(1):'Bild';}
+
 /** Untrusted uploads are decoded and re-encoded; EXIF, GPS and ICC metadata never persist. */
 export async function normalizeUpload(upload){
  const {name,input,format,requestId}=decodeUpload(upload);
@@ -39,7 +42,7 @@ export async function normalizeUpload(upload){
  }catch{throw invalid('Das Bild konnte nicht vollständig gelesen werden. Erlaubt sind einzelne PNG-, JPEG- oder WebP-Bilder mit höchstens 20 Megapixeln.');}
  if(output.length>MAX_MEDIA_BYTES)throw invalid('Das aufbereitete Bild überschreitet die Grenze von 5 MB.');
  const extension=format==='jpeg'?'jpg':format;
- const asset=({id:'asset/'+requestId,type:'asset',title:name,src:'assets/'+hash(output)+'.'+extension,mime:'image/'+format,width:info.width,height:info.height,defaultAlt:''});
+ const asset=({id:'asset/'+requestId,type:'asset',title:mediaTitle(name),src:'assets/'+hash(output)+'.'+extension,mime:'image/'+format,width:info.width,height:info.height,defaultAlt:''});
  const payload=hash(JSON.stringify({operation:'upload-media',name,inputHash:hash(input)}));
  return {asset,output,payload,requestId};
 }

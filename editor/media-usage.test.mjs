@@ -10,6 +10,7 @@ import {recordKinds} from './web/record-kinds.mjs';
 import {startNativeServers} from './server.mjs';
 import {NativeStore, git} from './native-store.mjs';
 import {createFlyingStarsAdapter} from './flyingstars-adapter.mjs';
+import {mediaTitle} from './media-upload.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const asset = (slug, src = `/assets/${slug}.png`, title = slug) => ({id: 'media/' + slug, data: {title, src, defaultAlt: title, width: 10, height: 10, mime: 'image/png'}});
@@ -103,6 +104,13 @@ test('delete guard: NativeStore.references uses the resolver, also when the asse
   assert.deepEqual(mediaUsers(others, a), ['post/p', 'client/c']);
   assert.deepEqual(NativeStore.prototype.references.call({}, others, a), ['post/p', 'client/c']);
   assert.deepEqual(NativeStore.prototype.references.call({}, [a, asset('b')], a), []);
+});
+
+test('an uploaded image gets a readable title instead of its file name', () => {
+  assert.equal(mediaTitle('testbild-violett_2.png'), 'Testbild violett 2');
+  assert.equal(mediaTitle('ÜBERSICHT.final.JPG'), 'ÜBERSICHT final');
+  assert.equal(mediaTitle('  .png'), 'Bild');
+  assert.equal(mediaTitle(''), 'Bild');
 });
 
 async function clone(t) {
