@@ -23,10 +23,10 @@ const page = (sections) => ({
   revision: "r1",
   data: { title: "Titel der Seite", sections },
   fields: [
-    { path: ["title"], kind: "text" },
+    { path: ["title"], kind: "text", 'x-afe': {translatable:true} },
     ...sections.flatMap((s, i) => [
-      { path: ["sections", i, "headline"], kind: "text" },
-      { path: ["sections", i, "href"], kind: "text" },
+      { path: ["sections", i, "headline"], kind: "text", 'x-afe': {translatable:true} },
+      { path: ["sections", i, "href"], kind: "text", 'x-afe': {translatable:false} },
     ]),
   ],
 });
@@ -54,7 +54,7 @@ test("only new or changed fields are sent; identical text is sent once; a second
 
 test("unchanged markdown paragraphs come from memory; link targets survive", async () => {
   const body = "Erster Absatz mit [Link](/kontakt/).\n\nZweiter Absatz.";
-  const post = { id: "post/a", revision: "p1", data: { body }, fields: [{ path: ["body"], kind: "text", format: "markdown" }] };
+  const post = { id: "post/a", revision: "p1", data: { body }, fields: [{ path: ["body"], kind: "text", 'x-afe': {translatable:true}, format: "markdown" }] };
   const memory = { entries: {} };
   const provider = fakeProvider();
   const first = plan({ records: [post], locale: "en", memory });
@@ -68,7 +68,7 @@ test("unchanged markdown paragraphs come from memory; link targets survive", asy
 });
 
 test("moving the record hash never revives an old value without a field hash", () => {
-  const owner = { id: "page/test", revision: "r2", data: { title: "Neu" }, fields: [{ path: ["title"], kind: "text" }] };
+  const owner = { id: "page/test", revision: "r2", data: { title: "Neu" }, fields: [{ path: ["title"], kind: "text", 'x-afe': {translatable:true} }] };
   const old = { id: "translation/page-test-en", revision: "t1", data: { sourceId: "page/test", locale: "en", sourceHash: "r1", values: [{ path: ["title"], text: "Old", reviewed: true }] } };
   const merged = mergeIntoTranslations({ records: [owner, old], locale: "en", values: new Map([["page/test", { revision: "r2", entries: [] }]]) });
   assert.equal(merged[0].data.values[0].sourceHash, sha256(""));
@@ -80,7 +80,7 @@ test("pieces respect a UTF-8 byte limit, also for long sentences without full st
   const seen = [];
   const provider = { id: "fake", maxChars: 100, async translate({ texts }) { seen.push(...texts); return { texts: texts.map((t) => t), billedCharacters: 0 }; } };
   const text = "ä".repeat(30) + ", " + "wort ".repeat(40);
-  const record = { id: "page/t", revision: "r", data: { title: text }, fields: [{ path: ["title"], kind: "text" }] };
+  const record = { id: "page/t", revision: "r", data: { title: text }, fields: [{ path: ["title"], kind: "text", 'x-afe': {translatable:true} }] };
   await execute(plan({ records: [record], locale: "en", memory }), provider, { memory });
   assert.ok(seen.length > 1 && seen.every((t) => new TextEncoder().encode(t).length <= 100), seen.map((t) => new TextEncoder().encode(t).length).join(","));
 });
@@ -89,14 +89,14 @@ test("code fences stay untouched across blank lines; titled links and placeholde
   const body = "Text davor.\n\n```js\nconst a = 1;\n\nconst b = 2;\n```\n\nSiehe [Seite](/x \"Titel\") und {name}.";
   const parts = segmentsOf({ markdown: true, text: body }).filter((p) => p.text?.trim());
   assert.deepEqual(parts.map((p) => p.text), ["Text davor.", 'Siehe [Seite](/x "Titel") und {name}.']);
-  const planned = plan({ records: [{ id: "post/c", revision: "r", data: { body }, fields: [{ path: ["body"], kind: "text", format: "markdown" }] }], locale: "en", memory: { entries: {} } });
+  const planned = plan({ records: [{ id: "post/c", revision: "r", data: { body }, fields: [{ path: ["body"], kind: "text", 'x-afe': {translatable:true}, format: "markdown" }] }], locale: "en", memory: { entries: {} } });
   assert.ok(planned.toSend.every((s) => !s.text.includes("const ")));
   assert.ok(planned.toSend.some((s) => s.text.includes("⟦") && !s.text.includes("/x") && !s.text.includes("{name}")));
 });
 
 test("a translation that drops a protected token is rejected; successful pieces are kept on partial failure", async () => {
   const memory = { entries: {} };
-  const record = { id: "page/t", revision: "r", data: { a: "Hallo {name}", b: "Guten Tag" }, fields: [{ path: ["a"], kind: "text" }, { path: ["b"], kind: "text" }] };
+  const record = { id: "page/t", revision: "r", data: { a: "Hallo {name}", b: "Guten Tag" }, fields: [{ path: ["a"], kind: "text", 'x-afe': {translatable:true} }, { path: ["b"], kind: "text", 'x-afe': {translatable:true} }] };
   const provider = { id: "fake", async translate({ texts }) { return { texts: texts.map((t) => (t.includes("⟦") ? "Hello " : "Good day")), billedCharacters: 5 }; } };
   const result = await execute(plan({ records: [record], locale: "en", memory }), provider, { memory });
   assert.equal(result.skippedFields, 1);
@@ -104,7 +104,7 @@ test("a translation that drops a protected token is rejected; successful pieces 
   assert.equal(result.values.get("page/t").entries[0].text, "Good day");
   const failing = { id: "fake", async translate({ texts }) { return { texts: texts.map((t, i) => (i === 0 ? "ok" : null)), billedCharacters: 2, errors: ["boom"] }; } };
   const memory2 = { entries: {} };
-  const record2 = { id: "page/u", revision: "r", data: { a: "Eins", b: "Zwei" }, fields: [{ path: ["a"], kind: "text" }, { path: ["b"], kind: "text" }] };
+  const record2 = { id: "page/u", revision: "r", data: { a: "Eins", b: "Zwei" }, fields: [{ path: ["a"], kind: "text", 'x-afe': {translatable:true} }, { path: ["b"], kind: "text", 'x-afe': {translatable:true} }] };
   const partial = await execute(plan({ records: [record2], locale: "en", memory: memory2 }), failing, { memory: memory2 });
   assert.equal(Object.keys(memory2.entries).length, 1);
   assert.equal(partial.skippedFields, 1);
@@ -112,7 +112,7 @@ test("a translation that drops a protected token is rejected; successful pieces 
 
 test("outline and caps marks are protected like placeholders and come back in place", async () => {
   const memory = { entries: {} };
-  const record = { id: "page/t", revision: "r", data: { title: "Wir {o}gestalten{/o} dein {c}Himmel{/c}" }, fields: [{ path: ["title"], kind: "text" }] };
+  const record = { id: "page/t", revision: "r", data: { title: "Wir {o}gestalten{/o} dein {c}Himmel{/c}" }, fields: [{ path: ["title"], kind: "text", 'x-afe': {translatable:true} }] };
   const planned = plan({ records: [record], locale: "en", memory });
   assert.ok(planned.toSend.every((s) => !/\{\/?[oc]\}/.test(s.text)));
   const provider = { id: "fake", async translate({ texts }) { return { texts: texts.map((t) => t.replace("Wir", "We").replace("gestalten", "design").replace("dein", "your").replace("Himmel", "sky")), billedCharacters: 1 }; } };

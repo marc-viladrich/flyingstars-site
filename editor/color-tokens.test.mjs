@@ -50,7 +50,7 @@ test('both colour schemas accept only registry ids and both field descriptor pat
 
 test('colour metadata excludes future fields from translation regardless of their name', () => {
   const record = {id:'project/example',data:{paint:'amber',caption:'Unsere Show'},fields:[
-    {path:['paint'],kind:'text',format:'color'}, {path:['caption'],kind:'text'}
+    {path:['paint'],kind:'text', 'x-afe': {translatable:true},format:'color'}, {path:['caption'],kind:'text', 'x-afe': {translatable:true}}
   ]};
   assert.deepEqual(translatableFields(record).map(f => f.path), [['caption']]);
   assert.equal(textFields(packageSchema,{color:'package-spark'}).find(f => f.path[0] === 'color').format, 'color');

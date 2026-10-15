@@ -17,7 +17,13 @@ test('Undo keeps an inspector only when its original source is still valid; stru
 import {mediaRecordFor,linkedRecordFor,itemSummary,imageSummary,instanceMarkers,sameOccurrence,scopeUnits,partitionUnits,covers} from './web/view-state.mjs';
 const mediaRecords=[{id:'media/image-a',title:'Berlin Game',data:{title:'Berlin Game 2025',src:'/m/02.jpg',defaultAlt:'Stadion bei Nacht'}},{id:'package/horizon',title:'HORIZON',data:{displayName:'HORIZON'}}];
 test('media usages resolve their library record by full id first, then by bare id',()=>{assert.equal(mediaRecordFor(mediaRecords,'media/image-a').id,'media/image-a');assert.equal(mediaRecordFor(mediaRecords,'image-a').id,'media/image-a');assert.equal(mediaRecordFor(mediaRecords,'image-x'),null);assert.equal(mediaRecordFor(mediaRecords,undefined),null);});
-test('<key>Id references never prefix a full record id twice (assetId stays media/…, not asset/media/…)',()=>{assert.equal(linkedRecordFor(mediaRecords,{packageId:'horizon'}).id,'package/horizon');assert.equal(linkedRecordFor(mediaRecords,{assetId:'media/image-a'}).id,'media/image-a');assert.equal(linkedRecordFor(mediaRecords,{assetId:'image-a'}).id,'media/image-a');assert.equal(linkedRecordFor(mediaRecords,{packageId:'nope'}),null);assert.equal(linkedRecordFor(mediaRecords,'horizon'),null);});
+const referenceDescriptor=(key,collection)=>({itemLabel:[key],element:{kind:'object',properties:{[key]:{kind:'text','x-afe':{reference:{collection,encoding:'id'}}}}}});
+test('explicit references resolve legacy full and bare IDs; names never infer a collection',()=>{
+ assert.equal(linkedRecordFor(mediaRecords,{packageId:'horizon'},referenceDescriptor('packageId','packages')).id,'package/horizon');
+ for(const id of ['media/image-a','image-a'])assert.equal(linkedRecordFor(mediaRecords,{assetId:id},referenceDescriptor('assetId','media')).id,'media/image-a');
+ assert.equal(linkedRecordFor(mediaRecords,{packageId:'horizon'}),null);
+ assert.equal(linkedRecordFor(mediaRecords,{unrelated:'horizon'},referenceDescriptor('unrelated','packages')).id,'package/horizon');
+});
 test('image items are named caption → effective alt → library title → file name → Eintrag N, with a thumbnail',()=>{
  const name=(entry,i=0)=>itemSummary(entry,i,{records:mediaRecords,image:true});
  assert.deepEqual(name({src:'/old.jpg',caption:'Berlin Game',alt:'x',assetId:'media/image-a'}),{label:'Berlin Game',thumb:'/m/02.jpg'});
@@ -30,10 +36,10 @@ test('image items are named caption → effective alt → library title → file
 });
 test('other entries keep their linked record or own name; image-bearing entries fall back to their image',()=>{
  const opts={records:mediaRecords,recordName:r=>r.data.displayName};
- assert.equal(itemSummary({packageId:'horizon',showOrb:true},1,opts).label,'HORIZON');
- assert.equal(itemSummary({title:'Ablauf',text:'x'},0,opts).label,'Ablauf');
+ assert.equal(itemSummary({packageId:'horizon',showOrb:true},1,{...opts,...referenceDescriptor('packageId','packages')}).label,'HORIZON');
+ assert.equal(itemSummary({title:'Ablauf',text:'x'},0,{...opts,itemLabel:['title']}).label,'Ablauf');
  assert.deepEqual(itemSummary({text:'ohne Namen'},0,{...opts,imageChild:{src:'/p.jpg',caption:'Porträt'}}),{label:'Porträt',thumb:'/p.jpg'});
- assert.deepEqual(itemSummary({name:'Jana'},0,{...opts,imageChild:{src:'/p.jpg'}}),{label:'Jana',thumb:'/p.jpg'});
+ assert.deepEqual(itemSummary({name:'Jana'},0,{...opts,itemLabel:['name'],imageChild:{src:'/p.jpg'}}),{label:'Jana',thumb:'/p.jpg'});
  assert.equal(itemSummary('Fakt',3).label,'Fakt');assert.equal(itemSummary('',3).label,'Eintrag 4');assert.equal(itemSummary({},0).label,'Eintrag 1');
 });
 // A pricing card: page/index tiers[1] renders package/horizon.

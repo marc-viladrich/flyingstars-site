@@ -29,11 +29,12 @@ test('NativeStore preserves the PR 3 records and whole-file revisions under Astr
     source=source.replace(`'./${file}'`,JSON.stringify(pathToFileURL(path.join(root,'editor',file)).href));
   }
   const {createFlyingStarsAdapter:beforeAdapter}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
-  const before=await new NativeStore(root,{site:await beforeAdapter(root),remote:false}).init();
+  const before=await new NativeStore(root,{site:{...await createFlyingStarsAdapter(root),...await beforeAdapter(root)},remote:false}).init();
   const after=await new NativeStore(root,{site:await createFlyingStarsAdapter(root),remote:false}).init();
   const revision=await git(root,['rev-parse','HEAD']);
   const baseline=await before.stateAt(revision),current=await after.stateAt(revision);
-  assert.deepEqual(current,baseline);
+  const values=state=>state.records.map(({id,data,file,revision})=>({id,data,file,revision}));
+  assert.deepEqual(values(current),values(baseline));
   for (const record of current.records) {
     const source=after.sourceFor(record.id);
     const collection=Object.entries(expected).find(([, [prefix,,singleton]])=>

@@ -98,12 +98,13 @@ test('a translation files its images under the type of its source record', () =>
   assert.deepEqual(mediaLibrary(records).assets[0].collections, ['post']);
 });
 
-test('delete guard: NativeStore.references uses the resolver, also when the asset is already gone from the list', () => {
+test('delete guard: NativeStore.references uses the site resolver, also when the asset is already gone from the list', async () => {
+  const site=await createFlyingStarsAdapter(path.join(here,'..')),store={site,sourceFor:id=>site.sourceFor(id)};
   const a = asset('a', 'https://flyingstars.art/a.jpg');
   const others = [{id: 'post/p', data: {body: `![A](${a.data.src})`}}, {id: 'client/c', data: {logo: img({src: a.data.src, assetId: 'a'})}}, asset('twin', a.data.src)];
   assert.deepEqual(mediaUsers(others, a), ['post/p', 'client/c']);
-  assert.deepEqual(NativeStore.prototype.references.call({}, others, a), ['post/p', 'client/c']);
-  assert.deepEqual(NativeStore.prototype.references.call({}, [a, asset('b')], a), []);
+  assert.deepEqual(NativeStore.prototype.references.call(store, others, a), ['post/p', 'client/c']);
+  assert.deepEqual(NativeStore.prototype.references.call(store, [a, asset('b')], a), []);
 });
 
 test('an uploaded image gets a readable title instead of its file name', () => {

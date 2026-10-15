@@ -25,7 +25,7 @@ test('outlined project titles and sustainability heading retain fresh EN/NL mark
       assert.ok(entry,id+' '+locale);
       assert.equal(entry.sourceHash,sha256(source));
       assert.match(entry.text,/^\{o\}[^]*\{\/o\}$/);
-      const record={id,data,fields:[{path,kind:'text',format:'inline'}]};
+      const record={id,data,fields:[{path,kind:'text', 'x-afe': {translatable:true},format:'inline'}]};
       const edited=localize(record,locale,{editor:true,translation});
       assert.equal(path.reduce((v,k)=>v[k],edited.data),entry.text);
       if(!entry.reviewed){

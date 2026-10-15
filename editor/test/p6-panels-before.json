@@ -1,0 +1,8477 @@
+{
+  "translation": {
+    "fields": [
+      {
+        "path": [
+          "values",
+          "*",
+          "reviewed"
+        ],
+        "label": "Reviewed",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "values",
+          "*",
+          "path",
+          "*"
+        ],
+        "label": "Path",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "values",
+          "*",
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "locale"
+        ],
+        "label": "Locale",
+        "kind": "enum",
+        "advanced": true,
+        "choices": [
+          "En",
+          "Nl"
+        ]
+      },
+      {
+        "path": [
+          "sourceHash"
+        ],
+        "label": "Source Hash",
+        "kind": "text",
+        "advanced": true
+      },
+      {
+        "path": [
+          "values",
+          "*",
+          "sourceHash"
+        ],
+        "label": "Source Hash",
+        "kind": "text",
+        "advanced": true
+      },
+      {
+        "path": [
+          "sourceId"
+        ],
+        "label": "Source Id",
+        "kind": "text",
+        "advanced": true
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "values"
+        ],
+        "label": "Values",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": false,
+          "insertable": false,
+          "removable": false
+        }
+      },
+      {
+        "path": [
+          "values",
+          "*",
+          "path"
+        ],
+        "label": "Path",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "values",
+          "*"
+        ],
+        "label": "Values",
+        "kind": "object",
+        "advanced": false
+      }
+    ],
+    "optionalFields": []
+  },
+  "team": {
+    "fields": [
+      {
+        "path": [
+          "image",
+          "decorative"
+        ],
+        "label": "Dekoratives Bild",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "bio"
+        ],
+        "label": "Kurzbiografie",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "name"
+        ],
+        "label": "Name",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "role"
+        ],
+        "label": "Rolle",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "image",
+          "assetId"
+        ],
+        "label": "Medium aus der Bibliothek",
+        "kind": "text",
+        "advanced": true
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "image"
+        ],
+        "label": "Porträt",
+        "kind": "object",
+        "advanced": false
+      }
+    ],
+    "optionalFields": [
+      {
+        "path": [
+          "image",
+          "decorative"
+        ],
+        "label": "Dekoratives Bild",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "image"
+        ],
+        "label": "Porträt",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "image",
+          "altOverride"
+        ],
+        "label": "Alternativtext an dieser Stelle",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "image",
+          "assetId"
+        ],
+        "label": "Medium aus der Bibliothek",
+        "kind": "text",
+        "advanced": true
+      }
+    ]
+  },
+  "site/contact": {
+    "fields": [
+      {
+        "path": [
+          "email",
+          "value"
+        ],
+        "label": "Angezeigter Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "phone",
+          "value"
+        ],
+        "label": "Angezeigter Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "videoCall",
+          "value"
+        ],
+        "label": "Angezeigter Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "whatsapp",
+          "value"
+        ],
+        "label": "Angezeigter Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "email",
+          "label"
+        ],
+        "label": "Bezeichnung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "phone",
+          "label"
+        ],
+        "label": "Bezeichnung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "videoCall",
+          "label"
+        ],
+        "label": "Bezeichnung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "whatsapp",
+          "label"
+        ],
+        "label": "Bezeichnung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "videoCall",
+          "href"
+        ],
+        "label": "Buchungslink (https://)",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "email",
+          "href"
+        ],
+        "label": "E-Mail-Link (mailto:)",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "address",
+          "post",
+          "name"
+        ],
+        "label": "Name",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "address",
+          "visit",
+          "name"
+        ],
+        "label": "Name",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "address",
+          "post",
+          "street"
+        ],
+        "label": "Straße und Ort",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "address",
+          "visit",
+          "street"
+        ],
+        "label": "Straße und Ort",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "phone",
+          "href"
+        ],
+        "label": "Telefon-Link (tel:)",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "whatsapp",
+          "href"
+        ],
+        "label": "WhatsApp-Link (https://)",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "address",
+          "post",
+          "label"
+        ],
+        "label": "Überschrift",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "address",
+          "visit",
+          "label"
+        ],
+        "label": "Überschrift",
+        "kind": "text",
+        "advanced": false
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "address"
+        ],
+        "label": "Adresse",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "address",
+          "visit"
+        ],
+        "label": "Besuchsadresse",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "email"
+        ],
+        "label": "E-Mail",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "address",
+          "post"
+        ],
+        "label": "Postanschrift",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "phone"
+        ],
+        "label": "Telefon",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "videoCall"
+        ],
+        "label": "Videocall",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "whatsapp"
+        ],
+        "label": "WhatsApp",
+        "kind": "object",
+        "advanced": false
+      }
+    ],
+    "optionalFields": []
+  },
+  "site/inquiry": {
+    "fields": [
+      {
+        "path": [
+          "buttons",
+          "submit"
+        ],
+        "label": "Absenden",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "occasions",
+          "agentur"
+        ],
+        "label": "Anlass „Agentur“",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "occasions",
+          "firma"
+        ],
+        "label": "Anlass „Firmenevent“",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "occasions",
+          "privat"
+        ],
+        "label": "Anlass „Hochzeit & Privat“",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "occasions",
+          "indoor"
+        ],
+        "label": "Anlass „Indoor“",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "occasions",
+          "sonstiges"
+        ],
+        "label": "Anlass „Sonstiges“",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "occasions",
+          "stadt"
+        ],
+        "label": "Anlass „Stadt & Festival“",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "date",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "email",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "fullName",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "message",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "occasion",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "package",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "phone",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "place",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "messages",
+          "sending"
+        ],
+        "label": "Button während des Versands",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "kicker"
+        ],
+        "label": "Dachzeile",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "package",
+          "suffix"
+        ],
+        "label": "Einheit hinter der Drohnenzahl",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "messages",
+          "success"
+        ],
+        "label": "Erfolgsmeldung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "messages",
+          "failed"
+        ],
+        "label": "Fehler ohne Verbindung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "messages",
+          "sendFailed"
+        ],
+        "label": "Fehler vom Server ohne Details",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "messages",
+          "required"
+        ],
+        "label": "Fehlermeldung Pflichtfeld",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "messages",
+          "spam"
+        ],
+        "label": "Fehlermeldung bei abgelehnter Spam-Prüfung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "email",
+          "invalid"
+        ],
+        "label": "Fehlermeldung bei ungültiger Adresse",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "occasion",
+          "error"
+        ],
+        "label": "Fehlermeldung ohne Auswahl",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "email",
+          "error"
+        ],
+        "label": "Fehlermeldung wenn leer",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "fullName",
+          "error"
+        ],
+        "label": "Fehlermeldung wenn leer",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "hint"
+        ],
+        "label": "Hinweis unter Schritt 1",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "privacy",
+          "link"
+        ],
+        "label": "Linktext",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "messages",
+          "notConfigured"
+        ],
+        "label": "Meldung wenn der Versand nicht eingerichtet ist ({email} wird ersetzt)",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "package",
+          "unknown"
+        ],
+        "label": "Option ohne Paket",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "message",
+          "placeholder"
+        ],
+        "label": "Platzhalter",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "place",
+          "placeholder"
+        ],
+        "label": "Platzhalter",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "steps",
+          "show"
+        ],
+        "label": "Schritt 1 (für Screenreader)",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "steps",
+          "contact"
+        ],
+        "label": "Schritt 2 (für Screenreader)",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "progress",
+          "step"
+        ],
+        "label": "Schrittanzeige ({current} und {total} werden ersetzt)",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "privacy",
+          "after"
+        ],
+        "label": "Text nach dem Link",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "privacy",
+          "before"
+        ],
+        "label": "Text vor dem Link",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "message",
+          "skyText"
+        ],
+        "label": "Vorbelegung aus dem Preisrechner ({text} wird ersetzt)",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "buttons",
+          "next"
+        ],
+        "label": "Weiter",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "progress",
+          "duration"
+        ],
+        "label": "Zeitangabe",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "buttons",
+          "back"
+        ],
+        "label": "Zurück",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "messages",
+          "retry"
+        ],
+        "label": "Zusatz nach jedem Fehler ({email} wird ersetzt)",
+        "kind": "text",
+        "advanced": false
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "occasion"
+        ],
+        "label": "Anlass",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "occasions"
+        ],
+        "label": "Anlass-Auswahl",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "buttons"
+        ],
+        "label": "Buttons",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "privacy"
+        ],
+        "label": "Datenschutzhinweis",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "date"
+        ],
+        "label": "Datum",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "email"
+        ],
+        "label": "E-Mail-Feld",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "progress"
+        ],
+        "label": "Fortschritt",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "messages"
+        ],
+        "label": "Meldungen",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "message"
+        ],
+        "label": "Nachricht",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "fullName"
+        ],
+        "label": "Name-Feld",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "place"
+        ],
+        "label": "Ort",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "package"
+        ],
+        "label": "Paket",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "steps"
+        ],
+        "label": "Schritt-Überschriften",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "phone"
+        ],
+        "label": "Telefon-Feld",
+        "kind": "object",
+        "advanced": false
+      }
+    ],
+    "optionalFields": []
+  },
+  "site/navigation": {
+    "fields": [
+      {
+        "path": [
+          "cta",
+          "label"
+        ],
+        "label": "Linktext",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "footer",
+          "legal",
+          "*",
+          "label"
+        ],
+        "label": "Linktext",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "footer",
+          "pages",
+          "*",
+          "label"
+        ],
+        "label": "Linktext",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "footer",
+          "social",
+          "*",
+          "label"
+        ],
+        "label": "Linktext",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "header",
+          "*",
+          "label"
+        ],
+        "label": "Linktext",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "mobileExtras",
+          "*",
+          "label"
+        ],
+        "label": "Linktext",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cta",
+          "href"
+        ],
+        "label": "Linkziel",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "footer",
+          "legal",
+          "*",
+          "href"
+        ],
+        "label": "Linkziel",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "footer",
+          "pages",
+          "*",
+          "href"
+        ],
+        "label": "Linkziel",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "footer",
+          "social",
+          "*",
+          "href"
+        ],
+        "label": "Linkziel",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "header",
+          "*",
+          "href"
+        ],
+        "label": "Linkziel",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "mobileExtras",
+          "*",
+          "href"
+        ],
+        "label": "Linkziel",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "footer",
+          "headings",
+          "contact"
+        ],
+        "label": "Überschrift Kontakt",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "footer",
+          "headings",
+          "pages"
+        ],
+        "label": "Überschrift Seiten",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "footer",
+          "headings",
+          "social"
+        ],
+        "label": "Überschrift soziale Netzwerke",
+        "kind": "text",
+        "advanced": false
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "header"
+        ],
+        "label": "Hauptnavigation",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "footer",
+          "legal"
+        ],
+        "label": "Rechtliche Seiten",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "footer",
+          "pages"
+        ],
+        "label": "Seiten im Footer",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "footer",
+          "social"
+        ],
+        "label": "Soziale Netzwerke",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "mobileExtras"
+        ],
+        "label": "Zusätzliche Links im mobilen Menü",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "cta"
+        ],
+        "label": "Anfrage-Button im Header",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "footer"
+        ],
+        "label": "Footer",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "footer",
+          "headings"
+        ],
+        "label": "Footer-Überschriften",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "footer",
+          "legal",
+          "*"
+        ],
+        "label": "Navigationslink",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "footer",
+          "pages",
+          "*"
+        ],
+        "label": "Navigationslink",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "footer",
+          "social",
+          "*"
+        ],
+        "label": "Navigationslink",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "header",
+          "*"
+        ],
+        "label": "Navigationslink",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "mobileExtras",
+          "*"
+        ],
+        "label": "Navigationslink",
+        "kind": "object",
+        "advanced": false
+      }
+    ],
+    "optionalFields": []
+  },
+  "site/ui": {
+    "fields": [
+      {
+        "path": [
+          "packageDetails",
+          "maximum"
+        ],
+        "label": " · bis {max} Drohnen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "unknown"
+        ],
+        "label": " · nicht darstellbar: {characters}",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "lines"
+        ],
+        "label": " · {count} Zeilen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "fontStyle"
+        ],
+        "label": " · {style}-Schrift",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "optional_ohne_aufpreis"
+        ],
+        "label": "(optional, ohne Aufpreis)",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "text_1_900_netto"
+        ],
+        "label": "+1.900 € netto",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "packageDetails",
+          "scale"
+        ],
+        "label": "+{price} € je {step} Drohnen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "depth"
+        ],
+        "label": ", {depth} m tief",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "base",
+          "text_100_okostrom"
+        ],
+        "label": "100 % Ökostrom",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "text_900_bei_odyssey_inklusive"
+        ],
+        "label": "900 € · bei ODYSSEY inklusive",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "ab"
+        ],
+        "label": "Ab",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "packageDetails",
+          "ab"
+        ],
+        "label": "Ab",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "postList",
+          "headline"
+        ],
+        "label": "Aktuelles",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "blog",
+          "alle_beitrage_in_chronologischer_reihenfolge_neues"
+        ],
+        "label": "Alle Beiträge in chronologischer Reihenfolge, neueste zuerst. Hintergründe, Projekte und Einblicke.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "als_faustregel_spark_bis_150_drohnen_mit_motiven_a"
+        ],
+        "label": "Als Faustregel: SPARK bis 150 Drohnen mit Motiven aus unserem Katalog, HORIZON für individuelle Anim",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "anfragen"
+        ],
+        "label": "Anfragen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "packageDetails",
+          "anfragen"
+        ],
+        "label": "Anfragen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "angebot_prufen_lassen"
+        ],
+        "label": "Angebot prüfen lassen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "animationResume"
+        ],
+        "label": "Animation fortsetzen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "animationResume"
+        ],
+        "label": "Animation fortsetzen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "animation_pausieren"
+        ],
+        "label": "Animation pausieren",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "animation_pausieren"
+        ],
+        "label": "Animation pausieren",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "animationReduced"
+        ],
+        "label": "Animation reduziert",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "anlass"
+        ],
+        "label": "Anlass",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "summaryOccasion"
+        ],
+        "label": "Anlass: {occasion}",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "anzahl_drohnen"
+        ],
+        "label": "Anzahl Drohnen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "aufpreis_nach_aufwand"
+        ],
+        "label": "Aufpreis nach Aufwand",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "summaryEffort"
+        ],
+        "label": "Aufwand: {effort} ({name}, {price} netto, Einstiegspreis laut Konfigurator)",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "bazl_antrag_und_zollabwicklung_fur_unsere_flotte_u"
+        ],
+        "label": "BAZL-Antrag und Zollabwicklung für unsere Flotte übernehmen wir.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "behorden"
+        ],
+        "label": "Behörden",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "summaryMotifs"
+        ],
+        "label": "Beispielmotive: {motifs}",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "logoBar",
+          "bekannt_aus"
+        ],
+        "label": "Bekannt aus",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "besondere_flachen_brauchen_sondergenehmigungen_die"
+        ],
+        "label": "Besondere Flächen brauchen Sondergenehmigungen – die holen wir ein.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "base",
+          "motionResume"
+        ],
+        "label": "Bewegung fortsetzen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "base",
+          "bewegung_pausieren"
+        ],
+        "label": "Bewegung pausieren",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "bilder_der_nacht"
+        ],
+        "label": "Bilder der Nacht",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "bilder_der_show"
+        ],
+        "label": "Bilder der Show",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "bildern"
+        ],
+        "label": "Bildern.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "brotkrumen"
+        ],
+        "label": "Brotkrumen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "video",
+          "das_video_ist_gerade_nicht_verfugbar_bitte_versuch"
+        ],
+        "label": "Das Video ist gerade nicht verfügbar. Bitte versuche es später erneut.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "dauer"
+        ],
+        "label": "Dauer",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "duration"
+        ],
+        "label": "Dauer",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "dein_text_am_himmel"
+        ],
+        "label": "Dein Text am Himmel",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "reserve"
+        ],
+        "label": "Dein Text braucht höchstens {used} Drohnen (80 m hoch) – die übrigen {reserve} zeigen wir als Reserv",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "deine_show_wird_fur_deinen_showbereich_deine_musik"
+        ],
+        "label": "Deine Show wird für deinen Showbereich, deine Musik und deine Motive programmiert.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "deine_eigenen_motive_siehst_du_vor_der_show_und_gi"
+        ],
+        "label": "Deine eigenen Motive siehst du vor der Show und gibst sie frei – ab HORIZON als Video-Vorschau.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "der_show_konfigurator_benotigt_javascript_die_pake"
+        ],
+        "label": "Der Show-Konfigurator benötigt JavaScript. Die Pakete findest du unter",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "der_grosste_aufwand_einer_drohnenshow_steckt_nicht"
+        ],
+        "label": "Der größte Aufwand einer Drohnenshow steckt nicht in den Drohnen, sondern in Design, Genehmigung und",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "der_interaktive_preisrechner_benotigt_javascript_d"
+        ],
+        "label": "Der interaktive Preisrechner benötigt JavaScript. Die Paketpreise unten gelten für die jeweilige Bas",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "design"
+        ],
+        "label": "Design",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "die_choreografie"
+        ],
+        "label": "Die Choreografie",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "formationFailed"
+        ],
+        "label": "Die Formation konnte nicht geladen werden.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "die_geschichte"
+        ],
+        "label": "Die Geschichte",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "packageDetails",
+          "die_preise_unten_gelten_fur_die_drohnenzahl_die_du"
+        ],
+        "label": "Die Preise unten gelten für die Drohnenzahl, die du oben eingestellt hast. Jedes Paket lässt sich mi",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "fontFailed"
+        ],
+        "label": "Die Schrift konnte nicht geladen werden.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "galleryHeading"
+        ],
+        "label": "Die Show in {count} Bildern.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "die_show_in"
+        ],
+        "label": "Die Show in",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "die_vorschau_ist_gerade_nicht_verfugbar_du_kannst_"
+        ],
+        "label": "Die Vorschau ist gerade nicht verfügbar. Du kannst weiterhin ein Paket wählen und anfragen.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "tooLong"
+        ],
+        "label": "Dieser Text lässt sich so nicht darstellen – bitte kürzen.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "packageDetails",
+          "drei_pakete_die_preise_rechnen_mit"
+        ],
+        "label": "Drei Pakete. Die Preise rechnen mit.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "drohnen"
+        ],
+        "label": "Drohnen ·",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "packageDetails",
+          "drohnen"
+        ],
+        "label": "Drohnen ·",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "drohnen"
+        ],
+        "label": "Drohnen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "drohnen"
+        ],
+        "label": "Drohnen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "packageDetails",
+          "drohnen_2"
+        ],
+        "label": "Drohnen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "projectGrid",
+          "drohnen"
+        ],
+        "label": "Drohnen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "base",
+          "drohnenshows_seit_2022_uber_150_shows_in_deutschla"
+        ],
+        "label": "Drohnenshows seit 2022. Über 150 Shows in Deutschland und Europa.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "print"
+        ],
+        "label": "Druckschrift",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "flightHero",
+          "eckdaten"
+        ],
+        "label": "Eckdaten",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "summaryText"
+        ],
+        "label": "Eigener Text: „{text}“ ({style})",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "projectGrid",
+          "headline"
+        ],
+        "label": "Ein paar Nächte, die wir nicht vergessen.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "includes"
+        ],
+        "label": "Enthalten: {text}.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "enthalten"
+        ],
+        "label": "Enthalten:",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "erscheint_als_finale_der_show_zahlt_als_eines_eure"
+        ],
+        "label": "Erscheint als Finale der Show. Zählt als eines eurer eigenen Elemente und ändert den Preis nicht.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "erweiterter_behordensupport"
+        ],
+        "label": "Erweiterter Behördensupport",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "captionSpark"
+        ],
+        "label": "Euer Text am Himmel",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "captionOdyssey"
+        ],
+        "label": "Euer Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "euer_text"
+        ],
+        "label": "Euer Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "ownText"
+        ],
+        "label": "Euer Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "express"
+        ],
+        "label": "Express",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "extras_upgrades"
+        ],
+        "label": "Extras & Upgrades",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "film"
+        ],
+        "label": "Film",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "logo",
+          "flyingstars_startseite"
+        ],
+        "label": "FlyingStars – Startseite",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "team",
+          "foto_folgt"
+        ],
+        "label": "Foto folgt",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "fragen_zum_preis"
+        ],
+        "label": "Fragen zum Preis",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "freigabe_vorab"
+        ],
+        "label": "Freigabe vorab",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "freigabe"
+        ],
+        "label": "Freigabe",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "fur_messen_hallen_und_buhnen_jede_indoor_show_kalk"
+        ],
+        "label": "Für Messen, Hallen und Bühnen. Jede Indoor-Show kalkulieren wir individuell.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "fur_besondere_anforderungen_erweitern_wir_jedes_pa"
+        ],
+        "label": "Für besondere Anforderungen erweitern wir jedes Paket. Die Preise stehen vorab im Angebot.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "geht_es_auch_grosser"
+        ],
+        "label": "Geht es auch größer?",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "genehmigung_sicherheitskonzept"
+        ],
+        "label": "Genehmigung & Sicherheitskonzept",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "genehmigung"
+        ],
+        "label": "Genehmigung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "motifTitle"
+        ],
+        "label": "Größe des ganzen Motivs am Himmel, Drohnen im Abstand von {distance} m",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "gunstigeres_angebot_mit_gleicher_leistung_wir_unte"
+        ],
+        "label": "Günstigeres Angebot mit gleicher Leistung? Wir unterbieten es.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "base",
+          "hauptnavigation"
+        ],
+        "label": "Hauptnavigation",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "faq",
+          "headline"
+        ],
+        "label": "Häufige Fragen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "immer_inklusive"
+        ],
+        "label": "Immer inklusive",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "in_zahlen"
+        ],
+        "label": "In Zahlen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "in_der_eu_planen_wir_mit_denselben_paketen_je_nach"
+        ],
+        "label": "In der EU planen wir mit denselben Paketen; je nach Land kommen Antragsfristen, eine längere Anfahrt",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "individuelles_angebot"
+        ],
+        "label": "Individuelles Angebot",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "indoor"
+        ],
+        "label": "Indoor",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "indoor_drohnenshows"
+        ],
+        "label": "Indoor-Drohnenshows",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "initials"
+        ],
+        "label": "Initialen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "ist_schlechtes_wetter_absehbar_verschieben_wir_ohn"
+        ],
+        "label": "Ist schlechtes Wetter absehbar, verschieben wir ohne Aufpreis – nur eine bereits angefallene Anfahrt",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "ja_unsere_bisher_grosste_show_hatte_600_drohnen_au"
+        ],
+        "label": "Ja. Unsere bisher größte Show hatte 600 Drohnen – auch 1.000 und mehr planen wir gemeinsam mit dir u",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "kontrollzonen_flughafennahe"
+        ],
+        "label": "Kontrollzonen & Flughafennähe",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "kostet_eine_show_im_ausland_mehr"
+        ],
+        "label": "Kostet eine Show im Ausland mehr?",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "captionHorizon"
+        ],
+        "label": "Licht schreibt euren Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "luftrechtliche_genehmigung_sicherheitszonen_und_ha"
+        ],
+        "label": "Luftrechtliche Genehmigung, Sicherheitszonen und Haftpflichtversicherung sind in jedem Paket enthalt",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "upgrade"
+        ],
+        "label": "Mehr als {count} Drohnen? Dann lohnt sich {name} mit individuellen Animationen.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "mehr_geht_immer"
+        ],
+        "label": "Mehr geht immer.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "base",
+          "menu_schliessen"
+        ],
+        "label": "Menü schließen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "base",
+          "menu_offnen"
+        ],
+        "label": "Menü öffnen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "mit_200_drohnen_anfragen"
+        ],
+        "label": "Mit 200 Drohnen anfragen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "mit_der_auftragsbestatigung_wird_eine_anzahlung_vo"
+        ],
+        "label": "Mit der Auftragsbestätigung wird eine Anzahlung von 30 % fällig – dann starten Design und Genehmigun",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "mit_dieser_show_anfragen"
+        ],
+        "label": "Mit dieser Show anfragen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "inquiry"
+        ],
+        "label": "Mit {count} Drohnen anfragen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "base",
+          "mobile_navigation"
+        ],
+        "label": "Mobile Navigation",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "motifs"
+        ],
+        "label": "Motive",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "motifSize"
+        ],
+        "label": "Motivgröße",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "noch_mal_starten"
+        ],
+        "label": "Noch mal starten",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "limit"
+        ],
+        "label": "Nur bis {count} Drohnen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "nur_die_anfahrt_und_die_mehrwertsteuer_die_anfahrt"
+        ],
+        "label": "Nur die Anfahrt und die Mehrwertsteuer. Die Anfahrt berechnen wir ab Gelsenkirchen nach Strecke, Tea",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "nachstes_bild"
+        ],
+        "label": "Nächstes Bild",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "nachstes_bild"
+        ],
+        "label": "Nächstes Bild",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "nextProject"
+        ],
+        "label": "Nächstes Projekt · {order} / 04 · {drones} Drohnen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "nachstes_projekt"
+        ],
+        "label": "Nächstes Projekt ·",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "optional"
+        ],
+        "label": "Optional",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "paket_gefunden_erzahl_uns_von_deinem_termin"
+        ],
+        "label": "Paket gefunden? Erzähl uns von deinem Termin.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "packageLabel"
+        ],
+        "label": "Paket",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "paket"
+        ],
+        "label": "Paket",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "pakete_vergleichen"
+        ],
+        "label": "Pakete vergleichen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "packageDetails",
+          "pakete"
+        ],
+        "label": "Pakete",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "paketpreis_plus_anfahrt_mehr_nicht_hier_die_detail"
+        ],
+        "label": "Paketpreis plus Anfahrt – mehr nicht. Hier die Details, die in den meisten Gesprächen auftauchen.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "selected"
+        ],
+        "label": "Passt zu deiner Auswahl",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "pilot_innen_und_techniker_innen_bauen_in_rund_drei"
+        ],
+        "label": "Pilot:innen und Techniker:innen bauen in rund drei Stunden auf und fliegen deine Show.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "preis_auf_anfrage"
+        ],
+        "label": "Preis auf Anfrage",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "preise_pakete"
+        ],
+        "label": "Preise & Pakete",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "preise"
+        ],
+        "label": "Preise",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "preisversprechen"
+        ],
+        "label": "Preisversprechen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "presse"
+        ],
+        "label": "Presse",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "professionelle_filmaufnahmen"
+        ],
+        "label": "Professionelle Filmaufnahmen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "programmierung_fur_deinen_ort"
+        ],
+        "label": "Programmierung für deinen Ort",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "projekt"
+        ],
+        "label": "Projekt",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "projekte"
+        ],
+        "label": "Projekte",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "prototyp_die_vorschau_zeigt_beispiele_den_ablauf_e"
+        ],
+        "label": "Prototyp: Die Vorschau zeigt Beispiele, den Ablauf eurer Show entwickeln wir gemeinsam. Die Zuordnun",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "base",
+          "rechtliches"
+        ],
+        "label": "Rechtliches",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "logoBar",
+          "referenzen"
+        ],
+        "label": "Referenzen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "rohaufnahmen_mit_kameradrohne_fur_aftermovie_und_s"
+        ],
+        "label": "Rohaufnahmen mit Kameradrohne für Aftermovie und Social Media.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "schick_uns_das_vergleichsangebot_bei_gleichem_leis"
+        ],
+        "label": "Schick uns das Vergleichsangebot – bei gleichem Leistungsumfang machen wir dir einen besseren Preis.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "script"
+        ],
+        "label": "Schreibschrift",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "schweiz"
+        ],
+        "label": "Schweiz",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "show_anfragen"
+        ],
+        "label": "Show anfragen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "show_anfragen"
+        ],
+        "label": "Show anfragen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "show_in_unter_zwei_wochen"
+        ],
+        "label": "Show in unter zwei Wochen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "show_von_vorn_ansehen"
+        ],
+        "label": "Show von vorn ansehen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "flightHero",
+          "showreel_ansehen"
+        ],
+        "label": "Showreel ansehen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "shows_in_der_schweiz"
+        ],
+        "label": "Shows in der Schweiz",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "showtag"
+        ],
+        "label": "Showtag",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "video",
+          "play"
+        ],
+        "label": "Showvideo ansehen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "sondergenehmigung"
+        ],
+        "label": "Sondergenehmigung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "base",
+          "sprache_deutsch"
+        ],
+        "label": "Sprache Deutsch",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "base",
+          "language"
+        ],
+        "label": "Sprache",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "start"
+        ],
+        "label": "Start",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "team_vor_ort"
+        ],
+        "label": "Team vor Ort",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "minimum"
+        ],
+        "label": "Unter 10 Drohnen pro Zeichen wird es schlecht lesbar – für deinen Text mindestens {count} Drohnen.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "videocall_buchen"
+        ],
+        "label": "Videocall buchen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "vorheriges_bild"
+        ],
+        "label": "Vorheriges Bild",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "vorheriges_bild"
+        ],
+        "label": "Vorheriges Bild",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "vorschau_der_show"
+        ],
+        "label": "Vorschau der Show",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "was_am_himmel_zu_sehen_war"
+        ],
+        "label": "Was am Himmel zu sehen war.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "was_kommt_zum_paketpreis_noch_dazu"
+        ],
+        "label": "Was kommt zum Paketpreis noch dazu?",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "was_kostet_eine_drohnenshow_wirklich"
+        ],
+        "label": "Was kostet eine Drohnenshow wirklich?",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "was_passiert_wenn_die_show_ausfallt"
+        ],
+        "label": "Was passiert, wenn die Show ausfällt?",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "base",
+          "website_vorschau"
+        ],
+        "label": "Website-Vorschau",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "welches_paket_passt_zu_mir"
+        ],
+        "label": "Welches Paket passt zu mir?",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "wie_aufwendig"
+        ],
+        "label": "Wie aufwendig?",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "wie_funktioniert_die_bezahlung"
+        ],
+        "label": "Wie funktioniert die Bezahlung?",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "wir_melden_uns_innerhalb_von_48_stunden_meist_deut"
+        ],
+        "label": "Wir melden uns innerhalb von 48 Stunden – meist deutlich schneller.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "wir_priorisieren_dein_projekt_bei_design_und_geneh"
+        ],
+        "label": "Wir priorisieren dein Projekt bei Design und Genehmigung.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "wir_zeigen_ihn_mit_deiner_drohnenzahl_in_unserer_s"
+        ],
+        "label": "Wir zeigen ihn mit deiner Drohnenzahl in unserer Show-Schrift.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "wir_ubernehmen_die_komplette_kommunikation_mit_amt"
+        ],
+        "label": "Wir übernehmen die komplette Kommunikation mit Ämtern und Behörden.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices",
+          "wofur_du_eigentlich_bezahlst"
+        ],
+        "label": "Wofür du eigentlich bezahlst.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "zum_anfassen"
+        ],
+        "label": "Zum Anfassen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "base",
+          "zum_inhalt_springen"
+        ],
+        "label": "Zum Inhalt springen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "fromPrice"
+        ],
+        "label": "ab {price} €",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "fromPrice"
+        ],
+        "label": "ab {price}",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "catalogue"
+        ],
+        "label": "aus dem Katalog + 4 eigene",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "ca_13_min"
+        ],
+        "label": "ca. 13 Min",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "size"
+        ],
+        "label": "ca. {width} × {height} m",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "above"
+        ],
+        "label": "darüber: {name}",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "packageDetails",
+          "base"
+        ],
+        "label": "für {count} Drohnen · {duration}",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "forCount"
+        ],
+        "label": "für {count} Drohnen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "packageDetails",
+          "fur"
+        ],
+        "label": "für",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "individual"
+        ],
+        "label": "individuell, 2D + einfaches 3D",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "included"
+        ],
+        "label": "inkl. {count} Drohnen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "storytelling"
+        ],
+        "label": "komplexes 3D + Storytelling",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "net"
+        ],
+        "label": "netto zzgl. Anfahrt",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "netto_zzgl_anfahrt"
+        ],
+        "label": "netto zzgl. Anfahrt",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "z_b_anna_tom"
+        ],
+        "label": "z. B. ANNA & TOM",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "z_b_anna_ben"
+        ],
+        "label": "z. B. Anna & Ben",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "textStats"
+        ],
+        "label": "{characters} Zeichen · {perCharacter} Drohnen pro Zeichen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "formationCount"
+        ],
+        "label": "{count} Drohnen aus der Show-Datei",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "detectedCount"
+        ],
+        "label": "{count} Drohnen erkannt",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "meta"
+        ],
+        "label": "{count} Drohnen · {duration} · netto zzgl. Anfahrt",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "range"
+        ],
+        "label": "{count} Drohnen, {name}, ab {price}",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "comparison",
+          "scrollLabel"
+        ],
+        "label": "{headline} (Tabelle, horizontal scrollbar)",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "packageDetails",
+          "inquiry"
+        ],
+        "label": "{name} anfragen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "alreadyIncluded"
+        ],
+        "label": "{name} enthält bereits {count} Drohnen – zum selben Preis.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "starts"
+        ],
+        "label": "{name} startet mit {count} Drohnen.",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "gallery"
+        ],
+        "label": "{name}: Bildergalerie",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy",
+          "play"
+        ],
+        "label": "{name}: Showvideo abspielen",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator",
+          "netto_zzgl_anfahrt"
+        ],
+        "label": "· netto zzgl. Anfahrt",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator",
+          "largeFleet"
+        ],
+        "label": "Über 600 Drohnen ist das ein Richtpreis – die Flotte planen wir gemeinsam und bestätigen sie im Ange",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "packageDetails",
+          "je"
+        ],
+        "label": "€ je",
+        "kind": "text",
+        "advanced": false
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "postList"
+        ],
+        "label": "Artikelliste",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "blog"
+        ],
+        "label": "Blog",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "faq"
+        ],
+        "label": "FAQ-Liste",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "logo"
+        ],
+        "label": "Logo",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "packageDetails"
+        ],
+        "label": "Paketdetails",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "calculator"
+        ],
+        "label": "Preisrechner",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "prices"
+        ],
+        "label": "Preisseite",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "caseStudy"
+        ],
+        "label": "Projektgeschichte",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "projectGrid"
+        ],
+        "label": "Projektliste",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "base"
+        ],
+        "label": "Rahmen und Navigation",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "logoBar"
+        ],
+        "label": "Referenzen",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "configurator"
+        ],
+        "label": "Show-Konfigurator",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "flightHero"
+        ],
+        "label": "Showreel-Auftakt",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "team"
+        ],
+        "label": "Team",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "comparison"
+        ],
+        "label": "Vergleich",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "video"
+        ],
+        "label": "Video",
+        "kind": "object",
+        "advanced": false
+      }
+    ],
+    "optionalFields": []
+  },
+  "screen": {
+    "fields": [
+      {
+        "path": [
+          "occasions",
+          "*",
+          "anlass"
+        ],
+        "label": "Formular-Anlass",
+        "kind": "enum",
+        "advanced": false,
+        "choices": [
+          "Privat",
+          "Sonstiges",
+          "Firma",
+          "Stadt"
+        ]
+      },
+      {
+        "path": [
+          "noindex"
+        ],
+        "label": "Nicht in Suchmaschinen anzeigen",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "occasions",
+          "*",
+          "motifs",
+          "*",
+          "tiers",
+          "HORIZON",
+          "build"
+        ],
+        "label": "Animationskennung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "occasions",
+          "*",
+          "motifs",
+          "*",
+          "tiers",
+          "ODYSSEY",
+          "build"
+        ],
+        "label": "Animationskennung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "occasions",
+          "*",
+          "motifs",
+          "*",
+          "tiers",
+          "SPARK",
+          "build"
+        ],
+        "label": "Animationskennung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "occasions",
+          "*",
+          "label"
+        ],
+        "label": "Anlassname",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "occasions",
+          "*",
+          "motifs",
+          "*",
+          "tiers",
+          "HORIZON",
+          "caption"
+        ],
+        "label": "Beschreibung der Vorschau",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "occasions",
+          "*",
+          "motifs",
+          "*",
+          "tiers",
+          "ODYSSEY",
+          "caption"
+        ],
+        "label": "Beschreibung der Vorschau",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "occasions",
+          "*",
+          "motifs",
+          "*",
+          "tiers",
+          "SPARK",
+          "caption"
+        ],
+        "label": "Beschreibung der Vorschau",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "text"
+        ],
+        "label": "Einleitung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "description"
+        ],
+        "label": "Meta-Beschreibung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "title"
+        ],
+        "label": "Meta-Titel",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "occasions",
+          "*",
+          "motifs",
+          "*",
+          "label"
+        ],
+        "label": "Motivname",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "headline"
+        ],
+        "label": "Überschrift",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "occasions",
+          "*",
+          "id"
+        ],
+        "label": "Anlasskennung",
+        "kind": "text",
+        "advanced": true
+      },
+      {
+        "path": [
+          "occasions",
+          "*",
+          "motifs",
+          "*",
+          "id"
+        ],
+        "label": "Motivkennung",
+        "kind": "text",
+        "advanced": true
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "occasions",
+          "*",
+          "motifs"
+        ],
+        "label": "Motive",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "occasions"
+        ],
+        "label": "Vorschau-Anlässe",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "occasions",
+          "*",
+          "motifs",
+          "*",
+          "tiers",
+          "HORIZON"
+        ],
+        "label": "HORIZON",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "occasions",
+          "*",
+          "motifs",
+          "*"
+        ],
+        "label": "Motifs",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "occasions",
+          "*",
+          "motifs",
+          "*",
+          "tiers",
+          "ODYSSEY"
+        ],
+        "label": "ODYSSEY",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "occasions",
+          "*"
+        ],
+        "label": "Occasions",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "occasions",
+          "*",
+          "motifs",
+          "*",
+          "tiers"
+        ],
+        "label": "Paketvarianten",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "occasions",
+          "*",
+          "motifs",
+          "*",
+          "tiers",
+          "SPARK"
+        ],
+        "label": "SPARK",
+        "kind": "object",
+        "advanced": false
+      }
+    ],
+    "optionalFields": [
+      {
+        "path": [
+          "occasions"
+        ],
+        "label": "Vorschau-Anlässe",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "occasions",
+          "*",
+          "motifs",
+          "*",
+          "tiers",
+          "SPARK"
+        ],
+        "label": "SPARK",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "text"
+        ],
+        "label": "Einleitung",
+        "kind": "text",
+        "advanced": false
+      }
+    ]
+  },
+  "project": {
+    "fields": [
+      {
+        "path": [
+          "cover",
+          "decorative"
+        ],
+        "label": "Dekoratives Bild",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "gallery",
+          "*",
+          "decorative"
+        ],
+        "label": "Dekoratives Bild",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "story",
+          "*",
+          "image",
+          "decorative"
+        ],
+        "label": "Dekoratives Bild",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "draft"
+        ],
+        "label": "Entwurf (nicht veröffentlicht)",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "featured"
+        ],
+        "label": "Hervorheben",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "portrait"
+        ],
+        "label": "Hochformat",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "drones"
+        ],
+        "label": "Drohnen",
+        "kind": "number",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "numbers",
+          "*",
+          "value"
+        ],
+        "label": "Wert",
+        "kind": "number",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "accent"
+        ],
+        "label": "Akzentfarbe",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "gallery",
+          "*",
+          "altOverride"
+        ],
+        "label": "Alt Override",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "body"
+        ],
+        "label": "Artikeltext (Markdown)",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "meta",
+          "description"
+        ],
+        "label": "Beschreibung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "credits",
+          "*",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "numbers",
+          "*",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "gallery",
+          "*",
+          "caption"
+        ],
+        "label": "Bildunterschrift",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "story",
+          "*",
+          "image",
+          "caption"
+        ],
+        "label": "Bildunterschrift",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "tagline"
+        ],
+        "label": "Claim",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "kicker"
+        ],
+        "label": "Dachzeile",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "story",
+          "*",
+          "kicker"
+        ],
+        "label": "Dachzeile",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "date"
+        ],
+        "label": "Datum",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "press",
+          "*",
+          "date"
+        ],
+        "label": "Datum",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "setlist",
+          "*",
+          "items",
+          "*"
+        ],
+        "label": "Einträge",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "category"
+        ],
+        "label": "Kategorie",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "client"
+        ],
+        "label": "Kunde",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "summary"
+        ],
+        "label": "Kurzfassung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "press",
+          "*",
+          "publication"
+        ],
+        "label": "Medium",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "name"
+        ],
+        "label": "Name",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "location"
+        ],
+        "label": "Ort",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "cardTitle"
+        ],
+        "label": "Projekt-Kartentitel",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "cta",
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "formation",
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "press",
+          "*",
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "story",
+          "*",
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "cta",
+          "title"
+        ],
+        "label": "Titel",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "formation",
+          "title"
+        ],
+        "label": "Titel",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "meta",
+          "title"
+        ],
+        "label": "Titel",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "press",
+          "*",
+          "title"
+        ],
+        "label": "Titel",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "setlist",
+          "*",
+          "title"
+        ],
+        "label": "Titel",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "story",
+          "*",
+          "title"
+        ],
+        "label": "Titel",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "title"
+        ],
+        "label": "Titel",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "heroVideo"
+        ],
+        "label": "Video im Auftakt",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "credits",
+          "*",
+          "value"
+        ],
+        "label": "Wert",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "order"
+        ],
+        "label": "Order",
+        "kind": "number",
+        "advanced": true
+      },
+      {
+        "path": [
+          "showcase",
+          "titleChars"
+        ],
+        "label": "Title Chars",
+        "kind": "number",
+        "advanced": true
+      },
+      {
+        "path": [
+          "showcase",
+          "gallery",
+          "*",
+          "assetId"
+        ],
+        "label": "Asset Id",
+        "kind": "text",
+        "advanced": true
+      },
+      {
+        "path": [
+          "showcase",
+          "story",
+          "*",
+          "image",
+          "assetId"
+        ],
+        "label": "Asset Id",
+        "kind": "text",
+        "advanced": true
+      },
+      {
+        "path": [
+          "showcase",
+          "formation",
+          "src"
+        ],
+        "label": "Formationsdatei (JSON)",
+        "kind": "text",
+        "advanced": true
+      },
+      {
+        "path": [
+          "showcase",
+          "titleLines",
+          "*"
+        ],
+        "label": "Hero-Titelzeile",
+        "kind": "text",
+        "advanced": true
+      },
+      {
+        "path": [
+          "cover",
+          "assetId"
+        ],
+        "label": "Medium aus der Bibliothek",
+        "kind": "text",
+        "advanced": true
+      },
+      {
+        "path": [
+          "showcase",
+          "nextRoute"
+        ],
+        "label": "Next Route",
+        "kind": "text",
+        "advanced": true
+      },
+      {
+        "path": [
+          "showcase",
+          "route"
+        ],
+        "label": "Route",
+        "kind": "text",
+        "advanced": true
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "showcase",
+          "setlist"
+        ],
+        "label": "Ablauf der Show",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "showcase",
+          "setlist",
+          "*",
+          "items"
+        ],
+        "label": "Einträge",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "showcase",
+          "gallery"
+        ],
+        "label": "Galerie",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "showcase",
+          "story"
+        ],
+        "label": "Geschichte",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "showcase",
+          "credits"
+        ],
+        "label": "Mitwirkende",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "showcase",
+          "press"
+        ],
+        "label": "Presse",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "showcase",
+          "numbers"
+        ],
+        "label": "Zahlen",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "sections"
+        ],
+        "label": "Zusätzliche Bausteine",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "showcase",
+          "setlist",
+          "*"
+        ],
+        "label": "Ablauf der Show",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "story",
+          "*",
+          "image"
+        ],
+        "label": "Bild",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "cta"
+        ],
+        "label": "Button",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "meta"
+        ],
+        "label": "Eckdaten",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "gallery",
+          "*"
+        ],
+        "label": "Galerie",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "story",
+          "*"
+        ],
+        "label": "Geschichte",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "formation"
+        ],
+        "label": "Interaktive Drohnenformation",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "credits",
+          "*"
+        ],
+        "label": "Mitwirkende",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "press",
+          "*"
+        ],
+        "label": "Presse",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase"
+        ],
+        "label": "Projektseite",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cover"
+        ],
+        "label": "Titelbild",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "numbers",
+          "*"
+        ],
+        "label": "Zahlen",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "titleLines"
+        ],
+        "label": "Title Lines",
+        "kind": "array",
+        "advanced": true,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      }
+    ],
+    "optionalFields": [
+      {
+        "path": [
+          "showcase",
+          "press"
+        ],
+        "label": "Presse",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "cover",
+          "decorative"
+        ],
+        "label": "Dekoratives Bild",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "portrait"
+        ],
+        "label": "Hochformat",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase"
+        ],
+        "label": "Projektseite",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cover"
+        ],
+        "label": "Titelbild",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "gallery",
+          "*",
+          "altOverride"
+        ],
+        "label": "Alt Override",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showcase",
+          "story",
+          "*",
+          "image",
+          "altOverride"
+        ],
+        "label": "Alt Override",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cover",
+          "altOverride"
+        ],
+        "label": "Alternativtext an dieser Stelle",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sourceIssue"
+        ],
+        "label": "Source Issue",
+        "kind": "number",
+        "advanced": true
+      },
+      {
+        "path": [
+          "cover",
+          "assetId"
+        ],
+        "label": "Medium aus der Bibliothek",
+        "kind": "text",
+        "advanced": true
+      }
+    ]
+  },
+  "post": {
+    "fields": [
+      {
+        "path": [
+          "draft"
+        ],
+        "label": "Entwurf (nicht veröffentlicht)",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "body"
+        ],
+        "label": "Artikeltext (Markdown)",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "description"
+        ],
+        "label": "Beschreibung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "date"
+        ],
+        "label": "Datum",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "tags",
+          "*"
+        ],
+        "label": "Schlagwörter",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "title"
+        ],
+        "label": "Titel",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sourceIssue"
+        ],
+        "label": "Source Issue",
+        "kind": "number",
+        "advanced": true
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "tags"
+        ],
+        "label": "Schlagwörter",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": false,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "sections"
+        ],
+        "label": "Zusätzliche Bausteine",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "cover"
+        ],
+        "label": "Titelbild",
+        "kind": "object",
+        "advanced": false
+      }
+    ],
+    "optionalFields": [
+      {
+        "path": [
+          "cover",
+          "decorative"
+        ],
+        "label": "Dekoratives Bild",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cover"
+        ],
+        "label": "Titelbild",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "updated"
+        ],
+        "label": "Aktualisiert am",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cover",
+          "altOverride"
+        ],
+        "label": "Alternativtext an dieser Stelle",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sourceIssue"
+        ],
+        "label": "Source Issue",
+        "kind": "number",
+        "advanced": true
+      },
+      {
+        "path": [
+          "cover",
+          "assetId"
+        ],
+        "label": "Medium aus der Bibliothek",
+        "kind": "text",
+        "advanced": true
+      }
+    ]
+  },
+  "page": {
+    "fields": [
+      {
+        "path": [
+          "sections",
+          "*",
+          "columns"
+        ],
+        "label": "Spalten",
+        "kind": "enum",
+        "advanced": false,
+        "choices": [
+          "3",
+          "2",
+          "1"
+        ]
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "columns"
+        ],
+        "label": "Spalten",
+        "kind": "enum",
+        "advanced": false,
+        "choices": [
+          "5",
+          "3",
+          "2",
+          "1"
+        ]
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "rows",
+          "*",
+          "cells",
+          "*",
+          "tone"
+        ],
+        "label": "Bewertung",
+        "kind": "enum",
+        "advanced": false,
+        "choices": [
+          "Ja",
+          "Nein",
+          "Teilweise"
+        ]
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "facts",
+          "*",
+          "tone"
+        ],
+        "label": "Darstellung der Kennzahl",
+        "kind": "enum",
+        "advanced": false,
+        "choices": [
+          "Kontur",
+          "Farbverlauf"
+        ]
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "mediaSide"
+        ],
+        "label": "Bildposition",
+        "kind": "enum",
+        "advanced": false,
+        "choices": [
+          "Links",
+          "Rechts"
+        ]
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "tiers",
+          "*",
+          "packageId"
+        ],
+        "label": "Paket",
+        "kind": "enum",
+        "advanced": false,
+        "choices": [
+          "Spark",
+          "Horizon",
+          "Odyssey"
+        ]
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "tiers",
+          "*",
+          "showOrb"
+        ],
+        "label": "Animation anzeigen",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "showImage"
+        ],
+        "label": "Bild anzeigen",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "showImages"
+        ],
+        "label": "Bilder anzeigen",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "cards",
+          "*",
+          "image",
+          "decorative"
+        ],
+        "label": "Dekoratives Bild",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "poster",
+          "decorative"
+        ],
+        "label": "Dekoratives Bild",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "proofImage",
+          "decorative"
+        ],
+        "label": "Dekoratives Bild",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "openFirst"
+        ],
+        "label": "Erste Frage geöffnet",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "showImages"
+        ],
+        "label": "Logos anzeigen",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "noindex"
+        ],
+        "label": "Nicht in Suchmaschinen anzeigen",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "limit"
+        ],
+        "label": "Anzahl",
+        "kind": "number",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "rowHeader"
+        ],
+        "label": "Beschriftung der ersten Spalte",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "cards",
+          "*",
+          "cta",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "cards",
+          "*",
+          "download",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "cta",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "items",
+          "*",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "rows",
+          "*",
+          "cells",
+          "*",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "rows",
+          "*",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "secondary",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "stats",
+          "*",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "tiers",
+          "*",
+          "cta",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "facts",
+          "*",
+          "label"
+        ],
+        "label": "Bezeichnung der Kennzahl",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "image"
+        ],
+        "label": "Bild",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "clientIds",
+          "*"
+        ],
+        "label": "Client Ids",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "eyebrow"
+        ],
+        "label": "Dachzeile",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "kicker"
+        ],
+        "label": "Dachzeile",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "facts",
+          "*",
+          "unit"
+        ],
+        "label": "Einheit",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "cards",
+          "*",
+          "facts",
+          "*"
+        ],
+        "label": "Fakten",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "note"
+        ],
+        "label": "Hinweis",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "campaign"
+        ],
+        "label": "Kampagne",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "cards",
+          "*",
+          "title"
+        ],
+        "label": "Kartentitel",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "cards",
+          "*",
+          "category"
+        ],
+        "label": "Kategorie",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "note"
+        ],
+        "label": "Kleingedrucktes unter den Karten",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "steps",
+          "*",
+          "duration"
+        ],
+        "label": "Kurzer Zeitrahmen, z. B. \"48 h Antwortzeit\"",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "cards",
+          "*",
+          "cta",
+          "href"
+        ],
+        "label": "Link",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "cards",
+          "*",
+          "download",
+          "href"
+        ],
+        "label": "Link",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "cta",
+          "href"
+        ],
+        "label": "Link",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "secondary",
+          "href"
+        ],
+        "label": "Link",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "tiers",
+          "*",
+          "cta",
+          "href"
+        ],
+        "label": "Link",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "body"
+        ],
+        "label": "Markdown erlaubt",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "memberIds",
+          "*"
+        ],
+        "label": "Member Ids",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "description"
+        ],
+        "label": "Meta Description",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "title"
+        ],
+        "label": "Meta Title",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "proofText"
+        ],
+        "label": "Nachweis-Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "press"
+        ],
+        "label": "Presse",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "tags",
+          "*"
+        ],
+        "label": "Schlagwörter",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "steps",
+          "*",
+          "title"
+        ],
+        "label": "Schritttitel",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "columns",
+          "*"
+        ],
+        "label": "Spalten",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "cards",
+          "*",
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "facts",
+          "*",
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "items",
+          "*",
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "rows",
+          "*",
+          "cells",
+          "*",
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "steps",
+          "*",
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "rows",
+          "*",
+          "values",
+          "*"
+        ],
+        "label": "Values",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "video"
+        ],
+        "label": "Video",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "words",
+          "*"
+        ],
+        "label": "Wechselndes Wort",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "facts",
+          "*",
+          "value"
+        ],
+        "label": "Wert der Kennzahl",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "items",
+          "*",
+          "value"
+        ],
+        "label": "Wert",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "stats",
+          "*",
+          "value"
+        ],
+        "label": "Wert",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "headline"
+        ],
+        "label": "Überschrift",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "lines",
+          "*"
+        ],
+        "label": "Überschriftszeile",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "id"
+        ],
+        "label": "Id",
+        "kind": "text",
+        "advanced": true
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "cards",
+          "*",
+          "image",
+          "assetId"
+        ],
+        "label": "Medium aus der Bibliothek",
+        "kind": "text",
+        "advanced": true
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "poster",
+          "assetId"
+        ],
+        "label": "Medium aus der Bibliothek",
+        "kind": "text",
+        "advanced": true
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "proofImage",
+          "assetId"
+        ],
+        "label": "Medium aus der Bibliothek",
+        "kind": "text",
+        "advanced": true
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "sections",
+          "*",
+          "rows",
+          "*",
+          "values"
+        ],
+        "label": "Genau ein Wert je Spalte, in derselben Reihenfolge",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": false,
+          "insertable": false,
+          "removable": false
+        }
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "columns"
+        ],
+        "label": "Spalten",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": false,
+          "insertable": false,
+          "removable": false
+        }
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "rows",
+          "*",
+          "cells"
+        ],
+        "label": "Zellen",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": false,
+          "insertable": false,
+          "removable": false
+        }
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "tags"
+        ],
+        "label": "Nur FAQ-Einträge mit einem dieser Tags",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": false,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "sections"
+        ],
+        "label": "Abschnitte",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "tiers",
+          "*",
+          "featureIds"
+        ],
+        "label": "Ausgewählte Paketleistungen in Kartenreihenfolge",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "items"
+        ],
+        "label": "Einträge",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "cards",
+          "*",
+          "facts"
+        ],
+        "label": "Fakten",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "facts"
+        ],
+        "label": "Fakten",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "cards"
+        ],
+        "label": "Karten",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "stats"
+        ],
+        "label": "Kennzahlen",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "clientIds"
+        ],
+        "label": "Kunden",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "tiers"
+        ],
+        "label": "Pakete",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "steps"
+        ],
+        "label": "Schritte",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "memberIds"
+        ],
+        "label": "Teammitglieder",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "words"
+        ],
+        "label": "Wechselnde Wörter",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "lines"
+        ],
+        "label": "Zeilen",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "rows"
+        ],
+        "label": "Zeilen",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "sections",
+          "*"
+        ],
+        "label": "Abschnitte",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "cards",
+          "*",
+          "image"
+        ],
+        "label": "Bild",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "image"
+        ],
+        "label": "Bild",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "cards",
+          "*",
+          "cta"
+        ],
+        "label": "Button",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "cta"
+        ],
+        "label": "Button",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "tiers",
+          "*",
+          "cta"
+        ],
+        "label": "Button",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "cards",
+          "*",
+          "download"
+        ],
+        "label": "Download",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "items",
+          "*"
+        ],
+        "label": "Einträge",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "facts",
+          "*"
+        ],
+        "label": "Fakten",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "cards",
+          "*"
+        ],
+        "label": "Karten",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "stats",
+          "*"
+        ],
+        "label": "Kennzahlen",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "proofImage"
+        ],
+        "label": "Nachweis-Bild",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "tiers",
+          "*"
+        ],
+        "label": "Pakete",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "steps",
+          "*"
+        ],
+        "label": "Schritte",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "poster"
+        ],
+        "label": "Vorschaubild",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "rows",
+          "*"
+        ],
+        "label": "Zeilen",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "rows",
+          "*",
+          "cells",
+          "*"
+        ],
+        "label": "Zellen",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "secondary"
+        ],
+        "label": "Zweiter Button",
+        "kind": "object",
+        "advanced": false
+      }
+    ],
+    "optionalFields": [
+      {
+        "path": [
+          "sections",
+          "*",
+          "facts",
+          "*",
+          "tone"
+        ],
+        "label": "Darstellung der Kennzahl",
+        "kind": "enum",
+        "advanced": false,
+        "choices": [
+          "Kontur",
+          "Farbverlauf"
+        ]
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "image",
+          "decorative"
+        ],
+        "label": "Dekoratives Bild",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "limit"
+        ],
+        "label": "Anzahl",
+        "kind": "number",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "image"
+        ],
+        "label": "Bild",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "cta"
+        ],
+        "label": "Button",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "cards",
+          "*",
+          "download"
+        ],
+        "label": "Download",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "cards",
+          "*",
+          "image",
+          "altOverride"
+        ],
+        "label": "Alternativtext an dieser Stelle",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "image",
+          "altOverride"
+        ],
+        "label": "Alternativtext an dieser Stelle",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "poster",
+          "altOverride"
+        ],
+        "label": "Alternativtext an dieser Stelle",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "proofImage",
+          "altOverride"
+        ],
+        "label": "Alternativtext an dieser Stelle",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "image"
+        ],
+        "label": "Bild",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "kicker"
+        ],
+        "label": "Dachzeile",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "facts",
+          "*",
+          "unit"
+        ],
+        "label": "Einheit",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "id"
+        ],
+        "label": "Id",
+        "kind": "text",
+        "advanced": true
+      },
+      {
+        "path": [
+          "sections",
+          "*",
+          "image",
+          "assetId"
+        ],
+        "label": "Medium aus der Bibliothek",
+        "kind": "text",
+        "advanced": true
+      }
+    ]
+  },
+  "package": {
+    "fields": [
+      {
+        "path": [
+          "orbShape"
+        ],
+        "label": "Animierte Paketformation",
+        "kind": "enum",
+        "advanced": false,
+        "choices": [
+          "Ring",
+          "Kugel",
+          "Torus"
+        ]
+      },
+      {
+        "path": [
+          "highlight"
+        ],
+        "label": "Paket hervorheben",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "add"
+        ],
+        "label": "Aufpreis je Preisstufe in Euro",
+        "kind": "number",
+        "advanced": false
+      },
+      {
+        "path": [
+          "base"
+        ],
+        "label": "Drohnen im Einstiegspaket",
+        "kind": "number",
+        "advanced": false
+      },
+      {
+        "path": [
+          "price"
+        ],
+        "label": "Einstiegspreis in Euro, netto",
+        "kind": "number",
+        "advanced": false
+      },
+      {
+        "path": [
+          "max"
+        ],
+        "label": "Maximale Drohnenzahl; null bedeutet unbegrenzt",
+        "kind": "number",
+        "advanced": false
+      },
+      {
+        "path": [
+          "step"
+        ],
+        "label": "Zusätzliche Drohnen je Preisstufe",
+        "kind": "number",
+        "advanced": false
+      },
+      {
+        "path": [
+          "effortLabel"
+        ],
+        "label": "Aufwand im Show-Konfigurator",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "includes"
+        ],
+        "label": "Enthaltene Leistungen im Show-Konfigurator",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "inheritsText"
+        ],
+        "label": "Enthaltenes Vorgängerpaket",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "featureGroups",
+          "*",
+          "items",
+          "*",
+          "text"
+        ],
+        "label": "Leistung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "featureGroups",
+          "*",
+          "title"
+        ],
+        "label": "Leistungsgruppe",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "description"
+        ],
+        "label": "Paketbeschreibung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "color"
+        ],
+        "label": "Paketfarbe",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "badge"
+        ],
+        "label": "Paketkennzeichnung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "displayName"
+        ],
+        "label": "Paketname auf der Website",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "dur"
+        ],
+        "label": "Showdauer",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "featureGroups",
+          "*",
+          "items",
+          "*",
+          "id"
+        ],
+        "label": "Stabile Leistungskennung",
+        "kind": "text",
+        "advanced": true
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "featureGroups"
+        ],
+        "label": "Ausführliche Paketleistungen",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "featureGroups",
+          "*",
+          "items"
+        ],
+        "label": "Leistungen",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "featureGroups",
+          "*",
+          "items",
+          "*"
+        ],
+        "label": "Einträge",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "featureGroups",
+          "*"
+        ],
+        "label": "Feature Groups",
+        "kind": "object",
+        "advanced": false
+      }
+    ],
+    "optionalFields": []
+  },
+  "media": {
+    "fields": [
+      {
+        "path": [
+          "title"
+        ],
+        "label": "Medientitel",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "defaultAlt"
+        ],
+        "label": "Standard-Alternativtext",
+        "kind": "text",
+        "advanced": false
+      }
+    ],
+    "containers": [],
+    "optionalFields": []
+  },
+  "faq": {
+    "fields": [
+      {
+        "path": [
+          "draft"
+        ],
+        "label": "Entwurf (nicht veröffentlicht)",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "body"
+        ],
+        "label": "Artikeltext (Markdown)",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "question"
+        ],
+        "label": "Frage",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "tags",
+          "*"
+        ],
+        "label": "Schlagwörter",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "order"
+        ],
+        "label": "Globale FAQ-Reihenfolge",
+        "kind": "number",
+        "advanced": true
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "tags"
+        ],
+        "label": "Schlagwörter",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": false,
+          "insertable": true,
+          "removable": true
+        }
+      }
+    ],
+    "optionalFields": [
+      {
+        "path": [
+          "sourceIssue"
+        ],
+        "label": "Source Issue",
+        "kind": "number",
+        "advanced": true
+      }
+    ]
+  },
+  "client": {
+    "fields": [
+      {
+        "path": [
+          "logo",
+          "decorative"
+        ],
+        "label": "Dekoratives Bild",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "featured"
+        ],
+        "label": "Hervorgehobener Kunde",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "tall"
+        ],
+        "label": "Hochformat-Logo",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "name"
+        ],
+        "label": "Kundenname",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "logo",
+          "assetId"
+        ],
+        "label": "Medium aus der Bibliothek",
+        "kind": "text",
+        "advanced": true
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "logo"
+        ],
+        "label": "Kundenlogo",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "testimonial"
+        ],
+        "label": "Kundenstimme",
+        "kind": "object",
+        "advanced": false
+      }
+    ],
+    "optionalFields": [
+      {
+        "path": [
+          "testimonial"
+        ],
+        "label": "Kundenstimme",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "logo",
+          "altOverride"
+        ],
+        "label": "Alternativtext an dieser Stelle",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "testimonial",
+          "role"
+        ],
+        "label": "Rolle",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "href"
+        ],
+        "label": "Website des Kunden",
+        "kind": "text",
+        "advanced": false
+      }
+    ]
+  },
+  "variant/showreelHero": {
+    "fields": [
+      {
+        "path": [
+          "poster",
+          "decorative"
+        ],
+        "label": "Dekoratives Bild",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cta",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "secondary",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "stats",
+          "*",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "eyebrow"
+        ],
+        "label": "Dachzeile",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cta",
+          "href"
+        ],
+        "label": "Link",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "secondary",
+          "href"
+        ],
+        "label": "Link",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "video"
+        ],
+        "label": "Video",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "words",
+          "*"
+        ],
+        "label": "Wechselndes Wort",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "stats",
+          "*",
+          "value"
+        ],
+        "label": "Wert",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "headline"
+        ],
+        "label": "Überschrift",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "poster",
+          "assetId"
+        ],
+        "label": "Medium aus der Bibliothek",
+        "kind": "text",
+        "advanced": true
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "stats"
+        ],
+        "label": "Kennzahlen",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "words"
+        ],
+        "label": "Wechselnde Wörter",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "cta"
+        ],
+        "label": "Button",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "stats",
+          "*"
+        ],
+        "label": "Kennzahlen",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "poster"
+        ],
+        "label": "Vorschaubild",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "secondary"
+        ],
+        "label": "Zweiter Button",
+        "kind": "object",
+        "advanced": false
+      }
+    ],
+    "optionalFields": [
+      {
+        "path": [
+          "poster",
+          "altOverride"
+        ],
+        "label": "Alternativtext an dieser Stelle",
+        "kind": "text",
+        "advanced": false
+      }
+    ]
+  },
+  "variant/occasions": {
+    "fields": [
+      {
+        "path": [
+          "cards",
+          "*",
+          "image",
+          "decorative"
+        ],
+        "label": "Dekoratives Bild",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cards",
+          "*",
+          "cta",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cards",
+          "*",
+          "download",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "kicker"
+        ],
+        "label": "Dachzeile",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cards",
+          "*",
+          "facts",
+          "*"
+        ],
+        "label": "Fakten",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cards",
+          "*",
+          "title"
+        ],
+        "label": "Kartentitel",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cards",
+          "*",
+          "category"
+        ],
+        "label": "Kategorie",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cards",
+          "*",
+          "cta",
+          "href"
+        ],
+        "label": "Link",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cards",
+          "*",
+          "download",
+          "href"
+        ],
+        "label": "Link",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cards",
+          "*",
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "headline"
+        ],
+        "label": "Überschrift",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "id"
+        ],
+        "label": "Id",
+        "kind": "text",
+        "advanced": true
+      },
+      {
+        "path": [
+          "cards",
+          "*",
+          "image",
+          "assetId"
+        ],
+        "label": "Medium aus der Bibliothek",
+        "kind": "text",
+        "advanced": true
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "cards",
+          "*",
+          "facts"
+        ],
+        "label": "Fakten",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "cards"
+        ],
+        "label": "Karten",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "cards",
+          "*",
+          "image"
+        ],
+        "label": "Bild",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cards",
+          "*",
+          "cta"
+        ],
+        "label": "Button",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cards",
+          "*",
+          "download"
+        ],
+        "label": "Download",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cards",
+          "*"
+        ],
+        "label": "Karten",
+        "kind": "object",
+        "advanced": false
+      }
+    ],
+    "optionalFields": [
+      {
+        "path": [
+          "cards",
+          "*",
+          "download"
+        ],
+        "label": "Download",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cards",
+          "*",
+          "image",
+          "altOverride"
+        ],
+        "label": "Alternativtext an dieser Stelle",
+        "kind": "text",
+        "advanced": false
+      }
+    ]
+  },
+  "variant/metrics": {
+    "fields": [
+      {
+        "path": [
+          "items",
+          "*",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "kicker"
+        ],
+        "label": "Dachzeile",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "items",
+          "*",
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "items",
+          "*",
+          "value"
+        ],
+        "label": "Wert",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "headline"
+        ],
+        "label": "Überschrift",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "id"
+        ],
+        "label": "Id",
+        "kind": "text",
+        "advanced": true
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "items"
+        ],
+        "label": "Einträge",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "items",
+          "*"
+        ],
+        "label": "Einträge",
+        "kind": "object",
+        "advanced": false
+      }
+    ],
+    "optionalFields": []
+  },
+  "variant/sustainability": {
+    "fields": [
+      {
+        "path": [
+          "facts",
+          "*",
+          "tone"
+        ],
+        "label": "Darstellung der Kennzahl",
+        "kind": "enum",
+        "advanced": false,
+        "choices": [
+          "Kontur",
+          "Farbverlauf"
+        ]
+      },
+      {
+        "path": [
+          "proofImage",
+          "decorative"
+        ],
+        "label": "Dekoratives Bild",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "facts",
+          "*",
+          "label"
+        ],
+        "label": "Bezeichnung der Kennzahl",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "kicker"
+        ],
+        "label": "Dachzeile",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "facts",
+          "*",
+          "unit"
+        ],
+        "label": "Einheit",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "campaign"
+        ],
+        "label": "Kampagne",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "proofText"
+        ],
+        "label": "Nachweis-Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "facts",
+          "*",
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "facts",
+          "*",
+          "value"
+        ],
+        "label": "Wert der Kennzahl",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "headline"
+        ],
+        "label": "Überschrift",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "lines",
+          "*"
+        ],
+        "label": "Überschriftszeile",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "id"
+        ],
+        "label": "Id",
+        "kind": "text",
+        "advanced": true
+      },
+      {
+        "path": [
+          "proofImage",
+          "assetId"
+        ],
+        "label": "Medium aus der Bibliothek",
+        "kind": "text",
+        "advanced": true
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "facts"
+        ],
+        "label": "Fakten",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "lines"
+        ],
+        "label": "Zeilen",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "facts",
+          "*"
+        ],
+        "label": "Fakten",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "proofImage"
+        ],
+        "label": "Nachweis-Bild",
+        "kind": "object",
+        "advanced": false
+      }
+    ],
+    "optionalFields": [
+      {
+        "path": [
+          "facts",
+          "*",
+          "tone"
+        ],
+        "label": "Darstellung der Kennzahl",
+        "kind": "enum",
+        "advanced": false,
+        "choices": [
+          "Kontur",
+          "Farbverlauf"
+        ]
+      },
+      {
+        "path": [
+          "proofImage",
+          "altOverride"
+        ],
+        "label": "Alternativtext an dieser Stelle",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "facts",
+          "*",
+          "unit"
+        ],
+        "label": "Einheit",
+        "kind": "text",
+        "advanced": false
+      }
+    ]
+  },
+  "variant/hero": {
+    "fields": [
+      {
+        "path": [
+          "cta",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "secondary",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cta",
+          "href"
+        ],
+        "label": "Link",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "secondary",
+          "href"
+        ],
+        "label": "Link",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "headline"
+        ],
+        "label": "Überschrift",
+        "kind": "text",
+        "advanced": false
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "image"
+        ],
+        "label": "Bild",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cta"
+        ],
+        "label": "Button",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "secondary"
+        ],
+        "label": "Zweiter Button",
+        "kind": "object",
+        "advanced": false
+      }
+    ],
+    "optionalFields": [
+      {
+        "path": [
+          "image",
+          "decorative"
+        ],
+        "label": "Dekoratives Bild",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "image"
+        ],
+        "label": "Bild",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "image",
+          "altOverride"
+        ],
+        "label": "Alternativtext an dieser Stelle",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "image",
+          "assetId"
+        ],
+        "label": "Medium aus der Bibliothek",
+        "kind": "text",
+        "advanced": true
+      }
+    ]
+  },
+  "variant/textMedia": {
+    "fields": [
+      {
+        "path": [
+          "mediaSide"
+        ],
+        "label": "Bildposition",
+        "kind": "enum",
+        "advanced": false,
+        "choices": [
+          "Links",
+          "Rechts"
+        ]
+      },
+      {
+        "path": [
+          "showImage"
+        ],
+        "label": "Bild anzeigen",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "body"
+        ],
+        "label": "Markdown erlaubt",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "headline"
+        ],
+        "label": "Überschrift",
+        "kind": "text",
+        "advanced": false
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "image"
+        ],
+        "label": "Bild",
+        "kind": "object",
+        "advanced": false
+      }
+    ],
+    "optionalFields": [
+      {
+        "path": [
+          "image",
+          "decorative"
+        ],
+        "label": "Dekoratives Bild",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "image"
+        ],
+        "label": "Bild",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "image",
+          "altOverride"
+        ],
+        "label": "Alternativtext an dieser Stelle",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "image",
+          "assetId"
+        ],
+        "label": "Medium aus der Bibliothek",
+        "kind": "text",
+        "advanced": true
+      }
+    ]
+  },
+  "variant/faq": {
+    "fields": [
+      {
+        "path": [
+          "openFirst"
+        ],
+        "label": "Erste Frage geöffnet",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cta",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "kicker"
+        ],
+        "label": "Dachzeile",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cta",
+          "href"
+        ],
+        "label": "Link",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "tags",
+          "*"
+        ],
+        "label": "Schlagwörter",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "headline"
+        ],
+        "label": "Überschrift",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "id"
+        ],
+        "label": "Id",
+        "kind": "text",
+        "advanced": true
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "tags"
+        ],
+        "label": "Nur FAQ-Einträge mit einem dieser Tags",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": false,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "cta"
+        ],
+        "label": "Button",
+        "kind": "object",
+        "advanced": false
+      }
+    ],
+    "optionalFields": [
+      {
+        "path": [
+          "limit"
+        ],
+        "label": "Anzahl",
+        "kind": "number",
+        "advanced": false
+      }
+    ]
+  },
+  "variant/cta": {
+    "fields": [
+      {
+        "path": [
+          "button",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "button",
+          "href"
+        ],
+        "label": "Link",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "headline"
+        ],
+        "label": "Überschrift",
+        "kind": "text",
+        "advanced": false
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "button"
+        ],
+        "label": "Button",
+        "kind": "object",
+        "advanced": false
+      }
+    ],
+    "optionalFields": [
+      {
+        "path": [
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      }
+    ]
+  },
+  "variant/postList": {
+    "fields": [
+      {
+        "path": [
+          "limit"
+        ],
+        "label": "Anzahl",
+        "kind": "number",
+        "advanced": false
+      }
+    ],
+    "containers": [],
+    "optionalFields": [
+      {
+        "path": [
+          "headline"
+        ],
+        "label": "Überschrift",
+        "kind": "text",
+        "advanced": false
+      }
+    ]
+  },
+  "variant/projectGrid": {
+    "fields": [
+      {
+        "path": [
+          "limit"
+        ],
+        "label": "Anzahl",
+        "kind": "number",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cta",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "kicker"
+        ],
+        "label": "Dachzeile",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cta",
+          "href"
+        ],
+        "label": "Link",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "headline"
+        ],
+        "label": "Überschrift",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "id"
+        ],
+        "label": "Id",
+        "kind": "text",
+        "advanced": true
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "cta"
+        ],
+        "label": "Button",
+        "kind": "object",
+        "advanced": false
+      }
+    ],
+    "optionalFields": []
+  },
+  "variant/pricing": {
+    "fields": [
+      {
+        "path": [
+          "columns"
+        ],
+        "label": "Spalten",
+        "kind": "enum",
+        "advanced": false,
+        "choices": [
+          "3",
+          "2",
+          "1"
+        ]
+      },
+      {
+        "path": [
+          "tiers",
+          "*",
+          "packageId"
+        ],
+        "label": "Paket",
+        "kind": "enum",
+        "advanced": false,
+        "choices": [
+          "Spark",
+          "Horizon",
+          "Odyssey"
+        ]
+      },
+      {
+        "path": [
+          "tiers",
+          "*",
+          "showOrb"
+        ],
+        "label": "Animation anzeigen",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cta",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "tiers",
+          "*",
+          "cta",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "kicker"
+        ],
+        "label": "Dachzeile",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "note"
+        ],
+        "label": "Kleingedrucktes unter den Karten",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cta",
+          "href"
+        ],
+        "label": "Link",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "tiers",
+          "*",
+          "cta",
+          "href"
+        ],
+        "label": "Link",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "headline"
+        ],
+        "label": "Überschrift",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "id"
+        ],
+        "label": "Id",
+        "kind": "text",
+        "advanced": true
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "tiers",
+          "*",
+          "featureIds"
+        ],
+        "label": "Ausgewählte Paketleistungen in Kartenreihenfolge",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "tiers"
+        ],
+        "label": "Pakete",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "cta"
+        ],
+        "label": "Button",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "tiers",
+          "*",
+          "cta"
+        ],
+        "label": "Button",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "tiers",
+          "*"
+        ],
+        "label": "Pakete",
+        "kind": "object",
+        "advanced": false
+      }
+    ],
+    "optionalFields": []
+  },
+  "variant/steps": {
+    "fields": [
+      {
+        "path": [
+          "kicker"
+        ],
+        "label": "Dachzeile",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "steps",
+          "*",
+          "duration"
+        ],
+        "label": "Kurzer Zeitrahmen, z. B. \"48 h Antwortzeit\"",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "steps",
+          "*",
+          "title"
+        ],
+        "label": "Schritttitel",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "steps",
+          "*",
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "headline"
+        ],
+        "label": "Überschrift",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "id"
+        ],
+        "label": "Id",
+        "kind": "text",
+        "advanced": true
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "steps"
+        ],
+        "label": "Schritte",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "steps",
+          "*"
+        ],
+        "label": "Schritte",
+        "kind": "object",
+        "advanced": false
+      }
+    ],
+    "optionalFields": []
+  },
+  "variant/comparison": {
+    "fields": [
+      {
+        "path": [
+          "rows",
+          "*",
+          "cells",
+          "*",
+          "tone"
+        ],
+        "label": "Bewertung",
+        "kind": "enum",
+        "advanced": false,
+        "choices": [
+          "Ja",
+          "Nein",
+          "Teilweise"
+        ]
+      },
+      {
+        "path": [
+          "rowHeader"
+        ],
+        "label": "Beschriftung der ersten Spalte",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "rows",
+          "*",
+          "cells",
+          "*",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "rows",
+          "*",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "kicker"
+        ],
+        "label": "Dachzeile",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "note"
+        ],
+        "label": "Hinweis",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "columns",
+          "*"
+        ],
+        "label": "Spalten",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "rows",
+          "*",
+          "cells",
+          "*",
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "rows",
+          "*",
+          "values",
+          "*"
+        ],
+        "label": "Values",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "headline"
+        ],
+        "label": "Überschrift",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "id"
+        ],
+        "label": "Id",
+        "kind": "text",
+        "advanced": true
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "rows",
+          "*",
+          "values"
+        ],
+        "label": "Genau ein Wert je Spalte, in derselben Reihenfolge",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": false,
+          "insertable": false,
+          "removable": false
+        }
+      },
+      {
+        "path": [
+          "columns"
+        ],
+        "label": "Spalten",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": false,
+          "insertable": false,
+          "removable": false
+        }
+      },
+      {
+        "path": [
+          "rows",
+          "*",
+          "cells"
+        ],
+        "label": "Zellen",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": false,
+          "insertable": false,
+          "removable": false
+        }
+      },
+      {
+        "path": [
+          "rows"
+        ],
+        "label": "Zeilen",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "rows",
+          "*"
+        ],
+        "label": "Zeilen",
+        "kind": "object",
+        "advanced": false
+      },
+      {
+        "path": [
+          "rows",
+          "*",
+          "cells",
+          "*"
+        ],
+        "label": "Zellen",
+        "kind": "object",
+        "advanced": false
+      }
+    ],
+    "optionalFields": []
+  },
+  "variant/team": {
+    "fields": [
+      {
+        "path": [
+          "columns"
+        ],
+        "label": "Spalten",
+        "kind": "enum",
+        "advanced": false,
+        "choices": [
+          "5",
+          "3",
+          "2",
+          "1"
+        ]
+      },
+      {
+        "path": [
+          "showImages"
+        ],
+        "label": "Bilder anzeigen",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cta",
+          "label"
+        ],
+        "label": "Beschriftung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "kicker"
+        ],
+        "label": "Dachzeile",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "note"
+        ],
+        "label": "Hinweis",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "cta",
+          "href"
+        ],
+        "label": "Link",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "memberIds",
+          "*"
+        ],
+        "label": "Member Ids",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "headline"
+        ],
+        "label": "Überschrift",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "id"
+        ],
+        "label": "Id",
+        "kind": "text",
+        "advanced": true
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "memberIds"
+        ],
+        "label": "Teammitglieder",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      },
+      {
+        "path": [
+          "cta"
+        ],
+        "label": "Button",
+        "kind": "object",
+        "advanced": false
+      }
+    ],
+    "optionalFields": []
+  },
+  "variant/logoBar": {
+    "fields": [
+      {
+        "path": [
+          "showImages"
+        ],
+        "label": "Logos anzeigen",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "clientIds",
+          "*"
+        ],
+        "label": "Client Ids",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "press"
+        ],
+        "label": "Presse",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "headline"
+        ],
+        "label": "Überschrift",
+        "kind": "text",
+        "advanced": false
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "clientIds"
+        ],
+        "label": "Kunden",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      }
+    ],
+    "optionalFields": [
+      {
+        "path": [
+          "kicker"
+        ],
+        "label": "Dachzeile",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "id"
+        ],
+        "label": "Id",
+        "kind": "text",
+        "advanced": true
+      }
+    ]
+  },
+  "variant/testimonials": {
+    "fields": [
+      {
+        "path": [
+          "columns"
+        ],
+        "label": "Spalten",
+        "kind": "enum",
+        "advanced": false,
+        "choices": [
+          "1",
+          "2"
+        ]
+      },
+      {
+        "path": [
+          "background"
+        ],
+        "label": "Kartenhintergrund",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "showImages"
+        ],
+        "label": "Kundenlogo anzeigen",
+        "kind": "boolean",
+        "advanced": false
+      },
+      {
+        "path": [
+          "clientIds",
+          "*"
+        ],
+        "label": "Client Ids",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "headline"
+        ],
+        "label": "Überschrift",
+        "kind": "text",
+        "advanced": false
+      }
+    ],
+    "containers": [
+      {
+        "path": [
+          "clientIds"
+        ],
+        "label": "Kundenstimmen",
+        "kind": "array",
+        "advanced": false,
+        "array": {
+          "reorderable": true,
+          "insertable": true,
+          "removable": true
+        }
+      }
+    ],
+    "optionalFields": [
+      {
+        "path": [
+          "kicker"
+        ],
+        "label": "Dachzeile",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "text"
+        ],
+        "label": "Einleitung",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "id"
+        ],
+        "label": "Id",
+        "kind": "text",
+        "advanced": true
+      }
+    ]
+  },
+  "variant/contactForm": {
+    "fields": [
+      {
+        "path": [
+          "text"
+        ],
+        "label": "Text",
+        "kind": "text",
+        "advanced": false
+      },
+      {
+        "path": [
+          "headline"
+        ],
+        "label": "Überschrift",
+        "kind": "text",
+        "advanced": false
+      }
+    ],
+    "containers": [],
+    "optionalFields": []
+  }
+}

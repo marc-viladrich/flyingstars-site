@@ -13,7 +13,7 @@ import {fake,translationProvider} from './translation-providers.mjs';
 import {executeBatched, createTranslationCore} from './translation-core.mjs';
 import {readFile,readdir} from 'node:fs/promises';
 const {plan,mergeIntoTranslations}=createTranslationCore(await translationSite(translationRoot(new URL('../',import.meta.url))));
-const record={id:'page/example',data:{title:'Grüße aus Köln',href:'/kontakt/',date:new Date('2026-10-14'),sections:[{headline:'Unser Himmel'}]},fields:[{path:['title'],kind:'text'},{path:['href'],kind:'text'},{path:['date'],kind:'text'},{path:['sections',0,'headline'],kind:'text'}]};
+const record={id:'page/example',data:{title:'Grüße aus Köln',href:'/kontakt/',date:new Date('2026-10-14'),sections:[{headline:'Unser Himmel'}]},fields:[{path:['title'],kind:'text', 'x-afe': {translatable:true}},{path:['href'],kind:'text', 'x-afe': {translatable:false}},{path:['date'],kind:'text', 'x-afe': {translatable:false}},{path:['sections',0,'headline'],kind:'text', 'x-afe': {translatable:true}}]};
 const value=(path,text,reviewed=true,sourceHash=sha256(path.reduce((v,k)=>v[k],record.data)))=>({path,text,reviewed,sourceHash});
 const translation=values=>({sourceId:record.id,locale:'en',sourceHash:'0'.repeat(64),values});
 test('Public eligibility is per-value review AND exact UTF-8 source hash; editor alone exposes fresh machine values',()=>{
@@ -58,14 +58,14 @@ test('Reviewed UI copy cannot escape the JSON-LD script element',()=>{
  const serialized=jsonScript(value);assert.ok(!serialized.includes('<'));assert.deepEqual(JSON.parse(serialized),value);
 });
 test('Markdown beginning with a heading remains translatable and every inline format mark survives the provider',async()=>{
- const owner={id:'post/a',revision:'r',data:{body:'## Ein neuer Absatz\n\n**Fett** *kursiv* ~~gestrichen~~ {o}Kontur{/o}'},fields:[{path:['body'],kind:'text',format:'markdown'}]},memory={entries:{}};
+ const owner={id:'post/a',revision:'r',data:{body:'## Ein neuer Absatz\n\n**Fett** *kursiv* ~~gestrichen~~ {o}Kontur{/o}'},fields:[{path:['body'],kind:'text', 'x-afe': {translatable:true},format:'markdown'}]},memory={entries:{}};
  const planned=plan({records:[owner],locale:'en',memory});assert.equal(planned.jobs.length,1);
  assert.ok(planned.toSend.every(segment=>!segment.text.includes('**')&&!segment.text.includes('~~')&&!segment.text.includes('{o}')));
  const result=await executeBatched(planned,fake(),{memory,maxChars:3000,budgetChars:3000});
  const text=result.values.get(owner.id).entries[0].text;assert.match(text,/\*\*Fett\*\* \*kursiv\* ~~gestrichen~~ \{o\}Kontur\{\/o\}/);
 });
 test('A provider that damages tokens is rejected and a later valid run can recover',async()=>{
- const owner={id:'page/a',revision:'r',data:{title:'Hallo {name}'},fields:[{path:['title'],kind:'text'}]},memory={entries:{}};
+ const owner={id:'page/a',revision:'r',data:{title:'Hallo {name}'},fields:[{path:['title'],kind:'text', 'x-afe': {translatable:true}}]},memory={entries:{}};
  const first=await executeBatched(plan({records:[owner],locale:'en',memory}),{id:'bad',async translate({texts}){return{texts:texts.map(()=> 'Broken'),billedCharacters:12};}},{memory});
  assert.equal(first.failedSegments,1);assert.equal(first.skippedFields,1);assert.equal(first.values.size,0);
  const recovered=await executeBatched(plan({records:[owner],locale:'en',memory}),fake(),{memory});assert.equal(recovered.skippedFields,0);assert.match(recovered.values.get(owner.id).entries[0].text,/\{name\}/);
@@ -81,7 +81,7 @@ test('Architecture guard: every production editorial read lives behind content.t
 });
 test('Fake provider preserves protected tokens and exact billing; batching exhausts and resumes without paying twice',async()=>{
  const provider=translationProvider('fake');assert.equal(provider.id,'fake');assert.deepEqual(await fake().translate({target:'nl',texts:['Hallo ⟦0⟧']}),{texts:['[NL] Hallo ⟦0⟧'],billedCharacters:9});
- const owner={id:'site/ui',revision:'a'.repeat(64),data:{a:'Hallo {name}',b:'Wir {o}formen{/o} den {c}Himmel{/c}',c:'Ein weiterer langer Text. Noch ein Satz. Noch mehr Worte für mehrere Batches.'},fields:['a','b','c'].map(key=>({path:[key],kind:'text'}))};
+ const owner={id:'site/ui',revision:'a'.repeat(64),data:{a:'Hallo {name}',b:'Wir {o}formen{/o} den {c}Himmel{/c}',c:'Ein weiterer langer Text. Noch ein Satz. Noch mehr Worte für mehrere Batches.'},fields:['a','b','c'].map(key=>({path:[key],kind:'text', 'x-afe': {translatable:true}}))};
  const memory={entries:{}};let calls=0;const counted={...provider,async translate(request){calls++;return provider.translate(request);}};
  const planned=plan({records:[owner],locale:'en',memory});
  const first=await executeBatched(planned,counted,{memory,maxChars:30,budgetChars:30});assert.ok(first.budgetExhausted);assert.ok(first.batches>0);assert.ok(first.sent<=30);
