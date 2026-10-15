@@ -22,7 +22,9 @@ import { sha256 } from "./sha256.mjs";
 import { flags } from "./flags.mjs";
 import { inlinePlain } from "/editor/site-lib/inline-text.mjs";
 import { kindOf, kindPlural } from "./record-kinds.mjs";
-import { mediaLibrary, collectionOf, ALL as ALL_MEDIA, UNUSED as UNUSED_MEDIA } from "./media-usage.mjs";
+import { mediaLibrary, mediaUsers, collectionOf, ALL as ALL_MEDIA, UNUSED as UNUSED_MEDIA } from "./media-usage.mjs";
+import { splitLocale, localizedPath, frontendTarget, liveURL } from "./frontend-url.mjs";
+import { navigatorGroups } from "./content-navigator.mjs";
 
 // ---------------------------------------------------------------------------
 // State
@@ -46,6 +48,8 @@ let state,
   currentInspector = null,
   inlineKeys = new Set(),
   publishPending = false,
+  // Last /editor/api/review answer: saved draft head, active public head, public origin.
+  publication = null,
   toastTimer = null,
   openMenuState = null,
   loadError = false;
@@ -476,6 +480,11 @@ function update() {
   $("#undo").hidden = preview || !draft.history.length;
   $("#undo").disabled = locked;
 
+  // The preview tab (same origin) shows whether the editor holds changes it does not contain.
+  try {
+    if (count) localStorage.setItem("fs-editor-unsaved", String(count));
+    else localStorage.removeItem("fs-editor-unsaved");
+  } catch {}
   const save = $("#save");
   save.hidden = !count && !busy;
   save.disabled = locked || !count;
@@ -508,9 +517,16 @@ $("#more").append(icon("ellipsis"));
 $("#panel-close").append(icon("x"));
 $("#panel-back").append(icon("chevron-left"));
 
+// A preview tab offers to reload once a newer state is saved.
+function rememberSavedHead() {
+  try {
+    localStorage.setItem("fs-editor-head", state.head);
+  } catch {}
+}
 async function refreshPublishState() {
   try {
     const result = await api("/editor/api/review");
+    publication = result;
     publishPending = (result.changed || []).length > 0 || publishNeedsActivation(result);
   } catch {
     publishPending = false;
@@ -529,10 +545,12 @@ function closeMenu({ restoreFocus = false } = {}) {
   openMenuState = null;
   if (restoreFocus) trigger.focus();
 }
-function openMenu(trigger, items) {
+// Dock menus open above their button and replace the panel; a menu from inside the panel (keepPanel)
+// leaves it open and drops below its button when there is no room above.
+function openMenu(trigger, items, { keepPanel = false } = {}) {
   if (openMenuState?.trigger === trigger) return closeMenu();
   closeMenu();
-  closePanel();
+  if (!keepPanel) closePanel();
   const node = el("div", { class: "editor-ui menu", role: "menu" });
   for (const item of items.filter(Boolean)) {
     if (item === "-") node.append(el("div", { class: "menu-sep", role: "separator" }));
@@ -550,6 +568,7 @@ function openMenu(trigger, items) {
         { icon: item.icon, cls: "menu-item " + (item.danger ? "danger" : "") },
       );
       if (item.flag) row.prepend(flagIcon(item.flag));
+      if (item.hint) row.querySelector("span").after(el("small", { class: "menu-hint", text: item.hint }));
       row.setAttribute("role", item.checked !== undefined ? "menuitemcheckbox" : "menuitem");
       if (item.checked !== undefined) {
         row.setAttribute("aria-checked", String(item.checked));
@@ -574,7 +593,8 @@ function openMenu(trigger, items) {
     width = node.offsetWidth,
     height = node.offsetHeight;
   node.style.left = Math.max(12, Math.min(innerWidth - width - 12, box.left)) + "px";
-  node.style.top = Math.max(12, box.top - height - 8) + "px";
+  const above = box.top - height - 8;
+  node.style.top = (keepPanel && above < 12 ? Math.min(box.bottom + 6, innerHeight - height - 12) : Math.max(12, above)) + "px";
   trigger.setAttribute("aria-expanded", "true");
   openMenuState = { node, trigger };
   const rows = () => [...node.querySelectorAll("button:not(:disabled)")];
@@ -590,6 +610,8 @@ function openMenu(trigger, items) {
       (event.key === "Home" ? list[0] : list.at(-1))?.focus();
     } else if (event.key === "Escape" || event.key === "Tab") {
       event.preventDefault();
+      // Escape closes only the menu, not the panel it was opened from.
+      event.stopPropagation();
       closeMenu({ restoreFocus: true });
     }
   });
@@ -635,10 +657,9 @@ function moreMenu() {
         syncFrame();
       },
     },
-    { label: "Seite in neuem Tab öffnen", icon: "external-link", run: () => open(route, "_blank", "noopener") },
+    frontendMenuItem(),
     "-",
     count ? { label: "Alle Änderungen verwerfen", icon: "rotate-ccw", danger: true, confirm: "Wirklich alle verwerfen?", run: discardAll } : null,
-    { label: "Alle Inhaltsfelder (Experten)", icon: "list", run: allFields },
     session.user ? "-" : null,
     session.user
       ? count
@@ -648,22 +669,30 @@ function moreMenu() {
   ]);
 }
 
+// This page outside the editor, in the current language: the live site when everything saved is
+// published, otherwise the saved draft under /vorschau/ (with a bar that says so). The label names the
+// target before the click. Unsaved changes are in neither; the preview bar says so, here a toast does.
+function frontendMenuItem() {
+  const target = frontendTarget({ route, locale: activeLocale, publication });
+  const run = () => {
+    open(target.url, "_blank", "noopener");
+    if (target.kind === "live" && changeCount()) toast("Live-Seite geöffnet. Deine ungespeicherten Änderungen sind dort noch nicht enthalten.");
+  };
+  return target.kind === "live"
+    ? { label: "Live ansehen", icon: "external-link", run }
+    : { label: "Vorschau ansehen", hint: "nicht veröffentlicht", icon: "external-link", run };
+}
+
 // ---------------------------------------------------------------------------
 // Navigation and selection
 // ---------------------------------------------------------------------------
 // Languages are real routes (/en/…, /nl/…). `route` always stays the German page the records belong to;
 // the language is kept separately and only the iframe address carries the prefix.
-const localeRoute = /^\/(en|nl)(?=\/|$)/;
-function splitLocale(pathname) {
-  const match = localeRoute.exec(pathname);
-  return match ? { locale: match[1], path: pathname.slice(match[0].length) || "/" } : { locale: "de", path: pathname };
-}
-const localizedPath = (path, locale) => (locale === "de" ? path : "/" + locale + (path.startsWith("/") ? path : "/" + path));
 function editorAddress() {
   const page = localizedPath(route, activeLocale);
   return "/editor/" + (page === "/" ? "" : "?page=" + encodeURIComponent(page));
 }
-function navigate(url, { reload = false, locale } = {}) {
+function navigate(url, { reload = false, locale, keepPanel = false } = {}) {
   nextViewRecordId = null;
   stageInputs();
   send("mode", { preview, busy: true, outlines });
@@ -672,7 +701,7 @@ function navigate(url, { reload = false, locale } = {}) {
   } catch {}
   ready = false;
   selection = null;
-  closePanel();
+  if (!keepPanel) closePanel();
   closeMenu();
   const next = new URL(url, location.origin);
   const split = splitLocale(next.pathname);
@@ -692,6 +721,9 @@ function navigate(url, { reload = false, locale } = {}) {
   $("#loading").hidden = false;
   history.replaceState(null, "", editorAddress());
   update();
+  // A language switch from inside a panel redraws the same view in the new language at once (it stays
+  // locked until the page has loaded, then it is drawn once more with the new page's markers).
+  if (keepPanel) rerender();
 }
 function frameOffset() {
   const box = frame.getBoundingClientRect();
@@ -908,6 +940,22 @@ function actionRow(label, run, iconName, { danger = false, confirm } = {}) {
   return row;
 }
 
+// Texts of content records have a translation per language; links, files and colours do not.
+const translatableRecord = (id) => /^(page|post|project|faq|client|team|screen|package|site)\//.test(id);
+function isTranslatable(item, field) {
+  return !!field && field.kind === "text" && field.format !== "color" && translatableRecord(item.id) && !["href", "url", "src", "video"].includes(field.path.at(-1));
+}
+// "Übersetzen" for one clicked text: in German it switches to the foreign view with that text focused on
+// the page; in a foreign view it goes back to German and the panel stays.
+function translateAction(item, field) {
+  if (!isTranslatable(item, field)) return null;
+  return activeLocale === "de"
+    ? actionRow("Übersetzen", () => startTranslation({ id: item.id, path: field.path }), "languages")
+    : actionRow("Zurück zu Deutsch", () => switchPanelLocale("de"), "languages");
+}
+// Set while a panel draws when it shows (or holds behind "Weitere Felder") a translatable text: then its
+// head carries the one language control of the panel.
+let panelTranslatable = false;
 // One control per field kind. Text that is visible on the page is edited there, never here.
 function fieldControl(item, field, { label } = {}) {
   const key = fieldKey(item.id, field.path),
@@ -971,15 +1019,14 @@ function fieldControl(item, field, { label } = {}) {
   }
   input.dataset.fieldKey = key;
   input.value = current ?? "";
-  const translatable =
-    field.kind === "text" && field.format !== "color" &&
-    /^(page|post|project|faq|client|team|screen|package|site)\//.test(item.id) &&
-    !["href", "url", "src", "video"].includes(field.path.at(-1));
+  const translatable = isTranslatable(item, field);
+  if (translatable) panelTranslatable = true;
   if (translatable && activeLocale !== "de") {
     // In a foreign-language view this field edits its translation; the German text is the placeholder.
+    // Its language pill switches the language of the whole panel (and the page) in place.
     input.value = translationText(item, field.path) ?? "";
     input.placeholder = current ?? "";
-    labelNode.append(el("span", { class: "locale-badge", text: activeLocale.toUpperCase() }));
+    labelNode.append(localeSwitch("locale-badge"));
     input.addEventListener("change", () => {
       if (input.value.trim()) writeTranslation(item.id, field.path, activeLocale, input.value);
     });
@@ -1323,12 +1370,15 @@ function referenceControl(item, container, source, { part = "all" } = {}) {
   };
   const chosenList = el("ul", { class: "rows", "data-list": listKey, "aria-label": fieldLabel(container) + " (angezeigt)" });
   chosen.forEach((option, index) => chosenList.append(row(option, index)));
-  // Not shown yet: grouped like their owner (e.g. "Musik", "Service & Extras").
+  // Not shown yet: grouped like their owner (e.g. "Musik", "Service & Extras"). Named groups are
+  // disclosures like entries: open in the record overview, closed in contextual panels, choice remembered.
   const groups = [...new Set(others.map((option) => option.group || ""))];
   const otherLists = groups.map((group) => {
+    const members = others.filter((option) => (option.group || "") === group);
     const list = el("ul", { class: "rows muted", "aria-label": group || "Weitere" });
-    others.filter((option) => (option.group || "") === group).forEach((option) => list.append(row(option, null)));
-    return [group ? el("span", { class: "row-sublabel", text: group }) : null, list];
+    members.forEach((option) => list.append(row(option, null)));
+    if (!group) return [list];
+    return [rememberedDisclosure(listKey + "#" + group, el("span", { text: `${group} (${members.length})` }), list, { cls: "ref-group" })];
   });
   const createButton = source.create
     ? button(source.createLabel || source.noun + " hinzufügen", source.create, { icon: source.createLabel ? "pencil" : "plus", cls: "inline-button" })
@@ -1437,6 +1487,13 @@ function tableColumns(item, container) {
 // an explicit toggle is remembered across redraws and follows the entry when it moves.
 function disclosureOpen(key) {
   return openDisclosures.has(key) ? openDisclosures.get(key) : renderMode === "entity";
+}
+// A <details> group whose open state follows disclosureOpen() and survives redraws (also a language switch).
+function rememberedDisclosure(key, summary, content, { cls = "", open = disclosureOpen(key) } = {}) {
+  const details = el("details", { class: cls }, el("summary", {}, summary, icon("chevron-down")), content);
+  details.open = open;
+  details.addEventListener("toggle", () => openDisclosures.set(key, details.open));
+  return details;
 }
 // permutation[newIndex] = oldIndex (missing old indexes were removed); nested keys move with their entry.
 function remapDisclosures(id, listPath, permutation) {
@@ -1948,6 +2005,15 @@ function parentLinks(item, context, { from }) {
   return actionGroup(rows.length ? "Gehört zu" : null, rows);
 }
 
+// The title says what the panel is; the kind beside it is context. When the head gets tight (language
+// control, narrow panel) the kind gives way first and is hidden rather than shrunk to "…".
+function fitPanelHead() {
+  const kind = $("#panel-kind");
+  kind.hidden = false;
+  kind.title = kind.textContent;
+  if (kind.textContent && kind.scrollWidth > kind.clientWidth && kind.clientWidth < 64) kind.hidden = true;
+}
+new ResizeObserver(() => !$("#panel").hidden && fitPanelHead()).observe($(".panel-head"));
 function renderTop({ keepScroll = false, keepPlace = false } = {}) {
   const view = panelStack.at(-1);
   const item = record(view.context.id);
@@ -1972,11 +2038,14 @@ function renderTop({ keepScroll = false, keepPlace = false } = {}) {
     showPanel({ title, iconName, kind, anchor: panelAnchor, docked: !panelAnchor, size: view.scope === "record" ? "overview" : "compact" });
   $("#panel").classList.remove("wide");
   const renderers = { element: elementView, entry: entryView, instance: instanceView, section: sectionView, media: mediaView, record: recordView, page: pageView, field: fieldView };
+  panelTranslatable = false;
   (renderers[view.scope] || elementView)(body, item, view.context, head);
+  if (panelTranslatable) $("#panel-actions").append(localeSwitch("panel-locale"));
   if (!body.children.length) put(body, group(null, el("p", { class: "note", text: "Hier gibt es nichts weiter einzustellen." })));
   $("#panel-back").hidden = panelStack.length < 2;
   update();
   placePanel(panelAnchor, previous);
+  fitPanelHead();
   body.scrollTop = scroll;
   if (reveal && !pendingFocus) {
     let target = body.querySelector(`[data-field-key="${CSS.escape(fieldKey(item.id, reveal))}"]`);
@@ -2026,19 +2095,7 @@ function elementView(body, item, context, head) {
     controls.push(...optionalVariants(item, parent, { exact: true }));
   }
   put(body, group(null, controls));
-  const actions = [];
-  if (
-    field?.kind === "text" &&
-    /^(page|post|project|faq|client|team|screen|package|site)\//.test(item.id) &&
-    !["href", "url", "src", "video"].includes(path.at(-1))
-  )
-    actions.push(
-      actionRow(
-        activeLocale === "de" ? "Übersetzen" : "Zurück zu Deutsch",
-        () => (activeLocale === "de" ? startTranslation({ id: item.id, path }) : setLocale("de")),
-        "languages",
-      ),
-    );
+  const actions = [translateAction(item, field)];
   if (groupContainer?.optional)
     actions.push(
       actionRow(`${fieldLabel(groupContainer)} entfernen`, () => removeOptional(item, parent), "trash-2", { danger: true, confirm: "Wirklich entfernen?" }),
@@ -2137,6 +2194,7 @@ function placeFocus(units, focus, ownerId) {
 }
 function moreDisclosure(item, units, prefix, key) {
   if (!units.length) return null;
+  if (units.some((unit) => unit.kind === "field" && isTranslatable(item, fieldsFor(item).find((f) => equal(f.path, unit.path))))) panelTranslatable = true;
   const details = el("details", { class: "more" }, el("summary", {}, el("span", { text: `Weitere Felder (${units.length})` }), icon("chevron-down")));
   // Filled when first opened: the closed disclosure costs nothing to draw.
   const fill = () => details.querySelector(":scope > .group") || put(details, group(null, units.map((unit) => unitControl(item, unit, prefix))));
@@ -2180,7 +2238,10 @@ function instanceView(body, item, context, head) {
       group(`${kindOf(shared.id)[0]} „${recordName(shared)}“`, draw(shared, sharedShown, []), el("p", { class: "note", text: `Gilt überall, wo ${recordName(shared)} erscheint.` })),
     );
   put(body, moreDisclosure(item, own.more, path, "more:" + fieldKey(item.id, path)));
-  if (path.length) put(body, entryActionGroup(item, path, container));
+  // The clicked text can be translated from its card as from its own element panel.
+  const focusOwner = focus?.kind === "field" ? record(focus.id) : null;
+  const translate = focusOwner ? translateAction(focusOwner, fieldsFor(focusOwner).find((f) => equal(f.path, focus.path))) : null;
+  put(body, path.length ? entryActionGroup(item, path, container, [translate]) : actionGroup(null, [translate]));
   put(body, parentLinks(item, context, { from: "entry" }));
   // Keyboard focus goes to the clicked element once, when the card opens.
   if (focus && !context.focused) {
@@ -2196,11 +2257,12 @@ function instanceView(body, item, context, head) {
   }
 }
 // Duplicate/remove of a card opened on its own (from the canvas).
-function entryActionGroup(item, path, container) {
+function entryActionGroup(item, path, container, lead = []) {
   const list = value(item, path.slice(0, -1)) || [];
-  if (positionalList(path.slice(0, -1))) return null;
+  if (positionalList(path.slice(0, -1))) return actionGroup(null, lead);
   const entry = value(item, path);
   return actionGroup(null, [
+    ...lead,
     container?.elementTemplate !== undefined && (container.max === undefined || list.length < container.max)
       ? actionRow(
           "Duplizieren",
@@ -2475,18 +2537,8 @@ function fieldView(body, item, context, head) {
 }
 function appendAdvanced(body, item, fields) {
   if (!fields.length) return;
-  put(
-    body,
-    el(
-      "details",
-      { class: "more" },
-      el("summary", {}, el("span", { text: "Erweitert" }), icon("chevron-down")),
-      group(
-        null,
-        fields.map((f) => fieldControl(item, f)),
-      ),
-    ),
-  );
+  const key = "advanced:" + fieldKey(item.id, fields[0].path.slice(0, -1));
+  put(body, rememberedDisclosure(key, el("span", { text: "Erweitert" }), group(null, fields.map((f) => fieldControl(item, f))), { cls: "more", open: openDisclosures.get(key) === true }));
 }
 // A record with its own page is best edited there: offered at the top of its overview.
 function editOnPage(item) {
@@ -2496,6 +2548,10 @@ function editOnPage(item) {
   navigate(item.route);
 }
 function recordActions(item) {
+  // An image still in use cannot be deleted; the usage list above says where to replace it first.
+  const usedBy = item.id.startsWith("media/") ? mediaUsers(records(), item).length : 0;
+  if (usedBy)
+    return actionGroup(null, [el("p", { class: "note", text: `Löschen ist möglich, sobald das Bild nirgends mehr verwendet wird (${usedBy}× verwendet).` })]);
   return actionGroup(null, [
     !["page/", "screen/", "package/", "site/"].some((p) => item.id.startsWith(p))
       ? actionRow(
@@ -2513,31 +2569,6 @@ function recordActions(item) {
         )
       : null,
   ]);
-}
-
-// Developer escape hatch: every schema field, reachable but out of the way.
-function allFields() {
-  stageInputs();
-  const d = dialog("Alle Inhaltsfelder");
-  const items = records();
-  d.body.append(el("p", { class: "note", text: "Technische Gesamtansicht für Entwickler. Redaktionelle Texte bitte direkt auf der Seite bearbeiten." }));
-  const listNode = el("ul", { class: "record-list" });
-  for (const item of items)
-    listNode.append(
-      el(
-        "li",
-        {},
-        button(
-          item.title,
-          () => {
-            d.close();
-            openInspector({ id: item.id, path: [] }, "record", undefined, { docked: true });
-          },
-          { icon: kindOf(item.id)[1] },
-        ),
-      ),
-    );
-  d.body.append(listNode);
 }
 
 // ---------------------------------------------------------------------------
@@ -2559,6 +2590,7 @@ async function save() {
     const result = await api("/editor/api/save", retry);
     state = result;
     initialHead = result.head;
+    rememberSavedHead();
     draft.accept(result.records);
     retry = null;
     editing.clear();
@@ -2720,9 +2752,11 @@ async function review() {
             expectedPublishedHead: result.publishedHead,
             requestId: crypto.randomUUID(),
           });
-          d.close();
           publishPending = false;
-          toast("Veröffentlicht.", { action: () => open(published.url || "/public/", "_blank", "noopener"), actionLabel: "Ansehen" });
+          const head = published.publishedHead;
+          publication = { ...result, draftHead: head, publishedHead: head, activePublishedHead: head, changed: [], url: published.url || result.url };
+          publishedState(d);
+          refreshPublishState();
         } catch (e) {
           status.textContent = e.message;
           status.classList.add("error");
@@ -2742,6 +2776,26 @@ async function review() {
     status.textContent = e.message;
     status.classList.add("error");
   }
+}
+
+// After a publication the dialog stays as the confirmation, with a lasting link to this page live in
+// the current language (the page the work was done on, not the homepage).
+function publishedState(d) {
+  const label = pageChoices().find((choice) => choice.value === route)?.label || "Diese Seite";
+  d.querySelector(".dlg-head h2").textContent = "Veröffentlicht";
+  const link = el("a", { class: "button primary", href: liveURL(route, activeLocale, publication.url), target: "_blank", rel: "noopener" }, icon("external-link"), el("span", { text: "Live ansehen" }));
+  d.body.replaceChildren(
+    el(
+      "div",
+      { class: "publish-done", role: "status" },
+      el("span", { class: "publish-done-mark", "aria-hidden": "true" }, icon("check")),
+      el("p", { class: "publish-done-title", text: "Die Website ist aktualisiert." }),
+      el("p", { class: "note", text: `„${label}“${activeLocale === "de" ? "" : ` (${localeNames[activeLocale]})`} ist jetzt live.` }),
+      link,
+    ),
+  );
+  d.foot.replaceChildren(button("Schließen", () => d.close(), { cls: "secondary" }));
+  link.focus();
 }
 
 // ---------------------------------------------------------------------------
@@ -2927,57 +2981,95 @@ function openCreate(prefix, reference, preset = {}, after) {
   );
   name.focus();
 }
+// "Inhalte verwalten": one navigator over every record, grouped by content type (see content-navigator.mjs).
+// Groups start closed (their heading with the count is the overview); a search opens every group with a
+// hit. A record opens in its overview; its language versions are flags on its row and open the same
+// overview in that language.
+const navigatorOpen = new Set();
+function navigatorName(item) {
+  if (item.route && /^(page|screen)\//.test(item.id))
+    return normalizedRoute(item.route) === "/" ? "Startseite" : String(inlinePlain(item.data?.title || item.title)).split(" – ")[0];
+  return recordName(item);
+}
 function contentLibrary() {
   stageInputs();
-  const tabs = ["client/", "team/", "package/", "media/", "post/", "project/", "faq/"]
-    .map((prefix) => [prefix, kindPlural(prefix)])
-    .filter(([prefix]) => records().some((r) => r.id.startsWith(prefix)) || recordTemplate(prefix));
-  const d = dialog("Inhalte verwalten");
-  const bar = el("div", { class: "tabs", role: "tablist" });
-  const pane = el("div", { role: "tabpanel" });
-  const show = (prefix) => {
-    for (const tab of bar.children) tab.setAttribute("aria-selected", String(tab.dataset.prefix === prefix));
+  const search = el("input", { type: "search", placeholder: "Suchen …", "aria-label": "Inhalte durchsuchen", autocomplete: "off" });
+  const d = dialog("Inhalte verwalten", { search });
+  d.classList.add("navigator");
+  const pane = el("div", { class: "nav-groups" });
+  const openRecord = (id, locale) => {
+    d.close();
+    openInspector({ id, path: [] }, "record", undefined, { docked: true });
+    if (locale && locale !== activeLocale) switchPanelLocale(locale);
+  };
+  const draw = () => {
+    const query = search.value.trim();
+    const groups = navigatorGroups(records(), { name: navigatorName, canCreate: (type) => !!recordTemplate(type + "/"), query });
     pane.replaceChildren();
-    d.classList.toggle("media-wide", prefix === "media/");
-    if (prefix === "media/") return pane.append(mediaBrowser({ mode: "manage", dialog: d }));
-    const template = recordTemplate(prefix);
-    if (template)
-      pane.append(
-        button(
-          template.title + " anlegen",
-          () => {
-            d.close();
-            openCreate(prefix);
-          },
-          { icon: "plus", cls: "inline-button" },
-        ),
-      );
-    const listNode = el("ul", { class: "record-list" });
-    for (const item of records().filter((r) => r.id.startsWith(prefix)))
-      listNode.append(
-        el(
-          "li",
-          {},
-          button(
-            item.data.displayName || item.data.name || item.data.title || item.title,
-            () => {
-              d.close();
-              openInspector({ id: item.id, path: [] }, "record", undefined, { docked: true });
-            },
-            { icon: kindOf(item.id)[1] },
+    if (!groups.length) pane.append(el("p", { class: "note", text: "Keine Treffer." }));
+    for (const g of groups) {
+      const template = g.create && !query ? recordTemplate(g.type + "/") : null;
+      const rows = el(
+        "ul",
+        { class: "record-list" },
+        g.items.map((row) =>
+          el(
+            "li",
+            {},
+            button(row.title, () => openRecord(row.id), { icon: kindOf(row.id)[1], cls: "nav-record" }),
+            row.locales.map((locale) => {
+              const chip = button(locale.toUpperCase(), () => openRecord(row.id, locale), { cls: "nav-locale" });
+              chip.prepend(flagIcon(locale));
+              chip.setAttribute("aria-label", `${row.title} auf ${localeNames[locale] || locale} öffnen`);
+              chip.title = localeNames[locale] || locale;
+              return chip;
+            }),
           ),
         ),
       );
-    pane.append(listNode);
+      const create = template
+        ? button(
+            template.title + " anlegen",
+            () => {
+              d.close();
+              openCreate(g.type + "/");
+            },
+            { icon: "plus", cls: "inline-button" },
+          )
+        : null;
+      // Images are browsed in the media library (grid, collections, usage), not as a record list.
+      const isMedia = g.type === "media";
+      const library = isMedia
+        ? button(
+            "Mediathek öffnen",
+            () => {
+              d.classList.add("media-wide");
+              pane.replaceChildren(mediaBrowser({ mode: "manage", dialog: d }));
+              search.hidden = true;
+            },
+            { icon: "image", cls: "inline-button" },
+          )
+        : null;
+      const count = query ? `${g.items.length} von ${g.total}` : String(g.total);
+      const details = el(
+        "details",
+        { class: "nav-group" },
+        el("summary", {}, icon(g.icon), el("span", { class: "nav-group-title", text: g.label }), el("span", { class: "nav-count", text: count }), icon("chevron-down")),
+        el("div", { class: "nav-group-body" }, library || create, isMedia ? null : g.items.length ? rows : el("p", { class: "note", text: "Noch keine Einträge." })),
+      );
+      details.open = !!query || navigatorOpen.has(g.type);
+      details.addEventListener("toggle", () => {
+        if (query) return;
+        if (details.open) navigatorOpen.add(g.type);
+        else navigatorOpen.delete(g.type);
+      });
+      pane.append(details);
+    }
   };
-  for (const [prefix, label] of tabs) {
-    const tab = button(label + " · " + records().filter((r) => r.id.startsWith(prefix)).length, () => show(prefix));
-    tab.dataset.prefix = prefix;
-    tab.setAttribute("role", "tab");
-    bar.append(tab);
-  }
-  d.body.append(bar, pane);
-  if (tabs.length) show(tabs[0][0]);
+  search.addEventListener("input", draw);
+  d.body.append(pane);
+  draw();
+  search.focus();
 }
 
 // ---------------------------------------------------------------------------
@@ -3147,7 +3239,7 @@ function mediaBrowser({ mode, dialog: d, context = null }) {
       search.value = "";
       select(library.assets.find((a) => a.id === focusId)?.collections[0] || ALL_MEDIA);
       tiles.querySelector(`[data-asset="${CSS.escape(focusId)}"]`)?.focus();
-      toast("Bild hochgeladen.");
+      toast(uploaded.reused ? "Dieses Bild ist schon in der Mediathek – es wurde ausgewählt." : "Bild hochgeladen.");
     } catch (e) {
       status.textContent = e.message;
       status.classList.add("error");
@@ -3520,7 +3612,7 @@ async function translateMissing() {
   refresh();
 }
 // Switching the language loads the real language route (html lang, head, scripts); the scroll position stays.
-function setLocale(locale) {
+function setLocale(locale, { keepPanel = false } = {}) {
   if (locale === activeLocale) return;
   stageInputs();
   try {
@@ -3528,11 +3620,41 @@ function setLocale(locale) {
   } catch {}
   const search = new URLSearchParams(frame.contentWindow?.location.search || "");
   for (const key of ["editor", "_editorNavigation", "_editorHead"]) search.delete(key);
-  navigate(route + (search.size ? "?" + search : ""), { locale });
+  navigate(route + (search.size ? "?" + search : ""), { locale, keepPanel });
   if (locale !== "de" && !setLocale.hinted) {
     setLocale.hinted = true;
     toast(`${localeNames[locale]}: Texte direkt auf der Seite überschreiben. Noch nicht übersetzte Texte sind gestrichelt markiert.`);
   }
+}
+// The language control of a panel: in its head (one per panel, when it shows translatable text) and as the
+// pill on every foreign-language field. Same languages and flags as the dock; switching keeps the panel
+// (same record, scroll position and open groups) and the page follows (setLocale, as from the dock).
+function localeSwitch(cls) {
+  const node = el(
+    "button",
+    { type: "button", class: cls, "aria-haspopup": "menu", "aria-expanded": "false", "aria-label": "Sprache wechseln, aktuell " + localeNames[activeLocale], title: "Sprache wechseln" },
+    cls === "panel-locale" ? flagIcon(activeLocale) : null,
+    el("span", { text: activeLocale.toUpperCase() }),
+    icon("chevron-down"),
+  );
+  node.addEventListener("click", (event) => {
+    // Inside a field label the click must not reach the input.
+    event.preventDefault();
+    event.stopPropagation();
+    openMenu(
+      node,
+      [{ heading: "Sprache der Ansicht" }, ...Object.entries(localeNames).map(([code, label]) => ({ label, flag: code, current: code === activeLocale, run: () => switchPanelLocale(code) }))],
+      { keepPanel: true },
+    );
+  });
+  return node;
+}
+let focusLocaleSwitch = false;
+function switchPanelLocale(locale) {
+  if (locale === activeLocale) return;
+  if ($("#panel").hidden) return setLocale(locale);
+  focusLocaleSwitch = true;
+  setLocale(locale, { keepPanel: true });
 }
 function startTranslation(context) {
   closePanel();
@@ -3624,6 +3746,12 @@ window.addEventListener("message", (event) => {
     $("#loading").hidden = true;
     syncFrame();
     update();
+    // A panel kept across a language switch is redrawn with the new page (card markers, inline texts).
+    if (!$("#panel").hidden) {
+      rerender();
+      if (focusLocaleSwitch) $("#panel .panel-locale")?.focus({ preventScroll: true });
+    }
+    focusLocaleSwitch = false;
     startPreview();
     if (activeLocale !== "de") overlayLocale(activeLocale);
     if (frame.dataset.restoreTransient) {
@@ -3756,6 +3884,11 @@ document.addEventListener("keydown", (event) => {
     }
   }
 });
+window.addEventListener("pagehide", () => {
+  try {
+    localStorage.removeItem("fs-editor-unsaved");
+  } catch {}
+});
 window.addEventListener("beforeunload", (event) => {
   if (draft.size || pendingCount() || pendingTranslations.size) {
     event.preventDefault();
@@ -3773,6 +3906,7 @@ window.addEventListener("resize", () => {
     await loadSession();
     state = await api("/editor/api/state");
     initialHead = state.head;
+    rememberSavedHead();
     draft.reset(state.records);
     if (state.activeHead && state.activeHead !== state.head)
       toast("Der letzte gespeicherte Stand konnte nicht aufgebaut werden. Die Seite zeigt einen früheren Stand.", { error: true });

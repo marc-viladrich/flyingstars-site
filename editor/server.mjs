@@ -1,4 +1,6 @@
-import {editorEntry,isSitePage,topLevelVisit} from './entry.mjs';
+import {editorEntry,isSitePage,loginReturn,topLevelVisit} from './entry.mjs';
+import {previewSitePath,savedIsLive} from './web/frontend-url.mjs';
+import {withPreviewBar} from './preview-page.mjs';
 import http from 'node:http';
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
@@ -22,7 +24,8 @@ export async function serveFile(res,base,relative,enhance=false){
  let name=path.join(base,decoded);const info=await fs.stat(name).catch(error=>{if(error.code==='ENOENT')throw failure('Nicht gefunden.',404);throw error;});if(info.isDirectory())name=path.join(name,'index.html');
  const actual=await fs.realpath(name),canonical=await fs.realpath(base);if(!actual.startsWith(canonical+path.sep))throw failure('Pfad nicht freigegeben.',403);
  let bytes=await fs.readFile(actual);
- if(enhance&&name.endsWith('.html'))bytes=Buffer.from(bytes.toString().replace('</body>','<script type="module" src="/editor/frame.js"></script></body>'));
+ if(typeof enhance==='function'&&name.endsWith('.html'))bytes=Buffer.from(await enhance(bytes.toString()));
+ else if(enhance&&name.endsWith('.html'))bytes=Buffer.from(bytes.toString().replace('</body>','<script type="module" src="/editor/frame.js"></script></body>'));
  res.writeHead(200,{'content-type':mime[path.extname(name)]||'application/octet-stream','cache-control':'no-store','x-content-type-options':'nosniff'});res.end(bytes);
 }
 const json=(res,status,data)=>{res.writeHead(status,{'content-type':'application/json','cache-control':'no-store','x-content-type-options':'nosniff'});res.end(JSON.stringify(data));};
@@ -66,7 +69,7 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
    session=await authentication.session(req);
    if(!session){
     const page=req.method==='GET'&&!p.startsWith('/editor/api/')&&!p.startsWith('/_')&&!p.startsWith('/@')&&(path.extname(p)==='.html'||!path.extname(p)&&(!p.startsWith('/editor/')||p==='/editor/'));
-    if(page){res.writeHead(302,{location:'/editor/login?next='+encodeURIComponent(editorEntry(url)||'/editor/')});return res.end();}
+    if(page){res.writeHead(302,{location:'/editor/login?next='+encodeURIComponent(loginReturn(url))});return res.end();}
     return json(res,401,{error:'Nicht angemeldet.'});
    }
   }
@@ -144,6 +147,14 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
    if(p.startsWith('/editor/shared/'))return await serveFile(res,root,p.slice('/editor/shared'.length));
    if(p.startsWith('/editor/'))return await serveFile(res,root,p==='/editor/'?'/index.html':p.slice('/editor'.length));
    if(livePreview&&(p.startsWith('/_image')||p.startsWith('/@fs/')))return await livePreview.proxy(req,res,p);
+   // The saved draft as plain pages (no editor chrome) with a bar that says so; see preview-page.mjs.
+   const previewPath=previewSitePath(p);
+   if(previewPath!==null){
+    if(p==='/vorschau'){res.writeHead(302,{location:'/vorschau/'+url.search});return res.end();}
+    const [draftHead,shown,live]=[await store.head(),builder.current,publicBuilder.current];
+    const liveFile=live&&await fs.stat(path.join(live.site,decodeURIComponent(previewPath),previewPath.endsWith('/')?'index.html':'')).then(()=>true,()=>false);
+    return await serveFile(res,shown.site,previewPath,html=>withPreviewBar(html,{live:savedIsLive({draftHead,activePublishedHead:live?.head}),draftHead,shownHead:shown.head,liveURL:liveFile?new URL(previewPath,publicOrigin).href:null}));
+   }
    return await serveFile(res,builder.current.site,p,url.searchParams.get('editor')==='1');
   }
   throw failure('Route fehlt.',404);

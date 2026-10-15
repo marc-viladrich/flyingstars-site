@@ -175,3 +175,20 @@ test('real store: deleting a used media record is refused with the using records
     return true;
   });
 });
+
+test('uploading the same image again reuses its media record instead of creating a duplicate', async () => {
+  const { uploadNativeMedia } = await import('./native-media.mjs');
+  const existing = { id: 'media/abc', data: { src: '/assets/' + 'f'.repeat(64) + '.png' } };
+  let saved = false;
+  const store = {
+    site: { mediaWrite: (asset, requestId) => ({ id: 'media/' + requestId, data: { src: existing.data.src }, file: 'public' + existing.data.src }) },
+    state: async () => ({ head: 'a'.repeat(40), records: [existing] }),
+    save: async () => { saved = true; return {}; },
+  };
+  const sharp = (await import('sharp')).default;
+  const png = await sharp({ create: { width: 2, height: 2, channels: 3, background: '#808080' } }).png().toBuffer();
+  const result = await uploadNativeMedia(store, { bytes: png, name: 'x.png', requestId: '11111111-1111-4111-8111-111111111111', expectedHead: 'a'.repeat(40) });
+  assert.equal(result.assetId, 'media/abc');
+  assert.equal(result.reused, true);
+  assert.equal(saved, false);
+});

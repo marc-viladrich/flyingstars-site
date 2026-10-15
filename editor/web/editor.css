@@ -1283,15 +1283,44 @@ dialog.dlg.media-wide {
   width: 15px;
   height: 15px;
 }
-.locale-badge {
+/* Language of a panel: one control in its head, and the pill on each foreign-language field. Both
+   open the same language menu; the pill stays as small as the label it sits in. */
+.editor-ui .locale-badge {
+  display: inline-flex;
+  gap: 2px;
+  min-height: 0;
   margin-left: 6px;
-  padding: 1px 5px;
+  padding: 1px 3px 1px 5px;
   border-radius: 4px;
   background: var(--ui-tint);
   color: var(--ui-accent-ink);
   font-size: 11px;
   font-weight: 600;
+  line-height: 16px;
   letter-spacing: 0.04em !important;
+  vertical-align: 1px;
+}
+.editor-ui .locale-badge:hover:not(:disabled) {
+  background: var(--ui-hover);
+}
+.editor-ui .locale-badge svg {
+  width: 12px;
+  height: 12px;
+}
+.editor-ui .panel-locale {
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 6px 0 8px;
+  color: var(--ui-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+.editor-ui .panel-locale svg:last-child {
+  width: 14px;
+  height: 14px;
+}
+.editor-ui .panel-locale[aria-expanded="true"] {
+  background: var(--ui-hover);
 }
 .dock #language span {
   font-size: 13px;
@@ -1596,9 +1625,12 @@ body#login {
 .panel-actions:empty {
   display: none;
 }
-.panel-actions:not(:empty) + #panel-unpin,
-.panel-head:has(.panel-actions:not(:empty)) .panel-kind {
+.panel-actions:not(:empty) + #panel-unpin {
   flex: 0 1 auto;
+}
+/* With actions in the head the kind gives way before the title (and is hidden when crushed, see fitPanelHead). */
+.panel-head:has(.panel-actions:not(:empty)) .panel-kind {
+  flex: 0 100 auto;
 }
 .editor-ui .panel-action {
   min-height: 32px;
@@ -1941,4 +1973,171 @@ body#login {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+/* ---------- Frontend link, publication confirmation ---------- */
+.menu-item .menu-hint {
+  flex: none;
+  color: var(--ui-muted);
+  font-size: 12px;
+}
+.editor-ui a.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  text-decoration: none;
+}
+.editor-ui a.button.primary {
+  color: var(--ui-on-accent);
+}
+.publish-done {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 16px 0 8px;
+  text-align: center;
+}
+.publish-done-mark {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--ui-tint);
+  color: var(--ui-accent-ink);
+}
+.publish-done-mark svg {
+  width: 22px;
+  height: 22px;
+}
+.publish-done-title {
+  font-size: 15px;
+  font-weight: 600;
+}
+.publish-done .button {
+  margin-top: 8px;
+}
+
+/* Card panels: grouped choices (a package's Leistungen by group) are disclosures like entries. */
+details.ref-group > summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  color: var(--ui-muted);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  cursor: pointer;
+  list-style: none;
+}
+details.ref-group > summary::-webkit-details-marker {
+  display: none;
+}
+details.ref-group > summary svg {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.15s;
+}
+details.ref-group[open] > summary svg {
+  transform: rotate(180deg);
+}
+
+/* "Inhalte verwalten": content types as an accordion, records inside, language versions as flags. */
+/* Fixed height: opening a group or typing a search never moves the dialog. */
+dialog.dlg.navigator {
+  height: min(84vh, 760px);
+}
+.navigator .dlg-body {
+  flex: 1;
+  align-content: start;
+}
+.nav-groups {
+  display: grid;
+}
+.nav-group:first-child {
+  border-top: 1px solid var(--ui-line);
+}
+.nav-group {
+  border-bottom: 1px solid var(--ui-line);
+}
+.nav-group > summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 4px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+.nav-group > summary::-webkit-details-marker {
+  display: none;
+}
+.nav-group > summary > svg:first-child {
+  color: var(--ui-accent);
+}
+.nav-group-title {
+  flex: 1;
+}
+.nav-count {
+  color: var(--ui-muted);
+  font-size: 13px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+.nav-group > summary > svg:last-child {
+  width: 16px;
+  height: 16px;
+  color: var(--ui-muted);
+  transition: transform 0.15s;
+}
+.nav-group[open] > summary > svg:last-child {
+  transform: rotate(180deg);
+}
+.nav-group-body {
+  display: grid;
+  gap: 6px;
+  padding: 0 0 12px 28px;
+}
+.nav-group-body > .inline-button {
+  justify-self: start;
+}
+.nav-group-body .record-list li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.nav-group-body .record-list .nav-record {
+  flex: 1;
+  min-width: 0;
+}
+.editor-ui .nav-locale {
+  gap: 5px;
+  min-height: 28px;
+  padding: 0 6px;
+  color: var(--ui-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+.editor-ui .nav-locale .flag {
+  width: 16px;
+  height: 12px;
+}
+@media (prefers-reduced-motion: reduce) {
+  details.ref-group > summary svg,
+  .nav-group > summary > svg:last-child {
+    transition: none;
+  }
+}
+.record-list .nav-locale span {
+  flex: none;
 }

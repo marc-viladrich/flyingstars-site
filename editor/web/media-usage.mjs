@@ -53,16 +53,14 @@ export function mediaUsage(records) {
 }
 
 // The collection a using record files an image under: its own type; a translation counts as its source's
-// type. Types sharing one plural ("Seiten" for page and screen) are one collection.
+// type. A kind may name another kind's collection explicitly (system pages file under "Seiten").
 export function collectionOf(recordId, records) {
   let prefix = prefixOf(recordId);
   if (prefix === "translation/") {
     const sourceId = records.find((r) => r.id === recordId)?.data?.sourceId;
     if (sourceId) prefix = prefixOf(sourceId);
   }
-  const plural = kindPlural(prefix);
-  const canonical = Object.keys(recordKinds).find((key) => recordKinds[key][2] === plural) || prefix;
-  return canonical.slice(0, -1);
+  return (recordKinds[prefix]?.[3] || prefix).slice(0, -1);
 }
 
 /** Library view of all media records: collections with counts (only non-empty ones, flat) and assets. */

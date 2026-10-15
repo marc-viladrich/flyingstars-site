@@ -1,4 +1,4 @@
-// The one place that names record types in the editor: [singular, icon, plural].
+// The one place that names record types in the editor: [singular, icon, plural, media collection (optional, defaults to the kind itself)].
 // Shared by the editor chrome (labels, icons, "Inhalte verwalten") and the server (media collections).
 // Order is the order in which content types are offered (Kunden, Team, Show-Pakete, Blog, Projekte, FAQ, …).
 export const recordKinds = {
@@ -9,7 +9,7 @@ export const recordKinds = {
   "project/": ["Projekt", "folder-open", "Projekte"],
   "faq/": ["FAQ", "circle-help", "FAQ"],
   "page/": ["Seite", "file-text", "Seiten"],
-  "screen/": ["Seite", "file-text", "Seiten"],
+  "screen/": ["Seite", "panel-top", "Systemseiten", "page/"],
   "site/": ["Website-Daten", "mail", "Website-Daten"],
   "media/": ["Medium", "image", "Medien"],
   "translation/": ["Sprachfassung", "languages", "Sprachfassungen"],
