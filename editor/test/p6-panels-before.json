@@ -6161,7 +6161,7 @@
         "path": [
           "max"
         ],
-        "label": "Maximale Drohnenzahl; null bedeutet unbegrenzt",
+        "label": "Maximale Drohnenzahl (leer = unbegrenzt)",
         "kind": "number",
         "advanced": false
       },
