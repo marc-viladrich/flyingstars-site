@@ -93,3 +93,40 @@ test('a query-backed card is an occurrence of its whole record; media and derive
  assert.deepEqual(result.more.map(u=>u.path.join('.')),['title','showcase.cardTitle','showcase.gallery']);assert.equal(result.count,3);
  assert.ok(covers(['color'],['color',1])&&covers(['cta','href'],['cta'])&&!covers(['cta','href'],['cta','label']));
 });
+
+// Grouped choices (a package's Leistungen): groups in option order, chosen first in stored order, rows stay
+// where they were clicked while the view is open; moving reorders within the group only.
+import { groupedChoices, groupedSelection, moveChoice } from './web/view-state.mjs';
+test('grouped choices keep rows in place, store group by group and move within a group', () => {
+  const options = [
+    { key: 'a1', group: 'Design' }, { key: 'a2', group: 'Design' }, { key: 'a3', group: 'Design' },
+    { key: 'm1', group: 'Musik' },
+    { key: 's1', group: 'Service' }, { key: 's2', group: 'Service' },
+  ];
+  const matches = (o, id) => o.key === id;
+  const memo = {};
+  // Stored in a mixed order: groups are normalised to option order, rows within a group keep the stored order.
+  let chosen = ['s2', 'a3', 'a1'];
+  let groups = groupedChoices(options, chosen, matches, memo);
+  const view = (gs) => gs.map((g) => g.group + ':' + g.rows.map((r) => r.option.key + (r.checked ? '✓' : '')).join(','));
+  assert.deepEqual(view(groups), ['Design:a3✓,a1✓,a2', 'Musik:m1', 'Service:s2✓,s1']);
+  assert.deepEqual(groupedSelection(groups), ['a3', 'a1', 's2']);
+  // Ticking a2 leaves it where it was clicked (after a1), and the stored order follows what is shown.
+  chosen = groupedSelection(groups, { key: 'a2', checked: true });
+  assert.deepEqual(chosen, ['a3', 'a1', 'a2', 's2']);
+  groups = groupedChoices(options, chosen, matches, memo);
+  assert.deepEqual(view(groups), ['Design:a3✓,a1✓,a2✓', 'Musik:m1', 'Service:s2✓,s1']);
+  // Unticking a3 keeps its row (now unchecked) at the top of its group.
+  chosen = groupedSelection(groups, { key: 'a3', checked: false });
+  groups = groupedChoices(options, chosen, matches, memo);
+  assert.deepEqual(view(groups), ['Design:a3,a1✓,a2✓', 'Musik:m1', 'Service:s2✓,s1']);
+  // Arrow up on a2 swaps it with the previous chosen row (a1), skipping nothing chosen in between.
+  assert.equal(moveChoice(memo, 'Design', { key: 'a2', step: -1, checked: new Set(chosen) }), true);
+  groups = groupedChoices(options, chosen, matches, memo);
+  assert.deepEqual(groupedSelection(groups), ['a2', 'a1', 's2']);
+  // No chosen row above: nothing moves.
+  assert.equal(moveChoice(memo, 'Design', { key: 'a2', step: -1, checked: new Set(['a2', 'a1', 's2']) }), false);
+  // A drag hands the DOM order of the group.
+  assert.equal(moveChoice(memo, 'Service', { order: ['s1', 's2'] }), true);
+  assert.equal(moveChoice(memo, 'Service', { order: ['s1', 'x'] }), false, 'foreign keys are refused');
+});

@@ -69,3 +69,48 @@ export function entryCounts(containers, data, path) {
     .map((c) => `${fieldLabel(c)}: ${value(c.path).length}`)
     .join(" · ");
 }
+
+// The direct children of one object in schema order: a field, or the container (image, list, object) that
+// holds deeper fields. Shared by the record sheet (subtreeControls) and the guards over real records.
+export function directChildren({ fields = [], containers = [], prefix = [] }) {
+  const children = [];
+  const seen = new Set();
+  const consider = (path, child) => {
+    const key = JSON.stringify(path.slice(0, prefix.length + 1));
+    if (seen.has(key)) return;
+    seen.add(key);
+    children.push(child);
+  };
+  for (const f of fields) {
+    if (!under(f.path, prefix) || f.path.length <= prefix.length) continue;
+    const childPath = f.path.slice(0, prefix.length + 1);
+    const container = f.path.length > prefix.length + 1 ? containers.find((c) => same(c.path, childPath)) : null;
+    consider(childPath, container ? { container } : { field: f });
+  }
+  for (const c of containers) if (c.path.length === prefix.length + 1 && under(c.path, prefix)) consider(c.path, { container: c });
+  return children;
+}
+// Inside an object, children that name an x-afe `group` gather under that subheading (in the order of the
+// group's first member); ungrouped children keep their place. A group equal to the object's own block
+// title adds nothing and is ignored. Returns [{ title: string | null, items }].
+export function chunkByGroup(items, groupOf, { ignore = null } = {}) {
+  const chunks = [];
+  const named = new Map();
+  for (const item of items) {
+    const raw = groupOf(item);
+    const title = typeof raw === "string" && raw.trim() && raw.trim() !== ignore ? raw.trim() : null;
+    if (!title) {
+      const last = chunks.at(-1);
+      if (last && last.title === null) last.items.push(item);
+      else chunks.push({ title: null, items: [item] });
+      continue;
+    }
+    if (!named.has(title)) {
+      const chunk = { title, items: [] };
+      named.set(title, chunk);
+      chunks.push(chunk);
+    }
+    named.get(title).items.push(item);
+  }
+  return chunks;
+}

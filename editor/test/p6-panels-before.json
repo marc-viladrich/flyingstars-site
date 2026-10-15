@@ -445,7 +445,7 @@
           "buttons",
           "submit"
         ],
-        "label": "Absenden",
+        "label": "Button zum Absenden",
         "kind": "text",
         "advanced": false
       },
@@ -794,7 +794,7 @@
           "buttons",
           "next"
         ],
-        "label": "Weiter",
+        "label": "Button zum nächsten Schritt",
         "kind": "text",
         "advanced": false
       },
@@ -812,7 +812,7 @@
           "buttons",
           "back"
         ],
-        "label": "Zurück",
+        "label": "Button zum vorigen Schritt",
         "kind": "text",
         "advanced": false
       },

@@ -72,7 +72,7 @@ export function mediaControl(item, path, { title, untitled = false } = {}, api) 
             { class: "stack" },
             el("span", { class: "row-label", text: "Alternativtext" }),
             local
-              ? fieldControl(item, override || { path: overridePath, kind: "text" }, { label: "Alternativtext an dieser Stelle" }).lastChild
+              ? fieldControl(item, override || { path: overridePath, kind: "text" }, { label: "Alternativtext an dieser Stelle" }).querySelector("input,textarea")
               : el("p", { class: "inherited-alt", text: inherited || "Noch kein Alternativtext in der Mediathek." }),
           ),
         );
@@ -101,8 +101,10 @@ export function packageFeatures(item,container,{record,recordName,pushView,inlin
           key: feature.id,
           label: inlinePlain(feature.text),
           group: group.title,
-          // The text belongs to the package: open its overview with this Leistung revealed.
-          open: () => pushView({ id: pkg.id, path: [], reveal: ["featureGroups", g, "items", i] }, "record"),
+          // The text belongs to the package: its overview opens with this Leistung's text revealed and marked.
+          open: () => pushView({ id: pkg.id, path: [], reveal: ["featureGroups", g, "items", i, "text"] }, "record"),
+          openLabel: "Text im Show-Paket bearbeiten",
+          openIcon: "pencil",
         })),
       ),
     };

@@ -17,6 +17,9 @@ import {
   stablePartition,
   pinnedChoices,
   reorderVisible,
+  groupedChoices,
+  groupedSelection,
+  moveChoice,
 } from "./view-state.mjs";
 import { packageOwnedPagePath } from "/editor/package-ownership.mjs";
 import { describe } from "./native-schema.mjs";
@@ -31,7 +34,8 @@ import { mediaLibrary, collectionOf, ALL as ALL_MEDIA, UNUSED as UNUSED_MEDIA } 
 import { splitLocale, localizedPath, frontendTarget, liveURL } from "./frontend-url.mjs";
 import { navigatorGroups, matchesQuery, localeVersion } from "./content-navigator.mjs";
 import { NavStack } from "./nav-stack.mjs";
-import { overviewPlan, entryCounts } from "./overview-plan.mjs";
+import { overviewPlan, entryCounts, directChildren, chunkByGroup } from "./overview-plan.mjs";
+import { incomingReferences } from "./linked-records.mjs";
 
 // ---------------------------------------------------------------------------
 // State
@@ -930,12 +934,12 @@ function actionRow(label, run, iconName, { danger = false, confirm } = {}) {
 // Texts of content records have a translation per language; links, files and colours do not.
 function isTranslatable(item,field){return field?.kind==='text'&&field['x-afe']?.translatable===true;}
 // "Übersetzen" for one clicked text: in German it switches to the foreign view with that text focused on
-// the page; in a foreign view it goes back to German and the panel stays.
+// the page. Switching the language itself is the panel head's job alone (one control, same place in every
+// language), so a foreign view offers no second "back to German" here; the panel still gets that control.
 function translateAction(item, field) {
   if (!isTranslatable(item, field)) return null;
-  return activeLocale === "de"
-    ? actionRow("Übersetzen", () => startTranslation({ id: item.id, path: field.path }), "languages")
-    : actionRow("Zurück zu Deutsch", () => switchPanelLocale("de"), "languages");
+  panelTranslatable = true;
+  return activeLocale === "de" ? actionRow("Übersetzen", () => startTranslation({ id: item.id, path: field.path }), "languages") : null;
 }
 // Set while a panel draws when it shows (or holds behind "Weitere Felder") a translatable text: then its
 // head carries the one language control of the panel.
@@ -950,8 +954,12 @@ function fieldControl(item, field, { label } = {}) {
   const current = value(item, field.path) ?? field.template;
 
   // Technical source data the schema declares read-only (e.g. a prepared formation file): visible, not editable.
-  if (field.readOnly)
-    return el("label", { class: "stack" }, labelNode, el("input", { type: "text", value: String(current ?? ""), readOnly: true, "aria-label": name }));
+  if (field.readOnly) {
+    const shown = textBox({ singleLine: true, name });
+    shown.value = String(current ?? "");
+    shown.readOnly = true;
+    return el("label", { class: "stack" }, labelNode, shown);
+  }
   if (field.kind === "boolean") {
     const input = el("input", { type: "checkbox", class: "switch", role: "switch", "aria-label": name });
     input.checked = !!current;
@@ -993,28 +1001,35 @@ function fieldControl(item, field, { label } = {}) {
       input.append(option);
     }
   } else if (field.kind === "number") input = el("input", { type: "number", step: "any", "aria-label": name });
-  else {
-    const long = ["multiline","markdown"].includes(field.format);
-    const isLink = field.format === "url";
-    const markdown = field.format === "markdown";
-    input = long
-      ? el("textarea", { rows: markdown ? 10 : 3, class: markdown ? "markdown" : "", "aria-label": name })
-      : el("input", { type: isLink ? "url" : "text", "aria-label": name });
-  }
+  else input = textBox({ format: field.format, name });
   input.dataset.fieldKey = key;
   input.value = current ?? "";
+  // Prose takes the whole row of a multi-column grid. A long short-text value wraps and grows in its own
+  // column, so the grid keeps its order and rhythm.
+  const wide = ["multiline", "markdown"].includes(field.format);
   const translatable = isTranslatable(item, field);
   if (translatable) panelTranslatable = true;
   if (translatable && activeLocale !== "de") {
     // In a foreign-language view this field edits its translation; the German text is the placeholder.
-    // Its language pill switches the language of the whole panel (and the page) in place.
+    // A quiet tag says which language the field holds (other fields of the panel are shared by all
+    // languages); an empty one is dashed like untranslated text on the page. Switching stays in the head.
     input.value = translationText(item, field.path) ?? "";
     input.placeholder = current ?? "";
-    labelNode.append(localeSwitch("locale-badge"));
+    const missing = () => input.classList.toggle("untranslated", !input.value.trim());
+    missing();
+    labelNode.append(
+      el("span", {
+        class: "locale-tag",
+        text: activeLocale.toUpperCase(),
+        title: `${localeNames[activeLocale]} – ohne eigenen Text erscheint der deutsche (als Platzhalter zu sehen)`,
+      }),
+    );
+    input.addEventListener("input", missing);
     input.addEventListener("change", () => {
       if (input.value.trim()) writeTranslation(item.id, field.path, activeLocale, input.value);
     });
-    return el("label", { class: "stack" }, labelNode, input);
+    keepSingleLine(input);
+    return el("label", { class: "stack" + (wide ? " long" : "") }, labelNode, input);
   }
   const read = () => (field.kind === "number" ? (input.value.trim() === "" ? null : Number(input.value)) : input.value);
   let baseline;
@@ -1042,20 +1057,74 @@ function fieldControl(item, field, { label } = {}) {
       event.preventDefault();
       event.stopPropagation();
       input.value = baseline ?? "";
+      refit(input);
       editing.delete(key);
       update();
       input.blur();
-    } else if (event.key === "Enter" && !event.shiftKey && input.tagName !== "TEXTAREA") {
+    } else if (event.key === "Enter" && !event.shiftKey && (input.tagName !== "TEXTAREA" || input.dataset.singleLine === "true")) {
       event.preventDefault();
       input.blur();
     }
   });
   input.disabled = busy;
-  // {o}/{c} in formatted short texts are format marks, not placeholders.
+  keepSingleLine(input);
+  // {o}/{c} in formatted short texts are format marks, not placeholders. The hint sits in the label row,
+  // so every control of a grid row starts at the same height.
   const placeholders = typeof current === "string" && field.format !== "inline" ? [...new Set(current.match(/\{\w+\}/g) || [])] : [];
   if (placeholders.length && !name.includes("{"))
-    return el("label", { class: "stack" }, labelNode, input, el("span", { class: "note", text: `${placeholders.join(", ")} wird automatisch eingesetzt.` }));
-  return el("label", { class: "stack" }, labelNode, input);
+    labelNode.append(el("span", { class: "row-hint", text: `${placeholders.join(", ")} wird automatisch eingesetzt` }));
+  return el("label", { class: "stack" + (wide ? " long" : "") }, labelNode, input);
+}
+// Text of any length is edited in one kind of control: a textarea one line high while its value fits,
+// growing with the text (prose starts at three lines). Nothing is cut off at the right edge, and a
+// resized panel re-wraps. A single-line value stays single-line: Enter commits, pasted breaks become spaces.
+function textBox({ format, name, singleLine = !["multiline", "markdown"].includes(format) }) {
+  const markdown = format === "markdown";
+  const box = el("textarea", {
+    rows: singleLine ? 1 : markdown ? 10 : 3,
+    class: markdown ? "markdown" : "autogrow" + (singleLine ? " single" : ""),
+    "aria-label": name,
+    ...(format === "url" ? { spellcheck: "false", autocapitalize: "off", inputmode: "url" } : {}),
+  });
+  if (singleLine) box.dataset.singleLine = "true";
+  if (!markdown) autoGrow(box);
+  return box;
+}
+function keepSingleLine(box) {
+  if (box.dataset?.singleLine !== "true" || box.dataset.lineGuard) return;
+  box.dataset.lineGuard = "true";
+  box.addEventListener("input", () => {
+    if (!/[\r\n]/.test(box.value)) return;
+    const at = box.selectionStart;
+    box.value = box.value.replace(/\r?\n|\r/g, " ");
+    box.setSelectionRange(at, at);
+  });
+}
+// Browsers without field-sizing get the same growth from script: on input and whenever the width changes
+// (first layout, an opened disclosure, a resized panel).
+const sizesItself = typeof CSS !== "undefined" && CSS.supports?.("field-sizing", "content");
+const grownWidth = new WeakMap();
+const fitHeight = (box) => {
+  if (!box.isConnected || !box.clientWidth) return;
+  box.style.height = "auto";
+  const edge = box.offsetHeight - box.clientHeight;
+  box.style.height = box.scrollHeight + edge + "px";
+};
+const growObserver = sizesItself
+  ? null
+  : new ResizeObserver((entries) => {
+      for (const { target } of entries) {
+        const width = target.clientWidth;
+        if (grownWidth.get(target) === width) continue;
+        grownWidth.set(target, width);
+        fitHeight(target);
+      }
+    });
+const refit = (box) => !sizesItself && box.classList?.contains("autogrow") && fitHeight(box);
+function autoGrow(box) {
+  if (sizesItself) return;
+  growObserver.observe(box);
+  box.addEventListener("input", () => fitHeight(box));
 }
 // Colour fields store a token id from the site's colour registry. Swatch + name open a labelled palette
 // (grouped, selected one marked by a check and its pressed state, arrow keys move, Escape closes).
@@ -1074,7 +1143,8 @@ function colorControl(item, field, { labelNode, name, key, isChanged }) {
   const trigger = el("button", { type: "button", class: "color-trigger", "aria-expanded": "false", "data-field-key": key }, swatch, label, icon("chevron-down"));
   const palette = el("div", { class: "color-palette", role: "group", "aria-label": `${name} wählen` });
   palette.hidden = true;
-  const wrap = el("div", { class: "stack color-field" }, labelNode, trigger, palette);
+  // Label row + control row (trigger with its palette below), like every field of a grid.
+  const wrap = el("div", { class: "stack color-field" }, labelNode, el("div", { class: "color-control" }, trigger, palette));
   let tokens = null;
   const paint = () => {
     const current = read();
@@ -1230,27 +1300,62 @@ function choiceSource(item, container) {
       noun: all[0]?.schema?.['x-afe']?.collection?.label||"Eintrag",
       empty: "Noch niemand ausgewählt.",
       create: recordTemplate(prefix) ? () => openCreate(prefix, { id: item.id, path: container.path }) : null,
-      options: all.map((r) => ({ key: r.id.slice(prefix.length), alias: r.id, label: recordName(r), open: () => pushView({ id: r.id, path: [] }, "record") })),
+      options: all.map((r) => ({
+        key: r.id.slice(prefix.length),
+        alias: r.id,
+        label: recordName(r),
+        open: () => pushView({ id: r.id, path: [] }, "record"),
+        openLabel: `${kindOf(r.id)[0]} öffnen`,
+      })),
     };
   }
   const widget=siteWidgets[container['x-afe']?.widget];
   if(widget?.choices)return widget.choices(item,container,{record,recordName,pushView,inlinePlain});
   return null;
 }
+// One row of a picker: clicking the row ticks or unticks it (the whole row is the checkbox's label); opening
+// what the row stands for is its own, labelled button at the end, never the row itself.
+function choiceRow(option, { checked, disabled, onToggle, grip = null, attrs = {} }) {
+  const box = el("input", { type: "checkbox", "aria-label": `${option.label} anzeigen` });
+  box.checked = checked;
+  box.disabled = disabled;
+  box.addEventListener("change", () => onToggle(box.checked));
+  const li = el("li", { "data-option": option.key, ...attrs }, grip, el("label", { class: "row-choice" }, box, el("span", { class: "row-choice-text", text: option.label })));
+  if (option.open) {
+    const label = option.openLabel || "Öffnen";
+    li.append(button(`„${option.label}“: ${label}`, option.open, { icon: option.openIcon || "chevron-right", iconOnly: true, cls: "row-go", title: label }));
+  }
+  return li;
+}
+function choiceGrip(option, onKey, onPointer) {
+  const grip = button(`„${option.label}“ verschieben`, null, { icon: "grip-vertical", iconOnly: true, cls: "grip", title: "Ziehen oder mit Pfeiltasten verschieben" });
+  grip.addEventListener("keydown", (event) => {
+    if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
+    event.preventDefault();
+    onKey(event.key === "ArrowUp" ? -1 : 1);
+  });
+  grip.addEventListener("pointerdown", onPointer);
+  return grip;
+}
 // part: "all" (picker with candidates), "chosen" (what the card shows) or "candidates" (the rest to tick on).
 function referenceControl(item, container, source, { part = "all" } = {}) {
   const listKey = fieldKey(item.id, container.path);
   const now = () => value(item, container.path) || [];
   const matches = (option, id) => option.key === id || option.alias === id;
-  // Rows stay where they were while the panel is open: a ticked candidate stays among the candidates
-  // (checked), an unticked chosen one stays in the chosen list (unchecked) until the panel opens again.
-  const rows = pinnedChoices(source.options, now(), matches, viewMemo("choices:" + listKey));
-  const storedId = (option) => now().find((id) => matches(option, id));
+  const policy = listPolicy(container);
   const write = (next, focusKey) => {
     changed(item.id, container.path, next);
     if (focusKey !== undefined) pendingFocus = `[data-list="${CSS.escape(listKey)}"] [data-option="${CSS.escape(focusKey)}"] .grip`;
     rerender();
   };
+  const createButton = source.create
+    ? button(source.createLabel || source.noun + " hinzufügen", source.create, { icon: source.createLabel ? "pencil" : "plus", cls: "inline-button" })
+    : null;
+  if (source.options.some((option) => option.group)) return groupedChoiceControl(item, container, source, { part, listKey, now, matches, policy, write, createButton });
+  // Rows stay where they were while the panel is open: a ticked candidate stays among the candidates
+  // (checked), an unticked chosen one stays in the chosen list (unchecked) until the panel opens again.
+  const rows = pinnedChoices(source.options, now(), matches, viewMemo("choices:" + listKey));
+  const storedId = (option) => now().find((id) => matches(option, id));
   // Moving changes the order of the chosen rows on screen; ticked candidates keep their place in the list.
   const chosenShown = rows.chosen.filter((row) => row.checked).map((row) => row.option);
   const moveTo = (visible, focusKey) => {
@@ -1258,81 +1363,102 @@ function referenceControl(item, container, source, { part = "all" } = {}) {
     const next = reorderVisible(now(), visible.map(storedId));
     if (!equal(next, now())) write(next, focusKey);
   };
-  const row = ({ option, checked }, inChosen) => {
-    const box = el("input", { type: "checkbox", "aria-label": `${option.label} anzeigen` });
-    box.checked = checked;
-    box.disabled = checked ? !listPolicy(container).removable : !listPolicy(container).insertable;
-    box.addEventListener("change", () => {
-      stageInputs();
-      const next = now().filter((id) => !matches(option, id));
-      if (box.checked) next.push(option.key);
-      write(next);
-    });
+  const toggle = (option) => (on) => {
+    stageInputs();
+    const next = now().filter((id) => !matches(option, id));
+    if (on) next.push(option.key);
+    write(next);
+  };
+  const row = ({ option, checked }, inChosen, at) => {
     const index = checked ? now().findIndex((id) => matches(option, id)) : -1;
-    const li = el("li", {
-      "data-option": option.key,
-      "data-index": index < 0 ? "" : String(index),
-      ...(index < 0 ? {} : { "data-entry-key": fieldKey(item.id, [...container.path, index]) }),
-    });
     const position = chosenShown.indexOf(option);
-    if (inChosen && checked && chosenShown.length > 1 && listPolicy(container).reorderable) {
-      const grip = button(`„${option.label}“ verschieben`, null, {
-        icon: "grip-vertical",
-        iconOnly: true,
-        cls: "grip",
-        title: "Ziehen oder mit Pfeiltasten verschieben",
-      });
-      grip.addEventListener("keydown", (event) => {
-        if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
-        event.preventDefault();
-        const to = position + (event.key === "ArrowUp" ? -1 : 1);
-        if (to < 0 || to >= chosenShown.length) return;
-        const visible = [...chosenShown];
-        visible.splice(to, 0, visible.splice(position, 1)[0]);
-        moveTo(visible, option.key);
-      });
-      // After a drag the list's DOM order is the new order of the chosen rows.
-      grip.addEventListener("pointerdown", (event) =>
-        dragRow(event, chosenList, li, position, () =>
-          moveTo(
-            [...chosenList.children].map((n) => source.options.find((o) => o.key === n.dataset.option)).filter((o) => chosenShown.includes(o)),
-            option.key,
+    let grip = null;
+    let li;
+    if (inChosen && checked && chosenShown.length > 1 && policy.reorderable)
+      grip = choiceGrip(
+        option,
+        (step) => {
+          const to = position + step;
+          if (to < 0 || to >= chosenShown.length) return;
+          const visible = [...chosenShown];
+          visible.splice(to, 0, visible.splice(position, 1)[0]);
+          moveTo(visible, option.key);
+        },
+        // After a drag the list's DOM order is the new order of the chosen rows.
+        (event) =>
+          dragRow(event, chosenList, li, at, () =>
+            moveTo([...chosenList.children].map((n) => source.options.find((o) => o.key === n.dataset.option)).filter((o) => chosenShown.includes(o)), option.key),
           ),
-        ),
       );
-      li.append(grip);
-    }
-    const open = button(option.label, option.open, { cls: "row-open" });
-    open.append(icon("chevron-right"));
-    li.append(el("label", { class: "row-check" }, box), open);
+    li = choiceRow(option, {
+      checked,
+      disabled: checked ? !policy.removable : !policy.insertable,
+      onToggle: toggle(option),
+      grip,
+      attrs: { "data-index": index < 0 ? "" : String(index), ...(index < 0 ? {} : { "data-entry-key": fieldKey(item.id, [...container.path, index]) }) },
+    });
     return li;
   };
   const chosenList = el("ul", { class: "rows", "data-list": listKey, "aria-label": fieldLabel(container) + " (angezeigt)" });
-  rows.chosen.forEach((entry) => chosenList.append(row(entry, true)));
-  // Not shown yet: grouped like their owner (e.g. "Musik", "Service & Extras"), each group one accordion.
-  const groups = [...new Set(rows.others.map(({ option }) => option.group || ""))];
-  const otherLists = groups.map((group) => {
-    const members = rows.others.filter(({ option }) => (option.group || "") === group);
-    const list = el("ul", { class: "rows muted", "aria-label": group || "Weitere" });
-    members.forEach((entry) => list.append(row(entry, false)));
-    if (!group) return [list];
-    return [fold(listKey + "#" + group, group, String(members.length), list)];
-  });
-  const createButton = source.create
-    ? button(source.createLabel || source.noun + " hinzufügen", source.create, { icon: source.createLabel ? "pencil" : "plus", cls: "inline-button" })
-    : null;
-  if (part === "candidates")
-    return el("div", { class: "stack" }, el("span", { class: "row-label", text: `${fieldLabel(container)} · nicht angezeigt` }), otherLists.flat());
+  rows.chosen.forEach((entry, at) => chosenList.append(row(entry, true, at)));
+  // Not shown yet: grouped like their owner, each group one accordion.
+  const otherList = el("ul", { class: "rows muted", "aria-label": "Weitere" });
+  rows.others.forEach((entry) => otherList.append(row(entry, false)));
+  if (part === "candidates") return el("div", { class: "stack" }, el("span", { class: "row-label", text: `${fieldLabel(container)} · nicht angezeigt` }), otherList);
   return el(
     "div",
     { class: "stack" },
     el("span", { class: "row-label", text: fieldLabel(container) }),
     // Still one line when the only chosen ones were ticked among the candidates below (nothing shifts).
     rows.chosen.length ? chosenList : el("p", { class: "note", text: now().length ? `${now().length} ausgewählt` : source.empty }),
-    part === "all" && rows.others.length ? el("span", { class: "note", text: "Nicht angezeigt" }) : null,
-    part === "all" ? otherLists.flat() : null,
+    part === "all" && rows.others.length ? [el("span", { class: "note", text: "Nicht angezeigt" }), otherList] : null,
     createButton,
   );
+}
+// A picker whose options carry groups shows them as the card does: one list per group under its title, in
+// the options' order. Rows keep their place while the view is open (groupedChoices); chosen rows move
+// within their group by drag or arrow keys; the stored list is what is shown, group by group.
+function groupedChoiceControl(item, container, source, { part, listKey, now, matches, policy, write, createButton }) {
+  if (part === "candidates") return null;
+  const memo = viewMemo("grouped:" + listKey);
+  const groups = groupedChoices(source.options, now(), matches, memo);
+  const lists = groups.map(({ group, rows }) => {
+    const checked = rows.filter((r) => r.checked);
+    const list = el("ul", { class: "rows choice-group", "data-list": listKey, "data-group": group, "aria-label": group || fieldLabel(container) });
+    rows.forEach(({ option, checked: on }, at) => {
+      let li;
+      const grip =
+        on && checked.length > 1 && policy.reorderable
+          ? choiceGrip(
+              option,
+              (step) => {
+                stageInputs();
+                if (moveChoice(memo, group, { key: option.key, step, checked: new Set(checked.map((r) => r.option.key)) }))
+                  write(groupedSelection(groupedChoices(source.options, now(), matches, memo)), option.key);
+              },
+              (event) =>
+                dragRow(event, list, li, at, () => {
+                  stageInputs();
+                  if (moveChoice(memo, group, { order: [...list.children].map((n) => n.dataset.option) }))
+                    write(groupedSelection(groupedChoices(source.options, now(), matches, memo)), option.key);
+                }),
+            )
+          : null;
+      li = choiceRow(option, {
+        checked: on,
+        disabled: on ? !policy.removable : !policy.insertable,
+        grip,
+        onToggle: (next) => {
+          stageInputs();
+          write(groupedSelection(groups, { key: option.key, checked: next }));
+        },
+      });
+      if (!on) li.classList.add("unchosen");
+      list.append(li);
+    });
+    return el("div", { class: "choice-group-block" }, group ? el("span", { class: "row-sublabel", text: group }) : null, list);
+  });
+  return el("div", { class: "stack" }, el("span", { class: "row-label", text: fieldLabel(container) }), lists, now().length ? null : el("p", { class: "note", text: source.empty }), createButton);
 }
 // Per-view memory for layout that must not shift while the view is open (see view-state.mjs).
 function viewMemo(key) {
@@ -1380,7 +1506,7 @@ function contentControls(item, prefix, options = {}) {
     if (skipKinds.includes(field.kind) || isTechnical(field)) continue;
     if (!includeInline && inlineKeys.has(fieldKey(item.id, field.path))) continue;
     const parent = field.path.length - prefix.length > 1 ? field.path.at(-2) : null;
-    const label = parent && typeof parent !== "number" ? fieldLabel({ path: [parent] }) + " · " + fieldLabel(field) : fieldLabel(field);
+    const label = parent && typeof parent !== "number" ? parentLabel(item, field.path) + " · " + fieldLabel(field) : fieldLabel(field);
     out.push(fieldControl(item, field, { label }));
   }
   const additions = [];
@@ -1547,7 +1673,7 @@ function listRows(item, container, options = {}) {
     } else if (primitive) {
       if (grip) row.append(grip);
       const field = fieldsFor(item).find((f) => equal(f.path, entryPath));
-      const input = field && fieldControl(item, field, { label: `${fieldLabel(container)} ${index + 1}` }).lastChild;
+      const input = field && fieldControl(item, field, { label: `${fieldLabel(container)} ${index + 1}` }).querySelector("input,textarea,select");
       // A text entry left empty disappears again instead of being saved as a blank value.
       input?.addEventListener("blur", () => {
         if (listPolicy(container).removable && input.value.trim() === "" && now()[index] !== undefined && String(now()[index]).trim() === "") removeAt(index);
@@ -1881,13 +2007,15 @@ function pushView(context, scope) {
 // place instead of stacking another one; the target is revealed (opened, scrolled to, focused).
 // Scrolls the panel body vertically only (scrollIntoView would also shift the panel sideways by the
 // resize handles' overhang): the node's top stays visible, as much of the rest as fits.
-function revealInPanel(node, { smooth = false } = {}) {
+// upperThird: a jump target (revealed from elsewhere) is placed in the upper third, with context around it.
+function revealInPanel(node, { smooth = false, upperThird = false } = {}) {
   const body = $("#panel-body");
   if (!node || !body.contains(node)) return;
   const box = body.getBoundingClientRect(),
     rect = node.getBoundingClientRect();
   let top = body.scrollTop;
-  if (rect.top < box.top) top -= box.top - rect.top;
+  if (upperThird) top += rect.top - box.top - Math.max(16, Math.min(box.height / 3, box.height - rect.height - 16));
+  else if (rect.top < box.top) top -= box.top - rect.top;
   else if (rect.bottom > box.bottom) top += Math.min(rect.bottom - box.bottom, rect.top - box.top);
   if (top !== body.scrollTop) body.scrollTo({ top, behavior: smooth && !reducedMotion() ? "smooth" : "auto" });
 }
@@ -2025,7 +2153,7 @@ function renderTop({ keepScroll = false, keepPlace = false, restore = null } = {
   const renderers = { element: elementView, entry: entryView, instance: instanceView, section: sectionView, media: mediaView, record: recordView, page: pageView, field: fieldView };
   panelTranslatable = false;
   (renderers[view.scope] || elementView)(body, item, view.context, head);
-  if (panelTranslatable) $("#panel-actions").append(localeSwitch("panel-locale"));
+  if (panelTranslatable) $("#panel-actions").append(localeSwitch());
   if (!body.children.length) put(body, group(null, el("p", { class: "note", text: "Hier gibt es nichts weiter einzustellen." })));
   $("#panel-back").hidden = !nav.canGoBack();
   $("#panel-back").setAttribute("aria-label", backLabel());
@@ -2038,8 +2166,10 @@ function renderTop({ keepScroll = false, keepPlace = false, restore = null } = {
     let target = body.querySelector(`[data-field-key="${CSS.escape(fieldKey(item.id, reveal))}"]`);
     for (let i = reveal.length; i > 0 && !target; i--) target = body.querySelector(entryKeySelector(item.id, reveal.slice(0, i)));
     if (target) {
-      revealInPanel(target);
+      const marked = target.closest("[data-entry-key]") || target.closest(".stack") || target;
+      revealInPanel(marked, { upperThird: true });
       (target.matches("input,textarea,select,button") ? target : target.querySelector(".entry-toggle,input,textarea,select,button"))?.focus({ preventScroll: true });
+      markRevealed(marked);
       return;
     }
   }
@@ -2049,6 +2179,14 @@ function renderTop({ keepScroll = false, keepPlace = false, restore = null } = {
   } else if (!keepScroll) (nav.canGoBack() ? $("#panel-back") : panel).focus({ preventScroll: true });
 }
 
+// What a jump revealed (e.g. a Leistung's text opened from a card's picker) is marked briefly, so the eye
+// lands on it in a long sheet. The mark is a ring that fades; with reduced motion it simply stays a moment.
+function markRevealed(node) {
+  node.classList.remove("revealed");
+  void node.offsetWidth;
+  node.classList.add("revealed");
+  setTimeout(() => node.classList.remove("revealed"), 2200);
+}
 // Right-click on one element: only what belongs to that element, then where it belongs.
 function elementView(body, item, context, head) {
   const path = context.path || [];
@@ -2133,7 +2271,8 @@ function unitsOf(item, prefix) {
       const media = isMediaContainer(item, c);
       const source = c.kind === "array" && !media ? choiceSource(item, c) : null;
       const chosen = source ? value(item, c.path) || [] : [];
-      const candidates = source ? source.options.filter((o) => !chosen.some((id) => o.key === id || o.alias === id)).length : 0;
+      // A grouped picker is always drawn whole (chosen and the rest per group), so it has no separate candidates.
+      const candidates = source && !source.options.some((o) => o.group) ? source.options.filter((o) => !chosen.some((id) => o.key === id || o.alias === id)).length : 0;
       return { ...c, media, reference: !!source, candidates };
     });
   const fields = fieldsFor(item)
@@ -2143,13 +2282,21 @@ function unitsOf(item, prefix) {
   return scopeUnits({ fields, containers, optionalFields, data: item.data, prefix });
 }
 // One control per unit; labels name the parent group for nested fields ("Link · Ziel").
-function unitControl(item, unit, prefix) {
+// The name of the object a nested field sits in, as the schema calls it ("Seitenauftakt", not the key).
+function parentLabel(item, path) {
+  const parent = path.slice(0, -1);
+  return fieldLabel(containersFor(item).find((c) => equal(c.path, parent)) || { path: parent });
+}
+// quietParents: object paths whose name is already said around the field (a chunk heading, the record's
+// wrapper object), so the field is not prefixed with it.
+function unitControl(item, unit, prefix, { quietParents = [] } = {}) {
   const container = () => containersFor(item).find((c) => equal(c.path, unit.path)) || { path: unit.path };
   if (unit.kind === "field" || unit.kind === "variant") {
     const field = (unit.kind === "field" ? fieldsFor(item) : optionalFieldsFor(item)).find((f) => equal(f.path, unit.path));
     if (!field) return null;
     const parent = unit.path.length - prefix.length > 1 ? unit.path.at(-2) : null;
-    return fieldControl(item, field, { label: parent !== null && typeof parent !== "number" ? fieldLabel({ path: [parent] }) + " · " + fieldLabel(field) : fieldLabel(field) });
+    const quiet = quietParents.some((p) => equal(p, unit.path.slice(0, -1)));
+    return fieldControl(item, field, { label: parent !== null && typeof parent !== "number" && !quiet ? parentLabel(item, unit.path) + " · " + fieldLabel(field) : fieldLabel(field) });
   }
   if (unit.kind === "media") return mediaControl(item, unit.path, { title: fieldLabel(container()) });
   if (unit.kind === "array" || unit.kind === "candidates") {
@@ -2184,8 +2331,9 @@ function moreDisclosure(item, units, prefix, key) {
   if (units.some((unit) => unit.kind === "field" && isTranslatable(item, fieldsFor(item).find((f) => equal(f.path, unit.path))))) panelTranslatable = true;
   // Its own zone (quietly tinted); inside, the same controls and accordions as everywhere else.
   const details = el("details", { class: "more more-zone" }, el("summary", {}, el("span", { text: `Weitere Felder (${units.length})` }), icon("chevron-down")));
-  // Filled when first opened: the closed disclosure costs nothing to draw.
-  const fill = () => details.querySelector(":scope > .group") || put(details, group(null, units.map((unit) => unitControl(item, unit, prefix))));
+  // Filled when first opened: the closed disclosure costs nothing to draw. Many fields (a whole project
+  // behind its card) are chunked under the record's own schema blocks, as in its overview.
+  const fill = () => details.querySelector(":scope > .group") || put(details, group(null, moreChunks(item, units, prefix)));
   if (openDisclosures.get(key) === true) {
     details.open = true;
     fill();
@@ -2199,6 +2347,25 @@ function moreDisclosure(item, units, prefix, key) {
     revealInPanel(details.querySelector(":scope > .group"), { smooth: true });
   });
   return details;
+}
+function moreChunks(item, units, prefix) {
+  const controls = (list) => list.map((unit) => unitControl(item, unit, prefix)).filter(Boolean);
+  if (units.length <= 10) return controls(units);
+  const plan = overviewPlan({ fields: fieldsFor(item), containers: containersFor(item), isMedia: (c) => isMediaContainer(item, c), isTechnical });
+  const titleOf = (unit) => plan.blocks.find((block) => block.members.some((m) => under(unit.path, m.path) || under(m.path, unit.path)))?.title || null;
+  const chunks = chunkByGroup(units, titleOf);
+  if (chunks.filter((c) => c.title).length < 2) return controls(units);
+  // Under a heading the wrapper object (project → showcase) and an object that is the block itself
+  // (Eckdaten = meta) go unsaid.
+  const objectBlocks = plan.blocks.filter((b) => b.members.length === 1 && b.members[0].kind === "object").map((b) => b.members[0].path);
+  const quietParents = [plan.base, ...objectBlocks];
+  return chunks.map((chunk) => {
+    const drawn = chunk.items.map((unit) => unitControl(item, unit, prefix, { quietParents })).filter(Boolean);
+    // A list that is the whole chunk (Mitwirkende under "Mitwirkende") does not repeat the heading.
+    const own = drawn.length === 1 ? drawn[0].querySelector(":scope > .row-label") : null;
+    if (own && own.textContent.trim() === chunk.title) own.remove();
+    return el("div", { class: "more-chunk" }, chunk.title ? el("h4", { class: "subgroup-title", text: chunk.title }) : null, drawn);
+  });
 }
 function instanceView(body, item, context, head) {
   const path = context.path || [];
@@ -2358,37 +2525,27 @@ function subtreeControls(item, prefix, { skipInline = false } = {}) {
   // A container's own explanation from the schema (help/hint) stands above its fields.
   const own = containersFor(item).find((c) => equal(c.path, prefix));
   const out = [own?.help, own?.hint].filter(Boolean).map((text) => el("p", { class: "note wide-row", text }));
-  const children = [];
-  const seen = new Set();
-  const consider = (path, node) => {
-    const key = pathKey(path.slice(0, prefix.length + 1));
-    if (seen.has(key)) return;
-    seen.add(key);
-    children.push(node);
-  };
-  for (const f of fieldsFor(item)) {
-    if (!under(f.path, prefix) || f.path.length <= prefix.length) continue;
-    const childPath = f.path.slice(0, prefix.length + 1);
-    const container = f.path.length > prefix.length + 1 ? containersFor(item).find((c) => equal(c.path, childPath)) : null;
-    consider(childPath, container ? { container } : { field: f });
-  }
-  for (const c of containersFor(item))
-    if (c.path.length === prefix.length + 1 && under(c.path, prefix)) consider(c.path, { container: c });
-  for (const child of children) {
-    if (child.field) {
-      if (!isTechnical(child.field) && !(skipInline && inlineKeys.has(fieldKey(item.id, child.field.path)))) out.push(fieldControl(item, child.field));
-      continue;
-    }
+  const controlOf = (child) => {
+    if (child.field) return !isTechnical(child.field) && !(skipInline && inlineKeys.has(fieldKey(item.id, child.field.path))) ? fieldControl(item, child.field) : null;
     const c = child.container;
-    if (isMediaContainer(item, c)) {
-      if (value(item, c.path) !== undefined) out.push(mediaControl(item, c.path, { title: fieldLabel(c) }));
-    } else if (c.kind === "array") {
+    if (isMediaContainer(item, c)) return value(item, c.path) !== undefined ? mediaControl(item, c.path, { title: fieldLabel(c) }) : null;
+    if (c.kind === "array") {
       const source = choiceSource(item, c);
-      out.push(source ? referenceControl(item, c, source) : listRows(item, c, { includeInline: true }));
-    } else if (c.kind === "object" && value(item, c.path) !== undefined) {
-      const inner = subtreeControls(item, c.path, { skipInline });
-      if (inner.length) out.push(el("div", { class: "subgroup" }, el("h4", { class: "subgroup-title", text: fieldLabel(c) }), inner));
+      return source ? referenceControl(item, c, source) : listRows(item, c, { includeInline: true });
     }
+    if (c.kind === "object" && value(item, c.path) !== undefined) {
+      const inner = subtreeControls(item, c.path, { skipInline });
+      return inner.length ? el("div", { class: "subgroup" }, el("h4", { class: "subgroup-title", text: fieldLabel(c) }), inner) : null;
+    }
+    return null;
+  };
+  // Children naming a schema group gather under that subheading (e.g. "Meldungen": Versand, Fehlermeldungen).
+  const children = directChildren({ fields: fieldsFor(item), containers: containersFor(item), prefix });
+  for (const chunk of chunkByGroup(children, (child) => (child.field || child.container).group, { ignore: own?.group })) {
+    const controls = chunk.items.map(controlOf).filter(Boolean);
+    if (!controls.length) continue;
+    if (chunk.title) out.push(el("div", { class: "subgroup" }, el("h4", { class: "subgroup-title", text: chunk.title }), controls));
+    else out.push(...controls);
   }
   const advanced = fieldsFor(item).filter((f) => f.path.length === prefix.length + 1 && under(f.path, prefix) && isTechnical(f));
   if (advanced.length) {
@@ -2459,6 +2616,10 @@ function recordView(body, item, context, head) {
   if (general) general.controls.push(...extras);
   if (item.id.startsWith("media/")) general.controls.unshift(mediaRecordPreview(item));
   if (item.id.startsWith("media/")) blocks.push(mediaUsageBlock(item));
+  else {
+    const linked = linkedFromBlock(item);
+    if (linked) blocks.push(linked);
+  }
   const shown = blocks.filter((b) => b.controls.length);
   const indexed = shown.length >= 3;
   $("#panel").dataset.sparse = String(!indexed);
@@ -2475,19 +2636,25 @@ function recordView(body, item, context, head) {
   );
   const index = el("nav", { class: "ov-nav", "aria-label": "Bereiche" }, links);
   put(body, el("div", { class: "overview indexed" }, index, main));
-  // The index follows the scroll position (one observer at a time).
+  // The index follows the scroll position: the current block is the one at the top of the sheet (the last
+  // whose top has reached it); at the very top the first, scrolled to the end the last (a short last
+  // block never reaches the top). One listener at a time.
   overviewObserver?.disconnect();
-  const observer = (overviewObserver = new IntersectionObserver(
-    (entries) => {
-      const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
-      if (!visible) return;
-      const index = sections.indexOf(visible.target);
-      links.forEach((link, i) => link.setAttribute("aria-current", String(i === index)));
-    },
-    { root: body, rootMargin: "0px 0px -70% 0px" },
-  ));
-  sections.forEach((section) => observer.observe(section));
+  const spy = () => {
+    const box = body.getBoundingClientRect();
+    let index = 0;
+    if (body.scrollTop > 0) {
+      sections.forEach((section, i) => {
+        if (section.getBoundingClientRect().top <= box.top + 48) index = i;
+      });
+      if (body.scrollTop + body.clientHeight >= body.scrollHeight - 2) index = sections.length - 1;
+    }
+    links.forEach((link, i) => link.setAttribute("aria-current", String(i === index)));
+  };
+  body.addEventListener("scroll", spy, { passive: true });
+  overviewObserver = { disconnect: () => body.removeEventListener("scroll", spy) };
   links[0]?.setAttribute("aria-current", "true");
+  requestAnimationFrame(spy);
 }
 // A page's sections in its overview: one row each that opens the section's own panel (Back returns here).
 // Adding, moving and removing sections stays with the section actions, which keep the page in step.
@@ -3415,6 +3582,35 @@ function mediaUsageBlock(item) {
   });
   return { title: `Verwendet in (${usage.length})`, controls: [el("div", { class: "media-usages" }, rows)] };
 }
+// "Verknüpft mit": the records that point at this one (a page section listing this client, a card showing
+// this package), read-only, each a jump that Back returns from. Derived from the schemas' reference
+// metadata over all draft records (linked-records.mjs); images keep their own "Verwendet in".
+function linkedFromBlock(item) {
+  const incoming = incomingReferences(records(), item);
+  if (!incoming.length) return null;
+  const rows = incoming.flatMap(({ owner, paths }) => {
+    const page = /^(page|screen)\//.test(owner.id);
+    // One row per place: a page names the section, any other record the field (first reference there).
+    const places = new Map();
+    for (const path of paths) {
+      const key = page && path[0] === "sections" ? "s" + path[1] : "r";
+      if (!places.has(key)) places.set(key, path);
+    }
+    return [...places.values()].map((path) => {
+      const inSection = page && path[0] === "sections" && Number.isInteger(path[1]);
+      const open = () => (inSection ? pushView({ id: owner.id, path: ["sections", path[1]] }, "section") : pushView({ id: owner.id, path: [], reveal: path }, "record"));
+      const where = inSection ? `Abschnitt „${sectionTitle(owner, path[1])}“` : mediaPlace(owner, path);
+      return el(
+        "button",
+        { type: "button", class: "action nav media-usage", onclick: open },
+        icon(kindOf(owner.id)[1]),
+        el("span", { class: "media-usage-text" }, el("span", { class: "media-usage-name", text: page ? pageName(owner) : recordName(owner) }), el("small", { text: [kindOf(owner.id)[0], where].filter(Boolean).join(" · ") })),
+        icon("chevron-right"),
+      );
+    });
+  });
+  return { title: `Verknüpft mit (${rows.length})`, controls: [el("div", { class: "media-usages wide-row" }, rows)] };
+}
 
 // ---------------------------------------------------------------------------
 // Languages: the whole page switches instantly; in EN/NL, text is overwritten in place
@@ -3736,19 +3932,18 @@ function setLocale(locale, { keepPanel = false } = {}) {
     toast(`${localeNames[locale]}: Texte direkt auf der Seite überschreiben. Noch nicht übersetzte Texte sind gestrichelt markiert.`);
   }
 }
-// The language control of a panel: in its head (one per panel, when it shows translatable text) and as the
-// pill on every foreign-language field. Same languages and flags as the dock; switching keeps the panel
-// (same record, scroll position and open groups) and the page follows (setLocale, as from the dock).
-function localeSwitch(cls) {
+// The language control of a panel: one, in its head, whenever the panel concerns translatable text, in
+// every language alike (so it stays under the pointer for quick switching). Same languages and flags as
+// the dock; switching keeps the panel (same record, scroll position and open groups) and the page follows.
+function localeSwitch() {
   const node = el(
     "button",
-    { type: "button", class: cls, "aria-haspopup": "menu", "aria-expanded": "false", "aria-label": "Sprache wechseln, aktuell " + localeNames[activeLocale], title: "Sprache wechseln" },
-    cls === "panel-locale" ? flagIcon(activeLocale) : null,
+    { type: "button", class: "panel-locale", "aria-haspopup": "menu", "aria-expanded": "false", "aria-label": "Sprache wechseln, aktuell " + localeNames[activeLocale], title: "Sprache wechseln" },
+    flagIcon(activeLocale),
     el("span", { text: activeLocale.toUpperCase() }),
     icon("chevron-down"),
   );
   node.addEventListener("click", (event) => {
-    // Inside a field label the click must not reach the input.
     event.preventDefault();
     event.stopPropagation();
     openMenu(

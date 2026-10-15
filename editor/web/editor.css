@@ -320,13 +320,16 @@ body {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+/* The kind always reads right after the title (it gives way first when the head gets tight); whatever
+   follows (actions, language, close) sits at the right edge. */
 .panel-kind {
-  flex: 1 1 0;
+  flex: 0 100 auto;
   min-width: 0;
+  margin-right: auto;
   overflow: hidden;
   color: var(--ui-muted);
   font-size: 13px;
-  text-align: right;
+  text-align: left;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -1298,29 +1301,24 @@ dialog.dlg.media-wide {
   width: 15px;
   height: 15px;
 }
-/* Language of a panel: one control in its head, and the pill on each foreign-language field. Both
-   open the same language menu; the pill stays as small as the label it sits in. */
-.editor-ui .locale-badge {
-  display: inline-flex;
-  gap: 2px;
-  min-height: 0;
+/* Language of a panel: one control, in its head. A foreign-language field only carries a quiet,
+   non-interactive tag; empty (untranslated) it is dashed like untranslated text on the page. */
+.editor-ui .locale-tag {
+  display: inline-block;
   margin-left: 6px;
-  padding: 1px 3px 1px 5px;
+  padding: 0 4px;
   border-radius: 4px;
   background: var(--ui-tint);
   color: var(--ui-accent-ink);
   font-size: 11px;
   font-weight: 600;
   line-height: 16px;
-  letter-spacing: 0.04em !important;
+  letter-spacing: 0.04em;
   vertical-align: 1px;
+  cursor: default;
 }
-.editor-ui .locale-badge:hover:not(:disabled) {
-  background: var(--ui-hover);
-}
-.editor-ui .locale-badge svg {
-  width: 12px;
-  height: 12px;
+.editor-ui :is(input, textarea).untranslated:not(:focus) {
+  border: 1px dashed var(--ui-muted);
 }
 .editor-ui .panel-locale {
   gap: 6px;
@@ -1330,7 +1328,7 @@ dialog.dlg.media-wide {
   font-size: 13px;
   font-weight: 600;
 }
-.editor-ui .panel-locale svg:last-child {
+.editor-ui .panel-locale > svg:last-child {
   width: 14px;
   height: 14px;
 }
@@ -1391,7 +1389,8 @@ dialog.dlg.media-wide {
 }
 .rows.table li > input + input,
 .rows.table li > input + textarea,
-.rows.table li > textarea + input {
+.rows.table li > textarea + input,
+.rows.table li > textarea + textarea {
   border-left: 1px solid var(--ui-line);
   border-radius: 0;
 }
@@ -1449,10 +1448,15 @@ dialog.dlg.media-wide {
   font-weight: 500;
   text-align: left;
 }
+/* Block names wrap instead of being cut off: the index is for finding, a truncated name hides the word. */
+.editor-ui .ov-link {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  white-space: normal;
+}
 .editor-ui .ov-link span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 18px;
+  overflow-wrap: anywhere;
 }
 .editor-ui .ov-link[aria-current="true"] {
   background: var(--ui-tint);
@@ -1485,7 +1489,9 @@ dialog.dlg.media-wide {
   align-items: start;
 }
 /* Long text, lists, images and choice rows use the full width; short fields sit side by side. */
-.ov-grid > .stack:has(textarea),
+.ov-grid > .stack.long,
+.subgroup > .stack.long,
+.subgroup > :not(label):not(.row),
 .ov-grid > :not(label):not(.row) {
   grid-column: 1 / -1;
 }
@@ -1516,9 +1522,11 @@ dialog.dlg.media-wide {
   border-radius: 2px;
   box-shadow: 0 0 0 1px var(--ui-shadow-boundary);
 }
-.editor-ui .flag svg {
-  width: 100%;
-  height: 100%;
+/* The flag fills its frame exactly, whatever icon size the host button gives its other svgs. */
+.editor-ui .flag > svg {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
 }
 #language {
   gap: 6px;
@@ -1876,7 +1884,7 @@ body#login {
   gap: 12px 16px;
   align-items: start;
 }
-.entry-grid > .stack:has(textarea),
+.entry-grid > .stack.long,
 .entry-grid > :not(label):not(.row) {
   grid-column: 1 / -1;
 }
@@ -1983,6 +1991,10 @@ body#login {
   flex: none;
   width: 16px;
   height: 16px;
+}
+.color-control {
+  display: grid;
+  gap: 6px;
 }
 .color-raw {
   display: flex;
@@ -2198,4 +2210,158 @@ dialog.dlg.navigator {
 }
 .record-list .nav-locale span {
   flex: none;
+}
+
+/* ---------- R10: aligned multi-column field grids ----------
+   Every grid item takes two rows: a label row and a control row. A field (label + control) adopts them
+   as a subgrid, so in one grid row all controls start at the same height however often a label wraps;
+   the label sits right above its control. A switch or segmented row sits in the control row. Items with
+   more parts (lists, images, notes) simply span both rows. */
+:is(.ov-grid, .entry-grid, .subgroup) > * {
+  grid-row: span 2;
+}
+:is(.ov-grid, .entry-grid, .subgroup) > .stack:has(> :nth-child(2):last-child) {
+  display: grid;
+  grid-template-rows: subgrid;
+  row-gap: 6px;
+}
+:is(.ov-grid, .entry-grid, .subgroup) > .stack:has(> :nth-child(2):last-child) > .row-label {
+  align-self: end;
+}
+:is(.ov-grid, .entry-grid, .subgroup) > .stack:has(> :nth-child(2):last-child) > :last-child {
+  align-self: start;
+}
+:is(.ov-grid, .entry-grid, .subgroup) > .row {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  /* Same inner gap as a field's subgrid, so its control row starts exactly where theirs does. */
+  row-gap: 6px;
+  column-gap: 12px;
+}
+:is(.ov-grid, .entry-grid, .subgroup) > .row > * {
+  grid-row: 2;
+  align-self: start;
+}
+:is(.ov-grid, .entry-grid, .subgroup) > .row > .row-label {
+  display: flex;
+  align-items: center;
+  min-height: 36px;
+}
+:is(.ov-grid, .entry-grid, .subgroup) > .row > input.switch {
+  margin-top: 8px;
+}
+:is(.ov-grid, .entry-grid, .subgroup) > :is(.subgroup-title, h4) {
+  grid-row: auto;
+}
+/* A block that opens with a subheading needs no rule above it: the block title already separates. */
+.ov-grid > .subgroup:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+.row-hint {
+  display: block;
+  color: var(--ui-muted);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+}
+/* One line high while the value fits, growing with it; never a horizontal scroll inside the field. */
+.editor-ui textarea.autogrow,
+.editor-ui .rows li > textarea.autogrow {
+  overflow-wrap: anywhere;
+  resize: none;
+}
+.editor-ui textarea.autogrow.single {
+  min-height: 36px;
+  max-height: 240px;
+}
+
+/* ---------- R10: pickers (row toggles, own open button), grouped choices, reveal mark ---------- */
+.editor-ui .row-choice {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 0 8px 0 10px;
+  cursor: pointer;
+}
+.rows li:has(.grip) .row-choice {
+  padding-left: 2px;
+}
+.row-choice > input[type="checkbox"] {
+  flex: none;
+  margin: 0;
+  accent-color: var(--ui-accent);
+}
+.row-choice-text {
+  overflow-wrap: anywhere;
+  line-height: 18px;
+  padding: 10px 0;
+}
+.editor-ui .row-go {
+  width: 36px;
+  min-height: 40px;
+  padding: 0;
+  color: var(--ui-muted);
+}
+.editor-ui .row-go svg {
+  width: 16px;
+  height: 16px;
+}
+.editor-ui .row-go:hover:not(:disabled) {
+  color: var(--ui-ink);
+}
+.rows li.unchosen {
+  background: transparent;
+  border: 1px dashed var(--ui-line);
+}
+.choice-group-block {
+  display: grid;
+  gap: 4px;
+}
+.choice-group-block + .choice-group-block {
+  margin-top: 6px;
+}
+.choice-group-block > .row-sublabel {
+  margin-top: 0;
+}
+.rows li > textarea {
+  flex: 1;
+  background: transparent;
+}
+.rows li > textarea:focus {
+  background: var(--ui-raised);
+}
+.revealed {
+  border-radius: 8px;
+  animation: revealed 2s ease-out;
+}
+@keyframes revealed {
+  0%,
+  35% {
+    box-shadow: 0 0 0 2px var(--ui-accent);
+    background-color: var(--ui-tint);
+  }
+  100% {
+    box-shadow: 0 0 0 2px transparent;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .revealed {
+    animation: none;
+    box-shadow: 0 0 0 2px var(--ui-accent);
+  }
+}
+
+/* "Weitere Felder" with many fields: chunked under the record's schema blocks. */
+.more-chunk {
+  display: grid;
+  gap: 12px;
+}
+.more-chunk + .more-chunk {
+  padding-top: 14px;
+  border-top: 1px dashed var(--ui-line);
 }
