@@ -2544,7 +2544,8 @@ function subtreeControls(item, prefix, { skipInline = false } = {}) {
   for (const chunk of chunkByGroup(children, (child) => (child.field || child.container).group, { ignore: own?.group })) {
     const controls = chunk.items.map(controlOf).filter(Boolean);
     if (!controls.length) continue;
-    if (chunk.title) out.push(el("div", { class: "subgroup" }, el("h4", { class: "subgroup-title", text: chunk.title }), controls));
+    // A group named like the object it sits in would repeat the heading right above it.
+    if (chunk.title && !(own && chunk.title === fieldLabel(own))) out.push(el("div", { class: "subgroup" }, el("h4", { class: "subgroup-title", text: chunk.title }), controls));
     else out.push(...controls);
   }
   const advanced = fieldsFor(item).filter((f) => f.path.length === prefix.length + 1 && under(f.path, prefix) && isTechnical(f));
