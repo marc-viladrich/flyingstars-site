@@ -72,7 +72,7 @@ export class NativePreview {
       const log = await fs.open(path.join(path.dirname(this.dir), "dev.log"), "a");
       const child = spawn(this.node, [cli, "dev", "--port", String(this.port), "--host", "127.0.0.1"], {
         cwd: this.dir,
-        env: { ...this.env, ASTRO_TELEMETRY_DISABLED: "1", FLYINGSTARS_EDITOR: "1", SITE_URL: this.origin },
+        env: { ...this.env, ASTRO_TELEMETRY_DISABLED: "1", ...this.site.extensions?.first('buildEnvironment',{editor:true,origin:this.origin}) },
         stdio: ["ignore", log.fd, log.fd],
         detached: true,
       });

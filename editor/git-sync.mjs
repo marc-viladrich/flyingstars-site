@@ -1,11 +1,12 @@
+import {legacyRuntimePaths,legacyRuntimeMessages} from './runtime-options.mjs';
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
 
 export async function configuredRemote(root, git, selected) {
   if (selected === false || selected === 'off') return null;
   const names = (await git(root, ['remote'])).split('\n');
-  if (selected && !names.includes(selected)) throw Error('AFE_GIT_REMOTE (FLYINGSTARS_GIT_REMOTE) muss einen konfigurierten Git-Remote benennen.');
-  // Opt-in: only an explicitly named remote is pushed to (the host sets FLYINGSTARS_GIT_REMOTE=origin).
+  if (selected && !names.includes(selected)) throw Error(legacyRuntimeMessages.remote);
+  // Opt-in: only an explicitly named remote is pushed to (the host sets AFE_GIT_REMOTE=origin).
   // A developer clone with an unrelated origin must never receive content pushes by accident.
   return selected || null;
 }
@@ -32,7 +33,7 @@ export class GitSync {
     this.running = (async () => {
       // Snapshot quickly under the store lock; network I/O must never hold up another save.
       const snapshot = await this.store.exclusive(async () => {
-      const head = await this.store.head(), leaseFile = path.join(this.store.root, '.git', 'flyingstars-draft-lease');
+      const head = await this.store.head(), leaseFile = path.join(this.store.root, '.git', legacyRuntimePaths.draftLease);
       const lease = await fs.readFile(leaseFile, 'utf8').catch(e => {if (e.code !== 'ENOENT') throw e; return '';});
       return {head,leaseFile,lease};
       });

@@ -10,7 +10,7 @@ const run=promisify(execFile);
 /** Build an immutable commit. Publication and preview have separate artifacts. */
 export class NativeBuilder {
  constructor(store,root,{editor=true,origin='http://127.0.0.1:4542',runtimeName='runtime',webroot=editor?null:store.runtime?.publicWebroot,site=store.site,env=store.runtime?.buildEnv||{}}={}) {
-  this.git=store.git||git;this.required=site?.requiredOutput||['index.html'];this.env=env;this.store=store;this.root=path.resolve(root);this.runtime=path.join(this.root,runtimeName);
+  this.extensions=site?.extensions;this.git=store.git||git;this.required=site?.requiredOutput||['index.html'];this.env=env;this.store=store;this.root=path.resolve(root);this.runtime=path.join(this.root,runtimeName);
   this.imageCache=path.join(this.root,'cache','astro-images',editor?'editor':'public');
   this.webroot=webroot;this.editor=editor;this.origin=origin;this.queue=Promise.resolve();this.current=null;
  }
@@ -48,7 +48,7 @@ export class NativeBuilder {
    const cli=path.join(source,'node_modules/astro',typeof pkg.bin==='string'?pkg.bin:pkg.bin.astro);
 
    try{
-    const result=await run(process.execPath,[cli,'build','--outDir',site],{cwd:source,env:{...this.env,ASTRO_TELEMETRY_DISABLED:'1',FLYINGSTARS_IMAGE_CACHE_DIR:this.imageCache,...(this.editor?{FLYINGSTARS_EDITOR:'1'}:{}),SITE_URL:this.origin},timeout:180000,maxBuffer:5_000_000});
+    const result=await run(process.execPath,[cli,'build','--outDir',site],{cwd:source,env:{...this.env,ASTRO_TELEMETRY_DISABLED:'1',...this.extensions?.first('buildEnvironment',{editor:this.editor,origin:this.origin,imageCache:this.imageCache})},timeout:180000,maxBuffer:5_000_000});
     await fs.writeFile(path.join(output,'build.log'),result.stdout+result.stderr);
    }catch(error){await fs.writeFile(path.join(output,'build.log'),(error.stdout||'')+(error.stderr||''));throw Error('Inhalt gespeichert, Astro-Aufbau fehlgeschlagen. Der vorherige Seitenstand bleibt aktiv.');}
    for(const file of this.required)await fs.access(path.join(site,file));

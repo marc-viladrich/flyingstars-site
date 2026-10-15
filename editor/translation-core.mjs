@@ -6,7 +6,7 @@ import { promises as fs } from "node:fs";
 
 export const sha256 = (text) => createHash("sha256").update(String(text), "utf8").digest("hex");
 const getPath = (data, path) => path.reduce((value, key) => value?.[key], data);
-const translatableOwners = /^(page|post|project|faq|client|team|screen|package|site)\//;
+
 
 // Markdown is translated per paragraph/line so an edited sentence does not resend a whole article.
 // Link targets and inline code are protected with tokens and restored afterwards.
@@ -41,7 +41,7 @@ export function segmentsOf(field) {
 function protect(text) {
   const tokens = [];
   const out = text
-    // Inline code, {placeholders} and the format marks {o}…{/o}, {c}…{/c} never reach the provider.
+    // Inline code, {placeholders} and site format marks never reach the provider.
     .replace(/`[^`]+`|\{\/?\w+\}/g, (m) => `⟦${tokens.push(m) - 1}⟧`)
     .replace(/\*\*|~~|\*/g, (m) => `⟦${tokens.push(m) - 1}⟧`)
     .replace(/\]\(([^)\s]+)((?:\s+"[^"]*")?)\)/g, (m, url, title) => `](⟦${tokens.push(url) - 1}⟧${title})`);
@@ -69,19 +69,17 @@ export async function saveMemory(file, memory) {
   await fs.rename(temp, file);
 }
 
-const translationIdFor = (ownerId, locale) => "translation/" + ownerId.replaceAll("/", "-") + "-" + locale;
-
 // Which fields need a (new) translation, which segments must actually be sent, and what that costs.
-export function plan({ records, locale, memory, ids }, {translatableFields}) {
+export function plan({ records, locale, memory, ids }, {translatableFields,translationStorage}) {
   const byId = new Map(records.map((r) => [r.id, r]));
-  const owners = (Array.isArray(ids) ? ids.map((id) => byId.get(id)).filter(Boolean) : records).filter((r) => translatableOwners.test(r.id));
+  const owners = (Array.isArray(ids) ? ids.map((id) => byId.get(id)).filter(Boolean) : records).filter((r) => translationStorage.isOwner(r));
   const jobs = [];
   const unique = new Map();
   let fieldChars = 0,
     cachedChars = 0,
     freshFields = 0;
   for (const owner of owners) {
-    const existing = byId.get(translationIdFor(owner.id, locale));
+    const existing = translationStorage.find(records,owner.id,locale);
     for (const field of translatableFields(owner)) {
       const sourceHash = sha256(field.text);
       const current = existing?.data.values?.find((v) => JSON.stringify(v.path) === JSON.stringify(field.path));
@@ -199,36 +197,6 @@ export async function executeBatched(planned, provider, {memory, maxChars=3000, 
   return {...result,failedSegments:invalidSegments,billed,batches,sent,errors,budgetExhausted:pending.length>0,remainingSegments:segments.filter(segment=>!memory.entries[segment.key]).length};
 }
 
-// Machine results become unreviewed values of the owner's translation record; reviewed values whose
-// German text is unchanged are kept as they are.
-export function mergeIntoTranslations({ records, locale, values }, {translatableFields}) {
-  const byId = new Map(records.map((r) => [r.id, r]));
-  const out = [];
-  for (const [ownerId, { revision, entries }] of values) {
-    const id = translationIdFor(ownerId, locale);
-    const existing = byId.get(id);
-    const data = existing ? structuredClone(existing.data) : { sourceId: ownerId, locale, sourceHash: revision, values: [] };
-    // Older values without a field hash: pin them to their German text if they were current,
-    // otherwise to a hash that can never match, so moving the record hash cannot revive them.
-    const owner = byId.get(ownerId);
-    const allowed=new Set(translatableFields(owner).map(field=>JSON.stringify(field.path)));
-    data.values=data.values.filter(value=>allowed.has(JSON.stringify(value.path)));
-    for (const value of data.values)
-      if (!value.sourceHash) {
-        const german = getPath(owner?.data, value.path);
-        value.sourceHash = data.sourceHash === revision && typeof german === "string" ? sha256(german) : sha256("");
-      }
-    data.sourceHash = revision;
-    for (const entry of entries) {
-      const index = data.values.findIndex((v) => JSON.stringify(v.path) === JSON.stringify(entry.path));
-      if (index < 0) data.values.push(entry);
-      else data.values[index] = entry;
-    }
-    out.push({ id, data, create: !existing, expectedRevision: existing?.revision });
-  }
-  return out;
-}
-
 export function createTranslationCore(site) {
- return {plan:request=>plan(request,site),mergeIntoTranslations:request=>mergeIntoTranslations(request,site)};
+ return {plan:request=>plan(request,{translatableFields:site.translatableFields,translationStorage:site.extensions.require('translationStorage')}),mergeIntoTranslations:request=>site.extensions.require('translationStorage').merge(request)};
 }

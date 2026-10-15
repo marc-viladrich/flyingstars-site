@@ -1,7 +1,7 @@
 import sharp from 'sharp';
 import {createHash} from 'node:crypto';
-export const MAX_MEDIA_BYTES=5*1024*1024;
-export const MAX_MEDIA_PIXELS=20_000_000;
+import {MAX_MEDIA_BYTES,MAX_MEDIA_PIXELS} from './core/media-limits.mjs';
+export {MAX_MEDIA_BYTES,MAX_MEDIA_PIXELS} from './core/media-limits.mjs';
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const invalid=message=>Object.assign(new Error(message),{status:400});
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;

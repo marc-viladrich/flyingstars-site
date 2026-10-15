@@ -34,6 +34,16 @@ test('core has no field-name tables, reference guesses or positional-list name r
  const files=['web/editor.js','web/view-state.mjs','web/field-labels.mjs','native-schema.mjs','web/native-schema.mjs','native-store.mjs','web/native-draft.mjs'];
  const forbidden=[/\b(?:keyLabels|choiceLabels|technicalKeys|ownNames|positionalList)\b/,/['"](?:packageId|memberIds|clientIds|assetId|featureIds)['"]/,/\.(?:packageId|memberIds|clientIds|assetId|featureIds)\b/,/endsWith\(\s*['"]Ids?['"]\s*\)/,/slice\(\s*0,\s*-2\s*\)/,/['"]cells['"]\s*,\s*['"]values['"]\s*,\s*['"]columns['"]/];
  for(const file of files){const source=await readFile(new URL(file,import.meta.url),'utf8');for(const pattern of forbidden)assert.doesNotMatch(source,pattern,file);}
+ // Scan every runtime server module, including newly added core/deploy modules. Browser modules
+ // and site proof/fixture/CI tools have separate ownership and retain their existing checks above.
+ const serverFiles=(await readdir(new URL('./',import.meta.url),{recursive:true})).filter(file=>file.endsWith('.mjs')&&!/(?:^|\/)(?:web|extensions|test|ci)\//.test(file)&&!/(?:\.test|\.browser|-fixture|-proof)\.mjs$/.test(file)&&!['flyingstars-adapter.mjs','pr5-compare.mjs'].includes(file));
+ const domain=[/FlyingStars|flyingstars/i,/\b(?:SPARK|HORIZON|ODYSSEY)\b/,/\b(?:packageId|featureIds|memberIds|clientIds|assetId)\b/,/["'](?:page|package|screen|post|project|faq|client|team|media|site|translation)\//,/\^\((?:page|package|screen|post|project|faq|client|team)\|/,/t-outline|t-caps|data-card|cfg-field/,/['"](?:packages|clients|team|screens|siteContact|siteInquiry|siteNavigation|siteUi|pricing|logoBar|projectGrid|postList)['"]/ ,/\b(?:packageOwnership|sourceId)\b/];
+ for(const file of serverFiles){
+  let source=await readFile(new URL(file,import.meta.url),'utf8');
+  // Only these composition roots may import the pilot adapter or its host compatibility constants. No body is exempt.
+  if(['server.mjs','runtime-options.mjs','translate-missing.mjs','deploy/host-update.mjs'].includes(file))source=source.replace(/^(?:import|export).*from ['"][^'"]*(?:flyingstars-adapter|extensions\/flyingstars\/runtime-compatibility)\.mjs['"];?$/gm,'');
+  for(const pattern of domain)assert.doesNotMatch(source,pattern,file);
+ }
 });
 
 test('unfamiliar field names carry validated references, choice labels, title, visibility and inherited read-only state',()=>{

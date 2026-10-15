@@ -68,3 +68,7 @@ State innerhalb der Site wird vor dem Laden von Konten oder Site-Modulen abgewie
 ## Grenze dieser Änderung
 
 Alle geprüften Service-Module sind von direkten Imports aus `src/schemas` und `src/lib` getrennt. Noch keine generische Produktimplementierung sind die Source-Codecs und Git-Transaktionen im Store, dessen Referenz-/Paketregeln sowie die Browserlogik. Die vorhandenen Feld- und Collection-Heuristiken bleiben im Pilot bis zu den dafür vorgesehenen PRs. PR 3 übernimmt die reversible Source-Registry einschließlich Shared-File-Konflikten und No-op-Roundtrips. Die kollisionsanfälligen Übersetzungs-IDs bleiben für PR 10 unverändert.
+
+## Serverseitige Extensions ab PR 7
+
+`resolveRuntimeOptions({values: {extensions: [...]}})` nimmt zusätzliche vertrauenswürdige Extension-Definitionen entgegen. `startNativeServers` registriert sie zusammen mit den Definitionen des Site-Adapters in einer eigenen Registry. Doppelte Namen und inkompatible Vertragsversionen brechen den Start ab. Es gibt dafür keine Umgebungsvariable und keinen Browser-Modulpfad. Hooks, Ausführungsreihenfolge und die noch offene Browseranbindung stehen in [extensions.md](extensions.md).

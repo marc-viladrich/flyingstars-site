@@ -5,7 +5,7 @@ import http from 'node:http';
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
 import {NativeStore,failure} from './native-store.mjs';
-import {mediaLibrary} from './web/media-usage.mjs';
+import {createExtensionRegistry} from './core/extensions.mjs';
 import {NativeBuilder} from './native-builder.mjs';
 import {NativePublisher} from './native-publisher.mjs';
 import {uploadNativeMedia} from './native-media.mjs';
@@ -16,7 +16,7 @@ import {translationProvider} from './translation-providers.mjs';
 import {EditorAuth} from './auth.mjs';
 import {isMain,assertStateLocation} from './paths.mjs';
 import {resolveRuntimeOptions} from './runtime-options.mjs';
-import {createFlyingStarsAdapter} from './flyingstars-adapter.mjs';
+import {createFlyingStarsAdapter as createSiteAdapter} from './flyingstars-adapter.mjs';
 const mime={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.json':'application/json','.svg':'image/svg+xml','.webp':'image/webp','.jpg':'image/jpeg','.jpeg':'image/jpeg','.png':'image/png','.woff2':'font/woff2','.ico':'image/x-icon','.pdf':'application/pdf','.mp4':'video/mp4'};
 export async function serveFile(res,base,relative,enhance=false){
  const decoded=decodeURIComponent(relative);
@@ -41,13 +41,15 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
  await assertStateLocation(sourceDir,stateDir,runtime.publicWebroot);
  const canonicalOrigin=new URL(origin);
  const authentication=runtime.auth.enabled?await new EditorAuth({...runtime.auth,secure:canonicalOrigin.protocol==='https:',...(typeof auth==='object'?auth:{})}).init({forbiddenRoots:runtime.auth.forbiddenRoots}):null;
- const adapter=site||await createFlyingStarsAdapter(sourceDir);
+ const configuredSite=site||await createSiteAdapter(sourceDir);
+ const adapter={...configuredSite,extensions:createExtensionRegistry([...configuredSite.extensions.definitions,...runtime.extensions])};
+ const languages=adapter.extensions.first('languages')??{source:'de',locales:{}};
  const store=await new NativeStore(sourceDir,{site:adapter,runtime}).init();
  const builder=new NativeBuilder(store,stateDir,{origin});if(initialize)await builder.init();
  const livePreview=runtime.preview.enabled?new NativePreview(store,stateDir,{...runtime.preview,origin,env:{...runtime.processEnv,...runtime.buildEnv}}):null;
  if(livePreview)livePreview.init().catch(error=>console.error('Live-Vorschau:',error.message));
  const publicBuilder=new NativeBuilder(store,stateDir,{editor:false,origin:publicOrigin,runtimeName:'runtime-public'});
- const publisher=new NativePublisher(store,publicBuilder),translation=new NativeTranslation(runtime.translation);
+ const publisher=new NativePublisher(store,publicBuilder),translation=new NativeTranslation({...runtime.translation,...languages});
  const {plan:planTranslation,mergeIntoTranslations}=createTranslationCore(adapter);
 
  if(initialize)await publisher.init();
@@ -93,7 +95,7 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
   if(req.method==='GET'&&p==='/editor/api/state')return json(res,200,{...await store.state(),activeHead:builder.current?.head});
   // Media library of the saved draft: collections by directly using record type + usage per asset.
   // Unsaved draft changes are added in the browser with the same resolver (web/media-usage.mjs).
-  if(req.method==='GET'&&p==='/editor/api/media'){const saved=await store.state();return json(res,200,{head:saved.head,basis:'saved-draft',...mediaLibrary(saved.records)});}
+  if(req.method==='GET'&&p==='/editor/api/media'){const saved=await store.state();return json(res,200,{head:saved.head,basis:'saved-draft',...adapter.extensions.require('mediaLibrary',saved.records)});}
   if(req.method==='GET'&&p==='/editor/api/review')return json(res,200,await publisher.review());
   if(req.method==='GET'&&p==='/editor/api/translation')return json(res,200,translation.status());
   if(req.method==='POST'){
@@ -104,9 +106,9 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
           // Machine translation of missing/changed texts; results go into the editor draft, not to git.
           // Scope: this page (ids) or the whole site (optionally only some kinds of content), one or more languages.
           // The run streams progress as NDJSON lines so the editor can show a real progress bar.
-          const request=await jsonBody(req),locales=[...new Set((Array.isArray(request?.locales)?request.locales:[request?.locale]).filter(l=>['en','nl'].includes(l)))];if(!locales.length)throw failure('Ungültige Sprache.');
+          const request=await jsonBody(req),locales=[...new Set((Array.isArray(request?.locales)?request.locales:[request?.locale]).filter(l=>Object.hasOwn(languages.locales,l)))];if(!locales.length)throw failure('Ungültige Sprache.');
           const provider=translationProvider(runtime.translation.provider,{...runtime.translation,key:runtime.translation.provider==='deepl'?runtime.translation.deeplKey:runtime.translation.key}),state=await store.state(),memoryFile=path.join(runtimeRoot,'translation-memory.json'),memory=await loadMemory(memoryFile);
-          const kindOf=id=>/^(page|screen)\//.test(id)?'pages':/^(project|post)\//.test(id)?'stories':id.startsWith('faq/')?'faq':id.startsWith('package/')?'packages':/^(client|team)\//.test(id)?'people':id.startsWith('site/')?'site':null;
+          const kindOf=id=>adapter.extensions.first('recordGroup',id);
           let ids;
           if(request.scope==='site'){const kinds=Array.isArray(request.kinds)?new Set(request.kinds):null;ids=state.records.map(r=>r.id).filter(id=>kindOf(id)&&(!kinds||kinds.has(kindOf(id))));}
           else{if(!Array.isArray(request.ids)||!request.ids.length||request.ids.length>400||request.ids.some(id=>typeof id!=='string'))throw failure('Bitte 1 bis 400 Inhalte auswählen.');ids=request.ids;}
@@ -126,7 +128,7 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
             doneBefore+=planned.chars;billedAll+=result.billed||0;skippedAll+=result.skippedFields||0;failedAll+=result.failedSegments||0;exhausted||=result.budgetExhausted;remaining+=result.remainingSegments||0;errors.push(...(result.errors||[]));
             const merged=mergeIntoTranslations({records:state.records,locale,values:result.values}).map(({id,data})=>({id,data}));
             // Explicit choice in the dialog: take the suggestions as reviewed (they become public on the next publication).
-            if(request.accept)for(const r of merged){const fresh=new Set([...result.values.get(r.data.sourceId)?.entries||[]].map(e=>JSON.stringify(e.path)));for(const v of r.data.values)if(fresh.has(JSON.stringify(v.path)))v.reviewed=true;}
+            if(request.accept)adapter.extensions.require('translationStorage').accept(merged,result.values);
             out.push(...merged);
            }
            line({type:'done',...summary,billedCharacters:billedAll,skippedFields:skippedAll,failedSegments:failedAll,budgetExhausted:exhausted,remainingSegments:remaining,errors:errors.slice(0,3),records:out});
@@ -135,8 +137,8 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
         }
         if(p==='/editor/api/preview'){if(!livePreview)throw failure('Live-Vorschau ist nicht aktiv.',503);return json(res,200,await livePreview.render(await jsonBody(req,20_000_000)));}
    if(p==='/editor/api/media'){
-    if(!/^image\/(png|jpeg|webp)$/.test(req.headers['content-type']||''))throw failure('PNG, JPEG oder WebP erwartet.',415);
-    const uploaded=await uploadNativeMedia(store,{bytes:await body(req,5*1024*1024),name:decodeURIComponent(String(req.headers['x-filename']||'')),requestId:req.headers['x-request-id'],expectedHead:req.headers['x-expected-head'],actor});
+    if(!adapter.extensions.require('mediaPolicy').mime.test(req.headers['content-type']||''))throw failure('PNG, JPEG oder WebP erwartet.',415);
+    const uploaded=await uploadNativeMedia(store,{bytes:await body(req,adapter.extensions.require('mediaPolicy').maxBytes),name:decodeURIComponent(String(req.headers['x-filename']||'')),requestId:req.headers['x-request-id'],expectedHead:req.headers['x-expected-head'],actor});
     return json(res,200,{...uploaded,state:await buildSaved(uploaded.state)});
    }
   }
