@@ -1,7 +1,7 @@
 ---
 {
   "title": "NFL Berlin Game",
-  "client": "Indianapolis Colts",
+  "client": "nfl",
   "date": "2025-11-01",
   "location": "Olympiastadion Berlin",
   "summary": "Das Hufeisen der Colts über dem Olympiastadion. Sport · Berlin.",
@@ -31,7 +31,7 @@
       "cardTitle": "NFL Berlin Game: das Wappen über dem Stadion",
       "category": "Sport · Berlin",
       "kicker": "Sport · Berlin · November 2025",
-      "titleLines": [ "NFL", "{o}Berlin Game{/o}" ],
+      "titleLines": [ "{c}NFL{/c}", "{c}{o}Berlin Game{/o}{/c}" ],
       "titleChars": 11,
       "tagline": "Das Hufeisen der Colts über dem Olympiastadion.",
       "accent": "project-nfl",
@@ -190,7 +190,7 @@
             }
         ],
       "press": [],
-      "nextRoute": "exploring-reinvented-der-neue-ford-explorer",
+      "nextProject": "exploring-reinvented-der-neue-ford-explorer",
       "cta":
         {
           "title": "Dein Stadion, deine Fans?",

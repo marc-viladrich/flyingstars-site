@@ -1,7 +1,7 @@
 {
   "sourceId": "project/musikalischer-teaser-bokkenrijders",
   "locale": "nl",
-  "sourceHash": "8a370962438ff0410c7b835964838b4f1acf1f3aa618b152b9da962a82e843eb",
+  "sourceHash": "444ec41ed552a2c59f4d24a6ddd8598ea39083a0b510dc1b05311d0a800c3474",
   "values": [
     {
       "path": [
@@ -64,9 +64,9 @@
         "titleLines",
         0
       ],
-      "text": "Bokken",
+      "text": "{c}Bokken{/c}",
       "reviewed": false,
-      "sourceHash": "c8607ffae161739e877104e3a6ee400c05cf994c59cd165307236dc4f0b35399"
+      "sourceHash": "0f5715800f6bc55d4bca10bf94111ff6d4d7f1b92ee9809edc5217d4a0521d05"
     },
     {
       "path": [
@@ -74,9 +74,9 @@
         "titleLines",
         1
       ],
-      "text": "{o}rijders{/o}",
+      "text": "{c}{o}rijders{/o}{/c}",
       "reviewed": false,
-      "sourceHash": "f430dbf2381bd1356c5c5ba594f5ccacaab8060081b1277048b718546194872f"
+      "sourceHash": "c5f467fccdab7d25ec7037ac5fc78951969c43d9aec7b49f10481eda52587288"
     },
     {
       "path": [

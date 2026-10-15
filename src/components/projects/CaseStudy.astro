@@ -9,6 +9,7 @@ const ui = await readUi('ui',locale);
 import InlineText from '../InlineText.astro';
 import {nativeRecord,nativeRecordMedia} from '../../lib/native-editor';
 import {resolveMedia} from '../../lib/content';
+import type {ResolvedProjectShowcase} from '../../schemas/project-showcase';
 import type { CollectionEntry } from 'astro:content';
 import {getProjects} from '../../lib/content';
 import SectionRenderer from '../SectionRenderer.astro';
@@ -19,12 +20,12 @@ interface Props { _locale?:string; locale?:string; project: CollectionEntry<'pro
 const { project } = Astro.props;
 const record=`project/${project.id}`;
 const field=(path:(string|number)[],inline=false)=>nativeRecord(record,["showcase",...path],inline);
-const data = project.data.showcase;
+const data = project.data.showcase as ResolvedProjectShowcase | undefined;
 if (!data) throw new Error(`Project ${project.id} has no showcase content`);
 const available = (await getProjects(locale)).filter(p=>p.data.showcase)
   .sort((a, b) => a.data.showcase!.order - b.data.showcase!.order);
 // A deliberately hidden case also disappears from related-project navigation.
-const next = available.find((p) => p.data.showcase!.route === data.nextRoute)
+const next = available.find((p) => p.id === data.nextProject.id)
   ?? available.find((p) => p.id !== project.id);
 const nextData = next?.data.showcase as typeof data;
 const uniqueImages = [...new Set([...data.story.map((s) => resolveMedia(s.image,locale).src), ...data.gallery.map((p) => resolveMedia(p,locale).src)])];

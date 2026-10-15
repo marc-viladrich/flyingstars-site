@@ -337,7 +337,7 @@ td.us { color: var(--text); background: rgb(from var(--c-text) r g b / 0.035); }
 .c-title { position: relative; z-index: 2; align-self: end; display: grid; gap: clamp(14px, 2vw, 24px); padding-bottom: clamp(28px, 5vh, 52px); }
 .c-kick { color: var(--accent); }
 .c-h1 { display: grid; gap: clamp(14px, 2vw, 24px); margin: 0; }
-.c-name { margin: 0; font: 700 min(13.5rem, calc(136vw / var(--chars))) / 0.84 var(--display); letter-spacing: -0.045em; text-transform: uppercase; display: grid; }
+.c-name { margin: 0; font: 700 min(13.5rem, calc(136vw / var(--chars))) / 0.84 var(--display); letter-spacing: -0.045em; display: grid; }
 .c-name > span:nth-child(2) { padding-left: 0.04em; }
 .c-tag { font: 500 clamp(21px, 2.3vw, 32px)/1.2 var(--display); letter-spacing: -0.02em; max-width: 30ch; }
 .c-credits { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid rgb(from var(--c-text) r g b / 0.22); margin: 0 calc(var(--pad) * -1); padding: 0 var(--pad); background: rgb(from var(--c-shade-base) r g b / 0.5); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }

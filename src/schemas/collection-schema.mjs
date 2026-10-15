@@ -18,7 +18,8 @@ export const postSchema = z.object({
 export const projectSchema = z.object({
     title: z.string().min(1).describe("Titel").meta(editable({"translatable":true})),
     sections:z.array(sectionSchema.describe("Abschnitte")).superRefine(validateSectionList).default([]).describe('Zusätzliche Bausteine').meta(editable({"array":{"role":"blocks","reorderable":true,"insertable":true,"removable":true,"discriminator":"type"}})),
-    client: z.string().optional().describe("Kunde"),
+    client: z.string().min(1).optional().describe("Kunde").meta(editable({reference:{collection:"clients",encoding:"id"}})),
+    package: z.string().min(1).optional().describe("Zugeordnetes Paket (intern)").meta(editable({visibility:"advanced",reference:{collection:"packages",encoding:"id"}})),
     showcase: projectShowcaseSchema.optional().describe("Projektseite"),
     date: z.coerce.date().describe("Datum").meta(editable({"format":"date","valueEncoding":"date-only"})),
     location: z.string().optional().describe("Ort").meta(editable({"translatable":true})),

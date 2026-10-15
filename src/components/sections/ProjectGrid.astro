@@ -1,5 +1,7 @@
 ---
 import {siteRecord as readUi} from '../../lib/content';
+import {getClients} from '../../lib/content';
+const clients=await getClients();
 import {localeFromPath,localizedHref,sourcePath} from '../../lib/localized-routes';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 const ui = await readUi('ui',locale);
@@ -27,7 +29,7 @@ const home = sourcePath(Astro.url.pathname) === '/';
       const image = images.get(project.id);
       return <a class="proj" href={localizedHref(showcase ? `/${showcase.route}/` : `/projekte/${project.id}/`,locale)} {...nativeItem(Astro.props,{record:`project/${project.id}`})} {...nativeUses(Astro.props,showcase?[{record:`project/${project.id}`,path:['showcase','route']}]:[])}>
         {image && <div class="img"><img {...nativeRecordMedia(`project/${project.id}`,["cover"])} src={image.src} {...image.attributes} width={image.width} height={image.height} alt={resolveMedia(project.data.cover,locale).alt} loading="lazy" decoding="async" />{showcase && <span class="count mono" {...nativeUses(Astro.props,[{record:`project/${project.id}`,path:['showcase','drones']}])}>{showcase.drones} {ui.components.projectGrid.dronesLabel}</span>}</div>}
-        <span class="kick mono" {...(showcase?nativeRecord(`project/${project.id}`,["showcase","category"]):nativeUses(Astro.props,[{record:`project/${project.id}`,path:['client']},{record:`project/${project.id}`,path:['location']}]))}>{showcase?.category ?? [project.data.client, project.data.location].filter(Boolean).join(' · ')}</span><h3 {...nativeRecord(`project/${project.id}`,showcase?["showcase","cardTitle"]:["title"],Boolean(showcase))}>{showcase?<InlineText value={showcase.cardTitle} />:project.data.title}</h3>
+        <span class="kick mono" {...(showcase?nativeRecord(`project/${project.id}`,["showcase","category"]):nativeUses(Astro.props,[{record:`project/${project.id}`,path:['client']},{record:`project/${project.id}`,path:['location']}]))}>{showcase?.category ?? [clients.find(client=>client.id===project.data.client?.id)?.name, project.data.location].filter(Boolean).join(' · ')}</span><h3 {...nativeRecord(`project/${project.id}`,showcase?["showcase","cardTitle"]:["title"],Boolean(showcase))}>{showcase?<InlineText value={showcase.cardTitle} />:project.data.title}</h3>
         {!showcase && <p {...nativeRecord(`project/${project.id}`,["summary"])}>{project.data.summary}</p>}
       </a>;
     })}

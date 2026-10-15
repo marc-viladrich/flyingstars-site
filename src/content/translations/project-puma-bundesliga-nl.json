@@ -1,7 +1,7 @@
 {
   "sourceId": "project/puma-bundesliga",
   "locale": "nl",
-  "sourceHash": "692bea8f2b281bbc4bea6c36638f8519e29fd473143ea13d8abb11466efec0b3",
+  "sourceHash": "cbd8aa99e85ce258729bddf043b8929e1705b49afc3f835f8295437caa9617fc",
   "values": [
     {
       "path": [
@@ -64,9 +64,9 @@
         "titleLines",
         0
       ],
-      "text": "Sterker",
+      "text": "{c}Sterker{/c}",
       "reviewed": false,
-      "sourceHash": "2c0a56c6ca0d14ca8ad7968cc1774fb24637072ce48928b76e0e754833d636f5"
+      "sourceHash": "5d977298f979f7708db31b4af403d60c10f8da503460687ee055531acbe451f9"
     },
     {
       "path": [
@@ -74,9 +74,9 @@
         "titleLines",
         1
       ],
-      "text": "{o}Samen{/o}",
+      "text": "{c}{o}Samen{/o}{/c}",
       "reviewed": false,
-      "sourceHash": "747be433ca882a5d2948d4ca378aa862027367b5f4e1797ed671ce39f516ad44"
+      "sourceHash": "d24d26448beea8298b3e4979294f6e5f7c543009e517ae4e0fae6e79727683c7"
     },
     {
       "path": [

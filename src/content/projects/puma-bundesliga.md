@@ -1,7 +1,7 @@
 ---
 {
   "title": "PUMA",
-  "client": "PUMA",
+  "client": "puma",
   "date": "2022-11-11",
   "location": "Borussia-Park, Mönchengladbach",
   "summary": "100 Drohnen für PUMA zum Anstoß des Derbys. Sport · Bundesliga.",
@@ -30,7 +30,7 @@
       "cardTitle": "PUMA zum Anstoß des Derbys",
       "category": "Sport · Bundesliga",
       "kicker": "Sport · Mönchengladbach · November 2022",
-      "titleLines": [ "Stronger", "{o}Together{/o}" ],
+      "titleLines": [ "{c}Stronger{/c}", "{c}{o}Together{/o}{/c}" ],
       "titleChars": 8,
       "tagline": "100 Drohnen für PUMA zum Anstoß des Derbys.",
       "accent": "project-puma",
@@ -159,7 +159,7 @@
             }
         ],
       "press": [],
-      "nextRoute": "musikalischer-teaser-bokkenrijders",
+      "nextProject": "musikalischer-teaser-bokkenrijders",
       "cta":
         {
           "title": "Ein Statement für deine Marke?",

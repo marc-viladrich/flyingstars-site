@@ -1,6 +1,7 @@
-import { defineCollection } from 'astro:content';
+import { defineCollection, reference } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import {astroReferences} from './schemas/astro-references.mjs';
 import {postSchema,projectSchema,faqSchema} from './schemas/collection-schema.mjs';
 import {clientSchema,teamSchema,mediaSchema} from './schemas/entity-schema.mjs';
 import {siteSchemas} from './schemas/site-schema.mjs';
@@ -33,7 +34,7 @@ const posts = defineCollection({
 
 const projects = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
-  schema: projectSchema,
+  schema: astroReferences(projectSchema,reference),
 });
 
 const faq = defineCollection({
@@ -47,7 +48,7 @@ const faq = defineCollection({
 const extras = defineCollection({loader:glob({pattern:'**/*.json',base:'./src/content/extras'}),schema:extraSchema});
 const packages = defineCollection({
   loader: glob({pattern:'**/*.json',base:'./src/content/packages'}),
-  schema: packageSchema,
+  schema: astroReferences(packageSchema,reference),
 });
 // screens: editable collection/title/i18n, editorial strings and nested list policy.
 const screens = defineCollection({

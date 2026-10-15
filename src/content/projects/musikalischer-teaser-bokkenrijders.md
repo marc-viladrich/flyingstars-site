@@ -1,7 +1,6 @@
 ---
 {
   "title": "Bokkenrijders",
-  "client": "Toneelgroep Maastricht",
   "date": "2025-09-04",
   "location": "Stadion De Geusselt, Maastricht",
   "summary": "600 Drohnen spielen im Musical mit. Musical · Maastricht.",
@@ -31,7 +30,7 @@
       "cardTitle": "Bokkenrijders: unsere bisher größte Show",
       "category": "Musical · Maastricht",
       "kicker": "Musical · Maastricht · 2025/26",
-      "titleLines": [ "Bokken", "{o}rijders{/o}" ],
+      "titleLines": [ "{c}Bokken{/c}", "{c}{o}rijders{/o}{/c}" ],
       "titleChars": 7,
       "tagline": "600 Drohnen spielen im Musical mit.",
       "accent": "project-bokkenrijders",
@@ -215,7 +214,7 @@
                 Niederlanden bis dahin nicht zu sehen."
             }
         ],
-      "nextRoute": "nfl-berlin-game",
+      "nextProject": "nfl-berlin-game",
       "cta":
         {
           "title": "Du planst etwas in dieser Größe?",

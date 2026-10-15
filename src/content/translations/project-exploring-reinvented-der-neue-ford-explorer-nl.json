@@ -1,7 +1,7 @@
 {
   "sourceId": "project/exploring-reinvented-der-neue-ford-explorer",
   "locale": "nl",
-  "sourceHash": "86bf8b6c58b3335dad1a9f2946d481654a48605a41513e1a3ad111332704c218",
+  "sourceHash": "d375451b4c4228178be99aeb5a42baf7bd3ccd76b2850a3d93ba076573922be0",
   "values": [
     {
       "path": [
@@ -64,9 +64,9 @@
         "titleLines",
         0
       ],
-      "text": "Verkennen",
+      "text": "{c}Verkennen{/c}",
       "reviewed": false,
-      "sourceHash": "39c32394761c042bafddebed718e62ebeaa15c090f7ab5ec3f30038a04f8fc5f"
+      "sourceHash": "456803e3b6420c2688e40eb946a8e4e2144b2848f2e24d9ba5732f8cd3853463"
     },
     {
       "path": [
@@ -74,9 +74,9 @@
         "titleLines",
         1
       ],
-      "text": "{o}Heruitgevonden{/o}",
+      "text": "{c}{o}Heruitgevonden{/o}{/c}",
       "reviewed": false,
-      "sourceHash": "199a7a82dfddc82cb2425dcb61ce8737424e287de47c786dff87ef8bdccff43b"
+      "sourceHash": "20ecf4caf23e9424586d09c8ff025cc59d99315ecd2f3c3757eaaff84966d804"
     },
     {
       "path": [

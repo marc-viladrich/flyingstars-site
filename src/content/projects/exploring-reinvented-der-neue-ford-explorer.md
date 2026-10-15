@@ -1,7 +1,7 @@
 ---
 {
   "title": "Ford Explorer",
-  "client": "Ford · Agentur Envy Create",
+  "client": "ford",
   "date": "2024-06-03",
   "location": "Ford Electric Vehicle Center, Köln",
   "summary": "350 Drohnen für den neuen Ford Explorer. Automotive · Launch.",
@@ -30,7 +30,7 @@
       "cardTitle": "Exploring Reinvented: der neue Ford Explorer",
       "category": "Automotive · Launch",
       "kicker": "Automotive · Köln · Juni 2024",
-      "titleLines": [ "Exploring", "{o}Reinvented{/o}" ],
+      "titleLines": [ "{c}Exploring{/c}", "{c}{o}Reinvented{/o}{/c}" ],
       "titleChars": 10,
       "tagline": "350 Drohnen für den neuen Ford Explorer.",
       "accent": "project-ford",
@@ -173,7 +173,7 @@
             }
         ],
       "press": [],
-      "nextRoute": "puma-bundesliga",
+      "nextProject": "puma-bundesliga",
       "cta":
         {
           "title": "Dein Launch, dein Clip?",

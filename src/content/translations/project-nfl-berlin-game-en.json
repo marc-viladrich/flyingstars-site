@@ -1,7 +1,7 @@
 {
   "sourceId": "project/nfl-berlin-game",
   "locale": "en",
-  "sourceHash": "5d3dfa58aa6ee40cf3c34730e7334bd7daabc2c058ae945d57c047a6141bff59",
+  "sourceHash": "d73a569841f0290a3de17ba259389a90a50d9cb4f0989038e01433f7170b26b8",
   "values": [
     {
       "path": [
@@ -86,9 +86,9 @@
         "titleLines",
         0
       ],
-      "text": "NFL",
+      "text": "{c}NFL{/c}",
       "reviewed": false,
-      "sourceHash": "b217235b16b5defda14c851d8e8161508fa2387026c9eeb904e66a43d3be5d75"
+      "sourceHash": "eb497a61e84c4c248304974b86c49df33487fb2d2632fb0354bf4017595fa209"
     },
     {
       "path": [
@@ -96,9 +96,9 @@
         "titleLines",
         1
       ],
-      "text": "{o}Berlin Game{/o}",
+      "text": "{c}{o}Berlin Game{/o}{/c}",
       "reviewed": false,
-      "sourceHash": "c68c4c965ced1282f02e77f8ff8ba41f144cd7b5e065b798179961d3ca2db5e7"
+      "sourceHash": "24c38dcb7098e0a686efafe2f41dffd845bd96274c12649acbf05173abefe7b7"
     },
     {
       "path": [
