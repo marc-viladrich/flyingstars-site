@@ -130,3 +130,8 @@ Every commit message ends with `Co-Authored-By: Codex <noreply@openai.com>`.
 The `git format-patch` series is in `/tmp/afe-pr5-patches`, based on `81caa685216019e118a94acbfafd28010ed55b71`. Apply it with `git am` to a clean checkout of that base, not on top of the already modified working files. No patch was applied to the live checkout or the original worktree.
 
 Open work is limited to the planned product steps: loader-wrapper provenance and registration lifecycle, `x-afe` annotations/site policies, canonical translation tuples and removal of the media/Markdown/legacy-address bridges after parity. The current PR deliberately keeps those existing formats and rendering contracts.
+
+## Nachprüfung außerhalb der Sandbox (Claude, 15.10.2026)
+
+- Volle Suite ohne Offline-Modus: **413 bestanden, 0 Fehler, 0 übersprungen**.
+- Unabhängiger Vergleich: `FLYINGSTARS_OFFLINE_MEDIA=1 astro build` aus `afe/pr3` und `afe/pr5` in getrennte Ausgabeordner; `diff -rq` über den **gesamten** Output (63 HTML-Seiten plus alle Assets): **0 abweichende Dateien**.
