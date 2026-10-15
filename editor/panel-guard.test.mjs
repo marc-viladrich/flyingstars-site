@@ -18,7 +18,7 @@ const at = (data, path) => path.reduce((v, k) => v?.[k], data);
 const MAX_DIRECT = 10;
 // Records another worker is restructuring right now. Their findings are printed, not failed, and an entry
 // that has become clean fails the test until it is removed here (so the list can only shrink).
-const PENDING = { 'site/ui': 'Gemeinsame Oberflächentexte: ui.json/ui-schema werden in R10 von Codex A neu gegliedert' };
+const PENDING = {};
 function judge(t, findings) {
   const pending = findings.filter((f) => Object.keys(PENDING).some((id) => f.startsWith(id + ' ')));
   for (const id of Object.keys(PENDING)) {
