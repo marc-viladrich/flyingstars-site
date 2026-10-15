@@ -1794,12 +1794,18 @@ function entryView(body, item, context, head) {
   const variants = fieldsFor(item).filter(
     (f) => f.path.length === path.length + 1 && under(f.path, path) && ["enum", "boolean"].includes(f.kind) && !isTechnical(f),
   );
+  // A card showing another record (a package on the homepage) also offers that record's own switches,
+  // e.g. the recommendation; they apply wherever the record appears, which the note says.
+  const shown = context.record && context.record !== item.id ? record(context.record) : null;
+  const shared = shown ? fieldsFor(shown).filter((f) => f.path.length === 1 && f.kind === "boolean" && !isTechnical(f)) : [];
   put(
     body,
     group(
       "Darstellung",
       variants.map((f) => fieldControl(item, f)),
       optionalVariants(item, path, { exact: true }),
+      shared.map((f) => fieldControl(shown, f)),
+      shared.length ? el("span", { class: "note", text: `Gilt überall, wo ${inlinePlain(listLabel(shown.data, "") || shown.title || shown.id)} erscheint.` }) : null,
     ),
   );
   // A small entry (a table cell: label, text, rating) is edited as a whole, including its on-page text.

@@ -753,7 +753,9 @@ function applyPresentation() {
         if (canvas)
           canvas.hidden = node.classList.contains("native-copy-pending") || section.tiers?.[index]?.showOrb === false;
         // Immediate feedback; the server render confirms it a moment later.
-        if (section.tiers?.[index]) card.classList.toggle("featured", !!section.tiers[index].highlight);
+        // The recommendation belongs to the package (shown wherever it appears), not to this card.
+        const pack = section.tiers?.[index] && records.find((r) => r.id === "package/" + section.tiers[index].packageId);
+        if (pack) card.classList.toggle("featured", !!pack.data.highlight);
       }
     if (section.type === "textMedia") {
       const image = node.querySelector("figure,img");
