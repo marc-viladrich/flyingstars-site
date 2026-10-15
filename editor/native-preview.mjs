@@ -44,7 +44,10 @@ export class NativePreview {
     if (!(await this.exists(modules))) await fs.symlink(await fs.realpath(path.join(this.store.root, "node_modules")), modules);
     const head = this.head || (await this.store.head());
     await this.enqueue(() => this.checkout(head, { force: true }));
-    await this.start();
+    // The dev server is detached and outlives the editor process. One left over from an earlier editor
+    // run holds that run's modules (schemas, collections, components), so it starts fresh here.
+    if (await this.alive()) await this.restart();
+    else await this.start();
     return this;
   }
   async alive() {
