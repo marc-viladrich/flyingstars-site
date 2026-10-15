@@ -59,8 +59,11 @@ test('media library server results match the unchanged browser resolver for actu
  assert.deepEqual(extensions.require('mediaLibrary',records),mediaLibrary(records));
  // Shape invariants remain authoritative in the site's Zod definitions.
  const page=sources.find(s=>s.id==='page/index'),data=records.find(r=>r.id===page.id).data;
- const comparison={type:'comparison',columns:[{label:'A'},{label:'B'}],rows:[{label:'Mismatch',values:['one']}]};
- assert.equal(page.schema.safeParse({...data,sections:[...data.sections,comparison]}).success,false);
+ const comparison={type:'comparison',headline:'Vergleich',columns:['A','B'],rows:[{label:'Mismatch',values:['one','two']}]};
+ assert.equal(page.schema.safeParse({...data,sections:[...data.sections,comparison]}).success,true);
+ comparison.rows[0].values.pop();
+ const invalid=page.schema.safeParse({...data,sections:[...data.sections,comparison]});
+ assert.equal(invalid.success,false);assert.match(JSON.stringify(invalid.error.issues),/eine je Spalte/);
 });
 
 test('extension policy errors, duplicate proposals and invalid proposed identities leave the real Git revision unchanged',async t=>{
@@ -82,4 +85,15 @@ test('extension policy errors, duplicate proposals and invalid proposed identiti
   await assert.rejects(store.save(request()));assert.equal(await store.head(),state.head);
   assert.equal(await git(directory,['status','--porcelain','--untracked-files=no']),'');
  }
+});
+
+test('server composition combines runtime and site registration without changing the injected site registry',async()=>{
+ const {resolveRuntimeOptions}=await import('./runtime-options.mjs'),{startNativeServers}=await import('./server.mjs');
+ const options=resolveRuntimeOptions({env:{},values:{siteRoot:root,stateDir:'/tmp/cx13/p7/runtime-composition',remote:false,extensions:[{name:'example/route',contractVersion:'1.0',hooks:{route:()=>'/custom/'}}]}});
+ const started=await startNativeServers({options,site,listen:false,initialize:false});
+ try{
+  assert.equal(started.store.site.extensions.first('route',{id:'page/index',data:{}}),'/custom/');
+  assert.equal(site.extensions.first('route',{id:'page/index',data:{}}),'/');
+  assert.ok(started.store.site.extensions.definitions.some(e=>e.name==='example/route'));
+ }finally{started.store.sync.close();}
 });
