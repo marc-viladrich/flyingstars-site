@@ -1,6 +1,7 @@
 ---
 {
   "title": "Bokkenrijders",
+  "client": "toneelgroep-maastricht",
   "date": "2025-09-04",
   "location": "Stadion De Geusselt, Maastricht",
   "summary": "600 Drohnen spielen im Musical mit. Musical · Maastricht.",

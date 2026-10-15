@@ -15,7 +15,7 @@ const root=fileURLToPath(new URL('../',import.meta.url)),run=promisify(execFile)
 const migrationBase='81caa685216019e118a94acbfafd28010ed55b71';
 // Deliberately independent of the implementation's identity table.
 const expected={
-  extras:['extra',6],packages:['package',3],screens:['screen',2],clients:['client',11],
+  extras:['extra',6],packages:['package',3],screens:['screen',2],clients:['client',12],
   team:['team',5],media:['media',45],translations:['translation',88],
   siteContact:['site',1,'contact'],siteInquiry:['site',1,'inquiry'],
   siteNavigation:['site',1,'navigation'],siteUi:['site',1,'ui'],
