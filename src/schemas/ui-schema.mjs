@@ -1,8 +1,8 @@
-import {editable} from './afe-meta.mjs';
+import {editable,inGroup} from './afe-meta.mjs';
 import {z} from 'astro/zod';
 // Keys are stable; changing German copy only invalidates its own field hash.
 export const siteUiSchema=z.object({
-  base:z.object({
+  base:inGroup('Rahmen der Website',z.object({
     zum_inhalt_springen:z.string().describe("Zum Inhalt springen").meta(editable({"translatable":true})),
     hauptnavigation:z.string().describe("Hauptnavigation").meta(editable({"translatable":true})),
     sprache_deutsch:z.string().describe("Sprache Deutsch").meta(editable({"translatable":true})),
@@ -16,8 +16,8 @@ export const siteUiSchema=z.object({
     text_100_okostrom:z.string().describe("100 % Ökostrom").meta(editable({"translatable":true})),
     language:z.string().describe("Sprache").meta(editable({"translatable":true})),
     motionResume:z.string().describe("Bewegung fortsetzen").meta(editable({"translatable":true})),
-  }).describe("Rahmen und Navigation"),
-  prices:z.object({
+  }).describe("Rahmen und Navigation")),
+  prices:inGroup('Preise & Pakete',z.object({
     immer_inklusive:z.string().describe("Immer inklusive").meta(editable({"translatable":true})),
     wofur_du_eigentlich_bezahlst:z.string().describe("Wofür du eigentlich bezahlst.").meta(editable({"translatable":true})),
     der_grosste_aufwand_einer_drohnenshow_steckt_nicht:z.string().describe("Der größte Aufwand einer Drohnenshow steckt nicht in den Drohnen, sondern in Design, Genehmigung und").meta(editable({"translatable":true})),
@@ -82,8 +82,8 @@ export const siteUiSchema=z.object({
     show_anfragen:z.string().describe("Show anfragen").meta(editable({"translatable":true})),
     text_900_bei_odyssey_inklusive:z.string().describe("900 € · bei ODYSSEY inklusive").meta(editable({"translatable":true})),
     text_1_900_netto:z.string().describe("+1.900 € netto").meta(editable({"translatable":true})),
-  }).describe("Preisseite"),
-  configurator:z.object({
+  }).describe("Preisseite")),
+  configurator:inGroup('Preise & Pakete',z.object({
     vorschau_der_show:z.string().describe("Vorschau der Show").meta(editable({"translatable":true})),
     die_vorschau_ist_gerade_nicht_verfugbar_du_kannst_:z.string().describe("Die Vorschau ist gerade nicht verfügbar. Du kannst weiterhin ein Paket wählen und anfragen.").meta(editable({"translatable":true})),
     bilder_der_show:z.string().describe("Bilder der Show").meta(editable({"translatable":true})),
@@ -118,11 +118,11 @@ export const siteUiSchema=z.object({
     summaryMotifs:z.string().describe("Beispielmotive: {motifs}").meta(editable({"translatable":true})),
     summaryText:z.string().describe("Eigener Text: „{text}“ ({style})").meta(editable({"translatable":true})),
     summaryEffort:z.string().describe("Aufwand: {effort} ({name}, {price} netto, Einstiegspreis laut Konfigurator)").meta(editable({"translatable":true})),
-  }).describe("Show-Konfigurator"),
-  blog:z.object({
+  }).describe("Show-Konfigurator")),
+  blog:inGroup('Listen & Bausteine',z.object({
     alle_beitrage_in_chronologischer_reihenfolge_neues:z.string().describe("Alle Beiträge in chronologischer Reihenfolge, neueste zuerst. Hintergründe, Projekte und Einblicke.").meta(editable({"translatable":true})),
-  }).describe("Blog"),
-  calculator:z.object({
+  }).describe("Blog")),
+  calculator:inGroup('Preise & Pakete',z.object({
     animation_pausieren:z.string().describe("Animation pausieren").meta(editable({"translatable":true})),
     preise_pakete:z.string().describe("Preise & Pakete").meta(editable({"translatable":true})),
     drohnen:z.string().describe("Drohnen").meta(editable({"translatable":true})),
@@ -172,8 +172,8 @@ export const siteUiSchema=z.object({
     individual:z.string().describe("individuell, 2D + einfaches 3D").meta(editable({"translatable":true})),
     storytelling:z.string().describe("komplexes 3D + Storytelling").meta(editable({"translatable":true})),
     animationReduced:z.string().describe("Animation reduziert").meta(editable({"translatable":true})),
-  }).describe("Preisrechner"),
-  packageDetails:z.object({
+  }).describe("Preisrechner")),
+  packageDetails:inGroup('Preise & Pakete',z.object({
     pakete:z.string().describe("Pakete").meta(editable({"translatable":true})),
     drei_pakete_die_preise_rechnen_mit:z.string().describe("Drei Pakete. Die Preise rechnen mit.").meta(editable({"translatable":true})),
     die_preise_unten_gelten_fur_die_drohnenzahl_die_du:z.string().describe("Die Preise unten gelten für die Drohnenzahl, die du oben eingestellt hast. Jedes Paket lässt sich mi").meta(editable({"translatable":true})),
@@ -187,8 +187,8 @@ export const siteUiSchema=z.object({
     maximum:z.string().describe(" · bis {max} Drohnen").meta(editable({"translatable":true})),
     inquiry:z.string().describe("{name} anfragen").meta(editable({"translatable":true})),
     base:z.string().describe("für {count} Drohnen · {duration}").meta(editable({"translatable":true})),
-  }).describe("Paketdetails"),
-  caseStudy:z.object({
+  }).describe("Paketdetails")),
+  caseStudy:inGroup('Projekte & Referenzen',z.object({
     brotkrumen:z.string().describe("Brotkrumen").meta(editable({"translatable":true})),
     start:z.string().describe("Start").meta(editable({"translatable":true})),
     projekte:z.string().describe("Projekte").meta(editable({"translatable":true})),
@@ -217,36 +217,36 @@ export const siteUiSchema=z.object({
     formationCount:z.string().describe("{count} Drohnen aus der Show-Datei").meta(editable({"translatable":true})),
     detectedCount:z.string().describe("{count} Drohnen erkannt").meta(editable({"translatable":true})),
     formationFailed:z.string().describe("Die Formation konnte nicht geladen werden.").meta(editable({"translatable":true})),
-  }).describe("Projektgeschichte"),
-  flightHero:z.object({
+  }).describe("Projektgeschichte")),
+  flightHero:inGroup('Rahmen der Website',z.object({
     showreel_ansehen:z.string().describe("Showreel ansehen").meta(editable({"translatable":true})),
     eckdaten:z.string().describe("Eckdaten").meta(editable({"translatable":true})),
-  }).describe("Showreel-Auftakt"),
-  logoBar:z.object({
+  }).describe("Showreel-Auftakt")),
+  logoBar:inGroup('Projekte & Referenzen',z.object({
     referenzen:z.string().describe("Referenzen").meta(editable({"translatable":true})),
     bekannt_aus:z.string().describe("Bekannt aus").meta(editable({"translatable":true})),
-  }).describe("Referenzen"),
-  projectGrid:z.object({
+  }).describe("Referenzen")),
+  projectGrid:inGroup('Projekte & Referenzen',z.object({
     drohnen:z.string().describe("Drohnen").meta(editable({"translatable":true})),
     headline:z.string().describe("Ein paar Nächte, die wir nicht vergessen.").meta(editable({"translatable":true})),
-  }).describe("Projektliste"),
-  team:z.object({
+  }).describe("Projektliste")),
+  team:inGroup('Listen & Bausteine',z.object({
     foto_folgt:z.string().describe("Foto folgt").meta(editable({"translatable":true})),
-  }).describe("Team"),
-  logo:z.object({
+  }).describe("Team")),
+  logo:inGroup('Rahmen der Website',z.object({
     flyingstars_startseite:z.string().describe("FlyingStars – Startseite").meta(editable({"translatable":true})),
-  }).describe("Logo"),
-  video:z.object({
+  }).describe("Logo")),
+  video:inGroup('Rahmen der Website',z.object({
     das_video_ist_gerade_nicht_verfugbar_bitte_versuch:z.string().describe("Das Video ist gerade nicht verfügbar. Bitte versuche es später erneut.").meta(editable({"translatable":true})),
     play:z.string().describe("Showvideo ansehen").meta(editable({"translatable":true})),
-  }).describe("Video"),
-  faq:z.object({
+  }).describe("Video")),
+  faq:inGroup('Listen & Bausteine',z.object({
     headline:z.string().describe("Häufige Fragen").meta(editable({"translatable":true})),
-  }).describe("FAQ-Liste"),
-  postList:z.object({
+  }).describe("FAQ-Liste")),
+  postList:inGroup('Listen & Bausteine',z.object({
     headline:z.string().describe("Aktuelles").meta(editable({"translatable":true})),
-  }).describe("Artikelliste"),
-  comparison:z.object({
+  }).describe("Artikelliste")),
+  comparison:inGroup('Listen & Bausteine',z.object({
     scrollLabel:z.string().describe("{headline} (Tabelle, horizontal scrollbar)").meta(editable({"translatable":true})),
-  }).describe("Vergleich"),
+  }).describe("Vergleich")),
 }).describe('Gemeinsame Oberflächentexte').meta(editable({"collection":{"label":"Gemeinsame Oberflächentexte","title":[],"icon":"mail","group":"Website-Daten","operations":["update"],"placement":"frontend","i18n":{"mode":"overlay"},"policies":["flyingstars/media-ownership"]}}));

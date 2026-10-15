@@ -1,4 +1,4 @@
-import {editable} from './afe-meta.mjs';
+import {editable,inGroup} from './afe-meta.mjs';
 import {z} from 'astro/zod';
 import {validateSectionList} from './section-policy.mjs';
 import {image,sectionSchema} from './page-schema.mjs';
@@ -23,7 +23,7 @@ export const projectSchema = z.object({
     date: z.coerce.date().describe("Datum").meta(editable({"format":"date","valueEncoding":"date-only"})),
     location: z.string().optional().describe("Ort").meta(editable({"translatable":true})),
     summary: z.string().min(30).max(200).describe("Kurzfassung").meta(editable({"format":"multiline","translatable":true})),
-    cover: image.optional().describe("Titelbild"),
+    cover: inGroup('Projektkarte', image.optional().describe("Titelbild")),
     featured: z.boolean().default(false).describe("Hervorheben"),
     draft: z.boolean().default(false).describe("Entwurf (nicht veröffentlicht)"),
     sourceIssue: z.number().int().positive().optional().describe("Source Issue").meta(editable({"visibility":"advanced"})),

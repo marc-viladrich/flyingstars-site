@@ -1,4 +1,4 @@
-import {editable} from './afe-meta.mjs';
+import {editable,inGroup} from './afe-meta.mjs';
 import {z} from 'astro/zod';
 import {siteUiSchema} from './ui-schema.mjs';
 import {editorialHref} from './page-schema.mjs';
@@ -19,21 +19,21 @@ export const siteContactSchema=z.object({
 export const occasionValues=['firma','stadt','agentur','privat','indoor','sonstiges'];
 const occasionLabels={firma:'Firmenevent',stadt:'Stadt & Festival',agentur:'Agentur',privat:'Hochzeit & Privat',indoor:'Indoor',sonstiges:'Sonstiges'};
 export const siteInquirySchema=z.object({
- kicker:text('Dachzeile').meta(editable({"translatable":true})),
- progress:z.object({step:text('Schrittanzeige ({current} und {total} werden ersetzt)').meta(editable({"translatable":true})),duration:text('Zeitangabe').meta(editable({"translatable":true}))}).describe('Fortschritt'),
- steps:z.object({show:text('Schritt 1 (für Screenreader)').meta(editable({"translatable":true})),contact:text('Schritt 2 (für Screenreader)').meta(editable({"translatable":true}))}).describe('Schritt-Überschriften'),
- occasion:z.object({label:text('Beschriftung').meta(editable({"translatable":true})),error:text('Fehlermeldung ohne Auswahl').meta(editable({"translatable":true}))}).describe('Anlass'),
- occasions:z.object(Object.fromEntries(occasionValues.map(value=>[value,text(`Anlass „${occasionLabels[value]}“`)]))).describe('Anlass-Auswahl'),
- date:z.object({label:text('Beschriftung').meta(editable({"translatable":true}))}).describe('Datum'),
- place:z.object({label:text('Beschriftung').meta(editable({"translatable":true})),placeholder:text('Platzhalter').meta(editable({"translatable":true}))}).describe('Ort'),
- package:z.object({label:text('Beschriftung').meta(editable({"translatable":true})),unknown:text('Option ohne Paket').meta(editable({"translatable":true})),suffix:text('Einheit hinter der Drohnenzahl').meta(editable({"translatable":true}))}).describe('Paket'),
- hint:text('Hinweis unter Schritt 1').meta(editable({"translatable":true})),
- fullName:z.object({label:text('Beschriftung').meta(editable({"translatable":true})),error:text('Fehlermeldung wenn leer').meta(editable({"translatable":true}))}).describe('Name-Feld'),
- email:z.object({label:text('Beschriftung').meta(editable({"translatable":true})),error:text('Fehlermeldung wenn leer').meta(editable({"translatable":true})),invalid:text('Fehlermeldung bei ungültiger Adresse').meta(editable({"translatable":true}))}).describe('E-Mail-Feld'),
- phone:z.object({label:text('Beschriftung').meta(editable({"translatable":true}))}).describe('Telefon-Feld'),
- message:z.object({label:text('Beschriftung').meta(editable({"translatable":true})),placeholder:text('Platzhalter').meta(editable({"translatable":true})),skyText:text('Vorbelegung aus dem Preisrechner ({text} wird ersetzt)').meta(editable({"translatable":true}))}).describe('Nachricht'),
- privacy:z.object({before:text('Text vor dem Link').meta(editable({"translatable":true})),link:text('Linktext').meta(editable({"translatable":true})),after:z.string().describe('Text nach dem Link').meta(editable({"translatable":true}))}).describe('Datenschutzhinweis'),
- buttons:z.object({next:text('Weiter').meta(editable({"translatable":true})),back:text('Zurück').meta(editable({"translatable":true})),submit:text('Absenden').meta(editable({"translatable":true}))}).describe('Buttons'),
+ kicker:inGroup('Ablauf',text('Dachzeile').meta(editable({"translatable":true}))),
+ progress:inGroup('Ablauf',z.object({step:text('Schrittanzeige ({current} und {total} werden ersetzt)').meta(editable({"translatable":true})),duration:text('Zeitangabe').meta(editable({"translatable":true}))}).describe('Fortschritt')),
+ steps:inGroup('Ablauf',z.object({show:text('Schritt 1 (für Screenreader)').meta(editable({"translatable":true})),contact:text('Schritt 2 (für Screenreader)').meta(editable({"translatable":true}))}).describe('Schritt-Überschriften')),
+ occasion:inGroup('Angaben zur Show',z.object({label:text('Beschriftung').meta(editable({"translatable":true})),error:text('Fehlermeldung ohne Auswahl').meta(editable({"translatable":true}))}).describe('Anlass')),
+ occasions:inGroup('Angaben zur Show',z.object(Object.fromEntries(occasionValues.map(value=>[value,text(`Anlass „${occasionLabels[value]}“`)]))).describe('Anlass-Auswahl')),
+ date:inGroup('Angaben zur Show',z.object({label:text('Beschriftung').meta(editable({"translatable":true}))}).describe('Datum')),
+ place:inGroup('Angaben zur Show',z.object({label:text('Beschriftung').meta(editable({"translatable":true})),placeholder:text('Platzhalter').meta(editable({"translatable":true}))}).describe('Ort')),
+ package:inGroup('Angaben zur Show',z.object({label:text('Beschriftung').meta(editable({"translatable":true})),unknown:text('Option ohne Paket').meta(editable({"translatable":true})),suffix:text('Einheit hinter der Drohnenzahl').meta(editable({"translatable":true}))}).describe('Paket')),
+ hint:inGroup('Ablauf',text('Hinweis unter Schritt 1').meta(editable({"translatable":true}))),
+ fullName:inGroup('Kontaktdaten',z.object({label:text('Beschriftung').meta(editable({"translatable":true})),error:text('Fehlermeldung wenn leer').meta(editable({"translatable":true}))}).describe('Name-Feld')),
+ email:inGroup('Kontaktdaten',z.object({label:text('Beschriftung').meta(editable({"translatable":true})),error:text('Fehlermeldung wenn leer').meta(editable({"translatable":true})),invalid:text('Fehlermeldung bei ungültiger Adresse').meta(editable({"translatable":true}))}).describe('E-Mail-Feld')),
+ phone:inGroup('Kontaktdaten',z.object({label:text('Beschriftung').meta(editable({"translatable":true}))}).describe('Telefon-Feld')),
+ message:inGroup('Kontaktdaten',z.object({label:text('Beschriftung').meta(editable({"translatable":true})),placeholder:text('Platzhalter').meta(editable({"translatable":true})),skyText:text('Vorbelegung aus dem Preisrechner ({text} wird ersetzt)').meta(editable({"translatable":true}))}).describe('Nachricht')),
+ privacy:inGroup('Kontaktdaten',z.object({before:text('Text vor dem Link').meta(editable({"translatable":true})),link:text('Linktext').meta(editable({"translatable":true})),after:z.string().describe('Text nach dem Link').meta(editable({"translatable":true}))}).describe('Datenschutzhinweis')),
+ buttons:inGroup('Ablauf',z.object({next:text('Weiter').meta(editable({"translatable":true})),back:text('Zurück').meta(editable({"translatable":true})),submit:text('Absenden').meta(editable({"translatable":true}))}).describe('Buttons')),
  messages:z.object({
   required:text('Fehlermeldung Pflichtfeld').meta(editable({"translatable":true})),
   spam:text('Fehlermeldung bei abgelehnter Spam-Prüfung').meta(editable({"translatable":true})),

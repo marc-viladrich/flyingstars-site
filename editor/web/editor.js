@@ -1298,7 +1298,7 @@ function referenceControl(item, container, source, { part = "all" } = {}) {
     const list = el("ul", { class: "rows muted", "aria-label": group || "Weitere" });
     members.forEach((option) => list.append(row(option, null)));
     if (!group) return [list];
-    return [rememberedDisclosure(listKey + "#" + group, el("span", { text: `${group} (${members.length})` }), list, { cls: "ref-group" })];
+    return [fold(listKey + "#" + group, group, String(members.length), list)];
   });
   const createButton = source.create
     ? button(source.createLabel || source.noun + " hinzufügen", source.create, { icon: source.createLabel ? "pencil" : "plus", cls: "inline-button" })
@@ -1403,10 +1403,11 @@ function tableColumns(item, container) {
   return columns.map((f) => ({ key: f.path.at(-1), label: fieldLabel(f) }));
 }
 // Complex entries open in place as disclosures (no new panel): the summary row names and pictures the
-// entry, the body edits it in a column grid. A record overview starts them open, contextual panels closed;
-// an explicit toggle is remembered across redraws and follows the entry when it moves.
+// entry and counts what it holds ("Leistungen: 5"), the body edits it in a column grid. Every list starts
+// collapsed, in the record overview as in card panels, so a long record reads as its outline first; an
+// explicit toggle is remembered across redraws and follows the entry when it moves.
 function disclosureOpen(key) {
-  return openDisclosures.has(key) ? openDisclosures.get(key) : renderMode === "entity";
+  return openDisclosures.get(key) === true;
 }
 // A <details> group whose open state follows disclosureOpen() and survives redraws (also a language switch).
 function rememberedDisclosure(key, summary, content, { cls = "", open = disclosureOpen(key) } = {}) {
@@ -1414,6 +1415,13 @@ function rememberedDisclosure(key, summary, content, { cls = "", open = disclosu
   details.open = open;
   details.addEventListener("toggle", () => openDisclosures.set(key, details.open));
   return details;
+}
+// The one accordion of panels and overviews (an object inside a block, a group of choices): a summary row
+// with title and count, closed until opened, the choice remembered like an entry's. Looks like a list entry.
+function fold(key, title, meta, content) {
+  const body = el("div", { class: "fold-body" }, content);
+  const summary = el("span", { class: "fold-title", text: title });
+  return rememberedDisclosure(key, [summary, meta ? el("span", { class: "fold-meta", text: meta }) : null].filter(Boolean), body, { cls: "fold" });
 }
 // permutation[newIndex] = oldIndex (missing old indexes were removed); nested keys move with their entry.
 function remapDisclosures(id, listPath, permutation) {
@@ -1526,7 +1534,8 @@ function listRows(item, container, options = {}) {
         open = disclosureOpen(key);
       const toggle = el("button", { type: "button", class: "entry-toggle", "aria-expanded": String(open), "aria-controls": bodyId });
       if (summary.thumb) toggle.append(el("img", { class: "entry-thumb", src: summary.thumb, alt: "", loading: "lazy", decoding: "async" }));
-      toggle.append(el("span", { class: "entry-label", text: summary.label }), icon("chevron-down"));
+      const counts = entryCounts(containersFor(item), item.data, entryPath);
+      put(toggle, el("span", { class: "entry-label", text: summary.label }), counts ? el("span", { class: "entry-meta", text: counts }) : null, icon("chevron-down"));
       const body = el("div", { class: "entry-body", id: bodyId, role: "group", "aria-label": summary.label });
       body.hidden = !open;
       const fill = () => body.childElementCount || put(body, entryBody(item, entryPath, container, { removeAt, now, write }));
@@ -2302,44 +2311,10 @@ function mediaView(body, item, context, head) {
   put(body, group(null, mediaControl(item, context.path, { untitled: true })));
   put(body, parentLinks(item, context, { from: "media" }));
 }
-// Record overview: everything of one record on one wide sheet. The groups come from the schema
-// itself (direct fields first, then each object and list in schema order); a record that wraps nearly
-// everything in one object (project → showcase) is grouped one level deeper. Long records get an index.
+// Record overview: everything of one record on one wide sheet, chunked into the blocks the schema names
+// (overview-plan.mjs: x-afe `group`, else "Allgemein" and one block per list or object). Lists start
+// collapsed, each entry summarised; long records get an index.
 let overviewObserver = null;
-function overviewGroups(item) {
-  const all = fieldsFor(item);
-  const fields = all.filter((f) => !isTechnical(f));
-  const containers = containersFor(item).filter((c) => c.path.length && !(c.path.length === 1 && c.path[0] === "sections"));
-  const editable = (c) => (c.kind === "object" || c.kind === "array") && !isMediaContainer(item, c) && !isTechnical(c);
-  let base = [];
-  for (;;) {
-    const inner = containers.find(
-      (c) =>
-        c.kind === "object" &&
-        !isMediaContainer(item, c) &&
-        c.path.length === base.length + 1 &&
-        under(c.path, base) &&
-        fields.filter((f) => under(f.path, c.path)).length > fields.length * 0.6,
-    );
-    if (!inner) break;
-    base = inner.path;
-  }
-  const parentIs = (c, p) => c.path.length === p.length + 1 && under(c.path, p);
-  const roots = containers.filter((c) => editable(c) && (parentIs(c, []) || parentIs(c, base)) && !under(base, c.path));
-  // Schema order: the position of the first field (or the container itself) in the depth-first listing.
-  const rank = (path) => {
-    const index = all.findIndex((f) => under(f.path, path));
-    return index < 0 ? all.length + containersFor(item).findIndex((c) => equal(c.path, path)) : index;
-  };
-  roots.sort((a, b) => rank(a.path) - rank(b.path));
-  const inRoot = (path) => roots.some((r) => under(path, r.path));
-  const general = { title: "Allgemein", path: null, fields: fields.filter((f) => !inRoot(f.path) && !mediaPathOf(item, f.path)), media: [] };
-  general.media = containers.filter((c) => isMediaContainer(item, c) && !inRoot(c.path) && value(item, c.path) !== undefined);
-  return { base, general, roots };
-}
-function mediaPathOf(item, path) {
-  return containersFor(item).some((c) => c.path.length < path.length && under(path, c.path) && isMediaContainer(item, c));
-}
 // Direct children of one object in schema order: fields, images, lists and nested objects (as subheadings).
 function subtreeControls(item, prefix, { skipInline = false } = {}) {
   // A container's own explanation from the schema (help/hint) stands above its fields.
@@ -2407,46 +2382,61 @@ function additionButtons(item, prefix) {
 }
 function recordView(body, item, context, head) {
   const [kindName, kindIcon] = kindOf(item.id);
-  head(recordName(item), kindIcon, kindName);
+  head(/^(page|screen)\//.test(item.id) ? navigatorName(item) : recordName(item), kindIcon, kindName);
   if (item.route) $("#panel-actions").append(button("Auf der Seite bearbeiten", () => editOnPage(item), { icon: "pencil", cls: "primary panel-action" }));
-  const { base, general, roots } = overviewGroups(item);
-  const blocks = [];
-  // Flat fields can name their group in the schema (.meta({ group: "Einordnung" })); the rest is "Allgemein".
-  const named = [...new Set(general.fields.map((f) => f.group).filter(Boolean))];
-  const rootAdditions = [...additionButtons(item, []), ...(base.length ? additionButtons(item, base) : [])];
-  const generalControls = [
-    ...general.fields.filter((f) => !f.group).map((f) => fieldControl(item, f)),
-    ...general.media.map((c) => mediaControl(item, c.path, { title: fieldLabel(c) })),
-    ...optionalVariants(item, [], { exact: true }),
-    rootAdditions.length ? el("div", { class: "seg wide-row" }, rootAdditions) : null,
-  ].filter(Boolean);
-  if (item.id.startsWith("media/")) generalControls.unshift(mediaRecordPreview(item));
-  if (generalControls.length) blocks.push({ title: "Allgemein", controls: generalControls });
-  for (const title of named) blocks.push({ title, controls: general.fields.filter((f) => f.group === title).map((f) => fieldControl(item, f)) });
-  for (const root of roots) {
-    let controls;
-    if (root.kind === "array") {
-      const source = choiceSource(item, root);
-      controls = [source ? referenceControl(item, root, source) : listRows(item, root, { includeInline: true, bare: true })];
-    } else controls = subtreeControls(item, root.path);
-    if (controls.length) blocks.push({ title: fieldLabel(root), controls });
-  }
+  const plan = overviewPlan({
+    fields: fieldsFor(item),
+    containers: containersFor(item),
+    isMedia: (c) => isMediaContainer(item, c),
+    isTechnical,
+    present: (path) => {
+      const v = value(item, path);
+      return Array.isArray(v) ? v.length > 0 : v !== undefined;
+    },
+  });
+  const blocks = plan.blocks.map((block) => {
+    const alone = block.members.length === 1;
+    const controls = block.members.flatMap((member) => {
+      const { node, path } = member;
+      if (member.kind === "field") return [fieldControl(item, node)];
+      if (member.kind === "media") return [mediaControl(item, path, { title: fieldLabel(node) })];
+      if (member.kind === "blocks") return [blockRows(item, node)];
+      if (member.kind === "list") {
+        const source = choiceSource(item, node);
+        return [source ? referenceControl(item, node, source) : listRows(item, node, { includeInline: true, bare: alone })];
+      }
+      const inner = subtreeControls(item, path);
+      // An object alone in its block is the block; beside other members it is one collapsed accordion.
+      const count = fieldsFor(item).filter((f) => under(f.path, path) && !isTechnical(f)).length;
+      return alone ? inner : inner.length ? [fold(fieldKey(item.id, path), fieldLabel(node), count === 1 ? "1 Feld" : `${count} Felder`, el("div", { class: "entry-grid" }, inner))] : [];
+    });
+    return { title: block.title, general: block.general, controls };
+  });
+  // What belongs to the record as a whole (the image itself, switches not set yet, "… ergänzen") goes
+  // to its general block, or to the first block when the schema groups every field.
+  const rootAdditions = [...additionButtons(item, []), ...(plan.base.length ? additionButtons(item, plan.base) : [])];
+  const extras = [...optionalVariants(item, [], { exact: true }), rootAdditions.length ? el("div", { class: "seg wide-row" }, rootAdditions) : null].filter(Boolean);
+  let general = blocks.find((b) => b.general) || blocks[0];
+  if (!general && (extras.length || item.id.startsWith("media/"))) blocks.unshift((general = { title: "Allgemein", general: true, controls: [] }));
+  if (general) general.controls.push(...extras);
+  if (item.id.startsWith("media/")) general.controls.unshift(mediaRecordPreview(item));
   if (item.id.startsWith("media/")) blocks.push(mediaUsageBlock(item));
-  const indexed = blocks.length >= 3;
+  const shown = blocks.filter((b) => b.controls.length);
+  const indexed = shown.length >= 3;
   $("#panel").dataset.sparse = String(!indexed);
-  const sections = blocks.map((block, i) =>
+  const sections = shown.map((block, i) =>
     el("section", { class: "ov-group", id: "ov-" + i }, el("h3", { class: "ov-title", text: block.title }), el("div", { class: "ov-grid" }, block.controls)),
   );
   const actions = recordActions(item);
   const main = el("div", { class: "ov-main" }, sections, actions);
   if (!indexed) return put(body, el("div", { class: "overview" }, main));
-  const links = blocks.map((block, i) =>
+  const links = shown.map((block, i) =>
     button(block.title, () => body.querySelector("#ov-" + i)?.scrollIntoView({ behavior: reducedMotion() ? "auto" : "smooth", block: "start" }), {
       cls: "ov-link",
     }),
   );
-  const nav = el("nav", { class: "ov-nav", "aria-label": "Bereiche" }, links);
-  put(body, el("div", { class: "overview indexed" }, nav, main));
+  const index = el("nav", { class: "ov-nav", "aria-label": "Bereiche" }, links);
+  put(body, el("div", { class: "overview indexed" }, index, main));
   // The index follows the scroll position (one observer at a time).
   overviewObserver?.disconnect();
   const observer = (overviewObserver = new IntersectionObserver(
@@ -2460,6 +2450,22 @@ function recordView(body, item, context, head) {
   ));
   sections.forEach((section) => observer.observe(section));
   links[0]?.setAttribute("aria-current", "true");
+}
+// A page's sections in its overview: one row each that opens the section's own panel (Back returns here).
+// Adding, moving and removing sections stays with the section actions, which keep the page in step.
+function blockRows(item, container) {
+  const list = value(item, container.path) || [];
+  return el(
+    "div",
+    { class: "stack wide-row" },
+    el(
+      "div",
+      { class: "media-usages" },
+      list.map((section, index) =>
+        navRow(sectionTitle(item, index), () => pushView({ id: item.id, path: [...container.path, index] }, "section"), sectionIcon(section?.type) || "panel-top"),
+      ),
+    ),
+  );
 }
 function pageView(body, item, context, head) {
   const label = pageChoices().find((choice) => choice.value === route)?.label;

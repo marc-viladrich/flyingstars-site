@@ -2036,29 +2036,62 @@ body#login {
   margin-top: 8px;
 }
 
-/* Card panels: grouped choices (a package's Leistungen by group) are disclosures like entries. */
-details.ref-group > summary {
+/* The one accordion (fold): grouped choices (a package's Leistungen by group), an object inside an overview
+   block. Same row as a list entry: field-coloured summary with title, quiet count and chevron. */
+details.fold > summary {
   display: flex;
   align-items: center;
-  gap: 6px;
-  min-height: 32px;
-  color: var(--ui-muted);
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 16px;
+  gap: 10px;
+  min-height: 40px;
+  padding: 0 8px 0 10px;
+  border-radius: 8px;
+  background: var(--ui-field);
+  font-size: 14px;
+  line-height: 20px;
   cursor: pointer;
   list-style: none;
 }
-details.ref-group > summary::-webkit-details-marker {
+details.fold[open] > summary {
+  border-radius: 8px 8px 0 0;
+}
+details.fold > summary::-webkit-details-marker {
   display: none;
 }
-details.ref-group > summary svg {
-  width: 14px;
-  height: 14px;
+details.fold > summary:hover {
+  background: var(--ui-hover);
+}
+.fold-title {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fold-meta,
+.editor-ui .entry-toggle .entry-meta {
+  flex: none;
+  color: var(--ui-muted);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+details.fold > summary > svg:last-child {
+  width: 16px;
+  height: 16px;
+  color: var(--ui-muted);
   transition: transform 0.15s;
 }
-details.ref-group[open] > summary svg {
+details.fold[open] > summary > svg:last-child {
   transform: rotate(180deg);
+}
+.fold-body {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--ui-field);
+  border-top: 0;
+  border-radius: 0 0 8px 8px;
+}
+details.fold + details.fold {
+  margin-top: -8px;
 }
 
 /* "Inhalte verwalten": content types as an accordion, records inside, language versions as flags. */
@@ -2154,7 +2187,7 @@ dialog.dlg.navigator {
   height: 12px;
 }
 @media (prefers-reduced-motion: reduce) {
-  details.ref-group > summary svg,
+  details.fold > summary > svg:last-child,
   .nav-group > summary > svg:last-child {
     transition: none;
   }
