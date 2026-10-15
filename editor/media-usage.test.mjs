@@ -182,7 +182,7 @@ test('uploading the same image again reuses its media record instead of creating
   const existing = { id: 'media/abc', data: { src: '/assets/' + 'f'.repeat(64) + '.png' } };
   let saved = false;
   const store = {
-    site: {...await createFlyingStarsAdapter(path.join(here,'..')),extensions:(await import('./core/extensions.mjs')).createExtensionRegistry([{name:'test/uploads',contractVersion:'1.0',hooks:{mediaPolicy:()=>({maxBytes:5*1024*1024,normalize:async()=>({asset:{},output:Buffer.alloc(0)}),write:(_asset,requestId)=>({id:'media/'+requestId,data:{src:existing.data.src},file:'public'+existing.data.src}),find:records=>records.find(r=>r.id===existing.id)})}}])},
+    site: {...await createFlyingStarsAdapter(path.join(here,'..')),extensions:(await import('./core/extensions.mjs')).createExtensionRegistry([{name:'test/uploads',contractVersion:'1.0',hooks:{mediaPolicy:()=>({maxBytes:5*1024*1024,normalize:async()=>({asset:{},output:Buffer.alloc(0)}),write:(_asset,requestId)=>({id:'media/'+requestId,data:{src:existing.data.src},file:'public'+existing.data.src}),find:records=>records.find(r=>r.id===existing.id),response:(state,id,reused)=>({state,assetId:id,reused})})}}])},
     state: async () => ({ head: 'a'.repeat(40), records: [existing] }),
     save: async () => { saved = true; return {}; },
   };

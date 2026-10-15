@@ -41,7 +41,7 @@ export function segmentsOf(field) {
 function protect(text) {
   const tokens = [];
   const out = text
-    // Inline code, {placeholders} and the format marks {o}…{/o}, {c}…{/c} never reach the provider.
+    // Inline code, {placeholders} and site format marks never reach the provider.
     .replace(/`[^`]+`|\{\/?\w+\}/g, (m) => `⟦${tokens.push(m) - 1}⟧`)
     .replace(/\*\*|~~|\*/g, (m) => `⟦${tokens.push(m) - 1}⟧`)
     .replace(/\]\(([^)\s]+)((?:\s+"[^"]*")?)\)/g, (m, url, title) => `](⟦${tokens.push(url) - 1}⟧${title})`);

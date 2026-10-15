@@ -10,13 +10,13 @@ import { createTranslationCore, executeBatched, loadMemory, saveMemory } from ".
 import { translationProvider } from "./translation-providers.mjs";
 
 import {resolveRuntimeOptions} from './runtime-options.mjs';
-import {createFlyingStarsAdapter} from './flyingstars-adapter.mjs';
+import {createFlyingStarsAdapter as createSiteAdapter} from './flyingstars-adapter.mjs';
 const args = Object.fromEntries(process.argv.slice(2).map((a, i, all) => (a.startsWith("--") ? [a.slice(2), all[i + 1]?.startsWith("--") || all[i + 1] === undefined ? true : all[i + 1]] : null)).filter(Boolean));
 const locale = args.locale || "en";
 
 if (args.all && args.records) throw Error("--all und --records schließen sich aus.");
 const runtime=resolveRuntimeOptions({values:{siteRoot:typeof args.source==='string'?args.source:args['site-root'],stateDir:args['state-dir'],translationProvider:args.provider}});
-const site=await createFlyingStarsAdapter(runtime.siteRoot);
+const site=await createSiteAdapter(runtime.siteRoot);
 const languages=site.extensions.require('languages');
 if(!Object.hasOwn(languages.locales,locale))throw Error('Sprachziel muss '+Object.keys(languages.locales).join(' oder ')+' sein.');
 const {plan,mergeIntoTranslations}=createTranslationCore(site);

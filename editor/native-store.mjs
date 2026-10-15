@@ -23,7 +23,7 @@ const sameBytes=(a,b)=>a===null&&b===null||Buffer.isBuffer(a)&&Buffer.isBuffer(b
 export class NativeStore{
  constructor(root,{remote,site,runtime}={}){this.root=path.resolve(root);this.site=site;this.runtime=runtime;this.remoteOption=remote??runtime?.git.remote;this.draftBranch=runtime?.git.draftBranch||'content/draft';this.env={...gitEnvironment(runtime?.processEnv),...site?.gitIdentity};this.git=(dir,args,options={})=>git(dir,args,{env:this.env,...options});this.lock=Promise.resolve();}
  async exclusive(work){const previous=this.lock;let release;this.lock=new Promise(r=>release=r);await previous;try{return await withRepositoryLock(this.root,work);}finally{release();}}
- async init(){if(!this.site)throw Error('Site-Adapter fehlt.');this.sourceAdapter=this.site.createSourceAdapter({root:this.root,site:this.site,git:this.git,draftBranch:this.draftBranch});this.editorialHref=this.site.editorialHref;
+ async init(){if(!this.site)throw Error('Site-Adapter fehlt.');this.sourceAdapter=this.site.createSourceAdapter({root:this.root,site:this.site,git:this.git,draftBranch:this.draftBranch});this.editorialHref=this.site.editorialHref;this.sectionSchema=this.site.sectionSchema;this.sectionPolicy=this.site.sectionPolicy;
  this.remote=await configuredRemote(this.root,this.git,this.remoteOption);this.sync=new GitSync(this,this.git,this.remote,{draftBranch:this.draftBranch});if(this.remote)this.sync.enqueue();return this;}
  sourceFor(id){return this.sourceAdapter.sourceFor(id);}
  async sourcesAt(head){return this.sourceAdapter.sourcesAt(head);}

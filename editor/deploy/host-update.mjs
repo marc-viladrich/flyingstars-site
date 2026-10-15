@@ -10,7 +10,7 @@ import {withRepositoryLock} from '../repository-lock.mjs';
 import {prepareDraftRebase,applyDraftRebase} from '../rebase-draft.mjs';
 import {isMain,assertStateLocation} from '../paths.mjs';
 import {resolveRuntimeOptions} from '../runtime-options.mjs';
-import {createFlyingStarsAdapter,legacyRuntimePaths,legacyRestartEnvironment} from '../flyingstars-adapter.mjs';
+import {createFlyingStarsAdapter as createSiteAdapter,legacyRuntimePaths,legacyRestartEnvironment} from '../flyingstars-adapter.mjs';
 const run = promisify(execFile);
 
 export async function hostUpdate({source, state, remote, webroot, restart = process.env.DEPLOY_RESTART_CMD, expectedMain = process.env.DEPLOY_EXPECTED_MAIN, install = true, options} = {}) {
@@ -41,7 +41,7 @@ export async function hostUpdate({source, state, remote, webroot, restart = proc
       await run(process.execPath, ['--check', path.join(staging, 'editor/server.mjs')]);
       // Import the NEW handler in a fresh process, without opening any socket or reading .env.
       await run(process.execPath, [path.join(staging, 'editor/deploy/handler-smoke.mjs'), staging, state], {env: {...runtime.processEnv,AFE_SITE_ROOT:staging,AFE_STATE_DIR:state,AFE_DRAFT_BRANCH:runtime.git.draftBranch,AFE_PUBLISHED_BRANCH:runtime.git.publishedBranch}, timeout: 30_000, maxBuffer: 1_000_000});
-      const builder = new NativeBuilder({root: staging}, state, {editor: false, origin: runtime.canonicalOrigin, runtimeName: 'runtime-public', webroot,site:await createFlyingStarsAdapter(staging),env:runtime.buildEnv});
+      const builder = new NativeBuilder({root: staging}, state, {editor: false, origin: runtime.canonicalOrigin, runtimeName: 'runtime-public', webroot,site:await createSiteAdapter(staging),env:runtime.buildEnv});
       const artifact = await builder.prepare(main);
       // Only a successful smoke/build changes the live checkout or the Apache artifact.
       await applyDraftRebase(source, prepared, git, runtime.git);

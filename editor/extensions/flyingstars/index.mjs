@@ -46,6 +46,7 @@ export function createFlyingStarsExtensions(site) {
     normalize:normalizeUpload,
     write(asset,requestId){return{id:'media/'+requestId,data:{title:asset.title,src:'/'+asset.src,defaultAlt:'',width:asset.width,height:asset.height,mime:asset.mime},file:'public/'+asset.src};},
     find:(records,data)=>records.find(record=>record.id.startsWith('media/')&&record.data?.src===data.src),
+    response:(state,id,reused=false)=>({state,assetId:id,...reused?{reused:true}:{}}),
    }),
    validateBinaryWrite(write){if(!/^public\/assets\/[a-f0-9]{64}\.(?:png|jpg|webp)$/.test(write.file)||path.basename(write.file).split('.')[0]!==createHash('sha256').update(write.bytes).digest('hex'))throw failure('Ungültiges Medienobjekt.');},
   }),

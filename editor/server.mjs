@@ -16,7 +16,7 @@ import {translationProvider} from './translation-providers.mjs';
 import {EditorAuth} from './auth.mjs';
 import {isMain,assertStateLocation} from './paths.mjs';
 import {resolveRuntimeOptions} from './runtime-options.mjs';
-import {createFlyingStarsAdapter} from './flyingstars-adapter.mjs';
+import {createFlyingStarsAdapter as createSiteAdapter} from './flyingstars-adapter.mjs';
 const mime={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.json':'application/json','.svg':'image/svg+xml','.webp':'image/webp','.jpg':'image/jpeg','.jpeg':'image/jpeg','.png':'image/png','.woff2':'font/woff2','.ico':'image/x-icon','.pdf':'application/pdf','.mp4':'video/mp4'};
 export async function serveFile(res,base,relative,enhance=false){
  const decoded=decodeURIComponent(relative);
@@ -41,7 +41,7 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
  await assertStateLocation(sourceDir,stateDir,runtime.publicWebroot);
  const canonicalOrigin=new URL(origin);
  const authentication=runtime.auth.enabled?await new EditorAuth({...runtime.auth,secure:canonicalOrigin.protocol==='https:',...(typeof auth==='object'?auth:{})}).init({forbiddenRoots:runtime.auth.forbiddenRoots}):null;
- const configuredSite=site||await createFlyingStarsAdapter(sourceDir);
+ const configuredSite=site||await createSiteAdapter(sourceDir);
  const adapter={...configuredSite,extensions:createExtensionRegistry([...configuredSite.extensions.definitions,...runtime.extensions])};
  const languages=adapter.extensions.first('languages')??{source:'de',locales:{}};
  const store=await new NativeStore(sourceDir,{site:adapter,runtime}).init();
