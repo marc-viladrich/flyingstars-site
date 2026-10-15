@@ -26,7 +26,10 @@ test('Runtime paths use the supplied root and cwd; host options stay outside the
  assert.equal(options.siteRoot,siteRoot);assert.equal(options.stateDir,'/tmp/private-state');
  assert.equal(options.auth.file,'/tmp/private-state/runtime-private/editor-accounts.json');
  assert.equal(options.auth.enabled,true);assert.equal(options.preview.enabled,false);
- assert.equal(resolveRuntimeOptions({cwd:'/tmp/site',env:{}}).siteRoot,'/tmp/site');
+ // The default root is the installed site, not the caller's cwd (legacy `node relaunch/server.mjs` from the project folder).
+ const installed=path.dirname(path.dirname(fileURLToPath(new URL('./runtime-options.mjs',import.meta.url))));
+ assert.equal(resolveRuntimeOptions({cwd:'/tmp/site',env:{}}).siteRoot,installed);
+ assert.equal(resolveRuntimeOptions({cwd:'/tmp/site',env:{}}).stateDir,path.dirname(installed));
  assert.equal(options.git.remote,null);assert.ok(Object.isFrozen(options));
 });
 

@@ -69,12 +69,16 @@ const origin=(value,name)=>{let url;try{url=new URL(value);}catch{throw Error(na
  * @param {{args?:string[],env?:NodeJS.ProcessEnv,cwd?:string,values?:Record<string,any>,authDefault?:boolean,previewDefault?:boolean}} [input]
  * @returns {RuntimeOptions}
  */
+const installedSiteRoot=path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+
 export function resolveRuntimeOptions({args=[],env=process.env,cwd=process.cwd(),values={},authDefault=false,previewDefault=false}={}) {
  /** @type {Record<string,any>} */
  const configured={};
  for(const[key,names]of Object.entries(environmentOptions)){const name=names.find(name=>env[name]!==undefined);if(name)configured[key]=env[name];}
  const v={...configured,...parseRuntimeArgs(args),...Object.fromEntries(Object.entries(values).filter(([,value])=>value!==undefined))};
- const siteRoot=path.resolve(cwd,v.siteRoot||'.'),stateDir=path.resolve(cwd,v.stateDir||path.dirname(siteRoot));
+ // Without an explicit root the pilot edits the site it is installed in (legacy default, independent of cwd).
+ // When the editor ships as a package (PR 11) this default must move to the site's working directory.
+ const siteRoot=v.siteRoot?path.resolve(cwd,v.siteRoot):installedSiteRoot,stateDir=path.resolve(cwd,v.stateDir||path.dirname(siteRoot));
  const publicWebroot=v.publicWebroot?path.resolve(cwd,v.publicWebroot):null;
  const port=number(v.port??4542,'AFE_PORT'),publicPort=number(v.publicPort??4543,'AFE_PUBLIC_PORT');
  const editorOrigin=origin(v.editorOrigin||'http://127.0.0.1:'+port,'AFE_EDITOR_ORIGIN');

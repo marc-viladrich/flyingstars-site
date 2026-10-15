@@ -1,6 +1,6 @@
 # Runtime-Optionen des Editors
 
-`editor/runtime-options.mjs` definiert `RuntimeOptions` per JSDoc und löst die Host-Einstellungen einmal am Einstiegspunkt auf. `server.mjs` verdrahtet damit Store, Builder, Publisher, Preview, Git-Sync, Auth, Medien und Übersetzung. Es werden keine `.env`-Dateien gelesen. Relative Pfade beziehen sich auf das Arbeitsverzeichnis des Aufrufers. Ohne `--site-root` oder `AFE_SITE_ROOT` ist dieses Verzeichnis die Site-Wurzel; der Standard für State bleibt deren Elternverzeichnis.
+`editor/runtime-options.mjs` definiert `RuntimeOptions` per JSDoc und löst die Host-Einstellungen einmal am Einstiegspunkt auf. `server.mjs` verdrahtet damit Store, Builder, Publisher, Preview, Git-Sync, Auth, Medien und Übersetzung. Es werden keine `.env`-Dateien gelesen. Relative Pfade beziehen sich auf das Arbeitsverzeichnis des Aufrufers. Ohne `--site-root` oder `AFE_SITE_ROOT` ist die Site die, in der dieser Editor installiert ist (unabhängig vom Arbeitsverzeichnis, wie vor PR 2); der Standard für State bleibt deren Elternverzeichnis.
 
 Host-Einstellungen gehören gemäß Architekturentscheidung 001, Entscheidung 9, nicht in den Site-Contract. Der explizit übergebene FlyingStars-Adapter in `editor/flyingstars-adapter.mjs` liefert Schemas, Source-Registrierung, Routen, Paketzuordnung, Übersetzungsfelder und Markdown-Validierung sowie die bestehenden Build-, Preview- und Medienkonventionen. Seine Imports beziehen sich immer auf die angegebene Site-Wurzel.
 
@@ -22,7 +22,7 @@ Explizite API-Werte in `values` gewinnen vor CLI-Argumenten, CLI-Argumente vor U
 
 | Variable | Deprecated Alias | CLI-Option | Standard / Bedeutung |
 |---|---|---|---|
-| `AFE_SITE_ROOT` | keiner | `--site-root`, `--source` | Arbeitsverzeichnis des Aufrufers |
+| `AFE_SITE_ROOT` | keiner | `--site-root`, `--source` | Site, in der der Editor liegt |
 | `AFE_STATE_DIR` | `FLYINGSTARS_STATE_DIR` | `--state-dir` | Elternverzeichnis der Site |
 | `AFE_PUBLIC_WEBROOT` | `FLYINGSTARS_PUBLIC_WEBROOT` | `--public-webroot` | Ohne Wert lokale Public-Simulation |
 | `AFE_EDITOR_ORIGIN` | `EDITOR_ORIGIN` | `--editor-origin` | `http://127.0.0.1:<port>` |
