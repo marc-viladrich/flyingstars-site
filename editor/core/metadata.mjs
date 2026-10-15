@@ -7,7 +7,7 @@ export function checkedMeta(value={}) {
 export const atPath=(value,path=[])=>path.reduce((item,key)=>item?.[key],value);
 export function recordTitle(record) {
   const collection=record?.schema?.['x-afe']?.collection;
-  return (collection?.title.length ? atPath(record.data,collection.title) : collection?.label)||record?.title||record?.id||'Inhalt';
+  return (collection?.title.length ? atPath(record.data,collection.title) : record?.title||collection?.label)||record?.title||record?.id||'Inhalt';
 }
 export function referenceRecord(records,value,reference) {
   if(!reference||value==null)return null;

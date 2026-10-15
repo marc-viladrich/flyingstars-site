@@ -84,7 +84,7 @@ test('pure panel parity covers every real record type and every section branch',
 test('all site widget declarations are registered and every collection metadata tree validates',async()=>{
  const {site}=await recordFixtures();
  const walk=node=>{if(node['x-afe']?.widget)assert.ok(siteWidgets[node['x-afe'].widget],node['x-afe'].widget);if(node.properties)Object.values(node.properties).forEach(walk);if(node.element)walk(node.element);node.options?.forEach(walk);node.items?.forEach(walk);};
- for(const type of site.types)for(const schema of [type.schema,...Object.values(type.schemas||{})].filter(Boolean))walk(schemaDescription(schema));
+ for(const type of site.types)for(const schema of [type.schema,...Object.values(type.schemas||{})].filter(Boolean)){const description=schemaDescription(schema);assert.ok(description['x-afe']?.collection,type.prefix+' collection metadata, including extended Markdown schemas');walk(description);}
 });
 
 test('real saves reject metadata-forbidden array mutations and read-only fields without a commit',async t=>{
@@ -121,4 +121,15 @@ test('browser dispatch resolves declared references and widgets, including compa
  assert.ok(refs>=3);assert.ok(features>=3);assert.ok(tables>=10);
  const staged={id:'client/new-client',schema:{'x-afe':{collection:{label:'Kunde',title:['name']}}},data:{name:'Neuer Kunde'}};
  assert.ok(referencedRecords([...records,staged],{collection:'clients',encoding:'id'}).includes(staged));
+});
+
+test('record titles retain the pilot presentation, including optional package names and singleton labels',async()=>{
+ const site=await createFlyingStarsAdapter(root),files=(await readdir(root+'src/content',{recursive:true})).map(f=>'src/content/'+f);
+ for(const source of site.sourcesFromFiles(files)){
+  const data=wire(source.schema.parse(codecs[source.format].parse(await readFile(root+source.file))));
+  const oldTitle=source.schemas&&source.schema.description||data.name||data.title||data.question||source.id;
+  const expected=data.displayName||data.name||data.title||data.question||oldTitle;
+  const schema=schemaDescription(source.schema),title=site.recordTitle(source,data)||recordTitle({schema,data,id:source.id});
+  assert.equal(recordTitle({schema,data,title,id:source.id}),expected,source.id);
+ }
 });
