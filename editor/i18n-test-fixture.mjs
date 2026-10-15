@@ -23,10 +23,11 @@ export async function i18nFixture(t,{sourceRoot=path.join(here,'..'),forCI=false
   if(!forCI)await fs.writeFile(path.join(source,'src/lib/media.ts'),`
 import {mediaForSource} from './editorial-records';
 export async function optimizedImage(src:string,width=960,height?:number,_format?:'webp'|'jpg') {
- let size;try{size=mediaForSource(src);}catch{size={width:960,height:540};}
+ let size;try{size=await mediaForSource(src);}catch{size={width:960,height:540};}
  const w=Math.min(width,960,size.width),h=height??Math.round(w*size.height/size.width);
  return {src,width:w,height:h,attributes:{width:w,height:h}};
 }
+export async function responsiveImage(src:string,sizes:string,width=1600,height?:number) {const image=await optimizedImage(src,width,height);return {...image,attributes:{...image.attributes,srcset:src+' '+image.width+'w',sizes}};}
 export async function optimizedLogo(src:string,height:number) {return optimizedImage(src,height*3,height);}
 `);
   await git(source,['init','--quiet','--initial-branch=content/draft']);

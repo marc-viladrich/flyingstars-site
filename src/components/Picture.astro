@@ -1,12 +1,13 @@
 ---
 import {localeFromPath} from '../lib/localized-routes';
-const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
-import {Image} from 'astro:assets';
 import {resolveMedia} from '../lib/content';
-const resolved=resolveMedia(Astro.props,locale);
-const {src,alt,width,height,sizes='(min-width:48rem) 50vw,100vw',loading='lazy',class:cls}=resolved;
+import {responsiveImage} from '../lib/media';
+const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
+const {src,alt,sizes,loading='lazy',class:cls}=resolveMedia(Astro.props,locale);
+if (!sizes) throw new Error('Picture benötigt sizes vom darstellenden Layout.');
+const image = await responsiveImage(src,sizes);
 const markers=Object.fromEntries(Object.entries(Astro.props).filter(([key])=>key.startsWith('data-native-')));
 const imageClass=['content-image',cls].filter(Boolean).join(' ');
 ---
-{src.startsWith('/assets/')?<img {...markers} src={src} alt={alt} width={width} height={height} sizes={sizes} loading={loading} class={imageClass} decoding="async"/>:<Image {...markers} src={src} alt={alt} width={width} height={height} sizes={sizes} loading={loading} class={imageClass} widths={[480,768,1200,1600].filter(w=>w<=width)}/>}
+<img {...markers} src={image.src} {...image.attributes} alt={alt} loading={loading} class={imageClass} decoding="async"/>
 <style>.content-image { display:block;max-width:100%;height:auto; }</style>

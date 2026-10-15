@@ -1,37 +1,37 @@
-import { getImage } from 'astro:assets';
-import fs from 'node:fs/promises';
-import path from 'node:path';
+import {getImage,inferRemoteSize} from 'astro:assets';
+import type {ImageMetadata} from 'astro';
 import {mediaForSource} from './content';
+import {resolveImageSource,imageWidths} from './media-source.mjs';
 
-const hosts = new Set(['flyingstars.art', 'flyingstars-relaunch.vercel.app', process.env.MEDIA_HOST ?? 'media.example.invalid']);
-const dimensions = new Map<string, Promise<{width:number;height:number}>>();
-async function sourceSize(src: string) {
-  if(src.startsWith('/assets/')) {
-    if(!/^\/assets\/[a-zA-Z0-9._/-]+$/.test(src)||src.split('/').includes('..'))throw new Error('Ungültiger Medienpfad');
-    await fs.access(path.join(process.cwd(),'public',src));
-    const info=await mediaForSource(src);
-    return {width:info.width,height:info.height};
-  }
-  const url = new URL(src);
-  if (url.protocol !== 'https:' || !hosts.has(url.hostname)) throw new Error(`Nicht freigegebene FlyingStars-Medienquelle: ${url.hostname}`);
-  if (process.env.FLYINGSTARS_OFFLINE_MEDIA === '1') {
-    const info=await mediaForSource(src);
-    return {width:info.width,height:info.height};
-  }
-  if (!dimensions.has(src)) dimensions.set(src, getImage({src,inferSize:true}).then(image => ({width:Number(image.attributes.width),height:Number(image.attributes.height)})));
-  return dimensions.get(src)!;
+// Astro imports these files as ImageMetadata, even though their stable public URLs remain /assets/… .
+// Lazy imports read only used uploads. Vite also tracks additions during live preview.
+const uploads = import.meta.glob<ImageMetadata>('../../public/assets/**/*.{png,jpg,jpeg,webp}',{import:'default'});
+const hosts = new Set(['flyingstars.art','flyingstars-relaunch.vercel.app',process.env.MEDIA_HOST ?? 'media.example.invalid']);
+const sources = new Map<string,ReturnType<typeof resolveImageSource>>();
+const fast = () => process.env.FLYINGSTARS_OFFLINE_MEDIA === '1' || process.env.FLYINGSTARS_EDITOR === '1';
+async function source(src:string) {
+  if (!sources.has(src)) sources.set(src,resolveImageSource(src,{uploads,hosts,remoteSize:async (url:string) => {
+    // Production probes the original, so stale editorial dimensions can never cause upscaling.
+    // Fast previews use the existing media record without remote GETs.
+    const info = fast() ? await mediaForSource(url) : await inferRemoteSize(url);
+    return {width:Number(info.width),height:Number(info.height)};
+  }}));
+  return sources.get(src)!;
 }
-/** Infer source dimensions first: inferSize plus width alone retains the source height in Astro 7. */
-export async function optimizedImage(src: string, width = 960, height?: number, format: 'webp' | 'jpg' = 'webp') {
-  const size = await sourceSize(src);
-  const targetWidth = Math.min(width, 960, size.width);
-  const targetHeight = height ?? Math.round(targetWidth * size.height / size.width);
-  if(src.startsWith('/assets/')||process.env.FLYINGSTARS_OFFLINE_MEDIA==='1')return {src,width:targetWidth,height:targetHeight,attributes:{width:targetWidth,height:targetHeight}};
-  const image = await getImage({src,width:targetWidth,height:targetHeight,fit:'cover',format,quality:format === 'jpg' ? 78 : 65});
-  return {src:image.src,width:Number(image.attributes.width),height:Number(image.attributes.height),attributes:image.attributes};
+async function transformImage(src:string,width:number,height:number|undefined,format:'webp'|'jpg',sizes?:string) {
+  const resolved = await source(src);
+  const targetWidth = Math.min(width,resolved.width);
+  // Preserve a requested crop ratio when a small original caps the width.
+  const targetHeight = Math.round(targetWidth * (height ? height/width : resolved.height/resolved.width));
+  if (fast()) return {src,width:targetWidth,height:targetHeight,attributes:{width:targetWidth,height:targetHeight,...(sizes?{srcset:`${src} ${resolved.width}w`,sizes}:{})}};
+  const image = await getImage({src:resolved.src,width:targetWidth,height:targetHeight,fit:'cover',format,quality:format==='jpg'?78:65,...(sizes?{widths:imageWidths(resolved.width,width),sizes}:{})});
+  return {src:image.src,width:Number(image.attributes.width),height:Number(image.attributes.height),attributes:{...image.attributes,...(sizes?{srcset:image.srcSet.attribute,sizes}:{})}};
 }
-/** Keep the full logo and size it by its rendered height, including portrait marks. */
-export async function optimizedLogo(src: string, height: number) {
-  const size = await sourceSize(src);
-  return optimizedImage(src, Math.round(size.width / size.height * height));
+/** Responsive content images require a sizes value supplied by the rendering layout. */
+export const responsiveImage = (src:string,sizes:string,width=1600,height?:number) => transformImage(src,width,height,'webp',sizes);
+/** Single image for social metadata and explicitly exempt small logos. */
+export const optimizedImage = (src:string,width=960,height?:number,format:'webp'|'jpg'='webp') => transformImage(src,width,height,format);
+export async function optimizedLogo(src:string,height:number) {
+  const size = await source(src);
+  return optimizedImage(src,Math.round(size.width/size.height*height));
 }

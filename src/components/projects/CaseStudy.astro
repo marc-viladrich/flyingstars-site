@@ -13,7 +13,7 @@ import type { CollectionEntry } from 'astro:content';
 import {getProjects} from '../../lib/content';
 import SectionRenderer from '../SectionRenderer.astro';
 import Video from '../Video.astro';
-import { optimizedImage } from '../../lib/media';
+import { responsiveImage } from '../../lib/media';
 
 interface Props { _locale?:string; locale?:string; project: CollectionEntry<'projects'> }
 const { project } = Astro.props;
@@ -28,8 +28,8 @@ const next = available.find((p) => p.data.showcase!.route === data.nextRoute)
   ?? available.find((p) => p.id !== project.id);
 const nextData = next?.data.showcase as typeof data;
 const uniqueImages = [...new Set([...data.story.map((s) => resolveMedia(s.image,locale).src), ...data.gallery.map((p) => resolveMedia(p,locale).src)])];
-const images = new Map(await Promise.all(uniqueImages.map(async (src) => [src, await optimizedImage(src)] as const)));
-const nextImage = next?.data.cover ? await optimizedImage(resolveMedia(next.data.cover,locale).src) : undefined;
+const images = new Map(await Promise.all(uniqueImages.map(async (src) => [src, await responsiveImage(src,'(max-width: 1000px) calc(100vw - 48px), 48vw')] as const)));
+const nextImage = next?.data.cover ? await responsiveImage(resolveMedia(next.data.cover,locale).src,'100vw') : undefined;
 const count = (n: number) => String(n).padStart(2, '0');
 ---
 <div data-runtime={JSON.stringify({ui:ui.caseStudy,locale})} class="case" style={`--accent:${colorVar(data.accent)}`} {...nativeColor(record,["showcase","accent"],"--accent")}>
@@ -58,7 +58,7 @@ const count = (n: number) => String(n).padStart(2, '0');
     </div>
     <div class="c-steps">
       {data.story.map((step,index) => <article class="c-step on" data-step>
-        <figure class:list={{ tall: data.portrait }}><img {...nativeRecordMedia(record,["showcase","story",index,"image"])} src={images.get(resolveMedia(step.image,locale).src)!.src} {...images.get(resolveMedia(step.image,locale).src)!.attributes} width={images.get(resolveMedia(step.image,locale).src)!.width} height={images.get(resolveMedia(step.image,locale).src)!.height} alt={resolveMedia(step.image,locale).alt} loading="lazy" decoding="async" /></figure>
+        <figure class:list={{ tall: data.portrait }}><img {...nativeRecordMedia(record,["showcase","story",index,"image"])} src={images.get(resolveMedia(step.image,locale).src)!.src} {...images.get(resolveMedia(step.image,locale).src)!.attributes} width={images.get(resolveMedia(step.image,locale).src)!.width} height={images.get(resolveMedia(step.image,locale).src)!.height} sizes={data.portrait?'(max-width: 468px) calc(100vw - 48px), 420px':'calc(100vw - 48px)'} alt={resolveMedia(step.image,locale).alt} loading="lazy" decoding="async" /></figure>
         <span class="k mono"><span {...field(["story",index,"kicker"]) }>{step.kicker}</span></span><h2><span {...field(["story",index,"title"]) }>{step.title}</span></h2><p><span {...field(["story",index,"text"]) }>{step.text}</span></p>
       </article>)}
     </div>
@@ -75,7 +75,7 @@ const count = (n: number) => String(n).padStart(2, '0');
   <section class="c-reel" aria-labelledby="reel-h">
     <div class="c-reel-head"><div><span class="kicker mono acc" {...uiMarker('site/ui',["caseStudy","bilder_der_nacht"])}>{ui.caseStudy.bilder_der_nacht}</span><h2 id="reel-h">{fillText(ui.caseStudy.galleryHeading,{count:data.gallery.length})}</h2></div><div class="ctrl"><button type="button" data-prev aria-label={ui.caseStudy.vorheriges_bild}>←</button><button type="button" data-next aria-label={ui.caseStudy.nachstes_bild}>→</button></div></div>
     <div class:list={['c-track', { tall: data.portrait }]} tabindex="0" role="region" aria-label={fillText(ui.caseStudy.gallery,{name:data.name})}>
-      {data.gallery.map((picture, index) => <figure><div class="img"><img {...nativeRecordMedia(record,["showcase","gallery",index])} src={images.get(resolveMedia(picture,locale).src)!.src} {...images.get(resolveMedia(picture,locale).src)!.attributes} width={images.get(resolveMedia(picture,locale).src)!.width} height={images.get(resolveMedia(picture,locale).src)!.height} alt={resolveMedia(picture,locale).alt} loading="lazy" decoding="async" draggable="false" /></div><figcaption class="mono"><b>{count(index + 1)}</b><span {...field(["gallery",index,"caption"])}>{picture.caption}</span></figcaption></figure>)}
+      {data.gallery.map((picture, index) => <figure><div class="img"><img {...nativeRecordMedia(record,["showcase","gallery",index])} src={images.get(resolveMedia(picture,locale).src)!.src} {...images.get(resolveMedia(picture,locale).src)!.attributes} width={images.get(resolveMedia(picture,locale).src)!.width} height={images.get(resolveMedia(picture,locale).src)!.height} sizes={data.portrait?'(max-width: 1000px) 64vw, (min-width: 1467px) 440px, 30vw':'(max-width: 1000px) 84vw, (min-width: 1532px) 980px, 64vw'} alt={resolveMedia(picture,locale).alt} loading="lazy" decoding="async" draggable="false" /></div><figcaption class="mono"><b>{count(index + 1)}</b><span {...field(["gallery",index,"caption"])}>{picture.caption}</span></figcaption></figure>)}
     </div>
   </section>
 

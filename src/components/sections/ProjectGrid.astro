@@ -7,7 +7,7 @@ import InlineText from '../InlineText.astro';
 import {nativeField,nativeSection,nativeRecord,nativeRecordMedia,nativeItem,nativeUses} from "../../lib/native-editor";
 import {getProjects} from '../../lib/content';
 import {resolveMedia} from '../../lib/content';
-import { optimizedImage } from '../../lib/media';
+import { responsiveImage } from '../../lib/media';
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'projectGrid' }> & { index: number; locale?:string; _locale?:string };
 const { headline = ui.projectGrid.headline, text, kicker, cta, id:sectionId, limit, index } = Astro.props;
@@ -16,7 +16,7 @@ const H = index === 0 ? 'h1' : 'h2';
 const projects = (await getProjects(locale))
   .sort((a, b) => (a.data.showcase?.order ?? 999) - (b.data.showcase?.order ?? 999) || Number(b.data.featured) - Number(a.data.featured) || b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, limit);
-const images = new Map(await Promise.all(projects.filter((p) => p.data.cover).map(async (p) => [p.id, await optimizedImage(resolveMedia(p.data.cover,locale).src)] as const)));
+const images = new Map(await Promise.all(projects.filter((p) => p.data.cover).map(async (p) => [p.id, await responsiveImage(resolveMedia(p.data.cover,locale).src,'(max-width: 640px) calc(100vw - 48px), 46vw')] as const)));
 const home = sourcePath(Astro.url.pathname) === '/';
 ---
 <section {...nativeSection(Astro.props)} class="section" id={sectionId ?? `s${index}`} aria-labelledby={id}>
