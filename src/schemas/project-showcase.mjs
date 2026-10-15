@@ -10,7 +10,7 @@ const photograph = z.object({
   decorative: z.boolean().default(false),
   alt: z.string(),
   caption: z.string().min(1),
-});
+}).meta({format: 'image'});
 
 export const projectShowcaseSchema = z.object({
   route: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
@@ -36,9 +36,12 @@ export const projectShowcaseSchema = z.object({
     image: photograph,
   })).min(1),
   formation: z.object({
-    src: z.string().regex(/^\/media\/projekte\/[a-z]+\/formation\.json$/),
+    src: z.string().regex(/^\/media\/projekte\/[a-z]+\/formation\.json$/).describe('Formationsdatei (JSON)').meta({readOnly: true, advanced: true}),
     title: z.string().min(1),
     text: z.string().min(1),
+  }).describe('Interaktive Drohnenformation').meta({
+    help: 'Animation aus vorbereiteten Drohnenpositionen.',
+    hint: 'Verwendet eine vorbereitete JSON-Datei mit Position und Farbe jeder Drohne; ein Bild-Upload erzeugt keine Formation. Änderungen an der Formationsdatei übernimmt die technische Betreuung.',
   }),
   gallery: z.array(photograph).min(1),
   portrait: z.boolean().default(false),

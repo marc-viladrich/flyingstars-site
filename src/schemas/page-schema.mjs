@@ -14,7 +14,7 @@ export const image = z.object({
   decorative: z.boolean().default(false).describe('Dekoratives Bild'),
   width: z.number().int().positive(),
   height: z.number().int().positive(),
-});
+}).meta({format: 'image'});
 
 export const sectionSchema = z.discriminatedUnion('type', [
   z.object({

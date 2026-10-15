@@ -1,10 +1,22 @@
+import {describe} from './native-schema.mjs';
 export function normalizedRoute(path){const clean=String(path||'/').split(/[?#]/,1)[0];return clean==='/'?'/':'/'+clean.replace(/^\/+|\/+$/g,'')+'/';}
 export function navigationChoices(records){const choices=new Map([['/','Startseite'],['/drohnenshow-preise/','Preise & Pakete'],['/show-konfigurator/','Show-Konfigurator']]);for(const item of records){const path=item.route||(item.id.startsWith('page/')?(item.id==='page/index'?'/':'/'+item.id.slice(5)+'/'):null);if(path)choices.set(normalizedRoute(path),item.title);}return [...choices].map(([value,label])=>({value,label}));}
 export function savedRecordRoute(records,id){return records.find(item=>item.id===id)?.route||'/';}
 export function publishNeedsActivation(review){return !!review.publishedHead&&review.activePublishedHead!==review.publishedHead;}
 export function mediaSourceChanged(originalSource,currentSource){return originalSource!==currentSource;}
 export function fieldsInScope(fields,path,scope){const prefix=scope==='media'?path:path[0]==='sections'?path.slice(0,2):path.slice(0,-1);return fields.filter(field=>prefix.every((part,index)=>field.path[index]===part)&&(scope!=='context'||path[0]!=='sections'||['enum','boolean'].includes(field.kind)));}
-export function sourceMediaSources(records){const sources={};const walk=(id,value,path=[])=>{if(Array.isArray(value)){value.forEach((item,index)=>walk(id,item,[...path,index]));return;}if(!value||typeof value!=='object')return;if(typeof value.src==='string'&&value.width&&value.height){const asset=value.assetId&&records.find(r=>r.id===value.assetId||r.id==='media/'+value.assetId)?.data;sources[id+'/'+JSON.stringify(path)]=asset?.src||value.src;}for(const [key,child]of Object.entries(value))walk(id,child,[...path,key]);};for(const record of records)walk(record.id,record.data);return sources;}
+export function sourceMediaSources(records){
+ const sources={};
+ for(const record of records){
+  const containers=record.schema?describe(record.schema,record.data).containers:record.containers||[];
+  for(const container of containers.filter(c=>c.format==='image')){
+   const value=container.path.reduce((value,key)=>value?.[key],record.data);if(!value)continue;
+   const asset=value.assetId&&records.find(r=>r.id===value.assetId||r.id==='media/'+value.assetId)?.data;
+   sources[record.id+'/'+JSON.stringify(container.path)]=asset?.src||value.src;
+  }
+ }
+ return sources;
+}
 export function floatingInspectorAllowed(selection,{preview=false,busy=false}={}){return !!selection&&!selection.rich&&!preview&&!busy;}
 export function richFormattingAllowed({preview=false,busy=false,locale='de'}={}){return !preview&&!busy&&locale==='de';}
 const pathValue=(data,path)=>path.reduce((value,key)=>value?.[key],data);

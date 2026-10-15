@@ -1202,8 +1202,7 @@ function referenceControl(item, container, source) {
 }
 const under = (path, prefix) => prefix.every((part, index) => path[index] === part);
 function isMediaContainer(item, container) {
-  const current = value(item, container.path);
-  return container.media || (current && typeof current === "object" && !Array.isArray(current) && typeof current.src === "string");
+  return container.format === "image";
 }
 // Builds the "Inhalt" group for everything under prefix that the page cannot edit inline.
 function contentControls(item, prefix, options = {}) {
@@ -1260,7 +1259,7 @@ function contentControls(item, prefix, options = {}) {
     if (!under(optional.path, prefix) || value(item, optional.path) !== undefined || insideHandled(optional.path) || isTechnical(optional)) continue;
     if (["boolean", "enum"].includes(optional.kind)) continue; // rendered as controls by optionalVariants()
     if (optional.path.length - prefix.length > depthLimit + 1) continue;
-    const isImage = optional.template && typeof optional.template === "object" && optional.template.src !== undefined;
+    const isImage = optional.format === "image";
     additions.push(
       button(
         isImage ? fieldLabel(optional) + " hinzufügen" : fieldLabel(optional) + " ergänzen",
@@ -1967,7 +1966,7 @@ function additionButtons(item, prefix) {
   for (const optional of optionalFieldsFor(item)) {
     if (optional.path.length !== prefix.length + 1 || !under(optional.path, prefix) || value(item, optional.path) !== undefined) continue;
     if (isTechnical(optional) || ["boolean", "enum"].includes(optional.kind)) continue;
-    const isImage = optional.template && typeof optional.template === "object" && optional.template.src !== undefined;
+    const isImage = optional.format === "image";
     additions.push(
       button(
         fieldLabel(optional) + (isImage ? " hinzufügen" : " ergänzen"),
