@@ -21,7 +21,10 @@ const MAX_DIRECT = 10;
 const PENDING = { 'site/ui': 'Gemeinsame Oberflächentexte: ui.json/ui-schema werden in R10 von Codex A neu gegliedert' };
 function judge(t, findings) {
   const pending = findings.filter((f) => Object.keys(PENDING).some((id) => f.startsWith(id + ' ')));
-  for (const f of pending) t.diagnostic('pending: ' + f);
+  for (const id of Object.keys(PENDING)) {
+    const mine = pending.filter((f) => f.startsWith(id + ' '));
+    if (mine.length) t.diagnostic(`pending ${id} (${PENDING[id]}): ${mine.length}, e.g. ${mine.slice(0, 3).join('; ')}`);
+  }
   const cleaned = Object.keys(PENDING).filter((id) => !pending.some((f) => f.startsWith(id + ' ')));
   assert.deepEqual(findings.filter((f) => !pending.includes(f)), []);
   return cleaned;

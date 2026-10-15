@@ -18,6 +18,7 @@ import {describe} from './web/native-schema.mjs';
 import {fieldLabel,choiceLabel,isTechnical} from './web/field-labels.mjs';
 import {omitRecordField,siteWidgets,referencePrefix,referencedRecords} from './web/site-adapter.mjs';
 import {codecs} from './core/codecs.mjs';
+import {kindOf} from './web/record-kinds.mjs';
 const root=fileURLToPath(new URL('../',import.meta.url));
 
 test('vendored vocabulary is unchanged and rejects unknown keys, including nested members',async()=>{
@@ -114,7 +115,7 @@ test('real saves reject metadata-forbidden array mutations and read-only fields 
 test('browser dispatch resolves declared references and widgets, including compact tables',async()=>{
  const {records}=await recordFixtures(),source=await readFile(new URL('./web/editor.js',import.meta.url),'utf8');
  const describeRecord=item=>describe(item.schema,item.data,{omitPath:(data,path)=>omitRecordField(item,data,path)});
- const context={nodeAt,referencePrefix,referencedRecords,siteWidgets,records:()=>records,record:id=>records.find(r=>r.id===id),recordName:recordTitle,recordTemplate:()=>null,pushView:()=>{},inlinePlain:v=>v,getPath:(data,path)=>path.reduce((v,k)=>v?.[k],data)};
+ const context={nodeAt,referencePrefix,referencedRecords,siteWidgets,kindOf,records:()=>records,record:id=>records.find(r=>r.id===id),recordName:recordTitle,recordTemplate:()=>null,pushView:()=>{},inlinePlain:v=>v,getPath:(data,path)=>path.reduce((v,k)=>v?.[k],data)};
  const choices=runInNewContext(source.slice(source.indexOf('function choiceSource('),source.indexOf('// part: "all"'))+';choiceSource',context);
  let size='overview';
  const columns=runInNewContext(source.slice(source.indexOf('function tableColumns('),source.indexOf('// Complex entries'))+';tableColumns',{...context,value:(item,path)=>path.reduce((v,k)=>v?.[k],item.data),containersFor:item=>describeRecord(item).containers,fieldsFor:item=>describeRecord(item).fields,under:(path,prefix)=>prefix.every((part,i)=>path[i]===part),isTechnical,fieldLabel,$:()=>({dataset:{size}})});
