@@ -1389,7 +1389,8 @@ dialog.dlg.media-wide {
 }
 .rows.table li > input + input,
 .rows.table li > input + textarea,
-.rows.table li > textarea + input {
+.rows.table li > textarea + input,
+.rows.table li > textarea + textarea {
   border-left: 1px solid var(--ui-line);
   border-radius: 0;
 }
@@ -1447,10 +1448,15 @@ dialog.dlg.media-wide {
   font-weight: 500;
   text-align: left;
 }
+/* Block names wrap instead of being cut off: the index is for finding, a truncated name hides the word. */
+.editor-ui .ov-link {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  white-space: normal;
+}
 .editor-ui .ov-link span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 18px;
+  overflow-wrap: anywhere;
 }
 .editor-ui .ov-link[aria-current="true"] {
   background: var(--ui-tint);
@@ -2348,4 +2354,14 @@ dialog.dlg.navigator {
     animation: none;
     box-shadow: 0 0 0 2px var(--ui-accent);
   }
+}
+
+/* "Weitere Felder" with many fields: chunked under the record's schema blocks. */
+.more-chunk {
+  display: grid;
+  gap: 12px;
+}
+.more-chunk + .more-chunk {
+  padding-top: 14px;
+  border-top: 1px dashed var(--ui-line);
 }

@@ -1506,7 +1506,7 @@ function contentControls(item, prefix, options = {}) {
     if (skipKinds.includes(field.kind) || isTechnical(field)) continue;
     if (!includeInline && inlineKeys.has(fieldKey(item.id, field.path))) continue;
     const parent = field.path.length - prefix.length > 1 ? field.path.at(-2) : null;
-    const label = parent && typeof parent !== "number" ? fieldLabel({ path: [parent] }) + " · " + fieldLabel(field) : fieldLabel(field);
+    const label = parent && typeof parent !== "number" ? parentLabel(item, field.path) + " · " + fieldLabel(field) : fieldLabel(field);
     out.push(fieldControl(item, field, { label }));
   }
   const additions = [];
@@ -2282,13 +2282,21 @@ function unitsOf(item, prefix) {
   return scopeUnits({ fields, containers, optionalFields, data: item.data, prefix });
 }
 // One control per unit; labels name the parent group for nested fields ("Link · Ziel").
-function unitControl(item, unit, prefix) {
+// The name of the object a nested field sits in, as the schema calls it ("Seitenauftakt", not the key).
+function parentLabel(item, path) {
+  const parent = path.slice(0, -1);
+  return fieldLabel(containersFor(item).find((c) => equal(c.path, parent)) || { path: parent });
+}
+// quietParents: object paths whose name is already said around the field (a chunk heading, the record's
+// wrapper object), so the field is not prefixed with it.
+function unitControl(item, unit, prefix, { quietParents = [] } = {}) {
   const container = () => containersFor(item).find((c) => equal(c.path, unit.path)) || { path: unit.path };
   if (unit.kind === "field" || unit.kind === "variant") {
     const field = (unit.kind === "field" ? fieldsFor(item) : optionalFieldsFor(item)).find((f) => equal(f.path, unit.path));
     if (!field) return null;
     const parent = unit.path.length - prefix.length > 1 ? unit.path.at(-2) : null;
-    return fieldControl(item, field, { label: parent !== null && typeof parent !== "number" ? fieldLabel({ path: [parent] }) + " · " + fieldLabel(field) : fieldLabel(field) });
+    const quiet = quietParents.some((p) => equal(p, unit.path.slice(0, -1)));
+    return fieldControl(item, field, { label: parent !== null && typeof parent !== "number" && !quiet ? parentLabel(item, unit.path) + " · " + fieldLabel(field) : fieldLabel(field) });
   }
   if (unit.kind === "media") return mediaControl(item, unit.path, { title: fieldLabel(container()) });
   if (unit.kind === "array" || unit.kind === "candidates") {
@@ -2323,8 +2331,9 @@ function moreDisclosure(item, units, prefix, key) {
   if (units.some((unit) => unit.kind === "field" && isTranslatable(item, fieldsFor(item).find((f) => equal(f.path, unit.path))))) panelTranslatable = true;
   // Its own zone (quietly tinted); inside, the same controls and accordions as everywhere else.
   const details = el("details", { class: "more more-zone" }, el("summary", {}, el("span", { text: `Weitere Felder (${units.length})` }), icon("chevron-down")));
-  // Filled when first opened: the closed disclosure costs nothing to draw.
-  const fill = () => details.querySelector(":scope > .group") || put(details, group(null, units.map((unit) => unitControl(item, unit, prefix))));
+  // Filled when first opened: the closed disclosure costs nothing to draw. Many fields (a whole project
+  // behind its card) are chunked under the record's own schema blocks, as in its overview.
+  const fill = () => details.querySelector(":scope > .group") || put(details, group(null, moreChunks(item, units, prefix)));
   if (openDisclosures.get(key) === true) {
     details.open = true;
     fill();
@@ -2338,6 +2347,25 @@ function moreDisclosure(item, units, prefix, key) {
     revealInPanel(details.querySelector(":scope > .group"), { smooth: true });
   });
   return details;
+}
+function moreChunks(item, units, prefix) {
+  const controls = (list) => list.map((unit) => unitControl(item, unit, prefix)).filter(Boolean);
+  if (units.length <= 10) return controls(units);
+  const plan = overviewPlan({ fields: fieldsFor(item), containers: containersFor(item), isMedia: (c) => isMediaContainer(item, c), isTechnical });
+  const titleOf = (unit) => plan.blocks.find((block) => block.members.some((m) => under(unit.path, m.path) || under(m.path, unit.path)))?.title || null;
+  const chunks = chunkByGroup(units, titleOf);
+  if (chunks.filter((c) => c.title).length < 2) return controls(units);
+  // Under a heading the wrapper object (project → showcase) and an object that is the block itself
+  // (Eckdaten = meta) go unsaid.
+  const objectBlocks = plan.blocks.filter((b) => b.members.length === 1 && b.members[0].kind === "object").map((b) => b.members[0].path);
+  const quietParents = [plan.base, ...objectBlocks];
+  return chunks.map((chunk) => {
+    const drawn = chunk.items.map((unit) => unitControl(item, unit, prefix, { quietParents })).filter(Boolean);
+    // A list that is the whole chunk (Mitwirkende under "Mitwirkende") does not repeat the heading.
+    const own = drawn.length === 1 ? drawn[0].querySelector(":scope > .row-label") : null;
+    if (own && own.textContent.trim() === chunk.title) own.remove();
+    return el("div", { class: "more-chunk" }, chunk.title ? el("h4", { class: "subgroup-title", text: chunk.title }) : null, drawn);
+  });
 }
 function instanceView(body, item, context, head) {
   const path = context.path || [];
@@ -2608,18 +2636,19 @@ function recordView(body, item, context, head) {
   );
   const index = el("nav", { class: "ov-nav", "aria-label": "Bereiche" }, links);
   put(body, el("div", { class: "overview indexed" }, index, main));
-  // The index follows the scroll position: the current block is the last one whose title has passed the
-  // upper third of the sheet; scrolled to the end, it is the last block (a short last block never reaches
-  // the top). One listener at a time.
+  // The index follows the scroll position: the current block is the one at the top of the sheet (the last
+  // whose top has reached it); at the very top the first, scrolled to the end the last (a short last
+  // block never reaches the top). One listener at a time.
   overviewObserver?.disconnect();
   const spy = () => {
     const box = body.getBoundingClientRect();
-    const atEnd = body.scrollTop + body.clientHeight >= body.scrollHeight - 2;
     let index = 0;
-    sections.forEach((section, i) => {
-      if (section.getBoundingClientRect().top <= box.top + box.height / 3) index = i;
-    });
-    if (atEnd && body.scrollTop > 0) index = sections.length - 1;
+    if (body.scrollTop > 0) {
+      sections.forEach((section, i) => {
+        if (section.getBoundingClientRect().top <= box.top + 48) index = i;
+      });
+      if (body.scrollTop + body.clientHeight >= body.scrollHeight - 2) index = sections.length - 1;
+    }
     links.forEach((link, i) => link.setAttribute("aria-current", String(i === index)));
   };
   body.addEventListener("scroll", spy, { passive: true });
