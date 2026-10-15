@@ -21,6 +21,8 @@ import { fieldLabel, choiceLabel, isTechnical } from "./field-labels.mjs";
 import { sha256 } from "./sha256.mjs";
 import { flags } from "./flags.mjs";
 import { inlinePlain } from "/editor/site-lib/inline-text.mjs";
+import { kindOf, kindPlural } from "./record-kinds.mjs";
+import { mediaLibrary, collectionOf, ALL as ALL_MEDIA, UNUSED as UNUSED_MEDIA } from "./media-usage.mjs";
 
 // ---------------------------------------------------------------------------
 // State
@@ -75,20 +77,6 @@ const sectionIcons = {
   testimonials: "quote",
   contactForm: "mail",
 };
-const recordKinds = {
-  "page/": ["Seite", "file-text"],
-  "screen/": ["Seite", "file-text"],
-  "client/": ["Kunde", "building-2"],
-  "team/": ["Teammitglied", "user"],
-  "package/": ["Show-Paket", "package"],
-  "media/": ["Medium", "image"],
-  "post/": ["Blogartikel", "newspaper"],
-  "project/": ["Projekt", "folder-open"],
-  "faq/": ["FAQ", "circle-help"],
-  "translation/": ["Sprachfassung", "languages"],
-  "site/": ["Website-Daten", "mail"],
-};
-const kindOf = (id) => recordKinds[String(id).split("/")[0] + "/"] || ["Inhalt", "file-text"];
 
 // ---------------------------------------------------------------------------
 // DOM helpers
@@ -2424,6 +2412,7 @@ function recordView(body, item, context, head) {
     ...optionalVariants(item, [], { exact: true }),
     rootAdditions.length ? el("div", { class: "seg wide-row" }, rootAdditions) : null,
   ].filter(Boolean);
+  if (item.id.startsWith("media/")) generalControls.unshift(mediaRecordPreview(item));
   if (generalControls.length) blocks.push({ title: "Allgemein", controls: generalControls });
   for (const title of named) blocks.push({ title, controls: general.fields.filter((f) => f.group === title).map((f) => fieldControl(item, f)) });
   for (const root of roots) {
@@ -2434,6 +2423,7 @@ function recordView(body, item, context, head) {
     } else controls = subtreeControls(item, root.path);
     if (controls.length) blocks.push({ title: fieldLabel(root), controls });
   }
+  if (item.id.startsWith("media/")) blocks.push(mediaUsageBlock(item));
   const indexed = blocks.length >= 3;
   $("#panel").dataset.sparse = String(!indexed);
   const sections = blocks.map((block, i) =>
@@ -2939,21 +2929,17 @@ function openCreate(prefix, reference, preset = {}, after) {
 }
 function contentLibrary() {
   stageInputs();
-  const tabs = [
-    ["client/", "Kunden"],
-    ["team/", "Team"],
-    ["package/", "Show-Pakete"],
-    ["media/", "Medien"],
-    ["post/", "Blog"],
-    ["project/", "Projekte"],
-    ["faq/", "FAQ"],
-  ].filter(([prefix]) => records().some((r) => r.id.startsWith(prefix)) || recordTemplate(prefix));
+  const tabs = ["client/", "team/", "package/", "media/", "post/", "project/", "faq/"]
+    .map((prefix) => [prefix, kindPlural(prefix)])
+    .filter(([prefix]) => records().some((r) => r.id.startsWith(prefix)) || recordTemplate(prefix));
   const d = dialog("Inhalte verwalten");
   const bar = el("div", { class: "tabs", role: "tablist" });
   const pane = el("div", { role: "tabpanel" });
   const show = (prefix) => {
     for (const tab of bar.children) tab.setAttribute("aria-selected", String(tab.dataset.prefix === prefix));
     pane.replaceChildren();
+    d.classList.toggle("media-wide", prefix === "media/");
+    if (prefix === "media/") return pane.append(mediaBrowser({ mode: "manage", dialog: d }));
     const template = recordTemplate(prefix);
     if (template)
       pane.append(
@@ -2995,90 +2981,235 @@ function contentLibrary() {
 }
 
 // ---------------------------------------------------------------------------
-// Media
+// Media library: one browser for choosing an image for a field ("pick") and for managing images
+// ("manage", in Inhalte verwalten → Medien). Collections and usage come from the shared resolver
+// (media-usage.mjs) over the current draft, so an unsaved image change counts at once; the server's
+// /editor/api/media gives the same view of the saved draft.
 // ---------------------------------------------------------------------------
-async function openMedia(context) {
-  const search = el("input", { type: "search", placeholder: "Suchen", "aria-label": "Bilder suchen" });
-  const d = dialog("Bild wählen", { search });
-  const status = el("p", { class: "note", role: "status" });
-  const grid = el("div", { class: "media-grid" });
+const usageCountLabel = (n) => (n ? `${n}× verwendet` : "Nicht verwendet");
+const isPhoto = (data) => /jpe?g/.test(data?.mime || "");
+function mediaThumb(data, { lazy = true } = {}) {
+  // Logos are mostly white on transparent: shown whole on the checkerboard, photos fill the tile.
+  return el(
+    "span",
+    { class: "media-thumb" + (isPhoto(data) ? "" : " transparent") },
+    el("img", { src: data.src, alt: "", loading: lazy ? "lazy" : null, decoding: "async" }),
+  );
+}
+// One tab stop per group; arrow keys move (in a grid also by rows), Home/End jump to the ends.
+function rovingFocus(container, selector, { grid = false } = {}) {
+  container.addEventListener("keydown", (event) => {
+    const items = [...container.querySelectorAll(selector)];
+    const index = items.indexOf(document.activeElement);
+    if (index < 0 || event.altKey || event.ctrlKey || event.metaKey) return;
+    const columns = grid ? Math.max(1, items.filter((n) => n.offsetTop === items[0].offsetTop).length) : 1;
+    const step = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: columns, ArrowUp: -columns, Home: -index, End: items.length - 1 - index }[event.key];
+    if (step === undefined) return;
+    event.preventDefault();
+    let target = index + step;
+    // Down from the second-to-last row lands on the last tile when the last row is shorter.
+    if (target >= items.length && event.key === "ArrowDown" && Math.floor(index / columns) < Math.floor((items.length - 1) / columns)) target = items.length - 1;
+    if (target < 0 || target >= items.length) return;
+    items.forEach((n) => (n.tabIndex = -1));
+    items[target].tabIndex = 0;
+    items[target].focus();
+    items[target].scrollIntoView({ block: "nearest" });
+  });
+  container.addEventListener("focusin", (event) => {
+    if (!event.target.matches(selector)) return;
+    for (const n of container.querySelectorAll(selector)) n.tabIndex = n === event.target ? 0 : -1;
+  });
+}
+function mediaBrowser({ mode, dialog: d, context = null }) {
+  const picking = mode === "pick";
+  const currentRef = picking ? value(record(context.id), context.path)?.assetId : null;
+  const currentId = currentRef ? (currentRef.startsWith("media/") ? currentRef : "media/" + currentRef) : null;
+  let library = mediaLibrary(records());
+  // Choosing a client logo starts in "Kunden", a team portrait in "Team" – when that collection exists.
+  const start = picking ? collectionOf(context.id, records()) : null;
+  let selected = library.collections.some((c) => c.id === start) ? start : ALL_MEDIA;
+  let focusId = null;
+  const search = el("input", { type: "search", placeholder: "Bilder suchen", "aria-label": "Bilder suchen" });
   const input = el("input", { type: "file", accept: "image/png,image/jpeg,image/webp", "aria-label": "Bild hochladen" });
   const upload = el("label", { class: "upload-button" }, icon("upload"), el("span", { text: "Hochladen" }), input);
-  d.head.insertBefore(upload, d.head.lastChild);
-  d.body.append(status, grid);
-  const currentAsset = value(record(context.id), context.path)?.assetId;
-  try {
-    const result = await api("/editor/api/media");
-    const assets = result.assets || [];
-    const render = () => {
-      grid.replaceChildren();
-      const term = search.value.toLowerCase();
-      for (const asset of assets.filter((a) => (a.data.title || a.id).toLowerCase().includes(term))) {
-        const card = el(
-          "button",
-          { type: "button", class: "media-card", "aria-current": String(asset.id === currentAsset || "media/" + currentAsset === asset.id) },
-          el("img", { src: asset.data.src, alt: "", loading: "lazy" }),
-          el("span", { text: asset.data.title || asset.id }),
-        );
-        card.addEventListener("click", () => {
-          const existing = value(record(context.id), context.path) || {};
-          changed(context.id, context.path, {
-            ...existing,
-            src: asset.data.src,
-            alt: asset.data.defaultAlt || "",
-            width: asset.data.width,
-            height: asset.data.height,
-            assetId: asset.id,
-            altOverride: null,
-            decorative: false,
-          });
-          d.close();
-          if (currentInspector) rerender();
-          else openInspector(context, "media");
-          toast("Bild übernommen.", { action: undoLast });
-        });
-        grid.append(card);
-      }
-      status.textContent = grid.children.length ? "" : "Keine Bilder gefunden.";
-    };
-    render();
-    search.addEventListener("input", render);
-    search.focus();
-    input.addEventListener("change", async () => {
-      const file = input.files[0];
-      if (!file) return;
-      input.disabled = true;
-      status.textContent = "Bild wird geprüft und gespeichert …";
-      try {
-        const response = await fetch("/editor/api/media", {
-          method: "POST",
-          headers: {
-            ...csrfHeader(),
-            "Content-Type": file.type,
-            "X-Filename": encodeURIComponent(file.name),
-            "X-Expected-Head": state.head,
-            "X-Request-Id": crypto.randomUUID(),
-          },
-          body: file,
-        });
-        const uploaded = await response.json().catch(() => ({}));
-        if (response.status === 401) sessionExpired();
-        if (!response.ok) throw Object.assign(Error(uploaded.error || "Hochladen fehlgeschlagen."), { status: response.status });
-        state = uploaded.state;
-        initialHead = state.head;
-        for (const r of state.records) if (!draft.base.has(r.id)) draft.base.set(r.id, r);
-        d.close();
-        openMedia(context);
-      } catch (e) {
-        status.textContent = e.message;
-        status.classList.add("error");
-        input.disabled = false;
-      }
+  const nav = el("div", { class: "media-collections", role: "group", "aria-label": "Sammlungen" });
+  const status = el("p", { class: "note media-status", role: "status" });
+  const tiles = el("ul", { class: "media-tiles" });
+  const root = el(
+    "div",
+    { class: "media-library" },
+    el(
+      "div",
+      { class: "media-layout" },
+      nav,
+      el("div", { class: "media-main" }, el("div", { class: "media-tools" }, search, upload), el("div", { class: "media-scroll" }, status, tiles)),
+    ),
+  );
+  const choose = (asset) => {
+    const existing = value(record(context.id), context.path) || {};
+    changed(context.id, context.path, {
+      ...existing,
+      src: asset.data.src,
+      alt: asset.data.defaultAlt || "",
+      width: asset.data.width,
+      height: asset.data.height,
+      assetId: asset.id,
+      altOverride: null,
+      decorative: false,
     });
-  } catch (e) {
-    status.textContent = e.message;
-    status.classList.add("error");
+    d.close();
+    if (currentInspector) rerender();
+    else openInspector(context, "media");
+    toast("Bild übernommen.", { action: undoLast });
+  };
+  const openAsset = (asset) => {
+    d.close();
+    openInspector({ id: asset.id, path: [] }, "record", undefined, { docked: true });
+  };
+  const tile = (asset, tabbable) => {
+    const current = asset.id === currentId;
+    const node = el(
+      "button",
+      { type: "button", class: "media-tile", tabindex: tabbable ? "0" : "-1", "aria-current": current ? "true" : null, "data-asset": asset.id },
+      mediaThumb(asset.data),
+      current ? el("span", { class: "media-badge", text: "Aktuell" }) : null,
+      el("span", { class: "media-title", text: asset.data.title || "Ohne Titel" }),
+      el("span", { class: "media-meta", text: usageCountLabel(asset.usage.length) }),
+    );
+    node.addEventListener("click", () => (picking ? choose(asset) : openAsset(asset)));
+    return node;
+  };
+  const select = (id) => {
+    selected = id;
+    drawNav();
+    drawTiles();
+  };
+  const drawNav = () => {
+    const hadFocus = nav.contains(document.activeElement);
+    nav.replaceChildren(
+      ...library.collections.map((c) =>
+        el(
+          "button",
+          { type: "button", class: "media-collection", "aria-pressed": String(c.id === selected), tabindex: c.id === selected ? "0" : "-1", onclick: () => select(c.id) },
+          el("span", { class: "media-collection-label", text: c.label }),
+          el("span", { class: "media-count", text: String(c.count) }),
+        ),
+      ),
+    );
+    if (hadFocus) nav.querySelector('[aria-pressed="true"]')?.focus();
+  };
+  const drawTiles = () => {
+    const term = search.value.trim().toLowerCase();
+    const label = library.collections.find((c) => c.id === selected)?.label || "Alle";
+    const shown = library.assets
+      .filter((a) => selected === ALL_MEDIA || a.collections.includes(selected))
+      .filter((a) => !term || [a.data.title, a.data.defaultAlt].join(" ").toLowerCase().includes(term))
+      .sort((a, b) => String(a.data.title || "").localeCompare(String(b.data.title || ""), "de"));
+    tiles.setAttribute("aria-label", "Bilder: " + label);
+    const active = shown.find((a) => a.id === focusId) || shown.find((a) => a.id === currentId) || shown[0];
+    tiles.replaceChildren(...shown.map((asset) => el("li", {}, tile(asset, asset === active))));
+    status.replaceChildren();
+    if (shown.length) return;
+    const where = selected === ALL_MEDIA ? "" : ` in „${label}“`;
+    status.append(el("span", { text: term ? `Keine Bilder zu „${search.value.trim()}“${where}.` : `Hier sind noch keine Bilder${where}.` }));
+    if (term && selected !== ALL_MEDIA) status.append(button("In allen Bildern suchen", () => select(ALL_MEDIA), { cls: "inline-button" }));
+  };
+  rovingFocus(nav, ".media-collection");
+  rovingFocus(tiles, ".media-tile", { grid: true });
+  search.addEventListener("input", drawTiles);
+  input.addEventListener("change", async () => {
+    const file = input.files[0];
+    if (!file) return;
+    input.disabled = true;
+    status.className = "note media-status";
+    status.textContent = "Bild wird geprüft und gespeichert …";
+    try {
+      const response = await fetch("/editor/api/media", {
+        method: "POST",
+        headers: {
+          ...csrfHeader(),
+          "Content-Type": file.type,
+          "X-Filename": encodeURIComponent(file.name),
+          "X-Expected-Head": state.head,
+          "X-Request-Id": crypto.randomUUID(),
+        },
+        body: file,
+      });
+      const uploaded = await response.json().catch(() => ({}));
+      if (response.status === 401) sessionExpired();
+      if (!response.ok) throw Object.assign(Error(uploaded.error || "Hochladen fehlgeschlagen."), { status: response.status });
+      state = uploaded.state;
+      initialHead = state.head;
+      for (const r of state.records) if (!draft.base.has(r.id)) draft.base.set(r.id, r);
+      // The new image is not used anywhere yet: it waits in "Nicht verwendet", ready to be chosen.
+      library = mediaLibrary(records());
+      focusId = uploaded.assetId;
+      search.value = "";
+      select(library.assets.find((a) => a.id === focusId)?.collections[0] || ALL_MEDIA);
+      tiles.querySelector(`[data-asset="${CSS.escape(focusId)}"]`)?.focus();
+      toast("Bild hochgeladen.");
+    } catch (e) {
+      status.textContent = e.message;
+      status.classList.add("error");
+    } finally {
+      input.value = "";
+      input.disabled = false;
+    }
+  });
+  drawNav();
+  drawTiles();
+  // The image in use is in view when the picker opens.
+  requestAnimationFrame(() => tiles.querySelector('[aria-current="true"]')?.scrollIntoView({ block: "nearest" }));
+  return root;
+}
+function openMedia(context) {
+  const d = dialog("Bild wählen");
+  d.classList.add("media-wide");
+  d.body.append(mediaBrowser({ mode: "pick", dialog: d, context }));
+  d.body.querySelector('input[type="search"]').focus();
+}
+// Media record panel: the image itself, then where it is used (each place opens its record).
+function mediaRecordPreview(item) {
+  const { width, height, mime } = item.data;
+  const format = String(mime || "").replace(/^image\//, "").replace("jpeg", "JPEG").replace("png", "PNG").replace("webp", "WebP");
+  return el("figure", { class: "media-record-preview" }, mediaThumb(item.data, { lazy: false }), el("figcaption", { class: "note", text: `${width} × ${height} px · ${format}` }));
+}
+function mediaPlace(owner, path, markdown) {
+  const parts = [];
+  let rest = path;
+  if (path[0] === "sections" && Number.isInteger(path[1])) {
+    parts.push(`Abschnitt „${sectionTitle(owner, path[1])}“`);
+    rest = path.slice(2);
   }
+  const containers = containersFor(owner);
+  const offset = path.length - rest.length;
+  const listAt = rest.findLastIndex((part) => Number.isInteger(part));
+  if (listAt >= 0) {
+    const listPath = path.slice(0, offset + listAt);
+    parts.push(`${fieldLabel(containers.find((c) => equal(c.path, listPath)) || { path: listPath })} ${rest[listAt] + 1}`);
+  } else if (rest.length) parts.push(fieldLabel(containers.find((c) => equal(c.path, path)) || { path }));
+  if (markdown) parts.push("im Text");
+  return parts.join(" · ");
+}
+function mediaUsageBlock(item) {
+  const usage = mediaLibrary(records()).assets.find((a) => a.id === item.id)?.usage || [];
+  if (!usage.length) return { title: "Verwendet in", controls: [el("p", { class: "note", text: "Dieses Bild wird noch nirgends verwendet." })] };
+  const rows = usage.map((use) => {
+    const user = record(use.recordId);
+    // A translation's image belongs to its source record.
+    const owner = use.recordId.startsWith("translation/") ? record(user?.data.sourceId) || user : user;
+    const ownPath = owner === user ? use.path : [];
+    const pageImage = /^(page|screen)\//.test(owner.id) && !use.markdown && ownPath.length;
+    const open = () => (pageImage ? pushView({ id: owner.id, path: ownPath }, "media") : pushView({ id: owner.id, path: [], reveal: ownPath.length ? ownPath : undefined }, "record"));
+    return el(
+      "button",
+      { type: "button", class: "action nav media-usage", onclick: open },
+      icon(kindOf(owner.id)[1]),
+      el("span", { class: "media-usage-text" }, el("span", { class: "media-usage-name", text: recordName(owner) }), el("small", { text: [kindOf(owner.id)[0], mediaPlace(owner, ownPath, use.markdown)].filter(Boolean).join(" · ") })),
+      icon("chevron-right"),
+    );
+  });
+  return { title: `Verwendet in (${usage.length})`, controls: [el("div", { class: "media-usages" }, rows)] };
 }
 
 // ---------------------------------------------------------------------------
