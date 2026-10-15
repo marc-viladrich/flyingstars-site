@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Translate missing or changed texts into EN/NL and commit them as unreviewed translations.
-// Usage: node relaunch/translate-missing.mjs --locale en [--records page/kontakt,faq/show-01] [--provider mymemory]
+// Usage: node relaunch/translate-missing.mjs --locale en [--records record/id] [--provider mymemory]
 //        [--all] [--max-chars 3000] [--budget-chars 30000] [--dry-run]
 // The same core runs behind the editor's "Fehlende Texte übersetzen" action. In CI it would run after a push.
 import path from "node:path";
@@ -13,10 +13,12 @@ import {resolveRuntimeOptions} from './runtime-options.mjs';
 import {createFlyingStarsAdapter} from './flyingstars-adapter.mjs';
 const args = Object.fromEntries(process.argv.slice(2).map((a, i, all) => (a.startsWith("--") ? [a.slice(2), all[i + 1]?.startsWith("--") || all[i + 1] === undefined ? true : all[i + 1]] : null)).filter(Boolean));
 const locale = args.locale || "en";
-if (!["en","nl"].includes(locale)) throw Error("Sprachziel muss en oder nl sein.");
+
 if (args.all && args.records) throw Error("--all und --records schließen sich aus.");
 const runtime=resolveRuntimeOptions({values:{siteRoot:typeof args.source==='string'?args.source:args['site-root'],stateDir:args['state-dir'],translationProvider:args.provider}});
 const site=await createFlyingStarsAdapter(runtime.siteRoot);
+const languages=site.extensions.require('languages');
+if(!Object.hasOwn(languages.locales,locale))throw Error('Sprachziel muss '+Object.keys(languages.locales).join(' oder ')+' sein.');
 const {plan,mergeIntoTranslations}=createTranslationCore(site);
 const store = await new NativeStore(runtime.siteRoot,{runtime,site}).init();
 const state = await store.state();

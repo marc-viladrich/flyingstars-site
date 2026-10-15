@@ -10,7 +10,7 @@ import {withRepositoryLock} from '../repository-lock.mjs';
 import {prepareDraftRebase,applyDraftRebase} from '../rebase-draft.mjs';
 import {isMain,assertStateLocation} from '../paths.mjs';
 import {resolveRuntimeOptions} from '../runtime-options.mjs';
-import {createFlyingStarsAdapter} from '../flyingstars-adapter.mjs';
+import {createFlyingStarsAdapter,legacyRuntimePaths,legacyRestartEnvironment} from '../flyingstars-adapter.mjs';
 const run = promisify(execFile);
 
 export async function hostUpdate({source, state, remote, webroot, restart = process.env.DEPLOY_RESTART_CMD, expectedMain = process.env.DEPLOY_EXPECTED_MAIN, install = true, options} = {}) {
@@ -27,7 +27,7 @@ export async function hostUpdate({source, state, remote, webroot, restart = proc
     const main = await git(source, ['rev-parse', 'refs/remotes/' + selected + '/' + runtime.git.publishedBranch]);
     if (expectedMain && main !== expectedMain) throw Error('main ist inzwischen weitergelaufen. Bitte CI für den aktuellen Stand abwarten und erneut deployen.');
     const prepared = await prepareDraftRebase(source, main, git, selected, runtime.git);
-    const staging = path.join(source, '.git', 'flyingstars-deploy-' + randomUUID());
+    const staging = path.join(source, '.git', legacyRuntimePaths.deployPrefix + randomUUID());
     await git(source, ['worktree', 'add', '--quiet', '--detach', staging, prepared.head]);
     let installed = false;
     try {
@@ -53,7 +53,7 @@ export async function hostUpdate({source, state, remote, webroot, restart = proc
         await fs.rename(path.join(staging, 'node_modules'), path.join(source, 'node_modules'));
       }
       await builder.activate(artifact);
-      try{await run('/bin/sh', ['-c', restart], {cwd: source, env: {...runtime.processEnv, AFE_SITE_ROOT:source,AFE_STATE_DIR:state,FLYINGSTARS_STATE_DIR: state}, timeout: 30_000, maxBuffer: 1_000_000});}
+      try{await run('/bin/sh', ['-c', restart], {cwd: source, env: {...runtime.processEnv, AFE_SITE_ROOT:source,AFE_STATE_DIR:state,...legacyRestartEnvironment(state)}, timeout: 30_000, maxBuffer: 1_000_000});}
       catch{throw Error('Öffentliche Ausgabe aktiviert, Editor-Neustart fehlgeschlagen. Bitte den konsoleH-Prozess prüfen und den Hook erneut ausführen.');}
       return {main, draft: prepared.head, installed, activated: artifact.head};
     } finally {await git(source, ['worktree', 'remove', '--force', staging]);}

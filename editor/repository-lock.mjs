@@ -1,10 +1,11 @@
+import {legacyRuntimePaths} from './runtime-options.mjs';
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
 import {setTimeout as delay} from 'node:timers/promises';
 
 /** Shared by the running editor, push queue and the SSH deploy process. */
 export async function withRepositoryLock(root, work, {timeout = 240_000} = {}) {
-  const file = path.join(root, '.git', 'flyingstars-operation.lock');
+  const file = path.join(root, '.git', legacyRuntimePaths.operationLock);
   const started = Date.now();
   let handle;
   while (!handle) {

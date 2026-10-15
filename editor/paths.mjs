@@ -1,3 +1,4 @@
+import {legacyRuntimeMessages} from './runtime-options.mjs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {realpathSync,promises as fs} from 'node:fs';
@@ -17,7 +18,7 @@ export async function assertStateLocation(source, state, publicRoot) {
   const configured=[source,state,publicRoot].map(file=>file?path.resolve(file):null);
   const resolved=await Promise.all(configured.map(file=>file?canonical(file):null));
   for(const [repo,privateDir,webroot] of [configured,resolved]) {
-    if(inside(privateDir,repo))throw Error('AFE_STATE_DIR (FLYINGSTARS_STATE_DIR) muss außerhalb des Repository-Klons liegen.');
+    if(inside(privateDir,repo))throw Error(legacyRuntimeMessages.state);
     if(webroot&&(inside(privateDir,webroot)||inside(webroot,privateDir)||inside(repo,webroot)||inside(webroot,repo)))throw Error('Klon, privater Zustand und öffentlicher Webroot müssen getrennt liegen.');
   }
 }

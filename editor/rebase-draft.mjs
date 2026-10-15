@@ -1,3 +1,4 @@
+import {legacyRuntimePaths} from './runtime-options.mjs';
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
@@ -11,11 +12,11 @@ export async function prepareDraftRebase(root, main, git, remote, {draftBranch='
     try {remoteDraft = await git(root, ['rev-parse', 'refs/remotes/' + remote + '/' + draftBranch]);} catch {}
     if (remoteDraft) try {await git(root, ['merge-base', '--is-ancestor', remoteDraft, before]);}
     catch {
-      const lease=await fs.readFile(path.join(root,'.git','flyingstars-draft-lease'),'utf8').catch(e=>{if(e.code!=='ENOENT')throw e;return '';});
+      const lease=await fs.readFile(path.join(root,'.git',legacyRuntimePaths.draftLease),'utf8').catch(e=>{if(e.code!=='ENOENT')throw e;return '';});
       if(lease!==remoteDraft)throw Error('Der entfernte Entwurf enthält fremde Änderungen. Bitte die Git-Stände manuell zusammenführen.');
     }
   }
-  const folder = path.join(root, '.git', 'flyingstars-rebase-' + randomUUID());
+  const folder = path.join(root, '.git', legacyRuntimePaths.rebasePrefix + randomUUID());
   await git(root, ['worktree', 'add', '--quiet', '--detach', folder, before]);
   try {
     try {await git(folder, ['-c', 'commit.gpgsign=false', 'rebase', main]);}
@@ -30,6 +31,6 @@ export async function applyDraftRebase(root, prepared, git, {draftBranch='conten
   if (prepared.head !== prepared.before) {
     await git(root, ['reset', '--hard', prepared.head]);
     // The explicit lease allows replacing only the remote draft we actually rebased.
-    if (prepared.remoteDraft) await fs.writeFile(path.join(root, '.git', 'flyingstars-draft-lease'), prepared.remoteDraft);
+    if (prepared.remoteDraft) await fs.writeFile(path.join(root, '.git', legacyRuntimePaths.draftLease), prepared.remoteDraft);
   }
 }
