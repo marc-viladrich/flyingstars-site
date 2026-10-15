@@ -14,7 +14,7 @@ Redaktion → Speichern → content/draft → asynchroner Push nach GitHub
 
 GitHub `main` enthält den verbindlichen Code und die freigegebenen Inhalte. Der Host-Klon steht auf `content/draft`. Speichern erzeugt einen lokalen Commit und stößt einen Push an. Ein Remoteausfall verhindert keinen Save; die Queue versucht es erneut, mit wachsendem Abstand bis maximal 60 Sekunden. Nach einem Neustart nimmt sie die noch vorhandenen Git-Commits wieder auf. `/editor/api/state` liefert `sync.enabled`, `pending`, `lastError` und `lastPushedAt`. Die Zeitangabe gilt für den laufenden Prozess.
 
-`FLYINGSTARS_GIT_REMOTE` benennt den Remote, an den der Editor Inhalte pusht; auf dem Host `FLYINGSTARS_GIT_REMOTE=origin` in der Node-App-Konfiguration setzen. Ohne die Variable ist Sync aus (bewusst: eine Entwicklerkopie mit fremdem `origin` bekommt nie versehentlich Inhalts-Pushes); `off` schaltet ihn ausdrücklich ab. Es gibt einen schreibenden Host. Fremde Commits auf dem entfernten Entwurfsbranch verlangen eine manuelle Zusammenführung. Nach einem Rebase darf die Queue den alten Entwurf nur mit einem exakt geprüften `--force-with-lease` ersetzen. `main` wird immer ohne Force-Push vorgeschoben.
+`AFE_GIT_REMOTE`, bisher `FLYINGSTARS_GIT_REMOTE`, benennt den Remote, an den der Editor Inhalte pusht; auf dem Host `AFE_GIT_REMOTE=origin` in der Node-App-Konfiguration setzen. Ohne die Variable ist Sync aus (bewusst: eine Entwicklerkopie mit fremdem `origin` bekommt nie versehentlich Inhalts-Pushes); `off` schaltet ihn ausdrücklich ab. Es gibt einen schreibenden Host. Fremde Commits auf dem entfernten Entwurfsbranch verlangen eine manuelle Zusammenführung. Nach einem Rebase darf die Queue den alten Entwurf nur mit einem exakt geprüften `--force-with-lease` ersetzen. `main` wird immer ohne Force-Push vorgeschoben.
 
 Freigeben prüft den zuvor angesehenen Draft- und main-Stand, holt den Remote und rebasiert bei Bedarf auf `origin/main`. Ein Rebase läuft in einem isolierten Worktree. Bei Konflikt bleibt der Editor-Klon unverändert und die API antwortet mit HTTP 409 und einer deutschen Erklärung. Der gesamte Entwurf wird freigegeben, keine einzelne Seite.
 
@@ -32,31 +32,39 @@ Save, Publish und Deploy teilen sich `.git/flyingstars-operation.lock`. Der Push
 
 ## Pfade und öffentliche Aktivierung
 
-| Einstellung | Bedeutung |
-|---|---|
-| `FLYINGSTARS_STATE_DIR` | Absoluter privater Ordner außerhalb des Klons und jedes Webroots |
-| `FLYINGSTARS_PUBLIC_WEBROOT` | Apache-Verzeichnis der öffentlichen Domain; nur statische Ausgabe |
-| `EDITOR_ORIGIN` | HTTPS-Origin der privaten Editor-Subdomain, ohne Pfad |
-| `SITE_URL` | Origin der öffentlichen Site, für Canonical und Sitemap |
-| `PORT` oder `RELAUNCH_PORT` | Listener-Port gemäß konsoleH-Konfiguration |
-| `RELAUNCH_PREVIEW=0` | Ein permanenter Node-Prozess; keine zusätzliche Astro-dev-Vorschau |
-| `DEPLOY_RESTART_CMD` | Auf dem Account geprüfter Neustartbefehl |
+Die vollständige Variablen- und CLI-Tabelle mit Defaults steht in [Runtime-Optionen](runtime-options.md). Die neuen `AFE_*`-Namen haben Vorrang; alle bisherigen `FLYINGSTARS_*`, `EDITOR_*`, `RELAUNCH_*`, `PORT` und `SITE_URL` bleiben als deprecated Aliase verfügbar, soweit ein neuer Name existiert.
+
+| Einstellung | Bisheriger Alias | Bedeutung |
+|---|---|---|
+| `AFE_SITE_ROOT` | keiner | Site-Klon; ohne Angabe das Arbeitsverzeichnis |
+| `AFE_STATE_DIR` | `FLYINGSTARS_STATE_DIR` | Privater Ordner außerhalb des Klons und jedes Webroots |
+| `AFE_PUBLIC_WEBROOT` | `FLYINGSTARS_PUBLIC_WEBROOT` | Apache-Verzeichnis der öffentlichen Domain |
+| `AFE_EDITOR_ORIGIN` | `EDITOR_ORIGIN` | HTTPS-Origin der privaten Editor-Subdomain, ohne Pfad |
+| `AFE_CANONICAL_ORIGIN` | `SITE_URL` | Origin der öffentlichen Site für Canonical und Sitemap |
+| `AFE_PORT` | `PORT`, `RELAUNCH_PORT` | Listener-Port gemäß konsoleH-Konfiguration |
+| `AFE_GIT_REMOTE` | `FLYINGSTARS_GIT_REMOTE` | Expliziter Remote für Inhalts-Pushes |
+| `AFE_DRAFT_BRANCH` / `AFE_PUBLISHED_BRANCH` | keine | `content/draft` / `main` |
+| `AFE_AUTH` / `AFE_ACCOUNTS` | `EDITOR_AUTH` / `EDITOR_ACCOUNTS` | Anmeldung und private Kontodatei |
+| `AFE_PREVIEW=0` | `RELAUNCH_PREVIEW=0` | Keine zusätzliche Astro-dev-Vorschau |
+| `DEPLOY_RESTART_CMD` | unverändert | Auf dem Account geprüfter Neustartbefehl |
 
 Im State-Ordner liegen `runtime/`, `runtime-public/`, `preview/`, `runtime-private/editor-accounts.json` und `translation-memory.json`. Konten und State brauchen eigene private Backups; Git sichert Inhalte und die hochgeladenen Medienbytes, nicht Passwörter oder den Übersetzungsspeicher.
 
-Ist `FLYINGSTARS_PUBLIC_WEBROOT` gesetzt, wird jeder vollständige Public-Release in einen Geschwisterordner kopiert und der Webroot-Symlink per Rename gewechselt. `<webroot>.previous` hält die vorige Ausgabe. Beim ersten Wechsel eines bestehenden echten Verzeichnisses wird es in einen Geschwisterordner verschoben und `.previous` darauf verlinkt; dabei ist eine kurze Lücke möglich. Deshalb den Webroot vor dem ersten Produktivstart als Symlink einrichten. Apache-Symlinkrechte müssen am Account geprüft werden. Alte Release-Ordner und Runtime-Artefakte erst bereinigen, wenn sie weder aktiv noch für den Rückweg vorgesehen sind.
+Ist `AFE_PUBLIC_WEBROOT` oder dessen Alias gesetzt, wird jeder vollständige Public-Release in einen Geschwisterordner kopiert und der Webroot-Symlink per Rename gewechselt. `<webroot>.previous` hält die vorige Ausgabe. Beim ersten Wechsel eines bestehenden echten Verzeichnisses wird es in einen Geschwisterordner verschoben und `.previous` darauf verlinkt; dabei ist eine kurze Lücke möglich. Deshalb den Webroot vor dem ersten Produktivstart als Symlink einrichten. Apache-Symlinkrechte müssen am Account geprüft werden. Alte Release-Ordner und Runtime-Artefakte erst bereinigen, wenn sie weder aktiv noch für den Rückweg vorgesehen sind.
 
-Ohne Webroot-Variable bleibt die bisherige lokale Simulation. Ohne State-Variable bleibt auf Marcs Mac der bestehende Ordner `relaunch/` die Zustandsablage. Die lokalen Befehle bleiben gleich:
+Ohne Webroot-Variable bleibt die lokale Simulation. Ohne State-Variable bleibt der Elternordner des Site-Klons die Zustandsablage. Site und State werden aus CLI/Umgebung aufgelöst, nicht aus dem Speicherort eines Runtime-Moduls. Startbefehle aus dem Klon:
 
 ```sh
-/opt/homebrew/opt/node@22/bin/node relaunch/server.mjs
-/opt/homebrew/opt/node@22/bin/node relaunch/manage-accounts.mjs list
-/opt/homebrew/opt/node@22/bin/node relaunch/translate-missing.mjs --locale en --dry-run
-/opt/homebrew/opt/node@22/bin/node relaunch/hosting-probe.mjs --build relaunch/source
-/opt/homebrew/opt/node@22/bin/node --test *.test.mjs relaunch/*.test.mjs relaunch/source/src/schemas/editorial-source.test.mjs
+node editor/server.mjs
+node editor/manage-accounts.mjs list
+node editor/translate-missing.mjs --locale en --dry-run
+node editor/hosting-probe.mjs --build "$PWD"
+node --test 'editor/*.test.mjs' 'editor/test/*.test.mjs'
 ```
 
-Die Implementierungen und Browserdateien liegen unter `editor/`; `relaunch/*.mjs` sind Weiterleitungen, `relaunch/web` ist ein Symlink. Weitere UI-Arbeit gehört nach `relaunch/source/editor/web/`.
+Für Aufrufe aus einem anderen Verzeichnis `AFE_SITE_ROOT` und `AFE_STATE_DIR` setzen oder dem Server `--site-root /absolut/klon --state-dir /absolut/private-state` übergeben. Vorhandene Weiterleitungen unter `relaunch/*.mjs` funktionieren ebenfalls mit diesen expliziten Angaben. Die Implementierungen und Browserdateien liegen unter `editor/`.
+
+Der Start verweigert State innerhalb des Klons, State im öffentlichen Webroot und einen öffentlichen Webroot innerhalb des State-Ordners. Klon und Webroot müssen ebenfalls getrennt liegen. Sowohl konfigurierte Pfade als auch Symlink-Ziele werden geprüft, auch wenn die letzten Verzeichnisse noch fehlen. Fehler erscheinen auf Deutsch vor dem Laden von Konten, Site-Modulen oder dem Öffnen eines Listeners.
 
 ## Einmalige Einrichtung durch Marc
 
@@ -64,7 +72,7 @@ Die Implementierungen und Browserdateien liegen unter `editor/`; `relaunch/*.mjs
 2. GitHub-Environment `production` einrichten. Secrets: `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY`, `DEPLOY_KNOWN_HOSTS`, `DEPLOY_PATH`. `DEPLOY_PATH` ist der absolute private Klonpfad. Den Host-Key unabhängig prüfen; die Action benutzt kein automatisches Vertrauen via ssh-keyscan.
 3. Den Actions-SSH-Schlüssel für den Webhosting-Nutzer hinterlegen. Einen separaten GitHub-Deploy-Key mit Schreibzugriff für den Host einrichten, damit er fetch und die Pushes nach content/draft und main ausführen kann. GitHub-Host-Key und SSH-Konfiguration am Account prüfen. Schlüssel bleiben außerhalb des Klons.
 4. Node 22 ab 22.12, Git und npm auf dem Account prüfen. `node editor/hosting-probe.mjs --build <klon>` misst die tatsächlichen Rechte und Ressourcen. Erster Clone außerhalb `public_html`, `npm ci --omit=dev`, `git switch -c content/draft origin/main`. Falls es bereits einen Remote-Entwurf gibt, diesen bewusst als Startstand wählen.
-5. Private State-Ablage und öffentlichen Apache-Webroot einrichten. Die öffentliche Domain bleibt eine statische Apache-Domain. Die Editor-Subdomain wird in konsoleH als Node-App mit Arbeitsverzeichnis `<klon>`, Startskript `editor/server.mjs`, HTTPS, Logdatei, Node-Version und geeignetem Speicherlimit eingerichtet. `EDITOR_AUTH=on`, `EDITOR_ORIGIN`, `SITE_URL`, State-, Webroot- und Portvariablen setzen. Für den Anfang `RELAUNCH_PREVIEW=0`.
+5. Private State-Ablage und öffentlichen Apache-Webroot einrichten. Die öffentliche Domain bleibt eine statische Apache-Domain. Die Editor-Subdomain wird in konsoleH als Node-App mit Arbeitsverzeichnis `<klon>`, Startskript `editor/server.mjs`, HTTPS, Logdatei, Node-Version und geeignetem Speicherlimit eingerichtet. `AFE_AUTH=on`, `AFE_SITE_ROOT`, `AFE_EDITOR_ORIGIN`, `AFE_CANONICAL_ORIGIN`, State-, Webroot- und Portvariablen setzen. Für den Anfang `AFE_PREVIEW=0`. Die bisherigen Namen bleiben gültig.
 6. Mit `node editor/manage-accounts.mjs add marc --name "Marc Viladrich" --email hey@marcviladrich.com` ein Konto im privaten State anlegen. Das Passwort wird im Terminal abgefragt.
 7. Unter `$HOME/.config/flyingstars/deploy-config.sh` mit Modus 600 dieselben öffentlichen Origins, Pfade, Node-PATH, nötige Buildvariablen und `DEPLOY_RESTART_CMD` als Shell-Exports eintragen. Die SSH-Action lädt diese private Datei; konsoleH-Umgebungsvariablen werden nicht automatisch an eine SSH-Sitzung vererbt. Kein `.env` im Klon nötig.
 8. Neustart am echten Account prüfen, dann `node editor/deploy/host-update.mjs` und anschließend eine reale Code-PR sowie Save/Freigabe testen. Kandidaten für den Neustart sind ein von Hetzner bestätigter konsoleH-Automationsweg, ein bestätigter Restart-Dateitrigger oder das Beenden des eigenen Node-Prozesses bei belegtem Supervisor-Neustart. Keiner dieser Wege ist hier verifiziert; keinen davon ungeprüft als Produktionsbefehl eintragen.
