@@ -35,6 +35,7 @@ import { splitLocale, localizedPath, frontendTarget, liveURL } from "./frontend-
 import { navigatorGroups, matchesQuery, localeVersion } from "./content-navigator.mjs";
 import { NavStack } from "./nav-stack.mjs";
 import { overviewPlan, entryCounts, directChildren, chunkByGroup } from "./overview-plan.mjs";
+import { incomingReferences } from "./linked-records.mjs";
 
 // ---------------------------------------------------------------------------
 // State
@@ -2584,6 +2585,10 @@ function recordView(body, item, context, head) {
   if (general) general.controls.push(...extras);
   if (item.id.startsWith("media/")) general.controls.unshift(mediaRecordPreview(item));
   if (item.id.startsWith("media/")) blocks.push(mediaUsageBlock(item));
+  else {
+    const linked = linkedFromBlock(item);
+    if (linked) blocks.push(linked);
+  }
   const shown = blocks.filter((b) => b.controls.length);
   const indexed = shown.length >= 3;
   $("#panel").dataset.sparse = String(!indexed);
@@ -3539,6 +3544,35 @@ function mediaUsageBlock(item) {
     );
   });
   return { title: `Verwendet in (${usage.length})`, controls: [el("div", { class: "media-usages" }, rows)] };
+}
+// "Verknüpft mit": the records that point at this one (a page section listing this client, a card showing
+// this package), read-only, each a jump that Back returns from. Derived from the schemas' reference
+// metadata over all draft records (linked-records.mjs); images keep their own "Verwendet in".
+function linkedFromBlock(item) {
+  const incoming = incomingReferences(records(), item);
+  if (!incoming.length) return null;
+  const rows = incoming.flatMap(({ owner, paths }) => {
+    const page = /^(page|screen)\//.test(owner.id);
+    // One row per place: a page names the section, any other record the field (first reference there).
+    const places = new Map();
+    for (const path of paths) {
+      const key = page && path[0] === "sections" ? "s" + path[1] : "r";
+      if (!places.has(key)) places.set(key, path);
+    }
+    return [...places.values()].map((path) => {
+      const inSection = page && path[0] === "sections" && Number.isInteger(path[1]);
+      const open = () => (inSection ? pushView({ id: owner.id, path: ["sections", path[1]] }, "section") : pushView({ id: owner.id, path: [], reveal: path }, "record"));
+      const where = inSection ? `Abschnitt „${sectionTitle(owner, path[1])}“` : mediaPlace(owner, path);
+      return el(
+        "button",
+        { type: "button", class: "action nav media-usage", onclick: open },
+        icon(kindOf(owner.id)[1]),
+        el("span", { class: "media-usage-text" }, el("span", { class: "media-usage-name", text: page ? pageName(owner) : recordName(owner) }), el("small", { text: [kindOf(owner.id)[0], where].filter(Boolean).join(" · ") })),
+        icon("chevron-right"),
+      );
+    });
+  });
+  return { title: `Verknüpft mit (${rows.length})`, controls: [el("div", { class: "media-usages wide-row" }, rows)] };
 }
 
 // ---------------------------------------------------------------------------
