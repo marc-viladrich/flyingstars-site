@@ -1,5 +1,5 @@
-import {legacyEnvironmentOptions,legacyBuildEnvironment} from './flyingstars-adapter.mjs';
-export {legacyRuntimePaths,legacyRuntimeMessages} from './flyingstars-adapter.mjs';
+import {legacyEnvironmentOptions,legacyBuildEnvironment} from './extensions/flyingstars/runtime-compatibility.mjs';
+export {legacyRuntimePaths,legacyRuntimeMessages} from './extensions/flyingstars/runtime-compatibility.mjs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 

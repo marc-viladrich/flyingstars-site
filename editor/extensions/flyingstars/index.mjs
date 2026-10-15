@@ -1,7 +1,7 @@
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {fileBytes} from '../../core/source-registry.mjs';
-import {normalizeUpload,MAX_MEDIA_BYTES} from '../../media-upload.mjs';
+import {MAX_MEDIA_BYTES} from '../../core/media-limits.mjs';
 import {policies} from './policies.mjs';
 import {templates,newRecordData,uniqueSection} from './templates.mjs';
 import {prepareOverlays,validateOverlays,translationStorage} from './translations.mjs';
@@ -43,7 +43,7 @@ export function createFlyingStarsExtensions(site) {
    mediaLibrary,
    mediaPolicy:()=>({
     maxBytes:MAX_MEDIA_BYTES,mime:/^image\/(png|jpeg|webp)$/,
-    normalize:normalizeUpload,
+    normalize:async upload=>(await import('../../media-upload.mjs')).normalizeUpload(upload),
     write(asset,requestId){return{id:'media/'+requestId,data:{title:asset.title,src:'/'+asset.src,defaultAlt:'',width:asset.width,height:asset.height,mime:asset.mime},file:'public/'+asset.src};},
     find:(records,data)=>records.find(record=>record.id.startsWith('media/')&&record.data?.src===data.src),
     response:(state,id,reused=false)=>({state,assetId:id,...reused?{reused:true}:{}}),

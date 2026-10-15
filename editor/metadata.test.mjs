@@ -40,8 +40,8 @@ test('core has no field-name tables, reference guesses or positional-list name r
  const domain=[/FlyingStars|flyingstars/i,/\b(?:SPARK|HORIZON|ODYSSEY)\b/,/\b(?:packageId|featureIds|memberIds|clientIds|assetId)\b/,/["'](?:page|package|screen|post|project|faq|client|team|media|site|translation)\//,/\^\((?:page|package|screen|post|project|faq|client|team)\|/,/t-outline|t-caps|data-card|cfg-field/,/['"](?:packages|clients|team|screens|siteContact|siteInquiry|siteNavigation|siteUi|pricing|logoBar|projectGrid|postList)['"]/ ,/\b(?:packageOwnership|sourceId)\b/];
  for(const file of serverFiles){
   let source=await readFile(new URL(file,import.meta.url),'utf8');
-  // Only these composition roots may import the named pilot adapter. No body is exempt.
-  if(['server.mjs','runtime-options.mjs','translate-missing.mjs','deploy/host-update.mjs'].includes(file))source=source.replace(/^(?:import|export).*from ['"][^'"]*flyingstars-adapter\.mjs['"];?$/gm,'');
+  // Only these composition roots may import the pilot adapter or its host compatibility constants. No body is exempt.
+  if(['server.mjs','runtime-options.mjs','translate-missing.mjs','deploy/host-update.mjs'].includes(file))source=source.replace(/^(?:import|export).*from ['"][^'"]*(?:flyingstars-adapter|extensions\/flyingstars\/runtime-compatibility)\.mjs['"];?$/gm,'');
   for(const pattern of domain)assert.doesNotMatch(source,pattern,file);
  }
 });
