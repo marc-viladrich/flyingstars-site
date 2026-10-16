@@ -7,7 +7,8 @@ test('Anfrage behält Paketauswahl, alle Showdetails und ehrlichen Versandstatus
     await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok:true,state:'not-configured' }) });
   });
   await page.goto('/?paket=HORIZON&drohnen=220#anfrage');
-  await expect(page.getByLabel('Drohnen / Paket')).toHaveValue('HORIZON · 200 Drohnen');
+  await expect(page.getByLabel('Drohnen / Paket')).toHaveValue('HORIZON');
+  await expect(page.locator('#f-paket option:checked')).toHaveText('HORIZON · 200 Drohnen');
   await page.evaluate(() => document.fonts.ready);
   await expect.poll(() => page.locator('#anfrage-h').evaluate(node => node.getBoundingClientRect().top)).toBeGreaterThan(70);
   await page.getByRole('button',{name:'Weiter',exact:true}).click();

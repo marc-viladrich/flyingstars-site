@@ -13,7 +13,8 @@ concurrency:
   cancel-in-progress: false
 jobs:
   deploy:
-    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    # Aus, bis der Hetzner-Account steht: Repository-Variable HETZNER_DEPLOY=on schaltet den Deploy ein.
+    if: vars.HETZNER_DEPLOY == 'on' && (github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'))
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: production

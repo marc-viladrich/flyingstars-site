@@ -3,6 +3,8 @@ name: CI
 on:
   pull_request:
   push:
+    # Entwurfs-Pushes des Editors (content/draft) laufen nicht durch die CI; geprüft wird, was freigegeben ist.
+    branches: [main]
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -17,6 +19,13 @@ jobs:
       - run: npm ci
       - name: Gemeinsame lokale und CI-Prüfung
         run: npm run ci
+        env:
+          SITE_URL: ${{ vars.SITE_URL || 'https://example.invalid' }}
+          MEDIA_HOST: ${{ vars.MEDIA_HOST || 'media.example.invalid' }}
+          PUBLIC_FORM_ENDPOINT: ${{ vars.PUBLIC_FORM_ENDPOINT }}
+      - name: Produktions-Build (Bilder selbst gehostet, wie deployt)
+        # npm run ci baut offline mit dem noop-Bilddienst; Browser-Gates prüfen den echten Output.
+        run: npx astro build
         env:
           SITE_URL: ${{ vars.SITE_URL || 'https://example.invalid' }}
           MEDIA_HOST: ${{ vars.MEDIA_HOST || 'media.example.invalid' }}

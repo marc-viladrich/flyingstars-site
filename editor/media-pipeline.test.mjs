@@ -26,6 +26,8 @@ test('Media resolution imports uploads and rejects missing or traversing paths',
  await assert.rejects(resolveImageSource('/assets/../secret.png',{uploads:{}}),/Ungültiger Medienpfad/);
 });
 test('Actual editor upload → media record → Astro local import → responsive build; next commit reuses host cache',{timeout:120_000},async t=>{
+ // CI sets FLYINGSTARS_OFFLINE_MEDIA=1, which the fixture's build environment would carry into the noop image service.
+ const offline=process.env.FLYINGSTARS_OFFLINE_MEDIA;delete process.env.FLYINGSTARS_OFFLINE_MEDIA;t.after(()=>{if(offline!==undefined)process.env.FLYINGSTARS_OFFLINE_MEDIA=offline;});
  const {root,source,store}=await i18nFixture(t,{forCI:true});t.after(()=>store.sync.close());
  // Keep this integration test network-free but run the real Sharp service on the uploaded bytes.
  const config=path.join(source,'astro.config.mjs');
