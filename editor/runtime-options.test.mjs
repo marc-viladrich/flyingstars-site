@@ -28,6 +28,11 @@ test('Runtime paths use the supplied root and cwd; host options stay outside the
  assert.equal(options.siteRoot,siteRoot);assert.equal(options.stateDir,'/tmp/private-state');
  assert.equal(options.auth.file,'/tmp/private-state/runtime-private/editor-accounts.json');
  assert.equal(options.auth.enabled,true);assert.equal(options.preview.enabled,false);
+ // Preview driver: live (astro dev) by default for the CLI, static (a build per draft change) for small hosts.
+ assert.equal(options.preview.driver,'off');
+ assert.equal(resolveRuntimeOptions({cwd:'/tmp',env:{AFE_PREVIEW:'static'}}).preview.driver,'static');
+ assert.equal(resolveRuntimeOptions({cwd:'/tmp',env:{},previewDefault:true}).preview.driver,'live');
+ assert.equal(resolveRuntimeOptions({cwd:'/tmp',env:{AFE_PREVIEW:'1'}}).preview.driver,'live');
  // The default root is the installed site, not the caller's cwd (legacy `node relaunch/server.mjs` from the project folder).
  const installed=path.dirname(path.dirname(fileURLToPath(new URL('./runtime-options.mjs',import.meta.url))));
  assert.equal(resolveRuntimeOptions({cwd:'/tmp/site',env:{}}).siteRoot,installed);
@@ -88,7 +93,7 @@ test('State checks resolve symlinks and missing descendants, and also protect le
 });
 
 test('Generic services contain no direct or dynamic site schema/lib imports',async()=>{
- const modules=['native-store','native-builder','native-publisher','native-preview','git-sync','auth','native-media','media-upload','native-translation','translation-core','translation-providers'];
+ const modules=['native-store','native-builder','native-publisher','preview/workspace','preview/proof','preview/live-driver','preview/static-driver','preview/service','git-sync','auth','native-media','media-upload','native-translation','translation-core','translation-providers'];
  for(const name of modules){const text=await fs.readFile(new URL('./'+name+'.mjs',import.meta.url),'utf8');assert.doesNotMatch(text,/src\/(?:schemas|lib)(?:\/|['"])/,name);}
  const adapter=await fs.readFile(new URL('./flyingstars-adapter.mjs',import.meta.url),'utf8');
  assert.match(adapter,/src\/schemas\//);assert.match(adapter,/src\/lib\//);

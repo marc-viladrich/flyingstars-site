@@ -11,7 +11,9 @@ import {NativeBuilder} from './native-builder.mjs';
 import {NativePublisher} from './native-publisher.mjs';
 import {uploadNativeMedia} from './native-media.mjs';
 import {NativeTranslation} from './native-translation.mjs';
-import {NativePreview} from './native-preview.mjs';
+import {PreviewService} from './preview/service.mjs';
+import {LiveDriver} from './preview/live-driver.mjs';
+import {StaticDriver} from './preview/static-driver.mjs';
 import {createTranslationCore,executeBatched,loadMemory,saveMemory} from './translation-core.mjs';
 import {translationProvider} from './translation-providers.mjs';
 import {EditorAuth} from './auth.mjs';
@@ -47,7 +49,7 @@ export async function serveFile(res,base,relative,enhance=false){
 const json=(res,status,data)=>{res.writeHead(status,{'content-type':'application/json','cache-control':'no-store','x-content-type-options':'nosniff'});res.end(JSON.stringify(data));};
 async function body(req,max=1_000_000){let size=0,parts=[];for await(const piece of req){size+=piece.length;if(size>max)throw failure('Anfrage zu groß.',413);parts.push(piece);}return Buffer.concat(parts);}
 async function jsonBody(req,max){if(!/^application\/json(?:\s*;|$)/i.test(req.headers['content-type']||''))throw failure('JSON erwartet.',415);const bytes=await body(req,max);try{return JSON.parse(bytes.toString());}catch{throw failure('Ungültiges JSON.');}}
-function respondError(res,error){const status=error.status||(error.name==='ZodError'||error.name==='SyntaxError'?400:error.code==='ENOENT'?404:500);if(error.retryAfter)res.setHeader('Retry-After',String(error.retryAfter));json(res,status,{error:status===500?'Interner Serverfehler.':error.message});}
+function respondError(res,error){const status=error.status||(error.name==='ZodError'||error.name==='SyntaxError'?400:error.code==='ENOENT'?404:500);if(error.retryAfter)res.setHeader('Retry-After',String(error.retryAfter));json(res,status,{error:status===500?'Interner Serverfehler.':error.message,...status===409&&typeof error.code==='string'?{code:error.code}:{}});}
 /** One composition root for the pilot. `options` is already resolved for CLI callers.
  * The flat arguments remain available to existing host smoke tests and embedders.
  */
@@ -62,8 +64,10 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
  const languages=adapter.extensions.first('languages')??{source:'de',locales:{}};
  const store=await new NativeStore(sourceDir,{site:adapter,runtime}).init();
  const builder=new NativeBuilder(store,stateDir,{origin});if(initialize)await builder.init();
- const livePreview=runtime.preview.enabled?new NativePreview(store,stateDir,{...runtime.preview,origin,env:{...runtime.processEnv,...runtime.buildEnv}}):null;
- if(livePreview)livePreview.init().catch(error=>console.error('Live-Vorschau:',error.message));
+ const previewEnv={...runtime.processEnv,...runtime.buildEnv};
+ const driver=runtime.preview.driver==='live'?new LiveDriver(store,stateDir,{...runtime.preview,origin,env:previewEnv}):runtime.preview.driver==='static'?new StaticDriver(store,stateDir,{origin,node:runtime.preview.node,env:previewEnv}):null;
+ const previews=driver?new PreviewService(driver,store):null;
+ if(previews)previews.init().catch(error=>console.error('Vorschau:',error.message));
  const publicBuilder=new NativeBuilder(store,stateDir,{editor:false,origin:publicOrigin,runtimeName:'runtime-public'});
  const publisher=new NativePublisher(store,publicBuilder),translation=new NativeTranslation({...runtime.translation,...languages});
  const {plan:planTranslation,mergeIntoTranslations}=createTranslationCore(adapter);
@@ -100,6 +104,7 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
    if(session)authentication.requireCsrf(req,session);
   }
   const actor=session?{name:session.user.displayName,email:session.user.email}:undefined;
+  const previewOwner=session?'user:'+session.user.id:'local';
   if(req.method==='GET'&&p==='/editor/login')return await serveFile(res,root,'/login.html');
   if(req.method==='POST'&&p==='/editor/api/login'){
    if(!authentication)throw failure('Anmeldung ist nicht aktiv.',503);
@@ -156,7 +161,11 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
           }catch(error){line({type:'error',error:error.status===413||error.status===429?error.message:(error.message||'Übersetzung fehlgeschlagen.')});}
           return res.end();
         }
-        if(p==='/editor/api/preview'){if(!livePreview)throw failure('Live-Vorschau ist nicht aktiv.',503);return json(res,200,await livePreview.render(await jsonBody(req,20_000_000)));}
+   // One preview lease per editor tab, bound to the login (see preview/service.mjs).
+   if(p==='/editor/api/preview/lease'){if(!previews)throw failure('Die Vorschau ist nicht aktiv.',503);return json(res,200,previews.lease(previewOwner));}
+   if(p==='/editor/api/preview'){if(!previews)throw failure('Die Vorschau ist nicht aktiv.',503);return json(res,200,await previews.render(await jsonBody(req,20_000_000),previewOwner));}
+   // Builds the saved draft if it is not built yet (a save from another tab, a sync) and waits for it.
+   if(p==='/editor/api/build'){const head=await store.head();try{await store.exclusive(()=>builder.build(head));return json(res,200,{head,activeHead:builder.current?.head});}catch(error){return json(res,200,{head,activeHead:builder.current?.head,buildError:error.message});}}
    if(p==='/editor/api/media'){
     if(!adapter.extensions.require('mediaPolicy').mime.test(req.headers['content-type']||''))throw failure('PNG, JPEG oder WebP erwartet.',415);
     const uploaded=await uploadNativeMedia(store,{bytes:await body(req,adapter.extensions.require('mediaPolicy').maxBytes),name:decodeURIComponent(String(req.headers['x-filename']||'')),requestId:req.headers['x-request-id'],expectedHead:req.headers['x-expected-head'],actor});
@@ -170,7 +179,7 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
    if(p==='/public/'||p==='/public'){res.writeHead(302,{location:publicOrigin+'/'});return res.end();}
    if(p.startsWith('/editor/shared/'))return await serveFile(res,root,p.slice('/editor/shared'.length));
    if(p.startsWith('/editor/'))return await serveFile(res,root,p==='/editor/'?'/index.html':p.slice('/editor'.length));
-   if(livePreview&&(p.startsWith('/_image')||p.startsWith('/@fs/')))return await livePreview.proxy(req,res,p);
+   if(previews?.driver.proxy&&previews.handles(p))return await previews.driver.proxy(req,res);
    // The saved draft as plain pages (no editor chrome) with a bar that says so; see preview-page.mjs.
    const previewPath=previewSitePath(p);
    if(previewPath!==null){
@@ -179,6 +188,8 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
     const liveFile=live&&await fs.stat(path.join(live.site,decodeURIComponent(previewPath),previewPath.endsWith('/')?'index.html':'')).then(()=>true,()=>false);
     return await serveFile(res,shown.site,previewPath,html=>withPreviewBar(html,{live:savedIsLive({draftHead,activePublishedHead:live?.head}),draftHead,shownHead:shown.head,liveURL:liveFile?new URL(previewPath,publicOrigin).href:null}));
    }
+   // Assets of a draft render (static driver) exist only in its artifact, after the saved build.
+   if(previews?.driver.assetRoots&&previews.handles(p))for(const base of [builder.current.site,...previews.driver.assetRoots()]){try{return await serveFile(res,base,p);}catch(error){if(error.status!==404)throw error;}}
    return await serveFile(res,builder.current.site,p,url.searchParams.get('editor')==='1');
   }
   throw failure('Route fehlt.',404);
@@ -192,7 +203,7 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
   await new Promise((resolve,reject)=>{editor.once('error',reject);editor.listen(runtime.port,'127.0.0.1',resolve);});
   try{if(!runtime.publicWebroot)await new Promise((resolve,reject)=>{publicServer.once('error',reject);publicServer.listen(runtime.publicPort,'127.0.0.1',resolve);});}catch(error){editor.close();throw error;}
  }
- return{store,builder,publisher,editor,publicServer,origin,publicOrigin,auth:authentication,options:runtime,preview:livePreview};
+ return{store,builder,publisher,editor,publicServer,origin,publicOrigin,auth:authentication,options:runtime,preview:previews};
 }
 export async function runEditor(args=process.argv.slice(2)){
  try{const started=await startNativeServers({options:resolveRuntimeOptions({args,authDefault:true,previewDefault:true})});console.log('REAL Relaunch editor: '+started.origin+'/editor/ (loopback listener)');console.log('Static public simulation: '+started.publicOrigin+'/');}

@@ -169,7 +169,7 @@ async function api(url, data) {
   );
   const result = await response.json().catch(() => ({}));
   if (response.status === 401) sessionExpired();
-  if (!response.ok) throw Object.assign(new Error(result.error || "Anfrage fehlgeschlagen."), { status: response.status });
+  if (!response.ok) throw Object.assign(new Error(result.error || "Anfrage fehlgeschlagen."), { status: response.status, code: result.code });
   return result;
 }
 // The session ran out while editing: sign in again right here. Draft, undo and translations stay as
@@ -314,29 +314,45 @@ function optionalFieldsFor(item) {
 }
 // ---------------------------------------------------------------------------
 // Live preview: after each draft change the server renders the page with the real Astro components.
+// This tab holds a preview lease and numbers its requests (epoch); the server drops older ones and answers with
+// the snapshot it proved to show. A request overtaken by a newer one is not an error.
 // ---------------------------------------------------------------------------
 let previewTimer = null,
   previewSeq = 0,
   previewAvailable = true,
-  previewBaselineFor = null;
+  previewBaselineFor = null,
+  previewLease = null,
+  previewFailed = false;
 function previewPayload(empty = false) {
   const request = empty ? { changes: [], creates: [], deletes: [] } : draft.request(initialHead, "00000000-0000-0000-0000-000000000000");
   return { head: initialHead, route: expectedFrameURL?.split("?")[0] || route, changes: request.changes, creates: request.creates, deletes: request.deletes };
 }
-async function requestPreview({ baseline = false, seq = ++previewSeq } = {}) {
+async function requestPreview({ baseline = false, seq = ++previewSeq, retried = false } = {}) {
   if (!previewAvailable || !ready || !initialHead) return;
   const frameURL = expectedFrameURL;
   try {
-    const result = await api("/editor/api/preview", previewPayload(baseline));
-    if (frameURL !== expectedFrameURL || result.head !== initialHead) return;
-    if (!baseline && seq !== previewSeq) return;
-    send("preview-html", { html: result.html, baseline });
-  } catch (error) {
-    if (error.status === 503) {
-      previewAvailable = false;
+    previewLease ??= (await api("/editor/api/preview/lease", {})).leaseId;
+    const result = await api("/editor/api/preview", { leaseId: previewLease, epoch: seq, ...previewPayload(baseline) });
+    if (frameURL !== expectedFrameURL || result.head !== initialHead || seq !== previewSeq) return;
+    if (previewFailed) {
+      previewFailed = false;
       update();
     }
-    else console.warn("Vorschau:", error.message);
+    send("preview-html", { html: result.html, baseline });
+  } catch (error) {
+    if (error.status === 409 && (error.code === "stale" || error.code === "superseded")) return;
+    if (error.status === 409 && error.code === "lease-unknown" && !retried) {
+      // The editor restarted: a new lease, and the same request once more under a fresh number.
+      previewLease = null;
+      if (seq === previewSeq) return requestPreview({ baseline, retried: true });
+      return;
+    }
+    if (error.status === 503) previewAvailable = false;
+    else {
+      console.warn("Vorschau:", error.message);
+      if (seq === previewSeq) previewFailed = true;
+    }
+    update();
   }
 }
 function schedulePreview() {
@@ -475,7 +491,7 @@ function update() {
   const buildMissing = state?.activeHead && state.activeHead !== state.head;
   // The loading overlay already says "lädt"; the dock only reports states that need attention.
   // Without live preview (RELAUNCH_PREVIEW=0, e.g. on small hosting) some changes appear only after saving.
-  const previewLater = ready && !previewAvailable && count > 0 && !busy;
+  const previewLater = ready && (!previewAvailable || previewFailed) && count > 0 && !busy;
   status.hidden = !(loadError || previewLater || (ready && buildMissing && !count && !busy));
   status.textContent = loadError ? "Nicht geladen" : previewLater ? "Vollständige Vorschau nach dem Speichern" : "Neuer Stand · noch nicht aufgebaut";
   status.classList.toggle("neutral", previewLater && !loadError);
@@ -4070,11 +4086,19 @@ window.addEventListener("resize", () => {
   try {
     await loadSession();
     state = await api("/editor/api/state");
+    // The saved draft is newer than the pages built from it (a save in another tab is still building, a
+    // sync): wait for its build, so the page and its records belong together.
+    if (state.activeHead && state.activeHead !== state.head) {
+      $("#loading").textContent = "Der zuletzt gespeicherte Stand wird aufgebaut …";
+      const built = await api("/editor/api/build", {});
+      state = await api("/editor/api/state");
+      $("#loading").textContent = "Seite wird geladen …";
+      if (built.buildError || state.activeHead !== state.head)
+        toast("Der letzte gespeicherte Stand konnte nicht aufgebaut werden. Die Seite zeigt einen früheren Stand.", { error: true });
+    }
     initialHead = state.head;
     rememberSavedHead();
     draft.reset(state.records);
-    if (state.activeHead && state.activeHead !== state.head)
-      toast("Der letzte gespeicherte Stand konnte nicht aufgebaut werden. Die Seite zeigt einen früheren Stand.", { error: true });
     const requested = splitLocale(new URL(location.href).searchParams.get("page") || "/");
     const initial = normalizedRoute(requested.path);
     // A deep link may name any page of the build, also one without its own record (a listing, a contact page).

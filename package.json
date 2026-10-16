@@ -15,7 +15,7 @@
     "gates": "astro check && astro build && npm test",
     "editor": "node editor/server.mjs",
     "ci": "node editor/ci/check.mjs",
-    "test:unit": "node --test 'editor/*.test.mjs' 'editor/test/*.test.mjs' 'scripts/*.test.mjs' src/schemas/editorial-source.test.mjs"
+    "test:unit": "node --test 'editor/*.test.mjs' 'editor/core/*.test.mjs' 'editor/preview/*.test.mjs' 'editor/test/*.test.mjs' 'scripts/*.test.mjs' src/schemas/editorial-source.test.mjs"
   },
   "dependencies": {
     "astro": "^7.3.6",

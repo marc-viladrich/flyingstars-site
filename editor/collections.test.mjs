@@ -59,7 +59,9 @@ test('Astro sync exports every schema and its public loaders preserve JSON entry
   await cp(path.join(root,'package.json'),path.join(fixture,'package.json'));
   await symlink(path.join(root,'node_modules'),path.join(fixture,'node_modules'));
   // No project environment files or external media are needed for this probe.
-  await writeFile(path.join(fixture,'astro.config.mjs'),"import {defineConfig} from 'astro/config'; export default defineConfig({output:'static',cacheDir:'.astro/cache',vite:{cacheDir:'.astro/vite'}});\n");
+  // The collections load through the editor's vendored loader wrappers, as in the site's own config.
+  const loaders=path.join(root,'editor/vendor/astro-frontend-editor/src/astro/loaders.mjs');
+  await writeFile(path.join(fixture,'astro.config.mjs'),`import {defineConfig} from 'astro/config'; export default defineConfig({output:'static',cacheDir:'.astro/cache',vite:{cacheDir:'.astro/vite',resolve:{alias:[{find:/^astro-frontend-editor\\/astro\\/loaders$/,replacement:${JSON.stringify(loaders)}}]}}});\n`);
   await rm(path.join(fixture,'src/pages'),{recursive:true});
   await mkdir(path.join(fixture,'src/pages'));
   await writeFile(path.join(fixture,'src/pages/collections.json.ts'),`

@@ -15,7 +15,7 @@ import {fileURLToPath} from 'node:url';
  * @property {number} port
  * @property {number} publicPort
  * @property {{remote:string|false|null,draftBranch:string,publishedBranch:string}} git
- * @property {{enabled:boolean,port:number,node:string}} preview
+ * @property {{enabled:boolean,driver:'live'|'static'|'off',port:number,node:string}} preview
  * @property {{enabled:boolean,file:string,secret:string|undefined,forbiddenRoots:string[]}} auth
  * @property {{provider:string|undefined,url:string|undefined,key:string|undefined,deeplKey:string|undefined,email:string|undefined,budget:number}} translation
  * @property {string|undefined} mediaHost
@@ -87,6 +87,7 @@ export function resolveRuntimeOptions({args=[],env=process.env,cwd=process.cwd()
  const editorOrigin=origin(v.editorOrigin||'http://127.0.0.1:'+port,'AFE_EDITOR_ORIGIN');
  const canonicalOrigin=origin(v.canonicalOrigin||'http://127.0.0.1:'+publicPort,'AFE_CANONICAL_ORIGIN');
  const authEnabled=enabled(v.auth,authDefault),url=new URL(editorOrigin);
+ const previewDriver=v.preview==='static'?'static':enabled(v.preview,previewDefault)?'live':'off';
  if(authEnabled&&url.protocol!=='https:'&&!['127.0.0.1','localhost','[::1]'].includes(url.hostname))throw Error('Anmeldung benötigt eine HTTPS-Origin.');
  const budget=Number(v.translationBudget??5000);if(!Number.isSafeInteger(budget)||budget<1)throw Error('AFE_TRANSLATION_BUDGET ist ungültig.');
  /** @type {Record<string,string>} */
@@ -100,7 +101,8 @@ export function resolveRuntimeOptions({args=[],env=process.env,cwd=process.cwd()
   editorAssets:fileURLToPath(new URL('./web/',import.meta.url)),
   editorOrigin,canonicalOrigin,port,publicPort,
   git:Object.freeze({remote:v.remote??null,draftBranch:branch(v.draftBranch||'content/draft'),publishedBranch:branch(v.publishedBranch||'main')}),
-  preview:Object.freeze({enabled:enabled(v.preview,previewDefault),port:number(v.previewPort??port+2,'AFE_PREVIEW_PORT'),node:process.execPath}),
+  // live: astro dev beside the editor; static: one astro build per draft change (no extra process); off.
+  preview:Object.freeze({enabled:previewDriver!=='off',driver:previewDriver,port:number(v.previewPort??port+2,'AFE_PREVIEW_PORT'),node:process.execPath}),
   auth:Object.freeze({enabled:authEnabled,file:path.resolve(cwd,v.accounts||path.join(stateDir,'runtime-private/editor-accounts.json')),secret:v.sessionSecret,
    forbiddenRoots:[siteRoot,fileURLToPath(new URL('./web/',import.meta.url)),...['runtime','runtime-public','preview'].map(dir=>path.join(stateDir,dir)),...publicWebroot?[publicWebroot]:[]]}),
   translation:Object.freeze({provider:v.translationProvider,url:v.translationUrl,key:v.translationKey,deeplKey:v.deeplKey,email:v.translationEmail,budget}),
