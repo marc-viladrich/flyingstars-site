@@ -110,13 +110,15 @@ export function compileCollection(name, schema, { loader, annotationOrigins = fa
         && ['id', 'slug'].some(key => child.properties?.[key]?.type === 'string'));
     if (branches && !variants && !referenceInput) issue('ambiguous-union', candidates.length > 1
       ? `Multiple discriminators: ${candidates.map(item => item.field).join(', ')}` : 'No unique required, non-overlapping literal discriminator');
-    let kind = branches ? variants ? 'discriminated-union' : 'union'
+    // Astro's reference() exports as id string | {id, collection} | {slug, collection}; with x-afe reference
+    // metadata that is one reference field holding the target's ID, not a union to edit.
+    let kind = referenceInput ? 'string' : branches ? variants ? 'discriminated-union' : 'union'
       : Object.hasOwn(node, 'const') ? 'literal' : node.enum ? 'enum'
       : node.prefixItems || Array.isArray(node.items) ? 'tuple'
       : Array.isArray(node.type) ? node.type.filter(type => type !== 'null')[0] ?? 'null'
       : node.type ?? (node.properties ? 'object' : 'unknown');
     if (resolved.error) kind = resolved.error[0] === 'recursive-schema' ? 'recursive' : 'unknown';
-    const container = branches ? 'union' : kind === 'object' ? 'object' : ['array', 'tuple'].includes(kind) ? 'array' : null;
+    const container = referenceInput ? null : branches ? 'union' : kind === 'object' ? 'object' : ['array', 'tuple'].includes(kind) ? 'array' : null;
     if (meta.collection && path.length) issue('metadata-placement', 'collection metadata belongs on the entry root');
     if (meta.array && container !== 'array') issue('metadata-placement', 'array metadata belongs on an array');
     if (meta.block && (kind !== 'object' || !branch)) issue('metadata-placement', 'block metadata belongs on an object union branch');
@@ -146,7 +148,7 @@ export function compileCollection(name, schema, { loader, annotationOrigins = fa
     if (kind === 'object' && isObject(node.additionalProperties)) {
       issue('dynamic-properties', 'Dynamic map keys need an explicit editor representation');
     }
-    branches?.forEach((child, index) => walk(child, path, `${pointer}/${node.oneOf ? 'oneOf' : 'anyOf'}/${index}`, required,
+    if (!referenceInput) branches?.forEach((child, index) => walk(child, path, `${pointer}/${node.oneOf ? 'oneOf' : 'anyOf'}/${index}`, required,
       [...when, variants ? { path, discriminator: variants.field, values: variants.options[index] }
         : { path, keyword: node.oneOf ? 'oneOf' : 'anyOf', index }], resolved.refs, meta.readOnly, depth + 1, true, variants?.field));
   }
