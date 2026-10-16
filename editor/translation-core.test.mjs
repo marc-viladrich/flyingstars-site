@@ -69,7 +69,7 @@ test("unchanged markdown paragraphs come from memory; link targets survive", asy
 
 test("moving the record hash never revives an old value without a field hash", () => {
   const owner = { id: "page/test", revision: "r2", data: { title: "Neu" }, fields: [{ path: ["title"], kind: "text", 'x-afe': {translatable:true} }] };
-  const old = { id: "translation/page-test-en", revision: "t1", data: { sourceId: "page/test", locale: "en", sourceHash: "r1", values: [{ path: ["title"], text: "Old", reviewed: true }] } };
+  const old = { id: "translation/page/test/en", revision: "t1", data: { format: 2, sourceId: "page/test", locale: "en", sourceHash: "r1", values: [{ path: ["title"], text: "Old", reviewed: true }] } };
   const merged = mergeIntoTranslations({ records: [owner, old], locale: "en", values: new Map([["page/test", { revision: "r2", entries: [] }]]) });
   assert.equal(merged[0].data.values[0].sourceHash, sha256(""));
   assert.notEqual(merged[0].data.values[0].sourceHash, sha256("Neu"));

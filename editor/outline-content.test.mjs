@@ -1,3 +1,4 @@
+import {resolvePath} from './vendor/astro-frontend-editor/src/content/index.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -21,8 +22,8 @@ test('outlined project titles and sustainability heading retain fresh EN/NL mark
     const caps=id.startsWith('project/');
     assert.match(inlineHtml(source),caps?/^<span class="t-caps"><span class="t-outline">[^]*<\/span><\/span>$/:/^<span class="t-outline">[^]*<\/span>$/);
     for(const locale of ['en','nl']){
-      const translation=JSON.parse(await fs.readFile(new URL('translations/'+id.replace('/','-')+'-'+locale+'.json',root)));
-      const entry=translation.values.find(value=>JSON.stringify(value.path)===JSON.stringify(path));
+      const translation=JSON.parse(await fs.readFile(new URL('translations/'+id+'/'+locale+'.json',root)));
+      const entry=translation.values.find(value=>JSON.stringify(resolvePath(data,value.path))===JSON.stringify(path));
       assert.ok(entry,id+' '+locale);
       assert.equal(entry.sourceHash,sha256(source));
       assert.match(entry.text,caps?/^\{c\}\{o\}[^]*\{\/o\}\{\/c\}$/:/^\{o\}[^]*\{\/o\}$/);

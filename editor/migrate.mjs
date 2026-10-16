@@ -2,12 +2,12 @@
 // tree. Commit the result; running it again afterwards changes nothing.
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {createFlyingStarsAdapter} from './flyingstars-adapter.mjs';
+import {createFlyingStarsAdapter as createSiteAdapter} from './flyingstars-adapter.mjs';
 import {applyMigrations,planMigrations} from './migrations/index.mjs';
 
 const args=process.argv.slice(2),apply=args.includes('--apply'),rootArg=args[args.indexOf('--site-root')+1];
 const root=path.resolve(args.includes('--site-root')?rootArg:fileURLToPath(new URL('../',import.meta.url)));
-const site=await createFlyingStarsAdapter(root);
+const site=await createSiteAdapter(root);
 const plans=await planMigrations({root,site});
 if(!plans.length){console.log('Alle Inhalte sind im aktuellen Format. Nichts zu tun.');process.exit(0);}
 for(const {id,description,changes} of plans){

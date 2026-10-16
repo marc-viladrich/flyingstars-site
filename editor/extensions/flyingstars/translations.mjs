@@ -31,6 +31,7 @@ export function prepareOverlays({state,nextRecords:input,seen,changes,sourceFor}
 export function validateOverlays({store,nextRecords,seen}){
  const {translatableFields,validateTranslatedMarkdown}=store.site;
  for(const translation of nextRecords.filter(r=>r.id.startsWith('translation/'))){
+  if(seen.has(translation.id)){let expected;try{expected=translationIdFor(translation.data.sourceId,translation.data.locale);}catch{}if(translation.id!==expected)throw failure('Eine Übersetzung heißt nach ihrer Quelle und Sprache: '+(expected||'Quelle oder Sprache ungültig')+'.');}
   const source=nextRecords.find(r=>r.id===translation.data.sourceId);
   if(!source)throw failure('Die Quelle der Übersetzung existiert nicht.',409);
   if(!seen.has(translation.id))continue;

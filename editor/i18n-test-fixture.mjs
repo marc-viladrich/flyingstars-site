@@ -14,10 +14,13 @@ export async function i18nFixture(t,{sourceRoot=path.join(here,'..'),forCI=false
   await fs.symlink(await fs.realpath(path.join(here,'../node_modules')),path.join(source,'node_modules'));
   // The fixture starts without translations: real ones saved in the working copy must not decide the test.
   const translations=path.join(source,'src/content/translations');
-  for(const file of await fs.readdir(translations).catch(()=>[]))if(file.endsWith('.json'))await fs.rm(path.join(translations,file));
+  // One file per [source, locale] in nested folders (content format 2).
+  await fs.rm(translations,{recursive:true,force:true});await fs.mkdir(translations,{recursive:true});
   let config=await fs.readFile(path.join(source,'astro.config.mjs'),'utf8');
-  config=config.replace("vite: {cacheDir:'.astro/vite'}","vite: {cacheDir:'.astro/vite',envDir:'/tmp/flyingstars-no-env'}");
-  config=config.replace('image: {',"image: {service:{entrypoint:'astro/assets/services/noop'},");
+  // Both replacements must take effect (a silent no-op once let the fixture read the project's .env).
+  const replaced=config.replace("vite: {cacheDir:'.astro/vite'","vite: {cacheDir:'.astro/vite',envDir:'/tmp/flyingstars-no-env'").replace('image: {',"image: {service:{entrypoint:'astro/assets/services/noop'},");
+  if(!replaced.includes("envDir:'/tmp/flyingstars-no-env'")||!replaced.includes('astro/assets/services/noop'))throw Error('astro.config.mjs hat eine unerwartete Form; die Fixture kann .env und Bilddienst nicht abschalten.');
+  config=replaced;
   await fs.writeFile(path.join(source,'astro.config.mjs'),config);
   // Image URLs stay visible in HTML; only build-time optimization/probes are bypassed in this fixture.
   if(!forCI)await fs.writeFile(path.join(source,'src/lib/media.ts'),`

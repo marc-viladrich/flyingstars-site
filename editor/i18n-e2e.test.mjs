@@ -1,3 +1,4 @@
+import {valueAt} from './vendor/astro-frontend-editor/src/content/index.mjs';
 import {createFlyingStarsAdapter as translationSite} from './flyingstars-adapter.mjs';
 import {fileURLToPath as translationRoot} from 'node:url';
 import test from 'node:test';
@@ -11,7 +12,8 @@ import {fake} from './translation-providers.mjs';
 import {verifyPricingRuntime} from './i18n-runtime-proof.mjs';
 import {i18nFixture} from './i18n-test-fixture.mjs';
 const {plan,mergeIntoTranslations}=createTranslationCore(await translationSite(translationRoot(new URL('../',import.meta.url))));
-const at=(data,path)=>path.reduce((value,key)=>value[key],data);
+// Stored translation paths may name list items by key (content format 2).
+const at=(data,path)=>valueAt(data,path);
 async function suggest(store,locale,ids) {
  let state=await store.state();const memory={entries:{}};
  const planned=plan({records:state.records,locale,memory,ids});
@@ -37,9 +39,9 @@ test('Offline real Astro: EN/NL saved translations, review, public/editor eligib
  let state=await suggest(store,'en',ids);
  const field=['sections',0,'headline'],other=['sections',0,'text'];
  const german=at(state.records.find(r=>r.id==='page/index').data,other);
- const machine=state.records.find(r=>r.id==='translation/page-index-en').data.values.find(value=>JSON.stringify(value.path)===JSON.stringify(other)).text;
- state=await review(store,'translation/page-index-en',field,'Reviewed English homepage I3');
- assert.equal(state.records.find(r=>r.id==='translation/page-index-en').data.values.find(v=>JSON.stringify(v.path)===JSON.stringify(field)).reviewed,true);
+ const machine=state.records.find(r=>r.id==='translation/page/index/en').data.values.find(value=>JSON.stringify(value.path)===JSON.stringify(other)).text;
+ state=await review(store,'translation/page/index/en',field,'Reviewed English homepage I3');
+ assert.equal(state.records.find(r=>r.id==='translation/page/index/en').data.values.find(v=>JSON.stringify(v.path)===JSON.stringify(field)).reviewed,true);
  const publicBuilder=new NativeBuilder(store,root,{editor:false,origin:'https://fixture.example',runtimeName:'public'});
  let artifact=await publicBuilder.build(state.head);
  const html=await fs.readFile(path.join(artifact.site,'en/index.html'),'utf8');
@@ -70,17 +72,17 @@ test('Offline real Astro: EN/NL saved translations, review, public/editor eligib
  artifact=await publicBuilder.build(state.head);const staleHtml=await fs.readFile(path.join(artifact.site,'en/index.html'),'utf8');
  assert.match(staleHtml,/Geänderte deutsche Startüberschrift I3/);assert.doesNotMatch(staleHtml,/Reviewed English homepage I3/);
  state=await suggest(store,'nl',['page/index','site/navigation']);
- state=await review(store,'translation/page-index-nl',field,'Reviewed Dutch homepage I3');
+ state=await review(store,'translation/page/index/nl',field,'Reviewed Dutch homepage I3');
  artifact=await publicBuilder.build(state.head);const dutch=await fs.readFile(path.join(artifact.site,'nl/index.html'),'utf8');
  assert.match(dutch,/<html lang="nl"/);assert.match(dutch,/Reviewed Dutch homepage I3/);assert.doesNotMatch(dutch,/\[NL\]/);
  // Validate translated Markdown through the real store, not only the renderer.
- const faq=state.records.find(r=>r.id.startsWith('faq/')),id='translation/'+faq.id.replaceAll('/','-')+'-en';
+ const faq=state.records.find(r=>r.id.startsWith('faq/')),id='translation/'+faq.id+'/en';
  const before=await store.head();await assert.rejects(review(store,id,['body'],'<script>alert(1)</script>'),/HTML|Skript/);assert.equal(await store.head(),before);
  state=await review(store,id,['body'],'**Reviewed FAQ Markdown I3** and [Contact](/kontakt/).');
  artifact=await publicBuilder.build(state.head);const faqHtml=await fs.readFile(path.join(artifact.site,'en/faq/index.html'),'utf8');
  assert.match(faqHtml,/<strong>Reviewed FAQ Markdown I3<\/strong>/);
  assert.match(faqHtml,/href="\/en\/kontakt\/"/);
- state=await review(store,'translation/site-ui-en',['prices','faq','items',0,'question'],'</script><script>alert("I3 reviewed copy")</script>');
+ state=await review(store,'translation/site/ui/en',['prices','faq','items',0,'question'],'</script><script>alert("I3 reviewed copy")</script>');
  artifact=await publicBuilder.build(state.head);
  const safePrice=await fs.readFile(path.join(artifact.site,'en/drohnenshow-preise/index.html'),'utf8');
  assert.ok(!safePrice.includes('<script>alert("I3 reviewed copy")'));

@@ -39,7 +39,7 @@ test('core has no field-name tables, reference guesses or positional-list name r
  for(const file of serverFiles){
   let source=await readFile(new URL(file,import.meta.url),'utf8');
   // Only these composition roots may import the pilot adapter or its host compatibility constants. No body is exempt.
-  if(['server.mjs','runtime-options.mjs','translate-missing.mjs','deploy/host-update.mjs'].includes(file))source=source.replace(/^(?:import|export).*from ['"][^'"]*(?:flyingstars-adapter|extensions\/flyingstars\/runtime-compatibility)\.mjs['"];?$/gm,'');
+  if(['server.mjs','runtime-options.mjs','translate-missing.mjs','migrate.mjs','deploy/host-update.mjs'].includes(file))source=source.replace(/^(?:import|export).*from ['"][^'"]*(?:flyingstars-adapter|extensions\/flyingstars\/runtime-compatibility)\.mjs['"];?$/gm,'');
   for(const pattern of domain)assert.doesNotMatch(source,pattern,file);
  }
 });
