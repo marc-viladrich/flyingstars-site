@@ -61,6 +61,7 @@ export class LiveDriver {
         detached: true,
       });
       child.unref();
+      await log.close(); // the child holds its own descriptor
       for (let i = 0; i < 120; i++) {
         if (await this.alive()) return;
         await new Promise((resolve) => setTimeout(resolve, 500));
