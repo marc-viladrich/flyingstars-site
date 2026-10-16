@@ -55,7 +55,8 @@ import {rgbOf} from '../lib/color-tokens.mjs';
       if (paused || document.hidden || word.isContentEditable) return;
       word.classList.add("out");
       setTimeout(() => { if(word.isContentEditable){word.classList.remove("out");return;} i = (i + 1) % words.length; if(richWords?.[i])word.innerHTML=richWords[i].innerHTML;else word.textContent=words[i];
-        if(word.dataset.nativePath){const path=JSON.parse(word.dataset.nativePath);path[path.length-1]=i;word.dataset.nativePath=JSON.stringify(path);}
+        // Editor builds: the word element is bound to the field of the word shown now.
+        if(word.dataset.afe){const marker=JSON.parse(word.dataset.afe);marker.address.path[marker.address.path.length-1]=i;word.dataset.afe=JSON.stringify(marker);}
         word.classList.remove("out"); }, 500);
     }, 3200);
   }

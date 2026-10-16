@@ -3,7 +3,7 @@ import {localeFromPath,localizedHref} from '../../lib/localized-routes';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 import InlineText from '../InlineText.astro';
 import {resolveMedia} from '../../lib/content';
-import {nativeField,nativeSection,nativeMedia,nativeItem,nativeUses} from "../../lib/native-editor";
+import {sectionField,sectionBlock,sectionMedia,listItem,sectionUses,markers} from "../../lib/editor-markers";
 import type { Section } from '../../content.config';
 import { responsiveImage } from '../../lib/media';
 type Props = Extract<Section, { type: 'occasions' }> & { index: number; locale?:string; _locale?:string };
@@ -12,16 +12,16 @@ const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const items = await Promise.all(cards.map(async card => ({ ...card,image:resolveMedia(card.image,locale), media: await responsiveImage(resolveMedia(card.image,locale).src, "(max-width: 640px) calc(100vw - 48px), (max-width: 1100px) 45vw, 23vw", 1200, 900) })));
 ---
-<section {...nativeSection(Astro.props)} class="section" id={id} aria-labelledby={headingId}>
-  <div class="sec-head"><div>{kicker && <span class="kicker mono" {...nativeField(Astro.props,["kicker"])}>{kicker}</span>}<H id={headingId} {...nativeField(Astro.props,["headline"],true)}><InlineText value={headline} /></H></div><p {...nativeField(Astro.props,["text"])}>{text}</p></div>
+<section {...sectionBlock(Astro.props)} class="section" id={id} aria-labelledby={headingId}>
+  <div class="sec-head"><div>{kicker && <span class="kicker mono" {...sectionField(Astro.props,["kicker"])}>{kicker}</span>}<H id={headingId} {...sectionField(Astro.props,["headline"])}><InlineText value={headline} /></H></div><p {...sectionField(Astro.props,["text"])}>{text}</p></div>
   <div class="occasions">
-    {items.map((card,i) => <article class="occ" {...nativeItem(Astro.props,{entry:["cards",i]})}>
-      <div class="img"><img {...nativeMedia(Astro.props,["cards",i,"image"])} src={card.media.src} {...card.media.attributes} width={card.media.width} height={card.media.height} alt={card.image.alt} loading="lazy" decoding="async" /></div>
+    {items.map((card,i) => <article class="occ" {...listItem(Astro.props,{entry:["cards",i]})}>
+      <div class="img"><img {...sectionMedia(Astro.props,["cards",i,"image"])} src={card.media.src} {...card.media.attributes} width={card.media.width} height={card.media.height} alt={card.image.alt} loading="lazy" decoding="async" /></div>
       <div class="body">
-        <span class="mono" style="color:var(--faint)" {...nativeField(Astro.props,["cards",i,"category"])}>{card.category}</span><h3 {...nativeField(Astro.props,["cards",i,"title"],true)}><InlineText value={card.title} /></h3><p {...nativeField(Astro.props,["cards",i,"text"])}>{card.text}</p>
-        <ul class="facts">{card.facts.map((fact,j) => <li {...nativeField(Astro.props,["cards",i,"facts",j])} {...nativeItem(Astro.props,{entry:["cards",i,"facts",j]})}>{fact}</li>)}</ul>
-        <a class="link" href={localizedHref(card.cta.href,locale)} {...nativeUses(Astro.props,[["cards",i,"cta","href"]])}><span {...nativeField(Astro.props,["cards",i,"cta","label"])}>{card.cta.label}</span> <span aria-hidden="true">→</span></a>
-        {card.download && <a class="dl mono" href={localizedHref(card.download.href,locale)} {...nativeUses(Astro.props,[["cards",i,"download","href"]])} type="application/pdf" target="_blank" rel="noopener"><span {...nativeField(Astro.props,["cards",i,"download","label"])}>{card.download.label}</span> <span aria-hidden="true">↓</span></a>}
+        <span class="mono" style="color:var(--faint)" {...sectionField(Astro.props,["cards",i,"category"])}>{card.category}</span><h3 {...sectionField(Astro.props,["cards",i,"title"])}><InlineText value={card.title} /></h3><p {...sectionField(Astro.props,["cards",i,"text"])}>{card.text}</p>
+        <ul class="facts">{card.facts.map((fact,j) => <li {...markers(sectionField(Astro.props,["cards",i,"facts",j]), listItem(Astro.props,{entry:["cards",i,"facts",j]}))}>{fact}</li>)}</ul>
+        <a class="link" href={localizedHref(card.cta.href,locale)} {...sectionUses(Astro.props,[["cards",i,"cta","href"]])}><span {...sectionField(Astro.props,["cards",i,"cta","label"])}>{card.cta.label}</span> <span aria-hidden="true">→</span></a>
+        {card.download && <a class="dl mono" href={localizedHref(card.download.href,locale)} {...sectionUses(Astro.props,[["cards",i,"download","href"]])} type="application/pdf" target="_blank" rel="noopener"><span {...sectionField(Astro.props,["cards",i,"download","label"])}>{card.download.label}</span> <span aria-hidden="true">↓</span></a>}
       </div>
     </article>)}
   </div>

@@ -72,7 +72,7 @@ registerCanvas("canvas#cfg-field", (canvas, life, saved) => {
 
   function update(keep, to) {
     const s = step(), p = pkg(), price = priceFor(s.pkg, p.base);
-    const editorResult=document.querySelector(".cfg-result[data-native-record]");if(editorResult)editorResult.dataset.nativeRecord="package/"+s.pkg.toLowerCase();
+    const editorResult=document.querySelector(".cfg-result[data-afe]");if(editorResult){const marker=JSON.parse(editorResult.dataset.afe);marker.address.owner.id=s.pkg.toLowerCase();editorResult.dataset.afe=JSON.stringify(marker);}
     document.documentElement.style.setProperty("--pkg", colorVar(p.color));
     for (const [sel, txt] of [["#cfg-pkg", inlinePlain(p.displayName)], ["#cfg-bar-pkg", inlinePlain(p.displayName)], ["#cfg-price", eur(price)], ["#cfg-bar-price", eur(price)]]) $(sel).textContent = txt;
     $("#cfg-meta").textContent = t("result.meta",{count:p.base.toLocaleString(fmt),duration:p.dur});
@@ -126,7 +126,7 @@ registerCanvas("canvas#cfg-field", (canvas, life, saved) => {
         if (Number.isInteger(saved.beat) && current?.beats[saved.beat]) field.goto(saved.beat);
       }
   };
-  if (document.querySelector('.cfg-result[data-native-record]')) window.flyingstarsConfigurator = controller;
+  if (document.querySelector('.cfg-result[data-afe]')) window.flyingstarsConfigurator = controller;
   life.preserve(() => controller.snapshot());
   life.cleanup(() => { clearTimeout(typing); ++job; });
   if (saved) controller.restore(saved);

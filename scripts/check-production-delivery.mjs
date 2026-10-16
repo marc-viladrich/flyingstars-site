@@ -13,7 +13,7 @@ assert.equal(Number(process.versions.node.split('.')[0]),22,'Use Node 22 in PATH
 const root=fileURLToPath(new URL('../',import.meta.url));
 const temporary=await mkdtemp(path.join(os.tmpdir(),'flyingstars-delivery-'));
 const source=path.join(temporary,'source'),dist=path.join(root,'dist'),preview=path.join(temporary,'preview');
-const env={...process.env,PATH:path.dirname(process.execPath)+path.delimiter+process.env.PATH,ASTRO_TELEMETRY_DISABLED:'1',FLYINGSTARS_OFFLINE_MEDIA:'1',SITE_URL:'https://flyingstars.art',FLYINGSTARS_EDITOR:''};
+const env={...process.env,PATH:path.dirname(process.execPath)+path.delimiter+process.env.PATH,ASTRO_TELEMETRY_DISABLED:'1',FLYINGSTARS_OFFLINE_MEDIA:'1',SITE_URL:'https://flyingstars.art',AFE_MODE:''};
 async function astro(args,extra={}) {
   await new Promise((resolve,reject)=>{
     const child=spawn(process.execPath,[path.join(source,'node_modules/astro/bin/astro.mjs'),...args],{cwd:source,env:{...env,...extra},stdio:'inherit'});
@@ -58,7 +58,7 @@ try {
   let count=0;
   for(const file of await htmlFiles(dist)) {
     const html=await readFile(path.join(dist,file),'utf8');count++;
-    assert.doesNotMatch(html,/data-native-|data-editor-|\/editor\/(?:web|api|bridge)|native-editor-bridge/,file);
+    assert.doesNotMatch(html,/data-afe|data-native-|data-editor-|\/editor\/(?:web|api|bridge)|native-editor-bridge/,file);
     for(const {from} of redirects) assert.ok(!html.includes(`href="${from}"`),`Internal link to redirect in ${file}: ${from}`);
   }
   await access(path.join(dist,'404.html'));
@@ -66,7 +66,7 @@ try {
   await mkdir(path.join(root,'.astro'),{recursive:true});
   await writeFile(path.join(root,'.astro/seo-fallbacks.json'),JSON.stringify(report,null,2)+'\n');
   // A second real build verifies preview output and crawler protection, with a different origin.
-  await astro(['build','--outDir',preview],{FLYINGSTARS_EDITOR:'1',SITE_URL:'https://preview.example.org'});
+  await astro(['build','--outDir',preview],{AFE_MODE:'editor',SITE_URL:'https://preview.example.org'});
   assert.equal(await readFile(path.join(preview,'robots.txt'),'utf8'),'User-agent: *\nDisallow: /\n');
   for(const file of await htmlFiles(preview)) assert.match(await readFile(path.join(preview,file),'utf8'),/<meta name="robots" content="[^"]*noindex/,file);
   const previewSitemap=await readFile(path.join(preview,'sitemap-0.xml'),'utf8').catch(()=> '');

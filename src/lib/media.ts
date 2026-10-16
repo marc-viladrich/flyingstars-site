@@ -2,13 +2,14 @@ import {getImage,inferRemoteSize} from 'astro:assets';
 import type {ImageMetadata} from 'astro';
 import {mediaForSource} from './content';
 import {resolveImageSource,imageWidths} from './media-source.mjs';
+import {editorBuild} from './editor-markers';
 
 // Astro imports these files as ImageMetadata, even though their stable public URLs remain /assets/… .
 // Lazy imports read only used uploads. Vite also tracks additions during live preview.
 const uploads = import.meta.glob<ImageMetadata>('../../public/assets/**/*.{png,jpg,jpeg,webp}',{import:'default'});
 const hosts = new Set(['flyingstars.art','flyingstars-relaunch.vercel.app',process.env.MEDIA_HOST ?? 'media.example.invalid']);
 const sources = new Map<string,ReturnType<typeof resolveImageSource>>();
-const fast = () => process.env.FLYINGSTARS_OFFLINE_MEDIA === '1' || process.env.FLYINGSTARS_EDITOR === '1';
+const fast = () => process.env.FLYINGSTARS_OFFLINE_MEDIA === '1' || editorBuild();
 async function source(src:string) {
   if (!sources.has(src)) sources.set(src,resolveImageSource(src,{uploads,hosts,remoteSize:async (url:string) => {
     // Production probes the original, so stale editorial dimensions can never cause upscaling.

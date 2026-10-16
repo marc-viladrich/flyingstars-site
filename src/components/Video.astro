@@ -1,5 +1,5 @@
 ---
-import {nativeRecord as uiMarker} from '../lib/native-editor';
+import {recordField as uiMarker} from '../lib/editor-markers';
 import {siteRecord as readUi} from '../lib/content';
 import {localeFromPath} from '../lib/localized-routes';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
@@ -8,11 +8,12 @@ import { responsiveImage } from '../lib/media';
 import { videoPath } from '../lib/videos';
 interface Props { _locale?:string; locale?:string;  src: string; poster?: string; class?: string; loop?: boolean; label?: string; hero?: boolean; }
 const { src, poster, class: className = '', loop = false, label = ui.components.video.buttonText, hero = false } = Astro.props;
-const markers=Object.fromEntries(Object.entries(Astro.props).filter(([key])=>key.startsWith('data-native-')));
+// The editor marker of the media field, forwarded onto the real image element.
+const afe=(Astro.props as unknown as Record<string,unknown>)['data-afe'],marker=afe===undefined?{}:{'data-afe':afe};
 const image = poster ? await responsiveImage(poster, hero ? '100vw' : '(max-width: 760px) calc(100vw - 48px), 46vw') : undefined;
 ---
 <div class:list={['video-player', className]} data-video-player>
-  {image && <img {...markers} src={image.src} {...image.attributes} width={image.width} height={image.height} alt="" loading={hero ? 'eager' : 'lazy'} fetchpriority={hero ? 'high' : 'auto'} />}
+  {image && <img {...marker} src={image.src} {...image.attributes} width={image.width} height={image.height} alt="" loading={hero ? 'eager' : 'lazy'} fetchpriority={hero ? 'high' : 'auto'} />}
   <video data-src={videoPath(src)} controls playsinline preload="none" loop={loop} aria-label={label} hidden></video>
   <button class="video-play btn" type="button" data-video-play aria-label={label}><span aria-hidden="true">▶</span> {label}</button>
   <p class="video-error" role="status" hidden {...uiMarker('site/ui',["components", "video", "unavailable"])}>{ui.components.video.unavailable}</p>

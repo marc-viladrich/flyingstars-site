@@ -1,13 +1,13 @@
 ---
 import InlineText from '../InlineText.astro';
-import {nativeField,nativeSection,nativeItem} from "../../lib/native-editor";
+import {sectionField,sectionBlock,listItem} from "../../lib/editor-markers";
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'steps' }> & { index: number; locale?:string; _locale?:string };
 const { headline, text, steps, kicker, id = `s${Astro.props.index}`, index } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 ---
-<section {...nativeSection(Astro.props)} class="section" id={id} aria-labelledby={headingId}>
-  <div class="sec-head"><div>{kicker && <span class="kicker mono" {...nativeField(Astro.props,["kicker"])}>{kicker}</span>}<H id={headingId} {...nativeField(Astro.props,["headline"],true)}><InlineText value={headline} /></H></div>{text && <p {...nativeField(Astro.props,["text"])}>{text}</p>}</div>
-  <ol class="steps">{steps.map((step,i) => <li {...nativeItem(Astro.props,{entry:["steps",i]})}><h3 {...nativeField(Astro.props,["steps",i,"title"],true)}><InlineText value={step.title} /></h3><p {...nativeField(Astro.props,["steps",i,"text"])}>{step.text}</p>{step.duration && <span class="t mono" {...nativeField(Astro.props,["steps",i,"duration"])}>{step.duration}</span>}</li>)}</ol>
+<section {...sectionBlock(Astro.props)} class="section" id={id} aria-labelledby={headingId}>
+  <div class="sec-head"><div>{kicker && <span class="kicker mono" {...sectionField(Astro.props,["kicker"])}>{kicker}</span>}<H id={headingId} {...sectionField(Astro.props,["headline"])}><InlineText value={headline} /></H></div>{text && <p {...sectionField(Astro.props,["text"])}>{text}</p>}</div>
+  <ol class="steps">{steps.map((step,i) => <li {...listItem(Astro.props,{entry:["steps",i]})}><h3 {...sectionField(Astro.props,["steps",i,"title"])}><InlineText value={step.title} /></h3><p {...sectionField(Astro.props,["steps",i,"text"])}>{step.text}</p>{step.duration && <span class="t mono" {...sectionField(Astro.props,["steps",i,"duration"])}>{step.duration}</span>}</li>)}</ol>
 </section>

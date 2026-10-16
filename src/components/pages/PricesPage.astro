@@ -1,5 +1,5 @@
 ---
-import {nativeRecord as uiMarker} from '../../lib/native-editor';
+import {recordField as uiMarker} from '../../lib/editor-markers';
 import {jsonScript} from '../../lib/json-script.mjs';
 import {siteRecord as readUi} from '../../lib/content';
 import {localeFromPath,localizedHref} from '../../lib/localized-routes';
@@ -13,7 +13,7 @@ import Base from '../../layouts/Base.astro';
 import Calculator from '../pricing/Calculator.astro';
 import PackageDetails from '../pricing/PackageDetails.astro';
 import { siteRecord } from '../../lib/content';
-import { nativeRecord } from '../../lib/native-editor';
+import { recordField } from '../../lib/editor-markers';
 const pricingFaq: Array<{question:string;answer:string}>=ui.prices.faq.items;
 const faqJson={"@context":"https://schema.org","@type":"FAQPage",mainEntity:pricingFaq.map(item=>({"@type":"Question",name:item.question,acceptedAnswer:{"@type":"Answer",text:item.answer}}))};
 const videoCall = (await siteRecord('contact',locale)).videoCall;
@@ -39,7 +39,7 @@ const videoCall = (await siteRecord('contact',locale)).videoCall;
       <p {...uiMarker('site/ui',["prices", "extras", "intro"])}>{ui.prices.extras.intro}</p>
     </div>
     <div class="extras">
-      {extras.map(extra => <div class="extra"><span class="k mono" {...nativeRecord(`extra/${extra.id}`,['name'])}>{extra.data.name}</span><h3 {...nativeRecord(`extra/${extra.id}`,['title'])}>{extra.data.title}</h3><p {...nativeRecord(`extra/${extra.id}`,['text'])}>{extra.data.text}</p><span class="price mono" {...nativeRecord(`extra/${extra.id}`,['priceNote'])}>{extra.data.priceNote}</span></div>)}
+      {extras.map(extra => <div class="extra"><span class="k mono" {...recordField(`extra/${extra.id}`,['name'])}>{extra.data.name}</span><h3 {...recordField(`extra/${extra.id}`,['title'])}>{extra.data.title}</h3><p {...recordField(`extra/${extra.id}`,['text'])}>{extra.data.text}</p><span class="price mono" {...recordField(`extra/${extra.id}`,['priceNote'])}>{extra.data.priceNote}</span></div>)}
     </div>
   </section>
 
@@ -62,7 +62,7 @@ const videoCall = (await siteRecord('contact',locale)).videoCall;
         <span class="kicker mono" style="margin:0" {...uiMarker('site/ui',["prices", "faq", "label"])}>{ui.prices.faq.label}</span>
         <h2 id="faq-h" {...uiMarker('site/ui',["prices", "faq", "headline"])}>{ui.prices.faq.headline}</h2>
         <p {...uiMarker('site/ui',["prices", "faq", "intro"])}>{ui.prices.faq.intro}</p>
-        <a class="link" href={localizedHref(videoCall.href,locale)} target="_blank" rel="noopener" {...nativeRecord("site/contact", ["videoCall", "href"])}>{ui.prices.faq.buttonText} <span aria-hidden="true">→</span></a>
+        <a class="link" href={localizedHref(videoCall.href,locale)} target="_blank" rel="noopener" {...recordField("site/contact", ["videoCall", "href"])}>{ui.prices.faq.buttonText} <span aria-hidden="true">→</span></a>
       </div>
       <div class="faq">
         {pricingFaq.map((item,i) => <details open={i===0}><summary {...uiMarker('site/ui',['prices','faq','items',i,'question'])}>{item.question}</summary><div class="answer"><p {...uiMarker('site/ui',['prices','faq','items',i,'answer'])}>{item.answer}</p></div></details>)}

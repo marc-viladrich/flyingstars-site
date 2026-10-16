@@ -5,23 +5,23 @@ const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro
 const ui = await readUi('ui',locale);
 import InlineText from '../InlineText.astro';
 import {resolveMedia} from '../../lib/content';
-import {nativeField,nativeSection,nativeMedia,nativeItem} from "../../lib/native-editor";
+import {sectionField,sectionBlock,sectionMedia,listItem} from "../../lib/editor-markers";
 import type { Section } from '../../content.config';
 import {inlinePlain} from '../../lib/inline-text';
 import Video from '../Video.astro';
 const H=Astro.props.index===0?'h1':'h2',headingId=`hero-${Astro.props.index}-h`;
 const { headline, text, eyebrow, words, cta, secondary, poster, video, stats } = Astro.props as Extract<Section, { type: 'showreelHero' }>;
 ---
-<section {...nativeSection(Astro.props)} class="hero" aria-labelledby={headingId}>
-  <Video src={video} poster={resolveMedia(poster,locale).src} label={ui.components.flightHero.buttonText} hero class="hero-media" {...nativeMedia(Astro.props,["poster"])} />
+<section {...sectionBlock(Astro.props)} class="hero" aria-labelledby={headingId}>
+  <Video src={video} poster={resolveMedia(poster,locale).src} label={ui.components.flightHero.buttonText} hero class="hero-media" {...sectionMedia(Astro.props,["poster"])} />
   <div class="shade" aria-hidden="true"></div>
   <div class="frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
   <div class="hero-copy">
-    <span class="kicker mono" {...nativeField(Astro.props,["eyebrow"])}>{eyebrow}</span>
-    <H id={headingId}><span {...nativeField(Astro.props,["headline"],true)}><InlineText value={headline} /></span> <span class="word" data-rotate={words.map(inlinePlain).join('|')} {...nativeField(Astro.props,["words",0],true)}><InlineText value={words[0]} /></span></H>
+    <span class="kicker mono" {...sectionField(Astro.props,["eyebrow"])}>{eyebrow}</span>
+    <H id={headingId}><span {...sectionField(Astro.props,["headline"])}><InlineText value={headline} /></span> <span class="word" data-rotate={words.map(inlinePlain).join('|')} {...sectionField(Astro.props,["words",0])}><InlineText value={words[0]} /></span></H>
     <template data-rotate-words>{words.map(word=><span><InlineText value={word} /></span>)}</template>
-    <p class="lead" {...nativeField(Astro.props,["text"])}>{text}</p>
-    <div class="actions"><a class="btn primary" href={localizedHref(cta.href,locale)}><span {...nativeField(Astro.props,["cta","label"])}>{cta.label}</span></a><a class="btn" href={localizedHref(secondary.href,locale)}><span {...nativeField(Astro.props,["secondary","label"])}>{secondary.label}</span></a></div>
+    <p class="lead" {...sectionField(Astro.props,["text"])}>{text}</p>
+    <div class="actions"><a class="btn primary" href={localizedHref(cta.href,locale)}><span {...sectionField(Astro.props,["cta","label"])}>{cta.label}</span></a><a class="btn" href={localizedHref(secondary.href,locale)}><span {...sectionField(Astro.props,["secondary","label"])}>{secondary.label}</span></a></div>
   </div>
-  <dl class="spec mono" aria-label={ui.components.flightHero.factsLabel}>{stats.map((stat,i) => {const pair=<><dt {...nativeField(Astro.props,["stats",i,"label"])}>{stat.label}</dt><dd><b {...nativeField(Astro.props,["stats",i,"value"])}>{stat.value}</b></dd></>,item=nativeItem(Astro.props,{entry:["stats",i]});return Object.keys(item).length?<div style="display:contents" {...item}>{pair}</div>:pair;})}</dl>
+  <dl class="spec mono" aria-label={ui.components.flightHero.factsLabel}>{stats.map((stat,i) => {const pair=<><dt {...sectionField(Astro.props,["stats",i,"label"])}>{stat.label}</dt><dd><b {...sectionField(Astro.props,["stats",i,"value"])}>{stat.value}</b></dd></>,item=listItem(Astro.props,{entry:["stats",i]});return Object.keys(item).length?<div style="display:contents" {...item}>{pair}</div>:pair;})}</dl>
 </section>

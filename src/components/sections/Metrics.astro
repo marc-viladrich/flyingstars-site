@@ -1,13 +1,13 @@
 ---
 import InlineText from '../InlineText.astro';
-import {nativeField,nativeSection,nativeItem} from "../../lib/native-editor";
+import {sectionField,sectionBlock,listItem} from "../../lib/editor-markers";
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'metrics' }> & { index: number; locale?:string; _locale?:string };
 const { headline, text, kicker, id = `s${Astro.props.index}`, items, index } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 ---
-<section {...nativeSection(Astro.props)} class="section alt" id={id} aria-labelledby={headingId}>
-  <div class="sec-head"><div>{kicker && <span class="kicker mono" {...nativeField(Astro.props,["kicker"])}>{kicker}</span>}<H id={headingId} {...nativeField(Astro.props,["headline"],true)}><InlineText value={headline} /></H></div><p {...nativeField(Astro.props,["text"])}>{text}</p></div>
-  <div class="sheet">{items.map((item,i) => <div class="cell" {...nativeItem(Astro.props,{entry:["items",i]})}><span class="k mono"><span {...nativeField(Astro.props,["items",i,"label"])}>{item.label}</span><span>{String(i+1).padStart(2,'0')}</span></span><span class="v" {...nativeField(Astro.props,["items",i,"value"])}>{item.value}</span><p {...nativeField(Astro.props,["items",i,"text"])}>{item.text}</p></div>)}</div>
+<section {...sectionBlock(Astro.props)} class="section alt" id={id} aria-labelledby={headingId}>
+  <div class="sec-head"><div>{kicker && <span class="kicker mono" {...sectionField(Astro.props,["kicker"])}>{kicker}</span>}<H id={headingId} {...sectionField(Astro.props,["headline"])}><InlineText value={headline} /></H></div><p {...sectionField(Astro.props,["text"])}>{text}</p></div>
+  <div class="sheet">{items.map((item,i) => <div class="cell" {...listItem(Astro.props,{entry:["items",i]})}><span class="k mono"><span {...sectionField(Astro.props,["items",i,"label"])}>{item.label}</span><span>{String(i+1).padStart(2,'0')}</span></span><span class="v" {...sectionField(Astro.props,["items",i,"value"])}>{item.value}</span><p {...sectionField(Astro.props,["items",i,"text"])}>{item.text}</p></div>)}</div>
 </section>

@@ -6,7 +6,7 @@ import {localeFromPath,localizedHref,sourcePath} from '../../lib/localized-route
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 const ui = await readUi('ui',locale);
 import InlineText from '../InlineText.astro';
-import {nativeField,nativeSection,nativeRecord,nativeRecordMedia,nativeItem,nativeUses} from "../../lib/native-editor";
+import {sectionField,sectionBlock,recordField,recordMedia,listItem,sectionUses,markers} from "../../lib/editor-markers";
 import {getProjects} from '../../lib/content';
 import {resolveMedia} from '../../lib/content';
 import { responsiveImage } from '../../lib/media';
@@ -21,18 +21,18 @@ const projects = (await getProjects(locale))
 const images = new Map(await Promise.all(projects.filter((p) => p.data.cover).map(async (p) => [p.id, await responsiveImage(resolveMedia(p.data.cover,locale).src,'(max-width: 640px) calc(100vw - 48px), 46vw')] as const)));
 const home = sourcePath(Astro.url.pathname) === '/';
 ---
-<section {...nativeSection(Astro.props)} class="section" id={sectionId ?? `s${index}`} aria-labelledby={id}>
-  <div class="sec-head"><div>{kicker && <span class="kicker mono" {...nativeField(Astro.props,["kicker"])}>{kicker}</span>}<H id={id} {...nativeField(Astro.props,["headline"],true)}><InlineText value={headline} /></H></div>{text && <p {...nativeField(Astro.props,["text"])}>{text}</p>}</div>
+<section {...sectionBlock(Astro.props)} class="section" id={sectionId ?? `s${index}`} aria-labelledby={id}>
+  <div class="sec-head"><div>{kicker && <span class="kicker mono" {...sectionField(Astro.props,["kicker"])}>{kicker}</span>}<H id={id} {...sectionField(Astro.props,["headline"])}><InlineText value={headline} /></H></div>{text && <p {...sectionField(Astro.props,["text"])}>{text}</p>}</div>
   <div class="projects">
     {projects.map((project) => {
       const showcase = project.data.showcase;
       const image = images.get(project.id);
-      return <a class="proj" href={localizedHref(showcase ? `/${showcase.route}/` : `/projekte/${project.id}/`,locale)} {...nativeItem(Astro.props,{record:`project/${project.id}`})} {...nativeUses(Astro.props,showcase?[{record:`project/${project.id}`,path:['showcase','route']}]:[])}>
-        {image && <div class="img"><img {...nativeRecordMedia(`project/${project.id}`,["cover"])} src={image.src} {...image.attributes} width={image.width} height={image.height} alt={resolveMedia(project.data.cover,locale).alt} loading="lazy" decoding="async" />{showcase && <span class="count mono" {...nativeUses(Astro.props,[{record:`project/${project.id}`,path:['showcase','drones']}])}>{showcase.drones} {ui.components.projectGrid.dronesLabel}</span>}</div>}
-        <span class="kick mono" {...(showcase?nativeRecord(`project/${project.id}`,["showcase","category"]):nativeUses(Astro.props,[{record:`project/${project.id}`,path:['client']},{record:`project/${project.id}`,path:['location']}]))}>{showcase?.category ?? [clients.find(client=>client.id===project.data.client?.id)?.name, project.data.location].filter(Boolean).join(' · ')}</span><h3 {...nativeRecord(`project/${project.id}`,showcase?["showcase","cardTitle"]:["title"],Boolean(showcase))}>{showcase?<InlineText value={showcase.cardTitle} />:project.data.title}</h3>
-        {!showcase && <p {...nativeRecord(`project/${project.id}`,["summary"])}>{project.data.summary}</p>}
+      return <a class="proj" href={localizedHref(showcase ? `/${showcase.route}/` : `/projekte/${project.id}/`,locale)} {...markers(listItem(Astro.props,{record:`project/${project.id}`}), sectionUses(Astro.props,showcase?[{record:`project/${project.id}`,path:['showcase','route']}]:[]))}>
+        {image && <div class="img"><img {...recordMedia(`project/${project.id}`,["cover"])} src={image.src} {...image.attributes} width={image.width} height={image.height} alt={resolveMedia(project.data.cover,locale).alt} loading="lazy" decoding="async" />{showcase && <span class="count mono" {...sectionUses(Astro.props,[{record:`project/${project.id}`,path:['showcase','drones']}])}>{showcase.drones} {ui.components.projectGrid.dronesLabel}</span>}</div>}
+        <span class="kick mono" {...(showcase?recordField(`project/${project.id}`,["showcase","category"]):sectionUses(Astro.props,[{record:`project/${project.id}`,path:['client']},{record:`project/${project.id}`,path:['location']}]))}>{showcase?.category ?? [clients.find(client=>client.id===project.data.client?.id)?.name, project.data.location].filter(Boolean).join(' · ')}</span><h3 {...recordField(`project/${project.id}`,showcase?["showcase","cardTitle"]:["title"])}>{showcase?<InlineText value={showcase.cardTitle} />:project.data.title}</h3>
+        {!showcase && <p {...recordField(`project/${project.id}`,["summary"])}>{project.data.summary}</p>}
       </a>;
     })}
   </div>
-  {cta && <div class="more"><a class="link" href={localizedHref(cta.href,locale)}><span {...nativeField(Astro.props,["cta","label"])}>{cta.label}</span> <span aria-hidden="true">→</span></a></div>}
+  {cta && <div class="more"><a class="link" href={localizedHref(cta.href,locale)}><span {...sectionField(Astro.props,["cta","label"])}>{cta.label}</span> <span aria-hidden="true">→</span></a></div>}
 </section>

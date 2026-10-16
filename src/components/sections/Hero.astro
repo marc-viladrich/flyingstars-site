@@ -2,25 +2,25 @@
 import {localeFromPath,localizedHref} from '../../lib/localized-routes';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 import InlineText from '../InlineText.astro';
-import {nativeField,nativeSection,nativeMedia} from "../../lib/native-editor";
+import {sectionField,sectionBlock,sectionMedia} from "../../lib/editor-markers";
 import Picture from '../Picture.astro';
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'hero' }> & {index:number;locale?:string;_locale?:string};
 const H=Astro.props.index===0?'h1':'h2',headingId=`hero-${Astro.props.index}-h`;
 const { headline, text, image, cta, secondary } = Astro.props;
 ---
-<section {...nativeSection(Astro.props)} class="section" aria-labelledby={headingId}>
+<section {...sectionBlock(Astro.props)} class="section" aria-labelledby={headingId}>
   <div class:list={['wrap', { 'grid-2': image }]}>
     <div class="measure">
-      <H id={headingId} {...nativeField(Astro.props,["headline"],true)}><InlineText value={headline} /></H>
-      {text && <p class="muted" {...nativeField(Astro.props,["text"])}>{text}</p>}
+      <H id={headingId} {...sectionField(Astro.props,["headline"])}><InlineText value={headline} /></H>
+      {text && <p class="muted" {...sectionField(Astro.props,["text"])}>{text}</p>}
       {(cta || secondary) && (
         <p>
-          {cta && <a class="btn" href={localizedHref(cta.href,locale)}><span {...nativeField(Astro.props,["cta","label"])}>{cta.label}</span></a>}
-          {secondary && <a class="btn btn--ghost" href={localizedHref(secondary.href,locale)} style="margin-left:.75rem"><span {...nativeField(Astro.props,["secondary","label"])}>{secondary.label}</span></a>}
+          {cta && <a class="btn" href={localizedHref(cta.href,locale)}><span {...sectionField(Astro.props,["cta","label"])}>{cta.label}</span></a>}
+          {secondary && <a class="btn btn--ghost" href={localizedHref(secondary.href,locale)} style="margin-left:.75rem"><span {...sectionField(Astro.props,["secondary","label"])}>{secondary.label}</span></a>}
         </p>
       )}
     </div>
-    {image && <Picture {...image} {...nativeMedia(Astro.props,["image"])} loading="eager" sizes="(min-width: 48rem) 50vw, 100vw" />}
+    {image && <Picture {...image} {...sectionMedia(Astro.props,["image"])} loading="eager" sizes="(min-width: 48rem) 50vw, 100vw" />}
   </div>
 </section>

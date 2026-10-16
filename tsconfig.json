@@ -7,5 +7,12 @@
   "exclude": [
     "dist",
     "editor"
-  ]
+  ],
+  "compilerOptions": {
+    "paths": {
+      "astro-frontend-editor/markers": [
+        "./editor/vendor/astro-frontend-editor/src/markers/index.d.mts"
+      ]
+    }
+  }
 }

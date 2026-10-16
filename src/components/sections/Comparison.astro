@@ -3,7 +3,7 @@ import {siteRecord,fillText} from '../../lib/content';
 import {localeFromPath} from '../../lib/localized-routes';
 const ui=await siteRecord('ui',Astro.props._locale ?? localeFromPath(Astro.url.pathname));
 import InlineText from '../InlineText.astro';
-import {nativeField,nativeSection,nativeItem,nativeUses} from "../../lib/native-editor";
+import {sectionField,sectionBlock,listItem,sectionUses,markers} from "../../lib/editor-markers";
 import {inlinePlain} from '../../lib/inline-text';
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'comparison' }> & { index: number; locale?:string; _locale?:string };
@@ -11,12 +11,12 @@ const { headline, text, rowHeader, columns, rows, note, kicker, id = `s${Astro.p
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 ---
-<section {...nativeSection(Astro.props)} class="section alt" id={id} aria-labelledby={headingId}>
-  <div class="sec-head"><div>{kicker && <span class="kicker mono" {...nativeField(Astro.props,["kicker"])}>{kicker}</span>}<H id={headingId} {...nativeField(Astro.props,["headline"],true)}><InlineText value={headline} /></H></div>{text && <p {...nativeField(Astro.props,["text"])}>{text}</p>}</div>
+<section {...sectionBlock(Astro.props)} class="section alt" id={id} aria-labelledby={headingId}>
+  <div class="sec-head"><div>{kicker && <span class="kicker mono" {...sectionField(Astro.props,["kicker"])}>{kicker}</span>}<H id={headingId} {...sectionField(Astro.props,["headline"])}><InlineText value={headline} /></H></div>{text && <p {...sectionField(Astro.props,["text"])}>{text}</p>}</div>
   <div class="table-wrap" role="region" aria-label={fillText(ui.components.comparison.scrollLabel,{headline:inlinePlain(headline)})} tabindex="0">
-    <table><caption class="sr-only" {...nativeField(Astro.props,["headline"],true)}><InlineText value={headline} /></caption><thead><tr><th scope="col" {...nativeField(Astro.props,["rowHeader"])}>{rowHeader}</th>{columns.map((column,i) => <th scope="col" class:list={{us:i===0}} {...nativeField(Astro.props,["columns",i])} {...nativeItem(Astro.props,{entry:["columns",i]})}>{column}</th>)}</tr></thead>
-      <tbody>{rows.map((row,r) => <tr {...nativeItem(Astro.props,{entry:["rows",r]})}><th scope="row" {...nativeField(Astro.props,["rows",r,"label"])}>{row.label}</th>{row.values.map((value,i) => <td class:list={{us:i===0}} {...nativeItem(Astro.props,{entry:["rows",r,row.cells?"cells":"values",i]})}>{row.cells ? <><span class:list={['m',row.cells[i].tone]} {...nativeField(Astro.props,["rows",r,"cells",i,"label"])} {...nativeUses(Astro.props,[["rows",r,"cells",i,"tone"]])}>{row.cells[i].label}</span>{row.cells[i].text && <> <span {...nativeField(Astro.props,["rows",r,"cells",i,"text"])}>{row.cells[i].text}</span></>}</> : <span {...nativeField(Astro.props,["rows",r,"values",i])}>{value}</span>}</td>)}</tr>)}</tbody>
+    <table><caption class="sr-only" {...sectionField(Astro.props,["headline"])}><InlineText value={headline} /></caption><thead><tr><th scope="col" {...sectionField(Astro.props,["rowHeader"])}>{rowHeader}</th>{columns.map((column,i) => <th scope="col" class:list={{us:i===0}} {...markers(sectionField(Astro.props,["columns",i]), listItem(Astro.props,{entry:["columns",i]}))}>{column}</th>)}</tr></thead>
+      <tbody>{rows.map((row,r) => <tr {...listItem(Astro.props,{entry:["rows",r]})}><th scope="row" {...sectionField(Astro.props,["rows",r,"label"])}>{row.label}</th>{row.values.map((value,i) => <td class:list={{us:i===0}} {...listItem(Astro.props,{entry:["rows",r,row.cells?"cells":"values",i]})}>{row.cells ? <><span class:list={['m',row.cells[i].tone]} {...markers(sectionField(Astro.props,["rows",r,"cells",i,"label"]), sectionUses(Astro.props,[["rows",r,"cells",i,"tone"]]))}>{row.cells[i].label}</span>{row.cells[i].text && <> <span {...sectionField(Astro.props,["rows",r,"cells",i,"text"])}>{row.cells[i].text}</span></>}</> : <span {...sectionField(Astro.props,["rows",r,"values",i])}>{value}</span>}</td>)}</tr>)}</tbody>
     </table>
   </div>
-  {note && <p class="fine mono" {...nativeField(Astro.props,["note"])}>{note}</p>}
+  {note && <p class="fine mono" {...sectionField(Astro.props,["note"])}>{note}</p>}
 </section>

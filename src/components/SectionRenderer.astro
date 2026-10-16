@@ -19,10 +19,11 @@ import Comparison from './sections/Comparison.astro';
 import Team from './sections/Team.astro';
 import LogoBar from './sections/LogoBar.astro';
 import Testimonials from './sections/Testimonials.astro';
+import {blockList,editorBuild} from '../lib/editor-markers';
 
 interface Props { sections?: Section[]; recordId?: string; headingOffset?:number; locale?:string; localization?:any }
 const { sections=[], recordId, headingOffset=0, locale="de",localization } = Astro.props;
 const map = { showreelHero: FlightHero, occasions: Occasions, metrics: Metrics, sustainability: Sustainability, hero: Hero, textMedia: TextMedia, faq: Faq, cta: Cta, postList: PostList, projectGrid: ProjectGrid, contactForm: ContactForm, pricing: Pricing, steps: Steps, comparison: Comparison, team: Team, logoBar: LogoBar, testimonials: Testimonials } as const;
 ---
-{process.env.FLYINGSTARS_EDITOR==='1'&&recordId&&<template data-native-section-list={recordId}></template>}
-{sections.map((s, i) => { const C = map[s.type]; return <C {...(s as any)} index={i+headingOffset} _nativeIndex={i} _nativeRecord={recordId} _locale={locale} _localization={localization} />; })}
+{editorBuild()&&recordId&&<template {...blockList(recordId)}></template>}
+{sections.map((s, i) => { const C = map[s.type]; return <C {...(s as any)} index={i+headingOffset} _sectionIndex={i} _recordId={recordId} _locale={locale} _localization={localization} />; })}

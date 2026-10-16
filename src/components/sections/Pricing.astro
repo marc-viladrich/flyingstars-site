@@ -2,7 +2,7 @@
 import {localeFromPath,localeFormat,localizedHref} from '../../lib/localized-routes';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 import InlineText from '../InlineText.astro';
-import {nativeField,nativeSection,nativeItem,nativeUses,editorBuild} from "../../lib/native-editor";
+import {sectionField,sectionBlock,listItem,sectionUses,editorBuild,markers,recordField,recordPanelField} from "../../lib/editor-markers";
 import {selectedPackageFeatures} from '../../content/package-features.mjs';
 import type { Section } from '../../content.config';
 import {type ShowPackage} from '../../content/show-packages';
@@ -14,15 +14,11 @@ const { headline, text, tiers, note, cta, kicker, columns='three', id = `s${Astr
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const money = new Intl.NumberFormat(localeFormat(locale), { maximumFractionDigits: 0 });
-const editor = process.env.FLYINGSTARS_EDITOR === '1';
-const native = (name: ShowPackage, path: Array<string | number>, derived = false, inline = false) => editor ? {
-  'data-native-record': `package/${name.toLowerCase()}`,
-  [derived ? 'data-native-derived' : 'data-native-path']: JSON.stringify(path),
-  ...(inline?{'data-native-inline':'true'}:{}),
-} : {};
+// A package field shown on this card; panel = a formatted value (price, drone count) edited in the panel.
+const packageField = (name: ShowPackage, path: Array<string | number>, panel = false) => (panel ? recordPanelField : recordField)(`package/${name.toLowerCase()}`, path);
 ---
-<section {...nativeSection(Astro.props)} class="section alt" id={id} aria-labelledby={headingId}>
-  <div class="sec-head"><div>{kicker && <span class="kicker mono" {...nativeField(Astro.props,["kicker"])}>{kicker}</span>}<H id={headingId} {...nativeField(Astro.props,["headline"],true)}><InlineText value={headline} /></H></div>{text && <p {...nativeField(Astro.props,["text"])}>{text}</p>}</div>
+<section {...sectionBlock(Astro.props)} class="section alt" id={id} aria-labelledby={headingId}>
+  <div class="sec-head"><div>{kicker && <span class="kicker mono" {...sectionField(Astro.props,["kicker"])}>{kicker}</span>}<H id={headingId} {...sectionField(Astro.props,["headline"])}><InlineText value={headline} /></H></div>{text && <p {...sectionField(Astro.props,["text"])}>{text}</p>}</div>
   <div class:list={["packs",{'packs--two':columns==='two','packs--one':columns==='one'}]}>{tiers.map((tier,i) => {
     const Card = tier.cta ? 'a' : 'article';
     const name = tier.packageId.toUpperCase() as ShowPackage;
@@ -35,12 +31,12 @@ const native = (name: ShowPackage, path: Array<string | number>, derived = false
     const featureGroups = [...new Set(features.map(f=>f.group))].sort((a,b)=>a-b).map(group=>({group,title:pkg.featureGroups[group]?.title,items:features.filter(f=>f.group===group)}));
     const price = fillText(ui.calculator.readout.fromPrice,{price:money.format(pkg.price)+" €"});
     const unit = `${pkg.base}${name === 'ODYSSEY' ? '+' : ''} ${ui.calculator.controls.dronesLabel} · ${pkg.dur}`;
-    return <Card class:list={['pack',{featured:pkg.highlight}]} href={localizedHref(tier.cta?.href,locale)} {...nativeItem(Astro.props,{record,entry:['tiers',i]})} {...nativeUses(Astro.props,[['tiers',i,'packageId'],...(tier.cta?[['tiers',i,'cta','href']]:[]),{record,path:['highlight']}])}>
-      {(tier.showOrb!==false || editorBuild()) && <canvas hidden={tier.showOrb===false} data-orb={pkg.orbShape} data-color={pkg.color} data-n={pkg.base} aria-hidden="true" {...nativeUses(Astro.props,[['tiers',i,'showOrb'],{record,path:['orbShape']},{record,path:['color']},{record,path:['base']}])}></canvas>}
-      <div><div class="name"><h3 {...native(name, ['displayName'],false,true)}><InlineText value={pkg.displayName} /></h3>{pkg.badge && (pkg.highlight || editorBuild()) && <span class="chip" {...native(name,['badge'])}>{pkg.badge}</span>}</div><div class="price" {...native(name, ['price'], true)}>{price}</div><div class="meta mono" {...native(name, ['base'], true)} {...nativeUses(Astro.props,[{record,path:['dur']}])}>{unit}</div>{pkg.description && <p {...native(name,['description'])}>{pkg.description}</p>}{featureGroups.map(({group,title,items}) => <div class="facts-group">{title && <h4 {...native(name,['featureGroups',group,'title'])}>{title}</h4>}<ul class="facts">{items.map(({feature,path,j}) => <li {...nativeItem(Astro.props,{record,entry:["tiers",i,"featureIds",j]})} {...native(name,path)}>{feature.text}</li>)}</ul></div>)}</div>
+    return <Card class:list={['pack',{featured:pkg.highlight}]} href={localizedHref(tier.cta?.href,locale)} {...markers(listItem(Astro.props,{record,entry:['tiers',i]}), sectionUses(Astro.props,[['tiers',i,'packageId'],...(tier.cta?[['tiers',i,'cta','href']]:[]),{record,path:['highlight']}]))}>
+      {(tier.showOrb!==false || editorBuild()) && <canvas hidden={tier.showOrb===false} data-orb={pkg.orbShape} data-color={pkg.color} data-n={pkg.base} aria-hidden="true" {...sectionUses(Astro.props,[['tiers',i,'showOrb'],{record,path:['orbShape']},{record,path:['color']},{record,path:['base']}])}></canvas>}
+      <div><div class="name"><h3 {...packageField(name, ['displayName'])}><InlineText value={pkg.displayName} /></h3>{pkg.badge && (pkg.highlight || editorBuild()) && <span class="chip" {...packageField(name, ['badge'])}>{pkg.badge}</span>}</div><div class="price" {...packageField(name, ['price'], true)}>{price}</div><div class="meta mono" {...markers(packageField(name, ['base'], true), sectionUses(Astro.props,[{record,path:['dur']}]))}>{unit}</div>{pkg.description && <p {...packageField(name, ['description'])}>{pkg.description}</p>}{featureGroups.map(({group,title,items}) => <div class="facts-group">{title && <h4 {...packageField(name, ['featureGroups',group,'title'])}>{title}</h4>}<ul class="facts">{items.map(({feature,path,j}) => <li {...markers(listItem(Astro.props,{record,entry:["tiers",i,"featureIds",j]}), packageField(name, path))}>{feature.text}</li>)}</ul></div>)}</div>
     </Card>;
   })}</div>
-  {(note || cta) && <div class="pack-note">{note && <span class="mono" {...nativeField(Astro.props,["note"])}>{note}</span>}{cta && <a class="link" href={localizedHref(cta.href,locale)}><span {...nativeField(Astro.props,["cta","label"])}>{cta.label}</span> <span aria-hidden="true">→</span></a>}</div>}
+  {(note || cta) && <div class="pack-note">{note && <span class="mono" {...sectionField(Astro.props,["note"])}>{note}</span>}{cta && <a class="link" href={localizedHref(cta.href,locale)}><span {...sectionField(Astro.props,["cta","label"])}>{cta.label}</span> <span aria-hidden="true">→</span></a>}</div>}
 </section>
 
 <style>/* Only the recommended package carries its chip here, so it stands out; the editor keeps all chips in the DOM for instant switching. */.pack:not(.featured) .chip{display:none}.packs--two{grid-template-columns:repeat(2,minmax(0,1fr))}/* Group titles of the chosen Leistungen read like those on the package card (PackageDetails). */.facts-group{margin-top:12px}.facts-group h4{margin:0 0 6px;font:400 11.5px/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}.packs--one{grid-template-columns:1fr}@media(max-width:640px){.packs--two{grid-template-columns:1fr}}</style>

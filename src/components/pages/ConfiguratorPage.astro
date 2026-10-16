@@ -1,13 +1,13 @@
 ---
 import {colorVar} from '../../lib/color-tokens.mjs';
-import {nativeRecord as uiMarker} from '../../lib/native-editor';
+import {recordField as uiMarker} from '../../lib/editor-markers';
 import {siteRecord as readUi} from '../../lib/content';
 import {localeFromPath,localeFormat,localizedHref} from '../../lib/localized-routes';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 const ui = await readUi('ui',locale);
 import InlineText from '../InlineText.astro';
 import {inlinePlain} from '../../lib/inline-text';
-import {nativeRecord} from '../../lib/native-editor';
+import {recordField,recordPanelField} from '../../lib/editor-markers';
 import {fillText,getScreen} from '../../lib/content';
 const screen = await getScreen('show-konfigurator',locale);
 import Base from '../../layouts/Base.astro';
@@ -43,7 +43,7 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
     </div>
 
     <form class="cfg-panel" id="cfg">
-      <h1 id="cfg-h" class="cfg-h" {...nativeRecord('screen/show-konfigurator',['headline'],true)}><InlineText value={screen.headline} /></h1>
+      <h1 id="cfg-h" class="cfg-h" {...recordField('screen/show-konfigurator',['headline'])}><InlineText value={screen.headline} /></h1>
 
       <fieldset class="cfg-block">
         <legend {...uiMarker('site/ui',["configurator", "steps", "occasionLabel"])}>{ui.configurator.steps.occasionLabel}</legend>
@@ -55,7 +55,7 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
       <fieldset class="cfg-block">
         <legend {...uiMarker('site/ui',["configurator", "steps", "effortLabel"])}>{ui.configurator.steps.effortLabel}</legend>
         <div class="cfg-pkgs">
-          {STEPS.map((s, i) => <label style={`--c: ${colorVar(SHOW_PACKAGES[s.pkg as ShowPackage].color)}`}><input type="radio" name="pkg" value={i} checked={i === start} /><span><b {...nativeRecord(`package/${s.pkg.toLowerCase()}`,["displayName"],true)}><InlineText value={SHOW_PACKAGES[s.pkg as ShowPackage].displayName} /></b><small>{s.label}</small></span></label>)}
+          {STEPS.map((s, i) => <label style={`--c: ${colorVar(SHOW_PACKAGES[s.pkg as ShowPackage].color)}`}><input type="radio" name="pkg" value={i} checked={i === start} /><span><b {...recordField(`package/${s.pkg.toLowerCase()}`,["displayName"])}><InlineText value={SHOW_PACKAGES[s.pkg as ShowPackage].displayName} /></b><small>{s.label}</small></span></label>)}
         </div>
       </fieldset>
 
@@ -68,7 +68,7 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
         <p class="cfg-text-note" id="cfg-text-note" hidden {...uiMarker('site/ui',["configurator", "ownText", "hint"])}>{ui.configurator.ownText.hint}</p>
       </fieldset>
 
-      <div class="cfg-result" aria-live="polite" data-native-record={process.env.FLYINGSTARS_EDITOR==='1'?"package/"+startPkg.toLowerCase():undefined} data-native-derived={process.env.FLYINGSTARS_EDITOR==='1'?'["price"]':undefined}>
+      <div class="cfg-result" aria-live="polite" {...recordPanelField("package/"+startPkg.toLowerCase(),["price"])}>
         <div class="cfg-price"><b id="cfg-pkg">{inlinePlain(first.displayName)}</b><span id="cfg-price">{money(first.price)}</span></div>
         <p class="cfg-meta mono" id="cfg-meta">{fillText(ui.configurator.result.meta,{count:first.base,duration:first.dur})}</p>
         <p class="cfg-includes" id="cfg-includes">{fillText(ui.configurator.result.includes,{text:STEPS[start].includes})}</p>

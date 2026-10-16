@@ -1,5 +1,5 @@
 ---
-import {nativeRecord as uiMarker} from '../lib/native-editor';
+import {recordField as uiMarker,markers,editorBuild} from '../lib/editor-markers';
 import {siteRecord as readUi} from '../lib/content';
 import {localeFromPath,localizedHref,sourcePath} from '../lib/localized-routes';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
@@ -11,15 +11,15 @@ import { site } from '../site.config';
 import Logo from '../components/Logo.astro';
 import { optimizedImage } from '../lib/media';
 import { siteRecord } from '../lib/content';
-import { nativeRecord,nativeItem } from '../lib/native-editor';
+import { recordField,listItem } from '../lib/editor-markers';
 interface Props { _locale?:string; title: string; description: string; noindex?: boolean; canonicalPath?: string; image?: string; navSection?: string; fullBleed?: boolean; locale?:string; }
 const { title, description, noindex = false, canonicalPath, image, navSection, fullBleed: bleed = false } = Astro.props;
 const canonical = new URL(localizedHref(canonicalPath ?? Astro.url.pathname,locale), Astro.site);
 const current = sourcePath(Astro.url.pathname);
 // Footer contact values and addresses are owned by site/contact (same record as the contact form).
-const contact = await siteRecord('contact',locale), C = (path: string[]) => nativeRecord('site/contact', path);
-const navigation = await siteRecord('navigation',locale), N = (path: (string|number)[]) => nativeRecord('site/navigation', path);
-const NI = (entry: (string|number)[]) => nativeItem({}, {record:'site/navigation',entry});
+const contact = await siteRecord('contact',locale), C = (path: string[]) => recordField('site/contact', path);
+const navigation = await siteRecord('navigation',locale), N = (path: (string|number)[]) => recordField('site/navigation', path);
+const NI = (entry: (string|number)[]) => listItem({}, {record:'site/navigation',entry});
 const addresses = contact.address ? (['visit', 'post'] as const).map((key) => [key, contact.address[key]] as const) : [];
 // Case pages and project details belong to the "Projekte" area of the main navigation.
 const section = navSection ?? (current.startsWith('/projekte/') ? '/projekte/' : undefined);
@@ -39,7 +39,7 @@ const eco = await optimizedImage('https://flyingstars.art/wp-content/uploads/202
     <link rel="canonical" href={canonical} />
     {['de','en','nl'].map(lang => <link rel="alternate" hreflang={lang} href={new URL(localizedHref(canonicalPath ?? current,lang),Astro.site)} />)}
     <link rel="alternate" hreflang="x-default" href={new URL(sourcePath(canonicalPath ?? current),Astro.site)} />
-    {(noindex || process.env.FLYINGSTARS_EDITOR==='1') && <meta name="robots" content="noindex" />}
+    {(noindex || editorBuild()) && <meta name="robots" content="noindex" />}
     <meta property="og:title" content={`${title} | FlyingStars`} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
@@ -55,7 +55,7 @@ const eco = await optimizedImage('https://flyingstars.art/wp-content/uploads/202
     <div class="nav-sentinel" aria-hidden="true"></div>
     <header class="nav">
       <Logo />
-      <nav aria-label={ui.base.navigation.ariaLabel}>{navigation.header.map((item:any,i:number) => <a href={localizedHref(item.href,locale)} aria-current={navState(item.href)} {...NI(["header",i])} {...N(["header",i,"label"])}>{item.label}</a>)}</nav>
+      <nav aria-label={ui.base.navigation.ariaLabel}>{navigation.header.map((item:any,i:number) => <a href={localizedHref(item.href,locale)} aria-current={navState(item.href)} {...markers(NI(["header",i]), N(["header",i,"label"]))}>{item.label}</a>)}</nav>
       <nav class="lang" aria-label={ui.base.navigation.languageLabel}>{['de','en','nl'].map(lang=><a data-language-link href={localizedHref(current,lang)} lang={lang} hreflang={lang} aria-current={locale===lang?'page':undefined}>{lang.toUpperCase()}</a>)}</nav>
       <button class="motion-btn" type="button" data-motion-toggle data-pause={ui.base.navigation.pauseMotion} data-resume={ui.base.navigation.resumeMotion} aria-pressed="false" aria-label={ui.base.navigation.pauseMotion} title={ui.base.navigation.pauseMotion}><svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="7" y="6" width="3.2" height="12" rx="1" /><rect x="13.8" y="6" width="3.2" height="12" rx="1" /></svg><svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 6.2v11.6a.8.8 0 0 0 1.2.7l9-5.8a.8.8 0 0 0 0-1.4l-9-5.8a.8.8 0 0 0-1.2.7z" /></svg></button>
       <a class="btn small primary" href={localizedHref(navigation.cta.href,locale)} {...N(["cta","label"])}>{navigation.cta.label}</a>
@@ -63,7 +63,7 @@ const eco = await optimizedImage('https://flyingstars.art/wp-content/uploads/202
     </header>
     <dialog class="mobile-menu" id="mobile-menu" aria-label={ui.base.navigation.ariaLabel}>
       <div class="top"><Logo /><button class="menu-btn menu-close" type="button" data-menu-close aria-label={ui.base.navigation.closeMenu}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg></button></div>
-      <nav aria-label={ui.base.navigation.mobileLabel}>{navigation.header.map((item:any,i:number) => <a href={localizedHref(item.href,locale)} {...NI(["header",i])} {...N(["header",i,"label"])}>{item.label}</a>)}{navigation.mobileExtras.map((item:any,i:number) => <a href={localizedHref(item.href,locale)} {...NI(["mobileExtras",i])} {...N(["mobileExtras",i,"label"])}>{item.label}</a>)}</nav>
+      <nav aria-label={ui.base.navigation.mobileLabel}>{navigation.header.map((item:any,i:number) => <a href={localizedHref(item.href,locale)} {...markers(NI(["header",i]), N(["header",i,"label"]))}>{item.label}</a>)}{navigation.mobileExtras.map((item:any,i:number) => <a href={localizedHref(item.href,locale)} {...markers(NI(["mobileExtras",i]), N(["mobileExtras",i,"label"]))}>{item.label}</a>)}</nav>
       <nav class="lang" aria-label={ui.base.navigation.languageLabel}>{['de','en','nl'].map(lang=><a data-language-link href={localizedHref(current,lang)} lang={lang} hreflang={lang} aria-current={locale===lang?'page':undefined}>{lang.toUpperCase()}</a>)}</nav>
     </dialog>
     <main id="main" class:list={{ 'content-page': !fullBleed }}><slot /></main>
@@ -74,7 +74,7 @@ const eco = await optimizedImage('https://flyingstars.art/wp-content/uploads/202
         <div><h2 class="footer-heading" {...N(["footer","headings","pages"])}>{navigation.footer.headings.pages}</h2><ul>{navigation.footer.pages.map((item:any,i:number) => <li {...NI(["footer","pages",i])}><a href={localizedHref(item.href,locale)} {...N(["footer","pages",i,"label"])}>{item.label}</a></li>)}</ul></div>
         <div><h2 class="footer-heading" {...N(["footer","headings","social"])}>{navigation.footer.headings.social}</h2><ul>{navigation.footer.social.map((item:any,i:number) => <li {...NI(["footer","social",i])}><a href={localizedHref(item.href,locale)} rel="noopener noreferrer" target="_blank" {...N(["footer","social",i,"label"])}>{item.label}</a></li>)}</ul></div>
       </div>
-      <div class="base mono"><span>© {new Date().getFullYear()} FlyingStars GmbH</span><nav aria-label={ui.base.footer.legalLabel}>{navigation.footer.legal.map((item:any,i:number) => <a href={localizedHref(item.href,locale)} {...NI(["footer","legal",i])} {...N(["footer","legal",i,"label"])}>{item.label}</a>)}</nav><span {...uiMarker('site/ui',["base", "footer", "previewLabel"])}>{ui.base.footer.previewLabel}</span></div>
+      <div class="base mono"><span>© {new Date().getFullYear()} FlyingStars GmbH</span><nav aria-label={ui.base.footer.legalLabel}>{navigation.footer.legal.map((item:any,i:number) => <a href={localizedHref(item.href,locale)} {...markers(NI(["footer","legal",i]), N(["footer","legal",i,"label"]))}>{item.label}</a>)}</nav><span {...uiMarker('site/ui',["base", "footer", "previewLabel"])}>{ui.base.footer.previewLabel}</span></div>
     </footer>
     <script>
       import '../scripts/site';

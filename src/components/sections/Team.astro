@@ -1,11 +1,11 @@
 ---
-import {nativeRecord as uiMarker} from '../../lib/native-editor';
+import {recordField as uiMarker} from '../../lib/editor-markers';
 import {siteRecord as readUi} from '../../lib/content';
 import {localeFromPath,localizedHref} from '../../lib/localized-routes';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 const ui = await readUi('ui',locale);
 import InlineText from '../InlineText.astro';
-import {nativeField,nativeSection,nativeRecord,nativeRecordMedia,nativeItem} from '../../lib/native-editor';
+import {sectionField,sectionBlock,recordField,recordMedia,listItem} from '../../lib/editor-markers';
 import {editorialRecord,resolveMedia} from '../../lib/content';
 import {responsiveImage} from '../../lib/media';
 const {headline,text,memberIds,kicker,note,cta,id=`s${Astro.props.index}`,index,columns='five',showImages=true}=Astro.props;
@@ -14,10 +14,10 @@ const initials=(name:string)=>name.trim().split(/\s+/).filter((_,i,a)=>i===0||i=
 const sizes=columns==='one'?'calc(100vw - 48px)':columns==='two'?'(max-width: 640px) calc(100vw - 48px), 46vw':columns==='three'?'(max-width: 640px) calc(100vw - 48px), 30vw':'(max-width: 640px) 44vw, (max-width: 1100px) 30vw, 18vw';
 const crew=await Promise.all(memberIds.map(async(id:string)=>{const member=await editorialRecord('team',id,locale),image=resolveMedia(member.image,locale);return {...member,id,image,media:image?await responsiveImage(image.src,sizes,1200):undefined};}));
 ---
-<section {...nativeSection(Astro.props)} class="team-sec" id={id} aria-labelledby={headingId}>
-  <div class="sec-head"><div>{kicker&&<span class="kicker mono" {...nativeField(Astro.props,['kicker'])}>{kicker}</span>}<H id={headingId} {...nativeField(Astro.props,['headline'],true)}><InlineText value={headline} /></H></div>{text&&<p {...nativeField(Astro.props,['text'])}>{text}</p>}</div>
-  <div class:list={["crew",{'crew--three':columns==='three','crew--two':columns==='two','crew--one':columns==='one'}]}>{crew.map((member:any,i:number)=>{const record=`team/${member.id}`;return <article class="member" style={`--i:${i}`} {...nativeItem(Astro.props,{record,entry:['memberIds',i]})}><div class="portrait" hidden={!showImages}>{member.image&&member.media?<img {...nativeRecordMedia(record,['image'])} src={member.media.src} {...member.media.attributes} width={member.media.width} height={member.media.height} alt={member.image.alt} loading="lazy" decoding="async"/>:<><span class="ini" aria-hidden="true">{initials(member.name)}</span><span class="soon mono" {...uiMarker('site/ui',["components", "team", "placeholder"])}>{ui.components.team.placeholder}</span></>}</div><span class="role mono" {...nativeRecord(record,['role'])}>{member.role}</span><h3 {...nativeRecord(record,['name'])}>{member.name}</h3>{member.bio&&<p {...nativeRecord(record,['bio'])}>{member.bio}</p>}</article>;})}</div>
-  {(note||cta)&&<p class="crew-note">{note&&<span {...nativeField(Astro.props,['note'])}>{note}</span>}{cta&&<a class="link" href={localizedHref(cta.href,locale)} {...nativeField(Astro.props,['cta','label'])}>{cta.label} <span aria-hidden="true">→</span></a>}</p>}
+<section {...sectionBlock(Astro.props)} class="team-sec" id={id} aria-labelledby={headingId}>
+  <div class="sec-head"><div>{kicker&&<span class="kicker mono" {...sectionField(Astro.props,['kicker'])}>{kicker}</span>}<H id={headingId} {...sectionField(Astro.props,['headline'])}><InlineText value={headline} /></H></div>{text&&<p {...sectionField(Astro.props,['text'])}>{text}</p>}</div>
+  <div class:list={["crew",{'crew--three':columns==='three','crew--two':columns==='two','crew--one':columns==='one'}]}>{crew.map((member:any,i:number)=>{const record=`team/${member.id}`;return <article class="member" style={`--i:${i}`} {...listItem(Astro.props,{record,entry:['memberIds',i]})}><div class="portrait" hidden={!showImages}>{member.image&&member.media?<img {...recordMedia(record,['image'])} src={member.media.src} {...member.media.attributes} width={member.media.width} height={member.media.height} alt={member.image.alt} loading="lazy" decoding="async"/>:<><span class="ini" aria-hidden="true">{initials(member.name)}</span><span class="soon mono" {...uiMarker('site/ui',["components", "team", "placeholder"])}>{ui.components.team.placeholder}</span></>}</div><span class="role mono" {...recordField(record,['role'])}>{member.role}</span><h3 {...recordField(record,['name'])}>{member.name}</h3>{member.bio&&<p {...recordField(record,['bio'])}>{member.bio}</p>}</article>;})}</div>
+  {(note||cta)&&<p class="crew-note">{note&&<span {...sectionField(Astro.props,['note'])}>{note}</span>}{cta&&<a class="link" href={localizedHref(cta.href,locale)} {...sectionField(Astro.props,['cta','label'])}>{cta.label} <span aria-hidden="true">→</span></a>}</p>}
 </section>
 
 <style>.crew--three{grid-template-columns:repeat(3,minmax(0,1fr))}.crew--two{grid-template-columns:repeat(2,minmax(0,1fr))}.crew--one{grid-template-columns:1fr}@media(max-width:640px){.crew--three,.crew--two{grid-template-columns:1fr}}</style>

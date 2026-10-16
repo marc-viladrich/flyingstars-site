@@ -6,8 +6,9 @@ const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro
 const {src,alt,sizes,loading='lazy',class:cls}=resolveMedia(Astro.props,locale);
 if (!sizes) throw new Error('Picture benötigt sizes vom darstellenden Layout.');
 const image = await responsiveImage(src,sizes);
-const markers=Object.fromEntries(Object.entries(Astro.props).filter(([key])=>key.startsWith('data-native-')));
+// The editor marker of the media field, forwarded onto the real image element.
+const afe=(Astro.props as unknown as Record<string,unknown>)['data-afe'],marker=afe===undefined?{}:{'data-afe':afe};
 const imageClass=['content-image',cls].filter(Boolean).join(' ');
 ---
-<img {...markers} src={image.src} {...image.attributes} alt={alt} loading={loading} class={imageClass} decoding="async"/>
+<img {...marker} src={image.src} {...image.attributes} alt={alt} loading={loading} class={imageClass} decoding="async"/>
 <style>.content-image { display:block;max-width:100%;height:auto; }</style>

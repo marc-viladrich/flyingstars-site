@@ -2,7 +2,7 @@
 import {localeFromPath,localeFormat} from '../../lib/localized-routes';
 import {renderBody} from '../../lib/content';
 const locale = Astro.props.locale ?? localeFromPath(Astro.url.pathname);
-import {nativeRecord,nativeRecordMedia} from '../../lib/native-editor';
+import {recordField,recordMedia,recordBody} from '../../lib/editor-markers';
 import SectionRenderer from '../SectionRenderer.astro';
 import Base from '../../layouts/Base.astro';
 import Picture from '../Picture.astro';
@@ -13,10 +13,10 @@ const fmt = new Intl.DateTimeFormat(localeFormat(locale), { dateStyle: 'long' })
 <Base locale={locale} title={post.data.title} description={post.data.description}>
   <article class="section"><div class="wrap">
     <div class="prose">
-      <h1 {...nativeRecord(`post/${post.id}`,["title"])}>{post.data.title}</h1>
+      <h1 {...recordField(`post/${post.id}`,["title"])}>{post.data.title}</h1>
       <p class="muted"><time datetime={post.data.date.toISOString()}>{fmt.format(post.data.date)}</time></p>
-      {post.data.cover && <Picture {...post.data.cover} {...nativeRecordMedia(`post/${post.id}`,["cover"])} loading="eager" sizes="(min-width: 48rem) 40rem, 100vw" />}
-      <div {...nativeRecord(`post/${post.id}`,["body"])} lang={lang} data-native-markdown={process.env.FLYINGSTARS_EDITOR==='1'?'true':undefined}>{Content ? <Content /> : <Fragment set:html={html} />}</div>
+      {post.data.cover && <Picture {...post.data.cover} {...recordMedia(`post/${post.id}`,["cover"])} loading="eager" sizes="(min-width: 48rem) 40rem, 100vw" />}
+      <div {...recordBody(`post/${post.id}`)} lang={lang}>{Content ? <Content /> : <Fragment set:html={html} />}</div>
     </div>
   </div></article>
 <SectionRenderer locale={locale} localization={post.localization} sections={post.data.sections} recordId={`post/${post.id}`} headingOffset={1} />

@@ -8,6 +8,7 @@ import {extraSchema} from '../schemas/extra-schema.mjs';
 import {packageSchema} from '../content/package-schema.mjs';
 import {screenSchema} from '../content/screen-schema.mjs';
 import {legacyCollections,siteAddresses} from './content-addresses.mjs';
+import {editorBuild} from './editor-markers';
 import {localize} from './localize';
 import {textFields} from './translatable-fields.mjs';
 import {markdownHtml} from './markdown-policy.mjs';
@@ -27,7 +28,7 @@ async function translations() {
   }
   return index;
 }
-const editor = () => process.env.FLYINGSTARS_EDITOR === '1';
+const editor = editorBuild;
 const schemas = {page:pageSchema,post:postSchema,project:projectSchema,faq:faqSchema,client:clientSchema,team:teamSchema,media:mediaSchema,package:packageSchema};
 function localized(id:string,data:any,schema:any,locale:string,translationIndex:Map<string,any>) {
   const fields = textFields(schema,data);

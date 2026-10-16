@@ -2,7 +2,7 @@
 import {localeFromPath} from '../../lib/localized-routes';
 const locale=Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 import InlineText from '../InlineText.astro';
-import {nativeField,nativeSection,nativeMedia} from "../../lib/native-editor";
+import {sectionField,sectionBlock,sectionMedia} from "../../lib/editor-markers";
 import Picture from '../Picture.astro';
 import {markdownHtml} from '../../lib/markdown-policy.mjs';
 import type { Section } from '../../content.config';
@@ -13,13 +13,13 @@ const H = index === 0 ? 'h1' : 'h2';
 const visibleImage=showImage?image:undefined;
 const html = await markdownHtml(body,locale);
 ---
-<section {...nativeSection(Astro.props)} class="section text-media" aria-labelledby={id}>
+<section {...sectionBlock(Astro.props)} class="section text-media" aria-labelledby={id}>
   <div class:list={['wrap', { 'grid-2': visibleImage, 'grid-2--media-left': visibleImage && mediaSide === 'left' }]}>
     <div class="prose">
-      <H id={id} {...nativeField(Astro.props,["headline"],true)}><InlineText value={headline} /></H>
-      <div {...nativeField(Astro.props,["body"])} data-native-markdown={process.env.FLYINGSTARS_EDITOR==='1'?'true':undefined} set:html={html} />
+      <H id={id} {...sectionField(Astro.props,["headline"])}><InlineText value={headline} /></H>
+      <div {...sectionField(Astro.props,["body"])} set:html={html} />
     </div>
-    {visibleImage && <Picture sizes="(max-width: 760px) calc(100vw - 48px), 46vw" {...visibleImage} {...nativeMedia(Astro.props,["image"])} />}
+    {visibleImage && <Picture sizes="(max-width: 760px) calc(100vw - 48px), 46vw" {...visibleImage} {...sectionMedia(Astro.props,["image"])} />}
   </div>
 </section>
 <style>

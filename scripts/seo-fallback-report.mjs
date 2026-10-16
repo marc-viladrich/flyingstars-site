@@ -46,7 +46,7 @@ export async function seoFallbackReport(root, dist, {editor=false}={}) {
 }
 
 export async function writeSeoFallbackReport(root, dist) {
-  const report = await seoFallbackReport(root,dist,{editor:process.env.FLYINGSTARS_EDITOR==='1'}), file = path.join(root,'.astro/seo-fallbacks.json');
+  const report = await seoFallbackReport(root,dist,{editor:process.env.AFE_MODE==='editor'}), file = path.join(root,'.astro/seo-fallbacks.json');
   await mkdir(path.dirname(file),{recursive:true});
   await writeFile(file,JSON.stringify(report,null,2)+'\n');
   console.log(`[SEO] ${report.length} Sprachseiten mit deutschem SEO-Fallback. Bericht: ${file}`);

@@ -1,6 +1,6 @@
 ---
 import InlineText from '../InlineText.astro';
-import {nativeField,nativeSection,nativeRecord,nativeItem,nativeOrder} from "../../lib/native-editor";
+import {sectionField,sectionBlock,recordField,listItem,collectionOrder,recordBody} from "../../lib/editor-markers";
 import {getFaq,renderBody} from '../../lib/content';
 import {localeFromPath,localizedHref} from '../../lib/localized-routes';
 import {siteRecord as readUi} from '../../lib/content';
@@ -16,7 +16,7 @@ let entries = await getFaq(tags,locale);
 if(limit) entries = entries.slice(0,limit);
 const rendered = await Promise.all(entries.map(async entry => ({entry, ...await renderBody(entry)})));
 ---
-<section {...nativeSection(Astro.props)} class="section" id={id} aria-labelledby={headingId}>
-  <div class="faq-grid"><div class="intro"><span class="kicker mono" style="margin:0" {...nativeField(Astro.props,["kicker"])}>{kicker}</span><H id={headingId} {...nativeField(Astro.props,["headline"],true)}><InlineText value={headline} /></H>{text && <p {...nativeField(Astro.props,["text"])}>{text}</p>}{cta && <a class="link" href={localizedHref(cta.href,locale)} rel={cta.href.startsWith('https://')?'noopener':undefined} target={cta.href.startsWith('https://')?'_blank':undefined}><span {...nativeField(Astro.props,["cta","label"])}>{cta.label}</span> <span aria-hidden="true">→</span></a>}</div>
-  <div class="faq" {...nativeOrder("order")}>{rendered.map(({entry,Content,html,lang},i) => <details open={openFirst && i===0} {...nativeItem(Astro.props,{record:`faq/${entry.id}`})}><summary {...nativeRecord(`faq/${entry.id}`,["question"])}>{entry.data.question}</summary><div class="answer" lang={lang} {...nativeRecord(`faq/${entry.id}`,["body"])} data-native-markdown={process.env.FLYINGSTARS_EDITOR==='1'?'true':undefined}>{Content ? <Content /> : <Fragment set:html={html} />}</div></details>)}</div></div>
+<section {...sectionBlock(Astro.props)} class="section" id={id} aria-labelledby={headingId}>
+  <div class="faq-grid"><div class="intro"><span class="kicker mono" style="margin:0" {...sectionField(Astro.props,["kicker"])}>{kicker}</span><H id={headingId} {...sectionField(Astro.props,["headline"])}><InlineText value={headline} /></H>{text && <p {...sectionField(Astro.props,["text"])}>{text}</p>}{cta && <a class="link" href={localizedHref(cta.href,locale)} rel={cta.href.startsWith('https://')?'noopener':undefined} target={cta.href.startsWith('https://')?'_blank':undefined}><span {...sectionField(Astro.props,["cta","label"])}>{cta.label}</span> <span aria-hidden="true">→</span></a>}</div>
+  <div class="faq" {...collectionOrder('faq','order')}>{rendered.map(({entry,Content,html,lang},i) => <details open={openFirst && i===0} {...listItem(Astro.props,{record:`faq/${entry.id}`})}><summary {...recordField(`faq/${entry.id}`,["question"])}>{entry.data.question}</summary><div class="answer" lang={lang} {...recordBody(`faq/${entry.id}`)}>{Content ? <Content /> : <Fragment set:html={html} />}</div></details>)}</div></div>
 </section>

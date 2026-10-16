@@ -2,7 +2,7 @@
 import {localeFromPath,localizedHref} from '../../lib/localized-routes';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 import InlineText from '../InlineText.astro';
-import {nativeField,nativeSection,nativeRecord} from "../../lib/native-editor";
+import {sectionField,sectionBlock,recordField} from "../../lib/editor-markers";
 import {siteRecord,fillText} from "../../lib/content";
 import {inlinePlain} from '../../lib/inline-text';
 import {PACKAGE_NAMES} from '../../content/show-packages';
@@ -14,7 +14,7 @@ const { headline, text, index = 0 } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
 // Contact values and form texts have one owner each: site/contact and site/inquiry.
 const contact = await siteRecord('contact',locale), form = await siteRecord('inquiry',locale);
-const C = (path: string[]) => nativeRecord('site/contact', path), I = (path: string[]) => nativeRecord('site/inquiry', path);
+const C = (path: string[]) => recordField('site/contact', path), I = (path: string[]) => recordField('site/inquiry', path);
 const channels = [['email', contact.email], ['phone', contact.phone], ['whatsapp', contact.whatsapp], ['videoCall', contact.videoCall]] as const;
 const external = (href: string) => href.startsWith('https:');
 const occasions = Object.entries(form.occasions) as [string, string][];
@@ -22,12 +22,12 @@ const email = { email: contact.email.value };
 // Texts the script shows later (step counter, validation, send states), already resolved against site/contact.
 const messages = { step: form.progress.step, required: form.messages.required, occasion: form.occasion.error, invalidEmail: form.email.invalid, sending: form.messages.sending, success: form.messages.success, notConfigured: fillText(form.messages.notConfigured, email), sendFailed: form.messages.sendFailed, failed: form.messages.failed, retry: fillText(form.messages.retry, email), submit: form.buttons.submit, skyText: form.message.skyText, spam: form.messages.spam };
 ---
-<section {...nativeSection(Astro.props)} aria-labelledby="anfrage-h" class="section alt" id="anfrage">
+<section {...sectionBlock(Astro.props)} aria-labelledby="anfrage-h" class="section alt" id="anfrage">
 <div class="inquiry">
 <div class="intro">
 <span class="kicker mono" {...I(['kicker'])}>{form.kicker}</span>
-<H id="anfrage-h" {...nativeField(Astro.props,["headline"],true)}><InlineText value={headline} /></H>
-<p class="lead" {...nativeField(Astro.props,["text"])}>{text}</p>
+<H id="anfrage-h" {...sectionField(Astro.props,["headline"])}><InlineText value={headline} /></H>
+<p class="lead" {...sectionField(Astro.props,["text"])}>{text}</p>
 <ul class="contact-list">
 {channels.map(([key, channel]) => <li><span class="k mono" {...C([key, 'label'])}>{channel.label}</span>{external(channel.href) ? <a href={localizedHref(channel.href,locale)} rel="noopener" target="_blank" {...C([key, 'value'])}>{channel.value}</a> : <a href={localizedHref(channel.href,locale)} {...C([key, 'value'])}>{channel.value}</a>}</li>)}
 </ul>

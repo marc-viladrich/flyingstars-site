@@ -2,15 +2,15 @@
 import {localeFromPath} from '../../lib/localized-routes';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 import InlineText from '../InlineText.astro';
-import {nativeField,nativeSection,nativeRecord,nativeRecordMedia,nativeItem} from '../../lib/native-editor';
+import {sectionField,sectionBlock,recordField,recordMedia,listItem} from '../../lib/editor-markers';
 import {editorialRecord,resolveMedia} from '../../lib/content';
 import {optimizedLogo} from '../../lib/media';
 const {headline,text,clientIds,columns='two',background=true,showImages=true,index}=Astro.props;
 const id=`testimonials-${index}`,H=index===0?'h1':'h2';
 const clients=await Promise.all(clientIds.map(async(id:string)=>{const client=await editorialRecord('client',id,locale),image=resolveMedia(client.logo,locale);return {...client,id,image,media:showImages&&image?await optimizedLogo(image.src,56):undefined};}));
 ---
-<section {...nativeSection(Astro.props)} class="section" aria-labelledby={id}>
- <div class="sec-head"><H id={id} {...nativeField(Astro.props,['headline'],true)}><InlineText value={headline} /></H>{text&&<p {...nativeField(Astro.props,['text'])}>{text}</p>}</div>
- <div class:list={['testimonials',{'testimonials--one':columns==='one','testimonials--plain':!background}]}>{clients.map((client:any,i:number)=>{const record=`client/${client.id}`;return <article {...nativeItem(Astro.props,{record,entry:['clientIds',i]})}>{client.image&&client.media&&<img {...nativeRecordMedia(record,['logo'])} data-media-single="logo-testimonial" src={client.media.src} width={client.media.width} height={client.media.height} alt={client.image.alt} loading="lazy"/>}{client.testimonial?<><blockquote><p {...nativeRecord(record,['testimonial','quote'])}>{client.testimonial.quote}</p></blockquote><p class="mono"><span {...nativeRecord(record,['testimonial','person'])}>{client.testimonial.person}</span>{client.testimonial.role&&<span {...nativeRecord(record,['testimonial','role'])}>{client.testimonial.role}</span>}</p></>:<p {...nativeRecord(record,['name'])}>{client.name}</p>}</article>;})}</div>
+<section {...sectionBlock(Astro.props)} class="section" aria-labelledby={id}>
+ <div class="sec-head"><H id={id} {...sectionField(Astro.props,['headline'])}><InlineText value={headline} /></H>{text&&<p {...sectionField(Astro.props,['text'])}>{text}</p>}</div>
+ <div class:list={['testimonials',{'testimonials--one':columns==='one','testimonials--plain':!background}]}>{clients.map((client:any,i:number)=>{const record=`client/${client.id}`;return <article {...listItem(Astro.props,{record,entry:['clientIds',i]})}>{client.image&&client.media&&<img {...recordMedia(record,['logo'])} data-media-single="logo-testimonial" src={client.media.src} width={client.media.width} height={client.media.height} alt={client.image.alt} loading="lazy"/>}{client.testimonial?<><blockquote><p {...recordField(record,['testimonial','quote'])}>{client.testimonial.quote}</p></blockquote><p class="mono"><span {...recordField(record,['testimonial','person'])}>{client.testimonial.person}</span>{client.testimonial.role&&<span {...recordField(record,['testimonial','role'])}>{client.testimonial.role}</span>}</p></>:<p {...recordField(record,['name'])}>{client.name}</p>}</article>;})}</div>
 </section>
 <style>.testimonials{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}.testimonials article{padding:32px;border:1px solid var(--line,var(--c-testimonial-line));border-radius:12px;background:var(--panel,var(--c-testimonial-surface))}.testimonials--one{grid-template-columns:1fr}.testimonials--plain article{background:transparent;border:none}.testimonials img{object-fit:contain;max-height:56px;max-width:180px;margin-bottom:24px}.testimonials blockquote{margin:0 0 24px;font-size:1.25rem;line-height:1.6}.testimonials .mono span{display:block}@media(max-width:640px){.testimonials{grid-template-columns:1fr}}</style>

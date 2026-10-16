@@ -50,6 +50,6 @@ export function createFlyingStarsExtensions(site) {
    }),
    validateBinaryWrite(write){if(!/^public\/assets\/[a-f0-9]{64}\.(?:png|jpg|webp)$/.test(write.file)||path.basename(write.file).split('.')[0]!==createHash('sha256').update(write.bytes).digest('hex'))throw failure('Ungültiges Medienobjekt.');},
   }),
-  extension('build',{buildEnvironment:({editor,origin,imageCache})=>({...imageCache?{FLYINGSTARS_IMAGE_CACHE_DIR:imageCache}:{},...editor?{FLYINGSTARS_EDITOR:'1'}:{},SITE_URL:origin})}),
+  extension('build',{buildEnvironment:({editor,origin,imageCache})=>({...imageCache?{FLYINGSTARS_IMAGE_CACHE_DIR:imageCache}:{},...editor?{AFE_MODE:'editor'}:{},SITE_URL:origin})}),
  ];
 }

@@ -4,7 +4,7 @@ import {siteRecord as readUi} from '../../lib/content';
 const ui = await readUi('ui',Astro.props._locale ?? localeFromPath(Astro.url.pathname));
 const locale = Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 import InlineText from '../InlineText.astro';
-import {nativeField,nativeSection,nativeRecord,nativeItem,nativeUses} from "../../lib/native-editor";
+import {sectionField,sectionBlock,recordField,listItem,sectionUses} from "../../lib/editor-markers";
 import {getPosts} from '../../lib/content';
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'postList' }> & { index: number; locale?:string; _locale?:string };
@@ -16,15 +16,15 @@ const posts = (await getPosts(locale))
   .slice(0, limit);
 const fmt = new Intl.DateTimeFormat(localeFormat(locale), { dateStyle: 'long' });
 ---
-<section {...nativeSection(Astro.props)} class="section" aria-labelledby={id}>
+<section {...sectionBlock(Astro.props)} class="section" aria-labelledby={id}>
   <div class="wrap">
-    <H id={id} {...nativeField(Astro.props,["headline"],true)}><InlineText value={headline} /></H>
+    <H id={id} {...sectionField(Astro.props,["headline"])}><InlineText value={headline} /></H>
     <div class="cards">
       {posts.map((p) => (
-        <article class="card" {...nativeItem(Astro.props,{record:`post/${p.id}`})}>
-          <h3><a href={localizedHref(`/blog/${p.id}/`,locale)}><span {...nativeRecord(`post/${p.id}`,["title"])}>{p.data.title}</span></a></h3>
-          <p class="muted"><time datetime={p.data.date.toISOString()} {...nativeUses(Astro.props,[{record:`post/${p.id}`,path:['date']}])}>{fmt.format(p.data.date)}</time></p>
-          <p {...nativeRecord(`post/${p.id}`,["description"])}>{p.data.description}</p>
+        <article class="card" {...listItem(Astro.props,{record:`post/${p.id}`})}>
+          <h3><a href={localizedHref(`/blog/${p.id}/`,locale)}><span {...recordField(`post/${p.id}`,["title"])}>{p.data.title}</span></a></h3>
+          <p class="muted"><time datetime={p.data.date.toISOString()} {...sectionUses(Astro.props,[{record:`post/${p.id}`,path:['date']}])}>{fmt.format(p.data.date)}</time></p>
+          <p {...recordField(`post/${p.id}`,["description"])}>{p.data.description}</p>
         </article>
       ))}
     </div>

@@ -1,15 +1,15 @@
 ---
-import {nativeRecord as uiMarker} from '../../lib/native-editor';
+import {recordField as uiMarker} from '../../lib/editor-markers';
 import {siteRecord as readUi} from '../../lib/content';
 import {localeFromPath,localeFormat,localizedHref} from '../../lib/localized-routes';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
 const ui = await readUi('ui',locale);
 import InlineText from '../InlineText.astro';
 import {inlinePlain} from '../../lib/inline-text';
-import {nativeRecord,nativeUses} from '../../lib/native-editor';
+import {recordField,sectionUses} from '../../lib/editor-markers';
 import {getScreen} from '../../lib/content';
 const screen = await getScreen('drohnenshow-preise',locale);
-const native=(path:string[],inline=false)=>nativeRecord('screen/drohnenshow-preise',path,inline);
+const native=(path:string[],inline=false)=>recordField('screen/drohnenshow-preise',path);
 import {fillText,getPackages} from '../../lib/content';
 // Keep colour token ids in runtime data; browser CSS/canvas resolve through the registry.
 const SHOW_PACKAGES = await getPackages(locale);
@@ -35,18 +35,18 @@ const money = (value: number) => value.toLocaleString(localeFormat(locale));
           <div class="scale mono" aria-hidden="true"><span style="--p:0">100</span><span style="--p:.1667">250</span><span style="--p:.4444">500</span><span style="--p:.7222">750</span><span style="--p:1">{(1000).toLocaleString(localeFormat(locale))}</span></div>
         </div>
         <div class="tiers" role="group" aria-label={ui.calculator.controls.packageLabel}>
-          <button type="button" data-tier="SPARK" aria-pressed="false"><b style="font:inherit" {...nativeRecord('package/spark',['displayName'],true)}><InlineText value={SHOW_PACKAGES.SPARK.displayName} /></b><span>{fillText(ui.calculator.readout.fromPrice,{price:money(SHOW_PACKAGES.SPARK.price)+" €"})}</span></button>
-          <button type="button" data-tier="HORIZON" aria-pressed="true"><b style="font:inherit" {...nativeRecord('package/horizon',['displayName'],true)}><InlineText value={SHOW_PACKAGES.HORIZON.displayName} /></b><span>{fillText(ui.calculator.readout.fromPrice,{price:money(SHOW_PACKAGES.HORIZON.price)+" €"})}</span></button>
-          <button type="button" data-tier="ODYSSEY" aria-pressed="false"><b style="font:inherit" {...nativeRecord('package/odyssey',['displayName'],true)}><InlineText value={SHOW_PACKAGES.ODYSSEY.displayName} /></b><span>{fillText(ui.calculator.readout.fromPrice,{price:money(SHOW_PACKAGES.ODYSSEY.price)+" €"})}</span></button>
+          <button type="button" data-tier="SPARK" aria-pressed="false"><b style="font:inherit" {...recordField('package/spark',['displayName'])}><InlineText value={SHOW_PACKAGES.SPARK.displayName} /></b><span>{fillText(ui.calculator.readout.fromPrice,{price:money(SHOW_PACKAGES.SPARK.price)+" €"})}</span></button>
+          <button type="button" data-tier="HORIZON" aria-pressed="true"><b style="font:inherit" {...recordField('package/horizon',['displayName'])}><InlineText value={SHOW_PACKAGES.HORIZON.displayName} /></b><span>{fillText(ui.calculator.readout.fromPrice,{price:money(SHOW_PACKAGES.HORIZON.price)+" €"})}</span></button>
+          <button type="button" data-tier="ODYSSEY" aria-pressed="false"><b style="font:inherit" {...recordField('package/odyssey',['displayName'])}><InlineText value={SHOW_PACKAGES.ODYSSEY.displayName} /></b><span>{fillText(ui.calculator.readout.fromPrice,{price:money(SHOW_PACKAGES.ODYSSEY.price)+" €"})}</span></button>
         </div>
         <div class="field textin">
           <label for="showtext">{ui.calculator.ownText.label} <span class="mono" {...uiMarker('site/ui',["calculator", "ownText", "optionalHint"])}>{ui.calculator.ownText.optionalHint}</span></label>
           <input id="showtext" type="text" maxlength="60" placeholder={ui.calculator.ownText.placeholder} autocomplete="off" spellcheck="false">
           <p class="mono" id="text-read" aria-live="polite" {...uiMarker('site/ui',["calculator", "ownText", "hint"])}>{ui.calculator.ownText.hint}</p>
         </div>
-        <div class="readout mono" id="calc-read"><span>{ui.calculator.controls.packageLabel} <b>{inlinePlain(SHOW_PACKAGES.HORIZON.displayName)}</b></span><span>{ui.calculator.result.durationLabel} <b {...nativeRecord('package/horizon',['dur'])}>{SHOW_PACKAGES.HORIZON.dur}</b></span></div>
+        <div class="readout mono" id="calc-read"><span>{ui.calculator.controls.packageLabel} <b>{inlinePlain(SHOW_PACKAGES.HORIZON.displayName)}</b></span><span>{ui.calculator.result.durationLabel} <b {...recordField('package/horizon',['dur'])}>{SHOW_PACKAGES.HORIZON.dur}</b></span></div>
         <p class="mono" id="calc-note" aria-live="polite" style="color:var(--amber);min-height:1.5em"></p>
-        <div class="actions"><a class="btn primary" id="calc-cta" href={localizedHref(`/?paket=HORIZON&drohnen=${SHOW_PACKAGES.HORIZON.base}#anfrage`,locale)} {...nativeUses({},[{record:'site/ui',path:['calculator','selection','buttonText']}])}>{fillText(ui.calculator.selection.buttonText,{count:SHOW_PACKAGES.HORIZON.base.toLocaleString(localeFormat(locale))})}</a><a class="btn" href="#pakete" {...uiMarker('site/ui',["calculator", "result", "compareButton"])}>{ui.calculator.result.compareButton}</a></div>
+        <div class="actions"><a class="btn primary" id="calc-cta" href={localizedHref(`/?paket=HORIZON&drohnen=${SHOW_PACKAGES.HORIZON.base}#anfrage`,locale)} {...sectionUses({},[{record:'site/ui',path:['calculator','selection','buttonText']}])}>{fillText(ui.calculator.selection.buttonText,{count:SHOW_PACKAGES.HORIZON.base.toLocaleString(localeFormat(locale))})}</a><a class="btn" href="#pakete" {...uiMarker('site/ui',["calculator", "result", "compareButton"])}>{ui.calculator.result.compareButton}</a></div>
       </div>
     </div>
   </section>

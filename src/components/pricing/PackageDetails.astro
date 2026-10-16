@@ -1,6 +1,6 @@
 ---
 import {colorVar} from '../../lib/color-tokens.mjs';
-import {nativeRecord as uiMarker} from '../../lib/native-editor';
+import {recordField as uiMarker,recordField,recordPanelField,markers} from '../../lib/editor-markers';
 import {siteRecord as readUi} from '../../lib/content';
 import {localeFromPath,localeFormat,localizedHref} from '../../lib/localized-routes';
 const locale = Astro.props.locale ?? Astro.props._locale ?? localeFromPath(Astro.url.pathname);
@@ -10,14 +10,10 @@ import {inlinePlain} from '../../lib/inline-text';
 import {PACKAGE_NAMES, type ShowPackage} from '../../content/show-packages';
 import {fillText,getPackages} from '../../lib/content';
 const SHOW_PACKAGES = await getPackages(locale);
-import { nativeItem, nativeUses } from "../../lib/native-editor";
+import { listItem, sectionUses } from "../../lib/editor-markers";
 const money = (value: number) => value.toLocaleString(localeFormat(locale));
-const editor = process.env.FLYINGSTARS_EDITOR === '1';
-const native = (name: ShowPackage, path: Array<string | number>, derived = false, inline = false) => editor ? {
-  'data-native-record': `package/${name.toLowerCase()}`,
-  [derived ? 'data-native-derived' : 'data-native-path']: JSON.stringify(path),
-  ...(inline?{'data-native-inline':'true'}:{}),
-} : {};
+// A package field shown on this card; panel = a formatted value (price, drone count) edited in the panel.
+const packageField = (name: ShowPackage, path: Array<string | number>, panel = false) => (panel ? recordPanelField : recordField)(`package/${name.toLowerCase()}`, path);
 ---
 
 <section class="section alt" id="pakete" aria-labelledby="pakete-h">
@@ -29,21 +25,21 @@ const native = (name: ShowPackage, path: Array<string | number>, derived = false
     {PACKAGE_NAMES.map(name => {
       const pkg = SHOW_PACKAGES[name];
       const record = `package/${name.toLowerCase()}`;
-      return <article class:list={['tier', {'is-rec': pkg.highlight}]} data-card={name} style={`--dot:${colorVar(pkg.color)}`} {...nativeItem(Astro.props, {record})} {...nativeUses(Astro.props,[{record,path:['highlight']},{record,path:['color']}])}>
-        <canvas data-orb={pkg.orbShape} data-n={pkg.base} data-color={pkg.color} aria-hidden="true" {...nativeUses(Astro.props,[{record,path:['orbShape']},{record,path:['base']},{record,path:['color']}])}></canvas>
-        <div class="head"><h3 {...native(name, ['displayName'],false,true)}><InlineText value={pkg.displayName} /></h3><span class="badge" {...native(name, ['badge'], true)}>{pkg.badge}</span></div>
-        <p class="tag" {...native(name, ['description'])}>{pkg.description}</p>
-        <div class="p" data-live {...native(name,["price"],true)}><b {...native(name, ['price'], true)}>{fillText(ui.calculator.readout.fromPrice,{price:money(pkg.price)+" €"})}</b><span class="mono" {...native(name, ['base'], true)} {...nativeUses(Astro.props,[{record,path:['dur']}])}>{fillText(ui.prices.packages.price.base,{count:pkg.base,duration:pkg.dur})}</span></div>
-        {pkg.inheritsText && <span class="plus" {...native(name, ['inheritsText'])}>{pkg.inheritsText}</span>}
+      return <article class:list={['tier', {'is-rec': pkg.highlight}]} data-card={name} style={`--dot:${colorVar(pkg.color)}`} {...markers(listItem(Astro.props, {record}), sectionUses(Astro.props,[{record,path:['highlight']},{record,path:['color']}]))}>
+        <canvas data-orb={pkg.orbShape} data-n={pkg.base} data-color={pkg.color} aria-hidden="true" {...sectionUses(Astro.props,[{record,path:['orbShape']},{record,path:['base']},{record,path:['color']}])}></canvas>
+        <div class="head"><h3 {...packageField(name, ['displayName'])}><InlineText value={pkg.displayName} /></h3><span class="badge" {...packageField(name, ['badge'], true)}>{pkg.badge}</span></div>
+        <p class="tag" {...packageField(name, ['description'])}>{pkg.description}</p>
+        <div class="p" data-live {...packageField(name, ["price"], true)}><b {...packageField(name, ['price'], true)}>{fillText(ui.calculator.readout.fromPrice,{price:money(pkg.price)+" €"})}</b><span class="mono" {...markers(packageField(name, ['base'], true), sectionUses(Astro.props,[{record,path:['dur']}]))}>{fillText(ui.prices.packages.price.base,{count:pkg.base,duration:pkg.dur})}</span></div>
+        {pkg.inheritsText && <span class="plus" {...packageField(name, ['inheritsText'])}>{pkg.inheritsText}</span>}
         {pkg.featureGroups.map((group, groupIndex) => {
           const content = <>
-          <h4 {...native(name, ['featureGroups', groupIndex, 'title'])}>{group.title}</h4>
-          <ul>{group.items.map((item, itemIndex) => <li {...native(name, ['featureGroups', groupIndex, 'items', itemIndex, 'text'])} {...nativeItem(Astro.props, {entryRecord: record, entry: ['featureGroups', groupIndex, 'items', itemIndex]})}>{item.text}</li>)}</ul>
-        </>, entry = nativeItem(Astro.props, {record, entry: ['featureGroups', groupIndex]});
+          <h4 {...packageField(name, ['featureGroups', groupIndex, 'title'])}>{group.title}</h4>
+          <ul>{group.items.map((item, itemIndex) => <li {...markers(packageField(name, ['featureGroups', groupIndex, 'items', itemIndex, 'text']), listItem(Astro.props, {entryRecord: record, entry: ['featureGroups', groupIndex, 'items', itemIndex]}))}>{item.text}</li>)}</ul>
+        </>, entry = listItem(Astro.props, {record, entry: ['featureGroups', groupIndex]});
           return Object.keys(entry).length ? <div style="display:contents" {...entry}>{content}</div> : content;
         })}
-        <span class="scale-note mono" {...native(name, ['add'], true)} {...nativeUses(Astro.props,[{record,path:['step']},{record,path:['max']}])}>{fillText(ui.prices.packages.price.scale,{price:money(pkg.add),step:pkg.step})}{Number.isFinite(pkg.max)?fillText(ui.prices.packages.price.maximum,{max:pkg.max}):''}</span>
-        <a class:list={['btn', {primary: pkg.highlight}]} href={localizedHref(`/?paket=${name}#anfrage`,locale)} {...native(name, ['displayName'], true)}>{fillText(ui.prices.packages.price.inquiry,{name:inlinePlain(pkg.displayName)})}</a>
+        <span class="scale-note mono" {...markers(packageField(name, ['add'], true), sectionUses(Astro.props,[{record,path:['step']},{record,path:['max']}]))}>{fillText(ui.prices.packages.price.scale,{price:money(pkg.add),step:pkg.step})}{Number.isFinite(pkg.max)?fillText(ui.prices.packages.price.maximum,{max:pkg.max}):''}</span>
+        <a class:list={['btn', {primary: pkg.highlight}]} href={localizedHref(`/?paket=${name}#anfrage`,locale)} {...packageField(name, ['displayName'], true)}>{fillText(ui.prices.packages.price.inquiry,{name:inlinePlain(pkg.displayName)})}</a>
       </article>;
     })}
   </div>

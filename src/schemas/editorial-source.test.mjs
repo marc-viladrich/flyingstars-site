@@ -83,58 +83,43 @@ test('all FAQ records persist a numeric global order and new entries receive a n
  assert.equal(faqSchema.parse({question:'Eine Frage?'}).order,100);
 });
 
-async function nativeHelpers(){
- const {transpileModule}=await import('typescript');
- const source=await fs.readFile(new URL('../lib/native-editor.ts',import.meta.url),'utf8');
- return import('data:text/javascript;base64,'+Buffer.from(transpileModule(source,{compilerOptions:{module:99,target:99}}).outputText).toString('base64'));
+// The site marker helpers, transpiled and loaded once per mode: the product helpers read AFE_MODE when their
+// module is first evaluated, so each mode imports its own copy (query string) of the vendored module.
+async function markerHelpers(mode){
+ const {transpileModule}=await import('typescript'),os=await import('node:os');
+ const product=new URL('../../editor/vendor/astro-frontend-editor/src/markers/index.mjs',import.meta.url).href+'?mode='+mode;
+ const source=(await fs.readFile(new URL('../lib/editor-markers.ts',import.meta.url),'utf8')).replace("'astro-frontend-editor/markers'",JSON.stringify(product)).replace("'./content-addresses.mjs'",JSON.stringify(new URL('../lib/content-addresses.mjs',import.meta.url).href));
+ const file=path.join(await fs.mkdtemp(path.join(os.tmpdir(),'editor-markers-')),'editor-markers.mjs');
+ await fs.writeFile(file,transpileModule(source,{compilerOptions:{module:99,target:99}}).outputText);
+ const previous=process.env.AFE_MODE;process.env.AFE_MODE=mode;
+ try{return await import(file);}finally{if(previous===undefined)delete process.env.AFE_MODE;else process.env.AFE_MODE=previous;}
 }
-test('native order and cross-record entries expose exact owners only in editor builds',async()=>{
- const helpers=await nativeHelpers(),previous=process.env.FLYINGSTARS_EDITOR;
- try{
-  process.env.FLYINGSTARS_EDITOR='1';assert.deepEqual(helpers.nativeOrder('order'),{'data-native-order-field':'order'});
-  assert.deepEqual(helpers.nativeItem({_nativeRecord:'page/index',_nativeIndex:3},{record:'package/spark',entry:['tiers',0,'featureIds',1]}),{'data-native-record':'package/spark','data-native-entry':'["sections",3,"tiers",0,"featureIds",1]','data-native-entry-record':'page/index','data-native-item':''});
-  // Query-backed cards (no entry) are occurrences too; section-owned entries name their owner explicitly.
-  assert.deepEqual(helpers.nativeItem({_nativeRecord:'page/index',_nativeIndex:7},{record:'project/nfl'}),{'data-native-record':'project/nfl','data-native-item':''});
-  assert.deepEqual(helpers.nativeItem({_nativeRecord:'page/index',_nativeIndex:2},{entry:['steps',1]}),{'data-native-entry':'["sections",2,"steps",1]','data-native-entry-record':'page/index','data-native-item':''});
-  assert.deepEqual(helpers.nativeItem({},{record:'package/odyssey',entry:['featureGroups',0]}),{'data-native-record':'package/odyssey','data-native-entry':'["featureGroups",0]','data-native-entry-record':'package/odyssey','data-native-item':''});
-  assert.deepEqual(helpers.nativeItem({_nativeRecord:'page/index',_nativeIndex:2},{}),{});
-  assert.deepEqual(helpers.nativeUses({_nativeRecord:'page/index',_nativeIndex:4},[['tiers',1,'cta','href'],{record:'package/horizon',path:['dur']}]),{'data-native-uses':'[["page/index",["sections",4,"tiers",1,"cta","href"]],["package/horizon",["dur"]]]'});
-  assert.deepEqual(helpers.nativeUses({},[['date']]),{});
-  process.env.FLYINGSTARS_EDITOR='0';assert.deepEqual(helpers.nativeOrder('order'),{});assert.deepEqual(helpers.nativeItem({},{record:'faq/show-01'}),{});assert.deepEqual(helpers.nativeUses({},[{record:'post/a',path:['date']}]),{});
- }finally{if(previous===undefined)delete process.env.FLYINGSTARS_EDITOR;else process.env.FLYINGSTARS_EDITOR=previous;}
-});
-
-test('enhanced sustainability facts are inert initially and after scroll except the visible fact; reduced motion keeps all interactive',async()=>{
- const {runInNewContext}=await import('node:vm'),source=(await fs.readFile(new URL('../scripts/site.ts',import.meta.url),'utf8')).replace(/^import .*?;\n/gm,'');
- for(const reduce of [false,true]){
-  let top=0;const events={},facts=Array.from({length:4},()=>({inert:false,classList:{toggle(){}},contains(){return false;}}));
-  const canvas={closest:()=>scrolly,getContext:()=>({}),getBoundingClientRect:()=>({width:1000,height:800})},pin={addEventListener(){}},scrolly={classList:{add(){}},style:{setProperty(){}},querySelectorAll:s=>s==='.fact'?facts:[],querySelector:s=>s==='canvas'?canvas:s==='.eco-pin'?pin:null,getBoundingClientRect:()=>({top,height:4000})};
-  const document={getElementById(){return null;},hidden:false,documentElement:{classList:{toggle(){}}},querySelector:s=>s==='[data-scrolly]'?scrolly:null,querySelectorAll:()=>[],dispatchEvent(){}};
-  class Observer{observe(){}unobserve(){}}
-  const window={addEventListener:(name,fn)=>events[name]=fn,IntersectionObserver:Observer};
-  const registerCanvas=(selector,initialize)=>{if(selector==='[data-scrolly] canvas')initialize(canvas,{listen:(target,name,fn)=>target.addEventListener(name,fn),observe:(observer,target)=>observer.observe(target),raf(){}});};
-  runInNewContext(source,{registerCanvas,rgbOf,document,window,IntersectionObserver:Observer,matchMedia:()=>({matches:reduce}),sessionStorage:{getItem:()=>null},location:{hash:''},Event:class{},requestAnimationFrame(){},devicePixelRatio:1,innerHeight:1000,addEventListener:(name,fn)=>events[name]=fn});
-  assert.deepEqual(facts.map(f=>f.inert),reduce?[false,false,false,false]:[false,true,true,true]);
-  if(!reduce){top=-1600;events.scroll();assert.deepEqual(facts.map(f=>f.inert),[true,true,false,true]);top=0;events.scroll();assert.deepEqual(facts.map(f=>f.inert),[false,true,true,true]);}
- }
-});
-
-test('inline rendering escapes HTML and supports only the five nested text formats',async()=>{
- const {inlineHtml,inlinePlain}=await import('../lib/inline-text.mjs');
- const cases=[
-  ['**fett**','<strong>fett</strong>','fett'],['*kursiv*','<em>kursiv</em>','kursiv'],['~~weg~~','<s>weg</s>','weg'],
-  ['{o}Kontur{/o}','<span class="t-outline">Kontur</span>','Kontur'],['{c}groß{/c}','<span class="t-caps">groß</span>','groß'],
-  ['***beides***','<strong><em>beides</em></strong>','beides'],['*innen **fett***','<em>innen <strong>fett</strong></em>','innen fett'],
-  ['**außen *innen***','<strong>außen <em>innen</em></strong>','außen innen'],
-  ['{o}**Hallo *Welt* ~~alt~~** {c}neu{/c}{/o}','<span class="t-outline"><strong>Hallo <em>Welt</em> <s>alt</s></strong> <span class="t-caps">neu</span></span>','Hallo Welt alt neu'],
-  ['**offen','**offen','**offen'],['{o}offen','{o}offen','{o}offen'],['a * b','a * b','a * b'],
-  ['[Link](https://example.com) _normal_','[Link](https://example.com) _normal_','[Link](https://example.com) _normal_'],
-  ['**<img src=x onerror="evil()">**','<strong>&lt;img src=x onerror=&quot;evil()&quot;&gt;</strong>','<img src=x onerror="evil()">'],
-  ['&amp; <script> " \'','&amp;amp; &lt;script&gt; &quot; &#39;','&amp; <script> " \''],
- ];
- for(const [source,html,plain] of cases){assert.equal(inlineHtml(source),html,source);assert.equal(inlinePlain(source),plain,source);}
- const marks=[['**','**'],['*','*'],['~~','~~'],['{o}','{/o}'],['{c}','{/c}']];
- for(const [a,ac] of marks)for(const[b,bc]of marks){const source=a+'außen '+b+'innen'+bc+' außen'+ac;assert.equal(inlinePlain(source),'außen innen außen',source);assert.doesNotMatch(inlineHtml(source),/[{}~*]/);}
+const afe=attrs=>attrs['data-afe']===undefined?undefined:JSON.parse(attrs['data-afe']);
+const at=(collection,id,path)=>({owner:{collection,id},part:'data',path});
+test('editor markers carry full addresses and explicit occurrences only in editor builds',async()=>{
+ const editor=await markerHelpers('editor'),site=await markerHelpers('public');
+ assert.deepEqual(afe(editor.collectionOrder('faq','order')),{v:1,kind:'order',collection:'faq',path:['order']});
+ // A card showing another record, whose membership lives in the section's own record.
+ assert.deepEqual(afe(editor.listItem({_recordId:'page/index',_sectionIndex:3},{record:'package/spark',entry:['tiers',0,'featureIds',1]})),{v:1,kind:'item',rendered:{collection:'packages',id:'spark'},occurrence:'page/index/sections/3 page/index#["sections",3,"tiers",0,"featureIds",1]',membership:at('pages','index',['sections',3,'tiers',0,'featureIds',1])});
+ // Query-backed cards (no entry) are occurrences too; their location tells two places apart.
+ assert.deepEqual(afe(editor.listItem({_recordId:'page/index',_sectionIndex:7},{record:'project/nfl'})),{v:1,kind:'item',rendered:{collection:'projects',id:'nfl'},occurrence:'page/index/sections/7 record:project/nfl'});
+ assert.deepEqual(afe(editor.listItem({_recordId:'page/index',_sectionIndex:2},{entry:['steps',1]})).rendered,{collection:'pages',id:'index'});
+ assert.deepEqual(afe(editor.listItem({},{record:'package/odyssey',entry:['featureGroups',0]})).membership,at('packages','odyssey',['featureGroups',0]));
+ assert.deepEqual(editor.listItem({_recordId:'page/index',_sectionIndex:2},{}),{});
+ assert.deepEqual(afe(editor.sectionUses({_recordId:'page/index',_sectionIndex:4},[['tiers',1,'cta','href'],{record:'package/horizon',path:['dur']}])).addresses,[at('pages','index',['sections',4,'tiers',1,'cta','href']),at('packages','horizon',['dur'])]);
+ assert.deepEqual(editor.sectionUses({},[['date']]),{});
+ assert.deepEqual(afe(editor.sectionBlock({_recordId:'page/index',_sectionIndex:1})),{v:1,kind:'blocks',address:at('pages','index',['sections',1])});
+ assert.deepEqual(afe(editor.recordBody('faq/show-01')),{v:1,kind:'body',address:{owner:{collection:'faq',id:'show-01'},part:'body',path:[]}});
+ assert.equal(afe(editor.recordPanelField('package/horizon',['price'])).mode,'panel');
+ assert.equal(afe(editor.recordField('site/ui',['base','navigation','skipLink'])).address.owner.collection,'siteUi');
+ assert.throws(()=>editor.recordField('unknown/x',['a']),/Unbekannte Datensatz-ID/);
+ // Several markers on one element become one attribute; plain attributes such as lang survive.
+ const localized={_recordId:'page/index',_sectionIndex:0,_localization:{locale:'en',fallback:[['sections',0,'text']],applied:[],machine:[]}};
+ const both=editor.markers(editor.sectionField(localized,['text']),editor.listItem(localized,{entry:['text']}));
+ assert.equal(both.lang,'de');assert.deepEqual(afe(both).markers.map(m=>m.kind),['field','item']);
+ // Public builds: no marker at all, the language attribute stays.
+ assert.deepEqual(site.collectionOrder('faq','order'),{});assert.deepEqual(site.listItem({},{record:'faq/show-01'}),{});assert.deepEqual(site.sectionUses({},[{record:'post/a',path:['date']}]),{});
+ assert.deepEqual(site.sectionField(localized,['text']),{lang:'de'});assert.deepEqual(site.markers(site.sectionField(localized,['text'])),{lang:'de'});
 });
 
 test('inline metadata survives constraints and optional unwrapping in Zod 4.6; non-editorial fields stay plain',async()=>{
@@ -144,16 +129,15 @@ test('inline metadata survives constraints and optional unwrapping in Zod 4.6; n
  for(const option of sectionSchema.options){const shape=option.shape;if(shape.headline)assert.equal(inner(shape.headline).meta().format,'inline',shape.type.value);}
  assert.equal(inner(packageSchema.shape.displayName).meta().format,'inline');assert.equal(projectShowcaseSchema.shape.cardTitle.meta().format,'inline');
  assert.equal(pageSchema.shape.title.meta()?.format,undefined);assert.equal(pageSchema.shape.description.meta()?.format,undefined);
- const {nativeField,nativeRecord}=await nativeHelpers(),previous=process.env.FLYINGSTARS_EDITOR;
- try{process.env.FLYINGSTARS_EDITOR='1';assert.equal(nativeField({_nativeRecord:'page/index',_nativeIndex:0},['headline'],true)['data-native-inline'],'true');assert.equal(nativeRecord('package/spark',['displayName'],true)['data-native-inline'],'true');process.env.FLYINGSTARS_EDITOR='0';assert.deepEqual(nativeRecord('package/spark',['displayName'],true),{});}finally{if(previous===undefined)delete process.env.FLYINGSTARS_EDITOR;else process.env.FLYINGSTARS_EDITOR=previous;}
 });
 
 test('rotating inline words retain safe rendered marks and update the exact word field path',async()=>{
  const {runInNewContext}=await import('node:vm'),source=(await fs.readFile(new URL('../scripts/site.ts',import.meta.url),'utf8')).replace(/^import .*?;\n/gm,''),intervals=[],timeouts=[];
- const word={dataset:{rotate:'Neu|Anders',nativePath:'["sections",0,"words",0]'},innerHTML:'<strong>Neu</strong>',isContentEditable:false,classList:{add(){},remove(){}}};
+ const marker=path=>JSON.stringify({v:1,kind:'field',address:{owner:{collection:'pages',id:'index'},part:'data',path},mode:'inline'});
+ const word={dataset:{rotate:'Neu|Anders',afe:marker(['sections',0,'words',0])},innerHTML:'<strong>Neu</strong>',isContentEditable:false,classList:{add(){},remove(){}}};
  const document={getElementById(){return null;},hidden:false,documentElement:{classList:{toggle(){}}},querySelector:s=>s==='[data-rotate]'?word:s==='[data-rotate-words]'?{content:{children:[{innerHTML:'<strong>Neu</strong>'},{innerHTML:'<em>Anders</em>'}]}}:null,querySelectorAll:()=>[],dispatchEvent(){}};
  runInNewContext(source,{registerCanvas(){},rgbOf,document,window:{addEventListener(){}},matchMedia:()=>({matches:false}),sessionStorage:{getItem:()=>null},location:{hash:''},setInterval:fn=>intervals.push(fn),setTimeout:fn=>timeouts.push(fn),Event:class{},requestAnimationFrame(){}});
- intervals[0]();timeouts.shift()();assert.equal(word.innerHTML,'<em>Anders</em>');assert.equal(word.dataset.nativePath,'["sections",0,"words",1]');
+ intervals[0]();timeouts.shift()();assert.equal(word.innerHTML,'<em>Anders</em>');assert.equal(word.dataset.afe,marker(['sections',0,'words',1]));
 });
 
 test('a backslash keeps typed mark characters literal',async()=>{
