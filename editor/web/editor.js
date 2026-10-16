@@ -3772,6 +3772,8 @@ async function translateMissing() {
       if (!result) throw Error("Übersetzung abgebrochen.");
       const scopeIds = choice.scope === "page" ? pageIds : records().map((r) => r.id).filter((id) => choice.kinds.has(translationKindOf(id)));
       mergeTranslationRecords(result.records || [], choice.accept ? { ids: scopeIds, locales: [...choice.locales] } : null);
+      // Results in the site's own records are field edits: the page shows them like any other edit.
+      syncFrame();
       d.close();
       const target = choice.locales.has(activeLocale) ? activeLocale : [...choice.locales][0];
       if (activeLocale !== target) setLocale(target);
