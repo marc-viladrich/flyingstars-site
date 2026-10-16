@@ -73,7 +73,7 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
  const previews=driver?new PreviewService(driver,store):null;
  if(previews)previews.init().catch(error=>console.error('Vorschau:',error.message));
  const publicBuilder=new NativeBuilder(store,stateDir,{editor:false,origin:publicOrigin,runtimeName:'runtime-public'});
- const publisher=new NativePublisher(store,publicBuilder),translation=new NativeTranslation({...runtime.translation,...languages});
+ const publisher=new NativePublisher(store,publicBuilder,{upload:runtime.git.upload,liveUrl:runtime.liveUrl}),translation=new NativeTranslation({...runtime.translation,...languages});
  const {plan:planTranslation,mergeIntoTranslations,storage:translationStorage}=createTranslationCore(adapter);
 
  if(initialize)await publisher.init();
@@ -127,10 +127,12 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
   // Unsaved draft changes are added in the browser with the same resolver (web/media-usage.mjs).
   if(req.method==='GET'&&p==='/editor/api/media'){const saved=await store.state();return json(res,200,{head:saved.head,basis:'saved-draft',...adapter.extensions.require('mediaLibrary',saved.records)});}
   if(req.method==='GET'&&p==='/editor/api/review')return json(res,200,await publisher.review());
+  if(req.method==='GET'&&p==='/editor/api/upload')return json(res,200,await publisher.uploadStatus());
   if(req.method==='GET'&&p==='/editor/api/translation')return json(res,200,translation.status());
   if(req.method==='POST'){
    if(p==='/editor/api/save')return json(res,200,await buildSaved(await store.save(await jsonBody(req,20_000_000),{actor})));
    if(p==='/editor/api/publish')return json(res,200,await publisher.publish(await jsonBody(req),{actor}));
+   if(p==='/editor/api/upload')return json(res,200,await publisher.upload(await jsonBody(req),{actor}));
    if(p==='/editor/api/translate')return json(res,200,await translation.suggest(await jsonBody(req)));
         if(p==='/editor/api/translate-missing'){
           // Machine translation of missing/changed texts; results go into the editor draft, not to git.

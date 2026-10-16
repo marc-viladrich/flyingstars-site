@@ -34,6 +34,8 @@ Explizite API-Werte in `values` gewinnen vor CLI-Argumenten, CLI-Argumente vor U
 | `AFE_GIT_REMOTE` | `FLYINGSTARS_GIT_REMOTE` | `--git-remote` | Ohne Wert aus; `off` ausdrücklich aus |
 | `AFE_DRAFT_BRANCH` | keiner | `--draft-branch` | `content/draft` |
 | `AFE_PUBLISHED_BRANCH` | keiner | `--published-branch` | `main` |
+| `AFE_UPLOAD_REMOTE` | keiner | `--upload-remote` | Entwicklerrechner: Freigabe bleibt lokal, „Hochladen“ pusht den freigegebenen Branch auf Anfrage zu diesem Remote. Schließt `AFE_GIT_REMOTE` aus |
+| `AFE_LIVE_URL` | keiner | `--live-url` | Origin, unter der ein hochgeladener Stand nach der CI erscheint (nur als Link) |
 | `AFE_AUTH` | `EDITOR_AUTH` | `--auth` | CLI an; `off` deaktiviert |
 | `AFE_ACCOUNTS` | `EDITOR_ACCOUNTS` | `--accounts` | `<state>/runtime-private/editor-accounts.json` |
 | `AFE_SESSION_SECRET` | `EDITOR_SESSION_SECRET` | `--session-secret` | Ohne Wert dauerhaft privat erzeugt; gesetzt mindestens 32 Bytes |

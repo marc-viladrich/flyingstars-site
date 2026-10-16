@@ -65,6 +65,8 @@ let state,
   publishPending = false,
   // Last /editor/api/review answer: saved draft head, active public head, public origin.
   publication = null,
+  // Last /editor/api/upload answer (manual upload to GitHub on a developer machine): enabled, ahead, behind, changed.
+  uploadState = null,
   toastTimer = null,
   openMenuState = null,
   loadError = false;
@@ -499,6 +501,9 @@ function update() {
 
   $("#publish").hidden = preview || !!count || busy || !publishPending || !ready;
   $("#publish").disabled = locked;
+  // Upload follows a local publication: offered once the published state differs from GitHub's.
+  $("#upload").hidden = preview || !!count || busy || publishPending || !ready || !(uploadState?.enabled && (uploadState.ahead || uploadState.behind));
+  $("#upload").disabled = locked;
 
   $("#panel").inert = locked;
   for (const input of document.querySelectorAll("#panel-body input,#panel-body textarea,#panel-body select"))
@@ -507,6 +512,9 @@ function update() {
 }
 setButton($("#publish"), "globe", "Freigeben", { wideOnly: true });
 $("#publish").setAttribute("aria-label", "Freigeben");
+setButton($("#upload"), "upload", "Hochladen", { wideOnly: true });
+$("#upload").setAttribute("aria-label", "Zu GitHub hochladen");
+$("#upload").title = "Lokal veröffentlichten Stand zu GitHub hochladen";
 $("#undo").append(icon("undo-2"));
 $("#add-section").append(icon("plus"));
 $("#more").append(icon("ellipsis"));
@@ -526,6 +534,15 @@ async function refreshPublishState() {
     publishPending = (result.changed || []).length > 0 || publishNeedsActivation(result);
   } catch {
     publishPending = false;
+  }
+  update();
+  refreshUploadState();
+}
+async function refreshUploadState() {
+  try {
+    uploadState = await api("/editor/api/upload");
+  } catch {
+    uploadState = null;
   }
   update();
 }
@@ -2834,6 +2851,26 @@ function changeGroups(files) {
       items: g.items.sort((x, y) => (x.kindIndex ?? 0) - (y.kindIndex ?? 0) || (y.at || 0) - (x.at || 0) || x.title.localeCompare(y.title)),
     }));
 }
+// Changed files grouped by kind, as in the publication dialog (also used by the upload dialog).
+function appendChangeGroups(d, groups) {
+  for (const g of groups) {
+    const rows = g.items.map((entry) =>
+      el(
+        "li",
+        {},
+        el("span", { class: "change-title", text: entry.title }),
+        entry.status === "A" ? el("span", { class: "change-badge", text: "neu" }) : entry.status === "D" ? el("span", { class: "change-badge danger", text: "gelöscht" }) : null,
+        el("span", { class: "change-meta", text: [entry.at ? since(entry.at) : "", entry.author || ""].filter(Boolean).join(" · ") }),
+      ),
+    );
+    const list = el("ul", { class: "list changes" }, rows);
+    d.body.append(
+      g.collapsed
+        ? el("details", { class: "change-group" }, el("summary", {}, icon(g.icon), el("span", { text: `${g.title} (${g.items.length})` }), icon("chevron-down")), g.note ? el("p", { class: "note", text: g.note }) : null, list)
+        : el("section", { class: "change-group" }, el("h3", { class: "change-group-title" }, icon(g.icon), el("span", { text: `${g.title} (${g.items.length})` })), list),
+    );
+  }
+}
 async function review() {
   stageInputs();
   closeMenu();
@@ -2854,23 +2891,7 @@ async function review() {
       return;
     }
     status.textContent = count ? `Seit der letzten Freigabe geändert (${count}):` : "Die letzte Freigabe ist noch nicht aktiv.";
-    for (const g of groups) {
-      const rows = g.items.map((entry) =>
-        el(
-          "li",
-          {},
-          el("span", { class: "change-title", text: entry.title }),
-          entry.status === "A" ? el("span", { class: "change-badge", text: "neu" }) : entry.status === "D" ? el("span", { class: "change-badge danger", text: "gelöscht" }) : null,
-          el("span", { class: "change-meta", text: [entry.at ? since(entry.at) : "", entry.author || ""].filter(Boolean).join(" · ") }),
-        ),
-      );
-      const list = el("ul", { class: "list changes" }, rows);
-      d.body.append(
-        g.collapsed
-          ? el("details", { class: "change-group" }, el("summary", {}, icon(g.icon), el("span", { text: `${g.title} (${g.items.length})` }), icon("chevron-down")), g.note ? el("p", { class: "note", text: g.note }) : null, list)
-          : el("section", { class: "change-group" }, el("h3", { class: "change-group-title" }, icon(g.icon), el("span", { text: `${g.title} (${g.items.length})` })), list),
-      );
-    }
+    appendChangeGroups(d, groups);
     d.body.append(
       el("p", { class: "note", text: "Die Website wird neu aufgebaut und anschließend ausgetauscht. Bis dahin bleibt der bisherige Stand online." }),
     );
@@ -2916,20 +2937,93 @@ async function review() {
 // the current language (the page the work was done on, not the homepage).
 function publishedState(d) {
   const label = pageChoices().find((choice) => choice.value === route)?.label || "Diese Seite";
-  d.querySelector(".dlg-head h2").textContent = "Veröffentlicht";
-  const link = el("a", { class: "button primary", href: liveURL(route, activeLocale, publication.url), target: "_blank", rel: "noopener" }, icon("external-link"), el("span", { text: "Live ansehen" }));
+  const local = uploadState?.enabled;
+  d.querySelector(".dlg-head h2").textContent = local ? "Lokal veröffentlicht" : "Veröffentlicht";
+  const link = el("a", { class: "button" + (local ? " secondary" : " primary"), href: liveURL(route, activeLocale, publication.url), target: "_blank", rel: "noopener" }, icon("external-link"), el("span", { text: local ? "Lokal ansehen" : "Live ansehen" }));
+  const upload = local ? button("Zu GitHub hochladen", () => (d.close(), uploadDialog()), { icon: "upload", cls: "primary" }) : null;
   d.body.replaceChildren(
     el(
       "div",
       { class: "publish-done", role: "status" },
       el("span", { class: "publish-done-mark", "aria-hidden": "true" }, icon("check")),
-      el("p", { class: "publish-done-title", text: "Die Website ist aktualisiert." }),
-      el("p", { class: "note", text: `„${label}“${activeLocale === sourceLocale ? "" : ` (${localeNames[activeLocale]})`} ist jetzt live.` }),
+      el("p", { class: "publish-done-title", text: local ? "Die lokale Website ist aktualisiert." : "Die Website ist aktualisiert." }),
+      el("p", { class: "note", text: `„${label}“${activeLocale === sourceLocale ? "" : ` (${localeNames[activeLocale]})`} ist jetzt ${local ? "in der lokalen Veröffentlichung zu sehen. Online geht der Stand erst nach dem Hochladen." : "live."}` }),
       link,
     ),
   );
+  d.foot.replaceChildren(button("Schließen", () => d.close(), { cls: "secondary" }), ...(upload ? [upload] : []));
+  (upload || link).focus();
+}
+
+// Developer machine (AFE_UPLOAD_REMOTE): the locally published state goes to GitHub on request.
+// GitHub's CI checks it and deploys it; the editor never pushes with force and never merges on its own.
+async function uploadDialog() {
+  const d = dialog("Zu GitHub hochladen");
+  const status = el("p", { class: "note", text: "GitHub wird abgefragt …" });
+  d.body.append(status);
+  try {
+    const result = await api("/editor/api/upload");
+    uploadState = result;
+    update();
+    if (result.behind) {
+      status.textContent = `Auf GitHub liegen ${result.behind === 1 ? "eine Änderung" : result.behind + " Änderungen"}, die hier fehlen. Bitte zuerst abgleichen (git pull), dann erneut hochladen.`;
+      status.classList.add("error");
+      return;
+    }
+    if (!result.ahead) {
+      status.textContent = "Der veröffentlichte Stand ist bereits auf GitHub.";
+      return;
+    }
+    const groups = changeGroups(result.changed || []);
+    const count = groups.reduce((n, g) => n + g.items.length, 0);
+    status.textContent = `Lokal veröffentlicht, noch nicht auf GitHub (${count}):`;
+    appendChangeGroups(d, groups);
+    d.body.append(el("p", { class: "note", text: "GitHub prüft den Stand automatisch und stellt ihn danach online. Schlägt die Prüfung fehl, bleibt der bisherige Stand online." }));
+    const go = button(
+      "Hochladen",
+      async () => {
+        busy = true;
+        go.disabled = true;
+        update();
+        try {
+          const uploaded = await api("/editor/api/upload", { expectedPublishedHead: result.publishedHead, requestId: crypto.randomUUID() });
+          uploadedState(d, uploaded);
+          refreshUploadState();
+        } catch (e) {
+          status.textContent = e.message;
+          status.classList.add("error");
+          go.disabled = false;
+        } finally {
+          busy = false;
+          update();
+        }
+      },
+      { icon: "upload", cls: "primary" },
+    );
+    d.foot.append(button("Abbrechen", () => d.close(), { cls: "secondary" }), go);
+  } catch (e) {
+    status.textContent = e.message;
+    status.classList.add("error");
+  }
+}
+function uploadedState(d, uploaded) {
+  d.querySelector(".dlg-head h2").textContent = "Hochgeladen";
+  const links = [
+    uploaded.liveUrl ? el("a", { class: "button primary", href: liveURL(route, activeLocale, uploaded.liveUrl), target: "_blank", rel: "noopener" }, icon("external-link"), el("span", { text: "Online-Seite öffnen" })) : null,
+    uploaded.actionsUrl ? el("a", { class: "button secondary", href: uploaded.actionsUrl, target: "_blank", rel: "noopener" }, icon("external-link"), el("span", { text: "Prüfung auf GitHub ansehen" })) : null,
+  ].filter(Boolean);
+  d.body.replaceChildren(
+    el(
+      "div",
+      { class: "publish-done", role: "status" },
+      el("span", { class: "publish-done-mark", "aria-hidden": "true" }, icon("check")),
+      el("p", { class: "publish-done-title", text: uploaded.replayed ? "Der Stand war bereits auf GitHub." : "Der Stand ist auf GitHub." }),
+      el("p", { class: "note", text: "GitHub prüft ihn jetzt und stellt ihn danach online. Das dauert etwa 10 Minuten." }),
+      ...links,
+    ),
+  );
   d.foot.replaceChildren(button("Schließen", () => d.close(), { cls: "secondary" }));
-  link.focus();
+  (links[0] || d.foot.querySelector("button")).focus();
 }
 
 // ---------------------------------------------------------------------------
@@ -4040,6 +4134,7 @@ $("#save").addEventListener("click", save);
 // A text field in the frame stages on blur via postMessage; let that land first so Undo reverts it.
 $("#undo").addEventListener("click", () => setTimeout(undoLast, 0));
 $("#publish").addEventListener("click", review);
+$("#upload").addEventListener("click", uploadDialog);
 $("#mode").addEventListener("click", () => {
   stageInputs();
   preview = !preview;

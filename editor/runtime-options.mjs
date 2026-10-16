@@ -14,7 +14,8 @@ import {fileURLToPath} from 'node:url';
  * @property {string} canonicalOrigin
  * @property {number} port
  * @property {number} publicPort
- * @property {{remote:string|false|null,draftBranch:string,publishedBranch:string}} git
+ * @property {{remote:string|false|null,upload:string|null,draftBranch:string,publishedBranch:string}} git
+ * @property {string|null} liveUrl
  * @property {{enabled:boolean,driver:'live'|'static'|'off',port:number,node:string}} preview
  * @property {{enabled:boolean,file:string,secret:string|undefined,forbiddenRoots:string[]}} auth
  * @property {{provider:string|undefined,url:string|undefined,key:string|undefined,deeplKey:string|undefined,email:string|undefined,budget:number}} translation
@@ -31,6 +32,7 @@ export const environmentOptions = Object.freeze({
  port:['AFE_PORT','PORT','RELAUNCH_PORT'],publicPort:['AFE_PUBLIC_PORT','RELAUNCH_PUBLIC_PORT'],
  preview:['AFE_PREVIEW','RELAUNCH_PREVIEW'],previewPort:['AFE_PREVIEW_PORT','RELAUNCH_PREVIEW_PORT'],
  remote:['AFE_GIT_REMOTE',...legacyEnvironmentOptions.remote],draftBranch:['AFE_DRAFT_BRANCH'],publishedBranch:['AFE_PUBLISHED_BRANCH'],
+ uploadRemote:['AFE_UPLOAD_REMOTE'],liveUrl:['AFE_LIVE_URL'],
  auth:['AFE_AUTH','EDITOR_AUTH'],accounts:['AFE_ACCOUNTS','EDITOR_ACCOUNTS'],sessionSecret:['AFE_SESSION_SECRET','EDITOR_SESSION_SECRET'],
  translationProvider:['AFE_TRANSLATION_PROVIDER','EDITOR_TRANSLATION_PROVIDER'],translationUrl:['AFE_TRANSLATION_URL','EDITOR_TRANSLATION_URL'],
  translationKey:['AFE_TRANSLATION_KEY','EDITOR_TRANSLATION_KEY'],translationBudget:['AFE_TRANSLATION_BUDGET','EDITOR_TRANSLATION_BUDGET'],
@@ -41,7 +43,7 @@ export const environmentOptions = Object.freeze({
 const flags=Object.freeze({
  'site-root':'siteRoot','source':'siteRoot','state-dir':'stateDir','public-webroot':'publicWebroot',
  'editor-origin':'editorOrigin','canonical-origin':'canonicalOrigin','port':'port','public-port':'publicPort',
- 'preview':'preview','preview-port':'previewPort','git-remote':'remote','draft-branch':'draftBranch','published-branch':'publishedBranch',
+ 'preview':'preview','preview-port':'previewPort','git-remote':'remote','draft-branch':'draftBranch','published-branch':'publishedBranch','upload-remote':'uploadRemote','live-url':'liveUrl',
  'auth':'auth','accounts':'accounts','session-secret':'sessionSecret','translation-provider':'translationProvider',
  'translation-url':'translationUrl','translation-key':'translationKey','translation-budget':'translationBudget',
  'deepl-api-key':'deeplKey','mymemory-email':'translationEmail','offline-media':'offlineMedia',
@@ -89,6 +91,8 @@ export function resolveRuntimeOptions({args=[],env=process.env,cwd=process.cwd()
  const authEnabled=enabled(v.auth,authDefault),url=new URL(editorOrigin);
  const previewDriver=v.preview==='static'?'static':enabled(v.preview,previewDefault)?'live':'off';
  if(authEnabled&&url.protocol!=='https:'&&!['127.0.0.1','localhost','[::1]'].includes(url.hostname))throw Error('Anmeldung benötigt eine HTTPS-Origin.');
+ // Automatic (host: every save and publication is pushed) and manual upload (developer machine) exclude each other.
+ if(v.remote&&!['off','false','0'].includes(String(v.remote))&&v.uploadRemote)throw Error('AFE_GIT_REMOTE und AFE_UPLOAD_REMOTE schließen sich aus.');
  const budget=Number(v.translationBudget??5000);if(!Number.isSafeInteger(budget)||budget<1)throw Error('AFE_TRANSLATION_BUDGET ist ungültig.');
  /** @type {Record<string,string>} */
  const snapshot={};for(const[key,value]of Object.entries(env))if(value!==undefined)snapshot[key]=value;
@@ -100,7 +104,9 @@ export function resolveRuntimeOptions({args=[],env=process.env,cwd=process.cwd()
   // Runtime assets belong to this pilot installation, not to the site's source services.
   editorAssets:fileURLToPath(new URL('./web/',import.meta.url)),
   editorOrigin,canonicalOrigin,port,publicPort,
-  git:Object.freeze({remote:v.remote??null,draftBranch:branch(v.draftBranch||'content/draft'),publishedBranch:branch(v.publishedBranch||'main')}),
+  // Where an uploaded publication appears once the remote's CI has deployed it (shown as a link only).
+  liveUrl:v.liveUrl?origin(v.liveUrl,'AFE_LIVE_URL'):null,
+  git:Object.freeze({remote:v.remote??null,upload:v.uploadRemote||null,draftBranch:branch(v.draftBranch||'content/draft'),publishedBranch:branch(v.publishedBranch||'main')}),
   // live: astro dev beside the editor; static: one astro build per draft change (no extra process); off.
   preview:Object.freeze({enabled:previewDriver!=='off',driver:previewDriver,port:number(v.previewPort??port+2,'AFE_PREVIEW_PORT'),node:process.execPath}),
   auth:Object.freeze({enabled:authEnabled,file:path.resolve(cwd,v.accounts||path.join(stateDir,'runtime-private/editor-accounts.json')),secret:v.sessionSecret,

@@ -44,6 +44,7 @@ Die vollständige Variablen- und CLI-Tabelle mit Defaults steht in [Runtime-Opti
 | `AFE_PORT` | `PORT`, `RELAUNCH_PORT` | Listener-Port gemäß konsoleH-Konfiguration |
 | `AFE_GIT_REMOTE` | `FLYINGSTARS_GIT_REMOTE` | Expliziter Remote für Inhalts-Pushes |
 | `AFE_DRAFT_BRANCH` / `AFE_PUBLISHED_BRANCH` | keine | `content/draft` / `main` |
+| `AFE_UPLOAD_REMOTE` / `AFE_LIVE_URL` | keine | Entwicklerrechner: lokal freigeben, dann von Hand hochladen (siehe unten) |
 | `AFE_AUTH` / `AFE_ACCOUNTS` | `EDITOR_AUTH` / `EDITOR_ACCOUNTS` | Anmeldung und private Kontodatei |
 | `AFE_PREVIEW=static` | – | Vorschau ohne zusätzlichen Dauerprozess: jeder Entwurf wird einmal gebaut (FlyingStars gemessen 2,1 s und 468 MB Spitze je Entwurf, danach kein Prozess). `AFE_PREVIEW=0` schaltet sie ganz ab |
 | `DEPLOY_RESTART_CMD` | unverändert | Auf dem Account geprüfter Neustartbefehl |
@@ -86,3 +87,10 @@ Der Start verweigert State innerhalb des Klons, State im öffentlichen Webroot u
 Nicht lokal belegbar sind GitHub-Secrets und tatsächliche Action-Ausführung, SSH/TLS/DNS am Account, konsoleH-Proxy und Neustart, Apache-Symlinkrechte, Ressourcenlimit und echte Medienabrufe. Die bisherigen Browser-/Lighthouse-Gates werden im Offline-E2E nicht ausgeführt.
 
 Für einen Code-Rollback den problematischen main-Commit durch `git revert` in einem PR zurücknehmen, CI abwarten und Deployment erneut starten. Der Rebase erhält die noch unveröffentlichten Inhalte. Bei inhaltlichem Konflikt zuerst manuell zusammenführen. Für einen sofortigen öffentlichen Rückweg den Webroot unter demselben Repository-Lock atomar auf das Ziel von `<webroot>.previous` zurückschalten; die unveränderlichen Artefakte in `runtime-public/<hash>/site` bleiben verfügbar. Ein öffentlicher Rückweg allein setzt Editorcode und main nicht zurück.
+
+## Entwicklerrechner: lokal freigeben, dann hochladen
+
+Bis der Host steht (und danach für die Entwicklung) läuft der Editor lokal mit `AFE_UPLOAD_REMOTE=github` und `AFE_LIVE_URL=https://flyingstars-site.pages.dev`. „Freigeben“ baut die lokale Veröffentlichung (`http://127.0.0.1:4543/`) und schiebt nur das lokale `main` vor. Ist der freigegebene Stand nicht auf GitHub, bietet der Editor „Hochladen“ an: Er holt `main` von GitHub, lehnt ab, wenn dort Commits liegen, die lokal fehlen (dann `git pull`), und pusht sonst ohne Force. Entwürfe werden in diesem Modus nicht gepusht. Auf GitHub prüft `ci.yml` den Stand; `deploy-cloudflare.yml` stellt ihn erst nach grüner CI auf Cloudflare Pages (Staging, Produktionsbranch `main`). `deploy-hetzner.yml` bleibt aus, bis die Repository-Variable `HETZNER_DEPLOY=on` gesetzt ist.
+
+GitHub-Schutz für `main`: Admins (Marcs SSH-Schlüssel) dürfen direkt pushen, für PRs ist der Check `gates` Pflicht, Force-Push und Löschen sind gesperrt.
+
