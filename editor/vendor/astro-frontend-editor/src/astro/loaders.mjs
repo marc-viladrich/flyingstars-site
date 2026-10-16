@@ -109,9 +109,15 @@ async function snapshot(context, loader, args, rawEntries) {
   const directory = resolve(root, process.env.AFE_PROVENANCE_DIR ?? '.astro/afe-provenance');
   await mkdir(directory, { recursive: true });
   const path = join(directory, `${sha256(context.collection)}.json`);
-  const temporary = `${path}.${process.pid}.tmp`;
-  await writeFile(temporary, JSON.stringify(manifest, null, 2) + '\n');
-  await rename(temporary, path);
+  const text = JSON.stringify(manifest, null, 2) + '\n';
+  // Watcher callbacks run for every file event, and the manifest directory may itself be watched: an
+  // unchanged manifest is not rewritten, so writes stay tied to real source changes (no write loop in dev,
+  // and the file time says when the entries last changed).
+  if (await readFile(path, 'utf8').catch(() => null) !== text) {
+    const temporary = `${path}.${process.pid}.tmp`;
+    await writeFile(temporary, text);
+    await rename(temporary, path);
+  }
   // Opt-in checker evidence from the public parseData boundary, never Astro's
   // internal store. Capture cold input for reference and concrete marker paths.
   if (process.env.AFE_CHECK_DATA_DIR) {
