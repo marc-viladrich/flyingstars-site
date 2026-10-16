@@ -13,7 +13,14 @@ export function prepareOverlays({state,nextRecords:input,seen,changes,sourceFor}
  const nextRecords=structuredClone(input),proposals=[];
  for(const translation of nextRecords.filter(r=>r.id.startsWith('translation/')&&seen.has(r.id))){
   const source=nextRecords.find(r=>r.id===translation.data.sourceId),baselineSource=state.records.find(r=>r.id===translation.data.sourceId);
-  if(!source||!baselineSource||!seen.has(source.id)||translation.data.sourceHash!==baselineSource.revision)continue;
+  if(!source||!baselineSource||!seen.has(source.id)||translation.data.sourceHash!==baselineSource.revision){
+   // A translation saved on its own: only its stored form (list keys, format) is settled here.
+   if(!source)continue;
+   const keyAt=listKeyAt(sourceFor(source.id).schema,source.data);
+   const values=translation.data.values.map(entry=>{const path=resolvePath(source.data,entry.path);return path?{...entry,path:storedPath(source.data,path,keyAt)}:entry;});
+   if(!same(values,translation.data.values)||translation.data.format!==2)proposals.push({id:translation.id,data:{...translation.data,format:2,values}});
+   continue;
+  }
   const baselineTranslation=state.records.find(r=>r.id===translation.id),explicitReview=changes.find(c=>c.id===translation.id)?.reviewedPaths||[];
   if(!Array.isArray(explicitReview)||explicitReview.some(p=>!safeParts(p)))throw failure('Ungültige Übersetzungsprüfung.');
   translation.data.sourceHash=source.revision;

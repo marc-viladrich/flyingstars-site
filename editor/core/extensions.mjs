@@ -49,7 +49,7 @@ import {AsyncLocalStorage} from 'node:async_hooks';
  * @property {<K extends keyof ServerHooks>(name:K, ...args:Parameters<NonNullable<ServerHooks[K]>>)=>(ReturnType<NonNullable<ServerHooks[K]>> extends (infer T)[] ? T : never)[]} collect
  */
 export const EXTENSION_CONTRACT_VERSION='1.0';
-const hookNames=new Set(['prepareTransaction','validateRecord','validateWrite','validateRecords','validateTransaction','validateCreation','validateBinaryWrite','omitField','readOnlyPaths','preventDelete','title','route','resolveReference','references','templates','createRecord','uniqueSection','normalize','query','codec','translationStorage','recordGroup','languages','navigation','mediaPolicy','mediaLibrary','buildEnvironment']);
+const hookNames=new Set(['migrations','prepareTransaction','validateRecord','validateWrite','validateRecords','validateTransaction','validateCreation','validateBinaryWrite','omitField','readOnlyPaths','preventDelete','title','route','resolveReference','references','templates','createRecord','uniqueSection','normalize','query','codec','translationStorage','recordGroup','languages','navigation','mediaPolicy','mediaLibrary','buildEnvironment']);
 
 /** One immutable registry per composition. Names define deterministic, code-point hook order.
  * Resolvers use the first non-null result. Validators run every hook once and stop on error.

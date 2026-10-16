@@ -1,10 +1,10 @@
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
-import {codecs} from '../core/codecs.mjs';
-import {listKeyAt} from '../native-schema.mjs';
-import {resolvePath,storedPath,translationKey} from '../vendor/astro-frontend-editor/src/content/index.mjs';
+import {codecs} from '../../../core/codecs.mjs';
+import {listKeyAt} from '../../../native-schema.mjs';
+import {resolvePath,storedPath,translationKey} from '../../../vendor/astro-frontend-editor/src/content/index.mjs';
 
-// Content format 1 → 2 for overlay translations:
+// FlyingStars overlay translations, content format 1 → 2:
 // - identity: translations/<source id>/<locale>.json instead of a name with "/" flattened to "-" (collisions);
 // - value paths name list items by key where the list declares one (x-afe.array.key), so a reorder outside the
 //   editor keeps them; items without a key keep their position;

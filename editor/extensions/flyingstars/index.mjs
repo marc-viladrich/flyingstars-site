@@ -5,6 +5,7 @@ import {MAX_MEDIA_BYTES} from '../../core/media-limits.mjs';
 import {policies} from './policies.mjs';
 import {templates,newRecordData,uniqueSection} from './templates.mjs';
 import {prepareOverlays,validateOverlays,translationStorage} from './translations.mjs';
+import * as translations2 from './migrations/translations-2.mjs';
 import {mediaLibrary} from './media.mjs';
 import {queryFor} from './queries.mjs';
 import {contactProposals} from './site-data.mjs';
@@ -38,7 +39,7 @@ export function createFlyingStarsExtensions(site) {
   extension('queries',{query:queryFor}),
   extension('site-data',{normalize:contactProposals}),
   extension('inline',{codec:name=>name==='flyingstars/inline'?site.inlineCodec:undefined}),
-  extension('translations',{prepareTransaction:prepareOverlays,validateTransaction:validateOverlays,translationStorage:()=>translationStorage(site.translatableFields,site.sourceFor)}),
+  extension('translations',{migrations:()=>[translations2],prepareTransaction:prepareOverlays,validateTransaction:validateOverlays,translationStorage:()=>translationStorage(site.translatableFields,site.sourceFor)}),
   extension('media',{
    mediaLibrary,
    mediaPolicy:()=>({

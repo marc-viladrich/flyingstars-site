@@ -1,14 +1,13 @@
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
-import * as translations2 from './translations-2.mjs';
-
 // Explicit content-format migrations, run on a working tree (the person or CI commits the result). Each plans
 // every file it writes or deletes first (dry run); applying is idempotent: a second plan after applying is empty.
-export const migrations=[translations2];
+// A site's extensions bring the migrations of the formats they own ({id, description, plan({root, site})}).
+export const migrationsOf=site=>(site.extensions?.collect?.('migrations')??[]).flat();
 
 export async function planMigrations({root,site}){
  const out=[];
- for(const migration of migrations){const changes=await migration.plan({root,site});if(changes.length)out.push({id:migration.id,description:migration.description,changes});}
+ for(const migration of migrationsOf(site)){const changes=await migration.plan({root,site});if(changes.length)out.push({id:migration.id,description:migration.description,changes});}
  return out;
 }
 
