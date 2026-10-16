@@ -23,6 +23,17 @@ import {createFlyingStarsAdapter as createSiteAdapter} from './flyingstars-adapt
 const editorRoot=fileURLToPath(new URL('./',import.meta.url));
 export const EDITOR_BROWSER_MODULES=Object.freeze(['/core/metadata.mjs','/web/sha256.mjs',...['schema/spec','markers/client','markers/protocol'].map(name=>`/vendor/astro-frontend-editor/src/${name}.mjs`)]);
 const mime={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.json':'application/json','.svg':'image/svg+xml','.webp':'image/webp','.jpg':'image/jpeg','.jpeg':'image/jpeg','.png':'image/png','.woff2':'font/woff2','.ico':'image/x-icon','.pdf':'application/pdf','.mp4':'video/mp4'};
+// Routes of a built site: every index.html below it, as /path/; redirect stubs are not pages. Cached per build.
+const routeCache=new Map();
+export async function builtRoutes(site){
+ if(!routeCache.has(site))routeCache.set(site,(async()=>{
+  const routes=[];
+  const walk=async dir=>{for(const entry of await fs.readdir(dir,{withFileTypes:true})){const file=path.join(dir,entry.name);if(entry.isDirectory()){if(!entry.name.startsWith('_'))await walk(file);}else if(entry.name==='index.html'&&!/<meta[^>]+http-equiv=["']?refresh/i.test(await fs.readFile(file,'utf8')))routes.push('/'+path.relative(site,dir).split(path.sep).filter(Boolean).map(part=>part+'/').join(''));}};
+  await walk(site);
+  return routes.sort();
+ })());
+ return routeCache.get(site);
+}
 export async function serveFile(res,base,relative,enhance=false){
  const decoded=decodeURIComponent(relative);
  if(decoded.includes('\\')||decoded.split('/').some(part=>part==='..'||part.startsWith('.')))throw failure('Pfad nicht freigegeben.',403);
@@ -99,6 +110,8 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
    return json(res,200,{ok:true});
   }
   if(req.method==='GET'&&p==='/editor/api/state')return json(res,200,{...await store.state(),activeHead:builder.current?.head});
+  // Every page of the active editor build, also those without a record of their own (a catalogue, a contact page).
+  if(req.method==='GET'&&p==='/editor/api/routes')return json(res,200,{head:builder.current?.head??null,routes:builder.current?await builtRoutes(builder.current.site):[]});
   // Media library of the saved draft: collections by directly using record type + usage per asset.
   // Unsaved draft changes are added in the browser with the same resolver (web/media-usage.mjs).
   if(req.method==='GET'&&p==='/editor/api/media'){const saved=await store.state();return json(res,200,{head:saved.head,basis:'saved-draft',...adapter.extensions.require('mediaLibrary',saved.records)});}

@@ -4077,7 +4077,10 @@ window.addEventListener("resize", () => {
       toast("Der letzte gespeicherte Stand konnte nicht aufgebaut werden. Die Seite zeigt einen früheren Stand.", { error: true });
     const requested = splitLocale(new URL(location.href).searchParams.get("page") || "/");
     const initial = normalizedRoute(requested.path);
-    navigate(navigationChoices(records()).some((choice) => choice.value === initial) ? initial : "/", { locale: requested.locale });
+    // A deep link may name any page of the build, also one without its own record (a listing, a contact page).
+    const built = navigationChoices(records()).some((choice) => choice.value === initial) ? null : await api("/editor/api/routes").catch(() => null);
+    const known = !built || built.routes.includes(new URL(new URL(location.href).searchParams.get("page") || "/", location.origin).pathname.replace(/\/?$/, "/"));
+    navigate(known ? initial : "/", { locale: requested.locale });
     refreshPublishState();
   } catch (error) {
     loadError = true;
