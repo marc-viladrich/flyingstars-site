@@ -55,27 +55,6 @@ export function itemSummary(entry,index,{records=[],image=false,imageChild=null,
 const startsWith = (prefix, path) => prefix.length <= path.length && prefix.every((part, index) => path[index] === part);
 // A marker on a container covers its fields; a marker on a field covers the containing unit.
 export const covers = (marker, path) => startsWith(marker, path) || startsWith(path, marker);
-// Raw frame markers → unique {id, path, kind}. A nested entry stands for itself, independent of its rendered record.
-export function instanceMarkers(raw, ownerId) {
-  const out = [],
-    seen = new Set();
-  for (const marker of raw) {
-    const use = marker.via && marker.via.id === ownerId ? { id: marker.via.id, path: marker.via.path, kind: "entry" } : { id: marker.id, path: marker.path, kind: marker.kind };
-    const key = use.id + "/" + JSON.stringify(use.path);
-    if (seen.has(key)) continue;
-    seen.add(key);
-    out.push(use);
-  }
-  return out;
-}
-// Two wrappers identify the same occurrence when their owner, entry and section match.
-export function sameOccurrence(a, b) {
-  if (!a || !b) return false;
-  const section = (s) => (s ? s.id + "#" + s.index : "");
-  if (section(a.section) !== section(b.section)) return false;
-  if (a.entry || b.entry) return !!a.entry && !!b.entry && a.entry.id === b.entry.id && JSON.stringify(a.entry.path) === JSON.stringify(b.entry.path);
-  return a.record === b.record;
-}
 // The editable units of one owner below prefix, in schema order. A unit is what one control edits: a field,
 // a whole list or image, an absent optional ("… ergänzen") or an absent optional switch with its default.
 // fields/optionalFields: describe() output with technical ones removed and inline (edited on the canvas)

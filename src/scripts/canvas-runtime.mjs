@@ -23,12 +23,12 @@ export function registerCanvas(selector, initialize, { attributes = [], scope: s
     const entry = { dispose() {
       const state = snapshot?.();
       abort.abort(); observers.forEach(observer => observer.disconnect()); frames.forEach(cancelAnimationFrame); cleanups.forEach(fn => fn());
-      delete canvas.dataset.nativeLive;
+      delete canvas.dataset.canvasLive;
       return state;
     } };
     active.set(canvas, entry);
     initialize(canvas, life, saved);
-    canvas.dataset.nativeLive = 'true';
+    canvas.dataset.canvasLive = 'true';
     // Attribute batches are delivered after all patches, never halfway through a render.
     const settings = new MutationObserver(() => {
       if (active.get(canvas) !== entry || !canvas.isConnected) return;

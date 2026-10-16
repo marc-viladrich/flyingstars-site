@@ -44,13 +44,13 @@ test('canvas settings reinitialize in place, preserve state, and release frames,
     life.observe({ observe() {}, disconnect() { disposals++; } }, canvas);
     life.raf(() => assert.fail('disposed frame executed'));
   }, { attributes: ['data-shape'], scope: 'section' });
-  assert.equal(dom.canvas.dataset.nativeLive, 'true');
+  assert.equal(dom.canvas.dataset.canvasLive, 'true');
   dom.attributes(dom.canvas, 'data-shape');
   assert.equal(mounts, 2); assert.equal(disposals, 2); assert.equal(dom.frames.size, 1);
   dom.button.dispatchEvent(new Event('click')); assert.equal(clicks, 2);
   dom.attributes(dom.scope, 'data-runtime'); assert.equal(mounts, 3); assert.equal(dom.frames.size, 1);
   dom.canvas.dispatchEvent(new Event('native:canvas-update')); assert.equal(mounts, 4);
-  stop(); assert.equal(dom.canvas.dataset.nativeLive, undefined); assert.equal(dom.frames.size, 0); assert.equal(disposals, 8);
+  stop(); assert.equal(dom.canvas.dataset.canvasLive, undefined); assert.equal(dom.frames.size, 0); assert.equal(disposals, 8);
   dom.button.dispatchEvent(new Event('click')); assert.equal(clicks, 2);
 });
 
@@ -59,7 +59,7 @@ test('replacement starts a new controller, moving a connected canvas retains its
   const stop = registerCanvas('canvas', (_, life) => { mounts++; life.cleanup(() => disposals++); });
   dom.move(); assert.equal(mounts, 1); assert.equal(disposals, 0);
   const replacement = dom.makeCanvas(); dom.replace([replacement]);
-  assert.equal(mounts, 2); assert.equal(disposals, 1); assert.equal(replacement.dataset.nativeLive, 'true');
+  assert.equal(mounts, 2); assert.equal(disposals, 1); assert.equal(replacement.dataset.canvasLive, 'true');
   dom.attributes(replacement, 'data-running'); assert.equal(mounts, 2);
   stop(); assert.equal(disposals, 2);
 });
@@ -85,5 +85,5 @@ test('actual site orb script re-reads shape, count and color on the same paused 
   assert.equal(draws.length, 230); // includes nonmultiples of 25, previously rounded down
   assert.ok(draws.every(draw => draw.color.startsWith('rgba(255,158,41,')));
   assert.notDeepEqual(draws.slice(0, 200).map(draw => draw.args.slice(0, 2)), previousGeometry);
-  assert.equal(dom.canvas.dataset.nativeLive, 'true');
+  assert.equal(dom.canvas.dataset.canvasLive, 'true');
 });

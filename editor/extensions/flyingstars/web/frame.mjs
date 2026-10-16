@@ -1,7 +1,8 @@
-function presentSections({document,records}) {
-  for (const node of document.querySelectorAll("[data-native-section-index]")) {
-    const owner = records.find((r) => r.id === node.dataset.nativeRecord),
-      section = owner?.data.sections?.[Number(node.dataset.nativeSectionIndex)];
+// markers: the editor's frame marker queries (frame-markers.mjs), passed with every presentation.
+function presentSections({document,records,markers}) {
+  for (const {node,marker} of markers.allMarked(document,markers.isBlock)) {
+    const owner = markers.recordOf(records, marker.address.owner),
+      section = readPath(owner?.data, marker.address.path);
     if (!section) continue;
     if (section.columns) {
       const grid = node.querySelector(".packs,.crew,.testimonials");
@@ -50,27 +51,19 @@ export const snapshotFrame=({window})=>({configurator:window.flyingstarsConfigur
 export async function restoreFrame(value,{window}){if(value?.configurator&&window.flyingstarsConfigurator?.restore)await window.flyingstarsConfigurator.restore(value.configurator);}
 export const ownsTransientInput=(node,value)=>!!value?.configurator&&!!node.closest('#cfg');
 
-const readPath=(data,path)=>path.reduce((v,k)=>v?.[k],data);
-const parse=value=>{try{const result=JSON.parse(value);return Array.isArray(result)?result:null;}catch{return null;}};
+function readPath(data,path){return path.reduce((v,k)=>v?.[k],data);}
 const mediaSourceChanged=(a,b)=>a!==b;
-export function presentFrame({document,records,mediaBaselines,initialMediaSource}){
-  // Colour fields feed CSS variables (marked with nativeColor): a picked colour shows at once.
-  for (const node of document.querySelectorAll("[data-native-color]")) {
-    let spec;
-    try {
-      spec = JSON.parse(node.dataset.nativeColor);
-    } catch {
-      continue;
-    }
-    const id = readPath(records.find((r) => r.id === spec.record)?.data, spec.path);
-    if (typeof id === "string" && /^[a-z0-9-]+$/.test(id)) node.style.setProperty(spec.var, `var(--c-${id})`);
+export function presentFrame({document,records,mediaBaselines,initialMediaSource,markers}){
+  // Colour fields feed CSS variables (color markers): a picked colour token shows at once.
+  for (const {node,marker} of markers.allMarked(document,markers.isColor)) {
+    const id = readPath(markers.recordOf(records, marker.address.owner)?.data, marker.address.path);
+    if (typeof id === "string" && /^[a-z0-9-]+$/.test(id)) node.style.setProperty(marker.cssVar, `var(--c-${id})`);
   }
-  presentSections({document,records});
-  for (const node of document.querySelectorAll("[data-native-media-path]")) {
-    const owner = node.closest("[data-native-record]"),
-      item = records.find((r) => r.id === owner?.dataset.nativeRecord),
-      path = parse(node.dataset.nativeMediaPath),
-      usage = path && readPath(item?.data, path);
+  presentSections({document,records,markers});
+  for (const {node,marker} of markers.allMarked(document,markers.isMedia)) {
+    const item = markers.recordOf(records, marker.address.owner),
+      path = markers.editorPath(marker.address),
+      usage = readPath(item?.data, path);
     if (!usage) continue;
     const asset =
         usage.assetId && records.find((r) => r.id === usage.assetId || r.id === "media/" + usage.assetId)?.data,
@@ -87,7 +80,7 @@ export function presentFrame({document,records,mediaBaselines,initialMediaSource
     if (img) {
       let baseline = mediaBaselines.get(img);
       if (!baseline) {
-        const saved = initialMediaSource(owner?.dataset.nativeRecord, path) || media.src;
+        const saved = initialMediaSource(item?.id, path) || media.src;
         baseline = {
           source: saved,
           src: img.getAttribute("src"),

@@ -9,18 +9,18 @@ export function prepareClonedSection(copy, { livePreview = false } = {}) {
   }
   const canvases = [...copy.querySelectorAll('canvas')];
   copy.classList.remove('native-copy-pending');
-  copy.querySelector('[data-native-runtime-note]')?.remove();
+  copy.querySelector('[data-editor-runtime-note]')?.remove();
   for (const canvas of canvases) {
     delete canvas.dataset.running;
-    delete canvas.dataset.nativeLive;
+    delete canvas.dataset.canvasLive;
     // Keep the server's hidden setting (e.g. showOrb=false) when live preview is available.
     if (!livePreview) canvas.hidden = true;
   }
   if (canvases.length && !livePreview) {
     copy.classList.add('native-copy-pending');
     const note = copy.ownerDocument.createElement('p');
-    note.dataset.nativeRuntimeNote = 'true';
-    note.dataset.nativeEditor = 'runtime-note';
+    note.dataset.editorRuntimeNote = 'true';
+    note.dataset.editor = 'runtime-note';
     note.className = 'native-runtime-note';
     note.textContent = 'Live-Vorschau nicht verfügbar. Animationen erscheinen nach dem Speichern und Neuladen.';
     copy.prepend(note);

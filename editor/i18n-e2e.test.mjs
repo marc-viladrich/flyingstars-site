@@ -46,13 +46,14 @@ test('Offline real Astro: EN/NL saved translations, review, public/editor eligib
  assert.match(html,/<html lang="en"/);assert.match(html,/Reviewed English homepage I3/);
  for(const locale of ['de','en','nl','x-default'])assert.match(html.split('</head>')[0],new RegExp(`rel="alternate" hreflang="${locale}"`));
  assert.match(html,/<link rel="canonical" href="https:\/\/fixture\.example\/en\/"/);
- assert.ok(html.includes(german));assert.ok(!html.includes(machine));assert.doesNotMatch(html,/\[EN\]|data-native-|\/editor\/frame/);
+ assert.ok(html.includes(german));assert.ok(!html.includes(machine));assert.doesNotMatch(html,/\[EN\]|data-afe|data-native-|\/editor\/frame/);
  assert.match(html,/lang="de"[^>]*>Über 150 Drohnenshows/);
  assert.match(html,/href="\/en\/projekte\/"/);assert.match(html,/href="\/nl\/"[^>]*lang="nl"/);
  const editorBuilder=new NativeBuilder(store,root,{editor:true,origin:'https://fixture.example',runtimeName:'editor'});
  const privateArtifact=await editorBuilder.build(state.head),privateHtml=await fs.readFile(path.join(privateArtifact.site,'en/index.html'),'utf8');
  await verifyPricingRuntime(await fs.readFile(path.join(privateArtifact.site,'en/drohnenshow-preise/index.html'),'utf8'));
- assert.ok(privateHtml.includes(machine));assert.match(privateHtml,/data-native-machine="true"/);assert.match(privateHtml,/data-native-record="page\/index"/);assert.doesNotMatch(privateHtml,/data-native-record="(?:en|nl)\//);
+ assert.ok(privateHtml.includes(machine));// Translated output stays bound to the German source record; the frame marks machine suggestions at runtime.
+ assert.match(privateHtml,/&quot;owner&quot;:\{&quot;collection&quot;:&quot;pages&quot;,&quot;id&quot;:&quot;index&quot;\}/);assert.doesNotMatch(privateHtml,/&quot;id&quot;:&quot;(?:en|nl)\//);assert.doesNotMatch(privateHtml,/data-native-/);
  for(const file of ['en/drohnenshow-preise/index.html','en/show-konfigurator/index.html','en/blog/index.html','nl/drohnenshow-preise/index.html','nl/show-konfigurator/index.html'])await fs.access(path.join(artifact.site,file));
  const configHtml=await fs.readFile(path.join(artifact.site,'en/show-konfigurator/index.html'),'utf8');assert.match(configHtml,/<meta name="robots" content="noindex"/);assert.match(configHtml,/data-runtime=/);
  const sitemap=await fs.readFile(path.join(artifact.site,'sitemap-0.xml'),'utf8');

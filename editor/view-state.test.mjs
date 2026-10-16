@@ -14,7 +14,7 @@ import {inspectionTarget} from './web/view-state.mjs';
 test('pointer, gear and keyboard inspection share section ownership for referenced collection records',()=>{const quote={id:'client/jade',path:['testimonial','quote']},section={id:'page/index',index:4};assert.deepEqual(inspectionTarget(quote,section),{id:'page/index',path:['sections',4],linkedId:'client/jade'});const own={id:'page/index',path:['sections',4,'headline'],derived:false};assert.deepEqual(inspectionTarget(own,section),own);assert.deepEqual(inspectionTarget({id:'package/spark',path:['price'],derived:true}),{id:'package/spark',path:['price'],derived:true});});
 import {restoredInspector} from './web/view-state.mjs';
 test('Undo keeps an inspector only when its original source is still valid; structural index selections close',()=>{const inspector={context:{id:'page/index',path:['sections',3,'showImages']},scope:'context'},records=[{id:'page/index'}];assert.equal(restoredInspector(inspector,records,{kind:'set',path:['sections',3,'showImages']}),inspector);assert.equal(restoredInspector(inspector,records,{kind:'set',path:['sections']}),null);assert.equal(restoredInspector(inspector,[],{kind:'create'}),null);assert.equal(restoredInspector({scope:'library'},records,{kind:'set',path:['title']}),null);});
-import {mediaRecordFor,linkedRecordFor,itemSummary,imageSummary,instanceMarkers,sameOccurrence,scopeUnits,partitionUnits,covers} from './web/view-state.mjs';
+import {mediaRecordFor,linkedRecordFor,itemSummary,imageSummary,scopeUnits,partitionUnits,covers} from './web/view-state.mjs';
 const mediaRecords=[{id:'media/image-a',title:'Berlin Game',data:{title:'Berlin Game 2025',src:'/m/02.jpg',defaultAlt:'Stadion bei Nacht'}},{id:'package/horizon',title:'HORIZON',data:{displayName:'HORIZON'}}];
 test('media usages resolve their library record by full id first, then by bare id',()=>{assert.equal(mediaRecordFor(mediaRecords,'media/image-a').id,'media/image-a');assert.equal(mediaRecordFor(mediaRecords,'image-a').id,'media/image-a');assert.equal(mediaRecordFor(mediaRecords,'image-x'),null);assert.equal(mediaRecordFor(mediaRecords,undefined),null);});
 const referenceDescriptor=(key,collection)=>({itemLabel:[key],element:{kind:'object',properties:{[key]:{kind:'text','x-afe':{reference:{collection,encoding:'id'}}}}}});
@@ -54,7 +54,8 @@ test('an instance shows what its card renders; the unrendered rest is exactly "W
  assert.deepEqual(own.more.map(u=>u.kind+':'+u.path.slice(4).join('.')),['array:featureIds','field:cta.label']);assert.equal(own.count,2);
 });
 test('a rendered selection stays visible and only the unchosen candidates move into Weitere Felder',()=>{
- const markers=[...cardMarkers,...instanceMarkers([{id:pkg,path:['featureGroups',0,'items',1,'text'],kind:'field',via:{id:page,path:[...tier,'featureIds',0]}}],page)];
+ // The chosen Leistung renders package text inside the card's own featureIds entry: the frame reports the entry.
+ const markers=[...cardMarkers,{id:page,path:[...tier,'featureIds',0],kind:'entry'}];
  const own=partitionUnits(scopeUnits(tierScope),markers,{id:page,path:tier});
  assert.ok(own.shown.some(u=>u.kind==='array'&&u.path.at(-1)==='featureIds'));
  assert.deepEqual(own.more.map(u=>u.kind),['candidates','field']);assert.equal(own.count,2);
@@ -72,10 +73,6 @@ test('duplicate occurrences: two cards of the same package never share their own
  const markers=[{id:page,path:[...other,'showOrb'],kind:'uses'},{id:page,path:[...other,'featureIds',0],kind:'entry'},{id:page,path:tier,kind:'entry'}];
  const own=partitionUnits(scopeUnits(tierScope),markers,{id:page,path:tier});
  assert.equal(own.shown.length,0,'neither the sibling card nor the own wrapper entry marks anything as rendered');
- assert.equal(sameOccurrence({section:{id:page,index:4},entry:{id:page,path:tier},record:pkg},{section:{id:page,index:4},entry:{id:page,path:other},record:pkg}),false);
- assert.equal(sameOccurrence({section:{id:page,index:2},entry:{id:page,path:['sections',2,'facts',1]}},{section:{id:page,index:2},entry:{id:page,path:['sections',2,'facts',1]}}),true);
- assert.equal(sameOccurrence({section:{id:page,index:7},record:'project/a'},{section:{id:page,index:7},record:'project/b'}),false);
- assert.deepEqual(instanceMarkers([{id:pkg,path:['dur'],kind:'uses'},{id:pkg,path:['dur'],kind:'uses'}],page).length,1);
 });
 test('absent optionals are units of their own: switches with a rendered default show, everything else counts once',()=>{
  const data={sections:{4:{tiers:{1:{packageId:'horizon',featureIds:[]}}}}};

@@ -5,14 +5,14 @@ test('a canvas copy is explicitly pending until real Astro initialization, never
 
 test('live preview copies keep canvases visible and have no pending note; explicit hidden settings survive', () => {
   const copy = node(['native-copy-pending']), visible = node(), hidden = node();
-  hidden.hidden = true; visible.dataset.nativeLive = 'true'; visible.dataset.running = 'true';
+  hidden.hidden = true; visible.dataset.canvasLive = 'true'; visible.dataset.running = 'true';
   copy.querySelectorAll = selector => selector === 'canvas' ? [visible, hidden] : [];
   const result = prepareClonedSection(copy, { livePreview: true });
   assert.equal(result.pendingCanvases, 0);
   assert.equal(copy.tokens.has('native-copy-pending'), false);
   assert.equal(visible.hidden, false);
   assert.equal(hidden.hidden, true);
-  assert.equal(visible.dataset.nativeLive, undefined);
+  assert.equal(visible.dataset.canvasLive, undefined);
   assert.equal(visible.dataset.running, undefined);
   assert.equal(copy.children.length, 0);
 });

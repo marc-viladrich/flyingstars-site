@@ -98,7 +98,7 @@ test('changing an array selector fails the transaction instead of persisting an 
   await assert.rejects(tx.stage({kind:'set',address:address('a'),path:['id'],value:'changed'}),/fehlt/);await assert.rejects(tx.commit(),/abgeschlossen/);assert.equal(await f.read(),before);
 });
 test('source boundary remains site-agnostic',async()=>{
-  const core=await fs.readdir(new URL('./',import.meta.url));for(const file of core.filter(file=>file.endsWith('.mjs')&&!file.endsWith('.test.mjs'))){const source=await fs.readFile(new URL(file,import.meta.url),'utf8');assert.doesNotMatch(source,/from\s*['"][^'"]*src\/|FlyingStars|flyingstars/);}
+  const core=await fs.readdir(new URL('./',import.meta.url));for(const file of core.filter(file=>file.endsWith('.mjs')&&!file.endsWith('.test.mjs'))){const source=await fs.readFile(new URL(file,import.meta.url),'utf8');assert.doesNotMatch(source,/from\s*['"](?![^'"]*vendor\/astro-frontend-editor\/)[^'"]*src\/|FlyingStars|flyingstars/);}
 
 });
 test('shared array reorder resolves the same stable IDs after moving source entries',async t=>{

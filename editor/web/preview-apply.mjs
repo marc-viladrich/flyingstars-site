@@ -3,9 +3,11 @@
 // scripts hold state (canvas animations, marquees, forms) are patched in place — classes, attributes
 // and leaf text — so running animations survive; any other region is replaced by the new render.
 import {extensions} from './site-adapter.mjs';
+import {markerOf,isBlock} from './frame-markers.mjs';
 
 export function regionKey(node, index) {
-  return node.dataset?.nativeSectionIndex !== undefined ? "s" + node.dataset.nativeSectionIndex : "i" + index;
+  const block = node.getAttribute ? markerOf(node, isBlock) : null;
+  return block ? "s" + block.address.path.at(-1) : "i" + index;
 }
 export function regions(root) {
   const main = root.querySelector("main");

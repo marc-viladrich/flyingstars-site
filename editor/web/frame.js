@@ -1,6 +1,6 @@
 import { prepareClonedSection } from "./prepare-cloned-section.mjs";
 import { LiveNodeHistory, remappedReference } from "./live-node-history.mjs";
-import { instanceMarkers, sameOccurrence } from "./view-state.mjs";
+import * as afe from "./frame-markers.mjs";
 import { marked } from "/editor/marked.mjs";
 import { ui } from "./ui-icons.mjs";
 import { fieldLabel, choiceLabel } from "./field-labels.mjs";
@@ -33,131 +33,78 @@ const send = (type, data = {}) =>
     location.origin,
   );
 const readPath = (data, path) => path.reduce((value, key) => value?.[key], data);
-function parse(value) {
-  try {
-    const result = JSON.parse(value);
-    return Array.isArray(result) ? result : null;
-  } catch {
-    return null;
-  }
-}
+// The field a marked element shows, with its record and descriptor. Panel fields (formatted or computed
+// output such as a price) open the raw field; inline fields are edited on the page.
 function context(node, derived = false) {
-  const owner = node.closest("[data-native-record]");
-  if (!owner) return null;
-  const path = parse(derived ? node.dataset.nativeDerived : node.dataset.nativePath);
-  if (!path) return null;
-  const section = node.closest("[data-native-section-index]");
-  const sectionOwned =
-    section &&
-    section.dataset.nativeRecord === owner.dataset.nativeRecord;
-  const fullPath =
-    sectionOwned && path[0] !== "sections" ? ["sections", Number(section.dataset.nativeSectionIndex), ...path] : path;
-  const item = records.find((item) => item.id === owner.dataset.nativeRecord);
-  const field = item?.fields.find((field) => equal(field.path, fullPath));
-  return item && field ? { id: item.id, path: fullPath, field, item, node, derived } : null;
+  const marker = afe.markerOf(node, derived ? afe.isPanelField : afe.isInlineField);
+  const found = marker && afe.binding(records, marker.address);
+  if (!found) return null;
+  const item = records.find((item) => item.id === found.id);
+  const field = item?.fields.find((field) => equal(field.path, found.path));
+  return item && field ? { id: item.id, path: found.path, field, item, node, derived, format: marker.kind === "body" ? "markdown" : field.format } : null;
 }
 function currentValue(c) {
   return readPath(c.item.data, c.path);
 }
 function sectionInfo(node) {
-  const section = node.closest("[data-native-section-index]");
-  return section ? { id: section.dataset.nativeRecord, index: Number(section.dataset.nativeSectionIndex) } : null;
+  const block = afe.blockInfo(records, node);
+  return block ? { id: block.id, index: block.index } : null;
 }
-// The card/list entry around an element, stamped by the Astro components as data-native-entry.
+// The card/list entry around an element: its membership in a list, and the record it shows if that is another one.
 function entryInfo(node) {
-  const wrapper = node.closest("[data-native-entry]");
-  const path = wrapper && parse(wrapper.dataset.nativeEntry);
-  if (!path) return null;
-  const id = wrapper.dataset.nativeEntryRecord || sectionInfo(wrapper)?.id || wrapper.closest("[data-native-record]")?.dataset.nativeRecord;
-  const record = wrapper.dataset.nativeRecord && wrapper.dataset.nativeRecord !== id ? wrapper.dataset.nativeRecord : null;
-  return id ? { id, path, record } : null;
+  const entry = afe.membershipInfo(records, node);
+  return entry ? { id: entry.id, path: entry.path, record: entry.record } : null;
 }
 // Everything the shell needs to open the right object: the field, its record, its card and its section.
 function target(c) {
   return { id: c.id, path: c.path, derived: c.derived, section: sectionInfo(c.node), entry: entryInfo(c.node) };
 }
 // ---------------------------------------------------------------------------
-// Occurrences: every card/list wrapper is stamped data-native-item. The outermost one around a node is the
-// instance the person means ("this card"); nested wrappers (a selected Leistung, a fact) are parts of it.
+// Occurrences: the outermost item marker around a node is the card the person means ("this card"); nested
+// items (a selected Leistung, a fact) are parts of it. The identity is the product's (occurrence, shown record,
+// membership) and goes to the shell unchanged.
 // ---------------------------------------------------------------------------
-function itemIdentity(wrapper) {
-  const path = wrapper.dataset.nativeEntry ? parse(wrapper.dataset.nativeEntry) : null;
-  const owner = path && (wrapper.dataset.nativeEntryRecord || sectionInfo(wrapper)?.id || wrapper.closest("[data-native-record]")?.dataset.nativeRecord);
-  const record = wrapper.dataset.nativeRecord || null;
-  return { section: sectionInfo(wrapper), entry: path && owner ? { id: owner, path } : null, record: path ? (record && record !== owner ? record : null) : record };
-}
-function occurrenceOf(node) {
-  let outer = null;
-  for (let n = node?.closest?.("[data-native-item]"); n; n = n.parentElement?.closest("[data-native-item]")) outer = n;
-  if (!outer) return null;
-  const identity = itemIdentity(outer);
-  const id = identity.entry?.id || identity.record;
-  const item = records.find((r) => r.id === id);
-  if (!item || (identity.entry && readPath(item.data, identity.entry.path) === undefined)) return null;
-  return { node: outer, identity, id, path: identity.entry?.path || [], record: identity.entry ? identity.record : null };
-}
-// Everything one occurrence renders: field, derived, media and render-dependency markers of all its wrappers
-// (an entry may be drawn twice), as {id, path, kind}; parts of nested entries stand for those entries.
-function occurrenceMarkers(identity) {
-  const owner = identity.entry?.id || identity.record,
-    raw = [];
-  const wrappers = [...document.querySelectorAll("[data-native-item]")].filter((n) => !n.parentElement?.closest("[data-native-item]") && sameOccurrence(itemIdentity(n), identity));
-  for (const wrapper of wrappers)
-    for (const node of [wrapper, ...wrapper.querySelectorAll("[data-native-path],[data-native-derived],[data-native-media-path],[data-native-uses],[data-native-item]")]) {
-      const nested = node === wrapper ? null : node.closest("[data-native-item]");
-      const via = nested && nested !== wrapper ? itemIdentity(nested).entry : null;
-      for (const derived of [false, true]) {
-        if (!node.hasAttribute(derived ? "data-native-derived" : "data-native-path")) continue;
-        const c = context(node, derived);
-        if (c) raw.push({ id: c.id, path: c.path, kind: derived ? "derived" : "field", via });
-      }
-      const mediaPath = node.dataset.nativeMediaPath && parse(node.dataset.nativeMediaPath),
-        mediaOwner = mediaPath && node.closest("[data-native-record]");
-      if (mediaOwner) raw.push({ id: mediaOwner.dataset.nativeRecord, path: mediaPath, kind: "media", via });
-      if (node.dataset.nativeUses)
-        try {
-          for (const [id, path] of JSON.parse(node.dataset.nativeUses)) raw.push({ id, path, kind: "uses", via });
-        } catch {}
-      if (nested === node) {
-        const entry = itemIdentity(node).entry;
-        if (entry) raw.push({ id: entry.id, path: entry.path, kind: "entry", via: null });
-      }
-    }
-  return instanceMarkers(raw, owner);
-}
+const occurrenceOf = (node) => afe.occurrenceInfo(records, node);
+// Everything one occurrence renders, read from all its wrappers (a card may be drawn twice), as {id, path, kind}.
+const occurrenceMarkers = (identity) => afe.occurrenceBindings(records, document, identity);
+const renderedId = (node) => {
+  const item = afe.markerOf(node, afe.isItem);
+  return item ? afe.recordIdOf(records, item.rendered) : null;
+};
 // One inspection for every way in (right-click, toolbar gear, ⇧F10, a click on a price): inside a card the
 // card opens, with the clicked element first; elsewhere the element, list entry, record or section.
 function inspection(node) {
   if (!node?.closest) return null;
-  const media = node.closest("[data-native-media-path]");
-  const mediaOwner = media?.closest("[data-native-record]"),
-    mediaPath = media && parse(media.dataset.nativeMediaPath);
-  const field = !mediaOwner && node.closest("[data-native-path],[data-native-derived]");
-  const c = field && context(field, field.hasAttribute("data-native-derived"));
+  const media = afe.closestMarker(node, afe.isMedia);
+  const mediaAt = media && afe.binding(records, media.marker.address);
+  const field = !mediaAt && afe.closestMarker(node, afe.isField);
+  const c = field && context(field.node, !afe.hasMarker(field.node, afe.isInlineField));
   const occurrence = occurrenceOf(node);
   if (occurrence) {
-    let focus = mediaOwner && mediaPath ? { id: mediaOwner.dataset.nativeRecord, path: mediaPath, kind: "media" } : c ? { id: c.id, path: c.path, kind: c.derived ? "derived" : "field" } : null;
+    let focus = mediaAt ? { ...mediaAt, kind: "media" } : c ? { id: c.id, path: c.path, kind: c.derived ? "derived" : "field" } : null;
     // Inside a nested part of the card (a selected Leistung, a table cell, a fact) the part is what was meant,
     // also when the click hit its padding rather than its text.
-    const nested = ((focus && (media || field)) || node).closest("[data-native-item]");
-    const part = nested && nested !== occurrence.node && itemIdentity(nested).entry;
+    const nested = afe.closestMarker((focus && (media?.node || field?.node)) || node, afe.isItem);
+    const part = nested && nested.node !== occurrence.node && nested.marker.membership && afe.binding(records, nested.marker.membership);
     if (part && part.id === occurrence.id) focus = { id: part.id, path: part.path, kind: "entry" };
     // A field of some other record embedded in the card keeps its own element panel.
     if (!focus || focus.id === occurrence.id || focus.id === occurrence.record)
       return {
         type: "inspect-instance",
-        data: { id: occurrence.id, path: occurrence.path, record: occurrence.record, section: occurrence.identity.section, occurrence: occurrence.identity, focus, rect: rect(occurrence.node) },
+        data: { id: occurrence.id, path: occurrence.path, record: occurrence.record, section: sectionInfo(occurrence.node), occurrence: occurrence.identity, focus, rect: rect(occurrence.node) },
       };
   }
-  if (mediaOwner && mediaPath) return { type: "media", data: { id: mediaOwner.dataset.nativeRecord, path: mediaPath, section: sectionInfo(media), entry: entryInfo(media) } };
+  if (mediaAt) return { type: "media", data: { ...mediaAt, section: sectionInfo(media.node), entry: entryInfo(media.node) } };
   if (c) return { type: "inspect", data: { ...target(c), rect: rect(c.node) } };
   const entry = entryInfo(node);
   if (entry) return { type: "inspect-entry", data: { ...entry, section: sectionInfo(node) } };
-  const owner = node.closest("[data-native-record]");
-  const ownerSection = node.closest("[data-native-section-index]");
-  if (owner && owner !== ownerSection && !extensions.some('isPage',{id:owner.dataset.nativeRecord}))
-    return { type: "inspect-record", data: { id: owner.dataset.nativeRecord, section: sectionInfo(owner) } };
-  if (ownerSection) return { type: "section", data: { id: ownerSection.dataset.nativeRecord, index: Number(ownerSection.dataset.nativeSectionIndex) } };
+  // A record shown here without being a list entry (a record wrapper, a queried card whose record has no panel of its own).
+  const shown = afe.closestMarker(node, (marker) => marker.kind === "record" || afe.isItem(marker));
+  const shownId = shown && afe.recordIdOf(records, shown.marker.kind === "record" ? shown.marker.address.owner : shown.marker.rendered);
+  if (shownId && !extensions.some('isPage',{id:shownId}))
+    return { type: "inspect-record", data: { id: shownId, section: sectionInfo(shown.node) } };
+  const block = afe.blockInfo(records, node);
+  if (block) return { type: "section", data: { id: block.id, index: block.index } };
   return null;
 }
 function inspect(node, point) {
@@ -186,16 +133,19 @@ function selection(c) {
     id: c.id,
     path: c.path,
     derived: c.derived,
-    rich: c.node.dataset.nativeMarkdown === "true" && c.node.hasAttribute("data-native-editable"),
+    rich: c.format === "markdown" && c.node.hasAttribute("data-editor-editable"),
     rect: rect(c.node),
     ...(opens?.type === "inspect-instance" ? { instance: opens.data } : {}),
   });
 }
-// Short texts with light formatting (data-native-inline): shown as HTML, stored as inline marks.
-const isInline = (node) => node.dataset.nativeInline === "true";
+// The schema format of the field a node shows: short texts with light formatting ("inline") are shown as HTML and
+// stored as inline marks; Markdown fields and bodies ("markdown") as rendered Markdown.
+const formatOf = (node) => (bindings.get(node) || context(node))?.format;
+const isInline = (node) => formatOf(node) === "inline";
+const isMarkdown = (node) => formatOf(node) === "markdown";
 const inlineTree = (node) => ({ tag: "div", children: domTree(node).children });
 function showText(node, value) {
-  if (node.dataset.nativeMarkdown === "true" && node.dataset.nativeRich === "true") node.innerHTML = safeMarkdown(value ?? "");
+  if (isMarkdown(node) && node.hasAttribute("data-editor-rich")) node.innerHTML = safeMarkdown(value ?? "");
   else if (isInline(node)) node.innerHTML = inlineHtml(value ?? "");
   else node.textContent = value ?? "";
 }
@@ -205,7 +155,7 @@ function read(c) {
       initial = richBaselines.get(c.node);
     return result === initial?.markdown ? initial.source : result;
   }
-  if (c.node.dataset.nativeMarkdown === "true") {
+  if (isMarkdown(c.node)) {
     const result = markdownText(domTree(c.node)),
       initial = richBaselines.get(c.node);
     return result === initial?.markdown ? initial.source : result;
@@ -246,26 +196,19 @@ extensions.connect({frame: {
     mode();
   },
   orderedRecords(id, index) {
-    const section = [...document.querySelectorAll("[data-native-section-index]")].find(
-      (n) => n.dataset.nativeRecord === id && Number(n.dataset.nativeSectionIndex) === index,
-    );
-    const container = section?.querySelector("[data-native-order-field]");
-    if (!container) return null;
-    return { field: container.dataset.nativeOrderField, ids: [...container.children].map((n) => n.dataset.nativeRecord).filter(Boolean) };
+    const ordered = orderedList(blockNode(id, index));
+    return ordered ? { field: ordered.field, ids: ordered.items.map(renderedId) } : null;
   },
   // The same order applied to the live page at once (also without live preview).
   orderRecords(id, index, ids) {
-    const section = [...document.querySelectorAll("[data-native-section-index]")].find(
-      (n) => n.dataset.nativeRecord === id && Number(n.dataset.nativeSectionIndex) === index,
-    );
-    const container = section?.querySelector("[data-native-order-field]");
-    if (!container) return;
-    const items = [...container.children].filter((n) => n.dataset.nativeRecord);
-    flip(items, () => ids.forEach((recordId) => { const node = items.find((n) => n.dataset.nativeRecord === recordId); if (node) container.append(node); }));
+    const ordered = orderedList(blockNode(id, index));
+    if (!ordered) return;
+    const items = ordered.items;
+    flip(items, () => ids.forEach((recordId) => { const node = items.find((n) => renderedId(n) === recordId); if (node) ordered.node.append(node); }));
   },
   // Text fields that are visible on this page (for "confirm all suggestions on this page").
   renderedFields() {
-    return [...document.querySelectorAll("[data-native-editable]")].map((n) => bindings.get(n)).filter(Boolean).map((c) => ({ id: c.id, path: c.path }));
+    return [...document.querySelectorAll("[data-editor-editable]")].map((n) => bindings.get(n)).filter(Boolean).map((c) => ({ id: c.id, path: c.path }));
   },
   // What one occurrence (card) renders, read fresh from the live page each time the panel draws.
   occurrenceMarkers(identity) {
@@ -273,7 +216,7 @@ extensions.connect({frame: {
   },
   // Records whose content is visible on this page (for "translate what is on this page").
   recordsOnPage() {
-    return [...new Set([...document.querySelectorAll("[data-native-record]")].map((node) => node.dataset.nativeRecord))];
+    return afe.recordsOnPage(records, document);
   },
   refocus() {
     if (selected?.node?.isConnected) selected.node.focus({ preventScroll: true });
@@ -282,14 +225,14 @@ extensions.connect({frame: {
     const middle = innerHeight / 2;
     let best = null,
       distance = Infinity;
-    for (const node of document.querySelectorAll("[data-native-section-index]")) {
+    for (const { node } of afe.allMarked(document, afe.isBlock)) {
       const r = node.getBoundingClientRect();
       if (r.height < 1) continue;
       const d =
         r.top <= middle && r.bottom >= middle ? 0 : Math.min(Math.abs(r.top - middle), Math.abs(r.bottom - middle));
       if (d < distance) {
         distance = d;
-        best = { id: node.dataset.nativeRecord, index: Number(node.dataset.nativeSectionIndex) };
+        best = sectionInfo(node);
       }
     }
     return best;
@@ -300,8 +243,8 @@ uiTokens.rel = "stylesheet";
 uiTokens.href = "/editor/ui-tokens.css";
 document.head.append(uiTokens);
 const style = document.createElement("style");
-style.dataset.nativeEditor = "true";
-style.textContent = `html:not(.native-editor-preview) [data-native-editable]{outline:2px solid transparent;outline-offset:4px;cursor:text;pointer-events:auto!important}html:not(.native-editor-preview) [data-native-editable]:hover{outline:1px solid var(--ui-frame-hover)}html:not(.native-editor-preview) [data-native-editable]:focus{outline:2px solid var(--ui-frame-accent);caret-color:var(--ui-frame-accent)}html.native-editor-outlines:not(.native-editor-preview) [data-native-editable],html.native-editor-outlines:not(.native-editor-preview) [data-native-derived]{outline:1px dashed var(--ui-frame-accent);outline-offset:4px}html:not(.native-editor-preview) [data-native-derived]:hover{outline:1px solid var(--ui-frame-hover);outline-offset:4px;cursor:pointer}html:not(.native-editor-preview) [data-native-derived]:focus-visible{outline:2px solid var(--ui-frame-accent);outline-offset:4px}html.native-editor-busy [data-native-editable]{cursor:wait}`;
+style.dataset.editor = "true";
+style.textContent = `html:not(.native-editor-preview) [data-editor-editable]{outline:2px solid transparent;outline-offset:4px;cursor:text;pointer-events:auto!important}html:not(.native-editor-preview) [data-editor-editable]:hover{outline:1px solid var(--ui-frame-hover)}html:not(.native-editor-preview) [data-editor-editable]:focus{outline:2px solid var(--ui-frame-accent);caret-color:var(--ui-frame-accent)}html.native-editor-outlines:not(.native-editor-preview) [data-editor-editable],html.native-editor-outlines:not(.native-editor-preview) [data-editor-panel]{outline:1px dashed var(--ui-frame-accent);outline-offset:4px}html:not(.native-editor-preview) [data-editor-panel]:hover{outline:1px solid var(--ui-frame-hover);outline-offset:4px;cursor:pointer}html:not(.native-editor-preview) [data-editor-panel]:focus-visible{outline:2px solid var(--ui-frame-accent);outline-offset:4px}html.native-editor-busy [data-editor-editable]{cursor:wait}`;
 document.head.append(style);
 style.textContent += extensions.collect('frameStyles').join('');
 function mode() {
@@ -309,10 +252,10 @@ function mode() {
   document.documentElement.classList.toggle("native-editor-preview", preview);
   document.documentElement.classList.toggle("native-editor-outlines", outlines);
   document.documentElement.classList.toggle("native-editor-busy", busy);
-  for (const node of document.querySelectorAll("[data-native-editable]")) {
+  for (const node of document.querySelectorAll("[data-editor-editable]")) {
     const c = bindings.get(node);
     const locked = preview || busy || (languageLocale !== sourceLocale && c?.field.kind !== "text");
-    node.contentEditable = locked ? "false" : node.dataset.nativeMarkdown === "true" || isInline(node) ? "true" : "plaintext-only";
+    node.contentEditable = locked ? "false" : isMarkdown(node) || isInline(node) ? "true" : "plaintext-only";
     if (preview) {
       node.removeAttribute("role");
       node.removeAttribute("tabindex");
@@ -321,7 +264,7 @@ function mode() {
       node.tabIndex = 0;
     }
   }
-  for (const node of document.querySelectorAll("[data-native-derived]")) {
+  for (const node of document.querySelectorAll("[data-editor-panel]")) {
     if (preview) {
       node.removeAttribute("role");
       node.removeAttribute("tabindex");
@@ -337,28 +280,32 @@ function mode() {
   }
 }
 function bind() {
-  for (const node of document.querySelectorAll("[data-native-path]")) {
+  stampBlockTypes(document);
+  // Panel fields (computed displays) get a focusable target; the attribute is the frame's own state.
+  for (const node of new Set(afe.allMarked(document, afe.isPanelField).map(({ node }) => node)))
+    if (!afe.hasMarker(node, afe.isInlineField)) node.setAttribute("data-editor-panel", "");
+  for (const node of new Set(afe.allMarked(document, afe.isInlineField).map(({ node }) => node))) {
     const c = context(node);
     if (!c) continue;
     bindings.set(node, c);
-    const rich = node.dataset.nativeMarkdown === "true" && markdownSupported(domTree(node));
-    const formatted = isInline(node) && inlineTree(node).children.every(inlineSupported);
-    if (rich) node.dataset.nativeRich = "true";
+    const rich = c.format === "markdown" && markdownSupported(domTree(node));
+    const formatted = c.format === "inline" && inlineTree(node).children.every(inlineSupported);
+    if (rich) node.setAttribute("data-editor-rich", "");
     // A template such as "Schritt {current} von {total}" is shown filled in; it is edited in the panel, not in place.
     // Format marks such as {o}…{/o} in formatted short texts are not placeholders.
-    const templated = !isInline(node) && typeof currentValue(c) === "string" && /\{\w+\}/.test(currentValue(c));
+    const templated = c.format !== "inline" && typeof currentValue(c) === "string" && /\{\w+\}/.test(currentValue(c));
     const inline =
       !templated &&
       ["text", "number"].includes(c.field.kind) &&
       !["IMG", "VIDEO", "CANVAS", "INPUT", "TEXTAREA", "SELECT"].includes(node.tagName) &&
       (node.children.length === 0 || rich || formatted);
     if (!inline) continue;
-    node.dataset.nativeEditable = "true";
+    node.setAttribute("data-editor-editable", "");
     node.setAttribute("aria-label", (c.field.label || c.path.at(-1)) + " · " + c.item.title);
     node.spellcheck = c.field.kind === "text";
     if (document.activeElement !== node) showText(node, displayValue(c));
-    if (node.dataset.nativeBound) continue;
-    node.dataset.nativeBound = "true";
+    if (node.hasAttribute("data-editor-bound")) continue;
+    node.setAttribute("data-editor-bound", "");
     node.addEventListener("focus", () => {
       const latest = context(node);
       bindings.set(node, latest);
@@ -367,7 +314,7 @@ function bind() {
       else if (isInline(node)) richBaselines.set(node, { markdown: inlineText(inlineTree(node)), source: displayValue(latest) });
       selection(latest);
     });
-    if (rich || isInline(node))
+    if (rich || c.format === "inline")
       node.addEventListener("paste", (event) => {
         event.preventDefault();
         if (preview || busy) return;
@@ -395,10 +342,10 @@ function bind() {
     });
   }
   mode();
-  const inlineNodes = [...document.querySelectorAll("[data-native-editable]")];
+  const inlineNodes = [...document.querySelectorAll("[data-editor-editable]")];
   send("coverage", {
     inline: inlineNodes.length,
-    derived: document.querySelectorAll("[data-native-derived]").length,
+    derived: document.querySelectorAll("[data-editor-panel]").length,
     keys: inlineNodes
       .map((node) => bindings.get(node))
       .filter(Boolean)
@@ -415,9 +362,9 @@ const controlOf = (target) => target.closest("a[href],button,summary,[role='butt
 const editableControl = (control) =>
   !toolbar.contains(control) &&
   !!(
-    control.matches("[data-native-path],[data-native-derived],[data-native-entry]") ||
-    control.querySelector("[data-native-path],[data-native-derived]") ||
-    control.closest("[data-native-path]")
+    afe.hasMarker(control, (marker) => afe.isField(marker) || afe.isMembership(marker)) ||
+    afe.allMarked(control, afe.isField).some(({ node }) => node !== control) ||
+    !!afe.closestMarker(control, afe.isInlineField)
   );
 document.addEventListener(
   "click",
@@ -435,20 +382,19 @@ document.addEventListener(
         send("hint", { text: "Erster Klick bearbeitet, ein zweiter Klick löst Button oder Link aus. ⌘-Klick löst sofort aus." });
       }
     }
-    const media = event.target.closest("[data-native-media-path]");
+    const media = afe.closestMarker(event.target, afe.isMedia);
     if (media && event.target.closest("img")) {
-      const owner = media.closest("[data-native-record]"),
-        path = parse(media.dataset.nativeMediaPath);
-      if (owner && path) {
+      const at = afe.binding(records, media.marker.address);
+      if (at) {
         event.preventDefault();
         selected = null;
         selectedMedia = event.target.closest("img");
-        showToolbar(selectedMedia, "media", { id: owner.dataset.nativeRecord, path, section: sectionInfo(media), entry: entryInfo(media) });
-        send("select-media", { id: owner.dataset.nativeRecord, path, section: sectionInfo(media) });
+        showToolbar(selectedMedia, "media", { ...at, section: sectionInfo(media.node), entry: entryInfo(media.node) });
+        send("select-media", { ...at, section: sectionInfo(media.node) });
         return;
       }
     }
-    const derived = event.target.closest("[data-native-derived]");
+    const derived = afe.closestMarker(event.target, afe.isPanelField)?.node;
     if (derived) {
       const c = context(derived, true);
       if (c) {
@@ -458,8 +404,8 @@ document.addEventListener(
       }
       return;
     }
-    const node = event.target.closest("[data-native-path]");
-    const entryNode = !node && event.target.closest("[data-native-entry]");
+    const node = afe.closestMarker(event.target, afe.isInlineField)?.node;
+    const entryNode = !node && afe.closestMarker(event.target, afe.isMembership)?.node;
     if (entryNode && !event.target.closest("button,input,select,textarea,summary,canvas,video")) {
       const info = entryInfo(entryNode);
       if (info) {
@@ -472,7 +418,7 @@ document.addEventListener(
     if (node) {
       const c = context(node);
       if (c) {
-        if (node.hasAttribute("data-native-editable")) {
+        if (node.hasAttribute("data-editor-editable")) {
           if (event.target.closest("a")) event.preventDefault();
           selection(c);
         } else {
@@ -531,7 +477,7 @@ document.addEventListener("keydown", (event) => {
     event.preventDefault();
     send("save");
   }
-  if (!preview && !busy && ["Enter", " "].includes(event.key) && event.target.matches("[data-native-derived]")) {
+  if (!preview && !busy && ["Enter", " "].includes(event.key) && event.target.hasAttribute?.("data-editor-panel")) {
     const c = context(event.target, true);
     if (c) {
       event.preventDefault();
@@ -587,7 +533,7 @@ window.addEventListener("message", (event) => {
   }
   else if (data.type === "preview-html") applyPreview(data);
   else if (data.type === "focus-field") {
-    const node = [...document.querySelectorAll("[data-native-editable]")].find((n) => {
+    const node = [...document.querySelectorAll("[data-editor-editable]")].find((n) => {
       const c = bindings.get(n);
       return c && c.id === data.id && equal(c.path, data.path);
     });
@@ -600,7 +546,8 @@ window.addEventListener("message", (event) => {
 new MutationObserver(() => mode()).observe(document.body, {
   attributes: true,
   subtree: true,
-  attributeFilter: ["data-native-record"],
+  // A site script may re-point a marker (the configurator's price shows the selected package).
+  attributeFilter: ["data-afe"],
 });
 send("ready", { url: location.pathname + location.search + location.hash });
 // Restored from the back/forward cache: the page may still be frozen from when it was left.
@@ -615,7 +562,7 @@ function transient() {
   return {
     extensions: extensions.snapshotFrame({window,document}),
     inputs: [...document.querySelectorAll("input[id],textarea[id],select[id],input[name]")]
-      .filter((node) => node.type !== "password" && node.type !== "file" && !node.closest("[data-native-editor]"))
+      .filter((node) => node.type !== "password" && node.type !== "file" && !node.closest("[data-editor]"))
       .map((node) => ({ id: node.id, name: node.name, type: node.type, value: node.value, checked: node.checked })),
     scroll: window.scrollY,
   };
@@ -638,24 +585,35 @@ async function restoreTransient(value) {
   }
   if (Number.isFinite(value?.scroll)) window.scrollTo({ top: value.scroll, behavior: "instant" });
 }
-function remapSection(node, index, id) {
-  node.dataset.nativeSectionIndex = String(index);
-  node.dataset.nativeRecord = id;
-  for (const target of node.querySelectorAll("[data-native-path],[data-native-media-path],[data-native-entry]"))
-    for (const key of ["nativePath", "nativeMediaPath", "nativeEntry"])
-      if (target.dataset[key]) {
-        const path = parse(target.dataset[key]);
-        if (path?.[0] === "sections") {
-          path[1] = index;
-          target.dataset[key] = JSON.stringify(path);
-        }
-      }
+// A section moved to index: its block address and every address below it follow (fields, media, cards, uses).
+function remapSection(node, index) {
+  const block = afe.markerOf(node, afe.isBlock);
+  if (block) afe.renumber(node, block.address.owner, block.address.path.slice(0, -1), index);
+}
+// The block elements of record id in page order, and the anchor of its (possibly empty) block list.
+const blockNodes = (id) => [...new Set(afe.allMarked(document, afe.isBlock).filter(({ marker }) => afe.recordIdOf(records, marker.address.owner) === id).map(({ node }) => node))];
+const blockNode = (id, index) => blockNodes(id).find((node) => sectionInfo(node)?.index === index) || null;
+const blockListAnchor = (id) => afe.allMarked(document, afe.isBlockList).find(({ marker }) => afe.recordIdOf(records, marker.address.owner) === id) || null;
+// Every block element carries its type as frame state (data-editor-block-type): the clone source of an insert
+// and the site's runtime classification read it. The discriminator comes from the block list's schema.
+function stampBlockTypes(root) {
+  for (const { node, marker } of afe.allMarked(root, afe.isBlock)) {
+    const item = afe.recordOf(records, marker.address.owner),
+      list = marker.address.path.slice(0, -1);
+    const discriminator = item?.containers?.find((container) => equal(container.path, list))?.["x-afe"]?.array?.discriminator || "type";
+    const type = readPath(item?.data, marker.address.path)?.[discriminator];
+    if (typeof type === "string") node.dataset.editorBlockType = type;
+  }
+}
+// A query-backed list inside node, sorted by a numeric field of its collection: its container and the cards in it.
+function orderedList(node) {
+  const found = node && afe.allMarked(node, afe.isOrder)[0];
+  if (!found) return null;
+  return { node: found.node, path: found.marker.path, field: found.marker.path.join("."), items: [...found.node.children].filter((n) => renderedId(n)) };
 }
 function structure(data) {
-  const nodes = [...document.querySelectorAll("[data-native-section-index]")].filter(
-      (node) => node.dataset.nativeRecord === data.id,
-    ),
-    target = nodes.find((node) => Number(node.dataset.nativeSectionIndex) === data.index);
+  const nodes = blockNodes(data.id),
+    target = nodes.find((node) => sectionInfo(node)?.index === data.index);
   liveNodeHistory.capture(data.id, nodes);
   if (data.action === "remove") target?.remove();
   else if (data.action === "duplicate" && target) {
@@ -663,7 +621,7 @@ function structure(data) {
     uniqueCloneIds(copy);
     prepareClonedSection(copy, { livePreview: hasBaseline });
     inheritMediaBaselines(target, copy);
-    for (const bound of copy.querySelectorAll("[data-native-bound]")) delete bound.dataset.nativeBound;
+    for (const bound of copy.querySelectorAll("[data-editor-bound]")) bound.removeAttribute("data-editor-bound");
     target.after(copy);
   } else if (data.action === "up" && target) {
     const previous = nodes[nodes.indexOf(target) - 1];
@@ -673,35 +631,27 @@ function structure(data) {
     next?.after(target);
   } else if (data.action === "insert") {
     const section = data.sections[data.index],
-      source = nodes.find((node) => node.dataset.nativeSectionType === section.type);
+      anchor = blockListAnchor(data.id),
+      source = nodes.find((node) => node.dataset.editorBlockType === section.type);
     let copy = source?.cloneNode(true);
     if (copy) {
       uniqueCloneIds(copy);
       prepareClonedSection(copy, { livePreview: hasBaseline });
       inheritMediaBaselines(source, copy);
-      for (const bound of copy.querySelectorAll("[data-native-bound]")) delete bound.dataset.nativeBound;
+      for (const bound of copy.querySelectorAll("[data-editor-bound]")) bound.removeAttribute("data-editor-bound");
     } else {
       copy = document.createElement("section");
       copy.className = "native-pending-section";
       copy.innerHTML = "<h2></h2><p>Neuer Abschnitt. Er erscheint nach dem Speichern mit seinem Inhalt.</p>";
       copy.querySelector("h2").textContent = data.template?.title || section.headline || section.type;
-      copy.dataset.nativeSectionType = section.type;
+      copy.dataset.editorBlockType = section.type;
+      if (anchor) copy.setAttribute("data-afe", afe.blockAttribute(anchor.marker.address.owner, [...anchor.marker.address.path, data.index]));
     }
-    copy.dataset.nativeRecord = data.id;
-    copy.dataset.nativeSectionIndex = String(data.index);
     if (target) target.before(copy);
     else if (nodes.length) nodes.at(-1).after(copy);
-    else {
-      const anchor = [...document.querySelectorAll("[data-native-section-list]")].find(
-        (node) => node.dataset.nativeSectionList === data.id,
-      );
-      anchor?.after(copy);
-    }
+    else anchor?.node.after(copy);
   }
-  for (const [index, node] of [...document.querySelectorAll("[data-native-section-index]")]
-    .filter((node) => node.dataset.nativeRecord === data.id)
-    .entries())
-    remapSection(node, index, data.id);
+  for (const [index, node] of blockNodes(data.id).entries()) remapSection(node, index);
   selected = null;
   bind();
   revealSection(data);
@@ -715,9 +665,7 @@ function revealSection(data) {
       : data.action === "down" || data.action === "duplicate"
         ? data.index + 1
         : data.index;
-  const node = [...document.querySelectorAll("[data-native-section-index]")].find(
-    (n) => n.dataset.nativeRecord === data.id && Number(n.dataset.nativeSectionIndex) === resulting,
-  );
+  const node = blockNode(data.id, resulting);
   if (!node) return;
   const r = node.getBoundingClientRect();
   if (r.top < 0 || r.top > innerHeight * 0.6)
@@ -734,23 +682,23 @@ function translationOverlay(data) {
   languageLocale = data.locale || sourceLocale;
   languageValues = data.values || [];
   document.documentElement.dataset.editorLocale = languageLocale;
-  for (const node of document.querySelectorAll("[data-native-path]")) {
+  for (const node of new Set(afe.allMarked(document, afe.isInlineField).map(({ node }) => node))) {
     const c = context(node);
     if (!c || c.field.kind !== "text") continue;
     const translated = translations.find(data.values,c.id,c.path);
     if (node.matches("input,textarea") && node.hasAttribute("placeholder")) node.placeholder = translated?.text ?? currentValue(c) ?? "";
     else if (node.matches("option")) node.textContent = translated?.text ?? currentValue(c) ?? "";
-    if (node.hasAttribute("data-native-editable") && document.activeElement !== node) {
+    if (node.hasAttribute("data-editor-editable") && document.activeElement !== node) {
       const value = translated?.text ?? currentValue(c) ?? "";
-      if (node.dataset.nativeMarkdown === "true") node.innerHTML = safeMarkdown(value);
-      else if (isInline(node)) node.innerHTML = inlineHtml(value);
+      if (c.format === "markdown") node.innerHTML = safeMarkdown(value);
+      else if (c.format === "inline") node.innerHTML = inlineHtml(value);
       else node.textContent = value;
     }
     // Addresses, numbers and links are data, not text to translate.
     const german = currentValue(c);
     const dataLike = typeof german !== "string" || !/\p{L}{2}/u.test(german) || /^(https?:|mailto:|tel:|\/|#)|^[\w.+-]+@[\w-]+\.[\w.]+$/.test(german.trim());
-    node.toggleAttribute("data-native-untranslated", languageLocale !== sourceLocale && !translated && !dataLike);
-    node.toggleAttribute("data-native-machine", languageLocale !== sourceLocale && translations.suggested(translated));
+    node.toggleAttribute("data-editor-untranslated", languageLocale !== sourceLocale && !translated && !dataLike);
+    node.toggleAttribute("data-editor-machine", languageLocale !== sourceLocale && translations.suggested(translated));
   }
   document.documentElement.classList.toggle("native-language-draft", languageLocale !== sourceLocale);
   mode();
@@ -761,19 +709,15 @@ style.textContent +=
 function restoreStructure(items, id) {
   const previous = liveNodeHistory.restore(id);
   if (!previous) return;
-  const anchor = [...document.querySelectorAll("[data-native-section-list]")].find(
-    (node) => node.dataset.nativeSectionList === id,
-  );
+  const anchor = blockListAnchor(id)?.node;
   if (!anchor) return;
   const keep = new Set(previous),
-    current = [...document.querySelectorAll("[data-native-section-index]")].filter(
-      (node) => node.dataset.nativeRecord === id,
-    );
+    current = blockNodes(id);
   for (const node of current) if (!keep.has(node)) node.remove();
   let at = anchor;
   for (const [index, node] of previous.entries()) {
     at.after(node);
-    remapSection(node, index, id);
+    remapSection(node, index);
     at = node;
   }
   selected = null;
@@ -785,7 +729,7 @@ function restoreStructure(items, id) {
 // Translation is offered in the context panel ("Übersetzen"), not as a floating button per text.
 
 function applyPresentation() {
-  extensions.run('presentFrame',{document,records,mediaBaselines,initialMediaSource});
+  extensions.run('presentFrame',{document,records,mediaBaselines,initialMediaSource,markers:afe});
 }
 
 // One small toolbar for the selected element: formatting (only for a text selection), translate, options.
@@ -794,7 +738,7 @@ let toolOwner = null,
   toolTarget = null,
   richRange = null;
 const toolbar = document.createElement("div");
-toolbar.dataset.nativeEditor = "toolbar";
+toolbar.dataset.editor = "toolbar";
 toolbar.className = "native-toolbar";
 toolbar.setAttribute("role", "toolbar");
 toolbar.setAttribute("aria-label", "Element");
@@ -996,15 +940,18 @@ toolButton("settings", "Optionen (⇧F10 oder Rechtsklick)", () => {
   inspect(toolOwner);
 });
 // The card/list entry the toolbar acts on: the selected entry itself or the one around the element.
-// record inside a container marked data-native-order-field. Moving them rewrites that field.
-const orderItem = (node) => node?.closest?.("[data-native-order-field] > [data-native-record]") || null;
+// or a card of a query-backed list (a container with an order marker). Moving those rewrites their order field.
+const orderItem = (node) => {
+  for (let n = node?.closest?.(afe.MARKED); n; n = n.parentElement?.closest(afe.MARKED))
+    if (renderedId(n) && n.parentElement && afe.hasMarker(n.parentElement, afe.isOrder)) return n;
+  return null;
+};
 // Ordered records follow their order values in the draft (Undo of a move, also without live preview).
 function syncOrderedRecords() {
   if (dragging) return;
-  for (const container of document.querySelectorAll("[data-native-order-field]")) {
-    const field = container.dataset.nativeOrderField;
-    const items = [...container.children].filter((n) => n.dataset.nativeRecord);
-    const valueOf = (n) => Number(readPath(records.find((r) => r.id === n.dataset.nativeRecord)?.data, [field]));
+  for (const { node: container, marker } of afe.allMarked(document, afe.isOrder)) {
+    const items = [...container.children].filter((n) => renderedId(n));
+    const valueOf = (n) => Number(readPath(records.find((r) => r.id === renderedId(n))?.data, marker.path));
     if (items.some((n) => !Number.isFinite(valueOf(n)))) continue;
     const sorted = [...items].sort((a, b) => valueOf(a) - valueOf(b));
     if (sorted.every((n, i) => n === items[i])) continue;
@@ -1013,14 +960,16 @@ function syncOrderedRecords() {
 }
 function toolEntry() {
   if (!toolOwner) return null;
-  const node = toolKind === "entry" ? toolOwner : toolOwner.closest("[data-native-entry]");
+  const node = toolKind === "entry" ? toolOwner : afe.closestMarker(toolOwner, afe.isMembership)?.node;
   if (node && entryInfo(node)) return node;
   return orderItem(toolOwner);
 }
+const membershipOf = (node) => afe.markerOf(node, afe.isMembership)?.membership || null;
+const sameList = (a, b) => a.owner.collection === b.owner.collection && a.owner.id === b.owner.id && equal(a.path.slice(0, -1), b.path.slice(0, -1));
 function listSiblings(node) {
-  if (!node.dataset.nativeEntry && orderItem(node) === node) return [...node.parentElement.children].filter((n) => n.dataset?.nativeRecord);
-  const list = JSON.stringify(parse(node.dataset.nativeEntry).slice(0, -1));
-  return [...node.parentElement.children].filter((n) => n.dataset?.nativeEntry && JSON.stringify(parse(n.dataset.nativeEntry).slice(0, -1)) === list);
+  const membership = membershipOf(node);
+  if (!membership && orderItem(node) === node) return [...node.parentElement.children].filter((n) => renderedId(n));
+  return [...node.parentElement.children].filter((n) => { const other = membershipOf(n); return other && sameList(other, membership); });
 }
 // One short enum of the entry (e.g. a table cell's Ja/Nein/Teilweise) is offered right in the toolbar.
 function renderVariant(entryNode) {
@@ -1070,14 +1019,14 @@ function hideToolbar() {
 function placeToolbar() {
   if (toolbar.hidden || !toolOwner?.isConnected) return hideToolbar();
   // Markdown texts: bold/italic/strike for a selection. Short formatted texts: all five, also without selection.
-  const markdown = toolKind === "text" && toolOwner.dataset.nativeMarkdown === "true";
-  const inline = toolKind === "text" && isInline(toolOwner) && toolOwner.hasAttribute("data-native-editable");
+  const markdown = toolKind === "text" && isMarkdown(toolOwner);
+  const inline = toolKind === "text" && isInline(toolOwner) && toolOwner.hasAttribute("data-editor-editable");
   const selected = markdown && richRange && !richRange.collapsed && toolOwner.contains(richRange.commonAncestorContainer);
   for (const button of formatButtons) button.hidden = !(inline || (selected && !Object.hasOwn(extensions.inlineCodec.marks||{},button.dataset.command)));
   const visible = formatButtons.filter((button) => !button.hidden);
   for (const button of formatButtons) button.classList.toggle("fmt-last", button === visible.at(-1));
   if (visible.length) updateFormatState();
-  confirmButton.hidden = !(toolKind === "text" && toolOwner.hasAttribute("data-native-machine"));
+  confirmButton.hidden = !(toolKind === "text" && toolOwner.hasAttribute("data-editor-machine"));
   const r = toolOwner.getBoundingClientRect();
   if (r.bottom < 0 || r.top > innerHeight) {
     toolbar.style.visibility = "hidden";
@@ -1099,9 +1048,9 @@ function beginMove(node) {
     stage(active);
     active.blur();
   }
-  if (!node.dataset.nativeEntry) return; // ordered records keep their identity; nothing is renumbered
+  if (!membershipOf(node)) return; // ordered records keep their identity; nothing is renumbered
   for (const sibling of listSiblings(node))
-    if (sibling.dataset.nativeOrigin === undefined) sibling.dataset.nativeOrigin = String(parse(sibling.dataset.nativeEntry).at(-1));
+    if (sibling.dataset.editorOrigin === undefined) sibling.dataset.editorOrigin = String(membershipOf(sibling).path.at(-1));
 }
 // Siblings that change place glide there (FLIP); the dragged entry itself follows the pointer.
 const motionOK = () => !matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1120,17 +1069,16 @@ function flip(nodes, mutate, skip) {
 const settling = (n) => n.getAnimations().some((a) => a.playState === "running");
 function moveEntry(node, from, to) {
   if (from === to) return;
-  if (!node.dataset.nativeEntry) {
-    const container = node.parentElement;
-    send("reorder-records", { ids: listSiblings(node).map((n) => n.dataset.nativeRecord), field: container.dataset.nativeOrderField });
+  const membership = membershipOf(node);
+  if (!membership) {
+    send("reorder-records", { ids: listSiblings(node).map(renderedId), field: orderedList(node.parentElement)?.field });
     refreshToolbar();
     return;
   }
   const siblings = listSiblings(node);
-  const listPath = parse(node.dataset.nativeEntry).slice(0, -1);
-  siblings.forEach((sibling, index) => renumberEntry(sibling, listPath, index));
+  siblings.forEach((sibling, index) => renumberEntry(sibling, membership, index));
   bind();
-  send("reorder", { id: entryInfo(node).id, path: listPath, from, to });
+  send("reorder", { id: entryInfo(node).id, path: afe.editorPath(membership).slice(0, -1), from, to });
   refreshToolbar();
 }
 // After paths change (move, re-render), the toolbar acts on the element's current path.
@@ -1206,7 +1154,7 @@ document.addEventListener("selectionchange", () => {
   if (toolKind === "text") placeToolbar();
 });
 style.textContent +=
-  ' .native-toolbar{position:fixed;z-index:99999;display:flex;align-items:center;gap:2px;border:1px solid var(--ui-line);border-radius:10px;background:var(--ui-surface);padding:3px;box-shadow:0 12px 32px var(--ui-shadow-small),0 1px 3px var(--ui-shadow-low);font:500 12px/1 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:normal;text-transform:none}.native-toolbar button{display:grid;place-items:center;width:30px;height:30px;border:0;background:transparent;border-radius:7px;color:var(--ui-ink);cursor:pointer;font:inherit}.native-toolbar button:hover{background:var(--ui-hover)}.native-toolbar button:disabled{opacity:.35;cursor:not-allowed;background:transparent}.native-toolbar button:focus-visible{outline:2px solid var(--ui-accent);outline-offset:1px}.native-toolbar svg{width:16px;height:16px;stroke-width:2}.native-toolbar .grip{cursor:grab;touch-action:none;color:var(--ui-muted)}.native-toolbar .grip:active{cursor:grabbing}.native-toolbar .lang svg{width:20px;height:15px;border-radius:2px;box-shadow:0 0 0 1px var(--ui-shadow-popover)}.native-variant{display:flex;gap:2px;padding:0 4px;margin:0 2px;border-left:1px solid var(--ui-line);border-right:1px solid var(--ui-line)}.native-variant button{width:auto;padding:0 8px;color:var(--ui-ink)}.native-variant button[aria-pressed=true]{background:var(--ui-tint);color:var(--ui-accent-ink);box-shadow:inset 0 0 0 1px var(--ui-accent)}.native-toolbar .fmt[aria-pressed=true]{background:var(--ui-tint);color:var(--ui-accent-ink)}.native-toolbar .confirm{color:var(--ui-warning);background:var(--ui-warning-tint)}.native-toolbar .confirm:hover{background:var(--ui-warning-hover)}.native-toolbar .fmt-last{margin-right:5px;position:relative}.native-toolbar .fmt-last::after{content:"";position:absolute;right:-4px;top:7px;bottom:7px;width:1px;background:var(--ui-line)}.native-toolbar [hidden],.native-toolbar[hidden],.native-editor-preview .native-toolbar{display:none!important}html.native-language-draft:not(.native-editor-preview) [data-native-untranslated]{outline:1px dashed var(--ui-frame-untranslated);outline-offset:4px}html.native-language-draft:not(.native-editor-preview) [data-native-machine]{outline:1px dashed var(--ui-machine);outline-offset:4px}.native-dragging{outline:2px solid var(--ui-frame-accent)!important;outline-offset:2px;opacity:.9;transition:none!important}html:not(.native-editor-preview) .native-entry-selected{outline:2px solid var(--ui-frame-accent)!important;outline-offset:-2px}';
+  ' .native-toolbar{position:fixed;z-index:99999;display:flex;align-items:center;gap:2px;border:1px solid var(--ui-line);border-radius:10px;background:var(--ui-surface);padding:3px;box-shadow:0 12px 32px var(--ui-shadow-small),0 1px 3px var(--ui-shadow-low);font:500 12px/1 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:normal;text-transform:none}.native-toolbar button{display:grid;place-items:center;width:30px;height:30px;border:0;background:transparent;border-radius:7px;color:var(--ui-ink);cursor:pointer;font:inherit}.native-toolbar button:hover{background:var(--ui-hover)}.native-toolbar button:disabled{opacity:.35;cursor:not-allowed;background:transparent}.native-toolbar button:focus-visible{outline:2px solid var(--ui-accent);outline-offset:1px}.native-toolbar svg{width:16px;height:16px;stroke-width:2}.native-toolbar .grip{cursor:grab;touch-action:none;color:var(--ui-muted)}.native-toolbar .grip:active{cursor:grabbing}.native-toolbar .lang svg{width:20px;height:15px;border-radius:2px;box-shadow:0 0 0 1px var(--ui-shadow-popover)}.native-variant{display:flex;gap:2px;padding:0 4px;margin:0 2px;border-left:1px solid var(--ui-line);border-right:1px solid var(--ui-line)}.native-variant button{width:auto;padding:0 8px;color:var(--ui-ink)}.native-variant button[aria-pressed=true]{background:var(--ui-tint);color:var(--ui-accent-ink);box-shadow:inset 0 0 0 1px var(--ui-accent)}.native-toolbar .fmt[aria-pressed=true]{background:var(--ui-tint);color:var(--ui-accent-ink)}.native-toolbar .confirm{color:var(--ui-warning);background:var(--ui-warning-tint)}.native-toolbar .confirm:hover{background:var(--ui-warning-hover)}.native-toolbar .fmt-last{margin-right:5px;position:relative}.native-toolbar .fmt-last::after{content:"";position:absolute;right:-4px;top:7px;bottom:7px;width:1px;background:var(--ui-line)}.native-toolbar [hidden],.native-toolbar[hidden],.native-editor-preview .native-toolbar{display:none!important}html.native-language-draft:not(.native-editor-preview) [data-editor-untranslated]{outline:1px dashed var(--ui-frame-untranslated);outline-offset:4px}html.native-language-draft:not(.native-editor-preview) [data-editor-machine]{outline:1px dashed var(--ui-machine);outline-offset:4px}.native-dragging{outline:2px solid var(--ui-frame-accent)!important;outline-offset:2px;opacity:.9;transition:none!important}html:not(.native-editor-preview) .native-entry-selected{outline:2px solid var(--ui-frame-accent)!important;outline-offset:-2px}';
 
 function safeMarkdown(source) {
   const holder = document.createElement("template");
@@ -1301,13 +1249,12 @@ style.textContent +=
 // Live preview: the shell sends server renders of the draft; the first one is the baseline.
 // ---------------------------------------------------------------------------
 // Each live region remembers the server render it currently shows. A moved section keeps its node,
-// so comparisons ignore the section index (it is part of attributes and field paths).
+// so comparisons ignore its position in the block list (part of every address below it) and occurrence names.
 const serverOf = new WeakMap();
 let hasBaseline = false,
   deferredPreview = null,
   previewGeneration = 0;
-const normalized = (node) =>
-  node.outerHTML.replace(/ data-native-section-index="\d+"/g, "").replace(/\[&quot;sections&quot;,\d+/g, "[&quot;sections&quot;,#");
+const normalized = (node) => afe.positionless(node.outerHTML, afe.blockLists(document));
 let dragging = false;
 function applyPreview({ html, baseline }) {
   if (dragging && !baseline) {
@@ -1316,6 +1263,7 @@ function applyPreview({ html, baseline }) {
   }
   previewGeneration++;
   const doc = new DOMParser().parseFromString(html, "text/html");
+  stampBlockTypes(doc);
   const next = regions(doc);
   const live = regions(document);
   if (baseline || !hasBaseline) {
@@ -1362,7 +1310,7 @@ function applyPreview({ html, baseline }) {
   }
   deferredPreview = deferred ? { html, seq: ++previewGeneration } : null;
   // The live page now matches the draft order; origins of earlier moves are no longer needed.
-  if (!deferred) for (const node of document.querySelectorAll("[data-native-origin]")) delete node.dataset.nativeOrigin;
+  if (!deferred) for (const node of document.querySelectorAll("[data-editor-origin]")) delete node.dataset.editorOrigin;
   if (applied) {
     bind();
     applyPresentation();
@@ -1381,17 +1329,27 @@ document.addEventListener("focusout", () => {
 });
 
 function keepDisclosureState(from, to) {
-  const key = (node, index) => node.closest("[data-native-record]")?.dataset.nativeRecord + "|" + (node.dataset.nativeEntry || index);
+  const key = (node, index) => {
+    const item = afe.closestMarker(node, afe.isItem)?.marker;
+    return item ? JSON.stringify([item.rendered, item.membership?.path ?? null]) : String(index);
+  };
   const open = new Set([...from.querySelectorAll("details")].map((node, index) => node.open && key(node, index)).filter(Boolean));
   [...to.querySelectorAll("details")].forEach((node, index) => (node.open = open.has(key(node, index))));
 }
 // Cards of an animated section that only changed order move as live nodes,
 // so their running canvases move with them. Field paths inside are renumbered.
 function entryKey(node) {
-  return node.dataset.nativeRecord || node.outerHTML.replace(/\[&quot;sections&quot;,\d+(,&quot;[^&]+&quot;,\d+)?/g, "#");
+  const item = afe.markerOf(node, afe.isItem);
+  if (item && !item.membership) return JSON.stringify(item.rendered);
+  const membership = membershipOf(node);
+  return afe.positionless(node.outerHTML, [...afe.blockLists(document), ...(membership ? [membership.path.slice(0, -1)] : [])]);
 }
 function topEntries(root) {
-  return [...root.querySelectorAll("[data-native-entry]")].filter((node) => !node.parentElement.closest("[data-native-entry]") || node.parentElement.closest("[data-native-entry]") === root);
+  const entries = [...new Set(afe.allMarked(root, afe.isMembership).map(({ node }) => node))].filter((node) => node !== root);
+  return entries.filter((node) => {
+    const up = afe.closestMarker(node.parentElement, afe.isMembership)?.node;
+    return !up || up === root;
+  });
 }
 function reorderEntries(live, before, after) {
   const was = topEntries(before),
@@ -1405,26 +1363,19 @@ function reorderEntries(live, before, after) {
   const parent = current[0].parentElement;
   if (current.some((node) => node.parentElement !== parent)) return false;
   // A live entry may already sit at its new place (dragged on the page); map it by where it came from.
-  const byKey = new Map(current.map((node, i) => [wasKeys[Number(node.dataset.nativeOrigin ?? i)], node]));
+  const byKey = new Map(current.map((node, i) => [wasKeys[Number(node.dataset.editorOrigin ?? i)], node]));
   const anchor = current.at(-1).nextSibling;
   nowKeys.forEach((key, index) => {
     const node = byKey.get(key);
     parent.insertBefore(node, anchor);
-    const listPath = parse(node.dataset.nativeEntry).slice(0, -1);
-    renumberEntry(node, listPath, index);
-    delete node.dataset.nativeOrigin;
+    const membership = membershipOf(node);
+    if (membership) renumberEntry(node, membership, index);
+    delete node.dataset.editorOrigin;
   });
   return true;
 }
-function renumberEntry(node, listPath, index) {
-  const depth = listPath.length;
-  for (const target of [node, ...node.querySelectorAll("[data-native-path],[data-native-media-path],[data-native-entry]")])
-    for (const key of ["nativePath", "nativeMediaPath", "nativeEntry"]) {
-      const path = target.dataset[key] && parse(target.dataset[key]);
-      if (path && path.length > depth && listPath.every((part, i) => path[i] === part)) {
-        path[depth] = index;
-        target.dataset[key] = JSON.stringify(path);
-      }
-    }
-  for (const bound of node.querySelectorAll("[data-native-bound]")) delete bound.dataset.nativeBound;
+// An entry now at index of its list: its membership and every address of that entry below it follow.
+function renumberEntry(node, membership, index) {
+  afe.renumber(node, membership.owner, membership.path.slice(0, -1), index);
+  for (const bound of node.querySelectorAll("[data-editor-bound]")) bound.removeAttribute("data-editor-bound");
 }

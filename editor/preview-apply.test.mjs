@@ -13,7 +13,7 @@ function element(tagName, attributes = {}, children = [], textContent = '') {
   children.forEach((child, index) => child.previousElementSibling = children[index - 1] || null);
   return node;
 }
-const section = (settings = {}, live = false) => element('SECTION', {}, [element('CANVAS', { 'data-orb': 'sphere', 'data-n': '200', 'data-color': 'neon-violet', ...settings, ...(live ? { 'data-native-live': 'true' } : {}) }), element('DIV', {}, [], 'Spark')]);
+const section = (settings = {}, live = false) => element('SECTION', {}, [element('CANVAS', { 'data-orb': 'sphere', 'data-n': '200', 'data-color': 'neon-violet', ...settings, ...(live ? { 'data-canvas-live': 'true' } : {}) }), element('DIV', {}, [], 'Spark')]);
 
 test('registered canvas data attributes patch in place for all settings, keeping runtime dimensions and card text', () => {
   const before = section(), after = section({ 'data-orb': 'torus', 'data-n': '230', 'data-color': 'neon-orange' }), live = section({ width: '512' }, true), canvas = live.children[0];

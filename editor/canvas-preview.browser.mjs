@@ -10,7 +10,7 @@ before(async () => {
     try {
       const path = new URL(req.url, 'http://localhost').pathname;
       if (path === '/') { res.end('<!doctype html><main></main>'); return; }
-      if (!/^\/(src\/(scripts|lib|content)\/|editor\/(web|extensions)\/|editor\/browser-site\.mjs)/.test(path) || path.includes('..')) { res.writeHead(404).end(); return; }
+      if (!/^\/(src\/(scripts|lib|content)\/|editor\/(web|extensions|vendor)\/|editor\/browser-site\.mjs)/.test(path) || path.includes('..')) { res.writeHead(404).end(); return; }
       const source = await readFile(new URL('..' + path, import.meta.url), 'utf8');
       res.setHeader('Content-Type', path.endsWith('.css') ? 'text/css' : 'text/javascript'); res.end(source);
     } catch { res.writeHead(404).end(); }
@@ -33,7 +33,7 @@ test('patchInPlace updates registered canvas settings and preserves the live nod
     const { patchInPlace } = await import('/editor/web/preview-apply.mjs');
     const before = document.createElement('section'); before.innerHTML = '<canvas data-orb="sphere" data-n="200" data-color="neon-violet"></canvas><div>Horizon</div>';
     const after = before.cloneNode(true), live = before.cloneNode(true), canvas = live.firstChild;
-    canvas.dataset.nativeLive = 'true'; canvas.width = 512;
+    canvas.dataset.canvasLive = 'true'; canvas.width = 512;
     after.firstChild.dataset.orb = 'torus'; after.firstChild.dataset.n = '230'; after.firstChild.dataset.color = 'neon-orange';
     const report = patchInPlace(live, before, after);
     return { report, same: live.firstChild === canvas, n: canvas.dataset.n, orb: canvas.dataset.orb, color: canvas.dataset.color, width: canvas.width };
@@ -48,7 +48,7 @@ test('unregistered canvas settings and genuine structural changes require replac
     const before = document.createElement('section'); before.innerHTML = '<canvas data-orb="sphere"></canvas><div>Spark</div>';
     const live = before.cloneNode(true), after = before.cloneNode(true); after.firstChild.dataset.orb = 'torus';
     const unregistered = patchInPlace(live, before, after).unsafe;
-    after.append(document.createElement('p')); live.firstChild.dataset.nativeLive = 'true';
+    after.append(document.createElement('p')); live.firstChild.dataset.canvasLive = 'true';
     return { unregistered, sameStructure: sameStructure(before, after), structural: patchInPlace(live, before, after), text: live.lastChild.textContent };
   });
   assert.deepEqual(result, { unregistered: true, sameStructure: false, structural: { unsafe: true, changed: 0 }, text: 'Spark' });
@@ -62,7 +62,7 @@ test('real orb controller re-reads shape, count and color while paused, and init
     CanvasRenderingContext2D.prototype.arc = function (...args) { window.draws.push({ color: this.fillStyle, canvas: this.canvas, args }); return original.apply(this, args); };
   });
   await page.addScriptTag({ type: 'module', url: origin + '/src/scripts/site.ts' });
-  await page.waitForFunction(() => document.querySelector('canvas').dataset.nativeLive);
+  await page.waitForFunction(() => document.querySelector('canvas').dataset.canvasLive);
   const result = await page.evaluate(async () => {
     const { patchInPlace } = await import('/editor/web/preview-apply.mjs');
     const canvas = document.querySelector('canvas'), before = canvas.cloneNode(), next = before.cloneNode();
@@ -81,8 +81,8 @@ test('real orb controller re-reads shape, count and color while paused, and init
     const old = document.querySelector('section'), copy = old.cloneNode(true); copy.append(document.createElement('p'));
     prepareClonedSection(copy, { livePreview: true }); window.draws = []; old.replaceWith(copy);
   });
-  await page.waitForFunction(() => document.querySelector('canvas').dataset.nativeLive && window.draws.length > 0);
-  assert.equal(await page.locator('[data-native-runtime-note],.native-copy-pending').count(), 0);
+  await page.waitForFunction(() => document.querySelector('canvas').dataset.canvasLive && window.draws.length > 0);
+  assert.equal(await page.locator('[data-editor-runtime-note],.native-copy-pending').count(), 0);
   assert.equal(await page.locator('canvas').isVisible(), true);
 });
 
