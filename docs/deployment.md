@@ -45,7 +45,7 @@ Die vollständige Variablen- und CLI-Tabelle mit Defaults steht in [Runtime-Opti
 | `AFE_GIT_REMOTE` | `FLYINGSTARS_GIT_REMOTE` | Expliziter Remote für Inhalts-Pushes |
 | `AFE_DRAFT_BRANCH` / `AFE_PUBLISHED_BRANCH` | keine | `content/draft` / `main` |
 | `AFE_AUTH` / `AFE_ACCOUNTS` | `EDITOR_AUTH` / `EDITOR_ACCOUNTS` | Anmeldung und private Kontodatei |
-| `AFE_PREVIEW=static` | – | Vorschau ohne zusätzlichen Dauerprozess: jeder Entwurf wird einmal gebaut (FlyingStars rund 2 s, Spitzen-RAM wie ein normaler Build). `AFE_PREVIEW=0` schaltet sie ganz ab |
+| `AFE_PREVIEW=static` | – | Vorschau ohne zusätzlichen Dauerprozess: jeder Entwurf wird einmal gebaut (FlyingStars gemessen 2,1 s und 468 MB Spitze je Entwurf, danach kein Prozess). `AFE_PREVIEW=0` schaltet sie ganz ab |
 | `DEPLOY_RESTART_CMD` | unverändert | Auf dem Account geprüfter Neustartbefehl |
 
 Im State-Ordner liegen `runtime/`, `runtime-public/`, `preview/`, `runtime-private/editor-accounts.json` und `translation-memory.json`. Konten und State brauchen eigene private Backups; Git sichert Inhalte und die hochgeladenen Medienbytes, nicht Passwörter oder den Übersetzungsspeicher.
