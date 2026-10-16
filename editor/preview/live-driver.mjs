@@ -8,7 +8,8 @@ import { awaitLoaded, provenanceDir } from "./proof.mjs";
 // A render returns only once the provenance proof shows Astro loaded exactly the requested files.
 
 const devAttributes = / data-astro-source-(?:file|loc)="[^"]*"/g;
-const complete = (html) => /<\/html>\s*$/i.test(html);
+// A render error cuts the stream before </html>. Astro dev may append hoisted scripts after it, so it need not end there.
+const complete = (html) => /<\/html>/i.test(html);
 
 export class LiveDriver {
   kind = "live";

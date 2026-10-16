@@ -207,6 +207,11 @@ test("live: a page cut off by a render error restarts the dev server once and th
     assert.match(result.html, /<\/html>$/);
     globalThis.fetch = async () => ({ ok: true, text: async () => "<html><body><section>" });
     await assert.rejects(driver.render({ head, files: new Map() }), /unvollständig/);
+    // Astro dev appends hoisted page scripts after </html>: complete, no restart.
+    globalThis.fetch = async () => ({ ok: true, text: async () => '<html><body></body></html><script type="module" src="/src/views/Catalog.astro?astro&type=script"></script>' });
+    restarts = 0;
+    await driver.render({ head, files: new Map() });
+    assert.equal(restarts, 0);
   } finally {
     await done();
   }
