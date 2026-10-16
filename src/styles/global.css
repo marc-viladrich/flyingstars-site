@@ -653,9 +653,18 @@ td.us { color: var(--text); background: rgb(from var(--c-text) r g b / 0.035); }
 }
 /* Caps keep the surrounding tracking, so a capitalised word matches uppercase set by the layout. */
 .t-caps { text-transform: uppercase; }
-/* Outline and gradient text get their look from a transparent fill. A selection paints that fill solid, so the
-   selected text looked filled; selected text keeps its outline or gradient, with the selection behind it. */
-:is(.t-outline, .fn.o, .portrait .ini, .grad, .word, .fn.g, .eco-title > span:nth-child(3))::selection,
-:is(.t-outline, .fn.o, .portrait .ini, .grad, .word, .fn.g, .eco-title > span:nth-child(3)) *::selection { color: transparent; -webkit-text-fill-color: transparent; }
+/* Outline and gradient text get their look from a transparent fill, which a selection repaints solid.
+   Gradient text keeps its gradient when selected. Outline text keeps its outline in WebKit; Chromium paints
+   selected text without any stroke, so there outlined words show as a pale fill, clearly unlike solid words,
+   and switching the outline on selected words stays visible. (The site is dark only, hence the light fill.) */
+:is(.grad, .word, .fn.g, .eco-title > span:nth-child(3))::selection,
+:is(.grad, .word, .fn.g, .eco-title > span:nth-child(3)) *::selection { color: transparent; -webkit-text-fill-color: transparent; background-color: color-mix(in srgb, Highlight 45%, transparent); }
+:is(.t-outline, .fn.o, .portrait .ini)::selection,
+:is(.t-outline, .fn.o, .portrait .ini) *::selection { color: rgb(255 255 255 / 0.32); -webkit-text-fill-color: rgb(255 255 255 / 0.32); background-color: color-mix(in srgb, Highlight 45%, transparent); }
+@supports (font: -apple-system-body) {
+  /* WebKit only: it draws the stroke of selected text (in the selection's colours), so the outline stays. */
+  :is(.t-outline, .fn.o, .portrait .ini)::selection,
+  :is(.t-outline, .fn.o, .portrait .ini) *::selection { color: transparent; -webkit-text-fill-color: transparent; -webkit-text-stroke-color: rgb(242 239 233 / 0.9); }
+}
 /* A strike inside outline text needs a visible line: the outline has a transparent text colour. */
 .t-outline, .t-outline * { text-decoration-color: color-mix(in srgb, var(--text) 90%, transparent); }

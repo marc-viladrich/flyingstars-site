@@ -1,6 +1,7 @@
 import { prepareClonedSection } from "./prepare-cloned-section.mjs";
 import { LiveNodeHistory, remappedReference } from "./live-node-history.mjs";
 import * as afe from "./frame-markers.mjs";
+import { selectedTextNodes as textNodesIn } from "./inline-selection.mjs";
 import { marked } from "/editor/marked.mjs";
 import { ui } from "./ui-icons.mjs";
 import { fieldLabel, choiceLabel } from "./field-labels.mjs";
@@ -787,21 +788,6 @@ function formatRange() {
   const range = document.createRange();
   range.selectNodeContents(toolOwner);
   return range;
-}
-// Text nodes with selected characters. A selection made by dragging often starts at the end of the text before a
-// mark (WebKit: "dein |Stück"); a node the range only touches, or of which only spaces are selected, is not part of it.
-function textNodesIn(range) {
-  const root = range.commonAncestorContainer.nodeType === 3 ? range.commonAncestorContainer.parentNode : range.commonAncestorContainer;
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT),
-    out = [];
-  while (walker.nextNode()) {
-    const node = walker.currentNode;
-    if (!range.intersectsNode(node)) continue;
-    const start = node === range.startContainer ? range.startOffset : 0,
-      end = node === range.endContainer ? range.endOffset : node.length;
-    if (node.data.slice(start, end).trim()) out.push(node);
-  }
-  return out;
 }
 const markOf = (text, cls) => {
   const span = text.parentElement.closest("span." + cls);
