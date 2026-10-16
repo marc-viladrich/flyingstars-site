@@ -928,6 +928,8 @@ function translateAction(item, field) {
 // Set while a panel draws when it shows (or holds behind "Weitere Felder") a translatable text: then its
 // head carries the one language control of the panel.
 let panelTranslatable = false;
+// A scalar field that stores the ID of one record (x-afe reference with ID encoding).
+const singleReference = (field) => field.kind === "text" && !!field["x-afe"]?.reference && (field["x-afe"].reference.encoding ?? "id") === "id";
 // One control per field kind. Text that is visible on the page is edited there, never here.
 function fieldControl(item, field, { label } = {}) {
   const key = fieldKey(item.id, field.path),
@@ -984,6 +986,18 @@ function fieldControl(item, field, { label } = {}) {
       option.value = typeof choice === "object" ? choice.value : choice;
       input.append(option);
     }
+  } else if (singleReference(field)) {
+    // A single reference (a product's category) is chosen from the records it may point to, by their names.
+    input = el("select", { "aria-label": name });
+    const candidates = referencedRecords(records(), field["x-afe"].reference) || [];
+    const options = candidates.map((target) => ({ value: target.address?.id ?? target.id, label: recordName(target) }));
+    if (current != null && current !== "" && !options.some((option) => option.value === current)) options.unshift({ value: current, label: current + " (nicht gefunden)" });
+    if (field.optional) options.unshift({ value: "", label: "–" });
+    for (const { value: optionValue, label: optionLabel } of options) {
+      const option = el("option", { text: optionLabel });
+      option.value = optionValue;
+      input.append(option);
+    }
   } else if (field.kind === "number") input = el("input", { type: "number", step: "any", "aria-label": name });
   else input = textBox({ format: field.format, name });
   input.dataset.fieldKey = key;
@@ -1028,7 +1042,7 @@ function fieldControl(item, field, { label } = {}) {
   };
   input.addEventListener("blur", commit);
   input.addEventListener("change", () => {
-    if (field.kind === "enum") {
+    if (field.kind === "enum" || singleReference(field)) {
       editing.set(key, { id: item.id, path: field.path, value: read() });
       commit();
       afterPresentationChange();
