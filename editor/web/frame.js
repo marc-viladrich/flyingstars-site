@@ -449,6 +449,22 @@ document.addEventListener(
   },
   true,
 );
+// While editing, dragging page content (an image, a link) would drop a copy into the text under the pointer.
+// Text moves by typing and pasting; entries and sections move with their grip.
+document.addEventListener(
+  "dragstart",
+  (event) => {
+    if (!preview) event.preventDefault();
+  },
+  true,
+);
+document.addEventListener(
+  "drop",
+  (event) => {
+    if (!preview && event.target.closest?.("[data-editor-editable]")) event.preventDefault();
+  },
+  true,
+);
 document.addEventListener("contextmenu", (event) => {
   if (preview || busy) return;
   if (inspection(event.target)) {
@@ -772,11 +788,19 @@ function formatRange() {
   range.selectNodeContents(toolOwner);
   return range;
 }
+// Text nodes with selected characters. A selection made by dragging often starts at the end of the text before a
+// mark (WebKit: "dein |Stück"); a node the range only touches, or of which only spaces are selected, is not part of it.
 function textNodesIn(range) {
   const root = range.commonAncestorContainer.nodeType === 3 ? range.commonAncestorContainer.parentNode : range.commonAncestorContainer;
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT),
     out = [];
-  while (walker.nextNode()) if (range.intersectsNode(walker.currentNode) && walker.currentNode.nodeValue.trim()) out.push(walker.currentNode);
+  while (walker.nextNode()) {
+    const node = walker.currentNode;
+    if (!range.intersectsNode(node)) continue;
+    const start = node === range.startContainer ? range.startOffset : 0,
+      end = node === range.endContainer ? range.endOffset : node.length;
+    if (node.data.slice(start, end).trim()) out.push(node);
+  }
   return out;
 }
 const markOf = (text, cls) => {
@@ -853,11 +877,16 @@ function toggleMark(range, cls) {
     // Only the selected words lose the mark: split a single mark around the selection.
     if (spans.length === 1 && !range.collapsed) {
       const span = spans[0];
+      // The part of the selection inside the mark: a drag may begin or end just outside it.
+      const inside = document.createRange();
+      inside.selectNodeContents(span);
+      if (range.compareBoundaryPoints(Range.START_TO_START, inside) > 0) inside.setStart(range.startContainer, range.startOffset);
+      if (range.compareBoundaryPoints(Range.END_TO_END, inside) < 0) inside.setEnd(range.endContainer, range.endOffset);
       const before = document.createRange(),
         after = document.createRange();
       before.setStart(span, 0);
-      before.setEnd(range.startContainer, range.startOffset);
-      after.setStart(range.endContainer, range.endOffset);
+      before.setEnd(inside.startContainer, inside.startOffset);
+      after.setStart(inside.endContainer, inside.endOffset);
       after.setEnd(span, span.childNodes.length);
       const head = before.extractContents(),
         tail = after.extractContents();
