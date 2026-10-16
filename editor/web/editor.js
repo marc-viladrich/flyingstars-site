@@ -1266,7 +1266,8 @@ function listLabel(item, path) {
 // Selected options keep their stored order. Unselected options follow them.
 function choiceSource(item, container) {
   const ref = nodeAt(item.schema,item.data,[...container.path,0])?.['x-afe']?.reference;
-  const prefix = referencePrefix(ref);
+  // Only reference lists have a target collection; a site extension is never asked about a missing reference.
+  const prefix = ref ? referencePrefix(ref) : null;
   const all = ref ? referencedRecords(records(),ref) : [];
   if (ref) {
     return {
