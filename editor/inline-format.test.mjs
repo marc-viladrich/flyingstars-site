@@ -65,6 +65,7 @@ test("case-title outline is active and removes/adds cleanly through the frame to
     node.parentElement = parent;
     node.nodeType = node.text === undefined ? 1 : 3;
     node.nodeValue = node.text;
+    if (node.text !== undefined) { node.data = node.text; node.length = node.text.length; }
     node.childNodes = node.children || [];
     node.contains = candidate => candidate === node || node.childNodes.some(child => child.contains(candidate));
     node.closest = selector => node.attributes?.class?.split(' ').includes(selector.slice(5)) ? node : parent?.closest(selector);
@@ -86,7 +87,7 @@ test("case-title outline is active and removes/adds cleanly through the frame to
   const range = {
     commonAncestorContainer: owner, collapsed: false,
     startContainer: owner, startOffset: 0, endContainer: owner, endOffset: 1,
-    intersectsNode: () => true,
+    intersectsNode: () => true, compareBoundaryPoints: () => 0,
     extractContents() { const children = owner.children.splice(0); return {children}; },
     insertNode(node) { owner.children.push(node); attach(node, owner); },
     selectNodeContents() {},
@@ -99,11 +100,14 @@ test("case-title outline is active and removes/adds cleanly through the frame to
       return {nextNode() { this.currentNode = nodes[i++]; return !!this.currentNode; }};
     },
     createElement(tag) { return attach({tag, children: []}); },
-    createRange() { return {setStart() {}, setEnd() {}, extractContents: () => ({textContent: '', children: []})}; },
+    createRange() { return {setStart() {}, setEnd() {}, selectNodeContents() {}, extractContents: () => ({textContent: '', children: []})}; },
   };
   const source = await readFile(new URL('./web/frame.js', import.meta.url), 'utf8');
-  const functions = source.slice(source.indexOf('function textNodesIn('), source.indexOf('function format(command)'));
-  const toolbar = runInNewContext(functions + ';({markActive,toggleMark})', {document, NodeFilter: {SHOW_TEXT: 4}, toolOwner: owner});
+  const functions = source.slice(source.indexOf('const markOf = '), source.indexOf('function format(command)'));
+  const { selectedTextNodes } = await import('./web/inline-selection.mjs');
+  globalThis.NodeFilter ??= { SHOW_TEXT: 4 };
+  owner.ownerDocument = document;
+  const toolbar = runInNewContext(functions + ';({markActive,toggleMark})', {document, NodeFilter: {SHOW_TEXT: 4}, toolOwner: owner, textNodesIn: selectedTextNodes, Range: {START_TO_START: 0, END_TO_END: 2}});
   for (let i = 0; i < 3; i++) {
     assert.equal(toolbar.markActive(range, 't-outline'), true);
     assert.equal(inlineText(owner), '{o}Berlin *Game*{/o}');
