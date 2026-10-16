@@ -67,5 +67,6 @@ export class NativeStore{
  this.rule('validateTransaction',{store:this,nextRecords:transactionIndex(nextRecords),seen:new Set(seen)});
  this.validateReferences(nextRecords);
  for(const write of binaryWrites){const before=await fileBytes(path.join(this.root,write.file));if(before&&!before.equals(write.bytes))throw failure('Eine vorhandene Mediendatei hat andere Bytes.',409);let tracked=null;try{tracked=await run('git',['-C',this.root,'show',parent+':'+write.file],{env:this.env,encoding:'buffer',maxBuffer:20_000_000}).then(r=>r.stdout);}catch{}if(before&&!tracked)throw failure('Der Medienpfad ist durch eine ungesicherte Datei belegt.',409);updated.push({...write,before});}
- const {head:candidate}=await this.sourceAdapter.commit(updated,{parent,requestId,payload,actor});this.sync.enqueue();return{...await this.stateAt(candidate),sync:{...this.sync.status},replayed:false};});}
+ // verify (set by the server): the candidate commit must build before the draft branch moves to it.
+ const {head:candidate}=await this.sourceAdapter.commit(updated,{parent,requestId,payload,actor,verify:this.verify});this.sync.enqueue();return{...await this.stateAt(candidate),sync:{...this.sync.status},replayed:false};});}
 }

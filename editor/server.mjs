@@ -70,6 +70,8 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
 
  if(initialize)await publisher.init();
  const root=runtime.editorAssets,source=sourceDir,runtimeRoot=stateDir;
+ // A save is published only if its site builds (AFE502); otherwise nothing is saved and the person learns why.
+ store.verify=async head=>{try{await builder.prepare(head);}catch(error){throw failure('Dieser Stand lässt sich nicht aufbauen, deshalb wurde nichts gespeichert: '+String(error.message||error).split('\n').find(line=>line.trim())?.slice(0,300),422);}};
  const buildSaved=async(saved)=>store.exclusive(async()=>{try{await builder.build(saved.head);return{...saved,activeHead:builder.current?.head};}catch(error){return{...saved,activeHead:builder.current?.head,buildError:error.message};}});
  const editor=http.createServer(async(req,res)=>{
   res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','same-origin');res.setHeader('Cache-Control','no-store');res.setHeader('Content-Security-Policy',"frame-ancestors 'none'");

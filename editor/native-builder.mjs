@@ -58,4 +58,6 @@ export class NativeBuilder {
  prepare(head){return this.enqueue(()=>this.prepareNow(head));}
  activate(artifact){return this.enqueue(()=>this.activateNow(artifact));}
  build(head){return this.enqueue(async()=>this.activateNow(await this.prepareNow(head)));}
+ // Builds and verifies a commit without activating it: a save is published only once its site builds.
+ prepare(head){return this.enqueue(()=>this.prepareNow(head));}
 }

@@ -1,6 +1,6 @@
 import {createFlyingStarsAdapter} from './flyingstars-adapter.mjs';
 import {resolveRuntimeOptions} from './runtime-options.mjs';
-import test from'node:test';import assert from'node:assert/strict';import{promises as fs}from'node:fs';import path from'node:path';import os from'node:os';import{fileURLToPath}from'node:url';import{randomUUID}from'node:crypto';import{NativeStore,git}from'./native-store.mjs';
+import test from'node:test';import assert from'node:assert/strict';import{promises as fs}from'node:fs';import path from'node:path';import os from'node:os';import{fileURLToPath}from'node:url';import{randomUUID}from'node:crypto';import{NativeStore,git,failure}from'./native-store.mjs';
 const root=path.dirname(fileURLToPath(import.meta.url));async function fixture(t){const dir=await fs.mkdtemp(path.join(os.tmpdir(),'flyingstars-native-'));await git(root,['clone','--quiet','--no-hardlinks',path.join(root,'..'),dir]);await git(dir,['checkout','-B','content/draft']);await fs.symlink(await fs.realpath(path.join(root,'../node_modules')),path.join(dir,'node_modules'));t.after(()=>fs.rm(dir,{recursive:true,force:true}));return new NativeStore(dir,{remote:false,site:await createFlyingStarsAdapter(dir),runtime:resolveRuntimeOptions({values:{siteRoot:dir}})}).init();}
 const request=(state,changes)=>{
  const records=new Map();
@@ -34,4 +34,13 @@ test('a site checked out as a Git worktree saves: shared lock, per-worktree inde
  assert.match(await git(tree,['show',saved.head+':src/content/packages/spark.json']),/"price": 8124/);
  const common=await git(tree,['rev-parse','--path-format=absolute','--git-common-dir']),own=await git(tree,['rev-parse','--path-format=absolute','--git-dir']);
  for(const dir of [common,own])assert.deepEqual((await fs.readdir(dir)).filter(name=>/operation\.lock|native-index/.test(name)),[],dir);
+});
+
+test('a save whose site does not build is not published: branch, files and index stay as they were',async t=>{
+ const s=await fixture(t),state=await s.state(),file='src/content/packages/spark.json',before=await fs.readFile(path.join(s.root,file),'utf8'),head=await s.head();
+ const seen=[];s.verify=async candidate=>{seen.push(candidate);throw failure('Dieser Stand lässt sich nicht aufbauen, deshalb wurde nichts gespeichert: Probe',422);};
+ await assert.rejects(s.save(request(state,[['package/spark',['price'],8125]])),error=>error.status===422&&/nichts gespeichert/.test(error.message));
+ assert.equal(seen.length,1);assert.match(seen[0],/^[a-f0-9]{40}$/);assert.notEqual(seen[0],head,'the candidate commit is what gets built');
+ assert.equal(await s.head(),head);assert.equal(await fs.readFile(path.join(s.root,file),'utf8'),before);assert.equal(await git(s.root,['status','--porcelain']),'');
+ s.verify=async()=>{};const saved=await s.save(request(await s.state(),[['package/spark',['price'],8125]]));assert.notEqual(saved.head,head,'a building save is published');
 });

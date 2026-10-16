@@ -13,7 +13,7 @@ class LegacyGitStorage extends FileStorage {
     catch(error){if(/fatal: path .* (?:does not exist|exists on disk, but not in)/s.test(String(error.stderr)))return null;throw error;}
   }
 
-  async commit(files,{check,parent,requestId,payload,actor,binaryWrites=[]}){
+  async commit(files,{check,parent,requestId,payload,actor,binaryWrites=[],...context}){
     const all=[...files,...binaryWrites],index=path.join((await gitDirs(this.root)).gitDir,'native-index-'+requestId),env={...actor?{GIT_AUTHOR_NAME:actor.name,GIT_AUTHOR_EMAIL:actor.email}:{},GIT_INDEX_FILE:index};
     const blobs=new Map();let candidate,published=false;
     try{
@@ -27,7 +27,7 @@ class LegacyGitStorage extends FileStorage {
       let checked=0;
       await super.commit(all,{check:async()=>{
         await check();for(const entry of binaryWrites)if(hashBytes(await this.read(entry.file))!==hashBytes(entry.before))throw conflict(entry.file);
-        if(++checked===2){try{await this.git(this.root,['update-ref','refs/heads/'+this.draftBranch,candidate,parent]);published=true;}catch(error){if(await this.git(this.root,['rev-parse','refs/heads/'+this.draftBranch])!==parent)throw conflict('Git-Revision');throw error;}}
+        if(++checked===2){if(context.verify)await context.verify(candidate);try{await this.git(this.root,['update-ref','refs/heads/'+this.draftBranch,candidate,parent]);published=true;}catch(error){if(await this.git(this.root,['rev-parse','refs/heads/'+this.draftBranch])!==parent)throw conflict('Git-Revision');throw error;}}
       },afterWrite:async()=>{
         const entries=all.map(({file,bytes})=>(bytes===null?'0 '+'0'.repeat(40):'100644 '+blobs.get(file))+'\t'+file+'\0').join('');
         if(entries)await this.git(this.root,['update-index','-z','--index-info'],{input:Buffer.from(entries)});
