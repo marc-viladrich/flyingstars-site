@@ -12,6 +12,9 @@
     "paths": {
       "astro-frontend-editor/markers": [
         "./editor/vendor/astro-frontend-editor/src/markers/index.d.mts"
+      ],
+      "astro-frontend-editor/astro/loaders": [
+        "./editor/vendor/astro-frontend-editor/src/astro/loaders.mjs"
       ]
     }
   }

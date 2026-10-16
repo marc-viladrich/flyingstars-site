@@ -1,5 +1,6 @@
 import { defineCollection, reference } from 'astro:content';
-import { glob } from 'astro/loaders';
+// The editor's loader wrappers: Astro's glob with identical options, plus the source of every entry (provenance).
+import { glob } from 'astro-frontend-editor/astro/loaders';
 import { z } from 'astro/zod';
 import {astroReferences} from './schemas/astro-references.mjs';
 import {postSchema,projectSchema,faqSchema} from './schemas/collection-schema.mjs';
@@ -42,8 +43,6 @@ const faq = defineCollection({
   schema: faqSchema,
 });
 
-// PR 5 uses Astro's loaders directly. Future x-afe annotations are recorded here
-// without changing raw values or importing the product package yet.
 // packages: editable collection/title/operations, readOnly name, feature-list policy.
 const extras = defineCollection({loader:glob({pattern:'**/*.json',base:'./src/content/extras'}),schema:extraSchema});
 const packages = defineCollection({

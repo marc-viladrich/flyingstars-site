@@ -1,6 +1,6 @@
 {
  "package": "astro-frontend-editor",
- "commit": "59f7a3c39b3a1da40a31ef427988a7d74cb37194",
+ "commit": "92f5c6fd7b999a609dcdbb3b5d6dc360df215552",
  "replacedBy": "PR 11: package dependency",
  "files": {
   "package.json": "636d9f3bee6001bee9b11195496ccb0dd2cd08fb200d9991f0501869ab5d0d0c",
@@ -11,6 +11,8 @@
   "src/markers/client.mjs": "094e281c679c82a306425052193bbfa51dad66e38c61dc78e868718cfb730e6f",
   "src/markers/client.d.mts": "b37a36d31d428409660d2d0c6fa0a8761be50e3a28e0bec82bc0ec5594529ee9",
   "src/markers/protocol.mjs": "3e9e77d0b5b76a0c4e3614620759b277b0d6ba5ecd6bb4e42899e4b0b2ae01d7",
+  "src/astro/loaders.mjs": "94e0c3c7ff843ef0ebb6cbaa2f42b33f33ab372405705893419a174cce662360",
+  "src/astro/source-spans.mjs": "54b3af85a2a26870cc442b96d66cacd97c22ecb134b0ba87da064e3ba5cf9596",
   "src/contract/descriptor.mjs": "01b36ecfd069072113c0d7cf791f604d936b135698b6a9689bd33a459d4ebb54",
   "src/schema/spec.mjs": "f61891b2e32a6d8e3ba6475d2b4793fd242e6e67d779b8fadf3d094098deaaed"
  }

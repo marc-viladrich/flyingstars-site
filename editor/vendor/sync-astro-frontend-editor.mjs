@@ -7,7 +7,7 @@ import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
-export const FILES=['package.json','LICENSE','NOTICE','src/markers/index.mjs','src/markers/index.d.mts','src/markers/client.mjs','src/markers/client.d.mts','src/markers/protocol.mjs','src/contract/descriptor.mjs','src/schema/spec.mjs'];
+export const FILES=['package.json','LICENSE','NOTICE','src/markers/index.mjs','src/markers/index.d.mts','src/markers/client.mjs','src/markers/client.d.mts','src/markers/protocol.mjs','src/astro/loaders.mjs','src/astro/source-spans.mjs','src/contract/descriptor.mjs','src/schema/spec.mjs'];
 export const VENDOR=fileURLToPath(new URL('./astro-frontend-editor/',import.meta.url));
 export const sha256=bytes=>createHash('sha256').update(bytes).digest('hex');
 
