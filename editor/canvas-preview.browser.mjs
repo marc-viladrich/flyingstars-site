@@ -107,17 +107,20 @@ test('canvas lifecycle batches settings, releases removed controllers and rebind
   assert.deepEqual(await page.evaluate(() => [window.mounts, window.disposals, window.clicks]), [3, 2, 2]);
 });
 
-test('hidden or absent canvas keeps pricing text in column 2 on desktop and mobile', async t => {
+test('pricing text sits beside a visible orb and takes the full card width when the orb is hidden or absent', async t => {
   const css = await readFile(new URL('../src/styles/global.css', import.meta.url), 'utf8');
-  const page = await pageFor(t, '<main><article class="pack"><canvas hidden></canvas><div><h3>Spark</h3><p>Package description</p></div></article></main>');
+  const page = await pageFor(t, '<main><article class="pack"><canvas></canvas><div><h3>Spark</h3><p>Package description</p></div></article></main>');
   await page.addStyleTag({ content: css });
+  const layout = () => page.locator('.pack > div').evaluate(node => { const card = node.parentElement.getBoundingClientRect(), box = node.getBoundingClientRect(); return { column: getComputedStyle(node).gridColumnStart, left: box.left - card.left, share: box.width / card.width }; });
   for (const width of [1200, 390]) {
     await page.setViewportSize({ width, height: 800 });
-    for (const absent of [false, true]) {
-      if (absent) await page.locator('canvas').evaluate(node => node.remove());
-      const layout = await page.locator('.pack > div').evaluate(node => ({ column: getComputedStyle(node).gridColumnStart, width: node.getBoundingClientRect().width, left: node.getBoundingClientRect().left - node.parentElement.getBoundingClientRect().left }));
-      assert.equal(layout.column, '2'); assert.ok(layout.width > 150); assert.ok(layout.left >= (width < 640 ? 72 : 96) + 18);
-    }
-    await page.locator('.pack').evaluate(node => node.prepend(Object.assign(document.createElement('canvas'), { hidden: true })));
+    const beside = await layout();
+    assert.equal(beside.column, '2'); assert.ok(beside.left >= 96 + 18, 'text starts after the orb column');
+    await page.locator('canvas').evaluate(node => { node.hidden = true; });
+    const hidden = await layout();
+    await page.locator('canvas').evaluate(node => node.remove());
+    const absent = await layout();
+    for (const state of [hidden, absent]) { assert.equal(state.column, '1'); assert.ok(state.left < 40, 'text starts at the card padding'); assert.ok(state.share > 0.8, 'text uses the card width'); }
+    await page.locator('.pack').evaluate(node => node.prepend(document.createElement('canvas')));
   }
 });
