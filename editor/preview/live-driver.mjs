@@ -2,7 +2,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { spawn } from "node:child_process";
 import { DraftWorkspace } from "./workspace.mjs";
-import { awaitLoaded } from "./proof.mjs";
+import { awaitLoaded, provenanceDir } from "./proof.mjs";
 
 // Live preview driver: a warm `astro dev` on a private workspace renders the draft with the real components.
 // A render returns only once the provenance proof shows Astro loaded exactly the requested files.
@@ -58,7 +58,7 @@ export class LiveDriver {
       const log = await fs.open(path.join(path.dirname(this.dir), "dev.log"), "a");
       const child = spawn(this.node, [cli, "dev", "--port", String(this.port), "--host", "127.0.0.1"], {
         cwd: this.dir,
-        env: { ...this.env, ASTRO_TELEMETRY_DISABLED: "1", ...this.site?.extensions?.first("buildEnvironment", { editor: true, origin: this.origin }) },
+        env: { ...this.env, ASTRO_TELEMETRY_DISABLED: "1", ...this.site?.extensions?.first("buildEnvironment", { editor: true, origin: this.origin }), AFE_PROVENANCE_DIR: provenanceDir(this.dir) },
         stdio: ["ignore", log.fd, log.fd],
         detached: true,
       });

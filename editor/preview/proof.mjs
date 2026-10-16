@@ -11,8 +11,12 @@ import { sharedSlices } from "../vendor/astro-frontend-editor/src/astro/source-s
 const sha256 = (value) => createHash("sha256").update(value).digest("hex");
 const codecOf = (file) => ({ ".json": "json", ".yaml": "yaml", ".yml": "yaml" })[path.extname(file)] ?? null;
 
+// Where a workspace's Astro writes its manifests: drivers set AFE_PROVENANCE_DIR to this for their processes, so a
+// value inherited from the editor (the site's own folder) never receives a draft's provenance.
+export const provenanceDir = (dir) => path.join(dir, ".astro", "afe-provenance");
+
 export async function readProvenance(dir) {
-  const folder = path.join(dir, process.env.AFE_PROVENANCE_DIR ?? ".astro/afe-provenance");
+  const folder = provenanceDir(dir);
   const manifests = [];
   for (const name of await fs.readdir(folder).catch(() => [])) {
     if (!name.endsWith(".json")) continue;

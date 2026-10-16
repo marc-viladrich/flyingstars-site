@@ -3,6 +3,7 @@ import path from "node:path";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { DraftWorkspace, snapshotId } from "./workspace.mjs";
+import { provenanceDir } from "./proof.mjs";
 const run = promisify(execFile);
 
 // Static preview driver for hosts without room for a permanent dev server: each draft snapshot is built with
@@ -61,7 +62,7 @@ export class StaticDriver {
     await fs.rm(output, { recursive: true, force: true });
     await fs.mkdir(output, { recursive: true });
     const cli = path.join(this.workspace.dir, "node_modules/astro/bin/astro.mjs");
-    const env = { ...this.env, ASTRO_TELEMETRY_DISABLED: "1", ...this.site?.extensions?.first("buildEnvironment", { editor: true, origin: this.origin, imageCache: this.imageCache }) };
+    const env = { ...this.env, ASTRO_TELEMETRY_DISABLED: "1", ...this.site?.extensions?.first("buildEnvironment", { editor: true, origin: this.origin, imageCache: this.imageCache }), AFE_PROVENANCE_DIR: provenanceDir(this.workspace.dir) };
     try {
       const result = await run(this.node, [cli, "build", "--outDir", path.join(output, "site")], { cwd: this.workspace.dir, env, timeout: this.timeout, maxBuffer: 5_000_000 });
       await fs.writeFile(path.join(output, "build.log"), result.stdout + result.stderr);
