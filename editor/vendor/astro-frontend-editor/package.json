@@ -1,0 +1,26 @@
+{
+  "name": "astro-frontend-editor",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "exports": {
+    "./astro/loaders": "./src/astro/loaders.mjs",
+    "./contract": "./src/contract/index.mjs",
+    "./schema": "./src/schema/index.mjs",
+    "./testkit": "./src/testkit/index.mjs",
+    "./package.json": "./package.json",
+    "./markers": {
+      "types": "./src/markers/index.d.mts",
+      "default": "./src/markers/index.mjs"
+    },
+    "./markers/client": {
+      "types": "./src/markers/client.d.mts",
+      "default": "./src/markers/client.mjs"
+    }
+  },
+  "bin": { "afe": "./bin/afe.mjs" },
+  "engines": { "node": ">=22" },
+  "peerDependencies": { "astro": "^7" },
+  "scripts": { "test": "node --test test/*.test.mjs" }
+}

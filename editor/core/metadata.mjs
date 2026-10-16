@@ -1,4 +1,4 @@
-import {readMeta} from './afe-meta-spec.mjs';
+import {readMeta} from '../vendor/astro-frontend-editor/src/schema/spec.mjs';
 export function checkedMeta(value={}) {
   const {value:metadata,issues}=readMeta(value);
   if(issues.length)throw new Error(issues.map(issue=>issue.message).join('; '));

@@ -68,7 +68,7 @@ test('generic browser modules contain no pilot identities, record IDs, selectors
  for(const file of files){const source=await readFile(new URL('./web/'+file,import.meta.url),'utf8');for(const pattern of forbidden)assert.doesNotMatch(source,pattern,file);}
 });
 
-test('actual browser graphs link under adapter-served URLs and startup registers exactly one instance',async()=>{
+test('actual browser graphs link under editor- and adapter-served URLs and startup registers exactly one instance',async()=>{
  const root=fileURLToPath(new URL('../',import.meta.url));
  const site=await createFlyingStarsAdapter(root);
  // Link the real HTTP module graph in a browser-like realm. This detects missing served modules,
@@ -76,7 +76,7 @@ test('actual browser graphs link under adapter-served URLs and startup registers
  const script=`
  import {SourceTextModule,createContext} from 'node:vm';
  import {readFile} from 'node:fs/promises';
- import {serveFile} from ${JSON.stringify(new URL('./server.mjs',import.meta.url).href)};
+ import {serveFile,EDITOR_BROWSER_MODULES} from ${JSON.stringify(new URL('./server.mjs',import.meta.url).href)};
  import assert from 'node:assert/strict';
  const root=${JSON.stringify(root)},files=${JSON.stringify(site.browserFiles)};
  for(const entry of ['/editor/editor.js','/editor/frame.js','/editor/site-adapter.mjs']){
@@ -85,8 +85,9 @@ test('actual browser graphs link under adapter-served URLs and startup registers
    if(cache.has(url))return cache.get(url);
    const pathname=new URL(url).pathname;
    let bytes,status;
-   const base=pathname==='/editor/marked.mjs'?root+'node_modules/marked/lib/':files[pathname]?root:root+'editor/web/';
-   const relative=pathname==='/editor/marked.mjs'?'/marked.esm.js':files[pathname]||pathname.slice('/editor/'.length);
+   const own=EDITOR_BROWSER_MODULES.includes(pathname);
+   const base=pathname==='/editor/marked.mjs'?root+'node_modules/marked/lib/':own?root+'editor/':files[pathname]?root:root+'editor/web/';
+   const relative=pathname==='/editor/marked.mjs'?'/marked.esm.js':own?pathname:files[pathname]||pathname.slice('/editor/'.length);
    try{await serveFile({writeHead(code){status=code;},end(body){bytes=body;}},base,relative);}catch(error){throw Error(url+': '+error.message);}
    assert.equal(status,200,url);
    const module=new SourceTextModule(bytes.toString(),{context,identifier:url});cache.set(url,module);return module;

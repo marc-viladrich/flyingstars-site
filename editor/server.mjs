@@ -4,6 +4,7 @@ import {withPreviewBar} from './preview-page.mjs';
 import http from 'node:http';
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
+import {fileURLToPath} from 'node:url';
 import {NativeStore,failure} from './native-store.mjs';
 import {createExtensionRegistry} from './core/extensions.mjs';
 import {NativeBuilder} from './native-builder.mjs';
@@ -17,6 +18,10 @@ import {EditorAuth} from './auth.mjs';
 import {isMain,assertStateLocation} from './paths.mjs';
 import {resolveRuntimeOptions} from './runtime-options.mjs';
 import {createFlyingStarsAdapter as createSiteAdapter} from './flyingstars-adapter.mjs';
+// Browser modules the editor itself imports outside editor/web (its core, the vendored product decoder).
+// They belong to the editor, so every site gets them without listing them in its adapter.
+const editorRoot=fileURLToPath(new URL('./',import.meta.url));
+export const EDITOR_BROWSER_MODULES=Object.freeze(['/core/metadata.mjs','/web/sha256.mjs',...['schema/spec','markers/client','markers/protocol'].map(name=>`/vendor/astro-frontend-editor/src/${name}.mjs`)]);
 const mime={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.json':'application/json','.svg':'image/svg+xml','.webp':'image/webp','.jpg':'image/jpeg','.jpeg':'image/jpeg','.png':'image/png','.woff2':'font/woff2','.ico':'image/x-icon','.pdf':'application/pdf','.mp4':'video/mp4'};
 export async function serveFile(res,base,relative,enhance=false){
  const decoded=decodeURIComponent(relative);
@@ -145,6 +150,7 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
   }
   if(req.method==='GET'){
    if(p==='/editor/marked.mjs')return await serveFile(res,path.join(source,'node_modules/marked/lib'),'/marked.esm.js');
+   if(EDITOR_BROWSER_MODULES.includes(p))return await serveFile(res,editorRoot,p);
    if(Object.hasOwn(adapter.browserFiles,p))return await serveFile(res,source,adapter.browserFiles[p]);
    if(p==='/public/'||p==='/public'){res.writeHead(302,{location:publicOrigin+'/'});return res.end();}
    if(p.startsWith('/editor/shared/'))return await serveFile(res,root,p.slice('/editor/shared'.length));

@@ -8,7 +8,7 @@ import path from 'node:path';
 import os from 'node:os';
 import {randomUUID,createHash} from 'node:crypto';
 import {z} from 'astro/zod';
-import {validateMeta} from './core/afe-meta-spec.mjs';
+import {validateMeta} from './vendor/astro-frontend-editor/src/schema/spec.mjs';
 import {assertMetadataWrite} from './core/write-policy.mjs';
 import {listPolicy,nodeAt,recordTitle,arrayActionAllowed} from './core/metadata.mjs';
 import {createFlyingStarsAdapter} from './flyingstars-adapter.mjs';
@@ -21,10 +21,7 @@ import {codecs} from './core/codecs.mjs';
 import {kindOf} from './web/record-kinds.mjs';
 const root=fileURLToPath(new URL('../',import.meta.url));
 
-test('vendored vocabulary is unchanged and rejects unknown keys, including nested members',async()=>{
- const source=await readFile(new URL('./core/afe-meta-spec.mjs',import.meta.url),'utf8');
- const original=source.split('\n').slice(2).join('\n');
- assert.equal(createHash('sha256').update(original).digest('hex'),'f61891b2e32a6d8e3ba6475d2b4793fd242e6e67d779b8fadf3d094098deaaed');
+test('vendored vocabulary rejects unknown keys, including nested members',async()=>{
  for(const meta of [{surprise:true},{array:{table:true}},{reference:{collection:'team',encoding:'id',guess:true}}])assert.ok(validateMeta(meta).some(i=>i.code==='unknown-key'));
  const schema=z.string().meta({'x-afe':{surprise:true}});
  assert.throws(()=>schemaDescription(schema),/Unknown x-afe key/);

@@ -1,5 +1,3 @@
-// Vendored from astro-frontend-editor/src/schema/spec.mjs, package 0.0.0, contract 1.0 (PR 4, 2026-10-15).
-// PR 11 replaces this module with the package import. Keep the vocabulary identical.
 /** Closed metadata vocabulary. Validation and defaults both read this object. */
 const string = { type: 'string' };
 const boolean = { type: 'boolean' };

@@ -1,0 +1,17 @@
+{
+ "package": "astro-frontend-editor",
+ "commit": "e2dade78d78a2d386ef384dde0d715d8b608398b",
+ "replacedBy": "PR 11: package dependency",
+ "files": {
+  "package.json": "636d9f3bee6001bee9b11195496ccb0dd2cd08fb200d9991f0501869ab5d0d0c",
+  "LICENSE": "a7d00bfd54525bc694b6e32f64c7ebcf5e6b7ae3657be5cc12767bce74654a47",
+  "NOTICE": "80c7b40ee28535e4de5c80759ecacd4c1a1d475814745d4d93e64ef593b945a5",
+  "src/markers/index.mjs": "80004453b04be550198a6c046bdf11804726936c2b27dbfefcf9809d6ee629e6",
+  "src/markers/index.d.mts": "92afb66e3870d7b6c12fec13a6eb2c16a077fb17dcd245164d954453b95db042",
+  "src/markers/client.mjs": "094e281c679c82a306425052193bbfa51dad66e38c61dc78e868718cfb730e6f",
+  "src/markers/client.d.mts": "b37a36d31d428409660d2d0c6fa0a8761be50e3a28e0bec82bc0ec5594529ee9",
+  "src/markers/protocol.mjs": "3e9e77d0b5b76a0c4e3614620759b277b0d6ba5ecd6bb4e42899e4b0b2ae01d7",
+  "src/contract/descriptor.mjs": "4b5925b37128468dd2dc573d3d8905fc946d19772a95d46e558f6dac9cfa92b0",
+  "src/schema/spec.mjs": "f61891b2e32a6d8e3ba6475d2b4793fd242e6e67d779b8fadf3d094098deaaed"
+ }
+}
