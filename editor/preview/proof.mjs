@@ -46,21 +46,24 @@ export function loaded(manifests, file, content) {
 
 /**
  * Waits until every file in `files` (file → bytes, null = deleted) is loaded and Astro's data store was written
- * after the newest manifest involved. A file that exists in the saved state but that no loader reads (a module
- * imported directly) cannot be proven this way: it is reported as `unproven` after a short settling time.
+ * after the newest manifest involved. A file that exists in the saved state but that no loader has ever read (a
+ * module imported directly) cannot be proven this way: it is reported as `unproven` after a short settling time.
+ * `known` collects every source a manifest has named, across calls: a saved file a draft deleted is absent from
+ * the manifests for a while, yet still belongs to its collection when it comes back.
  * Resolves with the evidence, rejects after `timeout` ms.
  */
-export async function awaitLoaded(dir, files, { existing = new Set(), timeout = 8000, interval = 25, settle = 150, dataStore = path.join(dir, ".astro", "data-store.json") } = {}) {
+export async function awaitLoaded(dir, files, { existing = new Set(), known = new Set(), timeout = 8000, interval = 25, settle = 150, dataStore = path.join(dir, ".astro", "data-store.json") } = {}) {
   const started = Date.now();
   const first = await readProvenance(dir);
-  const sources = new Set(first.flatMap((manifest) => manifest.entries.map((entry) => entry.source)));
-  const unproven = [...files.keys()].filter((file) => existing.has(file) && !sources.has(file));
+  for (const manifest of first) for (const entry of manifest.entries) known.add(entry.source);
+  const unproven = [...files.keys()].filter((file) => existing.has(file) && !known.has(file));
   const proven = new Map([...files].filter(([file]) => !unproven.includes(file)));
   // Collections that mention a file at any point: a deletion is proven by a manifest that no longer does.
   const involved = new Set();
   let pending = [];
   for (let manifests = first; ; manifests = await readProvenance(dir)) {
     pending = [];
+    for (const manifest of manifests) for (const entry of manifest.entries) known.add(entry.source);
     for (const [file, content] of proven) {
       const result = loaded(manifests, file, content);
       if (!result.ok) pending.push(file);

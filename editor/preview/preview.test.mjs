@@ -150,6 +150,27 @@ test("awaitLoaded: a deletion needs a newer data store too; files no loader read
   }
 });
 
+test("awaitLoaded: a saved file a draft deleted and then restored is waited for, not taken for a non-collection file", async () => {
+  const dir = await temporary();
+  try {
+    const file = "src/content/faq/a.md",
+      known = new Set();
+    await provenance(dir, [glob("faq", [[file, "A"]])]);
+    await awaitLoaded(dir, new Map([[file, "A"]]), { existing: new Set([file]), known, timeout: 1000, interval: 10 });
+    // The draft deleted it: the manifest no longer names it. Restoring it must wait for the loader.
+    await provenance(dir, [glob("faq", [])], Date.now() + 1000);
+    const waiting = awaitLoaded(dir, new Map([[file, "A"]]), { existing: new Set([file]), known, timeout: 3000, interval: 10 });
+    let settled = false;
+    waiting.then(() => (settled = true));
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    assert.equal(settled, false);
+    await provenance(dir, [glob("faq", [[file, "A"]])], Date.now() + 2000);
+    assert.deepEqual((await waiting).unproven, []);
+  } finally {
+    await fs.rm(dir, { recursive: true, force: true });
+  }
+});
+
 test("awaitLoaded fails closed: a created file no loader picks up is a 504, not an unproven page", async () => {
   const dir = await temporary();
   try {

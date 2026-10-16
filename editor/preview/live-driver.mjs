@@ -24,6 +24,8 @@ export class LiveDriver {
     this.base = `http://127.0.0.1:${port}`;
     this.starting = null;
     this.store = store;
+    // Every file a loader has read in this workspace (see proof.mjs).
+    this.known = new Set();
   }
   async init() {
     await this.workspace.ensure();
@@ -99,7 +101,7 @@ export class LiveDriver {
     for (const file of moved.changed) if (!expected.has(file)) expected.set(file, await this.workspace.read(file));
     const existing = new Set();
     for (const file of expected.keys()) if ((await this.workspace.saved(head, file)) !== null) existing.add(file);
-    const proof = await awaitLoaded(this.dir, expected, { existing, timeout: this.proofTimeout });
+    const proof = await awaitLoaded(this.dir, expected, { existing, known: this.known, timeout: this.proofTimeout });
     const url = new URL(route, this.base);
     url.searchParams.set("editor", "1");
     const fetchHtml = async () => {
@@ -111,7 +113,7 @@ export class LiveDriver {
     // A page that stops mid-stream hit a render error; a fresh dev server gets one more try.
     if (!complete(html)) {
       await this.restart();
-      await awaitLoaded(this.dir, expected, { existing, timeout: this.proofTimeout });
+      await awaitLoaded(this.dir, expected, { existing, known: this.known, timeout: this.proofTimeout });
       html = await fetchHtml();
       if (!complete(html)) throw Object.assign(Error("Die Vorschau dieser Seite ist unvollständig (Renderfehler)."), { status: 502 });
     }
