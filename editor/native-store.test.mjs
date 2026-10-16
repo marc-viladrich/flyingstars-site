@@ -22,3 +22,16 @@ test('All real package-backed YAML cards select canonical packages without shado
 test('Data-only editor rejects executable URLs and embedded HTML in Markdown before committing',async t=>{const s=await fixture(t),st=await s.state();const page=st.records.find(r=>r.id==='page/index'),href=page.fields.find(f=>f.path.at(-1)==='href');await assert.rejects(s.save(request(st,[[page.id,href.path,'javascript:alert(1)']])));const markdown=st.records.find(r=>r.fields.some(f=>f.path.at(-1)==='body')),body=markdown.fields.find(f=>f.path.at(-1)==='body');await assert.rejects(s.save(request(st,[[markdown.id,body.path,'<script>alert(1)</script>']])));assert.equal(await s.head(),st.head);});
 
 test('Markdown links follow the same URL policy; external image injection is rejected without losing drafts',async t=>{const s=await fixture(t),st=await s.state(),r=st.records.find(r=>r.fields.some(f=>f.path.at(-1)==='body')),p=r.fields.find(f=>f.path.at(-1)==='body').path;for(const body of ['[Link](javascript:alert%281%29)','![Tracking](https://unapproved.example/pixel.png)'])await assert.rejects(s.save(request(st,[[r.id,p,body]])));assert.equal(await s.head(),st.head);});
+
+test('a site checked out as a Git worktree saves: shared lock, per-worktree index, nothing left behind',async t=>{
+ const main=await fixture(t),tree=main.root+'-worktree';
+ await git(main.root,['worktree','add','--quiet','-b','content/worktree',tree,'content/draft']);t.after(()=>fs.rm(tree,{recursive:true,force:true}));
+ await fs.symlink(await fs.realpath(path.join(root,'../node_modules')),path.join(tree,'node_modules'));
+ assert.ok((await fs.stat(path.join(tree,'.git'))).isFile(),'linked worktree has a .git file');
+ const store=await new NativeStore(tree,{remote:false,site:await createFlyingStarsAdapter(tree),runtime:resolveRuntimeOptions({values:{siteRoot:tree,draftBranch:'content/worktree'}})}).init();
+ const state=await store.state(),saved=await store.save(request(state,[['package/spark',['price'],8124]]));
+ assert.equal(await git(tree,['rev-parse','content/worktree']),saved.head);
+ assert.match(await git(tree,['show',saved.head+':src/content/packages/spark.json']),/"price": 8124/);
+ const common=await git(tree,['rev-parse','--path-format=absolute','--git-common-dir']),own=await git(tree,['rev-parse','--path-format=absolute','--git-dir']);
+ for(const dir of [common,own])assert.deepEqual((await fs.readdir(dir)).filter(name=>/operation\.lock|native-index/.test(name)),[],dir);
+});

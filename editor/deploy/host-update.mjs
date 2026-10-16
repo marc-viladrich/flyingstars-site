@@ -11,6 +11,7 @@ import {prepareDraftRebase,applyDraftRebase} from '../rebase-draft.mjs';
 import {isMain,assertStateLocation} from '../paths.mjs';
 import {resolveRuntimeOptions} from '../runtime-options.mjs';
 import {createFlyingStarsAdapter as createSiteAdapter,legacyRuntimePaths,legacyRestartEnvironment} from '../flyingstars-adapter.mjs';
+import {gitDirs} from '../git-dirs.mjs';
 const run = promisify(execFile);
 
 export async function hostUpdate({source, state, remote, webroot, restart = process.env.DEPLOY_RESTART_CMD, expectedMain = process.env.DEPLOY_EXPECTED_MAIN, install = true, options} = {}) {
@@ -27,7 +28,7 @@ export async function hostUpdate({source, state, remote, webroot, restart = proc
     const main = await git(source, ['rev-parse', 'refs/remotes/' + selected + '/' + runtime.git.publishedBranch]);
     if (expectedMain && main !== expectedMain) throw Error('main ist inzwischen weitergelaufen. Bitte CI für den aktuellen Stand abwarten und erneut deployen.');
     const prepared = await prepareDraftRebase(source, main, git, selected, runtime.git);
-    const staging = path.join(source, '.git', legacyRuntimePaths.deployPrefix + randomUUID());
+    const staging = path.join((await gitDirs(source)).gitDir, legacyRuntimePaths.deployPrefix + randomUUID());
     await git(source, ['worktree', 'add', '--quiet', '--detach', staging, prepared.head]);
     let installed = false;
     try {

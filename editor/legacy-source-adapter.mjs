@@ -2,6 +2,7 @@ import path from 'node:path';
 import {promises as fs} from 'node:fs';
 import {codecs} from './core/codecs.mjs';
 import {SourceRegistry, FileStorage, hashBytes, conflict} from './core/source-registry.mjs';
+import {gitDirs} from './git-dirs.mjs';
 
 /** Git revision publication remains here while the pilot owns validation/replay. */
 class LegacyGitStorage extends FileStorage {
@@ -13,7 +14,7 @@ class LegacyGitStorage extends FileStorage {
   }
 
   async commit(files,{check,parent,requestId,payload,actor,binaryWrites=[]}){
-    const all=[...files,...binaryWrites],index=path.join(this.root,'.git','native-index-'+requestId),env={...actor?{GIT_AUTHOR_NAME:actor.name,GIT_AUTHOR_EMAIL:actor.email}:{},GIT_INDEX_FILE:index};
+    const all=[...files,...binaryWrites],index=path.join((await gitDirs(this.root)).gitDir,'native-index-'+requestId),env={...actor?{GIT_AUTHOR_NAME:actor.name,GIT_AUTHOR_EMAIL:actor.email}:{},GIT_INDEX_FILE:index};
     const blobs=new Map();let candidate,published=false;
     try{
       await this.git(this.root,['read-tree',parent],{extraEnv:env});

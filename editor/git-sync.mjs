@@ -1,6 +1,7 @@
 import {legacyRuntimePaths,legacyRuntimeMessages} from './runtime-options.mjs';
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
+import {gitDirs} from './git-dirs.mjs';
 
 export async function configuredRemote(root, git, selected) {
   if (selected === false || selected === 'off') return null;
@@ -33,7 +34,7 @@ export class GitSync {
     this.running = (async () => {
       // Snapshot quickly under the store lock; network I/O must never hold up another save.
       const snapshot = await this.store.exclusive(async () => {
-      const head = await this.store.head(), leaseFile = path.join(this.store.root, '.git', legacyRuntimePaths.draftLease);
+      const head = await this.store.head(), leaseFile = path.join((await gitDirs(this.store.root)).commonDir, legacyRuntimePaths.draftLease);
       const lease = await fs.readFile(leaseFile, 'utf8').catch(e => {if (e.code !== 'ENOENT') throw e; return '';});
       return {head,leaseFile,lease};
       });
