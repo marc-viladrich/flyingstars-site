@@ -254,6 +254,7 @@ function stagedRecords() {
     id: item.id,
     // The page's markers name Astro addresses; the frame finds the record by this one.
     address: item.address,
+    route: item.route,
     title: item.title,
     revision: item.revision,
     data: item.data,
@@ -358,6 +359,8 @@ function syncFrame() {
   send("state", {
     records: stagedRecords(),
     mediaSources: sourceMediaSources([...draft.base.values()]),
+    // The record this page shows; the frame opens it through its sections, never as a record panel.
+    page: currentPage()?.id ?? null,
     preview,
     busy,
     outlines,

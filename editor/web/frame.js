@@ -13,6 +13,7 @@ import {extensions} from './site-adapter.mjs';
 const translations=extensions.require('translationStorage');
 const sourceLocale=extensions.require('languages').source;
 let sourceMediaMap = {};
+let pageRecordId = null;
 let records = [],
   preview = false,
   busy = false,
@@ -67,6 +68,9 @@ function target(c) {
 const occurrenceOf = (node) => afe.occurrenceInfo(records, node);
 // Everything one occurrence renders, read from all its wrappers (a card may be drawn twice), as {id, path, kind}.
 const occurrenceMarkers = (identity) => afe.occurrenceBindings(records, document, identity);
+// The record of the page shown here opens through its sections, not as a record panel; cards of other
+// records (also of other pages) open their record.
+const isPageRecord = (id) => id === pageRecordId;
 const renderedId = (node) => {
   const item = afe.markerOf(node, afe.isItem);
   return item ? afe.recordIdOf(records, item.rendered) : null;
@@ -98,13 +102,13 @@ function inspection(node) {
   }
   if (mediaAt) return { type: "media", data: { ...mediaAt, section: sectionInfo(media.node), entry: entryInfo(media.node) } };
   if (c) return { type: "inspect", data: { ...target(c), rect: rect(c.node) } };
-  if (wholeRecord && !extensions.some('isPage',{id:wholeRecord})) return { type: "inspect-record", data: { id: wholeRecord, section: sectionInfo(field.node) } };
+  if (wholeRecord && !isPageRecord(wholeRecord)) return { type: "inspect-record", data: { id: wholeRecord, section: sectionInfo(field.node) } };
   const entry = entryInfo(node);
   if (entry) return { type: "inspect-entry", data: { ...entry, section: sectionInfo(node) } };
   // A record shown here without being a list entry (a record wrapper, a queried card whose record has no panel of its own).
   const shown = afe.closestMarker(node, (marker) => marker.kind === "record" || afe.isItem(marker));
   const shownId = shown && afe.recordIdOf(records, shown.marker.kind === "record" ? shown.marker.address.owner : shown.marker.rendered);
-  if (shownId && !extensions.some('isPage',{id:shownId}))
+  if (shownId && !isPageRecord(shownId))
     return { type: "inspect-record", data: { id: shownId, section: sectionInfo(shown.node) } };
   const block = afe.blockInfo(records, node);
   if (block) return { type: "section", data: { id: block.id, index: block.index } };
@@ -511,6 +515,7 @@ window.addEventListener("message", (event) => {
   const data = event.data;
   if (data.type === "state") {
     records = data.records || [];
+    pageRecordId = data.page ?? null;
     sourceMediaMap = data.mediaSources || sourceMediaMap;
     preview = !!data.preview;
     busy = !!data.busy;
