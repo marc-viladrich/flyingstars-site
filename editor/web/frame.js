@@ -79,6 +79,8 @@ function inspection(node) {
   const mediaAt = media && afe.binding(records, media.marker.address);
   const field = !mediaAt && afe.closestMarker(node, afe.isField);
   const c = field && context(field.node, !afe.hasMarker(field.node, afe.isInlineField));
+  // A panel binding to a whole record (empty path) opens that record.
+  const wholeRecord = field && !c && field.marker.kind === "field" && !field.marker.address.path.length && afe.recordIdOf(records, field.marker.address.owner);
   const occurrence = occurrenceOf(node);
   if (occurrence) {
     let focus = mediaAt ? { ...mediaAt, kind: "media" } : c ? { id: c.id, path: c.path, kind: c.derived ? "derived" : "field" } : null;
@@ -96,6 +98,7 @@ function inspection(node) {
   }
   if (mediaAt) return { type: "media", data: { ...mediaAt, section: sectionInfo(media.node), entry: entryInfo(media.node) } };
   if (c) return { type: "inspect", data: { ...target(c), rect: rect(c.node) } };
+  if (wholeRecord && !extensions.some('isPage',{id:wholeRecord})) return { type: "inspect-record", data: { id: wholeRecord, section: sectionInfo(field.node) } };
   const entry = entryInfo(node);
   if (entry) return { type: "inspect-entry", data: { ...entry, section: sectionInfo(node) } };
   // A record shown here without being a list entry (a record wrapper, a queried card whose record has no panel of its own).
@@ -401,8 +404,8 @@ document.addEventListener(
         event.preventDefault();
         event.stopPropagation();
         selection(c);
-      }
-      return;
+      } else if (!afe.closestMarker(event.target, afe.isInlineField) && inspect(derived, { x: event.clientX, y: event.clientY })) event.preventDefault();
+      if (c || !afe.closestMarker(event.target, afe.isInlineField)) return;
     }
     const node = afe.closestMarker(event.target, afe.isInlineField)?.node;
     const entryNode = !node && afe.closestMarker(event.target, afe.isMembership)?.node;
