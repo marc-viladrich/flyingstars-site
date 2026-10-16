@@ -5,6 +5,7 @@ import {codecs} from '../editor/core/codecs.mjs';
 import {describeSchema} from '../editor/native-schema.mjs';
 import {getPath, seoFields} from '../src/lib/translatable-fields.mjs';
 import {localize, sha256} from '../src/lib/localize.mjs';
+import {resolvePath} from '../editor/vendor/astro-frontend-editor/src/content/index.mjs';
 import {localizedHref} from '../src/lib/localized-routes.mjs';
 
 export async function readEditorialRecords(root) {
@@ -33,7 +34,7 @@ export async function seoFallbackReport(root, dist, {editor=false}={}) {
       const localized = localize(record,locale,{translation,editor});
       const fallbacks = fields.filter(([,fieldPath])=>localized.localization.fallback.some(p=>JSON.stringify(p)===JSON.stringify(fieldPath)))
         .map(([field,fieldPath])=>{
-          const value = translation?.values.find(value=>JSON.stringify(value.path)===JSON.stringify(fieldPath));
+          const value = translation?.values.find(value=>JSON.stringify(resolvePath(record.data,value.path))===JSON.stringify(fieldPath));
           const reason = !value ? 'missing' : value.sourceHash!==sha256(getPath(record.data,fieldPath)) ? 'stale' : 'unreviewed';
           // Include the real emitted value for a reviewer; no translation text is changed here.
           const output = field==='title' ? html.match(/<title>([\s\S]*?)<\/title>/)?.[1] : html.match(/<meta name="description" content="([^"]*)"/)?.[1];

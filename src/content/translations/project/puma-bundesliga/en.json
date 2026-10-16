@@ -1,0 +1,593 @@
+{
+  "format": 2,
+  "sourceId": "project/puma-bundesliga",
+  "locale": "en",
+  "sourceHash": "cbd8aa99e85ce258729bddf043b8929e1705b49afc3f835f8295437caa9617fc",
+  "values": [
+    {
+      "path": [
+        "showcase",
+        "credits",
+        1,
+        "label"
+      ],
+      "text": "Place",
+      "reviewed": false,
+      "sourceHash": "30fb259129e569445f9717f394a344607d61fc3611189c9a44a89d06fe5c20c9"
+    },
+    {
+      "path": [
+        "showcase",
+        "credits",
+        3,
+        "label"
+      ],
+      "text": "Drohnen",
+      "reviewed": false,
+      "sourceHash": "9dc7fa597613b82eecbe845291d235cf1c2c3bd2e22984207fad8e0b7fb31dd1"
+    },
+    {
+      "path": [
+        "title"
+      ],
+      "text": "PUMA",
+      "reviewed": false,
+      "sourceHash": "6f670aee856fccfa460e41d1c42bc1e66a9f4f064c8dc90ca2ffc4f90e68af02"
+    },
+    {
+      "path": [
+        "showcase",
+        "meta",
+        "title"
+      ],
+      "text": "PUMA: 100 drones to kick off a Bundesliga derby",
+      "reviewed": false,
+      "sourceHash": "d83516cf28b9a0bdfbfde6b9994f1edc3abd5a31533208bd85100564d646a305"
+    },
+    {
+      "path": [
+        "showcase",
+        "meta",
+        "description"
+      ],
+      "text": "Surprise before the kickoff: 100 drones showed at the Derby Gladbach against Dortmund over the Borussia-Park PUMA’s message “Stronger Together”.",
+      "reviewed": false,
+      "sourceHash": "83a523e742d6a0963a895ae70bbc820a2faf31b15ecf7f6c2a18d69fd2c7632f"
+    },
+    {
+      "path": [
+        "showcase",
+        "cardTitle"
+      ],
+      "text": "PUMA to kick-start the derby",
+      "reviewed": true,
+      "sourceHash": "aa90af9897feef7547348e44a90135cf23d2ae5b5ce92d5186d471ebb529fc74"
+    },
+    {
+      "path": [
+        "showcase",
+        "category"
+      ],
+      "text": "Sport · Bundesliga",
+      "reviewed": true,
+      "sourceHash": "fd4580aa0791f09b390819ea8aec42e581e343fab5b61a9aadae98f6bb746072"
+    },
+    {
+      "path": [
+        "showcase",
+        "kicker"
+      ],
+      "text": "Sport · Mönchengladbach · November 2022",
+      "reviewed": false,
+      "sourceHash": "d5a1e0c66db42f3d6e11187b660bf00559ba4dc5bd27cca298fcdfb758b25d04"
+    },
+    {
+      "path": [
+        "showcase",
+        "titleLines",
+        0
+      ],
+      "text": "{c}Stronger{/c}",
+      "reviewed": false,
+      "sourceHash": "5d977298f979f7708db31b4af403d60c10f8da503460687ee055531acbe451f9"
+    },
+    {
+      "path": [
+        "showcase",
+        "titleLines",
+        1
+      ],
+      "text": "{c}{o}Together{/o}{/c}",
+      "reviewed": false,
+      "sourceHash": "d24d26448beea8298b3e4979294f6e5f7c543009e517ae4e0fae6e79727683c7"
+    },
+    {
+      "path": [
+        "showcase",
+        "tagline"
+      ],
+      "text": "100 drones for PUMA to initiate the derby.",
+      "reviewed": false,
+      "sourceHash": "69880315253e8ac2eecff56d124d6c9043f29caa80384a611750f71df94f4f7a"
+    },
+    {
+      "path": [
+        "showcase",
+        "credits",
+        0,
+        "label"
+      ],
+      "text": "Customer",
+      "reviewed": false,
+      "sourceHash": "d1da7fb39689c31f757abde23ab1c9985ff8f5dddd935bd8c774cc7ca75c6e7e"
+    },
+    {
+      "path": [
+        "showcase",
+        "credits",
+        0,
+        "value"
+      ],
+      "text": "PUMA",
+      "reviewed": false,
+      "sourceHash": "6f670aee856fccfa460e41d1c42bc1e66a9f4f064c8dc90ca2ffc4f90e68af02"
+    },
+    {
+      "path": [
+        "showcase",
+        "credits",
+        1,
+        "value"
+      ],
+      "text": "Borussia Park, Mönchengladbach",
+      "reviewed": false,
+      "sourceHash": "798532fcd00d46c0c52f268eaf05d15e1284597367742a7ad746f74e5ea12bc6"
+    },
+    {
+      "path": [
+        "showcase",
+        "credits",
+        2,
+        "label"
+      ],
+      "text": "Date",
+      "reviewed": false,
+      "sourceHash": "9135882d323cd839a5239648d28440a256c299c08d108c1b09fc4b9872efcc3a"
+    },
+    {
+      "path": [
+        "showcase",
+        "credits",
+        2,
+        "value"
+      ],
+      "text": "11.11.2022 · Gladbach – Dortmund",
+      "reviewed": false,
+      "sourceHash": "51f5047fcad46d0a77b8747a0312ae2485f11f78162a2b13af3841e8d3aaace1"
+    },
+    {
+      "path": [
+        "showcase",
+        "numbers",
+        0,
+        "label"
+      ],
+      "text": "Drones over Borussia Park",
+      "reviewed": false,
+      "sourceHash": "af5f3cc685f57f98d8793d184d415fca2ff6a06a1726d6687804e301003cb910"
+    },
+    {
+      "path": [
+        "showcase",
+        "numbers",
+        1,
+        "label"
+      ],
+      "text": "Weeks from Order to Show",
+      "reviewed": false,
+      "sourceHash": "dbf1350dd1916beb9043e17e6e67c5d147cb9ef80bb6000d7262041ab23b1ce4"
+    },
+    {
+      "path": [
+        "showcase",
+        "numbers",
+        2,
+        "label"
+      ],
+      "text": "Motifs, from STRONGER to TOGETHER",
+      "reviewed": false,
+      "sourceHash": "1e03e9bd0271837fa6215d34fa150e334e6ea77aca196d20f02719f6be8b9581"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        0,
+        "kicker"
+      ],
+      "text": "01 · The idea",
+      "reviewed": false,
+      "sourceHash": "cc3ad1dd9a40a881731c1b62da01e64d07c08613dfe1eef514c1e7ded58dc4a7"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        0,
+        "title"
+      ],
+      "text": "Surprise before the kick",
+      "reviewed": false,
+      "sourceHash": "c61d66b80097c0a793585f68963766668da5f1438750dd4ac51fb543aa84f88c"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        0,
+        "text"
+      ],
+      "text": "With a guerrilla action before the kick-off, PUMA wanted to make its initiative “Stronger Together” visible – for a tolerant, diverse, inclusive and peaceful coexistence.",
+      "reviewed": false,
+      "sourceHash": "094f071237b8db056e86591dbdc9f717b06d28070c3913a1dd5b9efb81a6c288"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        0,
+        "image",
+        "caption"
+      ],
+      "text": "The Puma over Borussia Park",
+      "reviewed": false,
+      "sourceHash": "ed7c00d71f164653ce76527e5567411c42e8e1c5edb54960ea6e1347650f4b07"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        1,
+        "kicker"
+      ],
+      "text": "02 · The show",
+      "reviewed": false,
+      "sourceHash": "b841315416132731b9fc603a5534b933661bd29b52eea06c949675d082b9a6b8"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        1,
+        "title"
+      ],
+      "text": "Stronger becomes Together",
+      "reviewed": false,
+      "sourceHash": "846dba255b8d3011aa655bd52e1b02d302fa92c03b7918ad94d7b605e3ac93bd"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        1,
+        "text"
+      ],
+      "text": "A cougar appears in the sky, then de r Lettering STRONGER, de r It is transformed into TOGETHER. In the end, the cougar jumps – just like in the PUMA logo.",
+      "reviewed": false,
+      "sourceHash": "340396e00af1fb1b027447e2589a47a143c76c1b57b9ee0d44235d08585bb377"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        1,
+        "image",
+        "caption"
+      ],
+      "text": "STRONG",
+      "reviewed": false,
+      "sourceHash": "8cb51251cc49ef6ac3ef3fc80fe85c81bbaf922bcdeaab8ab598bc427eb79c54"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        2,
+        "kicker"
+      ],
+      "text": "03 · Implementation",
+      "reviewed": false,
+      "sourceHash": "696c3ad472f8d8ded287c4fae6faf9dc055e6b5456564aae23ac134d92a877f7"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        2,
+        "title"
+      ],
+      "text": "Three weeks from the mission to the show",
+      "reviewed": false,
+      "sourceHash": "8fa0097b5984b3fa7fc8b953b2cf48fb9598290d5fcad2d83054d975933cb647"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        2,
+        "text"
+      ],
+      "text": "We obtained the approval from the Federal Aviation Office in time and there s flight area pre-checked digitally.",
+      "reviewed": false,
+      "sourceHash": "6f86b30e7112de20d978891703bcf5aa44987d48c9afd74d7edec1255e5192ff"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        2,
+        "image",
+        "caption"
+      ],
+      "text": "TOGETHERS",
+      "reviewed": false,
+      "sourceHash": "af4d04c0625a32748483f3a7c70e485f336c68a675acc5875f37bfb8d94ede45"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        3,
+        "kicker"
+      ],
+      "text": "04 · The Echo",
+      "reviewed": false,
+      "sourceHash": "a03810f0d0827695838023f1de64a2d0cd8508a4ae93e012f12e872652a5384a"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        3,
+        "title"
+      ],
+      "text": "PUMA shared it itself",
+      "reviewed": false,
+      "sourceHash": "08bf2bb3eddbdb3fb33942fb33c0d5a7460b11a87c739f36d3ce5540134bc1b8"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        3,
+        "text"
+      ],
+      "text": "PUMA reported under the Title “Shining bright for diversity” and shared the show on Instagram at @puma.de.",
+      "reviewed": false,
+      "sourceHash": "9710cfb498de3a5026bf71921727013ff8253b860714fed8a09ca3caa2f769f0"
+    },
+    {
+      "path": [
+        "showcase",
+        "story",
+        3,
+        "image",
+        "caption"
+      ],
+      "text": "The Jumping Puma",
+      "reviewed": false,
+      "sourceHash": "bfdf957f116dc1af8fd3f12f4788c36c68a80436a3b773b4df2528ad03ce152c"
+    },
+    {
+      "path": [
+        "showcase",
+        "formation",
+        "title"
+      ],
+      "text": "The cougar, drone for drone.",
+      "reviewed": false,
+      "sourceHash": "db4b466e541c909f6396c823f351b02d4be18426c0caf9555d9f2157dd9f702b"
+    },
+    {
+      "path": [
+        "showcase",
+        "formation",
+        "text"
+      ],
+      "text": "We read these points from the original video – jed e Drone in its real position. Driving with De r Mouse through.",
+      "reviewed": false,
+      "sourceHash": "124e92b12578314575fd6d4138d3aafda09374596b34dce08334ddce7421dc49"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        0,
+        "altOverride"
+      ],
+      "text": "The cougar above the Borussia Park – PUMA",
+      "reviewed": false,
+      "sourceHash": "87ab4e97d864fb5e018bc30c6ee97a7e2bb43e23af1a09d3984a4927ff6e0ffa"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        0,
+        "caption"
+      ],
+      "text": "The Puma over Borussia Park",
+      "reviewed": false,
+      "sourceHash": "ed7c00d71f164653ce76527e5567411c42e8e1c5edb54960ea6e1347650f4b07"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        1,
+        "altOverride"
+      ],
+      "text": "STRONGER – PUMA",
+      "reviewed": false,
+      "sourceHash": "51baa435f553735441c71402e393cce866e8ebf9a6c8c9e0b1bc425241f0318b"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        1,
+        "caption"
+      ],
+      "text": "STRONG",
+      "reviewed": false,
+      "sourceHash": "8cb51251cc49ef6ac3ef3fc80fe85c81bbaf922bcdeaab8ab598bc427eb79c54"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        2,
+        "altOverride"
+      ],
+      "text": "TOGETHER — PUMA",
+      "reviewed": false,
+      "sourceHash": "173f868bc1af013cdbc5cceea0725a3192488b7793bf4ab8978a4a5e77aa9c6e"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        2,
+        "caption"
+      ],
+      "text": "TOGETHERS",
+      "reviewed": false,
+      "sourceHash": "af4d04c0625a32748483f3a7c70e485f336c68a675acc5875f37bfb8d94ede45"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        3,
+        "altOverride"
+      ],
+      "text": "The Jumping Puma – PUMA",
+      "reviewed": false,
+      "sourceHash": "983dc3896549b277a9671f463faedf105755602a666c15b32d613cf6a817a778"
+    },
+    {
+      "path": [
+        "showcase",
+        "gallery",
+        3,
+        "caption"
+      ],
+      "text": "The Jumping Puma",
+      "reviewed": false,
+      "sourceHash": "bfdf957f116dc1af8fd3f12f4788c36c68a80436a3b773b4df2528ad03ce152c"
+    },
+    {
+      "path": [
+        "showcase",
+        "setlist",
+        0,
+        "title"
+      ],
+      "text": "Storyboard",
+      "reviewed": false,
+      "sourceHash": "2b756b1663460f485291aae9e685fde956b7d443b52836dc6bff95fd88635f66"
+    },
+    {
+      "path": [
+        "showcase",
+        "setlist",
+        0,
+        "items",
+        0
+      ],
+      "text": "Appearing cougar",
+      "reviewed": false,
+      "sourceHash": "a852e3f5194546a0ed30b65fd52cedb924e3155f4461f17ad3f3836ac825f639"
+    },
+    {
+      "path": [
+        "showcase",
+        "setlist",
+        0,
+        "items",
+        1
+      ],
+      "text": "Lettering STRONGER",
+      "reviewed": false,
+      "sourceHash": "6cf7f785afaa26cd2d452a48488912468e39bbcc1f580aecde4a1b91349ca4ee"
+    },
+    {
+      "path": [
+        "showcase",
+        "setlist",
+        0,
+        "items",
+        2
+      ],
+      "text": "Transformation into TOGETHER",
+      "reviewed": false,
+      "sourceHash": "470349a3e5cbc81eb4ce348bd63d96f3b6ce8bb89535e6e5e45c77a5454ce7d8"
+    },
+    {
+      "path": [
+        "showcase",
+        "setlist",
+        0,
+        "items",
+        3
+      ],
+      "text": "Jumping cougar",
+      "reviewed": false,
+      "sourceHash": "17ab1f5f991f64a6e039046c04f242ea07433903907ab4fd3d283c0af118b5f2"
+    },
+    {
+      "path": [
+        "showcase",
+        "cta",
+        "title"
+      ],
+      "text": "A statement for your brand?",
+      "reviewed": false,
+      "sourceHash": "372e0211aa20bd48c402a36a1df4ce55a8370da271873f3ab530d5cf2ca5a92d"
+    },
+    {
+      "path": [
+        "showcase",
+        "cta",
+        "text"
+      ],
+      "text": "Also included Short-term: The Express is a show in under two weeks – approval included.",
+      "reviewed": false,
+      "sourceHash": "275dda97affeb5fadb803eac2be81950db689e4149fce361c4bac51f93ccca9a"
+    },
+    {
+      "path": [
+        "location"
+      ],
+      "text": "Borussia Park, Mönchengladbach",
+      "reviewed": false,
+      "sourceHash": "798532fcd00d46c0c52f268eaf05d15e1284597367742a7ad746f74e5ea12bc6"
+    },
+    {
+      "path": [
+        "summary"
+      ],
+      "text": "100 drones for PUMA to trigger the Derbys. Sport · Bundesliga.",
+      "reviewed": false,
+      "sourceHash": "baa8d315a71f7a213d7c33b224144d17c233382a7cc5bc48021baa409ea93b80"
+    },
+    {
+      "path": [
+        "body"
+      ],
+      "text": "100 drones for PUMA to trigger the Derbys. Sport · Bundesliga.\n",
+      "reviewed": false,
+      "sourceHash": "862c183815900dfe1d43c9e15005cb26383f2478de70322f01287a55753d8442"
+    }
+  ]
+}

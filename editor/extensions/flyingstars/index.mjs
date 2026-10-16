@@ -38,7 +38,7 @@ export function createFlyingStarsExtensions(site) {
   extension('queries',{query:queryFor}),
   extension('site-data',{normalize:contactProposals}),
   extension('inline',{codec:name=>name==='flyingstars/inline'?site.inlineCodec:undefined}),
-  extension('translations',{prepareTransaction:prepareOverlays,validateTransaction:validateOverlays,translationStorage:()=>translationStorage(site.translatableFields)}),
+  extension('translations',{prepareTransaction:prepareOverlays,validateTransaction:validateOverlays,translationStorage:()=>translationStorage(site.translatableFields,site.sourceFor)}),
   extension('media',{
    mediaLibrary,
    mediaPolicy:()=>({

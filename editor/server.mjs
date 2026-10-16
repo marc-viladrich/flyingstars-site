@@ -12,6 +12,7 @@ import {NativePublisher} from './native-publisher.mjs';
 import {uploadNativeMedia} from './native-media.mjs';
 import {NativeTranslation} from './native-translation.mjs';
 import {PreviewService} from './preview/service.mjs';
+import {planMigrations} from './migrations/index.mjs';
 import {LiveDriver} from './preview/live-driver.mjs';
 import {StaticDriver} from './preview/static-driver.mjs';
 import {createTranslationCore,executeBatched,loadMemory,saveMemory} from './translation-core.mjs';
@@ -23,7 +24,7 @@ import {createFlyingStarsAdapter as createSiteAdapter} from './flyingstars-adapt
 // Browser modules the editor itself imports outside editor/web (its core, the vendored product decoder).
 // They belong to the editor, so every site gets them without listing them in its adapter.
 const editorRoot=fileURLToPath(new URL('./',import.meta.url));
-export const EDITOR_BROWSER_MODULES=Object.freeze(['/core/metadata.mjs','/web/sha256.mjs',...['schema/spec','markers/client','markers/protocol'].map(name=>`/vendor/astro-frontend-editor/src/${name}.mjs`)]);
+export const EDITOR_BROWSER_MODULES=Object.freeze(['/core/metadata.mjs','/web/sha256.mjs',...['schema/spec','markers/client','markers/protocol','content/index','content/translation-paths'].map(name=>`/vendor/astro-frontend-editor/src/${name}.mjs`)]);
 const mime={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.json':'application/json','.svg':'image/svg+xml','.webp':'image/webp','.jpg':'image/jpeg','.jpeg':'image/jpeg','.png':'image/png','.woff2':'font/woff2','.ico':'image/x-icon','.pdf':'application/pdf','.mp4':'video/mp4'};
 // Routes of a built site: every index.html below it, as /path/; redirect stubs are not pages. Cached per build.
 const routeCache=new Map();
@@ -61,6 +62,9 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
  const authentication=runtime.auth.enabled?await new EditorAuth({...runtime.auth,sessionDir:path.join(stateDir,'runtime-private'),secure:canonicalOrigin.protocol==='https:',...(typeof auth==='object'?auth:{})}).init({forbiddenRoots:runtime.auth.forbiddenRoots}):null;
  const configuredSite=site||await createSiteAdapter(sourceDir);
  const adapter={...configuredSite,extensions:createExtensionRegistry([...configuredSite.extensions.definitions,...runtime.extensions])};
+ // Content in an older format would be read wrongly and written in a mix of formats: migrate first.
+ const pending=await planMigrations({root:sourceDir,site:adapter});
+ if(pending.length)throw Error(`Inhalte im alten Format (${pending.map(plan=>plan.id).join(', ')}). Erst ausführen: node editor/migrate.mjs --apply, dann committen.`);
  const languages=adapter.extensions.first('languages')??{source:'de',locales:{}};
  const store=await new NativeStore(sourceDir,{site:adapter,runtime}).init();
  const builder=new NativeBuilder(store,stateDir,{origin});if(initialize)await builder.init();

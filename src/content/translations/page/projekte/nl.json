@@ -1,0 +1,44 @@
+{
+  "format": 2,
+  "sourceId": "page/projekte",
+  "locale": "nl",
+  "sourceHash": "b6f09b674fc8bf93e3937535c3bb147611e0dbda044b1175f484a97d389f9c99",
+  "values": [
+    {
+      "path": [
+        "title"
+      ],
+      "text": "Projecten",
+      "reviewed": false,
+      "sourceHash": "e41fd32d41d92ffc10b66678fc816c999bd3c3d4c31180434968df16ece77d13"
+    },
+    {
+      "path": [
+        "description"
+      ],
+      "text": "FlyingStars drone shows voor Bokkenrijders, NFL, Ford Explorer en PUMA: geselecteerde verhalen, onderwerpen en video's van 100 tot 600 drones.",
+      "reviewed": false,
+      "sourceHash": "f857fddafb775c105a42a7327e9f29b8a3e9e6f2f7af319180bc380099515ec2"
+    },
+    {
+      "path": [
+        "sections",
+        0,
+        "text"
+      ],
+      "text": "Meer dan 3 0 shows per jaar van 100 tot 600 drones. Een kleine selectie:",
+      "reviewed": false,
+      "sourceHash": "f4bd420169aca03bfae3687c4828fa6961d6e30f599b0df4856cac3b082a6dfd"
+    },
+    {
+      "path": [
+        "sections",
+        0,
+        "headline"
+      ],
+      "text": "Nachten die we niet mogen vergeten.",
+      "reviewed": false,
+      "sourceHash": "1a0f95adf9e431893d658ecb95aea48240a5da92ffe7699cf18d7f70ccde59d9"
+    }
+  ]
+}

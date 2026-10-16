@@ -7,6 +7,7 @@
   "exports": {
     "./astro/loaders": "./src/astro/loaders.mjs",
     "./contract": "./src/contract/index.mjs",
+    "./content": "./src/content/index.mjs",
     "./schema": "./src/schema/index.mjs",
     "./testkit": "./src/testkit/index.mjs",
     "./package.json": "./package.json",
@@ -19,8 +20,16 @@
       "default": "./src/markers/client.mjs"
     }
   },
-  "bin": { "afe": "./bin/afe.mjs" },
-  "engines": { "node": ">=22" },
-  "peerDependencies": { "astro": "^7" },
-  "scripts": { "test": "node --test test/*.test.mjs" }
+  "bin": {
+    "afe": "./bin/afe.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "peerDependencies": {
+    "astro": "^7"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  }
 }

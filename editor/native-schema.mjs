@@ -4,6 +4,8 @@ const meta=(schema,node)=>{const own={...node.meta?.(),...schema.meta?.()},out={
  if(own['x-afe']){out['x-afe']=checkedMeta(own['x-afe']);Object.assign(out,Object.fromEntries(['format','group','readOnly','help'].filter(k=>out['x-afe'][k]!==undefined).map(k=>[k,out['x-afe'][k]])));if(out['x-afe'].visibility==='advanced')out.advanced=true;}
  for(const key of ['format','group','readOnly','advanced','help','hint','palette'])if(out[key]===undefined&&own[key]!==undefined)out[key]=own[key];return out;};
 // The editor reads the same Zod definitions Astro uses; no second form schema.
+// The key property a list declares for its items (x-afe.array.key, one property), for translation paths.
+export function listKeyAt(schema,data){return listPath=>{const node=schemaAt(schema,data,listPath);if(!node)return null;const key={...unwrap(node).meta?.(),...node.meta?.()}['x-afe']?.array?.key;return Array.isArray(key)&&key.length===1&&typeof key[0]==='string'?key[0]:null;};}
 export function unwrap(schema){while(['optional','default','nullable','prefault','catch','readonly'].includes(schema._def.type))schema=schema._def.innerType;return schema;}
 export function optional(schema){return schema.isOptional?.()||false;}
 export function selectedSchema(schema,data){const node=unwrap(schema);if(node._def.type!=='union')return node;return node.options.find(option=>option.safeParse(data).success)||node.options.find(option=>option.shape?.[node._def.discriminator]?._def?.values?.includes(data?.[node._def.discriminator]))||node.options[0];}

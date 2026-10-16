@@ -1,0 +1,24 @@
+{
+  "format": 2,
+  "sourceId": "faq/show-05",
+  "locale": "en",
+  "sourceHash": "0c1adb79133c40ae955aff9abae67dfd136f409b88b5f504ac4d34bd802e888d",
+  "values": [
+    {
+      "path": [
+        "question"
+      ],
+      "text": "Is a drone show safe?",
+      "reviewed": true,
+      "sourceHash": "c4a6e7321302d0d303724dcba772ffda502523451fc09436133a7aed50518a0e"
+    },
+    {
+      "path": [
+        "body"
+      ],
+      "text": "\n- Our drones weigh only about 300 grams.\n- A calculated safety zone protects people, animals and buildings.\n- Redundant automatic and manual security systems monitor every flight.\n- No explosions, no fire risk – and we usually fly no higher than 120 meters.\n",
+      "reviewed": true,
+      "sourceHash": "83ce75085bd4dfcdfafbc766202b8b2df38b8acac9da29c4672766f35d29d774"
+    }
+  ]
+}

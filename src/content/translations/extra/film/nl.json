@@ -1,0 +1,40 @@
+{
+  "format": 2,
+  "sourceId": "extra/film",
+  "locale": "nl",
+  "sourceHash": "4cbe5e0e106539c5ec667351f0df8c72da58c51d6f97152556d6b2199b2bd76c",
+  "values": [
+    {
+      "path": [
+        "name"
+      ],
+      "text": "Film",
+      "reviewed": false,
+      "sourceHash": "113af97940c30181e3251e51d6d091d315c350bdfc3a3f2e0fb09d59ee6ed4e8"
+    },
+    {
+      "path": [
+        "title"
+      ],
+      "text": "Professionele beelden",
+      "reviewed": false,
+      "sourceHash": "029ce9b24a41aab032254ff1366a4d824e425759cb2a553c2a1f3eb1808cc3c3"
+    },
+    {
+      "path": [
+        "text"
+      ],
+      "text": "Rauwe beelden met cameradrone voor aftermovie en social media.",
+      "reviewed": false,
+      "sourceHash": "fce30ff388f69640732b88abaf5d2e53e55dbd0de033fe012c6e5bd185942230"
+    },
+    {
+      "path": [
+        "priceNote"
+      ],
+      "text": "900 € · inclusief ODYSSEY",
+      "reviewed": false,
+      "sourceHash": "1ddec6f32b507c28f342f24672fd847e84ba8ce289a59554bee3f593a846e08c"
+    }
+  ]
+}

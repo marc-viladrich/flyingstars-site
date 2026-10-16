@@ -1,0 +1,170 @@
+{
+  "format": 2,
+  "sourceId": "package/odyssey",
+  "locale": "nl",
+  "sourceHash": "bd2b85df9458077dba2aee9c8cff94de65b52336d8c655508e2976d1f1be2d62",
+  "values": [
+    {
+      "path": [
+        "dur"
+      ],
+      "text": "15+ min",
+      "reviewed": false,
+      "sourceHash": "7d25a299f2b45ac6a80cc1f2217a9ab93504b7326ee1ecb615eb0c90353b2d7b"
+    },
+    {
+      "path": [
+        "badge"
+      ],
+      "text": "300+ drones",
+      "reviewed": true,
+      "sourceHash": "9ade071d86dee624139d564a7aa77a211264846105c8687d542984bc6ba5e87e"
+    },
+    {
+      "path": [
+        "description"
+      ],
+      "text": "De meeslepende ervaring voor grote campagnes, festivals en evenementen met maximaal bereik.",
+      "reviewed": true,
+      "sourceHash": "6af0e168cb623605a3b03a594f12468b7e4bdca83ab8811578a8613980a0f26f"
+    },
+    {
+      "path": [
+        "inheritsText"
+      ],
+      "text": "Alles van HORIZON, plus:",
+      "reviewed": false,
+      "sourceHash": "16bd416fc6b065c1c61e837a1da6a6a1fd1b58354fe25d0974e09714a255df9e"
+    },
+    {
+      "path": [
+        "featureGroups",
+        0,
+        "title"
+      ],
+      "text": "Ontwerp en inhoud",
+      "reviewed": false,
+      "sourceHash": "ee2cd5fa6c2fe3e61deff93760fcf7e8f3358d73ea4edfd87260be6fbc410918"
+    },
+    {
+      "path": [
+        "featureGroups",
+        0,
+        "items",
+        0,
+        "text"
+      ],
+      "text": "Complexe 3D-animaties en volumetrische effecten",
+      "reviewed": false,
+      "sourceHash": "7ae758470b0bcb57212e026c76306555a63e37786d8902515109cf8861f4a787"
+    },
+    {
+      "path": [
+        "featureGroups",
+        0,
+        "items",
+        1,
+        "text"
+      ],
+      "text": "Verhalende verhalen vertellen met een dramatische curve",
+      "reviewed": false,
+      "sourceHash": "a66e481ed9164a7df90c65e6626ba654f4192c11a10b74e03caf5017e16c07ab"
+    },
+    {
+      "path": [
+        "featureGroups",
+        1,
+        "title"
+      ],
+      "text": "Muziek",
+      "reviewed": false,
+      "sourceHash": "8ff93160579529e4487f15db8c8e8a1996ba7e1212058e823bcb342038695b06"
+    },
+    {
+      "path": [
+        "featureGroups",
+        1,
+        "items",
+        0,
+        "text"
+      ],
+      "text": "Synchronisatie tijdcode op site mogelijk",
+      "reviewed": false,
+      "sourceHash": "823ca5b95e3e1e345691ba04f58d5ebb5c6ae4b38cefff44b27cab340d9711ed"
+    },
+    {
+      "path": [
+        "featureGroups",
+        2,
+        "title"
+      ],
+      "text": "Service & Extra's",
+      "reviewed": false,
+      "sourceHash": "2d60e56ccf1a7c47474b3965fd37e70976053d93d19b144ff3e2993a109115eb"
+    },
+    {
+      "path": [
+        "featureGroups",
+        2,
+        "items",
+        0,
+        "text"
+      ],
+      "text": "Meerdere feedback loops met tevredenheid garantie",
+      "reviewed": false,
+      "sourceHash": "480d8751ee21656adca81c897616fcdde3044edd90fa564c505e09e139487666"
+    },
+    {
+      "path": [
+        "featureGroups",
+        2,
+        "items",
+        1,
+        "text"
+      ],
+      "text": "Eigen projectmanager",
+      "reviewed": false,
+      "sourceHash": "0f47d44168fe76c5b91e5a285084c71072bf35fd7302bc34c9f2c1150cb09373"
+    },
+    {
+      "path": [
+        "featureGroups",
+        2,
+        "items",
+        2,
+        "text"
+      ],
+      "text": "Professionele videodocumentatie (grondmateriaal)",
+      "reviewed": false,
+      "sourceHash": "62c30e95b557dcbc8f0d2c045f41cd56e6c9c068a8d53ebcdc854ddc71b29c8b"
+    },
+    {
+      "path": [
+        "featureGroups",
+        2,
+        "items",
+        3,
+        "text"
+      ],
+      "text": "Afspraak ter plaatse inbegrepen op aanvraag",
+      "reviewed": false,
+      "sourceHash": "317e80d9286ab8d3884fa52dd42f7edf4c8c6ed5769da10fa47dab8c09a370e6"
+    },
+    {
+      "path": [
+        "effortLabel"
+      ],
+      "text": "GeVertelde 3D show",
+      "reviewed": false,
+      "sourceHash": "2730a6733bafb5ab59c2776a515968ed2b32c2ac0f89bcbaccff981600b13347"
+    },
+    {
+      "path": [
+        "includes"
+      ],
+      "text": "alles van HORIZON plus complexe 3D-animaties, volumetrische effecten en storytelling met een dramatische curve",
+      "reviewed": false,
+      "sourceHash": "11409ca042bc84d3021c6de1ef441bfd5d773c5c9f000a85fafbaac3860e34ee"
+    }
+  ]
+}

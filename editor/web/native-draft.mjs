@@ -8,14 +8,17 @@ const startsWith=(prefix,path)=>prefix.length<=path.length&&prefix.every((part,i
 // Each changed record remembers which paths were edited, so a save writes exactly those fields; the record
 // data the browser holds is schema-parsed (defaults filled in) and must not be written back whole.
 export class NativeDraft {
- constructor(){this.base=new Map();this.local=new Map();this.created=new Map();this.deleted=new Set();this.paths=new Map();this.history=[];}
+ constructor(){this.base=new Map();this.local=new Map();this.created=new Map();this.deleted=new Set();this.paths=new Map();this.history=[];this.observers=[];}
  reset(records){this.base=new Map(records.map(r=>[r.id,clone(r)]));this.local.clear();this.created.clear();this.deleted.clear();this.paths.clear();this.history=[];}
  checkpoint(operation){if(this.grouping){if(this.grouping.done)return;this.grouping.done=true;}this.history.push({operation,local:clone(this.local),created:clone(this.created),deleted:clone(this.deleted),paths:clone(this.paths)});if(this.history.length>100)this.history.shift();}
  // A path covers its descendants: editing a list and then an entry of it stays one list write.
  touch(id,path){const paths=this.paths.get(id)||[];if(paths.some(known=>startsWith(known,path)))return;this.paths.set(id,[...paths.filter(known=>!startsWith(path,known)),clone(path)]);}
  get(id){return this.deleted.has(id)?undefined:this.created.get(id)||this.local.get(id)||this.base.get(id);}
  records(){return [...new Set([...this.base.keys(),...this.created.keys()])].map(id=>this.get(id)).filter(Boolean);}
- set(id,path,value){const before=this.get(id);if(!before||same(getPath(before.data,path),value))return false;this.checkpoint({kind:'set',id,path:clone(path)});const next=clone(before);next.data=setPath(next.data,path,value);if(this.created.has(id))this.created.set(id,next);else if(same(next.data,this.base.get(id).data)){this.local.delete(id);this.paths.delete(id);}else{this.local.set(id,next);this.touch(id,path);}return true;}
+ set(id,path,value){const before=this.get(id);if(!before||same(getPath(before.data,path),value))return false;return this.group(()=>{this.checkpoint({kind:'set',id,path:clone(path)});const next=clone(before);next.data=setPath(next.data,path,value);if(this.created.has(id))this.created.set(id,next);else if(same(next.data,this.base.get(id).data)){this.local.delete(id);this.paths.delete(id);}else{this.local.set(id,next);this.touch(id,path);}for(const observer of this.observers)observer(id,before.data,next.data);return true;});}
+ // Called after every change with the record's data before and after, inside the same undo step: what an
+ // observer changes in turn (translations following moved list items) is undone together with it.
+ observe(observer){this.observers.push(observer);return()=>{this.observers=this.observers.filter(other=>other!==observer);};}
  create(item){if(this.get(item.id))throw Error('Dieser Dateiname ist bereits belegt.');this.checkpoint({kind:'create',id:item.id});this.created.set(item.id,clone(item));this.deleted.delete(item.id);}
  remove(id){if(!this.get(id))return;this.checkpoint({kind:'remove',id});if(this.created.has(id))this.created.delete(id);else this.deleted.add(id);this.local.delete(id);}
  // Everything inside fn is one undo step (e.g. a phone number and its tel: link, a record and its reference).

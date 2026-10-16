@@ -168,5 +168,5 @@ export const pageSchema=z.object({
     noindex: z.boolean().default(false).describe("Nicht in Suchmaschinen anzeigen"),
     // Optional preview image for social shares; must come from an approved media host.
     image: z.url().optional().describe("Bild"),
-    sections: z.array(sectionSchema.describe("Abschnitte")).min(1).superRefine(validateSectionList).describe("Abschnitte").meta(editable({"array":{"role":"blocks","reorderable":true,"insertable":true,"removable":true,"discriminator":"type"}})),
+    sections: z.array(sectionSchema.describe("Abschnitte")).min(1).superRefine(validateSectionList).describe("Abschnitte").meta(editable({"array":{"role":"blocks","reorderable":true,"insertable":true,"removable":true,"discriminator":"type","key":["id"]}})),
   }).meta(editable({"collection":{"label":"Seite","title":["title"],"icon":"file-text","group":"Seiten","operations":["update","create","delete"],"placement":"frontend","i18n":{"mode":"overlay"},"policies":["flyingstars/media-ownership","flyingstars/comparison"]}}));

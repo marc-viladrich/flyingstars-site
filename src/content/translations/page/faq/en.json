@@ -1,0 +1,73 @@
+{
+  "format": 2,
+  "sourceId": "page/faq",
+  "locale": "en",
+  "sourceHash": "df84b4fa8b50bfe1b48c4f2f94402dd4ff6583a80a27910b99d7e492247e5d03",
+  "values": [
+    {
+      "path": [
+        "title"
+      ],
+      "text": "Questions about drone shows – FlyingStars",
+      "reviewed": false,
+      "sourceHash": "c98716f1cd06295d2ceb7af931c1b3348a5953379cbe512ee65a27ba477d5960"
+    },
+    {
+      "path": [
+        "description"
+      ],
+      "text": "Advance, space requirements, permits and weather: answers to the Most common questions about your drone show with FlyingStars.",
+      "reviewed": false,
+      "sourceHash": "19ab89d50ea378cf1fc4703038279886b3870b1c3682cf249dadea0e4a231895"
+    },
+    {
+      "path": [
+        "sections",
+        {
+          "id": "faq"
+        },
+        "kicker"
+      ],
+      "text": "FAQ",
+      "reviewed": false,
+      "sourceHash": "dbc468a14b601d5d9240aeb72b9fcd2f8aed2f4e30932876edf8d16ec313846b"
+    },
+    {
+      "path": [
+        "sections",
+        {
+          "id": "faq"
+        },
+        "text"
+      ],
+      "text": "The most common n questions, briefly answered. For everything else: call us or book a video call.",
+      "reviewed": false,
+      "sourceHash": "9c3cfdb906b57c05c99173a13f42db964a7df9337cef686ac29f101dd9900e29"
+    },
+    {
+      "path": [
+        "sections",
+        {
+          "id": "faq"
+        },
+        "cta",
+        "label"
+      ],
+      "text": "Booking video call",
+      "reviewed": false,
+      "sourceHash": "41490db6abaa2d4d0bd13cffcececcd6e46308a4bf6fb82bbf402fe93f0a6d5e"
+    },
+    {
+      "path": [
+        "sections",
+        {
+          "id": "faq"
+        },
+        "headline"
+      ],
+      "text": "What you before de r Booking knows n should be.",
+      "reviewed": false,
+      "sourceHash": "399065c75f2399af58a7daa65f8f5aa581b0c110379996e74e8bcd0da5a3f676"
+    }
+  ]
+}

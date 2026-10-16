@@ -1,0 +1,24 @@
+{
+  "format": 2,
+  "sourceId": "team/patrick",
+  "locale": "en",
+  "sourceHash": "d65237c1443c281cec7c417301ef7e53ad284184e50a469494353a3c59279a05",
+  "values": [
+    {
+      "path": [
+        "role"
+      ],
+      "text": "Head of Technology",
+      "reviewed": true,
+      "sourceHash": "fb89317d3476890a45b9ee70aded713541531cf25c2a4444fcd0d841019a966e"
+    },
+    {
+      "path": [
+        "bio"
+      ],
+      "text": "Technology, fleet and purchasing: holds jed e Drone ready to go.",
+      "reviewed": true,
+      "sourceHash": "e9eae621554b367f65d5df691428d242d08ab7fae14c2f4e353e47a185f506fc"
+    }
+  ]
+}

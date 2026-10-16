@@ -1,0 +1,24 @@
+{
+  "format": 2,
+  "sourceId": "faq/show-01",
+  "locale": "en",
+  "sourceHash": "dd02672bfc0eb903b2e3f20520ce052e78c318c87b2731dbbbcb27c25e721876",
+  "values": [
+    {
+      "path": [
+        "question"
+      ],
+      "text": "How much advance do you need?",
+      "reviewed": true,
+      "sourceHash": "22b52b0dd2c9a899eb9df95546fd95b7ebfe03ff1ee32d65e40f9b918a794f1b"
+    },
+    {
+      "path": [
+        "body"
+      ],
+      "text": "Ideal is one to two months. For there The design with your feedback should be at least three weeks, in the case of complex permits – for example near the airport – rather three months. If it rushes, a show in the express is also possible in one to two weeks.\n",
+      "reviewed": true,
+      "sourceHash": "4d09d7d882aeae727b43e829c22bbacb72d1e9d1b4cd62dbc7809b7dd8202621"
+    }
+  ]
+}

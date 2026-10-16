@@ -1,0 +1,40 @@
+{
+  "format": 2,
+  "sourceId": "screen/drohnenshow-preise",
+  "locale": "en",
+  "sourceHash": "ae4cc5cca0327cbbf036ff42a3aa906ab0c5c5803a72f68ae407d51159e835c4",
+  "values": [
+    {
+      "path": [
+        "title"
+      ],
+      "text": "Drone Show Prices – Packages from 7,900 €",
+      "reviewed": false,
+      "sourceHash": "ed4c673918cfce6721197f7d3e8f2d9c00b12a51076d896aad7935fe38c99f5b"
+    },
+    {
+      "path": [
+        "description"
+      ],
+      "text": "Three drone show packages from € 7,900, price calculator for 100 to 1,000 drones, approval and team included. All prices net plus travel.",
+      "reviewed": false,
+      "sourceHash": "478143428e0de380c047b70642fb35377a601f652c257c088606eab348cafe73"
+    },
+    {
+      "path": [
+        "headline"
+      ],
+      "text": "Put your show together.",
+      "reviewed": false,
+      "sourceHash": "438e9e206ea1a0e28deed4d4710ef4042f7d38b6d0432d70ea7fe48998122c7e"
+    },
+    {
+      "path": [
+        "text"
+      ],
+      "text": "Drag on the regulator: The swarm shows your drones, the price counts live. All prices net plus travel – without hidden costs.",
+      "reviewed": false,
+      "sourceHash": "e6eaef339842ee4ff15c5cb46013f9a840206f00bc44d4848721159161f12027"
+    }
+  ]
+}

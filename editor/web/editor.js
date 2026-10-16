@@ -3588,6 +3588,8 @@ let lastForeignLocale = Object.keys(localeNames).find(code=>code!==sourceLocale)
 const pendingTranslations = new Map();
 const translations=extensions.require('translationStorage');
 const translationId=translations.id;
+// Moving, inserting or removing list items of a record takes its translations along (same undo step).
+if(translations.follow)draft.observe((id,before,after)=>translations.follow(id,before,after,{records:()=>draft.records(),draft}));
 function translationValue(owner,path,locale=activeLocale){return translations.value(owner,path,locale,record);}
 function translationText(owner, path, locale = activeLocale) {
   return translationValue(owner, path, locale)?.text;

@@ -1,0 +1,34 @@
+{
+  "format": 2,
+  "sourceId": "page/datenschutz",
+  "locale": "nl",
+  "sourceHash": "ab0d642b2388f16e4bd568eb8e24c81d2a9217a097f580b77bffd55eeb0ad8af",
+  "values": [
+    {
+      "path": [
+        "title"
+      ],
+      "text": "Gegevensbescherming",
+      "reviewed": false,
+      "sourceHash": "f624fcf0dcbb39c0a05062577622a8530ae2b04c335ae657cb19bbda57e90d6b"
+    },
+    {
+      "path": [
+        "description"
+      ],
+      "text": "Notes on FlyingStars preview: zelfgehoste lettertypen, media en contactformulier, evenals de gegevensbeschermingsverklaring van de bestaande website.",
+      "reviewed": false,
+      "sourceHash": "528b5e194a1558917024b0048ec4f7607cb4d4fc6b7650684b582eb85992538e"
+    },
+    {
+      "path": [
+        "sections",
+        0,
+        "headline"
+      ],
+      "text": "Gegevensbescherming in dit voorbeeld",
+      "reviewed": false,
+      "sourceHash": "1265e970d27947a4edae7a491707224f74b67e165338006afd720324c0bd7eaa"
+    }
+  ]
+}

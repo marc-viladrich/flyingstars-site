@@ -1,0 +1,40 @@
+{
+  "format": 2,
+  "sourceId": "extra/sondergenehmigung",
+  "locale": "nl",
+  "sourceHash": "d0552d47ac4223333c30a5f860081c103834e94b0733da7f0265a813d94d3b34",
+  "values": [
+    {
+      "path": [
+        "priceNote"
+      ],
+      "text": "Prijs op aanvraag",
+      "reviewed": false,
+      "sourceHash": "3ca83ec890eca6bf5b56f1e7f07bb74d6f1cc66cce889eebfdc9188fc329fa02"
+    },
+    {
+      "path": [
+        "name"
+      ],
+      "text": "Specifieke vergunning",
+      "reviewed": false,
+      "sourceHash": "2aa5f09480705100bd083bdf72471c221e914928b76adef24054ad28b5a75fbb"
+    },
+    {
+      "path": [
+        "title"
+      ],
+      "text": "Controlezones en nabijheid van luchthavens",
+      "reviewed": false,
+      "sourceHash": "3d007f1abcd825337fc13d94dc55eb9e6c1893d8aa8946a2dd5c56780a32c100"
+    },
+    {
+      "path": [
+        "text"
+      ],
+      "text": "Speciale gebieden hebben speciale vergunningen nodig.",
+      "reviewed": false,
+      "sourceHash": "1443d094c05f443a6ce14fa5dfb35252d3f6ea1f205eb90846346fb10c56d971"
+    }
+  ]
+}

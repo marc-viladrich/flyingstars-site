@@ -1,6 +1,7 @@
 // Incremental machine translation: only texts that are new or whose German wording changed are sent.
 // A field is fresh when its translation carries sourceHash = sha256(current German text). Identical
 // segments are sent once, and a translation memory (hash + locale) makes repeated runs cost nothing.
+import { resolvePath } from './vendor/astro-frontend-editor/src/content/index.mjs';
 import { createHash } from "node:crypto";
 import { promises as fs } from "node:fs";
 
@@ -70,7 +71,7 @@ export async function saveMemory(file, memory) {
 }
 
 // Which fields need a (new) translation, which segments must actually be sent, and what that costs.
-export function plan({ records, locale, memory, ids }, {translatableFields,translationStorage}) {
+export function plan({ records, locale, memory, ids, source = "de" }, {translatableFields,translationStorage}) {
   const byId = new Map(records.map((r) => [r.id, r]));
   const owners = (Array.isArray(ids) ? ids.map((id) => byId.get(id)).filter(Boolean) : records).filter((r) => translationStorage.isOwner(r));
   const jobs = [];
@@ -82,7 +83,8 @@ export function plan({ records, locale, memory, ids }, {translatableFields,trans
     const existing = translationStorage.find(records,owner.id,locale);
     for (const field of translatableFields(owner)) {
       const sourceHash = sha256(field.text);
-      const current = existing?.data.values?.find((v) => JSON.stringify(v.path) === JSON.stringify(field.path));
+      // Stored paths may name list items by key; fields come by position.
+      const current = existing?.data.values?.find((v) => JSON.stringify(resolvePath(owner.data, v.path)) === JSON.stringify(field.path));
       if (current && current.sourceHash === sourceHash) {
         freshFields++;
         continue;
@@ -100,7 +102,7 @@ export function plan({ records, locale, memory, ids }, {translatableFields,trans
     }
   }
   const toSend = [...unique].map(([key, { text, tokens }]) => ({ key, text, tokens }));
-  return { locale, jobs, toSend, chars: toSend.reduce((n, s) => n + [...s.text].length, 0), cachedChars, fieldChars, freshFields };
+  return { source, locale, jobs, toSend, chars: toSend.reduce((n, s) => n + [...s.text].length, 0), cachedChars, fieldChars, freshFields };
 }
 
 // Long segments are split at sentence ends for providers with a per-text limit (MyMemory ~500 bytes).
@@ -125,7 +127,7 @@ export async function execute(planned, provider, { memory, maxChars = 3000 } = {
   // All pieces go to the provider in one call (it batches or parallelises), then are reassembled per segment.
   // Successful pieces are kept even if others fail, so nothing already billed is paid twice.
   const pieces = planned.toSend.flatMap((segment) => chunk(segment.text, provider.maxChars || 5000).map((text) => ({ segment, text })));
-  const result = pieces.length ? await provider.translate({ source: "de", target: planned.locale, texts: pieces.map((p) => p.text) }) : { texts: [], billedCharacters: 0 };
+  const result = pieces.length ? await provider.translate({ source: planned.source ?? "de", target: planned.locale, texts: pieces.map((p) => p.text) }) : { texts: [], billedCharacters: 0 };
   const billed = result.billedCharacters || 0;
   const failed = new Set();
   const joined = new Map();
@@ -174,7 +176,7 @@ export async function executeBatched(planned, provider, {memory, maxChars=3000, 
       chars+=cost;batch.push(pending.shift());
     }
     if (!batch.length) break;
-    const result=await provider.translate({source:'de',target:planned.locale,texts:batch.map(piece=>piece.text)});
+    const result=await provider.translate({source:planned.source??'de',target:planned.locale,texts:batch.map(piece=>piece.text)});
     sent+=chars;billed+=result.billedCharacters??chars;batches++;
     batch.forEach((piece,i) => {if(typeof result.texts[i]==='string')memory.entries[piece.key]={text:result.texts[i],provider:provider.id,at:new Date().toISOString().slice(0,10)};});
     errors.push(...result.errors||[]);
@@ -198,5 +200,7 @@ export async function executeBatched(planned, provider, {memory, maxChars=3000, 
 }
 
 export function createTranslationCore(site) {
- return {plan:request=>plan(request,{translatableFields:site.translatableFields,translationStorage:site.extensions.require('translationStorage')}),mergeIntoTranslations:request=>site.extensions.require('translationStorage').merge(request)};
+ // The site's source language, not a fixed one.
+ const source=site.extensions.first('languages')?.source??'de';
+ return {plan:request=>plan({source,...request},{translatableFields:site.translatableFields,translationStorage:site.extensions.require('translationStorage')}),mergeIntoTranslations:request=>site.extensions.require('translationStorage').merge(request)};
 }
