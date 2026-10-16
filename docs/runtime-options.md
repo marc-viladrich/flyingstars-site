@@ -29,7 +29,7 @@ Explizite API-Werte in `values` gewinnen vor CLI-Argumenten, CLI-Argumente vor U
 | `AFE_CANONICAL_ORIGIN` | `SITE_URL` | `--canonical-origin` | `http://127.0.0.1:<public-port>` |
 | `AFE_PORT` | `PORT`, danach `RELAUNCH_PORT` | `--port` | `4542`, Loopback |
 | `AFE_PUBLIC_PORT` | `RELAUNCH_PUBLIC_PORT` | `--public-port` | `4543`, Loopback |
-| `AFE_PREVIEW` | `RELAUNCH_PREVIEW` | `--preview` | CLI an; `0` oder `off` deaktiviert |
+| `AFE_PREVIEW` | `RELAUNCH_PREVIEW` | `--preview` | CLI `live` (dauerhafter `astro dev`); `static` baut jeden Entwurf mit `astro build` (kein zusätzlicher Prozess, rund 2 s je Änderung bei FlyingStars); `0` oder `off` deaktiviert |
 | `AFE_PREVIEW_PORT` | `RELAUNCH_PREVIEW_PORT` | `--preview-port` | Editor-Port + 2 |
 | `AFE_GIT_REMOTE` | `FLYINGSTARS_GIT_REMOTE` | `--git-remote` | Ohne Wert aus; `off` ausdrücklich aus |
 | `AFE_DRAFT_BRANCH` | keiner | `--draft-branch` | `content/draft` |
