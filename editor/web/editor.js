@@ -252,10 +252,13 @@ function toast(message, { error = false, action, actionLabel = "Rückgängig" } 
 function stagedRecords() {
   return records().map((item) => ({
     id: item.id,
+    // The page's markers name Astro addresses; the frame finds the record by this one.
+    address: item.address,
     title: item.title,
     revision: item.revision,
     data: item.data,
     fields: fieldsFor(item),
+    containers: item.containers,
   }));
 }
 // Draft records are replaced (never mutated) on every change, so one schema walk per record version is
