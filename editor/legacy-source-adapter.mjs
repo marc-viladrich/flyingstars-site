@@ -1,7 +1,7 @@
 import path from 'node:path';
 import {promises as fs} from 'node:fs';
-import {codecs} from './core/codecs.mjs';
-import {SourceRegistry, FileStorage, hashBytes, conflict} from './core/source-registry.mjs';
+import {codecs,atPath} from './core/codecs.mjs';
+import {SourceRegistry, FileStorage, hashBytes, conflict, select} from './core/source-registry.mjs';
 import {gitDirs} from './git-dirs.mjs';
 
 /** Git revision publication remains here while the pilot owns validation/replay. */
@@ -45,20 +45,29 @@ export class LegacySourceAdapter {
   async sourcesAt(head){const files=(await this.registry.storage.git(this.registry.storage.root,['ls-tree','-r','--name-only',head,'--',this.site.contentRoot])).split('\n');return this.site.sourcesFromFiles(files).map(source=>this.register(source));}
   async readFile(head,file){const bytes=await this.registry.readBytes(file,head);if(bytes===null)throw Error('Quelldatei fehlt: '+file);return bytes.toString('utf8');}
   bytes(file){return this.registry.storage.read(file);}
-  decode(source,text){const codec=codecs[source.format],raw=codec.parse(text);return {raw,doc:{bytes:text,codec}};}
+  // A record is its entry inside the source file: the whole document, or one entry of a shared map/array
+  // (several records in one YAML/JSON file). Reads select the entry; writes edit inside it.
+  decode(source,text){const codec=codecs[source.format],parsed=codec.parse(text),entry=select(parsed,source.locator||{kind:'document'});return {raw:atPath(parsed,entry),doc:{bytes:text,codec}};}
   encode(source,raw,doc,patches=[]){
-    const codec=codecs[source.format];if(!doc)return codec.create(raw);
+    const codec=codecs[source.format],locator=source.locator||{kind:'document'};
+    if(!doc)return codec.create(locator.kind==='document'?raw:locator.kind==='object-entry'?{[locator.key]:raw}:[raw]);
     let bytes=doc.bytes;
-    for(const patch of patches)bytes=codec.update(bytes,patch.path,patch.path.length?patch.value:raw);
+    for(const patch of patches){const entry=select(codec.parse(bytes),locator);bytes=codec.update(bytes,[...entry,...patch.path],patch.path.length?patch.value:raw);}
     return bytes;
   }
+  // A new record in a file that holds other records already: its entry is added, the file stays.
+  encodeCreate(source,raw,existing){if(existing===null||(source.locator||{kind:'document'}).kind==='document')return this.encode(source,raw);const codec=codecs[source.format],entry=select(codec.parse(existing),source.locator,{missing:true});return codec.update(existing,entry,raw);}
+  // Removing a record from a shared file removes its entry; a record that is the whole file removes the file.
+  encodeDelete(source,existing){if(!this.shared(source))return null;const codec=codecs[source.format];return codec.update(existing,select(codec.parse(existing),source.locator),undefined);}
+  shared(source){return (source.locator||{kind:'document'}).kind!=='document';}
   async commit(updated,context){
     const tx=this.registry.begin(context.parent),binaryWrites=[];
+    // Record writes are staged by address; the transaction edits each record's entry and writes every touched
+    // file once, so two records of one shared file are one consistent write.
     for(const update of updated){
-      const source=[...this.registry.sources.values()].find(source=>source.file===update.file);
-      if(!source){binaryWrites.push(update);continue;}
-      const kind=update.bytes===null?'delete':update.before===null?'create':'set';
-      await tx.stage({kind,address:source.key,path:[],...update.bytes===null?{}:{value:codecs[source.codec].parse(update.bytes)}});
+      if(!update.address){binaryWrites.push(update);continue;}
+      const kind=update.kind||(update.bytes===null?'delete':update.before===null?'create':'set');
+      await tx.stage({kind,address:update.address,path:[],...kind==='delete'?{}:{value:update.raw}});
     }
     return tx.commit({...context,binaryWrites});
   }

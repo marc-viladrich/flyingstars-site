@@ -1,4 +1,4 @@
-import {parseDocument, isMap, isSeq, isScalar, isAlias, stringify} from 'yaml';
+import {parseDocument, parse as parseYaml, isMap, isSeq, isScalar, isAlias, stringify} from 'yaml';
 import {isDeepStrictEqual} from 'node:util';
 
 export const sourceError = message => Object.assign(new Error('AFE105: '+message), {code:'AFE105', status:400});
@@ -75,7 +75,13 @@ function serialize(value, format, text, node) {
     const prefix=text.slice(lineStart(text,node.start),node.start).match(/^\s*/)[0];
     return encoded.replaceAll('\n',eolOf(text)+prefix);
   }
-  // Scalars use JSON's YAML-compatible spelling, avoiding implicit type changes,
+  // A string that replaces an unquoted string stays unquoted when it reads back as the same string.
+  if(typeof value==='string'&&!node.flow&&node.original?.type==='PLAIN'&&!/[\r\n]/.test(value)){
+    const plain=stringify(value,{lineWidth:0}).trimEnd();
+    // Commas and brackets would end a value inside an inline {…} or […] collection.
+    if(!/[\r\n,[\]{}]/.test(plain)&&!/^['"]/.test(plain)&&parseYaml(plain)===value)return plain;
+  }
+  // Other scalars use JSON's YAML-compatible spelling, avoiding implicit type changes,
   // line folding and indent-dependent multiline strings.
   if(value===null || typeof value!=='object')return JSON.stringify(value);
   if(node.flow || node.kind==='scalar')return JSON.stringify(value);

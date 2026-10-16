@@ -23,7 +23,7 @@ async function fixture(t){
 test('legacy bridge commits exactly the codec bytes, preserving hashes and a clean index',async t=>{
   const f=await fixture(t),source=f.descriptors[0],text=await f.adapter.readFile(f.parent,source.file),decoded=f.adapter.decode(source,text),patch={path:['items',0,'label'],value:'Grüße'};
   const bytes=Buffer.from(f.adapter.encode(source,decoded.raw,decoded.doc,[patch]));
-  assert.equal(bytes.toString(),text.replace('label: First','label: "Grüße"'));
+  assert.equal(bytes.toString(),text.replace('label: First','label: Grüße'));
   const {head}=await f.adapter.commit([{file:source.file,before:Buffer.from(text),bytes}],f.context());
   assert.equal(hashBytes(await f.adapter.bytes(source.file)),hashBytes(bytes));assert.equal(await f.adapter.readFile(head,source.file),bytes.toString());assert.equal(await git(f.root,['status','--porcelain']),'');
 });
@@ -46,4 +46,26 @@ test('NativeStore delegates content writes to its source transaction adapter',as
   const store=await fs.readFile(new URL('../native-store.mjs',import.meta.url),'utf8');
   assert.doesNotMatch(store,/fs\.(?:writeFile|rename|rm|unlink)|\[['"]checkout['"]/);
   assert.match(store,/sourceAdapter\.commit\(updated/);
+});
+
+test('records sharing one YAML map: two edits, a new entry and a removal are one exact commit of that file',async t=>{
+  const root=await fs.mkdtemp(path.join(os.tmpdir(),'afe-shared-sources-'));t.after(()=>fs.rm(root,{recursive:true,force:true}));
+  await git(root,['init','-q','-b','content/draft']);
+  const original='# Kategorien\nbread:\n  name: Brote # Grundsortiment\n  order: 1\npastry:\n  name: Gebäck\n  order: 2\nsavory:\n  name: Herzhaftes\n  order: 3\n';
+  await fs.writeFile(path.join(root,'categories.yaml'),original);
+  await git(root,['add','.']);await git(root,['-c','commit.gpgsign=false','commit','-qm','fixture']);
+  const parent=await git(root,['rev-parse','HEAD']);
+  const descriptors=['bread','pastry','savory','sweet'].map(id=>({id,address:{collection:'categories',id},file:'categories.yaml',format:'yaml',locator:{kind:'object-entry',key:id}}));
+  const adapter=new LegacySourceAdapter({root,site:{contentRoot:'.',sourceFor:id=>descriptors.find(s=>s.id===id),sourcesFromFiles:()=>descriptors},git,draftBranch:'content/draft'});descriptors.forEach(s=>adapter.register(s));
+  const [bread,pastry,savory,sweet]=descriptors,text=await adapter.readFile(parent,'categories.yaml');
+  const one=adapter.decode(bread,text);assert.deepEqual(one.raw,{name:'Brote',order:1},'a record reads only its entry');
+  const edit=(source,path,value)=>{const decoded=adapter.decode(source,text),raw=structuredClone(decoded.raw);raw[path[0]]=value;return {file:source.file,before:Buffer.from(text),bytes:Buffer.from(adapter.encode(source,raw,decoded.doc,[{path,value}])),address:source.address,raw};};
+  assert.equal(edit(bread,['name'],'Brot').bytes.toString(),original.replace('name: Brote','name: Brot'),'an edit stays inside its entry, the comment stays');
+  const updates=[edit(bread,['name'],'Brot'),edit(pastry,['order'],5),{file:sweet.file,before:Buffer.from(text),bytes:Buffer.from(adapter.encodeCreate(sweet,{name:'Süßes',order:4},text)),address:sweet.address,raw:{name:'Süßes',order:4},kind:'create'},{file:savory.file,before:Buffer.from(text),bytes:null,address:savory.address,kind:'delete'}];
+  const {head}=await adapter.commit(updates,{parent,requestId:randomUUID(),payload:'shared'});
+  const saved=await adapter.readFile(head,'categories.yaml');
+  assert.match(saved,/^# Kategorien\nbread:\n  name: Brot # Grundsortiment\n  order: 1\npastry:\n  name: Gebäck\n  order: 5\n/);
+  assert.doesNotMatch(saved,/savory/);assert.match(saved,/sweet:\n  name: Süßes\n  order: 4\n/);
+  assert.equal(await git(root,['show','--name-only','--format=',head]),'categories.yaml','one file, one commit');
+  assert.equal(adapter.encodeDelete(pastry,saved),saved.replace(/pastry:\n  name: Gebäck\n  order: 5\n/,''),'removing an entry keeps the others');
 });

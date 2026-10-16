@@ -84,7 +84,8 @@ export class SourceRegistry {
   begin(baseRevision){if(!baseRevision||typeof baseRevision!=='object'&&!this.storage.readRevision)throw sourceError('Eine Baseline-Revision ist erforderlich.');return new SourceTransaction(this,structuredClone(baseRevision));}
 }
 
-function select(data,locator,{missing=false}={}){
+/** Path of a record inside its parsed source file (document: [], map entry: [key], array entry: [index]). */
+export function select(data,locator,{missing=false}={}){
   if(locator.kind==='document')return [];
   if(locator.kind==='object-entry'){
     if(!data||Array.isArray(data)||typeof data!=='object')throw sourceError('Der Locator benötigt ein Quellobjekt.');

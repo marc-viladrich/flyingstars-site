@@ -56,7 +56,7 @@ for(const format of ['json','yaml'])test(format+': keyed array selectors retain 
   const f=await fixture(t,{format,source,locators});let tx=f.registry.begin(await f.registry.snapshot());
   await tx.stage({kind:'set',address:address('b'),path:['title'],value:'Bee'});await tx.commit();
   assert.equal((await f.registry.read(address('a'))).raw.title,'A');
-  assert.equal(await f.read(),source.replace(format==='json'?'"B"':'title: B',format==='json'?'"Bee"':'title: "Bee"'));
+  assert.equal(await f.read(),source.replace(format==='json'?'"B"':'title: B',format==='json'?'"Bee"':'title: Bee'));
   f.registry.register(address('c'),{file:f.file,codec:format,locator:{kind:'array-entry',idField:['id'],idValue:'c'}});
   tx=f.registry.begin(await f.registry.snapshot());await tx.stage({kind:'create',address:address('c'),value:{id:'c',title:'C'}});await tx.commit();
   tx=f.registry.begin(await f.registry.snapshot());await tx.stage({kind:'delete',owner:address('c')});await tx.commit();assert.equal((await f.registry.read(address('b'))).raw.title,'Bee');

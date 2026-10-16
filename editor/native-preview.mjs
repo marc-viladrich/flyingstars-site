@@ -120,22 +120,25 @@ export class NativePreview {
     return this.enqueue(() => this.renderNow(request));
   }
   async desiredFiles({ head, changes = [], creates = [], deletes = [] }) {
+    // Several records may share one file (a map of categories): each change starts from the file as the
+    // previous changes left it.
     const files = new Map();
+    const current = async (file) => (files.has(file) ? files.get(file) : await this.store.readFile(head, file).catch(() => null));
     for (const change of changes) {
       const source = this.store.sourceFor(change?.id);
       if (!source || !Array.isArray(change.patches)) continue;
-      const decoded = this.store.decode(source, await this.store.readFile(head, source.file));
+      const decoded = this.store.decode(source, await current(source.file));
       let raw = decoded.raw;
       for (const patch of change.patches) if (Array.isArray(patch.path) && !patch.path.length) raw = patch.value;
       files.set(source.file, this.store.encode(source, raw, decoded.doc, change.patches));
     }
     for (const creation of creates) {
       const source = this.store.sourceFor(creation?.id);
-      if (source) files.set(source.file, this.store.encode(source, creation.data));
+      if (source) files.set(source.file, this.store.encodeCreate ? this.store.encodeCreate(source, creation.data, await current(source.file)) : this.store.encode(source, creation.data));
     }
     for (const deletion of deletes) {
       const source = this.store.sourceFor(deletion?.id);
-      if (source) files.set(source.file, null);
+      if (source) { const existing = await current(source.file); files.set(source.file, existing === null ? null : this.store.encodeDelete?.(source, existing) ?? null); }
     }
     return files;
   }

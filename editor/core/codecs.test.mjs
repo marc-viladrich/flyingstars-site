@@ -25,9 +25,9 @@ for(const [name,root,inventory]of [
 
 for(const [name,source,path,value,expected]of [
   ['json','{\r\n "alpha": { "title" : "Alt", "n": 1 },\r\n "beta": {"title":"Keep"}\r\n}\r\n',['alpha','title'],'Grüße','{\r\n "alpha": { "title" : "Grüße", "n": 1 },\r\n "beta": {"title":"Keep"}\r\n}\r\n'],
-  ['yaml','# file\r\nalpha:\r\n  title: Alt # inline\r\n  n: 1\r\n# sibling\r\nbeta:\r\n  title: Keep\r\n',['alpha','title'],'Grüße','# file\r\nalpha:\r\n  title: "Grüße" # inline\r\n  n: 1\r\n# sibling\r\nbeta:\r\n  title: Keep\r\n'],
-  ['yaml','bread:\n  name: { de: Brote, en: Bread } # unchanged\nother: ok\n',['bread','name','de'],'Brot','bread:\n  name: { de: "Brot", en: Bread } # unchanged\nother: ok\n'],
-  ['markdown','---\r\n# metadata\r\ntitle: Alt # inline\r\ndate: 2026-10-12\r\n---\r\n\nBody  \r\n\r\n',['title'],'Neu','---\r\n# metadata\r\ntitle: "Neu" # inline\r\ndate: 2026-10-12\r\n---\r\n\nBody  \r\n\r\n'],
+  ['yaml','# file\r\nalpha:\r\n  title: Alt # inline\r\n  n: 1\r\n# sibling\r\nbeta:\r\n  title: Keep\r\n',['alpha','title'],'Grüße','# file\r\nalpha:\r\n  title: Grüße # inline\r\n  n: 1\r\n# sibling\r\nbeta:\r\n  title: Keep\r\n'],
+  ['yaml','bread:\n  name: { de: Brote, en: Bread } # unchanged\nother: ok\n',['bread','name','de'],'Brot','bread:\n  name: { de: Brot, en: Bread } # unchanged\nother: ok\n'],
+  ['markdown','---\r\n# metadata\r\ntitle: Alt # inline\r\ndate: 2026-10-12\r\n---\r\n\nBody  \r\n\r\n',['title'],'Neu','---\r\n# metadata\r\ntitle: Neu # inline\r\ndate: 2026-10-12\r\n---\r\n\nBody  \r\n\r\n'],
   ['markdown','---\ntitle: Same\n---\n\nOld\n',['body'],'\nNew  \n\n','---\ntitle: Same\n---\n\nNew  \n\n'],
 ])test(name+': single field changes exactly its lexical span '+JSON.stringify(path),()=>{
   assert.equal(codecs[name].update(source,path,value),expected);
@@ -44,7 +44,7 @@ test('Markdown flow frontmatter remains writable without reformatting adjacent f
 });
 test('root replacement reconciles only changed members',()=>{
   const source='# leading\na: old # inline\nb: keep\n';
-  assert.equal(yaml.update(source,[],{a:'new',b:'keep'}),source.replace('old','"new"'));
+  assert.equal(yaml.update(source,[],{a:'new',b:'keep'}),source.replace('old','new'));
 });
 test('block scalar update preserves unrelated trailing bytes and reparses the exact value',()=>{
   const source='a: |-\n  old\n  lines\nb: keep # comment\n',value='new\nwith\nlines\n';
@@ -64,7 +64,7 @@ for(const codec of [json,yaml])test((codec===json?'JSON':'YAML')+' optional fiel
   assert.deepEqual(codec.parse(codec.update(source,['a','b','c'],42)),{keep:1,a:{b:{c:42}}});
 });
 test('YAML empty scalars and scalar-to-collection replacements keep separators',()=>{
-  for(const [source,expected]of [['a:\nb: keep\n','a: "new"\nb: keep\n'],['a: # null\nb: keep\n','a: "new" # null\nb: keep\n']])assert.equal(yaml.update(source,['a'],'new'),expected);
+  for(const [source,expected]of [['a:\nb: keep\n','a: new\nb: keep\n'],['a: # null\nb: keep\n','a: new # null\nb: keep\n']])assert.equal(yaml.update(source,['a'],'new'),expected);
   assert.deepEqual(yaml.parse(yaml.update('a: old\nb: keep\n',['a'],['new','list'])),{a:['new','list'],b:'keep'});
 });
 test('removing the last nested member retains an empty object or array',()=>{
@@ -89,4 +89,12 @@ for(const [name,codec,source]of [['json',json,'{"keep":1}\n'],['yaml',yaml,'keep
   assert.equal(codec.update(source,['absent','child'],undefined),source);
   assert.deepEqual(codec.parse(codec.update(source,['a',0,'b'],'new')),{keep:1,a:[{b:'new'}]});
   assert.throws(()=>codec.update(source,['a',1,'b'],'new'),/Lücken/);
+});
+
+test('YAML: a replaced unquoted string stays unquoted only when it reads back as the same string',()=>{
+  const at=(source,value)=>yaml.update(source,['a'],value);
+  assert.equal(at('a: Alt # c\n','Neu'),'a: Neu # c\n');
+  for(const [value,written] of [['true','"true"'],['12','"12"'],['a: b','"a: b"'],['x # y','"x # y"'],['eins, zwei','"eins, zwei"'],['- dash','"- dash"'],['',  '""']])assert.equal(at('a: Alt\n',value),'a: '+written+'\n',value);
+  assert.equal(at('a: "Alt"\n','Neu'),'a: "Neu"\n','a quoted original keeps its quotes');
+  for(const value of ['Neu','true','eins, zwei','x # y','- dash',''])assert.equal(yaml.parse(at('a: Alt\n',value)).a,value);
 });
