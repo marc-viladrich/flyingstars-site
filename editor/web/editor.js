@@ -30,7 +30,8 @@ import { flags } from "./flags.mjs";
 import {inlinePlain} from './inline-format.mjs';
 import { kindOf, kindPlural } from "./record-kinds.mjs";
 import { mediaLibrary, collectionOf, ALL as ALL_MEDIA, UNUSED as UNUSED_MEDIA } from "./media-usage.mjs";
-import { splitLocale, localizedPath, frontendTarget, liveURL } from "./frontend-url.mjs";
+import { splitLocale, localizedPath, frontendTarget, liveURL, useLocaleRecords, missingLanguage } from "./frontend-url.mjs";
+import { contentTranslations } from "./content-translations.mjs";
 import { navigatorGroups, matchesQuery, localeVersion } from "./content-navigator.mjs";
 import { NavStack } from "./nav-stack.mjs";
 import { overviewPlan, entryCounts, directChildren, chunkByGroup } from "./overview-plan.mjs";
@@ -3586,7 +3587,9 @@ const localeNames=extensions.first('localeNames')??{};
 let lastForeignLocale = Object.keys(localeNames).find(code=>code!==sourceLocale),
   translationCapabilities = null;
 const pendingTranslations = new Map();
-const translations=extensions.require('translationStorage');
+// Overlay translations come from the site; without them, other languages are the site's own records.
+const translations=extensions.first('translationStorage')??contentTranslations;
+useLocaleRecords(()=>draft.records());
 const translationId=translations.id;
 // Moving, inserting or removing list items of a record takes its translations along (same undo step).
 if(translations.follow)draft.observe((id,before,after)=>translations.follow(id,before,after,{records:()=>draft.records(),draft}));
@@ -3691,7 +3694,7 @@ async function translateMissing() {
       );
       if (!planned.provider) return void (status.textContent = "Kein Übersetzungsdienst eingerichtet.");
       if (!planned.fields) {
-        status.textContent = "Alles ist in den gewählten Sprachen übersetzt.";
+        status.textContent = planned.missingRecords ? `Nichts zu übersetzen. ${planned.missingRecords} Inhalte haben noch keine Fassung in dieser Sprache.` : "Alles ist in den gewählten Sprachen übersetzt.";
         const ids = choice.scope === "page" ? pageIds : records().map((r) => r.id).filter((id) => choice.kinds.has(translationKindOf(id)));
         const open = ids.flatMap((id) => [...choice.locales].flatMap((l) => {
           const owner = record(id), t = owner && record(translationId(id, l));
@@ -3712,6 +3715,7 @@ async function translateMissing() {
           el("li", {}, el("span", { text: `${planned.fields} Texte ohne aktuelle Übersetzung` })),
           el("li", {}, el("span", { text: `${planned.chars.toLocaleString("de-DE")} Zeichen an ${planned.providerLabel}` })),
           planned.cachedChars ? el("li", {}, el("span", { text: `${planned.cachedChars.toLocaleString("de-DE")} Zeichen aus dem Übersetzungsspeicher (kostenlos)` })) : null,
+          planned.missingRecords ? el("li", {}, el("span", { text: `${planned.missingRecords} Inhalte haben noch keine Fassung in dieser Sprache und werden übersprungen` })) : null,
           planned.budget && planned.chars > planned.budget * choice.locales.size
             ? el("li", {}, el("span", { text: `Höchstens ${planned.budget.toLocaleString("de-DE")} Zeichen je Sprache und Lauf – der Rest folgt mit „Weiter übersetzen“` }))
             : null,
@@ -3774,6 +3778,8 @@ async function translateMissing() {
       else overlayLocale(target);
       update();
       const done = result.fields - (result.skippedFields || 0);
+      const missing = (result.records || []).filter((item) => item.missing).length;
+      if (missing) setTimeout(() => toast(`${missing} Inhalte haben noch keine Fassung in dieser Sprache; sie wurden übersprungen.`), 2500);
       const cost = result.billedCharacters ? ` (${result.billedCharacters.toLocaleString("de-DE")} Zeichen berechnet)` : "";
       if (result.budgetExhausted)
         toast(`${done} von ${result.fields} Texten übersetzt${cost}. Der Rest passt nicht mehr in diesen Lauf.`, { action: translateMissing, actionLabel: "Weiter übersetzen" });
@@ -3797,6 +3803,8 @@ async function translateMissing() {
 // Switching the language loads the real language route (html lang, head, scripts); the scroll position stays.
 function setLocale(locale, { keepPanel = false } = {}) {
   if (locale === activeLocale) return;
+  // A page that is a language record exists in another language only as its own record.
+  if (missingLanguage(route, locale)) return void toast(`Diese Seite gibt es noch nicht auf ${localeNames[locale] || locale}.`, { error: true });
   stageInputs();
   try {
     frame.dataset.restoreScroll = String(frame.contentWindow.scrollY);

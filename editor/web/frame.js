@@ -1,3 +1,4 @@
+import {contentTranslations} from './content-translations.mjs';
 import { prepareClonedSection } from "./prepare-cloned-section.mjs";
 import { LiveNodeHistory, remappedReference } from "./live-node-history.mjs";
 import * as afe from "./frame-markers.mjs";
@@ -11,7 +12,7 @@ import { inlineText, inlineSupported } from "./inline-format.mjs";
 import {inlineHtml} from './inline-format.mjs';
 import {extensions} from './site-adapter.mjs';
 // Editor-only enhancement. The public page keeps its native scripts and canvas controls.
-const translations=extensions.require('translationStorage');
+const translations=extensions.first('translationStorage')??contentTranslations;
 const sourceLocale=extensions.require('languages').source;
 let sourceMediaMap = {};
 let pageRecordId = null;

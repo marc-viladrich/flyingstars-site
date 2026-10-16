@@ -1,3 +1,4 @@
+import {contentTranslations} from './content-translations.mjs';
 import {extensions} from './site-adapter.mjs';
 // "Inhalte verwalten": every record of the site, grouped by its content type. Groups come from the
 // records themselves (record.type); this table only names and orders the known types. A translation is
@@ -35,7 +36,7 @@ export const localeVersion = (code) => versionNames[code] || `Fassung ${String(c
  * Returns [{ type, label, icon, total, create, items: [{ id, title, route, locales: [code] }] }].
  */
 export function navigatorGroups(records, { name = (r) => r.title || r.id, canCreate = () => false, query = "", searchText = () => "" } = {}) {
-  const translations=extensions.require('translationStorage');
+  const translations=extensions.first('translationStorage')??contentTranslations;
   const locales = new Map();
   const orphans = [];
   const ids = new Set(records.map((r) => r.id));

@@ -74,7 +74,7 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
  if(previews)previews.init().catch(error=>console.error('Vorschau:',error.message));
  const publicBuilder=new NativeBuilder(store,stateDir,{editor:false,origin:publicOrigin,runtimeName:'runtime-public'});
  const publisher=new NativePublisher(store,publicBuilder),translation=new NativeTranslation({...runtime.translation,...languages});
- const {plan:planTranslation,mergeIntoTranslations}=createTranslationCore(adapter);
+ const {plan:planTranslation,mergeIntoTranslations,storage:translationStorage}=createTranslationCore(adapter);
 
  if(initialize)await publisher.init();
  const root=runtime.editorAssets,source=sourceDir,runtimeRoot=stateDir;
@@ -138,13 +138,14 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
           // The run streams progress as NDJSON lines so the editor can show a real progress bar.
           const request=await jsonBody(req),locales=[...new Set((Array.isArray(request?.locales)?request.locales:[request?.locale]).filter(l=>Object.hasOwn(languages.locales,l)))];if(!locales.length)throw failure('Ungültige Sprache.');
           const provider=translationProvider(runtime.translation.provider,{...runtime.translation,key:runtime.translation.provider==='deepl'?runtime.translation.deeplKey:runtime.translation.key}),state=await store.state(),memoryFile=path.join(runtimeRoot,'translation-memory.json'),memory=await loadMemory(memoryFile);
-          const kindOf=id=>adapter.extensions.first('recordGroup',id);
+          // Kind of content for the site scope; without a site grouping, the collection.
+          const kindOf=id=>adapter.extensions.first('recordGroup',id)??id.slice(0,id.indexOf('/'));
           let ids;
-          if(request.scope==='site'){const kinds=Array.isArray(request.kinds)?new Set(request.kinds):null;ids=state.records.map(r=>r.id).filter(id=>kindOf(id)&&(!kinds||kinds.has(kindOf(id))));}
+          if(request.scope==='site'){const kinds=Array.isArray(request.kinds)&&request.kinds.length?new Set(request.kinds):null;ids=state.records.map(r=>r.id).filter(id=>kindOf(id)&&(!kinds||kinds.has(kindOf(id))));}
           else{if(!Array.isArray(request.ids)||!request.ids.length||request.ids.length>400||request.ids.some(id=>typeof id!=='string'))throw failure('Bitte 1 bis 400 Inhalte auswählen.');ids=request.ids;}
           const budget=runtime.translation.budget,plans=locales.map(locale=>planTranslation({records:state.records,locale,memory,ids}));
           const byKind={};for(const planned of plans)for(const job of planned.jobs){const kind=kindOf(job.ownerId);byKind[kind]??={fields:0,chars:0};byKind[kind].fields++;byKind[kind].chars+=job.segments.reduce((n,part)=>n+(part.key&&!memory.entries[part.key]?[...(part.text||'')].length:0),0);}
-          const summary={provider:provider?.id||null,providerLabel:provider?.label||null,budget,fields:plans.reduce((n,p)=>n+p.jobs.length,0),chars:plans.reduce((n,p)=>n+p.chars,0),cachedChars:plans.reduce((n,p)=>n+p.cachedChars,0),locales:Object.fromEntries(locales.map((l,i)=>[l,{fields:plans[i].jobs.length,chars:plans[i].chars}])),kinds:byKind};
+          const summary={provider:provider?.id||null,providerLabel:provider?.label||null,budget,fields:plans.reduce((n,p)=>n+p.jobs.length,0),chars:plans.reduce((n,p)=>n+p.chars,0),cachedChars:plans.reduce((n,p)=>n+p.cachedChars,0),missingRecords:plans.reduce((n,p)=>n+(p.missingRecords?.length||0),0),locales:Object.fromEntries(locales.map((l,i)=>[l,{fields:plans[i].jobs.length,chars:plans[i].chars}])),kinds:byKind};
           if(request.dryRun||!provider||!summary.fields)return json(res,200,summary);
           res.writeHead(200,{'Content-Type':'application/x-ndjson; charset=utf-8'});
           const line=data=>res.write(JSON.stringify(data)+'\n');
@@ -156,9 +157,10 @@ export async function startNativeServers({options,site,auth=false,listen=true,in
             const result=await executeBatched(planned,provider,{memory,maxChars:Math.min(provider.batchChars||3000,budget),budgetChars:budget,onBatch:({sent})=>line({type:'progress',locale,sent:doneBefore+sent,total})});
             await saveMemory(memoryFile,memory);
             doneBefore+=planned.chars;billedAll+=result.billed||0;skippedAll+=result.skippedFields||0;failedAll+=result.failedSegments||0;exhausted||=result.budgetExhausted;remaining+=result.remainingSegments||0;errors.push(...(result.errors||[]));
-            const merged=mergeIntoTranslations({records:state.records,locale,values:result.values}).map(({id,data})=>({id,data}));
+            // Overlay records come whole (data); language records and containers as field patches.
+            const merged=mergeIntoTranslations({records:state.records,locale,values:result.values}).map(({id,data,patches,expectedRevision,missing})=>({id,...data?{data}:{},...patches?{patches,expectedRevision}:{},...missing?{missing}:{}}));
             // Explicit choice in the dialog: take the suggestions as reviewed (they become public on the next publication).
-            if(request.accept)adapter.extensions.require('translationStorage').accept(merged,result.values);
+            if(request.accept)translationStorage.accept(merged,result.values);
             out.push(...merged);
            }
            line({type:'done',...summary,billedCharacters:billedAll,skippedFields:skippedAll,failedSegments:failedAll,budgetExhausted:exhausted,remainingSegments:remaining,errors:errors.slice(0,3),records:out});

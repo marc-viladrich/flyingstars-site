@@ -1,6 +1,7 @@
 // Incremental machine translation: only texts that are new or whose German wording changed are sent.
 // A field is fresh when its translation carries sourceHash = sha256(current German text). Identical
 // segments are sent once, and a translation memory (hash + locale) makes repeated runs cost nothing.
+import { createLocaleTranslations } from './core/locale-translations.mjs';
 import { resolvePath } from './vendor/astro-frontend-editor/src/content/index.mjs';
 import { createHash } from "node:crypto";
 import { promises as fs } from "node:fs";
@@ -79,9 +80,16 @@ export function plan({ records, locale, memory, ids, source = "de" }, {translata
   let fieldChars = 0,
     cachedChars = 0,
     freshFields = 0;
+  // A storage may bring its own field list (language containers) and say where nothing can be written.
+  const fieldsOf = translationStorage.fields ?? translatableFields;
+  const missingRecords = [];
   for (const owner of owners) {
+    if (translationStorage.writable && !translationStorage.writable(records, owner, locale)) {
+      missingRecords.push(owner.id);
+      continue;
+    }
     const existing = translationStorage.find(records,owner.id,locale);
-    for (const field of translatableFields(owner)) {
+    for (const field of fieldsOf(owner)) {
       const sourceHash = sha256(field.text);
       // Stored paths may name list items by key; fields come by position.
       const current = existing?.data.values?.find((v) => JSON.stringify(resolvePath(owner.data, v.path)) === JSON.stringify(field.path));
@@ -102,7 +110,7 @@ export function plan({ records, locale, memory, ids, source = "de" }, {translata
     }
   }
   const toSend = [...unique].map(([key, { text, tokens }]) => ({ key, text, tokens }));
-  return { source, locale, jobs, toSend, chars: toSend.reduce((n, s) => n + [...s.text].length, 0), cachedChars, fieldChars, freshFields };
+  return { source, locale, jobs, toSend, chars: toSend.reduce((n, s) => n + [...s.text].length, 0), cachedChars, fieldChars, freshFields, missingRecords };
 }
 
 // Long segments are split at sentence ends for providers with a per-text limit (MyMemory ~500 bytes).
@@ -202,5 +210,7 @@ export async function executeBatched(planned, provider, {memory, maxChars=3000, 
 export function createTranslationCore(site) {
  // The site's source language, not a fixed one.
  const source=site.extensions.first('languages')?.source??'de';
- return {plan:request=>plan({source,...request},{translatableFields:site.translatableFields,translationStorage:site.extensions.require('translationStorage')}),mergeIntoTranslations:request=>site.extensions.require('translationStorage').merge(request)};
+ // Overlay translations come from a site extension; otherwise the languages live in the site's records.
+ const storage=site.extensions.first('translationStorage')??createLocaleTranslations({source});
+ return {storage,plan:request=>plan({source,...request},{translatableFields:site.translatableFields,translationStorage:storage}),mergeIntoTranslations:request=>storage.merge(request)};
 }
