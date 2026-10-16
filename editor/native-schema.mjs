@@ -29,3 +29,36 @@ export function schemaDescription(schema,pool=[],fieldName='',parent={}){
  else if(type==='literal')result.value=node._def.values[0];
  return result;
 }
+
+// The value to write for an edited list or object, as close to its source as possible. The browser holds
+// schema-parsed data (defaults filled in); written back as is, a moved section would gain every default it never
+// stated. Unchanged entries keep their source form, moved list entries are found by content, an edited entry is
+// shaped against its old source entry (same id, else same position), and defaults absent from the source are left out.
+const sameParsed=(schema,raw,value)=>{const result=schema.safeParse(raw);return result.success&&JSON.stringify(wire(result.data))===JSON.stringify(value);};
+function defaultValue(schema){for(let node=schema;node?._def;node=node._def.innerType){if(node._def.type==='default'){const value=node._def.defaultValue;return {value:wire(typeof value==='function'?value():value)};}if(!['optional','nullable','readonly','catch','prefault'].includes(node._def.type))return null;}return null;}
+export function sourceShaped(schema,raw,value){
+ if(!schema||value===null||typeof value!=='object')return value;
+ if(raw!==undefined&&sameParsed(schema,raw,value))return structuredClone(raw);
+ const node=selectedSchema(schema,value);
+ if(node._def.type==='array'&&Array.isArray(value)){
+  const sources=(Array.isArray(raw)?raw:[]).map(entry=>({entry,used:false}));
+  const matched=value.map(item=>{const hit=sources.find(source=>!source.used&&sameParsed(node.element,source.entry,item));if(hit)hit.used=true;return hit?structuredClone(hit.entry):undefined;});
+  return value.map((item,index)=>{
+   if(matched[index]!==undefined)return matched[index];
+   const id=item&&typeof item==='object'?item.id:undefined;
+   const old=sources.find(source=>!source.used&&id!==undefined&&source.entry?.id===id)||(!sources[index]?.used?sources[index]:undefined);
+   if(old)old.used=true;
+   return sourceShaped(node.element,old?.entry,item);
+  });
+ }
+ if(node._def.type==='object'&&!Array.isArray(value)){
+  const out={},source=raw&&typeof raw==='object'&&!Array.isArray(raw)?raw:{};
+  for(const [key,child] of Object.entries(value)){
+   const field=node.shape[key];
+   if(field&&!Object.hasOwn(source,key)){const fallback=defaultValue(field);if(fallback&&JSON.stringify(fallback.value)===JSON.stringify(child))continue;}
+   out[key]=field?sourceShaped(field,source[key],child):child;
+  }
+  return out;
+ }
+ return value;
+}
