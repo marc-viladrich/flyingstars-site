@@ -257,6 +257,9 @@ test('the actual login script keeps redirects on-origin and reports errors as te
   await submit({preventDefault() {}}); assert.equal(message.textContent, '<script>unsafe</script>'); assert.equal(message.hidden, false);
 });
 
+// CI sets SITE_URL for the site build; the editor reads it as the public origin and would then
+// address the real deployed site instead of these local listeners.
+for (const name of ['SITE_URL', 'AFE_CANONICAL_ORIGIN']) delete process.env[name];
 let socketless = false;
 async function ports(t) {
   const servers = [http.createServer(), http.createServer()];
