@@ -68,9 +68,9 @@ function target(c) {
 const occurrenceOf = (node) => afe.occurrenceInfo(records, node);
 // Everything one occurrence renders, read from all its wrappers (a card may be drawn twice), as {id, path, kind}.
 const occurrenceMarkers = (identity) => afe.occurrenceBindings(records, document, identity);
-// The record of the page shown here opens through its sections, not as a record panel; cards of other
-// records (also of other pages) open their record.
-const isPageRecord = (id) => id === pageRecordId;
+// A page built from blocks (the record shown here, with its block list on this page) opens through its
+// sections, not as a record panel. Detail pages (a post, an event) and cards of other records open their record.
+const isPageRecord = (id) => id === pageRecordId && afe.allMarked(document, afe.isBlockList).some(({ marker }) => afe.recordIdOf(records, marker.address.owner) === id);
 const renderedId = (node) => {
   const item = afe.markerOf(node, afe.isItem);
   return item ? afe.recordIdOf(records, item.rendered) : null;
