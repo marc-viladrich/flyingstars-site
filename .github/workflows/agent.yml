@@ -19,10 +19,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with: { fetch-depth: 1 }
       - name: Auftraggeber vor Secret-Nutzung prüfen
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const actors = new Set([context.actor, process.env.GITHUB_TRIGGERING_ACTOR]);
@@ -33,9 +33,9 @@ jobs:
               }
             }
       # `npm ci` im Agentenlauf braucht das private Editor-Paket (GitHub Packages, Token nur read:packages).
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with: { node-version-file: .nvmrc, cache: npm, registry-url: 'https://npm.pkg.github.com', scope: '@marc-viladrich' }
-      - uses: anthropics/claude-code-action@86d88e619d8e6caf07b5c3944dd14f441c533718 # v1, geprüft am 2026-10-06
+      - uses: anthropics/claude-code-action@e4a6faad497d33dbc7144135c75e41f82f0bf6c0 # v1, geprüft am 2026-10-06
         id: claude
         env: { NODE_AUTH_TOKEN: '${{ secrets.PACKAGES_READ_TOKEN }}' }
         with:

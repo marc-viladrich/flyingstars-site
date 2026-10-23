@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with: { node-version-file: .nvmrc, cache: npm, registry-url: 'https://npm.pkg.github.com', scope: '@marc-viladrich' }
       - run: npm ci
         # Private editor package (GitHub Packages): classic token with read:packages only.
@@ -21,7 +21,7 @@ jobs:
           SITE_URL: ${{ github.event_name == 'push' && vars.SITE_URL || vars.PREVIEW_URL || 'https://example.invalid' }}
           MEDIA_HOST: ${{ vars.MEDIA_HOST }}
           PUBLIC_FORM_ENDPOINT: ${{ vars.PUBLIC_FORM_ENDPOINT }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with: { name: dist, path: dist/, retention-days: 7 }
 
   # --- HOST-SPEZIFISCH: Cloudflare Pages (Direct Upload) ------------------------------
@@ -48,19 +48,19 @@ jobs:
             fi
           done
           exit "$missing"
-      - uses: actions/checkout@v6   # für functions/ (Pages Functions werden aus dem Repo mitgebündelt)
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v7   # für functions/ (Pages Functions werden aus dem Repo mitgebündelt)
+      - uses: actions/download-artifact@v8
         with: { name: dist, path: dist }
       - name: Cloudflare Pages deploy
         id: cf
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=${{ vars.CF_PAGES_PROJECT }} --branch=manual-preview
       - name: Preview-URL in den PR schreiben
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const url = `${{ steps.cf.outputs.deployment-url }}`;

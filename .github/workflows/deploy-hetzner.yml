@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: Erfolgreiche CI für aktuellen main prüfen
         id: gate
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const {data: main} = await github.rest.repos.getBranch({...context.repo, branch: 'main'});
