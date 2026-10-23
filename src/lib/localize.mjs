@@ -1,7 +1,7 @@
 import {createHash} from 'node:crypto';
 import {getPath,translatableFields} from './translatable-fields.mjs';
 // Until the package is installed (step 11) the product module is read from the editor's vendored copy.
-import {resolvePath} from '../../editor/vendor/astro-frontend-editor/src/content/index.mjs';
+import {resolvePath} from 'astro-frontend-editor/content';
 export const sha256 = text => createHash('sha256').update(String(text),'utf8').digest('hex');
 const safePath = path => Array.isArray(path) && path.length > 0 && path.every(key => typeof key === 'string' ? !['__proto__','prototype','constructor'].includes(key) : Number.isInteger(key) && key >= 0);
 /** @param {any} record @param {string} locale @param {{editor?:boolean,translation?:any,fields?:any[]}} options */

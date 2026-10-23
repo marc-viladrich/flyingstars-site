@@ -1,3 +1,4 @@
+import './test/register-browser-site.mjs';
 import {execFileSync} from 'node:child_process';
 import test from 'node:test';
 import {runInNewContext} from 'node:vm';
@@ -8,17 +9,17 @@ import path from 'node:path';
 import os from 'node:os';
 import {randomUUID,createHash} from 'node:crypto';
 import {z} from 'astro/zod';
-import {validateMeta} from './vendor/astro-frontend-editor/src/schema/spec.mjs';
-import {assertMetadataWrite} from './core/write-policy.mjs';
-import {listPolicy,nodeAt,recordTitle,arrayActionAllowed} from './core/metadata.mjs';
+import {validateMeta} from 'astro-frontend-editor/schema';
+import {assertMetadataWrite} from 'astro-frontend-editor/runtime/extensions';
+import {listPolicy,nodeAt,recordTitle,arrayActionAllowed} from 'astro-frontend-editor/runtime/extensions';
 import {createFlyingStarsAdapter} from './flyingstars-adapter.mjs';
-import {describeSchema,schemaDescription,templateFor,wire} from './native-schema.mjs';
-import {NativeStore,git} from './native-store.mjs';
-import {describe} from './web/native-schema.mjs';
-import {fieldLabel,choiceLabel,isTechnical} from './web/field-labels.mjs';
-import {omitRecordField,siteWidgets,referencePrefix,referencedRecords} from './web/site-adapter.mjs';
-import {codecs} from './core/codecs.mjs';
-import {kindOf} from './web/record-kinds.mjs';
+import {describeSchema,schemaDescription,templateFor,wire} from 'astro-frontend-editor/runtime/extensions';
+import {NativeStore,git} from 'astro-frontend-editor/runtime';
+import {describe} from 'astro-frontend-editor/web/native-schema.mjs';
+import {fieldLabel,choiceLabel,isTechnical} from 'astro-frontend-editor/web/field-labels.mjs';
+import {omitRecordField,siteWidgets,referencePrefix,referencedRecords} from 'astro-frontend-editor/web/site-adapter.mjs';
+import {codecs} from 'astro-frontend-editor/runtime/extensions';
+import {kindOf} from 'astro-frontend-editor/web/record-kinds.mjs';
 const root=fileURLToPath(new URL('../',import.meta.url));
 
 test('vendored vocabulary rejects unknown keys, including nested members',async()=>{
@@ -29,17 +30,18 @@ test('vendored vocabulary rejects unknown keys, including nested members',async(
 });
 
 test('core has no field-name tables, reference guesses or positional-list name rules',async()=>{
- const files=['web/editor.js','web/view-state.mjs','web/field-labels.mjs','native-schema.mjs','web/native-schema.mjs','native-store.mjs','web/native-draft.mjs'];
+ // The installed editor package (astro-frontend-editor) must not know FlyingStars.
+ const pkg=new URL('./',import.meta.resolve('astro-frontend-editor/package.json'));
+ const files=['web/editor.js','web/view-state.mjs','web/field-labels.mjs','src/runtime/native-schema.mjs','web/native-schema.mjs','src/runtime/native-store.mjs','web/native-draft.mjs'];
  const forbidden=[/\b(?:keyLabels|choiceLabels|technicalKeys|ownNames|positionalList)\b/,/['"](?:packageId|memberIds|clientIds|assetId|featureIds)['"]/,/\.(?:packageId|memberIds|clientIds|assetId|featureIds)\b/,/endsWith\(\s*['"]Ids?['"]\s*\)/,/slice\(\s*0,\s*-2\s*\)/,/['"]cells['"]\s*,\s*['"]values['"]\s*,\s*['"]columns['"]/];
- for(const file of files){const source=await readFile(new URL(file,import.meta.url),'utf8');for(const pattern of forbidden)assert.doesNotMatch(source,pattern,file);}
- // Scan every runtime server module, including newly added core/deploy modules. Browser modules
- // and site proof/fixture/CI tools have separate ownership and retain their existing checks above.
- const serverFiles=(await readdir(new URL('./',import.meta.url),{recursive:true})).filter(file=>file.endsWith('.mjs')&&!/(?:^|\/)(?:web|extensions|test|ci)\//.test(file)&&!/(?:\.test|\.browser|-fixture|-proof)\.mjs$/.test(file)&&!['flyingstars-adapter.mjs','browser-site.mjs','pr5-compare.mjs'].includes(file));
+ for(const file of files){const source=await readFile(new URL(file,pkg),'utf8');for(const pattern of forbidden)assert.doesNotMatch(source,pattern,file);}
+ // Scan every runtime server module of the package, including core/deploy/preview modules.
+ const runtime=new URL('src/runtime/',pkg);
+ const serverFiles=(await readdir(runtime,{recursive:true})).filter(file=>file.endsWith('.mjs'));
+ assert.ok(serverFiles.length>30,'package runtime found');
  const domain=[/FlyingStars|flyingstars/i,/\b(?:SPARK|HORIZON|ODYSSEY)\b/,/\b(?:packageId|featureIds|memberIds|clientIds|assetId)\b/,/["'](?:page|package|screen|post|project|faq|client|team|media|site|translation)\//,/\^\((?:page|package|screen|post|project|faq|client|team)\|/,/t-outline|t-caps|data-card|cfg-field/,/['"](?:packages|clients|team|screens|siteContact|siteInquiry|siteNavigation|siteUi|pricing|logoBar|projectGrid|postList)['"]/ ,/\b(?:packageOwnership|sourceId)\b/];
  for(const file of serverFiles){
-  let source=await readFile(new URL(file,import.meta.url),'utf8');
-  // Only these composition roots may import the pilot adapter or its host compatibility constants. No body is exempt.
-  if(['server.mjs','runtime-options.mjs','translate-missing.mjs','migrate.mjs','deploy/host-update.mjs'].includes(file))source=source.replace(/^(?:import|export).*from ['"][^'"]*(?:flyingstars-adapter|extensions\/flyingstars\/runtime-compatibility)\.mjs['"];?$/gm,'');
+  const source=await readFile(new URL(file,runtime),'utf8');
   for(const pattern of domain)assert.doesNotMatch(source,pattern,file);
  }
 });
@@ -112,7 +114,7 @@ test('real saves reject metadata-forbidden array mutations and read-only fields 
 
 // Exercise the browser's actual dispatch functions without a web server or DOM dependency.
 test('browser dispatch resolves declared references and widgets, including compact tables',async()=>{
- const {records}=await recordFixtures(),source=await readFile(new URL('./web/editor.js',import.meta.url),'utf8');
+ const {records}=await recordFixtures(),source=await readFile(new URL('./web/editor.js',import.meta.resolve('astro-frontend-editor/package.json')),'utf8');
  const describeRecord=item=>describe(item.schema,item.data,{omitPath:(data,path)=>omitRecordField(item,data,path)});
  const context={nodeAt,referencePrefix,referencedRecords,siteWidgets,kindOf,records:()=>records,record:id=>records.find(r=>r.id===id),recordName:recordTitle,recordTemplate:()=>null,pushView:()=>{},inlinePlain:v=>v,getPath:(data,path)=>path.reduce((v,k)=>v?.[k],data)};
  const choices=runInNewContext(source.slice(source.indexOf('function choiceSource('),source.indexOf('// part: "all"'))+';choiceSource',context);
@@ -146,7 +148,7 @@ test('record titles retain the pilot presentation, including optional package na
 });
 
 test('block action controls and handlers honor the same metadata, including inherited read-only',async()=>{
- const source=await readFile(new URL('./web/editor.js',import.meta.url),'utf8');
+ const source=await readFile(new URL('./web/editor.js',import.meta.resolve('astro-frontend-editor/package.json')),'utf8');
  const item={data:{sections:[{type:'a'},{type:'a'},{type:'a'}]},schema:{kind:'object',properties:{sections:{kind:'array',min:1,'x-afe':{array:{reorderable:false,insertable:false,removable:false}}}}}};
  const actions=runInNewContext(source.slice(source.indexOf('function sectionActions('),source.lastIndexOf('// ---------------------------------------------------------------------------',source.indexOf('// Panel views')))+';sectionActions',{state:{templates:{sections:[{type:'a'}]}},nodeAt,listPolicy,actionGroup:(_,actions)=>actions.filter(Boolean),actionRow:label=>label});
  assert.equal(actions(item,1).length,0);
@@ -158,5 +160,5 @@ test('block action controls and handlers honor the same metadata, including inhe
 });
 
 test('complete browser modules parse, beyond isolated panel-function probes',async()=>{
- for(const file of await readdir(new URL('./web/',import.meta.url)))if(/\.m?js$/.test(file))execFileSync(process.execPath,['--check',fileURLToPath(new URL('./web/'+file,import.meta.url))],{stdio:'pipe'});
+ for(const file of await readdir(new URL('./web/',import.meta.resolve('astro-frontend-editor/package.json'))))if(/\.m?js$/.test(file))execFileSync(process.execPath,['--check',fileURLToPath(new URL('./web/'+file,import.meta.resolve('astro-frontend-editor/package.json')))],{stdio:'pipe'});
 });

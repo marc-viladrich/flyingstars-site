@@ -41,7 +41,8 @@ Die bisherige Cloudflare-Konfiguration und der tatsächlich eingerichtete Branch
 | `tests/` | Playwright-Gates. `routes.ts` ist die gemeinsame Routenliste |
 | `.github/ISSUE_TEMPLATE/` | Vier Issue Forms: Blogpost, Projekt, FAQ, Änderungswunsch |
 | `.github/workflows/` | `ci.yml` (Gates), `content-intake.yml` (Spur A), `agent.yml` (Spur B), `deploy-hetzner.yml` (Produktion), `deploy-cloudflare-preview.yml` (manuell) |
-| `editor/` | Editor-Runtime, Browserdateien, Unit-Tests, CI-Einstieg und Deploy-Hook |
+| `editor/` | FlyingStars-Adapter und -Erweiterungen, Editor-Launcher, Integrationstests, CI-Einstieg und Deploy-Hook (die Editor-Laufzeit ist das Paket `astro-frontend-editor`) |
+| `.npmrc` | Das Editor-Paket ist privat (`@marc-viladrich/astro-frontend-editor` auf GitHub Packages, als `astro-frontend-editor` installiert). `npm ci` braucht dafür ein Token mit `read:packages` (siehe `docs/deployment.md`) |
 | `AGENTS.md` | Agent-Vertrag, gilt für Claude Code und Codex |
 
 ## Section-Typen
@@ -112,7 +113,7 @@ Kundenbilder stammen derzeit von `flyingstars.art` und der geteilten Vercel-Refe
 ## Lokal
 
 ```sh
-nvm use   # oder Node 22 im PATH
+nvm use   # oder Node 24 (ab 24.15) im PATH
 npm ci
 npx astro dev
 npx astro check && npx astro build && npx playwright test

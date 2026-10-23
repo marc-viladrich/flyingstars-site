@@ -1,13 +1,14 @@
+import './test/register-browser-site.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile,readdir} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
-import {createBrowserExtensionRegistry} from './web/extensions.mjs';
-import {extensions} from './web/site-adapter.mjs';
-import {NativeDraft} from './web/native-draft.mjs';
+import {createBrowserExtensionRegistry} from 'astro-frontend-editor/web/extensions.mjs';
+import {extensions} from 'astro-frontend-editor/web/site-adapter.mjs';
+import {NativeDraft} from 'astro-frontend-editor/web/native-draft.mjs';
 import {createFlyingStarsAdapter} from './flyingstars-adapter.mjs';
-import {sha256} from './web/sha256.mjs';
+import {sha256} from 'astro-frontend-editor/content';
 const extension=(name,hooks={},extra={})=>({name,contractVersion:'1.0',hooks,...extra});
 
 test('browser registration rejects bad versions, duplicate identities and undeclared capabilities before dispatch',()=>{
@@ -63,9 +64,9 @@ test('all frame lifecycles snapshot/restore their own state in deterministic ord
 });
 
 test('generic browser modules contain no pilot identities, record IDs, selectors or content-field semantics',async()=>{
- const files=(await readdir(new URL('./web/',import.meta.url))).filter(file=>/\.(?:mjs|js)$/.test(file));
+ const files=(await readdir(new URL('./web/',import.meta.resolve('astro-frontend-editor/package.json')))).filter(file=>/\.(?:mjs|js)$/.test(file));
  const forbidden=[/flyingstars/i,/\b(?:SPARK|HORIZON|ODYSSEY)\b/,/\b(?:packageId|featureIds|memberIds|clientIds|featureGroups|assetId|defaultAlt|altOverride|showOrb|sourceId|sourceHash)\b/,/["'](?:page|package|extra|screen|post|project|faq|client|team|media|site|translation)\//,/\^\((?:page|package|screen|post|project|faq|client|team)\|/,/["']tone["']|data-tone|t-outline|t-caps|\.packs|\.crew|\.portrait|\.member\b|#cfg|data-card|cfg-field/,/["'](?:pricing|logoBar|projectGrid|postList|showreelHero|sustainability|contactForm|testimonials)["']/];
- for(const file of files){const source=await readFile(new URL('./web/'+file,import.meta.url),'utf8');for(const pattern of forbidden)assert.doesNotMatch(source,pattern,file);}
+ for(const file of files){const source=await readFile(new URL('./web/'+file,import.meta.resolve('astro-frontend-editor/package.json')),'utf8');for(const pattern of forbidden)assert.doesNotMatch(source,pattern,file);}
 });
 
 test('actual browser graphs link under editor- and adapter-served URLs and startup registers exactly one instance',async()=>{
@@ -75,25 +76,31 @@ test('actual browser graphs link under editor- and adapter-served URLs and start
  // relative URL mistakes, Node imports and missing exports without requiring a TCP listener.
  const script=`
  import {SourceTextModule,createContext} from 'node:vm';
- import {readFile} from 'node:fs/promises';
- import {serveFile,EDITOR_BROWSER_MODULES} from ${JSON.stringify(new URL('./server.mjs',import.meta.url).href)};
+ import {fileURLToPath} from 'node:url';
+ import path from 'node:path';
+ import {serveFile,EDITOR_BROWSER_MODULES,BROWSER_IMPORTS} from 'astro-frontend-editor/runtime';
  import assert from 'node:assert/strict';
  const root=${JSON.stringify(root)},files=${JSON.stringify(site.browserFiles)};
+ // The editor server's three bases: package modules (allowlist) and marked from the package, site files from
+ // the adapter, everything else under /editor/ from the package's web/ directory.
+ const packageRoot=fileURLToPath(new URL('./',import.meta.resolve('astro-frontend-editor/package.json'))),marked=fileURLToPath(import.meta.resolve('marked'));
  for(const entry of ['/editor/editor.js','/editor/frame.js','/editor/site-adapter.mjs']){
   const window={},context=createContext({window,TextEncoder,structuredClone}),cache=new Map();
+  const resolve=(specifier,parent)=>Object.hasOwn(BROWSER_IMPORTS,specifier)?new URL(BROWSER_IMPORTS[specifier],parent).href:new URL(specifier,parent).href;
   async function load(url){
    if(cache.has(url))return cache.get(url);
    const pathname=new URL(url).pathname;
    let bytes,status;
    const own=EDITOR_BROWSER_MODULES.includes(pathname);
-   const base=pathname==='/editor/marked.mjs'?root+'node_modules/marked/lib/':own?root+'editor/':files[pathname]?root:root+'editor/web/';
-   const relative=pathname==='/editor/marked.mjs'?'/marked.esm.js':own?pathname:files[pathname]||pathname.slice('/editor/'.length);
+   const base=pathname==='/editor/marked.mjs'?path.dirname(marked):own?packageRoot:files[pathname]?root:packageRoot+'web/';
+   const relative=pathname==='/editor/marked.mjs'?'/'+path.basename(marked):own?pathname:files[pathname]||pathname.slice('/editor/'.length);
    try{await serveFile({writeHead(code){status=code;},end(body){bytes=body;}},base,relative);}catch(error){throw Error(url+': '+error.message);}
    assert.equal(status,200,url);
-   const module=new SourceTextModule(bytes.toString(),{context,identifier:url});cache.set(url,module);return module;
+   const module=new SourceTextModule(bytes.toString(),{context,identifier:url,importModuleDynamically:async(specifier,parent)=>{const child=await load(resolve(specifier,parent.identifier));await link(child);await child.evaluate();return child;}});cache.set(url,module);return module;
   }
+  const link=module=>module.status==='unlinked'?module.link((specifier,parent)=>{assert.ok(!specifier.startsWith('node:'),specifier);return load(resolve(specifier,parent.identifier));}):undefined;
   const module=await load('http://fixture.invalid'+entry);
-  await module.link((specifier,parent)=>{assert.ok(!specifier.startsWith('node:'),specifier);return load(new URL(specifier,parent.identifier).href);});
+  await link(module);
   const registration=cache.get('http://fixture.invalid/editor/site-adapter.mjs');
   await registration.evaluate();
   assert.equal(window.afeExtensions,registration.namespace.extensions);
@@ -102,7 +109,7 @@ test('actual browser graphs link under editor- and adapter-served URLs and start
   assert.ok(window.afeExtensions.codecs['flyingstars/inline']);
  }
  `;
- execFileSync(process.execPath,['--experimental-vm-modules','--input-type=module'],{input:script,stdio:['pipe','pipe','pipe']});
+ execFileSync(process.execPath,['--experimental-vm-modules','--input-type=module'],{input:script,cwd:root,stdio:['pipe','pipe','pipe']});
 });
 
 test('registered browser queries and factories preserve matched lists, presets and one-step undo for canvas reorder',()=>{

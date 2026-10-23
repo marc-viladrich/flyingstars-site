@@ -1,6 +1,7 @@
 // Step 10 acceptance for overlay translations (content format 2): tuple identity without collisions, keyed list
 // items surviving a reorder outside the editor, editor changes carrying translations along in one undo step, and a
 // migration whose second run is empty.
+import './test/register-browser-site.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {promises as fs} from 'node:fs';
@@ -8,15 +9,15 @@ import path from 'node:path';
 import os from 'node:os';
 import {fileURLToPath} from 'node:url';
 import {randomUUID} from 'node:crypto';
-import {NativeStore,git} from './native-store.mjs';
+import {NativeStore,git} from 'astro-frontend-editor/runtime';
 import {createFlyingStarsAdapter} from './flyingstars-adapter.mjs';
-import {resolveRuntimeOptions} from './runtime-options.mjs';
-import {NativeDraft} from './web/native-draft.mjs';
+import {resolveRuntimeOptions} from './server.mjs';
+import {NativeDraft} from 'astro-frontend-editor/web/native-draft.mjs';
 import {translationStorage,translationId} from './extensions/flyingstars/web/translations.mjs';
 import {translationIdFor} from './extensions/flyingstars/translations.mjs';
-import {applyMigrations,planMigrations} from './migrations/index.mjs';
+import {applyMigrations,planMigrations} from 'astro-frontend-editor/runtime';
 import {localize} from '../src/lib/localize.mjs';
-import {sha256} from './web/sha256.mjs';
+import {sha256} from 'astro-frontend-editor/content';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const req=(state,extra)=>({expectedHead:state.head,requestId:randomUUID(),changes:[],creates:[],deletes:[],...extra});

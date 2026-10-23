@@ -84,10 +84,10 @@ test('all FAQ records persist a numeric global order and new entries receive a n
 });
 
 // The site marker helpers, transpiled and loaded once per mode: the product helpers read AFE_MODE when their
-// module is first evaluated, so each mode imports its own copy (query string) of the vendored module.
+// module is first evaluated, so each mode imports its own copy (query string) of the package module.
 async function markerHelpers(mode){
  const {transpileModule}=await import('typescript'),os=await import('node:os');
- const product=new URL('../../editor/vendor/astro-frontend-editor/src/markers/index.mjs',import.meta.url).href+'?mode='+mode;
+ const product=import.meta.resolve('astro-frontend-editor/markers')+'?mode='+mode;
  const source=(await fs.readFile(new URL('../lib/editor-markers.ts',import.meta.url),'utf8')).replace("'astro-frontend-editor/markers'",JSON.stringify(product)).replace("'./content-addresses.mjs'",JSON.stringify(new URL('../lib/content-addresses.mjs',import.meta.url).href));
  const file=path.join(await fs.mkdtemp(path.join(os.tmpdir(),'editor-markers-')),'editor-markers.mjs');
  await fs.writeFile(file,transpileModule(source,{compilerOptions:{module:99,target:99}}).outputText);
@@ -148,7 +148,7 @@ test('a backslash keeps typed mark characters literal',async()=>{
 });
 
 test('UI fields use editorial roles and every section has at most ten direct fields',async()=>{
- const {siteUiSchema}=await import('./ui-schema.mjs'),{describeSchema,unwrap}=await import('../../editor/native-schema.mjs');
+ const {siteUiSchema}=await import('./ui-schema.mjs'),{describeSchema,unwrap}=await import('astro-frontend-editor/runtime/extensions');
  const data=JSON.parse(await fs.readFile(path.join(root,'site/ui.json'),'utf8'));
  const description=describeSchema(siteUiSchema,data);
  for(const field of description.fields)assert.notEqual(field.label,field.value,field.path.join('.'));
@@ -156,7 +156,7 @@ test('UI fields use editorial roles and every section has at most ten direct fie
 });
 
 test('every UI text has a public consumer or an explicit unused reason',async()=>{
- const {siteUiSchema}=await import('./ui-schema.mjs'),{schemaAt,describeSchema}=await import('../../editor/native-schema.mjs');
+ const {siteUiSchema}=await import('./ui-schema.mjs'),{schemaAt,describeSchema}=await import('astro-frontend-editor/runtime/extensions');
  const ui=JSON.parse(await fs.readFile(path.join(root,'site/ui.json'),'utf8'));
  const files=[];const walk=async dir=>{for(const entry of await fs.readdir(dir,{withFileTypes:true})){const full=path.join(dir,entry.name);if(entry.isDirectory())await walk(full);else if(/\.(astro|js|mjs|ts)$/.test(full)&&!full.includes('/schemas/')&&!full.includes('/content/'))files.push(full);}};
  await walk(fileURLToPath(new URL('../',import.meta.url)));
@@ -172,7 +172,7 @@ test('every UI text has a public consumer or an explicit unused reason',async()=
 });
 
 test('all project, next-project and package-upgrade relationships resolve to stored records',async()=>{
- const {projectSchema}=await import('./collection-schema.mjs'),{packageSchema}=await import('../content/package-schema.mjs'),{extraSchema}=await import('./extra-schema.mjs'),{describeSchema}=await import('../../editor/native-schema.mjs');
+ const {projectSchema}=await import('./collection-schema.mjs'),{packageSchema}=await import('../content/package-schema.mjs'),{extraSchema}=await import('./extra-schema.mjs'),{describeSchema}=await import('astro-frontend-editor/runtime/extensions');
  const records=[];
  for(const[collection,schema]of [['projects',projectSchema],['packages',packageSchema],['extras',extraSchema],['clients',clientSchema],['media',mediaSchema]])for(const file of await fs.readdir(path.join(root,collection))){if(!/\.(md|json)$/.test(file))continue;const source=await fs.readFile(path.join(root,collection,file),'utf8'),raw=file.endsWith('.md')?parse(source.split('---')[1]):JSON.parse(source),data=schema.parse(raw);records.push({collection,id:file.replace(/\.(md|json)$/,''),data,schema});}
  for(const record of records)for(const field of describeSchema(record.schema,record.data).fields){const ref=field['x-afe']?.reference;if(ref&&field.value!==undefined)assert.ok(records.some(target=>target.collection===ref.collection&&target.id===field.value.replace(/^media\//,'')),`${record.collection}/${record.id}: ${field.path.join('.')} → ${field.value}`);}
@@ -204,7 +204,7 @@ test('Astro references derive from native relationship metadata and retain packa
 });
 
 test('migrated UI and upgrade translations retain valid paths and current per-field source hashes',async()=>{
- const {siteUiSchema}=await import('./ui-schema.mjs'),{extraSchema}=await import('./extra-schema.mjs'),{schemaAt}=await import('../../editor/native-schema.mjs'),{sha256}=await import('../lib/localize.mjs');
+ const {siteUiSchema}=await import('./ui-schema.mjs'),{extraSchema}=await import('./extra-schema.mjs'),{schemaAt}=await import('astro-frontend-editor/runtime/extensions'),{sha256}=await import('../lib/localize.mjs');
  for(const file of await fs.readdir(path.join(root,'translations'))){if(!/^(site-ui|extra-).+\.json$/.test(file))continue;const translation=JSON.parse(await fs.readFile(path.join(root,'translations',file),'utf8')),extra=translation.sourceId.startsWith('extra/'),data=JSON.parse(await fs.readFile(path.join(root,extra?'extras/'+translation.sourceId.slice(6)+'.json':'site/ui.json'),'utf8')),schema=extra?extraSchema:siteUiSchema;
   assert.equal(translation.sourceHash,sha256(await fs.readFile(path.join(root,extra?'extras/'+translation.sourceId.slice(6)+'.json':'site/ui.json'),'utf8')));
   for(const value of translation.values){assert.ok(schemaAt(schema,data,value.path),file+': '+value.path.join('.'));const german=value.path.reduce((v,k)=>v?.[k],data);assert.equal(value.sourceHash,sha256(german),file+': '+value.path.join('.'));}
@@ -219,7 +219,7 @@ test('all stored case titles and their translated lines carry caps with current 
 });
 
 test('UI edit markers resolve to active fields rather than unused extraction fragments',async()=>{
- const {siteUiSchema}=await import('./ui-schema.mjs'),{schemaAt}=await import('../../editor/native-schema.mjs');
+ const {siteUiSchema}=await import('./ui-schema.mjs'),{schemaAt}=await import('astro-frontend-editor/runtime/extensions');
  const ui=JSON.parse(await fs.readFile(path.join(root,'site/ui.json'),'utf8'));
  const walk=async dir=>{for(const entry of await fs.readdir(dir,{withFileTypes:true})){const file=path.join(dir,entry.name);if(entry.isDirectory()){await walk(file);continue;}if(!file.endsWith('.astro'))continue;const source=await fs.readFile(file,'utf8');for(const [,literal]of source.matchAll(/uiMarker\(['"]site\/ui['"],(\[[^\]]+\])\)/g)){const parts=JSON.parse(literal.replaceAll("'",'"').replace(/\bi\b/g,'0')),field=schemaAt(siteUiSchema,ui,parts);assert.ok(field,file+': '+literal);assert.ok(!field.meta()?.unused,file+': inactive '+literal);}}};
  await walk(fileURLToPath(new URL('../components/',import.meta.url)));await walk(fileURLToPath(new URL('../layouts/',import.meta.url)));

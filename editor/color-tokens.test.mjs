@@ -1,12 +1,13 @@
+import './test/register-browser-site.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readdir, readFile} from 'node:fs/promises';
 import {COLOR_TOKENS, colorVar, rgbOf, isColorToken, colorTokenCSS} from '../src/lib/color-tokens.mjs';
 import {packageSchema} from '../src/content/package-schema.mjs';
 import {projectShowcaseSchema} from '../src/schemas/project-showcase.mjs';
-import {describeSchema, schemaDescription} from './native-schema.mjs';
-import {describe} from './web/native-schema.mjs';
-import {fieldLabel, isTechnical} from './web/field-labels.mjs';
+import {describeSchema, schemaDescription} from 'astro-frontend-editor/runtime/extensions';
+import {describe} from 'astro-frontend-editor/web/native-schema.mjs';
+import {fieldLabel, isTechnical} from 'astro-frontend-editor/web/field-labels.mjs';
 import {textFields, translatableFields} from '../src/lib/translatable-fields.mjs';
 
 const root = new URL('../', import.meta.url);
@@ -68,6 +69,9 @@ async function filesAt(relative) {
 // Artwork channels in logo/formation rendering are data; numerical fixed CSS colours are forbidden.
 const namedColors = 'aliceblue antiquewhite aqua aquamarine azure beige bisque black blanchedalmond blue blueviolet brown burlywood cadetblue chartreuse chocolate coral cornflowerblue cornsilk crimson cyan darkblue darkcyan darkgoldenrod darkgray darkgreen darkgrey darkkhaki darkmagenta darkolivegreen darkorange darkorchid darkred darksalmon darkseagreen darkslateblue darkslategray darkslategrey darkturquoise darkviolet deeppink deepskyblue dimgray dimgrey dodgerblue firebrick floralwhite forestgreen fuchsia gainsboro ghostwhite gold goldenrod gray green greenyellow grey honeydew hotpink indianred indigo ivory khaki lavender lavenderblush lawngreen lemonchiffon lightblue lightcoral lightcyan lightgoldenrodyellow lightgray lightgreen lightgrey lightpink lightsalmon lightseagreen lightskyblue lightslategray lightslategrey lightsteelblue lightyellow lime limegreen linen magenta maroon mediumaquamarine mediumblue mediumorchid mediumpurple mediumseagreen mediumslateblue mediumspringgreen mediumturquoise mediumvioletred midnightblue mintcream mistyrose moccasin navajowhite navy oldlace olive olivedrab orange orangered orchid palegoldenrod palegreen paleturquoise palevioletred papayawhip peachpuff peru pink plum powderblue purple rebeccapurple red rosybrown royalblue saddlebrown salmon sandybrown seagreen seashell sienna silver skyblue slateblue slategray slategrey snow springgreen steelblue tan teal thistle tomato turquoise violet wheat white whitesmoke yellow yellowgreen'.split(' ').join('|');
 const literal = new RegExp(String.raw`#[\da-f]{3,8}\b|\b(?:rgb|rgba|hsl|hsla|hwb|lab|lch|oklab|oklch|color)\((?!\s*(?:from\s+var\(|var\(|\$\{))|[:,(]\s*(?:${namedColors})(?=[\s,;)}])`, 'gi');
+// The editor chrome ships in the astro-frontend-editor package; `editor/web/…` names its files there.
+const shell=new URL('./web/',import.meta.resolve('astro-frontend-editor/package.json'));
+const at=file=>file.startsWith('editor/web/')?new URL(file.slice('editor/web/'.length),shell):new URL(file,root);
 test('site styles, components and editor chrome contain no fixed colour literals', async () => {
   const fixedPattern = new RegExp(literal.source, 'i');
   for (const fixed of ['#12ab34', 'rgb(1 2 3 / .4)', 'color(srgb .2 .3 .4)', 'background: rebeccapurple;', 'linear-gradient(navy, white)']) assert.match(fixed,fixedPattern);
@@ -75,20 +79,20 @@ test('site styles, components and editor chrome contain no fixed colour literals
   const files = [...await filesAt('src/components'),...await filesAt('src/styles'),'editor/web/editor.css','editor/web/frame.js','src/scripts/site.ts','src/scripts/pricing.js'];
   const violations = [];
   for (const file of files) {
-    const source = (await readFile(new URL(file,root), 'utf8')).replace(/\/\*[\s\S]*?\*\/|^\s*\/\/[^\n]*$/gm, comment => comment.replace(/[^\n]/g,' '));
+    const source = (await readFile(at(file), 'utf8')).replace(/\/\*[\s\S]*?\*\/|^\s*\/\/[^\n]*$/gm, comment => comment.replace(/[^\n]/g,' '));
     for (const match of source.matchAll(literal)) violations.push(`${file}:${source.slice(0,match.index).split('\n').length} ${match[0]}`);
   }
   assert.deepEqual(violations, []);
 });
 
 test('editor and iframe use the same variable definitions with no unresolved UI tokens', async () => {
-  const definitions = await readFile(new URL('editor/web/ui-tokens.css',root),'utf8');
+  const definitions = await readFile(at('editor/web/ui-tokens.css'),'utf8');
   const declared = new Set([...definitions.matchAll(/(--ui-[\w-]+)\s*:/g)].map(m => m[1]));
   for (const file of ['editor/web/editor.css','editor/web/frame.js','editor/web/ui-tokens.css']) {
-    const source = await readFile(new URL(file,root),'utf8');
+    const source = await readFile(at(file),'utf8');
     for (const [,id] of source.matchAll(/var\((--ui-[\w-]+)/g)) assert.ok(declared.has(id), `${file}: ${id}`);
   }
-  assert.match(await readFile(new URL('editor/web/editor.css',root),'utf8'), /@import "\.\/ui-tokens\.css"/);
-  assert.match(await readFile(new URL('editor/web/frame.js',root),'utf8'), /uiTokens\.href = "\/editor\/ui-tokens\.css"/);
+  assert.match(await readFile(at('editor/web/editor.css'),'utf8'), /@import "\.\/ui-tokens\.css"/);
+  assert.match(await readFile(at('editor/web/frame.js'),'utf8'), /uiTokens\.href = "\/editor\/ui-tokens\.css"/);
   assert.doesNotMatch(definitions.replace(/--ui-[\w-]+\s*:[^;]+;/g,''), literal);
 });

@@ -1,8 +1,7 @@
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
-import {codecs} from '../../../core/codecs.mjs';
-import {listKeyAt} from '../../../native-schema.mjs';
-import {resolvePath,storedPath,translationKey} from '../../../vendor/astro-frontend-editor/src/content/index.mjs';
+import {codecs,listKeyAt} from 'astro-frontend-editor/runtime/extensions';
+import {resolvePath,storedPath,translationKey} from 'astro-frontend-editor/content';
 
 // FlyingStars overlay translations, content format 1 → 2:
 // - identity: translations/<source id>/<locale>.json instead of a name with "/" flattened to "-" (collisions);

@@ -1,11 +1,11 @@
 import {readFile, readdir, mkdir, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {createFlyingStarsAdapter} from '../editor/flyingstars-adapter.mjs';
-import {codecs} from '../editor/core/codecs.mjs';
-import {describeSchema} from '../editor/native-schema.mjs';
+import {codecs} from 'astro-frontend-editor/runtime/extensions';
+import {describeSchema} from 'astro-frontend-editor/runtime/extensions';
 import {getPath, seoFields} from '../src/lib/translatable-fields.mjs';
 import {localize, sha256} from '../src/lib/localize.mjs';
-import {resolvePath} from '../editor/vendor/astro-frontend-editor/src/content/index.mjs';
+import {resolvePath} from 'astro-frontend-editor/content';
 import {localizedHref} from '../src/lib/localized-routes.mjs';
 
 export async function readEditorialRecords(root) {

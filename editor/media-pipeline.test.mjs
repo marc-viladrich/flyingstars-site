@@ -5,10 +5,10 @@ import path from 'node:path';
 import {randomUUID} from 'node:crypto';
 import sharp from 'sharp';
 import {resolveImageSource,imageWidths} from '../src/lib/media-source.mjs';
-import {uploadNativeMedia} from './native-media.mjs';
+import {uploadNativeMedia} from 'astro-frontend-editor/runtime';
 import {i18nFixture} from './i18n-test-fixture.mjs';
-import {git} from './native-store.mjs';
-import {NativeBuilder} from './native-builder.mjs';
+import {git} from 'astro-frontend-editor/runtime';
+import {NativeBuilder} from 'astro-frontend-editor/runtime';
 
 const hosts=new Set(['flyingstars.art']);
 test('Media resolution accepts approved remote sources and caps responsive widths',async()=>{

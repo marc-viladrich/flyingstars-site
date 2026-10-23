@@ -1,6 +1,6 @@
 import {createFlyingStarsAdapter} from './flyingstars-adapter.mjs';
-import {resolveRuntimeOptions} from './runtime-options.mjs';
-import test from'node:test';import assert from'node:assert/strict';import{promises as fs}from'node:fs';import path from'node:path';import os from'node:os';import{fileURLToPath}from'node:url';import{randomUUID}from'node:crypto';import{NativeStore,git,failure}from'./native-store.mjs';
+import {resolveRuntimeOptions} from './server.mjs';
+import test from'node:test';import assert from'node:assert/strict';import{promises as fs}from'node:fs';import path from'node:path';import os from'node:os';import{fileURLToPath}from'node:url';import{randomUUID}from'node:crypto';import {NativeStore,git,failure} from 'astro-frontend-editor/runtime';
 const root=path.dirname(fileURLToPath(import.meta.url));async function fixture(t){const dir=await fs.mkdtemp(path.join(os.tmpdir(),'flyingstars-native-'));await git(root,['clone','--quiet','--no-hardlinks',path.join(root,'..'),dir]);await git(dir,['checkout','-B','content/draft']);await fs.symlink(await fs.realpath(path.join(root,'../node_modules')),path.join(dir,'node_modules'));t.after(()=>fs.rm(dir,{recursive:true,force:true}));return new NativeStore(dir,{remote:false,site:await createFlyingStarsAdapter(dir),runtime:resolveRuntimeOptions({values:{siteRoot:dir}})}).init();}
 const request=(state,changes)=>{
  const records=new Map();

@@ -1,6 +1,7 @@
+import './test/register-browser-site.mjs';
 import test from "node:test";
 import assert from "node:assert/strict";
-import { inlineText } from "./web/inline-format.mjs";
+import { inlineText } from "astro-frontend-editor/web/inline-format.mjs";
 import { inlineHtml } from "../src/lib/inline-text.mjs";
 
 // Tiny parser for the tags inlineHtml emits (and browsers add while editing), enough for round trips.
@@ -102,9 +103,9 @@ test("case-title outline is active and removes/adds cleanly through the frame to
     createElement(tag) { return attach({tag, children: []}); },
     createRange() { return {setStart() {}, setEnd() {}, selectNodeContents() {}, extractContents: () => ({textContent: '', children: []})}; },
   };
-  const source = await readFile(new URL('./web/frame.js', import.meta.url), 'utf8');
+  const source = await readFile(new URL('./web/frame.js',import.meta.resolve('astro-frontend-editor/package.json')), 'utf8');
   const functions = source.slice(source.indexOf('const markOf = '), source.indexOf('function format(command)'));
-  const { selectedTextNodes } = await import('./web/inline-selection.mjs');
+  const { selectedTextNodes } = await import('astro-frontend-editor/web/inline-selection.mjs');
   globalThis.NodeFilter ??= { SHOW_TEXT: 4 };
   owner.ownerDocument = document;
   const toolbar = runInNewContext(functions + ';({markActive,toggleMark})', {document, NodeFilter: {SHOW_TEXT: 4}, toolOwner: owner, textNodesIn: selectedTextNodes, Range: {START_TO_START: 0, END_TO_END: 2}});

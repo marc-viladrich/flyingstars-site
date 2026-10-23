@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {cp,mkdir,readdir,readFile,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath,pathToFileURL} from 'node:url';
-import {NativeStore,git} from './native-store.mjs';
+import {NativeStore,git} from 'astro-frontend-editor/runtime';
 import {createFlyingStarsAdapter} from './flyingstars-adapter.mjs';
 
 async function htmlFiles(root,directory='') {

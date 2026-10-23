@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
-import {GitSync} from './git-sync.mjs';
+import {GitSync} from 'astro-frontend-editor/runtime';
 import {i18nFixture} from './i18n-test-fixture.mjs';
-import {git} from './native-store.mjs';
+import {git} from 'astro-frontend-editor/runtime';
 
 test('A slow remote push never holds the save lock; later content is pushed in the next round', {timeout:20000}, async t => {
   const {store}=await i18nFixture(t);

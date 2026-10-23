@@ -1,14 +1,15 @@
 // "Verknüpft mit": incoming references are derived from schema reference metadata over all records.
+import './test/register-browser-site.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { incomingReferences } from './web/linked-records.mjs';
+import { incomingReferences } from 'astro-frontend-editor/web/linked-records.mjs';
 import { createFlyingStarsAdapter } from './flyingstars-adapter.mjs';
-import { schemaDescription, wire } from './native-schema.mjs';
-import { codecs } from './core/codecs.mjs';
-import { referenceFields } from './core/metadata.mjs';
-import { resolveReference } from './web/site-adapter.mjs';
+import { schemaDescription, wire } from 'astro-frontend-editor/runtime/extensions';
+import { codecs } from 'astro-frontend-editor/runtime/extensions';
+import { referenceFields } from 'astro-frontend-editor/runtime/extensions';
+import { resolveReference } from 'astro-frontend-editor/web/site-adapter.mjs';
 const root = fileURLToPath(new URL('../', import.meta.url));
 
 async function realRecords() {

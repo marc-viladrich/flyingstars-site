@@ -1,7 +1,7 @@
 import {createFlyingStarsAdapter as translationSite} from './flyingstars-adapter.mjs';
 import {fileURLToPath as translationRoot} from 'node:url';
 import test from 'node:test';import assert from 'node:assert/strict';import {promisify} from 'node:util';import {execFile} from 'node:child_process';import {fileURLToPath} from 'node:url';import path from 'node:path';
-import {i18nFixture} from './i18n-test-fixture.mjs';import {loadMemory, createTranslationCore} from './translation-core.mjs';
+import {i18nFixture} from './i18n-test-fixture.mjs';import {loadMemory, createTranslationCore} from 'astro-frontend-editor/runtime';
 const {plan,mergeIntoTranslations}=createTranslationCore(await translationSite(translationRoot(new URL('../',import.meta.url))));
 const run=promisify(execFile),cli=fileURLToPath(new URL('./translate-missing.mjs',import.meta.url));
 test('Actual offline CLI: --all respects per-batch/run limits, persists suggestions and resumes until the whole locale is fresh',{timeout:60000},async t=>{

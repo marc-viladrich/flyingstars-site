@@ -1,5 +1,4 @@
-import {sha256} from '../../../web/sha256.mjs';
-import {followPath,resolvePath,storedPath,translationKey,valueAt} from '../../../vendor/astro-frontend-editor/src/content/index.mjs';
+import {sha256,followPath,resolvePath,storedPath,translationKey,valueAt} from 'astro-frontend-editor/content';
 const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 // Content format 2: one overlay record per [source record, locale]; value paths name list items by key where
 // the list declares one. The shell and frame work with positions; this module converts at the storage boundary.

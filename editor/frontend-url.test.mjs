@@ -1,6 +1,7 @@
+import './test/register-browser-site.mjs';
 import test from "node:test";
 import assert from "node:assert/strict";
-import { frontendTarget, liveURL, localizedPath, previewSitePath, previewURL, savedIsLive, splitLocale } from "./web/frontend-url.mjs";
+import { frontendTarget, liveURL, localizedPath, previewSitePath, previewURL, savedIsLive, splitLocale } from "astro-frontend-editor/web/frontend-url.mjs";
 
 const head = (c) => c.repeat(40);
 const origin = "https://www.flyingstars.de";

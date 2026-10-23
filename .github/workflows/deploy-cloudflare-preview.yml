@@ -12,8 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
-        with: { node-version-file: .nvmrc, cache: npm }
+        with: { node-version-file: .nvmrc, cache: npm, registry-url: 'https://npm.pkg.github.com', scope: '@marc-viladrich' }
       - run: npm ci
+        # Private editor package (GitHub Packages): classic token with read:packages only.
+        env: { NODE_AUTH_TOKEN: '${{ secrets.PACKAGES_READ_TOKEN }}' }
       - run: npx astro build
         env:
           SITE_URL: ${{ github.event_name == 'push' && vars.SITE_URL || vars.PREVIEW_URL || 'https://example.invalid' }}
