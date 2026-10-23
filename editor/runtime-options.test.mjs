@@ -4,7 +4,7 @@ import {promises as fs} from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import net from 'node:net';
-import {spawn,execFile} from 'node:child_process';
+import {spawn,execFile,execFileSync} from 'node:child_process';
 import {promisify} from 'node:util';
 import {fileURLToPath} from 'node:url';
 import {once} from 'node:events';
@@ -17,7 +17,14 @@ const addAccount=(state,name,secret)=>manageAccounts(['add','tester','--name',na
 
 const run=promisify(execFile),siteRoot=path.resolve(fileURLToPath(new URL('../',import.meta.url)));
 // The editor reads its draft branch; in a worktree on another branch that is the checked-out one, not the shared content/draft.
-const draftBranch=(await promisify(execFile)('git',['-C',siteRoot,'rev-parse','--abbrev-ref','HEAD'])).stdout.trim();
+// The editor reads the draft from a branch. A PR checkout in CI is a detached HEAD ("HEAD" is no branch), so
+// the tests then work on a temporary branch at the same commit and remove it afterwards.
+const current=(await promisify(execFile)('git',['-C',siteRoot,'rev-parse','--abbrev-ref','HEAD'])).stdout.trim();
+const draftBranch=current==='HEAD'?'ci/editor-test-'+process.pid:current;
+if(current==='HEAD'){
+ await promisify(execFile)('git',['-C',siteRoot,'branch',draftBranch,'HEAD']);
+ process.on('exit',()=>execFileSync('git',['-C',siteRoot,'branch','-D',draftBranch],{stdio:'ignore'}));
+}
 async function temporary(t){const dir=await fs.mkdtemp(path.join(os.tmpdir(),'afe-options-'));t.after(()=>fs.rm(dir,{recursive:true,force:true}));return dir;}
 
 // FlyingStars launcher semantics. The generic resolution rules are tested in the astro-frontend-editor package.
