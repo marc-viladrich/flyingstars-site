@@ -1,12 +1,13 @@
+import './test/register-browser-site.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {fileURLToPath} from 'node:url';
 import {readFile} from 'node:fs/promises';
 import {runInNewContext} from 'node:vm';
 import {createFlyingStarsAdapter} from './flyingstars-adapter.mjs';
-import {newRecordData,sectionMutation} from './web/native-draft.mjs';
-import {mediaLibrary} from './web/media-usage.mjs';
-import {codecs} from './core/codecs.mjs';
+import {newRecordData,sectionMutation} from 'astro-frontend-editor/web/native-draft.mjs';
+import {mediaLibrary} from 'astro-frontend-editor/web/media-usage.mjs';
+import {codecs} from 'astro-frontend-editor/runtime/extensions';
 const root=fileURLToPath(new URL('../',import.meta.url));
 const site=await createFlyingStarsAdapter(root),extensions=site.extensions;
 
@@ -19,7 +20,7 @@ test('server creation factories and unique section lifecycle match existing brow
 });
 
 test('contact normalization proposes exactly the current browser-linked changes, with no mutation',async()=>{
- const {extensions:browser}=await import('./web/site-adapter.mjs');
+ const {extensions:browser}=await import('astro-frontend-editor/web/site-adapter.mjs');
  for(const [href,value] of [['mailto:old@example.org',' new@example.org '],['tel:+49541','0541 123-45'],['tel:+49','+31 20 123'],['https://example.org','unchanged']]){
   const data={phone:{value:'old',href}},path=['phone','value'],expected=browser.first('normalize',{id:'site/contact',path,value,data});
   const result=extensions.first('normalize',{id:'site/contact',path,value,data});
@@ -66,7 +67,7 @@ test('media library server results match the unchanged browser resolver for actu
 
 test('extension policy errors, duplicate proposals and invalid proposed identities leave the real Git revision unchanged',async t=>{
  const {mkdtemp,symlink,rm}=await import('node:fs/promises'),{tmpdir}=await import('node:os'),path=await import('node:path');
- const {NativeStore,git}=await import('./native-store.mjs'),{randomUUID}=await import('node:crypto'),{createExtensionRegistry}=await import('./core/extensions.mjs');
+ const {NativeStore,git}=await import('astro-frontend-editor/runtime'),{randomUUID}=await import('node:crypto'),{createExtensionRegistry}=await import('astro-frontend-editor/runtime/extensions');
  const directory=await mkdtemp(path.join(tmpdir(),'afe-extension-policy-'));t.after(()=>rm(directory,{recursive:true,force:true}));
  await git(root,['clone','--quiet','--no-hardlinks',root,directory]);await git(directory,['checkout','-B','content/draft']);
  await symlink(root+'node_modules',path.join(directory,'node_modules'));
@@ -87,7 +88,7 @@ test('extension policy errors, duplicate proposals and invalid proposed identiti
 });
 
 test('server composition combines runtime and site registration without changing the injected site registry',async()=>{
- const {resolveRuntimeOptions}=await import('./runtime-options.mjs'),{startNativeServers}=await import('./server.mjs');
+ const {resolveRuntimeOptions,startNativeServers}=await import('./server.mjs');
  const options=resolveRuntimeOptions({env:{},values:{siteRoot:root,stateDir:'/tmp/cx13/p7/runtime-composition',remote:false,extensions:[{name:'example/route',contractVersion:'1.0',hooks:{route:()=>'/custom/'}}]}});
  const started=await startNativeServers({options,site,listen:false,initialize:false});
  try{

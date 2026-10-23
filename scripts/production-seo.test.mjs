@@ -7,9 +7,9 @@ import {robotsText} from '../src/lib/robots.mjs';
 import {getPath,seoFields,textFields,translatableFields} from '../src/lib/translatable-fields.mjs';
 import {localize,sha256} from '../src/lib/localize.mjs';
 import {createFlyingStarsAdapter} from '../editor/flyingstars-adapter.mjs';
-import {createTranslationCore} from '../editor/translation-core.mjs';
-import {describeSchema} from '../editor/native-schema.mjs';
-import {codecs} from '../editor/core/codecs.mjs';
+import {createTranslationCore} from 'astro-frontend-editor/runtime';
+import {describeSchema} from 'astro-frontend-editor/runtime/extensions';
+import {codecs} from 'astro-frontend-editor/runtime/extensions';
 const root=fileURLToPath(new URL('../',import.meta.url)), site=await createFlyingStarsAdapter(root);
 
 test('robots follows the configured origin; editor/preview blocks all crawling',()=>{

@@ -1,11 +1,11 @@
 import {createFlyingStarsAdapter} from './flyingstars-adapter.mjs';
-import {resolveRuntimeOptions} from './runtime-options.mjs';
+import {resolveRuntimeOptions} from './server.mjs';
 // Isolated, fully offline Astro fixture. Never changes source media or production image behavior.
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import {fileURLToPath} from 'node:url';
-import {NativeStore,git} from './native-store.mjs';
+import {NativeStore,git} from 'astro-frontend-editor/runtime';
 const here=path.dirname(fileURLToPath(import.meta.url));
 export async function i18nFixture(t,{sourceRoot=path.join(here,'..'),forCI=false}={}) {
   const root=await fs.mkdtemp(path.join(os.tmpdir(),'flyingstars-i18n-')),source=path.join(root,'source');

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile,readdir} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {codecs,json,yaml,markdown} from './codecs.mjs';
+import {codecs,json,yaml,markdown} from 'astro-frontend-editor/runtime/extensions';
 
 const site=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const lab=path.resolve(site,'../../../../../editor-lab');

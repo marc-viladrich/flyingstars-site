@@ -4,46 +4,53 @@ import {promises as fs} from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import net from 'node:net';
-import {spawn,execFile} from 'node:child_process';
+import {spawn,execFile,execFileSync} from 'node:child_process';
 import {promisify} from 'node:util';
 import {fileURLToPath} from 'node:url';
 import {once} from 'node:events';
-import {resolveRuntimeOptions,environmentOptions} from './runtime-options.mjs';
-import {assertStateLocation} from './paths.mjs';
-import {startNativeServers} from './server.mjs';
-import {hashPassword} from './auth.mjs';
-import {createFlyingStarsAdapter} from './flyingstars-adapter.mjs';
-import {NativeStore,git} from './native-store.mjs';
-import {NativePublisher} from './native-publisher.mjs';
-import {createTranslationCore} from './translation-core.mjs';
-import {translationProvider} from './translation-providers.mjs';
+import {environmentNames,NativeStore,git,NativePublisher,createTranslationCore,translationProvider} from 'astro-frontend-editor/runtime';
+import {resolveRuntimeOptions,startNativeServers} from './server.mjs';
+import {createFlyingStarsAdapter,compatibility} from './flyingstars-adapter.mjs';
+import {manageAccounts} from './manage-accounts.mjs';
+// Accounts in the private state of a test, created through the FlyingStars launcher like an operator would.
+const addAccount=(state,name,secret)=>manageAccounts(['add','tester','--name',name,'--email','tester@example.invalid'],{runtime:resolveRuntimeOptions({env:{},args:['--site-root',siteRoot,'--state-dir',state]}),password:async()=>secret,print:()=>{}});
 
 const run=promisify(execFile),siteRoot=path.resolve(fileURLToPath(new URL('../',import.meta.url)));
 // The editor reads its draft branch; in a worktree on another branch that is the checked-out one, not the shared content/draft.
-const draftBranch=(await promisify(execFile)('git',['-C',siteRoot,'rev-parse','--abbrev-ref','HEAD'])).stdout.trim();
+// The editor reads the draft from a branch. A PR checkout in CI is a detached HEAD ("HEAD" is no branch), so
+// the tests then work on a temporary branch at the same commit and remove it afterwards.
+const current=(await promisify(execFile)('git',['-C',siteRoot,'rev-parse','--abbrev-ref','HEAD'])).stdout.trim();
+const draftBranch=current==='HEAD'?'ci/editor-test-'+process.pid:current;
+if(current==='HEAD'){
+ await promisify(execFile)('git',['-C',siteRoot,'branch',draftBranch,'HEAD']);
+ process.on('exit',()=>execFileSync('git',['-C',siteRoot,'branch','-D',draftBranch],{stdio:'ignore'}));
+}
 async function temporary(t){const dir=await fs.mkdtemp(path.join(os.tmpdir(),'afe-options-'));t.after(()=>fs.rm(dir,{recursive:true,force:true}));return dir;}
 
-test('Runtime paths use the supplied root and cwd; host options stay outside the site adapter',()=>{
- const options=resolveRuntimeOptions({cwd:'/tmp',env:{},args:['--site-root',siteRoot,'--state-dir','private-state','--auth','on','--preview','off']});
+// FlyingStars launcher semantics. The generic resolution rules are tested in the astro-frontend-editor package.
+test('The launcher edits the installed site by default, independent of cwd (node relaunch/server.mjs from the project folder)',()=>{
+ const options=resolveRuntimeOptions({cwd:'/tmp',env:{},args:['--state-dir','private-state']});
  assert.equal(options.siteRoot,siteRoot);assert.equal(options.stateDir,'/tmp/private-state');
- assert.equal(options.auth.file,'/tmp/private-state/runtime-private/editor-accounts.json');
- assert.equal(options.auth.enabled,true);assert.equal(options.preview.enabled,false);
- // Preview driver: live (astro dev) by default for the CLI, static (a build per draft change) for small hosts.
- assert.equal(options.preview.driver,'off');
- assert.equal(resolveRuntimeOptions({cwd:'/tmp',env:{AFE_PREVIEW:'static'}}).preview.driver,'static');
- assert.equal(resolveRuntimeOptions({cwd:'/tmp',env:{},previewDefault:true}).preview.driver,'live');
- assert.equal(resolveRuntimeOptions({cwd:'/tmp',env:{AFE_PREVIEW:'1'}}).preview.driver,'live');
- // The default root is the installed site, not the caller's cwd (legacy `node relaunch/server.mjs` from the project folder).
- const installed=path.dirname(path.dirname(fileURLToPath(new URL('./runtime-options.mjs',import.meta.url))));
- assert.equal(resolveRuntimeOptions({cwd:'/tmp/site',env:{}}).siteRoot,installed);
- assert.equal(resolveRuntimeOptions({cwd:'/tmp/site',env:{}}).stateDir,path.dirname(installed));
- assert.equal(options.git.remote,null);assert.ok(Object.isFrozen(options));
+ assert.equal(resolveRuntimeOptions({cwd:'/tmp/site',env:{}}).siteRoot,siteRoot);
+ assert.equal(resolveRuntimeOptions({cwd:'/tmp/site',env:{}}).stateDir,path.dirname(siteRoot));
+ assert.equal(resolveRuntimeOptions({cwd:'/tmp',env:{AFE_SITE_ROOT:'/srv/clone'}}).siteRoot,'/srv/clone');
+ assert.ok(Object.isFrozen(resolveRuntimeOptions({env:{}})));
 });
 
-test('Every deprecated environment alias resolves identically; AFE names and CLI take precedence',()=>{
- const samples={siteRoot:'/tmp/site',stateDir:'/tmp/state',publicWebroot:'/tmp/www',editorOrigin:'https://editor.example.org',canonicalOrigin:'https://example.org',port:'6123',publicPort:'6124',preview:'0',previewPort:'6125',remote:'origin',draftBranch:'editor/draft',publishedBranch:'release',auth:'on',accounts:'/tmp/accounts.json',sessionSecret:'x'.repeat(32),translationProvider:'fake',translationUrl:'https://translate.example.org',translationKey:'test-key',translationBudget:'42',deeplKey:'test:fx',translationEmail:'test@example.invalid',offlineMedia:'1',mediaHost:'media.example.invalid'};
- for(const[key,names]of Object.entries(environmentOptions))for(const name of names){
-  const canonical=resolveRuntimeOptions({cwd:'/tmp',env:{[names[0]]:samples[key]}});
+test('Existing FlyingStars state keeps its names: locks, lease, rebase/deploy worktrees, session cookie, tool commands',()=>{
+ const options=resolveRuntimeOptions({env:{}});
+ assert.deepEqual(options.git.files,{operationLock:'flyingstars-operation.lock',draftLease:'flyingstars-draft-lease',rebasePrefix:'flyingstars-rebase-',deployPrefix:'flyingstars-deploy-'});
+ assert.equal(options.auth.cookieName,'fs_editor');assert.equal(options.auth.file,path.join(path.dirname(siteRoot),'runtime-private/editor-accounts.json'));
+ assert.equal(options.commands.accounts,'node editor/manage-accounts.mjs');assert.equal(options.commands.migrate,'node editor/migrate.mjs');
+});
+
+test('Every deprecated FlyingStars environment alias resolves identically; AFE names and CLI take precedence',()=>{
+ const samples={siteRoot:'/tmp/site',stateDir:'/tmp/state',publicWebroot:'/tmp/www',editorOrigin:'https://editor.example.org',canonicalOrigin:'https://example.org',port:'6123',publicPort:'6124',preview:'0',previewPort:'6125',remote:'origin',draftBranch:'editor/draft',publishedBranch:'release',uploadRemote:'github',liveUrl:'https://live.example.org',auth:'on',accounts:'/tmp/accounts.json',sessionSecret:'x'.repeat(32),translationProvider:'fake',translationUrl:'https://translate.example.org',translationKey:'key',translationBudget:'1200',deeplKey:'deepl',translationEmail:'mail@example.org',offlineMedia:'1',mediaHost:'media.example.org',siteAdapter:'/tmp/adapter.mjs'};
+ const names=environmentNames(compatibility);
+ // The aliases this host and Marc's machine use.
+ for(const [key,name] of [['stateDir','FLYINGSTARS_STATE_DIR'],['remote','FLYINGSTARS_GIT_REMOTE'],['offlineMedia','FLYINGSTARS_OFFLINE_MEDIA'],['publicWebroot','FLYINGSTARS_PUBLIC_WEBROOT'],['editorOrigin','EDITOR_ORIGIN'],['port','RELAUNCH_PORT'],['port','PORT'],['publicPort','RELAUNCH_PUBLIC_PORT'],['preview','RELAUNCH_PREVIEW'],['auth','EDITOR_AUTH'],['translationProvider','EDITOR_TRANSLATION_PROVIDER'],['translationUrl','EDITOR_TRANSLATION_URL'],['translationKey','EDITOR_TRANSLATION_KEY'],['translationBudget','EDITOR_TRANSLATION_BUDGET'],['canonicalOrigin','SITE_URL'],['deeplKey','DEEPL_API_KEY'],['newPassword','EDITOR_NEW_PASSWORD']])assert.ok(names[key].includes(name),name);
+ for(const[key,list]of Object.entries(names))if(key!=='newPassword')for(const name of list){
+  const canonical=resolveRuntimeOptions({cwd:'/tmp',env:{[list[0]]:samples[key]}});
   const {processEnv:actualEnv,...actual}=resolveRuntimeOptions({cwd:'/tmp',env:{[name]:samples[key]}});
   const {processEnv:expectedEnv,...expected}=canonical;assert.deepEqual(actual,expected,name);
  }
@@ -52,49 +59,22 @@ test('Every deprecated environment alias resolves identically; AFE names and CLI
  assert.equal(resolveRuntimeOptions({env:{AFE_GIT_REMOTE:'',FLYINGSTARS_GIT_REMOTE:'origin'}}).git.remote,'');
 });
 
-test('Resolved settings are snapshots; malformed CLI, origins, ports and branches fail clearly',()=>{
+test('Resolved settings are snapshots; the offline media switch reaches the build as FLYINGSTARS_OFFLINE_MEDIA',()=>{
  const env={EDITOR_TRANSLATION_PROVIDER:'fake',FLYINGSTARS_OFFLINE_MEDIA:'1'};
  const options=resolveRuntimeOptions({env});env.EDITOR_TRANSLATION_PROVIDER='none';env.FLYINGSTARS_OFFLINE_MEDIA='0';
  assert.equal(options.translation.provider,'fake');assert.equal(options.buildEnv.FLYINGSTARS_OFFLINE_MEDIA,'1');
- for(const args of [['--unknown','x'],['--state-dir'],['--port','NaN'],['--port','0'],['--auth','on','--editor-origin','http://example.org'],['--editor-origin','https://example.org/path'],['--draft-branch','bad..branch'],['--translation-budget','-1']])assert.throws(()=>resolveRuntimeOptions({args,env:{}}));
+ assert.equal(resolveRuntimeOptions({env:{AFE_OFFLINE_MEDIA:'1'}}).buildEnv.FLYINGSTARS_OFFLINE_MEDIA,'1');
 });
 
-test('Startup rejects source/public overlaps before auth, adapter loading, writes or listening',async t=>{
- const root=await temporary(t),source=path.join(root,'source'),state=path.join(root,'private'),webroot=path.join(root,'www');
- const cases=[
-  ['state equals source',source,source,webroot],
-  ['state below source',source,path.join(source,'private'),webroot],
-  ['state equals public',source,webroot,webroot],
-  ['state below public',source,path.join(webroot,'private'),webroot],
-  ['public below state',source,state,path.join(state,'www')],
-  ['public equals source',source,state,source],
-  ['public below source',source,state,path.join(source,'public')],
-  ['source below public',path.join(webroot,'source'),state,webroot],
- ];
- for(const[name,siteRoot,stateDir,publicWebroot]of cases)await t.test(name,async()=>{
-  const options=resolveRuntimeOptions({env:{},values:{siteRoot,stateDir,publicWebroot,auth:true}});
-  await assert.rejects(startNativeServers({options}),/außerhalb|getrennt/);
- });
- await assert.rejects(fs.access(root+'/private'));
- await assertStateLocation(source,state,webroot);
- await assertStateLocation(source,path.dirname(source),root+'-www'); // Legacy sibling layout remains supported.
-});
-
-test('State checks resolve symlinks and missing descendants, and also protect lexical webroot locations',async t=>{
- const root=await temporary(t),source=path.join(root,'source'),state=path.join(root,'private'),webroot=path.join(root,'www');
- await fs.mkdir(source);await fs.mkdir(state);await fs.mkdir(webroot);
- await fs.symlink(source,path.join(root,'source-link'));await fs.symlink(webroot,path.join(root,'web-link'));
- await assert.rejects(assertStateLocation(source,path.join(root,'source-link/missing/state'),webroot),/außerhalb/);
- await assert.rejects(assertStateLocation(source,path.join(root,'web-link/missing/state'),webroot),/getrennt/);
- await fs.symlink(state,path.join(root,'public-link'));
- await assert.rejects(assertStateLocation(source,state,path.join(root,'public-link')),/getrennt/);
- await fs.symlink(webroot,path.join(state,'public-link'));
- await assert.rejects(assertStateLocation(source,state,path.join(state,'public-link')),/getrennt/);
+test('Messages name the FlyingStars variables too',async t=>{
+ const root=await temporary(t),source=path.join(root,'source');
+ await assert.rejects(startNativeServers({options:resolveRuntimeOptions({env:{},values:{siteRoot:source,stateDir:path.join(source,'private')}})}),/AFE_STATE_DIR \(FLYINGSTARS_STATE_DIR\) muss außerhalb des Repository-Klons liegen/);
 });
 
 test('Generic services contain no direct or dynamic site schema/lib imports',async()=>{
  const modules=['native-store','native-builder','native-publisher','preview/workspace','preview/proof','preview/live-driver','preview/static-driver','preview/service','git-sync','auth','native-media','media-upload','native-translation','translation-core','translation-providers'];
- for(const name of modules){const text=await fs.readFile(new URL('./'+name+'.mjs',import.meta.url),'utf8');assert.doesNotMatch(text,/src\/(?:schemas|lib)(?:\/|['"])/,name);}
+ const pkg=new URL('./src/runtime/',import.meta.resolve('astro-frontend-editor/package.json'));
+ for(const name of modules){const text=await fs.readFile(new URL(name+'.mjs',pkg),'utf8');assert.doesNotMatch(text,/src\/(?:schemas|lib)(?:\/|['"])/,name);}
  const adapter=await fs.readFile(new URL('./flyingstars-adapter.mjs',import.meta.url),'utf8');
  assert.match(adapter,/src\/schemas\//);assert.match(adapter,/src\/lib\//);
 });
@@ -121,10 +101,9 @@ test('Injected adapter controls routes and translation fields; custom branches r
 async function freePort(){const server=net.createServer();await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(0,'127.0.0.1',resolve);});const port=server.address().port;await new Promise(resolve=>server.close(resolve));return port;}
 
 test('Real CLI from /tmp builds WORKTREE and serves authenticated /editor/ with isolated private state', {timeout:120000},async t=>{
- const root=await temporary(t),state=path.join(root,'state'),file=path.join(state,'runtime-private/editor-accounts.json');
- await fs.mkdir(path.dirname(file),{recursive:true});
+ const root=await temporary(t),state=path.join(root,'state');
  const password='Listener-Test äöü';
- await fs.writeFile(file,JSON.stringify({version:1,users:[{id:'listener-test',username:'tester',displayName:'Listener Test',email:'listener@example.invalid',disabled:false,passwordVersion:1,...await hashPassword(password)}]}));
+ await addAccount(state,'Listener Test',password);
  let port;try{port=await freePort();}catch(error){if(error.code==='EPERM'||error.code==='EACCES'){t.skip('Sandbox verweigert Loopback-Listener mit '+error.code+'; realer Socket-Nachweis ausstehend.');return;}throw error;}let publicPort=await freePort();while(publicPort===port)publicPort=await freePort();
  const origin='http://127.0.0.1:'+port;
  // Deliberately no inherited AFE_*, EDITOR_* or FLYINGSTARS_* settings.
@@ -135,10 +114,10 @@ test('Real CLI from /tmp builds WORKTREE and serves authenticated /editor/ with 
  let output='';child.stdout.on('data',bytes=>output+=bytes);child.stderr.on('data',bytes=>output+=bytes);
  t.after(async()=>{if(child.exitCode===null&&child.signalCode===null){child.kill('SIGTERM');await once(child,'exit');}});
  const exited=once(child,'exit').then(([code])=>{throw Error('CLI exited '+code+': '+output);});
- await Promise.race([exited,(async()=>{for(let i=0;i<1000;i++){if(output.includes('(loopback listener)'))return;await new Promise(resolve=>setTimeout(resolve,80));}throw Error('Listener timeout: '+output);})()]);
+ await Promise.race([exited,(async()=>{for(let i=0;i<1000;i++){if(output.includes('(listening on '))return;await new Promise(resolve=>setTimeout(resolve,80));}throw Error('Listener timeout: '+output);})()]);
  const denied=await fetch(origin+'/editor/',{redirect:'manual'});assert.equal(denied.status,302);assert.match(denied.headers.get('location'),/^\/editor\/login/);
  const login=await fetch(origin+'/editor/api/login',{method:'POST',headers:{origin,'content-type':'application/json'},body:JSON.stringify({username:'tester',password})});
- assert.equal(login.status,200);const cookie=login.headers.get('set-cookie').split(';')[0];
+ assert.equal(login.status,200);const cookie=login.headers.getSetCookie().find(value=>value.startsWith('fs_editor=')).split(';')[0];
  const page=await fetch(origin+'/editor/',{headers:{cookie}});assert.equal(page.status,200);assert.match(await page.text(),/editor\.js/);
  for(const route of ['/editor/site-lib/inline-text.mjs','/editor/site-lib/color-tokens.mjs','/editor/package-ids.mjs'])assert.equal((await fetch(origin+route,{headers:{cookie}})).status,200);
  const response=await fetch(origin+'/editor/api/state',{headers:{cookie}});assert.equal(response.status,200);assert.ok((await response.json()).records.length>0);
@@ -152,21 +131,19 @@ test('Real CLI from /tmp builds WORKTREE and serves authenticated /editor/ with 
 });
 
 test('Composition from /tmp initializes both builds and authenticated editor handlers without sockets', {timeout:120000},async t=>{
- const root=await temporary(t),state=path.join(root,'state'),file=path.join(state,'runtime-private/editor-accounts.json');
- await fs.mkdir(path.dirname(file),{recursive:true});
+ const root=await temporary(t),state=path.join(root,'state');
  const password='Handler-Test äöü';
- await fs.writeFile(file,JSON.stringify({version:1,users:[{id:'handler-test',username:'tester',displayName:'Handler Test',email:'handler@example.invalid',disabled:false,passwordVersion:1,...await hashPassword(password)}]}));
+ await addAccount(state,'Handler Test',password);
  const script=`
  import assert from 'node:assert/strict';
- import {startNativeServers} from ${JSON.stringify(new URL('./server.mjs',import.meta.url).href)};
- import {resolveRuntimeOptions} from ${JSON.stringify(new URL('./runtime-options.mjs',import.meta.url).href)};
+ import {startNativeServers,resolveRuntimeOptions} from ${JSON.stringify(new URL('./server.mjs',import.meta.url).href)};
  import {handlerRequest} from ${JSON.stringify(new URL('./deploy/handler-smoke.mjs',import.meta.url).href)};
  const options=resolveRuntimeOptions({args:process.argv.slice(1),authDefault:true});
  const app=await startNativeServers({options,listen:false});
  try {
   const denied=await handlerRequest(app.editor,app.origin,'/editor/');assert.equal(denied.status,302);
-  const login=await app.auth.login({username:'tester',password:${JSON.stringify(password)}},{headers:{},socket:{remoteAddress:'127.0.0.1'}});
-  const headers={cookie:login.cookie.split(';')[0]};
+  const login=await app.auth.action('login',{username:'tester',password:${JSON.stringify(password)}},{headers:{origin:app.origin},socket:{remoteAddress:'127.0.0.1'}});
+  assert.equal(login.status,200);const headers={cookie:login.cookies.find(value=>value.startsWith('fs_editor=')).split(';')[0]};
   const page=await handlerRequest(app.editor,app.origin,'/editor/',headers);assert.equal(page.status,200);assert.match(page.body,/editor\\.js/);
   for(const route of ['/editor/api/state','/editor/site-lib/inline-text.mjs','/editor/site-lib/color-tokens.mjs','/editor/package-ids.mjs'])assert.equal((await handlerRequest(app.editor,app.origin,route,headers)).status,200);
   assert.ok(app.builder.current.head);assert.ok(app.publisher.builder.current.head);

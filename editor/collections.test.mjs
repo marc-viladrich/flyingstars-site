@@ -6,9 +6,9 @@ import {promisify} from 'node:util';
 import os from 'node:os';
 import path from 'node:path';
 import {fileURLToPath,pathToFileURL} from 'node:url';
-import {NativeStore,git} from './native-store.mjs';
+import {NativeStore,git} from 'astro-frontend-editor/runtime';
 import {createFlyingStarsAdapter} from './flyingstars-adapter.mjs';
-import {hashBytes} from './core/source-registry.mjs';
+import {hashBytes} from 'astro-frontend-editor/runtime/extensions';
 import {compareHtml} from './pr5-compare.mjs';
 
 const root=fileURLToPath(new URL('../',import.meta.url)),run=promisify(execFile);
@@ -25,8 +25,9 @@ test('NativeStore preserves the PR 3 records and whole-file revisions under Astr
   // Execute the actual pre-migration adapter against the same source revision.
   // Only module locations change; the baseline implementation stays untouched.
   let source=await git(root,['show',migrationBase+':editor/flyingstars-adapter.mjs']);
+  // Its runtime modules now come from the package (same exports, moved in PR 11).
   for (const file of ['legacy-source-adapter.mjs','native-schema.mjs']) {
-    source=source.replace(`'./${file}'`,JSON.stringify(pathToFileURL(path.join(root,'editor',file)).href));
+    source=source.replace(`'./${file}'`,JSON.stringify(import.meta.resolve('astro-frontend-editor/runtime/extensions')));
   }
   const {createFlyingStarsAdapter:beforeAdapter}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
   const before=await new NativeStore(root,{site:{...await createFlyingStarsAdapter(root),...await beforeAdapter(root)},remote:false}).init();
@@ -59,8 +60,8 @@ test('Astro sync exports every schema and its public loaders preserve JSON entry
   await cp(path.join(root,'package.json'),path.join(fixture,'package.json'));
   await symlink(path.join(root,'node_modules'),path.join(fixture,'node_modules'));
   // No project environment files or external media are needed for this probe.
-  // The collections load through the editor's vendored loader wrappers, as in the site's own config.
-  const loaders=path.join(root,'editor/vendor/astro-frontend-editor/src/astro/loaders.mjs');
+  // The collections load through the package's loader wrappers, as in the site's own config.
+  const loaders=fileURLToPath(import.meta.resolve('astro-frontend-editor/astro/loaders'));
   await writeFile(path.join(fixture,'astro.config.mjs'),`import {defineConfig} from 'astro/config'; export default defineConfig({output:'static',cacheDir:'.astro/cache',vite:{cacheDir:'.astro/vite',resolve:{alias:[{find:/^astro-frontend-editor\\/astro\\/loaders$/,replacement:${JSON.stringify(loaders)}}]}}});\n`);
   await rm(path.join(fixture,'src/pages'),{recursive:true});
   await mkdir(path.join(fixture,'src/pages'));

@@ -1,2 +1,0 @@
-import test from'node:test';import assert from'node:assert/strict';import{queuedFieldCount}from'./web/changes.mjs';
-test('Editing an already queued field counts one change; other fields and records remain distinct',()=>{const entries=new Map([['package/spark',{changes:new Map([['["price"]',8000]])}]]);assert.equal(queuedFieldCount(entries,['package/spark/["price"]']),1);assert.equal(queuedFieldCount(entries,['package/horizon/["price"]']),2);assert.equal(queuedFieldCount(entries,['package/spark/["description"]']),2);assert.equal(queuedFieldCount(new Map(),[]),0);});

@@ -17,8 +17,10 @@ jobs:
         # Editor-Tests lesen ältere Stände (Migrationen, Revisionsnachweise) aus der Git-Geschichte.
         with: { fetch-depth: 0 }
       - uses: actions/setup-node@v6
-        with: { node-version: '22', cache: npm }
+        with: { node-version-file: .nvmrc, cache: npm, registry-url: 'https://npm.pkg.github.com', scope: '@marc-viladrich' }
       - run: npm ci
+        # Private editor package (GitHub Packages): classic token with read:packages only.
+        env: { NODE_AUTH_TOKEN: '${{ secrets.PACKAGES_READ_TOKEN }}' }
       - name: Gemeinsame lokale und CI-Prüfung
         run: npm run ci
         env:

@@ -1,5 +1,5 @@
 import {createFlyingStarsAdapter} from './flyingstars-adapter.mjs';
-import {resolveRuntimeOptions} from './runtime-options.mjs';
+import {resolveRuntimeOptions} from './server.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {promises as fs} from 'node:fs';
@@ -8,8 +8,8 @@ import os from 'node:os';
 import {randomUUID} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import sharp from 'sharp';
-import {NativeStore,git} from './native-store.mjs';
-import {uploadNativeMedia} from './native-media.mjs';
+import {NativeStore,git} from 'astro-frontend-editor/runtime';
+import {uploadNativeMedia} from 'astro-frontend-editor/runtime';
 
 test('Real native image metadata and normalized bytes are one retryable commit; invalid bytes leave no record',async t=>{
  const here=path.dirname(fileURLToPath(import.meta.url)),root=await fs.mkdtemp(path.join(os.tmpdir(),'fs-native-media-'));t.after(()=>fs.rm(root,{recursive:true,force:true}));

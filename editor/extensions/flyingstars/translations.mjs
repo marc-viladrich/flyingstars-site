@@ -1,6 +1,6 @@
 import {createHash} from 'node:crypto';
-import {schemaAt,describeSchema,listKeyAt} from '../../native-schema.mjs';
-import {isStoredPath,resolvePath,storedPath,translationKey} from '../../vendor/astro-frontend-editor/src/content/index.mjs';
+import {schemaAt,describeSchema,listKeyAt} from 'astro-frontend-editor/runtime/extensions';
+import {isStoredPath,resolvePath,storedPath,translationKey} from 'astro-frontend-editor/content';
 const hash=x=>createHash('sha256').update(x).digest('hex');
 const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 const getPath=(value,parts)=>parts.reduce((v,k)=>v?.[k],value);

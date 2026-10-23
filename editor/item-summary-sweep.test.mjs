@@ -1,5 +1,6 @@
 // Every image list in every real record names its items (caption, alt, library title or file name) and
 // shows a thumbnail; none falls back to "Eintrag N". Enumerated from live content, not from a list.
+import './test/register-browser-site.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { promises as fs } from 'node:fs';
@@ -7,9 +8,9 @@ import path from 'node:path';
 import os from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { createFlyingStarsAdapter } from './flyingstars-adapter.mjs';
-import { resolveRuntimeOptions } from './runtime-options.mjs';
-import { NativeStore, git } from './native-store.mjs';
-import { itemSummary } from './web/view-state.mjs';
+import { resolveRuntimeOptions } from './server.mjs';
+import { NativeStore, git } from 'astro-frontend-editor/runtime';
+import { itemSummary } from 'astro-frontend-editor/web/view-state.mjs';
 const root = path.dirname(fileURLToPath(import.meta.url));
 test('every image list item in every collection has a name and a thumbnail', async (t) => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'flyingstars-summary-'));

@@ -1,8 +1,8 @@
-import {resolvePath} from './vendor/astro-frontend-editor/src/content/index.mjs';
+import {resolvePath} from 'astro-frontend-editor/content';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
-import {codecs} from './core/codecs.mjs';
+import {codecs} from 'astro-frontend-editor/runtime/extensions';
 import {sha256,localize} from '../src/lib/localize.mjs';
 import {inlineHtml} from '../src/lib/inline-text.mjs';
 

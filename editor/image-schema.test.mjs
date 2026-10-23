@@ -1,3 +1,4 @@
+import './test/register-browser-site.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -5,14 +6,14 @@ import {runInNewContext} from 'node:vm';
 import {z} from 'astro/zod';
 import {fileURLToPath} from 'node:url';
 import {createFlyingStarsAdapter} from './flyingstars-adapter.mjs';
-import {describeSchema,schemaDescription,selectedSchema} from './native-schema.mjs';
-import {describe} from './web/native-schema.mjs';
-import {codecs,atPath} from './core/codecs.mjs';
-import {sourceMediaSources} from './web/view-state.mjs';
+import {describeSchema,schemaDescription,selectedSchema} from 'astro-frontend-editor/runtime/extensions';
+import {describe} from 'astro-frontend-editor/web/native-schema.mjs';
+import {codecs,atPath} from 'astro-frontend-editor/runtime/extensions';
+import {sourceMediaSources} from 'astro-frontend-editor/web/view-state.mjs';
 
 const root = fileURLToPath(new URL('../',import.meta.url));
 const key = path => JSON.stringify(path);
-const editorSource = await fs.readFile(new URL('./web/editor.js',import.meta.url),'utf8');
+const editorSource = await fs.readFile(new URL('./web/editor.js',import.meta.resolve('astro-frontend-editor/package.json')),'utf8');
 const classifier = editorSource.slice(editorSource.indexOf('function isMediaContainer('),editorSource.indexOf('// Builds the "Inhalt"'));
 const isImage = runInNewContext(classifier+';isMediaContainer',{});
 
@@ -67,7 +68,7 @@ test('image metadata works without src, dimensions or assets; src-shaped objects
 
 test('formation is a named ordinary group with protected JSON source and editable copy',async()=>{
   const {projectShowcaseSchema}=await import('../src/schemas/project-showcase.mjs');
-  const {readOnlyPaths}=await import('./native-store.mjs');
+  const {readOnlyPaths}=await import('astro-frontend-editor/runtime');
   const schema=z.object({formation:projectShowcaseSchema.shape.formation});
   const data={formation:{src:'/media/projekte/nfl/formation.json',title:'Das Hufeisen',text:'Vorbereitete Formation'}};
   const serialized=schemaDescription(schema),group=serialized.properties.formation;

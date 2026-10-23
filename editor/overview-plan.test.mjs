@@ -1,16 +1,17 @@
 // Record overviews are chunked by the schema alone (x-afe `group`), never by per-type code in the editor.
+import './test/register-browser-site.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { z } from 'astro/zod';
-import { overviewPlan, entryCounts } from './web/overview-plan.mjs';
-import { describe } from './web/native-schema.mjs';
-import { isTechnical } from './web/field-labels.mjs';
-import { omitRecordField } from './web/site-adapter.mjs';
+import { overviewPlan, entryCounts } from 'astro-frontend-editor/web/overview-plan.mjs';
+import { describe } from 'astro-frontend-editor/web/native-schema.mjs';
+import { isTechnical } from 'astro-frontend-editor/web/field-labels.mjs';
+import { omitRecordField } from 'astro-frontend-editor/web/site-adapter.mjs';
 import { createFlyingStarsAdapter } from './flyingstars-adapter.mjs';
-import { schemaDescription, wire } from './native-schema.mjs';
-import { codecs } from './core/codecs.mjs';
+import { schemaDescription, wire } from 'astro-frontend-editor/runtime/extensions';
+import { codecs } from 'astro-frontend-editor/runtime/extensions';
 import { editable, inGroup } from '../src/schemas/afe-meta.mjs';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const titles = (plan) => plan.blocks.map((b) => b.title);

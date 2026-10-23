@@ -1,4 +1,4 @@
-import {describeSchema} from '../../native-schema.mjs';
+import {describeSchema} from 'astro-frontend-editor/runtime/extensions';
 import {resolveReference,omitOwnedField} from './references.mjs';
 import {mediaUsers} from './media.mjs';
 const at=(value,path)=>path.reduce((value,key)=>value?.[key],value);

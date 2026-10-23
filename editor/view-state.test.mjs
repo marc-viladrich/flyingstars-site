@@ -1,20 +1,21 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {normalizedRoute,navigationChoices,savedRecordRoute,publishNeedsActivation,mediaSourceChanged,fieldsInScope} from './web/view-state.mjs';
+import './test/register-browser-site.mjs';
+import test from 'node:test';import assert from 'node:assert/strict';import {normalizedRoute,navigationChoices,savedRecordRoute,publishNeedsActivation,mediaSourceChanged,fieldsInScope} from 'astro-frontend-editor/web/view-state.mjs';
 test('route reconciliation follows record identity, removes deleted/old routes and matches slashless links',()=>{const records=[{id:'page/index',route:'/',title:'Start'},{id:'project/one',route:'/new-project/',title:'Project'}];assert.equal(normalizedRoute('/new-project'),'/new-project/');assert.equal(normalizedRoute('/new-project/?q=1#title'),'/new-project/');assert.equal(savedRecordRoute(records,'project/one'),'/new-project/');assert.equal(savedRecordRoute(records,'page/deleted'),'/');assert.ok(!navigationChoices(records).some(option=>option.value==='/old-project/'));assert.ok(navigationChoices(records).some(option=>option.value==='/show-konfigurator/'));});
 test('an already committed publication still offers recovery when static activation failed',()=>{assert.equal(publishNeedsActivation({publishedHead:'new',activePublishedHead:'old',changed:[]}),true);assert.equal(publishNeedsActivation({publishedHead:'new',activePublishedHead:'new',changed:[]}),false);});
 test('alt text-only changes preserve native optimized image sources and source replacement is explicit',()=>{assert.equal(mediaSourceChanged('photo.webp','photo.webp'),false);assert.equal(mediaSourceChanged('photo.webp','replacement.webp'),true);});
 test('media object scope includes per-use alt override and decorative flag without neighboring section fields',()=>{const fields=[{path:['sections',0,'image','altOverride'],kind:'text'},{path:['sections',0,'image','decorative'],kind:'boolean'},{path:['sections',0,'headline'],kind:'text'}];assert.deepEqual(fieldsInScope(fields,['sections',0,'image'],'media').map(f=>f.path.at(-1)),['altOverride','decorative']);});
-import {sourceMediaSources} from './web/view-state.mjs';
+import {sourceMediaSources} from 'astro-frontend-editor/web/view-state.mjs';
 test('source media identity comes from saved records and global assets rather than staged or optimized HTML URLs',()=>{const records=[{id:'media/a',data:{src:'/assets/source.webp',width:100,height:80}},{id:'page/index',containers:[{path:['sections',0,'image'],format:'image'}],data:{sections:[{image:{src:'cached-original.jpg',assetId:'media/a'}}],formation:{src:'formation.json',width:100,height:80}}}];assert.equal(sourceMediaSources(records)['page/index/["sections",0,"image"]'],'/assets/source.webp');});
-import {floatingInspectorAllowed,richFormattingAllowed} from './web/view-state.mjs';
+import {floatingInspectorAllowed,richFormattingAllowed} from 'astro-frontend-editor/web/view-state.mjs';
 test('rich text owns its floating actions; inspector cannot cover its formatting buttons',()=>{assert.equal(floatingInspectorAllowed({rich:true}),false);assert.equal(floatingInspectorAllowed({rich:false}),true);assert.equal(floatingInspectorAllowed({rich:false},{busy:true}),false);});
 test('formatting is permitted only in an editable German draft, never while saving or previewing',()=>{assert.equal(richFormattingAllowed({}),true);for(const state of [{busy:true},{preview:true},{locale:'en'},{locale:'nl'}])assert.equal(richFormattingAllowed(state),false);});
-import {disclosedContainers,disclosedOptionalFields} from './web/view-state.mjs';
+import {disclosedContainers,disclosedOptionalFields} from 'astro-frontend-editor/web/view-state.mjs';
 test('missing optional groups expose one group action and hide duplicate or descendant controls until enabled',()=>{const containers=[{path:['image'],kind:'object',format:'image'},{path:['image','caption'],kind:'object'}],fields=[{path:['image'],kind:'object'},{path:['image','assetId'],kind:'text'},{path:['image','altOverride'],kind:'text'},{path:['description'],kind:'text'}];assert.deepEqual(disclosedContainers(containers,{}).map(c=>c.path),[['image']]);assert.deepEqual(disclosedOptionalFields(fields,containers,{}).map(f=>f.path),[['description']]);assert.ok(disclosedOptionalFields(fields,containers,{image:{src:'photo'}}).some(f=>f.path.at(-1)==='altOverride'));});
-import {inspectionTarget} from './web/view-state.mjs';
+import {inspectionTarget} from 'astro-frontend-editor/web/view-state.mjs';
 test('pointer, gear and keyboard inspection share section ownership for referenced collection records',()=>{const quote={id:'client/jade',path:['testimonial','quote']},section={id:'page/index',index:4};assert.deepEqual(inspectionTarget(quote,section),{id:'page/index',path:['sections',4],linkedId:'client/jade'});const own={id:'page/index',path:['sections',4,'headline'],derived:false};assert.deepEqual(inspectionTarget(own,section),own);assert.deepEqual(inspectionTarget({id:'package/spark',path:['price'],derived:true}),{id:'package/spark',path:['price'],derived:true});});
-import {restoredInspector} from './web/view-state.mjs';
+import {restoredInspector} from 'astro-frontend-editor/web/view-state.mjs';
 test('Undo keeps an inspector only when its original source is still valid; structural index selections close',()=>{const inspector={context:{id:'page/index',path:['sections',3,'showImages']},scope:'context'},records=[{id:'page/index'}];assert.equal(restoredInspector(inspector,records,{kind:'set',path:['sections',3,'showImages']}),inspector);assert.equal(restoredInspector(inspector,records,{kind:'set',path:['sections']}),null);assert.equal(restoredInspector(inspector,[],{kind:'create'}),null);assert.equal(restoredInspector({scope:'library'},records,{kind:'set',path:['title']}),null);});
-import {mediaRecordFor,linkedRecordFor,itemSummary,imageSummary,scopeUnits,partitionUnits,covers} from './web/view-state.mjs';
+import {mediaRecordFor,linkedRecordFor,itemSummary,imageSummary,scopeUnits,partitionUnits,covers} from 'astro-frontend-editor/web/view-state.mjs';
 const mediaRecords=[{id:'media/image-a',title:'Berlin Game',data:{title:'Berlin Game 2025',src:'/m/02.jpg',defaultAlt:'Stadion bei Nacht'}},{id:'package/horizon',title:'HORIZON',data:{displayName:'HORIZON'}}];
 test('media usages resolve their library record by full id first, then by bare id',()=>{assert.equal(mediaRecordFor(mediaRecords,'media/image-a').id,'media/image-a');assert.equal(mediaRecordFor(mediaRecords,'image-a').id,'media/image-a');assert.equal(mediaRecordFor(mediaRecords,'image-x'),null);assert.equal(mediaRecordFor(mediaRecords,undefined),null);});
 const referenceDescriptor=(key,collection)=>({itemLabel:[key],element:{kind:'object',properties:{[key]:{kind:'text','x-afe':{reference:{collection,encoding:'id'}}}}}});
@@ -93,7 +94,7 @@ test('a query-backed card is an occurrence of its whole record; media and derive
 
 // Grouped choices (a package's Leistungen): groups in option order, chosen first in stored order, rows stay
 // where they were clicked while the view is open; moving reorders within the group only.
-import { groupedChoices, groupedSelection, moveChoice } from './web/view-state.mjs';
+import { groupedChoices, groupedSelection, moveChoice } from 'astro-frontend-editor/web/view-state.mjs';
 test('grouped choices keep rows in place, store group by group and move within a group', () => {
   const options = [
     { key: 'a1', group: 'Design' }, { key: 'a2', group: 'Design' }, { key: 'a3', group: 'Design' },

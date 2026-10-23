@@ -1,6 +1,7 @@
+import './test/register-browser-site.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { patchInPlace, sameStructure } from './web/preview-apply.mjs';
+import { patchInPlace, sameStructure } from 'astro-frontend-editor/web/preview-apply.mjs';
 
 // Only the DOM operations used by the three-way patcher; browser geometry is tested
 // separately in canvas-preview.browser.mjs.

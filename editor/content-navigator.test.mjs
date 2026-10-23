@@ -1,5 +1,6 @@
 // "Inhalte verwalten" is one grouped navigator over every real record: every record is reachable exactly
 // once, translations only at their source. Enumerated from live content, not from a list.
+import './test/register-browser-site.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { promises as fs } from 'node:fs';
@@ -7,9 +8,9 @@ import path from 'node:path';
 import os from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { createFlyingStarsAdapter } from './flyingstars-adapter.mjs';
-import { resolveRuntimeOptions } from './runtime-options.mjs';
-import { NativeStore, git } from './native-store.mjs';
-import { navigatorGroups, navigatorTypes, matchesQuery, localeVersion } from './web/content-navigator.mjs';
+import { resolveRuntimeOptions } from './server.mjs';
+import { NativeStore, git } from 'astro-frontend-editor/runtime';
+import { navigatorGroups, navigatorTypes, matchesQuery, localeVersion } from 'astro-frontend-editor/web/content-navigator.mjs';
 const root = path.dirname(fileURLToPath(import.meta.url));
 
 test('every real record appears once in its type group; translations sit at their source record', async (t) => {

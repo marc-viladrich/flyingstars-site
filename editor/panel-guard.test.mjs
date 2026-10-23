@@ -1,17 +1,18 @@
 // Guards over every real record's panel description (the same describe() + overview plan the editor draws):
 // no visual group with more than ten direct fields, every field labelled by the schema, no label that only
 // repeats the stored value. New content types and new fields are covered without listing them here.
+import './test/register-browser-site.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { overviewPlan, directChildren, chunkByGroup } from './web/overview-plan.mjs';
-import { describe } from './web/native-schema.mjs';
-import { isTechnical, fieldLabel } from './web/field-labels.mjs';
-import { omitRecordField } from './web/site-adapter.mjs';
+import { overviewPlan, directChildren, chunkByGroup } from 'astro-frontend-editor/web/overview-plan.mjs';
+import { describe } from 'astro-frontend-editor/web/native-schema.mjs';
+import { isTechnical, fieldLabel } from 'astro-frontend-editor/web/field-labels.mjs';
+import { omitRecordField } from 'astro-frontend-editor/web/site-adapter.mjs';
 import { createFlyingStarsAdapter } from './flyingstars-adapter.mjs';
-import { schemaDescription, wire } from './native-schema.mjs';
-import { codecs } from './core/codecs.mjs';
+import { schemaDescription, wire } from 'astro-frontend-editor/runtime/extensions';
+import { codecs } from 'astro-frontend-editor/runtime/extensions';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const under = (path, prefix) => prefix.every((part, i) => path[i] === part);
 const at = (data, path) => path.reduce((v, k) => v?.[k], data);

@@ -1,13 +1,17 @@
 #!/usr/bin/env node
 // Hosting probe: measures on the real account what the documentation leaves open, before anything is
 // deployed. Run it over SSH in the account, e.g. on Hetzner Webhosting L:
-//   node relaunch/hosting-probe.mjs [--build <astro-source-dir>] [--json]
+//   node editor/hosting-probe.mjs [--build <astro-source-dir>] [--json]
+// Proxy check: run it as the editor subdomain's Node app instead of editor/server.mjs, open the subdomain in a
+// browser and read what arrives (public Host kept? X-Forwarded-For set? which proxy IP?):
+//   node editor/hosting-probe.mjs --proxy-echo [--port <port>] [--host <ip>]   (port also from PORT/AFE_PORT)
 // It never writes outside a temporary directory and never contacts the network except through the
 // optional Astro build (which fetches the site's remote images like any build).
 import { spawn, spawnSync } from "node:child_process";
 import { promises as fs, watch } from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import http from "node:http";
 
 const args = process.argv.slice(2);
 const buildDir = args.includes("--build") ? path.resolve(args[args.indexOf("--build") + 1]) : null;
@@ -15,7 +19,25 @@ const asJson = args.includes("--json");
 const mb = (bytes) => (bytes == null ? null : Math.round(bytes / 1048576));
 const result = {};
 
+if (args.includes("--proxy-echo")) {
+  const option = (name, fallback) => (args.includes(name) ? args[args.indexOf(name) + 1] : fallback);
+  const port = Number(option("--port", process.env.PORT || process.env.AFE_PORT || 4542)), host = option("--host", "127.0.0.1");
+  http.createServer((req, res) => {
+    // What the editor's checks depend on: Host must equal AFE_EDITOR_ORIGIN's host; the socket peer is the proxy
+    // (candidate for AFE_TRUSTED_PROXIES); X-Forwarded-For must end with the visitor's address.
+    const seen = { host: req.headers.host ?? null, xForwardedFor: req.headers["x-forwarded-for"] ?? null, xForwardedProto: req.headers["x-forwarded-proto"] ?? null,
+      forwarded: req.headers.forwarded ?? null, xRealIp: req.headers["x-real-ip"] ?? null, socketPeer: req.socket.remoteAddress, listening: `${host}:${port}`, node: process.version };
+    res.writeHead(200, { "content-type": "application/json", "cache-control": "no-store" });
+    res.end(JSON.stringify(seen, null, 2));
+  }).listen(port, host, () => console.log(`proxy echo on ${host}:${port}`));
+  await new Promise(() => {});
+}
+
 result.node = process.version;
+// The editor needs Node >= 24.15 for node:sqlite (accounts and sessions).
+const [major, minor] = process.versions.node.split(".").map(Number);
+result.nodeForEditor = major > 24 || (major === 24 && minor >= 15) ? "ok" : "needs Node >= 24.15";
+result.sqlite = await import("node:sqlite").then(({ DatabaseSync }) => { const db = new DatabaseSync(":memory:"); db.exec("CREATE TABLE t (x)"); db.close(); return "ok"; }, (error) => `missing (${error.code || error.message})`);
 result.platform = `${os.type()} ${os.release()} ${os.arch()}`;
 result.cpus = os.cpus().length;
 result.totalMemoryMB = mb(os.totalmem());

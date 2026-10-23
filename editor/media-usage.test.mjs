@@ -1,4 +1,5 @@
-import {createExtensionRegistry} from './core/extensions.mjs';
+import './test/register-browser-site.mjs';
+import {createExtensionRegistry} from 'astro-frontend-editor/runtime/extensions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {promises as fs} from 'node:fs';
@@ -6,12 +7,12 @@ import path from 'node:path';
 import os from 'node:os';
 import http from 'node:http';
 import {fileURLToPath} from 'node:url';
-import {mediaUsage, mediaLibrary, mediaUsers, collectionOf, ALL, UNUSED} from './web/media-usage.mjs';
-import {recordKinds} from './web/record-kinds.mjs';
+import {mediaUsage, mediaLibrary, mediaUsers, collectionOf, ALL, UNUSED} from 'astro-frontend-editor/web/media-usage.mjs';
+import {recordKinds} from 'astro-frontend-editor/web/record-kinds.mjs';
 import {startNativeServers} from './server.mjs';
-import {NativeStore, git} from './native-store.mjs';
+import {NativeStore, git} from 'astro-frontend-editor/runtime';
 import {createFlyingStarsAdapter} from './flyingstars-adapter.mjs';
-import {mediaTitle} from './media-upload.mjs';
+import {mediaTitle} from 'astro-frontend-editor/runtime/extensions';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const asset = (slug, src = `/assets/${slug}.png`, title = slug) => ({id: 'media/' + slug, data: {title, src, defaultAlt: title, width: 10, height: 10, mime: 'image/png'}});
@@ -179,7 +180,7 @@ test('real store: deleting a used media record is refused with the using records
 });
 
 test('uploading the same image again reuses its media record instead of creating a duplicate', async () => {
-  const { uploadNativeMedia } = await import('./native-media.mjs');
+  const { uploadNativeMedia } = await import('astro-frontend-editor/runtime');
   const existing = { id: 'media/abc', data: { src: '/assets/' + 'f'.repeat(64) + '.png' } };
   let saved = false;
   const adapter=await createFlyingStarsAdapter(path.join(here,'..')),policy=adapter.extensions.require('mediaPolicy');

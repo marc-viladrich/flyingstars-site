@@ -2,7 +2,7 @@ import {createFlyingStarsAdapter as translationSite} from './flyingstars-adapter
 import {fileURLToPath as translationRoot} from 'node:url';
 import test from "node:test";
 import assert from "node:assert/strict";
-import {execute, sha256, segmentsOf, createTranslationCore} from "./translation-core.mjs";
+import {execute, sha256, segmentsOf, createTranslationCore} from "astro-frontend-editor/runtime";
 const {plan,mergeIntoTranslations}=createTranslationCore(await translationSite(translationRoot(new URL('../',import.meta.url))));
 
 // A fake provider that records what it was asked to translate.

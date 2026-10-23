@@ -1,20 +1,25 @@
 # Runtime-Optionen des Editors
 
-`editor/runtime-options.mjs` definiert `RuntimeOptions` per JSDoc und löst die Host-Einstellungen einmal am Einstiegspunkt auf. `server.mjs` verdrahtet damit Store, Builder, Publisher, Preview, Git-Sync, Auth, Medien und Übersetzung. Es werden keine `.env`-Dateien gelesen. Relative Pfade beziehen sich auf das Arbeitsverzeichnis des Aufrufers. Ohne `--site-root` oder `AFE_SITE_ROOT` ist die Site die, in der dieser Editor installiert ist (unabhängig vom Arbeitsverzeichnis, wie vor PR 2); der Standard für State bleibt deren Elternverzeichnis.
+Seit PR 11 ist die Editor-Laufzeit das Paket `astro-frontend-editor` (privat auf GitHub Packages, Abhängigkeit `npm:@marc-viladrich/astro-frontend-editor@0.2.1`, installiert mit `npm ci`). Dieses Repository enthält nur noch, was FlyingStars betrifft: den Adapter `editor/flyingstars-adapter.mjs`, die Erweiterungen unter `editor/extensions/flyingstars/`, die Browser-Registrierung `editor/browser-site.mjs`, die Launcher (`editor/server.mjs`, `manage-accounts.mjs`, `translate-missing.mjs`, `migrate.mjs`), die Deploy-Anbindung `editor/deploy/`, `editor/ci/check.mjs` und die FlyingStars-Integrationstests. Die generischen Laufzeit-Tests liegen im Produkt-Repository.
 
-Host-Einstellungen gehören gemäß Architekturentscheidung 001, Entscheidung 9, nicht in den Site-Contract. Der explizit übergebene FlyingStars-Adapter in `editor/flyingstars-adapter.mjs` liefert Schemas, Source-Registrierung, Routen, Paketzuordnung, Übersetzungsfelder und Markdown-Validierung sowie die bestehenden Build-, Preview- und Medienkonventionen. Seine Imports beziehen sich immer auf die angegebene Site-Wurzel.
+`resolveRuntimeOptions` (aus `astro-frontend-editor/runtime`) löst die Host-Einstellungen einmal am Einstiegspunkt auf. Es werden keine `.env`-Dateien gelesen. Relative Pfade beziehen sich auf das Arbeitsverzeichnis des Aufrufers. Das Paket selbst nimmt ohne `--site-root`/`AFE_SITE_ROOT` das Arbeitsverzeichnis als Site; der FlyingStars-Launcher übergibt stattdessen seinen eigenen Checkout als Standard, damit `node relaunch/server.mjs` aus dem Projektordner weiter diese Site bearbeitet. Der Standard für State bleibt deren Elternverzeichnis.
+
+Host-Einstellungen gehören gemäß Architekturentscheidung 001, Entscheidung 9, nicht in den Site-Contract. Die Laufzeit importiert nie eine Site: der Launcher übergibt den Adapter (Schemas, Source-Registrierung, Routen, Paketzuordnung, Übersetzungsfelder, Markdown-Validierung, Build-, Preview- und Medienkonventionen, `label` und `previewPrefix`).
 
 ```js
-import {resolveRuntimeOptions} from './editor/runtime-options.mjs';
-import {createFlyingStarsAdapter} from './editor/flyingstars-adapter.mjs';
-import {startNativeServers} from './editor/server.mjs';
-
-const options = resolveRuntimeOptions({args: process.argv.slice(2), authDefault: true, previewDefault: true});
-const site = await createFlyingStarsAdapter(options.siteRoot);
-await startNativeServers({options, site});
+// editor/server.mjs (gekürzt)
+import {startNativeServers as start,runEditor as run} from 'astro-frontend-editor/runtime';
+import {createFlyingStarsAdapter,compatibility} from './flyingstars-adapter.mjs';
+const site={createSite:createFlyingStarsAdapter,compatibility,defaults:{siteRoot:<dieser Checkout>}};
+export const startNativeServers=(input={})=>start({...site,...input});
+export const runEditor=(args=process.argv.slice(2))=>run(args,site);
 ```
 
-Der Server lädt den Pilot-Adapter am Composition Root, wenn kein `site`-Objekt übergeben wurde. Generische Services laden ihn niemals selbst. Für eingebettete Aufrufer bleiben die bisherigen flachen Argumente von `startNativeServers`, etwa `source`, `runtimeRoot`, `remote` und `auth: {file, clock}`, erhalten. Dieser API-Einstieg startet ohne explizite Konfiguration weiterhin ohne Auth und Live-Preview; der CLI-Einstieg aktiviert beide standardmäßig.
+Ohne Launcher startet das Paket mit `npx afe editor --site-adapter editor/flyingstars-adapter.mjs` (oder `AFE_SITE_ADAPTER`); das Modul exportiert dafür `createSite` und `compatibility`. Für eingebettete Aufrufer bleiben die flachen Argumente von `startNativeServers` (`source`, `runtimeRoot`, `remote`, `auth: {file, clock}`) erhalten. Dieser API-Einstieg startet ohne explizite Konfiguration ohne Auth und Live-Preview; der CLI-Einstieg aktiviert beide standardmäßig.
+
+## Alte Namen (Kompatibilität)
+
+Das Paket kennt nur generische Namen (`AFE_*`, Dateien `afe-*`, Cookie `afe_editor`). FlyingStars übergibt seine bisherigen Namen ausdrücklich über `editor/extensions/flyingstars/runtime-compatibility.mjs`: die Umgebungs-Aliase `FLYINGSTARS_*`, `EDITOR_*` und `RELAUNCH_*`, die Lock-/Lease-/Worktree-Namen `flyingstars-operation.lock`, `flyingstars-draft-lease`, `flyingstars-rebase-`, `flyingstars-deploy-`, das Cookie `fs_editor` und die Befehle in Meldungen (`node editor/manage-accounts.mjs`, `node editor/migrate.mjs`). Ein bestehender State-Ordner, laufende Sitzungen und Host-Variablen funktionieren dadurch unverändert. Die Tabelle unten nennt diese Aliase weiter; sie gelten nur über den FlyingStars-Launcher bzw. dessen Adapter-Modul.
 
 ## Vorrang und Variablen
 
@@ -69,17 +74,16 @@ State innerhalb der Site wird vor dem Laden von Konten oder Site-Modulen abgewie
 
 ## Anmeldung und dauerhafte Sitzungen
 
-„Angemeldet bleiben“ ist beim Login ausgeschaltet. Ohne Häkchen setzt der Editor ein Session-Cookie ohne `Max-Age` oder `Expires`. Die serverseitige Sitzung endet nach zwölf Stunden ohne authentifizierte Anfrage. Browser können Session-Cookies bei einer Wiederherstellung übernehmen; das serverseitige Zeitlimit gilt auch dann.
+Seit Paket 0.2.0 übernimmt Better Auth Passwörter, Sitzungen, TOTP und Wiederherstellungscodes. Die vollständige Betriebsbeschreibung (Sitzungsgrenze zwölf Stunden ohne Verlängerung, MFA-Pflicht auf HTTPS, Proxy-Einstellungen, Backups, Updates) steht im Paket unter `node_modules/astro-frontend-editor/docs/authentication.md`. Für FlyingStars gilt zusätzlich:
 
-Mit Häkchen gilt das Cookie 30 Tage. Bei erneuter Nutzung nach mindestens 24 Stunden ersetzt der Editor den Token und setzt Cookie und Ablauf auf weitere 30 Tage. Häufigere Anfragen lösen keine weitere Rotation aus. Der alte Token bleibt höchstens 30 Sekunden gültig, damit parallele Asset- und API-Anfragen den Wechsel abschließen können. Der CSRF-Token bleibt dabei erhalten. Abmelden widerruft auch den kurzzeitig noch gültigen Vorgänger.
+- Konten liegen in `<state>/runtime-private/editor-auth.sqlite`, der Schlüssel daneben in `editor-auth-secret` (beide `0600`, Ordner `0700`). Beide gehören zusammen ins private Backup. `EDITOR_SESSION_SECRET` bleibt als Alias für `AFE_SESSION_SECRET` gültig.
+- Die bisherige `editor-accounts.json` ist nur noch Importquelle. Einmalig `node editor/manage-accounts.mjs migrate` ausführen; danach verlangt der erste Login einen Passwortwechsel (mindestens 15 Zeichen) und auf HTTPS die Einrichtung einer Authenticator-App. Die alte Datei bleibt unverändert als Rückweg. `editor-sessions.json` und `editor-session-secret` werden nicht mehr gelesen; alle bisherigen Sitzungen enden mit dem Wechsel.
+- Das Cookie heißt lokal `fs_editor`, auf HTTPS `__Host-fs_editor`.
+- Kontenbefehle: `node editor/manage-accounts.mjs add|list|passwd|disable|enable|reset-mfa|backup|schema`. Mit `--state-dir` wirken sie auf den angegebenen State.
 
-Der Server speichert Sitzungen atomar unter `<state>/runtime-private/editor-sessions.json`. Gespeichert werden nur HMAC-SHA256-Hashes der Sitzungstokens, Konto-ID und Passwortversion, CSRF-Token, Erstellungs-, Aktivitäts-, Erneuerungs- und Ablaufzeit sowie die Merken-Auswahl. Der Dateikopf enthält Version und eine HMAC-Kennung des Signierschlüssels. Unverschlüsselte Sitzungstokens, Passwörter und Kontohashes stehen nicht in der Sitzungsdatei. Das Verzeichnis hat Modus `0700`, die Auth-Dateien `0600`; sie dürfen weder im Repository noch im Webroot liegen. Auch diese Pfade werden gegen die verbotenen Wurzeln und Symlinks geprüft.
+## Anmeldeseite
 
-Ohne konfiguriertes `AFE_SESSION_SECRET` erzeugt der Editor einmalig `<state>/runtime-private/editor-session-secret`. Dieses Geheimnis und die Sitzungsdatei bleiben bei Builds und Neustarts erhalten. Bei explizitem Geheimnis muss derselbe Wert bei jedem Start bereitstehen. Ein Wechsel oder Verlust des Geheimnisses verwirft bestehende Sitzungen. Ein beschädigter Sitzungsspeicher verhindert den Start; zur Rücksetzung kann die Sitzungsdatei bei gestopptem Editor entfernt werden. Das meldet alle Konten ab.
-
-Abgelaufene und widerrufene Sitzungen werden beim Start und bei authentifizierten Anfragen entfernt. Die Kontodatei wird erneut gelesen: Passwortwechsel oder Deaktivierung über `manage-accounts.mjs` sowie das Entfernen eines Kontos sperren dessen Sitzungen bei der nächsten Anfrage, auch nach einem Neustart. Logout löscht die zugehörigen gespeicherten Tokens vor der Antwort. Jeder State-Ordner gehört genau einem laufenden Editorprozess. Die dateibasierte Speicherung unterstützt keine mehreren gleichzeitigen Serverinstanzen mit demselben State.
-
-HTTPS verwendet weiterhin `__Host-fs_editor` mit `Secure`, `Path=/`, `HttpOnly` und `SameSite=Strict`. Lokales Loopback-HTTP verwendet `fs_editor` ohne `Secure`, damit auch WebKit das Cookie akzeptiert. Origin-Prüfung, CSRF und Login-Drosselung bleiben aktiv. Für eine direkte Einbettung von `EditorAuth` ohne Server ist der Standard `<Kontenordner>/editor-session-state`; `sessionDir` kann einen anderen privaten Ordner vorgeben. `createSession` und `destroySession` sind jetzt asynchron und müssen vor der Verwendung ihrer Ergebnisse abgewartet werden.
+Der Adapter (`editor/flyingstars-adapter.mjs`, Feld `login`) legt das Aussehen fest: zwei Spalten, FlyingStars-Punktlogo, rechts das Hero-Poster der Startseite (Düsseldorf), ohne Bildunterschrift. Die Dateien liegen unter `editor/login/` und damit nicht im öffentlichen Build. Varianten zum Vergleichen: `/editor/login?layout=centered` (Karte vor dem Foto). Alle Optionen: `node_modules/astro-frontend-editor/docs/login.md`.
 
 ## Grenze dieser Änderung
 

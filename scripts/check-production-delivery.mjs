@@ -1,4 +1,4 @@
-// Run with Node 22. Builds in an isolated copy without .env files or media requests.
+// Run with Node 24 (the editor package needs node:sqlite, Node >= 24.15). Builds in an isolated copy without .env files or media requests.
 import assert from 'node:assert/strict';
 import {cp,mkdtemp,symlink,readFile,writeFile,readdir,rm,mkdir,access} from 'node:fs/promises';
 import {spawn} from 'node:child_process';
@@ -9,7 +9,7 @@ import {deliveryRedirects,htaccessText} from './lib/public-delivery.mjs';
 import {readEditorialRecords,seoFallbackReport} from './seo-fallback-report.mjs';
 import {localizedHref} from '../src/lib/localized-routes.mjs';
 
-assert.equal(Number(process.versions.node.split('.')[0]),22,'Use Node 22 in PATH');
+assert.equal(Number(process.versions.node.split('.')[0]),24,'Use Node 24 in PATH');
 const root=fileURLToPath(new URL('../',import.meta.url));
 const temporary=await mkdtemp(path.join(os.tmpdir(),'flyingstars-delivery-'));
 const source=path.join(temporary,'source'),dist=path.join(root,'dist'),preview=path.join(temporary,'preview');

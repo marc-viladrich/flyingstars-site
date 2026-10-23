@@ -1,13 +1,12 @@
-import {createExtensionRegistry} from './core/extensions.mjs';
+import {createExtensionRegistry,LegacySourceAdapter,unwrap} from 'astro-frontend-editor/runtime/extensions';
 import {createFlyingStarsExtensions} from './extensions/flyingstars/index.mjs';
+import {routeTools} from './extensions/flyingstars/web/routing.mjs';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
-import {LegacySourceAdapter} from './legacy-source-adapter.mjs';
-import {unwrap} from './native-schema.mjs';
 
 import {legacyCollections,siteAddresses} from '../src/lib/content-addresses.mjs';
 
-/** Only this adapter loads the pilot's schemas and source services.
+/** Only this adapter loads the site's schemas and source services; the editor package receives it from the launcher.
  * @param {string} root Absolute site root, supplied by the composition root.
  */
 export async function createFlyingStarsAdapter(root) {
@@ -26,7 +25,7 @@ export async function createFlyingStarsAdapter(root) {
  const sourcesFromFiles=files=>files.flatMap(file=>{const type=types.find(t=>file.startsWith('src/content/'+t.directory+'/')&&file.endsWith('.'+t.extension));if(!type)return [];const name=file.slice(('src/content/'+type.directory+'/').length,-(type.extension.length+1));const source=sourceFor(type.prefix+'/'+name);return source?[source]:[];});
  const {inlinePlain,inlineHtml}=await load('src/lib/inline-text.mjs');
  const inlineCodec={decode:source=>String(source),encode:value=>{if(typeof value!=='string')throw Error('Inline text must be a string.');return value;},plainText:inlinePlain,html:inlineHtml};
- const site={inlineCodec,sourceFor,sourcesFromFiles,recordTitle(source,data){return source.prefix==='package'?data.name:source.prefix==='translation'?source.id:null;},
+ const site={label:'FlyingStars',previewPrefix:routeTools.previewPrefix,inlineCodec,sourceFor,sourcesFromFiles,recordTitle(source,data){return source.prefix==='package'?data.name:source.prefix==='translation'?source.id:null;},
   createSourceAdapter:options=>new LegacySourceAdapter(options),types,editorialHref,sectionSchema,sectionPolicy,recordRoute,packageOwnership,translatableFields,validateTranslatedMarkdown,
   gitIdentity:{GIT_AUTHOR_NAME:'FlyingStars local editor',GIT_AUTHOR_EMAIL:'editor@example.invalid',GIT_COMMITTER_NAME:'FlyingStars Editor',GIT_COMMITTER_EMAIL:'editor@example.invalid'},
   mediaOrigin:'https://flyingstars.art',mediaHosts:['flyingstars.art','flyingstars-relaunch.vercel.app'],
@@ -35,6 +34,10 @@ export async function createFlyingStarsAdapter(root) {
    'src/content/extras/','src/content/packages/','src/content/screens/','src/content/clients/','src/content/team/',
    'src/content/media/','src/content/site/','src/content/translations/'],
   contentRoot:'src/content',assetRoot:'public/assets',
+  // Sign-in page (astro-frontend-editor docs/login.md). Files live beside the editor, not in public/, so the
+  // public site does not ship them. Photo: the home page's hero poster (Düsseldorf), no caption.
+  login:{layout:'split',logo:{src:'editor/login/logo.svg',alt:'FlyingStars'},image:{src:'editor/login/show.jpg',alt:''},imageFocus:'50% 45%',
+   accent:'#111114'},
   recordId,
   browserFiles:{'/browser-site.mjs':'editor/browser-site.mjs',...Object.fromEntries(['index','site-adapter','inline-format','prepare-cloned-section','record-kinds','media-usage','factories','navigation','preview','frame','translations','routing'].map(name=>['/extensions/flyingstars/web/'+name+'.mjs','editor/extensions/flyingstars/web/'+name+'.mjs'])),...Object.fromEntries(['queries','site-data'].map(name=>['/extensions/flyingstars/'+name+'.mjs','editor/extensions/flyingstars/'+name+'.mjs'])),'/src/lib/color-tokens.mjs':'src/lib/color-tokens.mjs','/src/lib/editorial-text.mjs':'src/lib/editorial-text.mjs','/src/content/package-ids.mjs':'src/content/package-ids.mjs','/src/lib/inline-text.mjs':'src/lib/inline-text.mjs','/src/content/package-ownership.mjs':'src/content/package-ownership.mjs','/src/lib/content-addresses.mjs':'src/lib/content-addresses.mjs','/editor/site-lib/color-tokens.mjs':'src/lib/color-tokens.mjs','/editor/site-lib/inline-text.mjs':'src/lib/inline-text.mjs','/editor/site-lib/editorial-text.mjs':'src/lib/editorial-text.mjs','/editor/package-ids.mjs':'src/content/package-ids.mjs','/editor/package-ownership.mjs':'src/content/package-ownership.mjs'},
 
@@ -43,4 +46,6 @@ export async function createFlyingStarsAdapter(root) {
  return site;
 }
 
-export {legacyRuntimePaths,legacyEnvironmentOptions,legacyBuildEnvironment,legacyRestartEnvironment,legacyRuntimeMessages} from './extensions/flyingstars/runtime-compatibility.mjs';
+// Adapter module convention of the package (createSite, compatibility): `afe … --site-adapter editor/flyingstars-adapter.mjs`.
+export {createFlyingStarsAdapter as createSite};
+export {compatibility} from './extensions/flyingstars/runtime-compatibility.mjs';

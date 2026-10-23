@@ -1,4 +1,4 @@
-import {valueAt} from './vendor/astro-frontend-editor/src/content/index.mjs';
+import {valueAt} from 'astro-frontend-editor/content';
 import {createFlyingStarsAdapter as translationSite} from './flyingstars-adapter.mjs';
 import {fileURLToPath as translationRoot} from 'node:url';
 import test from 'node:test';
@@ -6,9 +6,9 @@ import assert from 'node:assert/strict';
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
-import {NativeBuilder} from './native-builder.mjs';
-import {executeBatched, sha256, createTranslationCore} from './translation-core.mjs';
-import {fake} from './translation-providers.mjs';
+import {NativeBuilder} from 'astro-frontend-editor/runtime';
+import {executeBatched, sha256, createTranslationCore} from 'astro-frontend-editor/runtime';
+import {fakeTranslationProvider as fake} from 'astro-frontend-editor/runtime';
 import {verifyPricingRuntime} from './i18n-runtime-proof.mjs';
 import {i18nFixture} from './i18n-test-fixture.mjs';
 const {plan,mergeIntoTranslations}=createTranslationCore(await translationSite(translationRoot(new URL('../',import.meta.url))));
@@ -31,7 +31,8 @@ async function review(store,id,field,text) {
  const values=structuredClone(record.data.values);values[index]={...values[index],text,reviewed:true};
  return store.save({expectedHead:state.head,requestId:randomUUID(),changes:[{id,expectedRevision:record.revision,reviewedPaths:[field],patches:[{path:['values'],value:values}]}],creates:[],deletes:[]});
 }
-test('Offline real Astro: EN/NL saved translations, review, public/editor eligibility, stale German changes and all routes', {timeout:180000}, async t=>{
+// Three real Astro builds: about 50 s alone, over 180 s when the whole suite runs in parallel on a laptop.
+test('Offline real Astro: EN/NL saved translations, review, public/editor eligibility, stale German changes and all routes', {timeout:360000}, async t=>{
  const {root,store}=await i18nFixture(t);
  const initial=await store.state();
  // Homepage references packages, FAQ, projects, clients, team and global records. Include all their owners.

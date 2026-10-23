@@ -33,8 +33,7 @@ export default defineConfig({
   trailingSlash: 'always',
   i18n: {defaultLocale:'de',locales:['de','en','nl'],routing:{prefixDefaultLocale:false}},
   integrations: [sitemapExclusions,sitemap({i18n:{defaultLocale:'de',locales:{de:'de',en:'en',nl:'nl'}},filter:page=>!excluded.has(new URL(page).pathname),serialize:item=>{const german=item.links?.find(link=>link.lang==='de');if(german)item.links?.push({lang:'x-default',url:german.url});return item;}})],
-  // astro-frontend-editor is vendored under editor/vendor until PR 11 installs the package; imports already use its name.
-  vite: {cacheDir:'.astro/vite',resolve:{alias:[{find:/^astro-frontend-editor\/markers$/,replacement:fileURLToPath(new URL('./editor/vendor/astro-frontend-editor/src/markers/index.mjs',import.meta.url))},{find:/^astro-frontend-editor\/astro\/loaders$/,replacement:fileURLToPath(new URL('./editor/vendor/astro-frontend-editor/src/astro/loaders.mjs',import.meta.url))}]}},
+  vite: {cacheDir:'.astro/vite'},
   image: {
     // Explicit test mode keeps remote URLs/dimensions but performs no network optimization.
     ...(process.env.FLYINGSTARS_OFFLINE_MEDIA==='1'?{service:{entrypoint:'astro/assets/services/noop'}}:{}),

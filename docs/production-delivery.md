@@ -15,7 +15,7 @@ Stand: 15. Oktober 2026. Implementierung im Repository, kein Deployment und kein
 Die `.htaccess` wird aus der Inventur und den aktuellen veröffentlichten Projektquellen erzeugt:
 
 ```sh
-PATH=/opt/homebrew/opt/node@22/bin:$PATH node scripts/generate-public-delivery.mjs
+PATH=/opt/homebrew/opt/node@24/bin:$PATH node scripts/generate-public-delivery.mjs
 ```
 
 Nach neuen Showcase-Projekten oder einer geänderten Zuordnung erneut erzeugen und den Diff prüfen. Der Auslieferungscheck bricht bei einer veralteten Datei, fehlenden Zielen, Redirect-Ketten oder internen Links auf Redirect-Quellen ab. Keine Bilder oder Übersetzungswerte wurden für diese Aufgabe verändert.
@@ -31,17 +31,17 @@ Jeder Astro-Build schreibt `.astro/seo-fallbacks.json` und nennt die betroffenen
 ## Lokale Prüfung
 
 ```sh
-PATH=/opt/homebrew/opt/node@22/bin:$PATH node --test scripts/production-seo.test.mjs scripts/production-apache.test.mjs
-PATH=/opt/homebrew/opt/node@22/bin:$PATH node scripts/check-production-delivery.mjs
+PATH=/opt/homebrew/opt/node@24/bin:$PATH node --test scripts/production-seo.test.mjs scripts/production-apache.test.mjs
+PATH=/opt/homebrew/opt/node@24/bin:$PATH node scripts/check-production-delivery.mjs
 ```
 
-Der zweite Befehl kopiert die Arbeitsdateien in ein temporäres Verzeichnis, lässt `.env`-Dateien aus, setzt Node 22 und `FLYINGSTARS_OFFLINE_MEDIA=1`, führt `astro check` aus und baut die öffentliche Ausgabe nach `dist/`. Er prüft robots.txt, die kopierte `.htaccess`, sämtliche 301-Ziele, Projektduplikate, interne Links und Editor-Markierungen. Ein zweiter Build mit eigenem Preview-Origin prüft robots.txt und `noindex` für jede HTML-Seite. Die lokale Apache-Prüfung liest dieselbe `.htaccess` im Directory-Kontext mit und ohne optionale Kompressionsmodule. Sie startet keinen Server und beweist keine tatsächlichen Antwortheader. Brotli bleibt mangels lokalem Modul ein Kontotest.
+Der zweite Befehl kopiert die Arbeitsdateien in ein temporäres Verzeichnis, lässt `.env`-Dateien aus, setzt Node 24 und `FLYINGSTARS_OFFLINE_MEDIA=1`, führt `astro check` aus und baut die öffentliche Ausgabe nach `dist/`. Er prüft robots.txt, die kopierte `.htaccess`, sämtliche 301-Ziele, Projektduplikate, interne Links und Editor-Markierungen. Ein zweiter Build mit eigenem Preview-Origin prüft robots.txt und `noindex` für jede HTML-Seite. Die lokale Apache-Prüfung liest dieselbe `.htaccess` im Directory-Kontext mit und ohne optionale Kompressionsmodule. Sie startet keinen Server und beweist keine tatsächlichen Antwortheader. Brotli bleibt mangels lokalem Modul ein Kontotest.
 
 ## Einmal in konsoleH einrichten
 
 1. Öffentliche Domain und `www` demselben statischen Webroot zuordnen. Nur das vollständige Build-Artefakt inklusive versteckter `.htaccess` aktivieren. Öffentlichen Origin für Build und Editor-Publisher auf `https://flyingstars.art` setzen. Apache-Overrides für Rewrite, Headers, Options und ErrorDocument sowie Symlinkzugriff des vorhandenen Release-Verfahrens prüfen.
 2. TLS-Zertifikate für Apex, `www` und die gewählte Editor-Subdomain einrichten. HTTPS-Weiterleitungen erst mit gültigen Zertifikaten auf beiden öffentlichen Hosts testen.
-3. Node nur für die Editor-Subdomain aktivieren. Hetzner deaktiviert bei der Node-Zuordnung andere Webanwendungen auf dieser Domain. Node 22, Arbeitsverzeichnis des privaten Klons, Skript `editor/server.mjs`, Port laut Account, Umgebungsvariablen und ausreichendes Speicherlimit für Astro-Builds einstellen. Details zu `AFE_SITE_ROOT`, `AFE_STATE_DIR`, `AFE_PUBLIC_WEBROOT`, `AFE_EDITOR_ORIGIN`, `AFE_CANONICAL_ORIGIN`, `AFE_AUTH`, Kontodatei und Git-Sync stehen in [Deployment](deployment.md) und [Runtime-Optionen](runtime-options.md). State, Konten und Klon bleiben außerhalb des öffentlichen Webroots. Diese öffentliche `.htaccess` gehört nicht in den Editor-Webroot.
+3. Node nur für die Editor-Subdomain aktivieren. Hetzner deaktiviert bei der Node-Zuordnung andere Webanwendungen auf dieser Domain. Node 24, Arbeitsverzeichnis des privaten Klons, Skript `editor/server.mjs`, Port laut Account, Umgebungsvariablen und ausreichendes Speicherlimit für Astro-Builds einstellen. Details zu `AFE_SITE_ROOT`, `AFE_STATE_DIR`, `AFE_PUBLIC_WEBROOT`, `AFE_EDITOR_ORIGIN`, `AFE_CANONICAL_ORIGIN`, `AFE_AUTH`, Kontodatei und Git-Sync stehen in [Deployment](deployment.md) und [Runtime-Optionen](runtime-options.md). State, Konten und Klon bleiben außerhalb des öffentlichen Webroots. Diese öffentliche `.htaccess` gehört nicht in den Editor-Webroot.
 4. Unter Einstellungen → Webserver-Erweiterungen verfügbare `mod_deflate`-/`mod_brotli`-Erweiterungen aktivieren und einzeln testen. Keine Verfügbarkeit aus einem erfolgreichen Build ableiten. Varnish vorerst deaktiviert lassen, insbesondere für den Editor. Dort dürfen weder Hostingcache noch Proxy die vorhandenen `Cache-Control: no-store`-Antworten überschreiben.
 5. Node-Start, Wiederanlauf, Restart-Verfahren und Speichergrenze am Account prüfen. Für diese konsoleH-Einrichtung existiert im Projekt keine CLI; die dokumentierten Dashboard-Schritte werden einmal manuell ausgeführt. Keine Hetzner-Cloud-CLI dafür einsetzen.
 
@@ -105,11 +105,11 @@ Die lokale Prüfung ergab auf demselben Inhaltsstand 52 HTML-Dateien und 364 `<i
 
 Astro legt die Bildcache-Einträge unter `assets/` im konfigurierten Cache ab. Der Cache ist abgeleitet und darf bei Platzmangel außerhalb laufender Builds gelöscht werden; der nächste Build braucht dann alle Originale erneut. Er ersetzt deren Sicherung nicht. Remote-Dimensionsprobes benötigen auch bei warmem Transformationscache Zugriff auf die Originalquellen. [Astro-Bildcache und getImage](https://docs.astro.build/en/guides/images/#asset-caching).
 
-Kalt-/Warmmessung mit Node 22 auf einem Rechner mit Netzwerkzugriff, in einer Kopie ohne `.env`-Dateien:
+Kalt-/Warmmessung mit Node 24 auf einem Rechner mit Netzwerkzugriff, in einer Kopie ohne `.env`-Dateien:
 
 ```sh
 # Nur einen frischen Messpfad verwenden; keinen laufenden Hostcache leeren.
-export PATH=/opt/homebrew/opt/node@22/bin:$PATH
+export PATH=/opt/homebrew/opt/node@24/bin:$PATH
 export SITE_URL=https://flyingstars.art
 export FLYINGSTARS_IMAGE_CACHE_DIR=/tmp/flyingstars-q-image-cache
 unset FLYINGSTARS_EDITOR FLYINGSTARS_OFFLINE_MEDIA
