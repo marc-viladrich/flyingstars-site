@@ -11,7 +11,8 @@ concurrency:
 jobs:
   gates:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # Ein PR-Lauf dauerte 15 min, derselbe Stand auf main 20+ (Physik-Tests je ~1,5 min, Runner schwanken).
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v6
         # Editor-Tests lesen ältere Stände (Migrationen, Revisionsnachweise) aus der Git-Geschichte.
