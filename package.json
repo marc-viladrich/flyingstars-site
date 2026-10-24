@@ -20,7 +20,7 @@
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
     "astro": "^7.3.6",
-    "astro-frontend-editor": "npm:@marc-viladrich/astro-frontend-editor@0.2.3",
+    "astro-frontend-editor": "npm:@marc-viladrich/astro-frontend-editor@0.2.4",
     "marked": "^18.1.0",
     "sharp": "^0.35.5",
     "yaml": "^2.9.1",
