@@ -24,7 +24,7 @@ Neue Blogposts, Projekte und FAQ werden im PR mit `draft: false` erzeugt. Solang
 
 ## Veröffentlichung und Cache
 
-Ein Merge ändert zuerst GitHub main. Nach erfolgreicher CI ruft `deploy-hetzner.yml` den SSH-Hook auf. Der Host baut einen festen Git-Stand und wechselt erst nach Erfolg den öffentlichen Webroot. Inhaltsentwürfe auf `content/draft` werden beim Code-Deploy erhalten; freigegeben wird der Inhalt durch den Editor.
+Ein Merge ändert zuerst GitHub main. Danach ruft `deploy-hetzner.yml` den SSH-Hook auf, ohne erneute CI (Code-PRs sind vor dem Merge geprüft, Inhalte hat der Editor lokal gebaut). Der Host baut einen festen Git-Stand und wechselt erst nach Erfolg den öffentlichen Webroot. Inhaltsentwürfe auf `content/draft` werden beim Code-Deploy erhalten; freigegeben wird der Inhalt durch den Editor.
 
 Die bisherige Cloudflare-Konfiguration und der tatsächlich eingerichtete Branch-Schutz gehören zum früheren Pilot. Vor Inbetriebnahme muss Marc den Schutz an das neue Modell anpassen: `gates` bleibt erforderlich für Code-PRs, der manuelle Cloudflare-Job `upload` darf kein Pflichtcheck mehr sein. Der redaktionelle Host-Key muss geprüfte Fast-forward-Pushes auf main durchführen dürfen. Bestehende GitHub-Regeln wurden durch diese lokale Arbeit nicht geändert.
 

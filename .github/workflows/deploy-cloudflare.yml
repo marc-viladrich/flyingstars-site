@@ -1,37 +1,24 @@
 name: Cloudflare deploy
-# Staging bis zum Hetzner-Umzug: jeder freigegebene Stand auf main geht nach grüner CI auf Cloudflare Pages.
+# Staging bis zum Hetzner-Umzug: jeder Stand auf main geht direkt auf Cloudflare Pages (1–2 min).
+# Die volle Prüfung (ci.yml) läuft bei PRs und auf Abruf, nicht vor jeder Inhaltsänderung: Der Editor hat den Stand
+# vor dem Hochladen schon lokal gebaut, und scheitert hier der Build, bleibt der bisherige Stand online.
 # Ziel-URL: vars.SITE_URL (Produktionsbranch des Pages-Projekts ist main).
 on:
-  workflow_run:
-    workflows: [CI]
-    types: [completed]
+  push:
     branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
-  actions: read
   deployments: write
 concurrency:
   group: cloudflare-production
   cancel-in-progress: false
 jobs:
   deploy:
-    if: vars.CLOUDFLARE_DEPLOY != 'off' && (github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'))
+    if: vars.CLOUDFLARE_DEPLOY != 'off'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
-      - name: Erfolgreiche CI für aktuellen main prüfen
-        id: gate
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const {data: main} = await github.rest.repos.getBranch({...context.repo, branch: 'main'});
-            const sha = main.commit.sha;
-            const {data} = await github.rest.actions.listWorkflowRuns({...context.repo, workflow_id: 'ci.yml', branch: 'main', event: 'push', head_sha: sha});
-            if (!data.workflow_runs.some(run => run.head_sha === sha && run.conclusion === 'success')) {
-              throw new Error('Aktueller main hat noch keine erfolgreiche CI.');
-            }
-            core.setOutput('sha', sha);
       - name: Cloudflare-Konfiguration prüfen
         env:
           CF_PAGES_PROJECT: ${{ vars.CF_PAGES_PROJECT }}
@@ -44,7 +31,6 @@ jobs:
           done
           exit "$missing"
       - uses: actions/checkout@v6
-        with: { ref: '${{ steps.gate.outputs.sha }}' }
       - uses: actions/setup-node@v6
         with: { node-version-file: .nvmrc, cache: npm, registry-url: 'https://npm.pkg.github.com', scope: '@marc-viladrich' }
       - run: npm ci
@@ -61,4 +47,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=${{ vars.CF_PAGES_PROJECT }} --branch=main --commit-hash=${{ steps.gate.outputs.sha }}
+          command: pages deploy dist --project-name=${{ vars.CF_PAGES_PROJECT }} --branch=main --commit-hash=${{ github.sha }}

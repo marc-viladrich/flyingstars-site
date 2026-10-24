@@ -1,36 +1,23 @@
 name: Hetzner deploy
+# Wie deploy-cloudflare.yml: jeder Stand auf main, ohne vorgeschaltete CI; der Host baut selbst und schaltet nur
+# nach erfolgreichem Build um.
 on:
-  workflow_run:
-    workflows: [CI]
-    types: [completed]
+  push:
     branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
-  actions: read
 concurrency:
   group: hetzner-production
   cancel-in-progress: false
 jobs:
   deploy:
     # Aus, bis der Hetzner-Account steht: Repository-Variable HETZNER_DEPLOY=on schaltet den Deploy ein.
-    if: vars.HETZNER_DEPLOY == 'on' && (github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'))
+    if: vars.HETZNER_DEPLOY == 'on'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: production
     steps:
-      - name: Erfolgreiche CI für aktuellen main prüfen
-        id: gate
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const {data: main} = await github.rest.repos.getBranch({...context.repo, branch: 'main'});
-            const sha = main.commit.sha;
-            const {data} = await github.rest.actions.listWorkflowRuns({...context.repo, workflow_id: 'ci.yml', branch: 'main', event: 'push', head_sha: sha});
-            if (!data.workflow_runs.some(run => run.head_sha === sha && run.conclusion === 'success')) {
-              throw new Error('Aktueller main hat noch keine erfolgreiche CI.');
-            }
-            core.setOutput('sha', sha);
       - name: SSH-Deploy-Hook ausführen
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
@@ -38,7 +25,7 @@ jobs:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
           DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
-          DEPLOY_SHA: ${{ steps.gate.outputs.sha }}
+          DEPLOY_SHA: ${{ github.sha }}
         shell: bash
         run: |
           set -euo pipefail
