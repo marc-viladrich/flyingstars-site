@@ -4,6 +4,7 @@ Site, Editor, Tests und Deploy-Hooks liegen in einem Repository. Apache liefert 
 
 ```text
 Entwickler → PR → CI → main → Deploy-Hook → Host
+Redaktion → Hochladen → main → Deploy-Hook → Host (ohne CI)
                           ↳ Smoke-Test → Astro-Build → Webroot → Editor-Neustart
 
 Redaktion → Speichern → content/draft → asynchroner Push nach GitHub
@@ -22,7 +23,7 @@ Der Publisher baut den Kandidaten bereits vor dem Push auf main. Diese bewusste 
 
 ## Gemeinsame CI und Host-Hook
 
-`ci.yml` läuft auf allen Pushes und PRs mit der Node-Version aus `.nvmrc` (24), installiert mit `npm ci` und ruft `npm run ci` auf. Derselbe Einstieg `editor/ci/check.mjs` läuft im Offline-Nachweis: Astro check, sämtliche Editor- und Site-Unit-Tests, Astro-Build mit `FLYINGSTARS_OFFLINE_MEDIA=1`. Die bisherigen Browser-, Link- und Lighthouse-Gates folgen in GitHub. Der E2E-Test ruft die CI in einer Testkopie auf; nur dieser äußere Pipeline-Test wird im inneren Lauf ausgelassen, um Rekursion zu verhindern.
+`ci.yml` läuft bei PRs (Branch-Schutz verlangt den Check `gates`) und auf Abruf (Actions → CI → Run workflow), nicht bei Pushes auf main: Inhalte aus dem Editor gehen ohne diesen 15- bis 20-minütigen Lauf online. Der Editor baut jeden Stand schon beim Speichern lokal; scheitert der Build im Deploy, bleibt der bisherige Stand online. Die CI läuft mit der Node-Version aus `.nvmrc` (24), installiert mit `npm ci` und ruft `npm run ci` auf. Derselbe Einstieg `editor/ci/check.mjs` läuft im Offline-Nachweis: Astro check, sämtliche Editor- und Site-Unit-Tests, Astro-Build mit `FLYINGSTARS_OFFLINE_MEDIA=1`. Die bisherigen Browser-, Link- und Lighthouse-Gates folgen in GitHub. Der E2E-Test ruft die CI in einer Testkopie auf; nur dieser äußere Pipeline-Test wird im inneren Lauf ausgelassen, um Rekursion zu verhindern.
 
 ### Editor-Paket und laufende Updates
 
@@ -32,7 +33,7 @@ Lesen darf das Paket ein klassisches GitHub-Token mit nur `read:packages`. Es li
 
 Dependabot (`.github/dependabot.yml`) schlägt montags gebündelte Minor- und Patch-Updates vor, Actions monatlich, neue Editor-Versionen ebenfalls. Jeder dieser PRs läuft durch `ci.yml`; gemergt wird von Hand. Node selbst aktualisiert Dependabot nicht: `.nvmrc` (24) gibt die Hauptversion vor, CI und Host nehmen die aktuelle 24.x.
 
-`deploy-hetzner.yml` startet nach erfolgreicher Push-CI auf main oder manuell. Beide Wege prüfen eine erfolgreiche CI für den aktuellen main-Commit. SSH übergibt diesen Hash; ist main bis zum Fetch weitergelaufen, bricht der Hook ab. Deployments werden in Actions und durch den Dateilock des Editors serialisiert.
+`deploy-hetzner.yml` startet bei jedem Push auf main oder manuell, ohne vorgeschaltete CI. SSH übergibt den Hash des Pushes; ist main bis zum Fetch weitergelaufen, bricht der Hook ab. Deployments werden in Actions und durch den Dateilock des Editors serialisiert.
 
 `editor/deploy/host-update.mjs` holt GitHub, prüft einen sauberen Host-Klon und bereitet den Rebase isoliert vor. Bei geändertem Lockfile installiert er in der isolierten Arbeitskopie `npm ci --omit=dev`; sonst nutzt er die vorhandenen Dependencies. Astro, Sitemap, YAML, Zod, marked und sharp sind Runtime-Dependencies, damit der Host selbst bauen kann. Der neue Editor wird mit `node --check` (Launcher `editor/server.mjs` des Kandidaten) und einer echten Handler-Anfrage ohne Socket (`editor/deploy/handler-smoke.mjs` des Kandidaten, die das Editor-Paket aus dessen `node_modules` lädt) geprüft. Die Ablauflogik selbst liegt im Paket (`hostUpdate` aus `astro-frontend-editor/runtime`); `editor/deploy/host-update.mjs` übergibt nur Adapter, Kompatibilitätsnamen und diese Prüfschritte. Erst ein erfolgreicher öffentlicher Build für origin/main bewegt den Host-Klon und aktiviert die Ausgabe. Danach führt der Hook `DEPLOY_RESTART_CMD` aus. Ein fehlgeschlagener Build oder Rebase verändert weder den Klon noch den aktiven Public-Release.
 
@@ -98,7 +99,7 @@ Für einen Code-Rollback den problematischen main-Commit durch `git revert` in e
 
 ## Entwicklerrechner: lokal freigeben, dann hochladen
 
-Bis der Host steht (und danach für die Entwicklung) läuft der Editor lokal mit `AFE_UPLOAD_REMOTE=github` und `AFE_LIVE_URL=https://flyingstars-site.pages.dev`. „Freigeben“ baut die lokale Veröffentlichung (`http://127.0.0.1:4543/`) und schiebt nur das lokale `main` vor. Ist der freigegebene Stand nicht auf GitHub, bietet der Editor „Hochladen“ an: Er holt `main` von GitHub, lehnt ab, wenn dort Commits liegen, die lokal fehlen (dann `git pull`), und pusht sonst ohne Force. Entwürfe werden in diesem Modus nicht gepusht. Auf GitHub prüft `ci.yml` den Stand; `deploy-cloudflare.yml` stellt ihn erst nach grüner CI auf Cloudflare Pages (Staging, Produktionsbranch `main`). `deploy-hetzner.yml` bleibt aus, bis die Repository-Variable `HETZNER_DEPLOY=on` gesetzt ist.
+Bis der Host steht (und danach für die Entwicklung) läuft der Editor lokal mit `AFE_UPLOAD_REMOTE=github` und `AFE_LIVE_URL=https://flyingstars-site.pages.dev`. „Freigeben“ baut die lokale Veröffentlichung (`http://127.0.0.1:4543/`) und schiebt nur das lokale `main` vor. Ist der freigegebene Stand nicht auf GitHub, bietet der Editor „Hochladen“ an: Er holt `main` von GitHub, lehnt ab, wenn dort Commits liegen, die lokal fehlen (dann `git pull`), und pusht sonst ohne Force. Entwürfe werden in diesem Modus nicht gepusht. `deploy-cloudflare.yml` baut jeden Push auf main und stellt ihn direkt auf Cloudflare Pages (Staging, Produktionsbranch `main`, 1–2 min); `ci.yml` läuft dafür nicht. `deploy-hetzner.yml` bleibt aus, bis die Repository-Variable `HETZNER_DEPLOY=on` gesetzt ist.
 
 GitHub-Schutz für `main`: Admins (Marcs SSH-Schlüssel) dürfen direkt pushen, für PRs ist der Check `gates` Pflicht, Force-Push und Löschen sind gesperrt.
 
