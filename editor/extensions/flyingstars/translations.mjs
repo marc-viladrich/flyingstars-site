@@ -17,7 +17,12 @@ export function prepareOverlays({state,nextRecords:input,seen,changes,sourceFor}
    // A translation saved on its own: only its stored form (list keys, format) is settled here.
    if(!source)continue;
    const keyAt=listKeyAt(sourceFor(source.id).schema,source.data);
-   const values=translation.data.values.map(entry=>{const path=resolvePath(source.data,entry.path);return path?{...entry,path:storedPath(source.data,path,keyAt)}:entry;});
+   // A German edit saved earlier leaves reviewed values with an older source hash in this file. Sent back unchanged
+   // they are not a claim of review: they become "to be reviewed". A changed or explicitly reviewed stale value is
+   // still refused by validateOverlays.
+   const baseline=state.records.find(r=>r.id===translation.id),claimed=changes.find(c=>c.id===translation.id)?.reviewedPaths||[];
+   const untouched=(entry,path)=>{const before=baseline?.data.values.find(v=>same(resolvePath(source.data,v.path),path));return !!before&&before.text===entry.text&&before.sourceHash===entry.sourceHash&&!claimed.some(p=>same(resolvePath(source.data,p),path));};
+   const values=translation.data.values.map(entry=>{const path=resolvePath(source.data,entry.path);if(!path)return entry;const stale=entry.reviewed&&entry.sourceHash&&entry.sourceHash!==hash(getPath(source.data,path)??'')&&untouched(entry,path);return {...entry,path:storedPath(source.data,path,keyAt),...(stale?{reviewed:false}:{})};});
    if(!same(values,translation.data.values)||translation.data.format!==2)proposals.push({id:translation.id,data:{...translation.data,format:2,values}});
    continue;
   }
