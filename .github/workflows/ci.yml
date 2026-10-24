@@ -14,10 +14,10 @@ jobs:
     # Ein PR-Lauf dauerte 15 min, derselbe Stand auf main 20+ (Physik-Tests je ~1,5 min, Runner schwanken).
     timeout-minutes: 35
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         # Editor-Tests lesen ältere Stände (Migrationen, Revisionsnachweise) aus der Git-Geschichte.
         with: { fetch-depth: 0 }
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with: { node-version-file: .nvmrc, cache: npm, registry-url: 'https://npm.pkg.github.com', scope: '@marc-viladrich' }
       - run: npm ci
         # Private editor package (GitHub Packages): classic token with read:packages only.
@@ -39,7 +39,7 @@ jobs:
       - name: Playwright-Version
         id: playwright
         run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
@@ -63,7 +63,7 @@ jobs:
         run: |
           npm i -g @lhci/cli@0.15.x
           lhci autorun
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: reports
