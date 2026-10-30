@@ -31,7 +31,7 @@ for (const occasion of OCCASIONS) {
     test.skip(info.project.name !== 'desktop', 'Die Bewegung ist auf allen Geräten dieselbe.');
     test.setTimeout(900_000);
     await page.clock.install();
-    await page.goto('/show-konfigurator/');
+    await page.goto('/drohnenshow-preise/#vorschau'); // the configurator lives on the pricing page since 30.10.2026
     await page.clock.runFor(1000);
     await page.locator(`label:has([name=occasion][value=${occasion}])`).click();
     // long enough for every motif of the sequence to form and play, and for the loop back to the first

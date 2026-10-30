@@ -1,14 +1,58 @@
 ---
-// STUB (30.10.2026): compact package cards. Owner: pricing worker. Replace entirely.
+// The three packages as cards. Full (pricing page): every fact visible, two actions per card. Compact (homepage):
+// name, price, drones and what the audience sees, one link to the live preview. Prices only from show-packages.ts,
+// texts only from package-details.ts.
+import '../../styles/pricing.css';
 import type { Section } from '../../content.config';
-import { SHOW_PACKAGES, PACKAGE_NAMES } from '../../content/show-packages';
+import { SHOW_PACKAGES, PACKAGE_NAMES, priceFor } from '../../content/show-packages';
+import { PACKAGE_DETAILS, SHOW_DURATION, addOnLine } from '../../content/package-details';
 type Props = Extract<Section, { type: 'packages' }> & { index: number };
-const { headline, text, note, cta, id = 'pakete', index } = Astro.props;
+const { headline, text, note, cta, compact = false, id = 'pakete', index } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
-const money = (v: number) => v.toLocaleString('de-DE');
+const C = index === 0 ? 'h2' : 'h3';
+const money = (v: number) => `ab ${v.toLocaleString('de-DE')} €`;
+const preview = cta ?? { label: 'Unterschiede in der Vorschau ansehen', href: '/drohnenshow-preise/#vorschau' };
+const packs = PACKAGE_NAMES.map((name) => ({ name, ...SHOW_PACKAGES[name], ...PACKAGE_DETAILS[name], from: money(priceFor(name, SHOW_PACKAGES[name].base)!) }));
 ---
-<section class="section" id={id} aria-labelledby={`${id}-h`}>
-  <div class="sec-head"><H id={`${id}-h`}>{headline}</H>{text && <p>{text}</p>}</div>
-  <ul>{PACKAGE_NAMES.map((name) => <li><b>{name}</b> ab {money(SHOW_PACKAGES[name].price)} € · {SHOW_PACKAGES[name].base} Drohnen</li>)}</ul>
-  {note && <p class="mono">{note}</p>}{cta && <a class="link" href={cta.href}>{cta.label}</a>}
+<section class:list={['section', 'pk', { 'pk-compact': compact, 'pk-top': index === 0 }]} id={id} aria-labelledby={`${id}-h`}>
+  <div class="sec-head pk-head">
+    <H id={`${id}-h`}>{headline}</H>
+    {text && <p>{text}</p>}
+  </div>
+  {!compact && <p class="pk-duration">{note ?? SHOW_DURATION}</p>}
+  <div class="pk-grid">
+    {packs.map((p) => (
+      <article class="pk-card" aria-labelledby={`${id}-${p.name}`}>
+        <div class="pk-name">
+          <C id={`${id}-${p.name}`}>{p.name}</C>
+          {!compact && p.often && <span class="pk-often">{p.often}</span>}
+        </div>
+        <div class="pk-price">
+          <p class="num">{p.from}</p>
+          <p class="pk-scope">{p.base} Drohnen{!compact && <> · {p.label}</>}</p>
+        </div>
+        {compact ? (
+          <p class="pk-sky">{p.sky}.</p>
+        ) : (
+          <dl class="pk-facts">
+            <div><dt>Am Himmel</dt><dd>{p.sky}</dd></div>
+            <div><dt>Betreuung</dt><dd>{p.care}</dd></div>
+            <div><dt>Mehr Drohnen</dt><dd>{addOnLine(p.name)}</dd></div>
+            <div><dt>Typisch für</dt><dd>{p.typical}</dd></div>
+          </dl>
+        )}
+        {!compact && (
+          <div class="pk-actions">
+            <a class="btn primary" href={`/kontakt/?paket=${p.name}&quelle=preise-karte`}>Mit {p.name} anfragen</a>
+            <a class="btn ghost" href={`/drohnenshow-preise/?paket=${p.name}#vorschau`} data-preview-pkg={p.name} aria-label={`${p.name} in der Vorschau ansehen`}>In der Vorschau ansehen</a>
+          </div>
+        )}
+      </article>
+    ))}
+  </div>
+  {compact ? (
+    <div class="pk-foot">{note && <p>{note}</p>}<a class="link" href={preview.href}>{preview.label}</a></div>
+  ) : (
+    <p class="pk-net">Alle Preise netto zzgl. Anfahrt und Mehrwertsteuer.</p>
+  )}
 </section>

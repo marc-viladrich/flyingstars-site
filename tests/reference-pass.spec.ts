@@ -22,7 +22,7 @@ const hitAtBottom = (page: Page, selector: string) => page.locator(selector).eva
 test('Globaler Pausenschalter sitzt im Header und verdeckt keine Bedienelemente', async ({ page }) => {
   await page.goto('/drohnenshow-preise/');
   await expect(page.locator('header.nav').getByRole('button', { name: 'Bewegung pausieren', exact: true })).toBeVisible();
-  for (const selector of ['#drones', '#showtext', '#calc-cta']) expect(await hitAtBottom(page, selector), selector).toBe(true);
+  for (const selector of ['.pk-card:first-child .pk-actions', '.cfg-pkgs', '.cfg-result', '.pv-text summary'] /* rectangles: the pill buttons' own corners lie outside their rounding */) expect(await hitAtBottom(page, selector), selector).toBe(true);
   await page.goto('/nfl-berlin-game/');
   expect(await hitAtBottom(page, '.c-credits div:first-child dd')).toBe(true);
 });
@@ -59,13 +59,14 @@ test('Startseite trägt Titel, Beschreibung und Vorschaubild der Referenz', asyn
 });
 
 test('Text am Himmel wandert mit der Anfrage ins Formular', async ({ page }) => {
-  await page.goto('/drohnenshow-preise/');
-  await page.getByLabel('Dein Text am Himmel').fill('ANNA & TOM');
-  await expect(page.locator('#calc-cta')).toHaveAttribute('href', '/?paket=HORIZON&drohnen=200&text=ANNA+%26+TOM#anfrage');
-  await page.locator('#calc-cta').click();
-  await expect(page).toHaveURL(/#anfrage$/);
+  await page.goto('/drohnenshow-preise/#vorschau');
+  await page.getByText('Euren Text hinzufügen (ohne Aufpreis)').click();
+  await page.getByLabel('Euer Text am Himmel').fill('ANNA & TOM');
+  await expect(page.locator('#cfg-cta')).toHaveAttribute('href', /paket=HORIZON&drohnen=200&.*Eigener\+Text%3A\+%E2%80%9EANNA\+%26\+TOM%E2%80%9C/);
+  await page.locator('#cfg-cta').click();
+  await expect(page).toHaveURL(/\/kontakt\/\?/);
   await expect(page.locator('#inquiry-form [name=paket]')).toHaveValue(/HORIZON/);
-  await expect(page.locator('#inquiry-form [name=message]')).toHaveValue('Text am Himmel: ANNA & TOM');
+  await expect(page.locator('#inquiry-form [name=message]')).toHaveValue(/Eigener Text: „ANNA & TOM“ \(Schreibschrift\)/);
 });
 
 test('Scrollstory hebt auf breiten Bildschirmen nur den aktiven Abschnitt hervor', async ({ page }, info) => {
@@ -94,8 +95,7 @@ test('Formationen erscheinen fertig, wenn die Bewegung schon pausiert ist', asyn
   await page.locator('.c-play').scrollIntoViewIfNeeded();
   await expect(page.locator('[data-tally]')).toContainText('289 Drohnen');
   await expect.poll(() => colouredPixels(page, 'canvas[data-formation]')).toBeGreaterThan(500);
-  await page.goto('/drohnenshow-preise/');
-  await page.getByLabel('Dein Text am Himmel').fill('ANNA');
-  await expect(page.locator('#text-read')).toContainText('Zeichen', { ignoreCase: true, timeout: 15_000 });
-  await expect.poll(() => colouredPixels(page, '#swarm')).toBeGreaterThan(500);
+  await page.goto('/drohnenshow-preise/#vorschau');
+  await expect(page.locator('[data-preview]')).toHaveAttribute('data-state', 'paused');
+  await expect.poll(() => colouredPixels(page, '#cfg-field')).toBeGreaterThan(500);
 });

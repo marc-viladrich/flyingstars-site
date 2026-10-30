@@ -272,3 +272,38 @@ Die Vorschau zeigt nur das Paketbadge. Die redundante Drohnenzahl oben rechts en
 ## Fließtextschrift wiederhergestellt, 12.10.2026
 
 Nach Ansicht der Ein-Schrift-Fassung bevorzugt Marc Inter für die ursprünglichen Body-Rollen. Deshalb zeigt `--body` wieder auf die vorhandene lokale variable Inter. Überschriften und bisherige Mono-Rollen bleiben Space Grotesk; das Logo verwendet wie ursprünglich den Body-Token. JetBrains Mono und Montserrat bleiben entfernt. Die Fontprüfung erwartet genau die beiden lokalen Dateien auf allen gebauten Routen. Sichtbare Motivbeschreibungen und Preview-Zähler bleiben entfernt. Eine separate kuratierte Fontstudie entscheidet nicht ungefragt über die finale Designsprache.
+
+
+## Dreizehnte Fassung: Live-Vorschau auf der Preisseite (30.10.2026)
+
+Der Konfigurator ist jetzt die Live-Vorschau der Preisseite: Section `#vorschau` auf `/drohnenshow-preise/`, direkt unter den drei Paketkarten (Variante A aus Marcs Konzept). Das gilt vor den Angaben oben zu Route und Bildbeschreibung. `/show-konfigurator/` ist nur noch eine Weiterleitung (Skript mit Übernahme der Direktlink-Parameter, dazu Meta-Refresh und ein sichtbarer Link), `noindex`, kanonisch auf die Preisseite. Das Modell ist unverändert: Anlass bestimmt, was am Himmel steht, das Paket bestimmt wie und als Einziges den Preis. Physik, Motive und Szenen sind nicht angefasst.
+
+**Warum so (Marc):** Der Drohnen-Regler des alten Preisrechners entfällt. Eine Drohnenzahl sagt Laien nichts; den Unterschied zwischen den Paketen zeigt die Vorschau. Aufpreise stehen als Textzeile je Paket (aus `SHOW_PACKAGES` berechnet). Eine Dauer je Paket gibt es laut Fragebogen nicht; die Ergebniszeile nennt nur noch Drohnen und „netto zzgl. Anfahrt“, die Seite sagt einmal für alle Pakete „in der Regel ca. 13 Minuten, bis 25 Minuten möglich“.
+
+**Aufbau der Bühne** (`src/components/sections/ShowPreview.astro`, Stile in `src/styles/pricing.css`)
+
+- Die Bühne nutzt die volle Inhaltsbreite. Höhe der Zeichenfläche `clamp(400px, 42cqw, 100svh − Navigation − 214px)`, zusammen mit Anlasszeile und Leiste ergibt das auf dem Desktop etwa 16:9 bis 2:1 und mindestens 560 px. Mobil reicht die Bühne von Rand zu Rand, die Zeichenfläche ist 50svh hoch.
+- Die Bedienung sitzt an den Rändern: oben links die Anlässe als ruhige Text-Tabs (Radiogruppe, mobil seitlich scrollbar mit weichem Auslauf), oben rechts das Paket-Badge, am Fuß der Zeichenfläche die Bildunterschrift und ‹ ↻ ›, darunter die Leiste mit den drei Paket-Segmenten in Paketfarbe (Radiogruppe), dem Preis in `.num`, „Enthalten: …“ (Wortlaut der Paketkarte, `PACKAGE_DETAILS[p].sky`) und „Mit dieser Auswahl anfragen“.
+- Die Bildunterschrift ist wieder sichtbar, klein und in `--faint`: auf dem Desktop eine Zeile, mobil höchstens zwei. Die Zeichenfläche endet über diesem Streifen, die Drohnen überdecken den Text also nie.
+- „Euer Text“ liegt hinter einem nativen `<details>` „Euren Text hinzufügen (ohne Aufpreis)“ unter der Bühne. Die erste Ansicht zeigt damit nur Anlass, Paket, Preis und Anfrage.
+
+**Zustände** (`data-state` an der Section)
+
+| Zustand | Was passiert |
+|---|---|
+| `idle` | Bedienung, Preis und Anfrage funktionieren sofort. Die Drohnen-Engine (`show-field.js`, `show-scenes.js`) ist noch nicht geladen. |
+| `loading` | Die Engine lädt, sobald die Bühne 320 px vor dem Sichtbereich ist, bei `#vorschau` oder Direktlink sofort, bei der ersten Berührung der Bedienung auch. Erst nach 0,6 s erscheint leise „Vorschau wird geladen“. |
+| `running` | Das erste Bild steht schon, wie eine Show, die bereits am Himmel ist. |
+| `paused` | Globale Pause oder reduzierte Bewegung: das Motiv in Ruhe, ‹ › schalten Bild für Bild. Wer selbst pausiert hat, setzt mit „Abspielen“ die Bewegung fort (über den globalen Schalter); bei reduzierter Bewegung des Systems gibt es den Knopf nicht. |
+| `error` | Standbild einer echten FlyingStars-Show (Movie Park) mit Hinweis. Paket, Preis und Anfrage bleiben nutzbar. |
+
+**Übergänge zwischen Seite und Vorschau**
+
+- „In der Vorschau ansehen“ auf einer Paketkarte wählt das Paket in der Vorschau, scrollt die Bühne mittig unter die Navigation und setzt den Fokus auf die gewählte Paket-Option. Ohne JavaScript führt der Link auf `/drohnenshow-preise/?paket=…#vorschau`.
+- Direktlinks: `/drohnenshow-preise/?anlass=festival&paket=ODYSSEY&motiv=reise#vorschau`. Alte Links auf `/show-konfigurator/?…` werden mit denselben Parametern weitergeleitet.
+- Die Anfrage geht an `/kontakt/?paket=…&drohnen=…&anlass=…&quelle=preise-vorschau&show=…`; `src/scripts/contact.ts` liest `paket`, `drohnen`, `anlass` und `show`. Die Zusammenfassung lautet jetzt: Anlass, Beispielmotive, gegebenenfalls eigener Text, „Paket: SPARK, Klassisch in 2D (ab 7.900 € netto zzgl. Anfahrt, Einstiegspreis)“.
+- Mobil erscheint die feste Leiste (Paket, Preis, „Anfragen“) nur, solange die Vorschau im Bild ist und der Anfrageknopf der Bühne nicht vollständig sichtbar ist.
+
+**Prüfen:** `tests/show-configurator.spec.ts` läuft jetzt auf der Preisseite und prüft zusätzlich Ruhe vor Sichtbarkeit (keine Engine-Requests vor dem Scrollen), Paketkarte → Vorschau (Paket, Fokus, Bühne und Anfrage im Blick, kein Neuladen), die Weiterleitung mit Parametern, die sichtbare Bildunterschrift, Pausiert mit „Abspielen“, reduzierte Bewegung und den Fehlerzustand mit Standbild. `tests/show-physics.spec.ts` öffnet `/drohnenshow-preise/#vorschau`; dass dort echte Flugdaten gemessen werden (je Paket rund 500 Frames mit 100, 200 und 300 Drohnen), ist geprüft.
+
+**Offen:** Die Bezugsgröße der AGB-Staffel (40/60/80/95 %) steht auf der Seite ohne „des Auftragswerts“; bitte mit FlyingStars bestätigen. HORIZON enthält laut Paketbeschreibung „komplexere Genehmigungen, z. B. in Flughafennähe“, gleichzeitig stehen Sondergenehmigungen für Kontrollzonen und Flughafennähe als Zusatz „Preis auf Anfrage“; die Abgrenzung sollte FlyingStars klären.
