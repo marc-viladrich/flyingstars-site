@@ -4,11 +4,11 @@ export const site = {
   nav: [
     { label: 'Anlässe', href: '/#anlaesse' },
     { label: 'Preise', href: '/drohnenshow-preise/' },
-    { label: 'Projekte', href: '/projekte/' },
-    { label: 'Ablauf', href: '/#ablauf' },
+    { label: 'Referenzen', href: '/projekte/' },
+    { label: 'Über uns', href: '/ueber-uns/' },
     { label: 'FAQ', href: '/faq/' },
   ],
-  cta: { label: 'Show anfragen', href: '/#anfrage' },
+  cta: { label: 'Show anfragen', href: '/kontakt/' },
   footer: { legal: [{label:'Impressum',href:'/impressum/'},{label:'Datenschutz',href:'/datenschutz/'}] },
   formEndpoint: import.meta.env.PUBLIC_FORM_ENDPOINT || '/api/contact',
 } as const;

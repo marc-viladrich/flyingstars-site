@@ -8,10 +8,10 @@ const { headline, text, eyebrow, words, cta, secondary, poster, video, stats } =
   <div class="shade" aria-hidden="true"></div>
   <div class="frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
   <div class="hero-copy">
-    <span class="kicker mono">{eyebrow}</span>
-    <h1 id="hero-h">{headline} <span class="word" data-rotate={words.join('|')}>{words[0]}</span></h1>
+    {eyebrow && <span class="kicker mono">{eyebrow}</span>}
+    <h1 id="hero-h">{headline}{words?.length ? <> <span class="word" data-rotate={words.join('|')}>{words[0]}</span></> : null}</h1>
     <p class="lead">{text}</p>
-    <div class="actions"><a class="btn primary" href={cta.href}>{cta.label}</a><a class="btn" href={secondary.href}>{secondary.label}</a></div>
+    <div class="actions"><a class="btn primary" href={cta.href}>{cta.label}</a>{secondary && <a class="btn" href={secondary.href}>{secondary.label}</a>}</div>
   </div>
-  <dl class="spec mono" aria-label="Eckdaten">{stats.map((stat) => <><dt>{stat.label}</dt><dd><b>{stat.value}</b></dd></>)}</dl>
+  {stats?.length ? <dl class="spec mono" aria-label="Eckdaten">{stats.map((stat) => <><dt>{stat.label}</dt><dd><b>{stat.value}</b></dd></>)}</dl> : null}
 </section>
