@@ -1,0 +1,11 @@
+---
+// STUB (30.10.2026): milestones. Owner: content worker. Replace entirely.
+import type { Section } from '../../content.config';
+type Props = Extract<Section, { type: 'timeline' }> & { index: number };
+const { headline, text, items, id = `s${Astro.props.index}`, index } = Astro.props;
+const H = index === 0 ? 'h1' : 'h2';
+---
+<section class="section" id={id} aria-labelledby={`${id}-h`}>
+  <div class="sec-head"><H id={`${id}-h`}>{headline}</H>{text && <p>{text}</p>}</div>
+  <ol>{items.map((it) => <li><b>{it.when}</b> {it.title}{it.text && <span> · {it.text}</span>}</li>)}</ol>
+</section>

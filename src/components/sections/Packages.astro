@@ -1,0 +1,14 @@
+---
+// STUB (30.10.2026): compact package cards. Owner: pricing worker. Replace entirely.
+import type { Section } from '../../content.config';
+import { SHOW_PACKAGES, PACKAGE_NAMES } from '../../content/show-packages';
+type Props = Extract<Section, { type: 'packages' }> & { index: number };
+const { headline, text, note, cta, id = 'pakete', index } = Astro.props;
+const H = index === 0 ? 'h1' : 'h2';
+const money = (v: number) => v.toLocaleString('de-DE');
+---
+<section class="section" id={id} aria-labelledby={`${id}-h`}>
+  <div class="sec-head"><H id={`${id}-h`}>{headline}</H>{text && <p>{text}</p>}</div>
+  <ul>{PACKAGE_NAMES.map((name) => <li><b>{name}</b> ab {money(SHOW_PACKAGES[name].price)} € · {SHOW_PACKAGES[name].base} Drohnen</li>)}</ul>
+  {note && <p class="mono">{note}</p>}{cta && <a class="link" href={cta.href}>{cta.label}</a>}
+</section>

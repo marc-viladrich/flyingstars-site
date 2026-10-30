@@ -21,15 +21,15 @@ const image = z.object({
 export const sectionSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('showreelHero'),
-    headline: z.string().min(1), text: z.string().min(1), eyebrow: z.string().min(1),
-    words: z.array(z.string().min(1)).min(1), cta: link, secondary: link,
-    poster: image, video: z.url(), stats: z.array(z.object({ label: z.string(), value: z.string() })).min(1),
+    headline: z.string().min(1), text: z.string().min(1), eyebrow: z.string().optional(),
+    words: z.array(z.string().min(1)).optional(), cta: link, secondary: link.optional(),
+    poster: image, video: z.url(), stats: z.array(z.object({ label: z.string(), value: z.string() })).optional(),
   }),
   z.object({
     type: z.literal('occasions'), ...sectionHeading,
     headline: z.string().min(1), text: z.string().min(1),
     cards: z.array(z.object({ category: z.string(), title: z.string(), text: z.string(), image,
-      facts: z.array(z.string()).min(1), cta: link, download: link.optional() })).min(1),
+      facts: z.array(z.string()).optional(), cta: link, download: link.optional() })).min(1),
   }),
   z.object({
     type: z.literal('metrics'), ...sectionHeading,
@@ -144,6 +144,25 @@ export const sectionSchema = z.discriminatedUnion('type', [
       image: image.optional().describe('Ohne Bild erscheint ein Platzhalter mit Initialen'),
       bio: z.string().optional(),
     })).min(1),
+  }),
+  z.object({
+    // Compact package cards built from show-packages.ts and package-details.ts; the only place that explains the three tiers.
+    type: z.literal('packages'), ...sectionHeading,
+    headline: z.string().min(1), text: z.string().optional(), note: z.string().optional(),
+    cta: link.optional(), compact: z.boolean().default(false).describe('Kurzfassung für die Startseite'),
+  }),
+  z.object({
+    // The live show preview (occasion × package) from the configurator, embedded as a section.
+    type: z.literal('showPreview'), ...sectionHeading,
+    headline: z.string().min(1), text: z.string().optional(),
+    anlass: z.string().optional().describe('Start-Anlass, ID aus show-configurator.js'),
+    paket: z.enum(['SPARK','HORIZON','ODYSSEY']).optional(),
+    note: z.string().optional(),
+  }),
+  z.object({
+    type: z.literal('timeline'), ...sectionHeading,
+    headline: z.string().min(1), text: z.string().optional(),
+    items: z.array(z.object({ when: z.string().min(1), title: z.string().min(1), text: z.string().optional() })).min(2),
   }),
   z.object({
     type: z.literal('logoBar'), ...sectionHeading,

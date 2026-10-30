@@ -1,0 +1,11 @@
+---
+// STUB (30.10.2026): live show preview section. Owner: pricing worker. Replace entirely.
+import type { Section } from '../../content.config';
+type Props = Extract<Section, { type: 'showPreview' }> & { index: number };
+const { headline, text, id = 'vorschau', index } = Astro.props;
+const H = index === 0 ? 'h1' : 'h2';
+---
+<section class="section" id={id} aria-labelledby={`${id}-h`}>
+  <div class="sec-head"><H id={`${id}-h`}>{headline}</H>{text && <p>{text}</p>}</div>
+  <p class="mono">Vorschau folgt.</p>
+</section>
