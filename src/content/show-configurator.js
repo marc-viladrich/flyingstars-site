@@ -1,6 +1,6 @@
 /**
  * Show configurator prototype v9 (Marc, 7 October 2026). Two choices:
- *   Anlass picks a sequence of three motifs that plays as a little show (a real SPARK show also runs ten minutes
+ *   Anlass picks a sequence of three motifs that plays as a little show (a real show runs about 13 minutes
  *   through many pictures); Aufwand picks the package (one button per package, the only price driver).
  * Every motif has one version per package, so switching the package shows the SAME motif growing:
  *   SPARK = 2D pictures with gentle motion, HORIZON = 3D objects that move on their own, ODYSSEY = every motif told as

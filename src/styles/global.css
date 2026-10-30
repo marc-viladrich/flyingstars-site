@@ -281,10 +281,6 @@ td.us { color: var(--text); }
 .success h3 { font-size: 26px; }
 
 /* case pages: closing inquiry card */
-.promise { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px 40px; padding: clamp(28px, 4vw, 44px); border-radius: var(--radius); background: var(--surface-2); position: relative; }
-.promise::before { content: ""; position: absolute; inset: 0; border-radius: var(--radius); padding: 1px; background: var(--line-strong); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
-.promise h2 { font-size: clamp(26px, 3vw, 40px); max-width: 22ch; }
-.promise p { color: var(--muted); max-width: 46ch; }
 
 /* project pages: case studies in the calm of the home page. The hero reuses .hero; numbers in the display face, the story as
    picture + text, the real formation on a stage, gallery, setlist, press, next project, closing inquiry. No caps labels,

@@ -57,8 +57,8 @@
         "label": "Drohnen über dem Borussia-Park"
       },
       {
-        "value": 6,
-        "label": "Show in unserer Geschichte"
+        "value": 14,
+        "label": "Tage von der Anfrage bis zur Show"
       },
       {
         "value": 4,
