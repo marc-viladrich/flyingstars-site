@@ -1,16 +1,44 @@
-title: Fragen zu Drohnenshows – FlyingStars
-description: "Vorlauf, Platzbedarf, Genehmigungen und Wetter: Antworten auf die
-  häufigsten Fragen zu deiner Drohnenshow mit FlyingStars."
+# FAQ-Seite: eine faq-Section je Gruppe. Gruppen-Tags (planung, ort, sicherheit, preise, indoor, paare) sind so vergeben,
+# dass jede Frage hier genau einmal erscheint. Kontext-Tags (startseite, hochzeit, werbung) steuern die Landingpages.
+title: Häufige Fragen zu Drohnenshows
+description: "Vorlauf, Platz, Genehmigung, Wetter, Sicherheit und Kosten: Antworten auf die häufigsten Fragen zu Drohnenshows von FlyingStars."
 sections:
+  - type: hero
+    headline: Häufige Fragen zu Drohnenshows.
+    text: Vorlauf, Platz, Genehmigung, Wetter und Kosten, kurz beantwortet. Eure Frage ist nicht dabei? Ruft uns an oder schreibt uns.
+    cta: { label: Show anfragen, href: /kontakt/ }
+
   - type: faq
-    id: faq
-    kicker: FAQ
-    headline: Was du vor der Buchung wissen solltest.
-    text: "Die häufigsten Fragen, kurz beantwortet. Für alles andere: ruf uns an
-      oder buch dir einen Videocall."
-    cta:
-      label: Videocall buchen
-      href: https://calendly.com/team-flyingstars/beratung
-    openFirst: true
-    tags:
-      - startseite
+    id: planung
+    headline: Planung und Ablauf.
+    tags: [planung]
+
+  - type: faq
+    id: ort
+    headline: Ort und Genehmigung.
+    tags: [ort]
+
+  - type: faq
+    id: sicherheit
+    headline: Sicherheit, Wetter und Umwelt.
+    tags: [sicherheit]
+
+  - type: faq
+    id: preis
+    headline: Kosten.
+    tags: [preise]
+
+  - type: faq
+    id: indoor
+    headline: Indoor-Shows.
+    tags: [indoor]
+
+  - type: faq
+    id: hochzeit
+    headline: Hochzeit und Heiratsantrag.
+    tags: [paare]
+
+  - type: cta
+    headline: Eure Frage ist nicht dabei?
+    text: Ruft uns an unter 0209 883 065 62, schreibt an team@flyingstars.art oder vereinbart auf der Kontaktseite einen Videocall.
+    button: { label: Zur Kontaktseite, href: /kontakt/ }

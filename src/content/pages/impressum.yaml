@@ -1,12 +1,33 @@
+# Anbieterkennzeichnung nach Fragebogen 21.10.2026 („Stimmen alle Angaben? Ja.“). Telefon im Impressum nur Festnetz.
+# Manuel Contreras Hernandez bleibt vorerst als Vertreter genannt (Kundenantwort).
+# Offen: Datenschutzerklärung und AGB muss FlyingStars bzw. deren Datenschutzberatung freigeben; Haftungs- und Urheberrechtstexte
+# werden hier bewusst nicht ergänzt, bis FlyingStars sie liefert.
 title: Impressum
-description: Kontakt und Anbieterinformationen der FlyingStars GmbH sowie ein Link zur vollständigen Anbieterkennzeichnung auf der bestehenden Website.
+description: "Impressum der FlyingStars GmbH: Anschrift in Gelsenkirchen, Besuchsadresse in Essen, Vertretung, Handelsregister und Umsatzsteuer-ID."
 noindex: true
 sections:
   - type: textMedia
     headline: Impressum
     body: |
-      FlyingStars GmbH, Bulmker Straße 107, 45888 Gelsenkirchen.
+      **FlyingStars GmbH**<br>
+      Bulmker Straße 107<br>
+      45888 Gelsenkirchen
 
-      E-Mail: [team@flyingstars.art](mailto:team@flyingstars.art), Telefon: [0209 883 065 62](tel:+4920988306562).
+      **Besuchsadresse**<br>
+      Triple Z, Gründungszentrum Zeche Zollverein<br>
+      Katernberger Str. 107<br>
+      45327 Essen
 
-      Die vollständigen, aktuell veröffentlichten Anbieterangaben findest du im [Impressum der bestehenden FlyingStars-Website](https://flyingstars.art/impressum/). Diese Vorschau ersetzt die dortige Anbieterkennzeichnung noch nicht.
+      **Vertreten durch**<br>
+      Florian Becker, Manuel Contreras Hernandez, Ronja Donsbach, Erwin Wilms
+
+      **Kontakt**<br>
+      Telefon: [+49 209 88306562](tel:+4920988306562)<br>
+      E-Mail: [team@flyingstars.art](mailto:team@flyingstars.art)
+
+      **Registereintrag**<br>
+      Handelsregister: HRB 16602<br>
+      Registergericht: Amtsgericht Gelsenkirchen
+
+      **Umsatzsteuer-Identifikationsnummer**<br>
+      DE346644500

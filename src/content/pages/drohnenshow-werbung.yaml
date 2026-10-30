@@ -1,0 +1,143 @@
+# Landingpage Marken und Werbung. Konzept WB-01 bis WB-09, Fakten: Fragebogen 21.10.2026.
+# Agenturen: NDA, Projektleitung auf Wunsch, anonym fliegen möglich. Provision bewusst nicht auf der Website.
+title: Drohnenshow als Werbung
+description: "Drohnenshows für Marken und Agenturen: euer Logo am Nachthimmel, jedes Motiv vorab freigegeben. Für Launches, Jubiläen und Kampagnen."
+image: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
+sections:
+  - type: hero
+    headline: Eure Marke am Nachthimmel.
+    text: Wir setzen euer Logo und eure Botschaft aus Drohnen um, abgestimmt auf Musik und Kampagne. Jedes Motiv gebt ihr vor der Show frei.
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
+      alt: Volkswagen-Logo aus Drohnen über dem Wolfgangsee, Gäste filmen von einer Terrasse
+      width: 1920
+      height: 1281
+    cta: { label: Markenshow anfragen, href: "#anfrage" }
+    secondary: { label: Für Agenturen, href: "#agenturen" }
+
+  - type: logoBar
+    id: marken
+    headline: Marken, für die wir geflogen sind.
+    press: tagesschau · ZDF · WDR · Tagesspiegel · WAZ
+    logos:
+      - name: Ford
+        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Ford_logo_weiss.png, alt: Ford, width: 300, height: 108 }
+      - name: Volkswagen
+        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Volkswagen_logo_2019_weiss.png, alt: Volkswagen, width: 300, height: 300 }
+        tall: true
+      - name: PUMA
+        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Puma_Logo_weiss.png, alt: PUMA, width: 300, height: 161 }
+      - name: Prada
+        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Prada-Logo_weiss.png, alt: Prada, width: 300, height: 47 }
+      - name: L'Oréal
+        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/LOreal_logo_weiss.png, alt: L'Oréal, width: 300, height: 54 }
+      - name: Spotify
+        image: { src: https://flyingstars.art/wp-content/uploads/2024/07/spotify_logo_white.png, alt: Spotify, width: 300, height: 300 }
+      - name: Siemens
+        image: { src: https://flyingstars.art/wp-content/uploads/2024/10/siemens_logo_weiss.png, alt: Siemens, width: 500, height: 80 }
+      - name: E.ON
+        image: { src: https://flyingstars.art/wp-content/uploads/2024/07/EON_logo.png, alt: E.ON, width: 300, height: 88 }
+      - name: REWE
+        image: { src: https://flyingstars.art/wp-content/uploads/2024/07/Rewe.png, alt: REWE, width: 600, height: 209 }
+      - name: Bosch
+        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/bosch_logo_weiss.png, alt: Bosch, width: 300, height: 69 }
+      - name: Amazon
+        image: { src: https://flyingstars.art/wp-content/uploads/2024/07/amazon-logo-white.png, alt: Amazon, width: 300, height: 90 }
+      - name: McKinsey
+        image: { src: https://flyingstars.art/wp-content/uploads/2024/07/McKinsey_bw.png, alt: McKinsey, width: 300, height: 97 }
+      - name: Bogner
+        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Bogner-Logo_weiss.png, alt: Bogner, width: 300, height: 395 }
+        tall: true
+      - name: Bulgari
+        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Bulgari_logo_weiss.png, alt: Bulgari, width: 300, height: 33 }
+      - name: DKB
+        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Deutsche_Kreditbank_AG_Logo_2016_weiss.png, alt: DKB, width: 300, height: 153 }
+      - name: NFL
+        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png, alt: NFL, width: 300, height: 409 }
+        tall: true
+
+  - type: projectGrid
+    id: referenzen
+    headline: Ausgewählte Shows mit Video und Ablauf.
+    limit: 4
+
+  - type: textMedia
+    headline: Was eine Markenshow leisten kann.
+    body: |
+      - **Ein Logo, das man erkennt.** Wir übersetzen euer Logo in Lichtpunkte, so wie bei Ford, Volkswagen oder PUMA.
+      - **Bilder für eure Kanäle.** Gäste filmen und teilen die Show. Auf Wunsch filmen wir mit einer Kameradrohne mit. Die Rohaufnahmen kosten 900 €, bei ODYSSEY sind sie enthalten.
+      - **Ein Anlass für Berichte.** Über Drohnenshows und über uns haben unter anderem tagesschau, ZDF, WDR, Tagesspiegel und WAZ berichtet.
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2024/12/FORD_comp.png
+      alt: Ford-Schriftzug aus blauen Drohnen über dem Werksgelände in Köln
+      width: 1929
+      height: 1133
+    mediaSide: right
+
+  - type: steps
+    id: freigabe
+    headline: Vom Logo bis zur fertigen Show.
+    text: Nichts fliegt, was ihr nicht freigegeben habt.
+    steps:
+      - title: Anfrage und Angebot
+        text: Ihr nennt uns Termin, Ort und Ziel. Wir antworten innerhalb von 48 Stunden und schicken nach einem kurzen Gespräch ein Angebot.
+        duration: 48 h Antwort
+      - title: Entwurf
+        text: Ihr schickt uns euer Logo. Zuerst seht ihr einen 2D-Entwurf der Motive.
+      - title: Animation
+        text: Danach eine Rohanimation mit Musik. Ab HORIZON bekommt ihr eine Videovorschau der Show.
+      - title: Freigabe
+        text: Erst wenn ihr jedes Motiv freigegeben habt, programmieren wir Farben und Lichteffekte auf die Musik.
+      - title: Showtag
+        text: Unser Team ist etwa drei Stunden vorher vor Ort, sperrt die Startfläche und fliegt die Show.
+        duration: ca. 3 h Aufbau
+
+  - type: packages
+    id: pakete
+    headline: Wie aufwendig soll eure Show sein?
+    text: Ein Logo in 2D reicht für viele Firmenfeiern. Für Launches mit 3D-Objekten und einer Geschichte eignen sich HORIZON oder ODYSSEY. Am häufigsten gebucht wird HORIZON.
+    compact: true
+    cta: { label: Unterschied in der Vorschau ansehen, href: "/drohnenshow-preise/#vorschau" }
+
+  - type: metrics
+    id: agenturen
+    headline: Für Agenturen.
+    text: Ihr bleibt bei euren Kund*innen vorn. Wie viel ihr selbst organisiert und wie viel wir übernehmen, entscheidet ihr.
+    items:
+      - label: Rolle
+        value: Im Hintergrund
+        text: Auf Wunsch fliegen wir anonym. Euer Name steht vorn, wir liefern die Show.
+      - label: Vertraulichkeit
+        value: NDA
+        text: Wir unterschreiben eine Vertraulichkeitsvereinbarung.
+      - label: Freigabe
+        value: Visualisierung
+        text: Für die Abstimmung mit euren Kund*innen visualisieren wir die Motive mit deren Logo.
+      - label: Organisation
+        value: Projektleitung
+        text: Auf Wunsch übernehmen wir die Projektleitung, mit Genehmigung, Behörden und Technik vor Ort.
+
+  - type: textMedia
+    headline: Auch über Stadien, Innenstädten und am Wasser.
+    body: |
+      Dank unserer generischen Betriebsgenehmigung können wir die meisten Flugorte selbst freigeben. Für Kontrollzonen, Flughafennähe und Bundeswasserstraßen holen wir die nötigen Sondergenehmigungen ein. Das braucht mehr Vorlauf.
+
+      Geflogen sind wir zum Beispiel über dem Borussia-Park in Mönchengladbach, über dem Olympiastadion in Berlin, am Rheinturm in Düsseldorf und am Innenhafen in Duisburg.
+
+      Im Ausland beantragen wir für jedes EU-Land vorab eine Bestätigung. Das dauert 4 bis 8 Wochen, in Italien etwa drei Monate.
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
+      alt: Drohnenformation über der Skyline von Düsseldorf mit Rheinturm
+      width: 1920
+      height: 985
+    mediaSide: left
+
+  - type: faq
+    id: fragen
+    headline: Fragen von Marken und Agenturen.
+    cta: { label: Alle Fragen, href: /faq/ }
+    tags: [werbung]
+
+  - type: contactForm
+    headline: Erzählt uns von eurer Kampagne.
+    text: Termin, Ort und Ziel reichen. Euer Logo könnt ihr uns später per E-Mail schicken.

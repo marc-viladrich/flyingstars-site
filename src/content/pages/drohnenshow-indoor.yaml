@@ -1,0 +1,120 @@
+# Landingpage Indoor. Konzept IN-01 bis IN-10.
+# Bestätigt im Fragebogen 21.10.2026: 20–50 Drohnen, 5–8 Min, mind. 3 m Deckenhöhe, ab ca. 15.000 € netto für 20 Drohnen,
+# Referenzen Siemens Hannover Messe 03/2025 und Triple Z 09/2026.
+# Nur von der Live-Indoor-Seite (nicht im Fragebogen bestätigt): 188 g, max. 1,5 m/s, 1–8 m Flughöhe, 0,5 m Abstand, UWB,
+# CE-zertifizierte Komponenten, Ablauf 6–8 Wochen / Aufbau ab 2 h vorher / ca. 45 Min Aufbau. Vor Launch von FlyingStars bestätigen lassen.
+title: Indoor-Drohnenshow
+description: "Indoor-Drohnenshows für Messen, Bühnen und Hallen: 20 bis 50 Drohnen, 5 bis 8 Minuten, ab 3 Meter Deckenhöhe. Individuell kalkuliert."
+image: https://flyingstars.art/wp-content/uploads/2025/04/IMG_0201.jpg
+sections:
+  - type: hero
+    headline: Drohnenshows für Messen, Bühnen und Hallen.
+    text: Kleine Drohnen mit Rotorschutz fliegen im Raum, abgestimmt auf Musik und Licht. Jede Indoor-Show planen wir für euren Raum und kalkulieren sie einzeln.
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2025/04/IMG_0201.jpg
+      alt: Dutzende leuchtende Drohnen in Reihen über dem Boden einer abgedunkelten Sporthalle
+      width: 2560
+      height: 1440
+    cta: { label: Indoor-Show anfragen, href: "#anfrage" }
+    secondary: { label: Was drinnen anders ist, href: "#unterschied" }
+
+  - type: comparison
+    id: unterschied
+    headline: Drinnen fliegt eine andere Show.
+    text: Weniger und kleinere Drohnen, näher am Publikum, kürzer. Im Raum entstehen Muster und Figuren in Bewegung.
+    rowHeader: Merkmal
+    columns: [Indoor, Outdoor]
+    rows:
+      - label: Drohnen
+        values: [20 bis 50, ab 100]
+      - label: Dauer
+        values: [5 bis 8 Minuten, in der Regel etwa 13 Minuten]
+      - label: Gewicht je Drohne
+        values: [188 g, ca. 300 g]
+      - label: Ortung
+        values: [Funkstationen im Raum (UWB), GPS]
+      - label: Flughöhe
+        values: [1 bis 8 m, in der Regel bis 120 m]
+      - label: Platz
+        values: [ab 3 m Deckenhöhe und eine freie Flugfläche, Sicherheitsbereich von ca. 100 × 100 m]
+      - label: Preis
+        values: ["einzeln kalkuliert, ab ca. 15.000 € netto für 20 Drohnen", "Pakete ab 7.900 € netto"]
+
+  - type: textMedia
+    headline: Was euer Raum mitbringen muss.
+    body: |
+      - mindestens 3 Meter Deckenhöhe
+      - eine freie Start- und Flugfläche
+      - alles Weitere bringen wir mit
+
+      Für eine erste Einschätzung helfen uns ein Grundriss oder ein Foto des Raums, die Deckenhöhe, die Position des Publikums und die Info, ob im Raum Bühnenlicht, Nebel oder Pyrotechnik eingesetzt werden. Danach erstellen wir ein Showkonzept für euren Raum.
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2025/04/0L9A4365.jpg
+      alt: Kleine Drohnen mit Rotorschutz leuchten blau auf einem dunklen Boden
+      width: 2560
+      height: 1708
+    mediaSide: right
+
+  - type: metrics
+    id: sicherheit
+    headline: Sicher in der Nähe des Publikums.
+    text: Indoor-Drohnen sind leichter und langsamer als unsere Outdoor-Flotte und fliegen vorab berechnete Bahnen.
+    items:
+      - label: Rotoren
+        value: Geschützt
+        text: Ein Schutzrahmen umgibt die Rotoren jeder Drohne.
+      - label: Tempo
+        value: max. 1,5 m/s
+        text: Schneller fliegen die Drohnen im Raum nicht.
+      - label: Abstand
+        value: 0,5 m
+        text: Mindestabstand zwischen zwei Drohnen.
+      - label: Systeme
+        value: Mehrfach abgesichert
+        text: Redundante Sicherheitsfunktionen, eine kontrollierte Landefunktion und CE-zertifizierte Komponenten.
+
+  - type: textMedia
+    headline: Wo Indoor-Shows passen.
+    body: |
+      Messen, Konzerte, Sportevents, Firmenfeiern und Hochzeiten in Sälen. Markenfarben und Musik stimmen wir auf euren Auftritt ab.
+
+      **Siemens auf der Hannover Messe, März 2025.** Unsere erste Indoor-Show.
+
+      **Triple Z in Essen, September 2026.** Eine Indoor-Show im Gründungszentrum auf Zeche Zollverein, in dem auch unser Büro ist.
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2025/04/indoor-drohnenshow.jpg
+      alt: Leuchtende Indoor-Drohnen vor einem Hintergrund aus funkelnden Lichtpunkten
+      width: 1600
+      height: 1067
+    mediaSide: left
+
+  - type: steps
+    id: ablauf
+    headline: So läuft eine Indoor-Show ab.
+    text: Ideal ist ein erster Kontakt sechs bis acht Wochen vor eurem Termin.
+    steps:
+      - title: Erstkontakt und Briefing
+        text: Ihr erzählt uns von Raum, Anlass und Termin. Wir antworten innerhalb von 48 Stunden.
+        duration: 6 bis 8 Wochen vorher
+      - title: Konzept
+        text: Design, Planung im Raum und ein Projektplan für den Showtag.
+      - title: Vorschau
+        text: Ihr seht die Show vorab als Video oder bei einem Testflug.
+      - title: Showtag
+        text: Wir bauen ab zwei Stunden vor Beginn auf. Nach rund 45 Minuten sind wir startklar.
+        duration: ca. 45 Min Aufbau
+
+  - type: cta
+    headline: Was eine Indoor-Show kostet.
+    text: Indoor-Shows kalkulieren wir einzeln, weil Raum, Drohnenzahl und Aufbau sehr unterschiedlich sind. Als Größenordnung gilt ab etwa 15.000 € netto für 20 Drohnen. Die Outdoor-Pakete gelten drinnen nicht.
+    button: { label: Indoor-Angebot anfragen, href: "#anfrage" }
+
+  - type: faq
+    id: fragen
+    headline: Fragen zu Indoor-Shows.
+    cta: { label: Alle Fragen, href: /faq/ }
+    tags: [indoor]
+
+  - type: contactForm
+    headline: Erzählt uns von eurem Raum.
+    text: Deckenhöhe, Fläche und Datum reichen für eine erste Einschätzung. Wir melden uns innerhalb von 48 Stunden.

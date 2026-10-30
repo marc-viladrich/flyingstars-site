@@ -89,7 +89,7 @@
       {
         "kicker": "03 · Der Dreh",
         "title": "Zweimal komplett geflogen",
-        "text": "Für die besten Perspektiven haben wir die Show zweimal geflogen. Cinequads hat gefilmt und die Flugrouten der Kameradrohnen mit uns abgestimmt – bis mitten durch die Formation.",
+        "text": "Für die besten Perspektiven haben wir die Show zweimal geflogen. Cinequads hat gefilmt und die Flugrouten der Kameradrohnen mit uns abgestimmt, bis mitten durch die Formation.",
         "image": {
           "src": "https://flyingstars-relaunch.vercel.app/media/projekte/ford/03.jpg",
           "alt": "Flug über die aufsteigenden Drohnen",
@@ -110,7 +110,7 @@
     "formation": {
       "src": "/media/projekte/ford/formation.json",
       "title": "Das Ford-Logo, Drohne für Drohne.",
-      "text": "Diese Punkte haben wir aus dem Originalvideo gelesen – jede Drohne an ihrer echten Position. Fahr mit der Maus hindurch."
+      "text": "Diese Punkte haben wir aus dem Originalvideo gelesen, jede Drohne an ihrer echten Position. Fahrt mit der Maus hindurch."
     },
     "gallery": [
       {
@@ -159,8 +159,8 @@
     "press": [],
     "nextRoute": "puma-bundesliga",
     "cta": {
-      "title": "Dein Launch, dein Clip?",
-      "text": "Wir fliegen für Kamera und Publikum – und stimmen uns direkt mit Agentur und Filmteam ab."
+      "title": "Euer Launch, euer Clip?",
+      "text": "Wir fliegen für Kamera und Publikum und stimmen uns direkt mit Agentur und Filmteam ab."
     }
   }
 }

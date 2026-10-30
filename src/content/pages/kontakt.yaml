@@ -1,8 +1,35 @@
-title: Deine Show anfragen – FlyingStars
-description: Erzähl FlyingStars von deinem Anlass, Ort und Wunschdatum. Wir
-  beraten dich zu deiner Drohnenshow und melden uns innerhalb von 48 Stunden.
+# Kontaktseite. Telefon: zuerst Festnetz, dann Mobil/WhatsApp (Fragebogen 21.10.2026). Die frühere Nummer aus dem alten Impressum erscheint nirgends.
+title: Show anfragen
+description: "Erzählt FlyingStars von eurem Termin, Ort und Anlass. Wir antworten innerhalb von 48 Stunden, per Mail, Telefon, WhatsApp oder Videocall."
 sections:
   - type: contactForm
-    headline: Erzähl uns von deinem Stück Himmel.
-    text: Zwei kurze Schritte – was du noch nicht weißt, lässt du einfach offen. Wir
-      melden uns innerhalb von 48 Stunden, meist deutlich schneller.
+    headline: Erzählt uns von eurem Termin.
+    text: Datum, Ort und Anlass reichen für eine erste Einschätzung. Was ihr noch nicht wisst, lasst ihr offen. Mit dem Absenden bucht ihr noch nichts.
+
+  - type: steps
+    id: danach
+    headline: Was danach passiert.
+    steps:
+      - title: Antwort
+        text: Innerhalb von 48 Stunden antworten wir per E-Mail, mit Rückfragen oder einer ersten Einschätzung.
+        duration: 48 h
+      - title: Erstgespräch
+        text: In einem kurzen Gespräch per Telefon oder Video klären wir Ort, Motive und Größe.
+      - title: Angebot
+        text: Ihr bekommt ein schriftliches Angebot. Mit der Buchung zahlt ihr 40 % an.
+      - title: Planung
+        text: Wir prüfen den Standort, holen die Genehmigung ein und entwerfen die Show mit euch.
+
+  - type: textMedia
+    headline: Andere Wege.
+    body: |
+      Hinter allen Wegen steht dasselbe Team: Florian, Ronja und Erwin.
+
+      **Telefon:** [0209 883 065 62](tel:+4920988306562)<br>
+      **Mobil und WhatsApp:** [01579 260 86 72](tel:+4915792608672), [per WhatsApp schreiben](https://wa.me/4915792608672)<br>
+      **E-Mail:** [team@flyingstars.art](mailto:team@flyingstars.art)<br>
+      **Videocall:** [Termin über Calendly buchen](https://calendly.com/team-flyingstars/beratung)
+
+      **Besuch:** Triple Z, Gründungszentrum Zeche Zollverein, Katernberger Str. 107, 45327 Essen. Meldet euch vorher kurz an.
+
+      **Post:** FlyingStars GmbH, Bulmker Straße 107, 45888 Gelsenkirchen
