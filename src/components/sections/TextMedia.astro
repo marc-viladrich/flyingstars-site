@@ -9,7 +9,7 @@ const H = index === 0 ? 'h1' : 'h2';
 const html = await marked.parse(body);
 ---
 <section class="section" aria-labelledby={id}>
-  <div class:list={['wrap', { 'grid-2': image, 'grid-2--media-left': image && mediaSide === 'left' }]}>
+  <div class:list={[{ 'grid-2': image, 'grid-2--media-left': image && mediaSide === 'left' }]}>
     <div class="prose">
       <H id={id}>{headline}</H>
       <Fragment set:html={html} />

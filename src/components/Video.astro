@@ -8,7 +8,7 @@ const image = poster ? await optimizedImage(poster, hero ? 960 : 720) : undefine
 <div class:list={['video-player', className]} data-video-player>
   {image && <img src={image.src} width={image.width} height={image.height} alt="" loading={hero ? 'eager' : 'lazy'} fetchpriority={hero ? 'high' : 'auto'} />}
   <video data-src={videoPath(src)} controls playsinline preload="none" loop={loop} aria-label={label} hidden></video>
-  <button class="video-play btn" type="button" data-video-play aria-label={label}><span aria-hidden="true">▶</span> {label}</button>
+  <button class="video-play" type="button" data-video-play aria-label={label}><span class="video-play-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 6.6v10.8a.7.7 0 0 0 1.07.6l8.4-5.4a.7.7 0 0 0 0-1.2l-8.4-5.4A.7.7 0 0 0 9 6.6z" /></svg></span>{label}</button>
   <p class="video-error" role="status" hidden>Das Video ist gerade nicht verfügbar. Bitte versuche es später erneut.</p>
 </div>
 <script>

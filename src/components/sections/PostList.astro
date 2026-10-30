@@ -5,22 +5,21 @@ type Props = Extract<Section, { type: 'postList' }> & { index: number };
 const { headline = 'Aktuelles', limit, index } = Astro.props;
 const id = `s${index}-h`;
 const H = index === 0 ? 'h1' : 'h2';
+const Title = index === 0 ? 'h2' : 'h3';
 const posts = (await getCollection('posts', (p) => !p.data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, limit);
 const fmt = new Intl.DateTimeFormat('de-DE', { dateStyle: 'long' });
 ---
 <section class="section" aria-labelledby={id}>
-  <div class="wrap">
-    <H id={id}>{headline}</H>
-    <div class="cards">
-      {posts.map((p) => (
-        <article class="card">
-          <h3><a href={`/blog/${p.id}/`}>{p.data.title}</a></h3>
-          <p class="muted"><time datetime={p.data.date.toISOString()}>{fmt.format(p.data.date)}</time></p>
-          <p>{p.data.description}</p>
-        </article>
-      ))}
-    </div>
-  </div>
+  <div class="sec-head"><H id={id}>{headline}</H></div>
+  <ul class="post-list" role="list">
+    {posts.map((p) => (
+      <li class="post">
+        <time datetime={p.data.date.toISOString()}>{fmt.format(p.data.date)}</time>
+        <Title><a href={`/blog/${p.id}/`}>{p.data.title}</a></Title>
+        <p>{p.data.description}</p>
+      </li>
+    ))}
+  </ul>
 </section>

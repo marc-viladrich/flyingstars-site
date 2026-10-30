@@ -28,20 +28,24 @@ export const sectionSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('occasions'), ...sectionHeading,
     headline: z.string().min(1), text: z.string().min(1),
-    cards: z.array(z.object({ category: z.string(), title: z.string(), text: z.string(), image,
+    cards: z.array(z.object({ category: z.string().optional(), title: z.string(), text: z.string(), image,
       facts: z.array(z.string()).optional(), cta: link, download: link.optional() })).min(1),
   }),
   z.object({
     type: z.literal('metrics'), ...sectionHeading,
     headline: z.string().min(1), text: z.string().min(1),
-    items: z.array(z.object({ label: z.string(), value: z.string(), text: z.string() })).min(1),
+    items: z.array(z.object({ label: z.string(), value: z.string().optional(), text: z.string() })).min(1),
+    cta: link.optional(),
   }),
   z.object({
     type: z.literal('sustainability'), ...sectionHeading,
-    headline: z.string().min(1), lines: z.array(z.string()).length(3), text: z.string().min(1),
+    headline: z.string().min(1), text: z.string().min(1),
+    points: z.array(z.string().min(1)).optional().describe('Kurze, belegbare Sätze, je einer pro Punkt'),
+    campaign: z.string().optional(), proofImage: image.optional(),
+    // Legacy fields of the former scrollytelling version; no longer rendered.
+    lines: z.array(z.string()).optional(), proofText: z.string().optional(),
     facts: z.array(z.object({ label: z.string(), value: z.string(), unit: z.string().optional(),
-      text: z.string(), tone: z.enum(['o','g']).optional() })).length(4),
-    proofImage: image, proofText: z.string(), campaign: z.string(),
+      text: z.string(), tone: z.enum(['o','g']).optional() })).optional(),
   }),
   z.object({
     type: z.literal('hero'),
@@ -174,6 +178,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
       href: z.string().min(1).optional(),
       tall: z.boolean().default(false),
     })).min(1),
+    pressLogos: z.array(z.object({ name: z.string().min(1), image })).optional().describe('Kleine Zeile mit Presselogos unter "press"'),
   }),
   z.object({
     type: z.literal('contactForm'),

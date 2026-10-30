@@ -11,12 +11,12 @@ const { Content } = await render(post);
 const fmt = new Intl.DateTimeFormat('de-DE', { dateStyle: 'long' });
 ---
 <Base title={post.data.title} description={post.data.description}>
-  <article class="section"><div class="wrap">
+  <article class="section article">
     <div class="prose">
+      <p class="article-meta"><time datetime={post.data.date.toISOString()}>{fmt.format(post.data.date)}</time></p>
       <h1>{post.data.title}</h1>
-      <p class="muted"><time datetime={post.data.date.toISOString()}>{fmt.format(post.data.date)}</time></p>
       {post.data.cover && <Picture {...post.data.cover} loading="eager" sizes="(min-width: 48rem) 40rem, 100vw" />}
       <Content />
     </div>
-  </div></article>
+  </article>
 </Base>

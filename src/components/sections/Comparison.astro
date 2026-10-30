@@ -1,16 +1,22 @@
 ---
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'comparison' }> & { index: number };
-const { headline, text, rowHeader, columns, rows, note, kicker, id = `s${Astro.props.index}`, index } = Astro.props;
+const { headline, text, rowHeader, columns, rows, note, id = `s${Astro.props.index}`, index } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
+// On narrow screens the rows stack (CSS); explicit roles keep the table semantics when display changes.
+// Values are plain text. Older content with tone cells is written out as "Label, Zusatz" instead of coloured chips.
+const cell = (row: Props['rows'][number], i: number) => {
+  const c = row.cells?.[i];
+  return c ? [c.label, c.text].filter(Boolean).join(', ') : row.values[i];
+};
 ---
-<section class="section alt" id={id} aria-labelledby={headingId}>
-  <div class="sec-head"><div>{kicker && <span class="kicker mono">{kicker}</span>}<H id={headingId}>{headline}</H></div>{text && <p>{text}</p>}</div>
+<section class="section" id={id} aria-labelledby={headingId}>
+  <div class="sec-head"><H id={headingId}>{headline}</H>{text && <p>{text}</p>}</div>
   <div class="table-wrap" role="region" aria-label={`${headline} (Tabelle, horizontal scrollbar)`} tabindex="0">
-    <table><caption class="sr-only">{headline}</caption><thead><tr><th scope="col">{rowHeader}</th>{columns.map((column,i) => <th scope="col" class:list={{us:i===0}}>{column}</th>)}</tr></thead>
-      <tbody>{rows.map(row => <tr><th scope="row">{row.label}</th>{row.values.map((value,i) => <td class:list={{us:i===0}}>{row.cells ? <><span class:list={['m',row.cells[i].tone]}>{row.cells[i].label}</span>{row.cells[i].text && <> {row.cells[i].text}</>}</> : value}</td>)}</tr>)}</tbody>
+    <table class="compare" role="table"><caption class="sr-only">{headline}</caption><thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">{rowHeader}</th>{columns.map((column,i) => <th scope="col" role="columnheader" class:list={{us:i===0}}>{column}</th>)}</tr></thead>
+      <tbody role="rowgroup">{rows.map(row => <tr role="row"><th scope="row" role="rowheader">{row.label}</th>{columns.map((column,i) => <td role="cell" data-label={column} class:list={{us:i===0}}>{cell(row, i)}</td>)}</tr>)}</tbody>
     </table>
   </div>
-  {note && <p class="fine mono">{note}</p>}
+  {note && <p class="fine">{note}</p>}
 </section>

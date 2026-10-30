@@ -1,11 +1,15 @@
 ---
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'metrics' }> & { index: number };
-const { headline, text, kicker, id = 'warum', items, index } = Astro.props;
+const { headline, text, id = 'warum', items, cta, index } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
+const Item = index === 0 ? 'h2' : 'h3';
+// A calm list of facts. `value` is kept for older content and only shown when it adds to the label.
 ---
-<section class="section alt" id={id} aria-labelledby={headingId}>
-  <div class="sec-head"><div>{kicker && <span class="kicker mono">{kicker}</span>}<H id={headingId}>{headline}</H></div><p>{text}</p></div>
-  <div class="sheet">{items.map((item,i) => <div class="cell"><span class="k mono"><span>{item.label}</span><span>{String(i+1).padStart(2,'0')}</span></span><span class="v">{item.value}</span><p>{item.text}</p></div>)}</div>
+<section class="section" id={id} aria-labelledby={headingId}>
+  <div class="split">
+    <div class="sec-head split-head"><H id={headingId}>{headline}</H><p>{text}</p>{cta && <a class="link" href={cta.href}>{cta.label}</a>}</div>
+    <ul class="facts-list" role="list">{items.map(item => <li><Item>{item.label}</Item>{item.value && <p class="facts-value">{item.value}</p>}<p>{item.text}</p></li>)}</ul>
+  </div>
 </section>

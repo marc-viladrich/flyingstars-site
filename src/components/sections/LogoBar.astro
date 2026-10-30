@@ -2,13 +2,26 @@
 import type { Section } from '../../content.config';
 import { optimizedLogo } from '../../lib/media';
 type Props = Extract<Section, { type: 'logoBar' }> & { index: number };
-const { headline, press, logos } = Astro.props;
-const items = await Promise.all(logos.map(async logo => ({...logo,media:logo.image ? await optimizedLogo(logo.image.src,logo.tall ? 80 : 56) : undefined})));
+const { headline, press, logos, pressLogos = [] } = Astro.props;
+// Optical sizing: wide wordmarks get lower, compact marks taller, so every logo carries about the same visual weight.
+const opticalHeight = (ratio: number, base: number, min: number, max: number) => Math.round(Math.min(max, Math.max(min, base * ratio ** -0.42)));
+const prepare = async (list: { name: string; image?: { src: string; alt: string } ; href?: string }[], base: number, min: number, max: number) => Promise.all(list.map(async (logo) => {
+  if (!logo.image) return { ...logo, media: undefined, h: 0 };
+  const probe = await optimizedLogo(logo.image.src, 40);
+  const h = opticalHeight(probe.width / probe.height, base, min, max);
+  return { ...logo, media: await optimizedLogo(logo.image.src, h * 2), h };
+}));
+const items = await prepare(logos, 36, 18, 46);
+const pressItems = await prepare(pressLogos, 24, 13, 30);
 ---
-<div class="band" aria-label="Referenzen">
-  <div class="band-head mono">{headline && <span>{headline}</span>}{press && <span>Bekannt aus <b>{press}</b></span>}</div>
-  <div class="marquee">{items.map(logo => {
-    const content = logo.image && logo.media ? <img src={logo.media.src} width={logo.media.width} height={logo.media.height} alt={logo.name} class:list={{tall:logo.tall}} loading="lazy" decoding="async" /> : <span>{logo.name}</span>;
-    return logo.href ? <a href={logo.href}>{content}</a> : content;
-  })}</div>
+<div class="band" aria-label={headline ?? 'Kund*innen'}>
+  {headline && <p class="band-label">{headline}</p>}
+  <ul class="marquee" role="list">{items.map(logo => {
+    const content = logo.media ? <img src={logo.media.src} width={logo.media.width} height={logo.media.height} style={`--h:${logo.h}px`} alt={logo.name} loading="lazy" decoding="async" /> : <span>{logo.name}</span>;
+    return <li>{logo.href ? <a href={logo.href}>{content}</a> : content}</li>;
+  })}</ul>
+  {(press || pressItems.length > 0) && <div class="press">
+    {press && <p class="band-label">{press}</p>}
+    {pressItems.length > 0 && <ul class="press-logos" role="list">{pressItems.map(logo => <li>{logo.media ? <img src={logo.media.src} width={logo.media.width} height={logo.media.height} style={`--h:${logo.h}px`} alt={logo.name} loading="lazy" decoding="async" /> : logo.name}</li>)}</ul>}
+  </div>}
 </div>

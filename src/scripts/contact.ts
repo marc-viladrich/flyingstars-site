@@ -35,7 +35,7 @@ if (form) {
     if (error) error.textContent = '';
   }));
   const params = new URLSearchParams(location.search);
-  const selected = params.get('paket');
+  const selected = params.get('paket')?.toUpperCase();
   const select = form.querySelector<HTMLSelectElement>('[name=paket]')!;
   if (selected && ['SPARK','HORIZON','ODYSSEY'].includes(selected)) {
     select.value = [...select.options].find((option) => option.text.startsWith(selected))?.value || '';
@@ -52,7 +52,9 @@ if (form) {
   const message = form.querySelector<HTMLTextAreaElement>('[name=message]');
   const draft = [showSummary, skyText && `Text am Himmel: ${skyText}`].filter(Boolean).join('\n');
   if (draft && message && !message.value) message.value = draft;
-  const occasion = params.get('anlass');
+  // Occasion pages link with readable values (?anlass=hochzeit); map them onto the radio values.
+  const aliases: Record<string, string> = { hochzeit: 'privat', privat: 'privat', firma: 'firma', firmen: 'firma', marke: 'firma', werbung: 'firma', stadt: 'stadt', staedte: 'stadt', städte: 'stadt', festival: 'stadt', agentur: 'agentur', agenturen: 'agentur', indoor: 'indoor', sonstiges: 'sonstiges' };
+  const occasion = aliases[params.get('anlass')?.toLowerCase() ?? ''];
   const occasionInput = occasion ? [...form.querySelectorAll<HTMLInputElement>('[name=anlass]')].find((input) => input.value === occasion) : undefined;
   if (occasionInput && !form.querySelector('[name=anlass]:checked')) occasionInput.checked = true;
   form.addEventListener('submit', async (event) => {
@@ -66,12 +68,12 @@ if (form) {
       const result = await response.json();
       if (!response.ok || !result.ok) throw new Error(result.detail || 'Die Anfrage konnte nicht gesendet werden.');
       if (result.state === 'not-configured') {
-        status.textContent = 'Der Formularversand ist noch nicht eingerichtet. Es wurde nichts gesendet oder gespeichert. Bitte schreibe uns direkt an team@flyingstars.art.';
+        status.textContent = 'Der Formularversand ist noch nicht eingerichtet. Es wurde nichts gesendet oder gespeichert. Bitte schreibt uns direkt an team@flyingstars.art.';
       } else {
-        status.textContent = 'Deine Anfrage wurde gesendet. Wir melden uns innerhalb von 48 Stunden.';
+        status.textContent = 'Eure Anfrage wurde gesendet. Wir melden uns innerhalb von 48 Stunden.';
         form.reset(); show(0, false);
       }
-    } catch (error) { status.textContent = `${error instanceof Error ? error.message : 'Versand fehlgeschlagen.'} Bitte versuche es später erneut oder schreibe direkt an team@flyingstars.art.`; }
+    } catch (error) { status.textContent = `${error instanceof Error ? error.message : 'Versand fehlgeschlagen.'} Bitte versucht es später erneut oder schreibt direkt an team@flyingstars.art.`; }
     finally { button.disabled = false; button.textContent = 'Anfrage senden'; status.focus(); }
   });
   show(0, false);
