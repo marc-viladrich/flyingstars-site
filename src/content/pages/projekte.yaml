@@ -1,8 +1,12 @@
-title: Projekte – FlyingStars
-description: "FlyingStars-Drohnenshows für Bokkenrijders, NFL, Ford Explorer und
-  PUMA: ausgewählte Geschichten, Motive und Videos aus 100 bis 600 Drohnen."
+title: Referenzen
+description: "Shows von FlyingStars für Bokkenrijders, NFL, Ford und PUMA: Geschichten, Motive und Videos mit 100 bis 600 Drohnen. 178 Shows seit 2022."
 sections:
   - type: projectGrid
-    headline: Nächte, die wir nicht vergessen.
-    text: "Über 30 Shows im Jahr, von 100 bis 600 Drohnen. Eine kleine Auswahl:"
+    headline: Shows, die wir schon geflogen sind.
+    text: 178 Shows seit 2022, von 50 bis 600 Drohnen. Eine Auswahl mit Geschichte, Video und Drohnenzahl.
     limit: 50
+
+  - type: cta
+    headline: Euer Anlass ist nicht dabei?
+    text: Schreibt uns Datum, Ort und Idee. Wir sagen euch, was möglich ist.
+    button: { label: Show anfragen, href: /kontakt/ }

@@ -4,18 +4,16 @@ import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'hero' }>;
 const { headline, text, image, cta, secondary } = Astro.props;
 ---
-<section class="section" aria-labelledby="hero-h">
-  <div class:list={['wrap', { 'grid-2': image }]}>
-    <div class="measure">
+<section class="section page-hero" aria-labelledby="hero-h">
+  <div class:list={[{ 'grid-2': image }]}>
+    <div class="sec-head">
       <h1 id="hero-h">{headline}</h1>
-      {text && <p class="muted">{text}</p>}
-      {(cta || secondary) && (
-        <p>
-          {cta && <a class="btn" href={cta.href}>{cta.label}</a>}
-          {secondary && <a class="btn btn--ghost" href={secondary.href} style="margin-left:.75rem">{secondary.label}</a>}
-        </p>
-      )}
+      {text && <p>{text}</p>}
+      {(cta || secondary) && <div class="actions">
+        {cta && <a class="btn primary" href={cta.href}>{cta.label}</a>}
+        {secondary && <a class="btn" href={secondary.href}>{secondary.label}</a>}
+      </div>}
     </div>
-    {image && <Picture {...image} loading="eager" sizes="(min-width: 48rem) 50vw, 100vw" />}
+    {image && <Picture {...image} loading="eager" sizes="(min-width: 64rem) 50vw, 100vw" />}
   </div>
 </section>

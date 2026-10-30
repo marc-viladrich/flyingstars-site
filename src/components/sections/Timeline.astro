@@ -1,0 +1,40 @@
+---
+// Milestones as a calm vertical list: year on the left, title and one sentence on the right.
+// A year that repeats the previous one is hidden visually but stays readable for screen readers.
+import type { Section } from '../../content.config';
+type Props = Extract<Section, { type: 'timeline' }> & { index: number };
+const { headline, text, items, id = `s${Astro.props.index}`, index } = Astro.props;
+const H = index === 0 ? 'h1' : 'h2';
+const headingId = `${id}-h`;
+---
+<section class="section" id={id} aria-labelledby={headingId}>
+  <div class="sec-head"><H id={headingId}>{headline}</H>{text && <p>{text}</p>}</div>
+  <ol class="timeline">
+    {items.map((it, i) => (
+      <li class:list={['tl-item', { 'tl-repeat': i > 0 && items[i - 1].when === it.when }]}>
+        <span class="tl-when num">{it.when}</span>
+        <div class="tl-body">
+          <h3>{it.title}</h3>
+          {it.text && <p>{it.text}</p>}
+        </div>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .timeline { list-style: none; margin: 0; padding: 0; max-width: 52rem; }
+  .tl-item { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 0 2rem; padding: 1.4rem 0; position: relative; }
+  .tl-item + .tl-item:not(.tl-repeat) { margin-top: 0.6rem; }
+  .tl-repeat { padding-top: 0.2rem; }
+  .tl-when { font-size: clamp(28px, 3vw, 40px); line-height: 1; color: var(--muted); padding-top: 0.1rem; }
+  .tl-repeat .tl-when { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .tl-body { grid-column: 2; }
+  .tl-body h3 { font-size: 22px; line-height: 1.25; }
+  .tl-body p { margin: 0.4rem 0 0; color: var(--muted); max-width: var(--measure); }
+  @media (max-width: 640px) {
+    .tl-item { grid-template-columns: 1fr; gap: 0.4rem; padding: 1rem 0; }
+    .tl-body { grid-column: 1; }
+    .tl-when { font-size: 26px; }
+  }
+</style>

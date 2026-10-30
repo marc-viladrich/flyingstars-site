@@ -1,12 +1,14 @@
+# Vorläufiger Hinweis für die Vorschau. Die Datenschutzerklärung der neuen Website muss FlyingStars bzw. deren
+# Datenschutzberatung schreiben oder freigeben (Hosting, Formulardienst, Calendly, WhatsApp-Link, Videos).
 title: Datenschutz
-description: "Hinweise zur FlyingStars-Vorschau: selbst gehostete Schriftarten, Medien und Kontaktformular sowie die Datenschutzerklärung der bestehenden Website."
+description: "Datenschutzhinweise zur FlyingStars-Vorschau: selbst ausgelieferte Schriften und Bilder, Videos erst auf Klick, kein Analyse-Tracking."
 noindex: true
 sections:
   - type: textMedia
     headline: Datenschutz in dieser Vorschau
     body: |
-      Die Schriftarten und Vorschaubilder werden über diese Website ausgeliefert. Videos werden erst gestartet, wenn du sie ausdrücklich anklickst. Die Vorschau verwendet kein Analyse-Tracking.
+      Schriften und Vorschaubilder liefert diese Website selbst aus. Videos starten erst, wenn ihr sie ausdrücklich anklickt. Die Vorschau verwendet kein Analyse-Tracking.
 
-      Der Formularversand ist noch nicht eingerichtet. Ohne diese Einrichtung werden deine Angaben nicht gespeichert oder per E-Mail versendet; du erhältst eine entsprechende Rückmeldung.
+      Der Formularversand ist noch nicht eingerichtet. Bis dahin werden eure Angaben weder gespeichert noch per E-Mail verschickt, und ihr bekommt dazu eine Rückmeldung.
 
-      Die veröffentlichten Datenschutzinformationen findest du in der [Datenschutzerklärung der bestehenden FlyingStars-Website](https://flyingstars.art/datenschutz/). Die Erklärung für diese neue Website muss vor ihrer endgültigen Veröffentlichung ergänzt und geprüft werden.
+      Die geltenden Datenschutzinformationen findet ihr in der [Datenschutzerklärung der bestehenden FlyingStars-Website](https://flyingstars.art/datenschutz/). Für die neue Website wird die Erklärung vor der Veröffentlichung ergänzt und geprüft.

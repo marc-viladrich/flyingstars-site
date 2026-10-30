@@ -1,34 +1,10 @@
-// FlyingStars project pages: count-up numbers, scrollytelling, the real formation to play with, film reel
+// FlyingStars project pages: the real formation to play with and the film reel.
+// Numbers and story are plain markup; nothing here starts at zero or waits for scrolling to show content.
 // Adapted from the client-supplied reference; no third-party runtime requests.
 (() => {
   "use strict";
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const onView = (el, fn, opts = { threshold: 0.35 }) => { const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { fn(); io.disconnect(); } }), opts); io.observe(el); };
-
-  // big numbers count up once they come into view
-  document.querySelectorAll("[data-count]").forEach((el) => {
-    const to = +el.dataset.count, fmt = (v) => Math.round(v).toLocaleString("de-DE");
-    if (reduce) { el.textContent = fmt(to); return; }
-    el.textContent = "0";
-    onView(el, () => {
-      const t0 = performance.now(), dur = 1400 + Math.min(1200, to);
-      const tick = (now) => { const u = Math.min(1, (now - t0) / dur); el.textContent = fmt(to * (1 - (1 - u) ** 3)); if (u < 1) requestAnimationFrame(tick); };
-      requestAnimationFrame(tick);
-    });
-  });
-
-  // scrollytelling: the step in the middle of the screen picks the picture on the left
-  const steps = [...document.querySelectorAll("[data-step]")], scenes = [...document.querySelectorAll("[data-scene]")], progress = document.querySelector("[data-progress]");
-  if (steps.length) {
-    const show = (i) => {
-      steps.forEach((s, k) => s.classList.toggle("on", k === i));
-      scenes.forEach((s, k) => s.classList.toggle("on", k === i));
-      if (progress) progress.textContent = `${String(i + 1).padStart(2, "0")} / ${String(steps.length).padStart(2, "0")}`;
-    };
-    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) show(steps.indexOf(e.target)); }), { rootMargin: "-45% 0px -45% 0px" });
-    steps.forEach((s) => io.observe(s));
-    show(0);
-  }
 
   // film reel: arrows and drag to scroll
   document.querySelectorAll(".c-reel").forEach((reel) => {
@@ -81,8 +57,9 @@
         xs.push(X * k); ys.push(Y * k);
       }
       const bw = Math.max(...xs) - Math.min(...xs), bh = Math.max(...ys) - Math.min(...ys);
-      const wide = W > 900, room = wide ? [W * 0.62, H * 0.78] : [W * 0.86, H * 0.56];
-      fit = { hx: (wide ? W * 0.6 : W * 0.5) * DPR, hy: (wide ? H * 0.46 : H * 0.36) * DPR, s: Math.min(room[0] / bw, room[1] / bh) * DPR, cx: (wide ? W * 0.6 : W * 0.5) * DPR - ((Math.max(...xs) + Math.min(...xs)) / 2) * Math.min(room[0] / bw, room[1] / bh) * DPR, cy: (wide ? H * 0.46 : H * 0.36) * DPR + ((Math.max(...ys) + Math.min(...ys)) / 2) * Math.min(room[0] / bw, room[1] / bh) * DPR };
+      // the text sits above the stage, so the formation is centred in it
+      const s = Math.min((W * 0.84) / bw, (H * 0.8) / bh) * DPR, hx = W * 0.5 * DPR, hy = H * 0.5 * DPR;
+      fit = { hx, hy, s, cx: hx - ((Math.max(...xs) + Math.min(...xs)) / 2) * s, cy: hy + ((Math.max(...ys) + Math.min(...ys)) / 2) * s };
     };
     const held = () => paused || document.documentElement.classList.contains("motion-paused");
     // Shows the finished formation, e.g. when it appears while motion is paused.
@@ -110,7 +87,10 @@
     }).catch(() => { if (tally) tally.textContent = "Die Formation konnte nicht geladen werden."; });
     }, { rootMargin: "100px", threshold: 0 });
     replay?.addEventListener("click", () => { if (!reduce && D.length) { paused = false; pause?.setAttribute("aria-pressed", "false"); if (pause) pause.textContent = "Animation pausieren"; launch(); } });
-    pause?.addEventListener("click", () => { paused = !paused; pause.setAttribute("aria-pressed", String(paused)); pause.textContent = paused ? "Animation fortsetzen" : "Animation pausieren"; });
+    pause?.addEventListener("click", () => { paused = !paused; pause.setAttribute("aria-pressed", String(paused)); pause.textContent = paused ? "Animation fortsetzen" : "Animation pausieren"; if (paused && D.length) settle(); });
+    // The global pause (html.motion-paused) may come while the drones are still taking off: show the finished picture.
+    let wasHeld = held();
+    new MutationObserver(() => { const now = held(); if (now && !wasHeld && D.length && !reduce) settle(); wasHeld = now; }).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
     const host = cv.parentElement;
     host.addEventListener("pointermove", (e) => { if (e.pointerType === "touch") return; const r = cv.getBoundingClientRect(); mouse = [(e.clientX - r.left) * DPR, (e.clientY - r.top) * DPR]; });
     host.addEventListener("pointerleave", () => { mouse = null; });

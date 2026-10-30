@@ -5,16 +5,16 @@ const posts = (await getCollection('posts', (p) => !p.data.draft)).sort((a, b) =
 const fmt = new Intl.DateTimeFormat('de-DE', { dateStyle: 'long' });
 ---
 <Base title="Blog" description="Alle Beiträge in chronologischer Reihenfolge, neueste zuerst. Hintergründe, Projekte und Einblicke.">
-  <section class="section"><div class="wrap">
-    <h1>Blog</h1>
-    <div class="cards">
+  <section class="section" aria-labelledby="blog-h">
+    <div class="sec-head"><h1 id="blog-h">Blog</h1><p>Hintergründe zu Shows, Technik und Genehmigungen. Neueste Beiträge zuerst.</p></div>
+    <ul class="post-list" role="list">
       {posts.map((p) => (
-        <article class="card">
-          <h3><a href={`/blog/${p.id}/`}>{p.data.title}</a></h3>
-          <p class="muted"><time datetime={p.data.date.toISOString()}>{fmt.format(p.data.date)}</time></p>
+        <li class="post">
+          <time datetime={p.data.date.toISOString()}>{fmt.format(p.data.date)}</time>
+          <h2><a href={`/blog/${p.id}/`}>{p.data.title}</a></h2>
           <p>{p.data.description}</p>
-        </article>
+        </li>
       ))}
-    </div>
-  </div></section>
+    </ul>
+  </section>
 </Base>

@@ -1,8 +1,10 @@
-title: Status deiner Anfrage
-description: Rückmeldung zum Kontaktformular von FlyingStars. Solange der Versand nicht eingerichtet ist, kannst du das Team direkt per E-Mail kontaktieren.
+title: Status eurer Anfrage
+description: "Rückmeldung zum Kontaktformular von FlyingStars. Solange der Versand nicht eingerichtet ist, erreicht ihr das Team direkt per E-Mail."
 noindex: true
 sections:
   - type: textMedia
-    headline: Status deiner Anfrage
+    headline: Status eurer Anfrage
     body: |
-      Der Versand ist in dieser Vorschau noch nicht eingerichtet. Es wurde nichts gesendet oder gespeichert. Bitte kontaktiere uns direkt per E-Mail an [team@flyingstars.art](mailto:team@flyingstars.art).
+      In dieser Vorschau ist der Versand noch nicht eingerichtet. Es wurde nichts gesendet und nichts gespeichert.
+
+      Schreibt uns bitte direkt an [team@flyingstars.art](mailto:team@flyingstars.art) oder ruft an unter [0209 883 065 62](tel:+4920988306562).

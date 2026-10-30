@@ -1,0 +1,98 @@
+---
+// Live preview of the show (13th version of the configurator, 30.10.2026): occasion × package on one stage.
+// The occasion picks what plays in the sky, the package how; only the package changes the price. The controls sit on
+// the edges of the stage: occasion tabs on top, package, price and inquiry at the bottom, ‹ ↻ › for the pictures.
+// The drone engine (show-field.js, show-scenes.js) loads only when the stage comes close to the viewport.
+import '../../styles/pricing.css';
+import type { Section } from '../../content.config';
+import { OCCASIONS, STEPS } from '../../content/show-configurator.js';
+import { SHOW_PACKAGES, priceFor, type ShowPackage } from '../../content/show-packages';
+import { PACKAGE_DETAILS } from '../../content/package-details';
+import { optimizedImage } from '../../lib/media';
+type Props = Extract<Section, { type: 'showPreview' }> & { index: number };
+const { headline, text, anlass, paket, note, id = 'vorschau', index } = Astro.props;
+const H = index === 0 ? 'h1' : 'h2';
+const occasion = OCCASIONS.find((o) => o.id === anlass) ?? OCCASIONS[0];
+const start = Math.max(0, STEPS.findIndex((s) => s.pkg === (paket ?? 'HORIZON')));
+const pkg = STEPS[start].pkg as ShowPackage;
+const first = SHOW_PACKAGES[pkg];
+const money = (v: number) => `ab ${v.toLocaleString('de-DE')} €`;
+type Tiers = Record<string, { caption: string } | undefined>;
+const caption = occasion.motifs.map((m) => (m.tiers as Tiers)[pkg]?.caption).find(Boolean) ?? '';
+const colour = (name: string) => `rgb(${SHOW_PACKAGES[name as ShowPackage].color.join(',')})`;
+// the still that stands in when the preview cannot run: a real FlyingStars show
+const still = await optimizedImage('https://flyingstars.art/wp-content/uploads/2024/07/Movie_park_cover_img.png', 960);
+---
+<section class="section alt pv" id={id} aria-labelledby={`${id}-h`} data-preview data-state="idle" style={`--pkg: ${colour(pkg)}`}>
+  <div class="sec-head pv-head">
+    <H id={`${id}-h`}>{headline}</H>
+    {text && <p>{text}</p>}
+  </div>
+
+  <form class="pv-form" id="cfg" aria-labelledby={`${id}-h`}>
+    <div class="pv-frame">
+      <fieldset class="pv-occ">
+        <legend class="sr-only">Anlass</legend>
+        <div class="pv-occ-row">
+          {OCCASIONS.map((o) => <label><input type="radio" name="occasion" value={o.id} checked={o.id === occasion.id} /><span>{o.label}</span></label>)}
+        </div>
+      </fieldset>
+
+      <div class="cfg-stage" role="group" aria-label="Vorschau der Show" aria-describedby="cfg-scene">
+        <canvas id="cfg-field" aria-hidden="true"></canvas>
+        <span class="pv-badge" aria-hidden="true"><em id="cfg-new">{pkg}</em></span>
+        <p class="pv-status" aria-hidden="true">Vorschau wird geladen</p>
+        <div class="cfg-error" id="cfg-error" role="status" hidden>
+          <img src={still.src} width={still.width} height={still.height} alt="Standbild einer Drohnenshow von FlyingStars am Nachthimmel" loading="lazy" decoding="async" />
+          <p>Die Vorschau lässt sich gerade nicht laden. Paket und Preis könnt ihr trotzdem wählen und anfragen.</p>
+        </div>
+        <div class="pv-foot">
+          <p class="pv-caption" id="cfg-scene">{caption}</p>
+          <div class="cfg-acts" id="cfg-acts" role="group" aria-label="Bilder der Show">
+            <button type="button" class="pv-play" id="cfg-play" hidden>Abspielen</button>
+            <button type="button" id="cfg-prev" aria-label="Vorheriges Bild" title="Vorheriges Bild">‹</button>
+            <button type="button" id="cfg-replay" aria-label="Nochmal von vorn ansehen" title="Nochmal von vorn ansehen">↻</button>
+            <button type="button" id="cfg-next" aria-label="Nächstes Bild" title="Nächstes Bild">›</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pv-bar">
+        <fieldset class="cfg-pkgs">
+          <legend class="sr-only">Paket</legend>
+          {STEPS.map((s, i) => <label style={`--c: ${colour(s.pkg)}`}><input type="radio" name="pkg" value={i} checked={i === start} /><span><b>{s.pkg}</b><small>{s.label.replace('-', '\u2011')}</small></span></label>)}
+        </fieldset>
+        <div class="cfg-result" aria-live="polite">
+          <p class="cfg-price num" id="cfg-price">{money(priceFor(pkg, first.base)!)}</p>
+          <p class="pv-meta"><b id="cfg-pkg">{pkg}</b> · <span id="cfg-meta">{first.base} Drohnen · netto zzgl. Anfahrt</span></p>
+          <p class="pv-includes" id="cfg-includes">Enthalten: {PACKAGE_DETAILS[pkg].sky}.</p>
+        </div>
+        <a class="btn primary pv-cta" id="cfg-cta" href={`/kontakt/?paket=${pkg}&quelle=preise-vorschau`}>Mit dieser Auswahl anfragen</a>
+      </div>
+    </div>
+
+    <div class="pv-below">
+      <details class="pv-text">
+        <summary>Euren Text hinzufügen (ohne Aufpreis)</summary>
+        <div class="pv-text-body">
+          <label for="cfg-text">Euer Text am Himmel</label>
+          <input class="cfg-text" id="cfg-text" name="text" type="text" maxlength="24" autocomplete="off" placeholder="z. B. Anna & Ben" aria-describedby="cfg-text-hint" />
+          <p class="pv-hint" id="cfg-text-hint">Erscheint als Finale der Show. Er zählt als eines eurer eigenen Elemente und ändert den Preis nicht.</p>
+          <fieldset class="cfg-styles" id="cfg-styles" hidden>
+            <legend class="sr-only">Schrift</legend>
+            {[['script', 'Schreibschrift'], ['print', 'Druckschrift'], ['initials', 'Initialen']].map(([v, l], i) => <label><input type="radio" name="textstyle" value={v} checked={i === 0} /><span>{l}</span></label>)}
+          </fieldset>
+        </div>
+      </details>
+      <p class="pv-note">{note ?? 'Die Vorschau zeigt Beispielmotive im Zeitraffer, etwa dreimal so schnell wie eine echte Show. Den Ablauf eurer Show entwickeln wir mit euch.'}</p>
+    </div>
+  </form>
+
+  <div class="cfg-bar" aria-hidden="true"><span><b id="cfg-bar-pkg">{pkg}</b> <span class="num" id="cfg-bar-price">{money(priceFor(pkg, first.base)!)}</span></span><a class="btn small primary" href={`/kontakt/?paket=${pkg}&quelle=preise-vorschau`} id="cfg-bar-cta" tabindex="-1">Anfragen</a></div>
+  <noscript><p class="pv-noscript">Die Live-Vorschau braucht JavaScript. Pakete, Preise und alle Leistungen stehen auch ohne sie auf dieser Seite.</p></noscript>
+</section>
+
+<script>
+  import { mountPreview } from '../../scripts/show-configurator.js';
+  mountPreview();
+</script>

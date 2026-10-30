@@ -1,5 +1,7 @@
 # FlyingStars: Umsetzung der Kundenreferenz
 
+> Historisch (Stand 6.10.2026). Seit dem 30.10.2026 gilt das Designsystem „Lichtpunkt“ in `docs/DESIGN.md`: Scrollstory, Dimmen, Konturtitel, `--chars`-Skalierung und der Preisrechner mit Regler sind entfernt; die Vorschau der Show steht in `docs/show-konfigurator.md`. Dieses Dokument beschreibt die Herkunft der Seiten und die Prüfungen des ersten Ports.
+
 Stand: 6. Oktober 2026. Marc hat den vollständigen Erstdurchlauf der [geteilten Vercel-Referenz](https://flyingstars-relaunch.vercel.app/) einschließlich neuer Komponenten, Schemas und Qualitätssicherung beauftragt. Der spätere Opus-Lauf dient als zweiter Pass. Die Veröffentlichung braucht weiterhin den menschlichen PR-Merge.
 
 ## Umfang

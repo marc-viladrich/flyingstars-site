@@ -1,24 +1,17 @@
-title: Drohnenshows buchen – über 150 Shows seit 2022
-description: "Drohnenshows für Marken, Städte und große Momente: über 150 Shows
-  seit 2022, eigene Flotte, Genehmigung inklusive. Pakete ab 7.900 € – jetzt
-  Show anfragen."
+title: Drohnenshows für Firmen, Städte und Hochzeiten
+description: Drohnenshows für Firmen, Städte und Hochzeiten. FlyingStars entwirft
+  die Motive, holt die Genehmigung und fliegt mit eigener Flotte. Ab 7.900 € netto.
 image: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
 sections:
   - type: showreelHero
-    headline: Wir gestalten dein Stück Himmel.
-    text: Über 150 Drohnenshows für Marken, Städte und große Momente – von der
-      ersten Skizze über die Genehmigung bis zur Landung aus einer Hand.
-    eyebrow: Drohnenshows seit 2022 · DE · AT · CH · Benelux
-    words:
-      - Neu.
-      - Einzigartig.
-      - Anders.
-      - Spektakulär.
+    headline: Wir gestalten euer Stück Himmel.
+    text: Drohnenshows für Firmen, Städte und Hochzeiten. Wir entwerfen die Motive,
+      holen die Genehmigung und fliegen mit eigener Flotte. Pakete ab 7.900 € netto.
     cta:
       label: Show anfragen
-      href: "#anfrage"
+      href: /kontakt/
     secondary:
-      label: Pakete ab 7.900 €
+      label: Pakete und Preise
       href: /drohnenshow-preise/
     poster:
       src: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
@@ -26,326 +19,283 @@ sections:
       width: 1600
       height: 900
     video: https://flyingstars.art/wp-content/uploads/2026/05/Flyingstars-Showreel.mp4
-    stats:
-      - label: Shows
-        value: 150+
-      - label: Basis
-        value: 51.51° N · 7.10° E
   - type: logoBar
     headline: Geflogen für
-    press: tagesschau · ZDF · WDR · Tagesspiegel · WAZ
+    press: Berichtet haben unter anderem
     logos:
-      - name: Spotify
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/07/spotify_logo_white.png
-          alt: Spotify
-          width: 400
-          height: 200
-        tall: false
-      - name: NFL
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png
-          alt: NFL
-          width: 400
-          height: 200
-        tall: true
-      - name: Ford
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2023/04/Ford_logo_weiss.png
-          alt: Ford
-          width: 400
-          height: 200
-        tall: false
-      - name: Volkswagen
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2023/04/Volkswagen_logo_2019_weiss.png
-          alt: Volkswagen
-          width: 400
-          height: 200
-        tall: true
-      - name: L'Oréal
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2023/04/LOreal_logo_weiss.png
-          alt: L'Oréal
-          width: 400
-          height: 200
-        tall: false
-      - name: Prada
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2023/04/Prada-Logo_weiss.png
-          alt: Prada
-          width: 400
-          height: 200
-        tall: false
-      - name: PUMA
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2023/04/Puma_Logo_weiss.png
-          alt: PUMA
-          width: 400
-          height: 200
-        tall: false
-      - name: Siemens
+      - name: 'Siemens'
         image:
           src: https://flyingstars.art/wp-content/uploads/2024/10/siemens_logo_weiss.png
-          alt: Siemens
-          width: 400
-          height: 200
-        tall: false
-      - name: Red Bull
+          alt: 'Siemens'
+          width: 500
+          height: 80
+      - name: 'E.ON'
         image:
-          src: https://flyingstars.art/wp-content/uploads/2024/10/RED-BULL_white.png
-          alt: Red Bull
-          width: 400
-          height: 200
-        tall: false
-      - name: Bulgari
+          src: https://flyingstars.art/wp-content/uploads/2024/07/EON_logo.png
+          alt: 'E.ON'
+          width: 300
+          height: 88
+      - name: 'REWE'
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/07/Rewe.png
+          alt: 'REWE'
+          width: 600
+          height: 209
+      - name: 'Bosch'
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/bosch_logo_weiss.png
+          alt: 'Bosch'
+          width: 300
+          height: 69
+      - name: 'Amazon'
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/07/amazon-logo-white.png
+          alt: 'Amazon'
+          width: 300
+          height: 90
+      - name: 'McKinsey'
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/07/McKinsey_bw.png
+          alt: 'McKinsey'
+          width: 300
+          height: 97
+      - name: 'Volkswagen'
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/Volkswagen_logo_2019_weiss.png
+          alt: 'Volkswagen'
+          width: 300
+          height: 300
+      - name: 'Ford'
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/Ford_logo_weiss.png
+          alt: 'Ford'
+          width: 300
+          height: 108
+      - name: 'PUMA'
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/Puma_Logo_weiss.png
+          alt: 'PUMA'
+          width: 300
+          height: 161
+      - name: 'NFL'
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png
+          alt: 'NFL'
+          width: 300
+          height: 409
+      - name: 'Spotify'
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/07/spotify_logo_white.png
+          alt: 'Spotify'
+          width: 300
+          height: 300
+      - name: 'Prada'
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/Prada-Logo_weiss.png
+          alt: 'Prada'
+          width: 300
+          height: 47
+      - name: "L'Oréal"
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/LOreal_logo_weiss.png
+          alt: "L'Oréal"
+          width: 300
+          height: 54
+      - name: 'Bulgari'
         image:
           src: https://flyingstars.art/wp-content/uploads/2023/04/Bulgari_logo_weiss.png
-          alt: Bulgari
-          width: 400
-          height: 200
-        tall: false
-      - name: AIRPOWER
+          alt: 'Bulgari'
+          width: 300
+          height: 33
+      - name: 'Bogner'
         image:
-          src: https://flyingstars.art/wp-content/uploads/2024/10/airpower-logo-weiss.png
-          alt: AIRPOWER
-          width: 400
-          height: 200
-        tall: false
+          src: https://flyingstars.art/wp-content/uploads/2023/04/Bogner-Logo_weiss.png
+          alt: 'Bogner'
+          width: 300
+          height: 395
+      - name: 'DKB'
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/Deutsche_Kreditbank_AG_Logo_2016_weiss.png
+          alt: 'DKB'
+          width: 300
+          height: 153
+      - name: 'Bundesministerium für Landesverteidigung'
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/10/logo_bmlv_w.png
+          alt: 'Bundesministerium für Landesverteidigung'
+          width: 321
+          height: 65
+      - name: 'Deutsche Umwelthilfe'
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/Deutsche_Umwelthilfe_weiss.png
+          alt: 'Deutsche Umwelthilfe'
+          width: 300
+          height: 37
+    pressLogos:
+      - name: 'Tagesschau'
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/08/Tagesschau_Logo_2015_weiss.png
+          alt: 'Tagesschau'
+          width: 300
+          height: 57
+      - name: 'ZDF'
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/08/ZDF_logo_weiss.png
+          alt: 'ZDF'
+          width: 300
+          height: 175
+      - name: 'WDR'
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/07/WDR_weiss.png
+          alt: 'WDR'
+          width: 300
+          height: 91
+      - name: 'Tagesspiegel'
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/08/Tagesspiegel-Logo_weiss.png
+          alt: 'Tagesspiegel'
+          width: 300
+          height: 45
+      - name: 'WAZ'
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/08/WAZ_Logo_weiss.png
+          alt: 'WAZ'
+          width: 300
+          height: 89
   - type: occasions
     id: anlaesse
-    kicker: Anlässe
-    headline: Für jeden Anlass die passende Show.
-    text: "Ob Produktlaunch, Stadtfest oder Heiratsantrag: Wir entwickeln jede Show
-      für ihr Publikum – und übernehmen alles, was dafür nötig ist."
+    headline: Wofür plant ihr eine Show?
+    text: Jeder Anlass bringt andere Fragen mit. Wählt euren, dann findet ihr
+      Beispiele, Ablauf und Preise.
     cards:
-      - category: Firmen & Marken
-        title: Deine Marke auf der größten Leinwand der Welt
-        text: Logos, Claims und Produkte, präzise in den Nachthimmel gezeichnet – für
-          Kund:innen, Mitarbeitende und die Kamera.
+      - title: Firmen und Marken
+        text: Logos, Produkte und Claims am Himmel, für Launches, Jubiläen und Drehs.
         image:
           src: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
           alt: Volkswagen-Logo aus Drohnen über einer Bühne mit Suchscheinwerfern
-          width: 1600
-          height: 900
-        facts:
-          - "Brand-safe: Jedes Motiv gibst du vorab frei"
-          - Ideal für Launches, Jubiläen und Social-Media-Drehs
-          - Auf Wunsch synchron zu Sprecher:in oder Musik
+          width: 1920
+          height: 1281
         cta:
-          label: Für Unternehmen
-          href: "#anfrage"
-      - category: Städte & Festivals
-        title: Ein Highlight, über das die ganze Stadt spricht
-        text: "Stadtfeste, Jubiläen, Festivals und Silvester: leise, sauber und ohne
-          Brandgefahr – auch im trockensten Sommer."
+          label: Drohnenshows für Firmen und Marken
+          href: /drohnenshow-werbung/
+      - title: Städte und Veranstalter
+        text: Stadtfeste, Jubiläen und Silvester ohne Pyrotechnik.
         image:
           src: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
-          alt: Weltkugel aus Drohnen über dem Rhein bei der Extraschicht in Duisburg
-          width: 1600
-          height: 900
-        facts:
-          - Stadtwappen, Jubiläumszahlen, eure Geschichte
-          - "Kein Knall: gut für Anwohner:innen und Tiere"
-          - Genehmigungen mit den Behörden übernehmen wir
+          alt: Weltkugel aus Drohnen über dem Innenhafen bei der Extraschicht in Duisburg
+          width: 2544
+          height: 1493
         cta:
-          label: Für Städte & Festivals
-          href: "#anfrage"
-        download:
-          label: Technik-Datenblatt · PDF
-          href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf
-      - category: Agenturen
-        title: Wir fliegen, ihr glänzt
-        text: Wir kennen die Rolle als Dienstleister – und stimmen uns auf Wunsch direkt
-          mit euren Kund:innen ab.
+          label: Shows für Städte und Veranstalter
+          href: /projekte/
+      - title: Hochzeit und Privat
+        text: Initialen, Herzen und euer Datum über der Feier.
         image:
-          src: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
-          alt: Drohnenformation über der Skyline von Düsseldorf mit Rheinturm
-          width: 1600
-          height: 900
-        facts:
-          - Genehmigungen und Behörden komplett bei uns
-          - NDA auf Wunsch
-          - Visualisierung mit dem Logo eurer Kund:innen für die Freigabe
-        cta:
-          label: Für Agenturen
-          href: "#anfrage"
-        download:
-          label: Technik-Datenblatt · PDF
-          href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf
-      - category: Hochzeit & Privat
-        title: Euer Moment, am Himmel geschrieben
-        text: "Initialen, Herzen, ein „Ja“ in Lichtbuchstaben: Wir machen Hochzeit,
-          Antrag oder Geburtstag unvergesslich."
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg
-          alt: Drohnenformation zur blauen Stunde bei einem Heiratsantrag
-          width: 1600
-          height: 900
-        facts:
-          - Eigene Pakete für kleinere Feiern
-          - SPARK ab 7.900 € inklusive Genehmigung
-          - Motive aus unserem Katalog – oder euer eigenes
+          src: https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg
+          alt: Zwei Blüten aus Drohnen am Abendhimmel über einer Hochzeitsfeier
+          width: 1518
+          height: 854
         cta:
           label: Drohnenshow zur Hochzeit
-          href: "#anfrage"
-  - type: pricing
+          href: /drohnenshow-hochzeit/
+      - title: Indoor
+        text: Für Messen, Bühnen und Hallen ab drei Metern Deckenhöhe.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2025/04/drohnenshow-indoor-2.jpg
+          alt: Leuchtende Drohnen in Formation vor der Bühne eines voll besetzten Saals
+          width: 1200
+          height: 764
+        cta:
+          label: Indoor-Drohnenshows
+          href: /drohnenshow-indoor/
+      - title: Agenturen
+        text: Wir fliegen im Hintergrund, auf Wunsch mit NDA.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/12/Siemens_cover.jpg
+          alt: Gäste fotografieren einen Schriftzug aus Drohnen über einem Firmenevent
+          width: 1910
+          height: 820
+        cta:
+          label: Drohnenshows für Agenturen
+          href: /drohnenshow-werbung/#agenturen
+  - type: packages
     id: pakete
-    kicker: Pakete
-    headline: Transparente Preise. Keine Überraschungen.
-    text: Drei Pakete als Startpunkt – mehr Drohnen, eigene Motive und Extras gehen
-      jederzeit.
-    tiers:
-      - name: SPARK
-        price: ab 7.900 €
-        unit: 100 Drohnen · ca. 10 Min
-        highlight: false
-        cta:
-          label: Paket ansehen
-          href: /drohnenshow-preise/
-        orb:
-          shape: ring
-          color: 255,158,41
-          count: 100
-      - name: HORIZON
-        price: ab 15.900 €
-        unit: 200 Drohnen · ca. 13 Min
-        highlight: true
-        cta:
-          label: Paket ansehen
-          href: /drohnenshow-preise/
-        orb:
-          shape: sphere
-          color: 219,100,232
-          count: 200
-        badge: Bestseller
-      - name: ODYSSEY
-        price: ab 34.900 €
-        unit: 300+ Drohnen · 15+ Min
-        highlight: false
-        cta:
-          label: Paket ansehen
-          href: /drohnenshow-preise/
-        orb:
-          shape: torus
-          color: 51,237,242
-          count: 300
-    note: Alle Preise netto zzgl. Anfahrt
+    compact: true
+    headline: Drei Pakete mit festen Einstiegspreisen.
+    text: Der Preis hängt davon ab, wie aufwendig die Bilder am Himmel sind und wie
+      viele Drohnen fliegen. Alle Preise netto zzgl. Anfahrt.
     cta:
-      label: Alle Leistungen und Preisrechner
-      href: /drohnenshow-preise/
+      label: Unterschiede in der Vorschau ansehen
+      href: /drohnenshow-preise/#vorschau
   - type: steps
     id: ablauf
-    kicker: Ablauf
-    headline: Von der Idee bis zur Landung.
-    text: Du bist so viel oder so wenig eingebunden, wie du möchtest. Wir kommen mit
-      Lösungen, nicht mit Problemen.
+    headline: Von der Anfrage bis zum Showabend.
     steps:
       - title: Anfrage
-        text: Erzähl uns Datum, Ort und Anlass. Wir melden uns innerhalb von 48 Stunden
-          – meist deutlich schneller.
-        duration: 48 h Antwortzeit
-      - title: Standort & Angebot
-        text: Wir prüfen den Showbereich von rund 100 × 100 Metern und schicken dir ein
-          Festpreis-Angebot, das du online annimmst.
-        duration: Festpreis
+        text: Ihr schickt uns Datum, Ort und Anlass. Wir antworten innerhalb von 48
+          Stunden.
+      - title: Standortprüfung und Angebot
+        text: Wir prüfen, ob am Ort ein Showbereich von ca. 100 × 100 Metern möglich
+          ist, und schicken euch ein Angebot.
       - title: Genehmigung
-        text: Wir holen alle luftrechtlichen Genehmigungen ein. Von dir brauchen wir nur
-          die Zustimmung der Grundstückseigentümer:innen.
-        duration: LBA · EASA
-      - title: Design
-        text: "Motive, Storyline und Musik entwickeln wir gemeinsam: erst als
-          Rohanimation, dann mit Farben und Lichteffekten im Takt."
-        duration: Entwürfe & Feedback
+        text: Wir beantragen die Fluggenehmigung beim Luftfahrt-Bundesamt. Von euch
+          brauchen wir nur die Zustimmung der Grundstückseigentümer*innen.
+      - title: Motive mit Freigabe
+        text: Erst seht ihr eine Rohanimation, dann kommt die Musik dazu, zuletzt
+          Farben und Licht. Jeden Schritt gebt ihr frei.
       - title: Showtag
-        text: Rund drei Stunden Aufbau, ein Team aus Pilot:innen und Techniker:innen vor
-          Ort – du genießt mit deinen Gästen.
-        duration: ca. 3 h Aufbau
-  - type: metrics
-    id: warum
-    kicker: Warum FlyingStars
-    headline: In Zahlen statt in Adjektiven.
-    text: Wir erklären keine Drohnenshows mehr. Wir zeigen, was nach über 150 Shows
-      selbstverständlich ist.
-    items:
-      - label: Erfahrung
-        value: 150+ Shows
-        text: Seit 2022 für Marken, Städte, Festivals und Paare – in Deutschland und
-          ganz Europa.
-      - label: Tempo
-        value: 1–2 Wochen
-        text: So schnell kann eine Show im Express stehen. Ideal sind 1–2 Monate
-          Vorlauf.
-      - label: Aus einer Hand
-        value: Design · Genehmigung · Flotte
-        text: Eigenes Design-Team, eigene LBA- und EASA-Genehmigungen, eigene Drohnen.
-      - label: Preis
-        value: ab 7.900 €
-        text: Drei Pakete mit festen Preisen. Gleiches Angebot günstiger gesehen? Wir
-          ziehen mit.
-      - label: Sicherheit
-        value: LBA · EASA · TÜV Nord
-        text: Leichte Drohnen mit rund 300 g, redundante Sicherheitssysteme, Haftpflicht
-          in jedem Paket.
-      - label: Klima
-        value: 100 % Ökostrom
-        text: Kein Feinstaub, kein Müll, kein Knall. Unsere Drohnen werden in der EU
-          gebaut und fliegen Show für Show.
+        text: Ab ca. drei Stunden vor der Show ist die Startfläche gesperrt. Unser Team
+          aus Pilot*innen und Techniker*innen ist vor Ort.
   - type: projectGrid
-    id: projekte
-    kicker: Projekte
-    headline: Ein paar Nächte, die wir nicht vergessen.
-    text: "Über 30 Shows im Jahr, von 100 bis 600 Drohnen. Eine kleine Auswahl:"
+    id: referenzen
+    headline: Shows, die wir schon geflogen sind.
+    text: Produktlaunches, Stadtfeste und Hochzeiten. Zu jeder Show gibt es Video,
+      Ort und Drohnenzahl.
     limit: 4
     cta:
-      label: Alle Projekte
+      label: Alle Referenzen
       href: /projekte/
+  - type: metrics
+    id: sicherheit
+    headline: Genehmigung und Sicherheit übernehmen wir.
+    text: Wir beantragen die Fluggenehmigung selbst und planen jeden Showbereich mit
+      Sicherheitsabstand. Von euch brauchen wir nur die Zustimmung der
+      Grundstückseigentümer*innen.
+    items:
+      - label: Betriebsgenehmigung
+        text: Unsere Betriebsgenehmigung des Luftfahrt-Bundesamts gilt in der ganzen
+          EU. Für andere EU-Länder beantragen wir zusätzlich eine
+          Cross-border-Bestätigung.
+      - label: Sicherheitsbereich
+        text: Rund 100 × 100 Meter, in denen sich während der Show niemand aufhält.
+      - label: Technik
+        text: Geofence und mehrfach abgesicherte Systeme. Die Drohnen wiegen rund 300 g
+          und tragen keine Kameras.
+      - label: Haftpflicht
+        text: Versichert bis 1,3 Mio. €, in jedem Paket enthalten.
+    cta:
+      label: Mehr über uns
+      href: /ueber-uns/
   - type: sustainability
     id: nachhaltigkeit
-    kicker: Nachhaltigkeit
-    headline: Kein Knall. Kein Rauch. Kein Müll.
-    lines:
-      - Kein Knall.
-      - Kein Rauch.
-      - Kein Müll.
-    text: "Nach unserer Show bleibt nur die Erinnerung – kein Rauch über der Stadt,
-      nichts auf dem Boden. Vier Zahlen, die den Unterschied machen:"
-    facts:
-      - label: Kein Knall
-        value: leise
-        text: Statt Knall nur ein Summen – schont Anwohner:innen, Haus- und Wildtiere.
-      - label: Kein Rauch
-        value: "0"
-        text: Feinstaub, Stickoxide oder Schwermetalle vor Ort – nichts landet in Luft,
-          Boden oder Grundwasser.
-        unit: g
-        tone: o
-      - label: Kein Müll
-        value: "0"
-        text: Müll nach der Show. Keine Hülsen, keine Reste – dieselbe Flotte fliegt
-          Show für Show.
-        unit: kg
-      - label: Ökostrom
-        value: "100"
-        text: Ökostrom von naturstrom.
-        unit: "%"
-        tone: g
+    headline: Leise und ohne Rückstände.
+    text: Eine Drohnenshow macht keinen Knall, keinen Feinstaub und keinen Müll.
+    points:
+      - Unsere Drohnen laden mit 100 % Ökostrom von naturstrom.
+      - Die Drohnen kommen aus EU-Fertigung. Akkus und Teile tauschen wir einzeln.
+      - Zu den Shows fahren wir mit E-Transportern.
+    campaign: "Für die Kampagne #Böllerciao der Deutschen Umwelthilfe sind wir im
+      November 2023 mit 150 Drohnen über dem Cantianstadion in Berlin geflogen."
     proofImage:
       src: https://flyingstars.art/wp-content/uploads/2024/10/NATURSTROM-Logo_weiss.png
       alt: naturstrom
-      width: 500
-      height: 100
-    proofText: Unser Strom kommt zu 100 % von naturstrom, zusätzlich leisten wir
-      über ClimatePartner einen Klimabeitrag.
-    campaign: Für die Kampagne der Deutschen Umwelthilfe haben wir im November 2023
-      über dem Cantianstadion in Berlin 150 Drohnen fliegen lassen – als Beweis,
-      dass Silvester auch ohne Böller wunderschön sein kann.
+      width: 300
+      height: 71
   - type: comparison
     id: vergleich
-    kicker: Ehrlicher Vergleich
     headline: Drohne, Feuerwerk oder Laser?
-    text: Jede Technik hat ihre Stärken. Hier siehst du, wann eine Drohnenshow die
-      beste Wahl ist – und wann nicht.
+    text: Jede Technik hat ihre Stärken. So unterscheiden sich die drei bei den
+      Fragen, die am häufigsten kommen.
     rowHeader: Kriterium
     columns:
       - Drohnenshow
@@ -354,154 +304,45 @@ sections:
     rows:
       - label: Logos und Schriftzüge am Himmel
         values:
-          - Ja auch in 3D
+          - Ja, auch in 3D
           - Nein
-          - Teils nur auf Flächen oder Dunst
-        cells:
-          - label: Ja
-            text: auch in 3D
-            tone: y
-          - label: Nein
-            text: ""
-            tone: n
-          - label: Teils
-            text: nur auf Flächen oder Dunst
-            tone: p
+          - Teilweise, nur auf Flächen oder Dunst
       - label: Lautstärke
         values:
-          - Leise Musik nach Wahl
+          - Leise, Musik nach Wahl
           - Sehr laut
           - Leise
-        cells:
-          - label: Leise
-            text: Musik nach Wahl
-            tone: y
-          - label: Sehr laut
-            text: ""
-            tone: n
-          - label: Leise
-            text: ""
-            tone: y
       - label: Rauch, Feinstaub, Müll
         values:
-          - Nichts
+          - Keine
           - Viel
           - Dunst für sichtbare Strahlen nötig
-        cells:
-          - label: Nichts
-            text: ""
-            tone: y
-          - label: Viel
-            text: ""
-            tone: n
-          - label: Dunst
-            text: für sichtbare Strahlen nötig
-            tone: p
       - label: Brandgefahr
         values:
           - Keine
-          - Ja Verbote bei Trockenheit
+          - Ja, Verbote bei Trockenheit
           - Keine
-        cells:
-          - label: Keine
-            text: ""
-            tone: y
-          - label: Ja
-            text: Verbote bei Trockenheit
-            tone: n
-          - label: Keine
-            text: ""
-            tone: y
       - label: Wind und Wetter
         values:
-          - Grenze bis Windstärke 5, kein Starkregen
-          - Grenze bei Sturm abgesagt
-          - Robust auch drinnen
-        cells:
-          - label: Grenze
-            text: bis Windstärke 5, kein Starkregen
-            tone: p
-          - label: Grenze
-            text: bei Sturm abgesagt
-            tone: p
-          - label: Robust
-            text: auch drinnen
-            tone: y
+          - Bis Windstärke 5, kein Starkregen
+          - Bei Sturm abgesagt
+          - Robust, auch drinnen
       - label: Sichtbar aus der Ferne
         values:
           - Kilometerweit
           - Kilometerweit
-          - Begrenzt wirkt am besten nah
-        cells:
-          - label: Kilometerweit
-            text: ""
-            tone: y
-          - label: Kilometerweit
-            text: ""
-            tone: y
-          - label: Begrenzt
-            text: wirkt am besten nah
-            tone: p
-    note: Entwurf · fachliche Prüfung ausstehend
-  - type: team
-    id: team
-    kicker: Team
-    headline: Die Menschen hinter dem Himmel.
-    text: 2022 gegründet, zu Hause im Triple Z auf Zeche Zollverein in Essen.
-      Design, Technik und Genehmigungen machen wir selbst – du hast von der
-      ersten Idee bis zur Landung dieselben Ansprechpartner:innen.
-    members:
-      - name: Ronja Donsbach
-        role: Mitgründerin · GF
-        bio: "Kundenkontakt und Design: vom ersten Gespräch bis zum fertigen
-          Showkonzept."
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/08/Ronja_Teamfoto.jpg
-          alt: Ronja Donsbach
-          width: 800
-          height: 1000
-      - name: Erwin Wilms
-        role: Mitgründer · GF
-        bio: "Recht und Genehmigungen: spricht mit LBA und Flugbehörden, damit deine
-          Show abheben darf."
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/08/Erwin_Teamfoto.jpg
-          alt: Erwin Wilms
-          width: 800
-          height: 1000
-      - name: Florian Becker
-        role: Mitgründer · GF
-        bio: "Finanzen, Personal und Prozesse: sorgt dafür, dass im Hintergrund alles
-          läuft."
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/08/Florian_Teamfoto.jpg
-          alt: Florian Becker
-          width: 800
-          height: 1000
-      - name: Patrick
-        role: Head of Technik
-        bio: "Technik, Flotte und Einkauf: hält jede Drohne startklar."
-      - name: Alejandro Muñoz
-        role: Head of Design
-        bio: Entwirft alle Shows und Choreografien – Bild für Bild, im Takt der Musik.
-    note: Dazu unsere Crew aus Pilot:innen und Techniker:innen, die jede Show vor
-      Ort aufbaut und fliegt.
-    cta:
-      label: Lern uns kennen
-      href: "#anfrage"
+          - Begrenzt, wirkt am besten aus der Nähe
   - type: faq
     id: faq
-    kicker: FAQ
-    headline: Was du vor der Buchung wissen solltest.
-    text: "Die häufigsten Fragen, kurz beantwortet. Für alles andere: ruf uns an
-      oder buch dir einen Videocall."
+    headline: Was ihr vor der Anfrage wissen solltet.
     cta:
-      label: Videocall buchen
-      href: https://calendly.com/team-flyingstars/beratung
+      label: Alle Fragen
+      href: /faq/
     openFirst: true
+    limit: 4
     tags:
       - startseite
   - type: contactForm
-    headline: Erzähl uns von deinem Stück Himmel.
-    text: Zwei kurze Schritte – was du noch nicht weißt, lässt du einfach offen. Wir
-      melden uns innerhalb von 48 Stunden, meist deutlich schneller.
+    headline: Erzählt uns von eurem Termin.
+    text: Datum, Ort und Anlass reichen für eine erste Einschätzung. Was ihr noch
+      nicht wisst, lasst ihr offen.

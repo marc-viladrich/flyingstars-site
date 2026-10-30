@@ -1,0 +1,218 @@
+/* Pricing page and the live preview (30.10.2026). Imported by the packages and preview sections and the pricing page.
+   Tokens come from global.css. Package colours appear only on the package segments, the badge on the stage and the
+   drones; the stage is the page's one signature element. */
+
+/* ---------- packages ---------- */
+.pk.pk-top { padding-top: calc(var(--nav-h) + clamp(40px, 5.5vw, 88px)); padding-bottom: clamp(64px, 7vw, 104px); }
+.pk-head { margin-bottom: clamp(20px, 2.4vw, 28px); }
+.pk-top .pk-head h1 { max-width: 17ch; }
+.pk-duration { color: var(--muted); font-size: 15px; margin: 0 0 clamp(28px, 3.4vw, 44px); max-width: 72ch; }
+.pk-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(4, auto); gap: 0 16px; }
+.pk-card { grid-row: span 4; display: grid; grid-template-rows: subgrid; gap: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(22px, 2.2vw, 30px); min-width: 0; }
+.pk-name { display: flex; align-items: baseline; justify-content: space-between; gap: 6px 14px; flex-wrap: wrap; }
+.pk-name :is(h2, h3) { font: 600 clamp(20px, 1.6vw, 23px)/1.1 var(--display); letter-spacing: 0.02em; font-variation-settings: "opsz" 32; }
+.pk-often { color: var(--muted); font-size: 14px; }
+.pk-price { padding: 18px 0 22px; }
+.pk-price .num { font-size: clamp(38px, 3.6vw, 52px); line-height: 1; font-weight: 500; }
+.pk-scope { margin-top: 10px; color: var(--faint); font-size: 14.5px; }
+.pk-facts { margin: 0; display: grid; gap: 0; align-content: start; border-top: 1px solid var(--line); }
+.pk-facts div { padding: 14px 0; border-bottom: 1px solid var(--line); display: grid; gap: 3px; }
+.pk-facts dt { color: var(--faint); font-size: 13.5px; }
+.pk-facts dd { margin: 0; color: var(--text); font-size: 15.5px; line-height: 1.45; }
+.pk-actions { display: grid; gap: 4px; align-content: end; padding-top: 22px; }
+.pk-actions .btn { width: 100%; min-height: 48px; }
+.pk-actions .btn.ghost { min-height: 44px; }
+.pk-net { margin-top: 18px; color: var(--faint); font-size: 14px; }
+
+/* compact (homepage): name, price, drones and one line on what the audience sees */
+.pk-compact .pk-grid { grid-template-rows: repeat(3, auto); }
+.pk-compact .pk-card { grid-row: span 3; }
+.pk-compact .pk-price { padding: 14px 0 16px; }
+.pk-compact .pk-price .num { font-size: clamp(32px, 2.8vw, 40px); }
+.pk-sky { color: var(--muted); font-size: 15.5px; padding-top: 16px; border-top: 1px solid var(--line); }
+.pk-foot { margin-top: 24px; display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 12px 24px; color: var(--faint); font-size: 14px; }
+
+@media (max-width: 1000px) {
+  .pk-grid { grid-template-columns: 1fr; grid-template-rows: none; gap: 14px; max-width: 40rem; }
+  .pk-card, .pk-compact .pk-card { grid-row: auto; grid-template-rows: none; }
+}
+
+/* ---------- live preview ---------- */
+.pv { padding-top: clamp(64px, 7vw, 112px); padding-bottom: clamp(56px, 7vw, 104px); }
+.pv-head { margin-bottom: clamp(24px, 3vw, 40px); }
+.pv-form { display: grid; gap: 18px; }
+.pv-frame {
+  container-type: inline-size; position: relative; display: grid; grid-template-rows: auto auto auto;
+  border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--line);
+  background: radial-gradient(120% 90% at 50% 110%, rgba(243, 238, 230, 0.045), transparent 62%), #0a0908;
+}
+
+/* occasion: a row of quiet text tabs on the top edge */
+.pv-occ { border: 0; margin: 0; padding: 0; min-width: 0; }
+.pv-occ-row { display: flex; gap: 2px; padding: 8px clamp(10px, 1.4vw, 18px) 0; overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain; }
+.pv-occ-row::-webkit-scrollbar { display: none; }
+.pv-occ label { position: relative; flex: none; cursor: pointer; }
+.pv-occ input, .cfg-pkgs input, .cfg-styles input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
+.pv-occ span { position: relative; display: inline-flex; align-items: center; min-height: 48px; padding: 0 12px; font-size: 15px; color: var(--faint); white-space: nowrap; transition: color 0.2s; }
+.pv-occ span::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 8px; height: 1.5px; border-radius: 2px; background: var(--text); transform: scaleX(0); transform-origin: left; transition: transform 0.25s ease; }
+.pv-occ label:hover span { color: var(--text); }
+.pv-occ input:checked + span { color: var(--text); }
+.pv-occ input:checked + span::after { transform: scaleX(1); }
+.pv-occ input:focus-visible + span { outline: 2px solid var(--cyan); outline-offset: -4px; border-radius: 8px; }
+
+/* the stage: the canvas fills it; caption and picture controls sit in a strip at its foot */
+.cfg-stage { position: relative; height: clamp(400px, 42cqw, calc(100svh - var(--nav-h) - 214px)); }
+.cfg-stage canvas { position: absolute; inset: 0 0 52px 0; width: 100%; height: calc(100% - 52px); }
+.pv-badge { position: absolute; top: 12px; right: clamp(14px, 1.6vw, 22px); pointer-events: none; }
+.pv-badge em { display: inline-block; font: 600 12px/1 var(--body); font-style: normal; letter-spacing: 0.04em; color: var(--ground); background: var(--pkg, var(--orchid)); padding: 6px 9px; border-radius: 999px; transition: background 0.3s; }
+.pv-foot { position: absolute; left: 0; right: 0; bottom: 0; height: 52px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 10px 0 clamp(16px, 1.8vw, 24px); }
+.pv-caption { min-width: 0; font-size: 14px; line-height: 1.35; color: var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cfg-acts { display: flex; align-items: center; gap: 2px; flex: none; }
+.cfg-acts[hidden] { display: none; }
+.cfg-acts button { width: 44px; height: 44px; border: 0; border-radius: 50%; background: transparent; color: var(--muted); font: 400 21px/1 var(--body); cursor: pointer; transition: background 0.2s, color 0.2s; }
+.cfg-acts button:hover { background: rgba(243, 238, 230, 0.08); color: var(--text); }
+.cfg-acts .pv-play { width: auto; padding: 0 14px; border-radius: 999px; font-size: 14px; color: var(--text); border: 1px solid var(--line-strong); margin-right: 6px; }
+.cfg-acts .pv-play[hidden] { display: none; }
+.cfg-acts button:focus-visible { outline: 2px solid var(--cyan); outline-offset: -2px; }
+
+/* states: loading shows a quiet line only if it takes a moment; error shows a still of a real show */
+.pv-status { position: absolute; inset: 0 0 52px; display: grid; place-items: center; margin: 0; color: var(--faint); font-size: 14px; opacity: 0; pointer-events: none; }
+.pv[data-state="loading"] .pv-status { animation: pv-wait 0.4s ease 0.6s forwards; }
+@keyframes pv-wait { to { opacity: 1; } }
+.cfg-error { position: absolute; inset: 0 0 52px; display: grid; align-content: end; margin: 0; }
+.cfg-error img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.55; }
+.cfg-error p { position: relative; margin: 0 clamp(16px, 1.8vw, 24px) 6px; max-width: 46ch; color: var(--text); font-size: 15px; text-shadow: 0 1px 12px #000; }
+.pv[data-state="error"] .pv-caption, .pv[data-state="error"] .cfg-acts, .pv[data-state="error"] .pv-badge { visibility: hidden; }
+
+/* the bar on the lower edge: package, price, what is included, inquiry */
+.pv-bar { display: grid; grid-template-columns: minmax(0, 27rem) minmax(0, 1fr) auto; align-items: center; gap: 16px clamp(20px, 2.6vw, 40px); padding: 16px clamp(14px, 1.6vw, 22px) 18px; border-top: 1px solid var(--line); background: rgba(19, 17, 17, 0.72); }
+.cfg-pkgs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; border: 0; margin: 0; padding: 0; min-width: 0; }
+.cfg-pkgs label { position: relative; cursor: pointer; }
+.cfg-pkgs span { display: grid; gap: 5px; align-content: center; min-height: 60px; padding: 9px 12px; border-radius: 12px; border: 1px solid var(--line); color: var(--muted); transition: border-color 0.2s, background 0.2s, color 0.2s; }
+.cfg-pkgs b { font: 600 14px/1 var(--body); letter-spacing: 0.04em; color: var(--text); transition: color 0.2s; }
+.cfg-pkgs small { font-size: 13px; line-height: 1.2; }
+.cfg-pkgs label:hover span { border-color: var(--line-strong); color: var(--text); }
+.cfg-pkgs input:checked + span { color: var(--text); border-color: var(--c); background: color-mix(in srgb, var(--c) 13%, transparent); }
+.cfg-pkgs input:checked + span b { color: var(--c); }
+.cfg-pkgs input:focus-visible + span { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.cfg-result { display: grid; gap: 4px; min-width: 0; }
+.cfg-price { margin: 0; font-size: clamp(30px, 2.6vw, 40px); line-height: 1; font-weight: 500; }
+.pv-meta { margin: 4px 0 0; color: var(--faint); font-size: 14px; }
+.pv-meta b { color: var(--muted); font-weight: 600; letter-spacing: 0.04em; }
+.pv-includes { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.45; max-width: 52ch; }
+.pv-cta { justify-self: end; }
+
+/* below the stage: the optional own text behind a disclosure, and a note */
+.pv-below { display: flex; flex-wrap: wrap; align-items: start; justify-content: space-between; gap: 12px 32px; }
+.pv-text { flex: 1 1 22rem; max-width: 34rem; }
+.pv-text summary { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; cursor: pointer; list-style: none; color: var(--text); font-size: 15px; border-bottom: 1px solid var(--line-strong); }
+.pv-text summary::-webkit-details-marker { display: none; }
+.pv-text summary::before { content: ""; width: 9px; height: 9px; flex: none; background: linear-gradient(var(--text), var(--text)) center / 9px 1.5px no-repeat, linear-gradient(var(--text), var(--text)) center / 1.5px 9px no-repeat; transition: transform 0.25s; }
+.pv-text[open] summary::before { transform: rotate(45deg); }
+.pv-text summary:hover { border-color: var(--text); }
+.pv-text-body { display: grid; gap: 10px; padding: 16px 0 4px; }
+.pv-text-body > label { font-size: 15px; }
+.cfg-text { width: 100%; min-height: 48px; padding: 0 16px; border-radius: var(--radius); border: 1px solid var(--line-strong); background: var(--ground); color: var(--text); font: inherit; font-size: 16px; }
+.cfg-text::placeholder { color: var(--faint); }
+.pv-hint { color: var(--faint); font-size: 14px; line-height: 1.45; }
+.cfg-styles { display: flex; flex-wrap: wrap; gap: 6px; border: 0; margin: 0; padding: 0; }
+.cfg-styles label { position: relative; cursor: pointer; }
+.cfg-styles span { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+.cfg-styles input:checked + span { color: var(--text); border-color: var(--text); }
+.cfg-styles input:focus-visible + span { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.pv-note { flex: 0 1 40ch; color: var(--faint); font-size: 14px; line-height: 1.5; padding-top: 11px; }
+.pv-noscript { margin-top: 16px; color: var(--muted); }
+.cfg-bar { display: none; }
+
+@media (max-width: 1180px) {
+  .pv-bar { grid-template-columns: minmax(0, 1fr) auto; }
+  .cfg-pkgs { grid-column: 1 / -1; }
+}
+@media (max-width: 900px) {
+  .pv-frame { margin: 0 calc(var(--pad) * -1); border-radius: 0; border-left: 0; border-right: 0; }
+  .pv-occ-row { padding: 4px calc(var(--pad) - 12px) 0; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent); }
+  .cfg-stage { height: clamp(340px, 50svh, 540px); }
+  .cfg-stage canvas { inset: 0 0 60px 0; height: calc(100% - 60px); }
+  .pv-status, .cfg-error { inset: 0 0 60px; }
+  .pv-foot { height: 60px; padding-left: var(--pad); padding-right: calc(var(--pad) - 10px); }
+  .pv-caption { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; font-size: 13.5px; }
+  .pv-badge { right: var(--pad); }
+  .pv-bar { grid-template-columns: minmax(0, 1fr); padding: 14px var(--pad) 20px; gap: 14px; }
+  .cfg-pkgs span { min-height: 58px; padding: 8px 10px; }
+  .cfg-pkgs small { font-size: 12.5px; }
+  .pv-cta { justify-self: stretch; }
+  .pv-note { padding-top: 0; }
+  /* package, price and inquiry stay in reach while the stage is in view and its own bar is not */
+  .cfg-bar { position: fixed; z-index: 15; inset: auto 0 0 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px var(--pad) calc(10px + env(safe-area-inset-bottom, 0px)); background: rgba(15, 13, 12, 0.94); border-top: 1px solid var(--line); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); font-size: 15px; transform: translateY(110%); transition: transform 0.3s ease; }
+  .cfg-bar[data-show="true"] { transform: none; }
+  .cfg-bar b { letter-spacing: 0.04em; margin-right: 6px; }
+  .cfg-bar .num { font-size: 19px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pv-occ span::after, .cfg-bar { transition: none; }
+}
+
+/* ---------- what every package pays for ---------- */
+.pr-incl { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line-strong); }
+.pr-incl li { padding: 24px 24px 8px 0; display: grid; gap: 8px; align-content: start; }
+.pr-incl li + li { padding-left: 24px; border-left: 1px solid var(--line); }
+.pr-incl h3 { font-size: clamp(20px, 1.6vw, 23px); }
+.pr-incl p { color: var(--muted); font-size: 15.5px; }
+@media (max-width: 1100px) {
+  .pr-incl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pr-incl li:nth-child(3) { padding-left: 0; border-left: 0; }
+  .pr-incl li:nth-child(n + 3) { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 16px; }
+}
+@media (max-width: 640px) {
+  .pr-incl { grid-template-columns: 1fr; }
+  .pr-incl li, .pr-incl li + li { padding: 20px 0 4px; border-left: 0; }
+  .pr-incl li + li { border-top: 1px solid var(--line); margin-top: 16px; }
+}
+
+/* ---------- comparison ---------- */
+/* positioned, so the screen-reader-only cell texts (absolute) stay inside the scroll area */
+.pr-table-wrap { position: relative; overflow-x: auto; margin: 0 calc(var(--pad) * -1); padding: 0 var(--pad); }
+.pr-table { width: 100%; min-width: 760px; border-collapse: collapse; font-size: 15px; table-layout: fixed; }
+.pr-table th, .pr-table td { text-align: left; padding: 15px 18px 15px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.pr-table col.k { width: 25%; }
+.pr-table thead th { vertical-align: bottom; padding-bottom: 18px; border-bottom-color: var(--line-strong); font-weight: 400; }
+.pr-table thead b { display: block; font: 600 17px/1.2 var(--display); letter-spacing: 0.02em; color: var(--text); }
+.pr-table thead span { display: block; margin-top: 6px; font: 500 22px/1 var(--display); letter-spacing: -0.02em; color: var(--muted); font-variant-numeric: tabular-nums; }
+.pr-table tbody th { font-weight: 500; color: var(--text); }
+.pr-table td { color: var(--muted); }
+.pr-table td.all { color: var(--text); }
+.pr-table .no { color: var(--faint); }
+@media (max-width: 640px) {
+  /* phones: the row labels stay put while the packages scroll sideways */
+  .pr-table { min-width: 600px; font-size: 14.5px; }
+  .pr-table col.k { width: 132px; }
+  .pr-table tbody th, .pr-table thead td { position: sticky; left: 0; z-index: 1; background: var(--ground); padding-right: 14px; box-shadow: 12px 0 12px -12px rgba(0, 0, 0, 0.9); }
+}
+.pr-fine { margin-top: 18px; color: var(--faint); font-size: 14px; max-width: 72ch; }
+
+/* ---------- extras: a price list, not cards ---------- */
+.pr-extras { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line-strong); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(28px, 4vw, 64px); }
+.pr-extras li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 24px; padding: 20px 0; border-bottom: 1px solid var(--line); align-content: start; }
+.pr-extras h3 { font: 500 19px/1.3 var(--display); letter-spacing: -0.01em; font-variation-settings: "opsz" 24; }
+.pr-extras .price { text-align: right; color: var(--text); font-size: 15px; white-space: nowrap; }
+.pr-extras p { grid-column: 1 / -1; color: var(--muted); font-size: 15px; max-width: 52ch; }
+.pr-extras .link { grid-column: 1 / -1; justify-self: start; font-size: 15px; margin-top: 4px; }
+@media (max-width: 900px) { .pr-extras { grid-template-columns: 1fr; } }
+@media (max-width: 520px) {
+  .pr-extras li { grid-template-columns: 1fr; }
+  .pr-extras .price { text-align: left; white-space: normal; }
+}
+
+/* ---------- price questions ---------- */
+.pr-faq { display: grid; grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr); gap: clamp(28px, 5vw, 80px); align-items: start; }
+.pr-faq .sec-head { margin-bottom: 0; }
+.pr-faq .answer a { align-self: start; }
+@media (max-width: 900px) { .pr-faq { grid-template-columns: 1fr; } }
+
+/* ---------- closing ---------- */
+.pr-close { display: grid; gap: 18px; justify-items: start; max-width: 46rem; }
+.pr-close p { color: var(--muted); font-size: clamp(17px, 1.3vw, 19px); max-width: var(--measure); }
+.pr-close .btn { margin-top: 10px; }
+
+/* the section after the stage starts below the lifted surface, not flush against it */
+.section.pv + .section:not(.alt) { padding-top: var(--section); }

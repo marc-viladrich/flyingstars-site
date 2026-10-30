@@ -18,9 +18,12 @@ import Steps from './sections/Steps.astro';
 import Comparison from './sections/Comparison.astro';
 import Team from './sections/Team.astro';
 import LogoBar from './sections/LogoBar.astro';
+import Packages from './sections/Packages.astro';
+import ShowPreview from './sections/ShowPreview.astro';
+import Timeline from './sections/Timeline.astro';
 
 interface Props { sections: Section[] }
 const { sections } = Astro.props;
-const map = { showreelHero: FlightHero, occasions: Occasions, metrics: Metrics, sustainability: Sustainability, hero: Hero, textMedia: TextMedia, faq: Faq, cta: Cta, postList: PostList, projectGrid: ProjectGrid, contactForm: ContactForm, pricing: Pricing, steps: Steps, comparison: Comparison, team: Team, logoBar: LogoBar } as const;
+const map = { showreelHero: FlightHero, occasions: Occasions, metrics: Metrics, sustainability: Sustainability, hero: Hero, textMedia: TextMedia, faq: Faq, cta: Cta, postList: PostList, projectGrid: ProjectGrid, contactForm: ContactForm, pricing: Pricing, steps: Steps, comparison: Comparison, team: Team, logoBar: LogoBar, packages: Packages, showPreview: ShowPreview, timeline: Timeline } as const;
 ---
 {sections.map((s, i) => { const C = map[s.type]; return <C {...(s as any)} index={i} />; })}

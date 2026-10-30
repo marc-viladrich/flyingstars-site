@@ -6,9 +6,9 @@ const id = `s${index}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 ---
 <section class="section" aria-labelledby={id}>
-  <div class="wrap measure">
+  <div class="sec-head cta-block">
     <H id={id}>{headline}</H>
-    {text && <p class="muted">{text}</p>}
-    <p><a class="btn" href={button.href}>{button.label}</a></p>
+    {text && <p>{text}</p>}
+    <p class="actions"><a class="btn primary" href={button.href}>{button.label}</a></p>
   </div>
 </section>

@@ -11,7 +11,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
-    "test": "node --test 'scripts/*.test.mjs' && playwright test",
+    "test": "node --test 'scripts/*.test.mjs' && playwright test --grep-invert \"Physikalisch fliegbar\" && playwright test tests/show-physics.spec.ts --workers=2",
     "gates": "astro check && astro build && npm test"
   },
   "dependencies": {

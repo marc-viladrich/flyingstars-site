@@ -64,7 +64,7 @@ test('Neue Paketauswahl entfernt eine zuvor berechnete Drohnenanzahl', async ({p
 for (const route of ['/drohnenshow-preise/', '/musikalischer-teaser-bokkenrijders/']) {
   test(`Gemeinsame Pausenfunktion hält die Formation an: ${route}`, async ({page}) => {
     await page.goto(route);
-    const canvas = page.locator(route.includes('preise') ? '#swarm' : 'canvas[data-formation]');
+    const canvas = page.locator(route.includes('preise') ? '#cfg-field' : 'canvas[data-formation]'); // pricing page: the live preview
     await canvas.scrollIntoViewIfNeeded();
     if (!route.includes('preise')) await expect(page.locator('[data-tally]')).toContainText('600 Drohnen');
     const frame = () => canvas.evaluate(node => (node as HTMLCanvasElement).toDataURL());

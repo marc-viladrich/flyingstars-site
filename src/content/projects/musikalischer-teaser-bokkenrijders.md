@@ -19,7 +19,7 @@
     "name": "Bokkenrijders",
     "meta": {
       "title": "Bokkenrijders: 600 Drohnen im Musical in Maastricht",
-      "description": "Unsere bisher größte Show: 600 Drohnen für das Freiluft-Musical Bokkenrijders der Toneelgroep Maastricht – als Teaser 2025 und in den Aufführungen 2026."
+      "description": "600 Drohnen für das Freiluft-Musical Bokkenrijders der Toneelgroep Maastricht: als Teaser 2025 und in 20 Aufführungen im Juni 2026."
     },
     "cardTitle": "Bokkenrijders: unsere bisher größte Show",
     "category": "Musical · Maastricht",
@@ -44,7 +44,7 @@
       },
       {
         "label": "Termine",
-        "value": "Teaser 04.09.2025 · Musical Juni 2026"
+        "value": "Teaser 04.09.2025 · Musical Juni 2026, 20 Aufführungen"
       },
       {
         "label": "Drohnen",
@@ -54,22 +54,22 @@
     "numbers": [
       {
         "value": 600,
-        "label": "Drohnen – unsere bisher größte Show"
+        "label": "Drohnen, unsere bisher größte Einzelshow"
       },
       {
-        "value": 2,
-        "label": "Etappen: Teaser 2025, Musical 2026"
+        "value": 12000,
+        "label": "Drohnen in einem Monat"
       },
       {
-        "value": 5,
-        "label": "Windstärke – ab da bleiben die Drohnen am Boden"
+        "value": 20,
+        "label": "Shows im Juni 2026, je 600 Drohnen"
       }
     ],
     "story": [
       {
         "kicker": "01 · Die Idee",
         "title": "Reiter, die durch die Luft fliegen",
-        "text": "Der Legende nach ritten die Bokkenrijders auf Ziegenböcken durch die Nacht, vom Teufel gesandt. Drinnen hätte man das mit Hologrammen erzählt. Unter freiem Himmel suchten Produzent Servé Hermans und Produktionsleiterin Roos Aerts nach etwas Größerem – und kamen zu uns nach Gelsenkirchen.",
+        "text": "Der Legende nach ritten die Bokkenrijders auf Ziegenböcken durch die Nacht, vom Teufel gesandt. Drinnen hätte man das mit Hologrammen erzählt. Unter freiem Himmel suchten Produzent Servé Hermans und Produktionsleiterin Roos Aerts nach etwas Größerem und kamen zu uns nach Gelsenkirchen.",
         "image": {
           "src": "https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijders/03.jpg",
           "alt": "Der Teufel",
@@ -89,7 +89,7 @@
       {
         "kicker": "03 · Das Musical",
         "title": "Die Drohnen gehören zum Finale",
-        "text": "Bei den Aufführungen im Juni 2026 erscheint nach der Hinrichtung der Hauptfigur ihr Totenkopf mit Zylinder am Himmel. Er weint Blut, das zu einem schlagenden Herzen wird. Funken werden zum Sternenhimmel, am Ende blickt der Teufel ins Publikum.",
+        "text": "Im Juni 2026 flogen wir 20 Aufführungen mit je 600 Drohnen. Nach der Hinrichtung der Hauptfigur erscheint nach der Hinrichtung der Hauptfigur ihr Totenkopf mit Zylinder am Himmel. Er weint Blut, das zu einem schlagenden Herzen wird. Funken werden zum Sternenhimmel, am Ende blickt der Teufel ins Publikum.",
         "image": {
           "src": "https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijders/01.jpg",
           "alt": "Totenkopf mit Zylinder",
@@ -99,7 +99,7 @@
       {
         "kicker": "04 · Die Herausforderung",
         "title": "Flughafen, Hotel, zwei Autobahnen",
-        "text": "Alles direkt nebenan, dazu kaum Erfahrungswerte für so eine Show in den Niederlanden. Geflogen wird erst bei Dunkelheit und wenn der Flughafen geschlossen ist. Ab Windstärke 5 oder bei Starkregen bleiben die Drohnen am Boden.",
+        "text": "Alles direkt nebenan, dazu kaum Erfahrungswerte für so eine Show in den Niederlanden. Geflogen wird erst bei Dunkelheit und wenn der Flughafen geschlossen ist. Wir fliegen bis Windstärke 5, bei stärkerem Wind oder Starkregen bleiben die Drohnen am Boden.",
         "image": {
           "src": "https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijders/02.jpg",
           "alt": "Das Publikum zückt die Handys",
@@ -110,7 +110,7 @@
     "formation": {
       "src": "/media/projekte/bokkenrijders/formation.json",
       "title": "Der Teufel, Drohne für Drohne.",
-      "text": "Diese Punkte stammen aus unserer Original-Showdatei – alle 600 Drohnen an ihrer echten Position, so wie das Publikum von unten auf den Kopf geschaut hat. Beweg die Maus – er schaut dir hinterher."
+      "text": "Diese Punkte stammen aus unserer Original-Showdatei: alle 600 Drohnen an ihrer echten Position, so wie das Publikum von unten auf den Kopf geschaut hat. Bewegt die Maus, er schaut euch hinterher."
     },
     "gallery": [
       {
@@ -174,13 +174,13 @@
         "publication": "De Limburger",
         "date": "8. Juni 2026",
         "title": "„Wat er komt kijken bij show met 600 drones“",
-        "text": "Die Zeitung schaute unseren Pilot:innen in Maastricht über die Schulter. Eine Drohnenshow als Teil eines Musicals war in den Niederlanden bis dahin nicht zu sehen."
+        "text": "Die Zeitung schaute unseren Pilot*innen in Maastricht über die Schulter. Eine Drohnenshow als Teil eines Musicals war in den Niederlanden bis dahin nicht zu sehen."
       }
     ],
     "nextRoute": "nfl-berlin-game",
     "cta": {
-      "title": "Du planst etwas in dieser Größe?",
-      "text": "Ob Bühne, Stadion oder Festival: Wir entwickeln die Show mit dir, holen die Genehmigungen ein und fliegen sie."
+      "title": "Ihr plant etwas in dieser Größe?",
+      "text": "Ob Bühne, Stadion oder Festival: Wir entwickeln die Show mit euch, holen die Genehmigungen ein und fliegen sie."
     }
   }
 }

@@ -4,6 +4,7 @@ import '../styles/global.css';
 import { site } from '../site.config';
 import Logo from '../components/Logo.astro';
 import { optimizedImage } from '../lib/media';
+const contact = site.contact;
 interface Props { title: string; description: string; noindex?: boolean; canonicalPath?: string; image?: string; navSection?: string; fullBleed?: boolean; }
 const { title, description, noindex = false, canonicalPath, image, navSection, fullBleed: bleed = false } = Astro.props;
 const canonical = new URL(canonicalPath ?? Astro.url.pathname, Astro.site);
@@ -47,18 +48,22 @@ const eco = await optimizedImage('https://flyingstars.art/wp-content/uploads/202
     </header>
     <dialog class="mobile-menu" id="mobile-menu" aria-label="Hauptnavigation">
       <div class="top"><Logo /><button class="menu-btn menu-close" type="button" data-menu-close aria-label="Menü schließen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg></button></div>
-      <nav aria-label="Mobile Navigation">{site.nav.map((item) => <a href={item.href}>{item.label}</a>)}<a href="/#team">Über uns</a><a href="/blog/">Blog</a><a href="/#anfrage">Show anfragen</a></nav>
-      <span class="lang">DE · Deutsch</span>
+      <nav aria-label="Mobile Navigation">{site.nav.map((item) => <a href={item.href} aria-current={navState(item.href)}>{item.label}</a>)}<a href="/blog/">Blog</a></nav>
+      <div class="mobile-foot"><a class="btn primary" href={site.cta.href}>{site.cta.label}</a><a class="mobile-call" href={contact.phone.href}>{contact.phone.label}</a></div>
     </dialog>
     <main id="main" class:list={{ 'content-page': !fullBleed }}><slot /></main>
     <footer class="footer">
       <div class="cols">
-        <div class="footer-brand"><Logo /><p>Drohnenshows seit 2022. Über 150 Shows in Deutschland und Europa.</p><div class="eco"><img src={eco.src} width={eco.width} height={eco.height} alt="naturstrom" loading="lazy" /><span>100 % Ökostrom</span></div></div>
-        <div><h2 class="footer-heading">Kontakt</h2><address><span>Besucht uns:<br />Triple Z – Gründungszentrum Zeche Zollverein<br />Katernberger Str. 107, 45327 Essen</span><span>Post:<br />FlyingStars GmbH<br />Bulmker Straße 107, 45888 Gelsenkirchen</span><span><a href="mailto:team@flyingstars.art">team@flyingstars.art</a><br /><a href="tel:+4920988306562">0209 883 065 62</a></span></address></div>
-        <div><h2 class="footer-heading">Seiten</h2><ul>{site.nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}<li><a href="/#team">Über uns</a></li><li><a href="/blog/">Blog</a></li></ul></div>
-        <div><h2 class="footer-heading">Folgen</h2><ul><li><a href="https://www.instagram.com/flyingstars.art/" rel="noopener noreferrer" target="_blank">Instagram</a></li><li><a href="https://www.youtube.com/@flyingstars." rel="noopener noreferrer" target="_blank">YouTube</a></li><li><a href="https://www.tiktok.com/@flyingstars_art" rel="noopener noreferrer" target="_blank">TikTok</a></li><li><a href="https://www.facebook.com/FlyingStars.Art/" rel="noopener noreferrer" target="_blank">Facebook</a></li></ul></div>
+        <div class="footer-brand"><Logo /><p>{site.footer.note}</p><p class="eco"><img src={eco.src} width={eco.width} height={eco.height} alt="naturstrom" loading="lazy" decoding="async" /><span>Wir laden mit 100 % Ökostrom.</span></p></div>
+        {site.footer.columns.map((column, i) => <nav aria-labelledby={`footer-col-${i}`}><h2 class="footer-heading" id={`footer-col-${i}`}>{column.heading}</h2><ul>{column.links.map((link) => <li><a href={link.href}>{link.label}</a></li>)}</ul></nav>)}
+        <div><h2 class="footer-heading">Kontakt</h2><address>
+          <span><span class="footer-k">Besuch</span>{site.footer.address.visit.map((line) => <><br />{line}</>)}</span>
+          <span><span class="footer-k">Post</span>{site.footer.address.post.map((line) => <><br />{line}</>)}</span>
+          <span><a href={`mailto:${contact.email}`}>{contact.email}</a><br /><a href={contact.phone.href}>{contact.phone.label}</a><br />Mobil und WhatsApp: <a href={contact.mobile.href}>{contact.mobile.label}</a></span>
+        </address></div>
+        <div><h2 class="footer-heading">Folgen</h2><ul>{site.footer.social.map((link) => <li><a href={link.href} rel="noopener noreferrer" target="_blank">{link.label}</a></li>)}</ul></div>
       </div>
-      <div class="base mono"><span>© {new Date().getFullYear()} FlyingStars GmbH</span><nav aria-label="Rechtliches">{site.footer.legal.map((item) => <a href={item.href}>{item.label}</a>)}</nav><span>Website-Vorschau</span></div>
+      <div class="base"><span>© {new Date().getFullYear()} FlyingStars GmbH</span><nav aria-label="Rechtliches">{site.footer.legal.map((item) => <a href={item.href} rel={item.href.startsWith('https://') ? 'noopener' : undefined}>{item.label}</a>)}</nav><span class="preview-note">Website-Vorschau</span></div>
     </footer>
     <script>
       import '../scripts/site';
