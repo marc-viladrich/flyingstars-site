@@ -4,6 +4,12 @@ Website: **[flyingstars-site.pages.dev](https://flyingstars-site.pages.dev/)** �
 
 Astro-Instanz des `astro-site-template` für den Flying-Stars-Relaunch. Dieser Branch setzt die Kundenreferenz mit Startseite, Preisrechner und vier Case-Seiten um. Die Produktionsseite aktualisiert sich erst nach dem freigegebenen Merge. [Umsetzung und Unterschiede zur Vercel-Vorlage](docs/flyingstars-reference.md) und [Brevo-/CLI-Anleitung](docs/credentials.md).
 
+## Stand 30.10.2026: Designsystem „Lichtpunkt“
+
+Die Site hat das Design des Vercel-Prototyps verlassen. Verbindlich ist `docs/DESIGN.md` (Tokens, Typografie mit Bricolage Grotesque und Inter, Layout- und Sprachregeln). Seiten: Start, Preise mit Live-Vorschau (`docs/show-konfigurator.md`, dreizehnte Fassung), Über uns, Hochzeit, Indoor, Marken & Werbung mit Agenturen, Referenzen und vier Fallstudien, FAQ, Kontakt, Blog, Impressum, Datenschutz. Inhalte folgen dem FlyingStars-Fragebogen vom 21.10.2026; offene Freigaben (Preise, Logos, Rechtstexte, Testimonials) stehen in den Dateien als Kommentar.
+
+Gates: `npm run gates` prüft Typen, Build, Node-Tests, die Browser-Tests (Desktop und Mobil) und danach getrennt die Physik-Tests der Vorschau mit zwei Workern, weil sie unter CPU-Last sonst Frames verlieren.
+
 ## Das Modell
 
 ```

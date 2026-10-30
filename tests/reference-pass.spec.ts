@@ -2,11 +2,12 @@ import { test, expect, type Page } from '@playwright/test';
 
 // Findings from the second comparison pass against the shared Vercel reference.
 
+// 30.10.2026: the pages left the reference design (docs/DESIGN.md); what stays tested is behaviour, not parity.
 const cases = [
-  { route: '/musikalischer-teaser-bokkenrijders/', nextChars: 6, title: 'Bokkenrijders: 600 Drohnen im Musical in Maastricht | FlyingStars' },
-  { route: '/nfl-berlin-game/', nextChars: 8, title: 'NFL Berlin Game: 300 Drohnen für die Indianapolis Colts | FlyingStars' },
-  { route: '/exploring-reinvented-der-neue-ford-explorer/', nextChars: 4, title: 'Exploring Reinvented: 350 Drohnen für den neuen Ford Explorer | FlyingStars' },
-  { route: '/puma-bundesliga/', nextChars: 13, title: 'PUMA: 100 Drohnen zum Anstoß eines Bundesliga-Derbys | FlyingStars' },
+  { route: '/musikalischer-teaser-bokkenrijders/', title: /Bokkenrijders.*\| FlyingStars$/ },
+  { route: '/nfl-berlin-game/', title: /NFL.*\| FlyingStars$/ },
+  { route: '/exploring-reinvented-der-neue-ford-explorer/', title: /Ford Explorer.*\| FlyingStars$/ },
+  { route: '/puma-bundesliga/', title: /PUMA.*\| FlyingStars$/ },
 ];
 
 /** Puts the element at the bottom edge of the viewport and reports what the visitor would hit at its corners. */
@@ -39,22 +40,22 @@ test('Pausierte Bewegung bleibt beim Seitenwechsel pausiert', async ({ page }) =
 });
 
 for (const project of cases) {
-  test(`Case übernimmt Metadaten, Navigation und Titelgröße der Referenz: ${project.route}`, async ({ page }) => {
+  test(`Case trägt eigene Metadaten, markiert Referenzen in der Navigation und verlinkt das nächste Projekt: ${project.route}`, async ({ page }) => {
     await page.goto(project.route);
     await expect(page).toHaveTitle(project.title);
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /\.jpg$/);
     if (await page.locator('header.nav nav').isVisible()) {
       await expect(page.locator('header.nav nav a[href="/projekte/"]')).toHaveAttribute('aria-current', 'true');
     }
-    // The reference scales the next-case title by its longest word (values taken from its markup).
-    await expect(page.locator('.c-next b')).toHaveAttribute('style', `--chars:${project.nextChars}`);
+    await expect(page.locator('.c-next')).toHaveAttribute('href', /^\/[a-z0-9-]+\/$/);
   });
 }
 
-test('Startseite trägt Titel, Beschreibung und Vorschaubild der Referenz', async ({ page }) => {
+test('Startseite trägt Titel, Beschreibung und Vorschaubild', async ({ page }) => {
   await page.goto('/');
-  await expect(page).toHaveTitle('Drohnenshows buchen – über 150 Shows seit 2022 | FlyingStars');
-  await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /über 150 Shows seit 2022, eigene Flotte/);
+  await expect(page).toHaveTitle(/Drohnenshows für Firmen, Städte und Hochzeiten \| FlyingStars/);
+  const description = await page.locator('meta[name="description"]').getAttribute('content');
+  expect(description?.length ?? 0).toBeGreaterThanOrEqual(50);
   await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /\.jpg$/);
 });
 
@@ -67,17 +68,6 @@ test('Text am Himmel wandert mit der Anfrage ins Formular', async ({ page }) => 
   await expect(page).toHaveURL(/\/kontakt\/\?/);
   await expect(page.locator('#inquiry-form [name=paket]')).toHaveValue(/HORIZON/);
   await expect(page.locator('#inquiry-form [name=message]')).toHaveValue(/Eigener Text: „ANNA & TOM“ \(Schreibschrift\)/);
-});
-
-test('Scrollstory hebt auf breiten Bildschirmen nur den aktiven Abschnitt hervor', async ({ page }, info) => {
-  test.skip(info.project.name !== 'desktop', 'Mobil stehen alle Abschnitte untereinander mit eigenem Bild.');
-  await page.goto('/musikalischer-teaser-bokkenrijders/');
-  const steps = page.locator('.c-step');
-  await steps.nth(1).scrollIntoViewIfNeeded();
-  await expect(steps.nth(1)).toHaveClass(/\bon\b/);
-  const opacity = (index: number) => steps.nth(index).locator('h2').evaluate((node) => Number(getComputedStyle(node).opacity));
-  await expect.poll(() => opacity(1)).toBe(1);
-  await expect.poll(() => opacity(0)).toBeLessThan(1);
 });
 
 /** Counts coloured formation pixels; the grey dimension lines do not count. */

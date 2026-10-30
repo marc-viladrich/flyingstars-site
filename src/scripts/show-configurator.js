@@ -163,13 +163,13 @@ export function mountPreview(root = document.querySelector("[data-preview]")) {
     radio.focus({ preventScroll: true });
   });
 
-  // phones: package, price and "Anfragen" stay in reach while the stage is in view and the bar below it is not
-  const bar = root.querySelector(".cfg-bar"), seen = { section: false, cta: false };
-  const toggleBar = () => { bar.dataset.show = String(seen.section && !seen.cta); };
-  // the bar's own inquiry button counts as seen only when it is fully in view
+  // phones: package, price and "Anfragen" stay in reach while the stage is in view and its own control bar is not;
+  // as soon as any part of the control bar shows, the fixed bar leaves so it never covers the package buttons
+  const bar = root.querySelector(".cfg-bar"), seen = { section: false, controls: false };
+  const toggleBar = () => { bar.dataset.show = String(seen.section && !seen.controls); };
   const watch = new IntersectionObserver((entries) => {
-    for (const e of entries) { if (e.target === root) seen.section = e.isIntersecting; else seen.cta = e.intersectionRatio > 0.98; }
+    for (const e of entries) { if (e.target === root) seen.section = e.isIntersecting; else seen.controls = e.isIntersecting; }
     toggleBar();
-  }, { threshold: [0, 1] });
-  watch.observe(root); watch.observe($("#cfg-cta"));
+  }, { threshold: 0 });
+  watch.observe(root); watch.observe($(".pv-bar"));
 }

@@ -60,3 +60,34 @@ test('Reduzierte Bewegung zeigt eine statische echte Formation', async ({ page }
     return pixels.some((value, index) => index % 4 === 3 && value > 0);
   })).toBe(true);
 });
+
+test('Kennzahlen stehen ohne Scrollen fertig da, die Anfrage nennt die Referenz', async ({ page }) => {
+  await page.goto('/musikalischer-teaser-bokkenrijders/');
+  // read right after load, before anything could have scrolled into view
+  // one read without retrying: a count-up would still show its start value here
+  expect(await page.locator('.c-num b').allTextContents()).toEqual(['600', '12.000', '20']);
+  await expect(page.locator('section[aria-labelledby="cta-h"] a.btn')).toHaveAttribute('href', '/kontakt/?anlass=firma&quelle=referenz-musikalischer-teaser-bokkenrijders');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
+});
+
+test('Globale Pause mitten im Start zeigt sofort die fertige Formation', async ({ page }) => {
+  await page.goto('/puma-bundesliga/');
+  await page.locator('.c-play').scrollIntoViewIfNeeded();
+  await expect(page.locator('[data-tally]')).toContainText('Drohnen');
+  // the drones are still on the ground or climbing now; the pause has to land them in their places
+  await page.locator('header.nav').getByRole('button', { name: 'Bewegung pausieren', exact: true }).click();
+  const picture = () => page.locator('canvas[data-formation]').evaluate((node) => {
+    const canvas = node as HTMLCanvasElement;
+    const d = canvas.getContext('2d')!.getImageData(0, 0, canvas.width, canvas.height).data;
+    let n = 0, ys = 0;
+    for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 40 && Math.max(d[i], d[i + 1], d[i + 2]) > 120) { n++; ys += Math.floor(i / 4 / canvas.width); }
+    return { n, centre: n ? ys / n / canvas.height : 0 };
+  });
+  const first = await picture();
+  expect(first.n).toBeGreaterThan(500);
+  // finished formation sits in the middle of the stage, a take-off would be at the bottom edge
+  expect(first.centre).toBeGreaterThan(0.25);
+  expect(first.centre).toBeLessThan(0.75);
+  await page.waitForTimeout(500);
+  expect(await picture()).toEqual(first);
+});

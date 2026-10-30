@@ -24,9 +24,9 @@ const title = data.titleLines.reduce((all, line) => (/^\p{Ll}/u.test(line) ? `${
 // The page heading always names the project, also when the show title does not ("Stronger Together" for PUMA).
 const namePrefix = title.toLowerCase().includes(data.name.toLowerCase()) ? '' : `${data.name}: `;
 // "Drohnen: 600" reads as "600 Drohnen" in a line of facts; every other value speaks for itself.
-const facts = data.credits.map((credit) => ({ ...credit, text: /^\d+$/.test(credit.value) ? `${credit.value} ${credit.label}` : credit.value }));
+const facts = data.credits.map((credit) => ({ ...credit, text: /^\d+$/.test(credit.value) ? `${credit.value}\u00a0${credit.label}` : credit.value }));
 const occasion = (category: string) => category.split('·')[0].trim();
-const nextMeta = next && nextData ? [occasion(nextData.category), next.data.location, `${nextData.drones} Drohnen`].filter(Boolean).join(' · ') : '';
+const nextMeta = next && nextData ? [occasion(nextData.category), next.data.location, `${nextData.drones}\u00a0Drohnen`].filter(Boolean).join(' · ') : '';
 const inquiry = `/kontakt/?anlass=firma&quelle=referenz-${data.route}`;
 ---
 <div class="case">

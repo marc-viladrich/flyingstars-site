@@ -292,9 +292,9 @@ td.us { color: var(--text); }
 .c-hero .hero-copy { max-width: 920px; gap: 20px; }
 .c-hero h1 { max-width: 14ch; }
 /* one line of facts that wraps like text; the separator stays at the end of a line, never at the start of the next */
-.c-credits { margin: 4px 0 0; color: rgba(243, 238, 230, 0.74); font-size: 15px; line-height: 1.6; max-width: 62ch; }
+.c-credits { pointer-events: auto; margin: 4px 0 0; color: rgba(243, 238, 230, 0.74); font-size: 15px; line-height: 1.6; max-width: 62ch; }
 .c-credits div, .c-credits dd { display: inline; margin: 0; }
-.c-credits div:not(:last-child)::after { content: "\00a0\00a0·\00a0 "; content: "\00a0\00a0·\00a0 " / ""; color: rgba(243, 238, 230, 0.45); }
+.c-credits div:not(:last-child)::after { content: "\00a0· "; content: "\00a0· " / ""; color: rgba(243, 238, 230, 0.45); }
 
 .c-nums { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px clamp(28px, 4vw, 64px); max-width: 76rem; }
 .c-num { display: grid; gap: 14px; align-content: start; }

@@ -12,7 +12,7 @@ const projects = (await getCollection('projects', (p) => !p.data.draft))
   .slice(0, limit);
 const images = new Map(await Promise.all(projects.filter((p) => p.data.cover).map(async (p) => [p.id, await optimizedImage(p.data.cover!.src)] as const)));
 // One line of facts: occasion (first part of the category, e.g. "Sport"), venue, drones.
-const meta = (p: (typeof projects)[number]) => [p.data.showcase ? p.data.showcase.category.split('·')[0].trim() : p.data.client, p.data.location, p.data.showcase && `${p.data.showcase.drones} Drohnen`].filter(Boolean).join(' · ');
+const meta = (p: (typeof projects)[number]) => [p.data.showcase ? p.data.showcase.category.split('·')[0].trim() : p.data.client, p.data.location, p.data.showcase && `${p.data.showcase.drones}\u00a0Drohnen`].filter(Boolean).join(' · ');
 ---
 <section class="section" id={id} aria-labelledby={headingId}>
   <div class="sec-head"><H id={headingId}>{headline}</H>{text && <p>{text}</p>}</div>
