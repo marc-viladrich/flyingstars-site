@@ -5,11 +5,13 @@
 // lebendige Wolke, mittendrin ein Beispiel-Logo („Das könnte euer Logo sein“). Rechts ein reduziertes Wireframe des
 // Konfigurators im Stil einer Motion-Grafik: Anlass-Chip, Paketknopf und Regler wechseln synchron zur Bühne. Das
 // Wireframe ist reine Dekoration (aria-hidden, keine Formularelemente); bedienbar ist nur der Knopf in den Konfigurator.
+// Runde 8 (Marc): das Wireframe stark reduziert und größer: unbeschriftete Anlass-Pills, die drei Paketknöpfe in ihren
+// Farben, der Regler mit „N Drohnen“ und der Preis als Euro-Zeichen (€ bis €€€€€€), keine Platzhalterbalken mehr.
 // Kein Section-Kopf und kein Section-Abstand: Kicker und Headline baut die Seite drumherum. Skript, Motive und Ablauf:
 // src/scripts/show-teaser.js. Leistung: lädt erst, wenn der Block auf 300 px an den Viewport herankommt; zeichnet nur,
 // solange die Bühne sichtbar ist; bei globaler Pause oder reduzierter Bewegung steht ein Motiv in Ruhe.
 import { OCCASIONS } from '../../content/show-configurator.js';
-import { SHOW_PACKAGES, DRONE_RANGES, DRONES_MIN, DRONES_MAX, configuratorPrice } from '../../content/show-packages';
+import { SHOW_PACKAGES, DRONE_RANGES, DRONES_MIN, DRONES_MAX } from '../../content/show-packages';
 
 interface Props {
   /** Präfix für die IDs */
@@ -32,37 +34,29 @@ const rangeTrack = `linear-gradient(90deg, ${(Object.keys(DRONE_RANGES) as Pkg[]
 const start = { occasion: 'hochzeit', pkg: 'SPARK' as Pkg, drones: 100 };
 ---
 <div class="cft" id={id} data-cft-root style={`--pkg: ${rgb(start.pkg)}`}>
-  <div class="cft-stage" role="img" aria-label="Beispiel-Vorschau einer Drohnenshow: Motive von einfachen 2D-Bildern über 3D-Körper bis zu erzählten Geschichten, dazwischen ein Beispiel-Logo">
+  <div class="cft-stage" role="img" aria-label="Beispiel-Vorschau einer Drohnenshow: Motive von einfachen 2D-Bildern über 3D-Körper bis zu erzählten Geschichten, am Ende das FlyingStars-Logo, das mit mehr Drohnen schärfer wird">
     <canvas data-cft="field" aria-hidden="true"></canvas>
-    <span class="cft-badge" data-cft="badge" aria-hidden="true">{start.pkg}</span>
-    <p class="cft-logo" data-cft="logo" aria-hidden="true"><span>Das könnte</span> <b>euer Logo</b> <span>sein</span></p>
+    <p class="cft-logo" data-cft="logo" aria-hidden="true"><b>Euer Logo</b> <span>wird mit mehr Drohnen schärfer</span></p>
     <p class="cft-error" data-cft="error" hidden>Die Vorschau ist gerade nicht verfügbar.</p>
   </div>
 
   <div class="cft-side">
     <!-- Wireframe des Konfigurators: reine Dekoration, folgt der Bühne (show-teaser.js) -->
     <div class="cft-mock" aria-hidden="true">
-      <div class="cft-row cft-heading"><i style="--w: 78%"></i><i style="--w: 52%"></i></div>
-      <div class="cft-row">
-        <i class="cft-label" style="--w: 28%"></i>
-        <div class="cft-chips">
-          {OCCASIONS.map((o) => <span class:list={['cft-chip', { 'is-on': o.id === start.occasion }]} data-cft="chip" data-id={o.id}>{o.label}</span>)}
-        </div>
+      <div class="cft-pills">
+        {OCCASIONS.map((o, i) => <span class:list={['cft-pill', { 'is-on': o.id === start.occasion }]} data-cft="pill" style={`--w: ${[64, 78, 58, 54, 96, 70][i % 6]}px`}></span>)}
       </div>
-      <div class="cft-row">
-        <i class="cft-label" style="--w: 40%"></i>
-        <div class="cft-pkgs">
-          {(Object.keys(SHOW_PACKAGES) as Pkg[]).map((k) => <span class:list={['cft-pkg', { 'is-on': k === start.pkg }]} data-cft="pkg" data-id={k} style={`--c: ${rgb(k)}`}><b>{k}</b><i></i></span>)}
-        </div>
+      <div class="cft-pkgs">
+        {(Object.keys(SHOW_PACKAGES) as Pkg[]).map((k) => <span class:list={['cft-pkg', { 'is-on': k === start.pkg }]} data-cft="pkg" data-id={k} style={`--c: ${rgb(k)}`}>{k}</span>)}
       </div>
-      <div class="cft-row cft-slider-row">
-        <div class="cft-slider-head"><i class="cft-label" style="--w: 22%"></i><b data-cft="count">{start.drones}</b></div>
+      <div class="cft-drones">
+        <p class="cft-count"><b data-cft="count">{start.drones}</b> Drohnen</p>
         <div class="cft-slider" style={`--track: ${rangeTrack}`}>
           <span class="cft-fill" data-cft="fill" style={`--at: ${at(start.drones) / 100}`}></span>
           <span class="cft-thumb" data-cft="thumb" style={`--at: ${at(start.drones) / 100}`}></span>
         </div>
       </div>
-      <div class="cft-row cft-price"><b data-cft="price">ab {configuratorPrice(start.drones).toLocaleString('de-DE')} €</b><i style="--w: 34%"></i></div>
+      <p class="cft-price">{[1, 2, 3, 4, 5, 6].map((k) => <span class:list={['cft-euro', { 'is-on': k <= 1 }]} data-cft="euro">€</span>)}</p>
     </div>
     <a class="btn primary cft-cta" href={href}>{cta}</a>
   </div>
@@ -79,57 +73,56 @@ const start = { occasion: 'hochzeit', pkg: 'SPARK' as Pkg, drones: 100 };
 </script>
 
 <style>
-  /* Bühne links groß, schmale Wireframe-Spalte rechts; auf dem Handy Bühne oben, darunter nur Paket und Regler */
-  .cft { display: grid; grid-template-columns: minmax(0, 1fr) clamp(280px, 24vw, 360px); gap: clamp(20px, 2.6vw, 48px); align-items: stretch; }
-  .cft-stage { position: relative; min-height: clamp(380px, 60vh, 700px); border-radius: var(--radius); background: radial-gradient(ellipse at 50% 120%, rgba(51, 237, 242, 0.06), transparent 60%), #0a0908; border: 1px solid var(--line); overflow: hidden; }
+  /* Bühne links, Wireframe-Spalte rechts (Runde 8: Wireframe größer, Bühne etwas schmaler); auf dem Handy Bühne oben,
+     darunter nur Paketknöpfe und Regler */
+  .cft { display: grid; grid-template-columns: minmax(0, 1fr) clamp(320px, 31vw, 460px); gap: clamp(20px, 3vw, 56px); align-items: stretch; }
+  .cft-stage { position: relative; min-height: clamp(400px, 62vh, 720px); border-radius: var(--radius); background: radial-gradient(ellipse at 50% 120%, rgba(51, 237, 242, 0.06), transparent 60%), #0a0908; border: 1px solid var(--line); overflow: hidden; }
   .cft-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .cft-badge { position: absolute; left: 18px; top: 16px; z-index: 2; font: 500 11px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ground); background: var(--pkg, var(--amber)); padding: 5px 8px; border-radius: 4px; transition: background 0.4s ease; }
   .cft-error { position: absolute; inset: auto 20px 20px; margin: 0; color: var(--muted); font-size: 14px; }
-  /* „Das könnte euer Logo sein“: nur während des Beispiel-Logos, unten auf der Bühne, der Kern im Verlauf */
+  /* „Euer Logo wird mit mehr Drohnen schärfer“ (Entwurf): nur während des Logos, unten auf der Bühne, der Kern im Verlauf */
   .cft-logo { position: absolute; z-index: 2; left: 0; right: 0; bottom: clamp(16px, 4%, 32px); margin: 0 auto; width: fit-content; max-width: calc(100% - 32px); font: 400 14px/1.3 var(--display); color: var(--muted); text-align: center; opacity: 0; transform: translateY(6px); transition: opacity 0.5s ease, transform 0.5s ease; }
   .cft-logo b { font: 600 17px/1.2 var(--display); background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .cft-logo.is-on { opacity: 1; transform: none; }
 
-  .cft-side { display: grid; align-content: center; gap: 22px; }
-  /* Wireframe: Karte mit Platzhalterbalken, echte Beschriftung nur dort, wo sie den Wechsel zeigt */
-  .cft-mock { display: grid; gap: 18px; padding: 22px; border: 1px solid var(--line); border-radius: var(--radius); background: rgba(246, 241, 232, 0.02); pointer-events: none; user-select: none; }
-  .cft-row { display: grid; gap: 9px; }
-  .cft-row i { display: block; height: 7px; width: var(--w, 50%); border-radius: 4px; background: rgba(246, 241, 232, 0.12); }
-  .cft-heading { gap: 7px; }
-  .cft-heading i { height: 11px; background: rgba(246, 241, 232, 0.2); }
-  .cft-label { height: 6px !important; background: rgba(246, 241, 232, 0.16) !important; }
-  .cft-chips { display: flex; flex-wrap: wrap; gap: 5px; }
-  .cft-chip { padding: 4px 9px; border: 1px solid var(--line-strong); border-radius: 999px; font-size: 11px; line-height: 1.2; color: var(--faint); transition: color 0.35s ease, background 0.35s ease, border-color 0.35s ease; }
-  .cft-chip.is-on { color: var(--ground); background: var(--text); border-color: var(--text); }
-  .cft-pkgs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; padding: 3px; border: 1px solid var(--line); border-radius: 10px; }
-  .cft-pkg { display: grid; gap: 5px; justify-items: center; padding: 7px 4px; border: 1px solid transparent; border-radius: 7px; transition: border-color 0.35s ease, background 0.35s ease; }
-  .cft-pkg b { font: 600 10.5px/1 var(--mono); letter-spacing: 0.08em; color: var(--faint); transition: color 0.35s ease; }
-  .cft-pkg i { width: 70%; height: 5px; }
-  .cft-pkg.is-on { border-color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); }
-  .cft-pkg.is-on b { color: var(--c); }
-  .cft-slider-head { display: flex; align-items: center; justify-content: space-between; }
-  .cft-slider-head b { font: 600 17px/1 var(--display); color: var(--text); font-variant-numeric: tabular-nums; }
-  .cft-slider { position: relative; height: 18px; }
-  .cft-slider::before { content: ""; position: absolute; left: 0; right: 0; top: 7px; height: 4px; border-radius: 2px; background: var(--track); opacity: 0.25; }
-  .cft-fill { position: absolute; left: 0; top: 7px; height: 4px; width: calc(var(--at) * 100%); border-radius: 2px; background: var(--track); background-size: calc(100% / max(var(--at), 0.001)) 100%; transition: width 0.9s cubic-bezier(0.45, 0, 0.2, 1); }
-  .cft-thumb { position: absolute; top: 0; left: calc(var(--at) * (100% - 18px)); width: 18px; height: 18px; border-radius: 50%; background: var(--text); border: 4px solid var(--pkg, var(--amber)); box-shadow: 0 0 0 4px rgba(15, 13, 12, 0.9), 0 0 14px 2px color-mix(in srgb, var(--pkg, var(--amber)) 45%, transparent); transition: left 0.9s cubic-bezier(0.45, 0, 0.2, 1), border-color 0.4s ease, box-shadow 0.4s ease; }
-  .cft-price { display: flex; align-items: center; justify-content: space-between; padding-top: 14px; border-top: 1px solid var(--line); }
-  .cft-price b { font: 600 18px/1 var(--display); color: var(--text); }
+  .cft-side { display: grid; align-content: center; gap: 24px; }
+  .cft-mock { display: grid; gap: 26px; padding: clamp(22px, 2.2vw, 32px); border: 1px solid var(--line); border-radius: var(--radius); background: rgba(246, 241, 232, 0.02); pointer-events: none; user-select: none; }
+  /* Anlass: unbeschriftete Pills, die gewählte hervorgehoben */
+  .cft-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .cft-pill { width: var(--w); height: 30px; border: 1px solid var(--line-strong); border-radius: 999px; transition: background 0.35s ease, border-color 0.35s ease; }
+  .cft-pill.is-on { background: var(--text); border-color: var(--text); }
+  /* Paketknöpfe in ihren Farben (amber, orchid, cyan) */
+  .cft-pkgs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 12px; }
+  .cft-pkg { display: grid; place-items: center; min-height: 52px; border: 1px solid transparent; border-radius: 9px; font: 600 13px/1 var(--mono); letter-spacing: 0.08em; color: color-mix(in srgb, var(--c) 55%, var(--faint)); transition: border-color 0.35s ease, background 0.35s ease, color 0.35s ease; }
+  .cft-pkg.is-on { color: var(--c); border-color: var(--c); background: color-mix(in srgb, var(--c) 16%, transparent); }
+  /* Regler mit „N Drohnen“ */
+  .cft-drones { display: grid; gap: 12px; }
+  .cft-count { margin: 0; font: 400 16px/1 var(--display); color: var(--muted); }
+  .cft-count b { font: 600 26px/1 var(--display); color: var(--text); font-variant-numeric: tabular-nums; margin-right: 4px; }
+  .cft-slider { position: relative; height: 22px; }
+  .cft-slider::before { content: ""; position: absolute; left: 0; right: 0; top: 9px; height: 4px; border-radius: 2px; background: var(--track); opacity: 0.25; }
+  .cft-fill { position: absolute; left: 0; top: 9px; height: 4px; width: calc(var(--at) * 100%); border-radius: 2px; background: var(--track); background-size: calc(100% / max(var(--at), 0.001)) 100%; transition: width 0.7s cubic-bezier(0.45, 0, 0.2, 1); }
+  .cft-thumb { position: absolute; top: 0; left: calc(var(--at) * (100% - 22px)); width: 22px; height: 22px; border-radius: 50%; background: var(--text); border: 5px solid var(--pkg, var(--amber)); box-shadow: 0 0 0 4px rgba(15, 13, 12, 0.9), 0 0 16px 2px color-mix(in srgb, var(--pkg, var(--amber)) 45%, transparent); transition: left 0.7s cubic-bezier(0.45, 0, 0.2, 1), border-color 0.4s ease, box-shadow 0.4s ease; }
+  /* Preis ohne Zahlen: sechs Euro-Zeichen, die erreichten hell */
+  .cft-price { margin: 0; padding-top: 18px; border-top: 1px solid var(--line); font: 600 26px/1 var(--display); letter-spacing: 0.06em; }
+  .cft-euro { color: rgba(246, 241, 232, 0.16); transition: color 0.35s ease; }
+  .cft-euro.is-on { color: var(--text); }
   /* kurzer Druck, wo der Zustand wechselt (statt eines sichtbaren Cursors) */
-  .cft-chip.is-press, .cft-pkg.is-press { animation: cft-press 0.45s ease-out; }
+  .cft-pill.is-press, .cft-pkg.is-press { animation: cft-press 0.45s ease-out; }
   @keyframes cft-press { 0% { transform: scale(1); } 35% { transform: scale(0.94); } 100% { transform: scale(1); } }
   .cft-cta { justify-self: start; }
   @media (prefers-reduced-motion: reduce) {
-    .cft-chip.is-press, .cft-pkg.is-press { animation: none; }
+    .cft-pill.is-press, .cft-pkg.is-press { animation: none; }
     .cft-fill, .cft-thumb, .cft-logo { transition: none; }
   }
-  :global(html.motion-paused) .cft-chip.is-press, :global(html.motion-paused) .cft-pkg.is-press { animation: none; }
+  :global(html.motion-paused) .cft-pill.is-press, :global(html.motion-paused) .cft-pkg.is-press { animation: none; }
   @media (max-width: 860px) {
     .cft { grid-template-columns: 1fr; gap: 16px; }
-    .cft-stage { align-self: start; min-height: 320px; aspect-ratio: 4 / 4.2; }
+    .cft-stage { align-self: start; min-height: 340px; aspect-ratio: 1 / 1.05; }
     .cft-side { gap: 18px; }
-    /* auf dem Handy nur Paket und Regler */
-    .cft-mock { padding: 14px 16px; gap: 12px; }
-    .cft-heading, .cft-mock > .cft-row:nth-child(2), .cft-price, .cft-mock .cft-label { display: none; }
+    /* auf dem Handy nur Paketknöpfe und Regler */
+    .cft-mock { padding: 16px; gap: 16px; }
+    .cft-pills, .cft-price { display: none; }
+    .cft-pkg { min-height: 44px; font-size: 12px; }
+    .cft-count b { font-size: 22px; }
   }
 </style>

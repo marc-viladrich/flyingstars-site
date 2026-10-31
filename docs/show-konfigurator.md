@@ -709,3 +709,34 @@ Marc zur ersten Teaser-Fassung: Interaktiv ist für die Startseite zu komplex. S
 - **Props:** `id`, `href` (Standard `/drohnenshow-preise/#konfigurator`), `cta`. `occasion` und `drones` werden noch angenommen, haben aber keine Wirkung mehr.
 - **Prüfen:** `tests/show-teaser.spec.ts` (Laden in Viewport-Nähe; keine Formularelemente, ein Link, Textalternative; das Showreel läuft durch SPARK, HORIZON, ODYSSEY, zeigt das Logo und beginnt von vorn durch die Wolke; Pause außerhalb, Standbild bei reduzierter Bewegung), 12/12 in Chromium, WebKit und Pixel 7. Frame-Folge über einen Durchlauf: `/tmp/fs-r7-k/r1-sheet.png`.
 
+### Runde 8: reduziertes Wireframe, Schärfe-Effekt, Leistung (31.10.2026, abends)
+
+Marcs Rückmeldung zum Showreel.
+
+- **Wireframe stark reduziert und größer** (Spalte `clamp(320px, 31vw, 460px)`, Bühne entsprechend schmaler): unbeschriftete Anlass-Pills (die gewählte hell, sie wechselt nur mit dem Anlass), die drei Paketknöpfe in ihren Farben, der Regler mit „N Drohnen“ und der Preis als sechs Euro-Zeichen (`euros()` in `show-teaser.js`: SPARK 100 = €, SPARK 150 = €€, HORIZON 200 = €€€, HORIZON 250 = €€€€, ODYSSEY 300 = €€€€€, ab 450 = €€€€€€; nicht erreichte gedimmt). Keine Platzhalterbalken, kein Paket-Badge auf der Bühne. Auf dem Handy nur Paketknöpfe und Regler.
+- **Schärfe-Effekt:** Zwei Motive stehen mehrmals hintereinander mit wachsender Drohnenzahl (`drones: [...]` im `REEL`; die erste Stufe kommt aus der Wolke, jede weitere mit einem normalen Flug, das Bild verdichtet sich, der Regler fährt mit):
+  - der Drache als 3D-Körper (`dragon3d`) bei 250, 350 und 450 Drohnen: seine Flügel sind ein feines Gitter, das mit mehr Drohnen sichtbar geschlossener wird. Der Delfin ist nicht im Vergleich gelaufen.
+  - am Ende das FlyingStars-Logo der Designsprache-Probe (ohne Ring) bei 100, 200, 300, 450 und 600 Drohnen. Das Logo ist selbst ein Raster aus 88 Lichtpunkten; mit mehr Drohnen kommen Lichter auf die Verbindungen zwischen benachbarten Punkten (`logoPoints()`, wie `DENSE` in `poc/page.js`, aber stufenlos). Bei 100 Drohnen das Raster, bei 600 durchgehende Linien. Dazu „Euer Logo wird mit mehr Drohnen schärfer“ (Entwurf).
+  - Die Lichtgröße folgt der Drohnenzahl des Bildes (`beat.drones`, neu und optional in `show-field.js`) in Viertelpixel-Schritten etwa alle 90 ms, ohne Sprung.
+- **600 Drohnen:** die 3D-Maske aus Bokkenrijders statt des Feuerwerks. Bei reduzierter Bewegung steht sie als Standbild.
+- **Tempo:** `REEL_RATE = 3` (vorher 2,5). Die Wolke ist im Showreel kürzer und ruhiger: `createField(…, { cloudTime: 0.55, cloudSpread: 0.5 })`, neu und optional, im Konfigurator unverändert 1.
+- **Rahmung:** Jedes Bild hat `zoom: 0.82`, so bleiben Eigenbewegung und 3D-Tiefe auf der Bühne (die Tänzerin war unten angeschnitten). Alle Motive bei 1440 und 390 px über einen ganzen Durchlauf geprüft.
+- **Ablauf jetzt:** Herz (SPARK 100) → Schmetterling (SPARK 150) → Rakete (HORIZON 200) → Tänzerin (HORIZON 250) → Drache 250 / 350 / 450 → Orbit und Mondlandung (ODYSSEY 450) → Bokkenrijders (ODYSSEY 600) → FlyingStars-Logo 100 / 200 / 300 / 450 / 600 → von vorn. Ein Durchlauf dauert 33 s (Chromium und WebKit).
+
+**Leistung: warum die Seite nach einer Weile hing.**
+- Ursache: Der Sprite-Speicher in `show-field.js` legte für jede Farbe ein vorgerendertes Canvas an. Im Flug werden die Farben stetig überblendet, dabei entstand laufend ein neuer Schlüssel, und bei 4000 Einträgen wurde der Speicher ganz geleert und neu gefüllt. Das Showreel wechselt ständig das Motiv und traf das voll.
+- Gemessen über 4 Minuten Loop am Build (Chromium per CDP `Performance.getMetrics`, WebKit über rAF-Zähler und Prozessspeicher; Skripte `/tmp/fs-r8-k/perf*.mjs`, Protokolle daneben). Der Dev-Server eignet sich dafür nicht, weil HMR die Seite neu lädt, sobald jemand im Checkout eine Datei ändert.
+
+  | | vorher | nachher |
+  |---|---|---|
+  | neue Canvas-Elemente | 34.800 in 4 min (≈ 145/s), ohne Ende | sättigt bei ≈ 2.800, danach praktisch keine neuen |
+  | WebKit, Speicher Webinhalt | 500–900 MB, schwankend | 230–400 MB |
+  | WebKit, längste Bildlücke | bis 216 ms | bis 69 ms |
+  | Chromium, Bildrate / CPU | 60 fps / ≈ 19 % | 60 fps / ≈ 21 % (schnelleres Tempo) |
+  | Chromium, JS-Heap | 5–13 MB | 6–9 MB |
+  | nur Hero-Video (Teaser nie geladen) | 3 % CPU, 46 Canvas, WebKit 240–306 MB | unverändert |
+
+- Behoben: 16 statt 32 Farbstufen je Kanal (Abweichung höchstens 8/255, auf einem leuchtenden Punkt unsichtbar), das Sprite in der Mitte seiner Stufe, ein Speicher für 6000 Sprites, bei vollem Speicher fallen nur die 500 ältesten heraus. Gilt auch für den Konfigurator.
+- Hero-Video und Teaser zusammen lasten die CPU nicht dauerhaft aus (Chromium ≈ 21 %); der Teaser zeichnet nur, solange er sichtbar ist.
+- Nicht gefunden: keine doppelten rAF-Schleifen, keine wachsenden Arrays oder Listener (konstant 163), keine langen Tasks.
+

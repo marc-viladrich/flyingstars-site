@@ -1,6 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 
-// Teaser des Show-Konfigurators für die Startseite, Showreel-Fassung (31.10.2026, ConfiguratorTeaser.astro,
+// Teaser des Show-Konfigurators für die Startseite, Showreel-Fassung (31.10.2026, Runde 8: reduziertes Wireframe,
+// Schärfe-Effekt am Logo, Bokkenrijders bei 600; ConfiguratorTeaser.astro,
 // src/scripts/show-teaser.js): ein sich selbst abspielender Durchlauf durch die „Greatest Hits“ von SPARK bis ODYSSEY
 // mit einem Beispiel-Logo, daneben ein vor-animiertes Wireframe des Konfigurators, das der Bühne folgt. Keine
 // Formularelemente, nur der Knopf in den Konfigurator. Lädt erst in der Nähe des Viewports, zeichnet außerhalb nicht,
@@ -29,30 +30,34 @@ test('Das Mockup ist Dekoration: keine Formularelemente, nur der Knopf in den Ko
   await expect(root(page).locator('.cft-stage')).toHaveAttribute('aria-label', /Drohnenshow/);
 });
 
-test('Das Showreel läuft von selbst durch SPARK, HORIZON und ODYSSEY, zeigt das Beispiel-Logo und beginnt von vorn', async ({ page }) => {
+test('Das Showreel läuft von selbst durch SPARK, HORIZON und ODYSSEY, das Logo wird mit mehr Drohnen schärfer, dann von vorn', async ({ page }) => {
   test.setTimeout(90_000);
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto(PAGE);
   await reach(page);
-  const badge = root(page).locator('[data-cft=badge]'), on = (id: string) => root(page).locator(`[data-cft=pkg][data-id=${id}]`);
-  await expect(badge).toHaveText('SPARK');
-  await expect(root(page).locator('[data-cft=logo]')).toHaveClass(/is-on/, { timeout: 15_000 }); // „Das könnte euer Logo sein“
-  await expect(badge).toHaveText('HORIZON', { timeout: 15_000 });
-  await expect(on('HORIZON')).toHaveClass(/is-on/);
-  await expect(root(page).locator('[data-cft=logo]')).not.toHaveClass(/is-on/);
-  await expect(badge).toHaveText('ODYSSEY', { timeout: 20_000 });
-  await expect(on('ODYSSEY')).toHaveClass(/is-on/);
-  await expect(root(page).locator('[data-cft=count]')).not.toHaveText('100');
-  // das Wireframe folgt: der Regler steht weiter rechts als bei SPARK
-  expect(Number(await root(page).locator('[data-cft=thumb]').evaluate((el) => getComputedStyle(el).getPropertyValue('--at')))).toBeGreaterThan(0.5);
-  // nach dem Finale wieder von vorn, durch die lebendige Wolke
-  await expect(badge).toHaveText('SPARK', { timeout: 30_000 });
-  await expect(field(page)).toHaveAttribute('data-cloud', 'all');
+  const on = (id: string) => root(page).locator(`[data-cft=pkg][data-id=${id}]`), count = root(page).locator('[data-cft=count]');
+  const euros = () => root(page).locator('[data-cft=euro].is-on').count();
+  await expect(on('SPARK')).toHaveClass(/is-on/);
+  await expect(root(page).locator('.cft-count')).toContainText('Drohnen');
+  expect(await euros()).toBe(1);
+  await expect(on('HORIZON')).toHaveClass(/is-on/, { timeout: 15_000 });
+  await expect(on('ODYSSEY')).toHaveClass(/is-on/, { timeout: 20_000 });
+  await expect(count).toHaveText('600', { timeout: 20_000 }); // die Bokkenrijders-Maske
+  expect(await euros()).toBe(6);
+  // das Logo: der Regler fährt von 100 bis 600, die Schrift „Euer Logo …“ steht dabei
+  await expect(root(page).locator('[data-cft=logo]')).toHaveClass(/is-on/, { timeout: 15_000 });
+  await expect(count).toHaveText('100');
+  await expect(count).toHaveText('300', { timeout: 10_000 });
+  await expect(count).toHaveText('600', { timeout: 10_000 });
+  // dann wieder von vorn durch die lebendige Wolke
+  await expect(root(page).locator('[data-cft=logo]')).not.toHaveClass(/is-on/, { timeout: 10_000 });
+  await expect(on('SPARK')).toHaveClass(/is-on/);
+  await expect(count).toHaveText('100');
   expect(errors).toEqual([]);
 });
 
-test('Außerhalb des Viewports zeichnet die Engine nicht, bei reduzierter Bewegung steht ein ODYSSEY-Motiv in Ruhe', async ({ page }) => {
+test('Außerhalb des Viewports zeichnet die Engine nicht, bei reduzierter Bewegung steht die Bokkenrijders-Maske in Ruhe', async ({ page }) => {
   await page.goto(PAGE);
   await reach(page);
   await expect(field(page)).toHaveAttribute('data-running', 'true');
@@ -63,6 +68,6 @@ test('Außerhalb des Viewports zeichnet die Engine nicht, bei reduzierter Bewegu
   await reach(page);
   await page.waitForTimeout(500);
   await expect(field(page)).toHaveAttribute('data-running', 'false');
-  await expect(root(page).locator('[data-cft=badge]')).toHaveText('ODYSSEY');
-  expect(Number(await field(page).getAttribute('data-points'))).toBeGreaterThan(300);
+  await expect(root(page).locator('[data-cft=pkg][data-id=ODYSSEY]')).toHaveClass(/is-on/);
+  expect(Number(await field(page).getAttribute('data-points'))).toBe(600); // die Bokkenrijders-Maske in Ruhe
 });

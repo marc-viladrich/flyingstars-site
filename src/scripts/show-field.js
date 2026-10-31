@@ -42,7 +42,11 @@ const outside = (i, out) => {
   out[0] = Math.cos(a) * r * 1.1; out[1] = Math.sin(a) * r * 0.75; out[2] = (hash(i + 0.25) - 0.5) * 0.8; return out;
 };
 
-export function createField(canvas, { onBeat, onTick } = {}) {
+// Sechzehnte Fassung, Startseiten-Showreel (additiv, der Konfigurator setzt nichts davon): cloudTime und cloudSpread
+// verkürzen bzw. beruhigen die lebendige Wolke (Mindestdauer bzw. Versatz der Bahn-Mittelpunkte, 1 = wie bisher); ein
+// Bild darf mit `drones` eine eigene Drohnenzahl für die Größe der Lichter nennen (Schärfe-Effekt beim Logo), die
+// Lichtgröße folgt dann in kleinen Stufen über etwa eine halbe Sekunde, ohne zu springen.
+export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread = 1 } = {}) {
   const ctx = canvas.getContext("2d");
   const reduceQuery = matchMedia("(prefers-reduced-motion: reduce)");
   const pos = new Float64Array(MAX * 3), col = new Float32Array(MAX * 3), alpha = new Float32Array(MAX), vel = new Float64Array(MAX * 3);
@@ -59,7 +63,7 @@ export function createField(canvas, { onBeat, onTick } = {}) {
   const held = () => reduceQuery.matches || document.documentElement.classList.contains("motion-paused") || document.hidden;
   // Show-Uhr: vt rückt nur in der Render-Schleife vor, um die echte Zeit seit dem letzten Bild mal rate (höchstens
   // 0,1 s je Bild, damit ein ruckelndes Gerät die Show verlangsamt statt springen lässt)
-  let droneCount = 300; // Drohnenzahl der Show (Größe der Lichter)
+  let droneCount = 300, radNow = 0, radAt = 0; // Drohnenzahl der Show (Größe der Lichter), aktuelle Lichtgröße
   let vt = 0, lastReal = 0, rate = 1, userPaused = false, cloud = false, settled = 0, flightN = 0, flightC = 0;
   const now = () => vt;
   const still = () => held() || userPaused;
@@ -75,9 +79,16 @@ export function createField(canvas, { onBeat, onTick } = {}) {
   // bis 0,8 r, aufgehellt), schmaler Übergang auf einen schwachen Hof (0,24 bei 1,15 r, aus bei 3,4 r). Licht über 1
   // (Lichtlauf, Funkeln) legt ein zweites Sprite darüber: weißer Kern, weiterer Schein in der Drohnenfarbe. Vorher war
   // jede Drohne ein voller Kreis von etwa 3 px plus ein Hof von 10 px mit 35 % Deckkraft: groß, weich, verschwommen.
+  // Sechzehnte Fassung, Leistung (Marc, 31.10.2026: „die Seite hängt, nachdem der Teaser eine Weile läuft“): Im Flug
+  // werden die Farben stetig zwischen altem und neuem Motiv überblendet. Mit 32 Stufen je Kanal entstand dabei laufend
+  // ein neuer Schlüssel, bei 4000 Sprites wurde der Speicher ganz geleert und neu gefüllt: gemessen rund 145 neue
+  // Canvas-Elemente je Sekunde, in WebKit 500–900 MB statt 250–300 MB. Jetzt 16 Stufen je Kanal (Abweichung höchstens
+  // 8/255, auf einem leuchtenden Punkt unsichtbar), das Sprite in der Mitte seiner Stufe, und bei vollem Speicher fallen
+  // nur die ältesten Einträge heraus.
   function sprite(r, g, b, rad, hot, halo = 3.4) {
-    const key = `${r >> 3},${g >> 3},${b >> 3},${rad},${hot ? 1 : 0},${halo}`;
+    const qr = r >> 4, qg = g >> 4, qb = b >> 4, key = ((((qr * 16 + qg) * 16 + qb) * 2 + (hot ? 1 : 0)) * 1e4) + Math.round(rad * 40) * 10 + Math.round(halo * 2);
     let s = glow.get(key); if (s) return s;
+    r = Math.min(255, qr * 16 + 8); g = Math.min(255, qg * 16 + 8); b = Math.min(255, qb * 16 + 8);
     const R = Math.ceil(rad * (hot ? halo * 1.47 : halo)), c = document.createElement("canvas");
     c.width = c.height = R * 2;
     const x = c.getContext("2d"), up = (v) => Math.min(255, v + 70), gr = x.createRadialGradient(R, R, 0, R, R, R);
@@ -89,7 +100,7 @@ export function createField(canvas, { onBeat, onTick } = {}) {
     }
     x.fillStyle = gr; x.fillRect(0, 0, R * 2, R * 2);
     s = { c, R };
-    if (glow.size > 4000) glow.clear();
+    if (glow.size >= 6000) { let drop = 500; for (const k of glow.keys()) { glow.delete(k); if (--drop <= 0) break; } } // die ältesten zuerst
     glow.set(key, s);
     return s;
   }
@@ -247,8 +258,8 @@ export function createField(canvas, { onBeat, onTick } = {}) {
       for (let i = 0; i < n; i++) {
         if (!inCloud[i]) continue;
         const q = i * 3, j = order[i] * 3;
-        let ox = (hash(i * 3.17 + k * 1.3) - 0.5) * 0.9 * size, oy = (hash(i * 5.71 + k * 2.9) - 0.5) * 0.7 * size;
-        const oz = (hash(i * 7.33 + k * 0.7) - 0.5) * 0.6 * size;
+        let ox = (hash(i * 3.17 + k * 1.3) - 0.5) * 0.9 * size * cloudSpread, oy = (hash(i * 5.71 + k * 2.9) - 0.5) * 0.7 * size * cloudSpread;
+        const oz = (hash(i * 7.33 + k * 0.7) - 0.5) * 0.6 * size * cloudSpread;
         // keine Finte (vierzehnte Fassung, Marc: „überall raus“): Der Versatz des Bahn-Mittelpunkts entlang der
         // Flugrichtung, so wie man sie auf der Bühne sieht (x, gekipptes y), bleibt innerhalb der Strecke. Eine quadratische
         // Bézier-Bahn läuft dann in Flugrichtung stetig vorwärts; quer bleibt der Versatz frei, die Bahn bleibt gekrümmt.
@@ -265,7 +276,7 @@ export function createField(canvas, { onBeat, onTick } = {}) {
         const D = 2 * Math.max(Math.hypot(m[0] - from[q], m[1] - from[q + 1], m[2] - from[q + 2]), Math.hypot(target[j] - m[0], target[j + 1] - m[1], target[j + 2] - m[2]));
         need = Math.max(need, (1.875 * D) / LIMITS.speed, Math.sqrt((5.7735 * D) / LIMITS.accel));
       }
-      flightC = Math.max(TEMPO.cloud, need / TEMPO.cloudWindow, 1.1 * carried / TEMPO.cloudWindow);
+      flightC = Math.max(TEMPO.cloud * cloudTime, need / TEMPO.cloudWindow, 1.1 * carried / TEMPO.cloudWindow);
       flight = Math.max(flightC, flightN + spreadN); spread = 0;
     }
     // Wolke: Start nach der Stelle im Lichtlauf, die Form baut sich in ihrer eigenen Reihenfolge auf; sonst gestaffelte
@@ -384,7 +395,12 @@ export function createField(canvas, { onBeat, onTick } = {}) {
     canvas.dataset.lit = String(list.length); // drones lit right now, read by the tests
     // alle Lichter additiv wie in der Probe (die Reihenfolge spielt dabei keine Rolle); Tiefe macht ein Licht etwas
     // größer bzw. kleiner (Perspektive), Licht über 1 legt das helle Sprite darüber
-    const rad = dotRadius(droneCount, S / DPR), halo = haloOf(S / DPR);
+    const goal = dotRadius(scene.beats[beat]?.drones ?? droneCount, S / DPR), halo = haloOf(S / DPR);
+    // ein Bild mit eigener Drohnenzahl: die Lichtgröße wandert in Viertelpixel-Schritten dorthin (kein Sprung)
+    const wall = performance.now();
+    if (!(radNow > 0) || still()) radNow = goal;
+    else if (radNow !== goal && wall - radAt > 90) { radAt = wall; radNow = Math.abs(goal - radNow) <= 0.25 ? goal : radNow + Math.sign(goal - radNow) * 0.25; }
+    const rad = radNow;
     ctx.globalCompositeOperation = "lighter";
     for (const [px, py, , pr, a, r, g, b] of list) {
       const sp = sprite(r, g, b, rad, false, halo), R = sp.R * pr;
