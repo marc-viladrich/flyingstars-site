@@ -67,8 +67,9 @@ sections:
   - type: timeline
     id: meilensteine
     kicker: Meilensteine
-    headline: Meilensteine.
-    text: Von 50 Drohnen auf einem Geburtstag bis zu 600 Drohnen in einem Musical.
+    # Vertikaler Zeitstrahl mit derselben Animation wie der Ablauf auf der Startseite (Runde 8, 31.10.2026)
+    headline: Von 50 auf *600* Drohnen.
+    text: Vom ersten Geburtstag 2022 bis zum Musical in Maastricht.
     items:
       - { when: "2021", title: Gründung, text: Am 1. Dezember melden wir FlyingStars als Gewerbe an. }
       - { when: "2022", title: Die erste Show, text: Am 13. August fliegen 50 Drohnen zu einem privaten Geburtstag. }
@@ -113,18 +114,26 @@ sections:
       - { label: Flughöhe, value: bis 120 m, text: So hoch fliegen wir in der Regel. }
       - { label: Kameras, value: Keine, text: Unsere Showdrohnen filmen nicht. }
 
+  # Nachhaltigkeit (Marc, 31.10.2026, Runde 8): dieselbe Scrollstory wie auf der Startseite, mit denselben Fakten, statt
+  # einer schwächeren Kopie. docs/DESIGN.md sieht genau eine Scrollstory auf Über uns vor. Der Unterschied zur Startseite
+  # liegt im Satz unter der Headline (Gründungsmotiv) und im Hersteller als Beleg für „Gebaut in der EU“.
+  # Nur Aussagen über die Show vor Ort (EmpCo).
   - type: sustainability
     id: nachhaltigkeit
     kicker: Nachhaltigkeit
-    headline: Leise, ohne Rauch und ohne Müll vor Ort.
+    headline: Kein Knall. Kein Rauch. Kein Müll.
     text: Nachhaltigkeit ist der Grund, aus dem wir FlyingStars gegründet haben. Wir denken sie bei jeder Entscheidung mit.
-    points:
-      - Vor Ort entstehen kein Feinstaub, kein Müll und kein Knall. Laut ist nur die Musik.
-      - Unsere Akkus laden wir mit 100 % Ökostrom von naturstrom.
-      - Die Drohnen wiegen rund 300 Gramm und werden in der EU gebaut, bei Drotek SAS in Frankreich.
-      - Akkus, Motoren und Rotoren lassen sich einzeln tauschen.
-      - Zu den Shows fahren wir mit einem elektrischen Ford E-Transit.
-      - Den Schallschutz unserer Shows hat der TÜV Nord in einem Gutachten untersucht.
+    facts:
+      - { label: Kein Knall, value: leise, text: "Die Drohnen summen, laut ist nur eure Musik. Den Schallschutz hat der TÜV Nord in einem Gutachten untersucht." }
+      - { label: Kein Rauch, value: "0", unit: g, text: "Keine Pyrotechnik, also kein Rauch und keine Schwermetalle über dem Publikum." }
+      - { label: Kein Müll, value: "0", unit: kg, text: "Keine Hülsen, keine Reste. Dieselben Drohnen fliegen Show für Show." }
+      - { label: Ökostrom, value: "100", unit: "%", text: Ökostrom von naturstrom für unsere Akkus. }
+    # Icon-Raster wie auf der Startseite (pillars), hier mit dem Hersteller als Beleg
+    pillars:
+      - { icon: eu, title: Gebaut in der EU, text: "Unsere Drohnen wiegen rund 300 Gramm und werden bei Drotek SAS in Frankreich gebaut." }
+      - { icon: repair, title: Reparieren statt ersetzen, text: "Akkus, Motoren und Rotoren tauschen wir einzeln, die Drohne fliegt weiter." }
+      - { icon: ev, title: Elektrisch zur Show, text: Zu den Shows fahren wir mit einem elektrischen Ford E-Transit. }
+      - { icon: campaign, title: "#Böllerciao", text: "Mit der Deutschen Umwelthilfe im November 2023 über Berlin, als Alternative zum Silvesterfeuerwerk." }
 
   - type: metrics
     id: zahlen

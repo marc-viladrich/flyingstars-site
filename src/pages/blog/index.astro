@@ -1,20 +1,18 @@
 ---
+// Blog-Übersicht (Marc, 31.10.2026, Runde 8: „wie die Referenzen“): Karten mit Bild, Lichtpunkt-Hover, Kicker, drei Spalten.
+// Texte sind Entwürfe für Moritz.
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-const posts = (await getCollection('posts', (p) => !p.data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-const fmt = new Intl.DateTimeFormat('de-DE', { dateStyle: 'long' });
+import SectionHead from '../../components/SectionHead.astro';
+import PostGrid from '../../components/blog/PostGrid.astro';
+import Cta from '../../components/sections/Cta.astro';
+import { AUTHOR, sortPosts } from '../../components/blog/post-meta';
+const posts = sortPosts(await getCollection('posts', (p) => !p.data.draft));
 ---
-<Base title="Blog" description="Alle Beiträge in chronologischer Reihenfolge, neueste zuerst. Hintergründe, Projekte und Einblicke.">
-  <section class="section"><div class="wrap">
-    <h1>Blog</h1>
-    <div class="cards">
-      {posts.map((p) => (
-        <article class="card">
-          <h3><a href={`/blog/${p.id}/`}>{p.data.title}</a></h3>
-          <p class="muted"><time datetime={p.data.date.toISOString()}>{fmt.format(p.data.date)}</time></p>
-          <p>{p.data.description}</p>
-        </article>
-      ))}
-    </div>
-  </div></section>
+<Base title="Blog" description="Wie Drohnenshows funktionieren, wie sie programmiert werden und was sie vom Feuerwerk unterscheidet. Der Blog von FlyingStars." image={posts[0]?.data.cover?.src}>
+  <section class="section" aria-labelledby="blog-h">
+    <SectionHead kicker="Blog" headline="Wie Drohnenshows *entstehen*." text={`Technik, Programmierung und Hintergründe, aufgeschrieben von ${AUTHOR.name} aus unserem Team.`} id="blog-h" level="h1" />
+    {posts.length ? <PostGrid posts={posts} /> : <p class="lead">Bald gibt es hier die ersten Beiträge.</p>}
+  </section>
+  <Cta type="cta" index={1} kicker="Anfrage" headline="Eure Frage ist nicht dabei?" text="Schreibt uns, was ihr wissen wollt. Wir antworten innerhalb von 48 Stunden." button={{ label: 'Show anfragen', href: '/kontakt/' }} secondary={{ label: 'Häufige Fragen', href: '/faq/' }} />
 </Base>

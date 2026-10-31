@@ -1,84 +1,194 @@
 ---
-import SectionHead from '../SectionHead.astro';
-// Alle Referenzen mit Filter nach Anlass, Jahr und Drohnenzahl („show, don't tell, wie viele Shows“).
-// Ohne JS: ein Abschnitt je Anlass mit Sprunglinks. Mit JS: eine Liste (neueste zuerst), Filter als Radiogruppen,
-// die Zahl der passenden Shows wird angesagt. Werte kommen aus den Projektdateien (occasion, drones, date).
-import { getCollection } from 'astro:content';
+// Alle Referenzen mit Filter (Marc, 31.10.2026, Runde 8): Anlass als sichtbare Pills, Jahr und Drohnenzahl als zwei
+// Dropdowns, alles in einer Leiste. Reihenfolge: zuerst die Shows mit Video (groß, zwei Spalten, die erste spielt wie auf
+// der Startseite), danach alle anderen chronologisch (drei Spalten). Referenzen ohne Foto bekommen eine Formationskarte
+// statt eines leeren Rahmens: Lichtpunkte im Logoverlauf, wie die Shows selbst.
+// Ohne JS: die volle Liste in derselben Reihenfolge, die Filterleiste bleibt verborgen.
+import { getCollection, type CollectionEntry } from 'astro:content';
 import type { Section } from '../../content.config';
-import Accent from '../Accent.astro';
+import SectionHead from '../SectionHead.astro';
 import ProjectCard from '../projects/ProjectCard.astro';
-import { OCCASIONS, DRONE_BANDS, type Occasion, yearOf, bandOf, sortProjects } from '../projects/refs';
+import { OCCASIONS, DRONE_BANDS, type Occasion, yearOf, bandOf, dronesOf, kickOf, hasVideo, sortReferences } from '../projects/refs';
 type Props = Extract<Section, { type: 'references' }> & { index: number };
+type Project = CollectionEntry<'projects'>;
 const { headline, text, filters, id = 'referenzen', index, kicker } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
-const G = index === 0 ? 'h2' : 'h3';
-const C = index === 0 ? 'h3' : 'h4';
-const projects = sortProjects(await getCollection('projects', (p) => !p.data.draft));
-const keys = [...Object.keys(OCCASIONS), 'weitere'] as (Occasion | 'weitere')[];
-const label = (k: string) => (k in OCCASIONS ? OCCASIONS[k as Occasion] : 'Weitere Shows');
-const groups = keys.map((key) => ({ key, items: projects.filter((p) => (p.data.occasion ?? 'weitere') === key) })).filter((g) => g.items.length);
-const count = (fn: (p: (typeof projects)[number]) => unknown, v: unknown) => projects.filter((p) => fn(p) === v).length;
-const years = [...new Set(projects.map(yearOf))].sort((a, b) => b - a);
-const options = {
-  occasion: { legend: 'Anlass', param: 'anlass', values: groups.filter((g) => g.key !== 'weitere').map((g) => ({ v: g.key, l: label(g.key), n: g.items.length })) },
-  year: { legend: 'Jahr', param: 'jahr', values: years.map((y) => ({ v: String(y), l: String(y), n: count(yearOf, y) })) },
-  drones: { legend: 'Drohnen', param: 'drohnen', values: DRONE_BANDS.map((b) => ({ v: b.id, l: b.label, n: count(bandOf, b.id) })).filter((o) => o.n) },
+const C = index === 0 ? 'h2' : 'h3';
+const projects = sortReferences(await getCollection('projects', (p) => !p.data.draft));
+const featured = projects.filter(hasVideo);
+const rest = projects.filter((p) => !hasVideo(p));
+const count = (fn: (p: Project) => unknown, v: unknown) => projects.filter((p) => fn(p) === v).length;
+const occasions = (Object.keys(OCCASIONS) as Occasion[]).map((k) => ({ v: k, l: OCCASIONS[k], n: count((p) => p.data.occasion, k) })).filter((o) => o.n);
+const years = [...new Set(projects.map(yearOf))].sort((a, b) => b - a).map((y) => ({ v: String(y), l: String(y), n: count(yearOf, y) }));
+const bands = DRONE_BANDS.map((b) => ({ v: b.id, l: `${b.label.replace(" bis ", "–")} Drohnen`, n: count(bandOf, b.id) })).filter((o) => o.n);
+const selects = [
+  filters.includes('year') && years.length > 1 && { param: 'jahr', label: 'Jahr', all: 'Alle Jahre', values: years },
+  filters.includes('drones') && bands.length > 1 && { param: 'drohnen', label: 'Drohnen', all: 'Alle Größen', values: bands },
+].filter(Boolean) as { param: string; label: string; all: string; values: { v: string; l: string; n: number }[] }[];
+const showPills = filters.includes('occasion') && occasions.length > 1;
+const data = (p: Project) => ({ 'data-anlass': p.data.occasion ?? '', 'data-jahr': String(yearOf(p)), 'data-drohnen': bandOf(p) ?? '' });
+
+// Formationskarte für Referenzen ohne Foto: ein Stern aus Lichtpunkten über einem ruhigen Himmel, deterministisch je
+// Referenz. Etwa jeder zehnte Punkt funkelt (docs/DESIGN.md, lebendige Wolke), bei reduzierter Bewegung steht alles still.
+const formation = (seed: string) => {
+  let s = [...seed].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
+  const rnd = () => ((s = (s * 1664525 + 1013904223) >>> 0) / 2 ** 32);
+  const cx = 80, cy = 46, R = 30, r = 12.5, corners: [number, number][] = [];
+  for (let k = 0; k < 10; k++) { const a = -Math.PI / 2 + (k * Math.PI) / 5, q = k % 2 ? r : R; corners.push([cx + q * Math.cos(a), cy + q * Math.sin(a)]); }
+  const dots: { x: number; y: number; tw: boolean }[] = [];
+  corners.forEach(([x1, y1], k) => {
+    const [x2, y2] = corners[(k + 1) % 10], steps = Math.round(Math.hypot(x2 - x1, y2 - y1) / 3.4);
+    for (let t = 0; t < steps; t++) dots.push({ x: x1 + ((x2 - x1) * t) / steps, y: y1 + ((y2 - y1) * t) / steps, tw: rnd() < 0.1 });
+  });
+  const sky = Array.from({ length: 34 }, () => ({ x: rnd() * 160, y: rnd() * 90, o: 0.12 + rnd() * 0.25 })).filter((d) => Math.hypot(d.x - cx, d.y - cy) > R + 6);
+  return { dots, sky };
 };
-const shows = (n: number) => `${n} ${n === 1 ? 'Show' : 'Shows'}`;
 ---
 <section class="section refs" id={id} aria-labelledby={`${id}-h`} data-refs>
   <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
-  <div class="ref-bar">
-    <p class="ref-count" role="status" data-ref-status><b class="grad">{projects.length}</b> <span data-ref-label>{projects.length === 1 ? 'Show' : 'Shows'} in dieser Auswahl</span></p>
-    <nav class="ref-jump" aria-label="Nach Anlass springen" data-ref-jump>{groups.map((g) => <a href={`#${id}-${g.key}`}>{label(g.key)} <span class="mono">{g.items.length}</span></a>)}</nav>
-    <form class="ref-filter" aria-label="Referenzen filtern" data-ref-filter hidden>
-      {filters.map((f) => options[f]).filter((o) => o.values.length > 1).map((o) => <fieldset data-param={o.param}>
-        <legend>{o.legend}</legend>
-        <div class="chips">
-          <label><input type="radio" name={`${id}-${o.param}`} value="" checked /><span>Alle</span></label>
-          {o.values.map((v) => <label><input type="radio" name={`${id}-${o.param}`} value={v.v} /><span>{v.l} <small aria-hidden="true">{v.n}</small></span></label>)}
-        </div>
-      </fieldset>)}
-    </form>
+
+  <form class="rf-bar" aria-label="Referenzen filtern" data-ref-filter hidden>
+    {showPills && <fieldset class="rf-occ" data-param="anlass">
+      <legend class="sr-only">Anlass</legend>
+      <div class="rf-pills">
+        <label><input type="radio" name={`${id}-anlass`} value="" checked /><span>Alle</span></label>
+        {occasions.map((o) => <label><input type="radio" name={`${id}-anlass`} value={o.v} /><span>{o.l} <small aria-hidden="true">{o.n}</small></span></label>)}
+      </div>
+    </fieldset>}
+    {selects.length > 0 && <div class="rf-selects">
+      {selects.map((s) => <label class="rf-select">
+        <span class="sr-only">{s.label}</span>
+        <select name={s.param} data-param={s.param}>
+          <option value="">{s.all}</option>
+          {s.values.map((v) => <option value={v.v}>{v.l} ({v.n})</option>)}
+        </select>
+        <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" /></svg>
+      </label>)}
+    </div>}
+  </form>
+  <p class="rf-status" role="status" data-ref-status hidden><b class="grad" data-n>{projects.length}</b> <span data-ref-label>Shows</span> <button class="rf-reset" type="button" data-ref-reset hidden>Filter zurücksetzen</button></p>
+
+  <div class="rf-lists">
+    {featured.length > 0 && <div class="rf-grid rf-feature" data-ref-list>
+      {featured.map((p, i) => <div class="ref-item" {...data(p)}><ProjectCard project={p} i={i} level={C} year autoplay={i === 0} /></div>)}
+    </div>}
+    {rest.length > 0 && <div class="rf-grid rf-rest" data-ref-list>
+      {rest.map((p, i) => <div class="ref-item" {...data(p)}>
+        {p.data.cover ? <ProjectCard project={p} i={i} level={C} year /> : (() => {
+          const f = formation(p.id), drones = dronesOf(p), g = `rf-g-${p.id}`;
+          const badge = [yearOf(p), drones && `${drones} Drohnen`].filter(Boolean).join(' · ');
+          return <article class="proj static rf-ghost">
+            <div class="img" data-curtain style={`--i:${i % 2}`}>
+              <svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice" role="img" aria-label={`Kein Foto vorhanden, Lichtpunkt-Formation als Platzhalter`}>
+                <defs><linearGradient id={g} gradientUnits="userSpaceOnUse" x1="44" y1="0" x2="116" y2="0"><stop offset="0" stop-color="#ff9e29" /><stop offset=".5" stop-color="#db64e8" /><stop offset="1" stop-color="#33edf2" /></linearGradient></defs>
+                {f.sky.map((d) => <circle cx={d.x.toFixed(1)} cy={d.y.toFixed(1)} r=".45" fill="#f6f1e8" opacity={d.o.toFixed(2)} />)}
+                <g fill={`url(#${g})`}>{f.dots.map((d, k) => <circle class:list={{ tw: d.tw }} style={d.tw ? `--d:${(k % 7) * 0.6}s` : undefined} cx={d.x.toFixed(1)} cy={d.y.toFixed(1)} r="1.05" />)}</g>
+              </svg>
+              {badge && <span class="count mono">{badge}</span>}
+            </div>
+            <span class="kick mono">{kickOf(p)}</span><C>{p.data.title}</C>
+            <p>{p.data.summary}</p>
+          </article>;
+        })()}
+      </div>)}
+    </div>}
   </div>
-  <div class="ref-groups" data-ref-groups>
-    {groups.map((g) => <section class="ref-group" id={`${id}-${g.key}`} aria-labelledby={`${id}-${g.key}-h`}>
-      <G class="ref-group-h" id={`${id}-${g.key}-h`}>{label(g.key)} <span class="mono">{shows(g.items.length)}</span></G>
-      <div class="projects">{g.items.map((p, i) => <div class="ref-item" data-anlass={p.data.occasion ?? ''} data-jahr={yearOf(p)} data-drohnen={bandOf(p) ?? ''} data-date={p.data.date.valueOf()}><ProjectCard project={p} i={i} level={C} year /></div>)}</div>
-    </section>)}
-  </div>
-  <div class="projects ref-all" data-ref-all hidden></div>
-  <p class="ref-empty" data-ref-empty hidden>Keine Show passt zu dieser Auswahl. <button class="link" type="button" data-ref-reset>Alle zeigen</button></p>
+  <p class="rf-empty" data-ref-empty hidden>Keine Show passt zu dieser Auswahl. <button class="link" type="button" data-ref-clear>Alle zeigen</button></p>
 </section>
+
+<style>
+  /* Filterleiste: Pills links, Dropdowns rechts, eine Zeile; bricht sie um, rutschen die Dropdowns geschlossen nach unten */
+  .rf-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+  .rf-occ { border: 0; margin: 0; padding: 0; min-width: 0; flex: 0 1 auto; }
+  .rf-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .rf-pills label { position: relative; cursor: pointer; flex: none; }
+  .rf-pills input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+  .rf-pills span { display: inline-flex; gap: 7px; height: 40px; align-items: center; padding: 0 14px; border: 1px solid var(--line-strong); border-radius: 999px; font-size: 15px; color: var(--muted); white-space: nowrap; transition: color 0.2s, border-color 0.2s, background 0.2s; }
+  .rf-pills small { color: var(--faint); font: 400 12px/1 var(--mono); letter-spacing: 0.04em; }
+  .rf-pills label:hover span { color: var(--text); border-color: rgba(246, 241, 232, 0.5); }
+  .rf-pills input:checked + span { color: var(--ground); background: var(--text); border-color: var(--text); }
+  .rf-pills input:checked + span small { color: rgba(15, 13, 12, 0.6); }
+  .rf-pills input:focus-visible + span { outline: 2px solid var(--cyan); outline-offset: 3px; }
+  .rf-selects { display: flex; gap: 8px; flex: none; }
+  .rf-select { position: relative; display: block; }
+  .rf-select select { min-width: 10rem; appearance: none; -webkit-appearance: none; height: 40px; padding: 0 36px 0 16px; border: 1px solid var(--line-strong); border-radius: 999px; background: transparent; color: var(--text); font: 400 15px/1 var(--body); cursor: pointer; transition: border-color 0.2s; }
+  .rf-select select:hover { border-color: rgba(246, 241, 232, 0.5); }
+  .rf-select select:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+  .rf-select select option { background: var(--surface); color: var(--text); }
+  .rf-select.on select { border-color: var(--accent); color: var(--accent); }
+  .rf-select svg { position: absolute; right: 15px; top: 50%; width: 12px; height: 12px; margin-top: -6px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; color: var(--muted); pointer-events: none; }
+  .rf-status { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin: 18px 0 clamp(28px, 4vw, 44px); color: var(--muted); font-size: 16px; }
+  .rf-status b { font: 600 clamp(28px, 2.6vw, 36px)/1 var(--display); letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .rf-reset, .rf-empty .link { background: none; border: 0; border-bottom: 1px solid var(--accent-line); color: var(--accent); font: inherit; font-size: 15px; cursor: pointer; padding: 0 0 2px; margin-left: 6px; }
+  .rf-reset:hover, .rf-empty .link:hover { border-color: var(--accent); }
+
+  /* Karten: Videos groß in zwei Spalten, die übrigen in drei */
+  .rf-lists { display: grid; gap: clamp(36px, 4vw, 56px); }
+  .rf-grid { display: grid; gap: clamp(28px, 3vw, 44px) clamp(16px, 2vw, 28px); }
+  .rf-feature { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rf-rest { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .rf-empty { color: var(--muted); display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+
+  /* Formationskarte (Referenz ohne Foto) */
+  .rf-ghost .img { background: radial-gradient(120% 90% at 50% 40%, #1a1512 0%, #0a0908 70%); }
+  .rf-ghost svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .rf-ghost .tw { animation: rf-tw 4.2s ease-in-out var(--d, 0s) infinite; }
+  @keyframes rf-tw { 0%, 100% { opacity: 1; } 45% { opacity: 0.35; } 55% { opacity: 1; filter: brightness(1.8); } }
+  @media (prefers-reduced-motion: reduce) { .rf-ghost .tw { animation: none; } }
+  :global(html.motion-paused) .rf-ghost .tw { animation: none; }
+
+  @media (max-width: 1100px) { .rf-rest { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 720px) {
+    .rf-bar { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+    /* Pills in einer wischbaren Reihe statt drei Zeilen untereinander; die Leiste läuft bis an den Bildrand */
+    .rf-pills { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: calc(-1 * var(--gutter)); padding: 2px var(--gutter); scroll-padding-inline: var(--gutter); }
+    .rf-pills::-webkit-scrollbar { display: none; }
+    .rf-selects { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .rf-select select { width: 100%; }
+    .rf-feature, .rf-rest { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>
 
 <script>
   for (const root of document.querySelectorAll<HTMLElement>('[data-refs]')) {
     const form = root.querySelector<HTMLFormElement>('[data-ref-filter]')!;
-    const all = root.querySelector<HTMLElement>('[data-ref-all]')!;
     const status = root.querySelector<HTMLElement>('[data-ref-status]')!;
+    const reset = root.querySelector<HTMLButtonElement>('[data-ref-reset]')!;
     const empty = root.querySelector<HTMLElement>('[data-ref-empty]')!;
-    // eine Liste statt Abschnitten: neueste Show zuerst
-    const items = [...root.querySelectorAll<HTMLElement>('.ref-item')].sort((a, b) => +b.dataset.date! - +a.dataset.date!);
-    items.forEach((item) => all.append(item));
-    root.querySelector('[data-ref-groups]')!.remove();
-    root.querySelector<HTMLElement>('[data-ref-jump]')!.hidden = true;
-    all.hidden = false; form.hidden = false;
-    const fields = [...form.querySelectorAll<HTMLFieldSetElement>('fieldset')];
-    const chosen = () => fields.map((f) => [f.dataset.param!, f.querySelector<HTMLInputElement>('input:checked')?.value ?? ''] as const);
-    // Vorauswahl über die Adresse, z. B. /referenzen/?anlass=privat
+    const items = [...root.querySelectorAll<HTMLElement>('.ref-item')];
+    const lists = [...root.querySelectorAll<HTMLElement>('[data-ref-list]')];
+    const radios = [...form.querySelectorAll<HTMLInputElement>('input[type=radio]')];
+    const selects = [...form.querySelectorAll<HTMLSelectElement>('select')];
+    form.hidden = false; status.hidden = false;
+    const total = items.length;
+    const read = () => {
+      const want: [string, string][] = selects.map((s) => [s.dataset.param!, s.value]);
+      if (radios.length) want.unshift(['anlass', radios.find((r) => r.checked)?.value ?? '']);
+      return want;
+    };
+    // Vorauswahl über die Adresse, z. B. /referenzen/?anlass=privat&jahr=2024
     const params = new URLSearchParams(location.search);
-    fields.forEach((f) => { const v = params.get(f.dataset.param!); const input = v ? f.querySelector<HTMLInputElement>(`input[value="${CSS.escape(v)}"]`) : null; if (input) input.checked = true; });
-    const apply = (announce: boolean) => {
-      const want = chosen();
+    const a = params.get('anlass'); const r = a && radios.find((x) => x.value === a); if (r) r.checked = true;
+    selects.forEach((s) => { const v = params.get(s.dataset.param!); if (v && [...s.options].some((o) => o.value === v)) s.value = v; });
+    const apply = (fromUser: boolean) => {
+      const want = read();
       let n = 0;
       for (const item of items) { const ok = want.every(([k, v]) => !v || item.dataset[k] === v); item.hidden = !ok; if (ok) n++; }
-      const parts = want.filter(([, v]) => v).map(([k, v]) => form.querySelector<HTMLInputElement>(`fieldset[data-param="${k}"] input[value="${CSS.escape(v)}"]`)?.parentElement?.querySelector('span')?.firstChild?.textContent?.trim()).filter(Boolean);
-      const text = `${n === 1 ? 'Show' : 'Shows'} ${parts.length ? `· ${parts.join(' · ')}` : 'in dieser Auswahl'}`;
-      if (announce || status.querySelector('b')!.textContent !== String(n)) { status.querySelector('b')!.textContent = String(n); status.querySelector('[data-ref-label]')!.textContent = text; }
-      empty.hidden = n > 0;
+      lists.forEach((l) => { l.hidden = !l.querySelector('.ref-item:not([hidden])'); });
+      const active = want.some(([, v]) => v);
+      status.querySelector('[data-n]')!.textContent = String(n);
+      status.querySelector('[data-ref-label]')!.textContent = active ? `von ${total} Shows` : n === 1 ? 'Show' : 'Shows';
+      reset.hidden = !active; empty.hidden = n > 0;
+      selects.forEach((s) => s.parentElement!.classList.toggle('on', !!s.value));
+      if (fromUser) {
+        const q = new URLSearchParams(location.search); want.forEach(([k, v]) => (v ? q.set(k, v) : q.delete(k)));
+        history.replaceState(null, '', `${location.pathname}${q.size ? `?${q}` : ''}${location.hash}`);
+      }
     };
+    const clear = () => { form.reset(); apply(true); (radios[0] ?? selects[0])?.focus(); };
     form.addEventListener('change', () => apply(true));
-    root.querySelector('[data-ref-reset]')!.addEventListener('click', () => { form.reset(); apply(true); form.querySelector<HTMLInputElement>('input')?.focus(); });
+    reset.addEventListener('click', clear);
+    root.querySelector('[data-ref-clear]')!.addEventListener('click', clear);
     apply(false);
   }
 </script>

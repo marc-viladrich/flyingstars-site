@@ -1,22 +1,93 @@
 ---
+// Blogartikel auf Seitenniveau (Marc, 31.10.2026, Runde 8): Kicker mit Thema, Titel, Autor mit Foto, Datum und Lesezeit,
+// Titelbild mit Vorhang, lesbare Spalte (rund 68 Zeichen), am Ende Autor, Anfrage und zwei weitere Beiträge.
+// Der Artikeltext bleibt wörtlich wie auf flyingstars.art (Import 31.10.2026), Moritz überarbeitet ihn später.
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import Picture from '../../components/Picture.astro';
+import Cta from '../../components/sections/Cta.astro';
+import PostGrid from '../../components/blog/PostGrid.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import { optimizedImage } from '../../lib/media';
+import { AUTHOR, dateOf, readingMinutes, topicOf, sortPosts } from '../../components/blog/post-meta';
 export async function getStaticPaths() {
   const posts = await getCollection('posts', (p) => !p.data.draft);
   return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
 }
 const { post } = Astro.props;
 const { Content } = await render(post);
-const fmt = new Intl.DateTimeFormat('de-DE', { dateStyle: 'long' });
+const cover = post.data.cover ? await optimizedImage(post.data.cover.src, 1600) : undefined;
+const face = await optimizedImage(AUTHOR.image.src, 160);
+const more = sortPosts(await getCollection('posts', (p) => !p.data.draft && p.id !== post.id)).slice(0, 3);
+const updated = post.data.updated && post.data.updated.valueOf() !== post.data.date.valueOf() ? new Intl.DateTimeFormat('de-DE', { dateStyle: 'long' }).format(post.data.updated) : undefined;
 ---
-<Base title={post.data.title} description={post.data.description}>
-  <article class="section"><div class="wrap">
-    <div class="prose">
-      <h1>{post.data.title}</h1>
-      <p class="muted"><time datetime={post.data.date.toISOString()}>{fmt.format(post.data.date)}</time></p>
-      {post.data.cover && <Picture {...post.data.cover} loading="eager" sizes="(min-width: 48rem) 40rem, 100vw" />}
-      <Content />
-    </div>
-  </div></article>
+<Base title={post.data.title} description={post.data.description} image={post.data.cover?.src} navSection="/blog/">
+  <article class="section post" aria-labelledby="post-h">
+    <header class="post-head">
+      <a class="kicker mono post-back" href="/blog/"><span aria-hidden="true">←</span> Blog · {topicOf(post)}</a>
+      <h1 id="post-h">{post.data.title}</h1>
+      <div class="byline">
+        <img class="face" src={face.src} width={face.width} height={face.height} alt="" loading="eager" decoding="async" />
+        <p><b>{AUTHOR.name}</b> <span class="mono">{AUTHOR.role}</span></p>
+        <p class="when"><time datetime={post.data.date.toISOString()}>{dateOf(post)}</time> · {readingMinutes(post)} Min. Lesezeit{updated && <> · aktualisiert am {updated}</>}</p>
+      </div>
+    </header>
+    {cover && <figure class="post-cover" data-curtain><img src={cover.src} {...cover.attributes} width={cover.width} height={cover.height} alt={post.data.cover!.alt} loading="eager" decoding="async" fetchpriority="high" /></figure>}
+    <div class="post-body"><Content /></div>
+    <aside class="post-author" aria-label="Über den Autor">
+      <img class="face" src={face.src} width={face.width} height={face.height} alt={AUTHOR.name} loading="lazy" decoding="async" />
+      <p><b>{AUTHOR.name}</b> führt FlyingStars gemeinsam mit Ronja Donsbach und Erwin Wilms. Er kümmert sich um Verwaltung, Personal und Kund:innen in Deutschland und schreibt unseren Blog. <a class="link" href="/ueber-uns/#team">Das Team <span aria-hidden="true">→</span></a></p>
+    </aside>
+  </article>
+  <Cta type="cta" index={1} kicker="Anfrage" headline="Plant ihr eine eigene Show?" text="Datum, Ort und Anlass reichen für eine erste Einschätzung. Wir antworten innerhalb von 48 Stunden." button={{ label: 'Show anfragen', href: '/kontakt/' }} secondary={{ label: 'Pakete und Preise', href: '/drohnenshow-preise/' }} />
+  {more.length > 0 && <section class="section post-more" aria-labelledby="more-h">
+    <SectionHead kicker="Weiterlesen" headline="Mehr aus dem Blog." id="more-h" />
+    <PostGrid posts={more} level="h3" />
+  </section>}
 </Base>
+
+<style>
+  .post { --measure: 42rem; display: grid; justify-items: center; padding-bottom: 0; }
+  .post > * { width: 100%; }
+  .post-head { max-width: var(--measure); display: grid; gap: 22px; margin-bottom: clamp(32px, 4vw, 52px); }
+  .post-head h1 { font-size: clamp(34px, 4vw, 56px); line-height: 1.04; }
+  .post-back { width: fit-content; margin-bottom: 0; transition: color 0.2s; }
+  .post-back:hover { color: #ffbe6b; }
+  .byline { display: grid; grid-template-columns: auto 1fr; gap: 2px 14px; align-items: center; color: var(--muted); font-size: 15px; }
+  .byline .face { grid-row: span 2; }
+  .byline b { color: var(--head); font-weight: 500; margin-right: 8px; }
+  .byline .mono { color: var(--faint); }
+  .byline .when { color: var(--faint); font-size: 14px; }
+  .face { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+
+  .post-cover { max-width: 64rem; margin: 0 0 clamp(40px, 5vw, 64px); aspect-ratio: 2 / 1; overflow: hidden; border-radius: 16px; background: #0a0908; --curtain-r: 16px; }
+  .post-cover img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s cubic-bezier(0.2, 0.7, 0.2, 1); }
+
+  /* Lesespalte: Fließtext in Inter, Zwischentitel in Space Grotesk, Links und Listenpunkte in Orange */
+  .post-body { max-width: var(--measure); font-size: 18px; line-height: 1.72; color: #c9bfb0; }
+  .post-body > :global(* + *) { margin-top: 1.1em; }
+  .post-body :global(h2) { font-size: clamp(26px, 2.4vw, 34px); line-height: 1.12; margin-top: 1.6em; }
+  .post-body :global(h3) { font-size: clamp(20px, 1.7vw, 23px); line-height: 1.25; margin-top: 1.6em; }
+  .post-body :global(:is(h2, h3) + *) { margin-top: 0.6em; }
+  .post-body :global(strong) { color: var(--head); font-weight: 600; }
+  .post-body :global(a) { color: var(--accent); border-bottom: 1px solid var(--accent-line); transition: border-color 0.2s, color 0.2s; }
+  .post-body :global(a:hover) { color: #ffbe6b; border-color: var(--accent); }
+  .post-body :global(:is(ul, ol)) { padding-left: 1.3em; margin-bottom: 0; }
+  .post-body :global(li) { padding-left: 0.3em; }
+  .post-body :global(li + li) { margin-top: 0.5em; }
+  .post-body :global(li::marker) { color: var(--accent); }
+  .post-body :global(ol > li::marker) { font: 500 0.95em var(--display); }
+  .post-body :global(p:has(> img:only-child)) { margin-block: 2em; }
+  .post-body :global(img) { width: 100%; height: auto; border-radius: 14px; }
+  .post-body :global(blockquote) { margin-inline: 0; padding-left: 20px; border-left: 2px solid; border-image: var(--grad) 1; color: var(--head); }
+
+  .post-author { max-width: var(--measure); display: grid; grid-template-columns: auto 1fr; gap: 18px; align-items: start; margin-top: clamp(48px, 6vw, 72px); padding-top: 28px; border-top: 1px solid var(--line); color: var(--muted); font-size: 15px; }
+  .post-author .face { width: 64px; height: 64px; }
+  .post-author b { color: var(--head); font-weight: 500; }
+  .post-author .link { margin-top: 10px; display: flex; }
+  .post-more { padding-top: 0; }
+
+  @media (max-width: 720px) {
+    .post-body { font-size: 17px; }
+    .post-cover { border-radius: 12px; --curtain-r: 12px; }
+  }
+</style>
