@@ -21,7 +21,9 @@ const blocks = groups?.length
 const external = cta?.href.startsWith('https://');
 const photo = closing?.image ? await optimizedImage(closing.image.src, 640) : undefined;
 ---
-<section class="section" id={id} aria-labelledby={headingId}>
+<section class:list={['section', { 'faq-grouped': groups?.length }]} id={id} aria-labelledby={headingId}>
+  <!-- Mit Gruppen (FAQ-Seite): Kopf oben, je Gruppe links die Kategorie, die beim Scrollen mitläuft (sticky), rechts die
+       Fragen. So ist klar, was Kategorie und was Frage ist (Marc, 31.10.2026). -->
   <div class="faq-grid">
     <div class="intro">{kicker && <span class="kicker mono">{kicker}</span>}<H id={headingId}><Accent text={headline} /></H>{text && <p>{text}</p>}{cta && <a class="link" href={cta.href} rel={external ? 'noopener' : undefined} target={external ? '_blank' : undefined}>{cta.label} <span aria-hidden="true">→</span></a>}</div>
     <div class="faq-body">

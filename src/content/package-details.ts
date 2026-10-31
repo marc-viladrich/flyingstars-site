@@ -86,8 +86,10 @@ export function addOnLine(name: ShowPackage): string {
   return `+${money(p.add)} € je ${p.step} Drohnen${Number.isFinite(p.max) ? `, bis ${p.max} Drohnen` : ''}`;
 }
 
-/** Comparison "Alle Leistungen". A cell of `null` means: not part of this package. `all` spans the three packages. */
-export type Cell = string | null;
+/** Comparison "Alle Leistungen". A cell of `null` means: not part of this package, `true`: included (checkmark, wie auf
+ * SaaS-Preisseiten; Marc 31.10.2026: was überall drin ist, gehört als Häkchen in die Tabelle, nicht in eine Fußnote).
+ * `all` spans the three packages. */
+export type Cell = string | null | true;
 export interface Row { label: string; cells?: [Cell, Cell, Cell]; all?: string }
 export const COMPARISON: Row[] = [
   { label: 'Drohnen', cells: [
@@ -108,13 +110,16 @@ export const COMPARISON: Row[] = [
   { label: 'Musik', cells: ['GEMA-freie Musik, GEMA-Musik bei Anmeldung der Veranstaltung möglich', 'Synchron zu eurer Wunschmusik', 'Wie HORIZON, Timecode-Synchronisation vor Ort möglich'] },
   { label: 'Freigabe und Vorschau', cells: ['Eure eigenen Elemente vorab zur Freigabe', 'Videovorschau mit Feedbackschleife', 'Mehrere Feedbackschleifen'] },
   { label: 'Kreativ-Workshop', cells: [null, 'Mit Storyboard', 'Mit Storyboard'] },
+  { label: 'Sicherheitskonzept', cells: [true, true, true] },
+  { label: 'Haftpflicht bis 1,3 Mio. €', cells: [true, true, true] },
+  { label: 'Team vor Ort', cells: [true, true, true] },
   { label: 'Genehmigung', cells: ['Standardverfahren', 'Auch komplexere Verfahren, z. B. in Flughafennähe', 'Wie HORIZON'] },
-  { label: 'Hilfe bei der Zustimmung der Grundstückseigentümer:innen', cells: [null, 'Inklusive', 'Inklusive'] },
-  { label: 'Eigene Projektleitung', cells: [null, null, 'Inklusive'] },
-  { label: 'Video der Show (Rohaufnahmen)', cells: [`+900 €`, `+900 €`, 'Inklusive'] },
-  { label: 'Vor-Ort-Termin vorab', cells: [null, null, 'Auf Wunsch inklusive'] },
+  { label: 'Hilfe bei der Zustimmung der Grundstückseigentümer:innen', cells: [null, true, true] },
+  { label: 'Eigene Projektleitung', cells: [null, null, true] },
+  { label: 'Video der Show (Rohaufnahmen)', cells: [`+900 €`, `+900 €`, true] },
+  { label: 'Vor-Ort-Termin vorab', cells: [null, null, 'Auf Wunsch'] },
 ];
-export const COMPARISON_NOTE = 'In jedem Paket enthalten: Genehmigung, Sicherheitskonzept, Haftpflicht bis 1,3 Mio. € und das Team vor Ort. Die Beschallung vor Ort stellt ihr als Veranstalter:innen.';
+export const COMPARISON_NOTE = 'Die Beschallung vor Ort stellt ihr als Veranstalter:innen.';
 
 /** "Wofür ihr bei jedem Paket bezahlt" */
 export const INCLUDED = [

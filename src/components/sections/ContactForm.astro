@@ -1,4 +1,5 @@
 ---
+import { SHOW_PACKAGES } from '../../content/show-packages';
 // Anfrage wie in der Designsprache-Probe (Studie 8): Headline oben bündig mit dem Formular, darunter Satz, Gesichter
 // und Kontaktwege; Formular in genau zwei Schritten. Versand, Honeypot und Vorbelegung: src/scripts/contact.ts.
 import { site } from '../../site.config';
@@ -51,14 +52,9 @@ const sources = ['Google', 'Empfehlung', 'Social Media', 'Presse', 'Eine Show ge
         <div class="field">
           <span class="lbl" id="paket-label">Welches Paket? <em>optional</em></span>
           <div aria-labelledby="paket-label" aria-describedby="paket-hint" class="chips" role="radiogroup">
-            {packs.map(([value, label, line]) => <label title={line || undefined}><input name="paket" type="radio" value={value} checked={value === ''} /><span>{label}</span></label>)}
+            {packs.map(([value, label, line]) => <label title={line || undefined} style={value ? `--c: rgb(${SHOW_PACKAGES[value as keyof typeof SHOW_PACKAGES].color.join(',')})` : undefined}><input name="paket" type="radio" value={value} checked={value === ''} /><span>{label}</span></label>)}
           </div>
           <span class="hint" id="paket-hint">SPARK klassisch in 2D · HORIZON 3D in Bewegung · ODYSSEY erzählte 3D-Show</span>
-        </div>
-        <div class="field">
-          <label class="lbl" for="f-msg">Was soll am Himmel passieren? <em>optional</em></label>
-          <textarea id="f-msg" maxlength="5000" name="message" rows="3" aria-describedby="f-msg-hint"></textarea>
-          <span class="hint" id="f-msg-hint">Logo, Motiv, Claim, Musikwunsch, Anzahl Gäste: alles, was du schon weißt</span>
         </div>
         <button class="btn primary" data-next type="button">Weiter</button>
       </fieldset>
@@ -73,6 +69,8 @@ const sources = ['Google', 'Empfehlung', 'Social Media', 'Presse', 'Eine Show ge
           <div class="field"><label class="lbl" for="f-firma">Firma oder Organisation <em>optional</em></label><input autocomplete="organization" id="f-firma" maxlength="200" name="firma" type="text" /></div>
         </div>
         <div class="field"><label class="lbl" for="f-quelle">Wie hast du von uns erfahren? <em>optional</em></label><select id="f-quelle" name="quelle"><option value="">Bitte wählen</option>{sources.map((s) => <option>{s}</option>)}</select></div>
+        <!-- Freitext erst am Ende (Marc, 31.10.2026: im ersten Schritt ist das zu viel auf einmal) -->
+        <div class="field"><label class="lbl" for="f-msg">Möchtest du uns noch etwas mitteilen? <em>optional</em></label><textarea id="f-msg" maxlength="5000" name="message" rows="3"></textarea></div>
         <p class="hint">Mit dem Absenden werden deine Angaben zur Bearbeitung der Anfrage verwendet. Mehr dazu in der <a href="/datenschutz/">Datenschutzerklärung</a>.</p>
         <div class="actions"><button class="btn" data-back type="button">Zurück</button><button class="btn primary" type="submit">Anfrage senden</button></div>
         <div aria-hidden="true" class="honeypot"><label>Website<input autocomplete="off" name="website" tabindex="-1" /></label></div>

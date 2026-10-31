@@ -40,7 +40,10 @@ const marks = (await Promise.all(logos.map(async (logo): Promise<Mark | null> =>
   } catch {}
   return null;
 }))).filter((m): m is Mark => Boolean(m));
-const press = pressItems.map((p) => ({ ...p, show: p.cleared && has(p.logo) }));
+// Presselogos im Raster wie „Qualität und Sicherheit“ (Marc 31.10.: die Kästen wirkten „out of whack“), optisch gleich
+// schwer: breite Wortmarken flacher, kompakte Marken höher
+const pressHeight = (path?: string) => { const v = path && has(path) ? svgSize(path) : undefined; return v ? Math.round(Math.min(40, Math.max(18, 26 * Math.sqrt(2.4 / (v.w / v.h))))) : 26; };
+const press = pressItems.map((p) => ({ ...p, show: p.cleared && has(p.logo), h: pressHeight(p.logo) }));
 const seals = quality.filter((q) => !q.secondary).map((q) => ({ ...q, show: q.cleared && has(q.logo) }));
 const minor = quality.filter((q) => q.secondary);
 ---
@@ -57,8 +60,8 @@ const minor = quality.filter((q) => q.secondary);
   {press.length > 0 && <div class="press">
     <h2 class="proof-h">{pressHeadline}</h2>
     <ul>{press.map((p) => {
-      const inner = p.show ? <img class:list={{ knock: p.knock }} src={p.logo} alt={p.name} loading="lazy" decoding="async" /> : <b>{p.name}</b>;
-      return <li>{p.href ? <a href={p.href} rel="noopener" target="_blank" title={p.note ? `${p.name}: ${p.note}` : undefined}>{inner}</a> : <span class="noref" title={p.note}>{inner}</span>}</li>;
+      const inner = <>{p.show ? <img class:list={{ knock: p.knock }} src={p.logo} alt={p.name} style={`height:${p.h}px`} loading="lazy" decoding="async" /> : <b>{p.name}</b>}{p.note && <span class="note">{p.note}</span>}</>;
+      return <li>{p.href ? <a href={p.href} rel="noopener" target="_blank">{inner}</a> : <span class="noref">{inner}</span>}</li>;
     })}</ul>
   </div>}
   {seals.length > 0 && <div class="quality">

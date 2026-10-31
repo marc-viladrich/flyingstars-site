@@ -20,12 +20,30 @@ const BANDS = 6;
 const ease = u => u * u * (3 - 2 * u);
 const clamp01 = u => Math.min(1, Math.max(0, u));
 
-function buildLayers(img, W, H, step) {
+// object-position des sichtbaren Fotos (z. B. Porträts 50 % 25 %): der Ausschnitt der Lichtpunkte muss derselbe sein,
+// sonst verrutscht das Bild beim Hover (Marc, 31.10.2026, Team auf dem Handy). Nur Prozentwerte und Schlüsselwörter.
+function objectPos(el) {
+  const kw = { left: 0, top: 0, center: 0.5, right: 1, bottom: 1 };
+  const parts = getComputedStyle(el).objectPosition.split(/\s+/);
+  const v = t => (t in kw ? kw[t] : t.endsWith('%') ? parseFloat(t) / 100 : 0.5);
+  return { x: v(parts[0] || '50%'), y: v(parts[1] || '50%') };
+}
+
+/** Bildausschnitt (in echten Bildpixeln), den das Zellraster zeigt: genau wie object-fit: cover mit object-position auf
+ *  den Rahmen W×H, davon der Teil, den das zentrierte Raster aus cols×rows Zellen à step px abdeckt. Getestet in
+ *  dotimage.test.mjs: Ein Bildpunkt muss in Foto und Lichtpunkten an derselben Stelle des Rahmens liegen. */
+export function coverCrop(nw, nh, W, H, cols, rows, step, pos = { x: 0.5, y: 0.5 }) {
+  const k = Math.max(W / nw, H / nh);
+  const rx = (nw - W / k) * pos.x, ry = (nh - H / k) * pos.y;
+  const gx = (W - cols * step) / 2, gy = (H - rows * step) / 2;
+  return { sx: rx + gx / k, sy: ry + gy / k, sw: (cols * step) / k, sh: (rows * step) / k, k, rx, ry, gx, gy };
+}
+
+function buildLayers(img, W, H, step, pos = { x: 0.5, y: 0.5 }) {
   const cols = Math.max(1, Math.floor(W / step)), rows = Math.max(1, Math.floor(H / step));
   // Bild im Seitenverhältnis des Rahmens (object-fit: cover) abtasten. img ist hier immer eine eigene Kopie ohne srcset
   // (source() unten): naturalWidth sind dann echte Bildpixel, also derselbe Maßstab, in dem drawImage ausschneidet.
-  const s = Math.max(cols / img.naturalWidth, rows / img.naturalHeight);
-  const sw = cols / s, sh = rows / s, sx = (img.naturalWidth - sw) / 2, sy = (img.naturalHeight - sh) / 2;
+  const { sx, sy, sw, sh } = coverCrop(img.naturalWidth, img.naturalHeight, W, H, cols, rows, step, pos);
   // 4× feiner abtasten und je Zelle das hellste Pixel nehmen: Drohnen und Stadtlichter bleiben Lichter
   const F = 4, t = document.createElement('canvas'); t.width = cols * F; t.height = rows * F;
   const tg = t.getContext('2d', { willReadFrequently: true });
@@ -105,7 +123,8 @@ export function dotImage(wrap, { step = 8 } = {}) {
     if (!img.complete || !img.naturalWidth || !W) return null;
     const src = source(img);
     if (!src.ok) { src.copy.addEventListener('load', () => { src.ok = true; if (target) go(target); }, { once: true }); return null; }
-    if (!layers || built !== src.url) { layers = buildLayers(src.copy, W, H, step); built = src.url; }
+    const pos = objectPos(img), key = `${src.url}|${pos.x}|${pos.y}`;
+    if (!layers || built !== key) { layers = buildLayers(src.copy, W, H, step, pos); built = key; }
     return layers;
   };
 

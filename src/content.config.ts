@@ -50,6 +50,8 @@ export const sectionSchema = z.discriminatedUnion('type', [
     facts: z.array(z.object({ label: z.string(), value: z.string(), unit: z.string().optional(),
       text: z.string(), tone: legacy.describe('Veraltet (Kontur/Verlauf), wird ignoriert') })).max(4).optional(),
     points: z.array(z.string().min(1)).optional().describe('Kurze, belegbare Sätze, je einer pro Punkt'),
+    pillars: z.array(z.object({ icon: z.enum(['eu', 'repair', 'ev', 'campaign', 'leaf']), title: z.string().min(1), text: z.string().min(1) })).max(4).optional()
+      .describe('Vier belegbare Punkte unter der Scrollstory, je mit großem Icon (Marc 31.10.: Raster statt Kasten)'),
     proofImage: image.optional(), proofText: z.string().optional(), campaign: z.string().optional(),
     lines: z.array(z.string()).optional().describe('Veraltet (dreizeiliger Titel der Scrollstory), wird nicht mehr angezeigt'),
   }),
@@ -244,6 +246,92 @@ export const sectionSchema = z.discriminatedUnion('type', [
       .describe('Abkürzung über dem Zeitstrahl, z. B. Express: verbindet den ersten mit dem letzten Punkt, gestrichelt'),
     facts: z.array(z.object({ value: z.string().min(1), label: z.string().min(1), text: z.string().optional() })).default([]),
     note: z.string().optional(),
+  }),
+  // --- Anlass-Landingpages (Marc, 31.10.2026: „deutlich mehr in dieses Interaktive … mehr Variation in den Layouts“).
+  // Komponenten unter src/components/landing/. Kennzahlen überall als { value, label, text? }.
+  z.object({
+    // Seitenkopf mit kleinem Showreel im Bildrahmen: stumm, Loop, startet erst im Bild (ab 701 px automatisch, auf dem
+    // Handy per Knopf), pausiert bei globaler Pause und reduzierter Bewegung. Nur registrierte Videos (src/lib/videos.ts).
+    type: z.literal('landingHero'), kicker: z.string().optional(),
+    headline: z.string().min(1), text: z.string().min(1), cta: link, secondary: link.optional(),
+    video: z.enum(['showreel', 'bokkenrijders', 'nfl', 'ford', 'puma']).describe('Schlüssel aus src/lib/videos.ts'),
+    videoLabel: z.string().default('Showreel').describe('Kleine Beschriftung im Rahmen, z. B. "Ford Explorer · Köln"'),
+    poster: image.describe('Standbild bis zum ersten Videobild und bei reduzierter Bewegung'),
+    facts: z.array(z.object({ value: z.string().min(1), label: z.string().min(1) })).max(4).default([]),
+  }),
+  z.object({
+    // Referenzen als versetzte Geschichten: großes Bild mit Lichtpunkt-Hover, Ort und Datum, Kennzahlen, kurzer Text.
+    type: z.literal('landingStories'), ...sectionHeading,
+    headline: z.string().min(1), text: z.string().optional(), cta: link.optional(),
+    items: z.array(z.object({ kicker: z.string().min(1), title: z.string().min(1), text: z.string().min(1), image,
+      facts: z.array(z.object({ value: z.string().min(1), label: z.string().min(1) })).max(3).default([]) })).min(1).max(3),
+  }),
+  z.object({
+    // Ausgewählte Referenzen (Projekte-Sammlung) nach ID, als Karten mit Showvideo wie auf der Startseite.
+    type: z.literal('landingRefs'), ...sectionHeading,
+    headline: z.string().min(1), text: z.string().optional(), cta: link.optional(),
+    projects: z.array(z.string().min(1)).min(1).max(6).describe('Dateinamen aus src/content/projects ohne .md'),
+  }),
+  z.object({
+    // Konfigurator-Teaser mit Kopf, Ziel und Knopfbeschriftung je Anlass.
+    type: z.literal('landingTeaser'), ...sectionHeading,
+    headline: z.string().min(1), text: z.string().optional(), href: z.string().min(1).optional(), cta: z.string().optional(),
+  }),
+  z.object({
+    // Preiskarte: ein Preis groß (aus show-packages.ts, wenn `package` gesetzt; sonst `price`), daneben Gruppen wie ein
+    // Kassenzettel, optional ein Bonus (Frühbucher) im Verlauf, darunter Gesichter und Anfrage.
+    type: z.literal('landingPrice'), ...sectionHeading,
+    headline: z.string().min(1), text: z.string().optional(),
+    package: z.enum(['SPARK', 'HORIZON', 'ODYSSEY']).optional(),
+    price: z.string().optional().describe('Nur ohne package, z. B. "ab ca. 15.000 €"'),
+    unit: z.string().optional().describe('Zeile unter dem Preis, z. B. "netto für 20 Drohnen"'),
+    groups: z.array(z.object({ title: z.string().min(1),
+      items: z.array(z.object({ label: z.string().min(1), value: z.string().optional() })).min(1) })).min(1).max(3),
+    bonus: z.object({ value: z.string().min(1), text: z.string().min(1) }).optional(),
+    contact: z.string().optional().describe('Satz neben den Gesichtern'),
+    cta: link, secondary: link.optional(),
+  }),
+  z.object({
+    // Platzbedarf als Schema (outdoor: Draufsicht der Zonen nach dem Technik-Datenblatt; indoor: Raumschnitt mit
+    // Deckenhöhe) und daneben eine Checkliste. Zeigen auf einen Punkt hebt die passende Zone hervor (`zone`).
+    type: z.literal('landingSite'), ...sectionHeading,
+    headline: z.string().min(1), text: z.string().optional(),
+    variant: z.enum(['outdoor', 'indoor']),
+    items: z.array(z.object({ title: z.string().min(1), text: z.string().min(1), value: z.string().optional(),
+      zone: z.enum(['safety', 'start', 'drones', 'guests', 'ceiling', 'floor', 'kit']).optional() })).min(1).max(5),
+    checklist: z.object({ title: z.string().min(1), items: z.array(z.string().min(1)).min(1) }).optional(),
+    note: z.object({ value: z.string().min(1), text: z.string().min(1) }).optional(),
+    download: link.optional(),
+  }),
+  z.object({
+    // Ablauf mit Freigabe-Schranke: Kopf bleibt links stehen, rechts die Schritte am Verlaufsstrahl; der Schritt mit
+    // `gate` ist als Freigabe hervorgehoben.
+    type: z.literal('landingFlow'), ...sectionHeading,
+    headline: z.string().min(1), text: z.string().optional(),
+    steps: z.array(z.object({ title: z.string().min(1), text: z.string().min(1), duration: z.string().optional(),
+      gate: z.boolean().default(false) })).min(2).max(7),
+  }),
+  z.object({
+    // Kacheln mit einer großen Hauptkachel (Bild oder Aussage) und bis zu vier kleineren mit Kennzahl.
+    type: z.literal('landingBento'), ...sectionHeading,
+    headline: z.string().min(1), text: z.string().optional(),
+    lead: z.object({ label: z.string().optional(), title: z.string().min(1), text: z.string().optional(), image: image.optional() }),
+    items: z.array(z.object({ label: z.string().min(1), value: z.string().optional(), text: z.string().min(1) })).min(1).max(4),
+    cta: link.optional(), faces: z.boolean().default(false).describe('Gesichter der Geschäftsführer:innen neben dem Link'),
+    contact: z.string().optional().describe('Satz neben den Gesichtern'),
+  }),
+  z.object({
+    // Breites Bild mit Orten oder Einsatzarten als Markierungen, darunter Einträge und Kennzahlen.
+    type: z.literal('landingSpotlight'), ...sectionHeading,
+    headline: z.string().min(1), text: z.string().optional(), image,
+    tags: z.array(z.string().min(1)).default([]),
+    entries: z.array(z.object({ kicker: z.string().min(1), title: z.string().min(1), text: z.string().optional() })).default([]),
+    facts: z.array(z.object({ value: z.string().min(1), label: z.string().min(1) })).max(4).default([]),
+  }),
+  z.object({
+    // Abschluss mit Handlung und den Gesichtern der drei Geschäftsführer:innen.
+    type: z.literal('landingCta'), kicker: z.string().optional(),
+    headline: z.string().min(1), text: z.string().optional(), button: link, secondary: link.optional(),
   }),
   z.object({
     // Anfrage in zwei Schritten (docs/DESIGN.md). Gesichter: ohne Angabe die drei Geschäftsführer:innen.

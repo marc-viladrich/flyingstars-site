@@ -18,10 +18,11 @@ const packs = items.map((item) => ({ ...item, ...SHOW_PACKAGES[item.name], shape
 <section class="section alt" id={id} aria-labelledby={`${id}-h`}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
   {compact ? (
-    <div class="packs">{packs.map((p) => <article class:list={['pack', { featured: p.highlight }]} aria-labelledby={`${id}-${p.name}`}>
+    <div class="packs">{packs.map((p) => <a class:list={['pack', { featured: p.highlight }]} aria-labelledby={`${id}-${p.name}`} href={`/kontakt/?paket=${p.name}`} data-pick-paket={p.name} style={`--c:rgb(${p.color.join(',')})`}>
       <canvas data-orb={p.shape} data-color={p.color.join(',')} data-n={p.base} aria-hidden="true"></canvas>
       <div><div class="name"><C id={`${id}-${p.name}`}>{p.name}</C>{p.badge && <span class="chip">{p.badge}</span>}</div><p class="price">{money(p.price)}</p><p class="meta mono">{p.base} Drohnen{p.label && <> · {p.label}</>}</p>{p.sky && <p class="pack-sky">{p.sky}</p>}</div>
-    </article>)}</div>
+      <span class="pack-go" aria-hidden="true">→</span>
+    </a>)}</div>
   ) : (
     <div class="tiers-grid">{packs.map((p) => <article class:list={['tier', { 'is-rec': p.highlight }]} style={`--dot:rgb(${p.color.join(',')})`} aria-labelledby={`${id}-${p.name}`}>
       <canvas data-orb={p.shape} data-color={p.color.join(',')} data-n={p.base} aria-hidden="true"></canvas>

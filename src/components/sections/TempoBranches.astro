@@ -1,0 +1,66 @@
+---
+// Ablauf als Verzweigung (Marc, 31.10.2026: „als Branch darstellen, dass Design und Genehmigung parallel laufen, und
+// vielleicht einen dritten Branch für Express, damit man physisch sieht, dass die Zeit deutlich kürzer ist“).
+// Nur Desktop; auf dem Handy bleibt der senkrechte Zeitstrahl. Schematisch: Längen sind keine Messwerte. Belegt sind nur
+// die beschrifteten Zahlen (Fragebogen 21.10.): 48 h Antwort, Design mit Freigaben mind. drei Wochen, ideal 1–2 Monate,
+// Express 1–2 Wochen, ca. 3 h Aufbau.
+interface Props { id: string }
+const { id } = Astro.props;
+const g = (n: string) => `${id}-${n}`;
+---
+<figure class="branches" data-reveal-group aria-labelledby={g('cap')}>
+  <svg viewBox="51 0 858 300" role="img" aria-labelledby={g('cap')}>
+    <defs>
+      <linearGradient id={g('a')} x1="0" x2="1"><stop offset="0" stop-color="#ff9e29" /><stop offset="1" stop-color="#db64e8" /></linearGradient>
+      <linearGradient id={g('b')} x1="0" x2="1"><stop offset="0" stop-color="#ff9e29" /><stop offset="1" stop-color="#33edf2" /></linearGradient>
+    </defs>
+    <!-- Klammer „ideal: 1–2 Monate“ über dem regulären Weg -->
+    <path class="br-brace" d="M60 30 v-8 h840 v8" />
+    <text class="br-meta" x="480" y="14" text-anchor="middle">IDEAL: 1–2 MONATE VORLAUF</text>
+    <!-- regulärer Weg: Anfrage → zwei parallele Stränge → Showabend -->
+    <path class="br-line" pathLength="1" style="--d:0" stroke={`url(#${g('a')})`} d="M60 120 H170 C220 120 220 74 270 74 H700 C760 74 760 120 820 120 H900" />
+    <path class="br-line" pathLength="1" style="--d:.25" stroke={`url(#${g('b')})`} d="M170 120 C220 120 220 166 270 166 H640 C720 166 760 120 820 120" />
+    <text class="br-lane" x="290" y="54">Design mit euren Freigaben</text>
+    <text class="br-sub" x="290" y="100">mindestens drei Wochen: Rohanimation, Musik, Farben</text>
+    <text class="br-lane" x="290" y="146">Genehmigung beim Luftfahrt-Bundesamt</text>
+    <text class="br-sub" x="290" y="192">läuft parallel, von euch nur die Zustimmung der Eigentümer:innen</text>
+    <!-- Express: kurzer gestrichelter Weg zur eigenen Show -->
+    <path class="br-express" pathLength="1" d="M60 120 C90 120 100 250 150 250 H300" />
+    <text class="br-lane br-ex" x="160" y="234">Express in 1–2 Wochen</text>
+    <text class="br-sub br-ex" x="160" y="276">bei Bedarf zubuchbar</text>
+    <!-- Punkte -->
+    <circle class="br-dot" style="--c:#ff9e29;--d:0" cx="60" cy="120" r="9" />
+    <circle class="br-dot" style="--c:#33edf2;--d:1" cx="900" cy="120" r="9" />
+    <circle class="br-dot br-dot-ex" style="--c:#f5a73c;--d:.6" cx="300" cy="250" r="7" />
+  </svg>
+  <div class="br-ends" aria-hidden="true">
+    <div><b>Anfrage</b><span>Antwort in 48 h</span></div>
+    <div><b>Showabend</b><span>ca. 3 h Aufbau vor Ort</span></div>
+  </div>
+  <figcaption id={g('cap')} class="sr-only">Ablauf als Verzweigung: Nach der Anfrage (Antwort in 48 Stunden) laufen Design mit euren Freigaben (mindestens drei Wochen) und die Genehmigung beim Luftfahrt-Bundesamt parallel bis zum Showabend, ideal sind ein bis zwei Monate Vorlauf. Bei Bedarf ist ein Express in ein bis zwei Wochen zubuchbar.</figcaption>
+</figure>
+
+<style>
+  .branches { margin: 0; position: relative; }
+  .branches svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .br-line, .br-express { fill: none; stroke-width: 3; stroke-linecap: round; }
+  .br-line { stroke-dasharray: 1; stroke-dashoffset: 0; transition: stroke-dashoffset 1.8s cubic-bezier(0.6, 0, 0.2, 1); transition-delay: calc(var(--d) * 1s); }
+  .br-express { stroke: rgba(245, 167, 60, 0.75); stroke-width: 2; stroke-dasharray: 0.012 0.012; }
+  .br-brace { fill: none; stroke: var(--line-strong); stroke-width: 1.2; }
+  .br-dot { fill: var(--surface); stroke: var(--line-strong); stroke-width: 2; transition: fill 0.5s, stroke 0.5s; transition-delay: calc(var(--d) * 1.6s + 0.2s); }
+  :global(.reveal) .branches:not(.is-in) .br-line { stroke-dashoffset: 1; }
+  .branches:global(.is-in) .br-dot, :global(html:not(.reveal)) .br-dot { fill: var(--c); stroke: var(--c); filter: drop-shadow(0 0 8px var(--c)); }
+  .br-express { opacity: 1; transition: opacity 0.8s 0.6s; }
+  :global(.reveal) .branches:not(.is-in) .br-express { opacity: 0; }
+  .br-lane { font: 500 21px var(--display); fill: var(--head); letter-spacing: -0.01em; }
+  .br-sub { font: 400 14.5px var(--body); fill: var(--muted); }
+  .br-ex.br-lane { fill: var(--head); font-size: 18px; }
+  .br-ex.br-sub { fill: var(--accent); font: 400 12px var(--mono); letter-spacing: 0.1em; text-transform: uppercase; }
+  .br-meta { font: 400 12px var(--mono); letter-spacing: 0.1em; fill: var(--faint); }
+  .br-ends { display: flex; justify-content: space-between; margin-top: -4px; padding: 0 0 0 0; }
+  .br-ends > div { display: grid; gap: 4px; }
+  .br-ends > div:last-child { text-align: right; }
+  .br-ends b { font: 600 clamp(28px, 2.6vw, 40px)/1 var(--display); letter-spacing: -0.03em; color: var(--head); }
+  .br-ends span { color: var(--accent); font: 400 12px/1.5 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; }
+  @media (prefers-reduced-motion: reduce) { .br-line, .br-dot, .br-express { transition: none; } }
+</style>

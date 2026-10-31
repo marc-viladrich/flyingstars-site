@@ -167,13 +167,14 @@ sections:
   - type: logoBar
     id: presse
     kicker: Presse & Qualität
-    # Logos nur mit schriftlicher Freigabe (cleared), sonst Name als Text. Namentlich belegt: ntv und WAZ.
+    # Marc, 31.10.2026: Logos zeigen, Freigaben werden angenommen (vor Livegang bei FlyingStars bestätigen lassen;
+    # namentlich belegt sind nur ntv und WAZ). Ohne cleared erscheint der Name als Text.
     pressItems:
-      - { name: ZDF, logo: /brand/logos/presse-zdf.svg, knock: true, note: "1, 2 oder 3" }
-      - { name: WDR, logo: /brand/logos/presse-wdr.svg, note: Fernsehen und Interviews }
-      - { name: ntv, logo: /brand/logos/presse-ntv.svg, knock: true, cleared: true, note: Startup News, href: "https://www.n-tv.de/mediathek/magazine/startup_news/Drohnen-verwandeln-Nachthimmel-in-Showbuehne-article25835436.html" }
-      - { name: tagesschau, logo: /brand/logos/presse-tagesschau.svg, note: "#Böllerciao in Berlin" }
-      - { name: Tagesspiegel, logo: /brand/logos/presse-tagesspiegel.svg, note: "#Böllerciao in Berlin" }
+      - { name: ZDF, logo: /brand/logos/presse-zdf.svg, cleared: true, knock: true, note: "1, 2 oder 3" }
+      - { name: WDR, logo: /brand/logos/presse-wdr.svg, cleared: true, note: Fernsehen und Interviews }
+      - { name: ntv, logo: /brand/logos/presse-ntv.svg, cleared: true, knock: true, note: Startup News, href: "https://www.n-tv.de/mediathek/magazine/startup_news/Drohnen-verwandeln-Nachthimmel-in-Showbuehne-article25835436.html" }
+      - { name: tagesschau, logo: /brand/logos/presse-tagesschau.svg, cleared: true, note: "#Böllerciao in Berlin" }
+      - { name: Tagesspiegel, logo: /brand/logos/presse-tagesspiegel.svg, cleared: true, note: "#Böllerciao in Berlin" }
       - { name: WAZ, logo: /brand/logos/presse-waz.svg, cleared: true, note: Ruhrorter Hafenfest, href: "https://www.waz.de/lokales/duisburg/article409722481/ruhrorter-hafenfest-die-geheimnisse-hinter-dem-neuen-highlight.html" }
     quality:
       - { title: Betriebsgenehmigung des Luftfahrt-Bundesamts, text: seit Juli 2023, icon: permit, logo: /brand/logos/quali-lba-weiss.png, cleared: true }
@@ -193,10 +194,12 @@ sections:
       - { label: Kein Rauch, value: "0", unit: g, text: "Keine Pyrotechnik, also kein Rauch und keine Schwermetalle über dem Publikum." }
       - { label: Kein Müll, value: "0", unit: kg, text: "Keine Hülsen, keine Reste. Dieselben Drohnen fliegen Show für Show." }
       - { label: Ökostrom, value: "100", unit: "%", text: Ökostrom von naturstrom für unsere Akkus. }
-    points:
-      - Die Drohnen werden in der EU gebaut, Akkus, Motoren und Rotoren tauschen wir einzeln.
-      - Zu den Shows fahren wir mit einem elektrischen Ford E-Transit.
-    campaign: Für die Kampagne der Deutschen Umwelthilfe sind wir im November 2023 mit 150 Drohnen über dem Cantianstadion in Berlin geflogen, als Alternative zum Silvesterfeuerwerk.
+    # Vier Punkte im Raster unter den vier Zahlen (Marc 31.10.: statt Kasten, mit großen Icons). Nur belegte Aussagen (EmpCo).
+    pillars:
+      - { icon: eu, title: Gebaut in der EU, text: Unsere Drohnen werden in der EU gefertigt. }
+      - { icon: repair, title: Reparieren statt ersetzen, text: "Akkus, Motoren und Rotoren tauschen wir einzeln, die Drohne fliegt weiter." }
+      - { icon: ev, title: Elektrisch zur Show, text: Zu den Shows fahren wir mit einem elektrischen Ford E-Transit. }
+      - { icon: campaign, title: "#Böllerciao", text: "Mit der Deutschen Umwelthilfe im November 2023 über Berlin, als Alternative zum Silvesterfeuerwerk." }
 
   - type: comparison
     id: vergleich

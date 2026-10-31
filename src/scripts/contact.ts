@@ -61,6 +61,17 @@ if (form) {
   const message = form.querySelector<HTMLTextAreaElement>('[name=message]');
   const draft = [showSummary, skyText && `Text am Himmel: ${skyText}`].filter(Boolean).join('\n');
   if (draft && message && !message.value) message.value = draft;
+  // Paketkarten auf derselben Seite (Startseite): Klick wählt das Paket im Formular und springt hin, statt zu /kontakt/
+  document.querySelectorAll<HTMLAnchorElement>('[data-pick-paket]').forEach((link) => link.addEventListener('click', (event) => {
+    const input = packs.find((p) => p.value === link.dataset.pickPaket);
+    if (!input) return;
+    event.preventDefault();
+    input.checked = true;
+    form.querySelector('[name=drohnen]')?.remove();
+    show(0, false);
+    form.closest('section')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+    history.replaceState(null, '', '#anfrage');
+  }));
   const occasion = params.get('anlass');
   const occasionInput = occasion ? [...form.querySelectorAll<HTMLInputElement>('[name=anlass]')].find((input) => input.value === occasion) : undefined;
   if (occasionInput && !form.querySelector('[name=anlass]:checked')) occasionInput.checked = true;

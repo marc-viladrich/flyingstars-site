@@ -1,6 +1,6 @@
 ---
-// Preisseite (31.10.2026, Marcs Feedbackrunde 6): Aufbau wie im Vercel-Prototyp. Oben direkt der Show-Konfigurator,
-// dann die drei Pakete mit farbigen Punkten je Paket, was immer enthalten ist, alle Leistungen im Vergleich, Extras,
+// Preisseite (31.10.2026, Marcs Feedbackrunde 6/8): Aufbau wie im Vercel-Prototyp. Oben die drei Pakete, dann der
+// Show-Konfigurator, danach mit farbigen Punkten je Paket, was immer enthalten ist, alle Leistungen im Vergleich, Extras,
 // Preisversprechen (Fragebogen 21.10.), Fragen zum Preis und Abschluss. Preise und Drohnenzahlen nur aus
 // show-packages.ts, Texte aus package-details.ts.
 import Base from '../layouts/Base.astro';
@@ -9,27 +9,31 @@ import Cta from '../components/sections/Cta.astro';
 import Metrics from '../components/sections/Metrics.astro';
 import Faq from '../components/sections/Faq.astro';
 import SectionHead from '../components/SectionHead.astro';
+import Faces from '../components/Faces.astro';
 import ShowConfigurator from '../components/configurator/ShowConfigurator.astro';
 import { SHOW_PACKAGES, PACKAGE_NAMES } from '../content/show-packages';
 import { PACKAGE_DETAILS, COMPARISON, COMPARISON_NOTE, INCLUDED, EXTRAS, SHOW_DURATION } from '../content/package-details';
 const money = (v: number) => `ab ${v.toLocaleString('de-DE')} €`;
 const items = PACKAGE_NAMES.map((name) => ({ name, ...PACKAGE_DETAILS[name], badge: PACKAGE_DETAILS[name].often, highlight: Boolean(PACKAGE_DETAILS[name].often) }));
 const featured = PACKAGE_NAMES.findIndex((name) => PACKAGE_DETAILS[name].often);
+const orb = { SPARK: 'ring', HORIZON: 'sphere', ODYSSEY: 'torus' } as const;
 ---
 <Base title="Drohnenshow Preise: drei Pakete ab 7.900 €" description="Drei Drohnenshow-Pakete ab 7.900 € netto zzgl. Anfahrt. Design, Genehmigung und Team vor Ort sind immer enthalten. Mit Show-Konfigurator.">
-  <ShowConfigurator id="konfigurator" headingLevel={1} kicker="Preise & Pakete" heading="Was eure Show kostet." />
 
   <Packages
     type="packages"
-    index={1}
+    index={0}
     id="pakete"
-    kicker="Pakete"
+    kicker="Preise & Pakete"
     headline="Drei Pakete. Feste Einstiegspreise."
     text="Jedes Paket lässt sich mit mehr Drohnen und Extras erweitern. Alle Preise netto zzgl. Anfahrt."
     note={SHOW_DURATION}
     compact={false}
     items={items}
   />
+
+  <!-- Reihenfolge (Marc, 31.10.2026): erst die Pakete, dann der Konfigurator -->
+  <ShowConfigurator id="konfigurator" headingLevel={2} kicker="Show-Konfigurator" heading="Was eure Show kostet." />
 
   <Metrics
     type="metrics"
@@ -48,21 +52,23 @@ const featured = PACKAGE_NAMES.findIndex((name) => PACKAGE_DETAILS[name].often);
       <table style="position:relative">
         <caption class="sr-only">Leistungen der Pakete SPARK, HORIZON und ODYSSEY</caption>
         <thead>
-          <tr><th scope="col">Leistung</th>{PACKAGE_NAMES.map((name, i) => <th scope="col" class:list={{ us: i === featured }}>{name}<br /><span class="mono">{money(SHOW_PACKAGES[name].price)}</span></th>)}</tr>
+          <tr><th scope="col">Leistung</th>{PACKAGE_NAMES.map((name, i) => <th scope="col" class:list={['pk', { us: i === featured }]} style={`--c:rgb(${SHOW_PACKAGES[name].color.join(',')})`}><canvas data-orb={orb[name]} data-color={SHOW_PACKAGES[name].color.join(',')} data-n={Math.round(SHOW_PACKAGES[name].base * 0.6)} aria-hidden="true"></canvas><span class="pk-name">{name}</span><span class="mono">{money(SHOW_PACKAGES[name].price)}</span></th>)}</tr>
         </thead>
         <tbody>
           {COMPARISON.map((row) => (
             <tr>
               <th scope="row">{row.label}</th>
               {row.all ? <td colspan="3">{row.all}</td> : row.cells!.map((cell, i) => cell === null
-                ? <td class:list={{ us: i === featured }}><span aria-hidden="true">–</span><span class="sr-only">nicht enthalten</span></td>
+                ? <td class:list={['no', { us: i === featured }]}><span aria-hidden="true">–</span><span class="sr-only">nicht enthalten</span></td>
+                : cell === true
+                ? <td class:list={['yes', { us: i === featured }]} style={`--c:rgb(${SHOW_PACKAGES[PACKAGE_NAMES[i]].color.join(',')})`}><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" /></svg><span class="sr-only">enthalten</span></td>
                 : <td class:list={{ us: i === featured }}>{cell}</td>)}
             </tr>
           ))}
         </tbody>
       </table>
     </div>
-    <p class="fine mono">{COMPARISON_NOTE} Alle Preise netto zzgl. Anfahrt.</p>
+    <p class="fine mono">Alle Preise netto zzgl. Anfahrt. {COMPARISON_NOTE}</p>
   </section>
 
   <section class="section alt" id="zusaetze" aria-labelledby="zusaetze-h">
@@ -83,6 +89,7 @@ const featured = PACKAGE_NAMES.findIndex((name) => PACKAGE_DETAILS[name].often);
   <!-- Preisversprechen: von FlyingStars im Fragebogen (21.10.2026) bestätigt -->
   <section class="section promise-sec" aria-labelledby="versprechen-h">
     <div class="promise">
+      <Faces />
       <div><span class="kicker mono">Preisversprechen</span><h2 id="versprechen-h">Günstigeres Angebot mit gleicher Leistung? Wir unterbieten es.</h2><p>Schickt uns das Vergleichsangebot. Bei gleichem Leistungsumfang machen wir euch einen besseren Preis.</p></div>
       <a class="btn primary" href="/kontakt/?anliegen=vergleich">Angebot prüfen lassen</a>
     </div>

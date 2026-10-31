@@ -947,12 +947,15 @@ html.motion-paused .rec::before { animation: none; }
 }
 @media (prefers-reduced-motion: reduce) { .ruler::after, .ruler .dot { transition: none; } }
 
-/* Preisversprechen (Preisseite): Kasten mit Verlaufsrand wie im Prototyp */
-.promise { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px 40px; align-items: center; padding: clamp(26px, 4vw, 48px); border-radius: var(--radius); background: var(--surface); }
+/* CTA-Kasten (Cta.astro, Preisversprechen): schmal und zentriert statt über die volle Breite (Marc 31.10.: auf großen
+   Bildschirmen stand der Button verloren allein), Verlaufsrand wie im Prototyp, bei Kontakt-CTAs die Gesichter */
+.promise { position: relative; max-width: 860px; margin-inline: auto; display: grid; justify-items: center; gap: 22px; text-align: center; padding: clamp(36px, 5vw, 64px) clamp(24px, 5vw, 72px); border-radius: var(--radius); background: var(--surface); }
 .promise::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; background: var(--grad); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
-.promise h2 { font-size: clamp(28px, 3vw, 44px); max-width: 18ch; }
-.promise p { color: var(--muted); margin-top: 14px; max-width: 48ch; }
-@media (max-width: 760px) { .promise { grid-template-columns: 1fr; } }
+.promise :is(h2, h1) { font-size: clamp(28px, 3vw, 44px); max-width: 20ch; margin-inline: auto; }
+.promise p { color: var(--muted); margin: 14px auto 0; max-width: 48ch; }
+.promise .kicker { margin-bottom: 12px; }
+.promise .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+.promise .faces { justify-content: center; margin: 0; }
 
 .cfg-kicker { margin-bottom: -6px; }
 
@@ -973,3 +976,130 @@ html.motion-paused .rec::before { animation: none; }
   .shortcut .sc-line { display: none; }
   .shortcut .sc-label { padding: 0; background: none; flex-wrap: wrap; gap: 4px 10px; }
 }
+
+/* Presse im Raster wie Qualität und Sicherheit: Logo, darunter leise der Anlass. Keine Kästen. */
+.proof .press ul { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 28px 24px; }
+.proof .press a, .proof .press .noref { display: grid; gap: 12px; align-content: start; justify-items: start; padding: 0; background: none; min-height: 0; border-radius: 0; height: auto; }
+.proof .press a:hover { background: none; }
+.proof .press a:hover img { opacity: 1; }
+.proof .press img { width: auto; max-width: 150px; object-fit: contain; object-position: left bottom; filter: brightness(0) invert(1); opacity: 0.82; transition: opacity 0.2s; }
+.proof .press img.knock { filter: grayscale(1) brightness(0.85) contrast(1.15); opacity: 1; } /* farbige Fläche mit weißer Schrift (ZDF, ntv): Fläche grau, Schrift bleibt weiß */
+.proof .press .note { color: var(--faint); font-size: 13.5px; line-height: 1.4; }
+.proof .press a .note { color: var(--muted); }
+.proof .press :is(a, .noref) { min-height: 74px; align-content: end; }
+
+/* Nachhaltigkeit: Konturschrift für „Kein Rauch.“ wie im Prototyp, auch bei der Rauch-Zahl in der Scrollstory */
+.eco-title span.o, .fn.o { color: transparent; -webkit-text-stroke: 1.5px rgba(246, 241, 232, 0.85); }
+.is-scrolly .fn.o { -webkit-text-stroke-width: 2.5px; }
+@media (max-width: 1000px) { .is-scrolly .fn.o { -webkit-text-stroke-width: 2px; } }
+/* Vier Punkte unter der Scrollstory, im selben Vierer-Raster wie die Zahlen, große Icons in Orange */
+.eco-pillars { list-style: none; margin: clamp(48px, 6vw, 80px) 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 36px clamp(20px, 3vw, 44px); }
+.eco-pillars li { display: grid; gap: 10px; align-content: start; }
+.eco-pillars .ico { width: 44px; height: 44px; stroke-width: 1.6; margin-bottom: 8px; }
+.eco-pillars b { font: 500 clamp(19px, 1.6vw, 23px)/1.2 var(--display); color: var(--head); letter-spacing: -0.015em; }
+.eco-pillars span { color: var(--muted); font-size: 15px; max-width: 32ch; }
+@media (max-width: 1000px) { .eco-pillars { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .eco-pillars { grid-template-columns: 1fr; } }
+
+/* Formular: deutliche Hover-Zustände; Paket-Pills in den Paketfarben wie überall (Marc, 31.10.2026) */
+.ask .chips label:hover span { border-color: rgba(246, 241, 232, 0.55); color: var(--text); }
+.ask .chips label[style*="--c"] span { border-color: color-mix(in srgb, var(--c) 55%, transparent); }
+.ask .chips label[style*="--c"]:hover span { border-color: var(--c); color: var(--c); }
+.ask .chips label[style*="--c"] input:checked + span { background: var(--c); border-color: var(--c); color: var(--ground); }
+.ask :is(input[type="text"], input[type="email"], input[type="tel"], input[type="date"], select, textarea):hover { border-color: rgba(246, 241, 232, 0.4); }
+.ask .hint.check:hover { color: var(--text); }
+/* Paketkarten der Startseite sind Links: Klick wählt das Paket im Formular */
+a.pack { color: inherit; cursor: pointer; transition: border-color 0.2s, transform 0.2s, background 0.2s; position: relative; }
+a.pack:hover { border-color: color-mix(in srgb, var(--c) 70%, transparent); transform: translateY(-2px); }
+a.pack .pack-go { position: absolute; right: 22px; top: 50%; transform: translateY(-50%); color: var(--c); font-size: 20px; opacity: 0; transition: opacity 0.2s, transform 0.2s; }
+a.pack:hover .pack-go, a.pack:focus-visible .pack-go { opacity: 1; transform: translate(4px, -50%); }
+.promise-copy { justify-items: center; gap: 0; }
+.footer .eco img { height: 24px; filter: brightness(0) invert(1); opacity: 0.75; }
+
+/* Kicker überall 14 px über der Headline (gemessen auf allen Seiten, Marc 31.10.: „viel zu weit weg“). In Grid-Containern
+   addiert sich die Lücke des Containers, in Fließtext der obere Abstand der Headline; beides wird hier ausgeglichen. */
+.prose > .kicker { margin-bottom: 14px; }
+.prose > .kicker + :is(h1, h2, h3) { margin-top: 0; }
+.page-hero-copy > .kicker { margin-bottom: -8px; }
+:is(.inquiry .intro, .faq-grid .intro) > .kicker { margin-bottom: -4px; }
+.hero-copy > .kicker { margin-bottom: -8px; }
+
+/* FAQ mit Kategorien: Kopf über die volle Breite, je Kategorie eine Zeile mit mitlaufendem Kategorietitel links */
+.faq-grouped .faq-grid { grid-template-columns: 1fr; }
+.faq-grouped .faq-grid .intro { position: static; max-width: 52rem; margin-bottom: clamp(16px, 3vw, 32px); }
+.faq-grouped .faq-body { gap: 0; }
+.faq-grouped .faq-group { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(28px, 5vw, 80px); align-items: start; padding: clamp(28px, 4vw, 48px) 0; border-top: 1px solid var(--line-strong); }
+.faq-grouped .faq-group-h { position: sticky; top: 104px; margin: 0; padding-top: 18px; font: 500 clamp(26px, 2.6vw, 38px)/1.08 var(--display); letter-spacing: -0.025em; color: var(--head); }
+.faq-grouped .faq-group-h::before { content: counter(faqgroup, decimal-leading-zero); counter-increment: faqgroup; display: block; margin-bottom: 12px; font: 400 12px/1.5 var(--mono); letter-spacing: 0.1em; color: var(--accent); }
+.faq-grouped .faq-body { counter-reset: faqgroup; }
+.faq-grouped .faq { border-top: 0; }
+.faq-grouped .faq-closing { margin-top: clamp(28px, 4vw, 48px); }
+@media (max-width: 1000px) {
+  .faq-grouped .faq-group { grid-template-columns: 1fr; gap: 6px; }
+  .faq-grouped .faq-group-h { top: 58px; z-index: 2; padding: 14px 0 12px; background: color-mix(in srgb, var(--ground) 92%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); font-size: 24px; }
+  .faq-grouped .faq-group-h::before { display: inline; margin: 0 10px 0 0; }
+}
+
+/* Leistungsvergleich (Preisseite): Spaltenköpfe mit Paketfigur und Paketfarbe wie auf den Karten, Häkchen statt Fußnote */
+#leistungen thead th.pk { text-align: left; vertical-align: bottom; }
+#leistungen thead th.pk canvas { display: block; width: 56px; height: 56px; margin-bottom: 10px; }
+#leistungen thead th.pk .pk-name { display: block; color: var(--c); font: 700 15px/1.2 var(--display); letter-spacing: 0.06em; }
+#leistungen thead th.pk .mono { display: block; margin-top: 4px; color: var(--muted); }
+#leistungen thead th.pk::after { background: var(--c); }
+#leistungen td.yes svg { width: 20px; height: 20px; fill: none; stroke: var(--c); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; display: block; }
+#leistungen td.no { color: var(--faint); }
+
+/* Vergleich Drohne/Feuerwerk/Laser: Kriterienspalte schmaler mit Silbentrennung; auf dem Handy Reiter statt Tabelle */
+.section.alt table th[scope="row"] { width: 26%; hyphens: auto; -webkit-hyphens: auto; }
+.cmp-m { display: none; }
+@media (max-width: 700px) {
+  .section:has(> .cmp-m) > .table-wrap { display: none; }
+  .cmp-m { display: grid; gap: 18px; }
+  .cmp-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; padding: 5px; border: 1px solid var(--line-strong); border-radius: 12px; }
+  .cmp-tabs label { position: relative; cursor: pointer; }
+  .cmp-tabs input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+  .cmp-tabs span { display: block; padding: 10px 4px; border-radius: 8px; text-align: center; font: 500 13px/1.2 var(--body); color: var(--muted); }
+  .cmp-tabs input:checked + span { background: var(--surface-2); color: var(--text); }
+  .cmp-tabs label.us input:checked + span { box-shadow: inset 0 -2px 0 #db64e8; }
+  .cmp-tabs input:focus-visible + span { outline: 2px solid var(--cyan); outline-offset: 2px; }
+  .cmp-panel { display: none; margin: 0; }
+  .cmp-m:has(.cmp-tabs label:nth-child(1) input:checked) .cmp-panel[data-i="0"],
+  .cmp-m:has(.cmp-tabs label:nth-child(2) input:checked) .cmp-panel[data-i="1"],
+  .cmp-m:has(.cmp-tabs label:nth-child(3) input:checked) .cmp-panel[data-i="2"] { display: block; }
+  .cmp-panel > div { padding: 14px 0; border-bottom: 1px solid var(--line); display: grid; gap: 8px; }
+  .cmp-panel dt { color: var(--head); font-weight: 500; }
+  .cmp-panel dd { margin: 0; display: grid; justify-items: start; gap: 6px; color: var(--muted); font-size: 14.5px; }
+}
+
+/* Hero, seitliche Fassung (Standard seit 31.10.2026): Showreel rechts, nach links weich ins Schwarz ausgeblendet, kleiner
+   und dadurch schärfer. Vollflächig zum Vergleich mit ?hero=voll. Auf dem Handy bleibt es vollflächig. */
+@media (min-width: 901px) {
+  .hero.side { background: var(--ground); }
+  .hero.side .hero-media, .hero.side .reel { left: auto; right: 0; width: 64%; -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.55) 18%, #000 42%); mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.55) 18%, #000 42%); }
+  .hero.side .hero-media { position: absolute; top: 0; bottom: 0; }
+  .hero.side .shade { background: linear-gradient(0deg, rgba(15, 13, 12, 0.85) 0%, rgba(15, 13, 12, 0) 30%), linear-gradient(90deg, var(--ground) 30%, rgba(15, 13, 12, 0) 52%); }
+  .hero.side .frame { right: calc(var(--gutter) * 0.6); }
+}
+/* Showreel mit Ton als Overlay */
+.reel-dialog { width: min(1280px, 94vw); max-width: none; max-height: 92vh; padding: 0; border: 0; border-radius: 14px; background: #000; overflow: visible; }
+.reel-dialog::backdrop { background: rgba(8, 7, 6, 0.86); backdrop-filter: blur(6px); }
+.reel-dialog video { display: block; width: 100%; height: auto; max-height: 92vh; border-radius: 14px; }
+.reel-close { position: absolute; top: -18px; right: -18px; z-index: 2; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line-strong); background: var(--ground); color: var(--text); display: grid; place-items: center; cursor: pointer; }
+.reel-close:hover { border-color: var(--text); }
+.reel-close svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+@media (max-width: 700px) { .reel-close { top: -54px; right: 0; } }
+/* Seitlicher Hero: Videoebene (Standbild + Knopf „Showreel ansehen“) über der Abdunklung, sonst verschwindet der Knopf
+   darunter. Das Standbild blendet aus, sobald das Hintergrund-Reel läuft. */
+.hero .hero-media { z-index: 3; pointer-events: none; }
+.hero .hero-media .video-play { pointer-events: auto; }
+.hero .hero-media > img { transition: opacity 1.2s ease; }
+.hero.reel-on .hero-media > img { opacity: 0; }
+.hero .hero-copy { z-index: 4; }
+
+/* Ablauf: Verzweigung auf dem Desktop, Zeitstrahl auf dem Handy (und zum Vergleich mit ?ablauf=strahl) */
+.tempo-branches { display: none; }
+@media (min-width: 1001px) {
+  html:not(.ablauf-strahl) .tempo-branches { display: block; margin-bottom: clamp(36px, 4vw, 56px); }
+  html:not(.ablauf-strahl) .tempo .tempo-branches + .ruler-wrap { display: none; }
+}
+.promise { grid-template-columns: minmax(0, 1fr); } /* Spalte füllt den Kasten, sonst sitzt der Inhalt links */
