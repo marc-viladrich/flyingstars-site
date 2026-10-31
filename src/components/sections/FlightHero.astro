@@ -2,17 +2,49 @@
 import type { Section } from '../../content.config';
 import Video from '../Video.astro';
 import Accent from '../Accent.astro';
-// eyebrow ist veraltet und wird nicht mehr angezeigt (docs/DESIGN.md: keine Eyebrows)
-const { headline, text, words, cta, secondary, poster, video, stats } = Astro.props as Extract<Section, { type: 'showreelHero' }>;
+import { videoPath } from '../../lib/videos';
+import { optimizedImage } from '../../lib/media';
+// Hero mit laufendem Showreel (Marc, 31.10.2026: „mehr Bewegung, das Showreel gehört in den Hero“, wie im
+// Vercel-Prototyp): stumm im Hintergrund, Start erst nach dem ersten Bild; „Showreel ansehen“ spielt es mit Ton.
+// Ohne Hintergrundvideo bei reduzierter Bewegung, globaler Pause, Datensparmodus und auf schmalen Bildschirmen.
+const { headline, text, words, cta, secondary, poster, video, stats, eyebrow } = Astro.props as Extract<Section, { type: 'showreelHero' }>;
+const still = await optimizedImage(poster.src, 960);
 ---
 <section class="hero" aria-labelledby="hero-h">
   <Video src={video} poster={poster.src} label="Showreel ansehen" hero class="hero-media" />
+  <video class="reel" data-reel data-src={videoPath(video)} muted loop playsinline preload="none" poster={still.src} aria-hidden="true" tabindex="-1"></video>
   <div class="shade" aria-hidden="true"></div>
+  <div class="rec mono" aria-hidden="true">Showreel</div>
   <div class="frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
   <div class="hero-copy">
+    {eyebrow && <span class="kicker mono">{eyebrow}</span>}
     <h1 id="hero-h"><Accent text={headline} />{words && words.length > 0 && <> <span class="word" data-rotate={words.join('|')}>{words[0]}</span></>}</h1>
     <p class="lead">{text}</p>
     <div class="actions"><a class="btn primary" href={cta.href}>{cta.label}</a>{secondary && <a class="btn" href={secondary.href}>{secondary.label}</a>}</div>
   </div>
   {stats && stats.length > 0 && <dl class="spec mono" aria-label="Eckdaten">{stats.map((stat) => <><dt>{stat.label}</dt><dd><b>{stat.value}</b></dd></>)}</dl>}
 </section>
+
+<script>
+  const reel = document.querySelector<HTMLVideoElement>('video[data-reel]');
+  if (reel) {
+    const root = document.documentElement;
+    const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+    const allowed = () => !matchMedia('(prefers-reduced-motion: reduce)').matches && !root.classList.contains('motion-paused') && matchMedia('(min-width: 701px)').matches && !conn?.saveData;
+    const hero = reel.closest('.hero')!;
+    let visible = true;
+    const sync = () => {
+      const active = hero.querySelector('.video-active');
+      if (allowed() && visible && !active) {
+        if (!reel.src) reel.src = reel.dataset.src!;
+        reel.play().then(() => hero.classList.add('reel-on')).catch(() => {});
+      } else reel.pause();
+    };
+    reel.addEventListener('error', () => { hero.classList.remove('reel-on'); reel.removeAttribute('src'); });
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; sync(); }, { threshold: 0.2 }).observe(hero);
+    new MutationObserver(sync).observe(root, { attributes: true, attributeFilter: ['class'] });
+    hero.querySelector('[data-video-play]')?.addEventListener('click', () => { reel.pause(); hero.classList.remove('reel-on'); });
+    const start = () => sync();
+    if (document.readyState === 'complete') setTimeout(start, 300); else addEventListener('load', () => setTimeout(start, 300), { once: true });
+  }
+</script>

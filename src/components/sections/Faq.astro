@@ -8,7 +8,7 @@ import Faces from '../Faces.astro';
 import { CONTACT } from '../people';
 import { optimizedImage } from '../../lib/media';
 type Props = Extract<Section, { type: 'faq' }> & { index: number };
-const { headline = 'Häufige Fragen', text, cta, tags, limit, openFirst, groups, closing, id = `s${Astro.props.index}`, index } = Astro.props;
+const { headline = 'Häufige Fragen', text, cta, tags, limit, openFirst, groups, closing, id = `s${Astro.props.index}`, index, kicker } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const G = index === 0 ? 'h2' : 'h3';
@@ -23,7 +23,7 @@ const photo = closing?.image ? await optimizedImage(closing.image.src, 640) : un
 ---
 <section class="section" id={id} aria-labelledby={headingId}>
   <div class="faq-grid">
-    <div class="intro"><H id={headingId}><Accent text={headline} /></H>{text && <p>{text}</p>}{cta && <a class="link" href={cta.href} rel={external ? 'noopener' : undefined} target={external ? '_blank' : undefined}>{cta.label} <span aria-hidden="true">→</span></a>}</div>
+    <div class="intro">{kicker && <span class="kicker mono">{kicker}</span>}<H id={headingId}><Accent text={headline} /></H>{text && <p>{text}</p>}{cta && <a class="link" href={cta.href} rel={external ? 'noopener' : undefined} target={external ? '_blank' : undefined}>{cta.label} <span aria-hidden="true">→</span></a>}</div>
     <div class="faq-body">
       {blocks.map((block, bi) => <div class="faq-group" id={block.id} aria-labelledby={block.headline ? `${block.id}-h` : undefined} role={block.headline ? 'group' : undefined}>
         {block.headline && <G class="faq-group-h" id={`${block.id}-h`}>{block.headline}</G>}

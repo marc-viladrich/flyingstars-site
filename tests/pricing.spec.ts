@@ -9,7 +9,9 @@ test('Preisseite zeigt die drei Pakete mit Preisen aus einer Quelle und führt i
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/drohnenshow-preise/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Was eine Drohnenshow kostet.');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Was eure Show kostet.');
+  // Der Konfigurator steht direkt oben auf der Seite (Marc, 31.10.2026)
+  await expect(page.locator('#konfigurator canvas')).toHaveCount(1);
   for (const name of PACKAGE_NAMES) {
     const card = page.locator('#pakete article', { has: page.getByRole('heading', { name, exact: true }) });
     await expect(card).toContainText(money(SHOW_PACKAGES[name].price));
@@ -17,10 +19,9 @@ test('Preisseite zeigt die drei Pakete mit Preisen aus einer Quelle und führt i
   }
   await expect(page.locator('#pakete .is-rec')).toHaveCount(1);
   await expect(page.locator('#pakete .is-rec')).toContainText('HORIZON');
-  await expect(page.getByRole('link', { name: 'Zum Show-Konfigurator', exact: true })).toHaveAttribute('href', '/show-konfigurator/');
   await expect(page.locator('#leistungen table thead th')).toHaveCount(4);
-  // Keine Eyebrows (docs/DESIGN.md) und kein Rechner mehr auf der Seite
-  await expect(page.locator('.kicker')).toHaveCount(0);
+  // Kicker sind seit 31.10.2026 wieder Pflicht (docs/DESIGN.md); kein alter Rechner auf der Seite
+  await expect(page.locator('#pakete .kicker')).toHaveText('Pakete');
   await expect(page.locator('#drones, #swarm, #calc-cta')).toHaveCount(0);
   expect(errors).toEqual([]);
 });

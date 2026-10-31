@@ -1,0 +1,13 @@
+---
+// Section-Kopf für alle Sections (docs/DESIGN.md): Kicker in Orange, Headline (einzelne *Begriffe* im Logoverlauf),
+// optional ein Satz darunter. Eine Stelle für alle Komponenten, damit Kicker überall gleich aussehen.
+import Accent from './Accent.astro';
+interface Props { kicker?: string; headline: string; text?: string; id: string; level?: 'h1' | 'h2' | 'h3'; class?: string }
+const { kicker, headline, text, id, level = 'h2', class: cls } = Astro.props;
+const H = level;
+---
+<div class:list={['sec-head', cls]}>
+  {kicker && <span class="kicker mono">{kicker}</span>}
+  <H id={id}><Accent text={headline} /></H>
+  {text && <p>{text}</p>}
+</div>

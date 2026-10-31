@@ -7,6 +7,7 @@ description: "Drohnenshows für Marken und Agenturen: euer Logo am Nachthimmel, 
 image: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
 sections:
   - type: hero
+    kicker: Marken & Werbung
     headline: Eure Marke am Nachthimmel.
     text: Wir setzen euer Logo und eure Botschaft aus Drohnen um, abgestimmt auf Musik und Kampagne. Jedes Motiv gebt ihr vor der Show frei.
     image:
@@ -40,10 +41,12 @@ sections:
 
   - type: projectGrid
     id: referenzen
+    kicker: Referenzen
     headline: Ausgewählte Shows mit Video und Ablauf.
     limit: 4
 
   - type: textMedia
+    kicker: Wirkung
     headline: Was eine Markenshow leisten kann.
     body: |
       - **Ein Logo, das man erkennt.** Wir übersetzen euer Logo in Lichtpunkte, so wie bei Ford, Volkswagen oder PUMA.
@@ -58,6 +61,7 @@ sections:
 
   - type: steps
     id: freigabe
+    kicker: Ablauf
     headline: Vom Logo bis zur fertigen Show.
     text: Nichts fliegt, was ihr nicht freigegeben habt.
     steps:
@@ -76,6 +80,7 @@ sections:
 
   - type: packages
     id: pakete
+    kicker: Pakete
     headline: Wie aufwendig soll eure Show sein?
     text: Ein Logo in 2D reicht für viele Firmenfeiern. Für Launches mit 3D-Objekten und einer Geschichte eignen sich HORIZON oder ODYSSEY. Am häufigsten gebucht wird HORIZON.
     compact: true
@@ -84,10 +89,11 @@ sections:
       - { name: HORIZON, label: 3D in Bewegung, badge: Am häufigsten gebucht, highlight: true }
       - { name: ODYSSEY, label: Erzählte 3D-Show }
     note: Alle Preise netto zzgl. Anfahrt
-    cta: { label: Unterschied im Show-Konfigurator ansehen, href: "/show-konfigurator/?anlass=launch" }
+    cta: { label: Unterschied im Show-Konfigurator ansehen, href: "/drohnenshow-preise/?anlass=launch#konfigurator" }
 
   - type: metrics
     id: agenturen
+    kicker: Agenturen
     headline: Für Agenturen.
     text: Ihr bleibt bei euren Kund:innen vorn. Wie viel ihr selbst organisiert und wie viel wir übernehmen, entscheidet ihr.
     items:
@@ -105,6 +111,7 @@ sections:
         text: Auf Wunsch übernehmen wir die Projektleitung, mit Genehmigung, Behörden und Technik vor Ort.
 
   - type: textMedia
+    kicker: Orte
     headline: Auch über Stadien, Innenstädten und am Wasser.
     body: |
       Dank unserer generischen Betriebsgenehmigung können wir die meisten Flugorte selbst freigeben. Für Kontrollzonen, Flughafennähe und Bundeswasserstraßen holen wir die nötigen Sondergenehmigungen ein. Das braucht mehr Vorlauf.
@@ -121,10 +128,12 @@ sections:
 
   - type: faq
     id: fragen
+    kicker: FAQ
     headline: Fragen von Marken und Agenturen.
     cta: { label: Alle Fragen, href: /faq/ }
     tags: [werbung]
 
   - type: contactForm
+    kicker: Anfrage
     headline: Erzählt uns von eurer Kampagne.
     text: Termin, Ort und Ziel reichen. Euer Logo könnt ihr uns später per E-Mail schicken.

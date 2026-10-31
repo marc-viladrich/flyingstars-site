@@ -2,10 +2,11 @@
 import { getCollection } from 'astro:content';
 import type { Section } from '../../content.config';
 import Accent from '../Accent.astro';
+import SectionHead from '../SectionHead.astro';
 import ProjectCard from '../projects/ProjectCard.astro';
 import { sortProjects } from '../projects/refs';
 type Props = Extract<Section, { type: 'projectGrid' }> & { index: number };
-const { headline = 'Ein paar Nächte, die wir nicht vergessen.', text, cta, limit, id: ownId, index } = Astro.props;
+const { headline = 'Ein paar Nächte, die wir nicht vergessen.', text, cta, limit, id: ownId, index, kicker } = Astro.props;
 const home = Astro.url.pathname === '/';
 const sectionId = ownId ?? (home ? 'projekte' : undefined);
 const id = sectionId ? `${sectionId}-h` : index === 0 ? 'projekte-h' : `s${index}-h`;
@@ -15,7 +16,7 @@ const more = cta ?? (home ? { label: 'Alle Referenzen', href: '/referenzen/' } :
 const projects = sortProjects(await getCollection('projects', (p) => !p.data.draft)).slice(0, limit);
 ---
 <section class="section" id={sectionId} aria-labelledby={id}>
-  <div class="sec-head"><H id={id}><Accent text={headline} /></H>{text && <p>{text}</p>}</div>
-  <div class="projects">{projects.map((project, i) => <ProjectCard project={project} i={i} level={index === 0 ? 'h2' : 'h3'} />)}</div>
+  <SectionHead kicker={kicker} headline={headline} text={text} id={id} level={H} />
+  <div class="projects">{projects.map((project, i) => <ProjectCard project={project} i={i} level={index === 0 ? 'h2' : 'h3'} autoplay={i === 0} />)}</div>
   {more && <div class="more"><a class="link" href={more.href}>{more.label} <span aria-hidden="true">→</span></a></div>}
 </section>

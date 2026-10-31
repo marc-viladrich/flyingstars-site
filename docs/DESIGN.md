@@ -1,13 +1,14 @@
 # FlyingStars – Designsprache
 
-Stand 30.10.2026, abgeleitet aus vier Bewertungsrunden der Designsprache-Probe (`/poc/designsprache/`, Branch `feat/designsprache-poc`). Grundlage ist der erste Prototyp (Branch `fix/minimal-fonts`); die Elevation „Lichtpunkt“ ist als Designrichtung verworfen, ihre Inhalte und Fakten bleiben gültig. Belege und Bewertungsverlauf: Kundenordner `freelance/clients/flyingstars/17-designsprache-poc-2026-10-30/README.md`.
+Stand 31.10.2026 (Feedbackrunde 6: näher an den Vercel-Prototyp), davor abgeleitet aus vier Bewertungsrunden der Designsprache-Probe (`/poc/designsprache/`, Branch `feat/designsprache-poc`). Grundlage ist der erste Prototyp (Branch `fix/minimal-fonts`); die Elevation „Lichtpunkt“ ist als Designrichtung verworfen, ihre Inhalte und Fakten bleiben gültig. Belege und Bewertungsverlauf: Kundenordner `freelance/clients/flyingstars/17-designsprache-poc-2026-10-30/README.md`.
 
 ## Was die Marke trägt (nicht verhandelbar)
 
 Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' Notizen das Alleinstellungsmerkmal: „weniger ernst, genauso professionell“. Diese Elemente bleiben und werden auf neue Seiten übertragen, nicht zurückgenommen:
 
 - **Lichtpunkte und Formationen** als Bildsprache: Drohnen-Formationen (2D, sparsam 3D), Bilder, die zu Lichtpunkten werden, Chopper.
-- **Der Logoverlauf** amber `#ff9e29` → orchid `#db64e8` → cyan `#33edf2` (`--grad`) offensiv: Verlauf auf einzelnen Wörtern in Headlines, Linien, Icons, Nummern.
+- **Der Logoverlauf** amber `#ff9e29` → orchid `#db64e8` → cyan `#33edf2` (`--grad`) gezielt: einzelne Wörter in Headlines, Verlaufsränder (hervorgehobenes Paket, Preisversprechen), Linien (Zeitstrahl, Fortschritt), „Kein Müll.“.
+- **Das warme Orange** aus dem Logo (`--accent`, `#f5a73c`) ist die Akzentfarbe für Texte und Icons: Kicker, Links, Kartenkicker, Icons. Marc, 31.10.: „Mir fehlt ein Schuss Farbe, den hatten wir durch die Eyebrow-Headings.“
 - **Space Grotesk** als Display-Schrift (mit durchgestrichener Null), Inter für Fließtext.
 - **Bewegung**: lebendige Wolke, Lichtlauf, Vorhang-Reveals, Laufband. Ruhig und magisch, nie hektisch.
 
@@ -26,11 +27,16 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 - Kein Lichtlauf durch Schriftachsen
 - Hervorhebung = Verlauf auf einzelnen Begriffen (`.grad`)
 
-**Section-Köpfe (alle Seiten):**
-- Nur die Headline, einspaltig
-- Keine Eyebrow/Kicker
-- Kein Fülltext rechts daneben
+**Section-Köpfe (alle Seiten):** eine Komponente, `src/components/SectionHead.astro`
+- Kicker in Orange (Space Grotesk, Versalien, gesperrt) über der Headline, wie im Vercel-Prototyp. Jede Section bekommt einen (`kicker` im YAML)
+- Headline einspaltig, kein Fülltext rechts daneben
 - Ein Satz darunter nur, wenn er eine Information trägt, die sonst fehlt
+
+**Inhaltsbreite:** `--content-max: 1792px` (= 1920 − 2 × 64). Horizontaler Innenabstand jeder Section, der Navigation und des Footers ist `var(--gutter)`, nie `var(--pad)`: Ab 1920 px Fensterbreite wächst der Inhalt nicht weiter, Flächen laufen vollflächig.
+
+**Links:** `.link` in Orange mit orangefarbener Unterlinie, Linie nur so breit wie der Text (`width: fit-content`), nie über die ganze Spalte.
+
+**Icons:** einfarbig in `--accent` (`.ico.g`), kein Verlauf.
 
 **Sprache:** du/ihr, nie Sie. Gendern mit Doppelpunkt (Pilot:innen). Keine pauschalen Umweltversprechen (EmpCo). Moritz verantwortet die Texte, Entwürfe sind als solche zu kennzeichnen.
 
@@ -66,7 +72,8 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 
 **Bilder:**
 - Beim Scrollen öffnen sie sich von unten (Vorhang wie im Prototyp, `.pre`-Klasse, Startzustand vor dem ersten Bild setzen)
-- Bilder mit Interaktion (Anlass-Karten, Referenzen, Team-Porträts, Gesichter an der Anfrage) werden beim Hovern zu Lichtpunkten: Eine organische Welle läuft direkt über das Foto, danach glüht es ruhig weiter, beim Verlassen zurück zum Foto (`src/scripts/effects/dotimage.js`)
+- Bilder mit Interaktion (Anlass-Karten, Referenzen, Team-Porträts, Gesichter an der Anfrage) werden beim Hovern zu Lichtpunkten: Eine organische Welle läuft direkt über das Foto (0,7 s, zurück 0,45 s), danach glüht es ruhig weiter, beim Verlassen zurück zum Foto (`src/scripts/effects/dotimage.js`). Auslöser ist die ganze Karte (`data-dot-host`), nicht nur das Bild
+- Abgetastet wird immer eine Kopie der geladenen Datei ohne `srcset`: bei `srcset` meldet `naturalWidth` die Größe geteilt durch die Pixeldichte, `drawImage` schneidet aber in echten Pixeln aus. Mit `naturalWidth` landete ein vergrößerter Ausschnitt auf der Karte (Bug 31.10.)
 - Kein Foto-Zoom gleichzeitig
 - Auf Touch-Geräten nur der Reveal
 
@@ -101,12 +108,24 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 
 **Vergleich** Drohne/Feuerwerk/Laser bleibt farbig, die Drohnen-Spalte ist hervorgehoben.
 
-**Nummerierte Schritte:** Zahl im Kreis mit `--grad-soft`.
+**Nummerierte Schritte:** kleine Nummer „01“ in Orange über dem Titel wie im Prototyp, keine Verlaufskreise (Marc 31.10.: „over the top“). Kennzahlen-Raster tragen keine Nummern.
+
+**Ablauf auf der Startseite** (`tempo`, `Tempo.astro`): Zeitstrahl in Zahlen statt Prozessschritten, wie schnell es gehen kann (48 h Antwort, Express in 1–2 Wochen, ideal 1–2 Monate, 3 h Aufbau), darunter Kennzahlen.
+
+**Anlass-Karten:** Kicker = Zielgruppe in Orange, Titel = Nutzen. Vier Spalten ab 1200 px, darunter zwei, auf dem Handy eine (bei 3 oder 6 Karten drei Spalten).
+
+**Referenzen mit Video:** Karten mit Showvideo zeigen das Video wie im Prototyp: die erste Karte spielt, sobald sie im Bild ist, die anderen beim Zeigen auf die Karte (Touch: im Bild). Kein Lichtpunkt-Hover auf Videokarten.
+
+**Hero:** Showreel läuft stumm im Hintergrund (ab 701 px, nicht bei reduzierter Bewegung, Pause oder Datensparmodus), „Showreel ansehen“ spielt es mit Ton. Kicker „Drohnenshows seit 2022 · DE · AT · CH · Benelux“.
+
+**Presse und Qualität:** weiter unten (nach dem Ablauf). Logos von LBA, EASA und naturstrom tragen; TÜV-Gutachten und Haftpflicht stehen klein als Textzeile darunter (`secondary: true`).
 
 **404:** Chopper, der Bürohund, fliegt als Drohnenformation mit Propellermütze (`src/components/Chopper404.astro`). Er wendet per lebendiger Wolke und fliegt nie rückwärts.
 
 **Konfigurator:**
-- Eigenständig, siehe `docs/show-konfigurator.md`
+- Details in `docs/show-konfigurator.md`
+- Steht direkt oben auf der Preisseite (`ShowConfigurator.astro`, Anker `#konfigurator`); `/show-konfigurator/` leitet dorthin weiter
+- Startseite: minimal interaktiver Teaser (`ConfiguratorTeaser.astro`) statt Text-Banner, damit man sofort sieht, warum der Konfigurator interessant ist
 - Logo-Upload und eigener Text gehören dorthin
 - Hinweis am Upload: „Lade nur Logos hoch, die du verwenden darfst, zum Beispiel dein eigenes. Die Datei bleibt in deinem Browser: Wir speichern und übertragen sie nicht.“
 
@@ -117,9 +136,9 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 - Interaktive 3D-Demos
 - Lichtlauf durch Schriftachsen, Hubot Sans und Geologica
 - Hover-Lupe mit Drohnen
-- Scrollstory für Nachhaltigkeit
-- Scrollstory nur gezielt: einmal Startseite, einmal Über uns nach persönlicher Vorstellung und frühem CTA
-- Eyebrows, rechter Fülltext, Microcopy, die nur wiederholt, was man sieht
+- Scrollstory nur gezielt: Nachhaltigkeit auf der Startseite (aus dem Prototyp zurückgeholt, Marc 31.10.: „das Scrollytelling finde ich ganz nice“), einmal Über uns nach persönlicher Vorstellung und frühem CTA
+- Rechter Fülltext, Microcopy, die nur wiederholt, was man sieht (Eyebrows sind seit 31.10. wieder Pflicht, siehe Section-Köpfe)
+- Verlaufskreise um Schrittnummern, bunte Verlaufs-Icons
 - Kundenlogos als Drohnenformation
 
 ## Leistung

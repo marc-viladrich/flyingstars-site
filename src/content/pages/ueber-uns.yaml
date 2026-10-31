@@ -7,6 +7,7 @@ description: "FlyingStars aus dem Ruhrgebiet: Team, Geschichte und Meilensteine.
 image: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
 sections:
   - type: hero
+    kicker: Über uns
     headline: Ein Team aus dem Ruhrgebiet, das den *Nachthimmel* bespielt.
     text: Ronja, Florian und Erwin führen FlyingStars gemeinsam, mit einem kleinen Team aus dem Ruhrgebiet. Wir entwerfen Drohnenshows, holen die Genehmigungen ein und fliegen sie mit unserer eigenen Flotte. Unser Büro ist im Triple Z auf Zeche Zollverein in Essen.
     image:
@@ -19,6 +20,7 @@ sections:
 
   - type: team
     id: team
+    kicker: Team
     headline: Die Menschen hinter den Shows.
     text: Ihr erreicht uns als Team, und am Showabend stehen wir selbst mit auf dem Feld.
     members:
@@ -47,6 +49,7 @@ sections:
     cta: { label: Lernt uns kennen, href: /kontakt/ }
 
   - type: textMedia
+    kicker: Geschichte
     headline: Wie FlyingStars angefangen hat.
     body: |
       FlyingStars begann als Corona-Projekt. In Asien gab es damals schon viele große Drohnenshows, in Europa noch nicht. Wir wollten wissen, warum, und haben angefangen zu tüfteln. Am 1. Dezember 2021 haben wir das Gewerbe angemeldet.
@@ -63,6 +66,7 @@ sections:
 
   - type: timeline
     id: meilensteine
+    kicker: Meilensteine
     headline: Meilensteine.
     text: Von 50 Drohnen auf einem Geburtstag bis zu 600 Drohnen in einem Musical.
     items:
@@ -81,6 +85,7 @@ sections:
       - { when: "2026", title: Indoor im Triple Z, text: "Im September eine Indoor-Show im Gründungszentrum, in dem auch unser Büro ist." }
 
   - type: textMedia
+    kicker: Aus einer Hand
     headline: Design, Genehmigung und Flotte in einer Hand.
     body: |
       Die wichtigen Teile einer Show liegen bei uns. Das hält die Wege kurz, auch wenn es eilt.
@@ -97,6 +102,7 @@ sections:
 
   - type: metrics
     id: sicherheit
+    kicker: Sicherheit
     headline: So planen wir Sicherheit.
     text: Leichte Drohnen, ein abgesperrter Bereich und Systeme, die sich gegenseitig absichern.
     items:
@@ -109,6 +115,7 @@ sections:
 
   - type: sustainability
     id: nachhaltigkeit
+    kicker: Nachhaltigkeit
     headline: Leise, ohne Rauch und ohne Müll vor Ort.
     text: Nachhaltigkeit ist der Grund, aus dem wir FlyingStars gegründet haben. Wir denken sie bei jeder Entscheidung mit.
     points:
@@ -121,6 +128,7 @@ sections:
 
   - type: metrics
     id: zahlen
+    kicker: In Zahlen
     headline: In Zahlen.
     text: Stand 21. Oktober 2026.
     items:
@@ -130,6 +138,7 @@ sections:
       - { label: Ein Monat, value: 12.000 Drohnen, text: "Im Juni 2026, 20 Shows mit je 600 Drohnen." }
 
   - type: cta
+    kicker: Kontakt
     headline: Lernt uns kennen.
     text: Am schnellsten geht es per Anfrage. Wenn ihr lieber erst sprechen wollt, vereinbart auf der Kontaktseite einen Videocall.
     button: { label: Show anfragen, href: /kontakt/ }

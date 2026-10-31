@@ -1,0 +1,15 @@
+---
+// Show-Konfigurator als Vorgeschmack auf der Startseite (Marc, 31.10.2026: „eine minimal interaktive Version, damit man
+// sieht, warum der Konfigurator überhaupt interessant ist“). Kopf wie jede Section, darunter der Teaser aus
+// src/components/configurator/ConfiguratorTeaser.astro (Anlass-Chips, Drohnen-Regler, Übergabe an die Preisseite).
+import type { Section } from '../../content.config';
+import SectionHead from '../SectionHead.astro';
+import ConfiguratorTeaser from '../configurator/ConfiguratorTeaser.astro';
+type Props = Extract<Section, { type: 'configuratorTeaser' }> & { index: number };
+const { headline, text, kicker, occasion, drones, id = 'konfigurator', index } = Astro.props;
+const H = index === 0 ? 'h1' : 'h2';
+---
+<section class="section" id={id} aria-labelledby={`${id}-h`}>
+  <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
+  <ConfiguratorTeaser occasion={occasion} drones={drones} />
+</section>

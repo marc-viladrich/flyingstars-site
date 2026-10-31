@@ -7,7 +7,7 @@ import Faces from '../Faces.astro';
 import ContactWays from '../ContactWays.astro';
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'contactForm' }> & { index?: number };
-const { headline, text, people, index = 0 } = Astro.props;
+const { headline, text, people, index = 0, kicker } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
 const occasions: [string, string][] = [['firma', 'Firmenevent'], ['stadt', 'Stadt & Festival'], ['agentur', 'Agentur'], ['privat', 'Hochzeit & Privat'], ['indoor', 'Indoor'], ['sonstiges', 'Sonstiges']];
 const packs: [string, string, string][] = [['SPARK', 'SPARK', 'klassisch in 2D'], ['HORIZON', 'HORIZON', '3D in Bewegung'], ['ODYSSEY', 'ODYSSEY', 'erzählte 3D-Show'], ['', 'Weiß ich noch nicht', '']];
@@ -16,6 +16,7 @@ const sources = ['Google', 'Empfehlung', 'Social Media', 'Presse', 'Eine Show ge
 <section aria-labelledby="anfrage-h" class="section alt" id="anfrage">
   <div class="inquiry">
     <div class="intro">
+      {kicker && <span class="kicker mono">{kicker}</span>}
       <H id="anfrage-h"><Accent text={headline} /></H>
       {text && <p class="lead">{text}</p>}
       <Faces people={people} />

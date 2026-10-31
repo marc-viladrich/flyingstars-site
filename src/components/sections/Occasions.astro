@@ -2,16 +2,17 @@
 import type { Section } from '../../content.config';
 import { optimizedImage } from '../../lib/media';
 import Accent from '../Accent.astro';
+import SectionHead from '../SectionHead.astro';
 type Props = Extract<Section, { type: 'occasions' }> & { index: number };
-const { headline, text, id = 'anlaesse', cards, index } = Astro.props;
+const { headline, text, id = 'anlaesse', cards, index, kicker } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const items = await Promise.all(cards.map(async card => ({ ...card, media: await optimizedImage(card.image.src, 640, 480), small: await optimizedImage(card.image.src, 320, 240) })));
 ---
 <section class="section" id={id} aria-labelledby={headingId}>
-  <div class="sec-head"><H id={headingId}><Accent text={headline} /></H>{text && <p>{text}</p>}</div>
+  <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
   <div class="occasions" data-count={items.length}>
-    {items.map((card, i) => <article class="occ">
+    {items.map((card, i) => <article class="occ" data-dot-host>
       <!-- Bild: Vorhang beim Erscheinen, Lichtpunkte beim Hovern (kein Foto-Zoom) -->
       <div class="img" data-curtain data-dot-img style={`--i:${i}`}><img src={card.media.src} srcset={`${card.small.src} 320w, ${card.media.src} 640w`} sizes="(max-width: 640px) calc(100vw - 48px), (max-width: 1100px) 45vw, 23vw" width={card.media.width} height={card.media.height} alt={card.image.alt} loading="lazy" decoding="async" /></div>
       <div class="body">

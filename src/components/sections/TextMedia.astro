@@ -4,13 +4,14 @@ import Accent from '../Accent.astro';
 import { marked } from 'marked';
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'textMedia' }> & { index: number };
-const { headline, body, image, mediaSide, index, id: anchor } = Astro.props;
+const { headline, body, image, mediaSide, index, id: anchor, kicker } = Astro.props;
 const id = `${anchor ?? `s${index}`}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const html = await marked.parse(body);
 ---
 <section class:list={['section', 'text-media', { 'has-media': image, 'media-left': image && mediaSide === 'left' }]} id={anchor} aria-labelledby={id}>
   <div class="prose">
+    {kicker && <span class="kicker mono">{kicker}</span>}
     <H id={id}><Accent text={headline} /></H>
     <Fragment set:html={html} />
   </div>

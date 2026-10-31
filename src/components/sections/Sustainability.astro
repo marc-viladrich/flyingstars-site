@@ -1,23 +1,42 @@
 ---
-// Nachhaltigkeit in 2D (docs/DESIGN.md: keine Scrollstory): Kopf, bis zu vier Kennzahlen als ruhiges Raster,
-// optional kurze Sätze und ein Beleg. lines und tone sind Altlasten der früheren Scrollstory und werden ignoriert.
+// Nachhaltigkeit als Scrollstory aus dem Vercel-Prototyp (Marc, 31.10.2026: „das Scrollytelling finde ich ganz nice,
+// das kann bleiben“): Die Bühne bleibt stehen, vier Zahlen übernehmen nacheinander den Bildschirm, im Hintergrund fliegt
+// die Flotte eine passende Figur (Schallwelle, Null, geparkte Flotte, Blitz). Ohne JS, bei reduzierter Bewegung und auf
+// Wunsch pausiert: dieselben Zahlen als ruhige Liste. Aussagen nur über die Show vor Ort (EmpCo).
+// Headline: jeder Satz eine Zeile, der letzte im Logoverlauf (gezielter Einsatz statt drei Titelschnitte).
 import type { Section } from '../../content.config';
 import { optimizedLogo } from '../../lib/media';
-import Accent from '../Accent.astro';
 type Props = Extract<Section, { type: 'sustainability' }> & { index: number };
-const { headline, text, id = 'nachhaltigkeit', facts = [], points = [], proofImage, proofText, campaign, index } = Astro.props;
+const { headline, text, id = 'nachhaltigkeit', facts = [], points = [], proofImage, proofText, campaign, index, kicker } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
-// Komposita wie „E-Transportern“ nicht am Bindestrich umbrechen
+const lines = headline.split(/(?<=\.)\s+/).filter(Boolean);
 const parts = (point: string) => point.split(/(\S+-\S+)/).filter(Boolean);
 const proof = proofImage ? await optimizedLogo(proofImage.src, 60) : undefined;
 ---
 <section class="eco-sec" id={id} aria-labelledby={headingId}>
-  <div class="sec-head"><H id={headingId}><Accent text={headline} /></H>{text && <p>{text}</p>}</div>
-  {facts.length > 0 && <dl class="eco-facts">{facts.map((fact, i) => <div class="eco-fact"><dt class="fk mono">{String(i + 1).padStart(2, '0')} · {fact.label}</dt><dd class="fn">{fact.value}{fact.unit && <small>{fact.unit}</small>}</dd><dd><p>{fact.text}</p></dd></div>)}</dl>}
-  {points.length > 0 && <ul class="eco-points">{points.map((point) => <li><span>{parts(point).map((part) => part.includes('-') ? <span class="nowrap">{part}</span> : part)}</span></li>)}</ul>}
-  {(proofText || campaign || proof) && <div class="eco-proof">
+  <div class="eco-head">
+    <div>{kicker && <span class="kicker mono">{kicker}</span>}<H id={headingId} class="eco-title" data-reveal-group>{lines.map((line, i) => <span data-reveal style={`--i:${i}`} class:list={{ grad: i === lines.length - 1 && lines.length > 1 }}>{line} </span>)}</H></div>
+    {text && <p>{text}</p>}
+  </div>
+  {facts.length > 0 && <div class="eco-scrolly" data-scrolly><div class="eco-pin">
+    <canvas class="eco-canvas" aria-hidden="true"></canvas>
+    <dl class="eco-facts">{facts.map((fact) => <div class="fact">
+      <dt class="fk mono">{fact.label}</dt>
+      <dd class:list={['fn', { g: fact.unit === '%' }]}>{fact.unit === '%' ? <span data-to={fact.value}>{fact.value}</span> : fact.value}{fact.unit && <small>{fact.unit}</small>}</dd>
+      <dd class="ft"><p>{fact.text}</p></dd>
+    </div>)}</dl>
+    <ol class="eco-steps mono" aria-hidden="true">{facts.map((fact, i) => <li style={`--k:${i}`}>{fact.label}</li>)}</ol>
+  </div></div>}
+  {(points.length > 0 || campaign || proofText) && <div class="eco-proof">
     {proofImage && proof && <img src={proof.src} width={proof.width / 2} height={proof.height / 2} alt={proofImage.alt} loading="lazy" decoding="async" />}
-    <p>{proofText}{campaign && <> <b>#Böllerciao:</b> {campaign}</>}</p>
+    {points.length > 0 && <ul class="eco-points">{points.map((point) => <li><span>{parts(point).map((part) => part.includes('-') ? <span class="nowrap">{part}</span> : part)}</span></li>)}</ul>}
+    {(proofText || campaign) && <p>{proofText}{campaign && <> <b>#Böllerciao:</b> {campaign}</>}</p>}
   </div>}
 </section>
+<script>
+  const el = document.querySelector<HTMLElement>('[data-scrolly]');
+  if (el && !matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    import('../../scripts/effects/eco-scrolly.js').then(({ ecoScrolly }) => ecoScrolly(el));
+  }
+</script>

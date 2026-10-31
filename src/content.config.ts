@@ -9,11 +9,11 @@ import { projectShowcaseSchema } from './schemas/project-showcase';
 // src/components/sections/. Der Agent darf Seiten nur aus diesen Typen bauen.
 // ---------------------------------------------------------------------------
 const link = z.object({ label: z.string().min(1), href: z.string().min(1) });
-// Section-Köpfe (docs/DESIGN.md): nur die Headline, einspaltig; `text` ist der optionale Satz darunter.
+// Section-Köpfe (docs/DESIGN.md): Kicker in Orange über der Headline, einspaltig; `text` ist der optionale Satz darunter.
 // Headlines dürfen einzelne Begriffe mit *Sternchen* markieren, sie erscheinen dann im Logoverlauf.
-// `kicker`/`eyebrow` sind Altlasten aus dem Prototyp: erlaubt, damit alte Inhalte gültig bleiben, aber nicht mehr angezeigt.
+// Kicker sind seit 31.10.2026 wieder sichtbar (Marc: „die Eyebrow-Headings brauchen Farbe“, wie im Vercel-Prototyp).
 const legacy = z.string().optional().describe('Veraltet, wird nicht mehr angezeigt');
-const sectionHeading = { id: z.string().optional(), kicker: legacy };
+const sectionHeading = { id: z.string().optional(), kicker: z.string().optional().describe('Kicker über der Headline, z. B. "Anlässe"') };
 const brandPath = z.string().regex(/^\/brand\/[a-z0-9/._-]+\.(svg|png|webp)$/).describe('Lokale Datei unter public/brand/');
 
 const image = z.object({
@@ -26,7 +26,7 @@ const image = z.object({
 export const sectionSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('showreelHero'),
-    headline: z.string().min(1), text: z.string().min(1), eyebrow: legacy,
+    headline: z.string().min(1), text: z.string().min(1), eyebrow: z.string().optional().describe('Kicker über der Headline'),
     words: z.array(z.string().min(1)).optional().describe('Wechselndes Wort im Verlauf hinter der Headline'),
     cta: link, secondary: link.optional(),
     poster: image, video: z.url(), stats: z.array(z.object({ label: z.string(), value: z.string() })).optional(),
@@ -54,7 +54,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     lines: z.array(z.string()).optional().describe('Veraltet (dreizeiliger Titel der Scrollstory), wird nicht mehr angezeigt'),
   }),
   z.object({
-    type: z.literal('hero'),
+    type: z.literal('hero'), kicker: z.string().optional(),
     headline: z.string().min(1),
     text: z.string().optional(),
     image: image.optional(),
@@ -62,7 +62,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     secondary: link.optional(),
   }),
   z.object({
-    type: z.literal('textMedia'), id: z.string().optional().describe('Sprungmarke, z. B. "geschichte"'),
+    type: z.literal('textMedia'), id: z.string().optional().describe('Sprungmarke, z. B. "geschichte"'), kicker: z.string().optional(),
     headline: z.string().min(1),
     body: z.string().min(1).describe('Markdown erlaubt'),
     image: image.optional(),
@@ -86,7 +86,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     }).optional().describe('Abschluss mit Anrufen/Schreiben'),
   }),
   z.object({
-    type: z.literal('cta'),
+    type: z.literal('cta'), kicker: z.string().optional(),
     headline: z.string().min(1),
     text: z.string().optional(),
     button: link,
@@ -194,6 +194,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
       icon: z.enum(['permit', 'sound', 'shield', 'leaf']).describe('Verlaufs-Icon, wenn kein freigegebenes Logo'),
       logo: brandPath.optional(),
       cleared: z.boolean().default(false).describe('Logo darf gezeigt werden (LBA-Signet gemeinfrei; naturstrom nur nach Freigabe)'),
+      secondary: z.boolean().default(false).describe('Nachrangig: klein als Textzeile unter den Logos (Marc 31.10.: TÜV-Gutachten, Haftpflicht)'),
     })).default([]),
   }),
   z.object({
@@ -227,8 +228,25 @@ export const sectionSchema = z.discriminatedUnion('type', [
     })).default([{ name: 'SPARK', highlight: false }, { name: 'HORIZON', highlight: false }, { name: 'ODYSSEY', highlight: false }]),
   }),
   z.object({
+    // Konfigurator-Teaser (Startseite): Anlass-Chips und Drohnen-Regler, Übergabe an den Konfigurator auf der Preisseite.
+    type: z.literal('configuratorTeaser'), ...sectionHeading,
+    headline: z.string().min(1), text: z.string().optional(),
+    occasion: z.string().optional().describe('Anlass beim Laden, ID aus content/show-configurator.js'),
+    drones: z.number().int().positive().optional(),
+  }),
+  z.object({
+    // Ablauf in Zahlen (Marc, 31.10.2026): statt nummerierter Schritte ein Zeitstrahl von der Anfrage bis zum Showabend,
+    // der zeigt, wie schnell es gehen kann; darunter Kennzahlen aus „In Zahlen statt in Adjektiven“.
+    type: z.literal('tempo'), ...sectionHeading,
+    headline: z.string().min(1), text: z.string().optional(),
+    marks: z.array(z.object({ value: z.string().min(1), label: z.string().min(1), text: z.string().optional() })).min(2).max(5),
+    facts: z.array(z.object({ value: z.string().min(1), label: z.string().min(1), text: z.string().optional() })).default([]),
+    note: z.string().optional(),
+  }),
+  z.object({
     // Anfrage in zwei Schritten (docs/DESIGN.md). Gesichter: ohne Angabe die drei Geschäftsführer:innen.
     type: z.literal('contactForm'),
+    kicker: z.string().optional(),
     headline: z.string().min(1),
     text: z.string().optional(),
     people: z.array(z.object({ name: z.string().min(1), image })).max(4).optional(),

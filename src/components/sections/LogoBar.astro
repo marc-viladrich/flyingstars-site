@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import type { Section } from '../../content.config';
 import { optimizedLogo } from '../../lib/media';
 type Props = Extract<Section, { type: 'logoBar' }> & { index: number };
-const { headline, logos, pressHeadline, pressItems, qualityHeadline, quality, id = `s${Astro.props.index}` } = Astro.props;
+const { headline, logos, pressHeadline, pressItems, qualityHeadline, quality, kicker, id = `s${Astro.props.index}` } = Astro.props;
 
 const file = (path: string) => join(process.cwd(), 'public', path);
 const has = (path?: string) => Boolean(path && existsSync(file(path)));
@@ -41,7 +41,8 @@ const marks = (await Promise.all(logos.map(async (logo): Promise<Mark | null> =>
   return null;
 }))).filter((m): m is Mark => Boolean(m));
 const press = pressItems.map((p) => ({ ...p, show: p.cleared && has(p.logo) }));
-const seals = quality.map((q) => ({ ...q, show: q.cleared && has(q.logo) }));
+const seals = quality.filter((q) => !q.secondary).map((q) => ({ ...q, show: q.cleared && has(q.logo) }));
+const minor = quality.filter((q) => q.secondary);
 ---
 {marks.length > 0 && <div class="band" role="region" aria-label={headline ?? 'Kund:innen von FlyingStars'}>
   <div class="logo-marquee">
@@ -52,6 +53,7 @@ const seals = quality.map((q) => ({ ...q, show: q.cleared && has(q.logo) }));
   </div>
 </div>}
 {(press.length > 0 || seals.length > 0) && <section class="section proof" id={id} aria-label={[press.length && pressHeadline, seals.length && qualityHeadline].filter(Boolean).join(', ')}>
+  {kicker && <span class="kicker mono proof-kicker">{kicker}</span>}
   {press.length > 0 && <div class="press">
     <h2 class="proof-h">{pressHeadline}</h2>
     <ul>{press.map((p) => {
@@ -69,5 +71,11 @@ const seals = quality.map((q) => ({ ...q, show: q.cleared && has(q.logo) }));
         {q.icon === 'leaf' && <path d="M5 19c0-9 6-14 15-14 0 9-5 15-14 15m0-1 7-7" />}
       </svg>}
       <b>{q.title}</b>{q.text && <span>{q.text}</span>}</li>)}</ul>
+    {minor.length > 0 && <ul class="q-minor">{minor.map((q) => <li><svg class="ico g" viewBox="0 0 24 24" aria-hidden="true">
+        {q.icon === 'permit' && <path d="M7 3h7l5 5v13H7zM14 3v5h5M10 13l2 2 4-4" />}
+        {q.icon === 'sound' && <path d="M4 10v4h4l5 4V6L8 10zm12-1a4 4 0 0 1 0 6m2-9a8 8 0 0 1 0 12" />}
+        {q.icon === 'shield' && <path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM9 12l2 2 4-4" />}
+        {q.icon === 'leaf' && <path d="M5 19c0-9 6-14 15-14 0 9-5 15-14 15m0-1 7-7" />}
+      </svg><span><b>{q.title}</b>{q.text && <> {q.text}</>}</span></li>)}</ul>}
   </div>}
 </section>}

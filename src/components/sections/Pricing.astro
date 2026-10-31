@@ -2,15 +2,16 @@
 import type { Section } from '../../content.config';
 import { SHOW_PACKAGES, type ShowPackage } from '../../content/show-packages';
 import Accent from '../Accent.astro';
+import SectionHead from '../SectionHead.astro';
 type Props = Extract<Section, { type: 'pricing' }> & { index: number };
-const { headline, text, tiers, note, cta, id = `s${Astro.props.index}`, index } = Astro.props;
+const { headline, text, tiers, note, cta, id = `s${Astro.props.index}`, index, kicker } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const money = new Intl.NumberFormat('de-DE', { maximumFractionDigits: 0 });
 const price = (tier: Props['tiers'][number]) => tier.orb && tier.name in SHOW_PACKAGES ? `ab ${money.format(SHOW_PACKAGES[tier.name as ShowPackage].price)} €` : tier.price;
 ---
 <section class="section alt" id={id} aria-labelledby={headingId}>
-  <div class="sec-head"><H id={headingId}><Accent text={headline} /></H>{text && <p>{text}</p>}</div>
+  <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
   <div class="packs">{tiers.map(tier => {
     const Card = tier.cta ? 'a' : 'article';
     return <Card class:list={['pack',{featured:tier.highlight}]} href={tier.cta?.href}>

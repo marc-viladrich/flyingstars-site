@@ -1,4 +1,5 @@
 ---
+import SectionHead from '../SectionHead.astro';
 // Alle Referenzen mit Filter nach Anlass, Jahr und Drohnenzahl („show, don't tell, wie viele Shows“).
 // Ohne JS: ein Abschnitt je Anlass mit Sprunglinks. Mit JS: eine Liste (neueste zuerst), Filter als Radiogruppen,
 // die Zahl der passenden Shows wird angesagt. Werte kommen aus den Projektdateien (occasion, drones, date).
@@ -8,7 +9,7 @@ import Accent from '../Accent.astro';
 import ProjectCard from '../projects/ProjectCard.astro';
 import { OCCASIONS, DRONE_BANDS, type Occasion, yearOf, bandOf, sortProjects } from '../projects/refs';
 type Props = Extract<Section, { type: 'references' }> & { index: number };
-const { headline, text, filters, id = 'referenzen', index } = Astro.props;
+const { headline, text, filters, id = 'referenzen', index, kicker } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
 const G = index === 0 ? 'h2' : 'h3';
 const C = index === 0 ? 'h3' : 'h4';
@@ -26,7 +27,7 @@ const options = {
 const shows = (n: number) => `${n} ${n === 1 ? 'Show' : 'Shows'}`;
 ---
 <section class="section refs" id={id} aria-labelledby={`${id}-h`} data-refs>
-  <div class="sec-head"><H id={`${id}-h`}><Accent text={headline} /></H>{text && <p>{text}</p>}</div>
+  <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
   <div class="ref-bar">
     <p class="ref-count" role="status" data-ref-status><b class="grad">{projects.length}</b> <span data-ref-label>{projects.length === 1 ? 'Show' : 'Shows'} in dieser Auswahl</span></p>
     <nav class="ref-jump" aria-label="Nach Anlass springen" data-ref-jump>{groups.map((g) => <a href={`#${id}-${g.key}`}>{label(g.key)} <span class="mono">{g.items.length}</span></a>)}</nav>

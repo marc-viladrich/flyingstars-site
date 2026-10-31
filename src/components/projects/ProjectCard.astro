@@ -4,8 +4,13 @@
 import type { CollectionEntry } from 'astro:content';
 import { optimizedImage } from '../../lib/media';
 import { hrefOf, dronesOf, yearOf, kickOf } from './refs';
-interface Props { project: CollectionEntry<'projects'>; i?: number; level?: 'h2' | 'h3' | 'h4'; year?: boolean }
-const { project, i = 0, level = 'h3', year = false } = Astro.props;
+import { videos, videoPath } from '../../lib/videos';
+// Referenzen mit Showvideo zeigen das Video statt des Lichtpunkt-Hovers (Marc, 31.10.2026, wie im Vercel-Prototyp):
+// `autoplay` läuft, sobald die Karte im Bild ist; die anderen spielen beim Zeigen auf die Karte, auf Touch-Geräten im Bild.
+interface Props { project: CollectionEntry<'projects'>; i?: number; level?: 'h2' | 'h3' | 'h4'; year?: boolean; autoplay?: boolean }
+const { project, i = 0, level = 'h3', year = false, autoplay = false } = Astro.props;
+const clip = project.data.showcase?.heroVideo;
+const loop = clip && Object.values(videos).includes(clip) ? videoPath(clip) : undefined;
 const T = level;
 const href = hrefOf(project);
 const Card = href ? 'a' : 'article';
@@ -13,8 +18,36 @@ const image = project.data.cover ? await optimizedImage(project.data.cover.src) 
 const drones = dronesOf(project);
 const badge = [year && yearOf(project), drones && `${drones} Drohnen`].filter(Boolean).join(' · ');
 ---
-<Card class:list={['proj', { static: !href }]} href={href}>
-  {image && <div class="img" data-curtain data-dot-img style={`--i:${i % 2}`}><img src={image.src} {...image.attributes} width={image.width} height={image.height} alt={project.data.cover!.alt} loading="lazy" decoding="async" />{badge && <span class="count mono">{badge}</span>}</div>}
+<Card class:list={['proj', { static: !href, 'has-loop': loop }]} href={href} data-dot-host={loop ? undefined : ''} data-loop-host={loop ? (autoplay ? 'auto' : 'hover') : undefined}>
+  {image && <div class="img" data-curtain data-dot-img={loop ? undefined : ''} style={`--i:${i % 2}`}><img src={image.src} {...image.attributes} width={image.width} height={image.height} alt={project.data.cover!.alt} loading="lazy" decoding="async" />{loop && <video class="loop" data-src={loop} muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>}{badge && <span class="count mono">{badge}</span>}</div>}
   <span class="kick mono">{kickOf(project)}</span><T>{project.data.showcase?.cardTitle ?? project.data.title}</T>
   {!project.data.showcase && <p>{project.data.summary}</p>}
 </Card>
+
+<script>
+  // Showvideos in Referenzkarten: laden erst beim ersten Abspielen, pausieren außerhalb des Bildes und bei globaler Pause
+  const hosts = document.querySelectorAll<HTMLElement>('[data-loop-host]');
+  if (hosts.length) {
+    const root = document.documentElement;
+    const still = () => matchMedia('(prefers-reduced-motion: reduce)').matches || root.classList.contains('motion-paused');
+    const touch = !matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const state = new Map<HTMLElement, { seen: boolean; hover: boolean }>();
+    const sync = (host: HTMLElement) => {
+      const v = host.querySelector('video')!, st = state.get(host)!;
+      const want = !still() && st.seen && (host.dataset.loopHost === 'auto' || st.hover || touch);
+      if (want) { if (!v.src) v.src = v.dataset.src!; v.play().then(() => host.classList.add('playing')).catch(() => {}); }
+      else { v.pause(); if (host.dataset.loopHost !== 'auto') host.classList.remove('playing'); }
+    };
+    const io = new IntersectionObserver((es) => es.forEach((e) => { state.get(e.target as HTMLElement)!.seen = e.intersectionRatio >= (touch ? 0.6 : 0.3); sync(e.target as HTMLElement); }), { threshold: [0, 0.3, 0.6] });
+    hosts.forEach((host) => {
+      state.set(host, { seen: false, hover: false });
+      host.querySelector('video')!.addEventListener('error', () => host.classList.remove('playing'));
+      host.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') { state.get(host)!.hover = true; sync(host); } });
+      host.addEventListener('pointerleave', () => { state.get(host)!.hover = false; sync(host); });
+      host.addEventListener('focusin', () => { state.get(host)!.hover = true; sync(host); });
+      host.addEventListener('focusout', () => { state.get(host)!.hover = false; sync(host); });
+      io.observe(host);
+    });
+    new MutationObserver(() => hosts.forEach(sync)).observe(root, { attributes: true, attributeFilter: ['class'] });
+  }
+</script>

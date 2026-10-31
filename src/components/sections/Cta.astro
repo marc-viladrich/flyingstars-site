@@ -3,13 +3,14 @@
 import type { Section } from '../../content.config';
 import Accent from '../Accent.astro';
 type Props = Extract<Section, { type: 'cta' }> & { index: number };
-const { headline, text, button, secondary, index } = Astro.props;
+const { headline, text, button, secondary, index, kicker } = Astro.props;
 const id = `s${index}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 ---
 <section class="section" aria-labelledby={id}>
   <div class="promise">
     <div class="promise-copy">
+      {kicker && <span class="kicker mono">{kicker}</span>}
       <H id={id}><Accent text={headline} /></H>
       {text && <p>{text}</p>}
     </div>

@@ -4,11 +4,13 @@ title: Show anfragen
 description: "Erzählt FlyingStars von eurem Termin, Ort und Anlass. Wir antworten innerhalb von 48 Stunden, per Mail, Telefon, WhatsApp oder Videocall."
 sections:
   - type: contactForm
+    kicker: Anfrage
     headline: Erzählt uns von eurem Termin.
     text: Datum, Ort und Anlass reichen für eine erste Einschätzung. Was ihr noch nicht wisst, lasst ihr offen. Mit dem Absenden bucht ihr noch nichts.
 
   - type: steps
     id: danach
+    kicker: Ablauf
     headline: Was danach passiert.
     steps:
       - title: Antwort
@@ -22,6 +24,7 @@ sections:
         text: Wir prüfen den Standort, holen die Genehmigung ein und entwerfen die Show mit euch.
 
   - type: textMedia
+    kicker: Kontakt
     headline: Andere Wege.
     body: |
       Hinter allen Wegen steht dasselbe Team: Ronja, Florian und Erwin.

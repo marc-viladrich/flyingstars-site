@@ -4,10 +4,11 @@ import Picture from '../Picture.astro';
 import Accent from '../Accent.astro';
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'hero' }>;
-const { headline, text, image, cta, secondary } = Astro.props;
+const { headline, text, image, cta, secondary, kicker } = Astro.props;
 ---
 <section class:list={['page-hero', { 'has-media': image }]} aria-labelledby="hero-h">
   <div class="page-hero-copy">
+    {kicker && <span class="kicker mono">{kicker}</span>}
     <h1 id="hero-h"><Accent text={headline} /></h1>
     {text && <p class="lead">{text}</p>}
     {(cta || secondary) && (

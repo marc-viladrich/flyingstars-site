@@ -10,6 +10,7 @@ description: "Indoor-Drohnenshows für Messen, Bühnen und Hallen: 20 bis 50 Dro
 image: https://flyingstars.art/wp-content/uploads/2025/04/IMG_0201.jpg
 sections:
   - type: hero
+    kicker: Indoor
     headline: Drohnenshows für Messen, Bühnen und Hallen.
     text: Kleine Drohnen mit Rotorschutz fliegen im Raum, abgestimmt auf Musik und Licht. Jede Indoor-Show planen wir für euren Raum und kalkulieren sie einzeln.
     image:
@@ -22,6 +23,7 @@ sections:
 
   - type: comparison
     id: unterschied
+    kicker: Vergleich
     headline: Drinnen fliegt eine andere Show.
     text: Weniger und kleinere Drohnen, näher am Publikum, kürzer. Im Raum entstehen Muster und Figuren in Bewegung.
     rowHeader: Merkmal
@@ -43,6 +45,7 @@ sections:
         values: ["einzeln kalkuliert, ab ca. 15.000 € netto für 20 Drohnen", "Pakete ab 7.900 € netto"]
 
   - type: textMedia
+    kicker: Voraussetzungen
     headline: Was euer Raum mitbringen muss.
     body: |
       - mindestens 3 Meter Deckenhöhe
@@ -59,6 +62,7 @@ sections:
 
   - type: metrics
     id: sicherheit
+    kicker: Sicherheit
     headline: Sicher in der Nähe des Publikums.
     text: Indoor-Drohnen sind leichter und langsamer als unsere Outdoor-Flotte und fliegen vorab berechnete Bahnen.
     items:
@@ -76,6 +80,7 @@ sections:
         text: Redundante Sicherheitsfunktionen, eine kontrollierte Landefunktion und CE-zertifizierte Komponenten.
 
   - type: textMedia
+    kicker: Einsatzorte
     headline: Wo Indoor-Shows passen.
     body: |
       Messen, Konzerte, Sportevents, Firmenfeiern und Hochzeiten in Sälen. Markenfarben und Musik stimmen wir auf euren Auftritt ab.
@@ -92,6 +97,7 @@ sections:
 
   - type: steps
     id: ablauf
+    kicker: Ablauf
     headline: So läuft eine Indoor-Show ab.
     text: Ideal ist ein erster Kontakt sechs bis acht Wochen vor eurem Termin.
     steps:
@@ -107,16 +113,19 @@ sections:
         duration: ca. 45 Min Aufbau
 
   - type: cta
+    kicker: Preise
     headline: Was eine Indoor-Show kostet.
     text: Indoor-Shows kalkulieren wir einzeln, weil Raum, Drohnenzahl und Aufbau sehr unterschiedlich sind. Als Größenordnung gilt ab etwa 15.000 € netto für 20 Drohnen. Die Outdoor-Pakete gelten drinnen nicht.
     button: { label: Indoor-Angebot anfragen, href: "#anfrage" }
 
   - type: faq
     id: fragen
+    kicker: FAQ
     headline: Fragen zu Indoor-Shows.
     cta: { label: Alle Fragen, href: /faq/ }
     tags: [indoor]
 
   - type: contactForm
+    kicker: Anfrage
     headline: Erzählt uns von eurem Raum.
     text: Deckenhöhe, Fläche und Datum reichen für eine erste Einschätzung. Wir melden uns innerhalb von 48 Stunden.

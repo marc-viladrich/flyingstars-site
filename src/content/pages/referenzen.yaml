@@ -6,12 +6,14 @@ description: "Shows von FlyingStars für Bokkenrijders, NFL, Ford und PUMA, dazu
 sections:
   - type: references
     id: referenzen
+    kicker: Referenzen
     headline: Shows, die wir schon geflogen sind.
     text: 178 Shows seit 2022, von 50 bis 600 Drohnen. Hier eine Auswahl, vier davon erzählen wir ausführlich.
     filters: [occasion, year, drones]
 
   - type: metrics
     id: pro-jahr
+    kicker: In Zahlen
     headline: Shows pro *Jahr*.
     items:
       - { label: "2022", value: "8", text: "Die erste am 13. August: 50 Drohnen zu einem privaten Geburtstag. Im November PUMA im Borussia-Park." }
@@ -45,6 +47,7 @@ sections:
         image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Deutsche_Umwelthilfe_weiss.png, alt: Deutsche Umwelthilfe, width: 300, height: 37 }
 
   - type: cta
+    kicker: Anfrage
     headline: Euer Anlass ist nicht dabei?
     text: Schreibt uns Datum, Ort und Idee. Wir sagen euch, was möglich ist.
     button: { label: Show anfragen, href: /kontakt/ }

@@ -5,6 +5,7 @@ description: "Vorlauf, Platz, Genehmigung, Wetter, Sicherheit und Kosten: Antwor
 sections:
   - type: faq
     id: fragen
+    kicker: FAQ
     headline: Häufige Fragen zu Drohnenshows.
     text: Vorlauf, Platz, Genehmigung, Wetter und Kosten, kurz beantwortet.
     cta: { label: Show anfragen, href: /kontakt/ }

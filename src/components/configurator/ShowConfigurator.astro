@@ -17,8 +17,10 @@ interface Props {
   headingLevel?: 1 | 2;
   /** Text der Überschrift */
   heading?: string;
+  /** Kicker in Orange über der Überschrift (docs/DESIGN.md, Section-Köpfe) */
+  kicker?: string;
 }
-const { id = 'konfigurator', headingLevel = 2, heading = 'Was soll am Himmel passieren?' } = Astro.props;
+const { id = 'konfigurator', headingLevel = 2, heading = 'Was soll am Himmel passieren?', kicker } = Astro.props;
 const Heading = headingLevel === 1 ? 'h1' : 'h2';
 
 const list = OCCASIONS;
@@ -69,6 +71,7 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
     </div>
 
     <form class="cfg-panel" id="cfg">
+      {kicker && <span class="kicker mono cfg-kicker">{kicker}</span>}
       <Heading id="cfg-h" class="cfg-h">{heading}</Heading>
 
       <fieldset class="cfg-block">

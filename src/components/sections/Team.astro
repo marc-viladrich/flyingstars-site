@@ -3,8 +3,9 @@
 import type { Section } from '../../content.config';
 import { optimizedImage } from '../../lib/media';
 import Accent from '../Accent.astro';
+import SectionHead from '../SectionHead.astro';
 type Props = Extract<Section, { type: 'team' }> & { index: number };
-const { headline, text, members, note, cta, id = `s${Astro.props.index}`, index } = Astro.props;
+const { headline, text, members, note, cta, id = `s${Astro.props.index}`, index, kicker } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const Name = index === 0 ? 'h2' : 'h3';
@@ -15,8 +16,8 @@ const cols = n <= 5 ? n : n % 4 === 0 ? 4 : n % 3 === 0 ? 3 : 4;
 const crew = await Promise.all(members.map(async member => ({...member, media: member.image ? await optimizedImage(member.image.src, 640) : undefined})));
 ---
 <section class="team-sec" id={id} aria-labelledby={headingId}>
-  <div class="sec-head"><H id={headingId}><Accent text={headline} /></H>{text && <p>{text}</p>}</div>
-  <ul class="crew" style={`--cols:${cols}`} data-odd={n % 2 === 1 ? '' : undefined}>{crew.map((member,i) => <li class="member" style={`--i:${i}`}>
+  <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
+  <ul class="crew" style={`--cols:${cols}`} data-odd={n % 2 === 1 ? '' : undefined}>{crew.map((member,i) => <li class="member" style={`--i:${i}`} data-dot-host>
     <div class="portrait" data-dot-img={member.media ? '' : undefined} data-step="6">{member.image && member.media ? <img src={member.media.src} width={member.media.width} height={member.media.height} alt={member.image.alt} loading="lazy" decoding="async" /> : <><span class="ini" aria-hidden="true">{initials(member.name)}</span><span class="soon mono">Foto folgt</span></>}</div>
     <span class="role mono">{member.role}</span><Name>{member.name}</Name>{member.bio && <p>{member.bio}</p>}
   </li>)}</ul>

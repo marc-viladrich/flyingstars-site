@@ -1,0 +1,24 @@
+---
+// Von der Anfrage bis zum Showabend in Zahlen (Marc, 31.10.2026: „benefitorientiert … wie schnell ihr das theoretisch
+// anbieten könnt … in Zahlen statt in Adjektiven“). Ein Zeitstrahl: Beim Erscheinen zieht die Verlaufslinie von der
+// Anfrage zum Showabend, die Punkte schalten nacheinander ein wie Drohnen. Darunter ruhige Kennzahlen.
+import type { Section } from '../../content.config';
+import SectionHead from '../SectionHead.astro';
+type Props = Extract<Section, { type: 'tempo' }> & { index: number };
+const { headline, text, marks, facts = [], note, id = 'ablauf', index, kicker } = Astro.props;
+const headingId = `${id}-h`;
+const H = index === 0 ? 'h1' : 'h2';
+---
+<section class="section alt tempo" id={id} aria-labelledby={headingId}>
+  <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
+  <ol class="ruler" data-reveal-group style={`--n:${marks.length}`}>
+    {marks.map((m, i) => <li data-reveal style={`--i:${i}`}>
+      <span class="dot" aria-hidden="true"></span>
+      <b class="v">{m.value}</b>
+      <span class="l mono">{m.label}</span>
+      {m.text && <p>{m.text}</p>}
+    </li>)}
+  </ol>
+  {facts.length > 0 && <dl class="tempo-facts">{facts.map((f) => <div><dt class="mono">{f.label}</dt><dd class="v">{f.value}</dd>{f.text && <dd class="t">{f.text}</dd>}</div>)}</dl>}
+  {note && <p class="tempo-note mono">{note}</p>}
+</section>

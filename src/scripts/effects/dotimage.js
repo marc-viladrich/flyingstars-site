@@ -22,7 +22,8 @@ const clamp01 = u => Math.min(1, Math.max(0, u));
 
 function buildLayers(img, W, H, step) {
   const cols = Math.max(1, Math.floor(W / step)), rows = Math.max(1, Math.floor(H / step));
-  // Bild im Seitenverhältnis des Rahmens (object-fit: cover) abtasten
+  // Bild im Seitenverhältnis des Rahmens (object-fit: cover) abtasten. img ist hier immer eine eigene Kopie ohne srcset
+  // (source() unten): naturalWidth sind dann echte Bildpixel, also derselbe Maßstab, in dem drawImage ausschneidet.
   const s = Math.max(cols / img.naturalWidth, rows / img.naturalHeight);
   const sw = cols / s, sh = rows / s, sx = (img.naturalWidth - sw) / 2, sy = (img.naturalHeight - sh) / 2;
   // 4× feiner abtasten und je Zelle das hellste Pixel nehmen: Drohnen und Stadtlichter bleiben Lichter
@@ -68,6 +69,22 @@ function buildLayers(img, W, H, step) {
   return { bands, halo };
 }
 
+// Bei Bildern mit srcset meldet naturalWidth die Größe geteilt durch die gewählte Pixeldichte (z. B. 331 statt 640 px),
+// drawImage schneidet aber in echten Bildpixeln aus. Mit diesen Maßen abgetastet landete ein vergrößerter Ausschnitt
+// oben links auf der Karte, je nach Fensterbreite stärker (Marc, 31.10.2026). Deshalb tasten wir eine Kopie der
+// gerade geladenen Datei ab, deren Maße echte Pixel sind.
+function source(img) {
+  const url = img.currentSrc || img.src;
+  if (img.__dotSrc?.url === url) return img.__dotSrc;
+  const copy = new Image(); copy.decoding = 'async'; copy.src = url;
+  const entry = img.__dotSrc = { url, copy, ok: false };
+  const done = () => { entry.ok = copy.naturalWidth > 0; };
+  if (copy.complete) done(); else copy.addEventListener('load', done, { once: true });
+  return entry;
+}
+
+const IN = 0.7, OUT = 0.45; // Sekunden für Welle hin und zurück (Marc, 31.10.2026: „gerne ein ganzes Stück schneller“)
+
 export function dotImage(wrap, { step = 8 } = {}) {
   const img = wrap.querySelector('img');
   if (!img || !matchMedia('(hover: hover) and (pointer: fine)').matches) return; // Touch: nur der Reveal
@@ -78,8 +95,15 @@ export function dotImage(wrap, { step = 8 } = {}) {
   const g = cv.getContext('2d');
   // weiche Lichtpunkte brauchen keine Retina-Auflösung: 1× halbiert die Pixelarbeit je Frame
   let base, layers = null, p = 0, target = 0, raf = 0, last = 0, W = 0, H = 0, T = 0, amp = 0, slow = 0, calm = false;
+  let built = '';
   const size = () => { W = wrap.clientWidth; H = wrap.clientHeight; cv.width = W; cv.height = H; layers = null; if (p > 0 && ready()) draw(); };
-  const ready = () => { if (!layers && img.complete && img.naturalWidth && W) layers = buildLayers(img, W, H, step); return layers; };
+  const ready = () => {
+    if (!img.complete || !img.naturalWidth || !W) return null;
+    const src = source(img);
+    if (!src.ok) { src.copy.addEventListener('load', () => { src.ok = true; if (target) go(target); }, { once: true }); return null; }
+    if (!layers || built !== src.url) { layers = buildLayers(src.copy, W, H, step); built = src.url; }
+    return layers;
+  };
 
   function draw() {
     g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, cv.width, cv.height);
@@ -103,7 +127,7 @@ export function dotImage(wrap, { step = 8 } = {}) {
   }
   const tick = now => {
     const dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016; last = now; T = now / 1000;
-    p = clamp01(p + Math.sign(target - p) * dt / (target ? 1.6 : 0.9)); // rein 1,6 s (Welle), raus 0,9 s
+    p = clamp01(p + Math.sign(target - p) * dt / (target ? IN : OUT));
     // Glüh-Stärke gleitet: erst wenn das Bild fertig gezeichnet ist, weich hoch; beim Verlassen weich runter
     const want = target === 1 && p === 1 && !calm ? 0.2 : 0;
     amp += (want - amp) * Math.min(1, dt * 1.2);
@@ -119,8 +143,12 @@ export function dotImage(wrap, { step = 8 } = {}) {
     if (!ready()) return;
     if (!raf) raf = requestAnimationFrame(tick);
   };
-  wrap.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') go(1); });
-  wrap.addEventListener('pointerleave', () => go(0));
+  // Auslöser ist die ganze Karte, nicht nur das Foto (Marc, 31.10.2026): Karten tragen data-dot-host
+  const host = wrap.closest('[data-dot-host]') || wrap;
+  host.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') go(1); });
+  host.addEventListener('pointerleave', () => go(0));
+  host.addEventListener('focusin', () => { if (host.matches(':focus-visible, :has(:focus-visible)')) go(1); });
+  host.addEventListener('focusout', e => { if (!host.contains(e.relatedTarget)) go(0); });
   // nicht sofort messen: ein erzwungenes Layout beim Start ließ CSS-Reveals (Team, Vorhang) erst ein- und dann wieder
   // ausblenden; der ResizeObserver meldet die Größe ohnehin nach dem ersten Layout
   new ResizeObserver(size).observe(wrap);
@@ -128,6 +156,7 @@ export function dotImage(wrap, { step = 8 } = {}) {
   const idle = window.requestIdleCallback || (f => setTimeout(f, 200));
   new IntersectionObserver((es, o) => {
     if (!es[0].isIntersecting) return; o.disconnect();
-    if (img.complete) idle(() => ready()); else img.addEventListener('load', () => idle(() => ready()), { once: true });
+    const prep = () => idle(() => { source(img); idle(() => ready()); });
+    if (img.complete) prep(); else img.addEventListener('load', prep, { once: true });
   }, { rootMargin: '200px' }).observe(wrap);
 }

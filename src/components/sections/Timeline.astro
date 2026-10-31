@@ -3,14 +3,15 @@
 // steht nur einmal sichtbar da und bleibt für Screenreader lesbar.
 import type { Section } from '../../content.config';
 import Accent from '../Accent.astro';
+import SectionHead from '../SectionHead.astro';
 type Props = Extract<Section, { type: 'timeline' }> & { index: number };
-const { headline, text, items, id = `s${Astro.props.index}`, index } = Astro.props;
+const { headline, text, items, id = `s${Astro.props.index}`, index, kicker } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
 const T = index === 0 ? 'h2' : 'h3';
 const headingId = `${id}-h`;
 ---
 <section class="section" id={id} aria-labelledby={headingId}>
-  <div class="sec-head"><H id={headingId}><Accent text={headline} /></H>{text && <p>{text}</p>}</div>
+  <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
   <ol class="timeline">
     {items.map((it, i) => <li class:list={['tl-item', { 'tl-repeat': i > 0 && items[i - 1].when === it.when }]}>
       <span class="tl-when">{it.when}</span>

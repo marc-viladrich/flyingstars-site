@@ -1,13 +1,15 @@
 ---
-// Preisseite (30.10.2026): drei Pakete, deutlicher Weg in den Show-Konfigurator, was immer enthalten ist, alle Leistungen
-// im Vergleich, Zusätze, Fragen zum Preis (FAQ-Collection, Tag `preise`) und Abschluss. Ohne Kicker und ohne den alten
-// Preisrechner: Der Konfigurator ersetzt ihn (src/components/pricing/ bleibt unverändert im Repo, ist hier nicht mehr
-// eingebunden). Preise und Drohnenzahlen nur aus show-packages.ts, Texte aus package-details.ts (Elevate, Fragebogen 21.10.).
+// Preisseite (31.10.2026, Marcs Feedbackrunde 6): Aufbau wie im Vercel-Prototyp. Oben direkt der Show-Konfigurator,
+// dann die drei Pakete mit farbigen Punkten je Paket, was immer enthalten ist, alle Leistungen im Vergleich, Extras,
+// Preisversprechen (Fragebogen 21.10.), Fragen zum Preis und Abschluss. Preise und Drohnenzahlen nur aus
+// show-packages.ts, Texte aus package-details.ts.
 import Base from '../layouts/Base.astro';
 import Packages from '../components/sections/Packages.astro';
 import Cta from '../components/sections/Cta.astro';
 import Metrics from '../components/sections/Metrics.astro';
 import Faq from '../components/sections/Faq.astro';
+import SectionHead from '../components/SectionHead.astro';
+import ShowConfigurator from '../components/configurator/ShowConfigurator.astro';
 import { SHOW_PACKAGES, PACKAGE_NAMES } from '../content/show-packages';
 import { PACKAGE_DETAILS, COMPARISON, COMPARISON_NOTE, INCLUDED, EXTRAS, SHOW_DURATION } from '../content/package-details';
 const money = (v: number) => `ab ${v.toLocaleString('de-DE')} €`;
@@ -15,37 +17,32 @@ const items = PACKAGE_NAMES.map((name) => ({ name, ...PACKAGE_DETAILS[name], bad
 const featured = PACKAGE_NAMES.findIndex((name) => PACKAGE_DETAILS[name].often);
 ---
 <Base title="Drohnenshow Preise: drei Pakete ab 7.900 €" description="Drei Drohnenshow-Pakete ab 7.900 € netto zzgl. Anfahrt. Design, Genehmigung und Team vor Ort sind immer enthalten. Mit Show-Konfigurator.">
+  <ShowConfigurator id="konfigurator" headingLevel={1} kicker="Preise & Pakete" heading="Was eure Show kostet." />
+
   <Packages
     type="packages"
-    index={0}
+    index={1}
     id="pakete"
-    headline="Was eine Drohnenshow kostet."
-    text="Drei Pakete ab 7.900 € netto zzgl. Anfahrt. Design, Genehmigung und das Team vor Ort sind in jedem Paket enthalten."
-    note={`Alle Preise netto zzgl. Anfahrt. ${SHOW_DURATION}`}
+    kicker="Pakete"
+    headline="Drei Pakete. Feste Einstiegspreise."
+    text="Jedes Paket lässt sich mit mehr Drohnen und Extras erweitern. Alle Preise netto zzgl. Anfahrt."
+    note={SHOW_DURATION}
     compact={false}
     items={items}
-  />
-
-  <Cta
-    type="cta"
-    index={1}
-    headline="Stellt eure Show *selbst* zusammen."
-    text="Im Show-Konfigurator wählt ihr Anlass und Paket, stellt die Drohnenzahl ein und seht Beispielmotive mit Preis. Mit eurer Auswahl fragt ihr direkt an."
-    button={{ label: 'Zum Show-Konfigurator', href: '/show-konfigurator/' }}
-    secondary={{ label: 'Indoor-Shows', href: '/drohnenshow-indoor/' }}
   />
 
   <Metrics
     type="metrics"
     index={2}
     id="inklusive"
-    headline="Wofür ihr bei jedem Paket bezahlt."
-    text="Der größte Teil der Arbeit steckt in Design, Genehmigung und einem sicheren Ablauf."
+    kicker="Immer inklusive"
+    headline="Wofür ihr eigentlich bezahlt."
+    text="Der größte Teil der Arbeit steckt nicht in den Drohnen, sondern in Design, Genehmigung und einem sicheren Ablauf."
     items={INCLUDED.map((item) => ({ label: item.title, text: item.text }))}
   />
 
   <section class="section" id="leistungen" aria-labelledby="leistungen-h">
-    <div class="sec-head"><h2 id="leistungen-h">Alle Leistungen im Vergleich.</h2></div>
+    <SectionHead kicker="Vergleich" headline="Alle Leistungen im Vergleich." id="leistungen-h" />
     <div class="table-wrap" role="region" aria-label="Alle Leistungen im Vergleich (Tabelle, horizontal scrollbar)" tabindex="0">
       <!-- position:relative hält die visuell versteckten Texte („nicht enthalten“) im Scrollbereich der Tabelle -->
       <table style="position:relative">
@@ -69,10 +66,11 @@ const featured = PACKAGE_NAMES.findIndex((name) => PACKAGE_DETAILS[name].often);
   </section>
 
   <section class="section alt" id="zusaetze" aria-labelledby="zusaetze-h">
-    <div class="sec-head"><h2 id="zusaetze-h">Was zusätzlich möglich ist.</h2><p>Was ein Zusatz kostet, steht vorab im Angebot.</p></div>
+    <SectionHead kicker="Extras & Upgrades" headline="Mehr geht immer." text="Was ein Zusatz kostet, steht vorab im Angebot." id="zusaetze-h" />
     <div class="extras">
       {EXTRAS.map((x) => (
         <div class="extra">
+          <span class="k mono">{x.kick}</span>
           <h3>{x.title}</h3>
           <p>{x.text}</p>
           <span class="price mono">{x.price}</span>
@@ -82,11 +80,20 @@ const featured = PACKAGE_NAMES.findIndex((name) => PACKAGE_DETAILS[name].often);
     </div>
   </section>
 
+  <!-- Preisversprechen: von FlyingStars im Fragebogen (21.10.2026) bestätigt -->
+  <section class="section promise-sec" aria-labelledby="versprechen-h">
+    <div class="promise">
+      <div><span class="kicker mono">Preisversprechen</span><h2 id="versprechen-h">Günstigeres Angebot mit gleicher Leistung? Wir unterbieten es.</h2><p>Schickt uns das Vergleichsangebot. Bei gleichem Leistungsumfang machen wir euch einen besseren Preis.</p></div>
+      <a class="btn primary" href="/kontakt/?anliegen=vergleich">Angebot prüfen lassen</a>
+    </div>
+  </section>
+
   <Faq
     type="faq"
     index={5}
     id="preisfragen"
-    headline="Fragen zum Preis."
+    kicker="Fragen zum Preis"
+    headline="Was kostet eine Drohnenshow wirklich?"
     text="Was in Gesprächen über das Budget am häufigsten gefragt wird."
     cta={{ label: 'Alle Fragen', href: '/faq/' }}
     openFirst={true}

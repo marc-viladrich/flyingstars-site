@@ -51,7 +51,7 @@ const inNav = (href: string) => site.nav.some((item) => item.href === href);
     <div class="nav-sentinel" aria-hidden="true"></div>
     <header class="nav">
       <Logo />
-      <nav aria-label="Hauptnavigation">{site.nav.map((item) => <a href={item.href} aria-current={navState(item.href)}>{item.label}</a>)}</nav>
+      <nav aria-label="Hauptnavigation">{site.nav.map((item) => item.children ? <div class="nav-drop"><a href={item.href} aria-current={navState(item.href)}>{item.label} <svg class="caret" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" /></svg></a><ul>{item.children.map((c) => <li><a href={c.href} aria-current={navState(c.href)}>{c.label}</a></li>)}</ul></div> : <a href={item.href} aria-current={navState(item.href)}>{item.label}</a>)}</nav>
       <span class="lang" aria-label="Sprache Deutsch">DE</span>
       <button class="motion-btn" type="button" data-motion-toggle aria-pressed="false" aria-label="Bewegung pausieren" title="Bewegung pausieren"><svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="7" y="6" width="3.2" height="12" rx="1" /><rect x="13.8" y="6" width="3.2" height="12" rx="1" /></svg><svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 6.2v11.6a.8.8 0 0 0 1.2.7l9-5.8a.8.8 0 0 0 0-1.4l-9-5.8a.8.8 0 0 0-1.2.7z" /></svg></button>
       <a class="btn small primary" href={site.cta.href}>{site.cta.label}</a>
@@ -59,7 +59,7 @@ const inNav = (href: string) => site.nav.some((item) => item.href === href);
     </header>
     <dialog class="mobile-menu" id="mobile-menu" aria-label="Hauptnavigation">
       <div class="top"><Logo /><button class="menu-btn menu-close" type="button" data-menu-close aria-label="Menü schließen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg></button></div>
-      <nav aria-label="Mobile Navigation">{site.nav.map((item) => <a href={item.href}>{item.label}</a>)}{!inNav('/blog/') && <a href="/blog/">Blog</a>}<a href={site.cta.href}>{site.cta.label}</a></nav>
+      <nav aria-label="Mobile Navigation">{site.nav.map((item) => <><a href={item.href}>{item.label}</a>{item.children && <ul class="sub">{item.children.map((c) => <li><a href={c.href}>{c.label}</a></li>)}</ul>}</>)}{!inNav('/blog/') && <a href="/blog/">Blog</a>}<a href={site.cta.href}>{site.cta.label}</a></nav>
       <span class="lang">DE · Deutsch</span>
     </dialog>
     <main id="main" class:list={{ 'content-page': !fullBleed }}><slot /></main>

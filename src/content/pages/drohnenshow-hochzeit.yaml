@@ -8,6 +8,7 @@ description: "Eine Drohnenshow für eure Hochzeit: Initialen, Herz und Datum am 
 image: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg
 sections:
   - type: hero
+    kicker: Hochzeit
     headline: Eine Drohnenshow für eure Hochzeit.
     text: Eure Initialen, ein Herz und euer Datum am Nachthimmel. Wir planen die Show mit euch, holen die Genehmigung ein und fliegen am Abend eurer Feier. Hochzeitsshows gibt es mit SPARK ab 7.900 € netto.
     image:
@@ -19,6 +20,7 @@ sections:
     secondary: { label: So läuft es ab, href: "#ablauf" }
 
   - type: textMedia
+    kicker: Referenzen
     headline: So sah das bei anderen Paaren aus.
     body: |
       **Hochzeitsüberraschung in Recklinghausen, Juni 2024.** Die Familie des Brautpaars kam vier Monate vor der Hochzeit auf uns zu. 150 Drohnen zeigten Ringe, Herzen, Tauben und die Initialen der beiden. Die Startfläche haben wir auf einem Nachbargrundstück eingerichtet, ohne dass das Brautpaar davon wusste. Wegen eines Gewitters haben wir die Show am Abend verschoben und dann geflogen.
@@ -32,11 +34,13 @@ sections:
     mediaSide: left
 
   - type: cta
+    kicker: Motive
     headline: Was am Himmel stehen kann.
     text: Herzen und Ringe aus unserem Katalog, dazu eure Initialen oder euer Datum. Im Show-Konfigurator seht ihr Beispielmotive mit 100 Drohnen. Eure eigene Show entwerfen wir gemeinsam mit euch.
-    button: { label: Motive im Konfigurator ansehen, href: "/show-konfigurator/?anlass=hochzeit&paket=SPARK" }
+    button: { label: Motive im Konfigurator ansehen, href: "/drohnenshow-preise/?anlass=hochzeit&paket=SPARK#konfigurator" }
 
   - type: textMedia
+    kicker: Preise
     headline: Was eine Hochzeitsshow kostet.
     body: |
       Für Hochzeiten ist SPARK gedacht: 100 Drohnen ab 7.900 € netto zuzüglich Anfahrt. Bis 150 Drohnen kosten je weitere 10 Drohnen 900 €.
@@ -48,6 +52,7 @@ sections:
       Alle Pakete findet ihr auf der [Preisseite](/drohnenshow-preise/).
 
   - type: textMedia
+    kicker: Location
     headline: Passt eure Location?
     body: |
       Ob es bei euch passt, prüfen wir vor dem Angebot. Schickt uns die Adresse und sagt uns, wo eure Gäste stehen werden. Das braucht es:
@@ -60,6 +65,7 @@ sections:
 
   - type: steps
     id: ablauf
+    kicker: Ablauf
     headline: Bis zu eurem Abend.
     text: Ihr kümmert euch um die Feier. Wir melden uns, wenn wir eine Entscheidung von euch brauchen. Ideal sind ein bis zwei Monate Vorlauf.
     steps:
@@ -78,11 +84,13 @@ sections:
         duration: ca. 3 h Aufbau
 
   - type: cta
+    kicker: Überraschung
     headline: Es soll eine Überraschung werden?
     text: Ob Heiratsantrag oder Geschenk der Familie, wir stimmen uns nur mit euch ab. Die Startfläche richten wir abseits ein und den Startzeitpunkt planen wir mit der Location.
     button: { label: Überraschung anfragen, href: "#anfrage" }
 
   - type: textMedia
+    kicker: Wetter
     headline: Und wenn das Wetter nicht mitspielt?
     body: |
       Wir fliegen bis Windstärke 5 und auch bei leichtem Nieselregen. Ist schlechtes Wetter absehbar, verschieben wir die Show kostenlos, solange wir noch nicht losgefahren sind. Bei der Buchung zahlt ihr 40 % an. Fällt die Show ganz aus, gilt die Staffel aus unseren AGB.
@@ -91,11 +99,13 @@ sections:
 
   - type: faq
     id: fragen
+    kicker: FAQ
     headline: Fragen von Paaren.
     text: Kurz beantwortet. Weitere Antworten findet ihr in den häufigen Fragen.
     cta: { label: Alle Fragen, href: /faq/ }
     tags: [hochzeit]
 
   - type: contactForm
+    kicker: Anfrage
     headline: Erzählt uns von eurem Hochzeitstag.
     text: Datum und Location reichen für den Anfang. Wir melden uns innerhalb von 48 Stunden mit einer ersten Einschätzung.
