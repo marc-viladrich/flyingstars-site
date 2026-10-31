@@ -6,7 +6,9 @@ import type { Section } from '../../content.config';
 import SectionHead from '../SectionHead.astro';
 import ConfiguratorTeaser from '../configurator/ConfiguratorTeaser.astro';
 type Props = Extract<Section, { type: 'landingTeaser' }> & { index: number };
-const { kicker, headline, text, href, cta, id = 'motive', index } = Astro.props;
+// `loop` (marke | hochzeit | start): anlassspezifischer Ablauf (Runde 9). Wird an den Teaser durchgereicht, sobald
+// ConfiguratorTeaser.astro die Prop anbietet; bis dahin ohne Wirkung.
+const { kicker, headline, text, href, cta, loop: _loop, id = 'motive', index } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
 ---
 <section class="section" id={id} aria-labelledby={`${id}-h`}>

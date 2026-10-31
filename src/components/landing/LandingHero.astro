@@ -6,6 +6,7 @@
 // Datensparmodus und außerhalb des Bildes. Quelle nur aus src/lib/videos.ts, über videoPath() auf dieselbe Origin.
 import type { Section } from '../../content.config';
 import Accent from '../Accent.astro';
+import Icon from '../Icon.astro';
 import { optimizedImage } from '../../lib/media';
 import { videos, videoPath } from '../../lib/videos';
 type Props = Extract<Section, { type: 'landingHero' }> & { index: number };
@@ -27,7 +28,7 @@ const src = videoPath(videos[video]);
     <span class="lh-rec mono" aria-hidden="true">{videoLabel}</span>
     <span class="lh-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
     <button class="lh-toggle mono" type="button" data-lh-toggle aria-pressed="false" hidden>
-      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path class="i-play" d="M8 5.5v13l10.5-6.5z" /><path class="i-pause" d="M8 5v14M16 5v14" /></svg>
+      <Icon name="play" size={16} class="g i-play" /><Icon name="pause" size={16} class="g i-pause" />
       <span data-lh-label>Video abspielen</span>
     </button>
   </figure>
@@ -96,11 +97,10 @@ const src = videoPath(videos[video]);
   .lh-toggle { position: absolute; z-index: 3; right: 14px; bottom: 14px; display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 10px; border-radius: 999px; border: 1px solid rgba(246, 241, 232, 0.3); background: rgba(15, 13, 12, 0.66); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); color: var(--text); cursor: pointer; }
   .lh-toggle:hover { border-color: rgba(246, 241, 232, 0.6); }
   .lh-toggle:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
-  .lh-toggle .ico { width: 16px; height: 16px; stroke: var(--accent); }
-  .lh-toggle .i-play { fill: var(--accent); stroke: none; }
-  .lh-toggle .i-pause { display: none; }
-  .lh-media.is-on .i-play { display: none; }
-  .lh-media.is-on .i-pause { display: inline; }
+  .lh-toggle :global(.ico) { width: 16px; height: 16px; }
+  .lh-toggle :global(.i-pause) { display: none; }
+  .lh-media.is-on :global(.i-play) { display: none; }
+  .lh-media.is-on :global(.i-pause) { display: inline; }
   @media (max-width: 900px) {
     .lh { grid-template-columns: 1fr; }
     .lh::before { width: 120%; right: -40%; top: 40%; height: 60%; }

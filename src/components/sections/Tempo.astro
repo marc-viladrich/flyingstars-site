@@ -4,7 +4,6 @@
 // Anfrage zum Showabend, die Punkte schalten nacheinander ein wie Drohnen. Darunter ruhige Kennzahlen.
 import type { Section } from '../../content.config';
 import SectionHead from '../SectionHead.astro';
-import TempoBranches from './TempoBranches.astro';
 type Props = Extract<Section, { type: 'tempo' }> & { index: number };
 const { headline, text, marks, shortcut, facts = [], note, id = 'ablauf', index, kicker } = Astro.props;
 const headingId = `${id}-h`;
@@ -14,9 +13,6 @@ const H = index === 0 ? 'h1' : 'h2';
   <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
   <!-- Der Strahl zeigt den regulären Weg. Eine Abkürzung (Express) liegt fein gestrichelt darüber und verbindet den ersten
        mit dem letzten Punkt: sichtbar möglich, aber nicht die Regel (Marc, 31.10.2026). -->
-  <!-- Desktop: Ablauf als Verzweigung (Design und Genehmigung parallel, Express als kurzer Weg). Handy und ?ablauf=strahl:
-       der senkrechte bzw. waagrechte Zeitstrahl darunter. -->
-  {shortcut && <div class="tempo-branches"><TempoBranches id={`${id}-br`} /></div>}
   <div class:list={['ruler-wrap', { 'has-shortcut': shortcut }]}>
   {shortcut && <p class="shortcut" style={`--n:${marks.length}`}><span class="sc-line" aria-hidden="true"></span><span class="sc-label"><b>{shortcut.value}</b> <span class="mono">{shortcut.label}</span></span></p>}
   <ol class="ruler" data-reveal-group style={`--n:${marks.length}`}>
@@ -33,6 +29,3 @@ const H = index === 0 ? 'h1' : 'h2';
   {note && <p class="tempo-note mono">{note}</p>}
 </section>
 
-<script is:inline>
-  if (new URLSearchParams(location.search).get('ablauf') === 'strahl') document.documentElement.classList.add('ablauf-strahl');
-</script>

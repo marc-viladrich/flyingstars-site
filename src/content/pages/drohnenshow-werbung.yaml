@@ -4,6 +4,7 @@
 # Runde 8 (31.10.2026, Marc: „deutlich mehr in dieses Interaktive … mehr Variation in den Layouts“): Hero mit Ford-Clip
 # im Rahmen, nur Markenreferenzen, Wirkung als Kacheln, Freigabe als Strahl mit Schranke, Logo-Neugier im
 # Konfigurator-Teaser, Agenturen mit Gesichtern, Orte auf einem Bild. Bausteine: src/components/landing/.
+# Runde 9: Agentur-Abschluss als .promise, Pakete vor dem Teaser wie auf der Startseite, Orte ohne doppelte Einträge, Icons.
 # Alle Texte sind Entwürfe für Moritz; neu formulierte Stellen tragen den Kommentar „Entwurf für Moritz“.
 title: Drohnenshow als Werbung
 navLabel: "Marken & Werbung"
@@ -74,8 +75,8 @@ sections:
         width: 1929
         height: 1133
     items:
-      - { label: Bilder für eure Kanäle, value: 900 €, text: "Gäste filmen und teilen die Show. Rohaufnahmen mit unserer Kameradrohne kosten 900 €, bei ODYSSEY sind sie enthalten." }
-      - { label: Ein Anlass für Berichte, value: ZDF · WDR · ntv · WAZ, text: Über uns und unsere Shows haben unter anderem diese Sender und Zeitungen berichtet. }
+      - { icon: camera, label: Bilder für eure Kanäle, value: 900 €, text: "Gäste filmen und teilen die Show. Rohaufnahmen mit unserer Kameradrohne kosten 900 €, bei ODYSSEY sind sie enthalten." }
+      - { icon: newspaper, label: Ein Anlass für Berichte, value: ZDF · WDR · ntv · WAZ, text: Über uns und unsere Shows haben unter anderem diese Sender und Zeitungen berichtet. }
 
   # Entwurf für Moritz: Freigabe als Strahl mit Schranke, Inhalte wie bisher
   - type: landingFlow
@@ -98,15 +99,6 @@ sections:
         text: Unser Team ist etwa drei Stunden vorher vor Ort, sperrt die Startfläche und fliegt die Show.
         duration: ca. 3 h Aufbau
 
-  # Neugier aus dem Fragebogen („Wie sieht mein Unternehmen als Drohnenshow aus?“). Entwurf für Moritz.
-  - type: landingTeaser
-    id: logo
-    kicker: Show-Konfigurator
-    headline: Wie sieht euer *Logo* am Himmel aus?
-    text: Im Konfigurator ladet ihr euer Logo hoch und seht es als Drohnenformation, mit Motiven von SPARK bis ODYSSEY.
-    href: "/drohnenshow-preise/?anlass=launch#konfigurator"
-    cta: Logo im Konfigurator ausprobieren
-
   - type: packages
     id: pakete
     kicker: Pakete
@@ -115,10 +107,21 @@ sections:
     compact: true
     items:
       - { name: SPARK, label: Klassisch in 2D }
-      - { name: HORIZON, label: 3D in Bewegung, badge: Am häufigsten gebucht, highlight: true }
+      - { name: HORIZON, label: 3D in Bewegung, badge: Bestseller, highlight: true }
       - { name: ODYSSEY, label: Erzählte 3D-Show }
     note: Alle Preise netto zzgl. Anfahrt
     cta: { label: Alle Leistungen und Preise, href: "/drohnenshow-preise/" }
+
+
+  # Neugier aus dem Fragebogen („Wie sieht mein Unternehmen als Drohnenshow aus?“). Entwurf für Moritz.
+  - type: landingTeaser
+    id: logo
+    kicker: Show-Konfigurator
+    headline: Wie sieht euer *Logo* am Himmel aus?
+    text: Im Konfigurator ladet ihr euer Logo hoch und seht es als Drohnenformation, mit Motiven von SPARK bis ODYSSEY.
+    href: "/drohnenshow-preise/?anlass=launch#konfigurator"
+    cta: Logo im Konfigurator ausprobieren
+    loop: marke
 
   # Entwurf für Moritz: Agenturen mit Aussage-Kachel („Wir fliegen, ihr glänzt“ von der Startseite) und Gesichtern
   - type: landingBento
@@ -126,14 +129,15 @@ sections:
     kicker: Agenturen
     headline: Für Agenturen.
     lead:
+      icon: sparkles
       label: Für eure Kund:innen
       title: Wir fliegen, *ihr glänzt*.
       text: Ihr bleibt bei euren Kund:innen vorn. Wie viel ihr selbst organisiert und wie viel wir übernehmen, entscheidet ihr.
     items:
-      - { label: Rolle, value: Im Hintergrund, text: "Auf Wunsch fliegen wir anonym. Euer Name steht vorn, wir liefern die Show." }
-      - { label: Vertraulichkeit, value: NDA, text: Wir unterschreiben eine Vertraulichkeitsvereinbarung. }
-      - { label: Freigabe, value: Visualisierung, text: "Für die Abstimmung mit euren Kund:innen visualisieren wir die Motive mit deren Logo." }
-      - { label: Organisation, value: Projektleitung, text: "Auf Wunsch übernehmen wir die Projektleitung, mit Genehmigung, Behörden und Technik vor Ort." }
+      - { icon: eye-off, label: Rolle, value: Im Hintergrund, text: "Auf Wunsch fliegen wir anonym. Euer Name steht vorn, wir liefern die Show." }
+      - { icon: file-lock, label: Vertraulichkeit, value: NDA, text: Wir unterschreiben eine Vertraulichkeitsvereinbarung. }
+      - { icon: image, label: Freigabe, value: Visualisierung, text: "Für die Abstimmung mit euren Kund:innen visualisieren wir die Motive mit deren Logo." }
+      - { icon: clipboard-list, label: Organisation, value: Projektleitung, text: "Auf Wunsch übernehmen wir die Projektleitung, mit Genehmigung, Behörden und Technik vor Ort." }
     faces: true
     contact: Erzählt uns vom Projekt eurer Kund:innen. Wir melden uns innerhalb von 48 Stunden.
     cta: { label: Als Agentur anfragen, href: "/kontakt/?anlass=agentur" }
@@ -143,18 +147,15 @@ sections:
     id: orte
     kicker: Orte
     headline: Auch über Stadien, Innenstädten und am Wasser.
-    text: Dank unserer generischen Betriebsgenehmigung geben wir die meisten Flugorte selbst frei. Für Kontrollzonen, Flughafennähe und Bundeswasserstraßen holen wir die nötigen Sondergenehmigungen ein.
+    text: Dank unserer generischen Betriebsgenehmigung geben wir die meisten Flugorte selbst frei. Für Kontrollzonen, Flughafennähe und Bundeswasserstraßen holen wir die nötigen Sondergenehmigungen ein. Das braucht mehr Vorlauf.
     image:
       src: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
       alt: Drohnenformation über der Skyline von Düsseldorf mit Rheinturm
       width: 1920
       height: 985
     tags: [Borussia-Park · Mönchengladbach, Olympiastadion · Berlin, Rheinturm · Düsseldorf, Innenhafen · Duisburg]
-    entries:
-      - { kicker: Deutschland, title: Sondergenehmigungen, text: "Kontrollzonen, Flughafennähe und Bundeswasserstraßen brauchen mehr Vorlauf. Die Anträge stellen wir." }
-      - { kicker: EU, title: Bestätigung je Land, text: Im Ausland beantragen wir für jedes EU-Land vorab eine Bestätigung. }
     facts:
-      - { value: 4–8 Wochen, label: Vorlauf je EU-Land }
+      - { value: 4–8 Wochen, label: Bestätigung je EU-Land, vorab }
       - { value: ca. 3 Monate, label: in Italien }
 
   - type: faq

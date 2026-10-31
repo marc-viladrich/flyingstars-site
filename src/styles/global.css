@@ -986,7 +986,7 @@ html.motion-paused .rec::before { animation: none; }
 .proof .press img.knock { filter: grayscale(1) brightness(0.85) contrast(1.15); opacity: 1; } /* farbige Fläche mit weißer Schrift (ZDF, ntv): Fläche grau, Schrift bleibt weiß */
 .proof .press .note { color: var(--faint); font-size: 13.5px; line-height: 1.4; }
 .proof .press a .note { color: var(--muted); }
-.proof .press :is(a, .noref) { min-height: 74px; align-content: end; }
+.proof .press :is(a, .noref) { min-height: 48px; align-content: center; }
 
 /* Nachhaltigkeit: Konturschrift für „Kein Rauch.“ wie im Prototyp, auch bei der Rauch-Zahl in der Scrollstory */
 .eco-title span.o, .fn.o { color: transparent; -webkit-text-stroke: 1.5px rgba(246, 241, 232, 0.85); }
@@ -1096,10 +1096,36 @@ a.pack:hover .pack-go, a.pack:focus-visible .pack-go { opacity: 1; transform: tr
 .hero.reel-on .hero-media > img { opacity: 0; }
 .hero .hero-copy { z-index: 4; }
 
-/* Ablauf: Verzweigung auf dem Desktop, Zeitstrahl auf dem Handy (und zum Vergleich mit ?ablauf=strahl) */
-.tempo-branches { display: none; }
-@media (min-width: 1001px) {
-  html:not(.ablauf-strahl) .tempo-branches { display: block; margin-bottom: clamp(36px, 4vw, 56px); }
-  html:not(.ablauf-strahl) .tempo .tempo-branches + .ruler-wrap { display: none; }
-}
 .promise { grid-template-columns: minmax(0, 1fr); } /* Spalte füllt den Kasten, sonst sitzt der Inhalt links */
+/* Die Videoebene liegt seit Runde 8 über der Abdunklung: ohne transparenten Grund verdeckte ihre graue Fläche das laufende
+   Reel, sobald das Standbild ausblendete (Marc 31.10.: „ich sehe nur einen schmalen Streifen“) */
+.hero .hero-media.video-player { background: transparent; }
+
+/* Zeitstrahl: Punkte liegen vor der Linie. Die Listeneinträge bilden durch den Reveal (transform) eigene Ebenen, deshalb
+   reicht z-index am Punkt allein nicht; die Linie bekommt Ebene 0, die Einträge Ebene 1 (Marc 31.10.: Punkte hinter der Linie) */
+.ruler::before, .ruler::after { z-index: 0; }
+.ruler li { z-index: 1; }
+
+/* Anlässe als Slider (mehr als vier Karten): vier sichtbar, der Rest läuft bis an den Fensterrand und blendet aus */
+.occasions.occ-slider { display: grid; grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: calc((100% - 3 * 16px) / 4); overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-left: 0; overscroll-behavior-x: contain; scrollbar-width: none; margin-right: calc(var(--gutter) * -1); padding-right: var(--gutter); padding-bottom: 4px; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - var(--gutter) - 90px), transparent 100%); mask-image: linear-gradient(90deg, #000 calc(100% - var(--gutter) - 90px), transparent 100%); }
+.occasions.occ-slider::-webkit-scrollbar { display: none; }
+.occasions.occ-slider.at-end { -webkit-mask-image: none; mask-image: none; }
+.occasions.occ-slider > .occ { scroll-snap-align: start; }
+.occasions.occ-slider:focus-visible { outline: 2px solid var(--cyan); outline-offset: 6px; }
+.occ-nav { display: flex; justify-content: flex-end; gap: 10px; margin: calc(clamp(36px, 5vw, 56px) * -1 - 4px) 0 18px; }
+.occ-btn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line-strong); background: transparent; color: var(--text); font-size: 18px; cursor: pointer; transition: border-color 0.2s, opacity 0.2s; }
+.occ-btn:hover { border-color: var(--text); }
+.occ-nav:has(+ .at-start) [data-occ-prev], .occ-nav:has(+ .at-end) [data-occ-next] { opacity: 0.35; pointer-events: none; }
+@media (max-width: 1100px) { .occasions.occ-slider { grid-auto-columns: calc((100% - 16px) / 2.3); } }
+@media (max-width: 640px) { .occasions.occ-slider { grid-auto-columns: 82%; } .occ-nav { display: none; } }
+
+/* Paket-Kurzfassung (Startseite): Kernpunkte unter dem Preis, Drohnenzahl in der Paketfarbe hervorgehoben */
+a.pack { grid-template-rows: auto 1fr; align-items: start; }
+.pack-points { grid-column: 1 / -1; list-style: none; margin: 6px 0 0; padding: 16px 0 0; border-top: 1px solid var(--line); display: grid; gap: 8px; font-size: 14.5px; color: var(--muted); }
+.pack-points li { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 10px; align-items: baseline; }
+.pack-points li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--c); transform: translateY(-2px); }
+.pack-points li.drones { color: var(--c); font: 500 15px/1.4 var(--display); letter-spacing: 0.01em; }
+.packs { align-items: stretch; }
+.faq-cta { margin-top: clamp(40px, 5vw, 72px); width: 100%; }
+.extra .k { display: flex; align-items: center; gap: 10px; }
+.extra .k .ico { width: 22px; height: 22px; }

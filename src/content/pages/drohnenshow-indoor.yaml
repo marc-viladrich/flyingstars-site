@@ -7,8 +7,8 @@
 # Runde 8 (31.10.2026, Marc: „deutlich mehr in dieses Interaktive … mehr Variation in den Layouts“): Hero mit Showreel im
 # Rahmen, Raum als Schnitt mit Deckenhöhe und Checkliste, Sicherheit als Kacheln, Einsatzorte auf einem Bild, Ablauf als
 # Zeitstrahl in Zahlen, Preis als Preiskarte mit Gesichtern. Bausteine: src/components/landing/.
+# Runde 9: Abschluss als .promise, Zeitstrahl nur mit Zahlen, keine doppelten Kennzahlen, Icons in den Sicherheits-Kacheln.
 # Kein Konfigurator-Teaser: Der Konfigurator zeigt die Outdoor-Pakete, die drinnen nicht gelten.
-# Offen: Das Showreel zeigt Outdoor-Shows. Ein Indoor-Clip ist nicht registriert (src/lib/videos.ts).
 # Alle Texte sind Entwürfe für Moritz; neu formulierte Stellen tragen den Kommentar „Entwurf für Moritz“.
 title: Indoor-Drohnenshow
 navLabel: "Indoor"
@@ -21,8 +21,9 @@ sections:
     text: Kleine Drohnen mit Rotorschutz fliegen im Raum, abgestimmt auf Musik und Licht. Jede Indoor-Show planen wir für euren Raum und kalkulieren sie einzeln.
     cta: { label: Indoor-Show anfragen, href: "#anfrage" }
     secondary: { label: Was drinnen anders ist, href: "#unterschied" }
-    video: showreel
-    videoLabel: Showreel
+    # Echte Indoor-Show (Siemens, Hannover Messe 03/2025), Recherche 31.10.2026 (codex-befunde/videos-je-anlass)
+    video: siemensIndoor
+    videoLabel: Siemens · Hannover Messe
     poster:
       src: https://flyingstars.art/wp-content/uploads/2025/04/IMG_0201.jpg
       alt: Dutzende leuchtende Drohnen in Reihen über dem Boden einer abgedunkelten Sporthalle
@@ -91,9 +92,9 @@ sections:
         width: 2560
         height: 1708
     items:
-      - { label: Tempo, value: "max. 1,5 m/s", text: Schneller fliegen die Drohnen im Raum nicht. }
-      - { label: Abstand, value: "0,5 m", text: Mindestabstand zwischen zwei Drohnen. }
-      - { label: Systeme, value: Mehrfach abgesichert, text: "Redundante Sicherheitsfunktionen, eine kontrollierte Landefunktion und CE-zertifizierte Komponenten." }
+      - { icon: gauge, label: Tempo, value: "max. 1,5 m/s", text: Schneller fliegen die Drohnen im Raum nicht. }
+      - { icon: move-horizontal, label: Abstand, value: "0,5 m", text: Mindestabstand zwischen zwei Drohnen. }
+      - { icon: shield-check, label: Systeme, value: Mehrfach abgesichert, text: "Redundante Sicherheitsfunktionen, eine kontrollierte Landefunktion und CE-zertifizierte Komponenten." }
 
   # Entwurf für Moritz: Einsatzorte als Markierungen auf dem Bild, Referenzen darunter; Inhalte wie bisher
   - type: landingSpotlight
@@ -116,22 +117,17 @@ sections:
     id: ablauf
     kicker: Ablauf
     headline: So läuft eine Indoor-Show ab.
-    text: Ideal ist ein erster Kontakt sechs bis acht Wochen vor eurem Termin.
     marks:
       - { value: 48 h, label: bis zu unserer Antwort, text: "Ihr erzählt uns von Raum, Anlass und Termin." }
-      - { value: Konzept, label: "Design, Raum, Projektplan", text: "Danach seht ihr die Show vorab als Video oder bei einem Testflug." }
+      - { value: 6–8 Wochen, label: "Vorlauf, ideal", text: "Design und Planung im Raum. Vorab seht ihr die Show als Video oder bei einem Testflug." }
       - { value: 45 Min, label: Aufbau bis startklar, text: Wir beginnen ab zwei Stunden vor der Show. }
-    facts:
-      - { value: 6–8 Wochen, label: Vorlauf ideal }
-      - { value: Video oder Testflug, label: Vorschau }
-      - { value: 5–8 Min, label: Showdauer }
 
   # Entwurf für Moritz: Preis als Karte, Inhalte wie bisher
   - type: landingPrice
     id: preise
     kicker: Preise
     headline: Was eine Indoor-Show kostet.
-    text: Indoor-Shows kalkulieren wir einzeln, weil Raum, Drohnenzahl und Aufbau sehr unterschiedlich sind.
+    text: Indoor-Shows kalkulieren wir einzeln. Die Outdoor-Pakete gelten drinnen nicht.
     price: ab ca. 15.000 €
     unit: netto für 20 Drohnen, als Größenordnung
     groups:
@@ -140,11 +136,6 @@ sections:
           - { label: eurem Raum }
           - { label: der Drohnenzahl, value: 20–50 }
           - { label: dem Aufbau }
-      - title: Gut zu wissen
-        items:
-          - { label: "Die Outdoor-Pakete gelten drinnen nicht." }
-          - { label: "Showdauer", value: 5–8 Min }
-    contact: Schickt uns Deckenhöhe, Fläche und Datum, wir melden uns innerhalb von 48 Stunden.
     cta: { label: Indoor-Angebot anfragen, href: "#anfrage" }
 
   - type: faq

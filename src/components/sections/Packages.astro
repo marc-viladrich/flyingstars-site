@@ -20,7 +20,9 @@ const packs = items.map((item) => ({ ...item, ...SHOW_PACKAGES[item.name], shape
   {compact ? (
     <div class="packs">{packs.map((p) => <a class:list={['pack', { featured: p.highlight }]} aria-labelledby={`${id}-${p.name}`} href={`/kontakt/?paket=${p.name}`} data-pick-paket={p.name} style={`--c:rgb(${p.color.join(',')})`}>
       <canvas data-orb={p.shape} data-color={p.color.join(',')} data-n={p.base} aria-hidden="true"></canvas>
-      <div><div class="name"><C id={`${id}-${p.name}`}>{p.name}</C>{p.badge && <span class="chip">{p.badge}</span>}</div><p class="price">{money(p.price)}</p><p class="meta mono">{p.base} Drohnen{p.label && <> · {p.label}</>}</p>{p.sky && <p class="pack-sky">{p.sky}</p>}</div>
+      <div><div class="name"><C id={`${id}-${p.name}`}>{p.name}</C>{p.badge && <span class="chip">{p.badge}</span>}</div><p class="price">{money(p.price)}</p>{p.label && <p class="meta mono">{p.label}</p>}{p.sky && <p class="pack-sky">{p.sky}</p>}</div>
+      <!-- Kernpunkte (Marc, 31.10.2026): Drohnenzahl als eigener Punkt in der Paketfarbe, dann was das Paket ausmacht -->
+      <ul class="pack-points"><li class="drones">{p.base} Drohnen{Number.isFinite(p.max) ? `, bis ${p.max}` : ', mehr möglich'}</li>{(p.points ?? []).map((pt) => <li>{pt}</li>)}</ul>
       <span class="pack-go" aria-hidden="true">→</span>
     </a>)}</div>
   ) : (

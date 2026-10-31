@@ -6,6 +6,8 @@
 // Headline: jeder Satz eine Zeile, der letzte im Logoverlauf (gezielter Einsatz statt drei Titelschnitte).
 import type { Section } from '../../content.config';
 import { optimizedLogo } from '../../lib/media';
+import Icon from '../Icon.astro';
+const PICON = { eu: 'eu', repair: 'wrench', ev: 'car-front', campaign: 'megaphone', leaf: 'leaf' } as const;
 type Props = Extract<Section, { type: 'sustainability' }> & { index: number };
 const { headline, text, id = 'nachhaltigkeit', facts = [], points = [], pillars = [], proofImage, proofText, campaign, index, kicker } = Astro.props;
 const headingId = `${id}-h`;
@@ -29,13 +31,7 @@ const proof = proofImage ? await optimizedLogo(proofImage.src, 60) : undefined;
     <ol class="eco-steps mono" aria-hidden="true">{facts.map((fact, i) => <li style={`--k:${i}`}>{fact.label}</li>)}</ol>
   </div></div>}
   {pillars.length > 0 && <ul class="eco-pillars">{pillars.map((p) => <li>
-    <svg class="ico g" viewBox="0 0 48 48" aria-hidden="true">
-      {p.icon === 'eu' && <>{Array.from({ length: 12 }, (_, k) => { const a = (k / 12) * Math.PI * 2; const x = 24 + 15 * Math.cos(a), y = 24 + 15 * Math.sin(a); return <path d={`M${x} ${y - 2.6}l.8 1.7 1.8.2-1.3 1.3.3 1.8-1.6-.9-1.6.9.3-1.8-1.3-1.3 1.8-.2z`} style="fill:var(--accent);stroke:none" />; })}</>}
-      {p.icon === 'repair' && <path d="M31 7a10 10 0 0 0-9.4 13.3L7.8 34.1a4 4 0 0 0 5.7 5.7l13.8-13.8A10 10 0 0 0 40.6 17l-6 6-5.4-1.2L28 16.4l6-6A10 10 0 0 0 31 7z" />}
-      {p.icon === 'ev' && <><path d="M6 31v-7l5-9h18l7 9h4a3 3 0 0 1 3 3v4" /><circle cx="14" cy="32" r="4" /><circle cx="34" cy="32" r="4" /><path d="M18 32h12M6 24h33M24 15v9" /><path d="M23 6l-3 5h4l-3 5" /></>}
-      {p.icon === 'campaign' && <><path d="M24 24v-9M24 24l6.4-6.4M24 24h9M24 24l6.4 6.4M24 24v9M24 24l-6.4 6.4M24 24h-9M24 24l-6.4-6.4" /><path d="M24 9v-2M35.3 12.7l1.4-1.4M39 24h2M35.3 35.3l1.4 1.4M24 39v2M12.7 35.3l-1.4 1.4M9 24H7M12.7 12.7l-1.4-1.4" /><path d="M8 40L40 8" /></>}
-      {p.icon === 'leaf' && <path d="M10 38c0-18 12-28 30-28 0 18-10 30-28 30m0-2 14-14" />}
-    </svg>
+    <Icon name={PICON[p.icon]} class="g" size={44} strokeWidth={1.5} />
     <b>{p.title}</b><span>{p.text}</span>
   </li>)}</ul>}
   {(points.length > 0 || campaign || proofText) && <div class="eco-proof">

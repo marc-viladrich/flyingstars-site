@@ -40,7 +40,9 @@ export function coverCrop(nw, nh, W, H, cols, rows, step, pos = { x: 0.5, y: 0.5
 }
 
 function buildLayers(img, W, H, step, pos = { x: 0.5, y: 0.5 }) {
-  const cols = Math.max(1, Math.floor(W / step)), rows = Math.max(1, Math.floor(H / step));
+  // Raster immer mindestens so groß wie der Rahmen (aufgerundet, mittig, Überstand wird abgeschnitten). Abgerundet blieb
+  // ein dunkler Rand von bis zu einer Zelle, und beim Zurückwechseln aufs Foto „schnappte“ das Bild (Marc, 31.10.2026, Team)
+  const cols = Math.max(1, Math.ceil(W / step)), rows = Math.max(1, Math.ceil(H / step));
   // Bild im Seitenverhältnis des Rahmens (object-fit: cover) abtasten. img ist hier immer eine eigene Kopie ohne srcset
   // (source() unten): naturalWidth sind dann echte Bildpixel, also derselbe Maßstab, in dem drawImage ausschneidet.
   const { sx, sy, sw, sh } = coverCrop(img.naturalWidth, img.naturalHeight, W, H, cols, rows, step, pos);

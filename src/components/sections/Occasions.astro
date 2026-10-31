@@ -6,13 +6,16 @@ import SectionHead from '../SectionHead.astro';
 type Props = Extract<Section, { type: 'occasions' }> & { index: number };
 const { headline, text, id = 'anlaesse', cards, index, kicker } = Astro.props;
 const headingId = `${id}-h`;
+// Mehr als vier Karten: Slider, die vier wichtigsten sichtbar, der Rest läuft rechts aus dem Bild (Marc, 31.10.2026)
+const slider = cards.length > 4;
 const H = index === 0 ? 'h1' : 'h2';
 const items = await Promise.all(cards.map(async card => ({ ...card, media: await optimizedImage(card.image.src, 640, 480), small: await optimizedImage(card.image.src, 320, 240) })));
 ---
 <section class="section" id={id} aria-labelledby={headingId}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
-  <div class="occasions" data-count={items.length}>
-    {items.map((card, i) => <article class="occ" data-dot-host>
+  {slider && <div class="occ-nav" aria-hidden="true"><button type="button" class="occ-btn" data-occ-prev tabindex="-1">←</button><button type="button" class="occ-btn" data-occ-next tabindex="-1">→</button></div>}
+  <div class:list={['occasions', { 'occ-slider': slider }]} data-count={items.length} role={slider ? 'region' : undefined} aria-label={slider ? 'Anlässe, seitlich scrollbar' : undefined} tabindex={slider ? 0 : undefined}>
+    {items.map((card, i) => <article class="occ" data-dot-host data-season={card.season?.join(',')}>
       <!-- Bild: Vorhang beim Erscheinen, Lichtpunkte beim Hovern (kein Foto-Zoom) -->
       <div class="img" data-curtain data-dot-img style={`--i:${i}`}><img src={card.media.src} srcset={`${card.small.src} 320w, ${card.media.src} 640w`} sizes="(max-width: 640px) calc(100vw - 48px), (max-width: 1100px) 45vw, 23vw" width={card.media.width} height={card.media.height} alt={card.image.alt} loading="lazy" decoding="async" /></div>
       <div class="body">
@@ -24,3 +27,23 @@ const items = await Promise.all(cards.map(async card => ({ ...card, media: await
     </article>)}
   </div>
 </section>
+
+<script>
+  // Saisonkarten nach vorn (z. B. Silvester im November und Dezember), Pfeile scrollen um eine Karte, Ausblenden rechts nur,
+  // solange noch Karten folgen
+  document.querySelectorAll<HTMLElement>('.occ-slider').forEach((track) => {
+    const month = new Date().getMonth() + 1;
+    [...track.querySelectorAll<HTMLElement>('[data-season]')].reverse().forEach((card) => {
+      if (card.dataset.season!.split(',').map(Number).includes(month)) track.prepend(card);
+    });
+    const step = () => (track.querySelector('.occ') as HTMLElement).offsetWidth + 16;
+    const nav = track.previousElementSibling;
+    nav?.querySelector('[data-occ-prev]')?.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: 'smooth' }));
+    nav?.querySelector('[data-occ-next]')?.addEventListener('click', () => track.scrollBy({ left: step(), behavior: 'smooth' }));
+    const edge = () => {
+      track.classList.toggle('at-end', track.scrollLeft + track.clientWidth >= track.scrollWidth - 4);
+      track.classList.toggle('at-start', track.scrollLeft <= 4);
+    };
+    track.addEventListener('scroll', edge, { passive: true }); edge();
+  });
+</script>

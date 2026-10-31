@@ -7,6 +7,8 @@ import { join } from 'node:path';
 import type { Section } from '../../content.config';
 import { optimizedLogo } from '../../lib/media';
 type Props = Extract<Section, { type: 'logoBar' }> & { index: number };
+import Icon from '../Icon.astro';
+const QICON = { permit: 'file-badge', sound: 'audio-lines', shield: 'shield-check', leaf: 'leaf' } as const;
 const { headline, logos, pressHeadline, pressItems, qualityHeadline, quality, kicker, id = `s${Astro.props.index}` } = Astro.props;
 
 const file = (path: string) => join(process.cwd(), 'public', path);
@@ -60,25 +62,15 @@ const minor = quality.filter((q) => q.secondary);
   {press.length > 0 && <div class="press">
     <h2 class="proof-h">{pressHeadline}</h2>
     <ul>{press.map((p) => {
-      const inner = <>{p.show ? <img class:list={{ knock: p.knock }} src={p.logo} alt={p.name} style={`height:${p.h}px`} loading="lazy" decoding="async" /> : <b>{p.name}</b>}{p.note && <span class="note">{p.note}</span>}</>;
-      return <li>{p.href ? <a href={p.href} rel="noopener" target="_blank">{inner}</a> : <span class="noref">{inner}</span>}</li>;
+      const inner = <>{p.show ? <img class:list={{ knock: p.knock }} src={p.logo} alt={p.name} style={`height:${p.h}px`} loading="lazy" decoding="async" /> : <b>{p.name}</b>}</>;
+      return <li>{p.href ? <a href={p.href} rel="noopener" target="_blank" title={p.note ? `${p.name}: ${p.note}` : undefined}>{inner}</a> : <span class="noref" title={p.note}>{inner}</span>}</li>;
     })}</ul>
   </div>}
   {seals.length > 0 && <div class="quality">
     <h2 class="proof-h">{qualityHeadline}</h2>
     <ul>{seals.map((q) => <li>
-      {q.show ? <img class="q-logo" src={q.logo} alt="" loading="lazy" decoding="async" /> : <svg class="q-ico ico g" viewBox="0 0 24 24" aria-hidden="true">
-        {q.icon === 'permit' && <path d="M7 3h7l5 5v13H7zM14 3v5h5M10 13l2 2 4-4" />}
-        {q.icon === 'sound' && <path d="M4 10v4h4l5 4V6L8 10zm12-1a4 4 0 0 1 0 6m2-9a8 8 0 0 1 0 12" />}
-        {q.icon === 'shield' && <path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM9 12l2 2 4-4" />}
-        {q.icon === 'leaf' && <path d="M5 19c0-9 6-14 15-14 0 9-5 15-14 15m0-1 7-7" />}
-      </svg>}
+      {q.show ? <img class="q-logo" src={q.logo} alt="" loading="lazy" decoding="async" /> : <Icon name={QICON[q.icon]} class="q-ico g" size={30} />}
       <b>{q.title}</b>{q.text && <span>{q.text}</span>}</li>)}</ul>
-    {minor.length > 0 && <ul class="q-minor">{minor.map((q) => <li><svg class="ico g" viewBox="0 0 24 24" aria-hidden="true">
-        {q.icon === 'permit' && <path d="M7 3h7l5 5v13H7zM14 3v5h5M10 13l2 2 4-4" />}
-        {q.icon === 'sound' && <path d="M4 10v4h4l5 4V6L8 10zm12-1a4 4 0 0 1 0 6m2-9a8 8 0 0 1 0 12" />}
-        {q.icon === 'shield' && <path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM9 12l2 2 4-4" />}
-        {q.icon === 'leaf' && <path d="M5 19c0-9 6-14 15-14 0 9-5 15-14 15m0-1 7-7" />}
-      </svg><span><b>{q.title}</b>{q.text && <> {q.text}</>}</span></li>)}</ul>}
+    {minor.length > 0 && <ul class="q-minor">{minor.map((q) => <li><Icon name={QICON[q.icon]} class="g" size={18} /><span><b>{q.title}</b>{q.text && <> {q.text}</>}</span></li>)}</ul>}
   </div>}
 </section>}

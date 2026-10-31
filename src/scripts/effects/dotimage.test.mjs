@@ -22,10 +22,18 @@ const cases = [
 ];
 for (const [nw, nh, W, H, pos, step] of cases) {
   test(`gleiche Stelle in Foto und Lichtpunkten: ${nw}×${nh} in ${W}×${H}, Position ${pos.x}/${pos.y}`, () => {
-    const cols = Math.floor(W / step), rows = Math.floor(H / step), c = coverCrop(nw, nh, W, H, cols, rows, step, pos);
+    const cols = Math.ceil(W / step), rows = Math.ceil(H / step), c = coverCrop(nw, nh, W, H, cols, rows, step, pos);
     for (const [u, v] of [[nw * 0.5, nh * 0.5], [nw * 0.3, nh * 0.4], [nw * 0.62, nh * 0.55]]) {
       const [px, py] = photoAt(nw, nh, W, H, pos, u, v), [dx, dy] = dotsAt(c, u, v, step, cols, rows);
       assert.ok(Math.abs(px - dx) < 0.01 && Math.abs(py - dy) < 0.01, `Foto ${px.toFixed(2)}/${py.toFixed(2)} vs. Lichtpunkte ${dx.toFixed(2)}/${dy.toFixed(2)}`);
     }
   });
 }
+
+test('Raster deckt den ganzen Rahmen ab (kein dunkler Rand, kein Schnappen beim Zurückwechseln)', () => {
+  for (const [W, H, step] of [[342, 428, 6], [429, 322, 8], [120, 120, 4], [1101, 619, 10]]) {
+    const cols = Math.ceil(W / step), rows = Math.ceil(H / step), c = coverCrop(800, 1000, W, H, cols, rows, step);
+    assert.ok(c.gx <= 0 && c.gy <= 0, `Raster beginnt innerhalb des Rahmens: ${c.gx}/${c.gy}`);
+    assert.ok(cols * step >= W && rows * step >= H);
+  }
+});

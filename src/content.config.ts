@@ -35,7 +35,8 @@ export const sectionSchema = z.discriminatedUnion('type', [
     type: z.literal('occasions'), ...sectionHeading,
     headline: z.string().min(1), text: z.string().optional(),
     cards: z.array(z.object({ category: z.string().optional(), title: z.string(), text: z.string(), image,
-      facts: z.array(z.string()).optional(), cta: link, download: link.optional() })).min(1),
+      facts: z.array(z.string()).optional(), cta: link, download: link.optional(),
+      season: z.array(z.number().int().min(1).max(12)).optional().describe('Monate, in denen die Karte nach vorn rückt (z. B. [11, 12] für Silvester)') })).min(1),
   }),
   z.object({
     type: z.literal('metrics'), ...sectionHeading,
@@ -227,6 +228,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
       sky: z.string().optional().describe('Am Himmel'),
       care: z.string().optional().describe('Betreuung'),
       typical: z.string().optional().describe('Typisch für'),
+      points: z.array(z.string()).max(4).optional().describe('Kernpunkte auf der Kurzfassung (Startseite), die Drohnenzahl steht automatisch davor'),
     })).default([{ name: 'SPARK', highlight: false }, { name: 'HORIZON', highlight: false }, { name: 'ODYSSEY', highlight: false }]),
   }),
   z.object({
@@ -254,7 +256,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     // Handy per Knopf), pausiert bei globaler Pause und reduzierter Bewegung. Nur registrierte Videos (src/lib/videos.ts).
     type: z.literal('landingHero'), kicker: z.string().optional(),
     headline: z.string().min(1), text: z.string().min(1), cta: link, secondary: link.optional(),
-    video: z.enum(['showreel', 'bokkenrijders', 'nfl', 'ford', 'puma']).describe('Schlüssel aus src/lib/videos.ts'),
+    video: z.enum(['showreel', 'bokkenrijders', 'nfl', 'ford', 'puma', 'siemensIndoor']).describe('Schlüssel aus src/lib/videos.ts'),
     videoLabel: z.string().default('Showreel').describe('Kleine Beschriftung im Rahmen, z. B. "Ford Explorer · Köln"'),
     poster: image.describe('Standbild bis zum ersten Videobild und bei reduzierter Bewegung'),
     facts: z.array(z.object({ value: z.string().min(1), label: z.string().min(1) })).max(4).default([]),
@@ -276,6 +278,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     // Konfigurator-Teaser mit Kopf, Ziel und Knopfbeschriftung je Anlass.
     type: z.literal('landingTeaser'), ...sectionHeading,
     headline: z.string().min(1), text: z.string().optional(), href: z.string().min(1).optional(), cta: z.string().optional(),
+    loop: z.enum(['marke', 'hochzeit', 'start']).optional().describe('Anlassspezifischer Ablauf des Teasers (Runde 9)'),
   }),
   z.object({
     // Preiskarte: ein Preis groß (aus show-packages.ts, wenn `package` gesetzt; sonst `price`), daneben Gruppen wie ein
@@ -315,9 +318,11 @@ export const sectionSchema = z.discriminatedUnion('type', [
     // Kacheln mit einer großen Hauptkachel (Bild oder Aussage) und bis zu vier kleineren mit Kennzahl.
     type: z.literal('landingBento'), ...sectionHeading,
     headline: z.string().min(1), text: z.string().optional(),
-    lead: z.object({ label: z.string().optional(), title: z.string().min(1), text: z.string().optional(), image: image.optional() }),
-    items: z.array(z.object({ label: z.string().min(1), value: z.string().optional(), text: z.string().min(1) })).min(1).max(4),
-    cta: link.optional(), faces: z.boolean().default(false).describe('Gesichter der Geschäftsführer:innen neben dem Link'),
+    lead: z.object({ label: z.string().optional(), title: z.string().min(1), text: z.string().optional(), image: image.optional(),
+      icon: z.string().optional().describe('Lucide-Name, nur für die Aussage ohne Bild') }),
+    items: z.array(z.object({ label: z.string().min(1), value: z.string().optional(), text: z.string().min(1),
+      icon: z.string().optional().describe('Lucide-Name in kebab-case, z. B. "wind"') })).min(1).max(4),
+    cta: link.optional(), faces: z.boolean().default(false).describe('Abschluss mit Gesichtern der Geschäftsführer:innen (.promise)'),
     contact: z.string().optional().describe('Satz neben den Gesichtern'),
   }),
   z.object({

@@ -3,6 +3,8 @@
 # Location und dem Ablauf“): Hero mit Showreel im Rahmen, Referenzen als Geschichten, Motive im Konfigurator-Teaser,
 # Preis als Preiskarte, Location als Schema mit Checkliste, Ablauf als Zeitstrahl in Zahlen, Überraschung mit Gesichtern,
 # Wetter als Kacheln. Bausteine: src/components/landing/.
+# Runde 9 (Marc: CTAs schmal und zentriert, „ein paar Sachen sind noch ein bisschen random“): Abschlüsse als .promise,
+# Wiederholungen raus (48 h stand viermal da), Express als Abkürzung am Strahl, Icons in den Wetter-Kacheln.
 # Preise: src/content/show-packages.ts (SPARK 7.900 €, +900 € je 10 Drohnen bis 150), die Karte rechnet daraus.
 # Referenzen: Live-Seiten „Hochzeitsüberraschung“ (Recklinghausen, 29.06.2024, 150 Drohnen) und „Heiratsantrag“
 # (Schloss Hugenpoet, 10.09.2024, 220 Drohnen). Zonen der Location: Technik-Datenblatt 09/2026 (public/media/downloads).
@@ -30,7 +32,7 @@ sections:
     facts:
       - { value: ab 7.900 €, label: netto mit SPARK }
       - { value: 100 Drohnen, label: im Paket }
-      - { value: 48 h, label: bis zur Antwort }
+      - { value: inklusive, label: Genehmigung }
 
   # Entwurf für Moritz: Referenzen als zwei Geschichten statt Fließtext, Inhalte wie bisher
   - type: landingStories
@@ -49,7 +51,6 @@ sections:
         facts:
           - { value: "150", label: Drohnen }
           - { value: 4 Monate, label: vorher angefragt }
-          - { value: Ringe · Herzen · Tauben, label: Motive und Initialen }
       - kicker: Schloss Hugenpoet, Essen · September 2024
         title: "„Do you want to be my Forever?“"
         text: Eine Schmuckschatulle öffnete sich, ein Ring schwebte an eine Hand, danach stand die Frage am Himmel. Die Antwort war Ja.
@@ -69,6 +70,7 @@ sections:
     text: Herzen und Ringe aus unserem Katalog, dazu eure Initialen oder euer Datum. Eure eigene Show entwerfen wir mit euch.
     href: "/drohnenshow-preise/?anlass=hochzeit&paket=SPARK#konfigurator"
     cta: Motive im Konfigurator ansehen
+    loop: hochzeit
 
   # Entwurf für Moritz: Preis als Karte. Inhalte wie bisher; „Kontakt“-Satz neu.
   - type: landingPrice
@@ -128,15 +130,13 @@ sections:
     id: ablauf
     kicker: Ablauf
     headline: Bis zu eurem Abend.
-    text: Ihr kümmert euch um die Feier. Wir melden uns, wenn wir eine Entscheidung von euch brauchen.
+    text: Ihr kümmert euch um die Feier, wir melden uns, wenn wir eine Entscheidung brauchen. Ideal sind ein bis zwei Monate Vorlauf.
     marks:
       - { value: 48 h, label: bis zu unserer Antwort, text: "Datum, Location und eure Idee reichen. Danach ein kurzes Gespräch und euer Angebot." }
       - { value: 3 Wochen, label: "für Motive und Musik, mindestens", text: "Ihr seht einen Entwurf mit eurer Musik, gebt Feedback und am Ende jedes Motiv frei." }
       - { value: 3 h, label: vor der Show vor Ort, text: "Unser Team sperrt die Startfläche, fliegt die Show und baut danach wieder ab." }
-    facts:
-      - { value: 1–2 Monate, label: Vorlauf ideal, text: Genug Zeit für Design und Genehmigung. }
-      - { value: Genehmigung, label: machen wir, text: Von euch brauchen wir nur die Zustimmung der Location. }
-      - { value: Express, label: unter 14 Tagen, text: Möglich mit Aufpreis nach Aufwand. }
+    # Express als Abkürzung über dem Strahl wie auf der Startseite (Fragebogen: unter 14 Tagen, Aufpreis nach Aufwand)
+    shortcut: { value: Express unter 14 Tagen, label: Aufpreis nach Aufwand }
 
   - type: landingCta
     kicker: Überraschung
@@ -150,13 +150,14 @@ sections:
     kicker: Wetter
     headline: Und wenn das Wetter nicht mitspielt?
     lead:
+      icon: shield-check
       label: Kein Feuerwerk erlaubt?
       title: Eine Drohnenshow ist keine *Pyrotechnik*.
       text: Kein Knall, kein Rauch, keine Funken und nichts, was danach auf dem Rasen liegt. Laut ist nur eure Musik.
     items:
-      - { label: Wind, value: bis Stärke 5, text: "So lange fliegen wir, auch bei leichtem Nieselregen." }
-      - { label: Verschieben, value: kostenlos, text: "Ist schlechtes Wetter absehbar, verschieben wir, solange wir noch nicht losgefahren sind." }
-      - { label: Anzahlung, value: 40 %, text: "Zahlt ihr bei der Buchung an. Fällt die Show ganz aus, gilt die Staffel aus unseren AGB." }
+      - { icon: wind, label: Wind, value: bis Stärke 5, text: "So lange fliegen wir, auch bei leichtem Nieselregen." }
+      - { icon: calendar-sync, label: Verschieben, value: kostenlos, text: "Ist schlechtes Wetter absehbar, verschieben wir, solange wir noch nicht losgefahren sind." }
+      - { icon: wallet, label: Anzahlung, value: 40 %, text: "Zahlt ihr bei der Buchung an. Fällt die Show ganz aus, gilt die Staffel aus unseren AGB." }
 
   - type: faq
     id: fragen

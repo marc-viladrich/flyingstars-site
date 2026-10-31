@@ -1,0 +1,24 @@
+---
+// Gemeinsame Icon-Komponente (Marc, 31.10.2026: eine Icon-Bibliothek statt selbst gezeichneter Icons). Grundlage ist
+// Lucide (ISC-Lizenz, @lucide/astro), gerendert beim Build als reines SVG ohne JavaScript. Name = Lucide-Name in
+// kebab-case, Übersicht: https://lucide.dev/icons. Ergänzt um zwei Motive, die Lucide nicht führt: „eu“ (Sternenkranz) und
+// „whatsapp“ (Sprechblase mit Telefon im Lucide-Strich). Farbe: currentColor; mit class="g" in Orange (--accent).
+import * as L from '@lucide/astro';
+
+interface Props { name: string; size?: number; class?: string; strokeWidth?: number; label?: string }
+const { name, size = 20, class: cls, strokeWidth = 1.75, label } = Astro.props;
+const pascal = name.split('-').map((p) => p[0].toUpperCase() + p.slice(1)).join('');
+const custom = name === 'eu' || name === 'whatsapp';
+const Lucide = custom ? undefined : ((L as Record<string, unknown>)[pascal] as ((props: Record<string, unknown>) => unknown) | undefined);
+if (!custom && !Lucide) throw new Error(`Icon „${name}“ gibt es in Lucide nicht (https://lucide.dev/icons)`);
+const a11y: Record<string, string> = label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': 'true' };
+const stars = Array.from({ length: 12 }, (_, k) => { const a = (k / 12) * Math.PI * 2 - Math.PI / 2; return [12 + 8 * Math.cos(a), 12 + 8 * Math.sin(a)]; });
+---
+{Lucide && <Lucide size={size} stroke-width={strokeWidth} class:list={['ico', cls]} {...a11y} />}
+{name === 'eu' && <svg class:list={['ico', 'ico-eu', cls]} width={size} height={size} viewBox="0 0 24 24" {...(a11y as astroHTML.JSX.SVGAttributes)}>{stars.map(([x, y]) => <circle cx={x.toFixed(2)} cy={y.toFixed(2)} r="1.25" style="fill:currentColor;stroke:none" />)}</svg>}
+{name === 'whatsapp' && <svg class:list={['ico', cls]} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width={strokeWidth} stroke-linecap="round" stroke-linejoin="round" {...(a11y as astroHTML.JSX.SVGAttributes)}><path d="M3.5 20.5l1.3-4.2A8.5 8.5 0 1 1 8 19.6z" /><path d="M9 8.5c0 3.3 2.9 6.5 6.5 6.5l1-1.6-2-1-1 1c-1.2-.4-2.3-1.5-2.8-2.8l1-1-1-2z" /></svg>}
+
+<style>
+  /* EU-Sterne nehmen die Farbe wie die Striche an (.ico.g = Orange) */
+  :global(.ico-eu.g) circle { fill: var(--accent) !important; }
+</style>

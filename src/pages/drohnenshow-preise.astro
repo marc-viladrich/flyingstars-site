@@ -10,6 +10,7 @@ import Metrics from '../components/sections/Metrics.astro';
 import Faq from '../components/sections/Faq.astro';
 import SectionHead from '../components/SectionHead.astro';
 import Faces from '../components/Faces.astro';
+import Icon from '../components/Icon.astro';
 import ShowConfigurator from '../components/configurator/ShowConfigurator.astro';
 import { SHOW_PACKAGES, PACKAGE_NAMES } from '../content/show-packages';
 import { PACKAGE_DETAILS, COMPARISON, COMPARISON_NOTE, INCLUDED, EXTRAS, SHOW_DURATION } from '../content/package-details';
@@ -76,7 +77,7 @@ const orb = { SPARK: 'ring', HORIZON: 'sphere', ODYSSEY: 'torus' } as const;
     <div class="extras">
       {EXTRAS.map((x) => (
         <div class="extra">
-          <span class="k mono">{x.kick}</span>
+          <span class="k mono"><Icon name={x.icon} class="g" size={22} />{x.kick}</span>
           <h3>{x.title}</h3>
           <p>{x.text}</p>
           <span class="price mono">{x.price}</span>

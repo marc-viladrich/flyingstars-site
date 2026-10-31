@@ -56,9 +56,9 @@ sections:
       - name: ABUS
         image: { src: https://flyingstars.art/wp-content/uploads/2023/04/ABUS_Logo_weiss.png, alt: ABUS, width: 400, height: 200 }
 
-  # Anlässe (Marc, 31.10.2026): Headline aus dem Prototyp, vier Spalten auf großen Bildschirmen, deshalb acht Karten nach
-  # Moritz' Sitemap. Kicker = Zielgruppe, Kartentitel = Nutzen wie im Prototyp. Heiratsantrag und Silvester haben noch
-  # keine eigene Seite (Sitemap Prio 3 bzw. 8) und führen zur Anfrage. Texte sind Entwürfe für Moritz.
+  # Anlässe als Slider (Marc, 31.10.2026, Runde 9): die vier wichtigsten sichtbar, der Rest läuft rechts aus dem Bild.
+  # Kicker = Zielgruppe, Kartentitel = Nutzen. Silvester rückt im November und Dezember nach vorn (season). Hochzeit und
+  # Heiratsantrag sind eine Karte. Texte sind Entwürfe für Moritz.
   - type: occasions
     id: anlaesse
     kicker: Anlässe
@@ -82,31 +82,25 @@ sections:
         image: { src: "https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg", alt: Weltkugel aus Drohnen über dem Rhein bei der Extraschicht in Duisburg, width: 2544, height: 1493 }
         facts: ["Stadtwappen, Jubiläumszahlen, eure Geschichte", 10 % Rabatt bei Buchung im Vorjahr]
         cta: { label: Show für eure Stadt anfragen, href: "/kontakt/?anlass=stadt" }
-        download: { label: Technik-Datenblatt · PDF, href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf }
+      - category: Hochzeit & Privat
+        title: Euer Moment, am Himmel geschrieben
+        text: Initialen, Herzen und euer Datum über der Feier, auch als Heiratsantrag.
+        image: { src: "https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg", alt: Zwei Blüten aus Drohnen am Abendhimmel über einer Hochzeitsfeier, width: 1518, height: 854 }
+        facts: [Auch als Überraschung oder Antrag, SPARK ab 7.900 € netto]
+        cta: { label: Drohnenshow zur Hochzeit, href: /drohnenshow-hochzeit/ }
       - category: Festivals & Konzerte
         title: Der Höhepunkt, der eure Geschichte weitererzählt
         text: Die Show schließt an Bühne, Musik und Licht an, auch an vielen Abenden hintereinander.
         image: { src: "https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijders.jpg", alt: "Schriftzug Bokkenrijders aus Drohnen über der Freilichtbühne in Maastricht, Publikum im Vordergrund", width: 1600, height: 900 }
         facts: ["Jeden Abend dieselbe Show, auch 20-mal hintereinander", 10 % Rabatt bei Buchung im Vorjahr]
         cta: { label: 600 Drohnen im Musical, href: /musikalischer-teaser-bokkenrijders/ }
-      - category: Hochzeit & Privat
-        title: Euer Moment, am Himmel geschrieben
-        text: Initialen, Herzen und euer Datum über der Feier.
-        image: { src: "https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg", alt: Zwei Blüten aus Drohnen am Abendhimmel über einer Hochzeitsfeier, width: 1518, height: 854 }
-        facts: [Auch als Überraschung für die Gäste, SPARK ab 7.900 € netto]
-        cta: { label: Drohnenshow zur Hochzeit, href: /drohnenshow-hochzeit/ }
-      - category: Heiratsantrag
-        title: Die Frage, die am Himmel steht
-        text: Ein Antrag in Licht, mit euch geplant und geheim bis zum letzten Moment.
-        image: { src: "https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg", alt: Drohnenformation eines knienden Menschen mit Ring am blauen Abendhimmel zwischen Bäumen, width: 2063, height: 1303 }
-        facts: [Diskret geplant, Ring und Frage als Motiv]
-        cta: { label: Antrag anfragen, href: "/kontakt/?anlass=privat" }
       - category: Silvester & Weihnachten
         title: Silvester ohne Böller
         text: "Ein Countdown aus Licht statt Knall und Rauch, für Städte, Gemeinden und Veranstalter:innen."
         image: { src: "https://flyingstars.art/wp-content/uploads/2024/07/D_Umwelthilfe_cover_img.png", alt: "Bunte Feuerwerksblüte aus Drohnen über Berlin bei der Kampagne #Böllerciao der Deutschen Umwelthilfe", width: 1920, height: 987 }
         facts: [Mit der Deutschen Umwelthilfe über Berlin geflogen, "Früh anfragen, die Termine sind knapp"]
         cta: { label: Silvester-Show anfragen, href: "/kontakt/?anlass=stadt" }
+        season: [11, 12]
       - category: Indoor
         title: Drohnen in der Halle
         text: Für Messen, Bühnen und Hallen ab drei Metern Deckenhöhe.
@@ -121,9 +115,9 @@ sections:
     headline: Transparente Preise. Keine Überraschungen.
     text: Der Preis hängt davon ab, wie aufwendig die Bilder am Himmel sind und wie viele Drohnen fliegen.
     items:
-      - { name: SPARK, label: Klassisch in 2D }
-      - { name: HORIZON, label: 3D in Bewegung, badge: Am häufigsten gebucht, highlight: true }
-      - { name: ODYSSEY, label: Erzählte 3D-Show }
+      - { name: SPARK, label: Klassisch in 2D, points: [Formationen aus unserem Katalog, "Bis zu vier eigene Elemente, z. B. Initialen oder Logo", GEMA-freie Musik] }
+      - { name: HORIZON, label: 3D in Bewegung, badge: Bestseller, highlight: true, points: [Eigene 2D-Animationen und einfaches 3D, Euer Logo präzise am Himmel, Synchron zu eurer Wunschmusik] }
+      - { name: ODYSSEY, label: Erzählte 3D-Show, points: [Storyline mit dramaturgischer Kurve, Komplexe 3D-Animationen, Eigene Projektleitung] }
     note: Alle Preise netto zzgl. Anfahrt
     cta: { label: Alle Leistungen und Preise, href: /drohnenshow-preise/ }
 

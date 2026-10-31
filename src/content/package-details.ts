@@ -34,7 +34,7 @@ export const PACKAGE_DETAILS: Record<ShowPackage, PackageDetail> = {
     sky: 'Alles aus SPARK, dazu eigene 2D-Animationen, einfache 3D-Objekte und euer Logo präzise',
     care: 'Kreativ-Workshop mit Storyboard, Videovorschau mit Feedback, synchron zu eurer Wunschmusik',
     typical: 'Produktpräsentation, Firmenevent, Stadtfest',
-    often: 'Am häufigsten gebucht',
+    often: 'Bestseller',
   },
   ODYSSEY: {
     label: 'Erzählte 3D-Show',
@@ -60,7 +60,7 @@ export const PACKAGE_FEATURES: Record<ShowPackage, PackageFeatures> = {
   },
   HORIZON: {
     tag: 'Die eigene Inszenierung für Produktpräsentationen, große Firmenevents und Stadtfeste.',
-    badge: 'Am häufigsten gebucht',
+    badge: 'Bestseller',
     plus: 'Alles aus SPARK, plus:',
     groups: [
       { title: 'Design & Inhalt', items: ['Vollständig individuelle 2D-Animationen und einfache 3D-Elemente', 'Präzise Logos und komplexe Schriftzüge'] },
@@ -129,12 +129,12 @@ export const INCLUDED = [
   { title: 'Team vor Ort', text: 'Pilot:innen und Techniker:innen bauen in ca. 3 Stunden auf und fliegen eure Show.' },
 ];
 
-export interface Extra { kick: string; title: string; text: string; price: string; link?: { label: string; href: string } }
+export interface Extra { kick: string; icon: string; title: string; text: string; price: string; link?: { label: string; href: string } }
 export const EXTRAS: Extra[] = [
-  { kick: 'Express', title: 'Show in unter zwei Wochen', text: 'Alles unter 14 Tagen bis zur Show. Wir ziehen Design und Genehmigung vor.', price: 'Aufpreis nach Aufwand' },
-  { kick: 'Film', title: 'Rohaufnahmen mit Kameradrohne', text: 'Material für Aftermovie und Social Media.', price: '900 €, bei ODYSSEY inklusive' },
-  { kick: 'Behörden', title: 'Erweiterter Behördensupport', text: 'Wir übernehmen die gesamte Kommunikation mit Ämtern und Behörden.', price: 'Preis auf Anfrage' },
-  { kick: 'Sondergenehmigung', title: 'Kontrollzonen und Flughafennähe', text: 'Für Kontrollzonen und Flächen in Flughafennähe.', price: 'Preis auf Anfrage' },
-  { kick: 'Schweiz', title: 'Shows in der Schweiz', text: 'BAZL-Antrag und Zollabwicklung für unsere Flotte.', price: '+1.900 € netto' },
-  { kick: 'Indoor', title: 'Indoor-Drohnenshows', text: '20 bis 50 Drohnen, 5 bis 8 Minuten, ab 3 m Deckenhöhe. Jede Indoor-Show kalkulieren wir einzeln.', price: 'ab ca. 15.000 € netto für 20 Drohnen', link: { label: 'Mehr zu Indoor-Shows', href: '/drohnenshow-indoor/' } },
+  { kick: 'Express', icon: 'zap', title: 'Show in unter zwei Wochen', text: 'Alles unter 14 Tagen bis zur Show. Wir ziehen Design und Genehmigung vor.', price: 'Aufpreis nach Aufwand' },
+  { kick: 'Film', icon: 'camera', title: 'Rohaufnahmen mit Kameradrohne', text: 'Material für Aftermovie und Social Media.', price: '900 €, bei ODYSSEY inklusive' },
+  { kick: 'Behörden', icon: 'landmark', title: 'Erweiterter Behördensupport', text: 'Wir übernehmen die gesamte Kommunikation mit Ämtern und Behörden.', price: 'Preis auf Anfrage' },
+  { kick: 'Sondergenehmigung', icon: 'plane', title: 'Kontrollzonen und Flughafennähe', text: 'Für Kontrollzonen und Flächen in Flughafennähe.', price: 'Preis auf Anfrage' },
+  { kick: 'Schweiz', icon: 'mountain-snow', title: 'Shows in der Schweiz', text: 'BAZL-Antrag und Zollabwicklung für unsere Flotte.', price: '+1.900 € netto' },
+  { kick: 'Indoor', icon: 'building-2', title: 'Indoor-Drohnenshows', text: '20 bis 50 Drohnen, 5 bis 8 Minuten, ab 3 m Deckenhöhe. Jede Indoor-Show kalkulieren wir einzeln.', price: 'ab ca. 15.000 € netto für 20 Drohnen', link: { label: 'Mehr zu Indoor-Shows', href: '/drohnenshow-indoor/' } },
 ];

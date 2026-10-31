@@ -5,6 +5,8 @@ export const videos: Record<string, string> = {
   nfl: 'https://flyingstars-relaunch.vercel.app/media/projekte/nfl.mp4',
   ford: 'https://flyingstars-relaunch.vercel.app/media/projekte/ford.mp4',
   puma: 'https://flyingstars-relaunch.vercel.app/media/projekte/puma.mp4',
+  // Indoor-Show Siemens, Hannover Messe 03/2025, ohne Tonspur (Recherche 31.10.2026: codex-befunde/videos-je-anlass)
+  siemensIndoor: 'https://flyingstars.art/wp-content/uploads/2025/04/Siemens-Overview.mp4',
 };
 export function videoPath(src: string) {
   const key = Object.keys(videos).find((key) => videos[key] === src || videos[key].replace('.mp4', '.webm') === src);
