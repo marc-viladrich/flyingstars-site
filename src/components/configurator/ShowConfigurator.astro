@@ -256,9 +256,12 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
   .cfg-pkgs label { position: relative; cursor: pointer; }
   .cfg-pkgs input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
   .cfg-pkgs span { display: grid; gap: 4px; justify-items: center; text-align: center; min-height: 52px; padding: 8px 6px; border-radius: 9px; border: 1px solid transparent; color: var(--muted); }
-  .cfg-pkgs b { font: 600 13px/1 var(--mono); letter-spacing: 0.08em; }
+  /* Runde 10 (Marc): nicht gewählte Pakete behalten ihre Farbe, gedämpft (40 % Farbe, 60 % --faint); auf --ground
+     Amber 7,0:1, Orchid 5,8:1, Cyan 8,0:1 */
+  .cfg-pkgs b { font: 600 13px/1 var(--mono); letter-spacing: 0.08em; color: color-mix(in srgb, var(--c) 40%, var(--faint)); }
   .cfg-pkgs small { font-size: 12px; line-height: 1.2; }
   .cfg-pkgs label:hover span { color: var(--text); }
+  .cfg-pkgs label:hover b { color: var(--c); }
   .cfg-pkgs input:checked + span { color: var(--text); border-color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); }
   .cfg-pkgs input:checked + span b { color: var(--c); }
   .cfg-pkgs input:focus-visible + span { outline: 3px solid var(--cyan); outline-offset: 2px; }

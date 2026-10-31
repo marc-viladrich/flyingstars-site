@@ -708,3 +708,16 @@ test('Runde 9: weniger Text; der Hinweis zum Logo steht hinter dem Info-Zeichen 
   await expect(tip).toBeHidden();
   await expect(page.locator('#cfg-file')).toHaveAccessibleDescription(/Lade nur Logos hoch/);
 });
+
+test('Runde 10: nicht gewählte Pakete behalten ihre Farbe, gedämpft und mit mindestens 4,5:1 Kontrast', async ({ page }) => {
+  await page.goto(CFG);
+  const colours = await page.locator('.cfg-pkgs input:not(:checked) + span b').evaluateAll((els) => els.map((el) => getComputedStyle(el).color));
+  expect(colours).toHaveLength(2);
+  const L = (c: number[]) => { const [r, g, b] = c.map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+  for (const c of colours) {
+    const rgb = (c.match(/[\d.]+/g) ?? []).map(Number).slice(0, 3).map((v) => (c.startsWith('color(') ? v * 255 : v)); // color-mix kommt als color(srgb 0–1)
+    expect(Math.max(...rgb) - Math.min(...rgb), `${c} ist farbig, nicht grau`).toBeGreaterThan(30);
+    expect((L(rgb) + 0.05) / (L([15, 13, 12]) + 0.05), `${c} auf --ground`).toBeGreaterThanOrEqual(4.5);
+  }
+});
+

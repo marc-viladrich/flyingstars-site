@@ -16,6 +16,11 @@
 // - der Kolibri über die drei Pakete (2D, 3D, Geschichte) statt der Drachen-Steigerung
 // - Euro-Zeichen in acht Stufen, jede Drohnenzahl im Ablauf hat ihre eigene
 // - bei der Hochzeit statt des Logos die Initialen „A & B“ im Herz, ebenfalls mit wachsender Drohnenzahl
+// Runde 10 (Marc):
+// - FLYINGSTΛRS bei 600 Drohnen deutlich größer als bei 450 (die Schrift trägt die zusätzlichen Drohnen)
+// - das Herz zeigt die drei Pakete (2D, Herztunnel, Amors Pfeil in 3D) statt des Kolibris; die Rakete hebt ab und landet
+//   auf dem Mond, ohne den Orbit; die QR-Code-Geschichte (Nachricht → Code → „Scan me“) in start und marke
+// - „Platz für euer Logo“ statt des erklärenden Satzes; jeder Ablauf unter 25 s
 // Dieselbe Engine und dieselben Motive wie der Konfigurator; das Tempo kommt nur aus der Show-Uhr, darum ohne Einrasten
 // und ohne Finten. Geladen wird dieses Modul erst nahe am Viewport (ConfiguratorTeaser.astro); außerhalb des Viewports,
 // bei globaler Pause und bei reduzierter Bewegung zeichnet die Engine nicht weiter.
@@ -27,7 +32,7 @@ import { liftColor } from "./formation/index.js";
 import logoDots from "../data/logo-dots.json";
 
 /** Tempo des Showreels gegenüber der Vorschau im Konfigurator (1×). */
-export const REEL_RATE = 3;
+export const REEL_RATE = 3.4; // Runde 10: jeder Ablauf unter 25 s
 /** Die lebendige Wolke im Showreel: 55 % der Mindestdauer, Bahnen halb so weit ausgestellt. */
 export const REEL_CLOUD = { cloudTime: 0.55, cloudSpread: 0.5 };
 /** Rand auf der Bühne: das Motiv füllt höchstens 82 % (Eigenbewegung, 3D-Tiefe, schmale Bühnen). */
@@ -40,28 +45,33 @@ const ZOOM = 0.82;
  * Bilder einer Geschichte (Index, negativ vom Ende). note: Schrift unten auf der Bühne ([fett, Rest]).
  * still: das Motiv, das bei reduzierter Bewegung in Ruhe steht (Index im Ablauf).
  */
-const LOGO_NOTE = ["Euer Logo", " wird mit mehr Drohnen schärfer"];
+const LOGO_NOTE = ["Platz für euer Logo", ""];
+// Rakete: aus der Geschichte nur die Zündung (sie beginnt auf der Rampe), dann direkt die Landung (ohne Orbit, Marc Runde 10)
+const ROCKET = [
+  { occasion: "launch", motif: "rakete", drones: [450], beats: [1] }, // die Zündung beginnt auf der Rampe
+  { occasion: "launch", motif: "mond", drones: [450], beats: [-1], cloud: false },
+];
+// das Herz über die drei Pakete: ein Herz in 2D, der Herztunnel, Amors Pfeil trifft ein Herz in 3D
+const HEART = { occasion: "hochzeit", motif: "herz", drones: [100, 200, 300], beats: { ODYSSEY: [1] } }; // in 3D: der Pfeil trifft
+const QR = { occasion: "launch", motif: "qr", drones: [300] };
 export const REELS = {
-  start: { still: 4, label: "das FlyingStars-Logo, das mit mehr Drohnen schärfer wird, dann Motive von einfachen 2D-Bildern über 3D-Körper bis zu erzählten Geschichten", items: [
-    { occasion: "launch", kind: "logo", drones: [100, 200, 300, 450, 600], note: LOGO_NOTE },
-    { occasion: "hochzeit", motif: "herz", drones: [100] },
-    { occasion: "festival", motif: "kolibri", drones: [150, 250, 300] },
-    { occasion: "launch", motif: "mond", drones: [450] },
+  start: { still: 5, label: "das FlyingStars-Logo, das mit mehr Drohnen schärfer wird, ein Herz in 2D, als Tunnel und in 3D, ein QR-Code, eine Rakete, die auf dem Mond landet, und eine große 3D-Maske", items: [
+    { occasion: "launch", kind: "logo", drones: [100, 300, 450, 600], note: LOGO_NOTE },
+    HEART,
+    QR,
+    ...ROCKET,
     { occasion: "kultur", motif: "teufel", drones: [600] },
   ] },
-  marke: { still: 6, label: "ein Logo, das mit mehr Drohnen schärfer wird, dann Glühbirne, Spirale, Rakete, QR-Code und eine Mondlandung", items: [
-    { occasion: "launch", kind: "logo", drones: [100, 200, 300, 450, 600], note: LOGO_NOTE },
+  marke: { still: 5, label: "ein Logo, das mit mehr Drohnen schärfer wird, Glühbirne, Spirale, ein QR-Code und eine Rakete, die auf dem Mond landet", items: [
+    { occasion: "launch", kind: "logo", drones: [100, 300, 450, 600], note: LOGO_NOTE },
     { occasion: "launch", motif: "idee", drones: [100] },
     { occasion: "launch", motif: "spirale", drones: [150] },
-    { occasion: "launch", motif: "rakete", drones: [200] },
-    { occasion: "launch", motif: "qr", drones: [250] },
-    { occasion: "launch", motif: "idee", drones: [300] },
-    { occasion: "launch", motif: "mond", drones: [450] },
+    QR,
+    ...ROCKET,
   ] },
-  hochzeit: { still: 5, label: "Initialen im Herz, dann Herz, Schmetterling, Sektgläser, Ringe und ein Antrag", items: [
+  hochzeit: { still: 4, label: "Initialen im Herz, ein Herz in 2D, als Tunnel und in 3D, Sektgläser, Ringe und ein Antrag", items: [
     { occasion: "hochzeit", kind: "text", value: "Anna & Ben", style: "initials", drones: [100, 200, 300], beats: [0], note: ["Eure Initialen", " am Himmel"] },
-    { occasion: "hochzeit", motif: "herz", drones: [100] },
-    { occasion: "hochzeit", motif: "falter", drones: [150] },
+    HEART,
     { occasion: "hochzeit", motif: "glaeser", drones: [200] },
     { occasion: "hochzeit", motif: "ring", drones: [250] },
     { occasion: "hochzeit", motif: "antrag", drones: [450] },
@@ -101,11 +111,12 @@ export const LOGO_FULL = 300;
 async function logoBeat(n) {
   if (n <= LOGO_FULL) return { pts: logoPoints(n), hold: 2.2, run: true, frame: "mark", caption: `Das FlyingStars-Logo aus ${n} Drohnen` };
   // Logo oben (verkleinert), darunter FLYINGSTΛRS in der Druckschrift des Textplaners im FlyingStars-Verlauf
-  const mark = logoPoints(LOGO_FULL).map(([x, y, z, ...c]) => [x * 0.6, y * 0.6 + 0.42, z, ...c]);
+  // die Schrift trägt die zusätzlichen Drohnen: bei 450 klein unter dem Logo, bei 600 deutlich größer (Runde 10)
+  const big = n >= 600, mark = logoPoints(LOGO_FULL).map(([x, y, z, ...c]) => [x * 0.6, y * 0.6 + 0.42, z, ...c]);
   const { lettering } = await import("./scenes/text.js");
-  const text = await lettering("FlyingStars", "print", n - LOGO_FULL, 1.05);
+  const text = await lettering("FlyingStars", "print", n - LOGO_FULL, big ? 1.7 : 0.8);
   const ys = text.map((p) => p[1]), top = Math.max(...ys), x0 = Math.min(...text.map((p) => p[0])), x1 = Math.max(...text.map((p) => p[0]));
-  const word = text.map(([x, y]) => [x, y - top - 0.38, 0, ...gradAt((x - x0) / (x1 - x0 || 1))]);
+  const word = text.map(([x, y]) => [x, y - top - (big ? 0.34 : 0.4), 0, ...gradAt((x - x0) / (x1 - x0 || 1))]);
   return { pts: [...mark, ...word], hold: 2.6, run: true, frame: "brand", caption: `Das FlyingStars-Logo mit Schriftzug aus ${n} Drohnen` };
 }
 
@@ -125,12 +136,13 @@ export async function buildReel(reel = REEL) {
         if (!version) throw new Error(`Showreel: ${r.occasion}/${r.motif} hat keine ${pkg}-Fassung`);
         const seq = await buildSequence([{ id: r.motif ?? r.kind, label: r.label ?? motif?.label ?? "Text", tiers: { [pkg]: { ...version, minDrones: 0 } } }], pkg, n, SHOW_PACKAGES[pkg].color, r.occasion);
         const all = seq.beats.filter((b) => !b.interlude);
-        pick = (r.beats ? r.beats.map((i) => all.at(i)) : all).map((b) => ({ ...b, frame: `${b.frame ?? ""}#${step}` }));
+        const which = Array.isArray(r.beats) ? r.beats : r.beats?.[pkg];
+        pick = (which ? which.map((i) => all.at(i)) : all).map((b) => ({ ...b, frame: `${b.frame ?? ""}#${step}` }));
         // eigener Text: im Konfigurator schreibt er sich aus dem Dunkel; in der Steigerung soll er stehen bleiben und nur
         // dichter werden (wie das Logo), darum ohne Schreib-Licht, mit Lichtlauf und eigenem Ausschnitt je Paket
         if (r.kind === "text") pick = pick.map((b) => ({ ...b, live: undefined, run: true, hold: 2.2 }));
       }
-      pick.forEach((b, i) => beats.push({ ...b, segment, zoom: ZOOM, cloud: step === 0 && i === 0, drones: n, reel: { ...r, pkg, n } }));
+      pick.forEach((b, i) => beats.push({ ...b, segment, zoom: ZOOM, cloud: r.cloud !== false && step === 0 && i === 0, drones: n, reel: { ...r, pkg, n } }));
     }
   }
   return { beats, loopTo: 0 };

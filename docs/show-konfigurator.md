@@ -767,3 +767,31 @@ Marcs Rückmeldung zum Showreel.
 
 **Prüfen:** `tests/show-teaser.spec.ts` (neu: keine Pills, „Paket“, acht Euro-Stufen, Logo zuerst und Kolibri über die Pakete, jede Drohnenzahl mit eigener Stufe, Schleier beim Zeigen und bei Fokus auf dem Knopf, Abläufe `marke` und `hochzeit` auf der Prüfseite), `tests/show-configurator.spec.ts` (neu: „Runde 9: weniger Text …“). Beide grün in Chromium, WebKit und Pixel 7 gegen einen eigenen Build (der Dev-Server lädt neu, sobald im Checkout gespeichert wird).
 
+### Runde 10: Herz über die Pakete, Rakete ohne Orbit, QR-Geschichte, gedämpfte Paketfarben (31.10.2026, nachts)
+
+**Teaser:**
+- FLYINGSTΛRS bei 600 Drohnen deutlich größer als bei 450 (halbe Breite 1,7 statt 0,8; die Schrift trägt die zusätzlichen Drohnen). Die Logo-Stufen sind jetzt 100 / 300 / 450 / 600.
+- Bildunterschrift „Platz für euer Logo“ (Entwurf) statt des erklärenden Satzes.
+- Das Herz zeigt die drei Pakete: ein Herz in 2D (SPARK 100) → Herztunnel (HORIZON 200) → Amors Pfeil trifft das Herz in 3D (ODYSSEY 300). Der Kolibri ist raus; ein gekürzter Kolibri hätte den Ablauf wieder über 25 s gebracht.
+- Rakete ohne Orbit: die Zündung auf der Rampe, danach direkt die Landung auf dem Mond (ohne Wolke dazwischen, `cloud: false` am Eintrag).
+- QR-Code-Geschichte (Nachricht kommt an → der Code baut sich auf → „Scan me“) in `start` und `marke`.
+- Tempo 3,4× (vorher 3×).
+
+  | reel | Ablauf | Dauer |
+  |---|---|---|
+  | `start` | Logo 100 / 300 / 450 / 600 → Herz 100 / 200 / 300 → QR-Code (300) → Rakete und Mondlandung (450) → Bokkenrijders (600) | ≈ 25 s |
+  | `marke` | Logo wie oben → Glühbirne (100) → Spirale (150) → QR-Code (300) → Rakete und Mondlandung (450) | ≈ 21 s |
+  | `hochzeit` | Initialen 100 / 200 / 300 → Herz 100 / 200 / 300 → Sektgläser (200) → Ringe (250) → Antrag (450) | ≈ 21 s |
+
+  Standbild bei reduzierter Bewegung: Bokkenrijders, Mondlandung, Antrag.
+
+**Paketknöpfe in Teaser und Konfigurator:** Das gewählte Paket bleibt voll eingefärbt, die anderen behalten ihre Farbe gedämpft: `color-mix(in srgb, var(--c) 40%, var(--faint))`. Kontrast der Beschriftung:
+
+| Paket | gedämpft | auf der Teaser-Karte | auf --ground (Konfigurator) |
+|---|---|---|---|
+| SPARK (Amber) | #c0935a | 6,7 : 1 | 7,0 : 1 |
+| HORIZON (Orchid) | #b27ba7 | 5,6 : 1 | 5,8 : 1 |
+| ODYSSEY (Cyan) | #6eb2ab | 7,7 : 1 | 8,0 : 1 |
+
+Im Konfigurator wird beim Zeigen auf einen Paketknopf der Name voll farbig. Beide Specs prüfen, dass die nicht gewählten Paketnamen farbig (nicht grau) sind und mindestens 4,5 : 1 erreichen.
+

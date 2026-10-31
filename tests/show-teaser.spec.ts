@@ -10,6 +10,8 @@ const PAGE = process.env.TEASER_PATH ?? '/poc/konfigurator-teaser/';
 const root = (page: Page, sel = '[data-cft-root]') => page.locator(sel).first();
 const field = (page: Page, sel?: string) => root(page, sel).locator('[data-cft=field]');
 const reach = async (page: Page, sel?: string) => { await root(page, sel).scrollIntoViewIfNeeded(); await expect(root(page, sel)).toHaveAttribute('data-cft-loaded', 'true', { timeout: 20_000 }); };
+/** WCAG-Kontrast zweier Farben (sRGB 0–255). */
+const contrast = (a: number[], b: number[]) => { const L = (c: number[]) => { const [r, g, bl] = c.map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * bl; }; const [x, y] = [L(a), L(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
 const on = (page: Page, id: string, sel?: string) => root(page, sel).locator(`[data-cft=pkg][data-id=${id}]`);
 
 test('Der Teaser lädt erst in der Nähe des Viewports', async ({ page }) => {
@@ -38,7 +40,7 @@ test('Das Mockup ist Dekoration: keine Formularelemente, nur der Knopf als Tab-S
   await expect(r.locator('[role=img]')).toHaveAttribute('aria-label', /Drohnenshow/);
 });
 
-test('Start: erst das Logo mit wachsender Drohnenzahl, dann der Kolibri über die drei Pakete; jede Drohnenzahl hat ihre Euro-Stufe', async ({ page }) => {
+test('Start: erst das Logo mit wachsender Drohnenzahl, dann das Herz über die drei Pakete; jede Drohnenzahl hat ihre Euro-Stufe', async ({ page }) => {
   test.setTimeout(90_000);
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
@@ -52,25 +54,36 @@ test('Start: erst das Logo mit wachsender Drohnenzahl, dann der Kolibri über di
     w.__steps = []; take(); new MutationObserver(take).observe(el, { subtree: true, attributes: true, attributeFilter: ['class'] });
   });
   await expect(note).toHaveClass(/is-on/);
-  await expect(note).toContainText('Euer Logo');
+  await expect(note).toHaveText('Platz für euer Logo');
   await expect(count).toHaveText('300', { timeout: 15_000 });
   await expect(count).toHaveText('600', { timeout: 15_000 });
-  await expect(on(page, 'SPARK')).toHaveClass(/is-on/, { timeout: 15_000 }); // das Herz
+  await expect(on(page, 'SPARK')).toHaveClass(/is-on/, { timeout: 15_000 }); // das Herz in 2D
   await expect(note).not.toHaveClass(/is-on/);
-  await expect(count).toHaveText('150', { timeout: 10_000 }); // Kolibri in 2D
-  await expect(count).toHaveText('250', { timeout: 10_000 }); // in 3D
+  await expect(count).toHaveText('200', { timeout: 10_000 }); // der Herztunnel
   await expect(on(page, 'HORIZON')).toHaveClass(/is-on/);
-  await expect(count).toHaveText('300', { timeout: 10_000 }); // als Geschichte
+  await expect(count).toHaveText('300', { timeout: 10_000 }); // Amors Pfeil in 3D, dann der QR-Code
   await expect(on(page, 'ODYSSEY')).toHaveClass(/is-on/);
-  await expect(count).toHaveText('600', { timeout: 30_000 }); // Bokkenrijders
+  await expect(count).toHaveText('450', { timeout: 20_000 }); // Rakete und Mondlandung
+  await expect(count).toHaveText('600', { timeout: 20_000 }); // Bokkenrijders
   const steps = await page.evaluate(() => (window as unknown as { __steps: [string, number][] }).__steps);
   const level = new Map<number, Set<number>>();
   for (const [n, e] of steps) if (e) { if (!level.has(+n)) level.set(+n, new Set()); level.get(+n)!.add(e); }
   const sorted = [...level.keys()].sort((a, b) => a - b), euro = sorted.map((n) => Math.max(...level.get(n)!));
-  expect(sorted).toEqual([100, 150, 200, 250, 300, 450, 600]);
+  expect(sorted).toEqual([100, 200, 300, 450, 600]);
   for (let i = 1; i < euro.length; i++) expect(euro[i], `${sorted[i]} Drohnen`).toBeGreaterThan(euro[i - 1]);
   expect(euro.at(-1)).toBe(8);
   expect(errors).toEqual([]);
+});
+
+test('Nicht gewählte Pakete behalten ihre Farbe, gedämpft und mit mindestens 4,5:1 Kontrast', async ({ page }) => {
+  await page.goto(PAGE);
+  const colours = await root(page).locator('[data-cft=pkg]:not(.is-on)').evaluateAll((els) => els.map((el) => getComputedStyle(el).color));
+  expect(colours).toHaveLength(2);
+  for (const c of colours) {
+    const [r, g, b] = (c.match(/[\d.]+/g) ?? []).map(Number).slice(0, 3).map((v) => (c.startsWith('color(') ? v * 255 : v)); // color-mix kommt als color(srgb 0–1)
+    expect(Math.max(r, g, b) - Math.min(r, g, b), `${c} ist farbig, nicht grau`).toBeGreaterThan(30);
+    expect(contrast([r, g, b], [19, 17, 16]), `${c} auf der Karte`).toBeGreaterThanOrEqual(4.5);
+  }
 });
 
 test('Beim Zeigen auf die Bühne erscheint „Eigene Show zusammenstellen“, ein Klick führt in den Konfigurator; auch der Fokus auf dem Knopf zeigt es', async ({ page }, info) => {
@@ -94,7 +107,7 @@ test('Abläufe für die Landingpages: „marke“ beginnt mit dem Logo, „hochz
   test.skip(!PAGE.includes('/poc/'), 'Die Abläufe stehen nur auf der Prüfseite nebeneinander.');
   test.setTimeout(60_000);
   await page.goto(PAGE);
-  for (const [sel, note] of [['#cft-marke', 'Euer Logo'], ['#cft-hochzeit', 'Eure Initialen']] as const) {
+  for (const [sel, note] of [['#cft-marke', 'Platz für euer Logo'], ['#cft-hochzeit', 'Eure Initialen']] as const) {
     await reach(page, sel);
     await expect(root(page, sel)).toHaveAttribute('data-reel', sel.replace('#cft-', ''));
     await expect(root(page, sel).locator('[data-cft=note]')).toContainText(note);

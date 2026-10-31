@@ -38,9 +38,9 @@ const rangeTrack = `linear-gradient(90deg, ${(Object.keys(DRONE_RANGES) as Pkg[]
 const start = { pkg: 'SPARK' as Pkg, drones: 100 };
 // Textalternative je Ablauf (dieselbe Beschreibung wie REELS[…].label in show-teaser.js)
 const labels = {
-  start: 'das FlyingStars-Logo, das mit mehr Drohnen schärfer wird, dann Motive von einfachen 2D-Bildern über 3D-Körper bis zu erzählten Geschichten',
-  marke: 'ein Logo, das mit mehr Drohnen schärfer wird, dann Glühbirne, Spirale, Rakete, QR-Code und eine Mondlandung',
-  hochzeit: 'Initialen im Herz, dann Herz, Schmetterling, Sektgläser, Ringe und ein Antrag',
+  start: 'das FlyingStars-Logo, das mit mehr Drohnen schärfer wird, ein Herz in 2D, als Tunnel und in 3D, ein QR-Code, eine Rakete, die auf dem Mond landet, und eine große 3D-Maske',
+  marke: 'ein Logo, das mit mehr Drohnen schärfer wird, Glühbirne, Spirale, ein QR-Code und eine Rakete, die auf dem Mond landet',
+  hochzeit: 'Initialen im Herz, ein Herz in 2D, als Tunnel und in 3D, Sektgläser, Ringe und ein Antrag',
 };
 ---
 <div class="cft" id={id} data-cft-root data-reel={reel} style={`--pkg: ${rgb(start.pkg)}`}>
@@ -112,9 +112,10 @@ const labels = {
   .cft-mock { display: grid; gap: 26px; padding: clamp(22px, 2.2vw, 32px); border: 1px solid var(--line); border-radius: var(--radius); background: rgba(246, 241, 232, 0.02); pointer-events: none; user-select: none; }
   .cft-group { display: grid; gap: 10px; }
   .cft-label { margin: 0; font-size: 15px; color: var(--muted); }
-  /* Paketknöpfe in ihren Farben (amber, orchid, cyan) */
+  /* Paketknöpfe in ihren Farben (amber, orchid, cyan); Runde 10: die nicht gewählten in ihrer Farbe gedämpft (40 % Farbe,
+     60 % --faint): auf der Karte 6,7:1 / 5,6:1 / 7,7:1, also über AA */
   .cft-pkgs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 12px; }
-  .cft-pkg { display: grid; place-items: center; min-height: 52px; border: 1px solid transparent; border-radius: 9px; font: 600 13px/1 var(--mono); letter-spacing: 0.08em; color: color-mix(in srgb, var(--c) 55%, var(--faint)); transition: border-color 0.35s ease, background 0.35s ease, color 0.35s ease; }
+  .cft-pkg { display: grid; place-items: center; min-height: 52px; border: 1px solid transparent; border-radius: 9px; font: 600 13px/1 var(--mono); letter-spacing: 0.08em; color: color-mix(in srgb, var(--c) 40%, var(--faint)); transition: border-color 0.35s ease, background 0.35s ease, color 0.35s ease; }
   .cft-pkg.is-on { color: var(--c); border-color: var(--c); background: color-mix(in srgb, var(--c) 16%, transparent); }
   /* Regler mit „N Drohnen“ */
   .cft-drones { display: grid; gap: 12px; }
