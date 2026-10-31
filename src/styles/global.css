@@ -137,7 +137,7 @@ p { margin: 0; }
 
 /* occasions */
 .occasions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-.occ { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; display: grid; grid-template-rows: auto 1fr; transition: border-color 0.2s, transform 0.2s; }
+.occ { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: clip; /* clip statt hidden: kein Scroll-Container, sonst misst der CSS-Vorhang (view()) gegen die Karte */ display: grid; grid-template-rows: auto 1fr; transition: border-color 0.2s, transform 0.2s; }
 .occ:hover { border-color: var(--line-strong); transform: translateY(-2px); }
 .occ .img { aspect-ratio: 4 / 3; overflow: hidden; background: #0a0908; border-radius: var(--radius) var(--radius) 0 0; }
 .occ img { width: 100%; height: 100%; object-fit: cover; }
@@ -471,10 +471,28 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
 [data-reveal] { transition: opacity 0.8s ease, transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1); transition-delay: calc(var(--i, 0) * 140ms); }
 .reveal [data-reveal-group]:not(.is-in) [data-reveal] { opacity: 0; transform: translateY(0.4em); }
 /* Vorhang: das Bild öffnet sich von unten, das Foto setzt sich dabei von 1,28 auf 1 */
-[data-curtain] { clip-path: inset(0 0 0 0 round var(--curtain-r, 0px)); transition: clip-path 1.25s cubic-bezier(0.7, 0, 0.2, 1); transition-delay: calc(var(--i, 0) * 120ms); }
-[data-curtain] > img { transition: transform 1.7s cubic-bezier(0.2, 0.7, 0.2, 1); transition-delay: calc(var(--i, 0) * 120ms); }
+[data-curtain] { clip-path: inset(0 0 0 0 round var(--curtain-r, 0px)); transition: clip-path 0.9s cubic-bezier(0.7, 0, 0.2, 1); transition-delay: calc(var(--i, 0) * 60ms); }
+[data-curtain] > img { transition: transform 1.2s cubic-bezier(0.2, 0.7, 0.2, 1); transition-delay: calc(var(--i, 0) * 60ms); }
 .reveal [data-curtain]:not(.is-in) { clip-path: inset(100% 0 0 0 round var(--curtain-r, 0px)); }
 .reveal [data-curtain]:not(.is-in) > img { transform: scale(1.28); }
+/* Vorhang als scroll-gebundene CSS-Animation (Marc, 31.10.2026: „deutlich früher, idealerweise 100 % CSS“, nach dem
+   Vorbild von Automatic CSS: animation-timeline: view()). Der Vorhang öffnet sich, während das Bild ins Bild kommt, und
+   ist offen, wenn ein knappes Drittel sichtbar ist (öffnet von unten, das Bild kommt von unten: länger wäre der sichtbare Teil verdeckt): kein Warten auf JS, keine Staffelung, kein Nachlauf. Browser ohne
+   Scroll-Timeline nutzen den Übergang oben (site.ts, früher ausgelöst). Auf Touch-Geräten übernimmt bei Bildern mit
+   Lichtpunkten der Lichtpunkt-Reveal (dotimage.js), dort gibt es keinen Vorhang. */
+@keyframes curtain-open { from { clip-path: inset(100% 0 0 0 round var(--curtain-r, 0px)); } to { clip-path: inset(0 0 0 0 round var(--curtain-r, 0px)); } }
+@keyframes curtain-zoom { from { transform: scale(1.22); } to { transform: none; } }
+@supports (animation-timeline: view()) {
+  .reveal [data-curtain] { transition: none; view-timeline-name: --curtain; animation: curtain-open linear both; animation-timeline: view(); animation-range: entry 0% entry 30%; }
+  .reveal [data-curtain] > img { transition: none; animation: curtain-zoom linear both; animation-timeline: --curtain; animation-range: entry 0% cover 45%; }
+}
+@media (hover: none), (pointer: coarse) {
+  .reveal [data-curtain][data-dot-img], .reveal [data-curtain][data-dot-img] > img { animation: none; transition: none; clip-path: none; transform: none; }
+  .reveal .member .portrait[data-dot-img], .reveal .member .portrait[data-dot-img] img { clip-path: none; transform: none; transition: none; }
+}
+/* Lichtpunkt-Reveal (Touch): bis die Lichtpunkte das Bild gezeichnet haben, bleibt das Foto verborgen */
+.dot-pending > img { opacity: 0; }
+
 /* Lichtpunkt-Hover (src/scripts/effects/dotimage.js): Leinwand liegt direkt über dem Foto, kein Foto-Zoom */
 [data-dot-img] { position: relative; }
 .dot-cv { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
@@ -902,7 +920,7 @@ html.motion-paused .rec::before { animation: none; }
 .ruler::after { background: var(--grad); transform-origin: left; transform: scaleX(1); transition: transform 2.2s cubic-bezier(0.6, 0, 0.2, 1); }
 .reveal .ruler:not(.is-in)::after { transform: scaleX(0); }
 .ruler li { position: relative; display: grid; gap: 10px; align-content: start; padding: 38px clamp(14px, 2vw, 32px) 0 0; }
-.ruler .dot { position: absolute; left: 0; top: 0; width: 16px; height: 16px; border-radius: 50%; background: var(--ground); border: 2px solid var(--line-strong); transition: background 0.5s, border-color 0.5s, box-shadow 0.5s; transition-delay: calc(var(--i, 0) * 480ms + 300ms); }
+.ruler .dot { position: absolute; z-index: 1; left: 0; top: 0; width: 16px; height: 16px; border-radius: 50%; background: var(--ground); border: 2px solid var(--line-strong); transition: background 0.5s, border-color 0.5s, box-shadow 0.5s; transition-delay: calc(var(--i, 0) * 480ms + 300ms); }
 .ruler li:nth-child(1) .dot { --c: #ff9e29; } .ruler li:nth-child(2) .dot { --c: #ec7f95; } .ruler li:nth-child(3) .dot { --c: #b88bec; } .ruler li:nth-child(4) .dot { --c: #6fc8ef; } .ruler li:nth-child(5) .dot { --c: #33edf2; }
 .ruler.is-in .dot, html:not(.reveal) .ruler .dot { background: var(--c); border-color: var(--c); box-shadow: 0 0 14px var(--c), 0 0 2px #fff inset; }
 .ruler .v { font: 600 clamp(36px, 3.5vw, 58px)/0.95 var(--display); letter-spacing: -0.045em; color: var(--head); white-space: nowrap; }
@@ -937,3 +955,21 @@ html.motion-paused .rec::before { animation: none; }
 @media (max-width: 760px) { .promise { grid-template-columns: 1fr; } }
 
 .cfg-kicker { margin-bottom: -6px; }
+
+/* Express als Abkürzung über dem Zeitstrahl: feine gestrichelte Klammer vom ersten zum letzten Punkt, die Beschriftung
+   sitzt auf der Klammer. Der Beleg steht als Fußnote darunter, mit demselben gestrichelten Zeichen als Legende.
+   Handy: als gestrichelt umrandeter Hinweis über dem senkrechten Strahl. */
+.ruler-wrap.has-shortcut { position: relative; padding-top: 44px; }
+.shortcut { position: absolute; left: 0; top: 0; width: calc((100% / var(--n, 3)) * (var(--n, 3) - 1) + 16px); height: 52px; margin: 0; display: flex; justify-content: center; align-items: flex-start; }
+.shortcut .sc-line { position: absolute; left: 7px; right: 8px; top: 11px; bottom: 0; border: 1.5px dashed rgba(245, 167, 60, 0.6); border-bottom: 0; border-radius: 14px 14px 0 0; }
+.shortcut .sc-label { position: relative; display: inline-flex; gap: 10px; align-items: baseline; padding: 0 14px; background: var(--surface); }
+.shortcut .sc-label b { font: 500 18px/1.2 var(--display); color: var(--head); letter-spacing: -0.01em; }
+.shortcut .sc-label .mono { color: var(--accent); }
+.sc-text { display: flex; gap: 10px; align-items: baseline; margin: 30px 0 0; color: var(--faint); font-size: 14px; max-width: 70ch; }
+.sc-key { flex: none; width: 22px; border-top: 1.5px dashed rgba(245, 167, 60, 0.6); transform: translateY(-4px); }
+@media (max-width: 900px) {
+  .ruler-wrap.has-shortcut { padding-top: 0; }
+  .shortcut { position: static; width: auto; height: auto; justify-content: flex-start; margin: 0 0 28px; padding: 12px 16px; border: 1.5px dashed rgba(245, 167, 60, 0.6); border-radius: 12px; }
+  .shortcut .sc-line { display: none; }
+  .shortcut .sc-label { padding: 0; background: none; flex-wrap: wrap; gap: 4px 10px; }
+}

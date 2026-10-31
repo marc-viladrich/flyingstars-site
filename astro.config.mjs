@@ -17,6 +17,9 @@ export default defineConfig({
     remotePatterns: [...new Set([mediaHost, 'flyingstars.art', 'flyingstars-relaunch.vercel.app'])].map((hostname) => ({ protocol: 'https', hostname })),
   },
   build: { inlineStylesheets: 'auto' },
+  // Lokal leitet Tailscale den Dev-Port (4391) aufs Handy weiter und belegt ihn dafür auf der Tailnet-Adresse. Vite hält
+  // den Port dann für belegt und weicht aus; mit STRICT_PORT=1 bindet es trotzdem an 127.0.0.1:4391.
+  vite: { server: { strictPort: process.env.STRICT_PORT === '1' } },
   // Weiterleitungen nach dem Umbau zu Stufe 1 (30.10.2026). Im statischen Build entstehen daraus Seiten mit
   // meta refresh und canonical; auf dem Host sollten dieselben Paare zusätzlich als echte 301 eingetragen werden.
   // Die Fallstudien bleiben unter ihren Live-URLs im Wurzelverzeichnis (Moritz' Sitemap vom 07.10.).

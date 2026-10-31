@@ -100,7 +100,7 @@
       rio.unobserve(e.target);
       const own = e.target.__reveal || [e.target];
       own.forEach(show);
-    }), { threshold: 0.15 });
+    }), { threshold: 0, rootMargin: "0px 0px -6% 0px" }); // früher auslösen: sobald der Rahmen ins Bild kommt (Marc 31.10.)
     document.querySelectorAll("[data-reveal-group], .member").forEach((el) => rio.observe(el));
     // Vorhänge: beobachtet wird der Rahmen darüber, ein per clip-path verdeckter Rahmen meldet sonst keine Sichtbarkeit
     document.querySelectorAll("[data-curtain]").forEach((el) => {
@@ -110,9 +110,9 @@
     });
   }
 
-  // Lichtpunkt-Hover auf Bildern mit Interaktion; nur mit Maus, Modul wird erst dann geladen
+  // Lichtpunkte auf Bildern mit Interaktion: mit Maus beim Hovern, auf Touch-Geräten als Reveal beim Scrollen (statt Vorhang)
   const dotImgs = document.querySelectorAll("[data-dot-img]");
-  if (dotImgs.length && matchMedia("(hover: hover) and (pointer: fine)").matches) {
+  if (dotImgs.length) {
     import("./effects/dotimage.js").then(({ dotImage }) => dotImgs.forEach((el) => dotImage(el, { step: +(el.dataset.step || 8) })));
   }
 

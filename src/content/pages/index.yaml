@@ -149,12 +149,12 @@ sections:
     id: ablauf
     kicker: Ablauf in Zahlen
     headline: Von der Anfrage bis zum Showabend.
-    text: Ideal sind ein bis zwei Monate Vorlauf. Wenn es eilt, geht es deutlich schneller.
+    text: Ideal sind ein bis zwei Monate Vorlauf. Wenn es eilt, geht es auch in ein bis zwei Wochen.
     marks:
       - { value: 48 h, label: bis zu unserer Antwort, text: "Meist schneller, per Mail, Telefon oder Videocall." }
-      - { value: 1–2 Wochen, label: im Express, text: "Für PUMA kam die Anfrage 14 Tage vor dem Derby. Die Show flog pünktlich zum Anstoß." }
-      - { value: 1–2 Monate, label: ideal, text: Genug Zeit für eure Freigaben im Design und für die Genehmigung. }
+      - { value: 1–2 Monate, label: "Vorlauf, ideal", text: Genug Zeit für eure Freigaben im Design und für die Genehmigung. }
       - { value: 3 h, label: Aufbau am Showtag, text: "Unser Team baut auf, fliegt die Show und packt wieder ein." }
+    shortcut: { value: Express in 1–2 Wochen, label: bei Bedarf zubuchbar, text: "Für PUMA kam die Anfrage 14 Tage vor dem Derby, die Show flog pünktlich zum Anstoß." }
     facts:
       - { value: 178 Shows, label: Erfahrung, text: "Seit August 2022, Stand Oktober 2026" }
       - { value: 600 Drohnen, label: Größte Show, text: "Musical Bokkenrijders in Maastricht, an 20 Abenden" }

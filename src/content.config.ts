@@ -240,6 +240,8 @@ export const sectionSchema = z.discriminatedUnion('type', [
     type: z.literal('tempo'), ...sectionHeading,
     headline: z.string().min(1), text: z.string().optional(),
     marks: z.array(z.object({ value: z.string().min(1), label: z.string().min(1), text: z.string().optional() })).min(2).max(5),
+    shortcut: z.object({ value: z.string().min(1), label: z.string().min(1), text: z.string().optional() }).optional()
+      .describe('Abkürzung über dem Zeitstrahl, z. B. Express: verbindet den ersten mit dem letzten Punkt, gestrichelt'),
     facts: z.array(z.object({ value: z.string().min(1), label: z.string().min(1), text: z.string().optional() })).default([]),
     note: z.string().optional(),
   }),

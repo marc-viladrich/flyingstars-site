@@ -87,7 +87,11 @@ const IN = 0.7, OUT = 0.45; // Sekunden für Welle hin und zurück (Marc, 31.10.
 
 export function dotImage(wrap, { step = 8 } = {}) {
   const img = wrap.querySelector('img');
-  if (!img || !matchMedia('(hover: hover) and (pointer: fine)').matches) return; // Touch: nur der Reveal
+  if (!img) return;
+  // Maus: Lichtpunkte beim Hovern. Touch: Lichtpunkte als Reveal beim Scrollen (Marc, 31.10.2026: der Effekt soll auf
+  // dem Handy nicht verloren gehen und ersetzt dort den Vorhang)
+  const touch = !matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (touch && (still() || !document.documentElement.classList.contains('reveal'))) return;
   if (wrap.dataset.dotReady) return; // schon eingerichtet (Seite und Probe rufen beide auf)
   wrap.dataset.dotReady = '1';
   const cv = document.createElement('canvas'); cv.className = 'dot-cv'; cv.setAttribute('aria-hidden', 'true');
@@ -143,6 +147,39 @@ export function dotImage(wrap, { step = 8 } = {}) {
     if (!ready()) return;
     if (!raf) raf = requestAnimationFrame(tick);
   };
+  // Reveal auf Touch-Geräten: Bilder, die beim Laden schon im Bild sind, bleiben einfach Foto. Alle anderen sind bis
+  // zum Erscheinen verborgen (.dot-pending); beim Hereinscrollen zeichnet eine Lichtpunkt-Welle das Bild, das kurz
+  // glüht und dann zum Foto wird. Sicherung: Kommt das Bild nicht rechtzeitig, erscheint nach 2,5 s einfach das Foto.
+  // Ebenen im Leerlauf vorbereiten, sobald das Bild in der Nähe ist: der erste Hover bzw. Reveal startet ohne Wartezeit
+  function prepare() {
+    const idle = window.requestIdleCallback || (f => setTimeout(f, 200));
+    new IntersectionObserver((es, o) => {
+      if (!es[0].isIntersecting) return; o.disconnect();
+      if (img.loading === 'lazy') img.loading = 'eager';
+      const prep = () => idle(() => { source(img); idle(() => ready()); });
+      if (img.complete) prep(); else img.addEventListener('load', prep, { once: true });
+    }, { rootMargin: '600px' }).observe(wrap);
+  }
+  function reveal() {
+    if (wrap.getBoundingClientRect().top < innerHeight) return;
+    wrap.classList.add('dot-pending');
+    let started = false;
+    const show = () => wrap.classList.remove('dot-pending');
+    const run = () => {
+      if (started) return; started = true;
+      const fallback = setTimeout(show, 2500);
+      const begin = () => {
+        if (!ready()) return setTimeout(begin, 120);
+        clearTimeout(fallback);
+        go(1);
+        const wait = () => { if (p < 1) return requestAnimationFrame(wait); show(); setTimeout(() => go(0), 450); };
+        requestAnimationFrame(wait);
+      };
+      begin();
+    };
+    new IntersectionObserver((es, o) => { if (!es[0].isIntersecting) return; o.disconnect(); run(); }, { rootMargin: '0px 0px -8% 0px' }).observe(wrap);
+  }
+  if (touch) { new ResizeObserver(size).observe(wrap); prepare(); reveal(); return; }
   // Auslöser ist die ganze Karte, nicht nur das Foto (Marc, 31.10.2026): Karten tragen data-dot-host
   const host = wrap.closest('[data-dot-host]') || wrap;
   host.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') go(1); });
@@ -152,11 +189,5 @@ export function dotImage(wrap, { step = 8 } = {}) {
   // nicht sofort messen: ein erzwungenes Layout beim Start ließ CSS-Reveals (Team, Vorhang) erst ein- und dann wieder
   // ausblenden; der ResizeObserver meldet die Größe ohnehin nach dem ersten Layout
   new ResizeObserver(size).observe(wrap);
-  // Ebenen im Leerlauf vorbereiten, sobald das Bild in der Nähe ist: der erste Hover startet ohne Wartezeit
-  const idle = window.requestIdleCallback || (f => setTimeout(f, 200));
-  new IntersectionObserver((es, o) => {
-    if (!es[0].isIntersecting) return; o.disconnect();
-    const prep = () => idle(() => { source(img); idle(() => ready()); });
-    if (img.complete) prep(); else img.addEventListener('load', prep, { once: true });
-  }, { rootMargin: '200px' }).observe(wrap);
+  prepare();
 }
