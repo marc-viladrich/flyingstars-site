@@ -1,0 +1,26 @@
+---
+// Ausgewählte Referenzen nach ID statt „die ersten vier“: auf der Werbe-Seite nur Markenshows. Karten wie auf der
+// Startseite (ProjectCard): Showvideo, wo vorhanden; die erste Karte spielt im Bild, die anderen beim Zeigen.
+import { getCollection } from 'astro:content';
+import type { Section } from '../../content.config';
+import SectionHead from '../SectionHead.astro';
+import ProjectCard from '../projects/ProjectCard.astro';
+type Props = Extract<Section, { type: 'landingRefs' }> & { index: number };
+const { kicker, headline, text, cta, projects: ids, id = 'referenzen', index } = Astro.props;
+const H = index === 0 ? 'h1' : 'h2';
+const all = await getCollection('projects', (p) => !p.data.draft);
+const list = ids.map((pid) => {
+  const p = all.find((q) => q.id === pid);
+  if (!p) throw new Error(`landingRefs: Referenz „${pid}“ gibt es nicht (src/content/projects/).`);
+  return p;
+});
+---
+<section class="section" id={id} aria-labelledby={`${id}-h`}>
+  <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
+  <div class="projects">{list.map((project, i) => <ProjectCard project={project} i={i} level={index === 0 ? 'h2' : 'h3'} year autoplay={i === 0} />)}</div>
+  {cta && <div class="lr-more"><a class="link" href={cta.href}>{cta.label} <span aria-hidden="true">→</span></a></div>}
+</section>
+
+<style>
+  .lr-more { margin-top: clamp(28px, 4vw, 44px); }
+</style>

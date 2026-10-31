@@ -1,22 +1,34 @@
 # Landingpage Marken und Werbung. Konzept WB-01 bis WB-09, Fakten: Fragebogen 21.10.2026.
 # Agenturen: NDA, Projektleitung auf Wunsch, anonym fliegen möglich. Provision bewusst nicht auf der Website.
 # Inhalte aus Elevate (30.10.); Presse nur mit den Sendern, die laut Moritz' Notizen konkret über FlyingStars berichtet haben.
+# Runde 8 (31.10.2026, Marc: „deutlich mehr in dieses Interaktive … mehr Variation in den Layouts“): Hero mit Ford-Clip
+# im Rahmen, nur Markenreferenzen, Wirkung als Kacheln, Freigabe als Strahl mit Schranke, Logo-Neugier im
+# Konfigurator-Teaser, Agenturen mit Gesichtern, Orte auf einem Bild. Bausteine: src/components/landing/.
+# Alle Texte sind Entwürfe für Moritz; neu formulierte Stellen tragen den Kommentar „Entwurf für Moritz“.
 title: Drohnenshow als Werbung
 navLabel: "Marken & Werbung"
 description: "Drohnenshows für Marken und Agenturen: euer Logo am Nachthimmel, jedes Motiv vorab freigegeben. Für Launches, Jubiläen und Kampagnen."
 image: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
 sections:
-  - type: hero
+  # Clip: Ford Explorer (Köln, 2024), registriert in src/lib/videos.ts. Poster bleibt das VW-Bild.
+  - type: landingHero
     kicker: Marken & Werbung
-    headline: Eure Marke am Nachthimmel.
+    headline: Eure Marke am *Nachthimmel*.
     text: Wir setzen euer Logo und eure Botschaft aus Drohnen um, abgestimmt auf Musik und Kampagne. Jedes Motiv gebt ihr vor der Show frei.
-    image:
+    cta: { label: Markenshow anfragen, href: "#anfrage" }
+    secondary: { label: Für Agenturen, href: "#agenturen" }
+    video: ford
+    videoLabel: Ford Explorer · Köln
+    poster:
       src: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
       alt: Volkswagen-Logo aus Drohnen über dem Wolfgangsee, Gäste filmen von einer Terrasse
       width: 1920
       height: 1281
-    cta: { label: Markenshow anfragen, href: "#anfrage" }
-    secondary: { label: Für Agenturen, href: "#agenturen" }
+    # Entwurf für Moritz: Eckdaten (Startseite und Fragebogen)
+    facts:
+      - { value: "178", label: Shows seit 2022 }
+      - { value: 48 h, label: bis zur Antwort }
+      - { value: 1–2 Wochen, label: im Express }
 
   - type: logoBar
     id: marken
@@ -39,27 +51,34 @@ sections:
       - name: NFL
         image: { src: https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png, alt: NFL, width: 300, height: 409 }
 
-  - type: projectGrid
+  # Nur Markenshows (vorher: die ersten vier Referenzen, darunter das Musical Bokkenrijders). Ford steht schon im Hero.
+  - type: landingRefs
     id: referenzen
     kicker: Referenzen
     headline: Ausgewählte Shows mit Video und Ablauf.
-    limit: 4
+    projects: [nfl-berlin-game, puma-bundesliga, spotify-luciano-apache, loreal-prada-rheinturm]
+    cta: { label: Alle Referenzen, href: /referenzen/ }
 
-  - type: textMedia
+  # Entwurf für Moritz: Wirkung als Kacheln, Inhalte wie bisher
+  - type: landingBento
+    id: wirkung
     kicker: Wirkung
     headline: Was eine Markenshow leisten kann.
-    body: |
-      - **Ein Logo, das man erkennt.** Wir übersetzen euer Logo in Lichtpunkte, so wie bei Ford, Volkswagen oder PUMA.
-      - **Bilder für eure Kanäle.** Gäste filmen und teilen die Show. Auf Wunsch filmen wir mit einer Kameradrohne mit. Die Rohaufnahmen kosten 900 €, bei ODYSSEY sind sie enthalten.
-      - **Ein Anlass für Berichte.** Über uns und unsere Shows haben unter anderem ZDF, WDR, ntv und die WAZ berichtet.
-    image:
-      src: https://flyingstars.art/wp-content/uploads/2024/12/FORD_comp.png
-      alt: Ford-Schriftzug aus blauen Drohnen über dem Werksgelände in Köln
-      width: 1929
-      height: 1133
-    mediaSide: right
+    lead:
+      label: Ford · Volkswagen · PUMA
+      title: Ein Logo, das man *erkennt*.
+      text: Wir übersetzen euer Logo in Lichtpunkte, Drohne für Drohne.
+      image:
+        src: https://flyingstars.art/wp-content/uploads/2024/12/FORD_comp.png
+        alt: Ford-Schriftzug aus blauen Drohnen über dem Werksgelände in Köln
+        width: 1929
+        height: 1133
+    items:
+      - { label: Bilder für eure Kanäle, value: 900 €, text: "Gäste filmen und teilen die Show. Rohaufnahmen mit unserer Kameradrohne kosten 900 €, bei ODYSSEY sind sie enthalten." }
+      - { label: Ein Anlass für Berichte, value: ZDF · WDR · ntv · WAZ, text: Über uns und unsere Shows haben unter anderem diese Sender und Zeitungen berichtet. }
 
-  - type: steps
+  # Entwurf für Moritz: Freigabe als Strahl mit Schranke, Inhalte wie bisher
+  - type: landingFlow
     id: freigabe
     kicker: Ablauf
     headline: Vom Logo bis zur fertigen Show.
@@ -74,57 +93,69 @@ sections:
         text: Danach eine Rohanimation mit Musik. Ab HORIZON bekommt ihr eine Videovorschau der Show.
       - title: Freigabe
         text: Erst wenn ihr jedes Motiv freigegeben habt, programmieren wir Farben und Lichteffekte auf die Musik.
+        gate: true
       - title: Showtag
         text: Unser Team ist etwa drei Stunden vorher vor Ort, sperrt die Startfläche und fliegt die Show.
         duration: ca. 3 h Aufbau
+
+  # Neugier aus dem Fragebogen („Wie sieht mein Unternehmen als Drohnenshow aus?“). Entwurf für Moritz.
+  - type: landingTeaser
+    id: logo
+    kicker: Show-Konfigurator
+    headline: Wie sieht euer *Logo* am Himmel aus?
+    text: Im Konfigurator ladet ihr euer Logo hoch und seht es als Drohnenformation, mit Motiven von SPARK bis ODYSSEY.
+    href: "/drohnenshow-preise/?anlass=launch#konfigurator"
+    cta: Logo im Konfigurator ausprobieren
 
   - type: packages
     id: pakete
     kicker: Pakete
     headline: Wie aufwendig soll eure Show sein?
-    text: Ein Logo in 2D reicht für viele Firmenfeiern. Für Launches mit 3D-Objekten und einer Geschichte eignen sich HORIZON oder ODYSSEY. Am häufigsten gebucht wird HORIZON.
+    text: Ein Logo in 2D reicht für viele Firmenfeiern. Für Launches mit 3D-Objekten und einer Geschichte eignen sich HORIZON oder ODYSSEY.
     compact: true
     items:
       - { name: SPARK, label: Klassisch in 2D }
       - { name: HORIZON, label: 3D in Bewegung, badge: Am häufigsten gebucht, highlight: true }
       - { name: ODYSSEY, label: Erzählte 3D-Show }
     note: Alle Preise netto zzgl. Anfahrt
-    cta: { label: Unterschied im Show-Konfigurator ansehen, href: "/drohnenshow-preise/?anlass=launch#konfigurator" }
+    cta: { label: Alle Leistungen und Preise, href: "/drohnenshow-preise/" }
 
-  - type: metrics
+  # Entwurf für Moritz: Agenturen mit Aussage-Kachel („Wir fliegen, ihr glänzt“ von der Startseite) und Gesichtern
+  - type: landingBento
     id: agenturen
     kicker: Agenturen
     headline: Für Agenturen.
-    text: Ihr bleibt bei euren Kund:innen vorn. Wie viel ihr selbst organisiert und wie viel wir übernehmen, entscheidet ihr.
+    lead:
+      label: Für eure Kund:innen
+      title: Wir fliegen, *ihr glänzt*.
+      text: Ihr bleibt bei euren Kund:innen vorn. Wie viel ihr selbst organisiert und wie viel wir übernehmen, entscheidet ihr.
     items:
-      - label: Rolle
-        value: Im Hintergrund
-        text: Auf Wunsch fliegen wir anonym. Euer Name steht vorn, wir liefern die Show.
-      - label: Vertraulichkeit
-        value: NDA
-        text: Wir unterschreiben eine Vertraulichkeitsvereinbarung.
-      - label: Freigabe
-        value: Visualisierung
-        text: Für die Abstimmung mit euren Kund:innen visualisieren wir die Motive mit deren Logo.
-      - label: Organisation
-        value: Projektleitung
-        text: Auf Wunsch übernehmen wir die Projektleitung, mit Genehmigung, Behörden und Technik vor Ort.
+      - { label: Rolle, value: Im Hintergrund, text: "Auf Wunsch fliegen wir anonym. Euer Name steht vorn, wir liefern die Show." }
+      - { label: Vertraulichkeit, value: NDA, text: Wir unterschreiben eine Vertraulichkeitsvereinbarung. }
+      - { label: Freigabe, value: Visualisierung, text: "Für die Abstimmung mit euren Kund:innen visualisieren wir die Motive mit deren Logo." }
+      - { label: Organisation, value: Projektleitung, text: "Auf Wunsch übernehmen wir die Projektleitung, mit Genehmigung, Behörden und Technik vor Ort." }
+    faces: true
+    contact: Erzählt uns vom Projekt eurer Kund:innen. Wir melden uns innerhalb von 48 Stunden.
+    cta: { label: Als Agentur anfragen, href: "/kontakt/?anlass=agentur" }
 
-  - type: textMedia
+  # Entwurf für Moritz: Orte als Markierungen auf dem Bild, Zeiten als Kennzahlen; Inhalte wie bisher
+  - type: landingSpotlight
+    id: orte
     kicker: Orte
     headline: Auch über Stadien, Innenstädten und am Wasser.
-    body: |
-      Dank unserer generischen Betriebsgenehmigung können wir die meisten Flugorte selbst freigeben. Für Kontrollzonen, Flughafennähe und Bundeswasserstraßen holen wir die nötigen Sondergenehmigungen ein. Das braucht mehr Vorlauf.
-
-      Geflogen sind wir zum Beispiel über dem Borussia-Park in Mönchengladbach, über dem Olympiastadion in Berlin, am Rheinturm in Düsseldorf und am Innenhafen in Duisburg.
-
-      Im Ausland beantragen wir für jedes EU-Land vorab eine Bestätigung. Das dauert 4 bis 8 Wochen, in Italien etwa drei Monate.
+    text: Dank unserer generischen Betriebsgenehmigung geben wir die meisten Flugorte selbst frei. Für Kontrollzonen, Flughafennähe und Bundeswasserstraßen holen wir die nötigen Sondergenehmigungen ein.
     image:
       src: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
       alt: Drohnenformation über der Skyline von Düsseldorf mit Rheinturm
       width: 1920
       height: 985
-    mediaSide: left
+    tags: [Borussia-Park · Mönchengladbach, Olympiastadion · Berlin, Rheinturm · Düsseldorf, Innenhafen · Duisburg]
+    entries:
+      - { kicker: Deutschland, title: Sondergenehmigungen, text: "Kontrollzonen, Flughafennähe und Bundeswasserstraßen brauchen mehr Vorlauf. Die Anträge stellen wir." }
+      - { kicker: EU, title: Bestätigung je Land, text: Im Ausland beantragen wir für jedes EU-Land vorab eine Bestätigung. }
+    facts:
+      - { value: 4–8 Wochen, label: Vorlauf je EU-Land }
+      - { value: ca. 3 Monate, label: in Italien }
 
   - type: faq
     id: fragen

@@ -1,0 +1,95 @@
+---
+// Preiskarte (Marc, 31.10.2026: „bei der Hochzeit insbesondere mit den Preisen … viel mehr High Quality“). Links der
+// Preis groß, bei Paketbezug mit der Punktfigur des Pakets und Preis/Drohnen aus src/content/show-packages.ts; rechts
+// die Gruppen wie ein Kassenzettel (Bezeichnung links, Betrag rechts), optional ein Bonus im Logoverlauf. Unten
+// Gesichter der Geschäftsführer:innen und die Anfrage, weil hier die Entscheidung fällt.
+import type { Section } from '../../content.config';
+import SectionHead from '../SectionHead.astro';
+import Faces from '../Faces.astro';
+import { SHOW_PACKAGES } from '../../content/show-packages';
+type Props = Extract<Section, { type: 'landingPrice' }> & { index: number };
+const { kicker, headline, text, package: pkg, price, unit, groups, bonus, contact, cta, secondary, id = 'preise', index } = Astro.props;
+const H = index === 0 ? 'h1' : 'h2';
+const T = index === 0 ? 'h2' : 'h3';
+const orb = { SPARK: 'ring', HORIZON: 'sphere', ODYSSEY: 'torus' } as const;
+const p = pkg ? SHOW_PACKAGES[pkg] : undefined;
+const shown = p ? `ab ${p.price.toLocaleString('de-DE')} €` : price ?? '';
+// „ab“ bzw. „ab ca.“ klein über dem Betrag, damit auch „ab ca. 15.000 €“ in die Spalte passt
+const [, pre = '', amount = shown] = shown.match(/^((?:ab|bis)(?: ca\.)?)\s+(.+)$/) ?? [];
+const sub = unit ?? (p ? `netto für ${p.base} Drohnen, zzgl. Anfahrt` : undefined);
+// Staffel nur, wenn das Paket nach oben begrenzt ist (SPARK: bis 150 Drohnen, je 10 weitere +900 €)
+const scale = p && Number.isFinite(p.max) ? `bis ${p.max} Drohnen: +${p.add.toLocaleString('de-DE')} € je ${p.step} weitere` : undefined;
+---
+<section class="section alt lp" id={id} aria-labelledby={`${id}-h`}>
+  <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
+  <div class="lp-card">
+    <div class="lp-price">
+      {pkg && p && <canvas data-orb={orb[pkg]} data-color={p.color.join(',')} data-n={p.base} aria-hidden="true"></canvas>}
+      {pkg && <span class="lp-name mono">Paket {pkg}</span>}
+      <p class="lp-amount">{pre && <span class="lp-pre mono">{pre} </span>}{amount}</p>
+      {sub && <p class="lp-unit">{sub}</p>}
+      {scale && <p class="lp-scale mono">{scale}</p>}
+    </div>
+    <div class="lp-groups" data-n={groups.length}>
+      {groups.map((g, gi) => (
+        <div class="lp-group">
+          <T class="mono">{g.title}</T>
+          <ul>{g.items.map((it) => <li class:list={{ 'has-value': it.value }}>
+            {gi === 0 && pkg ? <svg class="ico g" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg> : gi > 0 && pkg ? <svg class="ico g" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6v12M6 12h12" /></svg> : <span class="lp-pt" aria-hidden="true"></span>}
+            <span>{it.label}</span>{it.value && <b>{it.value}</b>}
+          </li>)}</ul>
+        </div>
+      ))}
+      {bonus && <div class="lp-bonus"><span class="lp-bonus-v grad">{bonus.value}</span><p>{bonus.text}</p></div>}
+    </div>
+    <div class="lp-foot">
+      <div class="lp-contact"><Faces />{contact && <p>{contact}</p>}</div>
+      <div class="actions"><a class="btn primary" href={cta.href}>{cta.label}</a>{secondary && <a class="link" href={secondary.href}>{secondary.label} <span aria-hidden="true">→</span></a>}</div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .lp-card { position: relative; display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr); border-radius: var(--radius); background: var(--ground); }
+  .lp-card::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; background: var(--grad); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
+  .lp-price { position: relative; display: grid; gap: 10px; align-content: start; padding: clamp(28px, 4vw, 56px); border-right: 1px solid var(--line); overflow: hidden; }
+  .lp-price canvas { width: 140px; height: 140px; margin: -18px 0 4px -22px; }
+  .lp-name { color: var(--accent); }
+  .lp-amount { margin: 0; font: 600 clamp(44px, 5.2vw, 88px)/0.95 var(--display); letter-spacing: -0.05em; color: var(--head); white-space: nowrap; }
+  .lp-pre { display: block; margin-bottom: 8px; font-size: 13px; letter-spacing: 0.1em; color: var(--faint); }
+  .lp-unit { margin: 4px 0 0; color: var(--muted); font-size: 17px; max-width: 26ch; }
+  .lp-scale { margin: 8px 0 0; padding-top: 14px; border-top: 1px dashed var(--line-strong); color: var(--faint); }
+  /* Gruppen nebeneinander, der Bonus als Leiste darunter über die ganze Breite */
+  .lp-groups { display: grid; grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); align-content: start; }
+  .lp-groups[data-n='2'] { --cols: 2; }
+  .lp-groups[data-n='1'] { --cols: 1; }
+  .lp-group, .lp-bonus { padding: clamp(24px, 3vw, 44px) clamp(20px, 2.4vw, 36px); border-left: 1px solid var(--line); display: grid; gap: 16px; align-content: start; }
+  .lp-groups > :first-child { border-left: 0; }
+  .lp-groups > .lp-bonus { border-left: 0; }
+  .lp-group h2, .lp-group h3 { font: 400 12px/1.5 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+  .lp-group ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  .lp-group li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; align-items: baseline; color: var(--text); font-size: 15.5px; line-height: 1.4; }
+  .lp-group li.has-value { grid-template-columns: 20px minmax(0, 1fr) auto; }
+  .lp-group li .ico { width: 18px; height: 18px; transform: translateY(3px); }
+  .lp-pt { width: 6px; height: 6px; margin: 0 7px; border-radius: 50%; background: var(--accent); transform: translateY(-2px); }
+  .lp-group li b { font: 500 15px/1.4 var(--display); color: var(--head); white-space: nowrap; padding-left: 8px; }
+  .lp-bonus { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 12px 28px; flex-wrap: wrap; padding-top: clamp(18px, 2vw, 26px); padding-bottom: clamp(18px, 2vw, 26px); }
+  .lp-bonus-v { font: 600 clamp(40px, 4vw, 64px)/0.95 var(--display); letter-spacing: -0.05em; }
+  .lp-bonus p { color: var(--muted); max-width: 46ch; margin: 0; }
+  .lp-foot { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px 32px; padding: clamp(20px, 2.6vw, 32px) clamp(28px, 4vw, 56px); border-top: 1px solid var(--line); }
+  .lp-contact { display: flex; align-items: center; gap: 28px; }
+  .lp-contact p { color: var(--muted); max-width: 40ch; margin: 0; }
+  .lp-contact :global(.faces .face) { border-color: var(--ground); }
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; }
+  @media (max-width: 1100px) {
+    .lp-card { grid-template-columns: 1fr; }
+    .lp-price { border-right: 0; border-bottom: 1px solid var(--line); }
+  }
+  @media (max-width: 760px) {
+    .lp-groups, .lp-groups[data-n='2'] { grid-template-columns: 1fr; }
+    .lp-group, .lp-bonus { border-left: 0; border-top: 1px solid var(--line); }
+    .lp-bonus { display: grid; }
+    .lp-groups > :first-child { border-top: 0; }
+    .lp-contact { flex-direction: column; align-items: flex-start; gap: 14px; }
+  }
+</style>

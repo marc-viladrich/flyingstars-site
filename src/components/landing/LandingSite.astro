@@ -1,0 +1,173 @@
+---
+// Platzbedarf als Bild statt als Aufzählung (Marc, 31.10.2026: „Location … viel mehr High Quality“).
+// outdoor: Draufsicht wie im Technik-Datenblatt 09/2026 (public/media/downloads): Sicherheitsbereich ca. 100 × 100 m,
+// darin die Drohnenlinie quer zum Publikum und die Start- und Landefläche, das Publikum außerhalb mit Blick auf die Show.
+// indoor: Raumschnitt mit Deckenhöhe (mind. 3 m), Drohnen im Raum und freier Start- und Flugfläche.
+// Daneben die Checkliste. Nummern im Bild entsprechen den Punkten; Zeigen auf einen Punkt hebt seine Zone hervor.
+// Das Bild ist schematisch und nicht maßstäblich; die Lichtpunkte schalten beim Erscheinen nacheinander ein.
+import type { Section } from '../../content.config';
+import SectionHead from '../SectionHead.astro';
+type Props = Extract<Section, { type: 'landingSite' }> & { index: number };
+const { kicker, headline, text, variant, items, checklist, note, download, id = 'location', index } = Astro.props;
+const H = index === 0 ? 'h1' : 'h2';
+const T = index === 0 ? 'h2' : 'h3';
+// Nummer je Zone für die Marker im Bild (nur Zonen, die in der Checkliste vorkommen)
+const num: Record<string, number> = {};
+items.forEach((it, i) => { if (it.zone && !num[it.zone]) num[it.zone] = i + 1; });
+// Logoverlauf als Punktfarben, von links nach rechts
+const grad = ['#ff9e29', '#f58a5a', '#ec7f95', '#db64e8', '#b88bec', '#8aa9ee', '#6fc8ef', '#33edf2'];
+const col = (t: number) => grad[Math.min(grad.length - 1, Math.round(t * (grad.length - 1)))];
+// outdoor: Drohnenlinie (ca. 60 m von 100 m), leicht geschwungen; Startraster 6 × 3; Publikum als lockere Gruppe
+const line = Array.from({ length: 21 }, (_, i) => ({ x: 158 + i * 10.2, y: 168 + Math.sin(i / 20 * Math.PI) * -10, c: col(i / 20) }));
+const raster = Array.from({ length: 18 }, (_, i) => ({ x: 208 + (i % 6) * 9, y: 262 + Math.floor(i / 6) * 9 }));
+const crowd = Array.from({ length: 26 }, (_, i) => ({ x: 150 + (i % 13) * 18 + (Math.floor(i / 13) % 2) * 9, y: 412 + Math.floor(i / 13) * 14 }));
+// indoor: Drohnen als Welle im Raum, Publikum rechts (drei Personen)
+const swarm = Array.from({ length: 24 }, (_, i) => ({ x: 172 + i * 10.4, y: 160 + Math.sin(i / 23 * Math.PI * 2) * 34 - Math.sin(i / 23 * Math.PI) * 30, c: col(i / 23) }));
+const marker = (zone: string, x: number, y: number) => num[zone] ? { n: num[zone], x, y, zone } : undefined;
+const marks = variant === 'outdoor'
+  ? [marker('safety', 92, 64), marker('drones', 346, 150), marker('start', 300, 250), marker('guests', 400, 418)].filter(Boolean)
+  : [marker('ceiling', 64, 170), marker('drones', 400, 112), marker('floor', 104, 283), marker('guests', 472, 210), marker('kit', 96, 258)].filter(Boolean);
+---
+<section class="section ls-site" id={id} aria-labelledby={`${id}-h`}>
+  <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
+  <div class="st" data-site>
+    <figure class="st-fig" data-reveal-group data-active="">
+      {variant === 'outdoor' ? (
+        <svg viewBox="0 0 520 460" role="img" aria-label="Schema von oben: Sicherheitsbereich von ca. 100 × 100 Metern, darin die Drohnenlinie und die Start- und Landefläche, das Publikum außerhalb mit Blick auf die Show. Nicht maßstäblich.">
+          <g class="z z-safety">
+            <rect class="area" x="80" y="40" width="340" height="340" rx="26" />
+            <path class="dim" d="M80 22h340M80 16v12M420 16v12" />
+            <text class="lbl" x="250" y="14" text-anchor="middle">ca. 100 m</text>
+            <path class="dim" d="M440 40v340M434 40h12M434 380h12" />
+            <text class="lbl" x="458" y="210" text-anchor="middle" transform="rotate(90 458 210)">ca. 100 m</text>
+          </g>
+          <g class="z z-drones">
+            <rect class="soft" x="140" y="120" width="220" height="92" rx="46" />
+            {line.map((d, i) => <circle class="dot" cx={d.x} cy={d.y} r="4.2" fill={d.c} style={`--i:${i}`} />)}
+          </g>
+          <g class="z z-start">
+            <rect class="pad" x="196" y="250" width="70" height="42" rx="6" />
+            {raster.map((d) => <circle class="seed" cx={d.x} cy={d.y} r="1.8" />)}
+          </g>
+          <g class="z z-guests">
+            {crowd.map((d) => <circle class="guest" cx={d.x} cy={d.y} r="3.2" />)}
+            <path class="view" d="M250 400v-160" />
+            <path class="view-tip" d="M244 248l6-10 6 10" />
+          </g>
+          {marks.map((m) => <g class={`mk z-${m!.zone}`}><circle cx={m!.x} cy={m!.y} r="13" /><text x={m!.x} y={m!.y + 4.5} text-anchor="middle">{m!.n}</text></g>)}
+        </svg>
+      ) : (
+        <svg viewBox="0 0 520 340" role="img" aria-label="Schema im Schnitt: Raum mit mindestens drei Metern Deckenhöhe, Drohnen fliegen über einer freien Start- und Flugfläche, das Publikum steht daneben. Nicht maßstäblich.">
+          <g class="z z-ceiling">
+            <path class="wall" d="M20 50h480" />
+            {Array.from({ length: 24 }, (_, i) => <path class="hatch" d={`M${28 + i * 20} 50l-10 -12`} />)}
+            <path class="dim" d="M64 54v232M56 54h16M56 286h16" />
+            <text class="lbl" x="80" y="116">mind. 3 m</text>
+          </g>
+          <g class="z z-drones">
+            {swarm.map((d, i) => <circle class="dot" cx={d.x} cy={d.y} r="4.6" fill={d.c} style={`--i:${i}`} />)}
+          </g>
+          <g class="z z-floor">
+            <rect class="pad" x="126" y="278" width="290" height="10" rx="5" />
+            <text class="lbl" x="271" y="316" text-anchor="middle">freie Start- und Flugfläche</text>
+          </g>
+          <g class="z z-guests">
+            {[0, 1, 2].map((c) => <><circle class="guest" cx={444 + c * 22} cy="252" r="6" /><path class="guest-b" d={`M${434 + c * 22} 286c0-14 4-22 10-22s10 8 10 22`} /></>)}
+          </g>
+          <path class="wall" d="M20 287h480" />
+          {marks.map((m) => <g class={`mk z-${m!.zone}`}><circle cx={m!.x} cy={m!.y} r="13" /><text x={m!.x} y={m!.y + 4.5} text-anchor="middle">{m!.n}</text></g>)}
+        </svg>
+      )}
+      <figcaption class="mono">Schema, nicht maßstäblich</figcaption>
+    </figure>
+    <div class="st-list">
+      <ol class="st-items">
+        {items.map((it, i) => (
+          <li data-zone={it.zone}>
+            <span class="st-n mono" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <div>
+              <T>{it.title}{it.value && <span class="st-v"> {it.value}</span>}</T>
+              <p>{it.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+      {checklist && (
+        <div class="st-check">
+          <p class="mono">{checklist.title}</p>
+          <ul>{checklist.items.map((c) => <li><svg class="ico g" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg><span>{c}</span></li>)}</ul>
+        </div>
+      )}
+      {note && <p class="st-note"><b>{note.value}</b><span>{note.text}</span></p>}
+      {download && <a class="link" href={download.href} type="application/pdf" target="_blank" rel="noopener">{download.label} <span aria-hidden="true">↓</span></a>}
+    </div>
+  </div>
+</section>
+
+<script>
+  // Zeigen auf einen Punkt der Checkliste hebt die passende Zone im Bild hervor (reine Verstärkung, ohne Funktion)
+  document.querySelectorAll<HTMLElement>('[data-site]').forEach((root) => {
+    const fig = root.querySelector<HTMLElement>('.st-fig')!;
+    root.querySelectorAll<HTMLElement>('li[data-zone]').forEach((li) => {
+      li.addEventListener('pointerenter', () => { fig.dataset.active = li.dataset.zone ?? ''; li.classList.add('on'); });
+      li.addEventListener('pointerleave', () => { fig.dataset.active = ''; li.classList.remove('on'); });
+    });
+  });
+</script>
+
+<style>
+  .st { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 88px); align-items: start; }
+  .st-fig { margin: 0; position: sticky; top: 96px; padding: clamp(16px, 2.4vw, 36px); border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); display: grid; gap: 10px; }
+  .st-fig svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .st-fig figcaption { color: var(--faint); justify-self: end; }
+  .z { transition: opacity 0.35s ease; }
+  .st-fig:not([data-active='']) .z { opacity: 0.28; }
+  .st-fig[data-active='safety'] .z-safety, .st-fig[data-active='drones'] .z-drones, .st-fig[data-active='start'] .z-start,
+  .st-fig[data-active='guests'] .z-guests, .st-fig[data-active='ceiling'] .z-ceiling, .st-fig[data-active='floor'] .z-floor { opacity: 1; }
+  .area { fill: rgba(245, 167, 60, 0.04); stroke: rgba(245, 167, 60, 0.7); stroke-width: 1.5; stroke-dasharray: 7 6; }
+  .dim, .wall, .hatch { fill: none; stroke: var(--line-strong); stroke-width: 1.2; }
+  .wall { stroke: rgba(246, 241, 232, 0.4); stroke-width: 1.6; }
+  .hatch { stroke: rgba(246, 241, 232, 0.18); }
+  .lbl { fill: var(--faint); font: 400 15px var(--mono); letter-spacing: 0.06em; }
+  .soft { fill: rgba(219, 100, 232, 0.06); stroke: rgba(219, 100, 232, 0.25); stroke-dasharray: 3 5; }
+  .pad { fill: rgba(51, 237, 242, 0.1); stroke: rgba(51, 237, 242, 0.6); stroke-width: 1.2; }
+  .seed { fill: rgba(51, 237, 242, 0.75); }
+  .guest { fill: rgba(246, 241, 232, 0.4); }
+  .guest-b { fill: none; stroke: rgba(246, 241, 232, 0.4); stroke-width: 1.6; }
+  .view { stroke: rgba(246, 241, 232, 0.25); stroke-width: 1.2; stroke-dasharray: 2 5; fill: none; }
+  .view-tip { fill: none; stroke: rgba(246, 241, 232, 0.35); stroke-width: 1.2; }
+  .dot { filter: drop-shadow(0 0 4px currentColor); transition: opacity 0.6s ease; transition-delay: calc(var(--i, 0) * 70ms); }
+  :global(.reveal) .st-fig:not(.is-in) .dot { opacity: 0.12; }
+  .mk circle { fill: var(--ground); stroke: var(--accent); stroke-width: 1.4; }
+  .mk text { fill: var(--accent); font: 500 13px var(--display); }
+  .st-items { list-style: none; margin: 0; padding: 0; display: grid; }
+  .st-items li { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 4px; padding: 22px 0; border-top: 1px solid var(--line); transition: background 0.3s; }
+  .st-items li:last-child { border-bottom: 1px solid var(--line); }
+  .st-items li[data-zone] { cursor: default; }
+  .st-n { color: var(--accent); padding-top: 4px; }
+  .st-items h2, .st-items h3 { font-size: clamp(20px, 1.6vw, 24px); }
+  .st-v { color: var(--accent); white-space: nowrap; }
+  .st-items p { margin: 8px 0 0; color: var(--muted); max-width: 46ch; }
+  .st-items li.on h2, .st-items li.on h3 { color: #fff; }
+  .st-list { display: grid; gap: 28px; justify-items: start; }
+  .st-check { width: 100%; padding: 22px 24px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); display: grid; gap: 14px; }
+  .st-check .mono { margin: 0; color: var(--faint); }
+  .st-check ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .st-check li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; color: var(--text); font-size: 15.5px; }
+  .st-check .ico { width: 18px; height: 18px; transform: translateY(2px); }
+  .st-note { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 18px; align-items: baseline; padding: 18px 22px; border: 1.5px dashed rgba(245, 167, 60, 0.55); border-radius: 14px; }
+  .st-note b { font: 500 clamp(22px, 2vw, 28px)/1.1 var(--display); letter-spacing: -0.02em; color: var(--head); white-space: nowrap; }
+  .st-note span { color: var(--muted); }
+  @media (max-width: 960px) {
+    .st { grid-template-columns: 1fr; }
+    .st-fig { position: static; }
+  }
+  @media (max-width: 600px) {
+    .st-v { display: block; margin-top: 4px; }
+  }
+  @media (max-width: 480px) {
+    .st-note { grid-template-columns: 1fr; }
+    .lbl { font-size: 18px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .dot, .z { transition: none; } }
+</style>

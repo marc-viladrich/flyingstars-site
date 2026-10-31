@@ -1,0 +1,34 @@
+---
+// Abschluss mit Handlung und Gesichtern (Marc, 31.10.2026: „alles, was Richtung Abschluss geht, soll die Gesichter der
+// drei Geschäftsführer:innen zeigen“). Karte mit Verlaufsrand, links die Gesichter groß, Mitte Text, rechts Aktionen.
+import type { Section } from '../../content.config';
+import Accent from '../Accent.astro';
+import Faces from '../Faces.astro';
+type Props = Extract<Section, { type: 'landingCta' }> & { index: number };
+const { kicker, headline, text, button, secondary, index } = Astro.props;
+const id = `s${index}-h`;
+const H = index === 0 ? 'h1' : 'h2';
+---
+<section class="section lc" aria-labelledby={id}>
+  <div class="lc-card">
+    <div class="lc-faces"><Faces /></div>
+    <div class="lc-copy">
+      {kicker && <span class="kicker mono">{kicker}</span>}
+      <H id={id}><Accent text={headline} /></H>
+      {text && <p>{text}</p>}
+    </div>
+    <div class="lc-actions"><a class="btn primary" href={button.href}>{button.label}</a>{secondary && <a class="btn" href={secondary.href}>{secondary.label}</a>}</div>
+  </div>
+</section>
+
+<style>
+  .lc-card { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 24px clamp(28px, 4vw, 56px); align-items: center; padding: clamp(26px, 4vw, 48px); border-radius: var(--radius); background: var(--surface); }
+  .lc-card::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; background: var(--grad); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
+  .lc-faces :global(.faces .face) { width: 84px; height: 84px; margin-right: -18px; border-color: var(--surface); }
+  .lc-copy { display: grid; gap: 12px; justify-items: start; }
+  .lc-copy .kicker { margin: 0; }
+  .lc-copy h2, .lc-copy h1 { font-size: clamp(26px, 3vw, 42px); max-width: 20ch; }
+  .lc-copy p { margin: 0; color: var(--muted); max-width: 54ch; }
+  .lc-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  @media (max-width: 1000px) { .lc-card { grid-template-columns: minmax(0, 1fr); } .lc-faces :global(.faces .face) { width: 68px; height: 68px; margin-right: -14px; } }
+</style>

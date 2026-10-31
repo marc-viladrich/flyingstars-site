@@ -1,0 +1,15 @@
+---
+// Konfigurator-Teaser auf den Anlass-Seiten (Marc, 31.10.2026: „mindestens so ein Konfigurator-Teaser, damit man
+// unterschiedliche Motive sieht“). Kopf wie jede Section, Ziel und Knopf je Anlass. Der Teaser selbst
+// (src/components/configurator/ConfiguratorTeaser.astro) gehört dem Konfigurator; hier nur die Props id, href, cta.
+import type { Section } from '../../content.config';
+import SectionHead from '../SectionHead.astro';
+import ConfiguratorTeaser from '../configurator/ConfiguratorTeaser.astro';
+type Props = Extract<Section, { type: 'landingTeaser' }> & { index: number };
+const { kicker, headline, text, href, cta, id = 'motive', index } = Astro.props;
+const H = index === 0 ? 'h1' : 'h2';
+---
+<section class="section" id={id} aria-labelledby={`${id}-h`}>
+  <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
+  <ConfiguratorTeaser id={`${id}-cft`} href={href} cta={cta} />
+</section>

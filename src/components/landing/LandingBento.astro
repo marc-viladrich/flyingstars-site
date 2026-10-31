@@ -1,0 +1,79 @@
+---
+// Kacheln mit einer Hauptkachel (Bild mit Titel darauf oder eine große Aussage) und bis zu vier kleineren Kacheln mit
+// Kennzahl. Bricht die Folge aus Text-Bild-Blöcken auf (Marc, 31.10.2026: „mehr Variation in den Layouts“).
+// Optional unten Link und Gesichter der Geschäftsführer:innen (Agenturen: Abschluss mit Gesichtern).
+import type { Section } from '../../content.config';
+import SectionHead from '../SectionHead.astro';
+import Faces from '../Faces.astro';
+import Accent from '../Accent.astro';
+import { optimizedImage } from '../../lib/media';
+type Props = Extract<Section, { type: 'landingBento' }> & { index: number };
+const { kicker, headline, text, lead, items, cta, faces, contact, id = `s${Astro.props.index}`, index } = Astro.props;
+const H = index === 0 ? 'h1' : 'h2';
+const T = index === 0 ? 'h2' : 'h3';
+const img = lead.image ? await optimizedImage(lead.image.src, 960, 720) : undefined;
+---
+<section class="section lb" id={id} aria-labelledby={`${id}-h`}>
+  <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
+  <div class="lb-grid" data-n={items.length}>
+    <article class:list={['lb-lead', { 'has-img': img }]} data-dot-host={img ? '' : undefined}>
+      {img && <div class="lb-img" data-curtain data-dot-img><img src={img.src} width={img.width} height={img.height} alt={lead.image!.alt} loading="lazy" decoding="async" /></div>}
+      <div class="lb-lead-copy">
+        {lead.label && <span class="mono lb-k">{lead.label}</span>}
+        <T><Accent text={lead.title} /></T>
+        {lead.text && <p>{lead.text}</p>}
+      </div>
+    </article>
+    {items.map((it) => (
+      <div class="lb-cell">
+        <span class="mono lb-k">{it.label}</span>
+        {it.value && <p class="lb-v">{it.value}</p>}
+        <p class="lb-t">{it.text}</p>
+      </div>
+    ))}
+  </div>
+  {(cta || faces) && (
+    <div class="lb-foot">
+      {faces && <div class="lb-contact"><Faces />{contact && <p>{contact}</p>}</div>}
+      {cta && <a class:list={[faces ? 'btn primary' : 'link']} href={cta.href}>{cta.label}{!faces && <span aria-hidden="true">→</span>}</a>}
+    </div>
+  )}
+</section>
+
+<style>
+  .lb-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: minmax(200px, auto); gap: clamp(12px, 1.4vw, 20px); }
+  .lb-lead { grid-column: span 2; grid-row: span 2; position: relative; border-radius: var(--radius); overflow: hidden; background: var(--surface-2); border: 1px solid var(--line); display: grid; align-content: end; min-height: 420px; }
+  .lb-lead.has-img { border: 0; }
+  /* Aussage ohne Bild: ruhiges Raster aus Lichtpunkten, nach oben rechts ausblendend, wie Drohnen am Boden vor dem Start */
+  .lb-lead:not(.has-img)::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(245, 167, 60, 0.5) 1px, transparent 1.6px); background-size: 22px 22px; -webkit-mask-image: radial-gradient(120% 90% at 100% 0%, #000, transparent 62%); mask-image: radial-gradient(120% 90% at 100% 0%, #000, transparent 62%); opacity: 0.55; pointer-events: none; }
+  .lb-img { position: absolute; inset: 0; --curtain-r: var(--radius); }
+  .lb-img img { width: 100%; height: 100%; object-fit: cover; }
+  .lb-lead.has-img::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 35%, rgba(15, 13, 12, 0.88)); pointer-events: none; z-index: 1; }
+  .lb-lead-copy { position: relative; z-index: 2; display: grid; gap: 12px; justify-items: start; padding: clamp(24px, 3vw, 44px); }
+  .lb-lead h2, .lb-lead h3 { font-size: clamp(28px, 3.2vw, 48px); line-height: 1.04; letter-spacing: -0.03em; max-width: 16ch; }
+  .lb-lead p { color: var(--muted); max-width: 44ch; margin: 0; }
+  .lb-lead.has-img p { color: rgba(246, 241, 232, 0.82); }
+  .lb-k { color: var(--accent); }
+  .lb-cell { border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); padding: clamp(22px, 2.4vw, 32px); display: grid; gap: 10px; align-content: start; }
+  /* zwei Kacheln: je eine ganze Zeile rechts; drei: die letzte rechts unten über zwei Spalten */
+  .lb-grid[data-n='2'] .lb-cell { grid-column: span 2; }
+  .lb-grid[data-n='3'] .lb-cell:last-child { grid-column: span 2; }
+  .lb-grid[data-n='1'] .lb-cell { grid-column: span 2; grid-row: span 2; }
+  .lb-v { margin: 6px 0 0; font: 500 clamp(26px, 2.4vw, 38px)/1.05 var(--display); letter-spacing: -0.035em; color: var(--head); hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; }
+  .lb-t { margin: 0; color: var(--muted); font-size: 15.5px; max-width: 40ch; }
+  .lb-foot { margin-top: clamp(24px, 3vw, 40px); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px 32px; }
+  .lb-contact { display: flex; align-items: center; gap: 24px; }
+  .lb-contact p { margin: 0; color: var(--muted); max-width: 44ch; }
+  .lb-contact :global(.faces .face) { border-color: var(--ground); }
+  @media (max-width: 1100px) {
+    .lb-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .lb-lead { grid-column: 1 / -1; grid-row: auto; min-height: 380px; }
+    .lb-grid[data-n='3'] .lb-cell:last-child { grid-column: 1 / -1; }
+  }
+  @media (max-width: 640px) {
+    .lb-grid { grid-template-columns: 1fr; grid-auto-rows: auto; }
+    .lb-grid .lb-cell, .lb-grid[data-n] .lb-cell { grid-column: auto; grid-row: auto; }
+    .lb-lead { min-height: 340px; }
+    .lb-contact { flex-direction: column; align-items: flex-start; gap: 14px; }
+  }
+</style>

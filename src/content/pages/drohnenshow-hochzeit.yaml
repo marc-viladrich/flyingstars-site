@@ -1,101 +1,162 @@
-# Landingpage Hochzeit (nicht im Menü). Konzept HZ-01 bis HZ-10, Fakten: Fragebogen 21.10.2026. Inhalte aus Elevate (30.10.),
-# die Live-Vorschau (showPreview) ist durch einen Link in den Show-Konfigurator ersetzt. Startfläche ohne Maß: 15 × 15 oder 25 × 25 m ist offen.
-# Referenzen: Live-Seiten „Hochzeitsüberraschung“ (Recklinghausen, 29.06.2024, 150 Drohnen) und „Heiratsantrag“ (Schloss Hugenpoet, 10.09.2024, 220 Drohnen).
-# Preise stehen hier als Text; Quelle der Werte ist src/content/show-packages.ts (SPARK 7.900 €, +900 € je 10 Drohnen bis 150).
+# Landingpage Hochzeit (nicht im Menü). Konzept HZ-01 bis HZ-10, Fakten: Fragebogen 21.10.2026. Inhalte aus Elevate (30.10.).
+# Runde 8 (31.10.2026, Marc: „deutlich mehr in dieses Interaktive … bei der Hochzeit insbesondere mit den Preisen und der
+# Location und dem Ablauf“): Hero mit Showreel im Rahmen, Referenzen als Geschichten, Motive im Konfigurator-Teaser,
+# Preis als Preiskarte, Location als Schema mit Checkliste, Ablauf als Zeitstrahl in Zahlen, Überraschung mit Gesichtern,
+# Wetter als Kacheln. Bausteine: src/components/landing/.
+# Preise: src/content/show-packages.ts (SPARK 7.900 €, +900 € je 10 Drohnen bis 150), die Karte rechnet daraus.
+# Referenzen: Live-Seiten „Hochzeitsüberraschung“ (Recklinghausen, 29.06.2024, 150 Drohnen) und „Heiratsantrag“
+# (Schloss Hugenpoet, 10.09.2024, 220 Drohnen). Zonen der Location: Technik-Datenblatt 09/2026 (public/media/downloads).
+# Offen: Größe der Startfläche (15 × 15 oder 25 × 25 m), deshalb ohne Maß.
+# Alle Texte sind Entwürfe für Moritz; neu formulierte Stellen tragen den Kommentar „Entwurf für Moritz“.
 title: Drohnenshow zur Hochzeit
 navLabel: "Hochzeit"
 description: "Eine Drohnenshow für eure Hochzeit: Initialen, Herz und Datum am Nachthimmel. SPARK mit 100 Drohnen ab 7.900 € netto, Genehmigung inklusive."
 image: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg
 sections:
-  - type: hero
+  - type: landingHero
     kicker: Hochzeit
     headline: Eine Drohnenshow für eure Hochzeit.
-    text: Eure Initialen, ein Herz und euer Datum am Nachthimmel. Wir planen die Show mit euch, holen die Genehmigung ein und fliegen am Abend eurer Feier. Hochzeitsshows gibt es mit SPARK ab 7.900 € netto.
-    image:
+    text: Eure Initialen, ein Herz und euer Datum am Nachthimmel. Wir planen die Show mit euch, holen die Genehmigung ein und fliegen am Abend eurer Feier.
+    cta: { label: Hochzeitsshow anfragen, href: "#anfrage" }
+    secondary: { label: So läuft es ab, href: "#ablauf" }
+    video: showreel
+    videoLabel: Showreel
+    poster:
       src: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg
       alt: Hand mit Ring aus Drohnen am blauen Abendhimmel über Baumkronen, bei einem Heiratsantrag am Schloss Hugenpoet
       width: 2063
       height: 1303
-    cta: { label: Hochzeitsshow anfragen, href: "#anfrage" }
-    secondary: { label: So läuft es ab, href: "#ablauf" }
+    # Entwurf für Moritz: Eckdaten unter dem Satz (Werte aus show-packages.ts und dem Fragebogen)
+    facts:
+      - { value: ab 7.900 €, label: netto mit SPARK }
+      - { value: 100 Drohnen, label: im Paket }
+      - { value: 48 h, label: bis zur Antwort }
 
-  - type: textMedia
+  # Entwurf für Moritz: Referenzen als zwei Geschichten statt Fließtext, Inhalte wie bisher
+  - type: landingStories
+    id: referenzen
     kicker: Referenzen
-    headline: So sah das bei anderen Paaren aus.
-    body: |
-      **Hochzeitsüberraschung in Recklinghausen, Juni 2024.** Die Familie des Brautpaars kam vier Monate vor der Hochzeit auf uns zu. 150 Drohnen zeigten Ringe, Herzen, Tauben und die Initialen der beiden. Die Startfläche haben wir auf einem Nachbargrundstück eingerichtet, ohne dass das Brautpaar davon wusste. Wegen eines Gewitters haben wir die Show am Abend verschoben und dann geflogen.
+    headline: So sah das bei anderen *Paaren* aus.
+    items:
+      - kicker: Recklinghausen · Juni 2024
+        title: Eine Überraschung, die die Familie geplant hat
+        text: Die Familie kam vier Monate vor der Hochzeit auf uns zu. Die Startfläche lag auf einem Nachbargrundstück, ohne dass das Brautpaar davon wusste. Wegen eines Gewitters haben wir am Abend verschoben und dann geflogen.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg
+          alt: Zwei Blüten aus violetten und blauen Lichtpunkten am Abendhimmel über Bäumen, bei einer Hochzeit in Recklinghausen
+          width: 1518
+          height: 854
+        facts:
+          - { value: "150", label: Drohnen }
+          - { value: 4 Monate, label: vorher angefragt }
+          - { value: Ringe · Herzen · Tauben, label: Motive und Initialen }
+      - kicker: Schloss Hugenpoet, Essen · September 2024
+        title: "„Do you want to be my Forever?“"
+        text: Eine Schmuckschatulle öffnete sich, ein Ring schwebte an eine Hand, danach stand die Frage am Himmel. Die Antwort war Ja.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg
+          alt: Hand mit Ring aus Drohnen am blauen Abendhimmel über Baumkronen, bei einem Heiratsantrag am Schloss Hugenpoet
+          width: 2063
+          height: 1303
+        facts:
+          - { value: "220", label: Drohnen }
 
-      **Heiratsantrag am Schloss Hugenpoet in Essen, September 2024.** 220 Drohnen formten eine Schmuckschatulle, aus der ein Ring an eine Hand schwebte. Danach stand die Frage am Himmel: „Do you want to be my Forever?“ Die Antwort war Ja.
-    image:
-      src: https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg
-      alt: Zwei Blüten aus violetten und blauen Lichtpunkten am Abendhimmel über Bäumen, bei einer Hochzeit in Recklinghausen
-      width: 1518
-      height: 854
-    mediaSide: left
-
-  - type: cta
+  # Motive: Konfigurator-Teaser statt Text-Banner (Marc, 31.10.2026: „damit man unterschiedliche Motive sieht“)
+  - type: landingTeaser
+    id: motive
     kicker: Motive
-    headline: Was am Himmel stehen kann.
-    text: Herzen und Ringe aus unserem Katalog, dazu eure Initialen oder euer Datum. Im Show-Konfigurator seht ihr Beispielmotive mit 100 Drohnen. Eure eigene Show entwerfen wir gemeinsam mit euch.
-    button: { label: Motive im Konfigurator ansehen, href: "/drohnenshow-preise/?anlass=hochzeit&paket=SPARK#konfigurator" }
+    headline: Was am Himmel *stehen* kann.
+    text: Herzen und Ringe aus unserem Katalog, dazu eure Initialen oder euer Datum. Eure eigene Show entwerfen wir mit euch.
+    href: "/drohnenshow-preise/?anlass=hochzeit&paket=SPARK#konfigurator"
+    cta: Motive im Konfigurator ansehen
 
-  - type: textMedia
+  # Entwurf für Moritz: Preis als Karte. Inhalte wie bisher; „Kontakt“-Satz neu.
+  - type: landingPrice
+    id: preise
     kicker: Preise
     headline: Was eine Hochzeitsshow kostet.
-    body: |
-      Für Hochzeiten ist SPARK gedacht: 100 Drohnen ab 7.900 € netto zuzüglich Anfahrt. Bis 150 Drohnen kosten je weitere 10 Drohnen 900 €.
+    text: Für Hochzeiten ist SPARK gedacht. Alle Preise netto zuzüglich Anfahrt.
+    package: SPARK
+    groups:
+      - title: Enthalten
+        items:
+          - { label: Design eurer Motive mit Freigabe }
+          - { label: Genehmigung }
+          - { label: Musikschnitt }
+          - { label: Unser Team vor Ort }
+          - { label: "Haftpflicht bis 1,3 Mio. €" }
+      - title: Kann dazukommen
+        items:
+          - { label: Anfahrt ab Gelsenkirchen, value: nach Ort }
+          - { label: Express unter 14 Tagen Vorlauf, value: nach Aufwand }
+          - { label: Rohaufnahmen mit Kameradrohne, value: 900 € }
+    bonus: { value: "−10 %", text: "Frühbucherrabatt: Bucht ihr bis zum Jahresende für eine Hochzeit im nächsten Jahr." }
+    contact: Ronja, Florian und Erwin beantworten eure Anfrage innerhalb von 48 Stunden.
+    cta: { label: Hochzeitsshow anfragen, href: "#anfrage" }
+    secondary: { label: Alle Pakete, href: /drohnenshow-preise/ }
 
-      - **Enthalten:** das Design eurer Motive mit Freigabe, die Genehmigung, der Musikschnitt, unser Team vor Ort und die Haftpflichtversicherung bis 1,3 Mio. €.
-      - **Kann dazukommen:** die Anfahrt ab Gelsenkirchen, Express bei weniger als 14 Tagen Vorlauf, Rohaufnahmen mit einer Kameradrohne für 900 €.
-      - **Früh gebucht:** Bucht ihr bis zum Jahresende für eine Hochzeit im nächsten Jahr, bekommt ihr 10 % Frühbucherrabatt.
-
-      Alle Pakete findet ihr auf der [Preisseite](/drohnenshow-preise/).
-
-  - type: textMedia
+  # Entwurf für Moritz: Location als Schema mit Checkliste. Zonen nach dem Technik-Datenblatt 09/2026, Startfläche ohne Maß.
+  - type: landingSite
+    id: location
     kicker: Location
-    headline: Passt eure Location?
-    body: |
-      Ob es bei euch passt, prüfen wir vor dem Angebot. Schickt uns die Adresse und sagt uns, wo eure Gäste stehen werden. Das braucht es:
+    headline: Passt eure *Location*?
+    text: Ob es bei euch passt, prüfen wir vor dem Angebot. Schickt uns die Adresse und sagt uns, wo eure Gäste stehen werden.
+    variant: outdoor
+    items:
+      - title: Sicherheitsbereich
+        value: ca. 100 × 100 m
+        text: Während der Show hält sich darin niemand auf. Er hängt von Drohnenzahl, Motiven und Flughöhe ab.
+        zone: safety
+      - title: Drohnen am Himmel
+        value: bis 120 m
+        text: Die Drohnen bilden eine Linie quer zur Blickrichtung, so zeigen die Motive frontal zu euren Gästen.
+        zone: drones
+      - title: Start- und Landefläche
+        text: Eine freie Fläche, deren Größe von der Drohnenzahl abhängt. Sie ist ab etwa drei Stunden vor der Show gesperrt.
+        zone: start
+      - title: Freie Sicht für eure Gäste
+        text: Die Show wird auf eure Gäste ausgerichtet. Sie stehen außerhalb des Sicherheitsbereichs, nicht zu nah vor Hauswänden oder Bäumen.
+        zone: guests
+      - title: Zustimmung der Location
+        text: Die Grundstückseigentümer:innen, zum Beispiel eure Location, stimmen zu. Ein Schreiben dafür bekommt ihr von uns.
+    note: { value: ca. 3 Monate, text: "Vorlauf, wenn die Location in der Nähe eines Flughafens liegt. Dann braucht die Genehmigung mehr Zeit." }
+    download: { label: Technik-Datenblatt · PDF, href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf }
 
-      - eine freie Start- und Landefläche, deren Größe von der Drohnenzahl abhängt. Sie ist ab etwa drei Stunden vor der Show gesperrt.
-      - einen Sicherheitsbereich von rund 100 × 100 Metern, in dem sich während der Show niemand aufhält
-      - die Zustimmung der Grundstückseigentümer:innen, zum Beispiel eurer Location. Ein Schreiben dafür bekommt ihr von uns.
-
-      Liegt die Location in der Nähe eines Flughafens, braucht die Genehmigung mehr Zeit. Rechnet dann eher mit drei Monaten Vorlauf.
-
-  - type: steps
+  # Entwurf für Moritz: Ablauf in Zahlen wie auf der Startseite. Quellen: Fragebogen 21.10. (48 h, mind. 3 Wochen Design,
+  # 1–2 Monate ideal, ca. 3 h Aufbau, ca. 3 Monate bei Flughafennähe).
+  - type: tempo
     id: ablauf
     kicker: Ablauf
     headline: Bis zu eurem Abend.
-    text: Ihr kümmert euch um die Feier. Wir melden uns, wenn wir eine Entscheidung von euch brauchen. Ideal sind ein bis zwei Monate Vorlauf.
-    steps:
-      - title: Anfrage
-        text: Datum, Location und eure Idee reichen. Wir antworten innerhalb von 48 Stunden.
-        duration: 48 h Antwort
-      - title: Gespräch und Angebot
-        text: In einem kurzen Gespräch klären wir Ort, Motive und Größe. Danach bekommt ihr ein Angebot.
-      - title: Motive und Musik
-        text: Ihr seht einen Entwurf mit eurer Musik, gebt Feedback und am Ende jedes Motiv frei.
-        duration: mindestens 3 Wochen
-      - title: Genehmigung
-        text: Die Genehmigung holen wir ein. Von euch brauchen wir nur die Zustimmung der Location.
-      - title: Euer Abend
-        text: Unser Team kommt etwa drei Stunden vor der Show, sperrt die Startfläche, fliegt und baut danach wieder ab.
-        duration: ca. 3 h Aufbau
+    text: Ihr kümmert euch um die Feier. Wir melden uns, wenn wir eine Entscheidung von euch brauchen.
+    marks:
+      - { value: 48 h, label: bis zu unserer Antwort, text: "Datum, Location und eure Idee reichen. Danach ein kurzes Gespräch und euer Angebot." }
+      - { value: 3 Wochen, label: "für Motive und Musik, mindestens", text: "Ihr seht einen Entwurf mit eurer Musik, gebt Feedback und am Ende jedes Motiv frei." }
+      - { value: 3 h, label: vor der Show vor Ort, text: "Unser Team sperrt die Startfläche, fliegt die Show und baut danach wieder ab." }
+    facts:
+      - { value: 1–2 Monate, label: Vorlauf ideal, text: Genug Zeit für Design und Genehmigung. }
+      - { value: Genehmigung, label: machen wir, text: Von euch brauchen wir nur die Zustimmung der Location. }
+      - { value: Express, label: unter 14 Tagen, text: Möglich mit Aufpreis nach Aufwand. }
 
-  - type: cta
+  - type: landingCta
     kicker: Überraschung
-    headline: Es soll eine Überraschung werden?
+    headline: Es soll eine *Überraschung* werden?
     text: Ob Heiratsantrag oder Geschenk der Familie, wir stimmen uns nur mit euch ab. Die Startfläche richten wir abseits ein und den Startzeitpunkt planen wir mit der Location.
     button: { label: Überraschung anfragen, href: "#anfrage" }
 
-  - type: textMedia
+  # Entwurf für Moritz: Wetter als Kacheln, Inhalte wie bisher
+  - type: landingBento
+    id: wetter
     kicker: Wetter
     headline: Und wenn das Wetter nicht mitspielt?
-    body: |
-      Wir fliegen bis Windstärke 5 und auch bei leichtem Nieselregen. Ist schlechtes Wetter absehbar, verschieben wir die Show kostenlos, solange wir noch nicht losgefahren sind. Bei der Buchung zahlt ihr 40 % an. Fällt die Show ganz aus, gilt die Staffel aus unseren AGB.
-
-      **Eure Location erlaubt kein Feuerwerk?** Eine Drohnenshow ist keine Pyrotechnik. Es gibt keinen Knall, keinen Rauch, keine Funken und nichts, was danach auf dem Rasen liegt. Laut ist nur eure Musik.
+    lead:
+      label: Kein Feuerwerk erlaubt?
+      title: Eine Drohnenshow ist keine *Pyrotechnik*.
+      text: Kein Knall, kein Rauch, keine Funken und nichts, was danach auf dem Rasen liegt. Laut ist nur eure Musik.
+    items:
+      - { label: Wind, value: bis Stärke 5, text: "So lange fliegen wir, auch bei leichtem Nieselregen." }
+      - { label: Verschieben, value: kostenlos, text: "Ist schlechtes Wetter absehbar, verschieben wir, solange wir noch nicht losgefahren sind." }
+      - { label: Anzahlung, value: 40 %, text: "Zahlt ihr bei der Buchung an. Fällt die Show ganz aus, gilt die Staffel aus unseren AGB." }
 
   - type: faq
     id: fragen
