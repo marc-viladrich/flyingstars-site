@@ -127,12 +127,13 @@ sections:
     note: Alle Preise netto zzgl. Anfahrt
     cta: { label: Alle Leistungen und Preise, href: /drohnenshow-preise/ }
 
-  # Vorgeschmack auf den Konfigurator (Marc, 31.10.2026): Anlass wählen, Drohnen dazuschieben, neue Motive erscheinen.
+  # Vorgeschmack auf den Konfigurator (Marc, 31.10.2026, Runde 7): kein interaktiver Konfigurator, sondern ein Showreel,
+  # das sich selbst abspielt: die stärksten Motive von SPARK bis ODYSSEY, ein Beispiel-Logo, daneben ein Wireframe.
   - type: configuratorTeaser
     id: konfigurator
     kicker: Show-Konfigurator
     headline: Stellt eure Show *selbst* zusammen.
-    text: Wählt einen Anlass und schiebt mehr Drohnen dazu. Mit jeder Stufe kommen neue Motive an den Himmel.
+    text: Vom Herz bis zur Mondlandung, von 100 bis 600 Drohnen. Im Konfigurator seht ihr, was zu eurem Anlass passt.
 
   - type: projectGrid
     id: projekte

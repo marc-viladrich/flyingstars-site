@@ -1,6 +1,6 @@
 # Show-Konfigurator (Prototyp)
 
-Stand: 31. Oktober 2026, sechzehnte Fassung (Abschnitt „Sechzehnte Fassung“ ganz unten). Frühere Stände sind als Tags erhalten: `konfigurator-v6`, `konfigurator-v8`, `konfigurator-v9`, `konfigurator-v10`. Seit der sechzehnten Fassung ist der Konfigurator eine Komponente (`src/components/configurator/ShowConfigurator.astro`) direkt auf der Preisseite, Anker `#konfigurator`; `/show-konfigurator/` leitet dorthin weiter. Für die Startseite gibt es einen minimal interaktiven Teaser (`ConfiguratorTeaser.astro`). Der Konfigurator ist ein Vorschlag an FlyingStars.
+Stand: 31. Oktober 2026, sechzehnte Fassung (Abschnitt „Sechzehnte Fassung“ ganz unten). Frühere Stände sind als Tags erhalten: `konfigurator-v6`, `konfigurator-v8`, `konfigurator-v9`, `konfigurator-v10`. Seit der sechzehnten Fassung ist der Konfigurator eine Komponente (`src/components/configurator/ShowConfigurator.astro`) direkt auf der Preisseite, Anker `#konfigurator`; `/show-konfigurator/` leitet dorthin weiter. Für die Startseite gibt es einen Teaser als sich selbst abspielendes Showreel (`ConfiguratorTeaser.astro`, Abschnitt „Startseiten-Teaser als Showreel“). Der Konfigurator ist ein Vorschlag an FlyingStars.
 
 ## Das Modell: zwei Entscheidungen, die sich nicht gegenseitig verändern
 
@@ -684,7 +684,7 @@ Grundregeln bleiben: kein Einrasten, keine Finten (`scripts/show-finte.test.mjs`
 - `/show-konfigurator/` ist eine Weiterleitung in `astro.config.mjs` (`/drohnenshow-preise/#konfigurator`). Die statische Weiterleitung (meta refresh) verliert Query-Parameter; Links mit Parametern müssen direkt auf die Preisseite zeigen.
 - Die Freischalt-Meldung bricht auf dem Handy nicht mehr auf halber Breite um (Breite `fit-content` statt `left: 50%` mit Verschiebung).
 
-**4. Teaser für die Startseite.** Marc: „mit einer minimal interaktiven Version des Konfigurators schon einen Vorgeschmack geben, warum dieser Konfigurator überhaupt interessant ist.“
+**4. Teaser für die Startseite (erste Fassung, interaktiv; ersetzt durch das Showreel unten).** Marc: „mit einer minimal interaktiven Version des Konfigurators schon einen Vorgeschmack geben, warum dieser Konfigurator überhaupt interessant ist.“
 - `src/components/configurator/ConfiguratorTeaser.astro` + `src/scripts/show-teaser.js`: Bühne mit derselben Engine und denselben Motiven, zwei Bedienungen (Anlass, Drohnenzahl). Darunter die Motive des Anlasses, gesperrte leise mit „ab 250“, dazu Paket und Preis live und der Knopf „Show selbst zusammenstellen“.
 - Der Knopf übergibt Anlass, Drohnenzahl und das Motiv auf der Bühne: `/drohnenshow-preise/?anlass=hochzeit&drohnen=250&motiv=lotus#konfigurator`.
 - Props: `id` (Präfix der IDs, Standard `cft`), `occasion` (Standard `hochzeit`), `drones` (Standard 200), `href` (Standard `/drohnenshow-preise/`), `cta`. Kein Section-Kopf, kein Section-Abstand.
@@ -695,4 +695,17 @@ Grundregeln bleiben: kein Einrasten, keine Finten (`scripts/show-finte.test.mjs`
 
 - Schnell: `node --test scripts/show-unlock.test.mjs scripts/show-price.test.mjs scripts/show-geometry.test.mjs scripts/show-counts.test.mjs scripts/show-motive15.test.mjs scripts/show-flight.test.mjs`, dazu einzeln `scripts/show-clouds.test.mjs` (etwa 30 s) und `scripts/show-finte.test.mjs` (etwa 2 min).
 - Browser: `tests/show-configurator.spec.ts` (neu: gesperrte Lichtpunkte), `tests/show-teaser.spec.ts` (Laden in der Nähe des Viewports, Freischalten, Übergabe, Pause außerhalb und bei reduzierter Bewegung), `tests/show-physics.spec.ts` (neu: SPARK 190 und HORIZON 290). Die Specs laufen standardmäßig gegen `/drohnenshow-preise/`; `CFG_PATH=/poc/konfigurator-teaser/` bzw. `TEASER_PATH=/` stellen eine andere Seite ein.
+
+## Startseiten-Teaser als Showreel (31.10.2026, abends)
+
+Marc zur ersten Teaser-Fassung: Interaktiv ist für die Startseite zu komplex. Stattdessen ein vorprogrammierter Ablauf „wie so ein Quick-Showreel“ in schnellerem Tempo durch die „Greatest Hits“ von SPARK bis ODYSSEY, dazwischen lebendige Wolken mit „Quick Morphing Action“, ein Beispiel-Logo („das könnte dein Logo sein“) und ein reduziertes, vor-animiertes Wireframe des Konfigurators.
+
+- **Bühne** (`src/scripts/show-teaser.js`, `buildReel()`): eine Szene aus ausgewählten Bildern verschiedener Pakete und Drohnenzahlen, gebaut mit `buildSequence()` wie im Konfigurator, in der Paketfarbe. Jedes Motiv ist ein eigenes Segment und wird durch die lebendige Wolke erreicht; nach dem letzten geht es durch die Wolke zurück zum ersten.
+- **Ablauf** (`REEL`): Herz (SPARK 100) → Schmetterling (SPARK 150) → Beispiel-Logo mit Lichtlauf (SPARK 150, Schrift „Das könnte euer Logo sein“) → Rakete als Körper (HORIZON 200) → Tänzerin in 3D (HORIZON 250) → Orbit und Mondlandung (ODYSSEY 450) → Drache speit ein Feuerwerk (ODYSSEY 450) → Finale mit Goldregen (ODYSSEY 600).
+- **Tempo:** nur über die Show-Uhr, `REEL_RATE = 2.5` (`field.setRate`). Flug, Wolke, Eigenbewegung und Licht laufen gleichmäßig schneller, darum gibt es weder Einrasten noch Finten (Engine und Motive unverändert). Eine Wolke dauert etwa 1,7 s, ein Motiv steht etwa 1,2 bis 1,6 s; die Mondlandung als Geschichte etwa 5 s. Ein Durchlauf dauert gemessen 28 bis 32 s (Chromium und WebKit, Dev-Server).
+- **Wireframe** (`ConfiguratorTeaser.astro`, `aria-hidden`, keine Formularelemente): Platzhalterbalken für Überschrift und Beschriftungen; echte Wörter nur dort, wo sie den Wechsel zeigen (Anlass-Chips, Paketnamen, Drohnenzahl, Preis). Mit jedem neuen Motiv springt der Anlass-Chip, der Paketknopf wechselt SPARK → HORIZON → ODYSSEY (mit kurzem Druck statt eines sichtbaren Cursors), der Regler wandert nach rechts, Zahl und Preis folgen. Auf dem Handy bleiben nur Paketknöpfe und Regler.
+- **Bedienbar** ist nur der Knopf „Show selbst zusammenstellen“ → `/drohnenshow-preise/#konfigurator`. Die Bühne hat eine kurze Textalternative.
+- **Leistung:** wie zuvor; Laden erst auf 300 px vor dem Viewport, Pause außerhalb und bei `html.motion-paused`. Bei reduzierter Bewegung steht von Anfang an das Drachen-Feuerwerk in Ruhe (`STILL`).
+- **Props:** `id`, `href` (Standard `/drohnenshow-preise/#konfigurator`), `cta`. `occasion` und `drones` werden noch angenommen, haben aber keine Wirkung mehr.
+- **Prüfen:** `tests/show-teaser.spec.ts` (Laden in Viewport-Nähe; keine Formularelemente, ein Link, Textalternative; das Showreel läuft durch SPARK, HORIZON, ODYSSEY, zeigt das Logo und beginnt von vorn durch die Wolke; Pause außerhalb, Standbild bei reduzierter Bewegung), 12/12 in Chromium, WebKit und Pixel 7. Frame-Folge über einen Durchlauf: `/tmp/fs-r7-k/r1-sheet.png`.
 

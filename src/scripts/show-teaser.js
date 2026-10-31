@@ -1,123 +1,86 @@
-// Startseiten-Teaser des Show-Konfigurators (sechzehnte Fassung, Marc 31.10.2026: „mit einer minimal interaktiven
-// Version des Konfigurators schon einen Vorgeschmack geben, warum dieser Konfigurator überhaupt interessant ist“).
-// Dieselbe Engine (show-field.js) und dieselben Motive wie der Konfigurator, aber nur zwei Bedienungen: Anlass und
-// Drohnenzahl. Mehr Drohnen schalten Motive frei (Freischalt-Leiter, content/show-configurator.js); die Meldung ist
-// dieselbe wie im Konfigurator, die Bühne fliegt durch die lebendige Wolke zum neuen Motiv. Paket und Preis folgen der
-// Drohnenzahl. Der Knopf „Show selbst zusammenstellen“ übergibt Anlass, Drohnenzahl und das Motiv auf der Bühne.
+// Startseiten-Teaser des Show-Konfigurators, zweite Fassung (Marc, 31.10.2026: interaktiv ist für die Startseite zu
+// komplex; stattdessen „wie so ein Quick-Showreel“ in deutlich schnellerem Tempo, durch die „Greatest Hits“ von SPARK
+// über HORIZON bis ODYSSEY, mit lebendigen Wolken dazwischen, einem Beispiel-Logo „das könnte dein Logo sein“ und einem
+// vor-animierten, reduzierten Wireframe des Konfigurators, das synchron zur Bühne Anlass, Paket und Drohnenzahl wechselt).
+// Dieselbe Engine (show-field.js) und dieselben Motive wie der Konfigurator: Das Showreel ist eine Szene aus
+// ausgewählten Bildern verschiedener Pakete und Drohnenzahlen. Jedes Motiv wird durch die lebendige Wolke erreicht, nach
+// dem letzten beginnt die Runde von vorn (auch durch die Wolke). Das Tempo kommt nur aus der Show-Uhr (setRate): Flug,
+// Wolke, Eigenbewegung und Licht laufen gleichmäßig schneller, darum bleibt es ohne Einrasten und ohne Finten.
 // Geladen wird dieses Modul erst, wenn der Block in die Nähe des Viewports kommt (ConfiguratorTeaser.astro). Außerhalb
-// des Viewports, bei globaler Pause (html.motion-paused) und bei reduzierter Bewegung zeichnet die Engine nicht weiter
-// und zeigt das Motiv in Ruhe.
-import { OCCASIONS, unlockAt } from "../content/show-configurator.js";
-import { SHOW_PACKAGES, packageForDrones, snapDrones, configuratorPrice } from "../content/show-packages";
+// des Viewports, bei globaler Pause (html.motion-paused) und bei reduzierter Bewegung zeichnet die Engine nicht weiter;
+// bei reduzierter Bewegung steht von Anfang an ein starkes Motiv in Ruhe (STILL).
+import { OCCASIONS } from "../content/show-configurator.js";
+import { SHOW_PACKAGES, DRONES_MIN, DRONES_MAX, configuratorPrice } from "../content/show-packages";
 import { createField } from "./show-field.js";
-import { buildSequence, preloadScenes } from "./show-scenes.js";
-import { freshMotifs, unlockNote, canPlay } from "./show-tempo.js";
+import { buildSequence } from "./show-scenes.js";
 
-const eur = (v) => `ab ${v.toLocaleString("de-DE")} €`;
+/** Tempo des Showreels gegenüber der Vorschau im Konfigurator (dort 1×): Wolke ≈ 1,7 s, ein Motiv steht ≈ 1,2–1,6 s. */
+export const REEL_RATE = 2.5;
 
-/** Startet den Teaser in root (ein Element mit data-cft-root). Gibt eine Funktion zum Aufräumen zurück. */
+/**
+ * Die „Greatest Hits“, vom einfachen 2D-Bild zur erzählten Geschichte. beats: welche Bilder des Motivs (Index, negativ
+ * vom Ende); ohne Angabe alle. logo: das Beispiel-Logo mit der Botschaft „Das könnte euer Logo sein“.
+ */
+export const REEL = [
+  { occasion: "hochzeit", motif: "herz", pkg: "SPARK", drones: 100 },
+  { occasion: "hochzeit", motif: "falter", pkg: "SPARK", drones: 150 },
+  { occasion: "launch", motif: "logo", pkg: "SPARK", drones: 150, logo: true },
+  { occasion: "launch", motif: "rakete", pkg: "HORIZON", drones: 200 },
+  { occasion: "kultur", motif: "tanz", pkg: "HORIZON", drones: 250 },
+  { occasion: "launch", motif: "mond", pkg: "ODYSSEY", drones: 450 }, // Orbit und Landung (nur die Landung schnitte die anfliegende Rakete oben ab)
+  { occasion: "festival", motif: "drache", pkg: "ODYSSEY", drones: 450, beats: [-1] },
+  { occasion: "silvester", motif: "finale", pkg: "ODYSSEY", drones: 600 },
+];
+/** Das Motiv, das bei reduzierter Bewegung als ruhiges Standbild steht (Index in REEL). */
+export const STILL = 6;
+
+/** Baut die Szene des Showreels: je Eintrag die gewählten Bilder, in der Paketfarbe, als eigenes Motiv (segment). */
+export async function buildReel(reel = REEL) {
+  const beats = [];
+  for (const [segment, r] of reel.entries()) {
+    const occasion = OCCASIONS.find((o) => o.id === r.occasion), motif = occasion?.motifs.find((m) => m.id === r.motif);
+    if (!motif?.tiers[r.pkg]) throw new Error(`Showreel: ${r.occasion}/${r.motif} hat keine ${r.pkg}-Fassung`);
+    const seq = await buildSequence([motif], r.pkg, r.drones, SHOW_PACKAGES[r.pkg].color, r.occasion);
+    const all = seq.beats.filter((b) => !b.interlude), pick = r.beats ? r.beats.map((i) => all.at(i)) : all;
+    pick.forEach((b, i) => beats.push({ ...b, segment, cloud: i === 0, reel: r, motif: motif.label, caption: r.logo ? "Ein Beispiel-Logo aus Drohnen: das könnte euer Logo sein" : b.caption }));
+  }
+  return { beats, loopTo: 0 };
+}
+
+/** Startet das Showreel in root (ein Element mit data-cft-root). Gibt eine Funktion zum Aufräumen zurück. */
 export function initTeaser(root) {
   if (root.dataset.cftReady) return () => {};
   root.dataset.cftReady = "true";
   const q = (name) => root.querySelector(`[data-cft="${name}"]`);
-  const slider = q("drones"), count = q("count"), pkgOut = q("pkg"), priceOut = q("price"), scene = q("scene"), list = q("motifs"), cta = q("cta"), toast = q("toast");
-  const href = cta.getAttribute("href").split(/[?#]/)[0];
-  let occasion = OCCASIONS.find((o) => o.id === root.querySelector("[name$=-occasion]:checked")?.value) ?? OCCASIONS[0];
-  let drones = snapDrones(Number(slider.value)), segment = 0, job = 0, first = true, unlockTo = null, building = 0, fresh = [];
-  const field = createField(q("field"), { onBeat: (k, beat) => { segment = beat.segment ?? 0; scene.textContent = beat.caption ?? ""; link(); } });
-  const pkgName = () => packageForDrones(drones);
-  const size = () => Math.min(1, Math.sqrt(drones / SHOW_PACKAGES.ODYSSEY.base));
-  const cache = new Map();
-  const sequence = () => {
-    const key = `${occasion.id}|${pkgName()}|${drones}`;
-    if (cache.size > 30) cache.clear();
-    if (!cache.has(key)) cache.set(key, buildSequence(occasion.motifs, pkgName(), drones, SHOW_PACKAGES[pkgName()].color, occasion.id).catch((e) => { cache.delete(key); throw e; }));
-    return cache.get(key);
-  };
-
-  /** Anfrage-Link in den vollen Konfigurator: Anlass, Drohnenzahl und das Motiv, das gerade auf der Bühne steht. */
-  function link() {
-    const m = occasion.motifs[segment];
-    const params = new URLSearchParams({ anlass: occasion.id, drohnen: String(drones), ...(m ? { motiv: m.id } : {}) });
-    cta.href = `${href}?${params}#konfigurator`;
+  const all = (name) => [...root.querySelectorAll(`[data-cft="${name}"]`)];
+  const chips = all("chip"), pkgs = all("pkg"), thumb = q("thumb"), fill = q("fill"), count = q("count"), price = q("price"), logo = q("logo"), badge = q("badge");
+  let shownSegment = -1;
+  /** Das Wireframe folgt der Bühne: Anlass-Chip, Paketknopf, Regler, Zahl und Preis; ein kurzer Druck dort, wo es wechselt. */
+  function sync(beat) {
+    const r = beat.reel; if (!r) return;
+    root.style.setProperty("--pkg", `rgb(${SHOW_PACKAGES[r.pkg].color.join(",")})`);
+    if (beat.segment === shownSegment) return;
+    shownSegment = beat.segment;
+    const press = (el, on) => { el.classList.toggle("is-on", on); if (on && !el.dataset.was) { el.classList.remove("is-press"); void el.offsetWidth; el.classList.add("is-press"); } el.dataset.was = on ? "1" : ""; };
+    chips.forEach((c) => press(c, c.dataset.id === r.occasion));
+    pkgs.forEach((p) => press(p, p.dataset.id === r.pkg));
+    const at = (r.drones - DRONES_MIN) / (DRONES_MAX - DRONES_MIN);
+    thumb.style.setProperty("--at", String(at)); fill.style.setProperty("--at", String(at));
+    count.textContent = String(r.drones);
+    price.textContent = `ab ${configuratorPrice(r.drones).toLocaleString("de-DE")} €`;
+    badge.textContent = r.pkg;
+    logo.classList.toggle("is-on", Boolean(r.logo));
   }
-
-  /** Motive des Anlasses: die gespielten hell, die gesperrten leise mit ihrer Schwelle („ab 250“). */
-  function drawMotifs() {
-    const p = pkgName();
-    list.replaceChildren(...occasion.motifs.map((m) => {
-      const li = document.createElement("li"), on = canPlay(m, p, drones), at = on ? null : unlockAt(m, drones);
-      li.className = on ? "is-on" : "";
-      li.textContent = m.label;
-      if (at) { const s = document.createElement("small"); s.textContent = ` ab ${at}`; li.append(s); }
-      return li;
-    }));
-  }
-
-  function showToast(note) {
-    clearTimeout(showToast.timer);
-    const cut = note.indexOf(": "), lead = document.createElement("span"), names = document.createElement("b");
-    lead.textContent = cut < 0 ? "" : note.slice(0, cut + 2); names.textContent = cut < 0 ? note : note.slice(cut + 2);
-    toast.replaceChildren(lead, names);
-    toast.classList.remove("is-on"); void toast.offsetWidth; toast.classList.add("is-on");
-    showToast.timer = setTimeout(() => { toast.classList.remove("is-on"); showToast.timer = setTimeout(() => { toast.textContent = ""; }, 700); }, 3400);
-  }
-
-  async function render(keep, { cloud = false } = {}) {
-    let to = keep ? segment : null;
-    if (unlockTo !== null) { to = unlockTo; cloud = true; unlockTo = null; fresh = []; } // ein Motiv, das beim Ziehen freigeschaltet wurde
-    const id = ++job;
-    try {
-      const built = await sequence();
-      if (id !== job) return;
-      const land = (test) => built.beats.findIndex((b) => test(b.segment ?? 0) && !b.interlude);
-      let k = to === null ? -1 : land((s) => s === to);
-      if (k < 0 && to !== null) k = land((s) => s > to);
-      if (k < 0) k = 0;
-      field.show(built, drones, size(), { instant: first, at: k, cloud });
-      first = false;
-      q("error").hidden = true;
-    } catch {
-      if (id === job) q("error").hidden = false;
-    }
-  }
-
-  function update(keep, { delay = 0, cloud = false } = {}) {
-    const p = pkgName();
-    root.style.setProperty("--pkg", `rgb(${SHOW_PACKAGES[p].color.join(",")})`);
-    if (Number(slider.value) !== drones) slider.value = String(drones);
-    slider.setAttribute("aria-valuetext", `${drones} Drohnen, ${p}`);
-    count.textContent = String(drones); pkgOut.textContent = p; priceOut.textContent = eur(configuratorPrice(drones));
-    drawMotifs(); link();
-    clearTimeout(building);
-    if (delay) building = setTimeout(() => render(keep, { cloud }), delay); else render(keep, { cloud });
-  }
-
-  /** Neue Drohnenzahl: neu freigeschaltete Motive melden und zum ersten fliegen (nur, wenn es mehr Drohnen werden).
-   * Während man zieht, sammelt die Meldung alle neuen Motive, bis die Bühne zum ersten davon geflogen ist. */
-  function setDrones(n, opts) {
-    const before = { pkg: pkgName(), drones };
-    drones = snapDrones(n);
-    const after = { pkg: pkgName(), drones }, now = after.drones > before.drones ? freshMotifs(occasion.motifs, before, after) : [];
-    fresh = occasion.motifs.filter((m) => (fresh.includes(m) || now.includes(m)) && canPlay(m, after.pkg, after.drones));
-    if (now.length) showToast(unlockNote(fresh));
-    unlockTo = fresh.length ? occasion.motifs.indexOf(fresh[0]) : null;
-    update(true, opts);
-  }
-
-  const onInput = () => { first = false; setDrones(Number(slider.value), { delay: 180 }); };
-  const onChange = () => setDrones(Number(slider.value));
-  slider.addEventListener("input", onInput);
-  slider.addEventListener("change", onChange);
-  const radios = [...root.querySelectorAll("[name$=-occasion]")];
-  const onOccasion = (e) => { first = false; occasion = OCCASIONS.find((o) => o.id === e.target.value) ?? occasion; fresh = []; unlockTo = null; segment = 0; update(false, { cloud: true }); };
-  radios.forEach((r) => r.addEventListener("change", onOccasion));
-  root.addEventListener("pointerdown", preloadScenes, { once: true });
-  root.addEventListener("focusin", preloadScenes, { once: true });
-
-  update(false);
-  return () => {
-    slider.removeEventListener("input", onInput); slider.removeEventListener("change", onChange);
-    radios.forEach((r) => r.removeEventListener("change", onOccasion));
-  };
+  const field = createField(q("field"), { onBeat: (k, beat) => sync(beat) });
+  field.setRate(REEL_RATE);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let done = false;
+  buildReel().then((scene) => {
+    if (done) return;
+    const still = scene.beats.findIndex((b) => b.segment === STILL);
+    // die erste Ansicht steht schon; bei reduzierter Bewegung ein starkes Motiv in Ruhe
+    field.show(scene, 300, 1, { instant: true, at: reduce ? still : 0 });
+    root.dataset.cftLoaded = "true";
+  }).catch(() => { q("error").hidden = false; });
+  return () => { done = true; };
 }
