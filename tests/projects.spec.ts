@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { redirects } from './routes';
 
 const cases = [
   { route: '/musikalischer-teaser-bokkenrijders/', name: 'Bokkenrijders', droneCount: 600, pictures: 6, next: '/nfl-berlin-game/' },
@@ -29,8 +30,9 @@ for (const project of cases) {
   });
 }
 
-test('Projektübersicht verlinkt alle vier Fälle und blendet redaktionelle Entwürfe aus', async ({ page }) => {
-  await page.goto('/projekte/');
+test('Referenzen verlinken alle vier Fälle und blenden redaktionelle Entwürfe aus', async ({ page }) => {
+  await page.goto('/referenzen/');
+  await expect(page.locator('header.nav nav a[href="/referenzen/"]')).toHaveAttribute('aria-current', 'page');
   for (const project of cases) await expect(page.locator(`.projects a[href="${project.route}"]`)).toBeVisible();
   await expect(page.getByText('Beispielprojekt', { exact: true })).toHaveCount(0);
   await page.locator(`.projects a[href="${cases[0].route}"]`).click();
@@ -59,4 +61,28 @@ test('Reduzierte Bewegung zeigt eine statische echte Formation', async ({ page }
     const pixels = canvas.getContext('2d')!.getImageData(0, 0, canvas.width, canvas.height).data;
     return pixels.some((value, index) => index % 4 === 3 && value > 0);
   })).toBe(true);
+});
+
+// „Projekte“ heißt seit dem 30.10.2026 „Referenzen“. Alte Adressen leiten weiter, die Fallstudien bleiben unter ihren Live-URLs.
+const moved: Record<string, string> = {
+  '/projekte/': '/referenzen/',
+  ...Object.fromEntries(cases.map((c) => [`/projekte${c.route}`, c.route])),
+  '/leistungen/': '/drohnenshow-preise/',
+  '/warum-wir/': '/ueber-uns/',
+};
+
+test('Alte Adressen leiten auf die neue Seite weiter', async ({ page }) => {
+  expect(redirects).toEqual(Object.keys(moved).sort());
+  for (const [from, to] of Object.entries(moved)) {
+    await page.goto(from);
+    await expect(page).toHaveURL(new RegExp(`${to.replaceAll('/', '\\/')}$`));
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', new RegExp(`${to}$`));
+  }
+});
+
+test('Referenzen zeigen die Zahl der Shows pro Jahr', async ({ page }) => {
+  await page.goto('/referenzen/');
+  const years = page.locator('#pro-jahr .cell');
+  await expect(years).toHaveCount(6);
+  await expect(years.last()).toContainText('178');
 });

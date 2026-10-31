@@ -1,5 +1,5 @@
 // kultur motifs of the eleventh version (see src/content/show-configurator.js for the build names).
-import { TAU, WARM, GOLD, PINK, VIOLET, CYAN, BLUE, ORANGE, RED, GREEN, DIAMOND, mix, paint, place, frac, smooth, hash, yaw, roll, pitch, sway, swing, breathe, glint, sparkle, chase, trace, burstLight, loosen, rig, share, part, act } from "../show-motion.js";
+import { TAU, WARM, GOLD, PINK, VIOLET, CYAN, BLUE, ORANGE, RED, GREEN, DIAMOND, mix, paint, place, frac, smooth, hash, yaw, roll, pitch, sway, swing, breathe, glint, sparkle, chase, trace, burstLight, rig, share, part, act, drift } from "../show-motion.js";
 import { sampleOutline } from "../show-geometry.js";
 import { sample3d, notePath1, MELODY_X } from "../show-shapes.js";
 
@@ -41,6 +41,8 @@ const sheetEdges = (w, h, s0 = 0.06) => [{ pts: [[s0, h / 2], [w, h / 2], [w, -h
 const sheetPts = (n, w, h, s0) => sampleOutline(sheetEdges(w, h, s0).map((p) => ({ ...p, closed: false })), n);
 /** Rows of text on a page in sheet coordinates [s, y]. */
 const textRows = (ys, k, s0 = 0.16, s1 = 0.8) => ys.flatMap((y) => Array.from({ length: k }, (_, i) => [s0 + ((s1 - s0) * i) / (k - 1), y]));
+/** Zeilen mit zusammen genau total Drohnen (die ersten Zeilen bekommen den Rest), für jede Drohnenzahl des Reglers. */
+const textRowsTotal = (ys, total, s0, s1) => ys.flatMap((y, r) => textRows([y], Math.floor(total / ys.length) + (r < total % ys.length ? 1 : 0), s0, s1));
 
 const COVER = (p) => mix(RED, WARM, 0.08), INK = GOLD;
 
@@ -50,8 +52,8 @@ function book3dScene(n, caption) {
   const cov = [...sampleOutline([{ pts: [[0, BH / 2 + 0.05], [BW + 0.06, BH / 2 + 0.05], [BW + 0.06, -BH / 2 - 0.05], [0, -BH / 2 - 0.05]] }], Math.ceil(nc / 2)).map(([s, y]) => sheet(s, y, 0, -0.05, 0, 0)),
     ...sampleOutline([{ pts: [[0, BH / 2 + 0.05], [BW + 0.06, BH / 2 + 0.05], [BW + 0.06, -BH / 2 - 0.05], [0, -BH / 2 - 0.05]] }], Math.floor(nc / 2)).map(([s, y]) => sheet(s, y, Math.PI, 0.05, 0, 0))];
   const left = sheetPts(nl, BW, BH, 0.03).map(([s, y]) => sheet(s, y, Math.PI - BETA)), right = sheetPts(nr, BW, BH, 0.03).map(([s, y]) => sheet(s, y, BETA));
-  const turnLocal = [...sheetPts(nt, BW * 0.98, BH * 0.97, 0.1), ...textRows([0.3, 0.05, -0.2], nrt / 3)];
-  const rowsL = textRows([0.18, -0.07, -0.32], nrl / 3).map(([s, y]) => sheet(s, y, Math.PI - BETA)), rowsR = textRows([0.18, -0.07, -0.32], nrr / 3).map(([s, y]) => sheet(s, y, BETA));
+  const turnLocal = [...sheetPts(nt, BW * 0.98, BH * 0.97, 0.1), ...textRowsTotal([0.3, 0.05, -0.2], nrt)];
+  const rowsL = textRowsTotal([0.18, -0.07, -0.32], nrl).map(([s, y]) => sheet(s, y, Math.PI - BETA)), rowsR = textRowsTotal([0.18, -0.07, -0.32], nrr).map(([s, y]) => sheet(s, y, BETA));
   const A0 = BETA + 0.12, A1 = Math.PI - BETA - 0.12, P = 9, T = 3.4;
   // one cycle: rest on the right, turn over lit, rest on the left, turn back dimmed (the next page) and rest again
   const angle = (t) => { const u = frac((t - 0.6) / P) * P; return u < T ? smooth(u / T) : u < P / 2 ? 1 : u < P / 2 + T ? 1 - smooth((u - P / 2) / T) : 0; };
@@ -68,9 +70,12 @@ function book3dScene(n, caption) {
 }
 
 function bookStoryScene(n) {
-  // Ein geschlossenes Buch mit Feder → es öffnet sich → die Feder schreibt → die Zeilen steigen als Funken auf →
-  // …und werden ein Stern. Covers and pages are rigid parts: their drones keep their place while the book opens.
-  const NC = 84, NP = 66, NI = 54, NQ = 50, NS = n - NC - NP - NI - NQ;
+  // Ein geschlossenes Buch mit Feder → es öffnet sich → die Feder schreibt → die Zeilen und das goldene Band steigen
+  // aus den Seiten und werden ein Stern. Dreizehnte Fassung: nur dieser Teil fliegt durch die lebendige Wolke, Deckel,
+  // Seiten und Feder bleiben ruhig (cloud: ["star"]); das stehende Funkenbild davor ist entfallen. Covers and pages are rigid parts: their drones keep their place while the book opens.
+  // Dreizehnte Fassung: Deckel, Seiten und Feder wachsen mit der Drohnenzahl (sonst gingen alle zusätzlichen Drohnen
+  // in den Sternenhimmel); die Tintenzeilen haben feste 54 Punkte. Bei 300 bleibt es 84/66/54/50.
+  const even = (x) => 2 * Math.round((x * n) / 600), NC = even(84), NP = even(66), NI = 54, NQ = Math.round((50 * n) / 300), NS = n - NC - NP - NI - NQ;
   const coverLocal = sampleOutline([{ pts: [[0, BH / 2 + 0.05], [BW + 0.06, BH / 2 + 0.05], [BW + 0.06, -BH / 2 - 0.05], [0, -BH / 2 - 0.05]] }], NC / 2);
   const pageLocal = sheetPts(NP / 2, BW, BH, 0.04);
   const inkL = textRows([0.36, 0.14, -0.08, -0.3, -0.52].slice(0, 5), 6), inkR = textRows([0.3, 0.06, -0.18], 8, 0.14, 0.82);
@@ -100,7 +105,9 @@ function bookStoryScene(n) {
     for (let r = 0; r < 3; r++) {
       if (u < TW) { const w = smooth(u / TW); return [S0 + (S1 - S0) * w, rowsY[r] - 0.04, r + w, 0]; }
       u -= TW;
-      if (r < 2 && u < TR) { const w = smooth(u / TR); return [S1 + (S0 - S1) * w, rowsY[r] + (rowsY[r + 1] - rowsY[r]) * w - 0.04, r + 1, Math.sin(Math.PI * w) * 0.06]; }
+      // vierzehnte Fassung: die Feder gleitet ohne Hüpfer zurück an den Zeilenanfang (das kurze Anheben vor dem
+      // Absenken auf die nächste Zeile war eine kleine Gegenbewegung)
+      if (r < 2 && u < TR) { const w = smooth(u / TR); return [S1 + (S0 - S1) * w, rowsY[r] + (rowsY[r + 1] - rowsY[r]) * w - 0.04, r + 1, 0]; }
       if (r < 2) u -= TR;
     }
     const w = smooth(u / 1.6); return [S1 + 0.1 * w, rowsY[2] - 0.04 + 0.25 * w, 3, 0.2 * w]; // done: the pen lifts away
@@ -110,29 +117,28 @@ function bookStoryScene(n) {
   const starAt = (cx, cy, R) => { const out = sampleOutline([starPath(cx, cy, R), starPath(cx, cy, R * 0.8, 0.38)], NI + NS); return out.map(([x, y], i) => [x, y, i % 2 ? 0.05 : -0.05]); };
   const STAR = [0, 1.22, 0.5], finalStar = starAt(...STAR);
   const sky = paint(Array.from({ length: NS }, (_, k) => [-1.25 + 2.5 * ((k + hash(k + 1)) / NS), 0.74 + 0.36 * hash(k + 11), (hash(k + 5) - 0.5) * 0.5]), (p, i) => (i % 3 ? WARM : GOLD));
-  const twinkle = (j, t, o) => { o[3] = sparkle(j, t, 0.6, 1.25); };
+  const twinkle = (j, t, o) => { o[3] = sparkle(j, t, 0.6, 1.25); drift(o, j, t, 0.03); }; // vierzehnte Fassung: die Sterne treiben sanft
   const rest = [quillAt(0.68, -0.5, 0.1, -0.15)];
   const I0 = NC + NP, Q0 = I0 + NI, S0i = Q0 + NQ;
   const ink = (pts, colour = INK) => part("ink", paint(pts, colour));
   return { beats: [
     act([part("cover", cover(0), { rigid: true }), part("pages", pages(0), { rigid: true }), ink(frame), part("quill", rest[0], { rigid: true }), part("stars", sky)], { caption: "Ein geschlossenes Buch und eine Feder", hold: 1.4, frame: "book", live: (b, j, t, o) => { if (j >= S0i) twinkle(j, t, o); else if (j >= I0 && j < Q0) o[3] = glint(b[0] - b[1], t, 3.2, 0.45); sway(o, t, 0.2, 10); } }),
-    act([part("cover", cover(1), { rigid: true }), part("pages", pages(1), { rigid: true }), ink(inkOpen), part("quill", quillAt(nib0[0] + 0.25, nib0[1] + 0.35, nib0[2]), { rigid: true }), part("stars", sky)], { caption: "es öffnet sich", hold: 3.8, frame: "book", live: (b, j, t, o) => {
+    act([part("cover", cover(1), { rigid: true }), part("pages", pages(1), { rigid: true }), ink(inkOpen), part("quill", quillAt(...nib0), { rigid: true }), part("stars", sky)], { caption: "es öffnet sich", hold: 3.8, frame: "book", live: (b, j, t, o) => {
       const u = smooth((t - 0.4) / 3.2);
       const p = j < NC ? coverAt(j, u) : j < I0 ? pageAt(j - NC, u) : j < Q0 ? inkAt(j - I0, u) : null;
       if (p) { o[0] = p[0]; o[1] = p[1]; o[2] = p[2]; }
       if (j >= I0 && j < Q0) o[3] = j - I0 < inkL.length ? 0.3 + 0.75 * u : 0.15;
       if (j >= S0i) twinkle(j, t, o);
     } }),
-    act([part("cover", cover(1), { rigid: true }), part("pages", pages(1), { rigid: true }), ink(inkOpen), part("quill", quillAt(...nib0), { rigid: true }), part("stars", sky)], { caption: "eine Feder schreibt", hold: 9, frame: "book", live: (b, j, t, o) => {
-      if (j >= Q0 && j < S0i) { const q = nibAt(t); roll(o, 0.07 * Math.sin((t * TAU) / 1.8), nib0[0], nib0[1]); o[0] += q[0] - nib0[0]; o[1] += q[1] - nib0[1]; o[2] += q[2] - nib0[2]; }
+    act([part("cover", cover(1), { rigid: true }), part("pages", pages(1), { rigid: true }), ink(inkOpen), part("quill", quillAt(...nib0), { rigid: true }), part("stars", sky)], { caption: "eine Feder schreibt", hold: 9, frame: "book", writes: ["quill"], live: (b, j, t, o) => {
+      if (j >= Q0 && j < S0i) { const q = nibAt(t); roll(o, 0.04 * Math.sin((t * TAU) / 1.8), nib0[0], nib0[1]); o[0] += q[0] - nib0[0]; o[1] += q[1] - nib0[1]; o[2] += q[2] - nib0[2]; }
       else if (j >= I0 && j < Q0) {
         const k = j - I0 - inkL.length;
         if (k < 0) o[3] = 1.05;
         else { const r = Math.floor(k / 8), s = inkR[k][0], [ps, , row] = pen(t), at = row - r - (s - S0) / (S1 - S0); o[3] = row >= r + 1 ? 1.05 : at < -0.02 ? 0.15 : 1.05 + 0.6 * Math.exp(-(((ps - s) / 0.05) ** 2)); }
       } else if (j >= S0i) twinkle(j, t, o);
     } }),
-    act([part("cover", cover(1), { rigid: true }), part("pages", pages(1), { rigid: true }), part("quill", quillAt(nib0[0] + 0.62, nib0[1] + 0.25, nib0[2]), { rigid: true }), part("star", paint(loosen(finalStar, 0.4, 1.0).map(([x, y, z]) => [x * 1.25, y - 0.15, z]), GOLD))], { caption: "die Zeilen steigen als Funken auf", hold: 1.6, frame: "star", live: (b, j, t, o) => { if (j >= NC + NP + NQ) { o[3] = sparkle(j, t, 0.75, 1.4); o[1] += 0.12 * smooth(t / 2.5); } } }),
-    act([part("cover", cover(1), { rigid: true }), part("pages", pages(1), { rigid: true }), part("quill", quillAt(nib0[0] + 0.62, nib0[1] + 0.25, nib0[2]), { rigid: true }), part("star", paint(finalStar, GOLD))], { caption: "…und werden ein Stern", frame: "star", live: (b, j, t, o) => { if (j >= NC + NP + NQ) { yaw(o, Math.sin(t * 0.5) * 0.5, STAR[0], 0); o[3] = glint(b[0] + b[1], t, 3.6, 0.45, -0.6, 1.8); } else sway(o, t, 0.15, 12); } }),
+    act([part("cover", cover(1), { rigid: true }), part("pages", pages(1), { rigid: true }), part("quill", quillAt(nib0[0] + 0.62, nib0[1] + 0.25, nib0[2]), { rigid: true }), part("star", paint(finalStar, GOLD))], { caption: "die Zeilen steigen aus den Seiten und werden ein Stern", frame: "star", cloud: ["star"], live: (b, j, t, o) => { if (j >= NC + NP + NQ) { yaw(o, Math.sin(t * 0.5) * 0.5, STAR[0], 0); o[3] = glint(b[0] + b[1], t, 3.6, 0.45, -0.6, 1.8); } else sway(o, t, 0.15, 12); } }),
   ] };
 }
 
@@ -204,7 +210,7 @@ function harpStoryScene(n) {
   const local = per.flatMap((m, k) => quaver(m, 0.4, 0, 0).map((p) => [...p, k]));
   const noteOf = local.map((p) => p[3]), notesAt = (where) => local.map(([x, y, , k]) => [where[k][0] + x, where[k][1] + y, where[k][2] ?? 0]);
   const LEAVE = (k) => 0.3 + k * 0.45, FLY = 2.6;
-  const arc = (k, t) => { const u = smooth((t - LEAVE(k)) / FLY), [sx, sy, sz] = starts[k], [ex, ey] = TO[k], cx = (sx + ex) / 2, cy = Math.max(sy, ey) + 0.38; return [(1 - u) ** 2 * sx + 2 * u * (1 - u) * cx + u * u * ex, (1 - u) ** 2 * sy + 2 * u * (1 - u) * cy + u * u * ey, sz * (1 - u)]; };
+  const arc = (k, t) => { const u = smooth((t - LEAVE(k)) / FLY), [sx, sy, sz] = starts[k], [ex, ey] = TO[k], cx = sx + (ex - sx) * 0.25, cy = ey; /* vierzehnte Fassung: der Bogen steigt nur bis zur Zielhöhe (vorher über das Ziel hinaus und wieder hinab) */ return [(1 - u) ** 2 * sx + 2 * u * (1 - u) * cx + u * u * ex, (1 - u) ** 2 * sy + 2 * u * (1 - u) * cy + u * u * ey, sz * (1 - u)]; };
   // act 4: staff, clef and the melody
   const ys = [-0.5, -0.2, 0.1, -0.1, 0.2], CX = -1.5;
   const staff = flat(sampleOutline([0, 1, 2, 3, 4].map((k) => line([-1.85, -0.5 + k * 0.2], [1.35, -0.5 + k * 0.2])), NL));
@@ -215,18 +221,20 @@ function harpStoryScene(n) {
   const onString = STRING_X.map((_, i) => glissando.flatMap((s, k) => (s === i ? [0.5 + k * STEP] : [])));
   const strings = (pts) => part("strings", paint(pts, WARM)), harp = part("frame", paint(frame, GOLD));
   const endAt = notesAt(TO.map(([x, y]) => [x, y, 0]));
+  // vierzehnte Fassung: jede Note ist ein eigenes Teil, sie behält ihre Drohnen vom Abflug bis auf die Notenlinie
+  const noteParts = (pts) => { let at = 0; return per.map((m, k) => { const q = part(`note${k}`, pts.slice(at, at + m)); at += m; return q; }); };
   return { beats: [
     act([harp, strings(full.pts)], { caption: "Eine Harfe", hold: 1.4, frame: "harp", live: (b, j, t, o) => { o[3] = glint(b[0] + b[1] * 0.5, t, 3.8, 0.35); sw(o, t); } }),
     act([harp, strings(full.pts)], { caption: "die Saiten klingen nacheinander", hold: 4.8, frame: "harp", live: (b, j, t, o) => {
       if (j >= NF) { const [i, v] = full.of[j - NF], u = frac(t / P) * P; let a = 0.85; for (const s0 of onString[i]) a = Math.max(a, pluck(o, v, u - s0, 0.035), pluck(o, v, u + P - s0, 0.035)); o[3] = a; }
       sw(o, t);
     } }),
-    act([harp, strings(thin.pts), part("notes", paint(notesAt(starts), NOTE))], { caption: "Noten lösen sich und fliegen in Bögen davon", hold: 4.4, frame: "fly", fitPts: [...frame, ...thin.pts, ...endAt], live: (b, j, t, o) => {
+    act([harp, strings(thin.pts), ...noteParts(paint(notesAt(starts), NOTE))], { caption: "Noten lösen sich und fliegen in Bögen davon", hold: 4.4, frame: "fly", fitPts: [...frame, ...thin.pts, ...endAt], live: (b, j, t, o) => {
       if (j >= NF && j < NF + NS3) { const [i, v] = thin.of[j - NF], k = FROM.indexOf(i); if (k >= 0) o[3] = pluck(o, v, t - LEAVE(k) + 0.15, 0.03); }
       else if (j >= NF + NS3) { const q = j - NF - NS3, k = noteOf[q], [x, y] = local[q], c = arc(k, t); o[0] = c[0] + x; o[1] = c[1] + y; o[2] = c[2]; o[3] = 1 + 0.35 * Math.sin(Math.PI * smooth((t - LEAVE(k)) / FLY)); return; }
       sw(o, t);
     } }),
-    act([part("frame", paint(clef, GOLD)), strings(staff), part("notes", paint(melodyNotes, NOTE))], { caption: "…und ordnen sich auf fünf Linien zur Melodie", frame: "staff", live: (b, j, t, o) => {
+    act([part("frame", paint(clef, GOLD)), strings(staff), ...noteParts(paint(melodyNotes, NOTE))], { caption: "…und ordnen sich auf fünf Linien zur Melodie", frame: "staff", live: (b, j, t, o) => {
       if (j >= NC + NL) { const k = noteOf[j - NC - NL], u = frac(t / 3 - k * 0.12); o[1] += 0.08 * Math.sin(Math.PI * Math.min(1, u / 0.25)) ** 2; o[3] = 1 + 0.4 * Math.sin(Math.PI * Math.min(1, u / 0.25)); }
       else if (j < NC) o[3] = glint(b[1], t, 3.4, 0.4, -0.9, 0.7);
       sway(o, t, 0.2, 12);

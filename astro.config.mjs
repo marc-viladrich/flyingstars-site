@@ -17,4 +17,16 @@ export default defineConfig({
     remotePatterns: [...new Set([mediaHost, 'flyingstars.art', 'flyingstars-relaunch.vercel.app'])].map((hostname) => ({ protocol: 'https', hostname })),
   },
   build: { inlineStylesheets: 'auto' },
+  // Weiterleitungen nach dem Umbau zu Stufe 1 (30.10.2026). Im statischen Build entstehen daraus Seiten mit
+  // meta refresh und canonical; auf dem Host sollten dieselben Paare zusätzlich als echte 301 eingetragen werden.
+  // Die Fallstudien bleiben unter ihren Live-URLs im Wurzelverzeichnis (Moritz' Sitemap vom 07.10.).
+  redirects: {
+    '/projekte': '/referenzen/',
+    '/projekte/musikalischer-teaser-bokkenrijders': '/musikalischer-teaser-bokkenrijders/',
+    '/projekte/nfl-berlin-game': '/nfl-berlin-game/',
+    '/projekte/exploring-reinvented-der-neue-ford-explorer': '/exploring-reinvented-der-neue-ford-explorer/',
+    '/projekte/puma-bundesliga': '/puma-bundesliga/',
+    '/leistungen': '/drohnenshow-preise/',
+    '/warum-wir': '/ueber-uns/',
+  },
 });

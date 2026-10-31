@@ -1,0 +1,20 @@
+---
+// Meilensteine als ruhige Liste (docs/DESIGN.md: kein wachsender Schwarm). Eine Jahreszahl, die sich wiederholt,
+// steht nur einmal sichtbar da und bleibt für Screenreader lesbar.
+import type { Section } from '../../content.config';
+import Accent from '../Accent.astro';
+type Props = Extract<Section, { type: 'timeline' }> & { index: number };
+const { headline, text, items, id = `s${Astro.props.index}`, index } = Astro.props;
+const H = index === 0 ? 'h1' : 'h2';
+const T = index === 0 ? 'h2' : 'h3';
+const headingId = `${id}-h`;
+---
+<section class="section" id={id} aria-labelledby={headingId}>
+  <div class="sec-head"><H id={headingId}><Accent text={headline} /></H>{text && <p>{text}</p>}</div>
+  <ol class="timeline">
+    {items.map((it, i) => <li class:list={['tl-item', { 'tl-repeat': i > 0 && items[i - 1].when === it.when }]}>
+      <span class="tl-when">{it.when}</span>
+      <div class="tl-body"><T>{it.title}</T>{it.text && <p>{it.text}</p>}</div>
+    </li>)}
+  </ol>
+</section>

@@ -1,0 +1,38 @@
+---
+// Die drei Pakete im Prototyp-Look. Preis, Drohnenzahl und Farbe kommen nur aus src/content/show-packages.ts,
+// die Texte aus dem YAML. compact: Karten wie auf der Startseite (Punktfigur, Name, Preis, eine Zeile);
+// sonst ausführlich mit „Am Himmel“, „Betreuung“, „Typisch für“ und zwei Aktionen je Paket.
+import type { Section } from '../../content.config';
+import { SHOW_PACKAGES } from '../../content/show-packages';
+import Accent from '../Accent.astro';
+type Props = Extract<Section, { type: 'packages' }> & { index: number };
+const { headline, text, note, cta, compact, items, id = 'pakete', index } = Astro.props;
+const H = index === 0 ? 'h1' : 'h2';
+const C = index === 0 ? 'h2' : 'h3';
+const money = (v: number) => `ab ${v.toLocaleString('de-DE')} €`;
+const orb = { SPARK: 'ring', HORIZON: 'sphere', ODYSSEY: 'torus' } as const;
+const packs = items.map((item) => ({ ...item, ...SHOW_PACKAGES[item.name], shape: orb[item.name] }));
+---
+<section class="section alt" id={id} aria-labelledby={`${id}-h`}>
+  <div class="sec-head"><H id={`${id}-h`}><Accent text={headline} /></H>{text && <p>{text}</p>}</div>
+  {compact ? (
+    <div class="packs">{packs.map((p) => <article class:list={['pack', { featured: p.highlight }]} aria-labelledby={`${id}-${p.name}`}>
+      <canvas data-orb={p.shape} data-color={p.color.join(',')} data-n={p.base} aria-hidden="true"></canvas>
+      <div><div class="name"><C id={`${id}-${p.name}`}>{p.name}</C>{p.badge && <span class="chip">{p.badge}</span>}</div><p class="price">{money(p.price)}</p><p class="meta mono">{p.base} Drohnen{p.label && <> · {p.label}</>}</p>{p.sky && <p class="pack-sky">{p.sky}</p>}</div>
+    </article>)}</div>
+  ) : (
+    <div class="tiers-grid">{packs.map((p) => <article class:list={['tier', { 'is-rec': p.highlight }]} style={`--dot:rgb(${p.color.join(',')})`} aria-labelledby={`${id}-${p.name}`}>
+      <canvas data-orb={p.shape} data-color={p.color.join(',')} data-n={p.base} aria-hidden="true"></canvas>
+      <div class="head"><C id={`${id}-${p.name}`}>{p.name}</C>{p.badge && <span class="badge">{p.badge}</span>}</div>
+      {p.label && <p class="tag">{p.label}</p>}
+      <div class="p"><b>{money(p.price)}</b><span class="mono">für {p.base} Drohnen</span></div>
+      {(p.sky || p.care || p.typical) && <dl class="tier-facts">
+        {p.sky && <div><dt>Am Himmel</dt><dd>{p.sky}</dd></div>}
+        {p.care && <div><dt>Betreuung</dt><dd>{p.care}</dd></div>}
+        {p.typical && <div><dt>Typisch für</dt><dd>{p.typical}</dd></div>}
+      </dl>}
+      <div class="tier-actions"><a class="btn primary" href={`/kontakt/?paket=${p.name}`}>{p.name} anfragen</a><a class="link" href={`/show-konfigurator/?paket=${p.name}`}>In der Vorschau ansehen <span aria-hidden="true">→</span></a></div>
+    </article>)}</div>
+  )}
+  {(note || cta) && <div class="pack-note">{note && <span class="mono">{note}</span>}{cta && <a class="link" href={cta.href}>{cta.label} <span aria-hidden="true">→</span></a>}</div>}
+</section>

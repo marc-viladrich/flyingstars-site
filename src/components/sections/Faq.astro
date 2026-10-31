@@ -1,16 +1,45 @@
 ---
+// FAQ im Prototyp-Layout (Kopf links, Fragen rechts). Mit `groups` erscheinen die Fragen in Gruppen mit eigener
+// Zwischenüberschrift; mit `closing` folgt der Abschluss „Eure Frage ist nicht dabei?“ mit Anrufen/Schreiben.
 import { getCollection, render } from 'astro:content';
 import type { Section } from '../../content.config';
+import Accent from '../Accent.astro';
+import Faces from '../Faces.astro';
+import { CONTACT } from '../people';
+import { optimizedImage } from '../../lib/media';
 type Props = Extract<Section, { type: 'faq' }> & { index: number };
-const { headline = 'Häufige Fragen', text, kicker = 'FAQ', cta, tags, limit, openFirst, id = `s${Astro.props.index}`, index } = Astro.props;
+const { headline = 'Häufige Fragen', text, cta, tags, limit, openFirst, groups, closing, id = `s${Astro.props.index}`, index } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
-let entries = (await getCollection('faq', e => !e.data.draft)).sort((a,b) => a.data.order-b.data.order);
-if(tags?.length) entries = entries.filter(e=>e.data.tags.some(tag=>tags.includes(tag)));
-if(limit) entries = entries.slice(0,limit);
-const rendered = await Promise.all(entries.map(async entry => ({entry, Content:(await render(entry)).Content})));
+const G = index === 0 ? 'h2' : 'h3';
+const all = (await getCollection('faq', e => !e.data.draft)).sort((a,b) => a.data.order-b.data.order);
+const pick = (want?: string[]) => want?.length ? all.filter(e => e.data.tags.some(tag => want.includes(tag))) : all;
+const withContent = (list: typeof all) => Promise.all(list.map(async entry => ({ entry, Content: (await render(entry)).Content })));
+const blocks = groups?.length
+  ? await Promise.all(groups.map(async (g, gi) => ({ id: g.id ? `${id}-${g.id}` : `${id}-g${gi + 1}`, headline: g.headline, items: await withContent(pick(g.tags)) })))
+  : [{ id: undefined, headline: undefined, items: await withContent(limit ? pick(tags).slice(0, limit) : pick(tags)) }];
+const external = cta?.href.startsWith('https://');
+const photo = closing?.image ? await optimizedImage(closing.image.src, 640) : undefined;
 ---
 <section class="section" id={id} aria-labelledby={headingId}>
-  <div class="faq-grid"><div class="intro"><span class="kicker mono" style="margin:0">{kicker}</span><H id={headingId}>{headline}</H>{text && <p>{text}</p>}{cta && <a class="link" href={cta.href} rel={cta.href.startsWith('https://')?'noopener':undefined} target={cta.href.startsWith('https://')?'_blank':undefined}>{cta.label} <span aria-hidden="true">→</span></a>}</div>
-  <div class="faq">{rendered.map(({entry,Content},i) => <details open={openFirst && i===0}><summary>{entry.data.question}</summary><div class="answer"><Content /></div></details>)}</div></div>
+  <div class="faq-grid">
+    <div class="intro"><H id={headingId}><Accent text={headline} /></H>{text && <p>{text}</p>}{cta && <a class="link" href={cta.href} rel={external ? 'noopener' : undefined} target={external ? '_blank' : undefined}>{cta.label} <span aria-hidden="true">→</span></a>}</div>
+    <div class="faq-body">
+      {blocks.map((block, bi) => <div class="faq-group" id={block.id} aria-labelledby={block.headline ? `${block.id}-h` : undefined} role={block.headline ? 'group' : undefined}>
+        {block.headline && <G class="faq-group-h" id={`${block.id}-h`}>{block.headline}</G>}
+        <div class="faq">{block.items.map(({ entry, Content }, i) => <details open={openFirst && bi === 0 && i === 0}><summary>{entry.data.question}</summary><div class="answer"><Content /></div></details>)}</div>
+      </div>)}
+      {closing && <div class="faq-closing">
+        {photo && closing.image ? <img class="faq-photo" src={photo.src} width={photo.width} height={photo.height} alt={closing.image.alt} loading="lazy" decoding="async" /> : <Faces />}
+        <div class="faq-closing-copy">
+          <G>{closing.headline}</G>
+          {closing.text && <p>{closing.text}</p>}
+          <div class="actions">
+            <a class="btn primary" href={CONTACT.phone.href}><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h3l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v3a2 2 0 0 1-2 2A17 17 0 0 1 4 5a2 2 0 0 1 2-2z" /></svg>Anrufen</a>
+            <a class="btn" href={`mailto:${CONTACT.email}`}><svg class="ico g" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4zm0 0 8 7 8-7" /></svg>Schreiben</a>
+          </div>
+        </div>
+      </div>}
+    </div>
+  </div>
 </section>

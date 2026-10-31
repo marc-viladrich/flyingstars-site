@@ -7,23 +7,23 @@ test('Anfrage behält Paketauswahl, alle Showdetails und ehrlichen Versandstatus
     await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok:true,state:'not-configured' }) });
   });
   await page.goto('/?paket=HORIZON&drohnen=220#anfrage');
-  await expect(page.getByLabel('Drohnen / Paket')).toHaveValue('HORIZON · 200 Drohnen');
+  await expect(page.getByRole('radio',{name:'HORIZON',exact:true})).toBeChecked();
   await page.evaluate(() => document.fonts.ready);
   await expect.poll(() => page.locator('#anfrage-h').evaluate(node => node.getBoundingClientRect().top)).toBeGreaterThan(70);
   await page.getByRole('button',{name:'Weiter',exact:true}).click();
   await expect(page.getByText('Bitte wähle einen Anlass.')).toBeVisible();
   await page.getByText('Firmenevent',{exact:true}).click();
-  await page.getByLabel('Datum (falls schon bekannt)').fill('2026-12-01');
-  await page.getByLabel('Ort',{exact:true}).fill('Osnabrück');
+  await page.getByLabel('Wann soll sie fliegen?').fill('2026-12-01');
+  await page.getByLabel('Wo soll sie stattfinden?').fill('Osnabrück');
+  await page.getByLabel('Was soll am Himmel passieren?').fill('Produktlaunch mit Musik');
   await page.getByRole('button',{name:'Weiter',exact:true}).click();
-  await page.getByLabel('Name',{exact:true}).fill('Marc Viladrich');
-  await page.getByLabel('E-Mail',{exact:true}).fill('marc@example.test');
-  await page.getByLabel('Telefon (optional)').fill('01234');
-  await page.getByLabel('Nachricht (optional)').fill('Produktlaunch mit Musik');
+  await page.getByLabel('Dein Name').fill('Marc Viladrich');
+  await page.getByLabel('Deine E-Mail-Adresse').fill('marc@example.test');
+  await page.getByLabel('Deine Telefonnummer').fill('01234');
   await page.getByRole('button',{name:'Anfrage senden',exact:true}).click();
   await expect(page.getByRole('status')).toContainText('Es wurde nichts gesendet oder gespeichert');
   for (const value of ['HORIZON','220','Osnabrück','2026-12-01','Produktlaunch mit Musik','01234']) expect(submitted).toContain(value);
-  await expect(page.getByLabel('Name',{exact:true})).toHaveValue('Marc Viladrich');
+  await expect(page.getByLabel('Dein Name')).toHaveValue('Marc Viladrich');
 });
 
 test('Mobiles Menü hält den Fokus und gibt ihn beim Schließen zurück', async ({page}) => {
@@ -49,24 +49,27 @@ test('Neue Paketauswahl entfernt eine zuvor berechnete Drohnenanzahl', async ({p
     await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({ok:true,state:'not-configured'})});
   });
   await page.goto('/?paket=ODYSSEY&drohnen=1000#anfrage');
-  await page.getByLabel('Drohnen / Paket').selectOption('SPARK · 100 Drohnen');
+  await page.locator('#inquiry-form').getByText('SPARK',{exact:true}).click();
   await page.getByText('Firmenevent',{exact:true}).click();
+  await page.getByLabel('Wo soll sie stattfinden?').fill('Essen');
+  await page.getByText('Noch nicht festgelegt').click();
   await page.getByRole('button',{name:'Weiter',exact:true}).click();
-  await expect(page.getByLabel('Name',{exact:true})).toHaveAttribute('maxlength','120');
-  await page.getByLabel('Name',{exact:true}).fill('Marc');
-  await page.getByLabel('E-Mail',{exact:true}).fill('marc@example.test');
+  await expect(page.getByLabel('Dein Name')).toHaveAttribute('maxlength','120');
+  await page.getByLabel('Dein Name').fill('Marc');
+  await page.getByLabel('Deine E-Mail-Adresse').fill('marc@example.test');
   await page.getByRole('button',{name:'Anfrage senden',exact:true}).click();
   await expect(page.getByRole('status')).toContainText('Es wurde nichts gesendet');
   expect(submitted).toContain('SPARK');
   expect(submitted).not.toContain('name="drohnen"');
 });
 
-for (const route of ['/drohnenshow-preise/', '/musikalischer-teaser-bokkenrijders/']) {
+// Die Preisseite hat seit dem 30.10.2026 keinen eigenen Schwarm mehr (Rechner durch den Show-Konfigurator ersetzt).
+for (const route of ['/musikalischer-teaser-bokkenrijders/']) {
   test(`Gemeinsame Pausenfunktion hält die Formation an: ${route}`, async ({page}) => {
     await page.goto(route);
-    const canvas = page.locator(route.includes('preise') ? '#swarm' : 'canvas[data-formation]');
+    const canvas = page.locator('canvas[data-formation]');
     await canvas.scrollIntoViewIfNeeded();
-    if (!route.includes('preise')) await expect(page.locator('[data-tally]')).toContainText('600 Drohnen');
+    await expect(page.locator('[data-tally]')).toContainText('600 Drohnen');
     const frame = () => canvas.evaluate(node => (node as HTMLCanvasElement).toDataURL());
     await expect.poll(frame).not.toBe(await frame());
     await page.getByRole('button',{name:'Bewegung pausieren',exact:true}).click();
@@ -83,7 +86,7 @@ test('Porträtlogos behalten ihr Seitenverhältnis nach der Bildoptimierung', as
   await page.goto('/');
   await page.getByRole('button',{name:'Bewegung pausieren',exact:true}).click();
   await page.locator('.band').scrollIntoViewIfNeeded();
-  const nfl = page.locator('.marquee img[alt="NFL"]');
+  const nfl = page.locator('.logo-marquee img[alt="NFL"]');
   await expect.poll(()=>nfl.evaluate((node)=>{
     const image=node as HTMLImageElement;
     return image.complete && image.naturalWidth/image.naturalHeight;

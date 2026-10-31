@@ -1,0 +1,7 @@
+---
+// Headline-Text mit *markierten* Begriffen im Logoverlauf (docs/DESIGN.md: Hervorhebung = Verlauf auf einzelnen Begriffen).
+import { accentParts } from './accent';
+interface Props { text: string }
+const parts = accentParts(Astro.props.text);
+---
+{parts.map((p) => p.g ? <span class="grad">{p.t}</span> : p.t)}

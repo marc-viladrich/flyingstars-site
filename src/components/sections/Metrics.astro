@@ -1,11 +1,13 @@
 ---
 import type { Section } from '../../content.config';
+import Accent from '../Accent.astro';
 type Props = Extract<Section, { type: 'metrics' }> & { index: number };
-const { headline, text, kicker, id = 'warum', items, index } = Astro.props;
+const { headline, text, id = 'warum', items, cta, index } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 ---
 <section class="section alt" id={id} aria-labelledby={headingId}>
-  <div class="sec-head"><div>{kicker && <span class="kicker mono">{kicker}</span>}<H id={headingId}>{headline}</H></div><p>{text}</p></div>
-  <div class="sheet">{items.map((item,i) => <div class="cell"><span class="k mono"><span>{item.label}</span><span>{String(i+1).padStart(2,'0')}</span></span><span class="v">{item.value}</span><p>{item.text}</p></div>)}</div>
+  <div class="sec-head"><H id={headingId}><Accent text={headline} /></H>{text && <p>{text}</p>}</div>
+  <div class="sheet">{items.map((item,i) => <div class="cell"><span class="k mono"><span>{item.label}</span><span>{String(i+1).padStart(2,'0')}</span></span>{item.value && <span class="v">{item.value}</span>}<p>{item.text}</p></div>)}</div>
+  {cta && <div class="more"><a class="link" href={cta.href}>{cta.label} <span aria-hidden="true">→</span></a></div>}
 </section>

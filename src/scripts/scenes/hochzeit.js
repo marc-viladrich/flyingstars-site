@@ -1,7 +1,8 @@
 // hochzeit motifs of the eleventh version (see src/content/show-configurator.js for the build names).
-import { TAU, WARM, GOLD, PINK, VIOLET, CYAN, BLUE, ORANGE, RED, GREEN, DIAMOND, mix, paint, place, frac, smooth, hash, yaw, roll, pitch, sway, swing, breathe, glint, sparkle, chase, trace, burstLight, loosen, rig, share, part, act } from "../show-motion.js";
+import { TAU, WARM, GOLD, PINK, VIOLET, CYAN, BLUE, ORANGE, RED, GREEN, DIAMOND, mix, paint, place, frac, smooth, hash, yaw, roll, pitch, sway, swing, breathe, glint, sparkle, chase, trace, burstLight, rig, share, part, act, wander, drift, lightRank } from "../show-motion.js";
 import { sampleOutline } from "../show-geometry.js";
-import { starField, sample3d, brilliant } from "../show-shapes.js";
+import { heartShell } from "../heart-formation.js";
+import { starField, sample3d, brilliant, torusLink, solitaire } from "../show-shapes.js";
 
 // ---------- helpers ----------
 const lerp = (a, b, u) => a + (b - a) * u;
@@ -88,15 +89,16 @@ const petalLight = ([ri, k, u], t, dir = 1, rings = RINGS3D) => (ri === -2 ? 0.8
 
 function lotus3d(n, caption) {
   // two flowers turn against each other about their axes, side by side; then they glide towards each other, one in
-  // front of the other, turn into each other for a while and part again. One cycle, held long enough to be seen whole.
+  // front of the other, and keep turning into each other. Dreizehnte Fassung (Marc: „eine Art Finte, wirkt awkward“):
+  // they no longer part again before the next motif; every movement goes one way.
   const per = Math.floor(n / 2), slots = [...lotusSlots(per, RINGS_H), ...lotusSlots(n - per, RINGS_H)];
-  const APART = 1.6, MOVE = 2.6, TOGETHER = 3, into = (t) => smooth((t - APART) / MOVE) - smooth((t - APART - MOVE - TOGETHER) / MOVE);
+  const APART = 1.6, MOVE = 2.6, TOGETHER = 3.4, into = (t) => smooth((t - APART) / MOVE);
   const where = (j, t) => { const left = j < per, k = into(t), d = lerp(0.9, 0.32, k); return [left ? -d : d, -0.3, (left ? 1 : -1) * 0.38 * k]; };
   const pts = slots.map((sl, j) => [...seat(lotusLocal(sl, 1, 0, RINGS_H), ...where(j, 0)), ...lotusColour(sl, RINGS_H)]);
-  return { beats: [{ pts, caption, live: (b, j, t, o) => {
+  return { beats: [{ ...act([part("left", pts.slice(0, per)), part("right", pts.slice(per))]), caption, live: (b, j, t, o) => {
     const left = j < per, spin = (left ? 1 : -1) * ease(t, 3) * 0.32, p = seat(lotusLocal(slots[j], 1, slots[j][0] === -2 ? 0 : spin, RINGS_H), ...where(j, t));
     o[0] = p[0]; o[1] = p[1]; o[2] = p[2]; o[3] = petalLight(slots[j], t, left ? 1 : -1, RINGS_H);
-  }, hold: APART + 2 * MOVE + TOGETHER + 0.6 }] };
+  }, hold: APART + MOVE + TOGETHER }] };
 }
 
 /** A sphere of twisted bands (loxodrome-like): every band winds from pole to pole; drones evenly by length. */
@@ -113,7 +115,9 @@ function lotusStory(n) {
   const petals = sl.map((list) => list.filter((s) => s[0] >= 0)), cores = sl.map((list) => list.filter((s) => s[0] < 0));
   const order = [...petals[0].map((s) => [0, s]), ...petals[1].map((s) => [1, s]), ...cores[0].map((s) => [0, s]), ...cores[1].map((s) => [1, s])];
   const nl = petals[0].length, nr = petals[1].length, nc = n - nl - nr;
-  const APART = 1.02, BUD_APART = 0.62, INTO = 0.3;
+  // the buds stand where the open flowers will stand: blooming does not push them apart first (that outward step, then
+  // the turn inwards, read as a feint; Marc, 30.10.2026)
+  const APART = 1.02, BUD_APART = APART, INTO = 0.3;
   const pose = (open, spinOf, gapOf, t) => order.map(([f, s]) => { const d = gapOf(t), into = Math.max(0, (APART - d) / (APART - INTO)); return seat(lotusLocal(s, open(t), (f ? -1 : 1) * spinOf(t)), f ? d : -d, -0.25, (f ? -1 : 1) * 0.16 * into); });
   const parts = (pts) => [part("left", pts.slice(0, nl)), part("right", pts.slice(nl, nl + nr)), part("core", pts.slice(nl + nr))];
   const colourOf = (j) => lotusColour(order[j][1]);
@@ -190,29 +194,35 @@ function butterfly3d(n, caption) {
   } }] };
 }
 
-function butterflyStory(n) {
-  const [sp, b1, b2] = share(n, [0.6, 1.2, 1.2]), A = butterflyLocal(b1), B = butterflyLocal(b2), S = 0.62, RX = 0.86, RZ = 0.55;
-  const stars = starField(sp, -1.5, 1.5, -1.0, 1.1, 17);
-  // the dance: both fly round a common axis, half a turn apart, rising and sinking at their own pace
-  const orbit = (k, t) => { const phi = (k ? 0 : Math.PI) + ease(t, 2.5) * 0.72; return { at: [RX * Math.cos(phi), 0.08 + 0.12 * Math.sin(2 * phi + k), RZ * Math.sin(phi)], turn: -0.6 * Math.cos(phi) }; }; // each turns its face towards the other, never edge-on
-  const fly = (j, t, o, still) => {
-    const k = j < b1 ? 0 : 1, p = k ? B[j - b1] : A[j], { at, turn } = still ? orbit(k, 0) : orbit(k, t);
-    const q = flutter(p, beat(t, 2.6, 0.3, 0.22, k * 1.3), S, turn, -0.15, at); o[0] = q[0]; o[1] = q[1]; o[2] = q[2]; o[3] = wingShine(p, t);
-  };
-  const flyPts = (still) => [...A, ...B].map((p, j) => { const o = [0, 0, 0, 1]; fly(j, 0, o, still); return [o[0], o[1], o[2], ...wingColour(p)]; });
-  const twinkle = (j, t, o) => { o[3] = sparkle(j, t, 0.45, 1.1); };
-  // the heart: after half a dance the first butterfly is on the right, so it becomes the right half
-  const halfHeart = (m, right) => sampleOutline([heartCurve(80, right ? 0 : Math.PI, right ? Math.PI : TAU)], m).map(([x, y]) => [x, y, 0.06]);
-  const heart = [...halfHeart(b1, true), ...halfHeart(b2, false)], inner = sampleOutline([{ pts: heartCurve().pts.map(([x, y]) => [x * 0.8, y * 0.8 - 0.02]) }], sp).map(([x, y]) => [x, y, -0.14]);
-  const heartColour = (p) => mix(PINK, VIOLET, (0.85 - p[1]) / 1.9);
-  const heartParts = (pts) => [part("sparks", pts.slice(0, sp)), part("b1", pts.slice(sp, sp + b1)), part("b2", pts.slice(sp + b1))];
-  const all = [...paint(inner, GOLD), ...paint(heart, heartColour)];
-  const flyParts = (still) => { const f = flyPts(still); return [part("sparks", paint(stars, mix(PINK, WARM, 0.55))), part("b1", f.slice(0, b1)), part("b2", f.slice(b1))]; };
+/**
+ * Vierzehnte Fassung (Marc: die ODYSSEY-Schmetterlinge sahen nicht hochwertiger aus als in HORIZON, „nur ein bisschen
+ * mehr“; Vorbild Kolibri): ein großer Schmetterling in 3D wie in HORIZON, dazu eine Welt. Er fliegt zu einer Lotusblüte,
+ * landet und öffnet und schließt langsam die Flügel, über die ein feiner Schein wandert; dann steigt er ein Stück und
+ * hinter ihm leuchtet FlyingStars' 3D-Herz auf (die Blüte wird in der lebendigen Wolke zum Herz). Vorher waren es zwei
+ * kleine Falter mit je weniger Drohnen als der eine in HORIZON und ein flaches Herz.
+ */
+async function butterflyStory(n) {
+  const B = Math.round(n * 0.6), F = n - B, local = butterflyLocal(B), S = 0.72, TURN = 0.55, TILT = -0.18;
+  const slots = lotusSlots(F), FL = [0.3, -0.8], flowerPts = slots.map((sl) => [...seat(lotusLocal(sl, 1, 0), FL[0], FL[1], 0), ...lotusColour(sl)]);
+  const heart = (await heartShell(F)).map(([x, y, z]) => [x * 0.95 + 0.62, y * 0.95 - 0.25, z * 0.6 - 0.2]); // neben dem Falter, wo die Blüte stand
+  const START = [-1.05, 0.62, 0.1], C = [-0.35, 0.55, 0.1], LAND = [FL[0] - 0.02, FL[1] + 1.0, 0.05], UP = [-0.6, 0.32, 0.1];
+  const bez3 = (P0, P1, P2, u) => [0, 1, 2].map((i) => (1 - u) * (1 - u) * P0[i] + 2 * (1 - u) * u * P1[i] + u * u * P2[i]);
+  const pose = (j, a, at, o) => { const q = flutter(local[j], a, S, TURN, TILT, at); o[0] = q[0]; o[1] = q[1]; o[2] = q[2]; o[3] = wingShine(local[j], 0); };
+  const flyPts = (at, a) => local.map((p, j) => { const o = [0, 0, 0, 1]; pose(j, a, at, o); return [o[0], o[1], o[2], ...wingColour(p)]; });
+  const shine = (j, t) => (local[j][2] === 2 ? breathe(t, 2.2) + 0.1 : glint(Math.abs(local[j][0]) + local[j][1] * 0.25, t, 3.6, 0.55, -0.3, 1.3));
+  const petals = (j, t) => petalLight(slots[j], t);
   return { beats: [
-    act(flyParts(true), { caption: "Zwei Schmetterlinge", hold: 1.4, live: (b, j, t, o) => { if (j < sp) twinkle(j, t, o); else fly(j - sp, t, o, true); } }),
-    act(flyParts(false), { caption: "sie tanzen umeinander", hold: 4.5, live: (b, j, t, o) => { if (j < sp) twinkle(j, t, o); else fly(j - sp, t, o, false); } }),
-    act(heartParts(paint(loosen(all, 0.4, 1.1), (p) => mix(GOLD, PINK, hash(p[0] * 13 + p[1] * 7)))), { caption: "ihre Flügel lösen sich in Funken", hold: 0.5, live: (b, j, t, o) => { o[3] = sparkle(j, t, 0.6, 1.4); yaw(o, smooth(t / 1.5) * 0.15 * Math.sin(t * 0.8)); } }),
-    act(heartParts(all), { caption: "…und werden ein Herz", live: (b, j, t, o) => { o[3] = j < sp ? sparkle(j, t, 0.95, 1.5) : breathe(t, 2.8); yaw(o, smooth(t / 2) * 0.35 * Math.sin((t * TAU) / 10)); } }),
+    act([part("fly", flyPts(START, beat(0))), part("bloom", flowerPts)], { caption: "Ein Schmetterling fliegt zu einer Blüte", hold: 3.8, live: (b, j, t, o) => {
+      if (j < B) { pose(j, beat(t, 1.4, 0.32, 0.25), bez3(START, C, LAND, smooth(t / 3.6)), o); o[3] = shine(j, t); } else o[3] = petals(j - B, t);
+    } }),
+    act([part("fly", flyPts(LAND, 0.25)), part("bloom", flowerPts)], { caption: "er landet, die Flügel öffnen und schließen sich", hold: 4.2, live: (b, j, t, o) => {
+      // gelandet: langsam auf und zu (0,25 → 1,05 rad), so wie ein Falter auf einer Blüte ruht
+      if (j < B) { pose(j, 0.25 + 0.8 * (0.5 - 0.5 * Math.cos((t * TAU) / 4.2)), LAND, o); o[3] = shine(j, t); } else o[3] = petals(j - B, t);
+    } }),
+    act([part("fly", flyPts(UP, beat(0))), part("bloom", paint(heart, (p) => mix(PINK, VIOLET, (p[2] + 1) / 1.2)))], { caption: "…er steigt auf, aus der Blüte wird ein Herz", cloud: ["bloom"], live: (b, j, t, o) => {
+      if (j < B) { pose(j, beat(t, 2.6, 0.3, 0.22), [UP[0], UP[1] + 0.03 * Math.sin((t * TAU) / 3.4), UP[2]], o); o[3] = shine(j, t); }
+      else { o[3] = breathe(t, 2.8) * wander((b[1] + 1.1) / 2.2, t, 5, 0.25, 0.12); yaw(o, 0.12 * Math.sin((t * TAU) / 12), 0.55, -0.2); }
+    } }),
   ] };
 }
 
@@ -273,52 +283,64 @@ const swingLid = ([x, y, z], a) => { const o = [x, y, z]; pitch(o, -a, BOX.hinge
 const VIEW = (p) => { const o = [p[0], p[1], p[2]]; yaw(o, 0.5); pitch(o, 0.4); return o; }; // three-quarter view from a little above
 
 /**
- * The hand: a loose right hand in an oblique view, the wrist at the top right with a cuff of two arcs, fingers of
- * unequal bend with deep gaps between them, an empty palm. The ring finger reaches out furthest to the lower left:
- * a clear corridor for the ring. Fingers: [base, direction angle, length, half-width, curl].
+ * Fünfzehnte Fassung (Marc, 30.10.2026 abends): die Hand aus FlyingStars' eigener Antrags-Show. Marc hat ein Foto ihrer
+ * Formation geliefert (Hand mit Armband am Handgelenk, Ring am Finger, daneben eine kleine Ringformation; FlyingStars'
+ * eigene Arbeit, darf nachgebaut werden). Die Drohnen sind direkt aus dem Foto gelesen: Helligkeitsmaxima auf dem
+ * blauen Himmel, Bäume ausgeschlossen (211 Lichter), dann von Hand in Linienzüge geordnet:
+ * Handrücken mit erstem Finger, zweiter Finger, Ringfinger, vierter und fünfter Finger mit der Außenkante zum Handgelenk.
+ * Die beiden Lichterbüschel am Handgelenk sind das Armband (46 Lichter, wie im Foto). Der Ring am Fingeransatz (pink im
+ * Foto) ist hier der fliegende Ring der Geschichte, die kleine Ringformation links daneben sein Warteplatz.
+ * Einheiten: Bildmitte der Hand (0, 0), y nach oben, die Hand reicht etwa von −1 bis 1. Werkzeug und Kontaktbögen:
+ * docs/show-konfigurator.md, „Fünfzehnte Fassung“.
  */
-const FINGERS_H = [
-  [[0.24, 0.58], Math.PI - 0.5, 0.5, 0.09, -0.1], // thumb, short, raised
-  [[-0.22, 0.33], Math.PI + 0.08, 0.5, 0.068, 0.45], // index, bent back
-  [[-0.1, 0.15], Math.PI + 0.42, 0.56, 0.07, 0.42], // middle, bent back
-  [[0.03, -0.03], Math.PI + 0.72, 1.0, 0.07, 0.04], // ring finger, reaching out
-  [[0.17, -0.2], Math.PI + 1.15, 0.45, 0.06, 0.4], // little finger, curled
+const HAND_PHOTO = [
+  [[0.265,0.691],[0.193,0.638],[0.127,0.597],[0.061,0.561],[-0.008,0.517],[-0.077,0.483],[-0.146,0.459],[-0.215,0.431],[-0.285,0.412],[-0.354,0.39],[-0.425,0.37],[-0.483,0.337],[-0.544,0.298],[-0.605,0.26],[-0.666,0.229],[-0.724,0.193],[-0.779,0.157],[-0.746,0.11],[-0.68,0.102],[-0.616,0.116],[-0.561,0.149],[-0.5,0.18],[-0.448,0.227],[-0.381,0.249],[-0.312,0.265],[-0.249,0.268],[-0.177,0.251]],
+  [[-0.309,0.224],[-0.376,0.185],[-0.436,0.135],[-0.497,0.094],[-0.561,0.058],[-0.622,0.019],[-0.674,-0.036],[-0.727,-0.08],[-0.787,-0.122],[-0.837,-0.169],[-0.895,-0.204],[-0.948,-0.246],[-1.0,-0.287],[-0.953,-0.337],[-0.898,-0.326],[-0.84,-0.307],[-0.782,-0.287],[-0.729,-0.246],[-0.671,-0.215],[-0.619,-0.177],[-0.558,-0.146],[-0.497,-0.119],[-0.436,-0.091],[-0.373,-0.061]],
+  [[-0.334,-0.099],[-0.387,-0.16],[-0.436,-0.221],[-0.489,-0.285],[-0.528,-0.351],[-0.558,-0.423],[-0.583,-0.503],[-0.608,-0.575],[-0.635,-0.646],[-0.66,-0.721],[-0.685,-0.796],[-0.627,-0.771],[-0.575,-0.732],[-0.53,-0.674],[-0.492,-0.616],[-0.459,-0.547],[-0.423,-0.483],[-0.398,-0.45],[-0.387,-0.428],[-0.351,-0.376],[-0.315,-0.296],[-0.229,-0.257]],
+  [[-0.459,-0.547],[-0.453,-0.597],[-0.425,-0.663],[-0.395,-0.743],[-0.356,-0.812],[-0.315,-0.892],[-0.273,-0.959],[-0.229,-1.025],[-0.191,-0.972],[-0.196,-0.892],[-0.213,-0.82],[-0.235,-0.754],[-0.268,-0.693],[-0.296,-0.619],[-0.265,-0.541],[-0.235,-0.47],[-0.196,-0.395],[-0.157,-0.334],[-0.113,-0.265],[-0.064,-0.191],[-0.008,-0.138],[0.047,-0.069],[0.105,-0.019],[0.18,0.03],[0.21,-0.044],[0.243,-0.133],[0.257,-0.224],[0.243,-0.318],[0.213,-0.398],[0.166,-0.481],[0.13,-0.555],[0.122,-0.652],[0.124,-0.743],[0.141,-0.831],[0.174,-0.912],[0.235,-0.964],[0.268,-0.909],[0.26,-0.82],[0.271,-0.724],[0.337,-0.547],[0.378,-0.459],[0.428,-0.384],[0.478,-0.307],[0.514,-0.213],[0.552,-0.119],[0.608,-0.036],[0.66,0.044],[0.713,0.141]]
 ];
-const RING_FINGER = 3;
-/** Centre line point and direction of finger f at s ∈ [0, 1]. */
-function fingerAt(f, s) {
-  const [[bx, by], a0, L, , c] = FINGERS_H[f], a = a0 + c * s;
-  const x = Math.abs(c) < 1e-4 ? bx + L * s * Math.cos(a0) : bx + (L * (Math.sin(a) - Math.sin(a0))) / c;
-  const y = Math.abs(c) < 1e-4 ? by + L * s * Math.sin(a0) : by - (L * (Math.cos(a) - Math.cos(a0))) / c;
-  return [x, y, Math.cos(a), Math.sin(a)];
+/** Das Armband: die Lichterbüschel am Handgelenk, Punkt für Punkt aus dem Foto. */
+const HAND_CUFF = [[0.149,0.981],[0.166,0.928],[0.185,0.959],[0.193,1.008],[0.207,0.975],[0.229,0.997],[0.235,0.84],[0.254,0.914],[0.276,0.873],[0.298,0.942],[0.331,0.732],[0.351,0.815],[0.351,0.702],[0.392,0.785],[0.392,0.749],[0.395,0.862],[0.464,0.823],[0.475,0.704],[0.506,0.528],[0.514,0.732],[0.53,0.878],[0.536,0.635],[0.599,0.936],[0.599,0.569],[0.638,0.608],[0.666,0.37],[0.71,0.409],[0.715,0.439],[0.757,0.472],[0.762,0.224],[0.801,0.238],[0.807,0.296],[0.82,0.326],[0.848,0.282],[0.856,0.387],[0.865,0.362],[0.903,0.221],[0.906,0.459],[0.906,0.152],[0.945,0.199],[0.948,0.26],[0.953,0.144],[0.959,0.122],[0.975,0.528],[0.994,0.188],[0.997,0.166]];
+/** Fingerspitze und Sitz des Rings (Fingeransatz) im Foto, der Warteplatz des Rings (die kleine Ringformation). */
+const HAND_TIP = [-0.685,-0.796], HAND_RING = [-0.282,-0.022], HAND_RING_WAIT = [-1.518,-0.583];
+/** Glättet einen Linienzug aus dem Foto leicht (das Foto ist nicht exakt von vorn) und legt eine Catmull-Rom-Kurve hindurch. */
+const smoothLine = (P, k = 6) => {
+  const soft = P.map((p, i) => (i === 0 || i === P.length - 1 ? p : [0, 1].map((c) => (P[i - 1][c] + 2 * p[c] + P[i + 1][c]) / 4)));
+  return { ...spline(soft, k, false), closed: false };
+};
+/** Mittellinie des Ringfingers von der Spitze bis zum Ansatz: Mitte zwischen seinen beiden Kanten (dritter Linienzug, die
+ * Spitze in der Mitte), zuletzt der Sitz des Rings. */
+const RING_FINGER_LINE = (() => {
+  const L = HAND_PHOTO[2], tip = L.findIndex(([x, y]) => x === HAND_TIP[0] && y === HAND_TIP[1]);
+  const left = L.slice(0, tip + 1).reverse(), right = L.slice(tip), at = (line, u) => line[Math.min(line.length - 1, Math.round(u * (line.length - 1)))];
+  return [HAND_TIP, ...[0.25, 0.5, 0.75].map((u) => { const a = at(left, u), b = at(right, u); return [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2]; }), HAND_RING];
+})();
+/** Punkt und Richtung auf dem Ringfinger, s = 0 an der Spitze, 1 am Ansatz. */
+function ringFingerAt(s) {
+  const P = spline(RING_FINGER_LINE, 10, false).pts, L = [0];
+  for (let i = 1; i < P.length; i++) L.push(L[i - 1] + Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1]));
+  const d = Math.max(0, Math.min(1, s)) * L[L.length - 1];
+  let q = 1; while (q < P.length - 1 && L[q] < d) q++;
+  const u = (d - L[q - 1]) / (L[q] - L[q - 1] || 1), dx = P[q][0] - P[q - 1][0], dy = P[q][1] - P[q - 1][1], l = Math.hypot(dx, dy) || 1;
+  // Richtung zur Fingerspitze hin (der Ring gleitet entgegengesetzt, zum Ansatz)
+  return [P[q - 1][0] + dx * u, P[q - 1][1] + dy * u, -dx / l, -dy / l];
 }
-function handPaths() {
-  const W1 = [0.66, 1.12], W2 = [1.03, 0.76], wristDir = [0.71, 0.7], pts = [W1, [0.5, 0.88]];
-  const edge = (f, side) => [0, 0.35, 0.7, 1].map((s) => { const [x, y, dx, dy] = fingerAt(f, s), w = FINGERS_H[f][3] * (1 - 0.25 * s); return [x + side * dy * w, y - side * dx * w]; });
-  FINGERS_H.forEach((_, f) => {
-    const up = edge(f, 1), back = edge(f, -1).reverse(), [tx, ty, dx, dy] = fingerAt(f, 1), w = FINGERS_H[f][3] * 0.75;
-    if (f > 0) { const prev = pts[pts.length - 1], next = up[0]; pts.push([(prev[0] + next[0]) / 2 + wristDir[0] * (f === 1 ? 0.02 : 0.07), (prev[1] + next[1]) / 2 + wristDir[1] * (f === 1 ? 0.02 : 0.07)]); } // the gap between two fingers reaches into the hand
-    pts.push(...up.slice(0, 3));
-    for (let i = 0; i <= 4; i++) { const th = (i / 4) * Math.PI; pts.push([tx + w * (Math.cos(th) * dy + Math.sin(th) * dx), ty + w * (-Math.cos(th) * dx + Math.sin(th) * dy)]); } // rounded tip
-    pts.push(...back.slice(1));
-  });
-  pts.push([0.46, 0.04], [0.82, 0.42], W2);
-  const bulge = (a, b, k, out) => Array.from({ length: 9 }, (_, i) => { const u = i / 8, h = Math.sin(Math.PI * u) * k; return [a[0] + (b[0] - a[0]) * u + wristDir[0] * (h + out), a[1] + (b[1] - a[1]) * u + wristDir[1] * (h + out)]; });
-  const cuff = [{ pts: bulge(W1, W2, 0.04, 0), closed: false }, { pts: bulge([W1[0] - 0.04, W1[1] + 0.03], [W2[0] + 0.03, W2[1] - 0.04], 0.05, 0.15), closed: false }];
-  const inner = [{ pts: [[-0.03, 0.33], [0.08, 0.38], [0.17, 0.44]], closed: false }, { pts: [[0.1, 0.14], [0.2, 0.19], [0.28, 0.26]], closed: false }];
-  return { outline: spline(pts, 4, false), cuff, inner };
+/** Die Hand für nContour Drohnen auf den Linien (gleichmäßig neu verteilt) und das Armband wie im Foto (nCuff ≤ 46; mehr
+ * Drohnen kommen auf die Linien). */
+function hand(nContour, nCuff) {
+  const cuff = evenPick(HAND_CUFF, Math.min(nCuff, HAND_CUFF.length));
+  return { contour: sampleOutline(HAND_PHOTO.map((l) => smoothLine(l)), nContour + nCuff - cuff.length), cuff };
 }
-function hand(nContour, nCuff, nInner) {
-  const { outline, cuff, inner } = handPaths();
-  return { contour: sampleOutline([outline], nContour), cuff: sampleOutline(cuff, nCuff), inner: sampleOutline(inner, nInner) };
-}
-const HAND = [246, 200, 214], CUFF = mix(PINK, VIOLET, 0.35);
+/** m Punkte aus einer Liste, gleichmäßig über die Liste verteilt (die Reihenfolge ist von links nach rechts). */
+const evenPick = (list, m) => Array.from({ length: m }, (_, i) => list[Math.floor(((i + 0.5) * list.length) / m)]);
+const HAND = [246, 200, 214], CUFF = GOLD;
 
 function ringStory(n) {
   // budget per act (300 drones): ring 60; box 216 with cushion and gold edges + 24 calm stars far out; hand 232 with
-  // cuff + 8 sparks that wait dimmed at the stone's seat; heart 232 + the same 8 sparks
+  // cuff + 8 sparks that wait dimmed at the stone's seat; heart 232 + the same 8 sparks. Dreizehnte Fassung: the box no
+  // longer stands as a cloud; box and stars rebuild into the hand through the living cloud while the ring flies on
   const ringN = Math.round(n * 0.2), body = Math.round(n * 0.773), boxN = Math.round(n * 0.72), sparks = n - ringN - body, stars = n - ringN - boxN;
-  const [nBase, nGold, nLid, nCushion] = share(boxN, [84, 30, 66, 36]), [nContour, nCuff, nInner] = share(body, [178, 42, 12]);
+  const [nBase, nGold, nLid, nCushion] = share(boxN, [84, 30, 66, 36]), nCuff = Math.min(HAND_CUFF.length, Math.round(body * 0.14)), nContour = body - nCuff;
   const ring = ringLocal(ringN), band = ring.band, isStone = (j) => j >= band;
   const ringColour = (j) => (isStone(j) ? ICE : RING_GOLD);
   const place = (q, c) => ring.pts.map((p, j) => { const [x, y, z] = qRot(q, p); return [x + c[0], y + c[1], z + c[2], ...ringColour(j)]; });
@@ -333,17 +355,18 @@ function ringStory(n) {
   const boxStars = paint(farStars(stars, 1.15, 0.95, 0.1), mix(PINK, WARM, 0.55));
   const lidOpen = (t) => OPEN * smooth((t - 0.5) / 2.6);
   // the hand acts: the ring waits above the fingers, then flies a wide arc to the ring finger
-  // the hand is turned a little flatter than drawn, so it fills the wide stage instead of standing tall in it
-  const HR = -0.3, hc = Math.cos(HR), hs = Math.sin(HR), turnH = ([x, y]) => [0.15 + (x - 0.15) * hc - (y - 0.2) * hs, 0.2 + (x - 0.15) * hs + (y - 0.2) * hc];
-  const H = hand(nContour, nCuff, nInner), flatHand = (list, colour) => paint(list.map((p) => [...turnH(p), 0]), colour);
-  const handPts = [...flatHand(H.contour, HAND), ...flatHand(H.cuff, CUFF), ...flatHand(H.inner, HAND)];
-  const finger = (s) => { const [x, y, dx, dy] = fingerAt(RING_FINGER, s); return [...turnH([x, y]), dx * hc - dy * hs, dx * hs + dy * hc]; };
-  const hover = [-1.0, 0.45, 0.1], [tipX, tipY, ux, uy] = finger(1.12), [seatX, seatY] = finger(0.3);
+  // fünfzehnte Fassung: die Hand aus FlyingStars' Antrags-Show (HAND_PHOTO), Linien in Hand-Weiß, das Armband in Gold
+  const H = hand(nContour, nCuff), flatHand = (list, colour) => paint(list.map((p) => [p[0], p[1], 0]), colour);
+  const handPts = [...flatHand(H.contour, HAND), ...flatHand(H.cuff, CUFF)];
+  // vor der Fingerspitze (s < 0 verlängert die Spitze nach außen) und der Sitz des Rings, gut ein Drittel vom Ansatz
+  const tipAt = (() => { const [x, y, dx, dy] = ringFingerAt(0); return [x + dx * 0.1, y + dy * 0.1, dx, dy]; })();
+  // der Ring wartet, wo im Foto die kleine Ringformation steht, und sitzt am Ende am Fingeransatz wie der Ring im Foto
+  const hover = [HAND_RING_WAIT[0], HAND_RING_WAIT[1], 0.1], [tipX, tipY, ux, uy] = tipAt, [seatX, seatY] = ringFingerAt(0.8);
   // on the finger the ring's axis lies along the finger but tips 30° towards the audience, so the band stays an open
   // ellipse instead of an edge; the stone sits beside the finger on the side of the hand's back
   const side = ux < 0 ? [uy, -ux, 0] : [-uy, ux, 0], axis = norm3([ux * 0.87, uy * 0.87, 0.5]);
   const qFinger = qFromBasis(norm3(cross(side, axis)), side, axis);
-  const tipC = [tipX, tipY, 0.04], seatC = [seatX, seatY, 0.04], ctrl = [-1.3, -0.35, 0.1];
+  const tipC = [tipX, tipY, 0.04], seatC = [seatX, seatY, 0.04], ctrl = [(hover[0] + tipX) / 2 - 0.02, tipY + 0.12, 0.1]; // ein flacher Bogen, der nur vorwärts geht (vorher holte er nach links unten aus)
   const turnOf = (t) => smooth((t - 1.4) / 2.8);
   const flyAt = (t) => { // waits, flies a wide flat arc to the fingertip while it turns, then slides down to the base
     const u = smooth((t - 1.0) / 3.2), w = smooth((t - 4.5) / 2.2), v = 1 - u;
@@ -355,7 +378,7 @@ function ringStory(n) {
   const heartPts = [...sampleOutline([heartCurve()], Math.round(body * 0.58)).map(([x, y]) => [x * 1.02, y * 1.02 - 0.02, 0.05]), ...sampleOutline([{ pts: heartCurve().pts.map(([x, y]) => [x * 0.84, y * 0.84 - 0.04]) }], body - Math.round(body * 0.58)).map(([x, y]) => [x, y, -0.05])];
   const heartColour = (p) => (p[2] > 0 ? PINK : mix(PINK, VIOLET, 0.6)), centre = [0, -0.02, 0.1];
   const heartSparks = Array.from({ length: sparks }, (_, i) => { const a = (i / sparks) * TAU; return [centre[0] + Math.cos(a) * 0.3, centre[1] + 0.12 + Math.sin(a) * 0.3, 0.15]; });
-  const calm = (j, t, o) => { o[3] = 0.32 + 0.12 * Math.sin(t * 0.7 + j); }; // far stars: dim and quiet
+  const calm = (j, t, o) => { o[3] = 0.32 + 0.12 * Math.sin(t * 0.7 + j); drift(o, j, t, 0.03); }; // far stars: dim and quiet, drifting gently (vierzehnte Fassung)
   const ringLight = (j, t, stoneDim = 0) => (isStone(j) ? lerp(sparkle(j, t, 1.0, 1.65), 0.55, stoneDim) : 0.95 + 0.35 * Math.max(0, Math.sin(Math.atan2(ring.pts[j][1], ring.pts[j][0]) - t * 1.6)) ** 4);
   const sparkPart = (pts) => part("stars", paint(pts, mix(DIAMOND, WARM, 0.4)));
 
@@ -369,10 +392,7 @@ function ringStory(n) {
       if (j < ringN) { setRing(j, slerp(Q0, [Math.cos(0.3), 0, Math.sin(0.3), 0], 0.5 - 0.5 * Math.cos(t * 0.9)), raised, o); o[3] = isStone(j) ? sparkle(j, t, 1.05, 1.7) : 0.7 + 0.35 * smooth((t - 0.4) / 1.2); }
       else if (j >= ringN + boxN) calm(j, t, o);
     } }),
-    act([part("ring", place(Q0, hover), { rigid: true }), part("body", paint(loosen(handPts, 0.3, 1.04), mix(HAND, PINK, 0.3))), sparkPart(sparkPts)], { caption: "das Kästchen löst sich in eine Wolke", hold: 0.6, frame: "hand", live: (b, j, t, o) => {
-      if (j < ringN) o[3] = ringLight(j, t); else if (j >= ringN + body) o[3] = 0.1; else o[3] = sparkle(j, t, 0.35, 0.8);
-    } }),
-    act([part("ring", place(Q0, hover), { rigid: true }), part("body", handPts), sparkPart(sparkPts)], { caption: "eine Hand: der Ring findet den Ringfinger", hold: 7.4, frame: "hand", live: (b, j, t, o) => {
+    act([part("ring", place(Q0, hover), { rigid: true }), part("body", handPts), sparkPart(sparkPts)], { caption: "eine Hand: der Ring findet den Ringfinger", hold: 7.4, frame: "hand", cloud: ["body", "stars"], live: (b, j, t, o) => {
       if (j < ringN) { const { c, q } = flyAt(t); setRing(j, q, c, o); o[3] = ringLight(j, t, Math.sin(Math.PI * turnOf(t))); } // the stone dims while the ring turns
       else if (j < ringN + body) o[3] = 0.95 + 0.1 * Math.sin(t * 1.3);
       else o[3] = 0.1 + sparkle(j, t, 0.5, 1.5) * smooth((t - 6.6) / 0.8); // a few sparks at the stone once the ring sits
@@ -406,4 +426,30 @@ function weddingRings2d(n, caption) {
 }
 const circle2 = (cx, cy, r, k = 96) => ({ pts: Array.from({ length: k }, (_, i) => { const a = (i / k) * TAU; return [cx + Math.cos(a) * r, cy + Math.sin(a) * r]; }), closed: true });
 
-export const builders = { heartTunnel, lotus3d, lotusStory, butterfly2d, butterfly3d, butterflyStory, ringStory, weddingRings2d };
+
+// ---------- Ringe · ODYSSEY ----------
+/**
+ * Vierzehnte Fassung (Marc: ODYSSEY muss sichtbar hochwertiger sein als HORIZON, Vorbild Kolibri): Die Eheringe aus
+ * SPARK als Körper in 3D, ineinander verschlungen; ein Schein wandert um jeden Reif (der Schmetterlings-Effekt). Dann
+ * wachsen sie zu einem Solitär mit Brillant zusammen, dem HORIZON-Ring. Der Antrag mit Kästchen und Hand ist ein eigenes,
+ * größeres Motiv geworden (ab UNLOCK[1]).
+ */
+function ringsLink(n) {
+  const CHAMPAGNE = [250, 228, 190], ROSE = mix([250, 210, 190], PINK, 0.35);
+  const [ra, rb] = torusLink(n, 0.62, 0.36, 0.07);
+  const angleRank = (pts, cx) => pts.map((p) => frac(Math.atan2(p[1], p[0] - cx) / TAU + 0.25));
+  const ua = angleRank(ra, -0.36), ub = rb.map((p) => frac(Math.atan2(p[2], p[0] - 0.36) / TAU + 0.25));
+  const [band, stone] = solitaire(n, 0.8), bandU = band.map((p) => frac(Math.atan2(p[1], p[0]) / TAU + 0.25)), k = band.length;
+  return { beats: [
+    act([part("a", paint(ra, CHAMPAGNE)), part("b", paint(rb, ROSE))], { caption: "Zwei Eheringe verschlingen sich in 3D", hold: 4.5, live: (b, j, t, o) => {
+      o[3] = j < ra.length ? wander(ua[j], t, 4.6, 0.45, 0.07) : wander(ub[j - ra.length], t + 2.3, 4.6, 0.45, 0.07);
+      yaw(o, 0.28 * t); pitch(o, 0.32);
+    } }),
+    act([part("band", paint(band, (p) => mix(GOLD, WARM, (p[1] + 0.8) / 3.2))), part("stone", paint(stone, DIAMOND))], { caption: "…und werden ein Solitär mit Brillant", live: (b, j, t, o) => {
+      o[3] = j >= k ? sparkle(j, t, 0.95, 1.55) : wander(bandU[j], t, 4.2, 0.4, 0.08);
+      yaw(o, 0.28 * t); pitch(o, 0.35);
+    } }),
+  ] };
+}
+
+export const builders = { ringsLink, heartTunnel, lotus3d, lotusStory, butterfly2d, butterfly3d, butterflyStory, ringStory, weddingRings2d };

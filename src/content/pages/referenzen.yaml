@@ -1,0 +1,50 @@
+# Referenzen (30.10.2026), ersetzt /projekte/. Filter nach Anlass, Jahr und Drohnenzahl (Section references);
+# 19 Referenzen aus dem Live-Inventar, vier davon mit Fallstudie. Die Menge zeigt zusätzlich „Shows pro Jahr“.
+# Zahlen pro Jahr: Fragebogen 21.10.2026 bzw. Moritz' Notizen (2026 bis 21.10.).
+title: Referenzen
+description: "Shows von FlyingStars für Bokkenrijders, NFL, Ford und PUMA, dazu alle Shows pro Jahr: 178 Shows seit 2022, von 50 bis 600 Drohnen."
+sections:
+  - type: references
+    id: referenzen
+    headline: Shows, die wir schon geflogen sind.
+    text: 178 Shows seit 2022, von 50 bis 600 Drohnen. Hier eine Auswahl, vier davon erzählen wir ausführlich.
+    filters: [occasion, year, drones]
+
+  - type: metrics
+    id: pro-jahr
+    headline: Shows pro *Jahr*.
+    items:
+      - { label: "2022", value: "8", text: "Die erste am 13. August: 50 Drohnen zu einem privaten Geburtstag. Im November PUMA im Borussia-Park." }
+      - { label: "2023", value: "42", text: "Darunter L’Oréal × Prada am Rheinturm in Düsseldorf und #Böllerciao mit der Deutschen Umwelthilfe in Berlin." }
+      - { label: "2024", value: "45", text: "Darunter 50 Jahre VW Golf am Wolfgangsee und der neue Ford Explorer in Köln." }
+      - { label: "2025", value: "33", text: "Darunter die erste Indoor-Show für Siemens auf der Hannover Messe und das NFL Berlin Game." }
+      - { label: "2026", value: "50", text: "Bis 21. Oktober. Darunter 20 Abende Bokkenrijders mit je 600 Drohnen und E.ON in Hamburg." }
+      - { label: Gesamt, value: "178", text: "Für Marken, Städte, Festivals und Paare, in Deutschland und Europa." }
+
+  - type: logoBar
+    id: marken
+    headline: Kund:innen von FlyingStars
+    logos:
+      - { name: E.ON, file: /brand/logos/kunde-eon-weiss.svg }
+      - { name: REWE, file: /brand/logos/kunde-rewe-weiss.svg }
+      - { name: Spotify, file: /brand/logos/kunde-spotify-weiss.svg }
+      - { name: L’Oréal, file: /brand/logos/kunde-loreal-weiss.svg }
+      - { name: Bosch, file: /brand/logos/kunde-bosch-weiss.svg }
+      - { name: Amazon, file: /brand/logos/kunde-amazon-weiss.svg }
+      - name: NFL
+        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png, alt: NFL, width: 300, height: 409 }
+      - { name: McKinsey, file: /brand/logos/kunde-mckinsey-weiss.svg }
+      - name: PUMA
+        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Puma_Logo_weiss.png, alt: PUMA, width: 300, height: 161 }
+      - { name: Prada, file: /brand/logos/kunde-prada-weiss.svg }
+      - { name: Volkswagen, file: /brand/logos/kunde-volkswagen-weiss.svg }
+      - { name: Bulgari, file: /brand/logos/kunde-bulgari-weiss.svg }
+      - { name: Ford, file: /brand/logos/kunde-ford-weiss.svg }
+      - { name: Siemens, file: /brand/logos/kunde-siemens-weiss.svg }
+      - name: Deutsche Umwelthilfe
+        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Deutsche_Umwelthilfe_weiss.png, alt: Deutsche Umwelthilfe, width: 300, height: 37 }
+
+  - type: cta
+    headline: Euer Anlass ist nicht dabei?
+    text: Schreibt uns Datum, Ort und Idee. Wir sagen euch, was möglich ist.
+    button: { label: Show anfragen, href: /kontakt/ }

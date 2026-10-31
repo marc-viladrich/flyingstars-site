@@ -4,6 +4,8 @@
   "client": "PUMA",
   "date": "2022-11-11",
   "location": "Borussia-Park, Mönchengladbach",
+  "occasion": "firma",
+  "drones": 100,
   "summary": "100 Drohnen für PUMA zum Anstoß des Derbys. Sport · Bundesliga.",
   "cover": {
     "src": "https://flyingstars-relaunch.vercel.app/media/projekte/puma.jpg",
@@ -57,8 +59,8 @@
         "label": "Drohnen über dem Borussia-Park"
       },
       {
-        "value": 3,
-        "label": "Wochen vom Auftrag bis zur Show"
+        "value": 14,
+        "label": "Tage von der Anfrage bis zur Show"
       },
       {
         "value": 4,
@@ -69,7 +71,7 @@
       {
         "kicker": "01 · Die Idee",
         "title": "Überraschung vor dem Anstoß",
-        "text": "Mit einer Guerilla-Aktion vor dem Anpfiff wollte PUMA seine Initiative „Stronger Together“ sichtbar machen – für ein tolerantes, vielfältiges, inklusives und friedliches Miteinander.",
+        "text": "Mit einer Guerilla-Aktion vor dem Anpfiff wollte PUMA seine Initiative „Stronger Together“ sichtbar machen, für ein tolerantes, vielfältiges, inklusives und friedliches Miteinander.",
         "image": {
           "src": "https://flyingstars-relaunch.vercel.app/media/projekte/puma/01.jpg",
           "alt": "Der Puma über dem Borussia-Park",
@@ -79,7 +81,7 @@
       {
         "kicker": "02 · Die Show",
         "title": "Aus Stronger wird Together",
-        "text": "Ein Puma erscheint am Himmel, dann der Schriftzug STRONGER, der sich in TOGETHER verwandelt. Zum Schluss springt der Puma – so wie im PUMA-Logo.",
+        "text": "Ein Puma erscheint am Himmel, dann der Schriftzug STRONGER, der sich in TOGETHER verwandelt. Zum Schluss springt der Puma, so wie im PUMA-Logo.",
         "image": {
           "src": "https://flyingstars-relaunch.vercel.app/media/projekte/puma/02.jpg",
           "alt": "STRONGER",
@@ -88,8 +90,8 @@
       },
       {
         "kicker": "03 · Die Umsetzung",
-        "title": "Drei Wochen vom Auftrag zur Show",
-        "text": "Die Genehmigung beim Luftfahrt-Bundesamt haben wir rechtzeitig eingeholt und das Fluggebiet vorab digital geprüft.",
+        "title": "Etwa 14 Tage von der Anfrage zur Show",
+        "text": "Die Anfrage kam rund zwei Wochen vor dem Spiel. Die Genehmigung beim Luftfahrt-Bundesamt haben wir rechtzeitig eingeholt und das Fluggebiet vorab digital geprüft. Es war erst unsere sechste Show.",
         "image": {
           "src": "https://flyingstars-relaunch.vercel.app/media/projekte/puma/03.jpg",
           "alt": "TOGETHER",
@@ -110,7 +112,7 @@
     "formation": {
       "src": "/media/projekte/puma/formation.json",
       "title": "Der Puma, Drohne für Drohne.",
-      "text": "Diese Punkte haben wir aus dem Originalvideo gelesen – jede Drohne an ihrer echten Position. Fahr mit der Maus hindurch."
+      "text": "Diese Punkte haben wir aus dem Originalvideo gelesen, jede Drohne an ihrer echten Position. Fahrt mit der Maus hindurch."
     },
     "gallery": [
       {
@@ -149,8 +151,8 @@
     "press": [],
     "nextRoute": "musikalischer-teaser-bokkenrijders",
     "cta": {
-      "title": "Ein Statement für deine Marke?",
-      "text": "Auch kurzfristig: Im Express steht eine Show in unter zwei Wochen – Genehmigung inklusive."
+      "title": "Ein Statement für eure Marke?",
+      "text": "Auch kurzfristig: Alles unter 14 Tagen fliegen wir als Express, mit Aufpreis nach Aufwand und Genehmigung inklusive."
     }
   }
 }

@@ -159,7 +159,7 @@ export const builders = {
     const F = [0.6, 0.02], FR = 0.34, B1 = [1.26, -0.4], B2 = [0.12, -0.62];
     const origin = (tip) => [tip[0] - tipOff[0], tip[1] - tipOff[1]];
     const O2 = origin([F[0] - 0.5, F[1] + 0.04]), O3 = origin([F[0] - 0.02, F[1] + 0.01]);
-    const IN = [[O2[0] - 0.95, O2[1] + 0.58], [O2[0] - 0.6, O2[1] - 0.12], O2], UP = [O3, [O3[0] - 0.6, O3[1] + 0.04], [O3[0] - 0.42, O3[1] + 0.62]];
+    const IN = [[O2[0] - 0.95, O2[1] + 0.58], [O2[0] - 0.55, O2[1] + 0.04], O2] /* vierzehnte Fassung: der Anflug senkt sich nicht unter die Blüte und steigt wieder (Überschwingen) */, UP = [O3, [O3[0] - 0.6, O3[1] + 0.04], [O3[0] - 0.42, O3[1] + 0.62]];
     const T1 = 3.4, T4 = 3.2;
     const birdAt = (O) => bird.pts.map((p, j) => [...pose(j, 0, O, [0, 0, 0]), ...birdCol[j].slice(3)]);
     // a blossom: petals as loops; open 0 = a bud (petals bundled upwards), 1 = open. The same parameters in both, so
@@ -234,13 +234,13 @@ export const builders = {
     const [D, W, S] = share(n, [130, 56, 14]), WY = -0.45, C = [0, -1.25], R = 1.6, OM = 1.2;
     const local = dolphin(D, true), phiW = Math.acos((WY - C[1]) / R), xs = R * Math.sin(phiW);
     const body = local.map((p) => [...onCircle(p, C, R, 0, 1, [0, 0, 0]), ...dolphinColour(p)]);
-    const water = sea([0.5, -0.5], W / 2, WY).map((p) => [...p, ...mix(BLUE, CYAN, 0.2)]);
+    const water = [...sea([0.5], Math.ceil(W / 2), WY), ...sea([-0.5], Math.floor(W / 2), WY)].map((p) => [...p, ...mix(BLUE, CYAN, 0.2)]);
     const spray = Array.from({ length: S }, (_, i) => { const side = i < S / 2 ? -1 : 1, k = i % (S / 2), a = 0.45 + (2.25 * k) / (S / 2 - 1); return [side * xs + 0.17 * Math.cos(a), WY + 0.07 + 0.2 * Math.sin(a) * (0.75 + 0.25 * hash(i)), (k % 2 ? 1 : -1) * 0.08, ...DIAMOND]; });
     // a soft start, then the circle: slower over the top (the hang of a real leap), faster under water
     const phase = (t) => { const u = OM * (t <= 0 ? 0 : t < 2 ? (t * t) / 4 : t - 1); return u - 0.35 * Math.sin(u); };
     const splash = (d) => (d < 0 ? 0.12 : 0.15 + 1.45 * Math.exp(-d / 0.5));
     const fitPts = [...body, ...water, ...spray];
-    return { beats: [{ pts: [...body, ...water, ...spray], fitPts, caption, live: (b, j, t, o) => {
+    return { beats: [{ ...act([part("dolphin", body), part("water", water), part("spray", spray)]), fitPts, caption, live: (b, j, t, o) => {
       const ph = phase(t);
       if (j < D) { onCircle(local[j], C, R, ph, 1, o); o[3] = underwater(o[1], WY + 0.02) * glint(local[j][0], t, 3, 0.25, -1.2, 1.2); }
       else if (j < D + W) { waveLive(b, t, o); o[3] = 0.85 + 0.25 * Math.sin(2.4 * b[0] - 1.3 * t); }
@@ -280,13 +280,15 @@ export const builders = {
       act([water, part("a", asWater(rows([0.21, 1.05], DA))), part("b", asWater(rows([-0.21, -1.05], DB)))], { caption: "Wellen", hold: 2.4, live: (b, j, t, o) => {
         waveLive(b, t, o, 0.04); o[3] = chase(b[0] + b[2] * 0.3, t, 0.5, 0.9, 0.6, 1.35); turn(o);
       } }),
-      act([water, part("a", leapA(0.95)), part("b", asWater(rows([-1.05, 1.05], DB)))], { caption: "ein Delfin springt", hold: T2 + 0.3, minFlight: 2.6, live: (b, j, t, o) => {
-        if (j >= WN && j < WN + DA) { onCircle(la[j - WN], C, R, lerp(-2.2, 0.95, smooth(t / T2)), 1, o); lit(o); }
+      act([water, part("a", leapA(0)), part("b", asWater(rows([-1.05, 1.05], DB)))], { caption: "ein Delfin springt", hold: T2 + 0.3, minFlight: 2.6, live: (b, j, t, o) => {
+        // vierzehnte Fassung: das Bild endet im höchsten Punkt des Sprungs (dort steht er kurz still); vorher endete es
+        // im Fallen, die Bewegung bremste mitten im Abstieg und lief im nächsten Bild weiter
+        if (j >= WN && j < WN + DA) { onCircle(la[j - WN], C, R, lerp(-2.2, 0, smooth(t / T2)), 1, o); lit(o); }
         else { waveLive(b, t, o); o[3] = 0.85 + 0.25 * Math.sin(2.4 * b[0] - 1.3 * t); }
         turn(o);
       } }),
       act([water, part("a", leapA(2.5), { offstage: true }), part("b", rings.map(([x, y, z]) => [x, y, z, ...mix(CYAN, DIAMOND, 0.3)]))], { caption: "taucht ein, Ringe ziehen über das Wasser", hold: T3 + 0.8, live: (b, j, t, o) => {
-        if (j >= WN && j < WN + DA) { onCircle(la[j - WN], C, R, lerp(0.95, 2.5, smooth(t / T3)), 1, o); lit(o); }
+        if (j >= WN && j < WN + DA) { onCircle(la[j - WN], C, R, lerp(0, 2.5, smooth(t / T3)), 1, o); lit(o); }
         else if (j >= WN + DA) {
           // the rings widen slowly, a ripple of light runs outward
           const r0 = rings[j - WN - DA][3], k = lerp(0.6, 1, smooth(t / 3.2));

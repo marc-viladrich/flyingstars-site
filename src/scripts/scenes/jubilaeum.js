@@ -4,7 +4,7 @@
 // rig whose leg really swings (smooth, slow, within the drone limits), the diver a rigid body that turns along its arc.
 import { sampleOutline, circle } from "../show-geometry.js";
 import { loadTextEngine, textFormation } from "../text-formation.js";
-import { TAU, WARM, GOLD, CYAN, BLUE, mix, paint, smooth, hash, roll, sway, breathe, glint, sparkle, chase, burstLight, loosen, rig, share, part, act } from "../show-motion.js";
+import { TAU, WARM, GOLD, CYAN, BLUE, mix, paint, smooth, hash, roll, sway, breathe, glint, sparkle, chase, burstLight, rig, share, part, act, drift } from "../show-motion.js";
 
 const line = (...pts) => ({ pts, closed: false });
 const sample = (paths, k) => (k > 0 ? sampleOutline(paths, k).map(([x, y]) => [x, y, 0]) : []);
@@ -66,19 +66,24 @@ function football(k, R) {
 }
 const still = (v) => () => v;
 
-// One kick of the HORIZON loop (s): wind up, swing through, follow through, back to rest. The swing takes 1.6 s, slow
-// enough that the foot stays within the drones' acceleration; the ball leaves when the foot reaches it.
+// One kick of the HORIZON loop (s): swing through, follow through, back to rest. The swing takes 1.5 s, slow enough
+// that the foot stays within the drones' acceleration; the ball leaves when the foot reaches it.
+// Vierzehnte Fassung (Marc, 30.10.2026: „Finten … überall raus“): kein Ausholen mehr. Vorher zog das Bein erst nach
+// hinten (Oberschenkel −0,3, Unterschenkel −0,9) und schwang dann nach vorn. Jetzt geht der Fuß aus dem Stand nur nach
+// vorn; das Knie beugt sich im Schwung und streckt sich zum Ball.
 const KICK = {
-  thigh: [[0.1, 0.12], [1.2, -0.3], [2.8, 1.0], [3.1, 1.0], [4.6, 0.12]],
-  shin: [[0.1, -0.05], [1.2, -0.9], [2.6, -0.08], [4.6, -0.05]],
+  thigh: [[0.1, 0.12], [1.2, 0.12], [2.7, 1.0], [3.1, 1.0], [4.6, 0.12]],
+  shin: [[0.1, -0.05], [1.2, -0.05], [1.9, -0.32], [2.5, -0.08], [4.6, -0.05]],
   hit: 2.1, // the foot reaches the ball
 };
 const kickAngles = (clock) => {
   const th = (t) => keys(KICK.thigh, clock(t));
   return { thigh: th, shin: (t) => keys(KICK.shin, clock(t)), lean: (t) => 0.04 + 0.12 * (th(t) - 0.12), armB: (t) => 0.1 - 0.22 * (th(t) - 0.12), armF: (t) => -0.1 + 0.18 * (th(t) - 0.12) };
 };
-/** The ball's loop after the kick: up and forward, over the top, and down again in front of the foot (s ∈ [0, 1]). */
-const lob = (s, H, D) => [D * (0.85 * Math.sin(Math.PI * s) + 0.18 * Math.sin(TAU * s)), H * Math.sin(Math.PI * s)];
+/** The ball's arc after the kick: up and forward, over the top, and down again further ahead (s ∈ [0, 1]).
+ * Vierzehnte Fassung: Der Ball fliegt nur noch nach vorn. Vorher kehrte er in einer Schleife vor den Fuß zurück (für
+ * den nächsten Schuss), das las sich als Hin und Her. */
+const lob = (s, H, D) => [D * (1 - Math.cos(Math.PI * s)) * 0.5, H * Math.sin(Math.PI * s)];
 
 function kick2d(n, caption) {
   const [f, b] = share(n, [2.3, 1]), TH = 1.38, SN = -0.06, R = 0.19;
@@ -97,9 +102,10 @@ function kickHorizon(n, caption) {
   const clock = (t) => (t <= 0 ? 0 : t % P), r = footballer(f, kickAngles(clock), true);
   const B0 = [0.5, GROUND + R + 0.01], ballPts = football(b, R);
   const flight = (t) => ease((clock(t) - TL) / TF);
-  const fit = [...r.pts, ...Array.from({ length: 21 }, (_, i) => { const [x, y] = lob(i / 20, H, D); return [B0[0] + x, B0[1] + y + R, 0]; }), [B0[0] + D * 0.9 + R, B0[1], 0]];
-  const pts = [...paint(r.pts, WARM), ...paint(shift(ballPts, B0[0], B0[1]), GOLD)];
-  return { beats: [{ pts, fitPts: fit, caption, live: (bs, j, t, o) => {
+  const fit = [...r.pts, ...Array.from({ length: 21 }, (_, i) => { const [x, y] = lob(i / 20, H, D); return [B0[0] + x, B0[1] + y + R, 0]; }), [B0[0] + D + R, B0[1], 0]];
+  // vierzehnte Fassung: ein ganzer Schuss bis zur Landung des Balls (5,7 s), danach kommt die Bewegung zur Ruhe;
+  // Spieler und Ball als eigene Teile (der Ball fliegt als ein Stück)
+  return { beats: [{ ...act([part("player", paint(r.pts, WARM)), part("ball", paint(shift(ballPts, B0[0], B0[1]), GOLD))]), fitPts: fit, caption, hold: 5.8, live: (bs, j, t, o) => {
     if (j < f) {
       r.live(bs, j, t, o);
       if (r.owner[j] === SHIN) o[3] = 1 + 0.7 * Math.exp(-(((clock(t) - KICK.hit) / 0.18) ** 2)); // the foot lights up as it meets the ball
@@ -112,7 +118,9 @@ function kickHorizon(n, caption) {
 }
 
 async function kickStory(n) {
-  // Funken → ein Spieler mit Ball → Schuss, der Ball fliegt mit Lichtspur ins Tor → Tor! → der Ball wird zur Zahl.
+  // Ein Spieler mit Ball (aus der lebendigen Wolke) → Schuss, der Ball fliegt mit Lichtspur ins Tor → Tor! → der Ball
+  // wird zur Zahl. Dreizehnte Fassung: kein Bild mehr, in dem die Drohnen als Funkenwolke stehen; das Tor steht von
+  // Anfang an als Linie (gedimmt), statt als gelockerte Vorform.
   // The trail is light on drones that stand along the ball's arc; the goal is a frame with a net drawn in depth.
   const [PN, BN, TN, NN, FN] = share(n, [128, 36, 46, 50, 40]), PX = -1.25, R = 0.16;
   const at = (pts) => shift(pts, PX);
@@ -136,17 +144,16 @@ async function kickStory(n) {
   const RAYS = 9, burst = Array.from({ length: TN }, (_, k) => { const a = ((k % RAYS) / RAYS) * TAU + 0.2, u = Math.floor(k / RAYS) / Math.max(1, Math.ceil(TN / RAYS) - 1); return [0.78 + Math.cos(a) * (0.2 + 0.4 * u), 0.45 + Math.sin(a) * (0.2 + 0.4 * u), (hash(k) - 0.5) * 0.2]; });
   const stars = Array.from({ length: TN }, (_, k) => [-1.5 + 3.2 * hash(k * 2.3 + 1), -0.2 + 1.1 * hash(k * 4.1 + 2), (hash(k * 7.7) - 0.5) * 0.6]);
   const num = await number(NUMBER, BN + TN, 0.48, 0.78, 0.45, 0.1);
-  const twinkle = (j, t, o) => { o[3] = sparkle(j, t, 0.5, 1.2); };
+  const twinkle = (j, t, o) => { o[3] = sparkle(j, t, 0.5, 1.2); drift(o, j, t, 0.03); }; // vierzehnte Fassung: die Sterne treiben sanft
   const goal = (netPts = net, framePts = frame) => [part("net", paint(netPts, mix(WARM, CYAN, 0.25))), part("frame", paint(framePts, WARM))];
   const T0 = PN, T1 = PN + BN, T2 = T1 + TN; // index ranges: player | ball | trail | net | frame
   return { beats: [
-    act([part("player", paint(loosen(rest, 0.4), WARM)), part("ball", paint(loosen(ball(B0), 0.3), GOLD)), part("trail", paint(stars, GOLD)), ...goal(loosen(net, 0.6), loosen(frame, 0.6))], { caption: "Funken", hold: 1.2, live: (b, j, t, o) => { o[3] = sparkle(j, t, 0.45, 1.3); } }),
-    act([part("player", paint(rest, WARM)), part("ball", paint(ball(B0), GOLD)), part("trail", paint(stars, GOLD)), ...goal(loosen(net, 0.35), loosen(frame, 0.35))], { caption: "daraus wird ein Spieler", hold: 1.4, live: (b, j, t, o) => {
-      if (j >= T1 && j < T2) twinkle(j, t, o); else if (j >= T2) o[3] = 0.35 * sparkle(j, t, 0.6, 1.2);
+    act([part("player", paint(rest, WARM)), part("ball", paint(ball(B0), GOLD)), part("trail", paint(stars, GOLD)), ...goal()], { caption: "Ein Spieler und sein Tor", hold: 1.8, cloud: true, live: (b, j, t, o) => {
+      if (j >= T1 && j < T2) twinkle(j, t, o); else if (j >= T2) o[3] = 0.45;
       else if (j >= T0) roll(o, -t * 0.5, B0[0], B0[1]);
       sway(o, t, 0.15);
     } }),
-    act([part("player", paint(at(kicker.pts), WARM)), part("ball", paint(ball(B0), GOLD)), part("trail", paint(trail, GOLD)), ...goal()], { caption: "er holt aus und schießt", hold: 4.4, live: (b, j, t, o) => {
+    act([part("player", paint(at(kicker.pts), WARM)), part("ball", paint(ball(B0), GOLD)), part("trail", paint(trail, GOLD)), ...goal()], { caption: "er schießt", hold: 4.4, live: (b, j, t, o) => {
       if (j < T0) kickLive(j, t, o);
       else if (j < T1) { const q = s(t), c = bez(B0, K, G1, q), sc = 1 - 0.25 * q; roll(o, -0.8 * TAU * q, B0[0], B0[1]); o[0] = c[0] + (o[0] - B0[0]) * sc; o[1] = c[1] + (o[1] - B0[1]) * sc; o[2] = c[2]; }
       else if (j < T2) { const d = s(t) - sOf(j - T1); o[3] = d < 0 ? 0.06 : 0.35 + 1.2 * Math.exp(-d / 0.12); } // the light trail follows the ball
@@ -241,8 +248,8 @@ function diveHorizon(n, caption) {
   let tE = T0 + TD, xE = 0;
   for (let c = T0; c < T0 + TD; c += 0.01) { const q = at(c), hand = pose([HAND_TIP * S, 0], q.c, q.a); if (hand[1] < WY) { tE = c; xE = hand[0]; break; } }
   const start = r.pts.map((q, j) => diverAt(r, j, 0, A, dir(0))), top = r.pts.map((q, j) => diverAt(r, j, T0 + TD * 0.4, at(T0 + TD * 0.4).c, at(T0 + TD * 0.4).a));
-  const pts = [...paint(start, WARM), ...paint(water, (p) => mix(CYAN, BLUE, (p[1] - WY + 0.15) / 0.3))];
-  return { beats: [{ pts, fitPts: [...start, ...top, ...water], caption, live: (b, j, t, o) => {
+  // vierzehnte Fassung: ein ganzer Sprung, bis die Ringe verebbt sind (vorher endete das Bild nach 3 s mitten im Flug)
+  return { beats: [{ ...act([part("diver", paint(start, WARM)), part("water", paint(water, (p) => mix(CYAN, BLUE, (p[1] - WY + 0.15) / 0.3)))]), fitPts: [...start, ...top, ...water], caption, hold: 6.4, live: (b, j, t, o) => {
     if (t !== now) { now = t; cur = at(t); }
     if (j < dv) { const p = diverAt(r, j, t, cur.c, cur.a); o[0] = p[0]; o[1] = p[1]; o[2] = p[2]; o[3] = cur.lit * underwater(p[1], WY); return; }
     // the water: a slow swell, and after the dive rings that spread over the surface and settle again

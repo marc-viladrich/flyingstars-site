@@ -16,7 +16,8 @@ export const projectShowcaseSchema = z.object({
   meta: z.object({ title: z.string().min(1).max(70), description: z.string().min(50).max(160) }),
   cardTitle: z.string().min(1),
   category: z.string().min(1),
-  kicker: z.string().min(1),
+  // Meta-Zeile über dem Titel (Anlass · Ort · Datum); optional
+  kicker: z.string().min(1).optional(),
   titleLines: z.array(z.string().min(1)).min(1).max(2),
   titleChars: z.number().int().positive(),
   tagline: z.string().min(1),
@@ -26,7 +27,7 @@ export const projectShowcaseSchema = z.object({
   credits: z.array(z.object({ label: z.string().min(1), value: z.string().min(1) })).min(1),
   numbers: z.array(z.object({ value: z.number().int().nonnegative(), label: z.string().min(1) })).min(1),
   story: z.array(z.object({
-    kicker: z.string().min(1),
+    kicker: z.string().min(1).optional(),
     title: z.string().min(1),
     text: z.string().min(1),
     image: photograph,

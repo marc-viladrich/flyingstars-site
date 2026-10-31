@@ -1,0 +1,101 @@
+# Landingpage Hochzeit (nicht im Menü). Konzept HZ-01 bis HZ-10, Fakten: Fragebogen 21.10.2026. Inhalte aus Elevate (30.10.),
+# die Live-Vorschau (showPreview) ist durch einen Link in den Show-Konfigurator ersetzt. Startfläche ohne Maß: 15 × 15 oder 25 × 25 m ist offen.
+# Referenzen: Live-Seiten „Hochzeitsüberraschung“ (Recklinghausen, 29.06.2024, 150 Drohnen) und „Heiratsantrag“ (Schloss Hugenpoet, 10.09.2024, 220 Drohnen).
+# Preise stehen hier als Text; Quelle der Werte ist src/content/show-packages.ts (SPARK 7.900 €, +900 € je 10 Drohnen bis 150).
+title: Drohnenshow zur Hochzeit
+navLabel: "Hochzeit"
+description: "Eine Drohnenshow für eure Hochzeit: Initialen, Herz und Datum am Nachthimmel. SPARK mit 100 Drohnen ab 7.900 € netto, Genehmigung inklusive."
+image: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg
+sections:
+  - type: hero
+    headline: Eine Drohnenshow für eure Hochzeit.
+    text: Eure Initialen, ein Herz und euer Datum am Nachthimmel. Wir planen die Show mit euch, holen die Genehmigung ein und fliegen am Abend eurer Feier. Hochzeitsshows gibt es mit SPARK ab 7.900 € netto.
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg
+      alt: Hand mit Ring aus Drohnen am blauen Abendhimmel über Baumkronen, bei einem Heiratsantrag am Schloss Hugenpoet
+      width: 2063
+      height: 1303
+    cta: { label: Hochzeitsshow anfragen, href: "#anfrage" }
+    secondary: { label: So läuft es ab, href: "#ablauf" }
+
+  - type: textMedia
+    headline: So sah das bei anderen Paaren aus.
+    body: |
+      **Hochzeitsüberraschung in Recklinghausen, Juni 2024.** Die Familie des Brautpaars kam vier Monate vor der Hochzeit auf uns zu. 150 Drohnen zeigten Ringe, Herzen, Tauben und die Initialen der beiden. Die Startfläche haben wir auf einem Nachbargrundstück eingerichtet, ohne dass das Brautpaar davon wusste. Wegen eines Gewitters haben wir die Show am Abend verschoben und dann geflogen.
+
+      **Heiratsantrag am Schloss Hugenpoet in Essen, September 2024.** 220 Drohnen formten eine Schmuckschatulle, aus der ein Ring an eine Hand schwebte. Danach stand die Frage am Himmel: „Do you want to be my Forever?“ Die Antwort war Ja.
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg
+      alt: Zwei Blüten aus violetten und blauen Lichtpunkten am Abendhimmel über Bäumen, bei einer Hochzeit in Recklinghausen
+      width: 1518
+      height: 854
+    mediaSide: left
+
+  - type: cta
+    headline: Was am Himmel stehen kann.
+    text: Herzen und Ringe aus unserem Katalog, dazu eure Initialen oder euer Datum. Im Show-Konfigurator seht ihr Beispielmotive mit 100 Drohnen. Eure eigene Show entwerfen wir gemeinsam mit euch.
+    button: { label: Motive im Konfigurator ansehen, href: "/show-konfigurator/?anlass=hochzeit&paket=SPARK" }
+
+  - type: textMedia
+    headline: Was eine Hochzeitsshow kostet.
+    body: |
+      Für Hochzeiten ist SPARK gedacht: 100 Drohnen ab 7.900 € netto zuzüglich Anfahrt. Bis 150 Drohnen kosten je weitere 10 Drohnen 900 €.
+
+      - **Enthalten:** das Design eurer Motive mit Freigabe, die Genehmigung, der Musikschnitt, unser Team vor Ort und die Haftpflichtversicherung bis 1,3 Mio. €.
+      - **Kann dazukommen:** die Anfahrt ab Gelsenkirchen, Express bei weniger als 14 Tagen Vorlauf, Rohaufnahmen mit einer Kameradrohne für 900 €.
+      - **Früh gebucht:** Bucht ihr bis zum Jahresende für eine Hochzeit im nächsten Jahr, bekommt ihr 10 % Frühbucherrabatt.
+
+      Alle Pakete findet ihr auf der [Preisseite](/drohnenshow-preise/).
+
+  - type: textMedia
+    headline: Passt eure Location?
+    body: |
+      Ob es bei euch passt, prüfen wir vor dem Angebot. Schickt uns die Adresse und sagt uns, wo eure Gäste stehen werden. Das braucht es:
+
+      - eine freie Start- und Landefläche, deren Größe von der Drohnenzahl abhängt. Sie ist ab etwa drei Stunden vor der Show gesperrt.
+      - einen Sicherheitsbereich von rund 100 × 100 Metern, in dem sich während der Show niemand aufhält
+      - die Zustimmung der Grundstückseigentümer:innen, zum Beispiel eurer Location. Ein Schreiben dafür bekommt ihr von uns.
+
+      Liegt die Location in der Nähe eines Flughafens, braucht die Genehmigung mehr Zeit. Rechnet dann eher mit drei Monaten Vorlauf.
+
+  - type: steps
+    id: ablauf
+    headline: Bis zu eurem Abend.
+    text: Ihr kümmert euch um die Feier. Wir melden uns, wenn wir eine Entscheidung von euch brauchen. Ideal sind ein bis zwei Monate Vorlauf.
+    steps:
+      - title: Anfrage
+        text: Datum, Location und eure Idee reichen. Wir antworten innerhalb von 48 Stunden.
+        duration: 48 h Antwort
+      - title: Gespräch und Angebot
+        text: In einem kurzen Gespräch klären wir Ort, Motive und Größe. Danach bekommt ihr ein Angebot.
+      - title: Motive und Musik
+        text: Ihr seht einen Entwurf mit eurer Musik, gebt Feedback und am Ende jedes Motiv frei.
+        duration: mindestens 3 Wochen
+      - title: Genehmigung
+        text: Die Genehmigung holen wir ein. Von euch brauchen wir nur die Zustimmung der Location.
+      - title: Euer Abend
+        text: Unser Team kommt etwa drei Stunden vor der Show, sperrt die Startfläche, fliegt und baut danach wieder ab.
+        duration: ca. 3 h Aufbau
+
+  - type: cta
+    headline: Es soll eine Überraschung werden?
+    text: Ob Heiratsantrag oder Geschenk der Familie, wir stimmen uns nur mit euch ab. Die Startfläche richten wir abseits ein und den Startzeitpunkt planen wir mit der Location.
+    button: { label: Überraschung anfragen, href: "#anfrage" }
+
+  - type: textMedia
+    headline: Und wenn das Wetter nicht mitspielt?
+    body: |
+      Wir fliegen bis Windstärke 5 und auch bei leichtem Nieselregen. Ist schlechtes Wetter absehbar, verschieben wir die Show kostenlos, solange wir noch nicht losgefahren sind. Bei der Buchung zahlt ihr 40 % an. Fällt die Show ganz aus, gilt die Staffel aus unseren AGB.
+
+      **Eure Location erlaubt kein Feuerwerk?** Eine Drohnenshow ist keine Pyrotechnik. Es gibt keinen Knall, keinen Rauch, keine Funken und nichts, was danach auf dem Rasen liegt. Laut ist nur eure Musik.
+
+  - type: faq
+    id: fragen
+    headline: Fragen von Paaren.
+    text: Kurz beantwortet. Weitere Antworten findet ihr in den häufigen Fragen.
+    cta: { label: Alle Fragen, href: /faq/ }
+    tags: [hochzeit]
+
+  - type: contactForm
+    headline: Erzählt uns von eurem Hochzeitstag.
+    text: Datum und Location reichen für den Anfang. Wir melden uns innerhalb von 48 Stunden mit einer ersten Einschätzung.

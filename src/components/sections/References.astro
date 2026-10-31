@@ -1,0 +1,83 @@
+---
+// Alle Referenzen mit Filter nach Anlass, Jahr und Drohnenzahl („show, don't tell, wie viele Shows“).
+// Ohne JS: ein Abschnitt je Anlass mit Sprunglinks. Mit JS: eine Liste (neueste zuerst), Filter als Radiogruppen,
+// die Zahl der passenden Shows wird angesagt. Werte kommen aus den Projektdateien (occasion, drones, date).
+import { getCollection } from 'astro:content';
+import type { Section } from '../../content.config';
+import Accent from '../Accent.astro';
+import ProjectCard from '../projects/ProjectCard.astro';
+import { OCCASIONS, DRONE_BANDS, type Occasion, yearOf, bandOf, sortProjects } from '../projects/refs';
+type Props = Extract<Section, { type: 'references' }> & { index: number };
+const { headline, text, filters, id = 'referenzen', index } = Astro.props;
+const H = index === 0 ? 'h1' : 'h2';
+const G = index === 0 ? 'h2' : 'h3';
+const C = index === 0 ? 'h3' : 'h4';
+const projects = sortProjects(await getCollection('projects', (p) => !p.data.draft));
+const keys = [...Object.keys(OCCASIONS), 'weitere'] as (Occasion | 'weitere')[];
+const label = (k: string) => (k in OCCASIONS ? OCCASIONS[k as Occasion] : 'Weitere Shows');
+const groups = keys.map((key) => ({ key, items: projects.filter((p) => (p.data.occasion ?? 'weitere') === key) })).filter((g) => g.items.length);
+const count = (fn: (p: (typeof projects)[number]) => unknown, v: unknown) => projects.filter((p) => fn(p) === v).length;
+const years = [...new Set(projects.map(yearOf))].sort((a, b) => b - a);
+const options = {
+  occasion: { legend: 'Anlass', param: 'anlass', values: groups.filter((g) => g.key !== 'weitere').map((g) => ({ v: g.key, l: label(g.key), n: g.items.length })) },
+  year: { legend: 'Jahr', param: 'jahr', values: years.map((y) => ({ v: String(y), l: String(y), n: count(yearOf, y) })) },
+  drones: { legend: 'Drohnen', param: 'drohnen', values: DRONE_BANDS.map((b) => ({ v: b.id, l: b.label, n: count(bandOf, b.id) })).filter((o) => o.n) },
+};
+const shows = (n: number) => `${n} ${n === 1 ? 'Show' : 'Shows'}`;
+---
+<section class="section refs" id={id} aria-labelledby={`${id}-h`} data-refs>
+  <div class="sec-head"><H id={`${id}-h`}><Accent text={headline} /></H>{text && <p>{text}</p>}</div>
+  <div class="ref-bar">
+    <p class="ref-count" role="status" data-ref-status><b class="grad">{projects.length}</b> <span data-ref-label>{projects.length === 1 ? 'Show' : 'Shows'} in dieser Auswahl</span></p>
+    <nav class="ref-jump" aria-label="Nach Anlass springen" data-ref-jump>{groups.map((g) => <a href={`#${id}-${g.key}`}>{label(g.key)} <span class="mono">{g.items.length}</span></a>)}</nav>
+    <form class="ref-filter" aria-label="Referenzen filtern" data-ref-filter hidden>
+      {filters.map((f) => options[f]).filter((o) => o.values.length > 1).map((o) => <fieldset data-param={o.param}>
+        <legend>{o.legend}</legend>
+        <div class="chips">
+          <label><input type="radio" name={`${id}-${o.param}`} value="" checked /><span>Alle</span></label>
+          {o.values.map((v) => <label><input type="radio" name={`${id}-${o.param}`} value={v.v} /><span>{v.l} <small aria-hidden="true">{v.n}</small></span></label>)}
+        </div>
+      </fieldset>)}
+    </form>
+  </div>
+  <div class="ref-groups" data-ref-groups>
+    {groups.map((g) => <section class="ref-group" id={`${id}-${g.key}`} aria-labelledby={`${id}-${g.key}-h`}>
+      <G class="ref-group-h" id={`${id}-${g.key}-h`}>{label(g.key)} <span class="mono">{shows(g.items.length)}</span></G>
+      <div class="projects">{g.items.map((p, i) => <div class="ref-item" data-anlass={p.data.occasion ?? ''} data-jahr={yearOf(p)} data-drohnen={bandOf(p) ?? ''} data-date={p.data.date.valueOf()}><ProjectCard project={p} i={i} level={C} year /></div>)}</div>
+    </section>)}
+  </div>
+  <div class="projects ref-all" data-ref-all hidden></div>
+  <p class="ref-empty" data-ref-empty hidden>Keine Show passt zu dieser Auswahl. <button class="link" type="button" data-ref-reset>Alle zeigen</button></p>
+</section>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-refs]')) {
+    const form = root.querySelector<HTMLFormElement>('[data-ref-filter]')!;
+    const all = root.querySelector<HTMLElement>('[data-ref-all]')!;
+    const status = root.querySelector<HTMLElement>('[data-ref-status]')!;
+    const empty = root.querySelector<HTMLElement>('[data-ref-empty]')!;
+    // eine Liste statt Abschnitten: neueste Show zuerst
+    const items = [...root.querySelectorAll<HTMLElement>('.ref-item')].sort((a, b) => +b.dataset.date! - +a.dataset.date!);
+    items.forEach((item) => all.append(item));
+    root.querySelector('[data-ref-groups]')!.remove();
+    root.querySelector<HTMLElement>('[data-ref-jump]')!.hidden = true;
+    all.hidden = false; form.hidden = false;
+    const fields = [...form.querySelectorAll<HTMLFieldSetElement>('fieldset')];
+    const chosen = () => fields.map((f) => [f.dataset.param!, f.querySelector<HTMLInputElement>('input:checked')?.value ?? ''] as const);
+    // Vorauswahl über die Adresse, z. B. /referenzen/?anlass=privat
+    const params = new URLSearchParams(location.search);
+    fields.forEach((f) => { const v = params.get(f.dataset.param!); const input = v ? f.querySelector<HTMLInputElement>(`input[value="${CSS.escape(v)}"]`) : null; if (input) input.checked = true; });
+    const apply = (announce: boolean) => {
+      const want = chosen();
+      let n = 0;
+      for (const item of items) { const ok = want.every(([k, v]) => !v || item.dataset[k] === v); item.hidden = !ok; if (ok) n++; }
+      const parts = want.filter(([, v]) => v).map(([k, v]) => form.querySelector<HTMLInputElement>(`fieldset[data-param="${k}"] input[value="${CSS.escape(v)}"]`)?.parentElement?.querySelector('span')?.firstChild?.textContent?.trim()).filter(Boolean);
+      const text = `${n === 1 ? 'Show' : 'Shows'} ${parts.length ? `· ${parts.join(' · ')}` : 'in dieser Auswahl'}`;
+      if (announce || status.querySelector('b')!.textContent !== String(n)) { status.querySelector('b')!.textContent = String(n); status.querySelector('[data-ref-label]')!.textContent = text; }
+      empty.hidden = n > 0;
+    };
+    form.addEventListener('change', () => apply(true));
+    root.querySelector('[data-ref-reset]')!.addEventListener('click', () => { form.reset(); apply(true); form.querySelector<HTMLInputElement>('input')?.focus(); });
+    apply(false);
+  }
+</script>

@@ -9,7 +9,12 @@ import { projectShowcaseSchema } from './schemas/project-showcase';
 // src/components/sections/. Der Agent darf Seiten nur aus diesen Typen bauen.
 // ---------------------------------------------------------------------------
 const link = z.object({ label: z.string().min(1), href: z.string().min(1) });
-const sectionHeading = { id: z.string().optional(), kicker: z.string().optional() };
+// Section-Köpfe (docs/DESIGN.md): nur die Headline, einspaltig; `text` ist der optionale Satz darunter.
+// Headlines dürfen einzelne Begriffe mit *Sternchen* markieren, sie erscheinen dann im Logoverlauf.
+// `kicker`/`eyebrow` sind Altlasten aus dem Prototyp: erlaubt, damit alte Inhalte gültig bleiben, aber nicht mehr angezeigt.
+const legacy = z.string().optional().describe('Veraltet, wird nicht mehr angezeigt');
+const sectionHeading = { id: z.string().optional(), kicker: legacy };
+const brandPath = z.string().regex(/^\/brand\/[a-z0-9/._-]+\.(svg|png|webp)$/).describe('Lokale Datei unter public/brand/');
 
 const image = z.object({
   src: z.url().describe('Absolute URL im zentralen Medienspeicher'),
@@ -21,27 +26,32 @@ const image = z.object({
 export const sectionSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('showreelHero'),
-    headline: z.string().min(1), text: z.string().min(1), eyebrow: z.string().min(1),
-    words: z.array(z.string().min(1)).min(1), cta: link, secondary: link,
-    poster: image, video: z.url(), stats: z.array(z.object({ label: z.string(), value: z.string() })).min(1),
+    headline: z.string().min(1), text: z.string().min(1), eyebrow: legacy,
+    words: z.array(z.string().min(1)).optional().describe('Wechselndes Wort im Verlauf hinter der Headline'),
+    cta: link, secondary: link.optional(),
+    poster: image, video: z.url(), stats: z.array(z.object({ label: z.string(), value: z.string() })).optional(),
   }),
   z.object({
     type: z.literal('occasions'), ...sectionHeading,
-    headline: z.string().min(1), text: z.string().min(1),
-    cards: z.array(z.object({ category: z.string(), title: z.string(), text: z.string(), image,
-      facts: z.array(z.string()).min(1), cta: link, download: link.optional() })).min(1),
+    headline: z.string().min(1), text: z.string().optional(),
+    cards: z.array(z.object({ category: z.string().optional(), title: z.string(), text: z.string(), image,
+      facts: z.array(z.string()).optional(), cta: link, download: link.optional() })).min(1),
   }),
   z.object({
     type: z.literal('metrics'), ...sectionHeading,
-    headline: z.string().min(1), text: z.string().min(1),
-    items: z.array(z.object({ label: z.string(), value: z.string(), text: z.string() })).min(1),
+    headline: z.string().min(1), text: z.string().optional(),
+    items: z.array(z.object({ label: z.string(), value: z.string().optional(), text: z.string() })).min(1),
+    cta: link.optional(),
   }),
   z.object({
     type: z.literal('sustainability'), ...sectionHeading,
-    headline: z.string().min(1), lines: z.array(z.string()).length(3), text: z.string().min(1),
+    // Nachhaltigkeit in 2D (keine Scrollstory): Kopf, optional bis zu vier Kennzahlen, optional Sätze, optional Beleg.
+    headline: z.string().min(1), text: z.string().optional(),
     facts: z.array(z.object({ label: z.string(), value: z.string(), unit: z.string().optional(),
-      text: z.string(), tone: z.enum(['o','g']).optional() })).length(4),
-    proofImage: image, proofText: z.string(), campaign: z.string(),
+      text: z.string(), tone: legacy.describe('Veraltet (Kontur/Verlauf), wird ignoriert') })).max(4).optional(),
+    points: z.array(z.string().min(1)).optional().describe('Kurze, belegbare Sätze, je einer pro Punkt'),
+    proofImage: image.optional(), proofText: z.string().optional(), campaign: z.string().optional(),
+    lines: z.array(z.string()).optional().describe('Veraltet (dreizeiliger Titel der Scrollstory), wird nicht mehr angezeigt'),
   }),
   z.object({
     type: z.literal('hero'),
@@ -52,7 +62,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     secondary: link.optional(),
   }),
   z.object({
-    type: z.literal('textMedia'),
+    type: z.literal('textMedia'), id: z.string().optional().describe('Sprungmarke, z. B. "geschichte"'),
     headline: z.string().min(1),
     body: z.string().min(1).describe('Markdown erlaubt'),
     image: image.optional(),
@@ -62,14 +72,25 @@ export const sectionSchema = z.discriminatedUnion('type', [
     type: z.literal('faq'), ...sectionHeading,
     text: z.string().optional(), cta: link.optional(), openFirst: z.boolean().default(false),
     headline: z.string().optional(),
-    tags: z.array(z.string()).optional().describe('Nur FAQ-Einträge mit einem dieser Tags'),
+    tags: z.array(z.string()).optional().describe('Nur FAQ-Einträge mit einem dieser Tags (ohne groups)'),
     limit: z.number().int().positive().optional(),
+    groups: z.array(z.object({
+      id: z.string().regex(/^[a-z0-9-]+$/).optional().describe('Sprungmarke, z. B. "planung"'),
+      headline: z.string().min(1),
+      tags: z.array(z.string()).min(1).describe('FAQ-Einträge mit einem dieser Tags'),
+    })).optional().describe('Fragen in Gruppen; ersetzt tags/limit'),
+    closing: z.object({
+      headline: z.string().default('Eure Frage ist nicht dabei?'),
+      text: z.string().optional(),
+      image: image.optional().describe('Foto der drei Geschäftsführer:innen; ohne Bild erscheinen ihre drei Porträts'),
+    }).optional().describe('Abschluss mit Anrufen/Schreiben'),
   }),
   z.object({
     type: z.literal('cta'),
     headline: z.string().min(1),
     text: z.string().optional(),
     button: link,
+    secondary: link.optional(),
   }),
   z.object({
     type: z.literal('postList'),
@@ -146,20 +167,71 @@ export const sectionSchema = z.discriminatedUnion('type', [
     })).min(1),
   }),
   z.object({
+    // Kund:innen als Laufband, darunter optional Presse und „Qualität und Sicherheit“ (docs/DESIGN.md, Studie 6).
     type: z.literal('logoBar'), ...sectionHeading,
-    press: z.string().optional(),
-    headline: z.string().optional(),
+    headline: z.string().optional().describe('Name des Laufbands für Screenreader, z. B. "Kund:innen von FlyingStars"'),
+    press: legacy.describe('Veraltet (Textzeile „Bekannt aus“), ersetzt durch pressItems'),
     logos: z.array(z.object({
       name: z.string().min(1),
-      image: image.optional().describe('Ohne Bild wird der Name als Text gesetzt'),
+      file: brandPath.optional().describe('Bevorzugt: weißes SVG unter /brand/logos/'),
+      image: image.optional().describe('Sonst Live-PNG vom Medienspeicher'),
+      detail: z.boolean().default(false).describe('PNG mit dunklen Innendetails (Bentley): nicht weiß einfärben'),
       href: z.string().min(1).optional(),
-      tall: z.boolean().default(false),
-    })).min(1),
+      tall: z.boolean().default(false).describe('Veraltet: die optische Größe wird berechnet'),
+    })).default([]),
+    pressHeadline: z.string().default('Unsere Shows waren zu sehen in'),
+    pressItems: z.array(z.object({
+      name: z.string().min(1),
+      logo: brandPath.optional(),
+      cleared: z.boolean().default(false).describe('Schriftliche Freigabe für das Logo liegt vor; sonst erscheint der Name als Text'),
+      knock: z.boolean().default(false).describe('Logo mit ausgesparter Schrift (ZDF, ntv)'),
+      href: z.url().optional().describe('Beitrag, falls öffentlich'),
+      note: z.string().optional().describe('Kurzinfo als Tooltip, z. B. Sendung'),
+    })).default([]),
+    qualityHeadline: z.string().default('Qualität und Sicherheit'),
+    quality: z.array(z.object({
+      title: z.string().min(1), text: z.string().optional(),
+      icon: z.enum(['permit', 'sound', 'shield', 'leaf']).describe('Verlaufs-Icon, wenn kein freigegebenes Logo'),
+      logo: brandPath.optional(),
+      cleared: z.boolean().default(false).describe('Logo darf gezeigt werden (LBA-Signet gemeinfrei; naturstrom nur nach Freigabe)'),
+    })).default([]),
   }),
   z.object({
+    // Alle Referenzen (Projekte-Sammlung) mit Filter nach Anlass, Jahr und Drohnenzahl. Ohne JS: Abschnitte je Anlass
+    // mit Sprunglinks; mit JS: eine Liste mit Filter-Radiogruppen und Statusansage. Fallstudien verlinken auf ihre Seite.
+    type: z.literal('references'), ...sectionHeading,
+    headline: z.string().min(1), text: z.string().optional(),
+    filters: z.array(z.enum(['occasion', 'year', 'drones'])).default(['occasion', 'year', 'drones']),
+  }),
+  z.object({
+    // Meilensteine als ruhige Liste (kein Schwarm). Wiederholte Jahreszahlen werden nur einmal gezeigt.
+    type: z.literal('timeline'), ...sectionHeading,
+    headline: z.string().min(1), text: z.string().optional(),
+    items: z.array(z.object({ when: z.string().min(1), title: z.string().min(1), text: z.string().optional() })).min(2),
+  }),
+  z.object({
+    // Die drei Pakete. Preis und Drohnenzahl kommen nur aus src/content/show-packages.ts, Texte aus dem YAML.
+    type: z.literal('packages'), ...sectionHeading,
+    headline: z.string().min(1), text: z.string().optional(),
+    note: z.string().optional().describe('Kleingedrucktes unter den Karten'),
+    cta: link.optional(),
+    compact: z.boolean().default(false).describe('Kurzfassung (Startseite): Name, Preis, Drohnen, eine Zeile'),
+    items: z.array(z.object({
+      name: z.enum(['SPARK', 'HORIZON', 'ODYSSEY']),
+      label: z.string().optional().describe('z. B. "Klassisch in 2D"'),
+      badge: z.string().optional().describe('z. B. "Am häufigsten gebucht"'),
+      highlight: z.boolean().default(false),
+      sky: z.string().optional().describe('Am Himmel'),
+      care: z.string().optional().describe('Betreuung'),
+      typical: z.string().optional().describe('Typisch für'),
+    })).default([{ name: 'SPARK', highlight: false }, { name: 'HORIZON', highlight: false }, { name: 'ODYSSEY', highlight: false }]),
+  }),
+  z.object({
+    // Anfrage in zwei Schritten (docs/DESIGN.md). Gesichter: ohne Angabe die drei Geschäftsführer:innen.
     type: z.literal('contactForm'),
     headline: z.string().min(1),
     text: z.string().optional(),
+    people: z.array(z.object({ name: z.string().min(1), image })).max(4).optional(),
   }),
 ]);
 
@@ -176,6 +248,7 @@ const pages = defineCollection({
     noindex: z.boolean().default(false),
     // Optional preview image for social shares; must come from an approved media host.
     image: z.url().optional(),
+    navLabel: z.string().optional().describe('Kurzer Name in Footer-Listen, z. B. "Hochzeit" (Anlass-Seiten drohnenshow-*)'),
     sections: z.array(sectionSchema).min(1),
   }),
 });
@@ -203,6 +276,10 @@ const projects = defineCollection({
     showcase: projectShowcaseSchema.optional(),
     date: z.coerce.date(),
     location: z.string().optional(),
+    // Für den Referenzen-Filter; an jeder Referenz, nicht nur an Fallstudien. Unbekannt: weglassen.
+    occasion: z.enum(['firma', 'stadt', 'kultur', 'privat', 'indoor', 'sonstiges']).optional()
+      .describe('firma = Marken & Unternehmen, stadt = Städte & Festivals, kultur = Kultur & Bühne, privat = Hochzeit & Privat'),
+    drones: z.number().int().positive().optional().describe('Drohnen in der Show'),
     summary: z.string().min(30).max(200),
     cover: image.optional(),
     featured: z.boolean().default(false),

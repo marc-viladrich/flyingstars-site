@@ -1,5 +1,5 @@
 // launch motifs of the eleventh version (see src/content/show-configurator.js for the build names).
-import { TAU, WARM, GOLD, VIOLET, CYAN, BLUE, mix, paint, frac, smooth, hash, yaw, pitch, roll, breathe, glint, sparkle, chase, trace, loosen, share, part, act } from "../show-motion.js";
+import { TAU, WARM, GOLD, VIOLET, CYAN, BLUE, mix, paint, frac, smooth, hash, yaw, pitch, roll, breathe, glint, sparkle, chase, trace, share, part, act } from "../show-motion.js";
 import { sampleOutline, evenSubset } from "../show-geometry.js";
 
 const line = (...pts) => ({ pts, closed: false });
@@ -147,11 +147,17 @@ const run = (t, v, ramp = 1.5) => (t <= 0 ? 0 : t < ramp ? (v * t * t) / (2 * ra
 const tipped = (o, a = TILT) => pitch(o, a);
 const put = (o, p) => { o[0] = p[0]; o[1] = p[1]; o[2] = p[2]; };
 
+/** Height of the scan line over a code of half height top: one pass from top to bottom in T s (starting from rest),
+ * then up and down with period P (cosine: the ends of the line swing evenly, no feint). */
+const scanBeam = (t, top, T, P) => (t < T ? top - 2 * top * smooth(Math.max(0, t) / T) : -top + 2 * top * (0.5 - 0.5 * Math.cos((TAU * (t - T)) / P)));
+
 export const builders = {
   // ---- Launch · QR-Code ----
   qr2d(n, caption) {
     // the finder squares, a few modules, a scanner frame; a band of light scans down over the code
-    const m = 0.1, B = 20, code = paint(qrSketch(n - B, m), WARM), frame = paint(bracketCorners(B, 0, 0, 1.3, 0.36), GOLD);
+    // the sketch has at most 3 × 21 finder drones plus the dark data modules; above that (SPARK up to 190 drones since the
+    // thirteenth version) the scanner frame takes the extra drones
+    const m = 0.1, most = FINDERS.length * 21 + QR_DARK.filter(([r, c]) => !inFinder(r, c)).length, B = Math.max(20, n - most), code = paint(qrSketch(n - B, m), WARM), frame = paint(bracketCorners(B, 0, 0, 1.3, 0.36), GOLD);
     return { beats: [{ pts: [...code, ...frame], caption, live: (b, j, t, o) => {
       if (j >= code.length) { o[3] = breathe(t, 3.2); return; }
       const beam = 1.25 - 2.5 * frac(t / 3.4);
@@ -162,39 +168,43 @@ export const builders = {
     // the real code: a scan line runs down and lights it row by row; the two leftover drones are the ends of the line
     // and keep scanning up and down, the code stands still (scannable)
     const m = 0.1, code = paint(qrCode(m), WARM), X = 10 * m + 3.4 * m, TOP = 1.08, T = 2.8, P = 7;
-    const beamY = (t) => (t < T ? TOP - 2 * TOP * smooth(t / T) : -TOP + 2 * TOP * (0.5 - 0.5 * Math.cos((TAU * (t - T)) / P)));
     const ends = paint(Array.from({ length: n - code.length }, (_, k) => [k % 2 ? X : -X, TOP, 0]), GOLD);
     return { beats: [{ pts: [...code, ...ends], caption, live: (b, j, t, o) => {
-      const y = beamY(t);
+      const y = scanBeam(t, TOP, T, P);
       if (j >= code.length) { o[1] = y; o[3] = 1.5; return; }
       const near = Math.exp(-(((b[1] - y) / 0.07) ** 2));
       o[3] = t > T || b[1] > y ? 1 + 0.5 * near : 0.14 + 1.3 * near;
     } }] };
   },
   qrStory(n) {
-    // Eine Nachricht kommt an → die Nachrichten lösen sich in Funken → daraus wird ein QR-Code im Display → groß, mit
+    // Eine Nachricht kommt an → die Nachrichten werden in der lebendigen Wolke zum QR-Code im Display (das Handy bleibt
+    // stehen, dreizehnte Fassung) → groß, mit
     // Scanrahmen und „Scan me“. The phone's drones become frame and lettering, the message drones become the code.
     const P = n - QR_DARK.length, body = paint(phone(P), WARM), { pts: bubbles, of } = chat(QR_DARK.length);
     const small = qrCode(0.05, 0, 0.05), top = small[0][1], bottom = small[small.length - 1][1];
-    const sparks = loosen(small.map((p, i) => [p[0] * 1.15, p[1] * 1.05 + 0.05, (hash(i * 2.3) - 0.5) * 0.5]), 0.3, 1.05);
-    const big = qrCode(0.1, 0, 0.32), F = 1.3, BR = 24;
-    const frame = paint(bracketCorners(BR, 0, 0.32, F, 0.42), GOLD), words = paint(scanMe(P - BR).map(([x, y]) => [x, y - 1.5, 0]), GOLD);
+    const big = qrCode(0.1, 0, 0.32), F = 1.3, BR = 24, SC = 2;
+    // fünfzehnte Fassung (Marc: der Scan von oben nach unten auch in ODYSSEY): zwei Drohnen der Schrift werden die Enden
+    // der Scanlinie, wie in HORIZON, zwischen Code und Scanrahmen
+    const frame = paint(bracketCorners(BR, 0, 0.32, F, 0.42), GOLD), words = paint(scanMe(P - BR - SC).map(([x, y]) => [x, y - 1.5, 0]), GOLD);
+    const SX = 1.15, STOP = 1.08, ST = 2.8, SP = 7, ends = paint(Array.from({ length: SC }, (_, k) => [k % 2 ? SX : -SX, 0.32 + STOP, 0]), GOLD);
     const appear = (k) => 0.35 + 1.05 * k; // the bubbles come in one after the other, each rises a little into place
     return { beats: [
       act([part("phone", body), part("code", paint(bubbles, (p, i) => (BUBBLES[of[i]].tail === 3 ? GOLD : WARM)))], { caption: "Eine Nachricht kommt an", hold: 3.6, frame: "phone", live: (b, j, t, o) => {
         if (j >= P) { const u = smooth((t - appear(of[j - P])) / 0.7); o[1] -= 0.09 * (1 - u); o[3] = 0.12 + 1.0 * u; }
         yaw(o, 0.3 * Math.sin((TAU * t) / 9));
       } }),
-      act([part("phone", body), part("code", paint(sparks, (p, i) => mix(GOLD, WARM, hash(i))))], { caption: "die Nachrichten lösen sich in Funken", hold: 1.2, frame: "phone", live: (b, j, t, o) => {
-        if (j >= P) { yaw(o, 0.35 * t, 0, 0); o[3] = sparkle(j, t, 0.7, 1.35); }
-      } }),
-      act([part("phone", body), part("code", paint(small, WARM))], { caption: "daraus wird ein QR-Code", hold: 2.6, frame: "phone", live: (b, j, t, o) => {
+      // vierzehnte Fassung (Marc: der Übergang zum QR-Code hatte eine Finte): die Nachrichten fliegen ohne Wolke in den Code;
+      // in der Wolke flog ein Viertel der Drohnen über seinen zufälligen Mittelpunkt erst ein Stück zurück
+      act([part("phone", body), part("code", paint(small, WARM))], { caption: "die Nachrichten werden zu einem QR-Code", hold: 2.6, frame: "phone", live: (b, j, t, o) => {
         if (j >= P) o[3] = trace((top - b[1]) / (top - bottom), t, 1.8, { dim: 0.2 });
       } }),
-      act([part("phone", [...frame, ...words]), part("code", paint(big, WARM))], { caption: "„Scan me“: der Code steht still", frame: "scan", live: (b, j, t, o) => {
-        if (j >= P) { o[3] = 1 + 0.12 * Math.sin(t * 0.8); return; } // only light on the code, so it could be scanned
+      act([part("phone", [...frame, ...words, ...ends]), part("code", paint(big, WARM))], { caption: "„Scan me“: der Code steht still", frame: "scan", live: (b, j, t, o) => {
+        // the code stands still (scannable); the scan line runs down over it and only adds light, then keeps scanning
+        const y = 0.32 + scanBeam(t - 0.4, STOP, ST, SP);
+        if (j >= P) { o[3] = 1 + 0.9 * Math.exp(-(((b[1] - y) / 0.09) ** 2)); return; }
+        if (j >= P - SC) { o[1] = y; o[3] = 1.5; return; }
         if (j < BR) { const k = 1 + 0.03 * Math.sin((TAU * t) / 3.4); o[0] = b[0] * k; o[1] = 0.32 + (b[1] - 0.32) * k; o[3] = breathe(t, 3.4); } // the frame breathes
-        else o[3] = trace((j - BR) / (P - BR), t, 1.6, { dim: 0.25 });
+        else o[3] = trace((j - BR) / (P - BR - SC), t, 1.6, { dim: 0.25 });
       } }),
     ] };
   },

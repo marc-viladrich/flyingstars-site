@@ -3,15 +3,25 @@ if (form) {
   const steps = [...form.querySelectorAll<HTMLFieldSetElement>('[data-step]')];
   const status = form.querySelector<HTMLElement>('[data-form-status]')!;
   const label = form.querySelector<HTMLElement>('[data-step-label]')!;
-  const bar = form.querySelector<HTMLElement>('.bar i')!;
+  const marks = [...form.querySelectorAll<HTMLElement>('.ask-steps span')];
   let step = 0;
   const show = (index: number, focus = true) => {
     step = index;
     steps.forEach((fieldset, i) => { fieldset.hidden = i !== index; });
-    label.textContent = `Schritt ${index + 1} von ${steps.length}`;
-    bar.style.width = `${(index + 1) / steps.length * 100}%`;
+    marks.forEach((mark, i) => mark.classList.toggle('on', i <= index));
+    form.classList.toggle('is-2', index === 1);
+    if (focus) label.textContent = `Schritt ${index + 1} von ${steps.length}`;
     if (focus) steps[index].querySelector<HTMLInputElement>('input,select,textarea')?.focus();
   };
+  // Datum: Pflicht, außer „Noch nicht festgelegt“ ist angekreuzt (ohne JS bleibt es freiwillig)
+  const date = form.querySelector<HTMLInputElement>('[name=datum]');
+  const dateOpen = form.querySelector<HTMLInputElement>('[data-date-open]');
+  const syncDate = () => {
+    if (!date || !dateOpen) return;
+    date.required = !dateOpen.checked; date.disabled = dateOpen.checked;
+    if (dateOpen.checked) { date.value = ''; date.removeAttribute('aria-invalid'); const e = form.querySelector<HTMLElement>('[data-err-for="datum"]'); if (e) e.textContent = ''; }
+  };
+  dateOpen?.addEventListener('change', syncDate); syncDate();
   const validate = (container: Element) => {
     const fields = [...container.querySelectorAll<HTMLInputElement>('[required]')];
     let first: HTMLInputElement | undefined;
@@ -26,7 +36,7 @@ if (form) {
     return !first;
   };
   form.noValidate = true;
-  form.querySelectorAll<HTMLElement>('.progress,.bar').forEach((element) => { element.hidden = false; });
+  form.querySelectorAll<HTMLElement>('.ask-steps').forEach((element) => { element.hidden = false; });
   form.querySelector('[data-next]')?.addEventListener('click', () => { if (validate(steps[step])) show(1); });
   form.querySelector('[data-back]')?.addEventListener('click', () => show(0));
   form.querySelectorAll<HTMLInputElement>('input,select,textarea').forEach((field) => field.addEventListener('input', () => {
@@ -36,15 +46,14 @@ if (form) {
   }));
   const params = new URLSearchParams(location.search);
   const selected = params.get('paket');
-  const select = form.querySelector<HTMLSelectElement>('[name=paket]')!;
-  if (selected && ['SPARK','HORIZON','ODYSSEY'].includes(selected)) {
-    select.value = [...select.options].find((option) => option.text.startsWith(selected))?.value || '';
-  }
+  const packs = [...form.querySelectorAll<HTMLInputElement>('[name=paket]')];
+  const pick = selected ? packs.find((input) => input.value === selected) : undefined;
+  if (pick) pick.checked = true;
   const drones = Number(params.get('drohnen'));
   if (Number.isInteger(drones) && drones >= 100 && drones <= 1000) {
     const input = document.createElement('input'); input.type = 'hidden'; input.name = 'drohnen'; input.value = String(drones); form.append(input);
   }
-  select.addEventListener('change', () => form.querySelector('[name=drohnen]')?.remove());
+  packs.forEach((input) => input.addEventListener('change', () => form.querySelector('[name=drohnen]')?.remove()));
   // Text typed into the price calculator's sky preview and the show put together in the configurator, written into
   // the message as an editable draft. Values are only assigned, never parsed as HTML.
   const skyText = params.get('text')?.replace(/\s+/g, ' ').trim().slice(0, 60);
@@ -69,7 +78,7 @@ if (form) {
         status.textContent = 'Der Formularversand ist noch nicht eingerichtet. Es wurde nichts gesendet oder gespeichert. Bitte schreibe uns direkt an team@flyingstars.art.';
       } else {
         status.textContent = 'Deine Anfrage wurde gesendet. Wir melden uns innerhalb von 48 Stunden.';
-        form.reset(); show(0, false);
+        form.reset(); syncDate(); show(0, false);
       }
     } catch (error) { status.textContent = `${error instanceof Error ? error.message : 'Versand fehlgeschlagen.'} Bitte versuche es später erneut oder schreibe direkt an team@flyingstars.art.`; }
     finally { button.disabled = false; button.textContent = 'Anfrage senden'; status.focus(); }

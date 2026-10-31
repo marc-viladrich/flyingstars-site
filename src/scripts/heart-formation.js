@@ -18,3 +18,16 @@ export function heartPicture(data, m) {
   }
   return { n: st[0], step: st[1], hearts };
 }
+
+/**
+ * Vierzehnte Fassung: FlyingStars' 3D-Herz (Wabenschale für 290 Drohnen) in Einheitsgröße, gleichmäßig auf k Punkte
+ * ausgedünnt, für Motive außerhalb von show-scenes.js (Schmetterling, ODYSSEY). Lädt die Formationsdaten bei Bedarf.
+ */
+export async function heartShell(k) {
+  const data = (await import("./pricing-formations.js")).default, pic = heartPicture(data, 290);
+  const pts = pic.hearts.filter((h) => h.slot === 0).flatMap((h) => h.pts), mx = Math.max(...pts.map((p) => Math.max(Math.abs(p[0]), Math.abs(p[1]))));
+  const shell = pts.map(([x, y, z]) => [x / mx, y / mx - 0.1, z / mx]);
+  if (k >= shell.length) return shell.concat(shell.slice(0, k - shell.length).map(([x, y, z]) => [x * 0.68, y * 0.68 - 0.03, z * 0.68]));
+  const out = []; for (let i = 0; i < k; i++) out.push(shell[Math.floor((i * shell.length) / k)]);
+  return out;
+}

@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { OCCASIONS, STEPS } from '../content/show-configurator.js';
-import { SHOW_PACKAGES } from '../content/show-packages';
+import { SHOW_PACKAGES, DRONE_RANGES, DRONES_MIN, DRONES_MAX, DRONE_STEP } from '../content/show-packages';
 
 // Prototype for FlyingStars: not linked in the navigation and not indexed until FlyingStars approves the mapping.
 // Two choices: Anlass (a sequence of three motifs that plays like a little show) and Aufwand (one button per package,
@@ -12,18 +12,43 @@ const money = (v: number) => `ab ${v.toLocaleString('de-DE')} €`;
 const startPkg = STEPS[start].pkg as keyof typeof SHOW_PACKAGES;
 const first = SHOW_PACKAGES[startPkg];
 const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
+// Drohnenregler (zwölfte Fassung): die Spur zeigt die Bereiche der Pakete in ihrer Farbe. Seit der dreizehnten Fassung
+// schließen die Bereiche lückenlos aneinander an (eine Lücke bliebe hier leer)
+const at = (n: number) => ((n - DRONES_MIN) / (DRONES_MAX - DRONES_MIN)) * 100;
+const rgb = (k: keyof typeof SHOW_PACKAGES) => `rgb(${SHOW_PACKAGES[k].color.join(',')})`;
+const rangeTrack = `linear-gradient(90deg, ${(Object.keys(DRONE_RANGES) as (keyof typeof SHOW_PACKAGES)[]).map((k, i, all) => {
+  const r = DRONE_RANGES[k], next = all[i + 1] ? DRONE_RANGES[all[i + 1]].min : null;
+  return [`${rgb(k)} ${at(r.min)}%`, `${rgb(k)} ${at(r.max)}%`, ...(next !== null && next - r.max > DRONE_STEP ? [`transparent ${at(r.max)}%`, `transparent ${at(next)}%`] : [])].join(', ');
+}).join(', ')})`;
+const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.min), DRONES_MAX];
 ---
 <Base title="Show-Konfigurator (Prototyp)" description="Prototyp: Show nach Anlass und Aufwand zusammenstellen. Paket, Drohnenzahl und Preis ergeben sich aus den beiden Angaben." noindex fullBleed>
   <section class="cfg" aria-labelledby="cfg-h">
     <div class="cfg-stage" aria-label="Vorschau der Show" aria-describedby="cfg-scene">
       <canvas id="cfg-field" aria-hidden="true"></canvas>
+      <!-- vierzehnte Fassung: ein Klick irgendwo auf die Bühne hält die Vorführung an oder lässt sie weiterlaufen (wie bei
+           YouTube); als echter Knopf erreichbar, Leertaste und Eingabe schalten um -->
+      <button type="button" class="cfg-hit" id="cfg-hit" aria-label="Vorführung anhalten" aria-pressed="false"></button>
+      <span class="cfg-flash" id="cfg-flash" aria-hidden="true"><svg class="i-pause" viewBox="0 0 16 16"><rect x="4" y="3" width="2.6" height="10" rx="1"/><rect x="9.4" y="3" width="2.6" height="10" rx="1"/></svg><svg class="i-play" viewBox="0 0 16 16"><path d="M5 3.2v9.6a.6.6 0 0 0 .9.5l7.6-4.8a.6.6 0 0 0 0-1L5.9 2.7a.6.6 0 0 0-.9.5z"/></svg></span>
       <div class="cfg-caption"><em id="cfg-new">{STEPS[start].pkg}</em></div>
+      <div class="cfg-drop" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0-5 5m5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg><span>Dein Logo hier reinziehen</span><small>SVG, PNG oder JPG</small></div>
       <span class="sr-only" id="cfg-scene">{firstCaption}</span>
+      <p class="cfg-toast" id="cfg-toast" role="status"></p>
       <p class="cfg-error" id="cfg-error" role="status" hidden>Die Vorschau ist gerade nicht verfügbar. Du kannst weiterhin ein Paket wählen und anfragen.</p>
-      <div class="cfg-acts" id="cfg-acts" role="group" aria-label="Bilder der Show">
-        <button type="button" id="cfg-prev" aria-label="Vorheriges Bild">‹</button>
-        <button type="button" id="cfg-replay" aria-label="Show von vorn ansehen">↻</button>
-        <button type="button" id="cfg-next" aria-label="Nächstes Bild">›</button>
+      <div class="cfg-player" id="cfg-player" role="group" aria-label="Vorführung">
+        <button type="button" class="cfg-play" id="cfg-play" aria-label="Vorführung pausieren" data-paused="false">
+          <svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><rect x="4" y="3" width="2.6" height="10" rx="1"/><rect x="9.4" y="3" width="2.6" height="10" rx="1"/></svg>
+          <svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.2v9.6a.6.6 0 0 0 .9.5l7.6-4.8a.6.6 0 0 0 0-1L5.9 2.7a.6.6 0 0 0-.9.5z"/></svg>
+        </button>
+        <button type="button" class="cfg-stepbtn" id="cfg-prev" aria-label="Vorheriges Bild">‹</button>
+        <div class="cfg-track" id="cfg-track" role="slider" tabindex="0" aria-label="Bild der Show" aria-valuemin="1" aria-valuemax="1" aria-valuenow="1" aria-describedby="cfg-tip">
+          <div class="cfg-marks" id="cfg-marks" aria-hidden="true"></div>
+          <span class="cfg-tip" id="cfg-tip" role="tooltip"><b>{list[0].motifs[0].label}</b> · ab {DRONE_RANGES[startPkg].min} Drohnen</span>
+        </div>
+        <button type="button" class="cfg-stepbtn" id="cfg-next" aria-label="Nächstes Bild">›</button>
+        <div class="cfg-rate" role="group" aria-label="Tempo">
+          {[['0.5', '0,5×'], ['1', '1×'], ['2', '2×']].map(([v, l]) => <button type="button" data-rate={v} aria-pressed={v === '1' ? 'true' : 'false'}>{l}</button>)}
+        </div>
       </div>
     </div>
 
@@ -44,22 +69,34 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
         </div>
       </fieldset>
 
-      <fieldset class="cfg-block">
-        <legend>Euer Text <span class="cfg-opt">(optional, ohne Aufpreis)</span></legend>
-        <input class="cfg-text" id="cfg-text" name="text" type="text" maxlength="24" autocomplete="off" placeholder="z. B. Anna & Ben" aria-describedby="cfg-text-note" />
+      <div class="cfg-block cfg-drones">
+        <div class="cfg-drones-head"><label for="cfg-drones">Drohnen</label><output id="cfg-dronecount" for="cfg-drones">{first.base}</output></div>
+        <input class="cfg-range" id="cfg-drones" type="range" min={DRONES_MIN} max={DRONES_MAX} step={DRONE_STEP} value={first.base} style={`--track: ${rangeTrack}`} />
+        <div class="cfg-ticks mono" aria-hidden="true">{ticks.map((n) => <span style={`--p: ${at(n) / 100}`}>{n}</span>)}</div>
+      </div>
+
+      <!-- vierzehnte Fassung: eigener Text und eigenes Logo bei den Auswahlen, nicht mehr unter der Anfrage -->
+      <fieldset class="cfg-block cfg-own">
+        <legend>Euer Text, euer Logo <span class="cfg-opt">(optional)</span></legend>
+        <div class="cfg-own-row">
+          <input class="cfg-text" id="cfg-text" name="text" type="text" maxlength="24" autocomplete="off" placeholder="z. B. Anna & Ben" aria-label="Euer Text" />
+          <label class="cfg-upload" id="cfg-upload"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0-5 5m5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg><span>Logo</span><input id="cfg-file" type="file" accept="image/svg+xml,image/png,image/jpeg,image/webp" aria-describedby="cfg-legal" /></label>
+          <button type="button" class="cfg-logo-off" id="cfg-logo-off" aria-label="Logo entfernen" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+        </div>
         <div class="cfg-styles" id="cfg-styles" hidden>
           {[['script', 'Schreibschrift'], ['print', 'Druckschrift'], ['initials', 'Initialen']].map(([v, l], i) => <label><input type="radio" name="textstyle" value={v} checked={i === 0} /><span>{l}</span></label>)}
         </div>
-        <p class="cfg-text-note" id="cfg-text-note" hidden>Erscheint als Finale der Show. Zählt als eines eurer eigenen Elemente und ändert den Preis nicht.</p>
+        <p class="cfg-legal" id="cfg-legal">Lade nur Logos hoch, die du verwenden darfst, zum Beispiel dein eigenes. Die Datei bleibt in deinem Browser: Wir speichern und übertragen sie nicht.</p>
+        <p class="cfg-logo-status" id="cfg-logo-status" role="status"></p>
       </fieldset>
+
 
       <div class="cfg-result" aria-live="polite">
         <div class="cfg-price"><b id="cfg-pkg">{STEPS[start].pkg}</b><span id="cfg-price">{money(first.price)}</span></div>
         <p class="cfg-meta mono" id="cfg-meta">{first.base} Drohnen · {first.dur} · netto zzgl. Anfahrt</p>
-        <p class="cfg-includes" id="cfg-includes">Enthalten: {STEPS[start].includes}.</p>
       </div>
       <a class="btn primary cfg-cta" id="cfg-cta" href="/#anfrage">Mit dieser Show anfragen</a>
-      <p class="cfg-note">Prototyp: Die Vorschau zeigt Beispiele, den Ablauf eurer Show entwickeln wir gemeinsam. Die Zuordnung zu den Paketen ist aus den Paketbeschreibungen abgeleitet und noch nicht von FlyingStars bestätigt. Alle Preise sind Einstiegspreise.</p>
+      <p class="cfg-note" id="cfg-placeholder">Prototyp: Die Vorschau zeigt Beispiele, den Ablauf eurer Show entwickeln wir gemeinsam. Die Zuordnung zu den Paketen ist aus den Paketbeschreibungen abgeleitet und noch nicht von FlyingStars bestätigt. Alle Preise sind netto; Drohnenbereiche und Aufpreise sind Platzhalter.</p>
     </form>
 
     <div class="cfg-bar" aria-hidden="true"><span><b id="cfg-bar-pkg">{STEPS[start].pkg}</b> <span id="cfg-bar-price">{money(first.price)}</span></span><a class="btn small primary" href="/#anfrage" id="cfg-bar-cta" tabindex="-1">Anfragen</a></div>
@@ -72,19 +109,105 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
 </script>
 
 <style>
-  .cfg { display: grid; grid-template-columns: minmax(320px, 0.62fr) minmax(0, 1.38fr); gap: clamp(24px, 4vw, 56px); padding: 84px var(--pad) var(--section); align-items: start; }
+  /* zwei Spalten wie im ursprünglichen Entwurf: Bedienung links in fester Lesebreite, die Bühne nimmt den Rest bis 2560 px */
+  .cfg { display: grid; grid-template-columns: clamp(340px, 27vw, 500px) minmax(0, 1fr); gap: clamp(24px, 3.4vw, 72px); padding: 84px var(--pad) var(--section); align-items: start; }
   .cfg-stage { order: 2; position: sticky; top: 84px; height: calc(100svh - 108px); min-height: 460px; border-radius: var(--radius); background: radial-gradient(ellipse at 50% 120%, rgba(51, 237, 242, 0.06), transparent 60%), #0a0908; border: 1px solid var(--line); overflow: hidden; }
   .cfg-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
   .cfg-caption { position: absolute; left: 20px; top: 18px; right: 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
   .cfg-caption em { font: 500 11px/1 var(--mono); font-style: normal; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ground); background: var(--pkg, var(--amber)); padding: 5px 8px; border-radius: 4px; }
-  .cfg-acts { position: absolute; right: 14px; bottom: 14px; display: flex; gap: 2px; padding: 3px; border: 1px solid var(--line); border-radius: 999px; background: rgba(15, 13, 12, 0.72); }
-  .cfg-acts[hidden] { display: none; }
-  .cfg-acts button { width: 40px; height: 40px; border: 0; border-radius: 50%; background: transparent; color: var(--text); font: 400 20px/1 var(--body); cursor: pointer; }
-  .cfg-acts button:hover:not(:disabled) { background: rgba(246, 241, 232, 0.1); }
-  .cfg-acts button:disabled { color: var(--faint); cursor: default; }
-  .cfg-acts button:focus-visible { outline: 3px solid var(--cyan); outline-offset: -2px; }
+  /* Vorführ-Steuerung: Pause, Bild zurück/vor, Fortschritt mit einer Marke je Bild, Tempo */
+  .cfg-player { position: absolute; left: 14px; right: 14px; bottom: 14px; display: flex; align-items: center; gap: 4px; padding: 3px; border: 1px solid var(--line); border-radius: 999px; background: rgba(15, 13, 12, 0.72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  .cfg-player button { flex: none; height: 36px; min-width: 36px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); font: 400 18px/1 var(--body); cursor: pointer; display: inline-grid; place-items: center; padding: 0 8px; }
+  .cfg-player button:hover { color: var(--text); background: rgba(246, 241, 232, 0.08); }
+  .cfg-player button:focus-visible, .cfg-track:focus-visible { outline: 3px solid var(--cyan); outline-offset: -2px; }
+  .cfg-play { color: var(--text) !important; }
+  .cfg-play svg { width: 14px; height: 14px; fill: currentColor; }
+  .cfg-play[data-paused="false"] .i-play, .cfg-play[data-paused="true"] .i-pause { display: none; }
+  .cfg-track { position: relative; flex: 1 1 auto; min-width: 60px; height: 36px; cursor: pointer; touch-action: none; border-radius: 999px; }
+  .cfg-marks { position: absolute; left: 6px; right: 6px; top: 50%; height: 3px; margin-top: -1.5px; display: flex; gap: 2px; }
+  .cfg-marks :global(span) { flex: 1 1 0; min-width: 2px; border-radius: 2px; background: linear-gradient(90deg, var(--pkg, var(--amber)) var(--f, 0%), rgba(246, 241, 232, 0.18) var(--f, 0%)); }
+  .cfg-marks :global(span.is-motif) { margin-left: 4px; }
+  .cfg-rate { display: flex; flex: none; padding-left: 4px; border-left: 1px solid var(--line); }
+  .cfg-rate button { font: 500 12px/1 var(--mono); letter-spacing: 0.02em; padding: 0 7px; min-width: 0; }
+  .cfg-rate button[aria-pressed="true"] { color: var(--text); background: rgba(246, 241, 232, 0.1); }
+  /* Drohnenregler: Spur in den Paketfarben, Lücke zwischen den Bereichen leer */
+  .cfg-drones-head { display: flex; align-items: baseline; justify-content: space-between; }
+  .cfg-drones-head label { font-size: 15px; color: var(--text); }
+  .cfg-drones-head output { font: 600 20px/1 var(--display); color: var(--text); font-variant-numeric: tabular-nums; }
+  .cfg-range { -webkit-appearance: none; appearance: none; width: 100%; height: 28px; margin: 0; background: transparent; cursor: pointer; }
+  .cfg-range::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: var(--track), rgba(246, 241, 232, 0.08); opacity: 0.85; }
+  .cfg-range::-moz-range-track { height: 4px; border-radius: 2px; background: var(--track), rgba(246, 241, 232, 0.08); opacity: 0.85; }
+  .cfg-range::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; margin-top: -8px; border-radius: 50%; background: var(--text); border: 4px solid var(--pkg, var(--amber)); box-shadow: 0 0 0 4px rgba(15, 13, 12, 0.9); }
+  .cfg-range::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; background: var(--text); border: 4px solid var(--pkg, var(--amber)); box-shadow: 0 0 0 4px rgba(15, 13, 12, 0.9); }
+  .cfg-range:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; border-radius: 6px; }
+  .cfg-ticks { position: relative; height: 14px; margin: -4px 10px 0; font-size: 11px; color: var(--faint); }
+  .cfg-ticks span { position: absolute; left: calc(var(--p) * 100%); transform: translateX(-50%); }
+  /* Bühne als Pause-Knopf (vierzehnte Fassung): liegt über der Leinwand, unter Steuerung und Meldungen */
+  .cfg-hit { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; margin: 0; padding: 0; border: 0; border-radius: inherit; background: transparent; cursor: pointer; }
+  .cfg-hit:focus-visible { outline: 3px solid var(--cyan); outline-offset: -3px; }
+  .cfg-caption, .cfg-toast, .cfg-flash, .cfg-drop { z-index: 2; }
+  .cfg-caption { pointer-events: none; }
+  .cfg-player, .cfg-error { z-index: 3; }
+  /* kurzes Zeichen in der Mitte, was der Klick bewirkt hat (wie bei YouTube), danach weg */
+  .cfg-flash { position: absolute; left: 50%; top: 50%; width: 64px; height: 64px; margin: -32px 0 0 -32px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; background: rgba(15, 13, 12, 0.72); color: var(--text); opacity: 0; pointer-events: none; }
+  .cfg-flash svg { width: 24px; height: 24px; fill: currentColor; }
+  .cfg-flash[data-state="pause"] .i-play, .cfg-flash[data-state="play"] .i-pause, .cfg-flash:not([data-state]) svg { display: none; }
+  .cfg-flash.is-on { animation: cfg-pop 0.75s ease-out; }
+  @keyframes cfg-pop { from { opacity: 0.9; transform: scale(0.92); } to { opacity: 0; transform: scale(1.12); } }
+  @media (prefers-reduced-motion: reduce) { .cfg-flash.is-on { animation: none; } }
+  /* Dropzone fürs Logo: sichtbar, solange eine Datei über die Seite gezogen wird, und als Hinweis, wenn man auf
+     „Logo“ zeigt. Fünfzehnte Fassung (Marc, Kompromiss): beim ersten Überfahren der Bühne mit der Maus einmal als
+     Einladung (is-invite), danach nicht mehr. Nach dem Ablegen sofort weg, bis die Maus die Bühne verlassen hat
+     (is-done). Mit data-drop-hover an der Bühne erscheint sie wie in Studie 1 bei jedem Überfahren. */
+  .cfg-drop { position: absolute; inset: 14px 14px 64px; display: grid; place-content: center; justify-items: center; gap: 8px; border: 1.5px dashed rgba(246, 241, 232, 0.28); border-radius: calc(var(--radius) - 6px); color: var(--text); text-align: center; opacity: 0; transition: opacity 0.3s, border-color 0.3s, background 0.3s; pointer-events: none; }
+  .cfg-drop svg { width: 30px; height: 30px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .cfg-drop span { font: 500 18px/1.2 var(--display); }
+  .cfg-drop small { font-size: 13px; color: var(--muted); }
+  .cfg-stage.is-target .cfg-drop, .cfg-stage.is-page-drag .cfg-drop, .cfg-stage.is-invite .cfg-drop, .cfg-stage[data-drop-hover]:hover .cfg-drop { opacity: 1; background: rgba(10, 9, 8, 0.42); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+  .cfg-stage.is-drag .cfg-drop { opacity: 1; border-color: var(--pkg, var(--amber)); background: rgba(10, 9, 8, 0.55); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+  .cfg-stage.is-done .cfg-drop { opacity: 0; transition: none; }
+  /* Spur: beim Überfahren und mit Fokus ein kleiner Hinweis, ab wie vielen Drohnen die Sequenz möglich ist */
+  .cfg-tip { position: absolute; bottom: calc(100% + 8px); left: var(--x, 50%); transform: translateX(-50%); white-space: nowrap; padding: 4px 9px; border: 1px solid var(--line); border-radius: 6px; background: rgba(15, 13, 12, 0.92); color: var(--muted); font: 400 12px/1.3 var(--body); opacity: 0; transition: opacity 0.15s ease; pointer-events: none; }
+  .cfg-tip b { color: var(--text); font-weight: 500; }
+  .cfg-tip.is-on { opacity: 1; }
+  /* eigener Text und Logo in einer Zeile */
+  .cfg-own-row { display: flex; gap: 6px; align-items: stretch; }
+  .cfg-own-row .cfg-text { flex: 1 1 auto; min-width: 0; }
+  .cfg-upload { position: relative; flex: none; display: inline-flex; align-items: center; gap: 7px; min-height: 42px; padding: 0 14px; border: 1px solid var(--line-strong); border-radius: 10px; color: var(--text); font-size: 15px; cursor: pointer; }
+  .cfg-upload:hover { background: rgba(246, 241, 232, 0.06); }
+  .cfg-upload svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .cfg-upload input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
+  .cfg-upload:focus-within { outline: 3px solid var(--cyan); outline-offset: 2px; }
+  .cfg-upload.has-logo { border-color: var(--pkg, var(--amber)); }
+  .cfg-logo-off { flex: none; width: 42px; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--muted); cursor: pointer; display: grid; place-items: center; }
+  .cfg-logo-off[hidden] { display: none; }
+  .cfg-logo-off svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+  .cfg-logo-off:hover { color: var(--text); }
+  .cfg-logo-off:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+  .cfg-legal { margin: 0; font-size: 12px; line-height: 1.45; color: var(--faint); }
+  .cfg-logo-status { margin: 0; font-size: 13px; color: var(--muted); }
+  .cfg-logo-status:empty { display: none; }
 
   .cfg-error { position: absolute; inset: auto 20px 76px; color: var(--muted); font-size: 14px; }
+  /* Freischalt-Meldung (dreizehnte Fassung), fünfzehnte Fassung in der Sprache der Seite (Marc: die Toast-UI war „gar
+     nicht on-brand“): kein Kasten, nur Schrift auf einem weichen dunklen Schein; der Name des Motivs im FlyingStars-Verlauf
+     (Space Grotesk), darunter zieht ein Lichtpunkt eine feine Verlaufskante von links nach rechts. Weich ein- und
+     ausgeblendet (Unschärfe → scharf), verschwindet von selbst. */
+  .cfg-toast { position: absolute; top: 16px; left: 50%; transform: translate(-50%, -4px); margin: 0; max-width: calc(100% - 160px); padding: 10px 28px 14px; background: radial-gradient(closest-side, rgba(10, 9, 8, 0.78), rgba(10, 9, 8, 0.5) 60%, rgba(10, 9, 8, 0)); color: var(--muted); font: 400 13px/1.35 var(--display); letter-spacing: 0.01em; text-align: center; opacity: 0; filter: blur(6px); transition: opacity 0.6s ease, transform 0.6s ease, filter 0.6s ease; pointer-events: none; }
+  .cfg-toast :global(b) { font: 600 16px/1.25 var(--display); letter-spacing: 0; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  .cfg-toast::after { content: ""; position: absolute; left: 28px; right: 28px; bottom: 6px; height: 1px; border-radius: 1px; background: var(--grad); opacity: 0.85; transform: scaleX(0); transform-origin: left center; }
+  .cfg-toast::before { content: ""; position: absolute; left: 28px; bottom: 4.5px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: #fff; box-shadow: 0 0 5px 1px rgba(255, 158, 41, 0.9), 0 0 12px 3px rgba(219, 100, 232, 0.55), 0 0 22px 6px rgba(51, 237, 242, 0.25); opacity: 0; }
+  .cfg-toast.is-on { opacity: 1; transform: translate(-50%, 0); filter: none; }
+  .cfg-toast.is-on::after { animation: cfg-edge 1.2s 0.15s cubic-bezier(0.3, 0.7, 0.2, 1) forwards; }
+  .cfg-toast.is-on::before { animation: cfg-spark 1.2s 0.15s cubic-bezier(0.3, 0.7, 0.2, 1) forwards; }
+  @keyframes cfg-edge { to { transform: scaleX(1); } }
+  @keyframes cfg-spark { 0% { left: 28px; opacity: 0; } 18% { opacity: 1; } 75% { opacity: 1; } 100% { left: calc(100% - 28px); opacity: 0; } }
+  .cfg-toast:empty { display: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .cfg-toast { transition: none; transform: translate(-50%, 0); filter: none; }
+    .cfg-toast.is-on::after { animation: none; transform: none; }
+    .cfg-toast.is-on::before { animation: none; }
+  }
   /* package buttons like the pricing calculator: one segment per package, the chosen one in its package colour */
   .cfg-pkgs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 12px; }
   .cfg-pkgs label { position: relative; cursor: pointer; }
@@ -117,17 +240,26 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
   .cfg-styles span { display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); font-size: 14px; color: var(--muted); }
   .cfg-styles input:checked + span { color: var(--text); border-color: var(--text); }
   .cfg-styles input:focus-visible + span { outline: 3px solid var(--cyan); outline-offset: 2px; }
-  .cfg-text-note[hidden] { display: none; }
-  .cfg-text-note { margin: 0; font-size: 12.5px; color: var(--faint); line-height: 1.45; }
   .cfg-result { display: grid; gap: 6px; padding-top: 14px; border-top: 1px solid var(--line); }
   .cfg-price { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
   .cfg-price b { font: 600 clamp(24px, 2.2vw, 30px)/1 var(--display); letter-spacing: 0.02em; }
   .cfg-price span { font: 500 clamp(24px, 2.2vw, 30px)/1 var(--display); color: var(--text); }
   .cfg-meta { margin: 0; font-size: 12px; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; }
-  .cfg-includes { margin: 6px 0 0; color: var(--muted); font-size: 15px; }
   .cfg-cta { justify-self: start; }
   .cfg-note { margin: 0; font-size: 12.5px; color: var(--faint); line-height: 1.5; }
   .cfg-bar { display: none; }
+  /* niedrige Desktop-Fenster (1280 × 720): Text und Logo stehen seit der vierzehnten Fassung bei den Auswahlen; damit
+     Preis und Anfrage weiter im ersten Blick bleiben, rückt die Bedienung enger zusammen */
+  @media (min-width: 1001px) and (max-height: 820px) {
+    .cfg-panel { gap: 10px; }
+    .cfg-h { font-size: clamp(26px, 2.2vw, 34px); }
+    .cfg-text, .cfg-upload { min-height: 38px; }
+    .cfg-block > label, .cfg-block legend { margin-bottom: 2px; }
+    .cfg-occasions span { min-height: 36px; }
+    .cfg-pkgs span { min-height: 46px; padding: 6px; }
+    .cfg-result { padding-top: 10px; }
+    .cfg-legal { font-size: 11.5px; line-height: 1.35; }
+  }
   @media (max-width: 1000px) {
     .cfg { grid-template-columns: 1fr; padding-top: 64px; gap: 22px; padding-bottom: 120px; }
     .cfg-stage { order: 0; top: 64px; z-index: 5; height: 42svh; min-height: 280px; margin: 0 calc(var(--pad) * -1); border-radius: 0; border-left: 0; border-right: 0; }
@@ -135,8 +267,14 @@ const firstCaption = list[0].motifs[0].tiers[startPkg].caption;
     .cfg-h { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
     .cfg-panel { gap: 14px; }
     .cfg-caption { font-size: 13px; }
+    .cfg-toast { top: 48px; max-width: calc(100% - 28px); }
+    .cfg-player { left: 10px; right: 10px; bottom: 10px; gap: 2px; }
+    .cfg-player button { height: 34px; min-width: 32px; padding: 0 6px; }
+    .cfg-rate button { padding: 0 5px; }
     /* price and inquiry stay in reach while the visitor slides */
     .cfg-bar { position: fixed; z-index: 15; inset: auto 0 0 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px var(--pad) calc(12px + env(safe-area-inset-bottom, 0px)); background: rgba(15, 13, 12, 0.94); border-top: 1px solid var(--line); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); font-size: 15px; }
     .cfg-bar b { letter-spacing: 0.06em; margin-right: 6px; }
+    /* angesteuerte Felder (Fokus, Tastatur) bleiben zwischen der klebenden Bühne und der Preisleiste sichtbar */
+    .cfg-panel :is(input, button, .cfg-upload) { scroll-margin: calc(64px + max(42svh, 280px) + 16px) 0 96px; }
   }
 </style>

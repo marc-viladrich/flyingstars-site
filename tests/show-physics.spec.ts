@@ -45,3 +45,22 @@ for (const occasion of OCCASIONS) {
     }
   });
 }
+
+// Zwölfte Fassung: die Drohnenzahl ist frei wählbar; an der Obergrenze des Reglers (mehr Drohnen, dichtere Bilder,
+// lebendige Wolke mit Hilbert-Zuordnung) gelten dieselben Grenzen. Dreizehnte Fassung: alle Anlässe, weil erst ab 450
+// und 520 Drohnen die freigeschalteten Motive und ihre Teil-Umbauten in der Wolke laufen.
+for (const occasion of OCCASIONS) {
+  test(`Physikalisch fliegbar: ${occasion} in ODYSSEY mit 600 Drohnen`, async ({ page }, info) => {
+    test.skip(info.project.name !== 'desktop', 'Die Bewegung ist auf allen Geräten dieselbe.');
+    test.setTimeout(900_000);
+    await page.clock.install();
+    await page.goto(`/show-konfigurator/?anlass=${occasion}&paket=ODYSSEY&drohnen=600`);
+    await page.clock.runFor(1000);
+    await expect(page.locator('#cfg-field')).toHaveAttribute('data-points', '600');
+    await page.evaluate(() => { (window as unknown as { __showTrace: unknown[] }).__showTrace = []; });
+    await page.clock.runFor(160_000);
+    const { speed, accel } = await measure(page);
+    expect.soft(speed, `${occasion} speed at 600`).toBeLessThanOrEqual(LIMITS.speed);
+    expect.soft(accel, `${occasion} acceleration at 600`).toBeLessThanOrEqual(LIMITS.accel);
+  });
+}

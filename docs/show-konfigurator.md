@@ -1,6 +1,6 @@
 # Show-Konfigurator (Prototyp)
 
-Stand: 10. Oktober 2026, elfte Fassung. Frühere Stände sind als Tags erhalten: `konfigurator-v6`, `konfigurator-v8`, `konfigurator-v9`, `konfigurator-v10`. Die Route ist `/show-konfigurator/`, nicht verlinkt und mit `noindex`. Der Konfigurator ist ein Vorschlag an FlyingStars und ersetzt den Preisrechner der Referenz nicht.
+Stand: 30. Oktober 2026, dreizehnte Fassung (Abschnitt „Dreizehnte Fassung“ ganz unten; die zwölfte steht davor). Frühere Stände sind als Tags erhalten: `konfigurator-v6`, `konfigurator-v8`, `konfigurator-v9`, `konfigurator-v10`. Die Route ist `/show-konfigurator/`, nicht verlinkt und mit `noindex`. Der Konfigurator ist ein Vorschlag an FlyingStars und ersetzt den Preisrechner der Referenz nicht.
 
 ## Das Modell: zwei Entscheidungen, die sich nicht gegenseitig verändern
 
@@ -13,7 +13,7 @@ Stand: 10. Oktober 2026, elfte Fassung. Frühere Stände sind als Tags erhalten:
 | 3D in Bewegung | HORIZON | 200 | ab 15.900 € | alles aus SPARK plus individuelle 2D-Animationen und einfache 3D-Elemente |
 | Erzählte 3D-Show | ODYSSEY | 300 | ab 34.900 € | alles aus HORIZON plus komplexe 3D-Animationen und volumetrische Effekte |
 
-Die Preise kommen unverändert aus `priceFor()` in `src/content/show-packages.ts`. Publikum, Musik, Storytelling, Film und eigener Text sind bewusst nicht enthalten. Sie kommen später als sichtbare, eigene Preistreiber zurück, zum Beispiel hinter einem Aufklapper.
+Die Preise kommen aus `priceFor()` in `src/content/show-packages.ts`; seit der zwölften Fassung bestimmt zusätzlich die Drohnenzahl den Preis (siehe unten). Publikum, Musik, Storytelling, Film und eigener Text sind bewusst nicht enthalten. Sie kommen später als sichtbare, eigene Preistreiber zurück, zum Beispiel hinter einem Aufklapper.
 
 ## Warum so (Marcs Rückmeldungen)
 
@@ -272,3 +272,387 @@ Die Vorschau zeigt nur das Paketbadge. Die redundante Drohnenzahl oben rechts en
 ## Fließtextschrift wiederhergestellt, 12.10.2026
 
 Nach Ansicht der Ein-Schrift-Fassung bevorzugt Marc Inter für die ursprünglichen Body-Rollen. Deshalb zeigt `--body` wieder auf die vorhandene lokale variable Inter. Überschriften und bisherige Mono-Rollen bleiben Space Grotesk; das Logo verwendet wie ursprünglich den Body-Token. JetBrains Mono und Montserrat bleiben entfernt. Die Fontprüfung erwartet genau die beiden lokalen Dateien auf allen gebauten Routen. Sichtbare Motivbeschreibungen und Preview-Zähler bleiben entfernt. Eine separate kuratierte Fontstudie entscheidet nicht ungefragt über die finale Designsprache.
+
+
+## Zwölfte Fassung: lebendige Wolke, Show-Uhr, Drohnenzahl, zwei Spalten (30.10.2026)
+
+Grundlage sind Marcs Entscheidungen vom 30.10.2026 nach der Designsprache-Probe (Studie 2, `/poc/designsprache/`) und Codex' Codeanalyse (intern: `freelance/clients/flyingstars/17-designsprache-poc-2026-10-30/codex-befunde/konfigurator-codeanalyse.md`).
+
+**1. Lebendige Wolke in allen Paketen.** Marc: „Der Unterschied zwischen der lebendigen Wolke und der bisherigen Wolke ist Night and Day.“
+- Entscheidung: Bisher gab es eine Wolke nur bei SPARK, und zwar als eigenes Bild (Funkelband mit Haltezeit, `glitter()` in `scenes/interludes.js`). Das Funkelband ist entfernt. Die lebendige Wolke ist jetzt eine Art zu fliegen: Ein Bild mit `cloud: true` wird durch sie hindurch erreicht.
+- Wie sie fliegt (`show-field.js`, `startBeat`/`step`):
+  - Jede Drohne startet gestaffelt, nach ihrer Stelle im Lichtlauf des Zielbildes plus Zufall.
+  - Sie fliegt auf einer quadratischen Bézier-Bahn über einen zufälligen Mittelpunkt, auch in der Tiefe (z). So funktioniert die Wolke mit 3D-Formen.
+  - Im Flug leuchtet sie gedimmt (0,07); etwa 10 % blitzen deterministisch auf (Hash über Drohne und Zeitfenster).
+  - Die Form schaltet sich erst beim Ankommen ein.
+  - Die Flugdauer reicht in jedem Fall für die Geschwindigkeits- und Beschleunigungsgrenzen. Der Physiktest prüft das.
+- Wann: In jedem Paket vor dem zweiten Motiv und vor dem vierten Motiv. Bei drei Motiven liegt die zweite Wolke stattdessen vor dem Neustart der Runde. Das sind höchstens zwei Wolken je Runde, nicht vor jedem Motiv (`transitions()` in `scenes/interludes.js`).
+- SPARK behält Fächer (Kultur) und Lichttor (Stadtfest) als Figuren mit Bezug zum Anlass; diese Figuren werden selbst durch die Wolke erreicht.
+- Die Wolke kommt nur beim automatischen Weiterlaufen vor. Ein Klick (Paket, Anlass, Bildwechsel) antwortet weiter schnell mit einem normalen Flug.
+- Für die Wolke ordnet eine Hilbert-Reihenfolge die Drohnen ihren Plätzen zu statt der optimalen Zuordnung. Die Bahnen sind ohnehin gekrümmt, Kreuzungen fallen nicht auf. Grund: Bei 600 Drohnen kostete die optimale Zuordnung über alle Teile bis zu 0,6 s (4× gedrosselt 1,1 s) Stillstand.
+
+**2. Helligkeit.** Die Form leuchtet in voller Grundhelligkeit, Lichteffekte kommen nur obendrauf.
+- `lift()` in `show-tempo.js`:
+  - Werte von 0,6 bis 1 werden zu 1.
+  - Unter 0,2 bleibt bewusst dunkel, etwa Delfin unter Wasser, verdeckte Buchzeilen oder Feuerwerksglut.
+  - Dazwischen gibt es einen weichen Übergang, damit ein Ausblenden nicht springt.
+- `trace()` in `show-motion.js` dimmt nicht mehr: Die Linie steht vor dem Lichtkopf schon voll. Licht „schreibt“ damit über eine stehende Form; QR-Code und Route bauen sich nicht mehr im Dunkeln auf.
+- Der Lichtlauf läuft häufiger und entlang der Form. Er ersetzt den bisherigen diagonalen Schimmer:
+  - Reihenfolge ist die Hilbert-Ordnung der Punkte, oder `order` am Bild, falls ein Motiv eine Konturreihenfolge vorgibt.
+  - Er beginnt 0,6 s nach der Ankunft und wiederholt sich alle 4,6 s (`TEMPO.run`).
+  - Er kommt nur dazu, er dimmt nie.
+
+**3. Tempo.** Die Werte stehen zentral in `src/scripts/show-tempo.js` (`TEMPO`).
+- Wolke 4,3 s. Das ist Marcs langsamste Stufe aus der Probe: 2600 ms / 0,6.
+- Automatische Neupositionierung 1,8–4,3 s statt 1,1–3,2 s. Klicks bleiben bei 1,1–3,2 s.
+- Das letzte Bild eines Motivs steht in allen Paketen 3 s, vorher 3,5/5/3,5 s.
+- Gemessene Summe der Haltezeiten je Runde, vorher → nachher:
+
+  | Paket | Vorher | Nachher |
+  |---|---|---|
+  | SPARK | 14,5–21,5 s | 11–17 s |
+  | HORIZON | 20–30,4 s | 12–22,4 s |
+  | ODYSSEY | 49,8–72 s | 47,3–70,3 s |
+
+- **Offen bei ODYSSEY:** Die langen Akte sind Handlung, keine Standbilder. Beispiele: Zündung 8 s, Orbit 9,5 s, Landung 7,5 s, Feder schreibt 9 s, Ring auf der Hand 7,4 s, Papierflieger 8 s. Pauschal kürzen würde Handlungen abschneiden. Das braucht einen Durchgang Akt für Akt (Handlungsende + 1 s). Bis dahin hilft der Tempofaktor 2×.
+
+**4. Vorführ-Steuerung.**
+- Virtuelle Show-Uhr in `show-field.js` (`vt`): Sie rückt nur in der Render-Schleife vor, um die echte Zeit mal Tempofaktor. Pro Bild sind das höchstens 0,1 s; ein langsames Gerät verlangsamt die Show, statt sie springen zu lassen.
+- Alle Zeitpfade (Flug, Wolke, Eigenbewegung, Licht) hängen an dieser Uhr.
+- Die Leiste unter der Bühne hat vier Teile:
+  - **Pause:** friert das exakte Bild ein, auch mitten in der Wolke.
+  - **‹ ›:** ein Bild zurück oder vor.
+  - **Spur:** eine Marke je Bild, Breite nach geschätzter Dauer; ein neues Motiv beginnt mit größerem Abstand. Die Marken füllen sich in der Paketfarbe.
+  - **Tempo:** 0,5× / 1× / 2×.
+- Die Spur ist ein `role="slider"`:
+  - Klicken oder Ziehen springt zum Bild unter dem Zeiger, nach dem Ziehen beim Loslassen.
+  - Pfeiltasten gehen ein Bild weiter, Pos1 an den Anfang, Ende zum letzten Motiv.
+  - `aria-valuetext` lautet „Bild k von N: Beschreibung“.
+- ↻ ist entfallen; Pos1 oder ein Klick an den Anfang der Spur ersetzt es.
+- **Nicht gebaut: echtes Scrubben (stufenlos rückwärts).** Die Engine trägt Zustand von Bild zu Bild (Positionen, Geschwindigkeiten, Zuordnung). Rückwärts bräuchte sie Zustands-Schnappschüsse oder vorberechnete Übergänge. Gebaut sind deshalb Sprungmarken je Bild, wie vereinbart.
+- Die globale Pause im Kopf der Seite und reduzierte Bewegung zeigen weiterhin das Motiv in Ruhe.
+
+**5. Drohnenzahl als dritte Achse.**
+- Regler 100–600 in Zehnerschritten, darunter die Spur in den Paketfarben.
+- Jedes Paket hat einen eigenen Bereich (`DRONE_RANGES` in `src/content/show-packages.ts`): SPARK 100–150, HORIZON 200–290, ODYSSEY 300–600.
+- Die Lücke 160–190 ist nicht wählbar; der Regler springt in Bewegungsrichtung zur nächsten Grenze (`snapDrones`).
+- Überschreitet der Regler eine Grenze, wechselt das Paket sichtbar: Der Paketknopf springt um, darunter steht „Paket gewechselt: HORIZON beginnt bei 200 Drohnen.“ (`aria-live`).
+- Ein Klick auf einen Paketknopf setzt dessen Einstiegszahl.
+- Preis = Paketpreis + Aufpreis je angefangenem Schritt (`priceFor`, unverändert). So kostet HORIZON höchstens 25.700 € (290 Drohnen), ODYSSEY mindestens 34.900 €.
+- **Platzhalter:** Bereichsgrenzen und Aufpreise sind nicht mit FlyingStars geklärt. Im Code steht `DRONE_RANGES_PLACEHOLDER`, in der Oberfläche „Bereiche und Aufpreise: Platzhalter“.
+- Die Obergrenze 600 ist eine Vorschaugrenze, keine Flottengrenze. Bei 600 Drohnen hält die Vorschau während einer Wolke mit 4-fach gedrosselter CPU noch 46 fps.
+- Drohnenzahl in der Anfrage: `drohnen=<n>`, im Text „(ODYSSEY, 420 Drohnen, ab 54.700 € netto, Preis laut Konfigurator)“.
+- Direktlink: `?anlass=launch&paket=ODYSSEY&drohnen=420&motiv=rakete`.
+- Über 300 Drohnen behält das Bild die Bühnengröße und wird dichter. Bis 300 wächst es wie bisher mit der Wurzel der Drohnenzahl.
+- Vorher repariert: Drei Motivbauer lieferten bei anderen Drohnenzahlen zu wenige Punkte:
+  - Buch in HORIZON: Textzeilen wurden über `n/3` abgerundet, jetzt `textRowsTotal` in `scenes/kultur.js`.
+  - Delfin in HORIZON: ungerade Wasserdrohnen, `scenes/natur.js`.
+  - Herzgeschichte in ODYSSEY: Das 3D-Herz hat höchstens 290 Punkte. Darüber legt `heart3d` in `show-scenes.js` ein kleineres Herz hinein.
+
+**6. Zwei Spalten.**
+- Ab 1000 px steht die Bedienung links in fester Lesebreite (`clamp(340px, 27vw, 500px)`), die Bühne rechts nimmt den Rest bis 2560 px.
+- Mobil bleibt es gestapelt: Bühne oben, Bedienung darunter, Preisleiste unten.
+- Reihenfolge links: Anlass, Paket, Drohnen, Preis, Anfrage, danach „Euer Text“ (optional). So stehen Preis und Anfrage auch bei 1280 × 720 im ersten Blick.
+
+**Nicht in dieser Runde:** Logo-Upload im Konfigurator. Die Preisseite `/drohnenshow-preise/` hat in diesem Branch weiter den alten Rechner (`Calculator.astro`, `pricing.js`, eigener Regler 100–1.000). Die neue Logik gilt nur in `/show-konfigurator/`.
+
+### Wie prüfen
+
+- Schnell, ohne Browser: `node --test scripts/show-price.test.mjs scripts/show-counts.test.mjs scripts/show-geometry.test.mjs scripts/show-flight.test.mjs`.
+  - `show-price.test.mjs` prüft:
+    - getrennte Bereiche
+    - der Preis steigt nie, wenn Drohnen dazukommen
+    - HORIZON ist nie teurer als ODYSSEY bei gleicher oder höherer Drohnenzahl
+    - der Regler springt über die Lücke
+    - die Einstiegspreise bleiben
+  - `show-counts.test.mjs` baut jedes Motiv in jedem Paket bei jeder wählbaren Drohnenzahl (47 Zahlen) und prüft:
+    - die Punktzahl und endliche Koordinaten in jedem Bild
+    - den eigenen Text in drei Schriften an den Bereichsgrenzen
+    - die Wolkenregel
+  - Laufzeit etwa 3 s. `scripts/show-node-env.mjs` lädt die Motivbauer dafür in Node: JSON-Importe, `fetch` aus `public/`.
+- Browser (`tests/show-configurator.spec.ts`), neu:
+  - Regler mit echter Maus und Tastatur über die Paketgrenze
+  - Pause friert das Bild ein, Tempo, Sprung über die Spur
+  - zwei Spalten bei 1440 und 2560 px, gestapelt bei 390 px
+- `tests/show-physics.spec.ts` deckt jetzt auch die Wolken ab, weil sie im automatischen Ablauf vorkommen.
+- Bei der Bühne: Eine Wolke sieht man, wenn man im Ablauf ein Motiv vor dem zweiten oder vierten ansteuert und wartet. Beispiel: `?anlass=festival&paket=ODYSSEY&motiv=kolibri`, dann auf der Spur ← drücken; nach dem Kompass zerfällt das Bild in die Wolke, und Kolibri und Blüte setzen sich zusammen.
+
+
+## Dreizehnte Fassung: nur noch die lebendige Wolke, lückenloser Regler, Motive nach Drohnenzahl (30.10.2026)
+
+Grundlage ist Marcs Rückmeldung zur zwölften Fassung vom selben Tag. Fortschrittsleiste, Weiter/Zurück und Tempo bleiben unverändert („gerne so beibehalten“).
+
+**1. Keine ruhende Wolke mehr.** Marc: „kompletter Bullshit … alles muss die lebendige Wolke sein“ (gesehen bei Hochzeit und Jubiläum).
+- Ursache: Mehrere ODYSSEY-Geschichten hatten ein eigenes Bild, in dem die Drohnen als gelockerte, funkelnde Wolke stehen (`loosen()` plus `sparkle()`), und erst das Bild danach war die Form. Das Funkelband der zwölften Fassung war schon weg, diese Zwischenbilder nicht.
+- Entfernt, das jeweils folgende Bild wird durch die lebendige Wolke erreicht:
+
+  | Anlass | Geschichte | entfallenes Standbild | jetzt |
+  |---|---|---|---|
+  | Hochzeit | Ring | „das Kästchen löst sich in eine Wolke“ | Kästchen und Sterne werden in der Wolke zur Hand, der Ring fliegt dabei normal weiter (Teil-Umbau) |
+  | Hochzeit | Schmetterling | „ihre Flügel lösen sich in Funken“ | das Herz entsteht aus der Wolke |
+  | Jubiläum | Fußball | „Funken“ (erstes Bild) | „Ein Spieler und sein Tor“, das Tor steht als gedimmte Linie statt als gelockerte Vorform |
+  | Jubiläum | Pokal | Funkenkugel über dem Sockel (zwei Bilder) | die Drohnen warten gedimmt als schmaler Kranz; Zahl und Konfetti entstehen in der Wolke, der Pokal bleibt stehen |
+  | Launch | Glühbirne | „Ein Funke“ (Funkenball) | der Glühfaden glimmt allein, das Glas entsteht aus der Wolke (Teil-Umbau) |
+  | Launch | QR-Code | „die Nachrichten lösen sich in Funken“ | die Nachrichten werden in der Wolke zum Code, das Handy bleibt stehen (Teil-Umbau) |
+  | Launch | Logo | zwei „Funkenwirbel“ | Logo → Ring aus Licht durch die Wolke |
+  | Kultur | Buch | „die Zeilen steigen als Funken auf“ | Teil-Umbau, siehe Punkt 2 |
+  | Winter | Lichterbaum | „Schnee fällt“ und „die Flocken sammeln sich“ | eine Schneeflocke (die Flocke aus SPARK) wird in der Wolke zum Baum |
+  | Stadtfest | Drache | „Funken am Boden“ | der Drache steigt direkt aus der Wolke auf |
+  | eigener Text | ODYSSEY | „Funken sammeln sich“ | Licht schreibt den Text, erreicht durch die Wolke |
+
+- `loosen()` ist aus `show-motion.js` gelöscht, damit niemand das Muster wieder einbaut. Die Übergangsfiguren bei SPARK (Fächer, Tor) funkeln nach dem Zeichnen nicht mehr (`interludes.js`).
+- Nebenbefund: Bei 600 Drohnen stellte die Raketengeschichte 335 Drohnen als funkelnden Sternenhimmel hin, weil Rakete, Spur und Welt feste Zahlen hatten. Rakete und Buch wachsen jetzt mit der Drohnenzahl (`rocketStory` in `show-scenes.js`, `bookStoryScene` in `scenes/kultur.js`).
+- Wächter (`scripts/show-clouds.test.mjs`, „Keine ruhende Wolke“): baut alle Anlässe × Pakete bei den Bereichsgrenzen und Freischaltschwellen und misst je Bild den Anteil der Drohnen, die hell stehen und für sich allein funkeln. Kein Nachbar trägt dasselbe Licht (auch nicht leicht zeitversetzt wie bei einem Lichtlauf), und der Rhythmus der Drohne weicht von dem ihrer Nachbarn ab. Kalibriert am Stand vor dieser Runde: Die acht Standbilder lagen bei 0,25 bis 0,43, der Sternenhimmel der Rakete bei 600 bei 0,31. Echte Motive liegen jetzt höchstens bei 0,18. Grenze 0,22 für das ganze Bild, dazu kein Teil mit mindestens einem Drittel der Drohnen über 0,6.
+- Grenze des Wächters: Er erkennt funkelnde Wolken. Eine unbeleuchtete, formlose Punktfläche (wie der frühere Funkenwirbel) würde er nicht erkennen.
+
+**2. Lebendige Wolke häufiger, auch als Teil-Umbau.**
+- Regel: alle drei bis vier Bilder, höchstens fünf, in jedem Paket (`planClouds()` in `scenes/interludes.js`). Feste Wolken setzen die Geschichten selbst (Teil-Umbauten, Bilder nach einem entfernten Standbild, SPARK-Figuren). Dazu wählt `planClouds()` unter den Motivanfängen die Kombination, deren Abstände rund um die Schleife am nächsten an drei bis vier liegen; bei Gleichstand weniger Wolken und die erste möglichst früh.
+- Gemessene Abstände (Bilder bis zur nächsten Wolke, im Kreis):
+
+  | Paket | Hochzeit | Jubiläum | Launch | Kultur | Winter | Stadtfest |
+  |---|---|---|---|---|---|---|
+  | SPARK 100 | 4 | 4 | 5 | 3-3 | 4 | 4 |
+  | HORIZON 200 | 5 | 5 | 5 | 3-3 | 4 | 4 |
+  | ODYSSEY 300 | 5-5 | 5-4 | 2-5-2 | 3-3-5 | 3-5-4 | 4-5-3 |
+  | ODYSSEY 600 | 2-4-4-5-3 | 4-3-5-2-4 | 3-2-4-5-2 | 3-3-5-4-4 | 3-5-5-4 | 5-5-5-3 |
+
+  Vorher sah Marc bei ODYSSEY-Hochzeit eine einzige Wolke in 20 Bildern.
+- Teil-Umbau: `beat.cloud` darf eine Liste von Teilnamen sein (`show-field.js`, `assignPlaces`/`startBeat`/`step`). Nur die Drohnen dieser Teile fliegen durch die Wolke (Hilbert-Zuordnung), die übrigen Teile behalten ihre Drohnen und fliegen normal oder bleiben stehen. Eingesetzt:
+  - Buch (Kultur, ODYSSEY): Zeilen und Sterne steigen aus den Seiten und werden ein Stern; Deckel, Seiten und Feder bleiben (`cloud: ["star"]`).
+  - Vorhang (Kultur, HORIZON und ODYSSEY): der Stern entsteht aus dem Goldregen bzw. aus dem Vorhang, der Vorhang bleibt.
+  - Ring (Hand entsteht, Ring fliegt weiter), Pokal (Zahl und Konfetti), Glühbirne (Glas), QR-Code (Code), Reise (Karte wird zum Kompass, der Papierflieger kreist weiter).
+- Kontaktbögen zum Ansehen (nicht im Repo): `/tmp/fs-konfig-r3/sheets/*/sheet.png`.
+
+**3. Weniger Glühen.** Ursache: Jedes Bild bekam den Lichtlauf (`shimmer ??= true` in `buildSequence`), auch Formen mit eigenem Licht und Flächen.
+- Jetzt entscheidet `runFits()` in `show-tempo.js` je Bild: Lichtlauf nur, wenn das Bild kein eigenes Licht hat (die Helligkeit aus `live()` bleibt bei allen Stichproben bei 1) und die meisten Punkte auf Linien liegen (die vier nächsten Nachbarn liegen fast auf einer Geraden). Ergebnis: 16 von 162 Bildern bei 100/200/600 Drohnen, vorher alle.
+- Der Lauf selbst ist schwächer (0,65 → 0,4) und seltener (alle 6,5 statt 4,6 s). Sein Kopf startet vor der Form und blendet über 0,8 s ein, wie in der Designsprache-Probe; so blitzt beim Start nichts auf.
+- Eigener Text behält sein eingebautes Licht („Licht schreibt“), einen zusätzlichen Lauf bekommt er nicht.
+
+**4. Lotusblüten ohne Finte.** Ursache: In HORIZON glitten die Blüten zusammen und wieder auseinander, bevor das nächste Motiv kam; in ODYSSEY rückten sie beim Aufblühen erst nach außen (0,62 → 1,02) und danach zueinander. Jetzt geht jede Bewegung in eine Richtung: HORIZON bleibt ineinander gedreht (Haltezeit 7,6 statt 10,4 s), die Knospen stehen von Anfang an dort, wo die offenen Blüten stehen (`lotus3d`, `lotusStory` in `scenes/hochzeit.js`).
+
+**5. Kein Hin und Her am Regler.**
+- Ursache: Zwischen SPARK (bis 150) und HORIZON (ab 200) lag eine Lücke. `snapDrones()` setzte einen Wert in der Lücke in Bewegungsrichtung auf die nächste Grenze, und `update()` schrieb ihn in den Regler zurück. Stand der Zeiger in der Lücke, meldete der Regler beim nächsten Mausereignis wieder den Zeigerwert, diesmal von der anderen Seite. Reproduziert mit echter Maus in Chromium und WebKit (Nachbau der alten Logik): 20 Ereignisse bei ruhender Hand auf 170 ergaben 19 Paketwechsel 150 ↔ 200; mit den neuen Bereichen 0.
+- Jetzt lückenlos: SPARK 100–190, HORIZON 200–290, ODYSSEY 300–600 (`DRONE_RANGES` in `src/content/show-packages.ts`). Die Einstiegspunkte 100/200/300 bleiben die der Referenz. Bis 150 Drohnen gilt der Aufpreis der Referenz (900 € je 10), von 160 bis 190 ein eigener Platzhalter von 700 € je 10 (`SPARK_EXTRA`), damit SPARK mit 190 Drohnen (15.200 €) günstiger bleibt als HORIZON mit 200 (15.900 €). Die Preisseite ist davon nicht berührt.
+- Tests: `scripts/show-price.test.mjs` („lückenlos“, „kein Hin und Her“) und `tests/show-configurator.spec.ts` („Kein Hin und Her …“: echte Maus, ruhende zitternde Hand auf 140, 160, 170, 180, 190, die Paketfolge ist genau SPARK → HORIZON).
+
+**6. Mehr Drohnen, mehr Motive.** Marc: 300 und 600 Drohnen sahen gleich aus, kosten aber doppelt.
+- Rangfolge der ODYSSEY-Geschichten nach Akten, Teilen, Bildausschnitten und Tiefe (gemessen bei 300 Drohnen):
+
+  | Anlass | ab 450 | ab 520 | bei 300 bleiben |
+  |---|---|---|---|
+  | Hochzeit | Ring (5 Akte, 3 Teile, 3 Ausschnitte) | Lotusblüten (3D-Volumen, 3 Teile) | Herz, Sektgläser, Schmetterling |
+  | Jubiläum | Fußball (5 Akte, 6 Teile) | Kopfsprung (5 Akte, 5 Teile, 3D) | Wappen, Wahrzeichen, Pokal |
+  | Launch | Rakete (4 Teile, 2 Ausschnitte, 27 s) | QR-Code (2 Ausschnitte) | Glühbirne, Spirale, Logo |
+  | Kultur | Masken (der Bokkenrijders-Teufel ist eine echte Formation mit 600 Drohnen) | Musik/Harfe (3 Ausschnitte) | Buch, Vorhang, Tanz |
+  | Winter & Silvester | Uhr (5 Akte, Korken als eigenes Teil) | – | Lichterbaum, Feuerwerk, Kleeblatt |
+  | Stadtfest | Reise (6 Akte, 4 Teile) | – | Kolibri, Delfin, Drache |
+
+  Das Buch hätte nach der reinen Zählung vorn gelegen. Es bleibt ab 300, weil Marc den Teil-Umbau im Buch sehen will und die Masken mit dem echten 600er-Teufel den stärkeren Grund für mehr Drohnen haben.
+- Daten: `min` am Motiv (`v(build, caption, min)`), Schwellen in `UNLOCK = [450, 520]`, Hilfsfunktion `playable()` in `src/content/show-configurator.js`. `buildSequence` lässt Motive unter ihrer Schwelle weg. Die Anfrage nennt nur gespielte Motive. Ein Direktlink auf ein gesperrtes Motiv öffnet es mit der nötigen Drohnenzahl.
+- Gamifiziert, zurückhaltend: Schiebt man den Regler über eine Schwelle, erscheint oben auf der Bühne eine kleine Meldung („Neues Motiv freigeschaltet: Ring“, `role="status"`, verschwindet nach 3,4 s), und die Bühne fliegt durch die lebendige Wolke direkt zu diesem Motiv (`show(…, { cloud: true })`). Unter dem Regler steht leise, was noch fehlt („Mehr Drohnen, mehr Motive: ab 450 Ring, ab 520 Lotusblüten“).
+- Folge: ODYSSEY mit 300 Drohnen zeigt drei Motive, mit 600 alle vier oder fünf; die Runde wird länger (z. B. Hochzeit 10 → 18 Bilder).
+- **Platzhalter:** Schwellen und Zuordnung sind nicht mit FlyingStars abgestimmt.
+
+**Nicht in dieser Runde:** Logo-Upload im Konfigurator, die Preisseite `/drohnenshow-preise/`, der Akt-für-Akt-Durchgang der ODYSSEY-Haltezeiten aus der zwölften Fassung.
+
+### Wie prüfen (dreizehnte Fassung)
+
+- Schnell: `node --test scripts/show-clouds.test.mjs scripts/show-price.test.mjs scripts/show-counts.test.mjs scripts/show-geometry.test.mjs scripts/show-flight.test.mjs` (etwa 30 s, der Wolken-Wächter braucht die meiste Zeit).
+- Browser: `tests/show-configurator.spec.ts` („Kein Hin und Her …“, „Mehr Drohnen schalten ein Motiv frei …“), `tests/show-physics.spec.ts` (600 Drohnen jetzt für alle Anlässe, weil die freigeschalteten Motive und ihre Teil-Umbauten erst dort laufen).
+- Ansehen: `?anlass=kultur&paket=ODYSSEY` und warten, bis die Feder fertig geschrieben hat (Buch, Teil-Umbau); `?anlass=hochzeit&paket=ODYSSEY&drohnen=440`, dann den Regler auf 450 (Meldung, Wolke, Ringkästchen).
+- Ergebnisse am 30.10.2026 (eigener Build, nicht der Dev-Server): schnelle Tests 27/27; `tests/show-configurator.spec.ts` in Chromium, WebKit und mobil grün (54 bestanden, 3 nur für Desktop übersprungen); `tests/show-physics.spec.ts` alle 12 Läufe grün (alle Anlässe in allen Paketen, dazu alle Anlässe mit 600 Drohnen); `astro check` 0 Fehler. Bildraten während einer Wolke mit 600 Drohnen: Chromium mit 4-fach gedrosselter CPU 47–51 fps (Median 16,7 ms, schlechtestes Bild 33 ms, auch das Startbild der Wolke), WebKit 75 fps.
+
+
+## Vierzehnte Fassung (A): Bedienung (30.10.2026, abends)
+
+Grundlage ist Marcs Rückmeldung zur dreizehnten Fassung vom selben Abend. Teil B (Motive, Text-Beats, Freischalt-Schwellen) steht in einem eigenen Abschnitt. Fortschrittsleiste, Weiter/Zurück und Tempo bleiben.
+
+**1. Lebendige Wolke beim Rücksprung und beim Anlasswechsel.**
+- Vom letzten Bild zurück zum ersten fliegt die Show in jedem Paket und jedem Anlass durch die lebendige Wolke (`step()` in `show-field.js`, `startBeat(loopTo, t, true, true)`).
+- Ein neuer Anlass wird ebenfalls durch die Wolke erreicht (`update(false, …, { cloud: true })` in `show-configurator.js`).
+- Sonst bleibt es bei der Regel der dreizehnten Fassung. Ein Klick auf ‹ › oder die Spur antwortet weiter mit einem schnellen normalen Flug.
+
+**2. Klick auf die Bühne: Pause und weiter.**
+- Über der Leinwand liegt ein durchsichtiger Knopf über die ganze Bühne (`#cfg-hit`, `aria-pressed`, Name „Vorführung anhalten“). Er liegt unter der Leiste und den Meldungen, deshalb pausiert ein Klick auf ‹ › oder die Spur nicht.
+- Leertaste und Eingabe schalten um, wenn die Bühne den Fokus hat.
+- Knopf in der Leiste und Bühne zeigen denselben Zustand.
+- Wie bei YouTube erscheint kurz ein Pause- bzw. Abspielzeichen in der Mitte, bei reduzierter Bewegung nicht.
+
+**3. Hinweis an der Spur.** Beim Überfahren der Spur und bei Fokus auf ihr zeigt ein kleiner Hinweis über der Sequenz deren Namen und ab wie vielen Drohnen sie möglich ist, z. B. „Ring · ab 450 Drohnen“.
+- Die Zahl ist die Mindestzahl der Fassung, mindestens der Anfang des Paketbereichs (`possibleFrom()` in `show-tempo.js`).
+- Gelesen wird `minDrones` am Motiv; solange Teil B das Feld nicht gesetzt hat, gilt das `min` der dreizehnten Fassung (`minDronesOf()`).
+- Für Screenreader ist der Hinweis die Beschreibung der Spur (`role="tooltip"`, `aria-describedby`).
+- Auf dem Handy erscheint er beim Ziehen über die Spur.
+
+**4. Freischalt-Meldung auch beim Paketwechsel.**
+- `freshMotifs()` vergleicht Paket und Drohnenzahl vorher und nachher. Gemeldet werden alle Motive, die jetzt spielen und vorher nicht, in der Reihenfolge des Anlasses.
+- Die Bühne fliegt durch die Wolke zum ersten davon.
+- Beispiele mit den Inhalten aus Teil B (`UNLOCK = [300, 450]`): Hochzeit HORIZON → ODYSSEY meldet „Neues Motiv freigeschaltet: Lotusblüten“. HORIZON 200 → 600 mit der Taste Ende meldet „2 neue Motive: Lotusblüten, Antrag“. Jeder Anlass hat beim Einstieg in ODYSSEY mindestens ein neues Motiv; ein Klick auf ODYSSEY fliegt deshalb immer dorthin.
+- Während man zieht, sammelt die Meldung alle neuen Motive.
+- Nur mehr Drohnen schalten frei. Wer zu einem kleineren Paket zurückgeht, bekommt dessen einfachere Fassungen ohne Meldung.
+- Ist ein Logo geladen und wird nichts freigeschaltet, führt jede neue Drohnenzahl zurück zum Logo.
+
+**5. Microcopy entfernt.**
+- Gestrichen sind „ODYSSEY: 300–600 Drohnen“ (`#cfg-range`), „Paket gewechselt: …“ (`#cfg-switch`), „Mehr Drohnen, mehr Motive: …“ (`#cfg-more`) und „Enthalten: …“ (`#cfg-includes`).
+- Die Platzhalter-Markierung steht nur noch in der Fußnote: „Alle Preise sind netto; Drohnenbereiche und Aufpreise sind Platzhalter.“
+- „Euer Text“ steht jetzt bei den Auswahlen (Anlass, Paket, Drohnen, dann Text und Logo in einer Zeile), vor Preis und Anfrage.
+- Damit Preis und Anfrage bei 1280 × 720 im ersten Blick bleiben, rückt die Bedienung bei niedrigen Desktop-Fenstern enger zusammen (`max-height: 820px`).
+- Auf dem Handy werden angesteuerte Felder zwischen der klebenden Bühne und der Preisleiste gehalten.
+
+**6. Eigener Text: einmal durch alle drei Schriften.**
+- Nach dem Tippen läuft die Bühne einmal durch Schreibschrift → Druckschrift → Initialen. Die Schriftwahl links markiert jeweils die Schrift auf der Bühne.
+- Danach geht es mit den Motiven weiter, und die Auswahl zeigt wieder die gewählte Schrift.
+- Bau: `composeShow()` in `show-tempo.js` setzt den Durchlauf vor die Runde, `loopTo` zeigt hinter ihn. Er läuft also einmal, das Finale der Runde bleibt der Text in der gewählten Schrift.
+- Je Schrift nimmt der Durchlauf so viele Bilder, bis sie 5 s stand (`TEMPO.tourHold`). In ODYSSEY entfällt so der dritte Akt, der den Text in eine andere Schrift verwandelt. Im Finale bleibt er.
+- Ein Bild mit `tour: false` lässt der Durchlauf aus.
+- Ein Klick auf eine Schrift beendet den Durchlauf und zeigt das Finale in dieser Schrift, auch wenn die Schrift schon markiert war (`click` statt `change`).
+- Wie der Text sich zeigt, baut Teil B in den Text-Bildern.
+
+**7. Logo-Upload im Konfigurator.**
+- Knopf „Logo“ mit Icon neben dem Textfeld, dazu ✕ zum Entfernen. Darunter steht der Hinweis wörtlich: „Lade nur Logos hoch, die du verwenden darfst, zum Beispiel dein eigenes. Die Datei bleibt in deinem Browser: Wir speichern und übertragen sie nicht.“
+- Dropzone auf der Bühne (abgedunkelt, weichgezeichnet, „Dein Logo hier reinziehen“). Sie erscheint, sobald eine Datei über die Seite gezogen wird (über der Bühne mit Rahmen in der Paketfarbe) und wenn man auf „Logo“ zeigt.
+- Nach dem Ablegen oder Auswählen verschwindet sie sofort, bis die Maus die Bühne bzw. den Knopf verlassen hat (`is-done`).
+- Eine Datei, die neben die Bühne fällt, öffnet der Browser nicht.
+- **Abweichung von Studie 1:** Beim bloßen Überfahren der Bühne erscheint die Dropzone nicht. Grund: Im Konfigurator ist die Bühne die Show selbst und seit Punkt 2 der Pause-Knopf. Eine Hover-Dropzone würde die Show jedes Mal abdunkeln und weichzeichnen, wenn die Maus darüber steht, auch beim Anhalten. Das Verhalten aus Studie 1 lässt sich mit `data-drop-hover` an `.cfg-stage` einschalten (eine CSS-Regel ist vorbereitet).
+- Umrechnung: `formation({ kind: 'image', src: blobURL } | { kind: 'svg', markup }, n)` aus `src/scripts/formation/`, gerechnet im Web Worker und je Drohnenzahl gecacht. Farben wie im Logo, dunkle über `liftColor` aufgehellt (Schwarz wird warmes Weiß).
+- Das Logo ist ein eigenes Bild (`segment` −1, `logo: true`). Es eröffnet die Runde, steht 5 s (`TEMPO.logoHold`) und kehrt vor jedem zweiten Motiv zurück (`TEMPO.logoEvery`).
+- Das Logo wird durch die lebendige Wolke erreicht, das Bild danach mit einem normalen Flug (keine zwei Wolken hintereinander).
+- Bei SPARK entfällt mit Logo die Figur vor dem Rücksprung, weil die Runde mit dem Logo beginnt.
+- Nach dem Hochladen fliegt die Bühne durch die Wolke zum Logo. Ein laufender Text-Durchlauf endet dabei.
+- Eine neue Drohnenzahl führt zurück zum Logo.
+- Die Datei verlässt den Browser nicht: kein `fetch`, kein Speicher, keine Analyse. Die Blob-URL wird beim Ersetzen oder Entfernen freigegeben.
+- Die Anfrage nennt nur „Eigenes Logo: in der Vorschau ausprobiert“, ohne Dateinamen.
+- Eine Datei, die sich nicht umrechnen lässt, meldet: „Diese Datei konnten wir nicht umrechnen. Am besten klappt ein SVG oder ein PNG mit transparentem Hintergrund.“
+
+**8. Lichtlauf entlang der Linien.**
+- `rankOf()` in `show-tempo.js` nutzt jetzt `lightOrder()` aus `src/scripts/formation/` statt der Hilbert-Reihenfolge: ein Weg von Punkt zu nächstem Nachbarn, Start links unten.
+- Das gilt für den Lichtlauf und für die Staffelung, mit der sich eine Form in der Wolke aufbaut. Für die Zuordnung der Drohnen in der Wolke bleibt Hilbert (O(n log n)).
+- Der Kopf des Laufs ist eine Glocke ohne Kante (Breite 0,085), dahinter ein länger auslaufender Schweif (2,2-fache Breite).
+- Test: An einem Kreis über einer Linie springt die neue Reihenfolge höchstens dreimal, die alte Hilbert-Reihenfolge vielfach so oft.
+
+**9. Keine Finte in der lebendigen Wolke** (Nachtrag nach Teil B).
+- Der Mittelpunkt der Bézier-Bahn lag zufällig in alle Richtungen versetzt. Ein Teil der Drohnen flog deshalb erst ein Stück zurück.
+- Jetzt bleibt der Versatz entlang der Flugrichtung innerhalb der Strecke, gemessen so, wie man sie auf der Bühne sieht (x und gekipptes y, `TILT_C`/`TILT_S` in `show-field.js`, `startBeat`). Eine quadratische Bézier-Bahn läuft dann in Flugrichtung stetig vorwärts. Quer bleibt der Versatz frei, die Bahn bleibt gekrümmt.
+- Gemessen mit `FINTE_REPORT=1 FINTE_CLOUD=1 node --test scripts/show-finte.test.mjs` über 86 Wolken: vorher 1.468 von 29.289 Drohnen (5,0 %, schlimmste Wolke 27 %), nachher 17 (0,06 %, schlimmste 1,3 %).
+- Die 17 übrigen liegen in Bildern, deren Ziel sich während des Flugs selbst bewegt (Kompass mit kreisendem Flieger, Wellen, Tänzerin).
+- `along()` in `src/scripts/show-flight.js` (Änderung aus Teil B, gehört ab jetzt zu A) ist bestätigt: Strömung nur quer zur Flugrichtung, ohne Sockel, Stärke nach der Strecke im Bild.
+
+**10. Kein Einrasten.**
+- Pause friert das genaue Bild ein, weiter läuft es von dort.
+- Alle neuen Übergänge (Anlass, Rücksprung, Logo, Freischalten) starten aus den aktuellen Positionen und Geschwindigkeiten der Drohnen.
+
+### Wie prüfen (vierzehnte Fassung, A)
+
+- Schnell: `node --test scripts/show-price.test.mjs`. Neu darin:
+  - Freischalten beim Paketwechsel
+  - Mindestzahl und Hinweis an der Spur
+  - Abfolge mit Text-Durchlauf und Logo
+  - Lichtlauf ohne Viertelsprünge
+- Browser: `tests/show-configurator.spec.ts`, neu:
+  - Klick auf die Bühne mit Maus, Touch und Leertaste
+  - Hinweis an der Spur
+  - Paketwechsel-Meldung
+  - Wolke bei Anlasswechsel und Rücksprung
+  - Text-Durchlauf mit synchroner Auswahl
+  - Logo per Dateiauswahl und Drag&Drop, ohne Übertragung und ohne Speicher
+  - Lage von Text und Logo
+  - Physik von Logo, Text-Durchlauf, Anlasswechsel und Rücksprung
+- Ergebnisse am 30.10.2026, eigener Build mit den Inhalten aus Teil B:
+  - Node 32/32 (`show-price`, `show-flight`, `show-finte`, `show-clouds`, `show-counts`, `show-geometry`)
+  - `show-configurator.spec.ts` grün in Chromium, WebKit, Pixel 7 und iPhone 14
+  - `tests/show-physics.spec.ts` 12/12
+  - Seiten-Gates (axe, HTML, Netzwerk) für `/show-konfigurator/` grün, dazu axe nach Text, Logo, Pause und Hinweis
+  - `astro check` 0 Fehler
+
+
+## Fünfzehnte Fassung: Feinschliff nach Marcs Rückmeldung (30.10.2026, 22 Uhr)
+
+Grundregeln bleiben: kein Einrasten, keine Finten (`scripts/show-finte.test.mjs` grün), keine ruhenden Wolken (`scripts/show-clouds.test.mjs` grün), Lichtlauf über `lightOrder`.
+
+**1. Dropzone als Kompromiss.**
+- Beim ersten Überfahren der Bühne mit der Maus zeigt sich die Dropzone einmal als Einladung (abgedunkelt, weichgezeichnet, „Dein Logo hier reinziehen“, Klasse `is-invite`).
+- Sie geht, wenn die Maus die Bühne verlässt, bei einem Klick (der hält die Show wie gehabt an) oder nach 3,5 s. Danach erscheint sie nur noch beim Ziehen einer Datei oder beim Zeigen auf „Logo“.
+- Einmal je Seitenaufruf, als Variable im Skript, ohne `sessionStorage` (keine Spur im Browser). Mit geladenem Logo und bei Touch gibt es keine Einladung.
+- Nach dem Ablegen sofort weg (`is-done`, wie bisher).
+- Code: `show-configurator.js` (Abschnitt „Eigenes Logo“), CSS-Regel `.cfg-stage.is-invite .cfg-drop` in `show-konfigurator.astro`.
+
+**2. Freischalt-Meldung in der Sprache der Seite.** Marc: die Toast-UI war „gar nicht on-brand, lame“.
+- Kein Kasten und keine Pille mehr. Die Meldung ist Schrift auf einem weichen dunklen Schein (Space Grotesk).
+- Der Name des Motivs steht im FlyingStars-Verlauf (amber → orchid → cyan, `var(--grad)` als Verlaufsschrift).
+- Darunter zieht ein Lichtpunkt eine feine Verlaufskante von links nach rechts und verlischt am Ende.
+- Ein- und Ausblenden weich, mit Unschärfe zu scharf. Bei reduzierter Bewegung steht die Kante sofort, ohne Lichtpunkt.
+- Vorgelesen wird derselbe Satz wie vorher („Neues Motiv freigeschaltet: Antrag“, `role="status"`).
+- Die Teile baut `showToast()`. Weil Astro Stile auf Elemente aus dem Markup begrenzt, steht die Regel für den Namen als `.cfg-toast :global(b)`.
+
+**3. Das hochgeladene Logo glänzt.**
+- Bisher bekam das Logo keinen Lichtlauf: `runFits()` gibt Flächen keinen.
+- Jetzt hat es immer einen, mit den Werten aus Studie 1 der Designsprache-Probe: `TEMPO.logoRun` in `show-tempo.js` (Breite 0,06, Stärke 0,6, Kopf von −0,3 bis 1,3 in 3,56 s = wave 0,45, ohne Pause, symmetrische Glocke, nur aufhellend).
+- Die Reihenfolge ist `lightOrder` (über `rankOf`). Der Lauf beginnt mit der Ankunft und blendet über 0,8 s ein, an der Ankunft blitzt nichts.
+- `runLight(u, tau, params)` nimmt dafür eigene Werte, `restAt()` in `show-field.js` reicht `beat.runLight` durch.
+
+**4. Lichter wie auf der Probe-Seite.**
+- Vorher war jede Drohne ein voller Kreis von etwa 3 px Radius, darüber ein Hof von etwa 10 px mit 35 % Deckkraft (auf einer 1440er Bühne). Das wirkte groß, weich und verschwommen.
+- Jetzt rendert `show-field.js` (`sprite()`, `dotRadius()`, `render()`) wie `Swarm.draw()`/`sprite()` in `src/scripts/poc/swarm.js`:
+  - ein vorgerendertes Sprite je Farbe und Größe
+  - klarer, aufgehellter Kern bis 0,8 r, schmaler Übergang auf einen schwachen Hof (0,24 bei 1,15 r, aus bei 3,4 r)
+  - alles additiv
+  - Licht über 1 legt ein zweites Sprite mit weißem Kern darüber
+- Größe: 2,1 px bis 300 Drohnen (bis dahin wächst das Bild mit, der Abstand bleibt gleich). Darüber wird das Bild dichter und die Lichter kleiner (600: 1,6 px wie in Studie 1). Kleine Bilder (Handy) bekommen kleinere Lichter (Faktor Bildmaßstab / 250 CSS-Pixel, höchstens 1, mindestens 0,45) und einen kürzeren Hof (bis 2 statt 3,4 Kernradien, `haloOf()`). Mit der Bühnenseite wie in der Probe (min. Seite / 520) liefen auf dem Handy die Höfe der dichten Formationen zu Flecken zusammen (Vergleich `/tmp/fs-konfig-r5/shots/render-compare-mobile*.png`).
+- Nebenbei schneller: ein `drawImage` je Drohne statt zweier Zeichenaufrufe, keine Sortierung mehr.
+
+**5. FLYINGSTARS ohne Querstrich im A.**
+- Der Konfigurator selbst zeigt den Schriftzug nirgends als Formation. Das Motiv „Euer Logo“ ist das Bildzeichen, der QR-Code enthält die Adresse nur als Module.
+- Der Schriftzug kann nur über den eigenen Text entstehen. `brandText()` in `scenes/text.js` macht aus „FlyingStars“ (Groß/klein, mit oder ohne Leerzeichen) `FLYINGSTΛRS` mit der Glyphe „Λ“ des Textplaners. Das gilt für die Druckschrift; Schreibschrift und Initialen haben kein A mit Querstrich im selben Sinn.
+- Die Designsprache-Probe nutzt die Glyphe schon (`poc/page.js`).
+- Offen für den Lead: Der Preisrechner (`src/scripts/pricing.js`, nicht in dieser Dateihoheit) ruft `textFormation(value)` ohne diese Umsetzung auf.
+
+**6. Raketenflamme.**
+- Ursache: Seit der vierzehnten Fassung spannte `plumeAt` die Spur zwischen Düse und Rampe, um die Finte zu entfernen. Heraus kam ein dünner Stiel an der Düse mit einem breiten Klumpen unten, der am Boden klebte. Bei der Landung ließen die 40 dunkel wartenden Flaggen-Drohnen eine Lücke zwischen Düse und Flamme.
+- Jetzt hängt eine echte Flamme an der Düse (`flamePoint`, `flameTint`, `flameLight` in `show-scenes.js`):
+  - schmal an der Düse, bauchig im oberen Drittel, spitz am Ende
+  - innen weiß-gold, dann orange, die Spitze rot und dunkler
+  - das Licht flackert, Lichtpulse laufen nach unten
+- Beim Start steigen Düse und Länge mit derselben weichen Kurve. Jede Flammendrohne fliegt auf einer Geraden in eine Richtung, keine Finte; bewegt wird nur das Licht.
+- Bei der Landung bilden die Spurdrohnen ohne die Flagge die Flamme. Sie wird zum Aufsetzen kürzer und geht danach in Staub über.
+
+**7. QR-Scan auch in ODYSSEY.**
+- Im Bild „Scan me“ werden zwei Drohnen der Schrift die Enden der Scanlinie (`scenes/launch.js`, `qrStory`).
+- Wie in HORIZON fährt die Linie einmal von oben nach unten und pendelt dann gleichmäßig. Gemeinsame Kurve: `scanBeam()`, jetzt auch in `qrHorizon`.
+- Der Code steht still und wird unter der Linie nur heller (scannbar).
+
+**8. Die Hand aus FlyingStars' Antrags-Show.**
+- Quelle: Marcs Foto ihrer Formation. Hand mit Armband, Ring am Finger, daneben eine kleine Ringformation; FlyingStars' eigene Arbeit, darf nachgebaut werden.
+- Vorgehen:
+  1. Helligkeitsmaxima (R+G gegen den weichgezeichneten Hintergrund) im Himmelsausschnitt, Bäume ausgeschlossen: 211 Lichter.
+  2. Von Hand in vier Linienzüge geordnet: Handrücken mit erstem Finger, zweiter Finger, Ringfinger, vierter und fünfter Finger mit der Außenkante zum Handgelenk.
+  3. Dazu das Armband (46 Lichter, Punkt für Punkt), der Ring am Fingeransatz (3 Lichter, pink) und die Ringformation (42 Lichter).
+- Im Code (`scenes/hochzeit.js`):
+  - `HAND_PHOTO`, `HAND_CUFF`, `HAND_TIP`, `HAND_RING`, `HAND_RING_WAIT`: normiert, y nach oben, Hand etwa −1 bis 1
+  - `hand()` glättet die Linienzüge leicht und verteilt sie gleichmäßig auf die Drohnen neu (bei 450 rund 300 auf den Linien)
+  - das Armband in Gold wie im Foto
+  - der fliegende Ring wartet dort, wo im Foto die Ringformation steht, und gleitet über die Spitze auf den Ringfinger (Mittellinie aus seinen beiden Kanten, `RING_FINGER_LINE`)
+- Werkzeuge (nicht im Repo): `/tmp/fs-konfig-r5/hand/detect.py`, `strokes.py`, `emit.py`.
+- Kontaktbogen Foto | Linienzüge | vorher | nachher: `/tmp/fs-konfig-r5/hand-kontaktbogen.png`.
+- Die Hand der elften bis dreizehnten Fassung („wrist at the top right with a cuff“, git `8c77100`) hatte schon dieselbe Lage. Die Zeichnung der vierzehnten Fassung lag flach und quer und ist ersetzt.
+
+**9. Preissprünge.** Nichts geändert. Die Frage, wann der Preis springen soll, steht mit der Tabelle aller gleichen Preise in `docs/show-motive-inventar.md` („Was wir von FlyingStars brauchen“, Punkt 5).
+
+### Wie prüfen (fünfzehnte Fassung)
+
+- Schnell: `node --test scripts/show-price.test.mjs scripts/show-flight.test.mjs scripts/show-finte.test.mjs scripts/show-clouds.test.mjs scripts/show-counts.test.mjs scripts/show-geometry.test.mjs scripts/show-motive15.test.mjs`. Neu:
+  - `show-motive15.test.mjs`: Schriftzug mit „Λ“, Flamme an der Düse und in Flammenform (Start und Landung), Scanlinie in ODYSSEY, Hand aus dem Foto mit Armband und Ring auf dem Ringfinger. Gegenprobe: Auf dem Stand vor dieser Runde scheitern alle vier.
+  - `show-price.test.mjs`: Lichtlauf des Logos wie Studie 1, ohne Blitz an der Ankunft.
+- Browser: `tests/show-configurator.spec.ts`, neu „Fünfzehnte Fassung: die Dropzone lädt … ein …“ (Einladung einmal, nicht beim zweiten Überfahren, weiter bei „Logo“; Meldung mit Namen im Verlauf, ohne Kasten) und „Ein Klick auf die Bühne beendet die Einladung …“.
+- Ansehen:
+  - `?anlass=hochzeit&paket=ODYSSEY&drohnen=450&motiv=antrag` (Hand)
+  - `?anlass=launch&paket=ODYSSEY&drohnen=450&motiv=rakete` und `…&motiv=mond` (Flamme)
+  - `?anlass=launch&paket=ODYSSEY&motiv=qr` (Scan)
+  - `?anlass=hochzeit&paket=ODYSSEY&drohnen=440`, dann den Regler auf 450 (Meldung)
+- Vorher/nachher der Lichter: `/tmp/fs-konfig-r5/shots/render-compare-*.png` und `render-zoom.png`.
+- Ergebnisse am 30.10.2026 (eigener Build `/tmp/fs-konfig-r5/site`, nicht der Dev-Server):
+  - Node 37/37 (die sieben Dateien oben)
+  - `show-configurator.spec.ts` grün in Chromium, WebKit, Pixel 7 und iPhone 14
+  - `show-physics.spec.ts` 12/12
+  - Seiten-Gates (axe, HTML, Netzwerk) für `/show-konfigurator/` in Chromium und WebKit grün, dazu axe mit sichtbarer Meldung und Einladung
+  - `astro check` 0 Fehler
+  - Konsole ohne Fehler (Chromium und WebKit)

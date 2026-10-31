@@ -1,64 +1,50 @@
 import { test, expect } from '@playwright/test';
+import { SHOW_PACKAGES, PACKAGE_NAMES } from '../src/content/show-packages';
 
-test('Preisrechner behält Paketgrenzen, aufgerundete Aufpreise und Anfrageauswahl bei', async ({ page }) => {
+// Preisseite seit dem 30.10.2026: Pakete, Weg in den Show-Konfigurator, Leistungsvergleich, Zusätze, Fragen zum Preis.
+// Der alte Preisrechner ist nicht mehr eingebunden; Preise kommen nur aus show-packages.ts.
+const money = (v: number) => `ab ${v.toLocaleString('de-DE')} €`;
+
+test('Preisseite zeigt die drei Pakete mit Preisen aus einer Quelle und führt in den Konfigurator', async ({ page }) => {
   const errors: string[] = [];
-  page.on('pageerror', error => errors.push(error.message));
+  page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/drohnenshow-preise/');
-  const slider = page.getByRole('slider', { name: 'Anzahl Drohnen' });
-  const total = page.locator('#total');
-  const request = page.locator('#calc-cta');
-  for (const [drones, price, pkg] of [
-    [100, '7.900', 'SPARK'], [150, '12.400', 'SPARK'],
-    [160, '15.900', 'HORIZON'], [210, '20.800', 'HORIZON'],
-    [300, '34.900', 'ODYSSEY'], [1000, '104.200', 'ODYSSEY'],
-  ] as const) {
-    await slider.fill(String(drones));
-    await expect(total).toContainText(`ab ${price} €`);
-    await expect(request).toHaveAttribute('href', `/?paket=${pkg}&drohnen=${drones}#anfrage`);
-    await expect(page.locator(`[data-tier="${pkg}"]`)).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Was eine Drohnenshow kostet.');
+  for (const name of PACKAGE_NAMES) {
+    const card = page.locator('#pakete article', { has: page.getByRole('heading', { name, exact: true }) });
+    await expect(card).toContainText(money(SHOW_PACKAGES[name].price));
+    await expect(card.getByRole('link', { name: `${name} anfragen` })).toHaveAttribute('href', `/kontakt/?paket=${name}`);
   }
-  await page.locator('[data-tier="HORIZON"]').click();
-  await expect(slider).toHaveValue('1000');
-  await expect(total).toContainText('ab 94.300 €');
-  await expect(request).toHaveAttribute('href', '/?paket=HORIZON&drohnen=1000#anfrage');
-  await page.locator('[data-tier="SPARK"]').click();
-  await expect(slider).toHaveValue('150');
-  await expect(total).toContainText('ab 12.400 €');
-  await expect(request).toHaveAttribute('href', '/?paket=SPARK&drohnen=150#anfrage');
+  await expect(page.locator('#pakete .is-rec')).toHaveCount(1);
+  await expect(page.locator('#pakete .is-rec')).toContainText('HORIZON');
+  await expect(page.getByRole('link', { name: 'Zum Show-Konfigurator', exact: true })).toHaveAttribute('href', '/show-konfigurator/');
+  await expect(page.locator('#leistungen table thead th')).toHaveCount(4);
+  // Keine Eyebrows (docs/DESIGN.md) und kein Rechner mehr auf der Seite
+  await expect(page.locator('.kicker')).toHaveCount(0);
+  await expect(page.locator('#drones, #swarm, #calc-cta')).toHaveCount(0);
   expect(errors).toEqual([]);
 });
 
-test('Eigener Text lädt den lokalen Formationsplaner und passt die Mindestzahl an', async ({ page }) => {
-  const errors: string[] = [];
-  const remoteRequests: string[] = [];
-  page.on('pageerror', error => errors.push(error.message));
-  page.on('request', request => {
-    if (new URL(request.url()).hostname !== '127.0.0.1') remoteRequests.push(request.url());
+test('Fragen zum Preis nennen die Anzahlung laut Fragebogen (40 %)', async ({ page }) => {
+  await page.goto('/drohnenshow-preise/');
+  const faq = page.locator('#preisfragen');
+  await faq.getByText('Wie funktioniert die Bezahlung?').click();
+  await expect(faq).toContainText('Anzahlung von 40 %');
+  await expect(page.locator('body')).not.toContainText('30 %');
+});
+
+test('Paketwahl auf der Preisseite landet vorausgewählt in der Anfrage', async ({ page }) => {
+  await page.goto('/drohnenshow-preise/');
+  await page.getByRole('link', { name: 'ODYSSEY anfragen' }).click();
+  await expect(page).toHaveURL(/\/kontakt\/\?paket=ODYSSEY$/);
+  await expect(page.getByRole('radio', { name: 'ODYSSEY', exact: true })).toBeChecked();
+});
+
+test.describe('ohne JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+  test('Pakete, Preise und Vergleich bleiben vollständig lesbar', async ({ page }) => {
+    await page.goto('/drohnenshow-preise/');
+    for (const name of PACKAGE_NAMES) await expect(page.locator('#pakete')).toContainText(money(SHOW_PACKAGES[name].price));
+    await expect(page.locator('#leistungen table')).toBeVisible();
   });
-  await page.goto('/drohnenshow-preise/');
-  await page.getByRole('slider', { name: 'Anzahl Drohnen' }).fill('100');
-  await page.getByLabel('Dein Text am Himmel').fill('FLYINGSTARS FLYINGSTARS');
-  await expect(page.getByRole('slider', { name: 'Anzahl Drohnen' })).toHaveValue('220');
-  await expect(page.locator('#text-read')).toContainText('Einstrich-Schrift', { timeout: 15_000 });
-  await expect(page.locator('#calc-read')).toContainText('Motivgröße');
-  await expect(page.locator('#calc-cta')).toHaveAttribute('href', '/?paket=HORIZON&drohnen=220&text=FLYINGSTARS+FLYINGSTARS#anfrage');
-  await page.getByLabel('Dein Text am Himmel').fill('');
-  await expect(page.locator('#text-read')).toHaveText('Wir zeigen ihn mit deiner Drohnenzahl in unserer Show-Schrift.');
-  expect(errors).toEqual([]);
-  expect(remoteRequests).toEqual([]);
-});
-
-test('Animation ist pausierbar und der Rechner funktioniert mit reduzierter Bewegung', async ({ page }) => {
-  await page.goto('/drohnenshow-preise/');
-  const pause = page.locator('#swarm-motion');
-  await pause.click();
-  await expect(pause).toHaveText('Animation fortsetzen');
-  await expect(pause).toHaveAttribute('aria-pressed', 'true');
-  await page.getByRole('slider', { name: 'Anzahl Drohnen' }).fill('1000');
-  await expect(page.locator('#total')).toContainText('104.200 €');
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await expect(pause).toHaveText('Animation reduziert');
-  await expect(pause).toBeDisabled();
-  await page.getByRole('slider', { name: 'Anzahl Drohnen' }).fill('100');
-  await expect(page.locator('#total')).toContainText('7.900 €');
 });

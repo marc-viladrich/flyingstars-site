@@ -47,15 +47,18 @@ test('Motivformen haben genau die verlangte Punktzahl', () => {
   }
 });
 
-test('Jeder Anlass spielt vier oder fünf Motive mit je einer Fassung pro Paket, SPARK mindestens drei', () => {
+test('Jeder Anlass hat vier bis sechs Motive, SPARK mindestens drei, ODYSSEY alle; Geschichten-Motive nur ab ihrer Drohnenzahl', () => {
   assert.deepEqual(STEPS.map((s) => s.pkg), PACKAGE_ORDER);
   for (const occasion of OCCASIONS) {
-    assert.ok(occasion.motifs.length >= 4 && occasion.motifs.length <= 5, occasion.id);
+    assert.ok(occasion.motifs.length >= 4 && occasion.motifs.length <= 6, occasion.id);
     assert.ok(occasion.motifs.filter((m) => m.tiers.SPARK).length >= 3, `${occasion.id}: SPARK keeps at least three motifs`);
     for (const motif of occasion.motifs) {
-      // SPARK may leave out a motif that 100–150 drones cannot draw; HORIZON and ODYSSEY have every motif
+      // SPARK may leave out a motif that 100–150 drones cannot draw; a story motif (vierzehnte Fassung) exists only in
+      // ODYSSEY and carries minDrones; every motif has an ODYSSEY version, and SPARK ⊆ HORIZON
       const builds = PACKAGE_ORDER.map((pkg) => motif.tiers[pkg]?.build).filter(Boolean);
-      assert.ok(motif.tiers.HORIZON?.build && motif.tiers.ODYSSEY?.build, `${occasion.id}/${motif.id} misses a version`);
+      assert.ok(motif.tiers.ODYSSEY?.build, `${occasion.id}/${motif.id} misses ODYSSEY`);
+      if (!motif.tiers.HORIZON) assert.ok(!motif.tiers.SPARK && motif.minDrones >= 300, `${occasion.id}/${motif.id}: ODYSSEY-only needs minDrones`);
+      else assert.ok(!motif.minDrones, `${occasion.id}/${motif.id}: a motif HORIZON plays must not be locked in ODYSSEY`);
       assert.equal(new Set(builds).size, builds.length, `${occasion.id}/${motif.id}: every package needs its own version`);
     }
   }
@@ -63,19 +66,19 @@ test('Jeder Anlass spielt vier oder fünf Motive mit je einer Fassung pro Paket,
   assert.equal(new Set(all).size, all.length, 'motif versions are not shared between occasions');
 });
 
-test('SPARK-Übergänge: höchstens zwei pro Runde, zuerst Funkeln, Figuren nur mit Bezug zum Anlass', async () => {
+test('Übergänge: höchstens zwei pro Runde in jedem Paket, Figuren nur bei SPARK und nur mit Bezug zum Anlass', async () => {
   const { transitions } = await import('../src/scripts/scenes/interludes.js');
   const withFigure = new Set(['kultur', 'festival']); // Marc, round 12: the fan for culture, the gate for a city festival
-  for (const occasion of [...OCCASIONS.map((o) => o.id), 'unbekannt']) for (let k = 1; k <= 6; k++) {
-    const plan = transitions(occasion, k);
-    assert.ok(plan.length <= 2, `${occasion}/${k}: at most two transitions`);
-    assert.ok(plan.every((q) => q.before >= 1 && q.before <= k), `${occasion}/${k}: transitions sit between motifs or before the loop`);
-    const beats = plan.map((q) => q.build(100));
-    if (beats.length) assert.equal(beats[0].caption, 'Übergang: Funkeln', `${occasion}/${k}: glitter comes first`);
-    for (const b of beats) {
-      assert.equal(b.pts.length, 100, `${occasion}/${k}: ${b.caption} has the package's drones`);
-      assert.ok(b.interlude && b.pts.every((p) => p.every(Number.isFinite)));
-      if (b.caption !== 'Übergang: Funkeln') assert.ok(withFigure.has(occasion), `${occasion}: ${b.caption} without a link to the occasion`);
+  for (const pkg of PACKAGE_ORDER) for (const occasion of [...OCCASIONS.map((o) => o.id), 'unbekannt']) for (let k = 1; k <= 6; k++) {
+    const plan = transitions(occasion, k, pkg);
+    assert.ok(plan.length <= 2, `${pkg} ${occasion}/${k}: at most two transitions`);
+    if (k >= 2) assert.ok(plan.length >= 1 && plan[0].before === 1 && !plan[0].figure, `${pkg} ${occasion}/${k}: the living cloud comes first`);
+    assert.ok(plan.every((q) => q.before >= 1 && q.before < k), `${occasion}/${k}: transitions sit between motifs (vierzehnte Fassung: nie vor dem Neustart, der läuft durch die Wolke)`);
+    for (const q of plan.filter((x) => x.figure)) {
+      assert.equal(pkg, 'SPARK', 'figures only in SPARK');
+      assert.ok(withFigure.has(occasion), `${occasion}: figure without a link to the occasion`);
+      const b = q.figure(100);
+      assert.equal(b.pts.length, 100); assert.ok(b.interlude && b.pts.every((p) => p.every(Number.isFinite)));
     }
   }
 });

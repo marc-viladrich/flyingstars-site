@@ -1,0 +1,130 @@
+# Landingpage Marken und Werbung. Konzept WB-01 bis WB-09, Fakten: Fragebogen 21.10.2026.
+# Agenturen: NDA, Projektleitung auf Wunsch, anonym fliegen möglich. Provision bewusst nicht auf der Website.
+# Inhalte aus Elevate (30.10.); Presse nur mit den Sendern, die laut Moritz' Notizen konkret über FlyingStars berichtet haben.
+title: Drohnenshow als Werbung
+navLabel: "Marken & Werbung"
+description: "Drohnenshows für Marken und Agenturen: euer Logo am Nachthimmel, jedes Motiv vorab freigegeben. Für Launches, Jubiläen und Kampagnen."
+image: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
+sections:
+  - type: hero
+    headline: Eure Marke am Nachthimmel.
+    text: Wir setzen euer Logo und eure Botschaft aus Drohnen um, abgestimmt auf Musik und Kampagne. Jedes Motiv gebt ihr vor der Show frei.
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
+      alt: Volkswagen-Logo aus Drohnen über dem Wolfgangsee, Gäste filmen von einer Terrasse
+      width: 1920
+      height: 1281
+    cta: { label: Markenshow anfragen, href: "#anfrage" }
+    secondary: { label: Für Agenturen, href: "#agenturen" }
+
+  - type: logoBar
+    id: marken
+    headline: Marken, für die wir geflogen sind
+    logos:
+      - { name: Ford, file: /brand/logos/kunde-ford-weiss.svg }
+      - { name: Volkswagen, file: /brand/logos/kunde-volkswagen-weiss.svg }
+      - name: PUMA
+        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Puma_Logo_weiss.png, alt: PUMA, width: 300, height: 161 }
+      - { name: Prada, file: /brand/logos/kunde-prada-weiss.svg }
+      - { name: L’Oréal, file: /brand/logos/kunde-loreal-weiss.svg }
+      - { name: Spotify, file: /brand/logos/kunde-spotify-weiss.svg }
+      - { name: Siemens, file: /brand/logos/kunde-siemens-weiss.svg }
+      - { name: E.ON, file: /brand/logos/kunde-eon-weiss.svg }
+      - { name: REWE, file: /brand/logos/kunde-rewe-weiss.svg }
+      - { name: Bosch, file: /brand/logos/kunde-bosch-weiss.svg }
+      - { name: Amazon, file: /brand/logos/kunde-amazon-weiss.svg }
+      - { name: McKinsey, file: /brand/logos/kunde-mckinsey-weiss.svg }
+      - { name: Bulgari, file: /brand/logos/kunde-bulgari-weiss.svg }
+      - name: NFL
+        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png, alt: NFL, width: 300, height: 409 }
+
+  - type: projectGrid
+    id: referenzen
+    headline: Ausgewählte Shows mit Video und Ablauf.
+    limit: 4
+
+  - type: textMedia
+    headline: Was eine Markenshow leisten kann.
+    body: |
+      - **Ein Logo, das man erkennt.** Wir übersetzen euer Logo in Lichtpunkte, so wie bei Ford, Volkswagen oder PUMA.
+      - **Bilder für eure Kanäle.** Gäste filmen und teilen die Show. Auf Wunsch filmen wir mit einer Kameradrohne mit. Die Rohaufnahmen kosten 900 €, bei ODYSSEY sind sie enthalten.
+      - **Ein Anlass für Berichte.** Über uns und unsere Shows haben unter anderem ZDF, WDR, ntv und die WAZ berichtet.
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2024/12/FORD_comp.png
+      alt: Ford-Schriftzug aus blauen Drohnen über dem Werksgelände in Köln
+      width: 1929
+      height: 1133
+    mediaSide: right
+
+  - type: steps
+    id: freigabe
+    headline: Vom Logo bis zur fertigen Show.
+    text: Nichts fliegt, was ihr nicht freigegeben habt.
+    steps:
+      - title: Anfrage und Angebot
+        text: Ihr nennt uns Termin, Ort und Ziel. Wir antworten innerhalb von 48 Stunden und schicken nach einem kurzen Gespräch ein Angebot.
+        duration: 48 h Antwort
+      - title: Entwurf
+        text: Ihr schickt uns euer Logo. Zuerst seht ihr einen 2D-Entwurf der Motive.
+      - title: Animation
+        text: Danach eine Rohanimation mit Musik. Ab HORIZON bekommt ihr eine Videovorschau der Show.
+      - title: Freigabe
+        text: Erst wenn ihr jedes Motiv freigegeben habt, programmieren wir Farben und Lichteffekte auf die Musik.
+      - title: Showtag
+        text: Unser Team ist etwa drei Stunden vorher vor Ort, sperrt die Startfläche und fliegt die Show.
+        duration: ca. 3 h Aufbau
+
+  - type: packages
+    id: pakete
+    headline: Wie aufwendig soll eure Show sein?
+    text: Ein Logo in 2D reicht für viele Firmenfeiern. Für Launches mit 3D-Objekten und einer Geschichte eignen sich HORIZON oder ODYSSEY. Am häufigsten gebucht wird HORIZON.
+    compact: true
+    items:
+      - { name: SPARK, label: Klassisch in 2D }
+      - { name: HORIZON, label: 3D in Bewegung, badge: Am häufigsten gebucht, highlight: true }
+      - { name: ODYSSEY, label: Erzählte 3D-Show }
+    note: Alle Preise netto zzgl. Anfahrt
+    cta: { label: Unterschied im Show-Konfigurator ansehen, href: "/show-konfigurator/?anlass=launch" }
+
+  - type: metrics
+    id: agenturen
+    headline: Für Agenturen.
+    text: Ihr bleibt bei euren Kund:innen vorn. Wie viel ihr selbst organisiert und wie viel wir übernehmen, entscheidet ihr.
+    items:
+      - label: Rolle
+        value: Im Hintergrund
+        text: Auf Wunsch fliegen wir anonym. Euer Name steht vorn, wir liefern die Show.
+      - label: Vertraulichkeit
+        value: NDA
+        text: Wir unterschreiben eine Vertraulichkeitsvereinbarung.
+      - label: Freigabe
+        value: Visualisierung
+        text: Für die Abstimmung mit euren Kund:innen visualisieren wir die Motive mit deren Logo.
+      - label: Organisation
+        value: Projektleitung
+        text: Auf Wunsch übernehmen wir die Projektleitung, mit Genehmigung, Behörden und Technik vor Ort.
+
+  - type: textMedia
+    headline: Auch über Stadien, Innenstädten und am Wasser.
+    body: |
+      Dank unserer generischen Betriebsgenehmigung können wir die meisten Flugorte selbst freigeben. Für Kontrollzonen, Flughafennähe und Bundeswasserstraßen holen wir die nötigen Sondergenehmigungen ein. Das braucht mehr Vorlauf.
+
+      Geflogen sind wir zum Beispiel über dem Borussia-Park in Mönchengladbach, über dem Olympiastadion in Berlin, am Rheinturm in Düsseldorf und am Innenhafen in Duisburg.
+
+      Im Ausland beantragen wir für jedes EU-Land vorab eine Bestätigung. Das dauert 4 bis 8 Wochen, in Italien etwa drei Monate.
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
+      alt: Drohnenformation über der Skyline von Düsseldorf mit Rheinturm
+      width: 1920
+      height: 985
+    mediaSide: left
+
+  - type: faq
+    id: fragen
+    headline: Fragen von Marken und Agenturen.
+    cta: { label: Alle Fragen, href: /faq/ }
+    tags: [werbung]
+
+  - type: contactForm
+    headline: Erzählt uns von eurer Kampagne.
+    text: Termin, Ort und Ziel reichen. Euer Logo könnt ihr uns später per E-Mail schicken.

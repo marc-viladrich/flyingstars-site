@@ -9,8 +9,9 @@
 import logo from "../data/logo-dots.json";
 import { heartPicture } from "./heart-formation.js";
 import { loadTextEngine, textFormation } from "./text-formation.js";
-import { TAU, DIAMOND, GREEN, WARM, GOLD, PINK, VIOLET, CYAN, BLUE, ORANGE, RED, MOON, mix, paint, place, frac, smooth, hash, yaw, roll, pitch, sway, breathe, glint, sparkle, chase, part, act } from "./show-motion.js";
-import { transitions } from "./scenes/interludes.js";
+import { TAU, DIAMOND, GREEN, WARM, GOLD, PINK, VIOLET, CYAN, BLUE, ORANGE, RED, MOON, mix, paint, place, frac, smooth, hash, yaw, roll, pitch, sway, breathe, glint, sparkle, chase, part, act, steadyClock, drift, wander, lightRank } from "./show-motion.js";
+import { transitions, planClouds } from "./scenes/interludes.js";
+import { TEMPO, runFits } from "./show-tempo.js";
 import { star, extrude, evenSubset, sampleOutline, circle, heartOutline } from "./show-geometry.js";
 import { flute2d, flute3d, bubbles, trophy2d, trophy3d, bulb2d, bulb3d, bulbGlass, filament, notes2d, clover2d, clover3d } from "./show-shapes.js";
 import { solitaire, rocketSolid, globe, launchPad, moonHorizon, flagStar, starField } from "./show-shapes.js";
@@ -24,11 +25,14 @@ const loadFigure = () => (figure ||= fetch("/media/projekte/bokkenrijders/format
 export function preloadScenes() { loadExtra().catch(() => {}); loadHearts().catch(() => {}); loadFigure().catch(() => {}); loadTextEngine().catch(() => {}); }
 
 // ---------- sources ----------
-/** FlyingStars' 3D heart (honeycomb half-shell for 290 drones), unit size, thinned evenly to n. */
+/** FlyingStars' 3D heart (honeycomb half-shell for 290 drones), unit size, thinned evenly to n. Above 290 drones
+ * (Drohnenregler, zwölfte Fassung) the extra drones form a smaller heart inside it, so the count is always exactly n. */
 async function heart3d(n) {
   const pic = heartPicture(await loadHearts(), 290);
   const pts = pic.hearts.filter((h) => h.slot === 0).flatMap((h) => h.pts), mx = Math.max(...pts.map((p) => Math.max(Math.abs(p[0]), Math.abs(p[1]))));
-  return evenSubset(pts.map(([x, y, z]) => [x / mx, y / mx - 0.1, z / mx]), n);
+  const shell = pts.map(([x, y, z]) => [x / mx, y / mx - 0.1, z / mx]);
+  if (n <= shell.length) return evenSubset(shell, n);
+  return [...shell, ...place(await heart3d(n - shell.length), 0.68, 0, -0.03)];
 }
 const heartColour = (p) => mix(PINK, VIOLET, (p[2] + 0.3) / 0.6);
 const heartLine = (n) => heartOutline(n).map(([x, y]) => [x / 16, y / 16 + 0.05, 0]);
@@ -94,40 +98,105 @@ const warning = (t) => 0.75 + 0.6 * Math.exp(-(((frac(t / 1.6) - 0.1) / 0.06) **
 /** The two glasses touch rims now and then: each tips a little towards the other, around its foot. */
 const clink = (o, t, side) => roll(o, side * 0.07 * Math.sin((Math.PI * t) / 3) ** 8, side * 0.47, -0.78);
 const flameColour = (top) => (p) => mix(GOLD, ORANGE, (top - p[1]) / 0.42);
+const lerp = (a, b, u) => a + (b - a) * u;
+// Fünfzehnte Fassung: die Flamme unter einer Rakete (Start und Landung). Drohne k von m steht an der Stelle f entlang der
+// Flamme (0 an der Düse, 1 an der Spitze; dichter an der Düse) und seitlich bei ihrem Anteil l der halben Breite.
+const flameF = (k, m) => ((k + 0.5) / m) ** 1.25;
+const flameSide = (k) => 2 * frac(k * 0.618034 + 0.31) - 1; // gleichmäßig über die Breite verteilt (goldener Schnitt)
+/** Flammenform: schmal an der Düse, bauchig im oberen Drittel, spitz am Ende. */
+const flameHalf = (f) => Math.sin(Math.PI * (0.16 + 0.84 * f)) ** 0.85 * (1 - 0.35 * f);
+/** Wo Flammendrohne k steht: Düse (x, y), Länge len, größte halbe Breite width × 0,13. */
+const flamePoint = (k, m, x, y, len, width) => { const f = flameF(k, m); return [x + flameSide(k) * flameHalf(f) * 0.13 * width, y - f * len, (hash(k + 3) - 0.5) * 0.04 * f]; };
+/** Farbe: innen an der Düse weiß-gold, dann orange, die Spitze rot. */
+const flameTint = (k, m) => { const f = flameF(k, m); return f < 0.45 ? mix(mix(WARM, GOLD, 0.5), ORANGE, f / 0.45) : mix(ORANGE, RED, (f - 0.45) / 0.55 * 0.7); };
+/** Licht: hell an der Düse, dunkler zur Spitze, flackernd; Lichtpulse laufen nach unten (nur Licht, keine Bewegung). */
+const flameLight = (k, m, t) => { const f = flameF(k, m); return (1.35 - 0.85 * f) * sparkle(k + 101, t * 1.6, 0.72, 1.12) * chase(f, t, 1.3, 0.45, 0.82, 1.18); };
 
-/** How long the last picture of a motif stays before the next motif forms, per package. */
-const HOLD = { SPARK: 3.5, HORIZON: 5, ODYSSEY: 3.5 };
 const nearWhite = (r, g, b) => Math.min(r, g, b) > 190 && Math.max(r, g, b) - Math.min(r, g, b) < 45;
 /**
  * The show for one occasion and package: the occasion's motifs in order, each in its version for the package, as one
  * scene that starts again after the last motif. Every beat carries its motif (segment) for the controller. Drones that
  * would light warm white take the package's colour (Marc, round 9: SPARK orange, HORIZON pink, ODYSSEY blue); motifs
- * with their own colours keep them. Every version gets the soft light shimmer.
+ * with their own colours keep them.
+ * Zwölfte Fassung: the last picture of every motif stands TEMPO.hold (3 s) in every package.
+ * Dreizehnte Fassung (Marc, 30.10.2026):
+ * - A motif may need a minimum drone count (`minDrones` am Motiv, vierzehnte Fassung, see UNLOCK in
+ *   content/show-configurator.js); below it the motif is not part of the show.
+ * - The light run only where it fits (runFits() in show-tempo.js: lines and outlines without their own light).
+ * - The living cloud every three to four pictures, at most five (planClouds() in scenes/interludes.js); builders may
+ *   ask for it inside a story, also for single parts (beat.cloud = ["star"]).
  */
 export async function buildSequence(motifs, pkg, n, tint, occasion = "") {
-  const beats = [], shown = motifs.map((m, segment) => [m, segment]).filter(([m]) => m.tiers[pkg]); // a motif may skip a package (too few drones to read)
-  // SPARK passes through at most two transitions per round (round 12): glitter, and the occasion's figure if it has one
-  const plan = pkg === "SPARK" ? transitions(occasion, shown.length) : [];
+  const beats = [], shown = motifs.map((m, segment) => [m, segment]).filter(([m]) => m.tiers[pkg] && (m.minDrones ?? 0) <= n); // a motif may skip a package or need more drones (minDrones, vierzehnte Fassung)
+  const plan = transitions(occasion, shown.length, pkg);
   const tinted = (pts) => (tint ? pts.map((p) => (nearWhite(p[3], p[4], p[5]) ? [p[0], p[1], p[2], ...mix(WARM, tint, 0.7)] : p)) : pts);
-  const through = (tr, [m, segment]) => { const b = tr.build(n); beats.push({ ...b, pts: tinted(b.pts), segment, motif: m.label, shimmer: true }); };
+  // a transition belongs to the next motif, so a package switch never lands on a figure
+  const through = (tr, [m, segment]) => { const b = tr.figure(n); beats.push({ ...b, pts: tinted(b.pts), segment, motif: m.label, cloud: true }); };
   for (const [s, [m, segment]] of shown.entries()) {
     const tr = s > 0 && plan.find((q) => q.before === s);
-    if (tr) through(tr, [m, segment]); // part of the next motif, so a package switch never lands on it
+    if (tr?.figure) through(tr, [m, segment]);
     const scene = await buildBeats(m.tiers[pkg], n);
     scene.beats.forEach((b, i, all) => {
-      b.segment = segment; b.motif = m.label; b.shimmer ??= true;
-      if (i === all.length - 1) b.hold ??= HOLD[pkg];
+      b.segment = segment; b.motif = m.label;
+      if (i === all.length - 1) b.hold ??= TEMPO.hold;
       b.pts = tinted(b.pts);
       beats.push(b);
     });
   }
   const loop = shown.length && plan.find((q) => q.before === shown.length); // before the round starts again
-  if (loop) through(loop, shown[0]);
+  if (loop?.figure) through(loop, shown[0]);
+  steady(beats);
+  for (const b of beats) b.run = runFits(b);
+  planClouds(beats);
   return { beats, loopTo: 0 };
+}
+/** Bewegt live() die Drohnen (nicht nur ihr Licht)? Stichproben an einigen Punkten und Zeitpunkten. */
+function moves(b) {
+  if (!b.live) return false;
+  const n = b.pts.length, o = [0, 0, 0, 1];
+  for (let j = 0; j < n; j += Math.max(1, Math.floor(n / 24))) {
+    const p = b.pts[j];
+    for (const t of [0, 0.35, 0.9, 1.7, 2.6, 4.1, 6.3]) {
+      o[0] = p[0]; o[1] = p[1]; o[2] = p[2] || 0; o[3] = 1; b.live(p, j, t, o);
+      if (Math.abs(o[0] - p[0]) + Math.abs(o[1] - p[1]) + Math.abs(o[2] - (p[2] || 0)) > 1e-6) return true;
+    }
+  }
+  return false;
+}
+/**
+ * Vierzehnte Fassung (Marc, 30.10.2026: keine Finten): Jedes Bild, das sich selbst bewegt, läuft nach steadyClock() in
+ * show-motion.js: Es steht im Anflug, läuft sanft an und kommt vor dem nächsten Bild zum Stehen. Ein Bild mit
+ * `clock: "continue"` setzt die Uhr des vorigen Bildes fort (dieselbe Drehung, derselbe Flügelschlag), statt sie
+ * zurückzudrehen.
+ */
+function steady(beats) {
+  let prev = null;
+  for (const b of beats) {
+    if (!moves(b)) { prev = null; continue; }
+    const own = b.live, from = b.clock === "continue" && prev && prev.segment === b.segment ? prev.clockEnd : 0;
+    const clock = steadyClock(b.hold ?? 2.2, { from });
+    b.live = (p, j, t, o) => own(p, j, clock(t), o);
+    b.hold = clock.hold;
+    b.clockEnd = clock.end;
+    b.steady = { raw: own, from, end: clock.end }; // für den Finten-Wächter (scripts/show-finte.test.mjs)
+    prev = b;
+  }
 }
 async function buildBeats(version, n) {
   const caption = version.caption;
+  // Vierzehnte Fassung: drei lange Geschichten sind geteilt, ihr Schluss ist ein eigenes Motiv ab ODYSSEY (minDrones).
+  // Die Rakete endet im Orbit, die Mondlandung beginnt dort; die Masken enden beim Theaterzeichen, der Bokkenrijders-
+  // Teufel steht für sich; die Uhr endet mit dem neuen Jahr, der Sektkorken knallt im eigenen Motiv.
+  const slice = async (build, from, to) => { const all = await buildBeats({ ...version, build }, n); return { ...all, beats: all.beats.slice(from, to) }; };
   switch (version.build) {
+    case "rocketLaunch": return slice("rocketStory", 0, 3);
+    case "moonStory": return slice("rocketStory", 2, 4);
+    case "maskStory": if (!version.whole) return slice("maskStoryAll", 0, 3); break;
+    case "devilStory": return { beats: [{ pts: await devil(n), caption: "Der Teufel aus unserer Show Bokkenrijders", hold: 4, live: (b, j, t, o) => { if (b[3] > 200 && b[4] > 100) o[3] = 0.8 + 0.5 * Math.abs(Math.sin(t * 1.5)); sway(o, t, 0.35); } }] };
+    case "clockStory": if (!version.whole) return slice("clockStoryAll", 0, 4); break;
+    case "champagneStory": { const all = await buildBeats({ ...version, build: "clockStoryAll" }, n); const pop = all.beats[all.beats.length - 1]; return { beats: [{ ...pop, caption: "Eine Sektflasche, der Korken knallt", hold: 4.5 }] }; }
+  }
+  switch (version.build === "maskStoryAll" ? "maskStory" : version.build === "clockStoryAll" ? "clockStory" : version.build) {
     // ---- Hochzeit · Ring ----
     case "rings3d": {
       // a solitaire as a body: torus band and a brilliant-cut stone; it turns about the vertical axis, so the band
@@ -140,25 +209,31 @@ async function buildBeats(version, n) {
       } }] };
     }
     // ---- Hochzeit · Herz ----
-    case "heart2d": return { beats: [{ pts: paint(heartLine(n), PINK), caption, live: (b, j, t, o) => { o[3] = breathe(t); } }] };
+    // Vierzehnte Fassung (Marc: der wandernde Schein des Schmetterlings ist „magisch, premium“, bitte auf weitere Formen):
+    // ein feiner Schein läuft die Linie entlang (lightRank), das Herz wiegt sich kaum merklich. Schwach, nur aufhellend.
+    case "heart2d": { const pts = paint(heartLine(n), PINK), rank = lightRank(pts); return { beats: [{ pts, caption, live: (b, j, t, o) => { o[3] = wander(rank[j], t, 4.4, 0.4, 0.08); roll(o, 0.03 * Math.sin((t * TAU) / 7), 0, -0.2); } }] }; }
     case "heartsStory": {
+      // Vierzehnte Fassung (Marc: ODYSSEY-Herzen sahen nicht hochwertiger aus als in den kleineren Paketen; Vorbild
+      // Kolibri: SPARK 2D, HORIZON 3D, ODYSSEY 3D mit Geschichte): Die Geschichte spielt durchgehend mit FlyingStars'
+      // 3D-Herz. Amors Pfeil fliegt hinein und bleibt stecken, wie bei FlyingStars (der Pfeil steht im Herz); vorher flog
+      // er hindurch und hinaus, und seine Drohnen kamen als Funkenring zurück (eine Gegenbewegung).
       const [h, a] = share(n, [5, 1]);
-      // Amor's arrow flies through the heart in one piece and on out of it; the heart takes its drones in and fills
-      const arrow = (hx, hy) => part("arrow", paint(sampleOutline(arrowPaths(hx, hy, hx + 1.13, hy + 0.65), a).map(([x, y]) => [x, y, 0.05]), GOLD), { rigid: true });
-      // FlyingStars' 3D heart is a formation for 290 drones: the arrow's drones become a ring of sparks around it
-      const full = await heart3d(h), half = await heart3d(Math.ceil(n / 2)), ring = paint(sparkleShell(a, 1.3), GOLD);
-      const couple = [...place(half.slice(0, Math.floor(n / 2)), 0.62, -0.58, 0, 0), ...place(half.slice(0, Math.ceil(n / 2)), 0.62, 0.58, 0, 0)];
+      const arrow = (hx, hy) => part("arrow", paint(sampleOutline(arrowPaths(hx, hy, hx + 1.13, hy + 0.65), a).map(([x, y]) => [x, y, 0.32]), GOLD), { rigid: true });
+      const full = await heart3d(h), half = await heart3d(Math.ceil(h / 2)), yOf = (p) => (p[1] + 1.1) / 2.2;
+      const couple = [...place(half.slice(0, Math.floor(h / 2)), 0.62, -0.58, 0, 0), ...place(half.slice(0, Math.ceil(h / 2)), 0.62, 0.58, 0, 0)];
+      const orbitRing = Array.from({ length: a }, (_, i) => { const q = (i / a) * TAU; return [Math.cos(q) * 1.45, -0.05 + Math.sin(q) * 0.3, Math.sin(q) * 0.9]; }), orbitU = orbitRing.map((_, i) => i / a);
+      const heartLight = (b, t) => breathe(t, 2.8) * wander(yOf(b), t, 5, 0.25, 0.12);
       return { beats: [
-        act([part("heart", paint(heartLine(h), PINK)), arrow(0.9, 0.55)], { caption: "Ein Herz, Amor zielt", hold: 0.6, frame: "aim" }),
-        act([part("heart", paint(heartLine(h), PINK)), arrow(-2.0, -1.15)], { caption: "der Pfeil fliegt mitten hindurch", hold: 0.2, frame: "aim" }),
-        act([part("heart", paint(full, heartColour)), part("arrow", ring)], { caption: "das Herz wird voll und atmet", hold: 2, live: (b, j, t, o) => { if (j < h) { o[3] = breathe(t); sway(o, t, 0.25); } else { yaw(o, t * 0.2); o[3] = sparkle(j, t); } } }),
-        act([part("heart", paint(couple, heartColour))], { caption: "…und wird zu zwei Herzen, die sich umkreisen", live: (b, j, t, o) => { yaw(o, t * 0.35); o[3] = breathe(t, 2.6, j < n / 2 ? 0 : 1.3); } }),
+        act([part("heart", paint(full, heartColour)), arrow(0.95, 0.6)], { caption: "Ein Herz in 3D, Amor zielt", hold: 1.6, frame: "aim", live: (b, j, t, o) => { if (j < h) { o[3] = heartLight(b, t); sway(o, t, 0.2); } } }),
+        act([part("heart", paint(full, heartColour)), arrow(-0.4, -0.22)], { caption: "der Pfeil trifft und bleibt im Herz stecken", hold: 1.6, frame: "aim", live: (b, j, t, o) => { if (j < h) { o[3] = heartLight(b, t); sway(o, t, 0.2); } else o[3] = 1 + 0.5 * Math.exp(-t / 0.6); } }),
+        act([part("heart", paint(couple, heartColour)), part("arrow", paint(orbitRing, GOLD))], { caption: "…und wird zu zwei Herzen, die sich umkreisen", frame: "aim", live: (b, j, t, o) => { if (j < h) o[3] = heartLight(b, t); else o[3] = wander(orbitU[j - h], t, 4, 0.5, 0.06); yaw(o, t * 0.3); } }),
       ] };
     }
     // ---- Hochzeit · Sektgläser ----
     case "flutes2d": {
-      const per = Math.floor(n / 2), glass = (k, side) => place(flute2d(k), 1, side * 0.3, 0, 0, side * 0.22);
-      return { beats: [{ pts: paint([...glass(per, -1), ...glass(n - per, 1)], WARM), caption, live: (b, j, t, o) => clink(o, t, j < per ? -1 : 1) }] };
+      // vierzehnte Fassung: dazu ein feiner Schein, der über die Gläser wandert (wie beim Schmetterling)
+      const per = Math.floor(n / 2), glass = (k, side) => place(flute2d(k), 1, side * 0.3, 0, 0, side * 0.22), pts = paint([...glass(per, -1), ...glass(n - per, 1)], WARM), rank = lightRank(pts);
+      return { beats: [{ pts, caption, live: (b, j, t, o) => { clink(o, t, j < per ? -1 : 1); o[3] = wander(rank[j], t, 4.8, 0.4, 0.08); } }] };
     }
     case "flutes3d": {
       // each glass: its wireframe, then the bubbles inside; the light rises along the bubbles
@@ -184,12 +259,15 @@ async function buildBeats(version, n) {
     }
     case "trophy3d": return { beats: [{ pts: paint(trophy3d(n), (p) => (p[1] > 0.55 ? GOLD : WARM)), caption, live: (b, j, t, o) => { o[3] = glint(b[1], t, 4, 0.4, -1.2, 1.2); yaw(o, t * 0.3); } }] };
     case "trophyStory": {
+      // Dreizehnte Fassung: keine Funkenkugel mehr, die über dem Sockel steht. Die übrigen Drohnen warten gedimmt als
+      // schmaler Lichtkranz über dem Pokal; Zahl und Konfetti entstehen daraus in der lebendigen Wolke, der Pokal bleibt.
       const [a, b, s] = share(n, [5, 1.4, 1.2]), number = await words("125", b, 0.42, 0, 1.05, 0);
-      const cloud = (k, cy, R) => paint(fib(k, R, 0, cy).map(([x, y, z], i) => [x, y, z + (hash(i) - 0.5) * 0.1]), GOLD);
+      const halo = paint(sampleOutline([circle(0, 1.05, 0.42, 120)], n - a).map(([x, y], i) => [x, y, (hash(i) - 0.5) * 0.06]), GOLD);
       const confetti = (k) => paint(sparkleShell(k, 1.25).map(([x, y, z]) => [x, y + 0.15, z]), (p) => [GOLD, PINK, CYAN][Math.floor(hash(p[0] * 31) * 3)]);
+      const waiting = (j, t, o) => { o[3] = 0.16; yaw(o, t * 0.2, 0, 0); };
       return { beats: [
-        act([part("trophy", paint(trophy3d(a, 0.2), WARM)), part("sparks", cloud(n - a, 0.35, 0.5))], { caption: "Der Sockel, darüber sammeln sich Funken", hold: 0.8, live: (bs, j, t, o) => { if (j >= a) { yaw(o, t * 0.4); o[3] = sparkle(j, t); } } }),
-        act([part("trophy", paint(trophy3d(a), (p) => (p[1] > 0.55 ? GOLD : WARM))), part("sparks", cloud(n - a, 1.05, 0.38))], { caption: "der Pokal wächst aus den Funken", hold: 1.2, live: (bs, j, t, o) => { if (j >= a) { yaw(o, t * 0.4); o[3] = sparkle(j, t); } else yaw(o, t * 0.25); } }),
+        act([part("trophy", paint(trophy3d(a, 0.2), WARM)), part("sparks", halo)], { caption: "Der Sockel", hold: 1, live: (bs, j, t, o) => { if (j >= a) waiting(j, t, o); } }),
+        act([part("trophy", paint(trophy3d(a), (p) => (p[1] > 0.55 ? GOLD : WARM))), part("sparks", halo)], { caption: "der Pokal wächst", hold: 1.4, live: (bs, j, t, o) => { if (j >= a) waiting(j, t, o); else yaw(o, t * 0.25); } }),
         act([part("trophy", paint(trophy3d(a), (p) => (p[1] > 0.55 ? GOLD : WARM))), part("number", paint(number, GOLD)), part("sparks", confetti(s))], { caption: "…und eure Zahl steigt heraus, Konfetti funkelt", live: (bs, j, t, o) => {
           if (j >= a + b) { yaw(o, t * 0.15); o[3] = sparkle(j, t, 0.85, 1.4); } else if (j < a) yaw(o, t * 0.25); else o[3] = glint(bs[0], t, 3, 0.4);
         } }),
@@ -205,12 +283,14 @@ async function buildBeats(version, n) {
       return { beats: [{ pts: [...paint(glass, WARM), ...paint(fil, GOLD)], caption, live: (b, j, t, o) => { yaw(o, t * 0.3); if (j >= glass.length) o[3] = breathe(t, 1.8) + 0.2; } }] };
     }
     case "bulbStory": {
+      // Dreizehnte Fassung: kein Funkenball mehr; der Glühfaden glimmt allein, die Drohnen des Glases warten dunkel um
+      // ihn und bilden das Glas in der lebendigen Wolke (nur das Glas, der Faden bleibt stehen).
       const [g, f, r] = share(n, [3.4, 0.8, 1.6]), glassAll = bulbGlass(g + r), glass = bulbGlass(g);
-      const wire = paint(filament(f), GOLD), spark = paint(fib(g + r, 0.3, 0, -0.15).map(([x, y, z], i) => [x * (0.6 + hash(i) * 0.6), y, z]), GOLD);
+      const wire = paint(filament(f), GOLD), waiting = paint(fib(g + r, 0.45, 0, -0.15), GOLD);
       const RAYS = 12, rays = Array.from({ length: r }, (_, i) => { const k = i % RAYS, u = Math.floor(i / RAYS) / Math.max(1, Math.ceil(r / RAYS) - 1), a = (k / RAYS) * TAU + 0.13; return [Math.cos(a) * (0.62 + 0.38 * u), 0.15 + Math.sin(a) * (0.62 + 0.38 * u), 0]; });
       return { beats: [
-        act([part("filament", wire), part("glass", spark)], { caption: "Ein Funke", hold: 1, live: (b, j, t, o) => { if (j >= f) { yaw(o, t * 0.5); o[3] = sparkle(j, t); } else o[3] = breathe(t, 1.6) + 0.2; } }),
-        act([part("filament", wire), part("glass", paint(glassAll, WARM))], { caption: "um ihn formt sich die Glühbirne", hold: 1, live: (b, j, t, o) => { if (j < f) o[3] = breathe(t, 1.6) + 0.2; yaw(o, t * 0.25); } }),
+        act([part("filament", wire), part("glass", waiting)], { caption: "Ein Glühfaden glimmt", hold: 1.4, live: (b, j, t, o) => { if (j >= f) o[3] = 0; else o[3] = breathe(t, 1.6) + 0.2; } }),
+        act([part("filament", wire), part("glass", paint(glassAll, WARM))], { caption: "um ihn formt sich die Glühbirne", hold: 1, cloud: ["glass"], live: (b, j, t, o) => { if (j < f) o[3] = breathe(t, 1.6) + 0.2; yaw(o, t * 0.25); } }),
         act([part("filament", wire), part("glass", paint(glass, WARM)), part("rays", paint(rays, GOLD))], { caption: "…und sie strahlt", live: (b, j, t, o) => {
           if (j < f) o[3] = 1.35;
           else if (j >= f + g) { const k = 1 + 0.1 * Math.sin(t * 1.3 - Math.hypot(b[0], b[1] - 0.15) * 4); o[0] = b[0] * k; o[1] = 0.15 + (b[1] - 0.15) * k; o[3] = 1.1; } // the rays reach out and back
@@ -292,17 +372,24 @@ async function buildBeats(version, n) {
       // Startklar auf der Rampe → Zündung, die Rampe fällt weg, die Spur wächst → im Orbit um einen Planeten → Landung
       // auf dem Mond, Flagge gehisst. The rocket is one rigid body in every act; the plume drones stay the plume (then
       // comet tail, then dust and flag); the pad drones become the planet and then the moon.
-      const RK = 120, TR = 60, WD = 85, ST = n - RK - TR - WD;
+      // Dreizehnte Fassung: das Budget wächst mit der Drohnenzahl (bei 600 standen sonst 335 Drohnen als Sternenhimmel,
+      // und die Geschichte sah bei 300 und 600 gleich aus); bei 300 bleibt es 120/60/85/35
+      const q3 = n / 300, RK = Math.round(120 * q3), TR = Math.round(60 * q3), WD = Math.round(85 * q3), ST = n - RK - TR - WD;
       const body = rocketSolid(RK, 1), stars = starField(ST, -1.25, 1.25, 0.05, 1.0, 7);
       const at = (s, cx, cy, heading = 0) => body.map(([x, y, z]) => { const [X, Y] = heading ? [x * Math.cos(heading) - y * Math.sin(heading), x * Math.sin(heading) + y * Math.cos(heading)] : [x, y]; return [X * s + cx, Y * s + cy, z * s]; });
-      const bodyColour = (p) => mix(WARM, CYAN, (p[2] + 0.3) / 0.6), plumeColour = (q) => mix(GOLD, ORANGE, hash(q[0] * 97 + q[1] * 13));
+      const bodyColour = (p) => mix(WARM, CYAN, (p[2] + 0.3) / 0.6), plumeColour = (q) => mix(GOLD, ORANGE, hash(q[0] * 97 + q[1] * 13)), flameColour4 = (q, i) => flameTint(i, TR);
       // act 1 + 2: the rocket on the pad, then rising; the pad drops out of the picture (the world falls away)
       const S1 = 0.9, X1 = -0.2, Y0 = -0.72 + 0.62 * S1 + 0.02, RISE = 0.55, DROP = 0.95, T2 = 6;
       const pad = launchPad(WD, -0.72, 0.62, 0.4).map(([x, y, z]) => [Math.max(-0.8, Math.min(0.8, x)) + X1, y, z]);
-      const idle = Array.from({ length: TR }, (_, k) => { const a = k * 2.39996, r = 0.06 * Math.sqrt((k + 0.5) / TR); return [X1 + Math.cos(a) * r, Y0 - 0.62 * S1 - 0.05 - 0.06 * ((k * 7) % 10) / 10, Math.sin(a) * r * 0.5]; });
-      const lag = (k) => 0.05 + 2.2 * (k / TR), spread = (k) => (hash(k) - 0.5) * (0.14 + 0.3 * (k / TR));
-      // the plume grows with a soft start (smooth), so ignition has no velocity jump
-      const plumeAt = (k, t) => { const u = smooth(Math.max(0, t) / T2), y = Y0 + RISE * u - 0.62 * S1 - 0.04, l = lag(k) * smooth(Math.max(0, t) / 1.2); return [X1 + spread(k) * Math.sqrt(l + 0.05), y - l * (0.3 + RISE / T2), (hash(k + 3) - 0.5) * 0.05 * l]; };
+      const spread = (k) => (hash(k) - 0.5) * (0.14 + 0.3 * (k / TR));
+      // Fünfzehnte Fassung (Marc: der Abgasstrahl sah seit der vierzehnten „awkward“ aus, eine Säule von der Düse bis zum
+      // Boden). Jetzt eine echte Flamme an der Düse: schmal an der Düse, bauchig, zur Spitze hin spitz, innen weiß-gold,
+      // außen orange, an der Spitze rot und dunkler; ihr Licht flackert und läuft nach unten. Beim Start steigt die Düse und
+      // die Flamme wird länger, beides mit derselben weichen Kurve: Jede Flammendrohne fliegt dabei auf einer Geraden in
+      // eine Richtung (keine Finte), bewegt wird nur das Licht.
+      const nozzleY = (t) => Y0 + RISE * smooth(Math.max(0, t) / T2) - 0.62 * S1 - 0.04;
+      const plumeAt = (k, t) => { const g = smooth(Math.max(0, t) / T2); return flamePoint(k, TR, X1, nozzleY(t), (0.16 + 0.5 * g) * S1, (0.85 + 0.35 * g) * S1); };
+      const idle = Array.from({ length: TR }, (_, k) => plumeAt(k, 0));
       const plumeEnd = Array.from({ length: TR }, (_, k) => plumeAt(k, 99));
       // act 3: the planet and an orbit around it, the rocket smaller and heading along the orbit, the plume as its tail
       const G = [0.12, 0.05], GR = 0.52, A = 0.9, H = 0.3, W = TAU / 9, S3 = 0.46;
@@ -320,15 +407,17 @@ async function buildBeats(version, n) {
       const dust = Array.from({ length: TR - 40 }, (_, k) => { const u = (k + 0.5) / (TR - 40), side = k % 2 ? 1 : -1; return [XL + side * (0.22 + 0.55 * u), -0.44 + 0.03 * Math.sin(u * 9) + 0.015 * (k % 3), (hash(k + 9) - 0.5) * 0.2]; });
       const trailRest4 = [...pole, ...cloth, ...dust];
       const descent = (t) => smooth(Math.max(0, t) / T4);
-      const under = (k, t) => { const u = descent(t), y = YTOP + (YL - YTOP) * u - 0.62 * S4 - 0.04, l = lag(k) * 0.25; return [XL + spread(k) * 0.5, y - l * 0.6, (hash(k + 3) - 0.5) * 0.04]; };
+      // fünfzehnte Fassung: beim Landen dieselbe Flamme an der Düse aus den Spurdrohnen ohne die 40 der Flagge, sie wird zum
+      // Aufsetzen hin kürzer (Schub nimmt ab); Düse und Länge mit derselben Kurve, jede Flammendrohne fliegt auf einer Geraden
+      const FL = TR - 40, under = (k, t) => { const u = descent(t); return flamePoint(k - 40, FL, XL, YTOP + (YL - YTOP) * u - 0.62 * S4 - 0.04, (0.42 - 0.3 * u) * S4, 0.9 * S4); };
       return { beats: [
-        act([part("rocket", paint(at(S1, X1, Y0), bodyColour), { rigid: true }), part("trail", paint(idle, plumeColour)), part("world", paint(pad, WARM)), part("stars", paint(stars, WARM))], { caption: "Startklar", hold: 1.8, frame: "start", live: (b, j, t, o) => {
-          if (j >= RK && j < RK + TR) o[3] = 0.55 + 0.3 * sparkle(j, t, 0, 1); else if (j >= RK + TR + WD) o[3] = sparkle(j, t, 0.6, 1.3);
+        act([part("rocket", paint(at(S1, X1, Y0), bodyColour), { rigid: true }), part("trail", paint(idle, flameColour4)), part("world", paint(pad, WARM)), part("stars", paint(stars, WARM))], { caption: "Startklar", hold: 1.8, frame: "start", live: (b, j, t, o) => {
+          if (j >= RK && j < RK + TR) o[3] = 0.45 * flameLight(j - RK, TR, t) + 0.1; else if (j >= RK + TR + WD) { o[3] = sparkle(j, t, 0.6, 1.3); drift(o, j, t, 0.035); } // die Sterne treiben sanft
         } }),
-        act([part("rocket", paint(at(S1, X1, Y0 + RISE), bodyColour), { rigid: true }), part("trail", paint(plumeEnd, plumeColour)), part("world", paint(pad.map(([x, y, z]) => [x, y - DROP, z]), WARM), { offstage: true }), part("stars", paint(stars.map(([x, y, z]) => [x, y - 0.25, z]), WARM))], { caption: "Zündung: die Rakete hebt ab, die Rampe fällt weg", hold: 8, frame: "start", live: (b, j, t, o) => {
+        act([part("rocket", paint(at(S1, X1, Y0 + RISE), bodyColour), { rigid: true }), part("trail", paint(plumeEnd, flameColour4)), part("world", paint(pad.map(([x, y, z]) => [x, y - DROP, z]), WARM), { offstage: true }), part("stars", paint(stars.map(([x, y, z]) => [x, y - 0.25, z]), WARM))], { caption: "Zündung: die Rakete hebt ab, die Rampe fällt weg", hold: 8, frame: "start", live: (b, j, t, o) => {
           const u = smooth(Math.max(0, t) / T2);
           if (j < RK) { o[1] = b[1] - RISE * (1 - u); o[3] = glint(b[1] - Y0, t, 4, 0.3, -0.8, 0.9); }
-          else if (j < RK + TR) { const [x, y, z] = plumeAt(j - RK, t); o[0] = x; o[1] = y; o[2] = z; o[3] = (0.5 + 0.9 * Math.max(0, 1 - lag(j - RK) / 2.4)) * sparkle(j, t, 0.75, 1.2) + 0.1; }
+          else if (j < RK + TR) { const [x, y, z] = plumeAt(j - RK, t); o[0] = x; o[1] = y; o[2] = z; o[3] = (0.45 + 0.55 * smooth(Math.max(0, t) / 0.8)) * flameLight(j - RK, TR, t); } // die Zündung: die Flamme wird hell
           else if (j < RK + TR + WD) o[1] = b[1] + DROP * (1 - u);
           else { o[1] = b[1] + 0.25 * (1 - smooth(Math.max(0, t) / 8)); o[3] = sparkle(j, t, 0.6, 1.3); }
         } }),
@@ -337,16 +426,19 @@ async function buildBeats(version, n) {
           if (j < RK) { const [x, y, z] = inOrbit(body[j], ph); o[0] = x; o[1] = y; o[2] = z; }
           else if (j < RK + TR) { const k = j - RK, [x, y, z] = tailAt(k, ph); o[0] = x; o[1] = y; o[2] = z; o[3] = (0.45 + 0.9 * (1 - k / TR)) * sparkle(j, t, 0.8, 1.2); }
           else if (j < RK + TR + WD) { if (planetTurns(j)) yaw(o, t * 0.3, G[0], 0); o[3] = 0.85 + 0.35 * Math.max(0, (o[2] + GR) / (2 * GR)); }
-          else o[3] = sparkle(j, t, 0.6, 1.3);
+          else { o[3] = sparkle(j, t, 0.6, 1.3); drift(o, j, t, 0.045); } // die Sterne um den Planeten treiben sanft
         } }),
-        act([part("rocket", paint(at(S4, XL, YL), bodyColour), { rigid: true }), part("trail", paint(trailRest4, (q, i) => (i < 40 ? WARM : plumeColour(q)))), part("world", paint(moon, MOON)), part("stars", paint(stars, WARM))], { caption: "…und landet auf dem Mond. Flagge gehisst!", hold: 7.5, live: (b, j, t, o) => {
+        act([part("rocket", paint(at(S4, XL, YL), bodyColour), { rigid: true }), part("trail", paint(trailRest4, (q, i) => (i < 40 ? WARM : flameTint(i - 40, FL)))), part("world", paint(moon, MOON)), part("stars", paint(stars, WARM))], { caption: "…und landet auf dem Mond. Flagge gehisst!", hold: 7.5, live: (b, j, t, o) => {
           const u = descent(t), tt = Math.max(0, t);
           if (j < RK) { o[1] = b[1] + (YTOP - YL) * (1 - u); o[3] = glint(b[1] - YL, t, 4, 0.3, -0.7, 0.8); }
           else if (j < RK + TR) {
             const k = j - RK, w = smooth((tt - T4 + 0.3) / 2.4); // after touchdown the plume settles into flag and dust
-            if (w < 1) { const [x, y, z] = under(k, t); o[0] = x + (b[0] - x) * w; o[1] = y + (b[1] - y) * w; o[2] = z + (b[2] - z) * w; }
-            if (k >= 40) o[3] = (w < 1 ? 1.2 : 0.6) * sparkle(j, t, 0.7, 1.2);
+            // vierzehnte Fassung: die 40 Drohnen der Flagge warten dunkel an ihrem Platz und leuchten nach dem Aufsetzen auf;
+            // vorher sanken sie mit der Flamme hinab und stiegen danach wieder zur Flagge hinauf
+            if (w < 1 && k >= 40) { const [x, y, z] = under(k, t); o[0] = x + (b[0] - x) * w; o[1] = y + (b[1] - y) * w; o[2] = z + (b[2] - z) * w; }
+            if (k >= 40) o[3] = w < 1 ? lerp(flameLight(k - 40, FL, t), 0.6 * sparkle(j, t, 0.7, 1.2), w) : 0.6 * sparkle(j, t, 0.7, 1.2);
             else if (k >= 12) { const dx = b[0] - (XL + 0.42); o[2] += w * Math.sin(t * 2.4 - dx * 9) * 0.05 * dx; o[1] += w * Math.sin(t * 2.0 - dx * 9) * 0.015 * dx; o[3] = w < 1 ? sparkle(j, t, 0.8, 1.2) : glint(b[0], t, 3.5, 0.35, XL + 0.3, XL + 0.95); }
+            if (k < 40) o[3] *= smooth(w * 1.4); // die Flagge leuchtet erst nach dem Aufsetzen
           }
           else if (j >= RK + TR + WD) o[3] = sparkle(j, t, 0.6, 1.3);
         } }),
@@ -359,16 +451,12 @@ async function buildBeats(version, n) {
     }
     case "logo3d": return { beats: [{ pts: logo3d(n), caption, live: (b, j, t, o) => { o[3] = glint(b[0] + b[1] * 0.4, t); sway(o, t, 0.35); } }] };
     case "logoStory": {
-      const disk = paint(Array.from({ length: n }, (_, i) => { const r = 0.25 + 1.15 * Math.sqrt((i + 0.5) / n), a = i * 2.39996; return [Math.cos(a) * r, Math.sin(a) * r, Math.sin(i) * 0.15]; }), (p) => mix(GOLD, VIOLET, Math.hypot(p[0], p[1]) / 1.4));
-      // the vortex spins up (inner drones a little faster than outer ones) and the picture forms in the same direction
-      const spin = (t) => (t <= 0 ? t : t + 0.35 * Math.min(t, 2.6) ** 2 + 0.7 * 2.6 * Math.max(0, t - 2.6));
-      const vortex = (caption) => ({ pts: disk, caption, hold: 2.4, live: (b, j, t, o) => roll(o, spin(t) * (0.24 / (0.3 + Math.hypot(b[0], b[1])))) });
+      // Dreizehnte Fassung: die Funkenwirbel als stehende Bilder sind entfallen. Das Logo wird in der lebendigen Wolke
+      // zum Ring aus Licht; vor dem Logo liegt die Wolke zwischen den Motiven (planClouds).
       const ring = paint(torusSurface(n, 0.95, 0.3), (p) => mix(CYAN, VIOLET, (p[1] + 0.6) / 1.2));
       return { beats: [
-        vortex("Ein Funkenwirbel"),
-        { pts: logo3d(n), caption: "…dreht sich ein und wird zu eurem Logo", swirl: -0.9, hold: 3.4, live: (b, j, t, o) => sway(o, t, 0.3) },
-        vortex("…löst sich wieder in einen Wirbel"),
-        { pts: ring, caption: "…und wird zu einem Ring aus Licht in 3D", swirl: -0.6, hold: 3.4, live: (b, j, t, o) => yaw(o, t * 0.3) },
+        { pts: logo3d(n), caption: "Euer Logo", hold: 3.4, live: (b, j, t, o) => sway(o, t, 0.3) },
+        { pts: ring, caption: "…wird zu einem Ring aus Licht in 3D", hold: 3.4, cloud: true, live: (b, j, t, o) => yaw(o, t * 0.3) },
       ] };
     }
     // ---- Kultur · Maske ----
@@ -397,7 +485,7 @@ async function buildBeats(version, n) {
       const [a, b] = share(n, [2, 1]);
       return { beats: [
         act([part("curtain", paint(curtain(n, 0), RED))], { caption: "Vorhang auf", hold: 3, live: opening(n) }),
-        act([part("curtain", paint(curtain(a, 1), RED)), part("star", star3d(b))], { caption: "…ein 3D-Stern löst sich aus dem Vorhang", live: (bs, j, t, o) => { if (j < a) billow(bs, t, o); else { sway(o, t, 0.5, 8); o[3] = sparkle(j, t, 0.9, 1.3); } } }),
+        act([part("curtain", paint(curtain(a, 1), RED)), part("star", star3d(b))], { caption: "…ein 3D-Stern löst sich aus dem Vorhang", cloud: ["star"], live: (bs, j, t, o) => { if (j < a) billow(bs, t, o); else { sway(o, t, 0.5, 8); o[3] = sparkle(j, t, 0.9, 1.3); } } }),
       ] };
     }
     case "curtainStory": {
@@ -405,7 +493,7 @@ async function buildBeats(version, n) {
       return { beats: [
         act([part("curtain", paint(curtain(n, 0), RED))], { caption: "Vorhang auf", hold: 3, live: opening(n) }),
         act([part("curtain", paint(curtain(a, 1), RED)), part("rain", rain(r + s))], { caption: "aus dem Vorhang fällt Goldregen", hold: 3, live: (b, j, t, o) => { if (j < a) billow(b, t, o); else o[3] = chase(-b[1], t, 0.45, 0.55); } }),
-        act([part("curtain", paint(curtain(a, 1), RED)), part("rain", rain(r, -0.2)), part("star", star3d(s, 0.4, 0, 0.3))], { caption: "…und ein Stern steigt daraus auf", live: (b, j, t, o) => {
+        act([part("curtain", paint(curtain(a, 1), RED)), part("rain", rain(r, -0.2)), part("star", star3d(s, 0.4, 0, 0.3))], { caption: "…und ein Stern steigt daraus auf", cloud: ["star"], live: (b, j, t, o) => {
           if (j < a) billow(b, t, o);
           else if (j < a + r) o[3] = chase(-b[1], t, 0.45, 0.55);
           else { yaw(o, t * 0.3); o[1] += Math.sin(t * 0.7) * 0.03; o[3] = sparkle(j, t, 0.9, 1.3); }

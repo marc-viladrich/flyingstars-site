@@ -14,6 +14,7 @@ for (const route of routes) {
     const fonts = new Set<string>();
     page.on('request', (req) => {
       const url = new URL(req.url());
+      if (url.protocol === 'blob:' || url.protocol === 'data:') return; // im Browser erzeugt (z. B. SVG → Raster), kein Netzwerk
       const host = url.hostname;
       if (req.resourceType() === 'font') fonts.add(url.pathname);
       if (!allowed.has(host)) offenders.push(req.url());

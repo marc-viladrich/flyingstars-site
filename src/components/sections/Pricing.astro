@@ -1,15 +1,16 @@
 ---
 import type { Section } from '../../content.config';
 import { SHOW_PACKAGES, type ShowPackage } from '../../content/show-packages';
+import Accent from '../Accent.astro';
 type Props = Extract<Section, { type: 'pricing' }> & { index: number };
-const { headline, text, tiers, note, cta, kicker, id = `s${Astro.props.index}`, index } = Astro.props;
+const { headline, text, tiers, note, cta, id = `s${Astro.props.index}`, index } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const money = new Intl.NumberFormat('de-DE', { maximumFractionDigits: 0 });
 const price = (tier: Props['tiers'][number]) => tier.orb && tier.name in SHOW_PACKAGES ? `ab ${money.format(SHOW_PACKAGES[tier.name as ShowPackage].price)} €` : tier.price;
 ---
 <section class="section alt" id={id} aria-labelledby={headingId}>
-  <div class="sec-head"><div>{kicker && <span class="kicker mono">{kicker}</span>}<H id={headingId}>{headline}</H></div>{text && <p>{text}</p>}</div>
+  <div class="sec-head"><H id={headingId}><Accent text={headline} /></H>{text && <p>{text}</p>}</div>
   <div class="packs">{tiers.map(tier => {
     const Card = tier.cta ? 'a' : 'article';
     return <Card class:list={['pack',{featured:tier.highlight}]} href={tier.cta?.href}>

@@ -1,0 +1,49 @@
+---
+// Chopper, der Bürohund, als Drohnenformation. Genutzt auf der 404-Seite und in der Designsprache-Probe.
+interface Props { headline?: string; level?: 'h1' | 'h2'; }
+// eigene Seite: h1; eingebettet (Designsprache-Probe): h2, damit die Seite nur eine h1 hat
+const { headline = 'Diese Seite gibt es nicht.', level = 'h1' } = Astro.props;
+const H = level;
+---
+<div class="chopper" data-chopper>
+  <canvas class="chopper-stage" data-stage role="img" aria-label="Der Bürohund Chopper als Drohnenformation fliegt mit Propellermütze hin und her und wedelt"></canvas>
+  <div class="chopper-copy">
+    <p class="code">404</p>
+    <H class="chopper-h">{headline}</H>
+    <p>Chopper, unser Bürohund, ist schon eine Runde für euch geflogen. Gefunden hat er sie auch nicht, aber er bringt euch gern woandershin.</p>
+    <nav class="chopper-ways" aria-label="Weiter zu">
+      <a class="btn primary" href="/">Zur Startseite</a>
+      <a class="btn" href="/referenzen/">Referenzen ansehen</a>
+      <a class="btn" href="/drohnenshow-preise/">Preise und Vorschau</a>
+      <a class="btn" href="/kontakt/">Show anfragen</a>
+    </nav>
+  </div>
+</div>
+
+<script>
+  import { Swarm, formation } from '../scripts/effects/swarm.js';
+  import { CHOPPER_COUNT, chopperBehaviour, chopperColors, chopperParts } from '../scripts/effects/chopper.js';
+  for (const root of document.querySelectorAll<HTMLElement>('[data-chopper]')) {
+    const cv = root.querySelector<HTMLCanvasElement>('[data-stage]')!;
+    let started = false;
+    // erst rechnen, wenn die Bühne in die Nähe kommt
+    new IntersectionObserver(async (es, o) => {
+      if (!es[0].isIntersecting || started) return; started = true; o.disconnect();
+      const sw = new Swarm(cv, { count: CHOPPER_COUNT, scale: 0.46, dot: 1.9 });
+      let attention = false;
+      root.querySelectorAll('.chopper-ways a').forEach(a => {
+        a.addEventListener('pointerenter', () => { attention = true; });
+        a.addEventListener('pointerleave', () => { attention = false; });
+        a.addEventListener('focus', () => { attention = true; });
+        a.addEventListener('blur', () => { attention = false; });
+      });
+      const [pts, behaviour, parts] = await Promise.all([
+        formation({ kind: 'text', text: '404', font: '700 220px "Space Grotesk", sans-serif' }, CHOPPER_COUNT),
+        chopperBehaviour(() => attention), chopperParts(),
+      ]);
+      sw.set(pts, { mode: 'rise', dur: 1800 });
+      sw.wave = 0.45;
+      setTimeout(() => { sw.wave = 0; sw.follow(behaviour, { dur: 4200, colors: chopperColors(parts) }); }, 3600);
+    }, { rootMargin: '200px' }).observe(cv);
+  }
+</script>

@@ -5,20 +5,31 @@
 //   SPARK   the text stands, light breathes over it
 //   HORIZON light writes the text stroke by stroke, then the letters glow in a slow colour wave, an ornament twinkles
 //           and the whole lettering floats a little (sink and return, like the sled in the Leipzig shows)
-//   ODYSSEY sparks → written by light → the letters swing as a wave in 3D inside a turning ring of light → the text
+//   ODYSSEY the living cloud → written by light → the letters swing as a wave in 3D inside a turning ring of light → the text
 //           becomes the other script or its initials, framed
 import { loadTextEngine, textFormation } from "../text-formation.js";
 import { scriptFormation, initials } from "../script-formation.js";
 import { sampleOutline, circle, heartOutline } from "../show-geometry.js";
-import { WARM, GOLD, PINK, CYAN, VIOLET, TAU, paint, mix, hash, smooth, frac, part, act, trace, sparkle, breathe, loosen, yaw, pitch, share } from "../show-motion.js";
+import { WARM, GOLD, PINK, CYAN, VIOLET, TAU, paint, mix, hash, smooth, frac, part, act, sparkle, breathe, yaw, pitch, share, reveal, wander, lightRank } from "../show-motion.js";
 
 const WIDTH = 1.25; // half width of the lettering in scene units
-const HOLD = 9; // the visitor typed it: the text stays longer than a catalogue motif
+// Vierzehnte Fassung (Marc, 30.10.2026): Der Text zeichnet sich aus dem Nichts. Alle Drohnen stehen dunkel, dann leuchten
+// sie nacheinander in Schreibreihenfolge auf (lightRank: ein Weg von Punkt zu nächstem Nachbarn; die Hilbert-Reihenfolge
+// ließ den Schein quadrantenweise springen), danach wandert ein sanfter Schein über die Buchstaben. Die Haltezeit ist
+// kürzer (vorher 9 s): Der Text-Durchlauf zeigt drei Schriften nacheinander, mit 9 s dauerte er in SPARK rund 30 s.
+const HOLD = 3.2; // nach dem Schreiben
+const writeTime = (label) => 0.8 + 0.12 * Array.from(label).length; // etwa eine Zehntelsekunde je Zeichen
+/** Licht des Textes: erst aus dem Nichts geschrieben, danach ein wandernder Schein. */
+const textLight = (u, tt, write, delay = 0.3) => (tt < delay + write + 0.6 ? reveal(u, tt, write, { delay }) : wander(u, tt - delay - write - 0.6, 5.5, 0.3));
+
+/** Fünfzehnte Fassung (Marc): Der Schriftzug FLYINGSTARS steht wie im Logo ohne Querstrich im A. Der Textplaner hat
+ * dafür die Glyphe „Λ“ (U+039B, formwerk/font.js); wer „FlyingStars“ tippt, bekommt sie in der Druckschrift. */
+export const brandText = (value) => String(value).replace(/flying\s*stars/gi, "FLYINGST\u039BRS");
 
 /** Print lettering from FlyingStars' planner, centred, k points (planner spare drones join the lettering's line). */
 async function print(value, k, halfWidth = WIDTH) {
   await loadTextEngine();
-  const r = textFormation(value, k);
+  const r = textFormation(brandText(value), k);
   if (!r) return null;
   const pts = r.pts.slice(0, k), xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
   const s = (halfWidth * 2) / Math.max(1e-6, Math.max(...xs) - Math.min(...xs)), mx = (Math.max(...xs) + Math.min(...xs)) / 2, my = (Math.max(...ys) + Math.min(...ys)) / 2;
@@ -56,28 +67,27 @@ export async function textScene(n, caption, version, pkg) {
   const { value, style = "script", occasion = "" } = version;
   const label = style === "initials" ? initials(value) : value;
   if (pkg === "SPARK") {
+    const write = writeTime(label);
     if (style === "initials") {
-      const [t, f] = share(n, [3, 2]), pts = [...paint(await lettering(value, style, t), WARM), ...paint(frame(occasion, f, 0.95), occasion === "hochzeit" ? PINK : GOLD)];
-      return { beats: [{ pts, caption, hold: HOLD, live: (b, j, tt, o) => { o[3] = j < t ? breathe(tt, 3.2) : sparkle(j, tt, 0.85, 1.2); } }] };
+      const [t, f] = share(n, [3, 2]), letters = await lettering(value, style, t), rank = lightRank(letters), pts = [...paint(letters, WARM), ...paint(frame(occasion, f, 0.95), occasion === "hochzeit" ? PINK : GOLD)];
+      const frameRank = lightRank(pts.slice(t));
+      return { beats: [{ pts, caption, hold: write + HOLD, live: (b, j, tt, o) => { o[3] = j < t ? textLight(rank[j], tt, write) : textLight(frameRank[j - t], tt, write * 0.8, 0.3 + write * 0.5); } }] };
     }
-    return { beats: [{ pts: paint(await lettering(value, style, n), WARM), caption, hold: HOLD, live: (b, j, tt, o) => { o[3] = breathe(tt, 3.2); } }] };
+    const letters = await lettering(value, style, n), rank = lightRank(letters);
+    return { beats: [{ pts: paint(letters, WARM), caption, hold: write + HOLD, live: (b, j, tt, o) => { o[3] = textLight(rank[j], tt, write); } }] };
   }
 
   if (pkg === "HORIZON") {
-    const [t, d] = share(n, [5, 1]), text = await lettering(value, style, t), h = height(text);
+    const [t, d] = share(n, [5, 1]), text = await lettering(value, style, t), h = height(text), rank = lightRank(text);
     const deco = style === "initials" ? frame(occasion, d, 0.95) : ornament(occasion, d, WIDTH, h / 2 + 0.08);
     const colour = (p) => mix(WARM, occasion === "hochzeit" ? PINK : GOLD, 0.15);
     const pts = [...paint(text, colour), ...paint(deco, occasion === "hochzeit" ? PINK : GOLD)];
-    const write = 0.35 + 0.09 * Array.from(label).length; // a dedication takes its time: about a tenth of a second per letter
-    return { beats: [{ pts, caption, hold: HOLD + 2, live: (b, j, tt, o) => {
+    const write = writeTime(label);
+    return { beats: [{ pts, caption, hold: write + HOLD + 1, live: (b, j, tt, o) => {
       // the lettering floats: it sinks a little and comes back, and drifts sideways at another pace
       o[1] += -0.035 * (0.5 - 0.5 * Math.cos((tt * TAU) / 9)); o[0] += 0.03 * Math.sin((tt * TAU) / 11);
-      if (j < t) {
-        const written = trace(j / t, tt, write, { delay: 0.2 });
-        // once written, a slow colour wave runs over the letters (the colour changes, the drones stay)
-        const wave = 1 + 0.28 * Math.max(0, Math.sin(b[0] * 2.2 - tt * 1.6)) ** 2;
-        o[3] = tt < write + 0.4 ? written : wave;
-      } else o[3] = tt < write ? 0.15 : sparkle(j, tt, 0.8, 1.35);
+      if (j < t) o[3] = textLight(rank[j], tt, write);
+      else o[3] = tt < write + 0.3 ? reveal(0, tt, 1, { delay: write + 0.3 - 0.4 }) : sparkle(j, tt, 0.8, 1.35); // the ornament lights up once the text is written
     } }] };
   }
 
@@ -88,22 +98,21 @@ export async function textScene(n, caption, version, pkg) {
   const ring = ringPts(r, WIDTH + 0.35), ringColour = (p) => mix(GOLD, occasion === "hochzeit" ? PINK : VIOLET, (p[2] + 1.6) / 3.2);
   const other = style === "initials" ? "script" : "initials";
   const second = await lettering(value, other === "initials" && !initials(value) ? "script" : other, t, other === "initials" ? WIDTH : WIDTH);
-  const write = 0.35 + 0.09 * Array.from(label).length;
-  const cloud = loosen(text.map(([x, y]) => [x * 1.1, y * 1.6, 0]), 0.45, 1.05);
+  const write = writeTime(label), rank = lightRank(text), rank2 = lightRank(second);
   const end = other === "initials" ? frame(occasion, r, 0.95) : ringPts(r, WIDTH + 0.35);
   return { beats: [
-    act([part("text", paint(cloud, (p) => mix(GOLD, WARM, hash(p[0] * 17)))), part("ring", paint(loosen(ring, 0.6, 1.1), GOLD))], { caption: "Funken sammeln sich", hold: 1, live: (b, j, tt, o) => { o[3] = sparkle(j, tt, 0.6, 1.4); yaw(o, tt * 0.15); } }),
-    act([part("text", paint(text, WARM)), part("ring", paint(ring.map(([x, y, z]) => [x * 0.98, y, z]), ringColour))], { caption: "Licht schreibt euren Text", hold: 2.2 + write, live: (b, j, tt, o) => {
-      if (j < t) o[3] = trace(j / t, tt, write, { delay: 0.1 });
-      else { yaw(o, tt * 0.35); o[3] = tt < write ? 0.2 : sparkle(j, tt, 0.85, 1.35); }
+    act([part("text", paint(text, WARM)), part("ring", paint(ring.map(([x, y, z]) => [x * 0.98, y, z]), ringColour))], { caption: "Licht schreibt euren Text", hold: 1.6 + write, cloud: true, live: (b, j, tt, o) => {
+      if (j < t) o[3] = reveal(rank[j], tt, write, { delay: 0.2 });
+      else { yaw(o, tt * 0.35); o[3] = tt < write ? reveal(0, tt, 1, { delay: write - 0.6 }) : sparkle(j, tt, 0.85, 1.35); }
     } }),
     act([part("text", paint(text, WARM)), part("ring", paint(ring, ringColour))], { caption: "die Buchstaben schwingen in 3D", hold: 5, live: (b, j, tt, o) => {
       const k = smooth(tt / 1.5);
-      if (j < t) { o[2] += k * 0.16 * Math.sin(b[0] * 2.6 - tt * 1.8); o[1] += k * 0.035 * Math.sin(b[0] * 2.6 - tt * 1.8 + 1.2); o[3] = 1 + 0.3 * Math.max(0, Math.sin(b[0] * 2.6 - tt * 1.8)) ** 2; }
-      else { yaw(o, tt * 0.35 + 0.35 * 1.5); pitch(o, 0.18 * k); o[3] = sparkle(j, tt, 0.85, 1.35); }
+      if (j < t) { o[2] += k * 0.16 * Math.sin(b[0] * 2.6 - tt * 1.8); o[1] += k * 0.035 * Math.sin(b[0] * 2.6 - tt * 1.8 + 1.2); o[3] = wander(rank[j], tt, 5.5, 0.3); }
+      else { yaw(o, tt * 0.35 + 0.35 * (1.6 + write)); pitch(o, 0.18 * k); o[3] = sparkle(j, tt, 0.85, 1.35); } // der Ring dreht dort weiter, wo er im ersten Bild stand
     } }),
-    act([part("text", paint(second, WARM)), part("ring", paint(end, other === "initials" ? (occasion === "hochzeit" ? PINK : GOLD) : ringColour))], { caption: other === "initials" ? "…und werden zu euren Initialen" : "…und schreiben sich neu", hold: HOLD, live: (b, j, tt, o) => {
-      if (j < t) o[3] = breathe(tt, 3);
+    // im Text-Durchlauf (drei Schriften nacheinander) entfällt der Wechsel in die andere Schrift: der Durchlauf zeigt sie ohnehin
+    act([part("text", paint(second, WARM)), part("ring", paint(end, other === "initials" ? (occasion === "hochzeit" ? PINK : GOLD) : ringColour))], { caption: other === "initials" ? "…und werden zu euren Initialen" : "…und schreiben sich neu", hold: HOLD + 1, tour: false, live: (b, j, tt, o) => {
+      if (j < t) o[3] = wander(rank2[j], tt, 5.5, 0.3);
       else if (other === "initials") o[3] = sparkle(j, tt, 0.85, 1.35);
       else { yaw(o, tt * 0.3); o[3] = sparkle(j, tt, 0.85, 1.35); }
     } }),

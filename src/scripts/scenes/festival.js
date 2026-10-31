@@ -3,7 +3,7 @@
 // pins light up, a paper plane flies the route and circles the compass. Drache: an own, friendly dragon drawn as a
 // line (head, a body of two strands, wings, a spade tail); in the story it rises from sparks along a path, circles
 // once and breathes a firework. Everything that moves is a smooth path; fire and sparkle are light.
-import { TAU, WARM, GOLD, PINK, CYAN, ORANGE, RED, GREEN, mix, paint, frac, smooth, hash, yaw, roll, pitch, breathe, glint, sparkle, chase, trace, burstLight, loosen, share, part, act } from "../show-motion.js";
+import { TAU, WARM, GOLD, PINK, CYAN, ORANGE, RED, GREEN, mix, paint, frac, smooth, hash, yaw, roll, pitch, breathe, glint, sparkle, chase, trace, burstLight, share, part, act } from "../show-motion.js";
 import { sampleOutline } from "../show-geometry.js";
 import { sample3d, starField } from "../show-shapes.js";
 
@@ -61,13 +61,14 @@ function pathOf(ctrl, per = 64) {
 
 // ---------- Reise · Kompass ----------
 /**
- * The needle searching north: it arrives turned off north, swings back and forth with shrinking amplitude and rests
- * on north (a critically damped envelope, so it starts from rest). Before the period ends it turns off north again,
- * so a loop joins without a jump.
+ * The needle finding north. Vierzehnte Fassung (Marc: die Reise hatte eine Finte): Die Nadel schwang über Norden
+ * hinaus, zurück und wieder hinaus (gedämpftes Pendeln) und drehte sich am Ende der Periode wieder weg. Jetzt dreht sie
+ * aus ihrer Anfangslage in einer Richtung auf Norden und steht dort, mit einem kaum sichtbaren Zittern (±0,015 rad).
+ * swing und decay sind ohne Wirkung und bleiben nur für die Aufrufe stehen.
  */
-function needleAngle(t, { start = 0.2, period = 12, amp = 0.6, decay = 0.9, swing = 1.8 } = {}) {
-  const u = frac(Math.max(0, t - start) / period) * period, back = smooth((u - period + 2.5) / 2.5);
-  return amp * (Math.cos((TAU * u) / swing) * (1 + u / decay) * Math.exp(-u / decay) * (1 - back) + back);
+function needleAngle(t, { start = 0.2, amp = 0.6, settle = 2.8 } = {}) {
+  const u = Math.max(0, t - start);
+  return amp * (1 - smooth(u / settle)) + 0.015 * smooth((u - settle) / 1.5) * Math.sin((u * TAU) / 3.1);
 }
 /** The needle as a slim rhombus: north half and south half (for their colours). */
 const needleHalves = (len = 0.6, w = 0.075) => [line([-w, 0], [0, len], [w, 0]), line([w, 0], [0, -len], [-w, 0])];
@@ -138,7 +139,9 @@ const FOLDS = [-1.2, -0.6, 0, 0.6, 1.2];
 const foldW = (u) => { const k = Math.max(0, Math.min(3, Math.floor((u + 1.2) / 0.6))), f = (u - FOLDS[k]) / 0.6; return 0.11 * (k % 2 ? 1 - f : f); };
 const onMap = (u, v, lift = 0) => tilted(u, v, foldW(u) + lift);
 const MAP_TOP = 0.85;
-const PINS = [[-0.95, -0.5], [-0.55, 0.12], [-0.05, 0.32], [0.4, 0.05], [0.85, 0.42]];
+// vierzehnte Fassung: die Route steigt stetig von Ort zu Ort; vorher sank sie vor dem letzten Pin ab und stieg wieder
+// (der Papierflieger ging hoch, kurz runter und wieder hoch)
+const PINS = [[-0.95, -0.5], [-0.55, 0.08], [-0.05, 0.26], [0.4, 0.34], [0.85, 0.44]];
 
 /** A generic old town: gabled houses, a church tower with a spire, a domed tower, a stepped gable. Closed, so the
  * ground line is drawn too. */
@@ -217,7 +220,7 @@ builders.travelStory = (n) => {
       else if (j >= L && j < P) { const k = Math.min(PINS.length - 1, Math.floor((j - L) / perPin[0])); o[3] = 1 + 0.7 * Math.exp(-(((s - pinSigma[k]) / 0.15) ** 2)); } // each pin flashes as the plane passes
       else if (j >= P) o[3] = 1;
     } }),
-    { ...act([part("land", compass.slice(0, LD)), part("pins", compass.slice(LD + RT)), part("route", compass.slice(LD, LD + RT)), plane(circling, true)], { caption: "…und kreist um den Kompass, der nach Norden zeigt", live: (b, j, t, o) => {
+    { ...act([part("land", compass.slice(0, LD)), part("pins", compass.slice(LD + RT)), part("route", compass.slice(LD, LD + RT)), plane(circling, true)], { caption: "…und kreist um den Kompass, der nach Norden zeigt", cloud: ["land", "pins", "route"], live: (b, j, t, o) => {
       if (j >= P + RT) { const [x, y, z] = planeOnOrbit(model[j - P - RT], phase(t)); o[0] = x; o[1] = y; o[2] = z; o[3] = 1.15; }
       else if (j >= L && j < P) { roll(o, needleAngle(t, { start: 0.3, amp: 0.45, swing: 2.0, decay: 1.0 }), 0, CY); if (j - L < body.needleNorth) o[3] = 1.25; }
       else if (j < L) o[3] = glint(Math.atan2(b[1] - CY, b[0]), t, 4.5, 0.35, -Math.PI, Math.PI);
@@ -326,14 +329,14 @@ builders.dragonStory = (n) => {
   // the flight: coiled on the ground, rising in a wide S, one circle in depth, out towards the upper right
   // one continuous spiral: coiled on the ground, then climbing round an ellipse, then level for the rest of the
   // circle, leaving it in front heading right (a falls along the way; no hairpins, no steep climbs)
-  const G = -0.92, A0 = 5.3, A1 = 1.82, AS = A0 + Math.PI, Y1 = 0.22;
+  const G = -0.92, A0 = 5.3, A1 = Math.PI + 0.05, AS = A0 + Math.PI, Y1 = 0.22;
   const coil = Array.from({ length: 14 }, (_, i) => { const th = -1.08 - 13 * (1 - i / 13), r = 0.1 + 0.25 * (i / 13); return [-0.5 + Math.cos(th) * r, G, 0.655 + Math.sin(th) * r * 0.8]; });
   const ring = (a, y) => [0.05 + Math.cos(a) * 0.7, y, 0.55 * Math.sin(a) - 0.05];
   const rise = Array.from({ length: 7 }, (_, i) => { const u = (i + 1) / 7; return ring(AS - u * Math.PI, G + 0.05 + (Y1 - G - 0.05) * (0.5 * u + 0.5 * smooth(u))); });
   const loop = Array.from({ length: 7 }, (_, i) => ring(A0 - ((i + 1) / 7) * (A0 - A1), Y1 + 0.04 * Math.sin((i + 1) * 0.9)));
   const out = [[0.2, Y1 + 0.06, 0.5], [0.5, Y1 + 0.1, 0.42], [0.8, Y1 + 0.16, 0.3]];
   const ctrl = [...coil, ...rise, ...loop, ...out], path = pathOf(ctrl);
-  const S1 = path.knot(coil.length - 1) + 0.1, S2 = path.knot(coil.length + rise.length - 1), S3 = path.knot(coil.length + rise.length + loop.length + 1);
+  const S1 = path.knot(coil.length - 1) + 0.1, S2 = path.knot(coil.length + rise.length - 1), S3 = path.knot(coil.length + rise.length + loop.length - 1); /* vierzehnte Fassung: die Runde endet am Ende des Kreises; der Ausflug nach rechts und die Rückkehr zur Landung links waren ein Überschwingen */
   const RISE = 5.6, CIRCLE = 6.5;
   const flight = (from, to, dur) => (t) => from + (to - from) * smooth(Math.max(0, t) / dur);
   const flapAt = (t) => 0.22 * Math.sin((t * TAU) / 2.6);
@@ -364,8 +367,7 @@ builders.dragonStory = (n) => {
     if (j < D) { f(meta[j], o); o[3] = glow(meta[j], j, t); } else { const [x, y, z] = trail(h, j - D); o[0] = x; o[1] = y; o[2] = z; o[3] = sparkle(j, t, 0.6, 1.4) * (1 - 0.5 * ((j - D) / F)); }
   }; };
   return { beats: [
-    { ...act(parts(withColour(loosen(startPose, 0.35, 1)).map((p, j) => [p[0], Math.max(G - 0.05, p[1] - 0.1), p[2], ...(j < D ? mix(GOLD, ORANGE, hash(j)) : GOLD)])), { caption: "Funken am Boden", hold: 1.4, live: (b, j, t, o) => { o[3] = sparkle(j, t, 0.4, 1.3); } }), fitPts: view },
-    { ...act(parts(withColour(startPose)), { caption: "ein Drache steigt auf", hold: RISE + 0.6, live: flying(flight(S1, S2, RISE)) }), fitPts: view },
+    { ...act(parts(withColour(startPose)), { caption: "Ein Drache steigt auf", hold: RISE + 0.6, cloud: true, live: flying(flight(S1, S2, RISE)) }), fitPts: view },
     { ...act(parts(withColour(riseEnd)), { caption: "er dreht eine Runde", hold: CIRCLE + 0.6, live: flying(flight(S2, S3, CIRCLE)) }), fitPts: view },
     { ...act(parts(withColour(meta.map((m) => endF(m, [0, 0, 0]))), paint([...cone, ...shellPts], (p, k) => fireColour[k])), { caption: "…und speit ein Feuerwerk", live: (() => { let at = NaN, f = null; return (b, j, t, o) => {
       if (j < D) { if (t !== at) { at = t; f = landed(t); } f(meta[j], o); o[3] = glow(meta[j], j, t); return; }

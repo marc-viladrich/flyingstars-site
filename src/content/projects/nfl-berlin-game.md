@@ -4,6 +4,8 @@
   "client": "Indianapolis Colts",
   "date": "2025-11-01",
   "location": "Olympiastadion Berlin",
+  "occasion": "firma",
+  "drones": 300,
   "summary": "Das Hufeisen der Colts über dem Olympiastadion. Sport · Berlin.",
   "cover": {
     "src": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl.jpg",
@@ -58,7 +60,7 @@
       },
       {
         "value": 10,
-        "label": "Motive – von Indiana bis Berlin"
+        "label": "Motive, von Indiana bis Berlin"
       },
       {
         "value": 2,
@@ -79,7 +81,7 @@
       {
         "kicker": "02 · Der Ort",
         "title": "Das Olympiastadion als Bühne",
-        "text": "Geflogen haben wir über dem Olympiastadion, in dem das Berlin Game stattfand. Das Stadion selbst taucht auch in der Show auf – als Formation aus Drohnen.",
+        "text": "Geflogen haben wir über dem Olympiastadion, in dem das Berlin Game stattfand. Das Stadion selbst taucht auch in der Show auf, als Formation aus Drohnen.",
         "image": {
           "src": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl/05.jpg",
           "alt": "Das Olympiastadion",
@@ -110,7 +112,7 @@
     "formation": {
       "src": "/media/projekte/nfl/formation.json",
       "title": "Das NFL-Shield, Drohne für Drohne.",
-      "text": "Diese Punkte haben wir aus dem Originalvideo gelesen – jede Drohne an ihrer echten Position. Fahr mit der Maus hindurch."
+      "text": "Diese Punkte haben wir aus dem Originalvideo gelesen, jede Drohne an ihrer echten Position. Fahrt mit der Maus hindurch."
     },
     "gallery": [
       {
@@ -165,7 +167,7 @@
     "press": [],
     "nextRoute": "exploring-reinvented-der-neue-ford-explorer",
     "cta": {
-      "title": "Dein Stadion, deine Fans?",
+      "title": "Euer Stadion, eure Fans?",
       "text": "Für Vereine, Ligen und Sponsoren planen wir Shows, die im Stadion und auf Social Media funktionieren."
     }
   }

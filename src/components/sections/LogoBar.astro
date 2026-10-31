@@ -1,14 +1,73 @@
 ---
+// Kund:innen als Laufband (ohne Hover-Effekt), darunter optional Presse und „Qualität und Sicherheit“
+// (docs/DESIGN.md, Studie 6 der Designsprache-Probe). Logos liegen unter public/brand/logos/.
+// Presse- und Partnerlogos erscheinen nur mit `cleared: true` (schriftliche Freigabe), sonst Text bzw. Verlaufs-Icon.
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import type { Section } from '../../content.config';
 import { optimizedLogo } from '../../lib/media';
 type Props = Extract<Section, { type: 'logoBar' }> & { index: number };
-const { headline, press, logos } = Astro.props;
-const items = await Promise.all(logos.map(async logo => ({...logo,media:logo.image ? await optimizedLogo(logo.image.src,logo.tall ? 80 : 56) : undefined})));
+const { headline, logos, pressHeadline, pressItems, qualityHeadline, quality, id = `s${Astro.props.index}` } = Astro.props;
+
+const file = (path: string) => join(process.cwd(), 'public', path);
+const has = (path?: string) => Boolean(path && existsSync(file(path)));
+// optische Größe: breite Wortmarken flacher, runde Bildmarken höher, damit alle gleich schwer wirken
+const optical = (ratio: number) => Math.round(Math.min(46, Math.max(22, 30 * Math.sqrt(3 / ratio))));
+// SVGs bekommen 4 % Luft um den viewBox (sonst wirken runde Marken angeschnitten). Statt den viewBox umzuschreiben
+// (dann müsste das SVG inline in die Seite) wird die Luft als Innenabstand gesetzt: die Datei bleibt im Browser-Cache.
+const svgSize = (path: string) => {
+  const m = readFileSync(file(path), 'utf8').match(/viewBox="([\d.\s,-]+)"/);
+  if (!m) return undefined;
+  const [, , w, h] = m[1].trim().split(/[\s,]+/).map(Number);
+  return { w, h };
+};
+const pngSize = (path: string) => { const b = readFileSync(file(path)); return { w: b.readUInt32BE(16), h: b.readUInt32BE(20) }; };
+type Mark = { name: string; src: string; width: number; height: number; pad: string; detail: boolean; href?: string };
+const marks = (await Promise.all(logos.map(async (logo): Promise<Mark | null> => {
+  try {
+    if (logo.file && has(logo.file)) {
+      const size = logo.file.endsWith('.svg') ? svgSize(logo.file) : pngSize(logo.file);
+      if (!size) return null;
+      const p = logo.file.endsWith('.svg') ? Math.max(size.w, size.h) * 0.04 : 0;
+      const ratio = (size.w + 2 * p) / (size.h + 2 * p), height = optical(ratio), width = Math.round(height * ratio);
+      const pad = `${(p / (size.h + 2 * p) * height).toFixed(1)}px ${(p / (size.w + 2 * p) * width).toFixed(1)}px`;
+      return { name: logo.name, src: logo.file, width, height, pad, detail: logo.detail, href: logo.href };
+    }
+    if (logo.image) {
+      const img = await optimizedLogo(logo.image.src, 92), ratio = img.width / img.height, height = optical(ratio);
+      return { name: logo.name, src: img.src, width: Math.round(height * ratio), height, pad: '0px', detail: logo.detail, href: logo.href };
+    }
+  } catch {}
+  return null;
+}))).filter((m): m is Mark => Boolean(m));
+const press = pressItems.map((p) => ({ ...p, show: p.cleared && has(p.logo) }));
+const seals = quality.map((q) => ({ ...q, show: q.cleared && has(q.logo) }));
 ---
-<div class="band" aria-label="Referenzen">
-  <div class="band-head mono">{headline && <span>{headline}</span>}{press && <span>Bekannt aus <b>{press}</b></span>}</div>
-  <div class="marquee">{items.map(logo => {
-    const content = logo.image && logo.media ? <img src={logo.media.src} width={logo.media.width} height={logo.media.height} alt={logo.name} class:list={{tall:logo.tall}} loading="lazy" decoding="async" /> : <span>{logo.name}</span>;
-    return logo.href ? <a href={logo.href}>{content}</a> : content;
-  })}</div>
-</div>
+{marks.length > 0 && <div class="band" role="region" aria-label={headline ?? 'Kund:innen von FlyingStars'}>
+  <div class="logo-marquee">
+    {[0, 1].map((copy) => <ul class="track" aria-hidden={copy === 1 ? 'true' : undefined}>{marks.map((m) => {
+      const img = <img class:list={{ detail: m.detail }} src={m.src} width={m.width} height={m.height} style={`height:${m.height}px;padding:${m.pad}`} alt={copy ? '' : m.name} loading="lazy" decoding="async" />;
+      return <li>{m.href && !copy ? <a href={m.href}>{img}</a> : img}</li>;
+    })}</ul>)}
+  </div>
+</div>}
+{(press.length > 0 || seals.length > 0) && <section class="section proof" id={id} aria-label={[press.length && pressHeadline, seals.length && qualityHeadline].filter(Boolean).join(', ')}>
+  {press.length > 0 && <div class="press">
+    <h2 class="proof-h">{pressHeadline}</h2>
+    <ul>{press.map((p) => {
+      const inner = p.show ? <img class:list={{ knock: p.knock }} src={p.logo} alt={p.name} loading="lazy" decoding="async" /> : <b>{p.name}</b>;
+      return <li>{p.href ? <a href={p.href} rel="noopener" target="_blank" title={p.note ? `${p.name}: ${p.note}` : undefined}>{inner}</a> : <span class="noref" title={p.note}>{inner}</span>}</li>;
+    })}</ul>
+  </div>}
+  {seals.length > 0 && <div class="quality">
+    <h2 class="proof-h">{qualityHeadline}</h2>
+    <ul>{seals.map((q) => <li>
+      {q.show ? <img class="q-logo" src={q.logo} alt="" loading="lazy" decoding="async" /> : <svg class="q-ico ico g" viewBox="0 0 24 24" aria-hidden="true">
+        {q.icon === 'permit' && <path d="M7 3h7l5 5v13H7zM14 3v5h5M10 13l2 2 4-4" />}
+        {q.icon === 'sound' && <path d="M4 10v4h4l5 4V6L8 10zm12-1a4 4 0 0 1 0 6m2-9a8 8 0 0 1 0 12" />}
+        {q.icon === 'shield' && <path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM9 12l2 2 4-4" />}
+        {q.icon === 'leaf' && <path d="M5 19c0-9 6-14 15-14 0 9-5 15-14 15m0-1 7-7" />}
+      </svg>}
+      <b>{q.title}</b>{q.text && <span>{q.text}</span>}</li>)}</ul>
+  </div>}
+</section>}

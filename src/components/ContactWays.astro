@@ -1,0 +1,10 @@
+---
+// Kontaktwege mit Verlaufs-Icons (E-Mail, Telefon, Videocall, WhatsApp).
+import { CONTACT } from './people';
+---
+<ul class="ways">
+  <li><a href={`mailto:${CONTACT.email}`}><svg class="ico g" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4zm0 0 8 7 8-7" /></svg><span>{CONTACT.email}</span></a></li>
+  <li><a href={CONTACT.phone.href}><svg class="ico g" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h3l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v3a2 2 0 0 1-2 2A17 17 0 0 1 4 5a2 2 0 0 1 2-2z" /></svg><span>{CONTACT.phone.label}</span></a></li>
+  <li><a href={CONTACT.video.href} rel="noopener" target="_blank"><svg class="ico g" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h12v10H3zm12 3 6-3v10l-6-3" /></svg><span>{CONTACT.video.label}</span></a></li>
+  <li><a href={CONTACT.whatsapp.href} rel="noopener" target="_blank"><svg class="ico g" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7zM9 9c0 3 3 6 6 6l1-1.5-2-1-1 1a5 5 0 0 1-2.5-2.5l1-1-1-2z" /></svg><span>{CONTACT.whatsapp.label}</span></a></li>
+</ul>

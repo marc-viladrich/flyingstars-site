@@ -78,11 +78,22 @@ const tmp = [0, 0, 0];
 /**
  * Position of one drone at flight progress u ∈ [0, 1] between a and b (arrays or offsets). The flow lifts the path
  * sideways in the middle of the flight only (sin² πu: zero and flat at both ends), scaled with the distance.
+ * Vierzehnte Fassung (Marc, 30.10.2026: „alle Finten raus“): Die Strömung wirkt nur noch quer zur Flugrichtung und
+ * wächst mit der Strecke von null an. Vorher hatte sie einen Sockel von 0,04: Drohnen, die stehen bleiben sollten (Baum,
+ * Feuerwerk, Karte), wackelten bei jedem Bildwechsel um bis zu 0,07 hinaus und zurück, und kurze Wege liefen erst ein
+ * Stück rückwärts. Quer und ohne Sockel geht keine Drohne hinter ihren Start zurück oder über ihr Ziel hinaus. Die
+ * Stärke folgt der Strecke im Bild, nicht im Raum (ein Vorhang, der nach vorn kommt, pendelt nicht zur Seite).
  */
 export function along(ax, ay, az, bx, by, bz, u, t, out, scale = 1) {
   const e = ease(u), x = ax + (bx - ax) * e, y = ay + (by - ay) * e, z = az + (bz - az) * e;
-  const d = Math.hypot(bx - ax, by - ay, bz - az), amp = scale * Math.sin(Math.PI * Math.min(1, Math.max(0, u))) ** 2 * Math.min(0.14, 0.04 + d * 0.07); // sin²: no sideways kick at take-off or arrival
+  // die Stärke richtet sich nach der Strecke im Bild (x, y): ein Flug fast nur in die Tiefe bekommt kaum Strömung, sonst
+  // pendelt die Drohne im Bild sichtbar zur Seite und zurück, während sie kaum vorankommt
+  const d = Math.hypot(bx - ax, by - ay, bz - az), amp = scale * Math.sin(Math.PI * Math.min(1, Math.max(0, u))) ** 2 * Math.min(0.14, Math.hypot(bx - ax, by - ay) * 0.07); // sin²: no sideways kick at take-off or arrival
+  if (!amp) { out[0] = x; out[1] = y; out[2] = z; return out; }
   flow(x, y, z, t, tmp);
-  out[0] = x + tmp[0] * amp; out[1] = y + tmp[1] * amp * 0.8; out[2] = z + tmp[2] * amp;
+  tmp[1] *= 0.8;
+  // only the part across the flight: no drift backwards or past the target
+  const ux = (bx - ax) / d, uy = (by - ay) / d, uz = (bz - az) / d, k = tmp[0] * ux + tmp[1] * uy + tmp[2] * uz;
+  out[0] = x + (tmp[0] - k * ux) * amp; out[1] = y + (tmp[1] - k * uy) * amp; out[2] = z + (tmp[2] - k * uz) * amp;
   return out;
 }

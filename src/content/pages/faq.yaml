@@ -1,16 +1,21 @@
-title: Fragen zu Drohnenshows – FlyingStars
-description: "Vorlauf, Platzbedarf, Genehmigungen und Wetter: Antworten auf die
-  häufigsten Fragen zu deiner Drohnenshow mit FlyingStars."
+# FAQ-Seite (30.10.2026): eine faq-Section mit Gruppen. Gruppen-Tags (planung, ort, sicherheit, wetter-umwelt, preise, indoor)
+# sind so vergeben, dass jede Frage hier genau einmal erscheint. Kontext-Tags (startseite, hochzeit, werbung) steuern Auszüge.
+title: Häufige Fragen zu Drohnenshows
+description: "Vorlauf, Platz, Genehmigung, Wetter, Sicherheit und Kosten: Antworten auf die häufigsten Fragen zu Drohnenshows von FlyingStars."
 sections:
   - type: faq
-    id: faq
-    kicker: FAQ
-    headline: Was du vor der Buchung wissen solltest.
-    text: "Die häufigsten Fragen, kurz beantwortet. Für alles andere: ruf uns an
-      oder buch dir einen Videocall."
-    cta:
-      label: Videocall buchen
-      href: https://calendly.com/team-flyingstars/beratung
+    id: fragen
+    headline: Häufige Fragen zu Drohnenshows.
+    text: Vorlauf, Platz, Genehmigung, Wetter und Kosten, kurz beantwortet.
+    cta: { label: Show anfragen, href: /kontakt/ }
     openFirst: true
-    tags:
-      - startseite
+    groups:
+      - { id: planung, headline: Planung und Ablauf, tags: [planung] }
+      - { id: ort, headline: Ort und Genehmigung, tags: [ort] }
+      - { id: sicherheit, headline: Sicherheit, tags: [sicherheit] }
+      - { id: wetter-umwelt, headline: Wetter und Umwelt, tags: [wetter-umwelt] }
+      - { id: kosten, headline: Kosten, tags: [preise] }
+      - { id: indoor, headline: Indoor, tags: [indoor] }
+    closing:
+      headline: Eure Frage ist nicht dabei?
+      text: Ruft uns an oder schreibt uns. Wir antworten innerhalb von 48 Stunden.

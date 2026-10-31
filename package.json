@@ -11,7 +11,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
-    "test": "node --test 'scripts/*.test.mjs' && playwright test",
+    "test": "node --test 'scripts/*.test.mjs' 'src/scripts/effects/*.test.mjs' && playwright test",
+    "test:effects": "node --test 'src/scripts/effects/*.test.mjs'",
     "gates": "astro check && astro build && npm test"
   },
   "dependencies": {

@@ -1,14 +1,17 @@
 ---
 import type { Section } from '../../content.config';
+import Accent from '../Accent.astro';
+import { plain } from '../accent';
 type Props = Extract<Section, { type: 'comparison' }> & { index: number };
-const { headline, text, rowHeader, columns, rows, note, kicker, id = `s${Astro.props.index}`, index } = Astro.props;
+const { headline, text, rowHeader, columns, rows, note, id = `s${Astro.props.index}`, index } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
+const label = plain(headline);
 ---
 <section class="section alt" id={id} aria-labelledby={headingId}>
-  <div class="sec-head"><div>{kicker && <span class="kicker mono">{kicker}</span>}<H id={headingId}>{headline}</H></div>{text && <p>{text}</p>}</div>
-  <div class="table-wrap" role="region" aria-label={`${headline} (Tabelle, horizontal scrollbar)`} tabindex="0">
-    <table><caption class="sr-only">{headline}</caption><thead><tr><th scope="col">{rowHeader}</th>{columns.map((column,i) => <th scope="col" class:list={{us:i===0}}>{column}</th>)}</tr></thead>
+  <div class="sec-head"><H id={headingId}><Accent text={headline} /></H>{text && <p>{text}</p>}</div>
+  <div class="table-wrap" role="region" aria-label={`${label} (Tabelle, horizontal scrollbar)`} tabindex="0">
+    <table><caption class="sr-only">{label}</caption><thead><tr><th scope="col">{rowHeader}</th>{columns.map((column,i) => <th scope="col" class:list={{us:i===0}}>{column}</th>)}</tr></thead>
       <tbody>{rows.map(row => <tr><th scope="row">{row.label}</th>{row.values.map((value,i) => <td class:list={{us:i===0}}>{row.cells ? <><span class:list={['m',row.cells[i].tone]}>{row.cells[i].label}</span>{row.cells[i].text && <> {row.cells[i].text}</>}</> : value}</td>)}</tr>)}</tbody>
     </table>
   </div>

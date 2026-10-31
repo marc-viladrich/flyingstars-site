@@ -1,14 +1,18 @@
 ---
+// Abschluss mit Handlung, im Prototyp-Look (Karte mit Verlaufskante), z. B. Link in den Show-Konfigurator.
 import type { Section } from '../../content.config';
+import Accent from '../Accent.astro';
 type Props = Extract<Section, { type: 'cta' }> & { index: number };
-const { headline, text, button, index } = Astro.props;
+const { headline, text, button, secondary, index } = Astro.props;
 const id = `s${index}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 ---
 <section class="section" aria-labelledby={id}>
-  <div class="wrap measure">
-    <H id={id}>{headline}</H>
-    {text && <p class="muted">{text}</p>}
-    <p><a class="btn" href={button.href}>{button.label}</a></p>
+  <div class="promise">
+    <div class="promise-copy">
+      <H id={id}><Accent text={headline} /></H>
+      {text && <p>{text}</p>}
+    </div>
+    <div class="actions"><a class="btn primary" href={button.href}>{button.label}</a>{secondary && <a class="btn" href={secondary.href}>{secondary.label}</a>}</div>
   </div>
 </section>

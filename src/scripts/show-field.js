@@ -11,9 +11,30 @@
 // A beat may name fitPts (the points that must stay in view; parts that leave the picture are left out).
 // A sequence of motifs is one scene: beats carry their motif as segment (one scale per motif, optionally split by a
 // named frame). The render loop stops when nothing moves; paused or reduced motion shows the motif at rest.
-import { assign, flightTime, along, ease } from "./show-flight.js";
+//
+// Zwölfte Fassung (30.10.2026):
+// - Virtuelle Show-Uhr: alle Zeiten laufen über `vt`, das nur die Render-Schleife vorrückt (mal Tempofaktor). Pause
+//   friert das exakte Bild ein, statt ein fertiges Motiv zu zeigen; setRate() ändert das Tempo.
+// - Lebendige Wolke (beat.cloud, nur beim automatischen Weiterlaufen): gestaffelter Start je Drohne nach ihrer Stelle
+//   im Lichtlauf, gekrümmte quadratische Bézier-Bahn über einen zufälligen Mittelpunkt (auch in der Tiefe), im Flug
+//   gedimmt mit deterministischem Funkeln; die Form schaltet sich erst beim Ankommen ein.
+// - Grundhelligkeit und Lichtlauf: siehe lift() und runLight() in show-tempo.js.
+//
+// Dreizehnte Fassung (Marc, 30.10.2026):
+// - Teil-Umbau als lebendige Wolke: beat.cloud darf eine Liste von Teilnamen sein. Dann fliegen nur die Drohnen dieser
+//   Teile durch die Wolke, der stehende Rest (Buchdeckel, Vorhang, Hand) fliegt normal und bleibt ruhig.
+// - Der Lichtlauf kommt nur noch dort, wo buildSequence() beat.run gesetzt hat (Linien und Konturen ohne eigenes Licht).
+// - show(…, { cloud: true }) erreicht ein Bild auch auf Klick durch die Wolke (Freischalten eines Motivs am Regler).
+//
+// Vierzehnte Fassung (Marc, 30.10.2026 abends):
+// - Der Rücksprung vom letzten zum ersten Bild läuft immer durch die lebendige Wolke (step()); den Wechsel des Anlasses
+//   schickt der Konfigurator mit show(…, { cloud: true }) ebenfalls hindurch.
+// - Lichtlauf und Staffelung der Wolke folgen den Linien der Form (rankOf() → lightOrder(), show-tempo.js).
+import { assign, flightTime, along, ease, LIMITS } from "./show-flight.js";
+import { TEMPO, lift, runLight, rankOf, hilbertOrder } from "./show-tempo.js";
 
 const MAX = 1000;
+const TILT = 0.14, TILT_C = Math.cos(TILT), TILT_S = Math.sin(TILT); // Kippung der Bühne (render), auch für die Wolkenbahnen
 const hash = (x) => { const s = Math.sin(x * 12.9898 + 78.233) * 43758.5453; return s - Math.floor(s); };
 /** Outside place of drone i (display units): where drones join from and leave to, dark when idle. */
 const outside = (i, out) => {
@@ -21,20 +42,27 @@ const outside = (i, out) => {
   out[0] = Math.cos(a) * r * 1.1; out[1] = Math.sin(a) * r * 0.75; out[2] = (hash(i + 0.25) - 0.5) * 0.8; return out;
 };
 
-export function createField(canvas, { onBeat } = {}) {
+export function createField(canvas, { onBeat, onTick } = {}) {
   const ctx = canvas.getContext("2d");
   const reduceQuery = matchMedia("(prefers-reduced-motion: reduce)");
   const pos = new Float64Array(MAX * 3), col = new Float32Array(MAX * 3), alpha = new Float32Array(MAX), vel = new Float64Array(MAX * 3);
   const from = new Float64Array(MAX * 3), fromCol = new Float32Array(MAX * 3), fromAlpha = new Float32Array(MAX), fromVel = new Float64Array(MAX * 3);
   const delay = new Float32Array(MAX), prev = new Float64Array(MAX * 3), flowOf = new Float32Array(MAX);
   const groupOf = new Array(MAX).fill(""), localOf = new Int32Array(MAX);
+  const mid = new Float64Array(MAX * 3), rankNow = new Float32Array(MAX); // Wolke: Mittelpunkt der Bahn, Stelle im Lichtlauf
+  const inCloud = new Uint8Array(MAX); // diese Drohne fliegt im laufenden Übergang durch die lebendige Wolke
   const spot = [0, 0, 0], out = [0, 0, 0], live = [0, 0, 0, 1], rest = [0, 0, 0, 1];
   for (let i = 0; i < MAX; i++) { outside(i, spot); pos.set(spot, i * 3); col.set([246, 241, 232], i * 3); }
   let W = 0, H = 0, DPR = 1, frame = 0, visible = true, lastT = 0;
   let scene = null, beat = 0, beatAt = 0, flight = 0, spread = 0, order = null, active = 0, leaveEnd = 0, size = 1, fitK = 1, fitX = 0, fitY = 0;
   const glow = new Map();
   const held = () => reduceQuery.matches || document.documentElement.classList.contains("motion-paused") || document.hidden;
-  const now = () => performance.now() / 1000;
+  // Show-Uhr: vt rückt nur in der Render-Schleife vor, um die echte Zeit seit dem letzten Bild mal rate (höchstens
+  // 0,1 s je Bild, damit ein ruckelndes Gerät die Show verlangsamt statt springen lässt)
+  let droneCount = 300; // Drohnenzahl der Show (Größe der Lichter)
+  let vt = 0, lastReal = 0, rate = 1, userPaused = false, cloud = false, settled = 0, flightN = 0, flightC = 0;
+  const now = () => vt;
+  const still = () => held() || userPaused;
 
   function resize() {
     DPR = Math.min(1.5, devicePixelRatio || 1);
@@ -42,16 +70,40 @@ export function createField(canvas, { onBeat } = {}) {
     canvas.width = Math.round(W * DPR); canvas.height = Math.round(H * DPR);
     render();
   }
-  function sprite(r, g, b) {
-    const key = ((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3);
-    if (!glow.has(key)) {
-      const s = document.createElement("canvas"), R = 24; s.width = s.height = R * 2;
-      const c = s.getContext("2d"), gr = c.createRadialGradient(R, R, 0, R, R, R);
-      gr.addColorStop(0, `rgba(${r},${g},${b},0.35)`); gr.addColorStop(1, `rgba(${r},${g},${b},0)`);
-      c.fillStyle = gr; c.fillRect(0, 0, R * 2, R * 2); glow.set(key, s);
+  // Lichtpunkte wie in der Designsprache-Probe (fünfzehnte Fassung, Marc: „weniger hochwertig als die Probe-Seite“;
+  // Swarm.draw()/sprite() in src/scripts/poc/swarm.js): ein vorgerendertes Sprite je Farbe und Größe, klarer Kern (voll
+  // bis 0,8 r, aufgehellt), schmaler Übergang auf einen schwachen Hof (0,24 bei 1,15 r, aus bei 3,4 r). Licht über 1
+  // (Lichtlauf, Funkeln) legt ein zweites Sprite darüber: weißer Kern, weiterer Schein in der Drohnenfarbe. Vorher war
+  // jede Drohne ein voller Kreis von etwa 3 px plus ein Hof von 10 px mit 35 % Deckkraft: groß, weich, verschwommen.
+  function sprite(r, g, b, rad, hot, halo = 3.4) {
+    const key = `${r >> 3},${g >> 3},${b >> 3},${rad},${hot ? 1 : 0},${halo}`;
+    let s = glow.get(key); if (s) return s;
+    const R = Math.ceil(rad * (hot ? halo * 1.47 : halo)), c = document.createElement("canvas");
+    c.width = c.height = R * 2;
+    const x = c.getContext("2d"), up = (v) => Math.min(255, v + 70), gr = x.createRadialGradient(R, R, 0, R, R, R);
+    if (hot) { gr.addColorStop(0, "rgba(255,255,255,0.95)"); gr.addColorStop(rad / R, `rgba(${up(r)},${up(g)},${up(b)},0.55)`); gr.addColorStop(1, `rgba(${r},${g},${b},0)`); }
+    else {
+      const core = `rgb(${up(r)},${up(g)},${up(b)})`;
+      gr.addColorStop(0, core); gr.addColorStop((rad * 0.8) / R, core);
+      gr.addColorStop((rad * 1.15) / R, `rgba(${r},${g},${b},0.24)`); gr.addColorStop(1, `rgba(${r},${g},${b},0)`);
     }
-    return glow.get(key);
+    x.fillStyle = gr; x.fillRect(0, 0, R * 2, R * 2);
+    s = { c, R };
+    if (glow.size > 4000) glow.clear();
+    glow.set(key, s);
+    return s;
   }
+  /** Radius eines Lichts in Gerätepixeln: wie in der Probe 2,1 px bis 300 Drohnen (bis dahin wächst das Bild mit der
+   * Drohnenzahl, der Abstand bleibt gleich), darüber kleiner, weil das Bild dichter wird (bei 600 etwa 1,6 px wie in
+   * Studie 1). Kleine Bilder (Handy) bekommen kleinere Lichter, sonst laufen die Höfe dichter Formationen zu Flecken
+   * zusammen: gemessen am Bildmaßstab S (CSS-Pixel), voll ab S = 250 (Desktop-Bühnen liegen bei 300–500). */
+  function dotRadius(n, S) {
+    const dense = Math.min(1, Math.max(0.76, Math.sqrt(300 / Math.max(1, n)))), fitStage = Math.min(1, Math.max(0.45, S / 250));
+    return Math.max(1, Math.round(2.1 * dense * fitStage * DPR * 4) / 4);
+  }
+  /** Reichweite des Hofs in Kernradien: 3,4 wie in der Probe; auf kleinen Bildern kürzer (bis 2), weil die Lichter dort
+   * so dicht stehen, dass sich die Höfe sonst zu einer Fläche addieren. */
+  const haloOf = (S) => Math.round(Math.min(3.4, Math.max(2, 3.4 * (S / 250))) * 5) / 5;
 
   /** One scale per motif (beats with the same segment, optionally split by a named frame), so a story keeps its
    * proportions and every motif of a sequence fills the stage. */
@@ -77,18 +129,30 @@ export function createField(canvas, { onBeat } = {}) {
     let x = p[0], y = p[1], z = p[2] || 0, a = 1;
     if (b.live) { live[0] = x; live[1] = y; live[2] = z; live[3] = 1; b.live(p, j, t - beatAt - flight - spread, live); x = live[0]; y = live[1]; z = live[2]; a = live[3]; }
     rest[0] = (x - fitX) * fitK * size; rest[1] = (y - fitY) * fitK * size; rest[2] = z * fitK * size;
-    // shimmer: a soft band of light travels diagonally across the picture
-    if (b.shimmer) { const c = -1.6 + 3.2 * (((t / 3.6) % 1) + 1) % 1, d = rest[0] + rest[1] * 0.45 - c; a *= 1 + 0.45 * Math.exp(-((d / 0.24) ** 2)); }
+    // volle Grundhelligkeit, Effekte nur obendrauf; der Lichtlauf läuft entlang der Form (ersetzt den diagonalen Schimmer)
+    a = lift(a);
+    if (b.run === true && a >= 1) a += runLight(rankOf(b)[j], t - beatAt - flight - spread, b.runLight); // b.runLight: eigener Lauf (Logo)
     rest[3] = a;
     return rest;
   }
 
-  /** Assigns the drones of the new beat to its places, keeping every drone in its group where the group continues. */
-  function assignPlaces(b, n, target) {
+  /** Assigns the drones of the new beat to its places, keeping every drone in its group where the group continues.
+   * loose: true = the whole picture is reached through the living cloud; a Set of part names = only these parts are
+   * (their drones are matched in Hilbert order, the parts that stay keep their drones as before). */
+  function assignPlaces(b, n, target, loose = false) {
     order = new Int32Array(n).fill(-1);
     const taken = new Uint8Array(n);
+    const partial = loose instanceof Set ? loose : null;
     let start = 0;
-    for (const g of groupsOf(b)) {
+    if (loose === true) {
+      // lebendige Wolke: die Bahnen sind ohnehin gekrümmt und gestaffelt, Kreuzungen fallen nicht auf. Statt der optimalen
+      // Zuordnung (O(n³), bei 600 Drohnen ein spürbarer Hänger) verbindet die Hilbert-Reihenfolge der jetzigen Positionen
+      // die Plätze in Lichtlauf-Reihenfolge (O(n log n)); benachbarte Drohnen landen weiterhin benachbart.
+      const drones = hilbertOrder(n, (i) => pos[i * 3], (i) => pos[i * 3 + 1]), slots = hilbertOrder(n, (j) => target[j * 3], (j) => target[j * 3 + 1]);
+      drones.forEach((i, r) => { order[i] = slots[r]; taken[slots[r]] = 1; });
+    }
+    if (loose !== true) for (const g of groupsOf(b)) {
+      if (partial?.has(g.name)) { start += g.count; continue; } // rebuilt through the cloud: its drones are free
       const drones = [];
       for (let i = 0; i < n; i++) if (groupOf[i] === g.name && order[i] < 0) drones.push(i);
       const sameShape = g.rigid && drones.length === g.count && drones.every((i) => localOf[i] < g.count) && new Set(drones.map((i) => localOf[i])).size === g.count;
@@ -102,10 +166,25 @@ export function createField(canvas, { onBeat } = {}) {
       start += g.count;
     }
     // everything else: drones whose part ended, drones joining, places of parts that begin
-    const freeDrones = [], freeSlots = [];
+    let freeDrones = [], freeSlots = [];
     for (let i = 0; i < n; i++) { if (order[i] < 0) freeDrones.push(i); if (!taken[i]) freeSlots.push(i); }
+    const pick = (list, src) => Float64Array.from(list.flatMap((k) => [src[k * 3], src[k * 3 + 1], src[k * 3 + 2]]));
+    if (partial && freeDrones.length) {
+      // places of the parts that stay first (optimal, few), the rest of the free drones flies to the rebuilt parts
+      const owner = [];
+      for (const g of groupsOf(b)) for (let k = 0; k < g.count; k++) owner.push(g.name);
+      const cloudSlots = freeSlots.filter((j) => partial.has(owner[j])), otherSlots = freeSlots.filter((j) => !partial.has(owner[j]));
+      let rest = freeDrones;
+      if (otherSlots.length) {
+        const m = assign(pick(otherSlots, target), pick(freeDrones, pos)), used = new Set();
+        otherSlots.forEach((s, r) => { order[freeDrones[m[r]]] = s; used.add(freeDrones[m[r]]); });
+        rest = freeDrones.filter((i) => !used.has(i));
+      }
+      const drones = hilbertOrder(rest.length, (r) => pos[rest[r] * 3], (r) => pos[rest[r] * 3 + 1]), slots = hilbertOrder(cloudSlots.length, (r) => target[cloudSlots[r] * 3], (r) => target[cloudSlots[r] * 3 + 1]);
+      drones.forEach((r, q) => { order[rest[r]] = cloudSlots[slots[q]]; });
+      freeDrones = [];
+    }
     if (freeDrones.length) {
-      const pick = (list, src) => Float64Array.from(list.flatMap((k) => [src[k * 3], src[k * 3 + 1], src[k * 3 + 2]]));
       const m = assign(pick(freeDrones, pos), pick(freeSlots, target));
       freeDrones.forEach((i, r) => { order[i] = freeSlots[m[r]]; });
     }
@@ -116,10 +195,12 @@ export function createField(canvas, { onBeat } = {}) {
     for (let i = 0; i < n; i++) { const g = owner[order[i]]; groupOf[i] = g.name; localOf[i] = local[order[i]]; flowOf[i] = g.rigid ? 0 : 1; }
   }
 
-  function startBeat(k, t) {
+  /** auto: the show moves on by itself (slower flights, the living cloud where the beat asks for it); otherwise a
+   * visitor's click, which answers quickly. viaCloud: reach this beat through the living cloud also on a click. */
+  function startBeat(k, t, auto = false, viaCloud = false) {
     // bring every drone to where it is now: time may have passed since the last frame (slow device, async build)
     if (lastT && t > lastT) { for (let q = 0; q < MAX * 3; q++) pos[q] += vel[q] * (t - lastT); lastT = t; }
-    beat = k; beatAt = t;
+    beat = k; beatAt = t; settled = 0;
     const b = scene.beats[k], n = b.pts.length, target = new Float64Array(n * 3);
     useFit(b);
     for (let j = 0; j < n; j++) { const p = b.pts[j]; target[j * 3] = (p[0] - fitX) * fitK * size; target[j * 3 + 1] = (p[1] - fitY) * fitK * size; target[j * 3 + 2] = (p[2] || 0) * fitK * size; }
@@ -128,12 +209,19 @@ export function createField(canvas, { onBeat } = {}) {
     leaveEnd = n;
     for (let i = n; i < MAX; i++) if (alpha[i] > 0.01) leaveEnd = i + 1;
     active = n;
-    assignPlaces(b, n, target);
+    // lebendige Wolke: das ganze Bild (cloud: true) oder nur die genannten Teile (cloud: ["star"], Teil-Umbau)
+    const want = !held() && !userPaused && (viaCloud ? true : auto ? b.cloud : null);
+    const parts = Array.isArray(want) ? new Set(want) : null;
+    cloud = Boolean(want);
+    assignPlaces(b, n, target, parts ?? cloud);
+    inCloud.fill(0);
+    if (cloud) for (let i = 0; i < n; i++) inCloud[i] = parts ? (parts.has(groupOf[i]) ? 1 : 0) : 1;
     from.set(pos); fromCol.set(col); fromAlpha.set(alpha); fromVel.set(vel);
-    // flight time from the longest path, the starts staggered for drones that do not belong to a rigid part
-    const ordered = new Float64Array(n * 3);
-    for (let i = 0; i < n; i++) { const j = order[i]; ordered[i * 3] = target[j * 3]; ordered[i * 3 + 1] = target[j * 3 + 1]; ordered[i * 3 + 2] = target[j * 3 + 2]; }
-    let longest = flightTime(from.subarray(0, n * 3), ordered, Int32Array.from({ length: n }, (_, i) => i));
+    // flight time from the longest path of the drones that fly normally, the starts staggered for drones that do not
+    // belong to a rigid part
+    const ordered = new Float64Array(n * 3), plain = [];
+    for (let i = 0; i < n; i++) { const j = order[i]; ordered[i * 3] = target[j * 3]; ordered[i * 3 + 1] = target[j * 3 + 1]; ordered[i * 3 + 2] = target[j * 3 + 2]; if (!inCloud[i]) plain.push(i); }
+    let longest = plain.length ? flightTime(Float64Array.from(plain.flatMap((i) => [from[i * 3], from[i * 3 + 1], from[i * 3 + 2]])), Float64Array.from(plain.flatMap((i) => [ordered[i * 3], ordered[i * 3 + 1], ordered[i * 3 + 2]])), Int32Array.from(plain, (_, r) => r), ...(auto ? [TEMPO.flight.min, TEMPO.flight.max] : [])) : 0;
     let back = 0;
     for (let i = n; i < leaveEnd; i++) { outside(i, spot); back = Math.max(back, Math.hypot(from[i * 3] - spot[0], from[i * 3 + 1] - spot[1], from[i * 3 + 2] - spot[2])); }
     if (back) longest = Math.max(longest, flightTime(Float64Array.of(0, 0, 0), Float64Array.of(back, 0, 0), [0]));
@@ -142,13 +230,49 @@ export function createField(canvas, { onBeat } = {}) {
     // the flight lasts long enough to shed it gently
     let carried = 0;
     for (let i = 0; i < leaveEnd; i++) carried = Math.max(carried, Math.hypot(vel[i * 3], vel[i * 3 + 1], vel[i * 3 + 2]));
-    flight = held() ? 0 : Math.max(longest, b.minFlight || 0, 1.1 * carried);
-    spread = held() ? 0 : Math.min(0.5, flight * 0.25);
-    // staggered starts only for drones that really travel; a drone that stays put has nothing to wait for
-    for (let i = 0; i < leaveEnd; i++) { const j = order[i] ?? 0, d = i < n ? Math.hypot(from[i * 3] - target[j * 3], from[i * 3 + 1] - target[j * 3 + 1], from[i * 3 + 2] - target[j * 3 + 2]) : 0; delay[i] = flowOf[i] && i < n ? hash(i * 1.37 + k * 7.1) * spread * Math.min(1, d / 0.3) : 0; }
-    canvas.dataset.points = String(n); canvas.dataset.beat = String(k);
+    flightN = still() ? 0 : Math.max(longest, b.minFlight || 0, plain.length || leaveEnd > n ? 1.1 * carried : 0);
+    const spreadN = still() ? 0 : Math.min(0.5, flightN * 0.25);
+    flight = flightN; spread = spreadN; flightC = 0;
+    if (cloud) {
+      // lebendige Wolke: jede Drohne fliegt über einen eigenen, zufälligen Mittelpunkt; ihr Flugfenster ist so lang,
+      // dass die Bézier-Bahn die Geschwindigkeits- und Beschleunigungsgrenzen einhält (Spitze 1,875·D/W bzw. 5,77·D/W²
+      // mit D = doppelter längerer Schenkel), mindestens aber 60 % der Wolkendauer
+      const rank = rankOf(b), m = [0, 0, 0];
+      let need = 0;
+      for (let i = 0; i < n; i++) {
+        if (!inCloud[i]) continue;
+        const q = i * 3, j = order[i] * 3;
+        let ox = (hash(i * 3.17 + k * 1.3) - 0.5) * 0.9 * size, oy = (hash(i * 5.71 + k * 2.9) - 0.5) * 0.7 * size;
+        const oz = (hash(i * 7.33 + k * 0.7) - 0.5) * 0.6 * size;
+        // keine Finte (vierzehnte Fassung, Marc: „überall raus“): Der Versatz des Bahn-Mittelpunkts entlang der
+        // Flugrichtung, so wie man sie auf der Bühne sieht (x, gekipptes y), bleibt innerhalb der Strecke. Eine quadratische
+        // Bézier-Bahn läuft dann in Flugrichtung stetig vorwärts; quer bleibt der Versatz frei, die Bahn bleibt gekrümmt.
+        const sx = target[j] - from[q], sy = (target[j + 1] - from[q + 1]) * TILT_C - (target[j + 2] - from[q + 2]) * TILT_S, L = Math.hypot(sx, sy);
+        if (L > 1e-6) {
+          const ux = sx / L, uy = sy / L, a = ox * ux + (oy * TILT_C - oz * TILT_S) * uy, lim = L * 0.45;
+          const d = Math.max(-lim, Math.min(lim, a)) - a;
+          ox += d * ux; oy += (d * uy) / TILT_C;
+        }
+        m[0] = (from[q] + target[j]) / 2 + ox;
+        m[1] = (from[q + 1] + target[j + 1]) / 2 + oy;
+        m[2] = (from[q + 2] + target[j + 2]) / 2 + oz;
+        mid.set(m, q); rankNow[i] = rank[order[i]];
+        const D = 2 * Math.max(Math.hypot(m[0] - from[q], m[1] - from[q + 1], m[2] - from[q + 2]), Math.hypot(target[j] - m[0], target[j + 1] - m[1], target[j + 2] - m[2]));
+        need = Math.max(need, (1.875 * D) / LIMITS.speed, Math.sqrt((5.7735 * D) / LIMITS.accel));
+      }
+      flightC = Math.max(TEMPO.cloud, need / TEMPO.cloudWindow, 1.1 * carried / TEMPO.cloudWindow);
+      flight = Math.max(flightC, flightN + spreadN); spread = 0;
+    }
+    // Wolke: Start nach der Stelle im Lichtlauf, die Form baut sich in ihrer eigenen Reihenfolge auf; sonst gestaffelte
+    // Starts nur für Drohnen, die wirklich reisen (eine Drohne, die bleibt, hat auf nichts zu warten)
+    for (let i = 0; i < leaveEnd; i++) {
+      if (i < n && inCloud[i]) { delay[i] = (rankNow[i] * 0.25 + hash(i * 2.13 + k) * 0.15) * flightC; continue; }
+      const j = order[i] ?? 0, d = i < n ? Math.hypot(from[i * 3] - target[j * 3], from[i * 3 + 1] - target[j * 3 + 1], from[i * 3 + 2] - target[j * 3 + 2]) : 0;
+      delay[i] = flowOf[i] && i < n ? hash(i * 1.37 + k * 7.1) * spreadN * Math.min(1, d / 0.3) : 0;
+    }
+    canvas.dataset.points = String(n); canvas.dataset.beat = String(k); canvas.dataset.cloud = cloud ? (parts ? "part" : "all") : "";
     onBeat?.(k, b, scene.beats.length);
-    if (held()) settle(t, k);
+    if (still()) settle(t, k);
   }
 
   /** Shows beat k formed and at rest (paused, reduced motion, first view). */
@@ -159,40 +283,56 @@ export function createField(canvas, { onBeat } = {}) {
     order = Int32Array.from({ length: n }, (_, i) => i); active = n;
     let start = 0;
     for (const g of groupsOf(b)) { for (let q = 0; q < g.count; q++) { groupOf[start + q] = g.name; localOf[start + q] = q; flowOf[start + q] = g.rigid ? 0 : 1; } start += g.count; }
-    flight = 0; spread = 0; beatAt = t - 2.5; // live motion shown at a calm, fully formed moment
+    // live motion shown at a calm, fully formed moment; the picture still stands its full hold from now on
+    flight = 0; spread = 0; flightN = 0; flightC = 0; cloud = false; inCloud.fill(0); beatAt = t - 2.5; settled = 2.5;
     for (let i = 0; i < n; i++) { const r = restAt(i, t); pos[i * 3] = r[0]; pos[i * 3 + 1] = r[1]; pos[i * 3 + 2] = r[2]; alpha[i] = r[3]; col.set(b.pts[i].slice(3, 6), i * 3); }
     for (let i = n; i < MAX; i++) { outside(i, spot); pos.set(spot, i * 3); alpha[i] = 0; }
     vel.fill(0); leaveEnd = n;
-    canvas.dataset.beat = String(k); canvas.dataset.points = String(n); onBeat?.(k, b, scene.beats.length);
+    canvas.dataset.beat = String(k); canvas.dataset.points = String(n); canvas.dataset.cloud = ""; onBeat?.(k, b, scene.beats.length);
   }
 
   /** Shows a scene at a size factor (1 = fills the stage), starting at beat at; instant: already formed (first view
    * of the page). Paused or reduced motion shows the motif of that beat at rest. */
-  function show(next, droneCount, sizeFactor = 1, { instant = false, at = 0 } = {}) {
-    scene = next; size = sizeFactor; fit(scene.beats);
+  function show(next, droneCountOf, sizeFactor = 1, { instant = false, at = 0, cloud: viaCloud = false } = {}) {
+    scene = next; size = sizeFactor; droneCount = droneCountOf || 300; fit(scene.beats);
     groupOf.fill(""); // a new scene: every drone is free to take any place
     const k = Math.max(0, Math.min(scene.beats.length - 1, at));
-    if (instant || held()) settle(now(), motifEnd(k)); else startBeat(k, now());
+    if (instant || still()) settle(now(), motifEnd(k)); else startBeat(k, now(), false, viaCloud);
     render(); sync();
   }
   /** Jumps to act k of the current scene (back/forward buttons). */
   function goto(k) {
     if (!scene) return;
     const target = Math.max(0, Math.min(scene.beats.length - 1, k));
-    if (held()) { settle(now(), target); render(); } else { startBeat(target, now()); sync(); }
+    if (still()) { settle(now(), target); render(); tick(); } else { startBeat(target, now()); sync(); }
   }
 
   /** Advances the simulation; returns whether anything still moves. */
   function step(t) {
     prev.set(pos);
     const b = scene.beats[beat], elapsed = t - beatAt;
+    const W = flightC * TEMPO.cloudWindow;
     for (let i = 0; i < active; i++) {
       const r = restAt(i, t), k = i * 3, c = b.pts[order[i]];
-      const u = flight ? Math.min(1, Math.max(0, (elapsed - delay[i]) / flight)) : 1;
+      if (inCloud[i] && elapsed - delay[i] < W) {
+        const q = Math.max(0, (elapsed - delay[i]) / W), e = ease(q), span = delay[i] + W, w = Math.min(1, elapsed / span), carry = span * (w - 2 * w * w + w * w * w);
+        const A = (1 - e) * (1 - e), B = 2 * (1 - e) * e, C = e * e;
+        for (let d = 0; d < 3; d++) pos[k + d] = A * from[k + d] + B * mid[k + d] + C * r[d] + fromVel[k + d] * carry;
+        const f = Math.min(1, q * 1.4);
+        for (let d = 0; d < 3; d++) col[k + d] = fromCol[k + d] + (c[3 + d] - fromCol[k + d]) * f;
+        // wartend: das alte Bild verlischt; im Flug gedimmt, einzelne Drohnen blitzen auf; kurz vor der Ankunft an.
+        // Das Verlöschen läuft auch nach dem Start einer Drohne weiter (kein Helligkeitssprung, wenn sie losfliegt).
+        const fading = fromAlpha[i] > 0.05 ? fromAlpha[i] * Math.max(0, 1 - (elapsed / flightC) * 3) : 0;
+        if (q <= 0) alpha[i] = fromAlpha[i] > 0.05 ? Math.max(TEMPO.cloudDim, fading) : fromAlpha[i];
+        else if (q < 0.88) alpha[i] = Math.max(fading, hash(i * 0.731 + Math.floor(t * 7 + hash(i) * 7) * 1.917) < TEMPO.cloudTwinkle ? TEMPO.cloudSpark : TEMPO.cloudDim);
+        else alpha[i] = TEMPO.cloudDim + (r[3] - TEMPO.cloudDim) * ((q - 0.88) / 0.12);
+        continue;
+      }
+      const u = flightN && !inCloud[i] ? Math.min(1, Math.max(0, (elapsed - delay[i]) / flightN)) : 1;
       if (u < 1) {
         // a flight continues the drone's current velocity from the moment the beat starts, also while it waits for
         // its staggered start (Hermite term over its whole window, gone at arrival)
-        const span = flight + delay[i], w = Math.min(1, elapsed / span), carry = span * (w - 2 * w * w + w * w * w), e = ease(u), arc = Math.sin(Math.PI * u) ** 2;
+        const span = flightN + delay[i], w = Math.min(1, elapsed / span), carry = span * (w - 2 * w * w + w * w * w), e = ease(u), arc = Math.sin(Math.PI * u) ** 2;
         let fx = from[k], fy = from[k + 1];
         if (b.swirl) { const a0 = -b.swirl; fx = from[k] * Math.cos(a0) - from[k + 1] * Math.sin(a0); fy = from[k] * Math.sin(a0) + from[k + 1] * Math.cos(a0); }
         along(fx, fy, from[k + 2], r[0], r[1], r[2], u, t, out, flowOf[i]);
@@ -215,9 +355,10 @@ export function createField(canvas, { onBeat } = {}) {
     if (arrived) leaveEnd = active;
     const dt = lastT ? t - lastT : 0; lastT = t;
     if (dt > 0) for (let k = 0; k < MAX * 3; k++) vel[k] = (pos[k] - prev[k]) / dt;
-    if (arrived && elapsed - flight - spread >= (b.hold ?? 2.2)) {
-      if (beat < scene.beats.length - 1) startBeat(beat + 1, t);
-      else if (scene.loopTo !== undefined) startBeat(scene.loopTo, t);
+    if (arrived && elapsed - flight - spread - settled >= (b.hold ?? 2.2)) {
+      if (beat < scene.beats.length - 1) startBeat(beat + 1, t, true);
+      // vierzehnte Fassung (Marc): vom letzten Bild zurück zum ersten immer durch die lebendige Wolke, in jedem Paket
+      else if (scene.loopTo !== undefined) startBeat(scene.loopTo, t, true, true);
     }
     return !arrived || beat < scene.beats.length - 1 || scene.loopTo !== undefined || Boolean(b.live) || Boolean(b.shimmer);
   }
@@ -225,7 +366,7 @@ export function createField(canvas, { onBeat } = {}) {
   function render() {
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (!scene) return;
-    const tilt = 0.14, ct = Math.cos(tilt), st = Math.sin(tilt), narrow = W < 600;
+    const ct = TILT_C, st = TILT_S, narrow = W < 600;
     const S = Math.min(W * 0.36, H * (narrow ? 0.38 : 0.6)) * DPR, ox = W * 0.5 * DPR, oy = H * (narrow ? 0.52 : 0.5) * DPR, list = [];
     for (let i = 0; i < MAX; i++) {
       if (alpha[i] < 0.01) continue;
@@ -236,29 +377,53 @@ export function createField(canvas, { onBeat } = {}) {
       list.push([ox + pos[k] * S * pr, oy - Y * S * pr, Z, pr, alpha[i] * (0.78 + 0.22 * depth), col[k] | 0, col[k + 1] | 0, col[k + 2] | 0]);
     }
     canvas.dataset.lit = String(list.length); // drones lit right now, read by the tests
-    list.sort((a, b) => a[2] - b[2]);
-    const core = Math.max(1.2 * DPR, S * 0.0085);
+    // alle Lichter additiv wie in der Probe (die Reihenfolge spielt dabei keine Rolle); Tiefe macht ein Licht etwas
+    // größer bzw. kleiner (Perspektive), Licht über 1 legt das helle Sprite darüber
+    const rad = dotRadius(droneCount, S / DPR), halo = haloOf(S / DPR);
     ctx.globalCompositeOperation = "lighter";
-    // light above 1 (shimmer, sparkle) makes a drone brighter: larger glow, whiter core
-    for (const [px, py, , pr, a, r, g, b] of list) { const R = core * pr * 3.2 * (1 + Math.max(0, a - 1) * 0.8); ctx.globalAlpha = Math.min(1, a); ctx.drawImage(sprite(r, g, b), px - R, py - R, R * 2, R * 2); }
+    for (const [px, py, , pr, a, r, g, b] of list) {
+      const sp = sprite(r, g, b, rad, false, halo), R = sp.R * pr;
+      ctx.globalAlpha = Math.min(1, a); ctx.drawImage(sp.c, px - R, py - R, R * 2, R * 2);
+      if (a > 1.02) { const hot = sprite(r, g, b, rad, true, halo), Q = hot.R * pr; ctx.globalAlpha = Math.min(1, a - 1); ctx.drawImage(hot.c, px - Q, py - Q, Q * 2, Q * 2); }
+    }
     ctx.globalCompositeOperation = "source-over"; ctx.globalAlpha = 1;
-    for (const [px, py, , pr, a, r, g, b] of list) { const w = Math.min(1, Math.max(0, a - 1) * 1.6), lift = (c) => Math.min(255, c + 30 + (225 - c) * w) | 0; ctx.fillStyle = `rgba(${lift(r)},${lift(g)},${lift(b)},${Math.min(1, a).toFixed(2)})`; ctx.beginPath(); ctx.arc(px, py, core * pr, 0, 7); ctx.fill(); }
   }
 
   function loop(ms) {
     frame = 0;
-    if (!visible || held() || !scene) return;
-    const t = ms / 1000, busy = step(t);
-    render();
+    if (!visible || still() || !scene) return;
+    const real = ms / 1000;
+    if (lastReal) vt += Math.min(0.1, Math.max(0, real - lastReal)) * rate;
+    lastReal = real;
+    const t = vt, busy = step(t);
+    render(); tick();
     // physics test hook: positions of every drone in the air, in display units
     if (window.__showTrace) window.__showTrace.push([t, Array.from(pos.subarray(0, Math.max(active, leaveEnd) * 3)), beat, active, leaveEnd]);
     if (busy) frame = requestAnimationFrame(loop);
     else canvas.dataset.running = "false"; // nothing moves: no more frames until the next change
   }
   function sync() {
-    if (visible && !held()) { if (!frame && scene) { canvas.dataset.running = "true"; lastT = 0; frame = requestAnimationFrame(loop); } }
-    else { if (frame) cancelAnimationFrame(frame); frame = 0; canvas.dataset.running = "false"; if (scene) { settle(now(), beat); render(); } }
+    if (visible && !still()) { if (!frame && scene) { canvas.dataset.running = "true"; lastReal = 0; frame = requestAnimationFrame(loop); } }
+    else {
+      if (frame) cancelAnimationFrame(frame);
+      frame = 0; canvas.dataset.running = "false";
+      // reduzierte Bewegung, globale Pause, verdeckter Tab: das Motiv in Ruhe; Pause der Vorführ-Steuerung: genau dieses Bild
+      if (scene && held()) settle(now(), beat);
+      if (scene) { render(); tick(); }
+    }
   }
+
+  /** Fortschritt für die Vorführ-Steuerung: Schätzdauer je Bild und wie weit das laufende Bild ist. */
+  const estimates = new WeakMap();
+  function timeline() {
+    if (!scene) return null;
+    if (!estimates.has(scene)) estimates.set(scene, scene.beats.map((b) => (b.cloud ? TEMPO.cloud : 2.4) + (b.hold ?? 2.2)));
+    const b = scene.beats[beat], total = flight + spread + (b.hold ?? 2.2);
+    return { beat, beats: scene.beats, est: estimates.get(scene), frac: total > 0 ? Math.min(1, Math.max(0, (vt - beatAt - settled) / total)) : 1, paused: userPaused, rate };
+  }
+  function tick() { onTick?.(timeline()); }
+  /** Pause der Vorführ-Steuerung: friert das aktuelle Bild ein; weiter läuft es genau von dort. */
+  function setPaused(p) { userPaused = Boolean(p); sync(); tick(); }
 
   new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; sync(); }).observe(canvas);
   if ("ResizeObserver" in window) new ResizeObserver(resize).observe(canvas);
@@ -266,5 +431,5 @@ export function createField(canvas, { onBeat } = {}) {
   document.addEventListener("visibilitychange", sync);
   reduceQuery.addEventListener("change", sync);
   resize();
-  return { show, replay: () => goto(0), goto, beat: () => beat };
+  return { show, replay: () => goto(0), goto, beat: () => beat, setPaused, paused: () => userPaused, setRate: (r) => { rate = r; tick(); }, timeline };
 }

@@ -4,16 +4,24 @@ import '../styles/global.css';
 import { site } from '../site.config';
 import Logo from '../components/Logo.astro';
 import { optimizedImage } from '../lib/media';
+import { getCollection } from 'astro:content';
+import { SHOWS_TOTAL } from '../components/facts';
 interface Props { title: string; description: string; noindex?: boolean; canonicalPath?: string; image?: string; navSection?: string; fullBleed?: boolean; }
 const { title, description, noindex = false, canonicalPath, image, navSection, fullBleed: bleed = false } = Astro.props;
 const canonical = new URL(canonicalPath ?? Astro.url.pathname, Astro.site);
 const current = Astro.url.pathname;
 // Case pages and project details belong to the "Projekte" area of the main navigation.
-const section = navSection ?? (current.startsWith('/projekte/') ? '/projekte/' : undefined);
+// Fallstudien übergeben navSection="/referenzen/" und gehören damit zum Bereich „Referenzen“.
+const section = navSection;
 const navState = (href: string) => current === href ? 'page' : section === href ? 'true' : undefined;
 const social = image ? await optimizedImage(image, 960, undefined, 'jpg') : undefined;
-const fullBleed = bleed || ['/', '/drohnenshow-preise/', '/musikalischer-teaser-bokkenrijders/', '/nfl-berlin-game/', '/exploring-reinvented-der-neue-ford-explorer/', '/puma-bundesliga/'].includes(current) || current.startsWith('/projekte/');
-const eco = await optimizedImage('https://flyingstars.art/wp-content/uploads/2024/10/NATURSTROM-Logo_weiss.png', 160);
+// Vollflächig: Startseite, Preisseite und Fallstudien (diese kommen mit navSection, die Übersicht /referenzen/ nicht)
+const fullBleed = bleed || ['/', '/drohnenshow-preise/'].includes(current) || (navSection === '/referenzen/' && current !== '/referenzen/');
+// Anlass-Seiten (drohnenshow-*) für den Footer, Name aus navLabel bzw. Titel der Seite
+const occasionPages = (await getCollection('pages', (p) => p.id.startsWith('drohnenshow-') && !p.data.noindex))
+  .map((p) => ({ label: p.data.navLabel ?? p.data.title, href: `/${p.id}/` }))
+  .sort((a, b) => a.label.localeCompare(b.label, 'de'));
+const inNav = (href: string) => site.nav.some((item) => item.href === href);
 ---
 <!doctype html>
 <html lang="de">
@@ -33,9 +41,13 @@ const eco = await optimizedImage('https://flyingstars.art/wp-content/uploads/202
     {social && <meta property="og:image:height" content={String(social.height)} />}
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!-- Reveal-Startzustand vor dem ersten Bild: nur mit Bewegung (keine reduzierte Bewegung, keine gespeicherte Pause) -->
+    <script is:inline>(function(){var s=null;try{s=sessionStorage.getItem('flyingstars:motion')}catch(e){}var still=s?s==='paused':matchMedia('(prefers-reduced-motion: reduce)').matches;if(!still&&'IntersectionObserver' in window)document.documentElement.classList.add('reveal')})();</script>
   </head>
   <body>
     <a class="skip" href="#main">Zum Inhalt springen</a>
+    <!-- Logoverlauf für Icon-Konturen (.ico.g, stroke: url(#fs-grad)); nicht display:none, sonst greift der Verweis nicht -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><linearGradient id="fs-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9e29" /><stop offset=".5" stop-color="#db64e8" /><stop offset="1" stop-color="#33edf2" /></linearGradient></defs></svg>
     <div class="nav-sentinel" aria-hidden="true"></div>
     <header class="nav">
       <Logo />
@@ -47,15 +59,15 @@ const eco = await optimizedImage('https://flyingstars.art/wp-content/uploads/202
     </header>
     <dialog class="mobile-menu" id="mobile-menu" aria-label="Hauptnavigation">
       <div class="top"><Logo /><button class="menu-btn menu-close" type="button" data-menu-close aria-label="Menü schließen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg></button></div>
-      <nav aria-label="Mobile Navigation">{site.nav.map((item) => <a href={item.href}>{item.label}</a>)}<a href="/#team">Über uns</a><a href="/blog/">Blog</a><a href="/#anfrage">Show anfragen</a></nav>
+      <nav aria-label="Mobile Navigation">{site.nav.map((item) => <a href={item.href}>{item.label}</a>)}{!inNav('/blog/') && <a href="/blog/">Blog</a>}<a href={site.cta.href}>{site.cta.label}</a></nav>
       <span class="lang">DE · Deutsch</span>
     </dialog>
     <main id="main" class:list={{ 'content-page': !fullBleed }}><slot /></main>
     <footer class="footer">
       <div class="cols">
-        <div class="footer-brand"><Logo /><p>Drohnenshows seit 2022. Über 150 Shows in Deutschland und Europa.</p><div class="eco"><img src={eco.src} width={eco.width} height={eco.height} alt="naturstrom" loading="lazy" /><span>100 % Ökostrom</span></div></div>
+        <div class="footer-brand"><Logo /><p>Drohnenshows seit 2022. {SHOWS_TOTAL} Shows in Deutschland und Europa.</p><p class="eco"><svg class="ico g" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c0-9 6-14 15-14 0 9-5 15-14 15m0-1 7-7" /></svg><span>100 % Ökostrom von naturstrom</span></p></div>
         <div><h2 class="footer-heading">Kontakt</h2><address><span>Besucht uns:<br />Triple Z – Gründungszentrum Zeche Zollverein<br />Katernberger Str. 107, 45327 Essen</span><span>Post:<br />FlyingStars GmbH<br />Bulmker Straße 107, 45888 Gelsenkirchen</span><span><a href="mailto:team@flyingstars.art">team@flyingstars.art</a><br /><a href="tel:+4920988306562">0209 883 065 62</a></span></address></div>
-        <div><h2 class="footer-heading">Seiten</h2><ul>{site.nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}<li><a href="/#team">Über uns</a></li><li><a href="/blog/">Blog</a></li></ul></div>
+        <div><h2 class="footer-heading">Seiten</h2><ul>{site.nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}{!inNav('/blog/') && <li><a href="/blog/">Blog</a></li>}<li><a href={site.cta.href}>{site.cta.label}</a></li></ul>{occasionPages.length > 0 && <><h2 class="footer-heading footer-sub">Anlässe</h2><ul>{occasionPages.map((item) => <li><a href={item.href}>{item.label}</a></li>)}</ul></>}</div>
         <div><h2 class="footer-heading">Folgen</h2><ul><li><a href="https://www.instagram.com/flyingstars.art/" rel="noopener noreferrer" target="_blank">Instagram</a></li><li><a href="https://www.youtube.com/@flyingstars." rel="noopener noreferrer" target="_blank">YouTube</a></li><li><a href="https://www.tiktok.com/@flyingstars_art" rel="noopener noreferrer" target="_blank">TikTok</a></li><li><a href="https://www.facebook.com/FlyingStars.Art/" rel="noopener noreferrer" target="_blank">Facebook</a></li></ul></div>
       </div>
       <div class="base mono"><span>© {new Date().getFullYear()} FlyingStars GmbH</span><nav aria-label="Rechtliches">{site.footer.legal.map((item) => <a href={item.href}>{item.label}</a>)}</nav><span>Website-Vorschau</span></div>

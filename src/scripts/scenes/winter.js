@@ -2,7 +2,7 @@
 // Firework after FlyingStars' own (round 2, Frühlingsnacht 2:10–2:25, S3fuZRsYIvc): stars of straight drone chains,
 // one colour per star, full within a blink, standing for seconds, several overlapping with staggered starts; the
 // drones barely move, the burst is light. Tree after the spiral tree (FSR-018): a conical helix, light climbing it.
-import { TAU, GOLD, PINK, VIOLET, CYAN, ORANGE, GREEN, DIAMOND, mix, paint, frac, smooth, hash, yaw, roll, sparkle, chase, trace, loosen, share, part, act } from "../show-motion.js";
+import { TAU, GOLD, PINK, VIOLET, CYAN, ORANGE, GREEN, DIAMOND, mix, paint, frac, smooth, hash, yaw, roll, sparkle, chase, trace, share, part, act } from "../show-motion.js";
 
 export const builders = {};
 const EMBER = [178, 52, 34]; // a cooling spark: what the tips of a star turn into as it glows out
@@ -181,24 +181,16 @@ builders.tree3d = (n, caption) => {
 };
 
 builders.treeStory = (n, caption) => {
-  // Schnee fällt → die Flocken sammeln sich (sparks in the shape of the tree) → light draws the spiral from the bottom
-  // up → the star on the top lights up → the tree turns, the garland changes colour. Parts: lights (the helix), star.
-  const S = 50, L = n - S, coil = helix(L, TREE), crown = topStar(S, STAR_Y, 0.24, 1), tree = [...coil, ...crown];
-  // snow: columns of drones in depth, light falling along them (like rain in show-scenes.js, but slower and softer)
-  const COLS = 18, perCol = Math.ceil(n / COLS);
-  const snow = Array.from({ length: n }, (_, i) => { const c = i % COLS, k = Math.floor(i / COLS); return [-1.7 + (3.4 * c) / (COLS - 1) + 0.1 * (hash(i * 3.3) - 0.5), -0.95 + (1.95 * (k + 0.5 + 0.6 * (hash(i * 1.7) - 0.5))) / perCol + 0.12 * hash(c), Math.sin(c * 2.1) * 0.5 + 0.15 * (hash(i * 5.1) - 0.5)]; });
-  const flakes = paint(snow, (p, i) => (i % 4 === 0 ? CYAN : DIAMOND));
-  const cloud = paint(loosen(tree, 0.45, 1.12), (p, i) => (i % 4 === 0 ? CYAN : DIAMOND));
+  // Eine Schneeflocke dreht sich → in der lebendigen Wolke wird daraus der Baum, Licht zeichnet die Spirale von unten
+  // nach oben → auf der Spitze geht ein Stern auf → der Baum dreht sich, die Lichterkette wechselt die Farbe. Parts:
+  // lights (the helix), star. Dreizehnte Fassung: der Schneefall und die stehende Flockenwolke sind entfallen, beides
+  // las sich als ruhende Funkelwolke (Marc, 30.10.2026); die Flocke ist ein Motiv, der Übergang die lebendige Wolke.
+  const S = 50, L = n - S, coil = helix(L, TREE), crown = topStar(S, STAR_Y, 0.24, 1);
+  const flakeBeat = builders.snow2d(n).beats[0], flakeLive = flakeBeat.live;
   const bulbs = [GOLD, PINK, CYAN];
   return { beats: [
-    act([part("lights", flakes.slice(0, L)), part("star", flakes.slice(L))], { caption: "Schnee fällt", hold: 3.2, frame: "snow", live: (b, j, t, o) => {
-      const c = j % COLS;
-      o[1] -= 0.12 * smooth(Math.max(0, t) / 4); // the whole snowfall drifts down a little
-      o[0] += 0.025 * Math.sin(t * 0.8 + c * 1.3) * smooth(Math.max(0, t) / 1.5);
-      o[3] = chase(-b[1] + hash(c) * 0.6, t, 0.3, 0.55, 0.5, 1.4) * sparkle(j, t, 0.75, 1.15);
-    } }),
-    act([part("lights", cloud.slice(0, L)), part("star", cloud.slice(L))], { caption: "die Flocken sammeln sich", hold: 1.8, live: (b, j, t, o) => { o[3] = sparkle(j, t, 0.5, 1.35); } }),
-    act([part("lights", paint(coil, garland)), part("star", paint(crown, GOLD))], { caption: "Licht zeichnet den Baum von unten nach oben", hold: 3.4, live: (b, j, t, o) => {
+    act([part("lights", flakeBeat.pts.slice(0, L)), part("star", flakeBeat.pts.slice(L))], { caption: "Eine Schneeflocke", hold: 3, frame: "snow", live: flakeLive }),
+    act([part("lights", paint(coil, garland)), part("star", paint(crown, GOLD))], { caption: "aus ihr wird ein Baum, Licht zeichnet ihn von unten nach oben", hold: 3.4, cloud: true, live: (b, j, t, o) => {
       o[3] = j < L ? trace(j / L, t, 3.0) : 0.15;
     } }),
     act([part("lights", paint(coil, garland)), part("star", paint(crown, GOLD))], { caption: "auf der Spitze geht ein Stern auf", hold: 2.6, live: (b, j, t, o) => {
