@@ -687,3 +687,24 @@ test('Sechzehnte Fassung: gesperrte Motive stehen neben der Spur, ein Klick stel
   await expect(locks).toHaveCount(3);
   expect(errors).toEqual([]);
 });
+
+test('Runde 9: weniger Text; der Hinweis zum Logo steht hinter dem Info-Zeichen (Klick, Fokus, Esc)', async ({ page }, info) => {
+  await page.goto(CFG);
+  const tip = page.locator('#cfg-legal'), button = page.locator('#cfg-info');
+  await expect(tip).toBeHidden();
+  await expect(page.locator('#cfg-meta')).not.toContainText('Drohnen'); // die Zahl steht am Regler
+  await expect(page.locator('#cfg-placeholder')).toHaveText(/^Prototyp: .{0,90}$/); // eine kurze Zeile
+  // per Tastatur: Fokus öffnet, Esc schließt
+  await button.focus();
+  await expect(tip).toBeVisible();
+  await expect(button).toHaveAttribute('aria-expanded', 'true');
+  await page.keyboard.press('Escape');
+  await expect(tip).toBeHidden();
+  await expect(button).toHaveAttribute('aria-expanded', 'false');
+  // per Klick (bzw. Tippen): bleibt offen, bis man woanders hintippt
+  if (info.project.name.startsWith('mobile')) await button.tap(); else await button.click();
+  await expect(tip).toBeVisible();
+  await page.mouse.click(2, 400); // irgendwo anders hin (am Rand, außerhalb des Hinweises)
+  await expect(tip).toBeHidden();
+  await expect(page.locator('#cfg-file')).toHaveAccessibleDescription(/Lade nur Logos hoch/);
+});

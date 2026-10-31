@@ -1,15 +1,16 @@
 import { test, expect, type Page } from '@playwright/test';
 
-// Teaser des Show-Konfigurators für die Startseite, Showreel-Fassung (31.10.2026, Runde 8: reduziertes Wireframe,
-// Schärfe-Effekt am Logo, Bokkenrijders bei 600; ConfiguratorTeaser.astro,
-// src/scripts/show-teaser.js): ein sich selbst abspielender Durchlauf durch die „Greatest Hits“ von SPARK bis ODYSSEY
-// mit einem Beispiel-Logo, daneben ein vor-animiertes Wireframe des Konfigurators, das der Bühne folgt. Keine
-// Formularelemente, nur der Knopf in den Konfigurator. Lädt erst in der Nähe des Viewports, zeichnet außerhalb nicht,
-// steht bei reduzierter Bewegung. TEASER_PATH stellt die Seite ein (Standard: die Prüfseite; Startseite: TEASER_PATH=/).
+// Teaser des Show-Konfigurators (ConfiguratorTeaser.astro, src/scripts/show-teaser.js), Runde 9: ein Showreel, das sich
+// selbst abspielt, in drei Abläufen (Prop `reel`: start, marke, hochzeit). Daneben ein reduziertes Wireframe (Paket,
+// Regler mit „N Drohnen“, acht Euro-Stufen). Das Logo bzw. die Initialen stehen am Anfang und werden mit mehr Drohnen
+// schärfer; die Bühne ist ein Link ohne eigenen Tab-Stopp, der Knopf bleibt der Weg per Tastatur. Keine
+// Formularelemente. Lädt erst in der Nähe des Viewports, zeichnet außerhalb nicht, steht bei reduzierter Bewegung.
+// TEASER_PATH stellt die Seite ein (Standard: die Prüfseite mit allen drei Abläufen; Startseite: TEASER_PATH=/).
 const PAGE = process.env.TEASER_PATH ?? '/poc/konfigurator-teaser/';
-const root = (page: Page) => page.locator('[data-cft-root]');
-const field = (page: Page) => root(page).locator('[data-cft=field]');
-const reach = async (page: Page) => { await root(page).scrollIntoViewIfNeeded(); await expect(root(page)).toHaveAttribute('data-cft-loaded', 'true', { timeout: 20_000 }); };
+const root = (page: Page, sel = '[data-cft-root]') => page.locator(sel).first();
+const field = (page: Page, sel?: string) => root(page, sel).locator('[data-cft=field]');
+const reach = async (page: Page, sel?: string) => { await root(page, sel).scrollIntoViewIfNeeded(); await expect(root(page, sel)).toHaveAttribute('data-cft-loaded', 'true', { timeout: 20_000 }); };
+const on = (page: Page, id: string, sel?: string) => root(page, sel).locator(`[data-cft=pkg][data-id=${id}]`);
 
 test('Der Teaser lädt erst in der Nähe des Viewports', async ({ page }) => {
   await page.goto(PAGE);
@@ -20,41 +21,86 @@ test('Der Teaser lädt erst in der Nähe des Viewports', async ({ page }) => {
   await reach(page);
 });
 
-test('Das Mockup ist Dekoration: keine Formularelemente, nur der Knopf in den Konfigurator, die Bühne hat eine Textalternative', async ({ page }) => {
+test('Das Mockup ist Dekoration: keine Formularelemente, nur der Knopf als Tab-Stopp, die Bühne als Link ohne eigenen Tab-Stopp', async ({ page }) => {
   await page.goto(PAGE);
-  await expect(root(page).locator('input, button, select, textarea, [tabindex]')).toHaveCount(0);
-  await expect(root(page).locator('a')).toHaveCount(1);
-  await expect(root(page).locator('a')).toHaveAttribute('href', '/drohnenshow-preise/#konfigurator');
-  await expect(root(page).locator('a')).toHaveText('Show selbst zusammenstellen');
-  await expect(root(page).locator('.cft-mock')).toHaveAttribute('aria-hidden', 'true');
-  await expect(root(page).locator('.cft-stage')).toHaveAttribute('aria-label', /Drohnenshow/);
+  const r = root(page);
+  await expect(r.locator('input, button, select, textarea')).toHaveCount(0);
+  await expect(r.locator('.cft-pill')).toHaveCount(0); // Runde 9: Anlass-Pills ersatzlos raus
+  await expect(r.locator('.cft-label')).toHaveText('Paket');
+  await expect(r.locator('[data-cft=euro]')).toHaveCount(8);
+  await expect(r.locator('.cft-count')).toContainText('Drohnen');
+  await expect(r.locator('a:not([tabindex="-1"])')).toHaveCount(1);
+  await expect(r.locator('a.cft-cta')).toHaveText('Show selbst zusammenstellen');
+  await expect(r.locator('a.cft-cta')).toHaveAttribute('href', '/drohnenshow-preise/#konfigurator');
+  await expect(r.locator('a.cft-hit')).toHaveAttribute('href', '/drohnenshow-preise/#konfigurator');
+  await expect(r.locator('a.cft-hit')).toHaveAttribute('aria-hidden', 'true');
+  await expect(r.locator('.cft-mock')).toHaveAttribute('aria-hidden', 'true');
+  await expect(r.locator('[role=img]')).toHaveAttribute('aria-label', /Drohnenshow/);
 });
 
-test('Das Showreel läuft von selbst durch SPARK, HORIZON und ODYSSEY, das Logo wird mit mehr Drohnen schärfer, dann von vorn', async ({ page }) => {
+test('Start: erst das Logo mit wachsender Drohnenzahl, dann der Kolibri über die drei Pakete; jede Drohnenzahl hat ihre Euro-Stufe', async ({ page }) => {
   test.setTimeout(90_000);
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto(PAGE);
   await reach(page);
-  const on = (id: string) => root(page).locator(`[data-cft=pkg][data-id=${id}]`), count = root(page).locator('[data-cft=count]');
-  const euros = () => root(page).locator('[data-cft=euro].is-on').count();
-  await expect(on('SPARK')).toHaveClass(/is-on/);
-  await expect(root(page).locator('.cft-count')).toContainText('Drohnen');
-  expect(await euros()).toBe(1);
-  await expect(on('HORIZON')).toHaveClass(/is-on/, { timeout: 15_000 });
-  await expect(on('ODYSSEY')).toHaveClass(/is-on/, { timeout: 20_000 });
-  await expect(count).toHaveText('600', { timeout: 20_000 }); // die Bokkenrijders-Maske
-  expect(await euros()).toBe(6);
-  // das Logo: der Regler fährt von 100 bis 600, die Schrift „Euer Logo …“ steht dabei
-  await expect(root(page).locator('[data-cft=logo]')).toHaveClass(/is-on/, { timeout: 15_000 });
-  await expect(count).toHaveText('100');
-  await expect(count).toHaveText('300', { timeout: 10_000 });
-  await expect(count).toHaveText('600', { timeout: 10_000 });
-  // dann wieder von vorn durch die lebendige Wolke
-  await expect(root(page).locator('[data-cft=logo]')).not.toHaveClass(/is-on/, { timeout: 10_000 });
-  await expect(on('SPARK')).toHaveClass(/is-on/);
-  await expect(count).toHaveText('100');
+  const r = root(page), count = r.locator('[data-cft=count]'), note = r.locator('[data-cft=note]');
+  // Stufen mitschreiben: Drohnenzahl → Euro-Zeichen
+  await page.evaluate(() => {
+    const el = document.querySelector('[data-cft-root]')!, c = el.querySelector('[data-cft=count]')!, w = window as unknown as { __steps: [string, number][] };
+    const take = () => w.__steps.push([c.textContent ?? '', el.querySelectorAll('[data-cft=euro].is-on').length]);
+    w.__steps = []; take(); new MutationObserver(take).observe(el, { subtree: true, attributes: true, attributeFilter: ['class'] });
+  });
+  await expect(note).toHaveClass(/is-on/);
+  await expect(note).toContainText('Euer Logo');
+  await expect(count).toHaveText('300', { timeout: 15_000 });
+  await expect(count).toHaveText('600', { timeout: 15_000 });
+  await expect(on(page, 'SPARK')).toHaveClass(/is-on/, { timeout: 15_000 }); // das Herz
+  await expect(note).not.toHaveClass(/is-on/);
+  await expect(count).toHaveText('150', { timeout: 10_000 }); // Kolibri in 2D
+  await expect(count).toHaveText('250', { timeout: 10_000 }); // in 3D
+  await expect(on(page, 'HORIZON')).toHaveClass(/is-on/);
+  await expect(count).toHaveText('300', { timeout: 10_000 }); // als Geschichte
+  await expect(on(page, 'ODYSSEY')).toHaveClass(/is-on/);
+  await expect(count).toHaveText('600', { timeout: 30_000 }); // Bokkenrijders
+  const steps = await page.evaluate(() => (window as unknown as { __steps: [string, number][] }).__steps);
+  const level = new Map<number, Set<number>>();
+  for (const [n, e] of steps) if (e) { if (!level.has(+n)) level.set(+n, new Set()); level.get(+n)!.add(e); }
+  const sorted = [...level.keys()].sort((a, b) => a - b), euro = sorted.map((n) => Math.max(...level.get(n)!));
+  expect(sorted).toEqual([100, 150, 200, 250, 300, 450, 600]);
+  for (let i = 1; i < euro.length; i++) expect(euro[i], `${sorted[i]} Drohnen`).toBeGreaterThan(euro[i - 1]);
+  expect(euro.at(-1)).toBe(8);
   expect(errors).toEqual([]);
+});
+
+test('Beim Zeigen auf die Bühne erscheint „Eigene Show zusammenstellen“, ein Klick führt in den Konfigurator; auch der Fokus auf dem Knopf zeigt es', async ({ page }, info) => {
+  test.skip(info.project.name.startsWith('mobile'), 'Zeigen gibt es nur mit Maus.');
+  await page.goto(PAGE);
+  await reach(page);
+  const hit = root(page).locator('a.cft-hit');
+  await expect(hit).toHaveCSS('opacity', '0');
+  await root(page).locator('.cft-stage').hover();
+  await expect(hit).toHaveCSS('opacity', '1');
+  await expect(hit).toContainText('Eigene Show zusammenstellen');
+  await page.mouse.move(0, 0);
+  await expect(hit).toHaveCSS('opacity', '0');
+  await root(page).locator('a.cft-cta').focus(); // Tastatur: der Knopf ist der Tab-Stopp (WebKit springt per Tab nur mit Einstellung auf Links)
+  await expect(hit).toHaveCSS('opacity', '1');
+  await root(page).locator('.cft-stage').click();
+  await expect(page).toHaveURL(/\/drohnenshow-preise\/#konfigurator$/);
+});
+
+test('Abläufe für die Landingpages: „marke“ beginnt mit dem Logo, „hochzeit“ mit Initialen im Herz', async ({ page }) => {
+  test.skip(!PAGE.includes('/poc/'), 'Die Abläufe stehen nur auf der Prüfseite nebeneinander.');
+  test.setTimeout(60_000);
+  await page.goto(PAGE);
+  for (const [sel, note] of [['#cft-marke', 'Euer Logo'], ['#cft-hochzeit', 'Eure Initialen']] as const) {
+    await reach(page, sel);
+    await expect(root(page, sel)).toHaveAttribute('data-reel', sel.replace('#cft-', ''));
+    await expect(root(page, sel).locator('[data-cft=note]')).toContainText(note);
+    await expect(root(page, sel).locator('[data-cft=count]')).toHaveText('300', { timeout: 15_000 });
+    await expect(on(page, 'ODYSSEY', sel)).toHaveClass(/is-on/);
+  }
 });
 
 test('Außerhalb des Viewports zeichnet die Engine nicht, bei reduzierter Bewegung steht die Bokkenrijders-Maske in Ruhe', async ({ page }) => {
@@ -68,6 +114,6 @@ test('Außerhalb des Viewports zeichnet die Engine nicht, bei reduzierter Bewegu
   await reach(page);
   await page.waitForTimeout(500);
   await expect(field(page)).toHaveAttribute('data-running', 'false');
-  await expect(root(page).locator('[data-cft=pkg][data-id=ODYSSEY]')).toHaveClass(/is-on/);
-  expect(Number(await field(page).getAttribute('data-points'))).toBe(600); // die Bokkenrijders-Maske in Ruhe
+  await expect(on(page, 'ODYSSEY')).toHaveClass(/is-on/);
+  expect(Number(await field(page).getAttribute('data-points'))).toBe(600);
 });

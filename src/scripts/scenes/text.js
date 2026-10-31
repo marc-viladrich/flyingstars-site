@@ -39,8 +39,9 @@ async function print(value, k, halfWidth = WIDTH) {
   return out.concat(sampleOutline([{ pts: [[-halfWidth * 0.7, bottom - 0.16], [halfWidth * 0.7, bottom - 0.16]], closed: false }], k - out.length).map(([x, y]) => [x, y, 0]));
 }
 
-/** Points of the text in a style; the order is the writing order (script) or left to right (print). */
-async function lettering(value, style, k, halfWidth = WIDTH) {
+/** Points of the text in a style; the order is the writing order (script) or left to right (print). Exportiert für das
+ * Startseiten-Showreel (Logo mit Schriftzug, show-teaser.js). */
+export async function lettering(value, style, k, halfWidth = WIDTH) {
   if (style === "initials") return scriptFormation(initials(value) || value, k, halfWidth * 0.62);
   if (style === "script") return scriptFormation(value, k, halfWidth);
   const p = await print(value, k, halfWidth);

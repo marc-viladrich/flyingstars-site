@@ -8,6 +8,14 @@
 // - 600 Drohnen zeigt die 3D-Maske aus Bokkenrijders statt des Feuerwerks.
 // - schneller (REEL_RATE 3), die Wolke kürzer und ruhiger (cloudTime, cloudSpread an createField)
 // - jedes Motiv vollständig auf der Bühne (zoom < 1 an jedem Bild, Rand für Eigenbewegung und Tiefe)
+// Runde 9 (Marc):
+// - drei Abläufe (REELS): „start“ (Startseite), „marke“ (Werbung, corporate Motive) und „hochzeit“; die Komponente
+//   wählt mit der Prop `reel`, das Skript liest data-reel
+// - das FlyingStars-Logo zuerst: 100 → 200 → 300 Drohnen, ab da sieht es aus, wie es soll; bei 450 und 600 kommt der
+//   Schriftzug FLYINGSTΛRS über den Einstrich-Textplaner dazu (Logo mit Schriftzug wie in der Designsprache-Probe)
+// - der Kolibri über die drei Pakete (2D, 3D, Geschichte) statt der Drachen-Steigerung
+// - Euro-Zeichen in acht Stufen, jede Drohnenzahl im Ablauf hat ihre eigene
+// - bei der Hochzeit statt des Logos die Initialen „A & B“ im Herz, ebenfalls mit wachsender Drohnenzahl
 // Dieselbe Engine und dieselben Motive wie der Konfigurator; das Tempo kommt nur aus der Show-Uhr, darum ohne Einrasten
 // und ohne Finten. Geladen wird dieses Modul erst nahe am Viewport (ConfiguratorTeaser.astro); außerhalb des Viewports,
 // bei globaler Pause und bei reduzierter Bewegung zeichnet die Engine nicht weiter.
@@ -26,22 +34,42 @@ export const REEL_CLOUD = { cloudTime: 0.55, cloudSpread: 0.5 };
 const ZOOM = 0.82;
 
 /**
- * Der Ablauf, vom einfachen 2D-Bild zur erzählten Geschichte, am Ende das Logo. pkg wird aus der Drohnenzahl gelesen.
- * sweep: dasselbe Motiv bei mehreren Drohnenzahlen hintereinander (Schärfe-Effekt). build: eine Fassung direkt (für den
- * Drachen als 3D-Körper bei jeder Drohnenzahl). beats: welche Bilder einer Geschichte (Index, negativ vom Ende).
+ * Die Abläufe. Je Eintrag ein Motiv; drones: eine oder mehrere Drohnenzahlen hintereinander (das Paket folgt aus der
+ * Zahl, die erste Stufe kommt aus der lebendigen Wolke, jede weitere mit einem normalen Flug). kind: "logo" (das
+ * FlyingStars-Logo, ab 450 mit Schriftzug) oder "text" (eigener Text über den Textplaner, value/style). beats: welche
+ * Bilder einer Geschichte (Index, negativ vom Ende). note: Schrift unten auf der Bühne ([fett, Rest]).
+ * still: das Motiv, das bei reduzierter Bewegung in Ruhe steht (Index im Ablauf).
  */
-export const REEL = [
-  { occasion: "hochzeit", motif: "herz", drones: [100] },
-  { occasion: "hochzeit", motif: "falter", drones: [150] },
-  { occasion: "launch", motif: "rakete", drones: [200] },
-  { occasion: "kultur", motif: "tanz", drones: [250] },
-  { occasion: "festival", motif: "drache", build: "dragon3d", label: "Drache", drones: [250, 350, 450] },
-  { occasion: "launch", motif: "mond", drones: [450] },
-  { occasion: "kultur", motif: "teufel", drones: [600] },
-  { occasion: "launch", logo: true, label: "FlyingStars-Logo", drones: [100, 200, 300, 450, 600] },
-];
-/** Das Motiv, das bei reduzierter Bewegung als ruhiges Standbild steht (Index in REEL): die Bokkenrijders-Maske. */
-export const STILL = 6;
+const LOGO_NOTE = ["Euer Logo", " wird mit mehr Drohnen schärfer"];
+export const REELS = {
+  start: { still: 4, label: "das FlyingStars-Logo, das mit mehr Drohnen schärfer wird, dann Motive von einfachen 2D-Bildern über 3D-Körper bis zu erzählten Geschichten", items: [
+    { occasion: "launch", kind: "logo", drones: [100, 200, 300, 450, 600], note: LOGO_NOTE },
+    { occasion: "hochzeit", motif: "herz", drones: [100] },
+    { occasion: "festival", motif: "kolibri", drones: [150, 250, 300] },
+    { occasion: "launch", motif: "mond", drones: [450] },
+    { occasion: "kultur", motif: "teufel", drones: [600] },
+  ] },
+  marke: { still: 6, label: "ein Logo, das mit mehr Drohnen schärfer wird, dann Glühbirne, Spirale, Rakete, QR-Code und eine Mondlandung", items: [
+    { occasion: "launch", kind: "logo", drones: [100, 200, 300, 450, 600], note: LOGO_NOTE },
+    { occasion: "launch", motif: "idee", drones: [100] },
+    { occasion: "launch", motif: "spirale", drones: [150] },
+    { occasion: "launch", motif: "rakete", drones: [200] },
+    { occasion: "launch", motif: "qr", drones: [250] },
+    { occasion: "launch", motif: "idee", drones: [300] },
+    { occasion: "launch", motif: "mond", drones: [450] },
+  ] },
+  hochzeit: { still: 5, label: "Initialen im Herz, dann Herz, Schmetterling, Sektgläser, Ringe und ein Antrag", items: [
+    { occasion: "hochzeit", kind: "text", value: "Anna & Ben", style: "initials", drones: [100, 200, 300], beats: [0], note: ["Eure Initialen", " am Himmel"] },
+    { occasion: "hochzeit", motif: "herz", drones: [100] },
+    { occasion: "hochzeit", motif: "falter", drones: [150] },
+    { occasion: "hochzeit", motif: "glaeser", drones: [200] },
+    { occasion: "hochzeit", motif: "ring", drones: [250] },
+    { occasion: "hochzeit", motif: "antrag", drones: [450] },
+  ] },
+};
+/** Ablauf der Startseite (bleibt für bestehende Aufrufe). */
+export const REEL = REELS.start.items;
+export const STILL = REELS.start.still;
 
 /**
  * Das FlyingStars-Logo wie in der Designsprache-Probe (ohne Ring): selbst ein Raster aus 88 Lichtpunkten. Mit mehr Drohnen
@@ -66,52 +94,67 @@ export function logoPoints(n) {
   });
   return pts;
 }
-const logoBeat = (n) => ({ pts: logoPoints(n), hold: 2.2, run: true, caption: `Das FlyingStars-Logo aus ${n} Drohnen` });
+const FS_GRAD = [[255, 158, 41], [219, 100, 232], [51, 237, 242]];
+const gradAt = (u) => { const t = Math.max(0, Math.min(1, u)) * 2, i = Math.min(1, Math.floor(t)), f = t - i; return FS_GRAD[i].map((v, c) => Math.round(v + (FS_GRAD[i + 1][c] - v) * f)); };
+/** Ab dieser Drohnenzahl sieht das Logo aus, wie es soll; was darüber hinausgeht, schreibt den Schriftzug darunter. */
+export const LOGO_FULL = 300;
+async function logoBeat(n) {
+  if (n <= LOGO_FULL) return { pts: logoPoints(n), hold: 2.2, run: true, frame: "mark", caption: `Das FlyingStars-Logo aus ${n} Drohnen` };
+  // Logo oben (verkleinert), darunter FLYINGSTΛRS in der Druckschrift des Textplaners im FlyingStars-Verlauf
+  const mark = logoPoints(LOGO_FULL).map(([x, y, z, ...c]) => [x * 0.6, y * 0.6 + 0.42, z, ...c]);
+  const { lettering } = await import("./scenes/text.js");
+  const text = await lettering("FlyingStars", "print", n - LOGO_FULL, 1.05);
+  const ys = text.map((p) => p[1]), top = Math.max(...ys), x0 = Math.min(...text.map((p) => p[0])), x1 = Math.max(...text.map((p) => p[0]));
+  const word = text.map(([x, y]) => [x, y - top - 0.38, 0, ...gradAt((x - x0) / (x1 - x0 || 1))]);
+  return { pts: [...mark, ...word], hold: 2.6, run: true, frame: "brand", caption: `Das FlyingStars-Logo mit Schriftzug aus ${n} Drohnen` };
+}
 
-/** Baut die Szene des Showreels: je Eintrag und Drohnenzahl die gewählten Bilder, in der Paketfarbe, als eigenes Motiv. */
+/** Baut die Szene eines Ablaufs: je Eintrag und Drohnenzahl die gewählten Bilder, in der Paketfarbe, als eigenes Motiv.
+ * Jede Stufe bekommt ihren eigenen Bildausschnitt (frame), damit ein 2D-Bild nicht nach dem Rahmen einer Geschichte
+ * skaliert wird; das Logo behält seinen Maßstab über 100–300 Drohnen. */
 export async function buildReel(reel = REEL) {
-  const beats = [];
-  for (const [segment, r] of reel.entries()) {
+  const items = Array.isArray(reel) ? reel : (REELS[reel] ?? REELS.start).items, beats = [];
+  for (const [segment, r] of items.entries()) {
     const occasion = OCCASIONS.find((o) => o.id === r.occasion), motif = r.motif && occasion?.motifs.find((m) => m.id === r.motif);
     for (const [step, n] of r.drones.entries()) {
       const pkg = packageForDrones(n);
       let pick;
-      if (r.logo) pick = [logoBeat(n)];
+      if (r.kind === "logo") pick = [await logoBeat(n)];
       else {
-        const version = r.build ? { build: r.build, caption: r.label } : motif?.tiers[pkg];
+        const version = r.kind === "text" ? { build: `text${pkg}`, caption: "Eure Initialen", value: r.value, style: r.style, occasion: r.occasion } : r.build ? { build: r.build, caption: r.label } : motif?.tiers[pkg];
         if (!version) throw new Error(`Showreel: ${r.occasion}/${r.motif} hat keine ${pkg}-Fassung`);
-        const seq = await buildSequence([{ id: r.motif, label: r.label ?? motif.label, tiers: { [pkg]: { ...version, minDrones: 0 } } }], pkg, n, SHOW_PACKAGES[pkg].color, r.occasion);
+        const seq = await buildSequence([{ id: r.motif ?? r.kind, label: r.label ?? motif?.label ?? "Text", tiers: { [pkg]: { ...version, minDrones: 0 } } }], pkg, n, SHOW_PACKAGES[pkg].color, r.occasion);
         const all = seq.beats.filter((b) => !b.interlude);
-        pick = r.beats ? r.beats.map((i) => all.at(i)) : all;
+        pick = (r.beats ? r.beats.map((i) => all.at(i)) : all).map((b) => ({ ...b, frame: `${b.frame ?? ""}#${step}` }));
+        // eigener Text: im Konfigurator schreibt er sich aus dem Dunkel; in der Steigerung soll er stehen bleiben und nur
+        // dichter werden (wie das Logo), darum ohne Schreib-Licht, mit Lichtlauf und eigenem Ausschnitt je Paket
+        if (r.kind === "text") pick = pick.map((b) => ({ ...b, live: undefined, run: true, hold: 2.2 }));
       }
-      // die erste Zahl eines Motivs kommt aus der Wolke, jede weitere Stufe mit einem normalen Flug (das Bild verdichtet sich)
       pick.forEach((b, i) => beats.push({ ...b, segment, zoom: ZOOM, cloud: step === 0 && i === 0, drones: n, reel: { ...r, pkg, n } }));
     }
   }
   return { beats, loopTo: 0 };
 }
 
-/** Preis als Euro-Zeichen: 1 bis 6, je nach Preis der Drohnenzahl (SPARK 100 = €, ODYSSEY ab 450 = €€€€€€). */
-export const euros = (n) => [7900, 12000, 15900, 20000, 34900, 50000].filter((p) => configuratorPrice(n) >= p).length;
+/** Preis als Euro-Zeichen in acht Stufen, nach dem Preis der Drohnenzahl: 100 = €, 150 = €€, 200 = €€€, 250 = €€€€,
+ * 300 = €€€€€, 400 = 6, 450 = 7, ab 510 = 8 (Runde 9: jede Drohnenzahl im Ablauf sichtbar ein € mehr). */
+export const EURO_STEPS = [7900, 12000, 15900, 20000, 34900, 44000, 54000, 64000];
+export const euros = (n) => EURO_STEPS.filter((p) => configuratorPrice(n) >= p).length;
 
-/** Startet das Showreel in root (ein Element mit data-cft-root). Gibt eine Funktion zum Aufräumen zurück. */
+/** Startet das Showreel in root (ein Element mit data-cft-root, Ablauf in data-reel). Gibt eine Funktion zum Aufräumen zurück. */
 export function initTeaser(root) {
   if (root.dataset.cftReady) return () => {};
   root.dataset.cftReady = "true";
+  const reel = REELS[root.dataset.reel] ? root.dataset.reel : "start";
   const q = (name) => root.querySelector(`[data-cft="${name}"]`);
   const all = (name) => [...root.querySelectorAll(`[data-cft="${name}"]`)];
-  const pills = all("pill"), pkgs = all("pkg"), coins = all("euro"), thumb = q("thumb"), fill = q("fill"), count = q("count"), logo = q("logo");
-  let last = { occasion: null, pkg: null, n: null };
+  const pkgs = all("pkg"), coins = all("euro"), thumb = q("thumb"), fill = q("fill"), count = q("count"), note = q("note");
+  let last = { pkg: null, n: null, note: null };
   const press = (el) => { el.classList.remove("is-press"); void el.offsetWidth; el.classList.add("is-press"); };
-  /** Das Wireframe folgt der Bühne: Paket, Regler mit Drohnenzahl, Euro-Zeichen; die Anlass-Pills nur, wenn der Anlass wechselt. */
+  /** Das Wireframe folgt der Bühne: Paketknopf, Regler mit Drohnenzahl, Euro-Zeichen; dazu die Schrift unten auf der Bühne. */
   function sync(beat) {
     const r = beat.reel; if (!r) return;
     root.style.setProperty("--pkg", `rgb(${SHOW_PACKAGES[r.pkg].color.join(",")})`);
-    if (r.occasion !== last.occasion) {
-      const k = OCCASIONS.findIndex((o) => o.id === r.occasion);
-      pills.forEach((p, i) => p.classList.toggle("is-on", i === k));
-      if (pills[k] && last.occasion) press(pills[k]);
-    }
     if (r.pkg !== last.pkg) { pkgs.forEach((p) => p.classList.toggle("is-on", p.dataset.id === r.pkg)); const on = pkgs.find((p) => p.dataset.id === r.pkg); if (on && last.pkg) press(on); }
     if (r.n !== last.n) {
       const at = (r.n - DRONES_MIN) / (DRONES_MAX - DRONES_MIN);
@@ -119,18 +162,22 @@ export function initTeaser(root) {
       count.textContent = String(r.n);
       const e = euros(r.n); coins.forEach((c, i) => c.classList.toggle("is-on", i < e));
     }
-    logo.classList.toggle("is-on", Boolean(r.logo));
-    last = { occasion: r.occasion, pkg: r.pkg, n: r.n };
+    if (r.note !== last.note) {
+      if (r.note) { const b = document.createElement("b"); b.textContent = r.note[0]; note.replaceChildren(b, document.createTextNode(r.note[1])); }
+      note.classList.toggle("is-on", Boolean(r.note));
+    }
+    last = { pkg: r.pkg, n: r.n, note: r.note };
   }
   const field = createField(q("field"), { onBeat: (k, beat) => sync(beat), ...REEL_CLOUD });
   field.setRate(REEL_RATE);
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   let done = false;
-  buildReel().then((scene) => {
+  buildReel(reel).then((scene) => {
     if (done) return;
-    const still = scene.beats.findIndex((b) => b.segment === STILL);
-    // die erste Ansicht steht schon; bei reduzierter Bewegung ein starkes Motiv in Ruhe
-    field.show(scene, 300, 1, { instant: true, at: reduce ? still : 0 });
+    const still = scene.beats.findLastIndex((b) => b.segment === REELS[reel].still);
+    // bei reduzierter Bewegung steht ein starkes Motiv in Ruhe; sonst fliegt das erste Bild ein (eine sofort stehende
+    // erste Ansicht zeigte das Ende eines Motivs, beim Logo also gleich 600 Drohnen statt der Steigerung ab 100)
+    field.show(scene, 300, 1, reduce ? { instant: true, at: still } : { at: 0 });
     root.dataset.cftLoaded = "true";
   }).catch(() => { q("error").hidden = false; });
   return () => { done = true; };

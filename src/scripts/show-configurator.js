@@ -268,7 +268,7 @@ if (form) {
     if (Number(slider.value) !== drones) slider.value = String(drones);
     slider.setAttribute("aria-valuetext", `${drones} Drohnen, ${s.pkg}`);
     for (const [sel, txt] of [["#cfg-pkg", s.pkg], ["#cfg-bar-pkg", s.pkg], ["#cfg-price", eur(price)], ["#cfg-bar-price", eur(price)], ["#cfg-dronecount", String(drones)]]) $(sel).textContent = txt;
-    $("#cfg-meta").textContent = `${drones} Drohnen · ${p.dur} · netto zzgl. Anfahrt`;
+    $("#cfg-meta").textContent = `${p.dur} · netto zzgl. Anfahrt`; // die Drohnenzahl steht schon am Regler (Runde 9)
     const summary = [
       `Anlass: ${occasion.label}`,
       `Beispielmotive: ${occasion.motifs.filter((m) => canPlay(m, s.pkg, drones)).map((m) => m.label).join(", ")}`,
@@ -360,6 +360,20 @@ if (form) {
   // choosing a style ends the run-through: the stage shows the text finale in that style. click, not change: the style
   // marked because it is on stage (or the chosen one) shows the finale too (arrow keys in the group fire click as well)
   form.querySelectorAll("[name=textstyle]").forEach((r) => r.addEventListener("click", () => { style = r.value; tour = false; update(true, occasion.motifs.length); }));
+
+  // ---------- Hinweis zum Logo als Tooltip (Runde 9: „ein bisschen zu viel Text“) ----------
+  // Klick schaltet um, Fokus und Zeigen öffnen, Esc oder Verlassen schließt (ein per Klick geöffneter Hinweis bleibt, bis
+  // man woanders hinklickt oder Esc drückt)
+  const info = $("#cfg-info"), legal = $("#cfg-legal");
+  let pinned = false;
+  const openTip = (on) => { legal.classList.toggle("is-open", on); info.setAttribute("aria-expanded", String(on)); if (!on) pinned = false; };
+  info.addEventListener("click", () => { pinned = !pinned || !legal.classList.contains("is-open"); openTip(pinned); });
+  info.addEventListener("focus", () => openTip(true));
+  info.addEventListener("blur", () => { if (!pinned) openTip(false); });
+  info.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") openTip(true); });
+  info.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse" && !pinned && document.activeElement !== info) openTip(false); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && legal.classList.contains("is-open")) { openTip(false); } });
+  document.addEventListener("pointerdown", (e) => { if (pinned && !info.contains(e.target) && !legal.contains(e.target)) openTip(false); });
 
   // ---------- Eigenes Logo (vierzehnte Fassung) ----------
   const file = $("#cfg-file"), upload = $("#cfg-upload"), off = $("#cfg-logo-off");

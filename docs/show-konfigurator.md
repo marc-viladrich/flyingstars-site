@@ -740,3 +740,30 @@ Marcs Rückmeldung zum Showreel.
 - Hero-Video und Teaser zusammen lasten die CPU nicht dauerhaft aus (Chromium ≈ 21 %); der Teaser zeichnet nur, solange er sichtbar ist.
 - Nicht gefunden: keine doppelten rAF-Schleifen, keine wachsenden Arrays oder Listener (konstant 163), keine langen Tasks.
 
+### Runde 9: drei Abläufe, Logo mit Schriftzug, Kolibri, weniger Text im Konfigurator (31.10.2026, nachts)
+
+**Teaser** (`ConfiguratorTeaser.astro`, `show-teaser.js`):
+- Anlass-Pills ersatzlos raus (unbeschriftet verstand sie niemand). Über den Paketknöpfen steht „Paket“, auch auf dem Handy.
+- Euro-Zeichen in acht Stufen (`EURO_STEPS`): 100 = €, 150 = €€, 200 = €€€, 250 = €€€€, 300 = €€€€€, 400 = 6, 450 = 7, ab 510 = 8. Jede Drohnenzahl im Ablauf hat damit ihre eigene Stufe; der Spec prüft das über einen ganzen Durchlauf.
+- **Logo zuerst:** 100 → 200 → 300 Drohnen (ab 300 sieht das Logo aus, wie es soll), danach das verkleinerte Logo mit dem Schriftzug FLYINGSTΛRS darunter bei 450 und 600 (Druckschrift des Textplaners, `lettering()` jetzt aus `scenes/text.js` exportiert, im FlyingStars-Verlauf).
+- **Kolibri über die drei Pakete** statt der Drachen-Steigerung: 2D bei 150 (SPARK), 3D bei 250 (HORIZON), als Geschichte bei 300 (ODYSSEY, alle vier Akte). Jede Stufe hat ihren eigenen Bildausschnitt, damit das 2D-Bild nicht nach dem Rahmen der Geschichte skaliert wird.
+- **Bühne als Link:** Beim Zeigen ein dezenter Schleier mit „Eigene Show zusammenstellen →“ (leiser als die Dropzone im Konfigurator), ein Klick führt zum selben Ziel wie der Knopf. Kein eigener Tab-Stopp (`tabindex="-1"`, `aria-hidden`); per Tastatur führt der Knopf dorthin, hat er den Fokus, erscheint der Hinweis auch auf der Bühne. Auf Touch-Geräten ohne Zeigen gibt es den Schleier nicht.
+- Die erste Ansicht fliegt ein (vorher stand sie sofort und zeigte damit das Ende des ersten Motivs, beim Logo gleich 600 Drohnen).
+- **Abläufe** über die Prop `reel` (`REELS` in `show-teaser.js`):
+
+  | reel | Ablauf | Dauer |
+  |---|---|---|
+  | `start` (Standard) | FlyingStars-Logo 100 / 200 / 300 → mit Schriftzug 450 / 600 → Herz (SPARK 100) → Kolibri 150 / 250 / 300 → Orbit und Mondlandung (450) → Bokkenrijders (600) | 33 s |
+  | `marke` (Werbung) | Logo wie oben → Glühbirne (SPARK 100) → Spirale (150) → Rakete (HORIZON 200) → QR-Code (250) → Glühbirne als Geschichte (ODYSSEY 300) → Mondlandung (450) | 30 s |
+  | `hochzeit` | Initialen „A & B“ im Herz bei 100 / 200 / 300 (über den Textplaner, stehen und werden dichter, ohne Schreib-Licht) → Herz (SPARK 100) → Schmetterling (150) → Sektgläser (HORIZON 200) → Ringe (250) → Antrag (ODYSSEY 450) | 26 s |
+
+  Standbild bei reduzierter Bewegung: Bokkenrijders (`start`), Mondlandung (`marke`), Antrag (`hochzeit`).
+
+**Konfigurator, weniger Text** (`ShowConfigurator.astro`):
+- Der Hinweis „Lade nur Logos hoch …“ steht hinter einem Info-Zeichen an „Euer Text, euer Logo“: Klick schaltet um, Fokus und Zeigen öffnen, Esc oder ein Klick daneben schließt. Die Logo-Auswahl verweist weiter darauf (`aria-describedby`).
+- Der Prototyp-Hinweis ist eine Zeile: „Prototyp: Beispielmotive; Zuordnung, Drohnenbereiche und Aufpreise sind Platzhalter.“
+- Die Zeile unter dem Preis nennt die Drohnenzahl nicht mehr (sie steht am Regler): „ca. 13 Min · netto zzgl. Anfahrt“.
+- Geprüft und bewusst geblieben: „(optional)“, die Statusmeldungen beim Logo, „Die Vorschau ist gerade nicht verfügbar“.
+
+**Prüfen:** `tests/show-teaser.spec.ts` (neu: keine Pills, „Paket“, acht Euro-Stufen, Logo zuerst und Kolibri über die Pakete, jede Drohnenzahl mit eigener Stufe, Schleier beim Zeigen und bei Fokus auf dem Knopf, Abläufe `marke` und `hochzeit` auf der Prüfseite), `tests/show-configurator.spec.ts` (neu: „Runde 9: weniger Text …“). Beide grün in Chromium, WebKit und Pixel 7 gegen einen eigenen Build (der Dev-Server lädt neu, sobald im Checkout gespeichert wird).
+

@@ -96,7 +96,7 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
 
       <!-- vierzehnte Fassung: eigener Text und eigenes Logo bei den Auswahlen, nicht mehr unter der Anfrage -->
       <fieldset class="cfg-block cfg-own">
-        <legend>Euer Text, euer Logo <span class="cfg-opt">(optional)</span></legend>
+        <legend>Euer Text, euer Logo <span class="cfg-opt">(optional)</span><button type="button" class="cfg-info" id="cfg-info" aria-label="Hinweis zum Logo" aria-expanded="false" aria-controls="cfg-legal" aria-describedby="cfg-legal"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.2v4M8 4.9v.1"/></svg></button></legend>
         <div class="cfg-own-row">
           <input class="cfg-text" id="cfg-text" name="text" type="text" maxlength="24" autocomplete="off" placeholder="z. B. Anna & Ben" aria-label="Euer Text" />
           <label class="cfg-upload" id="cfg-upload"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0-5 5m5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg><span>Logo</span><input id="cfg-file" type="file" accept="image/svg+xml,image/png,image/jpeg,image/webp" aria-describedby="cfg-legal" /></label>
@@ -105,17 +105,19 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
         <div class="cfg-styles" id="cfg-styles" hidden>
           {[['script', 'Schreibschrift'], ['print', 'Druckschrift'], ['initials', 'Initialen']].map(([v, l], i) => <label><input type="radio" name="textstyle" value={v} checked={i === 0} /><span>{l}</span></label>)}
         </div>
-        <p class="cfg-legal" id="cfg-legal">Lade nur Logos hoch, die du verwenden darfst, zum Beispiel dein eigenes. Die Datei bleibt in deinem Browser: Wir speichern und übertragen sie nicht.</p>
+        <!-- Runde 9 (Marc: „ein bisschen zu viel Text“): der Hinweis steht hinter dem Info-Zeichen an der Überschrift, Klick, Fokus
+             oder Zeigen öffnet, Esc schließt; die Logo-Auswahl verweist weiter darauf (aria-describedby) -->
+        <p class="cfg-legal" id="cfg-legal" role="tooltip">Lade nur Logos hoch, die du verwenden darfst, zum Beispiel dein eigenes. Die Datei bleibt in deinem Browser: Wir speichern und übertragen sie nicht.</p>
         <p class="cfg-logo-status" id="cfg-logo-status" role="status"></p>
       </fieldset>
 
 
       <div class="cfg-result" aria-live="polite">
         <div class="cfg-price"><b id="cfg-pkg">{STEPS[start].pkg}</b><span id="cfg-price">{money(first.price)}</span></div>
-        <p class="cfg-meta mono" id="cfg-meta">{first.base} Drohnen · {first.dur} · netto zzgl. Anfahrt</p>
+        <p class="cfg-meta mono" id="cfg-meta">{first.dur} · netto zzgl. Anfahrt</p>
       </div>
       <a class="btn primary cfg-cta" id="cfg-cta" href="/#anfrage">Mit dieser Show anfragen</a>
-      <p class="cfg-note" id="cfg-placeholder">Prototyp: Die Vorschau zeigt Beispiele, den Ablauf eurer Show entwickeln wir gemeinsam. Die Zuordnung zu den Paketen ist aus den Paketbeschreibungen abgeleitet und noch nicht von FlyingStars bestätigt. Alle Preise sind netto; Drohnenbereiche und Aufpreise sind Platzhalter.</p>
+      <p class="cfg-note" id="cfg-placeholder">Prototyp: Beispielmotive; Zuordnung, Drohnenbereiche und Aufpreise sind Platzhalter.</p>
     </form>
 
     <div class="cfg-bar" aria-hidden="true"><span><b id="cfg-bar-pkg">{STEPS[start].pkg}</b> <span id="cfg-bar-price">{money(first.price)}</span></span><a class="btn small primary" href="/#anfrage" id="cfg-bar-cta" tabindex="-1">Anfragen</a></div>
@@ -217,7 +219,15 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
   .cfg-logo-off svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
   .cfg-logo-off:hover { color: var(--text); }
   .cfg-logo-off:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
-  .cfg-legal { margin: 0; font-size: 12px; line-height: 1.45; color: var(--faint); }
+  /* Hinweis zum Logo als Tooltip am Info-Zeichen (Runde 9) */
+  .cfg-own { position: relative; }
+  .cfg-own legend { display: flex; align-items: center; gap: 6px; }
+  .cfg-info { display: inline-grid; place-items: center; width: 24px; height: 24px; margin-left: 2px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--faint); cursor: pointer; }
+  .cfg-info svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; }
+  .cfg-info:hover, .cfg-info[aria-expanded="true"] { color: var(--text); }
+  .cfg-info:focus-visible { outline: 3px solid var(--cyan); outline-offset: 1px; }
+  .cfg-legal { position: absolute; z-index: 6; left: 0; right: 0; top: 30px; margin: 0; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: 10px; background: rgba(15, 13, 12, 0.97); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45); font-size: 12.5px; line-height: 1.45; color: var(--muted); opacity: 0; visibility: hidden; transform: translateY(-3px); transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s 0.15s; }
+  .cfg-legal.is-open { opacity: 1; visibility: visible; transform: none; transition: opacity 0.15s ease, transform 0.15s ease; }
   .cfg-logo-status { margin: 0; font-size: 13px; color: var(--muted); }
   .cfg-logo-status:empty { display: none; }
 
@@ -291,7 +301,6 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
     .cfg-occasions span { min-height: 36px; }
     .cfg-pkgs span { min-height: 46px; padding: 6px; }
     .cfg-result { padding-top: 10px; }
-    .cfg-legal { font-size: 11.5px; line-height: 1.35; }
   }
   @media (max-width: 1000px) {
     .cfg { grid-template-columns: 1fr; padding-top: 64px; gap: 22px; padding-bottom: 120px; }
