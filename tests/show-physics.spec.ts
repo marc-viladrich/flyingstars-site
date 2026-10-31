@@ -1,5 +1,8 @@
 import { test, expect, type Page } from '@playwright/test';
 
+// Sechzehnte Fassung: der Konfigurator steht auf der Preisseite (CFG_PATH überschreibt das, z. B. für die Prüfseite).
+const CFG = process.env.CFG_PATH ?? '/drohnenshow-preise/';
+
 // Every motif version may only do what real show drones can do: fly smoothly within speed and acceleration limits,
 // never jump (also not in the dark). Effects such as sparks, rain or a heartbeat must be made with light.
 // Display units. The preview runs as a time-lapse at the pace of the client's Vercel prototype (a real show takes
@@ -31,7 +34,7 @@ for (const occasion of OCCASIONS) {
     test.skip(info.project.name !== 'desktop', 'Die Bewegung ist auf allen Geräten dieselbe.');
     test.setTimeout(900_000);
     await page.clock.install();
-    await page.goto('/show-konfigurator/');
+    await page.goto(CFG);
     await page.clock.runFor(1000);
     await page.locator(`label:has([name=occasion][value=${occasion}])`).click();
     // long enough for every motif of the sequence to form and play, and for the loop back to the first
@@ -54,7 +57,7 @@ for (const occasion of OCCASIONS) {
     test.skip(info.project.name !== 'desktop', 'Die Bewegung ist auf allen Geräten dieselbe.');
     test.setTimeout(900_000);
     await page.clock.install();
-    await page.goto(`/show-konfigurator/?anlass=${occasion}&paket=ODYSSEY&drohnen=600`);
+    await page.goto(`${CFG}?anlass=${occasion}&paket=ODYSSEY&drohnen=600`);
     await page.clock.runFor(1000);
     await expect(page.locator('#cfg-field')).toHaveAttribute('data-points', '600');
     await page.evaluate(() => { (window as unknown as { __showTrace: unknown[] }).__showTrace = []; });
@@ -62,5 +65,25 @@ for (const occasion of OCCASIONS) {
     const { speed, accel } = await measure(page);
     expect.soft(speed, `${occasion} speed at 600`).toBeLessThanOrEqual(LIMITS.speed);
     expect.soft(accel, `${occasion} acceleration at 600`).toBeLessThanOrEqual(LIMITS.accel);
+  });
+}
+
+// Sechzehnte Fassung (Freischalt-Leiter): Motive, die erst ab SPARK 150 bzw. HORIZON 250 spielen (Riesenrad, Lotusblüten,
+// Kopfsprung, QR-Code, Tanz, Sektflasche, Drache in HORIZON), laufen an den Obergrenzen der beiden Pakete.
+for (const occasion of OCCASIONS) {
+  test(`Physikalisch fliegbar: ${occasion} mit SPARK 190 und HORIZON 290`, async ({ page }, info) => {
+    test.skip(info.project.name !== 'desktop', 'Die Bewegung ist auf allen Geräten dieselbe.');
+    test.setTimeout(900_000);
+    await page.clock.install();
+    for (const [n, seconds] of [[190, 60], [290, 70]] as const) {
+      await page.goto(`${CFG}?anlass=${occasion}&drohnen=${n}`);
+      await page.clock.runFor(1000);
+      await expect(page.locator('#cfg-field')).toHaveAttribute('data-points', String(n));
+      await page.evaluate(() => { (window as unknown as { __showTrace: unknown[] }).__showTrace = []; });
+      await page.clock.runFor(seconds * 1000);
+      const { speed, accel } = await measure(page);
+      expect.soft(speed, `${occasion} speed at ${n}`).toBeLessThanOrEqual(LIMITS.speed);
+      expect.soft(accel, `${occasion} acceleration at ${n}`).toBeLessThanOrEqual(LIMITS.accel);
+    }
   });
 }

@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 // Zwölfte Fassung: Die Drohnenzahl ist frei wählbar (Regler). Jedes Bild jedes Motivs muss für jede wählbare
 // Drohnenzahl seines Pakets genau so viele Punkte haben, mit endlichen Koordinaten und Farbe.
 const { buildSequence } = await import('../src/scripts/show-scenes.js');
-const { OCCASIONS } = await import('../src/content/show-configurator.js');
+const { OCCASIONS, playable } = await import('../src/content/show-configurator.js');
 const { DRONE_RANGES, DRONE_STEP, PACKAGE_NAMES } = await import('../src/content/show-packages.ts');
 
 const countsOf = (pkg) => { const out = []; for (let n = DRONE_RANGES[pkg].min; n <= DRONE_RANGES[pkg].max; n += DRONE_STEP) out.push(n); return out; };
@@ -17,7 +17,7 @@ const check = (beats, n, label) => beats.forEach((b, k) => {
 for (const pkg of PACKAGE_NAMES) {
   test(`${pkg}: jedes Motiv hat bei jeder wählbaren Drohnenzahl genau so viele Punkte`, async () => {
     for (const n of countsOf(pkg)) for (const o of OCCASIONS) for (const m of o.motifs) {
-      if (!m.tiers[pkg]) continue;
+      if (!playable(m, pkg, n)) continue; // gesperrt (Freischalt-Leiter): ein Link öffnet das Motiv mit seiner Mindestzahl
       check((await buildSequence([m], pkg, n, undefined, o.id)).beats, n, `${o.id}/${m.tiers[pkg].build} ${n}`);
     }
   });

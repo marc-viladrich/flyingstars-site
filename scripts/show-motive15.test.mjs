@@ -25,7 +25,7 @@ test('FLYINGSTARS steht wie im Logo ohne Querstrich im A', async () => {
 });
 
 test('Raketenflamme: hängt an der Düse, wächst beim Start, keine Säule bis zum Boden', async () => {
-  for (const n of [300, 600]) {
+  for (const n of [300, 450, 600]) {
     const seq = await buildSequence([motif('launch', 'rakete')], 'ODYSSEY', n, [255, 255, 255], 'launch');
     const go = seq.beats.find((b) => b.caption.startsWith('Zündung')), trail = go.groups.findIndex((g) => g.name === 'trail');
     const start = go.groups.slice(0, trail).reduce((s, g) => s + g.count, 0), TR = go.groups[trail].count, RK = go.groups[0].count;
@@ -42,6 +42,7 @@ test('Raketenflamme: hängt an der Düse, wächst beim Start, keine Säule bis z
       assert.ok(width(0.15, 0.5) > 1.4 * width(0.75, 1), `n ${n}, t ${t}: oben ${width(0.15, 0.5).toFixed(2)} breit, Spitze ${width(0.75, 1).toFixed(2)}`);
     }
     // Landung (eigenes Motiv „Mondlandung“): die leuchtenden Flammendrohnen beginnen an der Düse (vorher eine Lücke)
+    if (n < 450) continue; // die Mondlandung spielt ab ODYSSEY 450 (Freischalt-Leiter, sechzehnte Fassung)
     const moon = await buildSequence([motif('launch', 'mond')], 'ODYSSEY', n, [255, 255, 255], 'launch');
     const land = moon.beats.find((b) => b.caption.includes('landet')), g = land.groups, s0 = g.slice(0, g.findIndex((x) => x.name === 'trail')).reduce((a, x) => a + x.count, 0);
     for (const t of [0.5, 2, 3.5]) {

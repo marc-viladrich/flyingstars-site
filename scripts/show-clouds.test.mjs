@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 // Dreizehnte Fassung (Marc, 30.10.2026). Schnell, ohne Browser: baut jede Folge (alle Anlässe × Pakete × Drohnenzahlen
-// an den Bereichs- und Freischaltgrenzen) und prüft die Regeln aus docs/show-konfigurator.md, „Dreizehnte Fassung“.
+// an den Bereichs- und Freischaltgrenzen, seit der sechzehnten Fassung die Sprossen der Leiter) und prüft die Regeln aus docs/show-konfigurator.md, „Dreizehnte Fassung“.
 const { buildSequence } = await import('../src/scripts/show-scenes.js');
 const { OCCASIONS, UNLOCK, playable } = await import('../src/content/show-configurator.js');
 const { DRONE_RANGES, PACKAGE_NAMES } = await import('../src/content/show-packages.ts');
@@ -87,7 +87,7 @@ test('Teil-Umbau: die Wolke nennt nur Teile, die es im Bild gibt, und lässt ein
   assert.deepEqual(kultur.find((b) => b.caption.includes('Stern steigt daraus auf')).cloud, ['star']);
 });
 
-test('Freischalten: Motive erst ab ihrer Drohnenzahl (minDrones), ODYSSEY ist nie ein Downgrade', () => {
+test('Freischalten: Motive erst ab ihrer Drohnenzahl (minDrones an der Fassung), die Folge spielt genau sie', () => {
   for (const o of OCCASIONS) for (const pkg of PACKAGE_NAMES) {
     for (const n of counts(pkg)) {
       const { beats } = shows.find((s) => s.o === o && s.pkg === pkg && s.n === n), segs = new Set(beats.map((b) => b.segment).filter((x) => x >= 0));
@@ -95,21 +95,7 @@ test('Freischalten: Motive erst ab ihrer Drohnenzahl (minDrones), ODYSSEY ist ni
       assert.ok(segs.size >= 3, `${o.id} ${pkg} ${n}: ${segs.size} Motive`);
     }
   }
-  // vierzehnte Fassung (Marc): ODYSSEY zeigt bei jeder Drohnenzahl jedes Motiv, das HORIZON zeigt, und beim Wechsel
-  // HORIZON → ODYSSEY kommen Motive dazu; über UNLOCK[1] kommen nur weitere dazu, keins fällt weg
-  for (const o of OCCASIONS) {
-    const H = new Set(o.motifs.filter((m) => playable(m, 'HORIZON', DRONE_RANGES.HORIZON.max)).map((m) => m.id));
-    for (const n of [DRONE_RANGES.ODYSSEY.min, ...UNLOCK.filter((u) => u > DRONE_RANGES.ODYSSEY.min), DRONE_RANGES.ODYSSEY.max]) {
-      const O = new Set(o.motifs.filter((m) => playable(m, 'ODYSSEY', n)).map((m) => m.id));
-      for (const id of H) assert.ok(O.has(id), `${o.id}: ODYSSEY ${n} spielt ${id} wie HORIZON`);
-    }
-    const O300 = o.motifs.filter((m) => playable(m, 'ODYSSEY', DRONE_RANGES.ODYSSEY.min)).length;
-    assert.ok(O300 > H.size, `${o.id}: ODYSSEY bei ${DRONE_RANGES.ODYSSEY.min} zeigt mehr Motive als HORIZON (${O300} gegen ${H.size})`);
-    assert.ok(o.motifs.every((m) => playable(m, 'ODYSSEY', DRONE_RANGES.ODYSSEY.max)), `${o.id}: bei ${DRONE_RANGES.ODYSSEY.max} alle Motive`);
-    // Pakete wachsen: was SPARK spielt, spielt auch HORIZON
-    for (const m of o.motifs) if (playable(m, 'SPARK', DRONE_RANGES.SPARK.max)) assert.ok(playable(m, 'HORIZON', DRONE_RANGES.HORIZON.min), `${o.id}: ${m.id} in SPARK, aber nicht in HORIZON`);
-  }
-  assert.ok(OCCASIONS.some((o) => o.motifs.some((m) => m.minDrones === UNLOCK[1])), `mindestens ein Motiv erst ab ${UNLOCK[1]}`);
+  // Leiter-Regeln ohne Motivbau: scripts/show-unlock.test.mjs (sechzehnte Fassung)
 });
 
 test('Lichtlauf nur bei Linien und Konturen ohne eigenes Licht', () => {

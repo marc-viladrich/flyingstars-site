@@ -1,0 +1,19 @@
+---
+// Prüfseite der sechzehnten Konfigurator-Fassung (31.10.2026, nicht verlinkt, noindex): oben der volle Konfigurator als
+// Komponente im Seitenfluss (wie auf der Preisseite), darunter der Teaser für die Startseite in einer Section mit Kopf
+// (wie ihn die Startseite drumherum baut). Auf echten Seiten steht nie beides zusammen.
+import Base from '../../layouts/Base.astro';
+import ShowConfigurator from '../../components/configurator/ShowConfigurator.astro';
+import ConfiguratorTeaser from '../../components/configurator/ConfiguratorTeaser.astro';
+---
+<Base title="Konfigurator und Teaser (Prüfseite)" description="Prüfseite: Show-Konfigurator als Komponente und der minimal interaktive Teaser für die Startseite." noindex fullBleed>
+  <ShowConfigurator id="konfigurator" headingLevel={1} />
+  <section class="section" id="teaser" aria-labelledby="teaser-h">
+    <h2 id="teaser-h" class="poc-teaser-h">Eure Show, <span class="grad">live</span> ausprobiert.</h2>
+    <ConfiguratorTeaser />
+  </section>
+</Base>
+
+<style>
+  .poc-teaser-h { margin: 0 0 clamp(24px, 3vw, 40px); font-size: clamp(30px, 3.4vw, 52px); line-height: 1.04; letter-spacing: -0.03em; }
+</style>

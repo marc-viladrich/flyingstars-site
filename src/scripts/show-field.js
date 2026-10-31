@@ -97,9 +97,14 @@ export function createField(canvas, { onBeat, onTick } = {}) {
    * Drohnenzahl, der Abstand bleibt gleich), darüber kleiner, weil das Bild dichter wird (bei 600 etwa 1,6 px wie in
    * Studie 1). Kleine Bilder (Handy) bekommen kleinere Lichter, sonst laufen die Höfe dichter Formationen zu Flecken
    * zusammen: gemessen am Bildmaßstab S (CSS-Pixel), voll ab S = 250 (Desktop-Bühnen liegen bei 300–500). */
+  // Sechzehnte Fassung (Marc, 31.10.2026: „ein Stückchen größer … dann erkennt man die Motive besser und sie wirken
+  // eindrucksvoller“): Grundgröße 2,5 statt 2,1 px, und auf großen Bühnen wachsen die Lichter wieder mit, gedämpft mit
+  // der Wurzel des Bildmaßstabs. Gemessen an einer 1440er Bühne (S ≈ 330): Fassung 14 ≈ 2,8 px (S × 0,0085), Fassung 15
+  // 2,1 px, jetzt ≈ 2,6 px; bei 2560 px (S ≈ 690) 5,8 / 2,1 / 3,8 px. Kern und weicher Hof bleiben wie in Fassung 15.
   function dotRadius(n, S) {
     const dense = Math.min(1, Math.max(0.76, Math.sqrt(300 / Math.max(1, n)))), fitStage = Math.min(1, Math.max(0.45, S / 250));
-    return Math.max(1, Math.round(2.1 * dense * fitStage * DPR * 4) / 4);
+    const base = 2.5 * Math.sqrt(Math.max(1, S / 300));
+    return Math.max(1, Math.round(base * dense * fitStage * DPR * 4) / 4);
   }
   /** Reichweite des Hofs in Kernradien: 3,4 wie in der Probe; auf kleinen Bildern kürzer (bis 2), weil die Lichter dort
    * so dicht stehen, dass sich die Höfe sonst zu einer Fläche addieren. */

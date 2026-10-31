@@ -20,8 +20,13 @@
 // - the drop zone invites once, the first time the mouse moves over the stage; afterwards only while a file is dragged
 //   or the pointer is on „Logo“
 // - the unlock note speaks the language of the page: the motif's name in the FlyingStars gradient, a light point draws a
-//   fine gradient edge underneath (markup built in showToast, styles in show-konfigurator.astro)
-import { OCCASIONS, STEPS } from "../content/show-configurator.js";
+//   fine gradient edge underneath (markup built in showToast, styles in components/configurator/ShowConfigurator.astro)
+// Sechzehnte Fassung (Marc, 31.10.2026; docs/show-konfigurator.md):
+// - Freischalt-Leiter in jedem Paket (content/show-configurator.js, LADDER): gesperrte Motive stehen rechts neben der Spur
+//   als ungeleuchtete Lichtpunkte; Hinweis „Antrag · ab 450 Drohnen“, ein Klick stellt diese Drohnenzahl ein
+// - der Konfigurator ist eine Komponente (components/configurator/ShowConfigurator.astro) im Seitenfluss der Preisseite;
+//   die Preisleiste auf dem Handy erscheint nur, solange er im Bild ist
+import { OCCASIONS, STEPS, unlockAt } from "../content/show-configurator.js";
 import { SHOW_PACKAGES, DRONE_RANGES, DRONES_MIN, packageForDrones, snapDrones, clampToPackage, configuratorPrice } from "../content/show-packages";
 import { createField } from "./show-field.js";
 import { buildSequence, preloadScenes } from "./show-scenes.js";
@@ -32,7 +37,7 @@ const form = document.querySelector("#cfg");
 if (form) {
   const $ = (s) => document.querySelector(s);
   let current = null, first = true, segment = 0;
-  const track = $("#cfg-track"), marks = $("#cfg-marks"), play = $("#cfg-play"), stage = $(".cfg-stage"), tip = $("#cfg-tip");
+  const track = $("#cfg-track"), marks = $("#cfg-marks"), play = $("#cfg-play"), stage = $(".cfg-stage"), tip = $("#cfg-tip"), player = $("#cfg-player"), locks = $("#cfg-locks");
   let drawn = null, scrubbing = false, lastTick = 0, tipAt = null;
   const field = createField($("#cfg-field"), {
     onBeat: (k, beat) => {
@@ -40,7 +45,8 @@ if (form) {
       segment = beat.segment ?? 0;
       if (tour && current && k >= current.loopTo) tour = false; // the text ran through once; the round goes on without it
       showStyle(beat.textStyle ?? style);
-      if (document.activeElement === track) showTip(k); else if (tipAt === null) showTip(k, { quiet: true });
+      // ein gezeigter Hinweis zu einem gesperrten Motiv (is-locked) bleibt stehen, bis der Zeiger bzw. Fokus geht
+      if (document.activeElement === track) showTip(k); else if (tipAt === null && !tip.classList.contains("is-locked")) showTip(k, { quiet: true });
     },
     onTick: (tl) => { const t = performance.now(); if (scrubbing || (t - lastTick < 90 && tl && !tl.paused)) return; lastTick = t; drawTrack(tl); },
   });
@@ -92,16 +98,43 @@ if (form) {
     while (a > 0 && (same(a - 1) || (tl.beats[a - 1].interlude && (tl.beats[a - 1].segment ?? 0) === (b.segment ?? 0)))) a--;
     while (same(e + 1)) e++;
     const [label, from] = tipText(b);
-    const html = `<b>${label.replace(/[<&]/g, (c) => (c === "<" ? "&lt;" : "&amp;"))}</b> · ab ${from} Drohnen`;
-    if (tip.innerHTML !== html) tip.innerHTML = html;
+    setTip(label, from);
     const kids = marks.children; if (!kids[a] || !kids[e] || kids.length !== tl.beats.length) return;
-    const tr = track.getBoundingClientRect(), r0 = kids[a].getBoundingClientRect(), r1 = kids[e].getBoundingClientRect();
-    const half = tip.offsetWidth / 2, centre = (r0.left + r1.right) / 2 - tr.left;
-    tip.style.setProperty("--x", `${Math.max(half - 6, Math.min(tr.width - half + 6, centre))}px`);
+    const r0 = kids[a].getBoundingClientRect(), r1 = kids[e].getBoundingClientRect();
+    placeTip((r0.left + r1.right) / 2);
     if (quiet) return; // only the text: the description of the track stays right for the picture on stage
-    tip.classList.add("is-on"); tipAt = k;
+    tip.classList.remove("is-locked"); tip.classList.add("is-on"); tipAt = k;
   }
-  const hideTip = () => { tip.classList.remove("is-on"); tipAt = null; };
+  const esc = (t) => t.replace(/[<&]/g, (c) => (c === "<" ? "&lt;" : "&amp;"));
+  const setTip = (label, from) => { const html = `<b>${esc(label)}</b> · ab ${from} Drohnen`; if (tip.innerHTML !== html) tip.innerHTML = html; };
+  /** The hint stands over a point of the player bar (x in client pixels), kept inside the bar. */
+  const placeTip = (x) => {
+    const pr = player.getBoundingClientRect(), half = tip.offsetWidth / 2;
+    tip.style.setProperty("--x", `${Math.max(half + 4, Math.min(pr.width - half - 4, x - pr.left))}px`);
+  };
+  const hideTip = () => { tip.classList.remove("is-on", "is-locked"); tipAt = null; };
+
+  // Gesperrte Motive (sechzehnte Fassung): je Motiv, das bei dieser Drohnenzahl noch nicht spielt, ein ungeleuchteter
+  // Lichtpunkt rechts neben der Spur, nach Schwelle geordnet. Zeigen oder Fokus nennt Motiv und Schwelle, ein Klick
+  // stellt die Schwelle ein (die Meldung erscheint, die Bühne fliegt durch die Wolke dorthin).
+  function drawLocks() {
+    const list = occasion.motifs.map((m) => [m, unlockAt(m, drones)]).filter(([, at]) => at !== null).sort((a, b) => a[1] - b[1]);
+    const key = `${occasion.id}:` + list.map(([m, at]) => `${m.id}@${at}`).join(",");
+    if (locks.dataset.key === key) return;
+    locks.dataset.key = key;
+    locks.hidden = !list.length;
+    locks.replaceChildren(...list.map(([m, at]) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "cfg-lock"; b.dataset.motif = m.id; b.dataset.at = String(at);
+      b.setAttribute("aria-label", `${m.label}: ab ${at} Drohnen, Drohnenzahl auf ${at} stellen`);
+      b.innerHTML = '<i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i>';
+      const show = () => { setTip(m.label, at); const r = b.getBoundingClientRect(); placeTip((r.left + r.right) / 2); tip.classList.add("is-on", "is-locked"); tipAt = null; };
+      b.addEventListener("pointerenter", show); b.addEventListener("focus", show);
+      b.addEventListener("pointerleave", () => { if (document.activeElement !== b) hideTip(); }); b.addEventListener("blur", hideTip);
+      b.addEventListener("click", () => { hideTip(); first = false; setDrones(at); });
+      return b;
+    }));
+  }
 
   const trackX = (e) => { const r = track.getBoundingClientRect(); return Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)); };
   track.addEventListener("pointerdown", (e) => { scrubbing = true; track.setPointerCapture(e.pointerId); drawTrack(field.timeline(), trackX(e)); showTip(beatAt(trackX(e))); });
@@ -245,6 +278,7 @@ if (form) {
     ].join("\n");
     const inquiry = `/?${new URLSearchParams({ paket: s.pkg, drohnen: String(drones), anlass: occasion.anlass, show: summary })}#anfrage`;
     $("#cfg-cta").href = inquiry; $("#cfg-bar-cta").href = inquiry;
+    drawLocks();
     // while the slider moves, the picture follows once it rests for a moment (every drone count is its own formation)
     clearTimeout(building);
     if (delay) building = setTimeout(() => render(keep, to, { cloud }), delay); else render(keep, to, { cloud });
@@ -270,13 +304,17 @@ if (form) {
    * play now and did not before (a threshold crossed, or a package that has more of them; only when the count grows)
    * are announced together, and the stage flies through the cloud to the first of them; otherwise it stays on its
    * motif, or goes back to the logo if there is one (Marc: „Bei neuer Drohnenzahl zurück zum Logo“). */
-  function setDrones(n, { delay = 0 } = {}) {
+  // Sechzehnte Fassung: Mit der Freischalt-Leiter schaltet jeder Klick von SPARK 100 auf HORIZON ein Motiv frei. Ein
+  // Paketknopf (fly: false) meldet es, bleibt aber beim Motiv auf der Bühne (der Vergleich „dasselbe Motiv, größeres
+  // Paket“); Regler und gesperrte Lichtpunkte fliegen wie bisher zum neuen Motiv.
+  function setDrones(n, { delay = 0, fly = true } = {}) {
     const before = { pkg: pkgName(), drones };
     drones = snapDrones(n);
     // only more drones unlock: going down to a smaller package can bring back its simpler versions, that is no news
     const after = { pkg: pkgName(), drones }, now = after.drones > before.drones ? freshMotifs(occasion.motifs, before, after) : [];
     fresh = occasion.motifs.filter((m) => (fresh.includes(m) || now.includes(m)) && canPlay(m, after.pkg, after.drones));
     if (now.length) showToast(unlockNote(fresh));
+    if (!fly) fresh = [];
     unlockTo = fresh.length ? occasion.motifs.indexOf(fresh[0]) : null;
     update(true, logo && !fresh.length ? LOGO_SEGMENT : undefined, { delay });
   }
@@ -285,7 +323,7 @@ if (form) {
   for (const type of ["input", "click"]) form.addEventListener(type, () => { first = false; }, { capture: true });
   form.addEventListener("submit", (e) => e.preventDefault());
   // a package button sets the package's entry count (its price on the button and the package cards)
-  form.querySelectorAll("[name=pkg]").forEach((r) => r.addEventListener("change", () => setDrones(DRONE_RANGES[STEPS[+r.value].pkg].min)));
+  form.querySelectorAll("[name=pkg]").forEach((r) => r.addEventListener("change", () => setDrones(DRONE_RANGES[STEPS[+r.value].pkg].min, { fly: false })));
   slider.addEventListener("input", () => setDrones(Number(slider.value), { delay: 180 }));
   slider.addEventListener("change", () => setDrones(Number(slider.value)));
   // a new occasion is reached through the living cloud (Marc: „beim Wechsel des Anlasses immer“)
@@ -398,6 +436,10 @@ if (form) {
       if (r.bottom > bottom) scrollBy({ top: r.bottom - bottom }); else if (r.top < top) scrollBy({ top: r.top - top });
     }, 120);
   });
+
+  // eingebettet (Preisseite): die Preisleiste auf dem Handy erscheint nur, solange der Konfigurator im Bild ist
+  const section = form.closest(".cfg");
+  new IntersectionObserver(([entry]) => section.classList.toggle("is-near", entry.isIntersecting), { rootMargin: "0px 0px -20% 0px" }).observe(section);
 
   setPlay(false);
   update(false, linkedMotif >= 0 ? linkedMotif : undefined);

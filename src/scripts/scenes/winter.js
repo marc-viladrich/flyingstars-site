@@ -2,7 +2,8 @@
 // Firework after FlyingStars' own (round 2, Frühlingsnacht 2:10–2:25, S3fuZRsYIvc): stars of straight drone chains,
 // one colour per star, full within a blink, standing for seconds, several overlapping with staggered starts; the
 // drones barely move, the burst is light. Tree after the spiral tree (FSR-018): a conical helix, light climbing it.
-import { TAU, GOLD, PINK, VIOLET, CYAN, ORANGE, GREEN, DIAMOND, mix, paint, frac, smooth, hash, yaw, roll, sparkle, chase, trace, share, part, act } from "../show-motion.js";
+import { TAU, WARM, GOLD, PINK, VIOLET, CYAN, ORANGE, GREEN, DIAMOND, mix, paint, frac, smooth, hash, yaw, roll, pitch, sparkle, chase, trace, share, part, act } from "../show-motion.js";
+import { bottle3d, cork } from "../show-shapes.js";
 
 export const builders = {};
 const EMBER = [178, 52, 34]; // a cooling spark: what the tips of a star turn into as it glows out
@@ -207,3 +208,24 @@ builders.treeStory = (n, caption) => {
   ] };
 };
 
+
+// ---------- Sektflasche (sechzehnte Fassung, Freischalt-Leiter: HORIZON ab 250) ----------
+/**
+ * Die Sektflasche als Körper, bevor der Korken knallt (der Knall bleibt der ODYSSEY-Fassung „champagneStory“): sechs
+ * Profillinien und zwei Ringe wie in der Geschichte, der Korken sitzt noch, im Glas steigen Perlen als Licht auf. Die
+ * Flasche dreht sich langsam um die eigene Achse und ist leicht zum Publikum gekippt. Die Perlen bewegen sich nicht, es
+ * wandert nur ihr Licht nach oben (wie bei den Sektgläsern).
+ */
+builders.champagne3d = (n, caption) => {
+  const [nb, nc, np] = share(n, [5.4, 0.45, 1.5]), K = 1.25, top = 0.56 * K;
+  const bottle = paint(bottle3d(nb).map(([x, y, z]) => [x * K, y * K, z * K]), (p) => (p[1] > 0.3 * K ? GOLD : mix(WARM, [140, 230, 170], 0.5)));
+  const stopper = paint(cork(nc).map(([x, y, z]) => [x * 1.8 * K, top + (y + 0.06) * 1.8 * K, z * 1.8 * K]), WARM);
+  // Perlen in vier senkrechten Säulen im Bauch der Flasche, je Säule versetzt, damit das Licht nicht im Gleichtakt steigt
+  const pearls = paint(Array.from({ length: np }, (_, i) => { const c = i % 4, k = Math.floor(i / 4), per = Math.ceil((np - c) / 4), a = c * 1.7 + 0.4, r = 0.07 * K; return [Math.cos(a) * r, (-0.5 + (0.62 * (k + 0.5)) / per) * K, Math.sin(a) * r]; }), mix(GOLD, WARM, 0.4));
+  const pts = [...bottle, ...stopper, ...pearls], from = nb + nc;
+  return { beats: [{ pts, caption, live: (b, j, t, o) => {
+    if (j >= from) { const c = (j - from) % 4; o[3] = chase(b[1] / K + c * 0.21, t, 0.28, 0.34, 0.6, 1.4); }
+    else if (j >= nb) o[3] = 1.1;
+    yaw(o, t * 0.3); pitch(o, 0.18);
+  } }] };
+};

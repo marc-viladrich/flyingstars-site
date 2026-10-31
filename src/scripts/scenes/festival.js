@@ -3,7 +3,7 @@
 // pins light up, a paper plane flies the route and circles the compass. Drache: an own, friendly dragon drawn as a
 // line (head, a body of two strands, wings, a spade tail); in the story it rises from sparks along a path, circles
 // once and breathes a firework. Everything that moves is a smooth path; fire and sparkle are light.
-import { TAU, WARM, GOLD, PINK, CYAN, ORANGE, RED, GREEN, mix, paint, frac, smooth, hash, yaw, roll, pitch, breathe, glint, sparkle, chase, trace, burstLight, share, part, act } from "../show-motion.js";
+import { TAU, WARM, GOLD, PINK, CYAN, ORANGE, RED, GREEN, mix, paint, frac, smooth, hash, yaw, roll, pitch, breathe, glint, sparkle, chase, trace, burstLight, lightRank, share, part, act } from "../show-motion.js";
 import { sampleOutline } from "../show-geometry.js";
 import { sample3d, starField } from "../show-shapes.js";
 
@@ -375,5 +375,98 @@ builders.dragonStory = (n) => {
       if (k < CONE) o[3] = chase((k + 0.5) / CONE, t, 0.9, 0.35, 0.35, 1.5); // fire runs out of the mouth
       else { const r = Math.hypot(b[0] - BURST[0], b[1] - BURST[1], b[2] - BURST[2]) / BR, [a] = burstLight(r, t, 3.2, 0.4); o[3] = a; }
     }; })() }), fitPts: view },
+  ] };
+};
+
+// ---------- Riesenrad (sechzehnte Fassung, Freischalt-Leiter: ab SPARK 150) ----------
+// Ein eigenes Motiv für das Stadtfest, damit auch hier mehr Drohnen ein Motiv mehr bringen. Ein Rad mit acht Speichen und
+// acht Gondeln auf einem Bock; das Rad dreht sich langsam, die Gondeln bleiben hängend (sie wandern mit ihrem
+// Aufhängepunkt, drehen sich aber nicht mit). Bewegt wird nur gleichmäßig in einer Richtung, Licht kommt obendrauf.
+const WC = [0, 0.18], WR = 0.78, WG = -1.0, GONDOLAS = 8, SPIN = 0.16; // Nabe, Radius, Boden, Gondeln, rad/s
+const GONDOLA_COLOURS = [PINK, CYAN, GOLD, [219, 100, 232]];
+const anchorAt = (k) => { const a = (k / GONDOLAS) * TAU + TAU / 16; return [WC[0] + Math.cos(a) * WR, WC[1] + Math.sin(a) * WR]; };
+/** Eine Gondel unter ihrem Aufhängepunkt: Bügel und ein kleiner Korb (oben offen), in der Bildebene bei z. */
+const gondolaLines = (k, z = 0) => { const [x, y] = anchorAt(k); return [line([x, y, z], [x, y - 0.06, z]), line([x - 0.075, y - 0.06, z], [x - 0.065, y - 0.18, z], [x + 0.065, y - 0.18, z], [x + 0.075, y - 0.06, z])]; };
+/**
+ * Das Rad als Linien. depth = halber Abstand der beiden Radkränze (0: flach, SPARK). Gibt Punkte [x, y, z] und je Punkt
+ * kind (0 Kranz, 1 Speiche/Achse, 2 Gondel, 3 Bock), die Gondel (gk) und die Stelle auf dem Kranz (u, 0..1) zurück.
+ */
+function wheelModel(n, depth = 0) {
+  const zs = depth ? [depth, -depth] : [0];
+  const rim = zs.map((z) => ({ pts: Array.from({ length: 72 }, (_, i) => { const a = (i / 72) * TAU; return [WC[0] + Math.cos(a) * WR, WC[1] + Math.sin(a) * WR, z]; }), closed: true }));
+  const spokes = zs.flatMap((z) => Array.from({ length: GONDOLAS }, (_, k) => { const [x, y] = anchorAt(k), dx = x - WC[0], dy = y - WC[1]; return line([WC[0] + dx * 0.09, WC[1] + dy * 0.09, z], [x, y, z]); }));
+  if (depth) spokes.push(line([WC[0], WC[1], depth], [WC[0], WC[1], -depth]));
+  const legs = zs.flatMap((z) => [line([WC[0], WC[1], z], [-0.55, WG, z * 1.8]), line([WC[0], WC[1], z], [0.55, WG, z * 1.8])]);
+  const ground = [line([-0.7, WG, 0], [0.7, WG, 0])];
+  const [nRim, nSpoke, nGondola, nStand] = share(n, [4.9 * zs.length * 0.75, 3.4 * zs.length * 0.7, 4.4, 2.4 * zs.length * 0.7 + 1]);
+  const pts = [], kind = [], gk = [], u = [];
+  const add = (list, k, g = -1) => list.forEach((p) => { pts.push(p); kind.push(k); gk.push(g); u.push(k === 0 ? (Math.atan2(p[1] - WC[1], p[0] - WC[0]) / TAU + 1) % 1 : 0); });
+  add(sample3d(rim, nRim), 0);
+  add(sample3d(spokes, nSpoke), 1);
+  share(nGondola, Array(GONDOLAS).fill(1)).forEach((c, k) => add(sample3d(gondolaLines(k), c), 2, k));
+  add(sample3d([...legs, ...ground], nStand), 3);
+  return { pts, kind, gk, u };
+}
+/** Bewegt Punkt j des Rades um den Winkel th: Kranz und Speichen drehen sich um die Nabe, eine Gondel wandert mit ihrem
+ * Aufhängepunkt und bleibt hängen, der Bock steht. */
+function turnWheel(model, j, th, o) {
+  const k = model.kind[j];
+  if (k <= 1) roll(o, th, WC[0], WC[1]);
+  else if (k === 2) { const [x, y] = anchorAt(model.gk[j]), dx = x - WC[0], dy = y - WC[1], c = Math.cos(th), s = Math.sin(th); o[0] += WC[0] + dx * c - dy * s - x; o[1] += WC[1] + dx * s + dy * c - y; }
+}
+const wheelColour = (model) => (p, j) => (model.kind[j] === 2 ? GONDOLA_COLOURS[model.gk[j] % GONDOLA_COLOURS.length] : model.kind[j] === 0 ? GOLD : WARM);
+
+builders.wheel2d = (n, caption) => {
+  const model = wheelModel(n), pts = paint(model.pts, wheelColour(model));
+  // Licht läuft um den Kranz und dreht sich mit ihm; die Gondeln leuchten ruhig
+  return { beats: [{ pts, caption, live: (b, j, t, o) => {
+    turnWheel(model, j, t * SPIN, o);
+    if (model.kind[j] === 0) o[3] = chase(model.u[j], t, 0.09, 0.25, 0.95, 1.35); else if (model.kind[j] === 2) o[3] = 1.1;
+  } }] };
+};
+
+builders.wheel3d = (n, caption) => {
+  const model = wheelModel(n, 0.13), pts = paint(model.pts, wheelColour(model));
+  // zwei Radkränze mit Achse, im Dreiviertelprofil; die Gondeln leuchten nacheinander heller (nur Licht)
+  return { beats: [{ pts, caption, live: (b, j, t, o) => {
+    turnWheel(model, j, t * SPIN, o);
+    const k = model.kind[j];
+    if (k === 0) o[3] = chase(model.u[j], t, 0.09, 0.25, 0.95, 1.3);
+    else if (k === 2) o[3] = 1 + 0.4 * (0.5 + 0.5 * Math.sin(t * 1.6 - (model.gk[j] * TAU) / GONDOLAS));
+    yaw(o, 0.55);
+  } }] };
+};
+
+builders.wheelStory = (n) => {
+  const L = Math.round(n * 0.2), model = wheelModel(n - L, 0.13), W = model.pts.length;
+  const wheelPts = paint(model.pts, wheelColour(model));
+  const rank = lightRank(model.pts); // Reihenfolge, in der Licht das Rad zeichnet
+  // Lichterketten: zwei Bögen von den Seiten des Rades zu den Buden am Boden; im letzten Akt fliegen ihre Drohnen
+  // (normaler Flug, keine Teil-Wolke: sie läge direkt vor der Wolke des nächsten Motivs) zu einem Stern rechts über dem Rad
+  const swag = (x0, y0, x1, y1, sag) => line(...Array.from({ length: 25 }, (_, i) => { const u = i / 24; return [x0 + (x1 - x0) * u, y0 + (y1 - y0) * u - sag * 4 * u * (1 - u), 0.1]; }));
+  const [la, lb] = share(L, [1, 1]);
+  const garland = [...sample3d([swag(-0.74, 0.05, -1.5, -0.62, 0.16)], la), ...sample3d([swag(0.74, 0.05, 1.5, -0.62, 0.16)], lb)];
+  const BURST = [1.12, 1.0, 0], BR = 0.36, rays = 10;
+  const star = Array.from({ length: L }, (_, k) => { const ray = k % rays, a = (ray / rays) * TAU + 0.2, r = 0.3 + 0.7 * (Math.floor(k / rays) + 0.5) / Math.ceil(L / rays); return [BURST[0] + Math.cos(a) * r * BR, BURST[1] + Math.sin(a) * r * BR, 0]; });
+  const lightsColour = (p, k) => [GOLD, PINK, CYAN][k % 3];
+  const parts = (lights) => [part("wheel", wheelPts.slice(0, W)), part("lights", lights)];
+  const view = [...model.pts, ...garland, ...star]; // derselbe Bildausschnitt in allen Akten
+  const Y = 0.55, gondolaOn = (k, t) => 0.25 + smooth((t - 0.8 - k * 0.5) / 0.45);
+  const wheelLight = (j, t, fade) => (model.kind[j] === 0 ? 1 + (chase(model.u[j], t, 0.09, 0.25, 0.95, 1.3) - 1) * fade : 1);
+  return { beats: [
+    { ...act(parts(paint(garland, lightsColour)), { caption: "Ein Riesenrad zeichnet sich in den Himmel", hold: 3.2, live: (b, j, t, o) => {
+      if (j < W) o[3] = model.kind[j] === 2 ? 0.25 : trace(rank[j], t, 2.6);
+      else o[3] = chase((j - W) / L, t, 0.2, 0.2, 0.9, 1.3);
+      yaw(o, Y);
+    } }), fitPts: view },
+    { ...act(parts(paint(garland, lightsColour)), { caption: "es dreht sich, die Gondeln leuchten nacheinander auf", hold: 6.5, live: (b, j, t, o) => {
+      if (j < W) { turnWheel(model, j, t * SPIN, o); o[3] = model.kind[j] === 2 ? gondolaOn(model.gk[j], t) : wheelLight(j, t, smooth(t / 1.2)); }
+      else o[3] = chase((j - W) / L, t, 0.2, 0.2, 0.9, 1.3);
+      yaw(o, Y);
+    } }), fitPts: view },
+    { ...act(parts(paint(star, lightsColour)), { caption: "…und über ihm blüht ein Stern", clock: "continue", live: (b, j, t, o) => {
+      if (j < W) { turnWheel(model, j, t * SPIN, o); o[3] = model.kind[j] === 2 ? 1.25 : wheelLight(j, t, 1); yaw(o, Y); return; }
+      const r = Math.hypot(b[0] - BURST[0], b[1] - BURST[1]) / BR, [a] = burstLight(r, t, 3.4, 0.3); o[3] = a;
+    } }), fitPts: view },
   ] };
 };

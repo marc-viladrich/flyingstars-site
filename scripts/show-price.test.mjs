@@ -72,14 +72,15 @@ test('Freischalten: auch ein Paketwechsel meldet alle neuen Motive, in der Reihe
       assert.deepEqual(freshMotifs(o.motifs, b, a).filter((m) => fresh.includes(m)), [], 'zurück: nichts davon ist neu');
     }
   }
-  // Hochzeit (vierzehnte Fassung, Teil B): Lotusblüten gibt es nur als ODYSSEY-Geschichte ab 300, den Antrag ab 450.
-  // Der Paketwechsel HORIZON → ODYSSEY schaltet die Lotusblüten frei, der Sprung bis 600 beide auf einmal.
+  // Hochzeit (sechzehnte Fassung, Freischalt-Leiter): Schmetterling ab SPARK 150, Lotusblüten ab HORIZON 250, Antrag
+  // ab ODYSSEY 450. Wer mit 100 Drohnen auf HORIZON klickt (200), bekommt den Schmetterling gemeldet.
   const wedding = OCCASIONS.find((o) => o.id === 'hochzeit').motifs, ids = (list) => list.map((m) => m.id);
-  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 290 }, { pkg: 'ODYSSEY', drones: 300 })), ['lotus']);
-  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 290 }, { pkg: 'ODYSSEY', drones: 600 })), ['lotus', 'antrag']);
+  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'SPARK', drones: 140 }, { pkg: 'SPARK', drones: 150 })), ['falter']);
+  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'SPARK', drones: 100 }, { pkg: 'HORIZON', drones: 200 })), ['falter']);
+  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 240 }, { pkg: 'HORIZON', drones: 250 })), ['lotus']);
+  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 290 }, { pkg: 'ODYSSEY', drones: 300 })), []);
+  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 200 }, { pkg: 'ODYSSEY', drones: 600 })), ['lotus', 'antrag']);
   assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'ODYSSEY', drones: 440 }, { pkg: 'ODYSSEY', drones: 450 })), ['antrag']);
-  // jeder Anlass hat beim Einstieg in ODYSSEY mindestens ein neues Motiv (Schwelle UNLOCK[0] = 300)
-  for (const o of OCCASIONS) assert.ok(freshMotifs(o.motifs, { pkg: 'HORIZON', drones: 290 }, { pkg: 'ODYSSEY', drones: 300 }).length >= 1, o.id);
   assert.equal(unlockNote([{ label: 'Ring' }]), 'Neues Motiv freigeschaltet: Ring');
   assert.equal(unlockNote([{ label: 'Ring' }, { label: 'Lotusblüten' }, { label: 'Herz' }]), '3 neue Motive: Ring, Lotusblüten, Herz');
 });

@@ -28,5 +28,9 @@ export default defineConfig({
     '/projekte/puma-bundesliga': '/puma-bundesliga/',
     '/leistungen': '/drohnenshow-preise/',
     '/warum-wir': '/ueber-uns/',
+    // Sechzehnte Fassung des Konfigurators (31.10.2026): er steht als Komponente direkt auf der Preisseite. Achtung: Die
+    // statische Weiterleitung (meta refresh) verliert Query-Parameter; Direktlinks zeigen deshalb auf
+    // /drohnenshow-preise/?anlass=…#konfigurator.
+    '/show-konfigurator': '/drohnenshow-preise/#konfigurator',
   },
 });

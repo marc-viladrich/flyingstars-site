@@ -6,6 +6,9 @@ import { test, expect, type Page } from '@playwright/test';
 // runs on the virtual show clock. Shape counts, prices and the data model are unit-tested in scripts/show-*.test.mjs,
 // the motion in tests/show-physics.spec.ts.
 
+// Sechzehnte Fassung (31.10.2026): der Konfigurator ist eine Komponente auf der Preisseite (/show-konfigurator/ leitet
+// dorthin weiter). CFG_PATH stellt eine andere Seite ein, z. B. die Prüfseite /poc/konfigurator-teaser/.
+const CFG = process.env.CFG_PATH ?? '/drohnenshow-preise/';
 const OCCASIONS = ['hochzeit', 'jubilaeum', 'launch', 'kultur', 'silvester', 'festival'];
 const STEPS = [['SPARK', '7.900', '100'], ['HORIZON', '15.900', '200'], ['ODYSSEY', '34.900', '300']] as const;
 const occasion = (page: Page, id: string) => page.locator(`label:has([name=occasion][value=${id}])`).click();
@@ -37,7 +40,7 @@ test('Preis nur über den Aufwand; jeder Anlass zeigt drei Motive, jedes Bild mi
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await paused(page);
-  await page.goto('/show-konfigurator/');
+  await page.goto(CFG);
   await expect(page.locator('#cfg-motifs')).toHaveCount(0); // motifs are not chosen, they play
   const singles = new Set<string>();
   for (const id of OCCASIONS) {
@@ -59,7 +62,7 @@ test('Preis nur über den Aufwand; jeder Anlass zeigt drei Motive, jedes Bild mi
 });
 
 test('Der Anlass ändert weder Paket noch Preis', async ({ page }) => {
-  await page.goto('/show-konfigurator/');
+  await page.goto(CFG);
   await pkg(page, 2);
   for (const id of OCCASIONS) {
     await occasion(page, id);
@@ -69,14 +72,17 @@ test('Der Anlass ändert weder Paket noch Preis', async ({ page }) => {
 });
 
 test('Die Motive laufen von selbst durch, ein Paketwechsel bleibt beim Motiv', async ({ page }) => {
-  await page.goto('/show-konfigurator/');
+  await page.goto(CFG);
   await occasion(page, 'launch'); await pkg(page, 0);
   await expect(scene(page)).toHaveText('Rakete mit Flamme');
   await expect(scene(page)).toHaveText('Beispiel-Logo mit Lichtlauf', { timeout: 15_000 }); // the show moves on by itself
   await pkg(page, 1);
   await expect(scene(page)).toHaveText('Beispiel-Logo in 3D mit Lichtschimmer'); // same motif, next package
-  // ODYSSEY has a motif HORIZON does not have (Mondlandung, ab 300): the switch announces it and goes there
+  // sechzehnte Fassung: ODYSSEY mit 300 Drohnen bleibt beim Motiv; die Mondlandung kommt erst ab 450 (Freischalt-Leiter)
   await pkg(page, 2);
+  await expect(scene(page)).toHaveText('Euer Logo');
+  await page.locator('#cfg-drones').focus();
+  for (let i = 0; i < 15; i++) await page.keyboard.press('ArrowRight');
   await expect(page.locator('#cfg-toast')).toHaveText('Neues Motiv freigeschaltet: Mondlandung');
   await expect(scene(page)).toHaveText('im Orbit um einen Planeten');
 });
@@ -86,7 +92,7 @@ test('Dasselbe Motiv wird mit dem Paket größer', async ({ page }) => {
   const areas: number[] = [];
   // per link: a click on ODYSSEY would fly on to the motif it unlocks (Kopfsprung, ab 300)
   for (const k of [0, 2]) {
-    await page.goto(`/show-konfigurator/?anlass=jubilaeum&paket=${STEPS[k][0]}&motiv=wappen`);
+    await page.goto(`${CFG}?anlass=jubilaeum&paket=${STEPS[k][0]}&motiv=wappen`);
     await expect(scene(page)).toHaveText(k === 0 ? 'Wappen mit Stern und wehender Fahne' : '…mit Krone und kreisendem Sternenkranz');
     await page.waitForTimeout(300);
     areas.push((await picture(page)).area);
@@ -95,7 +101,7 @@ test('Dasselbe Motiv wird mit dem Paket größer', async ({ page }) => {
 });
 
 test('Jedes Paket bewegt sich nach dem Aufbau weiter', async ({ page }) => {
-  await page.goto('/show-konfigurator/');
+  await page.goto(CFG);
   await occasion(page, 'launch');
   const frame = () => field(page).evaluate((c) => (c as HTMLCanvasElement).toDataURL());
   for (const [k, caption] of [[0, 'Rakete mit Flamme'], [1, 'Die Rakete als Körper schwebt und dreht sich']] as const) {
@@ -109,8 +115,8 @@ test('Jedes Paket bewegt sich nach dem Aufbau weiter', async ({ page }) => {
 });
 
 test('ODYSSEY erzählt jedes Motiv in Akten, ↻ beginnt die Show von vorn', async ({ page }) => {
-  await page.goto('/show-konfigurator/');
-  await page.goto('/show-konfigurator/?anlass=launch&paket=ODYSSEY&motiv=idee');
+  await page.goto(CFG);
+  await page.goto(`${CFG}?anlass=launch&paket=ODYSSEY&motiv=idee`);
   await expect(scene(page)).toHaveText('Ein Glühfaden glimmt');
   await expect(scene(page)).toHaveText('um ihn formt sich die Glühbirne', { timeout: 20_000 });
   await page.locator('#cfg-track').focus();
@@ -120,7 +126,7 @@ test('ODYSSEY erzählt jedes Motiv in Akten, ↻ beginnt die Show von vorn', asy
 
 test('Paketknöpfe lassen sich per Tastatur wählen', async ({ page }) => {
   await paused(page);
-  await page.goto('/show-konfigurator/');
+  await page.goto(CFG);
   await page.locator('label:has([name=pkg][value="1"]) input').focus();
   await page.keyboard.press('ArrowRight');
   await expect(page.locator('label:has([name=pkg][value="2"]) input')).toBeChecked();
@@ -129,14 +135,14 @@ test('Paketknöpfe lassen sich per Tastatur wählen', async ({ page }) => {
 });
 
 test('Auf den ersten Blick: Anlass, Aufwand, Preis und Anfrage', async ({ page }, info) => {
-  await page.goto('/show-konfigurator/');
+  await page.goto(CFG);
   await expect(page.locator('[name=pkg]').first()).toBeAttached();
   if (info.project.name === 'mobile') { await expect(page.locator('#cfg-bar-cta')).toBeInViewport(); await expect(page.locator('.cfg-pkgs')).toBeInViewport({ ratio: 1 }); }
   else { await expect(page.locator('#cfg-cta')).toBeInViewport(); await expect(page.locator('.cfg-pkgs')).toBeInViewport({ ratio: 1 }); }
 });
 
 test('Die Anfrage übernimmt Anlass, Motive und Paket', async ({ page }) => {
-  await page.goto('/show-konfigurator/');
+  await page.goto(CFG);
   await occasion(page, 'launch');
   await pkg(page, 0);
   await page.locator('#cfg-cta').click();
@@ -144,11 +150,11 @@ test('Die Anfrage übernimmt Anlass, Motive und Paket', async ({ page }) => {
   const form = page.locator('#inquiry-form');
   await expect(form.locator('[name=paket]:checked')).toHaveValue(/SPARK/); // seit der Designsprache-Übertragung (Lead) eine Auswahl statt eines Feldes
   await expect(form.locator('[name=anlass][value=firma]')).toBeChecked();
-  await expect(form.locator('[name=message]')).toHaveValue('Anlass: Launch\nBeispielmotive: Rakete, Logo, Glühbirne, QR-Code, Spirale\nAufwand: Klassisch in 2D (SPARK, 100 Drohnen, ab 7.900 € netto, Preis laut Konfigurator)');
+  await expect(form.locator('[name=message]')).toHaveValue('Anlass: Launch\nBeispielmotive: Rakete, Logo, Glühbirne\nAufwand: Klassisch in 2D (SPARK, 100 Drohnen, ab 7.900 € netto, Preis laut Konfigurator)');
 });
 
 test('Nach schnellem Umschalten leuchten nie mehr Drohnen, als das Paket hat', async ({ page }) => {
-  await page.goto('/show-konfigurator/');
+  await page.goto(CFG);
   await occasion(page, 'kultur'); await pkg(page, 2); await page.waitForTimeout(400);
   for (const [id, k] of [['silvester', 0], ['launch', 1], ['hochzeit', 0], ['jubilaeum', 1]] as const) {
     await occasion(page, id); await pkg(page, k); await page.waitForTimeout(250);
@@ -161,11 +167,11 @@ test('Nach schnellem Umschalten leuchten nie mehr Drohnen, als das Paket hat', a
 
 test('Die Bilder lassen sich vor und zurück schalten, im Kreis', async ({ page }) => {
   await paused(page);
-  await page.goto('/show-konfigurator/');
+  await page.goto(CFG);
   await occasion(page, 'launch'); await pkg(page, 0);
   await expect(scene(page)).toHaveText('Rakete mit Flamme');
-  await page.locator('#cfg-prev').click(); // before the first picture comes the last one
-  await expect(scene(page)).toHaveText('Eine Spirale, Licht läuft nach innen');
+  await page.locator('#cfg-prev').click(); // before the first picture comes the last one (SPARK 100: Rakete, Logo, Glühbirne)
+  await expect(scene(page)).toHaveText('Eine Glühbirne: die Idee');
   await page.locator('#cfg-next').click(); // after the last picture comes the first one
   await expect(scene(page)).toHaveText('Rakete mit Flamme');
   await page.locator('#cfg-next').click();
@@ -173,18 +179,18 @@ test('Die Bilder lassen sich vor und zurück schalten, im Kreis', async ({ page 
   await expect(scene(page)).toHaveText('Eine Glühbirne: die Idee');
   await pkg(page, 1);
   await expect(scene(page)).toHaveText('Die Glühbirne in 3D, der Glühfaden leuchtet');
-  // ODYSSEY brings the Mondlandung (only as a story, ab 300): the stage goes there, paused at the story's end
+  // ODYSSEY bleibt bei der Glühbirne (sechzehnte Fassung), pausiert am Ende ihrer Geschichte; zurück geht es Akt für Akt
   await pkg(page, 2);
-  await expect(scene(page)).toHaveText('…und landet auf dem Mond. Flagge gehisst!');
+  await expect(scene(page)).toHaveText('…und sie strahlt');
   await page.locator('#cfg-prev').click();
-  await expect(scene(page)).toHaveText('im Orbit um einen Planeten');
+  await expect(scene(page)).toHaveText('um ihn formt sich die Glühbirne');
 });
 
 test('Eigener Text: einmal durch Schreibschrift, Druckschrift und Initialen, die Auswahl folgt der Bühne; dann die Motive', async ({ page }) => {
   test.setTimeout(90_000);
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto('/show-konfigurator/');
+  await page.goto(CFG);
   await occasion(page, 'hochzeit'); await pkg(page, 0);
   await page.locator('[data-rate="2"]').click();
   await expect(page.locator('#cfg-styles')).toBeHidden();
@@ -219,14 +225,14 @@ test('Eigener Text: einmal durch Schreibschrift, Druckschrift und Initialen, die
 });
 
 test('Direktlink öffnet Anlass, Paket und Motiv', async ({ page }) => {
-  await page.goto('/show-konfigurator/?anlass=launch&paket=HORIZON&motiv=rakete');
+  await page.goto(`${CFG}?anlass=launch&paket=HORIZON&motiv=rakete`);
   await expect(page.locator('[name=occasion][value=launch]')).toBeChecked();
   await expect(page.locator('#cfg-pkg')).toHaveText('HORIZON');
   await expect(scene(page)).toHaveText('Die Rakete als Körper schwebt und dreht sich');
 });
 
 test('SPARK lässt Motive aus, die 100 Drohnen nicht tragen; der Paketwechsel springt aufs nächste Motiv', async ({ page }) => {
-  await page.goto('/show-konfigurator/?anlass=festival&paket=ODYSSEY&motiv=drache');
+  await page.goto(`${CFG}?anlass=festival&paket=ODYSSEY&motiv=drache`);
   await expect(scene(page)).toHaveText('Ein Drache steigt auf');
   await pkg(page, 0);
   await expect(scene(page)).toHaveText('Ein Kompass, die Nadel sucht den Norden'); // the dragon is the last motif: round the loop
@@ -237,7 +243,7 @@ test('SPARK lässt Motive aus, die 100 Drohnen nicht tragen; der Paketwechsel sp
 
 test('Die Vorschau zeigt nur das Paket; Bildbeschreibung bleibt für assistive Technik verfügbar', async ({ page }) => {
   await paused(page);
-  await page.goto('/show-konfigurator/');
+  await page.goto(CFG);
   await expect(page.locator('#cfg-count')).toHaveCount(0);
   await expect(page.locator('.cfg-caption')).toHaveText('HORIZON');
   for (const id of OCCASIONS) {
@@ -260,7 +266,7 @@ test('Der Drohnenregler wechselt an der Bereichsgrenze sichtbar das Paket, mit e
   test.skip(info.project.name === 'mobile', 'Maus-Ziehen auf dem Desktop; die Tastatur deckt dieselbe Logik ab.');
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto('/show-konfigurator/');
+  await page.goto(CFG);
   await pkg(page, 0);
   await expect(droneCount(page)).toHaveText('100');
   await expect(page.locator('#cfg-price')).toHaveText('ab 7.900 €');
@@ -302,7 +308,7 @@ test('Der Drohnenregler wechselt an der Bereichsgrenze sichtbar das Paket, mit e
 
 test('Kein Hin und Her zwischen SPARK und HORIZON: Ziehen und Verweilen mit echter Maus', async ({ page }, info) => {
   test.skip(info.project.name === 'mobile', 'Maus auf dem Desktop.');
-  await page.goto('/show-konfigurator/');
+  await page.goto(CFG);
   await pkg(page, 0);
   // every change of the package label, in order
   await page.locator('#cfg-pkg').evaluate((node) => { const w = window as unknown as { __pkgs: string[] }; w.__pkgs = [node.textContent ?? '']; new MutationObserver(() => w.__pkgs.push(node.textContent ?? '')).observe(node, { childList: true, characterData: true, subtree: true }); });
@@ -328,7 +334,7 @@ test('Mehr Drohnen schalten ein Motiv frei: Meldung auf der Bühne, die Bühne f
   test.skip(info.project.name === 'mobile', 'Maus auf dem Desktop.');
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto('/show-konfigurator/');
+  await page.goto(CFG);
   await occasion(page, 'hochzeit'); await pkg(page, 2);
   await page.locator('#cfg-cta').evaluate((a) => a.getAttribute('href')).then((href) => expect(decodeURIComponent(href ?? '')).not.toContain('Antrag'));
   await page.locator('#cfg-field').evaluate((node) => { const w = window as unknown as { __clouds: string[] }; w.__clouds = []; new MutationObserver(() => w.__clouds.push((node as HTMLElement).dataset.cloud ?? '')).observe(node, { attributes: true, attributeFilter: ['data-cloud'] }); });
@@ -348,7 +354,7 @@ test('Mehr Drohnen schalten ein Motiv frei: Meldung auf der Bühne, die Bühne f
 test('Vorführ-Steuerung: Pause friert das Bild ein, Tempo und Bildsprung über die Spur', async ({ page }, info) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto('/show-konfigurator/?anlass=launch&paket=ODYSSEY&motiv=idee');
+  await page.goto(`${CFG}?anlass=launch&paket=ODYSSEY&motiv=idee`);
   await expect(scene(page)).toHaveText('Ein Glühfaden glimmt');
   const frame = () => field(page).evaluate((c) => (c as HTMLCanvasElement).toDataURL());
   await page.waitForTimeout(800);
@@ -378,7 +384,7 @@ test('Vorführ-Steuerung: Pause friert das Bild ein, Tempo und Bildsprung über 
 test('Große Bildschirme: Bedienung links, Bühne rechts; mobil gestapelt', async ({ page }, info) => {
   for (const [w, h] of info.project.name === 'mobile' ? [[390, 844]] : [[1440, 900], [2560, 1440]]) {
     await page.setViewportSize({ width: w, height: h });
-    await page.goto('/show-konfigurator/');
+    await page.goto(CFG);
     const panel = (await page.locator('#cfg').boundingBox())!, stage = (await page.locator('.cfg-stage').boundingBox())!;
     if (w >= 1000) {
       expect(panel.x + panel.width, `${w}: Bedienung links neben der Bühne`).toBeLessThanOrEqual(stage.x);
@@ -404,7 +410,7 @@ const beatsSeen = (page: Page) => page.evaluate(() => (window as unknown as { __
 test('Ein Klick irgendwo auf die Bühne hält an und lässt weiterlaufen; Leertaste bei Fokus auf der Bühne', async ({ page }, info) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto('/show-konfigurator/');
+  await page.goto(CFG);
   await occasion(page, 'launch');
   await page.waitForTimeout(600);
   const frame = () => field(page).evaluate((c) => (c as HTMLCanvasElement).toDataURL());
@@ -438,7 +444,7 @@ test('Ein Klick irgendwo auf die Bühne hält an und lässt weiterlaufen; Leerta
 
 test('Spur: Überfahren und Fokus zeigen, ab wie vielen Drohnen eine Sequenz möglich ist', async ({ page }, info) => {
   test.skip(info.project.name.startsWith('mobile'), 'Hover gibt es nur mit Maus; der Fokus-Fall läuft auf dem Desktop.');
-  await page.goto('/show-konfigurator/?anlass=hochzeit&paket=ODYSSEY&drohnen=600');
+  await page.goto(`${CFG}?anlass=hochzeit&paket=ODYSSEY&drohnen=600`);
   const track = page.locator('#cfg-track'), tip = page.locator('#cfg-tip');
   await expect(tip).not.toHaveClass(/is-on/);
   await expect.poll(async () => Number(await track.getAttribute('aria-valuemax'))).toBeGreaterThan(10);
@@ -461,15 +467,16 @@ test('Spur: Überfahren und Fokus zeigen, ab wie vielen Drohnen eine Sequenz mö
 test('Paketwechsel und Regler melden alle neuen Motive auf einmal und fliegen zum ersten', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto('/show-konfigurator/');
-  await occasion(page, 'hochzeit'); await pkg(page, 1);
+  await page.goto(CFG);
+  await occasion(page, 'hochzeit'); await pkg(page, 0);
   await page.waitForTimeout(400);
   await recordBeats(page);
-  // HORIZON → ODYSSEY: the lotus blossoms are new (only as a story, ab 300)
-  await pkg(page, 2);
-  await expect(page.locator('#cfg-toast')).toHaveText('Neues Motiv freigeschaltet: Lotusblüten');
-  await expect(scene(page)).toHaveText('Zwei Knospen');
-  expect(await beatsSeen(page)).toEqual(expect.arrayContaining([expect.stringMatching(/:all$/)]));
+  // SPARK 100 → HORIZON 200: der Schmetterling ist neu (Freischalt-Leiter: ab SPARK 150, sechzehnte Fassung). Der
+  // Paketknopf meldet ihn und bleibt beim Motiv auf der Bühne (dasselbe Motiv, größeres Paket)
+  await expect(scene(page)).toHaveText('Zwei Eheringe, der Stein funkelt');
+  await pkg(page, 1);
+  await expect(page.locator('#cfg-toast')).toHaveText('Neues Motiv freigeschaltet: Schmetterling');
+  await expect(scene(page)).toHaveText('Ein Solitär in 3D: Ring und Brillant drehen sich');
   // HORIZON, then the slider to the end in one go: two motifs at once, the stage goes to the first
   await pkg(page, 1);
   await page.locator('#cfg-drones').focus();
@@ -477,6 +484,7 @@ test('Paketwechsel und Regler melden alle neuen Motive auf einmal und fliegen zu
   await expect(droneCount(page)).toHaveText('600');
   await expect(page.locator('#cfg-toast')).toHaveText('2 neue Motive: Lotusblüten, Antrag');
   await expect(scene(page)).toHaveText('Zwei Knospen');
+  expect(await beatsSeen(page)).toEqual(expect.arrayContaining([expect.stringMatching(/:all$/)])); // durch die Wolke
   // going down is no news
   await page.keyboard.press('Home');
   await expect(droneCount(page)).toHaveText('100');
@@ -491,7 +499,7 @@ test('Paketwechsel und Regler melden alle neuen Motive auf einmal und fliegen zu
 
 test('Lebendige Wolke beim Wechsel des Anlasses und beim Rücksprung vom letzten zum ersten Bild', async ({ page }) => {
   test.setTimeout(90_000);
-  await page.goto('/show-konfigurator/');
+  await page.goto(CFG);
   await pkg(page, 0); await occasion(page, 'launch');
   await page.waitForTimeout(500);
   await recordBeats(page);
@@ -514,7 +522,7 @@ test('Eigenes Logo per Dateiauswahl und Drag&Drop: eigenes Bild im Ablauf, die D
   test.setTimeout(90_000);
   const errors: string[] = [], requests: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto('/show-konfigurator/');
+  await page.goto(CFG);
   await occasion(page, 'hochzeit');
   await page.waitForTimeout(300);
   const storage = await page.evaluate(() => JSON.stringify([{ ...localStorage }, { ...sessionStorage }]));
@@ -569,7 +577,7 @@ test('Fünfzehnte Fassung: die Dropzone lädt beim ersten Überfahren der Bühne
   test.skip(info.project.name.startsWith('mobile'), 'Überfahren mit der Maus gibt es nur am Desktop.');
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto('/show-konfigurator/?anlass=hochzeit&paket=ODYSSEY&drohnen=440');
+  await page.goto(`${CFG}?anlass=hochzeit&paket=ODYSSEY&drohnen=440`);
   const stage = page.locator('.cfg-stage'), drop = page.locator('.cfg-drop'), b = (await stage.boundingBox())!;
   const centre = () => page.mouse.move(b.x + b.width / 2, b.y + b.height / 2, { steps: 4 });
   await page.mouse.move(b.x - 60, b.y + 40);
@@ -602,7 +610,7 @@ test('Fünfzehnte Fassung: die Dropzone lädt beim ersten Überfahren der Bühne
 
 test('Ein Klick auf die Bühne beendet die Einladung und hält die Show an', async ({ page }, info) => {
   test.skip(info.project.name.startsWith('mobile'), 'Überfahren mit der Maus gibt es nur am Desktop.');
-  await page.goto('/show-konfigurator/');
+  await page.goto(CFG);
   const stage = page.locator('.cfg-stage'), b = (await stage.boundingBox())!;
   await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2, { steps: 4 });
   await expect(stage).toHaveClass(/is-invite/);
@@ -613,7 +621,7 @@ test('Ein Klick auf die Bühne beendet die Einladung und hält die Show an', asy
 });
 
 test('Euer Text und Logo stehen bei den Auswahlen, vor Preis und Anfrage', async ({ page }) => {
-  await page.goto('/show-konfigurator/');
+  await page.goto(CFG);
   const y = async (sel: string) => (await page.locator(sel).boundingBox())!.y;
   expect(await y('#cfg-text')).toBeGreaterThan(await y('#cfg-drones'));
   expect(await y('#cfg-text')).toBeLessThan(await y('#cfg-price'));
@@ -642,7 +650,7 @@ test('Logo, Text-Durchlauf, Anlasswechsel und Rücksprung bleiben fliegbar (Gren
     return { speed, accel };
   });
   await page.clock.install();
-  await page.goto('/show-konfigurator/?anlass=hochzeit&paket=ODYSSEY&drohnen=600');
+  await page.goto(`${CFG}?anlass=hochzeit&paket=ODYSSEY&drohnen=600`);
   await page.clock.runFor(1000);
   await page.evaluate(() => { (window as unknown as { __showTrace: unknown[] }).__showTrace = []; });
   await page.locator('#cfg-file').setInputFiles({ name: 'logo.png', mimeType: 'image/png', buffer: LOGO_PNG });
@@ -656,4 +664,26 @@ test('Logo, Text-Durchlauf, Anlasswechsel und Rücksprung bleiben fliegbar (Gren
   const { speed, accel } = await measure();
   expect.soft(speed, 'speed').toBeLessThanOrEqual(LIMITS.speed);
   expect.soft(accel, 'acceleration').toBeLessThanOrEqual(LIMITS.accel);
+});
+
+test('Sechzehnte Fassung: gesperrte Motive stehen neben der Spur, ein Klick stellt ihre Drohnenzahl ein', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  await page.goto(`${CFG}?anlass=hochzeit&paket=HORIZON`);
+  const locks = page.locator('#cfg-locks .cfg-lock');
+  await expect(locks).toHaveCount(2);
+  await expect(locks.nth(0)).toHaveAttribute('aria-label', 'Lotusblüten: ab 250 Drohnen, Drohnenzahl auf 250 stellen');
+  await expect(locks.nth(1)).toHaveAttribute('aria-label', 'Antrag: ab 450 Drohnen, Drohnenzahl auf 450 stellen');
+  await locks.nth(0).focus();
+  await expect(page.locator('#cfg-tip')).toHaveClass(/is-on/);
+  await expect(page.locator('#cfg-tip')).toHaveText('Lotusblüten · ab 250 Drohnen');
+  await page.keyboard.press('Enter');
+  await expect(page.locator('#cfg-dronecount')).toHaveText('250');
+  await expect(page.locator('#cfg-toast')).toHaveText('Neues Motiv freigeschaltet: Lotusblüten');
+  await expect(scene(page)).toHaveText('Zwei Lotusblüten in 3D drehen sich ineinander');
+  await expect(locks).toHaveCount(1);
+  // SPARK mit 100 Drohnen: drei Motive spielen, drei sind gesperrt (150, 250, 450)
+  await pkg(page, 0);
+  await expect(locks).toHaveCount(3);
+  expect(errors).toEqual([]);
 });

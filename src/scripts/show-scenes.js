@@ -120,14 +120,16 @@ const nearWhite = (r, g, b) => Math.min(r, g, b) > 190 && Math.max(r, g, b) - Ma
  * with their own colours keep them.
  * Zwölfte Fassung: the last picture of every motif stands TEMPO.hold (3 s) in every package.
  * Dreizehnte Fassung (Marc, 30.10.2026):
- * - A motif may need a minimum drone count (`minDrones` am Motiv, vierzehnte Fassung, see UNLOCK in
- *   content/show-configurator.js); below it the motif is not part of the show.
+ * - A motif may need a minimum drone count (`minDrones` an der Fassung, seit der sechzehnten Fassung je Paket, see
+ *   LADDER in content/show-configurator.js); below it the motif is not part of the show.
  * - The light run only where it fits (runFits() in show-tempo.js: lines and outlines without their own light).
  * - The living cloud every three to four pictures, at most five (planClouds() in scenes/interludes.js); builders may
  *   ask for it inside a story, also for single parts (beat.cloud = ["star"]).
  */
 export async function buildSequence(motifs, pkg, n, tint, occasion = "") {
-  const beats = [], shown = motifs.map((m, segment) => [m, segment]).filter(([m]) => m.tiers[pkg] && (m.minDrones ?? 0) <= n); // a motif may skip a package or need more drones (minDrones, vierzehnte Fassung)
+  // a motif may skip a package or need more drones: minDrones an der Fassung des Pakets (Freischalt-Leiter, sechzehnte
+  // Fassung, content/show-configurator.js)
+  const beats = [], shown = motifs.map((m, segment) => [m, segment]).filter(([m]) => m.tiers[pkg] && (m.tiers[pkg].minDrones ?? 0) <= n);
   const plan = transitions(occasion, shown.length, pkg);
   const tinted = (pts) => (tint ? pts.map((p) => (nearWhite(p[3], p[4], p[5]) ? [p[0], p[1], p[2], ...mix(WARM, tint, 0.7)] : p)) : pts);
   // a transition belongs to the next motif, so a package switch never lands on a figure
@@ -188,7 +190,23 @@ async function buildBeats(version, n) {
   // Die Rakete endet im Orbit, die Mondlandung beginnt dort; die Masken enden beim Theaterzeichen, der Bokkenrijders-
   // Teufel steht für sich; die Uhr endet mit dem neuen Jahr, der Sektkorken knallt im eigenen Motiv.
   const slice = async (build, from, to) => { const all = await buildBeats({ ...version, build }, n); return { ...all, beats: all.beats.slice(from, to) }; };
+  // Sechzehnte Fassung (Freischalt-Leiter): drei weitere lange Geschichten aus scenes/ sind geteilt, ihr Schluss ist ein
+  // eigenes Motiv ab ODYSSEY 450. Kopfsprung endet bei den Ringen, daraus wird die Medaille mit eurer Zahl; das Feuerwerk endet nach den
+  // Wellen, das Finale (alle Sterne, Goldregen) steht für sich; die Reise endet bei der Route, der Papierflieger fliegt
+  // sie ab und kreist um den Kompass. Die Teile stehen in der Motivliste direkt hintereinander, ab 450 läuft also wieder
+  // die ganze Geschichte.
+  const sliceExtra = async (build, from, to, first = null) => {
+    const all = await (await loadExtra())[build](n, caption, version), beats = all.beats.slice(from, to);
+    if (first) beats[0] = { ...beats[0], caption: first }; // ein Motiv, das mitten in einer Geschichte beginnt, bekommt einen eigenen ersten Satz
+    return { ...all, beats };
+  };
   switch (version.build) {
+    case "diveStory": if (!version.whole) return sliceExtra("diveStory", 0, 4); break;
+    case "medalStory": return sliceExtra("diveStory", 4, 5, "Die Ringe im Wasser werden zu eurer Zahl");
+    case "fireworkStory": if (!version.whole) return sliceExtra("fireworkStory", 0, 3); break;
+    case "fireworkFinale": return sliceExtra("fireworkStory", 3, 5);
+    case "travelStory": if (!version.whole) return sliceExtra("travelStory", 0, 4); break;
+    case "planeStory": return sliceExtra("travelStory", 4, 6, "Ein Papierflieger fliegt die Route ab");
     case "rocketLaunch": return slice("rocketStory", 0, 3);
     case "moonStory": return slice("rocketStory", 2, 4);
     case "maskStory": if (!version.whole) return slice("maskStoryAll", 0, 3); break;

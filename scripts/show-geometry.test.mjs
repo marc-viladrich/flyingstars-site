@@ -47,18 +47,19 @@ test('Motivformen haben genau die verlangte Punktzahl', () => {
   }
 });
 
-test('Jeder Anlass hat vier bis sechs Motive, SPARK mindestens drei, ODYSSEY alle; Geschichten-Motive nur ab ihrer Drohnenzahl', () => {
+test('Jeder Anlass hat vier bis sechs Motive, SPARK mindestens drei, ODYSSEY alle; jede Fassung hat ihre Mindestzahl', () => {
   assert.deepEqual(STEPS.map((s) => s.pkg), PACKAGE_ORDER);
   for (const occasion of OCCASIONS) {
     assert.ok(occasion.motifs.length >= 4 && occasion.motifs.length <= 6, occasion.id);
     assert.ok(occasion.motifs.filter((m) => m.tiers.SPARK).length >= 3, `${occasion.id}: SPARK keeps at least three motifs`);
     for (const motif of occasion.motifs) {
-      // SPARK may leave out a motif that 100–150 drones cannot draw; a story motif (vierzehnte Fassung) exists only in
-      // ODYSSEY and carries minDrones; every motif has an ODYSSEY version, and SPARK ⊆ HORIZON
+      // SPARK may leave out a motif that its drones cannot draw; every motif has an ODYSSEY version, a package that has
+      // the motif keeps it in every larger package (sechzehnte Fassung: Freischalt-Leiter, minDrones je Fassung)
       const builds = PACKAGE_ORDER.map((pkg) => motif.tiers[pkg]?.build).filter(Boolean);
       assert.ok(motif.tiers.ODYSSEY?.build, `${occasion.id}/${motif.id} misses ODYSSEY`);
-      if (!motif.tiers.HORIZON) assert.ok(!motif.tiers.SPARK && motif.minDrones >= 300, `${occasion.id}/${motif.id}: ODYSSEY-only needs minDrones`);
-      else assert.ok(!motif.minDrones, `${occasion.id}/${motif.id}: a motif HORIZON plays must not be locked in ODYSSEY`);
+      const first = PACKAGE_ORDER.findIndex((pkg) => motif.tiers[pkg]);
+      PACKAGE_ORDER.slice(first).forEach((pkg) => assert.ok(motif.tiers[pkg], `${occasion.id}/${motif.id}: ${pkg} fehlt nach ${PACKAGE_ORDER[first]}`));
+      for (const pkg of PACKAGE_ORDER) if (motif.tiers[pkg]) assert.ok(Number.isFinite(motif.tiers[pkg].minDrones), `${occasion.id}/${motif.id} ${pkg}: minDrones`);
       assert.equal(new Set(builds).size, builds.length, `${occasion.id}/${motif.id}: every package needs its own version`);
     }
   }

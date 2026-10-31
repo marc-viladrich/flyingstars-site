@@ -1,6 +1,6 @@
 # Show-Konfigurator (Prototyp)
 
-Stand: 30. Oktober 2026, dreizehnte Fassung (Abschnitt „Dreizehnte Fassung“ ganz unten; die zwölfte steht davor). Frühere Stände sind als Tags erhalten: `konfigurator-v6`, `konfigurator-v8`, `konfigurator-v9`, `konfigurator-v10`. Die Route ist `/show-konfigurator/`, nicht verlinkt und mit `noindex`. Der Konfigurator ist ein Vorschlag an FlyingStars und ersetzt den Preisrechner der Referenz nicht.
+Stand: 31. Oktober 2026, sechzehnte Fassung (Abschnitt „Sechzehnte Fassung“ ganz unten). Frühere Stände sind als Tags erhalten: `konfigurator-v6`, `konfigurator-v8`, `konfigurator-v9`, `konfigurator-v10`. Seit der sechzehnten Fassung ist der Konfigurator eine Komponente (`src/components/configurator/ShowConfigurator.astro`) direkt auf der Preisseite, Anker `#konfigurator`; `/show-konfigurator/` leitet dorthin weiter. Für die Startseite gibt es einen minimal interaktiven Teaser (`ConfiguratorTeaser.astro`). Der Konfigurator ist ein Vorschlag an FlyingStars.
 
 ## Das Modell: zwei Entscheidungen, die sich nicht gegenseitig verändern
 
@@ -656,3 +656,43 @@ Grundregeln bleiben: kein Einrasten, keine Finten (`scripts/show-finte.test.mjs`
   - Seiten-Gates (axe, HTML, Netzwerk) für `/show-konfigurator/` in Chromium und WebKit grün, dazu axe mit sichtbarer Meldung und Einladung
   - `astro check` 0 Fehler
   - Konsole ohne Fehler (Chromium und WebKit)
+
+
+## Sechzehnte Fassung: Freischalt-Leiter, größere Lichter, Komponente und Teaser (31.10.2026)
+
+Grundregeln bleiben: kein Einrasten, keine Finten (`scripts/show-finte.test.mjs`), keine ruhenden Wolken (`scripts/show-clouds.test.mjs`).
+
+**1. Lichter wieder größer.** Marc: „ein Stückchen größer … dann erkennt man die Motive besser und sie wirken eindrucksvoller.“
+- `dotRadius()` in `show-field.js`: Grundgröße 2,5 statt 2,1 px, auf großen Bühnen wachsen die Lichter gedämpft mit (Wurzel des Bildmaßstabs S / 300).
+- Radius in CSS-Pixeln, Fassung 14 / 15 / 16: 1440er Bühne (S ≈ 330) 2,8 / 2,1 / 2,6; 2560er Bühne (S ≈ 690) 5,8 / 2,1 / 3,8; Handy 390 (S ≈ 134) 1,2 / 1,1 / 1,3.
+- Kern, weicher Hof (`sprite()`, `haloOf()`), Dichte über 300 Drohnen und die kleineren Lichter auf kleinen Bühnen bleiben wie in Fassung 15.
+
+**2. Freischalt-Leiter in jedem Paket.** Marc: „mit mehr Drohnen neue, komplexere Motive freischalten.“ Vorher hing die Schwelle am Motiv, und es gab nur 300 (= Wechsel zu ODYSSEY) und 450 (nur Antrag); innerhalb von SPARK und HORIZON änderte der Regler nie die Motive.
+- `LADDER` in `src/content/show-configurator.js`, abgeleitet aus `DRONE_RANGES`: je Paket Einstieg und Mitte, auf 50 gerundet (SPARK 100/150, HORIZON 200/250, ODYSSEY 300/450).
+- Jedes Motiv nennt seine Sprosse (`S0`, `S1`, `H1`, `O1`); daraus bekommt jede Fassung ihr `minDrones` (im ersten Paket die Sprosse, danach der Einstieg des Pakets). `buildSequence()` und `playable()` lesen es an der Fassung.
+- Zuordnung, Begründung und neue Motive: `docs/show-motive-inventar.md`, „Freischalt-Leiter“. **Platzhalter**, geht zur Prüfung an FlyingStars.
+- Neu: Riesenrad (Stadtfest, drei Fassungen in `scenes/festival.js`), Sektflasche in HORIZON (`champagne3d` in `scenes/winter.js`). Wieder gespielt ab HORIZON 250: Lotusblüten, Kopfsprung, Drache. Geteilt (`sliceExtra()` in `show-scenes.js`): Medaille aus dem Kopfsprung, Finale aus dem Feuerwerk, Papierflieger aus der Reise; die Teile stehen in der Show direkt hintereinander.
+- Gesperrte Motive stehen als ungeleuchtete Lichtpunkte rechts neben der Spur (`#cfg-locks`, je Motiv ein Knopf). Zeigen oder Fokus: „Antrag · ab 450 Drohnen“, ein Klick stellt diese Drohnenzahl ein; die Meldung erscheint, die Bühne fliegt durch die Wolke dorthin. `unlockAt()` in `content/show-configurator.js`.
+- Die Freischalt-Meldung erscheint bei jeder Freischaltung (Regler, Lichtpunkt, Paketknopf). **Geändert:** Ein Paketknopf meldet die neuen Motive, bleibt aber beim Motiv auf der Bühne (`setDrones(…, { fly: false })`). Grund: Mit der Leiter schaltet jeder Klick von SPARK 100 auf HORIZON ein Motiv frei, und die Bühne wäre jedes Mal weggesprungen, auch weg vom eigenen Text. Regler und Lichtpunkte fliegen weiter zum neuen Motiv. Wer das alte Verhalten will: `fly: false` am Paketknopf entfernen.
+- Wächter `scripts/show-unlock.test.mjs` (unter einer Sekunde, nur Daten): am Einstieg jedes Pakets mindestens drei Motive, in jedem Paket mindestens eine Freischaltung, nie weniger Motive bei mehr Drohnen, ODYSSEY ⊇ HORIZON ⊇ SPARK, Geschichten später, `unlockAt()` und Hinweis passen zusammen.
+
+**3. Konfigurator als Komponente.** Marc: „Auf der Preisseite sollte der Konfigurator auf jeden Fall direkt angezeigt werden.“
+- `src/components/configurator/ShowConfigurator.astro`, Props `id` (Standard `konfigurator`), `headingLevel` (1 | 2, Standard 2), `heading` (Standard „Was soll am Himmel passieren?“). Sie rendert ihre eigene `<section>`, horizontal mit `var(--gutter, var(--pad))`, oben `var(--cfg-top, 84px)` für die feste Navigation.
+- Die inneren IDs bleiben `cfg-*` (höchstens ein Konfigurator je Seite).
+- Die Preisleiste auf dem Handy erscheint nur, solange der Konfigurator im Bild ist (`.cfg.is-near`).
+- Direktlinks: `/drohnenshow-preise/?anlass=launch&paket=ODYSSEY&drohnen=450&motiv=mond#konfigurator`.
+- `/show-konfigurator/` ist eine Weiterleitung in `astro.config.mjs` (`/drohnenshow-preise/#konfigurator`). Die statische Weiterleitung (meta refresh) verliert Query-Parameter; Links mit Parametern müssen direkt auf die Preisseite zeigen.
+- Die Freischalt-Meldung bricht auf dem Handy nicht mehr auf halber Breite um (Breite `fit-content` statt `left: 50%` mit Verschiebung).
+
+**4. Teaser für die Startseite.** Marc: „mit einer minimal interaktiven Version des Konfigurators schon einen Vorgeschmack geben, warum dieser Konfigurator überhaupt interessant ist.“
+- `src/components/configurator/ConfiguratorTeaser.astro` + `src/scripts/show-teaser.js`: Bühne mit derselben Engine und denselben Motiven, zwei Bedienungen (Anlass, Drohnenzahl). Darunter die Motive des Anlasses, gesperrte leise mit „ab 250“, dazu Paket und Preis live und der Knopf „Show selbst zusammenstellen“.
+- Der Knopf übergibt Anlass, Drohnenzahl und das Motiv auf der Bühne: `/drohnenshow-preise/?anlass=hochzeit&drohnen=250&motiv=lotus#konfigurator`.
+- Props: `id` (Präfix der IDs, Standard `cft`), `occasion` (Standard `hochzeit`), `drones` (Standard 200), `href` (Standard `/drohnenshow-preise/`), `cta`. Kein Section-Kopf, kein Section-Abstand.
+- Leistung: Engine und Motive laden erst, wenn der Block auf 300 px an den Viewport herankommt (IntersectionObserver, dynamischer Import). Außerhalb des Viewports, bei `html.motion-paused` und bei reduzierter Bewegung zeichnet die Engine nicht und zeigt das Motiv in Ruhe (`createField`).
+- Prüfseite (noindex): `/poc/konfigurator-teaser/` mit Konfigurator oben und Teaser unter `#teaser`.
+
+### Wie prüfen (sechzehnte Fassung)
+
+- Schnell: `node --test scripts/show-unlock.test.mjs scripts/show-price.test.mjs scripts/show-geometry.test.mjs scripts/show-counts.test.mjs scripts/show-motive15.test.mjs scripts/show-flight.test.mjs`, dazu einzeln `scripts/show-clouds.test.mjs` (etwa 30 s) und `scripts/show-finte.test.mjs` (etwa 2 min).
+- Browser: `tests/show-configurator.spec.ts` (neu: gesperrte Lichtpunkte), `tests/show-teaser.spec.ts` (Laden in der Nähe des Viewports, Freischalten, Übergabe, Pause außerhalb und bei reduzierter Bewegung), `tests/show-physics.spec.ts` (neu: SPARK 190 und HORIZON 290). Die Specs laufen standardmäßig gegen `/drohnenshow-preise/`; `CFG_PATH=/poc/konfigurator-teaser/` bzw. `TEASER_PATH=/` stellen eine andere Seite ein.
+
