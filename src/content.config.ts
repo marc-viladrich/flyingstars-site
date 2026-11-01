@@ -89,11 +89,11 @@ export const sectionSchema = z.discriminatedUnion('type', [
     }).optional().describe('Abschluss mit Anrufen/Schreiben'),
   }),
   z.object({
-    type: z.literal('cta'), kicker: z.string().optional(),
+    // Abschluss-CTA: genau ein Knopf, keine Zeile über der Überschrift (Marc, 01.11.2026: „keine multiplen CTAs“)
+    type: z.literal('cta'),
     headline: z.string().min(1),
     text: z.string().optional(),
     button: link,
-    secondary: link.optional(),
   }),
   z.object({
     type: z.literal('postList'),
@@ -292,7 +292,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
       items: z.array(z.object({ label: z.string().min(1), value: z.string().optional() })).min(1) })).min(1).max(3),
     bonus: z.object({ value: z.string().min(1), text: z.string().min(1) }).optional(),
     contact: z.string().optional().describe('Satz neben den Gesichtern'),
-    cta: link, secondary: link.optional(),
+    cta: link,
   }),
   z.object({
     // Platzbedarf als Schema (outdoor: Draufsicht der Zonen nach dem Technik-Datenblatt; indoor: Raumschnitt mit
@@ -320,7 +320,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     headline: z.string().min(1), text: z.string().optional(),
     lead: z.object({ label: z.string().optional(), title: z.string().min(1), text: z.string().optional(), image: image.optional(),
       icon: z.string().optional().describe('Lucide-Name, nur für die Aussage ohne Bild') }),
-    items: z.array(z.object({ label: z.string().min(1), value: z.string().optional(), text: z.string().min(1),
+    items: z.array(z.object({ label: z.string().min(1).optional().describe('Kleine Zeile neben dem Icon; ohne label wird value zur Überschrift der Kachel (großes Icon darüber)'), value: z.string().optional(), text: z.string().min(1),
       icon: z.string().optional().describe('Lucide-Name in kebab-case, z. B. "wind"') })).min(1).max(4),
     cta: link.optional(), faces: z.boolean().default(false).describe('Abschluss mit Gesichtern der Geschäftsführer:innen (.promise)'),
     contact: z.string().optional().describe('Satz neben den Gesichtern'),
@@ -335,8 +335,9 @@ export const sectionSchema = z.discriminatedUnion('type', [
   }),
   z.object({
     // Abschluss mit Handlung und den Gesichtern der drei Geschäftsführer:innen.
-    type: z.literal('landingCta'), kicker: z.string().optional(),
-    headline: z.string().min(1), text: z.string().optional(), button: link, secondary: link.optional(),
+    // Wie `cta`: ein Knopf, keine Zeile über der Überschrift (Marc, 01.11.2026)
+    type: z.literal('landingCta'),
+    headline: z.string().min(1), text: z.string().optional(), button: link,
   }),
   z.object({
     // Anfrage in zwei Schritten (docs/DESIGN.md). Gesichter: ohne Angabe die drei Geschäftsführer:innen.

@@ -14,5 +14,5 @@ const posts = sortPosts(await getCollection('posts', (p) => !p.data.draft));
     <SectionHead kicker="Blog" headline="Wie Drohnenshows *entstehen*." text={`Technik, Programmierung und Hintergründe, aufgeschrieben von ${AUTHOR.name} aus unserem Team.`} id="blog-h" level="h1" />
     {posts.length ? <PostGrid posts={posts} /> : <p class="lead">Bald gibt es hier die ersten Beiträge.</p>}
   </section>
-  <Cta type="cta" index={1} kicker="Anfrage" headline="Eure Frage ist nicht dabei?" text="Schreibt uns, was ihr wissen wollt. Wir antworten innerhalb von 48 Stunden." button={{ label: 'Show anfragen', href: '/kontakt/' }} secondary={{ label: 'Häufige Fragen', href: '/faq/' }} />
+  <Cta type="cta" index={1} headline="Eure Frage ist nicht dabei?" text="Schreibt uns, was ihr wissen wollt. Wir antworten innerhalb von 48 Stunden." button={{ label: 'Show anfragen', href: '/kontakt/' }} />
 </Base>

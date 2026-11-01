@@ -44,6 +44,21 @@ export const PACKAGE_DETAILS: Record<ShowPackage, PackageDetail> = {
   },
 };
 
+/** Drohnenzahl je Paket in einer Zeile, für Paketkarten und Vergleich (Marc, 01.11.2026: „ab 200 Drohnen“ statt
+ * „200 Drohnen, mehr möglich“). SPARK hat eine Obergrenze, HORIZON und ODYSSEY nicht. */
+export function dronesLine(name: ShowPackage): string {
+  const p = SHOW_PACKAGES[name];
+  return Number.isFinite(p.max) ? `${p.base} bis ${p.max} Drohnen` : `ab ${p.base} Drohnen`;
+}
+
+/** Kernpunkte der Paket-Kurzfassung (Startseite und Anlass-Seiten zeigen dieselbe Vorschau, Marc 01.11.2026). Die
+ * Drohnenzahl steht als eigene Zeile davor (dronesLine). Eine Seite kann im YAML eigene `points` setzen. */
+export const PACKAGE_POINTS: Record<ShowPackage, string[]> = {
+  SPARK: ['Formationen aus unserem Katalog', 'Bis zu vier eigene Elemente, z. B. Initialen oder Logo', 'GEMA-freie Musik'],
+  HORIZON: ['Eigene 2D-Animationen und einfaches 3D', 'Euer Logo präzise am Himmel', 'Synchron zu eurer Wunschmusik'],
+  ODYSSEY: ['Storyline mit dramaturgischer Kurve', 'Komplexe 3D-Animationen', 'Eigene Projektleitung'],
+};
+
 /** Paketkarten der Preisseite im Aufbau des Vercel-Prototyps (Marc, 31.10.2026: „besser strukturiert mit diesen Bullet
  * Points, die auch farbig sind“): Kurzbeschreibung, dann Gruppen Design & Inhalt / Musik / Service & Extras. Inhalte aus
  * der Vergleichstabelle unten (Fragebogen 21.10.), ab HORIZON nur was dazukommt („Alles aus SPARK, plus:“). */
@@ -93,9 +108,9 @@ export type Cell = string | null | true;
 export interface Row { label: string; cells?: [Cell, Cell, Cell]; all?: string }
 export const COMPARISON: Row[] = [
   { label: 'Drohnen', cells: [
-    `${SHOW_PACKAGES.SPARK.base}, bis ${SHOW_PACKAGES.SPARK.max} möglich`,
-    `${SHOW_PACKAGES.HORIZON.base}, mehr möglich`,
-    `${SHOW_PACKAGES.ODYSSEY.base}, mehr möglich`,
+    dronesLine('SPARK'),
+    dronesLine('HORIZON'),
+    dronesLine('ODYSSEY'),
   ] },
   { label: 'Mehr Drohnen', cells: [
     `+${money(SHOW_PACKAGES.SPARK.add)} € je ${SHOW_PACKAGES.SPARK.step}`,

@@ -5,8 +5,6 @@ import { getCollection, render } from 'astro:content';
 import type { Section } from '../../content.config';
 import Accent from '../Accent.astro';
 import Faces from '../Faces.astro';
-import Icon from '../Icon.astro';
-import { CONTACT } from '../people';
 import { optimizedImage } from '../../lib/media';
 type Props = Extract<Section, { type: 'faq' }> & { index: number };
 const { headline = 'Häufige Fragen', text, cta, tags, limit, openFirst, groups, closing, id = `s${Astro.props.index}`, index, kicker } = Astro.props;
@@ -35,14 +33,11 @@ const photo = closing?.image ? await optimizedImage(closing.image.src, 640) : un
       {closing && <div class="promise faq-cta">
         <Faces />
         <div class="promise-copy">
-          <span class="kicker mono">Persönlich</span>
           <G>{closing.headline}</G>
           {closing.text && <p>{closing.text}</p>}
         </div>
         <div class="actions">
           <a class="btn primary" href="/kontakt/">Show anfragen</a>
-          <a class="btn" href={CONTACT.phone.href}><Icon name="phone" class="g" />Anrufen</a>
-          <a class="btn" href={`mailto:${CONTACT.email}`}><Icon name="mail" class="g" />Schreiben</a>
         </div>
       </div>}
     </div>

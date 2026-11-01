@@ -123,6 +123,7 @@ sections:
     cta: Logo im Konfigurator ausprobieren
     loop: marke
 
+  # Kacheln ohne label (Marc, 01.11.2026): großes Icon und kleine Überschrift, „White Label“ statt „Im Hintergrund“.
   # Entwurf für Moritz: Agenturen mit Aussage-Kachel („Wir fliegen, ihr glänzt“ von der Startseite) und Gesichtern
   - type: landingBento
     id: agenturen
@@ -134,10 +135,10 @@ sections:
       title: Wir fliegen, *ihr glänzt*.
       text: Ihr bleibt bei euren Kund:innen vorn. Wie viel ihr selbst organisiert und wie viel wir übernehmen, entscheidet ihr.
     items:
-      - { icon: eye-off, label: Rolle, value: Im Hintergrund, text: "Auf Wunsch fliegen wir anonym. Euer Name steht vorn, wir liefern die Show." }
-      - { icon: file-lock, label: Vertraulichkeit, value: NDA, text: Wir unterschreiben eine Vertraulichkeitsvereinbarung. }
-      - { icon: image, label: Freigabe, value: Visualisierung, text: "Für die Abstimmung mit euren Kund:innen visualisieren wir die Motive mit deren Logo." }
-      - { icon: clipboard-list, label: Organisation, value: Projektleitung, text: "Auf Wunsch übernehmen wir die Projektleitung, mit Genehmigung, Behörden und Technik vor Ort." }
+      - { icon: eye-off, value: White Label, text: "Auf Wunsch fliegen wir anonym. Euer Name steht vorn, wir liefern die Show." }
+      - { icon: file-lock, value: Vertraulich, text: Wir unterschreiben eine Vertraulichkeitsvereinbarung. }
+      - { icon: image, value: Freigabe, text: "Für die Abstimmung mit euren Kund:innen visualisieren wir die Motive mit deren Logo." }
+      - { icon: clipboard-list, value: Projektleitung, text: "Auf Wunsch übernehmen wir die Projektleitung, mit Genehmigung, Behörden und Technik vor Ort." }
     faces: true
     contact: Erzählt uns vom Projekt eurer Kund:innen. Wir melden uns innerhalb von 48 Stunden.
     cta: { label: Als Agentur anfragen, href: "/kontakt/?anlass=agentur" }

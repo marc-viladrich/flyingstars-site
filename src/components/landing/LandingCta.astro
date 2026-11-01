@@ -5,7 +5,7 @@ import type { Section } from '../../content.config';
 import Accent from '../Accent.astro';
 import Faces from '../Faces.astro';
 type Props = Extract<Section, { type: 'landingCta' }> & { index: number };
-const { kicker, headline, text, button, secondary, index } = Astro.props;
+const { headline, text, button, index } = Astro.props;
 const id = `s${index}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 ---
@@ -13,10 +13,9 @@ const H = index === 0 ? 'h1' : 'h2';
   <div class="promise">
     <Faces />
     <div class="promise-copy">
-      {kicker && <span class="kicker mono">{kicker}</span>}
       <H id={id}><Accent text={headline} /></H>
       {text && <p>{text}</p>}
     </div>
-    <div class="actions"><a class="btn primary" href={button.href}>{button.label}</a>{secondary && <a class="btn" href={secondary.href}>{secondary.label}</a>}</div>
+    <div class="actions"><a class="btn primary" href={button.href}>{button.label}</a></div>
   </div>
 </section>

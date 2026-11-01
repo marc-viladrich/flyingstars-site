@@ -47,7 +47,6 @@ sections:
         image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Deutsche_Umwelthilfe_weiss.png, alt: Deutsche Umwelthilfe, width: 300, height: 37 }
 
   - type: cta
-    kicker: Anfrage
     headline: Euer Anlass ist nicht dabei?
     text: Schreibt uns Datum, Ort und Idee. Wir sagen euch, was möglich ist.
     button: { label: Show anfragen, href: /kontakt/ }

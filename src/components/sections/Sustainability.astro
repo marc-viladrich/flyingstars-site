@@ -7,7 +7,7 @@
 import type { Section } from '../../content.config';
 import { optimizedLogo } from '../../lib/media';
 import Icon from '../Icon.astro';
-const PICON = { eu: 'eu', repair: 'wrench', ev: 'car-front', campaign: 'megaphone', leaf: 'leaf' } as const;
+const PICON = { eu: 'eu', repair: 'wrench', ev: 'e-car', campaign: 'megaphone', leaf: 'leaf' } as const;
 type Props = Extract<Section, { type: 'sustainability' }> & { index: number };
 const { headline, text, id = 'nachhaltigkeit', facts = [], points = [], pillars = [], proofImage, proofText, campaign, index, kicker } = Astro.props;
 const headingId = `${id}-h`;

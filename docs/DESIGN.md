@@ -28,15 +28,17 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 - Hervorhebung = Verlauf auf einzelnen Begriffen (`.grad`)
 
 **Section-Köpfe (alle Seiten):** eine Komponente, `src/components/SectionHead.astro`
-- Kicker in Orange (Space Grotesk, Versalien, gesperrt) über der Headline, wie im Vercel-Prototyp. Jede Section bekommt einen (`kicker` im YAML)
+- Kicker in Orange (Space Grotesk, Versalien, gesperrt) über der Headline, wie im Vercel-Prototyp. Jede Section bekommt einen (`kicker` im YAML), außer den CTA-Kästen (Marc 01.11.: „unnötig“)
 - Headline einspaltig, kein Fülltext rechts daneben
 - Ein Satz darunter nur, wenn er eine Information trägt, die sonst fehlt
+
+**Zeilenumbruch:** Fließtext überall `text-wrap: pretty` (am `body`, vererbt sich), Überschriften `balance`. Keine einzelnen Wörter in der letzten Zeile (Marc, 01.11.2026).
 
 **Inhaltsbreite:** `--content-max: 1792px` (= 1920 − 2 × 64). Horizontaler Innenabstand jeder Section, der Navigation und des Footers ist `var(--gutter)`, nie `var(--pad)`: Ab 1920 px Fensterbreite wächst der Inhalt nicht weiter, Flächen laufen vollflächig.
 
 **Links:** `.link` in Orange mit orangefarbener Unterlinie, Linie nur so breit wie der Text (`width: fit-content`), nie über die ganze Spalte.
 
-**Icons:** nur über `src/components/Icon.astro` (Lucide, ISC, https://lucide.dev/icons; ergänzt um `eu` und `whatsapp`), einfarbig in `--accent` (`class="g"`), kein Verlauf. Keine selbst gezeichneten Icons mehr (Marc, 31.10.2026).
+**Icons:** nur über `src/components/Icon.astro` (Lucide, ISC, https://lucide.dev/icons; ergänzt um `eu`, `whatsapp` und `e-car` = Lucide-Auto mit Blitz, weil `car-front` allein nicht als Elektroauto lesbar ist), einfarbig in `--accent` (`class="g"`), kein Verlauf. Keine selbst gezeichneten Icons mehr (Marc, 31.10.2026).
 
 **Sprache:** du/ihr, nie Sie. Gendern mit Doppelpunkt (Pilot:innen). Keine pauschalen Umweltversprechen (EmpCo). Moritz verantwortet die Texte, Entwürfe sind als solche zu kennzeichnen.
 
@@ -114,13 +116,15 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 
 **Anlass-Karten:** Kicker = Zielgruppe in Orange, Titel = Nutzen. Bei mehr als vier Karten ein Slider: vier sichtbar, der Rest läuft bis an den Fensterrand und blendet aus; Saisonkarten (`season`, z. B. Silvester im November/Dezember) rücken nach vorn. Keine Karte nur zum Auffüllen des Rasters.
 
-**Paket-Kurzfassung (Startseite):** unter dem Preis 3–4 Kernpunkte, die Drohnenzahl als erster Punkt in der Paketfarbe. HORIZON trägt das Badge „Bestseller“. Klick auf eine Karte wählt das Paket im Formular vor; im Formular ist sonst nichts vorausgewählt.
+**Paket-Kurzfassung (Startseite und Anlass-Seiten, gleiche Karte):** Name klein in der Paketfarbe als Kennung, darunter mit Abstand der Preis als größtes Element, dann die Stilzeile. Nach einer Trennlinie die Drohnenzahl als eigene Gruppe in der Paketfarbe („100 bis 150 Drohnen“, „ab 200 Drohnen“, „ab 300 Drohnen“, `dronesLine()` in package-details.ts), mit Abstand darunter 3 Kernpunkte (`PACKAGE_POINTS`, eine Seite kann eigene setzen). HORIZON trägt das Badge „Bestseller“. Hover: die Karte hebt sich, kein Pfeil. Klick wählt das Paket im Formular vor; im Formular ist sonst nichts vorausgewählt.
 
-**CTA-Kästen:** schmal (max. 860 px), zentriert, Verlaufsrand, Gesichter oben bei allem, was zur Anfrage führt (`.promise`).
+**CTA-Kästen:** schmal (max. 860 px), zentriert, Verlaufsrand, Gesichter oben bei allem, was zur Anfrage führt (`.promise`). Genau ein Knopf (die Anfrage), keine Zweitknöpfe, kein Kicker (Marc, 01.11.2026). Das Schema von `cta`, `landingCta` und `landingPrice` kennt deshalb kein `secondary` und `cta`/`landingCta` keinen `kicker` mehr.
+
+**Kacheln ohne Kennzahl** (`landingBento`, Eintrag ohne `label`): großes Icon, kleine Überschrift, Text. Mit `label` bleibt die Kennzahl-Kachel (kleine Zeile neben dem Icon, große Zahl).
 
 **Referenzen mit Video:** Karten mit Showvideo zeigen das Video wie im Prototyp: die erste Karte spielt, sobald sie im Bild ist, die anderen beim Zeigen auf die Karte (Touch: im Bild). Kein Lichtpunkt-Hover auf Videokarten.
 
-**Hero:** Showreel rechts, nach links weich ins Schwarz ausgeblendet (`.hero.side`; `?hero=voll` zeigt die vollflächige Fassung), „Showreel ansehen“ öffnet ein Overlay mit Schließen-Knopf. Showreel läuft stumm im Hintergrund (ab 701 px, nicht bei reduzierter Bewegung, Pause oder Datensparmodus), „Showreel ansehen“ spielt es mit Ton. Kicker „Drohnenshows seit 2022 · DE · AT · CH · Benelux“.
+**Hero:** Showreel rechts, nach links weich ins Schwarz ausgeblendet (`.hero.side`; `?hero=voll` zeigt die vollflächige Fassung), Showreel läuft stumm im Hintergrund (ab 701 px, nicht bei reduzierter Bewegung, Pause oder Datensparmodus), sonst steht das Standbild. Kein Knopf „Showreel ansehen“ (Marc, 01.11.2026: „brauchen wir nicht“). Kicker „Drohnenshows seit 2022 · DE · AT · CH · Benelux“.
 
 **Presse und Qualität:** weiter unten (nach dem Ablauf). Logos von LBA, EASA und naturstrom tragen; TÜV-Gutachten und Haftpflicht stehen klein als Textzeile darunter (`secondary: true`).
 

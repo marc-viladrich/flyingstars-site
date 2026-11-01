@@ -27,10 +27,17 @@ const img = lead.image ? await optimizedImage(lead.image.src, 960, 720) : undefi
         {lead.text && <p>{lead.text}</p>}
       </div>
     </article>
-    {items.map((it) => (
+    {items.map((it) => it.label ? (
       <div class="lb-cell">
         <span class="lb-row">{it.icon && <Icon name={it.icon} size={20} class="g" />}<span class="mono lb-k">{it.label}</span></span>
         {it.value && <p class="lb-v">{it.value}</p>}
+        <p class="lb-t">{it.text}</p>
+      </div>
+    ) : (
+      <div class="lb-cell lb-feat">
+        <!-- Kachel ohne label (Marc, 01.11.2026, Agenturen): großes Icon, kleine Überschrift, keine Zeile neben dem Icon -->
+        {it.icon && <Icon name={it.icon} size={32} class="g lb-feat-ico" />}
+        {it.value && <T class="lb-h">{it.value}</T>}
         <p class="lb-t">{it.text}</p>
       </div>
     ))}
@@ -65,6 +72,9 @@ const img = lead.image ? await optimizedImage(lead.image.src, 960, 720) : undefi
   .lb-grid[data-n='1'] .lb-cell { grid-column: span 2; grid-row: span 2; }
   .lb-v { margin: 6px 0 0; font: 500 clamp(26px, 2.4vw, 38px)/1.05 var(--display); letter-spacing: -0.035em; color: var(--head); hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; }
   .lb-t { margin: 0; color: var(--muted); font-size: 15.5px; max-width: 40ch; }
+  .lb-feat { gap: 12px; }
+  .lb-feat :global(.lb-feat-ico) { width: 32px; height: 32px; margin-bottom: 8px; }
+  .lb-feat .lb-h { font: 500 clamp(20px, 1.6vw, 23px)/1.2 var(--display); letter-spacing: -0.015em; color: var(--head); }
   .lb-close { margin-top: clamp(32px, 4vw, 56px); }
   .lb-close > p { margin: 0; }
   .lb-more { margin-top: clamp(24px, 3vw, 40px); }

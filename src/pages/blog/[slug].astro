@@ -38,7 +38,7 @@ const updated = post.data.updated && post.data.updated.valueOf() !== post.data.d
       <p><b>{AUTHOR.name}</b> führt FlyingStars gemeinsam mit Ronja Donsbach und Erwin Wilms. Er kümmert sich um Verwaltung, Personal und Kund:innen in Deutschland und schreibt unseren Blog. <a class="link" href="/ueber-uns/#team">Das Team <span aria-hidden="true">→</span></a></p>
     </aside>
   </article>
-  <Cta type="cta" index={1} kicker="Anfrage" headline="Plant ihr eine eigene Show?" text="Datum, Ort und Anlass reichen für eine erste Einschätzung. Wir antworten innerhalb von 48 Stunden." button={{ label: 'Show anfragen', href: '/kontakt/' }} secondary={{ label: 'Pakete und Preise', href: '/drohnenshow-preise/' }} />
+  <Cta type="cta" index={1} headline="Plant ihr eine eigene Show?" text="Datum, Ort und Anlass reichen für eine erste Einschätzung. Wir antworten innerhalb von 48 Stunden." button={{ label: 'Show anfragen', href: '/kontakt/' }} />
   {more.length > 0 && <section class="section post-more" aria-labelledby="more-h">
     <SectionHead kicker="Weiterlesen" headline="Mehr aus dem Blog." id="more-h" />
     <PostGrid posts={more} level="h3" />

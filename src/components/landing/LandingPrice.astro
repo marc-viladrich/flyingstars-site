@@ -10,7 +10,7 @@ import Faces from '../Faces.astro';
 import Icon from '../Icon.astro';
 import { SHOW_PACKAGES } from '../../content/show-packages';
 type Props = Extract<Section, { type: 'landingPrice' }> & { index: number };
-const { kicker, headline, text, package: pkg, price, unit, groups, bonus, contact, cta, secondary, id = 'preise', index } = Astro.props;
+const { kicker, headline, text, package: pkg, price, unit, groups, bonus, contact, cta, id = 'preise', index } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
 const T = index === 0 ? 'h2' : 'h3';
 const orb = { SPARK: 'ring', HORIZON: 'sphere', ODYSSEY: 'torus' } as const;
@@ -47,7 +47,7 @@ const scale = p && Number.isFinite(p.max) ? `bis ${p.max} Drohnen: +${p.add.toLo
   <div class="promise lp-close">
     <Faces />
     {contact && <p>{contact}</p>}
-    <div class="actions"><a class="btn primary" href={cta.href}>{cta.label}</a>{secondary && <a class="btn" href={secondary.href}>{secondary.label}</a>}</div>
+    <div class="actions"><a class="btn primary" href={cta.href}>{cta.label}</a></div>
   </div>
 </section>
 

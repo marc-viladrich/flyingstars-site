@@ -5,7 +5,7 @@ import SectionHead from '../SectionHead.astro';
 // sonst ausführlich wie im Vercel-Prototyp: Kurzbeschreibung, Gruppen mit Punkten in der Paketfarbe (PACKAGE_FEATURES).
 import type { Section } from '../../content.config';
 import { SHOW_PACKAGES } from '../../content/show-packages';
-import { PACKAGE_FEATURES, addOnLine } from '../../content/package-details';
+import { PACKAGE_FEATURES, PACKAGE_POINTS, addOnLine, dronesLine } from '../../content/package-details';
 import Accent from '../Accent.astro';
 type Props = Extract<Section, { type: 'packages' }> & { index: number };
 const { headline, text, note, cta, compact, items, id = 'pakete', index, kicker } = Astro.props;
@@ -20,10 +20,11 @@ const packs = items.map((item) => ({ ...item, ...SHOW_PACKAGES[item.name], shape
   {compact ? (
     <div class="packs">{packs.map((p) => <a class:list={['pack', { featured: p.highlight }]} aria-labelledby={`${id}-${p.name}`} href={`/kontakt/?paket=${p.name}`} data-pick-paket={p.name} style={`--c:rgb(${p.color.join(',')})`}>
       <canvas data-orb={p.shape} data-color={p.color.join(',')} data-n={p.base} aria-hidden="true"></canvas>
-      <div><div class="name"><C id={`${id}-${p.name}`}>{p.name}</C>{p.badge && <span class="chip">{p.badge}</span>}</div><p class="price">{money(p.price)}</p>{p.label && <p class="meta mono">{p.label}</p>}{p.sky && <p class="pack-sky">{p.sky}</p>}</div>
-      <!-- Kernpunkte (Marc, 31.10.2026): Drohnenzahl als eigener Punkt in der Paketfarbe, dann was das Paket ausmacht -->
-      <ul class="pack-points"><li class="drones">{p.base} Drohnen{Number.isFinite(p.max) ? `, bis ${p.max}` : ', mehr möglich'}</li>{(p.points ?? []).map((pt) => <li>{pt}</li>)}</ul>
-      <span class="pack-go" aria-hidden="true">→</span>
+      <div class="pack-head"><div class="name"><C id={`${id}-${p.name}`}>{p.name}</C>{p.badge && <span class="chip">{p.badge}</span>}</div><p class="price">{money(p.price)}</p>{p.label && <p class="meta mono">{p.label}</p>}{p.sky && <p class="pack-sky">{p.sky}</p>}</div>
+      <!-- Drohnenzahl als eigene Gruppe in der Paketfarbe, darunter die Kernpunkte (Marc, 01.11.2026). Gleiche Vorschau auf
+           Startseite und Anlass-Seiten: Punkte aus package-details.ts, sofern die Seite keine eigenen setzt. -->
+      <p class="pack-drones">{dronesLine(p.name)}</p>
+      <ul class="pack-points">{(p.points ?? PACKAGE_POINTS[p.name]).map((pt) => <li>{pt}</li>)}</ul>
     </a>)}</div>
   ) : (
     <div class="tiers-grid">{packs.map((p) => <article class:list={['tier', { 'is-rec': p.highlight }]} style={`--dot:rgb(${p.color.join(',')})`} aria-labelledby={`${id}-${p.name}`}>

@@ -34,7 +34,7 @@ const orb = { SPARK: 'ring', HORIZON: 'sphere', ODYSSEY: 'torus' } as const;
   />
 
   <!-- Reihenfolge (Marc, 31.10.2026): erst die Pakete, dann der Konfigurator -->
-  <ShowConfigurator id="konfigurator" headingLevel={2} kicker="Show-Konfigurator" heading="Was eure Show kostet." />
+  <ShowConfigurator id="konfigurator" headingLevel={2} kicker="Show-Konfigurator" heading="Wie komplex darf’s sein?" />
 
   <Metrics
     type="metrics"
@@ -91,7 +91,7 @@ const orb = { SPARK: 'ring', HORIZON: 'sphere', ODYSSEY: 'torus' } as const;
   <section class="section promise-sec" aria-labelledby="versprechen-h">
     <div class="promise">
       <Faces />
-      <div><span class="kicker mono">Preisversprechen</span><h2 id="versprechen-h">Günstigeres Angebot mit gleicher Leistung? Wir unterbieten es.</h2><p>Schickt uns das Vergleichsangebot. Bei gleichem Leistungsumfang machen wir euch einen besseren Preis.</p></div>
+      <div><h2 id="versprechen-h">Günstigeres Angebot mit gleicher Leistung? Wir unterbieten es.</h2><p>Schickt uns das Vergleichsangebot. Bei gleichem Leistungsumfang machen wir euch einen besseren Preis.</p></div>
       <a class="btn primary" href="/kontakt/?anliegen=vergleich">Angebot prüfen lassen</a>
     </div>
   </section>
@@ -114,6 +114,5 @@ const orb = { SPARK: 'ring', HORIZON: 'sphere', ODYSSEY: 'torus' } as const;
     headline="Noch unsicher, welches Paket?"
     text="Schickt uns Datum und Ort. Wenn ihr kein Paket auswählt, schlagen wir euch eins vor."
     button={{ label: 'Show anfragen', href: '/kontakt/' }}
-    secondary={{ label: 'Videocall vereinbaren', href: 'https://calendly.com/team-flyingstars/beratung' }}
   />
 </Base>

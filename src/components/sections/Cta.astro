@@ -4,20 +4,19 @@ import type { Section } from '../../content.config';
 import Accent from '../Accent.astro';
 import Faces from '../Faces.astro';
 type Props = Extract<Section, { type: 'cta' }> & { index: number };
-const { headline, text, button, secondary, index, kicker } = Astro.props;
+const { headline, text, button, index } = Astro.props;
 const id = `s${index}-h`;
 const H = index === 0 ? 'h1' : 'h2';
-// Abschluss-CTAs (Kontakt, Anfrage, Videocall) zeigen die Gesichter der drei Geschäftsführer:innen (Marc, 31.10.2026)
-const contact = [button.href, secondary?.href].some((h) => h && /kontakt|anfrage|calendly|mailto|tel:/.test(h));
+// Ein Knopf, keine Kicker-Zeile (Marc, 01.11.2026). Abschluss-CTAs (Kontakt, Anfrage, Videocall) zeigen die Gesichter der drei Geschäftsführer:innen (Marc, 31.10.2026)
+const contact = /kontakt|anfrage|calendly|mailto|tel:/.test(button.href);
 ---
 <section class="section" aria-labelledby={id}>
   <div class="promise">
     {contact && <Faces />}
     <div class="promise-copy">
-      {kicker && <span class="kicker mono">{kicker}</span>}
       <H id={id}><Accent text={headline} /></H>
       {text && <p>{text}</p>}
     </div>
-    <div class="actions"><a class="btn primary" href={button.href}>{button.label}</a>{secondary && <a class="btn" href={secondary.href}>{secondary.label}</a>}</div>
+    <div class="actions"><a class="btn primary" href={button.href}>{button.label}</a></div>
   </div>
 </section>

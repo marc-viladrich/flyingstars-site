@@ -115,9 +115,9 @@ sections:
     headline: Transparente Preise. Keine Überraschungen.
     text: Der Preis hängt davon ab, wie aufwendig die Bilder am Himmel sind und wie viele Drohnen fliegen.
     items:
-      - { name: SPARK, label: Klassisch in 2D, points: [Formationen aus unserem Katalog, "Bis zu vier eigene Elemente, z. B. Initialen oder Logo", GEMA-freie Musik] }
-      - { name: HORIZON, label: 3D in Bewegung, badge: Bestseller, highlight: true, points: [Eigene 2D-Animationen und einfaches 3D, Euer Logo präzise am Himmel, Synchron zu eurer Wunschmusik] }
-      - { name: ODYSSEY, label: Erzählte 3D-Show, points: [Storyline mit dramaturgischer Kurve, Komplexe 3D-Animationen, Eigene Projektleitung] }
+      - { name: SPARK, label: Klassisch in 2D }
+      - { name: HORIZON, label: 3D in Bewegung, badge: Bestseller, highlight: true }
+      - { name: ODYSSEY, label: Erzählte 3D-Show }
     note: Alle Preise netto zzgl. Anfahrt
     cta: { label: Alle Leistungen und Preise, href: /drohnenshow-preise/ }
 

@@ -95,7 +95,6 @@ sections:
     bonus: { value: "−10 %", text: "Frühbucherrabatt: Bucht ihr bis zum Jahresende für eine Hochzeit im nächsten Jahr." }
     contact: Ronja, Florian und Erwin beantworten eure Anfrage innerhalb von 48 Stunden.
     cta: { label: Hochzeitsshow anfragen, href: "#anfrage" }
-    secondary: { label: Alle Pakete, href: /drohnenshow-preise/ }
 
   # Entwurf für Moritz: Location als Schema mit Checkliste. Zonen nach dem Technik-Datenblatt 09/2026, Startfläche ohne Maß.
   - type: landingSite
@@ -139,7 +138,6 @@ sections:
     shortcut: { value: Express unter 14 Tagen, label: Aufpreis nach Aufwand }
 
   - type: landingCta
-    kicker: Überraschung
     headline: Es soll eine *Überraschung* werden?
     text: Ob Heiratsantrag oder Geschenk der Familie, wir stimmen uns nur mit euch ab. Die Startfläche richten wir abseits ein und den Startzeitpunkt planen wir mit der Location.
     button: { label: Überraschung anfragen, href: "#anfrage" }
