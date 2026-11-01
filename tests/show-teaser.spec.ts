@@ -32,7 +32,7 @@ test('Das Mockup ist Dekoration: keine Formularelemente, nur der Knopf als Tab-S
   await expect(r.locator('[data-cft=euro]')).toHaveCount(8);
   await expect(r.locator('.cft-count')).toContainText('Drohnen');
   await expect(r.locator('a:not([tabindex="-1"])')).toHaveCount(1);
-  await expect(r.locator('a.cft-cta')).toHaveText('Show selbst zusammenstellen');
+  await expect(r.locator('a.cft-cta')).toHaveText('Zum Show-Konfigurator'); // Runde 11
   await expect(r.locator('a.cft-cta')).toHaveAttribute('href', '/drohnenshow-preise/#konfigurator');
   await expect(r.locator('a.cft-hit')).toHaveAttribute('href', '/drohnenshow-preise/#konfigurator');
   await expect(r.locator('a.cft-hit')).toHaveAttribute('aria-hidden', 'true');
@@ -63,6 +63,10 @@ test('Start: erst das Logo mit wachsender Drohnenzahl, dann das Herz über die d
   await expect(on(page, 'HORIZON')).toHaveClass(/is-on/);
   await expect(count).toHaveText('300', { timeout: 10_000 }); // Amors Pfeil in 3D, dann der QR-Code
   await expect(on(page, 'ODYSSEY')).toHaveClass(/is-on/);
+  // Runde 11: der Rahmen ist zum gewählten Paket geglitten, in dessen Farbe
+  const ind = r.locator('.cft-ind');
+  await expect.poll(async () => Math.abs((await ind.boundingBox())!.x - (await on(page, 'ODYSSEY').boundingBox())!.x)).toBeLessThan(1.5);
+  await expect(ind).toHaveCSS('border-top-color', 'rgb(51, 237, 242)');
   await expect(count).toHaveText('450', { timeout: 20_000 }); // Rakete und Mondlandung
   await expect(count).toHaveText('600', { timeout: 20_000 }); // Bokkenrijders
   const steps = await page.evaluate(() => (window as unknown as { __steps: [string, number][] }).__steps);
@@ -130,3 +134,24 @@ test('Außerhalb des Viewports zeichnet die Engine nicht, bei reduzierter Bewegu
   await expect(on(page, 'ODYSSEY')).toHaveClass(/is-on/);
   expect(Number(await field(page).getAttribute('data-points'))).toBe(600);
 });
+
+test('Runde 11: der Paketrahmen gleitet beim Wechsel über Zwischenwerte, bei reduzierter Bewegung nicht', async ({ page }) => {
+  test.setTimeout(60_000);
+  await page.goto(PAGE);
+  await reach(page);
+  const r = root(page);
+  // Zwischenwerte des Rahmens mitschreiben, bis HORIZON gewählt ist (Herztunnel)
+  await page.evaluate(() => {
+    const el = document.querySelector('[data-cft-root] .cft-ind')!, w = window as unknown as { __xs: number[] };
+    w.__xs = []; const tick = () => { w.__xs.push(new DOMMatrixReadOnly(getComputedStyle(el).transform).m41); requestAnimationFrame(tick); }; tick();
+  });
+  await expect(on(page, 'HORIZON')).toHaveClass(/is-on/, { timeout: 30_000 });
+  await page.waitForTimeout(800);
+  const end = await r.locator('.cft-ind').evaluate((el) => new DOMMatrixReadOnly(getComputedStyle(el).transform).m41);
+  const xs = await page.evaluate(() => (window as unknown as { __xs: number[] }).__xs);
+  expect(end).toBeGreaterThan(20);
+  expect(xs.some((x) => x > 2 && x < end - 2), 'mindestens ein Bild mitten im Gleiten').toBe(true);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect.poll(() => r.locator('.cft-ind').evaluate((el) => Math.max(...getComputedStyle(el).transitionDuration.split(',').map(parseFloat)))).toBeLessThan(0.001); // global 0,01 ms
+});
+

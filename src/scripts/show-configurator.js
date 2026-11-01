@@ -26,7 +26,12 @@
 //   als ungeleuchtete Lichtpunkte; Hinweis „Antrag · ab 450 Drohnen“, ein Klick stellt diese Drohnenzahl ein
 // - der Konfigurator ist eine Komponente (components/configurator/ShowConfigurator.astro) im Seitenfluss der Preisseite;
 //   die Preisleiste auf dem Handy erscheint nur, solange er im Bild ist
-import { OCCASIONS, STEPS, unlockAt } from "../content/show-configurator.js";
+// Runde 11 (Marc, 1.11.2026; docs/show-konfigurator.md):
+// - der Anlass ist ein natives <select>, in der Ordnung der Startseiten-Karten; Saison-Anlässe (Silvester im November
+//   und Dezember) rücken beim Laden nach vorn (bySeason), vorausgewählt ist der erste, ?anlass=… gewinnt
+// - der gleitende Rahmen an den Paketknöpfen ist reines CSS (ShowConfigurator.astro): er folgt dem Radio, also auch dem
+//   Regler, der unten in update() das Paket umstellt
+import { OCCASIONS, STEPS, unlockAt, bySeason } from "../content/show-configurator.js";
 import { SHOW_PACKAGES, DRONE_RANGES, DRONES_MIN, packageForDrones, snapDrones, clampToPackage, configuratorPrice } from "../content/show-packages";
 import { createField } from "./show-field.js";
 import { buildSequence, preloadScenes } from "./show-scenes.js";
@@ -183,7 +188,11 @@ if (form) {
 
   // ---------- Auswahl: Anlass, Paket, Drohnenzahl, Text, Logo ----------
   const eur = (v) => `ab ${v.toLocaleString("de-DE")} €`;
-  let occasion = OCCASIONS[0], job = 0, text = "", style = "script", tour = false;
+  // Anlässe mit dem Monat des Besuchs ordnen (der Build kennt nur seinen eigenen) und den ersten wählen
+  const occSelect = $("#cfg-occasion"), ordered = bySeason(OCCASIONS);
+  occSelect.replaceChildren(...ordered.map((o) => occSelect.querySelector(`option[value="${o.id}"]`)).filter(Boolean));
+  occSelect.value = ordered[0].id;
+  let occasion = ordered[0], job = 0, text = "", style = "script", tour = false;
   let logo = null, logoId = 0, logoURL = null;
   const slider = $("#cfg-drones");
   let drones = Number(slider.value);
@@ -327,14 +336,16 @@ if (form) {
   slider.addEventListener("input", () => setDrones(Number(slider.value), { delay: 180 }));
   slider.addEventListener("change", () => setDrones(Number(slider.value)));
   // a new occasion is reached through the living cloud (Marc: „beim Wechsel des Anlasses immer“)
-  form.querySelectorAll("[name=occasion]").forEach((r) => r.addEventListener("change", () => {
-    occasion = OCCASIONS.find((o) => o.id === r.value); tour = false; fresh = []; unlockTo = null;
+  occSelect.addEventListener("change", () => {
+    const next = OCCASIONS.find((o) => o.id === occSelect.value);
+    if (!next || next === occasion) return;
+    occasion = next; tour = false; fresh = []; unlockTo = null;
     update(false, undefined, { cloud: true });
-  }));
+  });
   for (const type of ["pointerdown", "focusin"]) form.addEventListener(type, preloadScenes, { once: true });
   // deep links (?anlass=hochzeit&paket=ODYSSEY&drohnen=400&motiv=lotus): open the configurator on a motif, e.g. to send it on
   const params = new URLSearchParams(location.search), linked = OCCASIONS.find((o) => o.id === params.get("anlass"));
-  if (linked) { occasion = linked; form.querySelector(`[name=occasion][value="${linked.id}"]`).checked = true; }
+  if (linked) { occasion = linked; occSelect.value = linked.id; }
   const linkedPkg = STEPS.find((x) => x.pkg === params.get("paket")?.toUpperCase())?.pkg;
   if (linkedPkg) drones = DRONE_RANGES[linkedPkg].min;
   if (params.get("drohnen")) drones = snapDrones(Number(params.get("drohnen")) || drones);

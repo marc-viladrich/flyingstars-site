@@ -7,7 +7,7 @@
 // Drohnenzahl, die einzigen Preistreiber). Die inneren IDs bleiben cfg-*: Der Konfigurator steht höchstens einmal auf
 // einer Seite (der Teaser für die Startseite nutzt eigene IDs, ConfiguratorTeaser.astro).
 // Direktlinks lesen Query-Parameter: /drohnenshow-preise/?anlass=launch&paket=ODYSSEY&drohnen=450&motiv=mond#konfigurator
-import { OCCASIONS, STEPS } from '../../content/show-configurator.js';
+import { OCCASIONS, STEPS, bySeason } from '../../content/show-configurator.js';
 import { SHOW_PACKAGES, DRONE_RANGES, DRONES_MIN, DRONES_MAX, DRONE_STEP } from '../../content/show-packages';
 
 interface Props {
@@ -23,7 +23,9 @@ interface Props {
 const { id = 'konfigurator', headingLevel = 2, heading = 'Was soll am Himmel passieren?', kicker } = Astro.props;
 const Heading = headingLevel === 1 ? 'h1' : 'h2';
 
-const list = OCCASIONS;
+// Runde 11: Anlässe in der Ordnung der Startseiten-Karten, Saison vorn (bySeason). Der Build kennt nur seinen eigenen
+// Monat; das Skript ordnet beim Laden mit dem Monat des Besuchs neu und wählt den ersten Anlass (show-configurator.js)
+const list = bySeason(OCCASIONS);
 const start = 1;
 const money = (v: number) => `ab ${v.toLocaleString('de-DE')} €`;
 const startPkg = STEPS[start].pkg as keyof typeof SHOW_PACKAGES;
@@ -74,17 +76,27 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
       {kicker && <span class="kicker mono cfg-kicker">{kicker}</span>}
       <Heading id="cfg-h" class="cfg-h">{heading}</Heading>
 
-      <fieldset class="cfg-block">
-        <legend>Anlass</legend>
-        <div class="cfg-occasions">
-          {list.map((o, i) => <label><input type="radio" name="occasion" value={o.id} checked={i === 0} /><span>{o.label}</span></label>)}
+      <!-- Runde 11 (Marc: „nicer, eleganter Dropdown“, den Anlass wechselt man selten): natives <select> mit eigenem
+           Rahmen und Pfeil; Tastatur, Screenreader und die Auswahlliste des Geräts bleiben die des Browsers -->
+      <div class="cfg-block cfg-occasion">
+        <label for="cfg-occasion">Anlass</label>
+        <div class="cfg-select">
+          <select id="cfg-occasion" name="occasion" autocomplete="off">
+            {list.map((o, i) => <option value={o.id} selected={i === 0}>{o.label}</option>)}
+          </select>
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" /></svg>
         </div>
-      </fieldset>
+      </div>
 
       <fieldset class="cfg-block">
         <legend>Wie aufwendig?</legend>
-        <div class="cfg-pkgs">
-          {STEPS.map((s, i) => <label style={`--c: rgb(${SHOW_PACKAGES[s.pkg as keyof typeof SHOW_PACKAGES].color.join(',')})`}><input type="radio" name="pkg" value={i} checked={i === start} /><span><b>{s.pkg}</b><small>{s.label}</small></span></label>)}
+        <!-- Runde 11: ein gleitender Rahmen statt harter Wechsel. .cfg-ind-sel zeigt das gewählte Paket und gleitet beim
+             Wechsel (Klick, Tastatur, Regler) dorthin; .cfg-ind-hover gleitet gedämpft zum Paket unter der Maus. Position
+             und Farbe kommen allein aus CSS (:has), also folgt der Rahmen jeder Änderung des Radios -->
+        <div class="cfg-pkgs" style={STEPS.map((s, i) => `--c${i}: ${rgb(s.pkg as keyof typeof SHOW_PACKAGES)}`).join('; ')}>
+          {STEPS.map((s, i) => <label style={`--c: var(--c${i})`}><input type="radio" name="pkg" value={i} checked={i === start} /><span><b>{s.pkg}</b><small>{s.label}</small></span></label>)}
+          <span class="cfg-ind cfg-ind-hover" aria-hidden="true"></span>
+          <span class="cfg-ind cfg-ind-sel" aria-hidden="true"></span>
         </div>
       </fieldset>
 
@@ -112,12 +124,18 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
       </fieldset>
 
 
-      <div class="cfg-result" aria-live="polite">
-        <div class="cfg-price"><b id="cfg-pkg">{STEPS[start].pkg}</b><span id="cfg-price">{money(first.price)}</span></div>
-        <p class="cfg-meta mono" id="cfg-meta">{first.dur} · netto zzgl. Anfahrt</p>
+      <!-- Runde 11 (Marc: „crampt“): Paket, Preis, Dauer und Anfrage als eigene, geschlossene Fläche mit Abstand zur
+           Bedienung. Darunter nur noch die Einordnung der Motive. PLATZHALTER, bewusst nicht mehr sichtbar: Drohnenbereiche
+           und Aufpreise (DRONE_RANGES_PLACEHOLDER, SPARK_EXTRA in content/show-packages.ts) und die Freischalt-Leiter
+           (LADDER in content/show-configurator.js) sind nicht mit FlyingStars abgestimmt. -->
+      <div class="cfg-sum">
+        <div class="cfg-result" aria-live="polite">
+          <div class="cfg-price"><b id="cfg-pkg">{STEPS[start].pkg}</b><span id="cfg-price">{money(first.price)}</span></div>
+          <p class="cfg-meta mono" id="cfg-meta">{first.dur} · netto zzgl. Anfahrt</p>
+        </div>
+        <a class="btn primary cfg-cta" id="cfg-cta" href="/#anfrage">Mit dieser Show anfragen</a>
+        <p class="cfg-note" id="cfg-note">Alle Motive hier sind Beispiele. Für eure Show entwerfen wir eigene.</p>
       </div>
-      <a class="btn primary cfg-cta" id="cfg-cta" href="/#anfrage">Mit dieser Show anfragen</a>
-      <p class="cfg-note" id="cfg-placeholder">Prototyp: Beispielmotive; Zuordnung, Drohnenbereiche und Aufpreise sind Platzhalter.</p>
     </form>
 
     <div class="cfg-bar" aria-hidden="true"><span><b id="cfg-bar-pkg">{STEPS[start].pkg}</b> <span id="cfg-bar-price">{money(first.price)}</span></span><a class="btn small primary" href="/#anfrage" id="cfg-bar-cta" tabindex="-1">Anfragen</a></div>
@@ -133,7 +151,10 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
   /* zwei Spalten wie im ursprünglichen Entwurf: Bedienung links in fester Lesebreite, die Bühne nimmt den Rest.
      Sechzehnte Fassung: eingebettet im Seitenfluss; horizontal an der globalen Inhaltsbreite (--gutter, ab 1920 px
      gedeckelt), oben Platz für die feste Navigation (--cfg-top, eine Seite kann es überschreiben) */
-  .cfg { --cfg-gutter: var(--gutter, var(--pad)); display: grid; grid-template-columns: clamp(340px, 27vw, 500px) minmax(0, 1fr); gap: clamp(24px, 3.4vw, 72px); padding: var(--cfg-top, 84px) var(--cfg-gutter) var(--section); align-items: start; scroll-margin-top: 0; }
+  .cfg { --cfg-gutter: var(--gutter, var(--pad)); display: grid; grid-template-columns: clamp(340px, 27vw, 500px) minmax(0, 1fr); gap: clamp(24px, 3.4vw, 72px); padding: var(--cfg-top, 84px) var(--cfg-gutter) var(--section); align-items: start; scroll-margin-top: -88px; }
+  /* Runde 11: Seit der Konfigurator unter den Paketen steht, kommt man über den Anker #konfigurator hin. html hat
+     scroll-padding-top: 88px (global.css); die Section bringt den Platz für die Navigation aber schon selbst mit
+     (--cfg-top). Ohne Ausgleich landet sie 88 px zu tief, und bei 1280 × 720 rutschen Spur und Anfrage aus dem Bild */
   .cfg-noscript { padding: 0 var(--gutter, var(--pad)) var(--section); color: var(--muted); }
   .cfg-stage { order: 2; position: sticky; top: 84px; height: calc(100svh - 108px); min-height: 460px; border-radius: var(--radius); background: radial-gradient(ellipse at 50% 120%, rgba(51, 237, 242, 0.06), transparent 60%), #0a0908; border: 1px solid var(--line); overflow: hidden; }
   .cfg-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -252,29 +273,52 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
     .cfg-toast.is-on::before { animation: none; }
   }
   /* package buttons like the pricing calculator: one segment per package, the chosen one in its package colour */
-  .cfg-pkgs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 12px; }
-  .cfg-pkgs label { position: relative; cursor: pointer; }
+  .cfg-pkgs { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 12px; }
+  .cfg-pkgs label { position: relative; z-index: 1; cursor: pointer; }
   .cfg-pkgs input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
-  .cfg-pkgs span { display: grid; gap: 4px; justify-items: center; text-align: center; min-height: 52px; padding: 8px 6px; border-radius: 9px; border: 1px solid transparent; color: var(--muted); }
+  .cfg-pkgs label > span { display: grid; gap: 4px; justify-items: center; text-align: center; min-height: 52px; padding: 8px 6px; border-radius: 9px; color: var(--muted); transition: color 0.3s ease; }
   /* Runde 10 (Marc): nicht gewählte Pakete behalten ihre Farbe, gedämpft (40 % Farbe, 60 % --faint); auf --ground
      Amber 7,0:1, Orchid 5,8:1, Cyan 8,0:1 */
-  .cfg-pkgs b { font: 600 13px/1 var(--mono); letter-spacing: 0.08em; color: color-mix(in srgb, var(--c) 40%, var(--faint)); }
+  .cfg-pkgs b { font: 600 13px/1 var(--mono); letter-spacing: 0.08em; color: color-mix(in srgb, var(--c) 40%, var(--faint)); transition: color 0.3s ease; }
   .cfg-pkgs small { font-size: 12px; line-height: 1.2; }
-  .cfg-pkgs label:hover span { color: var(--text); }
-  .cfg-pkgs label:hover b { color: var(--c); }
-  .cfg-pkgs input:checked + span { color: var(--text); border-color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); }
+  .cfg-pkgs input:checked + span { color: var(--text); }
   .cfg-pkgs input:checked + span b { color: var(--c); }
   .cfg-pkgs input:focus-visible + span { outline: 3px solid var(--cyan); outline-offset: 2px; }
-  .cfg-panel { order: 1; display: grid; gap: 16px; }
-  .cfg-h { font-size: clamp(28px, 2.6vw, 40px); line-height: 1.04; letter-spacing: -0.03em; }
+  /* Runde 11 (Marc: harte Hover-Wechsel „sehen scheiße aus“): gleitender Rahmen. --i ist das gewählte Paket (0–2), --h
+     das Paket unter der Maus (ohne Maus = --i, so gleitet der Schatten beim Verlassen zurück). Die Rahmen sind so breit
+     wie eine Spalte; translateX in eigener Breite plus Spaltenabstand (4 px) */
+  .cfg-pkgs { --i: 0; --sc: var(--c0); --h: var(--i); --hc: var(--sc); }
+  .cfg-pkgs:has(input[value="1"]:checked) { --i: 1; --sc: var(--c1); }
+  .cfg-pkgs:has(input[value="2"]:checked) { --i: 2; --sc: var(--c2); }
+  .cfg-ind { position: absolute; z-index: 0; top: 4px; bottom: 4px; left: 4px; width: calc((100% - 16px) / 3); box-sizing: border-box; border-radius: 9px; border: 1px solid var(--sc); background: color-mix(in srgb, var(--sc) 14%, transparent); transform: translateX(calc(var(--i) * (100% + 4px))); transition: transform 0.45s cubic-bezier(0.3, 0.7, 0.2, 1), border-color 0.45s ease, background-color 0.45s ease; pointer-events: none; }
+  .cfg-ind-hover { border-color: var(--hc); background: color-mix(in srgb, var(--hc) 10%, transparent); transform: translateX(calc(var(--h) * (100% + 4px))); opacity: 0; transition: transform 0.35s cubic-bezier(0.3, 0.7, 0.2, 1), border-color 0.35s ease, background-color 0.35s ease, opacity 0.3s ease; }
+  /* nur mit echter Maus: auf Touch bliebe :hover nach dem Tippen hängen */
+  @media (hover: hover) {
+    .cfg-pkgs:has(label:nth-child(1):hover) { --h: 0; --hc: var(--c0); }
+    .cfg-pkgs:has(label:nth-child(2):hover) { --h: 1; --hc: var(--c1); }
+    .cfg-pkgs:has(label:nth-child(3):hover) { --h: 2; --hc: var(--c2); }
+    .cfg-pkgs:has(label:hover) .cfg-ind-hover { opacity: 0.5; }
+    .cfg-pkgs:has(label:hover input:checked) .cfg-ind-hover { opacity: 0; }
+    .cfg-pkgs label:hover span { color: var(--text); }
+    .cfg-pkgs label:hover b { color: var(--c); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cfg-ind, .cfg-pkgs label > span, .cfg-pkgs b { transition: none; }
+  }
+  /* Runde 11 (Marc: „crampt“): mehr Luft zwischen den Eingabegruppen */
+  .cfg-panel { order: 1; display: grid; gap: clamp(26px, 2.2vw, 34px); }
+  .cfg-h { font-size: clamp(28px, 2.6vw, 40px); line-height: 1.04; letter-spacing: -0.03em; text-wrap: balance; }
   .cfg-block { display: grid; gap: 8px; border: 0; margin: 0; padding: 0; min-width: 0; }
   .cfg-block > label, .cfg-block legend { font-size: 15px; color: var(--text); padding: 0; margin-bottom: 6px; }
-  .cfg-occasions { display: flex; flex-wrap: wrap; gap: 6px; }
-  .cfg-occasions label { position: relative; cursor: pointer; }
-  .cfg-occasions input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
-  .cfg-occasions span { display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line-strong); font-size: 14px; color: var(--muted); }
-  .cfg-occasions input:checked + span { color: var(--ground); background: var(--text); border-color: var(--text); }
-  .cfg-occasions input:focus-visible + span { outline: 3px solid var(--cyan); outline-offset: 2px; }
+  /* Anlass als gestaltetes natives <select> (Runde 11): Rahmen wie die übrigen Felder, eigener Pfeil, dunkle Liste */
+  .cfg-select { position: relative; }
+  .cfg-select select { -webkit-appearance: none; appearance: none; display: block; width: 100%; min-height: 48px; margin: 0; padding: 0 48px 0 16px; border: 1px solid var(--line-strong); border-radius: 12px; background: rgba(246, 241, 232, 0.03); color: var(--text); font: 500 17px/1.2 var(--display); letter-spacing: -0.01em; color-scheme: dark; cursor: pointer; transition: border-color 0.2s ease, background-color 0.2s ease; }
+  .cfg-select select:hover { border-color: rgba(246, 241, 232, 0.42); background-color: rgba(246, 241, 232, 0.06); }
+  .cfg-select select:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+  .cfg-select option { background: var(--surface-2); color: var(--text); font-family: var(--body); }
+  .cfg-select svg { position: absolute; right: 16px; top: 50%; width: 16px; height: 16px; margin-top: -8px; fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; transition: stroke 0.2s ease; }
+  .cfg-select:hover svg { stroke: var(--text); }
+  @media (prefers-reduced-motion: reduce) { .cfg-select select, .cfg-select svg { transition: none; } }
   .cfg-opt { color: var(--faint); font-size: 13px; }
   .cfg-text { width: 100%; min-height: 42px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line-strong); background: transparent; color: var(--text); font: inherit; font-size: 16px; }
   .cfg-text::placeholder { color: var(--faint); }
@@ -286,31 +330,33 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
   .cfg-styles span { display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); font-size: 14px; color: var(--muted); }
   .cfg-styles input:checked + span { color: var(--text); border-color: var(--text); }
   .cfg-styles input:focus-visible + span { outline: 3px solid var(--cyan); outline-offset: 2px; }
-  .cfg-result { display: grid; gap: 6px; padding-top: 14px; border-top: 1px solid var(--line); }
+  /* Paket, Preis, Dauer und Anfrage als eigene Fläche (Runde 11), im Stil der Karten der Site (--surface, --line) */
+  .cfg-sum { display: grid; gap: 18px; margin-top: clamp(6px, 1vw, 16px); padding: clamp(20px, 1.8vw, 28px); border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+  .cfg-result { display: grid; gap: 8px; }
   .cfg-price { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
   .cfg-price b { font: 600 clamp(24px, 2.2vw, 30px)/1 var(--display); letter-spacing: 0.02em; }
   .cfg-price span { font: 500 clamp(24px, 2.2vw, 30px)/1 var(--display); color: var(--text); }
   .cfg-meta { margin: 0; font-size: 12px; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; }
   .cfg-cta { justify-self: start; }
-  .cfg-note { margin: 0; font-size: 12.5px; color: var(--faint); line-height: 1.5; }
+  .cfg-note { margin: 0; font-size: 13px; color: var(--faint); line-height: 1.5; text-wrap: pretty; }
   .cfg-bar { display: none; }
   /* niedrige Desktop-Fenster (1280 × 720): Text und Logo stehen seit der vierzehnten Fassung bei den Auswahlen; damit
      Preis und Anfrage weiter im ersten Blick bleiben, rückt die Bedienung enger zusammen */
   @media (min-width: 1001px) and (max-height: 820px) {
-    .cfg-panel { gap: 10px; }
+    .cfg-panel { gap: 18px; }
     .cfg-h { font-size: clamp(26px, 2.2vw, 34px); }
     .cfg-text, .cfg-upload { min-height: 38px; }
     .cfg-block > label, .cfg-block legend { margin-bottom: 2px; }
-    .cfg-occasions span { min-height: 36px; }
-    .cfg-pkgs span { min-height: 46px; padding: 6px; }
-    .cfg-result { padding-top: 10px; }
+    .cfg-select select { min-height: 42px; }
+    .cfg-pkgs label > span { min-height: 46px; padding: 6px; }
+    .cfg-sum { margin-top: 2px; padding: 16px 18px; gap: 12px; }
   }
   @media (max-width: 1000px) {
     .cfg { grid-template-columns: 1fr; padding-top: 64px; gap: 22px; padding-bottom: 120px; }
     .cfg-stage { order: 0; top: 64px; z-index: 5; height: 42svh; min-height: 280px; margin: 0 calc(var(--cfg-gutter) * -1); border-radius: 0; border-left: 0; border-right: 0; }
     /* on phones the picture is the headline: the question stays for screen readers, the slider moves into view */
     .cfg-h { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-    .cfg-panel { gap: 14px; }
+    .cfg-panel { gap: 26px; }
     .cfg-caption { font-size: 13px; }
     .cfg-toast { top: 48px; max-width: calc(100% - 28px); }
     .cfg-player { left: 10px; right: 10px; bottom: 10px; gap: 2px; }
@@ -322,6 +368,6 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
     .cfg.is-near .cfg-bar { transform: none; visibility: visible; transition: transform 0.3s ease; }
     .cfg-bar b { letter-spacing: 0.06em; margin-right: 6px; }
     /* angesteuerte Felder (Fokus, Tastatur) bleiben zwischen der klebenden Bühne und der Preisleiste sichtbar */
-    .cfg-panel :is(input, button, .cfg-upload) { scroll-margin: calc(64px + max(42svh, 280px) + 16px) 0 96px; }
+    .cfg-panel :is(input, select, button, .cfg-upload) { scroll-margin: calc(64px + max(42svh, 280px) + 16px) 0 96px; }
   }
 </style>

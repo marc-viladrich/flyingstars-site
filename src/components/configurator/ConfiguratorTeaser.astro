@@ -13,6 +13,8 @@
 // Kein Section-Kopf und kein Section-Abstand: Kicker und Headline baut die Seite drumherum. Skript, Motive und Ablauf:
 // src/scripts/show-teaser.js. Leistung: lädt erst, wenn der Block auf 300 px an den Viewport herankommt; zeichnet nur,
 // solange die Bühne sichtbar ist; bei globaler Pause oder reduzierter Bewegung steht ein Motiv in Ruhe.
+// Runde 11 (Marc): Knopf „Zum Show-Konfigurator“; der Paketrahmen gleitet wie im Konfigurator zum neuen Paket
+// (.cft-ind, reines CSS über .is-on, das show-teaser.js setzt).
 import { SHOW_PACKAGES, DRONE_RANGES, DRONES_MIN, DRONES_MAX } from '../../content/show-packages';
 
 interface Props {
@@ -29,7 +31,7 @@ interface Props {
   /** Beschriftung des Knopfs */
   cta?: string;
 }
-const { id = 'cft', reel = 'start', href = '/drohnenshow-preise/#konfigurator', cta = 'Show selbst zusammenstellen' } = Astro.props;
+const { id = 'cft', reel = 'start', href = '/drohnenshow-preise/#konfigurator', cta = 'Zum Show-Konfigurator' } = Astro.props;
 type Pkg = keyof typeof SHOW_PACKAGES;
 const rgb = (k: Pkg) => `rgb(${SHOW_PACKAGES[k].color.join(',')})`;
 const at = (n: number) => ((n - DRONES_MIN) / (DRONES_MAX - DRONES_MIN)) * 100;
@@ -60,8 +62,9 @@ const labels = {
     <div class="cft-mock" aria-hidden="true">
       <div class="cft-group">
         <p class="cft-label">Paket</p>
-        <div class="cft-pkgs">
+        <div class="cft-pkgs" style={(Object.keys(SHOW_PACKAGES) as Pkg[]).map((k, i) => `--c${i}: ${rgb(k)}`).join('; ')}>
           {(Object.keys(SHOW_PACKAGES) as Pkg[]).map((k) => <span class:list={['cft-pkg', { 'is-on': k === start.pkg }]} data-cft="pkg" data-id={k} style={`--c: ${rgb(k)}`}>{k}</span>)}
+          <span class="cft-ind"></span>
         </div>
       </div>
       <div class="cft-drones">
@@ -114,9 +117,14 @@ const labels = {
   .cft-label { margin: 0; font-size: 15px; color: var(--muted); }
   /* Paketknöpfe in ihren Farben (amber, orchid, cyan); Runde 10: die nicht gewählten in ihrer Farbe gedämpft (40 % Farbe,
      60 % --faint): auf der Karte 6,7:1 / 5,6:1 / 7,7:1, also über AA */
-  .cft-pkgs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 12px; }
-  .cft-pkg { display: grid; place-items: center; min-height: 52px; border: 1px solid transparent; border-radius: 9px; font: 600 13px/1 var(--mono); letter-spacing: 0.08em; color: color-mix(in srgb, var(--c) 40%, var(--faint)); transition: border-color 0.35s ease, background 0.35s ease, color 0.35s ease; }
-  .cft-pkg.is-on { color: var(--c); border-color: var(--c); background: color-mix(in srgb, var(--c) 16%, transparent); }
+  .cft-pkgs { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 12px; }
+  .cft-pkg { position: relative; z-index: 1; display: grid; place-items: center; min-height: 52px; border-radius: 9px; font: 600 13px/1 var(--mono); letter-spacing: 0.08em; color: color-mix(in srgb, var(--c) 40%, var(--faint)); transition: color 0.35s ease; }
+  .cft-pkg.is-on { color: var(--c); }
+  /* Runde 11: ein Rahmen, der zum gewählten Paket gleitet (wie .cfg-ind im Konfigurator), Farbe des Pakets */
+  .cft-pkgs { --i: 0; --sc: var(--c0); }
+  .cft-pkgs:has([data-id=HORIZON].is-on) { --i: 1; --sc: var(--c1); }
+  .cft-pkgs:has([data-id=ODYSSEY].is-on) { --i: 2; --sc: var(--c2); }
+  .cft-ind { position: absolute; z-index: 0; top: 4px; bottom: 4px; left: 4px; width: calc((100% - 16px) / 3); box-sizing: border-box; border-radius: 9px; border: 1px solid var(--sc); background: color-mix(in srgb, var(--sc) 16%, transparent); transform: translateX(calc(var(--i) * (100% + 4px))); transition: transform 0.55s cubic-bezier(0.3, 0.7, 0.2, 1), border-color 0.55s ease, background-color 0.55s ease; }
   /* Regler mit „N Drohnen“ */
   .cft-drones { display: grid; gap: 12px; }
   .cft-count { margin: 0; font: 400 16px/1 var(--display); color: var(--muted); }
@@ -135,9 +143,9 @@ const labels = {
   .cft-cta { justify-self: start; }
   @media (prefers-reduced-motion: reduce) {
     .cft-pkg.is-press { animation: none; }
-    .cft-fill, .cft-thumb, .cft-note, .cft-hit, .cft-hit span, .cft-hit i { transition: none; }
+    .cft-fill, .cft-thumb, .cft-note, .cft-hit, .cft-hit span, .cft-hit i, .cft-ind, .cft-pkg { transition: none; }
   }
-  :global(html.motion-paused) :global(html.motion-paused) .cft-pkg.is-press { animation: none; }
+  :global(html.motion-paused) .cft-pkg.is-press { animation: none; }
   @media (max-width: 860px) {
     .cft { grid-template-columns: 1fr; gap: 16px; }
     .cft-stage { align-self: start; min-height: 340px; aspect-ratio: 1 / 1.05; }

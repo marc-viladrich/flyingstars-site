@@ -795,3 +795,34 @@ Marcs Rückmeldung zum Showreel.
 
 Im Konfigurator wird beim Zeigen auf einen Paketknopf der Name voll farbig. Beide Specs prüfen, dass die nicht gewählten Paketnamen farbig (nicht grau) sind und mindestens 4,5 : 1 erreichen.
 
+
+## Runde 11: Anlass als Dropdown, gleitender Paketrahmen, mehr Luft (1.11.2026)
+
+Marcs Rückmeldung zum Konfigurator auf der Preisseite und zum Teaser.
+
+- **Anlass als Dropdown** (Marc: Den Anlass wechselt man selten, ein „nicer, eleganter Dropdown“ reicht): ein natives `<select id="cfg-occasion">` mit eigenem Rahmen, Pfeil und dunkler Liste (`color-scheme: dark`). Die Tastatur, der Screenreader und die Auswahlliste des Geräts bleiben die des Browsers. Statt Anlass-Pills gibt es keine Radios mehr; Specs wählen per `selectOption`.
+- **Reihenfolge wie auf der Startseite** (`OCCASIONS` in `src/content/show-configurator.js`): Launch (Unternehmen), Jubiläum (auch Unternehmen), Stadtfest (Städte & Gemeinden), Hochzeit (Hochzeit & Privat), Kultur (Festivals & Konzerte), Winter & Silvester (`season: [11, 12]`). Agenturen und Indoor haben keinen eigenen Anlass. `bySeason()` im selben Modul rückt Saison-Anlässe in diesen Monaten nach vorn, mit derselben Regel wie die Anlass-Karten in `Occasions.astro` (stabil, Saison zuerst). Der Build ordnet mit seinem Monat vor, das Skript beim Laden mit dem Monat des Besuchs. Vorausgewählt ist der erste Anlass der Liste, `?anlass=…` gewinnt.
+- **Gleitender Rahmen an den Paketknöpfen** (Marc: harte Hover-Wechsel ohne Übergang): `.cfg-ind-sel` zeigt das gewählte Paket in seiner Farbe und gleitet beim Wechsel dorthin (0,45 s). `.cfg-ind-hover` gleitet beim Zeigen mit halber Deckkraft zum Paket unter der Maus. Steht die Maus auf dem gewählten Paket oder verlässt sie die Gruppe, blendet der Schatten aus und gleitet zurück. Das ist reines CSS: `:has(input[value=…]:checked)` setzt `--i` und `--sc`, `:has(label:nth-child(…):hover)` setzt `--h` und `--hc`. Deshalb folgt der Rahmen jeder Änderung des Radios, auch dem Regler. Hover gibt es nur bei `(hover: hover)`. Bei reduzierter Bewegung wechselt der Rahmen sofort. Die Beschriftung behält den Stand von Runde 10: gewählt voll farbig, die anderen gedämpft (≥ 4,5 : 1).
+  - Stolperstein: Die Regel für die Knopfbeschriftung hieß `.cfg-pkgs span` und traf auch den Rahmen (ebenfalls ein `span`). Damit überschrieb sie dessen Transition mit `color 0.3s`, und nichts glitt. Jetzt heißt sie `.cfg-pkgs label > span`.
+  - Teaser (`ConfiguratorTeaser.astro`): dieselbe Mechanik mit `.cft-ind`, gesteuert über `.is-on`, das `show-teaser.js` setzt. Ohne Hover, weil das Wireframe Dekoration ist.
+- **Mehr Luft:** Der Abstand zwischen den Eingabegruppen beträgt `clamp(26px, 2.2vw, 34px)`, vorher 16 px; bei niedrigen Desktop-Fenstern 18 px, vorher 10 px. Paket, Preis, Dauer und Anfrage stehen als eigene Fläche `.cfg-sum` im Kartenstil der Site (`--surface`, `--line`, `--radius`) mit zusätzlichem Abstand zur Bedienung.
+- **Einordnung unter dem Knopf:** „Alle Motive hier sind Beispiele. Für eure Show entwerfen wir eigene.“ (`#cfg-note`, vorher `#cfg-placeholder`). Dass Drohnenbereiche, Aufpreise und die Freischalt-Leiter Platzhalter sind, steht jetzt nur noch als Kommentar im Markup und in `show-packages.ts` bzw. `show-configurator.js`.
+- **Anker:** Seit der Konfigurator unter den Paketen steht, kommt man über `#konfigurator` hin. `html` hat `scroll-padding-top: 88px`, die Section bringt den Platz für die Navigation aber selbst mit (`--cfg-top`). Ohne Ausgleich landete sie 88 px zu tief, und bei 1280 × 720 lagen Spur und Anfrage-Knopf unter dem Rand. Jetzt gilt `.cfg { scroll-margin-top: -88px }`.
+- **Teaser:** Der Standard-Knopf heißt „Zum Show-Konfigurator“. Eigene Beschriftungen übergeben `drohnenshow-hochzeit.yaml` („Motive im Konfigurator ansehen“) und `drohnenshow-werbung.yaml` („Logo im Konfigurator ausprobieren“).
+
+### Wie prüfen (Runde 11)
+
+- `tests/show-configurator.spec.ts`: Die Specs öffnen den Konfigurator jetzt über `#konfigurator` wie jeder Link der Site. Neu sind fünf Tests:
+  - Dropdown, Ordnung, Vorauswahl und `?anlass`
+  - Silvester vorn im November, über `page.clock.setFixedTime`
+  - Gleiten bei Klick und Regler mit Zwischenwerten je Bild, Schatten beim Zeigen mit halber Deckkraft in der Paketfarbe
+  - reduzierte Bewegung
+  - Ergebnisfläche mit Abstand
+- `tests/show-teaser.spec.ts`: Der Rahmen sitzt am gewählten Paket in dessen Farbe und gleitet über Zwischenwerte; neuer Knopftext.
+- Ergebnisse am 1.11.2026 gegen einen eigenen Build (`/tmp/fs-r11-cfg/dist`, Vorschau auf 4399):
+  - Konfigurator 67 bestanden, 7 übersprungen (Desktop und Pixel 7)
+  - Teaser 14 bestanden, 2 übersprungen; mit `TEASER_PATH=/` 13 bestanden, 3 übersprungen
+  - `astro check` 0 Fehler
+  - Unit-Wächter 52/52 und `show-clouds` 5/5
+- Offen: `tests/show-physics.spec.ts` wählt den Anlass noch über `label:has([name=occasion][value=…])` und muss auf `page.locator('#cfg-occasion').selectOption(…)` umgestellt werden.
+- Screenshots in Chromium und WebKit (1440 und 390 px, Zwischenframes beim Gleiten): `/tmp/fs-r11-cfg/`.
