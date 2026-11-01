@@ -75,8 +75,8 @@ sections:
         width: 1929
         height: 1133
     items:
-      - { icon: camera, label: Bilder für eure Kanäle, value: 900 €, text: "Gäste filmen und teilen die Show. Rohaufnahmen mit unserer Kameradrohne kosten 900 €, bei ODYSSEY sind sie enthalten." }
-      - { icon: newspaper, label: Ein Anlass für Berichte, value: ZDF · WDR · ntv · WAZ, text: Über uns und unsere Shows haben unter anderem diese Sender und Zeitungen berichtet. }
+      - { icon: camera, title: Bilder für eure Kanäle, text: "Gäste filmen und teilen die Show. Rohaufnahmen mit unserer Kameradrohne kosten 900 €, bei ODYSSEY sind sie enthalten." }
+      - { icon: newspaper, title: Ein Anlass für Berichte, text: "Über uns und unsere Shows haben unter anderem ZDF, WDR, ntv und die WAZ berichtet." }
 
   # Entwurf für Moritz: Freigabe als Strahl mit Schranke, Inhalte wie bisher
   - type: landingFlow
@@ -123,7 +123,7 @@ sections:
     cta: Logo im Konfigurator ausprobieren
     loop: marke
 
-  # Kacheln ohne label (Marc, 01.11.2026): großes Icon und kleine Überschrift, „White Label“ statt „Im Hintergrund“.
+  # Icon-Kacheln (Marc, 01.11.2026): großes Icon und kleine Überschrift, „White Label“ statt „Im Hintergrund“.
   # Entwurf für Moritz: Agenturen mit Aussage-Kachel („Wir fliegen, ihr glänzt“ von der Startseite) und Gesichtern
   - type: landingBento
     id: agenturen
@@ -131,14 +131,13 @@ sections:
     headline: Für Agenturen.
     lead:
       icon: sparkles
-      label: Für eure Kund:innen
       title: Wir fliegen, *ihr glänzt*.
       text: Ihr bleibt bei euren Kund:innen vorn. Wie viel ihr selbst organisiert und wie viel wir übernehmen, entscheidet ihr.
     items:
-      - { icon: eye-off, value: White Label, text: "Auf Wunsch fliegen wir anonym. Euer Name steht vorn, wir liefern die Show." }
-      - { icon: file-lock, value: Vertraulich, text: Wir unterschreiben eine Vertraulichkeitsvereinbarung. }
-      - { icon: image, value: Freigabe, text: "Für die Abstimmung mit euren Kund:innen visualisieren wir die Motive mit deren Logo." }
-      - { icon: clipboard-list, value: Projektleitung, text: "Auf Wunsch übernehmen wir die Projektleitung, mit Genehmigung, Behörden und Technik vor Ort." }
+      - { icon: hat-glasses, title: White Label, text: "Auf Wunsch fliegen wir anonym. Euer Name steht vorn, wir liefern die Show." }
+      - { icon: file-lock, title: Vertraulich, text: Wir unterschreiben eine Vertraulichkeitsvereinbarung. }
+      - { icon: thumbs-up, title: Freigabe, text: "Für die Abstimmung mit euren Kund:innen visualisieren wir die Motive mit deren Logo." }
+      - { icon: clipboard-list, title: Projektleitung, text: "Auf Wunsch übernehmen wir die Projektleitung, mit Genehmigung, Behörden und Technik vor Ort." }
     faces: true
     contact: Erzählt uns vom Projekt eurer Kund:innen. Wir melden uns innerhalb von 48 Stunden.
     cta: { label: Als Agentur anfragen, href: "/kontakt/?anlass=agentur" }

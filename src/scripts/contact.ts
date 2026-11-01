@@ -72,6 +72,14 @@ if (form) {
     form.closest('section')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
     history.replaceState(null, '', '#anfrage');
   }));
+  // Extras von der Preisseite: Feld einblenden und vorbelegen
+  const extras = (params.get('extras') ?? '').split(',').filter(Boolean);
+  const extraInputs = [...form.querySelectorAll<HTMLInputElement>('[name=extras]')];
+  const extraPicks = extraInputs.filter((input) => extras.includes(input.value));
+  if (extraPicks.length) {
+    extraPicks.forEach((input) => { input.checked = true; });
+    form.querySelector<HTMLElement>('[data-extras-field]')!.hidden = false;
+  }
   const occasion = params.get('anlass');
   const occasionInput = occasion ? [...form.querySelectorAll<HTMLInputElement>('[name=anlass]')].find((input) => input.value === occasion) : undefined;
   if (occasionInput && !form.querySelector('[name=anlass]:checked')) occasionInput.checked = true;

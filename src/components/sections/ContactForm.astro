@@ -1,5 +1,6 @@
 ---
 import { SHOW_PACKAGES } from '../../content/show-packages';
+import { EXTRAS } from '../../content/package-details';
 // Anfrage wie in der Designsprache-Probe (Studie 8): Headline oben bündig mit dem Formular, darunter Satz, Gesichter
 // und Kontaktwege; Formular in genau zwei Schritten. Versand, Honeypot und Vorbelegung: src/scripts/contact.ts.
 import { site } from '../../site.config';
@@ -55,6 +56,14 @@ const sources = ['Google', 'Empfehlung', 'Social Media', 'Presse', 'Eine Show ge
             {packs.map(([value, label, line]) => <label title={line || undefined} style={value ? `--c: rgb(${SHOW_PACKAGES[value as keyof typeof SHOW_PACKAGES].color.join(',')})` : undefined}><input name="paket" type="radio" value={value} /><span>{label}</span></label>)}
           </div>
           <span class="hint" id="paket-hint">SPARK klassisch in 2D · HORIZON 3D in Bewegung · ODYSSEY erzählte 3D-Show</span>
+        </div>
+        <!-- Extras von der Preisseite (?extras=express,film): erscheint nur, wenn dort welche gewählt wurden, damit der erste
+             Schritt sonst kurz bleibt; dann abwählbar und ergänzbar (Marc, 01.11.2026) -->
+        <div class="field" data-extras-field hidden>
+          <span class="lbl" id="extras-label">Extras <em>optional</em></span>
+          <div aria-labelledby="extras-label" class="chips" role="group">
+            {EXTRAS.map((x) => <label><input name="extras" type="checkbox" value={x.id} /><span>{x.short}</span></label>)}
+          </div>
         </div>
         <button class="btn primary" data-next type="button">Weiter</button>
       </fieldset>

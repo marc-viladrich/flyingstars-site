@@ -65,7 +65,7 @@ p { margin: 0; }
 .grad { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: 0.06em; }
 /* Icons mit Verlaufskontur: Verlauf #fs-grad steht einmal im Layout (Base.astro) */
 .ico { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-.ico.g { stroke: var(--accent); } /* früher Logoverlauf; Marc 31.10.: Icons einfarbig in Orange */
+.ico.g { stroke: var(--accent); } .ico.g .ico-fill { fill: var(--accent); } /* früher Logoverlauf; Marc 31.10.: Icons einfarbig in Orange */
 
 /* buttons */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 48px; padding: 0 22px; border-radius: 4px; font: 500 15px/1 var(--body); border: 1px solid var(--line-strong); color: var(--text); background: transparent; cursor: pointer; transition: background 0.2s, border-color 0.2s, transform 0.2s; white-space: nowrap; }
@@ -318,13 +318,6 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
 .inclusive b { font: 500 20px/1.2 var(--display); letter-spacing: -0.01em; }
 .inclusive p { color: var(--muted); font-size: 15px; }
 
-.extras { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-@media (max-width: 1100px) { .extras { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 640px) { .extras { grid-template-columns: 1fr; } }
-.extra { border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; display: grid; gap: 10px; align-content: start; }
-.extra .k { color: var(--amber); }
-.extra p { color: var(--muted); font-size: 15px; }
-.extra .price { color: var(--text); }
 
 .promise { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px 40px; padding: clamp(28px, 4vw, 44px); border-radius: var(--radius); background: var(--surface-2); position: relative; }
 .promise::before { content: ""; position: absolute; inset: 0; border-radius: var(--radius); padding: 1px; background: var(--grad); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
@@ -348,19 +341,27 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
 /* project pages: cinematic case studies, one accent colour per project (--accent on main.case) */
 .case { --accent: var(--amber); }
 .case .acc { color: var(--accent); }
-.c-hero { position: relative; min-height: max(660px, 100svh); display: grid; grid-template-rows: auto 1fr auto; overflow: hidden; background: #050505; padding: calc(96px + env(safe-area-inset-top, 0px)) var(--pad) 0; }
-.c-hero video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.04); }
-.c-hero .shade { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(8, 7, 6, 0.96) 0%, rgba(8, 7, 6, 0.6) 34%, rgba(8, 7, 6, 0.05) 68%), radial-gradient(120% 90% at 0% 100%, rgba(8, 7, 6, 0.7), rgba(8, 7, 6, 0) 60%); }
-.c-top { position: relative; z-index: 2; display: flex; justify-content: space-between; gap: 16px; color: rgba(246, 241, 232, 0.62); }
+.c-hero { position: relative; min-height: max(660px, 100svh); display: grid; grid-template-rows: auto 1fr auto; overflow: hidden; background: var(--ground); padding: calc(96px + env(safe-area-inset-top, 0px)) var(--pad) 0; }
+/* Titelbild und stummes Showvideo wie im Startseiten-Hero: das Video blendet über dem Bild ein, sobald es läuft */
+.c-hero .hero-media, .c-hero .reel { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.c-hero .hero-media { z-index: 0; }
+.c-hero .hero-media img, .c-hero .reel { width: 100%; height: 100%; object-fit: cover; }
+.c-hero .hero-media img { transition: opacity 1.2s ease; }
+.c-hero .reel { z-index: 1; opacity: 0; transition: opacity 1.2s ease; }
+.c-hero.reel-on .reel { opacity: 1; }
+.c-hero.reel-on .hero-media img { opacity: 0; }
+.c-hero .shade { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: linear-gradient(0deg, rgba(8, 7, 6, 0.96) 0%, rgba(8, 7, 6, 0.6) 34%, rgba(8, 7, 6, 0.05) 68%), radial-gradient(120% 90% at 0% 100%, rgba(8, 7, 6, 0.7), rgba(8, 7, 6, 0) 60%); }
+.c-top { position: relative; z-index: 3; display: flex; justify-content: space-between; gap: 16px; color: rgba(246, 241, 232, 0.62); }
 .c-top a:hover { color: var(--text); }
 .c-top .crumbs { display: flex; gap: 8px; flex-wrap: wrap; }
-.c-title { position: relative; z-index: 2; align-self: end; display: grid; gap: clamp(14px, 2vw, 24px); padding-bottom: clamp(28px, 5vh, 52px); }
+.c-title { position: relative; z-index: 3; align-self: end; display: grid; gap: clamp(14px, 2vw, 24px); padding-bottom: clamp(28px, 5vh, 52px); }
 .c-kick { color: var(--accent); }
 .c-h1 { display: grid; gap: clamp(14px, 2vw, 24px); margin: 0; }
-.c-name { margin: 0; font: 700 min(13.5rem, calc(136vw / var(--chars))) / 0.84 var(--display); letter-spacing: -0.045em; text-transform: uppercase; display: grid; }
+/* Titel kleiner (Marc, 01.11.2026: „etwas überbordend“): passt neben das Video in die linke Hälfte */
+.c-name { margin: 0; font: 700 min(7rem, calc(76vw / var(--chars))) / 0.86 var(--display); letter-spacing: -0.045em; text-transform: uppercase; display: grid; }
 .c-name span:nth-child(2) { color: transparent; -webkit-text-stroke: 1.5px rgba(246, 241, 232, 0.9); padding-left: 0.04em; }
-.c-tag { font: 500 clamp(21px, 2.3vw, 32px)/1.2 var(--display); letter-spacing: -0.02em; max-width: 30ch; }
-.c-credits { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid rgba(246, 241, 232, 0.22); margin: 0 calc(var(--pad) * -1); padding: 0 var(--pad); background: rgba(8, 7, 6, 0.5); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.c-tag { font: 500 clamp(19px, 1.8vw, 26px)/1.25 var(--display); letter-spacing: -0.02em; max-width: 30ch; }
+.c-credits { position: relative; z-index: 3; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid rgba(246, 241, 232, 0.22); margin: 0 calc(var(--pad) * -1); padding: 0 var(--pad); background: rgba(8, 7, 6, 0.5); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 .c-credits div { padding: 16px 16px 20px 0; display: grid; gap: 4px; }
 .c-credits div + div { padding-left: 16px; border-left: 1px solid rgba(246, 241, 232, 0.12); }
 .c-credits dt { color: rgba(246, 241, 232, 0.5); }
@@ -465,7 +466,6 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
 }
 @media (prefers-reduced-motion: reduce) {
   .c-media figure, .c-step > * { transition: none; }
-  .c-hero video { transform: none; }
 }
 
 /* Reveal beim Scrollen. Ohne JS, bei reduzierter Bewegung oder globaler Pause ist alles sofort sichtbar:
@@ -681,7 +681,6 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
 .form button:disabled { opacity:.6;cursor:wait; }
 .hero .hero-media { isolation:auto; }
 .hero:has(.video-active) .hero-copy,.hero:has(.video-active)>.shade,.hero:has(.video-active)>.frame,.hero:has(.video-active)>.spec { opacity:0;pointer-events:none; }
-.c-hero:has(.video-active)>.shade,.c-hero:has(.video-active)>.c-title,.c-hero:has(.video-active)>.c-top,.c-hero:has(.video-active)>.c-credits { opacity:0;pointer-events:none; }
 /* Global motion pause (WCAG 2.2.2) lives in the header so it never covers page content. */
 .motion-btn { flex:none;width:40px;height:40px;border-radius:50%;border:1px solid var(--line-strong);background:rgba(15,13,12,.5);color:var(--text);cursor:pointer;display:grid;place-items:center;padding:0; }
 .motion-btn svg { width:16px;height:16px; }
@@ -1080,7 +1079,15 @@ a.pack:hover, a.pack:focus-visible { border-color: color-mix(in srgb, var(--c) 7
   .hero.side .hero-media { position: absolute; top: 0; bottom: 0; }
   .hero.side .shade { background: linear-gradient(0deg, rgba(15, 13, 12, 0.85) 0%, rgba(15, 13, 12, 0) 30%), linear-gradient(90deg, var(--ground) 30%, rgba(15, 13, 12, 0) 52%); }
   .hero.side .frame { right: calc(var(--gutter) * 0.6); }
+  /* Referenzen: derselbe Schnitt (Marc, 01.11.2026) */
+  .c-hero .hero-media, .c-hero .reel { left: auto; right: 0; width: 64%; -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.55) 18%, #000 42%); mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.55) 18%, #000 42%); }
+  .c-hero .shade { background: linear-gradient(0deg, rgba(15, 13, 12, 0.9) 0%, rgba(15, 13, 12, 0) 34%), linear-gradient(90deg, var(--ground) 30%, rgba(15, 13, 12, 0) 52%); }
 }
+@media (max-width: 900px) { .c-name { font-size: min(6rem, calc(124vw / var(--chars))); } }
+/* Hero-Überschriften über Video: weicher dunkler Schatten, damit sie auch vor hellen Stellen lesbar bleiben (Marc,
+   01.11.2026). drop-shadow statt text-shadow, weil text-shadow über Verlaufs- und Konturschrift (background-clip: text,
+   transparente Füllung) liegen und sie abdunkeln würde. */
+.hero h1, .c-h1 { filter: drop-shadow(0 2px 18px rgba(8, 7, 6, 0.6)) drop-shadow(0 1px 3px rgba(8, 7, 6, 0.45)); }
 /* Showreel mit Ton als Overlay */
 .reel-dialog { width: min(1280px, 94vw); max-width: none; max-height: 92vh; padding: 0; border: 0; border-radius: 14px; background: #000; overflow: visible; }
 .reel-dialog::backdrop { background: rgba(8, 7, 6, 0.86); backdrop-filter: blur(6px); }
@@ -1135,5 +1142,3 @@ a.pack { grid-template-rows: auto auto 1fr; align-items: start; row-gap: 14px; }
 .pack-points li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--c); transform: translateY(-2px); }
 .packs { align-items: stretch; }
 .faq-cta { margin-top: clamp(40px, 5vw, 72px); width: 100%; }
-.extra .k { display: flex; align-items: center; gap: 10px; }
-.extra .k .ico { width: 22px; height: 22px; }

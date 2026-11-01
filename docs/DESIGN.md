@@ -38,7 +38,7 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 
 **Links:** `.link` in Orange mit orangefarbener Unterlinie, Linie nur so breit wie der Text (`width: fit-content`), nie über die ganze Spalte.
 
-**Icons:** nur über `src/components/Icon.astro` (Lucide, ISC, https://lucide.dev/icons; ergänzt um `eu`, `whatsapp` und `e-car` = Lucide-Auto mit Blitz, weil `car-front` allein nicht als Elektroauto lesbar ist), einfarbig in `--accent` (`class="g"`), kein Verlauf. Keine selbst gezeichneten Icons mehr (Marc, 31.10.2026).
+**Icons:** nur über `src/components/Icon.astro` (Lucide, ISC, https://lucide.dev/icons; ergänzt um `eu`, `whatsapp`, `e-car` = Lucide-Auto mit Blitz, weil `car-front` allein nicht als Elektroauto lesbar ist, und `swiss` = Lucide-Schild mit gefülltem Schweizer Kreuz nach Marcs Vorlage). White Label = `hat-glasses` (Lucides Incognito-Motiv), Freigabe = `thumbs-up`, einfarbig in `--accent` (`class="g"`), kein Verlauf. Keine selbst gezeichneten Icons mehr (Marc, 31.10.2026).
 
 **Sprache:** du/ihr, nie Sie. Gendern mit Doppelpunkt (Pilot:innen). Keine pauschalen Umweltversprechen (EmpCo). Moritz verantwortet die Texte, Entwürfe sind als solche zu kennzeichnen.
 
@@ -120,11 +120,13 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 
 **CTA-Kästen:** schmal (max. 860 px), zentriert, Verlaufsrand, Gesichter oben bei allem, was zur Anfrage führt (`.promise`). Genau ein Knopf (die Anfrage), keine Zweitknöpfe, kein Kicker (Marc, 01.11.2026). Das Schema von `cta`, `landingCta` und `landingPrice` kennt deshalb kein `secondary` und `cta`/`landingCta` keinen `kicker` mehr.
 
-**Kacheln ohne Kennzahl** (`landingBento`, Eintrag ohne `label`): großes Icon, kleine Überschrift, Text. Mit `label` bleibt die Kennzahl-Kachel (kleine Zeile neben dem Icon, große Zahl).
+**Icon-Kacheln** (`landingBento`, Extras, überall): großes Icon (36 px), Überschrift, Text. Keine Zeile neben oder über dem Icon (Marc, 01.11.2026: „überall keine Eyebrow-Heading und größere Icons“). Was früher Zeile + Kennzahl war, steht in der Überschrift („Bis Windstärke 5“, „40 % Anzahlung“). Das Schema der Bento-Kacheln ist `{ icon, title, text }` mit `.strict()`, `label`/`value` brechen den Build. Die kleine Zeile gibt es nur noch auf der Bildkachel (z. B. Kund:innen über dem Foto). Kennzahl-Raster ohne Icon (`metrics`, „In Zahlen“) behalten ihre Beschriftung, dort ist sie die Bedeutung der Zahl.
+
+**Extras (Preisseite):** offenes Raster ohne Kartenfläche, nur Haarlinien zwischen den Zellen. Die ganze Zelle ist klickbar und schaltet ein Kontrollkästchen; gewählt bekommt sie eine leichte Orange-Fläche, ein gefülltes Kästchen mit Leuchten und „In der Anfrage“ (Platz dafür ist immer reserviert, nichts springt). Ab der ersten Auswahl klebt unten eine Leiste mit der Auswahl und „Show mit diesen Extras anfragen“ → `/?extras=<id>,…#anfrage`; das Formular blendet dann das Feld „Extras“ ein und belegt es vor (sonst bleibt es verborgen, damit Schritt 1 kurz bleibt). Indoor setzt zusätzlich den Anlass. Der Knopf des Konfigurators nimmt gewählte Extras mit. `src/components/pricing/Extras.astro`, Test `tests/pricing.spec.ts` („Gewählte Extras …“).
 
 **Referenzen mit Video:** Karten mit Showvideo zeigen das Video wie im Prototyp: die erste Karte spielt, sobald sie im Bild ist, die anderen beim Zeigen auf die Karte (Touch: im Bild). Kein Lichtpunkt-Hover auf Videokarten.
 
-**Hero:** Showreel rechts, nach links weich ins Schwarz ausgeblendet (`.hero.side`; `?hero=voll` zeigt die vollflächige Fassung), Showreel läuft stumm im Hintergrund (ab 701 px, nicht bei reduzierter Bewegung, Pause oder Datensparmodus), sonst steht das Standbild. Kein Knopf „Showreel ansehen“ (Marc, 01.11.2026: „brauchen wir nicht“). Kicker „Drohnenshows seit 2022 · DE · AT · CH · Benelux“.
+**Hero:** Showreel rechts, nach links weich ins Schwarz ausgeblendet (`.hero.side`; `?hero=voll` zeigt die vollflächige Fassung), Showreel läuft stumm im Hintergrund (ab 701 px, nicht bei reduzierter Bewegung, Pause oder Datensparmodus), sonst steht das Standbild. Kein Knopf „Showreel ansehen“ (Marc, 01.11.2026: „brauchen wir nicht“). Die Überschrift hat einen weichen dunklen Schatten (`filter: drop-shadow`, nicht `text-shadow`, das die Verlaufs- und Konturschrift abdunkeln würde), damit sie vor hellen Videostellen lesbar bleibt. Dieselbe Mechanik (Split, Ausblendung, stummes Video, Schatten) hat der Kopf der Referenz-Einzelseiten (`.c-hero`, Marc 01.11.2026); dort ist der Titel kleiner (max. 7rem) und passt in die linke Hälfte. Skript für beide: `src/scripts/hero-reel.ts`. Kicker „Drohnenshows seit 2022 · DE · AT · CH · Benelux“.
 
 **Presse und Qualität:** weiter unten (nach dem Ablauf). Logos von LBA, EASA und naturstrom tragen; TÜV-Gutachten und Haftpflicht stehen klein als Textzeile darunter (`secondary: true`).
 
@@ -163,3 +165,4 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 - Seiten-Gates `tests/a11y.spec.ts`, `tests/html.spec.ts`, `tests/network-allowlist.spec.ts` grün auf allen Routen (Desktop und Mobil)
 - Chromium und WebKit ohne Konsolenfehler und ohne horizontalen Überlauf bei 390 und 1440 px
 - `npx astro check` ohne Fehler
+- Nach einer Schemaänderung: Dev-Server stoppen, `.astro/data-store.json` löschen, neu starten. Sonst liefert der neue Server Einträge, die der alte Server noch mit dem alten Schema geparst hat (01.11.2026: leere Kachel-Überschriften, weil `title` vom alten Schema verworfen worden war)

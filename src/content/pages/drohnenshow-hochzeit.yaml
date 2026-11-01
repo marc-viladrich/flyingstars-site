@@ -149,13 +149,12 @@ sections:
     headline: Und wenn das Wetter nicht mitspielt?
     lead:
       icon: shield-check
-      label: Kein Feuerwerk erlaubt?
       title: Eine Drohnenshow ist keine *Pyrotechnik*.
       text: Kein Knall, kein Rauch, keine Funken und nichts, was danach auf dem Rasen liegt. Laut ist nur eure Musik.
     items:
-      - { icon: wind, label: Wind, value: bis Stärke 5, text: "So lange fliegen wir, auch bei leichtem Nieselregen." }
-      - { icon: calendar-sync, label: Verschieben, value: kostenlos, text: "Ist schlechtes Wetter absehbar, verschieben wir, solange wir noch nicht losgefahren sind." }
-      - { icon: wallet, label: Anzahlung, value: 40 %, text: "Zahlt ihr bei der Buchung an. Fällt die Show ganz aus, gilt die Staffel aus unseren AGB." }
+      - { icon: wind, title: Bis Windstärke 5, text: "So lange fliegen wir, auch bei leichtem Nieselregen." }
+      - { icon: calendar-sync, title: Kostenlos verschieben, text: "Ist schlechtes Wetter absehbar, verschieben wir, solange wir noch nicht losgefahren sind." }
+      - { icon: wallet, title: 40 % Anzahlung, text: "Zahlt ihr bei der Buchung an. Fällt die Show ganz aus, gilt die Staffel aus unseren AGB." }
 
   - type: faq
     id: fragen

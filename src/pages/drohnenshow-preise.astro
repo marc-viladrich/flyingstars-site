@@ -10,10 +10,10 @@ import Metrics from '../components/sections/Metrics.astro';
 import Faq from '../components/sections/Faq.astro';
 import SectionHead from '../components/SectionHead.astro';
 import Faces from '../components/Faces.astro';
-import Icon from '../components/Icon.astro';
 import ShowConfigurator from '../components/configurator/ShowConfigurator.astro';
+import Extras from '../components/pricing/Extras.astro';
 import { SHOW_PACKAGES, PACKAGE_NAMES } from '../content/show-packages';
-import { PACKAGE_DETAILS, COMPARISON, COMPARISON_NOTE, INCLUDED, EXTRAS, SHOW_DURATION } from '../content/package-details';
+import { PACKAGE_DETAILS, COMPARISON, COMPARISON_NOTE, INCLUDED, SHOW_DURATION } from '../content/package-details';
 const money = (v: number) => `ab ${v.toLocaleString('de-DE')} €`;
 const items = PACKAGE_NAMES.map((name) => ({ name, ...PACKAGE_DETAILS[name], badge: PACKAGE_DETAILS[name].often, highlight: Boolean(PACKAGE_DETAILS[name].often) }));
 const featured = PACKAGE_NAMES.findIndex((name) => PACKAGE_DETAILS[name].often);
@@ -72,20 +72,7 @@ const orb = { SPARK: 'ring', HORIZON: 'sphere', ODYSSEY: 'torus' } as const;
     <p class="fine mono">Alle Preise netto zzgl. Anfahrt. {COMPARISON_NOTE}</p>
   </section>
 
-  <section class="section alt" id="zusaetze" aria-labelledby="zusaetze-h">
-    <SectionHead kicker="Extras & Upgrades" headline="Mehr geht immer." text="Was ein Zusatz kostet, steht vorab im Angebot." id="zusaetze-h" />
-    <div class="extras">
-      {EXTRAS.map((x) => (
-        <div class="extra">
-          <span class="k mono"><Icon name={x.icon} class="g" size={22} />{x.kick}</span>
-          <h3>{x.title}</h3>
-          <p>{x.text}</p>
-          <span class="price mono">{x.price}</span>
-          {x.link && <a class="link" href={x.link.href}>{x.link.label} <span aria-hidden="true">→</span></a>}
-        </div>
-      ))}
-    </div>
-  </section>
+  <Extras />
 
   <!-- Preisversprechen: von FlyingStars im Fragebogen (21.10.2026) bestätigt -->
   <section class="section promise-sec" aria-labelledby="versprechen-h">

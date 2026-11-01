@@ -24,6 +24,10 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
 
   const name = get('name'), email = get('email'), message = get('message');
   const extra = Object.fromEntries(['anlass', 'datum', 'datum-offen', 'ort', 'paket', 'drohnen', 'telefon', 'firma', 'quelle'].map((key) => [key, get(key)]));
+  // Extras von der Preisseite (Mehrfachauswahl, Werte wie „express“), als eine Zeile in die Mail
+  const extras = form.getAll('extras').map((value) => String(value).trim()).filter(Boolean);
+  if (extras.length > 10 || extras.some((value) => !/^[a-z]+(-[a-z]+)*$/.test(value) || value.length > 30)) return problem(400, 'Extras ungültig.');
+  if (extras.length) extra.extras = extras.join(', ');
   if (!name || !email || (!message && !extra.anlass)) return problem(400, 'Name, E-Mail und Anlass oder Nachricht sind Pflicht.');
   if (Object.values(extra).some((value) => value.length > 200 || /[\r\n]/.test(value))) return problem(400, 'Ungültige Zusatzangaben.');
   if (extra.anlass && !['firma', 'stadt', 'agentur', 'privat', 'indoor', 'sonstiges'].includes(extra.anlass)) return problem(400, 'Anlass ungültig.');

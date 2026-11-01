@@ -41,6 +41,24 @@ test('Paketwahl auf der Preisseite landet vorausgewählt in der Anfrage', async 
   await expect(page.getByRole('radio', { name: 'ODYSSEY', exact: true })).toBeChecked();
 });
 
+test('Gewählte Extras landen vorbelegt in der Anfrage', async ({ page }) => {
+  await page.goto('/drohnenshow-preise/');
+  const bar = page.locator('[data-extras-bar]');
+  await expect(bar).not.toBeVisible();
+  // Klick in die Zelle (nicht aufs Kästchen) wählt das Extra
+  await page.locator('.xc', { has: page.locator('#x-express') }).click();
+  await page.locator('.xc', { has: page.locator('#x-schweiz') }).click();
+  await expect(page.getByRole('checkbox', { name: 'Show in unter zwei Wochen' })).toBeChecked();
+  await expect(bar).toBeVisible();
+  await expect(bar).toContainText('2 Extras in eurer Anfrage: Express, Schweiz');
+  await page.locator('.xc', { has: page.locator('#x-schweiz') }).click();
+  await expect(bar).toContainText('1 Extra in eurer Anfrage: Express');
+  await page.getByRole('link', { name: 'Show mit diesen Extras anfragen' }).click();
+  await expect(page).toHaveURL(/\/\?extras=express#anfrage$/);
+  await expect(page.getByRole('checkbox', { name: 'Express', exact: true })).toBeChecked();
+  await expect(page.getByRole('checkbox', { name: 'Schweiz', exact: true })).not.toBeChecked();
+});
+
 test.describe('ohne JavaScript', () => {
   test.use({ javaScriptEnabled: false });
   test('Pakete, Preise und Vergleich bleiben vollständig lesbar', async ({ page }) => {

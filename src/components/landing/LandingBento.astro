@@ -1,6 +1,5 @@
 ---
-// Kacheln mit einer Hauptkachel (Bild mit Titel darauf oder eine große Aussage) und bis zu vier kleineren Kacheln mit
-// Kennzahl. Bricht die Folge aus Text-Bild-Blöcken auf (Marc, 31.10.2026: „mehr Variation in den Layouts“).
+// Kacheln mit einer Hauptkachel (Bild mit Titel darauf oder eine große Aussage) und bis zu vier kleineren Icon-Kacheln. Bricht die Folge aus Text-Bild-Blöcken auf (Marc, 31.10.2026: „mehr Variation in den Layouts“).
 // Optional unten ein Link oder (faces) ein Abschluss wie auf der Startseite: .promise mit Gesichtern, Satz und Knopf.
 // Icons: Lucide über src/components/Icon.astro (`icon` je Kachel, `lead.icon` für die Aussage ohne Bild).
 import type { Section } from '../../content.config';
@@ -22,22 +21,16 @@ const img = lead.image ? await optimizedImage(lead.image.src, 960, 720) : undefi
       {img && <div class="lb-img" data-curtain data-dot-img><img src={img.src} width={img.width} height={img.height} alt={lead.image!.alt} loading="lazy" decoding="async" /></div>}
       <div class="lb-lead-copy">
         {!img && lead.icon && <Icon name={lead.icon} size={40} class="g lb-lead-ico" />}
-        {lead.label && <span class="mono lb-k">{lead.label}</span>}
+        {img && lead.label && <span class="mono lb-k">{lead.label}</span>}
         <T><Accent text={lead.title} /></T>
         {lead.text && <p>{lead.text}</p>}
       </div>
     </article>
-    {items.map((it) => it.label ? (
-      <div class="lb-cell">
-        <span class="lb-row">{it.icon && <Icon name={it.icon} size={20} class="g" />}<span class="mono lb-k">{it.label}</span></span>
-        {it.value && <p class="lb-v">{it.value}</p>}
-        <p class="lb-t">{it.text}</p>
-      </div>
-    ) : (
+    {items.map((it) => (
       <div class="lb-cell lb-feat">
-        <!-- Kachel ohne label (Marc, 01.11.2026, Agenturen): großes Icon, kleine Überschrift, keine Zeile neben dem Icon -->
-        {it.icon && <Icon name={it.icon} size={32} class="g lb-feat-ico" />}
-        {it.value && <T class="lb-h">{it.value}</T>}
+        <!-- Icon-Kachel (Marc, 01.11.2026, für alle Kacheln): großes Icon, Überschrift, Text; keine Zeile neben dem Icon -->
+        <Icon name={it.icon} size={36} class="g lb-feat-ico" />
+        <T class="lb-h">{it.title}</T>
         <p class="lb-t">{it.text}</p>
       </div>
     ))}
@@ -70,15 +63,13 @@ const img = lead.image ? await optimizedImage(lead.image.src, 960, 720) : undefi
   .lb-grid[data-n='2'] .lb-cell { grid-column: span 2; }
   .lb-grid[data-n='3'] .lb-cell:last-child { grid-column: span 2; }
   .lb-grid[data-n='1'] .lb-cell { grid-column: span 2; grid-row: span 2; }
-  .lb-v { margin: 6px 0 0; font: 500 clamp(26px, 2.4vw, 38px)/1.05 var(--display); letter-spacing: -0.035em; color: var(--head); hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; }
   .lb-t { margin: 0; color: var(--muted); font-size: 15.5px; max-width: 40ch; }
   .lb-feat { gap: 12px; }
-  .lb-feat :global(.lb-feat-ico) { width: 32px; height: 32px; margin-bottom: 8px; }
+  .lb-feat :global(.lb-feat-ico) { width: 36px; height: 36px; margin-bottom: 10px; }
   .lb-feat .lb-h { font: 500 clamp(20px, 1.6vw, 23px)/1.2 var(--display); letter-spacing: -0.015em; color: var(--head); }
   .lb-close { margin-top: clamp(32px, 4vw, 56px); }
   .lb-close > p { margin: 0; }
   .lb-more { margin-top: clamp(24px, 3vw, 40px); }
-  .lb-row { display: flex; align-items: center; gap: 10px; }
   /* Aussage ohne Bild: Inhalt in der Mitte statt unten, Icon darüber */
   .lb-lead:not(.has-img) { align-content: center; }
   .lb-lead-copy :global(.lb-lead-ico) { width: 40px; height: 40px; margin-bottom: 6px; }

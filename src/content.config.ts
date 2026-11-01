@@ -318,10 +318,13 @@ export const sectionSchema = z.discriminatedUnion('type', [
     // Kacheln mit einer großen Hauptkachel (Bild oder Aussage) und bis zu vier kleineren mit Kennzahl.
     type: z.literal('landingBento'), ...sectionHeading,
     headline: z.string().min(1), text: z.string().optional(),
-    lead: z.object({ label: z.string().optional(), title: z.string().min(1), text: z.string().optional(), image: image.optional(),
-      icon: z.string().optional().describe('Lucide-Name, nur für die Aussage ohne Bild') }),
-    items: z.array(z.object({ label: z.string().min(1).optional().describe('Kleine Zeile neben dem Icon; ohne label wird value zur Überschrift der Kachel (großes Icon darüber)'), value: z.string().optional(), text: z.string().min(1),
-      icon: z.string().optional().describe('Lucide-Name in kebab-case, z. B. "wind"') })).min(1).max(4),
+    // Icon-Kacheln ohne Zeile neben dem Icon (Marc, 01.11.2026: „überall keine Eyebrow, größere Icons“): großes Icon,
+    // Überschrift, Text. strict(), damit label/value nicht unbemerkt zurückkommen. Die Zeile über dem Titel gibt es nur
+    // noch auf der Bildkachel (z. B. Kund:innen auf dem Foto), nicht neben einem Icon.
+    lead: z.object({ label: z.string().optional().describe('Nur mit image'), title: z.string().min(1), text: z.string().optional(), image: image.optional(),
+      icon: z.string().optional().describe('Lucide-Name, nur für die Aussage ohne Bild') }).strict()
+      .refine((l) => !l.label || l.image, { message: 'label nur auf der Bildkachel, nicht neben einem Icon' }),
+    items: z.array(z.object({ icon: z.string().min(1).describe('Lucide-Name in kebab-case, z. B. "wind"'), title: z.string().min(1), text: z.string().min(1) }).strict()).min(1).max(4),
     cta: link.optional(), faces: z.boolean().default(false).describe('Abschluss mit Gesichtern der Geschäftsführer:innen (.promise)'),
     contact: z.string().optional().describe('Satz neben den Gesichtern'),
   }),

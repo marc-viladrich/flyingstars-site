@@ -144,12 +144,15 @@ export const INCLUDED = [
   { title: 'Team vor Ort', text: 'Pilot:innen und Techniker:innen bauen in ca. 3 Stunden auf und fliegen eure Show.' },
 ];
 
-export interface Extra { kick: string; icon: string; title: string; text: string; price: string; link?: { label: string; href: string } }
+/** Extras on the pricing page. Selectable since 01.11.2026 (Marc): the chosen ones travel as `?extras=<id>,<id>` into the
+ * inquiry form (field „Extras“, src/components/sections/ContactForm.astro). `id` is that URL/form value, `short` the chip
+ * label in the form and in the summary bar. No eyebrow line in the card any more. */
+export interface Extra { id: string; short: string; icon: string; title: string; text: string; price: string; link?: { label: string; href: string } }
 export const EXTRAS: Extra[] = [
-  { kick: 'Express', icon: 'zap', title: 'Show in unter zwei Wochen', text: 'Alles unter 14 Tagen bis zur Show. Wir ziehen Design und Genehmigung vor.', price: 'Aufpreis nach Aufwand' },
-  { kick: 'Film', icon: 'camera', title: 'Rohaufnahmen mit Kameradrohne', text: 'Material für Aftermovie und Social Media.', price: '900 €, bei ODYSSEY inklusive' },
-  { kick: 'Behörden', icon: 'landmark', title: 'Erweiterter Behördensupport', text: 'Wir übernehmen die gesamte Kommunikation mit Ämtern und Behörden.', price: 'Preis auf Anfrage' },
-  { kick: 'Sondergenehmigung', icon: 'plane', title: 'Kontrollzonen und Flughafennähe', text: 'Für Kontrollzonen und Flächen in Flughafennähe.', price: 'Preis auf Anfrage' },
-  { kick: 'Schweiz', icon: 'mountain-snow', title: 'Shows in der Schweiz', text: 'BAZL-Antrag und Zollabwicklung für unsere Flotte.', price: '+1.900 € netto' },
-  { kick: 'Indoor', icon: 'building-2', title: 'Indoor-Drohnenshows', text: '20 bis 50 Drohnen, 5 bis 8 Minuten, ab 3 m Deckenhöhe. Jede Indoor-Show kalkulieren wir einzeln.', price: 'ab ca. 15.000 € netto für 20 Drohnen', link: { label: 'Mehr zu Indoor-Shows', href: '/drohnenshow-indoor/' } },
+  { id: 'express', short: 'Express', icon: 'zap', title: 'Show in unter zwei Wochen', text: 'Alles unter 14 Tagen bis zur Show. Wir ziehen Design und Genehmigung vor.', price: 'Aufpreis nach Aufwand' },
+  { id: 'film', short: 'Rohaufnahmen', icon: 'camera', title: 'Rohaufnahmen mit Kameradrohne', text: 'Material für Aftermovie und Social Media.', price: '900 €, bei ODYSSEY inklusive' },
+  { id: 'behoerden', short: 'Behördensupport', icon: 'landmark', title: 'Erweiterter Behördensupport', text: 'Wir übernehmen die gesamte Kommunikation mit Ämtern und Behörden.', price: 'Preis auf Anfrage' },
+  { id: 'kontrollzone', short: 'Flughafennähe', icon: 'plane', title: 'Kontrollzonen und Flughafennähe', text: 'Für Kontrollzonen und Flächen in Flughafennähe.', price: 'Preis auf Anfrage' },
+  { id: 'schweiz', short: 'Schweiz', icon: 'swiss', title: 'Shows in der Schweiz', text: 'BAZL-Antrag und Zollabwicklung für unsere Flotte.', price: '+1.900 € netto' },
+  { id: 'indoor', short: 'Indoor', icon: 'building-2', title: 'Indoor-Drohnenshows', text: '20 bis 50 Drohnen, 5 bis 8 Minuten, ab 3 m Deckenhöhe. Jede Indoor-Show kalkulieren wir einzeln.', price: 'ab ca. 15.000 € netto für 20 Drohnen', link: { label: 'Mehr zu Indoor-Shows', href: '/drohnenshow-indoor/' } },
 ];

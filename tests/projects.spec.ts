@@ -16,7 +16,10 @@ for (const project of cases) {
     await expect(page.getByRole('heading', { level: 1 })).toContainText(project.name);
     await expect(page.locator('.c-step')).toHaveCount(4);
     await expect(page.locator('.c-track figure')).toHaveCount(project.pictures);
-    await expect(page.locator('video')).not.toHaveAttribute('src');
+    // Kopf wie auf der Startseite: stummes Showvideo ohne Abspielknopf (Marc, 01.11.2026)
+    await expect(page.locator('.c-hero video[data-reel]')).toHaveJSProperty('muted', true);
+    await expect(page.locator('.c-hero video[data-reel]')).not.toHaveAttribute('controls');
+    await expect(page.getByRole('button', { name: /Showvideo abspielen/ })).toHaveCount(0);
     const formation = page.locator('.c-play');
     await formation.scrollIntoViewIfNeeded();
     await expect(page.locator('[data-tally]')).toContainText(`${project.droneCount} Drohnen`);

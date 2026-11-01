@@ -92,9 +92,9 @@ sections:
         width: 2560
         height: 1708
     items:
-      - { icon: gauge, label: Tempo, value: "max. 1,5 m/s", text: Schneller fliegen die Drohnen im Raum nicht. }
-      - { icon: move-horizontal, label: Abstand, value: "0,5 m", text: Mindestabstand zwischen zwei Drohnen. }
-      - { icon: shield-check, label: Systeme, value: Mehrfach abgesichert, text: "Redundante Sicherheitsfunktionen, eine kontrollierte Landefunktion und CE-zertifizierte Komponenten." }
+      - { icon: gauge, title: "Höchstens 1,5 m/s", text: Schneller fliegen die Drohnen im Raum nicht. }
+      - { icon: move-horizontal, title: "0,5 m Abstand", text: So weit bleiben zwei Drohnen mindestens auseinander. }
+      - { icon: shield-check, title: Mehrfach abgesichert, text: "Redundante Sicherheitsfunktionen, eine kontrollierte Landefunktion und CE-zertifizierte Komponenten." }
 
   # Entwurf für Moritz: Einsatzorte als Markierungen auf dem Bild, Referenzen darunter; Inhalte wie bisher
   - type: landingSpotlight

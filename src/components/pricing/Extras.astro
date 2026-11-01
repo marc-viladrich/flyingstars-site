@@ -1,0 +1,111 @@
+---
+// Extras zum Auswählen (Marc, 01.11.2026): offenes Raster ohne Kartenfläche, nur feine Linien zwischen den Zellen. Eine
+// Zelle ist als Ganzes klickbar (die Beschriftung des Kontrollkästchens deckt sie ab); gewählt bekommt sie eine Fläche und
+// ein gefülltes Kästchen in Orange. Sobald etwas gewählt ist, erscheint unten eine Leiste mit der Auswahl und dem Knopf
+// „Show mit diesen Extras anfragen“; er führt mit ?extras=<id>,… zum Anfrageformular, das die Extras dort vorbelegt.
+// Der Knopf im Show-Konfigurator nimmt die Auswahl ebenfalls mit. Ohne JavaScript bleibt es ein Raster zum Lesen.
+import Icon from '../Icon.astro';
+import SectionHead from '../SectionHead.astro';
+import { EXTRAS } from '../../content/package-details';
+---
+<section class="section alt" id="zusaetze" aria-labelledby="zusaetze-h">
+  <SectionHead kicker="Extras & Upgrades" headline="Mehr geht immer." text="Wählt aus, was ihr dazunehmen wollt. Es landet direkt in eurer Anfrage, den Preis nennen wir im Angebot." id="zusaetze-h" />
+  <div class="xg" data-extras>
+    {EXTRAS.map((x) => (
+      <div class="xc">
+        <input class="xc-box" type="checkbox" id={`x-${x.id}`} value={x.id} data-short={x.short} aria-describedby={`x-${x.id}-t x-${x.id}-p`} />
+        <Icon name={x.icon} size={36} class="g xc-ico" />
+        <h3><label for={`x-${x.id}`}>{x.title}</label></h3>
+        <p id={`x-${x.id}-t`}>{x.text}</p>
+        <span class="xc-price mono" id={`x-${x.id}-p`}>{x.price}</span>
+        <span class="xc-added mono" aria-hidden="true"><Icon name="check" size={14} strokeWidth={2.4} />In der Anfrage</span>
+        {x.link && <a class="link xc-link" href={x.link.href}>{x.link.label} <span aria-hidden="true">→</span></a>}
+      </div>
+    ))}
+  </div>
+  <div class="xbar" data-extras-bar inert>
+    <p class="xbar-t" role="status"><span data-extras-sum></span></p>
+    <a class="btn primary" href="/#anfrage" data-extras-cta>Show mit diesen Extras anfragen</a>
+  </div>
+</section>
+
+<style>
+  /* Raster mit Linien nur ZWISCHEN den Zellen: jede Zelle zieht oben und links eine Linie, die äußeren schneidet
+     overflow am Raster ab (margin -1px holt sie unter die Kante) */
+  .xg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: hidden; }
+  .xg > .xc { margin: -1px 0 0 -1px; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+  .xc { position: relative; display: grid; gap: 10px; align-content: start; justify-items: start; padding: clamp(26px, 2.6vw, 38px) clamp(22px, 2.4vw, 34px) clamp(28px, 2.8vw, 40px); transition: background-color 0.25s ease; }
+  .xc h3 { font: 500 clamp(19px, 1.5vw, 22px)/1.2 var(--display); letter-spacing: -0.015em; color: var(--head); padding-right: 36px; }
+  /* die Beschriftung deckt die ganze Zelle ab: Klick irgendwo in der Zelle schaltet um */
+  .xc label { cursor: pointer; }
+  .xc label::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+  .xc p { margin: 0; color: var(--muted); font-size: 15px; max-width: 40ch; }
+  .xc-price { color: var(--text); margin-top: 4px; }
+  .xc :global(.xc-ico) { width: 36px; height: 36px; margin-bottom: 10px; transition: transform 0.3s ease; }
+  .xc-link { position: relative; z-index: 2; margin-top: 2px; }
+  /* Kontrollkästchen in Orange mit Leuchten wie ein Lichtpunkt; ungewählt erst beim Zeigen sichtbar */
+  .xc-box { appearance: none; -webkit-appearance: none; position: absolute; z-index: 2; top: clamp(22px, 2.4vw, 32px); right: clamp(20px, 2.2vw, 30px); width: 24px; height: 24px; margin: 0; border-radius: 7px; border: 1.5px solid var(--line-strong); background: transparent no-repeat center / 14px 14px; cursor: pointer; opacity: 0; transform: scale(0.85); transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.3, 1.6, 0.5, 1), background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.3s ease; }
+  .xc-box:checked { opacity: 1; transform: none; background-color: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 4px rgba(245, 167, 60, 0.14), 0 0 18px rgba(245, 167, 60, 0.45); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%230f0d0c' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 10.5l3.6 3.6 7.4-8.2'/%3E%3C/svg%3E"); }
+  .xc-box:focus-visible { opacity: 1; transform: none; outline: 2px solid var(--accent); outline-offset: 3px; }
+  .xc:hover { background: rgba(246, 241, 232, 0.025); }
+  .xc:hover .xc-box { opacity: 1; transform: none; }
+  .xc:hover .xc-box:not(:checked) { border-color: rgba(246, 241, 232, 0.5); }
+  .xc:hover :global(.xc-ico) { transform: translateY(-2px); }
+  /* ohne Zeigegerät gibt es kein Hover: dort ist das leere Kästchen immer da */
+  @media (hover: none) { .xc-box { opacity: 1; transform: none; } }
+  .xc:has(.xc-box:checked) { background: rgba(245, 167, 60, 0.07); }
+  /* Platz ist immer reserviert, damit die Zeile beim Auswählen nicht springt */
+  .xc-added { display: inline-flex; align-items: center; gap: 6px; color: var(--accent); font-size: 12px; opacity: 0; transform: translateY(4px); transition: opacity 0.25s ease, transform 0.25s ease; }
+  .xc:has(.xc-box:checked) .xc-added { opacity: 1; transform: none; }
+  .xc-added :global(.ico) { stroke: var(--accent); }
+  /* Auswahl-Leiste: klebt unten, solange das Raster im Bild ist; erscheint erst mit der ersten Auswahl */
+  .xbar { position: sticky; bottom: 16px; z-index: 5; margin-top: clamp(20px, 2.4vw, 32px); display: flex; align-items: center; justify-content: space-between; gap: 16px 24px; flex-wrap: wrap; padding: 14px 14px 14px 24px; border: 1px solid rgba(245, 167, 60, 0.35); border-radius: var(--radius); background: rgba(15, 13, 12, 0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45); opacity: 0; transform: translateY(14px); visibility: hidden; transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1), visibility 0s linear 0.35s; }
+  .xbar.on { opacity: 1; transform: none; visibility: visible; transition-delay: 0s; }
+  .xbar-t { margin: 0; color: var(--muted); font-size: 15px; }
+  .xbar-t :global(b) { color: var(--head); font-weight: 500; }
+  @media (max-width: 1100px) { .xg { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 640px) {
+    .xg { grid-template-columns: 1fr; }
+    .xbar { padding: 14px; }
+    .xbar .btn { width: 100%; justify-content: center; }
+  }
+  @media (prefers-reduced-motion: reduce) { .xc-box, .xbar, .xc :global(.xc-ico), .xc-added { transition: none; } }
+</style>
+
+<script>
+  const grid = document.querySelector<HTMLElement>('[data-extras]');
+  const bar = document.querySelector<HTMLElement>('[data-extras-bar]');
+  if (grid && bar) {
+    const boxes = [...grid.querySelectorAll<HTMLInputElement>('.xc-box')];
+    const sum = bar.querySelector<HTMLElement>('[data-extras-sum]')!;
+    const cta = bar.querySelector<HTMLAnchorElement>('[data-extras-cta]')!;
+    const chosen = () => boxes.filter((b) => b.checked);
+    // Anfrage-Link mit den gewählten Extras; Indoor setzt zusätzlich den Anlass
+    const withExtras = (href: string) => {
+      const url = new URL(href, location.href);
+      const ids = chosen().map((b) => b.value);
+      if (ids.length) url.searchParams.set('extras', ids.join(',')); else url.searchParams.delete('extras');
+      if (ids.includes('indoor')) url.searchParams.set('anlass', 'indoor');
+      return url.pathname + url.search + url.hash;
+    };
+    const sync = () => {
+      const list = chosen();
+      bar.classList.toggle('on', list.length > 0);
+      bar.inert = list.length === 0;
+      // Text nur über textContent und b-Elemente, nie als HTML aus Daten
+      sum.replaceChildren();
+      if (list.length) {
+        const count = document.createElement('b');
+        count.textContent = list.length === 1 ? '1 Extra' : `${list.length} Extras`;
+        sum.append(count, ` in eurer Anfrage: ${list.map((b) => b.dataset.short).join(', ')}`);
+      }
+      cta.href = withExtras('/#anfrage');
+    };
+    boxes.forEach((b) => b.addEventListener('change', sync));
+    sync();
+    // Der Knopf des Show-Konfigurators auf derselben Seite nimmt die Auswahl mit
+    document.querySelectorAll<HTMLAnchorElement>('#cfg-cta, #cfg-bar-cta').forEach((link) => link.addEventListener('click', () => {
+      if (chosen().length) link.href = withExtras(link.href);
+    }));
+  }
+</script>
