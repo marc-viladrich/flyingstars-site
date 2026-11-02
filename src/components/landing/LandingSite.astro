@@ -5,13 +5,14 @@ const { t, localHref } = forPath(Astro.url.pathname);
 // die Geometrie ist bewusst schematisch. Belege: docs/sicherheitskonzept-quellen.md.
 // Schrittweise (Marc, 02.11.2026: „zu viel auf einmal … erstmal nur den ersten Punkt gehighlighted, on hover werden die
 // dazugehörigen Bereiche revealed“): Zeichnung und Liste zeigen eine Zone zugleich, anfangs die erste. Zeigen, Fokus oder
-// Tippen auf einen Titel oder eine Nummer in der Zeichnung wechselt die Zone. Zuständigkeiten, Vorlauf und Haftpflicht
-// stehen hinter einem Aufklapper. Ohne JavaScript ist alles offen.
+// Tippen auf einen Titel oder eine Nummer in der Zeichnung wechselt die Zone. Ohne JavaScript ist alles offen.
+// Zuständigkeiten als Tabelle mit ✓/◐/– (Marc: „keine Akkordeons, sondern Informationsdesign“); der Vorlauf steht im
+// Netzplan-Zeitstrahl der Tempo-Section, die Haftpflicht als Zeile der Tabelle.
 import type { Section } from '../../content.config';
 import SectionHead from '../SectionHead.astro';
 import Icon from '../Icon.astro';
 type Props = Extract<Section, { type: 'landingSite' }> & { index: number };
-const { kicker, headline, text, variant, diagram, items, responsibilities, safeguards, planning, note, download, id = 'location', index } = Astro.props;
+const { kicker, headline, text, variant, diagram, items, responsibilities, safeguards, download, id = 'location', index } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
 const T = index === 0 ? 'h2' : 'h3';
 const numbers = Object.fromEntries(items.map((item, i) => [item.zone, i + 1]));
@@ -81,18 +82,23 @@ const markers = variant === 'outdoor'
   {safeguards && <div class="st-safeguards">
     {safeguards.map((item) => <div><Icon name={item.icon} size={32} class="g" /><T>{item.title}</T><p>{item.text}</p></div>)}
   </div>}
-  <details class="st-more">
-    <summary><span>{t('landingsite.more')}</span><Icon name="chevron-down" size={20} class="g" /></summary>
-    <div class="st-responsibilities">
-      {[{ title: t('landingsite.provider'), icon: 'clipboard-check', entries: responsibilities.provider }, { title: t('landingsite.customer'), icon: 'map-pinned', entries: responsibilities.customer }].map((group) => <div>
-        <T><Icon name={group.icon} size={28} class="g" />{group.title}</T>
-        <ul>{group.entries.map((entry) => <li><Icon name="check" size={18} class="g" /><span>{entry}</span></li>)}</ul>
-      </div>)}
-    </div>
-    {planning && <div class="st-planning"><T>{planning.title}</T><p>{planning.text}</p></div>}
-    {note && <p class="st-note"><b>{note.value}</b><span>{note.text}</span></p>}
+  <div class="st-who">
+    <T id={`${id}-who`}>{t('landingsite.more')}</T>
+    <table aria-labelledby={`${id}-who`}>
+      <thead><tr><th scope="col">{t('landingsite.task')}</th><th scope="col" class="c">FlyingStars</th><th scope="col" class="c">{t('landingsite.you')}</th></tr></thead>
+      <tbody>{responsibilities.map((row) => <tr>
+        <th scope="row">{row.task}</th>
+        {[row.us, row.you].map((v) => <td class:list={['c', v]}>
+          {v === 'full' && <Icon name="check" size={20} strokeWidth={2.4} class="g" label={t('landingsite.full')} />}
+          {v === 'part' && <span class="half" role="img" aria-label={t('landingsite.part')}></span>}
+          {v === 'none' && <span class="none" role="img" aria-label={t('landingsite.none')}>–</span>}
+          {v === 'part' && row.hint && <small>{row.hint}</small>}
+        </td>)}
+      </tr>)}</tbody>
+    </table>
+    <p class="st-legend mono"><span><Icon name="check" size={14} strokeWidth={2.4} class="g" /> {t('landingsite.full')}</span><span><span class="half" aria-hidden="true"></span> {t('landingsite.part')}</span><span><span class="none" aria-hidden="true">–</span> {t('landingsite.none')}</span></p>
     {download && <a class="link st-download" href={localHref(download.href)} type="application/pdf" target="_blank" rel="noopener">{download.label}<Icon name="download" size={18} class="g" /></a>}
-  </details>
+  </div>
 </section>
 
 <script>
@@ -160,49 +166,43 @@ const markers = variant === 'outdoor'
   .is-stepped .st-items li:not(.on) :is(h2, h3) { color: var(--muted); }
   .is-stepped .st-items li:not(.on) .st-n { color: var(--faint); }
   .is-stepped .st-items li { cursor: pointer; }
-  /* Aufklapper für die Planungsdetails */
-  .st-more { margin-top: clamp(32px, 4vw, 56px); border-top: 1px solid var(--line); }
-  .st-more summary { list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 22px 0; cursor: pointer; font: 500 clamp(19px, 1.5vw, 22px)/1.2 var(--display); color: var(--head); }
-  .st-more summary::-webkit-details-marker { display: none; }
-  .st-more summary :global(.ico) { transition: transform 0.3s ease; flex: 0 0 auto; }
-  .st-more[open] summary :global(.ico) { transform: rotate(180deg); }
-  .st-more summary:focus-visible { outline: 2px solid var(--cyan); outline-offset: 4px; }
-  .st-more > .st-responsibilities { margin-top: 8px; }
-  @media (prefers-reduced-motion: reduce) { .zone, .marker, .st-body, .st-more summary :global(.ico) { transition: none; } }
+  /* Wer macht was: Tabelle, Aufgaben links, je Spalte ein Zeichen */
+  .st-who { margin-top: clamp(48px, 6vw, 88px); }
+  .st-who > :is(h2, h3) { font-size: clamp(24px, 2.2vw, 32px); margin-bottom: 20px; }
+  .st-who table { width: 100%; min-width: 0; max-width: 980px; border-collapse: collapse; table-layout: fixed; } /* Aufgabe nimmt den Rest, die Zeichenspalten bleiben schmal */
+  .st-who th, .st-who td { padding: 14px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+  .st-who thead th { padding-top: 0; font: 400 12px/1.4 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); border-bottom-color: var(--line-strong); }
+  .st-who tbody th { font-weight: 400; color: var(--text); font-size: 16px; padding-left: 0; hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; }
+  .st-who .c { width: 132px; text-align: center; }
+  .st-who td.c { color: var(--muted); }
+  .st-who td small { display: block; margin-top: 4px; font-size: 12.5px; color: var(--faint); line-height: 1.3; }
+  .st-who .half { display: inline-block; width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--accent); background: linear-gradient(90deg, var(--accent) 50%, transparent 50%); vertical-align: middle; }
+  .st-who .none { color: var(--faint); font-size: 18px; }
+  .st-who tbody tr { transition: background-color 0.2s ease; }
+  .st-who tbody tr:hover { background: rgba(246, 241, 232, 0.025); }
+  .st-legend { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 16px 0 0; color: var(--faint); font-size: 12px; }
+  .st-legend > span { display: inline-flex; align-items: center; gap: 8px; }
+  .st-legend .half { width: 12px; height: 12px; }
+  @media (max-width: 600px) { .st-who .c { width: 86px; } .st-who th, .st-who td { padding: 12px 4px; } .st-who tbody th { font-size: 15px; padding-right: 8px; } .st-who thead th { letter-spacing: 0.04em; font-size: 11px; } .st-who td small { font-size: 11.5px; } }
+  @media (prefers-reduced-motion: reduce) { .zone, .marker, .st-body { transition: none; } }
   .st-items li { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 8px; padding: 22px 0; border-top: 1px solid var(--line); }
   .st-items li:first-child { padding-top: 0; border: 0; }
   .st-n { color: var(--accent); padding-top: 4px; }
   .st-items h2, .st-items h3, .st-safeguards h2, .st-safeguards h3 { font-size: clamp(20px, 1.6vw, 24px); }
   .st-value { display: block; margin-top: 8px; color: var(--accent); font: 500 clamp(17px, 1.3vw, 20px)/1.2 var(--display); }
   .ls-site p { line-height: 1.65; }
-  .st-items p, .st-safeguards p, .st-planning p { margin: 10px 0 0; color: var(--muted); }
   .st-safeguards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; margin-top: clamp(40px, 5vw, 72px); padding-block: 32px; border-block: 1px solid var(--line); }
   .st-safeguards > div > :global(.ico) { width: 36px; height: 36px; }
   .st-safeguards h2, .st-safeguards h3 { margin-top: 18px; }
   .st-safeguards p { font-size: 16px; }
-  .st-responsibilities { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(32px, 5vw, 88px); margin-top: clamp(40px, 5vw, 64px); }
-  .st-responsibilities h2, .st-responsibilities h3 { display: flex; align-items: center; gap: 14px; font-size: clamp(24px, 2vw, 30px); }
-  .st-responsibilities :global(.ico) { flex: 0 0 auto; }
-  .st-responsibilities h2 :global(.ico), .st-responsibilities h3 :global(.ico) { width: 28px; height: 28px; }
-  .st-responsibilities ul { list-style: none; margin: 24px 0 0; padding: 0; display: grid; gap: 18px; }
-  .st-responsibilities li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 12px; color: var(--muted); }
-  .st-responsibilities li :global(.ico) { margin-top: 4px; }
-  .st-planning { margin-top: 40px; padding: 28px 0; border-block: 1px solid var(--line); }
-  .st-planning h2, .st-planning h3 { font-size: clamp(24px, 2vw, 30px); }
-  .st-planning p { max-width: 90ch; }
-  .st-note { margin: 32px 0 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px 24px; padding: 24px; border: 1px solid var(--line); border-radius: var(--radius); }
-  .st-note b { font: 500 clamp(24px, 2vw, 30px)/1.2 var(--display); color: var(--head); }
-  .st-note span { color: var(--muted); }
   .st-download { margin-top: 28px; display: flex; align-items: center; gap: 10px; }
   .st-download :global(.ico) { width: 18px; height: 18px; flex: 0 0 auto; }
   @media (max-width: 960px) {
     .st { grid-template-columns: 1fr; }
     .st-fig { position: static; }
     .st-safeguards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .st-responsibilities { grid-template-columns: 1fr; }
   }
   @media (max-width: 600px) {
     .st-safeguards { grid-template-columns: 1fr; gap: 28px; }
-    .st-note { grid-template-columns: 1fr; padding: 20px; }
   }
 </style>

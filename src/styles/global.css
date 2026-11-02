@@ -811,7 +811,20 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
 .ask .err { font-size: 13px; color: var(--bad); }
 .ask .err:empty { display: none; }
 .ask .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.ask .step > .btn, .ask .actions { justify-self: end; }
+.ask .step > .btn, .ask .actions { justify-self: start; } /* Knöpfe linksbündig, Hauptknopf zuerst (Marc, 02.11.2026) */
+/* Optionale Angaben im zweiten Schritt: Zeile kleiner Knöpfe; ein Feld gleitet beim Öffnen weich herein */
+.ask .opt-add { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.ask .opt-add[hidden] { display: none; }
+.ask .opt-add-l { font-size: 14px; color: var(--faint); margin-right: 4px; }
+.ask .opt-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 6px 13px; border: 1px dashed var(--line-strong); border-radius: 999px; background: transparent; color: var(--muted); font: 400 14px/1.2 var(--body); cursor: pointer; transition: color 0.2s, border-color 0.2s, opacity 0.25s, transform 0.25s; }
+.ask .opt-chip span { color: var(--accent); }
+.ask .opt-chip:hover { color: var(--text); border-color: rgba(246, 241, 232, 0.55); }
+.ask .opt-chip:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
+.ask .opt-chip[aria-expanded="true"] { display: none; }
+.ask.has-opt .opt:not(.open) { display: none; }
+.ask.has-opt .opt.open { animation: opt-in 0.45s cubic-bezier(0.3, 0.9, 0.3, 1); }
+@keyframes opt-in { from { opacity: 0; transform: translateY(-8px); clip-path: inset(0 0 100% 0); } to { opacity: 1; transform: none; clip-path: inset(0); } }
+@media (prefers-reduced-motion: reduce) { .ask.has-opt .opt.open { animation: none; } }
 .ask .actions { display: flex; gap: 10px; }
 .ask [aria-invalid="true"] { border-color: var(--bad); }
 
@@ -970,23 +983,41 @@ html.motion-paused .rec::before { animation: none; }
 
 .cfg-kicker { margin-bottom: -6px; }
 
-/* Express als Abkürzung über dem Zeitstrahl: feine gestrichelte Klammer vom ersten zum letzten Punkt, die Beschriftung
-   sitzt auf der Klammer. Der Beleg steht als Fußnote darunter, mit demselben gestrichelten Zeichen als Legende.
-   Handy: als gestrichelt umrandeter Hinweis über dem senkrechten Strahl. */
-.ruler-wrap.has-shortcut { position: relative; padding-top: 44px; }
-.shortcut { position: absolute; left: 0; top: 0; width: calc((100% / var(--n, 3)) * (var(--n, 3) - 1) + 16px); height: 52px; margin: 0; display: flex; justify-content: center; align-items: flex-start; }
-.shortcut .sc-line { position: absolute; left: 7px; right: 8px; top: 11px; bottom: 0; border: 1.5px dashed rgba(245, 167, 60, 0.6); border-bottom: 0; border-radius: 14px 14px 0 0; }
-.shortcut .sc-label { position: relative; display: inline-flex; gap: 10px; align-items: baseline; padding: 0 14px; background: var(--surface); }
-.shortcut .sc-label b { font: 500 18px/1.2 var(--display); color: var(--head); letter-spacing: -0.01em; }
-.shortcut .sc-label .mono { color: var(--accent); }
-.sc-text { display: flex; gap: 10px; align-items: baseline; margin: 30px 0 0; color: var(--faint); font-size: 14px; max-width: 70ch; }
-.sc-key { flex: none; width: 22px; border-top: 1.5px dashed rgba(245, 167, 60, 0.6); transform: translateY(-4px); }
+/* Netzplan-Zeitstrahl (MetroLine.astro): Hauptlinie mit Stationen (.ruler oben), Abzweigung als durchgezogene orange
+   Linie mit runden Ecken von der ersten zur letzten Station, Schild mittig darauf. --n: Zahl der Stationen. */
+.metro { position: relative; }
+.metro .ruler::before, .metro .ruler::after { height: 3px; top: 6.5px; right: calc(100% / var(--n) - 10px); } /* endet an der letzten Station */
+.metro .dot { width: 16px; height: 16px; border-width: 3px; }
+.metro .ruler li:first-child .dot, .metro .ruler li:last-child .dot { width: 20px; height: 20px; left: -2px; top: -2px; } /* Umsteigestationen */
+.metro.has-branch { padding-top: 68px; }
+.metro-branch { position: absolute; left: 7px; top: 16px; height: 60px; width: calc(100% / var(--n) * (var(--n) - 1)); border: 3px solid var(--accent); border-bottom: 0; border-radius: 28px 28px 0 0; transition: opacity 0.8s ease 1.6s; }
+.reveal .metro:has(.ruler:not(.is-in)) .metro-branch, .reveal .metro:has(.ruler:not(.is-in)) .metro-sign { opacity: 0; }
+.metro-sign { position: absolute; z-index: 1; top: 0; left: calc(7px + 100% / var(--n) * (var(--n) - 1) / 2); transform: translateX(-50%); margin: 0; display: inline-flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 4px 12px; padding: 4px 16px; border-radius: 999px; border: 1px solid rgba(245, 167, 60, 0.5); background: var(--surface); white-space: nowrap; transition: opacity 0.8s ease 1.8s; }
+.metro-sign b { font: 500 17px/1.3 var(--display); color: var(--head); letter-spacing: -0.01em; }
+.metro-sign .mono { color: var(--accent); }
+.metro-sign .link { font-size: 14px; }
+.metro-sign .metro-sign-key { display: none; }
+.metro-note { display: flex; gap: 10px; align-items: baseline; margin: 30px 0 0; color: var(--faint); font-size: 14px; max-width: 70ch; }
+.metro-sign-key { flex: none; width: 22px; border-top: 3px solid var(--accent); border-radius: 2px; transform: translateY(-4px); }
 @media (max-width: 900px) {
-  .ruler-wrap.has-shortcut { padding-top: 0; }
-  .shortcut { position: static; width: auto; height: auto; justify-content: flex-start; margin: 0 0 28px; padding: 12px 16px; border: 1.5px dashed rgba(245, 167, 60, 0.6); border-radius: 12px; }
-  .shortcut .sc-line { display: none; }
-  .shortcut .sc-label { padding: 0; background: none; flex-wrap: wrap; gap: 4px 10px; }
+  /* senkrecht: Hauptlinie links, Abzweigung als Bogen rechts daneben, Schild über der Liste */
+  .metro.has-branch { padding-top: 0; }
+  .metro.has-branch .ruler { padding-left: 62px; }
+  .metro.has-branch .dot { left: -62px; }
+  .metro.has-branch .ruler li:first-child .dot, .metro.has-branch .ruler li:last-child .dot { left: -64px; }
+  /* senkrechte Hauptlinie als Abschnitte von Station zu Station, damit sie an der letzten Station endet */
+  .metro .ruler::before, .metro .ruler::after { display: none; }
+  .metro .ruler li:not(:last-child)::before { content: ""; position: absolute; left: -55.5px; top: 8px; bottom: -36px; width: 3px; border-radius: 2px; background: linear-gradient(var(--c, var(--accent)), var(--c2, var(--accent))); }
+  .metro:not(.has-branch) .ruler li:not(:last-child)::before { left: -27.5px; }
+  .metro .ruler li:nth-child(1) { --c: #ff9e29; --c2: #ec7f95; } .metro .ruler li:nth-child(2) { --c: #ec7f95; --c2: #b88bec; } .metro .ruler li:nth-child(3) { --c: #b88bec; --c2: #6fc8ef; } .metro .ruler li:nth-child(4) { --c: #6fc8ef; --c2: #33edf2; }
+  .metro-branch { display: none; }
+  .metro.has-branch .ruler li::after { content: ""; position: absolute; left: -54px; width: 26px; top: 0; bottom: -28px; border-right: 3px solid var(--accent); }
+  .metro.has-branch .ruler li:first-child::after { top: 14px; border-top: 3px solid var(--accent); border-top-right-radius: 22px; }
+  .metro.has-branch .ruler li:last-child::after { top: 0; bottom: auto; height: 14px; border-bottom: 3px solid var(--accent); border-bottom-right-radius: 22px; }
+  .metro-sign { position: static; transform: none; white-space: normal; justify-content: flex-start; margin: 0 0 28px; padding: 12px 16px; border-radius: 14px; }
+  .metro-sign .metro-sign-key { display: inline-block; }
 }
+@media (prefers-reduced-motion: reduce) { .metro-branch, .metro-sign { transition: none; } }
 
 /* Presse im Raster wie Qualität und Sicherheit: Logo, darunter leise der Anlass. Keine Kästen. */
 .proof .press ul { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 28px 24px; }
@@ -1178,3 +1209,21 @@ a.pack { grid-template-rows: auto auto 1fr; align-items: start; row-gap: 14px; }
 .todo-note { position: relative; z-index: 6; display: flex; gap: 12px; align-items: flex-start; margin: 24px var(--gutter) -8px; padding: 12px 16px; border: 1px dashed rgba(245, 167, 60, 0.7); border-radius: 10px; background: rgba(245, 167, 60, 0.08); color: var(--text); font-size: 14.5px; line-height: 1.5; }
 .todo-note b { color: var(--accent); font-weight: 500; margin-right: 4px; }
 .todo-note .ico { flex: 0 0 auto; margin-top: 2px; }
+
+/* Handy (Marc, 02.11.2026): das Showreel steht als gerahmtes Bild im Seitenfluss über der Überschrift, nicht als Hintergrund
+   hinter dem Text. Startseiten-Hero (.hero) und Referenz-Kopf (.c-hero); Video: kleine Fassung (hero-reel.ts). */
+@media (max-width: 700px) {
+  .hero { height: auto; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "media" "copy"; padding: calc(76px + env(safe-area-inset-top, 0px)) var(--pad) 44px; background: var(--ground); --fr-arm: 16px; }
+  .hero > .hero-media, .hero > .reel, .hero > .frame, .hero > .rec { grid-area: media; position: relative; inset: auto; left: auto; right: auto; top: auto; bottom: auto; width: 100%; }
+  .hero > .hero-media, .hero > .reel { height: auto; aspect-ratio: 16 / 10; border-radius: 14px; overflow: hidden; -webkit-mask-image: none; mask-image: none; }
+  .hero > .hero-media img { width: 100%; height: 100%; object-fit: cover; }
+  .hero > .shade { display: none; }
+  .hero > .frame { width: auto; margin: 10px; z-index: 3; }
+  .hero.reel-on > .rec { display: flex; width: auto; align-self: start; justify-self: end; margin: calc(10px + var(--fr-arm) - 9px) 24px 0 0; z-index: 3; }
+  .hero > .hero-copy { grid-area: copy; position: relative; left: auto; right: auto; bottom: auto; padding-top: 28px; max-width: none; }
+  .c-hero { min-height: 0; grid-template-rows: auto auto auto auto; padding-bottom: 0; }
+  .c-hero > .hero-media, .c-hero > .reel { grid-row: 2; grid-column: 1; position: relative; inset: auto; width: 100%; height: auto; aspect-ratio: 16 / 10; margin-top: 18px; border-radius: 14px; overflow: hidden; -webkit-mask-image: none; mask-image: none; }
+  .c-hero > .shade { display: none; }
+  .c-hero > .c-title { grid-row: 3; padding-top: 24px; }
+  .c-hero > .c-credits { grid-row: 4; }
+}

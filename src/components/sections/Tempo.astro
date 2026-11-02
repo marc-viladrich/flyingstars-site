@@ -1,9 +1,9 @@
 ---
-// Von der Anfrage bis zum Showabend in Zahlen (Marc, 31.10.2026: „benefitorientiert … wie schnell ihr das theoretisch
-// anbieten könnt … in Zahlen statt in Adjektiven“). Ein Zeitstrahl: Beim Erscheinen zieht die Verlaufslinie von der
-// Anfrage zum Showabend, die Punkte schalten nacheinander ein wie Drohnen. Darunter ruhige Kennzahlen.
+// Von der Anfrage bis zum Showabend in Zahlen (Marc, 31.10.2026: „benefitorientiert … in Zahlen statt in Adjektiven“).
+// Der Weg als Netzplan-Zeitstrahl (MetroLine.astro), Express als Abzweigung; darunter ruhige Kennzahlen.
 import type { Section } from '../../content.config';
 import SectionHead from '../SectionHead.astro';
+import MetroLine from '../MetroLine.astro';
 type Props = Extract<Section, { type: 'tempo' }> & { index: number };
 const { headline, text, marks, shortcut, facts = [], note, id = 'ablauf', index, kicker } = Astro.props;
 const headingId = `${id}-h`;
@@ -11,21 +11,7 @@ const H = index === 0 ? 'h1' : 'h2';
 ---
 <section class="section alt tempo" id={id} aria-labelledby={headingId}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
-  <!-- Der Strahl zeigt den regulären Weg. Eine Abkürzung (Express) liegt fein gestrichelt darüber und verbindet den ersten
-       mit dem letzten Punkt: sichtbar möglich, aber nicht die Regel (Marc, 31.10.2026). -->
-  <div class:list={['ruler-wrap', { 'has-shortcut': shortcut }]}>
-  {shortcut && <p class="shortcut" style={`--n:${marks.length}`}><span class="sc-line" aria-hidden="true"></span><span class="sc-label"><b>{shortcut.value}</b> <span class="mono">{shortcut.label}</span></span></p>}
-  <ol class="ruler" data-reveal-group style={`--n:${marks.length}`}>
-    {marks.map((m, i) => <li data-reveal style={`--i:${i}`}>
-      <span class="dot" aria-hidden="true"></span>
-      <b class="v">{m.value}</b>
-      <span class="l mono">{m.label}</span>
-      {m.text && <p>{m.text}</p>}
-    </li>)}
-  </ol>
-  {shortcut?.text && <p class="sc-text"><span class="sc-key" aria-hidden="true"></span>{shortcut.text}</p>}
-  </div>
+  <MetroLine marks={marks} branch={shortcut} />
   {facts.length > 0 && <dl class="tempo-facts">{facts.map((f) => <div><dt class="mono">{f.label}</dt><dd class="v">{f.value}</dd>{f.text && <dd class="t">{f.text}</dd>}</div>)}</dl>}
   {note && <p class="tempo-note mono">{note}</p>}
 </section>
-

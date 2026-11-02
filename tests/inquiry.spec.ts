@@ -17,9 +17,12 @@ test('Anfrage behält Paketauswahl, alle Showdetails und ehrlichen Versandstatus
   await page.getByLabel('Wo soll sie stattfinden?').fill('Osnabrück');
   await page.getByRole('button',{name:'Weiter',exact:true}).click();
   // Freitext steht seit dem Fragebogen-Abgleich (30.10.2026) im zweiten Schritt
+  // optionale Felder öffnet man über die kleinen Knöpfe (seit 02.11.2026)
+  await page.getByRole('button', { name: 'Nachricht' }).click();
   await page.getByLabel('Möchtest du uns noch etwas mitteilen?').fill('Produktlaunch mit Musik');
   await page.getByLabel('Dein Name').fill('Marc Viladrich');
   await page.getByLabel('Deine E-Mail-Adresse').fill('marc@example.test');
+  await page.getByRole('button', { name: 'Telefon', exact: false }).first().click();
   await page.getByLabel('Deine Telefonnummer').fill('01234');
   await page.getByRole('button',{name:'Anfrage senden',exact:true}).click();
   await expect(page.getByRole('status')).toContainText('Es wurde nichts gesendet.');
@@ -94,4 +97,17 @@ test('Porträtlogos behalten ihr Seitenverhältnis nach der Bildoptimierung', as
   })).toBeGreaterThan(0.65);
   const ratio=await nfl.evaluate(node=>node.getBoundingClientRect().width/node.getBoundingClientRect().height);
   expect(ratio).toBeGreaterThan(0.65);expect(ratio).toBeLessThan(0.8);
+});
+
+test('Optionale Angaben stehen hinter kleinen Knöpfen, vorbelegte Felder sind offen', async ({ page }) => {
+  await page.goto('/kontakt/?show=Anlass%3A%20Launch#anfrage');
+  await page.getByText('Firmenevent', { exact: true }).click();
+  await page.getByLabel('Wo soll sie stattfinden?').fill('Essen');
+  await page.getByText('Noch nicht festgelegt').click();
+  await page.getByRole('button', { name: 'Weiter', exact: true }).click();
+  // Nachricht ist durch den Entwurf vorbelegt und deshalb offen, Telefon noch nicht
+  await expect(page.getByLabel('Möchtest du uns noch etwas mitteilen?')).toBeVisible();
+  await expect(page.getByLabel('Deine Telefonnummer')).toBeHidden();
+  await page.getByRole('button', { name: 'Telefon' }).click();
+  await expect(page.getByLabel('Deine Telefonnummer')).toBeFocused();
 });

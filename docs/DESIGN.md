@@ -60,7 +60,16 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 
 **Überschriften zeigen einen Nutzen:** keine reinen Etiketten („Für Agenturen.“, „Andere Wege.“, „In Zahlen.“), sondern was Besucher:innen davon haben („Reibungsloser Ablauf von A bis Z.“, „Wenig Vorlauf? Besonderer Ort? Wir finden einen Weg.“). Das Etikett darf im Kicker stehen.
 
-**Magie vor Technik (Marc, 02.11.2026):** Technische Details nie alle auf einmal. Standort/Sicherheit (`LandingSite.astro`) zeigt eine Zone zugleich, anfangs die erste; Zeigen, Fokus oder Tippen wechselt, Zeichnung und Text gemeinsam. Zuständigkeiten, Vorlauf und Haftpflicht hinter dem Aufklapper „Was wir übernehmen und was ihr klärt“. Auf B2C-Seiten (Hochzeit) keine Schutz-Kacheln.
+**Magie vor Technik (Marc, 02.11.2026):** Technische Details nie alle auf einmal, aber auch nie in Akkordeons verstecken. Progressive Disclosure heißt Informationsdesign: verdichten und strukturieren (Tabelle mit Zeichen, Zeitstrahl, Icon-Raster), nicht wegklappen.
+- Standort/Sicherheit (`LandingSite.astro`) zeigt eine Zone zugleich, anfangs die erste; Zeigen, Fokus oder Tippen wechselt, Zeichnung und Text gemeinsam. Auf B2C-Seiten (Hochzeit) keine Schutz-Kacheln.
+- Zuständigkeiten als Tabelle „Wer was übernimmt“: je Zeile eine kurze Aufgabe (max. 70 Zeichen), Spalten FlyingStars / Ihr mit ✓ übernimmt, ◐ unterstützt (kurzer Hinweis), – nicht nötig. Legende darunter.
+- Zeiten und Vorlauf als Netzplan-Zeitstrahl (`MetroLine.astro`, über Tempo): Hauptlinie im Logoverlauf mit Stationen, Express als orange Abzweigung von der ersten zur letzten Station mit Schild und Link „Express anfragen“. Handy senkrecht.
+
+**Formular:** Knöpfe linksbündig, Hauptknopf zuerst. Optionale Angaben im zweiten Schritt als Zeile kleiner „+ Telefon / Firma / Nachricht / Woher“-Knöpfe; ein Klick blendet das Feld ein und setzt den Fokus, vorbelegte Felder sind offen.
+
+**Video auf dem Handy:** Startseiten-Hero und Referenz-Kopf zeigen das Showreel bis 700 px als gerahmtes Bild im Seitenfluss über der Überschrift (kleine Fassung, `data-src-small`), nicht als Hintergrund.
+
+**Redaktionelle Hinweise:** jede Section kann `todo` tragen („Fehlt noch …“); sichtbar nur im Dev-Server und in Vorschau-Builds (`PUBLIC_ANNOTATE=1`), Produktion rendert nichts davon.
 
 **Textlink neben Knopf:** sitzt auf der Mittellinie des Knopfs (`.btn ~ .link`), nicht oben.
 

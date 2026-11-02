@@ -153,7 +153,7 @@ sections:
   - type: landingBento
     id: agenturen
     kicker: Agencies
-    headline: A smooth process from A to Z.
+    headline: You stay the face, we deliver the show.
     lead:
       icon: sparkles
       title: We fly, *you shine*.
@@ -180,7 +180,7 @@ sections:
   - type: landingSpotlight
     id: orte
     kicker: Locations
-    headline: "Short notice? Unusual venue? We'll find a way."
+    headline: We fly where your audience is.
     text: Our generic operating authorisation lets us approve most flight sites ourselves. For controlled
       airspace, airport locations and federal waterways, we obtain the necessary special permits. This takes
       more lead time.
@@ -213,4 +213,4 @@ sections:
     kicker: Enquiry
     headline: Tell us about your campaign.
     text: A date, location and goal are enough. You can send your logo by email later.
-translationSourceHash: 7b6f7468c1cb68602c6ff94bbcb797a4c9bd04a7509a270ddf49ad84ad78cacf
+translationSourceHash: 1a2163af16ef728c4298313f52034da523f1c08c9406bb376edecbcb2f7eff39

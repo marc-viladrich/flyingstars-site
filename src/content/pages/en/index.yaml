@@ -256,6 +256,8 @@ sections:
       value: Express in 1–2 weeks
       label: available as an extra
       text: PUMA contacted us 14 days before the derby. The show flew in time for kick-off.
+      href: /kontakt/?extras=express
+      linkLabel: Request express
     facts:
       - value: 178 shows
         label: Experience
@@ -515,4 +517,4 @@ sections:
     headline: Tell us about your date.
     text: A date, location and occasion are enough for an initial assessment. Leave anything you don't know yet
       open.
-translationSourceHash: 121df88dc2455f2b5c083d94868238568f91dcfd7a25416e77fb358a22e5f86e
+translationSourceHash: 1e5649876d17fba887ecba4dcb8b5f0c7f54b1bd4b002104b5604c238fae6272

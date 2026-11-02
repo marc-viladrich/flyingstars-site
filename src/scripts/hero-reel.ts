@@ -1,17 +1,18 @@
 // Stummes Hintergrund-Showreel in Seitenköpfen (Startseite und Referenzen, Marc 01.11.2026: „der gleiche Effekt wie auf
 // der Startseite“). Markup: ein Element mit [data-reel-host], darin <video data-reel data-src=… muted loop playsinline>.
 // Startet erst nach dem ersten Bild und nur, wenn es sichtbar ist; der Host bekommt .reel-on, sobald es wirklich läuft
-// (dann blendet das CSS das Standbild aus). Kein Video bei reduzierter Bewegung, globaler Pause, Datensparmodus und auf
-// schmalen Bildschirmen: dort bleibt das Standbild stehen.
+// (dann blendet das CSS das Standbild aus). Kein Video bei reduzierter Bewegung, globaler Pause und Datensparmodus: dort
+// bleibt das Standbild stehen. Auf schmalen Bildschirmen (bis 700 px) lädt die kleine Fassung aus data-src-small; das CSS
+// zeigt das Video dort als gerahmtes Bild im Seitenfluss statt als Hintergrund (Marc, 02.11.2026).
 document.querySelectorAll<HTMLVideoElement>('video[data-reel]').forEach((reel) => {
   const root = document.documentElement;
   const host = reel.closest<HTMLElement>('[data-reel-host]') ?? reel.parentElement!;
   const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
-  const allowed = () => !matchMedia('(prefers-reduced-motion: reduce)').matches && !root.classList.contains('motion-paused') && matchMedia('(min-width: 701px)').matches && !conn?.saveData;
+  const allowed = () => !matchMedia('(prefers-reduced-motion: reduce)').matches && !root.classList.contains('motion-paused') && !conn?.saveData;
   let visible = true;
   const sync = () => {
     if (allowed() && visible) {
-      if (!reel.src) reel.src = reel.dataset.src!;
+      if (!reel.src) reel.src = (matchMedia('(max-width: 700px)').matches && reel.dataset.srcSmall) || reel.dataset.src!;
       reel.play().then(() => host.classList.add('reel-on')).catch(() => {});
     } else reel.pause();
   };

@@ -31,12 +31,15 @@ for (const locale of ['en', 'nl']) {
     await expect(page.locator('#zusammenarbeit')).toBeVisible();
     await expect(page.locator('#sicherheit .st-items > li')).toHaveCount(5);
     await expect(page.locator('#sicherheit .st-safeguards > div')).toHaveCount(4);
-    await expect(page.locator('#sicherheit .st-responsibilities')).toContainText(t('landingsite.provider'));
+    // Zuständigkeiten als Tabelle (seit 02.11.2026): Überschrift, Zeichenlegende, Zeilen mit FlyingStars/Ihr
+    await expect(page.locator('#sicherheit .st-who')).toContainText(t('landingsite.more'));
+    await expect(page.locator('#sicherheit .st-who tbody tr')).toHaveCount(10);
+    await expect(page.locator('#sicherheit .st-legend')).toContainText(t('landingsite.part'));
     await expect(page.locator('#sicherheit svg title')).toHaveText(t('landingsite.outdoorTitle'));
     for (const route of ['drohnenshow-hochzeit', 'drohnenshow-indoor']) {
       await page.goto(`/${locale}/${route}/`);
       await expect(page.locator('.ls-site .st-items > li')).toHaveCount(5);
-      await expect(page.locator('.ls-site .st-responsibilities > div')).toHaveCount(2);
+      await expect(page.locator('.ls-site .st-who thead th')).toHaveCount(3);
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
     }
     expect(errors).toEqual([]);
@@ -59,6 +62,8 @@ for (const locale of ['en', 'nl']) {
     await expect(page.locator('#inquiry-form a')).toHaveAttribute('href', `/${locale}/datenschutz/`);
     await page.locator('#f-name').fill('Integration Test');
     await page.locator('#f-mail').fill('test@example.test');
+    // optionale Felder öffnen sich über ihren Knopf (seit 02.11.2026)
+    await page.locator('[data-opt-add=quelle]').click();
     await page.locator('#f-quelle').selectOption('Empfehlung');
     await page.locator('button[type=submit]').click();
     await expect(page.locator('[data-form-status]')).toHaveText(t('contact.formDeliveryHasNotBeenSetUpYetNothingWas'));

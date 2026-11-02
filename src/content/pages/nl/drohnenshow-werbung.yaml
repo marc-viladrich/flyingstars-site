@@ -152,7 +152,7 @@ sections:
   - type: landingBento
     id: agenturen
     kicker: Bureaus
-    headline: Een vlekkeloos verloop van A tot Z.
+    headline: Jullie blijven het gezicht, wij leveren de show.
     lead:
       icon: sparkles
       title: Wij vliegen, *jullie stralen*.
@@ -180,7 +180,7 @@ sections:
   - type: landingSpotlight
     id: orte
     kicker: Locaties
-    headline: Weinig tijd? Bijzondere locatie? We vinden een manier.
+    headline: We vliegen waar jullie publiek is.
     text: Met onze generieke exploitatievergunning kunnen we de meeste vlieglocaties zelf vrijgeven. Voor
       gecontroleerd luchtruim, locaties bij luchthavens en federale waterwegen regelen we de benodigde
       bijzondere vergunningen. Dat vraagt meer voorbereidingstijd.
@@ -213,4 +213,4 @@ sections:
     kicker: Aanvraag
     headline: Vertel ons over jullie campagne.
     text: Datum, locatie en doel zijn genoeg. Jullie logo mogen jullie later per e-mail sturen.
-translationSourceHash: 7b6f7468c1cb68602c6ff94bbcb797a4c9bd04a7509a270ddf49ad84ad78cacf
+translationSourceHash: 1a2163af16ef728c4298313f52034da523f1c08c9406bb376edecbcb2f7eff39

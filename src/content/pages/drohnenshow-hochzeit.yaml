@@ -133,20 +133,16 @@ sections:
         text: "Eure Gäste stehen außerhalb des äußeren Sicherheitsbereichs und brauchen freie Sicht auf die Show. Ihre Position planen wir mit euch, mit Abstand zu Hauswänden und Bäumen."
         zone: guests
     responsibilities:
-      provider:
-        - "Wir prüfen den Standort vor dem Angebot, zeichnen die Zonen ein und erstellen Sicherheitskonzept und Flugplanung."
-        - "Wir haben eine generische Betriebsgenehmigung des LBA und übernehmen weitere luftrechtliche Anträge, etwa bei der DFS. Für andere EU-Länder beantragen wir zusätzlich Cross-border-Bestätigungen."
-        - "In Flughafen-Kontrollzonen holen wir die Verkehrsfreigabe ein. Die Abstimmung zu Bundeswasserstraßen übernehmen wir ebenfalls."
-        - "Ein Schreiben für die Zustimmung der Grundstückseigentümer:innen bekommt ihr von uns. Bei Naturschutzgebieten hilft eine erste Anfrage durch den Betreiber vor Ort; Antrag und Flugplanung übernehmen wir."
-      customer:
-        - "Ihr stellt die benötigten Flächen bereit und holt die Zustimmung aller Grundstückseigentümer:innen im gesamten äußeren Sicherheitsbereich ein. Bei öffentlichen Flächen stimmt die Stadt oder Gemeinde zu. Auch Gebäude dürfen nur mit Zustimmung der Eigentümer:innen überflogen werden."
-        - "Ihr sichert den Sicherheitsbereich während der Show, sofern wir nichts anderes vereinbaren. Meist reicht Flatterband; an belebten Orten braucht es ein bis zwei Ordner:innen, über Wasser eine Person im Boot."
-        - "Ihr haltet die ebene Startfläche ab unserer Ankunft gesperrt und nennt uns Hindernisse im Flugbereich und im Sichtfeld, möglichst mit Höhen."
-        - "Ihr benennt eine erreichbare Ansprechperson für den Showtag und stimmt Showzeit und Beschallung mit uns ab. Den Musikschnitt liefern wir; für kleine Gruppen können wir eine große Box stellen."
-    planning:
-      title: Genehmigungen brauchen Vorlauf
-      text: "Plant idealerweise ein bis zwei Monate ein, bei aufwendigen Genehmigungen etwa in Flughafennähe eher drei Monate. Express ist je nach Standort in ein bis zwei Wochen möglich, mit Aufpreis nach Aufwand. Das sind Planungsrichtwerte; die nötigen Freigaben prüfen wir für euren Ort."
-    note: { value: "bis 1,3 Mio. €", text: "Drohnen-Haftpflicht in jedem Outdoor-Paket. Dafür braucht ihr keine zusätzliche Versicherung. Wir fliegen in der speziellen Kategorie nach den europäischen Vorgaben. Die Betriebsgenehmigung erteilt das LBA." }
+      - { task: "Standort prüfen, Sicherheitskonzept und Flugplanung", us: full, you: none }
+      - { task: "Luftrechtliche Genehmigungen (LBA, DFS, Wasserstraßen, EU-Länder)", us: full, you: none }
+      - { task: "Zustimmung der Grundstückseigentümer:innen", us: part, you: full, hint: "Vorlage von uns" }
+      - { task: "Flächen für Start, Sicherheitsbereich und Publikum", us: none, you: full }
+      - { task: "Sicherheitsbereich absichern (Flatterband, ggf. Ordner:innen)", us: part, you: full, hint: "nach Absprache" }
+      - { task: "Pilot:innen, Technik, Auf- und Abbau", us: full, you: none }
+      - { task: "Musikschnitt passend zur Show", us: full, you: none }
+      - { task: "Beschallung vor Ort", us: part, you: full, hint: "Box für kleine Gruppen" }
+      - { task: "Ansprechperson am Showtag", us: none, you: full }
+      - { task: "Haftpflicht bis 1,3 Mio. €", us: full, you: none }
     download: { label: Technik-Datenblatt · PDF, href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf }
 
   # Entwurf für Moritz: Ablauf in Zahlen wie auf der Startseite. Quellen: Fragebogen 21.10. (48 h, mind. 3 Wochen Design,
@@ -158,10 +154,11 @@ sections:
     text: Ihr kümmert euch um die Feier, wir melden uns, wenn wir eine Entscheidung brauchen. Ideal sind ein bis zwei Monate Vorlauf.
     marks:
       - { value: 48 h, label: bis zu unserer Antwort, text: "Datum, Location und eure Idee reichen. Danach ein kurzes Gespräch und euer Angebot." }
+      - { value: 1–2 Monate, label: "Vorlauf, ideal", text: "Genug Zeit für die Genehmigung. In Flughafennähe eher drei Monate." }
       - { value: 3 Wochen, label: "für Motive und Musik, mindestens", text: "Ihr seht einen Entwurf mit eurer Musik, gebt Feedback und am Ende jedes Motiv frei." }
       - { value: 3 h, label: vor der Show vor Ort, text: "Unser Team sperrt die Startfläche, fliegt die Show und baut danach wieder ab." }
-    # Express als Abkürzung über dem Strahl wie auf der Startseite (Fragebogen: unter 14 Tagen, Aufpreis nach Aufwand)
-    shortcut: { value: Express unter 14 Tagen, label: Aufpreis nach Aufwand }
+    # Express als Abzweigung im Netzplan (Fragebogen: unter 14 Tagen, Aufpreis nach Aufwand), mit Weg in die Anfrage
+    shortcut: { value: Express unter 14 Tagen, label: Aufpreis nach Aufwand, href: "/kontakt/?extras=express", linkLabel: Express anfragen }
 
   - type: landingCta
     headline: Es soll eine *Überraschung* werden?

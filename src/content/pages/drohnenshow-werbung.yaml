@@ -128,7 +128,7 @@ sections:
   - type: landingBento
     id: agenturen
     kicker: Agenturen
-    headline: Reibungsloser Ablauf von A bis Z.
+    headline: Ihr bleibt das Gesicht, wir liefern die Show.
     lead:
       icon: sparkles
       title: Wir fliegen, *ihr glänzt*.
@@ -147,7 +147,7 @@ sections:
   - type: landingSpotlight
     id: orte
     kicker: Orte
-    headline: Wenig Vorlauf? Besonderer Ort? Wir finden einen Weg.
+    headline: Wir fliegen dort, wo euer Publikum ist.
     text: Dank unserer generischen Betriebsgenehmigung geben wir die meisten Flugorte selbst frei. Für Kontrollzonen, Flughafennähe und Bundeswasserstraßen holen wir die nötigen Sondergenehmigungen ein. Das braucht mehr Vorlauf.
     image:
       src: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg

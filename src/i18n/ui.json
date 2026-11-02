@@ -325,9 +325,9 @@
     "nl": "Extra's & upgrades"
   },
   "extras.roomForMore": {
-    "de": "Mehr geht immer.",
-    "en": "Room for more.",
-    "nl": "Er kan altijd meer bij."
+    "de": "Wenig Vorlauf? Besonderer Ort? Wir finden einen Weg.",
+    "en": "Short notice? Unusual venue? We'll find a way.",
+    "nl": "Weinig tijd? Bijzondere locatie? We vinden een manier."
   },
   "extras.chooseTheExtrasYouDLikeTheyGoStraightInto": {
     "de": "Wählt aus, was ihr dazunehmen wollt. Es landet direkt in eurer Anfrage, den Preis nennen wir im Angebot.",
@@ -845,9 +845,9 @@
     "nl": "Altijd inbegrepen"
   },
   "pricingpage.whatYouReActuallyPayingFor": {
-    "de": "Wofür ihr eigentlich bezahlt.",
-    "en": "What you're actually paying for.",
-    "nl": "Waar jullie eigenlijk voor betalen."
+    "de": "Reibungsloser Ablauf von A bis Z.",
+    "en": "A smooth process from A to Z.",
+    "nl": "Een vlekkeloos verloop van A tot Z."
   },
   "pricingpage.mostOfTheWorkGoesIntoDesignPermitsAndA": {
     "de": "Der größte Teil der Arbeit steckt nicht in den Drohnen, sondern in Design, Genehmigung und einem sicheren Ablauf.",
@@ -3280,9 +3280,9 @@
     "nl": "Dit regelen wij"
   },
   "landingsite.more": {
-    "de": "Was wir übernehmen und was ihr klärt",
-    "en": "What we handle and what you arrange",
-    "nl": "Wat wij regelen en wat jullie regelen"
+    "de": "Wer was übernimmt",
+    "en": "Who takes care of what",
+    "nl": "Wie wat regelt"
   },
   "landingsite.customer": {
     "de": "Das braucht ihr",
@@ -3458,5 +3458,55 @@
     "de": "Der Browser kann eure Auswahl nicht speichern. Sie gilt nur bis zum nächsten Seitenaufruf. Ihr könnt diesen Dialog schließen.",
     "en": "Your browser cannot save your choices. They apply only until the next page load. You can close this dialog.",
     "nl": "De browser kan jullie keuzes niet bewaren. Ze gelden alleen tot de volgende paginaweergave. Jullie kunnen dit venster sluiten."
+  },
+  "landingsite.task": {
+    "de": "Aufgabe",
+    "en": "Task",
+    "nl": "Taak"
+  },
+  "landingsite.you": {
+    "de": "Ihr",
+    "en": "You",
+    "nl": "Jullie"
+  },
+  "landingsite.full": {
+    "de": "übernimmt",
+    "en": "takes care of it",
+    "nl": "regelt het"
+  },
+  "landingsite.part": {
+    "de": "unterstützt",
+    "en": "supports",
+    "nl": "ondersteunt"
+  },
+  "landingsite.none": {
+    "de": "nicht nötig",
+    "en": "not needed",
+    "nl": "niet nodig"
+  },
+  "contactform.addOptional": {
+    "de": "Optional ergänzen",
+    "en": "Add if you like",
+    "nl": "Optioneel aanvullen"
+  },
+  "contactform.addPhone": {
+    "de": "Telefon",
+    "en": "Phone",
+    "nl": "Telefoon"
+  },
+  "contactform.addCompany": {
+    "de": "Firma",
+    "en": "Company",
+    "nl": "Bedrijf"
+  },
+  "contactform.addMessage": {
+    "de": "Nachricht",
+    "en": "Message",
+    "nl": "Bericht"
+  },
+  "contactform.addSource": {
+    "de": "Woher ihr uns kennt",
+    "en": "How you found us",
+    "nl": "Hoe jullie ons vonden"
   }
 }

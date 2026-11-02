@@ -159,20 +159,16 @@ sections:
         title: Wetter im Blick
         text: "Wir fliegen formstabil bis Windstärke 5 und bei leichtem Nieselregen. Die Wetterlage stimmen wir idealerweise ein bis zwei Tage vorher mit euch ab."
     responsibilities:
-      provider:
-        - "Wir prüfen den Standort vor dem Angebot, zeichnen die Zonen ein und erstellen Sicherheitskonzept und Flugplanung."
-        - "Wir haben eine generische Betriebsgenehmigung des LBA und übernehmen weitere luftrechtliche Anträge, etwa bei der DFS. Für andere EU-Länder beantragen wir zusätzlich Cross-border-Bestätigungen."
-        - "In Flughafen-Kontrollzonen holen wir die Verkehrsfreigabe ein. Die Abstimmung zu Bundeswasserstraßen übernehmen wir ebenfalls."
-        - "Ein Schreiben für die Zustimmung der Grundstückseigentümer:innen bekommt ihr von uns. Bei Naturschutzgebieten hilft eine erste Anfrage durch den Betreiber vor Ort; Antrag und Flugplanung übernehmen wir."
-      customer:
-        - "Ihr stellt die benötigten Flächen bereit und holt die Zustimmung aller Grundstückseigentümer:innen im gesamten äußeren Sicherheitsbereich ein. Bei öffentlichen Flächen stimmt die Stadt oder Gemeinde zu. Auch Gebäude dürfen nur mit Zustimmung der Eigentümer:innen überflogen werden."
-        - "Ihr sichert den Sicherheitsbereich während der Show, sofern wir nichts anderes vereinbaren. Meist reicht Flatterband; an belebten Orten braucht es ein bis zwei Ordner:innen, über Wasser eine Person im Boot."
-        - "Ihr haltet die ebene Startfläche ab unserer Ankunft gesperrt und nennt uns Hindernisse im Flugbereich und im Sichtfeld, möglichst mit Höhen."
-        - "Ihr benennt eine erreichbare Ansprechperson für den Showtag und stimmt Showzeit und Beschallung mit uns ab. Den Musikschnitt liefern wir; für kleine Gruppen können wir eine große Box stellen."
-    planning:
-      title: Genehmigungen brauchen Vorlauf
-      text: "Plant idealerweise ein bis zwei Monate ein, bei aufwendigen Genehmigungen etwa in Flughafennähe eher drei Monate. Express ist je nach Standort in ein bis zwei Wochen möglich, mit Aufpreis nach Aufwand. Das sind Planungsrichtwerte; die nötigen Freigaben prüfen wir für euren Ort."
-    note: { value: "bis 1,3 Mio. €", text: "Drohnen-Haftpflicht in jedem Outdoor-Paket. Dafür braucht ihr keine zusätzliche Versicherung. Wir fliegen in der speziellen Kategorie nach den europäischen Vorgaben. Die Betriebsgenehmigung erteilt das LBA." }
+      - { task: "Standort prüfen, Sicherheitskonzept und Flugplanung", us: full, you: none }
+      - { task: "Luftrechtliche Genehmigungen (LBA, DFS, Wasserstraßen, EU-Länder)", us: full, you: none }
+      - { task: "Zustimmung der Grundstückseigentümer:innen", us: part, you: full, hint: "Vorlage von uns" }
+      - { task: "Flächen für Start, Sicherheitsbereich und Publikum", us: none, you: full }
+      - { task: "Sicherheitsbereich absichern (Flatterband, ggf. Ordner:innen)", us: part, you: full, hint: "nach Absprache" }
+      - { task: "Pilot:innen, Technik, Auf- und Abbau", us: full, you: none }
+      - { task: "Musikschnitt passend zur Show", us: full, you: none }
+      - { task: "Beschallung vor Ort", us: part, you: full, hint: "Box für kleine Gruppen" }
+      - { task: "Ansprechperson am Showtag", us: none, you: full }
+      - { task: "Haftpflicht bis 1,3 Mio. €", us: full, you: none }
     download: { label: Technik-Datenblatt · PDF, href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf }
 
   # Nachhaltigkeit (Marc, 31.10.2026, Runde 8): dieselbe Scrollstory wie auf der Startseite, mit denselben Fakten, statt

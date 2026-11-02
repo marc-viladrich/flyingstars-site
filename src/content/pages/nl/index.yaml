@@ -257,6 +257,8 @@ sections:
       value: Express binnen 1–2 weken
       label: bij te boeken
       text: PUMA stuurde de aanvraag 14 dagen voor de derby. De show vloog op tijd voor de aftrap.
+      href: /kontakt/?extras=express
+      linkLabel: Express aanvragen
     facts:
       - value: 178 shows
         label: Ervaring
@@ -517,4 +519,4 @@ sections:
     headline: Vertel ons over jullie datum.
     text: Datum, locatie en gelegenheid zijn genoeg voor een eerste inschatting. Laat open wat jullie nog niet
       weten.
-translationSourceHash: 121df88dc2455f2b5c083d94868238568f91dcfd7a25416e77fb358a22e5f86e
+translationSourceHash: 1e5649876d17fba887ecba4dcb8b5f0c7f54b1bd4b002104b5604c238fae6272

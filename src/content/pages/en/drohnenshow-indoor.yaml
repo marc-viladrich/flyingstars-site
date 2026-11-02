@@ -97,12 +97,11 @@ sections:
         text: We agree the position of your guests and the clear flight area with you. The distance from the audience is set out in the show concept for your room.
         zone: guests
     responsibilities:
-      provider:
-        - We plan the flight area, audience position and choreography for your room. Each indoor show is priced individually.
-        - We bring the indoor drone system, positioning equipment and our crew.
-      customer:
-        - You send us a floor plan with dimensions and ceiling height, and indicate the planned audience position.
-        - You provide a clear take-off and flight area on level ground. We agree with you on a nearby power connection.
+      - { task: "Planning flight area, audience and choreography", us: full, you: none }
+      - { task: "Indoor drones, positioning system and team", us: full, you: none }
+      - { task: "Floor plan with dimensions and ceiling height", us: none, you: full }
+      - { task: "Clear, level take-off and flight area", us: none, you: full }
+      - { task: "Power supply nearby", us: part, you: full, hint: "we coordinate" }
     download:
       label: Technical data sheet · PDF
       href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf
@@ -199,4 +198,4 @@ sections:
     kicker: Enquiry
     headline: Tell us about your room.
     text: Ceiling height, floor area and date are enough for an initial assessment. We'll reply within 48 hours.
-translationSourceHash: eb03fd1e1a5213135c726ecab6c74be859d02dec2e98aaa916ec8ef97ad49226
+translationSourceHash: d62dfe7b3fa5a8fac26f27976628c5fe31df5399e473f2a390bb1e14caab4907

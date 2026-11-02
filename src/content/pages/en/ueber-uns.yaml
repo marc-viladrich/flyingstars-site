@@ -187,22 +187,16 @@ sections:
         title: Monitoring the weather
         text: Our formations remain stable up to wind force 5 and in light drizzle. Ideally, we review the weather conditions with you one or two days beforehand.
     responsibilities:
-      provider:
-        - We check the site before quoting, map out the zones and prepare the safety concept and flight plan.
-        - We hold a generic operational authorisation from the LBA and handle further aviation applications, for example with DFS. For other EU countries, we also apply for cross-border confirmations.
-        - We obtain air traffic clearance in airport control zones. We also coordinate requirements concerning federal waterways.
-        - We provide a letter for obtaining landowner consent. For nature reserves, an initial enquiry by the local operator helps; we handle the application and flight planning.
-      customer:
-        - You provide the required areas and obtain consent from all landowners throughout the outer safety area. For public land, consent comes from the town or municipality. Flying over buildings also requires their owners’ consent.
-        - You secure the safety area during the show unless we agree otherwise. Barrier tape is usually sufficient; busy locations need one or two stewards, and shows over water need a person in a boat.
-        - You keep the level take-off area closed from our arrival and tell us about obstacles in the flight area and line of sight, including heights where possible.
-        - You nominate an available contact person for show day and coordinate the show time and sound system with us. We provide the music edit; for small groups, we can supply a large speaker.
-    planning:
-      title: Permits need lead time
-      text: Ideally, allow one to two months, or around three months for complex permits such as sites near airports. Depending on the site, express delivery may be possible within one to two weeks, with a surcharge based on the work involved. These are planning guidelines; we check the approvals required for your location.
-    note:
-      value: up to €1.3 million
-      text: Drone liability cover in every outdoor package. You do not need additional insurance for this. We fly in the specific category under European requirements. The LBA issues the operational authorisation.
+      - { task: "Site check, safety concept and flight plan", us: full, you: none }
+      - { task: "Aviation permits (LBA, DFS, waterways, other EU countries)", us: full, you: none }
+      - { task: "Consent from the landowners", us: part, you: full, hint: "Template from us" }
+      - { task: "Space for take-off, safety zone and audience", us: none, you: full }
+      - { task: "Securing the safety zone (barrier tape, stewards if needed)", us: part, you: full, hint: "by arrangement" }
+      - { task: "Pilots, equipment, set-up and dismantling", us: full, you: none }
+      - { task: "Music edited to the show", us: full, you: none }
+      - { task: "Sound system on site", us: part, you: full, hint: "Speaker for small groups" }
+      - { task: "Contact person on show day", us: none, you: full }
+      - { task: "Liability insurance up to €1.3m", us: full, you: none }
     download:
       label: Technical data sheet · PDF
       href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf
@@ -264,4 +258,4 @@ sections:
     button:
       label: Request a show
       href: /kontakt/
-translationSourceHash: 898fd98fcc78cd90a5783be4747460dad7062e6facf2ae82579c84a1aa2a0699
+translationSourceHash: b7b33e5d014b01e8680833bd434ef7a97cfe74093ddf0779e4e235d0fadf40ee

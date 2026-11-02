@@ -91,12 +91,11 @@ sections:
         text: "Wir stimmen die Position eurer Gäste und die freie Flugfläche mit euch ab. Der Abstand zum Publikum wird im Showkonzept für euren Raum festgelegt."
         zone: guests
     responsibilities:
-      provider:
-        - "Wir planen Flugfläche, Publikumsposition und Choreografie für euren Raum. Jede Indoor-Show kalkulieren wir individuell."
-        - "Wir bringen das Indoor-Drohnensystem, die Positionierungstechnik und unser Team mit."
-      customer:
-        - "Ihr schickt uns einen Grundriss mit Maßen und Deckenhöhe und nennt die geplante Position des Publikums."
-        - "Ihr stellt eine freie Start- und Flugfläche auf ebenem Boden bereit. Einen Stromanschluss in der Nähe stimmen wir mit euch ab."
+      - { task: "Planung von Flugfläche, Publikum und Choreografie", us: full, you: none }
+      - { task: "Indoor-Drohnen, Positionierungstechnik und Team", us: full, you: none }
+      - { task: "Grundriss mit Maßen und Deckenhöhe", us: none, you: full }
+      - { task: "Freie, ebene Start- und Flugfläche", us: none, you: full }
+      - { task: "Stromanschluss in der Nähe", us: part, you: full, hint: "wir stimmen ab" }
     download: { label: Technik-Datenblatt · PDF, href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf }
 
   # Entwurf für Moritz: Sicherheit als Kacheln (Werte von der Live-Seite, siehe Kopfkommentar)

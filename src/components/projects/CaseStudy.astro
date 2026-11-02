@@ -30,7 +30,7 @@ const count = (n: number) => String(n).padStart(2, '0');
        kein Abspielknopf. Bis das Video läuft (und auf dem Handy), steht das Titelbild. Skript: src/scripts/hero-reel.ts -->
   <section class="c-hero" aria-labelledby="case-h" data-reel-host>
     <div class="hero-media" aria-hidden="true">{still && <img src={still.src} width={still.width} height={still.height} alt="" loading="eager" fetchpriority="high" />}</div>
-    <video class="reel" data-reel data-src={videoPath(data.heroVideo)} muted loop playsinline preload="none" poster={still?.src} aria-hidden="true" tabindex="-1"></video>
+    <video class="reel" data-reel data-src={videoPath(data.heroVideo)} data-src-small={videoPath(data.heroVideo, 'preview')} muted loop playsinline preload="none" poster={still?.src} aria-hidden="true" tabindex="-1"></video>
     <div class="shade" aria-hidden="true"></div>
     <div class="c-top mono">
       <nav class="crumbs" aria-label={t('casestudy.breadcrumbs')}><a href={localHref("/")}>{t('casestudy.home')}</a><span aria-hidden="true">/</span><a href={localHref("/referenzen/")}>{t('casestudy.ourWork')}</a><span aria-hidden="true">/</span><span aria-current="page">{data.name}</span></nav>

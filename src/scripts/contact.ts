@@ -117,5 +117,27 @@ if (form) {
     } catch (error) { status.textContent = t('contact.valuePleaseTryAgainLaterOrEmailTeamFlyingstarsArt', { v0: error instanceof Error ? error.message : t('contact.deliveryFailed') }); }
     finally { button.disabled = false; button.textContent = t('contactform.sendEnquiry'); status.focus(); }
   });
+  // Optionale Angaben (Marc, 02.11.2026: „aus dem Weg räumen“): ein Knopf je Feld blendet es ein; Felder mit Inhalt
+  // (Entwurf aus dem Konfigurator, Autofill des Browsers) sind von Anfang an offen. Ohne JavaScript bleibt alles sichtbar.
+  const optBar = form.querySelector<HTMLElement>('[data-opt-bar]');
+  if (optBar) {
+    form.classList.add('has-opt');
+    optBar.hidden = false;
+    const buttons = [...optBar.querySelectorAll<HTMLButtonElement>('[data-opt-add]')];
+    const openOpt = (key: string, focus: boolean) => {
+      const box = form.querySelector<HTMLElement>(`[data-opt="${key}"]`);
+      if (!box || box.classList.contains('open')) return;
+      box.classList.add('open');
+      buttons.find((b) => b.dataset.optAdd === key)?.setAttribute('aria-expanded', 'true');
+      if (focus) box.querySelector<HTMLElement>('input, select, textarea')?.focus({ preventScroll: true });
+      if (buttons.every((b) => b.getAttribute('aria-expanded') === 'true')) optBar.hidden = true;
+    };
+    buttons.forEach((b) => b.addEventListener('click', () => openOpt(b.dataset.optAdd!, true)));
+    form.querySelectorAll<HTMLElement>('[data-opt]').forEach((box) => {
+      const field = box.querySelector<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>('input, select, textarea');
+      if (field?.value) openOpt(box.dataset.opt!, false);
+      field?.addEventListener('change', () => { if (field.value) openOpt(box.dataset.opt!, false); });
+    });
+  }
   show(0, false);
 }

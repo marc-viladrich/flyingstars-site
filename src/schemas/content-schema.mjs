@@ -248,8 +248,9 @@ export const sectionSchema = z.discriminatedUnion('type', [
     type: z.literal('tempo'), ...sectionHeading,
     headline: z.string().min(1), text: z.string().optional(),
     marks: z.array(z.object({ value: z.string().min(1), label: z.string().min(1), text: z.string().optional() })).min(2).max(5),
-    shortcut: z.object({ value: z.string().min(1), label: z.string().min(1), text: z.string().optional() }).optional()
-      .describe('Abkürzung über dem Zeitstrahl, z. B. Express: verbindet den ersten mit dem letzten Punkt, gestrichelt'),
+    shortcut: z.object({ value: z.string().min(1), label: z.string().min(1), text: z.string().optional(),
+      href: z.string().optional(), linkLabel: z.string().optional() }).optional()
+      .describe('Abzweigung im Netzplan (MetroLine.astro), z. B. Express: von der ersten zur letzten Station, mit optionalem Link'),
     facts: z.array(z.object({ value: z.string().min(1), label: z.string().min(1), text: z.string().optional() })).default([]),
     note: z.string().optional(),
   }),
@@ -312,15 +313,16 @@ export const sectionSchema = z.discriminatedUnion('type', [
       title: z.string().min(1), text: z.string().min(1), value: z.string().optional(),
       zone: z.enum(['safety', 'operative', 'start', 'drones', 'guests', 'ceiling', 'floor', 'kit']),
     }).strict()).length(5),
-    responsibilities: z.object({
-      provider: z.array(z.string().min(1)).min(1),
-      customer: z.array(z.string().min(1)).min(1),
-    }).strict(),
+    // Zuständigkeiten als Tabelle (Marc, 02.11.2026: „eine schön aufgearbeitete Tabelle … komprimierter, mehr mit Icons“):
+    // je Zeile eine Aufgabe, wer sie übernimmt (full ✓, part ◐ mit kurzem Hinweis, none –)
+    responsibilities: z.array(z.object({
+      task: z.string().min(1).max(70),
+      us: z.enum(['full', 'part', 'none']), you: z.enum(['full', 'part', 'none']),
+      hint: z.string().max(32).optional().describe('Kurz, nur bei part, z. B. "Vorlage von uns"'),
+    }).strict()).min(3).max(12),
     safeguards: z.array(z.object({
       icon: z.string().min(1), title: z.string().min(1), text: z.string().min(1),
     }).strict()).min(1).max(4).optional(),
-    planning: z.object({ title: z.string().min(1), text: z.string().min(1) }).strict().optional(),
-    note: z.object({ value: z.string().min(1), text: z.string().min(1) }).strict().optional(),
     download: link.strict().optional(),
   }).strict().superRefine((section, ctx) => {
     const expected = section.variant === 'outdoor'
