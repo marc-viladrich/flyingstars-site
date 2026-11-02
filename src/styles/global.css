@@ -1173,3 +1173,8 @@ a.pack { grid-template-rows: auto auto 1fr; align-items: start; row-gap: 14px; }
 .ic > p { margin: 0; color: var(--muted); font-size: 15px; max-width: 40ch; }
 @media (max-width: 1100px) { .ig, .ig.cols-4 { --ig-cols: 2; } }
 @media (max-width: 640px) { .ig, .ig.cols-4 { --ig-cols: 1; } }
+
+/* Redaktionelle Hinweise in der Vorschau (SectionRenderer, PUBLIC_ANNOTATE=1): gestrichelt in Orange, in der Content-Breite */
+.todo-note { position: relative; z-index: 6; display: flex; gap: 12px; align-items: flex-start; margin: 24px var(--gutter) -8px; padding: 12px 16px; border: 1px dashed rgba(245, 167, 60, 0.7); border-radius: 10px; background: rgba(245, 167, 60, 0.08); color: var(--text); font-size: 14.5px; line-height: 1.5; }
+.todo-note b { color: var(--accent); font-weight: 500; margin-right: 4px; }
+.todo-note .ico { flex: 0 0 auto; margin-top: 2px; }

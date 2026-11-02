@@ -37,6 +37,7 @@ sections:
   # Entwurf für Moritz: Referenzen als zwei Geschichten statt Fließtext, Inhalte wie bisher
   - type: landingStories
     id: referenzen
+    todo: Die Karten verlinken noch auf keine ausgearbeiteten Hochzeits-Fallstudien. Codex erstellt sie aus dem Bestand von flyingstars.art.
     kicker: Referenzen
     headline: So sah das bei anderen *Paaren* aus.
     items:

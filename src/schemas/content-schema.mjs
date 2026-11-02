@@ -14,7 +14,10 @@ const closingBox = z.object({ headline: z.string().min(1), text: z.string().min(
 // Headlines dürfen einzelne Begriffe mit *Sternchen* markieren, sie erscheinen dann im Logoverlauf.
 // Kicker sind seit 31.10.2026 wieder sichtbar (Marc: „die Eyebrow-Headings brauchen Farbe“, wie im Vercel-Prototyp).
 const legacy = z.string().optional().describe('Veraltet, wird nicht mehr angezeigt');
-const sectionHeading = { id: z.string().optional(), kicker: z.string().optional().describe('Kicker über der Headline, z. B. "Anlässe"') };
+// Redaktioneller Hinweis je Section (Marc, 02.11.2026: „bei den Seiten, bei denen inhaltlich noch was fehlt, das markieren“).
+// Erscheint nur in Vorschau-Builds mit PUBLIC_ANNOTATE=1 (SectionRenderer.astro), in Produktion steht er nicht im HTML.
+const todo = { todo: z.string().optional().describe('Was hier inhaltlich fehlt oder von FlyingStars kommen muss; nur in der Vorschau sichtbar') };
+const sectionHeading = { id: z.string().optional(), kicker: z.string().optional().describe('Kicker über der Headline, z. B. "Anlässe"'), ...todo };
 const brandPath = z.string().regex(/^\/brand\/[a-z0-9/._-]+\.(svg|png|webp)$/).describe('Lokale Datei unter public/brand/');
 
 const image = z.object({
@@ -26,7 +29,7 @@ const image = z.object({
 
 export const sectionSchema = z.discriminatedUnion('type', [
   z.object({
-    type: z.literal('showreelHero'),
+    type: z.literal('showreelHero'), ...todo,
     headline: z.string().min(1), text: z.string().min(1), eyebrow: z.string().optional().describe('Kicker über der Headline'),
     words: z.array(z.string().min(1)).optional().describe('Wechselndes Wort im Verlauf hinter der Headline'),
     cta: link, secondary: link.optional(),
@@ -58,7 +61,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     lines: z.array(z.string()).optional().describe('Veraltet (dreizeiliger Titel der Scrollstory), wird nicht mehr angezeigt'),
   }),
   z.object({
-    type: z.literal('hero'), kicker: z.string().optional(),
+    type: z.literal('hero'), ...todo, kicker: z.string().optional(),
     headline: z.string().min(1),
     text: z.string().optional(),
     image: image.optional(),
@@ -66,7 +69,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     secondary: link.optional(),
   }),
   z.object({
-    type: z.literal('textMedia'), id: z.string().optional().describe('Sprungmarke, z. B. "geschichte"'), kicker: z.string().optional(),
+    type: z.literal('textMedia'), ...todo, id: z.string().optional().describe('Sprungmarke, z. B. "geschichte"'), kicker: z.string().optional(),
     headline: z.string().min(1),
     body: z.string().min(1).describe('Markdown erlaubt').meta({'x-afe': {format: 'markdown'}}),
     image: image.optional(),
@@ -91,13 +94,13 @@ export const sectionSchema = z.discriminatedUnion('type', [
   }),
   z.object({
     // Abschluss-CTA: genau ein Knopf, keine Zeile über der Überschrift (Marc, 01.11.2026: „keine multiplen CTAs“)
-    type: z.literal('cta'),
+    type: z.literal('cta'), ...todo,
     headline: z.string().min(1),
     text: z.string().min(1),
     button: link,
   }),
   z.object({
-    type: z.literal('postList'),
+    type: z.literal('postList'), ...todo,
     headline: z.string().optional(),
     limit: z.number().int().positive().default(3),
   }),
@@ -255,7 +258,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
   z.object({
     // Seitenkopf mit kleinem Showreel im Bildrahmen: stumm, Loop, startet erst im Bild (ab 701 px automatisch, auf dem
     // Handy per Knopf), pausiert bei globaler Pause und reduzierter Bewegung. Nur registrierte Videos (src/lib/videos.ts).
-    type: z.literal('landingHero'), kicker: z.string().optional(),
+    type: z.literal('landingHero'), ...todo, kicker: z.string().optional(),
     headline: z.string().min(1), text: z.string().min(1), cta: link, secondary: link.optional(),
     video: z.enum(['showreel', 'bokkenrijders', 'nfl', 'ford', 'puma', 'siemensIndoor']).describe('Schlüssel aus src/lib/videos.ts'),
     videoLabel: z.string().optional().describe('Kleine Beschriftung im Rahmen, z. B. "Ford Explorer · Köln"'),
@@ -361,12 +364,12 @@ export const sectionSchema = z.discriminatedUnion('type', [
   z.object({
     // Abschluss mit Handlung und den Gesichtern der drei Geschäftsführer:innen.
     // Wie `cta`: ein Knopf, keine Zeile über der Überschrift (Marc, 01.11.2026)
-    type: z.literal('landingCta'),
+    type: z.literal('landingCta'), ...todo,
     headline: z.string().min(1), text: z.string().min(1), button: link,
   }),
   z.object({
     // Anfrage in zwei Schritten (docs/DESIGN.md). Gesichter: ohne Angabe die drei Geschäftsführer:innen.
-    type: z.literal('contactForm'),
+    type: z.literal('contactForm'), ...todo,
     kicker: z.string().optional(),
     headline: z.string().min(1),
     text: z.string().optional(),
