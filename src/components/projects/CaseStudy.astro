@@ -1,4 +1,6 @@
 ---
+import SectionHead from '../SectionHead.astro';
+import FactList from '../FactList.astro';
 import { localizedCollection } from '../../i18n/content';
 import { forPath } from '../../i18n/server';
 const { t, localHref, formatLocale } = forPath(Astro.url.pathname);
@@ -40,12 +42,10 @@ const count = (n: number) => String(n).padStart(2, '0');
       {data.kicker && <span class="c-kick mono">{data.kicker}</span>}
       <h1 id="case-h" class="c-h1"><span class="sr-only">{data.name}: </span><span class="c-name" style={`--chars:${data.titleChars}`} aria-hidden="true">{data.titleLines.map((line) => <span>{line}</span>)}</span><span class="c-tag">{data.tagline}</span></h1>
     </div>
-    <dl class="c-credits mono">{data.credits.map((credit) => <div><dt>{credit.label}</dt><dd>{credit.value}</dd></div>)}</dl>
+    <FactList items={data.credits} variant="credits" />
   </section>
 
-  <section class="c-numbers" data-columns={data.numbers.length} aria-label={t('casestudy.inNumbers')}>
-    {data.numbers.map((number) => <div class="c-num"><b data-count={number.value}>{number.value.toLocaleString(formatLocale)}</b><span>{number.label}</span></div>)}
-  </section>
+  <section aria-label={t('casestudy.inNumbers')}><FactList variant="numbers" items={data.numbers.map((n) => ({ label: n.label, value: n.value.toLocaleString(formatLocale), count: n.value }))} /></section>
 
   <section class="c-story" aria-label={t('casestudy.theStory')}>
     <div class="c-media" aria-hidden="true">
@@ -53,9 +53,9 @@ const count = (n: number) => String(n).padStart(2, '0');
       <div class="meta mono"><span>{data.name}</span><span data-progress>01 / {count(data.story.length)}</span></div>
     </div>
     <div class="c-steps">
-      {data.story.map((step, index) => <article class="c-step on" data-step>
+      {data.story.map((step, index) => <article class="c-step on" data-story-step>
         <figure class:list={{ tall: data.portrait }}><img src={images.get(step.image.src)!.src} {...images.get(step.image.src)!.attributes} width={images.get(step.image.src)!.width} height={images.get(step.image.src)!.height} alt={step.image.alt} loading="lazy" decoding="async" /></figure>
-        {step.kicker && <span class="k mono">{step.kicker}</span>}<h2>{step.title}</h2><p>{step.text}</p>
+        <SectionHead variant="contents" kicker={step.kicker} kickerClass="k" headline={step.title} text={step.text} id={`story-${index}-h`} />
         {index === data.story.length - 1 && data.videoLink && <a class="link" href={data.videoLink.href}>{data.videoLink.label} <span aria-hidden="true">↗</span></a>}
       </article>)}
     </div>
@@ -64,19 +64,19 @@ const count = (n: number) => String(n).padStart(2, '0');
   {data.formation && <section class="c-play" aria-labelledby="play-h">
     <canvas data-formation={data.formation.src} aria-hidden="true"></canvas>
     <div class="c-play-copy">
-      <h2 id="play-h">{data.formation.title}</h2><p>{data.formation.text}</p>
+      <SectionHead variant="contents" headline={data.formation.title} text={data.formation.text} id="play-h" />
       <div class="row"><button class="btn small" type="button" data-replay disabled>{t('casestudy.startAgain')}</button><button class="btn small" type="button" data-formation-pause aria-pressed="false">{t('casestudy.pauseAnimation')}</button><span class="tally mono" data-tally role="status"></span></div>
     </div>
   </section>}
 
   {data.gallery.length > 0 && <section class="c-reel" aria-labelledby="reel-h">
-    <div class="c-reel-head"><h2 id="reel-h">{t('casestudy.theShowIn')} {data.gallery.length} {t('casestudy.pictures')}</h2><div class="ctrl"><button type="button" data-prev aria-label={t('showconfigurator.previousScene')}>←</button><button type="button" data-next aria-label={t('showconfigurator.nextScene')}>→</button></div></div>
+    <div class="c-reel-head"><SectionHead variant="contents" headline={`${t('casestudy.theShowIn')} ${data.gallery.length} ${t('casestudy.pictures')}`} id="reel-h" /><div class="ctrl"><button type="button" data-prev aria-label={t('showconfigurator.previousScene')}>←</button><button type="button" data-next aria-label={t('showconfigurator.nextScene')}>→</button></div></div>
     <div class:list={['c-track', { tall: data.portrait }]} tabindex="0" role="region" aria-label={t('case.gallery', { name: data.name })}>
       {data.gallery.map((picture, index) => <figure><div class="img"><img src={images.get(picture.src)!.src} {...images.get(picture.src)!.attributes} width={images.get(picture.src)!.width} height={images.get(picture.src)!.height} alt={picture.alt} loading="lazy" decoding="async" draggable="false" /></div><figcaption class="mono"><b>{count(index + 1)}</b>{picture.caption}</figcaption></figure>)}
     </div>
   </section>}
 
-  <section class="c-setlist" aria-labelledby="set-h"><h2 id="set-h">{t('casestudy.whatAppearedInTheSky')}</h2><div class="groups">{data.setlist.map((group) => <div><h3>{group.title}</h3><ol>{group.items.map((item) => <li>{item}</li>)}</ol></div>)}</div></section>
+  <section class="c-setlist" aria-labelledby="set-h"><SectionHead variant="contents" headline={t('casestudy.whatAppearedInTheSky')} id="set-h" /><div class="groups">{data.setlist.map((group) => <div><h3>{group.title}</h3><ol>{group.items.map((item) => <li>{item}</li>)}</ol></div>)}</div></section>
   {data.press.length > 0 && <section class="c-press" aria-label={t('casestudy.press')}>{data.press.map((clip) => <article class="clip"><div class="mast">{clip.publication}<span>{clip.date}</span></div><b>{clip.title}</b><p>{clip.text}</p></article>)}</section>}
 
   {nextData && nextImage && <a class="c-next" href={localHref(`/${nextData.route}/`)} data-dot-img data-step="10">
@@ -88,10 +88,7 @@ const count = (n: number) => String(n).padStart(2, '0');
 <script>import './case.js';</script>
 <script>import '../../scripts/hero-reel';</script>
 <style>
-  @media (min-width: 1001px) {
-    .c-numbers[data-columns='1'] { grid-template-columns: 1fr; }
-    .c-numbers[data-columns='2'] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  }
+
   /* Teaser aufs nächste Projekt: beim Hovern Lichtpunkte statt Foto-Zoom (dotimage.js), Abdunklung bleibt darüber */
   .next-poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.75; }
   .c-next :global(.dot-cv) { opacity: 0.85; }

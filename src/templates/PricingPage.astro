@@ -14,7 +14,7 @@ import CtaBox from '../components/CtaBox.astro';
 import ShowConfigurator from '../components/configurator/ShowConfigurator.astro';
 import Extras from '../components/pricing/Extras.astro';
 import Included from '../components/pricing/Included.astro';
-import MobileTabs from '../components/MobileTabs.astro';
+import ComparisonMatrix from '../components/ComparisonMatrix.astro';
 import { SHOW_PACKAGES, PACKAGE_NAMES } from '../content/show-packages';
 import { getPackageDetails } from '../content/package-details';
 const { PACKAGE_DETAILS, COMPARISON, COMPARISON_NOTE, SHOW_DURATION } = getPackageDetails(forPath(Astro.url.pathname).locale);
@@ -48,34 +48,13 @@ const orb = { SPARK: 'ring', HORIZON: 'sphere', ODYSSEY: 'torus' } as const;
 
   <section class="section" id="leistungen" aria-labelledby="leistungen-h">
     <SectionHead kicker={t('pricingpage.comparison')} headline={t('pricingpage.compareAllServices')} id="leistungen-h" />
-    <div class="table-wrap mtab-hide" role="region" aria-label={t('pricingpage.serviceComparisonTableScrollHorizontally')} tabindex="0">
-      <!-- position:relative hält die visuell versteckten Texte („nicht enthalten“) im Scrollbereich der Tabelle -->
-      <table style="position:relative">
-        <caption class="sr-only">{t('pricingpage.servicesInTheSparkHorizonAndOdysseyPackages')}</caption>
-        <thead>
-          <tr><th scope="col">{t('pricingpage.service')}</th>{PACKAGE_NAMES.map((name, i) => <th scope="col" class:list={['pk', { us: i === featured }]} style={`--c:rgb(${SHOW_PACKAGES[name].color.join(',')})`}><canvas data-orb={orb[name]} data-color={SHOW_PACKAGES[name].color.join(',')} data-n={Math.round(SHOW_PACKAGES[name].base * 0.6)} aria-hidden="true"></canvas><span class="pk-name">{name}</span><span class="mono">{money(SHOW_PACKAGES[name].price)}</span></th>)}</tr>
-        </thead>
-        <tbody>
-          {COMPARISON.map((row) => (
-            <tr>
-              <th scope="row">{row.label}</th>
-              {row.all ? <td colspan="3">{row.all}</td> : row.cells!.map((cell, i) => cell === null
-                ? <td class:list={['no', { us: i === featured }]}><span aria-hidden="true">–</span><span class="sr-only">{t('pricingpage.notIncluded')}</span></td>
-                : cell === true
-                ? <td class:list={['yes', { us: i === featured }]} style={`--c:rgb(${SHOW_PACKAGES[PACKAGE_NAMES[i]].color.join(',')})`}><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" /></svg><span class="sr-only">{t('pricingpage.included')}</span></td>
-                : <td class:list={{ us: i === featured }}>{cell}</td>)}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-    <!-- Handy (Marc, 02.11.2026): ein Reiter je Paket wie beim Vergleich auf der Startseite, empfohlenes Paket vorgewählt -->
-    <div class="mtab-only" data-mtabs>
-      <MobileTabs name="leistungen-tab" label={t('mobileTabs.choosePackage')} initial={featured} tabs={PACKAGE_NAMES.map((name) => ({ label: name, color: `rgb(${SHOW_PACKAGES[name].color.join(',')})` }))} />
-      {PACKAGE_NAMES.map((name, i) => <dl class="cmp-panel" data-mtab={i} aria-label={`${name}, ${money(SHOW_PACKAGES[name].price)}`} style={`--c:rgb(${SHOW_PACKAGES[name].color.join(',')})`}>
-        {COMPARISON.map((row) => { const cell = row.all ?? row.cells![i]; return <div><dt>{row.label}</dt><dd>{cell === null ? <span class="no">{t('pricingpage.mobileNotIncluded')}</span> : cell === true ? <span class="yes"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" /></svg>{t('pricingpage.mobileIncluded')}</span> : cell}</dd></div>; })}
-      </dl>)}
-    </div>
+    <ComparisonMatrix id="leistungen" label={t('pricingpage.servicesInTheSparkHorizonAndOdysseyPackages')}
+      regionLabel={t('pricingpage.serviceComparisonTableScrollHorizontally')} rowHeader={t('pricingpage.service')}
+      tabLabel={t('mobileTabs.choosePackage')} initial={featured}
+      columns={PACKAGE_NAMES.map((name, i) => ({ label: name, color: `rgb(${SHOW_PACKAGES[name].color.join(',')})`, featured: i === featured,
+        price: money(SHOW_PACKAGES[name].price), panelLabel: `${name}, ${money(SHOW_PACKAGES[name].price)}`,
+        orb: { shape: orb[name], color: SHOW_PACKAGES[name].color.join(','), count: Math.round(SHOW_PACKAGES[name].base * 0.6) } }))}
+      rows={COMPARISON.map((row) => ({ ...row, cells: row.cells ?? [] }))} />
     <p class="fine mono">{t('pricingpage.allPricesExcludeVatAndTravel')} {COMPARISON_NOTE}</p>
   </section>
 

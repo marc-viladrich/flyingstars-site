@@ -2,7 +2,7 @@
 // „Immer inklusive“ auf der Preisseite (Marc, 02.11.2026: „cleane Icon-Darstellung mit colour injection und proper heading so
 // wie bei den zubuchbaren Extras“). Gleiches offenes Icon-Raster wie die Extras (.ig/.ic in global.css), nur ohne Auswahl.
 // Inhalte aus INCLUDED in content/package-details.ts.
-import Icon from '../Icon.astro';
+import IconFeature from '../IconFeature.astro';
 import SectionHead from '../SectionHead.astro';
 import { forPath } from '../../i18n/server';
 import { getPackageDetails } from '../../content/package-details';
@@ -14,11 +14,7 @@ const { id = 'inklusive', kicker, headline, text } = Astro.props;
   <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} />
   <div class:list={['ig', { 'cols-4': INCLUDED.length === 4 }]}>
     {INCLUDED.map((item) => (
-      <div class="ic">
-        <Icon name={item.icon} size={36} class="g ic-ico" />
-        <h3>{item.title}</h3>
-        <p>{item.text}</p>
-      </div>
+      <IconFeature class="ic" icon={item.icon} title={item.title} text={item.text} />
     ))}
   </div>
 </section>

@@ -5,7 +5,7 @@ import type { Section } from '../../content.config';
 import Accent from '../Accent.astro';
 import SectionHead from '../SectionHead.astro';
 import { plain } from '../accent';
-import MobileTabs from '../MobileTabs.astro';
+import ComparisonMatrix from '../ComparisonMatrix.astro';
 type Props = Extract<Section, { type: 'comparison' }> & { index: number };
 const { headline, text, rowHeader = t('comparison.criterion'), columns, rows, note, id = `s${Astro.props.index}`, index, kicker } = Astro.props;
 const headingId = `${id}-h`;
@@ -14,17 +14,9 @@ const label = plain(headline);
 ---
 <section class="section alt" id={id} aria-labelledby={headingId}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
-  <div class="table-wrap mtab-hide" role="region" aria-label={t('comparison.table', { label })} tabindex="0">
-    <table lang={forPath(Astro.url.pathname).locale}><caption class="sr-only">{label}</caption><thead><tr><th scope="col">{rowHeader}</th>{columns.map((column,i) => <th scope="col" class:list={{us:i===0}}>{column}</th>)}</tr></thead>
-      <tbody>{rows.map(row => <tr><th scope="row">{row.label}</th>{row.values.map((value,i) => <td class:list={{us:i===0}}>{row.cells ? <><span class:list={['m',row.cells[i].tone]}>{row.cells[i].label}</span>{row.cells[i].text && <> {row.cells[i].text}</>}</> : value}</td>)}</tr>)}</tbody>
-    </table>
-  </div>
-  <!-- Handy (Marc, 31.10.2026): statt einer zu breiten Tabelle je Technik ein Reiter (gemeinsame MobileTabs-Komponente) -->
-  <div class="mtab-only" data-mtabs>
-    <MobileTabs name={`${id}-tab`} label={t('comparison.valueChooseATechnology', { v0: label })} tabs={columns.map((column, i) => ({ label: column, featured: i === 0 }))} />
-    {columns.map((column, i) => <dl class="cmp-panel" data-mtab={i} aria-label={column}>
-      {rows.map((row) => <div><dt>{row.label}</dt><dd>{row.cells ? <><span class:list={['m', row.cells[i].tone]}>{row.cells[i].label}</span>{row.cells[i].text && <span class="t">{row.cells[i].text}</span>}</> : row.values[i]}</dd></div>)}
-    </dl>)}
-  </div>
+  <ComparisonMatrix id={id} label={label} regionLabel={t('comparison.table', { label })} rowHeader={rowHeader}
+    tabLabel={t('comparison.valueChooseATechnology', { v0: label })}
+    columns={columns.map((label, i) => ({ label, featured: i === 0 }))}
+    rows={rows.map((row) => ({ label: row.label, cells: row.cells ?? row.values }))} />
   {note && <p class="fine mono">{note}</p>}
 </section>

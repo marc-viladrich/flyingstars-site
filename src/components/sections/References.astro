@@ -13,6 +13,7 @@ import { type CollectionEntry } from 'astro:content';
 import type { Section } from '../../content.config';
 import SectionHead from '../SectionHead.astro';
 import ProjectCard from '../projects/ProjectCard.astro';
+import MediaCard from '../MediaCard.astro';
 import { OCCASIONS, DRONE_BANDS, type Occasion, yearOf, bandOf, dronesOf, kickOf, hasVideo, sortReferences } from '../projects/refs';
 type Props = Extract<Section, { type: 'references' }> & { index: number };
 type Project = CollectionEntry<'projects'>;
@@ -55,7 +56,7 @@ const formation = (seed: string) => {
   <form class="rf-bar" aria-label={t('references.filterOurWork')} data-ref-filter hidden>
     {showPills && <fieldset class="rf-occ" data-param="anlass">
       <legend class="sr-only">{t('showconfigurator.occasion')}</legend>
-      <div class="rf-pills">
+      <div class="chips rf-pills">
         <label><input type="radio" name={`${id}-anlass`} value="" checked /><span>{t('references.all')}</span></label>
         {occasions.map((o) => <label><input type="radio" name={`${id}-anlass`} value={o.v} /><span>{o.l} <small aria-hidden="true">{o.n}</small></span></label>)}
       </div>
@@ -63,11 +64,10 @@ const formation = (seed: string) => {
     {selects.length > 0 && <div class="rf-selects">
       {selects.map((s) => <label class="rf-select">
         <span class="sr-only">{s.label}</span>
-        <select name={s.param} data-param={s.param}>
+        <select class="native-select" name={s.param} data-param={s.param}>
           <option value="">{s.all}</option>
           {s.values.map((v) => <option value={v.v}>{v.l} ({v.n})</option>)}
         </select>
-        <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" /></svg>
       </label>)}
     </div>}
   </form>
@@ -82,18 +82,13 @@ const formation = (seed: string) => {
         {p.data.cover ? <ProjectCard project={p} i={i} level={C} year /> : (() => {
           const f = formation(p.id), drones = dronesOf(p), g = `rf-g-${p.id}`;
           const badge = [yearOf(p), drones && t('projectcard.valueDrones', { v0: drones })].filter(Boolean).join(' · ');
-          return <article class="proj static rf-ghost">
-            <div class="img" data-curtain style={`--i:${i % 2}`}>
-              <svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice" role="img" aria-label={t('references.placeholder')}>
+          return <MediaCard class="static rf-ghost" title={p.data.title} level={C} kicker={kickOf(p)} summary={p.data.summary} badge={badge} i={i % 2} dot={false}>
+              <svg slot="media" viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice" role="img" aria-label={t('references.placeholder')}>
                 <defs><linearGradient id={g} gradientUnits="userSpaceOnUse" x1="44" y1="0" x2="116" y2="0"><stop offset="0" stop-color="#ff9e29" /><stop offset=".5" stop-color="#db64e8" /><stop offset="1" stop-color="#33edf2" /></linearGradient></defs>
                 {f.sky.map((d) => <circle cx={d.x.toFixed(1)} cy={d.y.toFixed(1)} r=".45" fill="#f6f1e8" opacity={d.o.toFixed(2)} />)}
                 <g fill={`url(#${g})`}>{f.dots.map((d, k) => <circle class:list={{ tw: d.tw }} style={d.tw ? `--d:${(k % 7) * 0.6}s` : undefined} cx={d.x.toFixed(1)} cy={d.y.toFixed(1)} r="1.05" />)}</g>
               </svg>
-              {badge && <span class="count mono">{badge}</span>}
-            </div>
-            <span class="kick mono">{kickOf(p)}</span><C>{p.data.title}</C>
-            <p>{p.data.summary}</p>
-          </article>;
+          </MediaCard>;
         })()}
       </div>)}
     </div>}
@@ -105,23 +100,13 @@ const formation = (seed: string) => {
   /* Filterleiste: Pills links, Dropdowns rechts, eine Zeile; bricht sie um, rutschen die Dropdowns geschlossen nach unten */
   .rf-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
   .rf-occ { border: 0; margin: 0; padding: 0; min-width: 0; flex: 0 1 auto; }
-  .rf-pills { display: flex; flex-wrap: wrap; gap: 6px; }
-  .rf-pills label { position: relative; cursor: pointer; flex: none; }
-  .rf-pills input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
-  .rf-pills span { display: inline-flex; gap: 7px; height: 40px; align-items: center; padding: 0 14px; border: 1px solid var(--line-strong); border-radius: 999px; font-size: 15px; color: var(--muted); white-space: nowrap; transition: color 0.2s, border-color 0.2s, background 0.2s; }
+  .rf-pills { --chips-gap: 6px; --chip-height: 40px; --chip-padding: 0 14px; --chip-inner-gap: 7px; }
   .rf-pills small { color: var(--faint); font: 400 12px/1 var(--mono); letter-spacing: 0.04em; }
-  .rf-pills label:hover span { color: var(--text); border-color: rgba(246, 241, 232, 0.5); }
-  .rf-pills input:checked + span { color: var(--ground); background: var(--text); border-color: var(--text); }
-  .rf-pills input:checked + span small { color: rgba(15, 13, 12, 0.6); }
-  .rf-pills input:focus-visible + span { outline: 2px solid var(--cyan); outline-offset: 3px; }
   .rf-selects { display: flex; gap: 8px; flex: none; }
   .rf-select { position: relative; display: block; }
-  .rf-select select { min-width: 10rem; appearance: none; -webkit-appearance: none; height: 40px; padding: 0 36px 0 16px; border: 1px solid var(--line-strong); border-radius: 999px; background: transparent; color: var(--text); font: 400 15px/1 var(--body); cursor: pointer; transition: border-color 0.2s; }
+  .rf-select select { min-width: 10rem; height: 40px; padding: 0 36px 0 16px; border: 1px solid var(--line-strong); border-radius: 999px; background-color: transparent; color: var(--text); font: 400 15px/1 var(--body); transition: border-color 0.2s; }
   .rf-select select:hover { border-color: rgba(246, 241, 232, 0.5); }
-  .rf-select select:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
-  .rf-select select option { background: var(--surface); color: var(--text); }
   .rf-select.on select { border-color: var(--accent); color: var(--accent); }
-  .rf-select svg { position: absolute; right: 15px; top: 50%; width: 12px; height: 12px; margin-top: -6px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; color: var(--muted); pointer-events: none; }
   .rf-status { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin: 18px 0 clamp(28px, 4vw, 44px); color: var(--muted); font-size: 16px; }
   .rf-status b { font: 600 clamp(28px, 2.6vw, 36px)/1 var(--display); letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
   .rf-reset, .rf-empty .link { background: none; border: 0; border-bottom: 1px solid var(--accent-line); color: var(--accent); font: inherit; font-size: 15px; cursor: pointer; padding: 0 0 2px; margin-left: 6px; }
@@ -134,19 +119,11 @@ const formation = (seed: string) => {
   .rf-rest { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .rf-empty { color: var(--muted); display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
 
-  /* Formationskarte (Referenz ohne Foto) */
-  .rf-ghost .img { background: radial-gradient(120% 90% at 50% 40%, #1a1512 0%, #0a0908 70%); }
-  .rf-ghost svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .rf-ghost .tw { animation: rf-tw 4.2s ease-in-out var(--d, 0s) infinite; }
-  @keyframes rf-tw { 0%, 100% { opacity: 1; } 45% { opacity: 0.35; } 55% { opacity: 1; filter: brightness(1.8); } }
-  @media (prefers-reduced-motion: reduce) { .rf-ghost .tw { animation: none; } }
-  :global(html.motion-paused) .rf-ghost .tw { animation: none; }
 
   @media (max-width: 1100px) { .rf-rest { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 720px) {
     .rf-bar { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
     /* Pills in einer wischbaren Reihe statt drei Zeilen untereinander; die Leiste läuft bis an den Bildrand */
-    .rf-pills { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding: 2px 0; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 40px), transparent); } /* endet an der Content-Kante (Marc, 02.11.2026) */
     .rf-pills::-webkit-scrollbar { display: none; }
     .rf-selects { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .rf-select select { width: 100%; }

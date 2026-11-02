@@ -1,4 +1,5 @@
 ---
+import IconFeature from '../IconFeature.astro';
 import { forPath } from '../../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
 // Ein Schema für alle Standort- und Sicherheitsabschnitte. Maßangaben sind Content,
@@ -11,6 +12,7 @@ const { t, localHref } = forPath(Astro.url.pathname);
 import type { Section } from '../../content.config';
 import SectionHead from '../SectionHead.astro';
 import Icon from '../Icon.astro';
+import ComparisonCell from '../ComparisonCell.astro';
 type Props = Extract<Section, { type: 'landingSite' }> & { index: number };
 const { kicker, headline, text, variant, diagram, items, responsibilities, safeguards, download, id = 'location', index } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
@@ -80,7 +82,7 @@ const markers = variant === 'outdoor'
     </ol>
   </div>
   {safeguards && <div class="st-safeguards">
-    {safeguards.map((item) => <div><Icon name={item.icon} size={32} class="g" /><T>{item.title}</T><p>{item.text}</p></div>)}
+    {safeguards.map((item) => <IconFeature icon={item.icon} title={item.title} text={item.text} level={T} />)}
   </div>}
   <div class="st-who">
     <T id={`${id}-who`}>{t('landingsite.more')}</T>
@@ -89,14 +91,11 @@ const markers = variant === 'outdoor'
       <tbody>{responsibilities.map((row) => <tr>
         <th scope="row">{row.task}</th>
         {[row.us, row.you].map((v) => <td class:list={['c', v]}>
-          {v === 'full' && <Icon name="check" size={20} strokeWidth={2.4} class="g" label={t('landingsite.full')} />}
-          {v === 'part' && <span class="half" role="img" aria-label={t('landingsite.part')}></span>}
-          {v === 'none' && <span class="none" role="img" aria-label={t('landingsite.none')}>–</span>}
-          {v === 'part' && row.hint && <small>{row.hint}</small>}
+          <ComparisonCell value={null} responsibility={v} hint={row.hint} />
         </td>)}
       </tr>)}</tbody>
     </table>
-    <p class="st-legend mono"><span><Icon name="check" size={14} strokeWidth={2.4} class="g" /> {t('landingsite.full')}</span><span><span class="half" aria-hidden="true"></span> {t('landingsite.part')}</span><span><span class="none" aria-hidden="true">–</span> {t('landingsite.none')}</span></p>
+    <p class="st-legend mono">{(['full', 'part', 'none'] as const).map((v) => <span><ComparisonCell value={null} responsibility={v} legend /> {t(`landingsite.${v}`)}</span>)}</p>
     {download && <a class="link st-download" href={localHref(download.href)} type="application/pdf" target="_blank" rel="noopener">{download.label}<Icon name="download" size={18} class="g" /></a>}
   </div>
 </section>
@@ -175,26 +174,19 @@ const markers = variant === 'outdoor'
   .st-who tbody th { font-weight: 400; color: var(--text); font-size: 16px; padding-left: 0; hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; }
   .st-who .c { width: 132px; text-align: center; }
   .st-who td.c { color: var(--muted); }
-  .st-who td small { display: block; margin-top: 4px; font-size: 12.5px; color: var(--faint); line-height: 1.3; }
-  .st-who .half { display: inline-block; width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--accent); background: linear-gradient(90deg, var(--accent) 50%, transparent 50%); vertical-align: middle; }
-  .st-who .none { color: var(--faint); font-size: 18px; }
   .st-who tbody tr { transition: background-color 0.2s ease; }
   .st-who tbody tr:hover { background: rgba(246, 241, 232, 0.025); }
   .st-legend { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 16px 0 0; color: var(--faint); font-size: 12px; }
   .st-legend > span { display: inline-flex; align-items: center; gap: 8px; }
-  .st-legend .half { width: 12px; height: 12px; }
-  @media (max-width: 600px) { .st-who .c { width: 86px; } .st-who th, .st-who td { padding: 12px 4px; } .st-who tbody th { font-size: 15px; padding-right: 8px; } .st-who thead th { letter-spacing: 0.04em; font-size: 11px; } .st-who td small { font-size: 11.5px; } }
+  @media (max-width: 600px) { .st-who .c { width: 86px; } .st-who th, .st-who td { padding: 12px 4px; } .st-who tbody th { font-size: 15px; padding-right: 8px; } .st-who thead th { letter-spacing: 0.04em; font-size: 11px; } }
   @media (prefers-reduced-motion: reduce) { .zone, .marker, .st-body { transition: none; } }
   .st-items li { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 8px; padding: 22px 0; border-top: 1px solid var(--line); }
   .st-items li:first-child { padding-top: 0; border: 0; }
   .st-n { color: var(--accent); padding-top: 4px; }
-  .st-items h2, .st-items h3, .st-safeguards h2, .st-safeguards h3 { font-size: clamp(20px, 1.6vw, 24px); }
+  .st-items h2, .st-items h3 { font-size: clamp(20px, 1.6vw, 24px); }
   .st-value { display: block; margin-top: 8px; color: var(--accent); font: 500 clamp(17px, 1.3vw, 20px)/1.2 var(--display); }
   .ls-site p { line-height: 1.65; }
   .st-safeguards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; margin-top: clamp(40px, 5vw, 72px); padding-block: 32px; border-block: 1px solid var(--line); }
-  .st-safeguards > div > :global(.ico) { width: 36px; height: 36px; }
-  .st-safeguards h2, .st-safeguards h3 { margin-top: 18px; }
-  .st-safeguards p { font-size: 16px; }
   .st-download { margin-top: 28px; display: flex; align-items: center; gap: 10px; }
   .st-download :global(.ico) { width: 18px; height: 18px; flex: 0 0 auto; }
   @media (max-width: 960px) {

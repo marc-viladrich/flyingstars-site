@@ -1,0 +1,112 @@
+---
+import Icon from './Icon.astro';
+import { processEntries } from '../lib/lists';
+interface Item { title?: string; text?: string; duration?: string; when?: string; value?: string; label?: string; gate?: boolean }
+interface Props { items: Item[]; variant: 'steps' | 'milestones' | 'flow' | 'metro'; level?: 'h2' | 'h3' }
+const { items, variant, level: T = 'h3' } = Astro.props;
+const entries = processEntries(items);
+const cls = { steps: 'steps', milestones: 'ms', flow: 'lf-steps', metro: 'ruler' }[variant];
+---
+<ol class:list={['process-list', cls]} data-tl={variant === 'milestones' ? '' : undefined} data-reveal-group={['flow', 'metro'].includes(variant) ? '' : undefined} style={`--n:${items.length}`}>
+  {entries.map((item) => <li class:list={['process-item', { 'ms-item': variant === 'milestones', 'ms-repeat': variant === 'milestones' && item.repeat, 'ms-last': variant === 'milestones' && item.last, gate: variant === 'flow' && item.gate }]} data-reveal={['flow', 'metro'].includes(variant) ? '' : undefined} style={`--i:${item.i};--c:${item.color};--c2:${item.nextColor}`}>
+    {variant === 'milestones' ? <>
+      <span class="ms-when">{item.when}</span><span class="ms-rail" aria-hidden="true"><span class="ms-line"></span><span class="ms-dot"></span></span>
+      <div class="ms-body"><T>{item.title}</T>{item.text && <p>{item.text}</p>}</div>
+    </> : variant === 'flow' ? <>
+      <span class="lf-dot" aria-hidden="true">{item.gate && <Icon name="check" size={16} strokeWidth={2.6} />}</span>
+      <div class="lf-body"><span class="lf-n mono">{item.ordinal}{item.gate && <> · Freigabe</>}</span><T>{item.title}</T><p>{item.text}</p>{item.duration && <span class="lf-t mono">{item.duration}</span>}</div>
+    </> : variant === 'metro' ? <>
+      <span class="dot" aria-hidden="true"></span><b class="v">{item.value}</b><span class="l mono">{item.label}</span>{item.text && <p>{item.text}</p>}
+    </> : <><T>{item.title}</T><p>{item.text}</p>{item.duration && <span class="t mono">{item.duration}</span>}</>}
+  </li>)}
+</ol>
+
+<style is:global>
+
+  .ms { list-style: none; margin: 0; padding: 0; max-width: 64rem; }
+  .ms-item { display: grid; grid-template-columns: 7.5rem 16px minmax(0, 1fr); grid-template-areas: 'when rail body'; column-gap: clamp(20px, 2.6vw, 40px); }
+  .ms-when { grid-area: when; font: 600 clamp(30px, 3vw, 44px)/0.9 var(--display); letter-spacing: -0.04em; color: var(--c); text-align: right; padding-top: 1px; transition: color 0.5s, opacity 0.5s; }
+  .ms-repeat .ms-when { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .ms-item:not(.ms-repeat):not(:first-child) .ms-body, .ms-item:not(.ms-repeat):not(:first-child) .ms-when { margin-top: clamp(14px, 2vw, 28px); }
+  .ms-item:not(.ms-repeat):not(:first-child) .ms-rail { padding-top: clamp(14px, 2vw, 28px); }
+
+  /* Schiene: Punkt oben, Linie vom Punkt bis zum nächsten Punkt (Spur grau, darüber der Verlauf, der sich aufzieht) */
+  .ms-rail { grid-area: rail; position: relative; }
+  .ms-dot { position: absolute; z-index: 1; left: 0; top: 5px; width: 16px; height: 16px; border-radius: 50%; background: var(--c); border: 2px solid var(--c); box-shadow: 0 0 14px var(--c), 0 0 2px #fff inset; transition: background 0.5s, border-color 0.5s, box-shadow 0.5s; }
+  .ms-line { position: absolute; left: 7px; width: 2px; top: 13px; bottom: -13px; border-radius: 2px; background: var(--line-strong); overflow: hidden; }
+  .ms-item:not(.ms-repeat):not(:first-child) .ms-dot { top: calc(5px + clamp(14px, 2vw, 28px)); }
+  .ms-item:not(.ms-repeat):not(:first-child) .ms-line { top: calc(13px + clamp(14px, 2vw, 28px)); }
+  /* die Linie des Vorgängers reicht bis zum Punkt des nächsten Eintrags; bei einem neuen Jahr liegt der etwas tiefer */
+  .ms-item:has(+ .ms-item:not(.ms-repeat)) .ms-line { bottom: calc(-13px - clamp(14px, 2vw, 28px)); }
+  .ms-last .ms-line { display: none; }
+  .ms-line::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, var(--c), var(--c2)); transform-origin: top; transform: scaleY(1); transition: transform 0.55s cubic-bezier(0.6, 0, 0.2, 1) 0.15s; }
+
+  .ms-body { grid-area: body; display: grid; gap: 6px; padding-bottom: clamp(26px, 3vw, 40px); transition: opacity 0.6s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); }
+  .ms-body :is(h2, h3) { font-size: clamp(19px, 1.6vw, 23px); line-height: 1.25; letter-spacing: -0.015em; }
+  .ms-body p { color: var(--muted); max-width: 60ch; }
+  .ms-last .ms-body { padding-bottom: 0; }
+
+  /* Startzustand vor dem Erscheinen (html.reveal setzt das Inline-Skript im Kopf, nur mit Bewegung) */
+  html.reveal .ms-item:not(.lit) .ms-dot { background: var(--ground); border-color: var(--line-strong); box-shadow: none; }
+  html.reveal .ms-item:not(.lit) .ms-line::after { transform: scaleY(0); }
+  /* noch nicht erreichte Jahre gedämpft, aber lesbar (große Schrift, mind. 3:1; axe 02.11.2026) */
+  html.reveal .ms-item:not(.lit) .ms-when { color: var(--faint); }
+  html.reveal .ms-item:not(.lit) .ms-body { opacity: 0; transform: translateY(0.5em); }
+  @media (prefers-reduced-motion: reduce) { .ms-dot, .ms-line::after, .ms-when, .ms-body { transition: none; } }
+
+  @media (max-width: 720px) {
+    .ms-item { grid-template-columns: 16px minmax(0, 1fr); grid-template-areas: 'rail when' 'rail body'; column-gap: 18px; }
+    .ms-when { text-align: left; font-size: 28px; margin-bottom: 8px; }
+    .ms-rail { grid-row: 1 / span 2; }
+    .ms-item:not(.ms-repeat):not(:first-child) .ms-body { margin-top: 0; }
+  }
+
+  .lf-grid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(32px, 6vw, 112px); align-items: start; }
+  .lf-head { position: sticky; top: 110px; }
+  .lf-head .sec-head { margin-bottom: 0; }
+  .lf-steps { list-style: none; margin: 0; padding: 0 0 0 44px; position: relative; display: grid; gap: clamp(14px, 2vw, 22px); }
+  .lf-steps::before, .lf-steps::after { content: ""; position: absolute; left: 11px; top: 12px; bottom: 12px; width: 2px; border-radius: 2px; }
+  .lf-steps::before { background: var(--line-strong); }
+  .lf-steps::after { background: linear-gradient(180deg, #ff9e29, #db64e8 50%, #33edf2); transform-origin: top; transition: transform 2.4s cubic-bezier(0.6, 0, 0.2, 1); }
+  .reveal .lf-steps:not(.is-in)::after { transform: scaleY(0); }
+  .lf-steps li { position: relative; }
+  .lf-dot { position: absolute; z-index: 1; left: -44px; top: 22px; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 50%; background: var(--surface); border: 2px solid var(--line-strong); }
+  .lf-steps li:not(.gate) .lf-dot::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+  .gate .lf-dot { width: 32px; height: 32px; left: -48px; top: 26px; border: 0; background: var(--grad-soft); }
+  .gate .lf-dot .ico { width: 16px; height: 16px; color: var(--ground); stroke: var(--ground); }
+  .lf-body { display: grid; gap: 8px; justify-items: start; padding: 20px 0 22px; border-bottom: 1px solid var(--line); }
+  .gate .lf-body { position: relative; padding: clamp(22px, 2.6vw, 32px); border: 0; border-radius: var(--radius); background: var(--ground); margin: 6px 0; }
+  .gate .lf-body::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; background: var(--grad); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
+  .lf-n { color: var(--accent); }
+  .lf-body h2, .lf-body h3 { font-size: clamp(21px, 1.8vw, 26px); }
+  .gate .lf-body h2, .gate .lf-body h3 { font-size: clamp(26px, 2.4vw, 34px); }
+  .lf-body p { margin: 0; color: var(--muted); max-width: 50ch; }
+  .lf-t { color: var(--faint); padding: 5px 9px; border: 1px solid var(--line); border-radius: 999px; }
+  @media (max-width: 960px) {
+    .lf-grid { grid-template-columns: 1fr; }
+    .lf-head { position: static; }
+  }
+  @media (prefers-reduced-motion: reduce) { .lf-steps::after { transition: none; } }
+
+</style>
+<script>
+  // Punkte schalten der Reihe nach ein: Was ins Bild kommt, wird angefordert, eingeschaltet wird immer der nächste
+  // noch dunkle Punkt im Takt, nie einer außer der Reihe (auch nicht nach einem Sprung über den Anker).
+  const root = document.documentElement;
+  for (const list of document.querySelectorAll<HTMLElement>('[data-tl]')) {
+    const items = [...list.querySelectorAll<HTMLElement>('.ms-item')];
+    if (!root.classList.contains('reveal') || !('IntersectionObserver' in window)) { items.forEach((el) => el.classList.add('lit')); continue; }
+    let want = -1, next = 0, timer = 0;
+    const step = () => {
+      if (next > want) { timer = 0; return; }
+      const still = root.classList.contains('motion-paused');
+      do items[next++].classList.add('lit'); while (still && next <= want);
+      timer = window.setTimeout(step, 280);
+    };
+    const io = new IntersectionObserver((es) => {
+      for (const e of es) if (e.isIntersecting) { want = Math.max(want, items.indexOf(e.target as HTMLElement)); io.unobserve(e.target); }
+      if (!timer) step();
+    }, { rootMargin: '0px 0px -12% 0px' });
+    items.forEach((el) => io.observe(el));
+  }
+</script>

@@ -1,4 +1,5 @@
 ---
+import SectionHead from '../SectionHead.astro';
 import { forPath } from '../../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
 import { SHOW_PACKAGES } from '../../content/show-packages';
@@ -20,13 +21,10 @@ const sources = [['Google', 'Google'], ['Empfehlung', t('contactform.recommendat
 ---
 <section aria-labelledby="anfrage-h" class="section alt" id="anfrage">
   <div class="inquiry">
-    <div class="intro">
-      {kicker && <span class="kicker mono">{kicker}</span>}
-      <H id="anfrage-h"><Accent text={headline} /></H>
-      {text && <p class="lead">{text}</p>}
+    <SectionHead variant="embedded" class="intro" kicker={kicker} headline={headline} text={text} textClass="lead" id="anfrage-h" level={H}>
       <Faces people={people} />
       <ContactWays />
-    </div>
+    </SectionHead>
     <form action={site.formEndpoint} aria-labelledby="anfrage-h" class="ask" id="inquiry-form" method="post">
       <input type="hidden" name="locale" value={forPath(Astro.url.pathname).locale} />
       <div class="ask-steps" aria-hidden="true" hidden><span class="on">{t('contactform.1YourShow')}</span><span>{t('contactform.2AboutYou')}</span><i></i></div>
@@ -86,7 +84,7 @@ const sources = [['Google', 'Google'], ['Empfehlung', t('contactform.recommendat
         <div class="opt" id="opt-firma" data-opt="firma"><div><div class="field"><label class="lbl" for="f-firma">{t('contactform.companyOrOrganisation')} <em>{t('contactform.optional')}</em></label><input autocomplete="organization" id="f-firma" maxlength="200" name="firma" type="text" /></div></div></div>
         <!-- Freitext erst am Ende (Marc, 31.10.2026: im ersten Schritt ist das zu viel auf einmal) -->
         <div class="opt" id="opt-msg" data-opt="msg"><div><div class="field"><label class="lbl" for="f-msg">{t('contactform.anythingElseYouDLikeToTellUs')} <em>{t('contactform.optional')}</em></label><textarea id="f-msg" maxlength="5000" name="message" rows="3"></textarea></div></div></div>
-        <div class="opt" id="opt-quelle" data-opt="quelle"><div><div class="field"><label class="lbl" for="f-quelle">{t('contactform.howDidYouHearAboutUs')} <em>{t('contactform.optional')}</em></label><select id="f-quelle" name="quelle"><option value="">{t('contactform.pleaseSelect')}</option>{sources.map(([value, label]) => <option value={value}>{label}</option>)}</select></div></div></div>
+        <div class="opt" id="opt-quelle" data-opt="quelle"><div><div class="field"><label class="lbl" for="f-quelle">{t('contactform.howDidYouHearAboutUs')} <em>{t('contactform.optional')}</em></label><select class="native-select" id="f-quelle" name="quelle"><option value="">{t('contactform.pleaseSelect')}</option>{sources.map(([value, label]) => <option value={value}>{label}</option>)}</select></div></div></div>
         <div class="actions"><button class="btn primary" type="submit">{t('contactform.sendEnquiry')}</button><button class="btn" data-back type="button">{t('contactform.back')}</button></div>
         <p class="hint">{t('contactform.processingNotice')} <a href={localHref("/datenschutz/")}>{t('contactform.privacyPolicy')}</a>.</p>
         <div aria-hidden="true" class="honeypot"><label>Website<input autocomplete="off" name="website" tabindex="-1" /></label></div>

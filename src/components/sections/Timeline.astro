@@ -6,93 +6,16 @@
 // Eine Jahreszahl, die sich wiederholt, steht nur einmal sichtbar da und bleibt für Screenreader lesbar.
 // Ohne JS, bei reduzierter Bewegung und globaler Pause: alles sofort sichtbar und farbig.
 import type { Section } from '../../content.config';
+import ProcessList from '../ProcessList.astro';
 import SectionHead from '../SectionHead.astro';
 type Props = Extract<Section, { type: 'timeline' }> & { index: number };
 const { headline, text, items, id = `s${Astro.props.index}`, index, kicker } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
 const T = index === 0 ? 'h2' : 'h3';
 const headingId = `${id}-h`;
-// Stützfarben wie die Punkte im Startseiten-Zeitstrahl (global.css, .ruler li:nth-child)
-const STOPS = ['#ff9e29', '#ec7f95', '#b88bec', '#6fc8ef', '#33edf2'].map((h) => [1, 3, 5].map((k) => parseInt(h.slice(k, k + 2), 16)));
-const colorAt = (t: number) => {
-  const x = Math.min(0.9999, Math.max(0, t)) * (STOPS.length - 1), k = Math.floor(x), f = x - k;
-  return `#${STOPS[k].map((c, j) => Math.round(c + (STOPS[k + 1][j] - c) * f).toString(16).padStart(2, '0')).join('')}`;
-};
-const n = items.length;
-const colors = items.map((_, i) => colorAt(n > 1 ? i / (n - 1) : 0));
 ---
 <section class="section ms-sec" id={id} aria-labelledby={headingId}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
-  <ol class="ms" data-tl>
-    {items.map((it, i) => {
-      const repeat = i > 0 && items[i - 1].when === it.when;
-      return <li class:list={['ms-item', { 'ms-repeat': repeat, 'ms-last': i === n - 1 }]} style={`--c:${colors[i]};--c2:${colors[Math.min(i + 1, n - 1)]}`}>
-        <span class="ms-when">{it.when}</span>
-        <span class="ms-rail" aria-hidden="true"><span class="ms-line"></span><span class="ms-dot"></span></span>
-        <div class="ms-body"><T>{it.title}</T>{it.text && <p>{it.text}</p>}</div>
-      </li>;
-    })}
-  </ol>
+  <ProcessList items={items} variant="milestones" level={T} />
 </section>
 
-<style>
-  .ms { list-style: none; margin: 0; padding: 0; max-width: 64rem; }
-  .ms-item { display: grid; grid-template-columns: 7.5rem 16px minmax(0, 1fr); grid-template-areas: 'when rail body'; column-gap: clamp(20px, 2.6vw, 40px); }
-  .ms-when { grid-area: when; font: 600 clamp(30px, 3vw, 44px)/0.9 var(--display); letter-spacing: -0.04em; color: var(--c); text-align: right; padding-top: 1px; transition: color 0.5s, opacity 0.5s; }
-  .ms-repeat .ms-when { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  .ms-item:not(.ms-repeat):not(:first-child) .ms-body, .ms-item:not(.ms-repeat):not(:first-child) .ms-when { margin-top: clamp(14px, 2vw, 28px); }
-  .ms-item:not(.ms-repeat):not(:first-child) .ms-rail { padding-top: clamp(14px, 2vw, 28px); }
-
-  /* Schiene: Punkt oben, Linie vom Punkt bis zum nächsten Punkt (Spur grau, darüber der Verlauf, der sich aufzieht) */
-  .ms-rail { grid-area: rail; position: relative; }
-  .ms-dot { position: absolute; z-index: 1; left: 0; top: 5px; width: 16px; height: 16px; border-radius: 50%; background: var(--c); border: 2px solid var(--c); box-shadow: 0 0 14px var(--c), 0 0 2px #fff inset; transition: background 0.5s, border-color 0.5s, box-shadow 0.5s; }
-  .ms-line { position: absolute; left: 7px; width: 2px; top: 13px; bottom: -13px; border-radius: 2px; background: var(--line-strong); overflow: hidden; }
-  .ms-item:not(.ms-repeat):not(:first-child) .ms-dot { top: calc(5px + clamp(14px, 2vw, 28px)); }
-  .ms-item:not(.ms-repeat):not(:first-child) .ms-line { top: calc(13px + clamp(14px, 2vw, 28px)); }
-  /* die Linie des Vorgängers reicht bis zum Punkt des nächsten Eintrags; bei einem neuen Jahr liegt der etwas tiefer */
-  .ms-item:has(+ .ms-item:not(.ms-repeat)) .ms-line { bottom: calc(-13px - clamp(14px, 2vw, 28px)); }
-  .ms-last .ms-line { display: none; }
-  .ms-line::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, var(--c), var(--c2)); transform-origin: top; transform: scaleY(1); transition: transform 0.55s cubic-bezier(0.6, 0, 0.2, 1) 0.15s; }
-
-  .ms-body { grid-area: body; display: grid; gap: 6px; padding-bottom: clamp(26px, 3vw, 40px); transition: opacity 0.6s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); }
-  .ms-body :is(h2, h3) { font-size: clamp(19px, 1.6vw, 23px); line-height: 1.25; letter-spacing: -0.015em; }
-  .ms-body p { color: var(--muted); max-width: 60ch; }
-  .ms-last .ms-body { padding-bottom: 0; }
-
-  /* Startzustand vor dem Erscheinen (html.reveal setzt das Inline-Skript im Kopf, nur mit Bewegung) */
-  :global(html.reveal) .ms-item:not(.lit) .ms-dot { background: var(--ground); border-color: var(--line-strong); box-shadow: none; }
-  :global(html.reveal) .ms-item:not(.lit) .ms-line::after { transform: scaleY(0); }
-  /* noch nicht erreichte Jahre gedämpft, aber lesbar (große Schrift, mind. 3:1; axe 02.11.2026) */
-  :global(html.reveal) .ms-item:not(.lit) .ms-when { color: var(--faint); }
-  :global(html.reveal) .ms-item:not(.lit) .ms-body { opacity: 0; transform: translateY(0.5em); }
-  @media (prefers-reduced-motion: reduce) { .ms-dot, .ms-line::after, .ms-when, .ms-body { transition: none; } }
-
-  @media (max-width: 720px) {
-    .ms-item { grid-template-columns: 16px minmax(0, 1fr); grid-template-areas: 'rail when' 'rail body'; column-gap: 18px; }
-    .ms-when { text-align: left; font-size: 28px; margin-bottom: 8px; }
-    .ms-rail { grid-row: 1 / span 2; }
-    .ms-item:not(.ms-repeat):not(:first-child) .ms-body { margin-top: 0; }
-  }
-</style>
-
-<script>
-  // Punkte schalten der Reihe nach ein: Was ins Bild kommt, wird angefordert, eingeschaltet wird immer der nächste
-  // noch dunkle Punkt im Takt, nie einer außer der Reihe (auch nicht nach einem Sprung über den Anker).
-  const root = document.documentElement;
-  for (const list of document.querySelectorAll<HTMLElement>('[data-tl]')) {
-    const items = [...list.querySelectorAll<HTMLElement>('.ms-item')];
-    if (!root.classList.contains('reveal') || !('IntersectionObserver' in window)) { items.forEach((el) => el.classList.add('lit')); continue; }
-    let want = -1, next = 0, timer = 0;
-    const step = () => {
-      if (next > want) { timer = 0; return; }
-      const still = root.classList.contains('motion-paused');
-      do items[next++].classList.add('lit'); while (still && next <= want);
-      timer = window.setTimeout(step, 280);
-    };
-    const io = new IntersectionObserver((es) => {
-      for (const e of es) if (e.isIntersecting) { want = Math.max(want, items.indexOf(e.target as HTMLElement)); io.unobserve(e.target); }
-      if (!timer) step();
-    }, { rootMargin: '0px 0px -12% 0px' });
-    items.forEach((el) => io.observe(el));
-  }
-</script>

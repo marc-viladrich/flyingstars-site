@@ -1,4 +1,6 @@
 ---
+import MediaFrame from '../MediaFrame.astro';
+import FactList from '../FactList.astro';
 import { forPath } from '../../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
 import type { Section } from '../../content.config';
@@ -18,14 +20,14 @@ const still = await optimizedImage(poster.src, 960);
   <video class="reel" data-reel data-src={videoPath(video)} data-src-small={videoPath(video, 'preview')} muted loop playsinline preload="none" poster={still.src} aria-hidden="true" tabindex="-1"></video>
   <div class="shade" aria-hidden="true"></div>
   <div class="rec mono" aria-hidden="true">Showreel</div>
-  <div class="frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  <MediaFrame corners="content" as="div" aria-hidden="true" />
   <div class="hero-copy">
     {eyebrow && <span class="kicker mono">{eyebrow}</span>}
     <h1 id="hero-h"><Accent text={headline} />{words && words.length > 0 && <> <span class="word" data-rotate={words.join('|')}>{words[0]}</span></>}</h1>
     <p class="lead">{text}</p>
     <div class="actions"><a class="btn primary" href={localHref(cta.href)}>{cta.label}</a>{secondary && <a class="btn" href={localHref(secondary.href)}>{secondary.label}</a>}</div>
   </div>
-  {stats && stats.length > 0 && <dl class="spec mono" aria-label={t('flighthero.keyFacts')}>{stats.map((stat) => <><dt>{stat.label}</dt><dd><b>{stat.value}</b></dd></>)}</dl>}
+  {stats && stats.length > 0 && <FactList items={stats} variant="spec" label={t('flighthero.keyFacts')} />}
 </section>
 
 <script is:inline>

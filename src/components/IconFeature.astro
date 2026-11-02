@@ -1,0 +1,19 @@
+---
+import Icon from './Icon.astro';
+interface Props { icon?: string; logo?: string; title: string; text?: string; level?: 'h2' | 'h3'; class?: string; as?: 'div' | 'li' | 'label'; variant?: 'default' | 'compact'; textId?: string; iconClass?: string }
+const { icon, logo, title, text, level: H = 'h3', as: Tag = 'div', variant = 'default', class: cls, textId, iconClass, ...rest } = Astro.props;
+---
+<Tag class:list={['icon-feature', { 'icon-feature-compact': variant === 'compact' }, cls]} {...rest}>
+  <slot name="before" />
+  {logo ? <img class="q-logo" src={logo} alt="" loading="lazy" decoding="async" /> : icon && <Icon name={icon} size={variant === 'compact' ? 18 : 36} class={`g ic-ico ${iconClass ?? ''}`} />}
+  <H class="ic-h"><slot name="title">{title}</slot></H>{text && <p id={textId}>{text}</p>}
+  <slot />
+</Tag>
+<style is:global>
+  .icon-feature { display: grid; gap: 10px; align-content: start; justify-items: start; }
+  .icon-feature > .ico { width: 36px; height: 36px; }
+  .icon-feature > p { margin: 0; color: var(--muted); font-size: 15px; }
+  .icon-feature-compact { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 6px; }
+  .icon-feature-compact > .ico { width: 18px; height: 18px; align-self: center; margin: 0 4px 0 0; }
+  .icon-feature-compact > .ic-h, .icon-feature-compact > p { font: inherit; color: inherit; }
+</style>

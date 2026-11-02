@@ -1,4 +1,5 @@
 ---
+import MediaCard from '../MediaCard.astro';
 import { forPath } from '../../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
 // Referenzkarte: Bild mit Vorhang und Lichtpunkt-Hover, Kennzahl auf dem Bild, Titel. Fallstudien sind ein Link,
@@ -20,36 +21,18 @@ const image = project.data.cover ? await optimizedImage(project.data.cover.src) 
 const drones = dronesOf(project);
 const badge = [year && yearOf(project), drones && t('projectcard.valueDrones', { v0: drones })].filter(Boolean).join(' · ');
 ---
-<Card class:list={['proj', { static: !href, 'has-loop': loop }]} href={localHref(href)} data-dot-host={loop ? undefined : ''} data-loop-host={loop ? (autoplay ? 'auto' : 'hover') : undefined}>
-  {image && <div class="img" data-curtain data-dot-img={loop ? undefined : ''} style={`--i:${i % 2}`}><img src={image.src} {...image.attributes} width={image.width} height={image.height} alt={project.data.cover!.alt} loading="lazy" decoding="async" />{loop && <video class="loop" data-src={loop} muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>}{badge && <span class="count mono">{badge}</span>}</div>}
-  <span class="kick mono">{kickOf(project)}</span><T>{project.data.showcase?.cardTitle ?? project.data.title}</T>
-  {!project.data.showcase && <p>{project.data.summary}</p>}
-</Card>
+<MediaCard variant="reference" class={`${!href ? 'static' : ''} ${loop ? 'has-loop' : ''}`}  href={localHref(href)} title={project.data.showcase?.cardTitle ?? project.data.title} level={T} summary={!project.data.showcase ? project.data.summary : undefined} kicker={kickOf(project)} badge={badge || undefined} i={i % 2} hasMedia={Boolean(image)} dot={!loop} loop={loop ? (autoplay ? 'auto' : 'hover') : undefined}>
+  <Fragment slot="media">{image && <img src={image.src} {...image.attributes} width={image.width} height={image.height} alt={project.data.cover!.alt} loading="lazy" decoding="async" />}{loop && <video class="loop" data-src={loop} muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>}</Fragment>
+</MediaCard>
 
 <script>
-  // Showvideos in Referenzkarten: laden erst beim ersten Abspielen, pausieren außerhalb des Bildes und bei globaler Pause
-  const hosts = document.querySelectorAll<HTMLElement>('[data-loop-host]');
-  if (hosts.length) {
-    const root = document.documentElement;
-    const still = () => matchMedia('(prefers-reduced-motion: reduce)').matches || root.classList.contains('motion-paused');
-    const touch = !matchMedia('(hover: hover) and (pointer: fine)').matches;
-    const state = new Map<HTMLElement, { seen: boolean; hover: boolean }>();
-    const sync = (host: HTMLElement) => {
-      const v = host.querySelector('video')!, st = state.get(host)!;
-      const want = !still() && st.seen && (host.dataset.loopHost === 'auto' || st.hover || touch);
-      if (want) { if (!v.src) v.src = v.dataset.src!; v.play().then(() => host.classList.add('playing')).catch(() => {}); }
-      else { v.pause(); if (host.dataset.loopHost !== 'auto') host.classList.remove('playing'); }
-    };
-    const io = new IntersectionObserver((es) => es.forEach((e) => { state.get(e.target as HTMLElement)!.seen = e.intersectionRatio >= (touch ? 0.6 : 0.3); sync(e.target as HTMLElement); }), { threshold: [0, 0.3, 0.6] });
-    hosts.forEach((host) => {
-      state.set(host, { seen: false, hover: false });
-      host.querySelector('video')!.addEventListener('error', () => host.classList.remove('playing'));
-      host.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') { state.get(host)!.hover = true; sync(host); } });
-      host.addEventListener('pointerleave', () => { state.get(host)!.hover = false; sync(host); });
-      host.addEventListener('focusin', () => { state.get(host)!.hover = true; sync(host); });
-      host.addEventListener('focusout', () => { state.get(host)!.hover = false; sync(host); });
-      io.observe(host);
+  import { createVideoController } from '../../scripts/video-controller';
+  document.querySelectorAll<HTMLElement>('[data-loop-host]').forEach((host) => {
+    const ambient = host.dataset.loopHost === 'auto';
+    createVideoController(host.querySelector('video')!, {
+      host, trigger: ambient ? 'ambient' : 'hover', visibilityThreshold: matchMedia('(hover: hover) and (pointer: fine)').matches ? 0.3 : 0.6,
+      onState: (on) => { if (on || !ambient) host.classList.toggle('playing', on); },
+      onError: () => host.classList.remove('playing'),
     });
-    new MutationObserver(() => hosts.forEach(sync)).observe(root, { attributes: true, attributeFilter: ['class'] });
-  }
+  });
 </script>

@@ -1,4 +1,6 @@
 ---
+import MediaCard from '../MediaCard.astro';
+import FactList from '../FactList.astro';
 import { forPath } from '../../i18n/server';
 const { localHref } = forPath(Astro.url.pathname);
 // Referenzen als Geschichten (Hochzeit): zwei oder drei Karten nebeneinander, versetzt wie Fotos auf einem Tisch.
@@ -17,18 +19,10 @@ const cards = await Promise.all(items.map(async (item) => ({ ...item, media: awa
   <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
   <div class="ls-grid" data-n={cards.length}>
     {cards.map((c, i) => (
-      <article class="ls-card" data-dot-host>
-        <div class="ls-img" data-curtain data-dot-img style={`--i:${i}`}>
-          <img src={c.media.src} srcset={`${c.small.src} 480w, ${c.media.src} 960w`} sizes="(max-width: 760px) calc(100vw - 40px), 45vw" width={c.media.width} height={c.media.height} alt={c.image.alt} loading="lazy" decoding="async" />
-          {c.facts[0] && <span class="ls-badge mono">{c.facts[0].value} {c.facts[0].label}</span>}
-        </div>
-        <div class="ls-body">
-          <span class="kicker mono">{c.kicker}</span>
-          <T>{c.title}</T>
-          <p>{c.text}</p>
-          {c.facts.length > 1 && <dl class="ls-facts">{c.facts.slice(1).map((f) => <div><dt class="mono">{f.label}</dt><dd>{f.value}</dd></div>)}</dl>}
-        </div>
-      </article>
+      <MediaCard variant="story" title={c.title} level={T} summary={c.text} kicker={c.kicker} badge={c.facts[0] ? `${c.facts[0].value} ${c.facts[0].label}` : undefined} i={i}>
+        <img slot="media" src={c.media.src} srcset={`${c.small.src} 480w, ${c.media.src} 960w`} sizes="(max-width: 760px) calc(100vw - 40px), 45vw" width={c.media.width} height={c.media.height} alt={c.image.alt} loading="lazy" decoding="async" />
+        <Fragment slot="facts">{c.facts.length > 1 && <FactList items={c.facts.slice(1)} variant="story" />}</Fragment>
+      </MediaCard>
     ))}
   </div>
   {cta && <div class="ls-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></div>}
@@ -39,22 +33,8 @@ const cards = await Promise.all(items.map(async (item) => ({ ...item, media: awa
   .ls-grid[data-n='3'] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .ls-grid[data-n='1'] { grid-template-columns: minmax(0, 1fr); max-width: 60rem; }
   /* versetzt: die zweite Karte beginnt tiefer, das bricht die gleichförmige Reihe auf */
-  .ls-card:nth-child(2) { margin-top: clamp(40px, 9vw, 160px); }
-  .ls-card { display: grid; gap: 22px; align-content: start; }
-  .ls-img { position: relative; aspect-ratio: 4 / 3; border-radius: var(--radius); overflow: hidden; background: #0a0908; --curtain-r: var(--radius); }
-  .ls-img img { width: 100%; height: 100%; object-fit: cover; }
-  .ls-badge { position: absolute; z-index: 2; left: 14px; bottom: 14px; padding: 7px 10px; border-radius: 4px; background: rgba(15, 13, 12, 0.72); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); color: var(--text); }
-  .ls-body { display: grid; gap: 12px; justify-items: start; max-width: 40rem; }
-  .ls-body .kicker { margin: 0; }
-  .ls-body h2, .ls-body h3 { font-size: clamp(24px, 2.2vw, 32px); line-height: 1.1; max-width: 22ch; }
-  .ls-body p { color: var(--muted); max-width: 52ch; }
-  .ls-facts { display: flex; flex-wrap: wrap; gap: 0 28px; margin: 6px 0 0; padding-top: 16px; border-top: 1px solid var(--line); width: 100%; }
-  .ls-facts > div { display: grid; gap: 2px; }
-  .ls-facts dt { order: 2; color: var(--faint); }
-  .ls-facts dd { margin: 0; font: 500 22px/1.15 var(--display); letter-spacing: -0.02em; color: var(--head); }
   .ls-more { margin-top: clamp(32px, 4vw, 48px); }
   @media (max-width: 760px) {
     .ls-grid, .ls-grid[data-n='3'] { grid-template-columns: 1fr; gap: 56px; }
-    .ls-card:nth-child(2) { margin-top: 0; }
   }
 </style>
