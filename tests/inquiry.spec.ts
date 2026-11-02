@@ -22,7 +22,7 @@ test('Anfrage behält Paketauswahl, alle Showdetails und ehrlichen Versandstatus
   await page.getByLabel('Deine E-Mail-Adresse').fill('marc@example.test');
   await page.getByLabel('Deine Telefonnummer').fill('01234');
   await page.getByRole('button',{name:'Anfrage senden',exact:true}).click();
-  await expect(page.getByRole('status')).toContainText('Es wurde nichts gesendet oder gespeichert');
+  await expect(page.getByRole('status')).toContainText('Es wurde nichts gesendet.');
   for (const value of ['HORIZON','220','Osnabrück','2026-12-01','Produktlaunch mit Musik','01234']) expect(submitted).toContain(value);
   await expect(page.getByLabel('Dein Name')).toHaveValue('Marc Viladrich');
 });

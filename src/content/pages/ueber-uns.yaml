@@ -86,7 +86,7 @@ sections:
       - { when: "2026", title: Indoor im Triple Z, text: "Im September eine Indoor-Show im Gründungszentrum, in dem auch unser Büro ist." }
 
   # USP-Entwurf für Moritz. Quellen, Auswahl und Faktenabgleich: docs/ueber-uns-usps.md.
-  # Ersetzt die bisherige Sammelliste durch Zusammenarbeit/Produktion und einen eigenen Genehmigungsabschnitt.
+  # Ersetzt die bisherige Sammelliste durch Zusammenarbeit/Produktion.
   - type: landingBento
     id: zusammenarbeit
     kicker: Aus einer Hand
@@ -97,34 +97,20 @@ sections:
       text: Wir entwickeln mit euch Storyline, Motive und Musik für euren Anlass.
     items:
       - icon: pencil-ruler
-        title: Eigenes Design-Team.
+        title: Eigenes Design-Team
         text: Alejandro entwirft die Motive und Choreografien. Eure Ideen, euer Logo oder euer Stadtwappen werden zu Drohnenformationen.
       - icon: thumbs-up
-        title: Motive vorab freigeben.
+        title: Motive vorab freigeben
         text: Ihr seht die Entwürfe vor der Show und gebt jedes Motiv frei.
       - icon: music
-        title: Musik und Licht abstimmen.
+        title: Musik und Licht abstimmen
         text: Wir schneiden die Musik zur Animation. Danach programmieren wir Farben und Lichteffekte auf die musikalischen Akzente. Der Musikschnitt ist in jedem Paket enthalten.
       - icon: drone
-        title: Eigene Flotte.
+        title: Eigene Flotte
         text: Wir fliegen mit unseren eigenen Drohnen. Patrick plant ihren Einsatz und kümmert sich um die Technik für eure Show.
 
-  - type: textMedia
-    id: genehmigungen
-    kicker: Flugorte und Genehmigungen
-    headline: Wir klären, wo eure Show fliegen kann.
-    body: |
-      Mit unserer generischen Betriebsgenehmigung des Luftfahrt-Bundesamts können wir die meisten Flugorte selbst freigeben. Weitere Anträge übernehmen wir selbst, etwa bei der Deutschen Flugsicherung für Shows in Kontrollzonen oder in Flughafennähe. Auch an Bundeswasserstraßen kümmern wir uns um die nötigen Genehmigungen.
-
-      Für Shows in anderen EU-Ländern beantragen wir zusätzlich eine Cross-border-Bestätigung. Dafür planen wir 4 bis 8 Wochen Vorlauf ein, für Italien etwa 3 Monate.
-
-      Von euch brauchen wir die Zustimmung der Grundstückseigentümer:innen. Bei öffentlichen Flächen ist das die Stadt oder Gemeinde. Wir stellen euch dafür ein Schreiben bereit oder schicken es direkt dorthin.
-    image:
-      src: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
-      alt: Volkswagen-Logo aus Drohnen über dem Wolfgangsee, Gäste filmen von einer Terrasse
-      width: 1920
-      height: 1281
-    mediaSide: left
+  # Genehmigungen (Codex-Entwurf 02.11.) stehen nicht als eigene Section hier: Das Sicherheitskonzept direkt darunter nennt
+  # LBA-Genehmigung, DFS, Cross-border und Grundstückszustimmung ausführlicher („Das übernehmen wir / Das braucht ihr“).
 
   # Textentwurf für Moritz. Quellen und Konflikte: docs/sicherheitskonzept-quellen.md.
   - type: landingSite

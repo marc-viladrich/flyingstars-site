@@ -10,7 +10,7 @@
 const BLOCK = /<(p|li|figcaption|blockquote)(\s[^>]*)?>([\s\S]*?)<\/\1>/gi;
 const NESTED = /<(?:p|li|ul|ol|div|dl|table|section|h[1-6]|br|script|style|template|svg)\b/i;
 /** Wörter, die zusammen höchstens so lang sind, werden verbunden (Zeichen ohne Tags); das letzte Wort höchstens MAX_LAST. */
-const MAX_PAIR = 22;
+const MAX_PAIR = 28;
 const MAX_LAST = 14;
 
 /** Verbindet im inneren HTML eines Blocks die letzten zwei Wörter. Tags bleiben unangetastet. */

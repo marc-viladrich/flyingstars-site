@@ -34,7 +34,7 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 
 **Zeilenumbruch:** Keine einzelnen Wörter in der letzten Zeile (Marc, 01./02.11.2026), in zwei Stufen:
 - CSS: Überschriften und alle kurzen Textblöcke (`p`, `li`, `dt`, `dd`, `figcaption`, `label`, `.lead`) `text-wrap: balance`; langer Fließtext (`.post-body`, `.prose`) `pretty`. `pretty` allein reicht nicht, Chromium und WebKit lassen es bei zweizeiligen Sätzen beim Hurenkind
-- HTML: `src/middleware.ts` verbindet beim Ausliefern in `p`, `li`, `figcaption`, `blockquote` die letzten zwei Wörter mit `&nbsp;` (`src/lib/no-orphans.ts`, Test `scripts/no-orphans.test.mjs`). Nicht in Überschriften und `dt`/`dd` (große Schrift oder schmale Spalten), nicht bei langen Wortpaaren, nicht bei `<br>`. Ausnahme pro Element: `data-orphans="keep"
+- HTML: `src/middleware.ts` verbindet beim Ausliefern in `p`, `li`, `figcaption`, `blockquote` die letzten zwei Wörter mit `&nbsp;` (`src/lib/no-orphans.ts`, Test `scripts/no-orphans.test.mjs`). Nicht in Überschriften und `dt`/`dd` (große Schrift oder schmale Spalten), nicht bei langen Wortpaaren, nicht bei `<br>`. Ausnahme pro Element: `data-orphans="keep"`
 
 **Inhaltsbreite:** `--content-max: 1792px` (= 1920 − 2 × 64). Horizontaler Innenabstand jeder Section, der Navigation und des Footers ist `var(--gutter)`, nie `var(--pad)`: Ab 1920 px Fensterbreite wächst der Inhalt nicht weiter, Hintergrundflächen von Sections laufen vollflächig.
 - ALLES Sichtbare endet an der Content-Breite (Marc, 02.11.2026): Text, Bilder, Karussells, Galerien, Laufbänder, Spielfeld und „Nächstes Projekt“ auf den Referenzen. Scrollbereiche schneiden an der Content-Kante ab und blenden dort weich aus, statt bis zum Fensterrand zu laufen
