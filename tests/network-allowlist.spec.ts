@@ -12,6 +12,11 @@ for (const route of routes) {
   test(`keine Third-Party-Requests: ${route}`, async ({ page }) => {
     const offenders: string[] = [];
     const fonts = new Set<string>();
+    // Failures remain observable, but a regression must never contact Google in tests.
+    await page.route('**/*', (route) => {
+      const url = new URL(route.request().url());
+      return allowed.has(url.hostname) ? route.continue() : route.abort();
+    });
     page.on('request', (req) => {
       const url = new URL(req.url());
       if (url.protocol === 'blob:' || url.protocol === 'data:') return; // im Browser erzeugt (z. B. SVG → Raster), kein Netzwerk
