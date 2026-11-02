@@ -12,9 +12,6 @@ export const site=Object.freeze({createSite:createFlyingStarsAdapter,compatibili
 export const resolveRuntimeOptions=(input={})=>resolve({...input,compatibility,defaults:{siteRoot,...input.defaults}});
 /** startNativeServers with the FlyingStars adapter unless the caller passes another one. */
 export const startNativeServers=(input={})=>start({...site,...input});
-export const runEditor=(args=process.argv.slice(2))=>{
- if(process.env.AFE_DESIGN_EDITOR!=='source')throw Error('Der neue Designstand unterstützt vorerst nur den Datei-Editor. Canvas, Mediathek, Paket-/UI-Datensätze und automatische Übersetzung sind noch nicht migriert. Details: docs/editor-designsprache.md. Für den eingeschränkten Testbetrieb AFE_DESIGN_EDITOR=source setzen.');
- return run(args,site);
-};
+export const runEditor=(args=process.argv.slice(2))=>run(args,site);
 
 if(isMain(import.meta.url))await runEditor();

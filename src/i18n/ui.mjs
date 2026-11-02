@@ -3,7 +3,7 @@ import { LOCALES } from './routing.mjs';
 
 /** No HTML interpolation. Callers render links/emphasis, values are plain text. */
 export function createTranslator(locale = 'de') {
-  return (key, values = {}) => {
+  const translate = (key, values = {}) => {
     const message = messages[key]?.[locale];
     if (typeof message !== 'string') throw new Error(`Missing ${locale} UI message: ${key}`);
     return message.replace(/\{(\w+)\}/g, (_, name) => {
@@ -11,6 +11,9 @@ export function createTranslator(locale = 'de') {
       return String(values[name]);
     });
   };
+  // Render-time provenance for the dictionary actually used by this translator.
+  translate.afeAddress=key=>({owner:{collection:'siteUi',id:'ui'},part:'data',path:[key,locale],mode:/\{\w+\}/.test(messages[key]?.[locale]||'')?'panel':'inline'});
+  return translate;
 }
 /** Browser modules (including lazy scene builders); safe for deterministic Node unit tests. */
 export function t(key, values = {}) {

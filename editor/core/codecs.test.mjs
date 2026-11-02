@@ -6,7 +6,7 @@ import {fileURLToPath} from 'node:url';
 import {codecs,json,yaml,markdown} from 'astro-frontend-editor/runtime/extensions';
 
 const site=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const lab=path.resolve(site,'../../../../../editor-lab');
+const lab=path.join(site,'editor/test/fixtures');
 async function files(root){return (await readdir(root,{recursive:true})).filter(file=>/\.(json|ya?ml|md)$/.test(file)).sort();}
 const codecFor=file=>codecs[/\.json$/.test(file)?'json':/\.md$/.test(file)?'markdown':'yaml'];
 for(const [name,root,inventory]of [

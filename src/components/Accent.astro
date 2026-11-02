@@ -1,7 +1,8 @@
 ---
 // Headline-Text mit *markierten* Begriffen im Logoverlauf (docs/DESIGN.md: Hervorhebung = Verlauf auf einzelnen Begriffen).
+import {field,editorBuild} from 'astro-frontend-editor/markers';
 import { accentParts } from './accent';
 interface Props { text: string }
 const parts = accentParts(Astro.props.text);
 ---
-{parts.map((p) => p.g ? <span class="grad">{p.t}</span> : p.t)}
+{editorBuild() ? <span {...((Astro.props as any).__afe?.text ? field((Astro.props as any).__afe.text,{mode:'inline'}) : {})}>{parts.map((p) => p.g ? <span class="grad">{p.t}</span> : p.t)}</span> : parts.map((p) => p.g ? <span class="grad">{p.t}</span> : p.t)}

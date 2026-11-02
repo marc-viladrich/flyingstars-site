@@ -1,7 +1,9 @@
 import path from 'node:path';
+import {readFileSync} from 'node:fs';
 import {pathToFileURL} from 'node:url';
 import {z} from 'zod';
 import {createExtensionRegistry,LegacySourceAdapter} from 'astro-frontend-editor/runtime/extensions';
+import {mediaHooks} from './design/media.mjs';
 import {templates} from './design/templates.mjs';
 import {routeTools} from './extensions/flyingstars/web/routing.mjs';
 import {localeTransactions} from './design/locale-transactions.mjs';
@@ -13,13 +15,16 @@ export async function createFlyingStarsAdapter(root) {
  const types=Object.entries(contentSchemas).map(([directory,schema])=>({
   prefix:directory==='pages'?'page':directory==='posts'?'post':directory==='projects'?'project':'faq',directory,
   extension:directory==='pages'?'yaml':'md',format:directory==='pages'?'yaml':'markdown',
-  schema:directory==='pages'?schema:schema.extend({body:z.string().meta({'x-afe':{format:'markdown'}})}),
+  schema:directory==='pages'?schema:schema.extend({body:z.string().meta({'x-afe':{format:'markdown'}})}).meta(schema.meta()),
   // Locale triplets and structural edits need coordinated review. This adapter updates existing records only.
   title:directory,
  }));
- const recordId=/^(page|post|project|faq)\/((?:(?:en|nl)\/)?[a-z0-9]+(?:-[a-z0-9]+)*)$/;
- const sourceFor=id=>{const match=recordId.exec(id);if(!match)return null;const type=types.find(t=>t.prefix===match[1]);return {...type,id,address:{collection:type.directory,id:match[2]},locator:{kind:'document'},file:`src/content/${type.directory}/${match[2]}.${type.extension}`};};
- const sourcesFromFiles=files=>files.flatMap(file=>{const type=types.find(t=>file.startsWith(`src/content/${t.directory}/`)&&file.endsWith('.'+t.extension));if(!type)return [];const id=type.prefix+'/'+file.slice(`src/content/${type.directory}/`.length,-type.extension.length-1),source=sourceFor(id);return source?[source]:[];});
+ types.push({prefix:'media',directory:'editor-media',extension:'json',format:'json',title:'Mediathek',create:true,remove:true,schema:z.object({title:z.string(),src:z.string().regex(/^\/assets\/[a-f0-9]{64}\.(?:png|jpg|webp)$/),defaultAlt:z.string(),width:z.number().int().positive(),height:z.number().int().positive(),mime:z.enum(['image/png','image/jpeg','image/webp'])}).strict().meta({'x-afe':{collection:{label:'Bild',title:['title'],operations:['create','update','delete']}}})});
+ const recordId=/^(page|post|project|faq|media)\/((?:(?:en|nl)\/)?[a-z0-9]+(?:-[a-z0-9]+)*)$/;
+ const ui=JSON.parse(readFileSync(path.join(root,'src/i18n/ui.json'),'utf8'));
+ const uiSchema=z.object(Object.fromEntries(Object.keys(ui).map(key=>[key,z.object({de:z.string().min(1),en:z.string().min(1),nl:z.string().min(1)}).strict()]))).strict();
+ const sourceFor=id=>{if(id==='site/ui')return {id,prefix:'site',address:{collection:'siteUi',id:'ui'},file:'src/i18n/ui.json',locator:{kind:'document'},format:'json',schema:uiSchema};const match=recordId.exec(id);if(!match)return null;const type=types.find(t=>t.prefix===match[1]);return {...type,id,address:{collection:type.directory,id:match[2]},locator:{kind:'document'},file:`src/content/${type.directory}/${match[2]}.${type.extension}`};};
+ const sourcesFromFiles=files=>files.flatMap(file=>{if(file==='src/i18n/ui.json')return [sourceFor('site/ui')];const type=types.find(t=>file.startsWith(`src/content/${t.directory}/`)&&file.endsWith('.'+t.extension));if(!type)return [];const id=type.prefix+'/'+file.slice(`src/content/${type.directory}/`.length,-type.extension.length-1),source=sourceFor(id);return source?[source]:[];});
  const recordRoute=record=>{const source=sourceFor(record.id);if(!source)return null;const parts=source.address.id.split('/'),locale=parts.length===2?parts.shift():'de',slug=parts[0],prefix=locale==='de'?'':'/'+locale;
   if(source.prefix==='page')return prefix+(slug==='index'?'/':'/'+slug+'/');
   if(source.prefix==='post')return prefix+'/blog/'+slug+'/';
@@ -29,14 +34,15 @@ export async function createFlyingStarsAdapter(root) {
  const site={label:'FlyingStars · Designsprache',types,sourceFor,sourcesFromFiles,recordId,recordRoute,sectionSchema,sectionPolicy:{},
   editorialHref:/^(?:(?:https?:|mailto:|tel:)\/?.*|\/(?!\/)[^\s]*|#[^\s]*)$/,
   createSourceAdapter:options=>new LegacySourceAdapter(options),previewPrefix:routeTools.previewPrefix,
-  contentRoot:'src/content',contentCollections:types.map(t=>`src/content/${t.directory}/`),assetRoot:'public/assets',
+  contentRoot:'src',contentCollections:types.map(t=>`src/content/${t.directory}/`),assetRoot:'public/assets',
   mediaOrigin:'https://flyingstars.art',mediaHosts:['flyingstars.art','flyingstars-relaunch.vercel.app'],
   requiredOutput:['index.html','drohnenshow-preise/index.html','en/index.html','nl/index.html'],
   login:{layout:'split',logo:{src:'editor/login/logo.svg',alt:'FlyingStars'},image:{src:'editor/login/show.jpg',alt:''},imageFocus:'50% 45%',accent:'#111114'},
-  browserFiles:{'/browser-site.mjs':'editor/design/browser-site.mjs','/design/browser-site.mjs':'editor/design/browser-site.mjs','/extensions/flyingstars/web/routing.mjs':'editor/extensions/flyingstars/web/routing.mjs'},
+  browserFiles:{'/browser-site.mjs':'editor/design/browser-site.mjs','/design/browser-site.mjs':'editor/design/browser-site.mjs','/design/locale-review.mjs':'editor/design/locale-review.mjs','/design/inline.mjs':'editor/design/inline.mjs','/design/media-browser.mjs':'editor/design/media-browser.mjs','/extensions/flyingstars/web/media-usage.mjs':'editor/extensions/flyingstars/web/media-usage.mjs','/extensions/flyingstars/web/record-kinds.mjs':'editor/extensions/flyingstars/web/record-kinds.mjs','/extensions/flyingstars/web/routing.mjs':'editor/extensions/flyingstars/web/routing.mjs'},
  };
  site.extensions=createExtensionRegistry([{name:'flyingstars/design',contractVersion:'1.0',hooks:{
-  templates,
+  templates,...mediaHooks,
+  resolveReference:(records,value,reference)=>records.find(r=>r.address?.collection===reference?.collection&&r.address.id===value),
   title:(source,data)=>data.title||data.question||source.id,
   route:recordRoute,
   omitField:(_source,_data,field)=>field[0]==='translationSourceHash',

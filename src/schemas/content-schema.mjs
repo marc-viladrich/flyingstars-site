@@ -18,11 +18,11 @@ const sectionHeading = { id: z.string().optional(), kicker: z.string().optional(
 const brandPath = z.string().regex(/^\/brand\/[a-z0-9/._-]+\.(svg|png|webp)$/).describe('Lokale Datei unter public/brand/');
 
 const image = z.object({
-  src: z.url().describe('Absolute URL im zentralen Medienspeicher'),
+  src: z.union([z.url({protocol:/^https$/}),z.string().regex(/^\/assets\/[a-f0-9]{64}\.(?:png|jpg|webp)$/)]).describe('URL im Medienspeicher oder geprüfter Editor-Upload'),
   alt: z.string().min(1).describe('Pflicht. Leerer Alt-Text nur für Dekoration, dann alt: ""'),
   width: z.number().int().positive(),
   height: z.number().int().positive(),
-});
+}).meta({format:'image','x-afe':{widget:'flyingstars/image',media:{policy:'flyingstars/uploads',shape:{kind:'object',source:['src'],alt:['alt'],width:['width'],height:['height']}}}});
 
 export const sectionSchema = z.discriminatedUnion('type', [
   z.object({
@@ -273,7 +273,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     // Ausgewählte Referenzen (Projekte-Sammlung) nach ID, als Karten mit Showvideo wie auf der Startseite.
     type: z.literal('landingRefs'), ...sectionHeading,
     headline: z.string().min(1), text: z.string().optional(), cta: link.optional(),
-    projects: z.array(z.string().min(1)).min(1).max(6).describe('Dateinamen aus src/content/projects ohne .md'),
+    projects: z.array(z.string().min(1).meta({'x-afe':{reference:{collection:'projects',encoding:'id'}}})).min(1).max(6).describe('Dateinamen aus src/content/projects ohne .md'),
   }),
   z.object({
     // Konfigurator-Teaser mit Kopf, Ziel und Knopfbeschriftung je Anlass.
@@ -431,3 +431,19 @@ export const faqSchema = z.object({
   });
 
 export const contentSchemas = { pages: pageSchema, posts: postSchema, projects: projectSchema, faq: faqSchema };
+
+// Lists are edited through their existing Zod constraints. One traversal supplies the editor's
+// capabilities for every present and future nested list, without a second section/field catalogue.
+const editorialNodes=new Set();
+function editorialLists(schema) {
+ if(!schema?._def||editorialNodes.has(schema))return;
+ editorialNodes.add(schema);
+ if(schema._def.type==='array')z.globalRegistry.add(schema,{...schema.meta(),'x-afe':{...schema.meta()?.['x-afe'],array:{insertable:true,removable:true,reorderable:true,...schema.meta()?.['x-afe']?.array}}});
+ const def=schema._def;
+ if(schema.shape)Object.values(schema.shape).forEach(editorialLists);
+ if(schema.options)schema.options.forEach(editorialLists);
+ if(def.innerType)editorialLists(def.innerType);
+ if(def.element)editorialLists(def.element);
+ if(def.items)def.items.forEach(editorialLists);
+}
+for(const [directory,schema]of Object.entries(contentSchemas)){z.globalRegistry.add(schema,{...schema.meta(),'x-afe':{...schema.meta()?.['x-afe'],collection:{label:directory,title:[directory==='faq'?'question':'title'],operations:['update']}}});editorialLists(schema);}

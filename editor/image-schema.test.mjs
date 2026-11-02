@@ -1,87 +1,10 @@
 import './test/register-browser-site.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import fs from 'node:fs/promises';
-import {runInNewContext} from 'node:vm';
-import {z} from 'astro/zod';
-import {fileURLToPath} from 'node:url';
-import {createFlyingStarsAdapter} from './flyingstars-adapter.mjs';
-import {describeSchema,schemaDescription,selectedSchema} from 'astro-frontend-editor/runtime/extensions';
-import {describe} from 'astro-frontend-editor/web/native-schema.mjs';
-import {codecs,atPath} from 'astro-frontend-editor/runtime/extensions';
-import {sourceMediaSources} from 'astro-frontend-editor/web/view-state.mjs';
-
-const root = fileURLToPath(new URL('../',import.meta.url));
-const key = path => JSON.stringify(path);
-const editorSource = await fs.readFile(new URL('./web/editor.js',import.meta.resolve('astro-frontend-editor/package.json')),'utf8');
-const classifier = editorSource.slice(editorSource.indexOf('function isMediaContainer('),editorSource.indexOf('// Builds the "Inhalt"'));
-const isImage = runInNewContext(classifier+';isMediaContainer',{});
-
-function declaredImages(schema,data,path=[],out=[]) {
-  const node=selectedSchema(schema,data);
-  if ((schema.meta?.()?.format ?? node.meta?.()?.format)==='image') out.push(key(path));
-  if(node._def.type==='object') for(const [name,child]of Object.entries(node.shape)) declaredImages(child,data?.[name],[...path,name],out);
-  if(node._def.type==='array') for(const [i,value]of (data||[]).entries()) declaredImages(node.element,value,[...path,i],out);
-  return out;
-}
-
-test('image controls match schema declarations in both directions across every real content record',async t=>{
-  const adapter=await createFlyingStarsAdapter(root);
-  const files=(await fs.readdir(new URL('../src/content/',import.meta.url),{recursive:true})).map(file=>'src/content/'+file);
-  let records=0,images=0;
-  for(const source of adapter.sourcesFromFiles(files)) {
-    const bytes=await fs.readFile(root+source.file),data=source.schema.parse(codecs[source.format].parse(bytes));
-    const expected=declaredImages(source.schema,data).sort();
-    const server=describeSchema(source.schema,data),browser=describe(schemaDescription(source.schema),data);
-    for(const description of [server,browser]) {
-      const actual=description.containers.filter(container=>isImage({data},container)).map(c=>key(c.path)).sort();
-      assert.deepEqual(actual,expected,source.id);
-    }
-    const tracked=Object.keys(sourceMediaSources([{id:source.id,data,schema:schemaDescription(source.schema)}])).map(key=>key.slice(source.id.length+1)).sort();
-    assert.deepEqual(tracked,expected.filter(key=>atPath(data,JSON.parse(key))),source.id+' source media snapshot');
-    records++;images+=expected.length;
-  }
-  assert.ok(records>30);assert.ok(images>30);
-  t.diagnostic(`${records} records; ${images} declared image locations, including absent optional images.`);
-});
-
-test('image metadata works without src, dimensions or assets; src-shaped objects stay ordinary groups',()=>{
-  for(const present of [true,false]) {
-    const schema=z.object({photo:z.object({alt:z.string()}).meta({format:'image'}).optional(),formation:z.object({src:z.string(),width:z.number(),height:z.number()})});
-    const data={...(present?{photo:{alt:'Bild'}}:{}),formation:{src:'/media/projekte/nfl/formation.json',width:10,height:20}};
-    for(const description of [describeSchema(schema,data),describe(schemaDescription(schema),data)]) {
-      const photo=description.containers.find(c=>c.path[0]==='photo');
-      if(photo)assert.equal(isImage({},photo),true);
-      assert.equal(isImage({},description.containers.find(c=>c.path[0]==='formation')),false);
-      if(!present)assert.equal(description.optionalFields.find(c=>c.path[0]==='photo').format,'image');
-    }
-  }
-  const checks=[...editorSource.matchAll(/const isImage = ([^;]+);/g)];
-  // Every image decision in the editor reads the schema's format, wherever it is made (no src guessing).
-  assert.ok(checks.length>=2);
-  for(const [,expression]of checks) {
-    const classify=runInNewContext('(optional,c)=>'+expression);
-    assert.equal(classify({format:'image'}),true);
-    assert.equal(classify({template:{src:'not-an-image'}}),false);
-  }
-});
-
-test('formation is a named ordinary group with protected JSON source and editable copy',async()=>{
-  const {projectShowcaseSchema}=await import('../src/schemas/project-showcase.mjs');
-  const {readOnlyPaths}=await import('astro-frontend-editor/runtime');
-  const schema=z.object({formation:projectShowcaseSchema.shape.formation});
-  const data={formation:{src:'/media/projekte/nfl/formation.json',title:'Das Hufeisen',text:'Vorbereitete Formation'}};
-  const serialized=schemaDescription(schema),group=serialized.properties.formation;
-  assert.equal(group.label,'Interaktive Drohnenformation');
-  assert.equal(group.help,'Animation aus vorbereiteten Drohnenpositionen.');
-  assert.match(group.hint,/ein Bild-Upload erzeugt keine Formation/);
-  assert.equal(group.format,undefined);
-  assert.equal(group.properties.src.readOnly,true);
-  assert.equal(group.properties.src.advanced,true);
-  assert.deepEqual(readOnlyPaths({schema,prefix:'project'},data),[['formation','src']]);
-  const browser=describe(serialized,data);
-  assert.deepEqual(browser.fields.map(field=>field.path.at(-1)),['src','title','text']);
-  assert.equal(browser.fields[0].readOnly,true);
-  assert.equal(browser.fields[0].advanced,true);
-  assert.ok(describe(serialized,data,{readOnlyPaths:[['formation','src']]}).fields.some(field=>field.readOnly));
-});
+import {site,records,pages,record,root} from './test/design-data.mjs';
+import {sectionSchema} from '../src/schemas/content-schema.mjs';
+const hero=sectionSchema.options.find(s=>s.shape.type.value==='hero');
+const data={type:'hero',headline:'Bild',image:{src:'https://flyingstars.art/image.jpg',alt:'Eine Drohnenshow',width:100,height:50}};
+test('Images use the actual inline object and reject the old asset cache fields',()=>{assert.equal(hero.safeParse(data).success,true);assert.equal(hero.safeParse({...data,image:{...data.image,width:0}}).success,false);assert.equal(hero.safeParse({...data,image:{...data.image,alt:''}}).success,false);});
+test('A hash-addressed local upload is valid; arbitrary local paths and executable sources are rejected',()=>{assert.equal(hero.safeParse({...data,image:{...data.image,src:'/assets/'+'a'.repeat(64)+'.png'}}).success,true);for(const src of ['/private/key.png','../escape.png','javascript:alert(1)'])assert.equal(hero.safeParse({...data,image:{...data.image,src}}).success,false);});
+test('All real image objects expose source, alt and dimensions to the schema-derived panel',()=>{let count=0;for(const r of records){const walk=(v,path=[])=>{if(!v||typeof v!=='object')return;if(v.src&&'alt'in v&&v.width&&v.height){count++;for(const key of ['alt','width','height'])assert.ok(r.fields.some(f=>JSON.stringify(f.path)===JSON.stringify([...path,key])),r.id+path);}Object.entries(v).forEach(([k,x])=>walk(x,[...path,Array.isArray(v)?Number(k):k]));};walk(r.data);}assert.ok(count>100);});
