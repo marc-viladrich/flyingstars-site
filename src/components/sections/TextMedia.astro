@@ -1,5 +1,6 @@
 ---
 import {field,editorBuild} from 'astro-frontend-editor/markers';
+const editorFieldOptions={mode:'inline',format:'markdown'} as const;
 import Picture from '../Picture.astro';
 import Accent from '../Accent.astro';
 import { marked } from 'marked';
@@ -14,7 +15,7 @@ const html = await marked.parse(body);
   <div class="prose">
     {kicker && <span class="kicker mono">{kicker}</span>}
     <H id={id}><Accent text={headline} /></H>
-    {editorBuild() && (Astro.props as any).__afe?.body ? <div {...field((Astro.props as any).__afe.body,{mode:'inline',format:'markdown'})} set:html={html} /> : <Fragment set:html={html} />}
+    {editorBuild() && (Astro.props as any).__afe?.body ? <div {...field((Astro.props as any).__afe.body,editorFieldOptions)} set:html={html} /> : <Fragment set:html={html} />}
   </div>
   {image && <figure class="tm-media" data-curtain><Picture {...image} /></figure>}
 </section>

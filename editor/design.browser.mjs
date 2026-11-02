@@ -46,7 +46,7 @@ try{for(const [engine,type]of [['chromium',chromium],['webkit',webkit]]){
   await expect.poll(async()=>{const parsed=codec.parse(await readFile(ownerFile)),object=marker.address.path.reduce((v,k)=>v[k],parsed);return object.src;},{timeout:120000}).toMatch(/^\/assets\/[a-f0-9]{64}\.png$/);
   const asset=uploaded.state.records.find(r=>r.id===uploaded.assetId);expect(asset.data.width).toBe(32);expect(asset.data.height).toBe(18);
   expect((await sharp(await readFile(path.join(fixture.source,'public',asset.data.src))).metadata()).width).toBe(32);
-  await expect.poll(()=>app.builder.current?.head,{timeout:120000}).toBe(await app.store.head());
+  await expect.poll(()=>app.builder.current?.head,{timeout:120000}).toBe(await app.store.head());expect(await readFile(path.join(app.builder.current.site,'index.html'),'utf8')).toContain(asset.data.src);
   await page.screenshot({path:evidence+'/'+engine+'-saved.png'});reports.push({engine,cookies,sourceHash:hash,savedHeadline:data.sections[0].headline,uploaded:asset.data.src,imageOwner:marker.address,errors});
 
  }catch(error){await page.screenshot({path:evidence+'/'+engine+'-failure.png'});console.error((await page.locator('body').innerText()).slice(-3500));throw error;}finally{await browser.close();}
