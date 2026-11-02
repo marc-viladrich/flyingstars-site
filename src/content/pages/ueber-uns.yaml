@@ -9,7 +9,7 @@ sections:
   - type: hero
     kicker: Über uns
     headline: Ein Team aus dem Ruhrgebiet, das den *Nachthimmel* bespielt.
-    text: Ronja, Florian und Erwin führen FlyingStars gemeinsam, mit einem kleinen Team aus dem Ruhrgebiet. Wir entwerfen Drohnenshows, holen die Genehmigungen ein und fliegen sie mit unserer eigenen Flotte. Unser Büro ist im Triple Z auf Zeche Zollverein in Essen.
+    text: Ronja, Florian und Erwin führen FlyingStars gemeinsam, mit einem kleinen Team aus dem Ruhrgebiet. Unser Büro ist im Triple Z auf Zeche Zollverein in Essen. Dort könnt ihr uns auch besuchen.
     image:
       src: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
       alt: Weltkugel aus Drohnen über dem Rhein bei der Extraschicht in Duisburg
@@ -54,9 +54,9 @@ sections:
     body: |
       FlyingStars begann als Corona-Projekt. In Asien gab es damals schon viele große Drohnenshows, in Europa noch nicht. Wir wollten wissen, warum, und haben angefangen zu tüfteln. Am 1. Dezember 2021 haben wir das Gewerbe angemeldet.
 
-      Unsere erste Show flogen wir am 13. August 2022, zu einem privaten Geburtstag mit 50 Drohnen. Im selben Jahr kamen sieben weitere dazu. Seitdem sind es 178 Shows geworden, für Marken, Städte, Festivals und Paare.
+      Unsere erste Show flogen wir am 13. August 2022, zu einem privaten Geburtstag mit 50 Drohnen. Im selben Jahr kamen sieben weitere dazu.
 
-      Unser Sitz ist in Gelsenkirchen. Gearbeitet wird im Triple Z, dem Gründungszentrum auf Zeche Zollverein in Essen. Dort könnt ihr uns auch besuchen.
+      Unser Firmensitz und unsere Postadresse sind in Gelsenkirchen.
     image:
       src: https://flyingstars.art/wp-content/uploads/2024/07/D_Umwelthilfe_cover_img.png
       alt: Kreis aus bunten Drohnen über Berlin, Zuschauer:innen filmen die Show mit dem Handy
@@ -74,26 +74,51 @@ sections:
       - { when: "2021", title: Gründung, text: Am 1. Dezember melden wir FlyingStars als Gewerbe an. }
       - { when: "2022", title: Die erste Show, text: Am 13. August fliegen 50 Drohnen zu einem privaten Geburtstag. }
       - { when: "2022", title: PUMA im Borussia-Park, text: "Am 11. November, unsere sechste Show. 100 Drohnen vor dem Derby Gladbach gegen Dortmund, die Anfrage kam etwa 14 Tage vorher." }
-      - { when: "2023", title: Die erste generische Betriebsgenehmigung in Deutschland, text: Im Juli erteilt uns das Luftfahrt-Bundesamt die Genehmigung. Seitdem können wir die meisten Flugorte selbst freigeben. }
+      - { when: "2023", title: Die erste generische Betriebsgenehmigung in Deutschland, text: Im Juli erteilt uns das Luftfahrt-Bundesamt die Genehmigung. }
       - { when: "2023", title: L’Oréal × Prada Paradoxe, text: Am 11. Oktober 350 Drohnen am Rheinturm in Düsseldorf. }
       - { when: "2023", title: "#Böllerciao mit der Deutschen Umwelthilfe", text: "Am 27. November 150 Drohnen im Berliner Cantianstadion, vor Presse, Politik und Öffentlichkeit." }
       - { when: "2023", title: Einzug ins Triple Z, text: Im Dezember beziehen wir unser Büro im Gründungszentrum auf Zeche Zollverein. }
       - { when: "2024", title: 50 Jahre VW Golf, text: Am 22. Mai an der Scalaria am Wolfgangsee. Lange unsere größte Show. }
       - { when: "2025", title: Die erste Indoor-Show, text: Am 28. März für Siemens auf der Hannover Messe. }
       - { when: "2025", title: Kein Bock auf Nazis, text: "Am 8. August. Seitdem fliegen wir regelmäßig Shows für Demokratie, Vielfalt und Zusammenhalt." }
-      - { when: "2026", title: Bokkenrijders in Maastricht, text: Im Juni 20 Shows mit je 600 Drohnen in einem Musical. 12.000 Drohnen in einem Monat. }
+      - { when: "2026", title: Bokkenrijders in Maastricht, text: Im Juni 20 Shows mit je 600 Drohnen in einem Musical. }
       - { when: "2026", title: E.ON in Hamburg, text: Im September eine Doppelshow mit 500 Drohnen über der Elbe an den Landungsbrücken. }
       - { when: "2026", title: Indoor im Triple Z, text: "Im September eine Indoor-Show im Gründungszentrum, in dem auch unser Büro ist." }
 
-  - type: textMedia
+  # USP-Entwurf für Moritz. Quellen, Auswahl und Faktenabgleich: docs/ueber-uns-usps.md.
+  # Ersetzt die bisherige Sammelliste durch Zusammenarbeit/Produktion und einen eigenen Genehmigungsabschnitt.
+  - type: landingBento
+    id: zusammenarbeit
     kicker: Aus einer Hand
-    headline: Design, Genehmigung und Flotte in einer Hand.
-    body: |
-      Die wichtigen Teile einer Show liegen bei uns. Das hält die Wege kurz, auch wenn es eilt.
+    headline: Eure Idee wird zur *Choreografie*.
+    lead:
+      icon: users
+      title: Mit euch entwickelt.
+      text: Wir entwickeln mit euch Storyline, Motive und Musik für euren Anlass.
+    items:
+      - icon: pencil-ruler
+        title: Eigenes Design-Team.
+        text: Alejandro entwirft die Motive und Choreografien. Eure Ideen, euer Logo oder euer Stadtwappen werden zu Drohnenformationen.
+      - icon: thumbs-up
+        title: Motive vorab freigeben.
+        text: Ihr seht die Entwürfe vor der Show und gebt jedes Motiv frei.
+      - icon: music
+        title: Musik und Licht abstimmen.
+        text: Wir schneiden die Musik zur Animation. Danach programmieren wir Farben und Lichteffekte auf die musikalischen Akzente. Der Musikschnitt ist in jedem Paket enthalten.
+      - icon: drone
+        title: Eigene Flotte.
+        text: Wir fliegen mit unseren eigenen Drohnen. Patrick plant ihren Einsatz und kümmert sich um die Technik für eure Show.
 
-      - **Design:** Unser Design-Team entwirft jede Show für ihren Anlass. Ihr seht Entwürfe und gebt jedes Motiv frei.
-      - **Genehmigung:** Unsere Betriebsgenehmigung des Luftfahrt-Bundesamts war die erste generische in Deutschland. Dank ihr können wir die meisten Flugorte selbst freigeben. Weitere Anträge, etwa bei der Deutschen Flugsicherung, stellen wir selbst.
-      - **Flotte:** Geflogen wird mit unseren eigenen Drohnen. Patrick hält sie startklar und plant, welche Drohnen wann wo fliegen.
+  - type: textMedia
+    id: genehmigungen
+    kicker: Flugorte und Genehmigungen
+    headline: Wir klären, wo eure Show fliegen kann.
+    body: |
+      Mit unserer generischen Betriebsgenehmigung des Luftfahrt-Bundesamts können wir die meisten Flugorte selbst freigeben. Weitere Anträge übernehmen wir selbst, etwa bei der Deutschen Flugsicherung für Shows in Kontrollzonen oder in Flughafennähe. Auch an Bundeswasserstraßen kümmern wir uns um die nötigen Genehmigungen.
+
+      Für Shows in anderen EU-Ländern beantragen wir zusätzlich eine Cross-border-Bestätigung. Dafür planen wir 4 bis 8 Wochen Vorlauf ein, für Italien etwa 3 Monate.
+
+      Von euch brauchen wir die Zustimmung der Grundstückseigentümer:innen. Bei öffentlichen Flächen ist das die Stadt oder Gemeinde. Wir stellen euch dafür ein Schreiben bereit oder schicken es direkt dorthin.
     image:
       src: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
       alt: Volkswagen-Logo aus Drohnen über dem Wolfgangsee, Gäste filmen von einer Terrasse
@@ -194,7 +219,7 @@ sections:
       - { label: Shows, value: "178", text: Seit der ersten Show im August 2022. In diesem Jahr waren es bis Oktober 50. }
       - { label: Gegründet, value: "2021", text: Am 1. Dezember 2021 haben wir das Gewerbe angemeldet. }
       - { label: Größte Einzelshow, value: 600 Drohnen, text: "Im Musical Bokkenrijders in Maastricht, 2025 als Teaser und 2026 an 20 Abenden." }
-      - { label: Ein Monat, value: 12.000 Drohnen, text: "Im Juni 2026, 20 Shows mit je 600 Drohnen." }
+      - { label: Drohnen-Einsätze in einem Monat, value: "12.000", text: "Im Juni 2026, 20 Shows mit je 600 Drohnen." }
 
   - type: cta
     headline: Lernt uns kennen.
