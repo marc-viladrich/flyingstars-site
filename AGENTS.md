@@ -4,7 +4,7 @@ Diese Datei gilt für Claude Code (CLAUDE.md ist ein Symlink hierher) und Codex.
 
 ## Architektur in fünf Sätzen
 
-Statische Astro-Site. Inhalte liegen als Dateien in `src/content/` und werden durch Zod-Schemas in `src/content.config.ts` validiert; fehlende Pflichtfelder brechen den Build, das ist gewollt. Seiten (`src/content/pages/*.yaml`) sind Listen von Sections; jede Section hat einen Typ aus der Discriminated Union im Schema und genau eine Komponente in `src/components/sections/`. `src/components/SectionRenderer.astro` ist die einzige Zuordnung Typ → Komponente. Medien liegen außerhalb des Repos im zentralen Speicher (`MEDIA_HOST`) und werden beim Build von Astro optimiert.
+Statische Astro-Site. Inhalte liegen als Dateien in `src/content/` und werden durch gemeinsame Zod-Schemas in `src/schemas/content-schema.mjs` und `src/schemas/project-showcase.mjs` über `src/content.config.ts` validiert; fehlende Pflichtfelder brechen den Build, das ist gewollt. Seiten (`src/content/pages/*.yaml`) sind Listen von Sections; jede Section hat einen Typ aus der Discriminated Union im Schema und einen Renderer in `src/components/sections/` oder `src/components/landing/`. `src/components/SectionRenderer.astro` ist die einzige Zuordnung Typ → Komponente. Redaktionelle Fotos kommen von freigegebenen Remote-Hosts und werden beim Build von Astro optimiert; Markenassets und Fonts liegen unter `public/`. DE liegt am Root, vollständige EN-/NL-Dateien in den Locale-Unterordnern; deren `translationSourceHash` muss zur deutschen Quelldatei passen. Neue Abschnitte, Felder und Routen folgen `docs/DESIGN.md` und `docs/i18n/README.md`.
 
 ## Was du darfst
 
@@ -45,3 +45,7 @@ npx playwright test    # Gates gegen den Build
 ```
 
 Doku: https://docs.astro.build (Content Collections, Images, Routing).
+
+## Editor und Designsprache
+
+Der aktive Adapter leitet die vier Collections und alle Section-Typen aus denselben Zod-Schemas wie Astro ab. Die alte Overlay-/JSON-Datensatzarchitektur ist nicht mehr aktiv. Der Editor ist bis zur vollständigen Migration standardmäßig gesperrt; der eingeschränkte Dateimodus verlangt `AFE_DESIGN_EDITOR=source`. Grenzen und Teststatus: [docs/editor-designsprache.md](docs/editor-designsprache.md). Die Regeln zu neuen Section-Typen beziehen sich immer auf die aktuelle Union, nicht auf historische Typen in älteren Editor-Dokumenten.

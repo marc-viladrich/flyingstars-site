@@ -1,18 +1,21 @@
 import {readFile} from 'node:fs/promises';
 import path from 'node:path';
-import {localizedHref} from '../../src/lib/localized-routes.mjs';
+import {localizedHref} from '../../src/i18n/routing.mjs';
 import {readEditorialRecords} from '../seo-fallback-report.mjs';
+import config from '../../astro.config.mjs';
 
 export async function deliveryRedirects(root) {
   const inventory=JSON.parse(await readFile(path.join(root,'docs/legacy-url-inventory.json'),'utf8'));
   const redirects=inventory.entries.filter(entry=>entry.status==='redirect').map(({path:from,target:to})=>({from,to}));
-  for(const project of (await readEditorialRecords(root)).filter(r=>r.id.startsWith('project/') && !r.data.draft && r.data.showcase)) {
+  for(const project of (await readEditorialRecords(root)).filter(r=>/^project\/[^/]+$/.test(r.id) && !r.data.draft && r.data.showcase)) {
     for(const locale of ['de','en','nl']) redirects.push({
       from:localizedHref(`/projekte/${project.id.slice('project/'.length)}/`,locale),
       to:localizedHref(`/${project.data.showcase.route}/`,locale),
     });
   }
-  return redirects.sort((a,b)=>a.from.localeCompare(b.from,'en'));
+  for(const [from,to]of Object.entries(config.redirects||{}))redirects.push({from:from.endsWith('/')?from:from+'/',to});
+  const unique=new Map(redirects.map(r=>[r.from,r.to]));
+  return [...unique].map(([from,to])=>{const seen=new Set([from]);while(unique.has(to)){if(seen.has(to))throw Error('Redirect cycle: '+from);seen.add(to);to=unique.get(to);}return {from,to};}).sort((a,b)=>a.from.localeCompare(b.from,'en'));
 }
 
 const escapeRegex=text=>text.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');

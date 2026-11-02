@@ -12,7 +12,8 @@ import { LOCALES, localeFromPath, sourcePath, sourceId, localizedHref } from '..
 import LanguageSwitch from '../components/LanguageSwitch.astro';
 import { SHOWS_TOTAL } from '../components/facts';
 interface Props { title: string; description: string; noindex?: boolean; canonicalPath?: string; image?: string; navSection?: string; fullBleed?: boolean; }
-const { title, description, noindex = false, canonicalPath, image, navSection, fullBleed: bleed = false } = Astro.props;
+const { title, description, noindex: pageNoindex = false, canonicalPath, image, navSection, fullBleed: bleed = false } = Astro.props;
+const noindex = pageNoindex || process.env.AFE_MODE === 'editor';
 const canonical = new URL(canonicalPath ?? Astro.url.pathname, Astro.site);
 const locale = localeFromPath(Astro.url.pathname);
 const current = sourcePath(Astro.url.pathname);

@@ -6,7 +6,7 @@ Astro-Instanz des `astro-site-template` für den Flying-Stars-Relaunch. Dieser B
 
 ## Deployment und Editor
 
-Der automatische Zielbetrieb ist jetzt Hetzner Webhosting L: statische Apache-Ausgabe plus private Node-App. Site und Editor liegen in diesem Repository. Branchmodell, Secrets, Einrichtung, Offline-Nachweis und Rückweg stehen in [docs/deployment.md](docs/deployment.md). Cloudflare wird nur noch manuell als Preview ausgeführt.
+Aktiv vorgesehen ist der direkte Cloudflare-Deploy auf jeden Push nach `main`. Hetzner Webhosting L ist ein optionaler, mit `HETZNER_DEPLOY=on` freizuschaltender Zielbetrieb. Site und Editor liegen in diesem Repository. Branchmodell, Secrets, Einrichtung, Offline-Nachweis und Rückweg stehen in [docs/deployment.md](docs/deployment.md). Zusätzlich gibt es eine manuelle Cloudflare-Preview.
 
 ## Das Modell
 
@@ -32,7 +32,7 @@ Die bisherige Cloudflare-Konfiguration und der tatsächlich eingerichtete Branch
 
 | Pfad | Zweck |
 |---|---|
-| `src/content.config.ts` | Schemas: Sections (Discriminated Union) und Collections `pages`, `posts`, `projects`, `faq` |
+| `src/schemas/content-schema.mjs`, `src/content.config.ts` | Gemeinsame Schemas und Collection-Registrierung `pages`, `posts`, `projects`, `faq` |
 | `src/content/` | Inhalte. `pages/*.yaml` = Section-Listen, Rest Markdown |
 | `src/components/sections/` | Eine Komponente pro Section-Typ, typisierte Props |
 | `src/components/SectionRenderer.astro` | Einzige Zuordnung Typ → Komponente |
@@ -45,24 +45,13 @@ Die bisherige Cloudflare-Konfiguration und der tatsächlich eingerichtete Branch
 | `.npmrc` | Das Editor-Paket ist privat (`@marc-viladrich/astro-frontend-editor` auf GitHub Packages, als `astro-frontend-editor` installiert). `npm ci` braucht dafür ein Token mit `read:packages` (siehe `docs/deployment.md`) |
 | `AGENTS.md` | Agent-Vertrag, gilt für Claude Code und Codex |
 
-## Section-Typen
+## Inhalt und Designsprache
 
-Seiten sind Listen dieser Typen. Felder und Pflichtangaben stehen in `src/content.config.ts`, ein Beispiel für jeden neuen Typ in `src/content/pages/leistungen.yaml`.
+Das aktuelle Besuchsdesign folgt [docs/DESIGN.md](docs/DESIGN.md). `src/schemas/content-schema.mjs` ist die gemeinsame Zod-Quelle für Astro und den Editor; `src/content.config.ts` registriert die vier Collections. Die vollständigen Section-Typen stehen ausschließlich in der dort exportierten `sectionSchema`-Union. Komponenten liegen unter `sections/` und `landing/`, die Zuordnung erfolgt in `SectionRenderer.astro`.
 
-| Typ | Zweck |
-|---|---|
-| `hero` | Einstieg der Seite mit Headline, Text, Bild und bis zu zwei Links. |
-| `textMedia` | Fließtext (Markdown) mit optionalem Bild links oder rechts. |
-| `faq` | Akkordeon aus der Collection `faq`, optional nach Tags gefiltert. |
-| `cta` | Handlungsaufforderung mit Headline, Text und einem Button. |
-| `postList` | Die neuesten Beiträge aus der Collection `posts`. |
-| `projectGrid` | Kartenraster aus der Collection `projects`. |
-| `contactForm` | Kontaktformular, das an `PUBLIC_FORM_ENDPOINT` postet. |
-| `pricing` | Preiskarten mit Merkmalen, Preis, Bezugsgröße und Link; eine Karte lässt sich als Empfehlung hervorheben. |
-| `steps` | Nummerierte Ablaufschritte mit Titel, Text und optionalem Zeitrahmen; mobil untereinander, ab 48rem als Raster. |
-| `comparison` | Vergleichstabelle (echte `<table>` mit Caption, mobil horizontal scrollbar); jede Zeile braucht genau einen Wert je Spalte, sonst bricht der Build. |
-| `team` | Karten mit Name, Rolle und Kurztext; ohne Bild erscheint ein Platzhalterkreis mit Initialen. |
-| `logoBar` | Gedämpfte Reihe von Referenzlogos (ohne Animation); ohne Bild wird der Name als Text gesetzt, mit `href` ist er verlinkt. |
+DE-Inhalte liegen am Root der jeweiligen Collection, EN/NL als vollständige Dateien unter `en/` und `nl/`. Sie verwenden keine alten Übersetzungs-Overlays. Der Build prüft Vollständigkeit und SHA-256-Frische. Anleitung: [docs/i18n/README.md](docs/i18n/README.md).
+
+Die frühere vollständige Editor-Integration ist noch nicht auf dieses Modell migriert. Der Start ist deshalb standardmäßig gesperrt. Ein eingeschränkter Dateieditor lässt sich mit `AFE_DESIGN_EDITOR=source` testen; [Funktionen, Sperren und offene Punkte](docs/editor-designsprache.md). Die übrigen Editor-Dokumente beschreiben die Vorgängerarchitektur und sind historische Nachweise.
 
 ## Neue Kundensite anlegen
 
@@ -113,7 +102,7 @@ Kundenbilder stammen derzeit von `flyingstars.art` und der geteilten Vercel-Refe
 ## Lokal
 
 ```sh
-nvm use   # oder Node 24 (ab 24.15) im PATH
+nvm use   # Node 24.15+ für den Editor; Site-Prüfungen auch mit Node 22.12+
 npm ci
 npx astro dev
 npx astro check && npx astro build && npx playwright test

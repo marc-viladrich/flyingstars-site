@@ -7,7 +7,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {deliveryRedirects,htaccessText} from './lib/public-delivery.mjs';
 import {readEditorialRecords,seoFallbackReport} from './seo-fallback-report.mjs';
-import {localizedHref} from '../src/lib/localized-routes.mjs';
+import {localizedHref} from '../src/i18n/routing.mjs';
 
 assert.equal(Number(process.versions.node.split('.')[0]),24,'Use Node 24 in PATH');
 const root=fileURLToPath(new URL('../',import.meta.url));

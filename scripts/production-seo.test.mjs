@@ -1,43 +1,32 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFile,readdir} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {readFile} from 'node:fs/promises';
 import {robotsText} from '../src/lib/robots.mjs';
-import {getPath,seoFields,textFields,translatableFields} from '../src/lib/translatable-fields.mjs';
-import {localize,sha256} from '../src/lib/localize.mjs';
 import {createFlyingStarsAdapter} from '../editor/flyingstars-adapter.mjs';
-import {createTranslationCore} from 'astro-frontend-editor/runtime';
-import {describeSchema} from 'astro-frontend-editor/runtime/extensions';
-import {codecs} from 'astro-frontend-editor/runtime/extensions';
-const root=fileURLToPath(new URL('../',import.meta.url)), site=await createFlyingStarsAdapter(root);
+import {codecs,describeSchema} from 'astro-frontend-editor/runtime/extensions';
+const root=fileURLToPath(new URL('../',import.meta.url));
 
-test('robots follows the configured origin; editor/preview blocks all crawling',()=>{
-  for(const origin of ['https://flyingstars.art','https://preview.example.org/']) {
-    assert.equal(robotsText(origin),`User-agent: *\nAllow: /\nSitemap: ${new URL('/sitemap-index.xml',origin)}\n`);
-    assert.equal(robotsText(origin,true),'User-agent: *\nDisallow: /\n');
-  }
+test('robots uses the actual public origin and blocks private editor previews',()=>{
+ for(const origin of ['https://flyingstars.art','https://preview.example.org/']){
+  assert.equal(robotsText(origin),`User-agent: *\nAllow: /\nSitemap: ${new URL('/sitemap-index.xml',origin)}\n`);
+  assert.equal(robotsText(origin,true),'User-agent: *\nDisallow: /\n');
+ }
 });
-
-test('every SEO source field enters editor planning and public localization with identical paths',async()=>{
-  const {plan}=createTranslationCore(site);
-  for(const id of ['page/index','screen/drohnenshow-preise','project/puma-bundesliga','project/beispielprojekt','post/2026-10-06-beispielbeitrag','site/ui']) {
-    const source=site.sourceFor(id), data=source.schema.parse(codecs[source.format].parse(await readFile(path.join(root,source.file),'utf8')));
-    const record={id,data,revision:'fixture',fields:describeSchema(source.schema,data).fields};
-    const publicFields=translatableFields({...record,fields:textFields(source.schema,data)});
-    const planned=plan({records:[record],locale:'en',ids:[id],memory:{entries:{}}});
-    for(const fieldPath of Object.values(seoFields(record))) {
-      assert.ok(publicFields.some(f=>JSON.stringify(f.path)===JSON.stringify(fieldPath)),`${id}: public SEO field`);
-      assert.ok(planned.jobs.some(f=>JSON.stringify(f.path)===JSON.stringify(fieldPath)),`${id}: missing translation job`);
-      const original=getPath(data,fieldPath);
-      // Synthetic fixture only. No editorial translation is written or reviewed.
-      const translation={sourceId:id,locale:'en',values:[{path:fieldPath,text:'Synthetic SEO fixture',reviewed:false,sourceHash:sha256(original)}]};
-      assert.equal(getPath(localize(record,'en',{translation}).data,fieldPath),original);
-      assert.equal(getPath(localize(record,'en',{translation,editor:true}).data,fieldPath),'Synthetic SEO fixture');
-      translation.values[0].reviewed=true;
-      assert.equal(getPath(localize(record,'en',{translation}).data,fieldPath),'Synthetic SEO fixture');
-      translation.values[0].sourceHash=sha256('older source');
-      assert.equal(getPath(localize(record,'en',{translation}).data,fieldPath),original);
-    }
+test('every actual locale file exposes its SEO fields through the shared editor schema; source hashes are current',async()=>{
+ const site=await createFlyingStarsAdapter(root),files=await readdir(path.join(root,'src/content'),{recursive:true});
+ const sources=site.sourcesFromFiles(files.map(f=>'src/content/'+f));let localized=0,seo=0;
+ for(const source of sources){
+  const bytes=await readFile(path.join(root,source.file),'utf8'),data=source.schema.parse(codecs[source.format].parse(bytes));
+  const fields=describeSchema(source.schema,data).fields;
+  for(const field of ['title','description','summary','question'])if(typeof data[field]==='string'){seo++;assert.ok(fields.some(f=>f.path.length===1&&f.path[0]===field),source.id+': '+field);}
+  if(data.showcase?.meta)for(const field of ['title','description'])assert.ok(fields.some(f=>JSON.stringify(f.path)===JSON.stringify(['showcase','meta',field])));
+  if(/\/(en|nl)\//.test(source.id)){
+   localized++;const german=source.file.replace(/\/(en|nl)\//,'/'),hash=createHash('sha256').update(await readFile(path.join(root,german))).digest('hex');
+   assert.equal(data.translationSourceHash,hash,source.file);
   }
+ }
+ assert.equal(localized,sources.length*2/3);assert.ok(seo>100);
 });
