@@ -44,7 +44,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 88px; }
 body { margin: 0; background: var(--ground); color: var(--text); font: 400 16px/1.6 var(--body); font-feature-settings: 'zero'; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 img, video { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
-a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; border-radius: 6px; }
+a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: var(--focus-width, 2px) solid var(--cyan); outline-offset: var(--focus-offset, 3px); border-radius: 6px; }
 .skip { position: absolute; left: 16px; top: -60px; z-index: 100; background: var(--text); color: var(--ground); padding: 10px 16px; border-radius: 8px; }
 .skip:focus { top: 16px; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
@@ -241,23 +241,18 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
 .fields .full { grid-column: 1 / -1; }
 .field { display: grid; gap: 6px; }
 .field label { font-size: 13.5px; color: var(--muted); }
-.field input, .field select { width: 100%; height: 48px; padding: 0 14px; border-radius: 6px; border: 1px solid var(--line-strong); background: rgba(15, 13, 12, 0.6); color: var(--text); font: 400 15px/1.4 var(--body); }
-.field textarea { width: 100%; border-radius: 6px; border: 1px solid var(--line-strong); background: rgba(15, 13, 12, 0.6); color: var(--text); font: 400 15px/1.4 var(--body); }
-.field textarea { height: 110px; padding: 12px 14px; resize: vertical; }
-.field select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%); background-position: calc(100% - 20px) 21px, calc(100% - 15px) 21px; background-size: 5px 5px; background-repeat: no-repeat; }
-.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--text); outline: none; }
 .field .err { font-size: 13px; color: var(--bad); min-height: 0; }
 /* Auswahl-Pills (Formular, Referenzfilter): EIN Regelsatz für alle Zustände (Marc, 02.11.2026: gewählte Pill wurde beim
    Zeigen weiß auf weiß). Hover hebt nur ungewählte hervor; eine gewählte Pill bleibt beim Zeigen, wie sie ist.
    Pills mit --c (Paketfarbe) nehmen die Farbe für Rand, Hover und Auswahl. */
-.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: var(--chips-gap, 8px); }
 .chips label { position: relative; cursor: pointer; }
 .chips input { position: absolute; left: 0; top: 0; width: 1px; height: 1px; margin: 0; opacity: 0; pointer-events: none; } /* die Beschriftung nimmt den Klick */
-.chips span { display: inline-flex; gap: 8px; align-items: center; min-height: 38px; padding: 8px 15px; border-radius: 999px; border: 1px solid var(--line-strong); font-size: 15px; line-height: 1.2; color: var(--muted); transition: color 0.2s, background-color 0.2s, border-color 0.2s; }
+.chips span { display: inline-flex; gap: var(--chip-inner-gap, 8px); align-items: center; min-height: var(--chip-height, 38px); padding: var(--chip-padding, 8px 15px); border-radius: 999px; border: 1px solid var(--chip-border, var(--line-strong)); font-size: var(--chip-font-size, 15px); line-height: 1.2; color: var(--muted); transition: color 0.2s, background-color 0.2s, border-color 0.2s; }
 .chips label[style*="--c"] span { border-color: color-mix(in srgb, var(--c) 55%, transparent); }
 .chips label:hover input:not(:checked) + span { border-color: rgba(246, 241, 232, 0.55); color: var(--text); }
 .chips label[style*="--c"]:hover input:not(:checked) + span { border-color: var(--c); color: var(--c); }
-.chips input:checked + span { color: var(--ground); background: var(--text); border-color: var(--text); }
+.chips input:checked + span { color: var(--chip-selected-color, var(--ground)); background: var(--chip-selected-bg, var(--text)); border-color: var(--text); }
 .chips label[style*="--c"] input:checked + span { background: var(--c); border-color: var(--c); }
 .chips input:checked + span :is(small, b) { color: inherit; }
 .chips input:focus-visible + span { outline: 3px solid var(--cyan); outline-offset: 3px; }
@@ -749,10 +744,9 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
 .ask .field { display: grid; gap: 7px; min-width: 0; align-content: start; }
 .ask .lbl { font-size: 14px; color: var(--text); }
 .ask .lbl em { font-style: normal; color: var(--faint); margin-left: 4px; }
-.ask input[type=text], .ask input[type=email], .ask input[type=tel], .ask input[type=date], .ask select, .ask textarea { width: 100%; min-height: 48px; padding: 11px 14px; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 12px; color: var(--text); font: inherit; font-size: 16px; color-scheme: dark; }
+.ask input[type=text], .ask input[type=email], .ask input[type=tel], .ask input[type=date], .ask select, .ask textarea { width: 100%; height: var(--field-height, 48px); min-height: 48px; padding: 11px 14px; background-color: var(--surface); border: 1px solid var(--line-strong); border-radius: 12px; color: var(--text); font: inherit; font-size: 16px; color-scheme: dark; }
 .ask input:disabled { opacity: 0.5; }
-.ask select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%); background-position: calc(100% - 20px) 21px, calc(100% - 15px) 21px; background-size: 5px 5px; background-repeat: no-repeat; }
-.ask textarea { resize: vertical; }
+.ask textarea { --field-height: 110px; resize: vertical; }
 .ask input:focus-visible, .ask select:focus-visible, .ask textarea:focus-visible { outline: 2px solid var(--cyan); outline-offset: 1px; }
 .ask .hint { font-size: 13px; color: var(--faint); }
 .ask .hint.check { display: flex; gap: 8px; align-items: center; cursor: pointer; }
@@ -1152,3 +1146,9 @@ a.pack { grid-template-rows: auto auto 1fr; align-items: start; row-gap: 14px; }
   .c-hero > .c-title { grid-row: 3; padding-top: 24px; }
   .c-hero > .c-credits { grid-row: 4; }
 }
+
+/* Native Auswahl: derselbe Pfeil, dunkle Optionsliste und Fokusvertrag in Anfrage, Referenzfilter und Konfigurator.
+   Layout, Typografie und Größe gehören weiterhin zum jeweiligen Formular. Radio-/Checkbox-Geometrie bleibt nativ. */
+.native-select { appearance: none; -webkit-appearance: none; color-scheme: dark; cursor: pointer; background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%); background-position: calc(100% - 20px) 50%, calc(100% - 15px) 50%; background-size: 5px 5px; background-repeat: no-repeat; }
+.native-select option { background: var(--surface); color: var(--text); font-family: var(--body); }
+input:is([type="radio"], [type="checkbox"]) { accent-color: var(--orchid); }
