@@ -1,0 +1,41 @@
+{
+  "SPARK": {
+    "base": 100,
+    "max": 150,
+    "price": 7900,
+    "step": 10,
+    "add": 900,
+    "dur": "ca. 10 Min",
+    "color": [
+      255,
+      158,
+      41
+    ]
+  },
+  "HORIZON": {
+    "base": 200,
+    "max": null,
+    "price": 15900,
+    "step": 50,
+    "add": 4900,
+    "dur": "ca. 13 Min",
+    "color": [
+      219,
+      100,
+      232
+    ]
+  },
+  "ODYSSEY": {
+    "base": 300,
+    "max": null,
+    "price": 34900,
+    "step": 100,
+    "add": 9900,
+    "dur": "15+ Min",
+    "color": [
+      51,
+      237,
+      242
+    ]
+  }
+}

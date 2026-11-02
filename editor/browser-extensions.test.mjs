@@ -105,33 +105,12 @@ test('actual browser graphs link under editor- and adapter-served URLs and start
   await registration.evaluate();
   assert.equal(window.afeExtensions,registration.namespace.extensions);
   assert.deepEqual(Object.keys(window),['afeExtensions']);
-  assert.ok(window.afeExtensions.widgets['flyingstars/package-features']);
-  assert.ok(window.afeExtensions.codecs['flyingstars/inline']);
+  assert.ok(window.afeExtensions.widgets['flyingstars/image']);
+  assert.ok(window.afeExtensions.codecs['flyingstars/design-plain']);
  }
  `;
  execFileSync(process.execPath,['--experimental-vm-modules','--input-type=module'],{input:script,cwd:root,stdio:['pipe','pipe','pipe']});
 });
 
-test('registered browser queries and factories preserve matched lists, presets and one-step undo for canvas reorder',()=>{
- const draft=new NativeDraft();draft.reset([{id:'faq/a',data:{tags:['show'],order:10}},{id:'faq/b',data:{tags:['show'],order:10}},{id:'faq/c',data:{tags:['other'],order:30}}]);
- const query=extensions.require('sectionQuery',{type:'faq',tags:['show']});
- assert.deepEqual(query.list({records:draft.records(),section:{tags:['show']}}),['faq/a','faq/b']);assert.deepEqual(query.create({records:draft.records(),section:{tags:['show']}}),{tags:['show'],order:31});
- const canvas=extensions.require('orderedQuery',{ids:['faq/b','faq/a'],field:'order'});
- draft.group(()=>{for(const change of canvas.reorder({records:draft.records(),ids:['faq/b','faq/a']}))for(const patch of change.patches)draft.set(change.id,patch.path,patch.value);});
- assert.deepEqual(query.list({records:draft.records(),section:{tags:['show']}}),['faq/b','faq/a']);draft.undo();assert.equal(draft.size,0);
- assert.equal(extensions.first('sectionQuery',{type:'unrelated'}),undefined);
- assert.deepEqual(extensions.require('creationForm','client/').fields.map(f=>f.key),['quote','person','role']);
-});
-
-test('browser translation storage preserves review freshness, independent edits, overlays and undo through the real draft',()=>{
- const storage=extensions.require('translationStorage'),draft=new NativeDraft();draft.reset([{id:'page/test',revision:'saved',title:'Test',data:{heading:'Hallo',other:'Welt'}}]);
- const api={record:id=>draft.get(id),draft,recordTemplate:()=>null};
- storage.write({...api,owner:api.record('page/test'),path:['heading'],locale:'en',text:'Hello'});
- const id=storage.id('page/test','en');assert.equal(storage.value(api.record('page/test'),['heading'],'en',api.record).text,'Hello');
- assert.equal(storage.overlay(draft.records(),'en')[0].sourceId,'page/test');
- const suggestion={id,data:{sourceId:'page/test',locale:'en',sourceHash:'saved',values:[{path:['heading'],text:'Replace?',sourceHash:sha256('Hallo'),reviewed:false},{path:['other'],text:'World',sourceHash:sha256('Welt'),reviewed:false}]}};
- storage.merge([suggestion],null,api);assert.equal(storage.value(api.record('page/test'),['heading'],'en',api.record).text,'Hello');assert.equal(storage.pending(api.record('page/test'),api.record(id)).length,1);
- storage.accept(['page/test'],['en'],api);assert.equal(storage.pending(api.record('page/test'),api.record(id)).length,0);
- draft.set('page/test',['other'],'Geändert');assert.equal(storage.value(api.record('page/test'),['other'],'en',api.record),undefined);
- draft.undo();assert.equal(storage.value(api.record('page/test'),['other'],'en',api.record).text,'World');
-});
+test('locale synchronization and edits share one undo operation in the real draft',async()=>{const {synchronize}=await import('./design/locale-review.mjs');const draft=new NativeDraft();draft.reset([{id:'page/test',data:{sections:[{type:'hero',headline:'Hallo'},{type:'cta',headline:'Welt'}]}},{id:'page/en/test',data:{sections:[{type:'hero',headline:'Hello'},{type:'cta',headline:'World'}]}}]);const before=draft.get('page/test').data.sections;draft.group(()=>{const next=[before[1],before[0]];draft.set('page/test',['sections'],next);draft.set('page/en/test',['sections'],synchronize(before,next,draft.get('page/en/test').data.sections));});assert.equal(draft.get('page/en/test').data.sections[0].headline,'World');assert.equal(draft.history.length,1);draft.undo();assert.equal(draft.size,0);});
+ test('the active registration uses complete language files and no overlay transport',async()=>{assert.equal(extensions.first('translationStorage'),undefined);await extensions.runAsync('beforeSave',{draft:{local:new Map()}});assert.deepEqual(extensions.first('languages'),{source:'de',locales:{}});});

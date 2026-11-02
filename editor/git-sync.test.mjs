@@ -19,7 +19,7 @@ test('A slow remote push never holds the save lock; later content is pushed in t
   },'origin');
   t.after(()=>{finishPush();store.sync.close();});
   const pendingPush=store.sync.flush();await started;
-  const state=await store.state(),record=state.records.find(r=>r.id==='page/index');
+  const state=await store.state(),record=state.records.find(r=>r.id==='page/en/index');
   const saved=await store.save({expectedHead:state.head,requestId:randomUUID(),changes:[{id:record.id,expectedRevision:record.revision,patches:[{path:['title'],value:'Speichern während eines langsamen Pushs'}]}]});
   assert.notEqual(saved.head,state.head);
   finishPush();await pendingPush;assert.equal(store.sync.status.pending,true);
@@ -34,7 +34,7 @@ test('Push failure keeps a successful save; retry backs up that exact commit to 
     if(args[0]==='push'&&failing)throw Error('Simulierter Verbindungsabbruch');
     return git(dir,args,options);
   },'origin');t.after(()=>store.sync.close());
-  const state=await store.state(),record=state.records.find(r=>r.id==='page/index');
+  const state=await store.state(),record=state.records.find(r=>r.id==='page/en/index');
   const saved=await store.save({expectedHead:state.head,requestId:randomUUID(),changes:[{id:record.id,expectedRevision:record.revision,patches:[{path:['title'],value:'Auch ohne Remote gespeichert'}]}]});
   await store.sync.flush();assert.equal(store.sync.status.pending,true);assert.match(store.sync.status.lastError,/lokal gespeichert/);
   assert.equal(await store.head(),saved.head);

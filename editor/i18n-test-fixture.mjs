@@ -16,6 +16,13 @@ export async function i18nFixture(t,{sourceRoot=path.join(here,'..'),forCI=false
   config=config.replace(/vite:\s*\{/,"vite: {envDir:'/tmp/flyingstars-no-env',");
   if(!config.includes("envDir:'/tmp/flyingstars-no-env'"))throw Error('Die Fixture konnte das Laden von .env nicht abschalten.');
   await fs.writeFile(path.join(source,'astro.config.mjs'),config);
+  if(forCI){
+    const packageRoot=fileURLToPath(new URL('./',import.meta.resolve('astro-frontend-editor/package.json')));
+    const manifest=JSON.parse(await fs.readFile(path.join(source,'package.json'),'utf8'));manifest.dependencies['astro-frontend-editor']='file:'+packageRoot;
+    await fs.writeFile(path.join(source,'package.json'),JSON.stringify(manifest,null,2)+'\n');
+    const {execFile}=await import('node:child_process'),{promisify}=await import('node:util');
+    await promisify(execFile)('npm',['install','--package-lock-only','--ignore-scripts','--offline'],{cwd:source,env:{...process.env,PATH:path.dirname(process.execPath)+path.delimiter+process.env.PATH},maxBuffer:2000000});
+  }
   await git(source,['init','--quiet','--initial-branch=content/draft']);
   await git(source,['add','.']);
   await git(source,['rm','--cached','--ignore-unmatch','node_modules']);

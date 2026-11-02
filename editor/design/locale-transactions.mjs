@@ -49,7 +49,7 @@ export function localeTransactions(root,sourceFor) {
   },
   prepareTransaction({nextRecords,seen,changes}) {
    const proposals=[];
-   for(const id of seen){const source=sourceFor(id);if(!source||['media','site'].includes(source.prefix)||/\/(en|nl)\//.test(id))continue;
+   for(const id of seen){const source=sourceFor(id);if(!source||['media','site','package'].includes(source.prefix)||/\/(en|nl)\//.test(id))continue;
     const [kind,slug]=id.split('/'),targets=['en','nl'].map(locale=>`${kind}/${locale}/${slug}`);
     if(!targets.every(target=>seen.has(target)))throw failure(`Bitte beide Sprachfassungen gemeinsam prüfen und mitspeichern: ${targets.join(', ')}. Die Designsprache verwendet vollständige Sprachdateien, keine Übersetzungs-Overlays.`);
     const sourceHash=hash(candidateBytes(root,source,changes.find(change=>change.id===id)));

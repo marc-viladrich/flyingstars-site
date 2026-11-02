@@ -438,7 +438,7 @@ const editorialNodes=new Set();
 function editorialLists(schema) {
  if(!schema?._def||editorialNodes.has(schema))return;
  editorialNodes.add(schema);
- if(schema._def.type==='array')z.globalRegistry.add(schema,{...schema.meta(),'x-afe':{...schema.meta()?.['x-afe'],array:{insertable:true,removable:true,reorderable:true,...schema.meta()?.['x-afe']?.array}}});
+ if(schema._def.type==='array')z.globalRegistry.add(schema,{...schema.meta(),'x-afe':{...schema.meta()?.['x-afe'],array:{...(schema._def.element===sectionSchema?{role:'blocks',discriminator:'type'}:{}),insertable:true,removable:true,reorderable:true,...schema.meta()?.['x-afe']?.array}}});
  const def=schema._def;
  if(schema.shape)Object.values(schema.shape).forEach(editorialLists);
  if(schema.options)schema.options.forEach(editorialLists);

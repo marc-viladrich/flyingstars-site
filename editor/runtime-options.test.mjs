@@ -119,7 +119,7 @@ test('Real CLI from /tmp builds WORKTREE and serves authenticated /editor/ with 
  const login=await fetch(origin+'/editor/api/login',{method:'POST',headers:{origin,'content-type':'application/json'},body:JSON.stringify({username:'tester',password})});
  assert.equal(login.status,200);const cookie=login.headers.getSetCookie().find(value=>value.startsWith('fs_editor=')).split(';')[0];
  const page=await fetch(origin+'/editor/',{headers:{cookie}});assert.equal(page.status,200);assert.match(await page.text(),/editor\.js/);
- for(const route of ['/editor/site-lib/inline-text.mjs','/editor/site-lib/color-tokens.mjs','/editor/package-ids.mjs'])assert.equal((await fetch(origin+route,{headers:{cookie}})).status,200);
+ for(const route of ['/browser-site.mjs','/design/browser-site.mjs','/design/inline.mjs'])assert.equal((await fetch(origin+route,{headers:{cookie}})).status,200);
  const response=await fetch(origin+'/editor/api/state',{headers:{cookie}});assert.equal(response.status,200);assert.ok((await response.json()).records.length>0);
  assert.ok(JSON.parse(await fs.readFile(path.join(state,'runtime/active.json'),'utf8')).head);
  assert.ok(JSON.parse(await fs.readFile(path.join(state,'runtime-public/active.json'),'utf8')).head);
@@ -145,7 +145,7 @@ test('Composition from /tmp initializes both builds and authenticated editor han
   const login=await app.auth.action('login',{username:'tester',password:${JSON.stringify(password)}},{headers:{origin:app.origin},socket:{remoteAddress:'127.0.0.1'}});
   assert.equal(login.status,200);const headers={cookie:login.cookies.find(value=>value.startsWith('fs_editor=')).split(';')[0]};
   const page=await handlerRequest(app.editor,app.origin,'/editor/',headers);assert.equal(page.status,200);assert.match(page.body,/editor\\.js/);
-  for(const route of ['/editor/api/state','/editor/site-lib/inline-text.mjs','/editor/site-lib/color-tokens.mjs','/editor/package-ids.mjs'])assert.equal((await handlerRequest(app.editor,app.origin,route,headers)).status,200);
+  for(const route of ['/editor/api/state','/browser-site.mjs','/design/browser-site.mjs','/design/inline.mjs'])assert.equal((await handlerRequest(app.editor,app.origin,route,headers)).status,200);
   assert.ok(app.builder.current.head);assert.ok(app.publisher.builder.current.head);
   console.log('Authenticated /editor/ and source services from '+process.cwd()+'; both builds active.');
  } finally {app.store.sync.close();app.editor.close();app.publicServer.close();}
