@@ -39,9 +39,10 @@ try{for(const [engine,type]of [['chromium',chromium],['webkit',webkit]]){
   const marker=JSON.parse(await image.getAttribute('data-afe'));expect(marker.kind).toBe('media');
   await image.click();await frame.getByRole('button',{name:'Optionen (⇧F10 oder Rechtsklick)',exact:true}).click();await page.getByRole('button',{name:'Bild ersetzen',exact:true}).click();console.log(engine,'media picker open');
   const sharp=(await import('sharp')).default,buffer=await sharp({create:{width:32,height:18,channels:3,background:engine==='chromium'?'#3344aa':'#aa4433'}}).png().toBuffer();
+  const previousAssets=new Set((await app.store.state()).records.filter(r=>r.type==='media').map(r=>r.id));
   const uploadResponse=page.waitForResponse(r=>r.url().endsWith('/editor/api/media')&&r.request().method()==='POST',{timeout:120000});
   await page.getByLabel('Bild hochladen',{exact:true}).setInputFiles({name:engine+'-proof.png',mimeType:'image/png',buffer});
-  const upload=await uploadResponse;console.log(engine,'upload received',upload.status());expect(upload.status()).toBe(200);const uploaded=await upload.json();
+  const upload=await uploadResponse;console.log(engine,'upload received',upload.status());expect(upload.status()).toBe(200);const uploadedState=await app.store.state(),newAsset=uploadedState.records.find(r=>r.type==='media'&&!previousAssets.has(r.id));expect(newAsset).toBeTruthy();const uploaded={assetId:newAsset.id,state:uploadedState};
   await page.locator('[data-asset="'+uploaded.assetId+'"]').click();await expect(page.getByLabel('Bild hochladen',{exact:true})).toHaveCount(0);
   await page.getByRole('button',{name:/Änderung speichern/}).click();const mediaSaveResponse=page.waitForResponse(r=>r.url().endsWith('/editor/api/save')&&r.request().method()==='POST',{timeout:120000});await page.getByRole('dialog').getByRole('button',{name:'Geprüft speichern',exact:true}).click();const mediaSavedResponse=await mediaSaveResponse;expect(mediaSavedResponse.status()).toBe(200);const mediaSaved=await app.store.state();
   await expect.poll(async()=>{const source=codecs.yaml.parse(await readFile(file));return source.sections[0].headline;},{timeout:120000}).toBe(value);
