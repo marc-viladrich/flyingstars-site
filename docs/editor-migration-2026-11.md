@@ -117,13 +117,15 @@ Die dauerhaften Site-Änderungen betreffen Adapter, Launcher, Editorerweiterunge
 | Prüfung | Ergebnis |
 | --- | --- |
 | Editorsuite vorher | 250/334 bestanden, 84 Fehler, 0 Skips |
-| Editorsuite nachher | **401/401 bestanden, 0 Fehler, 0 Skips** |
+| Editorsuite nachher | **402/402 bestanden, 0 Fehler, 0 Skips** |
 | Site-Node-Gates, alle drei angeforderten Globs | **104/104 bestanden** |
 | `npx astro check`, Node 22 | **0 Fehler, 0 Warnungen**; bestehende Hinweise bleiben |
 | `npm run build`, Node 22 | **65 Seiten**, erfolgreich |
 | Acht angeforderte Playwright-Specs, `--workers=3` | **925 bestanden, 7 vorhandene Skips**, alle vier konfigurierten Browser-/Geräteprojekte |
 | Private Produktsuite | 270 bestanden, 21 oben beschriebene externe Lab-Prüfungen ausgelassen |
 | Zusätzliche aktuelle Produktprüfungen für Instrumentierung, Schema, Registry, Speicher, Vorschau und Paket | **59/59 bestanden** |
+| Zusätzliche Vorschau-/Speicherprüfungen nach Korrektur des schnellen Speicherns | **25/25 bestanden** |
+| NativeStore-/Listen-/Hash-Integration mit kanonischer Kandidatenrevision | **20/20 bestanden** |
 | Produktiver Upload-Renderer mit echten normalisierten PNG-Bytes und erneutem Upload | **1/1 bestanden** |
 | Visitor-Check und -Build mit installiertem veröffentlichtem AFE 0.2.4 statt lokalem Link | **0 Typfehler, 65 Seiten gebaut** |
 
@@ -142,3 +144,5 @@ Die längere Datei-Zeitgrenze erlaubt der Pipeline ihren vollständigen verschac
 Die lokale Evidenz liegt unter `/tmp/fs-editor-final-evidence/`: vollständige Testlogs, `browser-report.json` und geprüfte Screenshots beider Browser. Die Browserläufe bestätigten ohne JavaScript-Seitenfehler die Anmeldung mit `HttpOnly`/`SameSite=Strict`-Cookie, Tastatureingabe, DE-/EN-/NL-Rücklesen, Quellhash und Provenienz sowie PNG-Upload, Mediatheksauswahl, gespeicherte Bildadresse und den Build des zugehörigen Speichercommits. Die zusätzliche Vorschauprüfung kontrolliert die tatsächliche `src` im offenen Canvas und den Menüwechsel DE → EN → NL → DE. `secure:false` gehört hier zum ausdrücklich lokalen HTTP-Test; produktives HTTPS wurde nicht geprüft. Testinhalte und Konten liegen ausschließlich in den erzeugten temporären Fixtures.
 
 Der Sprachadapter verwendet für den Quellhash die vom NativeStore gelieferte Revision des bereits codierten Kandidaten. Er enthält keine zweite Serialisierung des Speicherauftrags. Ein zusätzlicher Guard prüft ausdrücklich diese Abhängigkeit; die Integration liest weiterhin die tatsächlich gespeicherten Bytes zurück.
+
+Vor dem Merge nach `main` müssen das private Produktrelease 0.3.0 und die Site-Abhängigkeit einschließlich Lockfile aufeinander abgestimmt sein. Das noch eingetragene veröffentlichte 0.2.4 enthält die neuen Editor-Hooks nicht; der verlinkte lokale Produktstand ist die Voraussetzung der erfolgreichen Editorsuite.
