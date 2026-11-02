@@ -54,3 +54,21 @@ test('Alle aktiven Reels verwenden den gemeinsamen Video-Controller', () => {
     const source = read(file); assert.match(source, /createVideoController/); assert.doesNotMatch(source, /\.play\(|new IntersectionObserver|new MutationObserver/);
   }
 });
+
+test('Globales CSS hat keine mehrfachen Eigenschaftsbesitzer im selben Kontext', async () => {
+  const { default: postcss } = await import('postcss');
+  const seen = new Map(), duplicates = [];
+  postcss.parse(read('src/styles/global.css')).walkRules(rule => {
+    const parents=[];for(let n=rule.parent;n.type!=='root';n=n.parent)parents.unshift(`@${n.name} ${n.params.replace(/\s+/g,'')}`);
+    const local = new Set();
+    for (const declaration of rule.nodes.filter(n=>n.type==='decl')) {
+      for(const selector of postcss.list.comma(rule.selector)) {
+        const key = parents.join('|')+'|'+selector+'|'+declaration.prop;
+        if(seen.has(key)&&!local.has(key))duplicates.push(key);
+        seen.set(key,declaration);local.add(key);
+      }
+    }
+  });
+  assert.deepEqual(duplicates, []);
+  assert.doesNotMatch(read('src/styles/global.css'), /\.(?:inclusive|tier-facts|tl-item|faq-closing|ref-filter|ref-count|lang)\b/);
+});

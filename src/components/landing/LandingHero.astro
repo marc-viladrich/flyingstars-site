@@ -88,8 +88,7 @@ const src = videoPath(videos[video], 'preview');
   .lh-rec { position: absolute; z-index: 2; left: calc(var(--c-in) + 14px); top: calc(var(--c-in) + var(--c-arm)); transform: translateY(-50%); line-height: 1; display: inline-flex; align-items: center; gap: 8px; color: var(--text); }
   .lh-rec::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--faint); transition: background 0.3s, box-shadow 0.3s; }
   .lh-media.is-on .lh-rec::before { background: #ff6f61; box-shadow: 0 0 10px #ff6f61; }
-  .lh-corners i { position: absolute; z-index: 2; width: 18px; height: 18px; border: 0 solid rgba(246, 241, 232, 0.55); }
-  .lh-corners i { width: var(--c-arm); height: var(--c-arm); }
+  .lh-corners i { position: absolute; z-index: 2; width: var(--c-arm); height: var(--c-arm); border: 0 solid rgba(246, 241, 232, 0.55); }
   .lh-corners i:nth-child(1) { left: var(--c-in); top: var(--c-in); border-width: 1px 0 0 1px; }
   .lh-corners i:nth-child(2) { right: var(--c-in); top: var(--c-in); border-width: 1px 1px 0 0; }
   .lh-corners i:nth-child(3) { left: var(--c-in); bottom: var(--c-in); border-width: 0 0 1px 1px; }
