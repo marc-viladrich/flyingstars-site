@@ -1,6 +1,7 @@
 ---
 // Einzige Zuordnung Section-Typ → Komponente. Neue Typen: Schema in content.config.ts,
 // Komponente in sections/, eine Zeile hier. Mehr nicht.
+import {blocks} from 'astro-frontend-editor/markers';
 import type { Section } from '../content.config';
 import Hero from './sections/Hero.astro';
 import FlightHero from './sections/FlightHero.astro';
@@ -33,4 +34,6 @@ const annotate = import.meta.env.DEV || import.meta.env.PUBLIC_ANNOTATE === '1';
 const { sections } = Astro.props;
 const map = { showreelHero: FlightHero, occasions: Occasions, metrics: Metrics, sustainability: Sustainability, hero: Hero, textMedia: TextMedia, faq: Faq, cta: Cta, postList: PostList, projectGrid: ProjectGrid, contactForm: ContactForm, pricing: Pricing, steps: Steps, comparison: Comparison, team: Team, logoBar: LogoBar, timeline: Timeline, packages: Packages, references: References, tempo: Tempo, configuratorTeaser: ConfiguratorTeaserSection, landingHero: LandingHero, landingStories: LandingStories, landingRefs: LandingRefs, landingTeaser: LandingTeaser, landingPrice: LandingPrice, landingSite: LandingSite, landingFlow: LandingFlow, landingBento: LandingBento, landingSpotlight: LandingSpotlight, landingCta: LandingCta } as const;
 ---
+<div style="display:contents" {...((Astro.props as any).__afe?.sections ? blocks((Astro.props as any).__afe?.sections) : {})}>
 {sections.map((s, i) => { const C = map[s.type]; return <>{annotate && s.todo && <aside class="todo-note" role="note"><Icon name="pencil-line" size={18} class="g" /><span><b>Fehlt noch</b> {s.todo}</span></aside>}<C {...(s as any)} index={i} /></>; })}
+</div>

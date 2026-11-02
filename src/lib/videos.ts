@@ -26,5 +26,5 @@ export function videoPath(src: string, variant: 'full' | 'preview' = 'full') {
   if (variant === 'preview') return videoPreviews[key];
   // Originale bleiben extern. Im Dev-Server gibt es die Pages Function nicht; Build und Produktion nutzen
   // denselben festen Proxy wie bisher. Keine erfundenen WebM-Aliase auf eine MP4-Quelle.
-  return import.meta.env?.DEV ? videos[key] : `/api/media?asset=${key}`;
+  return import.meta.env?.DEV || (import.meta.env?.SSR && process.env.AFE_MODE==='editor') ? videos[key] : `/api/media?asset=${key}`;
 }

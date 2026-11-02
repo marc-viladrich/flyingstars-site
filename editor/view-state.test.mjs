@@ -1,11 +1,12 @@
 import './test/register-browser-site.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';import {normalizedRoute,navigationChoices,savedRecordRoute,publishNeedsActivation,mediaSourceChanged,fieldsInScope} from 'astro-frontend-editor/web/view-state.mjs';
-test('route reconciliation follows record identity, removes deleted/old routes and matches slashless links',()=>{const records=[{id:'page/index',route:'/',title:'Start'},{id:'project/one',route:'/new-project/',title:'Project'}];assert.equal(normalizedRoute('/new-project'),'/new-project/');assert.equal(normalizedRoute('/new-project/?q=1#title'),'/new-project/');assert.equal(savedRecordRoute(records,'project/one'),'/new-project/');assert.equal(savedRecordRoute(records,'page/deleted'),'/');assert.ok(!navigationChoices(records).some(option=>option.value==='/old-project/'));assert.ok(navigationChoices(records).some(option=>option.value==='/show-konfigurator/'));});
+test('route reconciliation follows record identity, removes deleted/old routes and matches slashless links',()=>{const records=[{id:'page/index',route:'/',title:'Start'},{id:'project/one',route:'/new-project/',title:'Project'}];assert.equal(normalizedRoute('/new-project'),'/new-project/');assert.equal(normalizedRoute('/new-project/?q=1#title'),'/new-project/');assert.equal(savedRecordRoute(records,'project/one'),'/new-project/');assert.equal(savedRecordRoute(records,'page/deleted'),'/');assert.ok(!navigationChoices(records).some(option=>option.value==='/old-project/'));assert.ok(navigationChoices(records).some(option=>option.value==='/new-project/'));});
 test('an already committed publication still offers recovery when static activation failed',()=>{assert.equal(publishNeedsActivation({publishedHead:'new',activePublishedHead:'old',changed:[]}),true);assert.equal(publishNeedsActivation({publishedHead:'new',activePublishedHead:'new',changed:[]}),false);});
 test('alt text-only changes preserve native optimized image sources and source replacement is explicit',()=>{assert.equal(mediaSourceChanged('photo.webp','photo.webp'),false);assert.equal(mediaSourceChanged('photo.webp','replacement.webp'),true);});
 test('media object scope includes per-use alt override and decorative flag without neighboring section fields',()=>{const fields=[{path:['sections',0,'image','altOverride'],kind:'text'},{path:['sections',0,'image','decorative'],kind:'boolean'},{path:['sections',0,'headline'],kind:'text'}];assert.deepEqual(fieldsInScope(fields,['sections',0,'image'],'media').map(f=>f.path.at(-1)),['altOverride','decorative']);});
 import {sourceMediaSources} from 'astro-frontend-editor/web/view-state.mjs';
-test('source media identity comes from saved records and global assets rather than staged or optimized HTML URLs',()=>{const records=[{id:'media/a',data:{src:'/assets/source.webp',width:100,height:80}},{id:'page/index',containers:[{path:['sections',0,'image'],format:'image'}],data:{sections:[{image:{src:'cached-original.jpg',assetId:'media/a'}}],formation:{src:'formation.json',width:100,height:80}}}];assert.equal(sourceMediaSources(records)['page/index/["sections",0,"image"]'],'/assets/source.webp');});
+test('source media identity is the actual saved inline image source, never a shadow asset cache',()=>{const records=[{id:'page/index',containers:[{path:['image'],format:'image'}],data:{image:{src:'https://flyingstars.art/photo.jpg',alt:'Bild',width:100,height:50}}}];assert.equal(sourceMediaSources(records)['page/index/["image"]'],'https://flyingstars.art/photo.jpg');});
+
 import {floatingInspectorAllowed,richFormattingAllowed} from 'astro-frontend-editor/web/view-state.mjs';
 test('rich text owns its floating actions; inspector cannot cover its formatting buttons',()=>{assert.equal(floatingInspectorAllowed({rich:true}),false);assert.equal(floatingInspectorAllowed({rich:false}),true);assert.equal(floatingInspectorAllowed({rich:false},{busy:true}),false);});
 test('formatting is permitted only in an editable German draft, never while saving or previewing',()=>{assert.equal(richFormattingAllowed({}),true);for(const state of [{busy:true},{preview:true},{locale:'en'},{locale:'nl'}])assert.equal(richFormattingAllowed(state),false);});
@@ -17,32 +18,8 @@ import {restoredInspector} from 'astro-frontend-editor/web/view-state.mjs';
 test('Undo keeps an inspector only when its original source is still valid; structural index selections close',()=>{const inspector={context:{id:'page/index',path:['sections',3,'showImages']},scope:'context'},records=[{id:'page/index'}];assert.equal(restoredInspector(inspector,records,{kind:'set',path:['sections',3,'showImages']}),inspector);assert.equal(restoredInspector(inspector,records,{kind:'set',path:['sections']}),null);assert.equal(restoredInspector(inspector,[],{kind:'create'}),null);assert.equal(restoredInspector({scope:'library'},records,{kind:'set',path:['title']}),null);});
 import {mediaRecordFor,linkedRecordFor,itemSummary,imageSummary,scopeUnits,partitionUnits,covers} from 'astro-frontend-editor/web/view-state.mjs';
 const mediaRecords=[{id:'media/image-a',title:'Berlin Game',data:{title:'Berlin Game 2025',src:'/m/02.jpg',defaultAlt:'Stadion bei Nacht'}},{id:'package/horizon',title:'HORIZON',data:{displayName:'HORIZON'}}];
-test('media usages resolve their library record by full id first, then by bare id',()=>{assert.equal(mediaRecordFor(mediaRecords,'media/image-a').id,'media/image-a');assert.equal(mediaRecordFor(mediaRecords,'image-a').id,'media/image-a');assert.equal(mediaRecordFor(mediaRecords,'image-x'),null);assert.equal(mediaRecordFor(mediaRecords,undefined),null);});
-const referenceDescriptor=(key,collection)=>({itemLabel:[key],element:{kind:'object',properties:{[key]:{kind:'text','x-afe':{reference:{collection,encoding:'id'}}}}}});
-test('explicit references resolve legacy full and bare IDs; names never infer a collection',()=>{
- assert.equal(linkedRecordFor(mediaRecords,{packageId:'horizon'},referenceDescriptor('packageId','packages')).id,'package/horizon');
- for(const id of ['media/image-a','image-a'])assert.equal(linkedRecordFor(mediaRecords,{assetId:id},referenceDescriptor('assetId','media')).id,'media/image-a');
- assert.equal(linkedRecordFor(mediaRecords,{packageId:'horizon'}),null);
- assert.equal(linkedRecordFor(mediaRecords,{unrelated:'horizon'},referenceDescriptor('unrelated','packages')).id,'package/horizon');
-});
-test('image items are named caption → effective alt → library title → file name → Eintrag N, with a thumbnail',()=>{
- const name=(entry,i=0)=>itemSummary(entry,i,{records:mediaRecords,image:true});
- assert.deepEqual(name({src:'/old.jpg',caption:'Berlin Game',alt:'x',assetId:'media/image-a'}),{label:'Berlin Game',thumb:'/m/02.jpg'});
- assert.equal(name({src:'/a.jpg',caption:' ',altOverride:'Hier anders',alt:'Eigener Alt',assetId:'image-a'}).label,'Hier anders');
- assert.equal(name({src:'/a.jpg',altOverride:null,alt:'Eigener Alt'}).label,'Eigener Alt');
- assert.equal(name({src:'/a.jpg',assetId:'media/image-a'}).label,'Stadion bei Nacht');
- assert.equal(itemSummary({src:'/a.jpg',assetId:'image-b'},0,{records:[{id:'media/image-b',data:{title:'Nur Titel',src:'/b.jpg'}}],image:true}).label,'Nur Titel');
- assert.deepEqual(name({src:'https://cdn.example/media/projekte/nfl/03%20final.jpg'},2),{label:'03 final.jpg',thumb:'https://cdn.example/media/projekte/nfl/03%20final.jpg'});
- assert.deepEqual(name({},4),{label:'Eintrag 5',thumb:null});
-});
-test('other entries keep their linked record or own name; image-bearing entries fall back to their image',()=>{
- const opts={records:mediaRecords,recordName:r=>r.data.displayName};
- assert.equal(itemSummary({packageId:'horizon',showOrb:true},1,{...opts,...referenceDescriptor('packageId','packages')}).label,'HORIZON');
- assert.equal(itemSummary({title:'Ablauf',text:'x'},0,{...opts,itemLabel:['title']}).label,'Ablauf');
- assert.deepEqual(itemSummary({text:'ohne Namen'},0,{...opts,imageChild:{src:'/p.jpg',caption:'Porträt'}}),{label:'Porträt',thumb:'/p.jpg'});
- assert.deepEqual(itemSummary({name:'Jana'},0,{...opts,itemLabel:['name'],imageChild:{src:'/p.jpg'}}),{label:'Jana',thumb:'/p.jpg'});
- assert.equal(itemSummary('Fakt',3).label,'Fakt');assert.equal(itemSummary('',3).label,'Eintrag 4');assert.equal(itemSummary({},0).label,'Eintrag 1');
-});
+test('library metadata lookup uses its canonical record id and leaves inline content ownership alone',()=>{assert.equal(mediaRecordFor(mediaRecords,'media/image-a').id,'media/image-a');assert.equal(mediaRecordFor(mediaRecords,'image-a'),null);assert.equal(mediaRecordFor(mediaRecords,'missing'),null);});
+test('image item naming follows the actual inline caption, alt text and source filename',()=>{assert.deepEqual(itemSummary({src:'/photo.jpg',caption:'Caption',alt:'Alt'},0,{image:true}),{label:'Caption',thumb:'/photo.jpg'});assert.deepEqual(itemSummary({src:'/photo.jpg',alt:'Alt'},0,{image:true}),{label:'Alt',thumb:'/photo.jpg'});assert.equal(itemSummary({src:'/photo.jpg'},0,{image:true}).label,'photo.jpg');});
 // A pricing card: page/index tiers[1] renders package/horizon.
 const page='page/index',tier=['sections',4,'tiers',1],pkg='package/horizon';
 const tierData={sections:{4:{tiers:{1:{packageId:'horizon',showOrb:true,featureIds:[],cta:{label:'Paket ansehen',href:'/preise/'}}}}}};

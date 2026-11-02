@@ -1,0 +1,8 @@
+# Mehrsprachige, verschachtelte YAML-Fixture
+- id: anna
+  name: Anna
+  role: Physiotherapeutin
+  languages: [de, en]
+  note: |-
+    Erste Zeile
+    Zweite Zeile

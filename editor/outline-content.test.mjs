@@ -1,41 +1,7 @@
-import {resolvePath} from 'astro-frontend-editor/content';
+import './test/register-browser-site.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import fs from 'node:fs/promises';
-import {codecs} from 'astro-frontend-editor/runtime/extensions';
-import {sha256,localize} from '../src/lib/localize.mjs';
-import {inlineHtml} from '../src/lib/inline-text.mjs';
-
-test('outlined project titles and sustainability heading retain fresh EN/NL marks without promoting review',async()=>{
-  const root=new URL('../src/content/',import.meta.url);
-  const sources=[];
-  for(const file of await fs.readdir(new URL('projects/',root))) {
-    if(!file.endsWith('.md'))continue;
-    const data=codecs.markdown.parse(await fs.readFile(new URL('projects/'+file,root)));
-    if(data.showcase)sources.push({id:'project/'+file.slice(0,-3),data,path:['showcase','titleLines',1]});
-  }
-  const data=codecs.yaml.parse(await fs.readFile(new URL('pages/index.yaml',root)));
-  sources.push({id:'page/index',data,path:['sections',data.sections.findIndex(s=>s.type==='sustainability'),'lines',1]});
-  assert.equal(sources.length,5);
-  for(const {id,data,path}of sources){
-    const source=path.reduce((v,k)=>v[k],data);
-    const caps=id.startsWith('project/');
-    assert.match(inlineHtml(source),caps?/^<span class="t-caps"><span class="t-outline">[^]*<\/span><\/span>$/:/^<span class="t-outline">[^]*<\/span>$/);
-    for(const locale of ['en','nl']){
-      const translation=JSON.parse(await fs.readFile(new URL('translations/'+id+'/'+locale+'.json',root)));
-      const entry=translation.values.find(value=>JSON.stringify(resolvePath(data,value.path))===JSON.stringify(path));
-      assert.ok(entry,id+' '+locale);
-      assert.equal(entry.sourceHash,sha256(source));
-      assert.match(entry.text,caps?/^\{c\}\{o\}[^]*\{\/o\}\{\/c\}$/:/^\{o\}[^]*\{\/o\}$/);
-      const record={id,data,fields:[{path,kind:'text', 'x-afe': {translatable:true},format:'inline'}]};
-      const edited=localize(record,locale,{editor:true,translation});
-      assert.equal(path.reduce((v,k)=>v[k],edited.data),entry.text);
-      if(!entry.reviewed){
-        const published=localize(record,locale,{translation});
-        assert.equal(path.reduce((v,k)=>v[k],published.data),source);
-      }
-    }
-  }
-  // The fact's separate value-and-unit presentation is intentionally not migrated.
-  assert.ok(data.sections.find(s=>s.type==='sustainability').facts.some(f=>f.tone==='o'));
-});
+import {site,records,pages,record,root} from './test/design-data.mjs';
+import {inlineHtml,inlinePlain} from './design/inline.mjs';
+test('Current accent strings render the supported gradient spans in every actual language file',()=>{let count=0;for(const r of pages)for(const f of r.fields.filter(f=>typeof f.value==='string'&&f.path.at(-1)==='headline')){const html=inlineHtml(f.value);if(/\*[^*]+\*/.test(f.value)){count++;assert.match(html,/class="grad"/);}assert.equal(inlinePlain(f.value),f.value.replace(/\*([^*]+)\*/g,'$1'));}assert.ok(count>10);});
+test('The active codec does not reinterpret historical contour and capitals delimiters',()=>{assert.equal(inlineHtml('{o}Alt{/o}'),'{o}Alt{/o}');assert.equal(inlinePlain('{c}ALT{/c}'),'{c}ALT{/c}');});

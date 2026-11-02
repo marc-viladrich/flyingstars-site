@@ -1,21 +1,35 @@
-# Editor nach der Designzusammenführung
+# Editor auf dem aktuellen Dateimodell
 
-Der Designstand verwendet vollständige Sprachdateien und eingebettete Section-Daten. Das bisherige AFE-Modell mit eigenständigen Paket-, Team-, Kunden-, Medien-, UI- und Übersetzungs-Records würde Änderungen an inzwischen ungenutzten Daten anbieten. Diese Datensätze werden deshalb im aktiven Adapter nicht mehr registriert. Ihre bisherigen Erweiterungen und Tests bleiben als Migrationsmaterial erhalten.
+Arbeitsstand auf `codex/editor-migration`. Die Integration benötigt die noch unveröffentlichte Produkt-Erweiterung auf `codex/design-file-editor` im privaten AFE-Repo. Für eine veröffentlichte Installation ist ein AFE-Release 0.3.0 vorgesehen. Die Site bindet weiterhin 0.2.4; weder ein `file:`-Verweis noch Produktquellen oder ein Tarball gehören in diesen öffentlichen Branch.
 
-`editor/flyingstars-adapter.mjs` importiert die tatsächlichen vier Collection-Schemas und die Section-Union aus `src/schemas/content-schema.mjs`. Es gibt keine zweite Section-/Feldliste. `project-showcase.mjs` ist ebenfalls die gemeinsame Quelle für Astro und Editor.
+Der Adapter liest vollständige DE-/EN-/NL-Dateien der vier Astro-Collections. Section-Katalog, verschachtelte Felder und Listenaktionen stammen aus den gemeinsamen Zod-Definitionen. Die Renderintegration verfolgt CollectionEntry-Eigentümer durch tatsächliche Astro-Props und Array-Indizes. Unaufgelöste Ausdrücke erhalten keine erratene Bindung. `Accent`, Markdown und Bilder deklarieren ihre Renderform direkt am Renderer.
 
-Der reguläre Start verweigert den Betrieb mit einer deutschen Fehlermeldung. Ein ausdrücklich eingeschränkter Testbetrieb ist mit `AFE_DESIGN_EDITOR=source npm run editor` möglich, Node 24.15+ erforderlich. Er zeigt bestehende DE-, EN- und NL-Dateien als getrennte Records und ihre Schemafelder. Er unterstützt Feldänderungen und Markdown. Neue Records, Löschen und strukturelles Einfügen/Umsortieren sind nicht freigegeben.
+`src/content/show-packages.json` enthält die bisherigen Paketfakten. Die bestehenden Preisformeln bleiben in `show-packages.ts`; `null` bedeutet dort unbegrenzte Obergrenze. `src/content/navigation.json` besitzt Links und Menüstruktur. Beschriftungen verweisen auf das vorhandene Wörterbuch oder enthalten feste Namen. Beide Dateien werden beim Astro-Start durch ihre gemeinsamen Zod-Schemas validiert. Das Wörterbuch bleibt `src/i18n/ui.json`.
 
-Eine DE-Änderung muss zusammen mit den beiden geprüften EN-/NL-Records gespeichert werden. Andernfalls antwortet die Schreibgrenze mit HTTP 409 und benennt die fehlenden Records. Der Adapter berechnet die beiden `translationSourceHash`-Werte aus den tatsächlichen deutschen Codec-Ausgabebytes. Der Hash ist kein frei editierbares Feld. Der bestehende Build prüft die Sprachdateien erneut. Änderungen an EN/NL allein bleiben möglich.
+Eine deutsche Speicherung öffnet die gemeinsame EN-/NL-Prüfung. Verschobene Einträge behalten ihre bisherigen Übersetzungen, neue Einträge müssen geprüft werden. Erst die bestätigte Transaktion schreibt Sprachdateien, die aus den tatsächlichen deutschen Codec-Ausgabebytes berechneten Quellhashes und den Herkunftsnachweis gemeinsam in Git. Eine alleinige DE-API-Speicherung bleibt gesperrt. EN-/NL-Korrekturen allein verändern die deutschen Bytes nicht. Private ungespeicherte Vorschauen erneuern Hashes nur in ihrer Wegwerf-Arbeitskopie.
 
-Noch nicht migriert und im aktiven Adapter nicht angeboten:
+Die Mediathek leitet vorhandene Bilder aus ihren tatsächlichen Verwendungen ab. Uploads durchlaufen die bestehende Rasterbildprüfung und Metadatenbereinigung und erhalten eine Datei unter `public/assets/<sha256>.<ext>` sowie Katalogmetadaten unter `src/content/editor-media/`. Inhaltsfelder speichern weiterhin ihr eigenes Bildobjekt mit Alternativtext und bestätigten Maßen, ohne `assetId`-Cache.
 
-- Inline-/Canvas-Bearbeitung und Vorschau-DOM-Marker des neuen Designs.
-- Mediathek-Uploads und die bisherigen verknüpften Medienrecords. Bild-URLs und Alt-Texte sind gewöhnliche Schemafelder.
-- Automatische Übersetzung, Overlay-Review und Übersetzungsspeicher. Die bestehenden EN-/NL-Dateien sind die gültigen Übersetzungen.
-- Redaktionelle Bearbeitung der TS-/JS-Paketdaten, UI-Wörterbücher und Navigation.
-- Anlage/Löschung von Sprachtripeln, Strukturänderungen und automatische Übertragung von DE-Strukturänderungen.
+Die frühere `translate-missing`-CLI schreibt keine Overlay-Dateien mehr. `--dry-run` prüft fehlende oder veraltete vollständige Sprachdateien. Automatische Übersetzungsvorschläge aus dem alten Overlay-Workflow sind kein bestätigter Funktionsumfang dieses Migrationsstands.
 
-Die bisherigen Integrationstests prüfen teilweise entfernte Datensätze und Imports. Sie bleiben ausführbar und werden nicht übersprungen, um eine grüne CI vorzutäuschen. Der neue Test `editor/design-schema.test.mjs` prüft das aktuelle Modell einschließlich realer Git-Speichertransaktionen. Solange die alte Suite und der vollständige Editorpfad nicht migriert sind, ist dieser Branch nicht zur Produktionsfreigabe empfohlen. Ergebnisse stehen im Mergebericht.
+## Lokaler Entwicklungsbetrieb
 
-Die CI und Deploy-Workflows von main bleiben erhalten. `npm run ci` darf bei Editorfehlern weiterhin fehlschlagen. Ein Push nach main würde unabhängig davon den Cloudflare-Deploy starten. Deshalb den Branch erst nach Behebung der offenen Editor-/CI-Punkte freigeben.
+Nur ausdrücklich gesetzten Test-State verwenden. Mit Node 24.15 oder neuer im PATH:
+
+```sh
+# Im privaten Produkt-Worktree
+npm link
+# Im Site-Worktree, Manifest und Lockfile bleiben unverändert
+npm link astro-frontend-editor --no-save --package-lock=false
+AFE_STATE_DIR=/tmp/flyingstars-editor-test AFE_GIT_REMOTE=off npm run editor
+```
+
+Konten im angegebenen Test-State über `node editor/manage-accounts.mjs --state-dir /tmp/flyingstars-editor-test ...` verwalten. `AFE_AUTH=off` ist ausschließlich für isolierte lokale Funktionsprüfungen vorgesehen. Ein Test sollte eine Wegwerf-Kopie der Site verwenden, weil Speichern echte Inhaltscommits erzeugt.
+
+Prüfbefehl ohne Übersetzungsdienst oder private Übersetzungsspeicher:
+
+```sh
+node editor/translate-missing.mjs --locale en --dry-run --state-dir /tmp/flyingstars-i18n-audit
+```
+
+Prüfungen, Nachweise und Betriebsbefehle stehen im [Migrationsbericht](editor-migration-2026-11.md). Für die reguläre Paketinstallation stehen das private Produktrelease 0.3.0 und die Site-Versionsanhebung aus.

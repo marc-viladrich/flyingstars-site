@@ -1,0 +1,2324 @@
+{
+  "de": {
+    "SERVICES": [
+      {
+        "id": "drones",
+        "category": "service",
+        "label": "Drohnen",
+        "cells": [
+          "100 bis 150 Drohnen",
+          "ab 200 Drohnen",
+          "ab 300 Drohnen"
+        ]
+      },
+      {
+        "id": "more-drones",
+        "category": "service",
+        "label": "Mehr Drohnen",
+        "cells": [
+          "+900 € je 10",
+          "+4.900 € je 50",
+          "+9.900 € je 100"
+        ]
+      },
+      {
+        "id": "duration",
+        "category": "service",
+        "label": "Dauer",
+        "all": "In der Regel ca. 13 Minuten, bis 25 Minuten möglich"
+      },
+      {
+        "id": "design",
+        "category": "design",
+        "label": "Design und Motive",
+        "cells": [
+          "Formationen aus unserem Katalog, z. B. Herzen oder Ringe",
+          "Vollständig individuelle 2D-Animationen",
+          "Wie HORIZON, dazu komplexe 3D-Animationen"
+        ],
+        "cards": {
+          "SPARK": [
+            {
+              "text": "Formationen aus unserem Katalog, z. B. Herzen oder Ringe",
+              "order": 0
+            }
+          ],
+          "HORIZON": [
+            {
+              "text": "Vollständig individuelle 2D-Animationen und einfache 3D-Elemente",
+              "order": 0
+            }
+          ]
+        },
+        "summary": {
+          "SPARK": {
+            "text": "Formationen aus unserem Katalog",
+            "order": 0
+          },
+          "HORIZON": {
+            "text": "Eigene 2D-Animationen und einfaches 3D",
+            "order": 0
+          }
+        },
+        "included": {
+          "order": 0,
+          "icon": "pen-tool",
+          "title": "Design für euren Ort",
+          "text": "Wir programmieren die Show für euren Showbereich, eure Musik und eure Motive."
+        }
+      },
+      {
+        "id": "custom-elements",
+        "category": "design",
+        "label": "Eigene Elemente",
+        "cells": [
+          "Bis zu vier, z. B. Initialen, Logo, Stadtwappen",
+          "Präzise Logos und komplexe Schriftzüge",
+          "Wie HORIZON"
+        ],
+        "cards": {
+          "SPARK": [
+            {
+              "text": "Bis zu vier eigene Elemente: Initialen, Logo, Stadtwappen",
+              "order": 1
+            }
+          ],
+          "HORIZON": [
+            {
+              "text": "Präzise Logos und komplexe Schriftzüge",
+              "order": 1
+            }
+          ]
+        },
+        "summary": {
+          "SPARK": {
+            "text": "Bis zu vier eigene Elemente, z. B. Initialen oder Logo",
+            "order": 1
+          },
+          "HORIZON": {
+            "text": "Euer Logo präzise am Himmel",
+            "order": 1
+          }
+        }
+      },
+      {
+        "id": "3d",
+        "category": "design",
+        "label": "3D",
+        "cells": [
+          null,
+          "Einfache 3D-Elemente",
+          "Komplexe 3D-Animationen und volumetrische Effekte"
+        ],
+        "cards": {
+          "ODYSSEY": [
+            {
+              "text": "Komplexe 3D-Animationen und volumetrische Effekte",
+              "order": 0
+            }
+          ]
+        },
+        "summary": {
+          "ODYSSEY": {
+            "text": "Komplexe 3D-Animationen",
+            "order": 1
+          }
+        }
+      },
+      {
+        "id": "storytelling",
+        "category": "design",
+        "label": "Storytelling",
+        "cells": [
+          null,
+          null,
+          "Erzählte Show mit dramaturgischer Kurve"
+        ],
+        "cards": {
+          "ODYSSEY": [
+            {
+              "text": "Erzählte Show mit dramaturgischer Kurve",
+              "order": 1
+            }
+          ]
+        },
+        "summary": {
+          "ODYSSEY": {
+            "text": "Storyline mit dramaturgischer Kurve",
+            "order": 0
+          }
+        }
+      },
+      {
+        "id": "music",
+        "category": "music",
+        "label": "Musik",
+        "cells": [
+          "GEMA-freie Musik, GEMA-Musik bei Anmeldung der Veranstaltung möglich",
+          "Synchron zu eurer Wunschmusik",
+          "Wie HORIZON, Timecode-Synchronisation vor Ort möglich"
+        ],
+        "cards": {
+          "SPARK": [
+            {
+              "text": "GEMA-freie Musik",
+              "order": 2
+            },
+            {
+              "text": "GEMA-Musik bei Anmeldung der Veranstaltung möglich",
+              "order": 3
+            }
+          ],
+          "HORIZON": [
+            {
+              "text": "Synchron zu eurer Wunschmusik",
+              "order": 2
+            }
+          ],
+          "ODYSSEY": [
+            {
+              "text": "Timecode-Synchronisation vor Ort möglich",
+              "order": 2
+            }
+          ]
+        },
+        "summary": {
+          "SPARK": {
+            "text": "GEMA-freie Musik",
+            "order": 2
+          },
+          "HORIZON": {
+            "text": "Synchron zu eurer Wunschmusik",
+            "order": 2
+          }
+        }
+      },
+      {
+        "id": "preview",
+        "category": "service",
+        "label": "Freigabe und Vorschau",
+        "cells": [
+          "Eure eigenen Elemente vorab zur Freigabe",
+          "Videovorschau mit Feedbackschleife",
+          "Mehrere Feedbackschleifen"
+        ],
+        "cards": {
+          "SPARK": [
+            {
+              "text": "Eigene Elemente vorab zur Freigabe",
+              "order": 4
+            }
+          ],
+          "HORIZON": [
+            {
+              "text": "Videovorschau mit Feedbackschleife",
+              "order": 5
+            }
+          ],
+          "ODYSSEY": [
+            {
+              "text": "Mehrere Feedbackschleifen",
+              "order": 3
+            }
+          ]
+        },
+        "included": {
+          "order": 2,
+          "icon": "monitor-play",
+          "title": "Freigabe vorab",
+          "text": "Eure eigenen Elemente seht ihr vor der Show und gebt sie frei, ab HORIZON als Videovorschau."
+        }
+      },
+      {
+        "id": "workshop",
+        "category": "service",
+        "label": "Kreativ-Workshop",
+        "cells": [
+          null,
+          "Mit Storyboard",
+          "Mit Storyboard"
+        ],
+        "cards": {
+          "HORIZON": [
+            {
+              "text": "Kreativ-Workshop mit Storyboard",
+              "order": 3
+            }
+          ]
+        }
+      },
+      {
+        "id": "safety-plan",
+        "category": "service",
+        "label": "Sicherheitskonzept",
+        "cells": [
+          true,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "liability",
+        "category": "service",
+        "label": "Haftpflicht bis 1,3 Mio. €",
+        "cells": [
+          true,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "crew",
+        "category": "service",
+        "label": "Team vor Ort",
+        "cells": [
+          true,
+          true,
+          true
+        ],
+        "cards": {
+          "SPARK": [
+            {
+              "text": "Team vor Ort, Sicherheitskonzept und Haftpflicht",
+              "order": 6
+            }
+          ]
+        },
+        "included": {
+          "order": 3,
+          "icon": "users",
+          "title": "Team vor Ort",
+          "text": "Pilot:innen und Techniker:innen bauen in ca. 3 Stunden auf und fliegen eure Show."
+        }
+      },
+      {
+        "id": "permit",
+        "category": "service",
+        "label": "Genehmigung",
+        "cells": [
+          "Standardverfahren",
+          "Auch komplexere Verfahren, z. B. in Flughafennähe",
+          "Wie HORIZON"
+        ],
+        "cards": {
+          "SPARK": [
+            {
+              "text": "Standard-Genehmigungsverfahren",
+              "order": 5
+            }
+          ],
+          "HORIZON": [
+            {
+              "text": "Auch komplexere Genehmigungen, z. B. in Flughafennähe",
+              "order": 4
+            }
+          ]
+        },
+        "included": {
+          "order": 1,
+          "icon": "shield-check",
+          "title": "Genehmigung und Sicherheitskonzept",
+          "text": "Luftrechtliche Genehmigung, Sicherheitszonen und Haftpflicht bis 1,3 Mio. € sind immer enthalten."
+        }
+      },
+      {
+        "id": "landowner-consent",
+        "category": "service",
+        "label": "Hilfe bei der Zustimmung der Grundstückseigentümer:innen",
+        "cells": [
+          null,
+          true,
+          true
+        ],
+        "cards": {
+          "HORIZON": [
+            {
+              "text": "Hilfe bei der Zustimmung der Grundstückseigentümer:innen",
+              "order": 6
+            }
+          ]
+        }
+      },
+      {
+        "id": "project-manager",
+        "category": "service",
+        "label": "Eigene Projektleitung",
+        "cells": [
+          null,
+          null,
+          true
+        ],
+        "cards": {
+          "ODYSSEY": [
+            {
+              "text": "Eigene Projektleitung",
+              "order": 4
+            }
+          ]
+        },
+        "summary": {
+          "ODYSSEY": {
+            "text": "Eigene Projektleitung",
+            "order": 2
+          }
+        }
+      },
+      {
+        "id": "footage",
+        "category": "service",
+        "label": "Video der Show (Rohaufnahmen)",
+        "cells": [
+          "+900 €",
+          "+900 €",
+          true
+        ],
+        "cards": {
+          "ODYSSEY": [
+            {
+              "text": "Video der Show (Rohaufnahmen)",
+              "order": 5
+            }
+          ]
+        }
+      },
+      {
+        "id": "site-visit",
+        "category": "service",
+        "label": "Vor-Ort-Termin vorab",
+        "cells": [
+          null,
+          null,
+          "Auf Wunsch"
+        ],
+        "cards": {
+          "ODYSSEY": [
+            {
+              "text": "Auf Wunsch Vor-Ort-Termin vorab",
+              "order": 6
+            }
+          ]
+        }
+      }
+    ],
+    "SHOW_DURATION": "Eine Show dauert in der Regel ca. 13 Minuten, bis 25 Minuten sind möglich. Das gilt für jedes Paket.",
+    "PACKAGE_DETAILS": {
+      "SPARK": {
+        "label": "Klassisch in 2D",
+        "sky": "Formationen in 2D aus unserem Katalog, bis zu vier eigene Elemente",
+        "care": "Eure eigenen Elemente vorab zur Freigabe, GEMA-freie Musik",
+        "typical": "Hochzeit, Jubiläum, kleinere Firmenfeier"
+      },
+      "HORIZON": {
+        "label": "3D in Bewegung",
+        "sky": "Alles aus SPARK, dazu eigene 2D-Animationen, einfache 3D-Objekte und euer Logo präzise",
+        "care": "Kreativ-Workshop mit Storyboard, Videovorschau mit Feedback, synchron zu eurer Wunschmusik",
+        "typical": "Produktpräsentation, Firmenevent, Stadtfest",
+        "often": "Bestseller"
+      },
+      "ODYSSEY": {
+        "label": "Erzählte 3D-Show",
+        "sky": "Alles aus HORIZON, dazu 3D-Animation mit Storyline und volumetrische Effekte",
+        "care": "Mehrere Feedbackrunden, eigene Projektleitung, Rohmaterial-Video, Timecode möglich",
+        "typical": "Kampagne, Festival, Großveranstaltung"
+      }
+    },
+    "PACKAGE_POINTS": {
+      "SPARK": [
+        "Formationen aus unserem Katalog",
+        "Bis zu vier eigene Elemente, z. B. Initialen oder Logo",
+        "GEMA-freie Musik"
+      ],
+      "HORIZON": [
+        "Eigene 2D-Animationen und einfaches 3D",
+        "Euer Logo präzise am Himmel",
+        "Synchron zu eurer Wunschmusik"
+      ],
+      "ODYSSEY": [
+        "Storyline mit dramaturgischer Kurve",
+        "Komplexe 3D-Animationen",
+        "Eigene Projektleitung"
+      ]
+    },
+    "PACKAGE_FEATURES": {
+      "SPARK": {
+        "tag": "Der funkelnde Einstieg für Hochzeiten, Jubiläen und kleinere Firmen- und Kulturfeiern.",
+        "badge": "Einstieg",
+        "groups": [
+          {
+            "title": "Design & Inhalt",
+            "items": [
+              "Formationen aus unserem Katalog, z. B. Herzen oder Ringe",
+              "Bis zu vier eigene Elemente: Initialen, Logo, Stadtwappen"
+            ]
+          },
+          {
+            "title": "Musik",
+            "items": [
+              "GEMA-freie Musik",
+              "GEMA-Musik bei Anmeldung der Veranstaltung möglich"
+            ]
+          },
+          {
+            "title": "Service & Extras",
+            "items": [
+              "Eigene Elemente vorab zur Freigabe",
+              "Standard-Genehmigungsverfahren",
+              "Team vor Ort, Sicherheitskonzept und Haftpflicht"
+            ]
+          }
+        ]
+      },
+      "HORIZON": {
+        "tag": "Die eigene Inszenierung für Produktpräsentationen, große Firmenevents und Stadtfeste.",
+        "badge": "Bestseller",
+        "plus": "Alles aus SPARK, plus:",
+        "groups": [
+          {
+            "title": "Design & Inhalt",
+            "items": [
+              "Vollständig individuelle 2D-Animationen und einfache 3D-Elemente",
+              "Präzise Logos und komplexe Schriftzüge"
+            ]
+          },
+          {
+            "title": "Musik",
+            "items": [
+              "Synchron zu eurer Wunschmusik"
+            ]
+          },
+          {
+            "title": "Service & Extras",
+            "items": [
+              "Kreativ-Workshop mit Storyboard",
+              "Auch komplexere Genehmigungen, z. B. in Flughafennähe",
+              "Videovorschau mit Feedbackschleife",
+              "Hilfe bei der Zustimmung der Grundstückseigentümer:innen"
+            ]
+          }
+        ]
+      },
+      "ODYSSEY": {
+        "tag": "Die erzählte Show für große Kampagnen, Festivals und Events mit viel Publikum.",
+        "badge": "ab 300 Drohnen",
+        "plus": "Alles aus HORIZON, plus:",
+        "groups": [
+          {
+            "title": "Design & Inhalt",
+            "items": [
+              "Komplexe 3D-Animationen und volumetrische Effekte",
+              "Erzählte Show mit dramaturgischer Kurve"
+            ]
+          },
+          {
+            "title": "Musik",
+            "items": [
+              "Timecode-Synchronisation vor Ort möglich"
+            ]
+          },
+          {
+            "title": "Service & Extras",
+            "items": [
+              "Mehrere Feedbackschleifen",
+              "Eigene Projektleitung",
+              "Video der Show (Rohaufnahmen)",
+              "Auf Wunsch Vor-Ort-Termin vorab"
+            ]
+          }
+        ]
+      }
+    },
+    "COMPARISON": [
+      {
+        "id": "drones",
+        "label": "Drohnen",
+        "cells": [
+          "100 bis 150 Drohnen",
+          "ab 200 Drohnen",
+          "ab 300 Drohnen"
+        ]
+      },
+      {
+        "id": "more-drones",
+        "label": "Mehr Drohnen",
+        "cells": [
+          "+900 € je 10",
+          "+4.900 € je 50",
+          "+9.900 € je 100"
+        ]
+      },
+      {
+        "id": "duration",
+        "label": "Dauer",
+        "all": "In der Regel ca. 13 Minuten, bis 25 Minuten möglich"
+      },
+      {
+        "id": "design",
+        "label": "Design und Motive",
+        "cells": [
+          "Formationen aus unserem Katalog, z. B. Herzen oder Ringe",
+          "Vollständig individuelle 2D-Animationen",
+          "Wie HORIZON, dazu komplexe 3D-Animationen"
+        ]
+      },
+      {
+        "id": "custom-elements",
+        "label": "Eigene Elemente",
+        "cells": [
+          "Bis zu vier, z. B. Initialen, Logo, Stadtwappen",
+          "Präzise Logos und komplexe Schriftzüge",
+          "Wie HORIZON"
+        ]
+      },
+      {
+        "id": "3d",
+        "label": "3D",
+        "cells": [
+          null,
+          "Einfache 3D-Elemente",
+          "Komplexe 3D-Animationen und volumetrische Effekte"
+        ]
+      },
+      {
+        "id": "storytelling",
+        "label": "Storytelling",
+        "cells": [
+          null,
+          null,
+          "Erzählte Show mit dramaturgischer Kurve"
+        ]
+      },
+      {
+        "id": "music",
+        "label": "Musik",
+        "cells": [
+          "GEMA-freie Musik, GEMA-Musik bei Anmeldung der Veranstaltung möglich",
+          "Synchron zu eurer Wunschmusik",
+          "Wie HORIZON, Timecode-Synchronisation vor Ort möglich"
+        ]
+      },
+      {
+        "id": "preview",
+        "label": "Freigabe und Vorschau",
+        "cells": [
+          "Eure eigenen Elemente vorab zur Freigabe",
+          "Videovorschau mit Feedbackschleife",
+          "Mehrere Feedbackschleifen"
+        ]
+      },
+      {
+        "id": "workshop",
+        "label": "Kreativ-Workshop",
+        "cells": [
+          null,
+          "Mit Storyboard",
+          "Mit Storyboard"
+        ]
+      },
+      {
+        "id": "safety-plan",
+        "label": "Sicherheitskonzept",
+        "cells": [
+          true,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "liability",
+        "label": "Haftpflicht bis 1,3 Mio. €",
+        "cells": [
+          true,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "crew",
+        "label": "Team vor Ort",
+        "cells": [
+          true,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "permit",
+        "label": "Genehmigung",
+        "cells": [
+          "Standardverfahren",
+          "Auch komplexere Verfahren, z. B. in Flughafennähe",
+          "Wie HORIZON"
+        ]
+      },
+      {
+        "id": "landowner-consent",
+        "label": "Hilfe bei der Zustimmung der Grundstückseigentümer:innen",
+        "cells": [
+          null,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "project-manager",
+        "label": "Eigene Projektleitung",
+        "cells": [
+          null,
+          null,
+          true
+        ]
+      },
+      {
+        "id": "footage",
+        "label": "Video der Show (Rohaufnahmen)",
+        "cells": [
+          "+900 €",
+          "+900 €",
+          true
+        ]
+      },
+      {
+        "id": "site-visit",
+        "label": "Vor-Ort-Termin vorab",
+        "cells": [
+          null,
+          null,
+          "Auf Wunsch"
+        ]
+      }
+    ],
+    "COMPARISON_NOTE": "Die Beschallung vor Ort stellt ihr als Veranstalter:innen.",
+    "INCLUDED": [
+      {
+        "id": "design",
+        "order": 0,
+        "icon": "pen-tool",
+        "title": "Design für euren Ort",
+        "text": "Wir programmieren die Show für euren Showbereich, eure Musik und eure Motive."
+      },
+      {
+        "id": "permit",
+        "order": 1,
+        "icon": "shield-check",
+        "title": "Genehmigung und Sicherheitskonzept",
+        "text": "Luftrechtliche Genehmigung, Sicherheitszonen und Haftpflicht bis 1,3 Mio. € sind immer enthalten."
+      },
+      {
+        "id": "preview",
+        "order": 2,
+        "icon": "monitor-play",
+        "title": "Freigabe vorab",
+        "text": "Eure eigenen Elemente seht ihr vor der Show und gebt sie frei, ab HORIZON als Videovorschau."
+      },
+      {
+        "id": "crew",
+        "order": 3,
+        "icon": "users",
+        "title": "Team vor Ort",
+        "text": "Pilot:innen und Techniker:innen bauen in ca. 3 Stunden auf und fliegen eure Show."
+      }
+    ],
+    "EXTRAS": [
+      {
+        "id": "express",
+        "short": "Express",
+        "icon": "zap",
+        "title": "Show in unter zwei Wochen",
+        "text": "Alles unter 14 Tagen bis zur Show. Wir ziehen Design und Genehmigung vor.",
+        "price": "Aufpreis nach Aufwand"
+      },
+      {
+        "id": "film",
+        "short": "Rohaufnahmen",
+        "icon": "camera",
+        "title": "Rohaufnahmen mit Kameradrohne",
+        "text": "Material für Aftermovie und Social Media.",
+        "price": "900 €, bei ODYSSEY inklusive"
+      },
+      {
+        "id": "behoerden",
+        "short": "Behördensupport",
+        "icon": "landmark",
+        "title": "Erweiterter Behördensupport",
+        "text": "Wir übernehmen die gesamte Kommunikation mit Ämtern und Behörden.",
+        "price": "Preis auf Anfrage"
+      },
+      {
+        "id": "kontrollzone",
+        "short": "Flughafennähe",
+        "icon": "plane",
+        "title": "Kontrollzonen und Flughafennähe",
+        "text": "Für Kontrollzonen und Flächen in Flughafennähe.",
+        "price": "Preis auf Anfrage"
+      },
+      {
+        "id": "schweiz",
+        "short": "Schweiz",
+        "icon": "swiss",
+        "title": "Shows in der Schweiz",
+        "text": "BAZL-Antrag und Zollabwicklung für unsere Flotte.",
+        "price": "+1.900 € netto"
+      },
+      {
+        "id": "indoor",
+        "short": "Indoor",
+        "icon": "building-2",
+        "title": "Indoor-Drohnenshows",
+        "text": "20 bis 50 Drohnen, 5 bis 8 Minuten, ab 3 m Deckenhöhe. Jede Indoor-Show kalkulieren wir einzeln.",
+        "price": "ab ca. 15.000 € netto für 20 Drohnen",
+        "link": {
+          "label": "Mehr zu Indoor-Shows",
+          "href": "/drohnenshow-indoor/"
+        }
+      }
+    ]
+  },
+  "en": {
+    "SERVICES": [
+      {
+        "id": "drones",
+        "category": "service",
+        "label": "Drones",
+        "cells": [
+          "100 to 150 drones",
+          "from 200 drones",
+          "from 300 drones"
+        ]
+      },
+      {
+        "id": "more-drones",
+        "category": "service",
+        "label": "More drones",
+        "cells": [
+          "+€900 per 10",
+          "+€4,900 per 50",
+          "+€9,900 per 100"
+        ]
+      },
+      {
+        "id": "duration",
+        "category": "service",
+        "label": "Duration",
+        "all": "Usually around 13 minutes, up to 25 minutes possible"
+      },
+      {
+        "id": "design",
+        "category": "design",
+        "label": "Design and motifs",
+        "cells": [
+          "Formations from our catalogue, such as hearts or rings",
+          "Fully custom 2D animations",
+          "As HORIZON, plus complex 3D animations"
+        ],
+        "cards": {
+          "SPARK": [
+            {
+              "text": "Formations from our catalogue, such as hearts or rings",
+              "order": 0
+            }
+          ],
+          "HORIZON": [
+            {
+              "text": "Fully custom 2D animations and simple 3D elements",
+              "order": 0
+            }
+          ]
+        },
+        "summary": {
+          "SPARK": {
+            "text": "Formations from our catalogue",
+            "order": 0
+          },
+          "HORIZON": {
+            "text": "Custom 2D animations and simple 3D",
+            "order": 0
+          }
+        },
+        "included": {
+          "order": 0,
+          "icon": "pen-tool",
+          "title": "Design for your location",
+          "text": "We programme the show for your site, music and motifs."
+        }
+      },
+      {
+        "id": "custom-elements",
+        "category": "design",
+        "label": "Custom elements",
+        "cells": [
+          "Up to four, such as initials, logo or coat of arms",
+          "Precise logos and complex lettering",
+          "As HORIZON"
+        ],
+        "cards": {
+          "SPARK": [
+            {
+              "text": "Up to four custom elements: initials, logo, coat of arms",
+              "order": 1
+            }
+          ],
+          "HORIZON": [
+            {
+              "text": "Precise logos and complex lettering",
+              "order": 1
+            }
+          ]
+        },
+        "summary": {
+          "SPARK": {
+            "text": "Up to four custom elements, such as initials or a logo",
+            "order": 1
+          },
+          "HORIZON": {
+            "text": "Your logo drawn precisely in the sky",
+            "order": 1
+          }
+        }
+      },
+      {
+        "id": "3d",
+        "category": "design",
+        "label": "3D",
+        "cells": [
+          null,
+          "Simple 3D elements",
+          "Complex 3D animations and volumetric effects"
+        ],
+        "cards": {
+          "ODYSSEY": [
+            {
+              "text": "Complex 3D animations and volumetric effects",
+              "order": 0
+            }
+          ]
+        },
+        "summary": {
+          "ODYSSEY": {
+            "text": "Complex 3D animations",
+            "order": 1
+          }
+        }
+      },
+      {
+        "id": "storytelling",
+        "category": "design",
+        "label": "Storytelling",
+        "cells": [
+          null,
+          null,
+          "A storytelling show with a dramatic arc"
+        ],
+        "cards": {
+          "ODYSSEY": [
+            {
+              "text": "A storytelling show with a dramatic arc",
+              "order": 1
+            }
+          ]
+        },
+        "summary": {
+          "ODYSSEY": {
+            "text": "A storyline with a dramatic arc",
+            "order": 0
+          }
+        }
+      },
+      {
+        "id": "music",
+        "category": "music",
+        "label": "Music",
+        "cells": [
+          "Music free of GEMA royalties; GEMA music possible if the event is registered",
+          "Synchronised to your chosen music",
+          "As HORIZON, on-site timecode synchronisation available"
+        ],
+        "cards": {
+          "SPARK": [
+            {
+              "text": "Music free of GEMA royalties",
+              "order": 2
+            },
+            {
+              "text": "GEMA music possible if the event is registered",
+              "order": 3
+            }
+          ],
+          "HORIZON": [
+            {
+              "text": "Synchronised to your chosen music",
+              "order": 2
+            }
+          ],
+          "ODYSSEY": [
+            {
+              "text": "On-site timecode synchronisation available",
+              "order": 2
+            }
+          ]
+        },
+        "summary": {
+          "SPARK": {
+            "text": "Music free of GEMA royalties",
+            "order": 2
+          },
+          "HORIZON": {
+            "text": "Synchronised to your chosen music",
+            "order": 2
+          }
+        }
+      },
+      {
+        "id": "preview",
+        "category": "service",
+        "label": "Approval and preview",
+        "cells": [
+          "Your custom elements for approval in advance",
+          "Video preview with a feedback round",
+          "Multiple feedback rounds"
+        ],
+        "cards": {
+          "SPARK": [
+            {
+              "text": "Custom elements for approval in advance",
+              "order": 4
+            }
+          ],
+          "HORIZON": [
+            {
+              "text": "Video preview with a feedback round",
+              "order": 5
+            }
+          ],
+          "ODYSSEY": [
+            {
+              "text": "Multiple feedback rounds",
+              "order": 3
+            }
+          ]
+        },
+        "included": {
+          "order": 2,
+          "icon": "monitor-play",
+          "title": "Approval in advance",
+          "text": "You review and approve your custom elements before the show, with a video preview from HORIZON upwards."
+        }
+      },
+      {
+        "id": "workshop",
+        "category": "service",
+        "label": "Creative workshop",
+        "cells": [
+          null,
+          "With storyboard",
+          "With storyboard"
+        ],
+        "cards": {
+          "HORIZON": [
+            {
+              "text": "Creative workshop with storyboard",
+              "order": 3
+            }
+          ]
+        }
+      },
+      {
+        "id": "safety-plan",
+        "category": "service",
+        "label": "Safety plan",
+        "cells": [
+          true,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "liability",
+        "category": "service",
+        "label": "Liability cover up to €1.3 million",
+        "cells": [
+          true,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "crew",
+        "category": "service",
+        "label": "On-site crew",
+        "cells": [
+          true,
+          true,
+          true
+        ],
+        "cards": {
+          "SPARK": [
+            {
+              "text": "On-site crew, safety plan and liability insurance",
+              "order": 6
+            }
+          ]
+        },
+        "included": {
+          "order": 3,
+          "icon": "users",
+          "title": "On-site crew",
+          "text": "Our pilots and technicians set up in around 3 hours and fly your show."
+        }
+      },
+      {
+        "id": "permit",
+        "category": "service",
+        "label": "Permit",
+        "cells": [
+          "Standard procedure",
+          "More complex procedures too, such as near airports",
+          "As HORIZON"
+        ],
+        "cards": {
+          "SPARK": [
+            {
+              "text": "Standard permit procedure",
+              "order": 5
+            }
+          ],
+          "HORIZON": [
+            {
+              "text": "More complex permits too, such as near airports",
+              "order": 4
+            }
+          ]
+        },
+        "included": {
+          "order": 1,
+          "icon": "shield-check",
+          "title": "Permit and safety plan",
+          "text": "Aviation permits, safety zones and liability cover up to €1.3 million are always included."
+        }
+      },
+      {
+        "id": "landowner-consent",
+        "category": "service",
+        "label": "Help obtaining landowner consent",
+        "cells": [
+          null,
+          true,
+          true
+        ],
+        "cards": {
+          "HORIZON": [
+            {
+              "text": "Help obtaining landowner consent",
+              "order": 6
+            }
+          ]
+        }
+      },
+      {
+        "id": "project-manager",
+        "category": "service",
+        "label": "Dedicated project manager",
+        "cells": [
+          null,
+          null,
+          true
+        ],
+        "cards": {
+          "ODYSSEY": [
+            {
+              "text": "Dedicated project manager",
+              "order": 4
+            }
+          ]
+        },
+        "summary": {
+          "ODYSSEY": {
+            "text": "Dedicated project manager",
+            "order": 2
+          }
+        }
+      },
+      {
+        "id": "footage",
+        "category": "service",
+        "label": "Show video, raw footage",
+        "cells": [
+          "+900 €",
+          "+900 €",
+          true
+        ],
+        "cards": {
+          "ODYSSEY": [
+            {
+              "text": "Show video, raw footage",
+              "order": 5
+            }
+          ]
+        }
+      },
+      {
+        "id": "site-visit",
+        "category": "service",
+        "label": "Advance site visit",
+        "cells": [
+          null,
+          null,
+          "On request"
+        ],
+        "cards": {
+          "ODYSSEY": [
+            {
+              "text": "Advance site visit on request",
+              "order": 6
+            }
+          ]
+        }
+      }
+    ],
+    "SHOW_DURATION": "A show usually lasts around 13 minutes, with up to 25 minutes possible. This applies to every package.",
+    "PACKAGE_DETAILS": {
+      "SPARK": {
+        "label": "Classic 2D",
+        "sky": "2D formations from our catalogue, with up to four custom elements",
+        "care": "Your custom elements for approval in advance, music free of GEMA royalties",
+        "typical": "Weddings, anniversaries, smaller corporate events"
+      },
+      "HORIZON": {
+        "label": "3D in motion",
+        "sky": "Everything in SPARK, plus custom 2D animations, simple 3D objects and precise logo designs",
+        "care": "Creative workshop with storyboard, video preview with feedback, synchronised to your chosen music",
+        "typical": "Product launches, corporate events, city festivals",
+        "often": "Bestseller"
+      },
+      "ODYSSEY": {
+        "label": "3D storytelling show",
+        "sky": "Everything in HORIZON, plus 3D storytelling animation and volumetric effects",
+        "care": "Multiple feedback rounds, dedicated project manager, raw video footage, timecode available",
+        "typical": "Campaigns, festivals, large events"
+      }
+    },
+    "PACKAGE_POINTS": {
+      "SPARK": [
+        "Formations from our catalogue",
+        "Up to four custom elements, such as initials or a logo",
+        "Music free of GEMA royalties"
+      ],
+      "HORIZON": [
+        "Custom 2D animations and simple 3D",
+        "Your logo drawn precisely in the sky",
+        "Synchronised to your chosen music"
+      ],
+      "ODYSSEY": [
+        "A storyline with a dramatic arc",
+        "Complex 3D animations",
+        "Dedicated project manager"
+      ]
+    },
+    "PACKAGE_FEATURES": {
+      "SPARK": {
+        "tag": "A sparkling start for weddings, anniversaries and smaller corporate and cultural events.",
+        "badge": "Entry package",
+        "groups": [
+          {
+            "title": "Design & content",
+            "items": [
+              "Formations from our catalogue, such as hearts or rings",
+              "Up to four custom elements: initials, logo, coat of arms"
+            ]
+          },
+          {
+            "title": "Music",
+            "items": [
+              "Music free of GEMA royalties",
+              "GEMA music possible if the event is registered"
+            ]
+          },
+          {
+            "title": "Service & extras",
+            "items": [
+              "Custom elements for approval in advance",
+              "Standard permit procedure",
+              "On-site crew, safety plan and liability insurance"
+            ]
+          }
+        ]
+      },
+      "HORIZON": {
+        "tag": "Your own production for product launches, large corporate events and city festivals.",
+        "badge": "Bestseller",
+        "plus": "Everything in SPARK, plus:",
+        "groups": [
+          {
+            "title": "Design & content",
+            "items": [
+              "Fully custom 2D animations and simple 3D elements",
+              "Precise logos and complex lettering"
+            ]
+          },
+          {
+            "title": "Music",
+            "items": [
+              "Synchronised to your chosen music"
+            ]
+          },
+          {
+            "title": "Service & extras",
+            "items": [
+              "Creative workshop with storyboard",
+              "More complex permits too, such as near airports",
+              "Video preview with a feedback round",
+              "Help obtaining landowner consent"
+            ]
+          }
+        ]
+      },
+      "ODYSSEY": {
+        "tag": "A storytelling show for major campaigns, festivals and large audiences.",
+        "badge": "from 300 drones",
+        "plus": "Everything in HORIZON, plus:",
+        "groups": [
+          {
+            "title": "Design & content",
+            "items": [
+              "Complex 3D animations and volumetric effects",
+              "A storytelling show with a dramatic arc"
+            ]
+          },
+          {
+            "title": "Music",
+            "items": [
+              "On-site timecode synchronisation available"
+            ]
+          },
+          {
+            "title": "Service & extras",
+            "items": [
+              "Multiple feedback rounds",
+              "Dedicated project manager",
+              "Show video, raw footage",
+              "Advance site visit on request"
+            ]
+          }
+        ]
+      }
+    },
+    "COMPARISON": [
+      {
+        "id": "drones",
+        "label": "Drones",
+        "cells": [
+          "100 to 150 drones",
+          "from 200 drones",
+          "from 300 drones"
+        ]
+      },
+      {
+        "id": "more-drones",
+        "label": "More drones",
+        "cells": [
+          "+€900 per 10",
+          "+€4,900 per 50",
+          "+€9,900 per 100"
+        ]
+      },
+      {
+        "id": "duration",
+        "label": "Duration",
+        "all": "Usually around 13 minutes, up to 25 minutes possible"
+      },
+      {
+        "id": "design",
+        "label": "Design and motifs",
+        "cells": [
+          "Formations from our catalogue, such as hearts or rings",
+          "Fully custom 2D animations",
+          "As HORIZON, plus complex 3D animations"
+        ]
+      },
+      {
+        "id": "custom-elements",
+        "label": "Custom elements",
+        "cells": [
+          "Up to four, such as initials, logo or coat of arms",
+          "Precise logos and complex lettering",
+          "As HORIZON"
+        ]
+      },
+      {
+        "id": "3d",
+        "label": "3D",
+        "cells": [
+          null,
+          "Simple 3D elements",
+          "Complex 3D animations and volumetric effects"
+        ]
+      },
+      {
+        "id": "storytelling",
+        "label": "Storytelling",
+        "cells": [
+          null,
+          null,
+          "A storytelling show with a dramatic arc"
+        ]
+      },
+      {
+        "id": "music",
+        "label": "Music",
+        "cells": [
+          "Music free of GEMA royalties; GEMA music possible if the event is registered",
+          "Synchronised to your chosen music",
+          "As HORIZON, on-site timecode synchronisation available"
+        ]
+      },
+      {
+        "id": "preview",
+        "label": "Approval and preview",
+        "cells": [
+          "Your custom elements for approval in advance",
+          "Video preview with a feedback round",
+          "Multiple feedback rounds"
+        ]
+      },
+      {
+        "id": "workshop",
+        "label": "Creative workshop",
+        "cells": [
+          null,
+          "With storyboard",
+          "With storyboard"
+        ]
+      },
+      {
+        "id": "safety-plan",
+        "label": "Safety plan",
+        "cells": [
+          true,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "liability",
+        "label": "Liability cover up to €1.3 million",
+        "cells": [
+          true,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "crew",
+        "label": "On-site crew",
+        "cells": [
+          true,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "permit",
+        "label": "Permit",
+        "cells": [
+          "Standard procedure",
+          "More complex procedures too, such as near airports",
+          "As HORIZON"
+        ]
+      },
+      {
+        "id": "landowner-consent",
+        "label": "Help obtaining landowner consent",
+        "cells": [
+          null,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "project-manager",
+        "label": "Dedicated project manager",
+        "cells": [
+          null,
+          null,
+          true
+        ]
+      },
+      {
+        "id": "footage",
+        "label": "Show video, raw footage",
+        "cells": [
+          "+900 €",
+          "+900 €",
+          true
+        ]
+      },
+      {
+        "id": "site-visit",
+        "label": "Advance site visit",
+        "cells": [
+          null,
+          null,
+          "On request"
+        ]
+      }
+    ],
+    "COMPARISON_NOTE": "You provide the on-site sound system as the event organiser.",
+    "INCLUDED": [
+      {
+        "id": "design",
+        "order": 0,
+        "icon": "pen-tool",
+        "title": "Design for your location",
+        "text": "We programme the show for your site, music and motifs."
+      },
+      {
+        "id": "permit",
+        "order": 1,
+        "icon": "shield-check",
+        "title": "Permit and safety plan",
+        "text": "Aviation permits, safety zones and liability cover up to €1.3 million are always included."
+      },
+      {
+        "id": "preview",
+        "order": 2,
+        "icon": "monitor-play",
+        "title": "Approval in advance",
+        "text": "You review and approve your custom elements before the show, with a video preview from HORIZON upwards."
+      },
+      {
+        "id": "crew",
+        "order": 3,
+        "icon": "users",
+        "title": "On-site crew",
+        "text": "Our pilots and technicians set up in around 3 hours and fly your show."
+      }
+    ],
+    "EXTRAS": [
+      {
+        "id": "express",
+        "short": "Express",
+        "icon": "zap",
+        "title": "A show in under two weeks",
+        "text": "Less than 14 days until the show. We prioritise design and permits.",
+        "price": "Surcharge based on scope"
+      },
+      {
+        "id": "film",
+        "short": "Raw footage",
+        "icon": "camera",
+        "title": "Raw footage filmed by camera drone",
+        "text": "Footage for your aftermovie and social media.",
+        "price": "€900, included in ODYSSEY"
+      },
+      {
+        "id": "behoerden",
+        "short": "Authority liaison",
+        "icon": "landmark",
+        "title": "Extended authority liaison",
+        "text": "We handle all communication with public offices and authorities.",
+        "price": "Price on request"
+      },
+      {
+        "id": "kontrollzone",
+        "short": "Near airports",
+        "icon": "plane",
+        "title": "Controlled airspace and airport locations",
+        "text": "For controlled airspace and sites near airports.",
+        "price": "Price on request"
+      },
+      {
+        "id": "schweiz",
+        "short": "Switzerland",
+        "icon": "swiss",
+        "title": "Shows in Switzerland",
+        "text": "FOCA application and customs clearance for our fleet.",
+        "price": "+€1,900 excluding VAT"
+      },
+      {
+        "id": "indoor",
+        "short": "Indoor",
+        "icon": "building-2",
+        "title": "Indoor drone shows",
+        "text": "20 to 50 drones, 5 to 8 minutes, ceiling height from 3 m. We price each indoor show individually.",
+        "price": "from approx. €15,000 excluding VAT for 20 drones",
+        "link": {
+          "label": "More about indoor shows",
+          "href": "/drohnenshow-indoor/"
+        }
+      }
+    ]
+  },
+  "nl": {
+    "SERVICES": [
+      {
+        "id": "drones",
+        "category": "service",
+        "label": "Drones",
+        "cells": [
+          "100 tot 150 drones",
+          "vanaf 200 drones",
+          "vanaf 300 drones"
+        ]
+      },
+      {
+        "id": "more-drones",
+        "category": "service",
+        "label": "Meer drones",
+        "cells": [
+          "+€ 900 per 10",
+          "+€ 4.900 per 50",
+          "+€ 9.900 per 100"
+        ]
+      },
+      {
+        "id": "duration",
+        "category": "service",
+        "label": "Duur",
+        "all": "Meestal circa 13 minuten, tot 25 minuten mogelijk"
+      },
+      {
+        "id": "design",
+        "category": "design",
+        "label": "Ontwerp en beelden",
+        "cells": [
+          "Formaties uit onze catalogus, zoals harten of ringen",
+          "Volledig eigen 2D-animaties",
+          "Als HORIZON, plus complexe 3D-animaties"
+        ],
+        "cards": {
+          "SPARK": [
+            {
+              "text": "Formaties uit onze catalogus, zoals harten of ringen",
+              "order": 0
+            }
+          ],
+          "HORIZON": [
+            {
+              "text": "Volledig eigen 2D-animaties en eenvoudige 3D-elementen",
+              "order": 0
+            }
+          ]
+        },
+        "summary": {
+          "SPARK": {
+            "text": "Formaties uit onze catalogus",
+            "order": 0
+          },
+          "HORIZON": {
+            "text": "Eigen 2D-animaties en eenvoudig 3D",
+            "order": 0
+          }
+        },
+        "included": {
+          "order": 0,
+          "icon": "pen-tool",
+          "title": "Ontwerp voor jullie locatie",
+          "text": "We programmeren de show voor jullie locatie, muziek en beelden."
+        }
+      },
+      {
+        "id": "custom-elements",
+        "category": "design",
+        "label": "Eigen elementen",
+        "cells": [
+          "Maximaal vier, zoals initialen, logo of stadswapen",
+          "Nauwkeurige logo's en complexe teksten",
+          "Als HORIZON"
+        ],
+        "cards": {
+          "SPARK": [
+            {
+              "text": "Maximaal vier eigen elementen: initialen, logo, stadswapen",
+              "order": 1
+            }
+          ],
+          "HORIZON": [
+            {
+              "text": "Nauwkeurige logo's en complexe teksten",
+              "order": 1
+            }
+          ]
+        },
+        "summary": {
+          "SPARK": {
+            "text": "Maximaal vier eigen elementen, zoals initialen of een logo",
+            "order": 1
+          },
+          "HORIZON": {
+            "text": "Jullie logo nauwkeurig aan de hemel",
+            "order": 1
+          }
+        }
+      },
+      {
+        "id": "3d",
+        "category": "design",
+        "label": "3D",
+        "cells": [
+          null,
+          "Eenvoudige 3D-elementen",
+          "Complexe 3D-animaties en volumetrische effecten"
+        ],
+        "cards": {
+          "ODYSSEY": [
+            {
+              "text": "Complexe 3D-animaties en volumetrische effecten",
+              "order": 0
+            }
+          ]
+        },
+        "summary": {
+          "ODYSSEY": {
+            "text": "Complexe 3D-animaties",
+            "order": 1
+          }
+        }
+      },
+      {
+        "id": "storytelling",
+        "category": "design",
+        "label": "Storytelling",
+        "cells": [
+          null,
+          null,
+          "Show met verhaal en dramatische opbouw"
+        ],
+        "cards": {
+          "ODYSSEY": [
+            {
+              "text": "Show met verhaal en dramatische opbouw",
+              "order": 1
+            }
+          ]
+        },
+        "summary": {
+          "ODYSSEY": {
+            "text": "Verhaallijn met dramatische opbouw",
+            "order": 0
+          }
+        }
+      },
+      {
+        "id": "music",
+        "category": "music",
+        "label": "Muziek",
+        "cells": [
+          "GEMA-vrije muziek, GEMA-muziek mogelijk bij aanmelding van het evenement",
+          "Synchroon met jullie muziekkeuze",
+          "Als HORIZON, timecodesynchronisatie ter plaatse mogelijk"
+        ],
+        "cards": {
+          "SPARK": [
+            {
+              "text": "GEMA-vrije muziek",
+              "order": 2
+            },
+            {
+              "text": "GEMA-muziek mogelijk bij aanmelding van het evenement",
+              "order": 3
+            }
+          ],
+          "HORIZON": [
+            {
+              "text": "Synchroon met jullie muziekkeuze",
+              "order": 2
+            }
+          ],
+          "ODYSSEY": [
+            {
+              "text": "Timecodesynchronisatie ter plaatse mogelijk",
+              "order": 2
+            }
+          ]
+        },
+        "summary": {
+          "SPARK": {
+            "text": "GEMA-vrije muziek",
+            "order": 2
+          },
+          "HORIZON": {
+            "text": "Synchroon met jullie muziekkeuze",
+            "order": 2
+          }
+        }
+      },
+      {
+        "id": "preview",
+        "category": "service",
+        "label": "Goedkeuring en preview",
+        "cells": [
+          "Jullie eigen elementen vooraf ter goedkeuring",
+          "Videopreview met feedbackronde",
+          "Meerdere feedbackrondes"
+        ],
+        "cards": {
+          "SPARK": [
+            {
+              "text": "Eigen elementen vooraf ter goedkeuring",
+              "order": 4
+            }
+          ],
+          "HORIZON": [
+            {
+              "text": "Videopreview met feedbackronde",
+              "order": 5
+            }
+          ],
+          "ODYSSEY": [
+            {
+              "text": "Meerdere feedbackrondes",
+              "order": 3
+            }
+          ]
+        },
+        "included": {
+          "order": 2,
+          "icon": "monitor-play",
+          "title": "Goedkeuring vooraf",
+          "text": "Jullie zien en beoordelen de eigen elementen vóór de show, vanaf HORIZON als videopreview."
+        }
+      },
+      {
+        "id": "workshop",
+        "category": "service",
+        "label": "Creatieve workshop",
+        "cells": [
+          null,
+          "Met storyboard",
+          "Met storyboard"
+        ],
+        "cards": {
+          "HORIZON": [
+            {
+              "text": "Creatieve workshop met storyboard",
+              "order": 3
+            }
+          ]
+        }
+      },
+      {
+        "id": "safety-plan",
+        "category": "service",
+        "label": "Veiligheidsplan",
+        "cells": [
+          true,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "liability",
+        "category": "service",
+        "label": "Aansprakelijkheidsdekking tot € 1,3 miljoen",
+        "cells": [
+          true,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "crew",
+        "category": "service",
+        "label": "Team ter plaatse",
+        "cells": [
+          true,
+          true,
+          true
+        ],
+        "cards": {
+          "SPARK": [
+            {
+              "text": "Team ter plaatse, veiligheidsplan en aansprakelijkheidsverzekering",
+              "order": 6
+            }
+          ]
+        },
+        "included": {
+          "order": 3,
+          "icon": "users",
+          "title": "Team ter plaatse",
+          "text": "Onze piloten en technici bouwen in circa 3 uur op en vliegen jullie show."
+        }
+      },
+      {
+        "id": "permit",
+        "category": "service",
+        "label": "Vergunning",
+        "cells": [
+          "Standaardprocedure",
+          "Ook complexere procedures, bijvoorbeeld bij luchthavens",
+          "Als HORIZON"
+        ],
+        "cards": {
+          "SPARK": [
+            {
+              "text": "Standaard vergunningsprocedure",
+              "order": 5
+            }
+          ],
+          "HORIZON": [
+            {
+              "text": "Ook complexere vergunningen, bijvoorbeeld bij luchthavens",
+              "order": 4
+            }
+          ]
+        },
+        "included": {
+          "order": 1,
+          "icon": "shield-check",
+          "title": "Vergunning en veiligheidsplan",
+          "text": "Luchtvaartvergunning, veiligheidszones en aansprakelijkheidsdekking tot € 1,3 miljoen zijn altijd inbegrepen."
+        }
+      },
+      {
+        "id": "landowner-consent",
+        "category": "service",
+        "label": "Hulp bij toestemming van grondeigenaren",
+        "cells": [
+          null,
+          true,
+          true
+        ],
+        "cards": {
+          "HORIZON": [
+            {
+              "text": "Hulp bij toestemming van grondeigenaren",
+              "order": 6
+            }
+          ]
+        }
+      },
+      {
+        "id": "project-manager",
+        "category": "service",
+        "label": "Eigen projectleiding",
+        "cells": [
+          null,
+          null,
+          true
+        ],
+        "cards": {
+          "ODYSSEY": [
+            {
+              "text": "Eigen projectleiding",
+              "order": 4
+            }
+          ]
+        },
+        "summary": {
+          "ODYSSEY": {
+            "text": "Eigen projectleiding",
+            "order": 2
+          }
+        }
+      },
+      {
+        "id": "footage",
+        "category": "service",
+        "label": "Video van de show, ruwe beelden",
+        "cells": [
+          "+900 €",
+          "+900 €",
+          true
+        ],
+        "cards": {
+          "ODYSSEY": [
+            {
+              "text": "Video van de show, ruwe beelden",
+              "order": 5
+            }
+          ]
+        }
+      },
+      {
+        "id": "site-visit",
+        "category": "service",
+        "label": "Vooraf een locatiebezoek",
+        "cells": [
+          null,
+          null,
+          "Op aanvraag"
+        ],
+        "cards": {
+          "ODYSSEY": [
+            {
+              "text": "Vooraf een locatiebezoek op aanvraag",
+              "order": 6
+            }
+          ]
+        }
+      }
+    ],
+    "SHOW_DURATION": "Een show duurt meestal circa 13 minuten, tot 25 minuten is mogelijk. Dat geldt voor elk pakket.",
+    "PACKAGE_DETAILS": {
+      "SPARK": {
+        "label": "Klassiek in 2D",
+        "sky": "2D-formaties uit onze catalogus, met maximaal vier eigen elementen",
+        "care": "Jullie eigen elementen vooraf ter goedkeuring, GEMA-vrije muziek",
+        "typical": "Bruiloften, jubilea, kleinere bedrijfsfeesten"
+      },
+      "HORIZON": {
+        "label": "3D in beweging",
+        "sky": "Alles uit SPARK, plus eigen 2D-animaties, eenvoudige 3D-objecten en een nauwkeurig logo",
+        "care": "Creatieve workshop met storyboard, videopreview met feedback, synchroon met jullie muziekkeuze",
+        "typical": "Productpresentaties, bedrijfsevenementen, stadsfeesten",
+        "often": "Bestseller"
+      },
+      "ODYSSEY": {
+        "label": "3D-show met verhaal",
+        "sky": "Alles uit HORIZON, plus 3D-animatie met verhaallijn en volumetrische effecten",
+        "care": "Meerdere feedbackrondes, eigen projectleiding, ruwe videobeelden, timecode mogelijk",
+        "typical": "Campagnes, festivals, grote evenementen"
+      }
+    },
+    "PACKAGE_POINTS": {
+      "SPARK": [
+        "Formaties uit onze catalogus",
+        "Maximaal vier eigen elementen, zoals initialen of een logo",
+        "GEMA-vrije muziek"
+      ],
+      "HORIZON": [
+        "Eigen 2D-animaties en eenvoudig 3D",
+        "Jullie logo nauwkeurig aan de hemel",
+        "Synchroon met jullie muziekkeuze"
+      ],
+      "ODYSSEY": [
+        "Verhaallijn met dramatische opbouw",
+        "Complexe 3D-animaties",
+        "Eigen projectleiding"
+      ]
+    },
+    "PACKAGE_FEATURES": {
+      "SPARK": {
+        "tag": "Een sprankelend begin voor bruiloften, jubilea en kleinere bedrijfs- en cultuurfeesten.",
+        "badge": "Instappakket",
+        "groups": [
+          {
+            "title": "Ontwerp & inhoud",
+            "items": [
+              "Formaties uit onze catalogus, zoals harten of ringen",
+              "Maximaal vier eigen elementen: initialen, logo, stadswapen"
+            ]
+          },
+          {
+            "title": "Muziek",
+            "items": [
+              "GEMA-vrije muziek",
+              "GEMA-muziek mogelijk bij aanmelding van het evenement"
+            ]
+          },
+          {
+            "title": "Service & extra's",
+            "items": [
+              "Eigen elementen vooraf ter goedkeuring",
+              "Standaard vergunningsprocedure",
+              "Team ter plaatse, veiligheidsplan en aansprakelijkheidsverzekering"
+            ]
+          }
+        ]
+      },
+      "HORIZON": {
+        "tag": "Een eigen productie voor productpresentaties, grote bedrijfsevenementen en stadsfeesten.",
+        "badge": "Bestseller",
+        "plus": "Alles uit SPARK, plus:",
+        "groups": [
+          {
+            "title": "Ontwerp & inhoud",
+            "items": [
+              "Volledig eigen 2D-animaties en eenvoudige 3D-elementen",
+              "Nauwkeurige logo's en complexe teksten"
+            ]
+          },
+          {
+            "title": "Muziek",
+            "items": [
+              "Synchroon met jullie muziekkeuze"
+            ]
+          },
+          {
+            "title": "Service & extra's",
+            "items": [
+              "Creatieve workshop met storyboard",
+              "Ook complexere vergunningen, bijvoorbeeld bij luchthavens",
+              "Videopreview met feedbackronde",
+              "Hulp bij toestemming van grondeigenaren"
+            ]
+          }
+        ]
+      },
+      "ODYSSEY": {
+        "tag": "Een show met verhaal voor grote campagnes, festivals en een groot publiek.",
+        "badge": "vanaf 300 drones",
+        "plus": "Alles uit HORIZON, plus:",
+        "groups": [
+          {
+            "title": "Ontwerp & inhoud",
+            "items": [
+              "Complexe 3D-animaties en volumetrische effecten",
+              "Show met verhaal en dramatische opbouw"
+            ]
+          },
+          {
+            "title": "Muziek",
+            "items": [
+              "Timecodesynchronisatie ter plaatse mogelijk"
+            ]
+          },
+          {
+            "title": "Service & extra's",
+            "items": [
+              "Meerdere feedbackrondes",
+              "Eigen projectleiding",
+              "Video van de show, ruwe beelden",
+              "Vooraf een locatiebezoek op aanvraag"
+            ]
+          }
+        ]
+      }
+    },
+    "COMPARISON": [
+      {
+        "id": "drones",
+        "label": "Drones",
+        "cells": [
+          "100 tot 150 drones",
+          "vanaf 200 drones",
+          "vanaf 300 drones"
+        ]
+      },
+      {
+        "id": "more-drones",
+        "label": "Meer drones",
+        "cells": [
+          "+€ 900 per 10",
+          "+€ 4.900 per 50",
+          "+€ 9.900 per 100"
+        ]
+      },
+      {
+        "id": "duration",
+        "label": "Duur",
+        "all": "Meestal circa 13 minuten, tot 25 minuten mogelijk"
+      },
+      {
+        "id": "design",
+        "label": "Ontwerp en beelden",
+        "cells": [
+          "Formaties uit onze catalogus, zoals harten of ringen",
+          "Volledig eigen 2D-animaties",
+          "Als HORIZON, plus complexe 3D-animaties"
+        ]
+      },
+      {
+        "id": "custom-elements",
+        "label": "Eigen elementen",
+        "cells": [
+          "Maximaal vier, zoals initialen, logo of stadswapen",
+          "Nauwkeurige logo's en complexe teksten",
+          "Als HORIZON"
+        ]
+      },
+      {
+        "id": "3d",
+        "label": "3D",
+        "cells": [
+          null,
+          "Eenvoudige 3D-elementen",
+          "Complexe 3D-animaties en volumetrische effecten"
+        ]
+      },
+      {
+        "id": "storytelling",
+        "label": "Storytelling",
+        "cells": [
+          null,
+          null,
+          "Show met verhaal en dramatische opbouw"
+        ]
+      },
+      {
+        "id": "music",
+        "label": "Muziek",
+        "cells": [
+          "GEMA-vrije muziek, GEMA-muziek mogelijk bij aanmelding van het evenement",
+          "Synchroon met jullie muziekkeuze",
+          "Als HORIZON, timecodesynchronisatie ter plaatse mogelijk"
+        ]
+      },
+      {
+        "id": "preview",
+        "label": "Goedkeuring en preview",
+        "cells": [
+          "Jullie eigen elementen vooraf ter goedkeuring",
+          "Videopreview met feedbackronde",
+          "Meerdere feedbackrondes"
+        ]
+      },
+      {
+        "id": "workshop",
+        "label": "Creatieve workshop",
+        "cells": [
+          null,
+          "Met storyboard",
+          "Met storyboard"
+        ]
+      },
+      {
+        "id": "safety-plan",
+        "label": "Veiligheidsplan",
+        "cells": [
+          true,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "liability",
+        "label": "Aansprakelijkheidsdekking tot € 1,3 miljoen",
+        "cells": [
+          true,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "crew",
+        "label": "Team ter plaatse",
+        "cells": [
+          true,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "permit",
+        "label": "Vergunning",
+        "cells": [
+          "Standaardprocedure",
+          "Ook complexere procedures, bijvoorbeeld bij luchthavens",
+          "Als HORIZON"
+        ]
+      },
+      {
+        "id": "landowner-consent",
+        "label": "Hulp bij toestemming van grondeigenaren",
+        "cells": [
+          null,
+          true,
+          true
+        ]
+      },
+      {
+        "id": "project-manager",
+        "label": "Eigen projectleiding",
+        "cells": [
+          null,
+          null,
+          true
+        ]
+      },
+      {
+        "id": "footage",
+        "label": "Video van de show, ruwe beelden",
+        "cells": [
+          "+900 €",
+          "+900 €",
+          true
+        ]
+      },
+      {
+        "id": "site-visit",
+        "label": "Vooraf een locatiebezoek",
+        "cells": [
+          null,
+          null,
+          "Op aanvraag"
+        ]
+      }
+    ],
+    "COMPARISON_NOTE": "Jullie verzorgen als organisator de geluidsinstallatie ter plaatse.",
+    "INCLUDED": [
+      {
+        "id": "design",
+        "order": 0,
+        "icon": "pen-tool",
+        "title": "Ontwerp voor jullie locatie",
+        "text": "We programmeren de show voor jullie locatie, muziek en beelden."
+      },
+      {
+        "id": "permit",
+        "order": 1,
+        "icon": "shield-check",
+        "title": "Vergunning en veiligheidsplan",
+        "text": "Luchtvaartvergunning, veiligheidszones en aansprakelijkheidsdekking tot € 1,3 miljoen zijn altijd inbegrepen."
+      },
+      {
+        "id": "preview",
+        "order": 2,
+        "icon": "monitor-play",
+        "title": "Goedkeuring vooraf",
+        "text": "Jullie zien en beoordelen de eigen elementen vóór de show, vanaf HORIZON als videopreview."
+      },
+      {
+        "id": "crew",
+        "order": 3,
+        "icon": "users",
+        "title": "Team ter plaatse",
+        "text": "Onze piloten en technici bouwen in circa 3 uur op en vliegen jullie show."
+      }
+    ],
+    "EXTRAS": [
+      {
+        "id": "express",
+        "short": "Express",
+        "icon": "zap",
+        "title": "Show binnen twee weken",
+        "text": "Minder dan 14 dagen tot de show. We geven ontwerp en vergunning voorrang.",
+        "price": "Toeslag naar werkzaamheden"
+      },
+      {
+        "id": "film",
+        "short": "Ruwe beelden",
+        "icon": "camera",
+        "title": "Ruwe opnamen met cameradrone",
+        "text": "Beelden voor de aftermovie en social media.",
+        "price": "€ 900, inbegrepen bij ODYSSEY"
+      },
+      {
+        "id": "behoerden",
+        "short": "Contact met instanties",
+        "icon": "landmark",
+        "title": "Uitgebreide begeleiding bij instanties",
+        "text": "We verzorgen alle communicatie met overheidsinstanties.",
+        "price": "Prijs op aanvraag"
+      },
+      {
+        "id": "kontrollzone",
+        "short": "Bij luchthavens",
+        "icon": "plane",
+        "title": "Gecontroleerd luchtruim en locaties bij luchthavens",
+        "text": "Voor gecontroleerd luchtruim en terreinen bij luchthavens.",
+        "price": "Prijs op aanvraag"
+      },
+      {
+        "id": "schweiz",
+        "short": "Zwitserland",
+        "icon": "swiss",
+        "title": "Shows in Zwitserland",
+        "text": "BAZL-aanvraag en douaneafhandeling voor onze vloot.",
+        "price": "+€ 1.900 exclusief btw"
+      },
+      {
+        "id": "indoor",
+        "short": "Indoor",
+        "icon": "building-2",
+        "title": "Indoor-droneshows",
+        "text": "20 tot 50 drones, 5 tot 8 minuten, vanaf 3 m plafondhoogte. Elke indoor-show berekenen we apart.",
+        "price": "vanaf ca. € 15.000 exclusief btw voor 20 drones",
+        "link": {
+          "label": "Meer over indoor-shows",
+          "href": "/drohnenshow-indoor/"
+        }
+      }
+    ]
+  }
+}

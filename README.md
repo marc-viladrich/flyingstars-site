@@ -51,7 +51,7 @@ Das aktuelle Besuchsdesign folgt [docs/DESIGN.md](docs/DESIGN.md). `src/schemas/
 
 DE-Inhalte liegen am Root der jeweiligen Collection, EN/NL als vollständige Dateien unter `en/` und `nl/`. Sie verwenden keine alten Übersetzungs-Overlays. Der Build prüft Vollständigkeit und SHA-256-Frische. Anleitung: [docs/i18n/README.md](docs/i18n/README.md).
 
-Die frühere vollständige Editor-Integration ist noch nicht auf dieses Modell migriert. Der Start ist deshalb standardmäßig gesperrt. Ein eingeschränkter Dateieditor lässt sich mit `AFE_DESIGN_EDITOR=source` testen; [Funktionen, Sperren und offene Punkte](docs/editor-designsprache.md). Die übrigen Editor-Dokumente beschreiben die Vorgängerarchitektur und sind historische Nachweise.
+Die Editor-Integration verwendet vollständige Inhaltsdateien und renderseitige Feldbindungen. Sie benötigt die noch unveröffentlichten Produktänderungen für AFE 0.3.0; lokal lässt sich das private Produkt verlinken. [Betrieb und Voraussetzungen](docs/editor-designsprache.md), [Migrationsnachweis](docs/editor-migration-2026-11.md). Die älteren Editor-Dokumente beschreiben die Vorgängerarchitektur und bleiben historische Nachweise.
 
 ## Neue Kundensite anlegen
 

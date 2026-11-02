@@ -1,0 +1,70 @@
+{
+  "nav": [
+    {
+      "label": "base.occasions",
+      "href": "/#anlaesse",
+      "children": [
+        {
+          "label": "site.businesses",
+          "href": "/"
+        },
+        {
+          "label": "site.brandsAdvertising",
+          "href": "/drohnenshow-werbung/"
+        },
+        {
+          "label": "site.agencies",
+          "href": "/drohnenshow-werbung/#agenturen"
+        },
+        {
+          "label": "site.wedding",
+          "href": "/drohnenshow-hochzeit/"
+        },
+        {
+          "label": "Indoor",
+          "href": "/drohnenshow-indoor/"
+        }
+      ]
+    },
+    {
+      "label": "site.prices",
+      "href": "/drohnenshow-preise/"
+    },
+    {
+      "label": "casestudy.ourWork",
+      "href": "/referenzen/"
+    },
+    {
+      "label": "site.aboutUs",
+      "href": "/ueber-uns/"
+    },
+    {
+      "label": "FAQ",
+      "href": "/faq/"
+    },
+    {
+      "label": "Blog",
+      "href": "/blog/"
+    }
+  ],
+  "cta": {
+    "label": "chopper404.requestAShow",
+    "href": "/kontakt/"
+  },
+  "footer": {
+    "legal": [
+      {
+        "label": "site.legalNotice",
+        "href": "/impressum/"
+      },
+      {
+        "label": "site.privacy",
+        "href": "/datenschutz/"
+      },
+      {
+        "label": "site.terms",
+        "href": "https://flyingstars.art/agb/"
+      }
+    ]
+  }
+}

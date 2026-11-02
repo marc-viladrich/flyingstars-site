@@ -1,4 +1,5 @@
 ---
+import {body} from 'astro-frontend-editor/markers';
 import { localizedCollection } from '../i18n/content';
 import { forPath } from '../i18n/server';
 const { t, localHref, formatLocale } = forPath(Astro.url.pathname);
@@ -34,7 +35,7 @@ const updated = post.data.updated && post.data.updated.valueOf() !== post.data.d
       </div>
     </header>
     {cover && <figure class="post-cover" data-curtain><img src={cover.src} {...cover.attributes} width={cover.width} height={cover.height} alt={post.data.cover!.alt} loading="eager" decoding="async" fetchpriority="high" /></figure>}
-    <div class="post-body"><Content /></div>
+    <div class="post-body" {...body(post)}><Content /></div>
     <aside class="post-author" aria-label={t('blogpost.aboutTheAuthor')}>
       <img class="face" src={face.src} width={face.width} height={face.height} alt={AUTHOR.name} loading="lazy" decoding="async" />
       <p><b>{AUTHOR.name}</b> {t('blogpost.runsFlyingstarsTogetherWithRonjaDonsbachAndErwinWilmsHe')} <a class="link" href={localHref("/ueber-uns/#team")}>{t('blogpost.theTeam')} <span aria-hidden="true">→</span></a></p>

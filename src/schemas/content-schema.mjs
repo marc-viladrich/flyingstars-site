@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import {imageSource,imageMetadata} from './media.mjs';
 import { projectShowcaseSchema } from './project-showcase.mjs';
 
 // ---------------------------------------------------------------------------
@@ -21,11 +22,11 @@ const sectionHeading = { id: z.string().optional(), kicker: z.string().optional(
 const brandPath = z.string().regex(/^\/brand\/[a-z0-9/._-]+\.(svg|png|webp)$/).describe('Lokale Datei unter public/brand/');
 
 const image = z.object({
-  src: z.url().describe('Absolute URL im zentralen Medienspeicher'),
+  src: imageSource,
   alt: z.string().min(1).describe('Pflicht. Leerer Alt-Text nur für Dekoration, dann alt: ""'),
   width: z.number().int().positive(),
   height: z.number().int().positive(),
-});
+}).meta(imageMetadata);
 
 export const sectionSchema = z.discriminatedUnion('type', [
   z.object({
@@ -277,7 +278,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     // Ausgewählte Referenzen (Projekte-Sammlung) nach ID, als Karten mit Showvideo wie auf der Startseite.
     type: z.literal('landingRefs'), ...sectionHeading,
     headline: z.string().min(1), text: z.string().optional(), cta: link.optional(),
-    projects: z.array(z.string().min(1)).min(1).max(6).describe('Dateinamen aus src/content/projects ohne .md'),
+    projects: z.array(z.string().min(1).meta({'x-afe':{reference:{collection:'projects',encoding:'id'}}})).min(1).max(6).describe('Dateinamen aus src/content/projects ohne .md'),
   }),
   z.object({
     // Konfigurator-Teaser mit Kopf, Ziel und Knopfbeschriftung je Anlass.
@@ -405,25 +406,25 @@ export const postSchema = z.object({
     cover: image.optional(),
     draft: z.boolean().default(false),
     // Herkunft für Nachvollziehbarkeit: Issue-Nummer des Intake, falls vorhanden.
-    sourceIssue: z.number().int().positive().optional(),
+    sourceIssue: z.number().int().positive().optional().meta({'x-afe':{group:'Herkunft'}}),
   });
 
 export const projectSchema = z.object({
     ...translationMeta,
     title: z.string().min(1),
-    client: z.string().optional(),
-    showcase: projectShowcaseSchema.optional(),
+    client: z.string().optional().meta({'x-afe':{group:'Showdaten'}}),
+    showcase: projectShowcaseSchema.optional().meta({'x-afe':{group:'Fallstudie'}}),
     date: z.coerce.date(),
-    location: z.string().optional(),
+    location: z.string().optional().meta({'x-afe':{group:'Showdaten'}}),
     // Für den Referenzen-Filter; an jeder Referenz, nicht nur an Fallstudien. Unbekannt: weglassen.
     occasion: z.enum(['firma', 'stadt', 'kultur', 'privat', 'indoor', 'sonstiges']).optional()
       .describe('firma = Marken & Unternehmen, stadt = Städte & Festivals, kultur = Kultur & Bühne, privat = Hochzeit & Privat'),
     drones: z.number().int().positive().optional().describe('Drohnen in der Show'),
-    summary: z.string().min(30).max(200),
+    summary: z.string().min(30).max(200).meta({'x-afe':{group:'Projektkarte'}}),
     cover: image.optional(),
-    featured: z.boolean().default(false),
+    featured: z.boolean().default(false).meta({'x-afe':{group:'Veröffentlichung'}}),
     draft: z.boolean().default(false),
-    sourceIssue: z.number().int().positive().optional(),
+    sourceIssue: z.number().int().positive().optional().meta({'x-afe':{group:'Herkunft'}}),
   });
 
 export const faqSchema = z.object({
@@ -432,7 +433,24 @@ export const faqSchema = z.object({
     tags: z.array(z.string()).default([]),
     order: z.number().int().default(100),
     draft: z.boolean().default(false),
-    sourceIssue: z.number().int().positive().optional(),
+    sourceIssue: z.number().int().positive().optional().meta({'x-afe':{group:'Herkunft'}}),
   });
 
 export const contentSchemas = { pages: pageSchema, posts: postSchema, projects: projectSchema, faq: faqSchema };
+
+// Lists are edited through their existing Zod constraints. One traversal supplies the editor's
+// capabilities for every present and future nested list, without a second section/field catalogue.
+const editorialNodes=new Set();
+function editorialLists(schema,key) {
+ if(!schema?._def||editorialNodes.has(schema))return;
+ editorialNodes.add(schema);
+ if(!schema.description&&key&&schema._def.type!=='object'&&schema._def.type!=='union')z.globalRegistry.add(schema,{...schema.meta(),description:key.replace(/([a-z])([A-Z])/g,'$1 $2').replace(/^./,letter=>letter.toUpperCase())});
+ if(schema._def.type==='array')z.globalRegistry.add(schema,{...schema.meta(),'x-afe':{...schema.meta()?.['x-afe'],array:{...(schema._def.element===sectionSchema?{role:'blocks',discriminator:'type'}:{}),insertable:true,removable:true,reorderable:true,...schema.meta()?.['x-afe']?.array}}});
+ const def=schema._def;
+ if(schema.shape)Object.entries(schema.shape).forEach(([name,child])=>editorialLists(child,name));
+ if(schema.options)schema.options.forEach(child=>editorialLists(child,key));
+ if(def.innerType)editorialLists(def.innerType,key);
+ if(def.element)editorialLists(def.element,key);
+ if(def.items)def.items.forEach(child=>editorialLists(child,key));
+}
+for(const [directory,schema]of Object.entries(contentSchemas)){z.globalRegistry.add(schema,{...schema.meta(),'x-afe':{...schema.meta()?.['x-afe'],collection:{label:directory,title:[directory==='faq'?'question':'title'],operations:['update']}}});editorialLists(schema);}

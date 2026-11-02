@@ -1,6 +1,8 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+const markerIntegration='astro-frontend-editor/astro/markers';
+const editorIntegrations=process.env.AFE_MODE==='editor'?[(await import(markerIntegration)).default()]:[];
 import { LOCALES, localizedHref } from './src/i18n/routing.mjs';
 
 // SITE_URL und MEDIA_HOST kommen aus der Umgebung (lokal .env, in CI als Variable),
@@ -14,7 +16,7 @@ export default defineConfig({
   trailingSlash: 'always',
   cacheDir: process.env.FLYINGSTARS_IMAGE_CACHE_DIR ?? './.astro/cache',
   i18n: { defaultLocale: 'de', locales: [...LOCALES], routing: { prefixDefaultLocale: false } },
-  integrations: [sitemap({ i18n: { defaultLocale: 'de', locales: { de: 'de', en: 'en', nl: 'nl' } } })],
+  integrations: [...editorIntegrations, sitemap({ i18n: { defaultLocale: 'de', locales: { de: 'de', en: 'en', nl: 'nl' } } })],
   image: {
     ...(process.env.FLYINGSTARS_OFFLINE_MEDIA === '1' ? { service: { entrypoint: 'astro/assets/services/noop' } } : {}),
     // Nur der zentrale Medienspeicher darf als Remote-Bildquelle dienen.
