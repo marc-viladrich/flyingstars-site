@@ -3,16 +3,19 @@ import {readFile,writeFile,readdir,mkdir} from 'node:fs/promises';
 import {execFile} from 'node:child_process';import{promisify}from'node:util';import path from'node:path';import{createHash}from'node:crypto';
 import {startNativeServers,resolveRuntimeOptions} from './server.mjs';
 import {codecs} from 'astro-frontend-editor/runtime/extensions';
+const selectedEngines=process.env.AFE_PROOF_ENGINES?.split(',')??['chromium','webkit'];
+if(!selectedEngines.length||selectedEngines.some(name=>!['chromium','webkit'].includes(name)))throw Error('AFE_PROOF_ENGINES erwartet chromium und/oder webkit.');
+const engines=[['chromium',chromium],['webkit',webkit]].filter(([name])=>selectedEngines.includes(name));
 const {i18nFixture}=await import('./i18n-test-fixture.mjs');
 const run=promisify(execFile),fixture=await i18nFixture(),stateDir=fixture.root+'/state',origin='http://127.0.0.1:4763',evidence=process.env.AFE_EVIDENCE_DIR||'/tmp/fs-editor-browser-proof';await writeFile(evidence+'-fixture.json',JSON.stringify({root:fixture.root,source:fixture.source}));await mkdir(evidence,{recursive:true});
 const usernames=Object.fromEntries(['chromium','webkit'].map(engine=>[engine,'proof-'+engine+'-'+Date.now()]));
 const password='Temporary browser proof 2026!';
-for(const engine of ['chromium','webkit'])await run(process.execPath,[new URL('./manage-accounts.mjs',import.meta.url).pathname,'add',usernames[engine],'--name','Browser proof','--email',usernames[engine]+'@example.invalid','--state-dir',stateDir],{env:{PATH:process.env.PATH,HOME:process.env.HOME,EDITOR_NEW_PASSWORD:password},maxBuffer:1000000});
+for(const [engine]of engines)await run(process.execPath,[new URL('./manage-accounts.mjs',import.meta.url).pathname,'add',usernames[engine],'--name','Browser proof','--email',usernames[engine]+'@example.invalid','--state-dir',stateDir],{env:{PATH:process.env.PATH,HOME:process.env.HOME,EDITOR_NEW_PASSWORD:password},maxBuffer:1000000});
 const options=resolveRuntimeOptions({env:{PATH:process.env.PATH},values:{siteRoot:fixture.source,stateDir,port:4763,publicPort:4764,preview:'static',auth:'on',remote:false,offlineMedia:'1',translationProvider:'fake'}});
 const app=await startNativeServers({options,initialize:false});await app.builder.init();console.log('READY',fixture.source);
 fixture.store.sync.close();
 const reports=[];
-try{for(const [engine,type]of [['chromium',chromium],['webkit',webkit]]){
+try{for(const [engine,type]of engines){
  const browser=await type.launch({headless:true});const context=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce'});const page=await context.newPage();page.setDefaultTimeout(45000);const errors=[];page.on('pageerror',e=>errors.push(e.message));
  try{
   await page.goto(origin+'/editor/');console.log(engine,'login',await page.locator('body').innerText());
