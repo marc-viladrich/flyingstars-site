@@ -17,7 +17,7 @@ FlyingStars liefert und bestätigt Fakten, Originalmedien, Nutzungsrechte und Be
 
 ## Hinweise je Seite und Abschnitt
 
-43 Hinweise in DE, identisch in EN und NL, insgesamt 129 gespeicherte `todo`-Felder. Die Hinweise erscheinen nur im Dev-Server und in Builds mit `PUBLIC_ANNOTATE=1`. Die normalen Inhalte bleiben in allen Sprachen übersetzt. Interne Notizen werden bewusst nicht maschinell übersetzt.
+43 Hinweise in DE, identisch in EN und NL, insgesamt 129 gespeicherte `todo`-Felder. Die Hinweise erscheinen nur im lokalen Dev-Server, in keinem Build und auf keiner Preview. Die normalen Inhalte bleiben in allen Sprachen übersetzt. Interne Notizen werden bewusst nicht maschinell übersetzt.
 
 ### / (10 Hinweise)
 

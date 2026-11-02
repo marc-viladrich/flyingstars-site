@@ -38,19 +38,38 @@
   --cc-footer-color: var(--muted);
   --cc-footer-border-color: var(--line);
 }
-#cc-main .cm.cm--box { width: calc(100% - 32px); max-width: 700px; }
+/* Erste Stufe: kleine Karte unten rechts, die Seite bleibt bedienbar und hell (Marc, 02.11.2026). Die Einstellungen
+   bleiben ein echter Dialog in der Mitte. */
+#cc-main .cm.cm--box { width: 380px; max-width: calc(100vw - 32px); border: 1px solid var(--line-strong); box-shadow: 0 18px 50px rgb(0 0 0 / .45); }
+#cc-main .cm__body { padding: 0; }
+#cc-main .cm__texts { padding: 16px 0 0; }
+/* gleiche Ränder für Text und Knöpfe, auch gegen die !important-Werte der Bibliothek unter 640px */
+#cc-main .cm .cm__title, #cc-main .cm .cm__desc, #cc-main .cm .cm__btns { padding-left: 18px !important; padding-right: 18px !important; }
+#cc-main .cm__title { font: 500 16px/1.3 var(--display); letter-spacing: -.01em; margin: 0 0 6px; }
+#cc-main .cm__title + .cm__desc { margin-top: 0; }
+#cc-main .cm__desc { font-size: 13px; line-height: 1.5; padding-top: 0; padding-bottom: 0; max-height: none; }
+#cc-main .cm .cm__btns { padding-top: 12px; padding-bottom: 12px; border-top: 0 !important; }
+#cc-main .consent-fine { color: var(--faint); font-size: 12px; }
+#cc-main .consent-fine a { color: var(--muted); text-underline-offset: 2px; }
+#cc-main .consent-list { display: block; margin: 2px 0 0; padding: 0; }
+#cc-main .consent-list [role=listitem] { display: block; position: relative; padding-left: 16px; }
+#cc-main .consent-list [role=listitem]::before { content: ""; position: absolute; left: 3px; top: .62em; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
 #cc-main .pm.pm--box { max-height: calc(100dvh - 48px); }
 @media (max-width: 640px) { #cc-main .pm.pm--box { max-height: 100dvh; } }
-#cc-main .cm__title, #cc-main .pm__title { font: 500 clamp(26px, 4vw, 34px)/1.15 var(--display); letter-spacing: -.025em; }
-#cc-main .cm__desc, #cc-main .pm__section-desc { font-size: 14px; line-height: 1.6; }
+#cc-main .pm__title { font: 500 clamp(26px, 4vw, 34px)/1.15 var(--display); letter-spacing: -.025em; }
+#cc-main .pm__section-desc { font-size: 14px; line-height: 1.6; }
 #cc-main .consent-paragraph { display: block; }
-#cc-main .consent-paragraph + .consent-paragraph { margin-top: 12px; }
+#cc-main .consent-paragraph + .consent-paragraph, #cc-main .consent-list + .consent-paragraph { margin-top: 8px; }
 #cc-main .pm__section-title { font-family: var(--display); }
-#cc-main .cm__btn, #cc-main .pm__btn { min-height: 48px; font: 500 14px/1.3 var(--body); }
-#cc-main .cm .cm__btns, #cc-main .pm .pm__footer { display: grid; grid-template-columns: 1fr; gap: 10px; }
-#cc-main .cm .cm__btn-group, #cc-main .pm .pm__btn-group { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0 !important; }
+#cc-main .pm__btn { min-height: 48px; font: 500 14px/1.3 var(--body); }
+#cc-main .cm__btn { min-height: 38px; font: 500 13.5px/1.3 var(--body); }
+#cc-main .cm .cm__btns, #cc-main .pm .pm__footer { display: grid; grid-template-columns: 1fr; gap: 8px; }
+#cc-main .cm .cm__btn-group, #cc-main .pm .pm__btn-group { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 0 !important; }
 #cc-main .cm .cm__btn-group + .cm__btn-group, #cc-main .pm .pm__btn-group + .pm__btn-group { grid-template-columns: 1fr; }
-#cc-main .cm .cm__btn, #cc-main .pm .pm__btn { width: 100%; min-width: 0; margin: 0 !important; padding: 12px 14px; }
+#cc-main .cm .cm__btn, #cc-main .pm .pm__btn { width: 100%; min-width: 0; margin: 0 !important; padding: 9px 12px; }
+/* „Einstellungen“ als leiser Textknopf unter den zwei gleich gewichteten Entscheidungen */
+#cc-main .cm .cm__btn[data-role=show] { min-height: 24px; padding: 2px 0; font-size: 12.5px; background: none; border-color: transparent; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; justify-self: start; width: auto; }
+#cc-main .cm .cm__btn[data-role=show]:hover { color: var(--head); background: none; border-color: transparent; }
 #cc-main a { color: var(--accent); }
 #cc-main button:focus-visible, #cc-main a:focus-visible, #cc-main input:focus-visible + .toggle__icon { outline: 3px solid var(--cyan); outline-offset: 3px; }
 [data-consent-error]:not([hidden]) { position: fixed; z-index: 2147483647; bottom: 16px; left: 16px; right: 16px; padding: 16px; background: var(--ground); color: var(--head); border: 1px solid var(--accent); }

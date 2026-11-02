@@ -15,7 +15,7 @@ const closingBox = z.object({ headline: z.string().min(1), text: z.string().min(
 // Kicker sind seit 31.10.2026 wieder sichtbar (Marc: „die Eyebrow-Headings brauchen Farbe“, wie im Vercel-Prototyp).
 const legacy = z.string().optional().describe('Veraltet, wird nicht mehr angezeigt');
 // Redaktioneller Hinweis je Section (Marc, 02.11.2026: „bei den Seiten, bei denen inhaltlich noch was fehlt, das markieren“).
-// Erscheint nur in Vorschau-Builds mit PUBLIC_ANNOTATE=1 (SectionRenderer.astro), in Produktion steht er nicht im HTML.
+// Erscheint nur im lokalen Dev-Server (SectionRenderer.astro); kein Build, auch keine Preview, enthält ihn.
 const todo = { todo: z.string().optional().describe('Was hier inhaltlich fehlt oder von FlyingStars kommen muss; nur in der Vorschau sichtbar') };
 const sectionHeading = { id: z.string().optional(), kicker: z.string().optional().describe('Kicker über der Headline, z. B. "Anlässe"'), ...todo };
 const brandPath = z.string().regex(/^\/brand\/[a-z0-9/._-]+\.(svg|png|webp)$/).describe('Lokale Datei unter public/brand/');
@@ -249,8 +249,8 @@ export const sectionSchema = z.discriminatedUnion('type', [
     headline: z.string().min(1), text: z.string().optional(),
     marks: z.array(z.object({ value: z.string().min(1), label: z.string().min(1), text: z.string().optional() })).min(2).max(5),
     shortcut: z.object({ value: z.string().min(1), label: z.string().min(1), text: z.string().optional(),
-      href: z.string().optional(), linkLabel: z.string().optional() }).optional()
-      .describe('Abzweigung im Netzplan (MetroLine.astro), z. B. Express: von der ersten zur letzten Station, mit optionalem Link'),
+      href: z.string().optional() }).strict().optional()
+      .describe('Abzweigung im Netzplan (MetroLine.astro), z. B. Express: von der ersten zur letzten Station; mit href wird das Schild selbst zum Knopf'),
     facts: z.array(z.object({ value: z.string().min(1), label: z.string().min(1), text: z.string().optional() })).default([]),
     note: z.string().optional(),
   }),

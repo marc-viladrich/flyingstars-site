@@ -140,7 +140,7 @@ sections:
       - { value: 3 Wochen, label: "für Motive und Musik, mindestens", text: "Ihr seht einen Entwurf mit eurer Musik, gebt Feedback und am Ende jedes Motiv frei." }
       - { value: 3 h, label: vor der Show vor Ort, text: "Unser Team sperrt die Startfläche, fliegt die Show und baut danach wieder ab." }
     # Express als Abzweigung im Netzplan (Fragebogen: unter 14 Tagen, Aufpreis nach Aufwand), mit Weg in die Anfrage
-    shortcut: { value: Express unter 14 Tagen, label: Aufpreis nach Aufwand, href: "/kontakt/?extras=express", linkLabel: Express anfragen }
+    shortcut: { value: Express unter 14 Tagen, label: Aufpreis nach Aufwand, href: "/kontakt/?extras=express" }
 
   - type: landingCta
     headline: Es soll eine *Überraschung* werden?

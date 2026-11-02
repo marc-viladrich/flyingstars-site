@@ -29,6 +29,8 @@ async function fillInquiry(page: Page) {
   await page.locator('[data-next]').click();
   await page.locator('#f-name').fill('Integration Test');
   await page.locator('#f-mail').fill('test@example.test');
+  // Seit Runde 15 liegt „Wie habt ihr uns gefunden?“ hinter einem „+“-Chip.
+  await page.locator('[data-opt-add=quelle]').click();
   await page.locator('#f-quelle').selectOption('Empfehlung');
 }
 
@@ -208,6 +210,7 @@ test.describe('configured public IDs', () => {
       await expect.poll(() => page.locator(':focus').evaluate((element) => !!element.closest('.cm'))).toBe(true);
       const tab = browserName === 'webkit' && process.platform === 'darwin' ? 'Alt+Tab' : 'Tab';
       await page.keyboard.press(tab); await expect(consent(page).locator('.cm__desc')).toBeFocused();
+      await page.keyboard.press(tab); await expect(consent(page).locator('.cm__desc a')).toBeFocused();
       await page.keyboard.press(tab); await expect(page.locator(':focus')).toHaveText('Ablehnen');
       await page.screenshot({ path: testInfo.outputPath(`consent-de-${width}.png`) });
       expect((await new AxeBuilder({ page }).include('#cc-main').withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze()).violations).toEqual([]);
@@ -276,25 +279,49 @@ test.describe('configured public IDs', () => {
     expect(await events(page)).toEqual([]);
   });
 
-  test('both modals isolate the background and restore it when closed', async ({ page }) => {
-    await page.goto('/');
+  test('notice sits small in the bottom-right corner, leaves the page usable and undimmed; only settings isolate', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 }); await page.goto('/');
     await expect(consent(page)).toBeVisible();
-    await expect(page.locator('main')).toHaveAttribute('inert', '');
-    await consent(page).getByRole('button', { name: 'Ablehnen', exact: true }).click();
+    await expect.poll(() => consent(page).evaluate(el => getComputedStyle(el).opacity)).toBe('1');
+    await expect(consent(page)).toHaveAttribute('role', 'region');
     await expect(page.locator('main')).not.toHaveAttribute('inert');
+    await expect(page.locator('html')).not.toHaveClass(/disable--interaction/);
+    await expect(page.locator('#cc-main .cm-wrapper .cm-overlay, #cc-main .cm-overlay')).toHaveCount(0);
+    const box = (await consent(page).boundingBox())!;
+    expect(box.width).toBeLessThanOrEqual(380);
+    expect(box.height).toBeLessThanOrEqual(360);
+    expect(1440 - (box.x + box.width)).toBeLessThanOrEqual(40);
+    expect(900 - (box.y + box.height)).toBeLessThanOrEqual(40);
+    // The page beside the notice stays clickable.
+    await page.locator('header a[href]').first().click({ trial: true });
+    await consent(page).getByRole('button', { name: 'Ablehnen', exact: true }).click();
+    await expect(consent(page)).toBeHidden();
     await openSettings(page);
     await expect(page.locator('main')).toHaveAttribute('inert', '');
     await page.keyboard.press('Escape');
     await expect(page.locator('main')).not.toHaveAttribute('inert');
   });
 
-  test('notice text can be scrolled by keyboard on a short mobile viewport', async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 600 }); await page.goto('/');
-    const description = consent(page).locator('.cm__desc');
+  test('Tab leaves the notice instead of cycling inside it', async ({ page, browserName }) => {
+    await page.goto('/');
     await expect.poll(() => consent(page).evaluate(el => getComputedStyle(el).opacity)).toBe('1');
-    await expect(description).toHaveAttribute('tabindex', '0');
-    expect(await description.evaluate(el => el.scrollHeight > el.clientHeight)).toBe(true);
-    await description.focus(); await page.keyboard.press('PageDown');
-    await expect.poll(() => description.evaluate(el => el.scrollTop)).toBeGreaterThan(0);
+    await page.bringToFront();
+    await consent(page).getByRole('button', { name: 'Einstellungen', exact: true }).focus();
+    const tab = browserName === 'webkit' && process.platform === 'darwin' ? 'Alt+Tab' : 'Tab';
+    await page.keyboard.press(`Shift+${tab}`);
+    await expect.poll(() => page.locator(':focus').evaluate((element) => !!element.closest('.cm'))).toBe(true);
+    await consent(page).locator('.cm__desc').focus();
+    await page.keyboard.press(`Shift+${tab}`);
+    await expect.poll(() => page.evaluate(() => !document.activeElement?.closest('.cm'))).toBe(true);
+  });
+
+  test('notice stays compact on a short mobile viewport and keeps both bullets', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 600 }); await page.goto('/');
+    await expect.poll(() => consent(page).evaluate(el => getComputedStyle(el).opacity)).toBe('1');
+    const box = (await consent(page).boundingBox())!;
+    expect(box.height).toBeLessThanOrEqual(600 * 0.7);
+    await expect(consent(page).locator('.consent-list [role=listitem]')).toHaveCount(2);
+    const description = consent(page).locator('.cm__desc');
+    if (await description.evaluate(el => el.scrollHeight > el.clientHeight)) await expect(description).toHaveAttribute('tabindex', '0');
   });
 });

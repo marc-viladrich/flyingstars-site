@@ -11,7 +11,7 @@ const BLOCK = /<(p|li|figcaption|blockquote)(\s[^>]*)?>([\s\S]*?)<\/\1>/gi;
 const NESTED = /<(?:p|li|ul|ol|div|dl|table|section|h[1-6]|br|script|style|template|svg)\b/i;
 /** Wörter, die zusammen höchstens so lang sind, werden verbunden (Zeichen ohne Tags); das letzte Wort höchstens MAX_LAST. */
 const MAX_PAIR = 28;
-const MAX_LAST = 14;
+const MAX_LAST = 22; // „Sicherheitsprotokoll.“ (21) passt mit seinem Vorgänger noch in jede Spalte, seit Absätze pretty statt balance umbrechen
 
 /** Verbindet im inneren HTML eines Blocks die letzten zwei Wörter. Tags bleiben unangetastet. */
 export function joinLastWords(inner: string): string {
@@ -43,6 +43,12 @@ export function joinLastWords(inner: string): string {
   let start = target;
   while (start > 0 && /\s/.test(part[start - 1])) start--;
   parts[targetPart] = part.slice(0, start) + '&nbsp;' + part.slice(target + 1);
+  // Bindestrich im letzten Wort („E-Transit.“) ist sonst eine Umbruchstelle: Wortverbinder (U+2060) dahinter
+  for (let i = targetPart; i < parts.length; i++) {
+    if (parts[i].startsWith('<')) continue;
+    const from = i === targetPart ? parts[i].lastIndexOf('&nbsp;') + 6 : 0;
+    parts[i] = parts[i].slice(0, from) + parts[i].slice(from).replace(/-(?=[^\s-])/g, '-&#8288;');
+  }
   return parts.join('');
 }
 
@@ -54,10 +60,18 @@ export function noOrphans(html: string): string {
   return html.split(RAW).map((chunk, i, all) => {
     // split mit zwei Gruppen: [Text, ganzer Rohblock, Tagname, Text, …]
     if (i % 3 !== 0) return i % 3 === 1 ? chunk : '';
-    return chunk.replace(BLOCK, (whole, tag: string, attrs = '', inner: string) => {
-      if (NESTED.test(inner) || /data-orphans=["']?keep/.test(attrs) || inner.includes('&nbsp;')) return whole;
-      const joined = joinLastWords(inner);
-      return joined === inner ? whole : `<${tag}${attrs}>${joined}</${tag}>`;
-    });
+    return blocks(chunk);
   }).join('');
+}
+
+// Ein Block mit Unterblöcken (z. B. <li> einer Teamkarte mit <p> darin) wird nicht selbst verbunden, aber seine
+// Unterblöcke schon. Früher verschluckte der Treffer auf <li> das innere <p>, das dann nie bearbeitet wurde.
+function blocks(html: string): string {
+  return html.replace(BLOCK, (whole, tag: string, attrs = '', inner: string) => {
+    if (/data-orphans=["']?keep/.test(attrs)) return whole;
+    if (NESTED.test(inner)) { const nested = blocks(inner); return nested === inner ? whole : `<${tag}${attrs}>${nested}</${tag}>`; }
+    if (inner.includes('&nbsp;')) return whole;
+    const joined = joinLastWords(inner);
+    return joined === inner ? whole : `<${tag}${attrs}>${joined}</${tag}>`;
+  });
 }

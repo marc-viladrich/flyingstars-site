@@ -24,8 +24,10 @@ async function initConsent(element: HTMLElement) {
   let expiryTimer: ReturnType<typeof setTimeout>;
   let current: ReturnType<typeof readConsent> = null;
   const inertElements = new Map<HTMLElement, boolean>();
+  // Only the settings dialog is modal. The first notice is a small region in the corner that leaves the page
+  // usable and undimmed (Marc, 02.11.2026: „viel zu in your face … links/rechts unten in einer Ecke, deutlich kleiner“).
   function isolateModal() {
-    const visible = document.querySelector('#cc-main [role=dialog]:not([aria-hidden=true])');
+    const visible = document.querySelector('#cc-main .pm[role=dialog]:not([aria-hidden=true])');
     if (visible) {
       for (const child of document.body.children) {
         if (!(child instanceof HTMLElement) || child.contains(visible)) continue;
@@ -46,8 +48,11 @@ async function initConsent(element: HTMLElement) {
   window.gtag('set', 'url_passthrough', false);
 
   function focusVisibleModal() {
-    const modal = document.querySelector<HTMLElement>('#cc-main .pm:not([aria-hidden=true])')
-      ?? document.querySelector<HTMLElement>('#cc-main .cm:not([aria-hidden=true])');
+    // The settings dialog keeps focus. The corner notice only takes it when it appears and nothing else has focus,
+    // so it never pulls focus back while someone is using the page (WebKit sometimes drops the library's own focus).
+    const notice = document.activeElement === document.body
+      ? document.querySelector<HTMLElement>('#cc-main .cm:not([aria-hidden=true])') : null;
+    const modal = document.querySelector<HTMLElement>('#cc-main .pm:not([aria-hidden=true])') ?? notice;
     if (modal && getComputedStyle(modal).visibility === 'visible' && !modal.contains(document.activeElement)) {
       modal.focus({ preventScroll: true });
     }
@@ -128,7 +133,11 @@ async function initConsent(element: HTMLElement) {
   const escape = (text: string) => text.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]!);
   const paragraph = (text: string) => `<span class="consent-paragraph">${escape(text)}</span>`;
   const privacy = `<a class="link" href="${escape(element.dataset.privacy!)}">${escape(copy.privacy)}</a>`;
-  const summary = paragraph(copy.summary) + paragraph([config.ga && copy.gaSummary, config.ads && copy.adsSummary].filter(Boolean).join(' ')) + paragraph(copy.transfer);
+  // The optional services as a list (Marc, 02.11.2026: „zwei Bullet Points“). Spans with list roles, because the
+  // library renders the description into a <p>.
+  const services = [config.ga && copy.gaSummary, config.ads && copy.adsSummary].filter(Boolean) as string[];
+  const list = `<span class="consent-paragraph">${escape(copy.optional)}</span><span class="consent-list" role="list">${services.map((text) => `<span role="listitem">${escape(text)}</span>`).join('')}</span>`;
+  const summary = paragraph(copy.summary) + list + `<span class="consent-paragraph consent-fine">${escape(copy.transfer)} ${privacy}</span>`;
   const onConsent = ({ cookie }: { cookie: CookieConsent.CookieValue }) => {
     if (booting) { if (previous) apply(previous); return; }
     const record = readConsent(JSON.stringify(cookie), config);
@@ -148,11 +157,11 @@ async function initConsent(element: HTMLElement) {
   })));
   await CookieConsent.run({
     mode: 'opt-in', revision: consentRevision(config), autoShow: false,
-    hideFromBots: false, disablePageInteraction: true, manageScriptTags: false,
+    hideFromBots: false, disablePageInteraction: false, manageScriptTags: false,
     autoClearCookies: false, lazyHtmlGeneration: true,
     cookie: { name: CONSENT_KEY, useLocalStorage: true, expiresAfterDays: CONSENT_LIFETIME / 86400000 },
     guiOptions: {
-      consentModal: { layout: 'box', position: 'middle center', equalWeightButtons: true, flipButtons: false },
+      consentModal: { layout: 'box', position: 'bottom right', equalWeightButtons: true, flipButtons: false },
       preferencesModal: { layout: 'box', equalWeightButtons: true, flipButtons: false },
     },
     categories: {
@@ -165,14 +174,14 @@ async function initConsent(element: HTMLElement) {
         consentModal: {
           title: copy.title, description: summary, acceptAllBtn: copy.accept,
           acceptNecessaryBtn: copy.reject, showPreferencesBtn: copy.settings,
-          revisionMessage: copy.revision, footer: privacy,
+          revisionMessage: copy.revision,
         },
         preferencesModal: {
           title: copy.title, closeIconLabel: copy.close, acceptAllBtn: copy.accept,
           acceptNecessaryBtn: copy.reject, savePreferencesBtn: copy.save,
           serviceCounterLabel: copy.categoryLabel,
           sections: [
-            { description: summary + privacy },
+            { description: summary },
             { title: copy.necessaryTitle, description: copy.necessary, linkedCategory: 'necessary' },
             ...(config.ga ? [{ title: copy.analytics, description: copy.analyticsDetail, linkedCategory: 'analytics' }] : []),
             ...(config.ads ? [{ title: copy.ads, description: copy.adsDetail, linkedCategory: 'marketing' }] : []),
@@ -236,6 +245,12 @@ async function initConsent(element: HTMLElement) {
   window.addEventListener('storage', (event) => {
     if (event.key === CONSENT_KEY || event.key === null) reloadWithoutTags();
   });
+  // The library cycles Tab inside the notice even when it is not modal. A corner notice must not trap the keyboard:
+  // stop its handler before it runs and let the browser move focus on to the page.
+  window.addEventListener('keydown', (event) => {
+    if (event.key !== 'Tab' || document.querySelector('#cc-main .pm[role=dialog]:not([aria-hidden=true])')) return;
+    if ((document.activeElement as HTMLElement | null)?.closest('#cc-main .cm')) event.stopPropagation();
+  }, true);
   window.addEventListener('load', focusVisibleModal, { once: true });
   window.addEventListener('focus', focusVisibleModal);
   window.addEventListener('pageshow', (event) => { if (event.persisted) reloadWithoutTags(); else focusVisibleModal(); });

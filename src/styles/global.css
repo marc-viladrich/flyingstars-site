@@ -56,12 +56,11 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
 .kicker { display: block; color: var(--accent); margin-bottom: 14px; }
 h1, h3 { font-family: var(--display); font-weight: 500; margin: 0; text-wrap: balance; color: var(--head); }
 h2 { font-family: var(--display); font-weight: 500; margin: 0; letter-spacing: -0.03em; text-wrap: balance; color: var(--head); }
-/* Umbrüche ohne Einzelwörter in der letzten Zeile (Marc, 01./02.11.2026). pretty allein reicht nicht: Chromium und
-   WebKit lassen es bei zweizeiligen Sätzen beim Hurenkind („… was möglich / ist.“). Kurze Texte (Überschriften, Absätze in
-   Karten, CTAs, Listen) deshalb balance; langer Fließtext (Blog, Textblöcke) pretty. Prüfung: scripts/layout-audit.mjs */
+/* Umbrüche (Marc, 02.11.2026): Überschriften balance, alles andere pretty. balance auf Absätzen machte jede Textspalte
+   unterschiedlich breit. Einzelwörter in der letzten Zeile, die pretty bei zweizeiligen Sätzen stehen lässt, verhindert
+   src/lib/no-orphans.ts beim Ausliefern (src/middleware.ts, geschütztes Leerzeichen vor dem letzten Wort). Prüfung: scripts/layout-audit.mjs */
 body { text-wrap: pretty; }
-:is(h4, h5, h6, p, li, dt, dd, figcaption, blockquote, label, .lead) { text-wrap: balance; }
-:is(.post-body, .prose) :is(p, li) { text-wrap: pretty; }
+:is(h4, h5, h6) { text-wrap: balance; }
 h1 { font-size: clamp(36px, 4.6vw, 64px); line-height: 1.02; letter-spacing: -0.035em; }
 h2 { font-size: clamp(32px, 4vw, 56px); line-height: 1.04; }
 h3 { font-size: clamp(21px, 1.7vw, 25px); line-height: 1.15; letter-spacing: -0.02em; }
@@ -818,15 +817,19 @@ html.motion-paused .rec::before { animation: none; }
 .metro .dot { width: 16px; height: 16px; border-width: 3px; }
 .metro .ruler li:first-child .dot, .metro .ruler li:last-child .dot { width: 20px; height: 20px; left: -2px; top: -2px; } /* Umsteigestationen */
 .metro.has-branch { padding-top: 68px; }
-.metro-branch { position: absolute; left: 7px; top: 16px; height: 60px; width: calc(100% / var(--n) * (var(--n) - 1)); border: 3px solid var(--accent); border-bottom: 0; border-radius: 28px 28px 0 0; transition: opacity 0.8s ease 1.6s; }
+/* Express ist ein Nebenweg (Marc, 02.11.2026): gestrichelt und gedämpft statt durchgezogen, das Schild ist ein Knopf */
+.metro { --branch: rgba(245, 167, 60, 0.6); }
+.metro-branch { position: absolute; left: 7px; top: 16px; height: 60px; width: calc(100% / var(--n) * (var(--n) - 1)); border: 1.5px dashed var(--branch); border-bottom: 0; border-radius: 28px 28px 0 0; transition: opacity 0.8s ease 1.6s; }
 .reveal .metro:has(.ruler:not(.is-in)) .metro-branch, .reveal .metro:has(.ruler:not(.is-in)) .metro-sign { opacity: 0; }
-.metro-sign { position: absolute; z-index: 1; top: 0; left: calc(7px + 100% / var(--n) * (var(--n) - 1) / 2); transform: translateX(-50%); margin: 0; display: inline-flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 4px 12px; padding: 4px 16px; border-radius: 999px; border: 1px solid rgba(245, 167, 60, 0.5); background: var(--surface); white-space: nowrap; transition: opacity 0.8s ease 1.8s; }
+.metro-sign { position: absolute; z-index: 1; top: 0; left: calc(7px + 100% / var(--n) * (var(--n) - 1) / 2); transform: translateX(-50%); margin: 0; display: inline-flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 4px 12px; padding: 5px 16px; border-radius: 999px; border: 1.5px dashed var(--branch); background: var(--surface); color: inherit; text-decoration: none; white-space: nowrap; transition: opacity 0.8s ease 1.8s, border-color 0.2s ease, background-color 0.2s ease; }
 .metro-sign b { font: 500 17px/1.3 var(--display); color: var(--head); letter-spacing: -0.01em; }
 .metro-sign .mono { color: var(--accent); }
-.metro-sign .link { font-size: 14px; }
-.metro-sign .metro-sign-key { display: none; }
+.metro-sign .ico { align-self: center; color: var(--accent); transition: transform 0.2s ease; }
+a.metro-sign:hover { border-style: solid; border-color: var(--accent); background: var(--surface-2); }
+a.metro-sign:hover .ico { transform: translateX(3px); }
+a.metro-sign:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
 .metro-note { display: flex; gap: 10px; align-items: baseline; margin: 30px 0 0; color: var(--faint); font-size: 14px; max-width: 70ch; }
-.metro-sign-key { flex: none; width: 22px; border-top: 3px solid var(--accent); border-radius: 2px; transform: translateY(-4px); }
+.metro-sign-key { flex: none; width: 22px; border-top: 1.5px dashed var(--branch); transform: translateY(-4px); }
 @media (max-width: 900px) {
   /* senkrecht: Hauptlinie links, Abzweigung als Bogen rechts daneben, Schild über der Liste */
   .metro.has-branch { padding-top: 0; }
@@ -838,11 +841,10 @@ html.motion-paused .rec::before { animation: none; }
   .metro .ruler li:not(:last-child)::before { content: ""; position: absolute; left: -55.5px; top: 8px; bottom: -36px; width: 3px; border-radius: 2px; background: linear-gradient(var(--c, var(--accent)), var(--c2, var(--accent))); }
   .metro:not(.has-branch) .ruler li:not(:last-child)::before { left: -27.5px; }
   .metro-branch { display: none; }
-  .metro.has-branch .ruler li::after { content: ""; position: absolute; left: -54px; width: 26px; top: 0; bottom: -28px; border-right: 3px solid var(--accent); }
-  .metro.has-branch .ruler li:first-child::after { top: 14px; border-top: 3px solid var(--accent); border-top-right-radius: 22px; }
-  .metro.has-branch .ruler li:last-child::after { top: 0; bottom: auto; height: 14px; border-bottom: 3px solid var(--accent); border-bottom-right-radius: 22px; }
+  .metro.has-branch .ruler li::after { content: ""; position: absolute; left: -54px; width: 26px; top: 0; bottom: -28px; border-right: 1.5px dashed var(--branch); }
+  .metro.has-branch .ruler li:first-child::after { top: 14px; border-top: 1.5px dashed var(--branch); border-top-right-radius: 22px; }
+  .metro.has-branch .ruler li:last-child::after { top: 0; bottom: auto; height: 14px; border-bottom: 1.5px dashed var(--branch); border-bottom-right-radius: 22px; }
   .metro-sign { position: static; transform: none; white-space: normal; justify-content: flex-start; margin: 0 0 28px; padding: 12px 16px; border-radius: 14px; }
-  .metro-sign .metro-sign-key { display: inline-block; }
 }
 @media (prefers-reduced-motion: reduce) { .metro-branch, .metro-sign { transition: none; } }
 
@@ -1021,7 +1023,7 @@ a.pack { grid-template-rows: auto auto 1fr; align-items: start; row-gap: 14px; }
 @media (max-width: 1100px) { .ig, .ig.cols-4 { --ig-cols: 2; } }
 @media (max-width: 640px) { .ig, .ig.cols-4 { --ig-cols: 1; } }
 
-/* Redaktionelle Hinweise in der Vorschau (SectionRenderer, PUBLIC_ANNOTATE=1): gestrichelt in Orange, in der Content-Breite */
+/* Redaktionelle Hinweise im lokalen Dev-Server (SectionRenderer): gestrichelt in Orange, in der Content-Breite */
 .todo-note { position: relative; z-index: 6; display: flex; gap: 12px; align-items: flex-start; margin: 24px var(--gutter) -8px; padding: 12px 16px; border: 1px dashed rgba(245, 167, 60, 0.7); border-radius: 10px; background: rgba(245, 167, 60, 0.08); color: var(--text); font-size: 14.5px; line-height: 1.5; }
 .todo-note b { color: var(--accent); font-weight: 500; margin-right: 4px; }
 .todo-note .ico { flex: 0 0 auto; margin-top: 2px; }

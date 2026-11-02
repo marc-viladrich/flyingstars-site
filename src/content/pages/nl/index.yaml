@@ -259,7 +259,6 @@ sections:
       label: bij te boeken
       text: PUMA stuurde de aanvraag 14 dagen voor de derby. De show vloog op tijd voor de aftrap.
       href: /kontakt/?extras=express
-      linkLabel: Express aanvragen
     facts:
       - value: 178 shows
         label: Ervaring
@@ -522,4 +521,4 @@ sections:
     headline: Vertel ons over jullie datum.
     text: Datum, locatie en gelegenheid zijn genoeg voor een eerste inschatting. Laat open wat jullie nog niet weten.
     todo: FlyingStars und die Datenschutzberatung müssen Versanddienst, Empfängerpostfach, Auftragsverarbeitung, Drittlandtransfers und Löschfristen festlegen und die Datenschutzhinweise freigeben.
-translationSourceHash: 619c7db53d045f30176d1b0320718a6c3a87bf252047f6fa5f51621cf096edde
+translationSourceHash: 3928dc0d10dab694c51d2c54296400ac9c90d70a510780cb438ab3b3cf621f7c

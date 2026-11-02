@@ -63,13 +63,14 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 **Magie vor Technik (Marc, 02.11.2026):** Technische Details nie alle auf einmal, aber auch nie in Akkordeons verstecken. Progressive Disclosure heißt Informationsdesign: verdichten und strukturieren (Tabelle mit Zeichen, Zeitstrahl, Icon-Raster), nicht wegklappen.
 - Standort/Sicherheit (`LandingSite.astro`) zeigt eine Zone zugleich, anfangs die erste; Zeigen, Fokus oder Tippen wechselt, Zeichnung und Text gemeinsam. Auf B2C-Seiten (Hochzeit) keine Schutz-Kacheln.
 - Zuständigkeiten als Tabelle „Wer was übernimmt“: je Zeile eine kurze Aufgabe (max. 70 Zeichen), Spalten FlyingStars / Ihr mit ✓ übernimmt, ◐ unterstützt (kurzer Hinweis), – nicht nötig. Legende darunter.
-- Zeiten und Vorlauf als Netzplan-Zeitstrahl (`MetroLine.astro`, über Tempo): Hauptlinie im Logoverlauf mit Stationen, Express als orange Abzweigung von der ersten zur letzten Station mit Schild und Link „Express anfragen“. Handy senkrecht.
+- Zeiten und Vorlauf als Netzplan-Zeitstrahl (`MetroLine.astro`, über Tempo): Hauptlinie im Logoverlauf mit Stationen, Express als gestrichelte, gedämpfte Abzweigung von der ersten zur letzten Station (Nebenweg, nicht Hauptweg); das Schild ist selbst der Knopf („Express in 1–2 Wochen · bei Bedarf zubuchbar →“), kein zweiter Link daneben (Marc, 02.11.2026). Handy senkrecht.
+- Consent: erste Stufe als kleine Karte unten rechts (380 px), nicht modal, ohne Abdunkeln; die optionalen Google-Dienste als zwei Punkte. Nur die Einstellungen sind ein echter Dialog (Marc, 02.11.2026, Details `docs/analytics-consent.md`).
 
 **Formular:** Knöpfe linksbündig, Hauptknopf zuerst. Optionale Angaben im zweiten Schritt als Zeile kleiner „+ Telefon / Firma / Nachricht / Woher“-Knöpfe; ein Klick blendet das Feld ein und setzt den Fokus, vorbelegte Felder sind offen.
 
 **Video auf dem Handy:** Startseiten-Hero und Referenz-Kopf zeigen das Showreel bis 700 px als gerahmtes Bild im Seitenfluss über der Überschrift (kleine Fassung, `data-src-small`), nicht als Hintergrund.
 
-**Redaktionelle Hinweise:** jede Section kann `todo` tragen („Fehlt noch …“); sichtbar nur im Dev-Server und in Vorschau-Builds (`PUBLIC_ANNOTATE=1`), Produktion rendert nichts davon.
+**Redaktionelle Hinweise:** jede Section kann `todo` tragen („Fehlt noch …“); sichtbar nur im lokalen Dev-Server. Kein Build rendert sie, auch nicht die Preview eines Feature-Branches (Marc, 02.11.2026); `scripts/content-gaps.test.mjs` wacht darüber.
 
 **Textlink neben Knopf:** sitzt auf der Mittellinie des Knopfs (`.btn ~ .link`), nicht oben.
 

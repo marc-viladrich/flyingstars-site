@@ -48,3 +48,9 @@ test('Every published case has a unique route/order and an existing next case', 
   assert.equal(new Set(cases.map((c) => c.order)).size, cases.length);
   for (const c of cases) assert.ok(cases.some((next) => next.route === c.nextRoute && next.route !== c.route), c.route);
 });
+
+test('Internal section notes render only in the local dev server, never in a build or preview', () => {
+  const renderer = readFileSync(new URL('../src/components/SectionRenderer.astro', import.meta.url), 'utf8');
+  const gate = renderer.match(/const annotate = (.+);/)?.[1];
+  assert.equal(gate, 'import.meta.env.DEV', 'todo notes must depend on the dev server alone, not on a build flag');
+});

@@ -3370,24 +3370,29 @@
     "nl": "Jullie privacykeuzes"
   },
   "consent.summary": {
-    "de": "Ihr entscheidet, ob wir Google-Dienste zur Analyse und Werbeerfolgsmessung nutzen dürfen. Ohne Zustimmung laden wir diese Dienste nicht. Eure Anfrage funktioniert auch ohne sie.",
-    "en": "You choose whether we may use Google services for analytics and advertising measurement. We do not load these services without consent. You can send an enquiry without them.",
-    "nl": "Jullie bepalen of we Google-diensten voor analyse en advertentiemeting mogen gebruiken. Zonder toestemming laden we deze diensten niet. Een aanvraag versturen kan ook zonder."
+    "de": "Ihr entscheidet, ob wir Google-Dienste nutzen dürfen. Ohne Zustimmung laden wir sie nicht, eure Anfrage funktioniert trotzdem.",
+    "en": "You choose whether we may use Google services. Without consent we do not load them, and your enquiry still works.",
+    "nl": "Jullie bepalen of we Google-diensten mogen gebruiken. Zonder toestemming laden we ze niet, en jullie aanvraag werkt gewoon."
+  },
+  "consent.optional": {
+    "de": "Optional:",
+    "en": "Optional:",
+    "nl": "Optioneel:"
   },
   "consent.gaSummary": {
-    "de": "Optional: Google Analytics 4 für Besucherstatistik.",
-    "en": "Optional: Google Analytics 4 for visitor statistics.",
-    "nl": "Optioneel: Google Analytics 4 voor bezoekersstatistieken."
+    "de": "Google Analytics 4 für Besucherstatistik",
+    "en": "Google Analytics 4 for visitor statistics",
+    "nl": "Google Analytics 4 voor bezoekersstatistieken"
   },
   "consent.adsSummary": {
-    "de": "Optional: Google Ads zur Messung erfolgreicher Anfragen nach Anzeigenklicks.",
-    "en": "Optional: Google Ads to measure successful enquiries after ad clicks.",
-    "nl": "Optioneel: Google Ads om geslaagde aanvragen na advertentieklikken te meten."
+    "de": "Google Ads zur Messung erfolgreicher Anfragen nach Anzeigenklicks",
+    "en": "Google Ads to measure successful enquiries after ad clicks",
+    "nl": "Google Ads om geslaagde aanvragen na advertentieklikken te meten"
   },
   "consent.transfer": {
-    "de": "Google Ireland Limited verarbeitet dabei Nutzungsdaten und Kennungen; Daten können auch in die USA gelangen. Ihr könnt eure Wahl jederzeit im Footer ändern.",
-    "en": "Google Ireland Limited processes usage data and identifiers; data may also be transferred to the USA. You can change your choices at any time in the footer.",
-    "nl": "Google Ireland Limited verwerkt gebruiksgegevens en identificatoren; gegevens kunnen ook naar de VS gaan. Jullie kunnen de keuze altijd in de footer wijzigen."
+    "de": "Anbieterin ist Google Ireland, Daten können auch in die USA gelangen. Eure Wahl könnt ihr jederzeit im Footer ändern.",
+    "en": "The provider is Google Ireland; data may also be transferred to the USA. You can change your choice at any time in the footer.",
+    "nl": "Aanbieder is Google Ireland; gegevens kunnen ook naar de VS gaan. Jullie kunnen de keuze altijd in de footer wijzigen."
   },
   "consent.privacy": {
     "de": "Datenschutz und weitere Informationen",

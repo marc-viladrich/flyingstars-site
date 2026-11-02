@@ -38,3 +38,13 @@ test('EN und NL: letzte Wörter werden sprachunabhängig verbunden, lange Paare 
     assert.equal(joinLastWords(text), text);
   }
 });
+
+test('Absätze in Listenpunkten (Teamkarten) werden verbunden', () => {
+  const out = noOrphans('<ul><li class="m"><span>Rolle</span><h3>Name</h3><p>Sorgt dafür, dass eure Show fliegen darf. Auch auf Englisch.</p></li></ul>');
+  assert.match(out, /<p>Sorgt dafür, dass eure Show fliegen darf\. Auch auf&nbsp;Englisch\.<\/p><\/li>/);
+});
+test('lange Schlusswörter bis 22 Zeichen und Bindestriche im letzten Wort', () => {
+  assert.equal(joinLastWords('automatisch ein Sicherheitsprotokoll.'), 'automatisch ein&nbsp;Sicherheitsprotokoll.');
+  assert.equal(joinLastWords('mit dem elektrischen Ford E-Transit.'), 'mit dem elektrischen Ford&nbsp;E-&#8288;Transit.');
+  assert.equal(joinLastWords('ein Pre-Check und Follow-up'), 'ein Pre-Check und&nbsp;Follow-&#8288;up');
+});

@@ -1,21 +1,25 @@
 ---
 // Zeitstrahl als Linie mit Stationen, im Stil schlichter Netzpläne und Git-Graphen (Marc, 02.11.2026: „minimal branching
 // timeline … inspiriert von minimal metro maps“). Die Hauptlinie im Logoverlauf führt von Station zu Station; eine
-// Abzweigung (z. B. Express) zweigt an der ersten Station ab und mündet an der letzten wieder ein, als durchgezogene
-// orange Linie mit Schild und optionalem Link. Handy: senkrecht, die Abzweigung läuft rechts neben der Hauptlinie.
+// Abzweigung (z. B. Express) zweigt an der ersten Station ab und mündet an der letzten wieder ein, gestrichelt und
+// gedämpft, damit sie als Nebenweg liest (Marc, 02.11.2026). Mit href ist das Schild selbst ein Knopf mit Pfeil, kein
+// zweiter Link daneben. Handy: senkrecht, die Abzweigung läuft rechts neben der Hauptlinie.
 // Genutzt von Tempo.astro (Startseite, Hochzeit, Indoor) und LandingSite.astro (Vorlauf). Beim Erscheinen zieht die
 // Linie, die Stationen leuchten nacheinander auf (data-reveal-group).
 import ProcessList from './ProcessList.astro';
+import Icon from './Icon.astro';
 import { forPath } from '../i18n/server';
 interface Mark { value: string; label: string; text?: string }
-interface Branch { value: string; label: string; text?: string; href?: string; linkLabel?: string }
+interface Branch { value: string; label: string; text?: string; href?: string }
 interface Props { marks: Mark[]; branch?: Branch }
 const { marks, branch } = Astro.props;
 const { localHref } = forPath(Astro.url.pathname);
 ---
 <div class:list={['metro', { 'has-branch': branch }]} style={`--n:${marks.length}`}>
   {branch && <span class="metro-branch" aria-hidden="true"></span>}
-  {branch && <p class="metro-sign"><span class="metro-sign-key" aria-hidden="true"></span><b>{branch.value}</b><span class="mono">{branch.label}</span>{branch.href && <a class="link" href={localHref(branch.href)}>{branch.linkLabel} <span aria-hidden="true">→</span></a>}</p>}
+  {branch && (branch.href
+    ? <a class="metro-sign" href={localHref(branch.href)}><b>{branch.value}</b><span class="mono">{branch.label}</span><Icon name="arrow-right" size={16} /></a>
+    : <p class="metro-sign"><b>{branch.value}</b><span class="mono">{branch.label}</span></p>)}
   <ProcessList items={marks} variant="metro" />
   {branch?.text && <p class="metro-note"><span class="metro-sign-key" aria-hidden="true"></span>{branch.text}</p>}
 </div>
