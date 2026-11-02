@@ -39,7 +39,7 @@ export async function reviewLocales({draft}){
  await new Promise((resolve,reject)=>{
   const dialog=document.createElement('dialog'),form=document.createElement('form');form.method='dialog';
   const title=document.createElement('h2');title.textContent='EN und NL gemeinsam prüfen';form.append(title);
-  const help=document.createElement('p');help.textContent='Prüfe die Sprachfassungen der geänderten deutschen Felder. Erst „Geprüft speichern“ aktualisiert den Quellhash. Es wird keine automatische Übersetzung behauptet.';form.append(help);
+  const help=document.createElement('p');help.textContent='Prüfe die Sprachfassungen der geänderten deutschen Felder. Erst „Geprüft speichern“ aktualisiert den Quellhash.';form.append(help);
   for(const proposal of proposals){const heading=document.createElement('h3');heading.textContent=proposal.id;form.append(heading);
    for(const leaf of proposal.leaves){const label=document.createElement('label');label.style.display='block';label.textContent=leaf.path.join('.')+' · DE: '+leaf.value;
     const input=document.createElement('textarea');input.value=leaf.path.reduce((v,k)=>v?.[k],proposal.data)??'';input.style.cssText='display:block;width:100%;min-height:5em;margin:.5em 0 1em';input.addEventListener('input',()=>set(proposal.data,leaf.path,input.value));label.append(input);form.append(label);}

@@ -25,3 +25,8 @@ export async function optimizedLogo(src: string, height: number) {
   const size = await sourceSize(src);
   return optimizedImage(src, Math.round(size.width / size.height * height));
 }
+
+// Render provenance belongs to this transform, alongside its actual output shape.
+// No URL matching is used: src retains the address of the input content field.
+optimizedImage.afeBindings = ([source]: unknown[]) => ({src:source});
+optimizedLogo.afeBindings = optimizedImage.afeBindings;

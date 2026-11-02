@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import {imageSource,imageMetadata} from './media.mjs';
 import { projectShowcaseSchema } from './project-showcase.mjs';
 
 // ---------------------------------------------------------------------------
@@ -18,11 +19,11 @@ const sectionHeading = { id: z.string().optional(), kicker: z.string().optional(
 const brandPath = z.string().regex(/^\/brand\/[a-z0-9/._-]+\.(svg|png|webp)$/).describe('Lokale Datei unter public/brand/');
 
 const image = z.object({
-  src: z.union([z.url({protocol:/^https$/}),z.string().regex(/^\/assets\/[a-f0-9]{64}\.(?:png|jpg|webp)$/)]).describe('URL im Medienspeicher oder geprüfter Editor-Upload'),
+  src: imageSource,
   alt: z.string().min(1).describe('Pflicht. Leerer Alt-Text nur für Dekoration, dann alt: ""'),
   width: z.number().int().positive(),
   height: z.number().int().positive(),
-}).meta({format:'image','x-afe':{widget:'flyingstars/image',media:{policy:'flyingstars/uploads',shape:{kind:'object',source:['src'],alt:['alt'],width:['width'],height:['height']}}}});
+}).meta(imageMetadata);
 
 export const sectionSchema = z.discriminatedUnion('type', [
   z.object({

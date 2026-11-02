@@ -26,13 +26,18 @@ export async function optimizedImage(src:string,width=960,height?:number,_format
  return {src,width:w,height:h,attributes:{width:w,height:h}};
 }
 export async function optimizedLogo(src:string,height:number){return optimizedImage(src,height*3,height);}
+optimizedImage.afeBindings=([source]:unknown[])=>({src:source});optimizedLogo.afeBindings=optimizedImage.afeBindings;
 `);
   if(forCI){
     const packageRoot=fileURLToPath(new URL('./',import.meta.resolve('astro-frontend-editor/package.json')));
     const manifest=JSON.parse(await fs.readFile(path.join(source,'package.json'),'utf8'));manifest.dependencies['astro-frontend-editor']='file:'+packageRoot;
     await fs.writeFile(path.join(source,'package.json'),JSON.stringify(manifest,null,2)+'\n');
     const {execFile}=await import('node:child_process'),{promisify}=await import('node:util');
-    await promisify(execFile)('npm',['install','--package-lock-only','--ignore-scripts','--offline'],{cwd:source,env:{...process.env,PATH:path.dirname(process.execPath)+path.delimiter+process.env.PATH},maxBuffer:2000000});
+    await promisify(execFile)('npm',['install','--package-lock-only','--ignore-scripts','--offline','--install-links=true'],{cwd:source,env:{...process.env,PATH:path.dirname(process.execPath)+path.delimiter+process.env.PATH},maxBuffer:2000000});
+    // npm otherwise records a relative external link, invalid after the deploy hook creates a deeper worktree.
+    const lock=JSON.parse(await fs.readFile(path.join(source,'package-lock.json'),'utf8'));lock.packages['node_modules/astro-frontend-editor'].resolved='file:'+packageRoot;
+    await fs.writeFile(path.join(source,'package-lock.json'),JSON.stringify(lock,null,2)+'\n');
+    await fs.appendFile(path.join(source,'.npmrc'),'\ninstall-links=true\n');
   }
   await git(source,['init','--quiet','--initial-branch=content/draft']);
   await git(source,['add','.']);

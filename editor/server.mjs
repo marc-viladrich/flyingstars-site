@@ -14,4 +14,7 @@ export const resolveRuntimeOptions=(input={})=>resolve({...input,compatibility,d
 export const startNativeServers=(input={})=>start({...site,...input});
 export const runEditor=(args=process.argv.slice(2))=>run(args,site);
 
-if(isMain(import.meta.url))await runEditor();
+if(isMain(import.meta.url)){
+ try{import.meta.resolve('astro-frontend-editor/astro/markers');}catch{throw Error('Diese Integration benötigt AFE 0.3.0 (noch unveröffentlicht). Für Entwicklung das private Produkt mit npm link einbinden; siehe docs/editor-designsprache.md.');}
+ await runEditor();
+}

@@ -34,7 +34,7 @@ test('Offline-Pipeline: CI, Code-Deploy, Inhalts-Push/Freigabe, Rebase, Buildfeh
   }
   await git(host,['checkout','-b','content/draft','origin/content/draft']);
   const restart = shellQuote(process.execPath) + ' -e ' + shellQuote("require('node:fs').appendFileSync("+JSON.stringify(marker)+",'restart\\n')");
-  const update = () => hostUpdate({source:host,state,webroot,restart,remote:'origin'});
+  const update = async () => {try{return await hostUpdate({source:host,state,webroot,restart,remote:'origin'});}catch(error){if(error.cause?.stderr)t.diagnostic(error.cause.stderr);throw error;}};
   let store;
   t.after(() => store?.sync.close());
   const freshStore = async () => {store?.sync.close();store = await new NativeStore(host,{remote:'origin',site:await createFlyingStarsAdapter(host),runtime:resolveRuntimeOptions({values:{siteRoot:host,stateDir:state}})}).init();return store;};

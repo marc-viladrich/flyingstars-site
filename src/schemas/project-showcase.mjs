@@ -1,14 +1,15 @@
 import { z } from 'zod';
+import {imageSource,imageMetadata} from './media.mjs';
 /** @template {import('zod').ZodType} T @param {string} group @param {T} schema @returns {T} */
 const grouped=(group,schema)=>schema.meta({...schema.meta(),'x-afe':{...schema.meta()?.['x-afe'],group}});
 
 // Project-specific presentation stays in the content collection, shared by
 // the gallery, canonical case route and existing /projekte/ routes.
 const photograph = z.object({
-  src: z.url(),
+  src: imageSource,
   alt: z.string().min(1),
   caption: z.string().min(1),
-});
+}).meta(imageMetadata);
 
 export const projectShowcaseSchema = z.object({
   route: grouped('Adresse', z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)),
