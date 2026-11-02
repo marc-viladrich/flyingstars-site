@@ -21,7 +21,7 @@ export const kickOf = (p: Project) => p.data.showcase?.category ?? [p.data.clien
 export const sortProjects = (list: Project[]) => list.sort((a, b) => (a.data.showcase?.order ?? 999) - (b.data.showcase?.order ?? 999) || Number(b.data.featured) - Number(a.data.featured) || b.data.date.valueOf() - a.data.date.valueOf());
 
 /** Referenz mit registriertem Showvideo (dieselbe Prüfung wie in ProjectCard). */
-export const hasVideo = (p: Project) => { const clip = p.data.showcase?.heroVideo; return !!clip && Object.values(videos).includes(clip); };
+export const hasVideo = (p: Project) => { const clip = p.data.showcase?.heroVideo; return !!clip && Object.values(videos).some((src) => src === clip); };
 /** Referenzen-Seite (Marc, 31.10.2026): zuerst die Shows mit Video in Fallstudien-Reihenfolge, danach alle anderen chronologisch, neueste zuerst. */
 export const sortReferences = (list: Project[]) => list.sort((a, b) =>
   Number(hasVideo(b)) - Number(hasVideo(a))
