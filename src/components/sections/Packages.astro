@@ -7,6 +7,7 @@ import type { Section } from '../../content.config';
 import { SHOW_PACKAGES } from '../../content/show-packages';
 import { PACKAGE_FEATURES, PACKAGE_POINTS, addOnLine, dronesLine } from '../../content/package-details';
 import Accent from '../Accent.astro';
+import MobileTabs from '../MobileTabs.astro';
 type Props = Extract<Section, { type: 'packages' }> & { index: number };
 const { headline, text, note, cta, compact, items, id = 'pakete', index, kicker } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
@@ -27,7 +28,9 @@ const packs = items.map((item) => ({ ...item, ...SHOW_PACKAGES[item.name], shape
       <ul class="pack-points">{(p.points ?? PACKAGE_POINTS[p.name]).map((pt) => <li>{pt}</li>)}</ul>
     </a>)}</div>
   ) : (
-    <div class="tiers-grid">{packs.map((p) => <article class:list={['tier', { 'is-rec': p.highlight }]} style={`--dot:rgb(${p.color.join(',')})`} aria-labelledby={`${id}-${p.name}`}>
+    <div data-mtabs>{/* Handy: ein Reiter je Paket statt drei Karten untereinander, empfohlenes Paket vorgewählt */}
+    <MobileTabs name={`${id}-tab`} label="Paket wählen" initial={Math.max(0, packs.findIndex((p) => p.highlight))} tabs={packs.map((p) => ({ label: p.name, color: `rgb(${p.color.join(',')})` }))} />
+    <div class="tiers-grid">{packs.map((p, i) => <article class:list={['tier', { 'is-rec': p.highlight }]} data-mtab={i} style={`--dot:rgb(${p.color.join(',')})`} aria-labelledby={`${id}-${p.name}`}>
       <canvas data-orb={p.shape} data-color={p.color.join(',')} data-n={p.base} aria-hidden="true"></canvas>
       <div class="head"><C id={`${id}-${p.name}`}>{p.name}</C><span class="badge">{p.badge ?? PACKAGE_FEATURES[p.name].badge}</span></div>
       <p class="tag">{PACKAGE_FEATURES[p.name].tag}</p>
@@ -37,6 +40,7 @@ const packs = items.map((item) => ({ ...item, ...SHOW_PACKAGES[item.name], shape
       <span class="scale-note mono">{addOnLine(p.name)}</span>
       <div class="tier-actions"><a class:list={['btn', { primary: p.highlight }]} href={`/kontakt/?paket=${p.name}`}>{p.name} anfragen</a><a class="link" href={`/drohnenshow-preise/?paket=${p.name}#konfigurator`}>Im Konfigurator ansehen <span aria-hidden="true">→</span></a></div>
     </article>)}</div>
+    </div>
   )}
   {(note || cta) && <div class="pack-note">{note && <span class="mono">{note}</span>}{cta && <a class="link" href={cta.href}>{cta.label} <span aria-hidden="true">→</span></a>}</div>}
 </section>

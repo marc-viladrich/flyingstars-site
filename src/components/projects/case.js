@@ -40,6 +40,9 @@
     track.addEventListener("pointermove", (e) => { if (down) track.scrollLeft = down.left - (e.clientX - down.x); });
     const up = () => { down = null; track.classList.remove("drag"); };
     track.addEventListener("pointerup", up); track.addEventListener("pointercancel", up);
+    // am Ende keine Ausblendung mehr am rechten Rand (wie beim Anlässe-Karussell)
+    const edge = () => track.classList.toggle("at-end", track.scrollLeft + track.clientWidth >= track.scrollWidth - 4);
+    track.addEventListener("scroll", edge, { passive: true }); edge();
   });
 
   // the formation: real drone positions read from the footage, or taken from the show file (then with real depth as

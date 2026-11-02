@@ -12,7 +12,7 @@ type Props = Extract<Section, { type: 'contactForm' }> & { index?: number };
 const { headline, text, people, index = 0, kicker } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
 const occasions: [string, string][] = [['firma', 'Firmenevent'], ['stadt', 'Stadt & Festival'], ['agentur', 'Agentur'], ['privat', 'Hochzeit & Privat'], ['indoor', 'Indoor'], ['sonstiges', 'Sonstiges']];
-const packs: [string, string, string][] = [['SPARK', 'SPARK', 'klassisch in 2D'], ['HORIZON', 'HORIZON', '3D in Bewegung'], ['ODYSSEY', 'ODYSSEY', 'erzählte 3D-Show'], ['', 'Weiß ich noch nicht', '']];
+const packs: [string, string, string][] = [['SPARK', 'SPARK', 'klassisch in 2D'], ['HORIZON', 'HORIZON', '3D in Bewegung'], ['ODYSSEY', 'ODYSSEY', 'erzählte 3D-Show'], ['offen', 'Weiß ich noch nicht', '']];
 const sources = ['Google', 'Empfehlung', 'Social Media', 'Presse', 'Eine Show gesehen', 'Sonstiges'];
 ---
 <section aria-labelledby="anfrage-h" class="section alt" id="anfrage">
@@ -53,7 +53,7 @@ const sources = ['Google', 'Empfehlung', 'Social Media', 'Presse', 'Eine Show ge
         <div class="field">
           <span class="lbl" id="paket-label">Welches Paket? <em>optional</em></span>
           <div aria-labelledby="paket-label" aria-describedby="paket-hint" class="chips" role="radiogroup">
-            {packs.map(([value, label, line]) => <label title={line || undefined} style={value ? `--c: rgb(${SHOW_PACKAGES[value as keyof typeof SHOW_PACKAGES].color.join(',')})` : undefined}><input name="paket" type="radio" value={value} /><span>{label}</span></label>)}
+            {packs.map(([value, label, line]) => <label title={line || undefined} style={value in SHOW_PACKAGES ? `--c: rgb(${SHOW_PACKAGES[value as keyof typeof SHOW_PACKAGES].color.join(",")})` : undefined}><input name="paket" type="radio" value={value} /><span>{label}</span></label>)}
           </div>
           <span class="hint" id="paket-hint">SPARK klassisch in 2D · HORIZON 3D in Bewegung · ODYSSEY erzählte 3D-Show</span>
         </div>

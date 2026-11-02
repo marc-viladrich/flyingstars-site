@@ -10,11 +10,11 @@ import { EXTRAS } from '../../content/package-details';
 ---
 <section class="section alt" id="zusaetze" aria-labelledby="zusaetze-h">
   <SectionHead kicker="Extras & Upgrades" headline="Mehr geht immer." text="Wählt aus, was ihr dazunehmen wollt. Es landet direkt in eurer Anfrage, den Preis nennen wir im Angebot." id="zusaetze-h" />
-  <div class="xg" data-extras>
+  <div class="ig xg" data-extras>
     {EXTRAS.map((x) => (
-      <div class="xc">
+      <div class="ic xc">
         <input class="xc-box" type="checkbox" id={`x-${x.id}`} value={x.id} data-short={x.short} aria-describedby={`x-${x.id}-t x-${x.id}-p`} />
-        <Icon name={x.icon} size={36} class="g xc-ico" />
+        <Icon name={x.icon} size={36} class="g ic-ico xc-ico" />
         <h3><label for={`x-${x.id}`}>{x.title}</label></h3>
         <p id={`x-${x.id}-t`}>{x.text}</p>
         <span class="xc-price mono" id={`x-${x.id}-p`}>{x.price}</span>
@@ -30,18 +30,14 @@ import { EXTRAS } from '../../content/package-details';
 </section>
 
 <style>
-  /* Raster mit Linien nur ZWISCHEN den Zellen: jede Zelle zieht oben und links eine Linie, die äußeren schneidet
-     overflow am Raster ab (margin -1px holt sie unter die Kante) */
-  .xg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: hidden; }
-  .xg > .xc { margin: -1px 0 0 -1px; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
-  .xc { position: relative; display: grid; gap: 10px; align-content: start; justify-items: start; padding: clamp(26px, 2.6vw, 38px) clamp(22px, 2.4vw, 34px) clamp(28px, 2.8vw, 40px); transition: background-color 0.25s ease; }
-  .xc h3 { font: 500 clamp(19px, 1.5vw, 22px)/1.2 var(--display); letter-spacing: -0.015em; color: var(--head); padding-right: 36px; }
+  /* Raster, Zelle, Icon und Überschrift kommen aus dem gemeinsamen Icon-Raster (.ig/.ic in global.css); hier nur die Auswahl */
+  .xc { transition: background-color 0.25s ease; }
+  .xc h3 { padding-right: 36px; }
   /* die Beschriftung deckt die ganze Zelle ab: Klick irgendwo in der Zelle schaltet um */
   .xc label { cursor: pointer; }
   .xc label::after { content: ""; position: absolute; inset: 0; z-index: 1; }
-  .xc p { margin: 0; color: var(--muted); font-size: 15px; max-width: 40ch; }
   .xc-price { color: var(--text); margin-top: 4px; }
-  .xc :global(.xc-ico) { width: 36px; height: 36px; margin-bottom: 10px; transition: transform 0.3s ease; }
+  .xc :global(.xc-ico) { transition: transform 0.3s ease; }
   .xc-link { position: relative; z-index: 2; margin-top: 2px; }
   /* Kontrollkästchen in Orange mit Leuchten wie ein Lichtpunkt; ungewählt erst beim Zeigen sichtbar */
   .xc-box { appearance: none; -webkit-appearance: none; position: absolute; z-index: 2; top: clamp(22px, 2.4vw, 32px); right: clamp(20px, 2.2vw, 30px); width: 24px; height: 24px; margin: 0; border-radius: 7px; border: 1.5px solid var(--line-strong); background: transparent no-repeat center / 14px 14px; cursor: pointer; opacity: 0; transform: scale(0.85); transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.3, 1.6, 0.5, 1), background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.3s ease; }
@@ -63,9 +59,7 @@ import { EXTRAS } from '../../content/package-details';
   .xbar.on { opacity: 1; transform: none; visibility: visible; transition-delay: 0s; }
   .xbar-t { margin: 0; color: var(--muted); font-size: 15px; }
   .xbar-t :global(b) { color: var(--head); font-weight: 500; }
-  @media (max-width: 1100px) { .xg { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 640px) {
-    .xg { grid-template-columns: 1fr; }
     .xbar { padding: 14px; }
     .xbar .btn { width: 100%; justify-content: center; }
   }

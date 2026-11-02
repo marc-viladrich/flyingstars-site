@@ -15,8 +15,9 @@ test('Anfrage behält Paketauswahl, alle Showdetails und ehrlichen Versandstatus
   await page.getByText('Firmenevent',{exact:true}).click();
   await page.getByLabel('Wann soll sie fliegen?').fill('2026-12-01');
   await page.getByLabel('Wo soll sie stattfinden?').fill('Osnabrück');
-  await page.getByLabel('Was soll am Himmel passieren?').fill('Produktlaunch mit Musik');
   await page.getByRole('button',{name:'Weiter',exact:true}).click();
+  // Freitext steht seit dem Fragebogen-Abgleich (30.10.2026) im zweiten Schritt
+  await page.getByLabel('Möchtest du uns noch etwas mitteilen?').fill('Produktlaunch mit Musik');
   await page.getByLabel('Dein Name').fill('Marc Viladrich');
   await page.getByLabel('Deine E-Mail-Adresse').fill('marc@example.test');
   await page.getByLabel('Deine Telefonnummer').fill('01234');
@@ -38,7 +39,7 @@ test('Mobiles Menü hält den Fokus und gibt ihn beim Schließen zurück', async
   await opener.click();
   await page.getByRole('dialog').getByRole('link',{name:'Blog',exact:true}).click();
   await expect(page).toHaveURL(/\/blog\/$/);
-  await expect(page.getByRole('heading',{level:1})).toHaveText('Blog');
+  await expect(page.getByRole('heading',{level:1})).toHaveText('Wie Drohnenshows entstehen.');
 });
 
 

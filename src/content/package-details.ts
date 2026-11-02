@@ -138,10 +138,10 @@ export const COMPARISON_NOTE = 'Die Beschallung vor Ort stellt ihr als Veranstal
 
 /** "Wofür ihr bei jedem Paket bezahlt" */
 export const INCLUDED = [
-  { title: 'Design für euren Ort', text: 'Wir programmieren die Show für euren Showbereich, eure Musik und eure Motive.' },
-  { title: 'Genehmigung und Sicherheitskonzept', text: 'Luftrechtliche Genehmigung, Sicherheitszonen und Haftpflicht bis 1,3 Mio. € sind immer enthalten.' },
-  { title: 'Freigabe vorab', text: 'Eure eigenen Elemente seht ihr vor der Show und gebt sie frei, ab HORIZON als Videovorschau.' },
-  { title: 'Team vor Ort', text: 'Pilot:innen und Techniker:innen bauen in ca. 3 Stunden auf und fliegen eure Show.' },
+  { icon: 'pen-tool', title: 'Design für euren Ort', text: 'Wir programmieren die Show für euren Showbereich, eure Musik und eure Motive.' },
+  { icon: 'shield-check', title: 'Genehmigung und Sicherheitskonzept', text: 'Luftrechtliche Genehmigung, Sicherheitszonen und Haftpflicht bis 1,3 Mio. € sind immer enthalten.' },
+  { icon: 'monitor-play', title: 'Freigabe vorab', text: 'Eure eigenen Elemente seht ihr vor der Show und gebt sie frei, ab HORIZON als Videovorschau.' },
+  { icon: 'users', title: 'Team vor Ort', text: 'Pilot:innen und Techniker:innen bauen in ca. 3 Stunden auf und fliegen eure Show.' },
 ];
 
 /** Extras on the pricing page. Selectable since 01.11.2026 (Marc): the chosen ones travel as `?extras=<id>,<id>` into the

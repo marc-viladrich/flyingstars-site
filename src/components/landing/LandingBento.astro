@@ -29,8 +29,8 @@ const img = lead.image ? await optimizedImage(lead.image.src, 960, 720) : undefi
     {items.map((it) => (
       <div class="lb-cell lb-feat">
         <!-- Icon-Kachel (Marc, 01.11.2026, für alle Kacheln): großes Icon, Überschrift, Text; keine Zeile neben dem Icon -->
-        <Icon name={it.icon} size={36} class="g lb-feat-ico" />
-        <T class="lb-h">{it.title}</T>
+        <Icon name={it.icon} size={36} class="g ic-ico" />
+        <T class="ic-h">{it.title}</T>
         <p class="lb-t">{it.text}</p>
       </div>
     ))}
@@ -65,8 +65,7 @@ const img = lead.image ? await optimizedImage(lead.image.src, 960, 720) : undefi
   .lb-grid[data-n='1'] .lb-cell { grid-column: span 2; grid-row: span 2; }
   .lb-t { margin: 0; color: var(--muted); font-size: 15.5px; max-width: 40ch; }
   .lb-feat { gap: 12px; }
-  .lb-feat :global(.lb-feat-ico) { width: 36px; height: 36px; margin-bottom: 10px; }
-  .lb-feat .lb-h { font: 500 clamp(20px, 1.6vw, 23px)/1.2 var(--display); letter-spacing: -0.015em; color: var(--head); }
+  /* Icon und Überschrift wie im Icon-Raster der Preisseite (.ic-ico/.ic-h in global.css) */
   .lb-close { margin-top: clamp(32px, 4vw, 56px); }
   .lb-close > p { margin: 0; }
   .lb-more { margin-top: clamp(24px, 3vw, 40px); }

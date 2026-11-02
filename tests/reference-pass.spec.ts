@@ -92,3 +92,18 @@ test('Formationen erscheinen fertig, wenn die Bewegung schon pausiert ist', asyn
   await expect(page.locator('[data-tally]')).toContainText('289 Drohnen');
   await expect.poll(() => colouredPixels(page, 'canvas[data-formation]')).toBeGreaterThan(500);
 });
+
+test('Anlass-Seiten: Klick irgendwo aufs Video hält es an und startet es wieder', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'auf dem Handy startet das Video erst per Knopf');
+  // astro preview hat die Pages Function /api/media nicht: ein winziges Testvideo ersetzt das Showreel
+  await page.route('**/api/media**', (route) => route.fulfill({ path: 'tests/fixtures/tiny.webm', contentType: 'video/webm' }));
+  await page.goto('/drohnenshow-werbung/');
+  const host = page.locator('[data-lh-reel]');
+  const toggle = page.locator('[data-lh-toggle]');
+  await expect(host).toHaveClass(/is-on/, { timeout: 15000 });
+  const box = (await host.boundingBox())!;
+  await page.mouse.click(box.x + box.width * 0.4, box.y + box.height * 0.5);
+  await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+  await page.mouse.click(box.x + box.width * 0.3, box.y + box.height * 0.3);
+  await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+});

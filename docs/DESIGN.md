@@ -32,13 +32,29 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 - Headline einspaltig, kein Fülltext rechts daneben
 - Ein Satz darunter nur, wenn er eine Information trägt, die sonst fehlt
 
-**Zeilenumbruch:** Fließtext überall `text-wrap: pretty` (am `body`, vererbt sich), Überschriften `balance`. Keine einzelnen Wörter in der letzten Zeile (Marc, 01.11.2026).
+**Zeilenumbruch:** Keine einzelnen Wörter in der letzten Zeile (Marc, 01./02.11.2026), in zwei Stufen:
+- CSS: Überschriften und alle kurzen Textblöcke (`p`, `li`, `dt`, `dd`, `figcaption`, `label`, `.lead`) `text-wrap: balance`; langer Fließtext (`.post-body`, `.prose`) `pretty`. `pretty` allein reicht nicht, Chromium und WebKit lassen es bei zweizeiligen Sätzen beim Hurenkind
+- HTML: `src/middleware.ts` verbindet beim Ausliefern in `p`, `li`, `figcaption`, `blockquote` die letzten zwei Wörter mit `&nbsp;` (`src/lib/no-orphans.ts`, Test `scripts/no-orphans.test.mjs`). Nicht in Überschriften und `dt`/`dd` (große Schrift oder schmale Spalten), nicht bei langen Wortpaaren, nicht bei `<br>`. Ausnahme pro Element: `data-orphans="keep"
 
-**Inhaltsbreite:** `--content-max: 1792px` (= 1920 − 2 × 64). Horizontaler Innenabstand jeder Section, der Navigation und des Footers ist `var(--gutter)`, nie `var(--pad)`: Ab 1920 px Fensterbreite wächst der Inhalt nicht weiter, Flächen laufen vollflächig.
+**Inhaltsbreite:** `--content-max: 1792px` (= 1920 − 2 × 64). Horizontaler Innenabstand jeder Section, der Navigation und des Footers ist `var(--gutter)`, nie `var(--pad)`: Ab 1920 px Fensterbreite wächst der Inhalt nicht weiter, Hintergrundflächen von Sections laufen vollflächig.
+- ALLES Sichtbare endet an der Content-Breite (Marc, 02.11.2026): Text, Bilder, Karussells, Galerien, Laufbänder, Spielfeld und „Nächstes Projekt“ auf den Referenzen. Scrollbereiche schneiden an der Content-Kante ab und blenden dort weich aus, statt bis zum Fensterrand zu laufen
+- Einzige Ausnahme: das Showreel rechts in den Seitenköpfen (Startseite, Referenzen), es läuft bis an den rechten Fensterrand. Dazu die Konfigurator-Bühne auf dem Handy (klebt oben über die volle Breite). Beide tragen `data-bleed`
+- Achtung: `--gutter` rechnet mit 100 % des Elements, an dem es verwendet wird. In Kindern einer Section (z. B. negativer Rand) ergibt es einen anderen Wert als an der Section selbst
+- Prüfung: `npm run audit:layout [url]` (`scripts/layout-audit.mjs`) meldet Inhalt außerhalb der Content-Breite, Hurenkinder, leere Überschriften und seitliches Scrollen über alle Seiten bei 390/1440/1920 px, mit `--widths=` und `--browser=webkit` erweiterbar
 
 **Links:** `.link` in Orange mit orangefarbener Unterlinie, Linie nur so breit wie der Text (`width: fit-content`), nie über die ganze Spalte.
 
 **Icons:** nur über `src/components/Icon.astro` (Lucide, ISC, https://lucide.dev/icons; ergänzt um `eu`, `whatsapp`, `e-car` = Lucide-Auto mit Blitz, weil `car-front` allein nicht als Elektroauto lesbar ist, und `swiss` = Lucide-Schild mit gefülltem Schweizer Kreuz nach Marcs Vorlage). White Label = `hat-glasses` (Lucides Incognito-Motiv), Freigabe = `thumbs-up`, einfarbig in `--accent` (`class="g"`), kein Verlauf. Keine selbst gezeichneten Icons mehr (Marc, 31.10.2026).
+
+**Icon-Raster:** `.ig` / `.ic` / `.ic-ico` / `.ic-h` in global.css. Offenes Raster ohne Kartenfläche, Linien nur zwischen den Zellen, Icon 36 px in Orange, echte Überschrift, Text. Genutzt von Extras (auswählbar), „Immer inklusive“ (`pricing/Included.astro`); die Bento-Kacheln der Anlass-Seiten nehmen dieselben Maße. Kein Mono-Label über der Überschrift.
+
+**Paketfarben:** Paketname überall in seiner Farbe aus `show-packages.ts` (SPARK Orange, HORIZON Lila, ODYSSEY Cyan): Karten, Tabelle, Konfigurator (`--pkg`), Formular-Pills, Handy-Reiter.
+
+**Vergleiche auf dem Handy:** `src/components/MobileTabs.astro` + `[data-mtabs]`/`[data-mtab]` (Regeln „Reiter auf dem Handy“ in global.css). Bis 700 px ein Reiter je Spalte statt Tabelle oder Kartenreihe: Startseiten-Vergleich, Paketkarten, Leistungsvergleich. Reine Radiogruppe, geht ohne JS. Neue Vergleiche nutzen dieselbe Komponente.
+
+**Auswahl-Pills (`.chips`):** ein Regelsatz für Formular und Referenzfilter. Hover hebt nur ungewählte Pills hervor; gewählte bleiben beim Zeigen, wie sie sind (sonst weiß auf weiß). Das Eingabefeld liegt 1 px groß unter der Beschriftung, die Beschriftung nimmt den Klick.
+
+**Aufnahme-Rahmen im Startseiten-Hero:** Ecken genau auf der Content-Breite (`--fr-t`, `--fr-b`, `--fr-arm` an `.hero`). „Showreel“ sitzt auf Höhe der oberen, die Eckdaten auf Höhe der unteren Rahmenlinie, jeweils links neben dem Eckschenkel.
 
 **Sprache:** du/ihr, nie Sie. Gendern mit Doppelpunkt (Pilot:innen). Keine pauschalen Umweltversprechen (EmpCo). Moritz verantwortet die Texte, Entwürfe sind als solche zu kennzeichnen.
 
@@ -165,4 +181,5 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 - Seiten-Gates `tests/a11y.spec.ts`, `tests/html.spec.ts`, `tests/network-allowlist.spec.ts` grün auf allen Routen (Desktop und Mobil)
 - Chromium und WebKit ohne Konsolenfehler und ohne horizontalen Überlauf bei 390 und 1440 px
 - `npx astro check` ohne Fehler
-- Nach einer Schemaänderung: Dev-Server stoppen, `.astro/data-store.json` löschen, neu starten. Sonst liefert der neue Server Einträge, die der alte Server noch mit dem alten Schema geparst hat (01.11.2026: leere Kachel-Überschriften, weil `title` vom alten Schema verworfen worden war)
+- `npm run audit:layout` ohne Befunde (Dev-Server oder `astro preview` als Ziel)
+- Zwischenspeicher der Inhalte: `npm run dev` löscht `.astro/data-store.json` bei jedem Start (seit 02.11.2026). Astro erkennt Schemaänderungen nur am Inhalt von `content.config.ts`; ein Server, der YAML mit dem alten Schema eingelesen hat, hinterlässt sonst Einträge, die der nächste Start ungeprüft weiterverwendet (01. und 02.11.2026: leere Kachel-Überschriften, weil `title` vom alten Schema verworfen worden war). Nach einer Schemaänderung bei laufendem Server: Server neu starten

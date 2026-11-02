@@ -36,9 +36,9 @@ for (const project of cases) {
 test('Referenzen verlinken alle vier Fälle und blenden redaktionelle Entwürfe aus', async ({ page }) => {
   await page.goto('/referenzen/');
   await expect(page.locator('header.nav nav a[href="/referenzen/"]')).toHaveAttribute('aria-current', 'page');
-  for (const project of cases) await expect(page.locator(`.projects a[href="${project.route}"]`)).toBeVisible();
+  for (const project of cases) await expect(page.locator(`a.proj[href="${project.route}"]`).first()).toBeVisible();
   await expect(page.getByText('Beispielprojekt', { exact: true })).toHaveCount(0);
-  await page.locator(`.projects a[href="${cases[0].route}"]`).click();
+  await page.locator(`a.proj[href="${cases[0].route}"]`).first().click();
   await expect(page).toHaveURL(new RegExp(cases[0].route));
 });
 
@@ -72,6 +72,8 @@ const moved: Record<string, string> = {
   ...Object.fromEntries(cases.map((c) => [`/projekte${c.route}`, c.route])),
   '/leistungen/': '/drohnenshow-preise/',
   '/warum-wir/': '/ueber-uns/',
+  // Konfigurator steht seit der sechzehnten Fassung (31.10.2026) direkt auf der Preisseite
+  '/show-konfigurator/': '/drohnenshow-preise/#konfigurator',
 };
 
 test('Alte Adressen leiten auf die neue Seite weiter', async ({ page }) => {
@@ -79,7 +81,8 @@ test('Alte Adressen leiten auf die neue Seite weiter', async ({ page }) => {
   for (const [from, to] of Object.entries(moved)) {
     await page.goto(from);
     await expect(page).toHaveURL(new RegExp(`${to.replaceAll('/', '\\/')}$`));
-    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', new RegExp(`${to}$`));
+    // canonical ohne Sprungmarke
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', new RegExp(`${to.split('#')[0]}$`));
   }
 });
 

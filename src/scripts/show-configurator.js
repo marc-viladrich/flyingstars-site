@@ -377,7 +377,18 @@ if (form) {
   // man woanders hinklickt oder Esc drückt)
   const info = $("#cfg-info"), legal = $("#cfg-legal");
   let pinned = false;
-  const openTip = (on) => { legal.classList.toggle("is-open", on); info.setAttribute("aria-expanded", String(on)); if (!on) pinned = false; };
+  // Lage: direkt unter dem Info-Zeichen, links so weit wie möglich am Zeichen, aber nie über den Rand des Blocks
+  // (Bezug: .cfg-own-wrap, position: relative)
+  const placeLegal = () => {
+    const box = legal.offsetParent?.getBoundingClientRect(), r = info.getBoundingClientRect();
+    if (!box) return;
+    const x = r.left + r.width / 2 - box.left, w = legal.offsetWidth;
+    const left = Math.max(0, Math.min(x - 20, box.width - w));
+    legal.style.setProperty("--tip-left", `${left}px`);
+    legal.style.setProperty("--tip-arrow", `${x - left}px`);
+    legal.style.setProperty("--tip-top", `${r.bottom - box.top + 10}px`);
+  };
+  const openTip = (on) => { if (on) placeLegal(); legal.classList.toggle("is-open", on); info.setAttribute("aria-expanded", String(on)); if (!on) pinned = false; };
   info.addEventListener("click", () => { pinned = !pinned || !legal.classList.contains("is-open"); openTip(pinned); });
   info.addEventListener("focus", () => openTip(true));
   info.addEventListener("blur", () => { if (!pinned) openTip(false); });

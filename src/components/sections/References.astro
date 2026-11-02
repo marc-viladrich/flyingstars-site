@@ -141,7 +141,7 @@ const formation = (seed: string) => {
   @media (max-width: 720px) {
     .rf-bar { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
     /* Pills in einer wischbaren Reihe statt drei Zeilen untereinander; die Leiste läuft bis an den Bildrand */
-    .rf-pills { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: calc(-1 * var(--gutter)); padding: 2px var(--gutter); scroll-padding-inline: var(--gutter); }
+    .rf-pills { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding: 2px 0; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 40px), transparent); } /* endet an der Content-Kante (Marc, 02.11.2026) */
     .rf-pills::-webkit-scrollbar { display: none; }
     .rf-selects { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .rf-select select { width: 100%; }

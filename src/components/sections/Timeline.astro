@@ -62,7 +62,8 @@ const colors = items.map((_, i) => colorAt(n > 1 ? i / (n - 1) : 0));
   /* Startzustand vor dem Erscheinen (html.reveal setzt das Inline-Skript im Kopf, nur mit Bewegung) */
   :global(html.reveal) .ms-item:not(.lit) .ms-dot { background: var(--ground); border-color: var(--line-strong); box-shadow: none; }
   :global(html.reveal) .ms-item:not(.lit) .ms-line::after { transform: scaleY(0); }
-  :global(html.reveal) .ms-item:not(.lit) .ms-when { color: var(--faint); opacity: 0.4; }
+  /* noch nicht erreichte Jahre gedämpft, aber lesbar (große Schrift, mind. 3:1; axe 02.11.2026) */
+  :global(html.reveal) .ms-item:not(.lit) .ms-when { color: var(--faint); }
   :global(html.reveal) .ms-item:not(.lit) .ms-body { opacity: 0; transform: translateY(0.5em); }
   @media (prefers-reduced-motion: reduce) { .ms-dot, .ms-line::after, .ms-when, .ms-body { transition: none; } }
 

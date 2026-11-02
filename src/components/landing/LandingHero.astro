@@ -60,7 +60,10 @@ const src = videoPath(videos[video]);
     };
     btn.hidden = false;
     btn.addEventListener('click', () => { choice = !host.classList.contains('is-on'); if (choice && paused()) choice = false; sync(); });
-    v.addEventListener('error', () => { host.classList.remove('is-on'); btn.hidden = true; });
+    // Klick irgendwo aufs Video schaltet wie der Knopf (Marc, 02.11.2026); der Knopf bleibt das Ziel für Tastatur und Screenreader
+    host.addEventListener('click', (event) => { if (!btn.hidden && !btn.contains(event.target as Node)) btn.click(); });
+    host.classList.add('can-toggle');
+    v.addEventListener('error', () => { host.classList.remove('is-on', 'can-toggle'); btn.hidden = true; });
     new IntersectionObserver(([e]) => { visible = e.isIntersecting; sync(); }, { threshold: 0.25 }).observe(host);
     new MutationObserver(sync).observe(root, { attributes: true, attributeFilter: ['class'] });
     document.addEventListener('visibilitychange', () => { if (document.hidden) v.pause(); else sync(); });
@@ -95,7 +98,8 @@ const src = videoPath(videos[video]);
   .lh-corners i:nth-child(3) { left: 10px; bottom: 10px; border-width: 0 0 1px 1px; }
   .lh-corners i:nth-child(4) { right: 10px; bottom: 10px; border-width: 0 1px 1px 0; display: none; }
   .lh-toggle { position: absolute; z-index: 3; right: 14px; bottom: 14px; display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 10px; border-radius: 999px; border: 1px solid rgba(246, 241, 232, 0.3); background: rgba(15, 13, 12, 0.66); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); color: var(--text); cursor: pointer; }
-  .lh-toggle:hover { border-color: rgba(246, 241, 232, 0.6); }
+  .lh-media.can-toggle { cursor: pointer; }
+  .lh-toggle:hover, .lh-media.can-toggle:hover .lh-toggle { border-color: rgba(246, 241, 232, 0.6); }
   .lh-toggle:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
   .lh-toggle :global(.ico) { width: 16px; height: 16px; }
   .lh-toggle :global(.i-pause) { display: none; }
