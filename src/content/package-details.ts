@@ -55,50 +55,6 @@ function dronesLine(name: ShowPackage): string {
   return Number.isFinite(p.max) ? t('packageDetails.valueToValueDrones', { v0: p.base, v1: p.max }) : t('packageDetails.fromValueDrones', { v0: p.base });
 }
 
-/** Kernpunkte der Paket-Kurzfassung (Startseite und Anlass-Seiten zeigen dieselbe Vorschau, Marc 01.11.2026). Die
- * Drohnenzahl steht als eigene Zeile davor (dronesLine). Eine Seite kann im YAML eigene `points` setzen. */
-const PACKAGE_POINTS: Record<ShowPackage, string[]> = {
-  SPARK: [t('packageDetails.formationsFromOurCatalogue'), t('packageDetails.upToFourCustomElementsSuchAsInitialsOrA'), t('packageDetails.musicFreeOfGemaRoyalties')],
-  HORIZON: [t('packageDetails.custom2dAnimationsAndSimple3d'), t('packageDetails.yourLogoDrawnPreciselyInTheSky'), t('packageDetails.synchronisedToYourChosenMusic')],
-  ODYSSEY: [t('packageDetails.aStorylineWithADramaticArc'), t('packageDetails.complex3dAnimations'), t('packageDetails.dedicatedProjectManager')],
-};
-
-/** Paketkarten der Preisseite im Aufbau des Vercel-Prototyps (Marc, 31.10.2026: „besser strukturiert mit diesen Bullet
- * Points, die auch farbig sind“): Kurzbeschreibung, dann Gruppen Design & Inhalt / Musik / Service & Extras. Inhalte aus
- * der Vergleichstabelle unten (Fragebogen 21.10.), ab HORIZON nur was dazukommt („Alles aus SPARK, plus:“). */
-interface PackageFeatures { tag: string; badge: string; plus?: string; groups: { title: string; items: string[] }[] }
-const PACKAGE_FEATURES: Record<ShowPackage, PackageFeatures> = {
-  SPARK: {
-    tag: t('packageDetails.aSparklingStartForWeddingsAnniversariesAndSmallerCorporateAnd'),
-    badge: t('packageDetails.entryPackage'),
-    groups: [
-      { title: t('packageDetails.designContent'), items: [t('packageDetails.formationsFromOurCatalogueSuchAsHeartsOrRings'), t('packageDetails.upToFourCustomElementsInitialsLogoCoatOfArms')] },
-      { title: t('packageDetails.music'), items: [t('packageDetails.musicFreeOfGemaRoyalties'), t('packageDetails.gemaMusicPossibleIfTheEventIsRegistered')] },
-      { title: t('packageDetails.serviceExtras'), items: [t('packageDetails.customElementsForApprovalInAdvance'), t('packageDetails.standardPermitProcedure'), t('packageDetails.onSiteCrewSafetyPlanAndLiabilityInsurance')] },
-    ],
-  },
-  HORIZON: {
-    tag: t('packageDetails.yourOwnProductionForProductLaunchesLargeCorporateEventsAnd'),
-    badge: 'Bestseller',
-    plus: t('packageDetails.everythingInSparkPlus'),
-    groups: [
-      { title: t('packageDetails.designContent'), items: [t('packageDetails.fullyCustom2dAnimationsAndSimple3dElements'), t('packageDetails.preciseLogosAndComplexLettering')] },
-      { title: t('packageDetails.music'), items: [t('packageDetails.synchronisedToYourChosenMusic')] },
-      { title: t('packageDetails.serviceExtras'), items: [t('packageDetails.creativeWorkshopWithStoryboard'), t('packageDetails.moreComplexPermitsTooSuchAsNearAirports'), t('packageDetails.videoPreviewWithAFeedbackRound'), t('packageDetails.helpObtainingLandownerConsent')] },
-    ],
-  },
-  ODYSSEY: {
-    tag: t('packageDetails.aStorytellingShowForMajorCampaignsFestivalsAndLargeAudiences'),
-    badge: t('packageDetails.from300Drones'),
-    plus: t('packageDetails.everythingInHorizonPlus'),
-    groups: [
-      { title: t('packageDetails.designContent'), items: [t('packageDetails.complex3dAnimationsAndVolumetricEffects'), t('packageDetails.aStorytellingShowWithADramaticArc')] },
-      { title: t('packageDetails.music'), items: [t('packageDetails.onSiteTimecodeSynchronisationAvailable')] },
-      { title: t('packageDetails.serviceExtras'), items: [t('packageDetails.multipleFeedbackRounds'), t('packageDetails.dedicatedProjectManager'), t('packageDetails.showVideoRawFootage'), t('packageDetails.advanceSiteVisitOnRequest')] },
-    ],
-  },
-};
-
 /** "+900 € je 10 Drohnen, bis 150 Drohnen", built from the price table so it can never drift. */
 function addOnLine(name: ShowPackage): string {
   const p = SHOW_PACKAGES[name];
@@ -109,44 +65,68 @@ function addOnLine(name: ShowPackage): string {
  * SaaS-Preisseiten; Marc 31.10.2026: was überall drin ist, gehört als Häkchen in die Tabelle, nicht in eine Fußnote).
  * `all` spans the three packages. */
 type Cell = string | null | true;
-interface Row { label: string; cells?: [Cell, Cell, Cell]; all?: string }
-const COMPARISON: Row[] = [
-  { label: t('configuratorteaser.drones'), cells: [
+type CardPoint = { text: string; order: number };
+interface Service {
+  id: string; category: 'design' | 'music' | 'service'; label: string;
+  cells?: [Cell, Cell, Cell]; all?: string;
+  cards?: Partial<Record<ShowPackage, CardPoint[]>>;
+  summary?: Partial<Record<ShowPackage, CardPoint>>;
+  included?: { order: number; icon: string; title: string; text: string };
+}
+/** Eine Quelle pro Leistung. Alle Ansichten unten sind Projektionen dieser stabilen IDs.
+ * Redaktionelle Kurz-/Langtexte gehören zur Leistung; Preise und Mengen bleiben in SHOW_PACKAGES. */
+const SERVICES: Service[] = [
+  { id: 'drones', category: 'service', label: t('configuratorteaser.drones'), cells: [
     dronesLine('SPARK'),
     dronesLine('HORIZON'),
     dronesLine('ODYSSEY'),
   ] },
-  { label: t('packageDetails.moreDrones'), cells: [
+  { id: 'more-drones', category: 'service', label: t('packageDetails.moreDrones'), cells: [
     t('packageDetails.valuePerValue', { v0: money(SHOW_PACKAGES.SPARK.add), v1: SHOW_PACKAGES.SPARK.step }),
     t('packageDetails.valuePerValue', { v0: money(SHOW_PACKAGES.HORIZON.add), v1: SHOW_PACKAGES.HORIZON.step }),
     t('packageDetails.valuePerValue', { v0: money(SHOW_PACKAGES.ODYSSEY.add), v1: SHOW_PACKAGES.ODYSSEY.step }),
   ] },
-  { label: t('packageDetails.duration'), all: t('packageDetails.usuallyAround13MinutesUpTo25MinutesPossible') },
-  { label: t('packageDetails.designAndMotifs'), cells: [t('packageDetails.formationsFromOurCatalogueSuchAsHeartsOrRings'), t('packageDetails.fullyCustom2dAnimations'), t('packageDetails.asHorizonPlusComplex3dAnimations')] },
-  { label: t('packageDetails.customElements'), cells: [t('packageDetails.upToFourSuchAsInitialsLogoOrCoatOf'), t('packageDetails.preciseLogosAndComplexLettering'), t('packageDetails.asHorizon')] },
-  { label: '3D', cells: [null, t('packageDetails.simple3dElements'), t('packageDetails.complex3dAnimationsAndVolumetricEffects')] },
-  { label: 'Storytelling', cells: [null, null, t('packageDetails.aStorytellingShowWithADramaticArc')] },
-  { label: t('packageDetails.music'), cells: [t('packageDetails.musicFreeOfGemaRoyaltiesGemaMusicPossibleIfThe'), t('packageDetails.synchronisedToYourChosenMusic'), t('packageDetails.asHorizonOnSiteTimecodeSynchronisationAvailable')] },
-  { label: t('packageDetails.approvalAndPreview'), cells: [t('packageDetails.yourCustomElementsForApprovalInAdvance'), t('packageDetails.videoPreviewWithAFeedbackRound'), t('packageDetails.multipleFeedbackRounds')] },
-  { label: t('packageDetails.creativeWorkshop'), cells: [null, t('packageDetails.withStoryboard'), t('packageDetails.withStoryboard')] },
-  { label: t('packageDetails.safetyPlan'), cells: [true, true, true] },
-  { label: t('packageDetails.liabilityCoverUpTo13Million'), cells: [true, true, true] },
-  { label: t('packageDetails.onSiteCrew'), cells: [true, true, true] },
-  { label: t('packageDetails.permit'), cells: [t('packageDetails.standardProcedure'), t('packageDetails.moreComplexProceduresTooSuchAsNearAirports'), t('packageDetails.asHorizon')] },
-  { label: t('packageDetails.helpObtainingLandownerConsent'), cells: [null, true, true] },
-  { label: t('packageDetails.dedicatedProjectManager'), cells: [null, null, true] },
-  { label: t('packageDetails.showVideoRawFootage'), cells: [`+900 €`, `+900 €`, true] },
-  { label: t('packageDetails.advanceSiteVisit'), cells: [null, null, t('packageDetails.onRequest')] },
+  { id: 'duration', category: 'service', label: t('packageDetails.duration'), all: t('packageDetails.usuallyAround13MinutesUpTo25MinutesPossible') },
+  { id: 'design', category: 'design', label: t('packageDetails.designAndMotifs'), cells: [t('packageDetails.formationsFromOurCatalogueSuchAsHeartsOrRings'), t('packageDetails.fullyCustom2dAnimations'), t('packageDetails.asHorizonPlusComplex3dAnimations')], cards: { SPARK: [{ text: t('packageDetails.formationsFromOurCatalogueSuchAsHeartsOrRings'), order: 0 }], HORIZON: [{ text: t('packageDetails.fullyCustom2dAnimationsAndSimple3dElements'), order: 0 }] }, summary: { SPARK: { text: t('packageDetails.formationsFromOurCatalogue'), order: 0 }, HORIZON: { text: t('packageDetails.custom2dAnimationsAndSimple3d'), order: 0 } }, included: { order: 0, icon: 'pen-tool', title: t('packageDetails.designForYourLocation'), text: t('packageDetails.weProgrammeTheShowForYourSiteMusicAndMotifs') } },
+  { id: 'custom-elements', category: 'design', label: t('packageDetails.customElements'), cells: [t('packageDetails.upToFourSuchAsInitialsLogoOrCoatOf'), t('packageDetails.preciseLogosAndComplexLettering'), t('packageDetails.asHorizon')], cards: { SPARK: [{ text: t('packageDetails.upToFourCustomElementsInitialsLogoCoatOfArms'), order: 1 }], HORIZON: [{ text: t('packageDetails.preciseLogosAndComplexLettering'), order: 1 }] }, summary: { SPARK: { text: t('packageDetails.upToFourCustomElementsSuchAsInitialsOrA'), order: 1 }, HORIZON: { text: t('packageDetails.yourLogoDrawnPreciselyInTheSky'), order: 1 } } },
+  { id: '3d', category: 'design', label: '3D', cells: [null, t('packageDetails.simple3dElements'), t('packageDetails.complex3dAnimationsAndVolumetricEffects')], cards: { ODYSSEY: [{ text: t('packageDetails.complex3dAnimationsAndVolumetricEffects'), order: 0 }] }, summary: { ODYSSEY: { text: t('packageDetails.complex3dAnimations'), order: 1 } } },
+  { id: 'storytelling', category: 'design', label: 'Storytelling', cells: [null, null, t('packageDetails.aStorytellingShowWithADramaticArc')], cards: { ODYSSEY: [{ text: t('packageDetails.aStorytellingShowWithADramaticArc'), order: 1 }] }, summary: { ODYSSEY: { text: t('packageDetails.aStorylineWithADramaticArc'), order: 0 } } },
+  { id: 'music', category: 'music', label: t('packageDetails.music'), cells: [t('packageDetails.musicFreeOfGemaRoyaltiesGemaMusicPossibleIfThe'), t('packageDetails.synchronisedToYourChosenMusic'), t('packageDetails.asHorizonOnSiteTimecodeSynchronisationAvailable')], cards: { SPARK: [{ text: t('packageDetails.musicFreeOfGemaRoyalties'), order: 2 }, { text: t('packageDetails.gemaMusicPossibleIfTheEventIsRegistered'), order: 3 }], HORIZON: [{ text: t('packageDetails.synchronisedToYourChosenMusic'), order: 2 }], ODYSSEY: [{ text: t('packageDetails.onSiteTimecodeSynchronisationAvailable'), order: 2 }] }, summary: { SPARK: { text: t('packageDetails.musicFreeOfGemaRoyalties'), order: 2 }, HORIZON: { text: t('packageDetails.synchronisedToYourChosenMusic'), order: 2 } } },
+  { id: 'preview', category: 'service', label: t('packageDetails.approvalAndPreview'), cells: [t('packageDetails.yourCustomElementsForApprovalInAdvance'), t('packageDetails.videoPreviewWithAFeedbackRound'), t('packageDetails.multipleFeedbackRounds')], cards: { SPARK: [{ text: t('packageDetails.customElementsForApprovalInAdvance'), order: 4 }], HORIZON: [{ text: t('packageDetails.videoPreviewWithAFeedbackRound'), order: 5 }], ODYSSEY: [{ text: t('packageDetails.multipleFeedbackRounds'), order: 3 }] }, included: { order: 2, icon: 'monitor-play', title: t('packageDetails.approvalInAdvance'), text: t('packageDetails.youReviewAndApproveYourCustomElementsBeforeTheShow') } },
+  { id: 'workshop', category: 'service', label: t('packageDetails.creativeWorkshop'), cells: [null, t('packageDetails.withStoryboard'), t('packageDetails.withStoryboard')], cards: { HORIZON: [{ text: t('packageDetails.creativeWorkshopWithStoryboard'), order: 3 }] } },
+  { id: 'safety-plan', category: 'service', label: t('packageDetails.safetyPlan'), cells: [true, true, true] },
+  { id: 'liability', category: 'service', label: t('packageDetails.liabilityCoverUpTo13Million'), cells: [true, true, true] },
+  { id: 'crew', category: 'service', label: t('packageDetails.onSiteCrew'), cells: [true, true, true], cards: { SPARK: [{ text: t('packageDetails.onSiteCrewSafetyPlanAndLiabilityInsurance'), order: 6 }] }, included: { order: 3, icon: 'users', title: t('packageDetails.onSiteCrew'), text: t('packageDetails.ourPilotsAndTechniciansSetUpInAround3Hours') } },
+  { id: 'permit', category: 'service', label: t('packageDetails.permit'), cells: [t('packageDetails.standardProcedure'), t('packageDetails.moreComplexProceduresTooSuchAsNearAirports'), t('packageDetails.asHorizon')], cards: { SPARK: [{ text: t('packageDetails.standardPermitProcedure'), order: 5 }], HORIZON: [{ text: t('packageDetails.moreComplexPermitsTooSuchAsNearAirports'), order: 4 }] }, included: { order: 1, icon: 'shield-check', title: t('packageDetails.permitAndSafetyPlan'), text: t('packageDetails.aviationPermitsSafetyZonesAndLiabilityCoverUpTo1') } },
+  { id: 'landowner-consent', category: 'service', label: t('packageDetails.helpObtainingLandownerConsent'), cells: [null, true, true], cards: { HORIZON: [{ text: t('packageDetails.helpObtainingLandownerConsent'), order: 6 }] } },
+  { id: 'project-manager', category: 'service', label: t('packageDetails.dedicatedProjectManager'), cells: [null, null, true], cards: { ODYSSEY: [{ text: t('packageDetails.dedicatedProjectManager'), order: 4 }] }, summary: { ODYSSEY: { text: t('packageDetails.dedicatedProjectManager'), order: 2 } } },
+  { id: 'footage', category: 'service', label: t('packageDetails.showVideoRawFootage'), cells: [`+900 €`, `+900 €`, true], cards: { ODYSSEY: [{ text: t('packageDetails.showVideoRawFootage'), order: 5 }] } },
+  { id: 'site-visit', category: 'service', label: t('packageDetails.advanceSiteVisit'), cells: [null, null, t('packageDetails.onRequest')], cards: { ODYSSEY: [{ text: t('packageDetails.advanceSiteVisitOnRequest'), order: 6 }] } },
 ];
+const COMPARISON = SERVICES.map(({ id, label, cells, all }) => ({ id, label, cells, all }));
+const groupTitles = { design: t('packageDetails.designContent'), music: t('packageDetails.music'), service: t('packageDetails.serviceExtras') };
+const packageCopy = {
+  SPARK: { tag: t('packageDetails.aSparklingStartForWeddingsAnniversariesAndSmallerCorporateAnd'),
+    badge: t('packageDetails.entryPackage') },
+  HORIZON: { tag: t('packageDetails.yourOwnProductionForProductLaunchesLargeCorporateEventsAnd'),
+    badge: 'Bestseller',
+    plus: t('packageDetails.everythingInSparkPlus') },
+  ODYSSEY: { tag: t('packageDetails.aStorytellingShowForMajorCampaignsFestivalsAndLargeAudiences'),
+    badge: t('packageDetails.from300Drones'),
+    plus: t('packageDetails.everythingInHorizonPlus') }
+};
+const PACKAGE_POINTS = Object.fromEntries(Object.keys(SHOW_PACKAGES).map((name) => [name,
+  SERVICES.flatMap((service) => service.summary?.[name as ShowPackage] ?? []).sort((a, b) => a.order - b.order).map((point) => point.text),
+])) as Record<ShowPackage, string[]>;
+const PACKAGE_FEATURES = Object.fromEntries(Object.keys(SHOW_PACKAGES).map((name) => [name, {
+  ...packageCopy[name as ShowPackage],
+  groups: Object.entries(groupTitles).map(([category, title]) => ({ title, items: SERVICES
+    .filter((service) => service.category === category)
+    .flatMap((service) => service.cards?.[name as ShowPackage] ?? [])
+    .sort((a, b) => a.order - b.order).map((point) => point.text) })),
+}])) as Record<ShowPackage, { tag: string; badge: string; plus?: string; groups: { title: string; items: string[] }[] }>;
+const INCLUDED = SERVICES.filter((service) => service.included && service.cells?.every(Boolean)).sort((a, b) => a.included!.order - b.included!.order).map((service) => ({ id: service.id, ...service.included! }));
 const COMPARISON_NOTE = t('packageDetails.youProvideTheOnSiteSoundSystemAsTheEvent');
-
-/** "Wofür ihr bei jedem Paket bezahlt" */
-const INCLUDED = [
-  { icon: 'pen-tool', title: t('packageDetails.designForYourLocation'), text: t('packageDetails.weProgrammeTheShowForYourSiteMusicAndMotifs') },
-  { icon: 'shield-check', title: t('packageDetails.permitAndSafetyPlan'), text: t('packageDetails.aviationPermitsSafetyZonesAndLiabilityCoverUpTo1') },
-  { icon: 'monitor-play', title: t('packageDetails.approvalInAdvance'), text: t('packageDetails.youReviewAndApproveYourCustomElementsBeforeTheShow') },
-  { icon: 'users', title: t('packageDetails.onSiteCrew'), text: t('packageDetails.ourPilotsAndTechniciansSetUpInAround3Hours') },
-];
 
 /** Extras on the pricing page. Selectable since 01.11.2026 (Marc): the chosen ones travel as `?extras=<id>,<id>` into the
  * inquiry form (field „Extras“, src/components/sections/ContactForm.astro). `id` is that URL/form value, `short` the chip
@@ -161,5 +141,5 @@ const EXTRAS: Extra[] = [
   { id: 'indoor', short: 'Indoor', icon: 'building-2', title: t('packageDetails.indoorDroneShows'), text: t('packageDetails.20To50Drones5To8MinutesCeilingHeight'), price: t('packageDetails.fromApprox15000ExcludingVatFor20Drones'), link: { label: t('packageDetails.moreAboutIndoorShows'), href: '/drohnenshow-indoor/' } },
 ];
 
-return { SHOW_DURATION, PACKAGE_DETAILS, PACKAGE_POINTS, PACKAGE_FEATURES, dronesLine, addOnLine, COMPARISON, COMPARISON_NOTE, INCLUDED, EXTRAS };
+return { SERVICES, SHOW_DURATION, PACKAGE_DETAILS, PACKAGE_POINTS, PACKAGE_FEATURES, dronesLine, addOnLine, COMPARISON, COMPARISON_NOTE, INCLUDED, EXTRAS };
 }

@@ -202,3 +202,9 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 - `npx astro check` ohne Fehler
 - `npm run audit:layout` ohne Befunde (Dev-Server oder `astro preview` als Ziel)
 - Zwischenspeicher der Inhalte: `npm run dev` löscht `.astro/data-store.json` bei jedem Start (seit 02.11.2026). Astro erkennt Schemaänderungen nur am Inhalt von `content.config.ts`; ein Server, der YAML mit dem alten Schema eingelesen hat, hinterlässt sonst Einträge, die der nächste Start ungeprüft weiterverwendet (01. und 02.11.2026: leere Kachel-Überschriften, weil `title` vom alten Schema verworfen worden war). Nach einer Schemaänderung bei laufendem Server: Server neu starten
+
+## Gemeinsame Komponentenbesitzer, Konsolidierung 02.11.2026
+
+- `content/package-details.ts`: stabile Leistungs-IDs in `SERVICES`, daraus Kurzpunkte, Kartengruppen, Immer inklusive und Vergleich. Redaktionelle Fassungen sind Felder derselben Leistung. Preise, Mengen und Farben bleiben in `show-packages.ts`.
+- `PackageCard.astro`: einzige Paketkarte, `summary` und `detailed`; `Packages` und `Pricing` sind Adapter. Freie Angebote ohne Paket-ID verwenden `pricing/OfferCard.astro`.
+- Guard: `scripts/consolidation.test.mjs` prüft Projektionen in allen Sprachen und den Kartenbesitzer.
