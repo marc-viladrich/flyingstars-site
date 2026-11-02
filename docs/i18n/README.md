@@ -40,7 +40,7 @@ Für Inhaltsfelder, jeweils EN und NL zusammen:
 - **433 vorhandene Übersetzungen korrigiert oder angepasst** (`editor-revised`).
 - **1.341 neu maschinell übersetzt** (`machine-new`).
 
-Die gemeinsame UI-Datei enthält **647 Texte**, einschließlich Formular-, Preis- und Motivbeschreibungen. Über beide Sprachen sind das 137 unveränderte Übernahmen, 323 Korrekturen vorhandener Übersetzungen und 834 neue Übersetzungen.
+Die gemeinsame UI-Datei enthält **651 Texte**, einschließlich Formular-, Preis- und Motivbeschreibungen. Über beide Sprachen sind das 137 unveränderte Übernahmen, 325 Korrekturen vorhandener Übersetzungen und 840 neue Übersetzungen.
 
 Jede Zuordnung ist einzeln nachvollziehbar:
 
@@ -129,7 +129,7 @@ Die Preisseite, Blog-Übersicht, 404-Seiten und gemeinsame Navigation/Formulare 
 - `src/content/pages/en|nl/*.yaml`, `projects/en|nl/*.md`, `posts/en|nl/*.md` und `faq/en|nl/*.md` verwenden dieselben Zod-Schemas wie DE. Es gibt 132 neue Einträge zu 66 deutschen Quellen.
 - `src/i18n/routing.mjs` besitzt Sprach- und URL-Identität. `localizedHref()` setzt den Sprachpräfix, lässt externe URLs, Assets, API-Pfade, Query-Werte und Anker intakt und ist idempotent.
 - `localizedCollection()` in `src/i18n/content.ts` ist der gemeinsame Zugriff für Karten, FAQ, Footer und verwandte Inhalte. Jede Abfrage bleibt in der aktuellen Sprache.
-- `forPath()` liefert `t`, `localHref` und das Zahlenformat für serverseitige Komponenten. `ui.mjs` liefert dieselben Texte für Browsermodule. Fehlende Schlüssel oder Platzhalter werden nicht still auf Deutsch ersetzt.
+- `forPath()` liefert `t`, `localHref` und das Zahlenformat für serverseitige Komponenten. `ui.mjs` liefert dieselben Texte für Browsermodule. Fehlende Schlüssel oder Platzhalter werden nicht still auf Deutsch ersetzt. Sichtbare Standardtexte werden ebenfalls erst im Renderer aus dem Wörterbuch bezogen, nicht als sprachgebundene Zod-Defaults gesetzt.
 - Navigation und Paket-/Konfiguratortexte werden über Locale-Factories erzeugt. Drohnenzahlen, Preise, Motiv-Builds und IDs bleiben gemeinsame Daten.
 - `Base.astro` setzt `lang`, Canonical, DE/EN/NL-Alternates und `x-default` für indexierbare Seiten. `noindex`-Seiten erhalten einen eigenen Canonical und keine indexierbaren Alternates.
 - `LanguageSwitch.astro` nutzt normale Links mit vollständigem Sprachnamen, `hreflang` und `aria-current="page"`. Er ist auf Desktop und Mobil bedienbar. Query-Parameter und aktuelle Sprungmarke werden beim Wechsel übernommen.
@@ -147,7 +147,7 @@ Jeder EN-/NL-Eintrag enthält `translationSourceHash`, den SHA-256 seiner deutsc
 1. Die deutsche Seite wie bisher unter `src/content/pages/<slug>.yaml` aus den gemeinsamen Section-Typen anlegen.
 2. Unter `pages/en/<slug>.yaml` und `pages/nl/<slug>.yaml` dieselbe Struktur anlegen. Sichtbare Texte, Alternativtexte und gegebenenfalls sichtbare Tags übersetzen. IDs, Filter-Tags, technische Werte und Referenzen unverändert lassen. Keine neue Route und keine sprachabhängige Komponente anlegen.
 3. In beiden Übersetzungen `translationSourceHash` der aktuellen deutschen Datei setzen. Ermittlung zum Beispiel mit `shasum -a 256 src/content/pages/<slug>.yaml`.
-4. Allgemeine Komponentenbeschriftungen mit einem stabilen Schlüssel in `src/i18n/ui.json` für alle drei Sprachen ergänzen. Serverseitig `forPath(Astro.url.pathname)`, browserseitig `t()` verwenden. Linkziele durch `localHref()` beziehungsweise `localizedHref()` führen.
+4. Allgemeine Komponentenbeschriftungen mit einem stabilen Schlüssel in `src/i18n/ui.json` für alle drei Sprachen ergänzen. Serverseitig `forPath(Astro.url.pathname)`, browserseitig `t()` verwenden. Komponenten-Linkziele durch `localHref()` beziehungsweise `localizedHref()` führen. In übersetzten Markdown-Inhalten interne Links auf die entsprechende EN-/NL-Route setzen.
 5. Neue FAQ, Projekte und Posts entsprechend in ihren Locale-Unterordnern ergänzen. Listen, Fallstudien und Blogrouten werden automatisch erzeugt. Bei einer neuen Section bleibt der übliche Weg über das gemeinsame Schema und `SectionRenderer` bestehen.
 6. Herkunft für neue oder geänderte Felder in den beiden Provenienzdateien fortschreiben und die folgenden Prüfungen ausführen.
 
@@ -165,7 +165,7 @@ node scripts/check-i18n-build.mjs
 node --test 'scripts/*.test.mjs' 'src/scripts/effects/*.test.mjs'
 ```
 
-Ergebnisse und Belegpfade werden im Abschlussabschnitt ergänzt. Die volle Playwright-Suite wurde nicht gestartet. Die gezielten Playwright-Skripte liegen außerhalb des Repositories in `/tmp/fs-i18n/`.
+Ergebnisse und Belegpfade stehen im Abschlussabschnitt. Die volle Playwright-Suite wurde nicht gestartet. Die gezielten Playwright-Skripte liegen außerhalb des Repositories in `/tmp/fs-i18n/`.
 
 ## Bewusste Grenzen und offene Punkte
 
@@ -175,3 +175,25 @@ Ergebnisse und Belegpfade werden im Abschlussabschnitt ergänzt. Die volle Playw
 - Der echte E-Mail-Versand wurde nicht ausgelöst. Formularprüfungen verwenden den tatsächlichen API-Handler ohne Versandkonfiguration und prüfen die ehrliche `not-configured`-Rückmeldung. Der bestehende Prototyptext auf der Danke-Seite bleibt entsprechend erhalten.
 - `SITE_URL` muss beim späteren Deployment die endgültige Domain enthalten. Die Prüfung verwendet explizit `https://flyingstars.art`. Der Host muss die statisch erzeugten Alias-Seiten bei Bedarf zusätzlich als echte HTTP-Weiterleitungen konfigurieren.
 - Es wurden keine Accounts, Editor-Credentials oder externen Versanddienste verwendet. Kein Push, kein PR und kein Deployment.
+
+## Abschlussergebnis
+
+- `npx astro check`: **0 Fehler**, 0 Warnungen, 228 Hinweise aus der bestehenden Codebasis.
+- `SITE_URL=https://flyingstars.art npm run build`: erfolgreich, **65 Inhaltsseiten einschließlich der zwei internen PoCs**. Zusätzlich werden die Alias-Weiterleitungen ausgegeben.
+- `node scripts/check-i18n-build.mjs`: **29 deutsche Routen geprüft**; dafür **42 EN-/NL-Inhaltsrouten** und **16 EN-/NL-Weiterleitungen** nachgewiesen. Zwei interne PoCs sind ausdrücklich ausgenommen. Canonical und hreflang passen zur jeweiligen Seite.
+- Vollständiger angeforderter Node-Testbefehl: **77/77 Tests bestanden**, keine Fehler oder übersprungenen Tests, letzter Lauf ca. 107 Sekunden. Darunter sechs neue i18n-Tests einschließlich der Schema-Defaults.
+- Chromium: **12/12 geforderte Ansichten** für Startseite, Preisseite und PUMA-Fallstudie, jeweils EN/NL bei 1440 × 900 und 390 × 900. Keine JavaScript-Fehler; `scrollWidth` entspricht in allen Fällen exakt der Viewportbreite. Alle zwölf oberen Ansichten wurden visuell geprüft, vollständige Seitenscreenshots sind zusätzlich gespeichert.
+- Zusätzlich wurden die lokalisierten Standardüberschriften für Presse und Qualität im tatsächlichen Build und in zwei gezielten Screenshots geprüft.
+- **Vier Anfrage-/Tastaturszenarien bestanden:** EN und NL vom Konfigurator mit ODYSSEY, 600 Drohnen, eigenem Text, Express und Film ins Formular, dann Validierung und tatsächlicher API-Handler mit `env: {}`. Paket, Drohnenzahl, Anlass, Extras, `locale` und ursprünglicher `quelle`-Wert kommen unverändert an. Sprachwechsel per Tab/Enter bei beiden Breiten; mobiles Menü öffnet und schließt. Zusätzlich der Wechsel EN → NL mit erhaltenem `?paket=HORIZON#case-h`.
+- Referenzfilter auf NL zusätzlich direkt geprüft. Alle Beschriftungen und Mengenbereiche erscheinen übersetzt.
+- Kein echter Mailversand, keine volle Playwright-Suite, kein WebKit-Lauf und keine Videoaufzeichnung. Die angeforderten gezielten Chromium-Screenshots und Interaktionen wurden ausgeführt.
+
+Lokale Belege:
+
+- `/tmp/fs-i18n/screenshots/{en,nl}-{home,pricing,case}-{1440,390}.png`: vollständige Seiten. `-top.png`: visuell geprüfte erste Ansicht ohne Dev-Toolbar.
+- `/tmp/fs-i18n/screenshots/en-press-1440.png` und `nl-press-390.png`: zusätzliche Kontrolle der Standardüberschriften.
+- `/tmp/fs-i18n/visual-report.json`, `flows-report.json`, `build-coverage.json`.
+- `/tmp/fs-i18n/check-final.log`, `build-final.log`, `unit-final.log`.
+- `/tmp/fs-i18n/verify.mjs`, `flows.mjs`: gezielte, nicht eingecheckte Playwright-Skripte.
+
+Für die Integration: Nach Copy-Änderungen aus parallelen Branches werden die Quell-Hashes absichtlich anschlagen. Die jeweils betroffenen EN-/NL-Felder inhaltlich nachziehen und anschließend ihre Hashes aktualisieren. Die drei umgezogenen Seitenarten sind unter `src/templates/` zu bearbeiten; keine zweite Sprachvariante einer Astro-Komponente anlegen.

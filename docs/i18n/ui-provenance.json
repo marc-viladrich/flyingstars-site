@@ -1292,5 +1292,13 @@
   {"key":"references.ofTotal","locale":"en","origin":"machine-new","components":[]},
   {"key":"references.ofTotal","locale":"nl","origin":"machine-new","components":[]},
   {"key":"references.indoor","locale":"en","origin":"editor-revised","components":["src/components/sections/ContactForm.astro","src/site.config.ts","src/content/package-details.ts"],"editorFile":"src/content/translations/site/inquiry/en.json","editorReviewed":true},
-  {"key":"references.indoor","locale":"nl","origin":"editor-revised","components":["src/components/sections/ContactForm.astro","src/site.config.ts","src/content/package-details.ts"],"editorFile":"src/content/translations/site/inquiry/nl.json","editorReviewed":true}
+  {"key":"references.indoor","locale":"nl","origin":"editor-revised","components":["src/components/sections/ContactForm.astro","src/site.config.ts","src/content/package-details.ts"],"editorFile":"src/content/translations/site/inquiry/nl.json","editorReviewed":true},
+  {"key":"logoBar.pressHeadline","locale":"en","origin":"machine-new","components":["src/content.config.ts","src/components/sections/LogoBar.astro"]},
+  {"key":"logoBar.pressHeadline","locale":"nl","origin":"machine-new","components":["src/content.config.ts","src/components/sections/LogoBar.astro"]},
+  {"key":"logoBar.qualityHeadline","locale":"en","origin":"machine-new","components":["src/content.config.ts","src/components/sections/LogoBar.astro"]},
+  {"key":"logoBar.qualityHeadline","locale":"nl","origin":"machine-new","components":["src/content.config.ts","src/components/sections/LogoBar.astro"]},
+  {"key":"comparison.criterion","locale":"en","origin":"editor-revised","components":["src/content.config.ts","src/components/sections/Comparison.astro"],"editorFile":"src/content/translations/page/leistungen/en.json","editorReviewed":false},
+  {"key":"comparison.criterion","locale":"nl","origin":"editor-revised","components":["src/content.config.ts","src/components/sections/Comparison.astro"],"editorFile":"src/content/translations/page/leistungen/nl.json","editorReviewed":false},
+  {"key":"common.showreel","locale":"en","origin":"machine-new","components":["src/content.config.ts","src/components/landing/LandingHero.astro"]},
+  {"key":"common.showreel","locale":"nl","origin":"machine-new","components":["src/content.config.ts","src/components/landing/LandingHero.astro"]}
 ]

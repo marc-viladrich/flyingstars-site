@@ -38,7 +38,7 @@ const photo = closing?.image ? await optimizedImage(closing.image.src, 640) : un
       {closing && <div class="promise faq-cta">
         <Faces />
         <div class="promise-copy">
-          <G>{closing.headline}</G>
+          <G>{closing.headline ?? t('blogindex.canTFindYourQuestion')}</G>
           {closing.text && <p>{closing.text}</p>}
         </div>
         <div class="actions">

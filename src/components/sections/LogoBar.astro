@@ -11,7 +11,7 @@ import { optimizedLogo } from '../../lib/media';
 type Props = Extract<Section, { type: 'logoBar' }> & { index: number };
 import Icon from '../Icon.astro';
 const QICON = { permit: 'file-badge', sound: 'audio-lines', shield: 'shield-check', leaf: 'leaf' } as const;
-const { headline, logos, pressHeadline, pressItems, qualityHeadline, quality, kicker, id = `s${Astro.props.index}` } = Astro.props;
+const { headline, logos, pressHeadline = t('logoBar.pressHeadline'), pressItems, qualityHeadline = t('logoBar.qualityHeadline'), quality, kicker, id = `s${Astro.props.index}` } = Astro.props;
 
 const file = (path: string) => join(process.cwd(), 'public', path);
 const has = (path?: string) => Boolean(path && existsSync(file(path)));

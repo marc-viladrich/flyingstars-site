@@ -12,7 +12,7 @@ import Icon from '../Icon.astro';
 import { optimizedImage } from '../../lib/media';
 import { videos, videoPath } from '../../lib/videos';
 type Props = Extract<Section, { type: 'landingHero' }> & { index: number };
-const { kicker, headline, text, cta, secondary, video, videoLabel, poster, facts } = Astro.props;
+const { kicker, headline, text, cta, secondary, video, videoLabel = t('common.showreel'), poster, facts } = Astro.props;
 const still = await optimizedImage(poster.src, 960);
 const src = videoPath(videos[video]);
 ---

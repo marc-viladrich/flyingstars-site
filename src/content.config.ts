@@ -83,7 +83,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
       tags: z.array(z.string()).min(1).describe('FAQ-Einträge mit einem dieser Tags'),
     })).optional().describe('Fragen in Gruppen; ersetzt tags/limit'),
     closing: z.object({
-      headline: z.string().default('Eure Frage ist nicht dabei?'),
+      headline: z.string().optional(),
       text: z.string().optional(),
       image: image.optional().describe('Foto der drei Geschäftsführer:innen; ohne Bild erscheinen ihre drei Porträts'),
     }).optional().describe('Abschluss mit Anrufen/Schreiben'),
@@ -138,7 +138,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     type: z.literal('comparison'), ...sectionHeading,
     headline: z.string().min(1),
     text: z.string().optional(),
-    rowHeader: z.string().default('Kriterium').describe('Beschriftung der ersten Spalte'),
+    rowHeader: z.string().optional().describe('Beschriftung der ersten Spalte'),
     columns: z.array(z.string().min(1)).min(2),
     rows: z.array(z.object({
       label: z.string().min(1),
@@ -182,7 +182,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
       href: z.string().min(1).optional(),
       tall: z.boolean().default(false).describe('Veraltet: die optische Größe wird berechnet'),
     })).default([]),
-    pressHeadline: z.string().default('Unsere Shows waren zu sehen in'),
+    pressHeadline: z.string().optional(),
     pressItems: z.array(z.object({
       name: z.string().min(1),
       logo: brandPath.optional(),
@@ -191,7 +191,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
       href: z.url().optional().describe('Beitrag, falls öffentlich'),
       note: z.string().optional().describe('Kurzinfo als Tooltip, z. B. Sendung'),
     })).default([]),
-    qualityHeadline: z.string().default('Qualität und Sicherheit'),
+    qualityHeadline: z.string().optional(),
     quality: z.array(z.object({
       title: z.string().min(1), text: z.string().optional(),
       icon: z.enum(['permit', 'sound', 'shield', 'leaf']).describe('Verlaufs-Icon, wenn kein freigegebenes Logo'),
@@ -257,7 +257,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     type: z.literal('landingHero'), kicker: z.string().optional(),
     headline: z.string().min(1), text: z.string().min(1), cta: link, secondary: link.optional(),
     video: z.enum(['showreel', 'bokkenrijders', 'nfl', 'ford', 'puma', 'siemensIndoor']).describe('Schlüssel aus src/lib/videos.ts'),
-    videoLabel: z.string().default('Showreel').describe('Kleine Beschriftung im Rahmen, z. B. "Ford Explorer · Köln"'),
+    videoLabel: z.string().optional().describe('Kleine Beschriftung im Rahmen, z. B. "Ford Explorer · Köln"'),
     poster: image.describe('Standbild bis zum ersten Videobild und bei reduzierter Bewegung'),
     facts: z.array(z.object({ value: z.string().min(1), label: z.string().min(1) })).max(4).default([]),
   }),

@@ -6,7 +6,7 @@ import Accent from '../Accent.astro';
 import SectionHead from '../SectionHead.astro';
 import { plain } from '../accent';
 type Props = Extract<Section, { type: 'comparison' }> & { index: number };
-const { headline, text, rowHeader, columns, rows, note, id = `s${Astro.props.index}`, index, kicker } = Astro.props;
+const { headline, text, rowHeader = t('comparison.criterion'), columns, rows, note, id = `s${Astro.props.index}`, index, kicker } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const label = plain(headline);

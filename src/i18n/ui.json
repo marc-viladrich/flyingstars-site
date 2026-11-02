@@ -3233,5 +3233,25 @@
     "de": "Indoor",
     "en": "Indoor",
     "nl": "Indoor"
+  },
+  "logoBar.pressHeadline": {
+    "de": "Unsere Shows waren zu sehen in",
+    "en": "Our shows have appeared in",
+    "nl": "Onze shows waren te zien in"
+  },
+  "logoBar.qualityHeadline": {
+    "de": "Qualität und Sicherheit",
+    "en": "Quality and safety",
+    "nl": "Kwaliteit en veiligheid"
+  },
+  "comparison.criterion": {
+    "de": "Kriterium",
+    "en": "Criterion",
+    "nl": "Criterium"
+  },
+  "common.showreel": {
+    "de": "Showreel",
+    "en": "Showreel",
+    "nl": "Showreel"
   }
 }
