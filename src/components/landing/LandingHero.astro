@@ -68,7 +68,8 @@ const src = videoPath(videos[video], 'preview');
   .lh { position: relative; display: grid; grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); gap: clamp(32px, 5vw, 80px); align-items: center; padding: clamp(36px, 6vw, 88px) var(--gutter) clamp(56px, 7vw, 112px); overflow: hidden; }
   /* ruhiges Leuchten hinter dem Rahmen, wie Restlicht einer Show */
   .lh::before { content: ""; position: absolute; right: -10%; top: 0; width: 70%; height: 100%; background: radial-gradient(closest-side, rgba(219, 100, 232, 0.12), rgba(51, 237, 242, 0.04) 60%, transparent); pointer-events: none; }
-  .lh-copy { position: relative; display: grid; gap: 22px; justify-items: start; }
+  /* Text oben am Bild, damit die erste Zeile auf jeder Seite auf --hero-top steht, auch wenn das Bild höher ist (Runde 18) */
+  .lh-copy { position: relative; display: grid; gap: 22px; justify-items: start; align-self: start; }
   .lh-copy .kicker { margin: 0 0 -10px; }
   .lh h1 { font-size: clamp(40px, 5.4vw, 80px); line-height: 1; letter-spacing: -0.035em; max-width: 16ch; }
   .lh .lead { max-width: 48ch; }

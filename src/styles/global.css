@@ -623,7 +623,7 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
 /* Seitenkopf der Unterseiten */
 .page-hero { padding: clamp(36px, 6vw, 80px) var(--gutter) clamp(48px, 7vw, 96px); display: grid; gap: clamp(28px, 5vw, 72px); align-items: center; }
 .page-hero.has-media { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-.page-hero-copy { display: grid; gap: 22px; justify-items: start; }
+.page-hero-copy { display: grid; gap: 22px; justify-items: start; align-self: start; } /* erste Zeile auf --hero-top, auch neben einem höheren Bild (Runde 18) */
 .page-hero h1 { font-size: clamp(40px, 5.4vw, 80px); line-height: 1; letter-spacing: -0.035em; max-width: 16ch; }
 .page-hero .lead { max-width: 52ch; }
 .page-hero-media { margin: 0; border-radius: var(--radius); overflow: hidden; --curtain-r: var(--radius); background: #0a0908; }
