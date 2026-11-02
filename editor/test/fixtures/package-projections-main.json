@@ -723,7 +723,7 @@
         "id": "express",
         "short": "Express",
         "icon": "zap",
-        "title": "Show in unter zwei Wochen",
+        "title": "Express-Show in unter zwei Wochen",
         "text": "Alles unter 14 Tagen bis zur Show. Wir ziehen Design und Genehmigung vor.",
         "price": "Aufpreis nach Aufwand"
       },
@@ -1497,7 +1497,7 @@
         "id": "express",
         "short": "Express",
         "icon": "zap",
-        "title": "A show in under two weeks",
+        "title": "Express show in under two weeks",
         "text": "Less than 14 days until the show. We prioritise design and permits.",
         "price": "Surcharge based on scope"
       },
@@ -2271,7 +2271,7 @@
         "id": "express",
         "short": "Express",
         "icon": "zap",
-        "title": "Show binnen twee weken",
+        "title": "Express-show binnen twee weken",
         "text": "Minder dan 14 dagen tot de show. We geven ontwerp en vergunning voorrang.",
         "price": "Toeslag naar werkzaamheden"
       },

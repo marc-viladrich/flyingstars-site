@@ -181,3 +181,7 @@ Der parallele Komponenten-/CSS-Branch ist nicht Teil dieses Commits. Nach dessen
 ## Prüfung
 
 Die tatsächlichen Ergebnisse und Belegpfade stehen in [inhalte-pruefung.md](inhalte-pruefung.md). Die dauerhaften Wächter in `scripts/content-gaps.test.mjs` prüfen identische interne Hinweise in allen Sprachen, Case-Links aller landingRefs, optionale Medien mit unveränderter Validierung vorhandener Werte sowie eindeutige Case-Routen und gültige Weiterverweise. Die bestehenden i18n-Prüfungen sichern Quellhashes und Struktur; zusätzliche Szenarien in `tests/projects.spec.ts` prüfen die drei neuen Fälle und alle lokalisierten Landing-Verweise.
+
+## Offene Rückfrage: Showzeit je Paket (02.11.2026)
+
+Marc möchte, dass die Showzeit von SPARK über HORIZON zu ODYSSEY wächst. FlyingStars hat im Fragebogen vom 21.10.2026 die frühere Staffel „ca. 10 / ca. 13 / ca. 15 Minuten“ aber ausdrücklich korrigiert: „Es gibt keine Dauer je Paket. In der Regel ca. 13 Minuten, bis 25 Minuten möglich.“ Alle Paketkarten zeigen deshalb diesen Wert. Bestätigt FlyingStars eine Staffel, reicht es, `dur` je Paket in `src/content/show-packages.json` zu ändern.

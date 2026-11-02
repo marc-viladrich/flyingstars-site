@@ -56,6 +56,14 @@ function dronesLine(name: ShowPackage): string {
   return Number.isFinite(p.max) ? t('packageDetails.valueToValueDrones', { v0: p.base, v1: p.max }) : t('packageDetails.fromValueDrones', { v0: p.base });
 }
 
+/** Showzeit je Paket auf jeder Paketkarte (Marc, 02.11.2026: „da fehlt mir die Showzeit“). Wert aus show-packages.json.
+ * FlyingStars hat im Fragebogen 21.10.2026 die frühere Staffel 10/13/15 Min ausdrücklich korrigiert („Es gibt keine
+ * Dauer je Paket. In der Regel ca. 13 Minuten, bis 25 Minuten möglich“), deshalb tragen alle drei Pakete denselben Wert,
+ * bis FlyingStars eine Staffel bestätigt. */
+function showtimeLine(name: ShowPackage): string {
+  return t('packageDetails.showtimeLine', { v0: SHOW_PACKAGES[name].dur.replace(/ /g, '\u00a0') });
+}
+
 /** "+900 € je 10 Drohnen, bis 150 Drohnen", built from the price table so it can never drift. */
 function addOnLine(name: ShowPackage): string {
   const p = SHOW_PACKAGES[name];
@@ -128,5 +136,5 @@ const EXTRAS: Extra[] = [
   { id: 'indoor', short: 'Indoor', icon: 'building-2', title: t('packageDetails.indoorDroneShows'), text: t('packageDetails.20To50Drones5To8MinutesCeilingHeight'), price: t('packageDetails.fromApprox15000ExcludingVatFor20Drones'), link: { label: t('packageDetails.moreAboutIndoorShows'), href: '/drohnenshow-indoor/' } },
 ];
 
-return { SERVICES, SHOW_DURATION, PACKAGE_DETAILS, PACKAGE_POINTS, PACKAGE_FEATURES, dronesLine, addOnLine, COMPARISON, COMPARISON_NOTE, INCLUDED, EXTRAS };
+return { SERVICES, SHOW_DURATION, PACKAGE_DETAILS, PACKAGE_POINTS, PACKAGE_FEATURES, dronesLine, addOnLine, COMPARISON, COMPARISON_NOTE, INCLUDED, EXTRAS, showtimeLine };
 }

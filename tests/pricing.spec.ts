@@ -52,7 +52,7 @@ test('Gewählte Extras landen vorbelegt in der Anfrage', async ({ page }) => {
   // Klick in die Zelle (nicht aufs Kästchen) wählt das Extra
   await page.locator('.xc', { has: page.locator('#x-express') }).click();
   await page.locator('.xc', { has: page.locator('#x-schweiz') }).click();
-  await expect(page.getByRole('checkbox', { name: 'Show in unter zwei Wochen' })).toBeChecked();
+  await expect(page.getByRole('checkbox', { name: 'Express-Show in unter zwei Wochen' })).toBeChecked();
   await expect(bar).toBeVisible();
   await expect(bar).toContainText('2 Extras in eurer Anfrage: Express, Schweiz');
   await page.locator('.xc', { has: page.locator('#x-schweiz') }).click();

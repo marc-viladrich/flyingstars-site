@@ -1003,6 +1003,7 @@ a.pack { grid-template-rows: auto auto 1fr; align-items: start; row-gap: 14px; }
 .pack .price { font: 500 clamp(28px, 2.3vw, 34px)/1.05 var(--display); letter-spacing: -0.025em; margin-top: 12px; color: var(--head); }
 .pack .meta { margin-top: 8px; }
 .pack-drones { grid-column: 1 / -1; margin: 6px 0 0; padding: 18px 0 0; border-top: 1px solid var(--line); color: var(--c); font: 500 16px/1.3 var(--display); letter-spacing: 0.01em; }
+.pack-time { display: block; margin-top: 4px; color: var(--muted); font: 400 14px/1.4 var(--body); letter-spacing: 0; } /* Showzeit in der Faktengruppe unter der Drohnenzahl */
 .pack-points { grid-column: 1 / -1; list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 8px; font-size: 14.5px; color: var(--muted); }
 .pack-points li { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 10px; align-items: baseline; }
 .pack-points li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--c); transform: translateY(-2px); }

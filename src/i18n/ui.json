@@ -1149,6 +1149,11 @@
     "en": "from {v0} drones",
     "nl": "vanaf {v0} drones"
   },
+  "packageDetails.showtimeLine": {
+    "de": "{v0} Showzeit, bis 25 Min möglich",
+    "en": "{v0} show time, up to 25 min possible",
+    "nl": "{v0} showtijd, tot 25 min mogelijk"
+  },
   "packageDetails.formationsFromOurCatalogue": {
     "de": "Formationen aus unserem Katalog",
     "en": "Formations from our catalogue",
@@ -1505,9 +1510,9 @@
     "nl": "Onze piloten en technici bouwen in circa 3 uur op en vliegen jullie show."
   },
   "packageDetails.aShowInUnderTwoWeeks": {
-    "de": "Show in unter zwei Wochen",
-    "en": "A show in under two weeks",
-    "nl": "Show binnen twee weken"
+    "de": "Express-Show in unter zwei Wochen",
+    "en": "Express show in under two weeks",
+    "nl": "Express-show binnen twee weken"
   },
   "packageDetails.lessThan14DaysUntilTheShowWePrioritiseDesign": {
     "de": "Alles unter 14 Tagen bis zur Show. Wir ziehen Design und Genehmigung vor.",

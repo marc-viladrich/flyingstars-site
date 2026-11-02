@@ -1,6 +1,6 @@
 ---
 import { forPath } from '../../i18n/server';
-const { t, localHref, formatLocale } = forPath(Astro.url.pathname);
+const { t, localHref, formatLocale, locale } = forPath(Astro.url.pathname);
 // Preiskarte (Marc, 31.10.2026: „bei der Hochzeit insbesondere mit den Preisen … viel mehr High Quality“). Links der
 // Preis groß, bei Paketbezug mit der Punktfigur des Pakets und Preis/Drohnen aus src/content/show-packages.ts; rechts
 // die Gruppen wie ein Kassenzettel (Bezeichnung links, Betrag rechts), optional ein Bonus im Logoverlauf.
@@ -11,6 +11,7 @@ import SectionHead from '../SectionHead.astro';
 import CtaBox from '../CtaBox.astro';
 import Icon from '../Icon.astro';
 import { SHOW_PACKAGES } from '../../content/show-packages';
+import { getPackageDetails } from '../../content/package-details';
 type Props = Extract<Section, { type: 'landingPrice' }> & { index: number };
 const { kicker, headline, text, package: pkg, price, unit, groups, bonus, closing, id = 'preise', index } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
@@ -22,6 +23,8 @@ const shown = p ? t('showconfigurator.fromValue', { v0: p.price.toLocaleString(f
 const [, pre = '', amount = shown] = shown.match(/^((?:ab|bis|from|up to|vanaf|tot)(?: ca\.| approx\.)?)\s+(.+)$/) ?? [];
 const sub = unit ?? (p ? t('landingprice.excludingVatForValueDronesPlusTravel', { v0: p.base }) : undefined);
 // Staffel nur, wenn das Paket nach oben begrenzt ist (SPARK: bis 150 Drohnen, je 10 weitere +900 €)
+// Showzeit wie auf allen Paketkarten (package-details.ts)
+const showtime = pkg ? getPackageDetails(locale).showtimeLine(pkg) : undefined;
 const scale = p && Number.isFinite(p.max) ? t('landingprice.upToValueDronesValuePerValueAdditionalDrones', { v0: p.max, v1: p.add.toLocaleString(formatLocale), v2: p.step }) : undefined;
 ---
 <section class="section alt lp" id={id} aria-labelledby={`${id}-h`}>
@@ -31,6 +34,7 @@ const scale = p && Number.isFinite(p.max) ? t('landingprice.upToValueDronesValue
       {pkg && p && <div class="lp-pkg"><canvas data-orb={orb[pkg]} data-color={p.color.join(',')} data-n={p.base} aria-hidden="true"></canvas><span class="lp-name">{pkg}</span></div>}
       <p class="lp-amount">{pre && <span class="lp-pre mono">{pre} </span>}{amount}</p>
       {sub && <p class="lp-unit">{sub}</p>}
+      {showtime && <p class="lp-unit">{showtime}</p>}
       {scale && <p class="lp-scale mono">{scale}</p>}
     </div>
     <div class="lp-groups" data-n={groups.length}>

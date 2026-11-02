@@ -15,7 +15,8 @@ const label = t(tone === 'yes' ? (mobile ? 'pricingpage.mobileIncluded' : 'prici
   {responsibility === 'none' && <span class="none" role={legend ? undefined : 'img'} aria-hidden={legend ? 'true' : undefined} aria-label={legend ? undefined : t('landingsite.none')}>–</span>}
   {responsibility === 'part' && hint && <small class="responsibility-hint">{hint}</small>}
 </> : badge ? <>
-  <span class:list={['m', badge.tone]}><Icon name={comparisonIcon(tone)!} size={12} />{badge.label}</span>
+  <!-- Einordnung als Wort ohne Icon (Marc, 02.11.2026: Icons in dieser Vergleichstabelle verwirren) -->
+  <span class:list={['m', badge.tone]}>{badge.label}</span>
   {badge.text && (mobile ? <span class="t">{badge.text}</span> : <> {badge.text}</>)}
 </> : tone === 'value' ? value : <span class={tone}>
   <Icon name={comparisonIcon(tone)!} size={20} />
@@ -27,5 +28,4 @@ const label = t(tone === 'yes' ? (mobile ? 'pricingpage.mobileIncluded' : 'prici
   .half { display: inline-block; width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--accent); background: linear-gradient(90deg, var(--accent) 50%, transparent 50%); vertical-align: middle; }
   .half.is-legend { width: 12px; height: 12px; }
   .none { color: var(--faint); font-size: 18px; }
-  .m :global(.ico) { vertical-align: -2px; margin-right: 4px; }
 </style>
