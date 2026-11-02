@@ -61,12 +61,12 @@ try{for(const [engine,type]of [['chromium',chromium],['webkit',webkit]]){
   await page.screenshot({path:evidence+'/'+engine+'-saved.png'});
   await page.getByRole('button',{name:'Weitere Aktionen',exact:true}).click();await page.getByRole('menuitem',{name:'Inhalte verwalten',exact:true}).click();
   await page.getByRole('searchbox',{name:'Inhalte durchsuchen',exact:true}).fill('Show-Pakete');await page.getByRole('button',{name:'Show-Pakete · DE',exact:true}).click();
-  const price=page.getByLabel('Startpreis netto',{exact:true}).first();await expect(price).toBeVisible();await page.screenshot({path:evidence+'/'+engine+'-packages.png'});
+  const price=page.getByLabel('Startpreis netto',{exact:true}).first();await expect(price).toBeVisible();for(const channel of ['Rot','Grün','Blau'])await expect(page.getByLabel(channel,{exact:true})).toHaveCount(3);await page.screenshot({path:evidence+'/'+engine+'-packages.png'});
   const packagePrice=engine==='chromium'?8001:8002;await price.click();await price.press('ControlOrMeta+A');await price.pressSequentially(String(packagePrice));await price.press('Tab');
   const packageSave=page.waitForResponse(r=>r.url().endsWith('/editor/api/save')&&r.request().method()==='POST',{timeout:120000});await page.getByRole('button',{name:/Änderung speichern/}).click();expect((await packageSave).status()).toBe(200);
   expect(JSON.parse(await readFile(path.join(fixture.source,'src/content/show-packages.json'))).SPARK.price).toBe(packagePrice);
   expect(Object.keys(JSON.parse(await readFile(path.join(stateDir,'translation-memory.json'))).entries).some(key=>key.startsWith('en:'))).toBe(true);
-  reports.push({engine,cookies,sourceHash:hash,savedHeadline:data.sections[0].headline,uploaded:asset.data.src,imageOwner:marker.address,errors});
+  expect(errors).toEqual([]);reports.push({engine,cookies,sourceHash:hash,savedHeadline:data.sections[0].headline,uploaded:asset.data.src,imageOwner:marker.address,errors:[...errors]});
 
  }catch(error){await page.screenshot({path:evidence+'/'+engine+'-failure.png'});console.error((await page.locator('body').innerText()).slice(-3500));throw error;}finally{await browser.close();}
 }}
