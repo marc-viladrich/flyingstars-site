@@ -1,4 +1,5 @@
 import { z } from 'zod';
+/** @template {import('zod').ZodType} T @param {string} group @param {T} schema @returns {T} */
 const grouped=(group,schema)=>schema.meta({...schema.meta(),'x-afe':{...schema.meta()?.['x-afe'],group}});
 
 // Project-specific presentation stays in the content collection, shared by

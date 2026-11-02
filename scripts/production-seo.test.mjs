@@ -4,6 +4,7 @@ import {readFile,readdir} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {contentSchemas} from '../src/schemas/content-schema.mjs';
 import {robotsText} from '../src/lib/robots.mjs';
 import {createFlyingStarsAdapter} from '../editor/flyingstars-adapter.mjs';
 import {codecs,describeSchema} from 'astro-frontend-editor/runtime/extensions';
@@ -17,7 +18,7 @@ test('robots uses the actual public origin and blocks private editor previews',(
 });
 test('every actual locale file exposes its SEO fields through the shared editor schema; source hashes are current',async()=>{
  const site=await createFlyingStarsAdapter(root),files=await readdir(path.join(root,'src/content'),{recursive:true});
- const sources=site.sourcesFromFiles(files.map(f=>'src/content/'+f));let localized=0,seo=0;
+ const sources=site.sourcesFromFiles(files.map(f=>'src/content/'+f)).filter(source=>Object.hasOwn(contentSchemas,source.address.collection));let localized=0,seo=0;
  for(const source of sources){
   const bytes=await readFile(path.join(root,source.file),'utf8'),data=source.schema.parse(codecs[source.format].parse(bytes));
   const fields=describeSchema(source.schema,data).fields;

@@ -1,5 +1,5 @@
-import navigationData from './content/navigation.json';
-import messages from './i18n/ui.json';
+import navigationData from './content/navigation.json' with {type:'json'};
+import messages from './i18n/ui.json' with {type:'json'};
 import { createTranslator } from './i18n/ui.mjs';
 // Navigation nach Moritz' Sitemap-Entwurf (31.10.2026, noch nicht von FlyingStars abgenommen): Anlässe, Preise,
 // Referenzen, Über uns, FAQ, Blog; Kontakt über den Button „Show anfragen“. „Anlässe“ ist nur ein Menüpunkt ohne eigene

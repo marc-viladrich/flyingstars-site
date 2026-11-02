@@ -117,7 +117,7 @@ test('Offline-Pipeline: CI, Code-Deploy, Inhalts-Push/Freigabe, Rebase, Buildfeh
     await commit(dev,'Konkurrierender Inhalt');await git(dev,['push','origin','main']);
     const bytes=await fs.readFile(path.join(host,'src/content/pages/en/index.yaml'));
     await assert.rejects(update(),/Git-Konflikt.*unverändert/);
-    await assert.rejects(run(process.execPath,[path.join(host,'editor/deploy/host-update.mjs')],{cwd:host,env:{...process.env,FLYINGSTARS_STATE_DIR:state,FLYINGSTARS_PUBLIC_WEBROOT:webroot,DEPLOY_RESTART_CMD:restart}}),e=>e.code===1&&/Git-Konflikt/.test(e.stderr));
+    await assert.rejects(run(process.execPath,[path.join(host,'editor/deploy/host-update.mjs')],{cwd:host,env:{...process.env,AFE_GIT_REMOTE:'origin',FLYINGSTARS_STATE_DIR:state,FLYINGSTARS_PUBLIC_WEBROOT:webroot,DEPLOY_RESTART_CMD:restart}}),e=>e.code===1&&/Git-Konflikt/.test(e.stderr));
     assert.equal(await git(host,['rev-parse','HEAD']),before);assert.equal(await git(host,['status','--porcelain']),status);
     assert.deepEqual(await fs.readFile(path.join(host,'src/content/pages/en/index.yaml')),bytes);
     const publisher=await new NativePublisher(store,new NativeBuilder(store,state,{editor:false,runtimeName:'runtime-public',webroot})).init(),review=await publisher.review();

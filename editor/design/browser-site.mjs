@@ -1,6 +1,6 @@
 import {attributePolicy} from '../extensions/flyingstars/web/preview.mjs';
 import {inlineCodec} from './inline.mjs';
-import {imageControl,selectImage,library,mediaUsage,mediaUsers,collectionOf} from './media-browser.mjs';
+import {imageControl,chooseImage,library,mediaUsage,mediaUsers,collectionOf} from './media-browser.mjs';
 import {reviewLocales,uniqueSection} from './locale-review.mjs';
 import {routeTools} from '../extensions/flyingstars/web/routing.mjs';
 const kinds={'package/':['Show-Pakete','package','Show-Pakete'],'media/':['Bild','image','Mediathek'],'page/':['Seite','file-text','Seiten'],'post/':['Blogartikel','newspaper','Blog'],'project/':['Projekt','folder-open','Projekte'],'site/':['Website-Daten','settings','Website-Daten'],'faq/':['Frage','circle-help','FAQ']};
@@ -13,7 +13,7 @@ export default [{name:'flyingstars/design',contractVersion:'1.0',hooks:{
  pageGroups:()=>['Seiten','Projekte','Blog'],currentPage:(records,slug)=>records.find(r=>r.id==='page/'+slug)||records.find(r=>r.route===slug),navigatorName:name,
  navigation:records=>records.filter(r=>r.route).map(r=>({value:r.route,label:name(r)})),
  changeKinds:()=>Object.entries(kinds).map(([key,value])=>({test:id=>id.startsWith(key),title:value[2],icon:value[1]})),recordGroup:group,
- mediaLibrary:library,mediaUsage,mediaUsers,mediaCollection:collectionOf,isMedia:r=>r.type==='media',mediaSource:v=>v?.src,imageSummary:v=>({label:v?.caption?.trim()||v?.alt?.trim()||v?.src?.split('/').at(-1)||'Bild',thumb:v?.src}),mediaRecordFor:(records,id)=>records.find(r=>r.id===id)||null,mediaSelection:(v,assets=[])=>assets.find(a=>a.data.src===v?.src)?.id||null,selectedMedia:selectImage,uploadedMediaId:uploaded=>uploaded.assetId,mediaUsageKeys:()=>['src','alt','width','height'],
+ mediaLibrary:library,mediaUsage,mediaUsers,mediaCollection:collectionOf,isMedia:r=>r.type==='media',mediaSource:v=>v?.src,imageSummary:v=>({label:v?.caption?.trim()||v?.alt?.trim()||v?.src?.split('/').at(-1)||'Bild',thumb:v?.src}),mediaRecordFor:(records,id)=>records.find(r=>r.id===id)||null,mediaSelection:(v,assets=[])=>assets.find(a=>a.data.src===v?.src)?.id||null,selectedMedia:chooseImage,uploadedMediaId:uploaded=>uploaded.assetId,mediaUsageKeys:()=>['src','alt','width','height'],
  resolveReference:(records,value,reference)=>records.find(r=>r.address?.collection===reference?.collection&&r.address.id===value),referencePrefix:reference=>reference?.collection==='projects'?'project/':null,referencedRecords:(records,reference)=>records.filter(r=>r.address?.collection===reference?.collection),mediaAssetSearch:asset=>[asset.data.title,asset.data.defaultAlt,asset.data.src],mediaSearchText:r=>r.data?.defaultAlt,
  beforeSave:reviewLocales,uniqueSection,optionalFieldAllowed:()=>true,canDelete:()=>false,isPage:item=>item.type==='page',
  omitRecordField:(_item,_data,path)=>path[0]==='translationSourceHash',inlineCodec:()=>'flyingstars/design-plain',

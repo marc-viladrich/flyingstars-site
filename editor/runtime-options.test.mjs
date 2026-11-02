@@ -103,6 +103,7 @@ async function freePort(){const server=net.createServer();await new Promise((res
 
 test('Real CLI from /tmp builds WORKTREE and serves authenticated /editor/ with isolated private state', {timeout:120000},async t=>{
  const root=await temporary(t),state=path.join(root,'state');
+ const {i18nFixture}=await import('./i18n-test-fixture.mjs'),isolated=await i18nFixture(t),siteRoot=isolated.source,draftBranch='content/draft';isolated.store.sync.close();
  const password='Listener-Test äöü';
  await addAccount(state,'Listener Test',password);
  let port;try{port=await freePort();}catch(error){if(error.code==='EPERM'||error.code==='EACCES'){t.skip('Sandbox verweigert Loopback-Listener mit '+error.code+'; realer Socket-Nachweis ausstehend.');return;}throw error;}let publicPort=await freePort();while(publicPort===port)publicPort=await freePort();
@@ -133,6 +134,7 @@ test('Real CLI from /tmp builds WORKTREE and serves authenticated /editor/ with 
 
 test('Composition from /tmp initializes both builds and authenticated editor handlers without sockets', {timeout:120000},async t=>{
  const root=await temporary(t),state=path.join(root,'state');
+ const {i18nFixture}=await import('./i18n-test-fixture.mjs'),isolated=await i18nFixture(t),siteRoot=isolated.source,draftBranch='content/draft';isolated.store.sync.close();
  const password='Handler-Test äöü';
  await addAccount(state,'Handler Test',password);
  const script=`

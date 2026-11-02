@@ -19,7 +19,7 @@ test('the real source schema supplies every new section, all current file owners
  assert.deepEqual(site.types.map(t=>t.directory),['pages','posts','projects','faq','editor-media']);assert.equal(state.records.length,201);
  assert.deepEqual(state.templates.sections.map(s=>s.type),site.sectionSchema.options.map(s=>s.shape.type.value));assert.equal(state.templates.sections.length,31);
  for(const record of state.records){assert.ok(record.fields.length,record.id);assert.ok(!record.fields.some(f=>f.path[0]==='translationSourceHash'));}
- for(const id of ['package/spark','site/ui','translation/en--page-index','screen/show-konfigurator'])assert.equal(site.sourceFor(id),null);
+ for(const id of ['package/spark','site/contact','translation/en--page-index','screen/show-konfigurator'])assert.equal(site.sourceFor(id),null);
  assert.equal(state.records.find(r=>r.id==='page/en/index').route,'/en/');
  assert.equal(state.records.find(r=>r.id==='project/nl/puma-bundesliga').route,'/nl/puma-bundesliga/');
  assert.equal(state.templates.collections.length,0);

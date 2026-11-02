@@ -16,6 +16,17 @@ export async function i18nFixture(t,{sourceRoot=path.join(here,'..'),forCI=false
   config=config.replace(/vite:\s*\{/,"vite: {envDir:'/tmp/flyingstars-no-env',");
   if(!config.includes("envDir:'/tmp/flyingstars-no-env'"))throw Error('Die Fixture konnte das Laden von .env nicht abschalten.');
   await fs.writeFile(path.join(source,'astro.config.mjs'),config);
+  // Explicit offline fixture images. The public site's media resolver is never changed by this test.
+  await fs.writeFile(path.join(source,'src/lib/media.ts'),`
+import sharp from 'sharp';
+import path from 'node:path';
+export async function optimizedImage(src:string,width=960,height?:number,_format?:string){
+ const size=src.startsWith('/assets/')?await sharp(path.join(process.cwd(),'public',src)).metadata():{width:1600,height:900};
+ const w=Math.min(width,960,size.width!),h=height??Math.round(w*size.height!/size.width!);
+ return {src,width:w,height:h,attributes:{width:w,height:h}};
+}
+export async function optimizedLogo(src:string,height:number){return optimizedImage(src,height*3,height);}
+`);
   if(forCI){
     const packageRoot=fileURLToPath(new URL('./',import.meta.resolve('astro-frontend-editor/package.json')));
     const manifest=JSON.parse(await fs.readFile(path.join(source,'package.json'),'utf8'));manifest.dependencies['astro-frontend-editor']='file:'+packageRoot;

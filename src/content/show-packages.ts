@@ -1,7 +1,7 @@
 /** Prototype prices from FlyingStars' supplied Vercel reference, 24 September 2026.
  * Net, excluding travel. Customer approval is required before production release.
  */
-import packageData from './show-packages.json';
+import packageData from './show-packages.json' with {type:'json'};
 export type ShowPackage = keyof typeof packageData;
 export const PACKAGE_NAMES = Object.keys(packageData) as ShowPackage[];
 export const SHOW_PACKAGES = Object.fromEntries(PACKAGE_NAMES.map(name=>[name,{...packageData[name],max:packageData[name].max??Infinity}])) as Record<ShowPackage,{base:number;max:number;price:number;step:number;add:number;dur:string;color:number[]}>;

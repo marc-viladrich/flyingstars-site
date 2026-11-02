@@ -6,21 +6,23 @@ export function uniqueSection(section,existing){
 }
 // Preserve the translation that belongs to an array entry when entries move. A changed entry
 // with a stable id stays matched; positional fallback is used only after exact matches are reserved.
+export function matchEntries(before,after){
+ const old=Array.isArray(before)?before:[],used=new Set(),matches=after.map(value=>{const i=old.findIndex((v,i)=>!used.has(i)&&same(v,value));if(i>=0)used.add(i);return i;});
+ return after.map((value,i)=>{if(matches[i]>=0)return matches[i];let at=old.findIndex((v,j)=>!used.has(j)&&value?.id&&v?.id===value.id);const available=old.map((v,j)=>({v,j})).filter(({v,j})=>!used.has(j)&&v?.type===value?.type);if(at<0&&available.length===1)at=available[0].j;if(at<0&&old[i]!==undefined&&!used.has(i)&&old[i]?.type===value?.type)at=i;if(at>=0)used.add(at);return at;});
+}
 export function synchronize(before,after,target,path=[]){
  if(typeof after==='string'&&(['id','type'].includes(path.at(-1))||/^(?:https?:|\/|#)/.test(after)))return after;
  if(same(before,after))return structuredClone(target??after);
  if(after&&typeof after==='object'&&!Array.isArray(after)&&after.type&&before?.type!==after.type)return structuredClone(after);
- if(Array.isArray(after)){
-  const old=Array.isArray(before)?before:[],used=new Set(),matches=after.map(value=>{const i=old.findIndex((v,i)=>!used.has(i)&&same(v,value));if(i>=0)used.add(i);return i;});
-  return after.map((value,i)=>{let at=matches[i];if(at<0){at=old.findIndex((v,j)=>!used.has(j)&&value?.id&&v?.id===value.id);if(at<0&&old[i]!==undefined&&!used.has(i)&&old[i]?.type===value?.type)at=i;if(at>=0)used.add(at);}return synchronize(at>=0?old[at]:undefined,value,at>=0?target?.[at]:undefined,[...path,i]);});
- }
+ if(Array.isArray(after))return matchEntries(before,after).map((at,i)=>synchronize(at>=0?before[at]:undefined,after[i],at>=0?target?.[at]:undefined,[...path,i]));
  if(after&&typeof after==='object')return Object.fromEntries(Object.entries(after).filter(([key])=>key!=='translationSourceHash').map(([key,value])=>[key,synchronize(before?.[key],value,target?.[key],[...path,key])]));
  if(typeof after==='string'&&typeof target==='string')return target;
  return structuredClone(after);
 }
 export function changedLeaves(before,after,path=[]){
  if(same(before,after))return [];
- if(after&&typeof after==='object')return Object.entries(after).flatMap(([key,value])=>changedLeaves(before?.[key],value,[...path,Array.isArray(after)?Number(key):key]));
+ if(Array.isArray(after))return matchEntries(before,after).flatMap((at,i)=>changedLeaves(at>=0?before[at]:undefined,after[i],[...path,i]));
+ if(after&&typeof after==='object')return Object.entries(after).flatMap(([key,value])=>changedLeaves(before?.[key],value,[...path,key]));
  return typeof after==='string'?[{path,value:after}]:[];
 }
 const set=(object,path,value)=>{let node=object;for(const key of path.slice(0,-1))node=node[key];node[path.at(-1)]=value;};
