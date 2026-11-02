@@ -8,7 +8,7 @@ const run=promisify(execFile),fixture=await i18nFixture(),stateDir=fixture.root+
 const usernames=Object.fromEntries(['chromium','webkit'].map(engine=>[engine,'proof-'+engine+'-'+Date.now()]));
 const password='Temporary browser proof 2026!';
 for(const engine of ['chromium','webkit'])await run(process.execPath,[new URL('./manage-accounts.mjs',import.meta.url).pathname,'add',usernames[engine],'--name','Browser proof','--email',usernames[engine]+'@example.invalid','--state-dir',stateDir],{env:{PATH:process.env.PATH,HOME:process.env.HOME,EDITOR_NEW_PASSWORD:password},maxBuffer:1000000});
-const options=resolveRuntimeOptions({env:{PATH:process.env.PATH},values:{siteRoot:fixture.source,stateDir,port:4763,publicPort:4764,preview:'static',auth:'on',remote:false,offlineMedia:'1'}});
+const options=resolveRuntimeOptions({env:{PATH:process.env.PATH},values:{siteRoot:fixture.source,stateDir,port:4763,publicPort:4764,preview:'static',auth:'on',remote:false,offlineMedia:'1',translationProvider:'fake'}});
 const app=await startNativeServers({options,initialize:false});await app.builder.init();console.log('READY',fixture.source);
 fixture.store.sync.close();
 const reports=[];
@@ -22,10 +22,14 @@ try{for(const [engine,type]of [['chromium',chromium],['webkit',webkit]]){
   const frame=page.frameLocator('iframe');const heading=frame.getByRole('textbox',{name:/^headline ·/i}).first();await expect(heading).toBeVisible({timeout:90000});
   const value='Browser '+engine+' Nachweis';await heading.click();await heading.press('ControlOrMeta+A');await heading.pressSequentially(value);await heading.press('Tab');
   await page.getByRole('button',{name:/Änderung speichern/}).click();const dialog=page.getByRole('dialog');await expect(dialog.getByRole('heading',{name:'EN und NL gemeinsam prüfen'})).toBeVisible();const fields=dialog.getByRole('textbox');await expect(fields).toHaveCount(2);
-  for(const [index,text]of ['English '+engine+' proof','Nederlands '+engine+' bewijs'].entries()){await fields.nth(index).click();await fields.nth(index).press('ControlOrMeta+A');await fields.nth(index).pressSequentially(text);}
+  for(const [index,locale]of ['en','nl'].entries()){
+   const previous=await fields.nth(index).inputValue();await dialog.getByRole('button',{name:'Übersetzung vorschlagen',exact:true}).nth(index).click();
+   const adopt=dialog.getByRole('button',{name:'Vorschlag übernehmen',exact:true});await expect(adopt).toHaveCount(1);await expect(fields.nth(index)).toHaveValue(previous);
+   await adopt.click();await expect(fields.nth(index)).toHaveValue('['+locale.toUpperCase()+'] '+value);
+  }
   const response=page.waitForResponse(r=>r.url().endsWith('/editor/api/save')&&r.request().method()==='POST',{timeout:120000});await dialog.getByRole('button',{name:'Geprüft speichern',exact:true}).click();const saved=await response;const savedResult=await saved.json();console.log(engine,'save status',saved.status());expect(saved.status()).toBe(200);
   const file=path.join(fixture.source,'src/content/pages/index.yaml'),bytes=await readFile(file),data=codecs.yaml.parse(bytes);expect(data.sections[0].headline).toBe(value);const hash=createHash('sha256').update(bytes).digest('hex');
-  for(const locale of ['en','nl']){const target=codecs.yaml.parse(await readFile(path.join(fixture.source,'src/content/pages',locale,'index.yaml')));expect(target.translationSourceHash).toBe(hash);expect(target.sections[0].headline).toBe(locale==='en'?'English '+engine+' proof':'Nederlands '+engine+' bewijs');}
+  for(const locale of ['en','nl']){const target=codecs.yaml.parse(await readFile(path.join(fixture.source,'src/content/pages',locale,'index.yaml')));expect(target.translationSourceHash).toBe(hash);expect(target.sections[0].headline).toBe('['+locale.toUpperCase()+'] '+value);}
   const provenance=JSON.parse(await readFile(path.join(fixture.source,'docs/i18n/content-provenance.json'),'utf8'));for(const locale of ['en','nl'])expect(provenance.some(p=>p.source==='src/content/pages/index.yaml'&&p.locale===locale&&p.path.join('.')==='sections.0.headline'&&p.editorReviewed)).toBe(true);
   await expect.poll(()=>app.builder.current?.head,{timeout:120000}).toBe(savedResult.head);expect(await readFile(path.join(app.builder.current.site,'index.html'),'utf8')).toContain(value);
   await expect(page.getByRole('button',{name:'Speichert',exact:true})).toHaveCount(0,{timeout:120000});await page.reload();await expect(frame.getByRole('textbox',{name:/^headline ·/i}).first()).toHaveText(value,{timeout:120000});
@@ -53,7 +57,15 @@ try{for(const [engine,type]of [['chromium',chromium],['webkit',webkit]]){
    const localized=codecs.yaml.parse(await readFile(path.join(fixture.source,'src/content/pages',locale==='de'?'':locale,'index.yaml')));
    await expect(frame.getByRole('textbox',{name:/^headline ·/i}).first()).toHaveText(localized.sections[0].headline,{timeout:90000});
   }
-  await page.screenshot({path:evidence+'/'+engine+'-saved.png'});reports.push({engine,cookies,sourceHash:hash,savedHeadline:data.sections[0].headline,uploaded:asset.data.src,imageOwner:marker.address,errors});
+  await page.screenshot({path:evidence+'/'+engine+'-saved.png'});
+  await page.getByRole('button',{name:'Weitere Aktionen',exact:true}).click();await page.getByRole('menuitem',{name:'Inhalte verwalten',exact:true}).click();
+  await page.getByRole('searchbox',{name:'Inhalte durchsuchen',exact:true}).fill('Show-Pakete');await page.getByRole('button',{name:'Show-Pakete · DE',exact:true}).click();
+  const price=page.getByLabel('Startpreis netto',{exact:true}).first();await expect(price).toBeVisible();await page.screenshot({path:evidence+'/'+engine+'-packages.png'});
+  const packagePrice=engine==='chromium'?8001:8002;await price.click();await price.press('ControlOrMeta+A');await price.pressSequentially(String(packagePrice));await price.press('Tab');
+  const packageSave=page.waitForResponse(r=>r.url().endsWith('/editor/api/save')&&r.request().method()==='POST',{timeout:120000});await page.getByRole('button',{name:/Änderung speichern/}).click();expect((await packageSave).status()).toBe(200);
+  expect(JSON.parse(await readFile(path.join(fixture.source,'src/content/show-packages.json'))).SPARK.price).toBe(packagePrice);
+  expect(Object.keys(JSON.parse(await readFile(path.join(stateDir,'translation-memory.json'))).entries).some(key=>key.startsWith('en:'))).toBe(true);
+  reports.push({engine,cookies,sourceHash:hash,savedHeadline:data.sections[0].headline,uploaded:asset.data.src,imageOwner:marker.address,errors});
 
  }catch(error){await page.screenshot({path:evidence+'/'+engine+'-failure.png'});console.error((await page.locator('body').innerText()).slice(-3500));throw error;}finally{await browser.close();}
 }}

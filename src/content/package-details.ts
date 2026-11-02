@@ -87,7 +87,7 @@ function resolveService(value: any): any {
     if (value.computed === 'more-drones') { const p = SHOW_PACKAGES[value.package as ShowPackage]; return t('packageDetails.valuePerValue', { v0: money(p.add), v1: p.step }); }
     return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, resolveService(item)]));
   }
-  return value;
+  return value === false ? null : value;
 }
 const SERVICES: Service[] = packageData.services.map(resolveService);
 const COMPARISON = SERVICES.map(({ id, label, cells, all }) => ({ id, label, cells, all }));
