@@ -3363,5 +3363,100 @@
     "de": "Nicht enthalten",
     "en": "Not included",
     "nl": "Niet inbegrepen"
+  },
+  "consent.title": {
+    "de": "Deine Datenschutz-Einstellungen",
+    "en": "Your privacy choices",
+    "nl": "Jouw privacykeuzes"
+  },
+  "consent.summary": {
+    "de": "Ihr entscheidet, ob wir Google-Dienste zur Analyse und Werbeerfolgsmessung nutzen dürfen. Ohne Zustimmung laden wir diese Dienste nicht. Eure Anfrage funktioniert auch ohne sie.",
+    "en": "You choose whether we may use Google services for analytics and advertising measurement. We do not load these services without consent. You can send an enquiry without them.",
+    "nl": "Jullie bepalen of we Google-diensten voor analyse en advertentiemeting mogen gebruiken. Zonder toestemming laden we deze diensten niet. Een aanvraag versturen kan ook zonder."
+  },
+  "consent.gaSummary": {
+    "de": "Optional: Google Analytics 4 für Besucherstatistik.",
+    "en": "Optional: Google Analytics 4 for visitor statistics.",
+    "nl": "Optioneel: Google Analytics 4 voor bezoekersstatistieken."
+  },
+  "consent.adsSummary": {
+    "de": "Optional: Google Ads zur Messung erfolgreicher Anfragen nach Anzeigenklicks.",
+    "en": "Optional: Google Ads to measure successful enquiries after ad clicks.",
+    "nl": "Optioneel: Google Ads om geslaagde aanvragen na advertentieklikken te meten."
+  },
+  "consent.transfer": {
+    "de": "Google Ireland Limited verarbeitet dabei Nutzungsdaten und Kennungen; Daten können auch in die USA gelangen. Ihr könnt eure Wahl jederzeit im Footer ändern.",
+    "en": "Google Ireland Limited processes usage data and identifiers; data may also be transferred to the USA. You can change your choices at any time in the footer.",
+    "nl": "Google Ireland Limited verwerkt gebruiksgegevens en identificatoren; gegevens kunnen ook naar de VS gaan. Jullie kunnen de keuze altijd in de footer wijzigen."
+  },
+  "consent.privacy": {
+    "de": "Datenschutz und weitere Informationen",
+    "en": "Privacy and further information",
+    "nl": "Privacy en meer informatie"
+  },
+  "consent.necessary": {
+    "de": "Notwendig: Wir speichern nur eure Datenschutz-Auswahl für 180 Tage im Browser. Das umfasst auch eine Ablehnung.",
+    "en": "Necessary: We store only your privacy choices in your browser for 180 days. This includes a rejection.",
+    "nl": "Noodzakelijk: we bewaren alleen jullie privacykeuzes 180 dagen in de browser. Dit geldt ook voor een weigering."
+  },
+  "consent.analytics": {
+    "de": "Besucherstatistik",
+    "en": "Visitor statistics",
+    "nl": "Bezoekersstatistieken"
+  },
+  "consent.analyticsDetail": {
+    "de": "Google Analytics 4 nutzt Cookies, um Seitenaufrufe und Nutzung zu messen. Diese Auswertung ist freiwillig und für eure Anfrage nicht erforderlich.",
+    "en": "Google Analytics 4 uses cookies to measure page views and site usage. This analysis is optional and is not needed for your enquiry.",
+    "nl": "Google Analytics 4 gebruikt cookies om paginaweergaven en websitegebruik te meten. Deze analyse is vrijwillig en niet nodig voor jullie aanvraag."
+  },
+  "consent.ads": {
+    "de": "Werbeerfolg messen",
+    "en": "Measure advertising results",
+    "nl": "Advertentieresultaten meten"
+  },
+  "consent.adsDetail": {
+    "de": "Google Ads nutzt Cookies und Kennungen, um erfolgreiche Anfragen Anzeigen zuzuordnen. Keine personalisierte Werbung. Formularinhalte werden nicht als Messdaten übergeben.",
+    "en": "Google Ads uses cookies and identifiers to attribute successful enquiries to ads. No personalized advertising. Form contents are not passed as measurement data.",
+    "nl": "Google Ads gebruikt cookies en identificatoren om geslaagde aanvragen aan advertenties toe te schrijven. Geen gepersonaliseerde advertenties. Formulierinhoud wordt niet als meetgegevens doorgegeven."
+  },
+  "consent.retention": {
+    "de": "Eure Auswahl gilt für 180 Tage. Ein Widerruf beendet weitere Messung; bereits übertragene Daten werden dadurch nicht automatisch gelöscht.",
+    "en": "Your choices apply for 180 days. Withdrawal stops further measurement; it does not automatically delete data already transferred.",
+    "nl": "Jullie keuzes gelden 180 dagen. Intrekken stopt verdere metingen; al verstuurde gegevens worden daardoor niet automatisch verwijderd."
+  },
+  "consent.reject": {
+    "de": "Ablehnen",
+    "en": "Reject",
+    "nl": "Weigeren"
+  },
+  "consent.accept": {
+    "de": "Akzeptieren",
+    "en": "Accept",
+    "nl": "Accepteren"
+  },
+  "consent.settings": {
+    "de": "Einstellungen",
+    "en": "Settings",
+    "nl": "Instellingen"
+  },
+  "consent.save": {
+    "de": "Auswahl speichern",
+    "en": "Save choices",
+    "nl": "Keuzes opslaan"
+  },
+  "consent.close": {
+    "de": "Schließen ohne Änderung",
+    "en": "Close without changes",
+    "nl": "Sluiten zonder wijzigingen"
+  },
+  "consent.reopen": {
+    "de": "Datenschutz-Einstellungen",
+    "en": "Privacy settings",
+    "nl": "Privacyinstellingen"
+  },
+  "consent.storageError": {
+    "de": "Der Browser kann eure Auswahl nicht speichern. Sie gilt nur bis zum nächsten Seitenaufruf. Ihr könnt diesen Dialog schließen.",
+    "en": "Your browser cannot save your choices. They apply only until the next page load. You can close this dialog.",
+    "nl": "De browser kan jullie keuzes niet bewaren. Ze gelden alleen tot de volgende paginaweergave. Jullie kunnen dit venster sluiten."
   }
 }

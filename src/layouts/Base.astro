@@ -10,6 +10,13 @@ import Logo from '../components/Logo.astro';
 import { optimizedImage } from '../lib/media';
 import { LOCALES, localeFromPath, sourcePath, sourceId, localizedHref } from '../i18n/routing.mjs';
 import LanguageSwitch from '../components/LanguageSwitch.astro';
+import Consent from '../components/Consent.astro';
+import { trackingConfig } from '../lib/consent.mjs';
+const tracking = trackingConfig({
+  ga: import.meta.env.PUBLIC_GA_ID ?? '',
+  ads: import.meta.env.PUBLIC_GOOGLE_ADS_ID ?? '',
+  label: import.meta.env.PUBLIC_GOOGLE_ADS_LABEL ?? '',
+});
 import { SHOWS_TOTAL } from '../components/facts';
 interface Props { title: string; description: string; noindex?: boolean; canonicalPath?: string; image?: string; navSection?: string; fullBleed?: boolean; }
 const { title, description, noindex = false, canonicalPath, image, navSection, fullBleed: bleed = false } = Astro.props;
@@ -79,10 +86,14 @@ const inNav = (href: string) => site.nav.some((item) => item.href === href);
         <div><h2 class="footer-heading">{t('base.pages')}</h2><ul>{site.nav.map((item) => <li><a href={localHref(item.href)}>{item.label}</a></li>)}{!inNav('/blog/') && <li><a href={localHref("/blog/")}>Blog</a></li>}<li><a href={localHref(site.cta.href)}>{site.cta.label}</a></li></ul>{occasionPages.length > 0 && <><h2 class="footer-heading footer-sub">{t('base.occasions')}</h2><ul>{occasionPages.map((item) => <li><a href={localHref(item.href)}>{item.label}</a></li>)}</ul></>}</div>
         <div><h2 class="footer-heading">{t('base.followUs')}</h2><ul><li><a href="https://www.instagram.com/flyingstars.art/" rel="noopener noreferrer" target="_blank">Instagram</a></li><li><a href="https://www.youtube.com/@flyingstars." rel="noopener noreferrer" target="_blank">YouTube</a></li><li><a href="https://www.tiktok.com/@flyingstars_art" rel="noopener noreferrer" target="_blank">TikTok</a></li><li><a href="https://www.facebook.com/FlyingStars.Art/" rel="noopener noreferrer" target="_blank">Facebook</a></li></ul></div>
       </div>
-      <div class="base mono"><span>© {new Date().getFullYear()} FlyingStars GmbH</span><nav aria-label={t('base.legal')}>{site.footer.legal.map((item) => <a href={localHref(item.href)}>{item.label}</a>)}</nav><span>{t('base.websitePreview')}</span></div>
+      <div class="base mono"><span>© {new Date().getFullYear()} FlyingStars GmbH</span><nav aria-label={t('base.legal')}>{site.footer.legal.map((item) => <a href={localHref(item.href)}>{item.label}</a>)}<button type="button" class="consent-reopen" data-consent-open hidden>{t('consent.reopen')}</button></nav><span>{t('base.websitePreview')}</span></div>
     </footer>
+    {(tracking.ga || tracking.ads) && <Consent config={tracking} />}
     <script>
       import '../scripts/site';
     </script>
   </body>
 </html>
+<style>
+  .consent-reopen { background: none; border: 0; padding: 0; color: inherit; font: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 4px; min-height: 44px; }
+</style>
