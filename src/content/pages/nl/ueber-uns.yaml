@@ -17,6 +17,7 @@ sections:
     secondary:
       label: Onze mijlpalen
       href: "#meilensteine"
+    todo: FlyingStars muss ein freigegebenes Team- oder Arbeitsfoto für den persönlichen Einstieg liefern; derzeit steht hier ein Showbild. Moritz muss die deutsche Endfassung und die maschinell übersetzten EN-/NL-Texte redaktionell prüfen.
   - type: team
     id: team
     kicker: Team
@@ -60,6 +61,7 @@ sections:
     cta:
       label: Leer ons kennen
       href: /kontakt/
+    todo: FlyingStars muss hochauflösende Porträts von Ronja, Florian und Erwin sowie Fotos von Patrick und Alejandro liefern; die vorhandenen Porträts messen nur 199 × 199 Pixel. Zusätzlich fehlen Choppers Foto und eine abgestimmte Kurzvorstellung.
   - type: textMedia
     kicker: Geschiedenis
     headline: Hoe FlyingStars begon.
@@ -75,6 +77,7 @@ sections:
       width: 1920
       height: 987
     mediaSide: right
+    todo: FlyingStars muss ein passendes Gründungs- oder Arbeitsfoto liefern; das aktuelle Bild zeigt die spätere Böllerciao-Show, nicht die Gründung.
   - type: timeline
     id: meilensteine
     kicker: Mijlpalen
@@ -120,6 +123,7 @@ sections:
       - when: "2026"
         title: Indoor in het Triple Z
         text: In september een indoor-show in het bedrijvencentrum waar ook ons kantoor zit.
+    todo: FlyingStars muss den historischen LBA-Erstanspruch belegen und VW Golf mit 350/400 Drohnen sowie das E.ON-Datum 15./16.09. klären. Für E.ON und „Kein Bock auf Nazis“ fehlen zugeordnete Showbilder.
   - type: landingBento
     id: zusammenarbeit
     kicker: Vanuit één team
@@ -141,6 +145,7 @@ sections:
       - icon: drone
         title: Eigen vloot
         text: We vliegen met onze eigen drones. Patrick plant hun inzet en zorgt voor de techniek voor jullie show.
+    todo: Moritz muss den USP-Entwurf zur Zusammenarbeit redaktionell freigeben; die sachliche Grundlage ist in docs/ueber-uns-usps.md dokumentiert.
   - type: landingSite
     id: sicherheit
     kicker: Veiligheid
@@ -200,6 +205,7 @@ sections:
     download:
       label: Technisch gegevensblad · PDF
       href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf
+    todo: FlyingStars muss die Startflächen je Drohnenzahl und die standortabhängigen Abstände bestätigen; 15 × 15 und 25 × 25 Meter widersprechen sich in den Quellen. Die Zeichnung bleibt ein Beispiel; Betriebsgenehmigung und aktuelle Versicherungsbestätigung fehlen im Quellenpaket.
   - type: sustainability
     id: nachhaltigkeit
     kicker: Duurzaamheid
@@ -234,6 +240,7 @@ sections:
       - icon: campaign
         title: "#Böllerciao"
         text: Met Deutsche Umwelthilfe boven Berlijn in november 2023, als alternatief voor oud-en-nieuwvuurwerk.
+    todo: Moritz und FlyingStars müssen die Umweltformulierungen vor Veröffentlichung prüfen und die Belege für Ökostrom, Herstellung und das TÜV-Nord-Schallschutzgutachten bereithalten.
   - type: metrics
     id: zahlen
     kicker: In cijfers
@@ -252,10 +259,11 @@ sections:
       - label: Drone-inzetten in één maand
         value: "12.000"
         text: In juni 2026, 20 shows met elk 600 drones.
+    todo: FlyingStars muss den Showstand seit dem 21.10.2026 aktualisieren oder 178 weiterhin ausdrücklich als datierten Bestand kennzeichnen.
   - type: cta
     headline: Leer ons kennen.
     text: Een aanvraag is de snelste weg. Liever eerst praten? Plan een videogesprek via onze contactpagina.
     button:
       label: Vraag een show aan
       href: /kontakt/
-translationSourceHash: b7b33e5d014b01e8680833bd434ef7a97cfe74093ddf0779e4e235d0fadf40ee
+translationSourceHash: c5c3547b8b277fe896ab7b65e02dc6cbe477892951f241a5b2e7f96ae62f81e0

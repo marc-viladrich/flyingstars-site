@@ -240,3 +240,11 @@ Belege unter `/private/tmp/fs-i18n-r13/`:
 - `logs/check.log`, `logs/build.log`, `logs/unit-final.log`, `logs/playwright.log`, `logs/layout-{chromium,webkit}.log`, `logs/layout-{en,nl}-{chromium,webkit}.log`.
 
 Keine technischen Restpunkte aus dem Merge. Redaktionelle Prüfung der maschinellen Übersetzungen sowie rechtliche Freigabe des Datenschutzentwurfs bleiben offen. Die zwei internen PoCs bleiben wie zuvor deutsch. Ein echter Mailversand wurde nicht ausgelöst. `.env`-Dateien wurden nicht gelesen; es gab keinen Push und kein Deployment.
+
+## Inhaltslücken und zusätzliche Fallstudien, 02.11.2026
+
+Branch `codex/inhalte-fallstudien`, Ausgangspunkt `68c6940`. Drei vorhandene Kurzreferenzen wurden zu vollständigen Fallstudien ausgebaut: Hochzeit Recklinghausen, Heiratsantrag Hugenpoet und L’Oréal × Prada Paradoxe. Alle neuen Showcase-Texte sind in EN/NL als `machine-new` dokumentiert. Quelle, Bilder und Originalfilm-Links stehen in [fallstudien-quellen.md](../fallstudien-quellen.md).
+
+Die Hochzeit-Section `sections[1]` verwendet jetzt `landingRefs`; ihre alten `landingStories.items`-Pfade entfallen aus der Provenienz. Die folgenden Section-Indizes bleiben unverändert. Auf Werbung ersetzt die vorhandene Ford-Fallstudie die unverlinkte Spotify-Kurzreferenz. Der Gesamtbestand von 19 Referenzen bleibt erhalten; sieben davon haben nun eine eigene Fallstudie.
+
+43 interne Hinweise stehen identisch auf elf DE-/EN-/NL-Seiten. Sie bleiben absichtlich auf Deutsch und sind keine unübersetzte öffentliche Prosa. Sie benötigen keinen `machine-new`-Record, da sie nicht übersetzt wurden. Alle betroffenen Quellhashes sind aktualisiert. Die neu formulierte Referenz-Einleitung ist als `machine-new` erfasst. Lücken und tatsächliche Prüfergebnisse: [Inventar](../inhalte-luecken.md), [Prüfprotokoll](../inhalte-pruefung.md).

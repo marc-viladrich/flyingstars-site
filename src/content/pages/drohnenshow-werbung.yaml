@@ -30,6 +30,7 @@ sections:
       - { value: "178", label: Shows seit 2022 }
       - { value: 48 h, label: bis zur Antwort }
       - { value: 1–2 Wochen, label: im Express }
+    todo: Moritz muss die deutsche Endfassung und die maschinell übersetzten EN-/NL-Texte redaktionell prüfen.
 
   - type: logoBar
     id: marken
@@ -57,7 +58,11 @@ sections:
     id: referenzen
     kicker: Referenzen
     headline: Große Marken, große Bühnen.
-    projects: [nfl-berlin-game, puma-bundesliga, spotify-luciano-apache, loreal-prada-rheinturm]
+    projects:
+      - nfl-berlin-game
+      - puma-bundesliga
+      - exploring-reinvented-der-neue-ford-explorer
+      - loreal-prada-rheinturm
     cta: { label: Alle Referenzen, href: /referenzen/ }
 
   # Entwurf für Moritz: Wirkung als Kacheln, Inhalte wie bisher
@@ -77,6 +82,7 @@ sections:
     items:
       - { icon: camera, title: Bilder für eure Kanäle, text: "Gäste filmen und teilen die Show. Rohaufnahmen mit unserer Kameradrohne kosten 900 €, bei ODYSSEY sind sie enthalten." }
       - { icon: newspaper, title: Ein Anlass für Berichte, text: "Über uns und unsere Shows haben unter anderem ZDF, WDR, ntv und die WAZ berichtet." }
+    todo: FlyingStars muss die genannten ZDF-/WDR-Berichte konkret belegen; für Reichweiten- oder Wirkungsaussagen fehlen messbare Projektergebnisse.
 
   # Entwurf für Moritz: Freigabe als Strahl mit Schranke, Inhalte wie bisher
   - type: landingFlow
@@ -111,7 +117,7 @@ sections:
       - { name: ODYSSEY, label: Erzählte 3D-Show }
     note: Alle Preise netto zzgl. Anfahrt
     cta: { label: Alle Leistungen und Preise, href: "/drohnenshow-preise/" }
-
+    todo: FlyingStars muss die Paketgrenzen, Aufpreise und Leistungen für den Relaunch bestätigen; die endgültige Preisstruktur für 2027 ist noch offen.
 
   # Neugier aus dem Fragebogen („Wie sieht mein Unternehmen als Drohnenshow aus?“). Entwurf für Moritz.
   - type: landingTeaser
@@ -122,6 +128,7 @@ sections:
     href: "/drohnenshow-preise/?anlass=launch#konfigurator"
     cta: Logo im Konfigurator ausprobieren
     loop: marke
+    todo: FlyingStars muss die Motive, Drohnenzahlen und Freischaltstufen anhand von docs/show-motive-inventar.md fachlich bestätigen. Die Vorschau ist kein Flugplan.
 
   # Icon-Kacheln (Marc, 01.11.2026): großes Icon und kleine Überschrift, „White Label“ statt „Im Hintergrund“.
   # Entwurf für Moritz: Agenturen mit Aussage-Kachel („Wir fliegen, ihr glänzt“ von der Startseite) und Gesichtern
@@ -158,6 +165,7 @@ sections:
     facts:
       - { value: 4–8 Wochen, label: Bestätigung je EU-Land, vorab }
       - { value: ca. 3 Monate, label: in Italien }
+    todo: FlyingStars muss aktuelle Cross-border-Fristen und mögliche Sondergebühren je Land bestätigen. Die Ortsbeispiele belegen keine pauschale Genehmigung oder garantierte Frist.
 
   - type: faq
     id: fragen

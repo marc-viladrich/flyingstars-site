@@ -1,6 +1,5 @@
 title: Legal notice
-description: "FlyingStars GmbH legal notice: registered address in Gelsenkirchen, office in Essen,
-  representatives, commercial register and VAT ID."
+description: "FlyingStars GmbH legal notice: registered address in Gelsenkirchen, office in Essen, representatives, commercial register and VAT ID."
 noindex: true
 sections:
   - type: textMedia
@@ -28,4 +27,5 @@ sections:
 
       **VAT identification number**<br>
       DE346644500
-translationSourceHash: 14f1bdcaa973e2bc1445165703b846f2f103fbb0f733559c8036ef195e7e1b27
+    todo: FlyingStars muss Vertretung und Register-/Kontaktangaben zum Veröffentlichungszeitpunkt bestätigen, insbesondere Manuel Contreras Hernandez. Die Rechtsberatung muss die Anbieterkennzeichnung und ihre EN-/NL-Fassungen freigeben.
+translationSourceHash: eb2b687f043b14f326ca581dbd5f06bd8cb568b94ab92d3467f61ed89524fc24

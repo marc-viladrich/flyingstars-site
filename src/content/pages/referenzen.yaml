@@ -8,8 +8,9 @@ sections:
     id: referenzen
     kicker: Referenzen
     headline: Shows, die wir schon geflogen sind.
-    text: 178 Shows seit 2022, von 50 bis 600 Drohnen. Hier eine Auswahl, vier davon erzählen wir ausführlich.
+    text: 178 Shows seit 2022, Stand 21. Oktober 2026. Hier findet ihr eine Auswahl mit sieben ausführlichen Fallstudien.
     filters: [occasion, year, drones]
+    todo: Für die verbleibenden Kurzreferenzen fehlen Projektgeschichten und teilweise weitere Bilder. FlyingStars muss priorisierte Briefings und Nutzungsfreigaben liefern; freigegebene Kundenzitate liegen laut Fragebogen nicht vor.
 
   - type: metrics
     id: pro-jahr
@@ -22,6 +23,7 @@ sections:
       - { label: "2025", value: "33", text: "Darunter die erste Indoor-Show für Siemens auf der Hannover Messe und das NFL Berlin Game." }
       - { label: "2026", value: "50", text: "Bis 21. Oktober. Darunter 20 Abende Bokkenrijders mit je 600 Drohnen und E.ON in Hamburg." }
       - { label: Gesamt, value: "178", text: "Für Marken, Städte, Festivals und Paare, in Deutschland und Europa." }
+    todo: FlyingStars muss die Jahreszahlen einschließlich 2026 aktualisieren oder den Stand 21.10.2026 ausdrücklich beibehalten; 178 ist keine laufende Live-Zählung.
 
   - type: logoBar
     id: marken

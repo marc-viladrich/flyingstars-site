@@ -1,6 +1,5 @@
 title: Veelgestelde vragen over droneshows
-description: "Voorbereiding, ruimte, vergunning, weer, veiligheid en kosten: antwoorden op de meestgestelde
-  vragen over droneshows van FlyingStars."
+description: "Voorbereiding, ruimte, vergunning, weer, veiligheid en kosten: antwoorden op de meestgestelde vragen over droneshows van FlyingStars."
 sections:
   - type: faq
     id: fragen
@@ -39,4 +38,5 @@ sections:
     closing:
       headline: Staat jullie vraag er niet bij?
       text: Stuur jullie vraag mee met de aanvraag. We antwoorden binnen 48 uur.
-translationSourceHash: 1d43001b878c515b164813dc8ca86e3c14dff5237bd401fab8cd944227498645
+    todo: FlyingStars muss Wind-/AGB-Grenzen, Indoor-Abstände und die Indoor-Versicherung fachlich klären; Moritz muss die Antworten und EN/NL danach abschließend prüfen.
+translationSourceHash: e9bedfcd354f94cd4fab545bd466f435fb5fdbaa0788a71f9d763be2850f9e59

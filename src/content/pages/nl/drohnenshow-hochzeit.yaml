@@ -27,36 +27,14 @@ sections:
         label: in het pakket
       - value: inbegrepen
         label: Vergunning
-  - type: landingStories
-    todo: Die Karten verlinken noch auf keine ausgearbeiteten Hochzeits-Fallstudien. Codex erstellt sie aus dem Bestand von flyingstars.art.
+    todo: Moritz muss die deutsche Endfassung und die maschinell übersetzten EN-/NL-Texte redaktionell prüfen.
+  - type: landingRefs
     id: referenzen
     kicker: Onze shows
     headline: Zo zag het eruit bij andere *stellen*.
-    items:
-      - kicker: Recklinghausen · juni 2024
-        title: Een verrassing gepland door de familie
-        text: De familie benaderde ons vier maanden voor de bruiloft. De startzone lag op een naastgelegen terrein, zonder dat het bruidspaar ervan wist. Door onweer hebben we de show die avond uitgesteld en daarna gevlogen.
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg
-          alt: Twee bloemen van paarse en blauwe lichtpunten boven de bomen, bij een bruiloft in Recklinghausen
-          width: 1518
-          height: 854
-        facts:
-          - value: "150"
-            label: Drones
-          - value: 4 maanden
-            label: vooraf aangevraagd
-      - kicker: Schloss Hugenpoet, Essen · september 2024
-        title: „Do you want to be my Forever?“
-        text: Een sieradendoosje ging open, een ring zweefde naar een hand en daarna stond de vraag aan de hemel. Het antwoord was ja.
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg
-          alt: Een hand met ring van drones aan de blauwe avondhemel boven boomtoppen, bij een aanzoek op Schloss Hugenpoet
-          width: 2063
-          height: 1303
-        facts:
-          - value: "220"
-            label: Drones
+    projects:
+      - hochzeit-recklinghausen
+      - heiratsantrag-hugenpoet
   - type: landingTeaser
     id: motive
     kicker: Beelden
@@ -65,6 +43,7 @@ sections:
     href: /drohnenshow-preise/?anlass=hochzeit&paket=SPARK#konfigurator
     cta: Bekijk beelden in de configurator
     loop: hochzeit
+    todo: FlyingStars muss die Motive, Drohnenzahlen und Freischaltstufen anhand von docs/show-motive-inventar.md fachlich bestätigen. Die Vorschau ist kein Flugplan.
   - type: landingPrice
     id: preise
     kicker: Prijzen
@@ -96,6 +75,7 @@ sections:
       button:
         label: Vraag een bruiloftshow aan
         href: "#anfrage"
+    todo: FlyingStars muss die Paketgrenzen, Aufpreise und Leistungen für den Relaunch bestätigen; die endgültige Preisstruktur für 2027 ist noch offen.
   - type: landingSite
     id: location
     kicker: Location
@@ -142,6 +122,7 @@ sections:
     download:
       label: Technisch gegevensblad · PDF
       href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf
+    todo: FlyingStars muss die Startflächen je Drohnenzahl und die standortabhängigen Abstände bestätigen; 15 × 15 und 25 × 25 Meter widersprechen sich in den Quellen. Die Zeichnung bleibt ein Beispiel.
   - type: tempo
     id: ablauf
     kicker: Verloop
@@ -189,6 +170,7 @@ sections:
       - icon: wallet
         title: 40% aanbetaling
         text: Die betalen jullie bij de boeking. Gaat de show helemaal niet door, dan geldt de annuleringsregeling uit onze voorwaarden.
+    todo: FlyingStars muss die Website-Angabe Windstärke 5 mit den Windgrenzen der AGB abstimmen und die aktuelle Ausfall-/Verschiebungsstaffel samt verlinkbarer AGB-Fassung liefern.
   - type: faq
     id: fragen
     kicker: FAQ
@@ -203,4 +185,4 @@ sections:
     kicker: Aanvraag
     headline: Vertel ons over jullie trouwdag.
     text: Datum en locatie zijn genoeg voor het begin. We reageren binnen 48 uur met een eerste inschatting.
-translationSourceHash: 8906184630195ba1ef19e0b1efd68f152f3c5f409dd6f327e4862103aaa29b5e
+translationSourceHash: 260eaa5d8e8ebe962cb4f25e04e999669eea5b54d4df1f3657b9672876b1d66b

@@ -1,16 +1,16 @@
 title: Onze shows
-description: "FlyingStars-shows voor Bokkenrijders, NFL, Ford en PUMA, plus shows per jaar: 178 shows sinds
-  2022, met 50 tot 600 drones."
+description: "FlyingStars-shows voor Bokkenrijders, NFL, Ford en PUMA, plus shows per jaar: 178 shows sinds 2022, met 50 tot 600 drones."
 sections:
   - type: references
     id: referenzen
     kicker: Onze shows
     headline: Shows die we al hebben gevlogen.
-    text: 178 shows sinds 2022, met 50 tot 600 drones. Hier een selectie, waarvan we er vier uitgebreid vertellen.
+    text: 178 shows sinds 2022, stand 21 oktober 2026. Hier vinden jullie een selectie met zeven uitgebreide praktijkverhalen.
     filters:
       - occasion
       - year
       - drones
+    todo: Für die verbleibenden Kurzreferenzen fehlen Projektgeschichten und teilweise weitere Bilder. FlyingStars muss priorisierte Briefings und Nutzungsfreigaben liefern; freigegebene Kundenzitate liegen laut Fragebogen nicht vor.
   - type: metrics
     id: pro-jahr
     kicker: In cijfers
@@ -21,8 +21,7 @@ sections:
         text: "De eerste op 13 augustus: 50 drones voor een privéverjaardag. In november PUMA in Borussia-Park."
       - label: "2023"
         value: "42"
-        text: "Onder andere L’Oréal × Prada bij de Rheinturm in Düsseldorf en #Böllerciao met Deutsche Umwelthilfe in
-          Berlijn."
+        text: "Onder andere L’Oréal × Prada bij de Rheinturm in Düsseldorf en #Böllerciao met Deutsche Umwelthilfe in Berlijn."
       - label: "2024"
         value: "45"
         text: Onder andere 50 jaar VW Golf aan de Wolfgangsee en de nieuwe Ford Explorer in Keulen.
@@ -35,6 +34,7 @@ sections:
       - label: Totaal
         value: "178"
         text: Voor merken, steden, festivals en stellen, in Duitsland en Europa.
+    todo: FlyingStars muss die Jahreszahlen einschließlich 2026 aktualisieren oder den Stand 21.10.2026 ausdrücklich beibehalten; 178 ist keine laufende Live-Zählung.
   - type: logoBar
     id: marken
     headline: Klanten van FlyingStars
@@ -87,4 +87,4 @@ sections:
     button:
       label: Vraag een show aan
       href: /kontakt/
-translationSourceHash: 3139e33b03be473d2cf5aa22bda167e35a093f474c28df8a58aeefb796b86717
+translationSourceHash: befc3c4b90a59902b1178304eff838aef52a666576c2e46e029fe3b05008022a
