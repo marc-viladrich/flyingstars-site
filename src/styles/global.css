@@ -167,7 +167,7 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
 .fine { margin-top: 18px; color: var(--faint); }
 
 /* process */
-.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--line-strong); counter-reset: step; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--line-strong); counter-reset: step; }
 .steps li { counter-increment: step; padding: 24px 22px 8px 0; display: grid; gap: 10px; align-content: start; position: relative; }
 .steps li + li { padding-left: 22px; border-left: 1px solid var(--line); }
 .steps li::before { content: counter(step, decimal-leading-zero); color: var(--accent); font: 400 12px/1.5 var(--mono); letter-spacing: 0.1em; } /* Marc 31.10.: keine Verlaufskreise mehr, Nummer klein in Orange wie im Prototyp */
@@ -337,7 +337,7 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
 .c-step:not(.on) .section-head > .k { opacity: 0.88; }
 .c-step:not(.on) .section-head > h2 { opacity: 0.42; }
 .c-step:not(.on) .section-head > p { opacity: 0.8; } /* --muted ist seit 30.10. eine Stufe dunkler */
-.c-step .k { color: var(--accent); }
+.c-step .k { color: var(--accent); margin-bottom: 0; }
 .c-step h2 { font-size: clamp(32px, 3.6vw, 54px); line-height: 1.04; }
 .c-step p { color: var(--muted); font-size: clamp(17px, 1.3vw, 19px); max-width: 44ch; }
 .c-step figure { display: none; margin: 0; }

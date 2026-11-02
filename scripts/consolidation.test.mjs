@@ -34,6 +34,7 @@ test('Paketansichten haben genau einen Kartenbesitzer; ungenutzter Altbestand bl
     assert.doesNotMatch(source, /<canvas|class:list=\{\['(?:pack|tier)'/);
   }
   assert.ok(!existsSync(new URL('../src/components/pricing/PackageDetails.astro', import.meta.url)));
+  assert.doesNotMatch(read('src/components/PackageCard.astro'), /sky\s*=\s*PACKAGE_DETAILS/, 'Optionale Seitenprosa darf nicht als neuer Karteninhalt erscheinen');
 });
 
 test('Alle Vergleiche delegieren Tabelle, Tafeln und Statuszeichen an dieselben Besitzer', () => {
@@ -92,6 +93,7 @@ test('Alle redaktionellen Faktenlisten und Prozesslisten delegieren an ihre Besi
     const s=read(`src/components/${file}.astro`);assert.match(s,/<ProcessList /);assert.doesNotMatch(s,/<ol\b/);
   }
   assert.doesNotMatch(read('src/styles/global.css'),/\.ruler li:nth-child\(\d/);
+  assert.match(read('src/styles/global.css'), /\.steps \{[^}]*repeat\(var\(--n\)/);
   const script=read('src/components/projects/case.js');assert.match(script,/\.c-story \[data-story-step\]/);assert.doesNotMatch(script,/querySelectorAll\("\[data-step\]"\)/);
 });
 
@@ -103,5 +105,7 @@ test('Section-Köpfe, Icon-Features, Medienkarten und Aufnahme-Ecken haben je ei
   for(const file of ['sections/FlightHero','landing/LandingHero']){
     const s=read(`src/components/${file}.astro`);assert.match(s,/<MediaFrame /);assert.doesNotMatch(s,/<i><\/i>/);
   }
+  assert.match(read('src/components/MediaCard.astro'),/\.\.\.rest/);
+  assert.doesNotMatch(read('src/components/sections/References.astro'),/\.rf-ghost[^\n]*\{/);
   assert.match(read('src/components/MediaCard.astro'),/href && Astro.slots.has\('actions'\)/);
 });

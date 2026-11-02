@@ -7,7 +7,7 @@ interface Props { packageId: ShowPackage; variant?: 'summary' | 'detailed'; head
 const { packageId, variant = 'summary', headingId, level: C = 'h3', highlight, pointsOverride, tabIndex } = Astro.props;
 const { t, localHref, formatLocale, locale } = forPath(Astro.url.pathname);
 const { PACKAGE_FEATURES, PACKAGE_POINTS, PACKAGE_DETAILS, dronesLine, addOnLine } = getPackageDetails(locale);
-const { badge = PACKAGE_DETAILS[packageId].often, label = PACKAGE_DETAILS[packageId].label, sky = PACKAGE_DETAILS[packageId].sky } = Astro.props;
+const { badge = PACKAGE_DETAILS[packageId].often, label = PACKAGE_DETAILS[packageId].label, sky } = Astro.props;
 const p = { name: packageId, ...SHOW_PACKAGES[packageId], shape: { SPARK: 'ring', HORIZON: 'sphere', ODYSSEY: 'torus' }[packageId] };
 const money = (v: number) => t('showconfigurator.fromValue', { v0: v.toLocaleString(formatLocale) });
 ---

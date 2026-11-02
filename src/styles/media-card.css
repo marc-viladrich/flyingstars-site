@@ -39,3 +39,10 @@ a.proj:hover :is(h2, h3, h4) { text-decoration: underline; text-decoration-thick
   @media (max-width: 760px) {
     .ls-card:nth-child(2) { margin-top: 0; }
   }
+  /* Formationskarte (Referenz ohne Foto) */
+  .rf-ghost .img { background: radial-gradient(120% 90% at 50% 40%, #1a1512 0%, #0a0908 70%); }
+  .rf-ghost svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .rf-ghost .tw { animation: rf-tw 4.2s ease-in-out var(--d, 0s) infinite; }
+  @keyframes rf-tw { 0%, 100% { opacity: 1; } 45% { opacity: 0.35; } 55% { opacity: 1; filter: brightness(1.8); } }
+  @media (prefers-reduced-motion: reduce) { .rf-ghost .tw { animation: none; } }
+  html.motion-paused .rf-ghost .tw { animation: none; }
