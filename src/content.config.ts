@@ -357,9 +357,11 @@ export type Section = z.infer<typeof sectionSchema>;
 // ---------------------------------------------------------------------------
 // Collections
 // ---------------------------------------------------------------------------
+const translationMeta = { translationSourceHash: z.string().regex(/^[a-f0-9]{64}$/).optional().describe('SHA-256 der deutschen Quelldatei zum Übersetzungszeitpunkt') };
 const pages = defineCollection({
-  loader: glob({ pattern: '**/*.yaml', base: './src/content/pages' }),
+  loader: glob({ pattern: '**/*.yaml', base: './src/content/pages', generateId: ({ entry }) => entry.replace(/\.yaml$/, '') }),
   schema: z.object({
+    ...translationMeta,
     title: z.string().min(1),
     description: z.string().min(50).max(160),
     noindex: z.boolean().default(false),
@@ -373,6 +375,7 @@ const pages = defineCollection({
 const posts = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/posts' }),
   schema: z.object({
+    ...translationMeta,
     title: z.string().min(1),
     description: z.string().min(50).max(160),
     date: z.coerce.date(),
@@ -388,6 +391,7 @@ const posts = defineCollection({
 const projects = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
   schema: z.object({
+    ...translationMeta,
     title: z.string().min(1),
     client: z.string().optional(),
     showcase: projectShowcaseSchema.optional(),
@@ -408,6 +412,7 @@ const projects = defineCollection({
 const faq = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/faq' }),
   schema: z.object({
+    ...translationMeta,
     question: z.string().min(5),
     tags: z.array(z.string()).default([]),
     order: z.number().int().default(100),

@@ -1,0 +1,10 @@
+export type Locale = 'de' | 'en' | 'nl';
+export const LOCALES: readonly Locale[];
+export const LOCALE_NAMES: Record<Locale, string>;
+export function localeFromPath(path: string): Locale;
+export function localeOfId(id: string): Locale;
+export function sourceId(id: string): string;
+export function sourcePath(path: string): string;
+export function localeFormat(locale: string): string;
+export function localizedHref(href: string, locale?: string): string;
+export function entryPath(id: string): string;

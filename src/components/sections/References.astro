@@ -1,4 +1,6 @@
 ---
+import { localeOfId, localeFromPath, sourceId } from '../../i18n/routing.mjs';
+const locale = localeFromPath(Astro.url.pathname);
 // Alle Referenzen mit Filter (Marc, 31.10.2026, Runde 8): Anlass als sichtbare Pills, Jahr und Drohnenzahl als zwei
 // Dropdowns, alles in einer Leiste. Reihenfolge: zuerst die Shows mit Video (groß, zwei Spalten, die erste spielt wie auf
 // der Startseite), danach alle anderen chronologisch (drei Spalten). Referenzen ohne Foto bekommen eine Formationskarte
@@ -14,7 +16,7 @@ type Project = CollectionEntry<'projects'>;
 const { headline, text, filters, id = 'referenzen', index, kicker } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
 const C = index === 0 ? 'h2' : 'h3';
-const projects = sortReferences(await getCollection('projects', (p) => !p.data.draft));
+const projects = sortReferences(await getCollection('projects', p => localeOfId(p.id) === locale && !p.data.draft));
 const featured = projects.filter(hasVideo);
 const rest = projects.filter((p) => !hasVideo(p));
 const count = (fn: (p: Project) => unknown, v: unknown) => projects.filter((p) => fn(p) === v).length;

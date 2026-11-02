@@ -1,4 +1,6 @@
 ---
+import { localeOfId, localeFromPath, sourceId } from '../../i18n/routing.mjs';
+const locale = localeFromPath(Astro.url.pathname);
 // Neueste Blogbeiträge als Section (z. B. auf einer Anlass-Seite): dieselben Karten wie die Blog-Übersicht.
 import { getCollection } from 'astro:content';
 import type { Section } from '../../content.config';
@@ -8,7 +10,7 @@ import { sortPosts } from '../blog/post-meta';
 type Props = Extract<Section, { type: 'postList' }> & { index: number };
 const { headline = 'Aus dem Blog.', limit, index } = Astro.props;
 const id = `s${index}-h`;
-const posts = sortPosts(await getCollection('posts', (p) => !p.data.draft)).slice(0, limit);
+const posts = sortPosts(await getCollection('posts', p => localeOfId(p.id) === locale && !p.data.draft)).slice(0, limit);
 ---
 <section class="section" aria-labelledby={id}>
   <SectionHead kicker="Blog" headline={headline} id={id} level={index === 0 ? 'h1' : 'h2'} />

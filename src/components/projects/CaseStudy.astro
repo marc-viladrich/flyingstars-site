@@ -1,4 +1,6 @@
 ---
+import { localeOfId, localeFromPath, sourceId } from '../../i18n/routing.mjs';
+const locale = localeFromPath(Astro.url.pathname);
 import type { CollectionEntry } from 'astro:content';
 import { getCollection } from 'astro:content';
 import { videoPath } from '../../lib/videos';
@@ -8,7 +10,7 @@ interface Props { project: CollectionEntry<'projects'> }
 const { project } = Astro.props;
 const data = project.data.showcase;
 if (!data) throw new Error(`Project ${project.id} has no showcase content`);
-const available = (await getCollection('projects', (p) => !p.data.draft && Boolean(p.data.showcase)))
+const available = (await getCollection('projects', p => localeOfId(p.id) === locale && !p.data.draft && Boolean(p.data.showcase)))
   .sort((a, b) => a.data.showcase!.order - b.data.showcase!.order);
 // A deliberately hidden case also disappears from related-project navigation.
 const next = available.find((p) => p.data.showcase!.route === data.nextRoute)

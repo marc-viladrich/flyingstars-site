@@ -1,4 +1,6 @@
 ---
+import { localeOfId, localeFromPath, sourceId } from '../../i18n/routing.mjs';
+const locale = localeFromPath(Astro.url.pathname);
 // FAQ im Prototyp-Layout (Kopf links, Fragen rechts). Mit `groups` erscheinen die Fragen in Gruppen mit eigener
 // Zwischenüberschrift; mit `closing` folgt der Abschluss „Eure Frage ist nicht dabei?“ mit Anrufen/Schreiben.
 import { getCollection, render } from 'astro:content';
@@ -11,7 +13,7 @@ const { headline = 'Häufige Fragen', text, cta, tags, limit, openFirst, groups,
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const G = index === 0 ? 'h2' : 'h3';
-const all = (await getCollection('faq', e => !e.data.draft)).sort((a,b) => a.data.order-b.data.order);
+const all = (await getCollection('faq', e => localeOfId(e.id) === locale && !e.data.draft)).sort((a,b) => a.data.order-b.data.order);
 const pick = (want?: string[]) => want?.length ? all.filter(e => e.data.tags.some(tag => want.includes(tag))) : all;
 const withContent = (list: typeof all) => Promise.all(list.map(async entry => ({ entry, Content: (await render(entry)).Content })));
 const blocks = groups?.length

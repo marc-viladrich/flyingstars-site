@@ -1,23 +1,21 @@
 ---
+import { localeOfId, localeFromPath, sourceId } from '../i18n/routing.mjs';
+const locale = localeFromPath(Astro.url.pathname);
 // Blogartikel auf Seitenniveau (Marc, 31.10.2026, Runde 8): Kicker mit Thema, Titel, Autor mit Foto, Datum und Lesezeit,
 // Titelbild mit Vorhang, lesbare Spalte (rund 68 Zeichen), am Ende Autor, Anfrage und zwei weitere Beiträge.
 // Der Artikeltext bleibt wörtlich wie auf flyingstars.art (Import 31.10.2026), Moritz überarbeitet ihn später.
 import { getCollection, render } from 'astro:content';
-import Base from '../../layouts/Base.astro';
-import Cta from '../../components/sections/Cta.astro';
-import PostGrid from '../../components/blog/PostGrid.astro';
-import SectionHead from '../../components/SectionHead.astro';
-import { optimizedImage } from '../../lib/media';
-import { AUTHOR, dateOf, readingMinutes, topicOf, sortPosts } from '../../components/blog/post-meta';
-export async function getStaticPaths() {
-  const posts = await getCollection('posts', (p) => !p.data.draft);
-  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
-}
+import Base from '../layouts/Base.astro';
+import Cta from '../components/sections/Cta.astro';
+import PostGrid from '../components/blog/PostGrid.astro';
+import SectionHead from '../components/SectionHead.astro';
+import { optimizedImage } from '../lib/media';
+import { AUTHOR, dateOf, readingMinutes, topicOf, sortPosts } from '../components/blog/post-meta';
 const { post } = Astro.props;
 const { Content } = await render(post);
 const cover = post.data.cover ? await optimizedImage(post.data.cover.src, 1600) : undefined;
 const face = await optimizedImage(AUTHOR.image.src, 160);
-const more = sortPosts(await getCollection('posts', (p) => !p.data.draft && p.id !== post.id)).slice(0, 3);
+const more = sortPosts(await getCollection('posts', p => localeOfId(p.id) === locale && !p.data.draft && p.id !== post.id)).slice(0, 3);
 const updated = post.data.updated && post.data.updated.valueOf() !== post.data.date.valueOf() ? new Intl.DateTimeFormat('de-DE', { dateStyle: 'long' }).format(post.data.updated) : undefined;
 ---
 <Base title={post.data.title} description={post.data.description} image={post.data.cover?.src} navSection="/blog/">

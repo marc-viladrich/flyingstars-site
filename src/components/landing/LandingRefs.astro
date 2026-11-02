@@ -1,4 +1,6 @@
 ---
+import { localeOfId, localeFromPath, sourceId } from '../../i18n/routing.mjs';
+const locale = localeFromPath(Astro.url.pathname);
 // Ausgewählte Referenzen nach ID statt „die ersten vier“: auf der Werbe-Seite nur Markenshows. Karten wie auf der
 // Startseite (ProjectCard): Showvideo, wo vorhanden; die erste Karte spielt im Bild, die anderen beim Zeigen.
 import { getCollection } from 'astro:content';
@@ -8,9 +10,9 @@ import ProjectCard from '../projects/ProjectCard.astro';
 type Props = Extract<Section, { type: 'landingRefs' }> & { index: number };
 const { kicker, headline, text, cta, projects: ids, id = 'referenzen', index } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
-const all = await getCollection('projects', (p) => !p.data.draft);
+const all = await getCollection('projects', p => localeOfId(p.id) === locale && !p.data.draft);
 const list = ids.map((pid) => {
-  const p = all.find((q) => q.id === pid);
+  const p = all.find((q) => sourceId(q.id) === pid);
   if (!p) throw new Error(`landingRefs: Referenz „${pid}“ gibt es nicht (src/content/projects/).`);
   return p;
 });

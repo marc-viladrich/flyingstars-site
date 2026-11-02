@@ -1,14 +1,35 @@
 ---
-import { getCollection } from 'astro:content';
+import { forPath } from '../i18n/server';
+const { t } = forPath(Astro.url.pathname);
+import { getCollection, type CollectionEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import SectionRenderer from '../components/SectionRenderer.astro';
+import PricingPage from '../templates/PricingPage.astro';
+import BlogIndex from '../templates/BlogIndex.astro';
+import BlogPost from '../templates/BlogPost.astro';
+import CasePage from '../templates/CasePage.astro';
+import Chopper404 from '../components/Chopper404.astro';
+import { LOCALES, entryPath, localizedHref, localeOfId, sourceId } from '../i18n/routing.mjs';
+import { checkContentCoverage } from '../i18n/content';
 
 export async function getStaticPaths() {
-  const pages = await getCollection('pages');
-  return pages.map((p) => ({ params: { slug: p.id === 'index' ? undefined : p.id }, props: { page: p } }));
+  await checkContentCoverage();
+  const [pages, projects, posts] = await Promise.all([getCollection('pages'), getCollection('projects'), getCollection('posts')]);
+  const route = (path: string, props: Record<string, unknown>) => ({ params: { slug: path.replace(/^\/|\/$/g, '') || undefined }, props });
+  return [
+    ...pages.map((page) => route(entryPath(page.id), { kind: 'page', page })),
+    ...projects.filter((p) => !p.data.draft && p.data.showcase).map((project) => route(localizedHref(`/${project.data.showcase!.route}/`, localeOfId(project.id)), { kind: 'case', project })),
+    ...posts.filter((p) => !p.data.draft).map((post) => route(localizedHref(`/blog/${sourceId(post.id)}/`, localeOfId(post.id)), { kind: 'post', post })),
+    ...LOCALES.flatMap((locale) => [route(localizedHref('/drohnenshow-preise/', locale), { kind: 'pricing' }), route(localizedHref('/blog/', locale), { kind: 'blog' })]),
+    ...LOCALES.filter((l) => l !== 'de').map((locale) => route(localizedHref('/404/', locale), { kind: '404' })),
+  ];
 }
-const { page } = Astro.props;
+interface Props { kind: string; page?: CollectionEntry<'pages'>; project?: CollectionEntry<'projects'>; post?: CollectionEntry<'posts'>; }
+const { kind, page, project, post } = Astro.props;
 ---
-<Base title={page.data.title} description={page.data.description} noindex={page.data.noindex} image={page.data.image}>
-  <SectionRenderer sections={page.data.sections} />
-</Base>
+{kind === 'page' && page && <Base title={page.data.title} description={page.data.description} noindex={page.data.noindex} image={page.data.image}><SectionRenderer sections={page.data.sections} /></Base>}
+{kind === 'pricing' && <PricingPage />}
+{kind === 'blog' && <BlogIndex />}
+{kind === 'post' && post && <BlogPost post={post} />}
+{kind === 'case' && project && <CasePage project={project} />}
+{kind === '404' && <Base title={t('404.pageNotFound')} description={t('404.thisPageDoesnTExistChopperWillHelpYouFind')} noindex><Chopper404 /></Base>}
