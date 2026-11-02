@@ -1,6 +1,7 @@
 const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 export const locales=['en','nl'];
 export const sourceId=id=>id.replace(/^(page|post|project|faq)\/(?:en|nl)\//,'$1/');
+const structuralString=(path,value)=>path.includes('todo')||['type','id','translationSourceHash'].includes(path.at(-1))||(!/\s/.test(value)&&/^(?:https?:|mailto:|tel:|\/|#)/.test(value));
 export function uniqueSection(section,existing){
  if(section.id){const stem=section.id.replace(/-kopie(?:-\d+)?$/,'');let id=stem+'-kopie',n=2;while(existing.some(s=>s.id===id))id=stem+'-kopie-'+n++;section.id=id;}return section;
 }
@@ -11,7 +12,7 @@ export function matchEntries(before,after){
  return after.map((value,i)=>{if(matches[i]>=0)return matches[i];let at=old.findIndex((v,j)=>!used.has(j)&&value?.id&&v?.id===value.id);const available=old.map((v,j)=>({v,j})).filter(({v,j})=>!used.has(j)&&v?.type===value?.type);if(at<0&&available.length===1)at=available[0].j;if(at<0&&old[i]!==undefined&&!used.has(i)&&old[i]?.type===value?.type)at=i;if(at>=0)used.add(at);return at;});
 }
 export function synchronize(before,after,target,path=[]){
- if(typeof after==='string'&&(['id','type'].includes(path.at(-1))||/^(?:https?:|\/|#)/.test(after)))return after;
+ if(typeof after==='string'&&structuralString(path,after))return after;
  if(same(before,after))return structuredClone(target??after);
  if(after&&typeof after==='object'&&!Array.isArray(after)&&after.type&&before?.type!==after.type)return structuredClone(after);
  if(Array.isArray(after))return matchEntries(before,after).map((at,i)=>synchronize(at>=0?before[at]:undefined,after[i],at>=0?target?.[at]:undefined,[...path,i]));
@@ -25,7 +26,7 @@ export function changedLeaves(before,after,path=[]){
  if(after&&typeof after==='object')return Object.entries(after).flatMap(([key,value])=>changedLeaves(before?.[key],value,[...path,key]));
  return typeof after==='string'?[{path,value:after}]:[];
 }
-export const reviewLeaves=(before,after)=>changedLeaves(before,after).filter(f=>!f.path.includes('todo')&&!['type','id','translationSourceHash'].includes(f.path.at(-1))&&!/^(?:https?:|\/|#)/.test(f.value));
+export const reviewLeaves=(before,after)=>changedLeaves(before,after).filter(f=>!structuralString(f.path,f.value));
 const set=(object,path,value)=>{let node=object;for(const key of path.slice(0,-1))node=node[key];node[path.at(-1)]=value;};
 export async function reviewLocales({draft,api}){
  const sources=[...draft.local].filter(([id])=>/^(page|post|project|faq)\/[a-z0-9-]+$/.test(id));
