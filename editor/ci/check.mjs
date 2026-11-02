@@ -10,7 +10,7 @@ const env = {...process.env, ASTRO_TELEMETRY_DISABLED: '1', FLYINGSTARS_OFFLINE_
 // Dependencies are installed by npm ci before this entry; the offline fixture supplies the same lockfile dependencies.
 for (const step of [
   ['Astro check', [path.join(root, 'node_modules/astro/bin/astro.mjs'), 'check']],
-  ['Editor- und Site-Tests', ['--test', ...await files('editor'), ...await files('editor/test'), ...await files('scripts'), 'src/schemas/editorial-source.test.mjs']],
+  ['Editor- und Site-Tests', ['--test', ...await files('editor'), ...await files('editor/core'), ...await files('editor/test'), ...await files('scripts'), ...await files('src/scripts/effects'), ...await files('src/scripts')]],
   ['Offline-Astro-Build', [path.join(root, 'node_modules/astro/bin/astro.mjs'), 'build']],
 ]) {
   console.log(step[0]);

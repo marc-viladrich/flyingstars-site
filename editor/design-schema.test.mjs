@@ -5,11 +5,11 @@ import path from 'node:path';
 import os from 'node:os';
 import {randomUUID,createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
-import {NativeStore,git} from 'astro-frontend-editor/runtime';
+import {NativeStore,NativeBuilder,git} from 'astro-frontend-editor/runtime';
 import {createBrowserExtensionRegistry} from 'astro-frontend-editor/web/extensions.mjs';
 import {createSite} from './flyingstars-adapter.mjs';
 import browser from './design/browser-site.mjs';
-import {resolveRuntimeOptions} from './server.mjs';
+import {resolveRuntimeOptions,runEditor} from './server.mjs';
 const root=fileURLToPath(new URL('../',import.meta.url));
 async function fixture(t){const dir=await mkdtemp(path.join(os.tmpdir(),'fs-design-editor-'));await git(root,['clone','--quiet','--no-hardlinks',root,dir]);await git(dir,['checkout','-B','content/draft']);await symlink(path.join(root,'node_modules'),path.join(dir,'node_modules'));const site=await createSite(dir),store=await new NativeStore(dir,{remote:false,site,runtime:resolveRuntimeOptions({values:{siteRoot:dir}})}).init();t.after(async()=>{store.sync.close();await rm(dir,{recursive:true,force:true});});return store;}
 const request=(state,values)=>({expectedHead:state.head,requestId:randomUUID(),changes:values.map(([id,path,value])=>({id,expectedRevision:state.records.find(r=>r.id===id).revision,patches:[{path,value}]}))});
@@ -35,6 +35,10 @@ test('a coordinated DE/EN/NL save commits real files and source hashes; a retry 
  const bytes=await readFile(path.join(store.root,'src/content/pages/index.yaml')),hash=createHash('sha256').update(bytes).digest('hex');
  for(const locale of ['en','nl'])assert.equal(saved.records.find(r=>r.id===`page/${locale}/index`).data.translationSourceHash,hash);
  assert.equal((await store.save(req)).head,saved.head);assert.equal(await git(store.root,['status','--porcelain']),'');
+ const buildRoot=await mkdtemp(path.join(os.tmpdir(),'fs-design-build-'));t.after(()=>rm(buildRoot,{recursive:true,force:true}));
+ const builder=new NativeBuilder(store,buildRoot,{editor:false,origin:'https://flyingstars.art',env:{...process.env,FLYINGSTARS_OFFLINE_MEDIA:'1'}}),artifact=await builder.prepare(saved.head);
+ assert.match(await readFile(path.join(artifact.site,'index.html'),'utf8'),/<title>Deutsche Testüberschrift \| FlyingStars<\/title>/);
+ assert.match(await readFile(path.join(artifact.site,'en/index.html'),'utf8'),/<title>English test heading \| FlyingStars<\/title>/);
 });
 test('EN text edits keep DE bytes; unknown/hash fields and executable URLs are rejected',async t=>{
  const store=await fixture(t),state=await store.state(),source=await readFile(path.join(store.root,'src/content/pages/index.yaml'),'utf8');
@@ -46,4 +50,8 @@ test('EN text edits keep DE bytes; unknown/hash fields and executable URLs are r
 test('browser registry loads without obsolete source modules; locale and codec contracts are explicit',()=>{
  const registry=createBrowserExtensionRegistry(browser);assert.deepEqual(registry.first('languages'),{source:'de',locales:{}});assert.equal(registry.inlineCodec.supportsDOM({}),false);assert.equal(registry.inlineCodec.html('<script>'),'&lt;script&gt;');
  assert.ok(Array.isArray(registry.first('changeKinds')));
+});
+
+test('normal editor launch explains the incomplete migration instead of exposing old controls',()=>{
+ const mode=process.env.AFE_DESIGN_EDITOR;delete process.env.AFE_DESIGN_EDITOR;try{assert.throws(()=>runEditor([]),/Canvas, Mediathek.*noch nicht migriert/);}finally{if(mode!==undefined)process.env.AFE_DESIGN_EDITOR=mode;}
 });
