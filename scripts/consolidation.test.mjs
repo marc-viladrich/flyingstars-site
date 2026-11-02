@@ -35,3 +35,16 @@ test('Paketansichten haben genau einen Kartenbesitzer; ungenutzter Altbestand bl
   }
   assert.ok(!existsSync(new URL('../src/components/pricing/PackageDetails.astro', import.meta.url)));
 });
+
+test('Alle Vergleiche delegieren Tabelle, Tafeln und Statuszeichen an dieselben Besitzer', () => {
+  for (const path of ['src/components/sections/Comparison.astro', 'src/templates/PricingPage.astro']) {
+    const source = read(path);
+    assert.match(source, /<ComparisonMatrix /);
+    assert.doesNotMatch(source, /<table|<td|class="cmp-panel"/);
+  }
+  const matrix = read('src/components/ComparisonMatrix.astro');
+  assert.equal((matrix.match(/<ComparisonCell /g) ?? []).length, 3, 'Spannzelle, Einzelzelle und mobile Zelle');
+  assert.match(matrix, /<MobileTabs /);
+  assert.match(read('src/components/landing/LandingSite.astro'), /<ComparisonCell /);
+  assert.doesNotMatch(read('src/components/ComparisonCell.astro'), /<svg|<path/);
+});

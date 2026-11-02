@@ -1,0 +1,29 @@
+---
+import MobileTabs from './MobileTabs.astro';
+import ComparisonCell from './ComparisonCell.astro';
+import { comparisonTone, type ComparisonValue } from '../lib/comparison';
+import { forPath } from '../i18n/server';
+interface Column { label: string; color?: string; featured?: boolean; price?: string; orb?: { shape: string; color: string; count: number }; panelLabel?: string }
+interface Row { id?: string; label: string; cells: ComparisonValue[]; all?: string }
+interface Props { id: string; label: string; regionLabel: string; rowHeader: string; columns: Column[]; rows: Row[]; tabLabel: string; initial?: number }
+const { id, label, regionLabel, rowHeader, columns, rows, tabLabel, initial = 0 } = Astro.props;
+const { locale } = forPath(Astro.url.pathname);
+---
+<div class="table-wrap mtab-hide" role="region" aria-label={regionLabel} tabindex="0">
+  <table lang={locale} style="position:relative">
+    <caption class="sr-only">{label}</caption>
+    <thead><tr><th scope="col">{rowHeader}</th>{columns.map((column) => <th scope="col" class:list={{ us: column.featured, pk: column.orb }} style={column.color && `--c:${column.color}`}>
+      {column.orb && <canvas data-orb={column.orb.shape} data-color={column.orb.color} data-n={column.orb.count} aria-hidden="true"></canvas>}
+      <span class:list={{ 'pk-name': column.orb }}>{column.label}</span>{column.price && <span class="mono">{column.price}</span>}
+    </th>)}</tr></thead>
+    <tbody>{rows.map((row) => <tr data-service={row.id}><th scope="row">{row.label}</th>
+      {row.all ? <td colspan={columns.length}><ComparisonCell value={row.all} /></td> : row.cells.map((cell, i) => <td class:list={[comparisonTone(cell), { us: columns[i].featured }]} style={columns[i].color && `--c:${columns[i].color}`}><ComparisonCell value={cell} /></td>)}
+    </tr>)}</tbody>
+  </table>
+</div>
+<div class="mtab-only" data-mtabs>
+  <MobileTabs name={`${id}-tab`} label={tabLabel} initial={initial} tabs={columns} />
+  {columns.map((column, i) => <dl class="cmp-panel" data-mtab={i} aria-label={column.panelLabel ?? column.label} style={column.color && `--c:${column.color}`}>
+    {rows.map((row) => <div data-service={row.id}><dt>{row.label}</dt><dd><ComparisonCell value={row.all ?? row.cells[i]} mobile /></dd></div>)}
+  </dl>)}
+</div>

@@ -208,3 +208,4 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 - `content/package-details.ts`: stabile Leistungs-IDs in `SERVICES`, daraus Kurzpunkte, Kartengruppen, Immer inklusive und Vergleich. Redaktionelle Fassungen sind Felder derselben Leistung. Preise, Mengen und Farben bleiben in `show-packages.ts`.
 - `PackageCard.astro`: einzige Paketkarte, `summary` und `detailed`; `Packages` und `Pricing` sind Adapter. Freie Angebote ohne Paket-ID verwenden `pricing/OfferCard.astro`.
 - Guard: `scripts/consolidation.test.mjs` prüft Projektionen in allen Sprachen und den Kartenbesitzer.
+- `ComparisonMatrix.astro` besitzt Desktop-Tabelle und mobile Tafeln mit MobileTabs. `ComparisonCell.astro` rendert jede Zelle in beiden Ausgaben und die Zeichen der Zuständigkeitstabelle. Check, X und CircleHelp kommen aus `Icon.astro`, Status hat immer Text. Halbkreis und Gedankenstrich behalten bei Zuständigkeiten ihre eigene Bedeutung.
