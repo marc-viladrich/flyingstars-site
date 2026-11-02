@@ -9,4 +9,4 @@ test('Pricing orb colours follow the current RGB schema, not removed token ident
  assert.equal(schema.safeParse(base).success,true);
  for(const color of ['neon-orange','javascript:alert(1)','rgb(1,2,3)'])assert.equal(schema.safeParse({...base,tiers:[{...base.tiers[0],orb:{...base.tiers[0].orb,color}}]}).success,false);
 });
-test('Every existing colour field is described from its actual schema and value',()=>{let count=0;for(const r of pages)for(const field of r.fields.filter(f=>f.path.at(-1)==='color')){count++;assert.equal(typeof field.value,'string');assert.equal(field.kind,'text');}assert.ok(count);});
+test('Current package RGB tuples expose all three numeric channels from the authoritative JSON schema',()=>{const packages=record('package/configuration');let count=0;for(const f of packages.fields.filter(f=>f.path.includes('color'))){count++;assert.equal(f.kind,'number');assert.ok(f.value>=0&&f.value<=255);}assert.equal(count,9);});

@@ -15,7 +15,7 @@ export async function createFlyingStarsAdapter(root) {
  const types=Object.entries(contentSchemas).map(([directory,schema])=>({
   prefix:directory==='pages'?'page':directory==='posts'?'post':directory==='projects'?'project':'faq',directory,
   extension:directory==='pages'?'yaml':'md',format:directory==='pages'?'yaml':'markdown',
-  schema:directory==='pages'?schema:schema.extend({body:z.string().meta({'x-afe':{format:'markdown'}})}).meta(schema.meta()),
+  schema:directory==='pages'?schema:schema.extend({body:z.string().describe('Artikeltext').meta({'x-afe':{format:'markdown'}})}).meta(schema.meta()),
   // Locale triplets and structural edits need coordinated review. This adapter updates existing records only.
   title:directory,
  }));
@@ -40,7 +40,7 @@ export async function createFlyingStarsAdapter(root) {
   mediaOrigin:'https://flyingstars.art',mediaHosts:['flyingstars.art','flyingstars-relaunch.vercel.app'],
   requiredOutput:['index.html','drohnenshow-preise/index.html','en/index.html','nl/index.html'],
   login:{layout:'split',logo:{src:'editor/login/logo.svg',alt:'FlyingStars'},image:{src:'editor/login/show.jpg',alt:''},imageFocus:'50% 45%',accent:'#111114'},
-  browserFiles:{'/browser-site.mjs':'editor/browser-site.mjs','/design/browser-site.mjs':'editor/design/browser-site.mjs','/design/locale-review.mjs':'editor/design/locale-review.mjs','/design/inline.mjs':'editor/design/inline.mjs','/design/media-browser.mjs':'editor/design/media-browser.mjs','/extensions/flyingstars/web/media-usage.mjs':'editor/extensions/flyingstars/web/media-usage.mjs','/extensions/flyingstars/web/record-kinds.mjs':'editor/extensions/flyingstars/web/record-kinds.mjs','/extensions/flyingstars/web/routing.mjs':'editor/extensions/flyingstars/web/routing.mjs'},
+  browserFiles:{'/browser-site.mjs':'editor/browser-site.mjs','/design/browser-site.mjs':'editor/design/browser-site.mjs','/design/locale-review.mjs':'editor/design/locale-review.mjs','/design/inline.mjs':'editor/design/inline.mjs','/design/media-browser.mjs':'editor/design/media-browser.mjs','/extensions/flyingstars/web/media-usage.mjs':'editor/extensions/flyingstars/web/media-usage.mjs','/extensions/flyingstars/web/record-kinds.mjs':'editor/extensions/flyingstars/web/record-kinds.mjs','/extensions/flyingstars/web/routing.mjs':'editor/extensions/flyingstars/web/routing.mjs','/extensions/flyingstars/web/preview.mjs':'editor/extensions/flyingstars/web/preview.mjs'},
  };
  site.extensions=createExtensionRegistry([{name:'flyingstars/design',contractVersion:'1.0',hooks:{
   templates,...mediaHooks,

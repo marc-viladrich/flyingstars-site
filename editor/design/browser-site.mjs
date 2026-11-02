@@ -1,3 +1,4 @@
+import {attributePolicy} from '../extensions/flyingstars/web/preview.mjs';
 import {inlineCodec} from './inline.mjs';
 import {imageControl,selectImage,library,mediaUsage,mediaUsers,collectionOf} from './media-browser.mjs';
 import {reviewLocales,uniqueSection} from './locale-review.mjs';
@@ -6,7 +7,7 @@ const kinds={'package/':['Show-Pakete','package','Show-Pakete'],'media/':['Bild'
 const name=record=>`${record.title} · ${/^\w+\/(en|nl)\//.exec(record.id)?.[1]?.toUpperCase()||'DE'}`;
 const group=id=>id.split('/')[0];
 export default [{name:'flyingstars/design',contractVersion:'1.0',hooks:{
- isRuntime:node=>!!node.querySelector?.('canvas,video,form,[data-rotate]')||!!node.matches?.('canvas,video,form,[data-rotate]'),routeTools:()=>routeTools,recordKinds:()=>kinds,navigatorOrder:()=>['page','post','project','faq','media','package','site'],
+ attributePolicy,isRuntime:node=>!!node.querySelector?.('canvas,video,form,[data-rotate]')||!!node.matches?.('canvas,video,form,[data-rotate]'),routeTools:()=>routeTools,recordKinds:()=>kinds,navigatorOrder:()=>['page','post','project','faq','media','package','site'],
  languages:()=>({source:'de',locales:{}}),localeNames:()=>({de:'Deutsch',en:'English',nl:'Nederlands'}),
  pageChoices:records=>records.filter(r=>r.route).map(r=>({value:r.route,label:name(r),group:r.type==='post'?'Blog':r.type==='project'?'Projekte':'Seiten'})),
  pageGroups:()=>['Seiten','Projekte','Blog'],currentPage:(records,slug)=>records.find(r=>r.id==='page/'+slug)||records.find(r=>r.route===slug),navigatorName:name,

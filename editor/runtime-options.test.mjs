@@ -76,7 +76,7 @@ test('Generic services contain no direct or dynamic site schema/lib imports',asy
  const pkg=new URL('./src/runtime/',import.meta.resolve('astro-frontend-editor/package.json'));
  for(const name of modules){const text=await fs.readFile(new URL(name+'.mjs',pkg),'utf8');assert.doesNotMatch(text,/src\/(?:schemas|lib)(?:\/|['"])/,name);}
  const adapter=await fs.readFile(new URL('./flyingstars-adapter.mjs',import.meta.url),'utf8');
- assert.match(adapter,/src\/schemas\//);assert.match(adapter,/src\/lib\//);
+ assert.match(adapter,/src\/schemas\//);assert.match(adapter,/src\/i18n\/ui/);
 });
 
 test('Injected adapter controls routes and translation fields; custom branches reach store, publisher and sync',async t=>{
@@ -86,6 +86,7 @@ test('Injected adapter controls routes and translation fields; custom branches r
  await fs.symlink(await fs.realpath(path.join(siteRoot,'node_modules')),path.join(source,'node_modules'));
  const runtime=resolveRuntimeOptions({env:{PATH:process.env.PATH},values:{siteRoot:source,stateDir:path.join(root,'state'),draftBranch:'editor/proposal',publishedBranch:'release/live',remote:false}});
  const site={...await createFlyingStarsAdapter(source),recordRoute:()=>'/injected/',translatableFields:()=>[]};
+ site.extensions=(await import('astro-frontend-editor/runtime/extensions')).createExtensionRegistry([{name:'aaa/injected',contractVersion:'1.0',hooks:{route:()=>'/injected/'}},...site.extensions.definitions]);
  const store=await new NativeStore(source,{runtime,site}).init();t.after(()=>store.sync.close());
  assert.equal(store.sync.draftBranch,'editor/proposal');
  const state=await store.state();assert.ok(state.records.every(record=>record.route==='/injected/'));
@@ -110,7 +111,7 @@ test('Real CLI from /tmp builds WORKTREE and serves authenticated /editor/ with 
  const env=Object.fromEntries(['PATH','HOME','TMPDIR','LANG'].filter(k=>process.env[k]).map(k=>[k,process.env[k]]));
  const child=spawn(process.execPath,[fileURLToPath(new URL('./server.mjs',import.meta.url)),
   '--site-root',siteRoot,'--state-dir',state,'--port',String(port),'--public-port',String(publicPort),
-  '--auth','on','--preview','off','--git-remote','off','--draft-branch',draftBranch,'--offline-media','1'],{cwd:os.tmpdir(),env,stdio:['ignore','pipe','pipe']});
+  '--auth','on','--preview','off','--git-remote','off','--draft-branch',draftBranch,'--published-branch',draftBranch,'--offline-media','1'],{cwd:os.tmpdir(),env,stdio:['ignore','pipe','pipe']});
  let output='';child.stdout.on('data',bytes=>output+=bytes);child.stderr.on('data',bytes=>output+=bytes);
  t.after(async()=>{if(child.exitCode===null&&child.signalCode===null){child.kill('SIGTERM');await once(child,'exit');}});
  const exited=once(child,'exit').then(([code])=>{throw Error('CLI exited '+code+': '+output);});
@@ -152,6 +153,6 @@ test('Composition from /tmp initializes both builds and authenticated editor han
  `;
  const env=Object.fromEntries(['PATH','HOME','TMPDIR','LANG'].filter(k=>process.env[k]).map(k=>[k,process.env[k]]));
  const result=await run(process.execPath,['--input-type=module','--eval',script,'--',
-  '--site-root',siteRoot,'--state-dir',state,'--auth','on','--preview','off','--git-remote','off','--draft-branch',draftBranch,'--offline-media','1'],{cwd:os.tmpdir(),env,timeout:110000,maxBuffer:1000000});
+  '--site-root',siteRoot,'--state-dir',state,'--auth','on','--preview','off','--git-remote','off','--draft-branch',draftBranch,'--published-branch',draftBranch,'--offline-media','1'],{cwd:os.tmpdir(),env,timeout:110000,maxBuffer:1000000});
  assert.match(result.stdout,/Authenticated \/editor\//);
 });

@@ -131,8 +131,4 @@ test('schema groups inside an object become subheadings in order of their first 
   assert.deepEqual(chunks.map((c) => [c.title, c.items.length]), [['B', 2], [null, 1], ['A', 1], [null, 2]]);
 });
 
-test('the inquiry form messages read as Fehlermeldungen and Versand', async () => {
-  const inquiry = (await realPanels()).find((p) => p.id === 'site/inquiry');
-  const groups = visualGroups(inquiry).filter((g) => g.title.includes('Meldungen'));
-  assert.deepEqual(groups.map((g) => [g.title.replace('site/inquiry › ', ''), g.count]), [['Meldungen › Fehlermeldungen', 6], ['Meldungen › Versand', 2], ['Meldungen', 0]]);
-});
+test('current form copy lives in the actual UI dictionary with complete language fields',async()=>{const {record}=await import('./test/design-data.mjs');const ui=record('site/ui');const fields=ui.fields.filter(f=>String(f.path[0]).startsWith('contact.'));assert.ok(fields.length);for(const locale of ['de','en','nl'])assert.ok(fields.some(f=>f.path[1]===locale));});
