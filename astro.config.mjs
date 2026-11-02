@@ -12,7 +12,7 @@ export default defineConfig({
   site,
   output: 'static',
   trailingSlash: 'always',
-  i18n: { defaultLocale: 'de', locales: ['de', 'en', 'nl'], routing: { prefixDefaultLocale: false } },
+  i18n: { defaultLocale: 'de', locales: [...LOCALES], routing: { prefixDefaultLocale: false } },
   integrations: [sitemap({ i18n: { defaultLocale: 'de', locales: { de: 'de', en: 'en', nl: 'nl' } } })],
   image: {
     // Nur der zentrale Medienspeicher darf als Remote-Bildquelle dienen.

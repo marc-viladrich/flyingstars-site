@@ -1,3 +1,4 @@
+import { t as message } from '../i18n/ui.mjs';
 // Tempo, Licht und Übergänge des Show-Konfigurators an einer Stelle (zwölfte Fassung, Marc 30.10.2026).
 // Alle Zeiten in Sekunden der virtuellen Show-Uhr (show-field.js); der Tempofaktor der Vorführ-Steuerung skaliert sie.
 // Vierzehnte Fassung (Marc, 30.10.2026 abends): Lichtlauf entlang der Linien (lightOrder statt Hilbert) und die Abfolge
@@ -149,7 +150,7 @@ export const TOUR_STYLES = ["script", "print", "initials"];
  * Die Bilder werden kopiert (die gebauten Sequenzen liegen im Cache und bleiben unverändert). tourCaption(caption,
  * style) benennt die Bilder des Durchlaufs für die Bildbeschreibung (z. B. „…, in Druckschrift“).
  */
-export function composeShow({ main, tour = null, logo = null, logoCaption = "Euer Logo", textStyle = null, textSegment = -2, tourCaption = (caption) => caption }) {
+export function composeShow({ main, tour = null, logo = null, logoCaption = message('showConfigurator.yourLogo'), textStyle = null, textSegment = -2, tourCaption = (caption) => caption }) {
   const copy = (b, extra) => ({ ...b, ...extra });
   const intro = [];
   if (tour) {
@@ -196,4 +197,4 @@ export const possibleFrom = (version, rangeMin) => Math.max(minDronesOf(version)
 /** Motive, die bei `after` ({ pkg, drones }) spielen und bei `before` nicht, in der Reihenfolge des Anlasses. */
 export const freshMotifs = (motifs, before, after) => motifs.filter((m) => canPlay(m, after.pkg, after.drones) && !canPlay(m, before.pkg, before.drones));
 /** Freischalt-Meldung: ein Motiv mit Namen, mehrere mit Zahl und Namen. */
-export const unlockNote = (list) => (list.length === 1 ? `Neues Motiv freigeschaltet: ${list[0].label}` : `${list.length} neue Motive: ${list.map((m) => m.label).join(", ")}`);
+export const unlockNote = (list) => (list.length === 1 ? message('configurator.newMotif', { label: list[0].label }) : message('configurator.newMotifs', { count: list.length, list: list.map((m) => m.label).join(', ') }));

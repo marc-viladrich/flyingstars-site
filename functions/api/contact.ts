@@ -1,3 +1,6 @@
+import { createTranslator } from '../../src/i18n/ui.mjs';
+import { LOCALES, localizedHref } from '../../src/i18n/routing.mjs';
+
 // Kontaktformular-Endpoint als Cloudflare Pages Function (Prototyp-Stack).
 // Bewusst nur Web-Standard-APIs (Request/Response/FormData/fetch), damit der Code
 // 1:1 auf jede andere Runtime (Deno, Node, Worker eines EU-Anbieters) umziehen kann.
@@ -15,26 +18,28 @@ const MAX = { name: 120, email: 200, message: 5000 };
 
 export const onRequestPost = async ({ request, env }: { request: Request; env: Env }): Promise<Response> => {
   const ct = request.headers.get('content-type') ?? '';
-  if (!ct.includes('form')) return problem(415, 'Nur Formulardaten.');
+  if (!ct.includes('form')) return problem(415, createTranslator('de')('contactAPI.formData'));
   const form = await request.formData();
+  const locale = LOCALES.find((l) => l === form.get('locale')) ?? 'de';
+  const t = createTranslator(locale);
   const get = (k: string) => String(form.get(k) ?? '').trim();
 
   // Honeypot: Bots füllen das versteckte Feld. Bewusst 200 statt Fehler, damit sie nichts lernen.
-  if (get('website')) return ok(request);
+  if (get('website')) return ok(request, 'sent', locale);
 
   const name = get('name'), email = get('email'), message = get('message');
   const extra = Object.fromEntries(['anlass', 'datum', 'datum-offen', 'ort', 'paket', 'drohnen', 'telefon', 'firma', 'quelle'].map((key) => [key, get(key)]));
   // Extras von der Preisseite (Mehrfachauswahl, Werte wie „express“), als eine Zeile in die Mail
   const extras = form.getAll('extras').map((value) => String(value).trim()).filter(Boolean);
-  if (extras.length > 10 || extras.some((value) => !/^[a-z]+(-[a-z]+)*$/.test(value) || value.length > 30)) return problem(400, 'Extras ungültig.');
+  if (extras.length > 10 || extras.some((value) => !/^[a-z]+(-[a-z]+)*$/.test(value) || value.length > 30)) return problem(400, t('contactAPI.extras'));
   if (extras.length) extra.extras = extras.join(', ');
-  if (!name || !email || (!message && !extra.anlass)) return problem(400, 'Name, E-Mail und Anlass oder Nachricht sind Pflicht.');
-  if (Object.values(extra).some((value) => value.length > 200 || /[\r\n]/.test(value))) return problem(400, 'Ungültige Zusatzangaben.');
-  if (extra.anlass && !['firma', 'stadt', 'agentur', 'privat', 'indoor', 'sonstiges'].includes(extra.anlass)) return problem(400, 'Anlass ungültig.');
-  if (extra.drohnen && (!/^\d+$/.test(extra.drohnen) || Number(extra.drohnen) < 100 || Number(extra.drohnen) > 1000)) return problem(400, 'Drohnenanzahl ungültig.');
-  if (name.length > MAX.name || email.length > MAX.email || message.length > MAX.message) return problem(400, 'Eingabe zu lang.');
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return problem(400, 'E-Mail-Adresse ungültig.');
-  if (/[\r\n]/.test(name) || /[\r\n]/.test(email)) return problem(400, 'Ungültige Zeichen.');
+  if (!name || !email || (!message && !extra.anlass)) return problem(400, t('contactAPI.required'));
+  if (Object.values(extra).some((value) => value.length > 200 || /[\r\n]/.test(value))) return problem(400, t('contactAPI.additional'));
+  if (extra.anlass && !['firma', 'stadt', 'agentur', 'privat', 'indoor', 'sonstiges'].includes(extra.anlass)) return problem(400, t('contactAPI.occasion'));
+  if (extra.drohnen && (!/^\d+$/.test(extra.drohnen) || Number(extra.drohnen) < 100 || Number(extra.drohnen) > 1000)) return problem(400, t('contactAPI.drones'));
+  if (name.length > MAX.name || email.length > MAX.email || message.length > MAX.message) return problem(400, t('contactAPI.length'));
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return problem(400, t('contactAPI.email'));
+  if (/[\r\n]/.test(name) || /[\r\n]/.test(email)) return problem(400, t('contactAPI.characters'));
 
   if (env.TURNSTILE_SECRET) {
     const token = get('cf-turnstile-response');
@@ -44,12 +49,12 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
       body: JSON.stringify({ secret: env.TURNSTILE_SECRET, response: token, remoteip: ip }),
     });
     const v = (await r.json()) as { success: boolean };
-    if (!v.success) return problem(403, 'Spam-Prüfung fehlgeschlagen.');
+    if (!v.success) return problem(403, t('contactAPI.spam'));
   }
 
   if (!env.BREVO_API_KEY || !env.CONTACT_TO || !env.CONTACT_FROM) {
     // Prototyp ohne Mailversand: nichts speichern, aber ehrlich antworten.
-    return ok(request, 'not-configured');
+    return ok(request, 'not-configured', locale);
   }
 
   const site = env.SITE_NAME ?? 'Website';
@@ -64,18 +69,18 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
       textContent: `Name: ${name}\nE-Mail: ${email}\n${Object.entries(extra).filter(([, value]) => value).map(([key, value]) => `${key}: ${value}`).join('\n')}\n\n${message}\n`,
     }),
   });
-  if (!res.ok) return problem(502, 'Versand fehlgeschlagen. Bitte später erneut versuchen oder direkt per E-Mail.');
-  return ok(request);
+  if (!res.ok) return problem(502, t('contactAPI.delivery'));
+  return ok(request, 'sent', locale);
 };
 
-export const onRequestGet = (): Response => problem(405, 'Nur POST.');
+export const onRequestGet = (): Response => problem(405, createTranslator('de')('contactAPI.post'));
 
-function ok(request: Request, state = 'sent'): Response {
+function ok(request: Request, state = 'sent', locale = 'de'): Response {
   // Ohne JS: Redirect auf Danke-Seite. Mit fetch (Accept: application/json): JSON.
   if ((request.headers.get('accept') ?? '').includes('application/json')) {
     return new Response(JSON.stringify({ ok: true, state }), { headers: { 'content-type': 'application/json' } });
   }
-  const url = new URL(request.url); url.pathname = '/danke/'; url.search = state === 'sent' ? '' : `?state=${state}`;
+  const url = new URL(request.url); url.pathname = localizedHref('/danke/', locale); url.search = state === 'sent' ? '' : `?state=${state}`;
   return Response.redirect(url.toString(), 303);
 }
 

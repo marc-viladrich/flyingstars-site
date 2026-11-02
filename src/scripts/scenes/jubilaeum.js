@@ -1,3 +1,4 @@
+import { t as message } from '../../i18n/ui.mjs';
 // jubilaeum motifs of the eleventh version (see src/content/show-configurator.js for the build names).
 // Fußball and Kopfsprung, after FlyingStars' sports pictures in Eisenhüttenstadt (round 2: a stick figure with a ball
 // that drifts up, a diver over rows of water with a light running through them), as own figures: the footballer is a
@@ -148,24 +149,24 @@ async function kickStory(n) {
   const goal = (netPts = net, framePts = frame) => [part("net", paint(netPts, mix(WARM, CYAN, 0.25))), part("frame", paint(framePts, WARM))];
   const T0 = PN, T1 = PN + BN, T2 = T1 + TN; // index ranges: player | ball | trail | net | frame
   return { beats: [
-    act([part("player", paint(rest, WARM)), part("ball", paint(ball(B0), GOLD)), part("trail", paint(stars, GOLD)), ...goal()], { caption: "Ein Spieler und sein Tor", hold: 1.8, cloud: true, live: (b, j, t, o) => {
+    act([part("player", paint(rest, WARM)), part("ball", paint(ball(B0), GOLD)), part("trail", paint(stars, GOLD)), ...goal()], { caption: message('jubilaeum.aPlayerAndHisGoal'), hold: 1.8, cloud: true, live: (b, j, t, o) => {
       if (j >= T1 && j < T2) twinkle(j, t, o); else if (j >= T2) o[3] = 0.45;
       else if (j >= T0) roll(o, -t * 0.5, B0[0], B0[1]);
       sway(o, t, 0.15);
     } }),
-    act([part("player", paint(at(kicker.pts), WARM)), part("ball", paint(ball(B0), GOLD)), part("trail", paint(trail, GOLD)), ...goal()], { caption: "er schießt", hold: 4.4, live: (b, j, t, o) => {
+    act([part("player", paint(at(kicker.pts), WARM)), part("ball", paint(ball(B0), GOLD)), part("trail", paint(trail, GOLD)), ...goal()], { caption: message('jubilaeum.heShoots'), hold: 4.4, live: (b, j, t, o) => {
       if (j < T0) kickLive(j, t, o);
       else if (j < T1) { const q = s(t), c = bez(B0, K, G1, q), sc = 1 - 0.25 * q; roll(o, -0.8 * TAU * q, B0[0], B0[1]); o[0] = c[0] + (o[0] - B0[0]) * sc; o[1] = c[1] + (o[1] - B0[1]) * sc; o[2] = c[2]; }
       else if (j < T2) { const d = s(t) - sOf(j - T1); o[3] = d < 0 ? 0.06 : 0.35 + 1.2 * Math.exp(-d / 0.12); } // the light trail follows the ball
       else if (j < T2 + NN && s(t) > 0.97) o[3] = 1 + 0.6 * Math.exp(-(t - TL - TF) / 0.4); // the net catches the ball
     } }),
-    act([part("player", paint(cheer, WARM)), part("ball", paint(shift(football(BN, R * 0.75), ...G1), GOLD)), part("trail", paint(burst, GOLD)), ...goal()], { caption: "Tor!", hold: 2.6, live: (b, j, t, o) => {
+    act([part("player", paint(cheer, WARM)), part("ball", paint(shift(football(BN, R * 0.75), ...G1), GOLD)), part("trail", paint(burst, GOLD)), ...goal()], { caption: message('jubilaeum.goal'), hold: 2.6, live: (b, j, t, o) => {
       if (j >= T1 && j < T2) o[3] = burstLight(Math.hypot(b[0] - 0.78, b[1] - 0.45) / 0.6, t, 2.6)[0];
       else if (j >= T2 && j < T2 + NN) o[3] = chase(Math.hypot(b[0] - G1[0], b[1] - G1[1]), -t, 0.5, 0.6, 0.8, 1.7); // the net glows outward from the ball
       else if (j >= T0 && j < T1) o[3] = sparkle(j, t, 1, 1.5);
       sway(o, t, 0.15);
     } }),
-    act([part("player", paint(cheer, WARM)), part("number", paint(num, GOLD)), ...goal()], { caption: "…und der Ball wird zu eurer Zahl", live: (b, j, t, o) => {
+    act([part("player", paint(cheer, WARM)), part("number", paint(num, GOLD)), ...goal()], { caption: message('jubilaeum.andTheBallBecomesYourNumber'), live: (b, j, t, o) => {
       if (j >= PN && j < T2) o[3] = glint(b[0], t, 3.2, 0.45, -0.1, 1.7);
       sway(o, t, 0.2);
     } }),
@@ -303,13 +304,13 @@ async function diveStory(n) {
   const D0 = DV, D1 = DV + BD; // index ranges: diver | board | water
   const scene = (diverPts, opts = {}) => [part("diver", paint(diverPts, bodyCol), { rigid: true, ...opts }), part("board", paint(board, boardCol)), part("water", paint(water, waterCol))];
   return { beats: [
-    act(scene(standPts), { caption: "Ein Sprungbrett", hold: 1.4, live: (b, j, t, o) => { if (j >= D1) swell(b, t, o); } }),
-    act(scene(standPts), { caption: "Absprung", hold: 4.4, live: (b, j, t, o) => {
+    act(scene(standPts), { caption: message('jubilaeum.aDivingBoard'), hold: 1.4, live: (b, j, t, o) => { if (j >= D1) swell(b, t, o); } }),
+    act(scene(standPts), { caption: message('jubilaeum.takeOff'), hold: 4.4, live: (b, j, t, o) => {
       if (j < D0) { const { c, a } = leapAt(Math.max(0, t)); set(o, diverAt(jumper, j, Math.max(0, t), c, a)); }
       else if (j < D1) o[1] -= dip(Math.max(0, t)) * bend(b[0]);
       else swell(b, t, o);
     } }),
-    act(scene(underPts, { offstage: true }), { caption: "Kopfsprung, das Wasser spritzt", hold: 3.6, live: (b, j, t, o) => {
+    act(scene(underPts, { offstage: true }), { caption: message('jubilaeum.headFirstDiveTheWaterSplashes'), hold: 3.6, live: (b, j, t, o) => {
       if (j < D0) { const tt = Math.max(0, t), { c, a } = fallAt(tt), p = diverAt(diving, j, tt, c, a); set(o, p); o[3] = underwater(p[1], WY); }
       else if (j >= D1) {
         swell(b, t, o);
@@ -321,12 +322,12 @@ async function diveStory(n) {
         }
       }
     } }),
-    act([part("water", paint(rings.map((p) => p.slice(0, 3)), (p, i) => mix(CYAN, BLUE, rings[i][3] / 2)))], { caption: "Ringe breiten sich aus", hold: 2.8, live: (b, j, t, o) => {
+    act([part("water", paint(rings.map((p) => p.slice(0, 3)), (p, i) => mix(CYAN, BLUE, rings[i][3] / 2)))], { caption: message('jubilaeum.ripplesSpread'), hold: 2.8, live: (b, j, t, o) => {
       const q = rings[j][3], dx = b[0] - E[0], dy = b[1] - E[1], dz = b[2] - E[2], k = 1 + 0.06 * Math.sin(t * 1.4 - q * 1.1);
       o[0] = E[0] + dx * k; o[1] = E[1] + dy * k; o[2] = E[2] + dz * k;
       o[3] = chase(RR[q], t, 0.45, 0.9, 0.7, 1.5);
     } }),
-    act([part("water", paint(rim, GOLD)), part("number", paint(num, WARM)), part("ribbon", ribbon)], { caption: "…und werden zu eurer Zahl", live: (b, j, t, o) => {
+    act([part("water", paint(rim, GOLD)), part("number", paint(num, WARM)), part("ribbon", ribbon)], { caption: message('jubilaeum.andBecomeYourNumber'), live: (b, j, t, o) => {
       if (j < RIM) o[3] = glint(Math.atan2(b[1] - MC[1], b[0] - MC[0]), t, 4, 0.5, -Math.PI, Math.PI);
       sway(o, t, 0.3);
     } }),

@@ -1,12 +1,15 @@
 ---
-import { localeOfId, localeFromPath, sourceId } from '../../i18n/routing.mjs';
+import { localizedCollection } from '../../i18n/content';
+import { forPath } from '../../i18n/server';
+const { t } = forPath(Astro.url.pathname);
+import { localeFromPath } from '../../i18n/routing.mjs';
 const locale = localeFromPath(Astro.url.pathname);
 // Alle Referenzen mit Filter (Marc, 31.10.2026, Runde 8): Anlass als sichtbare Pills, Jahr und Drohnenzahl als zwei
 // Dropdowns, alles in einer Leiste. Reihenfolge: zuerst die Shows mit Video (groß, zwei Spalten, die erste spielt wie auf
 // der Startseite), danach alle anderen chronologisch (drei Spalten). Referenzen ohne Foto bekommen eine Formationskarte
 // statt eines leeren Rahmens: Lichtpunkte im Logoverlauf, wie die Shows selbst.
 // Ohne JS: die volle Liste in derselben Reihenfolge, die Filterleiste bleibt verborgen.
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { type CollectionEntry } from 'astro:content';
 import type { Section } from '../../content.config';
 import SectionHead from '../SectionHead.astro';
 import ProjectCard from '../projects/ProjectCard.astro';
@@ -16,16 +19,16 @@ type Project = CollectionEntry<'projects'>;
 const { headline, text, filters, id = 'referenzen', index, kicker } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
 const C = index === 0 ? 'h2' : 'h3';
-const projects = sortReferences(await getCollection('projects', p => localeOfId(p.id) === locale && !p.data.draft));
+const projects = sortReferences(await localizedCollection('projects', locale, p => !p.data.draft));
 const featured = projects.filter(hasVideo);
 const rest = projects.filter((p) => !hasVideo(p));
 const count = (fn: (p: Project) => unknown, v: unknown) => projects.filter((p) => fn(p) === v).length;
-const occasions = (Object.keys(OCCASIONS) as Occasion[]).map((k) => ({ v: k, l: OCCASIONS[k], n: count((p) => p.data.occasion, k) })).filter((o) => o.n);
+const occasions = (Object.keys(OCCASIONS) as Occasion[]).map((k) => ({ v: k, l: t(OCCASIONS[k]), n: count((p) => p.data.occasion, k) })).filter((o) => o.n);
 const years = [...new Set(projects.map(yearOf))].sort((a, b) => b - a).map((y) => ({ v: String(y), l: String(y), n: count(yearOf, y) }));
-const bands = DRONE_BANDS.map((b) => ({ v: b.id, l: `${b.label.replace(" bis ", "–")} Drohnen`, n: count(bandOf, b.id) })).filter((o) => o.n);
+const bands = DRONE_BANDS.map((b) => ({ v: b.id, l: t('projectcard.valueDrones', { v0: t(b.labelKey) }), n: count(bandOf, b.id) })).filter((o) => o.n);
 const selects = [
-  filters.includes('year') && years.length > 1 && { param: 'jahr', label: 'Jahr', all: 'Alle Jahre', values: years },
-  filters.includes('drones') && bands.length > 1 && { param: 'drohnen', label: 'Drohnen', all: 'Alle Größen', values: bands },
+  filters.includes('year') && years.length > 1 && { param: 'jahr', label: t('references.year'), all: t('references.allYears'), values: years },
+  filters.includes('drones') && bands.length > 1 && { param: 'drohnen', label: t('configuratorteaser.drones'), all: t('references.allSizes'), values: bands },
 ].filter(Boolean) as { param: string; label: string; all: string; values: { v: string; l: string; n: number }[] }[];
 const showPills = filters.includes('occasion') && occasions.length > 1;
 const data = (p: Project) => ({ 'data-anlass': p.data.occasion ?? '', 'data-jahr': String(yearOf(p)), 'data-drohnen': bandOf(p) ?? '' });
@@ -49,11 +52,11 @@ const formation = (seed: string) => {
 <section class="section refs" id={id} aria-labelledby={`${id}-h`} data-refs>
   <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
 
-  <form class="rf-bar" aria-label="Referenzen filtern" data-ref-filter hidden>
+  <form class="rf-bar" aria-label={t('references.filterOurWork')} data-ref-filter hidden>
     {showPills && <fieldset class="rf-occ" data-param="anlass">
-      <legend class="sr-only">Anlass</legend>
+      <legend class="sr-only">{t('showconfigurator.occasion')}</legend>
       <div class="rf-pills">
-        <label><input type="radio" name={`${id}-anlass`} value="" checked /><span>Alle</span></label>
+        <label><input type="radio" name={`${id}-anlass`} value="" checked /><span>{t('references.all')}</span></label>
         {occasions.map((o) => <label><input type="radio" name={`${id}-anlass`} value={o.v} /><span>{o.l} <small aria-hidden="true">{o.n}</small></span></label>)}
       </div>
     </fieldset>}
@@ -68,7 +71,7 @@ const formation = (seed: string) => {
       </label>)}
     </div>}
   </form>
-  <p class="rf-status" role="status" data-ref-status hidden><b class="grad" data-n>{projects.length}</b> <span data-ref-label>Shows</span> <button class="rf-reset" type="button" data-ref-reset hidden>Filter zurücksetzen</button></p>
+  <p class="rf-status" role="status" data-ref-status hidden><b class="grad" data-n>{projects.length}</b> <span data-ref-label>Shows</span> <button class="rf-reset" type="button" data-ref-reset hidden>{t('references.resetFilters')}</button></p>
 
   <div class="rf-lists">
     {featured.length > 0 && <div class="rf-grid rf-feature" data-ref-list>
@@ -78,10 +81,10 @@ const formation = (seed: string) => {
       {rest.map((p, i) => <div class="ref-item" {...data(p)}>
         {p.data.cover ? <ProjectCard project={p} i={i} level={C} year /> : (() => {
           const f = formation(p.id), drones = dronesOf(p), g = `rf-g-${p.id}`;
-          const badge = [yearOf(p), drones && `${drones} Drohnen`].filter(Boolean).join(' · ');
+          const badge = [yearOf(p), drones && t('projectcard.valueDrones', { v0: drones })].filter(Boolean).join(' · ');
           return <article class="proj static rf-ghost">
             <div class="img" data-curtain style={`--i:${i % 2}`}>
-              <svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice" role="img" aria-label={`Kein Foto vorhanden, Lichtpunkt-Formation als Platzhalter`}>
+              <svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice" role="img" aria-label={t('references.placeholder')}>
                 <defs><linearGradient id={g} gradientUnits="userSpaceOnUse" x1="44" y1="0" x2="116" y2="0"><stop offset="0" stop-color="#ff9e29" /><stop offset=".5" stop-color="#db64e8" /><stop offset="1" stop-color="#33edf2" /></linearGradient></defs>
                 {f.sky.map((d) => <circle cx={d.x.toFixed(1)} cy={d.y.toFixed(1)} r=".45" fill="#f6f1e8" opacity={d.o.toFixed(2)} />)}
                 <g fill={`url(#${g})`}>{f.dots.map((d, k) => <circle class:list={{ tw: d.tw }} style={d.tw ? `--d:${(k % 7) * 0.6}s` : undefined} cx={d.x.toFixed(1)} cy={d.y.toFixed(1)} r="1.05" />)}</g>
@@ -95,7 +98,7 @@ const formation = (seed: string) => {
       </div>)}
     </div>}
   </div>
-  <p class="rf-empty" data-ref-empty hidden>Keine Show passt zu dieser Auswahl. <button class="link" type="button" data-ref-clear>Alle zeigen</button></p>
+  <p class="rf-empty" data-ref-empty hidden>{t('references.noShowsMatchYourSelection')} <button class="link" type="button" data-ref-clear>{t('references.showAll')}</button></p>
 </section>
 
 <style>
@@ -152,6 +155,7 @@ const formation = (seed: string) => {
 </style>
 
 <script>
+  import { t } from '../../i18n/ui.mjs';
   for (const root of document.querySelectorAll<HTMLElement>('[data-refs]')) {
     const form = root.querySelector<HTMLFormElement>('[data-ref-filter]')!;
     const status = root.querySelector<HTMLElement>('[data-ref-status]')!;
@@ -179,7 +183,7 @@ const formation = (seed: string) => {
       lists.forEach((l) => { l.hidden = !l.querySelector('.ref-item:not([hidden])'); });
       const active = want.some(([, v]) => v);
       status.querySelector('[data-n]')!.textContent = String(n);
-      status.querySelector('[data-ref-label]')!.textContent = active ? `von ${total} Shows` : n === 1 ? 'Show' : 'Shows';
+      status.querySelector('[data-ref-label]')!.textContent = active ? t('references.ofTotal', { count: total }) : n === 1 ? 'Show' : 'Shows';
       reset.hidden = !active; empty.hidden = n > 0;
       selects.forEach((s) => s.parentElement!.classList.toggle('on', !!s.value));
       if (fromUser) {

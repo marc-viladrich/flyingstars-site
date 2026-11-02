@@ -1,4 +1,6 @@
 ---
+import { forPath } from '../../i18n/server';
+const { localHref } = forPath(Astro.url.pathname);
 // Referenzen als Geschichten (Hochzeit): zwei oder drei Karten nebeneinander, versetzt wie Fotos auf einem Tisch.
 // Großes Bild mit Vorhang und Lichtpunkt-Hover (ganze Karte ist Auslöser), Drohnenzahl auf dem Bild, darunter Ort und
 // Datum als Kicker, Titel, kurzer Text und bis zu drei Kennzahlen. Ersetzt den Fließtext-Block „So sah das aus“.
@@ -29,7 +31,7 @@ const cards = await Promise.all(items.map(async (item) => ({ ...item, media: awa
       </article>
     ))}
   </div>
-  {cta && <div class="ls-more"><a class="link" href={cta.href}>{cta.label} <span aria-hidden="true">→</span></a></div>}
+  {cta && <div class="ls-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></div>}
 </section>
 
 <style>

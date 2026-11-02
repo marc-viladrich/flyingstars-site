@@ -1,4 +1,6 @@
 ---
+import { forPath } from '../../i18n/server';
+const { t, localHref, formatLocale } = forPath(Astro.url.pathname);
 // Preiskarte (Marc, 31.10.2026: „bei der Hochzeit insbesondere mit den Preisen … viel mehr High Quality“). Links der
 // Preis groß, bei Paketbezug mit der Punktfigur des Pakets und Preis/Drohnen aus src/content/show-packages.ts; rechts
 // die Gruppen wie ein Kassenzettel (Bezeichnung links, Betrag rechts), optional ein Bonus im Logoverlauf.
@@ -15,12 +17,12 @@ const H = index === 0 ? 'h1' : 'h2';
 const T = index === 0 ? 'h2' : 'h3';
 const orb = { SPARK: 'ring', HORIZON: 'sphere', ODYSSEY: 'torus' } as const;
 const p = pkg ? SHOW_PACKAGES[pkg] : undefined;
-const shown = p ? `ab ${p.price.toLocaleString('de-DE')} €` : price ?? '';
+const shown = p ? t('showconfigurator.fromValue', { v0: p.price.toLocaleString(formatLocale) }) : price ?? '';
 // „ab“ bzw. „ab ca.“ klein über dem Betrag, damit auch „ab ca. 15.000 €“ in die Spalte passt
-const [, pre = '', amount = shown] = shown.match(/^((?:ab|bis)(?: ca\.)?)\s+(.+)$/) ?? [];
-const sub = unit ?? (p ? `netto für ${p.base} Drohnen, zzgl. Anfahrt` : undefined);
+const [, pre = '', amount = shown] = shown.match(/^((?:ab|bis|from|up to|vanaf|tot)(?: ca\.| approx\.)?)\s+(.+)$/) ?? [];
+const sub = unit ?? (p ? t('landingprice.excludingVatForValueDronesPlusTravel', { v0: p.base }) : undefined);
 // Staffel nur, wenn das Paket nach oben begrenzt ist (SPARK: bis 150 Drohnen, je 10 weitere +900 €)
-const scale = p && Number.isFinite(p.max) ? `bis ${p.max} Drohnen: +${p.add.toLocaleString('de-DE')} € je ${p.step} weitere` : undefined;
+const scale = p && Number.isFinite(p.max) ? t('landingprice.upToValueDronesValuePerValueAdditionalDrones', { v0: p.max, v1: p.add.toLocaleString(formatLocale), v2: p.step }) : undefined;
 ---
 <section class="section alt lp" id={id} aria-labelledby={`${id}-h`}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
@@ -47,7 +49,7 @@ const scale = p && Number.isFinite(p.max) ? `bis ${p.max} Drohnen: +${p.add.toLo
   <div class="promise lp-close">
     <Faces />
     {contact && <p>{contact}</p>}
-    <div class="actions"><a class="btn primary" href={cta.href}>{cta.label}</a></div>
+    <div class="actions"><a class="btn primary" href={localHref(cta.href)}>{cta.label}</a></div>
   </div>
 </section>
 

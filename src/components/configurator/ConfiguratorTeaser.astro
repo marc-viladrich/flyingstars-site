@@ -1,4 +1,6 @@
 ---
+import { forPath } from '../../i18n/server';
+const { t, localHref } = forPath(Astro.url.pathname);
 // Startseiten-Teaser des Show-Konfigurators, zweite Fassung (Marc, 31.10.2026): kein interaktiver Mini-Konfigurator,
 // sondern ein sich selbst abspielendes Mockup, „wie so ein Quick-Showreel“. Links die Bühne mit denselben Motiven und
 // Lichtern wie im Konfigurator, im schnellen Durchlauf durch die „Greatest Hits“ von SPARK bis ODYSSEY, dazwischen die
@@ -31,7 +33,7 @@ interface Props {
   /** Beschriftung des Knopfs */
   cta?: string;
 }
-const { id = 'cft', reel = 'start', href = '/drohnenshow-preise/#konfigurator', cta = 'Zum Show-Konfigurator' } = Astro.props;
+const { id = 'cft', reel = 'start', href = '/drohnenshow-preise/#konfigurator', cta = t('configuratorteaser.openTheShowConfigurator') } = Astro.props;
 type Pkg = keyof typeof SHOW_PACKAGES;
 const rgb = (k: Pkg) => `rgb(${SHOW_PACKAGES[k].color.join(',')})`;
 const at = (n: number) => ((n - DRONES_MIN) / (DRONES_MAX - DRONES_MIN)) * 100;
@@ -40,35 +42,35 @@ const rangeTrack = `linear-gradient(90deg, ${(Object.keys(DRONE_RANGES) as Pkg[]
 const start = { pkg: 'SPARK' as Pkg, drones: 100 };
 // Textalternative je Ablauf (dieselbe Beschreibung wie REELS[…].label in show-teaser.js)
 const labels = {
-  start: 'das FlyingStars-Logo, das mit mehr Drohnen schärfer wird, ein Herz in 2D, als Tunnel und in 3D, ein QR-Code, eine Rakete, die auf dem Mond landet, und eine große 3D-Maske',
-  marke: 'ein Logo, das mit mehr Drohnen schärfer wird, Glühbirne, Spirale, ein QR-Code und eine Rakete, die auf dem Mond landet',
-  hochzeit: 'Initialen im Herz, ein Herz in 2D, als Tunnel und in 3D, Sektgläser, Ringe und ein Antrag',
+  start: t('configuratorteaser.theFlyingstarsLogoBecomingSharperWithMoreDronesAHeart'),
+  marke: t('configuratorteaser.aLogoBecomingSharperWithMoreDronesALightBulb'),
+  hochzeit: t('configuratorteaser.initialsInsideAHeartAHeartIn2dAsA'),
 };
 ---
 <div class="cft" id={id} data-cft-root data-reel={reel} style={`--pkg: ${rgb(start.pkg)}`}>
   <div class="cft-stage">
-    <div class="cft-view" role="img" aria-label={`Beispiel-Vorschau einer Drohnenshow: ${labels[reel] ?? labels.start}`}>
+    <div class="cft-view" role="img" aria-label={t('configuratorteaser.sampleDroneShowPreviewValue', { v0: labels[reel] ?? labels.start })}>
       <canvas data-cft="field" aria-hidden="true"></canvas>
     </div>
     <p class="cft-note" data-cft="note" aria-hidden="true"></p>
     <!-- die Bühne als Link (Runde 9): beim Zeigen ein dezenter Hinweis; kein eigener Tab-Stopp, per Tastatur führt der Knopf
          dorthin (hat er den Fokus, erscheint der Hinweis auch hier) -->
-    <a class="cft-hit" href={href} tabindex="-1" aria-hidden="true"><span>Eigene Show zusammenstellen <i>→</i></span></a>
-    <p class="cft-error" data-cft="error" hidden>Die Vorschau ist gerade nicht verfügbar.</p>
+    <a class="cft-hit" href={localHref(href)} tabindex="-1" aria-hidden="true"><span>{t('configuratorteaser.createYourOwnShow')} <i>→</i></span></a>
+    <p class="cft-error" data-cft="error" hidden>{t('configuratorteaser.thePreviewIsCurrentlyUnavailable')}</p>
   </div>
 
   <div class="cft-side">
     <!-- Wireframe des Konfigurators: reine Dekoration, folgt der Bühne (show-teaser.js) -->
     <div class="cft-mock" aria-hidden="true">
       <div class="cft-group">
-        <p class="cft-label">Paket</p>
+        <p class="cft-label">{t('configuratorteaser.package')}</p>
         <div class="cft-pkgs" style={(Object.keys(SHOW_PACKAGES) as Pkg[]).map((k, i) => `--c${i}: ${rgb(k)}`).join('; ')}>
           {(Object.keys(SHOW_PACKAGES) as Pkg[]).map((k) => <span class:list={['cft-pkg', { 'is-on': k === start.pkg }]} data-cft="pkg" data-id={k} style={`--c: ${rgb(k)}`}>{k}</span>)}
           <span class="cft-ind"></span>
         </div>
       </div>
       <div class="cft-drones">
-        <p class="cft-count"><b data-cft="count">{start.drones}</b> Drohnen</p>
+        <p class="cft-count"><b data-cft="count">{start.drones}</b> {t('configuratorteaser.drones')}</p>
         <div class="cft-slider" style={`--track: ${rangeTrack}`}>
           <span class="cft-fill" data-cft="fill" style={`--at: ${at(start.drones) / 100}`}></span>
           <span class="cft-thumb" data-cft="thumb" style={`--at: ${at(start.drones) / 100}`}></span>
@@ -76,7 +78,7 @@ const labels = {
       </div>
       <p class="cft-price">{[1, 2, 3, 4, 5, 6, 7, 8].map((k) => <span class:list={['cft-euro', { 'is-on': k <= 1 }]} data-cft="euro">€</span>)}</p>
     </div>
-    <a class="btn primary cft-cta" href={href}>{cta}</a>
+    <a class="btn primary cft-cta" href={localHref(href)}>{cta}</a>
   </div>
 </div>
 

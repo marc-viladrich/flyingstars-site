@@ -1,3 +1,4 @@
+import { t } from '../i18n/ui.mjs';
 const form = document.querySelector<HTMLFormElement>('#inquiry-form');
 if (form) {
   const steps = [...form.querySelectorAll<HTMLFieldSetElement>('[data-step]')];
@@ -10,7 +11,7 @@ if (form) {
     steps.forEach((fieldset, i) => { fieldset.hidden = i !== index; });
     marks.forEach((mark, i) => mark.classList.toggle('on', i <= index));
     form.classList.toggle('is-2', index === 1);
-    if (focus) label.textContent = `Schritt ${index + 1} von ${steps.length}`;
+    if (focus) label.textContent = t('contact.stepValueOfValue', { v0: index + 1, v1: steps.length });
     if (focus) steps[index].querySelector<HTMLInputElement>('input,select,textarea')?.focus();
   };
   // Datum: Pflicht, außer „Noch nicht festgelegt“ ist angekreuzt (ohne JS bleibt es freiwillig)
@@ -29,7 +30,7 @@ if (form) {
       const valid = field.checkValidity();
       const error = form.querySelector<HTMLElement>(`[data-err-for="${field.name}"]`);
       field.setAttribute('aria-invalid', String(!valid));
-      if (error) error.textContent = valid ? '' : field.type === 'radio' ? 'Bitte wähle einen Anlass.' : field.type === 'email' && field.value ? 'Bitte gib eine gültige E-Mail-Adresse ein.' : field.dataset.msg || 'Bitte ausfüllen.';
+      if (error) error.textContent = valid ? '' : field.type === 'radio' ? t('contact.pleaseChooseAnOccasion') : field.type === 'email' && field.value ? t('contact.pleaseEnterAValidEmailAddress') : field.dataset.msg || t('contact.pleaseFillInThisField');
       if (!valid) first ||= field;
     });
     first?.focus();
@@ -59,7 +60,7 @@ if (form) {
   const skyText = params.get('text')?.replace(/\s+/g, ' ').trim().slice(0, 60);
   const showSummary = params.get('show')?.replace(/\r/g, '').trim().slice(0, 600);
   const message = form.querySelector<HTMLTextAreaElement>('[name=message]');
-  const draft = [showSummary, skyText && `Text am Himmel: ${skyText}`].filter(Boolean).join('\n');
+  const draft = [showSummary, skyText && t('contact.textInTheSkyValue', { v0: skyText })].filter(Boolean).join('\n');
   if (draft && message && !message.value) message.value = draft;
   // Paketkarten auf derselben Seite (Startseite): Klick wählt das Paket im Formular und springt hin, statt zu /kontakt/
   document.querySelectorAll<HTMLAnchorElement>('[data-pick-paket]').forEach((link) => link.addEventListener('click', (event) => {
@@ -88,19 +89,19 @@ if (form) {
     const invalid = steps.findIndex((fieldset) => !validate(fieldset));
     if (invalid >= 0) { show(invalid, false); validate(steps[invalid]); return; }
     const button = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
-    button.disabled = true; button.textContent = 'Wird gesendet …'; status.textContent = '';
+    button.disabled = true; button.textContent = t('contact.sending'); status.textContent = '';
     try {
       const response = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
       const result = await response.json();
-      if (!response.ok || !result.ok) throw new Error(result.detail || 'Die Anfrage konnte nicht gesendet werden.');
+      if (!response.ok || !result.ok) throw new Error(result.detail || t('contact.yourEnquiryCouldNotBeSent'));
       if (result.state === 'not-configured') {
-        status.textContent = 'Der Formularversand ist noch nicht eingerichtet. Es wurde nichts gesendet oder gespeichert. Bitte schreibe uns direkt an team@flyingstars.art.';
+        status.textContent = t('contact.formDeliveryHasNotBeenSetUpYetNothingWas');
       } else {
-        status.textContent = 'Deine Anfrage wurde gesendet. Wir melden uns innerhalb von 48 Stunden.';
+        status.textContent = t('contact.yourEnquiryHasBeenSentWeLlGetBackTo');
         form.reset(); syncDate(); show(0, false);
       }
-    } catch (error) { status.textContent = `${error instanceof Error ? error.message : 'Versand fehlgeschlagen.'} Bitte versuche es später erneut oder schreibe direkt an team@flyingstars.art.`; }
-    finally { button.disabled = false; button.textContent = 'Anfrage senden'; status.focus(); }
+    } catch (error) { status.textContent = t('contact.valuePleaseTryAgainLaterOrEmailTeamFlyingstarsArt', { v0: error instanceof Error ? error.message : t('contact.deliveryFailed') }); }
+    finally { button.disabled = false; button.textContent = t('contactform.sendEnquiry'); status.focus(); }
   });
   show(0, false);
 }

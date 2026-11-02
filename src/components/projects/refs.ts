@@ -3,13 +3,13 @@ import type { CollectionEntry } from 'astro:content';
 import { videos } from '../../lib/videos';
 type Project = CollectionEntry<'projects'>;
 
-export const OCCASIONS = { firma: 'Marken & Unternehmen', stadt: 'Städte & Festivals', kultur: 'Kultur & Bühne', privat: 'Hochzeit & Privat', indoor: 'Indoor', sonstiges: 'Sonstiges' } as const;
+export const OCCASIONS = { firma: 'references.brands', stadt: 'references.cities', kultur: 'references.culture', privat: 'contactform.weddingPrivate', indoor: 'references.indoor', sonstiges: 'contactform.other' } as const;
 export type Occasion = keyof typeof OCCASIONS;
 // Drohnenzahl in drei Stufen, angelehnt an die Pakete (SPARK bis 150, darüber HORIZON, ab 300+ ODYSSEY-Größe)
 export const DRONE_BANDS = [
-  { id: 'bis-150', label: 'bis 150', test: (n: number) => n <= 150 },
-  { id: '151-300', label: '151 bis 300', test: (n: number) => n > 150 && n <= 300 },
-  { id: 'ueber-300', label: 'über 300', test: (n: number) => n > 300 },
+  { id: 'bis-150', labelKey: 'references.upTo', test: (n: number) => n <= 150 },
+  { id: '151-300', labelKey: 'references.medium', test: (n: number) => n > 150 && n <= 300 },
+  { id: 'ueber-300', labelKey: 'references.over', test: (n: number) => n > 300 },
 ] as const;
 
 /** Fallstudien liegen im Wurzelverzeichnis (/<route>/); andere Referenzen haben keine eigene Seite. */

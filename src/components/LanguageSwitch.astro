@@ -2,9 +2,10 @@
 import { LOCALES, LOCALE_NAMES, localizedHref, type Locale } from '../i18n/routing.mjs';
 interface Props { locale: Locale; path: string; }
 const { locale, path } = Astro.props;
-const labels = { de: 'Sprache wählen', en: 'Choose language', nl: 'Taal kiezen' };
+import { createTranslator } from '../i18n/ui.mjs';
+const t = createTranslator(locale);
 ---
-<nav class="language-switch" aria-label={labels[locale]}>
+<nav class="language-switch" aria-label={t('language.choose')}>
   {LOCALES.map((language) => <a href={localizedHref(path, language)} lang={language} hreflang={language} aria-label={LOCALE_NAMES[language]} aria-current={language === locale ? 'page' : undefined} data-language-link>{language.toUpperCase()}</a>)}
 </nav>
 <script>
@@ -16,11 +17,16 @@ const labels = { de: 'Sprache wählen', en: 'Choose language', nl: 'Taal kiezen'
   });
 </script>
 <style>
-  .language-switch { display: flex; gap: 2px; align-items: center; flex-shrink: 0; }
+  .language-switch { margin-left: 0; display: flex; gap: 2px; align-items: center; flex-shrink: 0; }
   .language-switch a { display: grid; place-items: center; min-width: 32px; min-height: 44px; padding: 4px; font: 500 12px var(--display); color: var(--muted); text-decoration: none; border-bottom: 2px solid transparent; }
   .language-switch a[aria-current] { color: var(--head); border-color: var(--accent); }
   .language-switch a:hover { color: var(--accent); }
   .language-switch a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  :global(.mobile-menu) .language-switch { justify-content: flex-start; gap: 16px; margin-top: 24px; }
+  :global(.mobile-menu) .language-switch { display: flex; justify-content: flex-start; gap: 16px; margin-top: 24px; }
   @media (max-width: 480px) { .language-switch a { min-width: 26px; padding-inline: 2px; } }
+</style>
+
+<style>
+  :global(.nav) .language-switch { margin-left: 0; gap: 2px; display: flex; }
+  :global(.mobile-menu) .language-switch a { font-size: 14px; line-height: 1.2; letter-spacing: 0; }
 </style>

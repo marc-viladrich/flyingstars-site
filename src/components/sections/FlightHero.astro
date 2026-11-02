@@ -1,4 +1,6 @@
 ---
+import { forPath } from '../../i18n/server';
+const { t, localHref } = forPath(Astro.url.pathname);
 import type { Section } from '../../content.config';
 import Accent from '../Accent.astro';
 import { videoPath } from '../../lib/videos';
@@ -20,9 +22,9 @@ const still = await optimizedImage(poster.src, 960);
     {eyebrow && <span class="kicker mono">{eyebrow}</span>}
     <h1 id="hero-h"><Accent text={headline} />{words && words.length > 0 && <> <span class="word" data-rotate={words.join('|')}>{words[0]}</span></>}</h1>
     <p class="lead">{text}</p>
-    <div class="actions"><a class="btn primary" href={cta.href}>{cta.label}</a>{secondary && <a class="btn" href={secondary.href}>{secondary.label}</a>}</div>
+    <div class="actions"><a class="btn primary" href={localHref(cta.href)}>{cta.label}</a>{secondary && <a class="btn" href={localHref(secondary.href)}>{secondary.label}</a>}</div>
   </div>
-  {stats && stats.length > 0 && <dl class="spec mono" aria-label="Eckdaten">{stats.map((stat) => <><dt>{stat.label}</dt><dd><b>{stat.value}</b></dd></>)}</dl>}
+  {stats && stats.length > 0 && <dl class="spec mono" aria-label={t('flighthero.keyFacts')}>{stats.map((stat) => <><dt>{stat.label}</dt><dd><b>{stat.value}</b></dd></>)}</dl>}
 </section>
 
 <script is:inline>

@@ -8,6 +8,6 @@ export const FOUNDERS = [
 export const CONTACT = {
   email: 'team@flyingstars.art',
   phone: { label: '0209 883 065 62', href: 'tel:+4920988306562' },
-  video: { label: 'Videocall buchen', href: 'https://calendly.com/team-flyingstars/beratung' },
+  video: { labelKey: 'contact.videoCall', href: 'https://calendly.com/team-flyingstars/beratung' },
   whatsapp: { label: 'WhatsApp', href: 'https://wa.me/4915792608672' },
 };

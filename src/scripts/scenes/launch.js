@@ -1,3 +1,4 @@
+import { t as message } from '../../i18n/ui.mjs';
 // launch motifs of the eleventh version (see src/content/show-configurator.js for the build names).
 import { TAU, WARM, GOLD, VIOLET, CYAN, BLUE, mix, paint, frac, smooth, hash, yaw, pitch, roll, breathe, glint, sparkle, chase, trace, share, part, act } from "../show-motion.js";
 import { sampleOutline, evenSubset } from "../show-geometry.js";
@@ -189,16 +190,16 @@ export const builders = {
     const SX = 1.15, STOP = 1.08, ST = 2.8, SP = 7, ends = paint(Array.from({ length: SC }, (_, k) => [k % 2 ? SX : -SX, 0.32 + STOP, 0]), GOLD);
     const appear = (k) => 0.35 + 1.05 * k; // the bubbles come in one after the other, each rises a little into place
     return { beats: [
-      act([part("phone", body), part("code", paint(bubbles, (p, i) => (BUBBLES[of[i]].tail === 3 ? GOLD : WARM)))], { caption: "Eine Nachricht kommt an", hold: 3.6, frame: "phone", live: (b, j, t, o) => {
+      act([part("phone", body), part("code", paint(bubbles, (p, i) => (BUBBLES[of[i]].tail === 3 ? GOLD : WARM)))], { caption: message('launch.aMessageArrives'), hold: 3.6, frame: "phone", live: (b, j, t, o) => {
         if (j >= P) { const u = smooth((t - appear(of[j - P])) / 0.7); o[1] -= 0.09 * (1 - u); o[3] = 0.12 + 1.0 * u; }
         yaw(o, 0.3 * Math.sin((TAU * t) / 9));
       } }),
       // vierzehnte Fassung (Marc: der Übergang zum QR-Code hatte eine Finte): die Nachrichten fliegen ohne Wolke in den Code;
       // in der Wolke flog ein Viertel der Drohnen über seinen zufälligen Mittelpunkt erst ein Stück zurück
-      act([part("phone", body), part("code", paint(small, WARM))], { caption: "die Nachrichten werden zu einem QR-Code", hold: 2.6, frame: "phone", live: (b, j, t, o) => {
+      act([part("phone", body), part("code", paint(small, WARM))], { caption: message('launch.theMessagesBecomeAQrCode'), hold: 2.6, frame: "phone", live: (b, j, t, o) => {
         if (j >= P) o[3] = trace((top - b[1]) / (top - bottom), t, 1.8, { dim: 0.2 });
       } }),
-      act([part("phone", [...frame, ...words, ...ends]), part("code", paint(big, WARM))], { caption: "„Scan me“: der Code steht still", frame: "scan", live: (b, j, t, o) => {
+      act([part("phone", [...frame, ...words, ...ends]), part("code", paint(big, WARM))], { caption: message('launch.scanMeTheCodeStandsStill'), frame: "scan", live: (b, j, t, o) => {
         // the code stands still (scannable); the scan line runs down over it and only adds light, then keeps scanning
         const y = 0.32 + scanBeam(t - 0.4, STOP, ST, SP);
         if (j >= P) { o[3] = 1 + 0.9 * Math.exp(-(((b[1] - y) / 0.09) ** 2)); return; }
@@ -236,14 +237,14 @@ export const builders = {
     const wobble = (t) => TILT + 0.3 * Math.sin((TAU * t) / 11); // the torus tips slowly back and forth
     const at = (fn, t, tilt) => (j) => { const o = fn(j, t); tipped(o, tilt); return o; };
     return { beats: [
-      act([part("spiral", paint(helix.map((p) => { const o = [...p]; tipped(o, 0.32); return o; }), (p, i) => cool(i / n)))], { caption: "Eine Spirale", hold: 3, live: (b, j, t, o) => { put(o, helix[j]); yaw(o, t * 0.32); tipped(o, 0.32); o[3] = chase(j / n, t, 0.09, 0.34, 0.6, 1.5); } }),
-      act([part("spiral", paint(Array.from({ length: n }, (_, j) => at(coilAt, 0)(j)), (p, i) => cool(0.5 + 0.5 * Math.cos((TAU * 3 * i) / n))))], { caption: "sie schließt sich zum Torus, die Lichter laufen die Windungen entlang", hold: 4.5, live: (b, j, t, o) => {
+      act([part("spiral", paint(helix.map((p) => { const o = [...p]; tipped(o, 0.32); return o; }), (p, i) => cool(i / n)))], { caption: message('launch.aSpiral'), hold: 3, live: (b, j, t, o) => { put(o, helix[j]); yaw(o, t * 0.32); tipped(o, 0.32); o[3] = chase(j / n, t, 0.09, 0.34, 0.6, 1.5); } }),
+      act([part("spiral", paint(Array.from({ length: n }, (_, j) => at(coilAt, 0)(j)), (p, i) => cool(0.5 + 0.5 * Math.cos((TAU * 3 * i) / n))))], { caption: message('launch.itClosesIntoATorusLightsFollowTheCoils'), hold: 4.5, live: (b, j, t, o) => {
         put(o, coilAt(j, t)); yaw(o, t * 0.12); tipped(o);
       } }),
-      act([part("spiral", paint(Array.from({ length: n }, (_, j) => at(ringAt, 0)(j)), (p, i) => cool(0.5 - 0.5 * Math.cos(vOf[i]))))], { caption: "der Torus dreht sich durch sich selbst", hold: 6, live: (b, j, t, o) => {
+      act([part("spiral", paint(Array.from({ length: n }, (_, j) => at(ringAt, 0)(j)), (p, i) => cool(0.5 - 0.5 * Math.cos(vOf[i]))))], { caption: message('launch.theTorusTurnsThroughItself'), hold: 6, live: (b, j, t, o) => {
         put(o, ringAt(j, t)); yaw(o, t * 0.1); tipped(o, wobble(t));
       } }),
-      act([part("spiral", paint([...edge.spread(EG), ...rungs].map((p) => { const o = [...p]; tipped(o); return o; }), (p, i) => (i < EG ? cool(0.5 + 0.5 * Math.sin((TAU * 2 * i) / EG)) : mix(BLUE, WARM, 0.25))))], { caption: "…und verdreht sich zur endlosen Schleife", live: (b, j, t, o) => {
+      act([part("spiral", paint([...edge.spread(EG), ...rungs].map((p) => { const o = [...p]; tipped(o); return o; }), (p, i) => (i < EG ? cool(0.5 + 0.5 * Math.sin((TAU * 2 * i) / EG)) : mix(BLUE, WARM, 0.25))))], { caption: message('launch.andTwistsIntoAnEndlessLoop'), live: (b, j, t, o) => {
         if (j < EG) put(o, edgeAt(j, t)); else { put(o, rungs[j - EG]); o[3] = 0.85 * glint(Math.atan2(rungs[j - EG][2], rungs[j - EG][0]), t, 6, 0.6, -Math.PI, Math.PI); }
         yaw(o, t * 0.14); tipped(o);
       } }),

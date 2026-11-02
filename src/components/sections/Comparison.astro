@@ -1,4 +1,6 @@
 ---
+import { forPath } from '../../i18n/server';
+const { t } = forPath(Astro.url.pathname);
 import type { Section } from '../../content.config';
 import Accent from '../Accent.astro';
 import SectionHead from '../SectionHead.astro';
@@ -11,15 +13,15 @@ const label = plain(headline);
 ---
 <section class="section alt" id={id} aria-labelledby={headingId}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
-  <div class="table-wrap" role="region" aria-label={`${label} (Tabelle, horizontal scrollbar)`} tabindex="0">
-    <table lang="de"><caption class="sr-only">{label}</caption><thead><tr><th scope="col">{rowHeader}</th>{columns.map((column,i) => <th scope="col" class:list={{us:i===0}}>{column}</th>)}</tr></thead>
+  <div class="table-wrap" role="region" aria-label={t('comparison.table', { label })} tabindex="0">
+    <table><caption class="sr-only">{label}</caption><thead><tr><th scope="col">{rowHeader}</th>{columns.map((column,i) => <th scope="col" class:list={{us:i===0}}>{column}</th>)}</tr></thead>
       <tbody>{rows.map(row => <tr><th scope="row">{row.label}</th>{row.values.map((value,i) => <td class:list={{us:i===0}}>{row.cells ? <><span class:list={['m',row.cells[i].tone]}>{row.cells[i].label}</span>{row.cells[i].text && <> {row.cells[i].text}</>}</> : value}</td>)}</tr>)}</tbody>
     </table>
   </div>
   <!-- Handy (Marc, 31.10.2026): statt einer zu breiten Tabelle je Technik ein Reiter; Kriterium, darunter Wertung und
        Erklärung in einer eigenen Zeile. Reine Radiogruppe, funktioniert ohne JS. -->
   <div class="cmp-m">
-    <div class="cmp-tabs" role="radiogroup" aria-label={`${label}: Technik wählen`}>
+    <div class="cmp-tabs" role="radiogroup" aria-label={t('comparison.valueChooseATechnology', { v0: label })}>
       {columns.map((column, i) => <label class:list={{ us: i === 0 }}><input type="radio" name={`${id}-tab`} value={i} checked={i === 0} /><span>{column}</span></label>)}
     </div>
     {columns.map((column, i) => <dl class="cmp-panel" data-i={i} aria-label={column}>

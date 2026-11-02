@@ -1,15 +1,19 @@
+import { createTranslator } from '../i18n/ui.mjs';
+import { localeFormat } from '../i18n/routing.mjs';
 /** Texts of the pricing page (30.10.2026, from the Elevate branch): package cards, the comparison and extras.
  * The price questions live in the FAQ collection (tag `preise`), so the FAQ page and the pricing page share them.
  * Prices and drone counts come only from show-packages.ts. Facts follow the FlyingStars questionnaire of 21.10.2026:
  * no duration per package, 40 % deposit, cancellation scale from the AGB, extras as confirmed there. */
-import { SHOW_PACKAGES, type ShowPackage } from './show-packages';
+import { SHOW_PACKAGES, type ShowPackage } from './show-packages.ts';
 
-const money = (v: number) => v.toLocaleString('de-DE');
+export function getPackageDetails(locale = 'de') {
+const t = createTranslator(locale);
+const money = (v: number) => v.toLocaleString(localeFormat(locale));
 
 /** One line above all packages; the questionnaire: "Es gibt keine Dauer je Paket." */
-export const SHOW_DURATION = 'Eine Show dauert in der Regel ca. 13 Minuten, bis 25 Minuten sind möglich. Das gilt für jedes Paket.';
+const SHOW_DURATION = t('packageDetails.aShowUsuallyLastsAround13MinutesWithUpTo');
 
-export interface PackageDetail {
+interface PackageDetail {
   /** Short name of the step, the same as in the live preview. */
   label: string;
   /** "Am Himmel": what the audience sees. */
@@ -22,137 +26,140 @@ export interface PackageDetail {
   often?: string;
 }
 
-export const PACKAGE_DETAILS: Record<ShowPackage, PackageDetail> = {
+const PACKAGE_DETAILS: Record<ShowPackage, PackageDetail> = {
   SPARK: {
-    label: 'Klassisch in 2D',
-    sky: 'Formationen in 2D aus unserem Katalog, bis zu vier eigene Elemente',
-    care: 'Eure eigenen Elemente vorab zur Freigabe, GEMA-freie Musik',
-    typical: 'Hochzeit, Jubiläum, kleinere Firmenfeier',
+    label: t('packageDetails.classic2d'),
+    sky: t('packageDetails.2dFormationsFromOurCatalogueWithUpToFourCustom'),
+    care: t('packageDetails.yourCustomElementsForApprovalInAdvanceMusicFreeOf'),
+    typical: t('packageDetails.weddingsAnniversariesSmallerCorporateEvents'),
   },
   HORIZON: {
-    label: '3D in Bewegung',
-    sky: 'Alles aus SPARK, dazu eigene 2D-Animationen, einfache 3D-Objekte und euer Logo präzise',
-    care: 'Kreativ-Workshop mit Storyboard, Videovorschau mit Feedback, synchron zu eurer Wunschmusik',
-    typical: 'Produktpräsentation, Firmenevent, Stadtfest',
+    label: t('contactform.3dInMotion'),
+    sky: t('packageDetails.everythingInSparkPlusCustom2dAnimationsSimple3dObjects'),
+    care: t('packageDetails.creativeWorkshopWithStoryboardVideoPreviewWithFeedbackSynchronisedTo'),
+    typical: t('packageDetails.productLaunchesCorporateEventsCityFestivals'),
     often: 'Bestseller',
   },
   ODYSSEY: {
-    label: 'Erzählte 3D-Show',
-    sky: 'Alles aus HORIZON, dazu 3D-Animation mit Storyline und volumetrische Effekte',
-    care: 'Mehrere Feedbackrunden, eigene Projektleitung, Rohmaterial-Video, Timecode möglich',
-    typical: 'Kampagne, Festival, Großveranstaltung',
+    label: t('packageDetails.3dStorytellingShow'),
+    sky: t('packageDetails.everythingInHorizonPlus3dStorytellingAnimationAndVolumetricEffects'),
+    care: t('packageDetails.multipleFeedbackRoundsDedicatedProjectManagerRawVideoFootageTimecode'),
+    typical: t('packageDetails.campaignsFestivalsLargeEvents'),
   },
 };
 
 /** Drohnenzahl je Paket in einer Zeile, für Paketkarten und Vergleich (Marc, 01.11.2026: „ab 200 Drohnen“ statt
  * „200 Drohnen, mehr möglich“). SPARK hat eine Obergrenze, HORIZON und ODYSSEY nicht. */
-export function dronesLine(name: ShowPackage): string {
+function dronesLine(name: ShowPackage): string {
   const p = SHOW_PACKAGES[name];
-  return Number.isFinite(p.max) ? `${p.base} bis ${p.max} Drohnen` : `ab ${p.base} Drohnen`;
+  return Number.isFinite(p.max) ? t('packageDetails.valueToValueDrones', { v0: p.base, v1: p.max }) : t('packageDetails.fromValueDrones', { v0: p.base });
 }
 
 /** Kernpunkte der Paket-Kurzfassung (Startseite und Anlass-Seiten zeigen dieselbe Vorschau, Marc 01.11.2026). Die
  * Drohnenzahl steht als eigene Zeile davor (dronesLine). Eine Seite kann im YAML eigene `points` setzen. */
-export const PACKAGE_POINTS: Record<ShowPackage, string[]> = {
-  SPARK: ['Formationen aus unserem Katalog', 'Bis zu vier eigene Elemente, z. B. Initialen oder Logo', 'GEMA-freie Musik'],
-  HORIZON: ['Eigene 2D-Animationen und einfaches 3D', 'Euer Logo präzise am Himmel', 'Synchron zu eurer Wunschmusik'],
-  ODYSSEY: ['Storyline mit dramaturgischer Kurve', 'Komplexe 3D-Animationen', 'Eigene Projektleitung'],
+const PACKAGE_POINTS: Record<ShowPackage, string[]> = {
+  SPARK: [t('packageDetails.formationsFromOurCatalogue'), t('packageDetails.upToFourCustomElementsSuchAsInitialsOrA'), t('packageDetails.musicFreeOfGemaRoyalties')],
+  HORIZON: [t('packageDetails.custom2dAnimationsAndSimple3d'), t('packageDetails.yourLogoDrawnPreciselyInTheSky'), t('packageDetails.synchronisedToYourChosenMusic')],
+  ODYSSEY: [t('packageDetails.aStorylineWithADramaticArc'), t('packageDetails.complex3dAnimations'), t('packageDetails.dedicatedProjectManager')],
 };
 
 /** Paketkarten der Preisseite im Aufbau des Vercel-Prototyps (Marc, 31.10.2026: „besser strukturiert mit diesen Bullet
  * Points, die auch farbig sind“): Kurzbeschreibung, dann Gruppen Design & Inhalt / Musik / Service & Extras. Inhalte aus
  * der Vergleichstabelle unten (Fragebogen 21.10.), ab HORIZON nur was dazukommt („Alles aus SPARK, plus:“). */
-export interface PackageFeatures { tag: string; badge: string; plus?: string; groups: { title: string; items: string[] }[] }
-export const PACKAGE_FEATURES: Record<ShowPackage, PackageFeatures> = {
+interface PackageFeatures { tag: string; badge: string; plus?: string; groups: { title: string; items: string[] }[] }
+const PACKAGE_FEATURES: Record<ShowPackage, PackageFeatures> = {
   SPARK: {
-    tag: 'Der funkelnde Einstieg für Hochzeiten, Jubiläen und kleinere Firmen- und Kulturfeiern.',
-    badge: 'Einstieg',
+    tag: t('packageDetails.aSparklingStartForWeddingsAnniversariesAndSmallerCorporateAnd'),
+    badge: t('packageDetails.entryPackage'),
     groups: [
-      { title: 'Design & Inhalt', items: ['Formationen aus unserem Katalog, z. B. Herzen oder Ringe', 'Bis zu vier eigene Elemente: Initialen, Logo, Stadtwappen'] },
-      { title: 'Musik', items: ['GEMA-freie Musik', 'GEMA-Musik bei Anmeldung der Veranstaltung möglich'] },
-      { title: 'Service & Extras', items: ['Eigene Elemente vorab zur Freigabe', 'Standard-Genehmigungsverfahren', 'Team vor Ort, Sicherheitskonzept und Haftpflicht'] },
+      { title: t('packageDetails.designContent'), items: [t('packageDetails.formationsFromOurCatalogueSuchAsHeartsOrRings'), t('packageDetails.upToFourCustomElementsInitialsLogoCoatOfArms')] },
+      { title: t('packageDetails.music'), items: [t('packageDetails.musicFreeOfGemaRoyalties'), t('packageDetails.gemaMusicPossibleIfTheEventIsRegistered')] },
+      { title: t('packageDetails.serviceExtras'), items: [t('packageDetails.customElementsForApprovalInAdvance'), t('packageDetails.standardPermitProcedure'), t('packageDetails.onSiteCrewSafetyPlanAndLiabilityInsurance')] },
     ],
   },
   HORIZON: {
-    tag: 'Die eigene Inszenierung für Produktpräsentationen, große Firmenevents und Stadtfeste.',
+    tag: t('packageDetails.yourOwnProductionForProductLaunchesLargeCorporateEventsAnd'),
     badge: 'Bestseller',
-    plus: 'Alles aus SPARK, plus:',
+    plus: t('packageDetails.everythingInSparkPlus'),
     groups: [
-      { title: 'Design & Inhalt', items: ['Vollständig individuelle 2D-Animationen und einfache 3D-Elemente', 'Präzise Logos und komplexe Schriftzüge'] },
-      { title: 'Musik', items: ['Synchron zu eurer Wunschmusik'] },
-      { title: 'Service & Extras', items: ['Kreativ-Workshop mit Storyboard', 'Auch komplexere Genehmigungen, z. B. in Flughafennähe', 'Videovorschau mit Feedbackschleife', 'Hilfe bei der Zustimmung der Grundstückseigentümer:innen'] },
+      { title: t('packageDetails.designContent'), items: [t('packageDetails.fullyCustom2dAnimationsAndSimple3dElements'), t('packageDetails.preciseLogosAndComplexLettering')] },
+      { title: t('packageDetails.music'), items: [t('packageDetails.synchronisedToYourChosenMusic')] },
+      { title: t('packageDetails.serviceExtras'), items: [t('packageDetails.creativeWorkshopWithStoryboard'), t('packageDetails.moreComplexPermitsTooSuchAsNearAirports'), t('packageDetails.videoPreviewWithAFeedbackRound'), t('packageDetails.helpObtainingLandownerConsent')] },
     ],
   },
   ODYSSEY: {
-    tag: 'Die erzählte Show für große Kampagnen, Festivals und Events mit viel Publikum.',
-    badge: 'ab 300 Drohnen',
-    plus: 'Alles aus HORIZON, plus:',
+    tag: t('packageDetails.aStorytellingShowForMajorCampaignsFestivalsAndLargeAudiences'),
+    badge: t('packageDetails.from300Drones'),
+    plus: t('packageDetails.everythingInHorizonPlus'),
     groups: [
-      { title: 'Design & Inhalt', items: ['Komplexe 3D-Animationen und volumetrische Effekte', 'Erzählte Show mit dramaturgischer Kurve'] },
-      { title: 'Musik', items: ['Timecode-Synchronisation vor Ort möglich'] },
-      { title: 'Service & Extras', items: ['Mehrere Feedbackschleifen', 'Eigene Projektleitung', 'Video der Show (Rohaufnahmen)', 'Auf Wunsch Vor-Ort-Termin vorab'] },
+      { title: t('packageDetails.designContent'), items: [t('packageDetails.complex3dAnimationsAndVolumetricEffects'), t('packageDetails.aStorytellingShowWithADramaticArc')] },
+      { title: t('packageDetails.music'), items: [t('packageDetails.onSiteTimecodeSynchronisationAvailable')] },
+      { title: t('packageDetails.serviceExtras'), items: [t('packageDetails.multipleFeedbackRounds'), t('packageDetails.dedicatedProjectManager'), t('packageDetails.showVideoRawFootage'), t('packageDetails.advanceSiteVisitOnRequest')] },
     ],
   },
 };
 
 /** "+900 € je 10 Drohnen, bis 150 Drohnen", built from the price table so it can never drift. */
-export function addOnLine(name: ShowPackage): string {
+function addOnLine(name: ShowPackage): string {
   const p = SHOW_PACKAGES[name];
-  return `+${money(p.add)} € je ${p.step} Drohnen${Number.isFinite(p.max) ? `, bis ${p.max} Drohnen` : ''}`;
+  return t('packageDetails.valuePerValueDronesvalue', { v0: money(p.add), v1: p.step, v2: Number.isFinite(p.max) ? t('pricing.upTo', { count: p.max }) : '' });
 }
 
 /** Comparison "Alle Leistungen". A cell of `null` means: not part of this package, `true`: included (checkmark, wie auf
  * SaaS-Preisseiten; Marc 31.10.2026: was überall drin ist, gehört als Häkchen in die Tabelle, nicht in eine Fußnote).
  * `all` spans the three packages. */
-export type Cell = string | null | true;
-export interface Row { label: string; cells?: [Cell, Cell, Cell]; all?: string }
-export const COMPARISON: Row[] = [
-  { label: 'Drohnen', cells: [
+type Cell = string | null | true;
+interface Row { label: string; cells?: [Cell, Cell, Cell]; all?: string }
+const COMPARISON: Row[] = [
+  { label: t('configuratorteaser.drones'), cells: [
     dronesLine('SPARK'),
     dronesLine('HORIZON'),
     dronesLine('ODYSSEY'),
   ] },
-  { label: 'Mehr Drohnen', cells: [
-    `+${money(SHOW_PACKAGES.SPARK.add)} € je ${SHOW_PACKAGES.SPARK.step}`,
-    `+${money(SHOW_PACKAGES.HORIZON.add)} € je ${SHOW_PACKAGES.HORIZON.step}`,
-    `+${money(SHOW_PACKAGES.ODYSSEY.add)} € je ${SHOW_PACKAGES.ODYSSEY.step}`,
+  { label: t('packageDetails.moreDrones'), cells: [
+    t('packageDetails.valuePerValue', { v0: money(SHOW_PACKAGES.SPARK.add), v1: SHOW_PACKAGES.SPARK.step }),
+    t('packageDetails.valuePerValue', { v0: money(SHOW_PACKAGES.HORIZON.add), v1: SHOW_PACKAGES.HORIZON.step }),
+    t('packageDetails.valuePerValue', { v0: money(SHOW_PACKAGES.ODYSSEY.add), v1: SHOW_PACKAGES.ODYSSEY.step }),
   ] },
-  { label: 'Dauer', all: 'In der Regel ca. 13 Minuten, bis 25 Minuten möglich' },
-  { label: 'Design und Motive', cells: ['Formationen aus unserem Katalog, z. B. Herzen oder Ringe', 'Vollständig individuelle 2D-Animationen', 'Wie HORIZON, dazu komplexe 3D-Animationen'] },
-  { label: 'Eigene Elemente', cells: ['Bis zu vier, z. B. Initialen, Logo, Stadtwappen', 'Präzise Logos und komplexe Schriftzüge', 'Wie HORIZON'] },
-  { label: '3D', cells: [null, 'Einfache 3D-Elemente', 'Komplexe 3D-Animationen und volumetrische Effekte'] },
-  { label: 'Storytelling', cells: [null, null, 'Erzählte Show mit dramaturgischer Kurve'] },
-  { label: 'Musik', cells: ['GEMA-freie Musik, GEMA-Musik bei Anmeldung der Veranstaltung möglich', 'Synchron zu eurer Wunschmusik', 'Wie HORIZON, Timecode-Synchronisation vor Ort möglich'] },
-  { label: 'Freigabe und Vorschau', cells: ['Eure eigenen Elemente vorab zur Freigabe', 'Videovorschau mit Feedbackschleife', 'Mehrere Feedbackschleifen'] },
-  { label: 'Kreativ-Workshop', cells: [null, 'Mit Storyboard', 'Mit Storyboard'] },
-  { label: 'Sicherheitskonzept', cells: [true, true, true] },
-  { label: 'Haftpflicht bis 1,3 Mio. €', cells: [true, true, true] },
-  { label: 'Team vor Ort', cells: [true, true, true] },
-  { label: 'Genehmigung', cells: ['Standardverfahren', 'Auch komplexere Verfahren, z. B. in Flughafennähe', 'Wie HORIZON'] },
-  { label: 'Hilfe bei der Zustimmung der Grundstückseigentümer:innen', cells: [null, true, true] },
-  { label: 'Eigene Projektleitung', cells: [null, null, true] },
-  { label: 'Video der Show (Rohaufnahmen)', cells: [`+900 €`, `+900 €`, true] },
-  { label: 'Vor-Ort-Termin vorab', cells: [null, null, 'Auf Wunsch'] },
+  { label: t('packageDetails.duration'), all: t('packageDetails.usuallyAround13MinutesUpTo25MinutesPossible') },
+  { label: t('packageDetails.designAndMotifs'), cells: [t('packageDetails.formationsFromOurCatalogueSuchAsHeartsOrRings'), t('packageDetails.fullyCustom2dAnimations'), t('packageDetails.asHorizonPlusComplex3dAnimations')] },
+  { label: t('packageDetails.customElements'), cells: [t('packageDetails.upToFourSuchAsInitialsLogoOrCoatOf'), t('packageDetails.preciseLogosAndComplexLettering'), t('packageDetails.asHorizon')] },
+  { label: '3D', cells: [null, t('packageDetails.simple3dElements'), t('packageDetails.complex3dAnimationsAndVolumetricEffects')] },
+  { label: 'Storytelling', cells: [null, null, t('packageDetails.aStorytellingShowWithADramaticArc')] },
+  { label: t('packageDetails.music'), cells: [t('packageDetails.musicFreeOfGemaRoyaltiesGemaMusicPossibleIfThe'), t('packageDetails.synchronisedToYourChosenMusic'), t('packageDetails.asHorizonOnSiteTimecodeSynchronisationAvailable')] },
+  { label: t('packageDetails.approvalAndPreview'), cells: [t('packageDetails.yourCustomElementsForApprovalInAdvance'), t('packageDetails.videoPreviewWithAFeedbackRound'), t('packageDetails.multipleFeedbackRounds')] },
+  { label: t('packageDetails.creativeWorkshop'), cells: [null, t('packageDetails.withStoryboard'), t('packageDetails.withStoryboard')] },
+  { label: t('packageDetails.safetyPlan'), cells: [true, true, true] },
+  { label: t('packageDetails.liabilityCoverUpTo13Million'), cells: [true, true, true] },
+  { label: t('packageDetails.onSiteCrew'), cells: [true, true, true] },
+  { label: t('packageDetails.permit'), cells: [t('packageDetails.standardProcedure'), t('packageDetails.moreComplexProceduresTooSuchAsNearAirports'), t('packageDetails.asHorizon')] },
+  { label: t('packageDetails.helpObtainingLandownerConsent'), cells: [null, true, true] },
+  { label: t('packageDetails.dedicatedProjectManager'), cells: [null, null, true] },
+  { label: t('packageDetails.showVideoRawFootage'), cells: [`+900 €`, `+900 €`, true] },
+  { label: t('packageDetails.advanceSiteVisit'), cells: [null, null, t('packageDetails.onRequest')] },
 ];
-export const COMPARISON_NOTE = 'Die Beschallung vor Ort stellt ihr als Veranstalter:innen.';
+const COMPARISON_NOTE = t('packageDetails.youProvideTheOnSiteSoundSystemAsTheEvent');
 
 /** "Wofür ihr bei jedem Paket bezahlt" */
-export const INCLUDED = [
-  { title: 'Design für euren Ort', text: 'Wir programmieren die Show für euren Showbereich, eure Musik und eure Motive.' },
-  { title: 'Genehmigung und Sicherheitskonzept', text: 'Luftrechtliche Genehmigung, Sicherheitszonen und Haftpflicht bis 1,3 Mio. € sind immer enthalten.' },
-  { title: 'Freigabe vorab', text: 'Eure eigenen Elemente seht ihr vor der Show und gebt sie frei, ab HORIZON als Videovorschau.' },
-  { title: 'Team vor Ort', text: 'Pilot:innen und Techniker:innen bauen in ca. 3 Stunden auf und fliegen eure Show.' },
+const INCLUDED = [
+  { title: t('packageDetails.designForYourLocation'), text: t('packageDetails.weProgrammeTheShowForYourSiteMusicAndMotifs') },
+  { title: t('packageDetails.permitAndSafetyPlan'), text: t('packageDetails.aviationPermitsSafetyZonesAndLiabilityCoverUpTo1') },
+  { title: t('packageDetails.approvalInAdvance'), text: t('packageDetails.youReviewAndApproveYourCustomElementsBeforeTheShow') },
+  { title: t('packageDetails.onSiteCrew'), text: t('packageDetails.ourPilotsAndTechniciansSetUpInAround3Hours') },
 ];
 
 /** Extras on the pricing page. Selectable since 01.11.2026 (Marc): the chosen ones travel as `?extras=<id>,<id>` into the
  * inquiry form (field „Extras“, src/components/sections/ContactForm.astro). `id` is that URL/form value, `short` the chip
  * label in the form and in the summary bar. No eyebrow line in the card any more. */
-export interface Extra { id: string; short: string; icon: string; title: string; text: string; price: string; link?: { label: string; href: string } }
-export const EXTRAS: Extra[] = [
-  { id: 'express', short: 'Express', icon: 'zap', title: 'Show in unter zwei Wochen', text: 'Alles unter 14 Tagen bis zur Show. Wir ziehen Design und Genehmigung vor.', price: 'Aufpreis nach Aufwand' },
-  { id: 'film', short: 'Rohaufnahmen', icon: 'camera', title: 'Rohaufnahmen mit Kameradrohne', text: 'Material für Aftermovie und Social Media.', price: '900 €, bei ODYSSEY inklusive' },
-  { id: 'behoerden', short: 'Behördensupport', icon: 'landmark', title: 'Erweiterter Behördensupport', text: 'Wir übernehmen die gesamte Kommunikation mit Ämtern und Behörden.', price: 'Preis auf Anfrage' },
-  { id: 'kontrollzone', short: 'Flughafennähe', icon: 'plane', title: 'Kontrollzonen und Flughafennähe', text: 'Für Kontrollzonen und Flächen in Flughafennähe.', price: 'Preis auf Anfrage' },
-  { id: 'schweiz', short: 'Schweiz', icon: 'swiss', title: 'Shows in der Schweiz', text: 'BAZL-Antrag und Zollabwicklung für unsere Flotte.', price: '+1.900 € netto' },
-  { id: 'indoor', short: 'Indoor', icon: 'building-2', title: 'Indoor-Drohnenshows', text: '20 bis 50 Drohnen, 5 bis 8 Minuten, ab 3 m Deckenhöhe. Jede Indoor-Show kalkulieren wir einzeln.', price: 'ab ca. 15.000 € netto für 20 Drohnen', link: { label: 'Mehr zu Indoor-Shows', href: '/drohnenshow-indoor/' } },
+interface Extra { id: string; short: string; icon: string; title: string; text: string; price: string; link?: { label: string; href: string } }
+const EXTRAS: Extra[] = [
+  { id: 'express', short: 'Express', icon: 'zap', title: t('packageDetails.aShowInUnderTwoWeeks'), text: t('packageDetails.lessThan14DaysUntilTheShowWePrioritiseDesign'), price: t('packageDetails.surchargeBasedOnScope') },
+  { id: 'film', short: t('packageDetails.rawFootage'), icon: 'camera', title: t('packageDetails.rawFootageFilmedByCameraDrone'), text: t('packageDetails.footageForYourAftermovieAndSocialMedia'), price: t('packageDetails.900IncludedInOdyssey') },
+  { id: 'behoerden', short: t('packageDetails.authorityLiaison'), icon: 'landmark', title: t('packageDetails.extendedAuthorityLiaison'), text: t('packageDetails.weHandleAllCommunicationWithPublicOfficesAndAuthorities'), price: t('packageDetails.priceOnRequest') },
+  { id: 'kontrollzone', short: t('packageDetails.nearAirports'), icon: 'plane', title: t('packageDetails.controlledAirspaceAndAirportLocations'), text: t('packageDetails.forControlledAirspaceAndSitesNearAirports'), price: t('packageDetails.priceOnRequest') },
+  { id: 'schweiz', short: t('packageDetails.switzerland'), icon: 'swiss', title: t('packageDetails.showsInSwitzerland'), text: t('packageDetails.focaApplicationAndCustomsClearanceForOurFleet'), price: t('packageDetails.1900ExcludingVat') },
+  { id: 'indoor', short: 'Indoor', icon: 'building-2', title: t('packageDetails.indoorDroneShows'), text: t('packageDetails.20To50Drones5To8MinutesCeilingHeight'), price: t('packageDetails.fromApprox15000ExcludingVatFor20Drones'), link: { label: t('packageDetails.moreAboutIndoorShows'), href: '/drohnenshow-indoor/' } },
 ];
+
+return { SHOW_DURATION, PACKAGE_DETAILS, PACKAGE_POINTS, PACKAGE_FEATURES, dronesLine, addOnLine, COMPARISON, COMPARISON_NOTE, INCLUDED, EXTRAS };
+}

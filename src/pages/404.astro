@@ -1,7 +1,9 @@
 ---
+import { forPath } from '../i18n/server';
+const { t } = forPath(Astro.url.pathname);
 import Base from '../layouts/Base.astro';
 import Chopper404 from '../components/Chopper404.astro';
 ---
-<Base title="Seite nicht gefunden" description="Diese Seite gibt es nicht. Chopper bringt euch weiter." noindex>
+<Base title={t('404.pageNotFound')} description={t('404.thisPageDoesnTExistChopperWillHelpYouFind')} noindex>
   <main id="main" class="page-404"><Chopper404 /></main>
 </Base>

@@ -1,4 +1,6 @@
 ---
+import { forPath } from '../../i18n/server';
+const { t, localHref } = forPath(Astro.url.pathname);
 import type { Section } from '../../content.config';
 import { optimizedImage } from '../../lib/media';
 import Accent from '../Accent.astro';
@@ -14,15 +16,15 @@ const items = await Promise.all(cards.map(async card => ({ ...card, media: await
 <section class="section" id={id} aria-labelledby={headingId}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
   {slider && <div class="occ-nav" aria-hidden="true"><button type="button" class="occ-btn" data-occ-prev tabindex="-1">←</button><button type="button" class="occ-btn" data-occ-next tabindex="-1">→</button></div>}
-  <div class:list={['occasions', { 'occ-slider': slider }]} data-count={items.length} role={slider ? 'region' : undefined} aria-label={slider ? 'Anlässe, seitlich scrollbar' : undefined} tabindex={slider ? 0 : undefined}>
+  <div class:list={['occasions', { 'occ-slider': slider }]} data-count={items.length} role={slider ? 'region' : undefined} aria-label={slider ? t('occasions.occasionsScrollHorizontally') : undefined} tabindex={slider ? 0 : undefined}>
     {items.map((card, i) => <article class="occ" data-dot-host data-season={card.season?.join(',')}>
       <!-- Bild: Vorhang beim Erscheinen, Lichtpunkte beim Hovern (kein Foto-Zoom) -->
       <div class="img" data-curtain data-dot-img style={`--i:${i}`}><img src={card.media.src} srcset={`${card.small.src} 320w, ${card.media.src} 640w`} sizes="(max-width: 640px) calc(100vw - 48px), (max-width: 1100px) 45vw, 23vw" width={card.media.width} height={card.media.height} alt={card.image.alt} loading="lazy" decoding="async" /></div>
       <div class="body">
         {card.category && <span class="cat mono">{card.category}</span>}<h3>{card.title}</h3><p>{card.text}</p>
         {card.facts && card.facts.length > 0 && <ul class="facts">{card.facts.map(fact => <li>{fact}</li>)}</ul>}
-        <a class="link" href={card.cta.href}>{card.cta.label} <span aria-hidden="true">→</span></a>
-        {card.download && <a class="dl mono" href={card.download.href} type="application/pdf" target="_blank" rel="noopener">{card.download.label} <span aria-hidden="true">↓</span></a>}
+        <a class="link" href={localHref(card.cta.href)}>{card.cta.label} <span aria-hidden="true">→</span></a>
+        {card.download && <a class="dl mono" href={localHref(card.download.href)} type="application/pdf" target="_blank" rel="noopener">{card.download.label} <span aria-hidden="true">↓</span></a>}
       </div>
     </article>)}
   </div>

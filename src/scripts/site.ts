@@ -1,5 +1,6 @@
-// Shared FlyingStars presentation; source: customer Vercel prototype.
 // @ts-nocheck
+import { t } from '../i18n/ui.mjs';
+// Shared FlyingStars presentation; source: customer Vercel prototype.
 (() => {
   "use strict";
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -11,7 +12,7 @@
     document.documentElement.classList.toggle('motion-paused', paused);
     document.dispatchEvent(new Event('flyingstars:motion-change'));
     if (motionButton) {
-      const label = paused ? 'Bewegung fortsetzen' : 'Bewegung pausieren';
+      const label = paused ? t('site.resumeMotion') : t('base.pauseMotion');
       motionButton.setAttribute('aria-label', label); motionButton.title = label;
       motionButton.setAttribute('aria-pressed', String(paused));
     }
