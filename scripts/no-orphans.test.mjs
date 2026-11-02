@@ -30,3 +30,11 @@ test('Seiten: nur Textblöcke ohne Unterblöcke, keine Skripte', () => {
   assert.match(out, /so lassen bitte/);
   assert.match(out, /<script>const p = "<p>nicht anfassen<\/p>";<\/script>/);
 });
+
+test('EN und NL: letzte Wörter werden sprachunabhängig verbunden, lange Paare bleiben trennbar', () => {
+  assert.equal(noOrphans('<p>We plan your show together.</p>'), '<p>We plan your show&nbsp;together.</p>');
+  assert.equal(noOrphans('<p>We plannen de show met jullie.</p>'), '<p>We plannen de show met&nbsp;jullie.</p>');
+  for (const text of ['An internationalisation implementation', 'Een aansprakelijkheidsverzekering afsluiten']) {
+    assert.equal(joinLastWords(text), text);
+  }
+});

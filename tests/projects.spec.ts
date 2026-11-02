@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { redirects } from './routes';
+import { LOCALES, localizedHref } from '../src/i18n/routing.mjs';
 
 const cases = [
   { route: '/musikalischer-teaser-bokkenrijders/', name: 'Bokkenrijders', droneCount: 600, pictures: 6, next: '/nfl-berlin-game/' },
@@ -77,8 +78,9 @@ const moved: Record<string, string> = {
 };
 
 test('Alte Adressen leiten auf die neue Seite weiter', async ({ page }) => {
-  expect(redirects).toEqual(Object.keys(moved).sort());
-  for (const [from, to] of Object.entries(moved)) {
+  const localizedMoves = Object.fromEntries(LOCALES.flatMap(locale => Object.entries(moved).map(([from, to]) => [localizedHref(from, locale), localizedHref(to, locale)])));
+  expect(redirects).toEqual(Object.keys(localizedMoves).sort());
+  for (const [from, to] of Object.entries(localizedMoves)) {
     await page.goto(from);
     await expect(page).toHaveURL(new RegExp(`${to.replaceAll('/', '\\/')}$`));
     // canonical ohne Sprungmarke

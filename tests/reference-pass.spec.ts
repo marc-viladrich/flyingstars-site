@@ -43,7 +43,7 @@ for (const project of cases) {
     await page.goto(project.route);
     await expect(page).toHaveTitle(project.title);
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /\.jpg$/);
-    if (await page.locator('header.nav nav').isVisible()) {
+    if (await page.getByRole('navigation', { name: 'Hauptnavigation', exact: true }).isVisible()) {
       await expect(page.locator('header.nav nav a[href="/referenzen/"]')).toHaveAttribute('aria-current', 'true');
     }
     // The reference scales the next-case title by its longest word (values taken from its markup).

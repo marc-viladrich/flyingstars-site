@@ -13,7 +13,7 @@ import { onRequestPost } from '../functions/api/contact.ts';
 const readEntry = (file) => {
   const text = readFileSync(file, 'utf8');
   const match = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/.exec(text);
-  return { raw: text, data: parse(match ? match[1] : text) };
+  return { raw: text, data: parse(match ? match[1] : text), body: match?.[2] };
 };
 
 test('Locale URLs keep page, query and anchor identities; assets and external URLs stay unchanged', () => {
@@ -103,4 +103,36 @@ test('Content schemas do not inject language-specific default text into translat
   const schema = readFileSync(new URL('../src/content.config.ts', import.meta.url), 'utf8');
   const defaults = [...schema.matchAll(/z\.string\(\)(?:\.\w+\([^)]*\))*\.default\((['"])(.*?)\1\)/g)];
   assert.deepEqual(defaults.filter((match) => match[2].trim()).map((match) => match[2]), []);
+});
+
+test('Round 13: localized offen inquiries keep the hardened endpoint contract', async () => {
+  for (const locale of LOCALES) {
+    const form = new URLSearchParams({ locale, name: 'Test', email: 'test@example.test', anlass: 'firma', paket: 'offen', 'datum-offen': 'ja', 'form-duration': '2500' });
+    const response = await onRequestPost({ request: new Request('https://example.test/api/contact', { method: 'POST', body: form, headers: { accept: 'application/json' } }), env: {} });
+    assert.equal(response.status, 200);
+    assert.equal((await response.json()).state, 'not-configured');
+    assert.equal(response.headers.get('cache-control'), 'no-store');
+    const invalid = new URLSearchParams(form); invalid.set('paket', 'untrusted');
+    const rejected = await onRequestPost({ request: new Request('https://example.test/api/contact', { method: 'POST', body: invalid }), env: {} });
+    assert.equal(rejected.status, 400);
+    assert.equal((await rejected.json()).detail, createTranslator(locale)('contactAPI.package'));
+  }
+});
+
+test('Translation provenance keeps structured, traceable records for R13 drafts', () => {
+  for (const kind of ['content', 'ui']) {
+    const records = JSON.parse(readFileSync(new URL(`../docs/i18n/${kind}-provenance.json`, import.meta.url), 'utf8'));
+    assert.ok(records.some(record => record?.revision === 'round-13'));
+    for (const record of records) {
+      assert.ok(record && typeof record === 'object', `${kind}: invalid provenance record`);
+      assert.ok(['en', 'nl'].includes(record.locale));
+      assert.ok(['editor-carried', 'editor-revised', 'machine-new'].includes(record.origin));
+      if (kind === 'content') {
+        assert.ok(Array.isArray(record.path));
+        const source = readEntry(record.source);
+        const entry = { ...source.data, ...(source.body !== undefined ? { body: source.body } : {}) };
+        assert.equal(typeof record.path.reduce((value, key) => value?.[key], entry), 'string', `${record.source}: ${record.path}`);
+      } else assert.ok(messages[record.key]);
+    }
+  }
 });

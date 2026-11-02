@@ -1,6 +1,6 @@
 # EN und NL für die Designsprache-Probe
 
-Stand: 2. November 2026. Ausgangspunkt `feat/designsprache-poc`, Commit `7bd1fbf`. Umsetzung auf `codex/i18n-en-nl`, eigener Worktree `/tmp/fs-i18n/worktree`. Nicht gepusht.
+Ursprüngliche Umsetzung vor der Round-13-Integration, deren aktueller Bericht am Ende dieser Datei steht. Stand: 2. November 2026. Ausgangspunkt `feat/designsprache-poc`, Commit `7bd1fbf`. Umsetzung auf `codex/i18n-en-nl`, eigener Worktree `/tmp/fs-i18n/worktree`. Nicht gepusht.
 
 ## Gefundene Quellen
 
@@ -34,7 +34,7 @@ Der alte Editor-Stand enthält erhebliche Sprachfehler, auch bei gesetzten `revi
 
 Neue Texte folgen der aktuellen Designsprache. NL verwendet bei der Ansprache „jullie“. SPARK, HORIZON, ODYSSEY, Marken, Personennamen, Adressen und tatsächliche Schriftzüge der Shows bleiben erhalten. Die drei neu importierten Blogartikel wurden vollständig übersetzt und sprachlich gestrafft.
 
-Für Inhaltsfelder, jeweils EN und NL zusammen:
+Historische Zahlen vor Round 13, jeweils EN und NL zusammen:
 
 - **382 unverändert aus dem Editor übernommen** (`editor-carried`).
 - **433 vorhandene Übersetzungen korrigiert oder angepasst** (`editor-revised`).
@@ -176,7 +176,7 @@ Ergebnisse und Belegpfade stehen im Abschlussabschnitt. Die volle Playwright-Sui
 - `SITE_URL` muss beim späteren Deployment die endgültige Domain enthalten. Die Prüfung verwendet explizit `https://flyingstars.art`. Der Host muss die statisch erzeugten Alias-Seiten bei Bedarf zusätzlich als echte HTTP-Weiterleitungen konfigurieren.
 - Es wurden keine Accounts, Editor-Credentials oder externen Versanddienste verwendet. Kein Push, kein PR und kein Deployment.
 
-## Abschlussergebnis
+## Abschlussergebnis der ursprünglichen Umsetzung
 
 - `npx astro check`: **0 Fehler**, 0 Warnungen, 228 Hinweise aus der bestehenden Codebasis.
 - `SITE_URL=https://flyingstars.art npm run build`: erfolgreich, **65 Inhaltsseiten einschließlich der zwei internen PoCs**. Zusätzlich werden die Alias-Weiterleitungen ausgegeben.
@@ -219,3 +219,24 @@ Konfliktauflösung:
 Auch die automatisch zusammengeführten LandingHero-/CaseStudy-/Packages-/Schema-Änderungen wurden gegen Round 13 geprüft. Die entfernte Genehmigungen-Section kommt in keiner Sprache zurück. Die deutsche Referenzfilter-Beschriftung wurde auf „151–300“ zurückgesetzt, um den deutschen Rendertext zu bewahren.
 
 `scripts/layout-audit.mjs` akzeptiert zusätzlich `--start=/en/` oder jeden anderen lokalen Pfadpräfix. Der Crawl startet dort und bleibt innerhalb dieses Bereichs. Das Limit liegt bei 200 Pfaden. Ohne Option beginnt er weiterhin bei `/`. Die vorhandenen Prüfkriterien bleiben unverändert. Die Sprachlinks werden browserseitig zu vollständigen URLs, deshalb werden die drei Sprachbereiche ausdrücklich einzeln geprüft.
+
+### Prüfungen der Round-13-Integration
+
+- Vollständiger angeforderter Node-Befehl einschließlich `src/scripts/*.test.mjs`: 92/92 bestanden, keine Fehler oder Skips, Laufzeit ca. 108 Sekunden.
+- `npx astro check`: 0 Fehler, 0 Warnungen, 229 Hinweise.
+- `npm run build`: erfolgreich, 65 Inhaltsseiten. `node scripts/check-i18n-build.mjs`: 29 deutsche Routen, 42 EN-/NL-Inhaltsrouten, 16 EN-/NL-Weiterleitungen und zwei ausgenommene interne PoCs bestätigt.
+- Gezielte Playwright-Suite mit `--workers=3`: 463 bestanden, 0 fehlgeschlagen, drei bestehende Viewport-Skips. Ausgeführt wurden ausschließlich `pricing`, `projects`, `reference-pass`, `inquiry`, `a11y`, `html`, `network-allowlist` und die neue `i18n.spec.ts`. Laufzeit ca. 1,9 Minuten. Die Weiterleitungsprüfung umfasst jetzt alle 24 DE-/EN-/NL-Aliasse; der Referenztest spricht die Hauptnavigation gezielt an, weil die Sprachwahl ein eigenes `nav` hinzufügt. Die neue i18n-Spec prüft beide Sprachen, mobile Tabs, Included, Sicherheitsabschnitte, die Tooltip-Position, Query-/Hash-Erhalt, Formularwerte und Status ohne echten Versand.
+- Layout: jeweils 19 gecrawlte Inhaltsseiten pro Sprache. Chromium bei 390, 940, 1440, 1920 und 2560 px; WebKit bei 390 und 1440 px. Alle sechs Läufe mit 0 Befunden, insgesamt 399 Seiten-/Breiten-/Browserkombinationen. Einstieg jeweils `/`, `/en/` und `/nl/`. Es wurden keine Kriterien deaktiviert und keine Ausnahmen für Übersetzungen ergänzt.
+- Die no-orphans-Middleware bleibt unverändert. Zusätzliche EN-/NL-Unit-Beispiele prüfen das Verbinden kurzer Schlusswörter und die Längenausnahme. Die Layoutläufe bestätigen, dass die übersetzten Seiten damit nicht überlaufen.
+- Deutscher Rendertext: alle 21 deutschen Inhaltsrouten einschließlich 404, verglichen mit einem separaten Preview des unveränderten `b745898`. Nach Entfernen von Script-/Style-Inhalten und Vereinheitlichung von Leerraum 0 Abweichungen im `main`-Text. Die deutschen YAML-Dateien sind gegenüber `b745898` unverändert.
+- Sichtprüfung: 44 PNG-Dateien. EN/NL, jeweils Home, Pricing, Über uns und Kontakt bei 1440 × 900 und 390 × 900, dazu vollständige Seiten, eigene Aufnahmen von `#sicherheit`, Schutzmaßnahmen, Preis-Tabs und Formularschritt 2. Die 16 Seiten-/Breitenkombinationen melden keine JavaScript-Fehler; `scrollWidth` entspricht überall exakt der Viewportbreite. Die oberen Ansichten und die zusätzlichen Diagramm-/Tab-Ansichten wurden geöffnet und visuell geprüft.
+- Der Herkunftsnachweis enthält 240 neue Round-13-Inhaltsdatensätze und 48 Round-13-UI-Datensätze über beide Sprachen. Bestehende Editor-Herkunft wird nur fortgeschrieben, wenn deutscher Quelltext und tatsächliche Übersetzung übereinstimmen. Ein zusätzlicher Guard prüft Struktur und gültige Quellpfade aller Herkunftsdatensätze.
+
+Belege unter `/private/tmp/fs-i18n-r13/`:
+
+- `screenshots/{en,nl}-{home,pricing,about,contact}-{1440,390}.png`: geprüfte Ansichten. `about` zeigt den Anfang von `#sicherheit`, `about-safeguards` dessen Schutzmaßnahmen. `-full.png` enthält die ganze Seite.
+- `screenshots/{en,nl}-pricing-tabs-{1440,390}.png` und `screenshots/{en,nl}-contact-step2-{1440,390}.png`: zusätzliche Interaktionszustände.
+- `screenshot-report.json`, `layout-summary.json`, `build-coverage.json`, `german-render-diff.json`.
+- `logs/check.log`, `logs/build.log`, `logs/unit-final.log`, `logs/playwright.log`, `logs/layout-{chromium,webkit}.log`, `logs/layout-{en,nl}-{chromium,webkit}.log`.
+
+Keine technischen Restpunkte aus dem Merge. Redaktionelle Prüfung der maschinellen Übersetzungen sowie rechtliche Freigabe des Datenschutzentwurfs bleiben offen. Die zwei internen PoCs bleiben wie zuvor deutsch. Ein echter Mailversand wurde nicht ausgelöst. `.env`-Dateien wurden nicht gelesen; es gab keinen Push und kein Deployment.
