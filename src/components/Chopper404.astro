@@ -1,21 +1,23 @@
 ---
+import { forPath } from '../i18n/server';
+const { t, localHref } = forPath(Astro.url.pathname);
 // Chopper, der Bürohund, als Drohnenformation. Genutzt auf der 404-Seite und in der Designsprache-Probe.
 interface Props { headline?: string; level?: 'h1' | 'h2'; }
 // eigene Seite: h1; eingebettet (Designsprache-Probe): h2, damit die Seite nur eine h1 hat
-const { headline = 'Diese Seite gibt es nicht.', level = 'h1' } = Astro.props;
+const { headline = t('chopper404.thisPageDoesnTExist'), level = 'h1' } = Astro.props;
 const H = level;
 ---
 <div class="chopper" data-chopper>
-  <canvas class="chopper-stage" data-stage role="img" aria-label="Der Bürohund Chopper als Drohnenformation fliegt mit Propellermütze hin und her und wedelt"></canvas>
+  <canvas class="chopper-stage" data-stage role="img" aria-label={t('chopper404.chopperTheOfficeDogFliesBackAndForthAsA')}></canvas>
   <div class="chopper-copy">
     <p class="code">404</p>
     <H class="chopper-h">{headline}</H>
-    <p>Chopper, unser Bürohund, ist schon eine Runde für euch geflogen. Gefunden hat er sie auch nicht, aber er bringt euch gern woandershin.</p>
-    <nav class="chopper-ways" aria-label="Weiter zu">
-      <a class="btn primary" href="/">Zur Startseite</a>
-      <a class="btn" href="/referenzen/">Referenzen ansehen</a>
-      <a class="btn" href="/drohnenshow-preise/">Preise und Vorschau</a>
-      <a class="btn" href="/kontakt/">Show anfragen</a>
+    <p>{t('chopper404.chopperOurOfficeDogHasAlreadyFlownALapFor')}</p>
+    <nav class="chopper-ways" aria-label={t('chopper404.continueTo')}>
+      <a class="btn primary" href={localHref("/")}>{t('chopper404.backToTheHomepage')}</a>
+      <a class="btn" href={localHref("/referenzen/")}>{t('chopper404.viewOurWork')}</a>
+      <a class="btn" href={localHref("/drohnenshow-preise/")}>{t('chopper404.pricesAndPreview')}</a>
+      <a class="btn" href={localHref("/kontakt/")}>{t('chopper404.requestAShow')}</a>
     </nav>
   </div>
 </div>

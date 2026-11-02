@@ -1,4 +1,6 @@
 ---
+import { forPath } from '../../i18n/server';
+const { t, localHref } = forPath(Astro.url.pathname);
 // Kund:innen als Laufband (ohne Hover-Effekt), darunter optional Presse und „Qualität und Sicherheit“
 // (docs/DESIGN.md, Studie 6 der Designsprache-Probe). Logos liegen unter public/brand/logos/.
 // Presse- und Partnerlogos erscheinen nur mit `cleared: true` (schriftliche Freigabe), sonst Text bzw. Verlaufs-Icon.
@@ -9,7 +11,7 @@ import { optimizedLogo } from '../../lib/media';
 type Props = Extract<Section, { type: 'logoBar' }> & { index: number };
 import Icon from '../Icon.astro';
 const QICON = { permit: 'file-badge', sound: 'audio-lines', shield: 'shield-check', leaf: 'leaf' } as const;
-const { headline, logos, pressHeadline, pressItems, qualityHeadline, quality, kicker, id = `s${Astro.props.index}` } = Astro.props;
+const { headline, logos, pressHeadline = t('logoBar.pressHeadline'), pressItems, qualityHeadline = t('logoBar.qualityHeadline'), quality, kicker, id = `s${Astro.props.index}` } = Astro.props;
 
 const file = (path: string) => join(process.cwd(), 'public', path);
 const has = (path?: string) => Boolean(path && existsSync(file(path)));
@@ -49,11 +51,11 @@ const press = pressItems.map((p) => ({ ...p, show: p.cleared && has(p.logo), h: 
 const seals = quality.filter((q) => !q.secondary).map((q) => ({ ...q, show: q.cleared && has(q.logo) }));
 const minor = quality.filter((q) => q.secondary);
 ---
-{marks.length > 0 && <div class="band" role="region" aria-label={headline ?? 'Kund:innen von FlyingStars'}>
+{marks.length > 0 && <div class="band" role="region" aria-label={headline ?? t('logobar.flyingstarsClients')}>
   <div class="logo-marquee">
     {[0, 1].map((copy) => <ul class="track" aria-hidden={copy === 1 ? 'true' : undefined}>{marks.map((m) => {
       const img = <img class:list={{ detail: m.detail }} src={m.src} width={m.width} height={m.height} style={`height:${m.height}px;padding:${m.pad}`} alt={copy ? '' : m.name} loading="lazy" decoding="async" />;
-      return <li>{m.href && !copy ? <a href={m.href}>{img}</a> : img}</li>;
+      return <li>{m.href && !copy ? <a href={localHref(m.href)}>{img}</a> : img}</li>;
     })}</ul>)}
   </div>
 </div>}
@@ -63,7 +65,7 @@ const minor = quality.filter((q) => q.secondary);
     <h2 class="proof-h">{pressHeadline}</h2>
     <ul>{press.map((p) => {
       const inner = <>{p.show ? <img class:list={{ knock: p.knock }} src={p.logo} alt={p.name} style={`height:${p.h}px`} loading="lazy" decoding="async" /> : <b>{p.name}</b>}</>;
-      return <li>{p.href ? <a href={p.href} rel="noopener" target="_blank" title={p.note ? `${p.name}: ${p.note}` : undefined}>{inner}</a> : <span class="noref" title={p.note}>{inner}</span>}</li>;
+      return <li>{p.href ? <a href={localHref(p.href)} rel="noopener" target="_blank" title={p.note ? `${p.name}: ${p.note}` : undefined}>{inner}</a> : <span class="noref" title={p.note}>{inner}</span>}</li>;
     })}</ul>
   </div>}
   {seals.length > 0 && <div class="quality">

@@ -1,6 +1,9 @@
 ---
+import { forPath } from '../../i18n/server';
+const { t, localHref } = forPath(Astro.url.pathname);
 import { SHOW_PACKAGES } from '../../content/show-packages';
-import { EXTRAS } from '../../content/package-details';
+import { getPackageDetails } from '../../content/package-details';
+const { EXTRAS } = getPackageDetails(forPath(Astro.url.pathname).locale);
 // Anfrage wie in der Designsprache-Probe (Studie 8): Headline oben bündig mit dem Formular, darunter Satz, Gesichter
 // und Kontaktwege; Formular in genau zwei Schritten. Versand, Honeypot und Vorbelegung: src/scripts/contact.ts.
 import { site } from '../../site.config';
@@ -11,9 +14,9 @@ import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'contactForm' }> & { index?: number };
 const { headline, text, people, index = 0, kicker } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
-const occasions: [string, string][] = [['firma', 'Firmenevent'], ['stadt', 'Stadt & Festival'], ['agentur', 'Agentur'], ['privat', 'Hochzeit & Privat'], ['indoor', 'Indoor'], ['sonstiges', 'Sonstiges']];
-const packs: [string, string, string][] = [['SPARK', 'SPARK', 'klassisch in 2D'], ['HORIZON', 'HORIZON', '3D in Bewegung'], ['ODYSSEY', 'ODYSSEY', 'erzählte 3D-Show'], ['offen', 'Weiß ich noch nicht', '']];
-const sources = ['Google', 'Empfehlung', 'Social Media', 'Presse', 'Eine Show gesehen', 'Sonstiges'];
+const occasions: [string, string][] = [['firma', t('contactform.corporateEvent')], ['stadt', t('contactform.cityFestival')], ['agentur', t('contactform.agency')], ['privat', t('contactform.weddingPrivate')], ['indoor', 'Indoor'], ['sonstiges', t('contactform.other')]];
+const packs: [string, string, string][] = [['SPARK', 'SPARK', t('contactform.classic2d')], ['HORIZON', 'HORIZON', t('contactform.3dInMotion')], ['ODYSSEY', 'ODYSSEY', t('contactform.3dStorytellingShow')], ['offen', t('contactform.notSureYet'), '']];
+const sources = [['Google', 'Google'], ['Empfehlung', t('contactform.recommendation')], ['Social Media', 'Social Media'], ['Presse', t('casestudy.press')], ['Eine Show gesehen', t('contactform.sawAShow')], ['Sonstiges', t('contactform.other')]];
 ---
 <section aria-labelledby="anfrage-h" class="section alt" id="anfrage">
   <div class="inquiry">
@@ -25,12 +28,13 @@ const sources = ['Google', 'Empfehlung', 'Social Media', 'Presse', 'Eine Show ge
       <ContactWays />
     </div>
     <form action={site.formEndpoint} aria-labelledby="anfrage-h" class="ask" id="inquiry-form" method="post">
-      <div class="ask-steps" aria-hidden="true" hidden><span class="on">1 Deine Show</span><span>2 Du</span><i></i></div>
+      <input type="hidden" name="locale" value={forPath(Astro.url.pathname).locale} />
+      <div class="ask-steps" aria-hidden="true" hidden><span class="on">{t('contactform.1YourShow')}</span><span>{t('contactform.2AboutYou')}</span><i></i></div>
       <p class="sr-only" data-step-label aria-live="polite"></p>
       <fieldset class="step" data-step>
-        <legend class="sr-only">Schritt 1 von 2: Deine Show</legend>
+        <legend class="sr-only">{t('contactform.step1Of2YourShow')}</legend>
         <div class="field">
-          <span class="lbl" id="occasion-label">Wofür ist die Show?</span>
+          <span class="lbl" id="occasion-label">{t('contactform.whatSTheOccasion')}</span>
           <div aria-labelledby="occasion-label" class="chips" role="radiogroup">
             {occasions.map(([value, label], i) => <label><input name="anlass" required={i === 0} type="radio" value={value} /><span>{label}</span></label>)}
           </div>
@@ -38,50 +42,50 @@ const sources = ['Google', 'Empfehlung', 'Social Media', 'Presse', 'Eine Show ge
         </div>
         <div class="row2">
           <div class="field">
-            <label class="lbl" for="f-ort">Wo soll sie stattfinden?</label>
-            <input autocomplete="address-level2" id="f-ort" maxlength="200" name="ort" required type="text" aria-describedby="f-ort-hint" data-msg="Wo soll die Show stattfinden? Ort oder PLZ reicht." />
-            <span class="hint" id="f-ort-hint">Ort oder PLZ, bei Shows im Ausland mit Land</span>
+            <label class="lbl" for="f-ort">{t('contactform.whereWillItTakePlace')}</label>
+            <input autocomplete="address-level2" id="f-ort" maxlength="200" name="ort" required type="text" aria-describedby="f-ort-hint" data-msg={t('contactform.whereWillTheShowTakePlaceATownOrPostcode')} />
+            <span class="hint" id="f-ort-hint">{t('contactform.townOrPostcodePlusCountryForShowsAbroad')}</span>
             <span class="err" data-err-for="ort" role="alert"></span>
           </div>
           <div class="field">
-            <label class="lbl" for="f-datum">Wann soll sie fliegen?</label>
-            <input id="f-datum" name="datum" type="date" data-msg="Bitte ein Datum wählen oder „Noch nicht festgelegt“ ankreuzen." />
-            <label class="hint check"><input type="checkbox" name="datum-offen" value="ja" data-date-open /> Noch nicht festgelegt</label>
+            <label class="lbl" for="f-datum">{t('contactform.whenShouldItFly')}</label>
+            <input id="f-datum" name="datum" type="date" data-msg={t('contactform.pleaseChooseADateOrSelectNotDecidedYet')} />
+            <label class="hint check"><input type="checkbox" name="datum-offen" value="ja" data-date-open /> {t('contactform.notDecidedYet')}</label>
             <span class="err" data-err-for="datum" role="alert"></span>
           </div>
         </div>
         <div class="field">
-          <span class="lbl" id="paket-label">Welches Paket? <em>optional</em></span>
+          <span class="lbl" id="paket-label">{t('contactform.whichPackage')} <em>{t('contactform.optional')}</em></span>
           <div aria-labelledby="paket-label" aria-describedby="paket-hint" class="chips" role="radiogroup">
             {packs.map(([value, label, line]) => <label title={line || undefined} style={value in SHOW_PACKAGES ? `--c: rgb(${SHOW_PACKAGES[value as keyof typeof SHOW_PACKAGES].color.join(",")})` : undefined}><input name="paket" type="radio" value={value} /><span>{label}</span></label>)}
           </div>
-          <span class="hint" id="paket-hint">SPARK klassisch in 2D · HORIZON 3D in Bewegung · ODYSSEY erzählte 3D-Show</span>
+          <span class="hint" id="paket-hint">{t('contactform.sparkClassic2dHorizon3dInMotionOdyssey3dStorytelling')}</span>
         </div>
         <!-- Extras von der Preisseite (?extras=express,film): erscheint nur, wenn dort welche gewählt wurden, damit der erste
              Schritt sonst kurz bleibt; dann abwählbar und ergänzbar (Marc, 01.11.2026) -->
         <div class="field" data-extras-field hidden>
-          <span class="lbl" id="extras-label">Extras <em>optional</em></span>
+          <span class="lbl" id="extras-label">Extras <em>{t('contactform.optional')}</em></span>
           <div aria-labelledby="extras-label" class="chips" role="group">
             {EXTRAS.map((x) => <label><input name="extras" type="checkbox" value={x.id} /><span>{x.short}</span></label>)}
           </div>
         </div>
-        <button class="btn primary" data-next type="button">Weiter</button>
+        <button class="btn primary" data-next type="button">{t('contactform.next')}</button>
       </fieldset>
       <fieldset class="step" data-step>
-        <legend class="sr-only">Schritt 2 von 2: Du</legend>
+        <legend class="sr-only">{t('contactform.step2Of2AboutYou')}</legend>
         <div class="row2">
-          <div class="field"><label class="lbl" for="f-name">Dein Name</label><input autocomplete="name" data-msg="Wie dürfen wir dich ansprechen?" id="f-name" maxlength="120" name="name" required type="text" /><span class="err" data-err-for="name" role="alert"></span></div>
-          <div class="field"><label class="lbl" for="f-mail">Deine E-Mail-Adresse</label><input autocomplete="email" data-msg="Wohin dürfen wir antworten?" id="f-mail" maxlength="200" name="email" required type="email" /><span class="err" data-err-for="email" role="alert"></span></div>
+          <div class="field"><label class="lbl" for="f-name">{t('contactform.yourName')}</label><input autocomplete="name" data-msg={t('contactform.whatShouldWeCallYou')} id="f-name" maxlength="120" name="name" required type="text" /><span class="err" data-err-for="name" role="alert"></span></div>
+          <div class="field"><label class="lbl" for="f-mail">{t('contactform.yourEmailAddress')}</label><input autocomplete="email" data-msg={t('contactform.whereCanWeReply')} id="f-mail" maxlength="200" name="email" required type="email" /><span class="err" data-err-for="email" role="alert"></span></div>
         </div>
         <div class="row2">
-          <div class="field"><label class="lbl" for="f-tel">Deine Telefonnummer <em>optional</em></label><input autocomplete="tel" id="f-tel" maxlength="200" name="telefon" type="tel" aria-describedby="f-tel-hint" /><span class="hint" id="f-tel-hint">Für einen Rückruf, wenn du magst</span></div>
-          <div class="field"><label class="lbl" for="f-firma">Firma oder Organisation <em>optional</em></label><input autocomplete="organization" id="f-firma" maxlength="200" name="firma" type="text" /></div>
+          <div class="field"><label class="lbl" for="f-tel">{t('contactform.yourPhoneNumber')} <em>{t('contactform.optional')}</em></label><input autocomplete="tel" id="f-tel" maxlength="200" name="telefon" type="tel" aria-describedby="f-tel-hint" /><span class="hint" id="f-tel-hint">{t('contactform.forACallBackIfYouDLike')}</span></div>
+          <div class="field"><label class="lbl" for="f-firma">{t('contactform.companyOrOrganisation')} <em>{t('contactform.optional')}</em></label><input autocomplete="organization" id="f-firma" maxlength="200" name="firma" type="text" /></div>
         </div>
-        <div class="field"><label class="lbl" for="f-quelle">Wie hast du von uns erfahren? <em>optional</em></label><select id="f-quelle" name="quelle"><option value="">Bitte wählen</option>{sources.map((s) => <option>{s}</option>)}</select></div>
+        <div class="field"><label class="lbl" for="f-quelle">{t('contactform.howDidYouHearAboutUs')} <em>{t('contactform.optional')}</em></label><select id="f-quelle" name="quelle"><option value="">{t('contactform.pleaseSelect')}</option>{sources.map(([value, label]) => <option value={value}>{label}</option>)}</select></div>
         <!-- Freitext erst am Ende (Marc, 31.10.2026: im ersten Schritt ist das zu viel auf einmal) -->
-        <div class="field"><label class="lbl" for="f-msg">Möchtest du uns noch etwas mitteilen? <em>optional</em></label><textarea id="f-msg" maxlength="5000" name="message" rows="3"></textarea></div>
-        <div class="actions"><button class="btn" data-back type="button">Zurück</button><button class="btn primary" type="submit">Anfrage senden</button></div>
-        <p class="hint">FlyingStars verwendet eure Angaben, um eure Anfrage zu bearbeiten. Als optional gekennzeichnete Angaben sind freiwillig. Bitte sendet keine sensiblen Daten. Hinweise zu Hosting, E-Mail-Versand und euren Rechten findet ihr in der <a href="/datenschutz/">Datenschutzerklärung</a>.</p>
+        <div class="field"><label class="lbl" for="f-msg">{t('contactform.anythingElseYouDLikeToTellUs')} <em>{t('contactform.optional')}</em></label><textarea id="f-msg" maxlength="5000" name="message" rows="3"></textarea></div>
+        <div class="actions"><button class="btn" data-back type="button">{t('contactform.back')}</button><button class="btn primary" type="submit">{t('contactform.sendEnquiry')}</button></div>
+        <p class="hint">{t('contactform.processingNotice')} <a href={localHref("/datenschutz/")}>{t('contactform.privacyPolicy')}</a>.</p>
         <div aria-hidden="true" class="honeypot"><label>Website<input autocomplete="off" name="website" tabindex="-1" /></label></div>
       </fieldset>
       <p class="form-status" data-form-status role="status" tabindex="-1"></p>

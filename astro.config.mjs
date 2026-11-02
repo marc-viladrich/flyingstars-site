@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import { LOCALES, localizedHref } from './src/i18n/routing.mjs';
 
 // SITE_URL und MEDIA_HOST kommen aus der Umgebung (lokal .env, in CI als Variable),
 // damit dieselbe Codebasis für Preview und Produktion gebaut werden kann.
@@ -11,7 +12,8 @@ export default defineConfig({
   site,
   output: 'static',
   trailingSlash: 'always',
-  integrations: [sitemap()],
+  i18n: { defaultLocale: 'de', locales: [...LOCALES], routing: { prefixDefaultLocale: false } },
+  integrations: [sitemap({ i18n: { defaultLocale: 'de', locales: { de: 'de', en: 'en', nl: 'nl' } } })],
   image: {
     // Nur der zentrale Medienspeicher darf als Remote-Bildquelle dienen.
     remotePatterns: [...new Set([mediaHost, 'flyingstars.art', 'flyingstars-relaunch.vercel.app'])].map((hostname) => ({ protocol: 'https', hostname })),
@@ -23,7 +25,7 @@ export default defineConfig({
   // Weiterleitungen nach dem Umbau zu Stufe 1 (30.10.2026). Im statischen Build entstehen daraus Seiten mit
   // meta refresh und canonical; auf dem Host sollten dieselben Paare zusätzlich als echte 301 eingetragen werden.
   // Die Fallstudien bleiben unter ihren Live-URLs im Wurzelverzeichnis (Moritz' Sitemap vom 07.10.).
-  redirects: {
+  redirects: Object.fromEntries(LOCALES.flatMap((locale) => Object.entries({
     '/projekte': '/referenzen/',
     '/projekte/musikalischer-teaser-bokkenrijders': '/musikalischer-teaser-bokkenrijders/',
     '/projekte/nfl-berlin-game': '/nfl-berlin-game/',
@@ -35,5 +37,5 @@ export default defineConfig({
     // statische Weiterleitung (meta refresh) verliert Query-Parameter; Direktlinks zeigen deshalb auf
     // /drohnenshow-preise/?anlass=…#konfigurator.
     '/show-konfigurator': '/drohnenshow-preise/#konfigurator',
-  },
+  }).map(([from, to]) => [localizedHref(from, locale), localizedHref(to, locale)]))),
 });

@@ -1,3 +1,8 @@
+import { localeFromPath, localizedHref, localeFormat } from '../i18n/routing.mjs';
+const locale = localeFromPath(location.pathname);
+const formatLocale = localeFormat(locale);
+const { OCCASIONS, STEPS } = getConfiguratorContent(locale);
+import { t as message } from '../i18n/ui.mjs';
 // Show configurator. Anlass picks a sequence of motifs that plays like a little show; Paket and Drohnenzahl set the
 // price (zwölfte Fassung, Marc 30.10.2026: the drone count is the third axis, every package has its own range, crossing
 // a range boundary switches the package visibly). Switching the package turns the motif on stage into its version for
@@ -31,7 +36,7 @@
 //   und Dezember) rücken beim Laden nach vorn (bySeason), vorausgewählt ist der erste, ?anlass=… gewinnt
 // - der gleitende Rahmen an den Paketknöpfen ist reines CSS (ShowConfigurator.astro): er folgt dem Radio, also auch dem
 //   Regler, der unten in update() das Paket umstellt
-import { OCCASIONS, STEPS, unlockAt, bySeason } from "../content/show-configurator.js";
+import { getConfiguratorContent, unlockAt, bySeason } from "../content/show-configurator.js";
 import { SHOW_PACKAGES, DRONE_RANGES, DRONES_MIN, packageForDrones, snapDrones, clampToPackage, configuratorPrice } from "../content/show-packages";
 import { createField } from "./show-field.js";
 import { buildSequence, preloadScenes } from "./show-scenes.js";
@@ -82,17 +87,17 @@ if (form) {
     let acc = 0;
     [...marks.children].forEach((m, k) => { const f = Math.min(1, Math.max(0, (at - acc) / tl.est[k])); acc += tl.est[k]; m.style.setProperty("--f", `${(f * 100).toFixed(1)}%`); });
     track.setAttribute("aria-valuenow", String(tl.beat + 1));
-    track.setAttribute("aria-valuetext", `Bild ${tl.beat + 1} von ${tl.beats.length}: ${tl.beats[tl.beat].caption}`);
+    track.setAttribute("aria-valuetext", message('showConfigurator.sceneValueOfValueValue', { v0: tl.beat + 1, v1: tl.beats.length, v2: tl.beats[tl.beat].caption }));
   }
 
   // Hinweis an der Spur (vierzehnte Fassung): Name der Sequenz und ab wie vielen Drohnen sie möglich ist
   /** What the sequence of beat b is and from how many drones it can be flown (its minimum, at least the package's range). */
   function tipText(b) {
     const range = DRONE_RANGES[pkgName()].min;
-    if (b.logo) return ["Euer Logo", DRONES_MIN];
+    if (b.logo) return [message('showConfigurator.yourLogo'), DRONES_MIN];
     const seg = b.segment ?? 0;
     const m = seg < occasion.motifs.length && seg >= 0 ? occasion.motifs[seg] : textMotif(style);
-    return [seg >= 0 && seg < occasion.motifs.length ? m.label : "Euer Text", possibleFrom(m.tiers[pkgName()], range)];
+    return [seg >= 0 && seg < occasion.motifs.length ? m.label : message('showconfigurator.yourText'), possibleFrom(m.tiers[pkgName()], range)];
   }
   function showTip(k, { quiet = false } = {}) {
     const tl = field.timeline(); if (!tl || !tl.beats[k]) return hideTip();
@@ -111,7 +116,7 @@ if (form) {
     tip.classList.remove("is-locked"); tip.classList.add("is-on"); tipAt = k;
   }
   const esc = (t) => t.replace(/[<&]/g, (c) => (c === "<" ? "&lt;" : "&amp;"));
-  const setTip = (label, from) => { const html = `<b>${esc(label)}</b> · ab ${from} Drohnen`; if (tip.innerHTML !== html) tip.innerHTML = html; };
+  const setTip = (label, from) => { const html = message('showConfigurator.bValueBFromValueDrones', { v0: esc(label), v1: from }); if (tip.innerHTML !== html) tip.innerHTML = html; };
   /** The hint stands over a point of the player bar (x in client pixels), kept inside the bar. */
   const placeTip = (x) => {
     const pr = player.getBoundingClientRect(), half = tip.offsetWidth / 2;
@@ -131,7 +136,7 @@ if (form) {
     locks.replaceChildren(...list.map(([m, at]) => {
       const b = document.createElement("button");
       b.type = "button"; b.className = "cfg-lock"; b.dataset.motif = m.id; b.dataset.at = String(at);
-      b.setAttribute("aria-label", `${m.label}: ab ${at} Drohnen, Drohnenzahl auf ${at} stellen`);
+      b.setAttribute("aria-label", message('showConfigurator.valueFromValueDronesSetDroneCountToValue', { v0: m.label, v1: at, v2: at }));
       b.innerHTML = '<i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i>';
       const show = () => { setTip(m.label, at); const r = b.getBoundingClientRect(); placeTip((r.left + r.right) / 2); tip.classList.add("is-on", "is-locked"); tipAt = null; };
       b.addEventListener("pointerenter", show); b.addEventListener("focus", show);
@@ -170,7 +175,7 @@ if (form) {
   // Pause: Knopf in der Leiste und die ganze Bühne (vierzehnte Fassung), beide zeigen denselben Zustand
   const hit = $("#cfg-hit"), flash = $("#cfg-flash");
   const setPlay = (paused) => {
-    play.setAttribute("aria-label", paused ? "Vorführung abspielen" : "Vorführung pausieren"); play.dataset.paused = String(paused);
+    play.setAttribute("aria-label", paused ? message('showConfigurator.playThePreview') : message('showconfigurator.pauseThePreview2')); play.dataset.paused = String(paused);
     hit.setAttribute("aria-pressed", String(paused));
   };
   const togglePause = () => { field.setPaused(!field.paused()); setPlay(field.paused()); };
@@ -187,7 +192,7 @@ if (form) {
   }));
 
   // ---------- Auswahl: Anlass, Paket, Drohnenzahl, Text, Logo ----------
-  const eur = (v) => `ab ${v.toLocaleString("de-DE")} €`;
+  const eur = (v) => message('showconfigurator.fromValue', { v0: v.toLocaleString(formatLocale) });
   // Anlässe mit dem Monat des Besuchs ordnen (der Build kennt nur seinen eigenen) und den ersten wählen
   const occSelect = $("#cfg-occasion"), ordered = bySeason(OCCASIONS);
   occSelect.replaceChildren(...ordered.map((o) => occSelect.querySelector(`option[value="${o.id}"]`)).filter(Boolean));
@@ -197,10 +202,10 @@ if (form) {
   const slider = $("#cfg-drones");
   let drones = Number(slider.value);
   // the visitor's own text joins the show as its finale (round 11); one version per package like every motif
-  const CAPTIONS = { SPARK: "Euer Text am Himmel", HORIZON: "Licht schreibt euren Text", ODYSSEY: "Euer Text" };
-  const textMotif = (s) => ({ id: `text-${s}`, label: "Euer Text", tiers: Object.fromEntries(Object.entries(CAPTIONS).map(([k, caption]) => [k, { build: `text${k}`, caption, value: text, style: s, occasion: occasion.id }])) });
+  const CAPTIONS = { SPARK: message('showConfigurator.yourTextInTheSky'), HORIZON: message('showConfigurator.lightWritesYourText'), ODYSSEY: message('showconfigurator.yourText') };
+  const textMotif = (s) => ({ id: `text-${s}`, label: message('showconfigurator.yourText'), tiers: Object.fromEntries(Object.entries(CAPTIONS).map(([k, caption]) => [k, { build: `text${k}`, caption, value: text, style: s, occasion: occasion.id }])) });
   const motifs = () => (text ? [...occasion.motifs, textMotif(style)] : occasion.motifs);
-  const STYLE_LABEL = { script: "Schreibschrift", print: "Druckschrift", initials: "Initialen" };
+  const STYLE_LABEL = { script: message('showconfigurator.handwriting'), print: message('showconfigurator.printLettering'), initials: message('showconfigurator.initials') };
   const isText = (seg) => seg === occasion.motifs.length || seg >= TOUR_SEGMENT;
   /** The text style the stage shows is marked in the picker (Text-Durchlauf), without changing the chosen one. */
   const showStyle = (s) => { const r = form.querySelector(`[name=textstyle][value="${s}"]`); if (r && !r.checked) r.checked = true; };
@@ -226,7 +231,7 @@ if (form) {
   };
   const logoFailed = (id) => {
     if (id !== logoId) return;
-    $("#cfg-logo-status").textContent = "Diese Datei konnten wir nicht umrechnen. Am besten klappt ein SVG oder ein PNG mit transparentem Hintergrund.";
+    $("#cfg-logo-status").textContent = message('showConfigurator.weCouldnTConvertThisFileAnSvgOrA');
     dropLogo();
   };
   const sequence = () => {
@@ -236,7 +241,7 @@ if (form) {
     const logoPts = src ? memo(`logo|${id}|${drones}|${p}`, () => logoPoints(src, drones)).catch(() => { logoFailed(id); return null; }) : null;
     return memo(`show|${base}|${text}|${style}|${withTour}|${src ? id : 0}`, async () => composeShow({
       main: await main, tour: await tourSeq, logo: await logoPts, textStyle: text ? style : null, textSegment: occasion.motifs.length,
-      tourCaption: (caption, s) => `${caption}, in ${STYLE_LABEL[s]}`,
+      tourCaption: (caption, s) => message('configurator.captionStyle', { caption, style: STYLE_LABEL[s] }),
     }));
   };
 
@@ -275,17 +280,17 @@ if (form) {
     const radio = form.querySelector(`[name=pkg][value="${STEPS.indexOf(s)}"]`);
     if (!radio.checked) radio.checked = true;
     if (Number(slider.value) !== drones) slider.value = String(drones);
-    slider.setAttribute("aria-valuetext", `${drones} Drohnen, ${s.pkg}`);
+    slider.setAttribute("aria-valuetext", message('showConfigurator.valueDronesValue', { v0: drones, v1: s.pkg }));
     for (const [sel, txt] of [["#cfg-pkg", s.pkg], ["#cfg-bar-pkg", s.pkg], ["#cfg-price", eur(price)], ["#cfg-bar-price", eur(price)], ["#cfg-dronecount", String(drones)]]) $(sel).textContent = txt;
-    $("#cfg-meta").textContent = `${p.dur} · netto zzgl. Anfahrt`; // die Drohnenzahl steht schon am Regler (Runde 9)
+    $("#cfg-meta").textContent = message('showConfigurator.valueExcludingVatAndTravel', { v0: message(({ SPARK: 'pricing.duration10', HORIZON: 'pricing.duration13', ODYSSEY: 'pricing.duration15' })[s.pkg]) }); // die Drohnenzahl steht schon am Regler (Runde 9)
     const summary = [
-      `Anlass: ${occasion.label}`,
-      `Beispielmotive: ${occasion.motifs.filter((m) => canPlay(m, s.pkg, drones)).map((m) => m.label).join(", ")}`,
-      ...(text ? [`Eigener Text: „${text}“ (${STYLE_LABEL[style]})`] : []),
-      ...(logo ? ["Eigenes Logo: in der Vorschau ausprobiert"] : []),
-      `Aufwand: ${s.label} (${s.pkg}, ${drones} Drohnen, ${eur(price)} netto, Preis laut Konfigurator)`,
+      message('showConfigurator.occasionValue', { v0: occasion.label }),
+      message('configurator.motifs', { list: occasion.motifs.filter((m) => canPlay(m, s.pkg, drones)).map((m) => m.label).join(', ') }),
+      ...(text ? [message('showConfigurator.customTextValueValue', { v0: text, v1: STYLE_LABEL[style] })] : []),
+      ...(logo ? [message('showConfigurator.customLogoTriedInThePreview')] : []),
+      message('showConfigurator.complexityValueValueValueDronesValueExcludingVatConfiguratorPrice', { v0: s.label, v1: s.pkg, v2: drones, v3: eur(price) }),
     ].join("\n");
-    const inquiry = `/?${new URLSearchParams({ paket: s.pkg, drohnen: String(drones), anlass: occasion.anlass, show: summary })}#anfrage`;
+    const inquiry = localizedHref(`/?${new URLSearchParams({ paket: s.pkg, drohnen: String(drones), anlass: occasion.anlass, show: summary })}#anfrage`, locale);
     $("#cfg-cta").href = inquiry; $("#cfg-bar-cta").href = inquiry;
     drawLocks();
     // while the slider moves, the picture follows once it rests for a moment (every drone count is its own formation)
@@ -408,7 +413,7 @@ if (form) {
   function takeFile(f) {
     if (!f) return;
     const status = $("#cfg-logo-status");
-    if (!/^image\/(svg\+xml|png|jpeg|webp)$/.test(f.type)) { status.textContent = "Bitte ein SVG, PNG oder JPG wählen."; return; }
+    if (!/^image\/(svg\+xml|png|jpeg|webp)$/.test(f.type)) { status.textContent = message('showConfigurator.pleaseChooseAnSvgPngOrJpg'); return; }
     status.textContent = "";
     const use = (source) => {
       dropLogo(); logo = source; logoId++;
@@ -417,7 +422,7 @@ if (form) {
       first = false; fresh = []; unlockTo = null; tour = false; // the logo comes now; the text run-through is over
       update(true, LOGO_SEGMENT, { cloud: true });
     };
-    if (f.type === "image/svg+xml") f.text().then((markup) => use({ kind: "svg", markup }), () => { status.textContent = "Diese Datei konnten wir nicht lesen."; });
+    if (f.type === "image/svg+xml") f.text().then((markup) => use({ kind: "svg", markup }), () => { status.textContent = message('showConfigurator.weCouldnTReadThisFile'); });
     else use({ kind: "image", src: URL.createObjectURL(f) });
   }
   off.addEventListener("click", () => {

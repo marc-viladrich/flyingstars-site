@@ -1,4 +1,6 @@
 ---
+import { forPath } from '../../i18n/server';
+const { t, localHref } = forPath(Astro.url.pathname);
 // Team: große Porträts mit Vorhang-Reveal (CSS, html.reveal) und Lichtpunkt-Hover; kein Foto-Zoom.
 import type { Section } from '../../content.config';
 import { optimizedImage } from '../../lib/media';
@@ -18,8 +20,8 @@ const crew = await Promise.all(members.map(async member => ({...member, media: m
 <section class="team-sec" id={id} aria-labelledby={headingId}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
   <ul class="crew" style={`--cols:${cols}`} data-odd={n % 2 === 1 ? '' : undefined}>{crew.map((member,i) => <li class="member" style={`--i:${i}`} data-dot-host>
-    <div class="portrait" data-dot-img={member.media ? '' : undefined} data-step="6">{member.image && member.media ? <img src={member.media.src} width={member.media.width} height={member.media.height} alt={member.image.alt} loading="lazy" decoding="async" /> : <><span class="ini" aria-hidden="true">{initials(member.name)}</span><span class="soon mono">Foto folgt</span></>}</div>
+    <div class="portrait" data-dot-img={member.media ? '' : undefined} data-step="6">{member.image && member.media ? <img src={member.media.src} width={member.media.width} height={member.media.height} alt={member.image.alt} loading="lazy" decoding="async" /> : <><span class="ini" aria-hidden="true">{initials(member.name)}</span><span class="soon mono">{t('team.photoComingSoon')}</span></>}</div>
     <span class="role mono">{member.role}</span><Name>{member.name}</Name>{member.bio && <p>{member.bio}</p>}
   </li>)}</ul>
-  {(note || cta) && <p class="crew-note">{note && <span>{note}</span>}{cta && <a class="link" href={cta.href}>{cta.label} <span aria-hidden="true">→</span></a>}</p>}
+  {(note || cta) && <p class="crew-note">{note && <span>{note}</span>}{cta && <a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a>}</p>}
 </section>

@@ -1,17 +1,21 @@
 ---
+import { localizedCollection } from '../../i18n/content';
+import { forPath } from '../../i18n/server';
+const { t, localHref } = forPath(Astro.url.pathname);
+import { localeFromPath } from '../../i18n/routing.mjs';
+const locale = localeFromPath(Astro.url.pathname);
 // Neueste Blogbeiträge als Section (z. B. auf einer Anlass-Seite): dieselben Karten wie die Blog-Übersicht.
-import { getCollection } from 'astro:content';
 import type { Section } from '../../content.config';
 import SectionHead from '../SectionHead.astro';
 import PostGrid from '../blog/PostGrid.astro';
 import { sortPosts } from '../blog/post-meta';
 type Props = Extract<Section, { type: 'postList' }> & { index: number };
-const { headline = 'Aus dem Blog.', limit, index } = Astro.props;
+const { headline = t('postlist.fromTheBlog'), limit, index } = Astro.props;
 const id = `s${index}-h`;
-const posts = sortPosts(await getCollection('posts', (p) => !p.data.draft)).slice(0, limit);
+const posts = sortPosts(await localizedCollection('posts', locale, p => !p.data.draft)).slice(0, limit);
 ---
 <section class="section" aria-labelledby={id}>
   <SectionHead kicker="Blog" headline={headline} id={id} level={index === 0 ? 'h1' : 'h2'} />
   <PostGrid posts={posts} level={index === 0 ? 'h2' : 'h3'} />
-  <div class="more"><a class="link" href="/blog/">Alle Beiträge <span aria-hidden="true">→</span></a></div>
+  <div class="more"><a class="link" href={localHref("/blog/")}>{t('postlist.allArticles')} <span aria-hidden="true">→</span></a></div>
 </section>

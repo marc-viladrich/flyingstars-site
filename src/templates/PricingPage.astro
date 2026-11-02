@@ -1,0 +1,112 @@
+---
+import { forPath } from '../i18n/server';
+const { t, localHref, formatLocale } = forPath(Astro.url.pathname);
+// Preisseite (31.10.2026, Marcs Feedbackrunde 6/8): Aufbau wie im Vercel-Prototyp. Oben die drei Pakete, dann der
+// Show-Konfigurator, danach mit farbigen Punkten je Paket, was immer enthalten ist, alle Leistungen im Vergleich, Extras,
+// Preisversprechen (Fragebogen 21.10.), Fragen zum Preis und Abschluss. Preise und Drohnenzahlen nur aus
+// show-packages.ts, Texte aus package-details.ts.
+import Base from '../layouts/Base.astro';
+import Packages from '../components/sections/Packages.astro';
+import Cta from '../components/sections/Cta.astro';
+import Faq from '../components/sections/Faq.astro';
+import SectionHead from '../components/SectionHead.astro';
+import Faces from '../components/Faces.astro';
+import ShowConfigurator from '../components/configurator/ShowConfigurator.astro';
+import Extras from '../components/pricing/Extras.astro';
+import Included from '../components/pricing/Included.astro';
+import MobileTabs from '../components/MobileTabs.astro';
+import { SHOW_PACKAGES, PACKAGE_NAMES } from '../content/show-packages';
+import { getPackageDetails } from '../content/package-details';
+const { PACKAGE_DETAILS, COMPARISON, COMPARISON_NOTE, SHOW_DURATION } = getPackageDetails(forPath(Astro.url.pathname).locale);
+const money = (v: number) => t('showconfigurator.fromValue', { v0: v.toLocaleString(formatLocale) });
+const items = PACKAGE_NAMES.map((name) => ({ name, ...PACKAGE_DETAILS[name], badge: PACKAGE_DETAILS[name].often, highlight: Boolean(PACKAGE_DETAILS[name].often) }));
+const featured = PACKAGE_NAMES.findIndex((name) => PACKAGE_DETAILS[name].often);
+const orb = { SPARK: 'ring', HORIZON: 'sphere', ODYSSEY: 'torus' } as const;
+---
+<Base title={t('pricingpage.droneShowPricesThreePackagesFrom7900')} description={t('pricingpage.threeDroneShowPackagesFrom7900ExcludingVatAnd')}>
+
+  <Packages
+    type="packages"
+    index={0}
+    id="pakete"
+    kicker={t('pricingpage.pricesPackages')}
+    headline={t('pricingpage.threePackagesClearStartingPrices')}
+    text={t('pricingpage.addMoreDronesAndExtrasToAnyPackageAllPrices')}
+    note={SHOW_DURATION}
+    compact={false}
+    items={items}
+  />
+
+  <!-- Reihenfolge (Marc, 31.10.2026): erst die Pakete, dann der Konfigurator -->
+  <ShowConfigurator id="konfigurator" headingLevel={2} kicker={t('pricingpage.showConfigurator')} heading={t('pricingpage.howComplexWouldYouLikeIt')} />
+
+  <Included
+    kicker={t('pricingpage.alwaysIncluded')}
+    headline={t('pricingpage.whatYouReActuallyPayingFor')}
+    text={t('pricingpage.mostOfTheWorkGoesIntoDesignPermitsAndA')}
+  />
+
+  <section class="section" id="leistungen" aria-labelledby="leistungen-h">
+    <SectionHead kicker={t('pricingpage.comparison')} headline={t('pricingpage.compareAllServices')} id="leistungen-h" />
+    <div class="table-wrap mtab-hide" role="region" aria-label={t('pricingpage.serviceComparisonTableScrollHorizontally')} tabindex="0">
+      <!-- position:relative hält die visuell versteckten Texte („nicht enthalten“) im Scrollbereich der Tabelle -->
+      <table style="position:relative">
+        <caption class="sr-only">{t('pricingpage.servicesInTheSparkHorizonAndOdysseyPackages')}</caption>
+        <thead>
+          <tr><th scope="col">{t('pricingpage.service')}</th>{PACKAGE_NAMES.map((name, i) => <th scope="col" class:list={['pk', { us: i === featured }]} style={`--c:rgb(${SHOW_PACKAGES[name].color.join(',')})`}><canvas data-orb={orb[name]} data-color={SHOW_PACKAGES[name].color.join(',')} data-n={Math.round(SHOW_PACKAGES[name].base * 0.6)} aria-hidden="true"></canvas><span class="pk-name">{name}</span><span class="mono">{money(SHOW_PACKAGES[name].price)}</span></th>)}</tr>
+        </thead>
+        <tbody>
+          {COMPARISON.map((row) => (
+            <tr>
+              <th scope="row">{row.label}</th>
+              {row.all ? <td colspan="3">{row.all}</td> : row.cells!.map((cell, i) => cell === null
+                ? <td class:list={['no', { us: i === featured }]}><span aria-hidden="true">–</span><span class="sr-only">{t('pricingpage.notIncluded')}</span></td>
+                : cell === true
+                ? <td class:list={['yes', { us: i === featured }]} style={`--c:rgb(${SHOW_PACKAGES[PACKAGE_NAMES[i]].color.join(',')})`}><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" /></svg><span class="sr-only">{t('pricingpage.included')}</span></td>
+                : <td class:list={{ us: i === featured }}>{cell}</td>)}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <!-- Handy (Marc, 02.11.2026): ein Reiter je Paket wie beim Vergleich auf der Startseite, empfohlenes Paket vorgewählt -->
+    <div class="mtab-only" data-mtabs>
+      <MobileTabs name="leistungen-tab" label={t('mobileTabs.choosePackage')} initial={featured} tabs={PACKAGE_NAMES.map((name) => ({ label: name, color: `rgb(${SHOW_PACKAGES[name].color.join(',')})` }))} />
+      {PACKAGE_NAMES.map((name, i) => <dl class="cmp-panel" data-mtab={i} aria-label={`${name}, ${money(SHOW_PACKAGES[name].price)}`} style={`--c:rgb(${SHOW_PACKAGES[name].color.join(',')})`}>
+        {COMPARISON.map((row) => { const cell = row.all ?? row.cells![i]; return <div><dt>{row.label}</dt><dd>{cell === null ? <span class="no">{t('pricingpage.mobileNotIncluded')}</span> : cell === true ? <span class="yes"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" /></svg>{t('pricingpage.mobileIncluded')}</span> : cell}</dd></div>; })}
+      </dl>)}
+    </div>
+    <p class="fine mono">{t('pricingpage.allPricesExcludeVatAndTravel')} {COMPARISON_NOTE}</p>
+  </section>
+
+  <Extras />
+
+  <!-- Preisversprechen: von FlyingStars im Fragebogen (21.10.2026) bestätigt -->
+  <section class="section promise-sec" aria-labelledby="versprechen-h">
+    <div class="promise">
+      <Faces />
+      <div><h2 id="versprechen-h">{t('pricingpage.foundTheSameServiceForLessWeLlBeatThe')}</h2><p>{t('pricingpage.sendUsTheOtherQuoteForTheSameScopeOf')}</p></div>
+      <a class="btn primary" href={localHref("/kontakt/?anliegen=vergleich")}>{t('pricingpage.haveAQuoteChecked')}</a>
+    </div>
+  </section>
+
+  <Faq
+    type="faq"
+    index={5}
+    id="preisfragen"
+    kicker={t('pricingpage.pricingQuestions')}
+    headline={t('pricingpage.whatDoesADroneShowReallyCost')}
+    text={t('pricingpage.theQuestionsWeHearMostOftenWhenDiscussingBudgets')}
+    cta={{ label: t('pricingpage.allQuestions'), href: '/faq/' }}
+    openFirst={true}
+    tags={['preise']}
+  />
+
+  <Cta
+    type="cta"
+    index={6}
+    headline={t('pricingpage.notSureWhichPackageToChoose')}
+    text={t('pricingpage.sendUsYourDateAndLocationIfYouHavenT')}
+    button={{ label: t('chopper404.requestAShow'), href: '/kontakt/?paket=offen' }}
+  />
+</Base>

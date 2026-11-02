@@ -1,0 +1,31 @@
+title: Privacy
+description: Draft privacy information on hosting, the contact form and media in the FlyingStars preview. Legal review is still pending.
+noindex: true
+sections:
+  - type: textMedia
+    headline: Privacy in this preview
+    body: |
+      **Draft for legal review.** This information describes the technical prototype. FlyingStars and its privacy advisers must complete and approve it before production use. Email delivery being unavailable does not mean that hosting processes no data.
+
+      The controller is FlyingStars GmbH, Bulmker Straße 107, 45888 Gelsenkirchen, Germany. You can reach us at [team@flyingstars.art](mailto:team@flyingstars.art). Further company details are available in the [legal notice](/en/impressum/).
+
+      **Hosting.** The preview runs on Cloudflare Pages and a Cloudflare Pages Function. Cloudflare processes technical connection data, particularly your IP address, when you visit, and form data when you submit. Cloudflare is a US provider; its standard service does not guarantee processing exclusively within the EU. The legal basis for secure provision is Article 6(1)(f) GDPR, our legitimate interest in operating and protecting the website. Before launch, the data processing agreement, applicable safeguards for third-country transfers and actual log retention periods must be reviewed and specified here.
+
+      **Your enquiry.** We use your details to process and answer your enquiry and prepare a possible quote. The form asks for the occasion, town or postcode, date or an undecided date, name and email address. Package, extras, phone number, company, referral source and message are optional. The referral source helps us understand how you find us; it is not required for a quote. Please do not submit health data or other particularly sensitive information.
+
+      Article 6(1)(b) GDPR may apply to necessary steps prior to entering a contract at your request. For general enquiries and business contacts who will not themselves be a contracting party, processing serves our legitimate interest in answering enquiries and developing business under Article 6(1)(f) GDPR. Analysis of the optional referral source requires a separate justification. This form does not subscribe you to a newsletter.
+
+      The details are sent to the Cloudflare Function. When email delivery is configured, it forwards them through Brevo to our designated email inbox. Brevo is the intended delivery service, not a newsletter list. If delivery is not configured, the form reports this; the form application then does not store the enquiry permanently or send an email. The actual delivery configuration has not been checked for this draft.
+
+      The application does not log messages or IP addresses and has no enquiry database of its own. When delivery is configured, data may nevertheless be stored by Brevo, in the recipient inbox and in backups. We delete enquiries when their processing purpose no longer applies, unless statutory retention obligations or other lawful grounds require otherwise. **To complete before launch:** the recipient inbox and its provider, Brevo's contracting entity and subprocessors, safeguards for third-country transfers, specific deletion periods including delivery logs, backups and hosting logs.
+
+      **Abuse prevention.** The form uses a hidden honeypot field and, when JavaScript is enabled, a short timing check. These set no cookies and load no external verification services in the browser. The Function does not forward your IP address to Brevo or as an additional verification parameter to Turnstile. A Turnstile verification path is technically prepared; the prototype does not include a widget. Activation requires a separate privacy review and updated information.
+
+      **Files and prefilled fields.** The contact form does not accept files. A logo selected in the show configurator is processed locally in your browser and is not sent as a file. Custom text and the show summary may, however, appear in the URL when switching to an enquiry. They therefore reach the hosting provider on page load. After copying them into the form, the script removes these two details from the visible URL. Only when you submit are they forwarded to the delivery service as part of the message.
+
+      **Media and browser storage.** Fonts and optimised images are provided in the website build. Videos in the production build use a dedicated media endpoint; some start automatically. This endpoint fetches them on the server from specified sources on the existing website and the Vercel prototype. The reviewed build has no embedded YouTube players, maps or analytics scripts. Your motion-pause preference is stored in the browser for the session. The preview includes links to Calendly, WhatsApp and social networks. When opened, the respective provider's privacy information also applies. The final media storage and all active services must be checked again before publication.
+
+      **Your rights.** Subject to the statutory conditions, you have rights of access, rectification, erasure, restriction and data portability. You may object to processing based on legitimate interests under Article 21 GDPR. You may complain to a data protection supervisory authority, particularly the [State Commissioner for Data Protection and Freedom of Information North Rhine-Westphalia](https://www.ldi.nrw.de/). Any appointed data protection officer and the full information required under Article 13 GDPR must be added before launch.
+
+      The [privacy policy of the existing FlyingStars website](https://flyingstars.art/datenschutz/) does not replace the review of this new infrastructure.
+translationSourceHash: fbad6d3a8d6ff63029495d61b01aa7b3b39b91cc4aadd071fe4a601340252a99

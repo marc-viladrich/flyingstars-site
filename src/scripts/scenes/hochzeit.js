@@ -1,3 +1,4 @@
+import { t as message } from '../../i18n/ui.mjs';
 // hochzeit motifs of the eleventh version (see src/content/show-configurator.js for the build names).
 import { TAU, WARM, GOLD, PINK, VIOLET, CYAN, BLUE, ORANGE, RED, GREEN, DIAMOND, mix, paint, place, frac, smooth, hash, yaw, roll, pitch, sway, swing, breathe, glint, sparkle, chase, trace, burstLight, rig, share, part, act, wander, drift, lightRank } from "../show-motion.js";
 import { sampleOutline } from "../show-geometry.js";
@@ -138,10 +139,10 @@ function lotusStory(n) {
   const ballPts = [...sphere.map(({ p }, j) => [...place3(p, 0), ...(j < nl ? PINK : VIOLET)]), ...coreHeart.map((p) => [...place3(p, 0), ...GOLD])];
 
   return { beats: [
-    flowerBeat(() => 0, () => 0, () => BUD_APART, { caption: "Zwei Knospen", hold: 1.4, light: (s, t, f) => breathe(t, 2.8, f * 1.4) }),
-    flowerBeat(bloomAt, () => 0, budGap, { caption: "sie blühen auf", hold: 2.8, light: (s, t, f) => (t < 2.8 ? breathe(t, 2.8, f * 1.4) : petalLight(s, t, f ? -1 : 1)) }),
-    flowerBeat(() => 1, (t) => ease(t, 2.5) * 0.45, intoGap, { caption: "drehen sich ineinander", hold: 3.4, light: (s, t, f) => petalLight(s, t, f ? -1 : 1) }),
-    act(parts(ballPts), { caption: "…und werden eine Kugel aus Licht", live: (b, j, t, o) => {
+    flowerBeat(() => 0, () => 0, () => BUD_APART, { caption: message('hochzeit.twoBuds'), hold: 1.4, light: (s, t, f) => breathe(t, 2.8, f * 1.4) }),
+    flowerBeat(bloomAt, () => 0, budGap, { caption: message('hochzeit.theyBloom'), hold: 2.8, light: (s, t, f) => (t < 2.8 ? breathe(t, 2.8, f * 1.4) : petalLight(s, t, f ? -1 : 1)) }),
+    flowerBeat(() => 1, (t) => ease(t, 2.5) * 0.45, intoGap, { caption: message('hochzeit.twistIntoEachOther'), hold: 3.4, light: (s, t, f) => petalLight(s, t, f ? -1 : 1) }),
+    act(parts(ballPts), { caption: message('hochzeit.andBecomeASphereOfLight'), live: (b, j, t, o) => {
       const spin = ease(t, 3) * 0.3;
       if (j < nl + nr) { const p = place3(sphere[j].p, spin); o[0] = p[0]; o[1] = p[1]; o[2] = p[2]; o[3] = chase(sphere[j].s, t, j < nl ? 0.28 : -0.28, 0.5, 0.65, 1.5); }
       else { const p = place3(coreHeart[j - nl - nr], 0.3 * smooth(t / 2) * Math.sin(t * 0.7)); o[0] = p[0]; o[1] = p[1]; o[2] = p[2]; o[3] = breathe(t, 2.6) + 0.2; }
@@ -212,14 +213,14 @@ async function butterflyStory(n) {
   const shine = (j, t) => (local[j][2] === 2 ? breathe(t, 2.2) + 0.1 : glint(Math.abs(local[j][0]) + local[j][1] * 0.25, t, 3.6, 0.55, -0.3, 1.3));
   const petals = (j, t) => petalLight(slots[j], t);
   return { beats: [
-    act([part("fly", flyPts(START, beat(0))), part("bloom", flowerPts)], { caption: "Ein Schmetterling fliegt zu einer Blüte", hold: 3.8, live: (b, j, t, o) => {
+    act([part("fly", flyPts(START, beat(0))), part("bloom", flowerPts)], { caption: message('hochzeit.aButterflyFliesTowardsAFlower'), hold: 3.8, live: (b, j, t, o) => {
       if (j < B) { pose(j, beat(t, 1.4, 0.32, 0.25), bez3(START, C, LAND, smooth(t / 3.6)), o); o[3] = shine(j, t); } else o[3] = petals(j - B, t);
     } }),
-    act([part("fly", flyPts(LAND, 0.25)), part("bloom", flowerPts)], { caption: "er landet, die Flügel öffnen und schließen sich", hold: 4.2, live: (b, j, t, o) => {
+    act([part("fly", flyPts(LAND, 0.25)), part("bloom", flowerPts)], { caption: message('hochzeit.itLandsItsWingsOpenAndClose'), hold: 4.2, live: (b, j, t, o) => {
       // gelandet: langsam auf und zu (0,25 → 1,05 rad), so wie ein Falter auf einer Blüte ruht
       if (j < B) { pose(j, 0.25 + 0.8 * (0.5 - 0.5 * Math.cos((t * TAU) / 4.2)), LAND, o); o[3] = shine(j, t); } else o[3] = petals(j - B, t);
     } }),
-    act([part("fly", flyPts(UP, beat(0))), part("bloom", paint(heart, (p) => mix(PINK, VIOLET, (p[2] + 1) / 1.2)))], { caption: "…er steigt auf, aus der Blüte wird ein Herz", cloud: ["bloom"], live: (b, j, t, o) => {
+    act([part("fly", flyPts(UP, beat(0))), part("bloom", paint(heart, (p) => mix(PINK, VIOLET, (p[2] + 1) / 1.2)))], { caption: message('hochzeit.itRisesTheFlowerBecomesAHeart'), cloud: ["bloom"], live: (b, j, t, o) => {
       if (j < B) { pose(j, beat(t, 2.6, 0.3, 0.22), [UP[0], UP[1] + 0.03 * Math.sin((t * TAU) / 3.4), UP[2]], o); o[3] = shine(j, t); }
       else { o[3] = breathe(t, 2.8) * wander((b[1] + 1.1) / 2.2, t, 5, 0.25, 0.12); yaw(o, 0.12 * Math.sin((t * TAU) / 12), 0.55, -0.2); }
     } }),
@@ -383,21 +384,21 @@ function ringStory(n) {
   const sparkPart = (pts) => part("stars", paint(pts, mix(DIAMOND, WARM, 0.4)));
 
   return { beats: [
-    act([part("ring", place(Q0, inSlot), { rigid: true }), part("body", boxPts(0)), part("stars", boxStars, { offstage: true })], { caption: "Ein Schmuckkästchen öffnet sich", hold: 3.4, frame: "box", live: (b, j, t, o) => {
+    act([part("ring", place(Q0, inSlot), { rigid: true }), part("body", boxPts(0)), part("stars", boxStars, { offstage: true })], { caption: message('hochzeit.aJewelleryBoxOpens'), hold: 3.4, frame: "box", live: (b, j, t, o) => {
       if (j < ringN) o[3] = isStone(j) ? 0.3 + 1.1 * smooth((t - 2.2) / 1) : 0.3 + 0.4 * smooth((t - 2.6) / 1); // the stone shows first as the lid opens
       else if (j < ringN + boxN) { const k = j - ringN; if (k >= lidStart && k < cushionStart) { const p = VIEW(swingLid(B.lid[k - lidStart], lidOpen(t))); o[0] = p[0]; o[1] = p[1]; o[2] = p[2]; } }
       else calm(j, t, o);
     } }),
-    act([part("ring", place(Q0, raised), { rigid: true }), part("body", boxPts(OPEN)), part("stars", boxStars, { offstage: true })], { caption: "der Ring steigt aus dem Polster, der Stein funkelt", hold: 2.6, frame: "box", live: (b, j, t, o) => {
+    act([part("ring", place(Q0, raised), { rigid: true }), part("body", boxPts(OPEN)), part("stars", boxStars, { offstage: true })], { caption: message('hochzeit.theRingRisesFromItsCushionTheDiamondSparkles'), hold: 2.6, frame: "box", live: (b, j, t, o) => {
       if (j < ringN) { setRing(j, slerp(Q0, [Math.cos(0.3), 0, Math.sin(0.3), 0], 0.5 - 0.5 * Math.cos(t * 0.9)), raised, o); o[3] = isStone(j) ? sparkle(j, t, 1.05, 1.7) : 0.7 + 0.35 * smooth((t - 0.4) / 1.2); }
       else if (j >= ringN + boxN) calm(j, t, o);
     } }),
-    act([part("ring", place(Q0, hover), { rigid: true }), part("body", handPts), sparkPart(sparkPts)], { caption: "eine Hand: der Ring findet den Ringfinger", hold: 7.4, frame: "hand", cloud: ["body", "stars"], live: (b, j, t, o) => {
+    act([part("ring", place(Q0, hover), { rigid: true }), part("body", handPts), sparkPart(sparkPts)], { caption: message('hochzeit.aHandTheRingFindsTheRingFinger'), hold: 7.4, frame: "hand", cloud: ["body", "stars"], live: (b, j, t, o) => {
       if (j < ringN) { const { c, q } = flyAt(t); setRing(j, q, c, o); o[3] = ringLight(j, t, Math.sin(Math.PI * turnOf(t))); } // the stone dims while the ring turns
       else if (j < ringN + body) o[3] = 0.95 + 0.1 * Math.sin(t * 1.3);
       else o[3] = 0.1 + sparkle(j, t, 0.5, 1.5) * smooth((t - 6.6) / 0.8); // a few sparks at the stone once the ring sits
     } }),
-    act([part("ring", place(Q0, centre), { rigid: true }), part("body", paint(heartPts, heartColour)), sparkPart(heartSparks)], { caption: "…und sie sagt Ja", live: (b, j, t, o) => {
+    act([part("ring", place(Q0, centre), { rigid: true }), part("body", paint(heartPts, heartColour)), sparkPart(heartSparks)], { caption: message('hochzeit.andSheSaysYes'), live: (b, j, t, o) => {
       if (j < ringN) { setRing(j, slerp(Q0, [Math.cos(0.35), 0, Math.sin(0.35), 0], 0.5 - 0.5 * Math.cos(t * 0.8)), centre, o); o[3] = ringLight(j, t); }
       else if (j < ringN + body) o[3] = breathe(t, 2.8);
       else o[3] = sparkle(j, t, 0.6, 1.4);
@@ -441,11 +442,11 @@ function ringsLink(n) {
   const ua = angleRank(ra, -0.36), ub = rb.map((p) => frac(Math.atan2(p[2], p[0] - 0.36) / TAU + 0.25));
   const [band, stone] = solitaire(n, 0.8), bandU = band.map((p) => frac(Math.atan2(p[1], p[0]) / TAU + 0.25)), k = band.length;
   return { beats: [
-    act([part("a", paint(ra, CHAMPAGNE)), part("b", paint(rb, ROSE))], { caption: "Zwei Eheringe verschlingen sich in 3D", hold: 4.5, live: (b, j, t, o) => {
+    act([part("a", paint(ra, CHAMPAGNE)), part("b", paint(rb, ROSE))], { caption: message('hochzeit.twoWeddingRingsIntertwineIn3d'), hold: 4.5, live: (b, j, t, o) => {
       o[3] = j < ra.length ? wander(ua[j], t, 4.6, 0.45, 0.07) : wander(ub[j - ra.length], t + 2.3, 4.6, 0.45, 0.07);
       yaw(o, 0.28 * t); pitch(o, 0.32);
     } }),
-    act([part("band", paint(band, (p) => mix(GOLD, WARM, (p[1] + 0.8) / 3.2))), part("stone", paint(stone, DIAMOND))], { caption: "…und werden ein Solitär mit Brillant", live: (b, j, t, o) => {
+    act([part("band", paint(band, (p) => mix(GOLD, WARM, (p[1] + 0.8) / 3.2))), part("stone", paint(stone, DIAMOND))], { caption: message('hochzeit.andBecomeASolitaireWithADiamond'), live: (b, j, t, o) => {
       o[3] = j >= k ? sparkle(j, t, 0.95, 1.55) : wander(bandU[j], t, 4.2, 0.4, 0.08);
       yaw(o, 0.28 * t); pitch(o, 0.35);
     } }),

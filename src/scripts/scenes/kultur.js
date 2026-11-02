@@ -1,3 +1,4 @@
+import { t as message } from '../../i18n/ui.mjs';
 // kultur motifs of the eleventh version (see src/content/show-configurator.js for the build names).
 import { TAU, WARM, GOLD, PINK, VIOLET, CYAN, BLUE, ORANGE, RED, GREEN, DIAMOND, mix, paint, place, frac, smooth, hash, yaw, roll, pitch, sway, swing, breathe, glint, sparkle, chase, trace, burstLight, rig, share, part, act, drift } from "../show-motion.js";
 import { sampleOutline } from "../show-geometry.js";
@@ -122,15 +123,15 @@ function bookStoryScene(n) {
   const I0 = NC + NP, Q0 = I0 + NI, S0i = Q0 + NQ;
   const ink = (pts, colour = INK) => part("ink", paint(pts, colour));
   return { beats: [
-    act([part("cover", cover(0), { rigid: true }), part("pages", pages(0), { rigid: true }), ink(frame), part("quill", rest[0], { rigid: true }), part("stars", sky)], { caption: "Ein geschlossenes Buch und eine Feder", hold: 1.4, frame: "book", live: (b, j, t, o) => { if (j >= S0i) twinkle(j, t, o); else if (j >= I0 && j < Q0) o[3] = glint(b[0] - b[1], t, 3.2, 0.45); sway(o, t, 0.2, 10); } }),
-    act([part("cover", cover(1), { rigid: true }), part("pages", pages(1), { rigid: true }), ink(inkOpen), part("quill", quillAt(...nib0), { rigid: true }), part("stars", sky)], { caption: "es öffnet sich", hold: 3.8, frame: "book", live: (b, j, t, o) => {
+    act([part("cover", cover(0), { rigid: true }), part("pages", pages(0), { rigid: true }), ink(frame), part("quill", rest[0], { rigid: true }), part("stars", sky)], { caption: message('kultur.aClosedBookAndAQuill'), hold: 1.4, frame: "book", live: (b, j, t, o) => { if (j >= S0i) twinkle(j, t, o); else if (j >= I0 && j < Q0) o[3] = glint(b[0] - b[1], t, 3.2, 0.45); sway(o, t, 0.2, 10); } }),
+    act([part("cover", cover(1), { rigid: true }), part("pages", pages(1), { rigid: true }), ink(inkOpen), part("quill", quillAt(...nib0), { rigid: true }), part("stars", sky)], { caption: message('kultur.itOpens'), hold: 3.8, frame: "book", live: (b, j, t, o) => {
       const u = smooth((t - 0.4) / 3.2);
       const p = j < NC ? coverAt(j, u) : j < I0 ? pageAt(j - NC, u) : j < Q0 ? inkAt(j - I0, u) : null;
       if (p) { o[0] = p[0]; o[1] = p[1]; o[2] = p[2]; }
       if (j >= I0 && j < Q0) o[3] = j - I0 < inkL.length ? 0.3 + 0.75 * u : 0.15;
       if (j >= S0i) twinkle(j, t, o);
     } }),
-    act([part("cover", cover(1), { rigid: true }), part("pages", pages(1), { rigid: true }), ink(inkOpen), part("quill", quillAt(...nib0), { rigid: true }), part("stars", sky)], { caption: "eine Feder schreibt", hold: 9, frame: "book", writes: ["quill"], live: (b, j, t, o) => {
+    act([part("cover", cover(1), { rigid: true }), part("pages", pages(1), { rigid: true }), ink(inkOpen), part("quill", quillAt(...nib0), { rigid: true }), part("stars", sky)], { caption: message('kultur.aQuillWrites'), hold: 9, frame: "book", writes: ["quill"], live: (b, j, t, o) => {
       if (j >= Q0 && j < S0i) { const q = nibAt(t); roll(o, 0.04 * Math.sin((t * TAU) / 1.8), nib0[0], nib0[1]); o[0] += q[0] - nib0[0]; o[1] += q[1] - nib0[1]; o[2] += q[2] - nib0[2]; }
       else if (j >= I0 && j < Q0) {
         const k = j - I0 - inkL.length;
@@ -138,7 +139,7 @@ function bookStoryScene(n) {
         else { const r = Math.floor(k / 8), s = inkR[k][0], [ps, , row] = pen(t), at = row - r - (s - S0) / (S1 - S0); o[3] = row >= r + 1 ? 1.05 : at < -0.02 ? 0.15 : 1.05 + 0.6 * Math.exp(-(((ps - s) / 0.05) ** 2)); }
       } else if (j >= S0i) twinkle(j, t, o);
     } }),
-    act([part("cover", cover(1), { rigid: true }), part("pages", pages(1), { rigid: true }), part("quill", quillAt(nib0[0] + 0.62, nib0[1] + 0.25, nib0[2]), { rigid: true }), part("star", paint(finalStar, GOLD))], { caption: "die Zeilen steigen aus den Seiten und werden ein Stern", frame: "star", cloud: ["star"], live: (b, j, t, o) => { if (j >= NC + NP + NQ) { yaw(o, Math.sin(t * 0.5) * 0.5, STAR[0], 0); o[3] = glint(b[0] + b[1], t, 3.6, 0.45, -0.6, 1.8); } else sway(o, t, 0.15, 12); } }),
+    act([part("cover", cover(1), { rigid: true }), part("pages", pages(1), { rigid: true }), part("quill", quillAt(nib0[0] + 0.62, nib0[1] + 0.25, nib0[2]), { rigid: true }), part("star", paint(finalStar, GOLD))], { caption: message('kultur.theLinesRiseFromThePagesAndBecomeAStar'), frame: "star", cloud: ["star"], live: (b, j, t, o) => { if (j >= NC + NP + NQ) { yaw(o, Math.sin(t * 0.5) * 0.5, STAR[0], 0); o[3] = glint(b[0] + b[1], t, 3.6, 0.45, -0.6, 1.8); } else sway(o, t, 0.15, 12); } }),
   ] };
 }
 
@@ -224,17 +225,17 @@ function harpStoryScene(n) {
   // vierzehnte Fassung: jede Note ist ein eigenes Teil, sie behält ihre Drohnen vom Abflug bis auf die Notenlinie
   const noteParts = (pts) => { let at = 0; return per.map((m, k) => { const q = part(`note${k}`, pts.slice(at, at + m)); at += m; return q; }); };
   return { beats: [
-    act([harp, strings(full.pts)], { caption: "Eine Harfe", hold: 1.4, frame: "harp", live: (b, j, t, o) => { o[3] = glint(b[0] + b[1] * 0.5, t, 3.8, 0.35); sw(o, t); } }),
-    act([harp, strings(full.pts)], { caption: "die Saiten klingen nacheinander", hold: 4.8, frame: "harp", live: (b, j, t, o) => {
+    act([harp, strings(full.pts)], { caption: message('kultur.aHarp'), hold: 1.4, frame: "harp", live: (b, j, t, o) => { o[3] = glint(b[0] + b[1] * 0.5, t, 3.8, 0.35); sw(o, t); } }),
+    act([harp, strings(full.pts)], { caption: message('kultur.theStringsSoundOneAfterAnother'), hold: 4.8, frame: "harp", live: (b, j, t, o) => {
       if (j >= NF) { const [i, v] = full.of[j - NF], u = frac(t / P) * P; let a = 0.85; for (const s0 of onString[i]) a = Math.max(a, pluck(o, v, u - s0, 0.035), pluck(o, v, u + P - s0, 0.035)); o[3] = a; }
       sw(o, t);
     } }),
-    act([harp, strings(thin.pts), ...noteParts(paint(notesAt(starts), NOTE))], { caption: "Noten lösen sich und fliegen in Bögen davon", hold: 4.4, frame: "fly", fitPts: [...frame, ...thin.pts, ...endAt], live: (b, j, t, o) => {
+    act([harp, strings(thin.pts), ...noteParts(paint(notesAt(starts), NOTE))], { caption: message('kultur.notesLiftOffAndFlyAwayInArcs'), hold: 4.4, frame: "fly", fitPts: [...frame, ...thin.pts, ...endAt], live: (b, j, t, o) => {
       if (j >= NF && j < NF + NS3) { const [i, v] = thin.of[j - NF], k = FROM.indexOf(i); if (k >= 0) o[3] = pluck(o, v, t - LEAVE(k) + 0.15, 0.03); }
       else if (j >= NF + NS3) { const q = j - NF - NS3, k = noteOf[q], [x, y] = local[q], c = arc(k, t); o[0] = c[0] + x; o[1] = c[1] + y; o[2] = c[2]; o[3] = 1 + 0.35 * Math.sin(Math.PI * smooth((t - LEAVE(k)) / FLY)); return; }
       sw(o, t);
     } }),
-    act([part("frame", paint(clef, GOLD)), strings(staff), ...noteParts(paint(melodyNotes, NOTE))], { caption: "…und ordnen sich auf fünf Linien zur Melodie", frame: "staff", live: (b, j, t, o) => {
+    act([part("frame", paint(clef, GOLD)), strings(staff), ...noteParts(paint(melodyNotes, NOTE))], { caption: message('kultur.andArrangeThemselvesOnFiveLinesAsAMelody'), frame: "staff", live: (b, j, t, o) => {
       if (j >= NC + NL) { const k = noteOf[j - NC - NL], u = frac(t / 3 - k * 0.12); o[1] += 0.08 * Math.sin(Math.PI * Math.min(1, u / 0.25)) ** 2; o[3] = 1 + 0.4 * Math.sin(Math.PI * Math.min(1, u / 0.25)); }
       else if (j < NC) o[3] = glint(b[1], t, 3.4, 0.4, -0.9, 0.7);
       sway(o, t, 0.2, 12);
@@ -335,18 +336,18 @@ function dancerStoryScene(n) {
   const fanRibs = paint(sample3d(ribs, NB), GOLD);
   const spin = (t) => W1 * D * spun((t - 0.3) / D), lift = (t) => 0.15 + 0.85 * smooth((t - 0.6) / 3.4);
   return { beats: [
-    act([body, skirt(0.15)], { caption: "Eine Tänzerin", hold: 1.6, live: (b, j, t, o) => {
+    act([body, skirt(0.15)], { caption: message('kultur.aDancer'), hold: 1.6, live: (b, j, t, o) => {
       if (j >= NB) { const p = skirtAt(sk[j - NB], 0.15, t * 1.4); o[0] = p[0]; o[1] = p[1]; o[2] = p[2]; }
       yaw(o, 0.35 * Math.sin((t * TAU) / 9)); pitch(o, TILT);
     } }),
-    act([body, skirt(1)], { caption: "sie dreht sich, schneller, der Rock hebt sich", hold: 4.6, live: (b, j, t, o) => {
+    act([body, skirt(1)], { caption: message('kultur.sheSpinsFasterHerSkirtLifts'), hold: 4.6, live: (b, j, t, o) => {
       if (j >= NB) { const p = skirtAt(sk[j - NB], lift(t), t * 1.8); o[0] = p[0]; o[1] = p[1]; o[2] = p[2]; o[3] = sk[j - NB][1] === 1 ? 1 + 0.3 * smooth((t - 1) / 3) : 1; }
       yaw(o, spin(t)); pitch(o, TILT);
     } }),
-    act([part("body", flowerInner), part("skirt", flowerOuter)], { caption: "der Rock wird zur Blüte", hold: 2.6, live: (b, j, t, o) => {
+    act([part("body", flowerInner), part("skirt", flowerOuter)], { caption: message('kultur.theSkirtBecomesAFlower'), hold: 2.6, live: (b, j, t, o) => {
       roll(o, 0.3 * t, B[0], B[1]); pitch(o, 0.18 * Math.sin((t * TAU) / 7), B[1]); o[3] = glint(Math.hypot(b[0] - B[0], b[1] - B[1]), t, 3.2, 0.45, 0, 1.1);
     } }),
-    act([part("body", fanRibs), part("skirt", fanLeaf)], { caption: "…und die Blüte faltet sich zum Fächer", live: (b, j, t, o) => {
+    act([part("body", fanRibs), part("skirt", fanLeaf)], { caption: message('kultur.andTheFlowerFoldsIntoAFan'), live: (b, j, t, o) => {
       roll(o, 0.1 * Math.sin((t * TAU) / 3.4), FAN.x, FAN.y); o[3] = glint(Math.atan2(b[1] - FAN.y, b[0] - FAN.x), t, 3.4, 0.4, FAN.a1 + 0.3, FAN.a0 - 0.3);
     } }),
   ] };

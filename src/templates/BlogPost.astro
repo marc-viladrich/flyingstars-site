@@ -1,46 +1,48 @@
 ---
+import { localizedCollection } from '../i18n/content';
+import { forPath } from '../i18n/server';
+const { t, localHref, formatLocale } = forPath(Astro.url.pathname);
+import { localeFromPath } from '../i18n/routing.mjs';
+const locale = localeFromPath(Astro.url.pathname);
 // Blogartikel auf Seitenniveau (Marc, 31.10.2026, Runde 8): Kicker mit Thema, Titel, Autor mit Foto, Datum und Lesezeit,
 // Titelbild mit Vorhang, lesbare Spalte (rund 68 Zeichen), am Ende Autor, Anfrage und zwei weitere Beiträge.
 // Der Artikeltext bleibt wörtlich wie auf flyingstars.art (Import 31.10.2026), Moritz überarbeitet ihn später.
-import { getCollection, render } from 'astro:content';
-import Base from '../../layouts/Base.astro';
-import Cta from '../../components/sections/Cta.astro';
-import PostGrid from '../../components/blog/PostGrid.astro';
-import SectionHead from '../../components/SectionHead.astro';
-import { optimizedImage } from '../../lib/media';
-import { AUTHOR, dateOf, readingMinutes, topicOf, sortPosts } from '../../components/blog/post-meta';
-export async function getStaticPaths() {
-  const posts = await getCollection('posts', (p) => !p.data.draft);
-  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
-}
+import { render, type CollectionEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Cta from '../components/sections/Cta.astro';
+import PostGrid from '../components/blog/PostGrid.astro';
+import SectionHead from '../components/SectionHead.astro';
+import { optimizedImage } from '../lib/media';
+import { AUTHOR, dateOf, readingMinutes, topicOf, sortPosts } from '../components/blog/post-meta';
+interface Props { post: CollectionEntry<'posts'>; }
 const { post } = Astro.props;
 const { Content } = await render(post);
 const cover = post.data.cover ? await optimizedImage(post.data.cover.src, 1600) : undefined;
 const face = await optimizedImage(AUTHOR.image.src, 160);
-const more = sortPosts(await getCollection('posts', (p) => !p.data.draft && p.id !== post.id)).slice(0, 3);
-const updated = post.data.updated && post.data.updated.valueOf() !== post.data.date.valueOf() ? new Intl.DateTimeFormat('de-DE', { dateStyle: 'long' }).format(post.data.updated) : undefined;
+const more = sortPosts(await localizedCollection('posts', locale, p => !p.data.draft && p.id !== post.id)).slice(0, 3);
+const updated = post.data.updated && post.data.updated.valueOf() !== post.data.date.valueOf() ? new Intl.DateTimeFormat(formatLocale, { dateStyle: 'long' }).format(post.data.updated) : undefined;
 ---
 <Base title={post.data.title} description={post.data.description} image={post.data.cover?.src} navSection="/blog/">
   <article class="section post" aria-labelledby="post-h">
     <header class="post-head">
-      <a class="kicker mono post-back" href="/blog/"><span aria-hidden="true">←</span> Blog · {topicOf(post)}</a>
+      <a class="kicker mono post-back" href={localHref("/blog/")}><span aria-hidden="true">←</span> Blog · {topicOf(post)}</a>
       <h1 id="post-h">{post.data.title}</h1>
       <div class="byline">
         <img class="face" src={face.src} width={face.width} height={face.height} alt="" loading="eager" decoding="async" />
-        <p><b>{AUTHOR.name}</b> <span class="mono">{AUTHOR.role}</span></p>
-        <p class="when"><time datetime={post.data.date.toISOString()}>{dateOf(post)}</time> · {readingMinutes(post)} Min. Lesezeit{updated && <> · aktualisiert am {updated}</>}</p>
+        <p><b>{AUTHOR.name}</b> <span class="mono">{t(AUTHOR.roleKey)}</span></p>
+        <p class="when"><time datetime={post.data.date.toISOString()}>{dateOf(post)}</time> · {readingMinutes(post)} {t('postcard.minRead')}{updated && <> · {t('blog.updated', { date: updated })}</>}</p>
       </div>
     </header>
     {cover && <figure class="post-cover" data-curtain><img src={cover.src} {...cover.attributes} width={cover.width} height={cover.height} alt={post.data.cover!.alt} loading="eager" decoding="async" fetchpriority="high" /></figure>}
     <div class="post-body"><Content /></div>
-    <aside class="post-author" aria-label="Über den Autor">
+    <aside class="post-author" aria-label={t('blogpost.aboutTheAuthor')}>
       <img class="face" src={face.src} width={face.width} height={face.height} alt={AUTHOR.name} loading="lazy" decoding="async" />
-      <p><b>{AUTHOR.name}</b> führt FlyingStars gemeinsam mit Ronja Donsbach und Erwin Wilms. Er kümmert sich um Verwaltung, Personal und Kund:innen in Deutschland und schreibt unseren Blog. <a class="link" href="/ueber-uns/#team">Das Team <span aria-hidden="true">→</span></a></p>
+      <p><b>{AUTHOR.name}</b> {t('blogpost.runsFlyingstarsTogetherWithRonjaDonsbachAndErwinWilmsHe')} <a class="link" href={localHref("/ueber-uns/#team")}>{t('blogpost.theTeam')} <span aria-hidden="true">→</span></a></p>
     </aside>
   </article>
-  <Cta type="cta" index={1} headline="Plant ihr eine eigene Show?" text="Datum, Ort und Anlass reichen für eine erste Einschätzung. Wir antworten innerhalb von 48 Stunden." button={{ label: 'Show anfragen', href: '/kontakt/' }} />
+  <Cta type="cta" index={1} headline={t('blogpost.planningYourOwnShow')} text={t('blogpost.aDateLocationAndOccasionAreEnoughForAnInitial')} button={{ label: t('chopper404.requestAShow'), href: '/kontakt/' }} />
   {more.length > 0 && <section class="section post-more" aria-labelledby="more-h">
-    <SectionHead kicker="Weiterlesen" headline="Mehr aus dem Blog." id="more-h" />
+    <SectionHead kicker={t('blogpost.readOn')} headline={t('blogpost.moreFromTheBlog')} id="more-h" />
     <PostGrid posts={more} level="h3" />
   </section>}
 </Base>

@@ -1,0 +1,199 @@
+title: Indoor-droneshow
+navLabel: Indoor
+description: "Indoor-droneshows voor beurzen, podia en hallen: 20 tot 50 drones, 5 tot 8 minuten, vanaf 3 meter plafondhoogte. Apart berekend."
+image: https://flyingstars.art/wp-content/uploads/2025/04/IMG_0201.jpg
+sections:
+  - type: landingHero
+    kicker: Indoor
+    headline: Droneshows voor beurzen, podia en *hallen*.
+    text: Kleine drones met rotorbeveiliging vliegen binnen, afgestemd op muziek en licht. We plannen en berekenen elke indoor-show voor jullie ruimte.
+    cta:
+      label: Vraag een indoor-show aan
+      href: "#anfrage"
+    secondary:
+      label: Wat er binnen anders is
+      href: "#unterschied"
+    video: siemensIndoor
+    videoLabel: Siemens · Hannover Messe
+    poster:
+      src: https://flyingstars.art/wp-content/uploads/2025/04/IMG_0201.jpg
+      alt: Tientallen lichtgevende drones in rijen boven de vloer van een verduisterde sporthal
+      width: 2560
+      height: 1440
+    facts:
+      - value: 20–50
+        label: Drones
+      - value: 5–8 min.
+        label: Showduur
+      - value: vanaf 3 m
+        label: Plafondhoogte
+  - type: comparison
+    id: unterschied
+    kicker: Vergelijking
+    headline: Binnen vliegt een andere show.
+    text: Minder en kleinere drones, dichter bij het publiek, met een kortere duur. In de ruimte ontstaan patronen en bewegende figuren.
+    rowHeader: Kenmerk
+    columns:
+      - Indoor
+      - Outdoor
+    rows:
+      - label: Drones
+        values:
+          - 20 tot 50
+          - vanaf 100
+      - label: Duur
+        values:
+          - 5 tot 8 minuten
+          - meestal circa 13 minuten
+      - label: Gewicht per drone
+        values:
+          - 188 g
+          - ca. 300 g
+      - label: Positionering
+        values:
+          - Radiostations in de ruimte (UWB)
+          - GPS
+      - label: Vlieghoogte
+        values:
+          - 1 tot 8 m
+          - meestal tot 120 m
+      - label: Ruimte
+        values:
+          - vanaf 3 m plafondhoogte en een vrije vliegzone
+          - veiligheidszone van ca. 100 × 100 m
+      - label: Prijs
+        values:
+          - apart berekend, vanaf ca. € 15.000 exclusief btw voor 20 drones
+          - Pakketten vanaf € 7.900 exclusief btw
+  - type: landingSite
+    id: raum
+    kicker: Voorwaarden
+    headline: Wat jullie ruimte nodig heeft.
+    text: De plattegrond, plafondhoogte en positie van jullie publiek vormen de basis voor ons showconcept.
+    variant: indoor
+    diagram:
+      description: Doorsnede van een ruimte met minimaal 3 m plafondhoogte en het publiek naast het vrije vlieggebied. Daaronder een bovenaanzicht van een voorbeeldopstelling voor 20 drones, met antennes op de hoeken van het vlieggebied.
+      horizontalLabel: ca. 5 m
+      verticalLabel: min. 3 m
+      detailLabel: 1 m raster
+      flightLabel: Vlieghoogte tot 8 m, afgestemd op de ruimte
+      caption: Schema, niet op schaal. Voorbeeldopstelling voor 20 drones op ca. 5 × 5 m. Voor 50 drones vermeldt het gegevensblad ca. 7 × 7 m. We plannen het volledige vlieggebied en de publiekszone voor jullie ruimte.
+    items:
+      - title: Plafondhoogte
+        value: minimaal 3 m
+        text: We passen de vliegroutes aan jullie ruimte aan. Het indoorsysteem vliegt tot 8 m hoog.
+        zone: ceiling
+      - title: Vlieggebied
+        text: De start- en vliegzone blijft vrij. Indoor gebruiken we een eigen dronesysteem met vooraf berekende vliegroutes.
+        zone: drones
+      - title: Start- en landingszone
+        value: 1 m startraster
+        text: Als richtlijn hebben 20 drones ca. 5 × 5 m nodig en 50 drones ca. 7 × 7 m. De vloer moet vlak zijn; alle drones starten op dezelfde hoogte.
+        zone: floor
+      - title: Positionering in de ruimte
+        text: Antennes staan op de hoeken van het vlieggebied. Het UWB-systeem bepaalt de posities in de ruimte; wij nemen de drones en techniek mee.
+        zone: kit
+      - title: Publiekszone
+        text: We stemmen de positie van jullie gasten en het vrije vlieggebied met jullie af. De afstand tot het publiek leggen we vast in het showconcept voor jullie ruimte.
+        zone: guests
+    responsibilities:
+      provider:
+        - We plannen het vlieggebied, de publiekspositie en de choreografie voor jullie ruimte. Elke indoorshow berekenen we afzonderlijk.
+        - We nemen het indoor-dronesysteem, de positioneringstechniek en ons team mee.
+      customer:
+        - Jullie sturen ons een plattegrond met afmetingen en plafondhoogte en geven de geplande positie van het publiek aan.
+        - Jullie zorgen voor een vrije start- en vliegzone op een vlakke vloer. Een stroomaansluiting in de buurt stemmen we met jullie af.
+    download:
+      label: Technisch gegevensblad · PDF
+      href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf
+  - type: landingBento
+    id: sicherheit
+    kicker: Veiligheid
+    headline: Veilig dicht bij het publiek.
+    text: Indoor-drones zijn lichter en langzamer dan onze outdoor-vloot en vliegen vooraf berekende routes.
+    lead:
+      label: Rotoren
+      title: Een beschermframe rond elke *rotor*.
+      image:
+        src: https://flyingstars.art/wp-content/uploads/2025/04/0L9A4365.jpg
+        alt: Kleine drones met rotorbeveiliging lichten blauw op op een donkere vloer
+        width: 2560
+        height: 1708
+    items:
+      - icon: gauge
+        title: Maximaal 1,5 m/s
+        text: Sneller vliegen de drones binnen niet.
+      - icon: move-horizontal
+        title: 0,5 m afstand
+        text: De minimale afstand tussen twee drones.
+      - icon: shield-check
+        title: Meervoudig beveiligd
+        text: Redundante veiligheidsfuncties, een gecontroleerde landingsfunctie en CE-gecertificeerde onderdelen.
+  - type: landingSpotlight
+    id: einsatzorte
+    kicker: Locaties
+    headline: Waar indoor-shows passen.
+    text: We stemmen merkkleuren en muziek af op jullie optreden.
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2025/04/drohnenshow-indoor-2.jpg
+      alt: Lichtgevende drones in formatie voor het podium in een volle zaal
+      width: 1200
+      height: 764
+    tags:
+      - Beurzen
+      - Concerten
+      - Sportevenementen
+      - Bedrijfsfeesten
+      - Bruiloften in zalen
+    entries:
+      - kicker: Hannover Messe · maart 2025
+        title: Siemens
+        text: Onze eerste indoor-show.
+      - kicker: Essen · september 2026
+        title: Triple Z
+        text: In het bedrijvencentrum op Zeche Zollverein, waar ook ons kantoor zit.
+  - type: tempo
+    id: ablauf
+    kicker: Verloop
+    headline: Zo verloopt een indoor-show.
+    marks:
+      - value: 48 h
+        label: tot ons antwoord
+        text: Vertel ons over de ruimte, de gelegenheid en de datum.
+      - value: 6–8 weken
+        label: ideale voorbereidingstijd
+        text: Ontwerp en planning in de ruimte. Vooraf zien jullie de show op video of tijdens een testvlucht.
+      - value: 45 min.
+        label: van opbouw tot startklaar
+        text: We beginnen vanaf twee uur vóór de show.
+  - type: landingPrice
+    id: preise
+    kicker: Prijzen
+    headline: Wat een indoor-show kost.
+    text: Indoor-shows berekenen we apart. De outdoor-pakketten gelden binnen niet.
+    price: vanaf ca. € 15.000
+    unit: exclusief btw voor 20 drones, als richtprijs
+    groups:
+      - title: De prijs hangt af van
+        items:
+          - label: jullie ruimte
+          - label: het aantal drones
+            value: 20–50
+          - label: de opbouw
+    cta:
+      label: Vraag een indoor-offerte aan
+      href: "#anfrage"
+  - type: faq
+    id: fragen
+    kicker: FAQ
+    headline: Vragen over indoor-shows.
+    cta:
+      label: Alle vragen
+      href: /faq/
+    tags:
+      - indoor
+  - type: contactForm
+    kicker: Aanvraag
+    headline: Vertel ons over jullie ruimte.
+    text: Plafondhoogte, oppervlakte en datum zijn genoeg voor een eerste inschatting. We reageren binnen 48 uur.
+translationSourceHash: 20afefd7b6a7fba9c15fb6fde3aa861421c3b948fa2a8f42719ede8981a56c7d

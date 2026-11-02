@@ -1,3 +1,4 @@
+import { t as message } from '../../i18n/ui.mjs';
 // festival motifs (Reise, Drache) of the eleventh version (see src/content/show-configurator.js for the build names).
 // Reise: a compass rose whose needle settles on north; in the story an old town lies down and becomes a folded map,
 // pins light up, a paper plane flies the route and circles the compass. Drache: an own, friendly dragon drawn as a
@@ -201,26 +202,26 @@ builders.travelStory = (n) => {
   const pinLight = (j0, j, t, at) => { const k = Math.min(PINS.length - 1, Math.floor((j - j0) / perPin[0])); const tk = at(k); return t < tk ? 0.18 : 1 + 0.7 * Math.exp(-(t - tk) / 0.35); };
   const L = LD, P = LD + PN; // part offsets: land, pins, route, plane
   return { beats: [
-    act([part("land", paint(town, WARM)), part("pins", paint(lit, GOLD)), part("route", paint(stars, WARM)), plane(moon)], { caption: "Eine Stadt bei Nacht", hold: 1.6, live: (b, j, t, o) => {
+    act([part("land", paint(town, WARM)), part("pins", paint(lit, GOLD)), part("route", paint(stars, WARM)), plane(moon)], { caption: message('festival.aCityAtNight'), hold: 1.6, live: (b, j, t, o) => {
       if (j >= L && j < P) o[3] = 0.85 + 0.35 * sparkle(j, t, 0, 1); else if (j >= P && j < P + RT) o[3] = sparkle(j, t, 0.5, 1.2); else if (j >= P + RT) o[3] = 1.1;
     } }),
-    act([part("land", paint(town, WARM)), part("pins", paint(lit, GOLD)), part("route", paint(stars, WARM)), plane(moon)], { caption: "sie legt sich flach", hold: 3, live: (b, j, t, o) => {
+    act([part("land", paint(town, WARM)), part("pins", paint(lit, GOLD)), part("route", paint(stars, WARM)), plane(moon)], { caption: message('festival.itFlattensOut'), hold: 3, live: (b, j, t, o) => {
       if (j < P) pitch(o, TILT * fold(t), GROUND, 0); // the town tips back about its ground line
       if (j >= L && j < P) o[3] = 1; else if (j >= P && j < P + RT) o[3] = sparkle(j, t, 0.5, 1.2); else if (j >= P + RT) o[3] = 1.1;
     } }),
-    act([part("land", paint(map, mapColour)), part("pins", paint(pins, PINK)), part("route", paint(dashes, CYAN)), plane(parked, true)], { caption: "und wird zur Karte, Pins leuchten auf", hold: 3.2, live: (b, j, t, o) => {
+    act([part("land", paint(map, mapColour)), part("pins", paint(pins, PINK)), part("route", paint(dashes, CYAN)), plane(parked, true)], { caption: message('festival.andBecomesAMapPinsLightUp'), hold: 3.2, live: (b, j, t, o) => {
       if (j >= L && j < P) o[3] = pinLight(L, j, t, (k) => 0.3 + 0.55 * k); else if (j >= P && j < P + RT) o[3] = 0.15;
     } }),
-    act([part("land", paint(map, mapColour)), part("pins", paint(pins, PINK)), part("route", paint(dashes, CYAN)), plane(parked, true)], { caption: "eine Route verbindet die Orte", hold: 3, live: (b, j, t, o) => {
+    act([part("land", paint(map, mapColour)), part("pins", paint(pins, PINK)), part("route", paint(dashes, CYAN)), plane(parked, true)], { caption: message('festival.aRouteConnectsThePlaces'), hold: 3, live: (b, j, t, o) => {
       if (j >= L && j < P) o[3] = breathe(t, 2.6, (j - L) * 0.02); else if (j >= P && j < P + RT) o[3] = trace(routeU[j - P], t, 2.4, { delay: 0.2, dim: 0.15 });
     } }),
-    act([part("land", paint(map, mapColour)), part("pins", paint(pins, PINK)), part("route", paint(dashes, CYAN)), plane(parked, true)], { caption: "ein Papierflieger fliegt die Route ab", hold: FLY + 1, live: (b, j, t, o) => {
+    act([part("land", paint(map, mapColour)), part("pins", paint(pins, PINK)), part("route", paint(dashes, CYAN)), plane(parked, true)], { caption: message('festival.aPaperPlaneFollowsTheRoute'), hold: FLY + 1, live: (b, j, t, o) => {
       const s = flown(t);
       if (j >= P + RT) { const [x, y, z] = planeOnRoute(model[j - P - RT], s); o[0] = x; o[1] = y; o[2] = z; o[3] = 1.2; }
       else if (j >= L && j < P) { const k = Math.min(PINS.length - 1, Math.floor((j - L) / perPin[0])); o[3] = 1 + 0.7 * Math.exp(-(((s - pinSigma[k]) / 0.15) ** 2)); } // each pin flashes as the plane passes
       else if (j >= P) o[3] = 1;
     } }),
-    { ...act([part("land", compass.slice(0, LD)), part("pins", compass.slice(LD + RT)), part("route", compass.slice(LD, LD + RT)), plane(circling, true)], { caption: "…und kreist um den Kompass, der nach Norden zeigt", cloud: ["land", "pins", "route"], live: (b, j, t, o) => {
+    { ...act([part("land", compass.slice(0, LD)), part("pins", compass.slice(LD + RT)), part("route", compass.slice(LD, LD + RT)), plane(circling, true)], { caption: message('festival.andCirclesTheCompassPointingNorth'), cloud: ["land", "pins", "route"], live: (b, j, t, o) => {
       if (j >= P + RT) { const [x, y, z] = planeOnOrbit(model[j - P - RT], phase(t)); o[0] = x; o[1] = y; o[2] = z; o[3] = 1.15; }
       else if (j >= L && j < P) { roll(o, needleAngle(t, { start: 0.3, amp: 0.45, swing: 2.0, decay: 1.0 }), 0, CY); if (j - L < body.needleNorth) o[3] = 1.25; }
       else if (j < L) o[3] = glint(Math.atan2(b[1] - CY, b[0]), t, 4.5, 0.35, -Math.PI, Math.PI);
@@ -367,9 +368,9 @@ builders.dragonStory = (n) => {
     if (j < D) { f(meta[j], o); o[3] = glow(meta[j], j, t); } else { const [x, y, z] = trail(h, j - D); o[0] = x; o[1] = y; o[2] = z; o[3] = sparkle(j, t, 0.6, 1.4) * (1 - 0.5 * ((j - D) / F)); }
   }; };
   return { beats: [
-    { ...act(parts(withColour(startPose)), { caption: "Ein Drache steigt auf", hold: RISE + 0.6, cloud: true, live: flying(flight(S1, S2, RISE)) }), fitPts: view },
-    { ...act(parts(withColour(riseEnd)), { caption: "er dreht eine Runde", hold: CIRCLE + 0.6, live: flying(flight(S2, S3, CIRCLE)) }), fitPts: view },
-    { ...act(parts(withColour(meta.map((m) => endF(m, [0, 0, 0]))), paint([...cone, ...shellPts], (p, k) => fireColour[k])), { caption: "…und speit ein Feuerwerk", live: (() => { let at = NaN, f = null; return (b, j, t, o) => {
+    { ...act(parts(withColour(startPose)), { caption: message('festival.aDragonRises'), hold: RISE + 0.6, cloud: true, live: flying(flight(S1, S2, RISE)) }), fitPts: view },
+    { ...act(parts(withColour(riseEnd)), { caption: message('festival.itCirclesOnce'), hold: CIRCLE + 0.6, live: flying(flight(S2, S3, CIRCLE)) }), fitPts: view },
+    { ...act(parts(withColour(meta.map((m) => endF(m, [0, 0, 0]))), paint([...cone, ...shellPts], (p, k) => fireColour[k])), { caption: message('festival.andBreathesFireworks'), live: (() => { let at = NaN, f = null; return (b, j, t, o) => {
       if (j < D) { if (t !== at) { at = t; f = landed(t); } f(meta[j], o); o[3] = glow(meta[j], j, t); return; }
       const k = j - D;
       if (k < CONE) o[3] = chase((k + 0.5) / CONE, t, 0.9, 0.35, 0.35, 1.5); // fire runs out of the mouth
@@ -454,17 +455,17 @@ builders.wheelStory = (n) => {
   const Y = 0.55, gondolaOn = (k, t) => 0.25 + smooth((t - 0.8 - k * 0.5) / 0.45);
   const wheelLight = (j, t, fade) => (model.kind[j] === 0 ? 1 + (chase(model.u[j], t, 0.09, 0.25, 0.95, 1.3) - 1) * fade : 1);
   return { beats: [
-    { ...act(parts(paint(garland, lightsColour)), { caption: "Ein Riesenrad zeichnet sich in den Himmel", hold: 3.2, live: (b, j, t, o) => {
+    { ...act(parts(paint(garland, lightsColour)), { caption: message('festival.aFerrisWheelTakesShapeInTheSky'), hold: 3.2, live: (b, j, t, o) => {
       if (j < W) o[3] = model.kind[j] === 2 ? 0.25 : trace(rank[j], t, 2.6);
       else o[3] = chase((j - W) / L, t, 0.2, 0.2, 0.9, 1.3);
       yaw(o, Y);
     } }), fitPts: view },
-    { ...act(parts(paint(garland, lightsColour)), { caption: "es dreht sich, die Gondeln leuchten nacheinander auf", hold: 6.5, live: (b, j, t, o) => {
+    { ...act(parts(paint(garland, lightsColour)), { caption: message('festival.itTurnsTheGondolasLightUpOneByOne'), hold: 6.5, live: (b, j, t, o) => {
       if (j < W) { turnWheel(model, j, t * SPIN, o); o[3] = model.kind[j] === 2 ? gondolaOn(model.gk[j], t) : wheelLight(j, t, smooth(t / 1.2)); }
       else o[3] = chase((j - W) / L, t, 0.2, 0.2, 0.9, 1.3);
       yaw(o, Y);
     } }), fitPts: view },
-    { ...act(parts(paint(star, lightsColour)), { caption: "…und über ihm blüht ein Stern", clock: "continue", live: (b, j, t, o) => {
+    { ...act(parts(paint(star, lightsColour)), { caption: message('festival.andAStarBloomsAboveIt'), clock: "continue", live: (b, j, t, o) => {
       if (j < W) { turnWheel(model, j, t * SPIN, o); o[3] = model.kind[j] === 2 ? 1.25 : wheelLight(j, t, 1); yaw(o, Y); return; }
       const r = Math.hypot(b[0] - BURST[0], b[1] - BURST[1]) / BR, [a] = burstLight(r, t, 3.4, 0.3); o[3] = a;
     } }), fitPts: view },

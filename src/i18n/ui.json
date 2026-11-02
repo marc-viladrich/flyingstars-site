@@ -1,0 +1,3362 @@
+{
+  "chopper404.thisPageDoesnTExist": {
+    "de": "Diese Seite gibt es nicht.",
+    "en": "This page doesn't exist.",
+    "nl": "Deze pagina bestaat niet."
+  },
+  "chopper404.chopperTheOfficeDogFliesBackAndForthAsA": {
+    "de": "Der Bürohund Chopper als Drohnenformation fliegt mit Propellermütze hin und her und wedelt",
+    "en": "Chopper the office dog flies back and forth as a drone formation, wearing a propeller cap and wagging his tail",
+    "nl": "Kantoorhond Chopper vliegt als droneformatie heen en weer, met propellerpet en kwispelende staart"
+  },
+  "chopper404.chopperOurOfficeDogHasAlreadyFlownALapFor": {
+    "de": "Chopper, unser Bürohund, ist schon eine Runde für euch geflogen. Gefunden hat er sie auch nicht, aber er bringt euch gern woandershin.",
+    "en": "Chopper, our office dog, has already flown a lap for you. He couldn't find this page either, but he's happy to take you somewhere else.",
+    "nl": "Chopper, onze kantoorhond, heeft al een rondje voor jullie gevlogen. Ook hij kon deze pagina niet vinden, maar hij brengt jullie graag ergens anders heen."
+  },
+  "chopper404.continueTo": {
+    "de": "Weiter zu",
+    "en": "Continue to",
+    "nl": "Verder naar"
+  },
+  "chopper404.backToTheHomepage": {
+    "de": "Zur Startseite",
+    "en": "Back to the homepage",
+    "nl": "Naar de homepage"
+  },
+  "chopper404.viewOurWork": {
+    "de": "Referenzen ansehen",
+    "en": "View our work",
+    "nl": "Bekijk onze shows"
+  },
+  "chopper404.pricesAndPreview": {
+    "de": "Preise und Vorschau",
+    "en": "Prices and preview",
+    "nl": "Prijzen en preview"
+  },
+  "chopper404.requestAShow": {
+    "de": "Show anfragen",
+    "en": "Request a show",
+    "nl": "Vraag een show aan"
+  },
+  "logo.flyingstarsHomepage": {
+    "de": "FlyingStars – Startseite",
+    "en": "FlyingStars homepage",
+    "nl": "FlyingStars homepage"
+  },
+  "video.watchTheShowVideo": {
+    "de": "Showvideo ansehen",
+    "en": "Watch the show video",
+    "nl": "Bekijk de showvideo"
+  },
+  "video.theVideoIsCurrentlyUnavailablePleaseTryAgainLater": {
+    "de": "Das Video ist gerade nicht verfügbar. Bitte versuche es später erneut.",
+    "en": "The video is currently unavailable. Please try again later.",
+    "nl": "De video is momenteel niet beschikbaar. Probeer het later opnieuw."
+  },
+  "postcard.minRead": {
+    "de": "Min. Lesezeit",
+    "en": "min read",
+    "nl": "min. leestijd"
+  },
+  "configuratorteaser.openTheShowConfigurator": {
+    "de": "Zum Show-Konfigurator",
+    "en": "Open the show configurator",
+    "nl": "Naar de showconfigurator"
+  },
+  "configuratorteaser.theFlyingstarsLogoBecomingSharperWithMoreDronesAHeart": {
+    "de": "das FlyingStars-Logo, das mit mehr Drohnen schärfer wird, ein Herz in 2D, als Tunnel und in 3D, ein QR-Code, eine Rakete, die auf dem Mond landet, und eine große 3D-Maske",
+    "en": "the FlyingStars logo becoming sharper with more drones, a heart in 2D, as a tunnel and in 3D, a QR code, a rocket landing on the moon and a large 3D mask",
+    "nl": "het FlyingStars-logo dat scherper wordt met meer drones, een hart in 2D, als tunnel en in 3D, een QR-code, een raket die op de maan landt en een groot 3D-masker"
+  },
+  "configuratorteaser.aLogoBecomingSharperWithMoreDronesALightBulb": {
+    "de": "ein Logo, das mit mehr Drohnen schärfer wird, Glühbirne, Spirale, ein QR-Code und eine Rakete, die auf dem Mond landet",
+    "en": "a logo becoming sharper with more drones, a light bulb, a spiral, a QR code and a rocket landing on the moon",
+    "nl": "een logo dat scherper wordt met meer drones, een gloeilamp, een spiraal, een QR-code en een raket die op de maan landt"
+  },
+  "configuratorteaser.initialsInsideAHeartAHeartIn2dAsA": {
+    "de": "Initialen im Herz, ein Herz in 2D, als Tunnel und in 3D, Sektgläser, Ringe und ein Antrag",
+    "en": "initials inside a heart, a heart in 2D, as a tunnel and in 3D, champagne glasses, rings and a proposal",
+    "nl": "initialen in een hart, een hart in 2D, als tunnel en in 3D, champagneglazen, ringen en een huwelijksaanzoek"
+  },
+  "configuratorteaser.sampleDroneShowPreviewValue": {
+    "de": "Beispiel-Vorschau einer Drohnenshow: {v0}",
+    "en": "Sample drone show preview: {v0}",
+    "nl": "Voorbeeld van een droneshow: {v0}"
+  },
+  "configuratorteaser.createYourOwnShow": {
+    "de": "Eigene Show zusammenstellen",
+    "en": "Create your own show",
+    "nl": "Stel jullie eigen show samen"
+  },
+  "configuratorteaser.thePreviewIsCurrentlyUnavailable": {
+    "de": "Die Vorschau ist gerade nicht verfügbar.",
+    "en": "The preview is currently unavailable.",
+    "nl": "De preview is momenteel niet beschikbaar."
+  },
+  "configuratorteaser.package": {
+    "de": "Paket",
+    "en": "Package",
+    "nl": "Pakket"
+  },
+  "configuratorteaser.drones": {
+    "de": "Drohnen",
+    "en": "Drones",
+    "nl": "Drones"
+  },
+  "showconfigurator.whatShouldHappenInTheSky": {
+    "de": "Was soll am Himmel passieren?",
+    "en": "What should happen in the sky?",
+    "nl": "Wat mag er aan de hemel gebeuren?"
+  },
+  "showconfigurator.fromValue": {
+    "de": "ab {v0} €",
+    "en": "from €{v0}",
+    "nl": "vanaf € {v0}"
+  },
+  "showconfigurator.showPreview": {
+    "de": "Vorschau der Show",
+    "en": "Show preview",
+    "nl": "Preview van de show"
+  },
+  "showconfigurator.pauseThePreview": {
+    "de": "Vorführung anhalten",
+    "en": "Pause the preview",
+    "nl": "Preview pauzeren"
+  },
+  "showconfigurator.dragYourLogoHere": {
+    "de": "Dein Logo hier reinziehen",
+    "en": "Drag your logo here",
+    "nl": "Sleep jullie logo hierheen"
+  },
+  "showconfigurator.svgPngOrJpg": {
+    "de": "SVG, PNG oder JPG",
+    "en": "SVG, PNG or JPG",
+    "nl": "SVG, PNG of JPG"
+  },
+  "showconfigurator.thePreviewIsCurrentlyUnavailableYouCanStillChooseA": {
+    "de": "Die Vorschau ist gerade nicht verfügbar. Du kannst weiterhin ein Paket wählen und anfragen.",
+    "en": "The preview is currently unavailable. You can still choose a package and send an enquiry.",
+    "nl": "De preview is momenteel niet beschikbaar. Jullie kunnen wel een pakket kiezen en een aanvraag sturen."
+  },
+  "showconfigurator.previewPlayback": {
+    "de": "Vorführung",
+    "en": "Preview playback",
+    "nl": "Preview afspelen"
+  },
+  "showconfigurator.pauseThePreview2": {
+    "de": "Vorführung pausieren",
+    "en": "Pause the preview",
+    "nl": "Preview pauzeren"
+  },
+  "showconfigurator.previousScene": {
+    "de": "Vorheriges Bild",
+    "en": "Previous scene",
+    "nl": "Vorig beeld"
+  },
+  "showconfigurator.showScene": {
+    "de": "Bild der Show",
+    "en": "Show scene",
+    "nl": "Beeld uit de show"
+  },
+  "showconfigurator.motifsUnlockedWithMoreDrones": {
+    "de": "Motive mit mehr Drohnen",
+    "en": "Motifs unlocked with more drones",
+    "nl": "Beelden met meer drones"
+  },
+  "showconfigurator.from": {
+    "de": "· ab",
+    "en": "· from",
+    "nl": "· vanaf"
+  },
+  "showconfigurator.nextScene": {
+    "de": "Nächstes Bild",
+    "en": "Next scene",
+    "nl": "Volgend beeld"
+  },
+  "showconfigurator.speed": {
+    "de": "Tempo",
+    "en": "Speed",
+    "nl": "Snelheid"
+  },
+  "showconfigurator.occasion": {
+    "de": "Anlass",
+    "en": "Occasion",
+    "nl": "Gelegenheid"
+  },
+  "showconfigurator.howComplex": {
+    "de": "Wie aufwendig?",
+    "en": "How complex?",
+    "nl": "Hoe uitgebreid?"
+  },
+  "showconfigurator.yourTextYourLogo": {
+    "de": "Euer Text, euer Logo",
+    "en": "Your text, your logo",
+    "nl": "Jullie tekst, jullie logo"
+  },
+  "showconfigurator.optional": {
+    "de": "(optional)",
+    "en": "(optional)",
+    "nl": "(optioneel)"
+  },
+  "showconfigurator.aboutLogoUploads": {
+    "de": "Hinweis zum Logo",
+    "en": "About logo uploads",
+    "nl": "Over het uploaden van logo's"
+  },
+  "showconfigurator.eGAnnaBen": {
+    "de": "z. B. Anna & Ben",
+    "en": "e.g. Anna & Ben",
+    "nl": "bijv. Anna & Ben"
+  },
+  "showconfigurator.yourText": {
+    "de": "Euer Text",
+    "en": "Your text",
+    "nl": "Jullie tekst"
+  },
+  "showconfigurator.removeLogo": {
+    "de": "Logo entfernen",
+    "en": "Remove logo",
+    "nl": "Logo verwijderen"
+  },
+  "showconfigurator.handwriting": {
+    "de": "Schreibschrift",
+    "en": "Handwriting",
+    "nl": "Schrijfschrift"
+  },
+  "showconfigurator.printLettering": {
+    "de": "Druckschrift",
+    "en": "Print lettering",
+    "nl": "Blokletters"
+  },
+  "showconfigurator.initials": {
+    "de": "Initialen",
+    "en": "Initials",
+    "nl": "Initialen"
+  },
+  "showconfigurator.onlyUploadLogosYouHavePermissionToUseSuchAs": {
+    "de": "Lade nur Logos hoch, die du verwenden darfst, zum Beispiel dein eigenes. Die Datei bleibt in deinem Browser: Wir speichern und übertragen sie nicht.",
+    "en": "Only upload logos you have permission to use, such as your own. The file stays in your browser. We do not store or transfer it.",
+    "nl": "Upload alleen logo's die jullie mogen gebruiken, bijvoorbeeld jullie eigen logo. Het bestand blijft in jullie browser. We slaan het niet op en versturen het niet."
+  },
+  "showconfigurator.excludingVatAndTravel": {
+    "de": "· netto zzgl. Anfahrt",
+    "en": "· excluding VAT and travel",
+    "nl": "· exclusief btw en reiskosten"
+  },
+  "showconfigurator.enquireAboutThisShow": {
+    "de": "Mit dieser Show anfragen",
+    "en": "Enquire about this show",
+    "nl": "Vraag deze show aan"
+  },
+  "showconfigurator.allMotifsShownHereAreExamplesWeCreateOriginalDesigns": {
+    "de": "Alle Motive hier sind Beispiele. Für eure Show entwerfen wir eigene.",
+    "en": "All motifs shown here are examples. We create original designs for your show.",
+    "nl": "Alle beelden hier zijn voorbeelden. Voor jullie show maken we eigen ontwerpen."
+  },
+  "showconfigurator.sendAnEnquiry": {
+    "de": "Anfragen",
+    "en": "Send an enquiry",
+    "nl": "Aanvragen"
+  },
+  "showconfigurator.theShowConfiguratorRequiresJavascriptFindOurPackagesAndPrices": {
+    "de": "Der Show-Konfigurator benötigt JavaScript. Die Pakete mit Preisen findest du unter",
+    "en": "The show configurator requires JavaScript. Find our packages and prices under",
+    "nl": "De showconfigurator heeft JavaScript nodig. Onze pakketten en prijzen staan onder"
+  },
+  "showconfigurator.packages": {
+    "de": "Pakete",
+    "en": "Packages",
+    "nl": "Pakketten"
+  },
+  "landinghero.playVideo": {
+    "de": "Video abspielen",
+    "en": "Play video",
+    "nl": "Video afspelen"
+  },
+  "landinghero.pauseVideo": {
+    "de": "Video anhalten",
+    "en": "Pause video",
+    "nl": "Video pauzeren"
+  },
+  "landingprice.excludingVatForValueDronesPlusTravel": {
+    "de": "netto für {v0} Drohnen, zzgl. Anfahrt",
+    "en": "excluding VAT for {v0} drones, plus travel",
+    "nl": "voor {v0} drones, exclusief btw en reiskosten"
+  },
+  "landingprice.upToValueDronesValuePerValueAdditionalDrones": {
+    "de": "bis {v0} Drohnen: +{v1} € je {v2} weitere",
+    "en": "up to {v0} drones: +€{v1} per {v2} additional drones",
+    "nl": "tot {v0} drones: +€ {v1} per {v2} extra drones"
+  },
+  "landingsite.planViewASafetyAreaOfAround100100Metres": {
+    "de": "Schema von oben: Sicherheitsbereich von ca. 100 × 100 Metern, darin die Drohnenlinie und die Start- und Landefläche, das Publikum außerhalb mit Blick auf die Show. Nicht maßstäblich.",
+    "en": "Plan view: a safety area of around 100 × 100 metres with the drone line and take-off and landing area inside. The audience stands outside, facing the show. Not to scale.",
+    "nl": "Bovenaanzicht: een veiligheidszone van circa 100 × 100 meter met daarbinnen de dronelijn en de start- en landingszone. Het publiek staat erbuiten met zicht op de show. Niet op schaal."
+  },
+  "landingsite.approx100M": {
+    "de": "ca. 100 m",
+    "en": "approx. 100 m",
+    "nl": "ca. 100 m"
+  },
+  "landingsite.crossSectionARoomWithAtLeastThreeMetresOf": {
+    "de": "Schema im Schnitt: Raum mit mindestens drei Metern Deckenhöhe, Drohnen fliegen über einer freien Start- und Flugfläche, das Publikum steht daneben. Nicht maßstäblich.",
+    "en": "Cross-section: a room with at least three metres of ceiling height. Drones fly above a clear take-off and flight area, with the audience alongside. Not to scale.",
+    "nl": "Doorsnede: een ruimte met minimaal drie meter plafondhoogte. Drones vliegen boven een vrije start- en vliegzone, met het publiek ernaast. Niet op schaal."
+  },
+  "landingsite.min3M": {
+    "de": "mind. 3 m",
+    "en": "min. 3 m",
+    "nl": "min. 3 m"
+  },
+  "landingsite.clearTakeOffAndFlightArea": {
+    "de": "freie Start- und Flugfläche",
+    "en": "clear take-off and flight area",
+    "nl": "vrije start- en vliegzone"
+  },
+  "landingsite.diagramNotToScale": {
+    "de": "Schema, nicht maßstäblich",
+    "en": "Diagram, not to scale",
+    "nl": "Schema, niet op schaal"
+  },
+  "extras.extrasUpgrades": {
+    "de": "Extras & Upgrades",
+    "en": "Extras & upgrades",
+    "nl": "Extra's & upgrades"
+  },
+  "extras.roomForMore": {
+    "de": "Mehr geht immer.",
+    "en": "Room for more.",
+    "nl": "Er kan altijd meer bij."
+  },
+  "extras.chooseTheExtrasYouDLikeTheyGoStraightInto": {
+    "de": "Wählt aus, was ihr dazunehmen wollt. Es landet direkt in eurer Anfrage, den Preis nennen wir im Angebot.",
+    "en": "Choose the extras you'd like. They go straight into your enquiry. We'll include the price in your quote.",
+    "nl": "Kies wat jullie willen toevoegen. Het komt direct in jullie aanvraag, de prijs staat in onze offerte."
+  },
+  "extras.addedToEnquiry": {
+    "de": "In der Anfrage",
+    "en": "Added to enquiry",
+    "nl": "In de aanvraag"
+  },
+  "extras.requestAShowWithTheseExtras": {
+    "de": "Show mit diesen Extras anfragen",
+    "en": "Request a show with these extras",
+    "nl": "Vraag een show met deze extra's aan"
+  },
+  "extras.1Extra": {
+    "de": "1 Extra",
+    "en": "1 extra",
+    "nl": "1 extra"
+  },
+  "casestudy.breadcrumbs": {
+    "de": "Brotkrumen",
+    "en": "Breadcrumbs",
+    "nl": "Broodkruimelpad"
+  },
+  "casestudy.home": {
+    "de": "Start",
+    "en": "Home",
+    "nl": "Home"
+  },
+  "casestudy.ourWork": {
+    "de": "Referenzen",
+    "en": "Our work",
+    "nl": "Onze shows"
+  },
+  "casestudy.project": {
+    "de": "Projekt",
+    "en": "Project",
+    "nl": "Project"
+  },
+  "casestudy.inNumbers": {
+    "de": "In Zahlen",
+    "en": "In numbers",
+    "nl": "In cijfers"
+  },
+  "casestudy.theStory": {
+    "de": "Die Geschichte",
+    "en": "The story",
+    "nl": "Het verhaal"
+  },
+  "casestudy.startAgain": {
+    "de": "Noch mal starten",
+    "en": "Start again",
+    "nl": "Opnieuw starten"
+  },
+  "casestudy.pauseAnimation": {
+    "de": "Animation pausieren",
+    "en": "Pause animation",
+    "nl": "Animatie pauzeren"
+  },
+  "casestudy.theShowIn": {
+    "de": "Die Show in",
+    "en": "The show in",
+    "nl": "De show in"
+  },
+  "casestudy.pictures": {
+    "de": "Bildern.",
+    "en": "pictures.",
+    "nl": "beelden."
+  },
+  "casestudy.whatAppearedInTheSky": {
+    "de": "Was am Himmel zu sehen war.",
+    "en": "What appeared in the sky.",
+    "nl": "Wat er aan de hemel te zien was."
+  },
+  "casestudy.press": {
+    "de": "Presse",
+    "en": "Press",
+    "nl": "Pers"
+  },
+  "casestudy.nextProject": {
+    "de": "Nächstes Projekt ·",
+    "en": "Next project ·",
+    "nl": "Volgend project ·"
+  },
+  "projectcard.valueDrones": {
+    "de": "{v0} Drohnen",
+    "en": "{v0} drones",
+    "nl": "{v0} drones"
+  },
+  "case.valueDronesValue": {
+    "de": "{v0} Drohnen {v1}",
+    "en": "{v0} drones {v1}",
+    "nl": "{v0} drones {v1}"
+  },
+  "case.theFormationCouldNotBeLoaded": {
+    "de": "Die Formation konnte nicht geladen werden.",
+    "en": "The formation could not be loaded.",
+    "nl": "De formatie kon niet worden geladen."
+  },
+  "case.resumeAnimation": {
+    "de": "Animation fortsetzen",
+    "en": "Resume animation",
+    "nl": "Animatie hervatten"
+  },
+  "comparison.valueChooseATechnology": {
+    "de": "{v0}: Technik wählen",
+    "en": "{v0}: choose a technology",
+    "nl": "{v0}: kies een techniek"
+  },
+  "contactform.corporateEvent": {
+    "de": "Firmenevent",
+    "en": "Corporate event",
+    "nl": "Bedrijfsevenement"
+  },
+  "contactform.cityFestival": {
+    "de": "Stadt & Festival",
+    "en": "City & festival",
+    "nl": "Stad & festival"
+  },
+  "contactform.agency": {
+    "de": "Agentur",
+    "en": "Agency",
+    "nl": "Bureau"
+  },
+  "contactform.weddingPrivate": {
+    "de": "Hochzeit & Privat",
+    "en": "Wedding & private",
+    "nl": "Bruiloft & privé"
+  },
+  "contactform.other": {
+    "de": "Sonstiges",
+    "en": "Other",
+    "nl": "Anders"
+  },
+  "contactform.classic2d": {
+    "de": "klassisch in 2D",
+    "en": "classic 2D",
+    "nl": "klassiek in 2D"
+  },
+  "contactform.3dInMotion": {
+    "de": "3D in Bewegung",
+    "en": "3D in motion",
+    "nl": "3D in beweging"
+  },
+  "contactform.3dStorytellingShow": {
+    "de": "erzählte 3D-Show",
+    "en": "3D storytelling show",
+    "nl": "3D-show met verhaal"
+  },
+  "contactform.notSureYet": {
+    "de": "Weiß ich noch nicht",
+    "en": "Not sure yet",
+    "nl": "Dat weten we nog niet"
+  },
+  "contactform.recommendation": {
+    "de": "Empfehlung",
+    "en": "Recommendation",
+    "nl": "Aanbeveling"
+  },
+  "contactform.sawAShow": {
+    "de": "Eine Show gesehen",
+    "en": "Saw a show",
+    "nl": "Een show gezien"
+  },
+  "contactform.1YourShow": {
+    "de": "1 Deine Show",
+    "en": "1 Your show",
+    "nl": "1 Jullie show"
+  },
+  "contactform.2AboutYou": {
+    "de": "2 Du",
+    "en": "2 About you",
+    "nl": "2 Over jullie"
+  },
+  "contactform.step1Of2YourShow": {
+    "de": "Schritt 1 von 2: Deine Show",
+    "en": "Step 1 of 2: Your show",
+    "nl": "Stap 1 van 2: Jullie show"
+  },
+  "contactform.whatSTheOccasion": {
+    "de": "Wofür ist die Show?",
+    "en": "What's the occasion?",
+    "nl": "Wat is de gelegenheid?"
+  },
+  "contactform.whereWillItTakePlace": {
+    "de": "Wo soll sie stattfinden?",
+    "en": "Where will it take place?",
+    "nl": "Waar vindt de show plaats?"
+  },
+  "contactform.whereWillTheShowTakePlaceATownOrPostcode": {
+    "de": "Wo soll die Show stattfinden? Ort oder PLZ reicht.",
+    "en": "Where will the show take place? A town or postcode is enough.",
+    "nl": "Waar vindt de show plaats? Een plaats of postcode is voldoende."
+  },
+  "contactform.townOrPostcodePlusCountryForShowsAbroad": {
+    "de": "Ort oder PLZ, bei Shows im Ausland mit Land",
+    "en": "Town or postcode, plus country for shows abroad",
+    "nl": "Plaats of postcode, met het land bij shows in het buitenland"
+  },
+  "contactform.whenShouldItFly": {
+    "de": "Wann soll sie fliegen?",
+    "en": "When should it fly?",
+    "nl": "Wanneer mag de show vliegen?"
+  },
+  "contactform.pleaseChooseADateOrSelectNotDecidedYet": {
+    "de": "Bitte ein Datum wählen oder „Noch nicht festgelegt“ ankreuzen.",
+    "en": "Please choose a date or select “Not decided yet”.",
+    "nl": "Kies een datum of vink “Nog niet bekend” aan."
+  },
+  "contactform.notDecidedYet": {
+    "de": "Noch nicht festgelegt",
+    "en": "Not decided yet",
+    "nl": "Nog niet bekend"
+  },
+  "contactform.whichPackage": {
+    "de": "Welches Paket?",
+    "en": "Which package?",
+    "nl": "Welk pakket?"
+  },
+  "contactform.optional": {
+    "de": "optional",
+    "en": "optional",
+    "nl": "optioneel"
+  },
+  "contactform.sparkClassic2dHorizon3dInMotionOdyssey3dStorytelling": {
+    "de": "SPARK klassisch in 2D · HORIZON 3D in Bewegung · ODYSSEY erzählte 3D-Show",
+    "en": "SPARK classic 2D · HORIZON 3D in motion · ODYSSEY 3D storytelling show",
+    "nl": "SPARK klassiek in 2D · HORIZON 3D in beweging · ODYSSEY 3D-show met verhaal"
+  },
+  "contactform.next": {
+    "de": "Weiter",
+    "en": "Next",
+    "nl": "Verder"
+  },
+  "contactform.step2Of2AboutYou": {
+    "de": "Schritt 2 von 2: Du",
+    "en": "Step 2 of 2: About you",
+    "nl": "Stap 2 van 2: Over jullie"
+  },
+  "contactform.yourName": {
+    "de": "Dein Name",
+    "en": "Your name",
+    "nl": "Jullie naam"
+  },
+  "contactform.whatShouldWeCallYou": {
+    "de": "Wie dürfen wir dich ansprechen?",
+    "en": "What should we call you?",
+    "nl": "Hoe mogen we jullie aanspreken?"
+  },
+  "contactform.yourEmailAddress": {
+    "de": "Deine E-Mail-Adresse",
+    "en": "Your email address",
+    "nl": "Jullie e-mailadres"
+  },
+  "contactform.whereCanWeReply": {
+    "de": "Wohin dürfen wir antworten?",
+    "en": "Where can we reply?",
+    "nl": "Waar mogen we antwoorden?"
+  },
+  "contactform.yourPhoneNumber": {
+    "de": "Deine Telefonnummer",
+    "en": "Your phone number",
+    "nl": "Jullie telefoonnummer"
+  },
+  "contactform.forACallBackIfYouDLike": {
+    "de": "Für einen Rückruf, wenn du magst",
+    "en": "For a call back, if you'd like",
+    "nl": "Voor een terugbelverzoek, als jullie dat willen"
+  },
+  "contactform.companyOrOrganisation": {
+    "de": "Firma oder Organisation",
+    "en": "Company or organisation",
+    "nl": "Bedrijf of organisatie"
+  },
+  "contactform.howDidYouHearAboutUs": {
+    "de": "Wie hast du von uns erfahren?",
+    "en": "How did you hear about us?",
+    "nl": "Hoe hebben jullie ons gevonden?"
+  },
+  "contactform.pleaseSelect": {
+    "de": "Bitte wählen",
+    "en": "Please select",
+    "nl": "Maak een keuze"
+  },
+  "contactform.anythingElseYouDLikeToTellUs": {
+    "de": "Möchtest du uns noch etwas mitteilen?",
+    "en": "Anything else you'd like to tell us?",
+    "nl": "Willen jullie ons nog iets vertellen?"
+  },
+  "contactform.bySubmittingYouAgreeThatWeMayUseYourDetails": {
+    "de": "Mit dem Absenden werden deine Angaben zur Bearbeitung der Anfrage verwendet. Mehr dazu in der",
+    "en": "By submitting, you agree that we may use your details to handle your enquiry. Read more in our",
+    "nl": "We gebruiken jullie gegevens om de aanvraag te behandelen. Lees meer in onze"
+  },
+  "contactform.privacyPolicy": {
+    "de": "Datenschutzerklärung",
+    "en": "privacy policy",
+    "nl": "privacyverklaring"
+  },
+  "contactform.back": {
+    "de": "Zurück",
+    "en": "Back",
+    "nl": "Terug"
+  },
+  "contactform.sendEnquiry": {
+    "de": "Anfrage senden",
+    "en": "Send enquiry",
+    "nl": "Aanvraag versturen"
+  },
+  "faq.frequentlyAskedQuestions": {
+    "de": "Häufige Fragen",
+    "en": "Frequently asked questions",
+    "nl": "Veelgestelde vragen"
+  },
+  "flighthero.keyFacts": {
+    "de": "Eckdaten",
+    "en": "Key facts",
+    "nl": "Kerngegevens"
+  },
+  "logobar.flyingstarsClients": {
+    "de": "Kund:innen von FlyingStars",
+    "en": "FlyingStars clients",
+    "nl": "Klanten van FlyingStars"
+  },
+  "occasions.occasionsScrollHorizontally": {
+    "de": "Anlässe, seitlich scrollbar",
+    "en": "Occasions, scroll horizontally",
+    "nl": "Gelegenheden, horizontaal te scrollen"
+  },
+  "packages.for": {
+    "de": "für",
+    "en": "for",
+    "nl": "voor"
+  },
+  "packages.enquiry": {
+    "de": "anfragen",
+    "en": "enquiry",
+    "nl": "aanvragen"
+  },
+  "packages.viewInTheConfigurator": {
+    "de": "Im Konfigurator ansehen",
+    "en": "View in the configurator",
+    "nl": "Bekijk in de configurator"
+  },
+  "postlist.fromTheBlog": {
+    "de": "Aus dem Blog.",
+    "en": "From the blog.",
+    "nl": "Uit de blog."
+  },
+  "postlist.allArticles": {
+    "de": "Alle Beiträge",
+    "en": "All articles",
+    "nl": "Alle artikelen"
+  },
+  "projectgrid.aFewNightsWeWonTForget": {
+    "de": "Ein paar Nächte, die wir nicht vergessen.",
+    "en": "A few nights we won't forget.",
+    "nl": "Een paar avonden die we niet vergeten."
+  },
+  "projectgrid.allOurWork": {
+    "de": "Alle Referenzen",
+    "en": "All our work",
+    "nl": "Al onze shows"
+  },
+  "references.year": {
+    "de": "Jahr",
+    "en": "Year",
+    "nl": "Jaar"
+  },
+  "references.allYears": {
+    "de": "Alle Jahre",
+    "en": "All years",
+    "nl": "Alle jaren"
+  },
+  "references.allSizes": {
+    "de": "Alle Größen",
+    "en": "All sizes",
+    "nl": "Alle groottes"
+  },
+  "references.filterOurWork": {
+    "de": "Referenzen filtern",
+    "en": "Filter our work",
+    "nl": "Shows filteren"
+  },
+  "references.all": {
+    "de": "Alle",
+    "en": "All",
+    "nl": "Alle"
+  },
+  "references.resetFilters": {
+    "de": "Filter zurücksetzen",
+    "en": "Reset filters",
+    "nl": "Filters wissen"
+  },
+  "references.noShowsMatchYourSelection": {
+    "de": "Keine Show passt zu dieser Auswahl.",
+    "en": "No shows match your selection.",
+    "nl": "Geen shows voor deze selectie."
+  },
+  "references.showAll": {
+    "de": "Alle zeigen",
+    "en": "Show all",
+    "nl": "Alles tonen"
+  },
+  "team.photoComingSoon": {
+    "de": "Foto folgt",
+    "en": "Photo coming soon",
+    "nl": "Foto volgt"
+  },
+  "blogindex.howDroneShowsWorkHowTheyReProgrammedAndHow": {
+    "de": "Wie Drohnenshows funktionieren, wie sie programmiert werden und was sie vom Feuerwerk unterscheidet. Der Blog von FlyingStars.",
+    "en": "How drone shows work, how they're programmed and how they differ from fireworks. The FlyingStars blog.",
+    "nl": "Hoe droneshows werken, hoe we ze programmeren en wat ze van vuurwerk onderscheidt. De blog van FlyingStars."
+  },
+  "blogindex.howDroneShowsTakeShape": {
+    "de": "Wie Drohnenshows *entstehen*.",
+    "en": "How drone shows *take shape*.",
+    "nl": "Hoe droneshows *ontstaan*."
+  },
+  "blogindex.technologyProgrammingAndBackgroundStoriesWrittenByOurTeamMember": {
+    "de": "Technik, Programmierung und Hintergründe, aufgeschrieben von {v0} aus unserem Team.",
+    "en": "Technology, programming and background stories, written by our team member {v0}.",
+    "nl": "Techniek, programmering en achtergrondverhalen, geschreven door {v0} uit ons team."
+  },
+  "blogindex.ourFirstArticlesWillBeHereSoon": {
+    "de": "Bald gibt es hier die ersten Beiträge.",
+    "en": "Our first articles will be here soon.",
+    "nl": "Hier verschijnen binnenkort onze eerste artikelen."
+  },
+  "blogindex.canTFindYourQuestion": {
+    "de": "Eure Frage ist nicht dabei?",
+    "en": "Can't find your question?",
+    "nl": "Staat jullie vraag er niet bij?"
+  },
+  "blogindex.tellUsWhatYouDLikeToKnowWeLl": {
+    "de": "Schreibt uns, was ihr wissen wollt. Wir antworten innerhalb von 48 Stunden.",
+    "en": "Tell us what you'd like to know. We'll reply within 48 hours.",
+    "nl": "Schrijf ons wat jullie willen weten. We antwoorden binnen 48 uur."
+  },
+  "blogpost.aboutTheAuthor": {
+    "de": "Über den Autor",
+    "en": "About the author",
+    "nl": "Over de auteur"
+  },
+  "blogpost.runsFlyingstarsTogetherWithRonjaDonsbachAndErwinWilmsHe": {
+    "de": "führt FlyingStars gemeinsam mit Ronja Donsbach und Erwin Wilms. Er kümmert sich um Verwaltung, Personal und Kund:innen in Deutschland und schreibt unseren Blog.",
+    "en": "runs FlyingStars together with Ronja Donsbach and Erwin Wilms. He looks after administration, staff and clients in Germany, and writes our blog.",
+    "nl": "leidt FlyingStars samen met Ronja Donsbach en Erwin Wilms. Hij regelt de administratie, het personeel en de klanten in Duitsland en schrijft onze blog."
+  },
+  "blogpost.theTeam": {
+    "de": "Das Team",
+    "en": "The team",
+    "nl": "Het team"
+  },
+  "blogpost.planningYourOwnShow": {
+    "de": "Plant ihr eine eigene Show?",
+    "en": "Planning your own show?",
+    "nl": "Plannen jullie een eigen show?"
+  },
+  "blogpost.aDateLocationAndOccasionAreEnoughForAnInitial": {
+    "de": "Datum, Ort und Anlass reichen für eine erste Einschätzung. Wir antworten innerhalb von 48 Stunden.",
+    "en": "A date, location and occasion are enough for an initial assessment. We'll reply within 48 hours.",
+    "nl": "Een datum, locatie en gelegenheid zijn genoeg voor een eerste inschatting. We antwoorden binnen 48 uur."
+  },
+  "blogpost.readOn": {
+    "de": "Weiterlesen",
+    "en": "Read on",
+    "nl": "Verder lezen"
+  },
+  "blogpost.moreFromTheBlog": {
+    "de": "Mehr aus dem Blog.",
+    "en": "More from the blog.",
+    "nl": "Meer uit de blog."
+  },
+  "pricingpage.droneShowPricesThreePackagesFrom7900": {
+    "de": "Drohnenshow Preise: drei Pakete ab 7.900 €",
+    "en": "Drone show prices: three packages from €7,900",
+    "nl": "Droneshow prijzen: drie pakketten vanaf € 7.900"
+  },
+  "pricingpage.threeDroneShowPackagesFrom7900ExcludingVatAnd": {
+    "de": "Drei Drohnenshow-Pakete ab 7.900 € netto zzgl. Anfahrt. Design, Genehmigung und Team vor Ort sind immer enthalten. Mit Show-Konfigurator.",
+    "en": "Three drone show packages from €7,900 excluding VAT and travel. Design, permits and on-site crew included. Try the show configurator.",
+    "nl": "Drie droneshowpakketten vanaf € 7.900 excl. btw en reiskosten. Ontwerp, vergunning en team ter plaatse inbegrepen. Met showconfigurator."
+  },
+  "pricingpage.pricesPackages": {
+    "de": "Preise & Pakete",
+    "en": "Prices & packages",
+    "nl": "Prijzen & pakketten"
+  },
+  "pricingpage.threePackagesClearStartingPrices": {
+    "de": "Drei Pakete. Feste Einstiegspreise.",
+    "en": "Three packages. Clear starting prices.",
+    "nl": "Drie pakketten. Vaste vanafprijzen."
+  },
+  "pricingpage.addMoreDronesAndExtrasToAnyPackageAllPrices": {
+    "de": "Jedes Paket lässt sich mit mehr Drohnen und Extras erweitern. Alle Preise netto zzgl. Anfahrt.",
+    "en": "Add more drones and extras to any package. All prices exclude VAT and travel.",
+    "nl": "Elk pakket is uit te breiden met meer drones en extra's. Alle prijzen zijn exclusief btw en reiskosten."
+  },
+  "pricingpage.showConfigurator": {
+    "de": "Show-Konfigurator",
+    "en": "Show configurator",
+    "nl": "Showconfigurator"
+  },
+  "pricingpage.howComplexWouldYouLikeIt": {
+    "de": "Wie komplex darf’s sein?",
+    "en": "How complex would you like it?",
+    "nl": "Hoe uitgebreid mag het zijn?"
+  },
+  "pricingpage.alwaysIncluded": {
+    "de": "Immer inklusive",
+    "en": "Always included",
+    "nl": "Altijd inbegrepen"
+  },
+  "pricingpage.whatYouReActuallyPayingFor": {
+    "de": "Wofür ihr eigentlich bezahlt.",
+    "en": "What you're actually paying for.",
+    "nl": "Waar jullie eigenlijk voor betalen."
+  },
+  "pricingpage.mostOfTheWorkGoesIntoDesignPermitsAndA": {
+    "de": "Der größte Teil der Arbeit steckt nicht in den Drohnen, sondern in Design, Genehmigung und einem sicheren Ablauf.",
+    "en": "Most of the work goes into design, permits and a safe show, rather than the drones themselves.",
+    "nl": "Het meeste werk zit in het ontwerp, de vergunning en een veilig verloop van de show."
+  },
+  "pricingpage.comparison": {
+    "de": "Vergleich",
+    "en": "Comparison",
+    "nl": "Vergelijking"
+  },
+  "pricingpage.compareAllServices": {
+    "de": "Alle Leistungen im Vergleich.",
+    "en": "Compare all services.",
+    "nl": "Alle diensten vergelijken."
+  },
+  "pricingpage.serviceComparisonTableScrollHorizontally": {
+    "de": "Alle Leistungen im Vergleich (Tabelle, horizontal scrollbar)",
+    "en": "Service comparison table, scroll horizontally",
+    "nl": "Vergelijkingstabel van diensten, horizontaal te scrollen"
+  },
+  "pricingpage.servicesInTheSparkHorizonAndOdysseyPackages": {
+    "de": "Leistungen der Pakete SPARK, HORIZON und ODYSSEY",
+    "en": "Services in the SPARK, HORIZON and ODYSSEY packages",
+    "nl": "Diensten van de pakketten SPARK, HORIZON en ODYSSEY"
+  },
+  "pricingpage.service": {
+    "de": "Leistung",
+    "en": "Service",
+    "nl": "Dienst"
+  },
+  "pricingpage.notIncluded": {
+    "de": "nicht enthalten",
+    "en": "not included",
+    "nl": "niet inbegrepen"
+  },
+  "pricingpage.included": {
+    "de": "enthalten",
+    "en": "included",
+    "nl": "inbegrepen"
+  },
+  "pricingpage.allPricesExcludeVatAndTravel": {
+    "de": "Alle Preise netto zzgl. Anfahrt.",
+    "en": "All prices exclude VAT and travel.",
+    "nl": "Alle prijzen zijn exclusief btw en reiskosten."
+  },
+  "pricingpage.foundTheSameServiceForLessWeLlBeatThe": {
+    "de": "Günstigeres Angebot mit gleicher Leistung? Wir unterbieten es.",
+    "en": "Found the same service for less? We'll beat the price.",
+    "nl": "Dezelfde diensten voor een lagere prijs? Wij gaan eronder."
+  },
+  "pricingpage.sendUsTheOtherQuoteForTheSameScopeOf": {
+    "de": "Schickt uns das Vergleichsangebot. Bei gleichem Leistungsumfang machen wir euch einen besseren Preis.",
+    "en": "Send us the other quote. For the same scope of work, we'll offer a better price.",
+    "nl": "Stuur ons de andere offerte. Voor dezelfde diensten maken we jullie een betere prijs."
+  },
+  "pricingpage.haveAQuoteChecked": {
+    "de": "Angebot prüfen lassen",
+    "en": "Have a quote checked",
+    "nl": "Laat een offerte vergelijken"
+  },
+  "pricingpage.pricingQuestions": {
+    "de": "Fragen zum Preis",
+    "en": "Pricing questions",
+    "nl": "Vragen over de prijs"
+  },
+  "pricingpage.whatDoesADroneShowReallyCost": {
+    "de": "Was kostet eine Drohnenshow wirklich?",
+    "en": "What does a drone show really cost?",
+    "nl": "Wat kost een droneshow echt?"
+  },
+  "pricingpage.theQuestionsWeHearMostOftenWhenDiscussingBudgets": {
+    "de": "Was in Gesprächen über das Budget am häufigsten gefragt wird.",
+    "en": "The questions we hear most often when discussing budgets.",
+    "nl": "De vragen die we het vaakst krijgen over het budget."
+  },
+  "pricingpage.allQuestions": {
+    "de": "Alle Fragen",
+    "en": "All questions",
+    "nl": "Alle vragen"
+  },
+  "pricingpage.notSureWhichPackageToChoose": {
+    "de": "Noch unsicher, welches Paket?",
+    "en": "Not sure which package to choose?",
+    "nl": "Nog niet zeker welk pakket past?"
+  },
+  "pricingpage.sendUsYourDateAndLocationIfYouHavenT": {
+    "de": "Schickt uns Datum und Ort. Wenn ihr kein Paket auswählt, schlagen wir euch eins vor.",
+    "en": "Send us your date and location. If you haven't chosen a package, we'll suggest one.",
+    "nl": "Stuur ons de datum en locatie. Kiezen jullie nog geen pakket, dan stellen wij er een voor."
+  },
+  "base.skipToContent": {
+    "de": "Zum Inhalt springen",
+    "en": "Skip to content",
+    "nl": "Naar de inhoud"
+  },
+  "base.mainNavigation": {
+    "de": "Hauptnavigation",
+    "en": "Main navigation",
+    "nl": "Hoofdnavigatie"
+  },
+  "base.pauseMotion": {
+    "de": "Bewegung pausieren",
+    "en": "Pause motion",
+    "nl": "Beweging pauzeren"
+  },
+  "base.openMenu": {
+    "de": "Menü öffnen",
+    "en": "Open menu",
+    "nl": "Menu openen"
+  },
+  "base.closeMenu": {
+    "de": "Menü schließen",
+    "en": "Close menu",
+    "nl": "Menu sluiten"
+  },
+  "base.mobileNavigation": {
+    "de": "Mobile Navigation",
+    "en": "Mobile navigation",
+    "nl": "Mobiele navigatie"
+  },
+  "base.droneShowsSince2022": {
+    "de": "Drohnenshows seit 2022.",
+    "en": "Drone shows since 2022.",
+    "nl": "Droneshows sinds 2022."
+  },
+  "base.showsInGermanyAndEurope": {
+    "de": "Shows in Deutschland und Europa.",
+    "en": "shows in Germany and Europe.",
+    "nl": "shows in Duitsland en Europa."
+  },
+  "base.100GreenElectricityForTheEntireFleet": {
+    "de": "100 % Ökostrom für die ganze Flotte",
+    "en": "100% green electricity for the entire fleet",
+    "nl": "100% groene stroom voor de hele vloot"
+  },
+  "base.contact": {
+    "de": "Kontakt",
+    "en": "Contact",
+    "nl": "Contact"
+  },
+  "base.visitUs": {
+    "de": "Besucht uns:",
+    "en": "Visit us:",
+    "nl": "Bezoekadres:"
+  },
+  "base.post": {
+    "de": "Post:",
+    "en": "Post:",
+    "nl": "Postadres:"
+  },
+  "base.pages": {
+    "de": "Seiten",
+    "en": "Pages",
+    "nl": "Pagina's"
+  },
+  "base.occasions": {
+    "de": "Anlässe",
+    "en": "Occasions",
+    "nl": "Gelegenheden"
+  },
+  "base.followUs": {
+    "de": "Folgen",
+    "en": "Follow us",
+    "nl": "Volg ons"
+  },
+  "base.legal": {
+    "de": "Rechtliches",
+    "en": "Legal",
+    "nl": "Juridisch"
+  },
+  "base.websitePreview": {
+    "de": "Website-Vorschau",
+    "en": "Website preview",
+    "nl": "Websitepreview"
+  },
+  "404.pageNotFound": {
+    "de": "Seite nicht gefunden",
+    "en": "Page not found",
+    "nl": "Pagina niet gevonden"
+  },
+  "404.thisPageDoesnTExistChopperWillHelpYouFind": {
+    "de": "Diese Seite gibt es nicht. Chopper bringt euch weiter.",
+    "en": "This page doesn't exist. Chopper will help you find your way.",
+    "nl": "Deze pagina bestaat niet. Chopper helpt jullie verder."
+  },
+  "site.droneShowsForBusinessesCitiesFestivalsAndWeddingsDesignPermits": {
+    "de": "Drohnenshows für Unternehmen, Städte, Festivals und Hochzeiten. Motive, Genehmigung und eigene Flotte aus einer Hand.",
+    "en": "Drone shows for businesses, cities, festivals and weddings. Design, permits and our own fleet from one team.",
+    "nl": "Droneshows voor bedrijven, steden, festivals en bruiloften. Ontwerp, vergunning en eigen vloot vanuit één team."
+  },
+  "site.businesses": {
+    "de": "Unternehmen",
+    "en": "Businesses",
+    "nl": "Bedrijven"
+  },
+  "site.brandsAdvertising": {
+    "de": "Marken & Werbung",
+    "en": "Brands & advertising",
+    "nl": "Merken & reclame"
+  },
+  "site.agencies": {
+    "de": "Agenturen",
+    "en": "Agencies",
+    "nl": "Bureaus"
+  },
+  "site.wedding": {
+    "de": "Hochzeit",
+    "en": "Wedding",
+    "nl": "Bruiloft"
+  },
+  "site.prices": {
+    "de": "Preise",
+    "en": "Prices",
+    "nl": "Prijzen"
+  },
+  "site.aboutUs": {
+    "de": "Über uns",
+    "en": "About us",
+    "nl": "Over ons"
+  },
+  "site.legalNotice": {
+    "de": "Impressum",
+    "en": "Legal notice",
+    "nl": "Colofon"
+  },
+  "site.privacy": {
+    "de": "Datenschutz",
+    "en": "Privacy",
+    "nl": "Privacy"
+  },
+  "packageDetails.aShowUsuallyLastsAround13MinutesWithUpTo": {
+    "de": "Eine Show dauert in der Regel ca. 13 Minuten, bis 25 Minuten sind möglich. Das gilt für jedes Paket.",
+    "en": "A show usually lasts around 13 minutes, with up to 25 minutes possible. This applies to every package.",
+    "nl": "Een show duurt meestal circa 13 minuten, tot 25 minuten is mogelijk. Dat geldt voor elk pakket."
+  },
+  "packageDetails.classic2d": {
+    "de": "Klassisch in 2D",
+    "en": "Classic 2D",
+    "nl": "Klassiek in 2D"
+  },
+  "packageDetails.2dFormationsFromOurCatalogueWithUpToFourCustom": {
+    "de": "Formationen in 2D aus unserem Katalog, bis zu vier eigene Elemente",
+    "en": "2D formations from our catalogue, with up to four custom elements",
+    "nl": "2D-formaties uit onze catalogus, met maximaal vier eigen elementen"
+  },
+  "packageDetails.yourCustomElementsForApprovalInAdvanceMusicFreeOf": {
+    "de": "Eure eigenen Elemente vorab zur Freigabe, GEMA-freie Musik",
+    "en": "Your custom elements for approval in advance, music free of GEMA royalties",
+    "nl": "Jullie eigen elementen vooraf ter goedkeuring, GEMA-vrije muziek"
+  },
+  "packageDetails.weddingsAnniversariesSmallerCorporateEvents": {
+    "de": "Hochzeit, Jubiläum, kleinere Firmenfeier",
+    "en": "Weddings, anniversaries, smaller corporate events",
+    "nl": "Bruiloften, jubilea, kleinere bedrijfsfeesten"
+  },
+  "packageDetails.everythingInSparkPlusCustom2dAnimationsSimple3dObjects": {
+    "de": "Alles aus SPARK, dazu eigene 2D-Animationen, einfache 3D-Objekte und euer Logo präzise",
+    "en": "Everything in SPARK, plus custom 2D animations, simple 3D objects and precise logo designs",
+    "nl": "Alles uit SPARK, plus eigen 2D-animaties, eenvoudige 3D-objecten en een nauwkeurig logo"
+  },
+  "packageDetails.creativeWorkshopWithStoryboardVideoPreviewWithFeedbackSynchronisedTo": {
+    "de": "Kreativ-Workshop mit Storyboard, Videovorschau mit Feedback, synchron zu eurer Wunschmusik",
+    "en": "Creative workshop with storyboard, video preview with feedback, synchronised to your chosen music",
+    "nl": "Creatieve workshop met storyboard, videopreview met feedback, synchroon met jullie muziekkeuze"
+  },
+  "packageDetails.productLaunchesCorporateEventsCityFestivals": {
+    "de": "Produktpräsentation, Firmenevent, Stadtfest",
+    "en": "Product launches, corporate events, city festivals",
+    "nl": "Productpresentaties, bedrijfsevenementen, stadsfeesten"
+  },
+  "packageDetails.3dStorytellingShow": {
+    "de": "Erzählte 3D-Show",
+    "en": "3D storytelling show",
+    "nl": "3D-show met verhaal"
+  },
+  "packageDetails.everythingInHorizonPlus3dStorytellingAnimationAndVolumetricEffects": {
+    "de": "Alles aus HORIZON, dazu 3D-Animation mit Storyline und volumetrische Effekte",
+    "en": "Everything in HORIZON, plus 3D storytelling animation and volumetric effects",
+    "nl": "Alles uit HORIZON, plus 3D-animatie met verhaallijn en volumetrische effecten"
+  },
+  "packageDetails.multipleFeedbackRoundsDedicatedProjectManagerRawVideoFootageTimecode": {
+    "de": "Mehrere Feedbackrunden, eigene Projektleitung, Rohmaterial-Video, Timecode möglich",
+    "en": "Multiple feedback rounds, dedicated project manager, raw video footage, timecode available",
+    "nl": "Meerdere feedbackrondes, eigen projectleiding, ruwe videobeelden, timecode mogelijk"
+  },
+  "packageDetails.campaignsFestivalsLargeEvents": {
+    "de": "Kampagne, Festival, Großveranstaltung",
+    "en": "Campaigns, festivals, large events",
+    "nl": "Campagnes, festivals, grote evenementen"
+  },
+  "packageDetails.valueToValueDrones": {
+    "de": "{v0} bis {v1} Drohnen",
+    "en": "{v0} to {v1} drones",
+    "nl": "{v0} tot {v1} drones"
+  },
+  "packageDetails.fromValueDrones": {
+    "de": "ab {v0} Drohnen",
+    "en": "from {v0} drones",
+    "nl": "vanaf {v0} drones"
+  },
+  "packageDetails.formationsFromOurCatalogue": {
+    "de": "Formationen aus unserem Katalog",
+    "en": "Formations from our catalogue",
+    "nl": "Formaties uit onze catalogus"
+  },
+  "packageDetails.upToFourCustomElementsSuchAsInitialsOrA": {
+    "de": "Bis zu vier eigene Elemente, z. B. Initialen oder Logo",
+    "en": "Up to four custom elements, such as initials or a logo",
+    "nl": "Maximaal vier eigen elementen, zoals initialen of een logo"
+  },
+  "packageDetails.musicFreeOfGemaRoyalties": {
+    "de": "GEMA-freie Musik",
+    "en": "Music free of GEMA royalties",
+    "nl": "GEMA-vrije muziek"
+  },
+  "packageDetails.custom2dAnimationsAndSimple3d": {
+    "de": "Eigene 2D-Animationen und einfaches 3D",
+    "en": "Custom 2D animations and simple 3D",
+    "nl": "Eigen 2D-animaties en eenvoudig 3D"
+  },
+  "packageDetails.yourLogoDrawnPreciselyInTheSky": {
+    "de": "Euer Logo präzise am Himmel",
+    "en": "Your logo drawn precisely in the sky",
+    "nl": "Jullie logo nauwkeurig aan de hemel"
+  },
+  "packageDetails.synchronisedToYourChosenMusic": {
+    "de": "Synchron zu eurer Wunschmusik",
+    "en": "Synchronised to your chosen music",
+    "nl": "Synchroon met jullie muziekkeuze"
+  },
+  "packageDetails.aStorylineWithADramaticArc": {
+    "de": "Storyline mit dramaturgischer Kurve",
+    "en": "A storyline with a dramatic arc",
+    "nl": "Verhaallijn met dramatische opbouw"
+  },
+  "packageDetails.complex3dAnimations": {
+    "de": "Komplexe 3D-Animationen",
+    "en": "Complex 3D animations",
+    "nl": "Complexe 3D-animaties"
+  },
+  "packageDetails.dedicatedProjectManager": {
+    "de": "Eigene Projektleitung",
+    "en": "Dedicated project manager",
+    "nl": "Eigen projectleiding"
+  },
+  "packageDetails.aSparklingStartForWeddingsAnniversariesAndSmallerCorporateAnd": {
+    "de": "Der funkelnde Einstieg für Hochzeiten, Jubiläen und kleinere Firmen- und Kulturfeiern.",
+    "en": "A sparkling start for weddings, anniversaries and smaller corporate and cultural events.",
+    "nl": "Een sprankelend begin voor bruiloften, jubilea en kleinere bedrijfs- en cultuurfeesten."
+  },
+  "packageDetails.entryPackage": {
+    "de": "Einstieg",
+    "en": "Entry package",
+    "nl": "Instappakket"
+  },
+  "packageDetails.designContent": {
+    "de": "Design & Inhalt",
+    "en": "Design & content",
+    "nl": "Ontwerp & inhoud"
+  },
+  "packageDetails.formationsFromOurCatalogueSuchAsHeartsOrRings": {
+    "de": "Formationen aus unserem Katalog, z. B. Herzen oder Ringe",
+    "en": "Formations from our catalogue, such as hearts or rings",
+    "nl": "Formaties uit onze catalogus, zoals harten of ringen"
+  },
+  "packageDetails.upToFourCustomElementsInitialsLogoCoatOfArms": {
+    "de": "Bis zu vier eigene Elemente: Initialen, Logo, Stadtwappen",
+    "en": "Up to four custom elements: initials, logo, coat of arms",
+    "nl": "Maximaal vier eigen elementen: initialen, logo, stadswapen"
+  },
+  "packageDetails.music": {
+    "de": "Musik",
+    "en": "Music",
+    "nl": "Muziek"
+  },
+  "packageDetails.gemaMusicPossibleIfTheEventIsRegistered": {
+    "de": "GEMA-Musik bei Anmeldung der Veranstaltung möglich",
+    "en": "GEMA music possible if the event is registered",
+    "nl": "GEMA-muziek mogelijk bij aanmelding van het evenement"
+  },
+  "packageDetails.serviceExtras": {
+    "de": "Service & Extras",
+    "en": "Service & extras",
+    "nl": "Service & extra's"
+  },
+  "packageDetails.customElementsForApprovalInAdvance": {
+    "de": "Eigene Elemente vorab zur Freigabe",
+    "en": "Custom elements for approval in advance",
+    "nl": "Eigen elementen vooraf ter goedkeuring"
+  },
+  "packageDetails.standardPermitProcedure": {
+    "de": "Standard-Genehmigungsverfahren",
+    "en": "Standard permit procedure",
+    "nl": "Standaard vergunningsprocedure"
+  },
+  "packageDetails.onSiteCrewSafetyPlanAndLiabilityInsurance": {
+    "de": "Team vor Ort, Sicherheitskonzept und Haftpflicht",
+    "en": "On-site crew, safety plan and liability insurance",
+    "nl": "Team ter plaatse, veiligheidsplan en aansprakelijkheidsverzekering"
+  },
+  "packageDetails.yourOwnProductionForProductLaunchesLargeCorporateEventsAnd": {
+    "de": "Die eigene Inszenierung für Produktpräsentationen, große Firmenevents und Stadtfeste.",
+    "en": "Your own production for product launches, large corporate events and city festivals.",
+    "nl": "Een eigen productie voor productpresentaties, grote bedrijfsevenementen en stadsfeesten."
+  },
+  "packageDetails.everythingInSparkPlus": {
+    "de": "Alles aus SPARK, plus:",
+    "en": "Everything in SPARK, plus:",
+    "nl": "Alles uit SPARK, plus:"
+  },
+  "packageDetails.fullyCustom2dAnimationsAndSimple3dElements": {
+    "de": "Vollständig individuelle 2D-Animationen und einfache 3D-Elemente",
+    "en": "Fully custom 2D animations and simple 3D elements",
+    "nl": "Volledig eigen 2D-animaties en eenvoudige 3D-elementen"
+  },
+  "packageDetails.preciseLogosAndComplexLettering": {
+    "de": "Präzise Logos und komplexe Schriftzüge",
+    "en": "Precise logos and complex lettering",
+    "nl": "Nauwkeurige logo's en complexe teksten"
+  },
+  "packageDetails.creativeWorkshopWithStoryboard": {
+    "de": "Kreativ-Workshop mit Storyboard",
+    "en": "Creative workshop with storyboard",
+    "nl": "Creatieve workshop met storyboard"
+  },
+  "packageDetails.moreComplexPermitsTooSuchAsNearAirports": {
+    "de": "Auch komplexere Genehmigungen, z. B. in Flughafennähe",
+    "en": "More complex permits too, such as near airports",
+    "nl": "Ook complexere vergunningen, bijvoorbeeld bij luchthavens"
+  },
+  "packageDetails.videoPreviewWithAFeedbackRound": {
+    "de": "Videovorschau mit Feedbackschleife",
+    "en": "Video preview with a feedback round",
+    "nl": "Videopreview met feedbackronde"
+  },
+  "packageDetails.helpObtainingLandownerConsent": {
+    "de": "Hilfe bei der Zustimmung der Grundstückseigentümer:innen",
+    "en": "Help obtaining landowner consent",
+    "nl": "Hulp bij toestemming van grondeigenaren"
+  },
+  "packageDetails.aStorytellingShowForMajorCampaignsFestivalsAndLargeAudiences": {
+    "de": "Die erzählte Show für große Kampagnen, Festivals und Events mit viel Publikum.",
+    "en": "A storytelling show for major campaigns, festivals and large audiences.",
+    "nl": "Een show met verhaal voor grote campagnes, festivals en een groot publiek."
+  },
+  "packageDetails.from300Drones": {
+    "de": "ab 300 Drohnen",
+    "en": "from 300 drones",
+    "nl": "vanaf 300 drones"
+  },
+  "packageDetails.everythingInHorizonPlus": {
+    "de": "Alles aus HORIZON, plus:",
+    "en": "Everything in HORIZON, plus:",
+    "nl": "Alles uit HORIZON, plus:"
+  },
+  "packageDetails.complex3dAnimationsAndVolumetricEffects": {
+    "de": "Komplexe 3D-Animationen und volumetrische Effekte",
+    "en": "Complex 3D animations and volumetric effects",
+    "nl": "Complexe 3D-animaties en volumetrische effecten"
+  },
+  "packageDetails.aStorytellingShowWithADramaticArc": {
+    "de": "Erzählte Show mit dramaturgischer Kurve",
+    "en": "A storytelling show with a dramatic arc",
+    "nl": "Show met verhaal en dramatische opbouw"
+  },
+  "packageDetails.onSiteTimecodeSynchronisationAvailable": {
+    "de": "Timecode-Synchronisation vor Ort möglich",
+    "en": "On-site timecode synchronisation available",
+    "nl": "Timecodesynchronisatie ter plaatse mogelijk"
+  },
+  "packageDetails.multipleFeedbackRounds": {
+    "de": "Mehrere Feedbackschleifen",
+    "en": "Multiple feedback rounds",
+    "nl": "Meerdere feedbackrondes"
+  },
+  "packageDetails.showVideoRawFootage": {
+    "de": "Video der Show (Rohaufnahmen)",
+    "en": "Show video, raw footage",
+    "nl": "Video van de show, ruwe beelden"
+  },
+  "packageDetails.advanceSiteVisitOnRequest": {
+    "de": "Auf Wunsch Vor-Ort-Termin vorab",
+    "en": "Advance site visit on request",
+    "nl": "Vooraf een locatiebezoek op aanvraag"
+  },
+  "packageDetails.valuePerValueDronesvalue": {
+    "de": "+{v0} € je {v1} Drohnen{v2}",
+    "en": "+€{v0} per {v1} drones{v2}",
+    "nl": "+€ {v0} per {v1} drones{v2}"
+  },
+  "packageDetails.moreDrones": {
+    "de": "Mehr Drohnen",
+    "en": "More drones",
+    "nl": "Meer drones"
+  },
+  "packageDetails.valuePerValue": {
+    "de": "+{v0} € je {v1}",
+    "en": "+€{v0} per {v1}",
+    "nl": "+€ {v0} per {v1}"
+  },
+  "packageDetails.duration": {
+    "de": "Dauer",
+    "en": "Duration",
+    "nl": "Duur"
+  },
+  "packageDetails.usuallyAround13MinutesUpTo25MinutesPossible": {
+    "de": "In der Regel ca. 13 Minuten, bis 25 Minuten möglich",
+    "en": "Usually around 13 minutes, up to 25 minutes possible",
+    "nl": "Meestal circa 13 minuten, tot 25 minuten mogelijk"
+  },
+  "packageDetails.designAndMotifs": {
+    "de": "Design und Motive",
+    "en": "Design and motifs",
+    "nl": "Ontwerp en beelden"
+  },
+  "packageDetails.fullyCustom2dAnimations": {
+    "de": "Vollständig individuelle 2D-Animationen",
+    "en": "Fully custom 2D animations",
+    "nl": "Volledig eigen 2D-animaties"
+  },
+  "packageDetails.asHorizonPlusComplex3dAnimations": {
+    "de": "Wie HORIZON, dazu komplexe 3D-Animationen",
+    "en": "As HORIZON, plus complex 3D animations",
+    "nl": "Als HORIZON, plus complexe 3D-animaties"
+  },
+  "packageDetails.customElements": {
+    "de": "Eigene Elemente",
+    "en": "Custom elements",
+    "nl": "Eigen elementen"
+  },
+  "packageDetails.upToFourSuchAsInitialsLogoOrCoatOf": {
+    "de": "Bis zu vier, z. B. Initialen, Logo, Stadtwappen",
+    "en": "Up to four, such as initials, logo or coat of arms",
+    "nl": "Maximaal vier, zoals initialen, logo of stadswapen"
+  },
+  "packageDetails.asHorizon": {
+    "de": "Wie HORIZON",
+    "en": "As HORIZON",
+    "nl": "Als HORIZON"
+  },
+  "packageDetails.simple3dElements": {
+    "de": "Einfache 3D-Elemente",
+    "en": "Simple 3D elements",
+    "nl": "Eenvoudige 3D-elementen"
+  },
+  "packageDetails.musicFreeOfGemaRoyaltiesGemaMusicPossibleIfThe": {
+    "de": "GEMA-freie Musik, GEMA-Musik bei Anmeldung der Veranstaltung möglich",
+    "en": "Music free of GEMA royalties; GEMA music possible if the event is registered",
+    "nl": "GEMA-vrije muziek, GEMA-muziek mogelijk bij aanmelding van het evenement"
+  },
+  "packageDetails.asHorizonOnSiteTimecodeSynchronisationAvailable": {
+    "de": "Wie HORIZON, Timecode-Synchronisation vor Ort möglich",
+    "en": "As HORIZON, on-site timecode synchronisation available",
+    "nl": "Als HORIZON, timecodesynchronisatie ter plaatse mogelijk"
+  },
+  "packageDetails.approvalAndPreview": {
+    "de": "Freigabe und Vorschau",
+    "en": "Approval and preview",
+    "nl": "Goedkeuring en preview"
+  },
+  "packageDetails.yourCustomElementsForApprovalInAdvance": {
+    "de": "Eure eigenen Elemente vorab zur Freigabe",
+    "en": "Your custom elements for approval in advance",
+    "nl": "Jullie eigen elementen vooraf ter goedkeuring"
+  },
+  "packageDetails.creativeWorkshop": {
+    "de": "Kreativ-Workshop",
+    "en": "Creative workshop",
+    "nl": "Creatieve workshop"
+  },
+  "packageDetails.withStoryboard": {
+    "de": "Mit Storyboard",
+    "en": "With storyboard",
+    "nl": "Met storyboard"
+  },
+  "packageDetails.safetyPlan": {
+    "de": "Sicherheitskonzept",
+    "en": "Safety plan",
+    "nl": "Veiligheidsplan"
+  },
+  "packageDetails.liabilityCoverUpTo13Million": {
+    "de": "Haftpflicht bis 1,3 Mio. €",
+    "en": "Liability cover up to €1.3 million",
+    "nl": "Aansprakelijkheidsdekking tot € 1,3 miljoen"
+  },
+  "packageDetails.onSiteCrew": {
+    "de": "Team vor Ort",
+    "en": "On-site crew",
+    "nl": "Team ter plaatse"
+  },
+  "packageDetails.permit": {
+    "de": "Genehmigung",
+    "en": "Permit",
+    "nl": "Vergunning"
+  },
+  "packageDetails.standardProcedure": {
+    "de": "Standardverfahren",
+    "en": "Standard procedure",
+    "nl": "Standaardprocedure"
+  },
+  "packageDetails.moreComplexProceduresTooSuchAsNearAirports": {
+    "de": "Auch komplexere Verfahren, z. B. in Flughafennähe",
+    "en": "More complex procedures too, such as near airports",
+    "nl": "Ook complexere procedures, bijvoorbeeld bij luchthavens"
+  },
+  "packageDetails.advanceSiteVisit": {
+    "de": "Vor-Ort-Termin vorab",
+    "en": "Advance site visit",
+    "nl": "Vooraf een locatiebezoek"
+  },
+  "packageDetails.onRequest": {
+    "de": "Auf Wunsch",
+    "en": "On request",
+    "nl": "Op aanvraag"
+  },
+  "packageDetails.youProvideTheOnSiteSoundSystemAsTheEvent": {
+    "de": "Die Beschallung vor Ort stellt ihr als Veranstalter:innen.",
+    "en": "You provide the on-site sound system as the event organiser.",
+    "nl": "Jullie verzorgen als organisator de geluidsinstallatie ter plaatse."
+  },
+  "packageDetails.designForYourLocation": {
+    "de": "Design für euren Ort",
+    "en": "Design for your location",
+    "nl": "Ontwerp voor jullie locatie"
+  },
+  "packageDetails.weProgrammeTheShowForYourSiteMusicAndMotifs": {
+    "de": "Wir programmieren die Show für euren Showbereich, eure Musik und eure Motive.",
+    "en": "We programme the show for your site, music and motifs.",
+    "nl": "We programmeren de show voor jullie locatie, muziek en beelden."
+  },
+  "packageDetails.permitAndSafetyPlan": {
+    "de": "Genehmigung und Sicherheitskonzept",
+    "en": "Permit and safety plan",
+    "nl": "Vergunning en veiligheidsplan"
+  },
+  "packageDetails.aviationPermitsSafetyZonesAndLiabilityCoverUpTo1": {
+    "de": "Luftrechtliche Genehmigung, Sicherheitszonen und Haftpflicht bis 1,3 Mio. € sind immer enthalten.",
+    "en": "Aviation permits, safety zones and liability cover up to €1.3 million are always included.",
+    "nl": "Luchtvaartvergunning, veiligheidszones en aansprakelijkheidsdekking tot € 1,3 miljoen zijn altijd inbegrepen."
+  },
+  "packageDetails.approvalInAdvance": {
+    "de": "Freigabe vorab",
+    "en": "Approval in advance",
+    "nl": "Goedkeuring vooraf"
+  },
+  "packageDetails.youReviewAndApproveYourCustomElementsBeforeTheShow": {
+    "de": "Eure eigenen Elemente seht ihr vor der Show und gebt sie frei, ab HORIZON als Videovorschau.",
+    "en": "You review and approve your custom elements before the show, with a video preview from HORIZON upwards.",
+    "nl": "Jullie zien en beoordelen de eigen elementen vóór de show, vanaf HORIZON als videopreview."
+  },
+  "packageDetails.ourPilotsAndTechniciansSetUpInAround3Hours": {
+    "de": "Pilot:innen und Techniker:innen bauen in ca. 3 Stunden auf und fliegen eure Show.",
+    "en": "Our pilots and technicians set up in around 3 hours and fly your show.",
+    "nl": "Onze piloten en technici bouwen in circa 3 uur op en vliegen jullie show."
+  },
+  "packageDetails.aShowInUnderTwoWeeks": {
+    "de": "Show in unter zwei Wochen",
+    "en": "A show in under two weeks",
+    "nl": "Show binnen twee weken"
+  },
+  "packageDetails.lessThan14DaysUntilTheShowWePrioritiseDesign": {
+    "de": "Alles unter 14 Tagen bis zur Show. Wir ziehen Design und Genehmigung vor.",
+    "en": "Less than 14 days until the show. We prioritise design and permits.",
+    "nl": "Minder dan 14 dagen tot de show. We geven ontwerp en vergunning voorrang."
+  },
+  "packageDetails.surchargeBasedOnScope": {
+    "de": "Aufpreis nach Aufwand",
+    "en": "Surcharge based on scope",
+    "nl": "Toeslag naar werkzaamheden"
+  },
+  "packageDetails.rawFootage": {
+    "de": "Rohaufnahmen",
+    "en": "Raw footage",
+    "nl": "Ruwe beelden"
+  },
+  "packageDetails.rawFootageFilmedByCameraDrone": {
+    "de": "Rohaufnahmen mit Kameradrohne",
+    "en": "Raw footage filmed by camera drone",
+    "nl": "Ruwe opnamen met cameradrone"
+  },
+  "packageDetails.footageForYourAftermovieAndSocialMedia": {
+    "de": "Material für Aftermovie und Social Media.",
+    "en": "Footage for your aftermovie and social media.",
+    "nl": "Beelden voor de aftermovie en social media."
+  },
+  "packageDetails.900IncludedInOdyssey": {
+    "de": "900 €, bei ODYSSEY inklusive",
+    "en": "€900, included in ODYSSEY",
+    "nl": "€ 900, inbegrepen bij ODYSSEY"
+  },
+  "packageDetails.authorityLiaison": {
+    "de": "Behördensupport",
+    "en": "Authority liaison",
+    "nl": "Contact met instanties"
+  },
+  "packageDetails.extendedAuthorityLiaison": {
+    "de": "Erweiterter Behördensupport",
+    "en": "Extended authority liaison",
+    "nl": "Uitgebreide begeleiding bij instanties"
+  },
+  "packageDetails.weHandleAllCommunicationWithPublicOfficesAndAuthorities": {
+    "de": "Wir übernehmen die gesamte Kommunikation mit Ämtern und Behörden.",
+    "en": "We handle all communication with public offices and authorities.",
+    "nl": "We verzorgen alle communicatie met overheidsinstanties."
+  },
+  "packageDetails.priceOnRequest": {
+    "de": "Preis auf Anfrage",
+    "en": "Price on request",
+    "nl": "Prijs op aanvraag"
+  },
+  "packageDetails.nearAirports": {
+    "de": "Flughafennähe",
+    "en": "Near airports",
+    "nl": "Bij luchthavens"
+  },
+  "packageDetails.controlledAirspaceAndAirportLocations": {
+    "de": "Kontrollzonen und Flughafennähe",
+    "en": "Controlled airspace and airport locations",
+    "nl": "Gecontroleerd luchtruim en locaties bij luchthavens"
+  },
+  "packageDetails.forControlledAirspaceAndSitesNearAirports": {
+    "de": "Für Kontrollzonen und Flächen in Flughafennähe.",
+    "en": "For controlled airspace and sites near airports.",
+    "nl": "Voor gecontroleerd luchtruim en terreinen bij luchthavens."
+  },
+  "packageDetails.switzerland": {
+    "de": "Schweiz",
+    "en": "Switzerland",
+    "nl": "Zwitserland"
+  },
+  "packageDetails.showsInSwitzerland": {
+    "de": "Shows in der Schweiz",
+    "en": "Shows in Switzerland",
+    "nl": "Shows in Zwitserland"
+  },
+  "packageDetails.focaApplicationAndCustomsClearanceForOurFleet": {
+    "de": "BAZL-Antrag und Zollabwicklung für unsere Flotte.",
+    "en": "FOCA application and customs clearance for our fleet.",
+    "nl": "BAZL-aanvraag en douaneafhandeling voor onze vloot."
+  },
+  "packageDetails.1900ExcludingVat": {
+    "de": "+1.900 € netto",
+    "en": "+€1,900 excluding VAT",
+    "nl": "+€ 1.900 exclusief btw"
+  },
+  "packageDetails.indoorDroneShows": {
+    "de": "Indoor-Drohnenshows",
+    "en": "Indoor drone shows",
+    "nl": "Indoor-droneshows"
+  },
+  "packageDetails.20To50Drones5To8MinutesCeilingHeight": {
+    "de": "20 bis 50 Drohnen, 5 bis 8 Minuten, ab 3 m Deckenhöhe. Jede Indoor-Show kalkulieren wir einzeln.",
+    "en": "20 to 50 drones, 5 to 8 minutes, ceiling height from 3 m. We price each indoor show individually.",
+    "nl": "20 tot 50 drones, 5 tot 8 minuten, vanaf 3 m plafondhoogte. Elke indoor-show berekenen we apart."
+  },
+  "packageDetails.fromApprox15000ExcludingVatFor20Drones": {
+    "de": "ab ca. 15.000 € netto für 20 Drohnen",
+    "en": "from approx. €15,000 excluding VAT for 20 drones",
+    "nl": "vanaf ca. € 15.000 exclusief btw voor 20 drones"
+  },
+  "packageDetails.moreAboutIndoorShows": {
+    "de": "Mehr zu Indoor-Shows",
+    "en": "More about indoor shows",
+    "nl": "Meer over indoor-shows"
+  },
+  "showConfigurator.predefinedFormationsSuchAsHeartsOrRingsAndUpTo": {
+    "de": "vordefinierte Formationen wie Herzen oder Ringe und bis zu vier eigene Elemente",
+    "en": "predefined formations such as hearts or rings and up to four custom elements",
+    "nl": "vaste formaties zoals harten of ringen en maximaal vier eigen elementen"
+  },
+  "showConfigurator.everythingFromSparkPlusIndividual2dAnimationsAndSimple3d": {
+    "de": "alles aus SPARK plus individuelle 2D-Animationen und einfache 3D-Elemente",
+    "en": "everything in SPARK plus custom 2D animations and simple 3D elements",
+    "nl": "alles uit SPARK plus eigen 2D-animaties en eenvoudige 3D-elementen"
+  },
+  "showConfigurator.everythingFromHorizonPlusComplex3dAnimationsVolumetricEffectsAnd": {
+    "de": "alles aus HORIZON plus komplexe 3D-Animationen, volumetrische Effekte und Storytelling mit dramaturgischer Kurve",
+    "en": "everything in HORIZON plus complex 3D animations, volumetric effects and storytelling with a dramatic arc",
+    "nl": "alles uit HORIZON plus complexe 3D-animaties, volumetrische effecten en een verhaal met dramatische opbouw"
+  },
+  "showConfigurator.rocket": {
+    "de": "Rakete",
+    "en": "Rocket",
+    "nl": "Raket"
+  },
+  "showConfigurator.rocketWithFlame": {
+    "de": "Rakete mit Flamme",
+    "en": "Rocket with flame",
+    "nl": "Raket met vlam"
+  },
+  "showConfigurator.theRocketAsABodyFloatsAndRotates": {
+    "de": "Die Rakete als Körper schwebt und dreht sich",
+    "en": "The rocket floats and rotates in 3D",
+    "nl": "De raket zweeft en draait in 3D"
+  },
+  "showConfigurator.launchFromThePadTheRocketEntersOrbitAroundA": {
+    "de": "Start von der Rampe, die Rakete zieht in den Orbit um einen Planeten",
+    "en": "Launch from the pad, the rocket enters orbit around a planet",
+    "nl": "Lancering vanaf het platform, de raket gaat in een baan om een planeet"
+  },
+  "showConfigurator.moonLanding": {
+    "de": "Mondlandung",
+    "en": "Moon landing",
+    "nl": "Maanlanding"
+  },
+  "showConfigurator.theRocketLeavesOrbitAndLandsOnTheMoonA": {
+    "de": "Aus dem Orbit landet die Rakete auf dem Mond, die Flagge weht",
+    "en": "The rocket leaves orbit and lands on the moon, a flag flies",
+    "nl": "De raket verlaat de baan en landt op de maan, de vlag wappert"
+  },
+  "showConfigurator.exampleLogoWithLightSkating": {
+    "de": "Beispiel-Logo mit Lichtlauf",
+    "en": "Example logo with a travelling light effect",
+    "nl": "Voorbeeldlogo met een lopend lichteffect"
+  },
+  "showConfigurator.exampleLogoIn3dWithLightGlimmer": {
+    "de": "Beispiel-Logo in 3D mit Lichtschimmer",
+    "en": "Example logo in 3D with shimmering light",
+    "nl": "Voorbeeldlogo in 3D met glinsterend licht"
+  },
+  "showConfigurator.yourLogoBecomesA3dRingOfLight": {
+    "de": "Euer Logo wird zum Ring aus Licht in 3D",
+    "en": "Your logo becomes a 3D ring of light",
+    "nl": "Jullie logo wordt een 3D-ring van licht"
+  },
+  "showConfigurator.lightBulb": {
+    "de": "Glühbirne",
+    "en": "Light bulb",
+    "nl": "Gloeilamp"
+  },
+  "showConfigurator.aLightBulbTheIdea": {
+    "de": "Eine Glühbirne: die Idee",
+    "en": "A light bulb: the idea",
+    "nl": "Een gloeilamp: het idee"
+  },
+  "showConfigurator.theLightBulbIn3dTheLightFadeNIs": {
+    "de": "Die Glühbirne in 3D, der Glühfaden leuchtet",
+    "en": "A light bulb in 3D, its filament glows",
+    "nl": "Een gloeilamp in 3D, de gloeidraad licht op"
+  },
+  "showConfigurator.aLightBulbFormsAroundAFilamentAndShines": {
+    "de": "Um einen Glühfaden formt sich eine Glühbirne, die strahlt",
+    "en": "A light bulb forms around a filament and shines",
+    "nl": "Rond een gloeidraad vormt zich een gloeilamp die gaat stralen"
+  },
+  "showConfigurator.qrCodeWithScanMe": {
+    "de": "QR-Code mit „Scan me“",
+    "en": "QR code with “Scan me”",
+    "nl": "QR-code met Scan me"
+  },
+  "showConfigurator.aLightBeamScansTheQrCodeBuildsUp": {
+    "de": "Ein Lichtstrahl scannt, der QR-Code baut sich auf",
+    "en": "A beam of light scans, the QR code builds up",
+    "nl": "Een lichtstraal scant, de QR-code bouwt zich op"
+  },
+  "showConfigurator.aMessageArrivesItBecomesAScannableQrCode": {
+    "de": "Eine Nachricht kommt an, daraus wird ein scannbarer QR-Code",
+    "en": "A message arrives and becomes a scannable QR code",
+    "nl": "Een bericht komt aan en wordt een scanbare QR-code"
+  },
+  "showConfigurator.spiral": {
+    "de": "Spirale",
+    "en": "Spiral",
+    "nl": "Spiraal"
+  },
+  "showConfigurator.aSpiralLightRunningInwards": {
+    "de": "Eine Spirale, Licht läuft nach innen",
+    "en": "A spiral, light running inwards",
+    "nl": "Een spiraal, licht dat naar binnen loopt"
+  },
+  "showConfigurator.aSpiralIn3dLightRisesTheWindings": {
+    "de": "Eine Spirale in 3D, Licht steigt die Windungen hinauf",
+    "en": "A spiral in 3D, light climbs the coils",
+    "nl": "Een spiraal in 3D, licht klimt langs de windingen"
+  },
+  "showConfigurator.theSpiralBecomesTheTorusThatRotatesByItself": {
+    "de": "Die Spirale wird zum Torus, der sich durch sich selbst dreht",
+    "en": "The spiral becomes a torus that turns through itself",
+    "nl": "De spiraal wordt een torus die door zichzelf draait"
+  },
+  "showConfigurator.jubilee": {
+    "de": "Jubiläum",
+    "en": "Anniversary",
+    "nl": "Jubileum"
+  },
+  "showConfigurator.arms": {
+    "de": "Wappen",
+    "en": "Coat of arms",
+    "nl": "Wapen"
+  },
+  "showConfigurator.coatOfArmsWithStarAndFlyingFlag": {
+    "de": "Wappen mit Stern und wehender Fahne",
+    "en": "Coat of arms with a star and waving flag",
+    "nl": "Wapen met ster en wapperende vlag"
+  },
+  "showConfigurator.3dCoatOfArmsWithYourNumberAndWavingFlag": {
+    "de": "3D-Wappen mit eurer Zahl und wehender Fahne",
+    "en": "3D coat of arms with your number and a waving flag",
+    "nl": "3D-wapen met jullie getal en een wapperende vlag"
+  },
+  "showConfigurator.fromTheStarInTheCoatOfArmsBecomesYour": {
+    "de": "Aus dem Stern im Wappen wird eure Zahl, dazu Krone und Sternenkranz",
+    "en": "The star in the coat of arms becomes your number, with a crown and wreath of stars",
+    "nl": "De ster in het wapen wordt jullie getal, met kroon en sterrenkrans"
+  },
+  "showConfigurator.football": {
+    "de": "Fußball",
+    "en": "Football",
+    "nl": "Voetbal"
+  },
+  "showConfigurator.aPlayerTheBallRotatesOverHisFoot": {
+    "de": "Ein Spieler, der Ball dreht sich über dem Fuß",
+    "en": "A player, the ball rotates over his foot",
+    "nl": "Een speler, de bal draait over zijn voet"
+  },
+  "showConfigurator.thePlayerShootsTheBallSpinsThroughTheAir": {
+    "de": "Der Spieler schießt, der Ball fliegt mit Drall",
+    "en": "The player shoots, the ball spins through the air",
+    "nl": "De speler schiet, de bal vliegt met effect"
+  },
+  "showConfigurator.aPlayerScoresTheBallBecomesYourNumber": {
+    "de": "Ein Spieler schießt ins Tor, der Ball wird zu eurer Zahl",
+    "en": "A player scores, the ball becomes your number",
+    "nl": "Een speler scoort, de bal wordt jullie getal"
+  },
+  "showConfigurator.landmarks": {
+    "de": "Wahrzeichen",
+    "en": "Landmark",
+    "nl": "Herkenningspunt"
+  },
+  "showConfigurator.exampleBerlinTvTowerWithWarningLight": {
+    "de": "Beispiel: Berliner Fernsehturm mit Warnlicht",
+    "en": "Example: Berlin TV Tower with a warning light",
+    "nl": "Voorbeeld: Berlijnse televisietoren met waarschuwingslicht"
+  },
+  "showConfigurator.theTvTowerIn3dLightRunsAroundTheBall": {
+    "de": "Der Fernsehturm in 3D, Licht läuft um die Kugel",
+    "en": "The TV tower in 3D, light travels around the sphere",
+    "nl": "De televisietoren in 3D, licht loopt rond de bol"
+  },
+  "showConfigurator.theTvTowerBroadcastsAndBecomesTheBrandenburgGate": {
+    "de": "Der Fernsehturm sendet und wird zum Brandenburger Tor",
+    "en": "The TV tower broadcasts and becomes the Brandenburg Gate",
+    "nl": "De televisietoren zendt uit en wordt de Brandenburger Tor"
+  },
+  "showConfigurator.cup": {
+    "de": "Pokal",
+    "en": "Trophy",
+    "nl": "Beker"
+  },
+  "showConfigurator.aCupAboveItSparklingStars": {
+    "de": "Ein Pokal, über ihm funkeln Sterne",
+    "en": "A trophy with stars sparkling above it",
+    "nl": "Een beker met schitterende sterren erboven"
+  },
+  "showConfigurator.theCupIn3dLightGlidesOverIt": {
+    "de": "Der Pokal in 3D, Licht gleitet darüber",
+    "en": "The trophy in 3D, light glides across it",
+    "nl": "De beker in 3D, licht glijdt eroverheen"
+  },
+  "showConfigurator.theCupGrowsYourNumberRisesOut": {
+    "de": "Der Pokal wächst, eure Zahl steigt heraus",
+    "en": "The trophy grows, your number rises out of it",
+    "nl": "De beker groeit, jullie getal stijgt eruit"
+  },
+  "showConfigurator.head": {
+    "de": "Kopfsprung",
+    "en": "Dive",
+    "nl": "Duik"
+  },
+  "showConfigurator.theJumperDipsInTheWaterMovesInRings": {
+    "de": "Der Springer taucht ein, das Wasser bewegt sich in Ringen",
+    "en": "The diver enters the water, ripples spread",
+    "nl": "De duiker duikt het water in, kringen breiden zich uit"
+  },
+  "showConfigurator.divingBoardTakeOffSplashRipplesSpread": {
+    "de": "Sprungbrett, Absprung, Eintauchen, Ringe breiten sich aus",
+    "en": "Diving board, take-off, splash, ripples spread",
+    "nl": "Duikplank, afzet, duik, kringen breiden zich uit"
+  },
+  "showConfigurator.medal": {
+    "de": "Medaille",
+    "en": "Medal",
+    "nl": "Medaille"
+  },
+  "showConfigurator.theRipplesBecomeYourNumberOnAMedalRibbon": {
+    "de": "Die Ringe im Wasser werden zu eurer Zahl mit Medaillenband",
+    "en": "The ripples become your number on a medal ribbon",
+    "nl": "De kringen worden jullie getal met een medaillelint"
+  },
+  "showConfigurator.cityFestival": {
+    "de": "Stadtfest",
+    "en": "City festival",
+    "nl": "Stadsfeest"
+  },
+  "showConfigurator.travel": {
+    "de": "Reise",
+    "en": "Travel",
+    "nl": "Reis"
+  },
+  "showConfigurator.aCompassTheNeedleSeeksTheNorth": {
+    "de": "Ein Kompass, die Nadel sucht den Norden",
+    "en": "A compass, the needle seeks the north",
+    "nl": "Een kompas, de naald zoekt het noorden"
+  },
+  "showConfigurator.theCompassIn3dTheNeedleSwingsIn": {
+    "de": "Der Kompass in 3D, die Nadel schwingt ein",
+    "en": "The compass in 3D, its needle settles",
+    "nl": "Het kompas in 3D, de naald komt tot rust"
+  },
+  "showConfigurator.theCityBecomesAMapPinsLightUpAndA": {
+    "de": "Die Stadt wird zur Karte, Pins leuchten auf, eine Route verbindet die Orte",
+    "en": "The city becomes a map, pins light up and a route connects the places",
+    "nl": "De stad wordt een kaart, pins lichten op en een route verbindt de plaatsen"
+  },
+  "showConfigurator.paperPlane": {
+    "de": "Papierflieger",
+    "en": "Paper plane",
+    "nl": "Papieren vliegtuig"
+  },
+  "showConfigurator.aPaperPlaneFollowsTheRouteAndCirclesTheCompass": {
+    "de": "Ein Papierflieger fliegt die Route ab und kreist um den Kompass",
+    "en": "A paper plane follows the route and circles the compass",
+    "nl": "Een papieren vliegtuig volgt de route en cirkelt rond het kompas"
+  },
+  "showConfigurator.kolibrium": {
+    "de": "Kolibri",
+    "en": "Hummingbird",
+    "nl": "Kolibrie"
+  },
+  "showConfigurator.aHummingbirdTheWingsSwirlInTheLight": {
+    "de": "Ein Kolibri, die Flügel schwirren im Licht",
+    "en": "A hummingbird, its wings flutter in the light",
+    "nl": "Een kolibrie, de vleugels trillen in het licht"
+  },
+  "showConfigurator.aHummingbirdIn3dThatBeatsWings": {
+    "de": "Ein Kolibri in 3D, die Flügel schlagen",
+    "en": "A hummingbird in 3D, its wings beat",
+    "nl": "Een kolibrie in 3D, de vleugels slaan"
+  },
+  "showConfigurator.aHummingbirdFliesToFlowerDrinksAndAscends": {
+    "de": "Ein Kolibri fliegt zur Blüte, trinkt und steigt auf",
+    "en": "A hummingbird flies to a flower, drinks and rises",
+    "nl": "Een kolibrie vliegt naar een bloem, drinkt en stijgt op"
+  },
+  "showConfigurator.ferrisWheel": {
+    "de": "Riesenrad",
+    "en": "Ferris wheel",
+    "nl": "Reuzenrad"
+  },
+  "showConfigurator.aFerrisWheelTurnsItsGondolasHangStill": {
+    "de": "Ein Riesenrad dreht sich, die Gondeln hängen ruhig",
+    "en": "A Ferris wheel turns, its gondolas hang still",
+    "nl": "Een reuzenrad draait, de gondels hangen rustig"
+  },
+  "showConfigurator.theFerrisWheelIn3dTheGondolasLightUp": {
+    "de": "Das Riesenrad in 3D, die Gondeln leuchten",
+    "en": "The Ferris wheel in 3D, the gondolas light up",
+    "nl": "Het reuzenrad in 3D, de gondels lichten op"
+  },
+  "showConfigurator.aFerrisWheelTakesShapeAndTurnsAStarBlooms": {
+    "de": "Das Riesenrad zeichnet sich, dreht sich, über ihm blüht ein Stern",
+    "en": "A Ferris wheel takes shape and turns, a star blooms above it",
+    "nl": "Een reuzenrad tekent zich af en draait, erboven bloeit een ster"
+  },
+  "showConfigurator.dolphin": {
+    "de": "Delfin",
+    "en": "Dolphin",
+    "nl": "Dolfijn"
+  },
+  "showConfigurator.aDolphinOverAWave": {
+    "de": "Ein Delfin über einer Welle",
+    "en": "A dolphin over a wave",
+    "nl": "Een dolfijn over een golf"
+  },
+  "showConfigurator.aDolphinJumpsOutOfTheWaterIn3d": {
+    "de": "Ein Delfin springt in 3D aus dem Wasser",
+    "en": "A dolphin leaps from the water in 3D",
+    "nl": "Een dolfijn springt in 3D uit het water"
+  },
+  "showConfigurator.wavesOneDolphinJumpsDivesInTwoDolphinsJumpIn": {
+    "de": "Wellen, ein Delfin springt, taucht ein, zwei Delfine springen im Bogen",
+    "en": "Waves, a dolphin leaps and dives, two dolphins jump in an arc",
+    "nl": "Golven, een dolfijn springt en duikt, twee dolfijnen springen in een boog"
+  },
+  "showConfigurator.dragon": {
+    "de": "Drache",
+    "en": "Dragon",
+    "nl": "Draak"
+  },
+  "showConfigurator.aDragonIn3dThatBeatsWings": {
+    "de": "Ein Drache in 3D, die Flügel schlagen",
+    "en": "A dragon in 3D, its wings beat",
+    "nl": "Een draak in 3D, de vleugels slaan"
+  },
+  "showConfigurator.aDragonRisesCirclesAndBreathesFireworks": {
+    "de": "Ein Drache steigt auf, kreist und speit ein Feuerwerk",
+    "en": "A dragon rises, circles and breathes fireworks",
+    "nl": "Een draak stijgt op, cirkelt en spuwt vuurwerk"
+  },
+  "showConfigurator.rings": {
+    "de": "Ringe",
+    "en": "Rings",
+    "nl": "Ringen"
+  },
+  "showConfigurator.twoWeddingRingsTheStoneSparkles": {
+    "de": "Zwei Eheringe, der Stein funkelt",
+    "en": "Two wedding rings, the stone sparkles",
+    "nl": "Twee trouwringen, de steen schittert"
+  },
+  "showConfigurator.aSolitaireIn3dRingAndBrilliantSpin": {
+    "de": "Ein Solitär in 3D: Ring und Brillant drehen sich",
+    "en": "A solitaire in 3D: ring and diamond rotate",
+    "nl": "Een solitair in 3D: ring en diamant draaien"
+  },
+  "showConfigurator.twoWeddingRingsIntertwineIn3dAndBecomeASolitaire": {
+    "de": "Zwei Eheringe verschlingen sich in 3D und werden ein Solitär",
+    "en": "Two wedding rings intertwine in 3D and become a solitaire",
+    "nl": "Twee trouwringen verstrengelen in 3D en worden een solitair"
+  },
+  "showConfigurator.heart": {
+    "de": "Herz",
+    "en": "Heart",
+    "nl": "Hart"
+  },
+  "showConfigurator.aHeartLightTravelsAlongItsOutline": {
+    "de": "Ein Herz, ein Schein wandert über die Linie",
+    "en": "A heart, light travels along its outline",
+    "nl": "Een hart, licht glijdt langs de contour"
+  },
+  "showConfigurator.aTunnelOfHeartsLightFlowingThrough": {
+    "de": "Ein Tunnel aus Herzen, Licht fließt hindurch",
+    "en": "A tunnel of hearts, light flowing through",
+    "nl": "Een tunnel van harten, licht stroomt door"
+  },
+  "showConfigurator.cupidSArrowStrikesA3dHeartTwoHeartsOrbit": {
+    "de": "Amors Pfeil trifft ein Herz in 3D, zwei Herzen umkreisen sich",
+    "en": "Cupid's arrow strikes a 3D heart, two hearts orbit each other",
+    "nl": "Amors pijl raakt een 3D-hart, twee harten draaien om elkaar"
+  },
+  "showConfigurator.lotusFlowers": {
+    "de": "Lotusblüten",
+    "en": "Lotus flowers",
+    "nl": "Lotusbloemen"
+  },
+  "showConfigurator.twoLotusFlowersIn3dRotateIntoEachOther": {
+    "de": "Zwei Lotusblüten in 3D drehen sich ineinander",
+    "en": "Two lotus flowers twist into each other in 3D",
+    "nl": "Twee lotusbloemen draaien in 3D in elkaar"
+  },
+  "showConfigurator.twoBudsBloomRotateIntoEachOtherAndBecomeA": {
+    "de": "Zwei Knospen blühen auf, drehen sich ineinander und werden eine Kugel aus Licht",
+    "en": "Two buds bloom, twist into each other and become a sphere of light",
+    "nl": "Twee knoppen bloeien open, draaien in elkaar en worden een bol van licht"
+  },
+  "showConfigurator.butterfly": {
+    "de": "Schmetterling",
+    "en": "Butterfly",
+    "nl": "Vlinder"
+  },
+  "showConfigurator.aButterflyTheWingsShimmering": {
+    "de": "Ein Schmetterling, die Flügel schimmern",
+    "en": "A butterfly, the wings shimmering",
+    "nl": "Een vlinder, de vleugels schitteren"
+  },
+  "showConfigurator.aButterflyIn3dStrikesWithItsWings": {
+    "de": "Ein Schmetterling in 3D schlägt mit den Flügeln",
+    "en": "A butterfly in 3D flaps its wings",
+    "nl": "Een vlinder in 3D klappert met zijn vleugels"
+  },
+  "showConfigurator.a3dButterflyLandsOnAFlowerTheFlowerBecomes": {
+    "de": "Ein Schmetterling in 3D landet auf einer Blüte, aus der Blüte wird ein Herz",
+    "en": "A 3D butterfly lands on a flower, the flower becomes a heart",
+    "nl": "Een 3D-vlinder landt op een bloem, de bloem wordt een hart"
+  },
+  "showConfigurator.sparklingGlasses": {
+    "de": "Sektgläser",
+    "en": "Champagne glasses",
+    "nl": "Champagneglazen"
+  },
+  "showConfigurator.twoChampagneGlassesClinkLightGlidesAcrossTheGlass": {
+    "de": "Zwei Sektgläser stoßen an, ein Schein wandert über das Glas",
+    "en": "Two champagne glasses clink, light glides across the glass",
+    "nl": "Twee champagneglazen klinken, licht glijdt over het glas"
+  },
+  "showConfigurator.sparklingGlassesIn3dThePearlsRise": {
+    "de": "Sektgläser in 3D, die Perlen steigen",
+    "en": "Champagne glasses in 3D, bubbles rise",
+    "nl": "Champagneglazen in 3D, belletjes stijgen op"
+  },
+  "showConfigurator.theGlassesStrikeThePearlsRiseAsHeart": {
+    "de": "Die Gläser stoßen an, die Perlen steigen als Herz auf",
+    "en": "The glasses clink, bubbles rise as a heart",
+    "nl": "De glazen klinken, belletjes stijgen op als een hart"
+  },
+  "showConfigurator.proposal": {
+    "de": "Antrag",
+    "en": "Proposal",
+    "nl": "Huwelijksaanzoek"
+  },
+  "showConfigurator.aRingBoxOpensTheRingFindsTheRingFinger": {
+    "de": "Ein Ringkästchen öffnet sich, der Ring findet den Ringfinger",
+    "en": "A ring box opens, the ring finds the ring finger",
+    "nl": "Een ringdoos opent, de ring vindt de ringvinger"
+  },
+  "showConfigurator.culture": {
+    "de": "Kultur",
+    "en": "Culture",
+    "nl": "Cultuur"
+  },
+  "showConfigurator.book": {
+    "de": "Buch",
+    "en": "Book",
+    "nl": "Boek"
+  },
+  "showConfigurator.anOpenBookLightFlipsThePages": {
+    "de": "Ein offenes Buch, Licht blättert die Seiten",
+    "en": "An open book, light flips the pages",
+    "nl": "Een open boek, licht draait de pagina's"
+  },
+  "showConfigurator.theBookOpensIn3dOnePageTurns": {
+    "de": "Das Buch öffnet sich in 3D, eine Seite wendet sich",
+    "en": "The book opens in 3D, one page turns",
+    "nl": "Het boek opent in 3D, een pagina draait"
+  },
+  "showConfigurator.theBookOpensAPenWritesTheLinesRise": {
+    "de": "Das Buch öffnet sich, eine Feder schreibt, die Zeilen steigen auf",
+    "en": "The book opens, a quill writes, the lines rise",
+    "nl": "Het boek gaat open, een veer schrijft, de regels stijgen op"
+  },
+  "showConfigurator.curtain": {
+    "de": "Vorhang",
+    "en": "Curtain",
+    "nl": "Gordijn"
+  },
+  "showConfigurator.theCurtainMovesInTheAirDraft": {
+    "de": "Der Vorhang bewegt sich im Luftzug",
+    "en": "The curtain moves in the breeze",
+    "nl": "Het gordijn beweegt in de tocht"
+  },
+  "showConfigurator.curtainOnA3dStarIsReleased": {
+    "de": "Vorhang auf, ein 3D-Stern löst sich heraus",
+    "en": "Curtain up, a 3D star emerges",
+    "nl": "Het doek gaat open, een 3D-ster komt tevoorschijn"
+  },
+  "showConfigurator.curtainOnGoldRainFallsAStarRises": {
+    "de": "Vorhang auf, Goldregen fällt, ein Stern steigt auf",
+    "en": "Curtain up, golden rain falls, a star rises",
+    "nl": "Het doek gaat open, gouden regen valt, een ster stijgt op"
+  },
+  "showConfigurator.masks": {
+    "de": "Masken",
+    "en": "Masks",
+    "nl": "Maskers"
+  },
+  "showConfigurator.theatreMasksComedyAndTragedyWeighThemselves": {
+    "de": "Theatermasken: Komödie und Tragödie wiegen sich",
+    "en": "Theatre masks: comedy and tragedy sway",
+    "nl": "Theatermaskers: komedie en tragedie wiegen"
+  },
+  "showConfigurator.theMasksIn3d": {
+    "de": "Die Masken in 3D",
+    "en": "The masks in 3D",
+    "nl": "De maskers in 3D"
+  },
+  "showConfigurator.comedyAndTragedyJoinToFormTheTheatreSymbol": {
+    "de": "Komödie und Tragödie verbinden sich zum Theaterzeichen",
+    "en": "Comedy and tragedy join to form the theatre symbol",
+    "nl": "Komedie en tragedie vormen samen het theatersymbool"
+  },
+  "showConfigurator.twoNotesWeighInTime": {
+    "de": "Zwei Noten wiegen sich im Takt",
+    "en": "Two notes sway in time",
+    "nl": "Twee noten wiegen op de maat"
+  },
+  "showConfigurator.aHarpLightPlucksTheStringsNotesRise": {
+    "de": "Eine Harfe, Licht zupft die Saiten, Noten steigen auf",
+    "en": "A harp, light plucks the strings, notes rise",
+    "nl": "Een harp, licht tokkelt aan de snaren, noten stijgen op"
+  },
+  "showConfigurator.theStringsSoundNTheNotesFlyNOfThem": {
+    "de": "Die Saiten klingen, die Noten fliegen davon und werden eine Melodie",
+    "en": "The strings sound, notes fly away and become a melody",
+    "nl": "De snaren klinken, noten vliegen weg en worden een melodie"
+  },
+  "showConfigurator.dance": {
+    "de": "Tanz",
+    "en": "Dance",
+    "nl": "Dans"
+  },
+  "showConfigurator.aDancerHerRockSwings": {
+    "de": "Eine Tänzerin, ihr Rock schwingt",
+    "en": "A dancer, her skirt sways",
+    "nl": "Een danseres, haar rok zwiert"
+  },
+  "showConfigurator.theDancerTurnsIn3dTheRockFlies": {
+    "de": "Die Tänzerin dreht sich in 3D, der Rock fliegt",
+    "en": "The dancer spins in 3D, her skirt flares",
+    "nl": "De danseres draait in 3D, haar rok waait op"
+  },
+  "showConfigurator.theDancerTurnsTheSkirtBecomesTheFlowerTheFlower": {
+    "de": "Die Tänzerin dreht sich, der Rock wird zur Blüte, die Blüte zum Fächer",
+    "en": "The dancer spins, her skirt becomes a flower, the flower a fan",
+    "nl": "De danseres draait, haar rok wordt een bloem, de bloem een waaier"
+  },
+  "showConfigurator.theDevilFromOurBokkenrijdersShowAnActual3dFormation": {
+    "de": "Der Teufel aus unserer Show Bokkenrijders, eine echte Formation in 3D",
+    "en": "The devil from our Bokkenrijders show, an actual 3D formation",
+    "nl": "De duivel uit onze show Bokkenrijders, een echte 3D-formatie"
+  },
+  "showConfigurator.winterAndNewYear": {
+    "de": "Winter & Silvester",
+    "en": "Winter & New Year's Eve",
+    "nl": "Winter & oud en nieuw"
+  },
+  "showConfigurator.clock": {
+    "de": "Uhr",
+    "en": "Clock",
+    "nl": "Klok"
+  },
+  "showConfigurator.theHandsRunToTwelve": {
+    "de": "Die Zeiger laufen auf zwölf",
+    "en": "The hands move towards twelve",
+    "nl": "De wijzers lopen naar twaalf"
+  },
+  "showConfigurator.3dWatchTheHandsAreRunning": {
+    "de": "3D-Uhr, die Zeiger laufen",
+    "en": "A 3D clock, its hands move",
+    "nl": "Een 3D-klok, de wijzers bewegen"
+  },
+  "showConfigurator.midnightSparksSwirlOutAndWriteTheNewYear": {
+    "de": "Mitternacht: Funken schwärmen aus und schreiben das neue Jahr",
+    "en": "Midnight: sparks swirl out and write the new year",
+    "nl": "Middernacht: vonken zwermen uit en schrijven het nieuwe jaar"
+  },
+  "showConfigurator.champagneCork": {
+    "de": "Sektkorken",
+    "en": "Champagne cork",
+    "nl": "Champagnekurk"
+  },
+  "showConfigurator.aChampagneBottleIn3dBubblesRiseInTheLight": {
+    "de": "Eine Sektflasche in 3D, die Perlen steigen im Licht",
+    "en": "A champagne bottle in 3D, bubbles rise in the light",
+    "nl": "Een champagnefles in 3D, belletjes stijgen in het licht"
+  },
+  "showConfigurator.aChampagneBottleTheCorkPopsAndFliesInAn": {
+    "de": "Eine Sektflasche, der Korken knallt und fliegt im Bogen davon",
+    "en": "A champagne bottle, the cork pops and flies in an arc",
+    "nl": "Een champagnefles, de kurk knalt en vliegt in een boog weg"
+  },
+  "showConfigurator.lightTree": {
+    "de": "Lichterbaum",
+    "en": "Tree of lights",
+    "nl": "Lichtboom"
+  },
+  "showConfigurator.aSnowflakeTurns": {
+    "de": "Eine Schneeflocke dreht sich",
+    "en": "A snowflake turns",
+    "nl": "Een sneeuwvlok draait"
+  },
+  "showConfigurator.aLightTreeAsASpiralLightAscends": {
+    "de": "Ein Lichterbaum als Spirale, Licht steigt hinauf",
+    "en": "A spiral tree of lights, light travels upwards",
+    "nl": "Een lichtboom als spiraal, licht klimt omhoog"
+  },
+  "showConfigurator.aSnowflakeBecomesATreeOfLightsAStarAppears": {
+    "de": "Aus einer Schneeflocke wird ein Lichterbaum, ein Stern geht auf",
+    "en": "A snowflake becomes a tree of lights, a star appears",
+    "nl": "Een sneeuwvlok wordt een lichtboom, een ster verschijnt"
+  },
+  "showConfigurator.fireworks": {
+    "de": "Feuerwerk",
+    "en": "Fireworks",
+    "nl": "Vuurwerk"
+  },
+  "showConfigurator.fireworkStarsLightUpOneAfterTheOther": {
+    "de": "Feuerwerkssterne leuchten nacheinander auf",
+    "en": "Firework stars light up one after another",
+    "nl": "Vuurwerksterren lichten één voor één op"
+  },
+  "showConfigurator.fireworksOfLightStarsBloomAndBurn": {
+    "de": "Feuerwerk aus Licht: Sterne blühen und verglühen",
+    "en": "Fireworks made of light: stars bloom and fade",
+    "nl": "Vuurwerk van licht: sterren bloeien en doven"
+  },
+  "showConfigurator.aTrailOfLightRisesStarsBloomInWaves": {
+    "de": "Eine Leuchtspur steigt, Sterne blühen in Wellen",
+    "en": "A trail of light rises, stars bloom in waves",
+    "nl": "Een lichtspoor stijgt op, sterren bloeien in golven"
+  },
+  "showConfigurator.finale": {
+    "de": "Finale",
+    "en": "Finale",
+    "nl": "Finale"
+  },
+  "showConfigurator.finaleAllStarsAtOnceThenGoldenRainFalls": {
+    "de": "Finale: alle Sterne zugleich, dann fällt Goldregen",
+    "en": "Finale: all stars at once, then golden rain falls",
+    "nl": "Finale: alle sterren tegelijk, daarna valt gouden regen"
+  },
+  "showConfigurator.clover": {
+    "de": "Kleeblatt",
+    "en": "Clover",
+    "nl": "Klaver"
+  },
+  "showConfigurator.aLuckyCloverTurns": {
+    "de": "Ein Glücksklee dreht sich",
+    "en": "A lucky clover rotates",
+    "nl": "Een geluksklaver draait"
+  },
+  "showConfigurator.theLuckyCloverIn3d": {
+    "de": "Der Glücksklee in 3D",
+    "en": "The lucky clover in 3D",
+    "nl": "De geluksklaver in 3D"
+  },
+  "showConfigurator.threeLeavesBecomeFourHappinessForTheNewYear": {
+    "de": "Aus drei Blättern werden vier: Glück fürs neue Jahr",
+    "en": "Three leaves become four: luck for the new year",
+    "nl": "Drie blaadjes worden vier: geluk voor het nieuwe jaar"
+  },
+  "contact.stepValueOfValue": {
+    "de": "Schritt {v0} von {v1}",
+    "en": "Step {v0} of {v1}",
+    "nl": "Stap {v0} van {v1}"
+  },
+  "contact.pleaseChooseAnOccasion": {
+    "de": "Bitte wähle einen Anlass.",
+    "en": "Please choose an occasion.",
+    "nl": "Kies een gelegenheid."
+  },
+  "contact.pleaseEnterAValidEmailAddress": {
+    "de": "Bitte gib eine gültige E-Mail-Adresse ein.",
+    "en": "Please enter a valid email address.",
+    "nl": "Vul een geldig e-mailadres in."
+  },
+  "contact.pleaseFillInThisField": {
+    "de": "Bitte ausfüllen.",
+    "en": "Please fill in this field.",
+    "nl": "Vul dit veld in."
+  },
+  "contact.textInTheSkyValue": {
+    "de": "Text am Himmel: {v0}",
+    "en": "Text in the sky: {v0}",
+    "nl": "Tekst aan de hemel: {v0}"
+  },
+  "contact.sending": {
+    "de": "Wird gesendet …",
+    "en": "Sending …",
+    "nl": "Wordt verstuurd …"
+  },
+  "contact.yourEnquiryCouldNotBeSent": {
+    "de": "Die Anfrage konnte nicht gesendet werden.",
+    "en": "Your enquiry could not be sent.",
+    "nl": "De aanvraag kon niet worden verstuurd."
+  },
+  "contact.formDeliveryHasNotBeenSetUpYetNothingWas": {
+    "de": "Der Formularversand ist noch nicht eingerichtet. Es wurde nichts gesendet. Die Formularanwendung hat eure Anfrage nicht gespeichert. Bitte schreibt uns direkt an team@flyingstars.art.",
+    "en": "Form delivery has not been set up yet. Nothing was sent. The form application has not stored your enquiry. Please email us directly at team@flyingstars.art.",
+    "nl": "Het verzenden van het formulier is nog niet ingesteld. Er is niets verzonden. De formulierapplicatie heeft jullie aanvraag niet opgeslagen. Mail ons rechtstreeks op team@flyingstars.art."
+  },
+  "contact.yourEnquiryHasBeenSentWeLlGetBackTo": {
+    "de": "Deine Anfrage wurde gesendet. Wir melden uns innerhalb von 48 Stunden.",
+    "en": "Your enquiry has been sent. We'll get back to you within 48 hours.",
+    "nl": "Jullie aanvraag is verstuurd. We reageren binnen 48 uur."
+  },
+  "contact.valuePleaseTryAgainLaterOrEmailTeamFlyingstarsArt": {
+    "de": "{v0} Bitte versuche es später erneut oder schreibe direkt an team@flyingstars.art.",
+    "en": "{v0} Please try again later or email team@flyingstars.art directly.",
+    "nl": "{v0} Probeer het later opnieuw of mail rechtstreeks naar team@flyingstars.art."
+  },
+  "site.resumeMotion": {
+    "de": "Bewegung fortsetzen",
+    "en": "Resume motion",
+    "nl": "Beweging hervatten"
+  },
+  "showConfigurator.sceneValueOfValueValue": {
+    "de": "Bild {v0} von {v1}: {v2}",
+    "en": "Scene {v0} of {v1}: {v2}",
+    "nl": "Beeld {v0} van {v1}: {v2}"
+  },
+  "showConfigurator.yourLogo": {
+    "de": "Euer Logo",
+    "en": "Your logo",
+    "nl": "Jullie logo"
+  },
+  "showConfigurator.bValueBFromValueDrones": {
+    "de": "<b>{v0}</b> · ab {v1} Drohnen",
+    "en": "<b>{v0}</b> · from {v1} drones",
+    "nl": "<b>{v0}</b> · vanaf {v1} drones"
+  },
+  "showConfigurator.valueFromValueDronesSetDroneCountToValue": {
+    "de": "{v0}: ab {v1} Drohnen, Drohnenzahl auf {v2} stellen",
+    "en": "{v0}: from {v1} drones, set drone count to {v2}",
+    "nl": "{v0}: vanaf {v1} drones, stel het aantal drones in op {v2}"
+  },
+  "showConfigurator.playThePreview": {
+    "de": "Vorführung abspielen",
+    "en": "Play the preview",
+    "nl": "Preview afspelen"
+  },
+  "showConfigurator.yourTextInTheSky": {
+    "de": "Euer Text am Himmel",
+    "en": "Your text in the sky",
+    "nl": "Jullie tekst aan de hemel"
+  },
+  "showConfigurator.lightWritesYourText": {
+    "de": "Licht schreibt euren Text",
+    "en": "Light writes your text",
+    "nl": "Licht schrijft jullie tekst"
+  },
+  "showConfigurator.weCouldnTConvertThisFileAnSvgOrA": {
+    "de": "Diese Datei konnten wir nicht umrechnen. Am besten klappt ein SVG oder ein PNG mit transparentem Hintergrund.",
+    "en": "We couldn't convert this file. An SVG or a PNG with a transparent background works best.",
+    "nl": "We konden dit bestand niet omzetten. Een SVG of PNG met transparante achtergrond werkt het best."
+  },
+  "showConfigurator.valueDronesValue": {
+    "de": "{v0} Drohnen, {v1}",
+    "en": "{v0} drones, {v1}",
+    "nl": "{v0} drones, {v1}"
+  },
+  "showConfigurator.valueExcludingVatAndTravel": {
+    "de": "{v0} · netto zzgl. Anfahrt",
+    "en": "{v0} · excluding VAT and travel",
+    "nl": "{v0} · exclusief btw en reiskosten"
+  },
+  "showConfigurator.occasionValue": {
+    "de": "Anlass: {v0}",
+    "en": "Occasion: {v0}",
+    "nl": "Gelegenheid: {v0}"
+  },
+  "showConfigurator.customTextValueValue": {
+    "de": "Eigener Text: „{v0}“ ({v1})",
+    "en": "Custom text: “{v0}” ({v1})",
+    "nl": "Eigen tekst: “{v0}” ({v1})"
+  },
+  "showConfigurator.customLogoTriedInThePreview": {
+    "de": "Eigenes Logo: in der Vorschau ausprobiert",
+    "en": "Custom logo: tried in the preview",
+    "nl": "Eigen logo: uitgeprobeerd in de preview"
+  },
+  "showConfigurator.complexityValueValueValueDronesValueExcludingVatConfiguratorPrice": {
+    "de": "Aufwand: {v0} ({v1}, {v2} Drohnen, {v3} netto, Preis laut Konfigurator)",
+    "en": "Complexity: {v0} ({v1}, {v2} drones, {v3} excluding VAT, configurator price)",
+    "nl": "Uitvoering: {v0} ({v1}, {v2} drones, {v3} exclusief btw, prijs volgens configurator)"
+  },
+  "showConfigurator.pleaseChooseAnSvgPngOrJpg": {
+    "de": "Bitte ein SVG, PNG oder JPG wählen.",
+    "en": "Please choose an SVG, PNG or JPG.",
+    "nl": "Kies een SVG, PNG of JPG."
+  },
+  "showConfigurator.weCouldnTReadThisFile": {
+    "de": "Diese Datei konnten wir nicht lesen.",
+    "en": "We couldn't read this file.",
+    "nl": "We konden dit bestand niet lezen."
+  },
+  "showTeaser.spaceForYourLogo": {
+    "de": "Platz für euer Logo",
+    "en": "Space for your logo",
+    "nl": "Plek voor jullie logo"
+  },
+  "showTeaser.yourInitials": {
+    "de": "Eure Initialen",
+    "en": "Your initials",
+    "nl": "Jullie initialen"
+  },
+  "showTeaser.inTheSky": {
+    "de": " am Himmel",
+    "en": " in the sky",
+    "nl": " aan de hemel"
+  },
+  "showTeaser.theFlyingstarsLogoMadeOfValueDrones": {
+    "de": "Das FlyingStars-Logo aus {v0} Drohnen",
+    "en": "The FlyingStars logo made of {v0} drones",
+    "nl": "Het FlyingStars-logo uit {v0} drones"
+  },
+  "showTeaser.theFlyingstarsLogoWithLetteringMadeOfValueDrones": {
+    "de": "Das FlyingStars-Logo mit Schriftzug aus {v0} Drohnen",
+    "en": "The FlyingStars logo with lettering made of {v0} drones",
+    "nl": "Het FlyingStars-logo met tekst uit {v0} drones"
+  },
+  "showScenes.theDevilFromOurBokkenrijdersShow": {
+    "de": "Der Teufel aus unserer Show Bokkenrijders",
+    "en": "The devil from our Bokkenrijders show",
+    "nl": "De duivel uit onze show Bokkenrijders"
+  },
+  "showScenes.aChampagneBottleTheCorkPops": {
+    "de": "Eine Sektflasche, der Korken knallt",
+    "en": "A champagne bottle, the cork pops",
+    "nl": "Een champagnefles, de kurk knalt"
+  },
+  "showScenes.a3dHeartCupidTakesAim": {
+    "de": "Ein Herz in 3D, Amor zielt",
+    "en": "A 3D heart, Cupid takes aim",
+    "nl": "Een 3D-hart, Amor richt"
+  },
+  "showScenes.theArrowStrikesAndStaysInTheHeart": {
+    "de": "der Pfeil trifft und bleibt im Herz stecken",
+    "en": "the arrow strikes and stays in the heart",
+    "nl": "de pijl raakt het hart en blijft steken"
+  },
+  "showScenes.andBecomesTwoHeartsOrbitingEachOther": {
+    "de": "…und wird zu zwei Herzen, die sich umkreisen",
+    "en": "…and becomes two hearts orbiting each other",
+    "nl": "…en wordt twee harten die om elkaar draaien"
+  },
+  "showScenes.twoGlasses": {
+    "de": "Zwei Gläser",
+    "en": "Two glasses",
+    "nl": "Twee glazen"
+  },
+  "showScenes.theyClink": {
+    "de": "sie stoßen an",
+    "en": "they clink",
+    "nl": "ze klinken"
+  },
+  "showScenes.andTheBubblesRiseAsAHeart": {
+    "de": "…und die Perlen steigen als Herz auf",
+    "en": "…and the bubbles rise as a heart",
+    "nl": "…en de belletjes stijgen op als een hart"
+  },
+  "showScenes.theBase": {
+    "de": "Der Sockel",
+    "en": "The base",
+    "nl": "De voet"
+  },
+  "showScenes.theTrophyGrows": {
+    "de": "der Pokal wächst",
+    "en": "the trophy grows",
+    "nl": "de beker groeit"
+  },
+  "showScenes.andYourNumberRisesOutOfItConfettiSparkles": {
+    "de": "…und eure Zahl steigt heraus, Konfetti funkelt",
+    "en": "…and your number rises out of it, confetti sparkles",
+    "nl": "…en jullie getal stijgt eruit, confetti schittert"
+  },
+  "showScenes.aFilamentGlows": {
+    "de": "Ein Glühfaden glimmt",
+    "en": "A filament glows",
+    "nl": "Een gloeidraad gloeit"
+  },
+  "showScenes.aLightBulbFormsAroundIt": {
+    "de": "um ihn formt sich die Glühbirne",
+    "en": "a light bulb forms around it",
+    "nl": "er vormt zich een gloeilamp omheen"
+  },
+  "showScenes.andItShines": {
+    "de": "…und sie strahlt",
+    "en": "…and it shines",
+    "nl": "…en hij straalt"
+  },
+  "showScenes.aThreeLeafClover": {
+    "de": "Ein Kleeblatt mit drei Blättern",
+    "en": "A three-leaf clover",
+    "nl": "Een klaver met drie blaadjes"
+  },
+  "showScenes.aFourthLeafAppearsForLuck": {
+    "de": "ein viertes kommt dazu: Glück",
+    "en": "a fourth leaf appears for luck",
+    "nl": "er komt een vierde blaadje bij voor geluk"
+  },
+  "showScenes.forTheNewYearSurroundedBySparks": {
+    "de": "…für das neue Jahr, umringt von Funken",
+    "en": "…for the new year, surrounded by sparks",
+    "nl": "…voor het nieuwe jaar, omringd door vonken"
+  },
+  "showScenes.theCoatOfArms": {
+    "de": "Das Wappen",
+    "en": "The coat of arms",
+    "nl": "Het wapen"
+  },
+  "showScenes.theStarBecomesYourNumber": {
+    "de": "aus dem Stern wird eure Zahl",
+    "en": "the star becomes your number",
+    "nl": "de ster wordt jullie getal"
+  },
+  "showScenes.withACrownAndACirclingWreathOfStars": {
+    "de": "…mit Krone und kreisendem Sternenkranz",
+    "en": "…with a crown and a circling wreath of stars",
+    "nl": "…met een kroon en een draaiende sterrenkrans"
+  },
+  "showScenes.theTvTower": {
+    "de": "Der Fernsehturm",
+    "en": "The TV tower",
+    "nl": "De televisietoren"
+  },
+  "showScenes.broadcastsAcrossTheCity": {
+    "de": "sendet über die Stadt",
+    "en": "broadcasts across the city",
+    "nl": "zendt over de stad"
+  },
+  "showScenes.andBecomesTheBrandenburgGate": {
+    "de": "…und wird zum Brandenburger Tor",
+    "en": "…and becomes the Brandenburg Gate",
+    "nl": "…en wordt de Brandenburger Tor"
+  },
+  "showScenes.readyForLaunch": {
+    "de": "Startklar",
+    "en": "Ready for launch",
+    "nl": "Klaar voor lancering"
+  },
+  "showScenes.ignitionTheRocketLiftsOffTheLaunchPadFallsAway": {
+    "de": "Zündung: die Rakete hebt ab, die Rampe fällt weg",
+    "en": "Ignition: the rocket lifts off, the launch pad falls away",
+    "nl": "Ontsteking: de raket stijgt op, het platform valt weg"
+  },
+  "showScenes.inOrbitAroundAPlanet": {
+    "de": "im Orbit um einen Planeten",
+    "en": "in orbit around a planet",
+    "nl": "in een baan om een planeet"
+  },
+  "showScenes.andLandsOnTheMoonFlagRaised": {
+    "de": "…und landet auf dem Mond. Flagge gehisst!",
+    "en": "…and lands on the moon. Flag raised!",
+    "nl": "…en landt op de maan. De vlag is gehesen!"
+  },
+  "showScenes.becomesARingOfLightIn3d": {
+    "de": "…wird zu einem Ring aus Licht in 3D",
+    "en": "…becomes a ring of light in 3D",
+    "nl": "…wordt een ring van licht in 3D"
+  },
+  "showScenes.comedy": {
+    "de": "Die Komödie",
+    "en": "Comedy",
+    "nl": "De komedie"
+  },
+  "showScenes.tragedyJoinsIn": {
+    "de": "die Tragödie tritt dazu",
+    "en": "tragedy joins in",
+    "nl": "de tragedie komt erbij"
+  },
+  "showScenes.theyFormTheTheatreSymbol": {
+    "de": "sie verbinden sich zum Theaterzeichen",
+    "en": "they form the theatre symbol",
+    "nl": "ze vormen samen het theatersymbool"
+  },
+  "showScenes.andBecomeTheDevilFromOurBokkenrijdersShow": {
+    "de": "…und werden zum Teufel aus unserer Show Bokkenrijders",
+    "en": "…and become the devil from our Bokkenrijders show",
+    "nl": "…en worden de duivel uit onze show Bokkenrijders"
+  },
+  "showScenes.curtainUp": {
+    "de": "Vorhang auf",
+    "en": "Curtain up",
+    "nl": "Het doek gaat open"
+  },
+  "showScenes.a3dStarEmergesFromTheCurtain": {
+    "de": "…ein 3D-Stern löst sich aus dem Vorhang",
+    "en": "…a 3D star emerges from the curtain",
+    "nl": "…een 3D-ster komt uit het gordijn"
+  },
+  "showScenes.goldenRainFallsFromTheCurtain": {
+    "de": "aus dem Vorhang fällt Goldregen",
+    "en": "golden rain falls from the curtain",
+    "nl": "uit het gordijn valt gouden regen"
+  },
+  "showScenes.andAStarRisesFromIt": {
+    "de": "…und ein Stern steigt daraus auf",
+    "en": "…and a star rises from it",
+    "nl": "…en een ster stijgt eruit op"
+  },
+  "showScenes.fiveToMidnight": {
+    "de": "Fünf vor zwölf",
+    "en": "Five to midnight",
+    "nl": "Vijf voor twaalf"
+  },
+  "showScenes.midnightSparksSwirlOut": {
+    "de": "Mitternacht: die Funken schwärmen aus",
+    "en": "Midnight: sparks swirl out",
+    "nl": "Middernacht: de vonken zwermen uit"
+  },
+  "showScenes.theyWriteTheNewYear": {
+    "de": "sie schreiben das neue Jahr",
+    "en": "they write the new year",
+    "nl": "ze schrijven het nieuwe jaar"
+  },
+  "showScenes.swirlAroundTheClockAgain": {
+    "de": "wirbeln wieder um die Uhr",
+    "en": "swirl around the clock again",
+    "nl": "wervelen weer om de klok"
+  },
+  "showScenes.andTheCorkPops": {
+    "de": "…und der Korken knallt",
+    "en": "…and the cork pops",
+    "nl": "…en de kurk knalt"
+  },
+  "festival.aCityAtNight": {
+    "de": "Eine Stadt bei Nacht",
+    "en": "A city at night",
+    "nl": "Een stad bij nacht"
+  },
+  "festival.itFlattensOut": {
+    "de": "sie legt sich flach",
+    "en": "it flattens out",
+    "nl": "ze vlakt af"
+  },
+  "festival.andBecomesAMapPinsLightUp": {
+    "de": "und wird zur Karte, Pins leuchten auf",
+    "en": "and becomes a map, pins light up",
+    "nl": "en wordt een kaart, pins lichten op"
+  },
+  "festival.aRouteConnectsThePlaces": {
+    "de": "eine Route verbindet die Orte",
+    "en": "a route connects the places",
+    "nl": "een route verbindt de plaatsen"
+  },
+  "festival.aPaperPlaneFollowsTheRoute": {
+    "de": "ein Papierflieger fliegt die Route ab",
+    "en": "a paper plane follows the route",
+    "nl": "een papieren vliegtuig volgt de route"
+  },
+  "festival.andCirclesTheCompassPointingNorth": {
+    "de": "…und kreist um den Kompass, der nach Norden zeigt",
+    "en": "…and circles the compass pointing north",
+    "nl": "…en cirkelt rond het kompas dat naar het noorden wijst"
+  },
+  "festival.aDragonRises": {
+    "de": "Ein Drache steigt auf",
+    "en": "A dragon rises",
+    "nl": "Een draak stijgt op"
+  },
+  "festival.itCirclesOnce": {
+    "de": "er dreht eine Runde",
+    "en": "it circles once",
+    "nl": "hij vliegt een rondje"
+  },
+  "festival.andBreathesFireworks": {
+    "de": "…und speit ein Feuerwerk",
+    "en": "…and breathes fireworks",
+    "nl": "…en spuwt vuurwerk"
+  },
+  "festival.aFerrisWheelTakesShapeInTheSky": {
+    "de": "Ein Riesenrad zeichnet sich in den Himmel",
+    "en": "A Ferris wheel takes shape in the sky",
+    "nl": "Een reuzenrad tekent zich af aan de hemel"
+  },
+  "festival.itTurnsTheGondolasLightUpOneByOne": {
+    "de": "es dreht sich, die Gondeln leuchten nacheinander auf",
+    "en": "it turns, the gondolas light up one by one",
+    "nl": "het draait, de gondels lichten één voor één op"
+  },
+  "festival.andAStarBloomsAboveIt": {
+    "de": "…und über ihm blüht ein Stern",
+    "en": "…and a star blooms above it",
+    "nl": "…en erboven bloeit een ster"
+  },
+  "hochzeit.twoBuds": {
+    "de": "Zwei Knospen",
+    "en": "Two buds",
+    "nl": "Twee knoppen"
+  },
+  "hochzeit.theyBloom": {
+    "de": "sie blühen auf",
+    "en": "they bloom",
+    "nl": "ze bloeien open"
+  },
+  "hochzeit.twistIntoEachOther": {
+    "de": "drehen sich ineinander",
+    "en": "twist into each other",
+    "nl": "draaien in elkaar"
+  },
+  "hochzeit.andBecomeASphereOfLight": {
+    "de": "…und werden eine Kugel aus Licht",
+    "en": "…and become a sphere of light",
+    "nl": "…en worden een bol van licht"
+  },
+  "hochzeit.aButterflyFliesTowardsAFlower": {
+    "de": "Ein Schmetterling fliegt zu einer Blüte",
+    "en": "A butterfly flies towards a flower",
+    "nl": "Een vlinder vliegt naar een bloem"
+  },
+  "hochzeit.itLandsItsWingsOpenAndClose": {
+    "de": "er landet, die Flügel öffnen und schließen sich",
+    "en": "it lands, its wings open and close",
+    "nl": "hij landt, zijn vleugels gaan open en dicht"
+  },
+  "hochzeit.itRisesTheFlowerBecomesAHeart": {
+    "de": "…er steigt auf, aus der Blüte wird ein Herz",
+    "en": "…it rises, the flower becomes a heart",
+    "nl": "…hij stijgt op, de bloem wordt een hart"
+  },
+  "hochzeit.aJewelleryBoxOpens": {
+    "de": "Ein Schmuckkästchen öffnet sich",
+    "en": "A jewellery box opens",
+    "nl": "Een sieradendoosje gaat open"
+  },
+  "hochzeit.theRingRisesFromItsCushionTheDiamondSparkles": {
+    "de": "der Ring steigt aus dem Polster, der Stein funkelt",
+    "en": "the ring rises from its cushion, the diamond sparkles",
+    "nl": "de ring stijgt uit het kussentje, de diamant schittert"
+  },
+  "hochzeit.aHandTheRingFindsTheRingFinger": {
+    "de": "eine Hand: der Ring findet den Ringfinger",
+    "en": "a hand: the ring finds the ring finger",
+    "nl": "een hand: de ring vindt de ringvinger"
+  },
+  "hochzeit.andSheSaysYes": {
+    "de": "…und sie sagt Ja",
+    "en": "…and she says yes",
+    "nl": "…en ze zegt ja"
+  },
+  "hochzeit.twoWeddingRingsIntertwineIn3d": {
+    "de": "Zwei Eheringe verschlingen sich in 3D",
+    "en": "Two wedding rings intertwine in 3D",
+    "nl": "Twee trouwringen verstrengelen in 3D"
+  },
+  "hochzeit.andBecomeASolitaireWithADiamond": {
+    "de": "…und werden ein Solitär mit Brillant",
+    "en": "…and become a solitaire with a diamond",
+    "nl": "…en worden een solitair met diamant"
+  },
+  "jubilaeum.aPlayerAndHisGoal": {
+    "de": "Ein Spieler und sein Tor",
+    "en": "A player and his goal",
+    "nl": "Een speler en zijn doel"
+  },
+  "jubilaeum.heShoots": {
+    "de": "er schießt",
+    "en": "he shoots",
+    "nl": "hij schiet"
+  },
+  "jubilaeum.goal": {
+    "de": "Tor!",
+    "en": "Goal!",
+    "nl": "Doelpunt!"
+  },
+  "jubilaeum.andTheBallBecomesYourNumber": {
+    "de": "…und der Ball wird zu eurer Zahl",
+    "en": "…and the ball becomes your number",
+    "nl": "…en de bal wordt jullie getal"
+  },
+  "jubilaeum.aDivingBoard": {
+    "de": "Ein Sprungbrett",
+    "en": "A diving board",
+    "nl": "Een duikplank"
+  },
+  "jubilaeum.takeOff": {
+    "de": "Absprung",
+    "en": "Take-off",
+    "nl": "Afzet"
+  },
+  "jubilaeum.headFirstDiveTheWaterSplashes": {
+    "de": "Kopfsprung, das Wasser spritzt",
+    "en": "Head-first dive, the water splashes",
+    "nl": "Een duik, het water spat op"
+  },
+  "jubilaeum.ripplesSpread": {
+    "de": "Ringe breiten sich aus",
+    "en": "Ripples spread",
+    "nl": "Kringen breiden zich uit"
+  },
+  "jubilaeum.andBecomeYourNumber": {
+    "de": "…und werden zu eurer Zahl",
+    "en": "…and become your number",
+    "nl": "…en worden jullie getal"
+  },
+  "kultur.aClosedBookAndAQuill": {
+    "de": "Ein geschlossenes Buch und eine Feder",
+    "en": "A closed book and a quill",
+    "nl": "Een gesloten boek en een veer"
+  },
+  "kultur.itOpens": {
+    "de": "es öffnet sich",
+    "en": "it opens",
+    "nl": "het gaat open"
+  },
+  "kultur.aQuillWrites": {
+    "de": "eine Feder schreibt",
+    "en": "a quill writes",
+    "nl": "een veer schrijft"
+  },
+  "kultur.theLinesRiseFromThePagesAndBecomeAStar": {
+    "de": "die Zeilen steigen aus den Seiten und werden ein Stern",
+    "en": "the lines rise from the pages and become a star",
+    "nl": "de regels stijgen uit de pagina's op en worden een ster"
+  },
+  "kultur.aHarp": {
+    "de": "Eine Harfe",
+    "en": "A harp",
+    "nl": "Een harp"
+  },
+  "kultur.theStringsSoundOneAfterAnother": {
+    "de": "die Saiten klingen nacheinander",
+    "en": "the strings sound one after another",
+    "nl": "de snaren klinken één voor één"
+  },
+  "kultur.notesLiftOffAndFlyAwayInArcs": {
+    "de": "Noten lösen sich und fliegen in Bögen davon",
+    "en": "notes lift off and fly away in arcs",
+    "nl": "noten komen los en vliegen in bogen weg"
+  },
+  "kultur.andArrangeThemselvesOnFiveLinesAsAMelody": {
+    "de": "…und ordnen sich auf fünf Linien zur Melodie",
+    "en": "…and arrange themselves on five lines as a melody",
+    "nl": "…en vormen op vijf lijnen een melodie"
+  },
+  "kultur.aDancer": {
+    "de": "Eine Tänzerin",
+    "en": "A dancer",
+    "nl": "Een danseres"
+  },
+  "kultur.sheSpinsFasterHerSkirtLifts": {
+    "de": "sie dreht sich, schneller, der Rock hebt sich",
+    "en": "she spins faster, her skirt lifts",
+    "nl": "ze draait sneller, haar rok waait op"
+  },
+  "kultur.theSkirtBecomesAFlower": {
+    "de": "der Rock wird zur Blüte",
+    "en": "the skirt becomes a flower",
+    "nl": "de rok wordt een bloem"
+  },
+  "kultur.andTheFlowerFoldsIntoAFan": {
+    "de": "…und die Blüte faltet sich zum Fächer",
+    "en": "…and the flower folds into a fan",
+    "nl": "…en de bloem vouwt zich tot een waaier"
+  },
+  "launch.aMessageArrives": {
+    "de": "Eine Nachricht kommt an",
+    "en": "A message arrives",
+    "nl": "Een bericht komt aan"
+  },
+  "launch.theMessagesBecomeAQrCode": {
+    "de": "die Nachrichten werden zu einem QR-Code",
+    "en": "the messages become a QR code",
+    "nl": "de berichten worden een QR-code"
+  },
+  "launch.scanMeTheCodeStandsStill": {
+    "de": "„Scan me“: der Code steht still",
+    "en": "“Scan me”: the code stands still",
+    "nl": "“Scan me”: de code staat stil"
+  },
+  "launch.aSpiral": {
+    "de": "Eine Spirale",
+    "en": "A spiral",
+    "nl": "Een spiraal"
+  },
+  "launch.itClosesIntoATorusLightsFollowTheCoils": {
+    "de": "sie schließt sich zum Torus, die Lichter laufen die Windungen entlang",
+    "en": "it closes into a torus, lights follow the coils",
+    "nl": "ze sluit zich tot een torus, licht volgt de windingen"
+  },
+  "launch.theTorusTurnsThroughItself": {
+    "de": "der Torus dreht sich durch sich selbst",
+    "en": "the torus turns through itself",
+    "nl": "de torus draait door zichzelf"
+  },
+  "launch.andTwistsIntoAnEndlessLoop": {
+    "de": "…und verdreht sich zur endlosen Schleife",
+    "en": "…and twists into an endless loop",
+    "nl": "…en draait tot een eindeloze lus"
+  },
+  "natur.aHummingbirdFliesIn": {
+    "de": "Ein Kolibri fliegt heran",
+    "en": "A hummingbird flies in",
+    "nl": "Een kolibrie vliegt aan"
+  },
+  "natur.itHoversInFrontOfTheFlower": {
+    "de": "er schwebt vor der Blüte",
+    "en": "it hovers in front of the flower",
+    "nl": "hij zweeft voor de bloem"
+  },
+  "natur.drinksTheFlowerLightsUp": {
+    "de": "trinkt, die Blüte leuchtet auf",
+    "en": "drinks, the flower lights up",
+    "nl": "drinkt, de bloem licht op"
+  },
+  "natur.andRisesTheBudsBloom": {
+    "de": "…und steigt auf, die Knospen blühen",
+    "en": "…and rises, the buds bloom",
+    "nl": "…en stijgt op, de knoppen bloeien"
+  },
+  "natur.waves": {
+    "de": "Wellen",
+    "en": "Waves",
+    "nl": "Golven"
+  },
+  "natur.aDolphinLeaps": {
+    "de": "ein Delfin springt",
+    "en": "a dolphin leaps",
+    "nl": "een dolfijn springt"
+  },
+  "natur.divesInRipplesCrossTheWater": {
+    "de": "taucht ein, Ringe ziehen über das Wasser",
+    "en": "dives in, ripples cross the water",
+    "nl": "duikt onder, kringen lopen over het water"
+  },
+  "natur.twoDolphinsLeapTowardsEachOther": {
+    "de": "zwei Delfine springen aufeinander zu",
+    "en": "two dolphins leap towards each other",
+    "nl": "twee dolfijnen springen naar elkaar toe"
+  },
+  "natur.andFormAHeart": {
+    "de": "…und bilden ein Herz",
+    "en": "…and form a heart",
+    "nl": "…en vormen een hart"
+  },
+  "text.theLettersSwayIn3d": {
+    "de": "die Buchstaben schwingen in 3D",
+    "en": "the letters sway in 3D",
+    "nl": "de letters bewegen in 3D"
+  },
+  "text.andBecomeYourInitials": {
+    "de": "…und werden zu euren Initialen",
+    "en": "…and become your initials",
+    "nl": "…en worden jullie initialen"
+  },
+  "text.andWriteThemselvesAnew": {
+    "de": "…und schreiben sich neu",
+    "en": "…and write themselves anew",
+    "nl": "…en schrijven zichzelf opnieuw"
+  },
+  "winter.aTrailOfLightRises": {
+    "de": "Eine Leuchtspur steigt auf",
+    "en": "A trail of light rises",
+    "nl": "Een lichtspoor stijgt op"
+  },
+  "winter.andBloomsAsAStarInEveryDirection": {
+    "de": "…und blüht als Stern in alle Richtungen",
+    "en": "…and blooms as a star in every direction",
+    "nl": "…en bloeit als een ster in alle richtingen"
+  },
+  "winter.starsBloomInWavesLargeInFrontSmallBehind": {
+    "de": "Sterne blühen in Wellen, vorn groß, hinten klein",
+    "en": "Stars bloom in waves, large in front, small behind",
+    "nl": "Sterren bloeien in golven, vooraan groot, achteraan klein"
+  },
+  "winter.finaleAllStarsAtOnce": {
+    "de": "Finale: alle Sterne zugleich",
+    "en": "Finale: all stars at once",
+    "nl": "Finale: alle sterren tegelijk"
+  },
+  "winter.andGoldenRainFalls": {
+    "de": "…und Goldregen fällt",
+    "en": "…and golden rain falls",
+    "nl": "…en er valt gouden regen"
+  },
+  "winter.aSnowflake": {
+    "de": "Eine Schneeflocke",
+    "en": "A snowflake",
+    "nl": "Een sneeuwvlok"
+  },
+  "winter.itBecomesATreeLightDrawsItFromTheBottom": {
+    "de": "aus ihr wird ein Baum, Licht zeichnet ihn von unten nach oben",
+    "en": "it becomes a tree, light draws it from the bottom up",
+    "nl": "ze wordt een boom, licht tekent hem van onder naar boven"
+  },
+  "winter.aStarAppearsAtTheTop": {
+    "de": "auf der Spitze geht ein Stern auf",
+    "en": "a star appears at the top",
+    "nl": "op de top verschijnt een ster"
+  },
+  "winter.theTreeTurnsTheLightsChangeColour": {
+    "de": "…der Baum dreht sich, die Lichterkette wechselt die Farbe",
+    "en": "…the tree turns, the lights change colour",
+    "nl": "…de boom draait, de lichtjes veranderen van kleur"
+  },
+  "language.choose": {
+    "de": "Sprache wählen",
+    "en": "Choose language",
+    "nl": "Taal kiezen"
+  },
+  "site.terms": {
+    "de": "AGB",
+    "en": "Terms & conditions",
+    "nl": "Algemene voorwaarden"
+  },
+  "contact.videoCall": {
+    "de": "Videocall buchen",
+    "en": "Book a video call",
+    "nl": "Plan een videogesprek"
+  },
+  "case.gallery": {
+    "de": "{name}: Bildergalerie",
+    "en": "{name}: photo gallery",
+    "nl": "{name}: fotogalerij"
+  },
+  "case.detected": {
+    "de": "erkannt",
+    "en": "detected",
+    "nl": "herkend"
+  },
+  "case.fromShow": {
+    "de": "aus der Show-Datei",
+    "en": "from the show file",
+    "nl": "uit het showbestand"
+  },
+  "comparison.table": {
+    "de": "{label} (Tabelle, horizontal scrollbar)",
+    "en": "{label} (table, scroll horizontally)",
+    "nl": "{label} (tabel, horizontaal te scrollen)"
+  },
+  "references.placeholder": {
+    "de": "Kein Foto vorhanden, Lichtpunkt-Formation als Platzhalter",
+    "en": "No photo available, light formation placeholder",
+    "nl": "Geen foto beschikbaar, lichtformatie als tijdelijke afbeelding"
+  },
+  "references.drones": {
+    "de": "{count} Drohnen",
+    "en": "{count} drones",
+    "nl": "{count} drones"
+  },
+  "references.brands": {
+    "de": "Marken & Unternehmen",
+    "en": "Brands & businesses",
+    "nl": "Merken & bedrijven"
+  },
+  "references.cities": {
+    "de": "Städte & Festivals",
+    "en": "Cities & festivals",
+    "nl": "Steden & festivals"
+  },
+  "references.culture": {
+    "de": "Kultur & Bühne",
+    "en": "Culture & stage",
+    "nl": "Cultuur & podium"
+  },
+  "references.upTo": {
+    "de": "bis 150",
+    "en": "up to 150",
+    "nl": "tot 150"
+  },
+  "references.medium": {
+    "de": "151–300",
+    "en": "151 to 300",
+    "nl": "151 tot 300"
+  },
+  "references.over": {
+    "de": "über 300",
+    "en": "over 300",
+    "nl": "meer dan 300"
+  },
+  "pricing.upTo": {
+    "de": ", bis {count} Drohnen",
+    "en": ", up to {count} drones",
+    "nl": ", tot {count} drones"
+  },
+  "pricing.duration10": {
+    "de": "ca. 10 Min",
+    "en": "approx. 10 min",
+    "nl": "ca. 10 min."
+  },
+  "pricing.duration13": {
+    "de": "ca. 13 Min",
+    "en": "approx. 13 min",
+    "nl": "ca. 13 min."
+  },
+  "pricing.duration15": {
+    "de": "15+ Min",
+    "en": "15+ min",
+    "nl": "15+ min."
+  },
+  "pricing.extrasCount": {
+    "de": "{count} Extras",
+    "en": "{count} extras",
+    "nl": "{count} extra's"
+  },
+  "pricing.extrasSummary": {
+    "de": " in eurer Anfrage: {list}",
+    "en": " in your enquiry: {list}",
+    "nl": " in jullie aanvraag: {list}"
+  },
+  "configurator.motifs": {
+    "de": "Beispielmotive: {list}",
+    "en": "Example motifs: {list}",
+    "nl": "Voorbeeldbeelden: {list}"
+  },
+  "configurator.newMotif": {
+    "de": "Neues Motiv freigeschaltet: {label}",
+    "en": "New motif unlocked: {label}",
+    "nl": "Nieuw beeld beschikbaar: {label}"
+  },
+  "configurator.newMotifs": {
+    "de": "{count} neue Motive: {list}",
+    "en": "{count} new motifs: {list}",
+    "nl": "{count} nieuwe beelden: {list}"
+  },
+  "configurator.captionStyle": {
+    "de": "{caption}, in {style}",
+    "en": "{caption}, in {style}",
+    "nl": "{caption}, in {style}"
+  },
+  "video.close": {
+    "de": "Showreel schließen",
+    "en": "Close showreel",
+    "nl": "Showreel sluiten"
+  },
+  "contact.deliveryFailed": {
+    "de": "Versand fehlgeschlagen.",
+    "en": "Delivery failed.",
+    "nl": "Verzending mislukt."
+  },
+  "blog.updated": {
+    "de": "aktualisiert am {date}",
+    "en": "updated on {date}",
+    "nl": "bijgewerkt op {date}"
+  },
+  "blog.director": {
+    "de": "Geschäftsführer",
+    "en": "Managing director",
+    "nl": "Directeur"
+  },
+  "blog.technology": {
+    "de": "Technik",
+    "en": "Technology",
+    "nl": "Techniek"
+  },
+  "blog.sustainability": {
+    "de": "Nachhaltigkeit",
+    "en": "Sustainability",
+    "nl": "Duurzaamheid"
+  },
+  "blog.programming": {
+    "de": "Programmierung",
+    "en": "Programming",
+    "nl": "Programmering"
+  },
+  "contactAPI.formData": {
+    "de": "Nur Formulardaten.",
+    "en": "Form data only.",
+    "nl": "Alleen formuliergegevens."
+  },
+  "contactAPI.extras": {
+    "de": "Extras ungültig.",
+    "en": "Invalid extras.",
+    "nl": "Ongeldige extra’s."
+  },
+  "contactAPI.required": {
+    "de": "Name, E-Mail und Anlass oder Nachricht sind Pflicht.",
+    "en": "Name, email and an occasion or message are required.",
+    "nl": "Naam, e-mail en gelegenheid of bericht zijn verplicht."
+  },
+  "contactAPI.additional": {
+    "de": "Ungültige Zusatzangaben.",
+    "en": "Invalid additional details.",
+    "nl": "Ongeldige aanvullende gegevens."
+  },
+  "contactAPI.occasion": {
+    "de": "Anlass ungültig.",
+    "en": "Invalid occasion.",
+    "nl": "Ongeldige gelegenheid."
+  },
+  "contactAPI.drones": {
+    "de": "Drohnenanzahl ungültig.",
+    "en": "Invalid drone count.",
+    "nl": "Ongeldig aantal drones."
+  },
+  "contactAPI.length": {
+    "de": "Eingabe zu lang.",
+    "en": "Input is too long.",
+    "nl": "De invoer is te lang."
+  },
+  "contactAPI.email": {
+    "de": "E-Mail-Adresse ungültig.",
+    "en": "Invalid email address.",
+    "nl": "Ongeldig e-mailadres."
+  },
+  "contactAPI.characters": {
+    "de": "Ungültige Zeichen.",
+    "en": "Invalid characters.",
+    "nl": "Ongeldige tekens."
+  },
+  "contactAPI.spam": {
+    "de": "Spam-Prüfung fehlgeschlagen. Bitte versucht es erneut.",
+    "en": "The spam check failed. Please try again.",
+    "nl": "De spamcontrole is mislukt. Probeer het opnieuw."
+  },
+  "contactAPI.delivery": {
+    "de": "Versand fehlgeschlagen. Bitte versucht es später erneut oder schreibt direkt per E-Mail.",
+    "en": "Delivery failed. Please try again later or contact us directly by email.",
+    "nl": "Het verzenden is mislukt. Probeer het later opnieuw of mail ons rechtstreeks."
+  },
+  "contactAPI.post": {
+    "de": "Nur POST.",
+    "en": "POST only.",
+    "nl": "Alleen POST."
+  },
+  "references.ofTotal": {
+    "de": "von {count} Shows",
+    "en": "of {count} shows",
+    "nl": "van {count} shows"
+  },
+  "references.indoor": {
+    "de": "Indoor",
+    "en": "Indoor",
+    "nl": "Indoor"
+  },
+  "logoBar.pressHeadline": {
+    "de": "Unsere Shows waren zu sehen in",
+    "en": "Our shows have appeared in",
+    "nl": "Onze shows waren te zien in"
+  },
+  "logoBar.qualityHeadline": {
+    "de": "Qualität und Sicherheit",
+    "en": "Quality and safety",
+    "nl": "Kwaliteit en veiligheid"
+  },
+  "comparison.criterion": {
+    "de": "Kriterium",
+    "en": "Criterion",
+    "nl": "Criterium"
+  },
+  "common.showreel": {
+    "de": "Showreel",
+    "en": "Showreel",
+    "nl": "Showreel"
+  },
+  "mobileTabs.choosePackage": {
+    "de": "Paket wählen",
+    "en": "Choose a package",
+    "nl": "Kies een pakket"
+  },
+  "landingsite.outdoorTitle": {
+    "de": "Flug- und Sicherheitsbereich von oben",
+    "en": "Flight and safety areas from above",
+    "nl": "Vlieg- en veiligheidszones van bovenaf"
+  },
+  "landingsite.indoorTitle": {
+    "de": "Raumschnitt und Startraster von oben",
+    "en": "Room cross-section and take-off grid from above",
+    "nl": "Doorsnede van de ruimte en startopstelling van bovenaf"
+  },
+  "landingsite.numberedList": {
+    "de": "Die Nummern entsprechen der folgenden Liste.",
+    "en": "The numbers correspond to the list below.",
+    "nl": "De nummers verwijzen naar de onderstaande lijst."
+  },
+  "landingsite.provider": {
+    "de": "Das übernehmen wir",
+    "en": "What we take care of",
+    "nl": "Dit regelen wij"
+  },
+  "landingsite.customer": {
+    "de": "Das braucht ihr",
+    "en": "What you need to provide",
+    "nl": "Dit hebben jullie nodig"
+  },
+  "contactform.processingNotice": {
+    "de": "FlyingStars verwendet eure Angaben, um eure Anfrage zu bearbeiten. Als optional gekennzeichnete Angaben sind freiwillig. Bitte sendet keine sensiblen Daten. Hinweise zu Hosting, E-Mail-Versand und euren Rechten findet ihr in der",
+    "en": "FlyingStars uses your details to handle your enquiry. Fields marked optional are voluntary. Please do not send sensitive data. Information about hosting, email delivery and your rights is available in our",
+    "nl": "FlyingStars gebruikt jullie gegevens om jullie aanvraag te behandelen. Velden die als optioneel zijn gemarkeerd, zijn vrijwillig. Stuur geen gevoelige gegevens. Informatie over hosting, e-mailverzending en jullie rechten staat in onze"
+  },
+  "contact.shortenInput": {
+    "de": "Bitte kürzt eure Eingabe.",
+    "en": "Please shorten your entry.",
+    "nl": "Kort jullie invoer in."
+  },
+  "contactAPI.origin": {
+    "de": "Bitte nutzt das Formular auf unserer Website.",
+    "en": "Please use the form on our website.",
+    "nl": "Gebruik het formulier op onze website."
+  },
+  "contactAPI.bodySize": {
+    "de": "Die Anfrage ist zu groß. Bitte kürzt eure Angaben.",
+    "en": "The request is too large. Please shorten your entries.",
+    "nl": "De aanvraag is te groot. Kort jullie gegevens in."
+  },
+  "contactAPI.empty": {
+    "de": "Leere Anfrage.",
+    "en": "Empty request.",
+    "nl": "Lege aanvraag."
+  },
+  "contactAPI.unreadable": {
+    "de": "Die Formulardaten konnten nicht gelesen werden. Bitte versucht es erneut.",
+    "en": "The form data could not be read. Please try again.",
+    "nl": "De formuliergegevens konden niet worden gelezen. Probeer het opnieuw."
+  },
+  "contactAPI.invalidForm": {
+    "de": "Ungültige Formulardaten. Dateien können hier nicht gesendet werden.",
+    "en": "Invalid form data. Files cannot be sent here.",
+    "nl": "Ongeldige formuliergegevens. Hier kunnen geen bestanden worden verzonden."
+  },
+  "contactAPI.wait": {
+    "de": "Bitte wartet einen Moment und sendet die Anfrage erneut.",
+    "en": "Please wait a moment and send your enquiry again.",
+    "nl": "Wacht even en verstuur jullie aanvraag opnieuw."
+  },
+  "contactAPI.package": {
+    "de": "Paket ungültig.",
+    "en": "Invalid package.",
+    "nl": "Ongeldig pakket."
+  },
+  "contactAPI.openDate": {
+    "de": "Datumsangabe ungültig.",
+    "en": "Invalid date selection.",
+    "nl": "Ongeldige datumkeuze."
+  },
+  "contactAPI.date": {
+    "de": "Datum ungültig.",
+    "en": "Invalid date.",
+    "nl": "Ongeldige datum."
+  },
+  "contactAPI.spamUnavailable": {
+    "de": "Die Spam-Prüfung ist gerade nicht erreichbar. Bitte versucht es später erneut.",
+    "en": "The spam check is currently unavailable. Please try again later.",
+    "nl": "De spamcontrole is momenteel niet bereikbaar. Probeer het later opnieuw."
+  },
+  "contactAPI.unconfirmed": {
+    "de": "Der Versand konnte nicht bestätigt werden. Bitte kontaktiert uns direkt per E-Mail.",
+    "en": "Delivery could not be confirmed. Please contact us directly by email.",
+    "nl": "De verzending kon niet worden bevestigd. Neem rechtstreeks per e-mail contact met ons op."
+  },
+  "pricingpage.mobileIncluded": {
+    "de": "Enthalten",
+    "en": "Included",
+    "nl": "Inbegrepen"
+  },
+  "pricingpage.mobileNotIncluded": {
+    "de": "Nicht enthalten",
+    "en": "Not included",
+    "nl": "Niet inbegrepen"
+  }
+}

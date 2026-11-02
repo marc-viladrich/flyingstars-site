@@ -1,0 +1,31 @@
+title: Privacy
+description: Voorlopige privacyinformatie over hosting, het contactformulier en media in de FlyingStars-preview. Juridische toetsing volgt nog.
+noindex: true
+sections:
+  - type: textMedia
+    headline: Privacy in deze preview
+    body: |
+      **Concept voor juridische toetsing.** Deze informatie beschrijft het technische prototype. FlyingStars en de privacyadviseur moeten deze vóór productiegebruik aanvullen en goedkeuren. Als e-mailverzending ontbreekt, betekent dat niet dat de hosting geen gegevens verwerkt.
+
+      Verwerkingsverantwoordelijke is FlyingStars GmbH, Bulmker Straße 107, 45888 Gelsenkirchen, Duitsland. Jullie bereiken ons via [team@flyingstars.art](mailto:team@flyingstars.art). Verdere bedrijfsgegevens staan in het [colofon](/nl/impressum/).
+
+      **Hosting.** De preview draait op Cloudflare Pages en een Cloudflare Pages Function. Cloudflare verwerkt bij een bezoek technische verbindingsgegevens, met name het IP-adres, en bij het versturen de formuliergegevens. Cloudflare is een Amerikaanse aanbieder; de standaarddienst garandeert geen uitsluitende verwerking binnen de EU. De rechtsgrond voor een veilige beschikbaarstelling is artikel 6, lid 1, onder f AVG, ons gerechtvaardigd belang bij het beheer en de bescherming van de website. De verwerkersovereenkomst, toepasselijke waarborgen voor doorgifte naar derde landen en feitelijke bewaartermijnen voor logs moeten vóór de livegang worden gecontroleerd en hier worden geconcretiseerd.
+
+      **Jullie aanvraag.** We gebruiken jullie gegevens om de aanvraag te behandelen en te beantwoorden en een mogelijke offerte voor te bereiden. Het formulier vraagt naar de gelegenheid, plaats of postcode, datum of open datum, naam en e-mailadres. Pakket, extra’s, telefoon, bedrijf, herkomst van de aanbeveling en bericht zijn vrijwillig. De herkomst helpt ons te begrijpen hoe jullie ons vinden; deze is niet nodig voor een offerte. Stuur geen gezondheidsgegevens of andere bijzonder gevoelige informatie.
+
+      Voor noodzakelijke precontractuele stappen op jullie verzoek kan artikel 6, lid 1, onder b AVG van toepassing zijn. Bij algemene vragen en zakelijke contactpersonen die zelf geen contractspartij worden, dient de verwerking ons gerechtvaardigd belang bij het beantwoorden van vragen en het aangaan van zakelijke contacten volgens artikel 6, lid 1, onder f AVG. De analyse van de vrijwillige herkomstinformatie vraagt om een afzonderlijke onderbouwing. Dit formulier wordt niet gebruikt voor een nieuwsbrief.
+
+      De gegevens worden naar de Cloudflare Function gestuurd. Als verzending is ingesteld, stuurt deze ze via Brevo door naar ons aangewezen e-mailpostvak. Brevo is de beoogde verzenddienst, geen nieuwsbrieflijst. Als verzending niet is ingesteld, meldt het formulier dit; de formulierapplicatie slaat de aanvraag dan niet blijvend op en verstuurt geen e-mail. De feitelijke verzendconfiguratie is voor dit concept niet gecontroleerd.
+
+      De applicatie houdt geen logs met berichten of IP-adressen bij en heeft geen eigen database voor aanvragen. Als verzending is ingesteld, kunnen gegevens wel bij Brevo, in het ontvangende postvak en in back-ups worden opgeslagen. We verwijderen aanvragen zodra het verwerkingsdoel vervalt, voor zover wettelijke bewaarplichten of andere toegestane gronden zich daar niet tegen verzetten. **Vóór de livegang aan te vullen:** het ontvangende postvak en de aanbieder daarvan, de contractspartij en subverwerkers van Brevo, waarborgen voor doorgifte naar derde landen en concrete verwijdertermijnen voor onder meer verzendlogs, back-ups en hostinglogs.
+
+      **Bescherming tegen misbruik.** Het formulier gebruikt een verborgen lokveld en bij ingeschakeld JavaScript een korte tijdcontrole. Hiervoor worden geen cookies geplaatst en geen externe controlediensten in de browser geladen. De Function geeft jullie IP-adres niet door aan Brevo en ook niet als aanvullende controleparameter aan Turnstile. Een controlepad voor Turnstile is technisch voorbereid; er is geen widget in het prototype opgenomen. Activering vraagt om een afzonderlijke privacytoets en bijgewerkte informatie.
+
+      **Bestanden en vooraf ingevulde gegevens.** Het contactformulier accepteert geen bestanden. Een logo dat in de showconfigurator is gekozen, wordt lokaal in de browser verwerkt en niet als bestand meegestuurd. Eigen tekst en de showsamenvatting kunnen bij de overstap naar de aanvraag wel in de URL staan. Daardoor bereiken ze de hostingaanbieder al bij het openen van de pagina. Nadat deze twee gegevens in het formulier zijn overgenomen, verwijdert het script ze uit de zichtbare URL. Pas bij het versturen gaan ze als onderdeel van het bericht naar de verzenddienst.
+
+      **Media en browseropslag.** Lettertypen en geoptimaliseerde afbeeldingen worden in de websitebuild aangeboden. Video’s gebruiken in de productiebuild een eigen media-endpoint; sommige starten automatisch. Dit endpoint haalt ze op de server op uit vastgelegde bronnen van de bestaande website en het Vercel-prototype. De gecontroleerde build bevat geen ingesloten YouTube-spelers, kaarten of analysescripts. Jullie keuze om beweging te pauzeren wordt voor de sessie in de browser opgeslagen. De preview bevat links naar Calendly, WhatsApp en sociale netwerken. Bij het openen geldt ook de privacyinformatie van de betreffende aanbieder. De definitieve mediaopslag en alle actieve diensten moeten vóór publicatie opnieuw worden gecontroleerd.
+
+      **Jullie rechten.** Onder de wettelijke voorwaarden hebben jullie recht op inzage, rectificatie, verwijdering, beperking en gegevensoverdraagbaarheid. Tegen verwerking op basis van gerechtvaardigde belangen kunnen jullie volgens artikel 21 AVG bezwaar maken. Jullie kunnen een klacht indienen bij een privacytoezichthouder, met name de [Landesbeauftragte für Datenschutz und Informationsfreiheit Nordrhein-Westfalen](https://www.ldi.nrw.de/). Een eventueel aangestelde functionaris voor gegevensbescherming en de volledige informatie volgens artikel 13 AVG moeten vóór de livegang worden toegevoegd.
+
+      Het [privacybeleid van de bestaande FlyingStars-website](https://flyingstars.art/datenschutz/) vervangt de toetsing van deze nieuwe infrastructuur niet.
+translationSourceHash: fbad6d3a8d6ff63029495d61b01aa7b3b39b91cc4aadd071fe4a601340252a99

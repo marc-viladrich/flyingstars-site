@@ -1,0 +1,217 @@
+title: Wedding drone show
+navLabel: Wedding
+description: "A drone show for your wedding: initials, hearts and your date in the night sky. SPARK with 100 drones from €7,900 excluding VAT, permits included."
+image: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg
+sections:
+  - type: landingHero
+    kicker: Wedding
+    headline: A drone show for your wedding.
+    text: Your initials, a heart and your date in the night sky. We plan the show with you, obtain the permit and fly on the evening of your celebration.
+    cta:
+      label: Enquire about a wedding show
+      href: "#anfrage"
+    secondary:
+      label: How it works
+      href: "#ablauf"
+    video: showreel
+    videoLabel: Showreel
+    poster:
+      src: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg
+      alt: A hand and ring made of drones in the blue evening sky above the treetops, during a proposal at Schloss Hugenpoet
+      width: 2063
+      height: 1303
+    facts:
+      - value: from €7,900
+        label: excluding VAT with SPARK
+      - value: 100 drones
+        label: in the package
+      - value: included
+        label: Permit
+  - type: landingStories
+    id: referenzen
+    kicker: Our work
+    headline: What it looked like for other *couples*.
+    items:
+      - kicker: Recklinghausen · June 2024
+        title: A surprise planned by the family
+        text: The family contacted us four months before the wedding. The take-off area was on a neighbouring property, without the couple knowing. A thunderstorm meant we delayed the show that evening, then flew.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg
+          alt: Two flowers made of purple and blue points of light above the trees at a wedding in Recklinghausen
+          width: 1518
+          height: 854
+        facts:
+          - value: "150"
+            label: Drones
+          - value: 4 months
+            label: booked in advance
+      - kicker: Schloss Hugenpoet, Essen · September 2024
+        title: „Do you want to be my Forever?“
+        text: A jewellery box opened, a ring floated towards a hand, then the question appeared in the sky. The answer was yes.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg
+          alt: A hand and ring made of drones in the blue evening sky above the treetops, during a proposal at Schloss Hugenpoet
+          width: 2063
+          height: 1303
+        facts:
+          - value: "220"
+            label: Drones
+  - type: landingTeaser
+    id: motive
+    kicker: Motifs
+    headline: What can *appear* in the sky.
+    text: Hearts and rings from our catalogue, plus your initials or your date. We design your own show together with you.
+    href: /drohnenshow-preise/?anlass=hochzeit&paket=SPARK#konfigurator
+    cta: See motifs in the configurator
+    loop: hochzeit
+  - type: landingPrice
+    id: preise
+    kicker: Prices
+    headline: What a wedding show costs.
+    text: SPARK is designed for weddings. All prices exclude VAT and travel.
+    package: SPARK
+    groups:
+      - title: Included
+        items:
+          - label: Design of your motifs, with approval
+          - label: Permit
+          - label: Music editing
+          - label: Our crew on site
+          - label: Liability cover up to €1.3 million
+      - title: Optional additions
+        items:
+          - label: Travel from Gelsenkirchen
+            value: based on location
+          - label: Express with under 14 days' notice
+            value: based on scope
+          - label: Raw footage filmed by camera drone
+            value: 900 €
+    bonus:
+      value: −10 %
+      text: "Early booking discount: book by the end of the year for a wedding next year."
+    contact: Ronja, Florian and Erwin reply to your enquiry within 48 hours.
+    cta:
+      label: Enquire about a wedding show
+      href: "#anfrage"
+  - type: landingSite
+    id: location
+    kicker: Location
+    headline: Is your venue suitable?
+    text: Send us the address and the planned position of your guests. Before quoting, we check whether and how a show is possible there.
+    variant: outdoor
+    diagram:
+      description: Plan view showing the outer and inner safety areas, flight area, take-off and landing area, and the audience outside. The line of drones runs across the viewing direction.
+      horizontalLabel: approx. 100 m
+      verticalLabel: approx. 100 m
+      detailLabel: approx. 60 m
+      flightLabel: Usually up to 120 m flight altitude
+      caption: Example based on the technical data sheet, not to scale. We calculate all zones and distances for your site. The 60 m dimension refers to the line of drones in this example.
+    items:
+      - title: Outer safety area
+        value: approx. 100 × 100 m
+        text: This also includes the inner areas. It stays clear of uninvolved people during the show, for around 15 minutes. Its size depends on the number of drones, motifs and flight altitude.
+        zone: safety
+      - title: Inner safety area
+        text: The operational safety area surrounds the flight area. We define its boundaries as part of flight planning.
+        zone: operative
+      - title: Flight area
+        value: up to 120 m high
+        text: This is where the drones fly the motifs. Seen from above, they form a line across the viewing direction so that your guests see the motifs from the front.
+        zone: drones
+      - title: Take-off and landing area
+        value: closed approx. 3 hours before the show
+        text: From our arrival, we set up the drone grid, antenna stands and control station on a clear, level area. The space required depends on the number of drones.
+        zone: start
+      - title: Audience area
+        text: Your guests stand outside the outer safety area and need a clear view of the show. We plan their position with you, keeping a distance from walls and trees.
+        zone: guests
+    safeguards:
+      - icon: scan-line
+        title: Digitally bounded flight area
+        text: A geofence limits the show area. If a drone leaves this area, a safety protocol starts automatically.
+      - icon: shield-check
+        title: Multiple safeguards
+        text: Automatic and manual safety systems monitor every flight. If a drone fails, it usually returns or lands in the safety area. The outdoor drones weigh around 300 g and have no cameras.
+      - icon: users-round
+        title: On-site crew
+        text: Three to four people, including pilots and technicians, set up the equipment and monitor the show.
+      - icon: wind
+        title: Monitoring the weather
+        text: Our formations remain stable up to wind force 5 and in light drizzle. Ideally, we review the weather conditions with you one or two days beforehand.
+    responsibilities:
+      provider:
+        - We check the site before quoting, map out the zones and prepare the safety concept and flight plan.
+        - We hold a generic operational authorisation from the LBA and handle further aviation applications, for example with DFS. For other EU countries, we also apply for cross-border confirmations.
+        - We obtain air traffic clearance in airport control zones. We also coordinate requirements concerning federal waterways.
+        - We provide a letter for obtaining landowner consent. For nature reserves, an initial enquiry by the local operator helps; we handle the application and flight planning.
+      customer:
+        - You provide the required areas and obtain consent from all landowners throughout the outer safety area. For public land, consent comes from the town or municipality. Flying over buildings also requires their owners’ consent.
+        - You secure the safety area during the show unless we agree otherwise. Barrier tape is usually sufficient; busy locations need one or two stewards, and shows over water need a person in a boat.
+        - You keep the level take-off area closed from our arrival and tell us about obstacles in the flight area and line of sight, including heights where possible.
+        - You nominate an available contact person for show day and coordinate the show time and sound system with us. We provide the music edit; for small groups, we can supply a large speaker.
+    planning:
+      title: Permits need lead time
+      text: Ideally, allow one to two months, or around three months for complex permits such as sites near airports. Depending on the site, express delivery may be possible within one to two weeks, with a surcharge based on the work involved. These are planning guidelines; we check the approvals required for your location.
+    note:
+      value: up to €1.3 million
+      text: Drone liability cover in every outdoor package. You do not need additional insurance for this. We fly in the specific category under European requirements. The LBA issues the operational authorisation.
+    download:
+      label: Technical data sheet · PDF
+      href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf
+  - type: tempo
+    id: ablauf
+    kicker: The process
+    headline: Leading up to your evening.
+    text: You plan the celebration. We'll get in touch when we need a decision. One to two months' notice is ideal.
+    marks:
+      - value: 48 h
+        label: until our reply
+        text: A date, venue and your idea are enough. Then a short conversation and your quote.
+      - value: 3 weeks
+        label: for motifs and music, minimum
+        text: You see a draft with your music, give feedback and approve every motif at the end.
+      - value: 3 h
+        label: on site before the show
+        text: Our crew secures the take-off area, flies the show and packs everything away afterwards.
+    shortcut:
+      value: Express in under 14 days
+      label: Surcharge based on scope
+  - type: landingCta
+    headline: Planning a *surprise*?
+    text: Whether it's a proposal or a family gift, we coordinate only with you. We set up the take-off area out of sight and agree the timing with the venue.
+    button:
+      label: Enquire about a surprise
+      href: "#anfrage"
+  - type: landingBento
+    id: wetter
+    kicker: Weather
+    headline: What if the weather won't cooperate?
+    lead:
+      icon: shield-check
+      title: A drone show uses no *pyrotechnics*.
+      text: No bangs, smoke, sparks or debris on the lawn afterwards. Only your music is loud.
+    items:
+      - icon: wind
+        title: Up to wind force 5
+        text: We fly in these conditions, including light drizzle.
+      - icon: calendar-sync
+        title: Reschedule free of charge
+        text: If bad weather is forecast, we can reschedule as long as we haven't set off yet.
+      - icon: wallet
+        title: 40% deposit
+        text: Payable when booking. If the show is cancelled altogether, the cancellation scale in our terms applies.
+  - type: faq
+    id: fragen
+    kicker: FAQ
+    headline: Questions from couples.
+    text: Brief answers here. Find more in our frequently asked questions.
+    cta:
+      label: All questions
+      href: /faq/
+    tags:
+      - hochzeit
+  - type: contactForm
+    kicker: Enquiry
+    headline: Tell us about your wedding day.
+    text: A date and venue are enough to start. We'll reply within 48 hours with an initial assessment.
+translationSourceHash: ef4b902dd79d31b2fc20e889c95e0cebb6a58ef921d3285142a18ec5072cf3e3

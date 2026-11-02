@@ -1,11 +1,13 @@
 ---
+import { forPath } from '../i18n/server';
+const { t, localHref } = forPath(Astro.url.pathname);
 // Kontaktwege mit Icons in Orange (E-Mail, Telefon, Videocall, WhatsApp), Lucide über Icon.astro.
 import { CONTACT } from './people';
 import Icon from './Icon.astro';
 ---
 <ul class="ways">
-  <li><a href={`mailto:${CONTACT.email}`}><Icon name="mail" class="g" /><span>{CONTACT.email}</span></a></li>
-  <li><a href={CONTACT.phone.href}><Icon name="phone" class="g" /><span>{CONTACT.phone.label}</span></a></li>
-  <li><a href={CONTACT.video.href} rel="noopener" target="_blank"><Icon name="video" class="g" /><span>{CONTACT.video.label}</span></a></li>
-  <li><a href={CONTACT.whatsapp.href} rel="noopener" target="_blank"><Icon name="whatsapp" class="g" /><span>{CONTACT.whatsapp.label}</span></a></li>
+  <li><a href={localHref(`mailto:${CONTACT.email}`)}><Icon name="mail" class="g" /><span>{CONTACT.email}</span></a></li>
+  <li><a href={localHref(CONTACT.phone.href)}><Icon name="phone" class="g" /><span>{CONTACT.phone.label}</span></a></li>
+  <li><a href={localHref(CONTACT.video.href)} rel="noopener" target="_blank"><Icon name="video" class="g" /><span>{t(CONTACT.video.labelKey)}</span></a></li>
+  <li><a href={localHref(CONTACT.whatsapp.href)} rel="noopener" target="_blank"><Icon name="whatsapp" class="g" /><span>{CONTACT.whatsapp.label}</span></a></li>
 </ul>

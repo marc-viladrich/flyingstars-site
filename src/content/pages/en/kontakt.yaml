@@ -1,0 +1,46 @@
+title: Request a show
+description: Tell FlyingStars your date, location and occasion. We reply within 48 hours by email, phone,
+  WhatsApp or video call.
+sections:
+  - type: contactForm
+    kicker: Enquiry
+    headline: Tell us about your date.
+    text: A date, location and occasion are enough for an initial assessment. Leave anything you don't know yet
+      open. Sending this form does not make a booking.
+  - type: steps
+    id: danach
+    kicker: The process
+    headline: What happens next.
+    steps:
+      - title: Reply
+        text: We reply by email within 48 hours, with questions or an initial assessment.
+        duration: 48 h
+      - title: First conversation
+        text: A short phone or video call to discuss location, motifs and size.
+      - title: Quote
+        text: You receive a written quote. A 40% deposit is due when you book.
+      - title: Planning
+        text: We check the site, obtain the permit and design the show with you.
+  - type: textMedia
+    kicker: Contact
+    headline: Other ways to reach us.
+    body: >
+      Behind every channel is the same team: Ronja, Florian and Erwin.
+
+
+      **Phone:** [0209 883 065 62](tel:+4920988306562)<br>
+
+      **Mobile and WhatsApp:** [01579 260 86 72](tel:+4915792608672), [message on
+      WhatsApp](https://wa.me/4915792608672)<br>
+
+      **Email:** [team@flyingstars.art](mailto:team@flyingstars.art)<br>
+
+      **Video call:** [book a time through Calendly](https://calendly.com/team-flyingstars/beratung)
+
+
+      **Visit:** Triple Z, Gründungszentrum Zeche Zollverein, Katernberger Str. 107, 45327 Essen. Please let
+      us know in advance.
+
+
+      **Post:** FlyingStars GmbH, Bulmker Straße 107, 45888 Gelsenkirchen
+translationSourceHash: 5d3120276b973cc1060818c983c50ae3543613d369263dd8263b5bc357cc2f70

@@ -1,4 +1,6 @@
 ---
+import { forPath } from '../../i18n/server';
+const { t, localHref } = forPath(Astro.url.pathname);
 // Ein Schema für alle Standort- und Sicherheitsabschnitte. Maßangaben sind Content,
 // die Geometrie ist bewusst schematisch. Belege: docs/sicherheitskonzept-quellen.md.
 import type { Section } from '../../content.config';
@@ -22,8 +24,8 @@ const markers = variant === 'outdoor'
   <div class="st">
     <figure class="st-fig">
       <svg viewBox={variant === 'outdoor' ? '0 0 400 405' : '0 0 400 490'} role="img" aria-labelledby={`${id}-diagram-title ${id}-diagram-desc`}>
-        <title id={`${id}-diagram-title`}>{variant === 'outdoor' ? 'Flug- und Sicherheitsbereich von oben' : 'Raumschnitt und Startraster von oben'}</title>
-        <desc id={`${id}-diagram-desc`}>{diagram.description} Die Nummern entsprechen der folgenden Liste. {diagram.caption}</desc>
+        <title id={`${id}-diagram-title`}>{variant === 'outdoor' ? t('landingsite.outdoorTitle') : t('landingsite.indoorTitle')}</title>
+        <desc id={`${id}-diagram-desc`}>{diagram.description} {t('landingsite.numberedList')} {diagram.caption}</desc>
         {variant === 'outdoor' ? <>
           <rect class="outer" x="43" y="39" width="300" height="282" rx="16" />
           <path class="dim" d="M43 28h300M43 22v12M343 22v12M363 39v282M357 39h12M357 321h12" />
@@ -73,14 +75,14 @@ const markers = variant === 'outdoor'
     {safeguards.map((item) => <div><Icon name={item.icon} size={32} class="g" /><T>{item.title}</T><p>{item.text}</p></div>)}
   </div>}
   <div class="st-responsibilities">
-    {[{ title: 'Das übernehmen wir', icon: 'clipboard-check', entries: responsibilities.provider }, { title: 'Das braucht ihr', icon: 'map-pinned', entries: responsibilities.customer }].map((group) => <div>
+    {[{ title: t('landingsite.provider'), icon: 'clipboard-check', entries: responsibilities.provider }, { title: t('landingsite.customer'), icon: 'map-pinned', entries: responsibilities.customer }].map((group) => <div>
       <T><Icon name={group.icon} size={28} class="g" />{group.title}</T>
       <ul>{group.entries.map((entry) => <li><Icon name="check" size={18} class="g" /><span>{entry}</span></li>)}</ul>
     </div>)}
   </div>
   {planning && <div class="st-planning"><T>{planning.title}</T><p>{planning.text}</p></div>}
   {note && <p class="st-note"><b>{note.value}</b><span>{note.text}</span></p>}
-  {download && <a class="link st-download" href={download.href} type="application/pdf" target="_blank" rel="noopener">{download.label}<Icon name="download" size={18} class="g" /></a>}
+  {download && <a class="link st-download" href={localHref(download.href)} type="application/pdf" target="_blank" rel="noopener">{download.label}<Icon name="download" size={18} class="g" /></a>}
 </section>
 
 <style>

@@ -1,3 +1,4 @@
+import { t as message } from '../../i18n/ui.mjs';
 // Winter & Silvester (eleventh version): firework made of light, the snowflake and the tree of lights.
 // Firework after FlyingStars' own (round 2, Frühlingsnacht 2:10–2:25, S3fuZRsYIvc): stars of straight drone chains,
 // one colour per star, full within a blink, standing for seconds, several overlapping with staggered starts; the
@@ -96,27 +97,27 @@ builders.fireworkStory = (n, caption) => {
   const willow = (d) => { const r = 0.2 + 0.9 * d.r; return [d.c[0] + d.R * d.dir[0] * r, d.c[1] + d.R * (d.dir[1] * r * 0.45 + 0.1 * r - 1.25 * r * r), d.c[2] + d.R * d.dir[2] * r]; };
   const rainColour = (list) => paint(list.map(willow), (p, j) => mix(GOLD, ORANGE, list[j].r * 0.8));
   return { beats: [
-    act(parts(columnPts), { caption: "Eine Leuchtspur steigt auf", hold: 2.4, live: (b, j, t, o) => {
+    act(parts(columnPts), { caption: message('winter.aTrailOfLightRises'), hold: 2.4, live: (b, j, t, o) => {
       if (j < TR) { const h = 1.05 * smooth(t / 1.9), du = h - column[j].u; o[3] = du < 0 ? OFF + 0.6 * Math.exp(-((du / 0.03) ** 2)) : 0.25 + 1.3 * Math.exp(-du / 0.05) + 0.35 * Math.exp(-du / 0.3) * sparkle(j, t, 0.6, 1.4); }
       else if (j < TR + BG) o[3] = OFF + 0.14 * smooth((t - 1.6) / 0.6) * (1 - big[j - TR].r);
       else o[3] = OFF;
     } }),
-    act(parts(columnPts), { caption: "…und blüht als Stern in alle Richtungen", hold: 3.6, live: (b, j, t, o) => {
+    act(parts(columnPts), { caption: message('winter.andBloomsAsAStarInEveryDirection'), hold: 3.6, live: (b, j, t, o) => {
       if (j < TR) o[3] = OFF + 0.6 * Math.exp(-t / 0.8) * column[j].u * sparkle(j, t, 0.6, 1.4);
       else if (j < TR + BG) { o[3] = starGlow(big[j - TR], t - 0.1, { front: 0.4, stand: 99, flash: 0.9 }); turn(o, t, 3.6); }
       else o[3] = OFF;
     } }),
-    act(parts(stars(tStar)), { caption: "Sterne blühen in Wellen, vorn groß, hinten klein", hold: 4.6, live: (b, j, t, o) => {
+    act(parts(stars(tStar)), { caption: message('winter.starsBloomInWavesLargeInFrontSmallBehind'), hold: 4.6, live: (b, j, t, o) => {
       if (j < TR) o[3] = starGlow(tStar[j], t - tStar[j].delay, { front: 0.15, stand: 1.8, flash: 0.6, off: OFF });
       else if (j < TR + BG) { const d = big[j - TR], e = Math.exp(-Math.max(0, t) / (0.5 + 1.2 * d.r)); o[3] = OFF + (1 - OFF) * e * (1 + 0.35 * (1 - e) * Math.sin(t * 9 + d.ray)); }
       else { const d = waves[j - TR - BG]; o[3] = starGlow(d, t - d.delay, { front: 0.15, stand: 1.9, flash: 0.6, off: OFF }); }
     } }),
-    act(parts(stars(tStar)), { caption: "Finale: alle Sterne zugleich", hold: 3, live: (b, j, t, o) => {
+    act(parts(stars(tStar)), { caption: message('winter.finaleAllStarsAtOnce'), hold: 3, live: (b, j, t, o) => {
       const d = j < TR ? tStar[j] : j < TR + BG ? big[j - TR] : waves[j - TR - BG];
       o[3] = starGlow(d, t - 0.15 - 0.05 * hash(d.ray + (d.c[0] * 9)), { front: 0.25, stand: 99, flash: 1.0 });
       if (j >= TR && j < TR + BG) turn(o, t, 3, -0.5);
     } }),
-    act([part("trail", rainColour(tStar)), part("big", rainColour(big)), part("waves", rainColour(waves))], { caption: "…und Goldregen fällt", live: (b, j, t, o) => {
+    act([part("trail", rainColour(tStar)), part("big", rainColour(big)), part("waves", rainColour(waves))], { caption: message('winter.andGoldenRainFalls'), live: (b, j, t, o) => {
       const d = j < TR ? tStar[j] : j < TR + BG ? big[j - TR] : waves[j - TR - BG];
       o[1] -= 0.16 * d.r * d.R * smooth(Math.max(0, t) / 6);
       o[3] = chase(d.r, t, 0.32, 0.5, 0.4, 1.45) * sparkle(j, t, 0.85, 1.15);
@@ -190,15 +191,15 @@ builders.treeStory = (n, caption) => {
   const flakeBeat = builders.snow2d(n).beats[0], flakeLive = flakeBeat.live;
   const bulbs = [GOLD, PINK, CYAN];
   return { beats: [
-    act([part("lights", flakeBeat.pts.slice(0, L)), part("star", flakeBeat.pts.slice(L))], { caption: "Eine Schneeflocke", hold: 3, frame: "snow", live: flakeLive }),
-    act([part("lights", paint(coil, garland)), part("star", paint(crown, GOLD))], { caption: "aus ihr wird ein Baum, Licht zeichnet ihn von unten nach oben", hold: 3.4, cloud: true, live: (b, j, t, o) => {
+    act([part("lights", flakeBeat.pts.slice(0, L)), part("star", flakeBeat.pts.slice(L))], { caption: message('winter.aSnowflake'), hold: 3, frame: "snow", live: flakeLive }),
+    act([part("lights", paint(coil, garland)), part("star", paint(crown, GOLD))], { caption: message('winter.itBecomesATreeLightDrawsItFromTheBottom'), hold: 3.4, cloud: true, live: (b, j, t, o) => {
       o[3] = j < L ? trace(j / L, t, 3.0) : 0.15;
     } }),
-    act([part("lights", paint(coil, garland)), part("star", paint(crown, GOLD))], { caption: "auf der Spitze geht ein Stern auf", hold: 2.6, live: (b, j, t, o) => {
+    act([part("lights", paint(coil, garland)), part("star", paint(crown, GOLD))], { caption: message('winter.aStarAppearsAtTheTop'), hold: 2.6, live: (b, j, t, o) => {
       if (j < L) o[3] = 0.95 + 0.1 * Math.sin(t * 2 + j * 0.3);
       else { const k = j - L, u = k < 31 ? k / 31 : (k - 31) / 19; o[3] = trace(u, t, 0.9, { dim: 0.15, lit: 1.25 }) + 0.15 * sparkle(j, t, -1, 1) * smooth(t - 1); }
     } }),
-    act([part("lights", paint(coil, (p, j) => (j % 2 ? GREEN : bulbs[(j >> 1) % 3]))), part("star", paint(crown, GOLD))], { caption: "…der Baum dreht sich, die Lichterkette wechselt die Farbe", live: (b, j, t, o) => {
+    act([part("lights", paint(coil, (p, j) => (j % 2 ? GREEN : bulbs[(j >> 1) % 3]))), part("star", paint(crown, GOLD))], { caption: message('winter.theTreeTurnsTheLightsChangeColour'), live: (b, j, t, o) => {
       if (j < L) {
         yaw(o, spin(t, 0.35));
         // the bulbs light in turn, colour after colour, while the green line glows calmly

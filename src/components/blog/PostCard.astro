@@ -1,16 +1,19 @@
 ---
+import { forPath } from '../../i18n/server';
+const { t, localHref } = forPath(Astro.url.pathname);
 // Blogkarte im Look der Referenzkarten (global .proj): Bild mit Vorhang und Lichtpunkt-Hover über die ganze Karte,
 // Lesezeit auf dem Bild, Kicker mit Thema und Datum, Titel, ein Satz.
 import type { CollectionEntry } from 'astro:content';
 import { optimizedImage } from '../../lib/media';
+import { sourceId } from '../../i18n/routing.mjs';
 import { dateOf, readingMinutes, topicOf } from './post-meta';
 interface Props { post: CollectionEntry<'posts'>; i?: number; level?: 'h2' | 'h3' }
 const { post, i = 0, level = 'h2' } = Astro.props;
 const T = level;
 const image = post.data.cover ? await optimizedImage(post.data.cover.src) : undefined;
 ---
-<a class="proj post-card" href={`/blog/${post.id}/`} data-dot-host>
-  {image && <div class="img" data-curtain data-dot-img style={`--i:${i % 3}`}><img src={image.src} {...image.attributes} width={image.width} height={image.height} alt={post.data.cover!.alt} loading="lazy" decoding="async" /><span class="count mono">{readingMinutes(post)} Min. Lesezeit</span></div>}
+<a class="proj post-card" href={localHref(`/blog/${sourceId(post.id)}/`)} data-dot-host>
+  {image && <div class="img" data-curtain data-dot-img style={`--i:${i % 3}`}><img src={image.src} {...image.attributes} width={image.width} height={image.height} alt={post.data.cover!.alt} loading="lazy" decoding="async" /><span class="count mono">{readingMinutes(post)} {t('postcard.minRead')}</span></div>}
   <span class="kick mono">{topicOf(post)} · <time datetime={post.data.date.toISOString()}>{dateOf(post)}</time></span>
   <T>{post.data.title}</T>
   <p>{post.data.description}</p>

@@ -1,4 +1,6 @@
 ---
+import { forPath } from '../../i18n/server';
+const { localHref } = forPath(Astro.url.pathname);
 // Seitenkopf für Unterseiten: große Headline, ein Satz, Aktionen; optional ein Bild mit Vorhang-Reveal.
 import Picture from '../Picture.astro';
 import Accent from '../Accent.astro';
@@ -13,8 +15,8 @@ const { headline, text, image, cta, secondary, kicker } = Astro.props;
     {text && <p class="lead">{text}</p>}
     {(cta || secondary) && (
       <div class="actions">
-        {cta && <a class="btn primary" href={cta.href}>{cta.label}</a>}
-        {secondary && <a class="btn" href={secondary.href}>{secondary.label}</a>}
+        {cta && <a class="btn primary" href={localHref(cta.href)}>{cta.label}</a>}
+        {secondary && <a class="btn" href={localHref(secondary.href)}>{secondary.label}</a>}
       </div>
     )}
   </div>

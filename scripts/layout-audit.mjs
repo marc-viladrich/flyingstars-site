@@ -6,12 +6,16 @@
 //             [data-bleed] (z. B. das Showreel rechts im Seitenkopf) und alles, was als Fläche hinter dem Inhalt liegt
 //   empty-h   Überschrift ohne Text (z. B. Daten aus einem veralteten Zwischenspeicher)
 //   overflow  Seite scrollt seitlich
-// Aufruf: node scripts/layout-audit.mjs [basis-url] [--widths=390,1440,1920] [--only=orphan,contain] [--browser=webkit]
-// Ohne Basis-URL: http://127.0.0.1:4391. Die Seiten kommen aus den Links der Startseite und des Footers (Crawl, max. 60).
+// Aufruf: node scripts/layout-audit.mjs [basis-url] [--start=/en/] [--widths=390,1440,1920] [--only=orphan,contain] [--browser=webkit]
+// Ohne Basis-URL: http://127.0.0.1:4391. Die Seiten kommen aus den Links der Startseite und des Footers (Crawl, max. 200; --start begrenzt auf diesen Pfadpräfix).
 import { chromium, webkit } from 'playwright';
 
 const args = process.argv.slice(2);
 const base = (args.find((a) => !a.startsWith('--')) ?? 'http://127.0.0.1:4391').replace(/\/$/, '');
+// Optionaler Einstieg und Crawl-Bereich, etwa /en/ oder /nl/.
+const startArg = args.find((a) => a.startsWith('--start='))?.slice(8) ?? '/';
+if (!startArg.startsWith('/') || startArg.startsWith('//') || /[?#]/.test(startArg)) throw new Error('--start muss ein lokaler Pfad ohne Query/Hash sein');
+const start = startArg.endsWith('/') ? startArg : startArg + '/';
 const widths = (args.find((a) => a.startsWith('--widths='))?.slice(9) ?? '390,1440,1920').split(',').map(Number);
 const only = args.find((a) => a.startsWith('--only='))?.slice(7).split(',');
 const want = (k) => !only || only.includes(k);
@@ -23,13 +27,13 @@ const go = async (url, waitUntil) => { try { return await page.goto(url, { waitU
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
 
 // Seiten einsammeln
-const seen = new Set(['/']);
-const queue = ['/'];
-while (queue.length && seen.size < 60) {
+const seen = new Set([start]);
+const queue = [start];
+while (queue.length && seen.size < 200) {
   const path = queue.shift();
   await go(base + path, 'domcontentloaded');
   const links = await page.$$eval('a[href^="/"]', (as) => as.map((a) => new URL(a.href).pathname));
-  for (const l of links) if (!seen.has(l) && !/\.(pdf|jpe?g|png|mp4|svg|webp|xml)$/.test(l) && !l.startsWith('/poc') && !l.startsWith('/api')) { seen.add(l); queue.push(l); }
+  for (const l of links) if (l.startsWith(start) && !seen.has(l) && !/\.(pdf|jpe?g|png|mp4|svg|webp|xml)$/.test(l) && !l.startsWith('/poc') && !l.startsWith('/api')) { seen.add(l); queue.push(l); }
 }
 const paths = [...seen].sort();
 

@@ -1,17 +1,22 @@
 ---
+import { localizedCollection } from '../../i18n/content';
+import { forPath } from '../../i18n/server';
+const { t, localHref } = forPath(Astro.url.pathname);
+import { localeFromPath } from '../../i18n/routing.mjs';
+const locale = localeFromPath(Astro.url.pathname);
 // FAQ im Prototyp-Layout (Kopf links, Fragen rechts). Mit `groups` erscheinen die Fragen in Gruppen mit eigener
 // Zwischenüberschrift; mit `closing` folgt der Abschluss „Eure Frage ist nicht dabei?“ mit Anrufen/Schreiben.
-import { getCollection, render } from 'astro:content';
+import { render } from 'astro:content';
 import type { Section } from '../../content.config';
 import Accent from '../Accent.astro';
 import Faces from '../Faces.astro';
 import { optimizedImage } from '../../lib/media';
 type Props = Extract<Section, { type: 'faq' }> & { index: number };
-const { headline = 'Häufige Fragen', text, cta, tags, limit, openFirst, groups, closing, id = `s${Astro.props.index}`, index, kicker } = Astro.props;
+const { headline = t('faq.frequentlyAskedQuestions'), text, cta, tags, limit, openFirst, groups, closing, id = `s${Astro.props.index}`, index, kicker } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const G = index === 0 ? 'h2' : 'h3';
-const all = (await getCollection('faq', e => !e.data.draft)).sort((a,b) => a.data.order-b.data.order);
+const all = (await localizedCollection('faq', locale, e => !e.data.draft)).sort((a,b) => a.data.order-b.data.order);
 const pick = (want?: string[]) => want?.length ? all.filter(e => e.data.tags.some(tag => want.includes(tag))) : all;
 const withContent = (list: typeof all) => Promise.all(list.map(async entry => ({ entry, Content: (await render(entry)).Content })));
 const blocks = groups?.length
@@ -24,7 +29,7 @@ const photo = closing?.image ? await optimizedImage(closing.image.src, 640) : un
   <!-- Mit Gruppen (FAQ-Seite): Kopf oben, je Gruppe links die Kategorie, die beim Scrollen mitläuft (sticky), rechts die
        Fragen. So ist klar, was Kategorie und was Frage ist (Marc, 31.10.2026). -->
   <div class="faq-grid">
-    <div class="intro">{kicker && <span class="kicker mono">{kicker}</span>}<H id={headingId}><Accent text={headline} /></H>{text && <p>{text}</p>}{cta && <a class="link" href={cta.href} rel={external ? 'noopener' : undefined} target={external ? '_blank' : undefined}>{cta.label} <span aria-hidden="true">→</span></a>}</div>
+    <div class="intro">{kicker && <span class="kicker mono">{kicker}</span>}<H id={headingId}><Accent text={headline} /></H>{text && <p>{text}</p>}{cta && <a class="link" href={localHref(cta.href)} rel={external ? 'noopener' : undefined} target={external ? '_blank' : undefined}>{cta.label} <span aria-hidden="true">→</span></a>}</div>
     <div class="faq-body">
       {blocks.map((block, bi) => <div class="faq-group" id={block.id} aria-labelledby={block.headline ? `${block.id}-h` : undefined} role={block.headline ? 'group' : undefined}>
         {block.headline && <G class="faq-group-h" id={`${block.id}-h`}>{block.headline}</G>}
@@ -33,11 +38,11 @@ const photo = closing?.image ? await optimizedImage(closing.image.src, 640) : un
       {closing && <div class="promise faq-cta">
         <Faces />
         <div class="promise-copy">
-          <G>{closing.headline}</G>
+          <G>{closing.headline ?? t('blogindex.canTFindYourQuestion')}</G>
           {closing.text && <p>{closing.text}</p>}
         </div>
         <div class="actions">
-          <a class="btn primary" href="/kontakt/">Show anfragen</a>
+          <a class="btn primary" href={localHref("/kontakt/")}>{t('chopper404.requestAShow')}</a>
         </div>
       </div>}
     </div>

@@ -1,0 +1,267 @@
+title: Over ons
+description: "FlyingStars uit het Ruhrgebied: team, verhaal en mijlpalen. 178 shows sinds 2022, eigen ontwerpteam en vloot, kantoor op Zollverein."
+image: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
+sections:
+  - type: hero
+    kicker: Over ons
+    headline: Een team uit het Ruhrgebied dat de *nachthemel* tot leven brengt.
+    text: Ronja, Florian en Erwin leiden FlyingStars samen met een klein team uit het Ruhrgebied. Ons kantoor bevindt zich in Triple Z op het terrein van Zeche Zollverein in Essen. Jullie kunnen ons daar ook bezoeken.
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
+      alt: Een wereldbol van drones boven de Rijn bij de Extraschicht in Duisburg
+      width: 2544
+      height: 1493
+    cta:
+      label: Vraag een show aan
+      href: /kontakt/
+    secondary:
+      label: Onze mijlpalen
+      href: "#meilensteine"
+  - type: team
+    id: team
+    kicker: Team
+    headline: De mensen achter de shows.
+    text: Jullie bereiken ons als team en op de showavond staan we zelf op het veld.
+    members:
+      - name: Ronja Donsbach
+        role: Directeur
+        bio: Beantwoordt de meeste aanvragen en stemt ontwerp en muziek af met partners. Ook in het Engels.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/08/Ronja_Teamfoto.jpg
+          alt: Ronja Donsbach met een drone in haar hand
+          width: 800
+          height: 1000
+      - name: Florian Becker
+        role: Directeur
+        bio: Administratie, personeel en klanten in Duitsland. Schrijft onze blog.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/08/Florian_Teamfoto.jpg
+          alt: Florian Becker met een drone in zijn hand
+          width: 800
+          height: 1000
+      - name: Erwin Wilms
+        role: Directeur
+        bio: Aanvragen, instanties en luchtvaartrecht. Zorgt dat jullie show mag vliegen. Ook in het Engels.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/08/Erwin_Teamfoto.jpg
+          alt: Erwin Wilms met een drone in zijn hand
+          width: 800
+          height: 1000
+      - name: Patrick
+        role: Hoofd Techniek
+        bio: Vloot, beschikbaarheid, inkoop en de technische opbouw van elke show.
+      - name: Alejandro
+        role: Hoofd ontwerp
+        bio: Ontwerpt onze shows en de choreografieën.
+      - name: Chopper
+        role: Kantoorhond
+        bio: Nieuw in het team.
+    note: Daarnaast helpen zo'n tien oproepkrachten bij opbouw, beveiliging en afbouw.
+    cta:
+      label: Leer ons kennen
+      href: /kontakt/
+  - type: textMedia
+    kicker: Geschiedenis
+    headline: Hoe FlyingStars begon.
+    body: |
+      FlyingStars begon als een project tijdens de coronapandemie. In Azië waren er toen al veel grote droneshows, in Europa nog niet. We wilden weten waarom en begonnen te experimenteren. Op 1 december 2021 hebben we ons bedrijf ingeschreven.
+
+      Onze eerste show vlogen we op 13 augustus 2022, voor een privéverjaardag met 50 drones. In hetzelfde jaar volgden er nog zeven.
+
+      Onze statutaire zetel en ons postadres zijn in Gelsenkirchen.
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2024/07/D_Umwelthilfe_cover_img.png
+      alt: Een cirkel van kleurrijke drones boven Berlijn, toeschouwers filmen de show met hun telefoon
+      width: 1920
+      height: 987
+    mediaSide: right
+  - type: timeline
+    id: meilensteine
+    kicker: Mijlpalen
+    headline: Van 50 naar *600* drones.
+    text: Van de eerste verjaardag in 2022 tot de musical in Maastricht.
+    items:
+      - when: "2021"
+        title: Oprichting
+        text: Op 1 december schrijven we FlyingStars als bedrijf in.
+      - when: "2022"
+        title: De eerste show
+        text: Op 13 augustus vliegen 50 drones voor een privéverjaardag.
+      - when: "2022"
+        title: PUMA in Borussia-Park
+        text: Op 11 november, onze zesde show. 100 drones voor de derby Gladbach tegen Dortmund, de aanvraag kwam circa 14 dagen eerder.
+      - when: "2023"
+        title: De eerste generieke exploitatievergunning in Duitsland
+        text: In juli verleent het Duitse luchtvaartagentschap Luftfahrt-Bundesamt ons de vergunning.
+      - when: "2023"
+        title: L’Oréal × Prada Paradoxe
+        text: Op 11 oktober 350 drones bij de Rheinturm in Düsseldorf.
+      - when: "2023"
+        title: "#Böllerciao met Deutsche Umwelthilfe"
+        text: Op 27 november 150 drones in het Cantianstadion in Berlijn, voor pers, politiek en publiek.
+      - when: "2023"
+        title: Verhuizing naar Triple Z
+        text: In december betrekken we ons kantoor in het bedrijvencentrum op Zeche Zollverein.
+      - when: "2024"
+        title: 50 jaar VW Golf
+        text: Op 22 mei bij Scalaria aan de Wolfgangsee. Lange tijd onze grootste show.
+      - when: "2025"
+        title: De eerste indoor-show
+        text: Op 28 maart voor Siemens op de Hannover Messe.
+      - when: "2025"
+        title: Kein Bock auf Nazis
+        text: Op 8 augustus. Sindsdien vliegen we regelmatig shows voor democratie, diversiteit en saamhorigheid.
+      - when: "2026"
+        title: Bokkenrijders in Maastricht
+        text: In juni 20 shows met elk 600 drones in een musical.
+      - when: "2026"
+        title: E.ON in Hamburg
+        text: In september een dubbele show met 500 drones boven de Elbe bij de Landungsbrücken.
+      - when: "2026"
+        title: Indoor in het Triple Z
+        text: In september een indoor-show in het bedrijvencentrum waar ook ons kantoor zit.
+  - type: landingBento
+    id: zusammenarbeit
+    kicker: Vanuit één team
+    headline: Jullie idee wordt *choreografie*.
+    lead:
+      icon: users
+      title: Samen met jullie ontwikkeld.
+      text: We ontwikkelen samen met jullie de verhaallijn, motieven en muziek voor jullie gelegenheid.
+    items:
+      - icon: pencil-ruler
+        title: Eigen ontwerpteam
+        text: Alejandro ontwerpt de motieven en choreografieën. Jullie ideeën, logo of gemeentewapen worden droneformaties.
+      - icon: thumbs-up
+        title: Motieven vooraf goedkeuren
+        text: Jullie zien de ontwerpen vóór de show en keuren elk motief goed.
+      - icon: music
+        title: Muziek en licht afstemmen
+        text: We monteren de muziek bij de animatie. Daarna programmeren we kleuren en lichteffecten op de muzikale accenten. De muziekmontage is in elk pakket inbegrepen.
+      - icon: drone
+        title: Eigen vloot
+        text: We vliegen met onze eigen drones. Patrick plant hun inzet en zorgt voor de techniek voor jullie show.
+  - type: landingSite
+    id: sicherheit
+    kicker: Veiligheid
+    headline: Zo plannen we veiligheid.
+    text: We stemmen veiligheidszones, vluchtplanning en verantwoordelijkheden af voor elke locatie.
+    variant: outdoor
+    diagram:
+      description: Bovenaanzicht met de buitenste en binnenste veiligheidszone, het vlieggebied, de start- en landingszone en het publiek daarbuiten. De rij drones staat dwars op de kijkrichting.
+      horizontalLabel: ca. 100 m
+      verticalLabel: ca. 100 m
+      detailLabel: ca. 60 m
+      flightLabel: Meestal tot 120 m vlieghoogte
+      caption: Voorbeeld op basis van het technische gegevensblad, niet op schaal. We berekenen alle zones en afstanden voor jullie locatie. De 60 m heeft betrekking op de rij drones in dit voorbeeld.
+    items:
+      - title: Buitenste veiligheidszone
+        value: ca. 100 × 100 m
+        text: Deze omvat ook de binnenste zones. Tijdens de show blijft dit gebied ongeveer 15 minuten vrij van niet-betrokken personen. De grootte hangt af van het aantal drones, de motieven en de vlieghoogte.
+        zone: safety
+      - title: Binnenste veiligheidszone
+        text: De operationele veiligheidszone ligt rondom het vlieggebied. We bepalen de grenzen bij de vluchtplanning.
+        zone: operative
+      - title: Vlieggebied
+        value: tot 120 m hoog
+        text: Hier vliegen de drones de motieven. Van bovenaf vormen ze een rij dwars op de kijkrichting, zodat jullie gasten de motieven van voren zien.
+        zone: drones
+      - title: Start- en landingszone
+        value: ca. 3 uur voor de show afgesloten
+        text: Vanaf onze aankomst bouwen we de droneopstelling, antennestatieven en het controlestation op een vrije, vlakke plek op. De benodigde oppervlakte hangt af van het aantal drones.
+        zone: start
+      - title: Publiekszone
+        text: Jullie gasten staan buiten de buitenste veiligheidszone en hebben vrij zicht op de show nodig. We plannen hun positie samen met jullie, op afstand van gevels en bomen.
+        zone: guests
+    safeguards:
+      - icon: scan-line
+        title: Digitaal begrensd vlieggebied
+        text: Een geofence begrenst het showgebied. Als een drone dit gebied verlaat, start automatisch een veiligheidsprotocol.
+      - icon: shield-check
+        title: Meervoudig beveiligd
+        text: Automatische en handmatige veiligheidssystemen bewaken elke vlucht. Bij een storing keert de drone meestal terug of landt hij in de veiligheidszone. De outdoordrones wegen ongeveer 300 g en hebben geen camera’s.
+      - icon: users-round
+        title: Team ter plaatse
+        text: Drie tot vier personen, piloten en technici, bouwen de techniek op en bewaken de show.
+      - icon: wind
+        title: Het weer in de gaten
+        text: We vliegen met stabiele formaties tot windkracht 5 en bij lichte motregen. We bespreken de weersomstandigheden bij voorkeur één tot twee dagen van tevoren met jullie.
+    responsibilities:
+      provider:
+        - We beoordelen de locatie vóór de offerte, tekenen de zones in en maken het veiligheidsconcept en de vluchtplanning.
+        - We hebben een generieke exploitatievergunning van het LBA en verzorgen verdere luchtvaartaanvragen, bijvoorbeeld bij DFS. Voor andere EU-landen vragen we ook grensoverschrijdende bevestigingen aan.
+        - In controlezones van luchthavens vragen we de verkeersklaring aan. Ook de afstemming over federale waterwegen nemen we op ons.
+        - Jullie krijgen van ons een brief om toestemming van de grondeigenaren te vragen. Bij natuurgebieden helpt een eerste aanvraag door de lokale beheerder; wij verzorgen de formele aanvraag en de vluchtplanning.
+      customer:
+        - Jullie stellen de benodigde terreinen beschikbaar en vragen toestemming aan alle grondeigenaren binnen de volledige buitenste veiligheidszone. Voor openbare grond geeft de stad of gemeente toestemming. Ook voor het overvliegen van gebouwen is toestemming van de eigenaren nodig.
+        - Jullie beveiligen de veiligheidszone tijdens de show, tenzij we iets anders afspreken. Meestal volstaat afzetlint; op drukke locaties zijn één tot twee stewards nodig, boven water een persoon in een boot.
+        - Jullie houden de vlakke startlocatie vanaf onze aankomst afgesloten en melden obstakels in het vlieggebied en de zichtlijn, liefst met hoogtes.
+        - Jullie wijzen een bereikbare contactpersoon aan voor de showdag en stemmen de showtijd en het geluid met ons af. Wij leveren de muziekmontage; voor kleine groepen kunnen we een grote luidspreker meenemen.
+    planning:
+      title: Vergunningen vragen voorbereidingstijd
+      text: Plan bij voorkeur één tot twee maanden in, bij complexe vergunningen zoals nabij luchthavens eerder drie maanden. Afhankelijk van de locatie is express binnen één tot twee weken mogelijk, met een toeslag op basis van de werkzaamheden. Dit zijn richtlijnen voor de planning; we beoordelen welke toestemmingen voor jullie locatie nodig zijn.
+    note:
+      value: tot € 1,3 miljoen
+      text: Drone-aansprakelijkheidsverzekering in elk outdoorpakket. Jullie hebben hiervoor geen extra verzekering nodig. We vliegen in de specifieke categorie volgens de Europese voorschriften. Het LBA verleent de exploitatievergunning.
+    download:
+      label: Technisch gegevensblad · PDF
+      href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf
+  - type: sustainability
+    id: nachhaltigkeit
+    kicker: Duurzaamheid
+    headline: Geen knallen. Geen rook. Geen afval.
+    text: Duurzaamheid is de reden waarom we FlyingStars hebben opgericht. We nemen het mee in elke beslissing.
+    facts:
+      - label: Geen knal
+        value: Stil
+        text: De drones zoemen, alleen jullie muziek is luid. TÜV Nord heeft het geluid in een akoestisch rapport onderzocht.
+      - label: Geen rook
+        value: "0"
+        unit: g
+        text: Geen pyrotechniek, dus geen rook of zware metalen boven het publiek.
+      - label: Geen afval
+        value: "0"
+        unit: kg
+        text: Geen hulzen, geen resten. Dezelfde drones vliegen show na show.
+      - label: Groene stroom
+        value: "100"
+        unit: "%"
+        text: Groene stroom van naturstrom voor onze accu's.
+    pillars:
+      - icon: eu
+        title: Gebouwd in de EU
+        text: Onze drones wegen circa 300 gram en worden gebouwd door Drotek SAS in Frankrijk.
+      - icon: repair
+        title: Repareren in plaats van vervangen
+        text: Accu's, motoren en rotoren vervangen we afzonderlijk, zodat de drone blijft vliegen.
+      - icon: ev
+        title: Elektrisch naar de show
+        text: We rijden naar shows met een elektrische Ford E-Transit.
+      - icon: campaign
+        title: "#Böllerciao"
+        text: Met Deutsche Umwelthilfe boven Berlijn in november 2023, als alternatief voor oud-en-nieuwvuurwerk.
+  - type: metrics
+    id: zahlen
+    kicker: In cijfers
+    headline: In cijfers.
+    text: Stand 21 oktober 2026.
+    items:
+      - label: Shows
+        value: "178"
+        text: Sinds de eerste show in augustus 2022. Dit jaar waren het er tot oktober 50.
+      - label: Opgericht
+        value: "2021"
+        text: Op 1 december 2021 hebben we het bedrijf ingeschreven.
+      - label: Grootste afzonderlijke show
+        value: 600 drones
+        text: In de musical Bokkenrijders in Maastricht, in 2025 als teaser en in 2026 op 20 avonden.
+      - label: Drone-inzetten in één maand
+        value: "12.000"
+        text: In juni 2026, 20 shows met elk 600 drones.
+  - type: cta
+    headline: Leer ons kennen.
+    text: Een aanvraag is de snelste weg. Liever eerst praten? Plan een videogesprek via onze contactpagina.
+    button:
+      label: Vraag een show aan
+      href: /kontakt/
+translationSourceHash: 5f9d35ea7d3526750e194e1dc3732b8da2f618c1d55a350f42cc27f56f4c3c9b

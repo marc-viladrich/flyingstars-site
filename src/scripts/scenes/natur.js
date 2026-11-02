@@ -1,3 +1,4 @@
+import { t as message } from '../../i18n/ui.mjs';
 // festival motifs (Kolibri, Delfin) of the eleventh version (see src/content/show-configurator.js for the build names).
 // Kolibri: SPARK whirrs with light between two wing poses, HORIZON is a skeleton body whose wings really beat (slowly,
 // within drone limits) with light whirring at the edges, ODYSSEY flies to a blossom, drinks and rises. Delfin: one
@@ -192,22 +193,22 @@ export const builders = {
     const [FB, BB] = [B, B + FL];
     const flowerLive = (fl, local, open, out) => { if (local < fl.spec.length) fl.place(fl.spec[local], open, out); };
     return { beats: [
-      act(parts(O2, 1, 0, along(IN, TR)), { caption: "Ein Kolibri fliegt heran", hold: T1 + 0.8, live: (b, j, t, o) => {
+      act(parts(O2, 1, 0, along(IN, TR)), { caption: message('natur.aHummingbirdFliesIn'), hold: T1 + 0.8, live: (b, j, t, o) => {
         const u = smooth(Math.max(0, t) / T1);
         if (j < FB) { const O = bez(...IN, u), d = bob(t); pose(j, t, [O[0] + d[0], O[1] + d[1]], o); if (wingSide(bird.tags[j])) o[3] = whirr(bird.span[j], t, wingSide(bird.tags[j])); }
         else if (j >= n - TR) o[3] = lightTrail(trailU(j - (n - TR)), u);
       } }),
-      act(parts(O2, 1, 0, pollen), { caption: "er schwebt vor der Blüte", hold: 2.6, live: (b, j, t, o) => {
+      act(parts(O2, 1, 0, pollen), { caption: message('natur.itHoversInFrontOfTheFlower'), hold: 2.6, live: (b, j, t, o) => {
         if (j < FB) { const d = bob(t); pose(j, t, [O2[0] + d[0], O2[1] + d[1]], o); if (wingSide(bird.tags[j])) o[3] = whirr(bird.span[j], t, wingSide(bird.tags[j])); }
         else if (j >= n - TR) o[3] = sparkle(j, t, 0.5, 1.1);
       } }),
-      act(parts(O3, 1, 0, pollen), { caption: "trinkt, die Blüte leuchtet auf", hold: 3, live: (b, j, t, o) => {
+      act(parts(O3, 1, 0, pollen), { caption: message('natur.drinksTheFlowerLightsUp'), hold: 3, live: (b, j, t, o) => {
         const glow = smooth((t - 0.5) / 1.2);
         if (j < FB) { const d = bob(t); pose(j, t, [O3[0] + d[0], O3[1] + d[1] * 0.5], o); if (wingSide(bird.tags[j])) o[3] = whirr(bird.span[j], t, wingSide(bird.tags[j])); }
         else if (j < BB) { const r = Math.hypot(b[0] - F[0], b[1] - F[1]) / FR; if (r < 1.1) o[3] = 1 + 0.45 * glow + 0.4 * glow * chase(r, t, 0.5, 0.5, 0, 1); }
         else if (j >= n - TR) o[3] = sparkle(j, t, 0.6 + 0.4 * glow, 1.2 + 0.4 * glow);
       } }),
-      act(parts(UP[2], 1, 1, along(UP, TR)), { caption: "…und steigt auf, die Knospen blühen", live: (b, j, t, o) => {
+      act(parts(UP[2], 1, 1, along(UP, TR)), { caption: message('natur.andRisesTheBudsBloom'), live: (b, j, t, o) => {
         const u = smooth(Math.max(0, t) / T4), open = smooth((t - 0.4) / 2.6);
         if (j < FB) { const O = bez(...UP, u), d = bob(t); pose(j, t, [O[0] + d[0], O[1] + d[1]], o); if (wingSide(bird.tags[j])) o[3] = whirr(bird.span[j], t, wingSide(bird.tags[j])); }
         else if (j < BB) o[3] = breathe(t, 2.6);
@@ -277,17 +278,17 @@ export const builders = {
     const lit = (o, base = 1) => { o[3] = underwater(o[1], WY + 0.02) * base; };
     const turn = (o) => yaw(o, YAW);
     return { beats: [
-      act([water, part("a", asWater(rows([0.21, 1.05], DA))), part("b", asWater(rows([-0.21, -1.05], DB)))], { caption: "Wellen", hold: 2.4, live: (b, j, t, o) => {
+      act([water, part("a", asWater(rows([0.21, 1.05], DA))), part("b", asWater(rows([-0.21, -1.05], DB)))], { caption: message('natur.waves'), hold: 2.4, live: (b, j, t, o) => {
         waveLive(b, t, o, 0.04); o[3] = chase(b[0] + b[2] * 0.3, t, 0.5, 0.9, 0.6, 1.35); turn(o);
       } }),
-      act([water, part("a", leapA(0)), part("b", asWater(rows([-1.05, 1.05], DB)))], { caption: "ein Delfin springt", hold: T2 + 0.3, minFlight: 2.6, live: (b, j, t, o) => {
+      act([water, part("a", leapA(0)), part("b", asWater(rows([-1.05, 1.05], DB)))], { caption: message('natur.aDolphinLeaps'), hold: T2 + 0.3, minFlight: 2.6, live: (b, j, t, o) => {
         // vierzehnte Fassung: das Bild endet im höchsten Punkt des Sprungs (dort steht er kurz still); vorher endete es
         // im Fallen, die Bewegung bremste mitten im Abstieg und lief im nächsten Bild weiter
         if (j >= WN && j < WN + DA) { onCircle(la[j - WN], C, R, lerp(-2.2, 0, smooth(t / T2)), 1, o); lit(o); }
         else { waveLive(b, t, o); o[3] = 0.85 + 0.25 * Math.sin(2.4 * b[0] - 1.3 * t); }
         turn(o);
       } }),
-      act([water, part("a", leapA(2.5), { offstage: true }), part("b", rings.map(([x, y, z]) => [x, y, z, ...mix(CYAN, DIAMOND, 0.3)]))], { caption: "taucht ein, Ringe ziehen über das Wasser", hold: T3 + 0.8, live: (b, j, t, o) => {
+      act([water, part("a", leapA(2.5), { offstage: true }), part("b", rings.map(([x, y, z]) => [x, y, z, ...mix(CYAN, DIAMOND, 0.3)]))], { caption: message('natur.divesInRipplesCrossTheWater'), hold: T3 + 0.8, live: (b, j, t, o) => {
         if (j >= WN && j < WN + DA) { onCircle(la[j - WN], C, R, lerp(0, 2.5, smooth(t / T3)), 1, o); lit(o); }
         else if (j >= WN + DA) {
           // the rings widen slowly, a ripple of light runs outward
@@ -296,14 +297,14 @@ export const builders = {
         } else { waveLive(b, t, o); o[3] = 0.85 + 0.25 * Math.sin(2.4 * b[0] - 1.3 * t); }
         turn(o);
       } }),
-      act([water, part("a", dol(la, (p) => onCircle(p, CA, R, -0.55, -1, [0, 0, 0]))), part("b", dol(lb, (p) => onCircle(p, CB, R, -0.55, 1, [0, 0, 0])))], { caption: "zwei Delfine springen aufeinander zu", hold: T4 + 0.4, live: (b, j, t, o) => {
+      act([water, part("a", dol(la, (p) => onCircle(p, CA, R, -0.55, -1, [0, 0, 0]))), part("b", dol(lb, (p) => onCircle(p, CB, R, -0.55, 1, [0, 0, 0])))], { caption: message('natur.twoDolphinsLeapTowardsEachOther'), hold: T4 + 0.4, live: (b, j, t, o) => {
         const phi = lerp(-2.25, -0.55, smooth(t / T4));
         if (j >= WN && j < WN + DA) { onCircle(la[j - WN], CA, R, phi, -1, o); lit(o); }
         else if (j >= WN + DA) { onCircle(lb[j - WN - DA], CB, R, phi, 1, o); lit(o); }
         else { waveLive(b, t, o); o[3] = 0.85 + 0.25 * Math.sin(2.4 * b[0] - 1.3 * t); }
         turn(o);
       } }),
-      act([water, part("a", heartA), part("b", heartB)], { caption: "…und bilden ein Herz", live: (b, j, t, o) => {
+      act([water, part("a", heartA), part("b", heartB)], { caption: message('natur.andFormAHeart'), live: (b, j, t, o) => {
         if (j < WN) { waveLive(b, t, o); o[3] = chase(b[0], t, 0.5, 0.9, 0.6, 1.3); }
         else { o[1] += 0.03 * Math.sin((t * TAU) / 3.6); o[3] = glint(b[1], t, 3.6, 0.4, WY, HB + 1.6); }
         yaw(o, 0.14 * Math.cos((t * TAU) / 14));

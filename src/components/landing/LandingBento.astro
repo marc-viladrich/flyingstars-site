@@ -1,4 +1,6 @@
 ---
+import { forPath } from '../../i18n/server';
+const { localHref } = forPath(Astro.url.pathname);
 // Kacheln mit einer Hauptkachel (Bild mit Titel darauf oder eine große Aussage) und bis zu vier kleineren Icon-Kacheln. Bricht die Folge aus Text-Bild-Blöcken auf (Marc, 31.10.2026: „mehr Variation in den Layouts“).
 // Optional unten ein Link oder (faces) ein Abschluss wie auf der Startseite: .promise mit Gesichtern, Satz und Knopf.
 // Icons: Lucide über src/components/Icon.astro (`icon` je Kachel, `lead.icon` für die Aussage ohne Bild).
@@ -39,9 +41,9 @@ const img = lead.image ? await optimizedImage(lead.image.src, 960, 720) : undefi
     <div class="promise lb-close">
       <Faces />
       {contact && <p>{contact}</p>}
-      <div class="actions"><a class="btn primary" href={cta.href}>{cta.label}</a></div>
+      <div class="actions"><a class="btn primary" href={localHref(cta.href)}>{cta.label}</a></div>
     </div>
-  ) : cta && <div class="lb-more"><a class="link" href={cta.href}>{cta.label} <span aria-hidden="true">→</span></a></div>}
+  ) : cta && <div class="lb-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></div>}
 </section>
 
 <style>

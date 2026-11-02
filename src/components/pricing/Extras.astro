@@ -1,4 +1,6 @@
 ---
+import { forPath } from '../../i18n/server';
+const { t, localHref } = forPath(Astro.url.pathname);
 // Extras zum Auswählen (Marc, 01.11.2026): offenes Raster ohne Kartenfläche, nur feine Linien zwischen den Zellen. Eine
 // Zelle ist als Ganzes klickbar (die Beschriftung des Kontrollkästchens deckt sie ab); gewählt bekommt sie eine Fläche und
 // ein gefülltes Kästchen in Orange. Sobald etwas gewählt ist, erscheint unten eine Leiste mit der Auswahl und dem Knopf
@@ -6,10 +8,11 @@
 // Der Knopf im Show-Konfigurator nimmt die Auswahl ebenfalls mit. Ohne JavaScript bleibt es ein Raster zum Lesen.
 import Icon from '../Icon.astro';
 import SectionHead from '../SectionHead.astro';
-import { EXTRAS } from '../../content/package-details';
+import { getPackageDetails } from '../../content/package-details';
+const { EXTRAS } = getPackageDetails(forPath(Astro.url.pathname).locale);
 ---
 <section class="section alt" id="zusaetze" aria-labelledby="zusaetze-h">
-  <SectionHead kicker="Extras & Upgrades" headline="Mehr geht immer." text="Wählt aus, was ihr dazunehmen wollt. Es landet direkt in eurer Anfrage, den Preis nennen wir im Angebot." id="zusaetze-h" />
+  <SectionHead kicker={t('extras.extrasUpgrades')} headline={t('extras.roomForMore')} text={t('extras.chooseTheExtrasYouDLikeTheyGoStraightInto')} id="zusaetze-h" />
   <div class="ig xg" data-extras>
     {EXTRAS.map((x) => (
       <div class="ic xc">
@@ -18,14 +21,14 @@ import { EXTRAS } from '../../content/package-details';
         <h3><label for={`x-${x.id}`}>{x.title}</label></h3>
         <p id={`x-${x.id}-t`}>{x.text}</p>
         <span class="xc-price mono" id={`x-${x.id}-p`}>{x.price}</span>
-        <span class="xc-added mono" aria-hidden="true"><Icon name="check" size={14} strokeWidth={2.4} />In der Anfrage</span>
-        {x.link && <a class="link xc-link" href={x.link.href}>{x.link.label} <span aria-hidden="true">→</span></a>}
+        <span class="xc-added mono" aria-hidden="true"><Icon name="check" size={14} strokeWidth={2.4} />{t('extras.addedToEnquiry')}</span>
+        {x.link && <a class="link xc-link" href={localHref(x.link.href)}>{x.link.label} <span aria-hidden="true">→</span></a>}
       </div>
     ))}
   </div>
   <div class="xbar" data-extras-bar inert>
     <p class="xbar-t" role="status"><span data-extras-sum></span></p>
-    <a class="btn primary" href="/#anfrage" data-extras-cta>Show mit diesen Extras anfragen</a>
+    <a class="btn primary" href={localHref("/#anfrage")} data-extras-cta>{t('extras.requestAShowWithTheseExtras')}</a>
   </div>
 </section>
 
@@ -67,6 +70,8 @@ import { EXTRAS } from '../../content/package-details';
 </style>
 
 <script>
+  import { t } from '../../i18n/ui.mjs';
+  import { localizedHref, localeFromPath } from '../../i18n/routing.mjs';
   const grid = document.querySelector<HTMLElement>('[data-extras]');
   const bar = document.querySelector<HTMLElement>('[data-extras-bar]');
   if (grid && bar) {
@@ -76,7 +81,7 @@ import { EXTRAS } from '../../content/package-details';
     const chosen = () => boxes.filter((b) => b.checked);
     // Anfrage-Link mit den gewählten Extras; Indoor setzt zusätzlich den Anlass
     const withExtras = (href: string) => {
-      const url = new URL(href, location.href);
+      const url = new URL(localizedHref(href, localeFromPath(location.pathname)), location.href);
       const ids = chosen().map((b) => b.value);
       if (ids.length) url.searchParams.set('extras', ids.join(',')); else url.searchParams.delete('extras');
       if (ids.includes('indoor')) url.searchParams.set('anlass', 'indoor');
@@ -90,8 +95,8 @@ import { EXTRAS } from '../../content/package-details';
       sum.replaceChildren();
       if (list.length) {
         const count = document.createElement('b');
-        count.textContent = list.length === 1 ? '1 Extra' : `${list.length} Extras`;
-        sum.append(count, ` in eurer Anfrage: ${list.map((b) => b.dataset.short).join(', ')}`);
+        count.textContent = list.length === 1 ? t('extras.1Extra') : t('pricing.extrasCount', { count: list.length });
+        sum.append(count, t('pricing.extrasSummary', { list: list.map((b) => b.dataset.short).join(', ') }));
       }
       cta.href = withExtras('/#anfrage');
     };

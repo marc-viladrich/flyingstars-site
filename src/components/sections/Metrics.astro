@@ -1,4 +1,6 @@
 ---
+import { forPath } from '../../i18n/server';
+const { localHref } = forPath(Astro.url.pathname);
 import type { Section } from '../../content.config';
 import Accent from '../Accent.astro';
 import SectionHead from '../SectionHead.astro';
@@ -10,5 +12,5 @@ const H = index === 0 ? 'h1' : 'h2';
 <section class="section alt" id={id} aria-labelledby={headingId}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
   <div class="sheet">{items.map((item,i) => <div class="cell"><span class="k mono">{item.label}</span>{item.value && <span class="v">{item.value}</span>}<p>{item.text}</p></div>)}</div>
-  {cta && <div class="more"><a class="link" href={cta.href}>{cta.label} <span aria-hidden="true">→</span></a></div>}
+  {cta && <div class="more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></div>}
 </section>

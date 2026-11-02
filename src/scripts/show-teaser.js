@@ -1,3 +1,8 @@
+import { localeFromPath, localeFormat } from '../i18n/routing.mjs';
+const locale = localeFromPath(location.pathname);
+const formatLocale = localeFormat(locale);
+const { OCCASIONS } = getConfiguratorContent(locale);
+import { t as message } from '../i18n/ui.mjs';
 // Startseiten-Teaser des Show-Konfigurators als Showreel (Marc, 31.10.2026): ein vorprogrammierter Ablauf „wie so ein
 // Quick-Showreel“ durch die „Greatest Hits“ von SPARK über HORIZON bis ODYSSEY, mit lebendigen Wolken dazwischen und
 // einem reduzierten, vor-animierten Wireframe des Konfigurators, das synchron zur Bühne Paket, Regler und Preis wechselt.
@@ -24,7 +29,7 @@
 // Dieselbe Engine und dieselben Motive wie der Konfigurator; das Tempo kommt nur aus der Show-Uhr, darum ohne Einrasten
 // und ohne Finten. Geladen wird dieses Modul erst nahe am Viewport (ConfiguratorTeaser.astro); außerhalb des Viewports,
 // bei globaler Pause und bei reduzierter Bewegung zeichnet die Engine nicht weiter.
-import { OCCASIONS } from "../content/show-configurator.js";
+import { getConfiguratorContent } from "../content/show-configurator.js";
 import { SHOW_PACKAGES, DRONES_MIN, DRONES_MAX, configuratorPrice, packageForDrones } from "../content/show-packages.ts";
 import { createField } from "./show-field.js";
 import { buildSequence } from "./show-scenes.js";
@@ -45,7 +50,7 @@ const ZOOM = 0.82;
  * Bilder einer Geschichte (Index, negativ vom Ende). note: Schrift unten auf der Bühne ([fett, Rest]).
  * still: das Motiv, das bei reduzierter Bewegung in Ruhe steht (Index im Ablauf).
  */
-const LOGO_NOTE = ["Platz für euer Logo", ""];
+const LOGO_NOTE = [message('showTeaser.spaceForYourLogo'), ""];
 // Rakete: aus der Geschichte nur die Zündung (sie beginnt auf der Rampe), dann direkt die Landung (ohne Orbit, Marc Runde 10)
 const ROCKET = [
   { occasion: "launch", motif: "rakete", drones: [450], beats: [1] }, // die Zündung beginnt auf der Rampe
@@ -55,22 +60,22 @@ const ROCKET = [
 const HEART = { occasion: "hochzeit", motif: "herz", drones: [100, 200, 300], beats: { ODYSSEY: [1] } }; // in 3D: der Pfeil trifft
 const QR = { occasion: "launch", motif: "qr", drones: [300] };
 export const REELS = {
-  start: { still: 5, label: "das FlyingStars-Logo, das mit mehr Drohnen schärfer wird, ein Herz in 2D, als Tunnel und in 3D, ein QR-Code, eine Rakete, die auf dem Mond landet, und eine große 3D-Maske", items: [
+  start: { still: 5, label: message('configuratorteaser.theFlyingstarsLogoBecomingSharperWithMoreDronesAHeart'), items: [
     { occasion: "launch", kind: "logo", drones: [100, 300, 450, 600], note: LOGO_NOTE },
     HEART,
     QR,
     ...ROCKET,
     { occasion: "kultur", motif: "teufel", drones: [600] },
   ] },
-  marke: { still: 5, label: "ein Logo, das mit mehr Drohnen schärfer wird, Glühbirne, Spirale, ein QR-Code und eine Rakete, die auf dem Mond landet", items: [
+  marke: { still: 5, label: message('configuratorteaser.aLogoBecomingSharperWithMoreDronesALightBulb'), items: [
     { occasion: "launch", kind: "logo", drones: [100, 300, 450, 600], note: LOGO_NOTE },
     { occasion: "launch", motif: "idee", drones: [100] },
     { occasion: "launch", motif: "spirale", drones: [150] },
     QR,
     ...ROCKET,
   ] },
-  hochzeit: { still: 4, label: "Initialen im Herz, ein Herz in 2D, als Tunnel und in 3D, Sektgläser, Ringe und ein Antrag", items: [
-    { occasion: "hochzeit", kind: "text", value: "Anna & Ben", style: "initials", drones: [100, 200, 300], beats: [0], note: ["Eure Initialen", " am Himmel"] },
+  hochzeit: { still: 4, label: message('configuratorteaser.initialsInsideAHeartAHeartIn2dAsA'), items: [
+    { occasion: "hochzeit", kind: "text", value: "Anna & Ben", style: "initials", drones: [100, 200, 300], beats: [0], note: [message('showTeaser.yourInitials'), message('showTeaser.inTheSky')] },
     HEART,
     { occasion: "hochzeit", motif: "glaeser", drones: [200] },
     { occasion: "hochzeit", motif: "ring", drones: [250] },
@@ -109,7 +114,7 @@ const gradAt = (u) => { const t = Math.max(0, Math.min(1, u)) * 2, i = Math.min(
 /** Ab dieser Drohnenzahl sieht das Logo aus, wie es soll; was darüber hinausgeht, schreibt den Schriftzug darunter. */
 export const LOGO_FULL = 300;
 async function logoBeat(n) {
-  if (n <= LOGO_FULL) return { pts: logoPoints(n), hold: 2.2, run: true, frame: "mark", caption: `Das FlyingStars-Logo aus ${n} Drohnen` };
+  if (n <= LOGO_FULL) return { pts: logoPoints(n), hold: 2.2, run: true, frame: "mark", caption: message('showTeaser.theFlyingstarsLogoMadeOfValueDrones', { v0: n }) };
   // Logo oben (verkleinert), darunter FLYINGSTΛRS in der Druckschrift des Textplaners im FlyingStars-Verlauf
   // die Schrift trägt die zusätzlichen Drohnen: bei 450 klein unter dem Logo, bei 600 deutlich größer (Runde 10)
   const big = n >= 600, mark = logoPoints(LOGO_FULL).map(([x, y, z, ...c]) => [x * 0.6, y * 0.6 + 0.42, z, ...c]);
@@ -117,7 +122,7 @@ async function logoBeat(n) {
   const text = await lettering("FlyingStars", "print", n - LOGO_FULL, big ? 1.7 : 0.8);
   const ys = text.map((p) => p[1]), top = Math.max(...ys), x0 = Math.min(...text.map((p) => p[0])), x1 = Math.max(...text.map((p) => p[0]));
   const word = text.map(([x, y]) => [x, y - top - (big ? 0.34 : 0.4), 0, ...gradAt((x - x0) / (x1 - x0 || 1))]);
-  return { pts: [...mark, ...word], hold: 2.6, run: true, frame: "brand", caption: `Das FlyingStars-Logo mit Schriftzug aus ${n} Drohnen` };
+  return { pts: [...mark, ...word], hold: 2.6, run: true, frame: "brand", caption: message('showTeaser.theFlyingstarsLogoWithLetteringMadeOfValueDrones', { v0: n }) };
 }
 
 /** Baut die Szene eines Ablaufs: je Eintrag und Drohnenzahl die gewählten Bilder, in der Paketfarbe, als eigenes Motiv.
@@ -132,7 +137,7 @@ export async function buildReel(reel = REEL) {
       let pick;
       if (r.kind === "logo") pick = [await logoBeat(n)];
       else {
-        const version = r.kind === "text" ? { build: `text${pkg}`, caption: "Eure Initialen", value: r.value, style: r.style, occasion: r.occasion } : r.build ? { build: r.build, caption: r.label } : motif?.tiers[pkg];
+        const version = r.kind === "text" ? { build: `text${pkg}`, caption: message('showTeaser.yourInitials'), value: r.value, style: r.style, occasion: r.occasion } : r.build ? { build: r.build, caption: r.label } : motif?.tiers[pkg];
         if (!version) throw new Error(`Showreel: ${r.occasion}/${r.motif} hat keine ${pkg}-Fassung`);
         const seq = await buildSequence([{ id: r.motif ?? r.kind, label: r.label ?? motif?.label ?? "Text", tiers: { [pkg]: { ...version, minDrones: 0 } } }], pkg, n, SHOW_PACKAGES[pkg].color, r.occasion);
         const all = seq.beats.filter((b) => !b.interlude);

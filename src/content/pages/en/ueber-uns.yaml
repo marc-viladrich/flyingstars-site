@@ -1,0 +1,267 @@
+title: About us
+description: "FlyingStars from the Ruhr region: team, history and milestones. 178 shows since 2022, own design team and fleet, office at Zollverein."
+image: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
+sections:
+  - type: hero
+    kicker: About us
+    headline: A team from the Ruhr region bringing the *night sky* to life.
+    text: Ronja, Florian and Erwin run FlyingStars together with a small team from the Ruhr region. Our office is at Triple Z on the Zollverein site in Essen. You are welcome to visit us there.
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
+      alt: A globe made of drones above the Rhine at Extraschicht in Duisburg
+      width: 2544
+      height: 1493
+    cta:
+      label: Request a show
+      href: /kontakt/
+    secondary:
+      label: Our milestones
+      href: "#meilensteine"
+  - type: team
+    id: team
+    kicker: Team
+    headline: The people behind the shows.
+    text: You reach us as a team, and on show night we're out on the field ourselves.
+    members:
+      - name: Ronja Donsbach
+        role: Managing director
+        bio: Handles most enquiries and coordinates design and music with partners. In English too.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/08/Ronja_Teamfoto.jpg
+          alt: Ronja Donsbach holding a drone
+          width: 800
+          height: 1000
+      - name: Florian Becker
+        role: Managing director
+        bio: Administration, staff and clients in Germany. Writes our blog.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/08/Florian_Teamfoto.jpg
+          alt: Florian Becker holding a drone
+          width: 800
+          height: 1000
+      - name: Erwin Wilms
+        role: Managing director
+        bio: Applications, authorities and aviation law. Makes sure your show is cleared to fly. In English too.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/08/Erwin_Teamfoto.jpg
+          alt: Erwin Wilms holding a drone
+          width: 800
+          height: 1000
+      - name: Patrick
+        role: Head of Technology
+        bio: Fleet, availability, purchasing and the technical setup of every show.
+      - name: Alejandro
+        role: Head of Design
+        bio: Designs our shows and their choreographies.
+      - name: Chopper
+        role: Office dog
+        bio: New to the team.
+    note: Around ten part-time crew members help us set up, secure the site and pack away.
+    cta:
+      label: Get to know us
+      href: /kontakt/
+  - type: textMedia
+    kicker: Our story
+    headline: How FlyingStars began.
+    body: |
+      FlyingStars started as a project during the pandemic. There were already many large drone shows in Asia, but not yet in Europe. We wanted to find out why and began experimenting. We registered the business on 1 December 2021.
+
+      We flew our first show on 13 August 2022, at a private birthday party with 50 drones. Seven more followed that year.
+
+      Our registered office and postal address are in Gelsenkirchen.
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2024/07/D_Umwelthilfe_cover_img.png
+      alt: A circle of colourful drones above Berlin, spectators filming the show on their phones
+      width: 1920
+      height: 987
+    mediaSide: right
+  - type: timeline
+    id: meilensteine
+    kicker: Milestones
+    headline: From 50 to *600* drones.
+    text: From the first birthday in 2022 to a musical in Maastricht.
+    items:
+      - when: "2021"
+        title: Founded
+        text: On 1 December, we register FlyingStars as a business.
+      - when: "2022"
+        title: The first show
+        text: On 13 August, 50 drones fly for a private birthday.
+      - when: "2022"
+        title: PUMA at Borussia-Park
+        text: On 11 November, our sixth show. 100 drones before the Gladbach–Dortmund derby, with the enquiry arriving around 14 days beforehand.
+      - when: "2023"
+        title: Germany's first generic operating authorisation
+        text: In July, the German Federal Aviation Office grants us the authorisation.
+      - when: "2023"
+        title: L’Oréal × Prada Paradoxe
+        text: On 11 October, 350 drones at the Rhine Tower in Düsseldorf.
+      - when: "2023"
+        title: "#Böllerciao with Deutsche Umwelthilfe"
+        text: On 27 November, 150 drones at Berlin's Cantianstadion, for the press, politicians and the public.
+      - when: "2023"
+        title: Moving into Triple Z
+        text: In December, we move into our office at the business centre on Zeche Zollverein.
+      - when: "2024"
+        title: 50 years of VW Golf
+        text: On 22 May at Scalaria on Lake Wolfgangsee. Our largest show for a long time.
+      - when: "2025"
+        title: The first indoor show
+        text: On 28 March for Siemens at Hannover Messe.
+      - when: "2025"
+        title: Kein Bock auf Nazis
+        text: On 8 August. Since then, we've regularly flown shows for democracy, diversity and solidarity.
+      - when: "2026"
+        title: Bokkenrijders in Maastricht
+        text: In June, 20 shows with 600 drones each in a musical.
+      - when: "2026"
+        title: E.ON in Hamburg
+        text: In September, a double show with 500 drones above the Elbe at the Landungsbrücken.
+      - when: "2026"
+        title: Indoor at Triple Z
+        text: An indoor show in September at the business centre where our office is based.
+  - type: landingBento
+    id: zusammenarbeit
+    kicker: From one team
+    headline: Your idea becomes *choreography*.
+    lead:
+      icon: users
+      title: Developed with you.
+      text: We develop the storyline, motifs and music with you for your occasion.
+    items:
+      - icon: pencil-ruler
+        title: Our own design team
+        text: Alejandro designs the motifs and choreography. Your ideas, logo or town crest become drone formations.
+      - icon: thumbs-up
+        title: Approve motifs in advance
+        text: You see the designs before the show and approve every motif.
+      - icon: music
+        title: Coordinating music and light
+        text: We edit the music to match the animation. Then we programme colours and lighting effects to the musical accents. The music edit is included in every package.
+      - icon: drone
+        title: Our own fleet
+        text: We fly our own drones. Patrick plans their deployment and looks after the equipment for your show.
+  - type: landingSite
+    id: sicherheit
+    kicker: Safety
+    headline: How we plan safety.
+    text: We coordinate safety zones, flight planning and responsibilities for every site.
+    variant: outdoor
+    diagram:
+      description: Plan view showing the outer and inner safety areas, flight area, take-off and landing area, and the audience outside. The line of drones runs across the viewing direction.
+      horizontalLabel: approx. 100 m
+      verticalLabel: approx. 100 m
+      detailLabel: approx. 60 m
+      flightLabel: Usually up to 120 m flight altitude
+      caption: Example based on the technical data sheet, not to scale. We calculate all zones and distances for your site. The 60 m dimension refers to the line of drones in this example.
+    items:
+      - title: Outer safety area
+        value: approx. 100 × 100 m
+        text: This also includes the inner areas. It stays clear of uninvolved people during the show, for around 15 minutes. Its size depends on the number of drones, motifs and flight altitude.
+        zone: safety
+      - title: Inner safety area
+        text: The operational safety area surrounds the flight area. We define its boundaries as part of flight planning.
+        zone: operative
+      - title: Flight area
+        value: up to 120 m high
+        text: This is where the drones fly the motifs. Seen from above, they form a line across the viewing direction so that your guests see the motifs from the front.
+        zone: drones
+      - title: Take-off and landing area
+        value: closed approx. 3 hours before the show
+        text: From our arrival, we set up the drone grid, antenna stands and control station on a clear, level area. The space required depends on the number of drones.
+        zone: start
+      - title: Audience area
+        text: Your guests stand outside the outer safety area and need a clear view of the show. We plan their position with you, keeping a distance from walls and trees.
+        zone: guests
+    safeguards:
+      - icon: scan-line
+        title: Digitally bounded flight area
+        text: A geofence limits the show area. If a drone leaves this area, a safety protocol starts automatically.
+      - icon: shield-check
+        title: Multiple safeguards
+        text: Automatic and manual safety systems monitor every flight. If a drone fails, it usually returns or lands in the safety area. The outdoor drones weigh around 300 g and have no cameras.
+      - icon: users-round
+        title: On-site crew
+        text: Three to four people, including pilots and technicians, set up the equipment and monitor the show.
+      - icon: wind
+        title: Monitoring the weather
+        text: Our formations remain stable up to wind force 5 and in light drizzle. Ideally, we review the weather conditions with you one or two days beforehand.
+    responsibilities:
+      provider:
+        - We check the site before quoting, map out the zones and prepare the safety concept and flight plan.
+        - We hold a generic operational authorisation from the LBA and handle further aviation applications, for example with DFS. For other EU countries, we also apply for cross-border confirmations.
+        - We obtain air traffic clearance in airport control zones. We also coordinate requirements concerning federal waterways.
+        - We provide a letter for obtaining landowner consent. For nature reserves, an initial enquiry by the local operator helps; we handle the application and flight planning.
+      customer:
+        - You provide the required areas and obtain consent from all landowners throughout the outer safety area. For public land, consent comes from the town or municipality. Flying over buildings also requires their owners’ consent.
+        - You secure the safety area during the show unless we agree otherwise. Barrier tape is usually sufficient; busy locations need one or two stewards, and shows over water need a person in a boat.
+        - You keep the level take-off area closed from our arrival and tell us about obstacles in the flight area and line of sight, including heights where possible.
+        - You nominate an available contact person for show day and coordinate the show time and sound system with us. We provide the music edit; for small groups, we can supply a large speaker.
+    planning:
+      title: Permits need lead time
+      text: Ideally, allow one to two months, or around three months for complex permits such as sites near airports. Depending on the site, express delivery may be possible within one to two weeks, with a surcharge based on the work involved. These are planning guidelines; we check the approvals required for your location.
+    note:
+      value: up to €1.3 million
+      text: Drone liability cover in every outdoor package. You do not need additional insurance for this. We fly in the specific category under European requirements. The LBA issues the operational authorisation.
+    download:
+      label: Technical data sheet · PDF
+      href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf
+  - type: sustainability
+    id: nachhaltigkeit
+    kicker: Sustainability
+    headline: No bangs. No smoke. No debris.
+    text: Sustainability is why we founded FlyingStars. It informs every decision we make.
+    facts:
+      - label: No bang
+        value: Quiet
+        text: The drones hum. Only your music is loud. TÜV Nord has assessed the noise in an acoustic report.
+      - label: No smoke
+        value: "0"
+        unit: g
+        text: No pyrotechnics, so no smoke or heavy metals above the audience.
+      - label: No debris
+        value: "0"
+        unit: kg
+        text: No casings, no debris. The same drones fly show after show.
+      - label: Green electricity
+        value: "100"
+        unit: "%"
+        text: Green electricity from naturstrom for our batteries.
+    pillars:
+      - icon: eu
+        title: Built in the EU
+        text: Our drones weigh around 300 grams and are built by Drotek SAS in France.
+      - icon: repair
+        title: Repair rather than replace
+        text: We replace batteries, motors and rotors individually, so the drone keeps flying.
+      - icon: ev
+        title: Electric travel to the show
+        text: We travel to shows in an electric Ford E-Transit.
+      - icon: campaign
+        title: "#Böllerciao"
+        text: With Deutsche Umwelthilfe above Berlin in November 2023, as an alternative to New Year's Eve fireworks.
+  - type: metrics
+    id: zahlen
+    kicker: In numbers
+    headline: In numbers.
+    text: As of 21 October 2026.
+    items:
+      - label: Shows
+        value: "178"
+        text: Since our first show in August 2022. This year, we had flown 50 by October.
+      - label: Founded
+        value: "2021"
+        text: We registered the business on 1 December 2021.
+      - label: Largest individual show
+        value: 600 drones
+        text: In the musical Bokkenrijders in Maastricht, as a teaser in 2025 and across 20 evenings in 2026.
+      - label: Drone deployments in one month
+        value: 12,000
+        text: In June 2026, 20 shows with 600 drones each.
+  - type: cta
+    headline: Get to know us.
+    text: The quickest way is to send an enquiry. If you'd rather talk first, book a video call on our contact page.
+    button:
+      label: Request a show
+      href: /kontakt/
+translationSourceHash: 5f9d35ea7d3526750e194e1dc3732b8da2f618c1d55a350f42cc27f56f4c3c9b

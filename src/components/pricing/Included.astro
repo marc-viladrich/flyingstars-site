@@ -4,7 +4,9 @@
 // Inhalte aus INCLUDED in content/package-details.ts.
 import Icon from '../Icon.astro';
 import SectionHead from '../SectionHead.astro';
-import { INCLUDED } from '../../content/package-details';
+import { forPath } from '../../i18n/server';
+import { getPackageDetails } from '../../content/package-details';
+const { INCLUDED } = getPackageDetails(forPath(Astro.url.pathname).locale);
 interface Props { id?: string; kicker?: string; headline: string; text?: string }
 const { id = 'inklusive', kicker, headline, text } = Astro.props;
 ---

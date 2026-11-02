@@ -1,4 +1,6 @@
 ---
+import { forPath } from '../../i18n/server';
+const { t, localHref } = forPath(Astro.url.pathname);
 // Seitenkopf der Anlass-Landingpages (Marc, 31.10.2026: „in der Hero Section … so ein kleines Showreel, gerne in einer
 // kleineren Variante, so ähnlich wie wir jetzt ein Hero-Bild haben“). Links Kicker, Headline, Satz, Aktionen und bis zu
 // vier Eckdaten; rechts ein Bildrahmen mit stummem Loop. Startet erst, wenn der Rahmen im Bild ist: ab 701 px von selbst,
@@ -10,7 +12,7 @@ import Icon from '../Icon.astro';
 import { optimizedImage } from '../../lib/media';
 import { videos, videoPath } from '../../lib/videos';
 type Props = Extract<Section, { type: 'landingHero' }> & { index: number };
-const { kicker, headline, text, cta, secondary, video, videoLabel, poster, facts } = Astro.props;
+const { kicker, headline, text, cta, secondary, video, videoLabel = t('common.showreel'), poster, facts } = Astro.props;
 const still = await optimizedImage(poster.src, 960);
 const src = videoPath(videos[video]);
 ---
@@ -19,7 +21,7 @@ const src = videoPath(videos[video]);
     {kicker && <span class="kicker mono">{kicker}</span>}
     <h1 id="hero-h"><Accent text={headline} /></h1>
     <p class="lead">{text}</p>
-    <div class="actions"><a class="btn primary" href={cta.href}>{cta.label}</a>{secondary && <a class="btn" href={secondary.href}>{secondary.label}</a>}</div>
+    <div class="actions"><a class="btn primary" href={localHref(cta.href)}>{cta.label}</a>{secondary && <a class="btn" href={localHref(secondary.href)}>{secondary.label}</a>}</div>
     {facts.length > 0 && <dl class="lh-facts">{facts.map((f) => <div><dt class="mono">{f.label}</dt><dd>{f.value}</dd></div>)}</dl>}
   </div>
   <figure class="lh-media" data-lh-reel>
@@ -29,12 +31,13 @@ const src = videoPath(videos[video]);
     <span class="lh-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
     <button class="lh-toggle mono" type="button" data-lh-toggle aria-pressed="false" hidden>
       <Icon name="play" size={16} class="g i-play" /><Icon name="pause" size={16} class="g i-pause" />
-      <span data-lh-label>Video abspielen</span>
+      <span data-lh-label>{t('landinghero.playVideo')}</span>
     </button>
   </figure>
 </section>
 
 <script>
+  import { t } from '../../i18n/ui.mjs';
   document.querySelectorAll<HTMLElement>('[data-lh-reel]').forEach((host) => {
     const v = host.querySelector('video')!;
     const btn = host.querySelector<HTMLButtonElement>('[data-lh-toggle]')!;
@@ -49,7 +52,7 @@ const src = videoPath(videos[video]);
     const want = () => visible && !paused() && (choice ?? auto());
     const show = (on: boolean) => {
       btn.setAttribute('aria-pressed', String(on));
-      label.textContent = on ? 'Video anhalten' : 'Video abspielen';
+      label.textContent = on ? t('landinghero.pauseVideo') : t('landinghero.playVideo');
       host.classList.toggle('is-on', on);
     };
     const sync = () => {

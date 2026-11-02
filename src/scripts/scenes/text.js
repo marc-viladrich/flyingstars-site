@@ -1,3 +1,4 @@
+import { t as message } from '../../i18n/ui.mjs';
 // The visitor's own text as the finale of the show (round 11, Marc: "Ich kann meinen eigenen Text da reinschreiben und
 // er erscheint dort direkt" – the wow effect of the client's Vercel prototype, now not a static lettering).
 // Three styles: Druckschrift (FlyingStars' own text planner), Schreibschrift (single-stroke script), Initialen
@@ -102,17 +103,17 @@ export async function textScene(n, caption, version, pkg) {
   const write = writeTime(label), rank = lightRank(text), rank2 = lightRank(second);
   const end = other === "initials" ? frame(occasion, r, 0.95) : ringPts(r, WIDTH + 0.35);
   return { beats: [
-    act([part("text", paint(text, WARM)), part("ring", paint(ring.map(([x, y, z]) => [x * 0.98, y, z]), ringColour))], { caption: "Licht schreibt euren Text", hold: 1.6 + write, cloud: true, live: (b, j, tt, o) => {
+    act([part("text", paint(text, WARM)), part("ring", paint(ring.map(([x, y, z]) => [x * 0.98, y, z]), ringColour))], { caption: message('showConfigurator.lightWritesYourText'), hold: 1.6 + write, cloud: true, live: (b, j, tt, o) => {
       if (j < t) o[3] = reveal(rank[j], tt, write, { delay: 0.2 });
       else { yaw(o, tt * 0.35); o[3] = tt < write ? reveal(0, tt, 1, { delay: write - 0.6 }) : sparkle(j, tt, 0.85, 1.35); }
     } }),
-    act([part("text", paint(text, WARM)), part("ring", paint(ring, ringColour))], { caption: "die Buchstaben schwingen in 3D", hold: 5, live: (b, j, tt, o) => {
+    act([part("text", paint(text, WARM)), part("ring", paint(ring, ringColour))], { caption: message('text.theLettersSwayIn3d'), hold: 5, live: (b, j, tt, o) => {
       const k = smooth(tt / 1.5);
       if (j < t) { o[2] += k * 0.16 * Math.sin(b[0] * 2.6 - tt * 1.8); o[1] += k * 0.035 * Math.sin(b[0] * 2.6 - tt * 1.8 + 1.2); o[3] = wander(rank[j], tt, 5.5, 0.3); }
       else { yaw(o, tt * 0.35 + 0.35 * (1.6 + write)); pitch(o, 0.18 * k); o[3] = sparkle(j, tt, 0.85, 1.35); } // der Ring dreht dort weiter, wo er im ersten Bild stand
     } }),
     // im Text-Durchlauf (drei Schriften nacheinander) entfällt der Wechsel in die andere Schrift: der Durchlauf zeigt sie ohnehin
-    act([part("text", paint(second, WARM)), part("ring", paint(end, other === "initials" ? (occasion === "hochzeit" ? PINK : GOLD) : ringColour))], { caption: other === "initials" ? "…und werden zu euren Initialen" : "…und schreiben sich neu", hold: HOLD + 1, tour: false, live: (b, j, tt, o) => {
+    act([part("text", paint(second, WARM)), part("ring", paint(end, other === "initials" ? (occasion === "hochzeit" ? PINK : GOLD) : ringColour))], { caption: other === "initials" ? message('text.andBecomeYourInitials') : message('text.andWriteThemselvesAnew'), hold: HOLD + 1, tour: false, live: (b, j, tt, o) => {
       if (j < t) o[3] = wander(rank2[j], tt, 5.5, 0.3);
       else if (other === "initials") o[3] = sparkle(j, tt, 0.85, 1.35);
       else { yaw(o, tt * 0.3); o[3] = sparkle(j, tt, 0.85, 1.35); }

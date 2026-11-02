@@ -1,0 +1,520 @@
+title: "Boek een droneshow: ruim 150 shows sinds 2022"
+description: "Droneshows voor bedrijven, steden en grote momenten: ruim 150 shows sinds 2022, eigen vloot,
+  vergunning inbegrepen. Vraag een show aan."
+image: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
+sections:
+  - type: showreelHero
+    eyebrow: Droneshows sinds 2022 · DE · AT · CH · Benelux
+    headline: Wij geven jullie stukje hemel vorm.
+    text: Droneshows voor bedrijven, steden, festivals en stellen. We ontwerpen de beelden, regelen de vergunning
+      en vliegen met onze eigen vloot.
+    words:
+      - Nieuw.
+      - Uniek.
+      - Anders.
+      - Spectaculair.
+    cta:
+      label: Vraag een show aan
+      href: "#anfrage"
+    secondary:
+      label: Pakketten en prijzen
+      href: /drohnenshow-preise/
+    poster:
+      src: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
+      alt: Droneformatie boven de skyline van Düsseldorf met de Rheinturm
+      width: 1600
+      height: 900
+    video: https://flyingstars.art/wp-content/uploads/2026/05/Flyingstars-Showreel.mp4
+    stats:
+      - label: Shows
+        value: "178"
+      - label: Basis
+        value: 51.51° N · 7.10° E
+  - type: logoBar
+    id: kundinnen
+    headline: Klanten van FlyingStars
+    logos:
+      - name: E.ON
+        file: /brand/logos/kunde-eon-weiss.svg
+      - name: NFL
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png
+          alt: NFL
+          width: 300
+          height: 409
+      - name: REWE
+        file: /brand/logos/kunde-rewe-weiss.svg
+      - name: Spotify
+        file: /brand/logos/kunde-spotify-weiss.svg
+      - name: L’Oréal
+        file: /brand/logos/kunde-loreal-weiss.svg
+      - name: Bosch
+        file: /brand/logos/kunde-bosch-weiss.svg
+      - name: Amazon
+        file: /brand/logos/kunde-amazon-weiss.svg
+      - name: McKinsey
+        file: /brand/logos/kunde-mckinsey-weiss.svg
+      - name: PUMA
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/Puma_Logo_weiss.png
+          alt: PUMA
+          width: 300
+          height: 161
+      - name: Prada
+        file: /brand/logos/kunde-prada-weiss.svg
+      - name: Volkswagen
+        file: /brand/logos/kunde-volkswagen-weiss.svg
+      - name: Red Bull
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/10/RED-BULL_white.png
+          alt: Red Bull
+          width: 400
+          height: 200
+      - name: Bulgari
+        file: /brand/logos/kunde-bulgari-weiss.svg
+      - name: Ford
+        file: /brand/logos/kunde-ford-weiss.svg
+      - name: Siemens
+        file: /brand/logos/kunde-siemens-weiss.svg
+      - name: Lamborghini
+        file: /brand/logos/kunde-lamborghini-weiss.svg
+      - name: Deutsche Umwelthilfe
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/Deutsche_Umwelthilfe_weiss.png
+          alt: Deutsche Umwelthilfe
+          width: 300
+          height: 37
+      - name: Bentley
+        detail: true
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/Bentley_logo_weiss.png
+          alt: Bentley
+          width: 400
+          height: 200
+      - name: ABUS
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/ABUS_Logo_weiss.png
+          alt: ABUS
+          width: 400
+          height: 200
+  - type: occasions
+    id: anlaesse
+    kicker: Gelegenheden
+    headline: Voor elke gelegenheid de juiste show.
+    cards:
+      - category: Bedrijven
+        title: Jullie merk op het grootste doek ter wereld
+        text: Logo's, producten en slogans aan de hemel, voor lanceringen, jubilea en opnamen.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
+          alt: Volkswagen-logo van drones boven de Wolfgangsee, gasten op een terras
+          width: 1920
+          height: 1281
+        facts:
+          - Jullie keuren elk beeld vooraf goed
+          - Voor gasten, medewerkers en de camera
+        cta:
+          label: Droneshows voor merken
+          href: /drohnenshow-werbung/
+      - category: Bureaus
+        title: Wij vliegen, jullie stralen
+        text: We vliegen voor jullie klanten en blijven op verzoek op de achtergrond.
+        image:
+          src: https://flyingstars-relaunch.vercel.app/media/projekte/ford.jpg
+          alt: Ford-tekst van drones boven het fabrieksterrein in Keulen
+          width: 1600
+          height: 900
+        facts:
+          - NDA en projectleiding op verzoek
+          - Visualisatie met het logo van jullie klant
+        cta:
+          label: Voor bureaus
+          href: /drohnenshow-werbung/#agenturen
+      - category: Steden & gemeenten
+        title: Een hoogtepunt waarover de hele stad spreekt
+        text: Stadsfeesten en jubilea zonder pyrotechniek, ook in de droogste zomer.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
+          alt: Een wereldbol van drones boven de Rijn bij de Extraschicht in Duisburg
+          width: 2544
+          height: 1493
+        facts:
+          - Stadswapens, jubileumgetallen, jullie verhaal
+          - 10% korting bij boeking in het voorgaande jaar
+        cta:
+          label: Vraag een show voor jullie stad aan
+          href: /kontakt/?anlass=stadt
+      - category: Bruiloft & privé
+        title: Jullie moment, geschreven aan de hemel
+        text: Initialen, harten en jullie datum boven het feest, ook voor een huwelijksaanzoek.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg
+          alt: Twee bloemen van drones aan de avondhemel boven een bruiloft
+          width: 1518
+          height: 854
+        facts:
+          - Ook als verrassing of aanzoek
+          - SPARK vanaf € 7.900 exclusief btw
+        cta:
+          label: Droneshow voor jullie bruiloft
+          href: /drohnenshow-hochzeit/
+      - category: Festivals & concerten
+        title: Een hoogtepunt dat jullie verhaal verder vertelt
+        text: De show sluit aan op podium, muziek en licht, ook op veel avonden achter elkaar.
+        image:
+          src: https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijders.jpg
+          alt: Bokkenrijders-tekst van drones boven het openluchttheater in Maastricht, publiek op de voorgrond
+          width: 1600
+          height: 900
+        facts:
+          - Elke avond dezelfde show, ook 20 keer achter elkaar
+          - 10% korting bij boeking in het voorgaande jaar
+        cta:
+          label: 600 drones in een musical
+          href: /musikalischer-teaser-bokkenrijders/
+      - category: Oud en nieuw & kerst
+        title: Oud en nieuw zonder knalvuurwerk
+        text: Een countdown van licht zonder knallen of rook, voor steden, gemeenten en organisatoren.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/07/D_Umwelthilfe_cover_img.png
+          alt: "Een kleurrijke vuurwerkbloem van drones boven Berlijn bij de campagne #Böllerciao van Deutsche
+            Umwelthilfe"
+          width: 1920
+          height: 987
+        facts:
+          - Met Deutsche Umwelthilfe boven Berlijn gevlogen
+          - Vraag vroeg aan, de data zijn snel vol
+        cta:
+          label: Vraag een oud-en-nieuwshow aan
+          href: /kontakt/?anlass=stadt
+        season:
+          - 11
+          - 12
+      - category: Indoor
+        title: Drones in de zaal
+        text: Voor beurzen, podia en hallen vanaf drie meter plafondhoogte.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2025/04/drohnenshow-indoor-2.jpg
+          alt: Lichtgevende drones in formatie voor het podium in een volle zaal
+          width: 1200
+          height: 764
+        facts:
+          - 20 tot 50 drones, 5 tot 8 minuten
+          - Apart berekend
+        cta:
+          label: Indoor-droneshows
+          href: /drohnenshow-indoor/
+  - type: packages
+    id: pakete
+    kicker: Pakketten
+    compact: true
+    headline: Transparante prijzen. Geen verrassingen.
+    text: De prijs hangt af van hoe uitgebreid de beelden aan de hemel zijn en hoeveel drones er vliegen.
+    items:
+      - name: SPARK
+        label: Klassiek in 2D
+      - name: HORIZON
+        label: 3D in beweging
+        badge: Bestseller
+        highlight: true
+      - name: ODYSSEY
+        label: 3D-show met verhaal
+    note: Alle prijzen zijn exclusief btw en reiskosten
+    cta:
+      label: Alle diensten en prijzen
+      href: /drohnenshow-preise/
+  - type: configuratorTeaser
+    id: konfigurator
+    kicker: Showconfigurator
+    headline: Stel jullie show *zelf* samen.
+    text: Van een hart tot een maanlanding, met 100 tot 600 drones. In de configurator zien jullie wat bij de
+      gelegenheid past.
+  - type: projectGrid
+    id: projekte
+    kicker: Onze shows
+    headline: Een paar avonden die we niet vergeten.
+    text: 30 tot 50 shows per jaar, met 50 tot 600 drones. Een kleine selectie.
+    limit: 4
+    cta:
+      label: Al onze shows
+      href: /referenzen/
+  - type: tempo
+    id: ablauf
+    kicker: Het verloop in cijfers
+    headline: Van aanvraag tot showavond.
+    text: Eén tot twee maanden voorbereiding is ideaal. Als het haast heeft, kan het ook binnen één tot twee weken.
+    marks:
+      - value: 48 h
+        label: tot ons antwoord
+        text: Meestal sneller, per e-mail, telefoon of videogesprek.
+      - value: 1–2 maanden
+        label: ideale voorbereidingstijd
+        text: Genoeg tijd voor jullie goedkeuring van het ontwerp en voor de vergunning.
+      - value: 3 h
+        label: Opbouw op de showdag
+        text: Ons team bouwt op, vliegt de show en pakt weer in.
+    shortcut:
+      value: Express binnen 1–2 weken
+      label: bij te boeken
+      text: PUMA stuurde de aanvraag 14 dagen voor de derby. De show vloog op tijd voor de aftrap.
+    facts:
+      - value: 178 shows
+        label: Ervaring
+        text: Sinds augustus 2022, stand oktober 2026
+      - value: 600 drones
+        label: Grootste show
+        text: Musical Bokkenrijders in Maastricht, op 20 avonden
+      - value: Ontwerp · Vergunning · Vloot
+        label: Vanuit één team
+        text: Eigen ontwerpteam, eigen vergunning, eigen drones
+  - type: logoBar
+    id: presse
+    kicker: Pers & kwaliteit
+    pressItems:
+      - name: ZDF
+        logo: /brand/logos/presse-zdf.svg
+        cleared: true
+        knock: true
+        note: 1, 2 oder 3
+      - name: WDR
+        logo: /brand/logos/presse-wdr.svg
+        cleared: true
+        note: Televisie en interviews
+      - name: ntv
+        logo: /brand/logos/presse-ntv.svg
+        cleared: true
+        knock: true
+        note: Startup News
+        href: https://www.n-tv.de/mediathek/magazine/startup_news/Drohnen-verwandeln-Nachthimmel-in-Showbuehne-article25835436.html
+      - name: tagesschau
+        logo: /brand/logos/presse-tagesschau.svg
+        cleared: true
+        note: "#Böllerciao in Berlijn"
+      - name: Tagesspiegel
+        logo: /brand/logos/presse-tagesspiegel.svg
+        cleared: true
+        note: "#Böllerciao in Berlijn"
+      - name: WAZ
+        logo: /brand/logos/presse-waz.svg
+        cleared: true
+        note: Ruhrorter Hafenfest
+        href: https://www.waz.de/lokales/duisburg/article409722481/ruhrorter-hafenfest-die-geheimnisse-hinter-dem-neuen-highlight.html
+    quality:
+      - title: Exploitatievergunning van het Duitse Luftfahrt-Bundesamt
+        text: sinds juli 2023
+        icon: permit
+        logo: /brand/logos/quali-lba-weiss.png
+        cleared: true
+      - title: In de hele EU volgens EASA-regels
+        text: Shows in de hele EU, ook in Oostenrijk en Nederland
+        icon: permit
+        logo: /brand/logos/quali-easa-weiss.png
+        cleared: true
+      - title: 100% groene stroom van naturstrom
+        text: voor de hele vloot
+        icon: leaf
+        logo: /brand/logos/quali-naturstrom.svg
+        cleared: true
+      - title: Akoestisch onderzoek
+        text: van TÜV Nord
+        icon: sound
+        secondary: true
+      - title: Aansprakelijkheidsdekking tot € 1,3 miljoen
+        text: in elk pakket
+        icon: shield
+        secondary: true
+  - type: sustainability
+    id: nachhaltigkeit
+    kicker: Duurzaamheid
+    headline: Geen knallen. Geen rook. Geen afval.
+    text: Wat een droneshow op locatie achterlaat, is de herinnering.
+    facts:
+      - label: Geen knal
+        value: Stil
+        text: De drones zoemen, alleen jullie muziek is luid. TÜV Nord heeft het geluid in een akoestisch rapport
+          onderzocht.
+      - label: Geen rook
+        value: "0"
+        unit: g
+        text: Geen pyrotechniek, dus geen rook of zware metalen boven het publiek.
+      - label: Geen afval
+        value: "0"
+        unit: kg
+        text: Geen hulzen, geen resten. Dezelfde drones vliegen show na show.
+      - label: Groene stroom
+        value: "100"
+        unit: "%"
+        text: Groene stroom van naturstrom voor onze accu's.
+    pillars:
+      - icon: eu
+        title: Gebouwd in de EU
+        text: Onze drones worden in de EU gemaakt.
+      - icon: repair
+        title: Repareren in plaats van vervangen
+        text: Accu's, motoren en rotoren vervangen we afzonderlijk, zodat de drone blijft vliegen.
+      - icon: ev
+        title: Elektrisch naar de show
+        text: We rijden naar shows met een elektrische Ford E-Transit.
+      - icon: campaign
+        title: "#Böllerciao"
+        text: Met Deutsche Umwelthilfe boven Berlijn in november 2023, als alternatief voor oud-en-nieuwvuurwerk.
+  - type: comparison
+    id: vergleich
+    kicker: Eerlijke vergelijking
+    headline: Drone, vuurwerk of laser?
+    text: Elke techniek heeft haar sterke kanten. Zo verschillen de drie bij de vragen die we het vaakst krijgen.
+    rowHeader: Criterium
+    columns:
+      - Droneshow
+      - Vuurwerk
+      - Lasershow
+    rows:
+      - label: Logo's en teksten aan de hemel
+        values:
+          - Ja, ook in 3D
+          - Nee
+          - Deels, alleen op oppervlakken of nevel
+        cells:
+          - label: Ja
+            text: ook in 3D
+            tone: y
+          - label: Nee
+            text: ""
+            tone: n
+          - label: Deels
+            text: alleen op oppervlakken of waas
+            tone: p
+      - label: Geluidsniveau
+        values:
+          - Stil, met muziek naar keuze
+          - Zeer luid
+          - Stil
+        cells:
+          - label: Stil
+            text: Muziek naar keuze
+            tone: y
+          - label: Zeer luid
+            text: ""
+            tone: n
+          - label: Stil
+            text: ""
+            tone: y
+      - label: Rook, fijnstof en afval ter plaatse
+        values:
+          - Geen
+          - Veel
+          - Nevel nodig voor zichtbare stralen
+        cells:
+          - label: Geen
+            text: ""
+            tone: y
+          - label: Veel
+            text: ""
+            tone: n
+          - label: Nevel
+            text: nodig voor zichtbare stralen
+            tone: p
+      - label: Brandgevaar
+        values:
+          - Geen
+          - Ja, verboden bij droogte
+          - Geen
+        cells:
+          - label: Geen
+            text: ""
+            tone: y
+          - label: Ja
+            text: Verboden bij droogte
+            tone: n
+          - label: Geen
+            text: ""
+            tone: y
+      - label: Wind en weer
+        values:
+          - Tot windkracht 5, geen zware regen
+          - Afgelast bij storm
+          - Robuust, ook binnen
+        cells:
+          - label: Grens
+            text: tot windkracht 5, geen zware regen
+            tone: p
+          - label: Grens
+            text: afgelast bij storm
+            tone: p
+          - label: Robuust
+            text: ook binnen
+            tone: y
+      - label: Zichtbaar vanaf een afstand
+        values:
+          - Kilometers ver
+          - Kilometers ver
+          - Beperkt, werkt het best van dichtbij
+        cells:
+          - label: Kilometers ver
+            text: ""
+            tone: y
+          - label: Kilometers ver
+            text: ""
+            tone: y
+          - label: Beperkt
+            text: werkt het best van dichtbij
+            tone: p
+    note: Concept · inhoudelijke controle volgt
+  - type: team
+    id: team
+    kicker: Team
+    headline: De mensen achter de hemel.
+    text: Ronja, Florian en Erwin leiden FlyingStars samen. Jullie bereiken ons als team en op de showavond staan
+      we zelf op het veld.
+    members:
+      - name: Ronja Donsbach
+        role: Directeur
+        bio: Beantwoordt de meeste aanvragen, ook in het Engels, en stemt ontwerp en muziek af.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/08/Ronja_Teamfoto.jpg
+          alt: Ronja Donsbach met een drone in haar hand
+          width: 800
+          height: 1000
+      - name: Florian Becker
+        role: Directeur
+        bio: Regelt administratie, personeel en klanten in Duitsland. Schrijft de blog.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/08/Florian_Teamfoto.jpg
+          alt: Florian Becker met een drone in zijn hand
+          width: 800
+          height: 1000
+      - name: Erwin Wilms
+        role: Directeur
+        bio: Aanvragen, instanties en luchtvaartrecht. Zorgt dat jullie show mag vliegen.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/08/Erwin_Teamfoto.jpg
+          alt: Erwin Wilms met een drone in zijn hand
+          width: 800
+          height: 1000
+      - name: Patrick
+        role: Hoofd Techniek
+        bio: Dronevloot, beschikbaarheid, inkoop en de technische opbouw van elke show.
+      - name: Alejandro
+        role: Hoofd ontwerp
+        bio: Ontwerpt alle shows en choreografieën, beeld voor beeld, op het ritme van de muziek.
+    note: Daarnaast een crew van piloten en technici die elke show ter plaatse opbouwt en vliegt.
+    cta:
+      label: Meer over ons
+      href: /ueber-uns/
+  - type: faq
+    id: faq
+    kicker: FAQ
+    headline: Wat jullie vóór de aanvraag moeten weten.
+    cta:
+      label: Alle vragen
+      href: /faq/
+    openFirst: true
+    limit: 4
+    tags:
+      - startseite
+  - type: contactForm
+    kicker: Aanvraag
+    headline: Vertel ons over jullie datum.
+    text: Datum, locatie en gelegenheid zijn genoeg voor een eerste inschatting. Laat open wat jullie nog niet
+      weten.
+translationSourceHash: 121df88dc2455f2b5c083d94868238568f91dcfd7a25416e77fb358a22e5f86e
