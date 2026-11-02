@@ -114,3 +114,11 @@ test('actual browser graphs link under editor- and adapter-served URLs and start
 
 test('locale synchronization and edits share one undo operation in the real draft',async()=>{const {synchronize}=await import('./design/locale-review.mjs');const draft=new NativeDraft();draft.reset([{id:'page/test',data:{sections:[{type:'hero',headline:'Hallo'},{type:'cta',headline:'Welt'}]}},{id:'page/en/test',data:{sections:[{type:'hero',headline:'Hello'},{type:'cta',headline:'World'}]}}]);const before=draft.get('page/test').data.sections;draft.group(()=>{const next=[before[1],before[0]];draft.set('page/test',['sections'],next);draft.set('page/en/test',['sections'],synchronize(before,next,draft.get('page/en/test').data.sections));});assert.equal(draft.get('page/en/test').data.sections[0].headline,'World');assert.equal(draft.history.length,1);draft.undo();assert.equal(draft.size,0);});
  test('the active registration uses complete language files and no overlay transport',async()=>{assert.equal(extensions.first('translationStorage'),undefined);await extensions.runAsync('beforeSave',{draft:{local:new Map()}});assert.deepEqual(extensions.first('languages'),{source:'de',locales:{}});});
+
+test('Async review and media resolution await completion and propagate cancellation without changing the draft',async()=>{
+ const calls=[],draft={text:'Unsaved'};
+ const registry=createBrowserExtensionRegistry([extension('fixture/a',{beforeSave:async({draft})=>{await Promise.resolve();calls.push(draft.text);},selectedMedia:async()=>{await Promise.resolve();return {src:'/assets/confirmed.png'};}})]);
+ await registry.runAsync('beforeSave',{draft});assert.deepEqual(calls,['Unsaved']);assert.deepEqual(await registry.firstAsync('selectedMedia'),{src:'/assets/confirmed.png'});
+ const cancelled=createBrowserExtensionRegistry([extension('fixture/cancel',{beforeSave:async()=>{throw Error('Review cancelled');}})]);
+ await assert.rejects(cancelled.runAsync('beforeSave',{draft}),/Review cancelled/);assert.equal(draft.text,'Unsaved');
+});

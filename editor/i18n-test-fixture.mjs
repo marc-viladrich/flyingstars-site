@@ -29,7 +29,11 @@ export async function optimizedLogo(src:string,height:number){return optimizedIm
 optimizedImage.afeBindings=([source]:unknown[])=>({src:source});optimizedLogo.afeBindings=optimizedImage.afeBindings;
 `);
   if(forCI){
-    const packageRoot=fileURLToPath(new URL('./',import.meta.resolve('astro-frontend-editor/package.json')));
+    const installedRoot=fileURLToPath(new URL('./',import.meta.resolve('astro-frontend-editor/package.json'))),packageRoot=path.join(root,'private-product');
+    // Unique temporary package path avoids npm reusing a cached unreleased 0.2.4 folder package.
+    // Only the declared package files are copied, outside the fixture's Git repository.
+    const product=JSON.parse(await fs.readFile(path.join(installedRoot,'package.json'),'utf8'));await fs.mkdir(packageRoot);
+    for(const file of ['package.json',...product.files])await fs.cp(path.join(installedRoot,file),path.join(packageRoot,file),{recursive:true});
     const manifest=JSON.parse(await fs.readFile(path.join(source,'package.json'),'utf8'));manifest.dependencies['astro-frontend-editor']='file:'+packageRoot;
     await fs.writeFile(path.join(source,'package.json'),JSON.stringify(manifest,null,2)+'\n');
     const {execFile}=await import('node:child_process'),{promisify}=await import('node:util');
