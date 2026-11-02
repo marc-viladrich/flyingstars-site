@@ -1,0 +1,243 @@
+title: About us
+description: "FlyingStars from the Ruhr region: team, history and milestones. 178 shows since 2022, own design
+  team and fleet, office at Zollverein."
+image: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
+sections:
+  - type: hero
+    kicker: About us
+    headline: A team from the Ruhr region bringing the *night sky* to life.
+    text: Ronja, Florian and Erwin run FlyingStars together, with a small team from the Ruhr region. We design
+      drone shows, obtain the permits and fly them with our own fleet. Our office is at Triple Z on the Zeche
+      Zollverein site in Essen.
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
+      alt: A globe made of drones above the Rhine at Extraschicht in Duisburg
+      width: 2544
+      height: 1493
+    cta:
+      label: Request a show
+      href: /kontakt/
+    secondary:
+      label: Our milestones
+      href: "#meilensteine"
+  - type: team
+    id: team
+    kicker: Team
+    headline: The people behind the shows.
+    text: You reach us as a team, and on show night we're out on the field ourselves.
+    members:
+      - name: Ronja Donsbach
+        role: Managing director
+        bio: Handles most enquiries and coordinates design and music with partners. In English too.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/08/Ronja_Teamfoto.jpg
+          alt: Ronja Donsbach holding a drone
+          width: 800
+          height: 1000
+      - name: Florian Becker
+        role: Managing director
+        bio: Administration, staff and clients in Germany. Writes our blog.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/08/Florian_Teamfoto.jpg
+          alt: Florian Becker holding a drone
+          width: 800
+          height: 1000
+      - name: Erwin Wilms
+        role: Managing director
+        bio: Applications, authorities and aviation law. Makes sure your show is cleared to fly. In English too.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/08/Erwin_Teamfoto.jpg
+          alt: Erwin Wilms holding a drone
+          width: 800
+          height: 1000
+      - name: Patrick
+        role: Head of Technology
+        bio: Fleet, availability, purchasing and the technical setup of every show.
+      - name: Alejandro
+        role: Head of Design
+        bio: Designs our shows and their choreographies.
+      - name: Chopper
+        role: Office dog
+        bio: New to the team.
+    note: Around ten part-time crew members help us set up, secure the site and pack away.
+    cta:
+      label: Get to know us
+      href: /kontakt/
+  - type: textMedia
+    kicker: Our story
+    headline: How FlyingStars began.
+    body: >
+      FlyingStars began as a lockdown project. There were already many large drone shows in Asia, but not yet
+      in Europe. We wanted to know why and started experimenting. We registered the business on 1 December
+      2021.
+
+
+      We flew our first show on 13 August 2022, for a private birthday with 50 drones. Seven more followed
+      that year. Since then, we've flown 178 shows for brands, cities, festivals and couples.
+
+
+      Our registered office is in Gelsenkirchen. We work at Triple Z, the business centre on the Zeche
+      Zollverein site in Essen. You're welcome to visit us there too.
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2024/07/D_Umwelthilfe_cover_img.png
+      alt: A circle of colourful drones above Berlin, spectators filming the show on their phones
+      width: 1920
+      height: 987
+    mediaSide: right
+  - type: timeline
+    id: meilensteine
+    kicker: Milestones
+    headline: From 50 to *600* drones.
+    text: From the first birthday in 2022 to a musical in Maastricht.
+    items:
+      - when: "2021"
+        title: Founded
+        text: On 1 December, we register FlyingStars as a business.
+      - when: "2022"
+        title: The first show
+        text: On 13 August, 50 drones fly for a private birthday.
+      - when: "2022"
+        title: PUMA at Borussia-Park
+        text: On 11 November, our sixth show. 100 drones before the Gladbach–Dortmund derby, with the enquiry arriving
+          around 14 days beforehand.
+      - when: "2023"
+        title: Germany's first generic operating authorisation
+        text: In July, Germany's Federal Aviation Office grants our authorisation. Since then, we can approve most
+          flight sites ourselves.
+      - when: "2023"
+        title: L’Oréal × Prada Paradoxe
+        text: On 11 October, 350 drones at the Rhine Tower in Düsseldorf.
+      - when: "2023"
+        title: "#Böllerciao with Deutsche Umwelthilfe"
+        text: On 27 November, 150 drones at Berlin's Cantianstadion, for the press, politicians and the public.
+      - when: "2023"
+        title: Moving into Triple Z
+        text: In December, we move into our office at the business centre on Zeche Zollverein.
+      - when: "2024"
+        title: 50 years of VW Golf
+        text: On 22 May at Scalaria on Lake Wolfgangsee. Our largest show for a long time.
+      - when: "2025"
+        title: The first indoor show
+        text: On 28 March for Siemens at Hannover Messe.
+      - when: "2025"
+        title: Kein Bock auf Nazis
+        text: On 8 August. Since then, we've regularly flown shows for democracy, diversity and solidarity.
+      - when: "2026"
+        title: Bokkenrijders in Maastricht
+        text: In June, 20 musical shows with 600 drones each. 12,000 drones in one month.
+      - when: "2026"
+        title: E.ON in Hamburg
+        text: In September, a double show with 500 drones above the Elbe at the Landungsbrücken.
+      - when: "2026"
+        title: Indoor at Triple Z
+        text: An indoor show in September at the business centre where our office is based.
+  - type: textMedia
+    kicker: From one team
+    headline: Design, permits and fleet from one team.
+    body: >
+      We handle the main parts of a show ourselves. That keeps communication short, even when time is tight.
+
+
+      - **Design:** Our design team creates every show for its occasion. You see drafts and approve every
+      motif.
+
+      - **Permits:** Our operating authorisation from Germany's Federal Aviation Office was the country's
+      first generic authorisation. It lets us approve most flight sites ourselves. We submit additional
+      applications ourselves too, for example to German air traffic control.
+
+      - **Fleet:** We fly our own drones. Patrick keeps them ready and plans which drones fly where and when.
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
+      alt: Volkswagen logo made of drones above Lake Wolfgangsee, guests filming from a terrace
+      width: 1920
+      height: 1281
+    mediaSide: left
+  - type: landingSite
+    id: sicherheit
+    kicker: Safety
+    headline: How we plan safety.
+    text: Lightweight drones, a secured area and systems that back each other up.
+    variant: outdoor
+    items:
+      - title: Safety area
+        value: approx. 100 × 100 m
+        text: Nobody enters during the show. A geofence limits the flight area.
+        zone: safety
+      - title: Flight altitude
+        value: up to 120 m
+        text: Our usual flight altitude. The drones form a line across the audience's viewing direction.
+        zone: drones
+      - title: Multiple safeguards
+        text: Automatic and manual systems monitor every flight. If a drone fails, it usually returns or lands inside
+          the safety area.
+        zone: start
+      - title: Audience outside
+        text: Your guests stand outside the safety area, facing the show.
+        zone: guests
+      - title: Weight
+        value: approx. 300 g
+        text: The weight of one show drone. They have no cameras; our show drones do not film.
+        zone: drones
+    note:
+      value: up to €1.3 million
+      text: Liability insurance, included in every package.
+  - type: sustainability
+    id: nachhaltigkeit
+    kicker: Sustainability
+    headline: No bangs. No smoke. No debris.
+    text: Sustainability is why we founded FlyingStars. It informs every decision we make.
+    facts:
+      - label: No bang
+        value: Quiet
+        text: The drones hum. Only your music is loud. TÜV Nord has assessed the noise in an acoustic report.
+      - label: No smoke
+        value: "0"
+        unit: g
+        text: No pyrotechnics, so no smoke or heavy metals above the audience.
+      - label: No debris
+        value: "0"
+        unit: kg
+        text: No casings, no debris. The same drones fly show after show.
+      - label: Green electricity
+        value: "100"
+        unit: "%"
+        text: Green electricity from naturstrom for our batteries.
+    pillars:
+      - icon: eu
+        title: Built in the EU
+        text: Our drones weigh around 300 grams and are built by Drotek SAS in France.
+      - icon: repair
+        title: Repair rather than replace
+        text: We replace batteries, motors and rotors individually, so the drone keeps flying.
+      - icon: ev
+        title: Electric travel to the show
+        text: We travel to shows in an electric Ford E-Transit.
+      - icon: campaign
+        title: "#Böllerciao"
+        text: With Deutsche Umwelthilfe above Berlin in November 2023, as an alternative to New Year's Eve fireworks.
+  - type: metrics
+    id: zahlen
+    kicker: In numbers
+    headline: In numbers.
+    text: As of 21 October 2026.
+    items:
+      - label: Shows
+        value: "178"
+        text: Since our first show in August 2022. This year, we had flown 50 by October.
+      - label: Founded
+        value: "2021"
+        text: We registered the business on 1 December 2021.
+      - label: Largest individual show
+        value: 600 drones
+        text: In the musical Bokkenrijders in Maastricht, as a teaser in 2025 and across 20 evenings in 2026.
+      - label: One month
+        value: 12,000 drones
+        text: In June 2026, 20 shows with 600 drones each.
+  - type: cta
+    headline: Get to know us.
+    text: The quickest way is to send an enquiry. If you'd rather talk first, book a video call on our contact
+      page.
+    button:
+      label: Request a show
+      href: /kontakt/
+translationSourceHash: 2ce5ce5c5dd92f5361c563217c8eadfec334fbb28b2fd6f978c50a628bd058de

@@ -1,0 +1,215 @@
+title: Droneshows als reclame
+navLabel: Merken & reclame
+description: "Droneshows voor merken en bureaus: jullie logo aan de nachthemel, elk beeld vooraf goedgekeurd.
+  Voor lanceringen, jubilea en campagnes."
+image: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
+sections:
+  - type: landingHero
+    kicker: Merken & reclame
+    headline: Jullie merk aan de *nachthemel*.
+    text: We zetten jullie logo en boodschap om in drones, afgestemd op muziek en campagne. Elk beeld keuren
+      jullie vóór de show goed.
+    cta:
+      label: Vraag een merkshow aan
+      href: "#anfrage"
+    secondary:
+      label: Voor bureaus
+      href: "#agenturen"
+    video: ford
+    videoLabel: Ford Explorer · Keulen
+    poster:
+      src: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
+      alt: Volkswagen-logo van drones boven de Wolfgangsee, gasten filmen vanaf een terras
+      width: 1920
+      height: 1281
+    facts:
+      - value: "178"
+        label: shows sinds 2022
+      - value: 48 h
+        label: tot ons antwoord
+      - value: 1–2 weken
+        label: met express
+  - type: logoBar
+    id: marken
+    headline: Merken waarvoor we vlogen
+    logos:
+      - name: Ford
+        file: /brand/logos/kunde-ford-weiss.svg
+      - name: Volkswagen
+        file: /brand/logos/kunde-volkswagen-weiss.svg
+      - name: PUMA
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/Puma_Logo_weiss.png
+          alt: PUMA
+          width: 300
+          height: 161
+      - name: Prada
+        file: /brand/logos/kunde-prada-weiss.svg
+      - name: L’Oréal
+        file: /brand/logos/kunde-loreal-weiss.svg
+      - name: Spotify
+        file: /brand/logos/kunde-spotify-weiss.svg
+      - name: Siemens
+        file: /brand/logos/kunde-siemens-weiss.svg
+      - name: E.ON
+        file: /brand/logos/kunde-eon-weiss.svg
+      - name: REWE
+        file: /brand/logos/kunde-rewe-weiss.svg
+      - name: Bosch
+        file: /brand/logos/kunde-bosch-weiss.svg
+      - name: Amazon
+        file: /brand/logos/kunde-amazon-weiss.svg
+      - name: McKinsey
+        file: /brand/logos/kunde-mckinsey-weiss.svg
+      - name: Bulgari
+        file: /brand/logos/kunde-bulgari-weiss.svg
+      - name: NFL
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png
+          alt: NFL
+          width: 300
+          height: 409
+  - type: landingRefs
+    id: referenzen
+    kicker: Onze shows
+    headline: Een selectie van shows met video en verloop.
+    projects:
+      - nfl-berlin-game
+      - puma-bundesliga
+      - spotify-luciano-apache
+      - loreal-prada-rheinturm
+    cta:
+      label: Al onze shows
+      href: /referenzen/
+  - type: landingBento
+    id: wirkung
+    kicker: Effect
+    headline: Wat een merkshow kan bereiken.
+    lead:
+      label: Ford · Volkswagen · PUMA
+      title: Een logo dat mensen *herkennen*.
+      text: We vertalen jullie logo naar lichtpunten, drone voor drone.
+      image:
+        src: https://flyingstars.art/wp-content/uploads/2024/12/FORD_comp.png
+        alt: Ford-tekst van blauwe drones boven het fabrieksterrein in Keulen
+        width: 1929
+        height: 1133
+    items:
+      - icon: camera
+        title: Beelden voor jullie kanalen
+        text: Gasten filmen en delen de show. Ruwe beelden van onze cameradrone kosten € 900 en zijn bij ODYSSEY
+          inbegrepen.
+      - icon: newspaper
+        title: Een aanleiding voor publiciteit
+        text: Onder andere ZDF, WDR, ntv en WAZ berichtten over ons en onze shows.
+  - type: landingFlow
+    id: freigabe
+    kicker: Verloop
+    headline: Van logo tot complete show.
+    text: Er vliegt niets zonder jullie goedkeuring.
+    steps:
+      - title: Aanvraag en offerte
+        text: Vertel ons datum, locatie en doel. We reageren binnen 48 uur en sturen na een kort gesprek een offerte.
+        duration: Antwoord binnen 48 uur
+      - title: Ontwerp
+        text: Stuur ons jullie logo. Eerst zien jullie een 2D-ontwerp van de beelden.
+      - title: Animatie
+        text: Daarna volgt een ruwe animatie met muziek. Vanaf HORIZON krijgen jullie een videopreview van de show.
+      - title: Goedkeuring
+        text: Pas nadat jullie elk beeld hebben goedgekeurd, programmeren we kleuren en lichteffecten op de muziek.
+        gate: true
+      - title: Showdag
+        text: Ons team is circa drie uur vooraf ter plaatse, zet de startzone af en vliegt de show.
+        duration: ca. 3 uur opbouw
+  - type: packages
+    id: pakete
+    kicker: Pakketten
+    headline: Hoe uitgebreid mag jullie show zijn?
+    text: Voor veel bedrijfsfeesten is een 2D-logo voldoende. Voor lanceringen met 3D-objecten en een verhaal
+      passen HORIZON of ODYSSEY.
+    compact: true
+    items:
+      - name: SPARK
+        label: Klassiek in 2D
+      - name: HORIZON
+        label: 3D in beweging
+        badge: Bestseller
+        highlight: true
+      - name: ODYSSEY
+        label: 3D-show met verhaal
+    note: Alle prijzen zijn exclusief btw en reiskosten
+    cta:
+      label: Alle diensten en prijzen
+      href: /drohnenshow-preise/
+  - type: landingTeaser
+    id: logo
+    kicker: Showconfigurator
+    headline: Hoe ziet jullie *logo* er aan de hemel uit?
+    text: Upload jullie logo in de configurator en bekijk het als droneformatie, met beelden van SPARK tot ODYSSEY.
+    href: /drohnenshow-preise/?anlass=launch#konfigurator
+    cta: Probeer jullie logo in de configurator
+    loop: marke
+  - type: landingBento
+    id: agenturen
+    kicker: Bureaus
+    headline: Voor bureaus.
+    lead:
+      icon: sparkles
+      title: Wij vliegen, *jullie stralen*.
+      text: Jullie blijven vooraan bij jullie klanten. Jullie bepalen wat jullie zelf organiseren en wat wij
+        overnemen.
+    items:
+      - icon: hat-glasses
+        title: White label
+        text: Op verzoek vliegen we anoniem. Jullie naam staat voorop, wij leveren de show.
+      - icon: file-lock
+        title: Vertrouwelijk
+        text: We ondertekenen een geheimhoudingsovereenkomst.
+      - icon: thumbs-up
+        title: Goedkeuring
+        text: Voor de afstemming met jullie klanten visualiseren we de beelden met hun logo.
+      - icon: clipboard-list
+        title: Projectleiding
+        text: Op verzoek verzorgen we de projectleiding, met vergunning, instanties en techniek ter plaatse.
+    faces: true
+    contact: Vertel ons over het project van jullie klant. We reageren binnen 48 uur.
+    cta:
+      label: Aanvragen als bureau
+      href: /kontakt/?anlass=agentur
+  - type: landingSpotlight
+    id: orte
+    kicker: Locaties
+    headline: Ook boven stadions, binnensteden en water.
+    text: Met onze generieke exploitatievergunning kunnen we de meeste vlieglocaties zelf vrijgeven. Voor
+      gecontroleerd luchtruim, locaties bij luchthavens en federale waterwegen regelen we de benodigde
+      bijzondere vergunningen. Dat vraagt meer voorbereidingstijd.
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
+      alt: Droneformatie boven de skyline van Düsseldorf met de Rheinturm
+      width: 1920
+      height: 985
+    tags:
+      - Borussia-Park · Mönchengladbach
+      - Olympiastadion · Berlijn
+      - Rheinturm · Düsseldorf
+      - Binnenhaven · Duisburg
+    facts:
+      - value: 4–8 weken
+        label: bevestiging per EU-land
+        vorab: null
+      - value: ca. 3 maanden
+        label: in Italië
+  - type: faq
+    id: fragen
+    kicker: FAQ
+    headline: Vragen van merken en bureaus.
+    cta:
+      label: Alle vragen
+      href: /faq/
+    tags:
+      - werbung
+  - type: contactForm
+    kicker: Aanvraag
+    headline: Vertel ons over jullie campagne.
+    text: Datum, locatie en doel zijn genoeg. Jullie logo mogen jullie later per e-mail sturen.
+translationSourceHash: b72fcf831b6e03c526f711d072f8cdcea26bf18a3fde39ea84dc558494a92fae

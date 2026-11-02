@@ -1,0 +1,90 @@
+title: Our work
+description: "FlyingStars shows for Bokkenrijders, NFL, Ford and PUMA, plus annual show counts: 178 shows
+  since 2022, with 50 to 600 drones."
+sections:
+  - type: references
+    id: referenzen
+    kicker: Our work
+    headline: Shows we've already flown.
+    text: 178 shows since 2022, with 50 to 600 drones. Here's a selection, with four stories told in detail.
+    filters:
+      - occasion
+      - year
+      - drones
+  - type: metrics
+    id: pro-jahr
+    kicker: In numbers
+    headline: Shows per *year*.
+    items:
+      - label: "2022"
+        value: "8"
+        text: "The first on 13 August: 50 drones for a private birthday. PUMA at Borussia-Park in November."
+      - label: "2023"
+        value: "42"
+        text: "Including L’Oréal × Prada at Düsseldorf's Rhine Tower and #Böllerciao with Deutsche Umwelthilfe in
+          Berlin."
+      - label: "2024"
+        value: "45"
+        text: Including 50 years of VW Golf at Lake Wolfgangsee and the new Ford Explorer in Cologne.
+      - label: "2025"
+        value: "33"
+        text: Including the first indoor show for Siemens at Hannover Messe and the NFL Berlin Game.
+      - label: "2026"
+        value: "50"
+        text: Up to 21 October. Including 20 Bokkenrijders evenings with 600 drones each and E.ON in Hamburg.
+      - label: Total
+        value: "178"
+        text: For brands, cities, festivals and couples, in Germany and Europe.
+  - type: logoBar
+    id: marken
+    headline: FlyingStars clients
+    logos:
+      - name: E.ON
+        file: /brand/logos/kunde-eon-weiss.svg
+      - name: REWE
+        file: /brand/logos/kunde-rewe-weiss.svg
+      - name: Spotify
+        file: /brand/logos/kunde-spotify-weiss.svg
+      - name: L’Oréal
+        file: /brand/logos/kunde-loreal-weiss.svg
+      - name: Bosch
+        file: /brand/logos/kunde-bosch-weiss.svg
+      - name: Amazon
+        file: /brand/logos/kunde-amazon-weiss.svg
+      - name: NFL
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png
+          alt: NFL
+          width: 300
+          height: 409
+      - name: McKinsey
+        file: /brand/logos/kunde-mckinsey-weiss.svg
+      - name: PUMA
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/Puma_Logo_weiss.png
+          alt: PUMA
+          width: 300
+          height: 161
+      - name: Prada
+        file: /brand/logos/kunde-prada-weiss.svg
+      - name: Volkswagen
+        file: /brand/logos/kunde-volkswagen-weiss.svg
+      - name: Bulgari
+        file: /brand/logos/kunde-bulgari-weiss.svg
+      - name: Ford
+        file: /brand/logos/kunde-ford-weiss.svg
+      - name: Siemens
+        file: /brand/logos/kunde-siemens-weiss.svg
+      - name: Deutsche Umwelthilfe
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/Deutsche_Umwelthilfe_weiss.png
+          alt: Deutsche Umwelthilfe
+          width: 300
+          height: 37
+  - type: cta
+    headline: Don't see your occasion?
+    text: Send us your date, location and idea. We'll tell you what's possible.
+    button:
+      label: Request a show
+      href: /kontakt/
+translationSourceHash: 3139e33b03be473d2cf5aa22bda167e35a093f474c28df8a58aeefb796b86717

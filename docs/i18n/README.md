@@ -1,0 +1,177 @@
+# EN und NL für die Designsprache-Probe
+
+Stand: 2. November 2026. Ausgangspunkt `feat/designsprache-poc`, Commit `7bd1fbf`. Umsetzung auf `codex/i18n-en-nl`, eigener Worktree `/tmp/fs-i18n/worktree`. Nicht gepusht.
+
+## Gefundene Quellen
+
+Die vollständigen strukturierten Editor-Übersetzungen liegen im separaten Editor-Repository unter:
+
+`/Users/marcviladrich/Freelance/AI & Automation/Claude Code Prep/freelance/clients/flyingstars/15-editor-ui-2026-10-13/relaunch/source/src/content/translations/`
+
+Dort gibt es **88 JSON-Dateien**, je 44 für EN und NL. Sie enthalten Feldpfade, Quelltext-Hashes, Übersetzungen und gespeicherte `reviewed`-Flags. Abgedeckt sind die damaligen Seiten, Fallstudien, FAQ, Team, Pakete, Extras, Screens und Site-UI. Der letzte Übersetzungsformat-Commit ist `aeff790` vom 16.10.2026. Der jüngste untersuchte Quell-Snapshot ist `e36a04b27685ca360337201d200b57861f85719e` vom 24.10.2026.
+
+Vergleich der Kandidaten:
+
+| Quelle | Befund |
+| --- | --- |
+| Hauptcheckout `flyingstars/site`, Branch `main`, `494ba61` | Alte DE-Seiten, keine EN-/NL-Inhaltsdateien und kein nutzbares i18n-Routing. Der lokale Design-Branch enthält diese Editor-Dateien ebenfalls nicht. |
+| Remote-Branches `origin/main`, `origin/content/draft`, `origin/fix/stale-translation` und weitere Editor-Refs | Derselbe Übersetzungsbaum wie `relaunch/source`, Git-Tree `b8f069805df6b89b32f49bea4d6b69c3fc6e8d9f`. Kein abweichender neuerer Übersetzungsstand. |
+| Editor `relaunch/source` | 88 strukturierte Übersetzungsdateien, Format 2. Gewählte Quelle. |
+| Editor `afe-pr11` und `afe-pipeline` | Dieselben 88 Dateien, bytegleich mit `source`. Kein neuerer Übersetzungsstand. |
+| Editor `runtime/*/source/src/content/translations` | 34 Quell-Snapshots verglichen. Ältere Stände mit 1, 9 oder 76 Dateien sowie ältere 88-Dateien-Stände. Die zwölf jüngsten Format-2-Snapshots haben denselben vollständigen 88-Dateien-Stand wie `source`. |
+| `runtime-public/*/site/en` und `/nl` | Veröffentlichte Build-Ergebnisse, keine verwendete Textquelle. HTML wurde nicht als Übersetzungsquelle gescrapt. |
+| `08-entwicklungspiloten-2026-10/astro-pilot` | EN-/NL-Builds vorhanden, aber keine strukturierten Übersetzungsdateien in `src/content/translations`. |
+
+Der gemeinsame SHA-256 über die nach Pfad sortierten Inhalte der 88 aktuellen Dateien lautet `9a97b4071cd06c5cb4ba84e32fa587ec737ec41700535a681c053f1c32aa2752`. Es wurden keine `.env`-Dateien, Credentials oder privaten Editor-Zustände gelesen.
+
+Die Editor-Linie verwendet DE am Root, EN unter `/en/`, NL unter `/nl/` und gemeinsame Slugs. Auch die Sprachlinks der [bestehenden Live-Seite](https://flyingstars.art/) zeigen auf `/en/` und `/nl/`. Dieses Schema bleibt erhalten. Deutsche Slugs sind damit auch in englischen und niederländischen URLs bewusst unverändert.
+
+## Übernahme und neue Übersetzungen
+
+Übernommen wurden nur passende Inhalte. Der Abgleich nutzt den tatsächlichen deutschen Quelltext und den gespeicherten Feld-Hash, sodass ein alter Array-Index keinen inzwischen anderen Abschnitt übersetzt. Preisangaben, Zeiträume und Fakten stammen immer aus der aktuellen deutschen Fassung.
+
+Der alte Editor-Stand enthält erhebliche Sprachfehler, auch bei gesetzten `reviewed`-Flags. Beispiele: „Essen“ wurde zu „Food“, „Termine“ zu „Dadels“, „Kein Müll“ zu „Geen onzin“; „1–2 Wochen“ wurde im Niederländischen zu „12 weken“. Auch Kampagnennamen wie STRONGER und TOGETHER waren teilweise übersetzt oder beschädigt. Diese Stellen wurden korrigiert. Die Flags werden im Herkunftsnachweis dokumentiert, aber nicht als unabhängige Qualitätsfreigabe behandelt.
+
+Neue Texte folgen der aktuellen Designsprache. NL verwendet bei der Ansprache „jullie“. SPARK, HORIZON, ODYSSEY, Marken, Personennamen, Adressen und tatsächliche Schriftzüge der Shows bleiben erhalten. Die drei neu importierten Blogartikel wurden vollständig übersetzt und sprachlich gestrafft.
+
+Für Inhaltsfelder, jeweils EN und NL zusammen:
+
+- **382 unverändert aus dem Editor übernommen** (`editor-carried`).
+- **433 vorhandene Übersetzungen korrigiert oder angepasst** (`editor-revised`).
+- **1.341 neu maschinell übersetzt** (`machine-new`).
+
+Die gemeinsame UI-Datei enthält **647 Texte**, einschließlich Formular-, Preis- und Motivbeschreibungen. Über beide Sprachen sind das 137 unveränderte Übernahmen, 323 Korrekturen vorhandener Übersetzungen und 834 neue Übersetzungen.
+
+Jede Zuordnung ist einzeln nachvollziehbar:
+
+- [content-provenance.json](content-provenance.json): Quelldatei, Feldpfad, Sprache, Herkunft, gegebenenfalls Editor-Datei und gespeichertes Review-Flag. Der übersetzte Wert steht im entsprechenden EN-/NL-Inhaltseintrag.
+- [ui-provenance.json](ui-provenance.json): Wörterbuchschlüssel, Sprache, Herkunft und betroffene Komponenten.
+- [ui.json](../../src/i18n/ui.json): Die tatsächlichen deutschen, englischen und niederländischen UI-Texte.
+
+## Abdeckung pro Inhaltseintrag
+
+Die Zahlen zählen Textfelder, keine Wörter. Je Sprachspalte bedeutet **übernommen / korrigiert / neu**. „Weiterhin Deutsch“ zählt sichtbare deutsche Prosa. Unveränderte Marken, Eigennamen, Adressen, technische Werte und nicht gerenderte Quellkommentare sind davon ausgenommen. Auch FAQ und Referenzkarten ohne eigene Detailseite sind übersetzt, damit sie auf den lokalisierten Seiten korrekt erscheinen.
+
+| Deutscher Quell-Eintrag | EN: übernommen / korrigiert / neu | NL: übernommen / korrigiert / neu | Weiterhin Deutsch |
+| --- | ---: | ---: | ---: |
+| `faq/ablauf.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `faq/absturz.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `faq/ausland.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `faq/bezahlung.md` | 1 / 0 / 1 | 1 / 0 / 1 | 0 |
+| `faq/dauer.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `faq/drohnenzahl.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `faq/fruehbucher.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `faq/funktion.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `faq/genehmigung.md` | 0 / 1 / 1 | 0 / 1 / 1 | 0 |
+| `faq/groesser.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `faq/hochzeit-kosten.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `faq/hochzeit-motive.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `faq/hochzeit-ueberraschung.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `faq/indoor-kosten.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `faq/indoor-moeglich.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `faq/indoor-raum.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `faq/indoor-sicherheit.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `faq/kosten.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `faq/logo.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `faq/musik.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `faq/platz.md` | 1 / 0 / 1 | 1 / 0 / 1 | 0 |
+| `faq/sicherheit.md` | 1 / 0 / 1 | 1 / 0 / 1 | 0 |
+| `faq/spark-mehr.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `faq/stadt-flughafen.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `faq/startzeit.md` | 0 / 1 / 1 | 1 / 0 / 1 | 0 |
+| `faq/umwelt.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `faq/vorlauf.md` | 0 / 1 / 1 | 0 / 1 / 1 | 0 |
+| `faq/was-braucht-ihr.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `faq/was-ist-enthalten.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `faq/welches-paket.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `faq/wetter.md` | 1 / 0 / 1 | 1 / 0 / 1 | 0 |
+| `faq/winter-tag.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `pages/danke.yaml` | 0 / 0 / 4 | 0 / 0 / 4 | 0 |
+| `pages/datenschutz.yaml` | 0 / 2 / 2 | 0 / 2 / 2 | 0 |
+| `pages/drohnenshow-hochzeit.yaml` | 5 / 11 / 83 | 5 / 11 / 83 | 0 |
+| `pages/drohnenshow-indoor.yaml` | 4 / 8 / 94 | 5 / 7 / 94 | 0 |
+| `pages/drohnenshow-werbung.yaml` | 6 / 12 / 70 | 4 / 14 / 70 | 0 |
+| `pages/faq.yaml` | 2 / 2 / 10 | 0 / 4 / 10 | 0 |
+| `pages/impressum.yaml` | 0 / 2 / 2 | 0 / 2 / 2 | 0 |
+| `pages/index.yaml` | 60 / 34 / 127 | 45 / 49 / 127 | 0 |
+| `pages/kontakt.yaml` | 1 / 3 / 14 | 0 / 4 / 14 | 0 |
+| `pages/referenzen.yaml` | 2 / 3 / 14 | 2 / 3 / 14 | 0 |
+| `pages/ueber-uns.yaml` | 13 / 5 / 98 | 9 / 9 / 98 | 0 |
+| `posts/2025-01-14-wie-funktioniert-drohnenshow-drohne.md` | 0 / 0 / 4 | 0 / 0 / 4 | 0 |
+| `posts/2025-03-31-drohnen-feuerwerk-als-alternative.md` | 0 / 0 / 4 | 0 / 0 / 4 | 0 |
+| `posts/2025-06-12-wie-programmiert-man-eine-drohnenshow.md` | 0 / 0 / 4 | 0 / 0 / 4 | 0 |
+| `posts/2026-10-06-testflug-wie-eine-drohnenshow-entsteht.md` | 0 / 3 / 0 | 0 / 2 / 1 | 0 |
+| `projects/airpower24.md` | 0 / 0 / 3 | 0 / 0 / 3 | 0 |
+| `projects/boellerciao.md` | 0 / 0 / 3 | 0 / 0 / 3 | 0 |
+| `projects/eisenhuettenstadt-75.md` | 0 / 0 / 4 | 0 / 0 / 4 | 0 |
+| `projects/exploring-reinvented-der-neue-ford-explorer.md` | 23 / 32 / 6 | 18 / 37 / 6 | 0 |
+| `projects/extraschicht-duisburg.md` | 0 / 0 / 3 | 0 / 0 / 3 | 0 |
+| `projects/fruehlingsfest-essen.md` | 0 / 1 / 3 | 0 / 1 / 3 | 0 |
+| `projects/heiratsantrag-hugenpoet.md` | 0 / 0 / 4 | 0 / 0 / 4 | 0 |
+| `projects/hochzeit-recklinghausen.md` | 0 / 0 / 4 | 0 / 0 / 4 | 0 |
+| `projects/loreal-prada-rheinturm.md` | 0 / 0 / 4 | 0 / 0 / 4 | 0 |
+| `projects/movie-park-germany.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `projects/musikalischer-teaser-bokkenrijders.md` | 29 / 30 / 14 | 29 / 30 / 14 | 0 |
+| `projects/nfl-berlin-game.md` | 35 / 24 / 8 | 32 / 27 / 8 | 0 |
+| `projects/nfl-muenchen.md` | 0 / 0 / 4 | 0 / 0 / 4 | 0 |
+| `projects/puma-bundesliga.md` | 21 / 28 / 9 | 23 / 26 / 9 | 0 |
+| `projects/siemens-mobility.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `projects/sonnemondsterne.md` | 0 / 0 / 1 | 0 / 0 / 1 | 0 |
+| `projects/spotify-luciano-apache.md` | 0 / 0 / 2 | 0 / 0 / 2 | 0 |
+| `projects/vw-50-golf.md` | 0 / 0 / 4 | 0 / 0 / 4 | 0 |
+| `projects/westfalen-100.md` | 0 / 0 / 3 | 0 / 0 / 3 | 0 |
+Die Preisseite, Blog-Übersicht, 404-Seiten und gemeinsame Navigation/Formulare beziehen ihre Texte aus dem UI-Wörterbuch. Alle ihre sichtbaren Beschriftungen sind EN/NL verfügbar. Die vier ausführlichen Fallstudien behalten ihre Root-Slugs. Es gibt je Sprache 21 Inhaltsrouten inklusive 404 sowie acht alte Routen als sprachgleiche Weiterleitungen.
+
+## Architektur
+
+- `astro.config.mjs` aktiviert Astro-i18n mit DE ohne Präfix. Die bestehenden Weiterleitungen werden aus denselben Paaren für alle Sprachen abgeleitet.
+- `src/pages/[...slug].astro` erzeugt sämtliche Inhalts-, Preis-, Blog- und Fallstudienrouten aus den Sammlungen und der gemeinsamen Locale-Liste. Die bisherigen Seitenimplementierungen sind gemeinsame Templates unter `src/templates/`.
+- `src/content/pages/en|nl/*.yaml`, `projects/en|nl/*.md`, `posts/en|nl/*.md` und `faq/en|nl/*.md` verwenden dieselben Zod-Schemas wie DE. Es gibt 132 neue Einträge zu 66 deutschen Quellen.
+- `src/i18n/routing.mjs` besitzt Sprach- und URL-Identität. `localizedHref()` setzt den Sprachpräfix, lässt externe URLs, Assets, API-Pfade, Query-Werte und Anker intakt und ist idempotent.
+- `localizedCollection()` in `src/i18n/content.ts` ist der gemeinsame Zugriff für Karten, FAQ, Footer und verwandte Inhalte. Jede Abfrage bleibt in der aktuellen Sprache.
+- `forPath()` liefert `t`, `localHref` und das Zahlenformat für serverseitige Komponenten. `ui.mjs` liefert dieselben Texte für Browsermodule. Fehlende Schlüssel oder Platzhalter werden nicht still auf Deutsch ersetzt.
+- Navigation und Paket-/Konfiguratortexte werden über Locale-Factories erzeugt. Drohnenzahlen, Preise, Motiv-Builds und IDs bleiben gemeinsame Daten.
+- `Base.astro` setzt `lang`, Canonical, DE/EN/NL-Alternates und `x-default` für indexierbare Seiten. `noindex`-Seiten erhalten einen eigenen Canonical und keine indexierbaren Alternates.
+- `LanguageSwitch.astro` nutzt normale Links mit vollständigem Sprachnamen, `hreflang` und `aria-current="page"`. Er ist auf Desktop und Mobil bedienbar. Query-Parameter und aktuelle Sprungmarke werden beim Wechsel übernommen.
+- Das Formular sendet zusätzlich den validierten Locale-Wert. Alle bisherigen Feldnamen und Werte bleiben unverändert, auch `quelle=Empfehlung`, Paket-, Anlass- und Extra-IDs. Der API-Endpunkt lokalisiert Fehler und leitet ohne JavaScript zur passenden Danke-Seite weiter.
+- Konfigurator-Zusammenfassungen, Dateifehler, Motivtexte, Freischaltmeldungen, Pausenschalter, Referenzfilter und Extras sind übersetzt. Anfrage-Links bleiben in der gewählten Sprache und nehmen die Auswahl mit.
+
+### Schutz gegen fehlende und veraltete Übersetzungen
+
+Jeder EN-/NL-Eintrag enthält `translationSourceHash`, den SHA-256 seiner deutschen Quelldatei. Der Build bricht ab, wenn ein Eintrag fehlt, verwaist ist oder sich die deutsche Quelle seit der Übersetzung geändert hat. Das ist insbesondere beim Zusammenführen der parallelen Copy-Branches relevant: geänderte DE-Texte müssen in beiden Übersetzungen geprüft werden. Den Hash erst nach dieser Anpassung erneuern.
+
+`scripts/i18n.test.mjs` prüft die tatsächlichen Inhaltsdateien, Struktur- und ID-Gleichheit, Wörterbuch-Platzhalter, URL-Regeln, Konfigurator-/Extra-Identitäten sowie API-Fehler und Weiterleitungen. `scripts/check-i18n-build.mjs` kontrolliert den tatsächlich erzeugten Build, einschließlich aller Alias-Routen und Sprachalternates.
+
+## Eine neue Seite oder Section ergänzen
+
+1. Die deutsche Seite wie bisher unter `src/content/pages/<slug>.yaml` aus den gemeinsamen Section-Typen anlegen.
+2. Unter `pages/en/<slug>.yaml` und `pages/nl/<slug>.yaml` dieselbe Struktur anlegen. Sichtbare Texte, Alternativtexte und gegebenenfalls sichtbare Tags übersetzen. IDs, Filter-Tags, technische Werte und Referenzen unverändert lassen. Keine neue Route und keine sprachabhängige Komponente anlegen.
+3. In beiden Übersetzungen `translationSourceHash` der aktuellen deutschen Datei setzen. Ermittlung zum Beispiel mit `shasum -a 256 src/content/pages/<slug>.yaml`.
+4. Allgemeine Komponentenbeschriftungen mit einem stabilen Schlüssel in `src/i18n/ui.json` für alle drei Sprachen ergänzen. Serverseitig `forPath(Astro.url.pathname)`, browserseitig `t()` verwenden. Linkziele durch `localHref()` beziehungsweise `localizedHref()` führen.
+5. Neue FAQ, Projekte und Posts entsprechend in ihren Locale-Unterordnern ergänzen. Listen, Fallstudien und Blogrouten werden automatisch erzeugt. Bei einer neuen Section bleibt der übliche Weg über das gemeinsame Schema und `SectionRenderer` bestehen.
+6. Herkunft für neue oder geänderte Felder in den beiden Provenienzdateien fortschreiben und die folgenden Prüfungen ausführen.
+
+Nach einer Schemaänderung den Dev-Server stoppen und `.astro/data-store.json` löschen, dann neu starten. Astro 7 startet den Dev-Server im Hintergrund; `npx astro dev stop` beendet ihn in diesem Worktree.
+
+## Prüfungen und Belege
+
+Mit Node 22 im PATH:
+
+```sh
+export PATH=/opt/homebrew/opt/node@22/bin:$PATH
+npx astro check
+SITE_URL=https://flyingstars.art npm run build
+node scripts/check-i18n-build.mjs
+node --test 'scripts/*.test.mjs' 'src/scripts/effects/*.test.mjs'
+```
+
+Ergebnisse und Belegpfade werden im Abschlussabschnitt ergänzt. Die volle Playwright-Suite wurde nicht gestartet. Die gezielten Playwright-Skripte liegen außerhalb des Repositories in `/tmp/fs-i18n/`.
+
+## Bewusste Grenzen und offene Punkte
+
+- Die beiden internen, nicht indexierbaren Designexperimente `/poc/designsprache/` und `/poc/konfigurator-teaser/` bleiben deutsch. Dort werden keine falschen Sprachlinks angeboten. Die regulären 21 Inhaltsrouten haben jeweils DE, EN und NL. Auch ungenutzte Altkomponenten `pricing/Calculator.astro`, `pricing/PackageDetails.astro`, `src/scripts/pricing.js` sowie interne PoC-Skripte enthalten noch deutsche Texte; keine reguläre EN-/NL-Seite lädt sie.
+- Eigennamen wie „Deutsche Umwelthilfe“, „Kein Bock auf Nazis“, Anschriften, Kampagnen und externe Originalquellen bleiben in ihrer Originalsprache. Nicht auf die neue Site importierte Blog-/Quellenlinks können weiterhin auf deutsche Originalartikel führen. Interne Links auf bereits vorhandene neue Artikel wurden auf die passenden Locale-Routen gesetzt.
+- Die neuen und korrigierten Übersetzungen sind maschinelle Entwürfe und brauchen FlyingStars/Moritz' redaktionelle Freigabe. Insbesondere fachliche Aussagen aus den älteren Blogartikeln und die bestehenden Preis-/Konfigurator-Platzhalter bleiben inhaltlich zu prüfen. Es wurden keine neuen kommerziellen Leistungszusagen ergänzt.
+- Der echte E-Mail-Versand wurde nicht ausgelöst. Formularprüfungen verwenden den tatsächlichen API-Handler ohne Versandkonfiguration und prüfen die ehrliche `not-configured`-Rückmeldung. Der bestehende Prototyptext auf der Danke-Seite bleibt entsprechend erhalten.
+- `SITE_URL` muss beim späteren Deployment die endgültige Domain enthalten. Die Prüfung verwendet explizit `https://flyingstars.art`. Der Host muss die statisch erzeugten Alias-Seiten bei Bedarf zusätzlich als echte HTTP-Weiterleitungen konfigurieren.
+- Es wurden keine Accounts, Editor-Credentials oder externen Versanddienste verwendet. Kein Push, kein PR und kein Deployment.

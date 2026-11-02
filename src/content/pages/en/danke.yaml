@@ -1,0 +1,13 @@
+title: Your enquiry status
+description: Contact form update from FlyingStars. Until delivery is set up, please reach our team directly by email.
+noindex: true
+sections:
+  - type: textMedia
+    headline: Your enquiry status
+    body: >
+      Delivery is not set up in this preview. Nothing has been sent or stored.
+
+
+      Please email [team@flyingstars.art](mailto:team@flyingstars.art) directly or call [0209 883 065
+      62](tel:+4920988306562).
+translationSourceHash: e3cbe30b166b0a3956cd9689a3c6d031741b00084354ae7b1a29af90c929662f

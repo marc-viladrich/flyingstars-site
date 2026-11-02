@@ -1,0 +1,518 @@
+title: "Book drone shows: over 150 shows since 2022"
+description: "Drone shows for businesses, cities and big moments: over 150 shows since 2022, our own fleet,
+  permits included. Request your show."
+image: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
+sections:
+  - type: showreelHero
+    eyebrow: Drone shows since 2022 · DE · AT · CH · Benelux
+    headline: We design your piece of sky.
+    text: Drone shows for businesses, cities, festivals and couples. We design the motifs, obtain the permit and
+      fly with our own fleet.
+    words:
+      - New.
+      - Unique.
+      - Different.
+      - Spectacular.
+    cta:
+      label: Request a show
+      href: "#anfrage"
+    secondary:
+      label: Packages and prices
+      href: /drohnenshow-preise/
+    poster:
+      src: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
+      alt: Drone formation above the Düsseldorf skyline with the Rhine Tower
+      width: 1600
+      height: 900
+    video: https://flyingstars.art/wp-content/uploads/2026/05/Flyingstars-Showreel.mp4
+    stats:
+      - label: Shows
+        value: "178"
+      - label: Base
+        value: 51.51° N · 7.10° E
+  - type: logoBar
+    id: kundinnen
+    headline: FlyingStars clients
+    logos:
+      - name: E.ON
+        file: /brand/logos/kunde-eon-weiss.svg
+      - name: NFL
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png
+          alt: NFL
+          width: 300
+          height: 409
+      - name: REWE
+        file: /brand/logos/kunde-rewe-weiss.svg
+      - name: Spotify
+        file: /brand/logos/kunde-spotify-weiss.svg
+      - name: L’Oréal
+        file: /brand/logos/kunde-loreal-weiss.svg
+      - name: Bosch
+        file: /brand/logos/kunde-bosch-weiss.svg
+      - name: Amazon
+        file: /brand/logos/kunde-amazon-weiss.svg
+      - name: McKinsey
+        file: /brand/logos/kunde-mckinsey-weiss.svg
+      - name: PUMA
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/Puma_Logo_weiss.png
+          alt: PUMA
+          width: 300
+          height: 161
+      - name: Prada
+        file: /brand/logos/kunde-prada-weiss.svg
+      - name: Volkswagen
+        file: /brand/logos/kunde-volkswagen-weiss.svg
+      - name: Red Bull
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/10/RED-BULL_white.png
+          alt: Red Bull
+          width: 400
+          height: 200
+      - name: Bulgari
+        file: /brand/logos/kunde-bulgari-weiss.svg
+      - name: Ford
+        file: /brand/logos/kunde-ford-weiss.svg
+      - name: Siemens
+        file: /brand/logos/kunde-siemens-weiss.svg
+      - name: Lamborghini
+        file: /brand/logos/kunde-lamborghini-weiss.svg
+      - name: Deutsche Umwelthilfe
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/Deutsche_Umwelthilfe_weiss.png
+          alt: Deutsche Umwelthilfe
+          width: 300
+          height: 37
+      - name: Bentley
+        detail: true
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/Bentley_logo_weiss.png
+          alt: Bentley
+          width: 400
+          height: 200
+      - name: ABUS
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2023/04/ABUS_Logo_weiss.png
+          alt: ABUS
+          width: 400
+          height: 200
+  - type: occasions
+    id: anlaesse
+    kicker: Occasions
+    headline: The right show for every occasion.
+    cards:
+      - category: Businesses
+        title: Your brand on the world's biggest canvas
+        text: Logos, products and slogans in the sky, for launches, anniversaries and shoots.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
+          alt: Volkswagen logo made of drones above Lake Wolfgangsee, guests on a terrace
+          width: 1920
+          height: 1281
+        facts:
+          - You approve every motif in advance
+          - For guests, staff and the camera
+        cta:
+          label: Drone shows for brands
+          href: /drohnenshow-werbung/
+      - category: Agencies
+        title: We fly, you shine
+        text: We fly for your clients and can stay behind the scenes if you prefer.
+        image:
+          src: https://flyingstars-relaunch.vercel.app/media/projekte/ford.jpg
+          alt: Ford lettering made of drones above the factory site in Cologne
+          width: 1600
+          height: 900
+        facts:
+          - NDA and project management on request
+          - Visualisation with your client's logo
+        cta:
+          label: For agencies
+          href: /drohnenshow-werbung/#agenturen
+      - category: Cities & municipalities
+        title: A highlight that the whole city is talking about
+        text: City festivals and anniversaries without pyrotechnics, even in the driest summer.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
+          alt: A globe made of drones above the Rhine at Extraschicht in Duisburg
+          width: 2544
+          height: 1493
+        facts:
+          - City crests, anniversary numbers, your story
+          - 10% discount when booking the year before
+        cta:
+          label: Enquire about a show for your city
+          href: /kontakt/?anlass=stadt
+      - category: Wedding & private
+        title: Your moment, written in the sky
+        text: Initials, hearts and your date above the celebration, or as part of a proposal.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg
+          alt: Two flowers made of drones in the evening sky above a wedding celebration
+          width: 1518
+          height: 854
+        facts:
+          - For a surprise or proposal too
+          - SPARK from €7,900 excluding VAT
+        cta:
+          label: Wedding drone show
+          href: /drohnenshow-hochzeit/
+      - category: Festivals & concerts
+        title: A finale that carries your story further
+        text: The show connects with the stage, music and lighting, even across many consecutive evenings.
+        image:
+          src: https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijders.jpg
+          alt: Bokkenrijders lettering made of drones above the open-air theatre in Maastricht, audience in the
+            foreground
+          width: 1600
+          height: 900
+        facts:
+          - The same show every evening, even 20 times in a row
+          - 10% discount when booking the year before
+        cta:
+          label: 600 drones in a musical
+          href: /musikalischer-teaser-bokkenrijders/
+      - category: New Year's Eve & Christmas
+        title: New Year's Eve without firecrackers
+        text: A countdown in light, without bangs or smoke, for cities, municipalities and event organisers.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/07/D_Umwelthilfe_cover_img.png
+          alt: "A colourful drone firework above Berlin during Deutsche Umwelthilfe's #Böllerciao campaign"
+          width: 1920
+          height: 987
+        facts:
+          - Flown above Berlin with Deutsche Umwelthilfe
+          - Enquire early, dates fill up quickly
+        cta:
+          label: Enquire about a New Year's Eve show
+          href: /kontakt/?anlass=stadt
+        season:
+          - 11
+          - 12
+      - category: Indoor
+        title: Drones inside the hall
+        text: For exhibitions, stages and halls with ceiling heights from three metres.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2025/04/drohnenshow-indoor-2.jpg
+          alt: Glowing drones in formation in front of a stage in a packed hall
+          width: 1200
+          height: 764
+        facts:
+          - 20 to 50 drones, 5 to 8 minutes
+          - Individually priced
+        cta:
+          label: Indoor drone shows
+          href: /drohnenshow-indoor/
+  - type: packages
+    id: pakete
+    kicker: Packages
+    compact: true
+    headline: Transparent pricing. No surprises.
+    text: The price depends on the complexity of the pictures in the sky and how many drones fly.
+    items:
+      - name: SPARK
+        label: Classic 2D
+      - name: HORIZON
+        label: 3D in motion
+        badge: Bestseller
+        highlight: true
+      - name: ODYSSEY
+        label: 3D storytelling show
+    note: All prices exclude VAT and travel
+    cta:
+      label: All services and prices
+      href: /drohnenshow-preise/
+  - type: configuratorTeaser
+    id: konfigurator
+    kicker: Show configurator
+    headline: Create your show *yourselves*.
+    text: From hearts to a moon landing, with 100 to 600 drones. See what suits your occasion in the configurator.
+  - type: projectGrid
+    id: projekte
+    kicker: Our work
+    headline: A few nights we won't forget.
+    text: 30 to 50 shows a year, with 50 to 600 drones. A small selection.
+    limit: 4
+    cta:
+      label: All our work
+      href: /referenzen/
+  - type: tempo
+    id: ablauf
+    kicker: The process in numbers
+    headline: From enquiry to show night.
+    text: One to two months' notice is ideal. If time is short, one to two weeks can work too.
+    marks:
+      - value: 48 h
+        label: until our reply
+        text: Usually sooner, by email, phone or video call.
+      - value: 1–2 months
+        label: ideal lead time
+        text: Enough time for your design approvals and the permit.
+      - value: 3 h
+        label: Setup on show day
+        text: Our crew sets up, flies the show and packs everything away.
+    shortcut:
+      value: Express in 1–2 weeks
+      label: available as an extra
+      text: PUMA contacted us 14 days before the derby. The show flew in time for kick-off.
+    facts:
+      - value: 178 shows
+        label: Experience
+        text: Since August 2022, as of October 2026
+      - value: 600 drones
+        label: Largest show
+        text: The musical Bokkenrijders in Maastricht, over 20 evenings
+      - value: Design · Permits · Fleet
+        label: From one team
+        text: Our own design team, operating authorisation and drones
+  - type: logoBar
+    id: presse
+    kicker: Press & quality
+    pressItems:
+      - name: ZDF
+        logo: /brand/logos/presse-zdf.svg
+        cleared: true
+        knock: true
+        note: 1, 2 oder 3
+      - name: WDR
+        logo: /brand/logos/presse-wdr.svg
+        cleared: true
+        note: Television and interviews
+      - name: ntv
+        logo: /brand/logos/presse-ntv.svg
+        cleared: true
+        knock: true
+        note: Startup News
+        href: https://www.n-tv.de/mediathek/magazine/startup_news/Drohnen-verwandeln-Nachthimmel-in-Showbuehne-article25835436.html
+      - name: tagesschau
+        logo: /brand/logos/presse-tagesschau.svg
+        cleared: true
+        note: "#Böllerciao in Berlin"
+      - name: Tagesspiegel
+        logo: /brand/logos/presse-tagesspiegel.svg
+        cleared: true
+        note: "#Böllerciao in Berlin"
+      - name: WAZ
+        logo: /brand/logos/presse-waz.svg
+        cleared: true
+        note: Ruhrorter Hafenfest
+        href: https://www.waz.de/lokales/duisburg/article409722481/ruhrorter-hafenfest-die-geheimnisse-hinter-dem-neuen-highlight.html
+    quality:
+      - title: Operating authorisation from Germany's Federal Aviation Office
+        text: since July 2023
+        icon: permit
+        logo: /brand/logos/quali-lba-weiss.png
+        cleared: true
+      - title: Across the EU under EASA rules
+        text: Shows across the EU, including Austria and the Netherlands
+        icon: permit
+        logo: /brand/logos/quali-easa-weiss.png
+        cleared: true
+      - title: 100% green electricity from naturstrom
+        text: for the entire fleet
+        icon: leaf
+        logo: /brand/logos/quali-naturstrom.svg
+        cleared: true
+      - title: Acoustic assessment
+        text: by TÜV Nord
+        icon: sound
+        secondary: true
+      - title: Liability cover up to €1.3 million
+        text: in every package
+        icon: shield
+        secondary: true
+  - type: sustainability
+    id: nachhaltigkeit
+    kicker: Sustainability
+    headline: No bangs. No smoke. No debris.
+    text: What a drone show leaves behind at your venue is the memory.
+    facts:
+      - label: No bang
+        value: Quiet
+        text: The drones hum. Only your music is loud. TÜV Nord has assessed the noise in an acoustic report.
+      - label: No smoke
+        value: "0"
+        unit: g
+        text: No pyrotechnics, so no smoke or heavy metals above the audience.
+      - label: No debris
+        value: "0"
+        unit: kg
+        text: No casings, no debris. The same drones fly show after show.
+      - label: Green electricity
+        value: "100"
+        unit: "%"
+        text: Green electricity from naturstrom for our batteries.
+    pillars:
+      - icon: eu
+        title: Built in the EU
+        text: Our drones are manufactured in the EU.
+      - icon: repair
+        title: Repair rather than replace
+        text: We replace batteries, motors and rotors individually, so the drone keeps flying.
+      - icon: ev
+        title: Electric travel to the show
+        text: We travel to shows in an electric Ford E-Transit.
+      - icon: campaign
+        title: "#Böllerciao"
+        text: With Deutsche Umwelthilfe above Berlin in November 2023, as an alternative to New Year's Eve fireworks.
+  - type: comparison
+    id: vergleich
+    kicker: Honest comparison
+    headline: Drone, fireworks or laser?
+    text: Each technology has its strengths. Here's how the three compare on the questions we hear most often.
+    rowHeader: Criterion
+    columns:
+      - Drone show
+      - Fireworks
+      - Laser show
+    rows:
+      - label: Logos and lettering in the sky
+        values:
+          - Yes, in 3D too
+          - No
+          - Partly, on surfaces or haze only
+        cells:
+          - label: Yes
+            text: also in 3D
+            tone: y
+          - label: No
+            text: ""
+            tone: n
+          - label: Partly
+            text: only on surfaces or haze
+            tone: p
+      - label: Noise level
+        values:
+          - Quiet, with your choice of music
+          - Very loud
+          - Quiet
+        cells:
+          - label: Quiet
+            text: Your choice of music
+            tone: y
+          - label: Very loud
+            text: ""
+            tone: n
+          - label: Quiet
+            text: ""
+            tone: y
+      - label: Smoke, particles and debris on site
+        values:
+          - None
+          - Much
+          - Haze needed for visible beams
+        cells:
+          - label: None
+            text: ""
+            tone: y
+          - label: Much
+            text: ""
+            tone: n
+          - label: Haze
+            text: needed for visible beams
+            tone: p
+      - label: Fire hazard
+        values:
+          - None
+          - Yes, banned in dry conditions
+          - None
+        cells:
+          - label: None
+            text: ""
+            tone: y
+          - label: Yes
+            text: Bans in dry conditions
+            tone: n
+          - label: None
+            text: ""
+            tone: y
+      - label: Wind and weather
+        values:
+          - Up to wind force 5, no heavy rain
+          - Cancelled in storms
+          - Robust, works indoors too
+        cells:
+          - label: Limit
+            text: up to wind force 5, no heavy rain
+            tone: p
+          - label: Limit
+            text: cancelled in storms
+            tone: p
+          - label: Robust
+            text: also inside
+            tone: y
+      - label: Visible from a distance
+        values:
+          - For kilometres
+          - For kilometres
+          - Limited, works best up close
+        cells:
+          - label: For kilometres
+            text: ""
+            tone: y
+          - label: For kilometres
+            text: ""
+            tone: y
+          - label: Limited
+            text: works best up close
+            tone: p
+    note: Draft · technical review pending
+  - type: team
+    id: team
+    kicker: Team
+    headline: The people behind the sky.
+    text: Ronja, Florian and Erwin run FlyingStars together. You reach us as a team, and on show night we're out
+      on the field ourselves.
+    members:
+      - name: Ronja Donsbach
+        role: Managing director
+        bio: Handles most enquiries, in English too, and coordinates design and music.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/08/Ronja_Teamfoto.jpg
+          alt: Ronja Donsbach holding a drone
+          width: 800
+          height: 1000
+      - name: Florian Becker
+        role: Managing director
+        bio: Looks after administration, staff and clients in Germany. Writes the blog.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/08/Florian_Teamfoto.jpg
+          alt: Florian Becker holding a drone
+          width: 800
+          height: 1000
+      - name: Erwin Wilms
+        role: Managing director
+        bio: Applications, authorities and aviation law. Makes sure your show is cleared to fly.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/08/Erwin_Teamfoto.jpg
+          alt: Erwin Wilms holding a drone
+          width: 800
+          height: 1000
+      - name: Patrick
+        role: Head of Technology
+        bio: Drone fleet, availability, purchasing and the technical setup of every show.
+      - name: Alejandro
+        role: Head of Design
+        bio: Designs all shows and choreographies, frame by frame, in time with the music.
+    note: Plus a crew of pilots and technicians who set up and fly every show on site.
+    cta:
+      label: More about us
+      href: /ueber-uns/
+  - type: faq
+    id: faq
+    kicker: FAQ
+    headline: What to know before you enquire.
+    cta:
+      label: All questions
+      href: /faq/
+    openFirst: true
+    limit: 4
+    tags:
+      - startseite
+  - type: contactForm
+    kicker: Enquiry
+    headline: Tell us about your date.
+    text: A date, location and occasion are enough for an initial assessment. Leave anything you don't know yet
+      open.
+translationSourceHash: 121df88dc2455f2b5c083d94868238568f91dcfd7a25416e77fb358a22e5f86e

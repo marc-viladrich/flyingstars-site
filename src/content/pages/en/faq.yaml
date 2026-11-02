@@ -1,0 +1,42 @@
+title: Frequently asked questions about drone shows
+description: "Lead time, space, permits, weather, safety and costs: answers to the most common questions about
+  FlyingStars drone shows."
+sections:
+  - type: faq
+    id: fragen
+    kicker: FAQ
+    headline: Frequently asked questions about drone shows.
+    text: Lead time, space, permits, weather and costs, briefly explained.
+    cta:
+      label: Request a show
+      href: /kontakt/
+    openFirst: true
+    groups:
+      - id: planung
+        headline: Planning and process
+        tags:
+          - planung
+      - id: ort
+        headline: Location and permits
+        tags:
+          - ort
+      - id: sicherheit
+        headline: Safety
+        tags:
+          - sicherheit
+      - id: wetter-umwelt
+        headline: Weather and environment
+        tags:
+          - wetter-umwelt
+      - id: kosten
+        headline: Costs
+        tags:
+          - preise
+      - id: indoor
+        headline: Indoor
+        tags:
+          - indoor
+    closing:
+      headline: Can't find your question?
+      text: Add your question to your enquiry. We'll reply within 48 hours.
+translationSourceHash: 1d43001b878c515b164813dc8ca86e3c14dff5237bd401fab8cd944227498645

@@ -1,0 +1,197 @@
+title: Droneshow voor jullie bruiloft
+navLabel: Bruiloft
+description: "Een droneshow voor jullie bruiloft: initialen, hart en datum aan de nachthemel. SPARK met 100
+  drones vanaf € 7.900 excl. btw, vergunning inbegrepen."
+image: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg
+sections:
+  - type: landingHero
+    kicker: Bruiloft
+    headline: Een droneshow voor jullie bruiloft.
+    text: Jullie initialen, een hart en jullie datum aan de nachthemel. We plannen de show samen, regelen de
+      vergunning en vliegen op de avond van jullie feest.
+    cta:
+      label: Vraag een bruiloftshow aan
+      href: "#anfrage"
+    secondary:
+      label: Zo werkt het
+      href: "#ablauf"
+    video: showreel
+    videoLabel: Showreel
+    poster:
+      src: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg
+      alt: Een hand met ring van drones aan de blauwe avondhemel boven boomtoppen, bij een aanzoek op Schloss
+        Hugenpoet
+      width: 2063
+      height: 1303
+    facts:
+      - value: vanaf € 7.900
+        label: exclusief btw met SPARK
+      - value: 100 drones
+        label: in het pakket
+      - value: inbegrepen
+        label: Vergunning
+  - type: landingStories
+    id: referenzen
+    kicker: Onze shows
+    headline: Zo zag het eruit bij andere *stellen*.
+    items:
+      - kicker: Recklinghausen · juni 2024
+        title: Een verrassing gepland door de familie
+        text: De familie benaderde ons vier maanden voor de bruiloft. De startzone lag op een naastgelegen terrein,
+          zonder dat het bruidspaar ervan wist. Door onweer hebben we de show die avond uitgesteld en daarna
+          gevlogen.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg
+          alt: Twee bloemen van paarse en blauwe lichtpunten boven de bomen, bij een bruiloft in Recklinghausen
+          width: 1518
+          height: 854
+        facts:
+          - value: "150"
+            label: Drones
+          - value: 4 maanden
+            label: vooraf aangevraagd
+      - kicker: Schloss Hugenpoet, Essen · september 2024
+        title: „Do you want to be my Forever?“
+        text: Een sieradendoosje ging open, een ring zweefde naar een hand en daarna stond de vraag aan de hemel. Het
+          antwoord was ja.
+        image:
+          src: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg
+          alt: Een hand met ring van drones aan de blauwe avondhemel boven boomtoppen, bij een aanzoek op Schloss
+            Hugenpoet
+          width: 2063
+          height: 1303
+        facts:
+          - value: "220"
+            label: Drones
+  - type: landingTeaser
+    id: motive
+    kicker: Beelden
+    headline: Wat er aan de hemel kan *staan*.
+    text: Harten en ringen uit onze catalogus, met jullie initialen of datum. Jullie eigen show ontwerpen we samen.
+    href: /drohnenshow-preise/?anlass=hochzeit&paket=SPARK#konfigurator
+    cta: Bekijk beelden in de configurator
+    loop: hochzeit
+  - type: landingPrice
+    id: preise
+    kicker: Prijzen
+    headline: Wat een bruiloftshow kost.
+    text: Voor bruiloften is SPARK bedoeld. Alle prijzen zijn exclusief btw en reiskosten.
+    package: SPARK
+    groups:
+      - title: Inbegrepen
+        items:
+          - label: Ontwerp van jullie beelden, met goedkeuring
+          - label: Vergunning
+          - label: Muziekmontage
+          - label: Ons team ter plaatse
+          - label: Aansprakelijkheidsdekking tot € 1,3 miljoen
+      - title: Mogelijke extra's
+        items:
+          - label: Reiskosten vanuit Gelsenkirchen
+            value: afhankelijk van locatie
+          - label: Express bij minder dan 14 dagen voorbereiding
+            value: naar werkzaamheden
+          - label: Ruwe opnamen met cameradrone
+            value: 900 €
+    bonus:
+      value: −10 %
+      text: "Vroegboekkorting: boek vóór het einde van het jaar voor een bruiloft volgend jaar."
+    contact: Ronja, Florian en Erwin beantwoorden jullie aanvraag binnen 48 uur.
+    cta:
+      label: Vraag een bruiloftshow aan
+      href: "#anfrage"
+  - type: landingSite
+    id: location
+    kicker: Location
+    headline: Is jullie *locatie* geschikt?
+    text: We controleren de locatie vóór de offerte. Stuur ons het adres en vertel waar jullie gasten komen te
+      staan.
+    variant: outdoor
+    items:
+      - title: Veiligheidszone
+        value: ca. 100 × 100 m
+        text: Tijdens de show mag niemand deze zone betreden. De grootte hangt af van het aantal drones, de beelden en
+          de vlieghoogte.
+        zone: safety
+      - title: Drones aan de hemel
+        value: tot 120 m
+        text: De drones vormen een lijn dwars op de kijkrichting, zodat de beelden recht naar jullie gasten gericht
+          zijn.
+        zone: drones
+      - title: Start- en landingszone
+        text: Een vrij terrein waarvan de grootte afhangt van het aantal drones. Het wordt circa drie uur vóór de show
+          afgesloten.
+        zone: start
+      - title: Vrij zicht voor jullie gasten
+        text: De show wordt op jullie gasten gericht. Ze staan buiten de veiligheidszone, niet te dicht bij muren of
+          bomen.
+        zone: guests
+      - title: Toestemming van de locatie
+        text: De grondeigenaren, bijvoorbeeld jullie locatie, geven toestemming. De benodigde brief krijgen jullie van
+          ons.
+    note:
+      value: ca. 3 maanden
+      text: Voorbereidingstijd als de locatie bij een luchthaven ligt. De vergunning kost dan meer tijd.
+    download:
+      label: Technisch gegevensblad · PDF
+      href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf
+  - type: tempo
+    id: ablauf
+    kicker: Verloop
+    headline: Tot aan jullie avond.
+    text: Jullie regelen het feest. Wij melden ons als we een beslissing nodig hebben. Eén tot twee maanden
+      voorbereiding is ideaal.
+    marks:
+      - value: 48 h
+        label: tot ons antwoord
+        text: Datum, locatie en jullie idee zijn genoeg. Daarna volgen een kort gesprek en jullie offerte.
+      - value: 3 weken
+        label: voor beelden en muziek, minimaal
+        text: Jullie zien een ontwerp met de muziek, geven feedback en keuren uiteindelijk elk beeld goed.
+      - value: 3 h
+        label: voor de show ter plaatse
+        text: Ons team zet de startzone af, vliegt de show en bouwt daarna weer af.
+    shortcut:
+      value: Express binnen 14 dagen
+      label: Toeslag naar werkzaamheden
+  - type: landingCta
+    headline: Wordt het een *verrassing*?
+    text: Of het nu een aanzoek of een cadeau van de familie is, we stemmen alleen met jullie af. De startzone
+      richten we uit het zicht in en de timing regelen we met de locatie.
+    button:
+      label: Vraag een verrassingsshow aan
+      href: "#anfrage"
+  - type: landingBento
+    id: wetter
+    kicker: Weer
+    headline: En als het weer niet meewerkt?
+    lead:
+      icon: shield-check
+      title: Een droneshow gebruikt geen *pyrotechniek*.
+      text: Geen knallen, rook, vonken of resten op het gras achteraf. Alleen jullie muziek is luid.
+    items:
+      - icon: wind
+        title: Tot windkracht 5
+        text: Tot die grens vliegen we, ook bij lichte motregen.
+      - icon: calendar-sync
+        title: Gratis verplaatsen
+        text: Is slecht weer voorzien, dan kunnen we verplaatsen zolang we nog niet onderweg zijn.
+      - icon: wallet
+        title: 40% aanbetaling
+        text: Die betalen jullie bij de boeking. Gaat de show helemaal niet door, dan geldt de annuleringsregeling uit
+          onze voorwaarden.
+  - type: faq
+    id: fragen
+    kicker: FAQ
+    headline: Vragen van stellen.
+    text: Kort beantwoord. Meer antwoorden staan bij de veelgestelde vragen.
+    cta:
+      label: Alle vragen
+      href: /faq/
+    tags:
+      - hochzeit
+  - type: contactForm
+    kicker: Aanvraag
+    headline: Vertel ons over jullie trouwdag.
+    text: Datum en locatie zijn genoeg voor het begin. We reageren binnen 48 uur met een eerste inschatting.
+translationSourceHash: 71ea37588e55ccdb4588124d119028e0a89e08f15ef7c2f63857b9bac8c8314b

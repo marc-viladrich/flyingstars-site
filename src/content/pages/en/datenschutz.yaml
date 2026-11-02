@@ -1,0 +1,20 @@
+title: Privacy
+description: "Privacy information for the FlyingStars preview: locally served fonts and images, videos on
+  click, no analytics tracking."
+noindex: true
+sections:
+  - type: textMedia
+    headline: Privacy in this preview
+    body: >
+      This website serves its own fonts and preview images. Videos start only when you explicitly click them.
+      The preview does not use analytics tracking.
+
+
+      Form delivery is not set up yet. Until then, your details are neither stored nor emailed, and the form
+      tells you this.
+
+
+      The current privacy information is available in the [privacy policy on the existing FlyingStars
+      website](/en/datenschutz/). The policy for the new website will be completed and reviewed before
+      publication.
+translationSourceHash: 434f1922c06eed42193a1b53866cdd578acf70c37c2cfaac0fdc7654fec534ec

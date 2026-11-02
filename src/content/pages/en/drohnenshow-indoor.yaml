@@ -1,0 +1,184 @@
+title: Indoor drone show
+navLabel: Indoor
+description: "Indoor drone shows for exhibitions, stages and halls: 20 to 50 drones, 5 to 8 minutes, ceiling
+  height from 3 metres. Individually priced."
+image: https://flyingstars.art/wp-content/uploads/2025/04/IMG_0201.jpg
+sections:
+  - type: landingHero
+    kicker: Indoor
+    headline: Drone shows for exhibitions, stages and *halls*.
+    text: Small drones with rotor guards fly inside, coordinated with music and lighting. We plan and price each
+      indoor show for your room.
+    cta:
+      label: Enquire about an indoor show
+      href: "#anfrage"
+    secondary:
+      label: What's different indoors
+      href: "#unterschied"
+    video: siemensIndoor
+    videoLabel: Siemens · Hannover Messe
+    poster:
+      src: https://flyingstars.art/wp-content/uploads/2025/04/IMG_0201.jpg
+      alt: Dozens of glowing drones in rows above the floor of a darkened sports hall
+      width: 2560
+      height: 1440
+    facts:
+      - value: 20–50
+        label: Drones
+      - value: 5–8 min
+        label: Show duration
+      - value: from 3 m
+        label: Ceiling height
+  - type: comparison
+    id: unterschied
+    kicker: Comparison
+    headline: Indoors, the show is different.
+    text: Fewer, smaller drones, closer to the audience, with a shorter running time. Patterns and moving figures
+      take shape in the room.
+    rowHeader: Feature
+    columns:
+      - Indoor
+      - Outdoor
+    rows:
+      - label: Drones
+        values:
+          - 20 to 50
+          - from 100
+      - label: Duration
+        values:
+          - 5 to 8 minutes
+          - usually around 13 minutes
+      - label: Weight per drone
+        values:
+          - 188 g
+          - approx. 300 g
+      - label: Positioning
+        values:
+          - Radio stations in the room (UWB)
+          - GPS
+      - label: Flight altitude
+        values:
+          - 1 to 8 m
+          - usually up to 120 m
+      - label: Space
+        values:
+          - ceiling height from 3 m and a clear flight area
+          - safety area of approx. 100 × 100 m
+      - label: Price
+        values:
+          - individually priced, from approx. €15,000 excluding VAT for 20 drones
+          - Packages from €7,900 excluding VAT
+  - type: landingSite
+    id: raum
+    kicker: Requirements
+    headline: What your *room* needs.
+    text: We then develop a show concept for your room.
+    variant: indoor
+    items:
+      - title: Ceiling height
+        value: min. 3 m
+        text: The drones fly their routes below this height.
+        zone: ceiling
+      - title: Clear take-off and flight area
+        text: The drones take off and land here. It stays clear during the show.
+        zone: floor
+      - title: We bring everything else
+        text: Drones, equipment and our crew.
+    checklist:
+      title: What helps us make an initial assessment
+      items:
+        - Floor plan or photo of the room
+        - Ceiling height
+        - Audience position
+        - Stage lighting, fog or pyrotechnics in the room?
+  - type: landingBento
+    id: sicherheit
+    kicker: Safety
+    headline: Safe near the audience.
+    text: Indoor drones are lighter and slower than our outdoor fleet, and fly pre-calculated routes.
+    lead:
+      label: Rotors
+      title: A protective frame around every *rotor*.
+      image:
+        src: https://flyingstars.art/wp-content/uploads/2025/04/0L9A4365.jpg
+        alt: Small drones with rotor guards glow blue on a dark floor
+        width: 2560
+        height: 1708
+    items:
+      - icon: gauge
+        title: Maximum 1.5 m/s
+        text: The drones never fly faster than this indoors.
+      - icon: move-horizontal
+        title: 0.5 m separation
+        text: The minimum distance between two drones.
+      - icon: shield-check
+        title: Multiple safeguards
+        text: Redundant safety functions, a controlled landing function and CE-certified components.
+  - type: landingSpotlight
+    id: einsatzorte
+    kicker: Where to use it
+    headline: Where indoor shows work.
+    text: We match brand colours and music to your event.
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2025/04/drohnenshow-indoor-2.jpg
+      alt: Glowing drones in formation in front of a stage in a packed hall
+      width: 1200
+      height: 764
+    tags:
+      - Exhibitions
+      - Concerts
+      - Sporting events
+      - Corporate celebrations
+      - Weddings in halls
+    entries:
+      - kicker: Hannover Messe · March 2025
+        title: Siemens
+        text: Our first indoor show.
+      - kicker: Essen · September 2026
+        title: Triple Z
+        text: At the Zeche Zollverein business centre, where our office is based too.
+  - type: tempo
+    id: ablauf
+    kicker: The process
+    headline: How an indoor show works.
+    marks:
+      - value: 48 h
+        label: until our reply
+        text: Tell us about the room, occasion and date.
+      - value: 6–8 weeks
+        label: ideal lead time
+        text: Design and planning for your room. You see the show in advance on video or during a test flight.
+      - value: 45 min
+        label: from setup to ready to fly
+        text: We start from two hours before the show.
+  - type: landingPrice
+    id: preise
+    kicker: Prices
+    headline: What an indoor show costs.
+    text: Indoor shows are priced individually. Outdoor packages do not apply indoors.
+    price: from approx. €15,000
+    unit: excluding VAT for 20 drones, as a guide
+    groups:
+      - title: The price depends on
+        items:
+          - label: your room
+          - label: the drone count
+            value: 20–50
+          - label: the setup
+    cta:
+      label: Request an indoor quote
+      href: "#anfrage"
+  - type: faq
+    id: fragen
+    kicker: FAQ
+    headline: Questions about indoor shows.
+    cta:
+      label: All questions
+      href: /faq/
+    tags:
+      - indoor
+  - type: contactForm
+    kicker: Enquiry
+    headline: Tell us about your room.
+    text: Ceiling height, floor area and date are enough for an initial assessment. We'll reply within 48 hours.
+translationSourceHash: 4a7b9438db7dd8ce9d0f82b6cdaf268e7d3f22d9d29ad1c329935d64f1dd4271
