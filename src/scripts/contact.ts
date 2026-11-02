@@ -4,6 +4,12 @@ if (form) {
   const status = form.querySelector<HTMLElement>('[data-form-status]')!;
   const label = form.querySelector<HTMLElement>('[data-step-label]')!;
   const marks = [...form.querySelectorAll<HTMLElement>('.ask-steps span')];
+  // Nur Laufzeit im Browser, kein Cookie/Storage. Ohne JS fehlt das Feld bewusst.
+  const started = document.createElement('input');
+  started.type = 'hidden'; started.name = 'form-duration';
+  let opened = performance.now();
+  const restartTimer = () => { opened = performance.now(); started.value = ''; };
+  restartTimer(); form.append(started);
   let step = 0;
   const show = (index: number, focus = true) => {
     step = index;
@@ -23,13 +29,13 @@ if (form) {
   };
   dateOpen?.addEventListener('change', syncDate); syncDate();
   const validate = (container: Element) => {
-    const fields = [...container.querySelectorAll<HTMLInputElement>('[required]')];
-    let first: HTMLInputElement | undefined;
+    const fields = [...container.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>('input,select,textarea')];
+    let first: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | undefined;
     fields.forEach((field) => {
       const valid = field.checkValidity();
       const error = form.querySelector<HTMLElement>(`[data-err-for="${field.name}"]`);
       field.setAttribute('aria-invalid', String(!valid));
-      if (error) error.textContent = valid ? '' : field.type === 'radio' ? 'Bitte wähle einen Anlass.' : field.type === 'email' && field.value ? 'Bitte gib eine gültige E-Mail-Adresse ein.' : field.dataset.msg || 'Bitte ausfüllen.';
+      if (error) error.textContent = valid ? '' : field.type === 'radio' ? 'Bitte wähle einen Anlass.' : field.validity.tooLong ? 'Bitte kürzt eure Eingabe.' : field.type === 'email' && field.value ? 'Bitte gib eine gültige E-Mail-Adresse ein.' : field.dataset.msg || 'Bitte ausfüllen.';
       if (!valid) first ||= field;
     });
     first?.focus();
@@ -83,6 +89,13 @@ if (form) {
   const occasion = params.get('anlass');
   const occasionInput = occasion ? [...form.querySelectorAll<HTMLInputElement>('[name=anlass]')].find((input) => input.value === occasion) : undefined;
   if (occasionInput && !form.querySelector('[name=anlass]:checked')) occasionInput.checked = true;
+  // Freitext gehört nicht dauerhaft in die URL. Der erste HTTP-Aufruf ist zu diesem
+  // Zeitpunkt bereits beim Hoster angekommen; das ersetzt keine Log-Minimierung.
+  if (params.has('text') || params.has('show')) {
+    const clean = new URL(location.href);
+    clean.searchParams.delete('text'); clean.searchParams.delete('show');
+    history.replaceState(history.state, '', clean.pathname + clean.search + clean.hash);
+  }
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const invalid = steps.findIndex((fieldset) => !validate(fieldset));
@@ -90,14 +103,15 @@ if (form) {
     const button = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
     button.disabled = true; button.textContent = 'Wird gesendet …'; status.textContent = '';
     try {
+      started.value = String(Math.floor(performance.now() - opened));
       const response = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
       const result = await response.json();
       if (!response.ok || !result.ok) throw new Error(result.detail || 'Die Anfrage konnte nicht gesendet werden.');
       if (result.state === 'not-configured') {
-        status.textContent = 'Der Formularversand ist noch nicht eingerichtet. Es wurde nichts gesendet oder gespeichert. Bitte schreibe uns direkt an team@flyingstars.art.';
+        status.textContent = 'Der Formularversand ist noch nicht eingerichtet. Es wurde nichts gesendet. Die Formularanwendung hat eure Anfrage nicht gespeichert. Bitte schreibt uns direkt an team@flyingstars.art.';
       } else {
         status.textContent = 'Deine Anfrage wurde gesendet. Wir melden uns innerhalb von 48 Stunden.';
-        form.reset(); syncDate(); show(0, false);
+        form.reset(); restartTimer(); syncDate(); show(0, false);
       }
     } catch (error) { status.textContent = `${error instanceof Error ? error.message : 'Versand fehlgeschlagen.'} Bitte versuche es später erneut oder schreibe direkt an team@flyingstars.art.`; }
     finally { button.disabled = false; button.textContent = 'Anfrage senden'; status.focus(); }
