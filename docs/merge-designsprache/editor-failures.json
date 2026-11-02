@@ -1,0 +1,512 @@
+{
+  "testedCommit": "93508be",
+  "node": "24.21.0",
+  "command": "node --test --test-reporter=tap --test-concurrency=3 --test-timeout=180000 'editor/*.test.mjs' 'editor/core/*.test.mjs' 'editor/test/*.test.mjs'",
+  "tests": 334,
+  "passed": 250,
+  "failed": 84,
+  "skipped": 0,
+  "cancelled": 0,
+  "topLevelFailures": 83,
+  "note": "Ein fehlgeschlagener Core-Test enthält zusätzlich einen fehlgeschlagenen Untertest. Keine Ausfälle wurden übersprungen.",
+  "failures": [
+    {
+      "test": "The editor refuses to start with login but without accounts, and says which FlyingStars command creates one",
+      "location": "editor/auth.test.mjs:42:1",
+      "failureType": "testCodeFailure",
+      "error": "Der neue Designstand unterstützt vorerst nur den Datei-Editor. Canvas, Mediathek, Paket-/UI-Datensätze und automatische Übersetzung sind noch nicht migriert. Details: docs/editor-designsprache.md. Für den eingeschränkten Testbetrieb AFE_DESIGN_EDITOR=source setzen."
+    },
+    {
+      "test": "An existing FlyingStars accounts file moves into the account database once; the old file stays as the way back",
+      "location": "editor/auth.test.mjs:49:1",
+      "failureType": "testCodeFailure",
+      "error": "the start names the migration instead of guessing"
+    },
+    {
+      "test": "editor/browser-extensions.test.mjs",
+      "location": "editor/browser-extensions.test.mjs:1:1",
+      "failureType": "testCodeFailure",
+      "error": "test failed"
+    },
+    {
+      "test": "editor/canvas-runtime.test.mjs",
+      "location": "editor/canvas-runtime.test.mjs:1:1",
+      "failureType": "testCodeFailure",
+      "error": "test failed"
+    },
+    {
+      "test": "NativeStore preserves the PR 3 records and whole-file revisions under Astro addresses",
+      "location": "editor/collections.test.mjs:24:1",
+      "failureType": "testCodeFailure",
+      "error": "Cannot find module 'src/schemas/page-schema.mjs' imported from data:text/javascript;base64,aW1wb3J0IHBhdGggZnJvbSAnbm9kZTpwYXRoJzsKaW1wb3J0IHtwYXRoVG9GaWxlVVJMfSBmcm9tICdub2RlOnVybCc7CmltcG9ydCB7TGVnYWN5U291cmNlQWRhcHRlcn0gZnJvbSAiZmlsZTovLy9wcml2YXRlL3RtcC9mcy1tZXJnZS1kZXNpZ25zcHJhY2hlLW1haW4vbm9kZV9tb2R1bGVzL2FzdHJvLWZyb250ZW5kLWVkaXRvci9zcmMvcnVudGltZS9leHRlbnNpb25zLm1qcyI7CmltcG9ydCB7dW53cmFwfSBmcm9tICJmaWxlOi8vL3ByaXZhdGUvdG1wL2ZzLW1lcmdlLWRlc2lnbnNwcmFjaGUtbWFpbi9ub2RlX21vZHVsZXMvYXN0cm8tZnJvbnRlbmQtZWRpdG9yL3NyYy9ydW50aW1lL2V4dGVuc2lvbnMubWpzIjsKCi8qKiBPbmx5IHRoaXMgYWRhcHRlciBsb2FkcyB0aGUgcGlsb3QncyBzY2hlbWFzIGFuZCBzb3VyY2Ugc2VydmljZXMuCiAqIEBwYXJhbSB7c3RyaW5nfSByb290IEFic29sdXRlIHNpdGUgcm9vdCwgc3VwcGxpZWQgYnkgdGhlIGNvbXBvc2l0aW9uIHJvb3QuCiAqLwpleHBvcnQgYXN5bmMgZnVuY3Rpb24gY3JlYXRlRmx5aW5nU3RhcnNBZGFwdGVyKHJvb3QpIHsKIGNvbnN0IGxvYWQ9cmVsYXRpdmU9PmltcG9ydChwYXRoVG9GaWxlVVJMKHBhdGguam9pbihyb290LHJlbGF0aXZlKSkpO2NvbnN0IHtwYWdlU2NoZW1hLHNlY3Rpb25TY2hlbWEsZWRpdG9yaWFsSHJlZn09YXdhaXQgbG9hZCgnc3JjL3NjaGVtYXMvcGFnZS1zY2hlbWEubWpzJykse3BhY2thZ2VTY2hlbWF9PWF3YWl0IGxvYWQoJ3NyYy9jb250ZW50L3BhY2thZ2Utc2NoZW1hLm1qcycpLHtzY3JlZW5TY2hlbWF9PWF3YWl0IGxvYWQoJ3NyYy9jb250ZW50L3NjcmVlbi1zY2hlbWEub"
+    },
+    {
+      "test": "Astro sync exports every schema and its public loaders preserve JSON entry IDs and values",
+      "location": "editor/collections.test.mjs:56:1",
+      "failureType": "testCodeFailure",
+      "error": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n-   'clients.schema.json',\n-   'extras.schema.json',\n    'faq.schema.json',\n-   'media.schema.json',\n-   'packages.schema.json',\n    'pages.schema.json',\n    'posts.schema.json',\n    'projects.schema.json',\n-   'screens.schema.json',\n-   'siteContact.schema.json',\n-   'siteInquiry.schema.json',\n-   'siteNavigation.schema.json',\n-   'siteUi.schema.json',\n-   'team.schema.json',\n-   'translations.schema.json'\n  ]"
+    },
+    {
+      "test": "editor/color-tokens.test.mjs",
+      "location": "editor/color-tokens.test.mjs:1:1",
+      "failureType": "testCodeFailure",
+      "error": "test failed"
+    },
+    {
+      "test": "editor/content-navigator.test.mjs",
+      "location": "editor/content-navigator.test.mjs:1:1",
+      "failureType": "testCodeFailure",
+      "error": "test failed"
+    },
+    {
+      "test": "bakery: every real source has a byte-identical no-op roundtrip",
+      "location": "editor/core/codecs.test.mjs:16:3",
+      "failureType": "subtestsFailed",
+      "error": "1 subtest failed"
+    },
+    {
+      "test": "physio: every real source has a byte-identical no-op roundtrip",
+      "location": "editor/core/codecs.test.mjs:16:3",
+      "failureType": "testCodeFailure",
+      "error": "ENOENT: no such file or directory, scandir '/editor-lab/site-b-physio/src/content'"
+    },
+    {
+      "test": "editor/extensions.test.mjs",
+      "location": "editor/extensions.test.mjs:1:1",
+      "failureType": "testCodeFailure",
+      "error": "test failed"
+    },
+    {
+      "test": "editor/frontend-url.test.mjs",
+      "location": "editor/frontend-url.test.mjs:1:1",
+      "failureType": "testCodeFailure",
+      "error": "test failed"
+    },
+    {
+      "test": "A slow remote push never holds the save lock; later content is pushed in the next round",
+      "location": "editor/git-sync.test.mjs:9:1",
+      "failureType": "testCodeFailure",
+      "error": "astro.config.mjs hat eine unerwartete Form; die Fixture kann .env und Bilddienst nicht abschalten."
+    },
+    {
+      "test": "Push failure keeps a successful save; retry backs up that exact commit to a local bare remote",
+      "location": "editor/git-sync.test.mjs:29:1",
+      "failureType": "testCodeFailure",
+      "error": "astro.config.mjs hat eine unerwartete Form; die Fixture kann .env und Bilddienst nicht abschalten."
+    },
+    {
+      "test": "Actual offline CLI: --all respects per-batch/run limits, persists suggestions and resumes until the whole locale is fresh",
+      "location": "editor/i18n-cli.test.mjs:7:1",
+      "failureType": "testCodeFailure",
+      "error": "astro.config.mjs hat eine unerwartete Form; die Fixture kann .env und Bilddienst nicht abschalten."
+    },
+    {
+      "test": "Non-JavaScript contact submissions redirect to the matching language without allowing an arbitrary redirect",
+      "location": "editor/i18n-contact.test.mjs:3:1",
+      "failureType": "testCodeFailure",
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- 'email'"
+    },
+    {
+      "test": "Actual contact browser script uses localized data messages for backend codes and network errors",
+      "location": "editor/i18n-contact.test.mjs:12:1",
+      "failureType": "testCodeFailure",
+      "error": "Cannot use import statement outside a module"
+    },
+    {
+      "test": "editor/i18n-e2e.test.mjs",
+      "location": "editor/i18n-e2e.test.mjs:1:1",
+      "failureType": "testCodeFailure",
+      "error": "test failed"
+    },
+    {
+      "test": "editor/i18n-values.test.mjs",
+      "location": "editor/i18n-values.test.mjs:1:1",
+      "failureType": "testCodeFailure",
+      "error": "test failed"
+    },
+    {
+      "test": "editor/image-schema.test.mjs",
+      "location": "editor/image-schema.test.mjs:1:1",
+      "failureType": "testCodeFailure",
+      "error": "test failed"
+    },
+    {
+      "test": "editor/inline-format.test.mjs",
+      "location": "editor/inline-format.test.mjs:1:1",
+      "failureType": "testCodeFailure",
+      "error": "test failed"
+    },
+    {
+      "test": "editor/item-summary-sweep.test.mjs",
+      "location": "editor/item-summary-sweep.test.mjs:1:1",
+      "failureType": "testCodeFailure",
+      "error": "test failed"
+    },
+    {
+      "test": "editor/linked-records.test.mjs",
+      "location": "editor/linked-records.test.mjs:1:1",
+      "failureType": "testCodeFailure",
+      "error": "test failed"
+    },
+    {
+      "test": "editor/media-pipeline.test.mjs",
+      "location": "editor/media-pipeline.test.mjs:1:1",
+      "failureType": "testCodeFailure",
+      "error": "test failed"
+    },
+    {
+      "test": "editor/media-usage.test.mjs",
+      "location": "editor/media-usage.test.mjs:1:1",
+      "failureType": "testCodeFailure",
+      "error": "test failed"
+    },
+    {
+      "test": "editor/metadata.test.mjs",
+      "location": "editor/metadata.test.mjs:1:1",
+      "failureType": "testCodeFailure",
+      "error": "test failed"
+    },
+    {
+      "test": "Actual Astro source builds original scripts and stable calculated-price markers; partial failed build never activates even after restart",
+      "location": "editor/native-builder.test.mjs:5:1",
+      "failureType": "testCodeFailure",
+      "error": "Runtime-owned innerHTML must not erase package price binding\n\n0 !== 3"
+    },
+    {
+      "test": "Concurrent cached builds activate in request order without sharing an atomic temporary file",
+      "location": "editor/native-builder.test.mjs:7:1",
+      "failureType": "testCodeFailure",
+      "error": "Aufgerufener Testprozess fehlgeschlagen; Details im lokalen TAP-Protokoll."
+    },
+    {
+      "test": "editor/native-draft.test.mjs",
+      "location": "editor/native-draft.test.mjs:1:1",
+      "failureType": "testCodeFailure",
+      "error": "test failed"
+    },
+    {
+      "test": "Real native image metadata and normalized bytes are one retryable commit; invalid bytes leave no record",
+      "location": "editor/native-media.test.mjs:14:1",
+      "failureType": "testCodeFailure",
+      "error": "Required extension hook is missing: mediaPolicy"
+    },
+    {
+      "test": "Every source collection, optional group, and section is described from its actual schema",
+      "location": "editor/native-operations.test.mjs:10:1",
+      "failureType": "testCodeFailure",
+      "error": "client"
+    },
+    {
+      "test": "Create client and reference it through a native page loop in one commit; delete only after last use removed",
+      "location": "editor/native-operations.test.mjs:11:1",
+      "failureType": "testCodeFailure",
+      "error": "ids is not iterable"
+    },
+    {
+      "test": "Markdown edits preserve frontmatter comments, body whitespace, and native date values",
+      "location": "editor/native-operations.test.mjs:12:1",
+      "failureType": "testCodeFailure",
+      "error": "Bitte beide Sprachfassungen gemeinsam prüfen und mitspeichern: post/en/2025-01-14-wie-funktioniert-drohnenshow-drohne, post/nl/2025-01-14-wie-funktioniert-drohnenshow-drohne. Die Designsprache verwendet vollständige Sprachdateien, keine Übersetzungs-Overlays."
+    },
+    {
+      "test": "Structural patches validate every nested value and retain identity guards even through root replacement",
+      "location": "editor/native-operations.test.mjs:13:1",
+      "failureType": "testCodeFailure",
+      "error": "Cannot read properties of undefined (reading 'data')"
+    },
+    {
+      "test": "Optional source groups can be inserted and removed without a parallel record structure",
+      "location": "editor/native-operations.test.mjs:14:1",
+      "failureType": "testCodeFailure",
+      "error": "Cannot read properties of undefined (reading 'id')"
+    },
+    {
+      "test": "Create/delete retries are durable and stale deletions retain the current record",
+      "location": "editor/native-operations.test.mjs:15:1",
+      "failureType": "testCodeFailure",
+      "error": "Dieser Inhalt kann nicht angelegt werden oder existiert bereits."
+    },
+    {
+      "test": "Media metadata and immutable bytes share one atomic Git commit; referenced metadata cannot be deleted",
+      "location": "editor/native-operations.test.mjs:16:1",
+      "failureType": "testCodeFailure",
+      "error": "Required extension hook is missing: validateBinaryWrite"
+    },
+    {
+      "test": "Reviewed translations require an existing current source and source-defined text paths",
+      "location": "editor/native-operations.test.mjs:17:1",
+      "failureType": "testCodeFailure",
+      "error": "Dieser Inhalt kann nicht angelegt werden oder existiert bereits."
+    },
+    {
+      "test": "Dangling entity/media references and malformed request members never commit or overwrite content",
+      "location": "editor/native-operations.test.mjs:18:1",
+      "failureType": "testCodeFailure",
+      "error": "Cannot read properties of undefined (reading 'id')"
+    },
+    {
+      "test": "Every Markdown source accepts a new empty draft while serializing a real native frontmatter file",
+      "location": "editor/native-operations.test.mjs:19:1",
+      "failureType": "testCodeFailure",
+      "error": "Cannot read properties of undefined (reading 'data')"
+    },
+    {
+      "test": "Canonical media usage facts cannot be edited as shadow values and schema errors return actionable 400",
+      "location": "editor/native-operations.test.mjs:20:1",
+      "failureType": "testCodeFailure",
+      "error": "Cannot read properties of undefined (reading 'containers')"
+    },
+    {
+      "test": "Serializable source shape covers new list entries and optional groups before first save",
+      "location": "editor/native-operations.test.mjs:21:1",
+      "failureType": "testCodeFailure",
+      "error": "Cannot read properties of undefined (reading 'schema')"
+    },
+    {
+      "test": "Media byte facts stay upload-owned even with whole-record replacement",
+      "location": "editor/native-operations.test.mjs:22:1",
+      "failureType": "testCodeFailure",
+      "error": "Cannot read properties of undefined (reading 'data')"
+    },
+    {
+      "test": "Reordering real image-bearing sections does not mistake changed positions for shadow edits",
+      "location": "editor/native-operations.test.mjs:23:1",
+      "failureType": "testCodeFailure",
+      "error": "Umsortieren ist für diese Liste nicht freigegeben: sections"
+    },
+    {
+      "test": "A missing shared schema dependency fails initialization rather than silently hiding a collection",
+      "location": "editor/native-operations.test.mjs:24:1",
+      "failureType": "testCodeFailure",
+      "error": "ENOENT: no such file or directory, lstat '/var/folders/29/9p1f75kd7z1bz8j2rjr79_pc0000gn/T/fs-native-missing-schema-dmKVDD/src/schemas/collection-schema.mjs'"
+    },
+    {
+      "test": "Unmodified historical translation paths do not prevent removal of their source section",
+      "location": "editor/native-operations.test.mjs:26:1",
+      "failureType": "testCodeFailure",
+      "error": "Dieser Inhalt kann nicht angelegt werden oder existiert bereits."
+    },
+    {
+      "test": "Atomic source and translation edits rebase to the exact new bytes and invalidate untouched older reviews",
+      "location": "editor/native-operations.test.mjs:27:1",
+      "failureType": "testCodeFailure",
+      "error": "Dieser Inhalt kann nicht angelegt werden oder existiert bereits."
+    },
+    {
+      "test": "Actual canonical routes prevent new pages or case metadata from replacing an existing native page",
+      "location": "editor/native-operations.test.mjs:28:1",
+      "failureType": "testCodeFailure",
+      "error": "The validation function is expected to return \"true\". Received false\n\nCaught error:\n\nError: Dieser Inhalt kann nicht angelegt werden oder existiert bereits."
+    },
+    {
+      "test": "Atomic rebase prunes unchanged removed-source entries while retaining the newly curated surviving field",
+      "location": "editor/native-operations.test.mjs:29:1",
+      "failureType": "testCodeFailure",
+      "error": "Dieser Inhalt kann nicht angelegt werden oder existiert bereits."
+    },
+    {
+      "test": "Rebasing reordered same-type headings never reapplies an old translation to a different source phrase",
+      "location": "editor/native-operations.test.mjs:30:1",
+      "failureType": "testCodeFailure",
+      "error": "Entfernen ist für diese Liste nicht freigegeben: sections"
+    },
+    {
+      "test": "Nondecorative media use requires an effective global or contextual alt text; unreferenced uploads may remain unnamed",
+      "location": "editor/native-operations.test.mjs:31:1",
+      "failureType": "testCodeFailure",
+      "error": "Dieser Inhalt kann nicht angelegt werden oder existiert bereits."
+    },
+    {
+      "test": "Decorative images explicitly permit an empty effective alt text",
+      "location": "editor/native-operations.test.mjs:32:1",
+      "failureType": "testCodeFailure",
+      "error": "Dieser Inhalt kann nicht angelegt werden oder existiert bereits."
+    },
+    {
+      "test": "Field hashes: a German change elsewhere keeps reviewed translations of unchanged fields; a reviewed value with an outdated field hash is refused",
+      "location": "editor/native-operations.test.mjs:33:1",
+      "failureType": "testCodeFailure",
+      "error": "Dieser Inhalt kann nicht angelegt werden oder existiert bereits."
+    },
+    {
+      "test": "A German edit makes the old reviewed translation stale; saving another field of that translation still works and marks it for review",
+      "location": "editor/native-operations.test.mjs:37:1",
+      "failureType": "testCodeFailure",
+      "error": "Dieser Inhalt kann nicht angelegt werden oder existiert bereits."
+    },
+    {
+      "test": "editor/native-schema.test.mjs",
+      "location": "editor/native-schema.test.mjs:1:1",
+      "failureType": "testCodeFailure",
+      "error": "test failed"
+    },
+    {
+      "test": "Native schemas enumerate real nested page and package fields, expose colour metadata and lock package identity",
+      "location": "editor/native-store.test.mjs:13:1",
+      "failureType": "testCodeFailure",
+      "error": "Cannot read properties of undefined (reading 'fields')"
+    },
+    {
+      "test": "One save commits native YAML plus real package JSON atomically, including exact bytes and existing comments",
+      "location": "editor/native-store.test.mjs:14:1",
+      "failureType": "testCodeFailure",
+      "error": "Cannot read properties of undefined (reading 'revision')"
+    },
+    {
+      "test": "Lost save acknowledgement replays across fresh store without a duplicate commit",
+      "location": "editor/native-store.test.mjs:15:1",
+      "failureType": "testCodeFailure",
+      "error": "Cannot read properties of undefined (reading 'revision')"
+    },
+    {
+      "test": "Stale package rejects the entire batch, retaining the untouched homepage and newer package",
+      "location": "editor/native-store.test.mjs:16:1",
+      "failureType": "testCodeFailure",
+      "error": "Cannot read properties of undefined (reading 'revision')"
+    },
+    {
+      "test": "Invalid cross-field package values, identity changes and unknown paths create no commit",
+      "location": "editor/native-store.test.mjs:17:1",
+      "failureType": "testCodeFailure",
+      "error": "Cannot read properties of undefined (reading 'revision')"
+    },
+    {
+      "test": "External working-file edits are never overwritten by editor save",
+      "location": "editor/native-store.test.mjs:18:1",
+      "failureType": "testCodeFailure",
+      "error": "ENOENT: no such file or directory, open '/var/folders/29/9p1f75kd7z1bz8j2rjr79_pc0000gn/T/flyingstars-native-L3flju/src/content/packages/spark.json'"
+    },
+    {
+      "test": "All real package-backed YAML cards select canonical packages without shadow facts",
+      "location": "editor/native-store.test.mjs:20:1",
+      "failureType": "testCodeFailure",
+      "error": "The expression evaluated to a falsy value:\n\n  assert.ok(count>=3)"
+    },
+    {
+      "test": "a site checked out as a Git worktree saves: shared lock, per-worktree index, nothing left behind",
+      "location": "editor/native-store.test.mjs:26:1",
+      "failureType": "testCodeFailure",
+      "error": "Cannot read properties of undefined (reading 'revision')"
+    },
+    {
+      "test": "a save whose site does not build is not published: branch, files and index stay as they were",
+      "location": "editor/native-store.test.mjs:39:1",
+      "failureType": "testCodeFailure",
+      "error": "ENOENT: no such file or directory, open '/var/folders/29/9p1f75kd7z1bz8j2rjr79_pc0000gn/T/flyingstars-native-Zi5OFb/src/content/packages/spark.json'"
+    },
+    {
+      "test": "editor/outline-content.test.mjs",
+      "location": "editor/outline-content.test.mjs:1:1",
+      "failureType": "testCodeFailure",
+      "error": "test failed"
+    },
+    {
+      "test": "editor/overview-plan.test.mjs",
+      "location": "editor/overview-plan.test.mjs:1:1",
+      "failureType": "testCodeFailure",
+      "error": "test failed"
+    },
+    {
+      "test": "editor/panel-guard.test.mjs",
+      "location": "editor/panel-guard.test.mjs:1:1",
+      "failureType": "testCodeFailure",
+      "error": "test failed"
+    },
+    {
+      "test": "editor/prepare-cloned-section.test.mjs",
+      "location": "editor/prepare-cloned-section.test.mjs:1:1",
+      "failureType": "testCodeFailure",
+      "error": "test failed"
+    },
+    {
+      "test": "editor/preview-apply.test.mjs",
+      "location": "editor/preview-apply.test.mjs:1:1",
+      "failureType": "testCodeFailure",
+      "error": "test failed"
+    },
+    {
+      "test": "Generic services contain no direct or dynamic site schema/lib imports",
+      "location": "editor/runtime-options.test.mjs:74:1",
+      "failureType": "testCodeFailure",
+      "error": "The input did not match the regular expression /src\\/lib\\//. Input:\n\n\"import path from 'node:path';\\n\" +\n  \"import {pathToFileURL} from 'node:url';\\n\" +\n  \"import {z} from 'zod';\\n\" +\n  \"import {createExtensionRegistry,LegacySourceAdapter} from 'astro-frontend-editor/runtime/extensions';\\n\" +\n  \"import {templates} from './design/templates.mjs';\\n\" +\n  \"import {routeTools} from './extensions/flyingstars/web/routing.mjs';\\n\" +\n  \"import {localeTransactions} from './design/locale-transactions.mjs';\\n\" +\n  \"export {compatibility} from './extensions/flyingstars/runtime-compatibility.mjs';\\n\" +\n  '\\n' +\n  '/** The visitor schema is authoritative. Old package/site/translation records are deliberately not registered. */\\n' +\n  'export async function createFlyingStarsAdapter(root) {\\n' +\n  \" const {contentSchemas,sectionSchema}=await import(pathToFileURL(path.join(root,'src/schemas/content-schema.mjs')));\\n\" +\n  ' const types=Object.entries(contentSchemas).map(([directory,schema])=>({\\n' +\n  \"  prefix:directory==='pages'?'page':directory==='posts'?'post':directory==='projects'?'project':'faq',directory,\\n\" +\n  \"  extension:directory==='pages'?'yaml':'md',format:directory==='pages'?'yaml':'m"
+    },
+    {
+      "test": "Injected adapter controls routes and translation fields; custom branches reach store, publisher and sync",
+      "location": "editor/runtime-options.test.mjs:82:1",
+      "failureType": "testCodeFailure",
+      "error": "The expression evaluated to a falsy value:\n\n  assert.ok(state.records.every(record=>record.route==='/injected/'))"
+    },
+    {
+      "test": "Real CLI from /tmp builds WORKTREE and serves authenticated /editor/ with isolated private state",
+      "location": "editor/runtime-options.test.mjs:103:1",
+      "failureType": "testCodeFailure",
+      "error": "CLI exited 1: file://editor/server.mjs:16\n if(process.env.AFE_DESIGN_EDITOR!=='source')throw Error('Der neue Designstand unterstützt vorerst nur den Datei-Editor. Canvas, Mediathek, Paket-/UI-Datensätze und automatische Übersetzung sind noch nicht migriert. Details: docs/editor-designsprache.md. Für den eingeschränkten Testbetrieb AFE_DESIGN_EDITOR=source setzen.');\n                                                   ^\n\nError: Der neue Designstand unterstützt vorerst nur den Datei-Editor. Canvas, Mediathek, Paket-/UI-Datensätze und automatische Übersetzung sind noch nicht migriert. Details: docs/editor-designsprache.md. Für den eingeschränkten Testbetrieb AFE_DESIGN_EDITOR=source setzen.\n    at runEditor (file://editor/server.mjs:16:52)\n    at file://editor/server.mjs:20:34\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at async node:internal/modules/esm/loader:647:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.21.0"
+    },
+    {
+      "test": "Composition from /tmp initializes both builds and authenticated editor handlers without sockets",
+      "location": "editor/runtime-options.test.mjs:133:1",
+      "failureType": "testCodeFailure",
+      "error": "ENOENT: no such file or directory, access '/var/folders/29/9p1f75kd7z1bz8j2rjr79_pc0000gn/T/afe-options-8uuFrg/state/runtime-public/494ba6185984562b7211681da51413294f7f40d7/site/drohnenshow-preise/index.html'"
+    },
+    {
+      "test": "Offline-Pipeline: CI, Code-Deploy, Inhalts-Push/Freigabe, Rebase, Buildfehler und Konflikt",
+      "location": "editor/test/pipeline-e2e.test.mjs:21:1",
+      "failureType": "testCodeFailure",
+      "error": "astro.config.mjs hat eine unerwartete Form; die Fixture kann .env und Bilddienst nicht abschalten."
+    },
+    {
+      "test": "only new or changed fields are sent; identical text is sent once; a second run sends nothing",
+      "location": "editor/translation-core.test.mjs:34:1",
+      "failureType": "testCodeFailure",
+      "error": "Expected values to be strictly equal:\n\n0 !== 3"
+    },
+    {
+      "test": "unchanged markdown paragraphs come from memory; link targets survive",
+      "location": "editor/translation-core.test.mjs:55:1",
+      "failureType": "testCodeFailure",
+      "error": "Cannot read properties of undefined (reading 'entries')"
+    },
+    {
+      "test": "moving the record hash never revives an old value without a field hash",
+      "location": "editor/translation-core.test.mjs:70:1",
+      "failureType": "testCodeFailure",
+      "error": "Cannot read properties of undefined (reading 'data')"
+    },
+    {
+      "test": "pieces respect a UTF-8 byte limit, also for long sentences without full stops",
+      "location": "editor/translation-core.test.mjs:78:1",
+      "failureType": "testCodeFailure",
+      "error": ""
+    },
+    {
+      "test": "code fences stay untouched across blank lines; titled links and placeholders are protected",
+      "location": "editor/translation-core.test.mjs:88:1",
+      "failureType": "testCodeFailure",
+      "error": "The expression evaluated to a falsy value:\n\n  assert.ok(planned.toSend.some((s) => s.text.includes(\"⟦\") && !s.text.includes(\"/x\") && !s.text.includes(\"{name}\")))"
+    },
+    {
+      "test": "a translation that drops a protected token is rejected; successful pieces are kept on partial failure",
+      "location": "editor/translation-core.test.mjs:97:1",
+      "failureType": "testCodeFailure",
+      "error": "Expected values to be strictly equal:\n\n0 !== 1"
+    },
+    {
+      "test": "outline and caps marks are protected like placeholders and come back in place",
+      "location": "editor/translation-core.test.mjs:113:1",
+      "failureType": "testCodeFailure",
+      "error": "Cannot read properties of undefined (reading 'entries')"
+    },
+    {
+      "test": "editor/translation-format.test.mjs",
+      "location": "editor/translation-format.test.mjs:1:1",
+      "failureType": "testCodeFailure",
+      "error": "test failed"
+    },
+    {
+      "test": "editor/view-state.test.mjs",
+      "location": "editor/view-state.test.mjs:1:1",
+      "failureType": "testCodeFailure",
+      "error": "test failed"
+    }
+  ]
+}

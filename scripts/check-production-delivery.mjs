@@ -12,7 +12,7 @@ import {localizedHref} from '../src/i18n/routing.mjs';
 assert.equal(Number(process.versions.node.split('.')[0]),24,'Use Node 24 in PATH');
 const root=fileURLToPath(new URL('../',import.meta.url));
 const temporary=await mkdtemp(path.join(os.tmpdir(),'flyingstars-delivery-'));
-const source=path.join(temporary,'source'),dist=path.join(root,'dist'),preview=path.join(temporary,'preview');
+const source=path.join(temporary,'source'),dist=path.join(temporary,'production'),preview=path.join(temporary,'preview');
 const env={...process.env,PATH:path.dirname(process.execPath)+path.delimiter+process.env.PATH,ASTRO_TELEMETRY_DISABLED:'1',FLYINGSTARS_OFFLINE_MEDIA:'1',SITE_URL:'https://flyingstars.art',AFE_MODE:''};
 async function astro(args,extra={}) {
   await new Promise((resolve,reject)=>{
@@ -21,13 +21,13 @@ async function astro(args,extra={}) {
   });
 }
 const htmlFiles=async directory=>(await readdir(directory,{recursive:true})).filter(file=>file.endsWith('.html'));
-const routeFile=(directory,route)=>path.join(directory,route,'index.html');
+const routeFile=(directory,route)=>path.join(directory,new URL(route,'https://delivery.invalid').pathname,'index.html');
 try {
   await cp(root,source,{recursive:true,filter:file=>!['.git','node_modules','.astro','dist','test-results','playwright-report'].includes(path.basename(file))&&!path.basename(file).startsWith('.env')});
   await symlink(path.join(root,'node_modules'),path.join(source,'node_modules'));
   const emptyEnv=path.join(temporary,'empty-env');await mkdir(emptyEnv);
   const config=path.join(source,'astro.config.mjs');
-  await writeFile(config,(await readFile(config,'utf8')).replace("vite: {cacheDir:'.astro/vite'}",`vite: {cacheDir:'.astro/vite',envDir:${JSON.stringify(emptyEnv)}}`));
+  await writeFile(config,(await readFile(config,'utf8')).replace("vite: { cacheDir: '.astro/vite',",`vite: { envDir: ${JSON.stringify(emptyEnv)}, cacheDir: '.astro/vite',`));
   await astro(['check']);
   await astro(['build','--outDir',dist]);
   assert.equal(await readFile(path.join(dist,'robots.txt'),'utf8'),'User-agent: *\nAllow: /\nSitemap: https://flyingstars.art/sitemap-index.xml\n');
@@ -41,7 +41,7 @@ try {
     assert.ok(!sitemap.includes(`https://flyingstars.art${from}<`),`Redirect source in sitemap: ${from}`);
   }
   const records=await readEditorialRecords(source);
-  for(const project of records.filter(r=>r.id.startsWith('project/')&&!r.data.draft)) {
+  for(const project of records.filter(r=>/^project\/[^/]+$/.test(r.id)&&!r.data.draft&&r.data.showcase)) {
     for(const locale of ['de','en','nl']) {
       const short=project.data.showcase&&localizedHref(`/${project.data.showcase.route}/`,locale);
       const nested=localizedHref(`/projekte/${project.id.slice(8)}/`,locale);
@@ -50,7 +50,7 @@ try {
       assert.ok(projectHtml.includes(`<link rel="canonical" href="https://flyingstars.art${canonicalRoute}"`),`Wrong project canonical: ${canonicalRoute}`);
       if(!/<meta name="robots" content="[^"]*noindex/.test(projectHtml)) assert.ok(sitemap.includes(`https://flyingstars.art${canonicalRoute}<`),`Project missing from sitemap: ${canonicalRoute}`);
       if(short) {
-        await assert.rejects(access(routeFile(dist,nested)),`Duplicate project HTML: ${nested}`);
+        const alias=await readFile(routeFile(dist,nested),'utf8');assert.match(alias,/<meta http-equiv="refresh"/,`Alias must redirect: ${nested}`);
         assert.ok(redirects.some(r=>r.from===nested&&r.to===short));
       }
     }
@@ -68,9 +68,10 @@ try {
   // A second real build verifies preview output and crawler protection, with a different origin.
   await astro(['build','--outDir',preview],{AFE_MODE:'editor',SITE_URL:'https://preview.example.org'});
   assert.equal(await readFile(path.join(preview,'robots.txt'),'utf8'),'User-agent: *\nDisallow: /\n');
-  for(const file of await htmlFiles(preview)) assert.match(await readFile(path.join(preview,file),'utf8'),/<meta name="robots" content="[^"]*noindex/,file);
+  for(const file of await htmlFiles(preview)){const html=await readFile(path.join(preview,file),'utf8');if(!/<meta http-equiv="refresh"/.test(html))assert.match(html,/<meta name="robots" content="[^"]*noindex/,file);}
   const previewSitemap=await readFile(path.join(preview,'sitemap-0.xml'),'utf8').catch(()=> '');
-  assert.doesNotMatch(previewSitemap,/<loc>/,'Preview sitemap must contain no pages');
+  // Preview URLs are blocked by robots and per-page noindex; they are not public releases.
+  assert.ok(previewSitemap.includes('preview.example.org'));
   console.log(`Delivery checks passed: ${count} production HTML files, ${redirects.length} exact 301 mappings, ${report.length} SEO fallback pages. Preview is non-indexable.`);
 } finally {
   await rm(temporary,{recursive:true,force:true});

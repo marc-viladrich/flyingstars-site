@@ -40,7 +40,6 @@ export async function createFlyingStarsAdapter(root) {
   title:(source,data)=>data.title||data.question||source.id,
   route:recordRoute,
   omitField:(_source,_data,field)=>field[0]==='translationSourceHash',
-  validateWrite:localeTransactions(root,sourceFor).validateWrite,
   ...localeTransactions(root,sourceFor),
   buildEnvironment:({editor,origin,imageCache})=>({SITE_URL:origin,...editor?{AFE_MODE:'editor'}:{},...imageCache?{FLYINGSTARS_IMAGE_CACHE_DIR:imageCache}:{}}),
   recordGroup:id=>id.split('/')[0],
