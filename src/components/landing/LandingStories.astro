@@ -1,4 +1,5 @@
 ---
+import FactList from '../FactList.astro';
 import { forPath } from '../../i18n/server';
 const { localHref } = forPath(Astro.url.pathname);
 // Referenzen als Geschichten (Hochzeit): zwei oder drei Karten nebeneinander, versetzt wie Fotos auf einem Tisch.
@@ -26,7 +27,7 @@ const cards = await Promise.all(items.map(async (item) => ({ ...item, media: awa
           <span class="kicker mono">{c.kicker}</span>
           <T>{c.title}</T>
           <p>{c.text}</p>
-          {c.facts.length > 1 && <dl class="ls-facts">{c.facts.slice(1).map((f) => <div><dt class="mono">{f.label}</dt><dd>{f.value}</dd></div>)}</dl>}
+          {c.facts.length > 1 && <FactList items={c.facts.slice(1)} variant="story" />}
         </div>
       </article>
     ))}
@@ -48,10 +49,6 @@ const cards = await Promise.all(items.map(async (item) => ({ ...item, media: awa
   .ls-body .kicker { margin: 0; }
   .ls-body h2, .ls-body h3 { font-size: clamp(24px, 2.2vw, 32px); line-height: 1.1; max-width: 22ch; }
   .ls-body p { color: var(--muted); max-width: 52ch; }
-  .ls-facts { display: flex; flex-wrap: wrap; gap: 0 28px; margin: 6px 0 0; padding-top: 16px; border-top: 1px solid var(--line); width: 100%; }
-  .ls-facts > div { display: grid; gap: 2px; }
-  .ls-facts dt { order: 2; color: var(--faint); }
-  .ls-facts dd { margin: 0; font: 500 22px/1.15 var(--display); letter-spacing: -0.02em; color: var(--head); }
   .ls-more { margin-top: clamp(32px, 4vw, 48px); }
   @media (max-width: 760px) {
     .ls-grid, .ls-grid[data-n='3'] { grid-template-columns: 1fr; gap: 56px; }

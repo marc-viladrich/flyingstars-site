@@ -1,4 +1,5 @@
 ---
+import FactList from '../FactList.astro';
 // Breites Bild als Bühne: Orte (Werbung) oder Einsatzarten (Indoor) liegen als Markierungen auf dem Bild, darunter
 // Einträge (z. B. Referenzen mit Datum) links und Kennzahlen rechts. Bild mit Vorhang-Reveal, ohne Hover-Effekt.
 import type { Section } from '../../content.config';
@@ -25,7 +26,7 @@ const narrow = await optimizedImage(image.src, 640, 480);
   {(entries.length > 0 || facts.length > 0) && (
     <div class:list={['sp-below', { 'only-facts': entries.length === 0 }]}>
       {entries.length > 0 && <div class="sp-entries">{entries.map((e) => <article><span class="kicker mono">{e.kicker}</span><T>{e.title}</T>{e.text && <p>{e.text}</p>}</article>)}</div>}
-      {facts.length > 0 && <dl class="sp-facts">{facts.map((f) => <div><dt class="mono">{f.label}</dt><dd>{f.value}</dd></div>)}</dl>}
+      {facts.length > 0 && <FactList items={facts} variant="spotlight" />}
     </div>
   )}
 </section>
@@ -44,20 +45,9 @@ const narrow = await optimizedImage(image.src, 640, 480);
   .sp-entries .kicker { margin: 0; }
   .sp-entries h2, .sp-entries h3 { font-size: clamp(21px, 1.7vw, 25px); }
   .sp-entries p { margin: 0; color: var(--muted); max-width: 44ch; }
-  .sp-facts { margin: 0; display: grid; gap: 0; }
-  .sp-facts > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 16px; padding: 16px 0; border-top: 1px solid var(--line); }
-  .sp-facts > div:last-child { border-bottom: 1px solid var(--line); }
-  .sp-facts dt { color: var(--faint); }
-  .sp-facts dd { margin: 0; font: 500 clamp(22px, 2vw, 30px)/1.1 var(--display); letter-spacing: -0.02em; color: var(--head); text-align: right; }
   /* nur Kennzahlen: als Reihe nebeneinander, Wert über der Beschriftung */
   .sp-below.only-facts { grid-template-columns: 1fr; }
-  .only-facts .sp-facts { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); border-top: 1px solid var(--line); }
-  .only-facts .sp-facts > div { grid-template-columns: 1fr; gap: 6px; border: 0; padding: 20px 24px 0 0; }
-  .only-facts .sp-facts > div + div { padding-left: 24px; border-left: 1px solid var(--line); }
-  .only-facts .sp-facts dt { order: 2; }
-  .only-facts .sp-facts dd { text-align: left; }
   @media (max-width: 900px) { .sp-below { grid-template-columns: 1fr; } }
-  @media (max-width: 600px) { .only-facts .sp-facts > div + div { padding-left: 0; border-left: 0; } }
   @media (max-width: 700px) {
     .sp-img { aspect-ratio: 4 / 3; }
     .sp-tags { position: static; margin-top: 14px; }

@@ -21,7 +21,7 @@ import { t } from '../../i18n/ui.mjs';
   });
 
   // scrollytelling: the step in the middle of the screen picks the picture on the left
-  const steps = [...document.querySelectorAll("[data-step]")], scenes = [...document.querySelectorAll("[data-scene]")], progress = document.querySelector("[data-progress]");
+  const steps = [...document.querySelectorAll(".c-story [data-story-step]")], scenes = [...document.querySelectorAll(".c-story [data-scene]")], progress = document.querySelector(".c-story [data-progress]");
   if (steps.length) {
     const show = (i) => {
       steps.forEach((s, k) => s.classList.toggle("on", k === i));

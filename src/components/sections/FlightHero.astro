@@ -1,4 +1,5 @@
 ---
+import FactList from '../FactList.astro';
 import { forPath } from '../../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
 import type { Section } from '../../content.config';
@@ -25,7 +26,7 @@ const still = await optimizedImage(poster.src, 960);
     <p class="lead">{text}</p>
     <div class="actions"><a class="btn primary" href={localHref(cta.href)}>{cta.label}</a>{secondary && <a class="btn" href={localHref(secondary.href)}>{secondary.label}</a>}</div>
   </div>
-  {stats && stats.length > 0 && <dl class="spec mono" aria-label={t('flighthero.keyFacts')}>{stats.map((stat) => <><dt>{stat.label}</dt><dd><b>{stat.value}</b></dd></>)}</dl>}
+  {stats && stats.length > 0 && <FactList items={stats} variant="spec" label={t('flighthero.keyFacts')} />}
 </section>
 
 <script is:inline>

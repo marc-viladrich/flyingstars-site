@@ -83,3 +83,14 @@ test('Filter und Textstile erben Auswahlzustände; alle aktiven Selects erben di
   }
   assert.doesNotMatch(read('src/styles/global.css'),/\.field input[, {]|\.field select[, {]|\.field textarea[, {]/);
 });
+
+test('Alle redaktionellen Faktenlisten und Prozesslisten delegieren an ihre Besitzer', () => {
+  for(const file of ['sections/Metrics','sections/Tempo','projects/CaseStudy','landing/LandingHero','landing/LandingStories','landing/LandingSpotlight','sections/Sustainability','sections/FlightHero']) {
+    const s=read(`src/components/${file}.astro`);assert.match(s,/<FactList /);assert.doesNotMatch(s,/<dl\b/);
+  }
+  for(const file of ['sections/Steps','sections/Timeline','landing/LandingFlow','MetroLine']) {
+    const s=read(`src/components/${file}.astro`);assert.match(s,/<ProcessList /);assert.doesNotMatch(s,/<ol\b/);
+  }
+  assert.doesNotMatch(read('src/styles/global.css'),/\.ruler li:nth-child\(\d/);
+  const script=read('src/components/projects/case.js');assert.match(script,/\.c-story \[data-story-step\]/);assert.doesNotMatch(script,/querySelectorAll\("\[data-step\]"\)/);
+});

@@ -1,4 +1,5 @@
 ---
+import FactList from '../FactList.astro';
 // Von der Anfrage bis zum Showabend in Zahlen (Marc, 31.10.2026: „benefitorientiert … in Zahlen statt in Adjektiven“).
 // Der Weg als Netzplan-Zeitstrahl (MetroLine.astro), Express als Abzweigung; darunter ruhige Kennzahlen.
 import type { Section } from '../../content.config';
@@ -12,6 +13,6 @@ const H = index === 0 ? 'h1' : 'h2';
 <section class="section alt tempo" id={id} aria-labelledby={headingId}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
   <MetroLine marks={marks} branch={shortcut} />
-  {facts.length > 0 && <dl class="tempo-facts">{facts.map((f) => <div><dt class="mono">{f.label}</dt><dd class="v">{f.value}</dd>{f.text && <dd class="t">{f.text}</dd>}</div>)}</dl>}
+  {facts.length > 0 && <FactList items={facts} variant="tempo" />}
   {note && <p class="tempo-note mono">{note}</p>}
 </section>

@@ -1,4 +1,5 @@
 ---
+import FactList from '../FactList.astro';
 // Nachhaltigkeit als Scrollstory aus dem Vercel-Prototyp (Marc, 31.10.2026: „das Scrollytelling finde ich ganz nice,
 // das kann bleiben“): Die Bühne bleibt stehen, vier Zahlen übernehmen nacheinander den Bildschirm, im Hintergrund fliegt
 // die Flotte eine passende Figur (Schallwelle, Null, geparkte Flotte, Blitz). Ohne JS, bei reduzierter Bewegung und auf
@@ -23,11 +24,7 @@ const proof = proofImage ? await optimizedLogo(proofImage.src, 60) : undefined;
   </div>
   {facts.length > 0 && <div class="eco-scrolly" data-scrolly><div class="eco-pin">
     <canvas class="eco-canvas" aria-hidden="true"></canvas>
-    <dl class="eco-facts">{facts.map((fact, i) => <div class="fact">
-      <dt class="fk mono">{fact.label}</dt>
-      <dd class:list={['fn', { g: fact.unit === '%', o: i === 1 && facts.length > 2 }]}>{fact.unit === '%' ? <span data-to={fact.value}>{fact.value}</span> : fact.value}{fact.unit && <small>{fact.unit}</small>}</dd>
-      <dd class="ft"><p>{fact.text}</p></dd>
-    </div>)}</dl>
+    <FactList items={facts} variant="eco" />
     <ol class="eco-steps mono" aria-hidden="true">{facts.map((fact, i) => <li style={`--k:${i}`}>{fact.label}</li>)}</ol>
   </div></div>}
   {pillars.length > 0 && <ul class="eco-pillars">{pillars.map((p) => <li>
