@@ -1,84 +1,127 @@
-// Kontaktformular-Endpoint als Cloudflare Pages Function (Prototyp-Stack).
-// Bewusst nur Web-Standard-APIs (Request/Response/FormData/fetch), damit der Code
-// 1:1 auf jede andere Runtime (Deno, Node, Worker eines EU-Anbieters) umziehen kann.
-// Speichert nichts. Sendet per Brevo Transactional API, wenn BREVO_API_KEY gesetzt ist.
-
+// Cloudflare Pages Function. Nur Web-Standard-APIs für einen späteren EU-Umzug.
+// Keine eigene dauerhafte Ablage und keine Anwendungslogs. Hosting, Brevo und
+// Empfängerpostfach verarbeiten/speichern dennoch Daten, siehe Datenschutz-Doku.
 interface Env {
-  BREVO_API_KEY?: string;      // Secret
-  CONTACT_TO?: string;         // Empfängeradresse
-  CONTACT_FROM?: string;       // verifizierte Absenderadresse bei Brevo
-  TURNSTILE_SECRET?: string;   // optional; wenn gesetzt, wird cf-turnstile-response geprüft
+  BREVO_API_KEY?: string;
+  CONTACT_TO?: string;
+  CONTACT_FROM?: string;
+  TURNSTILE_SECRET?: string; // Erst mit passendem Widget + Datenschutzinformation aktivieren.
   SITE_NAME?: string;
 }
 
+const MAX_BODY = 64 * 1024; // Auch ohne oder mit falschem Content-Length durchsetzen.
 const MAX = { name: 120, email: 200, message: 5000 };
+const EXTRA_FIELDS = ['anlass', 'datum', 'datum-offen', 'ort', 'paket', 'drohnen', 'telefon', 'firma', 'quelle'];
+const CONTROL = /[\u0000-\u001f\u007f]/;
 
 export const onRequestPost = async ({ request, env }: { request: Request; env: Env }): Promise<Response> => {
+  // Keine fremden Websites als Browser-Mailrelay. Kein Ersatz für ein Rate-Limit.
+  const origin = request.headers.get('origin');
+  if (origin && origin !== new URL(request.url).origin) return problem(403, 'Bitte nutzt das Formular auf unserer Website.');
   const ct = request.headers.get('content-type') ?? '';
-  if (!ct.includes('form')) return problem(415, 'Nur Formulardaten.');
-  const form = await request.formData();
-  const get = (k: string) => String(form.get(k) ?? '').trim();
+  if (!/^(application\/x-www-form-urlencoded|multipart\/form-data)(;|$)/i.test(ct)) return problem(415, 'Nur Formulardaten.');
+  let form: FormData;
+  try {
+    if (Number(request.headers.get('content-length')) > MAX_BODY) return problem(413, 'Die Anfrage ist zu groß. Bitte kürzt eure Angaben.');
+    const reader = request.body?.getReader();
+    if (!reader) return problem(400, 'Leere Anfrage.');
+    const chunks: Uint8Array[] = [];
+    let size = 0;
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        size += value.byteLength;
+        if (size > MAX_BODY) {
+          await reader.cancel();
+          return problem(413, 'Die Anfrage ist zu groß. Bitte kürzt eure Angaben.');
+        }
+        chunks.push(value);
+      }
+    } finally { reader.releaseLock(); }
+    const bytes = new Uint8Array(size);
+    let offset = 0;
+    for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+    form = await new Response(bytes, { headers: { 'content-type': ct } }).formData();
+  } catch { return problem(400, 'Die Formulardaten konnten nicht gelesen werden. Bitte versucht es erneut.'); }
 
-  // Honeypot: Bots füllen das versteckte Feld. Bewusst 200 statt Fehler, damit sie nichts lernen.
+  // Es gibt keinen Datei-Upload im Kontaktformular. Auch unerwartete Dateien und
+  // mehrdeutige Mehrfachfelder ablehnen, bevor etwas an einen Dienst weitergeht.
+  if ([...form].length > 40 || [...form].some(([key, value]) => typeof value !== 'string' || (key !== 'extras' && form.getAll(key).length !== 1))) {
+    return problem(400, 'Ungültige Formulardaten. Dateien können hier nicht gesendet werden.');
+  }
+  const get = (key: string) => String(form.get(key) ?? '').trim();
+  // Honeypot: bewusst Erfolg vortäuschen, ohne Versand.
   if (get('website')) return ok(request);
+  // Ergänzende, umgehbare Zeitfalle. Kein Tracking, keine Sperre für No-JS.
+  const duration = get('form-duration');
+  if (duration && (!/^\d{1,12}$/.test(duration) || Number(duration) < 2000)) {
+    return problem(400, 'Bitte wartet einen Moment und sendet die Anfrage erneut.');
+  }
 
   const name = get('name'), email = get('email'), message = get('message');
-  const extra = Object.fromEntries(['anlass', 'datum', 'datum-offen', 'ort', 'paket', 'drohnen', 'telefon', 'firma', 'quelle'].map((key) => [key, get(key)]));
-  // Extras von der Preisseite (Mehrfachauswahl, Werte wie „express“), als eine Zeile in die Mail
+  const extra: Record<string, string> = Object.fromEntries(EXTRA_FIELDS.map((key) => [key, get(key)]));
   const extras = form.getAll('extras').map((value) => String(value).trim()).filter(Boolean);
   if (extras.length > 10 || extras.some((value) => !/^[a-z]+(-[a-z]+)*$/.test(value) || value.length > 30)) return problem(400, 'Extras ungültig.');
-  if (extras.length) extra.extras = extras.join(', ');
   if (!name || !email || (!message && !extra.anlass)) return problem(400, 'Name, E-Mail und Anlass oder Nachricht sind Pflicht.');
-  if (Object.values(extra).some((value) => value.length > 200 || /[\r\n]/.test(value))) return problem(400, 'Ungültige Zusatzangaben.');
+  if (Object.values(extra).some((value) => value.length > 200 || CONTROL.test(value))) return problem(400, 'Ungültige Zusatzangaben.');
   if (extra.anlass && !['firma', 'stadt', 'agentur', 'privat', 'indoor', 'sonstiges'].includes(extra.anlass)) return problem(400, 'Anlass ungültig.');
+  if (extra.paket && !['SPARK', 'HORIZON', 'ODYSSEY'].includes(extra.paket)) return problem(400, 'Paket ungültig.');
+  if (extra['datum-offen'] && extra['datum-offen'] !== 'ja') return problem(400, 'Datumsangabe ungültig.');
+  if (extra.datum && (!/^\d{4}-\d{2}-\d{2}$/.test(extra.datum) || !Number.isFinite(Date.parse(extra.datum)) || new Date(extra.datum).toISOString().slice(0, 10) !== extra.datum)) return problem(400, 'Datum ungültig.');
   if (extra.drohnen && (!/^\d+$/.test(extra.drohnen) || Number(extra.drohnen) < 100 || Number(extra.drohnen) > 1000)) return problem(400, 'Drohnenanzahl ungültig.');
   if (name.length > MAX.name || email.length > MAX.email || message.length > MAX.message) return problem(400, 'Eingabe zu lang.');
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return problem(400, 'E-Mail-Adresse ungültig.');
-  if (/[\r\n]/.test(name) || /[\r\n]/.test(email)) return problem(400, 'Ungültige Zeichen.');
+  if (CONTROL.test(name) || CONTROL.test(email) || /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(message)) return problem(400, 'Ungültige Zeichen.');
+  if (extra['datum-offen']) extra.datum = ''; // Nicht zugleich offenes und festes Datum versenden.
+  if (extras.length) extra.extras = [...new Set(extras)].join(', ');
 
   if (env.TURNSTILE_SECRET) {
     const token = get('cf-turnstile-response');
-    const ip = request.headers.get('cf-connecting-ip') ?? '';
-    const r = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-      method: 'POST', headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ secret: env.TURNSTILE_SECRET, response: token, remoteip: ip }),
+    if (!token || token.length > 2048) return problem(403, 'Spam-Prüfung fehlgeschlagen. Bitte versucht es erneut.');
+    try {
+      const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+        method: 'POST', headers: { 'content-type': 'application/json' }, signal: AbortSignal.timeout(10_000),
+        // remoteip ist optional. Die Besucher-IP wird hier nicht weitergereicht.
+        body: JSON.stringify({ secret: env.TURNSTILE_SECRET, response: token }),
+      });
+      const result = await response.json() as { success?: boolean; hostname?: string };
+      if (!response.ok || result.success !== true || result.hostname !== new URL(request.url).hostname) return problem(403, 'Spam-Prüfung fehlgeschlagen. Bitte versucht es erneut.');
+    } catch { return problem(503, 'Die Spam-Prüfung ist gerade nicht erreichbar. Bitte versucht es später erneut.'); }
+  }
+
+  if (!env.BREVO_API_KEY || !env.CONTACT_TO || !env.CONTACT_FROM) return ok(request, 'not-configured');
+  const site = (env.SITE_NAME ?? 'Website').replace(/[\u0000-\u001f\u007f]/g, '').slice(0, 120);
+  try {
+    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST', signal: AbortSignal.timeout(10_000),
+      headers: { 'api-key': env.BREVO_API_KEY, 'content-type': 'application/json', accept: 'application/json' },
+      body: JSON.stringify({
+        sender: { email: env.CONTACT_FROM, name: site }, to: [{ email: env.CONTACT_TO }], replyTo: { email, name },
+        // Namen nicht zusätzlich in den Betreff und damit in Betreff-/Benachrichtigungslogs schreiben.
+        subject: `Anfrage über ${site}`,
+        textContent: `Name: ${name}\nE-Mail: ${email}\n${Object.entries(extra).filter(([, value]) => value).map(([key, value]) => `${key}: ${value}`).join('\n')}\n\n${message}\n`,
+      }),
     });
-    const v = (await r.json()) as { success: boolean };
-    if (!v.success) return problem(403, 'Spam-Prüfung fehlgeschlagen.');
+    if (!response.ok) return problem(502, 'Versand fehlgeschlagen. Bitte versucht es später erneut oder schreibt direkt per E-Mail.');
+  } catch {
+    // Keine Fehlerobjekte/Providerantworten loggen oder ausgeben. Bei Timeout ist
+    // eine Annahme durch Brevo möglich; kein automatischer Retry mit Duplikatrisiko.
+    return problem(503, 'Der Versand konnte nicht bestätigt werden. Bitte kontaktiert uns direkt per E-Mail.');
   }
-
-  if (!env.BREVO_API_KEY || !env.CONTACT_TO || !env.CONTACT_FROM) {
-    // Prototyp ohne Mailversand: nichts speichern, aber ehrlich antworten.
-    return ok(request, 'not-configured');
-  }
-
-  const site = env.SITE_NAME ?? 'Website';
-  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
-    method: 'POST',
-    headers: { 'api-key': env.BREVO_API_KEY, 'content-type': 'application/json', accept: 'application/json' },
-    body: JSON.stringify({
-      sender: { email: env.CONTACT_FROM, name: site },
-      to: [{ email: env.CONTACT_TO }],
-      replyTo: { email, name },
-      subject: `Anfrage über ${site}: ${name}`,
-      textContent: `Name: ${name}\nE-Mail: ${email}\n${Object.entries(extra).filter(([, value]) => value).map(([key, value]) => `${key}: ${value}`).join('\n')}\n\n${message}\n`,
-    }),
-  });
-  if (!res.ok) return problem(502, 'Versand fehlgeschlagen. Bitte später erneut versuchen oder direkt per E-Mail.');
   return ok(request);
 };
 
 export const onRequestGet = (): Response => problem(405, 'Nur POST.');
 
 function ok(request: Request, state = 'sent'): Response {
-  // Ohne JS: Redirect auf Danke-Seite. Mit fetch (Accept: application/json): JSON.
-  if ((request.headers.get('accept') ?? '').includes('application/json')) {
-    return new Response(JSON.stringify({ ok: true, state }), { headers: { 'content-type': 'application/json' } });
-  }
-  const url = new URL(request.url); url.pathname = '/danke/'; url.search = state === 'sent' ? '' : `?state=${state}`;
-  return Response.redirect(url.toString(), 303);
+  if ((request.headers.get('accept') ?? '').includes('application/json')) return json({ ok: true, state });
+  // Statische Danke-Seite ist noch eine Vorschauseite. Vor echtem Versand abstimmen.
+  const url = new URL(request.url); url.pathname = '/danke/'; url.hash = '';
+  url.search = state === 'sent' ? '' : `?state=${state}`;
+  return new Response(null, { status: 303, headers: { location: url.toString(), 'cache-control': 'no-store', 'referrer-policy': 'no-referrer' } });
 }
-
-function problem(status: number, detail: string): Response {
-  return new Response(JSON.stringify({ ok: false, detail }), { status, headers: { 'content-type': 'application/json' } });
+function json(body: object, status = 200): Response {
+  return new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', 'x-content-type-options': 'nosniff', 'referrer-policy': 'no-referrer', ...(status === 405 ? { allow: 'POST' } : {}) } });
 }
+function problem(status: number, detail: string): Response { return json({ ok: false, detail }, status); }

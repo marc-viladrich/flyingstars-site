@@ -1,14 +1,33 @@
-# Vorläufiger Hinweis für die Vorschau. Die Datenschutzerklärung der neuen Website muss FlyingStars bzw. deren
-# Datenschutzberatung schreiben oder freigeben (Hosting, Formulardienst, Calendly, WhatsApp-Link, Videos).
+# ENTWURF ZUR RECHTLICHEN PRÜFUNG. Keine freigegebene Datenschutzerklärung.
+# Tatsächliche Kontoeinstellungen, Verträge, Fristen und Postfachanbieter vor Livegang ergänzen.
+# Prüfliste, Quellen und Datenfluss: docs/kontaktformular-dsgvo.md.
 title: Datenschutz
-description: "Datenschutzhinweise zur FlyingStars-Vorschau: selbst ausgelieferte Schriften und Bilder, Videos erst auf Klick, kein Analyse-Tracking."
+description: "Vorläufige Datenschutzhinweise zu Hosting, Kontaktformular und Medien der FlyingStars-Vorschau. Die rechtliche Prüfung steht noch aus."
 noindex: true
 sections:
   - type: textMedia
     headline: Datenschutz in dieser Vorschau
     body: |
-      Schriften und Vorschaubilder liefert diese Website selbst aus. Videos starten erst, wenn ihr sie ausdrücklich anklickt. Die Vorschau verwendet kein Analyse-Tracking.
+      **Entwurf zur rechtlichen Prüfung.** Diese Hinweise beschreiben den technischen Prototyp. FlyingStars und die Datenschutzberatung müssen sie vor dem produktiven Einsatz vervollständigen und freigeben. Ein fehlender Mailversand bedeutet nicht, dass beim Hosting keine Daten verarbeitet werden.
 
-      Der Formularversand ist noch nicht eingerichtet. Bis dahin werden eure Angaben weder gespeichert noch per E-Mail verschickt, und ihr bekommt dazu eine Rückmeldung.
+      Verantwortlich ist die FlyingStars GmbH, Bulmker Straße 107, 45888 Gelsenkirchen. Ihr erreicht uns unter [team@flyingstars.art](mailto:team@flyingstars.art). Weitere Unternehmensangaben stehen im [Impressum](/impressum/).
 
-      Die geltenden Datenschutzinformationen findet ihr in der [Datenschutzerklärung der bestehenden FlyingStars-Website](https://flyingstars.art/datenschutz/). Für die neue Website wird die Erklärung vor der Veröffentlichung ergänzt und geprüft.
+      **Hosting.** Die Vorschau läuft über Cloudflare Pages und eine Cloudflare Pages Function. Cloudflare verarbeitet beim Aufruf technische Verbindungsdaten, insbesondere die IP-Adresse, und beim Absenden die Formulardaten. Cloudflare ist ein US-Anbieter; der Standardbetrieb gewährleistet keine ausschließliche Verarbeitung in der EU. Rechtsgrundlage für die sichere Bereitstellung ist Art. 6 Abs. 1 Buchst. f DSGVO, unser berechtigtes Interesse am Betrieb und Schutz der Website. Auftragsverarbeitungsvertrag, einschlägige Drittlandgarantien und tatsächliche Protokollierungsfristen müssen vor dem Livegang geprüft und hier konkretisiert werden.
+
+      **Eure Anfrage.** Wir verwenden eure Angaben zur Bearbeitung und Beantwortung der Anfrage und zur Vorbereitung eines möglichen Angebots. Das Formular fragt nach Anlass, Ort oder PLZ, Datum oder offenem Termin sowie Name und E-Mail-Adresse. Paket, Extras, Telefon, Firma, Herkunft der Empfehlung und Nachricht sind freiwillig. Die Herkunftsangabe hilft uns zu verstehen, über welche Wege ihr uns findet; sie ist für ein Angebot nicht nötig. Bitte übermittelt keine Gesundheitsdaten oder andere besonders sensiblen Informationen.
+
+      Für erforderliche vorvertragliche Schritte auf euren Wunsch kommt Art. 6 Abs. 1 Buchst. b DSGVO in Betracht. Bei allgemeinen Anfragen und geschäftlichen Ansprechpersonen, die selbst nicht Vertragspartei werden, dient die Bearbeitung unserem berechtigten Interesse an der Beantwortung und Geschäftsanbahnung nach Art. 6 Abs. 1 Buchst. f DSGVO. Die Auswertung der freiwilligen Herkunftsangabe ist gesondert zu begründen. Eine Verwendung für Newsletter findet durch dieses Formular nicht statt.
+
+      Die Angaben werden an die Cloudflare Function übermittelt. Bei eingerichtetem Versand leitet diese sie über Brevo an unser festgelegtes E-Mail-Postfach weiter. Brevo ist der vorgesehene Versanddienst, kein Newsletterverteiler. Ist der Versand nicht konfiguriert, meldet das Formular dies; die Formularanwendung legt die Anfrage dann nicht dauerhaft ab und verschickt keine E-Mail. Die tatsächliche Versandkonfiguration wurde für diesen Entwurf nicht überprüft.
+
+      Die Anwendung führt keine Logs mit Nachrichten oder IP-Adressen und hat keine eigene Datenbank für Anfragen. Bei eingerichtetem Versand können Daten dennoch bei Brevo, im Empfängerpostfach und in Backups gespeichert werden. Wir löschen Anfragen, wenn ihr Bearbeitungszweck entfällt, soweit keine gesetzlichen Aufbewahrungspflichten oder anderen zulässigen Gründe entgegenstehen. **Vor Livegang zu ergänzen:** Empfängerpostfach und dessen Anbieter, Brevo-Vertragsgesellschaft und Unterauftragsverarbeiter, Drittlandgarantien, konkrete Löschfristen einschließlich Versandprotokollen, Backups und Hostingprotokollen.
+
+      **Missbrauchsschutz.** Das Formular verwendet ein verstecktes Fangfeld und bei aktiviertem JavaScript eine kurze Zeitprüfung. Dafür werden keine Cookies gesetzt und keine externen Prüfdienste im Browser geladen. Die Function reicht eure IP-Adresse weder an Brevo noch als zusätzlichen Prüfparameter an Turnstile weiter. Ein Turnstile-Prüfpfad ist technisch vorbereitet; ein Widget ist im Prototyp nicht eingebunden. Eine Aktivierung benötigt eine gesonderte Datenschutzprüfung und aktualisierte Informationen.
+
+      **Dateien und Vorbelegung.** Das Kontaktformular nimmt keine Dateien an. Ein im Show-Konfigurator ausgewähltes Logo wird lokal im Browser verarbeitet und nicht als Datei mitgesendet. Eigener Text und die Show-Zusammenfassung können dagegen beim Wechsel zur Anfrage in der URL stehen. Damit gelangen sie bereits beim Seitenaufruf zum Hostinganbieter. Nach Übernahme ins Formular entfernt das Skript diese beiden Angaben aus der sichtbaren URL. Erst mit dem Absenden werden sie als Teil der Nachricht zum Versanddienst weitergegeben.
+
+      **Medien und Browser-Speicher.** Schriften und optimierte Bilder werden im Build der Website bereitgestellt. Videos laufen im Produktionsbuild über einen eigenen Medien-Endpunkt; einige starten automatisch. Dieser Endpunkt lädt sie serverseitig von festgelegten Quellen der bisherigen Website und des Vercel-Prototyps. Es gibt keine eingebetteten YouTube-Player, Karten oder Analyse-Skripte im geprüften Build. Eure Wahl zur Bewegungspause wird für die Sitzung im Browser gespeichert. Die Vorschau enthält Links zu Calendly, WhatsApp und sozialen Netzwerken. Beim Öffnen gelten zusätzlich die Datenschutzinformationen des jeweiligen Anbieters. Der endgültige Medienspeicher und alle aktiven Dienste sind vor Veröffentlichung nochmals zu prüfen.
+
+      **Eure Rechte.** Unter den gesetzlichen Voraussetzungen habt ihr Rechte auf Auskunft, Berichtigung, Löschung, Einschränkung und Datenübertragbarkeit. Verarbeitungen aufgrund berechtigter Interessen könnt ihr nach Art. 21 DSGVO widersprechen. Ihr könnt euch bei einer Datenschutzaufsichtsbehörde beschweren, insbesondere bei der [Landesbeauftragten für Datenschutz und Informationsfreiheit Nordrhein-Westfalen](https://www.ldi.nrw.de/). Ein gegebenenfalls bestellter Datenschutzbeauftragter und die vollständigen Informationen nach Art. 13 DSGVO sind vor Livegang zu ergänzen.
+
+      Die [Datenschutzerklärung der bestehenden FlyingStars-Website](https://flyingstars.art/datenschutz/) ersetzt die Prüfung dieser neuen Infrastruktur nicht.

@@ -80,8 +80,8 @@ const sources = ['Google', 'Empfehlung', 'Social Media', 'Presse', 'Eine Show ge
         <div class="field"><label class="lbl" for="f-quelle">Wie hast du von uns erfahren? <em>optional</em></label><select id="f-quelle" name="quelle"><option value="">Bitte wählen</option>{sources.map((s) => <option>{s}</option>)}</select></div>
         <!-- Freitext erst am Ende (Marc, 31.10.2026: im ersten Schritt ist das zu viel auf einmal) -->
         <div class="field"><label class="lbl" for="f-msg">Möchtest du uns noch etwas mitteilen? <em>optional</em></label><textarea id="f-msg" maxlength="5000" name="message" rows="3"></textarea></div>
-        <p class="hint">Mit dem Absenden werden deine Angaben zur Bearbeitung der Anfrage verwendet. Mehr dazu in der <a href="/datenschutz/">Datenschutzerklärung</a>.</p>
         <div class="actions"><button class="btn" data-back type="button">Zurück</button><button class="btn primary" type="submit">Anfrage senden</button></div>
+        <p class="hint">FlyingStars verwendet eure Angaben, um eure Anfrage zu bearbeiten. Als optional gekennzeichnete Angaben sind freiwillig. Bitte sendet keine sensiblen Daten. Hinweise zu Hosting, E-Mail-Versand und euren Rechten findet ihr in der <a href="/datenschutz/">Datenschutzerklärung</a>.</p>
         <div aria-hidden="true" class="honeypot"><label>Website<input autocomplete="off" name="website" tabindex="-1" /></label></div>
       </fieldset>
       <p class="form-status" data-form-status role="status" tabindex="-1"></p>
