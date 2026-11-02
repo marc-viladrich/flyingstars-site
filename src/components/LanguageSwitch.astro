@@ -22,11 +22,10 @@ const t = createTranslator(locale);
   .language-switch a[aria-current] { color: var(--head); border-color: var(--accent); }
   .language-switch a:hover { color: var(--accent); }
   .language-switch a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  :global(.mobile-menu) .language-switch { display: flex; justify-content: flex-start; gap: 16px; margin-top: 24px; }
   @media (max-width: 480px) { .language-switch a { min-width: 26px; padding-inline: 2px; } }
 </style>
 
 <style>
-  :global(.nav) .language-switch { margin-left: 0; gap: 2px; display: flex; }
-  :global(.mobile-menu) .language-switch a { font-size: 14px; line-height: 1.2; letter-spacing: 0; }
+  /* Im Mobile-Menü steht der Sprachschalter an derselben Stelle wie im Header */
+  :global(.nav) .language-switch, :global(.mobile-menu .top) .language-switch { margin-left: 0; gap: 2px; display: flex; }
 </style>

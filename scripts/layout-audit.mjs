@@ -7,6 +7,8 @@
 //   empty-h   Überschrift ohne Text (z. B. Daten aus einem veralteten Zwischenspeicher)
 //   overflow  Seite scrollt seitlich
 //   cta       Abschluss-Kasten (.promise) ohne Gesichter, Überschrift oder Text (Marc, 02.11.2026: „empty-looking CTAs“)
+//   hero-top  erste Zeile (Kicker oder h1) einer Seite mit .page-top nicht auf --hero-top (Marc, 02.11.2026: „Die Hero
+//             section sollte überall auf der gleichen Höhe anfangen“). Ausnahme: Seiten, deren Kopf mit einem Bild beginnt (.page-404)
 // Aufruf: node scripts/layout-audit.mjs [basis-url] [--start=/en/] [--widths=390,1440,1920] [--only=orphan,contain] [--browser=webkit]
 // Ohne Basis-URL: http://127.0.0.1:4391. Die Seiten kommen aus den Links der Startseite und des Footers (Crawl, max. 200; --start begrenzt auf diesen Pfadpräfix).
 import { chromium, webkit } from 'playwright';
@@ -66,6 +68,9 @@ for (const width of widths) {
         const missing = [['.faces', 'Gesichter'], [':is(h1,h2,h3)', 'Überschrift'], ['p', 'Text']].filter(([sel]) => !box.querySelector(sel)?.textContent?.trim() && !box.querySelector(sel)?.querySelector?.('img')).map(([, n]) => n);
         if (missing.length) r.push({ k: 'cta', what: `${name(box)} ohne ${missing.join(', ')}` });
       }
+      if (checks.includes('hero-top')) { const main = document.querySelector('main.page-top'); const first = main?.querySelector('.kicker, h1');
+        if (first && !main.querySelector('.page-404')) { const probe = document.createElement('div'); probe.style.height = 'var(--hero-top)'; document.body.append(probe); const want = probe.offsetHeight; probe.remove();
+          const top = first.getBoundingClientRect().top + scrollY; if (Math.abs(top - want) > 3) r.push({ k: 'hero-top', what: `${name(first)} beginnt bei ${Math.round(top)} statt ${want}` }); } }
       if (checks.includes('empty-h')) for (const h of document.querySelectorAll('h1,h2,h3,h4')) if (!h.textContent.trim() && !h.querySelector('img,svg[aria-label]')) r.push({ k: 'empty-h', what: name(h) });
       if (checks.includes('orphan')) {
         for (const el of document.querySelectorAll('main :is(p,h1,h2,h3,h4,li,dd,figcaption,blockquote,.lead)')) {
@@ -125,7 +130,7 @@ for (const width of widths) {
         }
       }
       return r;
-    }, { checks: ['orphan', 'contain', 'empty-h', 'overflow', 'cta'].filter(want) });
+    }, { checks: ['orphan', 'contain', 'empty-h', 'overflow', 'cta', 'hero-top'].filter(want) });
     for (const f of out) findings.push({ width, path, ...f });
   }
 }

@@ -1019,11 +1019,6 @@
     "en": "Legal",
     "nl": "Juridisch"
   },
-  "base.websitePreview": {
-    "de": "Website-Vorschau",
-    "en": "Website preview",
-    "nl": "Websitepreview"
-  },
   "404.pageNotFound": {
     "de": "Seite nicht gefunden",
     "en": "Page not found",
@@ -1078,11 +1073,6 @@
     "de": "Datenschutz",
     "en": "Privacy",
     "nl": "Privacy"
-  },
-  "packageDetails.aShowUsuallyLastsAround13MinutesWithUpTo": {
-    "de": "Eine Show dauert in der Regel ca. 13 Minuten, bis 25 Minuten sind möglich. Das gilt für jedes Paket.",
-    "en": "A show usually lasts around 13 minutes, with up to 25 minutes possible. This applies to every package.",
-    "nl": "Een show duurt meestal circa 13 minuten, tot 25 minuten is mogelijk. Dat geldt voor elk pakket."
   },
   "packageDetails.classic2d": {
     "de": "Klassisch in 2D",
@@ -1150,9 +1140,9 @@
     "nl": "vanaf {v0} drones"
   },
   "packageDetails.showtimeLine": {
-    "de": "{v0} Showzeit, bis 25 Min möglich",
-    "en": "{v0} show time, up to 25 min possible",
-    "nl": "{v0} showtijd, tot 25 min mogelijk"
+    "de": "10–25 Min Showzeit",
+    "en": "10–25 min show time",
+    "nl": "10–25 min showtijd"
   },
   "packageDetails.formationsFromOurCatalogue": {
     "de": "Formationen aus unserem Katalog",
@@ -1298,11 +1288,6 @@
     "de": "Die erzählte Show für große Kampagnen, Festivals und Events mit viel Publikum.",
     "en": "A storytelling show for major campaigns, festivals and large audiences.",
     "nl": "Een show met verhaal voor grote campagnes, festivals en een groot publiek."
-  },
-  "packageDetails.from300Drones": {
-    "de": "ab 300 Drohnen",
-    "en": "from 300 drones",
-    "nl": "vanaf 300 drones"
   },
   "packageDetails.everythingInHorizonPlus": {
     "de": "Alles aus HORIZON, plus:",
@@ -3089,21 +3074,6 @@
     "en": ", up to {count} drones",
     "nl": ", tot {count} drones"
   },
-  "pricing.duration10": {
-    "de": "ca. 10 Min",
-    "en": "approx. 10 min",
-    "nl": "ca. 10 min."
-  },
-  "pricing.duration13": {
-    "de": "ca. 13 Min",
-    "en": "approx. 13 min",
-    "nl": "ca. 13 min."
-  },
-  "pricing.duration15": {
-    "de": "15+ Min",
-    "en": "15+ min",
-    "nl": "15+ min."
-  },
   "pricing.extrasCount": {
     "de": "{count} Extras",
     "en": "{count} extras",
@@ -3533,5 +3503,15 @@
     "de": "Dienst|Dienste",
     "en": "service|services",
     "nl": "dienst|diensten"
+  },
+  "packageDetails.pricesNetPlusTravel": {
+    "de": "Alle Preise netto zzgl. Anfahrt",
+    "en": "All prices exclude VAT and travel",
+    "nl": "Alle prijzen zijn exclusief btw en reiskosten"
+  },
+  "packageDetails.storytelling3d": {
+    "de": "3D-Storytelling",
+    "en": "3D storytelling",
+    "nl": "3D-storytelling"
   }
 }

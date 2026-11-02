@@ -87,7 +87,7 @@ const markers = variant === 'outdoor'
   <div class="st-who">
     <T id={`${id}-who`}>{t('landingsite.more')}</T>
     <table aria-labelledby={`${id}-who`}>
-      <thead><tr><th scope="col">{t('landingsite.task')}</th><th scope="col" class="c">FlyingStars</th><th scope="col" class="c">{t('landingsite.you')}</th></tr></thead>
+      <thead data-sticky-strip><tr><th scope="col">{t('landingsite.task')}</th><th scope="col" class="c">FlyingStars</th><th scope="col" class="c">{t('landingsite.you')}</th></tr></thead>
       <tbody>{responsibilities.map((row) => <tr>
         <th scope="row">{row.task}</th>
         {[row.us, row.you].map((v) => <td class:list={['c', v]}>
@@ -170,6 +170,11 @@ const markers = variant === 'outdoor'
   .st-who > :is(h2, h3) { font-size: clamp(24px, 2.2vw, 32px); margin-bottom: 20px; }
   .st-who table { width: 100%; min-width: 0; max-width: 980px; border-collapse: collapse; table-layout: fixed; } /* Aufgabe nimmt den Rest, die Zeichenspalten bleiben schmal */
   .st-who th, .st-who td { padding: 14px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+  /* Kopfzeile klebt auf dem Handy unter dem Header wie die Reiter der Vergleiche (Marc, 02.11.2026: „bei ALLEN Tabellen“) */
+  @media (max-width: 700px) { .st-who thead th { position: sticky; top: var(--nav-h); z-index: 2; padding-top: 12px; background: var(--strip, var(--ground)); }
+    /* deckender Streifen bis an die Fensterränder, nur an den äußeren Zellen, sonst überdeckt ein Schatten die Nachbarzelle */
+    .st-who thead th:first-child { box-shadow: -100vmax 0 0 0 var(--strip, var(--ground)); }
+    .st-who thead th:last-child { box-shadow: 100vmax 0 0 0 var(--strip, var(--ground)); } }
   .st-who thead th { padding-top: 0; font: 400 12px/1.4 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); border-bottom-color: var(--line-strong); }
   .st-who tbody th { font-weight: 400; color: var(--text); font-size: 16px; padding-left: 0; hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; }
   .st-who .c { width: 132px; text-align: center; }

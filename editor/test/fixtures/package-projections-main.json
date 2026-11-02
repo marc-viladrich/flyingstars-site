@@ -400,7 +400,7 @@
         }
       }
     ],
-    "SHOW_DURATION": "Eine Show dauert in der Regel ca. 13 Minuten, bis 25 Minuten sind möglich. Das gilt für jedes Paket.",
+    "PRICE_NOTE": "Alle Preise netto zzgl. Anfahrt",
     "PACKAGE_DETAILS": {
       "SPARK": {
         "label": "Klassisch in 2D",
@@ -499,7 +499,7 @@
       },
       "ODYSSEY": {
         "tag": "Die erzählte Show für große Kampagnen, Festivals und Events mit viel Publikum.",
-        "badge": "ab 300 Drohnen",
+        "badge": "3D-Storytelling",
         "plus": "Alles aus HORIZON, plus:",
         "groups": [
           {
@@ -1174,7 +1174,7 @@
         }
       }
     ],
-    "SHOW_DURATION": "A show usually lasts around 13 minutes, with up to 25 minutes possible. This applies to every package.",
+    "PRICE_NOTE": "All prices exclude VAT and travel",
     "PACKAGE_DETAILS": {
       "SPARK": {
         "label": "Classic 2D",
@@ -1273,7 +1273,7 @@
       },
       "ODYSSEY": {
         "tag": "A storytelling show for major campaigns, festivals and large audiences.",
-        "badge": "from 300 drones",
+        "badge": "3D storytelling",
         "plus": "Everything in HORIZON, plus:",
         "groups": [
           {
@@ -1948,7 +1948,7 @@
         }
       }
     ],
-    "SHOW_DURATION": "Een show duurt meestal circa 13 minuten, tot 25 minuten is mogelijk. Dat geldt voor elk pakket.",
+    "PRICE_NOTE": "Alle prijzen zijn exclusief btw en reiskosten",
     "PACKAGE_DETAILS": {
       "SPARK": {
         "label": "Klassiek in 2D",
@@ -2047,7 +2047,7 @@
       },
       "ODYSSEY": {
         "tag": "Een show met verhaal voor grote campagnes, festivals en een groot publiek.",
-        "badge": "vanaf 300 drones",
+        "badge": "3D-storytelling",
         "plus": "Alles uit HORIZON, plus:",
         "groups": [
           {

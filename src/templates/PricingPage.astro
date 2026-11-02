@@ -17,7 +17,7 @@ import Included from '../components/pricing/Included.astro';
 import ComparisonMatrix from '../components/ComparisonMatrix.astro';
 import { SHOW_PACKAGES, PACKAGE_NAMES } from '../content/show-packages';
 import { getPackageDetails } from '../content/package-details';
-const { PACKAGE_DETAILS, COMPARISON, COMPARISON_NOTE, SHOW_DURATION } = getPackageDetails(forPath(Astro.url.pathname).locale);
+const { PACKAGE_DETAILS, COMPARISON, COMPARISON_NOTE, PRICE_NOTE } = getPackageDetails(forPath(Astro.url.pathname).locale);
 const money = (v: number) => t('showconfigurator.fromValue', { v0: v.toLocaleString(formatLocale) });
 const items = PACKAGE_NAMES.map((name) => ({ name, ...PACKAGE_DETAILS[name], badge: PACKAGE_DETAILS[name].often, highlight: Boolean(PACKAGE_DETAILS[name].often) }));
 const featured = PACKAGE_NAMES.findIndex((name) => PACKAGE_DETAILS[name].often);
@@ -32,7 +32,7 @@ const orb = { SPARK: 'ring', HORIZON: 'sphere', ODYSSEY: 'torus' } as const;
     kicker={t('pricingpage.pricesPackages')}
     headline={t('pricingpage.threePackagesClearStartingPrices')}
     text={t('pricingpage.addMoreDronesAndExtrasToAnyPackageAllPrices')}
-    note={SHOW_DURATION}
+    note={PRICE_NOTE}
     compact={false}
     items={items}
   />

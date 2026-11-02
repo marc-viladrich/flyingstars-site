@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { t } from '../i18n/ui.mjs';
+import { REVEAL_MARGIN } from './reveal-point.js';
 // Shared FlyingStars presentation; source: customer Vercel prototype.
 (() => {
   "use strict";
@@ -7,23 +8,23 @@ import { t } from '../i18n/ui.mjs';
   // A pause chosen on one page stays in effect while the visitor moves through the site.
   const stored = (() => { try { return sessionStorage.getItem('flyingstars:motion'); } catch { return null; } })();
   let paused = stored ? stored === 'paused' : reduce;
-  const motionButton = document.querySelector('[data-motion-toggle]');
+  const motionButtons = document.querySelectorAll('[data-motion-toggle]'); // Header und Mobile-Menü
   function setMotion() {
     document.documentElement.classList.toggle('motion-paused', paused);
     document.dispatchEvent(new Event('flyingstars:motion-change'));
-    if (motionButton) {
-      const label = paused ? t('site.resumeMotion') : t('base.pauseMotion');
-      motionButton.setAttribute('aria-label', label); motionButton.title = label;
-      motionButton.setAttribute('aria-pressed', String(paused));
-    }
+    const label = paused ? t('site.resumeMotion') : t('base.pauseMotion');
+    motionButtons.forEach((button) => {
+      button.setAttribute('aria-label', label); button.title = label;
+      button.setAttribute('aria-pressed', String(paused));
+    });
   }
-  motionButton?.addEventListener('click', () => {
+  motionButtons.forEach((button) => button.addEventListener('click', () => {
     paused = !paused;
     try { sessionStorage.setItem('flyingstars:motion', paused ? 'paused' : 'running'); } catch {}
     // Pause: alles, was noch auf seinen Auftritt wartet, sofort zeigen
     if (paused) document.documentElement.classList.remove('reveal');
     setMotion();
-  });
+  }));
   setMotion();
   const nav = document.querySelector("header.nav");
   const sentinel = document.querySelector(".nav-sentinel");
@@ -31,11 +32,18 @@ import { t } from '../i18n/ui.mjs';
   const menu = document.getElementById("mobile-menu");
   const opener = document.querySelector("[data-menu-open]");
   if (menu && opener) {
-    opener.addEventListener("click", () => { menu.showModal(); opener.setAttribute("aria-expanded", "true"); document.body.style.overflow = "hidden"; });
+    opener.addEventListener("click", () => {
+      if (nav) menu.style.setProperty("--menu-top", getComputedStyle(nav).paddingTop); // Kopfzeile des Menüs = aktuelle Kopfzeile der Seite
+      menu.showModal(); opener.setAttribute("aria-expanded", "true"); document.body.style.overflow = "hidden"; });
     menu.querySelector("[data-menu-close]").addEventListener("click", () => menu.close());
     menu.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => menu.close()));
-    menu.addEventListener("close", () => { document.body.style.overflow = ""; opener.setAttribute("aria-expanded", "false"); opener.focus(); });
+    menu.addEventListener("close", () => { document.body.style.overflow = ""; opener.setAttribute("aria-expanded", "false"); menu.querySelectorAll("details[open]").forEach((d) => { d.open = false; }); opener.focus(); });
   }
+  // Klebende Tabellenköpfe ([data-sticky-strip]: Reiter der Vergleiche, Kopf der Aufgaben-Tabelle) decken in der Farbe ihrer
+  // Section. Gemessen beim ersten Scrollen, dann sind alle Stylesheets angewandt (WebKit meldete beim Laden noch transparent).
+  addEventListener("scroll", () => document.querySelectorAll("[data-sticky-strip]").forEach((head) => {
+    for (let el = head.parentElement; el; el = el.parentElement) { const bg = getComputedStyle(el).backgroundColor; if (bg && !/rgba\(.*,\s*0\)$|transparent/.test(bg)) { head.style.setProperty("--strip", bg); break; } }
+  }), { once: true, passive: true });
   // Enhancement and font loading can change the height above an incoming hash link.
   // Align it after layout settles so calculator inquiries stay below the fixed nav.
   if (location.hash) window.addEventListener('load', () => {
@@ -94,14 +102,14 @@ import { t } from '../i18n/ui.mjs';
   if (document.documentElement.classList.contains("reveal") && "IntersectionObserver" in window) {
     const show = (el) => {
       el.classList.add("is-in"); el.classList.remove("pre");
-      if (el.classList.contains("member")) setTimeout(() => el.classList.add("shown"), 2600); // spätere Hover ohne Auftrittsverzögerung
+      if (el.classList.contains("member")) setTimeout(() => el.classList.add("shown"), 1400); // spätere Hover ohne Auftrittsverzögerung
     };
     const rio = new IntersectionObserver((es) => es.forEach((e) => {
       if (!e.isIntersecting) return;
       rio.unobserve(e.target);
       const own = e.target.__reveal || [e.target];
       own.forEach(show);
-    }), { threshold: 0, rootMargin: "0px 0px -6% 0px" }); // früher auslösen: sobald der Rahmen ins Bild kommt (Marc 31.10.)
+    }), { threshold: 0, rootMargin: REVEAL_MARGIN });
     document.querySelectorAll("[data-reveal-group], .member").forEach((el) => rio.observe(el));
     // Vorhänge: beobachtet wird der Rahmen darüber, ein per clip-path verdeckter Rahmen meldet sonst keine Sichtbarkeit
     document.querySelectorAll("[data-curtain]").forEach((el) => {

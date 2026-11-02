@@ -282,7 +282,7 @@ if (form) {
     if (Number(slider.value) !== drones) slider.value = String(drones);
     slider.setAttribute("aria-valuetext", message('showConfigurator.valueDronesValue', { v0: drones, v1: s.pkg }));
     for (const [sel, txt] of [["#cfg-pkg", s.pkg], ["#cfg-bar-pkg", s.pkg], ["#cfg-price", eur(price)], ["#cfg-bar-price", eur(price)], ["#cfg-dronecount", String(drones)]]) $(sel).textContent = txt;
-    $("#cfg-meta").textContent = message('showConfigurator.valueExcludingVatAndTravel', { v0: message(({ SPARK: 'pricing.duration10', HORIZON: 'pricing.duration13', ODYSSEY: 'pricing.duration15' })[s.pkg]) }); // die Drohnenzahl steht schon am Regler (Runde 9)
+    $("#cfg-meta").textContent = message('showConfigurator.valueExcludingVatAndTravel', { v0: message('packageDetails.showtimeLine') }); // Drohnenzahl steht am Regler (Runde 9), Showzeit für alle Pakete gleich (Runde 18)
     const summary = [
       message('showConfigurator.occasionValue', { v0: occasion.label }),
       message('configurator.motifs', { list: occasion.motifs.filter((m) => canPlay(m, s.pkg, drones)).map((m) => m.label).join(', ') }),

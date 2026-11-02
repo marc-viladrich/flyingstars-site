@@ -221,3 +221,11 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 - `MediaFrame.astro` besitzt die vier Aufnahme-Ecken, `content` für FlightHero und `inset` für LandingHero, `none` für Rahmen ohne Ecken. Positionen nutzen Insets und Armlänge; Video-Policy bleibt im Controller.
 
 **Runde 17 (02.11.2026):** Die Vergleichstabelle Drohne/Feuerwerk/Laser zeigt ihre Einordnung („Ja“, „Leise“, „Grenze“) als farbiges Wort ohne Icon; Icons in Tabellen sind kein Muss und verwirrten hier. Jede Paketkarte (Vorschau, große Karte, Landing-Preiskarte) zeigt die Showzeit über `showtimeLine()` in `package-details.ts`. Das Extra heißt „Express-Show in unter zwei Wochen“.
+
+**Runde 18 (02.11.2026):**
+- **Seitenanfang:** Jede Seite außer Startseite und Fallstudien beginnt auf derselben Höhe (`--hero-top`, 112–140 px). Vorher addierten sich 110 px Seitenabstand und der Innenabstand der ersten Section. Nur die erste Section trägt den Abstand (`main.page-top`); `npm run audit:layout` prüft das als Regel `hero-top`.
+- **Mobile-Menü:** Die Kopfzeile des Menüs ist die Kopfzeile der Seite (Logo, Sprache, Pause, Schließen, gleicher Innenabstand), beim Öffnen springt nichts. „Anlässe“ ist ein eingeklapptes Dropdown, die Links stehen oben.
+- **Tabellen auf dem Handy:** Reiter der Vergleiche und der Kopf der Aufgaben-Tabelle kleben unter dem Header, mit deckendem Streifen in der Section-Farbe (`[data-sticky-strip]`). Ein Reiterwechsel weit unten springt an den Anfang der neuen Tafel.
+- **Reveals:** Alle Reveals lösen bei 3 rem sichtbarer Höhe aus (`REVEAL_MARGIN` in `src/scripts/reveal-point.js`). Der scroll-gebundene Vorhang ist raus, weil er den sichtbaren Teil bis etwa 23 % der Bildhöhe verdeckte. Die Staffel zwischen Geschwistern beträgt 40–60 ms.
+- **Footer:** „Website-Vorschau“ ist entfernt. Die Datenschutz-Einstellungen sind ein Cookie-Symbol rechts, nur sichtbar, wenn Tracking konfiguriert ist.
+- **Texte:** Überall steht „10–25 Min Showzeit“, auch im Konfigurator; dort gab es noch die alte Staffel 10/13/15. Die ODYSSEY-Pill heißt „3D-Storytelling“, unter den Paketen steht „Alle Preise netto zzgl. Anfahrt“, der Kicker der Startseite lautet „Drohnenshows in DE · AT · CH · Benelux“.

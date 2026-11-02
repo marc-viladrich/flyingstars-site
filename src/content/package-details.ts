@@ -11,8 +11,8 @@ export function getPackageDetails(locale = 'de') {
 const t = createTranslator(locale);
 const money = (v: number) => v.toLocaleString(localeFormat(locale));
 
-/** One line above all packages; the questionnaire: "Es gibt keine Dauer je Paket." */
-const SHOW_DURATION = t('packageDetails.aShowUsuallyLastsAround13MinutesWithUpTo');
+/** Hinweis unter den Paketkarten (Marc, 02.11.2026: „einfach Alle Preise netto zzgl. Anfahrt“). Die Showzeit steht auf jeder Karte. */
+const PRICE_NOTE = t('packageDetails.pricesNetPlusTravel');
 
 interface PackageDetail {
   /** Short name of the step, the same as in the live preview. */
@@ -56,12 +56,11 @@ function dronesLine(name: ShowPackage): string {
   return Number.isFinite(p.max) ? t('packageDetails.valueToValueDrones', { v0: p.base, v1: p.max }) : t('packageDetails.fromValueDrones', { v0: p.base });
 }
 
-/** Showzeit je Paket auf jeder Paketkarte (Marc, 02.11.2026: „da fehlt mir die Showzeit“). Wert aus show-packages.json.
- * FlyingStars hat im Fragebogen 21.10.2026 die frühere Staffel 10/13/15 Min ausdrücklich korrigiert („Es gibt keine
- * Dauer je Paket. In der Regel ca. 13 Minuten, bis 25 Minuten möglich“), deshalb tragen alle drei Pakete denselben Wert,
- * bis FlyingStars eine Staffel bestätigt. */
-function showtimeLine(name: ShowPackage): string {
-  return t('packageDetails.showtimeLine', { v0: SHOW_PACKAGES[name].dur.replace(/ /g, '\u00a0') });
+/** Showzeit je Paket auf jeder Paketkarte (Marc, 02.11.2026: „da fehlt mir die Showzeit“). 
+ * FlyingStars hat im Fragebogen 21.10.2026 die frühere Staffel 10/13/15 Min korrigiert („Es gibt keine Dauer je Paket“),
+ * Marc hat daraus am 02.11.2026 „überall 10–25 Minuten Showzeit“ gemacht. Eine Quelle für Karten und Konfigurator. */
+function showtimeLine(_name?: ShowPackage): string {
+  return t('packageDetails.showtimeLine');
 }
 
 /** "+900 € je 10 Drohnen, bis 150 Drohnen", built from the price table so it can never drift. */
@@ -107,7 +106,7 @@ const packageCopy = {
     badge: 'Bestseller',
     plus: t('packageDetails.everythingInSparkPlus') },
   ODYSSEY: { tag: t('packageDetails.aStorytellingShowForMajorCampaignsFestivalsAndLargeAudiences'),
-    badge: t('packageDetails.from300Drones'),
+    badge: t('packageDetails.storytelling3d'),
     plus: t('packageDetails.everythingInHorizonPlus') }
 };
 const PACKAGE_POINTS = Object.fromEntries(Object.keys(SHOW_PACKAGES).map((name) => [name,
@@ -136,5 +135,5 @@ const EXTRAS: Extra[] = [
   { id: 'indoor', short: 'Indoor', icon: 'building-2', title: t('packageDetails.indoorDroneShows'), text: t('packageDetails.20To50Drones5To8MinutesCeilingHeight'), price: t('packageDetails.fromApprox15000ExcludingVatFor20Drones'), link: { label: t('packageDetails.moreAboutIndoorShows'), href: '/drohnenshow-indoor/' } },
 ];
 
-return { SERVICES, SHOW_DURATION, PACKAGE_DETAILS, PACKAGE_POINTS, PACKAGE_FEATURES, dronesLine, addOnLine, COMPARISON, COMPARISON_NOTE, INCLUDED, EXTRAS, showtimeLine };
+return { SERVICES, PRICE_NOTE, PACKAGE_DETAILS, PACKAGE_POINTS, PACKAGE_FEATURES, dronesLine, addOnLine, COMPARISON, COMPARISON_NOTE, INCLUDED, EXTRAS, showtimeLine };
 }

@@ -7,6 +7,7 @@
 // Erscheinen beim Scrollen übernimmt der Vorhang-Reveal aus dem Prototyp (CSS, .pre).
 // Bewusst ohne Import aus swarm.js: das Modul läuft auf jeder Seite mit Bildkarten und soll klein bleiben (ca. 2 KB gzip),
 // der Schwarm samt Formationsplaner kommt nur auf Seiten mit Formationen dazu.
+import { REVEAL_MARGIN } from '../reveal-point.js';
 const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const motionPaused = () => document.documentElement.classList.contains('motion-paused');
 function hash(a, b = 0) {
@@ -198,7 +199,7 @@ export function dotImage(wrap, { step = 8 } = {}) {
       };
       begin();
     };
-    new IntersectionObserver((es, o) => { if (!es[0].isIntersecting) return; o.disconnect(); run(); }, { rootMargin: '0px 0px -8% 0px' }).observe(wrap);
+    new IntersectionObserver((es, o) => { if (!es[0].isIntersecting) return; o.disconnect(); run(); }, { rootMargin: REVEAL_MARGIN }).observe(wrap);
   }
   if (touch) { new ResizeObserver(size).observe(wrap); prepare(); reveal(); return; }
   // Auslöser ist die ganze Karte, nicht nur das Foto (Marc, 31.10.2026): Karten tragen data-dot-host
