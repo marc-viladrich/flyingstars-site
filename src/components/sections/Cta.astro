@@ -1,24 +1,12 @@
 ---
-import { forPath } from '../../i18n/server';
-const { localHref } = forPath(Astro.url.pathname);
-// Abschluss mit Handlung, im Prototyp-Look (Karte mit Verlaufskante), z. B. Link in den Show-Konfigurator.
+// Abschluss mit Handlung (Marc, 31.10./01./02.11.2026): ein Knopf, keine Kicker-Zeile, immer Gesichter, Überschrift und Text.
+// Darstellung: CtaBox.astro (ein Kasten für alle Abschlüsse).
 import type { Section } from '../../content.config';
-import Accent from '../Accent.astro';
-import Faces from '../Faces.astro';
+import CtaBox from '../CtaBox.astro';
 type Props = Extract<Section, { type: 'cta' }> & { index: number };
 const { headline, text, button, index } = Astro.props;
 const id = `s${index}-h`;
-const H = index === 0 ? 'h1' : 'h2';
-// Ein Knopf, keine Kicker-Zeile (Marc, 01.11.2026). Abschluss-CTAs (Kontakt, Anfrage, Videocall) zeigen die Gesichter der drei Geschäftsführer:innen (Marc, 31.10.2026)
-const contact = /kontakt|anfrage|calendly|mailto|tel:/.test(button.href);
 ---
 <section class="section" aria-labelledby={id}>
-  <div class="promise">
-    {contact && <Faces />}
-    <div class="promise-copy">
-      <H id={id}><Accent text={headline} /></H>
-      {text && <p>{text}</p>}
-    </div>
-    <div class="actions"><a class="btn primary" href={localHref(button.href)}>{button.label}</a></div>
-  </div>
+  <CtaBox headline={headline} text={text} button={button} id={id} level={index === 0 ? 'h1' : 'h2'} />
 </section>

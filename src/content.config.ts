@@ -9,6 +9,9 @@ import { projectShowcaseSchema } from './schemas/project-showcase';
 // src/components/sections/. Der Agent darf Seiten nur aus diesen Typen bauen.
 // ---------------------------------------------------------------------------
 const link = z.object({ label: z.string().min(1), href: z.string().min(1) });
+// Abschluss-Kasten (CtaBox.astro): immer Überschrift, Text und genau ein Knopf, dazu die Gesichter (Marc, 02.11.2026:
+// „solche empty-looking CTAs darf es niemals geben. Immer ein Heading und ein Text dazu“)
+const closingBox = z.object({ headline: z.string().min(1), text: z.string().min(1), button: link }).strict();
 // Section-Köpfe (docs/DESIGN.md): Kicker in Orange über der Headline, einspaltig; `text` ist der optionale Satz darunter.
 // Headlines dürfen einzelne Begriffe mit *Sternchen* markieren, sie erscheinen dann im Logoverlauf.
 // Kicker sind seit 31.10.2026 wieder sichtbar (Marc: „die Eyebrow-Headings brauchen Farbe“, wie im Vercel-Prototyp).
@@ -83,8 +86,8 @@ export const sectionSchema = z.discriminatedUnion('type', [
       tags: z.array(z.string()).min(1).describe('FAQ-Einträge mit einem dieser Tags'),
     })).optional().describe('Fragen in Gruppen; ersetzt tags/limit'),
     closing: z.object({
-      headline: z.string().optional(),
-      text: z.string().optional(),
+      headline: z.string().min(1),
+      text: z.string().min(1),
       image: image.optional().describe('Foto der drei Geschäftsführer:innen; ohne Bild erscheinen ihre drei Porträts'),
     }).optional().describe('Abschluss mit Anrufen/Schreiben'),
   }),
@@ -92,7 +95,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     // Abschluss-CTA: genau ein Knopf, keine Zeile über der Überschrift (Marc, 01.11.2026: „keine multiplen CTAs“)
     type: z.literal('cta'),
     headline: z.string().min(1),
-    text: z.string().optional(),
+    text: z.string().min(1),
     button: link,
   }),
   z.object({
@@ -291,8 +294,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     groups: z.array(z.object({ title: z.string().min(1),
       items: z.array(z.object({ label: z.string().min(1), value: z.string().optional() })).min(1) })).min(1).max(3),
     bonus: z.object({ value: z.string().min(1), text: z.string().min(1) }).optional(),
-    contact: z.string().optional().describe('Satz neben den Gesichtern'),
-    cta: link,
+    closing: closingBox.describe('Abschluss unter der Preiskarte'),
   }),
   z.object({
     // Quellen und Konflikte: docs/sicherheitskonzept-quellen.md. Alle Maße kommen aus dem Inhalt.
@@ -347,9 +349,9 @@ export const sectionSchema = z.discriminatedUnion('type', [
       icon: z.string().optional().describe('Lucide-Name, nur für die Aussage ohne Bild') }).strict()
       .refine((l) => !l.label || l.image, { message: 'label nur auf der Bildkachel, nicht neben einem Icon' }),
     items: z.array(z.object({ icon: z.string().min(1).describe('Lucide-Name in kebab-case, z. B. "wind"'), title: z.string().min(1), text: z.string().min(1) }).strict()).min(1).max(4),
-    cta: link.optional(), faces: z.boolean().default(false).describe('Abschluss mit Gesichtern der Geschäftsführer:innen (.promise)'),
-    contact: z.string().optional().describe('Satz neben den Gesichtern'),
-  }),
+    cta: link.optional().describe('Weiterführender Textlink unter dem Raster'),
+    closing: closingBox.optional().describe('Abschluss-Kasten mit Gesichtern statt Textlink'),
+  }).refine((b) => !(b.cta && b.closing), { message: 'entweder cta (Textlink) oder closing (Abschluss-Kasten)' }),
   z.object({
     // Breites Bild mit Orten oder Einsatzarten als Markierungen, darunter Einträge und Kennzahlen.
     type: z.literal('landingSpotlight'), ...sectionHeading,
@@ -362,7 +364,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     // Abschluss mit Handlung und den Gesichtern der drei Geschäftsführer:innen.
     // Wie `cta`: ein Knopf, keine Zeile über der Überschrift (Marc, 01.11.2026)
     type: z.literal('landingCta'),
-    headline: z.string().min(1), text: z.string().optional(), button: link,
+    headline: z.string().min(1), text: z.string().min(1), button: link,
   }),
   z.object({
     // Anfrage in zwei Schritten (docs/DESIGN.md). Gesichter: ohne Angabe die drei Geschäftsführer:innen.

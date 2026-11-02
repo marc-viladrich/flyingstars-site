@@ -78,6 +78,8 @@ p { margin: 0; }
 .btn.small { height: 40px; padding: 0 16px; font-size: 14px; }
 .link { display: inline-flex; gap: 8px; align-items: center; width: fit-content; justify-self: start; align-self: start; color: var(--accent); border-bottom: 1px solid var(--accent-line); padding-bottom: 3px; transition: border-color 0.2s, color 0.2s; }
 .link:hover { border-color: var(--accent); color: #ffbe6b; }
+/* Textlink neben einem Knopf: auf dessen Mitte, nicht oben (Marc, 02.11.2026) */
+.btn ~ .link, .link:has(~ .btn) { align-self: center; }
 .link span { transition: transform 0.2s; }
 .link:hover span { transform: translateX(3px); }
 
@@ -101,8 +103,9 @@ p { margin: 0; }
 
 /* hero */
 .hero { position: relative; height: max(640px, 100svh); overflow: hidden; background: #050505;
-  /* Aufnahme-Rahmen (Marc, 02.11.2026): Ecken genau auf der Content-Breite, die Beschriftungen rasten in der Zeile der
-     Ecken ein. --fr-t/--fr-b: Abstand der Rahmenlinien von oben/unten, --fr-arm: Länge der Eckschenkel */
+  /* Aufnahme-Rahmen (Marc, 02.11.2026, nach dem Vercel-Prototyp): Ecken genau auf der Content-Breite; die Beschriftungen
+     rasten innen ein: mittig auf Höhe des Schenkelendes, 14 px neben dem senkrechten Schenkel.
+     --fr-t/--fr-b: Abstand der Rahmenlinien von oben/unten, --fr-arm: Länge der Eckschenkel */
   --fr-t: clamp(80px, 11vh, 108px); --fr-b: clamp(24px, 4vh, 40px); --fr-arm: 22px; --fr-lh: 18px; }
 .hero video, .hero .poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .hero .shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(8, 7, 6, 0.88) 0%, rgba(8, 7, 6, 0.5) 45%, rgba(8, 7, 6, 0.12) 78%), linear-gradient(0deg, rgba(8, 7, 6, 0.92) 0%, rgba(8, 7, 6, 0) 42%); }
@@ -112,8 +115,8 @@ p { margin: 0; }
 .frame i:nth-child(2) { top: 0; right: 0; border-width: 1px 1px 0 0; }
 .frame i:nth-child(3) { bottom: 0; left: 0; border-width: 0 0 1px 1px; }
 .frame i:nth-child(4) { bottom: 0; right: 0; border-width: 0 1px 1px 0; }
-/* Showreel-Label auf Höhe der oberen Rahmenlinie, links neben dem Eckschenkel */
-.rec { position: absolute; top: calc(var(--fr-t) - var(--fr-lh) / 2); right: calc(var(--gutter) + var(--fr-arm) + 12px); z-index: 3; display: flex; align-items: center; gap: 10px; line-height: var(--fr-lh); color: rgba(246, 241, 232, 0.8); }
+/* Showreel-Label oben rechts in der Ecke eingerastet */
+.rec { position: absolute; top: calc(var(--fr-t) + var(--fr-arm) - var(--fr-lh) / 2); right: calc(var(--gutter) + 14px); z-index: 3; display: flex; align-items: center; gap: 10px; line-height: var(--fr-lh); color: rgba(246, 241, 232, 0.8); }
 .rec::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--bad); animation: blink 1.4s steps(2, jump-none) infinite; }
 @keyframes blink { 50% { opacity: 0.2; } }
 .hero-copy { position: absolute; z-index: 3; left: calc(var(--gutter) + 28px); right: var(--gutter); bottom: clamp(64px, 12vh, 124px); max-width: 780px; display: grid; gap: 22px; }
@@ -123,8 +126,8 @@ p { margin: 0; }
 .word.out { opacity: 0; filter: blur(10px); }
 .hero .lead { color: rgba(246, 241, 232, 0.82); }
 .actions { display: flex; flex-wrap: wrap; gap: 12px; }
-/* Eckdaten unten rechts: die letzte Zeile liegt auf Höhe der unteren Rahmenlinie, links neben dem Eckschenkel */
-.spec { position: absolute; z-index: 3; margin: 0; right: calc(var(--gutter) + var(--fr-arm) + 12px); bottom: calc(var(--fr-b) - var(--fr-lh) / 2); display: grid; grid-template-columns: auto auto; gap: 4px 18px; line-height: var(--fr-lh); color: rgba(246, 241, 232, 0.66); }
+/* Eckdaten unten rechts in der Ecke eingerastet: die letzte Zeile mittig auf Höhe des Schenkelendes */
+.spec { position: absolute; z-index: 3; margin: 0; right: calc(var(--gutter) + 14px); bottom: calc(var(--fr-b) + var(--fr-arm) - var(--fr-lh) / 2); display: grid; grid-template-columns: auto auto; gap: 4px 18px; line-height: var(--fr-lh); color: rgba(246, 241, 232, 0.66); }
 .spec dd { margin: 0; }
 .spec b { color: var(--text); font-weight: 500; }
 
@@ -750,8 +753,8 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
 .tier-facts div { display: grid; gap: 3px; }
 .tier-facts dt { font: 400 11.5px/1.4 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
 .tier-facts dd { margin: 0; color: var(--muted); font-size: 15px; }
-/* Knöpfe zentriert und in allen drei Karten auf einer Höhe am Kartenende (Marc, 02.11.2026) */
-.tier-actions { display: flex; flex-wrap: wrap; gap: 14px 20px; align-items: center; justify-content: center; margin-top: auto; padding-top: 6px; }
+/* Knopf und Textlink auf einer Mittellinie, in allen drei Karten auf einer Höhe am Kartenende (Marc, 02.11.2026) */
+.tier-actions { display: flex; flex-wrap: wrap; gap: 14px 20px; align-items: center; margin-top: auto; padding-top: 6px; }
 
 /* Meilensteine: ruhige Liste, Jahreszahl links */
 .timeline { list-style: none; margin: 0; padding: 0; max-width: 60rem; border-top: 1px solid var(--line-strong); }
@@ -959,7 +962,7 @@ html.motion-paused .rec::before { animation: none; }
    Bildschirmen stand der Button verloren allein), Verlaufsrand wie im Prototyp, bei Kontakt-CTAs die Gesichter */
 .promise { position: relative; max-width: 860px; margin-inline: auto; display: grid; justify-items: center; gap: 22px; text-align: center; padding: clamp(36px, 5vw, 64px) clamp(24px, 5vw, 72px); border-radius: var(--radius); background: var(--surface); }
 .promise::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; background: var(--grad); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
-.promise :is(h2, h1) { font-size: clamp(28px, 3vw, 44px); max-width: 20ch; margin-inline: auto; }
+.promise :is(h1, h2, h3) { font-size: clamp(28px, 3vw, 44px); line-height: 1.08; letter-spacing: -0.03em; max-width: 20ch; margin-inline: auto; } /* gleich groß, egal auf welcher Ebene der Kasten steht */
 .promise p { color: var(--muted); margin: 14px auto 0; max-width: 48ch; }
 .promise .kicker { margin-bottom: 12px; }
 .promise .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }

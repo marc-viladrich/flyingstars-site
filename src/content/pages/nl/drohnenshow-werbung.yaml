@@ -72,7 +72,7 @@ sections:
   - type: landingRefs
     id: referenzen
     kicker: Onze shows
-    headline: Een selectie van shows met video en verloop.
+    headline: Grote merken, grote podia.
     projects:
       - nfl-berlin-game
       - puma-bundesliga
@@ -152,7 +152,7 @@ sections:
   - type: landingBento
     id: agenturen
     kicker: Bureaus
-    headline: Voor bureaus.
+    headline: Een vlekkeloos verloop van A tot Z.
     lead:
       icon: sparkles
       title: Wij vliegen, *jullie stralen*.
@@ -171,15 +171,16 @@ sections:
       - icon: clipboard-list
         title: Projectleiding
         text: Op verzoek verzorgen we de projectleiding, met vergunning, instanties en techniek ter plaatse.
-    faces: true
-    contact: Vertel ons over het project van jullie klant. We reageren binnen 48 uur.
-    cta:
-      label: Aanvragen als bureau
-      href: /kontakt/?anlass=agentur
+    closing:
+      headline: Een project voor jullie klant?
+      text: Vertel ons erover. We reageren binnen 48 uur en stemmen de rest vertrouwelijk met jullie af.
+      button:
+        label: Aanvragen als bureau
+        href: /kontakt/?anlass=agentur
   - type: landingSpotlight
     id: orte
     kicker: Locaties
-    headline: Ook boven stadions, binnensteden en water.
+    headline: Weinig tijd? Bijzondere locatie? We vinden een manier.
     text: Met onze generieke exploitatievergunning kunnen we de meeste vlieglocaties zelf vrijgeven. Voor
       gecontroleerd luchtruim, locaties bij luchthavens en federale waterwegen regelen we de benodigde
       bijzondere vergunningen. Dat vraagt meer voorbereidingstijd.
@@ -212,4 +213,4 @@ sections:
     kicker: Aanvraag
     headline: Vertel ons over jullie campagne.
     text: Datum, locatie en doel zijn genoeg. Jullie logo mogen jullie later per e-mail sturen.
-translationSourceHash: b72fcf831b6e03c526f711d072f8cdcea26bf18a3fde39ea84dc558494a92fae
+translationSourceHash: 7b6f7468c1cb68602c6ff94bbcb797a4c9bd04a7509a270ddf49ad84ad78cacf

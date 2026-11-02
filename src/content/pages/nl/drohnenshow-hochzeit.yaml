@@ -89,10 +89,12 @@ sections:
     bonus:
       value: −10 %
       text: "Vroegboekkorting: boek vóór het einde van het jaar voor een bruiloft volgend jaar."
-    contact: Ronja, Florian en Erwin beantwoorden jullie aanvraag binnen 48 uur.
-    cta:
-      label: Vraag een bruiloftshow aan
-      href: "#anfrage"
+    closing:
+      headline: Staat jullie datum al vast?
+      text: Ronja, Florian en Erwin beantwoorden jullie aanvraag binnen 48 uur.
+      button:
+        label: Vraag een bruiloftshow aan
+        href: "#anfrage"
   - type: landingSite
     id: location
     kicker: Location
@@ -125,19 +127,6 @@ sections:
       - title: Publiekszone
         text: Jullie gasten staan buiten de buitenste veiligheidszone en hebben vrij zicht op de show nodig. We plannen hun positie samen met jullie, op afstand van gevels en bomen.
         zone: guests
-    safeguards:
-      - icon: scan-line
-        title: Digitaal begrensd vlieggebied
-        text: Een geofence begrenst het showgebied. Als een drone dit gebied verlaat, start automatisch een veiligheidsprotocol.
-      - icon: shield-check
-        title: Meervoudig beveiligd
-        text: Automatische en handmatige veiligheidssystemen bewaken elke vlucht. Bij een storing keert de drone meestal terug of landt hij in de veiligheidszone. De outdoordrones wegen ongeveer 300 g en hebben geen camera’s.
-      - icon: users-round
-        title: Team ter plaatse
-        text: Drie tot vier personen, piloten en technici, bouwen de techniek op en bewaken de show.
-      - icon: wind
-        title: Het weer in de gaten
-        text: We vliegen met stabiele formaties tot windkracht 5 en bij lichte motregen. We bespreken de weersomstandigheden bij voorkeur één tot twee dagen van tevoren met jullie.
     responsibilities:
       provider:
         - We beoordelen de locatie vóór de offerte, tekenen de zones in en maken het veiligheidsconcept en de vluchtplanning.
@@ -161,7 +150,7 @@ sections:
   - type: tempo
     id: ablauf
     kicker: Verloop
-    headline: Tot aan jullie avond.
+    headline: Jullie vieren, wij regelen de rest.
     text: Jullie regelen het feest. Wij melden ons als we een beslissing nodig hebben. Eén tot twee maanden voorbereiding is ideaal.
     marks:
       - value: 48 h
@@ -214,4 +203,4 @@ sections:
     kicker: Aanvraag
     headline: Vertel ons over jullie trouwdag.
     text: Datum en locatie zijn genoeg voor het begin. We reageren binnen 48 uur met een eerste inschatting.
-translationSourceHash: ef4b902dd79d31b2fc20e889c95e0cebb6a58ef921d3285142a18ec5072cf3e3
+translationSourceHash: 819b1d764caf906c0f65a53dd756325dc9b7666dada277fed7ac3fdc2452885a

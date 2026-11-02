@@ -2,16 +2,16 @@
 import { forPath } from '../../i18n/server';
 const { localHref } = forPath(Astro.url.pathname);
 // Kacheln mit einer Hauptkachel (Bild mit Titel darauf oder eine große Aussage) und bis zu vier kleineren Icon-Kacheln. Bricht die Folge aus Text-Bild-Blöcken auf (Marc, 31.10.2026: „mehr Variation in den Layouts“).
-// Optional unten ein Link oder (faces) ein Abschluss wie auf der Startseite: .promise mit Gesichtern, Satz und Knopf.
+// Optional unten ein Textlink (cta) oder ein Abschluss-Kasten (closing, CtaBox.astro).
 // Icons: Lucide über src/components/Icon.astro (`icon` je Kachel, `lead.icon` für die Aussage ohne Bild).
 import type { Section } from '../../content.config';
 import SectionHead from '../SectionHead.astro';
-import Faces from '../Faces.astro';
+import CtaBox from '../CtaBox.astro';
 import Accent from '../Accent.astro';
 import Icon from '../Icon.astro';
 import { optimizedImage } from '../../lib/media';
 type Props = Extract<Section, { type: 'landingBento' }> & { index: number };
-const { kicker, headline, text, lead, items, cta, faces, contact, id = `s${Astro.props.index}`, index } = Astro.props;
+const { kicker, headline, text, lead, items, cta, closing, id = `s${Astro.props.index}`, index } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
 const T = index === 0 ? 'h2' : 'h3';
 const img = lead.image ? await optimizedImage(lead.image.src, 960, 720) : undefined;
@@ -37,13 +37,7 @@ const img = lead.image ? await optimizedImage(lead.image.src, 960, 720) : undefi
       </div>
     ))}
   </div>
-  {faces && cta ? (
-    <div class="promise lb-close">
-      <Faces />
-      {contact && <p>{contact}</p>}
-      <div class="actions"><a class="btn primary" href={localHref(cta.href)}>{cta.label}</a></div>
-    </div>
-  ) : cta && <div class="lb-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></div>}
+  {closing ? <CtaBox {...closing} level={T} class="lb-close" /> : cta && <div class="lb-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></div>}
 </section>
 
 <style>
@@ -68,8 +62,8 @@ const img = lead.image ? await optimizedImage(lead.image.src, 960, 720) : undefi
   .lb-t { margin: 0; color: var(--muted); font-size: 15.5px; max-width: 40ch; }
   .lb-feat { gap: 12px; }
   /* Icon und Überschrift wie im Icon-Raster der Preisseite (.ic-ico/.ic-h in global.css) */
-  .lb-close { margin-top: clamp(32px, 4vw, 56px); }
-  .lb-close > p { margin: 0; }
+  /* CtaBox ist eine eigene Komponente: Abstand über :global, sonst greift das Komponenten-CSS nicht */
+  :global(.lb-close) { margin-top: clamp(32px, 4vw, 56px); }
   .lb-more { margin-top: clamp(24px, 3vw, 40px); }
   /* Aussage ohne Bild: Inhalt in der Mitte statt unten, Icon darüber */
   .lb-lead:not(.has-img) { align-content: center; }

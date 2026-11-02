@@ -56,7 +56,7 @@ sections:
   - type: landingRefs
     id: referenzen
     kicker: Referenzen
-    headline: Ausgewählte Shows mit Video und Ablauf.
+    headline: Große Marken, große Bühnen.
     projects: [nfl-berlin-game, puma-bundesliga, spotify-luciano-apache, loreal-prada-rheinturm]
     cta: { label: Alle Referenzen, href: /referenzen/ }
 
@@ -128,7 +128,7 @@ sections:
   - type: landingBento
     id: agenturen
     kicker: Agenturen
-    headline: Für Agenturen.
+    headline: Reibungsloser Ablauf von A bis Z.
     lead:
       icon: sparkles
       title: Wir fliegen, *ihr glänzt*.
@@ -138,15 +138,16 @@ sections:
       - { icon: file-lock, title: Vertraulich, text: Wir unterschreiben eine Vertraulichkeitsvereinbarung. }
       - { icon: thumbs-up, title: Freigabe, text: "Für die Abstimmung mit euren Kund:innen visualisieren wir die Motive mit deren Logo." }
       - { icon: clipboard-list, title: Projektleitung, text: "Auf Wunsch übernehmen wir die Projektleitung, mit Genehmigung, Behörden und Technik vor Ort." }
-    faces: true
-    contact: Erzählt uns vom Projekt eurer Kund:innen. Wir melden uns innerhalb von 48 Stunden.
-    cta: { label: Als Agentur anfragen, href: "/kontakt/?anlass=agentur" }
+    closing:
+      headline: Ein Projekt für eure Kund:innen?
+      text: Erzählt uns davon. Wir melden uns innerhalb von 48 Stunden und stimmen alles Weitere vertraulich mit euch ab.
+      button: { label: Als Agentur anfragen, href: "/kontakt/?anlass=agentur" }
 
   # Entwurf für Moritz: Orte als Markierungen auf dem Bild, Zeiten als Kennzahlen; Inhalte wie bisher
   - type: landingSpotlight
     id: orte
     kicker: Orte
-    headline: Auch über Stadien, Innenstädten und am Wasser.
+    headline: Wenig Vorlauf? Besonderer Ort? Wir finden einen Weg.
     text: Dank unserer generischen Betriebsgenehmigung geben wir die meisten Flugorte selbst frei. Für Kontrollzonen, Flughafennähe und Bundeswasserstraßen holen wir die nötigen Sondergenehmigungen ein. Das braucht mehr Vorlauf.
     image:
       src: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg

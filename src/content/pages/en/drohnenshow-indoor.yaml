@@ -132,7 +132,7 @@ sections:
   - type: landingSpotlight
     id: einsatzorte
     kicker: Where to use it
-    headline: Where indoor shows work.
+    headline: A highlight for trade fairs, galas and stages.
     text: We match brand colours and music to your event.
     image:
       src: https://flyingstars.art/wp-content/uploads/2025/04/drohnenshow-indoor-2.jpg
@@ -155,7 +155,7 @@ sections:
   - type: tempo
     id: ablauf
     kicker: The process
-    headline: How an indoor show works.
+    headline: Little effort for you, from enquiry to show.
     marks:
       - value: 48 h
         label: until our reply
@@ -180,9 +180,12 @@ sections:
           - label: the drone count
             value: 20–50
           - label: the setup
-    cta:
-      label: Request an indoor quote
-      href: "#anfrage"
+    closing:
+      headline: Will your venue work?
+      text: Send us photos or a floor plan with the ceiling height. We'll tell you within 48 hours what's possible there.
+      button:
+        label: Request an indoor quote
+        href: "#anfrage"
   - type: faq
     id: fragen
     kicker: FAQ
@@ -196,4 +199,4 @@ sections:
     kicker: Enquiry
     headline: Tell us about your room.
     text: Ceiling height, floor area and date are enough for an initial assessment. We'll reply within 48 hours.
-translationSourceHash: 20afefd7b6a7fba9c15fb6fde3aa861421c3b948fa2a8f42719ede8981a56c7d
+translationSourceHash: eb03fd1e1a5213135c726ecab6c74be859d02dec2e98aaa916ec8ef97ad49226

@@ -6,6 +6,7 @@
 //             [data-bleed] (z. B. das Showreel rechts im Seitenkopf) und alles, was als Fläche hinter dem Inhalt liegt
 //   empty-h   Überschrift ohne Text (z. B. Daten aus einem veralteten Zwischenspeicher)
 //   overflow  Seite scrollt seitlich
+//   cta       Abschluss-Kasten (.promise) ohne Gesichter, Überschrift oder Text (Marc, 02.11.2026: „empty-looking CTAs“)
 // Aufruf: node scripts/layout-audit.mjs [basis-url] [--start=/en/] [--widths=390,1440,1920] [--only=orphan,contain] [--browser=webkit]
 // Ohne Basis-URL: http://127.0.0.1:4391. Die Seiten kommen aus den Links der Startseite und des Footers (Crawl, max. 200; --start begrenzt auf diesen Pfadpräfix).
 import { chromium, webkit } from 'playwright';
@@ -61,6 +62,10 @@ for (const width of widths) {
         return b.width > 0 && b.height > 0 && !el.closest('[hidden],[inert],.sr-only,dialog:not([open]),[aria-hidden="true"]');
       };
       if (checks.includes('overflow') && document.documentElement.scrollWidth > vw + 1) r.push({ k: 'overflow', what: `scrollWidth ${document.documentElement.scrollWidth} > ${vw}` });
+      if (checks.includes('cta')) for (const box of document.querySelectorAll('main .promise')) {
+        const missing = [['.faces', 'Gesichter'], [':is(h1,h2,h3)', 'Überschrift'], ['p', 'Text']].filter(([sel]) => !box.querySelector(sel)?.textContent?.trim() && !box.querySelector(sel)?.querySelector?.('img')).map(([, n]) => n);
+        if (missing.length) r.push({ k: 'cta', what: `${name(box)} ohne ${missing.join(', ')}` });
+      }
       if (checks.includes('empty-h')) for (const h of document.querySelectorAll('h1,h2,h3,h4')) if (!h.textContent.trim() && !h.querySelector('img,svg[aria-label]')) r.push({ k: 'empty-h', what: name(h) });
       if (checks.includes('orphan')) {
         for (const el of document.querySelectorAll('main :is(p,h1,h2,h3,h4,li,dd,figcaption,blockquote,.lead)')) {
@@ -120,7 +125,7 @@ for (const width of widths) {
         }
       }
       return r;
-    }, { checks: ['orphan', 'contain', 'empty-h', 'overflow'].filter(want) });
+    }, { checks: ['orphan', 'contain', 'empty-h', 'overflow', 'cta'].filter(want) });
     for (const f of out) findings.push({ width, path, ...f });
   }
 }

@@ -54,7 +54,17 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 
 **Auswahl-Pills (`.chips`):** ein Regelsatz für Formular und Referenzfilter. Hover hebt nur ungewählte Pills hervor; gewählte bleiben beim Zeigen, wie sie sind (sonst weiß auf weiß). Das Eingabefeld liegt 1 px groß unter der Beschriftung, die Beschriftung nimmt den Klick.
 
-**Aufnahme-Rahmen im Startseiten-Hero:** Ecken genau auf der Content-Breite (`--fr-t`, `--fr-b`, `--fr-arm` an `.hero`). „Showreel“ sitzt auf Höhe der oberen, die Eckdaten auf Höhe der unteren Rahmenlinie, jeweils links neben dem Eckschenkel.
+**Aufnahme-Rahmen im Startseiten-Hero:** Ecken genau auf der Content-Breite (`--fr-t`, `--fr-b`, `--fr-arm` an `.hero`). „Showreel“ und die Eckdaten rasten innen in den Ecken ein (siehe „Video im Rahmen“).
+
+**Abschluss-Kästen (CTA):** eine Komponente `src/components/CtaBox.astro` für alle (Section-CTA, Anlass-CTA, Preiskarte, Bento, FAQ, Fallstudie, Preisseite): immer Gesichter, Überschrift, Text und genau ein Knopf. Das Schema (`closingBox`) erzwingt Überschrift und Text; `npm run audit:layout` meldet Kästen ohne eins davon (Marc, 02.11.2026: „empty-looking CTAs darf es niemals geben“).
+
+**Überschriften zeigen einen Nutzen:** keine reinen Etiketten („Für Agenturen.“, „Andere Wege.“, „In Zahlen.“), sondern was Besucher:innen davon haben („Reibungsloser Ablauf von A bis Z.“, „Wenig Vorlauf? Besonderer Ort? Wir finden einen Weg.“). Das Etikett darf im Kicker stehen.
+
+**Magie vor Technik (Marc, 02.11.2026):** Technische Details nie alle auf einmal. Standort/Sicherheit (`LandingSite.astro`) zeigt eine Zone zugleich, anfangs die erste; Zeigen, Fokus oder Tippen wechselt, Zeichnung und Text gemeinsam. Zuständigkeiten, Vorlauf und Haftpflicht hinter dem Aufklapper „Was wir übernehmen und was ihr klärt“. Auf B2C-Seiten (Hochzeit) keine Schutz-Kacheln.
+
+**Textlink neben Knopf:** sitzt auf der Mittellinie des Knopfs (`.btn ~ .link`), nicht oben.
+
+**Video im Rahmen (Anlass-Seiten):** läuft es, sitzt „Video anhalten“ unten rechts in der Ecke; angehalten bleibt das Bild des Videos stehen, der Knopf wandert in die Mitte und wird zum großen Play-Knopf ohne Beschriftung. Klick irgendwo aufs Video schaltet um. Rahmen-Ecken: Beschriftungen rasten innen ein, mittig auf Höhe des Schenkelendes, 14 px neben dem senkrechten Schenkel (wie im Vercel-Prototyp, auch im Startseiten-Hero).
 
 **Sprache:** du/ihr, nie Sie. Gendern mit Doppelpunkt (Pilot:innen). Keine pauschalen Umweltversprechen (EmpCo). Moritz verantwortet die Texte, Entwürfe sind als solche zu kennzeichnen.
 

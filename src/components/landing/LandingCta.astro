@@ -1,23 +1,11 @@
 ---
-import { forPath } from '../../i18n/server';
-const { localHref } = forPath(Astro.url.pathname);
-// Abschluss mit Handlung und Gesichtern, gestaltet wie auf Startseite und Preisseite (Marc, 31.10.2026: CTAs „schmaler
-// und zentrierter“): schmaler Kasten mit Verlaufsrand (.promise in global.css), Gesichter oben, Text und Knöpfe zentriert.
+// Abschluss der Anlass-Seiten, gleicher Kasten wie überall (CtaBox.astro): Gesichter, Überschrift, Text, ein Knopf.
 import type { Section } from '../../content.config';
-import Accent from '../Accent.astro';
-import Faces from '../Faces.astro';
+import CtaBox from '../CtaBox.astro';
 type Props = Extract<Section, { type: 'landingCta' }> & { index: number };
 const { headline, text, button, index } = Astro.props;
 const id = `s${index}-h`;
-const H = index === 0 ? 'h1' : 'h2';
 ---
 <section class="section" aria-labelledby={id}>
-  <div class="promise">
-    <Faces />
-    <div class="promise-copy">
-      <H id={id}><Accent text={headline} /></H>
-      {text && <p>{text}</p>}
-    </div>
-    <div class="actions"><a class="btn primary" href={localHref(button.href)}>{button.label}</a></div>
-  </div>
+  <CtaBox headline={headline} text={text} button={button} id={id} level={index === 0 ? 'h1' : 'h2'} />
 </section>

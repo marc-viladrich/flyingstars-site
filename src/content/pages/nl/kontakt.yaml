@@ -10,7 +10,7 @@ sections:
   - type: steps
     id: danach
     kicker: Verloop
-    headline: Wat er daarna gebeurt.
+    headline: In vier stappen naar jullie show.
     steps:
       - title: Antwoord
         text: We antwoorden binnen 48 uur per e-mail, met vragen of een eerste inschatting.
@@ -23,7 +23,7 @@ sections:
         text: We controleren de locatie, regelen de vergunning en ontwerpen de show samen met jullie.
   - type: textMedia
     kicker: Contact
-    headline: Andere contactmogelijkheden.
+    headline: Liever direct praten?
     body: >
       Achter elk contactkanaal staat hetzelfde team: Ronja, Florian en Erwin.
 
@@ -43,4 +43,4 @@ sections:
 
 
       **Post:** FlyingStars GmbH, Bulmker Straße 107, 45888 Gelsenkirchen
-translationSourceHash: 5d3120276b973cc1060818c983c50ae3543613d369263dd8263b5bc357cc2f70
+translationSourceHash: 72d0033386f283b76d3ca7b4fc2b2083f978b095e6202168e6d87b77ac3f90e8

@@ -93,8 +93,10 @@ sections:
           - { label: Express unter 14 Tagen Vorlauf, value: nach Aufwand }
           - { label: Rohaufnahmen mit Kameradrohne, value: 900 € }
     bonus: { value: "−10 %", text: "Frühbucherrabatt: Bucht ihr bis zum Jahresende für eine Hochzeit im nächsten Jahr." }
-    contact: Ronja, Florian und Erwin beantworten eure Anfrage innerhalb von 48 Stunden.
-    cta: { label: Hochzeitsshow anfragen, href: "#anfrage" }
+    closing:
+      headline: Euer Datum steht schon?
+      text: Ronja, Florian und Erwin beantworten eure Anfrage innerhalb von 48 Stunden.
+      button: { label: Hochzeitsshow anfragen, href: "#anfrage" }
 
   # Textentwurf für Moritz. Quellen und Konflikte: docs/sicherheitskonzept-quellen.md.
   - type: landingSite
@@ -129,19 +131,6 @@ sections:
       - title: Publikumsbereich
         text: "Eure Gäste stehen außerhalb des äußeren Sicherheitsbereichs und brauchen freie Sicht auf die Show. Ihre Position planen wir mit euch, mit Abstand zu Hauswänden und Bäumen."
         zone: guests
-    safeguards:
-      - icon: scan-line
-        title: Digital begrenzter Flugbereich
-        text: "Ein Geofence begrenzt den Showbereich. Verlässt eine Drohne diesen Bereich, startet automatisch ein Sicherheitsprotokoll."
-      - icon: shield-check
-        title: Mehrfach abgesichert
-        text: "Automatische und manuelle Sicherheitssysteme überwachen jeden Flug. Bei einem Ausfall kehrt die Drohne meist zurück oder landet im Sicherheitsbereich. Die Outdoor-Drohnen wiegen rund 300 g und haben keine Kameras."
-      - icon: users-round
-        title: Team vor Ort
-        text: "Drei bis vier Personen, Pilot:innen und Techniker:innen, bauen die Technik auf und überwachen die Show."
-      - icon: wind
-        title: Wetter im Blick
-        text: "Wir fliegen formstabil bis Windstärke 5 und bei leichtem Nieselregen. Die Wetterlage stimmen wir idealerweise ein bis zwei Tage vorher mit euch ab."
     responsibilities:
       provider:
         - "Wir prüfen den Standort vor dem Angebot, zeichnen die Zonen ein und erstellen Sicherheitskonzept und Flugplanung."
@@ -164,7 +153,7 @@ sections:
   - type: tempo
     id: ablauf
     kicker: Ablauf
-    headline: Bis zu eurem Abend.
+    headline: Ihr feiert, wir kümmern uns um den Rest.
     text: Ihr kümmert euch um die Feier, wir melden uns, wenn wir eine Entscheidung brauchen. Ideal sind ein bis zwei Monate Vorlauf.
     marks:
       - { value: 48 h, label: bis zu unserer Antwort, text: "Datum, Location und eure Idee reichen. Danach ein kurzes Gespräch und euer Angebot." }

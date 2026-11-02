@@ -132,7 +132,7 @@ sections:
   - type: landingSpotlight
     id: einsatzorte
     kicker: Locaties
-    headline: Waar indoor-shows passen.
+    headline: Een hoogtepunt voor beurs, gala en podium.
     text: We stemmen merkkleuren en muziek af op jullie optreden.
     image:
       src: https://flyingstars.art/wp-content/uploads/2025/04/drohnenshow-indoor-2.jpg
@@ -155,7 +155,7 @@ sections:
   - type: tempo
     id: ablauf
     kicker: Verloop
-    headline: Zo verloopt een indoor-show.
+    headline: Weinig moeite voor jullie, van aanvraag tot show.
     marks:
       - value: 48 h
         label: tot ons antwoord
@@ -180,9 +180,12 @@ sections:
           - label: het aantal drones
             value: 20–50
           - label: de opbouw
-    cta:
-      label: Vraag een indoor-offerte aan
-      href: "#anfrage"
+    closing:
+      headline: Is jullie hal geschikt?
+      text: Stuur ons foto's of een plattegrond met de plafondhoogte. We laten jullie binnen 48 uur weten wat daar mogelijk is.
+      button:
+        label: Vraag een indoor-offerte aan
+        href: "#anfrage"
   - type: faq
     id: fragen
     kicker: FAQ
@@ -196,4 +199,4 @@ sections:
     kicker: Aanvraag
     headline: Vertel ons over jullie ruimte.
     text: Plafondhoogte, oppervlakte en datum zijn genoeg voor een eerste inschatting. We reageren binnen 48 uur.
-translationSourceHash: 20afefd7b6a7fba9c15fb6fde3aa861421c3b948fa2a8f42719ede8981a56c7d
+translationSourceHash: eb03fd1e1a5213135c726ecab6c74be859d02dec2e98aaa916ec8ef97ad49226

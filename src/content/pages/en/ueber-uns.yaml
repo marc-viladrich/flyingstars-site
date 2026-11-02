@@ -144,7 +144,7 @@ sections:
   - type: landingSite
     id: sicherheit
     kicker: Safety
-    headline: How we plan safety.
+    headline: "Safety you don't have to worry about."
     text: We coordinate safety zones, flight planning and responsibilities for every site.
     variant: outdoor
     diagram:
@@ -243,7 +243,7 @@ sections:
   - type: metrics
     id: zahlen
     kicker: In numbers
-    headline: In numbers.
+    headline: Experience you can count.
     text: As of 21 October 2026.
     items:
       - label: Shows
@@ -264,4 +264,4 @@ sections:
     button:
       label: Request a show
       href: /kontakt/
-translationSourceHash: 5f9d35ea7d3526750e194e1dc3732b8da2f618c1d55a350f42cc27f56f4c3c9b
+translationSourceHash: 898fd98fcc78cd90a5783be4747460dad7062e6facf2ae82579c84a1aa2a0699

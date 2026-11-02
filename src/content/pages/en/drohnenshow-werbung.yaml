@@ -72,7 +72,7 @@ sections:
   - type: landingRefs
     id: referenzen
     kicker: Our work
-    headline: Selected shows with video and the story behind them.
+    headline: Big brands, big stages.
     projects:
       - nfl-berlin-game
       - puma-bundesliga
@@ -153,7 +153,7 @@ sections:
   - type: landingBento
     id: agenturen
     kicker: Agencies
-    headline: For agencies.
+    headline: A smooth process from A to Z.
     lead:
       icon: sparkles
       title: We fly, *you shine*.
@@ -171,15 +171,16 @@ sections:
       - icon: clipboard-list
         title: Project management
         text: On request, we manage the project, including permits, authorities and on-site technology.
-    faces: true
-    contact: Tell us about your client's project. We'll reply within 48 hours.
-    cta:
-      label: Enquire as an agency
-      href: /kontakt/?anlass=agentur
+    closing:
+      headline: A project for your client?
+      text: Tell us about it. We'll reply within 48 hours and agree everything else with you in confidence.
+      button:
+        label: Enquire as an agency
+        href: /kontakt/?anlass=agentur
   - type: landingSpotlight
     id: orte
     kicker: Locations
-    headline: Above stadiums, city centres and water too.
+    headline: "Short notice? Unusual venue? We'll find a way."
     text: Our generic operating authorisation lets us approve most flight sites ourselves. For controlled
       airspace, airport locations and federal waterways, we obtain the necessary special permits. This takes
       more lead time.
@@ -212,4 +213,4 @@ sections:
     kicker: Enquiry
     headline: Tell us about your campaign.
     text: A date, location and goal are enough. You can send your logo by email later.
-translationSourceHash: b72fcf831b6e03c526f711d072f8cdcea26bf18a3fde39ea84dc558494a92fae
+translationSourceHash: 7b6f7468c1cb68602c6ff94bbcb797a4c9bd04a7509a270ddf49ad84ad78cacf

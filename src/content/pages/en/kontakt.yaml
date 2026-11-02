@@ -10,7 +10,7 @@ sections:
   - type: steps
     id: danach
     kicker: The process
-    headline: What happens next.
+    headline: Four steps to your show.
     steps:
       - title: Reply
         text: We reply by email within 48 hours, with questions or an initial assessment.
@@ -23,7 +23,7 @@ sections:
         text: We check the site, obtain the permit and design the show with you.
   - type: textMedia
     kicker: Contact
-    headline: Other ways to reach us.
+    headline: Rather talk directly?
     body: >
       Behind every channel is the same team: Ronja, Florian and Erwin.
 
@@ -43,4 +43,4 @@ sections:
 
 
       **Post:** FlyingStars GmbH, Bulmker Straße 107, 45888 Gelsenkirchen
-translationSourceHash: 5d3120276b973cc1060818c983c50ae3543613d369263dd8263b5bc357cc2f70
+translationSourceHash: 72d0033386f283b76d3ca7b4fc2b2083f978b095e6202168e6d87b77ac3f90e8

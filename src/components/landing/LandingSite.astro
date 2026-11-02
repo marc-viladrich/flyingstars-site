@@ -3,6 +3,10 @@ import { forPath } from '../../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
 // Ein Schema für alle Standort- und Sicherheitsabschnitte. Maßangaben sind Content,
 // die Geometrie ist bewusst schematisch. Belege: docs/sicherheitskonzept-quellen.md.
+// Schrittweise (Marc, 02.11.2026: „zu viel auf einmal … erstmal nur den ersten Punkt gehighlighted, on hover werden die
+// dazugehörigen Bereiche revealed“): Zeichnung und Liste zeigen eine Zone zugleich, anfangs die erste. Zeigen, Fokus oder
+// Tippen auf einen Titel oder eine Nummer in der Zeichnung wechselt die Zone. Zuständigkeiten, Vorlauf und Haftpflicht
+// stehen hinter einem Aufklapper. Ohne JavaScript ist alles offen.
 import type { Section } from '../../content.config';
 import SectionHead from '../SectionHead.astro';
 import Icon from '../Icon.astro';
@@ -27,63 +31,88 @@ const markers = variant === 'outdoor'
         <title id={`${id}-diagram-title`}>{variant === 'outdoor' ? t('landingsite.outdoorTitle') : t('landingsite.indoorTitle')}</title>
         <desc id={`${id}-diagram-desc`}>{diagram.description} {t('landingsite.numberedList')} {diagram.caption}</desc>
         {variant === 'outdoor' ? <>
-          <rect class="outer" x="43" y="39" width="300" height="282" rx="16" />
+          <g class="zone" data-zone="safety"><rect class="outer" x="43" y="39" width="300" height="282" rx="16" />
           <path class="dim" d="M43 28h300M43 22v12M343 22v12M363 39v282M357 39h12M357 321h12" />
           <text class="lbl" x="193" y="18" text-anchor="middle">{diagram.horizontalLabel}</text>
-          <text class="lbl" x="380" y="181" text-anchor="middle" transform="rotate(90 380 181)">{diagram.verticalLabel}</text>
-          <rect class="operative" x="69" y="68" width="248" height="226" rx="12" />
-          <rect class="flight" x="92" y="100" width="202" height="155" rx="8" />
+          <text class="lbl" x="380" y="181" text-anchor="middle" transform="rotate(90 380 181)">{diagram.verticalLabel}</text></g>
+          <g class="zone" data-zone="operative"><rect class="operative" x="69" y="68" width="248" height="226" rx="12" /></g>
+          <g class="zone" data-zone="drones"><rect class="flight" x="92" y="100" width="202" height="155" rx="8" />
           {line.map((d) => <circle cx={d.x} cy={d.y} r="3.5" fill={d.color} />)}
           <path class="dim" d="M110 167h170M110 161v12M280 161v12" />
-          <text class="lbl" x="195" y="193" text-anchor="middle">{diagram.detailLabel}</text>
-          <rect class="pad" x="105" y="215" width="49" height="26" rx="3" />
-          {Array.from({ length: 18 }, (_, i) => <circle class="seed" cx={112 + (i % 6) * 7} cy={221 + Math.floor(i / 6) * 7} r="1.3" />)}
-          <rect class="audience" x="103" y="351" width="188" height="38" rx="8" />
+          <text class="lbl" x="195" y="193" text-anchor="middle">{diagram.detailLabel}</text></g>
+          <g class="zone" data-zone="start"><rect class="pad" x="105" y="215" width="49" height="26" rx="3" />
+          {Array.from({ length: 18 }, (_, i) => <circle class="seed" cx={112 + (i % 6) * 7} cy={221 + Math.floor(i / 6) * 7} r="1.3" />)}</g>
+          <g class="zone" data-zone="guests"><rect class="audience" x="103" y="351" width="188" height="38" rx="8" />
           {Array.from({ length: 22 }, (_, i) => <circle class="guest" cx={118 + (i % 11) * 15} cy={363 + Math.floor(i / 11) * 14} r="2.6" />)}
-          <path class="view" d="M197 343v-79m-5 8 5-8 5 8" />
+          <path class="view" d="M197 343v-79m-5 8 5-8 5 8" /></g>
         </> : <>
           <path class="wall" d="M49 28h324M49 210h324" />
-          {Array.from({ length: 17 }, (_, i) => <path class="hatch" d={`M${53 + i * 19} 28l-9 -12`} />)}
+          <g class="zone" data-zone="ceiling">{Array.from({ length: 17 }, (_, i) => <path class="hatch" d={`M${53 + i * 19} 28l-9 -12`} />)}
           <path class="dim" d="M31 34v176M25 34h12M25 210h12" />
-          <text class="lbl" x="17" y="123" text-anchor="middle" transform="rotate(-90 17 123)">{diagram.verticalLabel}</text>
-          <rect class="flight" x="73" y="53" width="211" height="155" rx="8" />
-          {swarm.map((d) => <circle cx={d.x} cy={d.y} r="3.3" fill={d.color} />)}
-          <rect class="pad" x="88" y="202" width="179" height="8" rx="3" />
-          {[0, 1, 2].map((i) => <><circle class="guest" cx={312 + i * 23} cy="180" r="5" /><path class="guest-body" d={`M${304 + i * 23} 210v-13a8 8 0 0 1 16 0v13`} /></>)}
+          <text class="lbl" x="17" y="123" text-anchor="middle" transform="rotate(-90 17 123)">{diagram.verticalLabel}</text></g>
+          <g class="zone" data-zone="drones"><rect class="flight" x="73" y="53" width="211" height="155" rx="8" />
+          {swarm.map((d) => <circle cx={d.x} cy={d.y} r="3.3" fill={d.color} />)}</g>
+          <g class="zone" data-zone="guests">{[0, 1, 2].map((i) => <><circle class="guest" cx={312 + i * 23} cy="180" r="5" /><path class="guest-body" d={`M${304 + i * 23} 210v-13a8 8 0 0 1 16 0v13`} /></>)}</g>
           <path class="divider" d="M49 238h324" />
+          <g class="zone" data-zone="floor"><rect class="pad" x="88" y="202" width="179" height="8" rx="3" />
           <path class="dim" d="M118 270h156M118 264v12M274 264v12" />
           <text class="lbl" x="196" y="261" text-anchor="middle">{diagram.horizontalLabel}</text>
           <rect class="flight" x="105" y="279" width="182" height="174" rx="6" />
           <rect class="pad" x="118" y="292" width="156" height="148" rx="4" />
-          {grid.map((d) => <circle class="seed" cx={d.x} cy={d.y} r="3" />)}
-          {[[105, 279], [287, 279], [105, 453], [287, 453]].map(([x, y]) => <circle class="antenna" cx={x} cy={y} r="5" />)}
-          <text class="lbl" x="196" y="482" text-anchor="middle">{diagram.detailLabel}</text>
+          {grid.map((d) => <circle class="seed" cx={d.x} cy={d.y} r="3" />)}</g>
+          <g class="zone" data-zone="kit">{[[105, 279], [287, 279], [105, 453], [287, 453]].map(([x, y]) => <circle class="antenna" cx={x} cy={y} r="5" />)}
+          <text class="lbl" x="196" y="482" text-anchor="middle">{diagram.detailLabel}</text></g>
         </>}
-        {markers.map((m) => <g class="marker"><circle cx={m.x} cy={m.y} r="12" /><text x={m.x} y={m.y + 4.5} text-anchor="middle">{numbers[m.zone]}</text></g>)}
+        {markers.map((m) => <g class="marker" data-zone={m.zone} data-pick={m.zone}><circle cx={m.x} cy={m.y} r="12" /><text x={m.x} y={m.y + 4.5} text-anchor="middle">{numbers[m.zone]}</text></g>)}
       </svg>
       <p class="st-height"><Icon name="move-up" size={20} class="g" /><span>{diagram.flightLabel}</span></p>
       <figcaption>{diagram.caption}</figcaption>
     </figure>
     <ol class="st-items">
-      {items.map((item, i) => <li data-zone={item.zone}>
+      {items.map((item, i) => <li data-zone={item.zone} data-pick={item.zone}>
         <span class="st-n mono" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-        <div><T>{item.title}{item.value && <span class="st-value">{item.value}</span>}</T><p>{item.text}</p></div>
+        <div>
+          <T><button type="button" class="st-row" aria-expanded="true" aria-controls={`${id}-z${i}`}>{item.title}</button></T>
+          <div class="st-body" id={`${id}-z${i}`}><div>{item.value && <span class="st-value">{item.value}</span>}<p>{item.text}</p></div></div>
+        </div>
       </li>)}
     </ol>
   </div>
   {safeguards && <div class="st-safeguards">
     {safeguards.map((item) => <div><Icon name={item.icon} size={32} class="g" /><T>{item.title}</T><p>{item.text}</p></div>)}
   </div>}
-  <div class="st-responsibilities">
-    {[{ title: t('landingsite.provider'), icon: 'clipboard-check', entries: responsibilities.provider }, { title: t('landingsite.customer'), icon: 'map-pinned', entries: responsibilities.customer }].map((group) => <div>
-      <T><Icon name={group.icon} size={28} class="g" />{group.title}</T>
-      <ul>{group.entries.map((entry) => <li><Icon name="check" size={18} class="g" /><span>{entry}</span></li>)}</ul>
-    </div>)}
-  </div>
-  {planning && <div class="st-planning"><T>{planning.title}</T><p>{planning.text}</p></div>}
-  {note && <p class="st-note"><b>{note.value}</b><span>{note.text}</span></p>}
-  {download && <a class="link st-download" href={localHref(download.href)} type="application/pdf" target="_blank" rel="noopener">{download.label}<Icon name="download" size={18} class="g" /></a>}
+  <details class="st-more">
+    <summary><span>{t('landingsite.more')}</span><Icon name="chevron-down" size={20} class="g" /></summary>
+    <div class="st-responsibilities">
+      {[{ title: t('landingsite.provider'), icon: 'clipboard-check', entries: responsibilities.provider }, { title: t('landingsite.customer'), icon: 'map-pinned', entries: responsibilities.customer }].map((group) => <div>
+        <T><Icon name={group.icon} size={28} class="g" />{group.title}</T>
+        <ul>{group.entries.map((entry) => <li><Icon name="check" size={18} class="g" /><span>{entry}</span></li>)}</ul>
+      </div>)}
+    </div>
+    {planning && <div class="st-planning"><T>{planning.title}</T><p>{planning.text}</p></div>}
+    {note && <p class="st-note"><b>{note.value}</b><span>{note.text}</span></p>}
+    {download && <a class="link st-download" href={localHref(download.href)} type="application/pdf" target="_blank" rel="noopener">{download.label}<Icon name="download" size={18} class="g" /></a>}
+  </details>
 </section>
+
+<script>
+  // Eine Zone zugleich: anfangs die erste; Zeigen (Maus), Fokus oder Tippen wechselt. Die Zone bleibt, bis eine andere kommt.
+  document.querySelectorAll<HTMLElement>('.ls-site .st').forEach((st) => {
+    const rows = [...st.querySelectorAll<HTMLButtonElement>('.st-row')];
+    const show = (zone: string) => {
+      st.querySelectorAll<SVGElement | HTMLElement>('[data-zone]').forEach((el) => el.classList.toggle('on', el.dataset.zone === zone));
+      rows.forEach((b) => b.setAttribute('aria-expanded', String(b.closest('li')!.dataset.zone === zone)));
+    };
+    st.querySelectorAll<HTMLElement | SVGElement>('[data-pick]').forEach((el) => {
+      const zone = el.dataset.pick!;
+      el.addEventListener('pointerenter', (e) => { if ((e as PointerEvent).pointerType === 'mouse') show(zone); });
+      el.addEventListener('click', () => show(zone));
+    });
+    rows.forEach((b) => b.addEventListener('focus', () => show(b.closest('li')!.dataset.zone!)));
+    st.classList.add('is-stepped');
+    show(rows[0]?.closest('li')?.dataset.zone ?? '');
+  });
+</script>
 
 <style>
   .st { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 88px); align-items: start; }
@@ -109,11 +138,38 @@ const markers = variant === 'outdoor'
   .marker circle { fill: var(--ground); stroke: var(--accent); stroke-width: 1.4; }
   .marker text { fill: var(--accent); font: 500 14px var(--display); }
   .st-items { list-style: none; margin: 0; padding: 0; }
+  /* Schrittweise: nicht gewählte Zonen treten zurück, ihr Text klappt zu (Höhe über grid-template-rows, weich) */
+  .zone, .marker { transition: opacity 0.4s ease; }
+  .is-stepped .zone:not(.on) { opacity: 0.16; }
+  .is-stepped .marker { cursor: pointer; }
+  .is-stepped .marker:not(.on) { opacity: 0.55; }
+  .marker circle, .marker text { transition: fill 0.3s ease; }
+  .is-stepped .marker.on circle { fill: var(--accent); }
+  .is-stepped .marker.on text { fill: var(--ground); }
+  .st-row { all: unset; cursor: pointer; display: block; width: 100%; font: inherit; color: inherit; }
+  .st-row:focus-visible { outline: 2px solid var(--cyan); outline-offset: 4px; border-radius: 4px; }
+  .st-body { display: grid; grid-template-rows: 1fr; transition: grid-template-rows 0.4s ease, opacity 0.35s ease, visibility 0s; }
+  .st-body > div { overflow: hidden; min-height: 0; }
+  /* zugeklappt wirklich verborgen (auch für Screenreader, passend zu aria-expanded), erst nach dem Zuklappen */
+  .is-stepped li:not(.on) .st-body { grid-template-rows: 0fr; opacity: 0; visibility: hidden; transition: grid-template-rows 0.4s ease, opacity 0.35s ease, visibility 0s 0.4s; }
+  .is-stepped .st-items li { transition: color 0.3s ease; }
+  .is-stepped .st-items li:not(.on) :is(h2, h3) { color: var(--muted); }
+  .is-stepped .st-items li:not(.on) .st-n { color: var(--faint); }
+  .is-stepped .st-items li { cursor: pointer; }
+  /* Aufklapper für die Planungsdetails */
+  .st-more { margin-top: clamp(32px, 4vw, 56px); border-top: 1px solid var(--line); }
+  .st-more summary { list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 22px 0; cursor: pointer; font: 500 clamp(19px, 1.5vw, 22px)/1.2 var(--display); color: var(--head); }
+  .st-more summary::-webkit-details-marker { display: none; }
+  .st-more summary :global(.ico) { transition: transform 0.3s ease; flex: 0 0 auto; }
+  .st-more[open] summary :global(.ico) { transform: rotate(180deg); }
+  .st-more summary:focus-visible { outline: 2px solid var(--cyan); outline-offset: 4px; }
+  .st-more > .st-responsibilities { margin-top: 8px; }
+  @media (prefers-reduced-motion: reduce) { .zone, .marker, .st-body, .st-more summary :global(.ico) { transition: none; } }
   .st-items li { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 8px; padding: 22px 0; border-top: 1px solid var(--line); }
   .st-items li:first-child { padding-top: 0; border: 0; }
   .st-n { color: var(--accent); padding-top: 4px; }
   .st-items h2, .st-items h3, .st-safeguards h2, .st-safeguards h3 { font-size: clamp(20px, 1.6vw, 24px); }
-  .st-value { display: block; margin-top: 6px; color: var(--accent); font-size: 0.85em; }
+  .st-value { display: block; margin-top: 8px; color: var(--accent); font: 500 clamp(17px, 1.3vw, 20px)/1.2 var(--display); }
   .ls-site p { line-height: 1.65; }
   .st-items p, .st-safeguards p, .st-planning p { margin: 10px 0 0; color: var(--muted); }
   .st-safeguards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; margin-top: clamp(40px, 5vw, 72px); padding-block: 32px; border-block: 1px solid var(--line); }

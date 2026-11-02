@@ -4,15 +4,15 @@ const { t, localHref, formatLocale } = forPath(Astro.url.pathname);
 // Preiskarte (Marc, 31.10.2026: „bei der Hochzeit insbesondere mit den Preisen … viel mehr High Quality“). Links der
 // Preis groß, bei Paketbezug mit der Punktfigur des Pakets und Preis/Drohnen aus src/content/show-packages.ts; rechts
 // die Gruppen wie ein Kassenzettel (Bezeichnung links, Betrag rechts), optional ein Bonus im Logoverlauf.
-// Darunter der Abschluss wie auf Startseite und Preisseite (Runde 9, Marc: CTAs „schmaler und zentrierter“): .promise
+// Darunter der Abschluss-Kasten (CtaBox.astro, Pflichtfelder im Schema) wie auf Startseite und Preisseite:
 // mit Gesichtern oben, Satz und Knöpfen zentriert. Die Karte selbst trägt deshalb keinen Verlaufsrand.
 import type { Section } from '../../content.config';
 import SectionHead from '../SectionHead.astro';
-import Faces from '../Faces.astro';
+import CtaBox from '../CtaBox.astro';
 import Icon from '../Icon.astro';
 import { SHOW_PACKAGES } from '../../content/show-packages';
 type Props = Extract<Section, { type: 'landingPrice' }> & { index: number };
-const { kicker, headline, text, package: pkg, price, unit, groups, bonus, contact, cta, id = 'preise', index } = Astro.props;
+const { kicker, headline, text, package: pkg, price, unit, groups, bonus, closing, id = 'preise', index } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
 const T = index === 0 ? 'h2' : 'h3';
 const orb = { SPARK: 'ring', HORIZON: 'sphere', ODYSSEY: 'torus' } as const;
@@ -46,11 +46,7 @@ const scale = p && Number.isFinite(p.max) ? t('landingprice.upToValueDronesValue
       {bonus && <div class="lp-bonus"><span class="lp-bonus-v grad">{bonus.value}</span><p>{bonus.text}</p></div>}
     </div>
   </div>
-  <div class="promise lp-close">
-    <Faces />
-    {contact && <p>{contact}</p>}
-    <div class="actions"><a class="btn primary" href={localHref(cta.href)}>{cta.label}</a></div>
-  </div>
+  <CtaBox {...closing} level={T} class="lp-close" />
 </section>
 
 <style>
@@ -79,8 +75,8 @@ const scale = p && Number.isFinite(p.max) ? t('landingprice.upToValueDronesValue
   .lp-bonus { grid-column: 1 / -1; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 12px 28px; flex-wrap: wrap; padding: clamp(18px, 2vw, 26px) clamp(22px, 2.6vw, 40px); }
   .lp-bonus-v { font: 600 clamp(40px, 4vw, 64px)/0.95 var(--display); letter-spacing: -0.05em; }
   .lp-bonus p { color: var(--muted); max-width: 46ch; margin: 0; }
-  .lp-close { margin-top: clamp(32px, 4vw, 56px); }
-  .lp-close > p { margin: 0; }
+  /* CtaBox ist eine eigene Komponente: Abstand über :global, sonst greift das Komponenten-CSS nicht */
+  :global(.lp-close) { margin-top: clamp(32px, 4vw, 56px); }
   @media (max-width: 1100px) {
     .lp-card { grid-template-columns: 1fr; }
     .lp-price { border-right: 0; border-bottom: 1px solid var(--line); }

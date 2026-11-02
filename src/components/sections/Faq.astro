@@ -9,7 +9,7 @@ const locale = localeFromPath(Astro.url.pathname);
 import { render } from 'astro:content';
 import type { Section } from '../../content.config';
 import Accent from '../Accent.astro';
-import Faces from '../Faces.astro';
+import CtaBox from '../CtaBox.astro';
 import { optimizedImage } from '../../lib/media';
 type Props = Extract<Section, { type: 'faq' }> & { index: number };
 const { headline = t('faq.frequentlyAskedQuestions'), text, cta, tags, limit, openFirst, groups, closing, id = `s${Astro.props.index}`, index, kicker } = Astro.props;
@@ -35,16 +35,7 @@ const photo = closing?.image ? await optimizedImage(closing.image.src, 640) : un
         {block.headline && <G class="faq-group-h" id={`${block.id}-h`}>{block.headline}</G>}
         <div class="faq">{block.items.map(({ entry, Content }, i) => <details open={openFirst && bi === 0 && i === 0}><summary>{entry.data.question}</summary><div class="answer"><Content /></div></details>)}</div>
       </div>)}
-      {closing && <div class="promise faq-cta">
-        <Faces />
-        <div class="promise-copy">
-          <G>{closing.headline ?? t('blogindex.canTFindYourQuestion')}</G>
-          {closing.text && <p>{closing.text}</p>}
-        </div>
-        <div class="actions">
-          <a class="btn primary" href={localHref("/kontakt/")}>{t('chopper404.requestAShow')}</a>
-        </div>
-      </div>}
+      {closing && <CtaBox headline={closing.headline} text={closing.text} button={{ label: t('chopper404.requestAShow'), href: '/kontakt/' }} level={G} class="faq-cta" />}
     </div>
   </div>
 </section>

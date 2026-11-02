@@ -1,0 +1,21 @@
+---
+// Der eine Abschluss-Kasten der Seite (Marc, 02.11.2026: „solche empty-looking CTAs darf es niemals geben. Immer ein
+// Heading und ein Text dazu“). Gesichter der drei Geschäftsführer:innen, Überschrift, Text, genau ein Knopf, zentriert im
+// Kasten mit Verlaufsrand (.promise in global.css). Genutzt von Cta, LandingCta, LandingPrice, LandingBento, FAQ,
+// Fallstudie und Preisseite; das Schema (closingBox in content.config.ts) verlangt Überschrift und Text.
+import { forPath } from '../i18n/server';
+import Accent from './Accent.astro';
+import Faces from './Faces.astro';
+interface Props { headline: string; text: string; button: { label: string; href: string }; id?: string; level?: 'h1' | 'h2' | 'h3'; class?: string; faces?: boolean }
+const { headline, text, button, id, level = 'h2', class: cls, faces = true } = Astro.props;
+const { localHref } = forPath(Astro.url.pathname);
+const H = level;
+---
+<div class:list={['promise', cls]}>
+  {faces && <Faces />}
+  <div class="promise-copy">
+    <H id={id}><Accent text={headline} /></H>
+    <p>{text}</p>
+  </div>
+  <div class="actions"><a class="btn primary" href={localHref(button.href)}>{button.label}</a></div>
+</div>

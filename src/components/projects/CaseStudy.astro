@@ -6,6 +6,7 @@ import { localeFromPath } from '../../i18n/routing.mjs';
 const locale = localeFromPath(Astro.url.pathname);
 import type { CollectionEntry } from 'astro:content';
 import { videoPath } from '../../lib/videos';
+import CtaBox from '../CtaBox.astro';
 import { optimizedImage } from '../../lib/media';
 
 interface Props { project: CollectionEntry<'projects'> }
@@ -81,7 +82,7 @@ const count = (n: number) => String(n).padStart(2, '0');
     <img class="next-poster" src={nextImage.src} {...nextImage.attributes} width={nextImage.width} height={nextImage.height} alt="" loading="lazy" decoding="async" />
     <div class="shade" aria-hidden="true"></div><div class="in"><span class="k mono">{t('casestudy.nextProject')} {count(nextData.order)} / 04 · {nextData.drones} {t('configuratorteaser.drones')}</span><b style={`--chars:${Math.max(...nextData.name.split(/\s+/).map((word) => word.length))}`}>{nextData.name} <i aria-hidden="true">→</i></b></div>
   </a>}
-  <section class="section" aria-labelledby="cta-h"><div class="promise"><div style="display:grid;gap:12px"><h2 id="cta-h">{data.cta.title}</h2><p>{data.cta.text}</p></div><a class="btn primary" href={localHref("/#anfrage")}>{t('chopper404.requestAShow')}</a></div></section>
+  <section class="section" aria-labelledby="cta-h"><CtaBox headline={data.cta.title} text={data.cta.text} button={{ label: t('chopper404.requestAShow'), href: '/#anfrage' }} id="cta-h" /></section>
 </div>
 <script>import './case.js';</script>
 <script>import '../../scripts/hero-reel';</script>

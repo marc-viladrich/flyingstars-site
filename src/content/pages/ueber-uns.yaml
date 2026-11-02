@@ -116,7 +116,7 @@ sections:
   - type: landingSite
     id: sicherheit
     kicker: Sicherheit
-    headline: So planen wir Sicherheit.
+    headline: Sicherheit, um die ihr euch nicht kümmern müsst.
     text: Sicherheitszonen, Flugplanung und Zuständigkeiten stimmen wir für jeden Standort ab.
     variant: outdoor
     diagram:
@@ -199,7 +199,7 @@ sections:
   - type: metrics
     id: zahlen
     kicker: In Zahlen
-    headline: In Zahlen.
+    headline: Erfahrung, die man zählen kann.
     text: Stand 21. Oktober 2026.
     items:
       - { label: Shows, value: "178", text: Seit der ersten Show im August 2022. In diesem Jahr waren es bis Oktober 50. }

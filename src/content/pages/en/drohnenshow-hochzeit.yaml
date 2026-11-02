@@ -89,10 +89,12 @@ sections:
     bonus:
       value: −10 %
       text: "Early booking discount: book by the end of the year for a wedding next year."
-    contact: Ronja, Florian and Erwin reply to your enquiry within 48 hours.
-    cta:
-      label: Enquire about a wedding show
-      href: "#anfrage"
+    closing:
+      headline: Already set a date?
+      text: Ronja, Florian and Erwin reply to your enquiry within 48 hours.
+      button:
+        label: Enquire about a wedding show
+        href: "#anfrage"
   - type: landingSite
     id: location
     kicker: Location
@@ -125,19 +127,6 @@ sections:
       - title: Audience area
         text: Your guests stand outside the outer safety area and need a clear view of the show. We plan their position with you, keeping a distance from walls and trees.
         zone: guests
-    safeguards:
-      - icon: scan-line
-        title: Digitally bounded flight area
-        text: A geofence limits the show area. If a drone leaves this area, a safety protocol starts automatically.
-      - icon: shield-check
-        title: Multiple safeguards
-        text: Automatic and manual safety systems monitor every flight. If a drone fails, it usually returns or lands in the safety area. The outdoor drones weigh around 300 g and have no cameras.
-      - icon: users-round
-        title: On-site crew
-        text: Three to four people, including pilots and technicians, set up the equipment and monitor the show.
-      - icon: wind
-        title: Monitoring the weather
-        text: Our formations remain stable up to wind force 5 and in light drizzle. Ideally, we review the weather conditions with you one or two days beforehand.
     responsibilities:
       provider:
         - We check the site before quoting, map out the zones and prepare the safety concept and flight plan.
@@ -161,7 +150,7 @@ sections:
   - type: tempo
     id: ablauf
     kicker: The process
-    headline: Leading up to your evening.
+    headline: You celebrate, we take care of the rest.
     text: You plan the celebration. We'll get in touch when we need a decision. One to two months' notice is ideal.
     marks:
       - value: 48 h
@@ -214,4 +203,4 @@ sections:
     kicker: Enquiry
     headline: Tell us about your wedding day.
     text: A date and venue are enough to start. We'll reply within 48 hours with an initial assessment.
-translationSourceHash: ef4b902dd79d31b2fc20e889c95e0cebb6a58ef921d3285142a18ec5072cf3e3
+translationSourceHash: 819b1d764caf906c0f65a53dd756325dc9b7666dada277fed7ac3fdc2452885a

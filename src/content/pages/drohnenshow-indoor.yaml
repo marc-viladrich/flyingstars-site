@@ -122,7 +122,7 @@ sections:
   - type: landingSpotlight
     id: einsatzorte
     kicker: Einsatzorte
-    headline: Wo Indoor-Shows passen.
+    headline: Ein Highlight für Messe, Gala und Bühne.
     text: Markenfarben und Musik stimmen wir auf euren Auftritt ab.
     image:
       src: https://flyingstars.art/wp-content/uploads/2025/04/drohnenshow-indoor-2.jpg
@@ -138,7 +138,7 @@ sections:
   - type: tempo
     id: ablauf
     kicker: Ablauf
-    headline: So läuft eine Indoor-Show ab.
+    headline: Wenig Aufwand für euch, von der Anfrage bis zur Show.
     marks:
       - { value: 48 h, label: bis zu unserer Antwort, text: "Ihr erzählt uns von Raum, Anlass und Termin." }
       - { value: 6–8 Wochen, label: "Vorlauf, ideal", text: "Design und Planung im Raum. Vorab seht ihr die Show als Video oder bei einem Testflug." }
@@ -158,7 +158,10 @@ sections:
           - { label: eurem Raum }
           - { label: der Drohnenzahl, value: 20–50 }
           - { label: dem Aufbau }
-    cta: { label: Indoor-Angebot anfragen, href: "#anfrage" }
+    closing:
+      headline: Passt eure Halle?
+      text: Schickt uns Fotos oder einen Grundriss mit der Deckenhöhe. Wir sagen euch innerhalb von 48 Stunden, was dort möglich ist.
+      button: { label: Indoor-Angebot anfragen, href: "#anfrage" }
 
   - type: faq
     id: fragen

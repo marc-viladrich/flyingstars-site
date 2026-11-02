@@ -10,7 +10,7 @@ import Packages from '../components/sections/Packages.astro';
 import Cta from '../components/sections/Cta.astro';
 import Faq from '../components/sections/Faq.astro';
 import SectionHead from '../components/SectionHead.astro';
-import Faces from '../components/Faces.astro';
+import CtaBox from '../components/CtaBox.astro';
 import ShowConfigurator from '../components/configurator/ShowConfigurator.astro';
 import Extras from '../components/pricing/Extras.astro';
 import Included from '../components/pricing/Included.astro';
@@ -83,11 +83,7 @@ const orb = { SPARK: 'ring', HORIZON: 'sphere', ODYSSEY: 'torus' } as const;
 
   <!-- Preisversprechen: von FlyingStars im Fragebogen (21.10.2026) bestätigt -->
   <section class="section promise-sec" aria-labelledby="versprechen-h">
-    <div class="promise">
-      <Faces />
-      <div><h2 id="versprechen-h">{t('pricingpage.foundTheSameServiceForLessWeLlBeatThe')}</h2><p>{t('pricingpage.sendUsTheOtherQuoteForTheSameScopeOf')}</p></div>
-      <a class="btn primary" href={localHref("/kontakt/?anliegen=vergleich")}>{t('pricingpage.haveAQuoteChecked')}</a>
-    </div>
+    <CtaBox headline={t('pricingpage.foundTheSameServiceForLessWeLlBeatThe')} text={t('pricingpage.sendUsTheOtherQuoteForTheSameScopeOf')} button={{ label: t('pricingpage.haveAQuoteChecked'), href: '/kontakt/?anliegen=vergleich' }} id="versprechen-h" />
   </section>
 
   <Faq
