@@ -23,6 +23,7 @@ sections:
     stats:
       - { label: Shows, value: "178" }
       - { label: Basis, value: 51.51° N · 7.10° E }
+    todo: Moritz muss die Einstiegs- und Anlass-Texte sowie EN/NL prüfen; FlyingStars muss den Showstand aktualisieren oder 178 ausdrücklich mit Stand 21.10.2026 führen.
 
   # 19 Marken aus der Designsprache-Probe. Red Bull, Lamborghini, Bentley und ABUS: Beleg für eine Show steht noch aus.
   - type: logoBar
@@ -55,6 +56,7 @@ sections:
         image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Bentley_logo_weiss.png, alt: Bentley, width: 400, height: 200 }
       - name: ABUS
         image: { src: https://flyingstars.art/wp-content/uploads/2023/04/ABUS_Logo_weiss.png, alt: ABUS, width: 400, height: 200 }
+    todo: FlyingStars muss konkrete Show-Belege für Red Bull, Lamborghini, Bentley und ABUS liefern oder die betreffenden Logos aus der Auswahl nehmen.
 
   # Anlässe als Slider (Marc, 31.10.2026, Runde 9): die vier wichtigsten sichtbar, der Rest läuft rechts aus dem Bild.
   # Kicker = Zielgruppe, Kartentitel = Nutzen. Silvester rückt im November und Dezember nach vorn (season). Hochzeit und
@@ -107,6 +109,7 @@ sections:
         image: { src: "https://flyingstars.art/wp-content/uploads/2025/04/drohnenshow-indoor-2.jpg", alt: Leuchtende Drohnen in Formation vor der Bühne eines voll besetzten Saals, width: 1200, height: 764 }
         facts: ["20 bis 50 Drohnen, 5 bis 8 Minuten", Einzeln kalkuliert]
         cta: { label: Indoor-Drohnenshows, href: /drohnenshow-indoor/ }
+    todo: Moritz muss die Anlass-Texte freigeben; FlyingStars muss die Relaunch-Sitemap bestätigen. Eigene Seiten für Städte, Festivals und Silvester sind bislang nicht ausgearbeitet.
 
   - type: packages
     id: pakete
@@ -120,6 +123,7 @@ sections:
       - { name: ODYSSEY, label: Erzählte 3D-Show }
     note: Alle Preise netto zzgl. Anfahrt
     cta: { label: Alle Leistungen und Preise, href: /drohnenshow-preise/ }
+    todo: FlyingStars muss die Paketgrenzen, Aufpreise und Leistungen für den Relaunch bestätigen; die endgültige Preisstruktur für 2027 ist noch offen.
 
   # Vorgeschmack auf den Konfigurator (Marc, 31.10.2026, Runde 7): kein interaktiver Konfigurator, sondern ein Showreel,
   # das sich selbst abspielt: die stärksten Motive von SPARK bis ODYSSEY, ein Beispiel-Logo, daneben ein Wireframe.
@@ -128,6 +132,7 @@ sections:
     kicker: Show-Konfigurator
     headline: Stellt eure Show *selbst* zusammen.
     text: Vom Herz bis zur Mondlandung, von 100 bis 600 Drohnen. Im Konfigurator seht ihr, was zu eurem Anlass passt.
+    todo: FlyingStars muss die Motive, Drohnenzahlen und Freischaltstufen anhand von docs/show-motive-inventar.md fachlich bestätigen. Die Vorschau ist kein Flugplan.
 
   - type: projectGrid
     id: projekte
@@ -176,6 +181,7 @@ sections:
       - { title: 100 % Ökostrom von naturstrom, text: für die ganze Flotte, icon: leaf, logo: /brand/logos/quali-naturstrom.svg, cleared: true }
       - { title: Schallschutz-Gutachten, text: vom TÜV Nord, icon: sound, secondary: true }
       - { title: "Haftpflicht bis 1,3 Mio. €", text: in jedem Paket, icon: shield, secondary: true }
+    todo: FlyingStars muss schriftliche Nutzungsfreigaben für Presse-, LBA-, EASA- und naturstrom-Logos sowie konkrete Beiträge von ZDF/WDR liefern. tagesschau und Tagesspiegel belegen bisher keinen namentlichen FlyingStars-Bezug.
 
   # Nachhaltigkeit als Scrollstory aus dem Prototyp (Marc, 31.10.2026). Nur Aussagen über die Show vor Ort (EmpCo).
   - type: sustainability
@@ -194,6 +200,7 @@ sections:
       - { icon: repair, title: Reparieren statt ersetzen, text: "Akkus, Motoren und Rotoren tauschen wir einzeln, die Drohne fliegt weiter." }
       - { icon: ev, title: Elektrisch zur Show, text: Zu den Shows fahren wir mit einem elektrischen Ford E-Transit. }
       - { icon: campaign, title: "#Böllerciao", text: "Mit der Deutschen Umwelthilfe im November 2023 über Berlin, als Alternative zum Silvesterfeuerwerk." }
+    todo: Moritz und FlyingStars müssen die Umweltformulierungen vor Veröffentlichung prüfen und die Belege für Ökostrom, Herstellung und das TÜV-Nord-Schallschutzgutachten bereithalten.
 
   - type: comparison
     id: vergleich
@@ -240,6 +247,7 @@ sections:
           - { label: Kilometerweit, text: "", tone: y }
           - { label: Begrenzt, text: wirkt am besten aus der Nähe, tone: p }
     note: Entwurf · fachliche Prüfung ausstehend
+    todo: FlyingStars muss den Vergleich fachlich prüfen, insbesondere pauschale Aussagen zu Brandgefahr, Lautstärke und Umweltwirkung; der Block ist bereits als Entwurf gekennzeichnet.
 
   - type: team
     id: team
@@ -267,6 +275,7 @@ sections:
         bio: Entwirft alle Shows und Choreografien, Bild für Bild, im Takt der Musik.
     note: Dazu eine Crew aus Pilot:innen und Techniker:innen, die jede Show vor Ort aufbaut und fliegt.
     cta: { label: Mehr über uns, href: /ueber-uns/ }
+    todo: FlyingStars muss hochauflösende Porträts von Ronja, Florian und Erwin sowie Fotos von Patrick und Alejandro liefern; die vorhandenen Porträts messen nur 199 × 199 Pixel.
 
   - type: faq
     id: faq
@@ -281,3 +290,4 @@ sections:
     kicker: Anfrage
     headline: Erzählt uns von eurem Termin.
     text: Datum, Ort und Anlass reichen für eine erste Einschätzung. Was ihr noch nicht wisst, lasst ihr offen.
+    todo: FlyingStars und die Datenschutzberatung müssen Versanddienst, Empfängerpostfach, Auftragsverarbeitung, Drittlandtransfers und Löschfristen festlegen und die Datenschutzhinweise freigeben.

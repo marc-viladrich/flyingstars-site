@@ -33,35 +33,14 @@ sections:
       - { value: ab 7.900 €, label: netto mit SPARK }
       - { value: 100 Drohnen, label: im Paket }
       - { value: inklusive, label: Genehmigung }
-
-  # Entwurf für Moritz: Referenzen als zwei Geschichten statt Fließtext, Inhalte wie bisher
-  - type: landingStories
+    todo: Moritz muss die deutsche Endfassung und die maschinell übersetzten EN-/NL-Texte redaktionell prüfen.
+  - type: landingRefs
     id: referenzen
-    todo: Die Karten verlinken noch auf keine ausgearbeiteten Hochzeits-Fallstudien. Codex erstellt sie aus dem Bestand von flyingstars.art.
     kicker: Referenzen
     headline: So sah das bei anderen *Paaren* aus.
-    items:
-      - kicker: Recklinghausen · Juni 2024
-        title: Eine Überraschung, die die Familie geplant hat
-        text: Die Familie kam vier Monate vor der Hochzeit auf uns zu. Die Startfläche lag auf einem Nachbargrundstück, ohne dass das Brautpaar davon wusste. Wegen eines Gewitters haben wir am Abend verschoben und dann geflogen.
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg
-          alt: Zwei Blüten aus violetten und blauen Lichtpunkten am Abendhimmel über Bäumen, bei einer Hochzeit in Recklinghausen
-          width: 1518
-          height: 854
-        facts:
-          - { value: "150", label: Drohnen }
-          - { value: 4 Monate, label: vorher angefragt }
-      - kicker: Schloss Hugenpoet, Essen · September 2024
-        title: "„Do you want to be my Forever?“"
-        text: Eine Schmuckschatulle öffnete sich, ein Ring schwebte an eine Hand, danach stand die Frage am Himmel. Die Antwort war Ja.
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg
-          alt: Hand mit Ring aus Drohnen am blauen Abendhimmel über Baumkronen, bei einem Heiratsantrag am Schloss Hugenpoet
-          width: 2063
-          height: 1303
-        facts:
-          - { value: "220", label: Drohnen }
+    projects:
+      - hochzeit-recklinghausen
+      - heiratsantrag-hugenpoet
 
   # Motive: Konfigurator-Teaser statt Text-Banner (Marc, 31.10.2026: „damit man unterschiedliche Motive sieht“)
   - type: landingTeaser
@@ -72,6 +51,7 @@ sections:
     href: "/drohnenshow-preise/?anlass=hochzeit&paket=SPARK#konfigurator"
     cta: Motive im Konfigurator ansehen
     loop: hochzeit
+    todo: FlyingStars muss die Motive, Drohnenzahlen und Freischaltstufen anhand von docs/show-motive-inventar.md fachlich bestätigen. Die Vorschau ist kein Flugplan.
 
   # Entwurf für Moritz: Preis als Karte. Inhalte wie bisher; „Kontakt“-Satz neu.
   - type: landingPrice
@@ -98,6 +78,7 @@ sections:
       headline: Euer Datum steht schon?
       text: Ronja, Florian und Erwin beantworten eure Anfrage innerhalb von 48 Stunden.
       button: { label: Hochzeitsshow anfragen, href: "#anfrage" }
+    todo: FlyingStars muss die Paketgrenzen, Aufpreise und Leistungen für den Relaunch bestätigen; die endgültige Preisstruktur für 2027 ist noch offen.
 
   # Textentwurf für Moritz. Quellen und Konflikte: docs/sicherheitskonzept-quellen.md.
   - type: landingSite
@@ -148,6 +129,7 @@ sections:
       text: "Plant idealerweise ein bis zwei Monate ein, bei aufwendigen Genehmigungen etwa in Flughafennähe eher drei Monate. Express ist je nach Standort in ein bis zwei Wochen möglich, mit Aufpreis nach Aufwand. Das sind Planungsrichtwerte; die nötigen Freigaben prüfen wir für euren Ort."
     note: { value: "bis 1,3 Mio. €", text: "Drohnen-Haftpflicht in jedem Outdoor-Paket. Dafür braucht ihr keine zusätzliche Versicherung. Wir fliegen in der speziellen Kategorie nach den europäischen Vorgaben. Die Betriebsgenehmigung erteilt das LBA." }
     download: { label: Technik-Datenblatt · PDF, href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf }
+    todo: FlyingStars muss die Startflächen je Drohnenzahl und die standortabhängigen Abstände bestätigen; 15 × 15 und 25 × 25 Meter widersprechen sich in den Quellen. Die Zeichnung bleibt ein Beispiel.
 
   # Entwurf für Moritz: Ablauf in Zahlen wie auf der Startseite. Quellen: Fragebogen 21.10. (48 h, mind. 3 Wochen Design,
   # 1–2 Monate ideal, ca. 3 h Aufbau, ca. 3 Monate bei Flughafennähe).
@@ -181,6 +163,7 @@ sections:
       - { icon: wind, title: Bis Windstärke 5, text: "So lange fliegen wir, auch bei leichtem Nieselregen." }
       - { icon: calendar-sync, title: Kostenlos verschieben, text: "Ist schlechtes Wetter absehbar, verschieben wir, solange wir noch nicht losgefahren sind." }
       - { icon: wallet, title: 40 % Anzahlung, text: "Zahlt ihr bei der Buchung an. Fällt die Show ganz aus, gilt die Staffel aus unseren AGB." }
+    todo: FlyingStars muss die Website-Angabe Windstärke 5 mit den Windgrenzen der AGB abstimmen und die aktuelle Ausfall-/Verschiebungsstaffel samt verlinkbarer AGB-Fassung liefern.
 
   - type: faq
     id: fragen

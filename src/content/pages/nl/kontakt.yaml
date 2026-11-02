@@ -1,12 +1,11 @@
 title: Vraag een show aan
-description: Vertel FlyingStars jullie datum, locatie en gelegenheid. We reageren binnen 48 uur per e-mail,
-  telefoon, WhatsApp of videogesprek.
+description: Vertel FlyingStars jullie datum, locatie en gelegenheid. We reageren binnen 48 uur per e-mail, telefoon, WhatsApp of videogesprek.
 sections:
   - type: contactForm
     kicker: Aanvraag
     headline: Vertel ons over jullie datum.
-    text: Datum, locatie en gelegenheid zijn genoeg voor een eerste inschatting. Laat open wat jullie nog niet
-      weten. Versturen is nog geen boeking.
+    text: Datum, locatie en gelegenheid zijn genoeg voor een eerste inschatting. Laat open wat jullie nog niet weten. Versturen is nog geen boeking.
+    todo: FlyingStars und die Datenschutzberatung müssen Versanddienst, Empfängerpostfach, Auftragsverarbeitung, Drittlandtransfers und Löschfristen festlegen und die Datenschutzhinweise freigeben.
   - type: steps
     id: danach
     kicker: Verloop
@@ -30,17 +29,16 @@ sections:
 
       **Telefoon:** [0209 883 065 62](tel:+4920988306562)<br>
 
-      **Mobiel en WhatsApp:** [01579 260 86 72](tel:+4915792608672), [schrijf via
-      WhatsApp](https://wa.me/4915792608672)<br>
+      **Mobiel en WhatsApp:** [01579 260 86 72](tel:+4915792608672), [schrijf via WhatsApp](https://wa.me/4915792608672)<br>
 
       **E-mail:** [team@flyingstars.art](mailto:team@flyingstars.art)<br>
 
       **Videogesprek:** [plan een afspraak via Calendly](https://calendly.com/team-flyingstars/beratung)
 
 
-      **Bezoek:** Triple Z, Gründungszentrum Zeche Zollverein, Katernberger Str. 107, 45327 Essen. Meld jullie
-      vooraf even aan.
+      **Bezoek:** Triple Z, Gründungszentrum Zeche Zollverein, Katernberger Str. 107, 45327 Essen. Meld jullie vooraf even aan.
 
 
       **Post:** FlyingStars GmbH, Bulmker Straße 107, 45888 Gelsenkirchen
-translationSourceHash: 72d0033386f283b76d3ca7b4fc2b2083f978b095e6202168e6d87b77ac3f90e8
+    todo: FlyingStars muss den Terminbuchungs-Link und die Kontaktwege vor dem Relaunch bestätigen; Moritz muss die Kontakttexte und EN/NL prüfen.
+translationSourceHash: 9f4a0744d00d58a08c0dca3f825b0e36417736d6980881d7a916d7b1ec47459d

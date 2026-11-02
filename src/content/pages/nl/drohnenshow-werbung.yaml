@@ -1,14 +1,12 @@
 title: Droneshows als reclame
 navLabel: Merken & reclame
-description: "Droneshows voor merken en bureaus: jullie logo aan de nachthemel, elk beeld vooraf goedgekeurd.
-  Voor lanceringen, jubilea en campagnes."
+description: "Droneshows voor merken en bureaus: jullie logo aan de nachthemel, elk beeld vooraf goedgekeurd. Voor lanceringen, jubilea en campagnes."
 image: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
 sections:
   - type: landingHero
     kicker: Merken & reclame
     headline: Jullie merk aan de *nachthemel*.
-    text: We zetten jullie logo en boodschap om in drones, afgestemd op muziek en campagne. Elk beeld keuren
-      jullie vóór de show goed.
+    text: We zetten jullie logo en boodschap om in drones, afgestemd op muziek en campagne. Elk beeld keuren jullie vóór de show goed.
     cta:
       label: Vraag een merkshow aan
       href: "#anfrage"
@@ -29,6 +27,7 @@ sections:
         label: tot ons antwoord
       - value: 1–2 weken
         label: met express
+    todo: Moritz muss die deutsche Endfassung und die maschinell übersetzten EN-/NL-Texte redaktionell prüfen.
   - type: logoBar
     id: marken
     headline: Merken waarvoor we vlogen
@@ -76,7 +75,7 @@ sections:
     projects:
       - nfl-berlin-game
       - puma-bundesliga
-      - spotify-luciano-apache
+      - exploring-reinvented-der-neue-ford-explorer
       - loreal-prada-rheinturm
     cta:
       label: Al onze shows
@@ -97,11 +96,11 @@ sections:
     items:
       - icon: camera
         title: Beelden voor jullie kanalen
-        text: Gasten filmen en delen de show. Ruwe beelden van onze cameradrone kosten € 900 en zijn bij ODYSSEY
-          inbegrepen.
+        text: Gasten filmen en delen de show. Ruwe beelden van onze cameradrone kosten € 900 en zijn bij ODYSSEY inbegrepen.
       - icon: newspaper
         title: Een aanleiding voor publiciteit
         text: Onder andere ZDF, WDR, ntv en WAZ berichtten over ons en onze shows.
+    todo: FlyingStars muss die genannten ZDF-/WDR-Berichte konkret belegen; für Reichweiten- oder Wirkungsaussagen fehlen messbare Projektergebnisse.
   - type: landingFlow
     id: freigabe
     kicker: Verloop
@@ -125,8 +124,7 @@ sections:
     id: pakete
     kicker: Pakketten
     headline: Hoe uitgebreid mag jullie show zijn?
-    text: Voor veel bedrijfsfeesten is een 2D-logo voldoende. Voor lanceringen met 3D-objecten en een verhaal
-      passen HORIZON of ODYSSEY.
+    text: Voor veel bedrijfsfeesten is een 2D-logo voldoende. Voor lanceringen met 3D-objecten en een verhaal passen HORIZON of ODYSSEY.
     compact: true
     items:
       - name: SPARK
@@ -141,6 +139,7 @@ sections:
     cta:
       label: Alle diensten en prijzen
       href: /drohnenshow-preise/
+    todo: FlyingStars muss die Paketgrenzen, Aufpreise und Leistungen für den Relaunch bestätigen; die endgültige Preisstruktur für 2027 ist noch offen.
   - type: landingTeaser
     id: logo
     kicker: Showconfigurator
@@ -149,6 +148,7 @@ sections:
     href: /drohnenshow-preise/?anlass=launch#konfigurator
     cta: Probeer jullie logo in de configurator
     loop: marke
+    todo: FlyingStars muss die Motive, Drohnenzahlen und Freischaltstufen anhand von docs/show-motive-inventar.md fachlich bestätigen. Die Vorschau ist kein Flugplan.
   - type: landingBento
     id: agenturen
     kicker: Bureaus
@@ -156,8 +156,7 @@ sections:
     lead:
       icon: sparkles
       title: Wij vliegen, *jullie stralen*.
-      text: Jullie blijven vooraan bij jullie klanten. Jullie bepalen wat jullie zelf organiseren en wat wij
-        overnemen.
+      text: Jullie blijven vooraan bij jullie klanten. Jullie bepalen wat jullie zelf organiseren en wat wij overnemen.
     items:
       - icon: hat-glasses
         title: White label
@@ -181,9 +180,7 @@ sections:
     id: orte
     kicker: Locaties
     headline: Weinig tijd? Bijzondere locatie? We vinden een manier.
-    text: Met onze generieke exploitatievergunning kunnen we de meeste vlieglocaties zelf vrijgeven. Voor
-      gecontroleerd luchtruim, locaties bij luchthavens en federale waterwegen regelen we de benodigde
-      bijzondere vergunningen. Dat vraagt meer voorbereidingstijd.
+    text: Met onze generieke exploitatievergunning kunnen we de meeste vlieglocaties zelf vrijgeven. Voor gecontroleerd luchtruim, locaties bij luchthavens en federale waterwegen regelen we de benodigde bijzondere vergunningen. Dat vraagt meer voorbereidingstijd.
     image:
       src: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
       alt: Droneformatie boven de skyline van Düsseldorf met de Rheinturm
@@ -200,6 +197,7 @@ sections:
         vorab: null
       - value: ca. 3 maanden
         label: in Italië
+    todo: FlyingStars muss aktuelle Cross-border-Fristen und mögliche Sondergebühren je Land bestätigen. Die Ortsbeispiele belegen keine pauschale Genehmigung oder garantierte Frist.
   - type: faq
     id: fragen
     kicker: FAQ
@@ -213,4 +211,4 @@ sections:
     kicker: Aanvraag
     headline: Vertel ons over jullie campagne.
     text: Datum, locatie en doel zijn genoeg. Jullie logo mogen jullie later per e-mail sturen.
-translationSourceHash: 7b6f7468c1cb68602c6ff94bbcb797a4c9bd04a7509a270ddf49ad84ad78cacf
+translationSourceHash: b6f01a48cf75d06c0e8a591d59a7f0820ecc9bd6fb04539e6a837fd4a9fab02e

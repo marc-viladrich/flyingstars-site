@@ -1,6 +1,5 @@
 title: Frequently asked questions about drone shows
-description: "Lead time, space, permits, weather, safety and costs: answers to the most common questions about
-  FlyingStars drone shows."
+description: "Lead time, space, permits, weather, safety and costs: answers to the most common questions about FlyingStars drone shows."
 sections:
   - type: faq
     id: fragen
@@ -39,4 +38,5 @@ sections:
     closing:
       headline: Can't find your question?
       text: Add your question to your enquiry. We'll reply within 48 hours.
-translationSourceHash: 1d43001b878c515b164813dc8ca86e3c14dff5237bd401fab8cd944227498645
+    todo: FlyingStars muss Wind-/AGB-Grenzen, Indoor-Abstände und die Indoor-Versicherung fachlich klären; Moritz muss die Antworten und EN/NL danach abschließend prüfen.
+translationSourceHash: e9bedfcd354f94cd4fab545bd466f435fb5fdbaa0788a71f9d763be2850f9e59

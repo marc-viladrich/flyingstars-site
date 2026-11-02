@@ -1,16 +1,16 @@
 title: Our work
-description: "FlyingStars shows for Bokkenrijders, NFL, Ford and PUMA, plus annual show counts: 178 shows
-  since 2022, with 50 to 600 drones."
+description: "FlyingStars shows for Bokkenrijders, NFL, Ford and PUMA, plus annual show counts: 178 shows since 2022, with 50 to 600 drones."
 sections:
   - type: references
     id: referenzen
     kicker: Our work
     headline: Shows we've already flown.
-    text: 178 shows since 2022, with 50 to 600 drones. Here's a selection, with four stories told in detail.
+    text: 178 shows since 2022, as of 21 October 2026. Explore a selection including seven detailed case studies.
     filters:
       - occasion
       - year
       - drones
+    todo: Für die verbleibenden Kurzreferenzen fehlen Projektgeschichten und teilweise weitere Bilder. FlyingStars muss priorisierte Briefings und Nutzungsfreigaben liefern; freigegebene Kundenzitate liegen laut Fragebogen nicht vor.
   - type: metrics
     id: pro-jahr
     kicker: In numbers
@@ -21,8 +21,7 @@ sections:
         text: "The first on 13 August: 50 drones for a private birthday. PUMA at Borussia-Park in November."
       - label: "2023"
         value: "42"
-        text: "Including L’Oréal × Prada at Düsseldorf's Rhine Tower and #Böllerciao with Deutsche Umwelthilfe in
-          Berlin."
+        text: "Including L’Oréal × Prada at Düsseldorf's Rhine Tower and #Böllerciao with Deutsche Umwelthilfe in Berlin."
       - label: "2024"
         value: "45"
         text: Including 50 years of VW Golf at Lake Wolfgangsee and the new Ford Explorer in Cologne.
@@ -35,6 +34,7 @@ sections:
       - label: Total
         value: "178"
         text: For brands, cities, festivals and couples, in Germany and Europe.
+    todo: FlyingStars muss die Jahreszahlen einschließlich 2026 aktualisieren oder den Stand 21.10.2026 ausdrücklich beibehalten; 178 ist keine laufende Live-Zählung.
   - type: logoBar
     id: marken
     headline: FlyingStars clients
@@ -87,4 +87,4 @@ sections:
     button:
       label: Request a show
       href: /kontakt/
-translationSourceHash: 3139e33b03be473d2cf5aa22bda167e35a093f474c28df8a58aeefb796b86717
+translationSourceHash: befc3c4b90a59902b1178304eff838aef52a666576c2e46e029fe3b05008022a

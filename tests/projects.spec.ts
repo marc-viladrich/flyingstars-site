@@ -94,3 +94,40 @@ test('Referenzen zeigen die Zahl der Shows pro Jahr', async ({ page }) => {
   await expect(years).toHaveCount(6);
   await expect(years.last()).toContainText('178');
 });
+
+// Real source material without a downloadable hero loop or formation file.
+const addedCases = [
+  { route: 'hochzeit-recklinghausen', name: 'Hochzeit', video: 'WRoA4dbs88w', gallery: 0 },
+  { route: 'heiratsantrag-hugenpoet', name: 'Hugenpoet', video: 'JhOLT_DfA8M', gallery: 0 },
+  { route: 'loreal-prada-rheinturm', name: 'Prada Paradoxe', video: 'm2K9VoelZYY', gallery: 3 },
+];
+for (const project of addedCases) {
+  test(`${project.name}: belegte Geschichte ohne erfundene Medien`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    await page.goto(`/${project.route}/`);
+    await expect(page.getByRole('heading', { level: 1 })).toContainText(project.name);
+    await expect(page.locator('.c-step')).toHaveCount(3);
+    await expect(page.locator('.c-hero video, .c-play')).toHaveCount(0);
+    await expect(page.locator('.c-track figure')).toHaveCount(project.gallery);
+    await expect(page.getByRole('link', { name: /Originalfilm/ })).toHaveAttribute('href', `https://www.youtube.com/watch?v=${project.video}`);
+    await expect(page.locator('.c-next')).toHaveAttribute('href', /\/$/);
+    await expect(page.locator('.idx')).toContainText('/ 07');
+    expect(errors).toEqual([]);
+  });
+}
+
+test('Alle Hochzeits- und Werbekarten verlinken sprachgleiche Fallstudien', async ({ page }) => {
+  for (const locale of LOCALES) {
+    for (const slug of ['drohnenshow-hochzeit', 'drohnenshow-werbung']) {
+      await page.goto(localizedHref(`/${slug}/`, locale));
+      const cards = page.locator('#referenzen .proj');
+      await expect(cards).toHaveCount(slug.endsWith('hochzeit') ? 2 : 4);
+      for (const card of await cards.all()) {
+        const href = await card.getAttribute('href');
+        expect(href).toBeTruthy();
+        expect(href).toMatch(locale === 'de' ? /^\/(?!en\/|nl\/)/ : new RegExp(`^/${locale}/`));
+      }
+    }
+  }
+});

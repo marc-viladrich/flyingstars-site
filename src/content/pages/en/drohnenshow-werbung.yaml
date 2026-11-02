@@ -1,14 +1,12 @@
 title: Drone shows for advertising
 navLabel: Brands & advertising
-description: "Drone shows for brands and agencies: your logo in the night sky, with every motif approved in
-  advance. For launches, anniversaries and campaigns."
+description: "Drone shows for brands and agencies: your logo in the night sky, with every motif approved in advance. For launches, anniversaries and campaigns."
 image: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
 sections:
   - type: landingHero
     kicker: Brands & advertising
     headline: Your brand in the *night sky*.
-    text: We turn your logo and message into drones, matched to your music and campaign. You approve every motif
-      before the show.
+    text: We turn your logo and message into drones, matched to your music and campaign. You approve every motif before the show.
     cta:
       label: Enquire about a brand show
       href: "#anfrage"
@@ -29,6 +27,7 @@ sections:
         label: until our reply
       - value: 1–2 weeks
         label: with express service
+    todo: Moritz muss die deutsche Endfassung und die maschinell übersetzten EN-/NL-Texte redaktionell prüfen.
   - type: logoBar
     id: marken
     headline: Brands we've flown for
@@ -76,7 +75,7 @@ sections:
     projects:
       - nfl-berlin-game
       - puma-bundesliga
-      - spotify-luciano-apache
+      - exploring-reinvented-der-neue-ford-explorer
       - loreal-prada-rheinturm
     cta:
       label: All our work
@@ -97,11 +96,11 @@ sections:
     items:
       - icon: camera
         title: Content for your channels
-        text: Guests film and share the show. Raw footage from our camera drone costs €900, and is included in
-          ODYSSEY.
+        text: Guests film and share the show. Raw footage from our camera drone costs €900, and is included in ODYSSEY.
       - icon: newspaper
         title: A reason to report
         text: ZDF, WDR, ntv and WAZ are among the media that have reported on us and our shows.
+    todo: FlyingStars muss die genannten ZDF-/WDR-Berichte konkret belegen; für Reichweiten- oder Wirkungsaussagen fehlen messbare Projektergebnisse.
   - type: landingFlow
     id: freigabe
     kicker: The process
@@ -109,8 +108,7 @@ sections:
     text: Nothing flies without your approval.
     steps:
       - title: Enquiry and quote
-        text: Tell us your date, location and goal. We'll reply within 48 hours and send a quote after a short
-          conversation.
+        text: Tell us your date, location and goal. We'll reply within 48 hours and send a quote after a short conversation.
         duration: Reply within 48 h
       - title: Draft
         text: Send us your logo. First, you'll see a 2D draft of the motifs.
@@ -126,8 +124,7 @@ sections:
     id: pakete
     kicker: Packages
     headline: How complex should your show be?
-    text: A 2D logo is enough for many corporate celebrations. For launches with 3D objects and a storyline,
-      choose HORIZON or ODYSSEY.
+    text: A 2D logo is enough for many corporate celebrations. For launches with 3D objects and a storyline, choose HORIZON or ODYSSEY.
     compact: true
     items:
       - name: SPARK
@@ -142,6 +139,7 @@ sections:
     cta:
       label: All services and prices
       href: /drohnenshow-preise/
+    todo: FlyingStars muss die Paketgrenzen, Aufpreise und Leistungen für den Relaunch bestätigen; die endgültige Preisstruktur für 2027 ist noch offen.
   - type: landingTeaser
     id: logo
     kicker: Show configurator
@@ -150,6 +148,7 @@ sections:
     href: /drohnenshow-preise/?anlass=launch#konfigurator
     cta: Try your logo in the configurator
     loop: marke
+    todo: FlyingStars muss die Motive, Drohnenzahlen und Freischaltstufen anhand von docs/show-motive-inventar.md fachlich bestätigen. Die Vorschau ist kein Flugplan.
   - type: landingBento
     id: agenturen
     kicker: Agencies
@@ -181,9 +180,7 @@ sections:
     id: orte
     kicker: Locations
     headline: "Short notice? Unusual venue? We'll find a way."
-    text: Our generic operating authorisation lets us approve most flight sites ourselves. For controlled
-      airspace, airport locations and federal waterways, we obtain the necessary special permits. This takes
-      more lead time.
+    text: Our generic operating authorisation lets us approve most flight sites ourselves. For controlled airspace, airport locations and federal waterways, we obtain the necessary special permits. This takes more lead time.
     image:
       src: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
       alt: Drone formation above the Düsseldorf skyline with the Rhine Tower
@@ -200,6 +197,7 @@ sections:
         vorab: null
       - value: approx. 3 months
         label: in Italy
+    todo: FlyingStars muss aktuelle Cross-border-Fristen und mögliche Sondergebühren je Land bestätigen. Die Ortsbeispiele belegen keine pauschale Genehmigung oder garantierte Frist.
   - type: faq
     id: fragen
     kicker: FAQ
@@ -213,4 +211,4 @@ sections:
     kicker: Enquiry
     headline: Tell us about your campaign.
     text: A date, location and goal are enough. You can send your logo by email later.
-translationSourceHash: 7b6f7468c1cb68602c6ff94bbcb797a4c9bd04a7509a270ddf49ad84ad78cacf
+translationSourceHash: b6f01a48cf75d06c0e8a591d59a7f0820ecc9bd6fb04539e6a837fd4a9fab02e

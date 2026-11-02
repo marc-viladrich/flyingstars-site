@@ -34,6 +34,7 @@ sections:
       - { value: 20–50, label: Drohnen }
       - { value: 5–8 Min, label: Showdauer }
       - { value: ab 3 m, label: Deckenhöhe }
+    todo: Moritz muss die Endfassung und EN/NL prüfen. FlyingStars muss die Zuordnung von Siemens-Film und Hallen-Standbildern zur Hannover Messe bestätigen; das Standbild belegt diesen Veranstaltungsort bislang nicht.
 
   - type: comparison
     id: unterschied
@@ -57,6 +58,7 @@ sections:
         values: [ab 3 m Deckenhöhe und eine freie Flugfläche, Sicherheitsbereich von ca. 100 × 100 m]
       - label: Preis
         values: ["einzeln kalkuliert, ab ca. 15.000 € netto für 20 Drohnen", "Pakete ab 7.900 € netto"]
+    todo: FlyingStars muss 188 g, UWB und die technischen Indoor-/Outdoor-Vergleichswerte für die aktuelle Flotte bestätigen.
 
   # Textentwurf für Moritz. Quellen und Konflikte: docs/sicherheitskonzept-quellen.md.
   - type: landingSite
@@ -98,6 +100,7 @@ sections:
         - "Ihr schickt uns einen Grundriss mit Maßen und Deckenhöhe und nennt die geplante Position des Publikums."
         - "Ihr stellt eine freie Start- und Flugfläche auf ebenem Boden bereit. Einen Stromanschluss in der Nähe stimmen wir mit euch ab."
     download: { label: Technik-Datenblatt · PDF, href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf }
+    todo: FlyingStars muss die gesamte Indoor-Flugfläche, Publikumsabstände, Strombedarf und Zugänglichkeit ergänzen; die Rastermaße allein bestimmen den Raumbedarf nicht.
 
   # Entwurf für Moritz: Sicherheit als Kacheln (Werte von der Live-Seite, siehe Kopfkommentar)
   - type: landingBento
@@ -117,6 +120,7 @@ sections:
       - { icon: gauge, title: "Höchstens 1,5 m/s", text: Schneller fliegen die Drohnen im Raum nicht. }
       - { icon: move-horizontal, title: "0,5 m Abstand", text: So weit bleiben zwei Drohnen mindestens auseinander. }
       - { icon: shield-check, title: Mehrfach abgesichert, text: "Redundante Sicherheitsfunktionen, eine kontrollierte Landefunktion und CE-zertifizierte Komponenten." }
+    todo: FlyingStars muss 1,5 m/s, 0,5 m Drohnenabstand, Sicherheitsfunktionen und CE-Angaben mit aktuellen technischen Unterlagen bestätigen.
 
   # Entwurf für Moritz: Einsatzorte als Markierungen auf dem Bild, Referenzen darunter; Inhalte wie bisher
   - type: landingSpotlight
@@ -133,6 +137,7 @@ sections:
     entries:
       - { kicker: Hannover Messe · März 2025, title: Siemens, text: Unsere erste Indoor-Show. }
       - { kicker: Essen · September 2026, title: Triple Z, text: "Im Gründungszentrum auf Zeche Zollverein, in dem auch unser Büro ist." }
+    todo: Für Siemens Hannover Messe und Triple Z fehlen ausgearbeitete Fallstudien. FlyingStars muss Briefing, Ablauf, konkrete Drohnenzahl, freigegebene Showbilder und die eindeutige Zuordnung des vorhandenen Siemens-Films liefern.
 
   # Entwurf für Moritz: Ablauf in Zahlen wie auf der Startseite (Werte von der Live-Seite, siehe Kopfkommentar)
   - type: tempo
@@ -143,6 +148,7 @@ sections:
       - { value: 48 h, label: bis zu unserer Antwort, text: "Ihr erzählt uns von Raum, Anlass und Termin." }
       - { value: 6–8 Wochen, label: "Vorlauf, ideal", text: "Design und Planung im Raum. Vorab seht ihr die Show als Video oder bei einem Testflug." }
       - { value: 45 Min, label: Aufbau bis startklar, text: Wir beginnen ab zwei Stunden vor der Show. }
+    todo: FlyingStars muss 6–8 Wochen Vorlauf, 45 Minuten Aufbau und Ankunft zwei Stunden vor der Show für die aktuelle Indoor-Technik bestätigen; diese Werte stammen bisher nur von der alten Website.
 
   # Entwurf für Moritz: Preis als Karte, Inhalte wie bisher
   - type: landingPrice
@@ -169,6 +175,7 @@ sections:
     headline: Fragen zu Indoor-Shows.
     cta: { label: Alle Fragen, href: /faq/ }
     tags: [indoor]
+    todo: FlyingStars muss die Indoor-Antworten zu Flächen und Sicherheitsabständen fachlich abgleichen und die ausdrücklich für Indoor geltende Haftpflichtdeckung belegen.
 
   - type: contactForm
     kicker: Anfrage

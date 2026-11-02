@@ -27,6 +27,7 @@ sections:
         label: Showduur
       - value: vanaf 3 m
         label: Plafondhoogte
+    todo: Moritz muss die Endfassung und EN/NL prüfen. FlyingStars muss die Zuordnung von Siemens-Film und Hallen-Standbildern zur Hannover Messe bestätigen; das Standbild belegt diesen Veranstaltungsort bislang nicht.
   - type: comparison
     id: unterschied
     kicker: Vergelijking
@@ -65,6 +66,7 @@ sections:
         values:
           - apart berekend, vanaf ca. € 15.000 exclusief btw voor 20 drones
           - Pakketten vanaf € 7.900 exclusief btw
+    todo: FlyingStars muss 188 g, UWB und die technischen Indoor-/Outdoor-Vergleichswerte für die aktuelle Flotte bestätigen.
   - type: landingSite
     id: raum
     kicker: Voorwaarden
@@ -106,6 +108,7 @@ sections:
     download:
       label: Technisch gegevensblad · PDF
       href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf
+    todo: FlyingStars muss die gesamte Indoor-Flugfläche, Publikumsabstände, Strombedarf und Zugänglichkeit ergänzen; die Rastermaße allein bestimmen den Raumbedarf nicht.
   - type: landingBento
     id: sicherheit
     kicker: Veiligheid
@@ -129,6 +132,7 @@ sections:
       - icon: shield-check
         title: Meervoudig beveiligd
         text: Redundante veiligheidsfuncties, een gecontroleerde landingsfunctie en CE-gecertificeerde onderdelen.
+    todo: FlyingStars muss 1,5 m/s, 0,5 m Drohnenabstand, Sicherheitsfunktionen und CE-Angaben mit aktuellen technischen Unterlagen bestätigen.
   - type: landingSpotlight
     id: einsatzorte
     kicker: Locaties
@@ -152,6 +156,7 @@ sections:
       - kicker: Essen · september 2026
         title: Triple Z
         text: In het bedrijvencentrum op Zeche Zollverein, waar ook ons kantoor zit.
+    todo: Für Siemens Hannover Messe und Triple Z fehlen ausgearbeitete Fallstudien. FlyingStars muss Briefing, Ablauf, konkrete Drohnenzahl, freigegebene Showbilder und die eindeutige Zuordnung des vorhandenen Siemens-Films liefern.
   - type: tempo
     id: ablauf
     kicker: Verloop
@@ -166,6 +171,7 @@ sections:
       - value: 45 min.
         label: van opbouw tot startklaar
         text: We beginnen vanaf twee uur vóór de show.
+    todo: FlyingStars muss 6–8 Wochen Vorlauf, 45 Minuten Aufbau und Ankunft zwei Stunden vor der Show für die aktuelle Indoor-Technik bestätigen; diese Werte stammen bisher nur von der alten Website.
   - type: landingPrice
     id: preise
     kicker: Prijzen
@@ -195,8 +201,9 @@ sections:
       href: /faq/
     tags:
       - indoor
+    todo: FlyingStars muss die Indoor-Antworten zu Flächen und Sicherheitsabständen fachlich abgleichen und die ausdrücklich für Indoor geltende Haftpflichtdeckung belegen.
   - type: contactForm
     kicker: Aanvraag
     headline: Vertel ons over jullie ruimte.
     text: Plafondhoogte, oppervlakte en datum zijn genoeg voor een eerste inschatting. We reageren binnen 48 uur.
-translationSourceHash: eb03fd1e1a5213135c726ecab6c74be859d02dec2e98aaa916ec8ef97ad49226
+translationSourceHash: 42ae75a8483043cbb63a40e1ce4a80605a5ed0e368fa54ca4f2bff2de99cf0aa

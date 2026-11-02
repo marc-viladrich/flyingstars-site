@@ -27,6 +27,7 @@ sections:
         label: Show duration
       - value: from 3 m
         label: Ceiling height
+    todo: Moritz muss die Endfassung und EN/NL prüfen. FlyingStars muss die Zuordnung von Siemens-Film und Hallen-Standbildern zur Hannover Messe bestätigen; das Standbild belegt diesen Veranstaltungsort bislang nicht.
   - type: comparison
     id: unterschied
     kicker: Comparison
@@ -65,6 +66,7 @@ sections:
         values:
           - individually priced, from approx. €15,000 excluding VAT for 20 drones
           - Packages from €7,900 excluding VAT
+    todo: FlyingStars muss 188 g, UWB und die technischen Indoor-/Outdoor-Vergleichswerte für die aktuelle Flotte bestätigen.
   - type: landingSite
     id: raum
     kicker: Requirements
@@ -106,6 +108,7 @@ sections:
     download:
       label: Technical data sheet · PDF
       href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf
+    todo: FlyingStars muss die gesamte Indoor-Flugfläche, Publikumsabstände, Strombedarf und Zugänglichkeit ergänzen; die Rastermaße allein bestimmen den Raumbedarf nicht.
   - type: landingBento
     id: sicherheit
     kicker: Safety
@@ -129,6 +132,7 @@ sections:
       - icon: shield-check
         title: Multiple safeguards
         text: Redundant safety functions, a controlled landing function and CE-certified components.
+    todo: FlyingStars muss 1,5 m/s, 0,5 m Drohnenabstand, Sicherheitsfunktionen und CE-Angaben mit aktuellen technischen Unterlagen bestätigen.
   - type: landingSpotlight
     id: einsatzorte
     kicker: Where to use it
@@ -152,6 +156,7 @@ sections:
       - kicker: Essen · September 2026
         title: Triple Z
         text: At the Zeche Zollverein business centre, where our office is based too.
+    todo: Für Siemens Hannover Messe und Triple Z fehlen ausgearbeitete Fallstudien. FlyingStars muss Briefing, Ablauf, konkrete Drohnenzahl, freigegebene Showbilder und die eindeutige Zuordnung des vorhandenen Siemens-Films liefern.
   - type: tempo
     id: ablauf
     kicker: The process
@@ -166,6 +171,7 @@ sections:
       - value: 45 min
         label: from setup to ready to fly
         text: We start from two hours before the show.
+    todo: FlyingStars muss 6–8 Wochen Vorlauf, 45 Minuten Aufbau und Ankunft zwei Stunden vor der Show für die aktuelle Indoor-Technik bestätigen; diese Werte stammen bisher nur von der alten Website.
   - type: landingPrice
     id: preise
     kicker: Prices
@@ -195,8 +201,9 @@ sections:
       href: /faq/
     tags:
       - indoor
+    todo: FlyingStars muss die Indoor-Antworten zu Flächen und Sicherheitsabständen fachlich abgleichen und die ausdrücklich für Indoor geltende Haftpflichtdeckung belegen.
   - type: contactForm
     kicker: Enquiry
     headline: Tell us about your room.
     text: Ceiling height, floor area and date are enough for an initial assessment. We'll reply within 48 hours.
-translationSourceHash: eb03fd1e1a5213135c726ecab6c74be859d02dec2e98aaa916ec8ef97ad49226
+translationSourceHash: 42ae75a8483043cbb63a40e1ce4a80605a5ed0e368fa54ca4f2bff2de99cf0aa

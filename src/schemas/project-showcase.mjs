@@ -23,7 +23,9 @@ export const projectShowcaseSchema = z.object({
   tagline: z.string().min(1),
   accent: z.string().regex(/^#[a-fA-F0-9]{6}$/),
   drones: z.number().int().positive(),
-  heroVideo: z.url(),
+  heroVideo: z.url().optional(),
+  // A published film can be linked without inventing a self-hosted hero loop.
+  videoLink: z.object({ href: z.url(), label: z.string().min(1) }).optional(),
   credits: z.array(z.object({ label: z.string().min(1), value: z.string().min(1) })).min(1),
   numbers: z.array(z.object({ value: z.number().int().nonnegative(), label: z.string().min(1) })).min(1),
   story: z.array(z.object({
@@ -36,8 +38,8 @@ export const projectShowcaseSchema = z.object({
     src: z.string().regex(/^\/media\/projekte\/[a-z]+\/formation\.json$/),
     title: z.string().min(1),
     text: z.string().min(1),
-  }),
-  gallery: z.array(photograph).min(1),
+  }).optional(),
+  gallery: z.array(photograph).default([]),
   portrait: z.boolean().default(false),
   setlist: z.array(z.object({ title: z.string().min(1), items: z.array(z.string().min(1)).min(1) })).min(1),
   press: z.array(z.object({ publication: z.string().min(1), date: z.string().min(1), title: z.string().min(1), text: z.string().min(1) })).default([]),

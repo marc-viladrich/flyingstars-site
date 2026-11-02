@@ -1,13 +1,11 @@
 title: "Boek een droneshow: ruim 150 shows sinds 2022"
-description: "Droneshows voor bedrijven, steden en grote momenten: ruim 150 shows sinds 2022, eigen vloot,
-  vergunning inbegrepen. Vraag een show aan."
+description: "Droneshows voor bedrijven, steden en grote momenten: ruim 150 shows sinds 2022, eigen vloot, vergunning inbegrepen. Vraag een show aan."
 image: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
 sections:
   - type: showreelHero
     eyebrow: Droneshows sinds 2022 · DE · AT · CH · Benelux
     headline: Wij geven jullie stukje hemel vorm.
-    text: Droneshows voor bedrijven, steden, festivals en stellen. We ontwerpen de beelden, regelen de vergunning
-      en vliegen met onze eigen vloot.
+    text: Droneshows voor bedrijven, steden, festivals en stellen. We ontwerpen de beelden, regelen de vergunning en vliegen met onze eigen vloot.
     words:
       - Nieuw.
       - Uniek.
@@ -30,6 +28,7 @@ sections:
         value: "178"
       - label: Basis
         value: 51.51° N · 7.10° E
+    todo: Moritz muss die Einstiegs- und Anlass-Texte sowie EN/NL prüfen; FlyingStars muss den Showstand aktualisieren oder 178 ausdrücklich mit Stand 21.10.2026 führen.
   - type: logoBar
     id: kundinnen
     headline: Klanten van FlyingStars
@@ -97,6 +96,7 @@ sections:
           alt: ABUS
           width: 400
           height: 200
+    todo: FlyingStars muss konkrete Show-Belege für Red Bull, Lamborghini, Bentley und ABUS liefern oder die betreffenden Logos aus der Auswahl nehmen.
   - type: occasions
     id: anlaesse
     kicker: Gelegenheden
@@ -177,8 +177,7 @@ sections:
         text: Een countdown van licht zonder knallen of rook, voor steden, gemeenten en organisatoren.
         image:
           src: https://flyingstars.art/wp-content/uploads/2024/07/D_Umwelthilfe_cover_img.png
-          alt: "Een kleurrijke vuurwerkbloem van drones boven Berlijn bij de campagne #Böllerciao van Deutsche
-            Umwelthilfe"
+          alt: "Een kleurrijke vuurwerkbloem van drones boven Berlijn bij de campagne #Böllerciao van Deutsche Umwelthilfe"
           width: 1920
           height: 987
         facts:
@@ -204,6 +203,7 @@ sections:
         cta:
           label: Indoor-droneshows
           href: /drohnenshow-indoor/
+    todo: Moritz muss die Anlass-Texte freigeben; FlyingStars muss die Relaunch-Sitemap bestätigen. Eigene Seiten für Städte, Festivals und Silvester sind bislang nicht ausgearbeitet.
   - type: packages
     id: pakete
     kicker: Pakketten
@@ -223,12 +223,13 @@ sections:
     cta:
       label: Alle diensten en prijzen
       href: /drohnenshow-preise/
+    todo: FlyingStars muss die Paketgrenzen, Aufpreise und Leistungen für den Relaunch bestätigen; die endgültige Preisstruktur für 2027 ist noch offen.
   - type: configuratorTeaser
     id: konfigurator
     kicker: Showconfigurator
     headline: Stel jullie show *zelf* samen.
-    text: Van een hart tot een maanlanding, met 100 tot 600 drones. In de configurator zien jullie wat bij de
-      gelegenheid past.
+    text: Van een hart tot een maanlanding, met 100 tot 600 drones. In de configurator zien jullie wat bij de gelegenheid past.
+    todo: FlyingStars muss die Motive, Drohnenzahlen und Freischaltstufen anhand von docs/show-motive-inventar.md fachlich bestätigen. Die Vorschau ist kein Flugplan.
   - type: projectGrid
     id: projekte
     kicker: Onze shows
@@ -323,6 +324,7 @@ sections:
         text: in elk pakket
         icon: shield
         secondary: true
+    todo: FlyingStars muss schriftliche Nutzungsfreigaben für Presse-, LBA-, EASA- und naturstrom-Logos sowie konkrete Beiträge von ZDF/WDR liefern. tagesschau und Tagesspiegel belegen bisher keinen namentlichen FlyingStars-Bezug.
   - type: sustainability
     id: nachhaltigkeit
     kicker: Duurzaamheid
@@ -331,8 +333,7 @@ sections:
     facts:
       - label: Geen knal
         value: Stil
-        text: De drones zoemen, alleen jullie muziek is luid. TÜV Nord heeft het geluid in een akoestisch rapport
-          onderzocht.
+        text: De drones zoemen, alleen jullie muziek is luid. TÜV Nord heeft het geluid in een akoestisch rapport onderzocht.
       - label: Geen rook
         value: "0"
         unit: g
@@ -358,6 +359,7 @@ sections:
       - icon: campaign
         title: "#Böllerciao"
         text: Met Deutsche Umwelthilfe boven Berlijn in november 2023, als alternatief voor oud-en-nieuwvuurwerk.
+    todo: Moritz und FlyingStars müssen die Umweltformulierungen vor Veröffentlichung prüfen und die Belege für Ökostrom, Herstellung und das TÜV-Nord-Schallschutzgutachten bereithalten.
   - type: comparison
     id: vergleich
     kicker: Eerlijke vergelijking
@@ -460,12 +462,12 @@ sections:
             text: werkt het best van dichtbij
             tone: p
     note: Concept · inhoudelijke controle volgt
+    todo: FlyingStars muss den Vergleich fachlich prüfen, insbesondere pauschale Aussagen zu Brandgefahr, Lautstärke und Umweltwirkung; der Block ist bereits als Entwurf gekennzeichnet.
   - type: team
     id: team
     kicker: Team
     headline: De mensen achter de hemel.
-    text: Ronja, Florian en Erwin leiden FlyingStars samen. Jullie bereiken ons als team en op de showavond staan
-      we zelf op het veld.
+    text: Ronja, Florian en Erwin leiden FlyingStars samen. Jullie bereiken ons als team en op de showavond staan we zelf op het veld.
     members:
       - name: Ronja Donsbach
         role: Directeur
@@ -501,6 +503,7 @@ sections:
     cta:
       label: Meer over ons
       href: /ueber-uns/
+    todo: FlyingStars muss hochauflösende Porträts von Ronja, Florian und Erwin sowie Fotos von Patrick und Alejandro liefern; die vorhandenen Porträts messen nur 199 × 199 Pixel.
   - type: faq
     id: faq
     kicker: FAQ
@@ -515,6 +518,6 @@ sections:
   - type: contactForm
     kicker: Aanvraag
     headline: Vertel ons over jullie datum.
-    text: Datum, locatie en gelegenheid zijn genoeg voor een eerste inschatting. Laat open wat jullie nog niet
-      weten.
-translationSourceHash: 121df88dc2455f2b5c083d94868238568f91dcfd7a25416e77fb358a22e5f86e
+    text: Datum, locatie en gelegenheid zijn genoeg voor een eerste inschatting. Laat open wat jullie nog niet weten.
+    todo: FlyingStars und die Datenschutzberatung müssen Versanddienst, Empfängerpostfach, Auftragsverarbeitung, Drittlandtransfers und Löschfristen festlegen und die Datenschutzhinweise freigeben.
+translationSourceHash: b6512cca13b01004d96229fb9d7f6db01ea7981d6fc68aa1962617f743289420

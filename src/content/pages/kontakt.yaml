@@ -7,6 +7,7 @@ sections:
     kicker: Anfrage
     headline: Erzählt uns von eurem Termin.
     text: Datum, Ort und Anlass reichen für eine erste Einschätzung. Was ihr noch nicht wisst, lasst ihr offen. Mit dem Absenden bucht ihr noch nichts.
+    todo: FlyingStars und die Datenschutzberatung müssen Versanddienst, Empfängerpostfach, Auftragsverarbeitung, Drittlandtransfers und Löschfristen festlegen und die Datenschutzhinweise freigeben.
 
   - type: steps
     id: danach
@@ -37,3 +38,4 @@ sections:
       **Besuch:** Triple Z, Gründungszentrum Zeche Zollverein, Katernberger Str. 107, 45327 Essen. Meldet euch vorher kurz an.
 
       **Post:** FlyingStars GmbH, Bulmker Straße 107, 45888 Gelsenkirchen
+    todo: FlyingStars muss den Terminbuchungs-Link und die Kontaktwege vor dem Relaunch bestätigen; Moritz muss die Kontakttexte und EN/NL prüfen.
