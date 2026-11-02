@@ -1,6 +1,8 @@
 # AFE-Migration auf die neue FlyingStars-Site
 
-Stand: 2. November 2026. Site-Branch `codex/editor-migration`, Ausgangspunkt `46cf22d`. Privates Produkt: Branch `codex/design-file-editor` im eigenen Repository. Die Produktquellen sind ausschließlich dort gespeichert. Die Migration ist lokal mit diesem Produktstand lauffähig; die Installation aus GitHub Packages benötigt dessen noch ausstehendes Release **0.3.0** und danach die entsprechende Versionsanhebung im Site-Manifest samt Lockfile. Es wurde kein Paket veröffentlicht und nichts nach `main` gepusht.
+Der aktuelle Release-Nachweis für `codex/afe-030` steht am Ende dieses Berichts. Die folgenden Abschnitte dokumentieren den davor geprüften Migrationsstand; dessen damalige Release-Lücken sind dort ausdrücklich aufgelöst.
+
+Historischer Migrationsnachweis vor dem Release, 2. November 2026. Site-Branch `codex/editor-migration`, Ausgangspunkt `46cf22d`. Privates Produkt: Branch `codex/design-file-editor` im eigenen Repository. Die Produktquellen sind ausschließlich dort gespeichert. Die Migration ist lokal mit diesem Produktstand lauffähig; die Installation aus GitHub Packages benötigt dessen noch ausstehendes Release **0.3.0** und danach die entsprechende Versionsanhebung im Site-Manifest samt Lockfile. Es wurde kein Paket veröffentlicht und nichts nach `main` gepusht.
 
 ## Verhalten und Herkunft
 
@@ -146,3 +148,69 @@ Die lokale Evidenz liegt unter `/tmp/fs-editor-final-evidence/`: vollständige T
 Der Sprachadapter verwendet für den Quellhash die vom NativeStore gelieferte Revision des bereits codierten Kandidaten. Er enthält keine zweite Serialisierung des Speicherauftrags. Ein zusätzlicher Guard prüft ausdrücklich diese Abhängigkeit; die Integration liest weiterhin die tatsächlich gespeicherten Bytes zurück.
 
 Vor dem Merge nach `main` müssen das private Produktrelease 0.3.0 und die Site-Abhängigkeit einschließlich Lockfile aufeinander abgestimmt sein. Das noch eingetragene veröffentlichte 0.2.4 enthält die neuen Editor-Hooks nicht; der verlinkte lokale Produktstand ist die Voraussetzung der erfolgreichen Editorsuite.
+
+## Release 0.3.0 auf aktuellem Main, 02.11.2026
+
+Dieser Abschnitt ersetzt die oben beschriebenen damaligen Release-Lücken. Site-Worktree `/tmp/fs-afe030`, Branch `codex/afe-030`, Basis `origin/main` bei `24675f4`. Der bestehende Site-Checkout auf `feat/designsprache-poc` wurde nicht gewechselt oder bearbeitet. Die beiden Migrations- und Main-Stände sind über einen echten Merge verbunden.
+
+### Ein Paketmodell
+
+`src/content/show-packages.json` besitzt die drei Preis-/Mengen-/Farbsätze und die 18 konsolidierten Leistungen mit ihren bisherigen stabilen IDs. `package-details.ts` löst Wörterbuchverweise und berechnete Preis-/Drohnenzellen auf und erzeugt daraus weiterhin Kernpunkte, ausführliche Karten, „Immer inklusive“ und Vergleichsmatrix. Die Wörterbuchtexte bleiben einmalig unter `src/i18n/ui.json`; eigene neue Leistungstexte müssen Deutsch, Englisch und Niederländisch enthalten. Preisformeln und sichtbare Texte wurden nicht geändert. Das gemeinsame Schema validiert Wörterbuchschlüssel und Grenzen; IDs bleiben schreibgeschützt. Leistungszuordnungen, Reihenfolge, Kartenprojektionen sowie Preise und RGB-Kanäle sind im schemaerzeugten Panel erreichbar. `false` ist beim Rendern wie der bisherige nicht enthaltene Status `null`.
+
+Ein Vergleich gegen die tatsächliche Funktion aus Main bestätigt alle serialisierbaren Paketprojektionen in DE/EN/NL. Der dauerhafte Guard `scripts/package-model.test.mjs` hält die dabei aus `24675f4` erfasste Referenz und die Modellgrenzen fest. Die übrigen Konsolidierungs-Guards bleiben aktiv. Neue optionale Fallstudienfelder (`heroVideo`, `formation`, leere Galerie und `videoLink`) bleiben erhalten und tragen die Editor-Metadaten.
+
+### Privates Produkt und Installation
+
+Produkt-Worktree `/tmp/afe-release030`. Releasecommit `265a25db957c8b20d1006cba198dbbc4749bd40e`, Tag `v0.3.0`; Produkt-Main einschließlich Veröffentlichungsdoku `c76654de00ecace6f84b544adfbd4723c82dc146`. Der [Veröffentlichungsworkflow](https://github.com/marc-viladrich/astro-frontend-editor/actions/runs/41479568864) ist erfolgreich. Kein anderes Kundenmanifest wurde verändert.
+
+Site-Alias: `npm:@marc-viladrich/astro-frontend-editor@0.3.0`.
+
+Registry-Integrität:
+
+```text
+sha512-5ivcTZiRijzoc1HkAJxoRIq1BMF3QA1ouS6OBzZkja6m8lu2z0FVvWNtmjsEmx5E4LmVfM6ptTEyVdYxaraFgg==
+```
+
+Das Lockfile wurde mit dem veröffentlichten Registry-Artefakt neu aufgelöst. Nach `npm ci` ist `node_modules/astro-frontend-editor` ein installiertes Paket mit gescoptem Namen und Version 0.3.0, kein Symlink. Alle **124 Dateien** unter `src`, `web`, `bin` stimmen bytegenau mit dem Produktrelease überein (`/tmp/fs-afe030-installed.json`). Der überprüfte finale Dependency-Stand verwendet Astro 7.3.6 und Playwright 1.63.0 aus dem Site-Lockfile. Die vorherige lokale Verlinkung hatte neuere kompatible Unterabhängigkeiten aufgelöst; die Abschlussprüfungen wurden deshalb mit dem sauberen Lockfile-Stand erneut ausgeführt. Es gibt keinen Produktquellcode, Tarball oder lokalen Paketpfad im Site-Git.
+
+### Vorschläge und Freigabe
+
+Der historische Anbieter-/Segment-/Memory-Code ist im privaten Produkt erhalten (`86046cf` und die dortige `translation-providers.mjs`/`translation-core.mjs`). Der Dateimodus nutzt ihn nun über `/editor/api/translate`. Die gemeinsame EN-/NL-Prüfung zeigt pro Textfeld getrennte Aktionen zum Anfordern und Übernehmen. Der Abruf ersetzt keine menschliche Eingabe. Ein Vorschlag bleibt ungeprüft, bis er übernommen und die gesamte Sprachprüfung ausdrücklich gespeichert wird. Die bestehende Transaktion schreibt danach die vollständigen Dateien, den Hash der tatsächlichen deutschen Ausgabebytes und `docs/i18n/content-provenance.json` zusammen. Interne `todo`-Notizen, strukturelle IDs und URLs gehen nicht an den Übersetzungsdienst.
+
+`translation-memory.json` liegt ausschließlich im konfigurierten State-Ordner und verwendet die historischen Locale-/Segment-Hashes. Markdown, Code und Platzhalter bleiben geschützt; verlorene Token erzeugen keinen Vorschlag. EN-/NL-Anfragen teilen sich eine serialisierte Memory-Schreibfolge. Das Zeichenbudget bleibt wirksam.
+
+Ohne Konfiguration ist die Funktion mit einer sichtbaren Erklärung deaktiviert; manuelles Prüfen bleibt möglich. Für die bestehende selbst betriebene LibreTranslate-Architektur sind `AFE_TRANSLATION_PROVIDER=libretranslate` und eine bewusst konfigurierte EU-Instanz über `AFE_TRANSLATION_URL` erforderlich, gegebenenfalls `AFE_TRANSLATION_KEY`. Alternativ unterstützt der vorhandene DeepL-Adapter `AFE_TRANSLATION_PROVIDER=deepl` plus `AFE_DEEPL_API_KEY`; ein fehlender Schlüssel deaktiviert ihn ausdrücklich. Keine `.env`-Datei und kein realer Schlüssel wurden gelesen, geändert oder gespeichert. Ein echter Anbieterruf und die Eignung einer konkreten Hostinstanz sind nicht Teil dieses Nachweises. Die Tests verwenden den Offline-Anbieter `fake`.
+
+### Produktprüfungen und historische Fixtures
+
+Lokal: **297/297** im vollständigen Produktlauf, **0 Skips**, danach der ergänzte gemeinsame Tupel-Guard **1/1**; Produkt-Browserprüfungen **11/11**, einschließlich Chromium und WebKit. Alle **21 zuvor ausgelassenen** historischen Fixture-Tests liefen mit `AFE_FIXTURE_ROOT` auf den tatsächlichen Hub-Ordner `freelance/`; deren Astro-Abhängigkeiten waren bereits vorhanden. Keine Fixture wurde durch die neue Site ersetzt. Die Release-CI bestätigt **298 Tests, 277 bestanden, 0 Fehler**, die 21 privaten Nachbarfixtures fehlen dort weiterhin und bleiben ausdrücklich ausgewiesen.
+
+Ein historischer Checker-Snapshot wurde nach Gegenprüfung angepasst: AFE303-Warnungen 2522 → 2520, alle anderen Werte unverändert. Sowohl der unveränderte Produkt-Main 0.2.4 (`a1c5835`) als auch der Releasekandidat liefern auf der heutigen historischen FlyingStars-Fixture `e36a04b` dieselben 2520 Warnungen. Die Checkerlogik wurde nicht geändert; die Abweichung stammt aus dem fortgeschriebenen Fixture-Inhaltsstand. Fingerprint-Guards prüfen weiterhin Pfade, Bytes, Rechte und Zeitstempel. Die vollständige Begründung steht in den privaten Release-Notizen.
+
+### Layout und Sichtprüfung
+
+Mit dem finalen Lockfile-Stand: DE, EN und NL, Chromium und WebKit, jeweils **22 Seiten × 5 Breiten** (390/940/1440/1920/2560), zusammen **660 Kombinationen, 0 Befunde**. Logs `/tmp/fs-afe030-layout-final-<locale>-<browser>.log`.
+
+Visueller Vergleich gegen den separat mit denselben Lockfile-Abhängigkeiten gebauten Main: Home, Preise, PUMA, Hochzeit und Über uns sowie die englische und niederländische Preisseite, jeweils 390/1440 px und beide Engines. **28 vollständige Seitenpaare, identische Seitengrößen und 0 abweichende Pixel** bei einer Kanalabweichung über 10. Zeitabhängige Canvas-/Video-/Wechseltextbereiche sind maskiert; Karussells werden in beiden Fassungen auf denselben Anfangszustand gesetzt und Scroll-Snapping während der Aufnahme ausgeschaltet. Die Masken erhalten die Geometrie. Ein Zwischenlauf zeigte ausschließlich unterschiedlichen horizontalen Karussell-Scrollstand; die synchronisierte Wiederholung bestätigt die Gleichheit ohne Änderung der Site. Belege `/tmp/fs-afe030-visual-installed-stable-20261102/report.json` und die zugehörigen Aufnahmen. Die Kontaktübersicht und Editoraufnahmen wurden geöffnet und geprüft.
+
+### Korrekturen an den Prüfungen
+
+Der alte Publikationstest erwartete den weiterhin absichtlich als `draft: true` gespeicherten Testflug-Beitrag öffentlich. Er folgt jetzt den tatsächlichen Quelldateien und prüft alle drei veröffentlichten Beiträge einschließlich ihrer Texte sowie die Unsichtbarkeit und 404-Antwort des Entwurfs. **16/16 Browserfälle** bestehen; kein Inhalt wurde dafür veröffentlicht.
+
+Ein gemeinsamer großer Node-24-Lauf endete nach 371 bestandenen Fällen mit „Promise resolution is still pending but the event loop has already resolved“ und ließ weitere Dateien unvollständig. Der abschließende isolierte Lauf gegen das installierte Registry-Paket bestätigt **404/404 Editor-Tests, 0 Skips, 0 Abbrüche**, einschließlich der kompletten Pipeline. Die Site-Suite bestätigt **123/123, 0 Skips**. Assertions und Zeitlimits wurden nicht gelockert. Der zusätzliche 404. Fall schützt Kontaktlinks und interne Notizen gemeinsam vor Übersetzung und lässt Markdown-Überschriften als Prosa zu. Die Quelldateien wurden dabei außerhalb der temporären Fixtures nicht geändert.
+
+Kein Push oder Merge nach Site-Main und kein Deployment. Lokale Pipeline-Tests verwenden isolierte Git-Remotes, Hostkopien und temporären State; sie belegen keinen echten Hosting-Deploy, TLS oder produktive Konten.
+
+### Abschließendes Prüfprotokoll
+
+- `npx astro check`: 0 Fehler, 0 Warnungen. `npm run build`: 74 Seiten. Registry-Installation und 124 Produktdateien nachgeprüft.
+- Editorsuite mit Node 24.21.0, begrenzte Parallelität 2, ausdrücklich temporärer State: **404/404 bestanden**, `/tmp/fs-afe030-isolated-editor-final.log`. Die fünf Pipeline-Szenarien einschließlich Code-CI, Inhaltsfreigabe, Erhalt offener Inhalte, Buildfehler und Git-Konflikt sind darin vollständig grün.
+- Site-Unit-Suite mit dem finalen Lockfile: **123/123 bestanden**, 0 Skips, `/tmp/fs-afe030-installed-site-unit.log`. Der zusätzliche Simulationslauf wurde zugunsten der Browserprüfungen zeitweise angehalten und anschließend vollständig beendet; kein Testfall wurde daraus entfernt.
+- Editor-Klicknachweise: **Chromium und WebKit bestanden**. Beide Engines bearbeiten den sichtbaren Seitentext per Tastatur, holen und übernehmen EN-/NL-Vorschläge, speichern und lesen Dateien/Quellhash/Provenienz, laden ein PNG hoch und wählen es aus, ändern Preis und Leistungsstatus anhand der stabilen ID `safety-plan` und lesen das gespeicherte JSON zurück. Alle neun RGB-Kanäle sind erreichbar. Eine anschließende UI-Aktion stellt die temporäre Leistungszuordnung für den nächsten Browser wieder her. Zusammengeführter Bericht `/tmp/fs-afe030-final-editor-browser-report.json`; geprüfte Screenshots unter `/tmp/fs-afe030-registry-proof3-20261102/` für Chromium und `/tmp/fs-afe030-webkit-phase-proof/` für WebKit. Der WebKit-Abschlusslauf meldet 0 JavaScript-Fehler und eine ausdrücklich als beim Neuladen abgebrochen protokollierte Vorschauanfrage. Ein vorheriger gelegentlicher Statusabruf-Fehler ließ sich im Abschlusslauf und einem verkleinerten Reload-Vergleich nicht erneut auslösen; er wurde nicht durch Unterdrücken von Fehlern „behoben“. Die Fehlerprüfung bleibt aktiv und benennt jetzt die Prüfphase.
+- Site-Browserbereiche einzeln, eigene Ports, höchstens zwei Worker, vier konfigurierte Browser-/Geräteprojekte: **1.233 bestanden, 107 bestehende Skips, 4 Fehler**. Verteilung: HTML 296, i18n 20, Projekte 52, Preise 26 (2 Skips), Netzwerk 296, Consent 4 (84 Skips im regulären OFF-Build), Kontakt 24, Accessibility 300, Publikation 16, Referenzen 39 (5 Skips), Konfigurator 132 (12 Skips, 4 Fehler), Teaser 28 (4 Skips). Logs `/tmp/fs-afe030-playwright-20261102/`, neue Publikationsprüfung `/tmp/fs-afe030-publication-current.log`, Zusammenfassung `/tmp/fs-afe030-browser-summary.json`.
+- Die vier Konfiguratorfehler betreffen ausschließlich `mobile-webkit`: erster sichtbarer Anfragebereich, Mausziehen über Paketgrenzen, Meldung eines freigeschalteten Motivs und Hover des Paketrahmens. Derselbe gezielte Lauf mit einem Worker gegen den separat gebauten **unveränderten Main** schlägt in allen vier identischen Fällen fehl (`/tmp/fs-afe030-configurator-baseline.log`). Kein Skip und keine Toleranz wurde dafür ergänzt. Die zugehörigen Frontenddateien bleiben im Scope des Leads.
+- Layout: **660 Kombinationen, 0 Befunde**. Visuelle Gleichheit: **28 Seitenpaare, 0 abweichende Pixel** unter den oben dokumentierten Zustandskontrollen. Die finale Evidenz verwendet die tatsächlichen Lockfile-Versionen.
+
+Nicht ausgeführt: die unveränderte Langzeitsuite `tests/show-physics.spec.ts` (kein Eingriff in Flugphysik; Preis-/Mengen-/Motiv-Guards und Konfigurator-/Teaserbereiche sind geprüft), ein echter Übersetzungsdienst mit produktivem Schlüssel, produktives TLS/Hosting und ein echtes Deployment. Es wurde kein Kunden- oder Live-State verwendet. Andere Kundenseiten bleiben auf ihren bisherigen Paketversionen.
+
+Die vollständige Standard-Editorprüfung bleibt ohne Browserfilter reproduzierbar. Für getrennte Engine-Nachweise unterstützt `editor/design.browser.mjs` zusätzlich `AFE_PROOF_ENGINES=chromium` bzw. `webkit`; ungültige Namen brechen ausdrücklich ab. Screenshots immer in ein neues `AFE_EVIDENCE_DIR` schreiben.
