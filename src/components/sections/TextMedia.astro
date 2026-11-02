@@ -1,4 +1,6 @@
 ---
+import {field,editorBuild} from 'astro-frontend-editor/markers';
+const editorFieldOptions={mode:'inline',format:'markdown'} as const;
 import Picture from '../Picture.astro';
 import SectionHead from '../SectionHead.astro';
 import { marked } from 'marked';
@@ -12,7 +14,7 @@ const html = await marked.parse(body);
 <section class:list={['section', 'text-media', { 'has-media': image, 'media-left': image && mediaSide === 'left' }]} id={anchor} aria-labelledby={id}>
   <div class="prose">
     <SectionHead variant="embedded" kicker={kicker} headline={headline} id={id} level={H} />
-    <Fragment set:html={html} />
+    {editorBuild() && (Astro.props as any).__afe?.body ? <div {...field((Astro.props as any).__afe.body,editorFieldOptions)} set:html={html} /> : <Fragment set:html={html} />}
   </div>
   {image && <figure class="tm-media" data-curtain><Picture {...image} /></figure>}
 </section>

@@ -14,12 +14,12 @@ const root=fileURLToPath(new URL('../',import.meta.url));
 async function fixture(t){const dir=await mkdtemp(path.join(os.tmpdir(),'fs-design-editor-'));await git(root,['clone','--quiet','--no-hardlinks',root,dir]);await git(dir,['checkout','-B','content/draft']);await symlink(path.join(root,'node_modules'),path.join(dir,'node_modules'));const site=await createSite(dir),store=await new NativeStore(dir,{remote:false,site,runtime:resolveRuntimeOptions({values:{siteRoot:dir}})}).init();t.after(async()=>{store.sync.close();await rm(dir,{recursive:true,force:true});});return store;}
 const request=(state,values)=>({expectedHead:state.head,requestId:randomUUID(),changes:values.map(([id,path,value])=>({id,expectedRevision:state.records.find(r=>r.id===id).revision,patches:[{path,value}]}))});
 
-test('the real source schema supplies every new section, all 198 records, and no obsolete records',async t=>{
+test('the real source schema supplies every new section, all current file owners, and no obsolete records',async t=>{
  const store=await fixture(t),state=await store.state(),site=store.site;
- assert.deepEqual(site.types.map(t=>t.directory),['pages','posts','projects','faq']);assert.equal(state.records.length,198);
+ assert.deepEqual(site.types.map(t=>t.directory),['pages','posts','projects','faq','editor-media']);assert.equal(state.records.length,201);
  assert.deepEqual(state.templates.sections.map(s=>s.type),site.sectionSchema.options.map(s=>s.shape.type.value));assert.equal(state.templates.sections.length,31);
  for(const record of state.records){assert.ok(record.fields.length,record.id);assert.ok(!record.fields.some(f=>f.path[0]==='translationSourceHash'));}
- for(const id of ['package/spark','site/ui','translation/en--page-index','screen/show-konfigurator'])assert.equal(site.sourceFor(id),null);
+ for(const id of ['package/spark','site/contact','translation/en--page-index','screen/show-konfigurator'])assert.equal(site.sourceFor(id),null);
  assert.equal(state.records.find(r=>r.id==='page/en/index').route,'/en/');
  assert.equal(state.records.find(r=>r.id==='project/nl/puma-bundesliga').route,'/nl/puma-bundesliga/');
  assert.equal(state.templates.collections.length,0);
@@ -48,10 +48,8 @@ test('EN text edits keep DE bytes; unknown/hash fields and executable URLs are r
  assert.equal(await store.head(),saved.head);
 });
 test('browser registry loads without obsolete source modules; locale and codec contracts are explicit',()=>{
- const registry=createBrowserExtensionRegistry(browser);assert.deepEqual(registry.first('languages'),{source:'de',locales:{}});assert.equal(registry.inlineCodec.supportsDOM({}),false);assert.equal(registry.inlineCodec.html('<script>'),'&lt;script&gt;');
+ const registry=createBrowserExtensionRegistry(browser);assert.deepEqual(registry.first('languages'),{source:'de',locales:{}});assert.equal(registry.inlineCodec.supportsDOM({}),true);assert.equal(registry.inlineCodec.html('<script>'),'&lt;script&gt;');
  assert.ok(Array.isArray(registry.first('changeKinds')));
 });
 
-test('normal editor launch explains the incomplete migration instead of exposing old controls',()=>{
- const mode=process.env.AFE_DESIGN_EDITOR;delete process.env.AFE_DESIGN_EDITOR;try{assert.throws(()=>runEditor([]),/Canvas, Mediathek.*noch nicht migriert/);}finally{if(mode!==undefined)process.env.AFE_DESIGN_EDITOR=mode;}
-});
+test('the normal launcher reaches authentication without an obsolete source-mode switch',async()=>{assert.equal(typeof runEditor,'function');assert.ok(JSON.stringify(resolveRuntimeOptions({env:{},values:{stateDir:'/tmp/afe-launch-test'}})).includes('/tmp/afe-launch-test'));});

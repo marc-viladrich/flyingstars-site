@@ -1,0 +1,611 @@
+{
+  "SPARK": {
+    "base": 100,
+    "max": 150,
+    "price": 7900,
+    "step": 10,
+    "add": 900,
+    "dur": "ca. 10 Min",
+    "color": [
+      255,
+      158,
+      41
+    ]
+  },
+  "HORIZON": {
+    "base": 200,
+    "max": null,
+    "price": 15900,
+    "step": 50,
+    "add": 4900,
+    "dur": "ca. 13 Min",
+    "color": [
+      219,
+      100,
+      232
+    ]
+  },
+  "ODYSSEY": {
+    "base": 300,
+    "max": null,
+    "price": 34900,
+    "step": 100,
+    "add": 9900,
+    "dur": "15+ Min",
+    "color": [
+      51,
+      237,
+      242
+    ]
+  },
+  "services": [
+    {
+      "id": "drones",
+      "category": "service",
+      "label": {
+        "key": "configuratorteaser.drones"
+      },
+      "cells": [
+        {
+          "computed": "drones",
+          "package": "SPARK"
+        },
+        {
+          "computed": "drones",
+          "package": "HORIZON"
+        },
+        {
+          "computed": "drones",
+          "package": "ODYSSEY"
+        }
+      ]
+    },
+    {
+      "id": "more-drones",
+      "category": "service",
+      "label": {
+        "key": "packageDetails.moreDrones"
+      },
+      "cells": [
+        {
+          "computed": "more-drones",
+          "package": "SPARK"
+        },
+        {
+          "computed": "more-drones",
+          "package": "HORIZON"
+        },
+        {
+          "computed": "more-drones",
+          "package": "ODYSSEY"
+        }
+      ]
+    },
+    {
+      "id": "duration",
+      "category": "service",
+      "label": {
+        "key": "packageDetails.duration"
+      },
+      "all": {
+        "key": "packageDetails.usuallyAround13MinutesUpTo25MinutesPossible"
+      }
+    },
+    {
+      "id": "design",
+      "category": "design",
+      "label": {
+        "key": "packageDetails.designAndMotifs"
+      },
+      "cells": [
+        {
+          "key": "packageDetails.formationsFromOurCatalogueSuchAsHeartsOrRings"
+        },
+        {
+          "key": "packageDetails.fullyCustom2dAnimations"
+        },
+        {
+          "key": "packageDetails.asHorizonPlusComplex3dAnimations"
+        }
+      ],
+      "cards": {
+        "SPARK": [
+          {
+            "text": {
+              "key": "packageDetails.formationsFromOurCatalogueSuchAsHeartsOrRings"
+            },
+            "order": 0
+          }
+        ],
+        "HORIZON": [
+          {
+            "text": {
+              "key": "packageDetails.fullyCustom2dAnimationsAndSimple3dElements"
+            },
+            "order": 0
+          }
+        ]
+      },
+      "summary": {
+        "SPARK": {
+          "text": {
+            "key": "packageDetails.formationsFromOurCatalogue"
+          },
+          "order": 0
+        },
+        "HORIZON": {
+          "text": {
+            "key": "packageDetails.custom2dAnimationsAndSimple3d"
+          },
+          "order": 0
+        }
+      },
+      "included": {
+        "order": 0,
+        "icon": "pen-tool",
+        "title": {
+          "key": "packageDetails.designForYourLocation"
+        },
+        "text": {
+          "key": "packageDetails.weProgrammeTheShowForYourSiteMusicAndMotifs"
+        }
+      }
+    },
+    {
+      "id": "custom-elements",
+      "category": "design",
+      "label": {
+        "key": "packageDetails.customElements"
+      },
+      "cells": [
+        {
+          "key": "packageDetails.upToFourSuchAsInitialsLogoOrCoatOf"
+        },
+        {
+          "key": "packageDetails.preciseLogosAndComplexLettering"
+        },
+        {
+          "key": "packageDetails.asHorizon"
+        }
+      ],
+      "cards": {
+        "SPARK": [
+          {
+            "text": {
+              "key": "packageDetails.upToFourCustomElementsInitialsLogoCoatOfArms"
+            },
+            "order": 1
+          }
+        ],
+        "HORIZON": [
+          {
+            "text": {
+              "key": "packageDetails.preciseLogosAndComplexLettering"
+            },
+            "order": 1
+          }
+        ]
+      },
+      "summary": {
+        "SPARK": {
+          "text": {
+            "key": "packageDetails.upToFourCustomElementsSuchAsInitialsOrA"
+          },
+          "order": 1
+        },
+        "HORIZON": {
+          "text": {
+            "key": "packageDetails.yourLogoDrawnPreciselyInTheSky"
+          },
+          "order": 1
+        }
+      }
+    },
+    {
+      "id": "3d",
+      "category": "design",
+      "label": "3D",
+      "cells": [
+        null,
+        {
+          "key": "packageDetails.simple3dElements"
+        },
+        {
+          "key": "packageDetails.complex3dAnimationsAndVolumetricEffects"
+        }
+      ],
+      "cards": {
+        "ODYSSEY": [
+          {
+            "text": {
+              "key": "packageDetails.complex3dAnimationsAndVolumetricEffects"
+            },
+            "order": 0
+          }
+        ]
+      },
+      "summary": {
+        "ODYSSEY": {
+          "text": {
+            "key": "packageDetails.complex3dAnimations"
+          },
+          "order": 1
+        }
+      }
+    },
+    {
+      "id": "storytelling",
+      "category": "design",
+      "label": "Storytelling",
+      "cells": [
+        null,
+        null,
+        {
+          "key": "packageDetails.aStorytellingShowWithADramaticArc"
+        }
+      ],
+      "cards": {
+        "ODYSSEY": [
+          {
+            "text": {
+              "key": "packageDetails.aStorytellingShowWithADramaticArc"
+            },
+            "order": 1
+          }
+        ]
+      },
+      "summary": {
+        "ODYSSEY": {
+          "text": {
+            "key": "packageDetails.aStorylineWithADramaticArc"
+          },
+          "order": 0
+        }
+      }
+    },
+    {
+      "id": "music",
+      "category": "music",
+      "label": {
+        "key": "packageDetails.music"
+      },
+      "cells": [
+        {
+          "key": "packageDetails.musicFreeOfGemaRoyaltiesGemaMusicPossibleIfThe"
+        },
+        {
+          "key": "packageDetails.synchronisedToYourChosenMusic"
+        },
+        {
+          "key": "packageDetails.asHorizonOnSiteTimecodeSynchronisationAvailable"
+        }
+      ],
+      "cards": {
+        "SPARK": [
+          {
+            "text": {
+              "key": "packageDetails.musicFreeOfGemaRoyalties"
+            },
+            "order": 2
+          },
+          {
+            "text": {
+              "key": "packageDetails.gemaMusicPossibleIfTheEventIsRegistered"
+            },
+            "order": 3
+          }
+        ],
+        "HORIZON": [
+          {
+            "text": {
+              "key": "packageDetails.synchronisedToYourChosenMusic"
+            },
+            "order": 2
+          }
+        ],
+        "ODYSSEY": [
+          {
+            "text": {
+              "key": "packageDetails.onSiteTimecodeSynchronisationAvailable"
+            },
+            "order": 2
+          }
+        ]
+      },
+      "summary": {
+        "SPARK": {
+          "text": {
+            "key": "packageDetails.musicFreeOfGemaRoyalties"
+          },
+          "order": 2
+        },
+        "HORIZON": {
+          "text": {
+            "key": "packageDetails.synchronisedToYourChosenMusic"
+          },
+          "order": 2
+        }
+      }
+    },
+    {
+      "id": "preview",
+      "category": "service",
+      "label": {
+        "key": "packageDetails.approvalAndPreview"
+      },
+      "cells": [
+        {
+          "key": "packageDetails.yourCustomElementsForApprovalInAdvance"
+        },
+        {
+          "key": "packageDetails.videoPreviewWithAFeedbackRound"
+        },
+        {
+          "key": "packageDetails.multipleFeedbackRounds"
+        }
+      ],
+      "cards": {
+        "SPARK": [
+          {
+            "text": {
+              "key": "packageDetails.customElementsForApprovalInAdvance"
+            },
+            "order": 4
+          }
+        ],
+        "HORIZON": [
+          {
+            "text": {
+              "key": "packageDetails.videoPreviewWithAFeedbackRound"
+            },
+            "order": 5
+          }
+        ],
+        "ODYSSEY": [
+          {
+            "text": {
+              "key": "packageDetails.multipleFeedbackRounds"
+            },
+            "order": 3
+          }
+        ]
+      },
+      "included": {
+        "order": 2,
+        "icon": "monitor-play",
+        "title": {
+          "key": "packageDetails.approvalInAdvance"
+        },
+        "text": {
+          "key": "packageDetails.youReviewAndApproveYourCustomElementsBeforeTheShow"
+        }
+      }
+    },
+    {
+      "id": "workshop",
+      "category": "service",
+      "label": {
+        "key": "packageDetails.creativeWorkshop"
+      },
+      "cells": [
+        null,
+        {
+          "key": "packageDetails.withStoryboard"
+        },
+        {
+          "key": "packageDetails.withStoryboard"
+        }
+      ],
+      "cards": {
+        "HORIZON": [
+          {
+            "text": {
+              "key": "packageDetails.creativeWorkshopWithStoryboard"
+            },
+            "order": 3
+          }
+        ]
+      }
+    },
+    {
+      "id": "safety-plan",
+      "category": "service",
+      "label": {
+        "key": "packageDetails.safetyPlan"
+      },
+      "cells": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "liability",
+      "category": "service",
+      "label": {
+        "key": "packageDetails.liabilityCoverUpTo13Million"
+      },
+      "cells": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "crew",
+      "category": "service",
+      "label": {
+        "key": "packageDetails.onSiteCrew"
+      },
+      "cells": [
+        true,
+        true,
+        true
+      ],
+      "cards": {
+        "SPARK": [
+          {
+            "text": {
+              "key": "packageDetails.onSiteCrewSafetyPlanAndLiabilityInsurance"
+            },
+            "order": 6
+          }
+        ]
+      },
+      "included": {
+        "order": 3,
+        "icon": "users",
+        "title": {
+          "key": "packageDetails.onSiteCrew"
+        },
+        "text": {
+          "key": "packageDetails.ourPilotsAndTechniciansSetUpInAround3Hours"
+        }
+      }
+    },
+    {
+      "id": "permit",
+      "category": "service",
+      "label": {
+        "key": "packageDetails.permit"
+      },
+      "cells": [
+        {
+          "key": "packageDetails.standardProcedure"
+        },
+        {
+          "key": "packageDetails.moreComplexProceduresTooSuchAsNearAirports"
+        },
+        {
+          "key": "packageDetails.asHorizon"
+        }
+      ],
+      "cards": {
+        "SPARK": [
+          {
+            "text": {
+              "key": "packageDetails.standardPermitProcedure"
+            },
+            "order": 5
+          }
+        ],
+        "HORIZON": [
+          {
+            "text": {
+              "key": "packageDetails.moreComplexPermitsTooSuchAsNearAirports"
+            },
+            "order": 4
+          }
+        ]
+      },
+      "included": {
+        "order": 1,
+        "icon": "shield-check",
+        "title": {
+          "key": "packageDetails.permitAndSafetyPlan"
+        },
+        "text": {
+          "key": "packageDetails.aviationPermitsSafetyZonesAndLiabilityCoverUpTo1"
+        }
+      }
+    },
+    {
+      "id": "landowner-consent",
+      "category": "service",
+      "label": {
+        "key": "packageDetails.helpObtainingLandownerConsent"
+      },
+      "cells": [
+        null,
+        true,
+        true
+      ],
+      "cards": {
+        "HORIZON": [
+          {
+            "text": {
+              "key": "packageDetails.helpObtainingLandownerConsent"
+            },
+            "order": 6
+          }
+        ]
+      }
+    },
+    {
+      "id": "project-manager",
+      "category": "service",
+      "label": {
+        "key": "packageDetails.dedicatedProjectManager"
+      },
+      "cells": [
+        null,
+        null,
+        true
+      ],
+      "cards": {
+        "ODYSSEY": [
+          {
+            "text": {
+              "key": "packageDetails.dedicatedProjectManager"
+            },
+            "order": 4
+          }
+        ]
+      },
+      "summary": {
+        "ODYSSEY": {
+          "text": {
+            "key": "packageDetails.dedicatedProjectManager"
+          },
+          "order": 2
+        }
+      }
+    },
+    {
+      "id": "footage",
+      "category": "service",
+      "label": {
+        "key": "packageDetails.showVideoRawFootage"
+      },
+      "cells": [
+        "+900 €",
+        "+900 €",
+        true
+      ],
+      "cards": {
+        "ODYSSEY": [
+          {
+            "text": {
+              "key": "packageDetails.showVideoRawFootage"
+            },
+            "order": 5
+          }
+        ]
+      }
+    },
+    {
+      "id": "site-visit",
+      "category": "service",
+      "label": {
+        "key": "packageDetails.advanceSiteVisit"
+      },
+      "cells": [
+        null,
+        null,
+        {
+          "key": "packageDetails.onRequest"
+        }
+      ],
+      "cards": {
+        "ODYSSEY": [
+          {
+            "text": {
+              "key": "packageDetails.advanceSiteVisitOnRequest"
+            },
+            "order": 6
+          }
+        ]
+      }
+    }
+  ]
+}

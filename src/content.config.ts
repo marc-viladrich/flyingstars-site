@@ -1,3 +1,9 @@
+import navigationData from './content/navigation.json' with {type:'json'};
+import {navigationSchema} from './schemas/navigation.mjs';
+navigationSchema.parse(navigationData);
+import packageData from './content/show-packages.json' with {type:'json'};
+import {showPackagesSchema} from './schemas/show-packages.mjs';
+showPackagesSchema.parse(packageData);
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import type { z } from 'astro/zod';

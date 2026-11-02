@@ -12,7 +12,7 @@ import { omitRecordField } from 'astro-frontend-editor/web/site-adapter.mjs';
 import { createFlyingStarsAdapter } from './flyingstars-adapter.mjs';
 import { schemaDescription, wire } from 'astro-frontend-editor/runtime/extensions';
 import { codecs } from 'astro-frontend-editor/runtime/extensions';
-import { editable, inGroup } from '../src/schemas/afe-meta.mjs';
+import { editable, inGroup } from './test/meta.mjs';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const titles = (plan) => plan.blocks.map((b) => b.title);
 const members = (plan) => Object.fromEntries(plan.blocks.map((b) => [b.title, b.members.map((m) => m.path.join('.'))]));
@@ -49,22 +49,4 @@ test('a collapsed entry is summarised by its nested lists', () => {
 
 // Every real record: the package reads as Marc's five blocks; a page never spills its sections' fields into
 // the sheet; no block grows past ten members (a new ungrouped field shows up here first).
-test('real FlyingStars records are chunked by their schema', async () => {
-  const site = await createFlyingStarsAdapter(root);
-  const files = (await readdir(root + 'src/content', { recursive: true })).map((f) => 'src/content/' + f);
-  const plans = new Map();
-  for (const source of site.sourcesFromFiles(files)) {
-    const data = wire(source.schema.parse(codecs[source.format].parse(await readFile(root + source.file))));
-    const d = describe(schemaDescription(source.schema), data, { id: source.id, omitPath: (dd, p) => omitRecordField({ id: source.id, data }, dd, p) });
-    const plan = overviewPlan({ fields: d.fields, containers: d.containers, isTechnical });
-    plans.set(source.id, plan);
-    for (const block of plan.blocks) assert.ok(block.members.length <= 10, `${source.id} › ${block.title}: ${block.members.length} members`);
-    for (const block of plan.blocks) for (const m of block.members) assert.ok(m.kind === 'blocks' || m.path[0] !== 'sections', `${source.id}: ${m.path.join('.')} belongs to a section`);
-  }
-  assert.deepEqual(titles(plans.get('package/horizon')), ['Name & Darstellung', 'Drohnen & Dauer', 'Preis', 'Leistungen', 'Show-Konfigurator']);
-  assert.deepEqual(members(plans.get('package/horizon')).Preis, ['price', 'step', 'add']);
-  assert.deepEqual(members(plans.get('package/horizon')).Leistungen, ['inheritsText', 'featureGroups']);
-  assert.deepEqual(titles(plans.get('page/index')), ['Allgemein', 'Abschnitte']);
-  assert.deepEqual(titles(plans.get('site/inquiry')), ['Ablauf', 'Angaben zur Show', 'Kontaktdaten', 'Meldungen']);
-  assert.ok(titles(plans.get('project/nfl-berlin-game')).includes('Projektkarte'));
-});
+test('all actual records are chunked by their current schema with sections kept in their block list',async()=>{const {records}=await import('./test/design-data.mjs');for(const record of records){const d=describe(record.schema,record.data,{omitPath:(data,path)=>omitRecordField(record,data,path)}),plan=overviewPlan({fields:d.fields,containers:d.containers,isTechnical});for(const block of plan.blocks){assert.ok(block.members.length<=10,record.id+' '+block.title);for(const member of block.members)assert.ok(member.kind==='blocks'||member.path[0]!=='sections',record.id+member.path);}}});

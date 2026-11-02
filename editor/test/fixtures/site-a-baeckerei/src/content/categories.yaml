@@ -1,0 +1,10 @@
+# Lokale Shared-File-Fixture, keine externe Site nötig.
+bread:
+  title: Brot
+  items:
+    - title: Roggenbrot
+      price: 4.20
+      available: true
+pastry:
+  title: Gebäck
+  items: []

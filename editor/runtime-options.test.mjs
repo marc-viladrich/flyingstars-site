@@ -76,7 +76,7 @@ test('Generic services contain no direct or dynamic site schema/lib imports',asy
  const pkg=new URL('./src/runtime/',import.meta.resolve('astro-frontend-editor/package.json'));
  for(const name of modules){const text=await fs.readFile(new URL(name+'.mjs',pkg),'utf8');assert.doesNotMatch(text,/src\/(?:schemas|lib)(?:\/|['"])/,name);}
  const adapter=await fs.readFile(new URL('./flyingstars-adapter.mjs',import.meta.url),'utf8');
- assert.match(adapter,/src\/schemas\//);assert.match(adapter,/src\/lib\//);
+ assert.match(adapter,/src\/schemas\//);assert.match(adapter,/src\/i18n\/ui/);
 });
 
 test('Injected adapter controls routes and translation fields; custom branches reach store, publisher and sync',async t=>{
@@ -86,6 +86,7 @@ test('Injected adapter controls routes and translation fields; custom branches r
  await fs.symlink(await fs.realpath(path.join(siteRoot,'node_modules')),path.join(source,'node_modules'));
  const runtime=resolveRuntimeOptions({env:{PATH:process.env.PATH},values:{siteRoot:source,stateDir:path.join(root,'state'),draftBranch:'editor/proposal',publishedBranch:'release/live',remote:false}});
  const site={...await createFlyingStarsAdapter(source),recordRoute:()=>'/injected/',translatableFields:()=>[]};
+ site.extensions=(await import('astro-frontend-editor/runtime/extensions')).createExtensionRegistry([{name:'aaa/injected',contractVersion:'1.0',hooks:{route:()=>'/injected/'}},...site.extensions.definitions]);
  const store=await new NativeStore(source,{runtime,site}).init();t.after(()=>store.sync.close());
  assert.equal(store.sync.draftBranch,'editor/proposal');
  const state=await store.state();assert.ok(state.records.every(record=>record.route==='/injected/'));
@@ -102,6 +103,7 @@ async function freePort(){const server=net.createServer();await new Promise((res
 
 test('Real CLI from /tmp builds WORKTREE and serves authenticated /editor/ with isolated private state', {timeout:120000},async t=>{
  const root=await temporary(t),state=path.join(root,'state');
+ const {i18nFixture}=await import('./i18n-test-fixture.mjs'),isolated=await i18nFixture(t),siteRoot=isolated.source,draftBranch='content/draft';isolated.store.sync.close();
  const password='Listener-Test äöü';
  await addAccount(state,'Listener Test',password);
  let port;try{port=await freePort();}catch(error){if(error.code==='EPERM'||error.code==='EACCES'){t.skip('Sandbox verweigert Loopback-Listener mit '+error.code+'; realer Socket-Nachweis ausstehend.');return;}throw error;}let publicPort=await freePort();while(publicPort===port)publicPort=await freePort();
@@ -110,7 +112,7 @@ test('Real CLI from /tmp builds WORKTREE and serves authenticated /editor/ with 
  const env=Object.fromEntries(['PATH','HOME','TMPDIR','LANG'].filter(k=>process.env[k]).map(k=>[k,process.env[k]]));
  const child=spawn(process.execPath,[fileURLToPath(new URL('./server.mjs',import.meta.url)),
   '--site-root',siteRoot,'--state-dir',state,'--port',String(port),'--public-port',String(publicPort),
-  '--auth','on','--preview','off','--git-remote','off','--draft-branch',draftBranch,'--offline-media','1'],{cwd:os.tmpdir(),env,stdio:['ignore','pipe','pipe']});
+  '--auth','on','--preview','off','--git-remote','off','--draft-branch',draftBranch,'--published-branch',draftBranch,'--offline-media','1'],{cwd:os.tmpdir(),env,stdio:['ignore','pipe','pipe']});
  let output='';child.stdout.on('data',bytes=>output+=bytes);child.stderr.on('data',bytes=>output+=bytes);
  t.after(async()=>{if(child.exitCode===null&&child.signalCode===null){child.kill('SIGTERM');await once(child,'exit');}});
  const exited=once(child,'exit').then(([code])=>{throw Error('CLI exited '+code+': '+output);});
@@ -119,7 +121,7 @@ test('Real CLI from /tmp builds WORKTREE and serves authenticated /editor/ with 
  const login=await fetch(origin+'/editor/api/login',{method:'POST',headers:{origin,'content-type':'application/json'},body:JSON.stringify({username:'tester',password})});
  assert.equal(login.status,200);const cookie=login.headers.getSetCookie().find(value=>value.startsWith('fs_editor=')).split(';')[0];
  const page=await fetch(origin+'/editor/',{headers:{cookie}});assert.equal(page.status,200);assert.match(await page.text(),/editor\.js/);
- for(const route of ['/editor/site-lib/inline-text.mjs','/editor/site-lib/color-tokens.mjs','/editor/package-ids.mjs'])assert.equal((await fetch(origin+route,{headers:{cookie}})).status,200);
+ for(const route of ['/browser-site.mjs','/design/browser-site.mjs','/design/inline.mjs'])assert.equal((await fetch(origin+route,{headers:{cookie}})).status,200);
  const response=await fetch(origin+'/editor/api/state',{headers:{cookie}});assert.equal(response.status,200);assert.ok((await response.json()).records.length>0);
  assert.ok(JSON.parse(await fs.readFile(path.join(state,'runtime/active.json'),'utf8')).head);
  assert.ok(JSON.parse(await fs.readFile(path.join(state,'runtime-public/active.json'),'utf8')).head);
@@ -132,6 +134,7 @@ test('Real CLI from /tmp builds WORKTREE and serves authenticated /editor/ with 
 
 test('Composition from /tmp initializes both builds and authenticated editor handlers without sockets', {timeout:120000},async t=>{
  const root=await temporary(t),state=path.join(root,'state');
+ const {i18nFixture}=await import('./i18n-test-fixture.mjs'),isolated=await i18nFixture(t),siteRoot=isolated.source,draftBranch='content/draft';isolated.store.sync.close();
  const password='Handler-Test äöü';
  await addAccount(state,'Handler Test',password);
  const script=`
@@ -145,13 +148,13 @@ test('Composition from /tmp initializes both builds and authenticated editor han
   const login=await app.auth.action('login',{username:'tester',password:${JSON.stringify(password)}},{headers:{origin:app.origin},socket:{remoteAddress:'127.0.0.1'}});
   assert.equal(login.status,200);const headers={cookie:login.cookies.find(value=>value.startsWith('fs_editor=')).split(';')[0]};
   const page=await handlerRequest(app.editor,app.origin,'/editor/',headers);assert.equal(page.status,200);assert.match(page.body,/editor\\.js/);
-  for(const route of ['/editor/api/state','/editor/site-lib/inline-text.mjs','/editor/site-lib/color-tokens.mjs','/editor/package-ids.mjs'])assert.equal((await handlerRequest(app.editor,app.origin,route,headers)).status,200);
+  for(const route of ['/editor/api/state','/browser-site.mjs','/design/browser-site.mjs','/design/inline.mjs'])assert.equal((await handlerRequest(app.editor,app.origin,route,headers)).status,200);
   assert.ok(app.builder.current.head);assert.ok(app.publisher.builder.current.head);
   console.log('Authenticated /editor/ and source services from '+process.cwd()+'; both builds active.');
  } finally {app.store.sync.close();app.editor.close();app.publicServer.close();}
  `;
  const env=Object.fromEntries(['PATH','HOME','TMPDIR','LANG'].filter(k=>process.env[k]).map(k=>[k,process.env[k]]));
  const result=await run(process.execPath,['--input-type=module','--eval',script,'--',
-  '--site-root',siteRoot,'--state-dir',state,'--auth','on','--preview','off','--git-remote','off','--draft-branch',draftBranch,'--offline-media','1'],{cwd:os.tmpdir(),env,timeout:110000,maxBuffer:1000000});
+  '--site-root',siteRoot,'--state-dir',state,'--auth','on','--preview','off','--git-remote','off','--draft-branch',draftBranch,'--published-branch',draftBranch,'--offline-media','1'],{cwd:os.tmpdir(),env,timeout:110000,maxBuffer:1000000});
  assert.match(result.stdout,/Authenticated \/editor\//);
 });

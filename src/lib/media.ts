@@ -1,8 +1,11 @@
+import sharp from 'sharp';
+import path from 'node:path';
 import { getImage } from 'astro:assets';
 
 const hosts = new Set(['flyingstars.art', 'flyingstars-relaunch.vercel.app', process.env.MEDIA_HOST ?? 'media.example.invalid']);
 const dimensions = new Map<string, Promise<{width:number;height:number}>>();
 async function sourceSize(src: string) {
+  if (/^\/assets\/[a-f0-9]{64}\.(?:png|jpg|webp)$/.test(src)) { const size=await sharp(path.join(process.cwd(),'public',src)).metadata();return {width:size.width!,height:size.height!}; }
   const url = new URL(src);
   if (url.protocol !== 'https:' || !hosts.has(url.hostname)) throw new Error(`Nicht freigegebene FlyingStars-Medienquelle: ${url.hostname}`);
   if (!dimensions.has(src)) dimensions.set(src, getImage({src,inferSize:true}).then(image => ({width:Number(image.attributes.width),height:Number(image.attributes.height)})));
@@ -13,6 +16,7 @@ export async function optimizedImage(src: string, width = 960, height?: number, 
   const size = await sourceSize(src);
   const targetWidth = Math.min(width, 960, size.width);
   const targetHeight = height ?? Math.round(targetWidth * size.height / size.width);
+  if(src.startsWith('/assets/'))return {src,width:targetWidth,height:targetHeight,attributes:{width:targetWidth,height:targetHeight}};
   const image = await getImage({src,width:targetWidth,height:targetHeight,fit:'cover',format,quality:format === 'jpg' ? 78 : 65});
   return {src:image.src,width:Number(image.attributes.width),height:Number(image.attributes.height),attributes:image.attributes};
 }
@@ -21,3 +25,8 @@ export async function optimizedLogo(src: string, height: number) {
   const size = await sourceSize(src);
   return optimizedImage(src, Math.round(size.width / size.height * height));
 }
+
+// Render provenance belongs to this transform, alongside its actual output shape.
+// No URL matching is used: src retains the address of the input content field.
+optimizedImage.afeBindings = ([source]: unknown[]) => ({src:source});
+optimizedLogo.afeBindings = optimizedImage.afeBindings;

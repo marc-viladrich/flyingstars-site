@@ -1,3 +1,5 @@
+import navigationData from './content/navigation.json' with {type:'json'};
+import messages from './i18n/ui.json' with {type:'json'};
 import { createTranslator } from './i18n/ui.mjs';
 // Navigation nach Moritz' Sitemap-Entwurf (31.10.2026, noch nicht von FlyingStars abgenommen): Anlässe, Preise,
 // Referenzen, Über uns, FAQ, Blog; Kontakt über den Button „Show anfragen“. „Anlässe“ ist nur ein Menüpunkt ohne eigene
@@ -6,30 +8,21 @@ import { createTranslator } from './i18n/ui.mjs';
 // Festivals, Privat, Heiratsantrag, Silvester usw. kommen nach Moritz' Prioritäten dazu.
 export function getSite(locale = 'de') {
 const t = createTranslator(locale);
-return {
+const address=(path:(string|number)[])=>({owner:{collection:'siteNavigation',id:'configuration'},part:'data',path});
+const stamp=(value:Record<string,unknown>,path:(string|number)[],fields:Record<string,unknown>={})=>{Object.defineProperty(value,Symbol.for('afe.source'),{value:{...address(path),strict:true,fields:{...Object.fromEntries(Object.keys(value).map(key=>[key,address([...path,key])])),...fields}}});return value;};
+const localized=(value:unknown,path:(string|number)[]=[]):any=>{
+ if(Array.isArray(value)){const result=value.map((item,i)=>localized(item,[...path,i]));Object.defineProperty(result,Symbol.for('afe.source'),{value:address(path)});return result;}
+ if(value&&typeof value==='object'){const source=value as Record<string,unknown>,result=Object.fromEntries(Object.entries(source).map(([key,item])=>[key,key==='label'&&typeof item==='string'&&item in messages?t(item):localized(item,[...path,key])]));return stamp(result,path,typeof source.label==='string'&&source.label in messages?{label:t.afeAddress(source.label)}:{});}
+ return value;
+};
+const navigation=localized(navigationData) as {nav:{label:string;href:string;children?:{label:string;href:string}[]}[];cta:{label:string;href:string};footer:{legal:{label:string;href:string}[]}};
+const result = {
   name: 'FlyingStars', locale,
   description: t('site.droneShowsForBusinessesCitiesFestivalsAndWeddingsDesignPermits'),
-  nav: [
-    { label: t('base.occasions'), href: '/#anlaesse', children: [
-      { label: t('site.businesses'), href: '/' },
-      { label: t('site.brandsAdvertising'), href: '/drohnenshow-werbung/' },
-      { label: t('site.agencies'), href: '/drohnenshow-werbung/#agenturen' },
-      { label: t('site.wedding'), href: '/drohnenshow-hochzeit/' },
-      { label: 'Indoor', href: '/drohnenshow-indoor/' },
-    ] },
-    { label: t('site.prices'), href: '/drohnenshow-preise/' },
-    { label: t('casestudy.ourWork'), href: '/referenzen/' },
-    { label: t('site.aboutUs'), href: '/ueber-uns/' },
-    { label: 'FAQ', href: '/faq/' },
-    { label: 'Blog', href: '/blog/' },
-  ] as { label: string; href: string; children?: { label: string; href: string }[] }[],
-  cta: { label: t('chopper404.requestAShow'), href: '/kontakt/' },
-  footer: { legal: [
-    { label: t('site.legalNotice'), href: '/impressum/' },
-    { label: t('site.privacy'), href: '/datenschutz/' },
-    { label: t('site.terms'), href: 'https://flyingstars.art/agb/' },
-  ] },
+  ...navigation,
   formEndpoint: import.meta.env.PUBLIC_FORM_ENDPOINT || '/api/contact',
 } as const;
+Object.defineProperty(result,Symbol.for('afe.source'),{value:{...address([]),strict:true,fields:Object.fromEntries(Object.keys(navigationData).map(key=>[key,address([key])]))}});
+return result;
 }
 export const site = getSite();
