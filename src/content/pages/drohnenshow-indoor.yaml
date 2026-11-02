@@ -58,24 +58,46 @@ sections:
       - label: Preis
         values: ["einzeln kalkuliert, ab ca. 15.000 € netto für 20 Drohnen", "Pakete ab 7.900 € netto"]
 
-  # Entwurf für Moritz: Raum als Schnitt mit Checkliste, Inhalte wie bisher
+  # Textentwurf für Moritz. Quellen und Konflikte: docs/sicherheitskonzept-quellen.md.
   - type: landingSite
     id: raum
     kicker: Voraussetzungen
-    headline: Was euer *Raum* mitbringen muss.
-    text: Danach erstellen wir ein Showkonzept für euren Raum.
+    headline: Was euer Raum mitbringen muss.
+    text: Grundriss, Deckenhöhe und die Position eures Publikums sind die Grundlage für unser Showkonzept.
     variant: indoor
+    diagram:
+      description: "Raumschnitt mit mindestens 3 m Deckenhöhe und Publikum neben der freien Flugfläche. Darunter eine Draufsicht auf ein beispielhaftes Startraster für 20 Drohnen mit Antennen an den Ecken des Fluggebiets."
+      horizontalLabel: ca. 5 m
+      verticalLabel: mind. 3 m
+      detailLabel: 1 m Raster
+      flightLabel: Flughöhe bis 8 m, passend zum Raum
+      caption: "Schema, nicht maßstäblich. Startraster als Beispiel für 20 Drohnen auf ca. 5 × 5 m. Für 50 Drohnen nennt das Datenblatt ca. 7 × 7 m. Die gesamte Flugfläche und den Publikumsbereich planen wir für euren Raum."
     items:
-      - { title: Deckenhöhe, value: mind. 3 m, text: "Darunter fliegen die Drohnen ihre Bahnen.", zone: ceiling }
-      - { title: Freie Start- und Flugfläche, text: "Auf ihr starten und landen die Drohnen, während der Show bleibt sie frei.", zone: floor }
-      - { title: Alles Weitere bringen wir mit, text: "Drohnen, Technik und unser Team." }
-    checklist:
-      title: Das hilft uns für eine erste Einschätzung
-      items:
-        - Grundriss oder Foto des Raums
-        - Deckenhöhe
-        - Position des Publikums
-        - "Bühnenlicht, Nebel oder Pyrotechnik im Raum?"
+      - title: Deckenhöhe
+        value: mindestens 3 m
+        text: "Die Flugbahnen passen wir an euren Raum an. Das Indoor-System fliegt bis zu 8 m hoch."
+        zone: ceiling
+      - title: Flugbereich
+        text: "Die Start- und Flugfläche bleibt frei. Indoor nutzen wir ein eigenes Drohnensystem mit vorab berechneten Bahnen."
+        zone: drones
+      - title: Start- und Landefläche
+        value: 1 m Startraster
+        text: "Als Richtwert brauchen 20 Drohnen ca. 5 × 5 m, 50 Drohnen ca. 7 × 7 m. Der Boden muss eben sein, alle Drohnen starten auf derselben Höhe."
+        zone: floor
+      - title: Positionierung im Raum
+        text: "Antennen stehen an den Ecken des Fluggebiets. Das UWB-System bestimmt die Positionen im Raum; Drohnen und Technik bringen wir mit."
+        zone: kit
+      - title: Publikumsbereich
+        text: "Wir stimmen die Position eurer Gäste und die freie Flugfläche mit euch ab. Der Abstand zum Publikum wird im Showkonzept für euren Raum festgelegt."
+        zone: guests
+    responsibilities:
+      provider:
+        - "Wir planen Flugfläche, Publikumsposition und Choreografie für euren Raum. Jede Indoor-Show kalkulieren wir individuell."
+        - "Wir bringen das Indoor-Drohnensystem, die Positionierungstechnik und unser Team mit."
+      customer:
+        - "Ihr schickt uns einen Grundriss mit Maßen und Deckenhöhe und nennt die geplante Position des Publikums."
+        - "Ihr stellt eine freie Start- und Flugfläche auf ebenem Boden bereit. Einen Stromanschluss in der Nähe stimmen wir mit euch ab."
+    download: { label: Technik-Datenblatt · PDF, href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf }
 
   # Entwurf für Moritz: Sicherheit als Kacheln (Werte von der Live-Seite, siehe Kopfkommentar)
   - type: landingBento

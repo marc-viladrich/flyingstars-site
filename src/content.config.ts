@@ -295,16 +295,38 @@ export const sectionSchema = z.discriminatedUnion('type', [
     cta: link,
   }),
   z.object({
-    // Platzbedarf als Schema (outdoor: Draufsicht der Zonen nach dem Technik-Datenblatt; indoor: Raumschnitt mit
-    // Deckenhöhe) und daneben eine Checkliste. Zeigen auf einen Punkt hebt die passende Zone hervor (`zone`).
+    // Quellen und Konflikte: docs/sicherheitskonzept-quellen.md. Alle Maße kommen aus dem Inhalt.
+    // Fünf eindeutige Zonen je Variante halten Zeichnung und nummerierte Erläuterung zusammen.
     type: z.literal('landingSite'), ...sectionHeading,
     headline: z.string().min(1), text: z.string().optional(),
     variant: z.enum(['outdoor', 'indoor']),
-    items: z.array(z.object({ title: z.string().min(1), text: z.string().min(1), value: z.string().optional(),
-      zone: z.enum(['safety', 'start', 'drones', 'guests', 'ceiling', 'floor', 'kit']).optional() })).min(1).max(5),
-    checklist: z.object({ title: z.string().min(1), items: z.array(z.string().min(1)).min(1) }).optional(),
-    note: z.object({ value: z.string().min(1), text: z.string().min(1) }).optional(),
-    download: link.optional(),
+    diagram: z.object({
+      description: z.string().min(1), caption: z.string().min(1),
+      horizontalLabel: z.string().min(1), verticalLabel: z.string().min(1),
+      detailLabel: z.string().min(1), flightLabel: z.string().min(1),
+    }).strict(),
+    items: z.array(z.object({
+      title: z.string().min(1), text: z.string().min(1), value: z.string().optional(),
+      zone: z.enum(['safety', 'operative', 'start', 'drones', 'guests', 'ceiling', 'floor', 'kit']),
+    }).strict()).length(5),
+    responsibilities: z.object({
+      provider: z.array(z.string().min(1)).min(1),
+      customer: z.array(z.string().min(1)).min(1),
+    }).strict(),
+    safeguards: z.array(z.object({
+      icon: z.string().min(1), title: z.string().min(1), text: z.string().min(1),
+    }).strict()).min(1).max(4).optional(),
+    planning: z.object({ title: z.string().min(1), text: z.string().min(1) }).strict().optional(),
+    note: z.object({ value: z.string().min(1), text: z.string().min(1) }).strict().optional(),
+    download: link.strict().optional(),
+  }).strict().superRefine((section, ctx) => {
+    const expected = section.variant === 'outdoor'
+      ? ['safety', 'operative', 'drones', 'start', 'guests']
+      : ['ceiling', 'drones', 'floor', 'kit', 'guests'];
+    if (new Set(section.items.map((item) => item.zone)).size !== expected.length ||
+        expected.some((zone) => !section.items.some((item) => item.zone === zone))) {
+      ctx.addIssue({ code: 'custom', path: ['items'], message: `Jede Zone genau einmal: ${expected.join(', ')}` });
+    }
   }),
   z.object({
     // Ablauf mit Freigabe-Schranke: Kopf bleibt links stehen, rechts die Schritte am Verlaufsstrahl; der Schritt mit
