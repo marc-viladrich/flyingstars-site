@@ -1,0 +1,29 @@
+# Wartung statt WordPress-Plugin-Updates: montags ein gebündelter PR für npm (Minor/Patch) und monatlich einer für
+# die Actions. Neue Versionen warten einige Tage (cooldown), bevor sie vorgeschlagen werden; Majors kommen einzeln.
+# Jeder PR läuft durch dieselbe CI wie jede andere Änderung und wird von Hand gemergt.
+# Das private Editor-Paket (GitHub Packages) liest Dependabot mit dem Dependabot-Secret PACKAGES_READ_TOKEN.
+version: 2
+registries:
+  github-packages:
+    type: npm-registry
+    url: https://npm.pkg.github.com
+    token: ${{ secrets.PACKAGES_READ_TOKEN }}
+updates:
+  - package-ecosystem: npm
+    directory: /
+    registries: [github-packages]
+    schedule: { interval: weekly, day: monday, time: '07:00', timezone: Europe/Berlin }
+    cooldown:
+      default-days: 5
+    groups:
+      minor-and-patch:
+        applies-to: version-updates
+        update-types: [minor, patch]
+    open-pull-requests-limit: 5
+    commit-message: { prefix: deps }
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: monthly }
+    groups:
+      actions:
+        patterns: ['*']

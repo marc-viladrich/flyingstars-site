@@ -1,35 +1,56 @@
 name: CI
-# Qualitäts-Gates für jeden PR. Alles hier ist host-unabhängig.
+# Volle Qualitäts-Gates (15–20 min) für Code-Änderungen per PR (Branch-Schutz verlangt `gates`) und auf Abruf
+# (Actions → CI → Run workflow). Inhalte aus dem Editor gehen ohne diesen Lauf online (deploy-cloudflare.yml).
+# Alles hier ist host-unabhängig.
 on:
   pull_request:
-  push:
-    branches: [main]
+  workflow_dispatch:
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   gates:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # Ein PR-Lauf dauerte 15 min, derselbe Stand auf main 20+ (Physik-Tests je ~1,5 min, Runner schwanken).
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v6
+        # Editor-Tests lesen ältere Stände (Migrationen, Revisionsnachweise) aus der Git-Geschichte.
+        with: { fetch-depth: 0 }
       - uses: actions/setup-node@v6
-        with: { node-version-file: .nvmrc, cache: npm }
+        with: { node-version-file: .nvmrc, cache: npm, registry-url: 'https://npm.pkg.github.com', scope: '@marc-viladrich' }
       - run: npm ci
-      - name: Typen und Schema (astro check)
-        run: npx astro check
-      - name: Intake-Skript-Tests
-        run: node --test 'scripts/*.test.mjs'
-      - name: Build
+        # Private editor package (GitHub Packages): classic token with read:packages only.
+        env: { NODE_AUTH_TOKEN: '${{ secrets.PACKAGES_READ_TOKEN }}' }
+      - name: Gemeinsame lokale und CI-Prüfung
+        run: npm run ci
+        env:
+          SITE_URL: ${{ vars.SITE_URL || 'https://example.invalid' }}
+          MEDIA_HOST: ${{ vars.MEDIA_HOST || 'media.example.invalid' }}
+          PUBLIC_FORM_ENDPOINT: ${{ vars.PUBLIC_FORM_ENDPOINT }}
+      - name: Produktions-Build (Bilder selbst gehostet, wie deployt)
+        # npm run ci baut offline mit dem noop-Bilddienst; Browser-Gates prüfen den echten Output.
         run: npx astro build
         env:
           SITE_URL: ${{ vars.SITE_URL || 'https://example.invalid' }}
           MEDIA_HOST: ${{ vars.MEDIA_HOST || 'media.example.invalid' }}
           PUBLIC_FORM_ENDPOINT: ${{ vars.PUBLIC_FORM_ENDPOINT }}
-      - name: Playwright (axe, Request-Allowlist, HTML-Hygiene)
+      # Die Browser (Chromium + Headless Shell, ~170 MB) nur bei neuer Playwright-Version herunterladen.
+      - name: Playwright-Version
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+      - name: Playwright-Browser
+        timeout-minutes: 6
         run: |
-          npx playwright install --with-deps chromium
-          npx playwright test
+          if [ "${{ steps.playwright-cache.outputs.cache-hit }}" = true ]; then npx playwright install-deps chromium
+          else npx playwright install --with-deps chromium; fi
+      - name: Playwright (axe, Request-Allowlist, HTML-Hygiene)
+        run: npx playwright test
         env:
           CI: 'true'
           MEDIA_HOST: ${{ vars.MEDIA_HOST }}

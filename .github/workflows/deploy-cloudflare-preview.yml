@@ -1,10 +1,7 @@
-name: Deploy
-# Der EINZIGE host-spezifische Workflow. Hosting wechseln = Job "upload" austauschen,
-# alles davor (Build-Artefakt) bleibt gleich. Varianten für IONOS/Dokploy/rsync in README.md.
+name: Cloudflare preview (manuell)
+# Optionaler Cloudflare-Test. Produktion läuft über deploy-hetzner.yml.
 on:
-  pull_request:
-  push:
-    branches: [main]
+  workflow_dispatch:
 concurrency:
   group: deploy-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
@@ -15,8 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
-        with: { node-version-file: .nvmrc, cache: npm }
+        with: { node-version-file: .nvmrc, cache: npm, registry-url: 'https://npm.pkg.github.com', scope: '@marc-viladrich' }
       - run: npm ci
+        # Private editor package (GitHub Packages): classic token with read:packages only.
+        env: { NODE_AUTH_TOKEN: '${{ secrets.PACKAGES_READ_TOKEN }}' }
       - run: npx astro build
         env:
           SITE_URL: ${{ github.event_name == 'push' && vars.SITE_URL || vars.PREVIEW_URL || 'https://example.invalid' }}
@@ -58,7 +57,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=${{ vars.CF_PAGES_PROJECT }} --branch=${{ github.head_ref || github.ref_name }}
+          command: pages deploy dist --project-name=${{ vars.CF_PAGES_PROJECT }} --branch=manual-preview
       - name: Preview-URL in den PR schreiben
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7

@@ -32,8 +32,12 @@ jobs:
                 throw new Error(`Agent-Auftrag nicht freigegeben: ${username} hat kein Schreibrecht.`);
               }
             }
+      # `npm ci` im Agentenlauf braucht das private Editor-Paket (GitHub Packages, Token nur read:packages).
+      - uses: actions/setup-node@v6
+        with: { node-version-file: .nvmrc, cache: npm, registry-url: 'https://npm.pkg.github.com', scope: '@marc-viladrich' }
       - uses: anthropics/claude-code-action@86d88e619d8e6caf07b5c3944dd14f441c533718 # v1, geprüft am 2026-10-06
         id: claude
+        env: { NODE_AUTH_TOKEN: '${{ secrets.PACKAGES_READ_TOKEN }}' }
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           # Mit eigenem Token braucht es keine Installation der Claude-GitHub-App; Commits/PRs laufen unter dieser Identität.

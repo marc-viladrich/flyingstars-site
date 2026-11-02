@@ -1,0 +1,50 @@
+name: Hetzner deploy
+# Wie deploy-cloudflare.yml: jeder Stand auf main, ohne vorgeschaltete CI; der Host baut selbst und schaltet nur
+# nach erfolgreichem Build um.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: hetzner-production
+  cancel-in-progress: false
+jobs:
+  deploy:
+    # Aus, bis der Hetzner-Account steht: Repository-Variable HETZNER_DEPLOY=on schaltet den Deploy ein.
+    if: vars.HETZNER_DEPLOY == 'on'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    steps:
+      - name: SSH-Deploy-Hook ausführen
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          DEPLOY_SHA: ${{ github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in DEPLOY_HOST DEPLOY_USER DEPLOY_SSH_KEY DEPLOY_KNOWN_HOSTS DEPLOY_PATH; do
+            test -n "${!name}" || { echo "::error::$name fehlt"; exit 1; }
+          done
+          sshdir=$(mktemp -d)
+          trap 'rm -rf "$sshdir"' EXIT
+          printf '%s\n' "$DEPLOY_SSH_KEY" > "$sshdir/key"
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$sshdir/known_hosts"
+          chmod 600 "$sshdir/key" "$sshdir/known_hosts"
+          # Quote the remote path as one shell argument; no secret values are logged.
+          quoted_path=$(printf '%s' "$DEPLOY_PATH" | sed "s/'/'\\\\''/g")
+          ssh -i "$sshdir/key" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$sshdir/known_hosts" \
+            "$DEPLOY_USER@$DEPLOY_HOST" "sh -s -- '$quoted_path' '$DEPLOY_SHA'" <<'REMOTE'
+          set -eu
+          cd "$1"
+          # Private shell config sets the same paths/origins/restart as the konsoleH app.
+          . "$HOME/.config/flyingstars/deploy-config.sh"
+          export DEPLOY_EXPECTED_MAIN="$2"
+          node editor/deploy/host-update.mjs
+          REMOTE

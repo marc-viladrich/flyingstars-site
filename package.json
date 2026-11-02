@@ -12,21 +12,28 @@
     "astro": "astro",
     "check": "astro check",
     "test": "node --test 'scripts/*.test.mjs' 'src/scripts/effects/*.test.mjs' && playwright test",
+    "gates": "astro check && astro build && npm test",
+    "editor": "node editor/server.mjs",
+    "ci": "node editor/ci/check.mjs",
+    "test:unit": "node --test 'editor/*.test.mjs' 'editor/core/*.test.mjs' 'editor/test/*.test.mjs' 'scripts/*.test.mjs' 'src/scripts/effects/*.test.mjs' 'src/scripts/*.test.mjs'",
     "test:effects": "node --test 'src/scripts/effects/*.test.mjs'",
-    "audit:layout": "node scripts/layout-audit.mjs",
-    "gates": "astro check && astro build && npm test"
+    "audit:layout": "node scripts/layout-audit.mjs"
   },
   "dependencies": {
-    "@lucide/astro": "^1.66.0",
+    "@astrojs/sitemap": "^3.7.4",
     "astro": "^7.3.6",
-    "marked": "^18.1.0"
+    "astro-frontend-editor": "npm:@marc-viladrich/astro-frontend-editor@0.2.4",
+    "marked": "^18.1.0",
+    "sharp": "^0.35.5",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.5",
+    "@lucide/astro": "^1.66.0"
   },
   "allowScripts": {
     "esbuild": true
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
-    "@astrojs/sitemap": "^3.7.4",
     "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.63.0",
     "typescript": "^6.0.3"

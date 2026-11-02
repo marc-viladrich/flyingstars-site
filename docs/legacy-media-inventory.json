@@ -1,0 +1,398 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijders.jpg",
+      "files": [
+        "src/content/media/image-35ec6384754fdfff.json"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijders.mp4",
+      "files": [
+        "src/lib/videos.ts"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijders/01.jpg",
+      "files": [
+        "src/content/media/image-3f2fe74ddb89f93d.json"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijders/02.jpg",
+      "files": [
+        "src/content/media/image-644a540ca40c8c97.json"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijders/03.jpg",
+      "files": [
+        "src/content/media/image-35801ecf7a3c1dc0.json"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijders/04.jpg",
+      "files": [
+        "src/content/media/image-ee4b42fafceed671.json"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijders/05.jpg",
+      "files": [
+        "src/content/media/image-80e26f045a6b389b.json"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijders/06.jpg",
+      "files": [
+        "src/content/media/image-d547063c101e754c.json"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/ford.jpg",
+      "files": [
+        "src/content/media/image-1984ec2bb75ac0f0.json",
+        "src/content/projects/exploring-reinvented-der-neue-ford-explorer.md"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/ford.mp4",
+      "files": [
+        "src/content/projects/exploring-reinvented-der-neue-ford-explorer.md",
+        "src/lib/videos.ts"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/ford/01.jpg",
+      "files": [
+        "src/content/media/image-2ea81e4304f3670c.json",
+        "src/content/projects/exploring-reinvented-der-neue-ford-explorer.md"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/ford/02.jpg",
+      "files": [
+        "src/content/media/image-a46fdbc53a70b762.json",
+        "src/content/projects/exploring-reinvented-der-neue-ford-explorer.md"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/ford/03.jpg",
+      "files": [
+        "src/content/media/image-2c2f0d7af2210740.json",
+        "src/content/projects/exploring-reinvented-der-neue-ford-explorer.md"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/ford/04.jpg",
+      "files": [
+        "src/content/media/image-b69ed0adefef4d14.json",
+        "src/content/projects/exploring-reinvented-der-neue-ford-explorer.md"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/ford/05.jpg",
+      "files": [
+        "src/content/media/image-f061076949035809.json",
+        "src/content/projects/exploring-reinvented-der-neue-ford-explorer.md"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/ford/06.jpg",
+      "files": [
+        "src/content/media/image-02d27d6b6cea1ac1.json",
+        "src/content/projects/exploring-reinvented-der-neue-ford-explorer.md"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl.jpg",
+      "files": [
+        "src/content/media/image-db731f9101117f27.json",
+        "src/content/projects/nfl-berlin-game.md"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl.mp4",
+      "files": [
+        "src/content/projects/nfl-berlin-game.md",
+        "src/lib/videos.ts"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl/01.jpg",
+      "files": [
+        "src/content/media/image-86ddd0e6394099fb.json",
+        "src/content/projects/nfl-berlin-game.md"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl/02.jpg",
+      "files": [
+        "src/content/media/image-0a2e64e7612526b9.json",
+        "src/content/projects/nfl-berlin-game.md"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl/03.jpg",
+      "files": [
+        "src/content/media/image-5593a9780e00d3d7.json",
+        "src/content/projects/nfl-berlin-game.md"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl/04.jpg",
+      "files": [
+        "src/content/media/image-fc3e154a3ef4ac04.json",
+        "src/content/projects/nfl-berlin-game.md"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl/05.jpg",
+      "files": [
+        "src/content/media/image-b403070787f648ef.json",
+        "src/content/projects/nfl-berlin-game.md"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl/06.jpg",
+      "files": [
+        "src/content/media/image-cf4999dff6864090.json",
+        "src/content/projects/nfl-berlin-game.md"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/puma.jpg",
+      "files": [
+        "src/content/media/image-84b5736102c2e86a.json",
+        "src/content/projects/puma-bundesliga.md"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/puma.mp4",
+      "files": [
+        "src/content/projects/puma-bundesliga.md",
+        "src/lib/videos.ts"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/puma/01.jpg",
+      "files": [
+        "src/content/media/image-4e9dcd461bfc7b3e.json",
+        "src/content/projects/puma-bundesliga.md"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/puma/02.jpg",
+      "files": [
+        "src/content/media/image-f8dc9651d06d4e9d.json",
+        "src/content/projects/puma-bundesliga.md"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/puma/03.jpg",
+      "files": [
+        "src/content/media/image-75c2127eb5a01a41.json",
+        "src/content/projects/puma-bundesliga.md"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars-relaunch.vercel.app/media/projekte/puma/04.jpg",
+      "files": [
+        "src/content/media/image-8c4064550422dfd2.json",
+        "src/content/projects/puma-bundesliga.md"
+      ],
+      "wordpress": false
+    },
+    {
+      "url": "https://flyingstars.art/wp-content/uploads/2023/04/Bulgari_logo_weiss.png",
+      "files": [
+        "src/content/clients/bulgari.json",
+        "src/content/media/image-7bcf9589072f2136.json"
+      ],
+      "wordpress": true
+    },
+    {
+      "url": "https://flyingstars.art/wp-content/uploads/2023/04/Ford_logo_weiss.png",
+      "files": [
+        "src/content/clients/ford.json",
+        "src/content/media/image-2bcb64dfde4d21fd.json"
+      ],
+      "wordpress": true
+    },
+    {
+      "url": "https://flyingstars.art/wp-content/uploads/2023/04/LOreal_logo_weiss.png",
+      "files": [
+        "src/content/clients/l-oreal.json",
+        "src/content/media/image-1adfd38483900066.json"
+      ],
+      "wordpress": true
+    },
+    {
+      "url": "https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png",
+      "files": [
+        "src/content/clients/nfl.json",
+        "src/content/media/image-29b794c670aed30d.json"
+      ],
+      "wordpress": true
+    },
+    {
+      "url": "https://flyingstars.art/wp-content/uploads/2023/04/Prada-Logo_weiss.png",
+      "files": [
+        "src/content/clients/prada.json",
+        "src/content/media/image-afe83b4eef6ff56c.json"
+      ],
+      "wordpress": true
+    },
+    {
+      "url": "https://flyingstars.art/wp-content/uploads/2023/04/Puma_Logo_weiss.png",
+      "files": [
+        "src/content/clients/puma.json",
+        "src/content/media/image-73c31adaa6c29c68.json"
+      ],
+      "wordpress": true
+    },
+    {
+      "url": "https://flyingstars.art/wp-content/uploads/2023/04/Volkswagen_logo_2019_weiss.png",
+      "files": [
+        "src/content/clients/volkswagen.json",
+        "src/content/media/image-a07a6f7485465125.json"
+      ],
+      "wordpress": true
+    },
+    {
+      "url": "https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg",
+      "files": [
+        "src/content/media/image-0a18e35cfad1ffdc.json",
+        "src/content/pages/index.yaml"
+      ],
+      "wordpress": true
+    },
+    {
+      "url": "https://flyingstars.art/wp-content/uploads/2024/07/spotify_logo_white.png",
+      "files": [
+        "src/content/clients/spotify.json",
+        "src/content/media/image-f2caa22ea2eee28f.json"
+      ],
+      "wordpress": true
+    },
+    {
+      "url": "https://flyingstars.art/wp-content/uploads/2024/08/Erwin_Teamfoto.jpg",
+      "files": [
+        "src/content/media/image-bfb76883ec083164.json",
+        "src/content/team/erwin-wilms.json"
+      ],
+      "wordpress": true
+    },
+    {
+      "url": "https://flyingstars.art/wp-content/uploads/2024/08/Florian_Teamfoto.jpg",
+      "files": [
+        "src/content/media/image-cd0d24534a3ef41b.json",
+        "src/content/team/florian-becker.json"
+      ],
+      "wordpress": true
+    },
+    {
+      "url": "https://flyingstars.art/wp-content/uploads/2024/08/Ronja_Teamfoto.jpg",
+      "files": [
+        "src/content/media/image-22abdc4c2d526171.json",
+        "src/content/team/ronja-donsbach.json"
+      ],
+      "wordpress": true
+    },
+    {
+      "url": "https://flyingstars.art/wp-content/uploads/2024/10/airpower-logo-weiss.png",
+      "files": [
+        "src/content/clients/airpower.json",
+        "src/content/media/image-8d5be8d14abd6014.json"
+      ],
+      "wordpress": true
+    },
+    {
+      "url": "https://flyingstars.art/wp-content/uploads/2024/10/NATURSTROM-Logo_weiss.png",
+      "files": [
+        "src/content/media/image-432161b9c1257aec.json",
+        "src/content/pages/index.yaml",
+        "src/layouts/Base.astro"
+      ],
+      "wordpress": true
+    },
+    {
+      "url": "https://flyingstars.art/wp-content/uploads/2024/10/RED-BULL_white.png",
+      "files": [
+        "src/content/clients/red-bull.json",
+        "src/content/media/image-17248028eec048e9.json"
+      ],
+      "wordpress": true
+    },
+    {
+      "url": "https://flyingstars.art/wp-content/uploads/2024/10/siemens_logo_weiss.png",
+      "files": [
+        "src/content/clients/siemens.json",
+        "src/content/media/image-7af0ea3cbcd9f0bd.json"
+      ],
+      "wordpress": true
+    },
+    {
+      "url": "https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg",
+      "files": [
+        "src/content/media/image-129ab7b56d038687.json",
+        "src/content/pages/index.yaml"
+      ],
+      "wordpress": true
+    },
+    {
+      "url": "https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg",
+      "files": [
+        "src/content/media/image-4e4c9ed0abfe9835.json",
+        "src/content/pages/index.yaml"
+      ],
+      "wordpress": true
+    },
+    {
+      "url": "https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg",
+      "files": [
+        "src/content/media/image-bd4dc6ffb7da7546.json",
+        "src/content/pages/index.yaml"
+      ],
+      "wordpress": true
+    },
+    {
+      "url": "https://flyingstars.art/wp-content/uploads/2026/05/Flyingstars-Showreel.mp4",
+      "files": [
+        "src/content/pages/index.yaml",
+        "src/lib/videos.ts"
+      ],
+      "wordpress": true
+    }
+  ]
+}
