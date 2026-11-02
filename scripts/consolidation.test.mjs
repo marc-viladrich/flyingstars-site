@@ -48,3 +48,9 @@ test('Alle Vergleiche delegieren Tabelle, Tafeln und Statuszeichen an dieselben 
   assert.match(read('src/components/landing/LandingSite.astro'), /<ComparisonCell /);
   assert.doesNotMatch(read('src/components/ComparisonCell.astro'), /<svg|<path/);
 });
+
+test('Alle aktiven Reels verwenden den gemeinsamen Video-Controller', () => {
+  for (const file of ['src/scripts/hero-reel.ts','src/components/landing/LandingHero.astro','src/components/projects/ProjectCard.astro']) {
+    const source = read(file); assert.match(source, /createVideoController/); assert.doesNotMatch(source, /\.play\(|new IntersectionObserver|new MutationObserver/);
+  }
+});
