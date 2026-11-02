@@ -14,8 +14,10 @@ for (const route of routes) {
   });
 }
 
-test('Skip-Link ist erstes fokussierbares Element', async ({ page }) => {
+test('Skip-Link ist erstes fokussierbares Element', async ({ page, browserName }) => {
   await page.goto('/');
-  await page.keyboard.press('Tab');
+  // macOS WebKit uses Option-Tab to include links with the default OS settings.
+  // https://support.apple.com/en-ie/guide/safari/cpsh003/mac
+  await page.keyboard.press(browserName === 'webkit' && process.platform === 'darwin' ? 'Alt+Tab' : 'Tab');
   await expect(page.locator(':focus')).toHaveText(/Zum Inhalt/);
 });

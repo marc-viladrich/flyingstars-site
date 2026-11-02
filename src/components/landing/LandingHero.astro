@@ -5,7 +5,7 @@ const { t, localHref } = forPath(Astro.url.pathname);
 // kleineren Variante, so ähnlich wie wir jetzt ein Hero-Bild haben“). Links Kicker, Headline, Satz, Aktionen und bis zu
 // vier Eckdaten; rechts ein Bildrahmen mit stummem Loop. Startet erst, wenn der Rahmen im Bild ist: ab 701 px von selbst,
 // auf dem Handy per Knopf (Datenvolumen). Hält an bei globaler Pause (html.motion-paused), reduzierter Bewegung,
-// Datensparmodus und außerhalb des Bildes. Quelle nur aus src/lib/videos.ts, über videoPath() auf dieselbe Origin.
+// Datensparmodus und außerhalb des Bildes. Quelle nur aus src/lib/videos.ts, als kleine Vorschau über videoPath() auf derselben Origin.
 import type { Section } from '../../content.config';
 import Accent from '../Accent.astro';
 import Icon from '../Icon.astro';
@@ -14,7 +14,7 @@ import { videos, videoPath } from '../../lib/videos';
 type Props = Extract<Section, { type: 'landingHero' }> & { index: number };
 const { kicker, headline, text, cta, secondary, video, videoLabel = t('common.showreel'), poster, facts } = Astro.props;
 const still = await optimizedImage(poster.src, 960);
-const src = videoPath(videos[video]);
+const src = videoPath(videos[video], 'preview');
 ---
 <section class="lh" aria-labelledby="hero-h">
   <div class="lh-copy">

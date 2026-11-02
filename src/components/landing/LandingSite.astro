@@ -109,8 +109,10 @@ const markers = variant === 'outdoor'
       el.addEventListener('click', () => show(zone));
     });
     rows.forEach((b) => b.addEventListener('focus', () => show(b.closest('li')!.dataset.zone!)));
+    // Anfangszustand ohne Überblendung setzen, Übergänge erst ab dem nächsten Bild (sonst blendet die Seite beim Laden um)
     st.classList.add('is-stepped');
     show(rows[0]?.closest('li')?.dataset.zone ?? '');
+    requestAnimationFrame(() => requestAnimationFrame(() => st.classList.add('is-live')));
   });
 </script>
 
@@ -139,20 +141,22 @@ const markers = variant === 'outdoor'
   .marker text { fill: var(--accent); font: 500 14px var(--display); }
   .st-items { list-style: none; margin: 0; padding: 0; }
   /* Schrittweise: nicht gewählte Zonen treten zurück, ihr Text klappt zu (Höhe über grid-template-rows, weich) */
-  .zone, .marker { transition: opacity 0.4s ease; }
+  .is-live :is(.zone, .marker) { transition: opacity 0.4s ease; }
   .is-stepped .zone:not(.on) { opacity: 0.16; }
   .is-stepped .marker { cursor: pointer; }
   .is-stepped .marker:not(.on) { opacity: 0.55; }
-  .marker circle, .marker text { transition: fill 0.3s ease; }
+  .is-live .marker :is(circle, text) { transition: fill 0.3s ease; }
   .is-stepped .marker.on circle { fill: var(--accent); }
   .is-stepped .marker.on text { fill: var(--ground); }
   .st-row { all: unset; cursor: pointer; display: block; width: 100%; font: inherit; color: inherit; }
   .st-row:focus-visible { outline: 2px solid var(--cyan); outline-offset: 4px; border-radius: 4px; }
-  .st-body { display: grid; grid-template-rows: 1fr; transition: grid-template-rows 0.4s ease, opacity 0.35s ease, visibility 0s; }
+  .st-body { display: grid; grid-template-rows: 1fr; }
+  .is-live .st-body { transition: grid-template-rows 0.4s ease, opacity 0.35s ease, visibility 0s; }
   .st-body > div { overflow: hidden; min-height: 0; }
   /* zugeklappt wirklich verborgen (auch für Screenreader, passend zu aria-expanded), erst nach dem Zuklappen */
-  .is-stepped li:not(.on) .st-body { grid-template-rows: 0fr; opacity: 0; visibility: hidden; transition: grid-template-rows 0.4s ease, opacity 0.35s ease, visibility 0s 0.4s; }
-  .is-stepped .st-items li { transition: color 0.3s ease; }
+  .is-stepped li:not(.on) .st-body { grid-template-rows: 0fr; opacity: 0; visibility: hidden; }
+  .is-live li:not(.on) .st-body { transition: grid-template-rows 0.4s ease, opacity 0.35s ease, visibility 0s 0.4s; }
+  .is-live .st-items li { transition: color 0.3s ease; }
   .is-stepped .st-items li:not(.on) :is(h2, h3) { color: var(--muted); }
   .is-stepped .st-items li:not(.on) .st-n { color: var(--faint); }
   .is-stepped .st-items li { cursor: pointer; }
