@@ -55,6 +55,7 @@ jobs:
         id: cf
         uses: cloudflare/wrangler-action@v3
         with:
+          wranglerVersion: '4.147.0' # siehe deploy-cloudflare.yml
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=${{ vars.CF_PAGES_PROJECT }} --branch=manual-preview

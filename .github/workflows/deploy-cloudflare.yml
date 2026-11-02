@@ -45,6 +45,9 @@ jobs:
       - name: Cloudflare Pages deploy
         uses: cloudflare/wrangler-action@v3
         with:
+          # Wrangler 4: die Functions importieren src/i18n/ui.mjs mit JSON-Importattribut (with { type: 'json' }),
+          # das der Standard der Action (Wrangler 3, älteres esbuild) nicht bündeln kann (Deploy 02.11.2026 fehlgeschlagen)
+          wranglerVersion: '4.147.0'
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=${{ vars.CF_PAGES_PROJECT }} --branch=main --commit-hash=${{ github.sha }}
