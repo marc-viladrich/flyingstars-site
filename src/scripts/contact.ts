@@ -107,12 +107,17 @@ if (form) {
       started.value = String(Math.floor(performance.now() - opened));
       const response = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
       const result = await response.json();
-      if (!response.ok || !result.ok) throw new Error(result.detail || t('contact.yourEnquiryCouldNotBeSent'));
+      if (!response.ok || result.ok !== true) throw new Error(result.detail || t('contact.yourEnquiryCouldNotBeSent'));
       if (result.state === 'not-configured') {
         status.textContent = t('contact.formDeliveryHasNotBeenSetUpYetNothingWas');
-      } else {
+      } else if (result.state === 'sent') {
         status.textContent = t('contact.yourEnquiryHasBeenSentWeLlGetBackTo');
+        // Only the provider-confirmed response carries an opaque request UUID.
+        // Honeypots intentionally show success but never carry this confirmation.
+        if (typeof result.requestId === 'string') window.dispatchEvent(new CustomEvent('flyingstars:lead-confirmed', { detail: { requestId: result.requestId } }));
         form.reset(); restartTimer(); syncDate(); show(0, false);
+      } else {
+        throw new Error(t('contact.yourEnquiryCouldNotBeSent'));
       }
     } catch (error) { status.textContent = t('contact.valuePleaseTryAgainLaterOrEmailTeamFlyingstarsArt', { v0: error instanceof Error ? error.message : t('contact.deliveryFailed') }); }
     finally { button.disabled = false; button.textContent = t('contactform.sendEnquiry'); status.focus(); }

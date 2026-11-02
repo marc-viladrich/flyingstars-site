@@ -35,7 +35,7 @@ jobs:
           SITE_URL: ${{ vars.SITE_URL || 'https://example.invalid' }}
           MEDIA_HOST: ${{ vars.MEDIA_HOST || 'media.example.invalid' }}
           PUBLIC_FORM_ENDPOINT: ${{ vars.PUBLIC_FORM_ENDPOINT }}
-      # Die Browser (Chromium + Headless Shell, ~170 MB) nur bei neuer Playwright-Version herunterladen.
+      # Chromium und WebKit passend zu allen vier Playwright-Projekten zwischenspeichern.
       - name: Playwright-Version
         id: playwright
         run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
@@ -43,12 +43,12 @@ jobs:
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+          key: playwright-chromium-webkit-${{ runner.os }}-${{ steps.playwright.outputs.version }}
       - name: Playwright-Browser
         timeout-minutes: 6
         run: |
-          if [ "${{ steps.playwright-cache.outputs.cache-hit }}" = true ]; then npx playwright install-deps chromium
-          else npx playwright install --with-deps chromium; fi
+          if [ "${{ steps.playwright-cache.outputs.cache-hit }}" = true ]; then npx playwright install-deps chromium webkit
+          else npx playwright install --with-deps chromium webkit; fi
       - name: Playwright (axe, Request-Allowlist, HTML-Hygiene)
         run: npx playwright test
         env:
@@ -63,6 +63,20 @@ jobs:
         run: |
           npm i -g @lhci/cli@0.15.x
           lhci autorun
+      - name: Aktive Consent-Integration mit abgefangenen Test-Tags
+        # Auch im aktivierten Build bleibt die Netzwerk-Allowlist ohne Zustimmung strikt.
+        run: |
+          npm run build
+          npx playwright test tests/consent.spec.ts tests/network-allowlist.spec.ts --workers=3
+        env:
+          CI: 'true'
+          CONSENT_TEST_ENABLED: '1'
+          PUBLIC_GA_ID: G-CONSENTTEST
+          PUBLIC_GOOGLE_ADS_ID: AW-123456789
+          PUBLIC_GOOGLE_ADS_LABEL: TEST_LABEL
+          SITE_URL: ${{ vars.SITE_URL || 'https://example.invalid' }}
+          MEDIA_HOST: ${{ vars.MEDIA_HOST || 'media.example.invalid' }}
+          PUBLIC_FORM_ENDPOINT: ${{ vars.PUBLIC_FORM_ENDPOINT }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:

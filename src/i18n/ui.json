@@ -3365,9 +3365,9 @@
     "nl": "Niet inbegrepen"
   },
   "consent.title": {
-    "de": "Deine Datenschutz-Einstellungen",
+    "de": "Eure Datenschutz-Einstellungen",
     "en": "Your privacy choices",
-    "nl": "Jouw privacykeuzes"
+    "nl": "Jullie privacykeuzes"
   },
   "consent.summary": {
     "de": "Ihr entscheidet, ob wir Google-Dienste zur Analyse und Werbeerfolgsmessung nutzen dürfen. Ohne Zustimmung laden wir diese Dienste nicht. Eure Anfrage funktioniert auch ohne sie.",
@@ -3508,5 +3508,20 @@
     "de": "Woher ihr uns kennt",
     "en": "How you found us",
     "nl": "Hoe jullie ons vonden"
+  },
+  "consent.necessaryTitle": {
+    "de": "Notwendig",
+    "en": "Necessary",
+    "nl": "Noodzakelijk"
+  },
+  "consent.revision": {
+    "de": "Unsere Zwecke oder Dienste haben sich geändert. Bitte trefft eure Auswahl erneut.",
+    "en": "Our purposes or services have changed. Please choose again.",
+    "nl": "Onze doeleinden of diensten zijn gewijzigd. Maak jullie keuze opnieuw."
+  },
+  "consent.categoryLabel": {
+    "de": "Dienst|Dienste",
+    "en": "service|services",
+    "nl": "dienst|diensten"
   }
 }

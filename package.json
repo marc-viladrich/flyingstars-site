@@ -21,13 +21,14 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
+    "@lucide/astro": "^1.66.0",
     "astro": "^7.3.6",
     "astro-frontend-editor": "npm:@marc-viladrich/astro-frontend-editor@0.2.4",
     "marked": "^18.1.0",
     "sharp": "^0.35.5",
+    "vanilla-cookieconsent": "3.2.1",
     "yaml": "^2.9.1",
-    "zod": "^4.6.5",
-    "@lucide/astro": "^1.66.0"
+    "zod": "^4.6.5"
   },
   "allowScripts": {
     "esbuild": true
