@@ -32,4 +32,4 @@ Prüfbefehl ohne Übersetzungsdienst oder private Übersetzungsspeicher:
 node editor/translate-missing.mjs --locale en --dry-run --state-dir /tmp/flyingstars-i18n-audit
 ```
 
-Abschlussprüfungen und verbleibende Grenzen werden im Migrationsbericht dokumentiert. Dieser Zwischenstand ist noch keine Produktionsfreigabe.
+Prüfungen, Nachweise und Betriebsbefehle stehen im [Migrationsbericht](editor-migration-2026-11.md). Für die reguläre Paketinstallation stehen das private Produktrelease 0.3.0 und die Site-Versionsanhebung aus.

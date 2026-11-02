@@ -39,14 +39,20 @@ try{for(const [engine,type]of [['chromium',chromium],['webkit',webkit]]){
   await page.getByLabel('Bild hochladen',{exact:true}).setInputFiles({name:engine+'-proof.png',mimeType:'image/png',buffer});
   const upload=await uploadResponse;console.log(engine,'upload received',upload.status());expect(upload.status()).toBe(200);const uploaded=await upload.json();
   await page.locator('[data-asset="'+uploaded.assetId+'"]').click();await expect(page.getByLabel('Bild hochladen',{exact:true})).toHaveCount(0);
-  await page.getByRole('button',{name:/Änderung speichern/}).click();await page.getByRole('dialog').getByRole('button',{name:'Geprüft speichern',exact:true}).click();
+  await page.getByRole('button',{name:/Änderung speichern/}).click();const mediaSaveResponse=page.waitForResponse(r=>r.url().endsWith('/editor/api/save')&&r.request().method()==='POST',{timeout:120000});await page.getByRole('dialog').getByRole('button',{name:'Geprüft speichern',exact:true}).click();const mediaSavedResponse=await mediaSaveResponse;expect(mediaSavedResponse.status()).toBe(200);const mediaSaved=await mediaSavedResponse.json();
   await expect.poll(async()=>{const source=codecs.yaml.parse(await readFile(file));return source.sections[0].headline;},{timeout:120000}).toBe(value);
   const owner=uploaded.state.records.find(r=>r.address?.collection===marker.address.owner.collection&&r.address.id===marker.address.owner.id);expect(owner).toBeTruthy();
   const ownerFile=path.join(fixture.source,owner.file),codec=owner.file.endsWith('.yaml')?codecs.yaml:codecs.markdown;
   await expect.poll(async()=>{const parsed=codec.parse(await readFile(ownerFile)),object=marker.address.path.reduce((v,k)=>v[k],parsed);return object.src;},{timeout:120000}).toMatch(/^\/assets\/[a-f0-9]{64}\.png$/);
   const asset=uploaded.state.records.find(r=>r.id===uploaded.assetId);expect(asset.data.width).toBe(32);expect(asset.data.height).toBe(18);
   expect((await sharp(await readFile(path.join(fixture.source,'public',asset.data.src))).metadata()).width).toBe(32);
-  await expect.poll(()=>app.builder.current?.head,{timeout:120000}).toBe(await app.store.head());expect(await readFile(path.join(app.builder.current.site,'index.html'),'utf8')).toContain(asset.data.src);
+  await expect.poll(()=>app.builder.current?.head,{timeout:120000}).toBe(mediaSaved.head);expect(await readFile(path.join(app.builder.current.site,'index.html'),'utf8')).toContain(asset.data.src);await expect(image).toHaveAttribute('src',asset.data.src,{timeout:120000});
+  for(const [locale,label]of [['en','English'],['nl','Nederlands'],['de','Deutsch']]){
+   await page.locator('#language').click();await page.getByRole('menuitem',{name:label,exact:true}).click();
+   await expect(frame.locator('html')).toHaveAttribute('lang',locale,{timeout:90000});
+   const localized=codecs.yaml.parse(await readFile(path.join(fixture.source,'src/content/pages',locale==='de'?'':locale,'index.yaml')));
+   await expect(frame.getByRole('textbox',{name:/^headline ·/i}).first()).toHaveText(localized.sections[0].headline,{timeout:90000});
+  }
   await page.screenshot({path:evidence+'/'+engine+'-saved.png'});reports.push({engine,cookies,sourceHash:hash,savedHeadline:data.sections[0].headline,uploaded:asset.data.src,imageOwner:marker.address,errors});
 
  }catch(error){await page.screenshot({path:evidence+'/'+engine+'-failure.png'});console.error((await page.locator('body').innerText()).slice(-3500));throw error;}finally{await browser.close();}
