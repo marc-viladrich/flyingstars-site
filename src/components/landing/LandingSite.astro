@@ -1,174 +1,146 @@
 ---
-// Platzbedarf als Bild statt als Aufzählung (Marc, 31.10.2026: „Location … viel mehr High Quality“).
-// outdoor: Draufsicht wie im Technik-Datenblatt 09/2026 (public/media/downloads): Sicherheitsbereich ca. 100 × 100 m,
-// darin die Drohnenlinie quer zum Publikum und die Start- und Landefläche, das Publikum außerhalb mit Blick auf die Show.
-// indoor: Raumschnitt mit Deckenhöhe (mind. 3 m), Drohnen im Raum und freier Start- und Flugfläche.
-// Daneben die Checkliste. Nummern im Bild entsprechen den Punkten; Zeigen auf einen Punkt hebt seine Zone hervor.
-// Das Bild ist schematisch und nicht maßstäblich; die Lichtpunkte schalten beim Erscheinen nacheinander ein.
+// Ein Schema für alle Standort- und Sicherheitsabschnitte. Maßangaben sind Content,
+// die Geometrie ist bewusst schematisch. Belege: docs/sicherheitskonzept-quellen.md.
 import type { Section } from '../../content.config';
 import SectionHead from '../SectionHead.astro';
 import Icon from '../Icon.astro';
 type Props = Extract<Section, { type: 'landingSite' }> & { index: number };
-const { kicker, headline, text, variant, items, checklist, note, download, id = 'location', index } = Astro.props;
+const { kicker, headline, text, variant, diagram, items, responsibilities, safeguards, planning, note, download, id = 'location', index } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
 const T = index === 0 ? 'h2' : 'h3';
-// Nummer je Zone für die Marker im Bild (nur Zonen, die in der Checkliste vorkommen)
-const num: Record<string, number> = {};
-items.forEach((it, i) => { if (it.zone && !num[it.zone]) num[it.zone] = i + 1; });
-// Logoverlauf als Punktfarben, von links nach rechts
-const grad = ['#ff9e29', '#f58a5a', '#ec7f95', '#db64e8', '#b88bec', '#8aa9ee', '#6fc8ef', '#33edf2'];
-const col = (t: number) => grad[Math.min(grad.length - 1, Math.round(t * (grad.length - 1)))];
-// outdoor: Drohnenlinie (ca. 60 m von 100 m), leicht geschwungen; Startraster 6 × 3; Publikum als lockere Gruppe
-const line = Array.from({ length: 21 }, (_, i) => ({ x: 158 + i * 10.2, y: 168 + Math.sin(i / 20 * Math.PI) * -10, c: col(i / 20) }));
-const raster = Array.from({ length: 18 }, (_, i) => ({ x: 208 + (i % 6) * 9, y: 262 + Math.floor(i / 6) * 9 }));
-const crowd = Array.from({ length: 26 }, (_, i) => ({ x: 150 + (i % 13) * 18 + (Math.floor(i / 13) % 2) * 9, y: 412 + Math.floor(i / 13) * 14 }));
-// indoor: Drohnen als Welle im Raum, Publikum rechts (drei Personen)
-const swarm = Array.from({ length: 24 }, (_, i) => ({ x: 172 + i * 10.4, y: 160 + Math.sin(i / 23 * Math.PI * 2) * 34 - Math.sin(i / 23 * Math.PI) * 30, c: col(i / 23) }));
-const marker = (zone: string, x: number, y: number) => num[zone] ? { n: num[zone], x, y, zone } : undefined;
-const marks = variant === 'outdoor'
-  ? [marker('safety', 92, 64), marker('drones', 346, 150), marker('start', 300, 250), marker('guests', 400, 418)].filter(Boolean)
-  : [marker('ceiling', 64, 170), marker('drones', 400, 112), marker('floor', 104, 283), marker('guests', 472, 210), marker('kit', 96, 258)].filter(Boolean);
+const numbers = Object.fromEntries(items.map((item, i) => [item.zone, i + 1]));
+const colors = ['#ff9e29', '#f58a5a', '#ec7f95', '#db64e8', '#b88bec', '#8aa9ee', '#6fc8ef', '#33edf2'];
+const line = Array.from({ length: 21 }, (_, i) => ({ x: 110 + i * 8.5, y: 138, color: colors[Math.round(i / 20 * 7)] }));
+const grid = Array.from({ length: 20 }, (_, i) => ({ x: 142 + (i % 5) * 25, y: 306 + Math.floor(i / 5) * 32 }));
+const swarm = Array.from({ length: 18 }, (_, i) => ({ x: 90 + i * 9, y: 122 - Math.sin(i / 17 * Math.PI) * 40, color: colors[Math.round(i / 17 * 7)] }));
+const markers = variant === 'outdoor'
+  ? [{ zone: 'safety', x: 43, y: 39 }, { zone: 'operative', x: 69, y: 68 }, { zone: 'drones', x: 92, y: 100 }, { zone: 'start', x: 96, y: 223 }, { zone: 'guests', x: 313, y: 368 }]
+  : [{ zone: 'ceiling', x: 49, y: 28 }, { zone: 'drones', x: 262, y: 83 }, { zone: 'floor', x: 118, y: 285 }, { zone: 'kit', x: 305, y: 442 }, { zone: 'guests', x: 350, y: 160 }];
 ---
 <section class="section ls-site" id={id} aria-labelledby={`${id}-h`}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
-  <div class="st" data-site>
-    <figure class="st-fig" data-reveal-group data-active="">
-      {variant === 'outdoor' ? (
-        <svg viewBox="0 0 520 460" role="img" aria-label="Schema von oben: Sicherheitsbereich von ca. 100 × 100 Metern, darin die Drohnenlinie und die Start- und Landefläche, das Publikum außerhalb mit Blick auf die Show. Nicht maßstäblich.">
-          <g class="z z-safety">
-            <rect class="area" x="80" y="40" width="340" height="340" rx="26" />
-            <path class="dim" d="M80 22h340M80 16v12M420 16v12" />
-            <text class="lbl" x="250" y="14" text-anchor="middle">ca. 100 m</text>
-            <path class="dim" d="M440 40v340M434 40h12M434 380h12" />
-            <text class="lbl" x="458" y="210" text-anchor="middle" transform="rotate(90 458 210)">ca. 100 m</text>
-          </g>
-          <g class="z z-drones">
-            <rect class="soft" x="140" y="120" width="220" height="92" rx="46" />
-            {line.map((d, i) => <circle class="dot" cx={d.x} cy={d.y} r="4.2" fill={d.c} style={`--i:${i}`} />)}
-          </g>
-          <g class="z z-start">
-            <rect class="pad" x="196" y="250" width="70" height="42" rx="6" />
-            {raster.map((d) => <circle class="seed" cx={d.x} cy={d.y} r="1.8" />)}
-          </g>
-          <g class="z z-guests">
-            {crowd.map((d) => <circle class="guest" cx={d.x} cy={d.y} r="3.2" />)}
-            <path class="view" d="M250 400v-160" />
-            <path class="view-tip" d="M244 248l6-10 6 10" />
-          </g>
-          {marks.map((m) => <g class={`mk z-${m!.zone}`}><circle cx={m!.x} cy={m!.y} r="13" /><text x={m!.x} y={m!.y + 4.5} text-anchor="middle">{m!.n}</text></g>)}
-        </svg>
-      ) : (
-        <svg viewBox="0 0 520 340" role="img" aria-label="Schema im Schnitt: Raum mit mindestens drei Metern Deckenhöhe, Drohnen fliegen über einer freien Start- und Flugfläche, das Publikum steht daneben. Nicht maßstäblich.">
-          <g class="z z-ceiling">
-            <path class="wall" d="M20 50h480" />
-            {Array.from({ length: 24 }, (_, i) => <path class="hatch" d={`M${28 + i * 20} 50l-10 -12`} />)}
-            <path class="dim" d="M64 54v232M56 54h16M56 286h16" />
-            <text class="lbl" x="80" y="116">mind. 3 m</text>
-          </g>
-          <g class="z z-drones">
-            {swarm.map((d, i) => <circle class="dot" cx={d.x} cy={d.y} r="4.6" fill={d.c} style={`--i:${i}`} />)}
-          </g>
-          <g class="z z-floor">
-            <rect class="pad" x="126" y="278" width="290" height="10" rx="5" />
-            <text class="lbl" x="271" y="316" text-anchor="middle">freie Start- und Flugfläche</text>
-          </g>
-          <g class="z z-guests">
-            {[0, 1, 2].map((c) => <><circle class="guest" cx={444 + c * 22} cy="252" r="6" /><path class="guest-b" d={`M${434 + c * 22} 286c0-14 4-22 10-22s10 8 10 22`} /></>)}
-          </g>
-          <path class="wall" d="M20 287h480" />
-          {marks.map((m) => <g class={`mk z-${m!.zone}`}><circle cx={m!.x} cy={m!.y} r="13" /><text x={m!.x} y={m!.y + 4.5} text-anchor="middle">{m!.n}</text></g>)}
-        </svg>
-      )}
-      <figcaption class="mono">Schema, nicht maßstäblich</figcaption>
+  <div class="st">
+    <figure class="st-fig">
+      <svg viewBox={variant === 'outdoor' ? '0 0 400 405' : '0 0 400 490'} role="img" aria-labelledby={`${id}-diagram-title ${id}-diagram-desc`}>
+        <title id={`${id}-diagram-title`}>{variant === 'outdoor' ? 'Flug- und Sicherheitsbereich von oben' : 'Raumschnitt und Startraster von oben'}</title>
+        <desc id={`${id}-diagram-desc`}>{diagram.description} Die Nummern entsprechen der folgenden Liste. {diagram.caption}</desc>
+        {variant === 'outdoor' ? <>
+          <rect class="outer" x="43" y="39" width="300" height="282" rx="16" />
+          <path class="dim" d="M43 28h300M43 22v12M343 22v12M363 39v282M357 39h12M357 321h12" />
+          <text class="lbl" x="193" y="18" text-anchor="middle">{diagram.horizontalLabel}</text>
+          <text class="lbl" x="380" y="181" text-anchor="middle" transform="rotate(90 380 181)">{diagram.verticalLabel}</text>
+          <rect class="operative" x="69" y="68" width="248" height="226" rx="12" />
+          <rect class="flight" x="92" y="100" width="202" height="155" rx="8" />
+          {line.map((d) => <circle cx={d.x} cy={d.y} r="3.5" fill={d.color} />)}
+          <path class="dim" d="M110 167h170M110 161v12M280 161v12" />
+          <text class="lbl" x="195" y="193" text-anchor="middle">{diagram.detailLabel}</text>
+          <rect class="pad" x="105" y="215" width="49" height="26" rx="3" />
+          {Array.from({ length: 18 }, (_, i) => <circle class="seed" cx={112 + (i % 6) * 7} cy={221 + Math.floor(i / 6) * 7} r="1.3" />)}
+          <rect class="audience" x="103" y="351" width="188" height="38" rx="8" />
+          {Array.from({ length: 22 }, (_, i) => <circle class="guest" cx={118 + (i % 11) * 15} cy={363 + Math.floor(i / 11) * 14} r="2.6" />)}
+          <path class="view" d="M197 343v-79m-5 8 5-8 5 8" />
+        </> : <>
+          <path class="wall" d="M49 28h324M49 210h324" />
+          {Array.from({ length: 17 }, (_, i) => <path class="hatch" d={`M${53 + i * 19} 28l-9 -12`} />)}
+          <path class="dim" d="M31 34v176M25 34h12M25 210h12" />
+          <text class="lbl" x="17" y="123" text-anchor="middle" transform="rotate(-90 17 123)">{diagram.verticalLabel}</text>
+          <rect class="flight" x="73" y="53" width="211" height="155" rx="8" />
+          {swarm.map((d) => <circle cx={d.x} cy={d.y} r="3.3" fill={d.color} />)}
+          <rect class="pad" x="88" y="202" width="179" height="8" rx="3" />
+          {[0, 1, 2].map((i) => <><circle class="guest" cx={312 + i * 23} cy="180" r="5" /><path class="guest-body" d={`M${304 + i * 23} 210v-13a8 8 0 0 1 16 0v13`} /></>)}
+          <path class="divider" d="M49 238h324" />
+          <path class="dim" d="M118 270h156M118 264v12M274 264v12" />
+          <text class="lbl" x="196" y="261" text-anchor="middle">{diagram.horizontalLabel}</text>
+          <rect class="flight" x="105" y="279" width="182" height="174" rx="6" />
+          <rect class="pad" x="118" y="292" width="156" height="148" rx="4" />
+          {grid.map((d) => <circle class="seed" cx={d.x} cy={d.y} r="3" />)}
+          {[[105, 279], [287, 279], [105, 453], [287, 453]].map(([x, y]) => <circle class="antenna" cx={x} cy={y} r="5" />)}
+          <text class="lbl" x="196" y="482" text-anchor="middle">{diagram.detailLabel}</text>
+        </>}
+        {markers.map((m) => <g class="marker"><circle cx={m.x} cy={m.y} r="12" /><text x={m.x} y={m.y + 4.5} text-anchor="middle">{numbers[m.zone]}</text></g>)}
+      </svg>
+      <p class="st-height"><Icon name="move-up" size={20} class="g" /><span>{diagram.flightLabel}</span></p>
+      <figcaption>{diagram.caption}</figcaption>
     </figure>
-    <div class="st-list">
-      <ol class="st-items">
-        {items.map((it, i) => (
-          <li data-zone={it.zone}>
-            <span class="st-n mono" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-            <div>
-              <T>{it.title}{it.value && <span class="st-v"> {it.value}</span>}</T>
-              <p>{it.text}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
-      {checklist && (
-        <div class="st-check">
-          <p class="mono">{checklist.title}</p>
-          <ul>{checklist.items.map((c) => <li><Icon name="check" size={18} class="g" /><span>{c}</span></li>)}</ul>
-        </div>
-      )}
-      {note && <p class="st-note"><b>{note.value}</b><span>{note.text}</span></p>}
-      {download && <a class="link" href={download.href} type="application/pdf" target="_blank" rel="noopener">{download.label} <span aria-hidden="true">↓</span></a>}
-    </div>
+    <ol class="st-items">
+      {items.map((item, i) => <li data-zone={item.zone}>
+        <span class="st-n mono" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        <div><T>{item.title}{item.value && <span class="st-value">{item.value}</span>}</T><p>{item.text}</p></div>
+      </li>)}
+    </ol>
   </div>
+  {safeguards && <div class="st-safeguards">
+    {safeguards.map((item) => <div><Icon name={item.icon} size={32} class="g" /><T>{item.title}</T><p>{item.text}</p></div>)}
+  </div>}
+  <div class="st-responsibilities">
+    {[{ title: 'Das übernehmen wir', icon: 'clipboard-check', entries: responsibilities.provider }, { title: 'Das braucht ihr', icon: 'map-pinned', entries: responsibilities.customer }].map((group) => <div>
+      <T><Icon name={group.icon} size={28} class="g" />{group.title}</T>
+      <ul>{group.entries.map((entry) => <li><Icon name="check" size={18} class="g" /><span>{entry}</span></li>)}</ul>
+    </div>)}
+  </div>
+  {planning && <div class="st-planning"><T>{planning.title}</T><p>{planning.text}</p></div>}
+  {note && <p class="st-note"><b>{note.value}</b><span>{note.text}</span></p>}
+  {download && <a class="link st-download" href={download.href} type="application/pdf" target="_blank" rel="noopener">{download.label}<Icon name="download" size={18} class="g" /></a>}
 </section>
 
-<script>
-  // Zeigen auf einen Punkt der Checkliste hebt die passende Zone im Bild hervor (reine Verstärkung, ohne Funktion)
-  document.querySelectorAll<HTMLElement>('[data-site]').forEach((root) => {
-    const fig = root.querySelector<HTMLElement>('.st-fig')!;
-    root.querySelectorAll<HTMLElement>('li[data-zone]').forEach((li) => {
-      li.addEventListener('pointerenter', () => { fig.dataset.active = li.dataset.zone ?? ''; li.classList.add('on'); });
-      li.addEventListener('pointerleave', () => { fig.dataset.active = ''; li.classList.remove('on'); });
-    });
-  });
-</script>
-
 <style>
-  .st { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 88px); align-items: start; }
-  .st-fig { margin: 0; position: sticky; top: 96px; padding: clamp(16px, 2.4vw, 36px); border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); display: grid; gap: 10px; }
-  .st-fig svg { width: 100%; height: auto; display: block; overflow: visible; }
-  .st-fig figcaption { color: var(--faint); justify-self: end; }
-  .z { transition: opacity 0.35s ease; }
-  .st-fig:not([data-active='']) .z { opacity: 0.28; }
-  .st-fig[data-active='safety'] .z-safety, .st-fig[data-active='drones'] .z-drones, .st-fig[data-active='start'] .z-start,
-  .st-fig[data-active='guests'] .z-guests, .st-fig[data-active='ceiling'] .z-ceiling, .st-fig[data-active='floor'] .z-floor { opacity: 1; }
-  .area { fill: rgba(245, 167, 60, 0.04); stroke: rgba(245, 167, 60, 0.7); stroke-width: 1.5; stroke-dasharray: 7 6; }
-  .dim, .wall, .hatch { fill: none; stroke: var(--line-strong); stroke-width: 1.2; }
-  .wall { stroke: rgba(246, 241, 232, 0.4); stroke-width: 1.6; }
-  .hatch { stroke: rgba(246, 241, 232, 0.18); }
-  .lbl { fill: var(--faint); font: 400 15px var(--mono); letter-spacing: 0.06em; }
-  .soft { fill: rgba(219, 100, 232, 0.06); stroke: rgba(219, 100, 232, 0.25); stroke-dasharray: 3 5; }
-  .pad { fill: rgba(51, 237, 242, 0.1); stroke: rgba(51, 237, 242, 0.6); stroke-width: 1.2; }
-  .seed { fill: rgba(51, 237, 242, 0.75); }
-  .guest { fill: rgba(246, 241, 232, 0.4); }
-  .guest-b { fill: none; stroke: rgba(246, 241, 232, 0.4); stroke-width: 1.6; }
-  .view { stroke: rgba(246, 241, 232, 0.25); stroke-width: 1.2; stroke-dasharray: 2 5; fill: none; }
-  .view-tip { fill: none; stroke: rgba(246, 241, 232, 0.35); stroke-width: 1.2; }
-  .dot { filter: drop-shadow(0 0 4px currentColor); transition: opacity 0.6s ease; transition-delay: calc(var(--i, 0) * 70ms); }
-  :global(.reveal) .st-fig:not(.is-in) .dot { opacity: 0.12; }
-  .mk circle { fill: var(--ground); stroke: var(--accent); stroke-width: 1.4; }
-  .mk text { fill: var(--accent); font: 500 13px var(--display); }
-  .st-items { list-style: none; margin: 0; padding: 0; display: grid; }
-  .st-items li { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 4px; padding: 22px 0; border-top: 1px solid var(--line); transition: background 0.3s; }
-  .st-items li:last-child { border-bottom: 1px solid var(--line); }
-  .st-items li[data-zone] { cursor: default; }
+  .st { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 88px); align-items: start; }
+  .st-fig { margin: 0; position: sticky; top: 96px; padding: clamp(16px, 2.4vw, 36px); border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); }
+  .st-fig svg { width: 100%; max-width: 560px; height: auto; display: block; margin-inline: auto; }
+  .st-fig figcaption { margin-top: 18px; color: var(--faint); font-size: 14px; }
+  .st-height { display: flex; align-items: center; gap: 10px; margin: 20px 0 0; color: var(--head); font-size: 16px; }
+  .st-height :global(.ico) { flex: 0 0 auto; }
+  .outer { fill: rgb(245 167 60 / 3%); stroke: var(--accent); stroke-width: 1.4; stroke-dasharray: 6 5; }
+  .operative { fill: rgb(245 167 60 / 5%); stroke: rgb(245 167 60 / 65%); stroke-width: 1.2; }
+  .flight { fill: rgb(237 230 218 / 3%); stroke: rgb(237 230 218 / 38%); stroke-dasharray: 3 4; }
+  .pad { fill: rgb(237 230 218 / 9%); stroke: var(--head); stroke-width: 1; }
+  .audience { fill: rgb(237 230 218 / 4%); stroke: rgb(237 230 218 / 20%); }
+  .dim, .wall, .hatch, .view { fill: none; stroke: var(--faint); stroke-width: 1; }
+  .hatch, .view { opacity: 0.6; }
+  .view { stroke-dasharray: 3 4; }
+  .divider { stroke: var(--line); }
+  .lbl { fill: var(--head); font: 400 17px var(--display); }
+  .seed, .guest { fill: var(--head); }
+  .guest { opacity: 0.65; }
+  .guest-body { fill: none; stroke: var(--head); stroke-width: 1.5; opacity: 0.65; }
+  .antenna { fill: var(--accent); stroke: var(--ground); stroke-width: 2; }
+  .marker circle { fill: var(--ground); stroke: var(--accent); stroke-width: 1.4; }
+  .marker text { fill: var(--accent); font: 500 14px var(--display); }
+  .st-items { list-style: none; margin: 0; padding: 0; }
+  .st-items li { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 8px; padding: 22px 0; border-top: 1px solid var(--line); }
+  .st-items li:first-child { padding-top: 0; border: 0; }
   .st-n { color: var(--accent); padding-top: 4px; }
-  .st-items h2, .st-items h3 { font-size: clamp(20px, 1.6vw, 24px); }
-  .st-v { color: var(--accent); white-space: nowrap; }
-  .st-items p { margin: 8px 0 0; color: var(--muted); max-width: 46ch; }
-  .st-items li.on h2, .st-items li.on h3 { color: #fff; }
-  .st-list { display: grid; gap: 28px; justify-items: start; }
-  .st-check { width: 100%; padding: 22px 24px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); display: grid; gap: 14px; }
-  .st-check .mono { margin: 0; color: var(--faint); }
-  .st-check ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
-  .st-check li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; color: var(--text); font-size: 15.5px; }
-  .st-check :global(.ico) { width: 18px; height: 18px; transform: translateY(2px); }
-  .st-note { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 18px; align-items: baseline; padding: 18px 22px; border: 1.5px dashed rgba(245, 167, 60, 0.55); border-radius: 14px; }
-  .st-note b { font: 500 clamp(22px, 2vw, 28px)/1.1 var(--display); letter-spacing: -0.02em; color: var(--head); white-space: nowrap; }
+  .st-items h2, .st-items h3, .st-safeguards h2, .st-safeguards h3 { font-size: clamp(20px, 1.6vw, 24px); }
+  .st-value { display: block; margin-top: 6px; color: var(--accent); font-size: 0.85em; }
+  .ls-site p { line-height: 1.65; }
+  .st-items p, .st-safeguards p, .st-planning p { margin: 10px 0 0; color: var(--muted); }
+  .st-safeguards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; margin-top: clamp(40px, 5vw, 72px); padding-block: 32px; border-block: 1px solid var(--line); }
+  .st-safeguards > div > :global(.ico) { width: 36px; height: 36px; }
+  .st-safeguards h2, .st-safeguards h3 { margin-top: 18px; }
+  .st-safeguards p { font-size: 16px; }
+  .st-responsibilities { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(32px, 5vw, 88px); margin-top: clamp(40px, 5vw, 64px); }
+  .st-responsibilities h2, .st-responsibilities h3 { display: flex; align-items: center; gap: 14px; font-size: clamp(24px, 2vw, 30px); }
+  .st-responsibilities :global(.ico) { flex: 0 0 auto; }
+  .st-responsibilities h2 :global(.ico), .st-responsibilities h3 :global(.ico) { width: 28px; height: 28px; }
+  .st-responsibilities ul { list-style: none; margin: 24px 0 0; padding: 0; display: grid; gap: 18px; }
+  .st-responsibilities li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 12px; color: var(--muted); }
+  .st-responsibilities li :global(.ico) { margin-top: 4px; }
+  .st-planning { margin-top: 40px; padding: 28px 0; border-block: 1px solid var(--line); }
+  .st-planning h2, .st-planning h3 { font-size: clamp(24px, 2vw, 30px); }
+  .st-planning p { max-width: 90ch; }
+  .st-note { margin: 32px 0 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px 24px; padding: 24px; border: 1px solid var(--line); border-radius: var(--radius); }
+  .st-note b { font: 500 clamp(24px, 2vw, 30px)/1.2 var(--display); color: var(--head); }
   .st-note span { color: var(--muted); }
+  .st-download { margin-top: 28px; display: flex; align-items: center; gap: 10px; }
+  .st-download :global(.ico) { width: 18px; height: 18px; flex: 0 0 auto; }
   @media (max-width: 960px) {
     .st { grid-template-columns: 1fr; }
     .st-fig { position: static; }
+    .st-safeguards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .st-responsibilities { grid-template-columns: 1fr; }
   }
   @media (max-width: 600px) {
-    .st-v { display: block; margin-top: 4px; }
+    .st-safeguards { grid-template-columns: 1fr; gap: 28px; }
+    .st-note { grid-template-columns: 1fr; padding: 20px; }
   }
-  @media (max-width: 480px) {
-    .st-note { grid-template-columns: 1fr; }
-    .lbl { font-size: 18px; }
-  }
-  @media (prefers-reduced-motion: reduce) { .dot, .z { transition: none; } }
 </style>
