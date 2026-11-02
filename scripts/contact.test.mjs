@@ -26,3 +26,27 @@ test('Unsupported occasions and injected extra headers are rejected at the endpo
   const result=await onRequestPost({request:request({...details,...invalid}),env:{}});assert.equal(result.status,400);
  }
 });
+
+test('Only provider acceptance confirms a lead UUID; honeypot, preview and failures cannot', async () => {
+ const original = globalThis.fetch;
+ const env = { BREVO_API_KEY: 'test-key', CONTACT_FROM: 'sender@example.test', CONTACT_TO: 'recipient@example.test' };
+ try {
+  let calls = 0;
+  globalThis.fetch = async () => { calls++; return new Response('{}', { status: 201 }); };
+  const honeypot = await onRequestPost({ request: request({ ...details, website: 'bot' }), env });
+  assert.deepEqual(await honeypot.json(), { ok: true, state: 'sent' });
+  assert.equal(calls, 0);
+  const preview = await onRequestPost({ request: request(details), env: {} });
+  assert.equal((await preview.json()).requestId, undefined);
+  const sent = await onRequestPost({ request: request(details), env });
+  const confirmation = await sent.json();
+  assert.equal(confirmation.ok, true); assert.equal(confirmation.state, 'sent');
+  assert.match(confirmation.requestId, /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+  globalThis.fetch = async () => new Response('{}', { status: 500 });
+  const failed = await onRequestPost({ request: request(details), env });
+  assert.equal(failed.status, 502); assert.equal((await failed.json()).requestId, undefined);
+  globalThis.fetch = async () => { throw new Error('timeout'); };
+  const timeout = await onRequestPost({ request: request(details), env });
+  assert.equal(timeout.status, 503); assert.equal((await timeout.json()).requestId, undefined);
+ } finally { globalThis.fetch = original; }
+});

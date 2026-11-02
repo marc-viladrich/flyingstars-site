@@ -3458,5 +3458,20 @@
     "de": "Der Browser kann eure Auswahl nicht speichern. Sie gilt nur bis zum nächsten Seitenaufruf. Ihr könnt diesen Dialog schließen.",
     "en": "Your browser cannot save your choices. They apply only until the next page load. You can close this dialog.",
     "nl": "De browser kan jullie keuzes niet bewaren. Ze gelden alleen tot de volgende paginaweergave. Jullie kunnen dit venster sluiten."
+  },
+  "consent.necessaryTitle": {
+    "de": "Notwendig",
+    "en": "Necessary",
+    "nl": "Noodzakelijk"
+  },
+  "consent.revision": {
+    "de": "Unsere Zwecke oder Dienste haben sich geändert. Bitte trefft eure Auswahl erneut.",
+    "en": "Our purposes or services have changed. Please choose again.",
+    "nl": "Onze doeleinden of diensten zijn gewijzigd. Maak jullie keuze opnieuw."
+  },
+  "consent.categoryLabel": {
+    "de": "Dienst|Dienste",
+    "en": "service|services",
+    "nl": "dienst|diensten"
   }
 }

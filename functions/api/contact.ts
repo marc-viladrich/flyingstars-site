@@ -122,13 +122,14 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
     // eine Annahme durch Brevo möglich; kein automatischer Retry mit Duplikatrisiko.
     return problem(503, t('contactAPI.unconfirmed'));
   }
-  return ok(request, 'sent', locale);
+  // Generated only after Brevo accepted the message. Never for honeypot/preview/error.
+  return ok(request, 'sent', locale, crypto.randomUUID());
 };
 
 export const onRequestGet = (): Response => problem(405, createTranslator('de')('contactAPI.post'));
 
-function ok(request: Request, state = 'sent', locale = 'de'): Response {
-  if ((request.headers.get('accept') ?? '').includes('application/json')) return json({ ok: true, state });
+function ok(request: Request, state = 'sent', locale = 'de', requestId?: string): Response {
+  if ((request.headers.get('accept') ?? '').includes('application/json')) return json({ ok: true, state, ...(requestId ? { requestId } : {}) });
   // Statische Danke-Seite ist noch eine Vorschauseite. Vor echtem Versand abstimmen.
   const url = new URL(request.url); url.pathname = localizedHref('/danke/', locale); url.hash = '';
   url.search = state === 'sent' ? '' : `?state=${state}`;

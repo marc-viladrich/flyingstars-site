@@ -4,51 +4,12 @@ import { trackingConfig } from '../lib/consent.mjs';
 const { t, localHref } = forPath(Astro.url.pathname);
 interface Props { config: ReturnType<typeof trackingConfig>; }
 const { config } = Astro.props;
+// Pass only this locale's consent copy to the optional browser chunk.
+const names = ['title', 'summary', 'gaSummary', 'adsSummary', 'transfer', 'privacy', 'necessary', 'necessaryTitle', 'analytics', 'analyticsDetail', 'ads', 'adsDetail', 'retention', 'reject', 'accept', 'settings', 'save', 'close', 'revision', 'categoryLabel', 'storageError'];
+const copy = Object.fromEntries(names.map((name) => [name, t(`consent.${name}`)]));
 ---
-{(config.ga || config.ads) && <dialog id="consent" class="consent" aria-labelledby="consent-title" aria-describedby="consent-summary" data-config={JSON.stringify(config)}>
-  <div class="consent-content">
-    <h2 id="consent-title" tabindex="-1">{t('consent.title')}</h2>
-    <p id="consent-summary">{t('consent.summary')}</p>
-    <p class="consent-services">{config.ga && t('consent.gaSummary')} {config.ads && t('consent.adsSummary')}</p>
-    <p>{t('consent.transfer')} <a class="link" href={localHref('/datenschutz/')}>{t('consent.privacy')}</a></p>
-    <div id="consent-settings" hidden>
-      <p>{t('consent.necessary')}</p>
-      {config.ga && <label class="consent-choice"><input type="checkbox" name="analytics" /><span><strong>{t('consent.analytics')}</strong><span>{t('consent.analyticsDetail')}</span></span></label>}
-      {config.ads && <label class="consent-choice"><input type="checkbox" name="ads" /><span><strong>{t('consent.ads')}</strong><span>{t('consent.adsDetail')}</span></span></label>}
-      <p class="consent-retention">{t('consent.retention')}</p>
-    </div>
-    <p data-consent-error role="status" hidden>{t('consent.storageError')}</p>
-    <div class="consent-actions">
-      <button type="button" class="btn primary" data-consent-reject>{t('consent.reject')}</button>
-      <button type="button" class="btn primary" data-consent-accept>{t('consent.accept')}</button>
-      <button type="button" class="btn" data-consent-settings aria-controls="consent-settings" aria-expanded="false">{t('consent.settings')}</button>
-      <button type="button" class="btn" data-consent-save hidden>{t('consent.save')}</button>
-    </div>
-    <button type="button" class="consent-close" data-consent-close>{t('consent.close')}</button>
-  </div>
-</dialog>}
+<div id="consent-config" hidden data-config={JSON.stringify(config)} data-copy={JSON.stringify(copy)} data-privacy={localHref('/datenschutz/')}></div>
 <script>
-  import '../scripts/consent';
+  // No IDs means no component, no import and no consent CSS/library download.
+  if (document.querySelector('#consent-config')) import('../scripts/consent');
 </script>
-<style>
-  .consent { color: var(--head); background: var(--ground); border: 1px solid var(--line-strong); border-radius: var(--radius); width: min(700px, calc(100% - 32px)); max-height: calc(100dvh - 32px); margin: auto; padding: 0; overscroll-behavior: contain; }
-  .consent:not([open]) { display: none; }
-  .consent::backdrop { background: rgb(0 0 0 / .72); }
-  .consent-content { padding: clamp(22px, 4vw, 36px); }
-  .consent h2 { font: 500 clamp(27px, 4vw, 36px)/1.15 var(--display); letter-spacing: -.025em; margin: 0 0 20px; }
-  .consent p { color: var(--muted); font-size: 14px; line-height: 1.6; margin: 0 0 14px; }
-  .consent .consent-services { color: var(--head); }
-  .consent-choice { display: flex; align-items: flex-start; gap: 14px; padding: 16px 0; border-top: 1px solid var(--line); cursor: pointer; }
-  .consent-choice input { flex: 0 0 22px; width: 22px; height: 22px; margin: 2px 0 0; accent-color: var(--accent); }
-  .consent-choice strong { display: block; font: 500 18px/1.3 var(--display); margin-bottom: 6px; }
-  .consent-choice span span { display: block; color: var(--muted); font-size: 14px; line-height: 1.5; }
-  .consent-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 24px; }
-  .consent-actions .btn { width: 100%; padding: 12px 14px; min-height: 48px; font-size: 14px; }
-  .consent-actions [data-consent-settings], .consent-actions [data-consent-save] { grid-column: 1 / -1; }
-  .consent [hidden] { display: none !important; }
-  .consent-close { display: block; background: none; border: 0; color: var(--muted); font: inherit; font-size: 13px; text-decoration: underline; text-underline-offset: 4px; min-height: 44px; margin: 12px auto -8px; cursor: pointer; }
-  @media (max-width: 420px) {
-    .consent-content { padding: 22px 20px; }
-    .consent p, .consent-choice span span { font-size: 13px; }
-  }
-</style>

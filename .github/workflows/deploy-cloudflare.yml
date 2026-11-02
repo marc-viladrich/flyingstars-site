@@ -41,6 +41,9 @@ jobs:
           SITE_URL: ${{ vars.SITE_URL }}
           MEDIA_HOST: ${{ vars.MEDIA_HOST }}
           PUBLIC_FORM_ENDPOINT: ${{ vars.PUBLIC_FORM_ENDPOINT }}
+          PUBLIC_GOOGLE_ADS_ID: ${{ vars.PUBLIC_GOOGLE_ADS_ID }}
+          PUBLIC_GOOGLE_ADS_LABEL: ${{ vars.PUBLIC_GOOGLE_ADS_LABEL }}
+          PUBLIC_GA_ID: ${{ vars.PUBLIC_GA_ID }}
       # Pages Functions (functions/) werden aus dem Repo-Root mitgebündelt.
       - name: Cloudflare Pages deploy
         uses: cloudflare/wrangler-action@v3

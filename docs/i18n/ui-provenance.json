@@ -1380,5 +1380,11 @@
   {"key":"consent.reopen","locale":"en","origin":"machine-new","components":["src/components/Consent.astro","src/layouts/Base.astro"],"revision":"analytics-consent","editorReviewed":false},
   {"key":"consent.reopen","locale":"nl","origin":"machine-new","components":["src/components/Consent.astro","src/layouts/Base.astro"],"revision":"analytics-consent","editorReviewed":false},
   {"key":"consent.storageError","locale":"en","origin":"machine-new","components":["src/components/Consent.astro","src/layouts/Base.astro"],"revision":"analytics-consent","editorReviewed":false},
-  {"key":"consent.storageError","locale":"nl","origin":"machine-new","components":["src/components/Consent.astro","src/layouts/Base.astro"],"revision":"analytics-consent","editorReviewed":false}
+  {"key":"consent.storageError","locale":"nl","origin":"machine-new","components":["src/components/Consent.astro","src/layouts/Base.astro"],"revision":"analytics-consent","editorReviewed":false},
+  {"key":"consent.necessaryTitle","locale":"en","origin":"machine-new","components":["src/components/Consent.astro"],"revision":"consent-library","editorReviewed":false},
+  {"key":"consent.necessaryTitle","locale":"nl","origin":"machine-new","components":["src/components/Consent.astro"],"revision":"consent-library","editorReviewed":false},
+  {"key":"consent.revision","locale":"en","origin":"machine-new","components":["src/components/Consent.astro"],"revision":"consent-library","editorReviewed":false},
+  {"key":"consent.revision","locale":"nl","origin":"machine-new","components":["src/components/Consent.astro"],"revision":"consent-library","editorReviewed":false},
+  {"key":"consent.categoryLabel","locale":"en","origin":"machine-new","components":["src/components/Consent.astro"],"revision":"consent-library","editorReviewed":false},
+  {"key":"consent.categoryLabel","locale":"nl","origin":"machine-new","components":["src/components/Consent.astro"],"revision":"consent-library","editorReviewed":false}
 ]

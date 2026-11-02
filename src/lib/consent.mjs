@@ -1,8 +1,7 @@
-// One storage record for all languages. Bump the version when purposes change.
-export const CONSENT_VERSION = 1;
+// The library owns the only consent record. Revision also binds it to the public targets.
+export const CONSENT_VERSION = 2;
 export const CONSENT_KEY = 'flyingstars:consent';
 export const CONSENT_LIFETIME = 180 * 24 * 60 * 60 * 1000;
-
 export const DENIED = Object.freeze({
   analytics_storage: 'denied', ad_storage: 'denied',
   ad_user_data: 'denied', ad_personalization: 'denied',
@@ -21,24 +20,33 @@ export function trackingConfig({ ga = '', ads = '', label = '' } = {}) {
   return { ga, ads, label };
 }
 
-export function consentRecord(choices, config, now = Date.now()) {
-  return {
-    version: CONSENT_VERSION, config: JSON.stringify(config),
-    analytics: Boolean(config.ga && choices.analytics), ads: Boolean(config.ads && choices.ads),
-    updatedAt: now, expiresAt: now + CONSENT_LIFETIME,
-  };
+export function consentRevision(config) {
+  let hash = 2166136261;
+  for (const char of JSON.stringify([CONSENT_VERSION, config.ga, config.ads, config.label])) {
+    hash = Math.imul(hash ^ char.charCodeAt(0), 16777619);
+  }
+  return hash >>> 0;
 }
 
-/** Storage is an external boundary: old, corrupt or future-dated records deny access. */
+/** Validate the library's persistent record at the storage boundary and before events. */
 export function readConsent(raw, config, now = Date.now()) {
   try {
     const value = JSON.parse(raw);
-    if (value?.version !== CONSENT_VERSION || value.config !== JSON.stringify(config)
-      || typeof value.analytics !== 'boolean' || typeof value.ads !== 'boolean'
-      || !Number.isFinite(value.updatedAt) || !Number.isFinite(value.expiresAt)
-      || value.updatedAt > now || value.expiresAt <= now
-      || value.expiresAt - value.updatedAt !== CONSENT_LIFETIME) return null;
-    return consentRecord(value, config, value.updatedAt);
+    const updated = Date.parse(value?.lastConsentTimestamp);
+    const created = Date.parse(value?.consentTimestamp);
+    if (value?.revision !== consentRevision(config) || typeof value.consentId !== 'string'
+      || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value.consentId)
+      || !Array.isArray(value.categories)
+      || !value.categories.includes('necessary')
+      || value.categories.some((category) => !['necessary', 'analytics', 'marketing'].includes(category))
+      || !Number.isFinite(created) || created > updated || !Number.isFinite(updated) || updated > now
+      || !Number.isFinite(value.expirationTime) || value.expirationTime <= now
+      || Math.abs(value.expirationTime - updated - CONSENT_LIFETIME) > 1000) return null;
+    return {
+      analytics: Boolean(config.ga && value.categories.includes('analytics')),
+      marketing: Boolean(config.ads && value.categories.includes('marketing')),
+      expiresAt: value.expirationTime,
+    };
   } catch { return null; }
 }
 
@@ -46,8 +54,8 @@ export function consentSignals(choices) {
   return {
     ...DENIED,
     analytics_storage: choices.analytics ? 'granted' : 'denied',
-    ad_storage: choices.ads ? 'granted' : 'denied',
-    ad_user_data: choices.ads ? 'granted' : 'denied',
-    // No remarketing/personalized advertising in this prototype.
+    ad_storage: choices.marketing ? 'granted' : 'denied',
+    ad_user_data: choices.marketing ? 'granted' : 'denied',
+    // No remarketing or personalized advertising, including after accepting all.
   };
 }

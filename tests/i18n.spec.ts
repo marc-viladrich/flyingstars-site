@@ -1,6 +1,13 @@
 import { test, expect } from '@playwright/test';
 import { createTranslator } from '../src/i18n/ui.mjs';
 
+test.beforeEach(async ({ page }) => {
+  if (process.env.CONSENT_TEST_ENABLED !== '1') return;
+  await page.goto('/');
+  await page.locator('.cm').getByRole('button', { name: 'Ablehnen', exact: true }).click();
+  await expect(page.locator('.cm')).toBeHidden();
+});
+
 for (const locale of ['en', 'nl']) {
   const t = createTranslator(locale);
   test(`${locale}: R13 content, language metadata and localized mobile comparisons`, async ({ page }) => {
