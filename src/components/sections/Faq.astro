@@ -1,4 +1,5 @@
 ---
+import SectionHead from '../SectionHead.astro';
 import { localizedCollection } from '../../i18n/content';
 import { forPath } from '../../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
@@ -29,7 +30,7 @@ const photo = closing?.image ? await optimizedImage(closing.image.src, 640) : un
   <!-- Mit Gruppen (FAQ-Seite): Kopf oben, je Gruppe links die Kategorie, die beim Scrollen mitläuft (sticky), rechts die
        Fragen. So ist klar, was Kategorie und was Frage ist (Marc, 31.10.2026). -->
   <div class="faq-grid">
-    <div class="intro">{kicker && <span class="kicker mono">{kicker}</span>}<H id={headingId}><Accent text={headline} /></H>{text && <p>{text}</p>}{cta && <a class="link" href={localHref(cta.href)} rel={external ? 'noopener' : undefined} target={external ? '_blank' : undefined}>{cta.label} <span aria-hidden="true">→</span></a>}</div>
+    <SectionHead variant="embedded" class="intro" kicker={kicker} headline={headline} text={text} id={headingId} level={H}>{cta && <a class="link" href={localHref(cta.href)} rel={external ? 'noopener' : undefined} target={external ? '_blank' : undefined}>{cta.label} <span aria-hidden="true">→</span></a>}</SectionHead>
     <div class="faq-body">
       {blocks.map((block, bi) => <div class="faq-group" id={block.id} aria-labelledby={block.headline ? `${block.id}-h` : undefined} role={block.headline ? 'group' : undefined}>
         {block.headline && <G class="faq-group-h" id={`${block.id}-h`}>{block.headline}</G>}

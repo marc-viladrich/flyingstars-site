@@ -1,4 +1,5 @@
 ---
+import IconFeature from '../IconFeature.astro';
 import { forPath } from '../../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
 // Ein Schema für alle Standort- und Sicherheitsabschnitte. Maßangaben sind Content,
@@ -81,7 +82,7 @@ const markers = variant === 'outdoor'
     </ol>
   </div>
   {safeguards && <div class="st-safeguards">
-    {safeguards.map((item) => <div><Icon name={item.icon} size={32} class="g" /><T>{item.title}</T><p>{item.text}</p></div>)}
+    {safeguards.map((item) => <IconFeature icon={item.icon} title={item.title} text={item.text} level={T} />)}
   </div>}
   <div class="st-who">
     <T id={`${id}-who`}>{t('landingsite.more')}</T>
@@ -182,13 +183,10 @@ const markers = variant === 'outdoor'
   .st-items li { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 8px; padding: 22px 0; border-top: 1px solid var(--line); }
   .st-items li:first-child { padding-top: 0; border: 0; }
   .st-n { color: var(--accent); padding-top: 4px; }
-  .st-items h2, .st-items h3, .st-safeguards h2, .st-safeguards h3 { font-size: clamp(20px, 1.6vw, 24px); }
+  .st-items h2, .st-items h3 { font-size: clamp(20px, 1.6vw, 24px); }
   .st-value { display: block; margin-top: 8px; color: var(--accent); font: 500 clamp(17px, 1.3vw, 20px)/1.2 var(--display); }
   .ls-site p { line-height: 1.65; }
   .st-safeguards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; margin-top: clamp(40px, 5vw, 72px); padding-block: 32px; border-block: 1px solid var(--line); }
-  .st-safeguards > div > :global(.ico) { width: 36px; height: 36px; }
-  .st-safeguards h2, .st-safeguards h3 { margin-top: 18px; }
-  .st-safeguards p { font-size: 16px; }
   .st-download { margin-top: 28px; display: flex; align-items: center; gap: 10px; }
   .st-download :global(.ico) { width: 18px; height: 18px; flex: 0 0 auto; }
   @media (max-width: 960px) {

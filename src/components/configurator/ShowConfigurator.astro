@@ -1,4 +1,5 @@
 ---
+import SectionHead from '../SectionHead.astro';
 import { forPath } from '../../i18n/server';
 const { t, localHref, formatLocale } = forPath(Astro.url.pathname);
 // Show-Konfigurator als einbettbare Komponente (sechzehnte Fassung, Marc 31.10.2026: „Auf der Preisseite sollte der
@@ -76,8 +77,7 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
     </div>
 
     <form class="cfg-panel" id="cfg">
-      {kicker && <span class="kicker mono cfg-kicker">{kicker}</span>}
-      <Heading id="cfg-h" class="cfg-h">{heading}</Heading>
+      <SectionHead variant="contents" headline={heading} kicker={kicker} id="cfg-h" level={Heading} titleClass="cfg-h" kickerClass="cfg-kicker" />
 
       <!-- Runde 11 (Marc: „nicer, eleganter Dropdown“, den Anlass wechselt man selten): natives <select> mit eigenem
            Rahmen und Pfeil; Tastatur, Screenreader und die Auswahlliste des Geräts bleiben die des Browsers -->
@@ -315,7 +315,7 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
   }
   /* Runde 11 (Marc: „crampt“): mehr Luft zwischen den Eingabegruppen */
   .cfg-panel { order: 1; display: grid; gap: clamp(26px, 2.2vw, 34px); }
-  .cfg-h { font-size: clamp(28px, 2.6vw, 40px); line-height: 1.04; letter-spacing: -0.03em; text-wrap: balance; }
+  :global(.cfg-h) { font-size: clamp(28px, 2.6vw, 40px); line-height: 1.04; letter-spacing: -0.03em; text-wrap: balance; }
   .cfg-block { display: grid; gap: 8px; border: 0; margin: 0; padding: 0; min-width: 0; }
   .cfg-block > label, .cfg-block legend { font-size: 15px; color: var(--text); padding: 0; margin-bottom: 6px; }
   /* Anlass als gestaltetes natives <select> (Runde 11): Rahmen wie die übrigen Felder, eigener Pfeil, dunkle Liste */
@@ -345,7 +345,7 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
      Preis und Anfrage weiter im ersten Blick bleiben, rückt die Bedienung enger zusammen */
   @media (min-width: 1001px) and (max-height: 820px) {
     .cfg-panel { gap: 18px; }
-    .cfg-h { font-size: clamp(26px, 2.2vw, 34px); }
+    :global(.cfg-h) { font-size: clamp(26px, 2.2vw, 34px); }
     .cfg-text, .cfg-upload { min-height: 38px; }
     .cfg-block > label, .cfg-block legend { margin-bottom: 2px; }
     .cfg-select select { min-height: 42px; }
@@ -356,7 +356,7 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
     .cfg { grid-template-columns: 1fr; padding-top: 64px; gap: 22px; padding-bottom: 120px; }
     .cfg-stage { order: 0; top: 64px; z-index: 5; height: 42svh; min-height: 280px; margin: 0 calc(var(--cfg-gutter) * -1); border-radius: 0; border-left: 0; border-right: 0; }
     /* on phones the picture is the headline: the question stays for screen readers, the slider moves into view */
-    .cfg-h { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    :global(.cfg-h) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
     .cfg-panel { gap: 26px; }
     .cfg-caption { font-size: 13px; }
     .cfg-toast { top: 48px; max-width: calc(100% - 28px); }

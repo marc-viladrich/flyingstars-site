@@ -1,4 +1,5 @@
 ---
+import MediaCard from '../MediaCard.astro';
 import { forPath } from '../../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
 // Referenzkarte: Bild mit Vorhang und Lichtpunkt-Hover, Kennzahl auf dem Bild, Titel. Fallstudien sind ein Link,
@@ -20,11 +21,9 @@ const image = project.data.cover ? await optimizedImage(project.data.cover.src) 
 const drones = dronesOf(project);
 const badge = [year && yearOf(project), drones && t('projectcard.valueDrones', { v0: drones })].filter(Boolean).join(' · ');
 ---
-<Card class:list={['proj', { static: !href, 'has-loop': loop }]} href={localHref(href)} data-dot-host={loop ? undefined : ''} data-loop-host={loop ? (autoplay ? 'auto' : 'hover') : undefined}>
-  {image && <div class="img" data-curtain data-dot-img={loop ? undefined : ''} style={`--i:${i % 2}`}><img src={image.src} {...image.attributes} width={image.width} height={image.height} alt={project.data.cover!.alt} loading="lazy" decoding="async" />{loop && <video class="loop" data-src={loop} muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>}{badge && <span class="count mono">{badge}</span>}</div>}
-  <span class="kick mono">{kickOf(project)}</span><T>{project.data.showcase?.cardTitle ?? project.data.title}</T>
-  {!project.data.showcase && <p>{project.data.summary}</p>}
-</Card>
+<MediaCard variant="reference" class={`${!href ? 'static' : ''} ${loop ? 'has-loop' : ''}`}  href={localHref(href)} title={project.data.showcase?.cardTitle ?? project.data.title} level={T} summary={!project.data.showcase ? project.data.summary : undefined} kicker={kickOf(project)} badge={badge || undefined} i={i % 2} hasMedia={Boolean(image)} dot={!loop} loop={loop ? (autoplay ? 'auto' : 'hover') : undefined}>
+  <Fragment slot="media">{image && <img src={image.src} {...image.attributes} width={image.width} height={image.height} alt={project.data.cover!.alt} loading="lazy" decoding="async" />}{loop && <video class="loop" data-src={loop} muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>}</Fragment>
+</MediaCard>
 
 <script>
   import { createVideoController } from '../../scripts/video-controller';

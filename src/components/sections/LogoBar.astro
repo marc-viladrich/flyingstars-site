@@ -1,4 +1,6 @@
 ---
+import IconFeature from '../IconFeature.astro';
+import SectionHead from '../SectionHead.astro';
 import { forPath } from '../../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
 // Kund:innen als Laufband (ohne Hover-Effekt), darunter optional Presse und „Qualität und Sicherheit“
@@ -60,19 +62,16 @@ const minor = quality.filter((q) => q.secondary);
   </div>
 </div>}
 {(press.length > 0 || seals.length > 0) && <section class="section proof" id={id} aria-label={[press.length && pressHeadline, seals.length && qualityHeadline].filter(Boolean).join(', ')}>
-  {kicker && <span class="kicker mono proof-kicker">{kicker}</span>}
   {press.length > 0 && <div class="press">
-    <h2 class="proof-h">{pressHeadline}</h2>
+    <SectionHead variant="embedded" kicker={kicker} headline={pressHeadline} id={`${id}-press-h`} titleClass="proof-h" />
     <ul>{press.map((p) => {
       const inner = <>{p.show ? <img class:list={{ knock: p.knock }} src={p.logo} alt={p.name} style={`height:${p.h}px`} loading="lazy" decoding="async" /> : <b>{p.name}</b>}</>;
       return <li>{p.href ? <a href={localHref(p.href)} rel="noopener" target="_blank" title={p.note ? `${p.name}: ${p.note}` : undefined}>{inner}</a> : <span class="noref" title={p.note}>{inner}</span>}</li>;
     })}</ul>
   </div>}
   {seals.length > 0 && <div class="quality">
-    <h2 class="proof-h">{qualityHeadline}</h2>
-    <ul>{seals.map((q) => <li>
-      {q.show ? <img class="q-logo" src={q.logo} alt="" loading="lazy" decoding="async" /> : <Icon name={QICON[q.icon]} class="q-ico g" size={30} />}
-      <b>{q.title}</b>{q.text && <span>{q.text}</span>}</li>)}</ul>
-    {minor.length > 0 && <ul class="q-minor">{minor.map((q) => <li><Icon name={QICON[q.icon]} class="g" size={18} /><span><b>{q.title}</b>{q.text && <> {q.text}</>}</span></li>)}</ul>}
+    <SectionHead variant="embedded" kicker={press.length ? undefined : kicker} headline={qualityHeadline} id={`${id}-quality-h`} titleClass="proof-h" />
+    <ul>{seals.map((q) => <IconFeature as="li" icon={QICON[q.icon]} logo={q.show ? q.logo : undefined} title={q.title} text={q.text} />)}</ul>
+    {minor.length > 0 && <ul class="q-minor">{minor.map((q) => <IconFeature as="li" variant="compact" icon={QICON[q.icon]} title={q.title} text={q.text} />)}</ul>}
   </div>}
 </section>}

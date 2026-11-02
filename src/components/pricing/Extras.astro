@@ -7,6 +7,7 @@ const { t, localHref } = forPath(Astro.url.pathname);
 // „Show mit diesen Extras anfragen“; er führt mit ?extras=<id>,… zum Anfrageformular, das die Extras dort vorbelegt.
 // Der Knopf im Show-Konfigurator nimmt die Auswahl ebenfalls mit. Ohne JavaScript bleibt es ein Raster zum Lesen.
 import Icon from '../Icon.astro';
+import IconFeature from '../IconFeature.astro';
 import SectionHead from '../SectionHead.astro';
 import { getPackageDetails } from '../../content/package-details';
 const { EXTRAS } = getPackageDetails(forPath(Astro.url.pathname).locale);
@@ -15,15 +16,13 @@ const { EXTRAS } = getPackageDetails(forPath(Astro.url.pathname).locale);
   <SectionHead kicker={t('extras.extrasUpgrades')} headline={t('extras.roomForMore')} text={t('extras.chooseTheExtrasYouDLikeTheyGoStraightInto')} id="zusaetze-h" />
   <div class="ig xg" data-extras>
     {EXTRAS.map((x) => (
-      <div class="ic xc">
-        <input class="xc-box" type="checkbox" id={`x-${x.id}`} value={x.id} data-short={x.short} aria-describedby={`x-${x.id}-t x-${x.id}-p`} />
-        <Icon name={x.icon} size={36} class="g ic-ico xc-ico" />
-        <h3><label for={`x-${x.id}`}>{x.title}</label></h3>
-        <p id={`x-${x.id}-t`}>{x.text}</p>
+      <IconFeature class="ic xc" icon={x.icon} iconClass="xc-ico" title={x.title} text={x.text} textId={`x-${x.id}-t`}>
+        <input slot="before" class="xc-box" type="checkbox" id={`x-${x.id}`} value={x.id} data-short={x.short} aria-describedby={`x-${x.id}-t x-${x.id}-p`} />
+        <label slot="title" for={`x-${x.id}`}>{x.title}</label>
         <span class="xc-price mono" id={`x-${x.id}-p`}>{x.price}</span>
         <span class="xc-added mono" aria-hidden="true"><Icon name="check" size={14} strokeWidth={2.4} />{t('extras.addedToEnquiry')}</span>
         {x.link && <a class="link xc-link" href={localHref(x.link.href)}>{x.link.label} <span aria-hidden="true">→</span></a>}
-      </div>
+      </IconFeature>
     ))}
   </div>
   <div class="xbar" data-extras-bar inert>
@@ -35,7 +34,7 @@ const { EXTRAS } = getPackageDetails(forPath(Astro.url.pathname).locale);
 <style>
   /* Raster, Zelle, Icon und Überschrift kommen aus dem gemeinsamen Icon-Raster (.ig/.ic in global.css); hier nur die Auswahl */
   .xc { transition: background-color 0.25s ease; }
-  .xc h3 { padding-right: 36px; }
+  .xc :global(h3) { padding-right: 36px; }
   /* die Beschriftung deckt die ganze Zelle ab: Klick irgendwo in der Zelle schaltet um */
   .xc label { cursor: pointer; }
   .xc label::after { content: ""; position: absolute; inset: 0; z-index: 1; }

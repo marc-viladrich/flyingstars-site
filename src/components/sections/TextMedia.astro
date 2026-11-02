@@ -1,6 +1,6 @@
 ---
 import Picture from '../Picture.astro';
-import Accent from '../Accent.astro';
+import SectionHead from '../SectionHead.astro';
 import { marked } from 'marked';
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'textMedia' }> & { index: number };
@@ -11,8 +11,7 @@ const html = await marked.parse(body);
 ---
 <section class:list={['section', 'text-media', { 'has-media': image, 'media-left': image && mediaSide === 'left' }]} id={anchor} aria-labelledby={id}>
   <div class="prose">
-    {kicker && <span class="kicker mono">{kicker}</span>}
-    <H id={id}><Accent text={headline} /></H>
+    <SectionHead variant="embedded" kicker={kicker} headline={headline} id={id} level={H} />
     <Fragment set:html={html} />
   </div>
   {image && <figure class="tm-media" data-curtain><Picture {...image} /></figure>}

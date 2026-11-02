@@ -58,7 +58,7 @@ test('Alle aktiven Reels verwenden den gemeinsamen Video-Controller', () => {
 test('Globales CSS hat keine mehrfachen Eigenschaftsbesitzer im selben Kontext', async () => {
   const { default: postcss } = await import('postcss');
   const seen = new Map(), duplicates = [];
-  postcss.parse(read('src/styles/global.css')).walkRules(rule => {
+  for (const sheet of ['global.css', 'facts.css', 'media-card.css']) postcss.parse(read(`src/styles/${sheet}`)).walkRules(rule => {
     const parents=[];for(let n=rule.parent;n.type!=='root';n=n.parent)parents.unshift(`@${n.name} ${n.params.replace(/\s+/g,'')}`);
     const local = new Set();
     for (const declaration of rule.nodes.filter(n=>n.type==='decl')) {
@@ -93,4 +93,15 @@ test('Alle redaktionellen Faktenlisten und Prozesslisten delegieren an ihre Besi
   }
   assert.doesNotMatch(read('src/styles/global.css'),/\.ruler li:nth-child\(\d/);
   const script=read('src/components/projects/case.js');assert.match(script,/\.c-story \[data-story-step\]/);assert.doesNotMatch(script,/querySelectorAll\("\[data-step\]"\)/);
+});
+
+test('Section-Köpfe, Icon-Features, Medienkarten und Aufnahme-Ecken haben je einen Besitzer', () => {
+  for(const file of ['sections/Faq','sections/ContactForm','sections/TextMedia','sections/Sustainability','sections/LogoBar','configurator/ShowConfigurator','projects/CaseStudy'])assert.match(read(`src/components/${file}.astro`),/<SectionHead /);
+  for(const file of ['landing/LandingSite','sections/Sustainability','sections/LogoBar','pricing/Included','landing/LandingBento','pricing/Extras'])assert.match(read(`src/components/${file}.astro`),/<IconFeature /);
+  const feature=read('src/components/IconFeature.astro');assert.match(feature,/\? 18 : 36/);assert.match(feature,/<H class="ic-h">/);
+  for(const file of ['projects/ProjectCard','blog/PostCard','landing/LandingStories','sections/Occasions','sections/References'])assert.match(read(`src/components/${file}.astro`),/<MediaCard /);
+  for(const file of ['sections/FlightHero','landing/LandingHero']){
+    const s=read(`src/components/${file}.astro`);assert.match(s,/<MediaFrame /);assert.doesNotMatch(s,/<i><\/i>/);
+  }
+  assert.match(read('src/components/MediaCard.astro'),/href && Astro.slots.has\('actions'\)/);
 });

@@ -1,0 +1,25 @@
+---
+// Die Fachadapter liefern Bild und Inhalte; Rahmen, Badge und Hover-Ziel gehören dieser Karte.
+interface Props { variant?: 'reference' | 'editorial' | 'story' | 'occasion'; href?: string; title: string; level?: 'h2' | 'h3' | 'h4'; summary?: string; kicker?: string; badge?: string; i?: number; hasMedia?: boolean; dot?: boolean; loop?: 'auto' | 'hover'; season?: string; class?: string }
+const { variant = 'reference', href, title, level: H = 'h3', summary, kicker, badge, i = 0, hasMedia = true, dot = true, loop, season, class: cls } = Astro.props;
+if (href && Astro.slots.has('actions')) throw new Error('Eine verlinkte MediaCard darf keine weiteren Aktionslinks enthalten.');
+const Tag = href ? 'a' : 'article';
+const root = variant === 'occasion' ? 'occ' : variant === 'story' ? 'ls-card' : 'proj';
+const mediaClass = variant === 'story' ? 'ls-img' : 'img';
+const bodyClass = variant === 'occasion' ? 'body' : variant === 'story' ? 'ls-body' : 'media-card-body';
+const kickerClass = variant === 'occasion' ? 'cat mono' : variant === 'story' ? 'kicker mono' : 'kick mono';
+---
+<Tag class:list={[root, cls]} href={href} data-dot-host={dot ? '' : undefined} data-loop-host={loop} data-season={season}>
+  {hasMedia && <div class={mediaClass} data-curtain data-dot-img={dot ? '' : undefined} style={`--i:${i}`}>
+    <slot name="media" />
+    {badge && <span class:list={['mono', variant === 'story' ? 'ls-badge' : 'count']}>{badge}</span>}
+  </div>}
+  <div class={bodyClass}>
+    <slot name="meta">{kicker && <span class={kickerClass}>{kicker}</span>}</slot>
+    <H>{title}</H>{summary && <p>{summary}</p>}
+    <slot name="facts" /><slot name="actions" />
+  </div>
+</Tag>
+<style is:global>
+  .media-card-body { display: contents; }
+</style>

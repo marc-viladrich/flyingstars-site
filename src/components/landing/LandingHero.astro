@@ -1,4 +1,5 @@
 ---
+import MediaFrame from '../MediaFrame.astro';
 import FactList from '../FactList.astro';
 import { forPath } from '../../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
@@ -25,16 +26,15 @@ const src = videoPath(videos[video], 'preview');
     <div class="actions"><a class="btn primary" href={localHref(cta.href)}>{cta.label}</a>{secondary && <a class="btn" href={localHref(secondary.href)}>{secondary.label}</a>}</div>
     {facts.length > 0 && <FactList items={facts} variant="hero" />}
   </div>
-  <figure class="lh-media" data-lh-reel>
+  <MediaFrame class="lh-media" corners="inset" data-lh-reel>
     <img src={still.src} width={still.width} height={still.height} alt={poster.alt} loading="eager" fetchpriority="high" decoding="async" />
     <video data-src={src} muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
     <span class="lh-rec mono" aria-hidden="true">{videoLabel}</span>
-    <span class="lh-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
     <button class="lh-toggle mono" type="button" data-lh-toggle aria-pressed="false" hidden>
       <Icon name="play" size={16} class="g i-play" /><Icon name="pause" size={16} class="g i-pause" />
       <span data-lh-label>{t('landinghero.playVideo')}</span>
     </button>
-  </figure>
+  </MediaFrame>
 </section>
 
 <script>
@@ -73,44 +73,14 @@ const src = videoPath(videos[video], 'preview');
   .lh h1 { font-size: clamp(40px, 5.4vw, 80px); line-height: 1; letter-spacing: -0.035em; max-width: 16ch; }
   .lh .lead { max-width: 48ch; }
   .actions { display: flex; flex-wrap: wrap; gap: 12px; }
-  .lh-media { position: relative; margin: 0; aspect-ratio: 16 / 11; border-radius: var(--radius); overflow: hidden; background: #0a0908; box-shadow: 0 30px 80px -40px rgba(219, 100, 232, 0.35); }
-  .lh-media img, .lh-media video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .lh-media video { opacity: 0; transition: opacity 0.8s ease; }
-  .lh-media.is-on video, .lh-media.has-played video { opacity: 1; }
-  .lh-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15, 13, 12, 0.45), transparent 26%, transparent 70%, rgba(15, 13, 12, 0.55)); pointer-events: none; }
   /* Rahmen wie im Startseiten-Hero (Vercel-Prototyp): Label und Knopf rasten innen in den Ecken ein, mittig auf Höhe des
      Schenkelendes und 14 px neben dem senkrechten Schenkel. --c-in: Abstand der Ecken vom Rand, --c-arm: Schenkellänge */
-  .lh-media { --c-in: 12px; --c-arm: 18px; }
-  .lh-rec { position: absolute; z-index: 2; left: calc(var(--c-in) + 14px); top: calc(var(--c-in) + var(--c-arm)); transform: translateY(-50%); line-height: 1; display: inline-flex; align-items: center; gap: 8px; color: var(--text); }
-  .lh-rec::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--faint); transition: background 0.3s, box-shadow 0.3s; }
-  .lh-media.is-on .lh-rec::before { background: #ff6f61; box-shadow: 0 0 10px #ff6f61; }
-  .lh-corners i { position: absolute; z-index: 2; width: var(--c-arm); height: var(--c-arm); border: 0 solid rgba(246, 241, 232, 0.55); }
-  .lh-corners i:nth-child(1) { left: var(--c-in); top: var(--c-in); border-width: 1px 0 0 1px; }
-  .lh-corners i:nth-child(2) { right: var(--c-in); top: var(--c-in); border-width: 1px 1px 0 0; }
-  .lh-corners i:nth-child(3) { left: var(--c-in); bottom: var(--c-in); border-width: 0 0 1px 1px; }
-  .lh-corners i:nth-child(4) { right: var(--c-in); bottom: var(--c-in); border-width: 0 1px 1px 0; }
   /* Knopf (Marc, 02.11.2026): läuft das Video, sitzt „Video anhalten“ unten rechts in der Ecke. Angehalten (oder noch nicht
      gestartet) wandert er weich in die Mitte, verliert die Beschriftung und wird zum großen Play-Knopf; das Bild des
      Videos bleibt stehen. Lage über left/top/transform, damit sich die Bewegung überblenden lässt. */
-  .lh-toggle { position: absolute; z-index: 3; left: calc(100% - var(--c-in) - 14px); top: calc(100% - var(--c-in) - var(--c-arm)); transform: translate(-100%, -50%); display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 36px; min-width: 36px; padding: 0 14px 0 10px; border-radius: 999px; border: 1px solid rgba(246, 241, 232, 0.3); background: rgba(15, 13, 12, 0.66); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); color: var(--text); cursor: pointer; opacity: 0; transition: left 0.55s cubic-bezier(0.3, 0.9, 0.3, 1), top 0.55s cubic-bezier(0.3, 0.9, 0.3, 1), transform 0.55s cubic-bezier(0.3, 0.9, 0.3, 1), height 0.45s ease, min-width 0.45s ease, padding 0.45s ease, gap 0.45s ease, background-color 0.3s ease, border-color 0.3s ease, opacity 0.3s ease; }
-  .lh-media.ready .lh-toggle { opacity: 1; }
-  .lh-toggle [data-lh-label] { display: inline-block; max-width: 14em; overflow: hidden; white-space: nowrap; transition: max-width 0.45s ease, opacity 0.25s ease; }
-  .lh-media:not(.is-on) .lh-toggle { left: 50%; top: 50%; transform: translate(-50%, -50%); height: 76px; min-width: 76px; padding: 0; gap: 0; background: rgba(15, 13, 12, 0.55); border-color: rgba(246, 241, 232, 0.5); }
-  .lh-media:not(.is-on) .lh-toggle [data-lh-label] { max-width: 0; opacity: 0; }
-  .lh-media:not(.is-on) .lh-toggle :global(.ico) { width: 30px; height: 30px; margin-left: 4px; }
-  .lh-media:not(.is-on):hover .lh-toggle { background: rgba(15, 13, 12, 0.75); border-color: var(--text); }
-  @media (prefers-reduced-motion: reduce) { .lh-toggle, .lh-toggle [data-lh-label] { transition: none; } }
-  .lh-media.can-toggle { cursor: pointer; }
-  .lh-toggle:hover, .lh-media.can-toggle:hover .lh-toggle { border-color: rgba(246, 241, 232, 0.6); }
-  .lh-toggle:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
-  .lh-toggle :global(.ico) { width: 16px; height: 16px; flex: 0 0 auto; transition: width 0.45s ease, height 0.45s ease, margin 0.45s ease; }
-  .lh-toggle :global(.i-pause) { display: none; }
-  .lh-media.is-on :global(.i-play) { display: none; }
-  .lh-media.is-on :global(.i-pause) { display: inline; }
   @media (max-width: 900px) {
     .lh { grid-template-columns: 1fr; }
     .lh::before { width: 120%; right: -40%; top: 40%; height: 60%; }
-    .lh-media { aspect-ratio: 16 / 10; }
   }
   @media (max-width: 600px) {
     /* Handy: Eckdaten als gleich breite Spalten, damit nichts einzeln umbricht */

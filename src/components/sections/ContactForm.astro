@@ -1,4 +1,5 @@
 ---
+import SectionHead from '../SectionHead.astro';
 import { forPath } from '../../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
 import { SHOW_PACKAGES } from '../../content/show-packages';
@@ -20,13 +21,10 @@ const sources = [['Google', 'Google'], ['Empfehlung', t('contactform.recommendat
 ---
 <section aria-labelledby="anfrage-h" class="section alt" id="anfrage">
   <div class="inquiry">
-    <div class="intro">
-      {kicker && <span class="kicker mono">{kicker}</span>}
-      <H id="anfrage-h"><Accent text={headline} /></H>
-      {text && <p class="lead">{text}</p>}
+    <SectionHead variant="embedded" class="intro" kicker={kicker} headline={headline} text={text} textClass="lead" id="anfrage-h" level={H}>
       <Faces people={people} />
       <ContactWays />
-    </div>
+    </SectionHead>
     <form action={site.formEndpoint} aria-labelledby="anfrage-h" class="ask" id="inquiry-form" method="post">
       <input type="hidden" name="locale" value={forPath(Astro.url.pathname).locale} />
       <div class="ask-steps" aria-hidden="true" hidden><span class="on">{t('contactform.1YourShow')}</span><span>{t('contactform.2AboutYou')}</span><i></i></div>

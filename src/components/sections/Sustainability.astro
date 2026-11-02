@@ -1,4 +1,6 @@
 ---
+import IconFeature from '../IconFeature.astro';
+import SectionHead from '../SectionHead.astro';
 import FactList from '../FactList.astro';
 // Nachhaltigkeit als Scrollstory aus dem Vercel-Prototyp (Marc, 31.10.2026: „das Scrollytelling finde ich ganz nice,
 // das kann bleiben“): Die Bühne bleibt stehen, vier Zahlen übernehmen nacheinander den Bildschirm, im Hintergrund fliegt
@@ -18,19 +20,15 @@ const parts = (point: string) => point.split(/(\S+-\S+)/).filter(Boolean);
 const proof = proofImage ? await optimizedLogo(proofImage.src, 60) : undefined;
 ---
 <section class="eco-sec" id={id} aria-labelledby={headingId}>
-  <div class="eco-head">
-    <div>{kicker && <span class="kicker mono">{kicker}</span>}<H id={headingId} class="eco-title" data-reveal-group>{lines.map((line, i) => <span data-reveal style={`--i:${i}`} class:list={{ grad: i === lines.length - 1 && lines.length > 1, o: lines.length > 2 && i === 1 }}>{line} </span>)}</H></div>
-    {text && <p>{text}</p>}
-  </div>
+  <SectionHead variant="display" class="eco-head" titleClass="eco-title" revealTitle kicker={kicker} headline={headline} text={text} id={headingId} level={H}>
+    <Fragment slot="title">{lines.map((line, i) => <span data-reveal style={`--i:${i}`} class:list={{ grad: i === lines.length - 1 && lines.length > 1, o: lines.length > 2 && i === 1 }}>{line} </span>)}</Fragment>
+  </SectionHead>
   {facts.length > 0 && <div class="eco-scrolly" data-scrolly><div class="eco-pin">
     <canvas class="eco-canvas" aria-hidden="true"></canvas>
     <FactList items={facts} variant="eco" />
     <ol class="eco-steps mono" aria-hidden="true">{facts.map((fact, i) => <li style={`--k:${i}`}>{fact.label}</li>)}</ol>
   </div></div>}
-  {pillars.length > 0 && <ul class="eco-pillars">{pillars.map((p) => <li>
-    <Icon name={PICON[p.icon]} class="g" size={44} strokeWidth={1.5} />
-    <b>{p.title}</b><span>{p.text}</span>
-  </li>)}</ul>}
+  {pillars.length > 0 && <ul class="eco-pillars">{pillars.map((p) => <IconFeature as="li" icon={PICON[p.icon]} title={p.title} text={p.text} />)}</ul>}
   {(points.length > 0 || campaign || proofText) && <div class="eco-proof">
     {proofImage && proof && <img src={proof.src} width={proof.width / 2} height={proof.height / 2} alt={proofImage.alt} loading="lazy" decoding="async" />}
     {points.length > 0 && <ul class="eco-points">{points.map((point) => <li><span>{parts(point).map((part) => part.includes('-') ? <span class="nowrap">{part}</span> : part)}</span></li>)}</ul>}

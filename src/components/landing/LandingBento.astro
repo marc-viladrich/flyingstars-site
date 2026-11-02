@@ -1,4 +1,5 @@
 ---
+import IconFeature from '../IconFeature.astro';
 import { forPath } from '../../i18n/server';
 const { localHref } = forPath(Astro.url.pathname);
 // Kacheln mit einer Hauptkachel (Bild mit Titel darauf oder eine große Aussage) und bis zu vier kleineren Icon-Kacheln. Bricht die Folge aus Text-Bild-Blöcken auf (Marc, 31.10.2026: „mehr Variation in den Layouts“).
@@ -29,12 +30,7 @@ const img = lead.image ? await optimizedImage(lead.image.src, 960, 720) : undefi
       </div>
     </article>
     {items.map((it) => (
-      <div class="lb-cell lb-feat">
-        <!-- Icon-Kachel (Marc, 01.11.2026, für alle Kacheln): großes Icon, Überschrift, Text; keine Zeile neben dem Icon -->
-        <Icon name={it.icon} size={36} class="g ic-ico" />
-        <T class="ic-h">{it.title}</T>
-        <p class="lb-t">{it.text}</p>
-      </div>
+      <IconFeature class="lb-cell lb-feat" icon={it.icon} title={it.title} text={it.text} level={T} />
     ))}
   </div>
   {closing ? <CtaBox {...closing} level={T} class="lb-close" /> : cta && <div class="lb-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></div>}
@@ -59,7 +55,6 @@ const img = lead.image ? await optimizedImage(lead.image.src, 960, 720) : undefi
   .lb-grid[data-n='2'] .lb-cell { grid-column: span 2; }
   .lb-grid[data-n='3'] .lb-cell:last-child { grid-column: span 2; }
   .lb-grid[data-n='1'] .lb-cell { grid-column: span 2; grid-row: span 2; }
-  .lb-t { margin: 0; color: var(--muted); font-size: 15.5px; max-width: 40ch; }
   .lb-feat { gap: 12px; }
   /* Icon und Überschrift wie im Icon-Raster der Preisseite (.ic-ico/.ic-h in global.css) */
   /* CtaBox ist eine eigene Komponente: Abstand über :global, sonst greift das Komponenten-CSS nicht */

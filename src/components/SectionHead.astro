@@ -1,13 +1,16 @@
 ---
-// Section-Kopf für alle Sections (docs/DESIGN.md): Kicker in Orange, Headline (einzelne *Begriffe* im Logoverlauf),
-// optional ein Satz darunter. Eine Stelle für alle Komponenten, damit Kicker überall gleich aussehen.
+// Ein Besitzer für Kicker, Überschrift und Einleitung. Einbettungen behalten ihre Fachlayouts.
 import Accent from './Accent.astro';
-interface Props { kicker?: string; headline: string; text?: string; id: string; level?: 'h1' | 'h2' | 'h3'; class?: string }
-const { kicker, headline, text, id, level = 'h2', class: cls } = Astro.props;
-const H = level;
+interface Props { kicker?: string; headline: string; text?: string; id: string; level?: 'h1' | 'h2' | 'h3'; class?: string; variant?: 'default' | 'embedded' | 'contents' | 'display'; titleClass?: string; textClass?: string; kickerClass?: string; revealTitle?: boolean }
+const { kicker, headline, text, id, level: H = 'h2', class: cls, variant = 'default', titleClass, textClass, kickerClass, revealTitle } = Astro.props;
 ---
-<div class:list={['sec-head', cls]}>
-  {kicker && <span class="kicker mono">{kicker}</span>}
-  <H id={id}><Accent text={headline} /></H>
-  {text && <p>{text}</p>}
+<div class:list={['section-head', { 'sec-head': variant === 'default' }, cls]} data-section-head={variant}>
+  {kicker && <span class:list={['kicker mono', kickerClass]}>{kicker}</span>}
+  <H id={id} class={titleClass} data-reveal-group={revealTitle ? '' : undefined}><slot name="title"><Accent text={headline} /></slot></H>
+  {text && <p class={textClass}>{text}</p>}
+  <slot />
 </div>
+<style is:global>
+  .section-head[data-section-head] > :is(h1, h2, h3) { margin-top: 0; }
+  .section-head[data-section-head="contents"] { display: contents; }
+</style>
