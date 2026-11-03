@@ -102,3 +102,64 @@
   Content-Type: video/mp4
   Content-Length: 455577
   Cache-Control: public, max-age=31536000, immutable, no-transform
+
+# Video-Lab 15s v2
+/media/video-lab/cut15-reference-v2.mp4
+  Content-Type: video/mp4
+  Content-Length: 11871940
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/cut15-h264-1918-v2.mp4
+  Content-Type: video/mp4
+  Content-Length: 3281889
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/cut15-av1-1918-v2.mp4
+  Content-Type: video/mp4
+  Content-Length: 1823492
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/cut15-h264-1600-v2.mp4
+  Content-Type: video/mp4
+  Content-Length: 2545893
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/cut15-av1-1600-v2.mp4
+  Content-Type: video/mp4
+  Content-Length: 1601268
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/cut15-h264-1440-v2.mp4
+  Content-Type: video/mp4
+  Content-Length: 2159133
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/cut15-av1-1440-v2.mp4
+  Content-Type: video/mp4
+  Content-Length: 1401949
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/cut15-h264-1280-v2.mp4
+  Content-Type: video/mp4
+  Content-Length: 1605075
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/cut15-av1-1280-v2.mp4
+  Content-Type: video/mp4
+  Content-Length: 1201902
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/cut15-mobile-h264-640-v2.mp4
+  Content-Type: video/mp4
+  Content-Length: 662875
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/cut15-mobile-av1-640-v2.mp4
+  Content-Type: video/mp4
+  Content-Length: 551387
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/fonts/inter-latin-400-700-v1.woff2
+  Content-Type: font/woff2
+  Content-Length: 36220
+  Cache-Control: public, max-age=31536000, immutable

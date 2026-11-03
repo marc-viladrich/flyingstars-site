@@ -1,0 +1,86 @@
+[
+  {
+    "source": "showreel",
+    "bytes": 6514429,
+    "sha256": "3ac827bd54aa2febfe1d422f230ff2d5463b871772e3da48da704a3a3339214d",
+    "audioStreams": [],
+    "video": [
+      {
+        "codec": "h264",
+        "width": 1918,
+        "height": 1080,
+        "duration": "25.880000"
+      }
+    ]
+  },
+  {
+    "source": "bokkenrijders",
+    "bytes": 1105755,
+    "sha256": "07108c3c737d185d621c758db176eed234c53526eabdd28794e32c5f2c61a532",
+    "audioStreams": [],
+    "video": [
+      {
+        "codec": "h264",
+        "width": 1280,
+        "height": 720,
+        "duration": "8.440000"
+      }
+    ]
+  },
+  {
+    "source": "nfl",
+    "bytes": 804593,
+    "sha256": "b91ff00baeac0f5c247ab086dac8d2715a00e1299e2b332ab39091d7346f4ba4",
+    "audioStreams": [],
+    "video": [
+      {
+        "codec": "h264",
+        "width": 1280,
+        "height": 720,
+        "duration": "6.880000"
+      }
+    ]
+  },
+  {
+    "source": "ford",
+    "bytes": 2144131,
+    "sha256": "f8b44c09139aa1d23e27488d04596c123998a6e38ae27da169fba548cb7285ed",
+    "audioStreams": [],
+    "video": [
+      {
+        "codec": "h264",
+        "width": 1280,
+        "height": 720,
+        "duration": "10.360000"
+      }
+    ]
+  },
+  {
+    "source": "puma",
+    "bytes": 1412013,
+    "sha256": "dd3de0b7892ce6e01b51f9ca6d53f2236c0b248239f5f3a9d035e694404c50e6",
+    "audioStreams": [],
+    "video": [
+      {
+        "codec": "h264",
+        "width": 1280,
+        "height": 720,
+        "duration": "7.800000"
+      }
+    ]
+  },
+  {
+    "source": "siemensIndoor",
+    "bytes": 6563549,
+    "sha256": "37f6bb19e91c84f3b74f41ed4e3f780ac7d46fd42b53931c7cf5a993a300179b",
+    "audioStreams": [],
+    "video": [
+      {
+        "codec": "h264",
+        "width": 1726,
+        "height": 1080,
+        "duration": "77.040000"
+      }
+    ]
+  }
+]

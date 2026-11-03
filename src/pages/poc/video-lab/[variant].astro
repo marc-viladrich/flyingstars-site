@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
 import FlightHero from '../../../components/sections/FlightHero.astro';
 import videos from '../../../data/video-lab.json';
+import { heroVideoSources } from '../../../lib/hero-video-sources';
 export function getStaticPaths(){return [...videos.map(video=>({params:{variant:video.id},props:{video}})),{params:{variant:'auto'},props:{video:null}}];}
 const { video }=Astro.props;
 const page=(await getCollection('pages')).find(p=>p.id==='index')!;
@@ -18,7 +19,7 @@ const previous=index>0?videos[index-1]:null,next=index>=0&&index<videos.length-1
     (function(){var v=document.querySelector('video[data-reel]');if(v){v.removeAttribute('data-reel');v.setAttribute('data-lab-video','')}})();
   </script>
   <aside class="lab-bar" aria-label="Videovergleich"><div><strong>{label}</strong><span id="lab-state" role="status">Wiedergabe wird vorbereitet …</span></div><nav aria-label="Videofassungen"><a href="/poc/video-lab/">Alle Fassungen</a>{previous&&<a href={`/poc/video-lab/${previous.id}/`}>← Vorherige</a>}{next&&<a href={`/poc/video-lab/${next.id}/`}>Nächste →</a>}<a href="/poc/video-lab/original/">Original</a><button type="button" id="lab-play">Abspielen</button></nav></aside>
-  <script type="application/json" id="lab-hero-data" set:html={JSON.stringify({video,videos}).replace(/</g,'\\u003c')}></script>
+  <script type="application/json" id="lab-hero-data" set:html={JSON.stringify({video,videos,sources:heroVideoSources()}).replace(/</g,'\\u003c')}></script>
   <script>import '../../../scripts/video-lab-hero';</script>
 </Base>
 <style>

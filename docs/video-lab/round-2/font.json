@@ -1,0 +1,35 @@
+{
+  "source": "public/fonts/inter-0.woff2",
+  "output": "public/fonts/inter-latin-400-700-v1.woff2",
+  "sourceBytes": 48432,
+  "outputBytes": 36220,
+  "sourceSha256": "c940764593d0fe5d596be327ca7558855e018039fb78509aa21921fd3644c3e4",
+  "outputSha256": "2ac410031367593a3c37e9ba98fb347f649706bfd769f597b97ca3cb7579fb31",
+  "axes": [
+    [
+      "wght",
+      400.0,
+      700.0
+    ]
+  ],
+  "sameCmap": true,
+  "sameGlyphOrder": true,
+  "sameFeatures": {
+    "GSUB": [
+      "calt",
+      "ccmp",
+      "dnom",
+      "frac",
+      "locl",
+      "numr",
+      "pnum",
+      "tnum"
+    ],
+    "GPOS": [
+      "kern",
+      "kern",
+      "mark",
+      "mkmk"
+    ]
+  }
+}
