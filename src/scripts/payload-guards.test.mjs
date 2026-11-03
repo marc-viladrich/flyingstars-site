@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
+import {heroVideoSources} from '../lib/hero-video-sources.ts';
 import videos from '../data/video-lab.json' with { type:'json' };
 import messages from '../i18n/ui.json' with { type:'json' };
 import { messagesForLocale } from '../i18n/ui.mjs';
@@ -18,9 +19,10 @@ test('Each browser dictionary is an exact single-language projection of the cano
  for(const locale of ['de','en','nl']){const part=messagesForLocale(locale);assert.deepEqual(Object.keys(part),Object.keys(messages));for(const [key,value]of Object.entries(part)){assert.deepEqual(Object.keys(value),[locale]);assert.equal(value[locale],messages[key][locale]);}}
  assert.throws(()=>messagesForLocale('xx'),/Unknown UI locale/);
 });
-test('Review labels, hashes and explicit response lengths refer to the real video bytes',()=>{
+test('Review labels, hashes and current explicit response lengths refer to real video bytes',()=>{
  const headers=fs.readFileSync(new URL('public/_headers',root),'utf8');
- for(const video of videos){const bytes=fs.readFileSync(new URL(`public${video.src}`,root));assert.equal(bytes.length,video.bytes,video.id);assert.equal(createHash('sha256').update(bytes).digest('hex'),video.sha256,video.id);assert.ok(headers.includes(`${video.src}\n  Content-Type: ${video.codec==='vp9'?'video/webm':'video/mp4'}\n  Content-Length: ${bytes.length}`),video.id);}
+ const activeEdit=heroVideoSources().mobile.fallback.edit;
+ for(const video of videos){const bytes=fs.readFileSync(new URL(`public${video.src}`,root));assert.equal(bytes.length,video.bytes,video.id);assert.equal(createHash('sha256').update(bytes).digest('hex'),video.sha256,video.id);if(video.edit===activeEdit)assert.ok(headers.includes(`${video.src}\n  Content-Type: ${video.codec==='vp9'?'video/webm':'video/mp4'}\n  Content-Length: ${bytes.length}`),video.id);}
 });
 
 test('Node consumers with DOM mocks keep canonical dictionaries and geometry instead of browser endpoints',()=>{
@@ -42,4 +44,12 @@ test('Published preview aliases are explicit URL slugs, not slash-separated Git 
  assert.equal(input.default,'manual-preview');
  assert.ok(input.options.includes('feat-designsprache-poc'));
  for(const option of input.options)assert.match(option,/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+});
+
+test('Pages header rules stay within budget and historical review media retain immutable caching',()=>{
+ const headers=fs.readFileSync(new URL('public/_headers',root),'utf8');
+ const rules=headers.split('\n').filter(line=>line&&!line.startsWith('#')&&!/^\s/.test(line));
+ assert.ok(rules.length<=100,`Pages header rule budget exceeded: ${rules.length}`);
+ assert.ok(headers.includes('/media/video-lab/*\n  Cache-Control: public, max-age=31536000, immutable, no-transform'));
+ for(const line of headers.split('\n'))assert.ok(line.length<=2000);
 });

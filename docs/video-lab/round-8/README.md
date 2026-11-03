@@ -44,4 +44,12 @@ Die große Vergleichsansicht unterstützt `?start=1&at=14`, damit Marc direkt vo
 | loop16-mobile-h264-640 | 882643 |
 | loop16-mobile-av1-640 | 742077 |
 
-43 fokussierte Node-Checks und neun Render-/Bildprüfungen bestanden. Astro check: 255 Dateien, 0 Fehler, 0 Warnungen. Build erfolgreich. Keine Aussage über die vollständige CI.
+44 fokussierte Node-Checks und neun Render-/Bildprüfungen bestanden. Astro check: 255 Dateien, 0 Fehler, 0 Warnungen. Build erfolgreich. Keine Aussage über die vollständige CI.
+
+## Auslieferung und Headerbudget
+
+Die 103 erhaltenen Videovarianten hatten zusammen mit den vorhandenen Regeln 110 Headerregeln erzeugt. Cloudflare Pages dokumentiert [maximal 100 Regeln](https://developers.cloudflare.com/pages/configuration/headers/). Bei den späteren aktuellen Dateien fehlten im ersten öffentlichen Check der gesetzte Cache-Control-Wert und zunächst Content-Length. Die Wirkung darf deshalb nicht allein aus dem lokalen `_headers` abgeleitet werden.
+
+`header_policy.py` fasst die unveränderliche Cache-Regel für sämtliche historischen Videovarianten in einem Wildcard-Muster zusammen. Explizite MIME-/Längenregeln bleiben für die aktuellen 13 Exporte erhalten. Historische Dateien verwenden ihre native MIME-/Längenbehandlung, ihre Bytes und URLs bleiben erhalten. Die sechs vorhandenen produktiven Vorschauvideos und übrigen Regeln bleiben unverändert. Ergebnis: 21 Regeln. Der Exportgenerator schreibt dieselbe Policy idempotent; ein eigener Node-Guard sichert Budget, Zeilenlimit, gemeinsamen Cache und tatsächliche Längen der aktiven Dateien ab.
+
+Ein Range-Probeabruf lieferte vor dieser Korrektur sowohl bei der älteren R7-Datei als auch einer aktuellen R8-Datei den vollständigen Body mit HTTP 200. HTTP 206 wird daher nicht als bereits erreichte Verbesserung behauptet. Der Headernachlauf ist keine Änderung am Video oder der Loop-Konstruktion.
