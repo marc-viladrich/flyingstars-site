@@ -1,0 +1,74 @@
+{
+  "sourceSha256": "3ac827bd54aa2febfe1d422f230ff2d5463b871772e3da48da704a3a3339214d",
+  "sourceFrames": 647,
+  "masterFrames": 379,
+  "sourcePassages": [
+    [
+      0,
+      41
+    ],
+    [
+      94,
+      158
+    ],
+    [
+      240,
+      387
+    ],
+    [
+      408,
+      434
+    ],
+    [
+      463,
+      564
+    ]
+  ],
+  "matchingDecodedFrames": 379,
+  "allFramesMatchOriginal": true,
+  "extraInsertedCuts": 4,
+  "segments": [
+    [
+      "ground-flight",
+      0,
+      41
+    ],
+    [
+      "qr-zoom-without-cube",
+      94,
+      158
+    ],
+    [
+      "hummingbird-puma-brockenriders-catch",
+      240,
+      387
+    ],
+    [
+      "nfl-single-logo",
+      408,
+      434
+    ],
+    [
+      "ford-to-dynamic-flyingstars",
+      463,
+      564
+    ]
+  ],
+  "qrZoom": {
+    "sourceFrames": [
+      94,
+      118
+    ],
+    "outputFrames": [
+      41,
+      65
+    ],
+    "matchingDecodedFrames": 24,
+    "matchesOriginal": true
+  },
+  "omissions": {
+    "cubeFramesAbsent": true,
+    "staticLogoFramesAbsent": true,
+    "lastSourceFrame": 563
+  }
+}
