@@ -156,51 +156,51 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
   /* zwei Spalten wie im ursprünglichen Entwurf: Bedienung links in fester Lesebreite, die Bühne nimmt den Rest.
      Sechzehnte Fassung: eingebettet im Seitenfluss; horizontal an der globalen Inhaltsbreite (--gutter, ab 1920 px
      gedeckelt), oben Platz für die feste Navigation (--cfg-top, eine Seite kann es überschreiben) */
-  .cfg { --cfg-gutter: var(--gutter, var(--pad)); display: grid; grid-template-columns: clamp(340px, 27vw, 500px) minmax(0, 1fr); gap: clamp(24px, 3.4vw, 72px); padding: var(--cfg-top, 84px) var(--cfg-gutter) var(--section); align-items: start; scroll-margin-top: -88px; }
+  .cfg { --cfg-gutter: var(--gutter, var(--pad)); display: grid; grid-template-columns: clamp(21.25rem, 27vw, 31.25rem) minmax(0, 1fr); gap: clamp(1.5rem, 3.4vw, 4.5rem); padding: var(--cfg-top, 5.25rem) var(--cfg-gutter) var(--section); align-items: start; scroll-margin-top: -5.5rem; }
   /* Runde 11: Seit der Konfigurator unter den Paketen steht, kommt man über den Anker #konfigurator hin. html hat
      scroll-padding-top: 88px (global.css); die Section bringt den Platz für die Navigation aber schon selbst mit
      (--cfg-top). Ohne Ausgleich landet sie 88 px zu tief, und bei 1280 × 720 rutschen Spur und Anfrage aus dem Bild */
   .cfg-noscript { padding: 0 var(--gutter, var(--pad)) var(--section); color: var(--muted); }
-  .cfg-stage { order: 2; position: sticky; top: 84px; height: calc(100svh - 108px); min-height: 460px; border-radius: var(--radius); background: radial-gradient(ellipse at 50% 120%, rgba(51, 237, 242, 0.06), transparent 60%), #0a0908; border: 1px solid var(--line); overflow: hidden; }
+  .cfg-stage { order: 2; position: sticky; top: 5.25rem; height: calc(100svh - 6.75rem); min-height: 28.75rem; border-radius: var(--radius); background: radial-gradient(ellipse at 50% 120%, rgba(51, 237, 242, 0.06), transparent 60%), #0a0908; border: 1px solid var(--line); overflow: hidden; }
   .cfg-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .cfg-caption { position: absolute; left: 20px; top: 18px; right: 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
-  .cfg-caption em { font: 500 11px/1 var(--mono); font-style: normal; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ground); background: var(--pkg, var(--amber)); padding: 5px 8px; border-radius: 4px; }
+  .cfg-caption { position: absolute; left: 1.25rem; top: 1.125rem; right: 1.25rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.625rem; font-size: var(--text-sm); color: var(--muted); }
+  .cfg-caption em { font: 500 0.6875rem/1 var(--mono); font-style: normal; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ground); background: var(--pkg, var(--amber)); padding: 0.3125rem 0.5rem; border-radius: 0.25rem; }
   /* Vorführ-Steuerung: Pause, Bild zurück/vor, Fortschritt mit einer Marke je Bild, Tempo */
-  .cfg-player { position: absolute; left: 14px; right: 14px; bottom: 14px; display: flex; align-items: center; gap: 4px; padding: 3px; border: 1px solid var(--line); border-radius: 999px; background: rgba(15, 13, 12, 0.72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
-  .cfg-player button { flex: none; height: 36px; min-width: 36px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); font: 400 18px/1 var(--body); cursor: pointer; display: inline-grid; place-items: center; padding: 0 8px; }
+  .cfg-player { position: absolute; left: 0.875rem; right: 0.875rem; bottom: 0.875rem; display: flex; align-items: center; gap: 0.25rem; padding: 0.1875rem; border: 1px solid var(--line); border-radius: 62.4375rem; background: rgba(15, 13, 12, 0.72); backdrop-filter: blur(0.5rem); -webkit-backdrop-filter: blur(0.5rem); }
+  .cfg-player button { flex: none; height: 2.25rem; min-width: 2.25rem; border: 0; border-radius: 62.4375rem; background: transparent; color: var(--muted); font: 400 var(--text-md)/1 var(--body); cursor: pointer; display: inline-grid; place-items: center; padding: 0 0.5rem; }
   .cfg-player button:hover { color: var(--text); background: rgba(246, 241, 232, 0.08); }
-  .cfg-player button:focus-visible, .cfg-track:focus-visible { outline: 3px solid var(--cyan); outline-offset: -2px; }
+  .cfg-player button:focus-visible, .cfg-track:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offset: -0.125rem; }
   .cfg-play { color: var(--text) !important; }
-  .cfg-play svg { width: 14px; height: 14px; fill: currentColor; }
+  .cfg-play svg { width: 0.875rem; height: 0.875rem; fill: currentColor; }
   .cfg-play[data-paused="false"] .i-play, .cfg-play[data-paused="true"] .i-pause { display: none; }
-  .cfg-track { position: relative; flex: 1 1 auto; min-width: 60px; height: 36px; cursor: pointer; touch-action: none; border-radius: 999px; }
-  .cfg-marks { position: absolute; left: 6px; right: 6px; top: 50%; height: 3px; margin-top: -1.5px; display: flex; gap: 2px; }
-  .cfg-marks :global(span) { flex: 1 1 0; min-width: 2px; border-radius: 2px; background: linear-gradient(90deg, var(--pkg, var(--amber)) var(--f, 0%), rgba(246, 241, 232, 0.18) var(--f, 0%)); }
-  .cfg-marks :global(span.is-motif) { margin-left: 4px; }
-  .cfg-rate { display: flex; flex: none; padding-left: 4px; border-left: 1px solid var(--line); }
-  .cfg-rate button { font: 500 12px/1 var(--mono); letter-spacing: 0.02em; padding: 0 7px; min-width: 0; }
+  .cfg-track { position: relative; flex: 1 1 auto; min-width: 3.75rem; height: 2.25rem; cursor: pointer; touch-action: none; border-radius: 62.4375rem; }
+  .cfg-marks { position: absolute; left: 0.375rem; right: 0.375rem; top: 50%; height: 0.1875rem; margin-top: -0.09375rem; display: flex; gap: 0.125rem; }
+  .cfg-marks :global(span) { flex: 1 1 0; min-width: 0.125rem; border-radius: 0.125rem; background: linear-gradient(90deg, var(--pkg, var(--amber)) var(--f, 0%), rgba(246, 241, 232, 0.18) var(--f, 0%)); }
+  .cfg-marks :global(span.is-motif) { margin-left: 0.25rem; }
+  .cfg-rate { display: flex; flex: none; padding-left: 0.25rem; border-left: 1px solid var(--line); }
+  .cfg-rate button { font: 500 var(--text-xs)/1 var(--mono); letter-spacing: 0.02em; padding: 0 0.4375rem; min-width: 0; }
   .cfg-rate button[aria-pressed="true"] { color: var(--text); background: rgba(246, 241, 232, 0.1); }
   /* Drohnenregler: Spur in den Paketfarben, Lücke zwischen den Bereichen leer */
   .cfg-drones-head { display: flex; align-items: baseline; justify-content: space-between; }
-  .cfg-drones-head label { font-size: 15px; color: var(--text); }
-  .cfg-drones-head output { font: 600 20px/1 var(--display); color: var(--text); font-variant-numeric: tabular-nums; }
-  .cfg-range { width: 100%; height: 28px; margin: 0; background: transparent; cursor: pointer; }
-  .cfg-range::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: var(--track), rgba(246, 241, 232, 0.08); opacity: 0.85; }
-  .cfg-range::-moz-range-track { height: 4px; border-radius: 2px; background: var(--track), rgba(246, 241, 232, 0.08); opacity: 0.85; }
-  .cfg-range::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; margin-top: -8px; border-radius: 50%; background: var(--text); border: 4px solid var(--pkg, var(--amber)); box-shadow: 0 0 0 4px rgba(15, 13, 12, 0.9); }
-  .cfg-range::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; background: var(--text); border: 4px solid var(--pkg, var(--amber)); box-shadow: 0 0 0 4px rgba(15, 13, 12, 0.9); }
-  .cfg-range:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; border-radius: 6px; }
-  .cfg-ticks { position: relative; height: 14px; margin: -4px 10px 0; font-size: 11px; color: var(--faint); }
+  .cfg-drones-head label { font-size: var(--text-control); color: var(--text); }
+  .cfg-drones-head output { font: 600 1.25rem/1 var(--display); color: var(--text); font-variant-numeric: tabular-nums; }
+  .cfg-range { width: 100%; height: 1.75rem; margin: 0; background: transparent; cursor: pointer; }
+  .cfg-range::-webkit-slider-runnable-track { height: 0.25rem; border-radius: 0.125rem; background: var(--track), rgba(246, 241, 232, 0.08); opacity: 0.85; }
+  .cfg-range::-moz-range-track { height: 0.25rem; border-radius: 0.125rem; background: var(--track), rgba(246, 241, 232, 0.08); opacity: 0.85; }
+  .cfg-range::-webkit-slider-thumb { -webkit-appearance: none; width: 1.25rem; height: 1.25rem; margin-top: -0.5rem; border-radius: 50%; background: var(--text); border: 0.25rem solid var(--pkg, var(--amber)); box-shadow: 0 0 0 0.25rem rgba(15, 13, 12, 0.9); }
+  .cfg-range::-moz-range-thumb { width: 0.75rem; height: 0.75rem; border-radius: 50%; background: var(--text); border: 0.25rem solid var(--pkg, var(--amber)); box-shadow: 0 0 0 0.25rem rgba(15, 13, 12, 0.9); }
+  .cfg-range:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offset: 0.125rem; border-radius: 0.375rem; }
+  .cfg-ticks { position: relative; height: 0.875rem; margin: -0.25rem 0.625rem 0; font-size: 0.6875rem; color: var(--faint); }
   .cfg-ticks span { position: absolute; left: calc(var(--p) * 100%); transform: translateX(-50%); }
   /* Bühne als Pause-Knopf (vierzehnte Fassung): liegt über der Leinwand, unter Steuerung und Meldungen */
   .cfg-hit { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; margin: 0; padding: 0; border: 0; border-radius: inherit; background: transparent; cursor: pointer; }
-  .cfg-hit:focus-visible { outline: 3px solid var(--cyan); outline-offset: -3px; }
+  .cfg-hit:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offset: -0.1875rem; }
   .cfg-caption, .cfg-toast, .cfg-flash, .cfg-drop { z-index: 2; }
   .cfg-caption { pointer-events: none; }
   .cfg-player, .cfg-error { z-index: 3; }
   /* kurzes Zeichen in der Mitte, was der Klick bewirkt hat (wie bei YouTube), danach weg */
-  .cfg-flash { position: absolute; left: 50%; top: 50%; width: 64px; height: 64px; margin: -32px 0 0 -32px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; background: rgba(15, 13, 12, 0.72); color: var(--text); opacity: 0; pointer-events: none; }
-  .cfg-flash svg { width: 24px; height: 24px; fill: currentColor; }
+  .cfg-flash { position: absolute; left: 50%; top: 50%; width: 4rem; height: 4rem; margin: -2rem 0 0 -2rem; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; background: rgba(15, 13, 12, 0.72); color: var(--text); opacity: 0; pointer-events: none; }
+  .cfg-flash svg { width: 1.5rem; height: 1.5rem; fill: currentColor; }
   .cfg-flash[data-state="pause"] .i-play, .cfg-flash[data-state="play"] .i-pause, .cfg-flash:not([data-state]) svg { display: none; }
   .cfg-flash.is-on { animation: cfg-pop 0.75s ease-out; }
   @keyframes cfg-pop { from { opacity: 0.9; transform: scale(0.92); } to { opacity: 0; transform: scale(1.12); } }
@@ -209,71 +209,71 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
      „Logo“ zeigt. Fünfzehnte Fassung (Marc, Kompromiss): beim ersten Überfahren der Bühne mit der Maus einmal als
      Einladung (is-invite), danach nicht mehr. Nach dem Ablegen sofort weg, bis die Maus die Bühne verlassen hat
      (is-done). Mit data-drop-hover an der Bühne erscheint sie wie in Studie 1 bei jedem Überfahren. */
-  .cfg-drop { position: absolute; inset: 14px 14px 64px; display: grid; place-content: center; justify-items: center; gap: 8px; border: 1.5px dashed rgba(246, 241, 232, 0.28); border-radius: calc(var(--radius) - 6px); color: var(--text); text-align: center; opacity: 0; transition: opacity 0.3s, border-color 0.3s, background 0.3s; pointer-events: none; }
-  .cfg-drop svg { width: 30px; height: 30px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-  .cfg-drop span { font: 500 18px/1.2 var(--display); }
-  .cfg-drop small { font-size: 13px; color: var(--muted); }
-  .cfg-stage.is-target .cfg-drop, .cfg-stage.is-page-drag .cfg-drop, .cfg-stage.is-invite .cfg-drop, .cfg-stage[data-drop-hover]:hover .cfg-drop { opacity: 1; background: rgba(10, 9, 8, 0.42); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
-  .cfg-stage.is-drag .cfg-drop { opacity: 1; border-color: var(--pkg, var(--amber)); background: rgba(10, 9, 8, 0.55); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+  .cfg-drop { position: absolute; inset: 0.875rem 0.875rem 4rem; display: grid; place-content: center; justify-items: center; gap: 0.5rem; border: 1.5px dashed rgba(246, 241, 232, 0.28); border-radius: calc(var(--radius) - 0.375rem); color: var(--text); text-align: center; opacity: 0; transition: opacity 0.3s, border-color 0.3s, background 0.3s; pointer-events: none; }
+  .cfg-drop svg { width: 1.875rem; height: 1.875rem; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .cfg-drop span { font: 500 var(--text-md)/1.2 var(--display); }
+  .cfg-drop small { font-size: var(--text-label); color: var(--muted); }
+  .cfg-stage.is-target .cfg-drop, .cfg-stage.is-page-drag .cfg-drop, .cfg-stage.is-invite .cfg-drop, .cfg-stage[data-drop-hover]:hover .cfg-drop { opacity: 1; background: rgba(10, 9, 8, 0.42); -webkit-backdrop-filter: blur(0.1875rem); backdrop-filter: blur(0.1875rem); }
+  .cfg-stage.is-drag .cfg-drop { opacity: 1; border-color: var(--pkg, var(--amber)); background: rgba(10, 9, 8, 0.55); -webkit-backdrop-filter: blur(0.25rem); backdrop-filter: blur(0.25rem); }
   .cfg-stage.is-done .cfg-drop { opacity: 0; transition: none; }
   /* Spur: beim Überfahren und mit Fokus ein kleiner Hinweis, ab wie vielen Drohnen die Sequenz möglich ist */
-  .cfg-tip { position: absolute; bottom: calc(100% + 8px); left: var(--x, 50%); transform: translateX(-50%); white-space: nowrap; padding: 4px 9px; border: 1px solid var(--line); border-radius: 6px; background: rgba(15, 13, 12, 0.92); color: var(--muted); font: 400 12px/1.3 var(--body); opacity: 0; transition: opacity 0.15s ease; pointer-events: none; }
+  .cfg-tip { position: absolute; bottom: calc(100% + 0.5rem); left: var(--x, 50%); transform: translateX(-50%); white-space: nowrap; padding: 0.25rem 0.5625rem; border: 1px solid var(--line); border-radius: 0.375rem; background: rgba(15, 13, 12, 0.92); color: var(--muted); font: 400 var(--text-xs)/1.3 var(--body); opacity: 0; transition: opacity 0.15s ease; pointer-events: none; }
   .cfg-tip b { color: var(--text); font-weight: 500; }
   .cfg-tip.is-on { opacity: 1; }
   .cfg-tip.is-locked :global(b) { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
   /* gesperrte Motive: je Motiv drei ungeleuchtete Lichtpunkte; beim Zeigen glimmen sie auf (sechzehnte Fassung). Die
      Knöpfe entstehen im Skript, darum :global (Astro begrenzt Stile sonst auf Elemente aus dem Markup) */
-  .cfg-locks { display: flex; flex: none; align-items: center; gap: 0; padding-left: 2px; }
+  .cfg-locks { display: flex; flex: none; align-items: center; gap: 0; padding-left: 0.125rem; }
   .cfg-locks[hidden] { display: none; }
-  .cfg-locks :global(.cfg-lock) { flex: none; min-width: 24px; height: 36px; padding: 0 5px; border: 0; border-radius: 999px; background: transparent; cursor: pointer; display: inline-flex; gap: 3px; align-items: center; justify-content: center; }
-  .cfg-locks :global(.cfg-lock:focus-visible) { outline: 3px solid var(--cyan); outline-offset: -2px; }
-  .cfg-locks :global(.cfg-lock i) { width: 3px; height: 3px; border-radius: 50%; background: rgba(246, 241, 232, 0.3); transition: background 0.2s, box-shadow 0.2s; }
-  .cfg-locks :global(.cfg-lock:is(:hover, :focus-visible) i) { background: #fff; box-shadow: 0 0 4px 1px rgba(255, 158, 41, 0.7), 0 0 9px 2px rgba(51, 237, 242, 0.25); }
-  .cfg-locks :global(.cfg-lock:is(:hover, :focus-visible) i:nth-child(2)) { box-shadow: 0 0 4px 1px rgba(219, 100, 232, 0.75), 0 0 9px 2px rgba(51, 237, 242, 0.25); }
-  .cfg-locks :global(.cfg-lock:is(:hover, :focus-visible) i:nth-child(3)) { box-shadow: 0 0 4px 1px rgba(51, 237, 242, 0.75), 0 0 9px 2px rgba(51, 237, 242, 0.25); }
+  .cfg-locks :global(.cfg-lock) { flex: none; min-width: 1.5rem; height: 2.25rem; padding: 0 0.3125rem; border: 0; border-radius: 62.4375rem; background: transparent; cursor: pointer; display: inline-flex; gap: 0.1875rem; align-items: center; justify-content: center; }
+  .cfg-locks :global(.cfg-lock:focus-visible) { outline: 0.1875rem solid var(--cyan); outline-offset: -0.125rem; }
+  .cfg-locks :global(.cfg-lock i) { width: 0.1875rem; height: 0.1875rem; border-radius: 50%; background: rgba(246, 241, 232, 0.3); transition: background 0.2s, box-shadow 0.2s; }
+  .cfg-locks :global(.cfg-lock:is(:hover, :focus-visible) i) { background: #fff; box-shadow: 0 0 0.25rem 1px rgba(255, 158, 41, 0.7), 0 0 0.5625rem 2px rgba(51, 237, 242, 0.25); }
+  .cfg-locks :global(.cfg-lock:is(:hover, :focus-visible) i:nth-child(2)) { box-shadow: 0 0 0.25rem 1px rgba(219, 100, 232, 0.75), 0 0 0.5625rem 2px rgba(51, 237, 242, 0.25); }
+  .cfg-locks :global(.cfg-lock:is(:hover, :focus-visible) i:nth-child(3)) { box-shadow: 0 0 0.25rem 1px rgba(51, 237, 242, 0.75), 0 0 0.5625rem 2px rgba(51, 237, 242, 0.25); }
   /* eigener Text und Logo in einer Zeile */
-  .cfg-own-row { display: flex; gap: 6px; align-items: stretch; }
+  .cfg-own-row { display: flex; gap: 0.375rem; align-items: stretch; }
   .cfg-own-row .cfg-text { flex: 1 1 auto; min-width: 0; }
-  .cfg-upload { position: relative; flex: none; display: inline-flex; align-items: center; gap: 7px; min-height: 42px; padding: 0 14px; border: 1px solid var(--line-strong); border-radius: 10px; color: var(--text); font-size: 15px; cursor: pointer; }
+  .cfg-upload { position: relative; flex: none; display: inline-flex; align-items: center; gap: 0.4375rem; min-height: 2.625rem; padding: 0 0.875rem; border: 1px solid var(--line-strong); border-radius: 0.625rem; color: var(--text); font-size: var(--text-control); cursor: pointer; }
   .cfg-upload:hover { background: rgba(246, 241, 232, 0.06); }
-  .cfg-upload svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .cfg-upload svg { width: 1.0625rem; height: 1.0625rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
   .cfg-upload input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
-  .cfg-upload:focus-within { outline: 3px solid var(--cyan); outline-offset: 2px; }
+  .cfg-upload:focus-within { outline: 0.1875rem solid var(--cyan); outline-offset: 0.125rem; }
   .cfg-upload.has-logo { border-color: var(--pkg, var(--amber)); }
-  .cfg-logo-off { flex: none; width: 42px; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--muted); cursor: pointer; display: grid; place-items: center; }
+  .cfg-logo-off { flex: none; width: 2.625rem; border: 1px solid var(--line); border-radius: 0.625rem; background: transparent; color: var(--muted); cursor: pointer; display: grid; place-items: center; }
   .cfg-logo-off[hidden] { display: none; }
-  .cfg-logo-off svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+  .cfg-logo-off svg { width: 0.875rem; height: 0.875rem; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
   .cfg-logo-off:hover { color: var(--text); }
-  .cfg-logo-off:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+  .cfg-logo-off:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offset: 0.125rem; }
   /* Hinweis zum Logo als Tooltip am Info-Zeichen (Runde 9) */
   .cfg-own-wrap { position: relative; }
-  .cfg-own legend { display: flex; align-items: center; gap: 6px; }
-  .cfg-info { display: inline-grid; place-items: center; width: 24px; height: 24px; margin-left: 2px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--faint); cursor: pointer; }
-  .cfg-info svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; }
+  .cfg-own legend { display: flex; align-items: center; gap: 0.375rem; }
+  .cfg-info { display: inline-grid; place-items: center; width: 1.5rem; height: 1.5rem; margin-left: 0.125rem; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--faint); cursor: pointer; }
+  .cfg-info svg { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; }
   .cfg-info:hover, .cfg-info[aria-expanded="true"] { color: var(--text); }
-  .cfg-info:focus-visible { outline: 3px solid var(--cyan); outline-offset: 1px; }
+  .cfg-info:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offset: 0.0625rem; }
   /* Hinweis direkt unter dem Info-Zeichen, Pfeil zeigt darauf (Marc, 02.11.2026); --tip-left/--tip-arrow setzt das Skript */
-  .cfg-legal { position: absolute; z-index: 6; left: var(--tip-left, 0px); top: var(--tip-top, 30px); width: min(320px, 100%); margin: 0; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: 10px; background: rgba(15, 13, 12, 0.97); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45); font-size: 12.5px; line-height: 1.45; color: var(--muted); opacity: 0; visibility: hidden; transform: translateY(-6px) scale(0.98); transform-origin: var(--tip-arrow, 20px) 0; transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s 0.28s; }
-  .cfg-legal::before { content: ""; position: absolute; top: -6px; left: calc(var(--tip-arrow, 20px) - 5px); width: 10px; height: 10px; background: inherit; border: solid var(--line-strong); border-width: 1px 0 0 1px; transform: rotate(45deg); border-radius: 2px 0 0 0; }
+  .cfg-legal { position: absolute; z-index: 6; left: var(--tip-left, 0rem); top: var(--tip-top, 1.875rem); width: min(20rem, 100%); margin: 0; padding: 0.625rem 0.75rem; border: 1px solid var(--line-strong); border-radius: 0.625rem; background: rgba(15, 13, 12, 0.97); box-shadow: 0 0.625rem 1.875rem rgba(0, 0, 0, 0.45); font-size: 0.78125rem; line-height: 1.45; color: var(--muted); opacity: 0; visibility: hidden; transform: translateY(-0.375rem) scale(0.98); transform-origin: var(--tip-arrow, 1.25rem) 0; transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s 0.28s; }
+  .cfg-legal::before { content: ""; position: absolute; top: -0.375rem; left: calc(var(--tip-arrow, 1.25rem) - 0.3125rem); width: 0.625rem; height: 0.625rem; background: inherit; border: solid var(--line-strong); border-width: 1px 0 0 1px; transform: rotate(45deg); border-radius: 0.125rem 0 0 0; }
   .cfg-legal.is-open { opacity: 1; visibility: visible; transform: none; transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1); }
   @media (prefers-reduced-motion: reduce) { .cfg-legal, .cfg-legal.is-open { transition: opacity 0.15s ease, visibility 0s 0.15s; transform: none; } }
-  .cfg-logo-status { margin: 0; font-size: 13px; color: var(--muted); }
+  .cfg-logo-status { margin: 0; font-size: var(--text-label); color: var(--muted); }
   .cfg-logo-status:empty { display: none; }
 
-  .cfg-error { position: absolute; inset: auto 20px 76px; color: var(--muted); font-size: 14px; }
+  .cfg-error { position: absolute; inset: auto 1.25rem 4.75rem; color: var(--muted); font-size: var(--text-sm); }
   /* Freischalt-Meldung (dreizehnte Fassung), fünfzehnte Fassung in der Sprache der Seite (Marc: die Toast-UI war „gar
      nicht on-brand“): kein Kasten, nur Schrift auf einem weichen dunklen Schein; der Name des Motivs im FlyingStars-Verlauf
      (Space Grotesk), darunter zieht ein Lichtpunkt eine feine Verlaufskante von links nach rechts. Weich ein- und
      ausgeblendet (Unschärfe → scharf), verschwindet von selbst. */
-  .cfg-toast { position: absolute; top: 16px; left: 0; right: 0; width: fit-content; transform: translateY(-4px); margin: 0 auto; max-width: calc(100% - 160px); padding: 10px 28px 14px; background: radial-gradient(closest-side, rgba(10, 9, 8, 0.78), rgba(10, 9, 8, 0.5) 60%, rgba(10, 9, 8, 0)); color: var(--muted); font: 400 13px/1.35 var(--display); letter-spacing: 0.01em; text-align: center; opacity: 0; filter: blur(6px); transition: opacity 0.6s ease, transform 0.6s ease, filter 0.6s ease; pointer-events: none; }
-  .cfg-toast :global(b) { font: 600 16px/1.25 var(--display); letter-spacing: 0; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
-  .cfg-toast::after { content: ""; position: absolute; left: 28px; right: 28px; bottom: 6px; height: 1px; border-radius: 1px; background: var(--grad); opacity: 0.85; transform: scaleX(0); transform-origin: left center; }
-  .cfg-toast::before { content: ""; position: absolute; left: 28px; bottom: 4.5px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: #fff; box-shadow: 0 0 5px 1px rgba(255, 158, 41, 0.9), 0 0 12px 3px rgba(219, 100, 232, 0.55), 0 0 22px 6px rgba(51, 237, 242, 0.25); opacity: 0; }
+  .cfg-toast { position: absolute; top: 1rem; left: 0; right: 0; width: fit-content; transform: translateY(-0.25rem); margin: 0 auto; max-width: calc(100% - 10rem); padding: 0.625rem 1.75rem 0.875rem; background: radial-gradient(closest-side, rgba(10, 9, 8, 0.78), rgba(10, 9, 8, 0.5) 60%, rgba(10, 9, 8, 0)); color: var(--muted); font: 400 var(--text-label)/1.35 var(--display); letter-spacing: 0.01em; text-align: center; opacity: 0; filter: blur(0.375rem); transition: opacity 0.6s ease, transform 0.6s ease, filter 0.6s ease; pointer-events: none; }
+  .cfg-toast :global(b) { font: 600 var(--text-base)/1.25 var(--display); letter-spacing: 0; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  .cfg-toast::after { content: ""; position: absolute; left: 1.75rem; right: 1.75rem; bottom: 0.375rem; height: 1px; border-radius: 0.0625rem; background: var(--grad); opacity: 0.85; transform: scaleX(0); transform-origin: left center; }
+  .cfg-toast::before { content: ""; position: absolute; left: 1.75rem; bottom: 0.28125rem; width: 0.25rem; height: 0.25rem; margin-left: -0.125rem; border-radius: 50%; background: #fff; box-shadow: 0 0 0.3125rem 1px rgba(255, 158, 41, 0.9), 0 0 0.75rem 0.1875rem rgba(219, 100, 232, 0.55), 0 0 1.375rem 0.375rem rgba(51, 237, 242, 0.25); opacity: 0; }
   .cfg-toast.is-on { opacity: 1; transform: none; filter: none; }
   .cfg-toast.is-on::after { animation: cfg-edge 1.2s 0.15s cubic-bezier(0.3, 0.7, 0.2, 1) forwards; }
   .cfg-toast.is-on::before { animation: cfg-spark 1.2s 0.15s cubic-bezier(0.3, 0.7, 0.2, 1) forwards; }
   @keyframes cfg-edge { to { transform: scaleX(1); } }
-  @keyframes cfg-spark { 0% { left: 28px; opacity: 0; } 18% { opacity: 1; } 75% { opacity: 1; } 100% { left: calc(100% - 28px); opacity: 0; } }
+  @keyframes cfg-spark { 0% { left: 1.75rem; opacity: 0; } 18% { opacity: 1; } 75% { opacity: 1; } 100% { left: calc(100% - 1.75rem); opacity: 0; } }
   .cfg-toast:empty { display: none; }
   @media (prefers-reduced-motion: reduce) {
     .cfg-toast { transition: none; transform: none; filter: none; }
@@ -281,25 +281,25 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
     .cfg-toast.is-on::before { animation: none; }
   }
   /* package buttons like the pricing calculator: one segment per package, the chosen one in its package colour */
-  .cfg-pkgs { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 12px; }
+  .cfg-pkgs { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.25rem; padding: 0.25rem; border: 1px solid var(--line); border-radius: 0.75rem; }
   .cfg-pkgs label { position: relative; z-index: 1; cursor: pointer; }
   .cfg-pkgs input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
-  .cfg-pkgs label > span { display: grid; gap: 4px; justify-items: center; text-align: center; min-height: 52px; padding: 8px 6px; border-radius: 9px; color: var(--muted); transition: color 0.3s ease; }
+  .cfg-pkgs label > span { display: grid; gap: 0.25rem; justify-items: center; text-align: center; min-height: 3.25rem; padding: 0.5rem 0.375rem; border-radius: 0.5625rem; color: var(--muted); transition: color 0.3s ease; }
   /* Runde 10 (Marc): nicht gewählte Pakete behalten ihre Farbe, gedämpft (40 % Farbe, 60 % --faint); auf --ground
      Amber 7,0:1, Orchid 5,8:1, Cyan 8,0:1 */
-  .cfg-pkgs b { font: 600 13px/1 var(--mono); letter-spacing: 0.08em; color: color-mix(in srgb, var(--c) 40%, var(--faint)); transition: color 0.3s ease; }
-  .cfg-pkgs small { font-size: 12px; line-height: 1.2; }
+  .cfg-pkgs b { font: 600 var(--text-label)/1 var(--mono); letter-spacing: 0.08em; color: color-mix(in srgb, var(--c) 40%, var(--faint)); transition: color 0.3s ease; }
+  .cfg-pkgs small { font-size: var(--text-xs); line-height: 1.2; }
   .cfg-pkgs input:checked + span { color: var(--text); }
   .cfg-pkgs input:checked + span b { color: var(--c); }
-  .cfg-pkgs input:focus-visible + span { outline: 3px solid var(--cyan); outline-offset: 2px; }
+  .cfg-pkgs input:focus-visible + span { outline: 0.1875rem solid var(--cyan); outline-offset: 0.125rem; }
   /* Runde 11 (Marc: harte Hover-Wechsel „sehen scheiße aus“): gleitender Rahmen. --i ist das gewählte Paket (0–2), --h
      das Paket unter der Maus (ohne Maus = --i, so gleitet der Schatten beim Verlassen zurück). Die Rahmen sind so breit
      wie eine Spalte; translateX in eigener Breite plus Spaltenabstand (4 px) */
   .cfg-pkgs { --i: 0; --sc: var(--c0); --h: var(--i); --hc: var(--sc); }
   .cfg-pkgs:has(input[value="1"]:checked) { --i: 1; --sc: var(--c1); }
   .cfg-pkgs:has(input[value="2"]:checked) { --i: 2; --sc: var(--c2); }
-  .cfg-ind { position: absolute; z-index: 0; top: 4px; bottom: 4px; left: 4px; width: calc((100% - 16px) / 3); box-sizing: border-box; border-radius: 9px; border: 1px solid var(--sc); background: color-mix(in srgb, var(--sc) 14%, transparent); transform: translateX(calc(var(--i) * (100% + 4px))); transition: transform 0.45s cubic-bezier(0.3, 0.7, 0.2, 1), border-color 0.45s ease, background-color 0.45s ease; pointer-events: none; }
-  .cfg-ind-hover { border-color: var(--hc); background: color-mix(in srgb, var(--hc) 10%, transparent); transform: translateX(calc(var(--h) * (100% + 4px))); opacity: 0; transition: transform 0.35s cubic-bezier(0.3, 0.7, 0.2, 1), border-color 0.35s ease, background-color 0.35s ease, opacity 0.3s ease; }
+  .cfg-ind { position: absolute; z-index: 0; top: 0.25rem; bottom: 0.25rem; left: 0.25rem; width: calc((100% - 1rem) / 3); box-sizing: border-box; border-radius: 0.5625rem; border: 1px solid var(--sc); background: color-mix(in srgb, var(--sc) 14%, transparent); transform: translateX(calc(var(--i) * (100% + 0.25rem))); transition: transform 0.45s cubic-bezier(0.3, 0.7, 0.2, 1), border-color 0.45s ease, background-color 0.45s ease; pointer-events: none; }
+  .cfg-ind-hover { border-color: var(--hc); background: color-mix(in srgb, var(--hc) 10%, transparent); transform: translateX(calc(var(--h) * (100% + 0.25rem))); opacity: 0; transition: transform 0.35s cubic-bezier(0.3, 0.7, 0.2, 1), border-color 0.35s ease, background-color 0.35s ease, opacity 0.3s ease; }
   /* nur mit echter Maus: auf Touch bliebe :hover nach dem Tippen hängen */
   @media (hover: hover) {
     .cfg-pkgs:has(label:nth-child(1):hover) { --h: 0; --hc: var(--c0); }
@@ -314,61 +314,61 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
     .cfg-ind, .cfg-pkgs label > span, .cfg-pkgs b { transition: none; }
   }
   /* Runde 11 (Marc: „crampt“): mehr Luft zwischen den Eingabegruppen */
-  .cfg-panel { order: 1; display: grid; gap: clamp(26px, 2.2vw, 34px); }
-  :global(.cfg-h) { font-size: clamp(28px, 2.6vw, 40px); line-height: 1.04; letter-spacing: -0.03em; text-wrap: balance; }
-  .cfg-block { display: grid; gap: 8px; border: 0; margin: 0; padding: 0; min-width: 0; }
-  .cfg-block > label, .cfg-block legend { font-size: 15px; color: var(--text); padding: 0; margin-bottom: 6px; }
+  .cfg-panel { order: 1; display: grid; gap: clamp(1.625rem, 2.2vw, 2.125rem); }
+  :global(.cfg-h) { font-size: clamp(1.75rem, 2.6vw, 2.5rem); line-height: 1.04; letter-spacing: -0.03em; text-wrap: balance; }
+  .cfg-block { display: grid; gap: 0.5rem; border: 0; margin: 0; padding: 0; min-width: 0; }
+  .cfg-block > label, .cfg-block legend { font-size: var(--text-control); color: var(--text); padding: 0; margin-bottom: 0.375rem; }
   /* Anlass als gestaltetes natives <select> (Runde 11): Rahmen wie die übrigen Felder, eigener Pfeil, dunkle Liste */
   .cfg-select { position: relative; }
-  .cfg-select select { display: block; width: 100%; min-height: 48px; margin: 0; padding: 0 48px 0 16px; border: 1px solid var(--line-strong); border-radius: 12px; background-color: rgba(246, 241, 232, 0.03); color: var(--text); font: 500 17px/1.2 var(--display); letter-spacing: -0.01em; color-scheme: dark; cursor: pointer; transition: border-color 0.2s ease, background-color 0.2s ease; }
+  .cfg-select select { display: block; width: 100%; min-height: 3rem; margin: 0; padding: 0 3rem 0 1rem; border: 1px solid var(--line-strong); border-radius: 0.75rem; background-color: rgba(246, 241, 232, 0.03); color: var(--text); font: 500 var(--text-copy)/1.2 var(--display); letter-spacing: -0.01em; color-scheme: dark; cursor: pointer; transition: border-color 0.2s ease, background-color 0.2s ease; }
   .cfg-select select:hover { border-color: rgba(246, 241, 232, 0.42); background-color: rgba(246, 241, 232, 0.06); }
   @media (prefers-reduced-motion: reduce) { .cfg-select select, .cfg-select svg { transition: none; } }
-  .cfg-opt { color: var(--faint); font-size: 13px; }
-  .cfg-text { width: 100%; min-height: 42px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line-strong); background: transparent; color: var(--text); font: inherit; font-size: 16px; }
+  .cfg-opt { color: var(--faint); font-size: var(--text-label); }
+  .cfg-text { width: 100%; min-height: 2.625rem; padding: 0 0.875rem; border-radius: 0.625rem; border: 1px solid var(--line-strong); background: transparent; color: var(--text); font: inherit; font-size: var(--text-base); }
   .cfg-text::placeholder { color: var(--faint); }
-  .cfg-text:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
-  .cfg-styles { --chips-gap: 6px; --chip-height: 36px; --chip-padding: 0 14px; --chip-font-size: 14px; --chip-border: var(--line); --chip-selected-bg: transparent; --chip-selected-color: var(--text); }
+  .cfg-text:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offset: 0.125rem; }
+  .cfg-styles { --chips-gap: 0.375rem; --chip-height: 2.25rem; --chip-padding: 0 0.875rem; --chip-font-size: var(--text-sm); --chip-border: var(--line); --chip-selected-bg: transparent; --chip-selected-color: var(--text); }
   .cfg-styles[hidden] { display: none; }
   /* Paket, Preis, Dauer und Anfrage als eigene Fläche (Runde 11), im Stil der Karten der Site (--surface, --line) */
-  .cfg-sum { display: grid; gap: 18px; margin-top: clamp(6px, 1vw, 16px); padding: clamp(20px, 1.8vw, 28px); border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
-  .cfg-result { display: grid; gap: 8px; }
-  .cfg-price { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  .cfg-sum { display: grid; gap: 1.125rem; margin-top: clamp(0.375rem, 1vw, 1rem); padding: clamp(1.25rem, 1.8vw, 1.75rem); border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+  .cfg-result { display: grid; gap: 0.5rem; }
+  .cfg-price { display: flex; align-items: baseline; gap: 0.875rem; flex-wrap: wrap; }
   /* Paketname in seiner Paketfarbe wie überall (Marc, 02.11.2026); --pkg setzt das Skript bei jedem Wechsel */
   .cfg-price b, .cfg-bar b { color: var(--pkg, var(--pkg0)); transition: color 0.3s ease; }
-  .cfg-price b { font: 600 clamp(24px, 2.2vw, 30px)/1 var(--display); letter-spacing: 0.02em; }
-  .cfg-price span { font: 500 clamp(24px, 2.2vw, 30px)/1 var(--display); color: var(--text); }
-  .cfg-meta { margin: 0; font-size: 12px; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; }
+  .cfg-price b { font: 600 clamp(1.5rem, 2.2vw, 1.875rem)/1 var(--display); letter-spacing: 0.02em; }
+  .cfg-price span { font: 500 clamp(1.5rem, 2.2vw, 1.875rem)/1 var(--display); color: var(--text); }
+  .cfg-meta { margin: 0; font-size: var(--text-xs); letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; }
   .cfg-cta { justify-self: start; }
-  .cfg-note { margin: 0; font-size: 13px; color: var(--faint); line-height: 1.5; text-wrap: pretty; }
+  .cfg-note { margin: 0; font-size: var(--text-label); color: var(--faint); line-height: 1.5; text-wrap: pretty; }
   .cfg-bar { display: none; }
   /* niedrige Desktop-Fenster (1280 × 720): Text und Logo stehen seit der vierzehnten Fassung bei den Auswahlen; damit
      Preis und Anfrage weiter im ersten Blick bleiben, rückt die Bedienung enger zusammen */
-  @media (min-width: 1001px) and (max-height: 820px) {
-    .cfg-panel { gap: 18px; }
-    :global(.cfg-h) { font-size: clamp(26px, 2.2vw, 34px); }
-    .cfg-text, .cfg-upload { min-height: 38px; }
-    .cfg-block > label, .cfg-block legend { margin-bottom: 2px; }
-    .cfg-select select { min-height: 42px; }
-    .cfg-pkgs label > span { min-height: 46px; padding: 6px; }
-    .cfg-sum { margin-top: 2px; padding: 16px 18px; gap: 12px; }
+  @media (min-width: 62.5625em) and (max-height: 51.25em) {
+    .cfg-panel { gap: 1.125rem; }
+    :global(.cfg-h) { font-size: clamp(1.625rem, 2.2vw, 2.125rem); }
+    .cfg-text, .cfg-upload { min-height: 2.375rem; }
+    .cfg-block > label, .cfg-block legend { margin-bottom: 0.125rem; }
+    .cfg-select select { min-height: 2.625rem; }
+    .cfg-pkgs label > span { min-height: 2.875rem; padding: 0.375rem; }
+    .cfg-sum { margin-top: 0.125rem; padding: 1rem 1.125rem; gap: 0.75rem; }
   }
-  @media (max-width: 1000px) {
-    .cfg { grid-template-columns: 1fr; padding-top: 64px; gap: 22px; padding-bottom: 120px; }
-    .cfg-stage { order: 0; top: 64px; z-index: 5; height: 42svh; min-height: 280px; margin: 0 calc(var(--cfg-gutter) * -1); border-radius: 0; border-left: 0; border-right: 0; }
+  @media (max-width: 62.5em) {
+    .cfg { grid-template-columns: 1fr; padding-top: 4rem; gap: 1.375rem; padding-bottom: 7.5rem; }
+    .cfg-stage { order: 0; top: 4rem; z-index: 5; height: 42svh; min-height: 17.5rem; margin: 0 calc(var(--cfg-gutter) * -1); border-radius: 0; border-left: 0; border-right: 0; }
     /* on phones the picture is the headline: the question stays for screen readers, the slider moves into view */
     :global(.cfg-h) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-    .cfg-panel { gap: 26px; }
-    .cfg-caption { font-size: 13px; }
-    .cfg-toast { top: 48px; max-width: calc(100% - 28px); }
-    .cfg-player { left: 10px; right: 10px; bottom: 10px; gap: 2px; }
-    .cfg-player button { height: 34px; min-width: 32px; padding: 0 6px; }
-    .cfg-rate button { padding: 0 5px; }
+    .cfg-panel { gap: 1.625rem; }
+    .cfg-caption { font-size: var(--text-label); }
+    .cfg-toast { top: 3rem; max-width: calc(100% - 1.75rem); }
+    .cfg-player { left: 0.625rem; right: 0.625rem; bottom: 0.625rem; gap: 0.125rem; }
+    .cfg-player button { height: 2.125rem; min-width: 2rem; padding: 0 0.375rem; }
+    .cfg-rate button { padding: 0 0.3125rem; }
     /* price and inquiry stay in reach while the visitor slides */
     /* eingebettet: die Leiste erscheint nur, solange der Konfigurator im Bild ist (is-near, show-configurator.js) */
-    .cfg-bar { position: fixed; z-index: 15; inset: auto 0 0 0; display: flex; transform: translateY(105%); visibility: hidden; transition: transform 0.3s ease, visibility 0s 0.3s; align-items: center; justify-content: space-between; gap: 12px; padding: 12px var(--pad) calc(12px + env(safe-area-inset-bottom, 0px)); background: rgba(15, 13, 12, 0.94); border-top: 1px solid var(--line); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); font-size: 15px; }
+    .cfg-bar { position: fixed; z-index: 15; inset: auto 0 0 0; display: flex; transform: translateY(105%); visibility: hidden; transition: transform 0.3s ease, visibility 0s 0.3s; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.75rem var(--pad) calc(0.75rem + env(safe-area-inset-bottom, 0rem)); background: rgba(15, 13, 12, 0.94); border-top: 1px solid var(--line); backdrop-filter: blur(0.625rem); -webkit-backdrop-filter: blur(0.625rem); font-size: var(--text-control); }
     .cfg.is-near .cfg-bar { transform: none; visibility: visible; transition: transform 0.3s ease; }
-    .cfg-bar b { letter-spacing: 0.06em; margin-right: 6px; }
+    .cfg-bar b { letter-spacing: 0.06em; margin-right: 0.375rem; }
     /* angesteuerte Felder (Fokus, Tastatur) bleiben zwischen der klebenden Bühne und der Preisleiste sichtbar */
-    .cfg-panel :is(input, select, button, .cfg-upload) { scroll-margin: calc(64px + max(42svh, 280px) + 16px) 0 96px; }
+    .cfg-panel :is(input, select, button, .cfg-upload) { scroll-margin: calc(4rem + max(42svh, 17.5rem) + 1rem) 0 6rem; }
   }
 </style>

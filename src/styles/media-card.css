@@ -1,42 +1,42 @@
 
 .occ { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: clip; /* clip statt hidden: kein Scroll-Container, sonst misst der CSS-Vorhang (view()) gegen die Karte */ display: grid; grid-template-rows: auto 1fr; transition: border-color 0.2s, transform 0.2s; }
-.occ:hover { border-color: var(--line-strong); transform: translateY(-2px); }
+.occ:hover { border-color: var(--line-strong); transform: translateY(-0.125rem); }
 .occ .img { aspect-ratio: 4 / 3; overflow: hidden; background: #0a0908; border-radius: var(--radius) var(--radius) 0 0; }
 .occ img { width: 100%; height: 100%; object-fit: cover; }
-.occ .body { padding: 22px; display: grid; gap: 12px; align-content: start; }
-.occ .body p { color: var(--muted); font-size: 15px; }
-.occ .link { margin-top: 6px; justify-self: start; font-size: 14.5px; }
-.occ .dl { justify-self: start; margin-top: -2px; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); transition: color 0.2s; }
+.occ .body { padding: 1.375rem; display: grid; gap: 0.75rem; align-content: start; }
+.occ .body p { color: var(--muted); font-size: var(--text-control); }
+.occ .link { margin-top: 0.375rem; justify-self: start; font-size: var(--text-sm-plus); }
+.occ .dl { justify-self: start; margin-top: -0.125rem; font-size: var(--text-xs); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); transition: color 0.2s; }
 .occ .dl:hover { color: var(--text); }
-.proj { display: grid; gap: 12px; align-content: start; }
-.proj .img { aspect-ratio: 16 / 9; overflow: hidden; border-radius: 14px; background: #0a0908; position: relative; }
+.proj { display: grid; gap: 0.75rem; align-content: start; }
+.proj .img { aspect-ratio: 16 / 9; overflow: hidden; border-radius: 0.875rem; background: #0a0908; position: relative; }
 .proj img, .proj video { width: 100%; height: 100%; object-fit: cover; }
-.proj .count { z-index: 2; position: absolute; left: 12px; bottom: 12px; background: rgba(15, 13, 12, 0.72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: var(--text); padding: 6px 9px; border-radius: 4px; }
+.proj .count { z-index: 2; position: absolute; left: 0.75rem; bottom: 0.75rem; background: rgba(15, 13, 12, 0.72); backdrop-filter: blur(0.5rem); -webkit-backdrop-filter: blur(0.5rem); color: var(--text); padding: 0.375rem 0.5625rem; border-radius: 0.25rem; }
 .proj .kick { color: var(--amber); }
-.proj :is(h2, h3, h4) { font: 500 clamp(19px, 1.5vw, 22px)/1.15 var(--display); letter-spacing: -0.02em; color: var(--head); margin: 0; text-wrap: balance; }
-a.proj:hover :is(h2, h3, h4) { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 5px; }
-@media (max-width: 640px) {
+.proj :is(h2, h3, h4) { font: 500 var(--text-lg)/1.15 var(--display); letter-spacing: -0.02em; color: var(--head); margin: 0; text-wrap: balance; }
+a.proj:hover :is(h2, h3, h4) { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.3125rem; }
+@media (max-width: 40em) {
   .proj .img { aspect-ratio: 16 / 10; }
 }
 .occ .cat { color: var(--accent); }
-.proj .img { --curtain-r: 14px; }
+.proj .img { --curtain-r: 0.875rem; }
 .proj.static .img { cursor: default; }
-.proj p { color: var(--muted); font-size: 15px; }
+.proj p { color: var(--muted); font-size: var(--text-control); }
 .proj .img .loop { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.6s ease; }
 .proj.playing .img .loop { opacity: 1; }
 .proj .img .count { z-index: 2; }
 .occasions.occ-slider > .occ { scroll-snap-align: start; }
 
-  .ls-card:nth-child(2) { margin-top: clamp(40px, 9vw, 160px); }
-  .ls-card { display: grid; gap: 22px; align-content: start; }
+  .ls-card:nth-child(2) { margin-top: clamp(2.5rem, 9vw, 10rem); }
+  .ls-card { display: grid; gap: 1.375rem; align-content: start; }
   .ls-img { position: relative; aspect-ratio: 4 / 3; border-radius: var(--radius); overflow: hidden; background: #0a0908; --curtain-r: var(--radius); }
   .ls-img img { width: 100%; height: 100%; object-fit: cover; }
-  .ls-badge { position: absolute; z-index: 2; left: 14px; bottom: 14px; padding: 7px 10px; border-radius: 4px; background: rgba(15, 13, 12, 0.72); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); color: var(--text); }
-  .ls-body { display: grid; gap: 12px; justify-items: start; max-width: 40rem; }
+  .ls-badge { position: absolute; z-index: 2; left: 0.875rem; bottom: 0.875rem; padding: 0.4375rem 0.625rem; border-radius: 0.25rem; background: rgba(15, 13, 12, 0.72); -webkit-backdrop-filter: blur(0.5rem); backdrop-filter: blur(0.5rem); color: var(--text); }
+  .ls-body { display: grid; gap: 0.75rem; justify-items: start; max-width: 40rem; }
   .ls-body .kicker { margin: 0; }
-  .ls-body h2, .ls-body h3 { font-size: clamp(24px, 2.2vw, 32px); line-height: 1.1; max-width: 22ch; }
+  .ls-body h2, .ls-body h3 { font-size: var(--text-2xl); line-height: 1.1; max-width: 22ch; }
   .ls-body p { color: var(--muted); max-width: 52ch; }
-  @media (max-width: 760px) {
+  @media (max-width: 47.5em) {
     .ls-card:nth-child(2) { margin-top: 0; }
   }
   /* Formationskarte (Referenz ohne Foto) */

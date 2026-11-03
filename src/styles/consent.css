@@ -6,7 +6,7 @@
   --cc-primary-color: var(--head);
   --cc-secondary-color: var(--muted);
   --cc-modal-border-radius: var(--radius);
-  --cc-btn-border-radius: 4px;
+  --cc-btn-border-radius: 0.25rem;
   --cc-primary-border-color: var(--line-strong);
   --cc-secondary-border-color: var(--line);
   --cc-overlay-bg: rgb(0 0 0 / .72);
@@ -40,41 +40,41 @@
 }
 /* Erste Stufe: kleine Karte unten rechts, die Seite bleibt bedienbar und hell (Marc, 02.11.2026). Die Einstellungen
    bleiben ein echter Dialog in der Mitte. */
-#cc-main .cm.cm--box { width: 380px; max-width: calc(100vw - 32px); border: 1px solid var(--line-strong); box-shadow: 0 18px 50px rgb(0 0 0 / .45); }
+#cc-main .cm.cm--box { width: 23.75rem; max-width: calc(100vw - 2rem); border: 1px solid var(--line-strong); box-shadow: 0 1.125rem 3.125rem rgb(0 0 0 / .45); }
 #cc-main .cm__body { padding: 0; }
-#cc-main .cm__texts { padding: 16px 0 0; }
+#cc-main .cm__texts { padding: 1rem 0 0; }
 /* gleiche Ränder für Text und Knöpfe, auch gegen die !important-Werte der Bibliothek unter 640px */
-#cc-main .cm .cm__title, #cc-main .cm .cm__desc, #cc-main .cm .cm__btns { padding-left: 18px !important; padding-right: 18px !important; }
-#cc-main .cm__title { font: 500 16px/1.3 var(--display); letter-spacing: -.01em; margin: 0 0 6px; }
+#cc-main .cm .cm__title, #cc-main .cm .cm__desc, #cc-main .cm .cm__btns { padding-left: 1.125rem !important; padding-right: 1.125rem !important; }
+#cc-main .cm__title { font: 500 var(--text-base)/1.3 var(--display); letter-spacing: -.01em; margin: 0 0 0.375rem; }
 #cc-main .cm__title + .cm__desc { margin-top: 0; }
-#cc-main .cm__desc { font-size: 13px; line-height: 1.5; padding-top: 0; padding-bottom: 0; max-height: none; }
-#cc-main .cm .cm__btns { padding-top: 12px; padding-bottom: 12px; border-top: 0 !important; }
-#cc-main .consent-fine { color: var(--faint); font-size: 12px; }
-#cc-main .consent-fine a { color: var(--muted); text-underline-offset: 2px; }
-#cc-main .consent-list { display: block; margin: 2px 0 0; padding: 0; }
-#cc-main .consent-list [role=listitem] { display: block; position: relative; padding-left: 16px; }
-#cc-main .consent-list [role=listitem]::before { content: ""; position: absolute; left: 3px; top: .62em; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+#cc-main .cm__desc { font-size: var(--text-label); line-height: 1.5; padding-top: 0; padding-bottom: 0; max-height: none; }
+#cc-main .cm .cm__btns { padding-top: 0.75rem; padding-bottom: 0.75rem; border-top: 0 !important; }
+#cc-main .consent-fine { color: var(--faint); font-size: var(--text-xs); }
+#cc-main .consent-fine a { color: var(--muted); text-underline-offset: 0.125rem; }
+#cc-main .consent-list { display: block; margin: 0.125rem 0 0; padding: 0; }
+#cc-main .consent-list [role=listitem] { display: block; position: relative; padding-left: 1rem; }
+#cc-main .consent-list [role=listitem]::before { content: ""; position: absolute; left: 0.1875rem; top: .62em; width: 0.3125rem; height: 0.3125rem; border-radius: 50%; background: var(--accent); }
 /* Einstellungen kompakt (Marc, 03.11.2026: „deutlich kleiner … bei großen Screens komplett unnötig, dass es so zentral
    Platz einnimmt“): höchstens 36 rem hoch, Überschrift höchstens 1,75 rem. Auf dem Handy als Blatt von unten statt
    bildschirmfüllend. Die Bibliothek setzt 16px als Grundgröße; 1rem folgt der Schriftgröße im Browser. */
 #cc-main { font-size: 1rem; }
 #cc-main .pm.pm--box { max-height: min(36rem, calc(100dvh - 3rem)); }
-@media (max-width: 640px) { #cc-main .pm.pm--box { top: auto; max-height: min(36rem, 100dvh); border-radius: var(--radius) var(--radius) 0 0; } }
+@media (max-width: 40em) { #cc-main .pm.pm--box { top: auto; max-height: min(36rem, 100dvh); border-radius: var(--radius) var(--radius) 0 0; } }
 #cc-main .pm__title { font: 500 clamp(1.375rem, 3vw, 1.75rem)/1.15 var(--display); letter-spacing: -.025em; }
-#cc-main .pm__section-desc { font-size: 14px; line-height: 1.6; }
+#cc-main .pm__section-desc { font-size: var(--text-sm); line-height: 1.6; }
 #cc-main .consent-paragraph { display: block; }
-#cc-main .consent-paragraph + .consent-paragraph, #cc-main .consent-list + .consent-paragraph { margin-top: 8px; }
+#cc-main .consent-paragraph + .consent-paragraph, #cc-main .consent-list + .consent-paragraph { margin-top: 0.5rem; }
 #cc-main .pm__section-title { font-family: var(--display); }
-#cc-main .pm__btn { min-height: 48px; font: 500 14px/1.3 var(--body); }
-#cc-main .cm__btn { min-height: 38px; font: 500 13.5px/1.3 var(--body); }
-#cc-main .cm .cm__btns, #cc-main .pm .pm__footer { display: grid; grid-template-columns: 1fr; gap: 8px; }
-#cc-main .cm .cm__btn-group, #cc-main .pm .pm__btn-group { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 0 !important; }
+#cc-main .pm__btn { min-height: 3rem; font: 500 var(--text-sm)/1.3 var(--body); }
+#cc-main .cm__btn { min-height: 2.375rem; font: 500 0.84375rem/1.3 var(--body); }
+#cc-main .cm .cm__btns, #cc-main .pm .pm__footer { display: grid; grid-template-columns: 1fr; gap: 0.5rem; }
+#cc-main .cm .cm__btn-group, #cc-main .pm .pm__btn-group { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; margin: 0 !important; }
 #cc-main .cm .cm__btn-group + .cm__btn-group, #cc-main .pm .pm__btn-group + .pm__btn-group { grid-template-columns: 1fr; }
-#cc-main .cm .cm__btn, #cc-main .pm .pm__btn { width: 100%; min-width: 0; margin: 0 !important; padding: 9px 12px; }
+#cc-main .cm .cm__btn, #cc-main .pm .pm__btn { width: 100%; min-width: 0; margin: 0 !important; padding: 0.5625rem 0.75rem; }
 /* „Einstellungen“ als leiser Textknopf unter den zwei gleich gewichteten Entscheidungen */
-#cc-main .cm .cm__btn[data-role=show] { min-height: 24px; padding: 2px 0; font-size: 12.5px; background: none; border-color: transparent; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; justify-self: start; width: auto; }
+#cc-main .cm .cm__btn[data-role=show] { min-height: 1.5rem; padding: 0.125rem 0; font-size: 0.78125rem; background: none; border-color: transparent; color: var(--muted); text-decoration: underline; text-underline-offset: 0.1875rem; justify-self: start; width: auto; }
 #cc-main .cm .cm__btn[data-role=show]:hover { color: var(--head); background: none; border-color: transparent; }
 #cc-main a { color: var(--accent); }
-#cc-main button:focus-visible, #cc-main a:focus-visible, #cc-main input:focus-visible + .toggle__icon { outline: 3px solid var(--cyan); outline-offset: 3px; }
-[data-consent-error]:not([hidden]) { position: fixed; z-index: 2147483647; bottom: 16px; left: 16px; right: 16px; padding: 16px; background: var(--ground); color: var(--head); border: 1px solid var(--accent); }
+#cc-main button:focus-visible, #cc-main a:focus-visible, #cc-main input:focus-visible + .toggle__icon { outline: 0.1875rem solid var(--cyan); outline-offset: 0.1875rem; }
+[data-consent-error]:not([hidden]) { position: fixed; z-index: 2147483647; bottom: 1rem; left: 1rem; right: 1rem; padding: 1rem; background: var(--ground); color: var(--head); border: 1px solid var(--accent); }
 @media (prefers-reduced-motion: reduce) { #cc-main * { transition: none !important; } }

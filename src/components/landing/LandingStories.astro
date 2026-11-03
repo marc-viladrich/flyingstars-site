@@ -29,12 +29,12 @@ const cards = await Promise.all(items.map(async (item) => ({ ...item, media: awa
 </section>
 
 <style>
-  .ls-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 4vw, 72px); align-items: start; }
+  .ls-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1.25rem, 4vw, 4.5rem); align-items: start; }
   .ls-grid[data-n='3'] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .ls-grid[data-n='1'] { grid-template-columns: minmax(0, 1fr); max-width: 60rem; }
   /* versetzt: die zweite Karte beginnt tiefer, das bricht die gleichförmige Reihe auf */
-  .ls-more { margin-top: clamp(32px, 4vw, 48px); }
-  @media (max-width: 760px) {
-    .ls-grid, .ls-grid[data-n='3'] { grid-template-columns: 1fr; gap: 56px; }
+  .ls-more { margin-top: clamp(2rem, 4vw, 3rem); }
+  @media (max-width: 47.5em) {
+    .ls-grid, .ls-grid[data-n='3'] { grid-template-columns: 1fr; gap: 3.5rem; }
   }
 </style>

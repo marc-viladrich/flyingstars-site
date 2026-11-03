@@ -34,35 +34,35 @@ const { EXTRAS } = getPackageDetails(forPath(Astro.url.pathname).locale);
 <style>
   /* Raster, Zelle, Icon und Überschrift kommen aus dem gemeinsamen Icon-Raster (.ig/.ic in global.css); hier nur die Auswahl */
   .xc { transition: background-color 0.25s ease; }
-  .xc :global(h3) { padding-right: 36px; }
+  .xc :global(h3) { padding-right: 2.25rem; }
   /* die Beschriftung deckt die ganze Zelle ab: Klick irgendwo in der Zelle schaltet um */
   .xc label { cursor: pointer; }
   .xc label::after { content: ""; position: absolute; inset: 0; z-index: 1; }
-  .xc-price { color: var(--text); margin-top: 4px; }
+  .xc-price { color: var(--text); margin-top: 0.25rem; }
   .xc :global(.xc-ico) { transition: transform 0.3s ease; }
-  .xc-link { position: relative; z-index: 2; margin-top: 2px; }
+  .xc-link { position: relative; z-index: 2; margin-top: 0.125rem; }
   /* Kontrollkästchen in Orange mit Leuchten wie ein Lichtpunkt; ungewählt erst beim Zeigen sichtbar */
-  .xc-box { appearance: none; -webkit-appearance: none; position: absolute; z-index: 2; top: clamp(22px, 2.4vw, 32px); right: clamp(20px, 2.2vw, 30px); width: 24px; height: 24px; margin: 0; border-radius: 7px; border: 1.5px solid var(--line-strong); background: transparent no-repeat center / 14px 14px; cursor: pointer; opacity: 0; transform: scale(0.85); transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.3, 1.6, 0.5, 1), background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.3s ease; }
-  .xc-box:checked { opacity: 1; transform: none; background-color: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 4px rgba(245, 167, 60, 0.14), 0 0 18px rgba(245, 167, 60, 0.45); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%230f0d0c' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 10.5l3.6 3.6 7.4-8.2'/%3E%3C/svg%3E"); }
-  .xc-box:focus-visible { opacity: 1; transform: none; outline: 2px solid var(--accent); outline-offset: 3px; }
+  .xc-box { appearance: none; -webkit-appearance: none; position: absolute; z-index: 2; top: clamp(1.375rem, 2.4vw, 2rem); right: clamp(1.25rem, 2.2vw, 1.875rem); width: 1.5rem; height: 1.5rem; margin: 0; border-radius: 0.4375rem; border: 1.5px solid var(--line-strong); background: transparent no-repeat center / 0.875rem 0.875rem; cursor: pointer; opacity: 0; transform: scale(0.85); transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.3, 1.6, 0.5, 1), background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.3s ease; }
+  .xc-box:checked { opacity: 1; transform: none; background-color: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 0.25rem rgba(245, 167, 60, 0.14), 0 0 1.125rem rgba(245, 167, 60, 0.45); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%230f0d0c' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 10.5l3.6 3.6 7.4-8.2'/%3E%3C/svg%3E"); }
+  .xc-box:focus-visible { opacity: 1; transform: none; outline: 2px solid var(--accent); outline-offset: 0.1875rem; }
   .xc:hover { background: rgba(246, 241, 232, 0.025); }
   .xc:hover .xc-box { opacity: 1; transform: none; }
   .xc:hover .xc-box:not(:checked) { border-color: rgba(246, 241, 232, 0.5); }
-  .xc:hover :global(.xc-ico) { transform: translateY(-2px); }
+  .xc:hover :global(.xc-ico) { transform: translateY(-0.125rem); }
   /* ohne Zeigegerät gibt es kein Hover: dort ist das leere Kästchen immer da */
   @media (hover: none) { .xc-box { opacity: 1; transform: none; } }
   .xc:has(.xc-box:checked) { background: rgba(245, 167, 60, 0.07); }
   /* Platz ist immer reserviert, damit die Zeile beim Auswählen nicht springt */
-  .xc-added { display: inline-flex; align-items: center; gap: 6px; color: var(--accent); font-size: 12px; opacity: 0; transform: translateY(4px); transition: opacity 0.25s ease, transform 0.25s ease; }
+  .xc-added { display: inline-flex; align-items: center; gap: 0.375rem; color: var(--accent); font-size: var(--text-xs); opacity: 0; transform: translateY(0.25rem); transition: opacity 0.25s ease, transform 0.25s ease; }
   .xc:has(.xc-box:checked) .xc-added { opacity: 1; transform: none; }
   .xc-added :global(.ico) { stroke: var(--accent); }
   /* Auswahl-Leiste: klebt unten, solange das Raster im Bild ist; erscheint erst mit der ersten Auswahl */
-  .xbar { position: sticky; bottom: 16px; z-index: 5; margin-top: clamp(20px, 2.4vw, 32px); display: flex; align-items: center; justify-content: space-between; gap: 16px 24px; flex-wrap: wrap; padding: 14px 14px 14px 24px; border: 1px solid rgba(245, 167, 60, 0.35); border-radius: var(--radius); background: rgba(15, 13, 12, 0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45); opacity: 0; transform: translateY(14px); visibility: hidden; transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1), visibility 0s linear 0.35s; }
+  .xbar { position: sticky; bottom: 1rem; z-index: 5; margin-top: clamp(1.25rem, 2.4vw, 2rem); display: flex; align-items: center; justify-content: space-between; gap: 1rem 1.5rem; flex-wrap: wrap; padding: 0.875rem 0.875rem 0.875rem 1.5rem; border: 1px solid rgba(245, 167, 60, 0.35); border-radius: var(--radius); background: rgba(15, 13, 12, 0.92); backdrop-filter: blur(0.625rem); -webkit-backdrop-filter: blur(0.625rem); box-shadow: 0 1.125rem 2.5rem rgba(0, 0, 0, 0.45); opacity: 0; transform: translateY(0.875rem); visibility: hidden; transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1), visibility 0s linear 0.35s; }
   .xbar.on { opacity: 1; transform: none; visibility: visible; transition-delay: 0s; }
-  .xbar-t { margin: 0; color: var(--muted); font-size: 15px; }
+  .xbar-t { margin: 0; color: var(--muted); font-size: var(--text-control); }
   .xbar-t :global(b) { color: var(--head); font-weight: 500; }
-  @media (max-width: 640px) {
-    .xbar { padding: 14px; }
+  @media (max-width: 40em) {
+    .xbar { padding: 0.875rem; }
     .xbar .btn { width: 100%; justify-content: center; }
   }
   @media (prefers-reduced-motion: reduce) { .xc-box, .xbar, .xc :global(.xc-ico), .xc-added { transition: none; } }
