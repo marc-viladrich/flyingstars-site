@@ -1,0 +1,19 @@
+{
+  "sourceSha256": "3ac827bd54aa2febfe1d422f230ff2d5463b871772e3da48da704a3a3339214d",
+  "sourceFrames": 647,
+  "masterFrames": 418,
+  "introFramesMatchOriginal": true,
+  "closingFramesMatchOriginal": true,
+  "extraInsertedCuts": 1,
+  "sourcePassages": [
+    [
+      0,
+      158
+    ],
+    [
+      387,
+      647
+    ]
+  ],
+  "matchingDecodedFrames": 418
+}

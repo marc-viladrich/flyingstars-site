@@ -219,3 +219,69 @@
   Content-Type: video/mp4
   Content-Length: 542437
   Cache-Control: public, max-age=31536000, immutable, no-transform
+
+# Video-Lab paced v4
+/media/video-lab/cut17-reference-v4.mp4
+  Content-Type: video/mp4
+  Content-Length: 16171180
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/cut17-h264-1918-v4.mp4
+  Content-Type: video/mp4
+  Content-Length: 4605443
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/cut17-av1-1918-v4.mp4
+  Content-Type: video/mp4
+  Content-Length: 2568300
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/cut17-h264-1600-v4.mp4
+  Content-Type: video/mp4
+  Content-Length: 3633075
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/cut17-av1-1600-v4.mp4
+  Content-Type: video/mp4
+  Content-Length: 2291556
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/cut17-h264-1440-v4.mp4
+  Content-Type: video/mp4
+  Content-Length: 3074613
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/cut17-av1-1440-v4.mp4
+  Content-Type: video/mp4
+  Content-Length: 1983772
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/cut17-h264-1280-v4.mp4
+  Content-Type: video/mp4
+  Content-Length: 2284309
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/cut17-av1-1280-v4.mp4
+  Content-Type: video/mp4
+  Content-Length: 1699035
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/cut17-h264-960-v4.mp4
+  Content-Type: video/mp4
+  Content-Length: 1538609
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/cut17-av1-960-v4.mp4
+  Content-Type: video/mp4
+  Content-Length: 1177893
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/cut17-mobile-h264-640-v4.mp4
+  Content-Type: video/mp4
+  Content-Length: 952971
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/cut17-mobile-av1-640-v4.mp4
+  Content-Type: video/mp4
+  Content-Length: 787858
+  Cache-Control: public, max-age=31536000, immutable, no-transform
