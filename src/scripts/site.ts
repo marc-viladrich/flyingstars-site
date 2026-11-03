@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { REVEAL_MARGIN } from './reveal-point.js';
+import { whenNear } from './when-near.mjs';
 // Shared FlyingStars presentation; source: customer Vercel prototype.
 (() => {
   "use strict";
@@ -120,8 +121,6 @@ import { REVEAL_MARGIN } from './reveal-point.js';
 
   // Lichtpunkte auf Bildern mit Interaktion: mit Maus beim Hovern, auf Touch-Geräten als Reveal beim Scrollen (statt Vorhang)
   const dotImgs = document.querySelectorAll("[data-dot-img]");
-  if (dotImgs.length) {
-    import("./effects/dotimage.js").then(({ dotImage }) => dotImgs.forEach((el) => dotImage(el, { step: +(el.dataset.step || 8) })));
-  }
+  dotImgs.forEach((el) => whenNear(el, () => import("./effects/dotimage.js").then(({ dotImage }) => dotImage(el, { step: +(el.dataset.step || 8) }))));
 
 })();

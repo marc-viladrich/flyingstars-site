@@ -36,8 +36,22 @@ const proof = proofImage ? await optimizedLogo(proofImage.src, 60) : undefined;
   </div>}
 </section>
 <script>
-  const el = document.querySelector<HTMLElement>('[data-scrolly]');
-  if (el && !matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
-    import('../../scripts/effects/eco-scrolly.js').then(({ ecoScrolly }) => ecoScrolly(el));
+  import { whenNear } from '../../scripts/when-near.mjs';
+  import { prepareEcoScrolly, resetEcoScrolly } from '../../scripts/effects/eco-scrolly-setup.mjs';
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    for (const el of document.querySelectorAll<HTMLElement>('[data-scrolly]')) {
+      // Keep later anchors and document height stable while the engine is still deferred.
+      prepareEcoScrolly(el);
+      const load = whenNear(el, async () => {
+        try {
+          const { ecoScrolly } = await import('../../scripts/effects/eco-scrolly.js');
+          ecoScrolly(el);
+        } catch (error) {
+          resetEcoScrolly(el); // The original fact list remains readable if the chunk fails.
+          throw error;
+        }
+      });
+      if (location.hash) void load().catch((error: unknown) => console.warn('Scrollstory could not load', error));
+    }
   }
 </script>

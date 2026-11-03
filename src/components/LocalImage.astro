@@ -1,0 +1,8 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { localImageSize } from '../lib/local-image-size.mjs';
+type Props = Omit<HTMLAttributes<'img'>, 'width' | 'height'> & { src: string; alt: string };
+const { src, alt, ...attributes } = Astro.props;
+const { width, height } = await localImageSize(src);
+---
+<img {...attributes} src={src} alt={alt} width={width} height={height} />

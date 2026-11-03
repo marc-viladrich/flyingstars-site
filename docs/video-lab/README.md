@@ -1,11 +1,13 @@
 # FlyingStars Video-Lab
 
-Reviewbranch `codex/video-vergleich-2026-11-03`, Ausgangspunkt `feat/designsprache-poc` auf `a4909c7`. Aktueller freigegebener Stand: bewegter 13,88s-Schnitt ohne angehängten Freeze, Desktop1440px und Mobil640px, jeweils AV1 bei positiver Effizienzauskunft und sonst H.264. [Runde3](round-3/README.md) dokumentiert Erzeugung und Veröffentlichung auf der von Marc bestätigten bestehenden WIP-Adresse. Historische Stände der folgenden Abschnitte sind als frühere Experimente zu lesen.
+Aktueller Arbeitsstand: Branch `codex/showreel-pacing-2026-11-03`, Basis bestehender WIP-Branch `feat/designsprache-poc`. Der ruhigere Schnitt dauert16,72s und erhält den vollständigen Originaleinstieg bis zum QR-Code sowie die gesamte NFL-/Drohnenflächen-/Ford-/FlyingStars-Schlusssequenz. [Runde4](round-4/README.md) dokumentiert Framegrenzen, echte Mediennachweise und adaptive Desktopgrößen960/1280/1440 mit Mobil640. AV1 bleibt an positive Decoder-/Effizienzauskunft gebunden; alle Größen haben H.264-Rückfall.
+
+Die bisherigen Runden und Dateien bleiben historische Experimente. Maßgeblich für aktuelle Automatik und große Vergleichsansicht sind die `cut17-…-v4.mp4`-Dateien und die `paced-*`-Gruppen.
 
 ## Vorschauen
 
 - `/poc/video-lab/gross/?start=1`: browserhoher A/B-Vergleich desselben 15s-Schnitts. Tasten 1–4 oder Pfeile wechseln Referenz/1600/1440/1280 bei gleicher Position. Optional zwei Filme nebeneinander, echte Vollbildtaste und ausblendbare Bedienung. H.264 und AV1 getrennt wählbar.
-- `/poc/video-lab/`: 38 Dateien mit echten Metadaten, Original/Kandidat nebeneinander, gemeinsamer Start und Seek. Erst nach „Vergleich laden“ werden Medien angefordert.
+- `/poc/video-lab/`: 51 Dateien mit echten Metadaten, Original/Kandidat nebeneinander, gemeinsamer Start und Seek. Erst nach „Vergleich laden“ werden Medien angefordert.
 - `/poc/video-lab/<id>/`: jede Fassung im bestehenden FlightHero und derselben responsiven Darstellung. Feste Auswahl ohne unbemerkten Codec-Fallback.
 - `/poc/video-lab/auto/`: dieselbe responsive Auswahl wie im regulären Hero. AV1 nur bei `supported && smooth && powerEfficient`; fehlende, negative, fehlerhafte oder länger als 250ms offene Auskunft führt zu H.264. Auch bei einem tatsächlichen AV1-Wiedergabefehler zurück auf H.264, sichtbar bezeichnet.
 - `/poc/video-lab/inter/`: vorhandene Inter-Verwendung und Space-Grotesk-Vergleich. Vollständige 20-Fälle-Inventur in `inter-inventur.md` und `src/data/inter-inventory.json`.

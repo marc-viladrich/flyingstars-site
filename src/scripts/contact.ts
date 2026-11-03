@@ -1,4 +1,6 @@
 import { t } from '../i18n/ui.mjs';
+let selectPackage: ((name: string) => void) | undefined;
+export function pickPackage(name: string) { selectPackage?.(name); }
 const form = document.querySelector<HTMLFormElement>('#inquiry-form');
 if (form) {
   const steps = [...form.querySelectorAll<HTMLFieldSetElement>('[data-step]')];
@@ -44,6 +46,7 @@ if (form) {
   };
   form.noValidate = true;
   form.querySelectorAll<HTMLElement>('.ask-steps').forEach((element) => { element.hidden = false; });
+  form.querySelector<HTMLElement>('[data-next]')?.removeAttribute('hidden');
   form.querySelector('[data-next]')?.addEventListener('click', () => { if (validate(steps[step])) show(1); });
   form.querySelector('[data-back]')?.addEventListener('click', () => show(0));
   form.querySelectorAll<HTMLInputElement>('input,select,textarea').forEach((field) => field.addEventListener('input', () => {
@@ -69,16 +72,15 @@ if (form) {
   const draft = [showSummary, skyText && t('contact.textInTheSkyValue', { v0: skyText })].filter(Boolean).join('\n');
   if (draft && message && !message.value) message.value = draft;
   // Paketkarten auf derselben Seite (Startseite): Klick wählt das Paket im Formular und springt hin, statt zu /kontakt/
-  document.querySelectorAll<HTMLAnchorElement>('[data-pick-paket]').forEach((link) => link.addEventListener('click', (event) => {
-    const input = packs.find((p) => p.value === link.dataset.pickPaket);
+  selectPackage = (name) => {
+    const input = packs.find((p) => p.value === name);
     if (!input) return;
-    event.preventDefault();
     input.checked = true;
     form.querySelector('[name=drohnen]')?.remove();
     show(0, false);
     form.closest('section')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
     history.replaceState(null, '', '#anfrage');
-  }));
+  };
   // Extras von der Preisseite: Feld einblenden und vorbelegen
   const extras = (params.get('extras') ?? '').split(',').filter(Boolean);
   const extraInputs = [...form.querySelectorAll<HTMLInputElement>('[name=extras]')];
@@ -144,5 +146,6 @@ if (form) {
       field?.addEventListener('change', () => { if (field.value) openOpt(box.dataset.opt!, false); });
     });
   }
-  show(0, false);
+  // Delayed enhancement must keep the field someone is already using visible.
+  show(Math.max(0, steps.findIndex((fieldset) => fieldset.contains(document.activeElement))), false);
 }

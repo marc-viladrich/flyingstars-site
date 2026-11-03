@@ -2,6 +2,7 @@
 // Designsprache-Probe 2 (30.10.2026, nach Marcs Bewertung). Jede Studie ist einzeln bewertbar: ja, nein, mehr davon, anders.
 // Basis ist der erste Prototyp (Branch fix/minimal-fonts), Fakten aus Moritz' Notizen vom 30.10.2026.
 import Base from '../../layouts/Base.astro';
+import LocalImage from '../../components/LocalImage.astro';
 import Comparison from '../../components/sections/Comparison.astro';
 import Chopper404 from '../../components/Chopper404.astro';
 import { getEntry } from 'astro:content';
@@ -177,14 +178,14 @@ const packs: [string, string][] = [['SPARK', 'klassisch in 2D'], ['HORIZON', '3D
         <div class="press">
           <h3>Unsere Shows waren zu sehen in</h3>
           <ul>{pressShown.map(p => {
-            const inner = p.logo ? <img class:list={[{ knock: p.knock }]} src={p.logo} alt={p.name} loading="lazy" /> : <b>{p.name}</b>;
+            const inner = p.logo ? <LocalImage class:list={[{ knock: p.knock }]} src={p.logo} alt={p.name} loading="lazy" /> : <b>{p.name}</b>;
             return <li>{p.href ? <a href={p.href} rel="noopener" target="_blank" title={`${p.name}: ${p.note}`}>{inner}</a> : <span class="noref" title={p.note}>{inner}</span>}</li>;
           })}</ul>
         </div>
         <div class="quality">
           <h3>Qualität und Sicherheit</h3>
           <ul>{quality.map(q => <li>
-            {q.logo ? <img class="q-logo" src={q.logo} alt="" loading="lazy" /> : <svg class="q-ico" viewBox="0 0 24 24" aria-hidden="true">
+            {q.logo ? <LocalImage class="q-logo" src={q.logo} alt="" loading="lazy" /> : <svg class="q-ico" viewBox="0 0 24 24" aria-hidden="true">
               {q.icon === 'permit' && <path d="M7 3h7l5 5v13H7zM14 3v5h5M10 13l2 2 4-4" />}
               {q.icon === 'sound' && <path d="M4 10v4h4l5 4V6L8 10zm12-1a4 4 0 0 1 0 6m2-9a8 8 0 0 1 0 12" />}
               {q.icon === 'shield' && <path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM9 12l2 2 4-4" />}
