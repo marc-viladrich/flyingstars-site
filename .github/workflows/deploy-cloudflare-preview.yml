@@ -2,6 +2,15 @@ name: Cloudflare preview (manuell)
 # Manueller Cloudflare-Test. Produktion läuft über deploy-cloudflare.yml.
 on:
   workflow_dispatch:
+    inputs:
+      preview_branch:
+        description: 'Pages-Vorschauziel'
+        required: true
+        default: manual-preview
+        type: choice
+        options:
+          - manual-preview
+          - feat/designsprache-poc
 concurrency:
   group: deploy-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
@@ -65,7 +74,7 @@ jobs:
           wranglerVersion: '4.147.0' # siehe deploy-cloudflare.yml
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=${{ vars.CF_PAGES_PROJECT }} --branch=manual-preview
+          command: pages deploy dist --project-name=${{ vars.CF_PAGES_PROJECT }} --branch="${{ inputs.preview_branch || 'manual-preview' }}" --commit-hash="${{ github.sha }}"
       - name: Preview-URL in den PR schreiben
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7

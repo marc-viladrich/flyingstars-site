@@ -6,7 +6,7 @@ export function heroVideoSources() {
     return item;
   };
   return {
-    desktop: { preferred: find('cut15-av1-1918'), fallback: find('cut15-h264-1918') },
-    mobile: { preferred: find('cut15-mobile-av1-640'), fallback: find('cut15-mobile-h264-640') },
+    desktop: { preferred: find('cut14-av1-1440'), fallback: find('cut14-h264-1440') },
+    mobile: { preferred: find('cut14-mobile-av1-640'), fallback: find('cut14-mobile-h264-640') },
   };
 }

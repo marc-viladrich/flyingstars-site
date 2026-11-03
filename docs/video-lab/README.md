@@ -1,11 +1,11 @@
 # FlyingStars Video-Lab
 
-Reviewbranch `codex/video-vergleich-2026-11-03`, Ausgangspunkt `feat/designsprache-poc` auf `a4909c7`. Auf Marcs Folgeauftrag nutzt die normale Startseite dieses Reviewbranches jetzt den neuen 15s-Schnitt: Desktop 1918px, Mobil 640px, jeweils AV1 bei positiver Effizienzauskunft und sonst H.264. Die ursprüngliche WIP bleibt unverändert.
+Reviewbranch `codex/video-vergleich-2026-11-03`, Ausgangspunkt `feat/designsprache-poc` auf `a4909c7`. Aktueller freigegebener Stand: bewegter 13,88s-Schnitt ohne angehängten Freeze, Desktop1440px und Mobil640px, jeweils AV1 bei positiver Effizienzauskunft und sonst H.264. [Runde3](round-3/README.md) dokumentiert Erzeugung und Veröffentlichung auf der von Marc bestätigten bestehenden WIP-Adresse. Historische Stände der folgenden Abschnitte sind als frühere Experimente zu lesen.
 
 ## Vorschauen
 
 - `/poc/video-lab/gross/?start=1`: browserhoher A/B-Vergleich desselben 15s-Schnitts. Tasten 1–4 oder Pfeile wechseln Referenz/1600/1440/1280 bei gleicher Position. Optional zwei Filme nebeneinander, echte Vollbildtaste und ausblendbare Bedienung. H.264 und AV1 getrennt wählbar.
-- `/poc/video-lab/`: 27 Dateien mit echten Metadaten, Original/Kandidat nebeneinander, gemeinsamer Start und Seek. Erst nach „Vergleich laden“ werden Medien angefordert.
+- `/poc/video-lab/`: 38 Dateien mit echten Metadaten, Original/Kandidat nebeneinander, gemeinsamer Start und Seek. Erst nach „Vergleich laden“ werden Medien angefordert.
 - `/poc/video-lab/<id>/`: jede Fassung im bestehenden FlightHero und derselben responsiven Darstellung. Feste Auswahl ohne unbemerkten Codec-Fallback.
 - `/poc/video-lab/auto/`: dieselbe responsive Auswahl wie im regulären Hero. AV1 nur bei `supported && smooth && powerEfficient`; fehlende, negative, fehlerhafte oder länger als 250ms offene Auskunft führt zu H.264. Auch bei einem tatsächlichen AV1-Wiedergabefehler zurück auf H.264, sichtbar bezeichnet.
 - `/poc/video-lab/inter/`: vorhandene Inter-Verwendung und Space-Grotesk-Vergleich. Vollständige 20-Fälle-Inventur in `inter-inventur.md` und `src/data/inter-inventory.json`.
@@ -35,7 +35,7 @@ Am 03.11. im aktuellen veröffentlichten WIP bei Desktop und 390px Mobil geprüf
 
 ## Prüfung
 
-`astro check`: 0 Fehler, 0 Warnungen, vorhandene Hinweise gesondert. Statischer Build erfolgreich. 29 gezielte Node-Tests für i18n, Geometriegleichheit, fehlende Referenzen, Codec-Fallback, Dateihashes, Headerlängen und Kommentare erfolgreich.
+`astro check`: 0 Fehler, 0 Warnungen, vorhandene Hinweise gesondert. Statischer Build erfolgreich. 34 gezielte Node-Tests für i18n, Geometriegleichheit, fehlende Referenzen, Codec-Fallback, Dateihashes, Headerlängen und Kommentare erfolgreich.
 
 Im nativen T3-Browser wurden AV1 im Vergleich und im Hero tatsächlich decodiert und abgespielt, ohne Fallback. Galerieinitialisierung ohne Medienrequest, gemeinsame Wiedergabe und Metadaten wurden geprüft. In Runde 2 spielte der reguläre Desktophero auf diesem Browser H.264; AV1 wurde in der manuellen großen Ansicht tatsächlich abgespielt. Die Automatik behauptet keine Hardwareerkennung bestimmter Modellnamen. Keine geräteübergreifende Kompatibilitätszusage.
 

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "cut14-h264-1440",
+    "frames": 28,
+    "uniqueDecodedFrames": 28,
+    "sha256": "26bfc2aa6f283c8132ba606f0f6e7ed8c990b74443b12d4f4151fda3acc31691"
+  },
+  {
+    "id": "cut14-av1-1440",
+    "frames": 28,
+    "uniqueDecodedFrames": 28,
+    "sha256": "ccc664a86655c7042f5c8eacf028435416424ec326fbbe738fb2b59b59529ebc"
+  },
+  {
+    "id": "cut14-mobile-h264-640",
+    "frames": 28,
+    "uniqueDecodedFrames": 28,
+    "sha256": "76cf28132c7f3253f7df1fddf0eb2bc7e7f2b79f28df3d8a530cce6734373464"
+  },
+  {
+    "id": "cut14-mobile-av1-640",
+    "frames": 28,
+    "uniqueDecodedFrames": 28,
+    "sha256": "019236644ff0e8a488d14ed6a929ea23d34c3db2c8cd7466e3fb4f5241f38fb1"
+  }
+]
