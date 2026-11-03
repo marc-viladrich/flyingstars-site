@@ -12,7 +12,7 @@ const index=video?videos.findIndex(v=>v.id===video.id):-1;
 const previous=index>0?videos[index-1]:null,next=index>=0&&index<videos.length-1?videos[index+1]:null;
 ---
 <Base title={`Videovergleich: ${label}`} description="Videofassungen im FlyingStars-Hero vergleichen: Auflösung, Codec, Dateigröße und Wiedergabe auf diesem Gerät prüfen." noindex fullBleed>
-  <FlightHero {...hero}/>
+  <FlightHero {...hero} cta={{ ...hero.cta, href: "/#anfrage" }}/>
   <script is:inline>
     // This review page owns playback. Exclude its video from the normal page-wide hero initializer.
     (function(){var v=document.querySelector('video[data-reel]');if(v){v.removeAttribute('data-reel');v.setAttribute('data-lab-video','')}})();
