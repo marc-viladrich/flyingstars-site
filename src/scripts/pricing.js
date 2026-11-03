@@ -50,7 +50,7 @@ import { SHOW_PACKAGES, PACKAGE_NAMES, priceFor, recommendPackage } from '../con
     cta.textContent = `Mit ${nTxt} Drohnen anfragen`;
     cta.href = inquiryHref(pkg, n);
     const share = (n - +range.min) / (+range.max - +range.min); // the coloured part ends under the thumb centre
-    range.style.setProperty("--fill", `calc(13px + ${share.toFixed(4)} * (100% - 26px))`);
+    range.style.setProperty("--fill", `calc(0.8125rem + ${share.toFixed(4)} * (100% - 1.625rem))`);
     const col = `rgb(${p.color.join(",")})`;
     document.documentElement.style.setProperty("--pkg", col);
     range.setAttribute("aria-valuetext", `${n} Drohnen, ${pkg}, ab ${eur(price)}`);

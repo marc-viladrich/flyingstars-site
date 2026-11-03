@@ -36,12 +36,13 @@ const marks = (await Promise.all(logos.map(async (logo): Promise<Mark | null> =>
       if (!size) return null;
       const p = logo.file.endsWith('.svg') ? Math.max(size.w, size.h) * 0.04 : 0;
       const ratio = (size.w + 2 * p) / (size.h + 2 * p), height = optical(ratio), width = Math.round(height * ratio);
-      const pad = `${(p / (size.h + 2 * p) * height).toFixed(1)}px ${(p / (size.w + 2 * p) * width).toFixed(1)}px`;
+      // Bildkoordinaten und intrinsische Maße bleiben unverändert; nur CSS-Ausgaben werden durch 16 geteilt.
+      const pad = `${Number((p / (size.h + 2 * p) * height).toFixed(1)) / 16}rem ${Number((p / (size.w + 2 * p) * width).toFixed(1)) / 16}rem`;
       return { name: logo.name, src: logo.file, width, height, pad, detail: logo.detail, href: logo.href };
     }
     if (logo.image) {
       const img = await optimizedLogo(logo.image.src, 92), ratio = img.width / img.height, height = optical(ratio);
-      return { name: logo.name, src: img.src, width: Math.round(height * ratio), height, pad: '0px', detail: logo.detail, href: logo.href };
+      return { name: logo.name, src: img.src, width: Math.round(height * ratio), height, pad: '0rem', detail: logo.detail, href: logo.href };
     }
   } catch {}
   return null;
@@ -56,7 +57,7 @@ const minor = quality.filter((q) => q.secondary);
 {marks.length > 0 && <div class="band" role="region" aria-label={headline ?? t('logobar.flyingstarsClients')}>
   <div class="logo-marquee">
     {[0, 1].map((copy) => <ul class="track" aria-hidden={copy === 1 ? 'true' : undefined}>{marks.map((m) => {
-      const img = <img class:list={{ detail: m.detail }} src={m.src} width={m.width} height={m.height} style={`height:${m.height}px;padding:${m.pad}`} alt={copy ? '' : m.name} loading="lazy" decoding="async" />;
+      const img = <img class:list={{ detail: m.detail }} src={m.src} width={m.width} height={m.height} style={`height:${m.height / 16}rem;padding:${m.pad}`} alt={copy ? '' : m.name} loading="lazy" decoding="async" />;
       return <li>{m.href && !copy ? <a href={localHref(m.href)}>{img}</a> : img}</li>;
     })}</ul>)}
   </div>
@@ -65,7 +66,7 @@ const minor = quality.filter((q) => q.secondary);
   {press.length > 0 && <div class="press">
     <SectionHead variant="embedded" kicker={kicker} headline={pressHeadline} id={`${id}-press-h`} titleClass="proof-h" />
     <ul>{press.map((p) => {
-      const inner = <>{p.show ? <img class:list={{ knock: p.knock }} src={p.logo} alt={p.name} style={`height:${p.h}px`} loading="lazy" decoding="async" /> : <b>{p.name}</b>}</>;
+      const inner = <>{p.show ? <img class:list={{ knock: p.knock }} src={p.logo} alt={p.name} style={`height:${p.h / 16}rem`} loading="lazy" decoding="async" /> : <b>{p.name}</b>}</>;
       return <li>{p.href ? <a href={localHref(p.href)} rel="noopener" target="_blank" title={p.note ? `${p.name}: ${p.note}` : undefined}>{inner}</a> : <span class="noref" title={p.note}>{inner}</span>}</li>;
     })}</ul>
   </div>}

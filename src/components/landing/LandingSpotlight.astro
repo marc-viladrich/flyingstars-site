@@ -17,7 +17,7 @@ const narrow = await optimizedImage(image.src, 640, 480);
   <figure class="sp-stage">
     <div class="sp-img" data-curtain>
       <picture>
-        <source media="(max-width: 700px)" srcset={narrow.src} width={narrow.width} height={narrow.height} />
+        <source media="(max-width: 43.75em)" srcset={narrow.src} width={narrow.width} height={narrow.height} />
         <img src={wide.src} width={wide.width} height={wide.height} alt={image.alt} loading="lazy" decoding="async" />
       </picture>
     </div>

@@ -5,7 +5,7 @@ import { forPath } from '../../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
 // Seitenkopf der Anlass-Landingpages (Marc, 31.10.2026: „in der Hero Section … so ein kleines Showreel, gerne in einer
 // kleineren Variante, so ähnlich wie wir jetzt ein Hero-Bild haben“). Links Kicker, Headline, Satz, Aktionen und bis zu
-// vier Eckdaten; rechts ein Bildrahmen mit stummem Loop. Startet erst, wenn der Rahmen im Bild ist: ab 701 px von selbst,
+// vier Eckdaten; rechts ein Bildrahmen mit stummem Loop. Startet erst, wenn der Rahmen im Bild ist: oberhalb der mobilen em-Grenze von selbst,
 // auf dem Handy per Knopf (Datenvolumen). Hält an bei globaler Pause (html.motion-paused), reduzierter Bewegung,
 // Datensparmodus und außerhalb des Bildes. Quelle nur aus src/lib/videos.ts, als kleine Vorschau über videoPath() auf derselben Origin.
 import type { Section } from '../../content.config';
@@ -39,7 +39,7 @@ const src = videoPath(videos[video], 'preview');
 
 <script>
   import { t } from '../../i18n/ui.mjs';
-  import { createVideoController } from '../../scripts/video-controller';
+  import { createVideoController, VIDEO_MOBILE_QUERY } from '../../scripts/video-controller';
   document.querySelectorAll<HTMLElement>('[data-lh-reel]').forEach((host) => {
     const v = host.querySelector('video')!;
     const btn = host.querySelector<HTMLButtonElement>('[data-lh-toggle]')!;
@@ -53,7 +53,7 @@ const src = videoPath(videos[video], 'preview');
       if (on) host.classList.add('has-played');
       host.classList.add('ready');
     };
-    const controller = createVideoController(v, { host, trigger: 'manual', visibilityThreshold: 0.25, minAutoWidth: 701, onState: show,
+    const controller = createVideoController(v, { host, trigger: 'manual', visibilityThreshold: 0.25, autoMediaQuery: `not all and ${VIDEO_MOBILE_QUERY}`, onState: show,
       onError: () => { host.classList.remove('is-on', 'can-toggle'); btn.hidden = true; } });
     btn.hidden = false;
     btn.addEventListener('click', () => controller.setChoice(!host.classList.contains('is-on')));

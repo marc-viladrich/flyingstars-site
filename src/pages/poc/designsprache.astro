@@ -171,8 +171,8 @@ const packs: [string, string][] = [['SPARK', 'klassisch in 2D'], ['HORIZON', '3D
       <div class="demo proof">
         <h2 id="s6-h" class="sr-only">Kund:innen, Presse und Qualität</h2>
         <div class="poc-marquee" data-poc-marquee aria-label="Kund:innen von FlyingStars" role="region">
-          <ul class="track">{logos.map(l => <li><img class:list={[{ detail: l.detail }]} src={l.src} width={l.width} height={l.height} style={`height:${l.height}px`} alt={l.name} loading="lazy" decoding="async" /></li>)}</ul>
-          <ul class="track" aria-hidden="true">{logos.map(l => <li><img class:list={[{ detail: l.detail }]} src={l.src} width={l.width} height={l.height} style={`height:${l.height}px`} alt="" loading="lazy" decoding="async" /></li>)}</ul>
+          <ul class="track">{logos.map(l => <li><img class:list={[{ detail: l.detail }]} src={l.src} width={l.width} height={l.height} style={`height:${l.height / 16}rem`} alt={l.name} loading="lazy" decoding="async" /></li>)}</ul>
+          <ul class="track" aria-hidden="true">{logos.map(l => <li><img class:list={[{ detail: l.detail }]} src={l.src} width={l.width} height={l.height} style={`height:${l.height / 16}rem`} alt="" loading="lazy" decoding="async" /></li>)}</ul>
         </div>
         <div class="press">
           <h3>Unsere Shows waren zu sehen in</h3>

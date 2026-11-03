@@ -20,7 +20,7 @@ const cards = await Promise.all(items.map(async (item) => ({ ...item, media: awa
   <div class="ls-grid" data-n={cards.length}>
     {cards.map((c, i) => (
       <MediaCard variant="story" title={c.title} level={T} summary={c.text} kicker={c.kicker} badge={c.facts[0] ? `${c.facts[0].value} ${c.facts[0].label}` : undefined} i={i}>
-        <img slot="media" src={c.media.src} srcset={`${c.small.src} 480w, ${c.media.src} 960w`} sizes="(max-width: 760px) calc(100vw - 40px), 45vw" width={c.media.width} height={c.media.height} alt={c.image.alt} loading="lazy" decoding="async" />
+        <img slot="media" src={c.media.src} srcset={`${c.small.src} 480w, ${c.media.src} 960w`} sizes="(max-width: 47.5em) calc(100vw - 2.5rem), 45vw" width={c.media.width} height={c.media.height} alt={c.image.alt} loading="lazy" decoding="async" />
         <Fragment slot="facts">{c.facts.length > 1 && <FactList items={c.facts.slice(1)} variant="story" />}</Fragment>
       </MediaCard>
     ))}

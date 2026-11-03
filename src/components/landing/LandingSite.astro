@@ -176,6 +176,7 @@ const markers = variant === 'outdoor'
   .shape.pad { fill: color-mix(in srgb, var(--zc) 80%, transparent); stroke: var(--zc); }
   .drone { fill: #ff9e29; stroke: var(--surface); stroke-width: 0.8; }
   .pill rect { fill: var(--ground); stroke: var(--line-strong); }
+  /* SVG-Text bleibt in viewBox-Benutzerkoordinaten und skaliert mit der gesamten Zeichnung. */
   .pill text { fill: var(--head); font: 500 11px var(--mono); letter-spacing: 0.04em; }
   /* Innenraum (indoor): dieselben Zonenfarben, sparsamer */
   .flight { fill: color-mix(in srgb, var(--zc, #6fdc98) 8%, transparent); stroke: color-mix(in srgb, var(--zc, #6fdc98) 55%, transparent); stroke-dasharray: 3 4; }

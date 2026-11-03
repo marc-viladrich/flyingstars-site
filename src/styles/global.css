@@ -48,8 +48,8 @@
      Flächen und Hintergründe laufen weiter vollflächig; jeder Inhalt einer Section richtet sich über --gutter aus.
      --gutter löst % erst am Element auf, also relativ zur Breite seines Rahmens (bei Sections: die Seite). */
   --content-max: 112rem;
-  /* Höhe des eingerollten Headers (12 + 44 + 12 + 1 px Linie); Anker für alles, was unter ihm kleben bleibt */
-  --nav-h: calc(4.3125rem + env(safe-area-inset-top, 0rem));
+  /* Eingerollter Header: 4.25rem Inhalt plus konstante 1px-Hairline und Safe Area; Anker für Sticky-Streifen. */
+  --nav-h: calc(4.25rem + 1px + env(safe-area-inset-top, 0px));
   /* Oberkante des ersten Inhalts auf jeder Seite außer Startseite und Fallstudien (unter dem 80 px hohen Header) */
   --hero-top: clamp(7rem, calc(6vw + 3.75rem), 8.75rem);
   --gutter: max(var(--pad), calc((100% - var(--content-max)) / 2));
@@ -275,7 +275,7 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
 .range::-webkit-slider-thumb { -webkit-appearance: none; width: 1.625rem; height: 1.625rem; margin-top: -0.6875rem; border-radius: 50%; background: var(--text); border: 0.375rem solid var(--ground); box-shadow: 0 0 0 1px var(--pkg, #db64e8), 0 0 1.125rem var(--pkg, #db64e8); }
 .range::-moz-range-thumb { width: 1rem; height: 1rem; border-radius: 50%; background: var(--text); border: 0.3125rem solid var(--ground); box-shadow: 0 0 0 1px var(--pkg, #db64e8); }
 .scale { position: relative; height: 1.5em; color: var(--faint); margin-top: -0.5rem; }
-/* each value sits under the thumb centre for that value: 13 px (half the thumb) + share × (track − thumb) */
+/* each value sits under the thumb centre for that value: 0.8125rem (half the thumb) + share × (track − thumb) */
 .scale span { position: absolute; top: 0; left: calc(0.8125rem + var(--p, 0) * (100% - 1.625rem)); transform: translateX(-50%); white-space: nowrap; }
 .scale span:first-child { left: 0; transform: none; }
 .scale span:last-child { left: auto; right: 0; transform: none; }

@@ -1,4 +1,6 @@
 import { getMotionPolicy, subscribeMotionPolicy, observeVisibility, type MotionPolicy } from './motion-policy.ts';
+// Wie die mobilen Video-Layouts in global.css: em bezieht sich in Media Queries auf die Browser-Grundschrift.
+export const VIDEO_MOBILE_QUERY = '(max-width: 43.75em)';
 export type VideoTrigger = 'ambient' | 'manual' | 'hover';
 interface Desire { trigger: VideoTrigger; policy: MotionPolicy; visible: boolean; choice: boolean | null; hovered: boolean; touch: boolean; wide: boolean }
 export function videoWanted({ trigger, policy, visible, choice, hovered, touch, wide }: Desire): boolean {
@@ -32,10 +34,22 @@ export function createPlayback(video: HTMLVideoElement, { source, onState = () =
   video.addEventListener('error', error);
   return { update, dispose: () => { disposed = true; desired = false; generation++; video.pause(); onState(false); video.removeEventListener('error', error); } };
 }
-interface ControllerOptions extends Partial<PlaybackOptions> { host?: HTMLElement; trigger: VideoTrigger; visibilityThreshold?: number; minAutoWidth?: number }
-export function createVideoController(video: HTMLVideoElement, { host = video.parentElement!, trigger, visibilityThreshold = 0.2, minAutoWidth = 0, source = () => (matchMedia('(max-width: 700px)').matches && video.dataset.srcSmall) || video.dataset.src!, onState, onError }: ControllerOptions) {
+interface ControllerOptions extends Partial<PlaybackOptions> {
+  host?: HTMLElement;
+  trigger: VideoTrigger;
+  visibilityThreshold?: number;
+  /** Feste Mindestbreite in CSS-Pixeln für API-Aufrufer; für responsive Layouts autoMediaQuery verwenden. */
+  minAutoWidth?: number;
+  /** Media Query passend zum Layout. Hat Vorrang vor dem festen Pixelvertrag minAutoWidth. */
+  autoMediaQuery?: string;
+}
+export function createVideoController(video: HTMLVideoElement, {
+  host = video.parentElement!, trigger, visibilityThreshold = 0.2, minAutoWidth = 0,
+  autoMediaQuery = `(min-width: ${minAutoWidth}px)`,
+  source = () => (matchMedia(VIDEO_MOBILE_QUERY).matches && video.dataset.srcSmall) || video.dataset.src!, onState, onError,
+}: ControllerOptions) {
   const playback = createPlayback(video, { source, onState, onError });
-  const width = matchMedia(`(min-width: ${minAutoWidth}px)`), pointer = matchMedia('(hover: hover) and (pointer: fine)');
+  const width = matchMedia(autoMediaQuery), pointer = matchMedia('(hover: hover) and (pointer: fine)');
   let visible = false, hovered = false, focused = false, choice: boolean | null = null, policy = getMotionPolicy();
   const sync = () => playback.update(videoWanted({ trigger, policy, visible, choice, hovered: hovered || focused, touch: !pointer.matches, wide: width.matches }));
   const enter = (event: PointerEvent) => { if (event.pointerType === 'mouse') { hovered = true; sync(); } };
