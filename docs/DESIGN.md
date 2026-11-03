@@ -78,6 +78,36 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 
 **Sprache:** du/ihr, nie Sie. Gendern mit Doppelpunkt (Pilot:innen). Keine pauschalen Umweltversprechen (EmpCo). Moritz verantwortet die Texte, Entwürfe sind als solche zu kennzeichnen.
 
+## Einheiten und Typo-Skala
+
+Marc, 03.11.2026: Typografie, Abstände und Layoutlängen verwenden rem, ohne feste `html-font-size`. Die ACSS-artige gemeinsame Skala steht in `:root` von `src/styles/global.css`. Bei 16 px Browser-Grundschrift entsprechen 1 rem genau 16 px; größere Grundeinstellungen skalieren mit. Bestehende em-Werte für Sperrung und einheitenlose Zeilenhöhen bleiben erhalten.
+
+| Token | Wert in rem, bei fluiden Werten `clamp(min, bevorzugt, max)` |
+|---|---|
+| `--text-xs` | `0.75rem` |
+| `--text-label` | `0.8125rem` |
+| `--text-sm` | `0.875rem` |
+| `--text-control` | `0.9375rem` |
+| `--text-base` | `1rem` |
+| `--text-copy` | `1.0625rem` |
+| `--text-md` | `1.125rem` |
+| `--text-lead` | `clamp(1.0625rem, calc(0.03125rem + 1.4vw), 1.1875rem)` |
+| `--text-lg` | `clamp(1.1875rem, calc(0.03125rem + 1.5vw), 1.375rem)` |
+| `--text-xl` | `clamp(1.3125rem, calc(0.03125rem + 1.7vw), 1.5625rem)` |
+| `--text-2xl` | `clamp(1.5rem, calc(0.03125rem + 2.2vw), 2rem)` |
+| `--text-3xl` | `clamp(2rem, calc(0.03125rem + 4vw), 3.5rem)` |
+| `--text-h1` | `clamp(2.25rem, calc(0.03125rem + 4.6vw), 4rem)` |
+| `--text-page` | `clamp(2.5rem, calc(0.03125rem + 5.4vw), 5rem)` |
+| `--text-4xl` | `clamp(2.625rem, calc(0.03125rem + 6vw), 5.5rem)` |
+
+14,5 und 13,5 px werden auf `--text-sm` gefaltet, 12,5 auf `--text-label`, 11 und 11,5 auf `--text-xs`. Seltene Schriftgrößen und Abstände bleiben exakt umgerechnete rem-Werte. Die fluiden Tokens bewahren die bisherige vw-Steigung mit höchstens 0,5 px Abweichung bei 16 px Grundschrift; ihr kleiner rem-Anteil allein garantiert keine Verdopplung bei Textzoom. Visueller Textzoom und Reflow brauchen eine eigene Browserprüfung.
+
+Media-Query-Grenzen in CSS, `media` und `sizes` verwenden em, bezogen auf die initiale Browser-Schriftgröße. Längen innerhalb von `sizes` verwenden rem. Video-Quelle und responsives Autoplay teilen `VIDEO_MOBILE_QUERY` mit 43,75 em; der feste API-Parameter `minAutoWidth` bleibt in CSS-Pixeln, responsive Aufrufer verwenden `autoMediaQuery`.
+
+Bewusste px-Ausnahmen sind 1–2 px Hairlines, kleine Schattenkomponenten, unsichtbare 1 px Eingaben/Messpunkte, SVG-Benutzerkoordinaten samt Text im viewBox-Diagramm, Canvas-Schriften und gemessene DOM-/Zeigerkoordinaten. `rootMargin` wird an der API-Grenze aus rem in px aufgelöst. Der Sticky-Anker koppelt Inhalt und konstante Header-Linie exakt: `--nav-h: calc(4.25rem + 1px + env(safe-area-inset-top, 0px))`. Intrinsische HTML-Bildmaße und SVG-viewBox-Werte bleiben unverändert; berechnete Logo-CSS-Maße werden erst bei der Ausgabe durch 16 geteilt.
+
+`scripts/no-px.test.mjs` prüft CSS, Astro-Inline-Styles und JS-/TS-Ausgaben auf neue px-Längen, mit eng begrenzten Ausnahmen. Er schützt außerdem Skala, Header-Formel, Slider-Fill und Video-Breakpoints. Aufruf: `node --test scripts/no-px.test.mjs`, auch aus einem anderen Arbeitsverzeichnis; Teil von `npm run -s test:unit`. Keine Allowlist für ungelöste Layoutwerte.
+
 ## Bewegung
 
 **Lebendige Wolke** als Übergang:
