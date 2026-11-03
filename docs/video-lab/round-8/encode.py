@@ -2,6 +2,7 @@ from pathlib import Path
 import subprocess,json,hashlib,time
 from PIL import Image, ImageChops, ImageStat
 from transition import render_bridge
+from header_policy import write_headers
 root=Path(__file__).resolve().parents[3]; source=root/'public/media/video-lab/original-v1.mp4'; work=Path(__import__('tempfile').mkdtemp(prefix='fs-loop16-'));base=work/'approved-edit.mkv';master=work/'master-loop.mkv';out=root/'public/media/video-lab';record=[]
 segments=[('ground-flight',0,41),('qr-zoom-without-cube',94,158),('hummingbird-puma-brockenriders-catch',240,387),('nfl-single-logo',408,434),('ford-to-dynamic-flyingstars',463,564)]
 filters=[]
@@ -45,13 +46,8 @@ for key,label,width,codec,crf,group in plans:
  record.append({'id':key,'command':cmd,'seconds':round(time.monotonic()-started,2),'probe':probe});print(key,size,flush=True)
  (root/'src/data/video-lab.json').write_text(json.dumps(old+rows,ensure_ascii=False,indent=2)+'\n')
 (root/'docs/video-lab/round-8/encodes.json').write_text(json.dumps(record,ensure_ascii=False,indent=2)+'\n')
-# Keep known lengths for WebKit and immutable versioned files. Replace only this round's generated rules.
-p=root/'public/_headers';s=p.read_text();marker='# Video-Lab radial zoom loop v8';
-import re
-for v in rows:s=re.sub(r'(?m)^'+re.escape(v['src'])+r'\n(?:[ \t]+[^\n]*\n)*', '', s)
-s=s.replace(marker, '').rstrip()+'\n\n'+marker+'\n'
-for v in rows:s+=f"{v['src']}\n  Content-Type: video/mp4\n  Content-Length: {v['bytes']}\n  Cache-Control: public, max-age=31536000, immutable, no-transform\n\n"
-p.write_text(s.rstrip()+'\n')
+# Share immutable caching, reserve explicit lengths for the current 13 files.
+write_headers(root,rows)
 print('COMPLETE',len(rows),flush=True)
 
 # Decode the final 1.12s of every approved rendition. Appended freezes must not return.

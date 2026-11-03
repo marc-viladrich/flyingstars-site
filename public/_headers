@@ -22,530 +22,64 @@
   Content-Length: 214043
   Cache-Control: public, max-age=31536000, immutable, no-transform
 
-# Review-only video variants: immutable filenames, explicit length for WebKit.
-/media/video-lab/original-v1.mp4
-  Content-Type: video/mp4
-  Content-Length: 6514429
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/h264-1600-v1.mp4
-  Content-Type: video/mp4
-  Content-Length: 5254148
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/h264-1440-v1.mp4
-  Content-Type: video/mp4
-  Content-Length: 4428142
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/h264-1280-v1.mp4
-  Content-Type: video/mp4
-  Content-Length: 3333510
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/h264-1080-v1.mp4
-  Content-Type: video/mp4
-  Content-Length: 5396496
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/av1-1080-v1.mp4
-  Content-Type: video/mp4
-  Content-Length: 3572165
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/av1-1080-mild-v1.mp4
-  Content-Type: video/mp4
-  Content-Length: 5164106
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/vp9-1080-v1.webm
-  Content-Type: video/webm
-  Content-Length: 4025557
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/hevc-1080-v1.mp4
-  Content-Type: video/mp4
-  Content-Length: 4465220
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/av1-1280-v1.mp4
-  Content-Type: video/mp4
-  Content-Length: 3089181
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/loop-av1-1280-v1.mp4
-  Content-Type: video/mp4
-  Content-Length: 1660811
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/mobile-960-loop-v1.mp4
-  Content-Type: video/mp4
-  Content-Length: 1176210
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/mobile-640-full-v1.mp4
-  Content-Type: video/mp4
-  Content-Length: 1332469
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/mobile-480-full-v1.mp4
-  Content-Type: video/mp4
-  Content-Length: 851182
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/mobile-640-loop-v1.mp4
-  Content-Type: video/mp4
-  Content-Length: 709416
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/mobile-480-loop-v1.mp4
-  Content-Type: video/mp4
-  Content-Length: 455577
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-# Video-Lab 15s v2
-/media/video-lab/cut15-reference-v2.mp4
-  Content-Type: video/mp4
-  Content-Length: 11871940
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut15-h264-1918-v2.mp4
-  Content-Type: video/mp4
-  Content-Length: 3281889
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut15-av1-1918-v2.mp4
-  Content-Type: video/mp4
-  Content-Length: 1823492
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut15-h264-1600-v2.mp4
-  Content-Type: video/mp4
-  Content-Length: 2545893
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut15-av1-1600-v2.mp4
-  Content-Type: video/mp4
-  Content-Length: 1601268
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut15-h264-1440-v2.mp4
-  Content-Type: video/mp4
-  Content-Length: 2159133
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut15-av1-1440-v2.mp4
-  Content-Type: video/mp4
-  Content-Length: 1401949
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut15-h264-1280-v2.mp4
-  Content-Type: video/mp4
-  Content-Length: 1605075
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut15-av1-1280-v2.mp4
-  Content-Type: video/mp4
-  Content-Length: 1201902
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut15-mobile-h264-640-v2.mp4
-  Content-Type: video/mp4
-  Content-Length: 662875
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut15-mobile-av1-640-v2.mp4
-  Content-Type: video/mp4
-  Content-Length: 551387
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
 /fonts/inter-latin-400-700-v1.woff2
   Content-Type: font/woff2
   Content-Length: 36220
   Cache-Control: public, max-age=31536000, immutable
 
-# Video-Lab motion v3
-/media/video-lab/cut14-reference-v3.mp4
-  Content-Type: video/mp4
-  Content-Length: 11613549
+# Versioned review media; historical files use native MIME and length.
+/media/video-lab/*
   Cache-Control: public, max-age=31536000, immutable, no-transform
 
-/media/video-lab/cut14-h264-1918-v3.mp4
-  Content-Type: video/mp4
-  Content-Length: 3247600
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut14-av1-1918-v3.mp4
-  Content-Type: video/mp4
-  Content-Length: 1793289
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut14-h264-1600-v3.mp4
-  Content-Type: video/mp4
-  Content-Length: 2509417
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut14-av1-1600-v3.mp4
-  Content-Type: video/mp4
-  Content-Length: 1572811
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut14-h264-1440-v3.mp4
-  Content-Type: video/mp4
-  Content-Length: 2125629
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut14-av1-1440-v3.mp4
-  Content-Type: video/mp4
-  Content-Length: 1375768
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut14-h264-1280-v3.mp4
-  Content-Type: video/mp4
-  Content-Length: 1580265
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut14-av1-1280-v3.mp4
-  Content-Type: video/mp4
-  Content-Length: 1178197
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut14-mobile-h264-640-v3.mp4
-  Content-Type: video/mp4
-  Content-Length: 648984
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut14-mobile-av1-640-v3.mp4
-  Content-Type: video/mp4
-  Content-Length: 542437
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-
-/media/video-lab/cut17-reference-v4.mp4
-  Content-Type: video/mp4
-  Content-Length: 16171180
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17-h264-1918-v4.mp4
-  Content-Type: video/mp4
-  Content-Length: 4605443
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17-av1-1918-v4.mp4
-  Content-Type: video/mp4
-  Content-Length: 2568300
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17-h264-1600-v4.mp4
-  Content-Type: video/mp4
-  Content-Length: 3633075
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17-av1-1600-v4.mp4
-  Content-Type: video/mp4
-  Content-Length: 2291556
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17-h264-1440-v4.mp4
-  Content-Type: video/mp4
-  Content-Length: 3074613
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17-av1-1440-v4.mp4
-  Content-Type: video/mp4
-  Content-Length: 1983772
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17-h264-1280-v4.mp4
-  Content-Type: video/mp4
-  Content-Length: 2284309
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17-av1-1280-v4.mp4
-  Content-Type: video/mp4
-  Content-Length: 1699035
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17-h264-960-v4.mp4
-  Content-Type: video/mp4
-  Content-Length: 1538609
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17-av1-960-v4.mp4
-  Content-Type: video/mp4
-  Content-Length: 1177893
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17-mobile-h264-640-v4.mp4
-  Content-Type: video/mp4
-  Content-Length: 952971
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17-mobile-av1-640-v4.mp4
-  Content-Type: video/mp4
-  Content-Length: 787858
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-# Video-Lab paced v4
-/media/video-lab/cut17b-reference-v5.mp4
-  Content-Type: video/mp4
-  Content-Length: 15180209
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17b-h264-1918-v5.mp4
-  Content-Type: video/mp4
-  Content-Length: 4506768
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17b-av1-1918-v5.mp4
-  Content-Type: video/mp4
-  Content-Length: 2528480
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17b-h264-1600-v5.mp4
-  Content-Type: video/mp4
-  Content-Length: 3513062
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17b-av1-1600-v5.mp4
-  Content-Type: video/mp4
-  Content-Length: 2267620
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17b-h264-1440-v5.mp4
-  Content-Type: video/mp4
-  Content-Length: 2968884
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17b-av1-1440-v5.mp4
-  Content-Type: video/mp4
-  Content-Length: 1950832
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17b-h264-1280-v5.mp4
-  Content-Type: video/mp4
-  Content-Length: 2208979
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17b-av1-1280-v5.mp4
-  Content-Type: video/mp4
-  Content-Length: 1673687
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17b-h264-960-v5.mp4
-  Content-Type: video/mp4
-  Content-Length: 1467930
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17b-av1-960-v5.mp4
-  Content-Type: video/mp4
-  Content-Length: 1161942
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17b-mobile-h264-640-v5.mp4
-  Content-Type: video/mp4
-  Content-Length: 904189
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17b-mobile-av1-640-v5.mp4
-  Content-Type: video/mp4
-  Content-Length: 771727
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-# Video-Lab original QR zoom v6
-/media/video-lab/cut17c-reference-v6.mp4
-  Content-Type: video/mp4
-  Content-Length: 15916792
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17c-h264-1918-v6.mp4
-  Content-Type: video/mp4
-  Content-Length: 4724154
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17c-av1-1918-v6.mp4
-  Content-Type: video/mp4
-  Content-Length: 2565626
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17c-h264-1600-v6.mp4
-  Content-Type: video/mp4
-  Content-Length: 3678991
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17c-av1-1600-v6.mp4
-  Content-Type: video/mp4
-  Content-Length: 2301780
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17c-h264-1440-v6.mp4
-  Content-Type: video/mp4
-  Content-Length: 3108821
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17c-av1-1440-v6.mp4
-  Content-Type: video/mp4
-  Content-Length: 1979925
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17c-h264-1280-v6.mp4
-  Content-Type: video/mp4
-  Content-Length: 2311356
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17c-av1-1280-v6.mp4
-  Content-Type: video/mp4
-  Content-Length: 1703816
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17c-h264-960-v6.mp4
-  Content-Type: video/mp4
-  Content-Length: 1535031
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17c-av1-960-v6.mp4
-  Content-Type: video/mp4
-  Content-Length: 1172982
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17c-mobile-h264-640-v6.mp4
-  Content-Type: video/mp4
-  Content-Length: 942864
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut17c-mobile-av1-640-v6.mp4
-  Content-Type: video/mp4
-  Content-Length: 783818
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-# Video-Lab dynamic ending without Cube v7
-/media/video-lab/cut15d-reference-v7.mp4
-  Content-Type: video/mp4
-  Content-Length: 14022425
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut15d-h264-1918-v7.mp4
-  Content-Type: video/mp4
-  Content-Length: 4279572
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut15d-av1-1918-v7.mp4
-  Content-Type: video/mp4
-  Content-Length: 2381214
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut15d-h264-1600-v7.mp4
-  Content-Type: video/mp4
-  Content-Length: 3340660
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut15d-av1-1600-v7.mp4
-  Content-Type: video/mp4
-  Content-Length: 2125272
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut15d-h264-1440-v7.mp4
-  Content-Type: video/mp4
-  Content-Length: 2821266
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut15d-av1-1440-v7.mp4
-  Content-Type: video/mp4
-  Content-Length: 1834874
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut15d-h264-1280-v7.mp4
-  Content-Type: video/mp4
-  Content-Length: 2100143
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut15d-av1-1280-v7.mp4
-  Content-Type: video/mp4
-  Content-Length: 1577926
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut15d-h264-960-v7.mp4
-  Content-Type: video/mp4
-  Content-Length: 1393873
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut15d-av1-960-v7.mp4
-  Content-Type: video/mp4
-  Content-Length: 1095055
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut15d-mobile-h264-640-v7.mp4
-  Content-Type: video/mp4
-  Content-Length: 853965
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-/media/video-lab/cut15d-mobile-av1-640-v7.mp4
-  Content-Type: video/mp4
-  Content-Length: 728868
-  Cache-Control: public, max-age=31536000, immutable, no-transform
-
-# Video-Lab radial zoom loop v8
+# Explicit metadata for the current hero and comparison encodes only.
 /media/video-lab/loop16-reference-v8.mp4
   Content-Type: video/mp4
   Content-Length: 14687401
-  Cache-Control: public, max-age=31536000, immutable, no-transform
 
 /media/video-lab/loop16-h264-1918-v8.mp4
   Content-Type: video/mp4
   Content-Length: 4431022
-  Cache-Control: public, max-age=31536000, immutable, no-transform
 
 /media/video-lab/loop16-av1-1918-v8.mp4
   Content-Type: video/mp4
   Content-Length: 2424815
-  Cache-Control: public, max-age=31536000, immutable, no-transform
 
 /media/video-lab/loop16-h264-1600-v8.mp4
   Content-Type: video/mp4
   Content-Length: 3452565
-  Cache-Control: public, max-age=31536000, immutable, no-transform
 
 /media/video-lab/loop16-av1-1600-v8.mp4
   Content-Type: video/mp4
   Content-Length: 2167866
-  Cache-Control: public, max-age=31536000, immutable, no-transform
 
 /media/video-lab/loop16-h264-1440-v8.mp4
   Content-Type: video/mp4
   Content-Length: 2917485
-  Cache-Control: public, max-age=31536000, immutable, no-transform
 
 /media/video-lab/loop16-av1-1440-v8.mp4
   Content-Type: video/mp4
   Content-Length: 1877163
-  Cache-Control: public, max-age=31536000, immutable, no-transform
 
 /media/video-lab/loop16-h264-1280-v8.mp4
   Content-Type: video/mp4
   Content-Length: 2170995
-  Cache-Control: public, max-age=31536000, immutable, no-transform
 
 /media/video-lab/loop16-av1-1280-v8.mp4
   Content-Type: video/mp4
   Content-Length: 1608841
-  Cache-Control: public, max-age=31536000, immutable, no-transform
 
 /media/video-lab/loop16-h264-960-v8.mp4
   Content-Type: video/mp4
   Content-Length: 1441628
-  Cache-Control: public, max-age=31536000, immutable, no-transform
 
 /media/video-lab/loop16-av1-960-v8.mp4
   Content-Type: video/mp4
   Content-Length: 1118629
-  Cache-Control: public, max-age=31536000, immutable, no-transform
 
 /media/video-lab/loop16-mobile-h264-640-v8.mp4
   Content-Type: video/mp4
   Content-Length: 882643
-  Cache-Control: public, max-age=31536000, immutable, no-transform
 
 /media/video-lab/loop16-mobile-av1-640-v8.mp4
   Content-Type: video/mp4
   Content-Length: 742077
-  Cache-Control: public, max-age=31536000, immutable, no-transform
