@@ -1,0 +1,35 @@
+{
+  "codec": "h264",
+  "width": 640,
+  "cycles": 3,
+  "decodedFrames": 1176,
+  "framesPerCycle": 392,
+  "identicalDecodedCycles": true,
+  "boundaryIndices": [
+    [
+      391,
+      392
+    ],
+    [
+      783,
+      784
+    ]
+  ],
+  "command": [
+    "ffmpeg",
+    "-v",
+    "error",
+    "-stream_loop",
+    "2",
+    "-i",
+    "/Users/marcviladrich/Freelance/zzdev/flyingstars-video-lab/public/media/video-lab/loop16-mobile-h264-640-v8.mp4",
+    "-map",
+    "0:v:0",
+    "-an",
+    "-c",
+    "copy",
+    "-y",
+    "/var/folders/29/9p1f75kd7z1bz8j2rjr79_pc0000gn/T/fs-loop16-hk7j0yyv/three-cycles.mp4"
+  ],
+  "sourceSha256": "1b857503cb6cef1e03aabd65c2dd7e583ec33a2754ba34cb611d2c4fdf848c9c"
+}

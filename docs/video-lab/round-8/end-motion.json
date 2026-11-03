@@ -1,0 +1,50 @@
+[
+  {
+    "id": "loop16-h264-1440",
+    "frames": 28,
+    "uniqueDecodedFrames": 28,
+    "sha256": "4bb904577e5904bd5007abca828d2b150dc53028125d65819ca8eeae801ee1f0"
+  },
+  {
+    "id": "loop16-av1-1440",
+    "frames": 28,
+    "uniqueDecodedFrames": 28,
+    "sha256": "1dde1e1d3dc3998537a972e82ff5f6b255871a54a136fda8ca3185f26349b313"
+  },
+  {
+    "id": "loop16-h264-1280",
+    "frames": 28,
+    "uniqueDecodedFrames": 28,
+    "sha256": "fb62db10ea82c3d53cf166d4d4548dd58964a7a0e52f556b22f0bf93831f37d1"
+  },
+  {
+    "id": "loop16-av1-1280",
+    "frames": 28,
+    "uniqueDecodedFrames": 28,
+    "sha256": "77ba1f304fa005baedf9513c71d288546813cd70a5bb9589e5d403a5fedf63ca"
+  },
+  {
+    "id": "loop16-h264-960",
+    "frames": 28,
+    "uniqueDecodedFrames": 28,
+    "sha256": "c0614d7cd32fcdda8baad468941ccc5151067d8f978b5f826c5eacd4ac4b8119"
+  },
+  {
+    "id": "loop16-av1-960",
+    "frames": 28,
+    "uniqueDecodedFrames": 28,
+    "sha256": "b90f86f54af812a0ae0317cc23ce342ad54e88d045b95b68d970bc8d4d692b53"
+  },
+  {
+    "id": "loop16-mobile-h264-640",
+    "frames": 28,
+    "uniqueDecodedFrames": 28,
+    "sha256": "1b857503cb6cef1e03aabd65c2dd7e583ec33a2754ba34cb611d2c4fdf848c9c"
+  },
+  {
+    "id": "loop16-mobile-av1-640",
+    "frames": 28,
+    "uniqueDecodedFrames": 28,
+    "sha256": "17e0e377d9d3007325cd98aed93f969a041c70ce97fe23c03d0c3f03ce0e9b8c"
+  }
+]

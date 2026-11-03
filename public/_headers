@@ -483,3 +483,69 @@
   Content-Type: video/mp4
   Content-Length: 728868
   Cache-Control: public, max-age=31536000, immutable, no-transform
+
+# Video-Lab radial zoom loop v8
+/media/video-lab/loop16-reference-v8.mp4
+  Content-Type: video/mp4
+  Content-Length: 14687401
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/loop16-h264-1918-v8.mp4
+  Content-Type: video/mp4
+  Content-Length: 4431022
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/loop16-av1-1918-v8.mp4
+  Content-Type: video/mp4
+  Content-Length: 2424815
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/loop16-h264-1600-v8.mp4
+  Content-Type: video/mp4
+  Content-Length: 3452565
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/loop16-av1-1600-v8.mp4
+  Content-Type: video/mp4
+  Content-Length: 2167866
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/loop16-h264-1440-v8.mp4
+  Content-Type: video/mp4
+  Content-Length: 2917485
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/loop16-av1-1440-v8.mp4
+  Content-Type: video/mp4
+  Content-Length: 1877163
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/loop16-h264-1280-v8.mp4
+  Content-Type: video/mp4
+  Content-Length: 2170995
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/loop16-av1-1280-v8.mp4
+  Content-Type: video/mp4
+  Content-Length: 1608841
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/loop16-h264-960-v8.mp4
+  Content-Type: video/mp4
+  Content-Length: 1441628
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/loop16-av1-960-v8.mp4
+  Content-Type: video/mp4
+  Content-Length: 1118629
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/loop16-mobile-h264-640-v8.mp4
+  Content-Type: video/mp4
+  Content-Length: 882643
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/loop16-mobile-av1-640-v8.mp4
+  Content-Type: video/mp4
+  Content-Length: 742077
+  Cache-Control: public, max-age=31536000, immutable, no-transform
