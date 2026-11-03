@@ -52,11 +52,15 @@ jobs:
           done
           exit "$missing"
       - uses: actions/checkout@v6   # für functions/ (Pages Functions werden aus dem Repo mitgebündelt)
+      - uses: actions/setup-node@v6
+        with: { node-version-file: .nvmrc, registry-url: 'https://npm.pkg.github.com', scope: '@marc-viladrich' }
       - uses: actions/download-artifact@v4
         with: { name: dist, path: dist }
       - name: Cloudflare Pages deploy
         id: cf
         uses: cloudflare/wrangler-action@v3
+        # Wrangler's npm install also resolves the workspace's private editor package.
+        env: { NODE_AUTH_TOKEN: '${{ secrets.PACKAGES_READ_TOKEN }}' }
         with:
           wranglerVersion: '4.147.0' # siehe deploy-cloudflare.yml
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
