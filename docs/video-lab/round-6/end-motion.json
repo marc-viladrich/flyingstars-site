@@ -1,0 +1,50 @@
+[
+  {
+    "id": "cut17c-h264-1440",
+    "frames": 28,
+    "uniqueDecodedFrames": 28,
+    "sha256": "0c5318279a10fd064b23e49892bf0bcf771832beed7f241671c6083bbb358365"
+  },
+  {
+    "id": "cut17c-av1-1440",
+    "frames": 28,
+    "uniqueDecodedFrames": 28,
+    "sha256": "1a350a553a695144a1ff7f78a945beea75a8af504e997479f7c539577a6d88cf"
+  },
+  {
+    "id": "cut17c-h264-1280",
+    "frames": 28,
+    "uniqueDecodedFrames": 28,
+    "sha256": "be3f69f2bcba8d7eb8b149d35074b6fadf4e9db1b366a04e51d360f10c14683d"
+  },
+  {
+    "id": "cut17c-av1-1280",
+    "frames": 28,
+    "uniqueDecodedFrames": 28,
+    "sha256": "ca4cb18c1be8262d1780e6eec9d7002e43bdc5ac6f171770c4322622da6672f6"
+  },
+  {
+    "id": "cut17c-h264-960",
+    "frames": 28,
+    "uniqueDecodedFrames": 28,
+    "sha256": "523dcd055c581d91025a83e0111e669c6f6cd57d69322532c05b9e4d911de6c2"
+  },
+  {
+    "id": "cut17c-av1-960",
+    "frames": 28,
+    "uniqueDecodedFrames": 28,
+    "sha256": "d7ecc5f4737ced4b040202617e347bcfa2d8bd4df3fe6778aa68343ac762bd70"
+  },
+  {
+    "id": "cut17c-mobile-h264-640",
+    "frames": 28,
+    "uniqueDecodedFrames": 28,
+    "sha256": "e0d9c5a9e1a3646128c86019ba41bf93b83d221f8610c123b99d8972c82a13ce"
+  },
+  {
+    "id": "cut17c-mobile-av1-640",
+    "frames": 28,
+    "uniqueDecodedFrames": 28,
+    "sha256": "717124d2ef971803f40304cfb2f58c8132537101c69202435e61abf5e05c270c"
+  }
+]
