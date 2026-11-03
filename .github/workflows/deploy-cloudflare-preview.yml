@@ -10,7 +10,7 @@ on:
         type: choice
         options:
           - manual-preview
-          - feat/designsprache-poc
+          - feat-designsprache-poc
 concurrency:
   group: deploy-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
