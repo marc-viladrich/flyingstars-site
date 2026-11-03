@@ -1,3 +1,4 @@
+import { loadHeartData } from "./heart-data.js";
 // FS heart formations from the Formations-Werkzeug (pricing-formations.js), shared by the price calculator and the show
 // configurator. One step per 10 drones from 100 to 1000; each step places one or more hearts (main heart + small ones).
 
@@ -24,7 +25,7 @@ export function heartPicture(data, m) {
  * ausgedünnt, für Motive außerhalb von show-scenes.js (Schmetterling, ODYSSEY). Lädt die Formationsdaten bei Bedarf.
  */
 export async function heartShell(k) {
-  const data = (await import("./pricing-formations.js")).default, pic = heartPicture(data, 290);
+  const data = await loadHeartData(), pic = heartPicture(data, 290);
   const pts = pic.hearts.filter((h) => h.slot === 0).flatMap((h) => h.pts), mx = Math.max(...pts.map((p) => Math.max(Math.abs(p[0]), Math.abs(p[1]))));
   const shell = pts.map(([x, y, z]) => [x / mx, y / mx - 0.1, z / mx]);
   if (k >= shell.length) return shell.concat(shell.slice(0, k - shell.length).map(([x, y, z]) => [x * 0.68, y * 0.68 - 0.03, z * 0.68]));

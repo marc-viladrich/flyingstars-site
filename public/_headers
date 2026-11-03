@@ -21,3 +21,84 @@
 /media/video/siemensIndoor-preview-v1.mp4
   Content-Length: 214043
   Cache-Control: public, max-age=31536000, immutable, no-transform
+
+# Review-only video variants: immutable filenames, explicit length for WebKit.
+/media/video-lab/original-v1.mp4
+  Content-Type: video/mp4
+  Content-Length: 6514429
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/h264-1600-v1.mp4
+  Content-Type: video/mp4
+  Content-Length: 5254148
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/h264-1440-v1.mp4
+  Content-Type: video/mp4
+  Content-Length: 4428142
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/h264-1280-v1.mp4
+  Content-Type: video/mp4
+  Content-Length: 3333510
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/h264-1080-v1.mp4
+  Content-Type: video/mp4
+  Content-Length: 5396496
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/av1-1080-v1.mp4
+  Content-Type: video/mp4
+  Content-Length: 3572165
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/av1-1080-mild-v1.mp4
+  Content-Type: video/mp4
+  Content-Length: 5164106
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/vp9-1080-v1.webm
+  Content-Type: video/webm
+  Content-Length: 4025557
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/hevc-1080-v1.mp4
+  Content-Type: video/mp4
+  Content-Length: 4465220
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/av1-1280-v1.mp4
+  Content-Type: video/mp4
+  Content-Length: 3089181
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/loop-av1-1280-v1.mp4
+  Content-Type: video/mp4
+  Content-Length: 1660811
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/mobile-960-loop-v1.mp4
+  Content-Type: video/mp4
+  Content-Length: 1176210
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/mobile-640-full-v1.mp4
+  Content-Type: video/mp4
+  Content-Length: 1332469
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/mobile-480-full-v1.mp4
+  Content-Type: video/mp4
+  Content-Length: 851182
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/mobile-640-loop-v1.mp4
+  Content-Type: video/mp4
+  Content-Length: 709416
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video-lab/mobile-480-loop-v1.mp4
+  Content-Type: video/mp4
+  Content-Length: 455577
+  Cache-Control: public, max-age=31536000, immutable, no-transform

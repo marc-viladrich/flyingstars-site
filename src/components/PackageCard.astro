@@ -15,8 +15,8 @@ const money = (v: number) => t('showconfigurator.fromValue', { v0: v.toLocaleStr
 <a class:list={['pack', { featured: highlight }]} aria-labelledby={headingId} href={localHref(`/kontakt/?paket=${p.name}`)} data-pick-paket={p.name} style={`--c:rgb(${p.color.join(',')})`}>
       <canvas data-orb={p.shape} data-color={p.color.join(',')} data-n={p.base} aria-hidden="true"></canvas>
       <div class="pack-head"><div class="name"><C id={headingId}>{p.name}</C>{badge && <span class="chip">{badge}</span>}</div><p class="price">{money(p.price)}</p>{label && <p class="meta mono">{label}</p>}{sky && <p class="pack-sky">{sky}</p>}</div>
-      <!-- Drohnenzahl als eigene Gruppe in der Paketfarbe, darunter die Kernpunkte (Marc, 01.11.2026). Gleiche Vorschau auf
-           Startseite und Anlass-Seiten: Punkte aus package-details.ts, sofern die Seite keine eigenen setzt. -->
+      {/* Drohnenzahl als eigene Gruppe in der Paketfarbe, darunter die Kernpunkte (Marc, 01.11.2026). Gleiche Vorschau auf
+           Startseite und Anlass-Seiten: Punkte aus package-details.ts, sofern die Seite keine eigenen setzt. */}
       <p class="pack-drones">{dronesLine(p.name)}<span class="pack-time">{showtimeLine(p.name)}</span></p>
       <ul class="pack-points">{(pointsOverride ?? PACKAGE_POINTS[p.name]).map((pt) => <li>{pt}</li>)}</ul>
     </a>

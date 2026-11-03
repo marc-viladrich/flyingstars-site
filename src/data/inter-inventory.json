@@ -1,0 +1,509 @@
+{
+  "commit": "a4909c76b9f84b644fd6aa543be4ec3c7e61c5eb",
+  "gallery": [
+    {
+      "id": "wordmark",
+      "selector": ".logo span",
+      "family": "Inter",
+      "weight": 600,
+      "status": "source-proven",
+      "sources": [
+        "src/components/Logo.astro:10",
+        "src/styles/global.css:114",
+        "src/styles/global.css:568"
+      ],
+      "exampleUrls": {
+        "de": "https://feat-designsprache-poc.flyingstars-site.pages.dev/",
+        "en": "https://feat-designsprache-poc.flyingstars-site.pages.dev/en/",
+        "nl": "https://feat-designsprache-poc.flyingstars-site.pages.dev/nl/"
+      },
+      "visibleText": {
+        "shared": "FLYINGSTARS"
+      },
+      "condition": "Hidden at max-width:40em by global.css:568; present in header, mobile-menu top and footer Logo instances."
+    },
+    {
+      "id": "buttons",
+      "selector": ".btn",
+      "family": "Inter",
+      "weight": 500,
+      "status": "source-proven",
+      "sources": [
+        "src/styles/global.css:97",
+        "src/components/sections/ContactForm.astro:70",
+        "src/components/sections/ContactForm.astro:88"
+      ],
+      "exampleUrls": {
+        "de": "https://feat-designsprache-poc.flyingstars-site.pages.dev/kontakt/",
+        "en": "https://feat-designsprache-poc.flyingstars-site.pages.dev/en/kontakt/",
+        "nl": "https://feat-designsprache-poc.flyingstars-site.pages.dev/nl/kontakt/"
+      },
+      "visibleText": {
+        "de": [
+          "Weiter",
+          "Anfrage senden",
+          "Zurück"
+        ],
+        "en": [
+          "Next",
+          "Send enquiry",
+          "Back"
+        ],
+        "nl": [
+          "Verder",
+          "Aanvraag versturen",
+          "Terug"
+        ]
+      },
+      "condition": ""
+    },
+    {
+      "id": "table-row-headers",
+      "selector": "tbody th",
+      "family": "Inter",
+      "weight": 500,
+      "status": "source-proven",
+      "sources": [
+        "src/styles/global.css:188",
+        "src/components/ComparisonMatrix.astro:19"
+      ],
+      "exampleUrls": {
+        "de": "https://feat-designsprache-poc.flyingstars-site.pages.dev/#vergleich",
+        "en": "https://feat-designsprache-poc.flyingstars-site.pages.dev/en/#vergleich",
+        "nl": "https://feat-designsprache-poc.flyingstars-site.pages.dev/nl/#vergleich"
+      },
+      "visibleText": {
+        "de": [
+          "Logos und Schriftzüge am Himmel",
+          "Lautstärke"
+        ],
+        "en": [
+          "Logos and lettering in the sky"
+        ],
+        "nl": [
+          "Logo's en teksten aan de hemel"
+        ]
+      },
+      "condition": "Desktop; LandingSite .st-who tbody th explicitly overrides to 400 at LandingSite.astro:237"
+    },
+    {
+      "id": "mobile-comparison-tabs",
+      "selector": ".mtabs span",
+      "family": "Inter",
+      "weight": 500,
+      "status": "source-proven",
+      "sources": [
+        "src/styles/global.css:962",
+        "src/styles/global.css:963",
+        "src/components/MobileTabs.astro:12"
+      ],
+      "exampleUrls": {
+        "de": "https://feat-designsprache-poc.flyingstars-site.pages.dev/#vergleich",
+        "en": "https://feat-designsprache-poc.flyingstars-site.pages.dev/en/#vergleich",
+        "nl": "https://feat-designsprache-poc.flyingstars-site.pages.dev/nl/#vergleich"
+      },
+      "visibleText": {
+        "de": [
+          "Drohnenshow",
+          "Feuerwerk",
+          "Lasershow"
+        ],
+        "en": [
+          "Drone show",
+          "Fireworks",
+          "Laser show"
+        ],
+        "nl": [
+          "Droneshow",
+          "Vuurwerk",
+          "Lasershow"
+        ]
+      },
+      "condition": "max-width:43.75em; labels with --c use Space Grotesk 600, including package tabs"
+    },
+    {
+      "id": "mobile-comparison-labels",
+      "selector": ".cmp-panel dt",
+      "family": "Inter",
+      "weight": 500,
+      "status": "source-proven",
+      "sources": [
+        "src/styles/global.css:972",
+        "src/components/ComparisonMatrix.astro:27"
+      ],
+      "exampleUrls": {
+        "de": "https://feat-designsprache-poc.flyingstars-site.pages.dev/#vergleich",
+        "en": "https://feat-designsprache-poc.flyingstars-site.pages.dev/en/#vergleich",
+        "nl": "https://feat-designsprache-poc.flyingstars-site.pages.dev/nl/#vergleich"
+      },
+      "visibleText": {
+        "de": [
+          "Lautstärke",
+          "Brandgefahr"
+        ]
+      },
+      "condition": "max-width:43.75em; also pricing services panels"
+    },
+    {
+      "id": "blog-byline",
+      "selector": ".byline b",
+      "family": "Inter",
+      "weight": 500,
+      "status": "source-proven",
+      "sources": [
+        "src/templates/BlogPost.astro:33",
+        "src/templates/BlogPost.astro:60"
+      ],
+      "exampleUrls": {
+        "de": "https://feat-designsprache-poc.flyingstars-site.pages.dev/blog/2025-06-12-wie-programmiert-man-eine-drohnenshow/",
+        "en": "https://feat-designsprache-poc.flyingstars-site.pages.dev/en/blog/2025-06-12-wie-programmiert-man-eine-drohnenshow/",
+        "nl": "https://feat-designsprache-poc.flyingstars-site.pages.dev/nl/blog/2025-06-12-wie-programmiert-man-eine-drohnenshow/"
+      },
+      "visibleText": {
+        "shared": "Florian Becker"
+      },
+      "condition": ""
+    },
+    {
+      "id": "blog-author",
+      "selector": ".post-author b",
+      "family": "Inter",
+      "weight": 500,
+      "status": "source-proven",
+      "sources": [
+        "src/templates/BlogPost.astro:41",
+        "src/templates/BlogPost.astro:88"
+      ],
+      "exampleUrls": {
+        "de": "https://feat-designsprache-poc.flyingstars-site.pages.dev/blog/2025-06-12-wie-programmiert-man-eine-drohnenshow/",
+        "en": "https://feat-designsprache-poc.flyingstars-site.pages.dev/en/blog/2025-06-12-wie-programmiert-man-eine-drohnenshow/",
+        "nl": "https://feat-designsprache-poc.flyingstars-site.pages.dev/nl/blog/2025-06-12-wie-programmiert-man-eine-drohnenshow/"
+      },
+      "visibleText": {
+        "shared": "Florian Becker"
+      },
+      "condition": "Explicit 500, not UA bolder 700. Saved compiled CSS confirms both scoped rules."
+    },
+    {
+      "id": "blog-strong",
+      "selector": ".post-body strong",
+      "family": "Inter",
+      "weight": 600,
+      "status": "source-proven",
+      "sources": [
+        "src/templates/BlogPost.astro:74",
+        "src/content/posts/2025-06-12-wie-programmiert-man-eine-drohnenshow.md:29"
+      ],
+      "exampleUrls": {
+        "de": "https://feat-designsprache-poc.flyingstars-site.pages.dev/blog/2025-06-12-wie-programmiert-man-eine-drohnenshow/",
+        "en": "https://feat-designsprache-poc.flyingstars-site.pages.dev/en/blog/2025-06-12-wie-programmiert-man-eine-drohnenshow/",
+        "nl": "https://feat-designsprache-poc.flyingstars-site.pages.dev/nl/blog/2025-06-12-wie-programmiert-man-eine-drohnenshow/"
+      },
+      "visibleText": {
+        "de": "präzise Planung, Synchronisierung und Ausführung",
+        "en": "precise planning, synchronisation and execution"
+      },
+      "condition": "Body paragraphs/list items; strong inside h2/h3 would remain Space Grotesk"
+    },
+    {
+      "id": "textmedia-strong",
+      "selector": ".text-media .prose strong",
+      "family": "Inter",
+      "weight": 700,
+      "status": "source-plus-UA-default",
+      "sources": [
+        "src/components/sections/TextMedia.astro:12",
+        "src/components/sections/TextMedia.astro:17",
+        "src/content/pages/impressum.yaml:12",
+        "src/content/pages/kontakt.yaml:33"
+      ],
+      "exampleUrls": {
+        "de": "https://feat-designsprache-poc.flyingstars-site.pages.dev/impressum/",
+        "en": "https://feat-designsprache-poc.flyingstars-site.pages.dev/en/impressum/",
+        "nl": "https://feat-designsprache-poc.flyingstars-site.pages.dev/nl/impressum/"
+      },
+      "visibleText": {
+        "de": [
+          "FlyingStars GmbH",
+          "Besuchsadresse",
+          "Telefon:"
+        ],
+        "en": [
+          "FlyingStars GmbH",
+          "Visiting address",
+          "Phone:"
+        ],
+        "nl": [
+          "FlyingStars GmbH",
+          "Bezoekadres"
+        ]
+      },
+      "condition": "marked renders ** as strong; no author font-weight override; 700 inferred from usual UA bolder on body400, no computed-style run"
+    },
+    {
+      "id": "configurator-tooltip",
+      "selector": ".cfg-tip b",
+      "family": "Inter",
+      "weight": {
+        "initialSSR": 500,
+        "afterSetTip": 700
+      },
+      "status": "source-css-scope-plus-UA-default",
+      "sources": [
+        "src/components/configurator/ShowConfigurator.astro:71",
+        "src/components/configurator/ShowConfigurator.astro:220",
+        "src/components/configurator/ShowConfigurator.astro:221",
+        "src/scripts/show-configurator.js:119",
+        "src/i18n/ui.json:2332",
+        "src/scripts/show-configurator.js:97"
+      ],
+      "exampleUrls": {
+        "de": "https://feat-designsprache-poc.flyingstars-site.pages.dev/drohnenshow-preise/#konfigurator",
+        "en": "https://feat-designsprache-poc.flyingstars-site.pages.dev/en/drohnenshow-preise/#konfigurator",
+        "nl": "https://feat-designsprache-poc.flyingstars-site.pages.dev/nl/drohnenshow-preise/#konfigurator"
+      },
+      "visibleText": {
+        "de": "<b>Euer Logo</b> · ab 100 Drohnen",
+        "en": "<b>Your logo</b> · from 100 drones",
+        "nl": "<b>Jullie logo</b> · vanaf 100 drones"
+      },
+      "condition": "Initial SSR b has Astro scope attribute and weight500; setTip innerHTML replaces it with unscoped b, so compiled scoped b selector misses and UA bolder over Inter400 implies700. Runtime computed style not measured.",
+      "savedCssEvidence": ".cfg-tip[data-astro-cid-udk4loue] b[data-astro-cid-udk4loue]{color:var(--text);font-weight:500}",
+      "savedCssFile": "notes/flying-stars/optimierung-2026-11-03/build/http/_astro/ShowConfigurator.BkC1ye02.css"
+    },
+    {
+      "id": "configurator-sticky-bar",
+      "selector": ".cfg-bar b",
+      "family": "Inter",
+      "weight": 700,
+      "status": "source-plus-UA-default",
+      "sources": [
+        "src/components/configurator/ShowConfigurator.astro:146",
+        "src/components/configurator/ShowConfigurator.astro:337",
+        "src/components/configurator/ShowConfigurator.astro:368",
+        "src/components/configurator/ShowConfigurator.astro:370"
+      ],
+      "exampleUrls": {
+        "de": "https://feat-designsprache-poc.flyingstars-site.pages.dev/drohnenshow-preise/",
+        "en": "https://feat-designsprache-poc.flyingstars-site.pages.dev/en/drohnenshow-preise/",
+        "nl": "https://feat-designsprache-poc.flyingstars-site.pages.dev/nl/drohnenshow-preise/"
+      },
+      "visibleText": {
+        "shared": [
+          "SPARK",
+          "HORIZON",
+          "ODYSSEY"
+        ]
+      },
+      "condition": "max-width:62.5em and .cfg.is-near; body inherited400, b UA bolder; source .cfg-price b display600 does not match this separate b"
+    },
+    {
+      "id": "extras-count",
+      "selector": ".xbar-t b",
+      "family": "Inter",
+      "weight": 500,
+      "status": "source-proven",
+      "sources": [
+        "src/components/pricing/Extras.astro:63",
+        "src/components/pricing/Extras.astro:96"
+      ],
+      "exampleUrls": {
+        "de": "https://feat-designsprache-poc.flyingstars-site.pages.dev/drohnenshow-preise/#zusaetze",
+        "en": "https://feat-designsprache-poc.flyingstars-site.pages.dev/en/drohnenshow-preise/#zusaetze",
+        "nl": "https://feat-designsprache-poc.flyingstars-site.pages.dev/nl/drohnenshow-preise/#zusaetze"
+      },
+      "visibleText": {
+        "de": [
+          "1 Extra"
+        ],
+        "en": [
+          "1 extra"
+        ],
+        "nl": [
+          "1 extra"
+        ]
+      },
+      "condition": "Select at least one checkbox, e.g. indoor, before count is visible"
+    },
+    {
+      "id": "consent-toggles",
+      "selector": "#cc-main .consent-toggle-text b",
+      "family": "Inter",
+      "weight": 500,
+      "status": "source-proven-conditional",
+      "sources": [
+        "src/styles/consent.css:69",
+        "src/scripts/consent.ts:144"
+      ],
+      "exampleUrls": {
+        "de": "https://feat-designsprache-poc.flyingstars-site.pages.dev/",
+        "en": "https://feat-designsprache-poc.flyingstars-site.pages.dev/en/",
+        "nl": "https://feat-designsprache-poc.flyingstars-site.pages.dev/nl/"
+      },
+      "visibleText": {
+        "de": [
+          "Besucherstatistik",
+          "Werbeerfolg messen"
+        ],
+        "en": [
+          "Visitor statistics",
+          "Measure advertising results"
+        ],
+        "nl": [
+          "Bezoekersstatistieken",
+          "Advertentieresultaten meten"
+        ]
+      },
+      "condition": "Only with configured analytics/ads, no account or env read"
+    },
+    {
+      "id": "consent-buttons",
+      "selector": "#cc-main .cm__btn",
+      "family": "Inter",
+      "weight": 500,
+      "status": "source-proven-conditional",
+      "sources": [
+        "src/styles/consent.css:70",
+        "src/scripts/consent.ts:180"
+      ],
+      "exampleUrls": {
+        "de": "https://feat-designsprache-poc.flyingstars-site.pages.dev/",
+        "en": "https://feat-designsprache-poc.flyingstars-site.pages.dev/en/",
+        "nl": "https://feat-designsprache-poc.flyingstars-site.pages.dev/nl/"
+      },
+      "visibleText": {
+        "de": [
+          "Akzeptieren",
+          "Ablehnen"
+        ],
+        "en": [
+          "Accept",
+          "Reject"
+        ],
+        "nl": [
+          "Accepteren",
+          "Weigeren"
+        ]
+      },
+      "condition": "Only with configured analytics/ads; overrides library600"
+    },
+    {
+      "id": "consent-links",
+      "selector": "#cc-main a",
+      "family": "Inter",
+      "weight": 600,
+      "status": "source-proven-conditional",
+      "sources": [
+        "node_modules/vanilla-cookieconsent/dist/cookieconsent.css:1",
+        "src/scripts/consent.ts:135",
+        "src/styles/consent.css:74"
+      ],
+      "exampleUrls": {
+        "de": "https://feat-designsprache-poc.flyingstars-site.pages.dev/",
+        "en": "https://feat-designsprache-poc.flyingstars-site.pages.dev/en/",
+        "nl": "https://feat-designsprache-poc.flyingstars-site.pages.dev/nl/"
+      },
+      "visibleText": {
+        "de": [
+          "Details in der Datenschutzerklärung"
+        ],
+        "en": [
+          "Details in our privacy policy"
+        ],
+        "nl": [
+          "Details in onze privacyverklaring"
+        ]
+      },
+      "condition": "Only with configured analytics/ads; library600 remains on privacy link"
+    },
+    {
+      "id": "poc-counters",
+      "selector": ".poc-toc a::before",
+      "family": "Inter",
+      "weight": 600,
+      "status": "source-proven",
+      "sources": [
+        "src/styles/poc.css:26",
+        "src/pages/poc/designsprache.astro:87"
+      ],
+      "exampleUrls": {
+        "de": "https://feat-designsprache-poc.flyingstars-site.pages.dev/poc/designsprache/"
+      },
+      "visibleText": {
+        "shared": "1 … 9"
+      },
+      "condition": "Design study only, no locale variants"
+    },
+    {
+      "id": "legacy-tier-buttons",
+      "selector": ".tiers button",
+      "family": "Inter",
+      "weight": 600,
+      "status": "potential-unreferenced",
+      "sources": [
+        "src/styles/global.css:283",
+        "src/components/pricing/Calculator.astro:24"
+      ],
+      "exampleUrls": {},
+      "visibleText": {
+        "shared": [
+          "SPARK",
+          "HORIZON",
+          "ODYSSEY"
+        ]
+      },
+      "condition": "Calculator has no src importer; active pricing route uses ShowConfigurator; nested span is Space400"
+    },
+    {
+      "id": "eco-proof",
+      "selector": ".eco-proof b",
+      "family": "Inter",
+      "weight": 500,
+      "status": "potential-no-content",
+      "sources": [
+        "src/styles/global.css:490",
+        "src/components/sections/Sustainability.astro:35"
+      ],
+      "exampleUrls": {},
+      "visibleText": {
+        "de": "#Böllerciao:"
+      },
+      "condition": "No campaign: or proofText: values in current content. Current #Böllerciao pillar heading is Space500 instead."
+    },
+    {
+      "id": "crew-note",
+      "selector": ".crew-note b",
+      "family": "Inter",
+      "weight": 500,
+      "status": "potential-no-element",
+      "sources": [
+        "src/styles/global.css:526",
+        "src/components/sections/Team.astro:26"
+      ],
+      "exampleUrls": {},
+      "visibleText": {},
+      "condition": "Team renders note as escaped span and link, no b"
+    },
+    {
+      "id": "dev-todo",
+      "selector": ".todo-note b",
+      "family": "Inter",
+      "weight": 500,
+      "status": "dev-only",
+      "sources": [
+        "src/styles/global.css:1072",
+        "src/components/SectionRenderer.astro:33",
+        "src/components/SectionRenderer.astro:38"
+      ],
+      "exampleUrls": {
+        "de": "https://feat-designsprache-poc.flyingstars-site.pages.dev/impressum/",
+        "en": "https://feat-designsprache-poc.flyingstars-site.pages.dev/en/impressum/",
+        "nl": "https://feat-designsprache-poc.flyingstars-site.pages.dev/nl/impressum/"
+      },
+      "visibleText": {
+        "shared": "Fehlt noch"
+      },
+      "condition": "import.meta.env.DEV only; absent from built preview"
+    }
+  ]
+}

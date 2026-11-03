@@ -9,6 +9,7 @@ import { t as message } from '../i18n/ui.mjs';
 // and the line drawings in show-shapes.js; motifs follow FlyingStars' published shows and Marc's references.
 import logo from "../data/logo-dots.json";
 import { heartPicture } from "./heart-formation.js";
+import { loadHeartData } from "./heart-data.js";
 import { loadTextEngine, textFormation } from "./text-formation.js";
 import { TAU, DIAMOND, GREEN, WARM, GOLD, PINK, VIOLET, CYAN, BLUE, ORANGE, RED, MOON, mix, paint, place, frac, smooth, hash, yaw, roll, pitch, sway, breathe, glint, sparkle, chase, part, act, steadyClock, drift, wander, lightRank } from "./show-motion.js";
 import { transitions, planClouds } from "./scenes/interludes.js";
@@ -18,9 +19,9 @@ import { flute2d, flute3d, bubbles, trophy2d, trophy3d, bulb2d, bulb3d, bulbGlas
 import { solitaire, rocketSolid, globe, launchPad, moonHorizon, flagStar, starField } from "./show-shapes.js";
 import { share, shield, shield3d, crestStar3d, CREST_NUMBER, inCrestFlag, crown, rocket, rocket3d, flame, maskPair, maskPair3d, mask3d, MASKS, curtain, clockRim, clockDial, hand, sparkleShell, tower, tower3d, waves, TOWER_SPHERE, gate3d, arrowPaths, inside, bottle3d, cork } from "./show-shapes.js";
 
-let hearts = null, figure = null, extra = null;
+let figure = null, extra = null;
 const loadExtra = () => (extra ||= import("./scenes/index.js").then((m) => m.BUILDERS).catch((e) => { extra = null; throw e; }));
-const loadHearts = () => (hearts ||= import("./pricing-formations.js").then((m) => m.default).catch((e) => { hearts = null; throw e; }));
+const loadHearts = loadHeartData;
 const loadFigure = () => (figure ||= fetch("/media/projekte/bokkenrijders/formation.json").then((r) => { if (!r.ok) throw new Error(`Formation HTTP ${r.status}`); return r.json(); }).catch((e) => { figure = null; throw e; }));
 /** Loads the larger formation sources ahead of need, e.g. on the first interaction with the configurator. */
 export function preloadScenes() { loadExtra().catch(() => {}); loadHearts().catch(() => {}); loadFigure().catch(() => {}); loadTextEngine().catch(() => {}); }
