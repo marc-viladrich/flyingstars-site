@@ -1,4 +1,5 @@
 import test from 'node:test';
+import { parse as parseYaml } from 'yaml';
 import { spawnSync } from 'node:child_process';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -33,4 +34,12 @@ test('Node consumers with DOM mocks keep canonical dictionaries and geometry ins
   if(!(await loadHeartData()).steps[290])throw Error('Geometry missing');
  `],{cwd:fileURLToPath(root),encoding:'utf8'});
  assert.equal(result.status,0,result.stderr);
+});
+
+test('Published preview aliases are explicit URL slugs, not slash-separated Git refs',()=>{
+ const workflow=parseYaml(fs.readFileSync(new URL('.github/workflows/deploy-cloudflare-preview.yml',root),'utf8'));
+ const input=workflow.on.workflow_dispatch.inputs.preview_branch;
+ assert.equal(input.default,'manual-preview');
+ assert.ok(input.options.includes('feat-designsprache-poc'));
+ for(const option of input.options)assert.match(option,/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 });

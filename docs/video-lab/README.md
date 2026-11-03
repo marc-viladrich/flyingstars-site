@@ -35,7 +35,7 @@ Am 03.11. im aktuellen veröffentlichten WIP bei Desktop und 390px Mobil geprüf
 
 ## Prüfung
 
-`astro check`: 0 Fehler, 0 Warnungen, vorhandene Hinweise gesondert. Statischer Build erfolgreich. 34 gezielte Node-Tests für i18n, Geometriegleichheit, fehlende Referenzen, Codec-Fallback, Dateihashes, Headerlängen und Kommentare erfolgreich.
+`astro check`: 0 Fehler, 0 Warnungen, vorhandene Hinweise gesondert. Statischer Build erfolgreich. 35 gezielte Node-Tests für i18n, Geometriegleichheit, fehlende Referenzen, Codec-Fallback, Dateihashes, Headerlängen und Kommentare erfolgreich.
 
 Im nativen T3-Browser wurden AV1 im Vergleich und im Hero tatsächlich decodiert und abgespielt, ohne Fallback. Galerieinitialisierung ohne Medienrequest, gemeinsame Wiedergabe und Metadaten wurden geprüft. In Runde 2 spielte der reguläre Desktophero auf diesem Browser H.264; AV1 wurde in der manuellen großen Ansicht tatsächlich abgespielt. Die Automatik behauptet keine Hardwareerkennung bestimmter Modellnamen. Keine geräteübergreifende Kompatibilitätszusage.
 
