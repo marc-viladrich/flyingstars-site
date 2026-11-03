@@ -47,4 +47,4 @@ AV1 benötigt je Größenstufe `supported && smooth && powerEfficient`, mit250ms
 
 ## Prüfgrenzen
 
-Gezielte Node-Tests und deterministische Medienprüfungen; keine breite Browsersuite und keine Aufnahme. Echte Safari-/iOS-/Android-Decodierung ist keine aus Unit-Tests ableitbare Garantie. CSS-/Importketten-/Bildmaßänderungen werden im parallelen Performancebericht separat dokumentiert. Finale gemeinsame Checks und Veröffentlichungsnachweise werden im Geschäftshub ergänzt.
+Gezielte Node-Tests und deterministische Medienprüfungen; keine breite Browsersuite und keine Aufnahme. Echte Safari-/iOS-/Android-Decodierung ist keine aus Unit-Tests ableitbare Garantie. [CSS-/Importketten-/Bildmaßänderungen und Messgrenzen](performance.md) sind separat dokumentiert. 66 fokussierte Tests und neun Render-/Bild-/Dotimageprüfungen bestehen. Finale Veröffentlichungsnachweise werden im Geschäftshub ergänzt.

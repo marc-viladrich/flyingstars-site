@@ -1,5 +1,6 @@
 ---
 import IconFeature from '../IconFeature.astro';
+import LocalImage from '../LocalImage.astro';
 import SectionHead from '../SectionHead.astro';
 import { forPath } from '../../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
@@ -66,7 +67,7 @@ const minor = quality.filter((q) => q.secondary);
   {press.length > 0 && <div class="press">
     <SectionHead variant="embedded" kicker={kicker} headline={pressHeadline} id={`${id}-press-h`} titleClass="proof-h" />
     <ul>{press.map((p) => {
-      const inner = <>{p.show ? <img class:list={{ knock: p.knock }} src={p.logo} alt={p.name} style={`height:${p.h / 16}rem`} loading="lazy" decoding="async" /> : <b>{p.name}</b>}</>;
+      const inner = <>{p.show && p.logo ? <LocalImage class:list={{ knock: p.knock }} src={p.logo} alt={p.name} style={`height:${p.h / 16}rem`} loading="lazy" decoding="async" /> : <b>{p.name}</b>}</>;
       return <li>{p.href ? <a href={localHref(p.href)} rel="noopener" target="_blank" title={p.note ? `${p.name}: ${p.note}` : undefined}>{inner}</a> : <span class="noref" title={p.note}>{inner}</span>}</li>;
     })}</ul>
   </div>}

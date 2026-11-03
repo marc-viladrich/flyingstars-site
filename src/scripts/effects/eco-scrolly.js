@@ -1,12 +1,13 @@
 // Scrollstory Nachhaltigkeit, übernommen aus dem Vercel-Prototyp (Branch fix/minimal-fonts, src/scripts/site.ts):
 // Die Bühne bleibt stehen, während vier Zahlen nacheinander den Bildschirm übernehmen; im Hintergrund fliegt die Flotte
 // eine passende Figur (Schallwelle, die zur Ruhe kommt; eine Null; die geparkte Flotte; ein Blitz für den Strom).
-// Neu (31.10.2026): globale Pause (html.motion-paused) hält die Figur an; das Modul lädt erst, wenn es die Section gibt.
+// Globale Pause hält die Figur an; das Modul lädt erst nahe der Section.
+import { prepareEcoScrolly } from './eco-scrolly-setup.mjs';
 export function ecoScrolly(scrolly) {
   const paused = () => document.documentElement.classList.contains('motion-paused');
     const facts = [...scrolly.querySelectorAll(".fact")], steps = [...scrolly.querySelectorAll(".eco-steps li")], pin = scrolly.querySelector(".eco-pin");
     const cv = scrolly.querySelector("canvas"), g = cv.getContext("2d"), count = scrolly.querySelector("[data-to]");
-    scrolly.classList.add("is-scrolly"); scrolly.style.setProperty("--steps", facts.length);
+    prepareEcoScrolly(scrolly);
     let W = 1, H = 1, DPR = 1, cur = -1, since = 0, t = 0, seen = false, launched = false, mouse = null, fit = { cx: 0, cy: 0, s: 1 };
     const size = () => {
       DPR = Math.min(2, devicePixelRatio || 1);

@@ -67,7 +67,7 @@ const sources = [['Google', 'Google'], ['Empfehlung', t('contactform.recommendat
             {EXTRAS.map((x) => <label><input name="extras" type="checkbox" value={x.id} /><span>{x.short}</span></label>)}
           </div>
         </div>
-        <button class="btn primary" data-next type="button">{t('contactform.next')}</button>
+        <button class="btn primary" data-next type="button" hidden>{t('contactform.next')}</button>
       </fieldset>
       <fieldset class="step" data-step>
         <legend class="sr-only">{t('contactform.step2Of2AboutYou')}</legend>
@@ -89,8 +89,28 @@ const sources = [['Google', 'Google'], ['Empfehlung', t('contactform.recommendat
         <p class="hint">{t('contactform.processingNotice')} <a href={localHref("/datenschutz/")}>{t('contactform.privacyPolicy')}</a>.</p>
         <div aria-hidden="true" class="honeypot"><label>Website<input autocomplete="off" name="website" tabindex="-1" /></label></div>
       </fieldset>
-      <p class="form-status" data-form-status role="status" tabindex="-1"></p>
+      <p class="form-status" data-form-status data-load-error={t('contact.valuePleaseTryAgainLaterOrEmailTeamFlyingstarsArt', { v0: t('contact.deliveryFailed') })} role="status" tabindex="-1"></p>
     </form>
   </div>
 </section>
-<script>import '../../scripts/contact';</script>
+<script>
+  import { whenNear } from '../../scripts/when-near.mjs';
+  import { deferredForm } from '../../scripts/deferred-form.mjs';
+  const form = document.querySelector<HTMLFormElement>('#inquiry-form');
+  if (form) {
+    const enhance = deferredForm(form, () => import('../../scripts/contact'));
+    const load = whenNear(form, enhance);
+    const start = () => { void load().catch((error: unknown) => console.warn('Form enhancement could not load', error)); };
+    // Prefill and remove private draft text from the address immediately on arrival.
+    if (location.search || location.hash || form.contains(document.activeElement)) start();
+    for (const link of document.querySelectorAll<HTMLAnchorElement>('[data-pick-paket]')) {
+      link.addEventListener('pointerenter', start, { once: true });
+      link.addEventListener('focus', start, { once: true });
+      link.addEventListener('click', async (event) => {
+        event.preventDefault();
+        try { (await load()).pickPackage(link.dataset.pickPaket!); }
+        catch { location.href = link.href; }
+      });
+    }
+  }
+</script>
