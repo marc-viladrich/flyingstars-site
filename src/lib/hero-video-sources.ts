@@ -5,9 +5,9 @@ export function heroVideoSources() {
     if (!item) throw new Error(`Missing approved hero rendition: ${id}`);
     return item;
   };
-  const desktop = (width: number) => ({ preferred: find(`cut15d-av1-${width}`), fallback: find(`cut15d-h264-${width}`) });
+  const desktop = (width: number) => ({ preferred: find(`loop16-av1-${width}`), fallback: find(`loop16-h264-${width}`) });
   return {
     desktop: [960, 1280, 1440].map(desktop),
-    mobile: { preferred: find('cut15d-mobile-av1-640'), fallback: find('cut15d-mobile-h264-640') },
+    mobile: { preferred: find('loop16-mobile-av1-640'), fallback: find('loop16-mobile-h264-640') },
   };
 }
