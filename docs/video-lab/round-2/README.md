@@ -44,8 +44,18 @@ Variable Achse 400–700, nicht 500–700: Fließtext braucht 400. Datei 48.432 
 
 ## Verifikation
 
-19 gezielte Node-Tests erfolgreich; Astrocheck 0 Fehler/0 Warnungen (237 Hinweise), Build 105 Seiten erfolgreich. Hash-/Längenwächter erfassen alle 27 Dateien. Keine breite Browser-/Regressionssuite und keine Aufnahme.
+29 gezielte Node-Tests erfolgreich; Astrocheck 0 Fehler/0 Warnungen (237 Hinweise), Build 105 Seiten erfolgreich. Hash-/Längenwächter erfassen alle 27 Dateien. Keine breite Browser-/Regressionssuite und keine Aufnahme.
 
 Gezielte Bedienung im nativen T3-Browser: H.264 aktiv auf 1440×900 Fläche, Tastenwechsel auf 1440px, zwei laufende Filme mit je 720×900, Pause beider Filme, AV11440 tatsächliche Wiedergabe und Element-Vollbild. Regulärer Desktophero forderte ausschließlich die neue 1918px-H.264-Datei an.
 
 Grenzen: T3-Bildabfrage wieder `Preview automation snapshot timed out after 15000ms`; kein neues Screenshoturteil. Die Resize-API meldete zwar 390×844 als Einstellung, die Seite behielt tatsächlich 1440×900. Daher kein behaupteter mobiler Lauf in Runde 2. Mobilpaar und 640px-Vertrag sind mit Node geprüft; Safari/iOS/Android und echte ältere Geräte müssen visuell abgenommen werden. Bestehende native Browserdiagnose in der Lab-Galerie ist für Marcs Gerät verfügbar. Kein neuer Lighthouse-/Carbonwert behauptet.
+
+## Nachlauf nach CI
+
+Die CI fand sechs Verstöße gegen die bestehende Einheitenregel. Fokusbreite/-offset verwenden jetzt rem; Auflösungsangaben im Programmtext sind als „640 px“ getrennt geschrieben. Der unveränderte `no-px`-Wächter läuft lokal grün.
+
+Ein schon im vorherigen Branchstand vorhandener Fehler der Wörterbuchprojektion wurde behoben: Node-Simulationen mit DOM-Attrappen dürfen nicht in den Browserpfad geraten. Ohne Vite-SSR-Flag entscheidet nun die tatsächliche Node-Laufzeit, bei Wörterbuch und Herzprojektion gleich. Ein eigener Kindprozess mit DOM-/window-Attrappen und verbotenem fetch prüft beide echten Importe. Dieser Test schlug vor der Korrektur fehl und besteht danach.
+
+CI-Lauf `41635087603` sowie vorheriger `41625126038` zeigen außerdem denselben `ERESOLVE` im unveränderten Offline-Pipeline-Fixture (`npm install --package-lock-only --ignore-scripts --offline --install-links=true`, Astro als undefined aufgelöst). Fixture, Paketdateien und CI-Konfiguration wurden dafür nicht verändert. Der vollständige CI-Status darf deshalb nicht als grün ausgegeben werden. Der Show-Finte-Skriptaufruf mit Namensfilter wurde abgebrochen, weil das Skript bereits vor der Testauswahl eine volle Simulation startet; kein bestandener Volltest behauptet.
+
+Die öffentliche Cloudflare-Preview beantwortete einen Range-GET mit 200 und vollständiger 640px-Datei, auch beim nativen Browserfetch. Keine bestätigte206-Teilantwort; dies wird beim späteren Hetzner-Host gesondert geprüft. Wiedergabe im Preview funktionierte, Range-Byteeinsparung wird nicht behauptet.

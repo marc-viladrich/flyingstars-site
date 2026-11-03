@@ -1,6 +1,6 @@
 import messages from './ui.json' with { type: 'json' };
 import { LOCALES } from './routing.mjs';
-const server = import.meta.env?.SSR ?? (typeof document === 'undefined');
+const server = import.meta.env?.SSR ?? (typeof process !== 'undefined' && Boolean(process.versions?.node));
 let browserDictionary;
 if (!server) {
   const language = document.documentElement.lang;

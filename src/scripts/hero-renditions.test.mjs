@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createHash} from 'node:crypto';
 import {heroVideoSources} from '../lib/hero-video-sources.ts';
-test('Both hero layouts use the approved 15s edit, with 640px mobile H264 fallback',()=>{
+test('Both hero layouts use the approved 15s edit, with 640 px mobile H264 fallback',()=>{
  const sources=heroVideoSources();
  for(const [layout,pair]of Object.entries(sources)){
   assert.equal(pair.preferred.codec,'av1');assert.equal(pair.fallback.codec,'h264');

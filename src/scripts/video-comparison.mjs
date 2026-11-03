@@ -4,7 +4,7 @@ export function comparisonSet(videos, codec = 'h264') {
   if (!reference) throw new Error('15s reference missing');
   const candidates = [1600, 1440, 1280].map(width => {
     const video = videos.find(v => v.group === 'cut-desktop' && v.width === width && v.codec === codec);
-    if (!video || video.edit !== reference.edit || video.duration !== reference.duration) throw new Error(`Matching ${width}px ${codec} comparison missing`);
+    if (!video || video.edit !== reference.edit || video.duration !== reference.duration) throw new Error(`Matching ${width} px ${codec} comparison missing`);
     return video;
   });
   return [reference, ...candidates];
