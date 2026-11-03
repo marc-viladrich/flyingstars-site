@@ -13,9 +13,9 @@ import { LOCALES, localeFromPath, sourcePath, sourceId, localizedHref } from '..
 import LanguageSwitch from '../components/LanguageSwitch.astro';
 import Consent from '../components/Consent.astro';
 import { trackingConfig } from '../lib/consent.mjs';
-const tracking = trackingConfig({
-  ga: Astro.url.pathname.startsWith('/poc/video-lab/') ? '' : import.meta.env.PUBLIC_GA_ID ?? '',
-  ads: Astro.url.pathname.startsWith('/poc/video-lab/') ? '' : import.meta.env.PUBLIC_GOOGLE_ADS_ID ?? '',
+const tracking = trackingConfig(Astro.url.pathname.startsWith('/poc/video-lab/') ? {} : {
+  ga: import.meta.env.PUBLIC_GA_ID ?? '',
+  ads: import.meta.env.PUBLIC_GOOGLE_ADS_ID ?? '',
   label: import.meta.env.PUBLIC_GOOGLE_ADS_LABEL ?? '',
 });
 import { SHOWS_TOTAL } from '../components/facts';
