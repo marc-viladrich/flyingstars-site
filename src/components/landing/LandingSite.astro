@@ -236,7 +236,7 @@ const markers = variant === 'outdoor'
   .st-who tbody tr:hover { background: rgba(246, 241, 232, 0.025); }
   .st-legend { display: flex; flex-wrap: wrap; gap: 0.5rem 1.375rem; margin: 1rem 0 0; color: var(--faint); font-size: var(--text-xs); }
   .st-legend > span { display: inline-flex; align-items: center; gap: 0.5rem; }
-  @media (max-width: 37.5em) { .st-who .c { width: 5.375rem; } .st-who th, .st-who td { padding: 0.75rem 0.25rem; } .st-who tbody th { font-size: var(--text-control); padding-right: 0.5rem; } .st-who thead th { letter-spacing: 0.04em; font-size: 0.6875rem; } }
+  @media (max-width: 37.5em) { .st-who .c { width: 5.375rem; } .st-who th, .st-who td { padding: 0.75rem 0.25rem; } .st-who tbody th { font-size: var(--text-control); padding-right: 0.5rem; } .st-who thead th { letter-spacing: 0.04em; font-size: var(--text-xs); } }
   @media (prefers-reduced-motion: reduce) { .zone, .zone *, .marker, .st-body { transition: none; animation: none !important; } }
   .st-items li { display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); gap: 0.5rem; padding: 1.375rem 0; border-top: 1px solid var(--line); }
   .st-items li:first-child { padding-top: 0; border: 0; }
