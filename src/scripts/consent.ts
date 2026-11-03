@@ -133,11 +133,16 @@ async function initConsent(element: HTMLElement) {
   const escape = (text: string) => text.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]!);
   const paragraph = (text: string) => `<span class="consent-paragraph">${escape(text)}</span>`;
   const privacy = `<a class="link" href="${escape(element.dataset.privacy!)}">${escape(copy.privacy)}</a>`;
-  // The optional services as a list (Marc, 02.11.2026: „zwei Bullet Points“). Spans with list roles, because the
-  // library renders the description into a <p>.
-  const services = [config.ga && copy.gaSummary, config.ads && copy.adsSummary].filter(Boolean) as string[];
-  const list = `<span class="consent-paragraph">${escape(copy.optional)}</span><span class="consent-list" role="list">${services.map((text) => `<span role="listitem">${escape(text)}</span>`).join('')}</span>`;
-  const summary = paragraph(copy.summary) + list + `<span class="consent-paragraph consent-fine">${escape(copy.transfer)} ${privacy}</span>`;
+  // Eine Karte für alles (Marc, 03.11.2026): kurzer Text, die Schalter direkt darunter, kein zweiter großer Dialog.
+  // Spans statt divs, weil die Bibliothek die Beschreibung in ein <p> setzt. Anbieter steht am Schalter, Details
+  // (Rechtsgrundlage, Speicherdauer, Drittland) in der Datenschutzerklärung.
+  const purposes = [
+    config.ga && { category: 'analytics', title: copy.analytics, provider: 'Google Analytics' },
+    config.ads && { category: 'marketing', title: copy.ads, provider: 'Google Ads' },
+  ].filter(Boolean) as { category: keyof Choices; title: string; provider: string }[];
+  const toggles = `<span class="consent-toggles" role="group" aria-label="${escape(copy.choices)}">${purposes.map((purpose) =>
+    `<label class="consent-toggle"><input type="checkbox" role="switch" data-purpose="${purpose.category}"><span class="consent-switch" aria-hidden="true"></span><span class="consent-toggle-text"><b>${escape(purpose.title)}</b> ${escape(purpose.provider)}</span></label>`).join('')}</span>`;
+  const summary = paragraph(copy.summary) + toggles + `<span class="consent-paragraph consent-fine">${privacy}</span>`;
   const onConsent = ({ cookie }: { cookie: CookieConsent.CookieValue }) => {
     if (booting) { if (previous) apply(previous); return; }
     const record = readConsent(JSON.stringify(cookie), config);
@@ -173,21 +178,9 @@ async function initConsent(element: HTMLElement) {
       [document.documentElement.lang]: {
         consentModal: {
           title: copy.title, description: summary, acceptAllBtn: copy.accept,
-          acceptNecessaryBtn: copy.reject, showPreferencesBtn: copy.settings,
-          revisionMessage: copy.revision,
+          acceptNecessaryBtn: copy.reject, revisionMessage: copy.revision,
         },
-        preferencesModal: {
-          title: copy.title, closeIconLabel: copy.close, acceptAllBtn: copy.accept,
-          acceptNecessaryBtn: copy.reject, savePreferencesBtn: copy.save,
-          serviceCounterLabel: copy.categoryLabel,
-          sections: [
-            { description: summary },
-            { title: copy.necessaryTitle, description: copy.necessary, linkedCategory: 'necessary' },
-            ...(config.ga ? [{ title: copy.analytics, description: copy.analyticsDetail, linkedCategory: 'analytics' }] : []),
-            ...(config.ads ? [{ title: copy.ads, description: copy.adsDetail, linkedCategory: 'marketing' }] : []),
-            { description: copy.retention },
-          ],
-        },
+        preferencesModal: { sections: [] },
       },
     } },
     onConsent, onChange: onConsent,
@@ -218,7 +211,8 @@ async function initConsent(element: HTMLElement) {
       modal.addEventListener('transitionend', (event) => { if (event.target === modal) focusVisibleModal(); });
       // The library scrolls its notice description on short screens. Safari needs
       // an explicit keyboard target to read that region (axe scrollable-region-focusable).
-      modal.querySelector<HTMLElement>('.cm__desc')?.setAttribute('tabindex', '0');
+      const desc = modal.querySelector<HTMLElement>('.cm__desc');
+      if (desc && desc.scrollHeight > desc.clientHeight) desc.setAttribute('tabindex', '0');
       // Match visual order and keyboard order, with rejection first at equal weight.
       const reject = modal.querySelector<HTMLButtonElement>('[data-role=necessary]');
       if (reject) reject.parentElement!.prepend(reject);
@@ -226,8 +220,37 @@ async function initConsent(element: HTMLElement) {
         button.classList.add('btn');
         if (['all', 'necessary'].includes(button.dataset.role ?? '')) button.classList.add('primary');
       });
+      wireToggles(modal);
     },
   });
+  // Schalter in der Karte: anfangs der gespeicherte Stand (neu: alles aus). Wer etwas umlegt, speichert mit dem rechten
+  // Knopf genau diese Auswahl („Auswahl speichern“); unverändert bleibt er „Akzeptieren“ für alles. Ablehnen bleibt
+  // gleich gewichtet daneben.
+  function syncToggles() {
+    const card = document.querySelector<HTMLElement>('#cc-main .cm');
+    if (!card) return;
+    card.querySelectorAll<HTMLInputElement>('[data-purpose]').forEach((input) => { input.checked = choices[input.dataset.purpose as keyof Choices]; });
+    card.dataset.dirty = '';
+    const all = card.querySelector<HTMLButtonElement>('[data-role=all]');
+    if (all) all.textContent = copy.accept;
+  }
+  function wireToggles(modal: HTMLElement) {
+    if (!modal.matches('.cm') || modal.dataset.wired) return;
+    modal.dataset.wired = '1';
+    const inputs = [...modal.querySelectorAll<HTMLInputElement>('[data-purpose]')];
+    const all = modal.querySelector<HTMLButtonElement>('[data-role=all]')!;
+    const dirty = () => inputs.some((input) => input.checked !== choices[input.dataset.purpose as keyof Choices]);
+    modal.addEventListener('change', () => { all.textContent = dirty() ? copy.save : copy.accept; });
+    // Vor dem Klick-Handler der Bibliothek: bei geänderter Auswahl genau diese speichern statt alles anzunehmen
+    modal.addEventListener('click', (event) => {
+      if (!(event.target as HTMLElement).closest('[data-role=all]') || !dirty()) return;
+      event.preventDefault(); event.stopPropagation();
+      CookieConsent.acceptCategory(inputs.filter((input) => input.checked).map((input) => input.dataset.purpose!));
+      CookieConsent.hide();
+    }, true);
+    syncToggles();
+  }
+
   // The library may have read a stale grant from a store that became read-only.
   // Clear its in-memory selection too; it must not preselect optional purposes.
   if (!previous && CookieConsent.validConsent()) CookieConsent.acceptCategory([]);
@@ -237,10 +260,23 @@ async function initConsent(element: HTMLElement) {
   warning.textContent = copy.storageError;
   element.after(warning);
   reopen.hidden = false;
+  let reopened = false;
   reopen.addEventListener('click', () => {
+    reopened = true;
     returnFocus = reopen;
     reopen.focus({ preventScroll: true }); // Safari pointer clicks do not focus buttons.
-    CookieConsent.showPreferences();
+    CookieConsent.show(true);
+    syncToggles();
+    requestAnimationFrame(() => document.querySelector<HTMLElement>('#cc-main .cm')?.focus({ preventScroll: true }));
+  });
+  // Über das Cookie-Symbol geöffnete Karte schließt Escape ohne Änderung (auch auf Datenschutz/Impressum, wo noch keine
+  // Entscheidung vorliegt); die automatisch erscheinende erste Karte bleibt, bis jemand entscheidet.
+  window.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape' || !reopened) return;
+    if (!document.querySelector('#cc-main .cm:not([aria-hidden=true])') || !document.documentElement.classList.contains('show--consent')) return;
+    reopened = false;
+    CookieConsent.hide();
+    returnFocus?.focus({ preventScroll: true });
   });
   window.addEventListener('storage', (event) => {
     if (event.key === CONSENT_KEY || event.key === null) reloadWithoutTags();

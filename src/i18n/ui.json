@@ -3345,69 +3345,34 @@
     "nl": "Niet inbegrepen"
   },
   "consent.title": {
-    "de": "Eure Datenschutz-Einstellungen",
-    "en": "Your privacy choices",
-    "nl": "Jullie privacykeuzes"
+    "de": "Dürfen wir mitzählen?",
+    "en": "Mind if we count along?",
+    "nl": "Mogen we meetellen?"
   },
   "consent.summary": {
-    "de": "Ihr entscheidet, ob wir Google-Dienste nutzen dürfen. Ohne Zustimmung laden wir sie nicht, eure Anfrage funktioniert trotzdem.",
-    "en": "You choose whether we may use Google services. Without consent we do not load them, and your enquiry still works.",
-    "nl": "Jullie bepalen of we Google-diensten mogen gebruiken. Zonder toestemming laden we ze niet, en jullie aanvraag werkt gewoon."
+    "de": "Mit eurer Zustimmung sehen wir, welche Seiten euch interessieren und über welche Anzeige ihr gekommen seid. Ohne läuft alles genauso, auch eure Anfrage.",
+    "en": "With your consent we can see which pages interest you and which ad brought you here. Without it, everything works the same, including your enquiry.",
+    "nl": "Met jullie toestemming zien we welke pagina's jullie interesseren en via welke advertentie jullie hier kwamen. Zonder werkt alles precies hetzelfde, ook jullie aanvraag."
   },
-  "consent.optional": {
-    "de": "Optional:",
-    "en": "Optional:",
-    "nl": "Optioneel:"
-  },
-  "consent.gaSummary": {
-    "de": "Google Analytics 4 für Besucherstatistik",
-    "en": "Google Analytics 4 for visitor statistics",
-    "nl": "Google Analytics 4 voor bezoekersstatistieken"
-  },
-  "consent.adsSummary": {
-    "de": "Google Ads zur Messung erfolgreicher Anfragen nach Anzeigenklicks",
-    "en": "Google Ads to measure successful enquiries after ad clicks",
-    "nl": "Google Ads om geslaagde aanvragen na advertentieklikken te meten"
-  },
-  "consent.transfer": {
-    "de": "Anbieterin ist Google Ireland, Daten können auch in die USA gelangen. Eure Wahl könnt ihr jederzeit im Footer ändern.",
-    "en": "The provider is Google Ireland; data may also be transferred to the USA. You can change your choice at any time in the footer.",
-    "nl": "Aanbieder is Google Ireland; gegevens kunnen ook naar de VS gaan. Jullie kunnen de keuze altijd in de footer wijzigen."
+  "consent.choices": {
+    "de": "Optionale Dienste",
+    "en": "Optional services",
+    "nl": "Optionele diensten"
   },
   "consent.privacy": {
-    "de": "Datenschutz und weitere Informationen",
-    "en": "Privacy and further information",
-    "nl": "Privacy en meer informatie"
-  },
-  "consent.necessary": {
-    "de": "Notwendig: Wir speichern nur eure Datenschutz-Auswahl für 180 Tage im Browser. Das umfasst auch eine Ablehnung.",
-    "en": "Necessary: We store only your privacy choices in your browser for 180 days. This includes a rejection.",
-    "nl": "Noodzakelijk: we bewaren alleen jullie privacykeuzes 180 dagen in de browser. Dit geldt ook voor een weigering."
+    "de": "Details in der Datenschutzerklärung",
+    "en": "Details in our privacy policy",
+    "nl": "Details in onze privacyverklaring"
   },
   "consent.analytics": {
     "de": "Besucherstatistik",
     "en": "Visitor statistics",
     "nl": "Bezoekersstatistieken"
   },
-  "consent.analyticsDetail": {
-    "de": "Google Analytics 4 nutzt Cookies, um Seitenaufrufe und Nutzung zu messen. Diese Auswertung ist freiwillig und für eure Anfrage nicht erforderlich.",
-    "en": "Google Analytics 4 uses cookies to measure page views and site usage. This analysis is optional and is not needed for your enquiry.",
-    "nl": "Google Analytics 4 gebruikt cookies om paginaweergaven en websitegebruik te meten. Deze analyse is vrijwillig en niet nodig voor jullie aanvraag."
-  },
   "consent.ads": {
     "de": "Werbeerfolg messen",
     "en": "Measure advertising results",
     "nl": "Advertentieresultaten meten"
-  },
-  "consent.adsDetail": {
-    "de": "Google Ads nutzt Cookies und Kennungen, um erfolgreiche Anfragen Anzeigen zuzuordnen. Keine personalisierte Werbung. Formularinhalte werden nicht als Messdaten übergeben.",
-    "en": "Google Ads uses cookies and identifiers to attribute successful enquiries to ads. No personalized advertising. Form contents are not passed as measurement data.",
-    "nl": "Google Ads gebruikt cookies en identificatoren om geslaagde aanvragen aan advertenties toe te schrijven. Geen gepersonaliseerde advertenties. Formulierinhoud wordt niet als meetgegevens doorgegeven."
-  },
-  "consent.retention": {
-    "de": "Eure Auswahl gilt für 180 Tage. Ein Widerruf beendet weitere Messung; bereits übertragene Daten werden dadurch nicht automatisch gelöscht.",
-    "en": "Your choices apply for 180 days. Withdrawal stops further measurement; it does not automatically delete data already transferred.",
-    "nl": "Jullie keuzes gelden 180 dagen. Intrekken stopt verdere metingen; al verstuurde gegevens worden daardoor niet automatisch verwijderd."
   },
   "consent.reject": {
     "de": "Ablehnen",
@@ -3419,20 +3384,10 @@
     "en": "Accept",
     "nl": "Accepteren"
   },
-  "consent.settings": {
-    "de": "Einstellungen",
-    "en": "Settings",
-    "nl": "Instellingen"
-  },
   "consent.save": {
     "de": "Auswahl speichern",
     "en": "Save choices",
     "nl": "Keuzes opslaan"
-  },
-  "consent.close": {
-    "de": "Schließen ohne Änderung",
-    "en": "Close without changes",
-    "nl": "Sluiten zonder wijzigingen"
   },
   "consent.reopen": {
     "de": "Datenschutz-Einstellungen",
@@ -3494,20 +3449,10 @@
     "en": "How you found us",
     "nl": "Hoe jullie ons vonden"
   },
-  "consent.necessaryTitle": {
-    "de": "Notwendig",
-    "en": "Necessary",
-    "nl": "Noodzakelijk"
-  },
   "consent.revision": {
     "de": "Unsere Zwecke oder Dienste haben sich geändert. Bitte trefft eure Auswahl erneut.",
     "en": "Our purposes or services have changed. Please choose again.",
     "nl": "Onze doeleinden of diensten zijn gewijzigd. Maak jullie keuze opnieuw."
-  },
-  "consent.categoryLabel": {
-    "de": "Dienst|Dienste",
-    "en": "service|services",
-    "nl": "dienst|diensten"
   },
   "packageDetails.pricesNetPlusTravel": {
     "de": "Alle Preise netto zzgl. Anfahrt",

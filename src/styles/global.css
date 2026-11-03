@@ -503,14 +503,19 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
 /* homepage: team – colour portraits that rise in one after another and open like a curtain */
 .team-sec { padding: var(--section) var(--gutter); background: radial-gradient(70% 45% at 50% 0%, rgba(219, 100, 232, 0.07), transparent 70%), #0a0908; border-bottom: 1px solid var(--line); }
 .crew { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--cols, 5), minmax(0, 1fr)); gap: clamp(0.75rem, 1.6vw, 1.375rem); }
-.member { display: grid; gap: 0.625rem; align-content: start; transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1); transition-delay: calc(var(--i, 0) * 50ms); }
-.reveal .member:not(.is-in) { opacity: 0; transform: translateY(5rem); }
-.portrait { position: relative; aspect-ratio: 4 / 5; border-radius: 1rem; overflow: hidden; background: #16120f; margin-bottom: 0.375rem; clip-path: inset(0 0 0 0 round 1rem); transition: clip-path 0.75s cubic-bezier(0.7, 0, 0.2, 1); transition-delay: calc(var(--i, 0) * 50ms); }
+/* Team-Auftritt (Marc, 03.11.2026, Video: „greift viel zu spät“): Die Karte selbst wird beobachtet und darf deshalb
+   nicht verschoben sein. Vorher lag sie im Startzustand 5 rem tiefer; der Observer maß die verschobene Box und löste
+   erst 5,5 rem später aus. Jetzt bewegen sich nur die Kinder, die Karte bleibt an ihrem Platz. */
+.member { display: grid; gap: 0.625rem; align-content: start; transition: opacity 0.5s ease; transition-delay: calc(var(--i, 0) * 40ms); }
+.member > * { transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); transition-delay: calc(var(--i, 0) * 40ms); }
+.reveal .member:not(.is-in) { opacity: 0; }
+.reveal .member:not(.is-in) > * { transform: translateY(1.5rem); }
+.portrait { position: relative; aspect-ratio: 4 / 5; border-radius: 1rem; overflow: hidden; background: #16120f; margin-bottom: 0.375rem; clip-path: inset(0 0 0 0 round 1rem); transition: clip-path 0.6s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); transition-delay: calc(var(--i, 0) * 40ms); }
 .reveal .member:not(.is-in) .portrait { clip-path: inset(100% 0 0 0 round 1rem); }
-.portrait img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1s cubic-bezier(0.2, 0.7, 0.2, 1); transition-delay: calc(var(--i, 0) * 50ms); }
+.portrait img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1); transition-delay: calc(var(--i, 0) * 40ms); }
 .reveal .member:not(.is-in) .portrait img { transform: scale(1.28); }
 /* nach dem Auftritt reagieren Hover ohne Verzögerung; kein Foto-Zoom, die Lichtpunkte übernehmen */
-.member.shown, .member.shown .portrait, .member.shown .portrait img { transition-delay: 0s; }
+.member.shown, .member.shown > *, .member.shown .portrait img { transition-delay: 0s; }
 .portrait .ini { position: absolute; inset: 0; display: grid; place-items: center; font: 700 clamp(5.25rem, 9.5vw, 10rem)/1 var(--display); letter-spacing: -0.05em; color: transparent; -webkit-text-stroke: 1.5px rgba(246, 241, 232, 0.55); background: radial-gradient(90% 70% at 50% 30%, rgba(219, 100, 232, 0.14), transparent 70%), radial-gradient(80% 60% at 50% 100%, rgba(255, 158, 41, 0.1), transparent 70%); }
 .portrait .soon { position: absolute; left: 0.75rem; bottom: 0.75rem; z-index: 2; color: rgba(246, 241, 232, 0.65); }
 .member .role { color: var(--amber); }

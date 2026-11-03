@@ -90,6 +90,7 @@ const cls = { steps: 'steps', milestones: 'ms', flow: 'lf-steps', metro: 'ruler'
 
 </style>
 <script>
+  import { REVEAL_MARGIN } from '../scripts/reveal-point.js';
   // Punkte schalten der Reihe nach ein: Was ins Bild kommt, wird angefordert, eingeschaltet wird immer der nächste
   // noch dunkle Punkt im Takt, nie einer außer der Reihe (auch nicht nach einem Sprung über den Anker).
   const root = document.documentElement;
@@ -106,7 +107,7 @@ const cls = { steps: 'steps', milestones: 'ms', flow: 'lf-steps', metro: 'ruler'
     const io = new IntersectionObserver((es) => {
       for (const e of es) if (e.isIntersecting) { want = Math.max(want, items.indexOf(e.target as HTMLElement)); io.unobserve(e.target); }
       if (!timer) step();
-    }, { rootMargin: '0px 0px -12% 0px' });
+    }, { rootMargin: REVEAL_MARGIN }); // derselbe Auslösepunkt wie alle Reveals (vorher 12 % der Bildhöhe)
     items.forEach((el) => io.observe(el));
   }
 </script>

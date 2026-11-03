@@ -12,7 +12,8 @@ const commands = (page: Page) => page.evaluate(() => ((window as any).dataLayer 
 const events = async (page: Page) => (await commands(page)).filter((value: any) => value[0] === 'event');
 const emitLead = (page: Page, requestId = id) => page.evaluate((requestId) => window.dispatchEvent(new CustomEvent('flyingstars:lead-confirmed', { detail: { requestId } })), requestId);
 const consent = (page: Page) => page.locator('.cm');
-const settings = (page: Page) => page.locator('.pm');
+// Seit 03.11.2026 gibt es nur noch die Karte: das Cookie-Symbol im Footer öffnet sie wieder, mit dem gespeicherten Stand.
+const settings = (page: Page) => page.locator('.cm');
 const accept = async (page: Page) => {
   await consent(page).getByRole('button', { name: 'Akzeptieren', exact: true }).click();
   await expect(page.locator('script[data-consent-tag]')).toHaveCount(1);
@@ -103,12 +104,12 @@ test.describe('configured public IDs', () => {
 
   for (const purpose of ['analytics', 'marketing']) test(`settings grant only ${purpose}`, async ({ page }) => {
     await page.goto('/?text=private&show=private#anfrage');
-    await consent(page).getByRole('button', { name: 'Einstellungen', exact: true }).click();
-    await expect(settings(page).locator('input:checked:not(:disabled)')).toHaveCount(0);
-    const input = settings(page).locator(`input[name="cc-${purpose}"]`);
-    await settings(page).locator("label").filter({ has: page.locator(`input[name="cc-${purpose}"]`) }).click();
+    await expect(consent(page).locator('input[data-purpose]:checked')).toHaveCount(0);
+    const input = consent(page).locator(`input[data-purpose="${purpose}"]`);
+    await consent(page).locator(`label:has(input[data-purpose="${purpose}"])`).click();
     await expect(input).toBeChecked();
-    await settings(page).getByRole('button', { name: 'Auswahl speichern' }).click();
+    // Wer einen Schalter umlegt, speichert genau diese Auswahl; der Knopf sagt es
+    await consent(page).getByRole('button', { name: 'Auswahl speichern' }).click();
     await expect.poll(() => requests.get(page)!.length).toBe(1);
     const configs = (await commands(page)).filter((value: any) => value[0] === 'config');
     expect(configs).toHaveLength(1);
@@ -209,19 +210,16 @@ test.describe('configured public IDs', () => {
       expect(await accept.getAttribute('class')).toBe(await reject.getAttribute('class'));
       await expect.poll(() => page.locator(':focus').evaluate((element) => !!element.closest('.cm'))).toBe(true);
       const tab = browserName === 'webkit' && process.platform === 'darwin' ? 'Alt+Tab' : 'Tab';
-      await page.keyboard.press(tab); await expect(consent(page).locator('.cm__desc')).toBeFocused();
+      await page.keyboard.press(tab); await expect(consent(page).locator('input[data-purpose=analytics]')).toBeFocused();
+      await page.keyboard.press(tab); await expect(consent(page).locator('input[data-purpose=marketing]')).toBeFocused();
       await page.keyboard.press(tab); await expect(consent(page).locator('.cm__desc a')).toBeFocused();
       await page.keyboard.press(tab); await expect(page.locator(':focus')).toHaveText('Ablehnen');
       await page.screenshot({ path: testInfo.outputPath(`consent-de-${width}.png`) });
       expect((await new AxeBuilder({ page }).include('#cc-main').withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze()).violations).toEqual([]);
-      await consent(page).getByRole('button', { name: 'Einstellungen', exact: true }).click();
-      await expect(settings(page)).toBeVisible();
-      await expect.poll(() => settings(page).evaluate(el => getComputedStyle(el).opacity)).toBe('1');
-      await page.screenshot({ path: testInfo.outputPath(`consent-settings-de-${width}.png`) });
-      expect((await new AxeBuilder({ page }).include('#cc-main').withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze()).violations).toEqual([]);
-      expect(await settings(page).evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
-      await page.keyboard.press('Escape'); await expect(settings(page)).toBeHidden();
+      expect(await consent(page).evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
+      await expect(page.locator('#cc-main .pm')).toHaveCount(0);
       // Escape on initial notice must never grant anything.
+      await page.keyboard.press('Escape'); await expect(consent(page)).toBeVisible();
       expect(await events(page)).toEqual([]);
     }
     expect(requests.get(page)).toEqual([]);
@@ -279,7 +277,7 @@ test.describe('configured public IDs', () => {
     expect(await events(page)).toEqual([]);
   });
 
-  test('notice sits small in the bottom-right corner, leaves the page usable and undimmed; only settings isolate', async ({ page }) => {
+  test('notice sits small in the bottom-right corner, leaves the page usable and undimmed, also when reopened', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 }); await page.goto('/');
     await expect(consent(page)).toBeVisible();
     await expect.poll(() => consent(page).evaluate(el => getComputedStyle(el).opacity)).toBe('1');
@@ -297,30 +295,32 @@ test.describe('configured public IDs', () => {
     await consent(page).getByRole('button', { name: 'Ablehnen', exact: true }).click();
     await expect(consent(page)).toBeHidden();
     await openSettings(page);
-    await expect(page.locator('main')).toHaveAttribute('inert', '');
-    await page.keyboard.press('Escape');
     await expect(page.locator('main')).not.toHaveAttribute('inert');
+    await expect(consent(page).locator('input[data-purpose]:checked')).toHaveCount(0);
+    await page.keyboard.press('Escape');
+    await expect(consent(page)).toBeHidden();
+    await expect(page.locator('[data-consent-open]')).toBeFocused();
   });
 
   test('Tab leaves the notice instead of cycling inside it', async ({ page, browserName }) => {
     await page.goto('/');
     await expect.poll(() => consent(page).evaluate(el => getComputedStyle(el).opacity)).toBe('1');
     await page.bringToFront();
-    await consent(page).getByRole('button', { name: 'Einstellungen', exact: true }).focus();
+    await consent(page).getByRole('button', { name: 'Akzeptieren', exact: true }).focus();
     const tab = browserName === 'webkit' && process.platform === 'darwin' ? 'Alt+Tab' : 'Tab';
     await page.keyboard.press(`Shift+${tab}`);
     await expect.poll(() => page.locator(':focus').evaluate((element) => !!element.closest('.cm'))).toBe(true);
-    await consent(page).locator('.cm__desc').focus();
+    await consent(page).locator('input[data-purpose=analytics]').focus();
     await page.keyboard.press(`Shift+${tab}`);
     await expect.poll(() => page.evaluate(() => !document.activeElement?.closest('.cm'))).toBe(true);
   });
 
-  test('notice stays compact on a short mobile viewport and keeps both bullets', async ({ page }) => {
+  test('notice stays compact on a short mobile viewport and keeps both switches', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 600 }); await page.goto('/');
     await expect.poll(() => consent(page).evaluate(el => getComputedStyle(el).opacity)).toBe('1');
     const box = (await consent(page).boundingBox())!;
     expect(box.height).toBeLessThanOrEqual(600 * 0.7);
-    await expect(consent(page).locator('.consent-list [role=listitem]')).toHaveCount(2);
+    await expect(consent(page).locator('input[data-purpose][role=switch]')).toHaveCount(2);
     const description = consent(page).locator('.cm__desc');
     if (await description.evaluate(el => el.scrollHeight > el.clientHeight)) await expect(description).toHaveAttribute('tabindex', '0');
   });

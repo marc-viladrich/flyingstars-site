@@ -59,11 +59,20 @@ test('Zonen-Zeichnung: Farben wie im Datenblatt, Zeigen wählt nur bei echter Ma
   assert.match(src, /clientX !== last\.x \|\| p\.clientY !== last\.y/, 'Zuklappen unter dem Zeiger wählt sonst die falsche Zone');
 });
 
-test('Cookie-Einstellungen kompakt: höchstens 36 rem hoch, Überschrift höchstens 1,75 rem', () => {
-  const css = read('src/styles/consent.css');
-  assert.match(css, /#cc-main \.pm\.pm--box \{ max-height: min\(36rem,/);
-  assert.match(css, /\.pm__title \{ font: 500 clamp\([^,]+, [^,]+, 1\.75rem\)/);
-  assert.match(css, /#cc-main \{ font-size: 1rem; \}/, 'Bibliothek setzt sonst 16px fest');
+test('Cookie-Entscheidung in einer kleinen Karte mit Schaltern, kein zweiter Dialog', () => {
+  const src = read('src/scripts/consent.ts');
+  assert.match(src, /role="switch" data-purpose=/, 'Schalter stehen in der Karte');
+  assert.doesNotMatch(src, /showPreferences\(|showPreferencesBtn/, 'großer Einstellungsdialog ist zurück');
+  assert.match(src, /copy\.save : copy\.accept/, 'geänderte Auswahl wird als „Auswahl speichern“ benannt');
+  assert.match(read('src/styles/consent.css'), /#cc-main \{ font-size: 1rem; \}/, 'Bibliothek setzt sonst 16px fest');
+});
+
+test('Beobachtete Reveal-Elemente sind im Startzustand nicht verschoben (sonst misst der Observer die verschobene Box)', () => {
+  const css = ['src/styles/global.css', 'src/styles/facts.css', 'src/styles/media-card.css'].map(read).join('\n');
+  // Regeln, die das Element selbst im Zustand „noch nicht drin“ treffen (kein Kind, kein Pseudo-Element danach)
+  for (const [, selector, body] of css.matchAll(/([^{}]*:not\(\.is-in\))\s*\{([^}]*)\}/g)) {
+    assert.doesNotMatch(body, /transform|translate/, `${selector.trim()} verschiebt das beobachtete Element`);
+  }
 });
 
 test('404: Text ohne ch-Begrenzung, Schriftgrößen in rem', () => {
