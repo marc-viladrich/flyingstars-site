@@ -1,21 +1,21 @@
 ---
 import variants from '../../../data/video-lab.json';
 import '../../../styles/fonts.css';
-const videos=variants.filter(v=>v.id.startsWith('cut17c-'));
+const videos=variants.filter(v=>v.id.startsWith('cut15d-'));
 ---
 <!doctype html><html lang="de"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="robots" content="noindex,nofollow"/><title>Großer Videovergleich | FlyingStars</title></head><body>
 <main tabindex="-1" id="comparison-stage" data-mode="single" data-fit="cover">
  <h1 class="sr">Showreel-Fassungen in großer Darstellung vergleichen</h1>
  <div class="films" id="stage-films"></div>
- <div class="top"><a href="/poc/video-lab/">← Übersicht</a><a href="/media/video-lab/original-v1.mp4" target="_blank" rel="noopener">Originaldatei · 25,88 s</a><span id="stage-name">17,48s-Schnitt · Vergleich vorbereiten</span><button type="button" id="stage-fullscreen">Vollbild</button></div>
+ <div class="top"><a href="/poc/video-lab/">← Übersicht</a><a href="/media/video-lab/original-v1.mp4" target="_blank" rel="noopener">Originaldatei · 25,88 s</a><span id="stage-name">15,16s-Schnitt · Vergleich vorbereiten</span><button type="button" id="stage-fullscreen">Vollbild</button></div>
  <div class="welcome" id="stage-welcome"><h2>In Hero-Größe vergleichen</h2><p>Die Filme füllen die Browserhöhe. Wechsle mit 1–4 oder den Pfeiltasten bei gleicher Position zwischen Referenz, 1600, 1440 und 1280 px. „Nebeneinander“ zeigt zwei Fassungen auf voller Höhe.</p><button type="button" id="stage-load">Vier Fassungen laden und starten</button><p id="stage-budget"></p></div>
  <div class="controls" id="stage-controls">
   <div class="variants" role="group" aria-label="Fassung wählen"><button type="button" data-index="0" aria-pressed="true">1 · Referenz</button><button type="button" data-index="1" aria-pressed="false">2 · 1600 px</button><button type="button" data-index="2" aria-pressed="false">3 · 1440 px</button><button type="button" data-index="3" aria-pressed="false">4 · 1280 px</button></div>
   <div class="tools"><button type="button" id="stage-play" disabled>Abspielen</button><label>Codec <select id="stage-codec"><option value="h264">H.264</option><option value="av1">AV1 manuell vergleichen</option></select></label><label>Ansicht <select id="stage-mode"><option value="single">A/B umschalten · volle Fläche</option><option value="pair">Nebeneinander · je halbe Breite</option></select></label><label>Bild <select id="stage-fit"><option value="cover">Hero-Beschnitt · volle Höhe</option><option value="contain">Ganzes Bild · ohne Beschnitt</option></select></label><button type="button" id="stage-hide">Bedienung ausblenden · H</button></div>
-  <label class="timeline" for="stage-time">Position <output id="stage-time-label">0,0 s</output><input id="stage-time" type="range" min="0" max="17.44" step="0.04" value="0" disabled/></label>
-  <p id="stage-status" role="status">Noch kein Video geladen. Die Referenz ist derselbe 17,48s-Schnitt in hoher H.264-Qualität. Die unveränderte Originaldatei mit 25,88 s findest du in der Übersicht.</p>
+  <label class="timeline" for="stage-time">Position <output id="stage-time-label">0,0 s</output><input id="stage-time" type="range" min="0" max="15.12" step="0.04" value="0" disabled/></label>
+  <p id="stage-status" role="status">Noch kein Video geladen. Die Referenz ist derselbe 15,16s-Schnitt in hoher H.264-Qualität. Die unveränderte Originaldatei mit 25,88 s findest du in der Übersicht.</p>
  </div>
- <div class="labels" aria-hidden="true"><span>Referenz · 17,48 s</span><span id="stage-pair-name"></span></div>
+ <div class="labels" aria-hidden="true"><span>Referenz · 15,16 s</span><span id="stage-pair-name"></span></div>
 </main>
 <script type="application/json" id="stage-data" set:html={JSON.stringify(videos).replace(/</g,'\\u003c')}></script><script>import '../../../scripts/video-lab-stage';</script>
 </body></html>
