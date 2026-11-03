@@ -194,13 +194,13 @@ sections:
     responsibilities:
       - { task: "Site check, safety concept and flight plan", us: full, you: none }
       - { task: "Aviation permits (LBA, DFS, waterways, other EU countries)", us: full, you: none }
-      - { task: "Consent from the landowners", us: part, you: full, hint: "Template from us" }
-      - { task: "Space for take-off, safety zone and audience", us: none, you: full }
+      - { task: "Obtain consent from the landowners", us: part, you: full, hint: "Template from us" }
+      - { task: "Provide space for take-off, safety zone and audience", us: none, you: full }
       - { task: "Securing the safety zone (barrier tape, stewards if needed)", us: part, you: full, hint: "by arrangement" }
       - { task: "Pilots, equipment, set-up and dismantling", us: full, you: none }
       - { task: "Music edited to the show", us: full, you: none }
-      - { task: "Sound system on site", us: part, you: full, hint: "Speaker for small groups" }
-      - { task: "Contact person on show day", us: none, you: full }
+      - { task: "Arrange sound on site", us: part, you: full, hint: "Speaker for small groups" }
+      - { task: "Name a contact person for show day", us: none, you: full }
       - { task: "Liability insurance up to €1.3m", us: full, you: none }
     download:
       label: Technical data sheet · PDF
@@ -266,4 +266,4 @@ sections:
     button:
       label: Request a show
       href: /kontakt/
-translationSourceHash: c5c3547b8b277fe896ab7b65e02dc6cbe477892951f241a5b2e7f96ae62f81e0
+translationSourceHash: 312a97ba4bc9297423e399bc0cce66db202ed8d035934dc621a9854d5fafae7d

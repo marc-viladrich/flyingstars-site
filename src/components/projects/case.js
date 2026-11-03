@@ -33,11 +33,9 @@ import { t } from '../../i18n/ui.mjs';
     show(0);
   }
 
-  // film reel: arrows and drag to scroll
+  // film reel: drag to scroll (Pfeile: SliderNav.astro)
   document.querySelectorAll(".c-reel").forEach((reel) => {
-    const track = reel.querySelector(".c-track"), step = () => (track.querySelector("figure")?.getBoundingClientRect().width || 400) + 20;
-    reel.querySelector("[data-prev]")?.addEventListener("click", () => track.scrollBy({ left: -step(), behavior: reduce ? "auto" : "smooth" }));
-    reel.querySelector("[data-next]")?.addEventListener("click", () => track.scrollBy({ left: step(), behavior: reduce ? "auto" : "smooth" }));
+    const track = reel.querySelector(".c-track");
     let down = null;
     track.addEventListener("pointerdown", (e) => { if (e.pointerType !== "mouse") return; down = { x: e.clientX, left: track.scrollLeft }; track.classList.add("drag"); track.setPointerCapture(e.pointerId); });
     track.addEventListener("pointermove", (e) => { if (down) track.scrollLeft = down.left - (e.clientX - down.x); });

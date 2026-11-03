@@ -1,0 +1,38 @@
+---
+// Pfeile für horizontale Slider (Anlässe, Fallstudien-Galerie). Marc, 03.11.2026: „Slider-Buttons … unten unter der
+// Anlässekarte kann es die ja ruhig geben.“ Ein Baustein für alle Slider: steht direkt NACH dem Scroll-Container, auf
+// allen Breiten sichtbar, blättert um eine Karte. Am Anfang bzw. Ende ist der jeweilige Pfeil gedämpft und inaktiv.
+import Icon from './Icon.astro';
+import { forPath } from '../i18n/server';
+const { t } = forPath(Astro.url.pathname);
+interface Props { class?: string }
+const { class: cls } = Astro.props;
+---
+<div class:list={['slider-nav', cls]} data-slider-nav>
+  <button type="button" class="slider-btn" data-slide="-1" aria-label={t('slider.previous')}><Icon name="arrow-left" size={20} /></button>
+  <button type="button" class="slider-btn" data-slide="1" aria-label={t('slider.next')}><Icon name="arrow-right" size={20} /></button>
+</div>
+
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  document.querySelectorAll<HTMLElement>('[data-slider-nav]').forEach((nav) => {
+    const track = nav.previousElementSibling as HTMLElement | null;
+    if (!track) return;
+    const [prev, next] = nav.querySelectorAll<HTMLButtonElement>('[data-slide]');
+    // eine Karte samt Abstand, gemessen statt fest verdrahtet (Kartenbreiten wechseln mit der Fensterbreite)
+    const step = () => {
+      const first = track.firstElementChild as HTMLElement | null;
+      return (first?.getBoundingClientRect().width ?? track.clientWidth) + (parseFloat(getComputedStyle(track).columnGap) || 0);
+    };
+    nav.querySelectorAll<HTMLButtonElement>('[data-slide]').forEach((b) => b.addEventListener('click', () =>
+      track.scrollBy({ left: Number(b.dataset.slide) * step(), behavior: reduce.matches ? 'auto' : 'smooth' })));
+    const edge = () => {
+      const start = track.scrollLeft <= 4, end = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+      prev.disabled = start; next.disabled = end;
+      nav.hidden = start && end; // alles passt hinein: keine Pfeile
+    };
+    track.addEventListener('scroll', edge, { passive: true });
+    new ResizeObserver(edge).observe(track);
+    edge();
+  });
+</script>

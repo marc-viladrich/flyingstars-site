@@ -22,57 +22,85 @@ const colors = ['#ff9e29', '#f58a5a', '#ec7f95', '#db64e8', '#b88bec', '#8aa9ee'
 const line = Array.from({ length: 21 }, (_, i) => ({ x: 110 + i * 8.5, y: 138, color: colors[Math.round(i / 20 * 7)] }));
 const grid = Array.from({ length: 20 }, (_, i) => ({ x: 142 + (i % 5) * 25, y: 306 + Math.floor(i / 5) * 32 }));
 const swarm = Array.from({ length: 18 }, (_, i) => ({ x: 90 + i * 9, y: 122 - Math.sin(i / 17 * Math.PI) * 40, color: colors[Math.round(i / 17 * 7)] }));
+// Zonenfarben wie im Technik-Datenblatt von FlyingStars (Marc, 03.11.2026: „die Darstellung … sieht deutlich nicer aus“):
+// Rot = äußerer, Gelb = innerer Sicherheitsbereich, Grün = Flugbereich, Blau = Start und Landung, Violett = Publikum,
+// Drohnen als orange Punktlinie. Für dunklen Grund aufgehellt; Liste und Nummern in der Zeichnung tragen dieselbe Farbe.
+const zoneColor: Record<string, string> = { safety: '#ff7a6e', operative: '#f5b43c', drones: '#6fdc98', start: '#6aa8ff', guests: '#c49bf2', ceiling: '#f5b43c', floor: '#6aa8ff', kit: '#ff9e29' };
+// Abgerundetes Vieleck (Ecken als Bézier), damit die Zonen weich wie im Datenblatt wirken
+const rounded = (pts: number[][], r: number) => pts.map((p, i) => {
+  const a = pts[(i + pts.length - 1) % pts.length], c = pts[(i + 1) % pts.length];
+  const towards = (q: number[]) => { const dx = q[0] - p[0], dy = q[1] - p[1], len = Math.hypot(dx, dy), k = Math.min(r, len / 2) / len; return [p[0] + dx * k, p[1] + dy * k]; };
+  const [s, e] = [towards(a), towards(c)];
+  return `${i ? 'L' : 'M'}${s[0].toFixed(1)} ${s[1].toFixed(1)}Q${p[0]} ${p[1]} ${e[0].toFixed(1)} ${e[1].toFixed(1)}`;
+}).join('') + 'Z';
+// Lageplan (Draufsicht, leicht gedreht wie im Datenblatt): Zonen ineinander, Drohnenlinie quer zur Blickrichtung
+const plan = {
+  outer: rounded([[70, 86], [146, 50], [264, 54], [330, 104], [338, 214], [288, 286], [146, 294], [78, 240]], 30),
+  operative: rounded([[92, 100], [152, 72], [258, 76], [312, 116], [318, 206], [276, 266], [154, 272], [98, 228]], 24),
+  flight: rounded([[114, 116], [160, 94], [250, 98], [292, 130], [296, 198], [262, 246], [162, 252], [118, 212]], 18),
+  drones: Array.from({ length: 21 }, (_, i) => ({ x: 146 + i * 6.3, y: 196 - Math.sin(i / 20 * Math.PI) * 4 })),
+  buildings: [[6, 6, 50, 30], [70, 4, 64, 24], [148, -6, 50, 24], [296, 4, 50, 30], [374, 30, 30, 62], [374, 108, 30, 74], [374, 198, 30, 54], [374, 268, 30, 70], [6, 312, 44, 34], [312, 334, 46, 30], [-6, 384, 70, 30], [92, 386, 74, 30], [196, 388, 60, 30], [282, 386, 76, 30]],
+  trees: [[16, 108, 8], [32, 140, 6], [14, 172, 9], [34, 206, 7], [16, 240, 8], [30, 272, 6]],
+};
 const markers = variant === 'outdoor'
-  ? [{ zone: 'safety', x: 43, y: 39 }, { zone: 'operative', x: 69, y: 68 }, { zone: 'drones', x: 92, y: 100 }, { zone: 'start', x: 96, y: 223 }, { zone: 'guests', x: 313, y: 368 }]
+  ? [{ zone: 'safety', x: 302, y: 70 }, { zone: 'operative', x: 318, y: 160 }, { zone: 'drones', x: 268, y: 222 }, { zone: 'start', x: 186, y: 127 }, { zone: 'guests', x: 290, y: 320 }]
   : [{ zone: 'ceiling', x: 49, y: 28 }, { zone: 'drones', x: 262, y: 83 }, { zone: 'floor', x: 118, y: 285 }, { zone: 'kit', x: 305, y: 442 }, { zone: 'guests', x: 350, y: 160 }];
 ---
 <section class="section ls-site" id={id} aria-labelledby={`${id}-h`}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
   <div class="st">
     <figure class="st-fig">
-      <svg viewBox={variant === 'outdoor' ? '0 0 400 405' : '0 0 400 490'} role="img" aria-labelledby={`${id}-diagram-title ${id}-diagram-desc`}>
+      <svg viewBox={variant === 'outdoor' ? '0 0 400 400' : '0 0 400 490'} role="img" aria-labelledby={`${id}-diagram-title ${id}-diagram-desc`}>
         <title id={`${id}-diagram-title`}>{variant === 'outdoor' ? t('landingsite.outdoorTitle') : t('landingsite.indoorTitle')}</title>
         <desc id={`${id}-diagram-desc`}>{diagram.description} {t('landingsite.numberedList')} {diagram.caption}</desc>
         {variant === 'outdoor' ? <>
-          <g class="zone" data-zone="safety"><rect class="outer" x="43" y="39" width="300" height="282" rx="16" />
-          <path class="dim" d="M43 28h300M43 22v12M343 22v12M363 39v282M357 39h12M357 321h12" />
-          <text class="lbl" x="193" y="18" text-anchor="middle">{diagram.horizontalLabel}</text>
-          <text class="lbl" x="380" y="181" text-anchor="middle" transform="rotate(90 380 181)">{diagram.verticalLabel}</text></g>
-          <g class="zone" data-zone="operative"><rect class="operative" x="69" y="68" width="248" height="226" rx="12" /></g>
-          <g class="zone" data-zone="drones"><rect class="flight" x="92" y="100" width="202" height="155" rx="8" />
-          {line.map((d) => <circle cx={d.x} cy={d.y} r="3.5" fill={d.color} />)}
-          <path class="dim" d="M110 167h170M110 161v12M280 161v12" />
-          <text class="lbl" x="195" y="193" text-anchor="middle">{diagram.detailLabel}</text></g>
-          <g class="zone" data-zone="start"><rect class="pad" x="105" y="215" width="49" height="26" rx="3" />
-          {Array.from({ length: 18 }, (_, i) => <circle class="seed" cx={112 + (i % 6) * 7} cy={221 + Math.floor(i / 6) * 7} r="1.3" />)}</g>
-          <g class="zone" data-zone="guests"><rect class="audience" x="103" y="351" width="188" height="38" rx="8" />
-          {Array.from({ length: 22 }, (_, i) => <circle class="guest" cx={118 + (i % 11) * 15} cy={363 + Math.floor(i / 11) * 14} r="2.6" />)}
-          <path class="view" d="M197 343v-79m-5 8 5-8 5 8" /></g>
+          <g class="plan" aria-hidden="true">
+            <path class="road" d="M362 0v374M0 374h400" />
+            {plan.buildings.map(([x, y, w, h]) => <rect class="house" x={x} y={y} width={w} height={h} rx="3" />)}
+            <path class="park" d={rounded([[-4, 92], [50, 88], [56, 292], [-4, 296]], 8)} />
+            {plan.trees.map(([x, y, r]) => <circle class="tree" cx={x} cy={y} r={r} />)}
+          </g>
+          <g transform="rotate(-14 204 172)">
+            <g class="zone" data-zone="safety" data-pick="safety" style={`--zc: ${zoneColor.safety}`}><path class="shape" d={plan.outer} />
+              <path class="dim" d="M70 30L330 30M70 24v12M330 24v12" />
+              <g class="pill" transform="translate(200 30)"><rect x="-34" y="-10" width="68" height="20" rx="10" /><text y="4.5" text-anchor="middle">{diagram.horizontalLabel}</text></g></g>
+            <g class="zone" data-zone="operative" data-pick="operative" style={`--zc: ${zoneColor.operative}`}><path class="under" d={plan.operative} /><path class="shape" d={plan.operative} /></g>
+            <g class="zone" data-zone="drones" data-pick="drones" style={`--zc: ${zoneColor.drones}`}><path class="under" d={plan.flight} /><path class="shape" d={plan.flight} />
+              <path class="dim" d="M146 172h126M146 166v12M272 166v12" />
+              <g class="pill" transform="translate(209 172)"><rect x="-30" y="-10" width="60" height="20" rx="10" /><text y="4.5" text-anchor="middle">{diagram.detailLabel}</text></g>
+              {plan.drones.map((d, i) => <circle class="drone" cx={d.x} cy={d.y} r="2.9" style={`--d: ${(i * 0.11).toFixed(2)}s`} />)}</g>
+            <g class="zone" data-zone="start" data-pick="start" style={`--zc: ${zoneColor.start}`}><rect class="shape pad" x="132" y="118" width="40" height="17" rx="4" />
+              {Array.from({ length: 12 }, (_, i) => <circle class="seed" cx={138 + (i % 6) * 5.6} cy={123 + Math.floor(i / 6) * 6} r="1.2" />)}</g>
+            <g class="zone" data-zone="guests" data-pick="guests" style={`--zc: ${zoneColor.guests}`}><rect class="shape" x="140" y="308" width="134" height="26" rx="7" />
+              {Array.from({ length: 20 }, (_, i) => <circle class="guest" cx={150 + (i % 10) * 12.7} cy={316 + Math.floor(i / 10) * 10} r="2.3" />)}
+              <path class="view" d="M207 302v-38m-5 8 5-8 5 8" /></g>
+            {markers.map((m) => <g class="marker" data-zone={m.zone} data-pick={m.zone} style={`--zc: ${zoneColor[m.zone]}`} transform={`translate(${m.x} ${m.y}) rotate(14)`}><circle r="11" /><text y="4.5" text-anchor="middle">{numbers[m.zone]}</text></g>)}
+          </g>
         </> : <>
           <path class="wall" d="M49 28h324M49 210h324" />
-          <g class="zone" data-zone="ceiling">{Array.from({ length: 17 }, (_, i) => <path class="hatch" d={`M${53 + i * 19} 28l-9 -12`} />)}
+          <g class="zone" data-zone="ceiling" data-pick="ceiling" style={`--zc: ${zoneColor.ceiling}`}>{Array.from({ length: 17 }, (_, i) => <path class="hatch" d={`M${53 + i * 19} 28l-9 -12`} />)}
           <path class="dim" d="M31 34v176M25 34h12M25 210h12" />
           <text class="lbl" x="17" y="123" text-anchor="middle" transform="rotate(-90 17 123)">{diagram.verticalLabel}</text></g>
-          <g class="zone" data-zone="drones"><rect class="flight" x="73" y="53" width="211" height="155" rx="8" />
+          <g class="zone" data-zone="drones" data-pick="drones" style={`--zc: ${zoneColor.drones}`}><rect class="flight" x="73" y="53" width="211" height="155" rx="8" />
           {swarm.map((d) => <circle cx={d.x} cy={d.y} r="3.3" fill={d.color} />)}</g>
-          <g class="zone" data-zone="guests">{[0, 1, 2].map((i) => <><circle class="guest" cx={312 + i * 23} cy="180" r="5" /><path class="guest-body" d={`M${304 + i * 23} 210v-13a8 8 0 0 1 16 0v13`} /></>)}</g>
+          <g class="zone" data-zone="guests" data-pick="guests" style={`--zc: ${zoneColor.guests}`}>{[0, 1, 2].map((i) => <><circle class="guest" cx={312 + i * 23} cy="180" r="5" /><path class="guest-body" d={`M${304 + i * 23} 210v-13a8 8 0 0 1 16 0v13`} /></>)}</g>
           <path class="divider" d="M49 238h324" />
-          <g class="zone" data-zone="floor"><rect class="pad" x="88" y="202" width="179" height="8" rx="3" />
+          <g class="zone" data-zone="floor" data-pick="floor" style={`--zc: ${zoneColor.floor}`}><rect class="pad" x="88" y="202" width="179" height="8" rx="3" />
           <path class="dim" d="M118 270h156M118 264v12M274 264v12" />
           <text class="lbl" x="196" y="261" text-anchor="middle">{diagram.horizontalLabel}</text>
           <rect class="flight" x="105" y="279" width="182" height="174" rx="6" />
           <rect class="pad" x="118" y="292" width="156" height="148" rx="4" />
           {grid.map((d) => <circle class="seed" cx={d.x} cy={d.y} r="3" />)}</g>
-          <g class="zone" data-zone="kit">{[[105, 279], [287, 279], [105, 453], [287, 453]].map(([x, y]) => <circle class="antenna" cx={x} cy={y} r="5" />)}
+          <g class="zone" data-zone="kit" data-pick="kit" style={`--zc: ${zoneColor.kit}`}>{[[105, 279], [287, 279], [105, 453], [287, 453]].map(([x, y]) => <circle class="antenna" cx={x} cy={y} r="5" />)}
           <text class="lbl" x="196" y="482" text-anchor="middle">{diagram.detailLabel}</text></g>
         </>}
-        {markers.map((m) => <g class="marker" data-zone={m.zone} data-pick={m.zone}><circle cx={m.x} cy={m.y} r="12" /><text x={m.x} y={m.y + 4.5} text-anchor="middle">{numbers[m.zone]}</text></g>)}
+        {variant === 'indoor' && markers.map((m) => <g class="marker" data-zone={m.zone} data-pick={m.zone} style={`--zc: ${zoneColor[m.zone]}`} transform={`translate(${m.x} ${m.y})`}><circle r="12" /><text y="4.5" text-anchor="middle">{numbers[m.zone]}</text></g>)}
       </svg>
       <p class="st-height"><Icon name="move-up" size={20} class="g" /><span>{diagram.flightLabel}</span></p>
       <figcaption>{diagram.caption}</figcaption>
     </figure>
     <ol class="st-items">
-      {items.map((item, i) => <li data-zone={item.zone} data-pick={item.zone}>
+      {items.map((item, i) => <li data-zone={item.zone} data-pick={item.zone} style={`--zc: ${zoneColor[item.zone]}`}>
         <span class="st-n mono" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
         <div>
           <T><button type="button" class="st-row" aria-expanded="true" aria-controls={`${id}-z${i}`}>{item.title}</button></T>
@@ -108,9 +136,16 @@ const markers = variant === 'outdoor'
       st.querySelectorAll<SVGElement | HTMLElement>('[data-zone]').forEach((el) => el.classList.toggle('on', el.dataset.zone === zone));
       rows.forEach((b) => b.setAttribute('aria-expanded', String(b.closest('li')!.dataset.zone === zone)));
     };
+    // Zeigen wählt nur bei echter Mausbewegung: Klappt nach einem Klick der Text zu, rutscht die nächste Zeile unter den
+    // stehenden Zeiger und meldete „pointerenter“ — die Auswahl sprang auf die falsche Zone (gefunden 03.11.2026).
+    let last = { x: -1, y: -1 };
+    st.addEventListener('pointermove', (e) => { last = { x: e.clientX, y: e.clientY }; });
     st.querySelectorAll<HTMLElement | SVGElement>('[data-pick]').forEach((el) => {
       const zone = el.dataset.pick!;
-      el.addEventListener('pointerenter', (e) => { if ((e as PointerEvent).pointerType === 'mouse') show(zone); });
+      el.addEventListener('pointerenter', (e) => {
+        const p = e as PointerEvent;
+        if (p.pointerType === 'mouse' && (p.clientX !== last.x || p.clientY !== last.y)) show(zone);
+      });
       el.addEventListener('click', () => show(zone));
     });
     rows.forEach((b) => b.addEventListener('focus', () => show(b.closest('li')!.dataset.zone!)));
@@ -128,30 +163,48 @@ const markers = variant === 'outdoor'
   .st-fig figcaption { margin-top: 18px; color: var(--faint); font-size: 14px; }
   .st-height { display: flex; align-items: center; gap: 10px; margin: 20px 0 0; color: var(--head); font-size: 16px; }
   .st-height :global(.ico) { flex: 0 0 auto; }
-  .outer { fill: rgb(245 167 60 / 3%); stroke: var(--accent); stroke-width: 1.4; stroke-dasharray: 6 5; }
-  .operative { fill: rgb(245 167 60 / 5%); stroke: rgb(245 167 60 / 65%); stroke-width: 1.2; }
-  .flight { fill: rgb(237 230 218 / 3%); stroke: rgb(237 230 218 / 38%); stroke-dasharray: 3 4; }
-  .pad { fill: rgb(237 230 218 / 9%); stroke: var(--head); stroke-width: 1; }
-  .audience { fill: rgb(237 230 218 / 4%); stroke: rgb(237 230 218 / 20%); }
+  /* Lageplan (outdoor): Straßen, Häuser und Park nur als ruhiger Grund, die Zonen tragen die Farbe */
+  .plan .road { fill: none; stroke: rgb(237 230 218 / 5%); stroke-width: 12; }
+  .plan .house { fill: rgb(237 230 218 / 5%); stroke: rgb(237 230 218 / 9%); }
+  .plan .park { fill: rgb(111 220 152 / 5%); }
+  .plan .tree { fill: rgb(111 220 152 / 11%); }
+  .zone { cursor: pointer; }
+  .zone .under { fill: var(--surface); }
+  .shape { fill: color-mix(in srgb, var(--zc) 20%, transparent); stroke: color-mix(in srgb, var(--zc) 70%, transparent); stroke-width: 1.5; }
+  [data-zone="operative"] .shape { fill: color-mix(in srgb, var(--zc) 30%, transparent); }
+  [data-zone="guests"] .shape { fill: color-mix(in srgb, var(--zc) 30%, transparent); }
+  .shape.pad { fill: color-mix(in srgb, var(--zc) 80%, transparent); stroke: var(--zc); }
+  .drone { fill: #ff9e29; stroke: var(--surface); stroke-width: 0.8; }
+  .pill rect { fill: var(--ground); stroke: var(--line-strong); }
+  .pill text { fill: var(--head); font: 500 11px var(--mono); letter-spacing: 0.04em; }
+  /* Innenraum (indoor): dieselben Zonenfarben, sparsamer */
+  .flight { fill: color-mix(in srgb, var(--zc, #6fdc98) 8%, transparent); stroke: color-mix(in srgb, var(--zc, #6fdc98) 55%, transparent); stroke-dasharray: 3 4; }
+  .pad { fill: color-mix(in srgb, var(--zc, #6aa8ff) 14%, transparent); stroke: color-mix(in srgb, var(--zc, #6aa8ff) 80%, transparent); stroke-width: 1; }
   .dim, .wall, .hatch, .view { fill: none; stroke: var(--faint); stroke-width: 1; }
-  .hatch, .view { opacity: 0.6; }
-  .view { stroke-dasharray: 3 4; }
+  .hatch { stroke: var(--zc, var(--faint)); opacity: 0.7; }
+  .view { stroke: var(--zc, var(--faint)); stroke-dasharray: 3 4; opacity: 0.8; }
   .divider { stroke: var(--line); }
   .lbl { fill: var(--head); font: 400 17px var(--display); }
-  .seed, .guest { fill: var(--head); }
-  .guest { opacity: 0.65; }
-  .guest-body { fill: none; stroke: var(--head); stroke-width: 1.5; opacity: 0.65; }
-  .antenna { fill: var(--accent); stroke: var(--ground); stroke-width: 2; }
-  .marker circle { fill: var(--ground); stroke: var(--accent); stroke-width: 1.4; }
-  .marker text { fill: var(--accent); font: 500 14px var(--display); }
+  .seed { fill: var(--head); }
+  .guest { fill: var(--zc, var(--head)); opacity: 0.85; }
+  .guest-body { fill: none; stroke: var(--zc, var(--head)); stroke-width: 1.5; opacity: 0.85; }
+  .antenna { fill: var(--zc, var(--accent)); stroke: var(--ground); stroke-width: 2; }
+  .marker circle { fill: var(--surface); stroke: var(--zc, var(--accent)); stroke-width: 1.4; }
+  .marker text { fill: var(--zc, var(--accent)); font: 600 13px var(--display); }
   .st-items { list-style: none; margin: 0; padding: 0; }
-  /* Schrittweise: nicht gewählte Zonen treten zurück, ihr Text klappt zu (Höhe über grid-template-rows, weich) */
-  .is-live :is(.zone, .marker) { transition: opacity 0.4s ease; }
-  .is-stepped .zone:not(.on) { opacity: 0.16; }
+  /* Schrittweise: nicht gewählte Zonen treten zurück, ihr Text klappt zu (Höhe über grid-template-rows, weich).
+     Gedämpft wird nur die Farbe, nicht die Unterlage (.under), sonst schimmern die äußeren Zonen durch die inneren. */
+  .is-live :is(.zone > *, .marker) { transition: opacity 0.35s ease, stroke-width 0.25s ease; }
+  .is-stepped .zone:not(.on) > :not(.under) { opacity: 0.4; }
+  .is-stepped .zone.on .shape { stroke: var(--zc); stroke-width: 2.4; stroke-dasharray: 7 5; animation: st-march 1.4s linear infinite; }
+  .is-stepped .zone.on .shape.pad { stroke-dasharray: none; animation: none; }
+  .is-stepped .zone.on .drone { animation: st-twinkle 1.8s ease-in-out infinite; animation-delay: var(--d, 0s); }
+  @keyframes st-march { to { stroke-dashoffset: -24; } }
+  @keyframes st-twinkle { 50% { fill: #ffe7b0; } }
   .is-stepped .marker { cursor: pointer; }
-  .is-stepped .marker:not(.on) { opacity: 0.55; }
+  .is-stepped .marker:not(.on) { opacity: 0.6; }
   .is-live .marker :is(circle, text) { transition: fill 0.3s ease; }
-  .is-stepped .marker.on circle { fill: var(--accent); }
+  .is-stepped .marker.on circle { fill: var(--zc, var(--accent)); }
   .is-stepped .marker.on text { fill: var(--ground); }
   .st-row { all: unset; cursor: pointer; display: block; width: 100%; font: inherit; color: inherit; }
   .st-row:focus-visible { outline: 2px solid var(--cyan); outline-offset: 4px; border-radius: 4px; }
@@ -184,12 +237,12 @@ const markers = variant === 'outdoor'
   .st-legend { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 16px 0 0; color: var(--faint); font-size: 12px; }
   .st-legend > span { display: inline-flex; align-items: center; gap: 8px; }
   @media (max-width: 600px) { .st-who .c { width: 86px; } .st-who th, .st-who td { padding: 12px 4px; } .st-who tbody th { font-size: 15px; padding-right: 8px; } .st-who thead th { letter-spacing: 0.04em; font-size: 11px; } }
-  @media (prefers-reduced-motion: reduce) { .zone, .marker, .st-body { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .zone, .zone *, .marker, .st-body { transition: none; animation: none !important; } }
   .st-items li { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 8px; padding: 22px 0; border-top: 1px solid var(--line); }
   .st-items li:first-child { padding-top: 0; border: 0; }
-  .st-n { color: var(--accent); padding-top: 4px; }
+  .st-n { color: var(--zc, var(--accent)); padding-top: 4px; }
   .st-items h2, .st-items h3 { font-size: clamp(20px, 1.6vw, 24px); }
-  .st-value { display: block; margin-top: 8px; color: var(--accent); font: 500 clamp(17px, 1.3vw, 20px)/1.2 var(--display); }
+  .st-value { display: block; margin-top: 8px; color: var(--zc, var(--accent)); font: 500 clamp(17px, 1.3vw, 20px)/1.2 var(--display); }
   .ls-site p { line-height: 1.65; }
   .st-safeguards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; margin-top: clamp(40px, 5vw, 72px); padding-block: 32px; border-block: 1px solid var(--line); }
   .st-download { margin-top: 28px; display: flex; align-items: center; gap: 10px; }

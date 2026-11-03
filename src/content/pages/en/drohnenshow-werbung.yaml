@@ -200,6 +200,55 @@ sections:
       - value: approx. 3 months
         label: in Italy
     todo: FlyingStars muss aktuelle Cross-border-Fristen und mögliche Sondergebühren je Land bestätigen. Die Ortsbeispiele belegen keine pauschale Genehmigung oder garantierte Frist.
+  - type: landingSite
+    id: standort
+    kicker: Site
+    headline: Is your site suitable?
+    text: Send us the address and the planned position of your audience. Before quoting, we check whether and how a show is possible there.
+    variant: outdoor
+    diagram:
+      description: Plan view showing the outer and inner safety areas, flight area, take-off and landing area, and the audience outside. The line of drones runs across the viewing direction.
+      horizontalLabel: approx. 100 m
+      verticalLabel: approx. 100 m
+      detailLabel: approx. 60 m
+      flightLabel: Usually up to 120 m flight altitude
+      caption: Example based on the technical data sheet, not to scale. We calculate all zones and distances for your site. The 60 m dimension refers to the line of drones in this example.
+    items:
+      - title: Outer safety area
+        value: approx. 100 × 100 m
+        text: This also includes the inner areas. It stays clear of uninvolved people during the show, for around 15 minutes. Its size depends on the number of drones, motifs and flight altitude.
+        zone: safety
+      - title: Inner safety area
+        text: The operational safety area surrounds the flight area. We define its boundaries as part of flight planning.
+        zone: operative
+      - title: Flight area
+        value: up to 120 m high
+        text: This is where the drones fly the motifs. Seen from above, they form a line across the viewing direction so that your audience sees the motifs from the front.
+        zone: drones
+      - title: Take-off and landing area
+        value: closed approx. 3 hours before the show
+        text: From our arrival, we set up the drone grid, antenna stands and control station on a clear, level area. The space required depends on the number of drones.
+        zone: start
+      - title: Audience area
+        text: Your audience stands outside the outer safety area and needs a clear view of the show. We plan its position with you, keeping a distance from walls and trees.
+        zone: guests
+    responsibilities:
+      - { task: "Send your logo and approve every motif", us: none, you: full }
+      - { task: "Design and animate the motifs", us: full, you: none }
+      - { task: "Site check, safety concept and flight plan", us: full, you: none }
+      - { task: "Aviation permits (LBA, DFS, waterways, other EU countries)", us: full, you: none }
+      - { task: "Obtain consent from the landowners", us: part, you: full, hint: "Template from us" }
+      - { task: "Provide space for take-off, safety zone and audience", us: none, you: full }
+      - { task: "Securing the safety zone (barrier tape, stewards if needed)", us: part, you: full, hint: "by arrangement" }
+      - { task: "Pilots, equipment, set-up and dismantling", us: full, you: none }
+      - { task: "Music edited to the show", us: full, you: none }
+      - { task: "Arrange sound on site", us: part, you: full, hint: "Speaker for small groups" }
+      - { task: "Name a contact person for show day", us: none, you: full }
+      - { task: "Liability insurance up to €1.3m", us: full, you: none }
+    download:
+      label: Technical data sheet · PDF
+      href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf
+    todo: FlyingStars muss die Startflächen je Drohnenzahl und die standortabhängigen Abstände bestätigen; 15 × 15 und 25 × 25 Meter widersprechen sich in den Quellen. Die Zeichnung bleibt ein Beispiel. Moritz muss die Aufgabenliste für Markenshows freigeben.
   - type: faq
     id: fragen
     kicker: FAQ
@@ -213,4 +262,4 @@ sections:
     kicker: Enquiry
     headline: Tell us about your campaign.
     text: A date, location and goal are enough. You can send your logo by email later.
-translationSourceHash: a5a067b47f0f83f292fb5638da722b53273487d4af8652e1a4c7b0efc36d46f8
+translationSourceHash: 5bbae7c49e9ed2ccb8fffdee2ac5ae14ea694c818c6be47e19aba699cffe4e6b

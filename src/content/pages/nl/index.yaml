@@ -102,7 +102,7 @@ sections:
     kicker: Gelegenheden
     headline: Voor elke gelegenheid de juiste show.
     cards:
-      - category: Bedrijven
+      - category: Merken & reclame
         title: Jullie merk op het grootste doek ter wereld
         text: Logo's, producten en slogans aan de hemel, voor lanceringen, jubilea en opnamen.
         image:
@@ -521,4 +521,4 @@ sections:
     headline: Vertel ons over jullie datum.
     text: Datum, locatie en gelegenheid zijn genoeg voor een eerste inschatting. Laat open wat jullie nog niet weten.
     todo: FlyingStars und die Datenschutzberatung müssen Versanddienst, Empfängerpostfach, Auftragsverarbeitung, Drittlandtransfers und Löschfristen festlegen und die Datenschutzhinweise freigeben.
-translationSourceHash: 8c709f7e0b843128b31b20f18181d85b1f7524a35a576127fcee3503d229a4f6
+translationSourceHash: c3cc15ee35e0104646f677cf6d5bf6d42ef933fa81f25d32d031e65e0d408eb9

@@ -101,9 +101,9 @@ sections:
     responsibilities:
       - { task: "Planning van vliegzone, publiek en choreografie", us: full, you: none }
       - { task: "Indoor-drones, positioneringstechniek en team", us: full, you: none }
-      - { task: "Plattegrond met maten en plafondhoogte", us: none, you: full }
-      - { task: "Vrije, vlakke start- en vliegzone", us: none, you: full }
-      - { task: "Stroomaansluiting in de buurt", us: part, you: full, hint: "we stemmen af" }
+      - { task: "Plattegrond met maten en plafondhoogte sturen", us: none, you: full }
+      - { task: "Vrije, vlakke start- en vliegzone beschikbaar stellen", us: none, you: full }
+      - { task: "Stroomaansluiting in de buurt beschikbaar stellen", us: part, you: full, hint: "we stemmen af" }
     download:
       label: Technisch gegevensblad · PDF
       href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf
@@ -205,4 +205,4 @@ sections:
     kicker: Aanvraag
     headline: Vertel ons over jullie ruimte.
     text: Plafondhoogte, oppervlakte en datum zijn genoeg voor een eerste inschatting. We reageren binnen 48 uur.
-translationSourceHash: 7e5f395784e8d5ec49042c16de4882198cd22819f7c1e3d7b793baddd4b2056e
+translationSourceHash: ca98ccc6e6f6e471561e2ef34fff43e28e5426dda8ab950b1ee3e6e0d5497a2c

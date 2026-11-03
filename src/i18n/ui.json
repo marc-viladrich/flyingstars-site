@@ -20,24 +20,29 @@
     "nl": "Verder naar"
   },
   "chopper404.backToTheHomepage": {
-    "de": "Zur Startseite",
-    "en": "Back to the homepage",
-    "nl": "Naar de homepage"
+    "de": "Startseite",
+    "en": "Homepage",
+    "nl": "Homepage"
   },
   "chopper404.viewOurWork": {
-    "de": "Referenzen ansehen",
-    "en": "View our work",
-    "nl": "Bekijk onze shows"
+    "de": "Referenzen",
+    "en": "Our work",
+    "nl": "Onze shows"
   },
   "chopper404.pricesAndPreview": {
-    "de": "Preise und Vorschau",
-    "en": "Prices and preview",
-    "nl": "Prijzen en preview"
+    "de": "Preise",
+    "en": "Prices",
+    "nl": "Prijzen"
   },
   "chopper404.requestAShow": {
     "de": "Show anfragen",
     "en": "Request a show",
     "nl": "Vraag een show aan"
+  },
+  "chopper404.showRequest": {
+    "de": "Show-Anfrage",
+    "en": "Show request",
+    "nl": "Showaanvraag"
   },
   "logo.flyingstarsHomepage": {
     "de": "FlyingStars – Startseite",
@@ -3513,5 +3518,15 @@
     "de": "3D-Storytelling",
     "en": "3D storytelling",
     "nl": "3D-storytelling"
+  },
+  "slider.previous": {
+    "de": "Zurückblättern",
+    "en": "Previous",
+    "nl": "Vorige"
+  },
+  "slider.next": {
+    "de": "Weiterblättern",
+    "en": "Next",
+    "nl": "Volgende"
   }
 }

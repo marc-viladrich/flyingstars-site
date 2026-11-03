@@ -95,9 +95,9 @@ sections:
     responsibilities:
       - { task: "Planung von Flugfläche, Publikum und Choreografie", us: full, you: none }
       - { task: "Indoor-Drohnen, Positionierungstechnik und Team", us: full, you: none }
-      - { task: "Grundriss mit Maßen und Deckenhöhe", us: none, you: full }
-      - { task: "Freie, ebene Start- und Flugfläche", us: none, you: full }
-      - { task: "Stromanschluss in der Nähe", us: part, you: full, hint: "wir stimmen ab" }
+      - { task: "Grundriss mit Maßen und Deckenhöhe schicken", us: none, you: full }
+      - { task: "Freie, ebene Start- und Flugfläche bereitstellen", us: none, you: full }
+      - { task: "Stromanschluss in der Nähe bereitstellen", us: part, you: full, hint: "wir stimmen ab" }
     download: { label: Technik-Datenblatt · PDF, href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf }
     todo: FlyingStars muss die gesamte Indoor-Flugfläche, Publikumsabstände, Strombedarf und Zugänglichkeit ergänzen; die Rastermaße allein bestimmen den Raumbedarf nicht.
 

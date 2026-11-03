@@ -102,7 +102,7 @@ sections:
     kicker: Occasions
     headline: The right show for every occasion.
     cards:
-      - category: Businesses
+      - category: Brands & advertising
         title: Your brand on the world's biggest canvas
         text: Logos, products and slogans in the sky, for launches, anniversaries and shoots.
         image:
@@ -521,4 +521,4 @@ sections:
     headline: Tell us about your date.
     text: A date, location and occasion are enough for an initial assessment. Leave anything you don't know yet open.
     todo: FlyingStars und die Datenschutzberatung müssen Versanddienst, Empfängerpostfach, Auftragsverarbeitung, Drittlandtransfers und Löschfristen festlegen und die Datenschutzhinweise freigeben.
-translationSourceHash: 8c709f7e0b843128b31b20f18181d85b1f7524a35a576127fcee3503d229a4f6
+translationSourceHash: c3cc15ee35e0104646f677cf6d5bf6d42ef933fa81f25d32d031e65e0d408eb9

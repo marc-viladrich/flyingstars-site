@@ -54,9 +54,13 @@
 #cc-main .consent-list { display: block; margin: 2px 0 0; padding: 0; }
 #cc-main .consent-list [role=listitem] { display: block; position: relative; padding-left: 16px; }
 #cc-main .consent-list [role=listitem]::before { content: ""; position: absolute; left: 3px; top: .62em; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
-#cc-main .pm.pm--box { max-height: calc(100dvh - 48px); }
-@media (max-width: 640px) { #cc-main .pm.pm--box { max-height: 100dvh; } }
-#cc-main .pm__title { font: 500 clamp(26px, 4vw, 34px)/1.15 var(--display); letter-spacing: -.025em; }
+/* Einstellungen kompakt (Marc, 03.11.2026: „deutlich kleiner … bei großen Screens komplett unnötig, dass es so zentral
+   Platz einnimmt“): höchstens 36 rem hoch, Überschrift höchstens 1,75 rem. Auf dem Handy als Blatt von unten statt
+   bildschirmfüllend. Die Bibliothek setzt 16px als Grundgröße; 1rem folgt der Schriftgröße im Browser. */
+#cc-main { font-size: 1rem; }
+#cc-main .pm.pm--box { max-height: min(36rem, calc(100dvh - 3rem)); }
+@media (max-width: 640px) { #cc-main .pm.pm--box { top: auto; max-height: min(36rem, 100dvh); border-radius: var(--radius) var(--radius) 0 0; } }
+#cc-main .pm__title { font: 500 clamp(1.375rem, 3vw, 1.75rem)/1.15 var(--display); letter-spacing: -.025em; }
 #cc-main .pm__section-desc { font-size: 14px; line-height: 1.6; }
 #cc-main .consent-paragraph { display: block; }
 #cc-main .consent-paragraph + .consent-paragraph, #cc-main .consent-list + .consent-paragraph { margin-top: 8px; }

@@ -101,9 +101,9 @@ sections:
     responsibilities:
       - { task: "Planning flight area, audience and choreography", us: full, you: none }
       - { task: "Indoor drones, positioning system and team", us: full, you: none }
-      - { task: "Floor plan with dimensions and ceiling height", us: none, you: full }
-      - { task: "Clear, level take-off and flight area", us: none, you: full }
-      - { task: "Power supply nearby", us: part, you: full, hint: "we coordinate" }
+      - { task: "Send a floor plan with dimensions and ceiling height", us: none, you: full }
+      - { task: "Provide a clear, level take-off and flight area", us: none, you: full }
+      - { task: "Provide a power supply nearby", us: part, you: full, hint: "we coordinate" }
     download:
       label: Technical data sheet · PDF
       href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf
@@ -205,4 +205,4 @@ sections:
     kicker: Enquiry
     headline: Tell us about your room.
     text: Ceiling height, floor area and date are enough for an initial assessment. We'll reply within 48 hours.
-translationSourceHash: 7e5f395784e8d5ec49042c16de4882198cd22819f7c1e3d7b793baddd4b2056e
+translationSourceHash: ca98ccc6e6f6e471561e2ef34fff43e28e5426dda8ab950b1ee3e6e0d5497a2c

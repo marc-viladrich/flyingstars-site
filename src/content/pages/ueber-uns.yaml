@@ -166,13 +166,13 @@ sections:
     responsibilities:
       - { task: "Standort prüfen, Sicherheitskonzept und Flugplanung", us: full, you: none }
       - { task: "Luftrechtliche Genehmigungen (LBA, DFS, Wasserstraßen, EU-Länder)", us: full, you: none }
-      - { task: "Zustimmung der Grundstückseigentümer:innen", us: part, you: full, hint: "Vorlage von uns" }
-      - { task: "Flächen für Start, Sicherheitsbereich und Publikum", us: none, you: full }
+      - { task: "Zustimmung der Grundstückseigentümer:innen einholen", us: part, you: full, hint: "Vorlage von uns" }
+      - { task: "Flächen für Start, Sicherheitsbereich und Publikum bereitstellen", us: none, you: full }
       - { task: "Sicherheitsbereich absichern (Flatterband, ggf. Ordner:innen)", us: part, you: full, hint: "nach Absprache" }
       - { task: "Pilot:innen, Technik, Auf- und Abbau", us: full, you: none }
       - { task: "Musikschnitt passend zur Show", us: full, you: none }
-      - { task: "Beschallung vor Ort", us: part, you: full, hint: "Box für kleine Gruppen" }
-      - { task: "Ansprechperson am Showtag", us: none, you: full }
+      - { task: "Beschallung vor Ort organisieren", us: part, you: full, hint: "Box für kleine Gruppen" }
+      - { task: "Ansprechperson für den Showtag benennen", us: none, you: full }
       - { task: "Haftpflicht bis 1,3 Mio. €", us: full, you: none }
     download: { label: Technik-Datenblatt · PDF, href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf }
     todo: FlyingStars muss die Startflächen je Drohnenzahl und die standortabhängigen Abstände bestätigen; 15 × 15 und 25 × 25 Meter widersprechen sich in den Quellen. Die Zeichnung bleibt ein Beispiel; Betriebsgenehmigung und aktuelle Versicherungsbestätigung fehlen im Quellenpaket.

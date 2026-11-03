@@ -66,7 +66,7 @@ sections:
     kicker: Anlässe
     headline: Für jeden Anlass die passende Show.
     cards:
-      - category: Unternehmen
+      - category: Marken & Werbung
         title: Eure Marke auf der größten Leinwand der Welt
         text: Logos, Produkte und Claims am Himmel, für Launches, Jubiläen und Drehs.
         image: { src: "https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg", alt: "Volkswagen-Logo aus Drohnen über dem Wolfgangsee, Gäste auf einer Terrasse", width: 1920, height: 1281 }

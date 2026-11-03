@@ -12,13 +12,22 @@ const { name, label, tabs, initial = 0 } = Astro.props;
   {tabs.map((t, i) => <label class:list={{ us: t.featured }} style={t.color ? `--c: ${t.color}` : undefined}><input type="radio" name={name} value={i} checked={i === initial} /><span>{t.label}</span></label>)}
 </div>
 <script>
-  // Klebende Reiter: Wer weit unten den Reiter wechselt, landet am Anfang der neuen Tafel statt mitten in einer anderen Länge.
-  document.querySelectorAll<HTMLElement>('.mtabs').forEach((tabs) => tabs.addEventListener('change', () => {
-    const box = tabs.parentElement;
-    if (!box) return;
-    const stuck = box.getBoundingClientRect().top < tabs.getBoundingClientRect().top - 1;
-    if (!stuck) return;
-    // erst nach dem Umschalten der Tafel messen, sonst stimmt die Höhe darüber nicht mehr
-    requestAnimationFrame(() => scrollTo({ top: box.getBoundingClientRect().top + scrollY - parseFloat(getComputedStyle(tabs).top), behavior: 'instant' }));
-  }));
+  // Reiterwechsel lässt die Seite stehen (Marc, 03.11.2026: „nicht an den Anfang der Tabelle springen, sondern einfach da
+  // bleiben“): Wer schnell hin und her tippt, vergleicht dieselbe Zeile. Beim Umschalten verschwinden Spalten, an denen
+  // der Browser seine Scroll-Verankerung festhält; deshalb die Position vor dem Wechsel merken und danach zurücksetzen.
+  document.querySelectorAll<HTMLElement>('.mtabs').forEach((tabs) => {
+    // Chromium scrollt beim Fokussieren eines Radios im klebenden Streifen zu dessen Ruheposition (bis zu 370 px,
+    // gemessen 03.11.2026). Deshalb wählt ein Tippen auf das Label selbst und fokussiert ohne Scrollen.
+    tabs.addEventListener('click', (e) => {
+      const label = (e.target as HTMLElement).closest('label'), input = label?.querySelector('input');
+      if (!input || e.target === input) return;
+      e.preventDefault();
+      if (!input.checked) { input.checked = true; input.dispatchEvent(new Event('change', { bubbles: true })); }
+      input.focus({ preventScroll: true });
+    });
+    let y = 0;
+    tabs.addEventListener('pointerdown', () => { y = scrollY; });
+    tabs.addEventListener('keydown', () => { y = scrollY; });
+    tabs.addEventListener('change', () => requestAnimationFrame(() => { if (scrollY !== y) scrollTo({ top: y, behavior: 'instant' }); }));
+  });
 </script>

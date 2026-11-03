@@ -194,13 +194,13 @@ sections:
     responsibilities:
       - { task: "Locatiecheck, veiligheidsconcept en vluchtplan", us: full, you: none }
       - { task: "Luchtvaartvergunningen (LBA, DFS, waterwegen, andere EU-landen)", us: full, you: none }
-      - { task: "Toestemming van de grondeigenaren", us: part, you: full, hint: "Sjabloon van ons" }
-      - { task: "Ruimte voor start, veiligheidszone en publiek", us: none, you: full }
+      - { task: "Toestemming van de grondeigenaren regelen", us: part, you: full, hint: "Sjabloon van ons" }
+      - { task: "Ruimte voor start, veiligheidszone en publiek beschikbaar stellen", us: none, you: full }
       - { task: "Veiligheidszone afzetten (lint, zo nodig stewards)", us: part, you: full, hint: "in overleg" }
       - { task: "Piloten, techniek, op- en afbouw", us: full, you: none }
       - { task: "Muziekmontage op de show", us: full, you: none }
-      - { task: "Geluid ter plaatse", us: part, you: full, hint: "Box voor kleine groepen" }
-      - { task: "Contactpersoon op de showdag", us: none, you: full }
+      - { task: "Geluid ter plaatse regelen", us: part, you: full, hint: "Box voor kleine groepen" }
+      - { task: "Contactpersoon voor de showdag aanwijzen", us: none, you: full }
       - { task: "Aansprakelijkheid tot € 1,3 mln.", us: full, you: none }
     download:
       label: Technisch gegevensblad · PDF
@@ -266,4 +266,4 @@ sections:
     button:
       label: Vraag een show aan
       href: /kontakt/
-translationSourceHash: c5c3547b8b277fe896ab7b65e02dc6cbe477892951f241a5b2e7f96ae62f81e0
+translationSourceHash: 312a97ba4bc9297423e399bc0cce66db202ed8d035934dc621a9854d5fafae7d

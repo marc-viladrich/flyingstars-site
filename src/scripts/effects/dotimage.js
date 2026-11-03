@@ -171,7 +171,7 @@ export function dotImage(wrap, { step = 8 } = {}) {
   };
   // Reveal auf Touch-Geräten: Bilder, die beim Laden schon im Bild sind, bleiben einfach Foto. Alle anderen sind bis
   // zum Erscheinen verborgen (.dot-pending); beim Hereinscrollen zeichnet eine Lichtpunkt-Welle das Bild, das kurz
-  // glüht und dann zum Foto wird. Sicherung: Kommt das Bild nicht rechtzeitig, erscheint nach 2,5 s einfach das Foto.
+  // glüht und dann zum Foto wird. Sicherung: Kommt das Bild nicht rechtzeitig, erscheint nach 250 ms einfach das Foto.
   // Ebenen im Leerlauf vorbereiten, sobald das Bild in der Nähe ist: der erste Hover bzw. Reveal startet ohne Wartezeit
   function prepare() {
     const idle = window.requestIdleCallback || (f => setTimeout(f, 200));
@@ -185,13 +185,16 @@ export function dotImage(wrap, { step = 8 } = {}) {
   function reveal() {
     if (wrap.getBoundingClientRect().top < innerHeight) return;
     wrap.classList.add('dot-pending');
-    let started = false;
-    const show = () => wrap.classList.remove('dot-pending');
+    let started = false, shown = false;
+    const show = () => { shown = true; wrap.classList.remove('dot-pending'); };
     const run = () => {
       if (started) return; started = true;
-      const fallback = setTimeout(show, 2500);
+      // Sind die Lichtpunkte beim Hereinscrollen nicht fertig, erscheint nach 250 ms das Foto (vorher 2,5 s leerer
+      // Rahmen, Marc 03.11.2026: „viel zu spät“); eine verspätete Welle über dem schon sichtbaren Foto gibt es nicht.
+      const fallback = setTimeout(show, 250);
       const begin = () => {
-        if (!ready()) return setTimeout(begin, 120);
+        if (shown) return;
+        if (!ready()) return setTimeout(begin, 60);
         clearTimeout(fallback);
         go(1);
         const wait = () => { if (p < 1) return requestAnimationFrame(wait); show(); setTimeout(() => go(0), 450); };

@@ -1,4 +1,5 @@
 ---
+import SliderNav from '../SliderNav.astro';
 import SectionHead from '../SectionHead.astro';
 import FactList from '../FactList.astro';
 import { localizedCollection } from '../../i18n/content';
@@ -70,10 +71,11 @@ const count = (n: number) => String(n).padStart(2, '0');
   </section>}
 
   {data.gallery.length > 0 && <section class="c-reel" aria-labelledby="reel-h">
-    <div class="c-reel-head"><SectionHead variant="contents" headline={`${t('casestudy.theShowIn')} ${data.gallery.length} ${t('casestudy.pictures')}`} id="reel-h" /><div class="ctrl"><button type="button" data-prev aria-label={t('showconfigurator.previousScene')}>←</button><button type="button" data-next aria-label={t('showconfigurator.nextScene')}>→</button></div></div>
+    <div class="c-reel-head"><SectionHead variant="contents" headline={`${t('casestudy.theShowIn')} ${data.gallery.length} ${t('casestudy.pictures')}`} id="reel-h" /></div>
     <div class:list={['c-track', { tall: data.portrait }]} tabindex="0" role="region" aria-label={t('case.gallery', { name: data.name })}>
       {data.gallery.map((picture, index) => <figure><div class="img"><img src={images.get(picture.src)!.src} {...images.get(picture.src)!.attributes} width={images.get(picture.src)!.width} height={images.get(picture.src)!.height} alt={picture.alt} loading="lazy" decoding="async" draggable="false" /></div><figcaption class="mono"><b>{count(index + 1)}</b>{picture.caption}</figcaption></figure>)}
     </div>
+    <SliderNav class="c-reel-nav" />
   </section>}
 
   <section class="c-setlist" aria-labelledby="set-h"><SectionHead variant="contents" headline={t('casestudy.whatAppearedInTheSky')} id="set-h" /><div class="groups">{data.setlist.map((group) => <div><h3>{group.title}</h3><ol>{group.items.map((item) => <li>{item}</li>)}</ol></div>)}</div></section>

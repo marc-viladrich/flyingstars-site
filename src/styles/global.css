@@ -361,9 +361,6 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
 
 .c-reel { padding: var(--section) 0; }
 .c-reel-head { display: flex; justify-content: space-between; align-items: end; gap: 20px; padding: 0 var(--gutter); margin-bottom: 28px; }
-.c-reel-head .ctrl { display: flex; gap: 8px; }
-.c-reel-head button { width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--line-strong); background: transparent; color: var(--text); cursor: pointer; font-size: 18px; }
-.c-reel-head button:hover { border-color: var(--text); }
 .c-track { display: flex; gap: clamp(12px, 1.6vw, 22px); overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 var(--gutter); padding: 0 0 8px; border-radius: 16px; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 90px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 90px), transparent); scrollbar-width: none; cursor: grab; }
 .c-track::-webkit-scrollbar { display: none; }
 .c-track.at-end { -webkit-mask-image: none; mask-image: none; }
@@ -415,7 +412,6 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
 @media (max-width: 640px) {
   .c-top .idx { display: none; }
   .c-name span:nth-child(2) { -webkit-text-stroke-width: 1px; }
-  .c-reel-head .ctrl { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .c-media figure, .c-step > * { transition: none; }
@@ -427,14 +423,16 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
 [data-reveal] { transition: opacity 0.6s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); transition-delay: calc(var(--i, 0) * 60ms); }
 .reveal [data-reveal-group]:not(.is-in) [data-reveal] { opacity: 0; transform: translateY(0.4em); }
 /* Vorhang: das Bild öffnet sich von unten, das Foto setzt sich dabei von 1,28 auf 1 */
-/* Runde 18 (Marc, 02.11.2026): früher auslösen (REVEAL_MARGIN, 3 rem im Bild), kürzer, nur noch 40 ms Staffel zwischen Geschwistern */
-[data-curtain] { clip-path: inset(0 0 0 0 round var(--curtain-r, 0px)); transition: clip-path 0.7s cubic-bezier(0.7, 0, 0.2, 1); transition-delay: calc(var(--i, 0) * 40ms); }
+/* Runde 18/19 (Marc, 02./03.11.2026: „immer noch viel zu spät“): Auslösen bei einem halben rem im Bild (REVEAL_MARGIN),
+   40 ms Staffel zwischen Geschwistern. Die Kurve öffnet sofort (ease-out); die frühere ease-in-out-Kurve bewegte sich in
+   den ersten 150 ms kaum und verschob den sichtbaren Start zusätzlich. */
+[data-curtain] { clip-path: inset(0 0 0 0 round var(--curtain-r, 0px)); transition: clip-path 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); transition-delay: calc(var(--i, 0) * 40ms); }
 [data-curtain] > img { transition: transform 0.95s cubic-bezier(0.2, 0.7, 0.2, 1); transition-delay: calc(var(--i, 0) * 40ms); }
 .reveal [data-curtain]:not(.is-in) { clip-path: inset(100% 0 0 0 round var(--curtain-r, 0px)); }
 .reveal [data-curtain]:not(.is-in) > img { transform: scale(1.28); }
 /* Kein scroll-gebundener Vorhang mehr (31.10. eingeführt): er öffnete von unten, während das Bild von oben ins Bild kam,
    der sichtbare Teil blieb also bis ca. 23 % der Bildhöhe verdeckt (Marc, 02.11.2026: „setzen zu spät ein“). Jetzt löst
-   site.ts bei 3 rem aus, der Übergang oben läuft in allen Browsern gleich. Auf Touch-Geräten übernimmt bei Bildern mit
+   site.ts bei einem halben rem aus, der Übergang oben läuft in allen Browsern gleich. Auf Touch-Geräten übernimmt bei Bildern mit
    Lichtpunkten der Lichtpunkt-Reveal (dotimage.js), dort gibt es keinen Vorhang. */
 @media (hover: none), (pointer: coarse) {
   .reveal [data-curtain][data-dot-img], .reveal [data-curtain][data-dot-img] > img { animation: none; transition: none; clip-path: none; transform: none; }
@@ -717,13 +715,14 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
 .proof .quality .q-logo { width: auto; object-fit: contain; object-position: left; filter: brightness(0) invert(1); opacity: 0.85; }
 
 /* 404: Chopper, der Bürohund (src/components/Chopper404.astro) */
-.chopper { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: clamp(24px, 4vw, 56px); align-items: center; }
+.chopper { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(1.5rem, 4vw, 3.5rem); align-items: center; }
 .chopper-stage { width: 100%; aspect-ratio: 4 / 3; display: block; border-radius: var(--radius); background: radial-gradient(90% 70% at 50% 100%, rgba(255, 158, 41, 0.08), transparent 60%), #0a0908; }
-.chopper-copy { display: grid; gap: 16px; justify-items: start; }
-.chopper-copy .code { font: 700 18px/1 var(--display); background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.chopper-h { font-size: clamp(32px, 4vw, 56px); line-height: 1.04; }
-.chopper-copy > p:not(.code) { color: var(--muted); font-size: 18px; max-width: 36ch; }
-.chopper-ways { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+.chopper-copy { display: grid; gap: 1rem; justify-items: start; }
+.chopper-copy .code { font: 700 1.125rem/1 var(--display); background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.chopper-h { font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.04; }
+/* ohne ch-Begrenzung (Marc, 03.11.2026): der Text läuft über die ganze Spalte */
+.chopper-copy > p:not(.code) { color: var(--muted); font-size: 1.125rem; }
+.chopper-ways { display: flex; flex-wrap: wrap; gap: 0.625rem; margin-top: 0.5rem; }
 .page-404 { padding: 140px var(--gutter) 100px; min-height: 100vh; }
 
 @media (max-width: 1000px) {
@@ -1003,12 +1002,15 @@ a.pack:hover, a.pack:focus-visible { border-color: color-mix(in srgb, var(--c) 7
 .occasions.occ-slider::-webkit-scrollbar { display: none; }
 .occasions.occ-slider.at-end { -webkit-mask-image: none; mask-image: none; }
 .occasions.occ-slider:focus-visible { outline: 2px solid var(--cyan); outline-offset: 6px; }
-.occ-nav { display: flex; justify-content: flex-end; gap: 10px; margin: calc(clamp(36px, 5vw, 56px) * -1 - 4px) 0 18px; }
-.occ-btn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line-strong); background: transparent; color: var(--text); font-size: 18px; cursor: pointer; transition: border-color 0.2s, opacity 0.2s; }
-.occ-btn:hover { border-color: var(--text); }
-.occ-nav:has(+ .at-start) [data-occ-prev], .occ-nav:has(+ .at-end) [data-occ-next] { opacity: 0.35; pointer-events: none; }
+/* Slider-Pfeile unter dem Slider, auf allen Breiten (SliderNav.astro) */
+.slider-nav { display: flex; justify-content: flex-end; gap: 0.625rem; margin-top: 1.25rem; }
+.slider-nav[hidden] { display: none; }
+.c-reel-nav { padding-inline: var(--gutter); }
+.slider-btn { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; padding: 0; border-radius: 50%; border: 1px solid var(--line-strong); background: transparent; color: var(--text); cursor: pointer; transition: border-color 0.2s, opacity 0.2s; }
+.slider-btn:hover:not(:disabled) { border-color: var(--text); }
+.slider-btn:disabled { opacity: 0.35; cursor: default; }
 @media (max-width: 1100px) { .occasions.occ-slider { grid-auto-columns: calc((100% - 16px) / 2.3); } }
-@media (max-width: 640px) { .occasions.occ-slider { grid-auto-columns: 82%; } .occ-nav { display: none; } }
+@media (max-width: 640px) { .occasions.occ-slider { grid-auto-columns: 82%; } }
 
 /* Paket-Kurzfassung (Startseite): Kernpunkte unter dem Preis, Drohnenzahl in der Paketfarbe hervorgehoben */
 a.pack { grid-template-rows: auto auto 1fr; align-items: start; row-gap: 14px; }

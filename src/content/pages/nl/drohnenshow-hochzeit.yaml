@@ -111,13 +111,13 @@ sections:
     responsibilities:
       - { task: "Locatiecheck, veiligheidsconcept en vluchtplan", us: full, you: none }
       - { task: "Luchtvaartvergunningen (LBA, DFS, waterwegen, andere EU-landen)", us: full, you: none }
-      - { task: "Toestemming van de grondeigenaren", us: part, you: full, hint: "Sjabloon van ons" }
-      - { task: "Ruimte voor start, veiligheidszone en publiek", us: none, you: full }
+      - { task: "Toestemming van de grondeigenaren regelen", us: part, you: full, hint: "Sjabloon van ons" }
+      - { task: "Ruimte voor start, veiligheidszone en publiek beschikbaar stellen", us: none, you: full }
       - { task: "Veiligheidszone afzetten (lint, zo nodig stewards)", us: part, you: full, hint: "in overleg" }
       - { task: "Piloten, techniek, op- en afbouw", us: full, you: none }
       - { task: "Muziekmontage op de show", us: full, you: none }
-      - { task: "Geluid ter plaatse", us: part, you: full, hint: "Box voor kleine groepen" }
-      - { task: "Contactpersoon op de showdag", us: none, you: full }
+      - { task: "Geluid ter plaatse regelen", us: part, you: full, hint: "Box voor kleine groepen" }
+      - { task: "Contactpersoon voor de showdag aanwijzen", us: none, you: full }
       - { task: "Aansprakelijkheid tot € 1,3 mln.", us: full, you: none }
     download:
       label: Technisch gegevensblad · PDF
@@ -184,4 +184,4 @@ sections:
     kicker: Aanvraag
     headline: Vertel ons over jullie trouwdag.
     text: Datum en locatie zijn genoeg voor het begin. We reageren binnen 48 uur met een eerste inschatting.
-translationSourceHash: 638466f58cd1ddfd126a00296bf260c0bc96a463e00e90ef93ed856a6a301799
+translationSourceHash: ed698716bcdb37591144aed55862f59ae89381577af5543802b0b6d9726e6d50
