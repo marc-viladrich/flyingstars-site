@@ -48,8 +48,8 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
 <section class="cfg" id={id} aria-labelledby="cfg-h" style={`--pkg0: ${rgb(startPkg)}`}>
     <div class="cfg-stage" aria-label={t('showconfigurator.showPreview')} aria-describedby="cfg-scene" data-bleed>
       <canvas id="cfg-field" aria-hidden="true"></canvas>
-      <!-- vierzehnte Fassung: ein Klick irgendwo auf die Bühne hält die Vorführung an oder lässt sie weiterlaufen (wie bei
-           YouTube); als echter Knopf erreichbar, Leertaste und Eingabe schalten um -->
+      {/* vierzehnte Fassung: ein Klick irgendwo auf die Bühne hält die Vorführung an oder lässt sie weiterlaufen (wie bei
+           YouTube); als echter Knopf erreichbar, Leertaste und Eingabe schalten um */}
       <button type="button" class="cfg-hit" id="cfg-hit" aria-label={t('showconfigurator.pauseThePreview')} aria-pressed="false"></button>
       <span class="cfg-flash" id="cfg-flash" aria-hidden="true"><svg class="i-pause" viewBox="0 0 16 16"><rect x="4" y="3" width="2.6" height="10" rx="1"/><rect x="9.4" y="3" width="2.6" height="10" rx="1"/></svg><svg class="i-play" viewBox="0 0 16 16"><path d="M5 3.2v9.6a.6.6 0 0 0 .9.5l7.6-4.8a.6.6 0 0 0 0-1L5.9 2.7a.6.6 0 0 0-.9.5z"/></svg></span>
       <div class="cfg-caption"><em id="cfg-new">{STEPS[start].pkg}</em></div>
@@ -66,7 +66,7 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
         <div class="cfg-track" id="cfg-track" role="slider" tabindex="0" aria-label={t('showconfigurator.showScene')} aria-valuemin="1" aria-valuemax="1" aria-valuenow="1" aria-describedby="cfg-tip">
           <div class="cfg-marks" id="cfg-marks" aria-hidden="true"></div>
         </div>
-        <!-- sechzehnte Fassung: Motive, die erst mit mehr Drohnen spielen, als ungeleuchtete Lichtpunkte (show-configurator.js) -->
+        {/* sechzehnte Fassung: Motive, die erst mit mehr Drohnen spielen, als ungeleuchtete Lichtpunkte (show-configurator.js) */}
         <div class="cfg-locks" id="cfg-locks" role="group" aria-label={t('showconfigurator.motifsUnlockedWithMoreDrones')} hidden></div>
         <span class="cfg-tip" id="cfg-tip" role="tooltip"><b>{list[0].motifs[0].label}</b> {t('showconfigurator.from')} {DRONE_RANGES[startPkg].min} {t('configuratorteaser.drones')}</span>
         <button type="button" class="cfg-stepbtn" id="cfg-next" aria-label={t('showconfigurator.nextScene')}>›</button>
@@ -79,8 +79,8 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
     <form class="cfg-panel" id="cfg">
       <SectionHead variant="contents" headline={heading} kicker={kicker} id="cfg-h" level={Heading} titleClass="cfg-h" kickerClass="cfg-kicker" />
 
-      <!-- Runde 11 (Marc: „nicer, eleganter Dropdown“, den Anlass wechselt man selten): natives <select> mit eigenem
-           Rahmen und Pfeil; Tastatur, Screenreader und die Auswahlliste des Geräts bleiben die des Browsers -->
+      {/* Runde 11 (Marc: „nicer, eleganter Dropdown“, den Anlass wechselt man selten): natives <select> mit eigenem
+           Rahmen und Pfeil; Tastatur, Screenreader und die Auswahlliste des Geräts bleiben die des Browsers */}
       <div class="cfg-block cfg-occasion">
         <label for="cfg-occasion">{t('showconfigurator.occasion')}</label>
         <div class="cfg-select">
@@ -92,9 +92,9 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
 
       <fieldset class="cfg-block">
         <legend>{t('showconfigurator.howComplex')}</legend>
-        <!-- Runde 11: ein gleitender Rahmen statt harter Wechsel. .cfg-ind-sel zeigt das gewählte Paket und gleitet beim
+        {/* Runde 11: ein gleitender Rahmen statt harter Wechsel. .cfg-ind-sel zeigt das gewählte Paket und gleitet beim
              Wechsel (Klick, Tastatur, Regler) dorthin; .cfg-ind-hover gleitet gedämpft zum Paket unter der Maus. Position
-             und Farbe kommen allein aus CSS (:has), also folgt der Rahmen jeder Änderung des Radios -->
+             und Farbe kommen allein aus CSS (:has), also folgt der Rahmen jeder Änderung des Radios */}
         <div class="cfg-pkgs" style={STEPS.map((s, i) => `--c${i}: ${rgb(s.pkg as keyof typeof SHOW_PACKAGES)}`).join('; ')}>
           {STEPS.map((s, i) => <label style={`--c: var(--c${i})`}><input type="radio" name="pkg" value={i} checked={i === start} /><span><b>{s.pkg}</b><small>{s.label}</small></span></label>)}
           <span class="cfg-ind cfg-ind-hover" aria-hidden="true"></span>
@@ -108,7 +108,7 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
         <div class="cfg-ticks mono" aria-hidden="true">{ticks.map((n) => <span style={`--p: ${at(n) / 100}`}>{n}</span>)}</div>
       </div>
 
-      <!-- vierzehnte Fassung: eigener Text und eigenes Logo bei den Auswahlen, nicht mehr unter der Anfrage -->
+      {/* vierzehnte Fassung: eigener Text und eigenes Logo bei den Auswahlen, nicht mehr unter der Anfrage */}
       <div class="cfg-own-wrap">
       <fieldset class="cfg-block cfg-own">
         <legend>{t('showconfigurator.yourTextYourLogo')} <span class="cfg-opt">{t('showconfigurator.optional')}</span><button type="button" class="cfg-info" id="cfg-info" aria-label={t('showconfigurator.aboutLogoUploads')} aria-expanded="false" aria-controls="cfg-legal" aria-describedby="cfg-legal"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.2v4M8 4.9v.1"/></svg></button></legend>
@@ -120,19 +120,19 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
         <div class="chips cfg-styles" id="cfg-styles" hidden>
           {[['script', t('showconfigurator.handwriting')], ['print', t('showconfigurator.printLettering')], ['initials', t('showconfigurator.initials')]].map(([v, l], i) => <label><input type="radio" name="textstyle" value={v} checked={i === 0} /><span>{l}</span></label>)}
         </div>
-        <!-- Runde 9 (Marc: „ein bisschen zu viel Text“): der Hinweis steht hinter dem Info-Zeichen an der Überschrift, Klick, Fokus
-             oder Zeigen öffnet, Esc schließt; die Logo-Auswahl verweist weiter darauf (aria-describedby) -->
+        {/* Runde 9 (Marc: „ein bisschen zu viel Text“): der Hinweis steht hinter dem Info-Zeichen an der Überschrift, Klick, Fokus
+             oder Zeigen öffnet, Esc schließt; die Logo-Auswahl verweist weiter darauf (aria-describedby) */}
         <p class="cfg-logo-status" id="cfg-logo-status" role="status"></p>
       </fieldset>
-      <!-- außerhalb des fieldset: dessen Positionierungs-Bezug liegt unter der Legende, nicht an der Kante -->
+      {/* außerhalb des fieldset: dessen Positionierungs-Bezug liegt unter der Legende, nicht an der Kante */}
         <p class="cfg-legal" id="cfg-legal" role="tooltip">{t('showconfigurator.onlyUploadLogosYouHavePermissionToUseSuchAs')}</p>
       </div>
 
 
-      <!-- Runde 11 (Marc: „crampt“): Paket, Preis, Dauer und Anfrage als eigene, geschlossene Fläche mit Abstand zur
+      {/* Runde 11 (Marc: „crampt“): Paket, Preis, Dauer und Anfrage als eigene, geschlossene Fläche mit Abstand zur
            Bedienung. Darunter nur noch die Einordnung der Motive. PLATZHALTER, bewusst nicht mehr sichtbar: Drohnenbereiche
            und Aufpreise (DRONE_RANGES_PLACEHOLDER, SPARK_EXTRA in content/show-packages.ts) und die Freischalt-Leiter
-           (LADDER in content/show-configurator.js) sind nicht mit FlyingStars abgestimmt. -->
+           (LADDER in content/show-configurator.js) sind nicht mit FlyingStars abgestimmt. */}
       <div class="cfg-sum">
         <div class="cfg-result" aria-live="polite">
           <div class="cfg-price"><b id="cfg-pkg">{STEPS[start].pkg}</b><span id="cfg-price">{money(first.price)}</span></div>

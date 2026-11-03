@@ -5,7 +5,8 @@ import { forPath } from '../../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
 import type { Section } from '../../content.config';
 import Accent from '../Accent.astro';
-import { videoPath } from '../../lib/videos';
+import { videoPath, videos } from '../../lib/videos';
+import { heroVideoSources } from '../../lib/hero-video-sources';
 import { optimizedImage } from '../../lib/media';
 // Hero mit laufendem Showreel (Marc, 31.10.2026: „mehr Bewegung, das Showreel gehört in den Hero“, wie im
 // Vercel-Prototyp): stumm im Hintergrund, Start erst nach dem ersten Bild. Den Knopf „Showreel ansehen“ (Overlay mit Ton)
@@ -14,10 +15,11 @@ import { optimizedImage } from '../../lib/media';
 // gerahmtes Bild im Fluss über der Überschrift und lädt die kleine Fassung (Marc, 02.11.2026).
 const { headline, text, words, cta, secondary, poster, video, stats, eyebrow } = Astro.props as Extract<Section, { type: 'showreelHero' }>;
 const still = await optimizedImage(poster.src, 960);
+const sources = video === videos.showreel ? heroVideoSources() : undefined;
 ---
 <section class="hero side" aria-labelledby="hero-h" data-reel-host>
   <div class="video-player hero-media" aria-hidden="true"><img src={still.src} width={still.width} height={still.height} alt="" loading="eager" fetchpriority="high" /></div>
-  <video class="reel" data-reel data-src={videoPath(video)} data-src-small={videoPath(video, 'preview')} muted loop playsinline preload="none" poster={still.src} aria-hidden="true" tabindex="-1"></video>
+  <video class="reel" data-reel data-reel-sources={sources ? JSON.stringify(sources) : undefined} data-src={videoPath(video)} data-src-small={videoPath(video, 'preview')} muted loop playsinline preload="none" poster={still.src} aria-hidden="true" tabindex="-1"></video>
   <div class="shade" aria-hidden="true"></div>
   <div class="rec mono" aria-hidden="true">Showreel</div>
   <MediaFrame corners="content" as="div" aria-hidden="true" />

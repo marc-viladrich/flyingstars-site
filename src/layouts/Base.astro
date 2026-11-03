@@ -13,7 +13,7 @@ import { LOCALES, localeFromPath, sourcePath, sourceId, localizedHref } from '..
 import LanguageSwitch from '../components/LanguageSwitch.astro';
 import Consent from '../components/Consent.astro';
 import { trackingConfig } from '../lib/consent.mjs';
-const tracking = trackingConfig({
+const tracking = trackingConfig(Astro.url.pathname.startsWith('/poc/video-lab/') ? {} : {
   ga: import.meta.env.PUBLIC_GA_ID ?? '',
   ads: import.meta.env.PUBLIC_GOOGLE_ADS_ID ?? '',
   label: import.meta.env.PUBLIC_GOOGLE_ADS_LABEL ?? '',
@@ -61,25 +61,25 @@ const inNav = (href: string) => site.nav.some((item) => item.href === href);
     {social && <meta property="og:image:height" content={String(social.height)} />}
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <!-- Reveal-Startzustand vor dem ersten Bild: nur mit Bewegung (keine reduzierte Bewegung, keine gespeicherte Pause) -->
+    {/* Reveal-Startzustand vor dem ersten Bild: nur mit Bewegung (keine reduzierte Bewegung, keine gespeicherte Pause) */}
     <script is:inline>(function(){var s=null;try{s=sessionStorage.getItem('flyingstars:motion')}catch(e){}var still=s?s==='paused':matchMedia('(prefers-reduced-motion: reduce)').matches;if(!still&&'IntersectionObserver' in window)document.documentElement.classList.add('reveal')})();</script>
   </head>
   <body>
     <a class="skip" href="#main">{t('base.skipToContent')}</a>
-    <!-- Logoverlauf für Icon-Konturen (.ico.g, stroke: url(#fs-grad)); nicht display:none, sonst greift der Verweis nicht -->
+    {/* Logoverlauf für Icon-Konturen (.ico.g, stroke: url(#fs-grad)); nicht display:none, sonst greift der Verweis nicht */}
     <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><linearGradient id="fs-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9e29" /><stop offset=".5" stop-color="#db64e8" /><stop offset="1" stop-color="#33edf2" /></linearGradient></defs></svg>
     <div class="nav-sentinel" aria-hidden="true"></div>
     <header class="nav">
       <Logo />
       <nav aria-label={t('base.mainNavigation')}>{site.nav.map((item) => item.children ? <div class="nav-drop"><a href={localHref(item.href)} aria-current={navState(item.href)}>{item.label} <svg class="caret" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" /></svg></a><ul>{item.children.map((c) => <li><a href={localHref(c.href)} aria-current={navState(c.href)}>{c.label}</a></li>)}</ul></div> : <a href={localHref(item.href)} aria-current={navState(item.href)}>{item.label}</a>)}</nav>
       {hasTranslations && <LanguageSwitch locale={locale} path={current} />}
-      <button class="motion-btn" type="button" data-motion-toggle aria-pressed="false" aria-label={t('base.pauseMotion')} title={t('base.pauseMotion')}><svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="7" y="6" width="3.2" height="12" rx="1" /><rect x="13.8" y="6" width="3.2" height="12" rx="1" /></svg><svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 6.2v11.6a.8.8 0 0 0 1.2.7l9-5.8a.8.8 0 0 0 0-1.4l-9-5.8a.8.8 0 0 0-1.2.7z" /></svg></button>
+      <button class="motion-btn" type="button" data-motion-toggle data-motion-pause={t('base.pauseMotion')} data-motion-resume={t('site.resumeMotion')} aria-pressed="false" aria-label={t('base.pauseMotion')} title={t('base.pauseMotion')}><svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="7" y="6" width="3.2" height="12" rx="1" /><rect x="13.8" y="6" width="3.2" height="12" rx="1" /></svg><svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 6.2v11.6a.8.8 0 0 0 1.2.7l9-5.8a.8.8 0 0 0 0-1.4l-9-5.8a.8.8 0 0 0-1.2.7z" /></svg></button>
       <a class="btn small primary" href={localHref(site.cta.href)}>{site.cta.label}</a>
       <button class="menu-btn" type="button" data-menu-open aria-controls="mobile-menu" aria-expanded="false" aria-label={t('base.openMenu')}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg></button>
     </header>
-    <!-- Kopfzeile des Menüs = Kopfzeile der Seite (gleiche Elemente, gleiche Abstände), damit beim Öffnen nichts springt (Marc, 02.11.2026) -->
+    {/* Kopfzeile des Menüs = Kopfzeile der Seite (gleiche Elemente, gleiche Abstände), damit beim Öffnen nichts springt (Marc, 02.11.2026) */}
     <dialog class="mobile-menu" id="mobile-menu" aria-label={t('base.mainNavigation')} autofocus>
-      <div class="top"><Logo />{hasTranslations && <LanguageSwitch locale={locale} path={current} />}<button class="motion-btn" type="button" data-motion-toggle aria-pressed="false" aria-label={t('base.pauseMotion')} title={t('base.pauseMotion')}><svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="7" y="6" width="3.2" height="12" rx="1" /><rect x="13.8" y="6" width="3.2" height="12" rx="1" /></svg><svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 6.2v11.6a.8.8 0 0 0 1.2.7l9-5.8a.8.8 0 0 0 0-1.4l-9-5.8a.8.8 0 0 0-1.2.7z" /></svg></button><button class="menu-btn menu-close" type="button" data-menu-close aria-label={t('base.closeMenu')}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg></button></div>
+      <div class="top"><Logo />{hasTranslations && <LanguageSwitch locale={locale} path={current} />}<button class="motion-btn" type="button" data-motion-toggle data-motion-pause={t('base.pauseMotion')} data-motion-resume={t('site.resumeMotion')} aria-pressed="false" aria-label={t('base.pauseMotion')} title={t('base.pauseMotion')}><svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="7" y="6" width="3.2" height="12" rx="1" /><rect x="13.8" y="6" width="3.2" height="12" rx="1" /></svg><svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 6.2v11.6a.8.8 0 0 0 1.2.7l9-5.8a.8.8 0 0 0 0-1.4l-9-5.8a.8.8 0 0 0-1.2.7z" /></svg></button><button class="menu-btn menu-close" type="button" data-menu-close aria-label={t('base.closeMenu')}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg></button></div>
       <nav aria-label={t('base.mobileNavigation')}>{site.nav.map((item) => item.children ? <details class="sub-drop"><summary>{item.label}<svg class="caret" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" /></svg></summary><ul class="sub">{item.children.map((c) => <li><a href={localHref(c.href)}>{c.label}</a></li>)}</ul></details> : <a href={localHref(item.href)}>{item.label}</a>)}{!inNav('/blog/') && <a href={localHref("/blog/")}>Blog</a>}<a href={localHref(site.cta.href)}>{site.cta.label}</a></nav>
     </dialog>
     <main id="main" class:list={{ 'content-page': !fullBleed, 'page-top': !flushTop }}><slot /></main>

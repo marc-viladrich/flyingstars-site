@@ -1,5 +1,4 @@
 // @ts-nocheck
-import { t } from '../i18n/ui.mjs';
 import { REVEAL_MARGIN } from './reveal-point.js';
 // Shared FlyingStars presentation; source: customer Vercel prototype.
 (() => {
@@ -12,8 +11,8 @@ import { REVEAL_MARGIN } from './reveal-point.js';
   function setMotion() {
     document.documentElement.classList.toggle('motion-paused', paused);
     document.dispatchEvent(new Event('flyingstars:motion-change'));
-    const label = paused ? t('site.resumeMotion') : t('base.pauseMotion');
     motionButtons.forEach((button) => {
+      const label = paused ? button.dataset.motionResume : button.dataset.motionPause;
       button.setAttribute('aria-label', label); button.title = label;
       button.setAttribute('aria-pressed', String(paused));
     });

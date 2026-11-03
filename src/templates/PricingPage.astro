@@ -37,7 +37,7 @@ const orb = { SPARK: 'ring', HORIZON: 'sphere', ODYSSEY: 'torus' } as const;
     items={items}
   />
 
-  <!-- Reihenfolge (Marc, 31.10.2026): erst die Pakete, dann der Konfigurator -->
+  {/* Reihenfolge (Marc, 31.10.2026): erst die Pakete, dann der Konfigurator */}
   <ShowConfigurator id="konfigurator" headingLevel={2} kicker={t('pricingpage.showConfigurator')} heading={t('pricingpage.howComplexWouldYouLikeIt')} />
 
   <Included
@@ -60,7 +60,7 @@ const orb = { SPARK: 'ring', HORIZON: 'sphere', ODYSSEY: 'torus' } as const;
 
   <Extras />
 
-  <!-- Preisversprechen: von FlyingStars im Fragebogen (21.10.2026) bestätigt -->
+  {/* Preisversprechen: von FlyingStars im Fragebogen (21.10.2026) bestätigt */}
   <section class="section promise-sec" aria-labelledby="versprechen-h">
     <CtaBox headline={t('pricingpage.foundTheSameServiceForLessWeLlBeatThe')} text={t('pricingpage.sendUsTheOtherQuoteForTheSameScopeOf')} button={{ label: t('pricingpage.haveAQuoteChecked'), href: '/kontakt/?anliegen=vergleich' }} id="versprechen-h" />
   </section>

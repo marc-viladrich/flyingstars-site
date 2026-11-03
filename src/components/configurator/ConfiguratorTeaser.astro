@@ -53,14 +53,14 @@ const labels = {
       <canvas data-cft="field" aria-hidden="true"></canvas>
     </div>
     <p class="cft-note" data-cft="note" aria-hidden="true"></p>
-    <!-- die Bühne als Link (Runde 9): beim Zeigen ein dezenter Hinweis; kein eigener Tab-Stopp, per Tastatur führt der Knopf
-         dorthin (hat er den Fokus, erscheint der Hinweis auch hier) -->
+    {/* die Bühne als Link (Runde 9): beim Zeigen ein dezenter Hinweis; kein eigener Tab-Stopp, per Tastatur führt der Knopf
+         dorthin (hat er den Fokus, erscheint der Hinweis auch hier) */}
     <a class="cft-hit" href={localHref(href)} tabindex="-1" aria-hidden="true"><span>{t('configuratorteaser.createYourOwnShow')} <i>→</i></span></a>
     <p class="cft-error" data-cft="error" hidden>{t('configuratorteaser.thePreviewIsCurrentlyUnavailable')}</p>
   </div>
 
   <div class="cft-side">
-    <!-- Wireframe des Konfigurators: reine Dekoration, folgt der Bühne (show-teaser.js) -->
+    {/* Wireframe des Konfigurators: reine Dekoration, folgt der Bühne (show-teaser.js) */}
     <div class="cft-mock" aria-hidden="true">
       <div class="cft-group">
         <p class="cft-label">{t('configuratorteaser.package')}</p>

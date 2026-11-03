@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import FlightHero from '../../../components/sections/FlightHero.astro';
+import videos from '../../../data/video-lab.json';
+import { heroVideoSources } from '../../../lib/hero-video-sources';
+export function getStaticPaths(){return [...videos.map(video=>({params:{variant:video.id},props:{video}})),{params:{variant:'auto'},props:{video:null}}];}
+const { video }=Astro.props;
+const page=(await getCollection('pages')).find(p=>p.id==='index')!;
+const hero=page.data.sections.find(s=>s.type==='showreelHero')!;
+const label=video?.label??'Automatische Codec-Auswahl';
+const index=video?videos.findIndex(v=>v.id===video.id):-1;
+const previous=index>0?videos[index-1]:null,next=index>=0&&index<videos.length-1?videos[index+1]:null;
+---
+<Base title={`Videovergleich: ${label}`} description="Videofassungen im FlyingStars-Hero vergleichen: Auflösung, Codec, Dateigröße und Wiedergabe auf diesem Gerät prüfen." noindex fullBleed>
+  <FlightHero {...hero} cta={{ ...hero.cta, href: "/#anfrage" }}/>
+  <script is:inline>
+    // This review page owns playback. Exclude its video from the normal page-wide hero initializer.
+    (function(){var v=document.querySelector('video[data-reel]');if(v){v.removeAttribute('data-reel');v.setAttribute('data-lab-video','')}})();
+  </script>
+  <aside class="lab-bar" aria-label="Videovergleich"><div><strong>{label}</strong><span id="lab-state" role="status">Wiedergabe wird vorbereitet …</span></div><nav aria-label="Videofassungen"><a href="/poc/video-lab/">Alle Fassungen</a>{previous&&<a href={`/poc/video-lab/${previous.id}/`}>← Vorherige</a>}{next&&<a href={`/poc/video-lab/${next.id}/`}>Nächste →</a>}<a href="/poc/video-lab/original/">Original</a><button type="button" id="lab-play">Abspielen</button></nav></aside>
+  <script type="application/json" id="lab-hero-data" set:html={JSON.stringify({video,videos,sources:heroVideoSources()}).replace(/</g,'\\u003c')}></script>
+  <script>import '../../../scripts/video-lab-hero';</script>
+</Base>
+<style>
+.lab-bar{position:fixed;z-index:80;left:1rem;right:1rem;bottom:1rem;background:rgba(15,13,12,.96);border:1px solid var(--line-strong);border-radius:var(--radius);padding:1rem 1.25rem;display:flex;justify-content:space-between;gap:1rem;align-items:center;box-shadow:0 .4rem 2rem #0008;backdrop-filter:blur(.5rem)}.lab-bar strong{font:600 var(--text-sm)/1.4 var(--display);display:block}.lab-bar span{font:400 var(--text-xs)/1.5 var(--body);color:var(--muted);display:block;max-width:48rem}.lab-bar nav{display:flex;gap:.8rem;flex-wrap:wrap;align-items:center;font-size:var(--text-sm)}.lab-bar a,.lab-bar button{white-space:nowrap}.lab-bar button{font:inherit;padding:.4rem .7rem;border:1px solid var(--line-strong);border-radius:.25rem;background:none;color:var(--text);cursor:pointer}.lab-bar :focus-visible{outline:2px solid var(--cyan);outline-offset:.25rem}@media(max-width:53.75em){.lab-bar{position:relative;left:auto;right:auto;bottom:auto;margin:1rem;flex-direction:column;align-items:start}.lab-bar nav{gap:1rem}.lab-bar span{overflow-wrap:anywhere}}
+</style>

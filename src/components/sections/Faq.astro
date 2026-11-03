@@ -27,8 +27,8 @@ const external = cta?.href.startsWith('https://');
 const photo = closing?.image ? await optimizedImage(closing.image.src, 640) : undefined;
 ---
 <section class:list={['section', { 'faq-grouped': groups?.length }]} id={id} aria-labelledby={headingId}>
-  <!-- Mit Gruppen (FAQ-Seite): Kopf oben, je Gruppe links die Kategorie, die beim Scrollen mitläuft (sticky), rechts die
-       Fragen. So ist klar, was Kategorie und was Frage ist (Marc, 31.10.2026). -->
+  {/* Mit Gruppen (FAQ-Seite): Kopf oben, je Gruppe links die Kategorie, die beim Scrollen mitläuft (sticky), rechts die
+       Fragen. So ist klar, was Kategorie und was Frage ist (Marc, 31.10.2026). */}
   <div class="faq-grid">
     <SectionHead variant="embedded" class="intro" kicker={kicker} headline={headline} text={text} id={headingId} level={H}>{cta && <a class="link" href={localHref(cta.href)} rel={external ? 'noopener' : undefined} target={external ? '_blank' : undefined}>{cta.label} <span aria-hidden="true">→</span></a>}</SectionHead>
     <div class="faq-body">

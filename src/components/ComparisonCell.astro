@@ -15,7 +15,7 @@ const label = t(tone === 'yes' ? (mobile ? 'pricingpage.mobileIncluded' : 'prici
   {responsibility === 'none' && <span class="none" role={legend ? undefined : 'img'} aria-hidden={legend ? 'true' : undefined} aria-label={legend ? undefined : t('landingsite.none')}>–</span>}
   {responsibility === 'part' && hint && <small class="responsibility-hint">{hint}</small>}
 </> : badge ? <>
-  <!-- Einordnung als Wort ohne Icon (Marc, 02.11.2026: Icons in dieser Vergleichstabelle verwirren) -->
+  {/* Einordnung als Wort ohne Icon (Marc, 02.11.2026: Icons in dieser Vergleichstabelle verwirren) */}
   <span class:list={['m', badge.tone]}>{badge.label}</span>
   {badge.text && (mobile ? <span class="t">{badge.text}</span> : <> {badge.text}</>)}
 </> : tone === 'value' ? value : <span class={tone}>

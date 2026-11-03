@@ -29,8 +29,8 @@ const still = project.data.cover ? await optimizedImage(project.data.cover.src, 
 const count = (n: number) => String(n).padStart(2, '0');
 ---
 <div class="case" style={`--accent:${data.accent}`}>
-  <!-- Kopf wie auf der Startseite (Marc, 01.11.2026): Showvideo rechts, stumm im Loop, nach links ins Schwarz ausgeblendet;
-       kein Abspielknopf. Bis das Video läuft (und auf dem Handy), steht das Titelbild. Skript: src/scripts/hero-reel.ts -->
+  {/* Kopf wie auf der Startseite (Marc, 01.11.2026): Showvideo rechts, stumm im Loop, nach links ins Schwarz ausgeblendet;
+       kein Abspielknopf. Bis das Video läuft (und auf dem Handy), steht das Titelbild. Skript: src/scripts/hero-reel.ts */}
   <section class="c-hero" aria-labelledby="case-h" data-reel-host>
     <div class="hero-media" aria-hidden="true">{still && <img src={still.src} width={still.width} height={still.height} alt="" loading="eager" fetchpriority="high" />}</div>
     {data.heroVideo && <video class="reel" data-reel data-src={videoPath(data.heroVideo)} data-src-small={videoPath(data.heroVideo, 'preview')} muted loop playsinline preload="none" poster={still?.src} aria-hidden="true" tabindex="-1"></video>}
