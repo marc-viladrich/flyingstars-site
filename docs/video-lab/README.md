@@ -1,13 +1,13 @@
 # FlyingStars Video-Lab
 
-Aktueller Arbeitsstand: Branch `codex/showreel-pacing-2026-11-03`, Basis bestehender WIP-Branch `feat/designsprache-poc`. Der ruhigere Schnitt dauert16,72s und erhält den vollständigen Originaleinstieg bis zum QR-Code sowie die gesamte NFL-/Drohnenflächen-/Ford-/FlyingStars-Schlusssequenz. [Runde4](round-4/README.md) dokumentiert Framegrenzen, echte Mediennachweise und adaptive Desktopgrößen960/1280/1440 mit Mobil640. AV1 bleibt an positive Decoder-/Effizienzauskunft gebunden; alle Größen haben H.264-Rückfall.
+Aktueller Arbeitsstand: Branch `codex/showreel-motifs-2026-11-03`, Basis bestehender WIP-Branch `feat/designsprache-poc`. Der 16,76s-Schnitt zeigt einen kurzen Bodenflug, QR/Scan Me, Kolibri, Puma, Riders-Motiv, NFL-Catch und eine NFL-Logo-Einstellung sowie die späteren Ford-Übergänge und FlyingStars. Cube und erste Ford-Einstellung entfallen. [Runde 5](round-5/README.md) dokumentiert die genauen Framegrenzen. Adaptive Desktopgrößen 960/1280/1440 und Mobil 640 bleiben wie in [Runde 4](round-4/README.md). AV1 bleibt an positive Decoder-/Effizienzauskunft gebunden; alle Größen haben H.264-Rückfall.
 
-Die bisherigen Runden und Dateien bleiben historische Experimente. Maßgeblich für aktuelle Automatik und große Vergleichsansicht sind die `cut17-…-v4.mp4`-Dateien und die `paced-*`-Gruppen.
+Die bisherigen Runden und Dateien bleiben historische Experimente. Maßgeblich für aktuelle Automatik und große Vergleichsansicht sind die `cut17b-…-v5.mp4`-Dateien und die `diverse-*`-Gruppen.
 
 ## Vorschauen
 
-- `/poc/video-lab/gross/?start=1`: browserhoher A/B-Vergleich desselben 15s-Schnitts. Tasten 1–4 oder Pfeile wechseln Referenz/1600/1440/1280 bei gleicher Position. Optional zwei Filme nebeneinander, echte Vollbildtaste und ausblendbare Bedienung. H.264 und AV1 getrennt wählbar.
-- `/poc/video-lab/`: 51 Dateien mit echten Metadaten, Original/Kandidat nebeneinander, gemeinsamer Start und Seek. Erst nach „Vergleich laden“ werden Medien angefordert.
+- `/poc/video-lab/gross/?start=1`: browserhoher A/B-Vergleich desselben 16,76s-Schnitts. Tasten 1–4 oder Pfeile wechseln Referenz/1600/1440/1280 bei gleicher Position. Optional zwei Filme nebeneinander, echte Vollbildtaste und ausblendbare Bedienung. H.264 und AV1 getrennt wählbar.
+- `/poc/video-lab/`: aktuelle Fassungen mit echten Metadaten, Original/Kandidat nebeneinander, gemeinsamer Start und Seek. Der Katalog enthält einschließlich historischer Experimente 64 Dateien mit eigenen Prüfseiten. Erst nach „Vergleich laden“ werden Medien angefordert.
 - `/poc/video-lab/<id>/`: jede Fassung im bestehenden FlightHero und derselben responsiven Darstellung. Feste Auswahl ohne unbemerkten Codec-Fallback.
 - `/poc/video-lab/auto/`: dieselbe responsive Auswahl wie im regulären Hero. AV1 nur bei `supported && smooth && powerEfficient`; fehlende, negative, fehlerhafte oder länger als 250ms offene Auskunft führt zu H.264. Auch bei einem tatsächlichen AV1-Wiedergabefehler zurück auf H.264, sichtbar bezeichnet.
 - `/poc/video-lab/inter/`: vorhandene Inter-Verwendung und Space-Grotesk-Vergleich. Vollständige 20-Fälle-Inventur in `inter-inventur.md` und `src/data/inter-inventory.json`.
