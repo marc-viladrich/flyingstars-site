@@ -40,7 +40,7 @@ const narrow = await optimizedImage(image.src, 640, 480);
   .sp-tags li { display: inline-flex; align-items: center; gap: 0.5625rem; padding: 0.5625rem 0.875rem 0.5625rem 0.6875rem; border-radius: 62.4375rem; background: rgba(15, 13, 12, 0.7); -webkit-backdrop-filter: blur(0.5rem); backdrop-filter: blur(0.5rem); border: 1px solid rgba(246, 241, 232, 0.18); color: var(--text); letter-spacing: 0.06em; }
   .sp-pin { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0.625rem var(--accent); flex: none; }
   .sp-below { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: clamp(1.75rem, 5vw, 5rem); margin-top: clamp(2rem, 4vw, 3.5rem); align-items: start; }
-  .sp-entries { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: clamp(1.25rem, 3vw, 2.5rem); }
+  .sp-entries { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr)); gap: clamp(1.25rem, 3vw, 2.5rem); }
   .sp-entries article { display: grid; gap: 0.625rem; align-content: start; padding-top: 1.125rem; border-top: 1px solid var(--line); }
   .sp-entries .kicker { margin: 0; }
   .sp-entries h2, .sp-entries h3 { font-size: var(--text-xl); }

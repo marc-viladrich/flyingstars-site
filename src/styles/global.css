@@ -799,7 +799,7 @@ html.motion-paused .rec::before { animation: none; }
 /* Presse und Qualität (weiter unten auf der Startseite): Logos von LBA, EASA und naturstrom tragen, TÜV-Gutachten und
    Haftpflicht stehen klein darunter (Marc, 31.10.2026: „clearly secondary“) */
 .proof { gap: clamp(2.5rem, 5vw, 4rem); }
-.proof .quality ul:not(.q-minor) { grid-template-columns: repeat(auto-fit, minmax(12.5rem, 1fr)); }
+.proof .quality ul:not(.q-minor) { grid-template-columns: repeat(auto-fit, minmax(min(12.5rem, 100%), 1fr)); }
 .proof .quality .q-logo { height: 3.25rem; max-width: 11.25rem; margin-bottom: 0.875rem; }
 .proof .quality .q-minor { list-style: none; margin: 1.875rem 0 0; padding: 1.125rem 0 0; border-top: 1px solid var(--line); display: flex !important; flex-wrap: wrap; gap: 0.625rem 2rem; }
 .proof .q-minor li { display: flex; align-items: center; gap: 0.625rem; color: var(--faint); font-size: var(--text-sm); }
@@ -880,7 +880,7 @@ a.metro-sign:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offse
 @media (prefers-reduced-motion: reduce) { .metro-branch, .metro-sign { transition: none; } }
 
 /* Presse im Raster wie Qualität und Sicherheit: Logo, darunter leise der Anlass. Keine Kästen. */
-.proof .press ul { grid-template-columns: repeat(auto-fit, minmax(9.375rem, 1fr)); gap: 1.75rem 1.5rem; }
+.proof .press ul { grid-template-columns: repeat(auto-fit, minmax(min(9.375rem, 100%), 1fr)); gap: 1.75rem 1.5rem; }
 .proof .press a, .proof .press .noref { display: grid; gap: 0.75rem; align-content: start; justify-items: start; padding: 0; background: none; min-height: 0; border-radius: 0; height: auto; }
 .proof .press a:hover { background: none; }
 .proof .press a:hover img { opacity: 1; }

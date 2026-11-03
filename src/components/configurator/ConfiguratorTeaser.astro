@@ -150,7 +150,9 @@ const labels = {
   :global(html.motion-paused) .cft-pkg.is-press { animation: none; }
   @media (max-width: 53.75em) {
     .cft { grid-template-columns: 1fr; gap: 1rem; }
-    .cft-stage { align-self: start; min-height: 21.25rem; aspect-ratio: 1 / 1.05; }
+    /* Höhe aus dem Seitenverhältnis: eine Mindesthöhe erzwang über aspect-ratio ~20 rem Mindestbreite, bei 320 px
+       oder größerer Schrift lief die Bühne seitlich aus dem Bild (WCAG 1.4.10, 03.11.2026) */
+    .cft-stage { align-self: start; min-height: 0; aspect-ratio: 1 / 1.05; }
     .cft-side { gap: 1.125rem; }
     /* auf dem Handy nur Paketknöpfe und Regler */
     .cft-mock { padding: 1rem; gap: 1rem; }

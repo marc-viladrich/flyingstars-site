@@ -89,7 +89,7 @@
 @media (max-width: 40em) {
   .cell:nth-child(2n) { padding-left: 0; border-left: 0; }
 }
-.tempo-facts { margin: clamp(3rem, 6vw, 5rem) 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(12.5rem, 1fr)); border-top: 1px solid var(--line); }
+.tempo-facts { margin: clamp(3rem, 6vw, 5rem) 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(12.5rem, 100%), 1fr)); border-top: 1px solid var(--line); }
 .tempo-facts > div { padding: 1.375rem 1.375rem 0 0; display: grid; gap: 0.375rem; align-content: start; }
 .tempo-facts > div + div { padding-left: 1.375rem; border-left: 1px solid var(--line); }
 .tempo-facts dt { color: var(--faint); }
@@ -131,7 +131,7 @@
   .sp-facts > div:last-child { border-bottom: 1px solid var(--line); }
   .sp-facts dt { color: var(--faint); }
   .sp-facts dd { margin: 0; font: 500 clamp(1.375rem, 2vw, 1.875rem)/1.1 var(--display); letter-spacing: -0.02em; color: var(--head); text-align: right; }
-  .only-facts .sp-facts { grid-template-columns: repeat(auto-fit, minmax(12.5rem, 1fr)); border-top: 1px solid var(--line); }
+  .only-facts .sp-facts { grid-template-columns: repeat(auto-fit, minmax(min(12.5rem, 100%), 1fr)); border-top: 1px solid var(--line); }
   .only-facts .sp-facts > div { grid-template-columns: 1fr; gap: 0.375rem; border: 0; padding: 1.25rem 1.5rem 0 0; }
   .only-facts .sp-facts > div + div { padding-left: 1.5rem; border-left: 1px solid var(--line); }
   .only-facts .sp-facts dt { order: 2; }

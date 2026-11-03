@@ -108,8 +108,11 @@ for (const width of widths) {
         }
       }
       if (checks.includes('contain')) {
-        const pad = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--pad')) || 20;
-        const max = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--content-max')) || 1792;
+        // Tokens über ein Mess-Element auflösen: parseFloat las aus „112rem“ 112 und aus clamp() gar nichts (dann galt still
+        // 20 px Rand). Seit der rem-Umstellung (03.11.2026) stehen alle Längen in rem.
+        const len = (v) => { const d = document.createElement('div'); d.style.cssText = `position:absolute;visibility:hidden;width:var(${v})`; document.body.append(d); const w = d.getBoundingClientRect().width; d.remove(); return w; };
+        const pad = len('--pad') || 20;
+        const max = len('--content-max') || 1792;
         const gutter = Math.max(pad, (vw - max) / 2);
         const seenEl = new Set();
         for (const el of document.querySelectorAll('main :is(h1,h2,h3,h4,p,li,dt,dd,img,video,canvas,button,a.btn,a.link,table,figure,label,span.mono,.kicker)')) {

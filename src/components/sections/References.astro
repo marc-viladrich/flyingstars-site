@@ -126,7 +126,7 @@ const formation = (seed: string) => {
     /* Pills in einer wischbaren Reihe statt drei Zeilen untereinander; die Leiste läuft bis an den Bildrand */
     .rf-pills::-webkit-scrollbar { display: none; }
     .rf-selects { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .rf-select select { width: 100%; }
+    .rf-select select { width: 100%; min-width: 0; }
     .rf-feature, .rf-rest { grid-template-columns: minmax(0, 1fr); }
   }
 </style>
