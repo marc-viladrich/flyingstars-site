@@ -1,0 +1,35 @@
+{
+  "codec": "h264",
+  "width": 640,
+  "cycles": 3,
+  "decodedFrames": 1125,
+  "framesPerCycle": 375,
+  "identicalDecodedCycles": true,
+  "boundaryIndices": [
+    [
+      374,
+      375
+    ],
+    [
+      749,
+      750
+    ]
+  ],
+  "command": [
+    "ffmpeg",
+    "-v",
+    "error",
+    "-stream_loop",
+    "2",
+    "-i",
+    "/private/tmp/fs-loop-v9/public/media/video-lab/loop16-mobile-h264-640-v9.mp4",
+    "-map",
+    "0:v:0",
+    "-an",
+    "-c",
+    "copy",
+    "-y",
+    "/var/folders/29/9p1f75kd7z1bz8j2rjr79_pc0000gn/T/fs-loop15-_lf9aigo/three-cycles.mp4"
+  ],
+  "sourceSha256": "88f2cd0a2c123903a7ec18ee797d505eb221680e16c9a92fc52143322f69f49c"
+}

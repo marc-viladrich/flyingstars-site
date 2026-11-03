@@ -32,54 +32,58 @@
   Cache-Control: public, max-age=31536000, immutable, no-transform
 
 # Explicit metadata for the current hero and comparison encodes only.
-/media/video-lab/loop16-reference-v8.mp4
+/media/video-lab/loop16-reference-v9.mp4
   Content-Type: video/mp4
-  Content-Length: 14687401
+  Content-Length: 14302038
 
-/media/video-lab/loop16-h264-1918-v8.mp4
+/media/video-lab/loop16-h264-1918-v9.mp4
   Content-Type: video/mp4
-  Content-Length: 4431022
+  Content-Length: 4318027
 
-/media/video-lab/loop16-av1-1918-v8.mp4
+/media/video-lab/loop16-av1-1918-v9.mp4
   Content-Type: video/mp4
-  Content-Length: 2424815
+  Content-Length: 2387351
 
-/media/video-lab/loop16-h264-1600-v8.mp4
+/media/video-lab/loop16-h264-1600-v9.mp4
   Content-Type: video/mp4
-  Content-Length: 3452565
+  Content-Length: 3364178
 
-/media/video-lab/loop16-av1-1600-v8.mp4
+/media/video-lab/loop16-av1-1600-v9.mp4
   Content-Type: video/mp4
-  Content-Length: 2167866
+  Content-Length: 2138539
+
+/media/video-lab/loop16-h264-1440-v9.mp4
+  Content-Type: video/mp4
+  Content-Length: 2842185
+
+/media/video-lab/loop16-av1-1440-v9.mp4
+  Content-Type: video/mp4
+  Content-Length: 1846578
+
+/media/video-lab/loop16-h264-1280-v9.mp4
+  Content-Type: video/mp4
+  Content-Length: 2116898
+
+/media/video-lab/loop16-av1-1280-v9.mp4
+  Content-Type: video/mp4
+  Content-Length: 1595673
+
+/media/video-lab/loop16-h264-960-v9.mp4
+  Content-Type: video/mp4
+  Content-Length: 1406948
+
+/media/video-lab/loop16-av1-960-v9.mp4
+  Content-Type: video/mp4
+  Content-Length: 1105282
+
+/media/video-lab/loop16-mobile-h264-640-v9.mp4
+  Content-Type: video/mp4
+  Content-Length: 862969
+
+/media/video-lab/loop16-mobile-av1-640-v9.mp4
+  Content-Type: video/mp4
+  Content-Length: 736685
 
 /media/video-lab/loop16-h264-1440-v8.mp4
   Content-Type: video/mp4
   Content-Length: 2917485
-
-/media/video-lab/loop16-av1-1440-v8.mp4
-  Content-Type: video/mp4
-  Content-Length: 1877163
-
-/media/video-lab/loop16-h264-1280-v8.mp4
-  Content-Type: video/mp4
-  Content-Length: 2170995
-
-/media/video-lab/loop16-av1-1280-v8.mp4
-  Content-Type: video/mp4
-  Content-Length: 1608841
-
-/media/video-lab/loop16-h264-960-v8.mp4
-  Content-Type: video/mp4
-  Content-Length: 1441628
-
-/media/video-lab/loop16-av1-960-v8.mp4
-  Content-Type: video/mp4
-  Content-Length: 1118629
-
-/media/video-lab/loop16-mobile-h264-640-v8.mp4
-  Content-Type: video/mp4
-  Content-Length: 882643
-
-/media/video-lab/loop16-mobile-av1-640-v8.mp4
-  Content-Type: video/mp4
-  Content-Length: 742077
