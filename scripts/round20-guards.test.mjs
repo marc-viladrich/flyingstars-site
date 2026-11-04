@@ -28,14 +28,14 @@ test('Sprachwahl ist ein natives Popover und kein JS-Menü', () => {
 
 // Nummern und Anschriften stehen nur in CONTACT (src/components/people.ts). Ausnahmen sind redaktionell verantwortete
 // Rechtstexte und die Danke-Seite; das Inventar von Runde 20 (docs/dupes-inventory-r20) entscheidet über sie.
-const CONTACT_FACTS = [/883 065 62/, /4920988306562/, /260 86 72/, /4915792608672/, /Bulmker Stra(ß|ss)e/, /Katernberger Str/];
-const ALLOWED = new Set(['src/components/people.ts', 'src/content/pages/impressum.yaml', 'src/content/pages/datenschutz.yaml', 'src/content/pages/danke.yaml', 'src/pages/poc/designsprache.astro']);
+const CONTACT_FACTS = [/team@flyingstars\.art/, /883 065 62/, /4920988306562/, /260 86 72/, /4915792608672/, /Bulmker Stra(ß|ss)e/, /Katernberger Str/];
+const ALLOWED = new Set(['src/content/contact.json', 'src/content/pages/impressum.yaml', 'src/content/pages/datenschutz.yaml', 'src/pages/poc/designsprache.astro']);
 const files = (dir) => readdirSync(new URL(`../${dir}`, import.meta.url)).flatMap((name) => {
   const path = join(dir, name);
   return statSync(new URL(`../${path}`, import.meta.url)).isDirectory() ? files(path) : [path];
 });
 
-test('Kontaktdaten stehen nur in CONTACT (people.ts)', () => {
+test('Operative Kontaktdaten stehen nur in contact.json', () => {
   const offenders = [];
   for (const file of files('src')) {
     if (!/\.(astro|ts|mjs|js|yaml|md|json)$/.test(file)) continue;

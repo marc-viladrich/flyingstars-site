@@ -2300,9 +2300,9 @@
     "nl": "De aanvraag kon niet worden verstuurd."
   },
   "contact.formDeliveryHasNotBeenSetUpYetNothingWas": {
-    "de": "Der Formularversand ist noch nicht eingerichtet. Es wurde nichts gesendet. Die Formularanwendung hat eure Anfrage nicht gespeichert. Bitte schreibt uns direkt an team@flyingstars.art.",
-    "en": "Form delivery has not been set up yet. Nothing was sent. The form application has not stored your enquiry. Please email us directly at team@flyingstars.art.",
-    "nl": "Het verzenden van het formulier is nog niet ingesteld. Er is niets verzonden. De formulierapplicatie heeft jullie aanvraag niet opgeslagen. Mail ons rechtstreeks op team@flyingstars.art."
+    "de": "Der Formularversand ist noch nicht eingerichtet. Es wurde nichts gesendet. Die Formularanwendung hat eure Anfrage nicht gespeichert. Bitte schreibt uns direkt an {email}.",
+    "en": "Form delivery has not been set up yet. Nothing was sent. The form application has not stored your enquiry. Please email us directly at {email}.",
+    "nl": "Het verzenden van het formulier is nog niet ingesteld. Er is niets verzonden. De formulierapplicatie heeft jullie aanvraag niet opgeslagen. Mail ons rechtstreeks op {email}."
   },
   "contact.yourEnquiryHasBeenSentWeLlGetBackTo": {
     "de": "Deine Anfrage wurde gesendet. Wir melden uns innerhalb von 48 Stunden.",
@@ -2310,9 +2310,9 @@
     "nl": "Jullie aanvraag is verstuurd. We reageren binnen 48 uur."
   },
   "contact.valuePleaseTryAgainLaterOrEmailTeamFlyingstarsArt": {
-    "de": "{v0} Bitte versuche es später erneut oder schreibe direkt an team@flyingstars.art.",
-    "en": "{v0} Please try again later or email team@flyingstars.art directly.",
-    "nl": "{v0} Probeer het later opnieuw of mail rechtstreeks naar team@flyingstars.art."
+    "de": "{v0} Bitte versuche es später erneut oder schreibe direkt an {email}.",
+    "en": "{v0} Please try again later or email {email} directly.",
+    "nl": "{v0} Probeer het later opnieuw of mail rechtstreeks naar {email}."
   },
   "site.resumeMotion": {
     "de": "Bewegung fortsetzen",

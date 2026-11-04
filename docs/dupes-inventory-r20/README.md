@@ -222,3 +222,7 @@ Etappe A umfasst nur A01/S02, Kontakt, Dauer, Paketidentität/Vorschaupolicy und
 A01: Video, Calculator, pricing.js und dessen Heart-Capacity-Ableitung entfernt. Die alten Calculator-Styles sind entfernt; aktive Paketkarten-, Formular- und PoC-Styles bleiben bestehen. S02: ausschließlich unerreichbare Overlay-/Creation-/Translation-Zweige und die defekte i18n-Runtimehilfe entfernt. `translate-missing.mjs` gehört zum aktiven Full-file-Vertrag und bleibt. Guard: lokaler Importgraph, Browserregistrierung und aktueller Reglergeometrie-Test.
 
 Die unveränderlichen Commit-Stände werden für längere Prüfungen in getrennten temporären Verifikations-Worktrees gebaut. Jeder Lauf erhält eigenes AFE_STATE_DIR. So konkurrieren Build-Ausgaben und Astro-Zwischenspeicher nicht mit dem nächsten Umsetzungsschritt.
+
+### Schritt 2: editorfähiger Kontakt
+
+Kontaktwerte nach `contact.json` mit gemeinsamem Zod-Schema verschoben. CONTACT bleibt die Leseschnittstelle. `site/contact` ist registriert und heißt „Kontakt“; Record-Marker an Footer, ContactWays und contactDetails öffnen diesen Besitzer. Danke und Fehlermeldungen enthalten Platzhalter. Rechtstexte bleiben eigenständig, der separate Driftwächter meldet Änderungen. Die Ausnahme für Danke entfällt aus dem Literale-Guard. Bestehende EN-/NL-Copy wurde ausschließlich parametrisiert, Quellhashes und Provenienz sind fortgeschrieben.

@@ -1,3 +1,6 @@
+import contactData from './content/contact.json' with {type:'json'};
+import {contactSchema} from './schemas/contact.mjs';
+contactSchema.parse(contactData);
 import navigationData from './content/navigation.json' with {type:'json'};
 import {navigationSchema} from './schemas/navigation.mjs';
 navigationSchema.parse(navigationData);

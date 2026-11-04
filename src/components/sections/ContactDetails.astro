@@ -1,4 +1,6 @@
 ---
+import {record,field} from 'astro-frontend-editor/markers';
+import {CONTACT_OWNER} from '../../content/contact.mjs';
 // Kontaktwege und Anschriften mit Icons, daneben das Team (Runde 20, Marc 04.11.2026: „deutlich nicer und ansprechender“,
 // Adressen mehrzeilig wie auf einem Briefumschlag, Mobil und WhatsApp mit eigenen Icons, zwei Spalten mit Teamfoto).
 // Nummern, Adressen und Links stehen nur in CONTACT (people.ts); die Section liefert Überschrift, Text und den Besuchshinweis.
@@ -28,12 +30,12 @@ const crew = image ? [] : await Promise.all(FOUNDERS.map(async (p) => ({ ...p, i
 <section class="section contact-details" id={anchor} aria-labelledby={id}>
   <div class="cd-main">
     <SectionHead variant="embedded" kicker={kicker} headline={headline} text={text} id={id} level={H} textClass="cd-lead" />
-    <ul class="cd-grid">
-      {ways.map((w) => <IconFeature as="li" icon={w.icon} title={w.title} level={Item}><a class="cd-link" href={localHref(w.href)} rel={w.external ? 'noopener' : undefined} target={w.external ? '_blank' : undefined}>{w.label}</a></IconFeature>)}
-      <IconFeature as="li" icon="map-pin" title={t('contactDetails.visit')} level={Item}><address>{CONTACT.visit.map((line) => <span>{line}</span>)}</address>{visitNote && <p class="cd-note">{visitNote}</p>}</IconFeature>
-      <IconFeature as="li" icon="mailbox" title={t('contactDetails.post')} level={Item}><address>{CONTACT.post.map((line) => <span>{line}</span>)}</address></IconFeature>
+    <ul class="cd-grid" {...record(CONTACT_OWNER)}>
+      {ways.map((w) => <IconFeature as="li" icon={w.icon} title={w.title} level={Item}><a {...field(CONTACT_OWNER,[],{mode:'panel'})} class="cd-link" href={localHref(w.href)} rel={w.external ? 'noopener' : undefined} target={w.external ? '_blank' : undefined}>{w.label}</a></IconFeature>)}
+      <IconFeature as="li" icon="map-pin" title={t('contactDetails.visit')} level={Item}><address>{CONTACT.visit.map((line,i) => <span {...field(CONTACT_OWNER,[],{mode:'panel'})}>{line}</span>)}</address>{visitNote && <p class="cd-note">{visitNote}</p>}</IconFeature>
+      <IconFeature as="li" icon="mailbox" title={t('contactDetails.post')} level={Item}><address>{CONTACT.post.map((line,i) => <span {...field(CONTACT_OWNER,[],{mode:'panel'})}>{line}</span>)}</address></IconFeature>
     </ul>
-    <a class="btn cd-video" href={localHref(CONTACT.video.href)} rel="noopener" target="_blank"><Icon name="video" class="g" />{t(CONTACT.video.labelKey)}</a>
+    <a {...field(CONTACT_OWNER,[],{mode:'panel'})} class="btn cd-video" href={localHref(CONTACT.video.href)} rel="noopener" target="_blank"><Icon name="video" class="g" />{t(CONTACT.video.labelKey)}</a>
   </div>
   {image
     ? <figure class="cd-photo"><Picture {...image} /></figure>

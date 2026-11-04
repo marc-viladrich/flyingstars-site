@@ -1,15 +1,17 @@
 ---
 import {field,editorBuild} from 'astro-frontend-editor/markers';
-const editorFieldOptions={mode:'inline',format:'markdown'} as const;
 import Picture from '../Picture.astro';
 import SectionHead from '../SectionHead.astro';
+import {contactText} from '../../content/contact.mjs';
 import { marked } from 'marked';
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'textMedia' }> & { index: number };
 const { headline, body, image, mediaSide, index, id: anchor, kicker } = Astro.props;
+// Projected contact facts must be edited as their source template, never materialized from the visible DOM.
+const editorFieldOptions={mode:body.includes('{{contact.')?'panel':'inline',format:'markdown'} as const;
 const id = `${anchor ?? `s${index}`}-h`;
 const H = index === 0 ? 'h1' : 'h2';
-const html = await marked.parse(body);
+const html = await marked.parse(contactText(body));
 ---
 <section class:list={['section', 'text-media', { 'has-media': image, 'media-left': image && mediaSide === 'left' }]} id={anchor} aria-labelledby={id}>
   <div class="prose">

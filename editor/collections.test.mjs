@@ -11,5 +11,5 @@ test('Every actual content file has exactly one editor owner and the same author
 });
 test('Locales keep their file identity and render route; removed data stores cannot be addressed',()=>{
  for(const r of pages){const locale=/^page\/(en|nl)\//.exec(r.id)?.[1];if(locale)assert.ok(r.route.startsWith('/'+locale+'/'));assert.ok(r.fields.length);}
- for(const id of ['package/spark','screen/show-konfigurator','translation/en--page-index','team/marc','site/contact'])assert.equal(site.sourceFor(id),null);
+ for(const id of ['package/spark','screen/show-konfigurator','translation/en--page-index','team/marc'])assert.equal(site.sourceFor(id),null);
 });

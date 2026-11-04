@@ -283,3 +283,9 @@ Bewusste px-Ausnahmen sind 1–2 px Hairlines, kleine Schattenkomponenten, unsic
 ## Aktiver Quellgraph nach Etappe A
 
 Frontend-Wurzeln sind Astro-Routen und SectionRenderer. Der Editor startet über `editor/server.mjs` und `flyingstars-adapter.mjs`; `browserFiles` registriert die Browsermodule. Unter `extensions/flyingstars` bleiben Runtime-Kompatibilität sowie die aktiv registrierten Routing-, Preview- und Medienmodule. Die alte Overlay-/Creation-Architektur und unbenutzte Calculator-/Video-Renderer wurden entfernt. Der Pixel-Guard prüft jetzt den aktiven Konfiguratorregler. `scripts/dedupe-a-legacy.test.mjs` prüft lokale Imports und die tatsächliche Browserregistrierung. Öffentlich erreichbare PoC-Routen bleiben erhalten.
+
+## Operativer Kontakt
+
+`src/content/contact.json` besitzt Mail, Festnetz, Mobil, Videocall und beide Anschriften. `contactSchema` validiert dieselbe Datei für Build und Editor. `CONTACT` in `people.ts` bleibt die Leseschnittstelle; Telefon- und WhatsApp-Links entstehen aus den gespeicherten Nummern. Der Datensatz „Kontakt“ ist über den bestehenden Record-Marker in Footer, Kontaktwegen und Kontaktdetails erreichbar. Diese Aufgabe verwendet die bewährte Datensatzansicht; es gibt keine zusätzliche Interaktion oder Parallelablage.
+
+Nur explizite `{{contact.email}}`, `{{contact.phone.label}}` und `{{contact.phone.href}}` im TextMedia-Text werden projiziert, aktuell auf Danke. UI-Fehler verwenden `{email}`. Impressum und Datenschutz behalten ihre eigenständige Freigabe. `node scripts/check-contact-drift.mjs` meldet Abweichungen; er schreibt keine Rechtsfassung um. Der Mutationsnachweis `editor/contact-record.test.mjs` speichert über NativeStore, baut alle drei Sprachen und prüft Kontaktmarker, Footer, Section, ContactWays, Danke und unveränderte Rechtsdateien.

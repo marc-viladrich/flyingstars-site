@@ -1,3 +1,4 @@
+import {contact as CONTACT} from '../src/content/contact.mjs';
 import { test, expect } from '@playwright/test';
 import { createTranslator } from '../src/i18n/ui.mjs';
 
@@ -73,7 +74,7 @@ for (const locale of ['en', 'nl']) {
     await page.locator('[data-opt-add=quelle]').click();
     await page.locator('#f-quelle').selectOption('Empfehlung');
     await page.locator('button[type=submit]').click();
-    await expect(page.locator('[data-form-status]')).toHaveText(t('contact.formDeliveryHasNotBeenSetUpYetNothingWas'));
+    await expect(page.locator('[data-form-status]')).toHaveText(t('contact.formDeliveryHasNotBeenSetUpYetNothingWas',{email:CONTACT.email}));
     for (const value of [locale, 'offen', 'express', 'Empfehlung', 'Custom', 'Hello']) expect(submitted).toContain(value);
     await expect(page.locator('#f-name')).toHaveValue('Integration Test');
   });

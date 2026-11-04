@@ -8,6 +8,6 @@ sections:
       Delivery is not set up in this preview. Nothing has been sent or stored.
 
 
-      Please email [team@flyingstars.art](mailto:team@flyingstars.art) directly or call [0209 883 065 62](tel:+4920988306562).
+      Please email [{{contact.email}}](mailto:{{contact.email}}) directly or call [{{contact.phone.label}}]({{contact.phone.href}}).
     todo: FlyingStars muss den tatsächlichen Versandstatus mit dem Betrieb klären; Moritz muss die reine Vorschau-Meldung bei aktivem Versand durch eine passende Rückmeldung in DE/EN/NL ersetzen.
-translationSourceHash: d6fb233f6d208f0f543ffe2da9c25954f0e82e85464954bed87250e2f6f112ea
+translationSourceHash: dbf9394d559751264745d7ef5c74ec4b577c53796e814a720a43028a07985907

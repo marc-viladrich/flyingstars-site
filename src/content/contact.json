@@ -1,0 +1,20 @@
+{
+  "email": "team@flyingstars.art",
+  "phone": "0209 883 065 62",
+  "mobile": "01579 260 86 72",
+  "video": {
+    "labelKey": "contact.videoCall",
+    "href": "https://calendly.com/team-flyingstars/beratung"
+  },
+  "visit": [
+    "Triple Z",
+    "Gründungszentrum Zeche Zollverein",
+    "Katernberger Str. 107",
+    "45327 Essen"
+  ],
+  "post": [
+    "FlyingStars GmbH",
+    "Bulmker Straße 107",
+    "45888 Gelsenkirchen"
+  ]
+}

@@ -1,3 +1,4 @@
+import {contact as CONTACT} from '../content/contact.mjs';
 import { t } from '../i18n/ui.mjs';
 let selectPackage: ((name: string) => void) | undefined;
 export function pickPackage(name: string) { selectPackage?.(name); }
@@ -111,7 +112,7 @@ if (form) {
       const result = await response.json();
       if (!response.ok || result.ok !== true) throw new Error(result.detail || t('contact.yourEnquiryCouldNotBeSent'));
       if (result.state === 'not-configured') {
-        status.textContent = t('contact.formDeliveryHasNotBeenSetUpYetNothingWas');
+        status.textContent = t('contact.formDeliveryHasNotBeenSetUpYetNothingWas', {email:CONTACT.email});
       } else if (result.state === 'sent') {
         status.textContent = t('contact.yourEnquiryHasBeenSentWeLlGetBackTo');
         // Only the provider-confirmed response carries an opaque request UUID.
@@ -121,7 +122,7 @@ if (form) {
       } else {
         throw new Error(t('contact.yourEnquiryCouldNotBeSent'));
       }
-    } catch (error) { status.textContent = t('contact.valuePleaseTryAgainLaterOrEmailTeamFlyingstarsArt', { v0: error instanceof Error ? error.message : t('contact.deliveryFailed') }); }
+    } catch (error) { status.textContent = t('contact.valuePleaseTryAgainLaterOrEmailTeamFlyingstarsArt', { email:CONTACT.email, v0: error instanceof Error ? error.message : t('contact.deliveryFailed') }); }
     finally { button.disabled = false; button.textContent = t('contactform.sendEnquiry'); status.focus(); }
   });
   // Optionale Angaben (Marc, 02.11.2026: „aus dem Weg räumen“): ein Knopf je Feld blendet es ein; Felder mit Inhalt
