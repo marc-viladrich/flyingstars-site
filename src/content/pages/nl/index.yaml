@@ -344,7 +344,8 @@ sections:
         unit: kg
         text: Geen hulzen, geen resten. Dezelfde drones vliegen show na show.
       - label: Groene stroom
-        value: { fact: renewablePercent }
+        value:
+          fact: renewablePercent
         unit: "%"
         text: Groene stroom van naturstrom voor onze accu's.
     pillars:
@@ -470,36 +471,24 @@ sections:
     headline: De mensen achter de hemel.
     text: Ronja, Florian en Erwin leiden FlyingStars samen. Jullie bereiken ons als team en op de showavond staan we zelf op het veld.
     members:
-      - name: Ronja Donsbach
-        role: Directeur
+      - role: Directeur
         bio: Beantwoordt de meeste aanvragen, ook in het Engels, en stemt ontwerp en muziek af.
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/08/Ronja_Teamfoto.jpg
-          alt: Ronja Donsbach met een drone in haar hand
-          width: 800
-          height: 1000
-      - name: Florian Becker
-        role: Directeur
+        personId: ronja-donsbach
+        imageAlt: Ronja Donsbach met een drone in haar hand
+      - role: Directeur
         bio: Regelt administratie, personeel en klanten in Duitsland. Schrijft de blog.
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/08/Florian_Teamfoto.jpg
-          alt: Florian Becker met een drone in zijn hand
-          width: 800
-          height: 1000
-      - name: Erwin Wilms
-        role: Directeur
+        personId: florian-becker
+        imageAlt: Florian Becker met een drone in zijn hand
+      - role: Directeur
         bio: Aanvragen, instanties en luchtvaartrecht. Zorgt dat jullie show mag vliegen.
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/08/Erwin_Teamfoto.jpg
-          alt: Erwin Wilms met een drone in zijn hand
-          width: 800
-          height: 1000
-      - name: Patrick
-        role: Hoofd Techniek
+        personId: erwin-wilms
+        imageAlt: Erwin Wilms met een drone in zijn hand
+      - role: Hoofd Techniek
         bio: Dronevloot, beschikbaarheid, inkoop en de technische opbouw van elke show.
-      - name: Alejandro
-        role: Hoofd ontwerp
+        personId: patrick
+      - role: Hoofd ontwerp
         bio: Ontwerpt alle shows en choreografieën, beeld voor beeld, op het ritme van de muziek.
+        personId: alejandro
     note: Daarnaast een crew van piloten en technici die elke show ter plaatse opbouwt en vliegt.
     cta:
       label: Meer over ons
@@ -521,4 +510,4 @@ sections:
     headline: Vertel ons over jullie datum.
     text: Datum, locatie en gelegenheid zijn genoeg voor een eerste inschatting. Laat open wat jullie nog niet weten.
     todo: FlyingStars und die Datenschutzberatung müssen Versanddienst, Empfängerpostfach, Auftragsverarbeitung, Drittlandtransfers und Löschfristen festlegen und die Datenschutzhinweise freigeben.
-translationSourceHash: 664123c9f434bf777b25a489fbb1e168b8679e009edeab578eb0e3cf202b4954
+translationSourceHash: 29a5761534de13cb50a10b193a38ea3de7f82aabf1a9431d5a74207150c13e87

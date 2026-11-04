@@ -1,0 +1,10 @@
+{
+  "name": "Ronja Donsbach",
+  "order": 1,
+  "founder": true,
+  "image": {
+    "src": "https://flyingstars.art/wp-content/uploads/2024/08/Ronja_Teamfoto.jpg",
+    "width": 800,
+    "height": 1000
+  }
+}

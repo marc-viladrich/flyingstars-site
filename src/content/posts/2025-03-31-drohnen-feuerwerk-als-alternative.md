@@ -1,4 +1,5 @@
 ---
+authorId: florian-becker
 title: "Drohnen als Alternative zum Feuerwerk: Ein umweltschonendes Lichtspektakel"
 description: "Drohnenshows als Alternative zum Feuerwerk: Funktionsweise, Umweltaspekte, Einsatzmöglichkeiten und Sicherheitsmaßnahmen."
 date: 2025-03-31

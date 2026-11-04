@@ -13,3 +13,9 @@ Strukturierte Zahlenfelder verwenden `{fact, display}`. SHOWS_TOTAL, Hero, Zahle
 Mutationstests ändern jede zentrale Zahl und eine lokale Antwortfrist. Nach Marcs Freigabe vom 04.11. sind neue redaktionelle Faktenplatzhalter erlaubt. Die alte Mengen-Allowlist entfällt. `factText` und die Build-Inhaltsprüfung lehnen unbekannte Platzhalter in allen vier Sammlungen ab. Die vorhandenen Sicherheits-/Nachhaltigkeitsblöcke bleiben wegen der offenen T02-Entscheidung wortgleich und durch Driftwächter geschützt.
 
 Prüfergebnisse werden nach dem vollständigen Schritt-Lauf ergänzt.
+
+## Schritt 5a
+
+Sechs native `person/*`-Datensätze unter `src/content/people/` besitzen Name, Porträt, Gründungsstatus und Reihenfolge. Teammitglieder verwenden `personId`, alle zwölf Blogdateien `authorId`. Faces, Team, Blogkopf/-abschluss und Blogübersicht lesen dieselben Personen. Die bisherigen Klarname-/Bildkopien in sechs Teamseiten und `components/people.ts` sind entfernt. Rollen, Bios und kontextuelle Bildbeschreibungen bleiben unverändert in den Sprachdateien. Direkte AFE-Marker öffnen Name beziehungsweise Porträt am gemeinsamen Besitzer; Personenänderungen brauchen kein fingiertes Übersetzungstripel.
+
+Gezielt 13/13 Tests einschließlich echter Inhaltsschemas, ID-Auflösung, Änderungen an Name/Foto und AFE-Quelladressen. Build und i18n-Prüfung erfolgreich. Vergleich mit dem einmaligen `origin/main`-Build: 96 HTML-Dateien, keine Text-, Link-, SEO- oder Formularabweichungen. Die Zahl bezieht sich auf das aktuelle Werkzeug und diesen Build, nicht auf Claudes früheren HTML-Zählumfang.

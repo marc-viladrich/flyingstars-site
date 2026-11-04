@@ -1,5 +1,5 @@
 ---
-import {body} from 'astro-frontend-editor/markers';
+import {body,field} from 'astro-frontend-editor/markers';
 import { localizedCollection } from '../i18n/content';
 import { forPath } from '../i18n/server';
 const { t, localHref, formatLocale } = forPath(Astro.url.pathname);
@@ -14,9 +14,10 @@ import Cta from '../components/sections/Cta.astro';
 import PostGrid from '../components/blog/PostGrid.astro';
 import SectionHead from '../components/SectionHead.astro';
 import { optimizedImage } from '../lib/media';
-import { AUTHOR, dateOf, readingMinutes, topicOf, sortPosts } from '../components/blog/post-meta';
+import { authorOf, dateOf, readingMinutes, topicOf, sortPosts } from '../components/blog/post-meta';
 interface Props { post: CollectionEntry<'posts'>; }
 const { post } = Astro.props;
+const AUTHOR=authorOf(post);
 const { Content } = await render(post);
 const cover = post.data.cover ? await optimizedImage(post.data.cover.src, 1600) : undefined;
 const face = await optimizedImage(AUTHOR.image.src, 160);
@@ -30,7 +31,7 @@ const updated = post.data.updated && post.data.updated.valueOf() !== post.data.d
       <h1 id="post-h">{post.data.title}</h1>
       <div class="byline">
         <img class="face" src={face.src} width={face.width} height={face.height} alt="" loading="eager" decoding="async" />
-        <p><b>{AUTHOR.name}</b> <span class="mono">{t(AUTHOR.roleKey)}</span></p>
+        <p><b {...field({collection:"people",id:AUTHOR.id},["name"])}>{AUTHOR.name}</b> <span class="mono">{t(AUTHOR.roleKey)}</span></p>
         <p class="when"><time datetime={post.data.date.toISOString()}>{dateOf(post)}</time> · {readingMinutes(post)} {t('postcard.minRead')}{updated && <> · {t('blog.updated', { date: updated })}</>}</p>
       </div>
     </header>
@@ -38,7 +39,7 @@ const updated = post.data.updated && post.data.updated.valueOf() !== post.data.d
     <div class="post-body" {...body(post)}><Content /></div>
     <aside class="post-author" aria-label={t('blogpost.aboutTheAuthor')}>
       <img class="face" src={face.src} width={face.width} height={face.height} alt={AUTHOR.name} loading="lazy" decoding="async" />
-      <p><b>{AUTHOR.name}</b> {t('blogpost.runsFlyingstarsTogetherWithRonjaDonsbachAndErwinWilmsHe')} <a class="link" href={localHref("/ueber-uns/#team")}>{t('blogpost.theTeam')} <span aria-hidden="true">→</span></a></p>
+      <p><b {...field({collection:"people",id:AUTHOR.id},["name"])}>{AUTHOR.name}</b> {t('blogpost.runsFlyingstarsTogetherWithRonjaDonsbachAndErwinWilmsHe')} <a class="link" href={localHref("/ueber-uns/#team")}>{t('blogpost.theTeam')} <span aria-hidden="true">→</span></a></p>
     </aside>
   </article>
   <Cta type="cta" index={1} headline={t('blogpost.planningYourOwnShow')} text={t('blogpost.aDateLocationAndOccasionAreEnoughForAnInitial')} button={{ label: t('chopper404.requestAShow'), href: '/kontakt/' }} />

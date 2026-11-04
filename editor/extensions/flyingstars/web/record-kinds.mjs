@@ -3,6 +3,7 @@
 // Order is the order in which content types are offered (Kunden, Team, Show-Pakete, Blog, Projekte, FAQ, …).
 export const recordKinds = {
   "client/": ["Kunde", "building-2", "Kunden"],
+  "person/": ["Person", "user", "Personen"],
   "team/": ["Teammitglied", "user", "Team"],
   "extra/": ["Paket-Upgrade", "package", "Paket-Upgrades"],
   "package/": ["Show-Paket", "package", "Show-Pakete"],

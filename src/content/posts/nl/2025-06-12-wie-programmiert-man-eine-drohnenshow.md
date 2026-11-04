@@ -1,4 +1,5 @@
 ---
+authorId: florian-becker
 title: Hoe wordt een droneshow geprogrammeerd?
 description: "Hoe een droneshow wordt geprogrammeerd: showdrones, choreografiesoftware, vliegroutes,
   simulaties en tests vóór de live-show."
@@ -13,7 +14,7 @@ cover:
   width: 1680
   height: 1120
 draft: false
-translationSourceHash: 4781eda5e444858a4db865695f7d2489e1c7a97a0e42a1b570a2862ed01f72e9
+translationSourceHash: 4bbbb0b261a95d04d72d42a590075365d9a07791f5b1d68eed44ec96697cc94b
 ---
 Op stadsfeesten, bedrijfsjubilea en muziekfestivals trekken droneshows wereldwijd publiek. Lichtgevende drones stijgen op en vormen logo's, harten en bewegende animaties. Maar hoe ontstaat zo'n show? Welke techniek zit erachter en hoe werkt het programmeren van drones?
 

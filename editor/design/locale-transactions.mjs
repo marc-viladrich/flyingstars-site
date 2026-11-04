@@ -38,7 +38,7 @@ export function localeTransactions(root,sourceFor) {
   },
   prepareTransaction({nextRecords,seen}) {
    const proposals=[];
-   for(const id of seen){const source=sourceFor(id);if(!source||['media','site','package'].includes(source.prefix)||/\/(en|nl)\//.test(id))continue;
+   for(const id of seen){const source=sourceFor(id);if(!source||['media','site','package','person'].includes(source.prefix)||/\/(en|nl)\//.test(id))continue;
     const [kind,slug]=id.split('/'),targets=['en','nl'].map(locale=>`${kind}/${locale}/${slug}`);
     if(!targets.every(target=>seen.has(target)))throw failure(`Bitte beide Sprachfassungen gemeinsam prüfen und mitspeichern: ${targets.join(', ')}. Die Designsprache verwendet vollständige Sprachdateien, keine Übersetzungs-Overlays.`);
     // NativeStore has already encoded this candidate. Its revision is SHA-256 of those exact bytes.

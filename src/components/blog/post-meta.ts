@@ -1,10 +1,10 @@
 // Gemeinsame Angaben für Blogkarten und Artikelseite: Autor, Datum, Lesezeit, Kicker.
 import type { CollectionEntry } from 'astro:content';
-import { FOUNDERS } from '../people';
+import {person} from '../../content/people.mjs';
 type Post = CollectionEntry<'posts'>;
 
-/** Laut Fragebogen (21.10.2026) schreibt Florian Becker den Blog; das Schema kennt (noch) kein Autorenfeld. */
-export const AUTHOR = { name: 'Florian Becker', roleKey: 'blog.director', image: FOUNDERS.find((f) => f.name === 'Florian Becker')!.image };
+/** Laut Fragebogen (21.10.2026) schreibt Florian Becker den Blog; die Zuordnung verwendet seine stabile Personen-ID. */
+export const authorOf = (post:Post) => ({ ...person(post.data.authorId), roleKey: 'blog.director' });
 
 import { localeOfId, localeFormat } from '../../i18n/routing.mjs';
 import { createTranslator } from '../../i18n/ui.mjs';

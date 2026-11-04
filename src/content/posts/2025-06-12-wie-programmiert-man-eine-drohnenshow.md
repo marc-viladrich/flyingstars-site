@@ -1,4 +1,5 @@
 ---
+authorId: florian-becker
 title: "Wie programmiert man eine Drohnenshow?"
 description: "Wie eine Drohnenshow programmiert wird: Showdrohnen, Choreografie-Software, Flugbahnen, Simulationen und Tests vor der Live-Show."
 date: 2025-06-12

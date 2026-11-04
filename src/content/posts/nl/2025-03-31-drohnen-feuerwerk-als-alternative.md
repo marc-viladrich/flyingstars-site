@@ -1,4 +1,5 @@
 ---
+authorId: florian-becker
 title: "Drones als alternatief voor vuurwerk: een lichtshow met minder milieubelasting"
 description: "Droneshows als alternatief voor vuurwerk: werking, milieuaspecten, toepassingen en veiligheidsmaatregelen."
 date: 2025-03-31
@@ -13,7 +14,7 @@ cover:
   width: 1200
   height: 915
 draft: false
-translationSourceHash: 33099bf8bc67194ee48ece0cdd19b9807c1890a83b4b32268fcde1644c225611
+translationSourceHash: 255e57b33739cd830f700ed312230b49a4b31f5e7f96450fcc8b8d5af57689f6
 ---
 Vuurwerk hoort al eeuwen bij feesten, van oud en nieuw en bruiloften tot grote evenementen. Maar de gekleurde explosies brengen ook lawaai, fijnstof en chemische resten mee die milieu en gezondheid belasten. Vooral dieren hebben veel stress van de harde knallen. Dronevuurwerk biedt een stiller alternatief zonder vuurwerkafval, met visuele effecten aan de hemel.
 

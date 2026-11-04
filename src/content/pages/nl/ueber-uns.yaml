@@ -24,39 +24,27 @@ sections:
     headline: De mensen achter de shows.
     text: Jullie bereiken ons als team en op de showavond staan we zelf op het veld.
     members:
-      - name: Ronja Donsbach
-        role: Directeur
+      - role: Directeur
         bio: Beantwoordt de meeste aanvragen en stemt ontwerp en muziek af met partners. Ook in het Engels.
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/08/Ronja_Teamfoto.jpg
-          alt: Ronja Donsbach met een drone in haar hand
-          width: 800
-          height: 1000
-      - name: Florian Becker
-        role: Directeur
+        personId: ronja-donsbach
+        imageAlt: Ronja Donsbach met een drone in haar hand
+      - role: Directeur
         bio: Administratie, personeel en klanten in Duitsland. Schrijft onze blog.
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/08/Florian_Teamfoto.jpg
-          alt: Florian Becker met een drone in zijn hand
-          width: 800
-          height: 1000
-      - name: Erwin Wilms
-        role: Directeur
+        personId: florian-becker
+        imageAlt: Florian Becker met een drone in zijn hand
+      - role: Directeur
         bio: Aanvragen, instanties en luchtvaartrecht. Zorgt dat jullie show mag vliegen. Ook in het Engels.
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/08/Erwin_Teamfoto.jpg
-          alt: Erwin Wilms met een drone in zijn hand
-          width: 800
-          height: 1000
-      - name: Patrick
-        role: Hoofd Techniek
+        personId: erwin-wilms
+        imageAlt: Erwin Wilms met een drone in zijn hand
+      - role: Hoofd Techniek
         bio: Vloot, beschikbaarheid, inkoop en de technische opbouw van elke show.
-      - name: Alejandro
-        role: Hoofd ontwerp
+        personId: patrick
+      - role: Hoofd ontwerp
         bio: Ontwerpt onze shows en de choreografieën.
-      - name: Chopper
-        role: Kantoorhond
+        personId: alejandro
+      - role: Kantoorhond
         bio: Nieuw in het team.
+        personId: chopper
     note: Daarnaast helpen zo'n tien oproepkrachten bij opbouw, beveiliging en afbouw.
     cta:
       label: Leer ons kennen
@@ -224,7 +212,8 @@ sections:
         unit: kg
         text: Geen hulzen, geen resten. Dezelfde drones vliegen show na show.
       - label: Groene stroom
-        value: { fact: renewablePercent }
+        value:
+          fact: renewablePercent
         unit: "%"
         text: Groene stroom van naturstrom voor onze accu's.
     pillars:
@@ -266,4 +255,4 @@ sections:
     button:
       label: Vraag een show aan
       href: /kontakt/
-translationSourceHash: a540b79b63e2a4f6c211171ea95f6783dcefed54d536743d662db906585a7249
+translationSourceHash: 9b206245439c618646e98633bac52de316eb13c7561bebd873ea28bfe1267d7e

@@ -25,27 +25,27 @@ sections:
     headline: Die Menschen hinter den Shows.
     text: Ihr erreicht uns als Team, und am Showabend stehen wir selbst mit auf dem Feld.
     members:
-      - name: Ronja Donsbach
-        role: Geschäftsführerin
+      - role: Geschäftsführerin
         bio: Beantwortet die meisten Anfragen und stimmt Design und Musik mit Partner:innen ab. Auch auf Englisch.
-        image: { src: "https://flyingstars.art/wp-content/uploads/2024/08/Ronja_Teamfoto.jpg", alt: Ronja Donsbach mit einer Drohne in der Hand, width: 800, height: 1000 }
-      - name: Florian Becker
-        role: Geschäftsführer
+        personId: ronja-donsbach
+        imageAlt: Ronja Donsbach mit einer Drohne in der Hand
+      - role: Geschäftsführer
         bio: Verwaltung, Personal und Kund:innen in Deutschland. Schreibt unseren Blog.
-        image: { src: "https://flyingstars.art/wp-content/uploads/2024/08/Florian_Teamfoto.jpg", alt: Florian Becker mit einer Drohne in der Hand, width: 800, height: 1000 }
-      - name: Erwin Wilms
-        role: Geschäftsführer
+        personId: florian-becker
+        imageAlt: Florian Becker mit einer Drohne in der Hand
+      - role: Geschäftsführer
         bio: Anträge, Behörden und Luftfahrtrecht. Sorgt dafür, dass eure Show fliegen darf. Auch auf Englisch.
-        image: { src: "https://flyingstars.art/wp-content/uploads/2024/08/Erwin_Teamfoto.jpg", alt: Erwin Wilms mit einer Drohne in der Hand, width: 800, height: 1000 }
-      - name: Patrick
-        role: Head of Technik
+        personId: erwin-wilms
+        imageAlt: Erwin Wilms mit einer Drohne in der Hand
+      - role: Head of Technik
         bio: Flotte, Verfügbarkeit, Einkauf und das technische Setup jeder Show.
-      - name: Alejandro
-        role: Head of Design
+        personId: patrick
+      - role: Head of Design
         bio: Entwirft unsere Shows und ihre Choreografien.
-      - name: Chopper
-        role: Bürohund
+        personId: alejandro
+      - role: Bürohund
         bio: Neu im Team.
+        personId: chopper
     note: Dazu kommen rund zehn Aushilfen, die mit uns aufbauen, absichern und wieder abbauen.
     cta: { label: Lernt uns kennen, href: /kontakt/ }
     todo: FlyingStars muss hochauflösende Porträts von Ronja, Florian und Erwin sowie Fotos von Patrick und Alejandro liefern; die vorhandenen Porträts messen nur 199 × 199 Pixel. Zusätzlich fehlen Choppers Foto und eine abgestimmte Kurzvorstellung.

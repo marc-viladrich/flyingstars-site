@@ -1,4 +1,5 @@
 ---
+authorId: florian-becker
 title: How does a drone show work?
 description: The technology, programming and production of a drone show, plus creative uses and the
   requirements for staging one.
@@ -13,7 +14,7 @@ cover:
   width: 1600
   height: 1067
 draft: false
-translationSourceHash: c215ab948c0159b80d2338fff0c3cd9bf0a9b366fc47981f7c5942e15fddb435
+translationSourceHash: 0585064a6624f27d910d3cd1e7f39ea1080ff6e7afe366f542a255dd2ce8cb15
 ---
 How does a drone show work? Picture hundreds of drones moving in sync across the night sky, forming illuminated pictures, symbols and animations. Behind the performance are flight technology, creative programming and precise coordination. This article explains the technology, programming and design that make a drone show possible.
 

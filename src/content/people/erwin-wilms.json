@@ -1,0 +1,10 @@
+{
+  "name": "Erwin Wilms",
+  "order": 3,
+  "founder": true,
+  "image": {
+    "src": "https://flyingstars.art/wp-content/uploads/2024/08/Erwin_Teamfoto.jpg",
+    "width": 800,
+    "height": 1000
+  }
+}

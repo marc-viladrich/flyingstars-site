@@ -24,39 +24,27 @@ sections:
     headline: The people behind the shows.
     text: You reach us as a team, and on show night we're out on the field ourselves.
     members:
-      - name: Ronja Donsbach
-        role: Managing director
+      - role: Managing director
         bio: Handles most enquiries and coordinates design and music with partners. In English too.
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/08/Ronja_Teamfoto.jpg
-          alt: Ronja Donsbach holding a drone
-          width: 800
-          height: 1000
-      - name: Florian Becker
-        role: Managing director
+        personId: ronja-donsbach
+        imageAlt: Ronja Donsbach holding a drone
+      - role: Managing director
         bio: Administration, staff and clients in Germany. Writes our blog.
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/08/Florian_Teamfoto.jpg
-          alt: Florian Becker holding a drone
-          width: 800
-          height: 1000
-      - name: Erwin Wilms
-        role: Managing director
+        personId: florian-becker
+        imageAlt: Florian Becker holding a drone
+      - role: Managing director
         bio: Applications, authorities and aviation law. Makes sure your show is cleared to fly. In English too.
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/08/Erwin_Teamfoto.jpg
-          alt: Erwin Wilms holding a drone
-          width: 800
-          height: 1000
-      - name: Patrick
-        role: Head of Technology
+        personId: erwin-wilms
+        imageAlt: Erwin Wilms holding a drone
+      - role: Head of Technology
         bio: Fleet, availability, purchasing and the technical setup of every show.
-      - name: Alejandro
-        role: Head of Design
+        personId: patrick
+      - role: Head of Design
         bio: Designs our shows and their choreographies.
-      - name: Chopper
-        role: Office dog
+        personId: alejandro
+      - role: Office dog
         bio: New to the team.
+        personId: chopper
     note: Around ten part-time crew members help us set up, secure the site and pack away.
     cta:
       label: Get to know us
@@ -224,7 +212,8 @@ sections:
         unit: kg
         text: No casings, no debris. The same drones fly show after show.
       - label: Green electricity
-        value: { fact: renewablePercent }
+        value:
+          fact: renewablePercent
         unit: "%"
         text: Green electricity from naturstrom for our batteries.
     pillars:
@@ -266,4 +255,4 @@ sections:
     button:
       label: Request a show
       href: /kontakt/
-translationSourceHash: a540b79b63e2a4f6c211171ea95f6783dcefed54d536743d662db906585a7249
+translationSourceHash: 9b206245439c618646e98633bac52de316eb13c7561bebd873ea28bfe1267d7e

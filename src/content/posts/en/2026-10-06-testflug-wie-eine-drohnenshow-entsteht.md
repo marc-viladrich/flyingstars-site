@@ -1,4 +1,5 @@
 ---
+authorId: florian-becker
 title: "Test flight: how a drone show takes shape"
 description: Behind the scenes, from the first sketch and permits to landing. A test article for the intake workflow.
 date: 2026-10-06
@@ -7,7 +8,7 @@ tags:
   - Ablauf
 draft: true
 sourceIssue: 1
-translationSourceHash: 7b8f39095d944e547dc81e6cea182191f88536b68addac103e865986c6d46e4f
+translationSourceHash: 43e0de20dff90e62194627cad43e815dbff172087689941e078a1a1c5084a88d
 ---
 
 This is a **test article** for checking the deterministic intake.

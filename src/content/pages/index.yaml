@@ -11,7 +11,7 @@ sections:
     eyebrow: Drohnenshows in DE · AT · CH · Benelux
     headline: Wir gestalten euer Stück Himmel.
     text: Drohnenshows für Unternehmen, Städte, Festivals und Paare. Wir entwerfen die Motive, holen die Genehmigung und fliegen mit eigener Flotte.
-    words: [Neu., Einzigartig., Anders., Spektakulär.]
+    words: [ Neu., Einzigartig., Anders., Spektakulär. ]
     cta: { label: Show anfragen, href: "#anfrage" }
     secondary: { label: Pakete und Preise, href: /drohnenshow-preise/ }
     poster:
@@ -70,44 +70,44 @@ sections:
         title: Eure Marke auf der größten Leinwand der Welt
         text: Logos, Produkte und Claims am Himmel, für Launches, Jubiläen und Drehs.
         image: { src: "https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg", alt: "Volkswagen-Logo aus Drohnen über dem Wolfgangsee, Gäste auf einer Terrasse", width: 1920, height: 1281 }
-        facts: [Jedes Motiv gebt ihr vorab frei, "Für Gäste, Mitarbeitende und die Kamera"]
+        facts: [ Jedes Motiv gebt ihr vorab frei, "Für Gäste, Mitarbeitende und die Kamera" ]
         cta: { label: Drohnenshows für Marken, href: /drohnenshow-werbung/ }
       - category: Agenturen
         title: Wir fliegen, ihr glänzt
         text: Wir fliegen für eure Kund:innen und bleiben auf Wunsch im Hintergrund.
         image: { src: "https://flyingstars-relaunch.vercel.app/media/projekte/ford.jpg", alt: Ford-Schriftzug aus Drohnen über dem Werksgelände in Köln, width: 1600, height: 900 }
-        facts: [NDA und Projektleitung auf Wunsch, Visualisierung mit dem Logo eurer Kund:innen]
+        facts: [ NDA und Projektleitung auf Wunsch, Visualisierung mit dem Logo eurer Kund:innen ]
         cta: { label: Für Agenturen, href: "/drohnenshow-werbung/#agenturen" }
       - category: Städte & Gemeinden
         title: Ein Highlight, über das die ganze Stadt spricht
         text: Stadtfeste und Jubiläen ohne Pyrotechnik, auch im trockensten Sommer.
         image: { src: "https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg", alt: Weltkugel aus Drohnen über dem Rhein bei der Extraschicht in Duisburg, width: 2544, height: 1493 }
-        facts: ["Stadtwappen, Jubiläumszahlen, eure Geschichte", 10 % Rabatt bei Buchung im Vorjahr]
+        facts: [ "Stadtwappen, Jubiläumszahlen, eure Geschichte", 10 % Rabatt bei Buchung im Vorjahr ]
         cta: { label: Show für eure Stadt anfragen, href: "/kontakt/?anlass=stadt" }
       - category: Hochzeit & Privat
         title: Euer Moment, am Himmel geschrieben
         text: Initialen, Herzen und euer Datum über der Feier, auch als Heiratsantrag.
         image: { src: "https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg", alt: Zwei Blüten aus Drohnen am Abendhimmel über einer Hochzeitsfeier, width: 1518, height: 854 }
-        facts: [Auch als Überraschung oder Antrag, SPARK ab 7.900 € netto]
+        facts: [ Auch als Überraschung oder Antrag, SPARK ab 7.900 € netto ]
         cta: { label: Drohnenshow zur Hochzeit, href: /drohnenshow-hochzeit/ }
       - category: Festivals & Konzerte
         title: Der Höhepunkt, der eure Geschichte weitererzählt
         text: Die Show schließt an Bühne, Musik und Licht an, auch an vielen Abenden hintereinander.
         image: { src: "https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijders.jpg", alt: "Schriftzug Bokkenrijders aus Drohnen über der Freilichtbühne in Maastricht, Publikum im Vordergrund", width: 1600, height: 900 }
-        facts: ["Jeden Abend dieselbe Show, auch 20-mal hintereinander", 10 % Rabatt bei Buchung im Vorjahr]
+        facts: [ "Jeden Abend dieselbe Show, auch 20-mal hintereinander", 10 % Rabatt bei Buchung im Vorjahr ]
         cta: { label: 600 Drohnen im Musical, href: /musikalischer-teaser-bokkenrijders/ }
       - category: Silvester & Weihnachten
         title: Silvester ohne Böller
         text: "Ein Countdown aus Licht statt Knall und Rauch, für Städte, Gemeinden und Veranstalter:innen."
         image: { src: "https://flyingstars.art/wp-content/uploads/2024/07/D_Umwelthilfe_cover_img.png", alt: "Bunte Feuerwerksblüte aus Drohnen über Berlin bei der Kampagne #Böllerciao der Deutschen Umwelthilfe", width: 1920, height: 987 }
-        facts: [Mit der Deutschen Umwelthilfe über Berlin geflogen, "Früh anfragen, die Termine sind knapp"]
+        facts: [ Mit der Deutschen Umwelthilfe über Berlin geflogen, "Früh anfragen, die Termine sind knapp" ]
         cta: { label: Silvester-Show anfragen, href: "/kontakt/?anlass=stadt" }
-        season: [11, 12]
+        season: [ 11, 12 ]
       - category: Indoor
         title: Drohnen in der Halle
         text: "Für Messen, Bühnen und Hallen ab {{offer.indoor.ceilingWords}} Metern Deckenhöhe."
         image: { src: "https://flyingstars.art/wp-content/uploads/2025/04/drohnenshow-indoor-2.jpg", alt: Leuchtende Drohnen in Formation vor der Bühne eines voll besetzten Saals, width: 1200, height: 764 }
-        facts: ["{{offer.indoor.drones.min}} bis {{offer.indoor.drones.max}} Drohnen, {{duration.indoor.min}} bis {{duration.indoor.max}} Minuten", Einzeln kalkuliert]
+        facts: [ "{{offer.indoor.drones.min}} bis {{offer.indoor.drones.max}} Drohnen, {{duration.indoor.min}} bis {{duration.indoor.max}} Minuten", Einzeln kalkuliert ]
         cta: { label: Indoor-Drohnenshows, href: /drohnenshow-indoor/ }
     todo: Moritz muss die Anlass-Texte freigeben; FlyingStars muss die Relaunch-Sitemap bestätigen. Eigene Seiten für Städte, Festivals und Silvester sind bislang nicht ausgearbeitet.
 
@@ -208,40 +208,40 @@ sections:
     headline: Drohne, Feuerwerk oder Laser?
     text: Jede Technik hat ihre Stärken. So unterscheiden sich die drei bei den Fragen, die am häufigsten kommen.
     rowHeader: Kriterium
-    columns: [Drohnenshow, Feuerwerk, Lasershow]
+    columns: [ Drohnenshow, Feuerwerk, Lasershow ]
     rows:
       - label: Logos und Schriftzüge am Himmel
-        values: ["Ja, auch in 3D", Nein, "Teilweise, nur auf Flächen oder Dunst"]
+        values: [ "Ja, auch in 3D", Nein, "Teilweise, nur auf Flächen oder Dunst" ]
         cells:
           - { label: Ja, text: auch in 3D, tone: y }
           - { label: Nein, text: "", tone: n }
           - { label: Teilweise, text: nur auf Flächen oder Dunst, tone: p }
       - label: Lautstärke
-        values: ["Leise, Musik nach Wahl", Sehr laut, Leise]
+        values: [ "Leise, Musik nach Wahl", Sehr laut, Leise ]
         cells:
           - { label: Leise, text: Musik nach Wahl, tone: y }
           - { label: Sehr laut, text: "", tone: n }
           - { label: Leise, text: "", tone: y }
       - label: Rauch, Feinstaub, Müll vor Ort
-        values: [Keine, Viel, Dunst für sichtbare Strahlen nötig]
+        values: [ Keine, Viel, Dunst für sichtbare Strahlen nötig ]
         cells:
           - { label: Keine, text: "", tone: y }
           - { label: Viel, text: "", tone: n }
           - { label: Dunst, text: für sichtbare Strahlen nötig, tone: p }
       - label: Brandgefahr
-        values: [Keine, "Ja, Verbote bei Trockenheit", Keine]
+        values: [ Keine, "Ja, Verbote bei Trockenheit", Keine ]
         cells:
           - { label: Keine, text: "", tone: y }
           - { label: Ja, text: Verbote bei Trockenheit, tone: n }
           - { label: Keine, text: "", tone: y }
       - label: Wind und Wetter
-        values: ["Bis Windstärke 5, kein Starkregen", Bei Sturm abgesagt, "Robust, auch drinnen"]
+        values: [ "Bis Windstärke 5, kein Starkregen", Bei Sturm abgesagt, "Robust, auch drinnen" ]
         cells:
           - { label: Grenze, text: "bis Windstärke 5, kein Starkregen", tone: p }
           - { label: Grenze, text: bei Sturm abgesagt, tone: p }
           - { label: Robust, text: auch drinnen, tone: y }
       - label: Sichtbar aus der Ferne
-        values: [Kilometerweit, Kilometerweit, "Begrenzt, wirkt am besten aus der Nähe"]
+        values: [ Kilometerweit, Kilometerweit, "Begrenzt, wirkt am besten aus der Nähe" ]
         cells:
           - { label: Kilometerweit, text: "", tone: y }
           - { label: Kilometerweit, text: "", tone: y }
@@ -255,24 +255,24 @@ sections:
     headline: Die Menschen hinter dem Himmel.
     text: Ronja, Florian und Erwin führen FlyingStars gemeinsam. Ihr erreicht uns als Team, und am Showabend stehen wir selbst mit auf dem Feld.
     members:
-      - name: Ronja Donsbach
-        role: Geschäftsführerin
+      - role: Geschäftsführerin
         bio: Beantwortet die meisten Anfragen, auch auf Englisch, und stimmt Design und Musik ab.
-        image: { src: "https://flyingstars.art/wp-content/uploads/2024/08/Ronja_Teamfoto.jpg", alt: Ronja Donsbach mit einer Drohne in der Hand, width: 800, height: 1000 }
-      - name: Florian Becker
-        role: Geschäftsführer
+        personId: ronja-donsbach
+        imageAlt: Ronja Donsbach mit einer Drohne in der Hand
+      - role: Geschäftsführer
         bio: Kümmert sich um Verwaltung, Personal und Kund:innen in Deutschland. Schreibt den Blog.
-        image: { src: "https://flyingstars.art/wp-content/uploads/2024/08/Florian_Teamfoto.jpg", alt: Florian Becker mit einer Drohne in der Hand, width: 800, height: 1000 }
-      - name: Erwin Wilms
-        role: Geschäftsführer
+        personId: florian-becker
+        imageAlt: Florian Becker mit einer Drohne in der Hand
+      - role: Geschäftsführer
         bio: Anträge, Behörden und Luftfahrtrecht. Sorgt dafür, dass eure Show fliegen darf.
-        image: { src: "https://flyingstars.art/wp-content/uploads/2024/08/Erwin_Teamfoto.jpg", alt: Erwin Wilms mit einer Drohne in der Hand, width: 800, height: 1000 }
-      - name: Patrick
-        role: Head of Technik
+        personId: erwin-wilms
+        imageAlt: Erwin Wilms mit einer Drohne in der Hand
+      - role: Head of Technik
         bio: Drohnenflotte, Verfügbarkeit, Einkauf und das technische Setup jeder Show.
-      - name: Alejandro
-        role: Head of Design
+        personId: patrick
+      - role: Head of Design
         bio: Entwirft alle Shows und Choreografien, Bild für Bild, im Takt der Musik.
+        personId: alejandro
     note: Dazu eine Crew aus Pilot:innen und Techniker:innen, die jede Show vor Ort aufbaut und fliegt.
     cta: { label: Mehr über uns, href: /ueber-uns/ }
     todo: FlyingStars muss hochauflösende Porträts von Ronja, Florian und Erwin sowie Fotos von Patrick und Alejandro liefern; die vorhandenen Porträts messen nur 199 × 199 Pixel.
@@ -284,7 +284,7 @@ sections:
     cta: { label: Alle Fragen, href: /faq/ }
     openFirst: true
     limit: 4
-    tags: [startseite]
+    tags: [ startseite ]
 
   - type: contactForm
     kicker: Anfrage

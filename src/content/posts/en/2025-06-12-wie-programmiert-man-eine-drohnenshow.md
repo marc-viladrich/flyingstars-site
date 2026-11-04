@@ -1,4 +1,5 @@
 ---
+authorId: florian-becker
 title: How do you programme a drone show?
 description: "How a drone show is programmed: show drones, choreography software, flight paths, simulations
   and tests before the live show."
@@ -13,7 +14,7 @@ cover:
   width: 1680
   height: 1120
 draft: false
-translationSourceHash: 4781eda5e444858a4db865695f7d2489e1c7a97a0e42a1b570a2862ed01f72e9
+translationSourceHash: 4bbbb0b261a95d04d72d42a590075365d9a07791f5b1d68eed44ec96697cc94b
 ---
 At city festivals, company anniversaries and music festivals, drone shows draw audiences around the world. Illuminated drones rise into the sky and form logos, hearts and moving animations. How is a show like this made? What technology is involved, and how does drone programming work?
 

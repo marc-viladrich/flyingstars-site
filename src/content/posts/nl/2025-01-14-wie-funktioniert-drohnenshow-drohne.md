@@ -1,4 +1,5 @@
 ---
+authorId: florian-becker
 title: Hoe werkt een droneshow?
 description: Techniek, programmering en verloop van een droneshow, met creatieve toepassingen en voorwaarden
   voor de uitvoering.
@@ -13,7 +14,7 @@ cover:
   width: 1600
   height: 1067
 draft: false
-translationSourceHash: c215ab948c0159b80d2338fff0c3cd9bf0a9b366fc47981f7c5942e15fddb435
+translationSourceHash: 0585064a6624f27d910d3cd1e7f39ea1080ff6e7afe366f542a255dd2ce8cb15
 ---
 Hoe werkt een droneshow? Stel jullie honderden drones voor die synchroon door de nachthemel bewegen en lichtgevende beelden, symbolen en animaties vormen. Achter zo'n voorstelling zitten vliegtechniek, creatieve programmering en nauwkeurige afstemming. In dit artikel leggen we de techniek, programmering en vormgeving van een droneshow uit.
 

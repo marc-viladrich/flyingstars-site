@@ -344,7 +344,8 @@ sections:
         unit: kg
         text: No casings, no debris. The same drones fly show after show.
       - label: Green electricity
-        value: { fact: renewablePercent }
+        value:
+          fact: renewablePercent
         unit: "%"
         text: Green electricity from naturstrom for our batteries.
     pillars:
@@ -470,36 +471,24 @@ sections:
     headline: The people behind the sky.
     text: Ronja, Florian and Erwin run FlyingStars together. You reach us as a team, and on show night we're out on the field ourselves.
     members:
-      - name: Ronja Donsbach
-        role: Managing director
+      - role: Managing director
         bio: Handles most enquiries, in English too, and coordinates design and music.
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/08/Ronja_Teamfoto.jpg
-          alt: Ronja Donsbach holding a drone
-          width: 800
-          height: 1000
-      - name: Florian Becker
-        role: Managing director
+        personId: ronja-donsbach
+        imageAlt: Ronja Donsbach holding a drone
+      - role: Managing director
         bio: Looks after administration, staff and clients in Germany. Writes the blog.
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/08/Florian_Teamfoto.jpg
-          alt: Florian Becker holding a drone
-          width: 800
-          height: 1000
-      - name: Erwin Wilms
-        role: Managing director
+        personId: florian-becker
+        imageAlt: Florian Becker holding a drone
+      - role: Managing director
         bio: Applications, authorities and aviation law. Makes sure your show is cleared to fly.
-        image:
-          src: https://flyingstars.art/wp-content/uploads/2024/08/Erwin_Teamfoto.jpg
-          alt: Erwin Wilms holding a drone
-          width: 800
-          height: 1000
-      - name: Patrick
-        role: Head of Technology
+        personId: erwin-wilms
+        imageAlt: Erwin Wilms holding a drone
+      - role: Head of Technology
         bio: Drone fleet, availability, purchasing and the technical setup of every show.
-      - name: Alejandro
-        role: Head of Design
+        personId: patrick
+      - role: Head of Design
         bio: Designs all shows and choreographies, frame by frame, in time with the music.
+        personId: alejandro
     note: Plus a crew of pilots and technicians who set up and fly every show on site.
     cta:
       label: More about us
@@ -521,4 +510,4 @@ sections:
     headline: Tell us about your date.
     text: A date, location and occasion are enough for an initial assessment. Leave anything you don't know yet open.
     todo: FlyingStars und die Datenschutzberatung müssen Versanddienst, Empfängerpostfach, Auftragsverarbeitung, Drittlandtransfers und Löschfristen festlegen und die Datenschutzhinweise freigeben.
-translationSourceHash: 664123c9f434bf777b25a489fbb1e168b8679e009edeab578eb0e3cf202b4954
+translationSourceHash: 29a5761534de13cb50a10b193a38ea3de7f82aabf1a9431d5a74207150c13e87

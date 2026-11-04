@@ -10,12 +10,12 @@ import Base from '../layouts/Base.astro';
 import SectionHead from '../components/SectionHead.astro';
 import PostGrid from '../components/blog/PostGrid.astro';
 import Cta from '../components/sections/Cta.astro';
-import { AUTHOR, sortPosts } from '../components/blog/post-meta';
+import { authorOf, sortPosts } from '../components/blog/post-meta';
 const posts = sortPosts(await localizedCollection('posts', locale, p => !p.data.draft));
 ---
 <Base title="Blog" description={t('blogindex.howDroneShowsWorkHowTheyReProgrammedAndHow')} image={posts[0]?.data.cover?.src}>
   <section class="section" aria-labelledby="blog-h">
-    <SectionHead kicker="Blog" headline={t('blogindex.howDroneShowsTakeShape')} text={t('blogindex.technologyProgrammingAndBackgroundStoriesWrittenByOurTeamMember', { v0: AUTHOR.name })} id="blog-h" level="h1" />
+    <SectionHead kicker="Blog" headline={t('blogindex.howDroneShowsTakeShape')} text={t('blogindex.technologyProgrammingAndBackgroundStoriesWrittenByOurTeamMember', { v0: [...new Set(posts.map(p=>authorOf(p).name))].join(', ') })} id="blog-h" level="h1" />
     {posts.length ? <PostGrid posts={posts} /> : <p class="lead">{t('blogindex.ourFirstArticlesWillBeHereSoon')}</p>}
   </section>
   <Cta type="cta" index={1} headline={t('blogindex.canTFindYourQuestion')} text={t('blogindex.tellUsWhatYouDLikeToKnowWeLl')} button={{ label: t('chopper404.requestAShow'), href: '/kontakt/' }} />

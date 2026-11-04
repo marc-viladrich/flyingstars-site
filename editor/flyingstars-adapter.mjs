@@ -19,8 +19,10 @@ export async function createFlyingStarsAdapter(root) {
   // Locale triplets and structural edits need coordinated review. This adapter updates existing records only.
   title:directory,
  }));
+ const {personSchema}=await import(pathToFileURL(path.join(root,'src/schemas/person.mjs')));
+ types.push({prefix:'person',directory:'people',extension:'json',format:'json',title:'Person',schema:personSchema});
  types.push({prefix:'media',directory:'editor-media',extension:'json',format:'json',title:'Mediathek',create:true,remove:true,schema:z.object({title:z.string(),src:z.string().regex(/^\/assets\/[a-f0-9]{64}\.(?:png|jpg|webp)$/),defaultAlt:z.string(),width:z.number().int().positive(),height:z.number().int().positive(),mime:z.enum(['image/png','image/jpeg','image/webp'])}).strict().meta({'x-afe':{collection:{label:'Bild',title:['title'],operations:['create','update','delete']}}})});
- const recordId=/^(page|post|project|faq|media)\/((?:(?:en|nl)\/)?[a-z0-9]+(?:-[a-z0-9]+)*)$/;
+ const recordId=/^(page|post|project|faq|media|person)\/((?:(?:en|nl)\/)?[a-z0-9]+(?:-[a-z0-9]+)*)$/;
  const {navigationSchema}=await import(pathToFileURL(path.join(root,'src/schemas/navigation.mjs')));
  const {showPackagesSchema}=await import(pathToFileURL(path.join(root,'src/schemas/show-packages.mjs')));
  const {contactSchema}=await import(pathToFileURL(path.join(root,'src/schemas/contact.mjs')));
@@ -50,7 +52,7 @@ export async function createFlyingStarsAdapter(root) {
  site.extensions=createExtensionRegistry([{name:'flyingstars/design',contractVersion:'1.0',hooks:{
   templates,...mediaHooks,
   resolveReference:(records,value,reference)=>records.find(r=>r.address?.collection===reference?.collection&&r.address.id===value),
-  title:(source,data)=>source.id==='site/business-facts'?'Geschäftsfakten':source.id==='site/show-extras'?'Extras und Sonderangebote':source.id==='site/preview-policy'?'Vorschaupolicy · nicht freigegebene Preise':source.id==='site/show-duration'?'Showzeiten':source.id==='site/contact'?'Kontakt':source.id==='site/navigation'?'Navigation':source.id==='site/ui'?'Website-Texte':source.id==='package/configuration'?'Show-Pakete':data.title||data.question||source.id,
+  title:(source,data)=>source.id==='site/business-facts'?'Geschäftsfakten':source.id==='site/show-extras'?'Extras und Sonderangebote':source.id==='site/preview-policy'?'Vorschaupolicy · nicht freigegebene Preise':source.id==='site/show-duration'?'Showzeiten':source.id==='site/contact'?'Kontakt':source.id==='site/navigation'?'Navigation':source.id==='site/ui'?'Website-Texte':source.id==='package/configuration'?'Show-Pakete':data.name||data.title||data.question||source.id,
   route:recordRoute,
   omitField:(_source,_data,field)=>field[0]==='translationSourceHash',
   ...localeTransactions(root,sourceFor),

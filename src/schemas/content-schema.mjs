@@ -1,3 +1,4 @@
+import {PERSON_IDS,PEOPLE} from '../content/people.mjs';
 import {businessValueSchema} from './business-facts.mjs';
 import {PACKAGE_NAMES} from '../content/package-identity.mjs';
 import {factText} from '../content/show-extras.mjs';
@@ -24,6 +25,7 @@ const todo = { todo: z.string().optional().describe('Was hier inhaltlich fehlt o
 const sectionHeading = { id: z.string().optional(), kicker: z.string().optional().describe('Kicker über der Headline, z. B. "Anlässe"'), ...todo };
 const brandPath = z.string().regex(/^\/brand\/[a-z0-9/._-]+\.(svg|png|webp)$/).describe('Lokale Datei unter public/brand/');
 
+const personId=z.enum(PERSON_IDS).describe('Person').meta({'x-afe':{reference:{collection:'people',encoding:'id'},choices:Object.fromEntries(PERSON_IDS.map(id=>[id,{label:PEOPLE[id].name}]))}});
 const image = z.object({
   src: imageSource,
   alt: z.string().min(1).describe('Pflicht. Leerer Alt-Text nur für Dekoration, dann alt: ""'),
@@ -171,9 +173,9 @@ export const sectionSchema = z.discriminatedUnion('type', [
     headline: z.string().min(1),
     text: z.string().optional(),
     members: z.array(z.object({
-      name: z.string().min(1),
+      personId,
+      imageAlt:z.string().optional().describe('Alt-Text im Kontext'),
       role: z.string().min(1),
-      image: image.optional().describe('Ohne Bild erscheint ein Platzhalter mit Initialen'),
       bio: z.string().optional(),
     })).min(1),
   }),
@@ -389,7 +391,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     kicker: z.string().optional(),
     headline: z.string().min(1),
     text: z.string().optional(),
-    people: z.array(z.object({ name: z.string().min(1), image })).max(4).optional(),
+    people: z.array(personId).max(4).optional(),
   }),
 ]);
 
@@ -410,6 +412,7 @@ export const pageSchema = z.object({
   });
 
 export const postSchema = z.object({
+    authorId:personId,
     ...translationMeta,
     title: z.string().min(1),
     description: z.string().refine(text=>{const n=factText(text).length;return n>=50&&n<=160;},'Beschreibung braucht nach Faktenprojektion 50–160 Zeichen'),

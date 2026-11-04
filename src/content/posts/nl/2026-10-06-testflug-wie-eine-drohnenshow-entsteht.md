@@ -1,4 +1,5 @@
 ---
+authorId: florian-becker
 title: "Testvlucht: hoe een droneshow ontstaat"
 description: Een blik achter de schermen, van eerste schets en vergunning tot landing. Testartikel voor de intakeworkflow.
 date: 2026-10-06
@@ -7,7 +8,7 @@ tags:
   - Ablauf
 draft: true
 sourceIssue: 1
-translationSourceHash: 7b8f39095d944e547dc81e6cea182191f88536b68addac103e865986c6d46e4f
+translationSourceHash: 43e0de20dff90e62194627cad43e815dbff172087689941e078a1a1c5084a88d
 ---
 
 Dit is een **testartikel** om de deterministische intake te controleren.

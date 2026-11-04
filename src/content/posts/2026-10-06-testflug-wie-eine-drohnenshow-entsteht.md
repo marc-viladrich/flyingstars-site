@@ -1,4 +1,5 @@
 ---
+authorId: florian-becker
 title: "Testflug: Wie eine Drohnenshow entsteht"
 description: "Ein Blick hinter die Kulissen: von der ersten Skizze über die Genehmigung bis zur Landung. Testbeitrag für den Intake-Flow."
 date: 2026-10-06

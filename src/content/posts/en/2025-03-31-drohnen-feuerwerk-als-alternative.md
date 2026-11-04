@@ -1,4 +1,5 @@
 ---
+authorId: florian-becker
 title: "Drones as an alternative to fireworks: a light show with less environmental impact"
 description: "Drone shows as an alternative to fireworks: how they work, environmental aspects, possible uses
   and safety measures."
@@ -14,7 +15,7 @@ cover:
   width: 1200
   height: 915
 draft: false
-translationSourceHash: 33099bf8bc67194ee48ece0cdd19b9807c1890a83b4b32268fcde1644c225611
+translationSourceHash: 255e57b33739cd830f700ed312230b49a4b31f5e7f96450fcc8b8d5af57689f6
 ---
 Fireworks have been part of celebrations for centuries, from New Year's Eve and weddings to major events. But the colourful explosions also bring noise, fine particles and chemical residue that affect the environment and health. Loud bangs are particularly stressful for animals. Drone fireworks offer a quieter alternative without firework debris, while still creating visual effects in the sky.
 

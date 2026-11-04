@@ -1,4 +1,5 @@
 ---
+authorId: florian-becker
 title: "Wie funktioniert eine Drohnenshow?"
 description: "Technik, Programmierung und Ablauf einer Drohnenshow sowie kreative Einsatzmöglichkeiten und Anforderungen an die Durchführung."
 date: 2025-01-14
