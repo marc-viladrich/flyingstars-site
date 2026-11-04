@@ -14,7 +14,7 @@
     "field": "location"
   },
   "occasion": "stadt",
-  "summary": "FlyingStars performed a 100-drone show for more than 30,000 visitors at the SonneMondSterne festival.",
+  "summary": "FlyingStars performed a {{project.sonnemondsterne.drones}}-drone show for more than 30,000 visitors at the SonneMondSterne festival.",
   "featured": false,
   "draft": false,
   "drones": {

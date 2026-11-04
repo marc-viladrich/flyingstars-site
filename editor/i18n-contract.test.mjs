@@ -15,13 +15,7 @@ const de = {label: 'PUMA', href: '/kontakt/', width: 400}, en = {...de};
 const run = (source = de, target = en, deps = dependencies) => project(schema, source, target, 'en', deps);
 const baseline = run(), evidence = adoptionEvidence(baseline, {editorReviewed: true, origin: 'machine-new'});
 
-const knownShadowBlockers = {
-  'page/en/drohnenshow-indoor.yaml': 'Fact token mismatch at /sections/2/diagram/description',
-  'page/en/drohnenshow-werbung.yaml': 'Unknown i18n field: /sections/8/facts/0/vorab',
-  'page/nl/drohnenshow-werbung.yaml': 'Unknown i18n field: /sections/8/facts/0/vorab',
-  'project/en/nfl-muenchen.md': 'Fact token mismatch at /summary',
-  'project/en/sonnemondsterne.md': 'Fact token mismatch at /summary',
-};
+const knownShadowBlockers = {};
 
 test('all 132 raw hashes remain current; shadow checks expose exactly the documented existing blockers', () => {
   assert.equal(pairs.length, 132);

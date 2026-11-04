@@ -163,7 +163,7 @@ sections:
       height: 985
     tags: [ Borussia-Park · Mönchengladbach, Olympiastadion · Berlin, Rheinturm · Düsseldorf, Innenhafen · Duisburg ]
     facts:
-      - { value: 4–8 Wochen, label: Bestätigung je EU-Land, vorab }
+      - { value: 4–8 Wochen, label: Bestätigung je EU-Land }
       - { value: ca. 3 Monate, label: in Italien }
     todo: FlyingStars muss aktuelle Cross-border-Fristen und mögliche Sondergebühren je Land bestätigen. Die Ortsbeispiele belegen keine pauschale Genehmigung oder garantierte Frist.
 

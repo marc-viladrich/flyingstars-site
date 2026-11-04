@@ -194,7 +194,6 @@ sections:
     facts:
       - value: 4–8 weken
         label: bevestiging per EU-land
-        vorab: null
       - value: ca. 3 maanden
         label: in Italië
     todo: FlyingStars muss aktuelle Cross-border-Fristen und mögliche Sondergebühren je Land bestätigen. Die Ortsbeispiele belegen keine pauschale Genehmigung oder garantierte Frist.
@@ -226,4 +225,4 @@ sections:
     kicker: Aanvraag
     headline: Vertel ons over jullie campagne.
     text: Datum, locatie en doel zijn genoeg. Jullie logo mogen jullie later per e-mail sturen.
-translationSourceHash: 14d08c7ac0425e93947dac3c66ce81ce3f8d36701ef4696a1762f820f7fa1dee
+translationSourceHash: 10090cc34d35857ecdfedff0e7ff2fed0dd0488beae2a14209134a8061438ddc

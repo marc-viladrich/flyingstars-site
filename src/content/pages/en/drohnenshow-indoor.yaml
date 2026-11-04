@@ -74,7 +74,7 @@ sections:
     text: The floor plan, ceiling height and audience position form the basis of our show concept.
     variant: indoor
     diagram:
-      description: "Room cross-section showing a ceiling height of at least {{offer.indoor.ceilingMin}} m and the audience beside the clear flight area. Below is a plan view of an example take-off grid for {{offer.indoor.drones.min}} drones, with antennas at the corners of the flight area."
+      description: "Room cross-section showing a ceiling height of at least {{offer.indoor.ceilingMin}} m and the audience beside the clear flight area. Below is a plan view of an example take-off grid for 20 drones, with antennas at the corners of the flight area."
       horizontalLabel: approx. 5 m
       verticalLabel: "min. {{offer.indoor.ceilingMin}} m"
       detailLabel: 1 m grid
