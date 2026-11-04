@@ -1,3 +1,5 @@
+import {createTranslator} from '../src/i18n/ui.mjs';
+const t=createTranslator('de');
 import { test, expect } from '@playwright/test';
 
 test('Anfrage behält Paketauswahl, alle Showdetails und ehrlichen Versandstatus', async ({ page }) => {
@@ -10,24 +12,24 @@ test('Anfrage behält Paketauswahl, alle Showdetails und ehrlichen Versandstatus
   await expect(page.getByRole('radio',{name:'HORIZON',exact:true})).toBeChecked();
   await page.evaluate(() => document.fonts.ready);
   await expect.poll(() => page.locator('#anfrage-h').evaluate(node => node.getBoundingClientRect().top)).toBeGreaterThan(70);
-  await page.getByRole('button',{name:'Weiter',exact:true}).click();
-  await expect(page.getByText('Bitte wähle einen Anlass.')).toBeVisible();
+  await page.getByRole('button',{name:t('contactform.next'),exact:true}).click();
+  await expect(page.getByText(t('contact.pleaseChooseAnOccasion'))).toBeVisible();
   await page.getByText('Firmenevent',{exact:true}).click();
-  await page.getByLabel('Wann soll sie fliegen?').fill('2026-12-01');
-  await page.getByLabel('Wo soll sie stattfinden?').fill('Osnabrück');
-  await page.getByRole('button',{name:'Weiter',exact:true}).click();
+  await page.getByLabel(t('contactform.whenShouldItFly')).fill('2026-12-01');
+  await page.getByLabel(t('contactform.whereWillItTakePlace')).fill('Osnabrück');
+  await page.getByRole('button',{name:t('contactform.next'),exact:true}).click();
   // Freitext steht seit dem Fragebogen-Abgleich (30.10.2026) im zweiten Schritt
   // optionale Felder öffnet man über die kleinen Knöpfe (seit 02.11.2026)
-  await page.getByRole('button', { name: 'Nachricht' }).click();
-  await page.getByLabel('Möchtest du uns noch etwas mitteilen?').fill('Produktlaunch mit Musik');
-  await page.getByLabel('Dein Name').fill('Marc Viladrich');
-  await page.getByLabel('Deine E-Mail-Adresse').fill('marc@example.test');
+  await page.getByRole('button', { name: t('contactform.addMessage') }).click();
+  await page.getByLabel(t('contactform.anythingElseYouDLikeToTellUs')).fill('Produktlaunch mit Musik');
+  await page.getByLabel(t('contactform.yourName')).fill('Marc Viladrich');
+  await page.getByLabel(t('contactform.yourEmailAddress')).fill('marc@example.test');
   await page.getByRole('button', { name: 'Telefon', exact: false }).first().click();
-  await page.getByLabel('Deine Telefonnummer').fill('01234');
-  await page.getByRole('button',{name:'Anfrage senden',exact:true}).click();
+  await page.getByLabel(t('contactform.yourPhoneNumber')).fill('01234');
+  await page.getByRole('button',{name:t('contactform.sendEnquiry'),exact:true}).click();
   await expect(page.getByRole('status')).toContainText('Es wurde nichts gesendet.');
   for (const value of ['HORIZON','220','Osnabrück','2026-12-01','Produktlaunch mit Musik','01234']) expect(submitted).toContain(value);
-  await expect(page.getByLabel('Dein Name')).toHaveValue('Marc Viladrich');
+  await expect(page.getByLabel(t('contactform.yourName'))).toHaveValue('Marc Viladrich');
 });
 
 test('Mobiles Menü hält den Fokus und gibt ihn beim Schließen zurück', async ({page}) => {
@@ -55,13 +57,13 @@ test('Neue Paketauswahl entfernt eine zuvor berechnete Drohnenanzahl', async ({p
   await page.goto('/?paket=ODYSSEY&drohnen=1000#anfrage');
   await page.locator('#inquiry-form').getByText('SPARK',{exact:true}).click();
   await page.getByText('Firmenevent',{exact:true}).click();
-  await page.getByLabel('Wo soll sie stattfinden?').fill('Essen');
+  await page.getByLabel(t('contactform.whereWillItTakePlace')).fill('Essen');
   await page.getByText('Noch nicht festgelegt').click();
-  await page.getByRole('button',{name:'Weiter',exact:true}).click();
-  await expect(page.getByLabel('Dein Name')).toHaveAttribute('maxlength','120');
-  await page.getByLabel('Dein Name').fill('Marc');
-  await page.getByLabel('Deine E-Mail-Adresse').fill('marc@example.test');
-  await page.getByRole('button',{name:'Anfrage senden',exact:true}).click();
+  await page.getByRole('button',{name:t('contactform.next'),exact:true}).click();
+  await expect(page.getByLabel(t('contactform.yourName'))).toHaveAttribute('maxlength','120');
+  await page.getByLabel(t('contactform.yourName')).fill('Marc');
+  await page.getByLabel(t('contactform.yourEmailAddress')).fill('marc@example.test');
+  await page.getByRole('button',{name:t('contactform.sendEnquiry'),exact:true}).click();
   await expect(page.getByRole('status')).toContainText('Es wurde nichts gesendet');
   expect(submitted).toContain('SPARK');
   expect(submitted).not.toContain('name="drohnen"');
@@ -102,12 +104,12 @@ test('Porträtlogos behalten ihr Seitenverhältnis nach der Bildoptimierung', as
 test('Optionale Angaben stehen hinter kleinen Knöpfen, vorbelegte Felder sind offen', async ({ page }) => {
   await page.goto('/kontakt/?show=Anlass%3A%20Launch#anfrage');
   await page.getByText('Firmenevent', { exact: true }).click();
-  await page.getByLabel('Wo soll sie stattfinden?').fill('Essen');
+  await page.getByLabel(t('contactform.whereWillItTakePlace')).fill('Essen');
   await page.getByText('Noch nicht festgelegt').click();
-  await page.getByRole('button', { name: 'Weiter', exact: true }).click();
+  await page.getByRole('button', { name: t('contactform.next'), exact: true }).click();
   // Nachricht ist durch den Entwurf vorbelegt und deshalb offen, Telefon noch nicht
-  await expect(page.getByLabel('Möchtest du uns noch etwas mitteilen?')).toBeVisible();
-  await expect(page.getByLabel('Deine Telefonnummer')).toBeHidden();
+  await expect(page.getByLabel(t('contactform.anythingElseYouDLikeToTellUs'))).toBeVisible();
+  await expect(page.getByLabel(t('contactform.yourPhoneNumber'))).toBeHidden();
   await page.getByRole('button', { name: 'Telefon' }).click();
-  await expect(page.getByLabel('Deine Telefonnummer')).toBeFocused();
+  await expect(page.getByLabel(t('contactform.yourPhoneNumber'))).toBeFocused();
 });

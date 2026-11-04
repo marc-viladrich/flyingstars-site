@@ -6,7 +6,6 @@ const contractSite=await createSite(process.cwd());
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
-import { parse } from 'yaml';
 import messages from '../src/i18n/ui.json' with { type: 'json' };
 import { createTranslator } from '../src/i18n/ui.mjs';
 import { LOCALES, localizedHref, localeFromPath, localeOfId, sourceId, entryPath } from '../src/i18n/routing.mjs';

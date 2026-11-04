@@ -4,7 +4,6 @@ import {sectionSchema} from '../src/schemas/content-schema.mjs';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
-import { parse } from 'yaml';
 import { projectShowcaseSchema } from '../src/schemas/project-showcase.mjs';
 const root = new URL('../src/content/', import.meta.url);
 const entry = (path) => readEntry(new URL(path, root)).data;
