@@ -6,6 +6,15 @@ import {project,reviewRequired,parseContent} from '../../src/i18n/contract.mjs';
 import {metadataKeys,contentData,dependenciesFromRecords,isSource,baseId,localeOf,seedTranslation,stamp,survivingEvidence,verifyCurrent,same} from '../../src/i18n/transaction.mjs';
 const failure=message=>Object.assign(new Error(message),{status:409});
 export function localeTransactions(root,sourceFor) {
+ // Cache only successful checks of exact content + owner snapshots. Changed bytes
+ // still pass the independent revision guard on every save, including cache hits.
+ const verified=new Map();
+ const verify=(source,target,locale,deps,depsKey)=>{
+  const id=target.id,key=depsKey+'\n'+JSON.stringify([source.data,target.data]);
+  if(verified.get(id)===key)return;
+  verifyCurrent(sourceFor(source.id).schema,source.data,target.data,locale,deps);
+  verified.set(id,key);
+ };
  const fileRecords=files=>{
   const paths=readdirSync(path.join(root,'src/content'),{recursive:true}).map(f=>'src/content/'+f);paths.push('src/i18n/ui.json');
   return paths.flatMap(file=>{const id=file==='src/i18n/ui.json'?'site/ui':file==='src/content/contact.json'?'site/contact':file==='src/content/show-extras.json'?'site/show-extras':file==='src/content/show-duration.json'?'site/show-duration':file==='src/content/project-facts.json'?'site/project-facts':file==='src/content/business-facts.json'?'site/business-facts':/^src\/content\/(pages|posts|projects|faq|people)\/(.+)\.(yaml|md|json)$/.test(file)?file.replace(/^src\/content\/(pages|posts|projects|faq|people)\/(.+)\.(yaml|md|json)$/,(_,kind,slug)=>({pages:'page',posts:'post',projects:'project',faq:'faq',people:'person'}[kind])+'/'+slug):null;
@@ -28,7 +37,7 @@ export function localeTransactions(root,sourceFor) {
    return extra;
   },
   prepareTransaction({state,nextRecords,seen}) {
-   const before=state.records??state,dependencies=dependenciesFromRecords(nextRecords),proposals=[];
+   const before=state.records??state,dependencies=dependenciesFromRecords(nextRecords),depsKey=JSON.stringify(dependencies),proposals=[];
    // Every projection reads these owner snapshots. A working-copy change to any read owner is a conflict.
    for(const record of before){const source=sourceFor(record.id);if(!source)continue;const bytes=readFileSync(path.join(root,source.file));if(createHash('sha256').update(bytes).digest('hex')!==record.revision)throw failure('Eine gelesene Quelldatei wurde außerhalb des Editors geändert: '+source.file);}
    for(const id of seen){const old=before.find(r=>r.id===id),now=nextRecords.find(r=>r.id===id);if(!old||!now||!localeOf(id)&&!isSource(id))continue;
@@ -37,6 +46,7 @@ export function localeTransactions(root,sourceFor) {
    }
    for(const source of nextRecords.filter(r=>isSource(r.id))){
     const targets=['en','nl'].map(locale=>source.id.replace('/',`/${locale}/`));
+    if(!seen.has(source.id)&&!targets.some(id=>seen.has(id))){for(const id of targets){const target=nextRecords.find(r=>r.id===id);if(!target)throw failure('Sprachfassung fehlt: '+id);verify(source,target,localeOf(id),dependencies,depsKey);}continue;}
     if(seen.has(source.id)&&!targets.every(id=>seen.has(id)))throw failure(`Bitte beide Sprachfassungen gemeinsam prüfen und mitspeichern: ${targets.join(', ')}.`);
     for(const id of targets){
      const locale=localeOf(id),target=nextRecords.find(r=>r.id===id),old=before.find(r=>r.id===id);if(!target||!old)throw failure('Sprachfassung fehlt: '+id);
@@ -64,8 +74,8 @@ export function localeTransactions(root,sourceFor) {
    return proposals;
   },
   validateTransaction({nextRecords}){
-   const deps=dependenciesFromRecords(nextRecords);
-   for(const source of nextRecords.filter(r=>isSource(r.id)))for(const locale of ['en','nl']){const target=nextRecords.find(r=>r.id===source.id.replace('/',`/${locale}/`));verifyCurrent(sourceFor(source.id).schema,source.data,target.data,locale,deps);}
+   const deps=dependenciesFromRecords(nextRecords),depsKey=JSON.stringify(deps);
+   for(const source of nextRecords.filter(r=>isSource(r.id)))for(const locale of ['en','nl']){const target=nextRecords.find(r=>r.id===source.id.replace('/',`/${locale}/`));verify(source,target,locale,deps,depsKey);}
   },
  };
 }

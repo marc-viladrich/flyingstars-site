@@ -1,3 +1,4 @@
+import {isDeepStrictEqual} from 'node:util';
 import {assertKnownFields} from '../src/i18n/contract.mjs';
 import {sharedPaths,localeOf} from '../src/i18n/transaction.mjs';
 import path from 'node:path';
@@ -12,8 +13,48 @@ import {routeTools} from './extensions/flyingstars/web/routing.mjs';
 import {localeTransactions} from './design/locale-transactions.mjs';
 export {compatibility} from './extensions/flyingstars/runtime-compatibility.mjs';
 
+function changedLeaves(before,after){
+ const changed=[];
+ const diff=(old,value,path=[])=>{
+  if(isDeepStrictEqual(old,value))return;
+  if(old&&value&&typeof old==='object'&&typeof value==='object'&&!(old instanceof Date)&&!(value instanceof Date)&&Array.isArray(old)===Array.isArray(value)&&(!Array.isArray(old)||old.length===value.length)){
+   for(const key of new Set([...Object.keys(old),...Object.keys(value)]))diff(old[key],value[key],[...path,Array.isArray(value)?Number(key):key]);
+  }else changed.push({path,value});
+ };
+ diff(before,after);return changed;
+}
+
 class FlyingStarsSourceAdapter extends LegacySourceAdapter {
- decode(source,text){const decoded=super.decode(source,text);assertKnownFields(source.schema,decoded.raw);return decoded;}
+ decode(source,text){
+  this.decodedFiles??=new Map();const cached=this.decodedFiles.get(source.id);
+  if(cached?.text===text&&cached.schema===source.schema)return {raw:structuredClone(cached.raw),doc:cached.doc};
+  const decoded=super.decode(source,text);assertKnownFields(source.schema,decoded.raw);
+  this.decodedFiles.set(source.id,{text,schema:source.schema,raw:structuredClone(decoded.raw),doc:decoded.doc});
+  return decoded;
+ }
+ // AFE's root reconciliation reparses the whole YAML for EVERY member, even
+ // unchanged evidence fields. Derive only changed leaves before invoking it.
+ encode(source,raw,doc,patches=[]){
+  if(!doc||!patches.some(p=>p.path.length===0))return super.encode(source,raw,doc,patches);
+  const changed=changedLeaves(this.decode(source,doc.bytes).raw,raw);
+  return super.encode(source,raw,doc,changed);
+ }
+ async commit(updated,context){
+  const tx=this.registry.begin(context.parent),binaryWrites=[];
+  for(const update of updated){
+   if(!update.address){binaryWrites.push(update);continue;}
+   const kind=update.kind||(update.bytes===null?'delete':update.before===null?'create':'set');
+   if(kind!=='set'){await tx.stage({kind,address:update.address,path:[],...kind==='delete'?{}:{value:update.raw}});continue;}
+   const source=this.site.sourcesFromFiles([update.file]).find(s=>s.address.collection===update.address.collection&&s.address.id===update.address.id);
+   const before=this.decode(source,update.before.toString('utf8')).raw;
+   const patches=changedLeaves(before,update.raw);
+   // Keep read/conflict participation even for an explicitly saved no-op.
+   if(!patches.length)patches.push({path:[],value:update.raw});
+   for(const patch of patches)await tx.stage({kind:patch.value===undefined?'unset':'set',address:update.address,...patch});
+  }
+  return tx.commit({...context,binaryWrites});
+ }
+
 }
 
 /** The visitor schema is authoritative. Old package/site/translation records are deliberately not registered. */
