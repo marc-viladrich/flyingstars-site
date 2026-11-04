@@ -1,0 +1,10 @@
+/* Gemeinsame responsive Verträge. scripts/css-media.mjs löst sie für jedes CSS-/Astro-Modul auf.
+   Grenzen bleiben in em der initialen Browser-Schriftgröße; min/max-Paare behalten ihren bisherigen 1px-Abstand. */
+@custom-media --compact (max-width: 40em);
+@custom-media --mobile (max-width: 43.75em);
+@custom-media --timeline-stacked (max-width: 56.25em);
+@custom-media --nav-collapsed (max-width: 62.5em);
+@custom-media --nav-expanded (min-width: 62.5625em);
+@custom-media --grid-stacked (max-width: 68.75em);
+@custom-media --grid-expanded (min-width: 68.8125em);
+@custom-media --small-facts (max-width: 37.5em);

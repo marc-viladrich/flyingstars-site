@@ -1,37 +1,37 @@
 
-.occ { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: clip; /* clip statt hidden: kein Scroll-Container, sonst misst der CSS-Vorhang (view()) gegen die Karte */ display: grid; grid-template-rows: auto 1fr; transition: border-color 0.2s, transform 0.2s; }
+.occ { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: clip; /* clip statt hidden: kein Scroll-Container, sonst misst der CSS-Vorhang (view()) gegen die Karte */ display: grid; grid-template-rows: auto 1fr; transition: border-color var(--dur-control), transform var(--dur-control); }
 .occ:hover { border-color: var(--line-strong); transform: translateY(-0.125rem); }
-.occ .img { aspect-ratio: 4 / 3; overflow: hidden; background: #0a0908; border-radius: var(--radius) var(--radius) 0 0; }
+.occ .img { aspect-ratio: 4 / 3; overflow: hidden; background: var(--media-ground); border-radius: var(--radius) var(--radius) 0 0; }
 .occ img { width: 100%; height: 100%; object-fit: cover; }
-.occ .body { padding: 1.375rem; display: grid; gap: 0.75rem; align-content: start; }
+.occ .body { padding: var(--space-5-5); display: grid; gap: var(--space-3); align-content: start; }
 .occ .body p { color: var(--muted); font-size: var(--text-control); }
-.occ .link { margin-top: 0.375rem; justify-self: start; font-size: var(--text-sm); }
-.occ .dl { justify-self: start; margin-top: -0.125rem; font-size: var(--text-xs); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); transition: color 0.2s; }
+.occ .link { margin-top: var(--space-1-5); justify-self: start; font-size: var(--text-sm); }
+.occ .dl { justify-self: start; margin-top: calc(-1 * var(--space-0-5)); font-size: var(--text-xs); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); transition: color var(--dur-control); }
 .occ .dl:hover { color: var(--text); }
-.proj { display: grid; gap: 0.75rem; align-content: start; }
-.proj .img { aspect-ratio: 16 / 9; overflow: hidden; border-radius: 0.875rem; background: #0a0908; position: relative; }
+.proj { display: grid; gap: var(--space-3); align-content: start; }
+.proj .img { aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-14); background: var(--media-ground); position: relative; }
 .proj img, .proj video { width: 100%; height: 100%; object-fit: cover; }
-.proj .count { z-index: 2; position: absolute; left: 0.75rem; bottom: 0.75rem; background: rgba(15, 13, 12, 0.72); backdrop-filter: blur(0.5rem); -webkit-backdrop-filter: blur(0.5rem); color: var(--text); padding: 0.375rem 0.5625rem; border-radius: 0.25rem; }
+.proj .count { z-index: 2; position: absolute; left: 0.75rem; bottom: 0.75rem; background: var(--overlay-media); backdrop-filter: blur(0.5rem); -webkit-backdrop-filter: blur(0.5rem); color: var(--text); padding: var(--space-1-5) var(--space-2-25); border-radius: var(--radius-4); }
 .proj .kick { color: var(--amber); }
 .proj :is(h2, h3, h4) { font: 500 var(--text-lg)/1.15 var(--display); letter-spacing: -0.02em; color: var(--head); margin: 0; text-wrap: balance; }
-@media (max-width: 40em) {
+@media (--compact) {
   .proj .img { aspect-ratio: 16 / 10; }
 }
 .occ .cat { color: var(--accent); }
 .proj .img { --curtain-r: 0.875rem; }
 .proj.static .img { cursor: default; }
 .proj p { color: var(--muted); font-size: var(--text-control); }
-.proj .img .loop { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.6s ease; }
+.proj .img .loop { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity var(--dur-reveal) var(--ease-default); }
 .proj.playing .img .loop { opacity: 1; }
 .proj .img .count { z-index: 2; }
 .occasions.occ-slider > .occ { scroll-snap-align: start; }
 
-  .ls-card:nth-child(2) { margin-top: clamp(2.5rem, 9vw, 10rem); }
-  .ls-card { display: grid; gap: 1.375rem; align-content: start; }
-  .ls-img { position: relative; aspect-ratio: 4 / 3; border-radius: var(--radius); overflow: hidden; background: #0a0908; --curtain-r: var(--radius); }
+  .ls-card:nth-child(2) { margin-top: clamp(var(--space-10), 9vw, 10rem); }
+  .ls-card { display: grid; gap: var(--space-5-5); align-content: start; }
+  .ls-img { position: relative; aspect-ratio: 4 / 3; border-radius: var(--radius); overflow: hidden; background: var(--media-ground); --curtain-r: var(--radius); }
   .ls-img img { width: 100%; height: 100%; object-fit: cover; }
-  .ls-badge { position: absolute; z-index: 2; left: 0.875rem; bottom: 0.875rem; padding: 0.4375rem 0.625rem; border-radius: 0.25rem; background: rgba(15, 13, 12, 0.72); -webkit-backdrop-filter: blur(0.5rem); backdrop-filter: blur(0.5rem); color: var(--text); }
-  .ls-body { display: grid; gap: 0.75rem; justify-items: start; max-width: 40rem; }
+  .ls-badge { position: absolute; z-index: 2; left: 0.875rem; bottom: 0.875rem; padding: var(--space-1-75) var(--space-2-5); border-radius: var(--radius-4); background: var(--overlay-media); -webkit-backdrop-filter: blur(0.5rem); backdrop-filter: blur(0.5rem); color: var(--text); }
+  .ls-body { display: grid; gap: var(--space-3); justify-items: start; max-width: 40rem; }
   .ls-body .kicker { margin: 0; }
   .ls-body h2, .ls-body h3 { font-size: var(--text-2xl); line-height: 1.1; max-width: 22ch; }
   .ls-body p { color: var(--muted); max-width: 52ch; }
@@ -39,9 +39,9 @@
     .ls-card:nth-child(2) { margin-top: 0; }
   }
   /* Formationskarte (Referenz ohne Foto) */
-  .rf-ghost .img { background: radial-gradient(120% 90% at 50% 40%, #1a1512 0%, #0a0908 70%); }
+  .rf-ghost .img { background: radial-gradient(120% 90% at 50% 40%, #1a1512 0%, var(--media-ground) 70%); }
   .rf-ghost svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .rf-ghost .tw { animation: rf-tw 4.2s ease-in-out var(--d, 0s) infinite; }
+  .rf-ghost .tw { animation: rf-tw var(--dur-float) var(--ease-ambient) var(--d, 0s) infinite; }
   @keyframes rf-tw { 0%, 100% { opacity: 1; } 45% { opacity: 0.35; } 55% { opacity: 1; filter: brightness(1.8); } }
   @media (prefers-reduced-motion: reduce) { .rf-ghost .tw { animation: none; } }
   html.motion-paused .rf-ghost .tw { animation: none; }

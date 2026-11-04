@@ -11,10 +11,10 @@ const { icon, logo, title, text, level: H = 'h3', as: Tag = 'div', variant = 'de
   <slot />
 </Tag>
 <style is:global>
-  .icon-feature { display: grid; gap: 0.625rem; align-content: start; justify-items: start; }
+  .icon-feature { display: grid; gap: var(--space-2-5); align-content: start; justify-items: start; }
   .icon-feature > .ico { width: 2.25rem; height: 2.25rem; }
   .icon-feature > p { margin: 0; color: var(--muted); font-size: var(--text-control); }
-  .icon-feature-compact { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 0.375rem; }
-  .icon-feature-compact > .ico { width: 1.125rem; height: 1.125rem; align-self: center; margin: 0 0.25rem 0 0; }
+  .icon-feature-compact { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--space-1-5); }
+  .icon-feature-compact > .ico { width: 1.125rem; height: 1.125rem; align-self: center; margin: 0 var(--space-1) 0 0; }
   .icon-feature-compact > .ic-h, .icon-feature-compact > p { font: inherit; color: inherit; }
 </style>

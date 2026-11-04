@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import {cssMedia} from './scripts/css-media.mjs';
 const markerIntegration='astro-frontend-editor/astro/markers';
 const editorIntegrations=process.env.AFE_MODE==='editor'?[(await import(markerIntegration)).default()]:[];
 import {astroRedirects} from './src/i18n/public-routes.mjs';
@@ -27,7 +28,7 @@ export default defineConfig({
   build: { inlineStylesheets: 'auto' },
   // Lokal leitet Tailscale den Dev-Port (4391) aufs Handy weiter und belegt ihn dafür auf der Tailnet-Adresse. Vite hält
   // den Port dann für belegt und weicht aus; mit STRICT_PORT=1 bindet es trotzdem an 127.0.0.1:4391.
-  vite: { cacheDir: '.astro/vite', server: { strictPort: process.env.STRICT_PORT === '1' } },
+  vite: { css: { postcss: { plugins: [cssMedia()] } }, cacheDir: '.astro/vite', server: { strictPort: process.env.STRICT_PORT === '1' } },
   // Weiterleitungen nach dem Umbau zu Stufe 1 (30.10.2026). Im statischen Build entstehen daraus Seiten mit
   // meta refresh und canonical; auf dem Host sollten dieselben Paare zusätzlich als echte 301 eingetragen werden.
   // Die Fallstudien bleiben unter ihren Live-URLs im Wurzelverzeichnis (Moritz' Sitemap vom 07.10.).

@@ -1,51 +1,51 @@
 /* Bühne links, Wireframe-Spalte rechts (Runde 8: Wireframe größer, Bühne etwas schmaler); auf dem Handy Bühne oben,
      darunter nur Paketknöpfe und Regler */
-  .cft { display: grid; grid-template-columns: minmax(0, 1fr) clamp(20rem, 31vw, 28.75rem); gap: clamp(1.25rem, 3vw, 3.5rem); align-items: stretch; }
-  .cft-stage { position: relative; min-height: clamp(25rem, 62vh, 45rem); border-radius: var(--radius); background: radial-gradient(ellipse at 50% 120%, rgba(51, 237, 242, 0.06), transparent 60%), #0a0908; border: 1px solid var(--line); overflow: hidden; }
+  .cft { display: grid; grid-template-columns: minmax(0, 1fr) clamp(20rem, 31vw, 28.75rem); gap: clamp(var(--space-5), 3vw, var(--space-14)); align-items: stretch; }
+  .cft-stage { position: relative; min-height: clamp(25rem, 62vh, 45rem); border-radius: var(--radius); background: radial-gradient(ellipse at 50% 120%, var(--fill-cyan), transparent 60%), var(--media-ground); border: 1px solid var(--line); overflow: hidden; }
   .cft-view, .cft-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
   .cft-error { position: absolute; inset: auto 1.25rem 1.25rem; margin: 0; color: var(--muted); font-size: var(--text-sm); }
   /* „Euer Logo wird mit mehr Drohnen schärfer“ (Entwurf): nur während des Logos, unten auf der Bühne, der Kern im Verlauf */
-  .cft-note { position: absolute; z-index: 2; left: 0; right: 0; bottom: clamp(1rem, 4%, 2rem); margin: 0 auto; width: fit-content; max-width: calc(100% - 2rem); font: 400 var(--text-sm)/1.3 var(--display); color: var(--muted); text-align: center; opacity: 0; transform: translateY(0.375rem); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .cft-note { position: absolute; z-index: 2; left: 0; right: 0; bottom: clamp(1rem, 4%, 2rem); margin: 0 auto; width: fit-content; max-width: calc(100% - 2rem); font: 400 var(--text-sm)/1.3 var(--display); color: var(--muted); text-align: center; opacity: 0; transform: translateY(0.375rem); transition: opacity var(--dur-fade) var(--ease-default), transform var(--dur-fade) var(--ease-default); }
   .cft-note b { font: 600 var(--text-copy)/1.2 var(--display); background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .cft-note.is-on { opacity: 1; transform: none; }
 
   /* die Bühne als Link: beim Zeigen (und wenn der Knopf den Fokus hat) ein dezenter Schleier mit Hinweis, leiser als die
      Dropzone im Konfigurator */
-  .cft-hit { position: absolute; inset: 0; z-index: 3; display: grid; place-items: center; border-radius: inherit; color: var(--text); text-decoration: none; background: radial-gradient(ellipse at 50% 55%, rgba(10, 9, 8, 0.38), rgba(10, 9, 8, 0.12) 70%); opacity: 0; transition: opacity 0.25s ease; }
-  .cft-hit span { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5625rem 1rem; border: 1px solid rgba(246, 241, 232, 0.22); border-radius: 62.4375rem; background: rgba(15, 13, 12, 0.6); -webkit-backdrop-filter: blur(0.25rem); backdrop-filter: blur(0.25rem); font: 500 var(--text-control)/1 var(--display); transform: translateY(0.25rem); transition: transform 0.25s ease; }
-  .cft-hit i { font-style: normal; transition: transform 0.25s ease; }
+  .cft-hit { position: absolute; inset: 0; z-index: 3; display: grid; place-items: center; border-radius: inherit; color: var(--text); text-decoration: none; background: radial-gradient(ellipse at 50% 55%, rgb(var(--rgb-media-ground) / 0.38), rgb(var(--rgb-media-ground) / 0.12) 70%); opacity: 0; transition: opacity var(--dur-color) var(--ease-default); }
+  .cft-hit span { display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-2-25) var(--space-4); border: 1px solid var(--line-bright); border-radius: var(--radius-pill); background: rgb(var(--rgb-ground) / 0.6); -webkit-backdrop-filter: blur(0.25rem); backdrop-filter: blur(0.25rem); font: 500 var(--text-control)/1 var(--display); transform: translateY(0.25rem); transition: transform var(--dur-color) var(--ease-default); }
+  .cft-hit i { font-style: normal; transition: transform var(--dur-color) var(--ease-default); }
   .cft-hit:hover, .cft:has(.cft-cta:focus) .cft-hit { opacity: 1; }
   .cft-hit:hover span, .cft:has(.cft-cta:focus) .cft-hit span { transform: none; }
   .cft-hit:hover i { transform: translateX(0.1875rem); }
   @media (hover: none) { .cft-hit { display: none; } }
-  .cft-side { display: grid; align-content: center; gap: 1.5rem; }
-  .cft-mock { display: grid; gap: 1.625rem; padding: clamp(1.375rem, 2.2vw, 2rem); border: 1px solid var(--line); border-radius: var(--radius); background: rgba(246, 241, 232, 0.02); pointer-events: none; user-select: none; }
-  .cft-group { display: grid; gap: 0.625rem; }
+  .cft-side { display: grid; align-content: center; gap: var(--space-6); }
+  .cft-mock { display: grid; gap: var(--space-6-5); padding: clamp(var(--space-5-5), 2.2vw, var(--space-8)); border: 1px solid var(--line); border-radius: var(--radius); background: rgb(var(--rgb-text) / 0.02); pointer-events: none; user-select: none; }
+  .cft-group { display: grid; gap: var(--space-2-5); }
   .cft-label { margin: 0; font-size: var(--text-control); color: var(--muted); }
   /* Paketknöpfe in ihren Farben (amber, orchid, cyan); Runde 10: die nicht gewählten in ihrer Farbe gedämpft (40 % Farbe,
      60 % --faint): auf der Karte 6,7:1 / 5,6:1 / 7,7:1, also über AA */
-  .cft-pkgs { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.25rem; padding: 0.25rem; border: 1px solid var(--line); border-radius: 0.75rem; }
-  .cft-pkg { position: relative; z-index: 1; display: grid; place-items: center; min-height: 3.25rem; border-radius: 0.5625rem; font: 600 var(--text-label)/1 var(--mono); letter-spacing: 0.08em; color: color-mix(in srgb, var(--c) 40%, var(--faint)); transition: color 0.35s ease; }
+  .cft-pkgs { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-1); padding: var(--space-1); border: 1px solid var(--line); border-radius: var(--radius-12); }
+  .cft-pkg { position: relative; z-index: 1; display: grid; place-items: center; min-height: 3.25rem; border-radius: var(--radius-9); font: 600 var(--text-label)/1 var(--mono); letter-spacing: 0.08em; color: color-mix(in srgb, var(--c) 40%, var(--faint)); transition: color var(--dur-glide) var(--ease-default); }
   .cft-pkg.is-on { color: var(--c); }
   /* Runde 11: ein Rahmen, der zum gewählten Paket gleitet (wie .cfg-ind im Konfigurator), Farbe des Pakets */
   .cft-pkgs { --i: 0; --sc: var(--c0); }
   .cft-pkgs:has([data-id=HORIZON].is-on) { --i: 1; --sc: var(--c1); }
   .cft-pkgs:has([data-id=ODYSSEY].is-on) { --i: 2; --sc: var(--c2); }
-  .cft-ind { position: absolute; z-index: 0; top: 0.25rem; bottom: 0.25rem; left: 0.25rem; width: calc((100% - 1rem) / 3); box-sizing: border-box; border-radius: 0.5625rem; border: 1px solid var(--sc); background: color-mix(in srgb, var(--sc) 16%, transparent); transform: translateX(calc(var(--i) * (100% + 0.25rem))); transition: transform 0.55s cubic-bezier(0.3, 0.7, 0.2, 1), border-color 0.55s ease, background-color 0.55s ease; }
+  .cft-ind { position: absolute; z-index: 0; top: 0.25rem; bottom: 0.25rem; left: 0.25rem; width: calc((100% - 1rem) / 3); box-sizing: border-box; border-radius: var(--radius-9); border: 1px solid var(--sc); background: color-mix(in srgb, var(--sc) 16%, transparent); transform: translateX(calc(var(--i) * (100% + 0.25rem))); transition: transform var(--dur-fade-long) var(--ease-glide), border-color var(--dur-fade-long) var(--ease-default), background-color var(--dur-fade-long) var(--ease-default); }
   /* Regler mit „N Drohnen“ */
-  .cft-drones { display: grid; gap: 0.75rem; }
+  .cft-drones { display: grid; gap: var(--space-3); }
   .cft-count { margin: 0; font: 400 var(--text-base)/1 var(--display); color: var(--muted); }
-  .cft-count b { font: 600 1.625rem/1 var(--display); color: var(--text); font-variant-numeric: tabular-nums; margin-right: 0.25rem; }
+  .cft-count b { font: 600 1.625rem/1 var(--display); color: var(--text); font-variant-numeric: tabular-nums; margin-right: var(--space-1); }
   .cft-slider { position: relative; height: 1.375rem; }
-  .cft-slider::before { content: ""; position: absolute; left: 0; right: 0; top: 0.5625rem; height: 0.25rem; border-radius: 0.125rem; background: var(--track); opacity: 0.25; }
-  .cft-fill { position: absolute; left: 0; top: 0.5625rem; height: 0.25rem; width: calc(var(--at) * 100%); border-radius: 0.125rem; background: var(--track); background-size: calc(100% / max(var(--at), 0.001)) 100%; transition: width 0.7s cubic-bezier(0.45, 0, 0.2, 1); }
-  .cft-thumb { position: absolute; top: 0; left: calc(var(--at) * (100% - 1.375rem)); width: 1.375rem; height: 1.375rem; border-radius: 50%; background: var(--text); border: 0.3125rem solid var(--pkg, var(--amber)); box-shadow: 0 0 0 0.25rem rgba(15, 13, 12, 0.9), 0 0 1rem 2px color-mix(in srgb, var(--pkg, var(--amber)) 45%, transparent); transition: left 0.7s cubic-bezier(0.45, 0, 0.2, 1), border-color 0.4s ease, box-shadow 0.4s ease; }
+  .cft-slider::before { content: ""; position: absolute; left: 0; right: 0; top: 0.5625rem; height: 0.25rem; border-radius: var(--radius-2); background: var(--track); opacity: 0.25; }
+  .cft-fill { position: absolute; left: 0; top: 0.5625rem; height: 0.25rem; width: calc(var(--at) * 100%); border-radius: var(--radius-2); background: var(--track); background-size: calc(100% / max(var(--at), 0.001)) 100%; transition: width var(--dur-reveal-move) var(--ease-scene); }
+  .cft-thumb { position: absolute; top: 0; left: calc(var(--at) * (100% - 1.375rem)); width: 1.375rem; height: 1.375rem; border-radius: var(--radius-round); background: var(--text); border: 0.3125rem solid var(--pkg, var(--amber)); box-shadow: 0 0 0 0.25rem var(--overlay-heavy), 0 0 1rem 2px color-mix(in srgb, var(--pkg, var(--amber)) 45%, transparent); transition: left var(--dur-reveal-move) var(--ease-scene), border-color var(--dur-underline) var(--ease-default), box-shadow var(--dur-underline) var(--ease-default); }
   /* Preis ohne Zahlen: sechs Euro-Zeichen, die erreichten hell */
-  .cft-price { margin: 0; padding-top: 1.125rem; border-top: 1px solid var(--line); font: 600 1.5rem/1 var(--display); letter-spacing: 0.04em; white-space: nowrap; }
-  .cft-euro { color: rgba(246, 241, 232, 0.16); transition: color 0.35s ease; }
+  .cft-price { margin: 0; padding-top: var(--space-4-5); border-top: 1px solid var(--line); font: 600 1.5rem/1 var(--display); letter-spacing: 0.04em; white-space: nowrap; }
+  .cft-euro { color: rgb(var(--rgb-text) / 0.16); transition: color var(--dur-glide) var(--ease-default); }
   .cft-euro.is-on { color: var(--text); }
   /* kurzer Druck, wo der Zustand wechselt (statt eines sichtbaren Cursors) */
-  .cft-pkg.is-press { animation: cft-press 0.45s ease-out; }
+  .cft-pkg.is-press { animation: cft-press var(--dur-enter) var(--ease-out); }
   @keyframes cft-press { 0% { transform: scale(1); } 35% { transform: scale(0.94); } 100% { transform: scale(1); } }
   .cft-cta { justify-self: start; }
   @media (prefers-reduced-motion: reduce) {
@@ -54,13 +54,13 @@
   }
   html.motion-paused .cft-pkg.is-press { animation: none; }
   @media (max-width: 53.75em) {
-    .cft { grid-template-columns: 1fr; gap: 1rem; }
+    .cft { grid-template-columns: 1fr; gap: var(--space-4); }
     /* Höhe aus dem Seitenverhältnis: eine Mindesthöhe erzwang über aspect-ratio ~20 rem Mindestbreite, bei 320 px
        oder größerer Schrift lief die Bühne seitlich aus dem Bild (WCAG 1.4.10, 03.11.2026) */
     .cft-stage { align-self: start; min-height: 0; aspect-ratio: 1 / 1.05; }
-    .cft-side { gap: 1.125rem; }
+    .cft-side { gap: var(--space-4-5); }
     /* auf dem Handy nur Paketknöpfe und Regler */
-    .cft-mock { padding: 1rem; gap: 1rem; }
+    .cft-mock { padding: var(--space-4); gap: var(--space-4); }
     .cft-price { display: none; }
     .cft-pkg { min-height: 2.75rem; font-size: var(--text-xs); }
     .cft-count b { font-size: 1.375rem; }

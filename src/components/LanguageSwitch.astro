@@ -36,26 +36,26 @@ const popId = `lang-${id}`;
   if (new URLSearchParams(location.search).get('sprache') === 'icon') document.documentElement.dataset.langSwitch = 'icon';
 </script>
 <style>
-  .language-switch { position: relative; flex-shrink: 0; --glide: cubic-bezier(0.3, 0.7, 0.2, 1); }
-  .lang-btn { display: inline-flex; align-items: center; gap: 0.375rem; height: 2.5rem; padding: 0 0.75rem 0 0.6875rem; border-radius: 62.4375rem; border: 1px solid var(--line-strong); background: rgba(15, 13, 12, 0.5); color: var(--text); font: 500 var(--text-xs)/1 var(--mono); letter-spacing: 0.08em; cursor: pointer; transition: border-color 0.25s ease, background-color 0.25s ease; }
-  .language-switch:is(:hover, :focus-within) .lang-btn { border-color: var(--text); background: rgba(246, 241, 232, 0.06); }
+  .language-switch { position: relative; flex-shrink: 0; --glide: var(--ease-glide); }
+  .lang-btn { display: inline-flex; align-items: center; gap: var(--space-1-5); height: 2.5rem; padding: 0 var(--space-3) 0 var(--space-2-75); border-radius: var(--radius-pill); border: 1px solid var(--line-strong); background: var(--overlay-control); color: var(--text); font: 500 var(--text-xs)/1 var(--mono); letter-spacing: 0.08em; cursor: pointer; transition: border-color var(--dur-color) var(--ease-default), background-color var(--dur-color) var(--ease-default); }
+  .language-switch:is(:hover, :focus-within) .lang-btn { border-color: var(--text); background: var(--fill-hover); }
   .lang-btn:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offset: 0.1875rem; }
   .lang-btn :global(.ico) { width: 1.125rem; height: 1.125rem; flex: none; }
-  .lang-caret { display: block; width: 0.5625rem; height: 0.375rem; fill: none; stroke: currentColor; stroke-width: 1.4; transform-origin: 50% 50%; transition: transform 0.3s var(--glide); }
+  .lang-caret { display: block; width: 0.5625rem; height: 0.375rem; fill: none; stroke: currentColor; stroke-width: 1.4; transform-origin: 50% 50%; transition: transform var(--dur-standard) var(--glide); }
   .language-switch:is(:hover, :focus-within) .lang-caret { transform: rotate(180deg); }
   :global(html[data-lang-switch="icon"]) .lang-btn { width: 2.5rem; padding: 0; justify-content: center; }
   :global(html[data-lang-switch="icon"]) .lang-btn > .lang-code, :global(html[data-lang-switch="icon"]) .lang-caret { display: none; }
   /* Handy: so hoch wie Pause- und Menüknopf (global.css, max-width 62.5em) */
-  @media (max-width: 62.5em) { .lang-btn { height: 2.75rem; } :global(html[data-lang-switch="icon"]) .lang-btn { width: 2.75rem; } }
+  @media (--nav-collapsed) { .lang-btn { height: 2.75rem; } :global(html[data-lang-switch="icon"]) .lang-btn { width: 2.75rem; } }
 
   /* Liste wie „Anlässe“: öffnet beim Zeigen und per Fokus (auch Tippen), schließt mit kurzer Verzögerung. visibility
      statt clip-path, damit die Links geschlossen nicht per Tab erreichbar sind; ::before überbrückt den Abstand. */
-  .lang-pop { position: absolute; z-index: 30; top: calc(100% + 0.5rem); right: 0; min-width: 12rem; padding: 0.5rem; border: 1px solid var(--line); border-radius: 0.75rem; background: rgba(22, 19, 17, 0.96); -webkit-backdrop-filter: blur(0.875rem); backdrop-filter: blur(0.875rem); color: var(--text); box-shadow: 0 1.5rem 3rem -1.5rem rgba(0, 0, 0, 0.7); opacity: 0; visibility: hidden; transform: translateY(-0.375rem) scale(0.98); transform-origin: right top; transition: opacity 0.2s ease 0.12s, transform 0.25s var(--glide) 0.12s, visibility 0s 0.37s; }
+  .lang-pop { position: absolute; z-index: 30; top: calc(100% + 0.5rem); right: 0; min-width: 12rem; padding: var(--space-2); border: 1px solid var(--line); border-radius: var(--radius-12); background: var(--surface-popover); -webkit-backdrop-filter: blur(0.875rem); backdrop-filter: blur(0.875rem); color: var(--text); box-shadow: var(--shadow-popover); opacity: 0; visibility: hidden; transform: translateY(-0.375rem) scale(0.98); transform-origin: right top; transition: opacity var(--dur-control) var(--ease-default) var(--dur-delay-popover), transform var(--dur-color) var(--glide) var(--dur-delay-popover), visibility 0s var(--dur-delay-dismiss); }
   .lang-pop::before { content: ""; position: absolute; inset: -0.75rem 0 auto; height: 0.75rem; }
-  .language-switch:is(:hover, :focus-within) .lang-pop { opacity: 1; visibility: visible; transform: none; transition: opacity 0.2s ease, transform 0.3s var(--glide), visibility 0s; }
+  .language-switch:is(:hover, :focus-within) .lang-pop { opacity: 1; visibility: visible; transform: none; transition: opacity var(--dur-control) var(--ease-default), transform var(--dur-standard) var(--glide), visibility 0s; }
   .lang-pop ul { position: relative; list-style: none; margin: 0; padding: 0; display: grid; }
-  .lang-pop a { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; min-height: 2.75rem; padding: 0 0.75rem; border-radius: 0.5rem; font-size: var(--text-sm); text-decoration: none; }
-  .lang-pop .lang-code { font: 500 var(--text-xs)/1 var(--mono); letter-spacing: 0.08em; color: var(--faint); transition: color 0.2s ease; }
+  .lang-pop a { display: flex; align-items: center; justify-content: space-between; gap: var(--space-6); min-height: 2.75rem; padding: 0 var(--space-3); border-radius: var(--radius-8); font-size: var(--text-sm); text-decoration: none; }
+  .lang-pop .lang-code { font: 500 var(--text-xs)/1 var(--mono); letter-spacing: 0.08em; color: var(--faint); transition: color var(--dur-control) var(--ease-default); }
   .lang-pop a:hover .lang-code, .lang-pop a[aria-current] .lang-code { color: var(--accent); }
   .lang-pop a:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offset: 0; }
 </style>

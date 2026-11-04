@@ -42,24 +42,24 @@ const crew = image ? [] : await Promise.all(FOUNDERS.map(async (p) => ({ ...p, i
     : <ul class="cd-crew" aria-label={t('contactDetails.team')}>{crew.map((p) => <li><div class="portrait" data-dot-img data-step="6"><img src={p.img.src} width={p.img.width} height={p.img.height} alt={p.image.alt} loading="lazy" decoding="async" /></div><span>{p.name}</span></li>)}</ul>}
 </section>
 <style>
-  .contact-details { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: clamp(2.5rem, 6vw, 7rem); align-items: center; }
-  .cd-main :global(.cd-lead) { margin: 1rem 0 0; color: var(--muted); }
-  .cd-grid { list-style: none; margin: 2.75rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.25rem 2.5rem; }
-  .cd-grid :global(.icon-feature) { gap: 0.5rem; }
-  .cd-grid :global(.icon-feature > .ico) { width: 1.75rem; height: 1.75rem; margin-bottom: 0.25rem; }
+  .contact-details { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: clamp(var(--space-10), 6vw, var(--space-28)); align-items: center; }
+  .cd-main :global(.cd-lead) { margin: var(--space-4) 0 0; color: var(--muted); }
+  .cd-grid { list-style: none; margin: var(--space-11) 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-9) var(--space-10); }
+  .cd-grid :global(.icon-feature) { gap: var(--space-2); }
+  .cd-grid :global(.icon-feature > .ico) { width: 1.75rem; height: 1.75rem; margin-bottom: var(--space-1); }
   .cd-grid :global(.ic-h) { font: 500 var(--text-xs)/1.2 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
   .cd-link { color: var(--text); font-size: var(--text-copy); }
   /* eine Zeile je Adresszeile wie auf dem Umschlag; muss eine umbrechen, dann ausgewogen („Gründungszentrum / Zeche Zollverein“) */
   address { font-style: normal; font-size: var(--text-copy); line-height: 1.5; color: var(--text); }
   address span { display: block; text-wrap: balance; }
-  .cd-note { margin: 0.25rem 0 0; font-size: var(--text-sm); color: var(--muted); }
-  .cd-video { margin-top: 2.75rem; }
+  .cd-note { margin: var(--space-1) 0 0; font-size: var(--text-sm); color: var(--muted); }
+  .cd-video { margin-top: var(--space-11); }
   .cd-photo { margin: 0; border-radius: var(--radius); overflow: hidden; }
   .cd-photo :global(img) { display: block; width: 100%; height: auto; }
   /* Drei Porträts, die mittlere versetzt: wirkt wie eine Gruppe statt wie drei Passbilder */
-  .cd-crew { list-style: none; margin: 0; padding: 0 0 2.5rem; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
+  .cd-crew { list-style: none; margin: 0; padding: 0 0 var(--space-10); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); }
   .cd-crew li:nth-child(2) { translate: 0 2.5rem; }
-  .cd-crew .portrait { margin-bottom: 0.625rem; }
+  .cd-crew .portrait { margin-bottom: var(--space-2-5); }
   .cd-crew span { font-size: var(--text-sm); color: var(--muted); }
   /* unter 75em gestapelt: zwei Spalten ließen den Kontaktwegen zu wenig Breite (bei 940 px brachen Adresszeilen um) */
   @media (max-width: 75em) {
@@ -67,7 +67,7 @@ const crew = image ? [] : await Promise.all(FOUNDERS.map(async (p) => ({ ...p, i
     .cd-crew { max-width: 40rem; }
   }
   @media (max-width: 30em) {
-    .cd-grid { grid-template-columns: 1fr; gap: 1.75rem; }
+    .cd-grid { grid-template-columns: 1fr; gap: var(--space-7); }
     .cd-crew li:nth-child(2) { translate: 0 1.5rem; }
   }
 </style>

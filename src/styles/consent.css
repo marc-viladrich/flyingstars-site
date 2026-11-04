@@ -9,13 +9,13 @@
   --cc-btn-border-radius: 0.25rem;
   --cc-primary-border-color: var(--line-strong);
   --cc-secondary-border-color: var(--line);
-  --cc-overlay-bg: rgb(0 0 0 / .72);
+  --cc-overlay-bg: rgb(var(--rgb-black) / .72);
   --cc-btn-primary-bg: var(--text);
   --cc-btn-primary-color: var(--ground);
   --cc-btn-primary-border-color: var(--text);
-  --cc-btn-primary-hover-bg: #fff;
+  --cc-btn-primary-hover-bg: var(--white);
   --cc-btn-primary-hover-color: var(--ground);
-  --cc-btn-primary-hover-border-color: #fff;
+  --cc-btn-primary-hover-border-color: var(--white);
   --cc-btn-secondary-bg: transparent;
   --cc-btn-secondary-color: var(--head);
   --cc-btn-secondary-border-color: var(--line-strong);
@@ -23,10 +23,10 @@
   --cc-btn-secondary-hover-color: var(--head);
   --cc-btn-secondary-hover-border-color: var(--muted);
   --cc-toggle-on-bg: var(--accent);
-  --cc-toggle-off-bg: #63594e;
+  --cc-toggle-off-bg: var(--toggle-off);
   --cc-toggle-on-knob-bg: var(--ground);
   --cc-toggle-off-knob-bg: var(--head);
-  --cc-toggle-readonly-bg: #63594e;
+  --cc-toggle-readonly-bg: var(--toggle-off);
   --cc-toggle-readonly-knob-bg: var(--head);
   --cc-cookie-category-block-bg: transparent;
   --cc-cookie-category-block-border: var(--line-strong);
@@ -42,25 +42,25 @@
    die Schalter selbst; es gibt keinen zweiten großen Dialog mehr. Die Bibliothek setzt 16px als Grundgröße; 1rem folgt
    der Schriftgröße im Browser. */
 #cc-main { font-size: 1rem; }
-#cc-main .cm.cm--box { width: 23.75rem; max-width: calc(100vw - 2rem); max-height: calc(100dvh - 2rem); overflow: auto; border: 1px solid var(--line-strong); box-shadow: 0 1.125rem 3.125rem rgb(0 0 0 / .45); }
+#cc-main .cm.cm--box { width: 23.75rem; max-width: calc(100vw - 2rem); max-height: calc(100dvh - 2rem); overflow: auto; border: 1px solid var(--line-strong); box-shadow: 0 1.125rem 3.125rem rgb(var(--rgb-black) / .45); }
 #cc-main .cm__body { padding: 0; }
-#cc-main .cm__texts { padding: 1rem 0 0; }
+#cc-main .cm__texts { padding: var(--space-4) 0 0; }
 /* gleiche Ränder für Text und Knöpfe, auch gegen die !important-Werte der Bibliothek unter 640px */
-#cc-main .cm .cm__title, #cc-main .cm .cm__desc, #cc-main .cm .cm__btns { padding-left: 1.125rem !important; padding-right: 1.125rem !important; }
-#cc-main .cm__title { font: 500 var(--text-md)/1.3 var(--display); letter-spacing: -.01em; margin: 0 0 0.375rem; }
+#cc-main .cm .cm__title, #cc-main .cm .cm__desc, #cc-main .cm .cm__btns { padding-left: var(--space-4-5) !important; padding-right: var(--space-4-5) !important; }
+#cc-main .cm__title { font: 500 var(--text-md)/1.3 var(--display); letter-spacing: -.01em; margin: 0 0 var(--space-1-5); }
 #cc-main .cm__title + .cm__desc { margin-top: 0; }
 #cc-main .cm__desc { font-size: var(--text-label); line-height: 1.5; padding-top: 0; padding-bottom: 0; max-height: none; }
-#cc-main .cm .cm__btns { padding-top: 0.875rem; padding-bottom: 0.875rem; border-top: 0 !important; }
+#cc-main .cm .cm__btns { padding-top: var(--space-3-5); padding-bottom: var(--space-3-5); border-top: 0 !important; }
 #cc-main .consent-paragraph { display: block; }
-#cc-main .consent-fine { display: block; margin-top: 0.625rem; color: var(--faint); font-size: var(--text-xs); }
+#cc-main .consent-fine { display: block; margin-top: var(--space-2-5); color: var(--faint); font-size: var(--text-xs); }
 #cc-main .consent-fine a { color: var(--muted); text-underline-offset: 0.125rem; }
 /* Schalter: das echte Kontrollkästchen liegt unsichtbar über der ganzen Zeile, die Zeile ist die Klickfläche */
-#cc-main .consent-toggles { display: grid; gap: 0.375rem; margin-top: 0.75rem; }
-#cc-main .consent-toggle { position: relative; display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0.625rem; border: 1px solid var(--line); border-radius: 0.625rem; cursor: pointer; transition: border-color 0.2s; }
+#cc-main .consent-toggles { display: grid; gap: var(--space-1-5); margin-top: var(--space-3); }
+#cc-main .consent-toggle { position: relative; display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-2-5); border: 1px solid var(--line); border-radius: var(--radius-10); cursor: pointer; transition: border-color var(--dur-control); }
 #cc-main .consent-toggle:hover { border-color: var(--line-strong); }
 #cc-main .consent-toggle input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
-#cc-main .consent-switch { position: relative; display: block; flex: none; width: 2.25rem; height: 1.25rem; border-radius: 1rem; background: #63594e; transition: background-color 0.2s; }
-#cc-main .consent-switch::after { content: ""; position: absolute; top: 0.1875rem; left: 0.1875rem; width: 0.875rem; height: 0.875rem; border-radius: 50%; background: var(--head); transition: transform 0.2s, background-color 0.2s; }
+#cc-main .consent-switch { position: relative; display: block; flex: none; width: 2.25rem; height: 1.25rem; border-radius: var(--radius-16); background: var(--toggle-off); transition: background-color var(--dur-control); }
+#cc-main .consent-switch::after { content: ""; position: absolute; top: 0.1875rem; left: 0.1875rem; width: 0.875rem; height: 0.875rem; border-radius: var(--radius-round); background: var(--head); transition: transform var(--dur-control), background-color var(--dur-control); }
 #cc-main .consent-toggle input:checked + .consent-switch { background: var(--accent); }
 #cc-main .consent-toggle input:checked + .consent-switch::after { transform: translateX(1rem); background: var(--ground); }
 #cc-main .consent-toggle input:focus-visible + .consent-switch { outline: 0.1875rem solid var(--cyan); outline-offset: 0.125rem; }
@@ -68,10 +68,10 @@
 #cc-main .consent-toggle-text { display: block; color: var(--faint); font-size: var(--text-xs); line-height: 1.35; }
 #cc-main .consent-toggle-text b { display: block; color: var(--head); font: 500 var(--text-label)/1.35 var(--body); }
 #cc-main .cm__btn { min-height: 2.5rem; font: 500 var(--text-sm)/1.3 var(--body); }
-#cc-main .cm .cm__btns { display: grid; grid-template-columns: 1fr; gap: 0.5rem; }
-#cc-main .cm .cm__btn-group { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; margin: 0 !important; }
-#cc-main .cm .cm__btn { width: 100%; min-width: 0; margin: 0 !important; padding: 0.5625rem 0.75rem; }
+#cc-main .cm .cm__btns { display: grid; grid-template-columns: 1fr; gap: var(--space-2); }
+#cc-main .cm .cm__btn-group { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2); margin: 0 !important; }
+#cc-main .cm .cm__btn { width: 100%; min-width: 0; margin: 0 !important; padding: var(--space-2-25) var(--space-3); }
 #cc-main a { color: var(--accent); }
 #cc-main button:focus-visible, #cc-main a:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offset: 0.1875rem; }
-[data-consent-error]:not([hidden]) { position: fixed; z-index: 2147483647; bottom: 1rem; left: 1rem; right: 1rem; padding: 1rem; background: var(--ground); color: var(--head); border: 1px solid var(--accent); }
+[data-consent-error]:not([hidden]) { position: fixed; z-index: 2147483647; bottom: 1rem; left: 1rem; right: 1rem; padding: var(--space-4); background: var(--ground); color: var(--head); border: 1px solid var(--accent); }
 @media (prefers-reduced-motion: reduce) { #cc-main * { transition: none !important; } }

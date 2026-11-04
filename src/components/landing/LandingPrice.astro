@@ -55,33 +55,33 @@ const scale = p && Number.isFinite(p.max) ? t('landingprice.upToValueDronesValue
 
 <style>
   .lp-card { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr); border-radius: var(--radius); background: var(--ground); border: 1px solid var(--line-strong); }
-  .lp-price { display: grid; gap: 0.625rem; align-content: start; padding: clamp(1.75rem, 4vw, 3.5rem); border-right: 1px solid var(--line); }
-  .lp-pkg { display: flex; align-items: center; gap: 0.875rem; margin-bottom: clamp(0.625rem, 2vw, 1.5rem); }
+  .lp-price { display: grid; gap: var(--space-2-5); align-content: start; padding: clamp(var(--space-7), 4vw, var(--space-14)); border-right: 1px solid var(--line); }
+  .lp-pkg { display: flex; align-items: center; gap: var(--space-3-5); margin-bottom: clamp(var(--space-2-5), 2vw, var(--space-6)); }
   .lp-pkg canvas { width: 3.5rem; height: 3.5rem; flex: none; }
   .lp-name { font: 500 var(--text-control)/1 var(--display); letter-spacing: 0.14em; color: var(--head); }
   .lp-amount { margin: 0; font: 600 clamp(2.75rem, 5.2vw, 5.5rem)/0.95 var(--display); letter-spacing: -0.05em; color: var(--head); white-space: nowrap; }
-  .lp-pre { display: block; margin-bottom: 0.625rem; font-size: var(--text-label); letter-spacing: 0.1em; color: var(--faint); }
-  .lp-unit { margin: 0.375rem 0 0; color: var(--muted); font-size: var(--text-copy); max-width: 26ch; }
-  .lp-scale { margin: 0.625rem 0 0; padding-top: 0.875rem; border-top: 1px dashed var(--line-strong); color: var(--faint); }
+  .lp-pre { display: block; margin-bottom: var(--space-2-5); font-size: var(--text-label); letter-spacing: 0.1em; color: var(--faint); }
+  .lp-unit { margin: var(--space-1-5) 0 0; color: var(--muted); font-size: var(--text-copy); max-width: 26ch; }
+  .lp-scale { margin: var(--space-2-5) 0 0; padding-top: var(--space-3-5); border-top: 1px dashed var(--line-strong); color: var(--faint); }
   /* Gruppen nebeneinander, der Bonus als Leiste darunter über die ganze Breite */
   .lp-groups { display: grid; grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); align-content: start; }
   .lp-groups[data-n='2'] { --cols: 2; }
   .lp-groups[data-n='1'] { --cols: 1; }
-  .lp-group { padding: clamp(1.75rem, 3.4vw, 3rem) clamp(1.375rem, 2.6vw, 2.5rem); border-left: 1px solid var(--line); display: grid; gap: 1.125rem; align-content: start; }
+  .lp-group { padding: clamp(var(--space-7), 3.4vw, var(--space-12)) clamp(var(--space-5-5), 2.6vw, var(--space-10)); border-left: 1px solid var(--line); display: grid; gap: var(--space-4-5); align-content: start; }
   .lp-groups > :first-child { border-left: 0; }
   .lp-group h2, .lp-group h3 { font: 400 var(--text-xs)/1.5 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
-  .lp-group ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.875rem; max-width: 30rem; }
-  .lp-group li { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); gap: 0.75rem; align-items: baseline; color: var(--text); font-size: 0.96875rem; line-height: 1.4; }
+  .lp-group ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3-5); max-width: 30rem; }
+  .lp-group li { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); gap: var(--space-3); align-items: baseline; color: var(--text); font-size: 0.96875rem; line-height: 1.4; }
   .lp-group li.has-value { grid-template-columns: 1.25rem minmax(0, 1fr) auto; }
   .lp-group li :global(.ico) { width: 1.125rem; height: 1.125rem; transform: translateY(0.1875rem); }
-  .lp-pt { width: 0.375rem; height: 0.375rem; margin: 0 0.4375rem; border-radius: 50%; background: var(--accent); transform: translateY(-0.125rem); }
-  .lp-group li b { font: 500 var(--text-control)/1.4 var(--display); color: var(--head); white-space: nowrap; padding-left: 0.5rem; }
-  .lp-bonus { grid-column: 1 / -1; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 0.75rem 1.75rem; flex-wrap: wrap; padding: clamp(1.125rem, 2vw, 1.625rem) clamp(1.375rem, 2.6vw, 2.5rem); }
+  .lp-pt { width: 0.375rem; height: 0.375rem; margin: 0 var(--space-1-75); border-radius: var(--radius-round); background: var(--accent); transform: translateY(-0.125rem); }
+  .lp-group li b { font: 500 var(--text-control)/1.4 var(--display); color: var(--head); white-space: nowrap; padding-left: var(--space-2); }
+  .lp-bonus { grid-column: 1 / -1; border-top: 1px solid var(--line); display: flex; align-items: center; gap: var(--space-3) var(--space-7); flex-wrap: wrap; padding: clamp(var(--space-4-5), 2vw, var(--space-6-5)) clamp(var(--space-5-5), 2.6vw, var(--space-10)); }
   .lp-bonus-v { font: 600 clamp(2.5rem, 4vw, 4rem)/0.95 var(--display); letter-spacing: -0.05em; }
   .lp-bonus p { color: var(--muted); max-width: 46ch; margin: 0; }
   /* CtaBox ist eine eigene Komponente: Abstand über :global, sonst greift das Komponenten-CSS nicht */
-  :global(.lp-close) { margin-top: clamp(2rem, 4vw, 3.5rem); }
-  @media (max-width: 68.75em) {
+  :global(.lp-close) { margin-top: clamp(var(--space-8), 4vw, var(--space-14)); }
+  @media (--grid-stacked) {
     .lp-card { grid-template-columns: 1fr; }
     .lp-price { border-right: 0; border-bottom: 1px solid var(--line); }
   }

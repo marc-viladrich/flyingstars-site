@@ -109,6 +109,6 @@ const inNav = (href: string) => site.nav.some((item) => item.href === href);
 </html>
 <style>
   /* Datenschutz-Einstellungen als Cookie-Symbol rechts in der Fußzeile, statt „Website-Vorschau“ (Marc, 02.11.2026) */
-  .consent-reopen { flex: none; display: grid; place-items: center; width: 2.5rem; height: 2.5rem; padding: 0; border-radius: 50%; border: 1px solid var(--line-strong); background: none; color: var(--muted); cursor: pointer; transition: color 0.2s, border-color 0.2s; }
+  .consent-reopen { flex: none; display: grid; place-items: center; width: 2.5rem; height: 2.5rem; padding: 0; border-radius: var(--radius-round); border: 1px solid var(--line-strong); background: none; color: var(--muted); cursor: pointer; transition: color var(--dur-control), border-color var(--dur-control); }
   .consent-reopen:hover { color: var(--text); border-color: var(--text); }
 </style>
