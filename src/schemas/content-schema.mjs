@@ -26,7 +26,7 @@ const closingBox = z.object({ headline: fieldPolicy(z.string().min(1), 'translat
 const legacy = fieldPolicy(z.string().optional().describe('Veraltet, wird nicht mehr angezeigt'), 'translatable');
 // Redaktioneller Hinweis je Section (Marc, 02.11.2026: „bei den Seiten, bei denen inhaltlich noch was fehlt, das markieren“).
 // Erscheint nur im lokalen Dev-Server (SectionRenderer.astro); kein Build, auch keine Preview, enthält ihn.
-const todo = { todo: fieldPolicy(z.string().optional().describe('Was hier inhaltlich fehlt oder von FlyingStars kommen muss; nur in der Vorschau sichtbar'), 'shared') };
+const todo = { todo: fieldPolicy(z.string().optional().describe('Was hier inhaltlich fehlt oder von FlyingStars kommen muss; nur im lokalen Dev-Server sichtbar, nie in Build oder Preview'), 'shared') };
 const sectionHeading = { id: fieldPolicy(z.string().optional(), 'shared'), kicker: fieldPolicy(z.string().optional().describe('Kicker über der Headline, z. B. "Anlässe"'), 'translatable'), ...todo };
 const brandPath = fieldPolicy(z.string().regex(/^\/brand\/[a-z0-9/._-]+\.(svg|png|webp)$/).describe('Lokale Datei unter public/brand/'), 'shared');
 
@@ -129,7 +129,7 @@ const rawSectionSchema = z.discriminatedUnion('type', [
       name: fieldPolicy(z.string().min(1), 'translatable'),
       badge: fieldPolicy(z.string().optional(), 'translatable'),
       orb: z.object({ shape: fieldPolicy(z.enum(['ring','sphere','torus']), 'shared'), color: fieldPolicy(z.string().regex(/^\d{1,3},\d{1,3},\d{1,3}$/), 'translatable'), count: fieldPolicy(z.number().int().positive(), 'shared') }).optional(),
-      price: fieldPolicy(z.string().min(1).describe('Freitext inkl. Währung, z. B. "ab 7.900 €"'), 'translatable'),
+      price: fieldPolicy(z.string().min(1).describe('Freitext inkl. Währung, z. B. "ab 1.000 €"'), 'translatable'),
       unit: fieldPolicy(z.string().optional().describe('Bezugsgröße zum Preis, z. B. "pro Show" oder "netto"'), 'translatable'),
       description: fieldPolicy(z.string().optional(), 'translatable'),
       features: z.array(keyedText(fieldPolicy(z.string().min(1), 'translatable'))).default([]),
@@ -145,7 +145,7 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     steps: z.array(z.object({
       title: fieldPolicy(z.string().min(1), 'translatable'),
       text: fieldPolicy(z.string().min(1), 'translatable'),
-      duration: fieldPolicy(z.string().optional().describe('Kurzer Zeitrahmen, z. B. "48 h Antwortzeit"'), 'translatable'),
+      duration: fieldPolicy(z.string().optional().describe('Kurzer Zeitrahmen, z. B. "zwei Tage"'), 'translatable'),
     })).min(2),
   }),
   z.object({

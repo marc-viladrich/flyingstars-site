@@ -1,10 +1,10 @@
+import {read} from './test-support/read.mjs';
 // Runde 20 (04.11.2026): Header-Hover, Sprachwahl als Popover, Kontaktdaten aus einer Quelle.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
-const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 
 test('Hover im Kopf: Unterstrich je Link, gleitende Box als echtes Element (WebKit-Falle)', () => {
   const css = read('src/styles/global.css');

@@ -1,3 +1,4 @@
+import {readEntry} from './test-support/read.mjs';
 import {contentSchemas} from '../src/schemas/content-schema.mjs';
 import {createSite} from '../editor/flyingstars-adapter.mjs';
 import {readContractRecords,auditContracts} from '../src/i18n/read-contracts.mjs';
@@ -5,7 +6,6 @@ const contractSite=await createSite(process.cwd());
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
-import { parse } from 'yaml';
 import messages from '../src/i18n/ui.json' with { type: 'json' };
 import { createTranslator } from '../src/i18n/ui.mjs';
 import { LOCALES, localizedHref, localeFromPath, localeOfId, sourceId, entryPath } from '../src/i18n/routing.mjs';
@@ -13,11 +13,7 @@ import { getConfiguratorContent } from '../src/content/show-configurator.js';
 import { getPackageDetails } from '../src/content/package-details.ts';
 import { onRequestPost } from '../functions/api/contact.ts';
 
-const readEntry = (file) => {
-  const text = readFileSync(file, 'utf8');
-  const match = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/.exec(text);
-  return { raw: text, data: parse(match ? match[1] : text), body: match?.[2] };
-};
+
 
 test('Locale URLs keep page, query and anchor identities; assets and external URLs stay unchanged', () => {
   for (const locale of LOCALES) {

@@ -1,0 +1,24 @@
+{
+  "node": "24.21.0",
+  "tests": 711,
+  "passed": 707,
+  "failed": 2,
+  "skipped": 2,
+  "cancelled": 0,
+  "durationMs": 745423.464125,
+  "log": "/tmp/fs-rest-unit-verified.log",
+  "failures": [
+    "editor/contact-record.test.mjs",
+    "editor/facts-records.test.mjs"
+  ],
+  "message": "Inhalt gespeichert, Astro-Aufbau fehlgeschlagen. Der vorherige Seitenstand bleibt aktiv.",
+  "targetedRecheck": {
+    "tests": 2,
+    "passed": 2,
+    "failed": 0,
+    "concurrency": 2,
+    "unchangedCode": true,
+    "durationMs": 111311.743083,
+    "log": "/tmp/fs-rest-build-recheck.log"
+  }
+}
