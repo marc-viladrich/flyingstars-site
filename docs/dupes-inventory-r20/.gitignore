@@ -1,0 +1,3 @@
+# Generierte Rohdaten (13 MB), jederzeit neu erzeugbar: node docs/dupes-inventory-r20/tools/scan.mjs && node docs/dupes-inventory-r20/tools/build-inventory.mjs
+evidence.json
+inventory.json

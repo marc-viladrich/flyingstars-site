@@ -1,0 +1,61 @@
+{
+  "contentSchemaValidation": {
+    "pages": 33,
+    "projects": 57,
+    "posts": 12,
+    "faq": 96
+  },
+  "hashCoverage": {
+    "checked": 132,
+    "stale": []
+  },
+  "afeOwners": {
+    "packages": "src/content/show-packages.json",
+    "navigation": "src/content/navigation.json",
+    "ui": "src/i18n/ui.json",
+    "types": [
+      "page",
+      "post",
+      "project",
+      "faq",
+      "media"
+    ]
+  },
+  "independentPackageInputs": {
+    "schemaAcceptsChangedBaseAndDuration": true,
+    "currentStoredBase": 100,
+    "acceptedEditedBase": 110,
+    "configuratorRangeMin": 100,
+    "currentStoredDuration": "10–25 Min",
+    "acceptedEditedDuration": "99 Min",
+    "visibleDurationFactory": "10–25 Min Showzeit",
+    "priceAt150": 12400,
+    "configuratorAt150": 12400,
+    "commercialMax": 150,
+    "previewMax": 190
+  },
+  "localeReview": {
+    "urlOnly": [],
+    "nameChange": [
+      {
+        "path": [
+          "name"
+        ],
+        "value": "Person B"
+      }
+    ],
+    "numberStringChange": [
+      {
+        "path": [
+          "count"
+        ],
+        "value": "179"
+      }
+    ],
+    "numericChange": [],
+    "synchronizedURL": {
+      "src": "https://a.invalid/b.jpg"
+    }
+  },
+  "noEnvironmentFilesRead": true
+}

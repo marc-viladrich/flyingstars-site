@@ -17,7 +17,7 @@ const request=(state,values)=>({expectedHead:state.head,requestId:randomUUID(),c
 test('the real source schema supplies every new section, all current file owners, and no obsolete records',async t=>{
  const store=await fixture(t),state=await store.state(),site=store.site;
  assert.deepEqual(site.types.map(t=>t.directory),['pages','posts','projects','faq','editor-media']);assert.equal(state.records.length,201);
- assert.deepEqual(state.templates.sections.map(s=>s.type),site.sectionSchema.options.map(s=>s.shape.type.value));
+ assert.deepEqual(state.templates.sections.map(s=>s.type),site.sectionSchema.options.map(s=>s.shape.type.value));assert.ok(state.templates.sections.some(section=>section.type==='contactDetails')); 
  for(const record of state.records){assert.ok(record.fields.length,record.id);assert.ok(!record.fields.some(f=>f.path[0]==='translationSourceHash'));}
  for(const id of ['package/spark','site/contact','translation/en--page-index','screen/show-konfigurator'])assert.equal(site.sourceFor(id),null);
  assert.equal(state.records.find(r=>r.id==='page/en/index').route,'/en/');
