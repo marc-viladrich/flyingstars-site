@@ -1,3 +1,4 @@
+import {PACKAGE_NAMES} from '../content/package-identity.mjs';
 import {durationText} from '../content/show-duration.mjs';
 import { z } from 'zod';
 import {imageSource,imageMetadata} from './media.mjs';
@@ -227,7 +228,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     cta: link.optional(),
     compact: z.boolean().default(false).describe('Kurzfassung (Startseite): Name, Preis, Drohnen, eine Zeile'),
     items: z.array(z.object({
-      name: z.enum(['SPARK', 'HORIZON', 'ODYSSEY']),
+      name: z.enum(PACKAGE_NAMES),
       label: z.string().optional().describe('z. B. "Klassisch in 2D"'),
       badge: z.string().optional().describe('z. B. "Am häufigsten gebucht"'),
       highlight: z.boolean().default(false),
@@ -235,7 +236,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
       care: z.string().optional().describe('Betreuung'),
       typical: z.string().optional().describe('Typisch für'),
       points: z.array(z.string()).max(4).optional().describe('Kernpunkte auf der Kurzfassung (Startseite), die Drohnenzahl steht automatisch davor'),
-    })).default([{ name: 'SPARK', highlight: false }, { name: 'HORIZON', highlight: false }, { name: 'ODYSSEY', highlight: false }]),
+    })).default(PACKAGE_NAMES.map(name=>({name,highlight:false}))),
   }),
   z.object({
     // Konfigurator-Teaser (Startseite): Anlass-Chips und Drohnen-Regler, Übergabe an den Konfigurator auf der Preisseite.
@@ -292,7 +293,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     // Kassenzettel, optional ein Bonus (Frühbucher) im Verlauf, darunter Gesichter und Anfrage.
     type: z.literal('landingPrice'), ...sectionHeading,
     headline: z.string().min(1), text: z.string().optional(),
-    package: z.enum(['SPARK', 'HORIZON', 'ODYSSEY']).optional(),
+    package: z.enum(PACKAGE_NAMES).optional(),
     price: z.string().optional().describe('Nur ohne package, z. B. "ab ca. 15.000 €"'),
     unit: z.string().optional().describe('Zeile unter dem Preis, z. B. "netto für 20 Drohnen"'),
     groups: z.array(z.object({ title: z.string().min(1),

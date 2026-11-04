@@ -9,16 +9,18 @@ import { createTranslator } from '../i18n/ui.mjs';
  * Package texts are quoted from the client's reference; prices come from show-packages.ts only.
  */
 
+import {PACKAGE_NAMES,packageLabel} from './package-identity.mjs';
 import { DRONE_RANGES, DRONE_STEP } from './show-packages.ts';
 
-export const PACKAGE_ORDER = ['SPARK', 'HORIZON', 'ODYSSEY'];
+export const PACKAGE_ORDER = PACKAGE_NAMES;
 
-function stepsFor(locale) { const t = createTranslator(locale);
-return  [
-  { pkg: 'SPARK', label: t('packageDetails.classic2d'), includes: t('showConfigurator.predefinedFormationsSuchAsHeartsOrRingsAndUpTo') },
-  { pkg: 'HORIZON', label: t('contactform.3dInMotion'), includes: t('showConfigurator.everythingFromSparkPlusIndividual2dAnimationsAndSimple3d') },
-  { pkg: 'ODYSSEY', label: t('packageDetails.3dStorytellingShow'), includes: t('showConfigurator.everythingFromHorizonPlusComplex3dAnimationsVolumetricEffectsAnd') },
-];
+const stepIncludes={
+ SPARK:'showConfigurator.predefinedFormationsSuchAsHeartsOrRingsAndUpTo',
+ HORIZON:'showConfigurator.everythingFromSparkPlusIndividual2dAnimationsAndSimple3d',
+ ODYSSEY:'showConfigurator.everythingFromHorizonPlusComplex3dAnimationsVolumetricEffectsAnd',
+};
+function stepsFor(locale) { const t=createTranslator(locale);
+ return PACKAGE_ORDER.map(pkg=>({pkg,label:packageLabel(pkg,t),includes:t(stepIncludes[pkg])}));
 }
 export const STEPS = stepsFor('de');
 

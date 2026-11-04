@@ -1,3 +1,4 @@
+import {packageLabel} from './package-identity.mjs';
 import {SHOW_DURATION,durationValues} from './show-duration.mjs';
 import packageData from './show-packages.json' with {type:'json'};
 import { createTranslator } from '../i18n/ui.mjs';
@@ -30,20 +31,20 @@ interface PackageDetail {
 
 const PACKAGE_DETAILS: Record<ShowPackage, PackageDetail> = {
   SPARK: {
-    label: t('packageDetails.classic2d'),
+    label: packageLabel('SPARK',t),
     sky: t('packageDetails.2dFormationsFromOurCatalogueWithUpToFourCustom'),
     care: t('packageDetails.yourCustomElementsForApprovalInAdvanceMusicFreeOf'),
     typical: t('packageDetails.weddingsAnniversariesSmallerCorporateEvents'),
   },
   HORIZON: {
-    label: t('contactform.3dInMotion'),
+    label: packageLabel('HORIZON',t),
     sky: t('packageDetails.everythingInSparkPlusCustom2dAnimationsSimple3dObjects'),
     care: t('packageDetails.creativeWorkshopWithStoryboardVideoPreviewWithFeedbackSynchronisedTo'),
     typical: t('packageDetails.productLaunchesCorporateEventsCityFestivals'),
     often: 'Bestseller',
   },
   ODYSSEY: {
-    label: t('packageDetails.3dStorytellingShow'),
+    label: packageLabel('ODYSSEY',t),
     sky: t('packageDetails.everythingInHorizonPlus3dStorytellingAnimationAndVolumetricEffects'),
     care: t('packageDetails.multipleFeedbackRoundsDedicatedProjectManagerRawVideoFootageTimecode'),
     typical: t('packageDetails.campaignsFestivalsLargeEvents'),

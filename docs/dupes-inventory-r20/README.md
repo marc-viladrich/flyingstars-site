@@ -230,3 +230,7 @@ Kontaktwerte nach `contact.json` mit gemeinsamem Zod-Schema verschoben. CONTACT 
 ### Schritt 3a: wirksame Dauerpolicy
 
 Die drei toten Paketfelder `dur` sind entfernt. `show-duration.json` besitzt Outdoor 10–25, typisch 13 und Indoor 5–8 als getrennte Fakten. Paketkarten, Konfigurator, Leistungsübersicht, FAQ und Indoor-Ausgaben projizieren diese Werte mit den vorhandenen Sprachfassungen. Die Showzeiten sind im Editor erreichbar und werden tatsächlich gespeichert. Typische FAQ-Aussagen bleiben textgleich.
+
+### Schritt 3b: Paketprojektionen und unabhängige Vorschau
+
+Paket-IDs/Reihenfolge, Orb-Formen und Bezeichnungen aus dem Paket-JSON abgeleitet. Zweite Arrays, Orb-Maps und zwei unbenutzte UI-Labelkopien entfernt. Die bisher in TS stehende Vorschaupolicy liegt separat schema-validiert im JSON und ist im Editor ausdrücklich als nicht freigegeben bezeichnet. Preise, Übergänge, kommerzielle SPARK-Grenze 150 und Vorschaugrenze 190 bleiben erhalten.

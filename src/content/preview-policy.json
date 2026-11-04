@@ -1,0 +1,23 @@
+{
+  "placeholder": true,
+  "step": 10,
+  "ranges": {
+    "SPARK": {
+      "min": 100,
+      "max": 190
+    },
+    "HORIZON": {
+      "min": 200,
+      "max": 290
+    },
+    "ODYSSEY": {
+      "min": 300,
+      "max": 600
+    }
+  },
+  "extension": {
+    "package": "SPARK",
+    "from": 150,
+    "add": 700
+  }
+}

@@ -110,7 +110,7 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
 
       <div class="cfg-block cfg-drones">
         <div class="cfg-drones-head"><label for="cfg-drones">{t('configuratorteaser.drones')}</label><output id="cfg-dronecount" for="cfg-drones">{first.base}</output></div>
-        <input class="cfg-range" id="cfg-drones" type="range" min={DRONES_MIN} max={DRONES_MAX} step={DRONE_STEP} value={first.base} style={`--track: ${rangeTrack}`} />
+        <input class="cfg-range" id="cfg-drones" {...record({collection:'previewPolicy',id:'configuration'})} type="range" min={DRONES_MIN} max={DRONES_MAX} step={DRONE_STEP} value={first.base} style={`--track: ${rangeTrack}`} />
         <div class="cfg-ticks mono" aria-hidden="true">{ticks.map((n) => <span style={`--p: ${at(n) / 100}`}>{n}</span>)}</div>
       </div>
 

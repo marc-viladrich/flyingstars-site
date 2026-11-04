@@ -1,3 +1,4 @@
+import {PACKAGE_NAMES} from '../../src/content/package-identity.mjs';
 import { createTranslator } from '../../src/i18n/ui.mjs';
 import { LOCALES, localizedHref, localeFromPath } from '../../src/i18n/routing.mjs';
 
@@ -79,7 +80,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
   if (!name || !email || (!message && !extra.anlass)) return problem(400, t('contactAPI.required'));
   if (Object.values(extra).some((value) => value.length > 200 || CONTROL.test(value))) return problem(400, t('contactAPI.additional'));
   if (extra.anlass && !['firma', 'stadt', 'agentur', 'privat', 'indoor', 'sonstiges'].includes(extra.anlass)) return problem(400, t('contactAPI.occasion'));
-  if (extra.paket && !['SPARK', 'HORIZON', 'ODYSSEY', 'offen'].includes(extra.paket)) return problem(400, t('contactAPI.package'));
+  if (extra.paket && extra.paket!=='offen' && !PACKAGE_NAMES.some(name=>name===extra.paket)) return problem(400, t('contactAPI.package'));
   if (extra['datum-offen'] && extra['datum-offen'] !== 'ja') return problem(400, t('contactAPI.openDate'));
   if (extra.datum && (!/^\d{4}-\d{2}-\d{2}$/.test(extra.datum) || !Number.isFinite(Date.parse(extra.datum)) || new Date(extra.datum).toISOString().slice(0, 10) !== extra.datum)) return problem(400, t('contactAPI.date'));
   if (extra.drohnen && (!/^\d+$/.test(extra.drohnen) || Number(extra.drohnen) < 100 || Number(extra.drohnen) > 1000)) return problem(400, t('contactAPI.drones'));

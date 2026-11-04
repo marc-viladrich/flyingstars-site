@@ -21,7 +21,6 @@ const { PACKAGE_DETAILS, COMPARISON, COMPARISON_NOTE, PRICE_NOTE } = getPackageD
 const money = (v: number) => t('showconfigurator.fromValue', { v0: v.toLocaleString(formatLocale) });
 const items = PACKAGE_NAMES.map((name) => ({ name, ...PACKAGE_DETAILS[name], badge: PACKAGE_DETAILS[name].often, highlight: Boolean(PACKAGE_DETAILS[name].often) }));
 const featured = PACKAGE_NAMES.findIndex((name) => PACKAGE_DETAILS[name].often);
-const orb = { SPARK: 'ring', HORIZON: 'sphere', ODYSSEY: 'torus' } as const;
 ---
 <Base title={t('pricingpage.droneShowPricesThreePackagesFrom7900')} description={t('pricingpage.threeDroneShowPackagesFrom7900ExcludingVatAnd')}>
 
@@ -53,7 +52,7 @@ const orb = { SPARK: 'ring', HORIZON: 'sphere', ODYSSEY: 'torus' } as const;
       tabLabel={t('mobileTabs.choosePackage')} initial={featured}
       columns={PACKAGE_NAMES.map((name, i) => ({ label: name, color: `rgb(${SHOW_PACKAGES[name].color.join(',')})`, featured: i === featured,
         price: money(SHOW_PACKAGES[name].price), panelLabel: `${name}, ${money(SHOW_PACKAGES[name].price)}`,
-        orb: { shape: orb[name], color: SHOW_PACKAGES[name].color.join(','), count: Math.round(SHOW_PACKAGES[name].base * 0.6) } }))}
+        orb: { shape: SHOW_PACKAGES[name].orb, color: SHOW_PACKAGES[name].color.join(','), count: Math.round(SHOW_PACKAGES[name].base * 0.6) } }))}
       rows={COMPARISON.map((row) => ({ ...row, cells: row.cells ?? [] }))} />
     <p class="fine mono">{t('pricingpage.allPricesExcludeVatAndTravel')} {COMPARISON_NOTE}</p>
   </section>

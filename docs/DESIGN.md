@@ -293,3 +293,9 @@ Nur explizite `{{contact.email}}`, `{{contact.phone.label}}` und `{{contact.phon
 ## Showzeiten
 
 `show-duration.json` besitzt Outdoor-Spanne, typische Outdoor-Dauer und Indoor-Spanne. Diese sind fachlich verschiedene Werte. Der Datensatz „Showzeiten“ verwendet denselben Zod-Vertrag im Build und Editor; typische Dauer muss innerhalb der Spanne liegen. Das wirkungslose `dur` je Paket entfällt. Karten und Konfigurator öffnen per Record-Marker die gemeinsame Policy. Lokalisierte UI-Satzmuster erhalten numerische Parameter. FAQ und Indoor-Inhalte referenzieren ausschließlich explizite Dauerfakten; FaqAnswer, FactList, ComparisonCell und SEO-Beschreibung projizieren sie ohne Kopie der Zahlen. Die 50–160 Zeichen der Beschreibung werden an der projizierten Ausgabe geprüft. Mutation und textgleicher Default werden von `show-duration.test.mjs`, `duration-record.test.mjs` und dem Buildvergleich belegt.
+
+## Paketidentität und Vorschaupolicy
+
+Die Paket-Keys und ihre Reihenfolge sowie Bezeichnung und Orb-Form gehören zu `show-packages.json`. Schema-Enums, Paketknöpfe, Formular und API projizieren dieselben IDs. Formularlabels verwenden den vorhandenen kleinen Anfangsbuchstaben als Darstellungsregel; PoC-Inhalte bleiben eigenständig.
+
+`preview-policy.json` ist der ausdrücklich getrennte, nicht freigegebene Vorschauvertrag mit Schrittweite, lückenlosen Bereichen und SPARK-Erweiterungsaufschlag. Die kommerzielle SPARK-Grenze 150 und Vorschaugrenze 190 sind verschiedene Werte. Der Editor nennt den Datensatz „Vorschaupolicy · nicht freigegebene Preise“. Sein Freigabefeld ist unveränderlich `true` für vorläufig. Der Drohnenregler öffnet diesen Datensatz über einen Record-Marker. Bestehende Preis-, Übergangs- und Freischalttests prüfen sämtliche wählbaren Stufen. `package-policy-record.test.mjs` prüft gespeicherte Änderungen bis zur dreisprachigen Buildausgabe.

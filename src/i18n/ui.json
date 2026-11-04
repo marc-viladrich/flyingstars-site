@@ -469,20 +469,10 @@
     "en": "Other",
     "nl": "Anders"
   },
-  "contactform.classic2d": {
-    "de": "klassisch in 2D",
-    "en": "classic 2D",
-    "nl": "klassiek in 2D"
-  },
   "contactform.3dInMotion": {
     "de": "3D in Bewegung",
     "en": "3D in motion",
     "nl": "3D in beweging"
-  },
-  "contactform.3dStorytellingShow": {
-    "de": "erzählte 3D-Show",
-    "en": "3D storytelling show",
-    "nl": "3D-show met verhaal"
   },
   "contactform.notSureYet": {
     "de": "Weiß ich noch nicht",

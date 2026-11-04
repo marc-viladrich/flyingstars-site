@@ -16,7 +16,6 @@ type Props = Extract<Section, { type: 'landingPrice' }> & { index: number };
 const { kicker, headline, text, package: pkg, price, unit, groups, bonus, closing, id = 'preise', index } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
 const T = index === 0 ? 'h2' : 'h3';
-const orb = { SPARK: 'ring', HORIZON: 'sphere', ODYSSEY: 'torus' } as const;
 const p = pkg ? SHOW_PACKAGES[pkg] : undefined;
 const shown = p ? t('showconfigurator.fromValue', { v0: p.price.toLocaleString(formatLocale) }) : price ?? '';
 // „ab“ bzw. „ab ca.“ klein über dem Betrag, damit auch „ab ca. 15.000 €“ in die Spalte passt
@@ -31,7 +30,7 @@ const scale = p && Number.isFinite(p.max) ? t('landingprice.upToValueDronesValue
   <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
   <div class="lp-card">
     <div class="lp-price">
-      {pkg && p && <div class="lp-pkg"><canvas data-orb={orb[pkg]} data-color={p.color.join(',')} data-n={p.base} aria-hidden="true"></canvas><span class="lp-name">{pkg}</span></div>}
+      {pkg && p && <div class="lp-pkg"><canvas data-orb={p.orb} data-color={p.color.join(',')} data-n={p.base} aria-hidden="true"></canvas><span class="lp-name">{pkg}</span></div>}
       <p class="lp-amount">{pre && <span class="lp-pre mono">{pre} </span>}{amount}</p>
       {sub && <p class="lp-unit">{sub}</p>}
       {showtime && <p class="lp-unit">{showtime}</p>}

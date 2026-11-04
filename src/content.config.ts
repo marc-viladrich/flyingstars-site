@@ -1,3 +1,6 @@
+import previewPolicy from './content/preview-policy.json' with {type:'json'};
+import {previewPolicySchema} from './schemas/preview-policy.mjs';
+previewPolicySchema.parse(previewPolicy);
 import durationData from './content/show-duration.json' with {type:'json'};
 import {showDurationSchema} from './schemas/show-duration.mjs';
 showDurationSchema.parse(durationData);
@@ -7,9 +10,11 @@ contactSchema.parse(contactData);
 import navigationData from './content/navigation.json' with {type:'json'};
 import {navigationSchema} from './schemas/navigation.mjs';
 navigationSchema.parse(navigationData);
+import {assertPreviewPricing} from './content/show-packages.ts';
 import packageData from './content/show-packages.json' with {type:'json'};
 import {showPackagesSchema} from './schemas/show-packages.mjs';
 showPackagesSchema.parse(packageData);
+assertPreviewPricing();
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import type { z } from 'astro/zod';

@@ -1,5 +1,7 @@
 {
   "SPARK": {
+    "labelKey": "packageDetails.classic2d",
+    "orb": "ring",
     "base": 100,
     "max": 150,
     "price": 7900,
@@ -12,6 +14,8 @@
     ]
   },
   "HORIZON": {
+    "labelKey": "contactform.3dInMotion",
+    "orb": "sphere",
     "base": 200,
     "max": null,
     "price": 15900,
@@ -24,6 +28,8 @@
     ]
   },
   "ODYSSEY": {
+    "labelKey": "packageDetails.3dStorytellingShow",
+    "orb": "torus",
     "base": 300,
     "max": null,
     "price": 34900,

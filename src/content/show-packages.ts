@@ -3,8 +3,10 @@
  */
 import packageData from './show-packages.json' with {type:'json'};
 export type ShowPackage = Exclude<keyof typeof packageData, 'services'>;
-export const PACKAGE_NAMES = Object.keys(packageData).filter(name => name !== 'services') as ShowPackage[];
-export const SHOW_PACKAGES = Object.fromEntries(PACKAGE_NAMES.map(name=>[name,{...packageData[name],max:packageData[name].max??Infinity}])) as Record<ShowPackage,{base:number;max:number;price:number;step:number;add:number;color:number[]}>;
+import {PACKAGE_NAMES as packageNames} from './package-identity.mjs';
+import previewPolicy from './preview-policy.json' with {type:'json'};
+export const PACKAGE_NAMES = packageNames as ShowPackage[];
+export const SHOW_PACKAGES = Object.fromEntries(PACKAGE_NAMES.map(name=>[name,{...packageData[name],max:packageData[name].max??Infinity}])) as Record<ShowPackage,{base:number;max:number;price:number;step:number;add:number;color:number[];labelKey:string;orb:string}>;
 // Source provenance travels with this computed view of the canonical JSON, never with displayed text.
 Object.defineProperty(SHOW_PACKAGES,Symbol.for('afe.source'),{value:{owner:{collection:'showPackages',id:'configuration'},part:'data',path:[]}});
 export function priceFor(name: ShowPackage, drones: number): number | null {
@@ -12,7 +14,7 @@ export function priceFor(name: ShowPackage, drones: number): number | null {
   return drones > p.max ? null : p.price + Math.max(0, Math.ceil((drones - p.base) / p.step)) * p.add;
 }
 export function recommendPackage(drones: number): ShowPackage {
-  return drones <= 150 ? 'SPARK' : drones < 300 ? 'HORIZON' : 'ODYSSEY';
+  return PACKAGE_NAMES.find((name,i)=>drones<=SHOW_PACKAGES[name].max&&(i===PACKAGE_NAMES.length-1||drones<SHOW_PACKAGES[PACKAGE_NAMES[i+1]].base)) ?? PACKAGE_NAMES.at(-1)!;
 }
 
 /**
@@ -27,15 +29,10 @@ export function recommendPackage(drones: number): ShowPackage {
  * 160–190 gilt ein eigener Aufpreis (SPARK_EXTRA), damit SPARK mit 190 Drohnen günstiger bleibt als HORIZON mit 200.
  * PLATZHALTER: Bereichsgrenzen und Aufpreise sind noch nicht mit FlyingStars geklärt.
  */
-export const DRONE_RANGES_PLACEHOLDER = true;
-export const DRONE_STEP = 10;
-export const DRONE_RANGES: Record<ShowPackage, { min: number; max: number }> = {
-  SPARK: { min: 100, max: 190 },
-  HORIZON: { min: 200, max: 290 },
-  ODYSSEY: { min: 300, max: 600 },
-};
-/** SPARK über der Referenzgrenze (150): Aufpreis je 10 Drohnen, Platzhalter. 190 Drohnen = 12.400 € + 4 × 700 € = 15.200 €. */
-export const SPARK_EXTRA = { from: 150, add: 700 };
+export const DRONE_RANGES_PLACEHOLDER = previewPolicy.placeholder;
+export const DRONE_STEP = previewPolicy.step;
+export const DRONE_RANGES = previewPolicy.ranges;
+export const SPARK_EXTRA = previewPolicy.extension;
 export const DRONES_MIN = DRONE_RANGES.SPARK.min;
 export const DRONES_MAX = DRONE_RANGES.ODYSSEY.max;
 
@@ -61,6 +58,19 @@ export const clampToPackage = (name: ShowPackage, drones: number) => Math.min(DR
 /** Preis für Paket und Drohnenzahl im Konfigurator (Formel wie priceFor, dazu SPARK_EXTRA; Aufpreise sind Platzhalter). */
 export function configuratorPrice(drones: number): number {
   const name = packageForDrones(drones), p = SHOW_PACKAGES[name];
-  if (name === 'SPARK' && drones > SPARK_EXTRA.from) return (priceFor('SPARK', SPARK_EXTRA.from) as number) + Math.ceil((drones - SPARK_EXTRA.from) / DRONE_STEP) * SPARK_EXTRA.add;
+  if (name === SPARK_EXTRA.package && drones > SPARK_EXTRA.from) return (priceFor(name, SPARK_EXTRA.from) as number) + Math.ceil((drones - SPARK_EXTRA.from) / DRONE_STEP) * SPARK_EXTRA.add;
   return p.price + Math.max(0, Math.ceil((drones - p.base) / p.step)) * p.add;
+}
+
+/** Joint build invariant: the preview remains independent, but its prices must stay valid for the current commercial facts. */
+export function assertPreviewPricing(): void {
+  if (priceFor(SPARK_EXTRA.package as ShowPackage, SPARK_EXTRA.from) === null)
+    throw new Error('Die Vorschau-Erweiterung beginnt außerhalb der kommerziellen Paketgrenze. Vorschaupolicy getrennt prüfen.');
+  let previous = -Infinity;
+  for (let drones = DRONES_MIN; drones <= DRONES_MAX; drones += DRONE_STEP) {
+    const price = configuratorPrice(drones);
+    if (!Number.isFinite(price) || price < previous)
+      throw new Error(`Vorschaupreis bei ${drones} Drohnen ist ungültig oder fällt unter die vorige Stufe. Vorschaupolicy getrennt prüfen.`);
+    previous = price;
+  }
 }
