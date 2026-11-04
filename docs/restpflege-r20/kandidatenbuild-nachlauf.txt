@@ -1,0 +1,10 @@
+✔ Kontakt: tatsächliches Editor-Speichern ändert Footer, Section, ContactWays, Danke und Marker; Rechtsfassungen bleiben eigenständig (72909.638667ms)
+✔ Ein natives AFE-Speichern von Person und Projektfakten erreicht die echten DE/EN/NL-Ausgaben und ihre Besitzer (110450.999ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 111311.743083

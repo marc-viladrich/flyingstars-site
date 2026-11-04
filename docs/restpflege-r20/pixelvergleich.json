@@ -1,0 +1,650 @@
+[
+  {
+    "engine": "chromium",
+    "width": 390,
+    "route": "/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 17706,
+        "width": 390
+      },
+      {
+        "height": 17706,
+        "width": 390
+      }
+    ]
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "route": "/drohnenshow-preise/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 10651,
+        "width": 390
+      },
+      {
+        "height": 10651,
+        "width": 390
+      }
+    ]
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "route": "/referenzen/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 9937,
+        "width": 390
+      },
+      {
+        "height": 9937,
+        "width": 390
+      }
+    ]
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "route": "/ueber-uns/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 14331,
+        "width": 390
+      },
+      {
+        "height": 14331,
+        "width": 390
+      }
+    ]
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "route": "/kontakt/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 3960,
+        "width": 390
+      },
+      {
+        "height": 3960,
+        "width": 390
+      }
+    ]
+  },
+  {
+    "engine": "chromium",
+    "width": 390,
+    "route": "/faq/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 4388,
+        "width": 390
+      },
+      {
+        "height": 4388,
+        "width": 390
+      }
+    ]
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "route": "/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 14194,
+        "width": 1440
+      },
+      {
+        "height": 14194,
+        "width": 1440
+      }
+    ]
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "route": "/drohnenshow-preise/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 9330,
+        "width": 1440
+      },
+      {
+        "height": 9330,
+        "width": 1440
+      }
+    ]
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "route": "/referenzen/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 5453,
+        "width": 1440
+      },
+      {
+        "height": 5453,
+        "width": 1440
+      }
+    ]
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "route": "/ueber-uns/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 12861,
+        "width": 1440
+      },
+      {
+        "height": 12861,
+        "width": 1440
+      }
+    ]
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "route": "/kontakt/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 2549,
+        "width": 1440
+      },
+      {
+        "height": 2549,
+        "width": 1440
+      }
+    ]
+  },
+  {
+    "engine": "chromium",
+    "width": 1440,
+    "route": "/faq/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 4188,
+        "width": 1440
+      },
+      {
+        "height": 4188,
+        "width": 1440
+      }
+    ]
+  },
+  {
+    "engine": "chromium",
+    "width": 2560,
+    "route": "/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 14577,
+        "width": 2560
+      },
+      {
+        "height": 14577,
+        "width": 2560
+      }
+    ]
+  },
+  {
+    "engine": "chromium",
+    "width": 2560,
+    "route": "/drohnenshow-preise/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 9026,
+        "width": 2560
+      },
+      {
+        "height": 9026,
+        "width": 2560
+      }
+    ]
+  },
+  {
+    "engine": "chromium",
+    "width": 2560,
+    "route": "/referenzen/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 6087,
+        "width": 2560
+      },
+      {
+        "height": 6087,
+        "width": 2560
+      }
+    ]
+  },
+  {
+    "engine": "chromium",
+    "width": 2560,
+    "route": "/ueber-uns/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 13108,
+        "width": 2560
+      },
+      {
+        "height": 13108,
+        "width": 2560
+      }
+    ]
+  },
+  {
+    "engine": "chromium",
+    "width": 2560,
+    "route": "/kontakt/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 2525,
+        "width": 2560
+      },
+      {
+        "height": 2525,
+        "width": 2560
+      }
+    ]
+  },
+  {
+    "engine": "chromium",
+    "width": 2560,
+    "route": "/faq/",
+    "sameSize": true,
+    "maxDelta": 1,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 4196,
+        "width": 2560
+      },
+      {
+        "height": 4196,
+        "width": 2560
+      }
+    ]
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "route": "/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 17706,
+        "width": 390
+      },
+      {
+        "height": 17706,
+        "width": 390
+      }
+    ]
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "route": "/drohnenshow-preise/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 10650,
+        "width": 390
+      },
+      {
+        "height": 10650,
+        "width": 390
+      }
+    ]
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "route": "/referenzen/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 9936,
+        "width": 390
+      },
+      {
+        "height": 9936,
+        "width": 390
+      }
+    ]
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "route": "/ueber-uns/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 14353,
+        "width": 390
+      },
+      {
+        "height": 14353,
+        "width": 390
+      }
+    ]
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "route": "/kontakt/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 3960,
+        "width": 390
+      },
+      {
+        "height": 3960,
+        "width": 390
+      }
+    ]
+  },
+  {
+    "engine": "webkit",
+    "width": 390,
+    "route": "/faq/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 4388,
+        "width": 390
+      },
+      {
+        "height": 4388,
+        "width": 390
+      }
+    ]
+  },
+  {
+    "engine": "webkit",
+    "width": 1440,
+    "route": "/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 14195,
+        "width": 1440
+      },
+      {
+        "height": 14195,
+        "width": 1440
+      }
+    ]
+  },
+  {
+    "engine": "webkit",
+    "width": 1440,
+    "route": "/drohnenshow-preise/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 9328,
+        "width": 1440
+      },
+      {
+        "height": 9328,
+        "width": 1440
+      }
+    ]
+  },
+  {
+    "engine": "webkit",
+    "width": 1440,
+    "route": "/referenzen/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 5453,
+        "width": 1440
+      },
+      {
+        "height": 5453,
+        "width": 1440
+      }
+    ]
+  },
+  {
+    "engine": "webkit",
+    "width": 1440,
+    "route": "/ueber-uns/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 12861,
+        "width": 1440
+      },
+      {
+        "height": 12861,
+        "width": 1440
+      }
+    ]
+  },
+  {
+    "engine": "webkit",
+    "width": 1440,
+    "route": "/kontakt/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 2549,
+        "width": 1440
+      },
+      {
+        "height": 2549,
+        "width": 1440
+      }
+    ]
+  },
+  {
+    "engine": "webkit",
+    "width": 1440,
+    "route": "/faq/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 4188,
+        "width": 1440
+      },
+      {
+        "height": 4188,
+        "width": 1440
+      }
+    ]
+  },
+  {
+    "engine": "webkit",
+    "width": 2560,
+    "route": "/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 14579,
+        "width": 2560
+      },
+      {
+        "height": 14579,
+        "width": 2560
+      }
+    ]
+  },
+  {
+    "engine": "webkit",
+    "width": 2560,
+    "route": "/drohnenshow-preise/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 9023,
+        "width": 2560
+      },
+      {
+        "height": 9023,
+        "width": 2560
+      }
+    ]
+  },
+  {
+    "engine": "webkit",
+    "width": 2560,
+    "route": "/referenzen/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 6087,
+        "width": 2560
+      },
+      {
+        "height": 6087,
+        "width": 2560
+      }
+    ]
+  },
+  {
+    "engine": "webkit",
+    "width": 2560,
+    "route": "/ueber-uns/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 13108,
+        "width": 2560
+      },
+      {
+        "height": 13108,
+        "width": 2560
+      }
+    ]
+  },
+  {
+    "engine": "webkit",
+    "width": 2560,
+    "route": "/kontakt/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 2525,
+        "width": 2560
+      },
+      {
+        "height": 2525,
+        "width": 2560
+      }
+    ]
+  },
+  {
+    "engine": "webkit",
+    "width": 2560,
+    "route": "/faq/",
+    "sameSize": true,
+    "maxDelta": 0,
+    "channelsOver2": 0,
+    "geometry": [
+      {
+        "height": 4196,
+        "width": 2560
+      },
+      {
+        "height": 4196,
+        "width": 2560
+      }
+    ]
+  }
+]
