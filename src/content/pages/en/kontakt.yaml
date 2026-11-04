@@ -20,25 +20,10 @@ sections:
         text: You receive a written quote. A 40% deposit is due when you book.
       - title: Planning
         text: We check the site, obtain the permit and design the show with you.
-  - type: textMedia
+  - type: contactDetails
     kicker: Contact
     headline: Rather talk directly?
-    body: >
-      Behind every channel is the same team: Ronja, Florian and Erwin.
-
-
-      **Phone:** [0209 883 065 62](tel:+4920988306562)<br>
-
-      **Mobile and WhatsApp:** [01579 260 86 72](tel:+4915792608672), [message on WhatsApp](https://wa.me/4915792608672)<br>
-
-      **Email:** [team@flyingstars.art](mailto:team@flyingstars.art)<br>
-
-      **Video call:** [book a time through Calendly](https://calendly.com/team-flyingstars/beratung)
-
-
-      **Visit:** Triple Z, Gründungszentrum Zeche Zollverein, Katernberger Str. 107, 45327 Essen. Please let us know in advance.
-
-
-      **Post:** FlyingStars GmbH, Bulmker Straße 107, 45888 Gelsenkirchen
-    todo: FlyingStars muss den Terminbuchungs-Link und die Kontaktwege vor dem Relaunch bestätigen; Moritz muss die Kontakttexte und EN/NL prüfen.
-translationSourceHash: 9f4a0744d00d58a08c0dca3f825b0e36417736d6980881d7a916d7b1ec47459d
+    text: "Behind every channel is the same team: Ronja, Florian and Erwin."
+    visitNote: Please let us know in advance.
+    todo: Teamfoto fehlt, bis dahin stehen hier die Porträts der Geschäftsführer:innen. FlyingStars muss den Terminbuchungs-Link und die Kontaktwege vor dem Relaunch bestätigen; Moritz muss die Kontakttexte und EN/NL prüfen.
+translationSourceHash: bf6c7898306ea04cf2ddfc6b86000252cd22d8c3ef3290a0ac299d718449302f

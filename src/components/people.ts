@@ -8,6 +8,10 @@ export const FOUNDERS = [
 export const CONTACT = {
   email: 'team@flyingstars.art',
   phone: { label: '0209 883 065 62', href: 'tel:+4920988306562' },
+  mobile: { label: '01579 260 86 72', href: 'tel:+4915792608672' },
   video: { labelKey: 'contact.videoCall', href: 'https://calendly.com/team-flyingstars/beratung' },
   whatsapp: { label: 'WhatsApp', href: 'https://wa.me/4915792608672' },
+  // Anschriften zeilenweise wie auf einem Briefumschlag (Kontakt-Section, Footer)
+  visit: ['Triple Z', 'Gründungszentrum Zeche Zollverein', 'Katernberger Str. 107', '45327 Essen'],
+  post: ['FlyingStars GmbH', 'Bulmker Straße 107', '45888 Gelsenkirchen'],
 };
