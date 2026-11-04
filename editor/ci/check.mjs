@@ -1,6 +1,6 @@
+import {UNIT_ARGS} from '../../scripts/unit-contract.mjs';
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
-import {promises as fs} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 const run = promisify(execFile);
@@ -10,13 +10,11 @@ const env = {...process.env, ASTRO_TELEMETRY_DISABLED: '1', FLYINGSTARS_OFFLINE_
 // Dependencies are installed by npm ci before this entry; the offline fixture supplies the same lockfile dependencies.
 for (const step of [
   ['Astro check', [path.join(root, 'node_modules/astro/bin/astro.mjs'), 'check']],
-  ['Editor- und Site-Tests', ['--test','--test-concurrency=3', ...await files('editor'), ...await files('editor/test'), ...await files('scripts'), ...await files('src/scripts/effects'), ...await files('src/scripts')]],
+  ['Editor- und Site-Tests', UNIT_ARGS],
   ['Offline-Astro-Build', [path.join(root, 'node_modules/astro/bin/astro.mjs'), 'build']],
+  ['Sprach-Buildvertrag', ['scripts/check-i18n-build.mjs']],
 ]) {
   console.log(step[0]);
   try {const result = await run(process.execPath, step[1], {cwd: root, env, timeout: 600_000, maxBuffer: 12_000_000}); console.log(result.stdout);}
   catch (error) {console.error(error.stdout || ''); console.error(error.stderr || ''); process.exitCode = 1; break;}
-}
-async function files(dir) {
-  return (await fs.readdir(path.join(root, dir))).filter(name => name.endsWith('.test.mjs')).map(name => dir + '/' + name);
 }

@@ -107,3 +107,7 @@ npm ci
 npx astro dev
 npx astro check && npx astro build && npx playwright test
 ```
+
+## Lokale Laufzeit
+
+Site und Editor benötigen Node >=24.15.0. `.nvmrc` und CI verwenden Node 24. `npm run test:unit` und `npm run ci` verwenden denselben vollständigen Unit-Testvertrag inklusive `editor/core`. Historische Prüfprotokolle mit Node 22 dokumentieren den damaligen Stand.
