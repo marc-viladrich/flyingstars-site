@@ -279,3 +279,7 @@ Bewusste px-Ausnahmen sind 1–2 px Hairlines, kleine Schattenkomponenten, unsic
 - **Team-Reveal:** Beobachtete Reveal-Elemente dürfen im Startzustand nicht verschoben sein. Die Team-Karte lag 5 rem tiefer, der Observer maß die verschobene Box und löste erst bei 92 px sichtbarer Höhe aus (in Marcs 400 px hohem Fenster fast ein Viertel). Jetzt bewegen sich nur die Kinder um 1,5 rem, Auslösung bei 9–12 px in Chromium und WebKit. Der Zeitstrahl (`ProcessList`) nutzt ebenfalls `REVEAL_MARGIN` statt eigener 12 %.
 - **Startfläche im Lageplan:** laufende Kontur als Rahmen mit Abstand um die gefüllte Fläche.
 - Wächter: `scripts/round19-guards.test.mjs`. Offene Punkte vor dem Launch: `docs/pre-launch-checkliste.md`.
+
+## Aktiver Quellgraph nach Etappe A
+
+Frontend-Wurzeln sind Astro-Routen und SectionRenderer. Der Editor startet über `editor/server.mjs` und `flyingstars-adapter.mjs`; `browserFiles` registriert die Browsermodule. Unter `extensions/flyingstars` bleiben Runtime-Kompatibilität sowie die aktiv registrierten Routing-, Preview- und Medienmodule. Die alte Overlay-/Creation-Architektur und unbenutzte Calculator-/Video-Renderer wurden entfernt. Der Pixel-Guard prüft jetzt den aktiven Konfiguratorregler. `scripts/dedupe-a-legacy.test.mjs` prüft lokale Imports und die tatsächliche Browserregistrierung. Öffentlich erreichbare PoC-Routen bleiben erhalten.

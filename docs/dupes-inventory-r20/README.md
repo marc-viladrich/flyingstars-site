@@ -216,3 +216,9 @@ Die Worktree-Isolation verhindert Konflikte mit Claudes Arbeit. `Base.astro`-Hea
 Umsetzung auf `e66c01c` in `/tmp/fs-dupes-inventory-r20`, Branch `codex/dedupe-r20-a`. Das ursprüngliche Inventar bleibt als historischer Befund erhalten. F01/N01/K03/K05 wurden erneut an `people.ts`, `ContactDetails`, `ContactWays`, `Base`, `LanguageSwitch` und `round20-guards` geprüft. CONTACT besitzt bereits Mobilnummer, Besuchs- und Postanschrift. Header und Sprachwahl bleiben bei Claudes Implementierung. Die veraltete feste Section-Anzahl im Editor-Test wurde durch den Nachweis des neuen Schema-Typs ersetzt; der vollständige Schemaabgleich bleibt bestehen.
 
 Etappe A umfasst nur A01/S02, Kontakt, Dauer, Paketidentität/Vorschaupolicy und Sonderangebote. PoC-Routen, I01, CSS-Tokens und Schritte 4–9 bleiben ausgenommen.
+
+### Schritt 1: Altbestand
+
+A01: Video, Calculator, pricing.js und dessen Heart-Capacity-Ableitung entfernt. Die alten Calculator-Styles sind entfernt; aktive Paketkarten-, Formular- und PoC-Styles bleiben bestehen. S02: ausschließlich unerreichbare Overlay-/Creation-/Translation-Zweige und die defekte i18n-Runtimehilfe entfernt. `translate-missing.mjs` gehört zum aktiven Full-file-Vertrag und bleibt. Guard: lokaler Importgraph, Browserregistrierung und aktueller Reglergeometrie-Test.
+
+Die unveränderlichen Commit-Stände werden für längere Prüfungen in getrennten temporären Verifikations-Worktrees gebaut. Jeder Lauf erhält eigenes AFE_STATE_DIR. So konkurrieren Build-Ausgaben und Astro-Zwischenspeicher nicht mit dem nächsten Umsetzungsschritt.

@@ -109,7 +109,6 @@ export function boundaryReason(file, context) {
  if(/\brootMargin\s*:|^export const REVEAL_MARGIN\s*=/.test(context))return 'IntersectionObserver-API: px-Grenze beibehalten; rem bei Bedarf vorher auflösen.';
  if(file==='src/components/Chopper404.astro'&&/formation\(\{.*font: '700 220px /.test(context))return 'Canvas-Formationsschrift in festen Rasterkoordinaten.';
  if(file==='src/scripts/effects/shapes.js'&&/moin:.*font: '700 180px /.test(context))return 'Canvas-Formationsschrift in festen Rasterkoordinaten.';
- if(file==='src/scripts/pricing.js'&&/ctx\.font\s*=/.test(context))return 'Canvas-Schrift rechnet ausdrücklich mit DPR.';
  if(file==='src/scripts/formation/index.js'&&/const font = source\.font|g\.letterSpacing\s*=/.test(context))return 'Canvas-Font/-Sperrung, bestehender Parser erwartet px.';
  if(file==='src/scripts/show-configurator.js'&&/\.style\.setProperty\("--(?:x|tip-left|tip-arrow|tip-top)"/.test(context))return 'DOMRect-/Zeigerkoordinaten sind CSS-px; numerische Geometrie nicht durch 16 teilen.';
  return null;
@@ -211,14 +210,15 @@ test('Typo-Skala hat keine Zwischenstufe und lässt die Browser-Grundschrift fre
  }
 });
 
-test('Slider-Fill und Skala enden bei jeder Root-Größe unter der Mitte des rem-Thumbs',()=>{
- const css=readFileSync(join(REPO,'src/styles/global.css'),'utf8'), js=readFileSync(join(REPO,'src/scripts/pricing.js'),'utf8');
- const thumb=Number(css.match(/\.range::-webkit-slider-thumb\s*\{[^}]*width:\s*([\d.]+)rem/)[1]);
- const [,half,diameter]=js.match(/--fill", `calc\(([\d.]+)rem \+ \$\{share.toFixed\(4\)\} \* \(100% - ([\d.]+)rem\)\)/).map((v,i)=>i?Number(v):v);
- assert.equal(diameter,thumb);assert.equal(half,thumb/2);
- assert.ok(css.includes(`left: calc(${half}rem + var(--p, 0) * (100% - ${diameter}rem))`));
+test('Aktiver Konfigurator: Regler und Skala verwenden bei jeder Root-Größe dieselben Thumb-Ränder',()=>{
+ const css=readFileSync(join(REPO,'src/styles/show-configurator.css'),'utf8');
+ const thumb=Number(css.match(/\.cfg-range::-webkit-slider-thumb\s*\{[^}]*width:\s*([\d.]+)rem/)[1]);
+ const inset=Number(css.match(/\.cfg-ticks\s*\{[^}]*margin: -?[\d.]+rem ([\d.]+)rem 0/)[1]);
+ assert.equal(inset,thumb/2);
+ assert.match(css,/left: calc\(var\(--p\) \* 100%\)/);
  for(const root of [16,20,32])for(const width of [240,600])for(const share of [0,0.5,1]){
-  assert.equal(half*root+share*(width-diameter*root),share===0?thumb*root/2:share===1?width-thumb*root/2:width/2);
+  const tick=inset*root+share*(width-2*inset*root);
+  assert.equal(tick,thumb*root/2+share*(width-thumb*root));
  }
 });
 
