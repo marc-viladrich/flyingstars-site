@@ -17,6 +17,7 @@ function changedLeaves(before,after){
  const changed=[];
  const diff=(old,value,path=[])=>{
   if(isDeepStrictEqual(old,value))return;
+  if(path.length===1&&['translationEvidence','translationReview'].includes(path[0])&&old!==undefined&&value!==undefined){changed.push({path,value:undefined},{path,value});return;}
   if(old&&value&&typeof old==='object'&&typeof value==='object'&&!(old instanceof Date)&&!(value instanceof Date)&&Array.isArray(old)===Array.isArray(value)&&(!Array.isArray(old)||old.length===value.length)){
    for(const key of new Set([...Object.keys(old),...Object.keys(value)]))diff(old[key],value[key],[...path,Array.isArray(value)?Number(key):key]);
   }else changed.push({path,value});

@@ -13,17 +13,17 @@ test('Root writes parse only changed leaves, independent of evidence count',asyn
  assert.equal(adapter.decode(source,text).raw.title,originalTitle);decoded.raw.title=originalTitle;
  assert.throws(()=>adapter.decode(source,text+'\nunknownContractField: true\n'),/Unknown i18n field/);
  const raw=structuredClone(decoded.raw);raw.title+=' proof';
- raw.translationEvidence.fields[0].targetFingerprint='a'.repeat(64);
+ for(const field of raw.translationEvidence.fields)field.targetFingerprint='a'.repeat(64);
  const parse=codecs.yaml.parse;let reads=0;
  codecs.yaml.parse=function(...args){reads++;return parse.apply(this,args);};
  let output;
  try{output=adapter.encode(source,raw,decoded.doc,[{path:[],value:raw}]);}finally{codecs.yaml.parse=parse;}
- assert.ok(reads<=5,`Root write parsed ${reads} times for two changed leaves`);
+ assert.ok(reads<=7,`Root write parsed ${reads} times for a title and the whole evidence block`);
  assert.deepEqual(adapter.decode(source,output).raw,raw);
  assert.ok(output.includes('translationEvidence:'));
  const staged=[];adapter.registry.begin=()=>({stage:async operation=>staged.push(operation),commit:async()=>({head:'proof'})});
  await adapter.commit([{address:source.address,file:source.file,before:Buffer.from(text),bytes:Buffer.from(output),raw}],{parent:'proof'});
- assert.equal(staged.length,2);
+ assert.equal(staged.length,3);
  assert.ok(staged.every(operation=>operation.path.length>0),'Commit must not stage a whole existing record');
  assert.equal(adapter.encode(source,decoded.raw,decoded.doc,[{path:[],value:decoded.raw}]),text);
 });
