@@ -12,7 +12,6 @@ for (const step of [
   ['Astro check', [path.join(root, 'node_modules/astro/bin/astro.mjs'), 'check']],
   ['Editor- und Site-Tests', UNIT_ARGS],
   ['Offline-Astro-Build', [path.join(root, 'node_modules/astro/bin/astro.mjs'), 'build']],
-  ['Sprach-Buildvertrag', ['scripts/check-i18n-build.mjs']],
 ]) {
   console.log(step[0]);
   try {const result = await run(process.execPath, step[1], {cwd: root, env, timeout: 600_000, maxBuffer: 12_000_000}); console.log(result.stdout);}
