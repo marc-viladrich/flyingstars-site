@@ -34,3 +34,24 @@ node editor/translate-missing.mjs --locale en --dry-run --state-dir /tmp/flyings
 Prüfungen, Nachweise und Betriebsbefehle stehen im [Migrationsbericht](editor-migration-2026-11.md). Abschluss: 404/404 Editor-Tests, 123/123 Site-Unit-Tests, echte Klicknachweise in Chromium und WebKit. Layoutprüfung: 660 Kombinationen ohne Befund; 28 visuelle Seitenpaare entsprechen Main. Vier unveränderte Mobile-WebKit-Konfiguratorfälle scheitern auch im Main-Gegenlauf und sind im Migrationsbericht ausgewiesen.
 
 Die Installation wird zusätzlich am tatsächlichen `node_modules/astro-frontend-editor/package.json` und an der Registry-Integrität des Lockfiles geprüft.
+
+## Abgeleitete Hinweise, AFE 0.3.1 vorbereitet
+
+Die Schemas liefern `x-afe.derivedNote` für Showzeiten, Extras, Kontakt,
+Projekt-/Geschäftsfakten und Show-Pakete. Das Wörterbuchschema im Adapter liefert
+denselben Vertrag für gemeinsame Übersetzungswerte. Der Paket-Startpreis besitzt
+einen vorrangigen Feldhinweis. Texte kommen ausschließlich aus dem Seitenvertrag;
+ohne Angabe zeigt AFE 0.3.1 keinen Zusatzhinweis. Die bestehenden Besitzersprünge
+bleiben verfügbar. Kontaktmarker nennen wieder die konkreten Quellfelder,
+einschließlich Mobilnummer für WhatsApp und der jeweiligen Adresszeile.
+
+Die Abhängigkeit bleibt bis zur Registry-Veröffentlichung auf 0.3.0. Die neuen
+Metadaten gehören zum 0.3.1-Vertrag; diese Änderungen werden erst zusammen mit
+dem Paketupgrade ausgerollt. Anschließend hebt der Lead Paketalias
+und Lockfile auf 0.3.1 an. Lokale Kandidaten ausschließlich im Wegwerf-Checkout
+installieren und Version sowie `web/editor.js`/`web/derived-note.mjs` im tatsächlich
+installierten Paket zurücklesen.
+
+Guards: `node --test editor/derived-note.test.mjs editor/contact-record.test.mjs`.
+
+Prüfung des Kandidaten: [AFE-0.3.1-Nachweis](editor-afe-031-proof.md).

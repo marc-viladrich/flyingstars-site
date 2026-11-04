@@ -7,4 +7,4 @@ export const showExtrasSchema=z.object({
  film:z.object({price:priceSchema,includedIn:z.array(fieldPolicy(z.enum(PACKAGE_NAMES).describe('Paket'), 'shared')).min(1).refine(ids=>new Set(ids).size===ids.length,'Paket nur einmal angeben').describe('In diesen Paketen enthalten')}).strict().describe('Filmaufnahmen'),
  schweiz:z.object({price:priceSchema}).strict().describe('Schweiz'),
  indoor:z.object({price:priceSchema,drones:z.object({min:count.describe('Untergrenze'),max:count.describe('Obergrenze')}).strict().refine(value=>value.min<=value.max,'Maximum muss mindestens dem Minimum entsprechen').describe('Drohnenzahl'),ceilingMin:fieldPolicy(z.number().positive().describe('Mindestdeckenhöhe in Metern'), 'shared')}).strict().describe('Indoor-Sonderangebot'),
-}).strict().meta({'x-afe':{collection:{label:'Extras und Sonderangebote',title:[],operations:['update']}}});
+}).strict().meta({'x-afe':{derivedNote:'Ändert alle Angaben, die aus diesem Extra oder Sonderangebot berechnet werden.',collection:{label:'Extras und Sonderangebote',title:[],operations:['update']}}});

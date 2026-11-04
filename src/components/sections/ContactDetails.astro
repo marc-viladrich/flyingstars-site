@@ -20,10 +20,10 @@ const id = `${anchor ?? `s${index}`}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const Item = index === 0 ? 'h2' : 'h3';
 const ways = [
-  { icon: 'phone', title: t('contactDetails.phone'), label: CONTACT.phone.label, href: CONTACT.phone.href },
-  { icon: 'smartphone', title: t('contactDetails.mobile'), label: CONTACT.mobile.label, href: CONTACT.mobile.href },
-  { icon: 'whatsapp', title: 'WhatsApp', label: t('contactDetails.whatsappAction'), href: CONTACT.whatsapp.href, external: true },
-  { icon: 'mail', title: t('contactDetails.email'), label: CONTACT.email, href: `mailto:${CONTACT.email}` },
+  { path: ['phone'], icon: 'phone', title: t('contactDetails.phone'), label: CONTACT.phone.label, href: CONTACT.phone.href },
+  { path: ['mobile'], icon: 'smartphone', title: t('contactDetails.mobile'), label: CONTACT.mobile.label, href: CONTACT.mobile.href },
+  { path: ['mobile'], icon: 'whatsapp', title: 'WhatsApp', label: t('contactDetails.whatsappAction'), href: CONTACT.whatsapp.href, external: true },
+  { path: ['email'], icon: 'mail', title: t('contactDetails.email'), label: CONTACT.email, href: `mailto:${CONTACT.email}` },
 ];
 const crew = image ? [] : await Promise.all(FOUNDERS.map(async (p) => ({ ...p, img: await optimizedImage(p.image.src, 480) })));
 ---
@@ -31,11 +31,11 @@ const crew = image ? [] : await Promise.all(FOUNDERS.map(async (p) => ({ ...p, i
   <div class="cd-main">
     <SectionHead variant="embedded" kicker={kicker} headline={headline} text={text} id={id} level={H} textClass="cd-lead" />
     <ul class="cd-grid" {...record(CONTACT_OWNER)}>
-      {ways.map((w) => <IconFeature as="li" icon={w.icon} title={w.title} level={Item}><a {...field(CONTACT_OWNER,[],{mode:'panel'})} class="cd-link hover-line" href={localHref(w.href)} rel={w.external ? 'noopener' : undefined} target={w.external ? '_blank' : undefined}>{w.label}</a></IconFeature>)}
-      <IconFeature as="li" icon="map-pin" title={t('contactDetails.visit')} level={Item}><address>{CONTACT.visit.map((line,i) => <span {...field(CONTACT_OWNER,[],{mode:'panel'})}>{line}</span>)}</address>{visitNote && <p class="cd-note">{visitNote}</p>}</IconFeature>
-      <IconFeature as="li" icon="mailbox" title={t('contactDetails.post')} level={Item}><address>{CONTACT.post.map((line,i) => <span {...field(CONTACT_OWNER,[],{mode:'panel'})}>{line}</span>)}</address></IconFeature>
+      {ways.map((w) => <IconFeature as="li" icon={w.icon} title={w.title} level={Item}><a {...field(CONTACT_OWNER,w.path,{mode:'panel'})} class="cd-link hover-line" href={localHref(w.href)} rel={w.external ? 'noopener' : undefined} target={w.external ? '_blank' : undefined}>{w.label}</a></IconFeature>)}
+      <IconFeature as="li" icon="map-pin" title={t('contactDetails.visit')} level={Item}><address>{CONTACT.visit.map((line,i) => <span {...field(CONTACT_OWNER,['visit',i],{mode:'panel'})}>{line}</span>)}</address>{visitNote && <p class="cd-note">{visitNote}</p>}</IconFeature>
+      <IconFeature as="li" icon="mailbox" title={t('contactDetails.post')} level={Item}><address>{CONTACT.post.map((line,i) => <span {...field(CONTACT_OWNER,['post',i],{mode:'panel'})}>{line}</span>)}</address></IconFeature>
     </ul>
-    <a {...field(CONTACT_OWNER,[],{mode:'panel'})} class="btn cd-video" href={localHref(CONTACT.video.href)} rel="noopener" target="_blank"><Icon name="video" class="g" />{t(CONTACT.video.labelKey)}</a>
+    <a {...field(CONTACT_OWNER,['video','href'],{mode:'panel'})} class="btn cd-video" href={localHref(CONTACT.video.href)} rel="noopener" target="_blank"><Icon name="video" class="g" />{t(CONTACT.video.labelKey)}</a>
   </div>
   {image
     ? <figure class="cd-photo"><Picture {...image} /></figure>

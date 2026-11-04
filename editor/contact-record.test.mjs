@@ -45,7 +45,7 @@ test('Kontakt: tatsächliches Editor-Speichern ändert Footer, Section, ContactW
   assert.ok(thanksMarkers.some(marker=>marker.kind==='field'&&marker.mode==='panel'&&marker.address.path.at(-1)==='body'),'Danke bearbeitet die Vorlage im Panel statt aufgelöste Werte zurückzuschreiben');
   for(const [name,markup]of [['Footer',footer],['ContactWays',ways],['Kontakt-Section',section]]){
    const markers=[...markup.matchAll(/data-afe="([^"]+)"/g)].map(match=>JSON.parse(match[1].replaceAll('&quot;','"').replaceAll('&amp;','&'))).flatMap(value=>value.markers??[value]);
-   assert.ok(markers.some(marker=>marker.kind==='field'&&marker.mode==='panel'&&marker.address.owner.collection==='contact'&&marker.address.path.length===0),`Direkter Kontakt-Datensatzmarker ${locale} ${name}`);
+   assert.ok(markers.some(marker=>marker.kind==='field'&&marker.mode==='panel'&&marker.address.owner.collection==='contact'&&marker.address.path.length>0),`Konkreter Kontakt-Feldmarker ${locale} ${name}`);
   }
  }
  assert.deepEqual(legalDocuments(dir),legal);

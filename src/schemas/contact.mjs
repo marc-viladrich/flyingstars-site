@@ -6,4 +6,4 @@ export const contactSchema=z.object({
  email:fieldPolicy(z.email().describe('E-Mail'), 'shared'),phone:phone.describe('Festnetz'),mobile:phone.describe('Mobil und WhatsApp'),
  video:z.object({labelKey:fieldPolicy(z.literal('contact.videoCall').describe('Beschriftung').meta({'x-afe':{readOnly:true}}), 'shared'),href:fieldPolicy(z.url().refine(v=>v.startsWith('https://'),'HTTPS erforderlich').describe('Buchungslink'), 'shared')}).strict().describe('Videocall'),
  visit:lines.describe('Besuchsanschrift'),post:lines.describe('Postanschrift'),
-}).strict().meta({'x-afe':{collection:{label:'Kontakt',title:[],operations:['update']}}});
+}).strict().meta({'x-afe':{derivedNote:'Ändert die Kontaktangabe an allen Stellen der Website.',collection:{label:'Kontakt',title:[],operations:['update']}}});

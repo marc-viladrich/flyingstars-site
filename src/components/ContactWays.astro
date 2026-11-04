@@ -8,8 +8,8 @@ import { CONTACT } from './people';
 import Icon from './Icon.astro';
 ---
 <ul class="ways" {...record(CONTACT_OWNER)}>
-  <li><a {...field(CONTACT_OWNER,[],{mode:'panel'})} href={localHref(`mailto:${CONTACT.email}`)}><Icon name="mail" class="g" /><span class="hover-line">{CONTACT.email}</span></a></li>
-  <li><a {...field(CONTACT_OWNER,[],{mode:'panel'})} href={localHref(CONTACT.phone.href)}><Icon name="phone" class="g" /><span class="hover-line">{CONTACT.phone.label}</span></a></li>
-  <li><a {...field(CONTACT_OWNER,[],{mode:'panel'})} href={localHref(CONTACT.video.href)} rel="noopener" target="_blank"><Icon name="video" class="g" /><span class="hover-line">{t(CONTACT.video.labelKey)}</span></a></li>
-  <li><a {...field(CONTACT_OWNER,[],{mode:'panel'})} href={localHref(CONTACT.whatsapp.href)} rel="noopener" target="_blank"><Icon name="whatsapp" class="g" /><span class="hover-line">{CONTACT.whatsapp.label}</span></a></li>
+  <li><a {...field(CONTACT_OWNER,['email'],{mode:'panel'})} href={localHref(`mailto:${CONTACT.email}`)}><Icon name="mail" class="g" /><span class="hover-line">{CONTACT.email}</span></a></li>
+  <li><a {...field(CONTACT_OWNER,['phone'],{mode:'panel'})} href={localHref(CONTACT.phone.href)}><Icon name="phone" class="g" /><span class="hover-line">{CONTACT.phone.label}</span></a></li>
+  <li><a {...field(CONTACT_OWNER,['video', 'href'],{mode:'panel'})} href={localHref(CONTACT.video.href)} rel="noopener" target="_blank"><Icon name="video" class="g" /><span class="hover-line">{t(CONTACT.video.labelKey)}</span></a></li>
+  <li><a {...field(CONTACT_OWNER,['mobile'],{mode:'panel'})} href={localHref(CONTACT.whatsapp.href)} rel="noopener" target="_blank"><Icon name="whatsapp" class="g" /><span class="hover-line">{CONTACT.whatsapp.label}</span></a></li>
 </ul>
