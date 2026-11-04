@@ -36,7 +36,7 @@ for (const occasion of OCCASIONS) {
     await page.clock.install();
     await page.goto(CFG);
     await page.clock.runFor(1000);
-    await page.locator('#cfg-occasion').selectOption(occasion);
+    await page.locator(`#cfg-occasion label[data-occasion="${occasion}"]`).click();
     // long enough for every motif of the sequence to form and play, and for the loop back to the first
     for (const [k, seconds] of [[0, 40], [1, 50], [2, 180]] as const) {
       await page.evaluate(() => { (window as unknown as { __showTrace: unknown[] }).__showTrace = []; });

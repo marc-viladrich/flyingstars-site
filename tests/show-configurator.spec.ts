@@ -14,8 +14,9 @@ const CFG = process.env.CFG_PATH ?? '/drohnenshow-preise/';
 // Runde 11: Ordnung der Startseiten-Karten (Silvester rückt im November und Dezember nach vorn, eigener Test unten)
 const OCCASIONS = ['launch', 'jubilaeum', 'festival', 'hochzeit', 'kultur', 'silvester'];
 const STEPS = [['SPARK', '7.900', '100'], ['HORIZON', '15.900', '200'], ['ODYSSEY', '34.900', '300']] as const;
-// Runde 11: der Anlass ist ein natives <select> (#cfg-occasion)
-const occasion = (page: Page, id: string) => page.locator('#cfg-occasion').selectOption(id);
+// Runde 22: der Anlass ist wieder eine Pill-Gruppe (#cfg-occasion, Radios name=occasion)
+const occasion = (page: Page, id: string) => page.locator(`#cfg-occasion label[data-occasion="${id}"]`).click();
+const chosenOccasion = (page: Page) => page.locator('#cfg-occasion input:checked');
 const pkg = (page: Page, k: number) => page.locator(`label:has([name=pkg][value="${k}"])`).click();
 const scene = (page: Page) => page.locator('#cfg-scene');
 /** Captions of all pictures of the running show, stepping with › until the first comes back. */
@@ -230,7 +231,7 @@ test('Eigener Text: einmal durch Schreibschrift, Druckschrift und Initialen, die
 
 test('Direktlink öffnet Anlass, Paket und Motiv', async ({ page }) => {
   await page.goto(`${CFG}?anlass=launch&paket=HORIZON&motiv=rakete#konfigurator`);
-  await expect(page.locator('#cfg-occasion')).toHaveValue('launch');
+  await expect(chosenOccasion(page)).toHaveValue('launch');
   await expect(page.locator('#cfg-pkg')).toHaveText('HORIZON');
   await expect(scene(page)).toHaveText('Die Rakete als Körper schwebt und dreht sich');
 });
@@ -740,28 +741,41 @@ const stopSample = (page: Page) => page.evaluate(() => { const w = window as unk
 /** Linke Kante der Paketspalte k relativ zur Gruppe (dort sitzt der Rahmen am Ende). */
 const columnX = (page: Page, k: number) => page.locator('.cfg-pkgs').evaluate((g, i) => (g.querySelectorAll('label')[i] as HTMLElement).getBoundingClientRect().left - (g.querySelector('.cfg-ind-sel') as HTMLElement).offsetLeft - g.getBoundingClientRect().left - g.clientLeft, k);
 
-test('Runde 11: Anlass als Dropdown in der Ordnung der Startseite, der erste ist gewählt, ?anlass gewinnt', async ({ page }) => {
+test('Runde 22: Anlass als Pills in der Ordnung der Startseite, der erste ist gewählt, ?anlass gewinnt', async ({ page }) => {
   await page.clock.setFixedTime(new Date('2026-06-15T12:00:00'));
   await page.goto(`${CFG}#konfigurator`);
-  const select = page.locator('#cfg-occasion');
-  await expect(page.locator('[name=occasion][type=radio]')).toHaveCount(0);
-  await expect(select).toHaveAccessibleName('Anlass');
-  await expect(select.locator('option')).toHaveText(['Launch', 'Jubiläum', 'Stadtfest', 'Hochzeit', 'Kultur', 'Winter & Silvester']);
-  await expect(select).toHaveValue('launch');
+  await expect(page.getByRole('group', { name: 'Anlass' })).toBeVisible();
+  await expect(page.locator('#cfg-occasion label')).toHaveText(['Launch', 'Jubiläum', 'Stadtfest', 'Hochzeit', 'Kultur', 'Winter & Silvester']);
+  await expect(chosenOccasion(page)).toHaveValue('launch');
   await expect(scene(page)).toHaveText('Die Rakete als Körper schwebt und dreht sich');
-  // Wechsel per Tastatur am nativen Element
-  await select.focus();
-  await select.selectOption('hochzeit');
+  // ein Klick wechselt den Anlass (Marc: kein zusätzlicher Klick wie beim Dropdown)
+  await occasion(page, 'hochzeit');
+  await expect(chosenOccasion(page)).toHaveValue('hochzeit');
   await expect(scene(page)).toHaveText(/Solitär|Ring/);
+  // Tastatur: Pfeiltaste wechselt innerhalb der Radio-Gruppe
+  await chosenOccasion(page).focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(chosenOccasion(page)).toHaveValue('kultur');
   await page.goto(`${CFG}?anlass=kultur#konfigurator`);
-  await expect(select).toHaveValue('kultur');
+  await expect(chosenOccasion(page)).toHaveValue('kultur');
+});
+
+test('Runde 22: nicht gewählte Anlässe gedämpft, aber über 4,5:1, beim Zeigen voll', async ({ page }) => {
+  await page.goto(`${CFG}?anlass=launch#konfigurator`);
+  const span = (id: string) => page.locator(`#cfg-occasion label[data-occasion="${id}"] span`);
+  const ratio = (fg: string, bg = [15, 13, 12]) => { const c = fg.match(/[\d.]+/g)!.map(Number); const a = c[3] ?? 1; const mix = c.slice(0, 3).map((v, i) => v * a + bg[i] * (1 - a)); const L = (x: number[]) => { const [r, g, b] = x.map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; }; return (L(mix) + 0.05) / (L(bg) + 0.05); };
+  const dim = ratio(await span('hochzeit').evaluate((e) => getComputedStyle(e).color));
+  expect(dim).toBeGreaterThanOrEqual(4.5);
+  expect(dim).toBeLessThan(6);
+  await page.locator('#cfg-occasion label[data-occasion="hochzeit"]').hover();
+  await expect.poll(async () => ratio(await span('hochzeit').evaluate((e) => getComputedStyle(e).color))).toBeGreaterThan(15);
 });
 
 test('Runde 11: im November und Dezember steht Winter & Silvester vorn und ist gewählt, wie die Karte der Startseite', async ({ page }) => {
   await page.clock.setFixedTime(new Date('2026-11-01T12:00:00'));
   await page.goto(`${CFG}#konfigurator`);
-  await expect(page.locator('#cfg-occasion option')).toHaveText(['Winter & Silvester', 'Launch', 'Jubiläum', 'Stadtfest', 'Hochzeit', 'Kultur']);
-  await expect(page.locator('#cfg-occasion')).toHaveValue('silvester');
+  await expect(page.locator('#cfg-occasion label')).toHaveText(['Winter & Silvester', 'Launch', 'Jubiläum', 'Stadtfest', 'Hochzeit', 'Kultur']);
+  await expect(chosenOccasion(page)).toHaveValue('silvester');
   await page.locator('#cfg-cta').scrollIntoViewIfNeeded();
   await expect(page.locator('#cfg-cta')).toHaveAttribute('href', /anlass=stadt/);
 });

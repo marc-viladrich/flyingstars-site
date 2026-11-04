@@ -444,6 +444,11 @@ td.us { color: var(--text); background: var(--fill-soft); }
 .chips label[style*="--c"] input:checked + span { background: var(--c); border-color: var(--c); }
 .chips input:checked + span :is(small, b) { color: inherit; }
 .chips input:focus-visible + span { outline: 0.1875rem solid var(--cyan); outline-offset: 0.1875rem; }
+/* Variante „gedämpft“ (Runde 22, Marc 04.11.2026, Konfigurator-Anlässe): Nur die gewählte Pill soll ins Auge fallen.
+   Nicht gewählte stehen auf 4,7:1 vor dem Sektionsgrund rgb(15 13 12), also über WCAG AA für normale Schrift
+   (4,5:1; 3:1 gälte nur für große Schrift und Rahmen); beim Zeigen und im Tastaturfokus werden sie voll. */
+.chips-quiet input:not(:checked) + span { color: rgb(var(--rgb-text) / 0.49); transition: color var(--dur-color) var(--ease-default), border-color var(--dur-color) var(--ease-default); }
+.chips-quiet label:hover input:not(:checked) + span, .chips-quiet input:focus-visible:not(:checked) + span { color: var(--text); border-color: var(--ink-subtle); }
 .form .row { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
 .form .hint { font-size: var(--text-label); color: var(--faint); max-width: 36ch; }
 .success { display: grid; gap: var(--space-3); }

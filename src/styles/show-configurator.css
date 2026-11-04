@@ -163,11 +163,6 @@
   .cfg-h { font-size: clamp(1.75rem, 2.6vw, 2.5rem); line-height: 1.04; letter-spacing: -0.03em; text-wrap: balance; }
   .cfg-block { display: grid; gap: var(--space-2); border: 0; margin: 0; padding: 0; min-width: 0; }
   .cfg-block > label, .cfg-block legend { font-size: var(--text-control); color: var(--text); padding: 0; margin-bottom: var(--space-1-5); }
-  /* Anlass als gestaltetes natives <select> (Runde 11): Rahmen wie die übrigen Felder, eigener Pfeil, dunkle Liste */
-  .cfg-select { position: relative; }
-  .cfg-select select { display: block; width: 100%; min-height: 3rem; margin: 0; padding: 0 var(--space-12) 0 var(--space-4); border: 1px solid var(--line-strong); border-radius: var(--radius-12); background-color: rgb(var(--rgb-text) / 0.03); color: var(--text); font: 500 var(--text-copy)/1.2 var(--display); letter-spacing: -0.01em; color-scheme: dark; cursor: pointer; transition: border-color var(--dur-control) var(--ease-default), background-color var(--dur-control) var(--ease-default); }
-  .cfg-select select:hover { border-color: rgb(var(--rgb-text) / 0.42); background-color: var(--fill-hover); }
-  @media (prefers-reduced-motion: reduce) { .cfg-select select, .cfg-select svg { transition: none; } }
   .cfg-opt { color: var(--faint); font-size: var(--text-label); }
   .cfg-text { width: 100%; min-height: 2.625rem; padding: 0 var(--space-3-5); border-radius: var(--radius-10); border: 1px solid var(--line-strong); background: transparent; color: var(--text); font: inherit; font-size: var(--text-base); }
   .cfg-text::placeholder { color: var(--faint); }
@@ -193,7 +188,6 @@
     .cfg-h { font-size: clamp(1.625rem, 2.2vw, 2.125rem); }
     .cfg-text, .cfg-upload { min-height: 2.375rem; }
     .cfg-block > label, .cfg-block legend { margin-bottom: var(--space-0-5); }
-    .cfg-select select { min-height: 2.625rem; }
     .cfg-pkgs label > span { min-height: 2.875rem; padding: var(--space-1-5); }
     .cfg-sum { margin-top: var(--space-0-5); padding: var(--space-4) var(--space-4-5); gap: var(--space-3); }
   }

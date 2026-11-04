@@ -75,11 +75,13 @@ test('Globales CSS hat keine mehrfachen Eigenschaftsbesitzer im selben Kontext',
 });
 
 test('Filter und Textstile erben Auswahlzustände; alle aktiven Selects erben dieselbe Basis', () => {
-  for(const [path, cls] of [['src/components/sections/References.astro','rf-pills'],['src/components/configurator/ShowConfigurator.astro','cfg-styles']]) {
+  // Runde 22: die Konfigurator-Anlässe sind wieder Pills (Variante chips-quiet), kein <select> mehr
+  for(const [path, cls] of [['src/components/sections/References.astro','rf-pills'],['src/components/configurator/ShowConfigurator.astro','cfg-styles'],['src/components/configurator/ShowConfigurator.astro','chips-quiet cfg-occasions']]) {
     const s=read(path);assert.match(s,new RegExp(`class="chips ${cls}"`));
     assert.doesNotMatch(s,new RegExp(`\\.${cls}[^\\n]*(?:input|:checked|:focus-visible|:hover)`));
   }
-  for(const path of ['src/components/sections/References.astro','src/components/sections/ContactForm.astro','src/components/configurator/ShowConfigurator.astro']) {
+  assert.doesNotMatch(read('src/styles/show-configurator.css'),/\.cfg-occasions[^\n]*(?:input|:checked|:focus-visible|:hover)/);
+  for(const path of ['src/components/sections/References.astro','src/components/sections/ContactForm.astro']) {
     const selects=read(path).replace(/<!--[\s\S]*?-->|\/\*[\s\S]*?\*\//g,'').match(/<select\b[^>]*>/g)??[];assert.ok(selects.length);for(const s of selects)assert.match(s,/class="native-select"/);
   }
   assert.doesNotMatch(read('src/styles/global.css'),/\.field input[, {]|\.field select[, {]|\.field textarea[, {]/);

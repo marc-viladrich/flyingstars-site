@@ -86,16 +86,15 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
     <form class="cfg-panel" id="cfg">
       <SectionHead variant="contents" headline={heading} kicker={kicker} id="cfg-h" level={Heading} titleClass="cfg-h" kickerClass="cfg-kicker" />
 
-      {/* Runde 11 (Marc: „nicer, eleganter Dropdown“, den Anlass wechselt man selten): natives <select> mit eigenem
-           Rahmen und Pfeil; Tastatur, Screenreader und die Auswahlliste des Geräts bleiben die des Browsers */}
-      <div class="cfg-block cfg-occasion">
-        <label for="cfg-occasion">{t('showconfigurator.occasion')}</label>
-        <div class="cfg-select">
-          <select class="native-select" id="cfg-occasion" name="occasion" autocomplete="off">
-            {list.map((o, i) => <option value={o.id} selected={i === 0}>{o.label}</option>)}
-          </select>
+      {/* Runde 22 (Marc, 04.11.2026, für die Demo: „mit einem Klick weniger durchklicken“): Anlass wieder als Pills, eine
+           Radio-Gruppe mit der gemeinsamen .chips-Komponente. Nicht gewählte Anlässe gedämpft, beim Zeigen voll
+           (Variante .chips-quiet der gemeinsamen Pills, global.css). Reihenfolge nach Saison ordnet das Skript beim Laden neu. */}
+      <fieldset class="cfg-block cfg-occasion">
+        <legend>{t('showconfigurator.occasion')}</legend>
+        <div class="chips chips-quiet cfg-occasions" id="cfg-occasion">
+          {list.map((o, i) => <label data-occasion={o.id}><input type="radio" name="occasion" value={o.id} checked={i === 0} /><span>{o.label}</span></label>)}
         </div>
-      </div>
+      </fieldset>
 
       <fieldset class="cfg-block">
         <legend>{t('showconfigurator.howComplex')}</legend>

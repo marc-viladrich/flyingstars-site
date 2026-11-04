@@ -196,9 +196,12 @@ if (form) {
   // ---------- Auswahl: Anlass, Paket, Drohnenzahl, Text, Logo ----------
   const eur = (v) => startingPrice(v,locale);
   // Anlässe mit dem Monat des Besuchs ordnen (der Build kennt nur seinen eigenen) und den ersten wählen
-  const occSelect = $("#cfg-occasion"), ordered = bySeason(OCCASIONS);
-  occSelect.replaceChildren(...ordered.map((o) => occSelect.querySelector(`option[value="${o.id}"]`)).filter(Boolean));
-  occSelect.value = ordered[0].id;
+  // Anlass-Pills (Radio-Gruppe, Runde 22): in Saison-Reihenfolge stellen, den ersten wählen
+  const occGroup = $("#cfg-occasion"), ordered = bySeason(OCCASIONS);
+  occGroup.replaceChildren(...ordered.map((o) => occGroup.querySelector(`label[data-occasion="${o.id}"]`)).filter(Boolean));
+  const occRadio = (id) => occGroup.querySelector(`input[value="${id}"]`);
+  const occValue = () => occGroup.querySelector("input:checked")?.value;
+  occRadio(ordered[0].id).checked = true;
   let occasion = ordered[0], job = 0, text = "", style = "script", tour = false;
   let logo = null, logoId = 0, logoURL = null;
   const slider = $("#cfg-drones");
@@ -343,8 +346,8 @@ if (form) {
   slider.addEventListener("input", () => setDrones(Number(slider.value), { delay: 180 }));
   slider.addEventListener("change", () => setDrones(Number(slider.value)));
   // a new occasion is reached through the living cloud (Marc: „beim Wechsel des Anlasses immer“)
-  occSelect.addEventListener("change", () => {
-    const next = OCCASIONS.find((o) => o.id === occSelect.value);
+  occGroup.addEventListener("change", () => {
+    const next = OCCASIONS.find((o) => o.id === occValue());
     if (!next || next === occasion) return;
     occasion = next; tour = false; fresh = []; unlockTo = null;
     update(false, undefined, { cloud: true });
@@ -352,7 +355,7 @@ if (form) {
   for (const type of ["pointerdown", "focusin"]) form.addEventListener(type, preloadScenes, { once: true });
   // deep links (?anlass=hochzeit&paket=ODYSSEY&drohnen=400&motiv=lotus): open the configurator on a motif, e.g. to send it on
   const params = new URLSearchParams(location.search), linked = OCCASIONS.find((o) => o.id === params.get("anlass"));
-  if (linked) { occasion = linked; occSelect.value = linked.id; }
+  if (linked) { occasion = linked; occRadio(linked.id).checked = true; }
   const linkedPkg = STEPS.find((x) => x.pkg === params.get("paket")?.toUpperCase())?.pkg;
   if (linkedPkg) drones = DRONE_RANGES[linkedPkg].min;
   if (params.get("drohnen")) drones = snapDrones(Number(params.get("drohnen")) || drones);
