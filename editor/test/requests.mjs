@@ -10,8 +10,8 @@ export function reviewedRequest(state,values){
  const dependencies=dependenciesFromRecords(records),out=[...values],changed=new Set(values.map(v=>v[0]));
  for(const source of records.filter(r=>isSource(r.id)))for(const locale of ['en','nl']){
   const id=source.id.replace('/',`/${locale}/`),target=records.find(r=>r.id===id);
-  if(!changed.has(source.id)&&!changed.has(id))continue;
   const {result,needed}=prepareLocale(source.schema,source.data,target.data,locale,dependencies);
+  if(!changed.has(source.id)&&!changed.has(id)&&!needed.length)continue;
   const data={...result.projection,translationContractVersion:target.data.translationContractVersion,translationSourceHash:target.data.translationSourceHash,translationEvidence:target.data.translationEvidence,...needed.length?{translationReview:approvalFor(result,needed)}:{}};
   for(let i=out.length-1;i>=0;i--)if(out[i][0]===id)out.splice(i,1);
   out.push([id,[],data]);

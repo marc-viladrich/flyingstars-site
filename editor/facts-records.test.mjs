@@ -1,3 +1,6 @@
+import {reviewedRequest} from './test/requests.mjs';
+import {contentData} from '../src/i18n/transaction.mjs';
+import {codecs} from 'astro-frontend-editor/runtime/extensions';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {mkdtemp,symlink,rm,readFile,mkdir,writeFile} from 'node:fs/promises';
 import path from 'node:path';import os from 'node:os';import {randomUUID} from 'node:crypto';import {fileURLToPath} from 'node:url';
@@ -13,11 +16,11 @@ test('Ein natives AFE-Speichern von Person und Projektfakten erreicht die echten
  assert.ok(person);assert.ok(facts);
  const before={};for(const locale of ['','en/','nl/'])for(const name of ['index','ueber-uns']){const f=`src/content/pages/${locale}${name}.yaml`;before[f]=await readFile(path.join(dir,f),'utf8');}
  const photo='https://flyingstars.art/wp-content/uploads/2024/08/Ronja_Teamfoto.jpg';
- const saved=await store.save({expectedHead:state.head,requestId:randomUUID(),changes:[
-  {id:person.id,expectedRevision:person.revision,patches:[{path:['name'],value:'Beweisname'},{path:['image','src'],value:photo}]},
-  {id:facts.id,expectedRevision:facts.revision,patches:[{path:['puma-bundesliga','drones'],value:101},{path:['puma-bundesliga','client'],value:'Beweiskunde'},{path:['puma-bundesliga','location'],value:'Beweisort'},{path:['puma-bundesliga','date'],value:'2022-11-12'}]},
- ]});
- for(const [f,raw]of Object.entries(before))assert.equal(await readFile(path.join(dir,f),'utf8'),raw,'Personen-/Faktenänderung schreibt keine Team-Bios oder Sprachdateien um');
+ const saved=await store.save(reviewedRequest(state,[
+  [person.id,['name'],'Beweisname'],[person.id,['image','src'],photo],
+  ...Object.entries({drones:101,client:'Beweiskunde',location:'Beweisort',date:'2022-11-12'}).map(([key,value])=>[facts.id,['puma-bundesliga',key],value]),
+ ]));
+ for(const [f,raw]of Object.entries(before))assert.deepEqual(contentData(codecs.yaml.parse(await readFile(path.join(dir,f),'utf8'))),contentData(codecs.yaml.parse(raw)),'Personen-/Faktenänderung bestätigt betroffene Nachweise und erhält alle Team-Bios und Sprachtexte');
  const persisted=JSON.parse(await readFile(path.join(dir,'src/content/people/florian-becker.json'),'utf8'));assert.equal(persisted.name,'Beweisname');assert.equal(persisted.image.src,photo);
  const builder=new NativeBuilder(store,path.join(dir,'artifacts'),{editor:true,origin:'https://flyingstars.art',env:{...process.env,AFE_STATE_DIR:path.join(dir,'build-state'),FLYINGSTARS_OFFLINE_MEDIA:'1'}}),artifact=await builder.prepare(saved.head);
  const markers=html=>[...html.matchAll(/data-afe="([^"]+)"/g)].flatMap(m=>{const parsed=JSON.parse(m[1].replaceAll('&quot;','"').replaceAll('&amp;','&'));return parsed.markers??[parsed];});

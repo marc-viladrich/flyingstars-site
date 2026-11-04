@@ -43,7 +43,7 @@ export async function createFlyingStarsAdapter(root) {
  const recordRoute=record=>{const source=sourceFor(record.id);return source?contentRoute(source.address.collection,source.address.id,record.data):null;};
  const {LEGACY_MEDIA_ORIGIN,LEGACY_MEDIA_HOSTS}=await import(pathToFileURL(path.join(root,'src/site-policy.mjs')));
  const site={label:'FlyingStars · Designsprache',types,sourceFor,sourcesFromFiles,recordId,recordRoute,sectionSchema,sectionPolicy:{},
-  editorialHref:/^(?:(?:https?:|mailto:|tel:)\/?.*|\/(?!\/)[^\s]*|#[^\s]*)$/,
+  editorialHref:/^(?:(?:https?:|mailto:|tel:)\/?.*|\/(?!\/)[^\s]*|#[^\s]*|\{\{contact\.phone\.href\}\})$/,
   createSourceAdapter:options=>new LegacySourceAdapter(options),previewPrefix:routeTools.previewPrefix,
   contentRoot:'src',contentCollections:types.map(t=>`src/content/${t.directory}/`),assetRoot:'public/assets',
   mediaOrigin:LEGACY_MEDIA_ORIGIN,mediaHosts:LEGACY_MEDIA_HOSTS,

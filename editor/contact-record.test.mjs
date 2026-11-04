@@ -1,3 +1,4 @@
+import {reviewedRequest} from './test/requests.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,symlink,rm,readFile} from 'node:fs/promises';
@@ -24,7 +25,7 @@ test('Kontakt: tatsächliches Editor-Speichern ändert Footer, Section, ContactW
  assert.deepEqual(site.sourcesFromFiles(['src/content/contact.json']).map(s=>s.id),['site/contact']);
  const legal=legalDocuments(dir);
  const changed={phone:'0209 999 12 34',mobile:'01579 999 12 34',email:'probe@example.org',visit:['Testweg 8'],post:['FlyingStars GmbH','Teststraße 7','45888 Gelsenkirchen']};
- const saved=await store.save({expectedHead:state.head,requestId:randomUUID(),changes:[{id:record.id,expectedRevision:record.revision,patches:Object.entries(changed).map(([key,value])=>({path:[key],value}))}]});
+ const saved=await store.save(reviewedRequest(state,Object.entries(changed).map(([key,value])=>[record.id,[key],value])));
  const disk=JSON.parse(await readFile(path.join(dir,'src/content/contact.json'),'utf8'));
  for(const [key,value]of Object.entries(changed))assert.deepEqual(disk[key],value);
  const builder=new NativeBuilder(store,path.join(dir,'artifacts'),{editor:true,origin:'https://flyingstars.art',env:{...process.env,AFE_STATE_DIR:path.join(dir,'build-state'),FLYINGSTARS_OFFLINE_MEDIA:'1'}});

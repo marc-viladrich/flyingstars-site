@@ -21,3 +21,9 @@ test('Explicit review carries exact source and target field fingerprints',()=>{
  for(const locale of ['en','nl']){const target=c.nextRecords.find(r=>r.id===`page/${locale}/index`),{result,needed}=prepareLocale(de.schema,de.data,target.data,locale,dependenciesFromRecords(c.nextRecords));target.data.translationReview=approvalFor(result,needed);}
  const out=localeTransactions(root,site.sourceFor).prepareTransaction(c);for(const p of out){assert.equal(p.data.translationEvidence.fields.find(f=>f.address==='/title').status,'reviewed');assert.equal(p.data.translationReview,undefined);verifyCurrent(de.schema,de.data,p.data,p.id.split('/')[1],dependenciesFromRecords(c.nextRecords));}
 });
+
+test('Build readers reject target-only structural reorder even with unchanged text fingerprints',()=>{
+ const source=record('page/index'),target=structuredClone(record('page/en/index'));
+ [target.data.sections[0],target.data.sections[1]]=[target.data.sections[1],target.data.sections[0]];
+ assert.throws(()=>verifyCurrent(source.schema,source.data,target.data,'en',dependenciesFromRecords(records)),/stale/);
+});

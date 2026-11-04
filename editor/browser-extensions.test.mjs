@@ -75,7 +75,7 @@ test('actual browser graphs link under editor- and adapter-served URLs and start
  // Link the real HTTP module graph in a browser-like realm. This detects missing served modules,
  // relative URL mistakes, Node imports and missing exports without requiring a TCP listener.
  const script=`
- import {SourceTextModule,createContext} from 'node:vm';
+ import {SourceTextModule,SyntheticModule,createContext} from 'node:vm';
  import {fileURLToPath} from 'node:url';
  import path from 'node:path';
  import {serveFile,EDITOR_BROWSER_MODULES,BROWSER_IMPORTS} from 'astro-frontend-editor/runtime';
@@ -96,6 +96,7 @@ test('actual browser graphs link under editor- and adapter-served URLs and start
    const relative=pathname==='/editor/marked.mjs'?'/'+path.basename(marked):own?pathname:files[pathname]||pathname.slice('/editor/'.length);
    try{await serveFile({writeHead(code){status=code;},end(body){bytes=body;}},base,relative);}catch(error){throw Error(url+': '+error.message);}
    assert.equal(status,200,url);
+   if(pathname.endsWith('.json')){const data=JSON.parse(bytes.toString()),module=new SyntheticModule(['default'],function(){this.setExport('default',data);},{context,identifier:url});cache.set(url,module);return module;}
    const module=new SourceTextModule(bytes.toString(),{context,identifier:url,importModuleDynamically:async(specifier,parent)=>{const child=await load(resolve(specifier,parent.identifier));await link(child);await child.evaluate();return child;}});cache.set(url,module);return module;
   }
   const link=module=>module.status==='unlinked'?module.link((specifier,parent)=>{assert.ok(!specifier.startsWith('node:'),specifier);return load(resolve(specifier,parent.identifier));}):undefined;

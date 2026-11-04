@@ -34,7 +34,7 @@ export function prepareLocale(schema,source,target,locale,dependencies){
 }
 export function verifyCurrent(schema,source,target,locale,dependencies,{allowUnreviewed=false}={}){
  const result=project(schema,source,target,locale,dependencies);
- if(target.translationContractVersion!==CONTRACT_VERSION||target.translationSourceHash!==result.sourceFingerprint||result.sharedDifferences.length||(!allowUnreviewed&&(target.translationEvidence?.sourceFingerprint!==result.sourceFingerprint||reviewRequired(result,target.translationEvidence).length)))throw Error('Missing or stale '+locale+' translation contract');
+ if(target.translationContractVersion!==CONTRACT_VERSION||target.translationSourceHash!==result.sourceFingerprint||result.sharedDifferences.length||!same(contentData(target),result.projection)||(!allowUnreviewed&&(target.translationEvidence?.sourceFingerprint!==result.sourceFingerprint||reviewRequired(result,target.translationEvidence).length)))throw Error('Missing or stale '+locale+' translation contract');
  return result;
 }
 export const same=(a,b)=>canonical(a)===canonical(b);

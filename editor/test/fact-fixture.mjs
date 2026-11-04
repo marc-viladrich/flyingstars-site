@@ -1,3 +1,4 @@
+import {reviewedRequest} from './requests.mjs';
 import {mkdtemp,symlink,rm} from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
@@ -15,5 +16,5 @@ export async function factFixture(t){
  const site=await createSite(dir),runtime=resolveRuntimeOptions({env:{},values:{siteRoot:dir,stateDir:path.join(dir,'state')}});
  const store=await new NativeStore(dir,{remote:false,site,runtime}).init();
  t.after(async()=>{store.sync.close();await rm(dir,{recursive:true,force:true});});
- return {dir,store,async save(id,values){const state=await store.state(),record=state.records.find(r=>r.id===id);return store.save({expectedHead:state.head,requestId:randomUUID(),changes:[{id,expectedRevision:record.revision,patches:Object.entries(values).map(([key,value])=>({path:[key],value}))}]});},async build(head){const builder=new NativeBuilder(store,path.join(dir,'artifacts'),{editor:true,origin:'https://flyingstars.art',env:{...process.env,AFE_STATE_DIR:path.join(dir,'build-state'),FLYINGSTARS_OFFLINE_MEDIA:'1'}});return builder.prepare(head);}};
+ return {dir,store,async save(id,values){const state=await store.state(),record=state.records.find(r=>r.id===id);return store.save(reviewedRequest(state,Object.entries(values).map(([key,value])=>[id,[key],value])));},async build(head){const builder=new NativeBuilder(store,path.join(dir,'artifacts'),{editor:true,origin:'https://flyingstars.art',env:{...process.env,AFE_STATE_DIR:path.join(dir,'build-state'),FLYINGSTARS_OFFLINE_MEDIA:'1'}});return builder.prepare(head);}};
 }

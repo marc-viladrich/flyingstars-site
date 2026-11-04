@@ -44,7 +44,7 @@ const hasText = node => node.mode === 'translatable' || Object.values(node.prope
 /** Pure, strict projection. Never falls back to German for a missing translation; never writes files. */
 export function project(schema, source, target, locale, dependencies = {}) {
   if (!['en', 'nl'].includes(locale)) throw Error(`Unsupported target locale: ${locale}`);
-  const tree = policyTree(schema);
+  const tree = {...policyTree(schema)};
   if(tree.properties){tree.properties={...tree.properties};for(const key of ['translationSourceHash','translationContractVersion','translationEvidence','translationReview'])delete tree.properties[key];}
   const clean=data=>Object.fromEntries(Object.entries(data).filter(([key])=>!['translationSourceHash','translationContractVersion','translationEvidence','translationReview'].includes(key)));
   source=clean(source);target=clean(target);

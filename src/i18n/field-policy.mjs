@@ -13,8 +13,11 @@ export function fieldPolicy(schema, mode) {
 const wrappers = new Set(['optional', 'nullable', 'default', 'prefault', 'readonly', 'catch']);
 const leaves = new Set(['text', 'number', 'boolean', 'enum', 'literal']);
 
+const policyCache = new WeakMap();
+
 /** Normalize real Zod and AFE's browser schema into the SAME policy tree. No name/value heuristics. */
 export function policyTree(schema, address = '$') {
+  if (policyCache.has(schema)) return policyCache.get(schema);
   let node = schema;
   while (node?._def && wrappers.has(node._def.type)) node = node._def.innerType;
   const zod = !!node?._def;
@@ -37,6 +40,7 @@ export function policyTree(schema, address = '$') {
     if (kind === 'enum') result.choices = zod ? node.options : node.choices;
     if (kind === 'literal') result.value = zod ? node._def.values[0] : node.value;
   } else throw Error(`Unsupported i18n schema at ${address}: ${kind}`);
+  policyCache.set(schema, result);
   return result;
 }
 
