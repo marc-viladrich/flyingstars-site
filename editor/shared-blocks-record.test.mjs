@@ -21,8 +21,8 @@ test('T02: natives AFE-Speichern von Bio/Rolle und beiden Bausteinen erreicht al
  const evidence=path.join(process.env.AFE_STATE_DIR??dir,'t02-proof');await mkdir(evidence,{recursive:true});
  for(const locale of ['de','en','nl'])for(const name of ['index','ueber-uns','drohnenshow-hochzeit','drohnenshow-werbung']){
   const html=await readFile(path.join(artifact.site,locale==='de'?'':locale,name==='index'?'index.html':`${name}/index.html`),'utf8');await writeFile(path.join(evidence,`${locale}-${name}.html`),html);
-  const actual=markers(html),has=(collection,p)=>actual.some(m=>m.address?.owner?.collection===collection&&JSON.stringify(m.address.path)===JSON.stringify(p));
-  if(['index','ueber-uns'].includes(name)){assert.ok(html.includes('Beweisbiografie '+locale));assert.ok(html.includes('Beweisrolle '+locale));assert.ok(html.includes('Beweisnachhaltigkeit '+locale));assert.ok(has('people',['bio',locale]));assert.ok(has('people',['role',locale]));assert.ok(has('sustainabilityPillars',[locale,'pillars']));}
-  if(name!=='index'){assert.ok(html.includes('Beweissicherheit '+locale));assert.ok(html.includes('Beweisaufgabe '+locale));assert.ok(has('safetyConcept',[locale,'items']));assert.ok(has('safetyConcept',[locale,'responsibilities']));}
+  const actual=markers(html),visible=html.replaceAll('&nbsp;',' ').replaceAll('\u00a0',' '),has=(collection,p)=>actual.some(m=>m.address?.owner?.collection===collection&&JSON.stringify(m.address.path)===JSON.stringify(p));
+  if(['index','ueber-uns'].includes(name)){assert.ok(visible.includes('Beweisbiografie '+locale));assert.ok(visible.includes('Beweisrolle '+locale));assert.ok(visible.includes('Beweisnachhaltigkeit '+locale));assert.ok(has('people',['bio',locale]));assert.ok(has('people',['role',locale]));assert.ok(has('sustainabilityPillars',[locale,'pillars']));}
+  if(name!=='index'){assert.ok(visible.includes('Beweissicherheit '+locale));assert.ok(visible.includes('Beweisaufgabe '+locale));assert.ok(has('safetyConcept',[locale,'items']));assert.ok(has('safetyConcept',[locale,'responsibilities']));}
  }
 });

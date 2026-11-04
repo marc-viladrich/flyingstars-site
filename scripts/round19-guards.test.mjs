@@ -3,6 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { parse } from 'yaml';
+import {landingSiteContent} from '../src/content/shared-blocks.mjs';
 const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
 
 test('Reveals starten spätestens bei einem halben rem im Bild, und die Kurve öffnet sofort', async () => {
@@ -39,7 +40,7 @@ test('Jeder horizontale Slider hat Pfeile unter sich, auf allen Breiten', () => 
 test('Zuständigkeiten: jede Aufgabe, die ihr übernehmt, nennt ein Verb', () => {
   const dir = new URL('../src/content/pages/', import.meta.url);
   const rows = readdirSync(dir).filter((f) => f.endsWith('.yaml')).flatMap((f) =>
-    (parse(readFileSync(new URL(f, dir), 'utf8')).sections || []).flatMap((s) => (s.responsibilities || []).map((r) => ({ f, ...r }))));
+    (parse(readFileSync(new URL(f, dir), 'utf8')).sections || []).flatMap((s) => ((s.type === 'landingSite' ? landingSiteContent(s,'de') : s).responsibilities || []).map((r) => ({ f, ...r }))));
   assert.ok(rows.length >= 20, 'keine Zuständigkeitstabellen gefunden');
   for (const r of rows.filter((r) => r.you === 'full')) {
     const words = r.task.replace(/\([^)]*\)/g, '').trim().split(/\s+/);
@@ -49,7 +50,7 @@ test('Zuständigkeiten: jede Aufgabe, die ihr übernehmt, nennt ein Verb', () =>
 
 test('Marken & Werbung hat die Zuständigkeitstabelle wie Hochzeit und Indoor', () => {
   for (const f of ['drohnenshow-werbung', 'drohnenshow-hochzeit', 'drohnenshow-indoor']) {
-    assert.ok(parse(read(`src/content/pages/${f}.yaml`)).sections.some((s) => s.type === 'landingSite' && (s.safetyRef === 'safety-concept' || s.responsibilities?.length)), f);
+    assert.ok(parse(read(`src/content/pages/${f}.yaml`)).sections.some((s) => s.type === 'landingSite' && landingSiteContent(s,'de').responsibilities?.length), f);
   }
 });
 
