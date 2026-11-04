@@ -20,6 +20,7 @@ try{for(const [engine,type]of [['chromium',chromium],['webkit',webkit]]){
    snap.configurator=await page.locator('#konfigurator').ariaSnapshot();
    await page.locator('#x-express').check();await expect(page.locator('[data-extras-bar]')).toContainText(/1.*Express/s);snap.extras=await page.locator('[data-extras-bar]').evaluate(node=>({text:node.textContent.trim().replace(/\s+/g,' '),links:[...node.querySelectorAll('a')].map(a=>({text:a.textContent,href:a.getAttribute('href')})),status:node.querySelector('[role=status]')?.textContent}));
    snap.languageLinks=await page.locator('.nav .language-switch a').evaluateAll(nodes=>nodes.map(n=>({text:n.textContent,href:n.getAttribute('href'),lang:n.hreflang})));
+   const nextLocale={de:'en',en:'nl',nl:'de'}[locale];await page.locator('.nav .lang-btn').focus();await page.keyboard.press('Enter');await page.locator('.nav .language-switch a[hreflang='+nextLocale+']').click();await expect(page.locator('html')).toHaveAttribute('lang',nextLocale);snap.languageSwitch={locale:await page.locator('html').getAttribute('lang'),url:page.url().replace(origin,''),headline:await page.locator('h1').innerText()};
    await page.goto(origin+prefix+'/kontakt/?paket=offen#anfrage');
    await page.locator('[data-next]').click();snap.formErrors=await page.locator('#inquiry-form').ariaSnapshot();
    await page.locator('label:has(input[name=anlass][value=firma])').click();await page.locator('#f-ort').fill('Osnabrück');await page.locator('[data-date-open]').check();await page.locator('[data-next]').click();

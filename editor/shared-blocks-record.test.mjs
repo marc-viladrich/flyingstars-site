@@ -1,3 +1,6 @@
+import {reviewedRequest} from './test/requests.mjs';
+import {contentData} from '../src/i18n/transaction.mjs';
+import {codecs} from 'astro-frontend-editor/runtime/extensions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,symlink,rm,readFile,mkdir,writeFile} from 'node:fs/promises';
@@ -13,8 +16,8 @@ test('T02: natives AFE-Speichern von Bio/Rolle und beiden Bausteinen erreicht al
  const state=await store.state(),ids=['person/florian-becker','site/safety-concept','site/sustainability-pillars'];
  const before={};for(const l of ['','en/','nl/'])for(const n of ['index','ueber-uns','drohnenshow-hochzeit','drohnenshow-werbung']){const file=`src/content/pages/${l}${n}.yaml`;before[file]=await readFile(path.join(dir,file),'utf8');}
  const changes=ids.map(id=>{const record=state.records.find(r=>r.id===id);assert.ok(record,id);return {id,expectedRevision:record.revision,patches:['de','en','nl'].flatMap(locale=>id.startsWith('person/')?[{path:['bio',locale],value:'Beweisbiografie '+locale},{path:['role',locale],value:'Beweisrolle '+locale}]:id==='site/safety-concept'?[{path:[locale,'items',0,'text'],value:'Beweissicherheit '+locale},{path:[locale,'responsibilities',0,'task'],value:'Beweisaufgabe '+locale}]:[{path:[locale,'pillars',0,'text'],value:'Beweisnachhaltigkeit '+locale}])};});
- const saved=await store.save({expectedHead:state.head,requestId:randomUUID(),changes});
- for(const [file,raw]of Object.entries(before))assert.equal(await readFile(path.join(dir,file),'utf8'),raw,'Seiten bleiben Referenzen');
+ const saved=await store.save(reviewedRequest(state,changes.flatMap(change=>change.patches.map(patch=>[change.id,patch.path,patch.value]))));
+ for(const [file,raw]of Object.entries(before))assert.deepEqual(contentData(codecs.yaml.parse(await readFile(path.join(dir,file),'utf8'))),contentData(codecs.yaml.parse(raw)),'Seiten bleiben Referenzen; nur betroffene Nachweise werden bestätigt');
  const persisted=JSON.parse(await readFile(path.join(dir,'src/content/people/florian-becker.json'),'utf8'));assert.equal(persisted.bio.de,'Beweisbiografie de');
  const builder=new NativeBuilder(store,path.join(dir,'artifacts'),{editor:true,origin:'https://flyingstars.art',env:{...process.env,AFE_STATE_DIR:path.join(dir,'build-state'),FLYINGSTARS_OFFLINE_MEDIA:'1'}}),artifact=await builder.prepare(saved.head);
  const markers=html=>[...html.matchAll(/data-afe="([^"]+)"/g)].flatMap(m=>{const p=JSON.parse(m[1].replaceAll('&quot;','"').replaceAll('&amp;','&'));return p.markers??[p];});

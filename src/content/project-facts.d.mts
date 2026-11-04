@@ -13,3 +13,4 @@ export function projectValue(ref:unknown,locale?:string,source?:Record<string,an
 export function projectText<T>(text:T,locale?:string,source?:Record<string,any>,options?:{markdown?:boolean}):T;
 export function projectValues(value:unknown,locale?:string,source?:Record<string,any>):any;
 export function projectView(entry:CollectionEntry<'projects'>):ProjectView;
+export function projectFactPath(ref:{project:unknown;field:unknown}):string[];
