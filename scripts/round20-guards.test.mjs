@@ -6,22 +6,27 @@ import { join } from 'node:path';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 
-test('Hover-Marker im Kopf: keine :has()-Regel am ::after selbst (WebKit bricht den Gleit-Übergang sonst ab)', () => {
+test('Hover im Kopf: Unterstrich je Link, gleitende Box als echtes Element (WebKit-Falle)', () => {
   const css = read('src/styles/global.css');
-  for (const marker of ['.nav nav', '.glide-list']) {
-    const rules = css.split('}').map((rule) => rule.split('{')[0]).filter((sel) => sel.includes(`${marker}`) && sel.includes('::after'));
-    assert.ok(rules.length > 0, `Marker ${marker}::after fehlt`);
-    for (const sel of rules) assert.doesNotMatch(sel, /:has\([^)]*\)[^,]*::after/, `:has() direkt am Marker: ${sel.trim()}`);
-  }
+  // Unterstrich je Hauptpunkt (Marc 04.11.: „in sich geschlossen“), kein gemeinsamer Marker am nav
+  assert.match(css, /\.nav nav > a::after, \.nav-drop > a::after \{[^}]*scaleX\(0\)/);
+  assert.doesNotMatch(css, /\.nav nav::after/);
+  // Box in Auswahllisten: echtes Element, kein Pseudo-Element; WebKit bricht Übergänge an Pseudo-Elementen ab, sobald
+  // eine :has()-Regel sie neu berechnet
+  assert.doesNotMatch(css, /\.glide-list::(after|before)/);
+  const selectors = css.split('}').map((rule) => rule.split('{')[0]);
+  for (const sel of selectors) if (/glide/.test(sel)) assert.doesNotMatch(sel, /:has\([^{]*::(after|before)/, sel.trim());
+  for (const file of ['src/layouts/Base.astro', 'src/components/LanguageSwitch.astro']) assert.match(read(file), /<li class="glide-mark" aria-hidden="true"><\/li>/, file);
   // ein wandernder Ankername statt umgeschaltetem position-anchor (springt in WebKit)
-  assert.doesNotMatch(css, /:has\([^{]*\)::after\s*\{[^}]*position-anchor/, 'position-anchor wird per :has() umgeschaltet');
+  assert.doesNotMatch(css, /:has\([^{]*\)[^{,]*\{[^}]*position-anchor/, 'position-anchor wird per :has() umgeschaltet');
 });
 
 test('Sprachwahl ist ein natives Popover und kein JS-Menü', () => {
   const src = read('src/components/LanguageSwitch.astro');
   assert.match(src, /popovertarget=/);
   assert.match(src, /<div popover /);
-  assert.doesNotMatch(src, /addEventListener\(['"]click/);
+  assert.doesNotMatch(src, /addEventListener\(['"](click|mouseenter|pointerenter)/);
+  assert.match(src, /@media \(hover: hover\)[\s\S]*\.language-switch:hover \.lang-pop/, 'mit Maus öffnet die Sprachwahl beim Zeigen wie „Anlässe“');
   const base = read('src/layouts/Base.astro');
   assert.equal((base.match(/<LanguageSwitch [^>]*id="/g) ?? []).length, 2, 'Kopf und Menü brauchen je eine eigene id (Popover- und Ankername)');
 });
