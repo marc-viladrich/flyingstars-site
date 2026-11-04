@@ -6,7 +6,7 @@ import {fieldPolicy, policyTree, policyStatistics} from '../src/i18n/field-polic
 import {contractFixtures} from './test/i18n-contract-fixtures.mjs';
 
 const fixtures = await contractFixtures();
-const ids = ['page/index', 'post/test', 'project/test', 'faq/test', 'person/test', 'media/test', 'site/contact', 'site/navigation', 'site/show-duration', 'site/show-extras', 'site/business-facts', 'site/project-facts', 'site/preview-policy', 'package/configuration', 'site/ui'];
+const ids = ['page/index', 'post/test', 'project/test', 'faq/test', 'person/test', 'media/test', 'site/contact', 'site/navigation', 'site/show-duration', 'site/show-extras', 'site/business-facts', 'site/project-facts', 'site/preview-policy', 'package/configuration', 'site/ui', 'site/safety-concept', 'site/sustainability-pillars'];
 
 test('every possible branch of every registered source has the same server/browser policy', () => {
   for (const id of ids) {

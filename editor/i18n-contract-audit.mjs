@@ -6,7 +6,7 @@ import {policyTree, policyStatistics} from '../src/i18n/field-policy.mjs';
 import {checkParallel, project, adoptionEvidence, reviewRequired} from '../src/i18n/contract.mjs';
 
 const {site, pairs, dependencies} = await contractFixtures();
-const ids = ['page/index', 'post/test', 'project/test', 'faq/test', 'person/test', 'media/test', 'site/contact', 'site/navigation', 'site/show-duration', 'site/show-extras', 'site/business-facts', 'site/project-facts', 'site/preview-policy', 'package/configuration', 'site/ui'];
+const ids = ['page/index', 'post/test', 'project/test', 'faq/test', 'person/test', 'media/test', 'site/contact', 'site/navigation', 'site/show-duration', 'site/show-extras', 'site/business-facts', 'site/project-facts', 'site/preview-policy', 'package/configuration', 'site/ui', 'site/safety-concept', 'site/sustainability-pillars'];
 const policy = Object.fromEntries(ids.map(id => [id, policyStatistics(policyTree(site.sourceFor(id).schema))]));
 const report = {version: 2, addressing: 'positional-pre-keys', sources: pairs.length / 2, localeFiles: pairs.length,
   rawCurrent: 0, shadowPass: 0, blockers: [], sharedDrift: [], policy,
