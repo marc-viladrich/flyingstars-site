@@ -3,14 +3,12 @@
 // unterschiedliche Motive sieht“). Kopf wie jede Section, Ziel und Knopf je Anlass. Der Teaser selbst
 // (src/components/configurator/ConfiguratorTeaser.astro) gehört dem Konfigurator; hier nur die Props id, href, cta.
 import type { Section } from '../../content.config';
-import SectionHead from '../SectionHead.astro';
+import TeaserSection from '../TeaserSection.astro';
 import ConfiguratorTeaser from '../configurator/ConfiguratorTeaser.astro';
 type Props = Extract<Section, { type: 'landingTeaser' }> & { index: number };
 // `loop` (marke | hochzeit | start): anlassspezifischer Ablauf des Teasers (Runde 9, Prop `reel` am Teaser)
 const { kicker, headline, text, href, cta, loop, id = 'motive', index } = Astro.props;
-const H = index === 0 ? 'h1' : 'h2';
 ---
-<section class="section" id={id} aria-labelledby={`${id}-h`}>
-  <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
+<TeaserSection id={id} index={index} kicker={kicker} headline={headline} text={text}>
   <ConfiguratorTeaser id={`${id}-cft`} href={href} cta={cta} reel={loop} />
-</section>
+</TeaserSection>

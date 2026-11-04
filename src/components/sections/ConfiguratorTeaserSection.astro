@@ -3,13 +3,11 @@
 // sieht, warum der Konfigurator überhaupt interessant ist“; Runde 7: als Showreel, das sich selbst abspielt, statt
 // interaktiv). Kopf wie jede Section, darunter der Teaser aus src/components/configurator/ConfiguratorTeaser.astro.
 import type { Section } from '../../content.config';
-import SectionHead from '../SectionHead.astro';
+import TeaserSection from '../TeaserSection.astro';
 import ConfiguratorTeaser from '../configurator/ConfiguratorTeaser.astro';
 type Props = Extract<Section, { type: 'configuratorTeaser' }> & { index: number };
 const { headline, text, kicker, occasion, drones, id = 'konfigurator', index } = Astro.props;
-const H = index === 0 ? 'h1' : 'h2';
 ---
-<section class="section" id={id} aria-labelledby={`${id}-h`}>
-  <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
+<TeaserSection id={id} index={index} kicker={kicker} headline={headline} text={text}>
   <ConfiguratorTeaser occasion={occasion} drones={drones} />
-</section>
+</TeaserSection>
