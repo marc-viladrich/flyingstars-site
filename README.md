@@ -102,7 +102,7 @@ Kundenbilder stammen derzeit von `flyingstars.art` und der geteilten Vercel-Refe
 ## Lokal
 
 ```sh
-nvm use   # Node 24.15+ für den Editor; Site-Prüfungen auch mit Node 22.12+
+nvm use   # Node 26 LTS für Entwicklung und CI
 npm ci
 npx astro dev
 npx astro check && npx astro build && npx playwright test
@@ -110,4 +110,4 @@ npx astro check && npx astro build && npx playwright test
 
 ## Lokale Laufzeit
 
-Site und Editor benötigen Node >=24.15.0. `.nvmrc` und CI verwenden Node 24. `npm run test:unit` und `npm run ci` verwenden denselben vollständigen Unit-Testvertrag inklusive `editor/core`. Historische Prüfprotokolle mit Node 22 dokumentieren den damaligen Stand.
+Site und Editor benötigen Node >=24.15.0. `.nvmrc` und CI verwenden Node 26 LTS. Node 24.15+ bleibt aus Kompatibilitätsgründen unterstützt. `npm run test:unit` und `npm run ci` verwenden denselben vollständigen Unit-Testvertrag inklusive `editor/core`. Historische Prüfprotokolle mit Node 22 dokumentieren den damaligen Stand.

@@ -10,5 +10,5 @@ test('Jeder Unit-Test unter editor, scripts und src/scripts ist im gemeinsamen G
  assert.equal(pkg.engines.node,'>=24.15.0');assert.equal(lock.packages[''].engines.node,pkg.engines.node);
  const afe=JSON.parse(readFileSync('node_modules/astro-frontend-editor/package.json'));
  assert.equal(afe.engines.node,pkg.engines.node);
- assert.equal(readFileSync('.nvmrc','utf8').trim(),'24');
+ assert.equal(readFileSync('.nvmrc','utf8').trim(),'26');
 });
