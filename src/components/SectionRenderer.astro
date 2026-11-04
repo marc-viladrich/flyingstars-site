@@ -14,6 +14,7 @@ import Cta from './sections/Cta.astro';
 import PostList from './sections/PostList.astro';
 import ProjectGrid from './sections/ProjectGrid.astro';
 import ContactForm from './sections/ContactForm.astro';
+import ContactDetails from './sections/ContactDetails.astro';
 import Pricing from './sections/Pricing.astro';
 import Steps from './sections/Steps.astro';
 import Comparison from './sections/Comparison.astro';
@@ -32,7 +33,7 @@ interface Props { sections: Section[] }
 // Redaktionelle Hinweise (todo) nur im lokalen Dev-Server. Kein Build, auch keine Preview, rendert sie (Marc, 02.11.2026).
 const annotate = import.meta.env.DEV;
 const { sections } = Astro.props;
-const map = { showreelHero: FlightHero, occasions: Occasions, metrics: Metrics, sustainability: Sustainability, hero: Hero, textMedia: TextMedia, faq: Faq, cta: Cta, postList: PostList, projectGrid: ProjectGrid, contactForm: ContactForm, pricing: Pricing, steps: Steps, comparison: Comparison, team: Team, logoBar: LogoBar, timeline: Timeline, packages: Packages, references: References, tempo: Tempo, configuratorTeaser: ConfiguratorTeaserSection, landingHero: LandingHero, landingStories: LandingStories, landingRefs: LandingRefs, landingTeaser: LandingTeaser, landingPrice: LandingPrice, landingSite: LandingSite, landingFlow: LandingFlow, landingBento: LandingBento, landingSpotlight: LandingSpotlight, landingCta: LandingCta } as const;
+const map = { showreelHero: FlightHero, occasions: Occasions, metrics: Metrics, sustainability: Sustainability, hero: Hero, textMedia: TextMedia, faq: Faq, cta: Cta, postList: PostList, projectGrid: ProjectGrid, contactForm: ContactForm, contactDetails: ContactDetails, pricing: Pricing, steps: Steps, comparison: Comparison, team: Team, logoBar: LogoBar, timeline: Timeline, packages: Packages, references: References, tempo: Tempo, configuratorTeaser: ConfiguratorTeaserSection, landingHero: LandingHero, landingStories: LandingStories, landingRefs: LandingRefs, landingTeaser: LandingTeaser, landingPrice: LandingPrice, landingSite: LandingSite, landingFlow: LandingFlow, landingBento: LandingBento, landingSpotlight: LandingSpotlight, landingCta: LandingCta } as const;
 ---
 <div style="display:contents" {...((Astro.props as any).__afe?.sections ? blocks((Astro.props as any).__afe?.sections) : {})}>
 {sections.map((s, i) => { const C = map[s.type]; return <>{annotate && s.todo && <aside class="todo-note" role="note"><Icon name="pencil-line" size={18} class="g" /><span><b>Fehlt noch</b> {s.todo}</span></aside>}<C {...(s as any)} index={i} /></>; })}

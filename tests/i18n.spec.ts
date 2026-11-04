@@ -82,8 +82,14 @@ for (const locale of ['en', 'nl']) {
 test('Language switch keeps page, query and hash and is keyboard accessible', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/en/kontakt/?paket=offen#anfrage');
+  // Sprachwahl ist ein Popover (Runde 20): Knopf per Tastatur öffnen, dann den Link wählen
+  const button = page.locator('.nav .lang-btn');
   const link = page.locator('.nav .language-switch a[hreflang=nl]');
   await expect(link).toHaveAttribute('href', /\/nl\/kontakt\/\?paket=offen#anfrage$/);
+  await expect(link).toBeHidden();
+  await button.focus();
+  await page.keyboard.press('Enter');
+  await expect(link).toBeVisible();
   await link.focus();
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/\/nl\/kontakt\/\?paket=offen#anfrage$/);

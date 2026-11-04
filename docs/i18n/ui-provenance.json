@@ -1356,5 +1356,19 @@
   {"key":"consent.storageError","locale":"en","origin":"machine-new","components":["src/components/Consent.astro","src/layouts/Base.astro"],"revision":"analytics-consent","editorReviewed":false},
   {"key":"consent.storageError","locale":"nl","origin":"machine-new","components":["src/components/Consent.astro","src/layouts/Base.astro"],"revision":"analytics-consent","editorReviewed":false},
   {"key":"consent.revision","locale":"en","origin":"machine-new","components":["src/components/Consent.astro"],"revision":"consent-library","editorReviewed":false},
-  {"key":"consent.revision","locale":"nl","origin":"machine-new","components":["src/components/Consent.astro"],"revision":"consent-library","editorReviewed":false}
+  {"key":"consent.revision","locale":"nl","origin":"machine-new","components":["src/components/Consent.astro"],"revision":"consent-library","editorReviewed":false},
+  {"key":"contactDetails.phone","locale":"en","origin":"machine-new","components":["src/components/sections/ContactDetails.astro"]},
+  {"key":"contactDetails.phone","locale":"nl","origin":"machine-new","components":["src/components/sections/ContactDetails.astro"]},
+  {"key":"contactDetails.mobile","locale":"en","origin":"machine-new","components":["src/components/sections/ContactDetails.astro"]},
+  {"key":"contactDetails.mobile","locale":"nl","origin":"machine-new","components":["src/components/sections/ContactDetails.astro"]},
+  {"key":"contactDetails.whatsappAction","locale":"en","origin":"machine-new","components":["src/components/sections/ContactDetails.astro"]},
+  {"key":"contactDetails.whatsappAction","locale":"nl","origin":"machine-new","components":["src/components/sections/ContactDetails.astro"]},
+  {"key":"contactDetails.email","locale":"en","origin":"machine-new","components":["src/components/sections/ContactDetails.astro"]},
+  {"key":"contactDetails.email","locale":"nl","origin":"machine-new","components":["src/components/sections/ContactDetails.astro"]},
+  {"key":"contactDetails.visit","locale":"en","origin":"machine-new","components":["src/components/sections/ContactDetails.astro"]},
+  {"key":"contactDetails.visit","locale":"nl","origin":"machine-new","components":["src/components/sections/ContactDetails.astro"]},
+  {"key":"contactDetails.post","locale":"en","origin":"machine-new","components":["src/components/sections/ContactDetails.astro"]},
+  {"key":"contactDetails.post","locale":"nl","origin":"machine-new","components":["src/components/sections/ContactDetails.astro"]},
+  {"key":"contactDetails.team","locale":"en","origin":"machine-new","components":["src/components/sections/ContactDetails.astro"]},
+  {"key":"contactDetails.team","locale":"nl","origin":"machine-new","components":["src/components/sections/ContactDetails.astro"]}
 ]

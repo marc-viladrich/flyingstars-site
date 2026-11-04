@@ -3473,5 +3473,40 @@
     "de": "Weiterblättern",
     "en": "Next",
     "nl": "Volgende"
+  },
+  "contactDetails.phone": {
+    "de": "Telefon",
+    "en": "Phone",
+    "nl": "Telefoon"
+  },
+  "contactDetails.mobile": {
+    "de": "Mobil",
+    "en": "Mobile",
+    "nl": "Mobiel"
+  },
+  "contactDetails.whatsappAction": {
+    "de": "Nachricht schreiben",
+    "en": "Send a message",
+    "nl": "Stuur een bericht"
+  },
+  "contactDetails.email": {
+    "de": "E-Mail",
+    "en": "Email",
+    "nl": "E-mail"
+  },
+  "contactDetails.visit": {
+    "de": "Besuch",
+    "en": "Visit",
+    "nl": "Bezoek"
+  },
+  "contactDetails.post": {
+    "de": "Post",
+    "en": "Post",
+    "nl": "Post"
+  },
+  "contactDetails.team": {
+    "de": "Das Team",
+    "en": "The team",
+    "nl": "Het team"
   }
 }

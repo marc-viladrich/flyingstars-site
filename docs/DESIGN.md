@@ -138,6 +138,13 @@ Bewusste px-Ausnahmen sind 1–2 px Hairlines, kleine Schattenkomponenten, unsic
 
 ## Komponenten
 
+**Kopfzeile (Runde 20, 04.11.2026):**
+- Hover-Marker sind reines CSS über Anchor Positioning: unter den Hauptpunkten ein Unterstrich im Logoverlauf, in Auswahllisten (Anlässe, Sprache: Klasse `.glide-list`) eine Box. Ein einziger Ankername (`--nav-mark`, `--glide-mark`) wandert zum Eintrag unter Maus oder Tastaturfokus, sonst zum aktuellen Eintrag; der Marker gleitet hinterher. Ein Wechsel von `position-anchor` oder eine `:has()`-Regel direkt am `::after` lässt WebKit springen, `scripts/round20-guards.test.mjs` verbietet beides. Ohne Anchor-Unterstützung bleibt die Farbänderung.
+- „Anlässe“ öffnet beim Zeigen und per Tastatur und schließt mit 0,12 s Verzögerung. Ist eine Anlass-Seite offen, trägt „Anlässe“ den Unterstrich.
+- Die Sprachwahl ist ein natives Popover (`popovertarget`, kein JS): Knopf mit Lucide `languages` und Kürzel der Sprache, Liste mit vollem Namen. Auf dem Handy führt sie die Knopfgruppe rechts an, im Menükopf an derselben Stelle. Vergleich nur mit Symbol: `?sprache=icon`.
+
+**Kontaktdaten:** Nummern, E-Mail, Links und beide Anschriften stehen nur in `CONTACT` (`src/components/people.ts`). Die Section `contactDetails` (/kontakt/), `ContactWays` und der Footer lesen daraus; Anschriften stehen zeilenweise wie auf einem Umschlag. Ein Wächter meldet die Nummern und Straßen an jeder anderen Stelle außer den Rechtstexten und der Danke-Seite.
+
 **Bilder:**
 - Beim Scrollen öffnen sie sich von unten (Vorhang wie im Prototyp, `.pre`-Klasse, Startzustand vor dem ersten Bild setzen)
 - Bilder mit Interaktion (Anlass-Karten, Referenzen, Team-Porträts, Gesichter an der Anfrage) werden beim Hovern zu Lichtpunkten: Eine organische Welle läuft direkt über das Foto (0,7 s, zurück 0,45 s), danach glüht es ruhig weiter, beim Verlassen zurück zum Foto (`src/scripts/effects/dotimage.js`). Auslöser ist die ganze Karte (`data-dot-host`), nicht nur das Bild

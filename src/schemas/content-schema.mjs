@@ -371,6 +371,15 @@ export const sectionSchema = z.discriminatedUnion('type', [
     headline: z.string().min(1), text: z.string().min(1), button: link,
   }),
   z.object({
+    // Alle Kontaktwege, Besuchs- und Postanschrift mit Icons, daneben das Team (Runde 20, Marc 04.11.2026). Nummern,
+    // Adressen und Links kommen aus CONTACT (src/components/people.ts), nicht aus dem Text, damit sie nur an einer Stelle
+    // stehen. Ohne Teamfoto erscheinen die Porträts der drei Geschäftsführer:innen.
+    type: z.literal('contactDetails'), ...sectionHeading,
+    headline: z.string().min(1), text: z.string().optional(),
+    visitNote: z.string().optional().describe('Satz unter der Besuchsadresse, z. B. "Meldet euch vorher kurz an."'),
+    image: image.optional().describe('Teamfoto; ohne Bild die Porträts der Geschäftsführer:innen'),
+  }),
+  z.object({
     // Anfrage in zwei Schritten (docs/DESIGN.md). Gesichter: ohne Angabe die drei Geschäftsführer:innen.
     type: z.literal('contactForm'), ...todo,
     kicker: z.string().optional(),
