@@ -8,7 +8,7 @@ const { posts, level = 'h2' } = Astro.props;
 <div class="post-grid">{posts.map((post, i) => <PostCard post={post} i={i} level={level} />)}</div>
 
 <style>
-  .post-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(var(--space-8), 3vw, var(--space-12)) clamp(var(--space-4), 2vw, var(--space-7)); }
+  .post-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(var(--space-8), 3vw, var(--space-12)) var(--card-grid-gap); }
   @media (--grid-stacked) { .post-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 45em) { .post-grid { grid-template-columns: minmax(0, 1fr); } }
 </style>

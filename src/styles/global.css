@@ -214,6 +214,8 @@
   /* Inhaltsbreite (Marc, 31.10.2026): ab 1920 px Fensterbreite wächst der Inhalt nicht weiter (1920 − 2 × 64 px).
      Flächen und Hintergründe laufen weiter vollflächig; jeder Inhalt einer Section richtet sich über --gutter aus.
      --gutter löst % erst am Element auf, also relativ zur Breite seines Rahmens (bei Sections: die Seite). */
+  /* K02: derselbe Kartenabstand für Projekt- und Blogspalten. */
+  --card-grid-gap: clamp(var(--space-4), 2vw, var(--space-7));
   --content-max: 112rem;
   /* Eingerollter Header: 4.25rem Inhalt plus konstante 1px-Hairline und Safe Area; Anker für Sticky-Streifen. */
   --nav-h: calc(4.25rem + 1px + env(safe-area-inset-top, 0px));
@@ -367,7 +369,7 @@ html.motion-paused { scroll-behavior: auto !important; }
 /* vier Kennzahlen in einer Reihe statt 3 + 1 */
 
 /* projects */
-.projects { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(var(--space-4), 2vw, var(--space-7)); }
+.projects { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--card-grid-gap); }
 .more { display: flex; justify-content: flex-end; }
 
 /* comparison */
