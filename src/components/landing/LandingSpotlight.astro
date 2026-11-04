@@ -35,7 +35,7 @@ const narrow = await optimizedImage(image.src, 640, 480);
   .sp-stage { position: relative; margin: 0; }
   .sp-img { aspect-ratio: 2 / 1; border-radius: var(--radius); overflow: hidden; background: var(--media-ground); --curtain-r: var(--radius); }
   .sp-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .sp-stage::after { content: ""; position: absolute; inset: 0; border-radius: var(--radius); background: linear-gradient(0deg, rgb(var(--rgb-ground) / 0.82), transparent 55%); pointer-events: none; }
+  .sp-stage::after { content: ""; position: absolute; inset: 0; border-radius: var(--radius); background: linear-gradient(transparent 45%, rgb(var(--rgb-ground) / 0.82)); pointer-events: none; }
   .sp-tags { position: absolute; z-index: 2; left: clamp(1rem, 3vw, 2.5rem); right: clamp(1rem, 3vw, 2.5rem); bottom: clamp(1rem, 3vw, 2.25rem); list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2-5); }
   .sp-tags li { display: inline-flex; align-items: center; gap: var(--space-2-25); padding: var(--space-2-25) var(--space-3-5) var(--space-2-25) var(--space-2-75); border-radius: var(--radius-pill); background: rgb(var(--rgb-ground) / 0.7); -webkit-backdrop-filter: blur(0.5rem); backdrop-filter: blur(0.5rem); border: 1px solid var(--line-emphasis); color: var(--text); letter-spacing: 0.06em; }
   .sp-pin { width: 0.5rem; height: 0.5rem; border-radius: var(--radius-round); background: var(--accent); box-shadow: 0 0 0.625rem var(--accent); flex: none; }

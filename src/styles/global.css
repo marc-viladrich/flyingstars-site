@@ -325,7 +325,8 @@ html.motion-paused { scroll-behavior: auto !important; }
      --fr-t/--fr-b: Abstand der Rahmenlinien von oben/unten, --fr-arm: Länge der Eckschenkel */
   --fr-t: clamp(5rem, 11vh, 6.75rem); --fr-b: clamp(1.5rem, 4vh, 2.5rem); --fr-arm: 1.375rem; --fr-lh: 1.125rem; }
 .hero video, .hero .poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.hero .shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgb(var(--rgb-night) / 0.88) 0%, var(--night-half) 45%, rgb(var(--rgb-night) / 0.12) 78%), linear-gradient(0deg, var(--night-panel) 0%, rgb(var(--rgb-night) / 0) 42%); }
+/* Richtung/Stop-Reihenfolge wie im bisherigen minifizierten Build: WebKit rastert die Gegenrichtung leicht anders. */
+.hero .shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgb(var(--rgb-night) / 0.88) 0%, var(--night-half) 45%, rgb(var(--rgb-night) / 0.12) 78%), linear-gradient(rgb(var(--rgb-night) / 0) 58%, var(--night-panel) 100%); }
 /* Showreel-Label oben rechts in der Ecke eingerastet */
 .rec { position: absolute; top: calc(var(--fr-t) + var(--fr-arm) - var(--fr-lh) / 2); right: calc(var(--gutter) + 0.875rem); z-index: 3; display: flex; align-items: center; gap: var(--space-2-5); line-height: var(--fr-lh); color: rgb(var(--rgb-text) / 0.8); }
 @keyframes blink { 50% { opacity: 0.2; } }
@@ -489,7 +490,7 @@ td.us { color: var(--text); background: var(--fill-soft); }
 .c-hero .reel { z-index: 1; opacity: 0; transition: opacity var(--dur-reel) var(--ease-default); }
 .c-hero.reel-on .reel { opacity: 1; }
 .c-hero.reel-on .hero-media img { opacity: 0; }
-.c-hero .shade { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: linear-gradient(0deg, rgb(var(--rgb-night) / 0.96) 0%, var(--night-shade) 34%, rgb(var(--rgb-night) / 0.05) 68%), radial-gradient(120% 90% at 0% 100%, rgb(var(--rgb-night) / 0.7), rgb(var(--rgb-night) / 0) 60%); }
+.c-hero .shade { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: linear-gradient(rgb(var(--rgb-night) / 0.05) 32%, var(--night-shade) 66%, rgb(var(--rgb-night) / 0.96) 100%), radial-gradient(120% 90% at 0 100%, rgb(var(--rgb-night) / 0.7), rgb(var(--rgb-night) / 0) 60%); }
 .c-top { position: relative; z-index: 3; display: flex; justify-content: space-between; gap: var(--space-4); color: rgb(var(--rgb-text) / 0.62); }
 .c-top a:hover { color: var(--text); }
 .c-top .crumbs { display: flex; gap: var(--space-2); flex-wrap: wrap; }
@@ -507,7 +508,7 @@ td.us { color: var(--text); background: var(--fill-soft); }
 .c-media figure.on { opacity: 1; transform: none; }
 .c-media img { width: 100%; height: 100%; object-fit: cover; }
 .c-media .meta { position: absolute; left: 1rem; right: 1rem; bottom: 0.875rem; display: flex; justify-content: space-between; color: var(--ink-secondary); z-index: 2; }
-.c-media::after { content: ""; position: absolute; inset: auto 0 0 0; height: 30%; background: linear-gradient(0deg, rgb(var(--rgb-night) / 0.8), transparent); pointer-events: none; }
+.c-media::after { content: ""; position: absolute; inset: auto 0 0 0; height: 30%; background: linear-gradient(transparent, rgb(var(--rgb-night) / 0.8)); pointer-events: none; }
 .c-steps { display: grid; }
 .c-step { min-height: 78vh; display: grid; align-content: center; gap: var(--space-4); }
 /* Inactive story steps recede like in the reference, but every line keeps WCAG AA contrast:
@@ -560,7 +561,7 @@ td.us { color: var(--text); background: var(--fill-soft); }
 .clip p { color: #4a403a; font-size: 1.03125rem; }
 
 .c-next { position: relative; display: grid; align-content: end; min-height: 72vh; margin: var(--section) var(--gutter); padding: clamp(var(--space-6), 4vw, var(--space-14)); border-radius: var(--radius-18); overflow: hidden; background: var(--video-ground); }
-.c-next .shade { position: absolute; inset: 0; z-index: 1; background: linear-gradient(0deg, var(--night-panel), rgb(var(--rgb-night) / 0.1) 60%); }
+.c-next .shade { position: absolute; inset: 0; z-index: 1; background: linear-gradient(rgb(var(--rgb-night) / 0.1) 40%, var(--night-panel)); }
 .c-next .in { position: relative; z-index: 2; display: grid; gap: var(--space-2-5); }
 .c-next b { font: 700 min(clamp(3rem, 9vw, 9.375rem), calc(128vw / var(--chars, 8)))/0.9 var(--display); letter-spacing: -0.045em; text-transform: uppercase; display: flex; align-items: center; gap: 0.2em; flex-wrap: wrap; }
 .c-next b i { font-style: normal; font-weight: 500; transition: transform var(--dur-standard); }
