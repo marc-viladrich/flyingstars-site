@@ -6,7 +6,7 @@ import { LOCALES, localizedHref } from '../src/i18n/routing.mjs';
 /** Checks the output that is actually deployed, including redirects; no hand-maintained route list. */
 export function checkI18nBuild(dist = new URL('../dist/', import.meta.url)) {
   const files = readdirSync(dist, { recursive: true }).filter((file) => file.endsWith('.html'));
-  const german = files.filter((file) => !/^(?:en|nl|poc)\//.test(file));
+  const german = files.filter((file) => !/^(?:en|nl)\//.test(file));
   const routeOf = (file) => file === '404.html' ? '/404/' : `/${file}`.replace(/index\.html$/, '');
   let content = 0, redirects = 0;
   for (const file of german) for (const locale of LOCALES.filter((l) => l !== 'de')) {
@@ -29,6 +29,6 @@ export function checkI18nBuild(dist = new URL('../dist/', import.meta.url)) {
       assert.equal(new URL(fallback).pathname, routeOf(file), localizedFile);
     }
   }
-  return { germanRoutes: german.length, localizedContentRoutes: content, localizedRedirects: redirects, excludedPrototypes: files.filter((file) => file.startsWith('poc/')).length };
+  return { germanRoutes: german.length, localizedContentRoutes: content, localizedRedirects: redirects };
 }
 if (process.argv[1] === fileURLToPath(import.meta.url)) console.log(JSON.stringify(checkI18nBuild(), null, 2));

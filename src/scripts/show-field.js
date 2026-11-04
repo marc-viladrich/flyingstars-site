@@ -75,7 +75,7 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
     render();
   }
   // Lichtpunkte wie in der Designsprache-Probe (fünfzehnte Fassung, Marc: „weniger hochwertig als die Probe-Seite“;
-  // Swarm.draw()/sprite() in src/scripts/poc/swarm.js): ein vorgerendertes Sprite je Farbe und Größe, klarer Kern (voll
+  // Swarm.draw()/sprite() der früheren Designsprache-Probe): ein vorgerendertes Sprite je Farbe und Größe, klarer Kern (voll
   // bis 0,8 r, aufgehellt), schmaler Übergang auf einen schwachen Hof (0,24 bei 1,15 r, aus bei 3,4 r). Licht über 1
   // (Lichtlauf, Funkeln) legt ein zweites Sprite darüber: weißer Kern, weiterer Schein in der Drohnenfarbe. Vorher war
   // jede Drohne ein voller Kreis von etwa 3 px plus ein Hof von 10 px mit 35 % Deckkraft: groß, weich, verschwommen.

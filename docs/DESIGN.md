@@ -1,6 +1,6 @@
 # FlyingStars – Designsprache
 
-Stand 31.10.2026 (Feedbackrunde 6: näher an den Vercel-Prototyp), davor abgeleitet aus vier Bewertungsrunden der Designsprache-Probe (`/poc/designsprache/`, Branch `feat/designsprache-poc`). Grundlage ist der erste Prototyp (Branch `fix/minimal-fonts`); die Elevation „Lichtpunkt“ ist als Designrichtung verworfen, ihre Inhalte und Fakten bleiben gültig. Belege und Bewertungsverlauf: Kundenordner `freelance/clients/flyingstars/17-designsprache-poc-2026-10-30/README.md`.
+Stand 31.10.2026 (Feedbackrunde 6: näher an den Vercel-Prototyp), davor abgeleitet aus vier Bewertungsrunden der Designsprache-Probe (`/poc/designsprache/`, Branch `feat/designsprache-poc`; alle PoC-Seiten am 04.11.2026 gelöscht, Stand in der Git-Historie). Grundlage ist der erste Prototyp (Branch `fix/minimal-fonts`); die Elevation „Lichtpunkt“ ist als Designrichtung verworfen, ihre Inhalte und Fakten bleiben gültig. Belege und Bewertungsverlauf: Kundenordner `freelance/clients/flyingstars/17-designsprache-poc-2026-10-30/README.md`.
 
 ## Was die Marke trägt (nicht verhandelbar)
 
@@ -156,7 +156,7 @@ Bewusste px-Ausnahmen sind 1–2 px Hairlines, kleine Schattenkomponenten, unsic
 - Laufband ohne Hover-Effekt, nur bekannte Marken
 - Saubere SVGs mit etwas Luft, sonst Live-PNGs
 - Optische Größen: breite Wortmarken flacher, Bildmarken höher
-- Assets und Auswahl: `src/pages/poc/designsprache.astro`, `public/poc/logos/`
+- Assets: `public/brand/logos/`
 
 **Presse:**
 - „Unsere Shows waren zu sehen in“ mit Logos, ohne Beitragszeile

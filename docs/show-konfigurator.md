@@ -689,7 +689,7 @@ Grundregeln bleiben: kein Einrasten, keine Finten (`scripts/show-finte.test.mjs`
 - Der Knopf übergibt Anlass, Drohnenzahl und das Motiv auf der Bühne: `/drohnenshow-preise/?anlass=hochzeit&drohnen=250&motiv=lotus#konfigurator`.
 - Props: `id` (Präfix der IDs, Standard `cft`), `occasion` (Standard `hochzeit`), `drones` (Standard 200), `href` (Standard `/drohnenshow-preise/`), `cta`. Kein Section-Kopf, kein Section-Abstand.
 - Leistung: Engine und Motive laden erst, wenn der Block auf 300 px an den Viewport herankommt (IntersectionObserver, dynamischer Import). Außerhalb des Viewports, bei `html.motion-paused` und bei reduzierter Bewegung zeichnet die Engine nicht und zeigt das Motiv in Ruhe (`createField`).
-- Prüfseite (noindex): `/poc/konfigurator-teaser/` mit Konfigurator oben und Teaser unter `#teaser`.
+- Prüfseite `/poc/konfigurator-teaser/`: am 04.11.2026 gelöscht (Marc); der Teaser-Test läuft auf der Startseite, die Abläufe „marke“/„hochzeit“ auf Werbung und Hochzeit.
 
 ### Wie prüfen (sechzehnte Fassung)
 

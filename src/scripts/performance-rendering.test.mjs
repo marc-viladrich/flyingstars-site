@@ -16,7 +16,7 @@ function* files(dir) {
 
 test('local logo dimensions come from the real SVG/PNG files', async () => {
   // Enumerate the actual logo directories, including future additions.
-  for (const dir of ['public/brand/logos', 'public/poc/logos']) {
+  for (const dir of ['public/brand/logos']) {
     for (const file of files(dir)) {
       if (!/\.(svg|png|jpe?g|webp)$/.test(file)) continue;
       const src = '/' + path.relative('public', file);

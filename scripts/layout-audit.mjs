@@ -36,7 +36,7 @@ while (queue.length && seen.size < 200) {
   const path = queue.shift();
   await go(base + path, 'domcontentloaded');
   const links = await page.$$eval('a[href^="/"]', (as) => as.map((a) => new URL(a.href).pathname));
-  for (const l of links) if (l.startsWith(start) && !seen.has(l) && !/\.(pdf|jpe?g|png|mp4|svg|webp|xml)$/.test(l) && !l.startsWith('/poc') && !l.startsWith('/api')) { seen.add(l); queue.push(l); }
+  for (const l of links) if (l.startsWith(start) && !seen.has(l) && !/\.(pdf|jpe?g|png|mp4|svg|webp|xml)$/.test(l) && !l.startsWith('/api')) { seen.add(l); queue.push(l); }
 }
 const paths = [...seen].sort();
 

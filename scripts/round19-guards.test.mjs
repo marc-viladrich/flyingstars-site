@@ -82,7 +82,7 @@ test('404: Text ohne ch-Begrenzung, Schriftgrößen in rem', () => {
 });
 
 test('Auto-Raster erzwingen keine Mindestspalte breiter als der Platz (Reflow bei 320 px und großer Schrift)', () => {
-  const files = ['src/styles/global.css', 'src/styles/facts.css', 'src/styles/poc.css', 'src/styles/media-card.css',
+  const files = ['src/styles/global.css', 'src/styles/facts.css', 'src/styles/media-card.css',
     ...readdirSync(new URL('../src/components/', import.meta.url), { recursive: true }).filter((f) => f.endsWith('.astro')).map((f) => `src/components/${f}`)];
   for (const f of files) {
     const bad = read(f).match(/repeat\((auto-fit|auto-fill), minmax\((?!min\()[0-9.]+(rem|px|em)/g);

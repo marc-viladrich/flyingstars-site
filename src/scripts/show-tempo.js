@@ -23,7 +23,7 @@ export const TEMPO = {
    * eigenes Licht (runFits()); der Kopf beginnt vor der Form und blendet über 0,8 s ein, damit nichts aufblitzt. */
   run: { delay: 0.6, duration: 2.2, period: 6.5, width: 0.085, tail: 2.2, strength: 0.4, fadeIn: 0.8 },
   /** Fünfzehnte Fassung (Marc: „Logo glänzt“): der Lichtlauf über einem hochgeladenen Logo wie in Studie 1 der
-   * Designsprache-Probe (Swarm in src/scripts/poc/swarm.js: wave 0,45, waveWidth 0,06, boost 0,6). Der Kopf läuft ohne
+   * Designsprache-Probe (früherer Swarm der Probe: wave 0,45, waveWidth 0,06, boost 0,6). Der Kopf läuft ohne
    * Pause von −0,3 bis 1,3 der Linienreihenfolge (1,6 / 0,45 ≈ 3,6 s), eine symmetrische Glocke, die nur aufhellt; er
    * beginnt mit der Ankunft und blendet über 0,8 s ein, so blitzt beim Start nichts auf. */
   logoRun: { delay: 0, duration: 3.56, period: 3.56, width: 0.06, tail: 1, strength: 0.6, fadeIn: 0.8 },

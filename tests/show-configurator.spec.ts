@@ -7,7 +7,7 @@ import { test, expect, type Page } from '@playwright/test';
 // the motion in tests/show-physics.spec.ts.
 
 // Sechzehnte Fassung (31.10.2026): der Konfigurator ist eine Komponente auf der Preisseite (/show-konfigurator/ leitet
-// dorthin weiter). CFG_PATH stellt eine andere Seite ein, z. B. die Prüfseite /poc/konfigurator-teaser/.
+// dorthin weiter). CFG_PATH stellt eine andere Seite ein.
 const CFG = process.env.CFG_PATH ?? '/drohnenshow-preise/';
 // Runde 11: Auf der Preisseite steht der Konfigurator seit dem 31.10. unter den Paketen. Die Specs öffnen ihn wie jeder
 // Link auf der Site über den Anker #konfigurator (sonst steht die Bühne außerhalb des Viewports und zeichnet nicht).

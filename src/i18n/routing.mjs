@@ -10,7 +10,7 @@ export function localizedHref(href, locale = 'de') {
   if (!href || !href.startsWith('/') || href.startsWith('//')) return href;
   const path = sourcePath(href);
   // API requests and media never receive a language prefix.
-  if (/^\/(?:api|_astro|brand|fonts|media|poc)(?:\/|[?#]|$)|\.[a-z0-9]+(?:[?#]|$)/i.test(path)) return href;
+  if (/^\/(?:api|_astro|brand|fonts|media)(?:\/|[?#]|$)|\.[a-z0-9]+(?:[?#]|$)/i.test(path)) return href;
   return locale === 'de' ? path : `/${locale}${path.startsWith('/') ? path : `/${path}`}`;
 }
 export const entryPath = (id) => localizedHref(sourceId(id) === 'index' ? '/' : `/${sourceId(id)}/`, localeOfId(id));

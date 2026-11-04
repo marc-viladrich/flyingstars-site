@@ -88,7 +88,7 @@ export const STILL = REELS.start.still;
 
 /**
  * Das FlyingStars-Logo wie in der Designsprache-Probe (ohne Ring): selbst ein Raster aus 88 Lichtpunkten. Mit mehr Drohnen
- * kommen Lichter auf die Verbindungen zwischen benachbarten Punkten (wie DENSE in src/scripts/poc/page.js, aber stufenlos):
+ * kommen Lichter auf die Verbindungen zwischen benachbarten Punkten (wie DENSE in der früheren Designsprache-Probe, aber stufenlos):
  * bei 100 Drohnen das Raster, bei 600 durchgehende, scharfe Linien. Farben aus den beiden Endpunkten gemischt.
  */
 const DOTS = logoDots.dots.map(([x, y, r, g, b]) => [x, y, r, g, b]);

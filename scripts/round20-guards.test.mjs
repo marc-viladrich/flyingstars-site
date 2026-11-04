@@ -29,7 +29,7 @@ test('Sprachwahl ist ein natives Popover und kein JS-Menü', () => {
 // Operative Nummern, Mail und Anschriften stehen in contact.json; CONTACT bleibt die Leseschnittstelle.
 // Rechtstexte und der bestehende PoC bleiben eigenständig. Danke verwendet explizite Referenzen.
 const CONTACT_FACTS = [/team@flyingstars\.art/, /883 065 62/, /4920988306562/, /260 86 72/, /4915792608672/, /Bulmker Stra(ß|ss)e/, /Katernberger Str/];
-const ALLOWED = new Set(['src/content/contact.json', 'src/content/pages/impressum.yaml', 'src/content/pages/datenschutz.yaml', 'src/pages/poc/designsprache.astro']);
+const ALLOWED = new Set(['src/content/contact.json', 'src/content/pages/impressum.yaml', 'src/content/pages/datenschutz.yaml']);
 const files = (dir) => readdirSync(new URL(`../${dir}`, import.meta.url)).flatMap((name) => {
   const path = join(dir, name);
   return statSync(new URL(`../${path}`, import.meta.url)).isDirectory() ? files(path) : [path];
@@ -45,4 +45,11 @@ test('Operative Kontaktdaten stehen nur in contact.json', () => {
     for (const fact of CONTACT_FACTS) if (fact.test(text)) offenders.push(`${file}: ${fact}`);
   }
   assert.deepEqual(offenders, []);
+});
+
+// Marc, 04.11.2026: Die PoC-Seiten (/poc/…, Video-Labor) sind gelöscht und sollen nicht zurückkommen. Die produktiven
+// Hero-Videos liegen weiter unter public/media/video-lab/ und werden über src/data/video-lab.json ausgewählt.
+test('Keine PoC-Routen mehr', () => {
+  assert.throws(() => statSync(new URL('../src/pages/poc', import.meta.url)), /ENOENT/);
+  assert.throws(() => statSync(new URL('../public/poc', import.meta.url)), /ENOENT/);
 });

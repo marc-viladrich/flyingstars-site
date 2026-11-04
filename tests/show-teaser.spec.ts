@@ -5,8 +5,9 @@ import { test, expect, type Page } from '@playwright/test';
 // Regler mit „N Drohnen“, acht Euro-Stufen). Das Logo bzw. die Initialen stehen am Anfang und werden mit mehr Drohnen
 // schärfer; die Bühne ist ein Link ohne eigenen Tab-Stopp, der Knopf bleibt der Weg per Tastatur. Keine
 // Formularelemente. Lädt erst in der Nähe des Viewports, zeichnet außerhalb nicht, steht bei reduzierter Bewegung.
-// TEASER_PATH stellt die Seite ein (Standard: die Prüfseite mit allen drei Abläufen; Startseite: TEASER_PATH=/).
-const PAGE = process.env.TEASER_PATH ?? '/poc/konfigurator-teaser/';
+// TEASER_PATH stellt die Seite ein (Standard: Startseite). Die Prüfseite /poc/konfigurator-teaser/ ist seit Runde 20
+// gelöscht (Marc, 04.11.2026); die Abläufe „marke“ und „hochzeit“ stehen auf ihren Landingpages.
+const PAGE = process.env.TEASER_PATH ?? '/';
 const root = (page: Page, sel = '[data-cft-root]') => page.locator(sel).first();
 const field = (page: Page, sel?: string) => root(page, sel).locator('[data-cft=field]');
 const reach = async (page: Page, sel?: string) => { await root(page, sel).scrollIntoViewIfNeeded(); await expect(root(page, sel)).toHaveAttribute('data-cft-loaded', 'true', { timeout: 20_000 }); };
@@ -108,12 +109,11 @@ test('Beim Zeigen auf die Bühne erscheint „Eigene Show zusammenstellen“, ei
 });
 
 test('Abläufe für die Landingpages: „marke“ beginnt mit dem Logo, „hochzeit“ mit Initialen im Herz', async ({ page }) => {
-  test.skip(!PAGE.includes('/poc/'), 'Die Abläufe stehen nur auf der Prüfseite nebeneinander.');
   test.setTimeout(60_000);
-  await page.goto(PAGE);
-  for (const [sel, note] of [['#cft-marke', 'Platz für euer Logo'], ['#cft-hochzeit', 'Eure Initialen']] as const) {
+  for (const [path, reel, note] of [['/drohnenshow-werbung/', 'marke', 'Platz für euer Logo'], ['/drohnenshow-hochzeit/', 'hochzeit', 'Eure Initialen']] as const) {
+    await page.goto(path);
+    const sel = `[data-cft-root][data-reel=${reel}]`;
     await reach(page, sel);
-    await expect(root(page, sel)).toHaveAttribute('data-reel', sel.replace('#cft-', ''));
     await expect(root(page, sel).locator('[data-cft=note]')).toContainText(note);
     await expect(root(page, sel).locator('[data-cft=count]')).toHaveText('300', { timeout: 15_000 });
     await expect(on(page, 'ODYSSEY', sel)).toHaveClass(/is-on/);
