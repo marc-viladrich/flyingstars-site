@@ -67,7 +67,9 @@ sections:
           - label: Ruwe opnamen met cameradrone
             value: "{{offer.film.priceSuffix}}"
     bonus:
-      value: −10 %
+      value:
+        fact: earlyBookingPercent
+        display: discount
       text: "Vroegboekkorting: boek vóór het einde van het jaar voor een bruiloft volgend jaar."
     closing:
       headline: Staat jullie datum al vast?

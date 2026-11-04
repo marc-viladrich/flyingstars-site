@@ -67,7 +67,9 @@ sections:
           - label: Raw footage filmed by camera drone
             value: "{{offer.film.priceSuffix}}"
     bonus:
-      value: −10 %
+      value:
+        fact: earlyBookingPercent
+        display: discount
       text: "Early booking discount: book by the end of the year for a wedding next year."
     closing:
       headline: Already set a date?

@@ -344,7 +344,7 @@ sections:
         unit: kg
         text: No casings, no debris. The same drones fly show after show.
       - label: Green electricity
-        value: "100"
+        value: { fact: renewablePercent }
         unit: "%"
         text: Green electricity from naturstrom for our batteries.
     pillars:

@@ -10,6 +10,6 @@ Strukturierte Zahlenfelder verwenden `{fact, display}`. SHOWS_TOTAL, Hero, Zahle
 
 `node scripts/check-business-drift.mjs` prüft alle tatsächlichen Textblätter in Seiten und FAQ, DE/EN/NL. Der Bericht nennt Datei, Feldpfad, Text, Fakt, Ist und Soll. Überwacht werden Antwortfristen, Anzahlungen, Frühbucherrabatt, Haftpflicht, Ökostrom, Gewicht, übliche Flughöhe, Windstärke und Showstand. Historische Projektzahlen gehören nicht zum Organisationsstand. Die Stornostaffel ist ausdrücklich keine Anzahlung. Die Rundungen über/over/more than/ruim 150 bleiben erlaubt, solange sie unter dem datierten Gesamtstand liegen.
 
-Mutationstests ändern jede zentrale Zahl und eine lokale Antwortfrist. Ein weiterer Guard verbietet neue Rohplatzhalter in allen Markdown-/YAML-Texten; die vorhandenen A-Platzhalter sind bis Marcs Entscheidung begrenzt zugelassen.
+Mutationstests ändern jede zentrale Zahl und eine lokale Antwortfrist. Nach Marcs Freigabe vom 04.11. sind neue redaktionelle Faktenplatzhalter erlaubt. Die alte Mengen-Allowlist entfällt. `factText` und die Build-Inhaltsprüfung lehnen unbekannte Platzhalter in allen vier Sammlungen ab. Die vorhandenen Sicherheits-/Nachhaltigkeitsblöcke bleiben wegen der offenen T02-Entscheidung wortgleich und durch Driftwächter geschützt.
 
 Prüfergebnisse werden nach dem vollständigen Schritt-Lauf ergänzt.

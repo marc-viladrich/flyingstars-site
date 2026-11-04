@@ -17,8 +17,7 @@ test('Prosa-Driftbericht erfasst alle aktuellen Blätter und meldet zentrale sow
  assert.equal(businessDrift([{file:'new.yaml',path:['text'],text:'Wir antworten innerhalb von 49 Stunden.'}]).drift.length,1);
 });
 
-import {readdirSync,readFileSync} from 'node:fs';
-import allowed from './legacy-text-references.json' with {type:'json'};
-test('Redaktionelle Texte erhalten keine neuen Rohplatzhalter',()=>{
- for(const name of readdirSync('src/content',{recursive:true}).filter(n=>/\.(md|yaml)$/.test(n))){const file='src/content/'+name,text=readFileSync(file,'utf8');for(const token of new Set(text.match(/\{\{[^}]+\}\}/g)??[]))assert.ok(text.split(token).length-1<=(allowed[file]?.[token]??0),`${file}: ${token}`);}
+import {factText} from '../src/content/show-extras.mjs';
+test('Unbekannte Faktenplatzhalter brechen die Projektion ab',()=>{
+ for(const token of ['{{unknown.value}}','{{duration.outdoor.missing}}','{{offer.indoor.missing}}'])assert.throws(()=>factText(token),/Unbekannt/);
 });

@@ -1,3 +1,4 @@
+import {factText} from '../content/show-extras.mjs';
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { getCollection, type CollectionEntry, type CollectionKey } from 'astro:content';
@@ -12,6 +13,7 @@ export async function localizedCollection<C extends CollectionKey>(collection: C
 export async function checkContentCoverage() {
   for (const collection of ['pages', 'projects', 'posts', 'faq'] as const) {
     const entries = await getCollection(collection);
+    for(const entry of entries){const raw=await readFile(`src/content/${collection}/${entry.id}.${collection==='pages'?'yaml':'md'}`,'utf8');factText(raw,localeOfId(entry.id));}
     const source = entries.filter((e) => localeOfId(e.id) === 'de');
     for (const locale of LOCALES.filter((l) => l !== 'de')) {
       const ids = new Set(entries.filter((e) => localeOfId(e.id) === locale).map((e) => sourceId(e.id)));

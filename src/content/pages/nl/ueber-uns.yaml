@@ -224,7 +224,7 @@ sections:
         unit: kg
         text: Geen hulzen, geen resten. Dezelfde drones vliegen show na show.
       - label: Groene stroom
-        value: "100"
+        value: { fact: renewablePercent }
         unit: "%"
         text: Groene stroom van naturstrom voor onze accu's.
     pillars:
