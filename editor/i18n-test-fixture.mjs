@@ -6,6 +6,7 @@ import path from 'node:path';
 import os from 'node:os';
 import {fileURLToPath} from 'node:url';
 import {NativeStore,git} from 'astro-frontend-editor/runtime';
+import assert from 'node:assert/strict';
 const here=path.dirname(fileURLToPath(import.meta.url));
 export async function i18nFixture(t,{sourceRoot=path.join(here,'..'),forCI=false,offlineMedia=true}={}) {
   const root=await fs.mkdtemp(path.join(os.tmpdir(),'flyingstars-i18n-')),source=path.join(root,'source');
@@ -34,18 +35,18 @@ optimizedImage.afeBindings=([source]:unknown[])=>({src:source});optimizedLogo.af
     // Only the declared package files are copied, outside the fixture's Git repository.
     const product=JSON.parse(await fs.readFile(path.join(installedRoot,'package.json'),'utf8'));await fs.mkdir(packageRoot);
     for(const file of ['package.json',...product.files])await fs.cp(path.join(installedRoot,file),path.join(packageRoot,file),{recursive:true});
-    const manifest=JSON.parse(await fs.readFile(path.join(source,'package.json'),'utf8'));manifest.dependencies['astro-frontend-editor']='file:'+packageRoot;
-    await fs.writeFile(path.join(source,'package.json'),JSON.stringify(manifest,null,2)+'\n');
-    const previousLock=JSON.parse(await fs.readFile(path.join(source,'package-lock.json'),'utf8'));delete previousLock.packages['node_modules/astro-frontend-editor'];await fs.writeFile(path.join(source,'package-lock.json'),JSON.stringify(previousLock,null,2)+'\n');
     const {execFile}=await import('node:child_process'),{promisify}=await import('node:util');
-    await fs.rm(path.join(source,'node_modules'));
-    await promisify(execFile)('npm',['install','--package-lock-only','--ignore-scripts','--offline','--install-links=true'],{cwd:source,env:{...process.env,PATH:path.dirname(process.execPath)+path.delimiter+process.env.PATH},maxBuffer:2000000});
-    // npm otherwise records a relative external link, invalid after the deploy hook creates a deeper worktree.
-    const lock=JSON.parse(await fs.readFile(path.join(source,'package-lock.json'),'utf8'));lock.packages['node_modules/astro-frontend-editor'].resolved='file:'+packageRoot;
+    // npm ci caches tarballs, not the registry metadata needed by npm install's peer resolver.
+    // Reuse the verified locked graph and replace only this installed package's transport.
+    const lock=JSON.parse(await fs.readFile(path.join(source,'package-lock.json'),'utf8')),entry=lock.packages['node_modules/astro-frontend-editor'];
+    assert.equal(entry.name,product.name);assert.equal(entry.version,product.version);
+    assert.deepEqual(entry.dependencies,product.dependencies);assert.deepEqual(entry.peerDependencies,product.peerDependencies);
+    const packed=await promisify(execFile)('npm',['pack','--ignore-scripts','--offline','--json'],{cwd:packageRoot,env:{...process.env,PATH:path.dirname(process.execPath)+path.delimiter+process.env.PATH},maxBuffer:2000000});
+    const [archive]=JSON.parse(packed.stdout),spec='file:'+path.join(packageRoot,archive.filename);
+    const manifest=JSON.parse(await fs.readFile(path.join(source,'package.json'),'utf8'));manifest.dependencies['astro-frontend-editor']=spec;
+    lock.packages[''].dependencies['astro-frontend-editor']=spec;entry.resolved=spec;entry.integrity=archive.integrity;
+    await fs.writeFile(path.join(source,'package.json'),JSON.stringify(manifest,null,2)+'\n');
     await fs.writeFile(path.join(source,'package-lock.json'),JSON.stringify(lock,null,2)+'\n');
-    await fs.appendFile(path.join(source,'.npmrc'),'\ninstall-links=true\n');
-    if(lock.packages['node_modules/astro-frontend-editor'].name&&lock.packages['node_modules/astro-frontend-editor'].name!==product.name)throw Error('Offline-Fixture hat das veröffentlichte Paket statt des lokalen Produkts aufgelöst.');
-    await fs.symlink(await fs.realpath(path.join(here,'../node_modules')),path.join(source,'node_modules'));
   }
   await git(source,['init','--quiet','--initial-branch=content/draft']);
   await git(source,['add','.']);
