@@ -1,0 +1,344 @@
+{
+  "publicBuildCompare": {
+    "htmlFiles": 96,
+    "removed": [],
+    "added": [],
+    "changes": []
+  },
+  "publicOrderedOutput": {
+    "htmlFiles": 96,
+    "removed": [],
+    "added": [],
+    "changes": []
+  },
+  "editorBuildCompare": {
+    "htmlFiles": 96,
+    "removed": [],
+    "added": [],
+    "changes": []
+  },
+  "editorOrderedOutput": {
+    "htmlFiles": 96,
+    "removed": [],
+    "added": [],
+    "changes": []
+  },
+  "bindings": {
+    "html": 96,
+    "markers": 6567,
+    "addresses": 6567,
+    "inline": 4356,
+    "sharedLocaleOwners": 14,
+    "localized": 3957,
+    "optionalPanels": 15
+  },
+  "coverage": {
+    "germanRoutes": 32,
+    "localizedContentRoutes": 48,
+    "localizedRedirects": 16
+  },
+  "contract": {
+    "version": 2,
+    "addressing": "stable-keys",
+    "sources": 66,
+    "localeFiles": 132,
+    "valid": 132,
+    "fields": 3054,
+    "policy": {
+      "page/index": {
+        "shared": 327,
+        "translatable": 249
+      },
+      "post/test": {
+        "shared": 25,
+        "translatable": 4
+      },
+      "project/test": {
+        "shared": 69,
+        "translatable": 35
+      },
+      "faq/test": {
+        "shared": 19,
+        "translatable": 2
+      },
+      "person/test": {
+        "shared": 7,
+        "translatable": 9
+      },
+      "media/test": {
+        "shared": 4,
+        "translatable": 2
+      },
+      "site/contact": {
+        "shared": 7,
+        "translatable": 0
+      },
+      "site/navigation": {
+        "shared": 8,
+        "translatable": 0
+      },
+      "site/show-duration": {
+        "shared": 5,
+        "translatable": 0
+      },
+      "site/show-extras": {
+        "shared": 19,
+        "translatable": 0
+      },
+      "site/business-facts": {
+        "shared": 54,
+        "translatable": 0
+      },
+      "site/project-facts": {
+        "shared": 60,
+        "translatable": 160
+      },
+      "site/preview-policy": {
+        "shared": 11,
+        "translatable": 0
+      },
+      "package/configuration": {
+        "shared": 68,
+        "translatable": 56
+      },
+      "site/ui": {
+        "shared": 0,
+        "translatable": 2148
+      },
+      "site/safety-concept": {
+        "shared": 18,
+        "translatable": 36
+      },
+      "site/sustainability-pillars": {
+        "shared": 3,
+        "translatable": 6
+      }
+    }
+  },
+  "dynamic": {
+    "scenarios": 6,
+    "report": [
+      {
+        "engine": "chromium",
+        "locale": "de",
+        "checkpoints": [
+          "configurator",
+          "extras",
+          "languageLinks",
+          "languageSwitch",
+          "formErrors",
+          "formStatus",
+          "dialog"
+        ],
+        "equal": true
+      },
+      {
+        "engine": "chromium",
+        "locale": "en",
+        "checkpoints": [
+          "configurator",
+          "extras",
+          "languageLinks",
+          "languageSwitch",
+          "formErrors",
+          "formStatus",
+          "dialog"
+        ],
+        "equal": true
+      },
+      {
+        "engine": "chromium",
+        "locale": "nl",
+        "checkpoints": [
+          "configurator",
+          "extras",
+          "languageLinks",
+          "languageSwitch",
+          "formErrors",
+          "formStatus",
+          "dialog"
+        ],
+        "equal": true
+      },
+      {
+        "engine": "webkit",
+        "locale": "de",
+        "checkpoints": [
+          "configurator",
+          "extras",
+          "languageLinks",
+          "languageSwitch",
+          "formErrors",
+          "formStatus",
+          "dialog"
+        ],
+        "equal": true
+      },
+      {
+        "engine": "webkit",
+        "locale": "en",
+        "checkpoints": [
+          "configurator",
+          "extras",
+          "languageLinks",
+          "languageSwitch",
+          "formErrors",
+          "formStatus",
+          "dialog"
+        ],
+        "equal": true
+      },
+      {
+        "engine": "webkit",
+        "locale": "nl",
+        "checkpoints": [
+          "configurator",
+          "extras",
+          "languageLinks",
+          "languageSwitch",
+          "formErrors",
+          "formStatus",
+          "dialog"
+        ],
+        "equal": true
+      }
+    ]
+  },
+  "basis": "399419f5cb93efe7bd38120d8a8e560a88a26772",
+  "unitFirst": {
+    "tests": 701,
+    "pass": 683,
+    "fail": 15,
+    "cancelled": 1,
+    "skipped": 2,
+    "todo": 0,
+    "exitCode": 1,
+    "log": "/tmp/fs-p2-unit-final.log",
+    "note": "Während des Laufs wurden alte Formatannahmen korrigiert. Kein konsistent grüner Gesamtlauf des Endstands."
+  },
+  "correctiveRuns": [
+    {
+      "log": "/tmp/fs-p2-unit-corrections2.log",
+      "tests": 27,
+      "pass": 27,
+      "exitCode": 0
+    },
+    {
+      "log": "/tmp/fs-p2-unit-corrections3.log",
+      "tests": 13,
+      "pass": 13,
+      "exitCode": 0
+    },
+    {
+      "log": "/tmp/fs-p2-clone-final.log",
+      "tests": 2,
+      "pass": 2,
+      "exitCode": 0
+    },
+    {
+      "log": "/tmp/fs-p2-t02-final.log",
+      "tests": 1,
+      "pass": 1,
+      "exitCode": 0
+    },
+    {
+      "log": "/tmp/fs-p2-pipeline-final.log",
+      "tests": 6,
+      "pass": 6,
+      "exitCode": 0
+    },
+    {
+      "log": "/tmp/fs-p2-proof-payload-final.log",
+      "tests": 10,
+      "pass": 10,
+      "exitCode": 0
+    },
+    {
+      "log": "/tmp/fs-p2-cli-final.log",
+      "tests": 4,
+      "pass": 4,
+      "exitCode": 0
+    },
+    {
+      "log": "/tmp/fs-p2-v2-tests2.log",
+      "tests": 9,
+      "pass": 9,
+      "exitCode": 0
+    }
+  ],
+  "gitSyncIsolated": {
+    "tests": 2,
+    "pass": 1,
+    "cancelled": 1,
+    "exitCode": 1,
+    "log": "/tmp/fs-p2-git-sync-final.log",
+    "timeoutMs": 20000,
+    "observedFirstTestMs": 26975.028292
+  },
+  "browserProof": [
+    {
+      "engine": "chromium",
+      "errors": [],
+      "networkFailures": []
+    },
+    {
+      "engine": "webkit",
+      "errors": [],
+      "networkFailures": []
+    }
+  ],
+  "playwright": {
+    "file": "tests/i18n.spec.ts",
+    "projects": [
+      "desktop",
+      "webkit"
+    ],
+    "tests": 10,
+    "pass": 10,
+    "log": "/tmp/fs-p2-playwright.log"
+  },
+  "layout": {
+    "engines": [
+      "chromium",
+      "webkit"
+    ],
+    "starts": [
+      "/",
+      "/en/",
+      "/nl/"
+    ],
+    "widths": [
+      390,
+      1440,
+      2560
+    ],
+    "pagesPerRun": 22,
+    "combinations": 396,
+    "findings": 0,
+    "logs": "/tmp/fs-p2-layout-{chromium,webkit}-{de,en,nl}.log"
+  },
+  "astroCheck": {
+    "errors": 0,
+    "warnings": 0,
+    "log": "/tmp/fs-p2-check-complete2.log"
+  },
+  "gitSyncDiagnostic": {
+    "source": "/tmp/fs-p2-sync-diagnostic/git-sync.test.mjs",
+    "change": "Nur in temporärer Testkopie: timeout 20000 → 60000; Repositorytest unverändert.",
+    "tests": 2,
+    "pass": 2,
+    "exitCode": 0,
+    "firstTestMs": 33965.845791,
+    "secondTestMs": 34468.757958,
+    "log": "/tmp/fs-p2-git-sync-diagnostic.log"
+  },
+  "limits": [
+    "Kein konsistent grüner zweiter Unit-Gesamtlauf",
+    "20-Sekunden-Git-Sync-Test auch isoliert abgebrochen",
+    "Node 24, Live-Betrieb, echter Mailversand und echter Übersetzungsprovider nicht geprüft"
+  ],
+  "css": {
+    "changedCssFiles": [],
+    "changedAstroStyleBlocks": []
+  }
+}
