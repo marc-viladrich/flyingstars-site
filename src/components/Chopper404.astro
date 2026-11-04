@@ -7,7 +7,7 @@ interface Props { headline?: string; level?: 'h1' | 'h2'; }
 const { headline = t('chopper404.thisPageDoesnTExist'), level = 'h1' } = Astro.props;
 const H = level;
 ---
-<!-- Der Seitenrahmen (Ränder, Abstand oben) gehört zur Komponente, damit DE und EN/NL nicht auseinanderlaufen (Runde 22: EN/NL-404 hatte keinen Rahmen) -->
+{/* Der Seitenrahmen (Ränder, Abstand oben) gehört zur Komponente, damit DE und EN/NL nicht auseinanderlaufen (Runde 22: EN/NL-404 hatte keinen Rahmen) */}
 <div class="page-404">
 <div class="chopper" data-chopper>
   <canvas class="chopper-stage" data-stage role="img" aria-label={t('chopper404.chopperTheOfficeDogFliesBackAndForthAsA')}></canvas>
