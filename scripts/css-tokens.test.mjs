@@ -39,6 +39,10 @@ function declarations(sources) {
   });
   return out;
 }
+// Masken tragen nur Deckkraft, keine Farbe: dort bleiben feste Werte (#000, rgba(0,0,0,…)). Mit var() in der
+// -webkit-mask-Kurzschreibweise setzt WebKit das folgende mask-composite zurück, und die Verlaufsrahmen (CtaBox,
+// empfohlenes Paket, Gates) verschwinden (Claude, 04.11.2026, Pixelvergleich nach der Token-Umstellung).
+const MASK = /^(?:-webkit-)?mask(?:-image)?$/;
 function violations(decls) {
   const durations = new Map(), curves = new Map();
   for (const d of decls) {
@@ -48,7 +52,7 @@ function violations(decls) {
     for (const c of d.curves) curves.set(c, (curves.get(c) ?? 0)+1);
   }
   return decls.filter(d => !d.owner).flatMap(d => [
-    ...numericColors(d.value).filter(c => brand.has(c)).map(() => `${d.file}: Markenfarbe in ${d.prop}: ${d.value}`),
+    ...(MASK.test(d.prop) ? [] : numericColors(d.value).filter(c => brand.has(c)).map(() => `${d.file}: Markenfarbe in ${d.prop}: ${d.value}`)),
     ...d.times.filter(n => !motionExceptions.has(n) && durations.get(n)>1).map(n => `${d.file}: wiederholte Dauer ${n}s in ${d.prop}`),
     ...d.curves.filter(c => curves.get(c)>1).map(c => `${d.file}: wiederholte Kurve ${c} in ${d.prop}`),
   ]);
@@ -117,4 +121,10 @@ test('Mobile und Navigation behalten bei Root 16/20/32 ihre ursprünglichen Gren
     assert.equal(bound('--nav-collapsed'), 62.5 * font);
     assert.equal(bound('--nav-expanded'), 62.5625 * font);
   }
+});
+
+test('Masken enthalten keine Variablen (WebKit verliert sonst mask-composite und damit die Verlaufsrahmen)', () => {
+  const sources = files('src').flatMap(file => regions(read(file), file).map(css => ({file, css})));
+  const bad = declarations(sources).filter(d => MASK.test(d.prop) && /var\(/.test(d.value)).map(d => d.file + ': ' + d.prop);
+  assert.deepEqual(bad, []);
 });

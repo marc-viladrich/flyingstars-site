@@ -342,7 +342,7 @@ html.motion-paused { scroll-behavior: auto !important; }
 /* proof band */
 .band { border-bottom: 1px solid var(--line); padding: var(--space-7-5) var(--gutter); overflow: hidden; }
 /* Laufband: zwei gleiche Spuren nebeneinander, jede läuft um ihre eigene Breite; keine Hover-Effekte */
-.logo-marquee { display: flex; overflow: hidden; padding: var(--space-1-5) 0; -webkit-mask-image: linear-gradient(90deg, transparent, var(--black) 8%, var(--black) 92%, transparent); mask-image: linear-gradient(90deg, transparent, var(--black) 8%, var(--black) 92%, transparent); }
+.logo-marquee { display: flex; overflow: hidden; padding: var(--space-1-5) 0; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
 .logo-marquee .track { list-style: none; margin: 0; padding: 0 clamp(var(--space-11), 5vw, var(--space-19)) 0 0; display: flex; align-items: center; gap: clamp(var(--space-11), 5vw, var(--space-19)); flex: none; animation: logo-slide var(--dur-marquee) var(--ease-linear) infinite; }
 .logo-marquee img { display: block; width: auto; max-width: none; filter: brightness(0) invert(1); opacity: 0.66; }
 .logo-marquee img.detail { filter: grayscale(1) brightness(1.15); mix-blend-mode: screen; opacity: 0.8; } /* dunkle Innendetails (Bentley) bleiben sichtbar */
@@ -397,7 +397,7 @@ td.us { color: var(--text); background: var(--fill-soft); }
 .pack { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: var(--space-6); display: grid; grid-template-columns: 6rem minmax(0, 1fr); gap: var(--space-4-5); align-items: center; transition: border-color var(--dur-control), transform var(--dur-control); }
 .pack:hover { border-color: var(--line-strong); transform: translateY(-0.125rem); }
 .pack.featured { background: var(--surface-2); border-color: transparent; }
-.pack.featured::before { content: ""; position: absolute; inset: 0; border-radius: var(--radius); padding: var(--space-0-25); background: var(--grad); -webkit-mask: linear-gradient(var(--black) 0 0) content-box, linear-gradient(var(--black) 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
+.pack.featured::before { content: ""; position: absolute; inset: 0; border-radius: var(--radius); padding: var(--space-0-25); background: var(--grad); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
 .pack canvas { width: 6rem; height: 6rem; }
 .pack .name { display: flex; align-items: center; gap: var(--space-2-5); flex-wrap: wrap; }
 .chip { font: 500 0.65625rem/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; padding: var(--space-1-5) var(--space-2); border-radius: var(--radius-pill); border: 1px solid var(--line-orchid); color: var(--orchid); }
@@ -453,7 +453,7 @@ td.us { color: var(--text); background: var(--fill-soft); }
 .tiers-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); align-items: stretch; }
 .tier { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: var(--space-6-5); display: flex; flex-direction: column; gap: var(--space-4); }
 .tier.is-rec { background: var(--surface-2); border-color: transparent; }
-.tier.is-rec::before { content: ""; position: absolute; inset: 0; border-radius: var(--radius); padding: var(--space-0-25); background: var(--grad); -webkit-mask: linear-gradient(var(--black) 0 0) content-box, linear-gradient(var(--black) 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
+.tier.is-rec::before { content: ""; position: absolute; inset: 0; border-radius: var(--radius); padding: var(--space-0-25); background: var(--grad); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
 .tier canvas { width: 100%; height: 9.375rem; }
 .tier .head { display: flex; justify-content: space-between; align-items: center; gap: var(--space-2-5); }
 .tier .head h3 { font-weight: 700; letter-spacing: 0.04em; font-size: 1.375rem; }
@@ -533,7 +533,7 @@ td.us { color: var(--text); background: var(--fill-soft); }
 
 .c-reel { padding: var(--section) 0; }
 .c-reel-head { display: flex; justify-content: space-between; align-items: end; gap: var(--space-5); padding: 0 var(--gutter); margin-bottom: var(--space-7); }
-.c-track { display: flex; gap: clamp(var(--space-3), 1.6vw, var(--space-5-5)); overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 var(--gutter); padding: 0 0 var(--space-2); border-radius: var(--radius-16); -webkit-mask-image: linear-gradient(90deg, var(--black) calc(100% - 5.625rem), transparent); mask-image: linear-gradient(90deg, var(--black) calc(100% - 5.625rem), transparent); scrollbar-width: none; cursor: grab; }
+.c-track { display: flex; gap: clamp(var(--space-3), 1.6vw, var(--space-5-5)); overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 var(--gutter); padding: 0 0 var(--space-2); border-radius: var(--radius-16); -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 5.625rem), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 5.625rem), transparent); scrollbar-width: none; cursor: grab; }
 .c-track::-webkit-scrollbar { display: none; }
 .c-track.at-end { -webkit-mask-image: none; mask-image: none; }
 .c-track.drag { cursor: grabbing; scroll-snap-type: none; }
@@ -1037,7 +1037,7 @@ html.motion-paused .rec::before { animation: none; }
 /* CTA-Kasten (Cta.astro, Preisversprechen): schmal und zentriert statt über die volle Breite (Marc 31.10.: auf großen
    Bildschirmen stand der Button verloren allein), Verlaufsrand wie im Prototyp, bei Kontakt-CTAs die Gesichter */
 .promise { position: relative; max-width: 53.75rem; margin-inline: auto; display: grid; justify-items: center; gap: var(--space-5-5); text-align: center; padding: clamp(var(--space-9), 5vw, var(--space-16)) clamp(var(--space-6), 5vw, var(--space-18)); border-radius: var(--radius); background: var(--surface); }
-.promise::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: var(--space-0-25); background: var(--grad); -webkit-mask: linear-gradient(var(--black) 0 0) content-box, linear-gradient(var(--black) 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
+.promise::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: var(--space-0-25); background: var(--grad); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
 .promise :is(h1, h2, h3) { font-size: clamp(1.75rem, 3vw, 2.75rem); line-height: 1.08; letter-spacing: -0.03em; max-width: 20ch; margin-inline: auto; } /* gleich groß, egal auf welcher Ebene der Kasten steht */
 .promise p { color: var(--muted); margin: var(--space-3-5) auto 0; max-width: 48ch; }
 .promise .kicker { margin-bottom: var(--space-3); }
@@ -1182,11 +1182,11 @@ a.pack:hover, a.pack:focus-visible { border-color: color-mix(in srgb, var(--c) 7
    und dadurch schärfer. Vollflächig zum Vergleich mit ?hero=voll. Auf dem Handy bleibt es vollflächig. */
 @media (min-width: 56.3125em) {
   .hero.side { background: var(--ground); }
-  .hero.side .hero-media, .hero.side .reel { left: auto; right: 0; width: 64%; -webkit-mask-image: linear-gradient(90deg, transparent 0%, var(--shadow-ink) 18%, var(--black) 42%); mask-image: linear-gradient(90deg, transparent 0%, var(--shadow-ink) 18%, var(--black) 42%); }
+  .hero.side .hero-media, .hero.side .reel { left: auto; right: 0; width: 64%; -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.55) 18%, #000 42%); mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.55) 18%, #000 42%); }
   .hero.side .hero-media { position: absolute; top: 0; bottom: 0; }
   .hero.side .shade { background: linear-gradient(0deg, rgb(var(--rgb-ground) / 0.85) 0%, rgb(var(--rgb-ground) / 0) 30%), linear-gradient(90deg, var(--ground) 30%, rgb(var(--rgb-ground) / 0) 52%); }
   /* Referenzen: derselbe Schnitt (Marc, 01.11.2026) */
-  .c-hero .hero-media, .c-hero .reel { left: auto; right: 0; width: 64%; -webkit-mask-image: linear-gradient(90deg, transparent 0%, var(--shadow-ink) 18%, var(--black) 42%); mask-image: linear-gradient(90deg, transparent 0%, var(--shadow-ink) 18%, var(--black) 42%); }
+  .c-hero .hero-media, .c-hero .reel { left: auto; right: 0; width: 64%; -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.55) 18%, #000 42%); mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.55) 18%, #000 42%); }
   .c-hero .shade { background: linear-gradient(0deg, var(--overlay-heavy) 0%, rgb(var(--rgb-ground) / 0) 34%), linear-gradient(90deg, var(--ground) 30%, rgb(var(--rgb-ground) / 0) 52%); }
 }
 @media (--timeline-stacked) { .c-name { font-size: min(6rem, calc(124vw / var(--chars))); } }
@@ -1221,7 +1221,7 @@ a.pack:hover, a.pack:focus-visible { border-color: color-mix(in srgb, var(--c) 7
 
 /* Anlässe als Slider (mehr als vier Karten): vier sichtbar, der Rest blendet an der Content-Kante aus (Marc, 02.11.2026:
    alles endet an der Content-Breite, nur das Showreel rechts im Seitenkopf läuft bis an den Fensterrand) */
-.occasions.occ-slider { display: grid; grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: calc((100% - 3 * 1rem) / 4); overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-left: 0; overscroll-behavior-x: contain; scrollbar-width: none; padding-bottom: var(--space-1); -webkit-mask-image: linear-gradient(90deg, var(--black) calc(100% - 5.625rem), transparent 100%); mask-image: linear-gradient(90deg, var(--black) calc(100% - 5.625rem), transparent 100%); }
+.occasions.occ-slider { display: grid; grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: calc((100% - 3 * 1rem) / 4); overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-left: 0; overscroll-behavior-x: contain; scrollbar-width: none; padding-bottom: var(--space-1); -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 5.625rem), transparent 100%); mask-image: linear-gradient(90deg, #000 calc(100% - 5.625rem), transparent 100%); }
 .occasions.occ-slider::-webkit-scrollbar { display: none; }
 .occasions.occ-slider.at-end { -webkit-mask-image: none; mask-image: none; }
 .occasions.occ-slider:focus-visible { outline: 2px solid var(--cyan); outline-offset: 0.375rem; }

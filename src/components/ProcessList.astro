@@ -79,7 +79,7 @@ const cls = { steps: 'steps', milestones: 'ms', flow: 'lf-steps', metro: 'ruler'
   .gate .lf-dot .ico { width: 1rem; height: 1rem; color: var(--ground); stroke: var(--ground); }
   .lf-body { display: grid; gap: var(--space-2); justify-items: start; padding: var(--space-5) 0 var(--space-5-5); border-bottom: 1px solid var(--line); }
   .gate .lf-body { position: relative; padding: clamp(var(--space-5-5), 2.6vw, var(--space-8)); border: 0; border-radius: var(--radius); background: var(--ground); margin: var(--space-1-5) 0; }
-  .gate .lf-body::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: var(--space-0-25); background: var(--grad); -webkit-mask: linear-gradient(var(--black) 0 0) content-box, linear-gradient(var(--black) 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
+  .gate .lf-body::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: var(--space-0-25); background: var(--grad); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
   .lf-n { color: var(--accent); }
   .lf-body h2, .lf-body h3 { font-size: clamp(1.3125rem, 1.8vw, 1.625rem); }
   .gate .lf-body h2, .gate .lf-body h3 { font-size: clamp(1.625rem, 2.4vw, 2.125rem); }
