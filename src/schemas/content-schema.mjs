@@ -390,7 +390,15 @@ const rawSectionSchema = z.discriminatedUnion('type', [
 // Collections
 // ---------------------------------------------------------------------------
 export const sectionSchema = keyedSchema(rawSectionSchema, true);
-const translationMeta = { translationSourceHash: fieldPolicy(z.string().regex(/^[a-f0-9]{64}$/).optional().describe('SHA-256 der deutschen Quelldatei zum Übersetzungszeitpunkt'), 'shared') };
+const technical=schema=>fieldPolicy(schema.meta({'x-afe':{visibility:'hidden'}}),'shared');
+const proofField=z.object({address:technical(z.string()),sourceFingerprint:technical(z.string().regex(/^[a-f0-9]{64}$/)),targetFingerprint:technical(z.string().regex(/^[a-f0-9]{64}$/))});
+const evidenceField=proofField.extend({status:technical(z.enum(['adopted-existing','reviewed','unreviewed']))});
+const translationMeta = {
+ translationContractVersion:technical(z.literal(2).optional()),
+ translationSourceHash:technical(z.string().regex(/^[a-f0-9]{64}$/).optional().describe('Fingerprint des übersetzbaren Quellstands, Vertrag Version 2')),
+ translationEvidence:z.object({version:technical(z.literal(2)),addressing:technical(z.literal('stable-keys')),locale:technical(z.enum(['en','nl'])),sourceFingerprint:technical(z.string()),legacy:z.object({provenanceFile:technical(z.string()),migration:technical(z.string())}).optional(),fields:z.array(evidenceField).meta({'x-afe':{array:{insertable:true,removable:true,reorderable:true}}})}).optional().meta({'x-afe':{visibility:'hidden'}}),
+ translationReview:z.array(proofField).optional().meta({'x-afe':{visibility:'hidden',array:{insertable:true,removable:true,reorderable:true}}}),
+};
 export const pageSchema = keyedSchema(z.object({
     ...translationMeta,
     title: fieldPolicy(z.string().min(1), 'translatable'),

@@ -1,3 +1,4 @@
+import {translatorFor} from './ui-core.mjs';
 import messages from './ui.json' with { type: 'json' };
 import { LOCALES } from './routing.mjs';
 const server = import.meta.env?.SSR ?? (typeof process !== 'undefined' && Boolean(process.versions?.node));
@@ -18,20 +19,8 @@ export function messagesForLocale(locale) {
 /** No HTML interpolation. Callers render links/emphasis, values are plain text.
  * @returns {((key: string, values?: Record<string, unknown>) => string) & {afeAddress: (key: string) => {owner:{collection:string,id:string},part:string,path:string[],mode:string}}}
  */
-export function createTranslator(locale = 'de') {
-  const source = dictionary();
-  const translate = (key, values = {}) => {
-    const message = source[key]?.[locale];
-    if (typeof message !== 'string') throw new Error(`Missing ${locale} UI message: ${key}`);
-    return message.replace(/\{(\w+)\}/g, (_, name) => {
-      if (!(name in values)) throw new Error(`Missing ${name} in UI message ${key}`);
-      return String(values[name]);
-    });
-  };
-  // Render-time provenance for the dictionary actually used by this translator.
-  translate.afeAddress=key=>({owner:{collection:'siteUi',id:'ui'},part:'data',path:[key,locale],mode:/\{\w+\}/.test(source[key]?.[locale]||'')?'panel':'inline'});
-  return translate;
-}
+export function createTranslator(locale = 'de') { return translatorFor(dictionary(),locale); }
+
 /** Browser modules (including lazy scene builders); safe for deterministic Node unit tests. */
 export function t(key, values = {}) {
   const language = typeof document === 'undefined' ? undefined : document.documentElement?.lang;

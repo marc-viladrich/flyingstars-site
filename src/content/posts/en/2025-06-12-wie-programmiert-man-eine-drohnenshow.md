@@ -3,8 +3,8 @@ authorId: florian-becker
 title: How do you programme a drone show?
 description: "How a drone show is programmed: show drones, choreography software, flight paths, simulations
   and tests before the live show."
-date: 2025-06-12
-updated: 2026-09-18
+date: "2025-06-12T00:00:00.000Z"
+updated: "2026-09-18T00:00:00.000Z"
 tags:
   - Drohnenshow
   - Programmierung
@@ -14,7 +14,33 @@ cover:
   width: 1680
   height: 1120
 draft: false
-translationSourceHash: 4bbbb0b261a95d04d72d42a590075365d9a07791f5b1d68eed44ec96697cc94b
+translationSourceHash: a9cb9784d8d7ff2f6aa88248cd4c3947aef7edbb3c5559ec0422331ed87562ac
+translationContractVersion: 2
+translationEvidence:
+  version: 2
+  addressing: stable-keys
+  locale: en
+  sourceFingerprint: a9cb9784d8d7ff2f6aa88248cd4c3947aef7edbb3c5559ec0422331ed87562ac
+  legacy:
+    provenanceFile: docs/i18n/content-provenance.json
+    migration: I01-v2-2026-11-04
+  fields:
+    - address: /body
+      sourceFingerprint: c79ec3ff088d883dc33e6dc5979080142566bcfd106b4c761dd70a2b8d421fc9
+      targetFingerprint: 61060236dc74c707ae80aeaf9b9d11aa3a76ce11b0bd8eb931b48924c3bfbcde
+      status: adopted-existing
+    - address: /cover/alt
+      sourceFingerprint: debf6f3890f470655260d1c585061012aab399099fdb5f2a21f10d398a9ba7e0
+      targetFingerprint: 66de5e7d066e16815d3df572eba7d85a358df7d066b6773e2777d10a15bfecfa
+      status: adopted-existing
+    - address: /description
+      sourceFingerprint: 38d43f2fc28bccd663971bca98a13a681d2dfde58118b59adb61d6e422e423ee
+      targetFingerprint: e68c49e2535f793b23ce32ffba3751a221b2205c2d10e87fb30e4991603f2e3b
+      status: adopted-existing
+    - address: /title
+      sourceFingerprint: c153a5e4fc5aec4040559ab0c9340446275f8cd711bc424059596bf39240faa0
+      targetFingerprint: e330e7c53c81817c6f6ec6917a2e432f4ac6642bbe0de725d28e2c1d9e111254
+      status: adopted-existing
 ---
 At city festivals, company anniversaries and music festivals, drone shows draw audiences around the world. Illuminated drones rise into the sky and form logos, hearts and moving animations. How is a show like this made? What technology is involved, and how does drone programming work?
 

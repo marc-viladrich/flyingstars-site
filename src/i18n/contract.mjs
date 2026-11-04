@@ -28,7 +28,7 @@ function matches(node, value) {
   if (node.kind === 'literal') return equal(node.value, value);
   return node.kind === 'text' ? typeof value === 'string' || value instanceof Date : typeof value === node.kind;
 }
-function selected(node, value, path) {
+export function selected(node, value, path = []) {
   if (node.kind !== 'union') return node;
   if (node.discriminator) {
     const choice = node.options.find(option => option.properties?.[node.discriminator]?.value === value?.[node.discriminator]);
@@ -44,7 +44,11 @@ const hasText = node => node.mode === 'translatable' || Object.values(node.prope
 /** Pure, strict projection. Never falls back to German for a missing translation; never writes files. */
 export function project(schema, source, target, locale, dependencies = {}) {
   if (!['en', 'nl'].includes(locale)) throw Error(`Unsupported target locale: ${locale}`);
-  const tree = policyTree(schema), fields = [], sharedDifferences = [], globalDependencies = [];
+  const tree = policyTree(schema);
+  if(tree.properties){tree.properties={...tree.properties};for(const key of ['translationSourceHash','translationContractVersion','translationEvidence','translationReview'])delete tree.properties[key];}
+  const clean=data=>Object.fromEntries(Object.entries(data).filter(([key])=>!['translationSourceHash','translationContractVersion','translationEvidence','translationReview'].includes(key)));
+  source=clean(source);target=clean(target);
+  const fields = [], sharedDifferences = [], globalDependencies = [];
   // Real schemas additionally enforce refinements; unknown fields are checked below BEFORE Zod can strip them.
   const walk = (original, de, translated, path, inheritedDependencies = []) => {
     if (de === undefined || de === null) {
@@ -157,10 +161,3 @@ export function reviewRequired(result, evidence) {
   return needed;
 }
 
-/** Shadow check ONLY. The legacy raw hash remains mandatory until atomic step 4. */
-export function checkParallel({schema, source, target, locale, dependencies, sourceRaw, evidence}) {
-  const rawHash = sha256(sourceRaw);
-  if (target.translationSourceHash !== rawHash) throw Error('Stale legacy translationSourceHash');
-  const result = project(schema, source, target, locale, dependencies);
-  return {...result, rawHash, rawCurrent: true, reviewRequired: evidence ? reviewRequired(result, evidence) : null};
-}

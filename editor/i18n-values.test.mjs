@@ -1,16 +1,20 @@
 import './test/register-browser-site.mjs';
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import {site,records,pages,record,root} from './test/design-data.mjs';
-import {synchronize,changedLeaves} from './design/locale-review.mjs';
-test('A source change keeps the translated prose and synchronizes technical values',()=>{const before={headline:'Alt',href:'/alt/',count:2},after={headline:'Neu',href:'/neu/',count:3},target={headline:'Old',href:'/alt/',count:2};assert.deepEqual(synchronize(before,after,target),{headline:'Old',href:'/neu/',count:3});assert.deepEqual(target,{headline:'Old',href:'/alt/',count:2});});
-test('Reordered repeated section types keep each section’s own translation',()=>{const before=[{type:'hero',headline:'A'},{type:'hero',headline:'B'}],target=[{type:'hero',headline:'English A'},{type:'hero',headline:'English B'}];assert.deepEqual(synchronize(before,[before[1],before[0]],target),[target[1],target[0]]);});
-test('Inserted and deleted sections follow the actual array; removed fields never survive in a locale',()=>{const before=[{type:'hero',headline:'A',text:'Text'}],after=[{type:'cta',headline:'Neu',text:'Satz',button:{label:'Kontakt',href:'/kontakt/'}}];assert.deepEqual(synchronize(before,after,[{type:'hero',headline:'Old',text:'Text EN'}]),after);assert.deepEqual(synchronize(before,[],before),[]);assert.deepEqual(synchronize({a:'Alt',b:'Weg'},{a:'Neu'},{a:'Old',b:'Gone'}),{a:'Old'});});
-test('Real DE EN NL pages can be synchronized without losing translated bytes',()=>{for(const source of pages.filter(r=>!/^page\/(en|nl)\//.test(r.id)))for(const locale of ['en','nl']){const target=record(source.id.replace('page/','page/'+locale+'/'));assert.deepEqual(synchronize(source.data,source.data,target.data),target.data);}});
-test('Changed leaves identify actual source fields and do not report unrelated data',()=>{assert.deepEqual(changedLeaves({a:'Alt',b:'Bleibt'},{a:'Neu',b:'Bleibt'}),[{path:['a'],value:'Neu'}]);});
-
-test('Moving an existing section requests no translation review, inserting one requests only its new fields',()=>{const before=[{type:'hero',headline:'A'},{type:'cta',headline:'B'}];assert.deepEqual(changedLeaves(before,[before[1],before[0]]),[]);assert.deepEqual(changedLeaves(before,[{type:'hero',headline:'Neu'},...before]),[{path:[0,'type'],value:'hero'},{path:[0,'headline'],value:'Neu'}]);});
-
-test('Internal todo notes, structural IDs and URLs never enter translation review or suggestions',async()=>{const {reviewLeaves}=await import('./design/locale-review.mjs');assert.deepEqual(reviewLeaves({sections:[]},{sections:[{type:'hero',id:'hero',headline:'Neu',todo:'Intern',image:{src:'https://example.invalid/photo',alt:'Beschreibung'}}]}).map(f=>f.path.join('.')),['sections.0.headline','sections.0.image.alt']);});
-
-test('Mail, telephone and internal notes follow their source without suggestions; Markdown headings remain prose',async()=>{const {reviewLeaves}=await import('./design/locale-review.mjs');const before={href:'mailto:old@example.invalid',phone:'tel:+49123',todo:'Alt',body:'# Alt\n\nText'},after={href:'mailto:new@example.invalid',phone:'tel:+49456',todo:'Neue interne Notiz',body:'# Neu\n\nText'},target={href:'mailto:old@example.invalid',phone:'tel:+49123',todo:'Alt',body:'# English\n\nText'};assert.deepEqual(synchronize(before,after,target),{...after,body:target.body});assert.deepEqual(reviewLeaves(before,after),[{path:['body'],value:after.body}]);});
+import test from 'node:test';import assert from 'node:assert/strict';
+import {pages,record,records} from './test/design-data.mjs';
+import {NativeDraft,sectionMutation} from 'astro-frontend-editor/web/native-draft.mjs';
+import {localeProposals,applyLocaleProposals,keyedListChange} from './design/locale-review.mjs';
+import {contentData,seedTranslation,sharedPaths} from '../src/i18n/transaction.mjs';
+const draft=()=>{const d=new NativeDraft();d.reset(records);return d;};
+test('Every real page projects shared fields without losing translated values',()=>{for(const source of pages.filter(r=>!/^page\/(en|nl)\//.test(r.id)))for(const locale of ['en','nl']){const target=record(source.id.replace('page/','page/'+locale+'/'));assert.deepEqual(seedTranslation(source.schema,source.data,target.data),contentData(target.data));}});
+test('Shared URL change follows DE without any review command or evidence mutation',()=>{
+ const d=draft(),before=structuredClone(d.get('page/en/index').data.translationEvidence);d.set('page/index',['sections',0,'cta','href'],'/kontakt/');const p=localeProposals(d);assert.equal(p.length,2);assert.ok(p.every(p=>!p.needed.length));applyLocaleProposals(d,p);assert.equal(d.get('page/en/index').data.sections[0].cta.href,'/kontakt/');assert.deepEqual(d.get('page/en/index').data.translationEvidence,before);assert.equal(d.get('page/en/index').data.translationReview,undefined);
+});
+test('Text review planning and suggestion edits leave the actual draft unchanged until acceptance',()=>{
+ const d=draft();d.set('page/index',['title'],'Neuer Titel');const before=structuredClone([...d.local]),p=localeProposals(d);assert.ok(p.every(p=>p.needed.includes('/title')));p[0].data.title='Suggested English';assert.deepEqual([...d.local],before);applyLocaleProposals(d,p,{reviewed:true});assert.equal(d.get('page/en/index').data.title,'Suggested English');assert.equal(d.get('page/en/index').data.translationReview.length,1);
+});
+test('Repeated section types with reorder plus text change retain keyed target association',()=>{
+ const d=draft(),source=d.get('page/index'),sections=structuredClone(source.data.sections),chosen=sections[0];sections.splice(0,1);sections.push(chosen);chosen.headline+=' Neu';d.set('page/index',['sections'],sections);const p=localeProposals(d);for(const item of p){assert.equal(item.data.sections.at(-1)._key,chosen._key);assert.equal(item.data.sections.at(-1).headline,record(item.id).data.sections[0].headline);assert.ok(item.needed.includes('/sections/@'+chosen._key+'/headline'));}
+});
+test('Source-only internal notes and structural IDs never request text review',()=>{const d=draft();d.set('page/index',['sections',0,'todo'],'Interne Notiz');assert.ok(localeProposals(d).every(p=>p.needed.length===0));});
+test('List insertion/duplication renews identities recursively through the real site hook',()=>{const d=draft(),p=['sections',0,'words'],list=structuredClone(d.get('page/index').data.sections[0].words),key=list[0]._key;list.push(structuredClone(list[0]));assert.equal(keyedListChange('page/index',p,list,{draft:d}),true);assert.equal(d.get('page/index').data.sections[0].words[0]._key,key);assert.notEqual(d.get('page/index').data.sections[0].words.at(-1)._key,key);});
+test('EN/NL shared controls are derived from field policy including nested media',()=>{const source=record('page/en/index'),paths=sharedPaths(source.schema,source.data).map(p=>p.join('.'));assert.ok(paths.includes('sections.0.cta.href'));assert.ok(paths.includes('sections.0.poster.src'));assert.ok(!paths.includes('sections.0.headline'));assert.ok(!paths.includes('sections.0.poster.alt'));});

@@ -38,4 +38,43 @@ sections:
       The [privacy policy of the existing FlyingStars website](https://flyingstars.art/datenschutz/) does not replace the review of this new infrastructure.
     todo: FlyingStars und die Datenschutzberatung müssen Versanddienst, Empfängerpostfach, Auftragsverarbeitung, Drittlandtransfers und Löschfristen festlegen und die Datenschutzhinweise freigeben. Auch die EN-/NL-Fassungen brauchen eine rechtliche und sprachliche Prüfung.
     _key: k_80839b70c619f180158b
-translationSourceHash: 37fbd88ffc3650b08335990177790ca473a52b57c369037904071e3876178bfd
+    mediaSide: right
+translationSourceHash: 7440a9972e2f64b1aeec834ed6c5fbd69c9f3731c08c1694c88c37dcb866787a
+translationContractVersion: 2
+translationEvidence:
+  version: 2
+  addressing: stable-keys
+  locale: en
+  sourceFingerprint: 7440a9972e2f64b1aeec834ed6c5fbd69c9f3731c08c1694c88c37dcb866787a
+  legacy:
+    provenanceFile: docs/i18n/content-provenance.json
+    migration: I01-v2-2026-11-04
+  fields:
+    - address: /description
+      sourceFingerprint: 467c3e784e2f218c130ef90ecf2e99b1c135d444eb0437114443e53891f6e04e
+      targetFingerprint: 6897ac07efab547ba162b292e4404df229c8959eb2c1a772338b1fa1a6a681fe
+      status: adopted-existing
+    - address: /navLabel
+      sourceFingerprint: 5eca75dc86b64b90cc8087b960962b56c2d45c5ec25bbc19554dc8cc41f814fc
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
+    - address: /sections/@k_80839b70c619f180158b/body
+      sourceFingerprint: 17be14a12595a308e8289abdbe1d7523e5081e0152ba0395cdc1ee5bd6d53628
+      targetFingerprint: 1cdee63b7e6b3819475371e8a7a6153d4acdb77073ed9186560df159c8e3533d
+      status: adopted-existing
+    - address: /sections/@k_80839b70c619f180158b/headline
+      sourceFingerprint: cc9564f63001cdcbd16b7010a232e9ade93300be73e8935f25a4b5518bd7eec2
+      targetFingerprint: c7a981dd578043e5454f4f8407f793c9577d51027174f2459d11c0a67f119fe4
+      status: adopted-existing
+    - address: /sections/@k_80839b70c619f180158b/image
+      sourceFingerprint: 8c7ea8867d985d11ffb4cab86b625e8de50037ff89a343a56fc7d1fc01a4a00d
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
+    - address: /sections/@k_80839b70c619f180158b/kicker
+      sourceFingerprint: 3150bbd565ad0c3b7f2d6f621b97699ec8e1872498caeae869d58f86809989fd
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
+    - address: /title
+      sourceFingerprint: 9e060ca93e2df64278742d4eabe5acfcfeff0e3b669bfdbf6147f92d915e17d7
+      targetFingerprint: 09baf698612742114119afe9ffe49011f39d24ede1d162a2a5729362f227a5b5
+      status: adopted-existing

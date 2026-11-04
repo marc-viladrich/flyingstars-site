@@ -1,7 +1,8 @@
 import {projectValue} from '../content/project-facts.mjs';
 import {projectContact, contactText} from '../content/contact.mjs';
 import {durationText} from '../content/show-duration.mjs';
-import {offerText} from '../content/show-extras.mjs';
+import {offerTextCore} from '../content/offer-core.mjs';
+import {translatorFor} from './ui-core.mjs';
 
 const own = (source, key) => {
   if (!source || !Object.hasOwn(source, key)) throw Error(`Missing i18n dependency: ${key}`);
@@ -32,7 +33,7 @@ export function tokenDependency(token, dependencies, locale) {
   } else if (owner === 'offer') {
     const source = own(dependencies, 'showExtras');
     if (!Object.hasOwn(source, parts[0])) throw Error(`Unknown fact token: ${token}`);
-    value = offerText(`{{${token}}}`, locale, source);
+    value = offerTextCore(`{{${token}}}`, locale, source,{t:translatorFor(own(dependencies,'ui'),locale)});
     if (value === `{{${token}}}`) throw Error(`Unknown fact token: ${token}`);
     // The existing priceLine renderer controls amount formatting in all three languages.
     // Only its amount is parametric. Currency, qualifier, net/travel and UI copy remain review dependencies.

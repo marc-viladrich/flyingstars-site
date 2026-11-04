@@ -3,8 +3,8 @@ authorId: florian-becker
 title: Hoe werkt een droneshow?
 description: Techniek, programmering en verloop van een droneshow, met creatieve toepassingen en voorwaarden
   voor de uitvoering.
-date: 2025-01-14
-updated: 2026-09-22
+date: "2025-01-14T00:00:00.000Z"
+updated: "2026-09-22T00:00:00.000Z"
 tags:
   - Drohnenshow
   - Technik
@@ -14,7 +14,33 @@ cover:
   width: 1600
   height: 1067
 draft: false
-translationSourceHash: 0585064a6624f27d910d3cd1e7f39ea1080ff6e7afe366f542a255dd2ce8cb15
+translationSourceHash: 721e73d6d2bc34c6d36953159d9a82612da2cdfff612901296f170eb62251a5e
+translationContractVersion: 2
+translationEvidence:
+  version: 2
+  addressing: stable-keys
+  locale: nl
+  sourceFingerprint: 721e73d6d2bc34c6d36953159d9a82612da2cdfff612901296f170eb62251a5e
+  legacy:
+    provenanceFile: docs/i18n/content-provenance.json
+    migration: I01-v2-2026-11-04
+  fields:
+    - address: /body
+      sourceFingerprint: 6aed6932a5daee725aa7aa53c6187a455c29a9b29dcc7fd473967be86b14d9c8
+      targetFingerprint: b238a87ebc077a2373cf1347140e0ac2315db0212e6004f6dc260b021f9d6b9f
+      status: adopted-existing
+    - address: /cover/alt
+      sourceFingerprint: 409f5539db2fd1cfa90510b75350f3eaf95aada55b3dfa542ad516abafca4938
+      targetFingerprint: 5be128a705996b560555e9a94038f1f22efe748d05af0d8272b64734d9f04713
+      status: adopted-existing
+    - address: /description
+      sourceFingerprint: 7afb011571c307e5134a90b0133f3ace9c9906062234b2c8b8ed9dae689b7b0d
+      targetFingerprint: f2e74057a6abed21723f213e8cb466a14e8f02ecc99af9cbabb741f8fe607fa5
+      status: adopted-existing
+    - address: /title
+      sourceFingerprint: 3273d3f9ad0aae9413a84cfbad09056bd4e797f93df02ad7b630e277f14b9186
+      targetFingerprint: dabb1e893ac5ea841a5d6daa2a61c6488d3dfeea2060c9a4d23a5ed79d6ebc41
+      status: adopted-existing
 ---
 Hoe werkt een droneshow? Stel jullie honderden drones voor die synchroon door de nachthemel bewegen en lichtgevende beelden, symbolen en animaties vormen. Achter zo'n voorstelling zitten vliegtechniek, creatieve programmering en nauwkeurige afstemming. In dit artikel leggen we de techniek, programmering en vormgeving van een droneshow uit.
 

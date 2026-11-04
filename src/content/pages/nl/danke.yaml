@@ -11,4 +11,43 @@ sections:
       Mail rechtstreeks naar [{{contact.email}}](mailto:{{contact.email}}) of bel [{{contact.phone.label}}]({{contact.phone.href}}).
     todo: FlyingStars muss den tatsächlichen Versandstatus mit dem Betrieb klären; Moritz muss die reine Vorschau-Meldung bei aktivem Versand durch eine passende Rückmeldung in DE/EN/NL ersetzen.
     _key: k_7f812f5f0bc5bd9032db
-translationSourceHash: 03ac5849f6f2cb8e52884cb524d2aadb373c1caad0625ae4bae317ac64532457
+    mediaSide: right
+translationSourceHash: b59df6dd442fc62a9b94740e2b93f237ce19c9e2ecd2c0eac482dec881f815af
+translationContractVersion: 2
+translationEvidence:
+  version: 2
+  addressing: stable-keys
+  locale: nl
+  sourceFingerprint: b59df6dd442fc62a9b94740e2b93f237ce19c9e2ecd2c0eac482dec881f815af
+  legacy:
+    provenanceFile: docs/i18n/content-provenance.json
+    migration: I01-v2-2026-11-04
+  fields:
+    - address: /description
+      sourceFingerprint: 2df5411563a222f04b260cf5b00137b8d86a43aa88b40518e5ebe2fc87980dec
+      targetFingerprint: 2445fc80447eba6f09e143a8b6a18d2ec9ef26f9b9b82b6fa460745d7eb08fd1
+      status: adopted-existing
+    - address: /navLabel
+      sourceFingerprint: 5eca75dc86b64b90cc8087b960962b56c2d45c5ec25bbc19554dc8cc41f814fc
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
+    - address: /sections/@k_7f812f5f0bc5bd9032db/body
+      sourceFingerprint: 7d1d0a47c706f97af244b37d8e69efa6cafdb285b1f92efdc192bf4becbce0a9
+      targetFingerprint: cea65da6e11fee32c45ca1148a94b627cbf31a847b61275843a3abbb6f0ffb89
+      status: adopted-existing
+    - address: /sections/@k_7f812f5f0bc5bd9032db/headline
+      sourceFingerprint: 8505ec5a72d0bd8a72906eaac7bd2f28b9909d527f413f5204ad0489ea7d9e2c
+      targetFingerprint: 6d4299502e9b33873b584fbb2223679498c1b2d140ec4f9798137ee612931d74
+      status: adopted-existing
+    - address: /sections/@k_7f812f5f0bc5bd9032db/image
+      sourceFingerprint: 4c7ed4e635876aa9919d7a66ef60034a92f81ebc974d2498837c30a46670af17
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
+    - address: /sections/@k_7f812f5f0bc5bd9032db/kicker
+      sourceFingerprint: 2330c20dd97cd6bdfdbb262ad06e6b6aacfd95ef7b0f72a08d4a2316a49e3d30
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
+    - address: /title
+      sourceFingerprint: a9a0bf619591b54c52590dcba4eb86e60508b3acdda26af3034ea8a617a21bb8
+      targetFingerprint: 6d4299502e9b33873b584fbb2223679498c1b2d140ec4f9798137ee612931d74
+      status: adopted-existing

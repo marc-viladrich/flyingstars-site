@@ -3,8 +3,8 @@ authorId: florian-becker
 title: "Drones as an alternative to fireworks: a light show with less environmental impact"
 description: "Drone shows as an alternative to fireworks: how they work, environmental aspects, possible uses
   and safety measures."
-date: 2025-03-31
-updated: 2026-09-22
+date: "2025-03-31T00:00:00.000Z"
+updated: "2026-09-22T00:00:00.000Z"
 tags:
   - Drohnenshow
   - Feuerwerk
@@ -15,7 +15,33 @@ cover:
   width: 1200
   height: 915
 draft: false
-translationSourceHash: 255e57b33739cd830f700ed312230b49a4b31f5e7f96450fcc8b8d5af57689f6
+translationSourceHash: a7f95f42822e3761d2b27ef943b1c6f5f584552f41a5a53255e61db44dd8c603
+translationContractVersion: 2
+translationEvidence:
+  version: 2
+  addressing: stable-keys
+  locale: en
+  sourceFingerprint: a7f95f42822e3761d2b27ef943b1c6f5f584552f41a5a53255e61db44dd8c603
+  legacy:
+    provenanceFile: docs/i18n/content-provenance.json
+    migration: I01-v2-2026-11-04
+  fields:
+    - address: /body
+      sourceFingerprint: 0f88928cd3ea15df3745cc9d5ec747ee8fc8ac81cc6f68d7b2896313e71ca904
+      targetFingerprint: 8d477a068be0818c2448f6da43e34245ab4b0a8f17c4a3f78b3b15171130d795
+      status: adopted-existing
+    - address: /cover/alt
+      sourceFingerprint: 9da8835a0729b68a99fabc6a3592a6247e14aee134e0750eba780561bd081ea2
+      targetFingerprint: d02441616501c941eb0dbcf6c64161213d4342645bb2011b72815ad593fa2bba
+      status: adopted-existing
+    - address: /description
+      sourceFingerprint: da838276af24946ee8b40ad2b6bde2d3631c80e4cc8afcaf13f06b9a5b2dc51f
+      targetFingerprint: 03510416aa52b0862fb0def8a05644ef496fef64c6aa49859f3c48a1a51c930c
+      status: adopted-existing
+    - address: /title
+      sourceFingerprint: eea10e0f052d3de660c728978ffae24f851c4bc0e5c2a9ebdde73852de82206a
+      targetFingerprint: 96b3b37fb429d877c46507d2fbacdabeab257a8aaa42ba934e8407cac1f0e22a
+      status: adopted-existing
 ---
 Fireworks have been part of celebrations for centuries, from New Year's Eve and weddings to major events. But the colourful explosions also bring noise, fine particles and chemical residue that affect the environment and health. Loud bangs are particularly stressful for animals. Drone fireworks offer a quieter alternative without firework debris, while still creating visual effects in the sky.
 

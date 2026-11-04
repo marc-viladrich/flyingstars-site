@@ -1,11 +1,23 @@
 import './test/register-browser-site.mjs';
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import {site,records,pages,record,root} from './test/design-data.mjs';
+import test from 'node:test';import assert from 'node:assert/strict';
+import {site,records,record,root} from './test/design-data.mjs';
 import {localeTransactions} from './design/locale-transactions.mjs';
-import {synchronize} from './design/locale-review.mjs';
-test('Locale write policy rejects German-only changes and direct executable URLs',()=>{const policy=localeTransactions(root,site.sourceFor);assert.throws(()=>policy.prepareTransaction({seen:new Set(['page/index']),nextRecords:records,changes:[]}),/page\/en\/index, page\/nl\/index/);assert.throws(()=>policy.validateWrite({}, {},{href:'javascript:alert(1)'}),/Ausführbare/);});
-test('Numbers, booleans and list structure use the source while translated prose remains editable',()=>{const before={text:'Alt',enabled:true,n:1,items:['A','B']},after={text:'Neu',enabled:false,n:2,items:['B']};assert.deepEqual(synchronize(before,after,{text:'English',enabled:true,n:1,items:['EN A','EN B']}),{text:'English',enabled:false,n:2,items:['EN B']});});
-test('Review freshness uses codec output bytes including comments, not a JSON digest of field values',()=>{const base=record('page/index'),targets=['en','nl'].map(l=>record('page/'+l+'/index'));const out=localeTransactions(root,site.sourceFor).prepareTransaction({seen:new Set([base.id,...targets.map(r=>r.id)]),nextRecords:records,changes:[]});assert.equal(out.length,2);for(const p of out)assert.equal(p.data.translationSourceHash,targets[0].data.translationSourceHash);});
-
-test('Locale hashes use the store’s encoded candidate revision, with no second serializer in the adapter',()=>{const base=record('page/index'),revision='a'.repeat(64),nextRecords=records.map(r=>r.id===base.id?{...r,revision}:r);const out=localeTransactions(root,site.sourceFor).prepareTransaction({seen:new Set([base.id,'page/en/index','page/nl/index']),nextRecords});assert.equal(out.length,2);for(const proposal of out)assert.equal(proposal.data.translationSourceHash,revision);});
+import {dependenciesFromRecords,prepareLocale,approvalFor,verifyCurrent} from '../src/i18n/transaction.mjs';
+import {project} from '../src/i18n/contract.mjs';
+const candidate=()=>({state:{records},nextRecords:structuredClone(records),seen:new Set(['page/index','page/en/index','page/nl/index'])});
+test('German-only changes and executable URLs are rejected',()=>{const policy=localeTransactions(root,site.sourceFor),c=candidate();c.seen=new Set(['page/index']);assert.throws(()=>policy.prepareTransaction(c),/page\/en\/index, page\/nl\/index/);assert.throws(()=>policy.validateWrite({}, {},{href:'javascript:alert(1)'}),/Ausführbare/);});
+test('Byte revisions still guard concurrency; translation freshness ignores byte-only revisions',()=>{
+ const c=candidate();c.nextRecords.find(r=>r.id==='page/index').revision='a'.repeat(64);
+ const out=localeTransactions(root,site.sourceFor).prepareTransaction(c);assert.equal(out.length,2);
+ for(const p of out)assert.equal(p.data.translationSourceHash,record(p.id).data.translationSourceHash);
+});
+test('New shared values cannot conceal stale text through a current fingerprint',()=>{
+ const c=candidate(),de=c.nextRecords.find(r=>r.id==='page/index');de.data.title+=' Neu';de.data.sections[0].cta.href='/kontakt/';
+ for(const locale of ['en','nl']){const target=c.nextRecords.find(r=>r.id===`page/${locale}/index`);target.data.sections[0].cta.href='/kontakt/';}
+ assert.throws(()=>localeTransactions(root,site.sourceFor).prepareTransaction(c),/Explizite Textprüfung/);
+});
+test('Explicit review carries exact source and target field fingerprints',()=>{
+ const c=candidate(),de=c.nextRecords.find(r=>r.id==='page/index');de.data.title+=' Neu';
+ for(const locale of ['en','nl']){const target=c.nextRecords.find(r=>r.id===`page/${locale}/index`),{result,needed}=prepareLocale(de.schema,de.data,target.data,locale,dependenciesFromRecords(c.nextRecords));target.data.translationReview=approvalFor(result,needed);}
+ const out=localeTransactions(root,site.sourceFor).prepareTransaction(c);for(const p of out){assert.equal(p.data.translationEvidence.fields.find(f=>f.address==='/title').status,'reviewed');assert.equal(p.data.translationReview,undefined);verifyCurrent(de.schema,de.data,p.data,p.id.split('/')[1],dependenciesFromRecords(c.nextRecords));}
+});

@@ -1,3 +1,4 @@
+import {reviewedRequest} from './test/requests.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,symlink,rm,readFile,readdir} from 'node:fs/promises';
@@ -11,7 +12,7 @@ import {createSite} from './flyingstars-adapter.mjs';
 import browser from './design/browser-site.mjs';
 import {resolveRuntimeOptions,runEditor} from './server.mjs';
 const root=fileURLToPath(new URL('../',import.meta.url));
-async function fixture(t){const dir=await mkdtemp(path.join(os.tmpdir(),'fs-design-editor-'));await git(root,['clone','--quiet','--no-hardlinks',root,dir]);await git(dir,['checkout','-B','content/draft']);await symlink(path.join(root,'node_modules'),path.join(dir,'node_modules'));const site=await createSite(dir),store=await new NativeStore(dir,{remote:false,site,runtime:resolveRuntimeOptions({values:{siteRoot:dir}})}).init();t.after(async()=>{store.sync.close();await rm(dir,{recursive:true,force:true});});return store;}
+async function fixture(t){const dir=await mkdtemp(path.join(os.tmpdir(),'fs-design-editor-'));await git(root,['clone','--quiet','--no-hardlinks',root,dir]);await git(dir,['checkout','-B','content/draft']);await symlink(path.join(root,'node_modules'),path.join(dir,'node_modules'));const site=await createSite(dir),store=await new NativeStore(dir,{remote:false,site,runtime:resolveRuntimeOptions({env:{},values:{siteRoot:dir,stateDir:dir+'-state'}})}).init();t.after(async()=>{store.sync.close();await rm(dir,{recursive:true,force:true});});return store;}
 const request=(state,values)=>({expectedHead:state.head,requestId:randomUUID(),changes:values.map(([id,path,value])=>({id,expectedRevision:state.records.find(r=>r.id===id).revision,patches:[{path,value}]}))});
 
 test('the real source schema supplies every new section, all current file owners, and no obsolete records',async t=>{
@@ -32,10 +33,10 @@ test('German-only save fails atomically with actionable locale names',async t=>{
  assert.equal(await store.head(),state.head);assert.equal(await readFile(file,'utf8'),before);
 });
 test('a coordinated DE/EN/NL save commits real files and source hashes; a retry is idempotent',async t=>{
- const store=await fixture(t),state=await store.state(),req=request(state,[['page/index',['title'],'Deutsche Testüberschrift'],['page/en/index',['title'],'English test heading'],['page/nl/index',['title'],'Nederlandse testtitel']]);
+ const store=await fixture(t),state=await store.state(),req=reviewedRequest(state,[['page/index',['title'],'Deutsche Testüberschrift'],['page/en/index',['title'],'English test heading'],['page/nl/index',['title'],'Nederlandse testtitel']]);
  const saved=await store.save(req);assert.notEqual(saved.head,state.head);
  const bytes=await readFile(path.join(store.root,'src/content/pages/index.yaml')),hash=createHash('sha256').update(bytes).digest('hex');
- for(const locale of ['en','nl'])assert.equal(saved.records.find(r=>r.id===`page/${locale}/index`).data.translationSourceHash,hash);
+ for(const locale of ['en','nl'])assert.equal(saved.records.find(r=>r.id===`page/${locale}/index`).data.translationEvidence.fields.find(f=>f.address==='/title').status,'reviewed');
  assert.equal((await store.save(req)).head,saved.head);assert.equal(await git(store.root,['status','--porcelain']),'');
  const buildRoot=await mkdtemp(path.join(os.tmpdir(),'fs-design-build-'));t.after(()=>rm(buildRoot,{recursive:true,force:true}));
  const builder=new NativeBuilder(store,buildRoot,{editor:false,origin:'https://flyingstars.art',env:{...process.env,FLYINGSTARS_OFFLINE_MEDIA:'1'}}),artifact=await builder.prepare(saved.head);

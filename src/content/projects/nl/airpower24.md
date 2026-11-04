@@ -27,7 +27,9 @@
     "width": 1600,
     "height": 900
   },
-  "translationSourceHash": "c0905f7d892782245b1f2688a0518659bfcd568416a0653d664769623a23b12e"
+  "translationSourceHash": "f5ae7aa198ce57ab2f57dfa3b67e8c4f6702b2cd36cee49bf5edc74412e63a4b",
+  "translationContractVersion": 2,
+  "translationEvidence": {"version":2,"addressing":"stable-keys","locale":"nl","sourceFingerprint":"f5ae7aa198ce57ab2f57dfa3b67e8c4f6702b2cd36cee49bf5edc74412e63a4b","legacy":{"provenanceFile":"docs/i18n/content-provenance.json","migration":"I01-v2-2026-11-04"},"fields":[{"address":"/body","sourceFingerprint":"d332a48982496b01829fc3fa4d7d13ae0c5900f2b870543965a6d50a459049c3","targetFingerprint":"110929b72a046dc978c2ed2bd62f4b834ad2fb84870075410365b88912bbd4d6","status":"adopted-existing"},{"address":"/cover/alt","sourceFingerprint":"ceb80091d92319c60a69a6355141f325fc949a1ec29d0cae8483c12adfc0567d","targetFingerprint":"092b0e8e58d0b8de23f8a6ebe0948ebd7a8add270133935b52742c6035e37e49","status":"adopted-existing"},{"address":"/showcase","sourceFingerprint":"29d390b8c6061167e143c25448150bac575fb039742096c046400d86e9d1226b","targetFingerprint":"a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17","status":"adopted-existing"},{"address":"/summary","sourceFingerprint":"c8d7131e34eae19fe4c3a7b72d498bd06c4753dd43f8960ed417b7cb29398cc4","targetFingerprint":"dff6bc5bca869f130c98443afa8f733d925060894ef0a391d2be7ff50f1f20bb","status":"adopted-existing"},{"address":"/title","sourceFingerprint":"719148fe44ce5b69e1ac35ebe2ce153d6cc647dce8ca0996cb00b1100e648817","targetFingerprint":"ea32487d6dd8b0dd76a3ba49c904f19d97015b10b92d4aef492253fb8a57e17e","status":"adopted-existing"}]}
 }
 ---
 

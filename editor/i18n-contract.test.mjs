@@ -4,7 +4,7 @@ import {z} from 'zod';
 import {createHash} from 'node:crypto';
 import {schemaDescription} from 'astro-frontend-editor/runtime/extensions';
 import {fieldPolicy} from '../src/i18n/field-policy.mjs';
-import {project, checkParallel, adoptionEvidence, reviewRequired, fingerprint} from '../src/i18n/contract.mjs';
+import {project, adoptionEvidence, reviewRequired, fingerprint} from '../src/i18n/contract.mjs';
 import {imageMetadata} from '../src/schemas/media.mjs';
 import {contractFixtures} from './test/i18n-contract-fixtures.mjs';
 const {pairs, dependencies} = await contractFixtures();
@@ -17,15 +17,15 @@ const baseline = run(), evidence = adoptionEvidence(baseline, {editorReviewed: t
 
 const knownShadowBlockers = {};
 
-test('all 132 raw hashes remain current; shadow checks expose exactly the documented existing blockers', () => {
+test('all 132 version 2 contracts are valid without any bestandsblocker', () => {
   assert.equal(pairs.length, 132);
   const blockers = {};
   for (const pair of pairs) {
-    assert.equal(pair.target.translationSourceHash, createHash('sha256').update(pair.sourceRaw).digest('hex'), pair.id);
+    assert.equal(pair.target.translationContractVersion,2,pair.id);
     let result;
-    try { result = checkParallel(pair); } catch (error) { blockers[pair.id] = error.message; continue; }
+    try { result = project(pair.schema,pair.source,pair.target,pair.locale,dependencies); } catch (error) { blockers[pair.id] = error.message; continue; }
     assert.deepEqual(reviewRequired(result, adoptionEvidence(result)), [], pair.id);
-    const {translationSourceHash, ...target} = pair.target;
+    const {translationSourceHash,translationContractVersion,translationEvidence, ...target} = pair.target;
     assert.deepEqual(result.projection, target, pair.id);
     assert.deepEqual(result.sharedDifferences.filter(field => field.address !== '/translationSourceHash'), [], pair.id);
   }
@@ -141,13 +141,13 @@ test('adoption preserves provenance without reinterpreting historical editorRevi
   assert.throws(() => reviewRequired(baseline, {...evidence, fields: [...evidence.fields, {address: '/orphan', status: 'reviewed'}]}), /Orphan/);
 });
 
-test('new fingerprints never bypass a stale legacy raw hash, including comment-only changes', () => {
-  const pair = pairs[0], before = checkParallel(pair);
-  const sourceRaw = '# contract comment\n' + pair.sourceRaw;
-  assert.throws(() => checkParallel({...pair, sourceRaw, evidence: adoptionEvidence(before)}), /Stale legacy/);
-  assert.equal(project(pair.schema, pair.source, pair.target, pair.locale, dependencies).sourceFingerprint, before.sourceFingerprint);
-  assert.notEqual(fingerprint('x'), createHash('sha256').update('x').digest('hex'));
-  assert.notEqual(fingerprint(undefined), fingerprint(['undefined']));
+test('byte-only comments leave translation evidence current; byte revisions remain distinct',()=>{
+ const pair=pairs[0],before=project(pair.schema,pair.source,pair.target,pair.locale,dependencies);
+ const sourceRaw='# contract comment\n'+pair.sourceRaw;
+ assert.notEqual(createHash('sha256').update(sourceRaw).digest('hex'),createHash('sha256').update(pair.sourceRaw).digest('hex'));
+ assert.deepEqual(reviewRequired(before,pair.target.translationEvidence),[]);
+ assert.notEqual(fingerprint('x'),createHash('sha256').update('x').digest('hex'));
+ assert.notEqual(fingerprint(undefined),fingerprint(['undefined']));
 });
 
 const listSchema = z.object({items: z.array(z.object({_key:s(z.string()),type:s(z.literal('same')),text:t(z.string()),children:z.array(z.object({_key:s(z.string()),value:t(z.string())}))}))});

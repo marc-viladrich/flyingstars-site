@@ -3,8 +3,8 @@ authorId: florian-becker
 title: How does a drone show work?
 description: The technology, programming and production of a drone show, plus creative uses and the
   requirements for staging one.
-date: 2025-01-14
-updated: 2026-09-22
+date: "2025-01-14T00:00:00.000Z"
+updated: "2026-09-22T00:00:00.000Z"
 tags:
   - Drohnenshow
   - Technik
@@ -14,7 +14,33 @@ cover:
   width: 1600
   height: 1067
 draft: false
-translationSourceHash: 0585064a6624f27d910d3cd1e7f39ea1080ff6e7afe366f542a255dd2ce8cb15
+translationSourceHash: 721e73d6d2bc34c6d36953159d9a82612da2cdfff612901296f170eb62251a5e
+translationContractVersion: 2
+translationEvidence:
+  version: 2
+  addressing: stable-keys
+  locale: en
+  sourceFingerprint: 721e73d6d2bc34c6d36953159d9a82612da2cdfff612901296f170eb62251a5e
+  legacy:
+    provenanceFile: docs/i18n/content-provenance.json
+    migration: I01-v2-2026-11-04
+  fields:
+    - address: /body
+      sourceFingerprint: 6aed6932a5daee725aa7aa53c6187a455c29a9b29dcc7fd473967be86b14d9c8
+      targetFingerprint: bb0bd09c92ae6a3836dc92aec74dde7560f83f3389a06365592b09bf8038a86a
+      status: adopted-existing
+    - address: /cover/alt
+      sourceFingerprint: 409f5539db2fd1cfa90510b75350f3eaf95aada55b3dfa542ad516abafca4938
+      targetFingerprint: 32adb80a2f487ebfc9dd3ebd6a0b96310f60a006f6c17c0bd0538628eb31cc06
+      status: adopted-existing
+    - address: /description
+      sourceFingerprint: 7afb011571c307e5134a90b0133f3ace9c9906062234b2c8b8ed9dae689b7b0d
+      targetFingerprint: fed52e37f16d70a3e4e66bb5e943f5cba96dee51e35a5f904535e55a7b397870
+      status: adopted-existing
+    - address: /title
+      sourceFingerprint: 3273d3f9ad0aae9413a84cfbad09056bd4e797f93df02ad7b630e277f14b9186
+      targetFingerprint: e0479f3b591b678b96c312b6efaa476ae2a050f97be0a4eae737a6bc34d2120c
+      status: adopted-existing
 ---
 How does a drone show work? Picture hundreds of drones moving in sync across the night sky, forming illuminated pictures, symbols and animations. Behind the performance are flight technology, creative programming and precise coordination. This article explains the technology, programming and design that make a drone show possible.
 

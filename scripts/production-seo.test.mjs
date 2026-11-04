@@ -1,3 +1,4 @@
+import {readContractRecords,auditContracts} from '../src/i18n/read-contracts.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile,readdir} from 'node:fs/promises';
@@ -17,7 +18,7 @@ test('robots uses the actual public origin and blocks private editor previews',(
  }
 });
 test('every actual locale file exposes its SEO fields through the shared editor schema; source hashes are current',async()=>{
- const site=await createFlyingStarsAdapter(root),files=await readdir(path.join(root,'src/content'),{recursive:true});
+ const site=await createFlyingStarsAdapter(root);assert.equal(auditContracts(site,readContractRecords(root,site)).length,132);const files=await readdir(path.join(root,'src/content'),{recursive:true});
  const sources=site.sourcesFromFiles(files.map(f=>'src/content/'+f)).filter(source=>Object.hasOwn(contentSchemas,source.address.collection));let localized=0,seo=0;
  for(const source of sources){
   const bytes=await readFile(path.join(root,source.file),'utf8'),data=source.schema.parse(codecs[source.format].parse(bytes));
@@ -26,7 +27,7 @@ test('every actual locale file exposes its SEO fields through the shared editor 
   if(data.showcase?.meta)for(const field of ['title','description'])assert.ok(fields.some(f=>JSON.stringify(f.path)===JSON.stringify(['showcase','meta',field])));
   if(/\/(en|nl)\//.test(source.id)){
    localized++;const german=source.file.replace(/\/(en|nl)\//,'/'),hash=createHash('sha256').update(await readFile(path.join(root,german))).digest('hex');
-   assert.equal(data.translationSourceHash,hash,source.file);
+   assert.equal(data.translationContractVersion,2,source.file);
   }
  }
  assert.equal(localized,sources.length*2/3);assert.ok(seo>100);

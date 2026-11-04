@@ -3,8 +3,8 @@ authorId: florian-becker
 title: Hoe wordt een droneshow geprogrammeerd?
 description: "Hoe een droneshow wordt geprogrammeerd: showdrones, choreografiesoftware, vliegroutes,
   simulaties en tests vóór de live-show."
-date: 2025-06-12
-updated: 2026-09-18
+date: "2025-06-12T00:00:00.000Z"
+updated: "2026-09-18T00:00:00.000Z"
 tags:
   - Drohnenshow
   - Programmierung
@@ -14,7 +14,33 @@ cover:
   width: 1680
   height: 1120
 draft: false
-translationSourceHash: 4bbbb0b261a95d04d72d42a590075365d9a07791f5b1d68eed44ec96697cc94b
+translationSourceHash: a9cb9784d8d7ff2f6aa88248cd4c3947aef7edbb3c5559ec0422331ed87562ac
+translationContractVersion: 2
+translationEvidence:
+  version: 2
+  addressing: stable-keys
+  locale: nl
+  sourceFingerprint: a9cb9784d8d7ff2f6aa88248cd4c3947aef7edbb3c5559ec0422331ed87562ac
+  legacy:
+    provenanceFile: docs/i18n/content-provenance.json
+    migration: I01-v2-2026-11-04
+  fields:
+    - address: /body
+      sourceFingerprint: c79ec3ff088d883dc33e6dc5979080142566bcfd106b4c761dd70a2b8d421fc9
+      targetFingerprint: 5bd6874288ccbf61d4dcd718321b42b6dca64bfa02d969b8477d634155c97f75
+      status: adopted-existing
+    - address: /cover/alt
+      sourceFingerprint: debf6f3890f470655260d1c585061012aab399099fdb5f2a21f10d398a9ba7e0
+      targetFingerprint: 825076cde2c3d53eda1db68a418f0a6a2dbfbcb7e27e97abae8064d198df860c
+      status: adopted-existing
+    - address: /description
+      sourceFingerprint: 38d43f2fc28bccd663971bca98a13a681d2dfde58118b59adb61d6e422e423ee
+      targetFingerprint: 85c7f9bccc557c207702ce9847ad2f9c4a74e5c76ac9bbbe85926e58f0ac7d08
+      status: adopted-existing
+    - address: /title
+      sourceFingerprint: c153a5e4fc5aec4040559ab0c9340446275f8cd711bc424059596bf39240faa0
+      targetFingerprint: f6477758c432119c723f1e897aa2fecea662186e5b91ecb342ebfec3d18ef6fd
+      status: adopted-existing
 ---
 Op stadsfeesten, bedrijfsjubilea en muziekfestivals trekken droneshows wereldwijd publiek. Lichtgevende drones stijgen op en vormen logo's, harten en bewegende animaties. Maar hoe ontstaat zo'n show? Welke techniek zit erachter en hoe werkt het programmeren van drones?
 

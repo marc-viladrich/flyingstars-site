@@ -2,8 +2,8 @@
 authorId: florian-becker
 title: "Drones als alternatief voor vuurwerk: een lichtshow met minder milieubelasting"
 description: "Droneshows als alternatief voor vuurwerk: werking, milieuaspecten, toepassingen en veiligheidsmaatregelen."
-date: 2025-03-31
-updated: 2026-09-22
+date: "2025-03-31T00:00:00.000Z"
+updated: "2026-09-22T00:00:00.000Z"
 tags:
   - Drohnenshow
   - Feuerwerk
@@ -14,7 +14,33 @@ cover:
   width: 1200
   height: 915
 draft: false
-translationSourceHash: 255e57b33739cd830f700ed312230b49a4b31f5e7f96450fcc8b8d5af57689f6
+translationSourceHash: a7f95f42822e3761d2b27ef943b1c6f5f584552f41a5a53255e61db44dd8c603
+translationContractVersion: 2
+translationEvidence:
+  version: 2
+  addressing: stable-keys
+  locale: nl
+  sourceFingerprint: a7f95f42822e3761d2b27ef943b1c6f5f584552f41a5a53255e61db44dd8c603
+  legacy:
+    provenanceFile: docs/i18n/content-provenance.json
+    migration: I01-v2-2026-11-04
+  fields:
+    - address: /body
+      sourceFingerprint: 0f88928cd3ea15df3745cc9d5ec747ee8fc8ac81cc6f68d7b2896313e71ca904
+      targetFingerprint: 4b4464e884f7c5b993158021779db0a001fe68de9a95b259d3bc8d466e32a9ff
+      status: adopted-existing
+    - address: /cover/alt
+      sourceFingerprint: 9da8835a0729b68a99fabc6a3592a6247e14aee134e0750eba780561bd081ea2
+      targetFingerprint: 20b159d709a956a5e9f5f2e68cecf7258fa8119fe183a1dc1079079f25f6ea51
+      status: adopted-existing
+    - address: /description
+      sourceFingerprint: da838276af24946ee8b40ad2b6bde2d3631c80e4cc8afcaf13f06b9a5b2dc51f
+      targetFingerprint: 1e1479e05929606ce3c3e9c479136233b7a9f2c01bade580033e4b54aad118d6
+      status: adopted-existing
+    - address: /title
+      sourceFingerprint: eea10e0f052d3de660c728978ffae24f851c4bc0e5c2a9ebdde73852de82206a
+      targetFingerprint: 7c2850440361eab4a885906aa60c991ffbdf2d41a8f0fad0c06987aee7c46d43
+      status: adopted-existing
 ---
 Vuurwerk hoort al eeuwen bij feesten, van oud en nieuw en bruiloften tot grote evenementen. Maar de gekleurde explosies brengen ook lawaai, fijnstof en chemische resten mee die milieu en gezondheid belasten. Vooral dieren hebben veel stress van de harde knallen. Dronevuurwerk biedt een stiller alternatief zonder vuurwerkafval, met visuele effecten aan de hemel.
 

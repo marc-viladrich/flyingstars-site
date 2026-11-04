@@ -1,3 +1,7 @@
+import {contentSchemas} from '../src/schemas/content-schema.mjs';
+import {createSite} from '../editor/flyingstars-adapter.mjs';
+import {readContractRecords,auditContracts} from '../src/i18n/read-contracts.mjs';
+const contractSite=await createSite(process.cwd());
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
@@ -42,6 +46,7 @@ test('Every UI message has all locales and exactly the same interpolation fields
 });
 
 test('All real source entries have current EN/NL content and stable structural identities', () => {
+  assert.equal(auditContracts(contractSite,readContractRecords(process.cwd(),contractSite)).length,132);
   const identity = new Set(['type', 'id', 'personId', 'authorId', 'project', 'field', 'display', 'href', 'src', 'file', 'logo', 'video', 'heroVideo', 'route', 'nextRoute', 'icon', 'shape', 'color', 'accent', 'variant', 'zone', 'loop', 'reel', 'occasion', 'package', 'mediaSide']);
   const sameStructure = (source, target, at = '') => {
     if (source === null || typeof source !== 'object') {
@@ -49,7 +54,7 @@ test('All real source entries have current EN/NL content and stable structural i
       if (typeof source !== 'string' || identity.has(at.split('.').at(-1))) assert.deepEqual(target, source, at);
       return;
     }
-    assert.deepEqual(Object.keys(target).filter((key) => key !== 'translationSourceHash').sort(), Object.keys(source).sort(), at);
+    assert.deepEqual(Object.keys(target).filter((key) => !key.startsWith('translation')).sort(), Object.keys(source).sort(), at);
     for (const key of Object.keys(source)) sameStructure(source[key], target[key], `${at}.${key}`);
   };
   for (const collection of ['pages', 'posts', 'projects', 'faq']) {
@@ -60,8 +65,8 @@ test('All real source entries have current EN/NL content and stable structural i
       const expectedHash = createHash('sha256').update(source.raw).digest('hex');
       for (const locale of ['en', 'nl']) {
         const translated = readEntry(new URL(`${locale}/${file.name}`, base));
-        assert.equal(translated.data.translationSourceHash, expectedHash, `${locale}: stale ${collection}/${file.name}`);
-        sameStructure(source.data, translated.data, `${locale}/${collection}/${file.name}`);
+        assert.equal(translated.data.translationContractVersion,2);
+        sameStructure(contentSchemas[collection].parse(source.data), contentSchemas[collection].parse(translated.data), `${locale}/${collection}/${file.name}`);
       }
     }
   }
@@ -131,7 +136,7 @@ test('Translation provenance keeps structured, traceable records for R13 drafts'
         assert.ok(Array.isArray(record.path));
         const source = readEntry(record.source);
         const entry = { ...source.data, ...(source.body !== undefined ? { body: source.body } : {}) };
-        assert.equal(typeof record.path.reduce((value, key) => value?.[key], entry), 'string', `${record.source}: ${record.path}`);
+        const historical=record.path.reduce((value, key) => value?.[key], entry);assert.equal(typeof (historical?.value ?? historical), 'string', `${record.source}: ${record.path}`);
       } else assert.ok(messages[record.key]);
     }
   }
