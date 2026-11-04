@@ -5,7 +5,6 @@ const contractSite=await createSite(process.cwd());
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
-import { createHash } from 'node:crypto';
 import { parse } from 'yaml';
 import messages from '../src/i18n/ui.json' with { type: 'json' };
 import { createTranslator } from '../src/i18n/ui.mjs';
@@ -62,7 +61,6 @@ test('All real source entries have current EN/NL content and stable structural i
     const files = readdirSync(base, { withFileTypes: true }).filter((entry) => entry.isFile() && /\.(yaml|md)$/.test(entry.name));
     for (const file of files) {
       const source = readEntry(new URL(file.name, base));
-      const expectedHash = createHash('sha256').update(source.raw).digest('hex');
       for (const locale of ['en', 'nl']) {
         const translated = readEntry(new URL(`${locale}/${file.name}`, base));
         assert.equal(translated.data.translationContractVersion,2);

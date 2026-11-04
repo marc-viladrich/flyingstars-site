@@ -52,7 +52,8 @@ export function localeTransactions(root,sourceFor) {
       const approval=byAddress.get(field.address);byAddress.delete(field.address);
       // Saving a direct target correction confirms only an already current SOURCE field.
       const direct=!seen.has(source.id)&&prior?.sourceFingerprint===field.sourceFingerprint&&prior.targetFingerprint!==field.targetFingerprint;
-      if(!direct&&(!approval||approval.sourceFingerprint!==field.sourceFingerprint||approval.targetFingerprint!==field.targetFingerprint))throw failure('Explizite Textprüfung nötig: '+id+' '+field.address);
+      if(approval&&(approval.sourceFingerprint!==field.sourceFingerprint||approval.targetFingerprint!==field.targetFingerprint))throw failure('Ungültiger Textprüfungsstand: '+id+' '+field.address);
+      if(!direct&&!approval)throw failure('Explizite Textprüfung nötig: '+id+' '+field.address);
       return {address:field.address,sourceFingerprint:field.sourceFingerprint,targetFingerprint:field.targetFingerprint,status:'reviewed'};
      });
      if(byAddress.size)throw failure('Verwaiste oder unnötige Sprachprüfung: '+id);

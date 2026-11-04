@@ -2,7 +2,6 @@ import {readContractRecords,auditContracts} from '../src/i18n/read-contracts.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile,readdir} from 'node:fs/promises';
-import {createHash} from 'node:crypto';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {contentSchemas} from '../src/schemas/content-schema.mjs';
@@ -26,7 +25,7 @@ test('every actual locale file exposes its SEO fields through the shared editor 
   for(const field of ['title','description','summary','question'])if(typeof data[field]==='string'){seo++;assert.ok(fields.some(f=>f.path.length===1&&f.path[0]===field),source.id+': '+field);}
   if(data.showcase?.meta)for(const field of ['title','description'])assert.ok(fields.some(f=>JSON.stringify(f.path)===JSON.stringify(['showcase','meta',field])));
   if(/\/(en|nl)\//.test(source.id)){
-   localized++;const german=source.file.replace(/\/(en|nl)\//,'/'),hash=createHash('sha256').update(await readFile(path.join(root,german))).digest('hex');
+   localized++;
    assert.equal(data.translationContractVersion,2,source.file);
   }
  }

@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {mkdtemp,symlink,rm,readFile,readdir} from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
-import {randomUUID,createHash} from 'node:crypto';
+import {randomUUID} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {NativeStore,NativeBuilder,git} from 'astro-frontend-editor/runtime';
 import {createBrowserExtensionRegistry} from 'astro-frontend-editor/web/extensions.mjs';
@@ -35,7 +35,6 @@ test('German-only save fails atomically with actionable locale names',async t=>{
 test('a coordinated DE/EN/NL save commits real files and source hashes; a retry is idempotent',async t=>{
  const store=await fixture(t),state=await store.state(),req=reviewedRequest(state,[['page/index',['title'],'Deutsche Testüberschrift'],['page/en/index',['title'],'English test heading'],['page/nl/index',['title'],'Nederlandse testtitel']]);
  const saved=await store.save(req);assert.notEqual(saved.head,state.head);
- const bytes=await readFile(path.join(store.root,'src/content/pages/index.yaml')),hash=createHash('sha256').update(bytes).digest('hex');
  for(const locale of ['en','nl'])assert.equal(saved.records.find(r=>r.id===`page/${locale}/index`).data.translationEvidence.fields.find(f=>f.address==='/title').status,'reviewed');
  assert.equal((await store.save(req)).head,saved.head);assert.equal(await git(store.root,['status','--porcelain']),'');
  const buildRoot=await mkdtemp(path.join(os.tmpdir(),'fs-design-build-'));t.after(()=>rm(buildRoot,{recursive:true,force:true}));

@@ -45,3 +45,7 @@ test('The installed source adapter rejects unknown raw fields and duplicate list
  const {readFile}=await import('node:fs/promises'),{codecs}=await import('astro-frontend-editor/runtime/extensions'),source=site.sourceFor('page/index'),adapter=site.createSourceAdapter({root,site,git:()=>{}}),raw=await readFile(root+source.file,'utf8');
  assert.throws(()=>adapter.decode(source,raw+'\nunknownForContract: true\n'),/Unknown i18n field/);const data=codecs.yaml.parse(raw);data.sections[1]._key=data.sections[0]._key;assert.throws(()=>adapter.decode(source,codecs.yaml.create(data)),/Duplicate _key/);
 });
+
+test('Direct EN corrections reject a supplied approval for different source/target fingerprints',()=>{
+ const c=candidate();c.seen=new Set(['page/en/index']);const target=c.nextRecords.find(r=>r.id==='page/en/index');target.data.title='Direct correction';target.data.translationReview=[{address:'/title',sourceFingerprint:'0'.repeat(64),targetFingerprint:'1'.repeat(64)}];assert.throws(()=>localeTransactions(root,site.sourceFor).prepareTransaction(c),/Ungültiger Textprüfungsstand/);
+});
