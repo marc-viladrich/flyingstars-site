@@ -1,3 +1,4 @@
+import {sectionSchema} from '../src/schemas/content-schema.mjs';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
@@ -53,4 +54,11 @@ test('Internal section notes render only in the local dev server, never in a bui
   const renderer = readFileSync(new URL('../src/components/SectionRenderer.astro', import.meta.url), 'utf8');
   const gate = renderer.match(/const annotate = (.+);/)?.[1];
   assert.equal(gate, 'import.meta.env.DEV', 'todo notes must depend on the dev server alone, not on a build flag');
+});
+
+test('Alle Section-Typen erben dieselbe Dev-only-Hilfe aus dem Schema',()=>{
+ const descriptions=sectionSchema.options.map(s=>s.shape.todo.description);
+ assert.equal(new Set(descriptions).size,1);
+ assert.match(descriptions[0],/lokalen Dev-Server/);
+ assert.match(descriptions[0],/nie in Build oder Preview/);
 });
