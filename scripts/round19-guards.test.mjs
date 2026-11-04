@@ -10,7 +10,10 @@ test('Reveals starten spätestens bei einem halben rem im Bild, und die Kurve ö
   const { REVEAL_REM, REVEAL_MARGIN } = await import('../src/scripts/reveal-point.js');
   assert.ok(REVEAL_REM <= 0.5, `Auslösepunkt ${REVEAL_REM} rem ist zu spät`);
   assert.match(REVEAL_MARGIN, /^0px 0px -\d+px 0px$/);
-  const curtain = read('src/styles/global.css').match(/\[data-curtain\] \{[^}]*transition: clip-path [\d.]+s cubic-bezier\(([\d.]+),/);
+  const css=read('src/styles/global.css');
+  const tokens=Object.fromEntries([...css.matchAll(/(--(?:dur|ease)-[\w-]+):\s*([^;]+);/g)].map(m=>[m[1],m[2]]));
+  const resolved=css.replace(/var\((--(?:dur|ease)-[\w-]+)\)/g,(_,name)=>tokens[name]);
+  const curtain = resolved.match(/\[data-curtain\] \{[^}]*transition: clip-path [\d.]+s cubic-bezier\(([\d.]+),/);
   assert.ok(curtain && Number(curtain[1]) <= 0.3, 'Vorhang-Kurve beginnt langsam (ease-in), der Start wirkt verspätet');
   assert.doesNotMatch(read('src/scripts/effects/dotimage.js'), /setTimeout\(show, [1-9]\d{3}\)/, 'Lichtpunkt-Reveal lässt das Foto über eine Sekunde leer');
 });

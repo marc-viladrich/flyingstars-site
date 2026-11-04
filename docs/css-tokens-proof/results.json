@@ -1,0 +1,553 @@
+{
+  "date": "2026-11-04",
+  "baseline": "3e42814",
+  "cssCandidate": "1acf5ec",
+  "publicBuild": "passed",
+  "astroCheck": {
+    "errors": 0,
+    "warnings": 0,
+    "hints": 246
+  },
+  "scope": {
+    "astroOutsideStyleBlocksUnchanged": true,
+    "contentMarkupOrFrontendLogicChanged": false
+  },
+  "tokens": {
+    "rootBefore": 53,
+    "rootAfter": 211,
+    "added": 158,
+    "localLiterals": {
+      "colors": 222,
+      "durations": 227,
+      "easing": 132,
+      "spacing": 720,
+      "radii": 102,
+      "revealOffsets": 2,
+      "mediaQueries": 73
+    },
+    "sharedShadowRules": 2
+  },
+  "comparison": {
+    "pages": 96,
+    "contentPages": 72,
+    "redirects": 24,
+    "widths": [
+      390,
+      1440
+    ],
+    "motion": [
+      "no-preference",
+      "reduce"
+    ],
+    "javaScriptEnabled": false,
+    "properties": [
+      "color",
+      "background-color",
+      "background-image",
+      "border-top-color",
+      "border-right-color",
+      "border-bottom-color",
+      "border-left-color",
+      "box-shadow",
+      "text-shadow",
+      "transition",
+      "animation",
+      "opacity",
+      "margin-top",
+      "margin-right",
+      "margin-bottom",
+      "margin-left",
+      "padding-top",
+      "padding-right",
+      "padding-bottom",
+      "padding-left",
+      "gap",
+      "row-gap",
+      "column-gap",
+      "border-top-left-radius",
+      "border-top-right-radius",
+      "border-bottom-left-radius",
+      "border-bottom-right-radius",
+      "font-size",
+      "font-family",
+      "line-height",
+      "letter-spacing",
+      "width",
+      "height",
+      "max-width",
+      "min-width",
+      "top",
+      "right",
+      "bottom",
+      "left",
+      "transform",
+      "clip-path",
+      "filter",
+      "outline",
+      "fill",
+      "stroke",
+      "mask-image",
+      "-webkit-mask-image",
+      "display",
+      "position"
+    ],
+    "engines": {
+      "chromium": {
+        "version": "153.0.8010.12",
+        "pageConfigurations": 384,
+        "elementAndPseudoMeasurements": 710628,
+        "comparedValues": 34820772,
+        "initialRawDifferences": 347,
+        "pixelEquivalentOccurrences": 294,
+        "pixelEquivalentPairs": [
+          {
+            "property": "background-image",
+            "before": "linear-gradient(90deg, rgba(8, 7, 6, 0.88) 0%, rgba(8, 7, 6, 0.5) 45%, rgba(8, 7, 6, 0.12) 78%), linear-gradient(rgba(8, 7, 6, 0) 58%, rgba(8, 7, 6, 0.92) 100%)",
+            "after": "linear-gradient(90deg, rgba(8, 7, 6, 0.88) 0%, rgba(8, 7, 6, 0.5) 45%, rgba(8, 7, 6, 0.12) 78%), linear-gradient(0deg, rgba(8, 7, 6, 0.92) 0%, rgba(8, 7, 6, 0) 42%)",
+            "sizes": [
+              [
+                600,
+                400
+              ],
+              [
+                237,
+                131
+              ],
+              [
+                390,
+                900
+              ],
+              [
+                1440,
+                900
+              ]
+            ],
+            "reason": "Wertgleiche Verlaufsnotation des Minifiers (Richtung/Stop-Reihenfolge bzw. Nullposition); RGBA-Pixel in vier Geometrien exakt identisch."
+          },
+          {
+            "property": "background-image",
+            "before": "radial-gradient(70% 45% at 50% 0px, rgba(219, 100, 232, 0.07), rgba(0, 0, 0, 0) 70%), none",
+            "after": "radial-gradient(70% 45% at 50% 0%, rgba(219, 100, 232, 0.07), rgba(0, 0, 0, 0) 70%), none",
+            "sizes": [
+              [
+                600,
+                400
+              ],
+              [
+                237,
+                131
+              ],
+              [
+                390,
+                900
+              ],
+              [
+                1440,
+                900
+              ]
+            ],
+            "reason": "Wertgleiche Verlaufsnotation des Minifiers (Richtung/Stop-Reihenfolge bzw. Nullposition); RGBA-Pixel in vier Geometrien exakt identisch."
+          },
+          {
+            "property": "mask-image",
+            "before": "radial-gradient(120% 90% at 100% 0px, rgb(0, 0, 0), rgba(0, 0, 0, 0) 62%)",
+            "after": "radial-gradient(120% 90% at 100% 0%, rgb(0, 0, 0), rgba(0, 0, 0, 0) 62%)",
+            "sizes": [
+              [
+                600,
+                400
+              ],
+              [
+                237,
+                131
+              ],
+              [
+                390,
+                900
+              ],
+              [
+                1440,
+                900
+              ]
+            ],
+            "reason": "Wertgleiche Verlaufsnotation des Minifiers (Richtung/Stop-Reihenfolge bzw. Nullposition); RGBA-Pixel in vier Geometrien exakt identisch."
+          },
+          {
+            "property": "-webkit-mask-image",
+            "before": "radial-gradient(120% 90% at 100% 0px, rgb(0, 0, 0), rgba(0, 0, 0, 0) 62%)",
+            "after": "radial-gradient(120% 90% at 100% 0%, rgb(0, 0, 0), rgba(0, 0, 0, 0) 62%)",
+            "sizes": [
+              [
+                600,
+                400
+              ],
+              [
+                237,
+                131
+              ],
+              [
+                390,
+                900
+              ],
+              [
+                1440,
+                900
+              ]
+            ],
+            "reason": "Wertgleiche Verlaufsnotation des Minifiers (Richtung/Stop-Reihenfolge bzw. Nullposition); RGBA-Pixel in vier Geometrien exakt identisch."
+          },
+          {
+            "property": "background-image",
+            "before": "linear-gradient(rgba(0, 0, 0, 0) 45%, rgba(15, 13, 12, 0.82))",
+            "after": "linear-gradient(0deg, rgba(15, 13, 12, 0.82), rgba(0, 0, 0, 0) 55%)",
+            "sizes": [
+              [
+                600,
+                400
+              ],
+              [
+                237,
+                131
+              ],
+              [
+                390,
+                900
+              ],
+              [
+                1440,
+                900
+              ]
+            ],
+            "reason": "Wertgleiche Verlaufsnotation des Minifiers (Richtung/Stop-Reihenfolge bzw. Nullposition); RGBA-Pixel in vier Geometrien exakt identisch."
+          },
+          {
+            "property": "background-image",
+            "before": "linear-gradient(rgba(0, 0, 0, 0), rgba(8, 7, 6, 0.8))",
+            "after": "linear-gradient(0deg, rgba(8, 7, 6, 0.8), rgba(0, 0, 0, 0))",
+            "sizes": [
+              [
+                600,
+                400
+              ],
+              [
+                237,
+                131
+              ],
+              [
+                390,
+                900
+              ],
+              [
+                1440,
+                900
+              ]
+            ],
+            "reason": "Wertgleiche Verlaufsnotation des Minifiers (Richtung/Stop-Reihenfolge bzw. Nullposition); RGBA-Pixel in vier Geometrien exakt identisch."
+          },
+          {
+            "property": "background-image",
+            "before": "linear-gradient(rgba(8, 7, 6, 0.1) 40%, rgba(8, 7, 6, 0.92))",
+            "after": "linear-gradient(0deg, rgba(8, 7, 6, 0.92), rgba(8, 7, 6, 0.1) 60%)",
+            "sizes": [
+              [
+                600,
+                400
+              ],
+              [
+                237,
+                131
+              ],
+              [
+                390,
+                900
+              ],
+              [
+                1440,
+                900
+              ]
+            ],
+            "reason": "Wertgleiche Verlaufsnotation des Minifiers (Richtung/Stop-Reihenfolge bzw. Nullposition); RGBA-Pixel in vier Geometrien exakt identisch."
+          }
+        ],
+        "exactFinalRecaptures": 53,
+        "recaptureClasses": [
+          {
+            "property": "background-image",
+            "reason": "Token-Verlauf in die bereits auf main kompilierte Richtung geschrieben; jetzt exakt dieselbe Serialisierung.",
+            "count": 42
+          },
+          {
+            "property": "margin-left",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 7
+          },
+          {
+            "property": "opacity",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 3
+          },
+          {
+            "property": "margin-right",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 1
+          }
+        ],
+        "unexplainedFinalDifferences": 0
+      },
+      "webkit": {
+        "version": "26.6",
+        "pageConfigurations": 384,
+        "elementAndPseudoMeasurements": 710628,
+        "comparedValues": 34820772,
+        "initialRawDifferences": 7261,
+        "pixelEquivalentOccurrences": 96,
+        "pixelEquivalentPairs": [
+          {
+            "property": "background-image",
+            "before": "radial-gradient(70% 45% at 50% 0px, rgba(219, 100, 232, 0.07), rgba(0, 0, 0, 0) 70%), none",
+            "after": "radial-gradient(70% 45% at 50% 0%, rgba(219, 100, 232, 0.07), rgba(0, 0, 0, 0) 70%), none",
+            "sizes": [
+              [
+                600,
+                400
+              ],
+              [
+                237,
+                131
+              ],
+              [
+                390,
+                900
+              ],
+              [
+                1440,
+                900
+              ]
+            ],
+            "reason": "Wertgleiche Verlaufsnotation des Minifiers (Richtung/Stop-Reihenfolge bzw. Nullposition); RGBA-Pixel in vier Geometrien exakt identisch."
+          },
+          {
+            "property": "mask-image",
+            "before": "radial-gradient(120% 90% at 100% 0px, rgb(0, 0, 0), rgba(0, 0, 0, 0) 62%)",
+            "after": "radial-gradient(120% 90% at 100% 0%, rgb(0, 0, 0), rgba(0, 0, 0, 0) 62%)",
+            "sizes": [
+              [
+                600,
+                400
+              ],
+              [
+                237,
+                131
+              ],
+              [
+                390,
+                900
+              ],
+              [
+                1440,
+                900
+              ]
+            ],
+            "reason": "Wertgleiche Verlaufsnotation des Minifiers (Richtung/Stop-Reihenfolge bzw. Nullposition); RGBA-Pixel in vier Geometrien exakt identisch."
+          },
+          {
+            "property": "-webkit-mask-image",
+            "before": "radial-gradient(120% 90% at 100% 0px, rgb(0, 0, 0), rgba(0, 0, 0, 0) 62%)",
+            "after": "radial-gradient(120% 90% at 100% 0%, rgb(0, 0, 0), rgba(0, 0, 0, 0) 62%)",
+            "sizes": [
+              [
+                600,
+                400
+              ],
+              [
+                237,
+                131
+              ],
+              [
+                390,
+                900
+              ],
+              [
+                1440,
+                900
+              ]
+            ],
+            "reason": "Wertgleiche Verlaufsnotation des Minifiers (Richtung/Stop-Reihenfolge bzw. Nullposition); RGBA-Pixel in vier Geometrien exakt identisch."
+          }
+        ],
+        "exactFinalRecaptures": 7165,
+        "recaptureClasses": [
+          {
+            "property": "background-color",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 7
+          },
+          {
+            "property": "border-top-color",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 1108
+          },
+          {
+            "property": "border-right-color",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 1112
+          },
+          {
+            "property": "border-bottom-color",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 1108
+          },
+          {
+            "property": "border-left-color",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 1107
+          },
+          {
+            "property": "background-image",
+            "reason": "Token-Verlauf in die bereits auf main kompilierte Richtung geschrieben; jetzt exakt dieselbe Serialisierung.",
+            "count": 240
+          },
+          {
+            "property": "color",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 1110
+          },
+          {
+            "property": "outline",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 1110
+          },
+          {
+            "property": "opacity",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 3
+          },
+          {
+            "property": "transform",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 2
+          },
+          {
+            "property": "padding-top",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 1
+          },
+          {
+            "property": "padding-right",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 1
+          },
+          {
+            "property": "padding-bottom",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 1
+          },
+          {
+            "property": "padding-left",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 1
+          },
+          {
+            "property": "height",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 10
+          },
+          {
+            "property": "bottom",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 4
+          },
+          {
+            "property": "margin-left",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 2
+          },
+          {
+            "property": "font-size",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 86
+          },
+          {
+            "property": "line-height",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 86
+          },
+          {
+            "property": "letter-spacing",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 26
+          },
+          {
+            "property": "width",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 3
+          },
+          {
+            "property": "stroke",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 28
+          },
+          {
+            "property": "right",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 1
+          },
+          {
+            "property": "fill",
+            "reason": "Wiederholung nach Layout-Flush, erzwungenem Rendern und neutralem Zeiger ist exakt gleich.",
+            "count": 8
+          }
+        ],
+        "unexplainedFinalDifferences": 0
+      }
+    }
+  },
+  "layout": {
+    "widths": [
+      390,
+      1440,
+      2560
+    ],
+    "linkedPagesPerLocale": 22,
+    "extraPages": [
+      "/404.html",
+      "/danke/",
+      "/en/404/",
+      "/en/danke/",
+      "/nl/404/",
+      "/nl/danke/"
+    ],
+    "chromium": {
+      "linkedFindings": 0,
+      "extraFindings": 29,
+      "baselineExtraFindings": 29,
+      "extraLogsByteIdentical": true,
+      "newFindings": 0
+    },
+    "webkit": {
+      "findings": 0
+    }
+  },
+  "tests": {
+    "full": {
+      "total": 659,
+      "passed": 655,
+      "failed": 1,
+      "cancelled": 1,
+      "skipped": 2,
+      "failedGuard": "scripts/round19-guards.test.mjs:8 (Literal-Assertion; auf Tokenauflösung umgestellt und erfolgreich nachgeprüft)",
+      "baselineCancelled": "editor/git-sync.test.mjs:9 (20-Sekunden-Timeout auch auf 3e42814 einzeln reproduziert)"
+    },
+    "focusedFinal": {
+      "total": 42,
+      "passed": 42
+    },
+    "finalSourceSuite": {
+      "total": 237,
+      "passed": 235,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 2
+    }
+  }
+}

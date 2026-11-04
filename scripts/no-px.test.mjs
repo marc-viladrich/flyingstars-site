@@ -2,6 +2,7 @@
 // Absichtlich strenger als nur font-size: alle sicheren CSS-Längen sowie
 // unbekannte CSS/JS-Einheiten werden gemeldet. Keine pauschale Datei-Ausnahme.
 import {test} from 'node:test';
+import {expandMedia} from './css-media.mjs';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
@@ -211,7 +212,8 @@ test('Typo-Skala hat keine Zwischenstufe und lässt die Browser-Grundschrift fre
 });
 
 test('Aktiver Konfigurator: Regler und Skala verwenden bei jeder Root-Größe dieselben Thumb-Ränder',()=>{
- const css=readFileSync(join(REPO,'src/styles/show-configurator.css'),'utf8');
+ const tokens=Object.fromEntries(declarations(readFileSync(join(REPO,'src/styles/global.css'),'utf8')).filter(d=>d.prop.startsWith('--space-')).map(d=>[d.prop,d.value.trim()]));
+ const css=readFileSync(join(REPO,'src/styles/show-configurator.css'),'utf8').replace(/var\((--space-[\d-]+)\)/g,(_,name)=>tokens[name]).replace(/calc\(-1 \* ([\d.]+)rem\)/g,'-$1rem');
  const thumb=Number(css.match(/\.cfg-range::-webkit-slider-thumb\s*\{[^}]*width:\s*([\d.]+)rem/)[1]);
  const inset=Number(css.match(/\.cfg-ticks\s*\{[^}]*margin: -?[\d.]+rem ([\d.]+)rem 0/)[1]);
  assert.equal(inset,thumb/2);
@@ -225,7 +227,7 @@ test('Aktiver Konfigurator: Regler und Skala verwenden bei jeder Root-Größe di
 test('Video folgt der mobilen em-Grenze bei größerer Grundschrift; minAutoWidth bleibt Pixel-API',async()=>{
  const {createVideoController,VIDEO_MOBILE_QUERY}=await import('../src/scripts/video-controller.ts');
  const css=readFileSync(join(REPO,'src/styles/global.css'),'utf8');
- assert.ok(css.includes('@media '+VIDEO_MOBILE_QUERY), 'CSS und Video-Quelle müssen dieselbe Grenze verwenden.');
+ assert.ok(css.replace(/@media ([^{]+)/g,(_,query)=>'@media '+expandMedia(query)).includes('@media '+VIDEO_MOBILE_QUERY), 'CSS und Video-Quelle müssen dieselbe Grenze verwenden.');
  assert.match(readFileSync(join(REPO,'src/components/landing/LandingHero.astro'),'utf8'),/autoMediaQuery: `not all and \$\{VIDEO_MOBILE_QUERY\}`/);
  const names=['document','navigator','matchMedia','MutationObserver','window'];
  const saved=Object.fromEntries(names.map(k=>[k,Object.getOwnPropertyDescriptor(globalThis,k)]));
