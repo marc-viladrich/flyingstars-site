@@ -12,7 +12,7 @@ export const contact=projectContact(data);
 export function contactText(text,source=contact){
  const values={email:source.email,'phone.label':source.phone.label,'phone.href':source.phone.href};
  return text.replace(/\{\{contact\.([\w.]+)\}\}/g,(_,key)=>{
-  if(!(key in values))throw Error(`Unbekannter Kontaktplatzhalter: ${key}`);
+  if(!Object.hasOwn(values,key))throw Error(`Unbekannter Kontaktplatzhalter: ${key}`);
   return values[key];
  });
 }

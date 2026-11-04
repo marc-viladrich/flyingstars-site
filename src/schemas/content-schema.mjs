@@ -1,6 +1,6 @@
 import {REFERENCE_OCCASION_IDS} from '../content/occasions.mjs';
 import {projectFactRefSchema} from './project-facts.mjs';
-import {PERSON_IDS,PEOPLE} from '../content/people.mjs';
+import {PERSON_IDS} from '../content/people.mjs';
 import {businessValueSchema} from './business-facts.mjs';
 import {PACKAGE_NAMES} from '../content/package-identity.mjs';
 import {factText} from '../content/show-extras.mjs';
@@ -27,7 +27,7 @@ const todo = { todo: z.string().optional().describe('Was hier inhaltlich fehlt o
 const sectionHeading = { id: z.string().optional(), kicker: z.string().optional().describe('Kicker über der Headline, z. B. "Anlässe"'), ...todo };
 const brandPath = z.string().regex(/^\/brand\/[a-z0-9/._-]+\.(svg|png|webp)$/).describe('Lokale Datei unter public/brand/');
 
-const personId=z.enum(PERSON_IDS).describe('Person').meta({'x-afe':{reference:{collection:'people',encoding:'id'},choices:Object.fromEntries(PERSON_IDS.map(id=>[id,{label:PEOPLE[id].name}]))}});
+const personId=z.enum(PERSON_IDS).describe('Person').meta({'x-afe':{reference:{collection:'people',encoding:'id'}}});
 const image = z.object({
   src: imageSource,
   alt: z.string().min(1).describe('Pflicht. Leerer Alt-Text nur für Dekoration, dann alt: ""'),

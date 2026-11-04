@@ -1,3 +1,6 @@
+import {PEOPLE} from './content/people.mjs';
+import {factText} from './content/show-extras.mjs';
+import {LOCALES} from './i18n/routing.mjs';
 import projectFacts from './content/project-facts.json' with {type:'json'};
 import {projectFactsSchema} from './schemas/project-facts.mjs';
 projectFactsSchema.parse(projectFacts);
@@ -24,6 +27,8 @@ import packageData from './content/show-packages.json' with {type:'json'};
 import {showPackagesSchema} from './schemas/show-packages.mjs';
 showPackagesSchema.parse(packageData);
 assertPreviewPricing();
+// Reject unknown editorial tokens even in a central record that has no current visible consumer.
+for(const config of [projectFacts,businessFacts,extrasData,previewPolicy,durationData,contactData,navigationData,packageData,PEOPLE])for(const locale of LOCALES)factText(JSON.stringify(config),locale);
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import type { z } from 'astro/zod';

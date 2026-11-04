@@ -26,7 +26,7 @@ for (const route of routes) {
     });
     await page.goto(route, { waitUntil: 'networkidle' });
     await page.evaluate(() => document.fonts.ready);
-    expect([...fonts].sort(), 'Only display and body webfonts on every built route').toEqual(['/fonts/inter-0.woff2', '/fonts/space-grotesk-0.woff2']);
+    expect([...fonts].sort(), 'Only display and body webfonts on every built route').toEqual(['/fonts/inter-latin-400-700-v1.woff2', '/fonts/space-grotesk-0.woff2']);
     expect(offenders, `Unerlaubte Requests:\n${offenders.join('\n')}`).toEqual([]);
   });
 }

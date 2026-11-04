@@ -1,8 +1,9 @@
+import {mediaHosts} from '../site-policy.mjs';
 import sharp from 'sharp';
 import path from 'node:path';
 import { getImage } from 'astro:assets';
 
-const hosts = new Set(['flyingstars.art', 'flyingstars-relaunch.vercel.app', process.env.MEDIA_HOST ?? 'media.example.invalid']);
+const hosts = new Set(mediaHosts(process.env.MEDIA_HOST));
 const dimensions = new Map<string, Promise<{width:number;height:number}>>();
 async function sourceSize(src: string) {
   if (/^\/assets\/[a-f0-9]{64}\.(?:png|jpg|webp)$/.test(src)) { const size=await sharp(path.join(process.cwd(),'public',src)).metadata();return {width:size.width!,height:size.height!}; }

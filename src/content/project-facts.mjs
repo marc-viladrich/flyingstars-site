@@ -1,16 +1,20 @@
 import data from './project-facts.json' with {type:'json'};
 export const PROJECT_FACTS=data;
+export const PROJECT_FIELDS=['date','client','location','drones','shows','totalDrones'];
+export const PROJECT_DISPLAYS=['text','iso','numeric','year','long','monthYear','monthYearCapital','dayMonth'];
 /** A project fact always identifies one historical event, never the current fleet. */
 export function projectValue(ref,locale='de',source=data){
  if(!ref||typeof ref!=='object'||!('project'in ref))return ref;
- const event=source[ref.project];if(!event)throw Error('Unbekannter Projektfakt: '+ref.project);
+ if(!PROJECT_FIELDS.includes(ref.field)||ref.display&&(!PROJECT_DISPLAYS.includes(ref.display)||ref.field!=='date'&&ref.display!=='text'))throw Error('Unbekanntes Projektfaktenformat: '+ref.field+'.'+ref.display);
+ const event=source[ref.project];if(!Object.hasOwn(source,ref.project))throw Error('Unbekannter Projektfakt: '+ref.project);
  let value=ref.field==='totalDrones'?event.drones*event.shows:event[ref.field];
  if(value===undefined||typeof value==='number'&&!Number.isFinite(value))throw Error(`Unbekannter Projektfakt: ${ref.project}.${ref.field}`);
  if(value&&typeof value==='object'){value=value[locale];if(typeof value!=='string')throw Error(`Fehlende Faktensprache: ${ref.project}.${ref.field}.${locale}`);}
  if(ref.field==='date'){
   const [year,month,day]=value.split('-');
   if(ref.display==='year')return year;
-  if(ref.display==='iso')return value;
+  if(ref.display==='iso'||ref.display==='text')return value;
+  if(!day&&['long','dayMonth'].includes(ref.display))throw Error('Tag unbekannt: '+ref.project);
   if(['long','monthYear','monthYearCapital','dayMonth'].includes(ref.display)){const options=ref.display==='long'?{dateStyle:'long'}:ref.display==='dayMonth'?{day:'numeric',month:'long'}:{month:'long',year:'numeric'};let formatted=new Intl.DateTimeFormat({de:'de-DE',en:'en-GB',nl:'nl-NL'}[locale],{...options,timeZone:'UTC'}).format(new Date(value+(value.length===7?'-01':'')+'T00:00:00Z'));return ref.display==='monthYearCapital'?formatted[0].toUpperCase()+formatted.slice(1):formatted;}
   if(ref.display==='numeric'){if(!day)throw Error('Tag unbekannt: '+ref.project);return `${day}.${month}.${year}`;}
   return new Date(value+(value.length===7?'-01':'')+'T00:00:00Z');

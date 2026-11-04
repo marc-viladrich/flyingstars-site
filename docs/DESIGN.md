@@ -319,4 +319,13 @@ Projizierte FAQ- und Danke-Texte verwenden im Editor die native Panel-Bearbeitun
 
 ## Geschäftsfakten
 
-Numerische Geschäftsaussagen mit Geltungsbereich und Stand liegen in `src/content/business-facts.json`, im Editor unter „Geschäftsfakten“. Strukturierte Zahlenfelder können `{fact, display}` referenzieren. Freie Texte bleiben frei; `scripts/check-business-drift.mjs` meldet Abweichungen mit tatsächlichen Feldpfaden. Keine neuen Rohplatzhalter in redaktionelle Texte schreiben. Versicherungs-Bis-Beträge, historische Bestände und Rundungen sind keine erweiterten Leistungszusagen. Quellen-/Freigabestatus steht am Fakt.
+Numerische Geschäftsaussagen mit Geltungsbereich und Stand liegen in `src/content/business-facts.json`, im Editor unter „Geschäftsfakten“. Strukturierte Zahlenfelder können `{fact, display}` referenzieren. Freie Texte bleiben frei; `scripts/check-business-drift.mjs` meldet Abweichungen mit tatsächlichen Feldpfaden. Redaktionelle Platzhalter sind seit Marcs Freigabe vom 04.11. erlaubt. Explizite `{{contact.…}}`, `{{duration.…}}`, `{{offer.…}}` und `{{project.<id>.<field>[.<display>]}}` werden aus ihren Besitzern aufgelöst; unbekannte Platzhalter brechen den Build ab. Versicherungs-Bis-Beträge, historische Bestände und Rundungen sind keine erweiterten Leistungszusagen. Quellen-/Freigabestatus steht am Fakt.
+
+
+## Personen, Projektfakten und Anfragevertrag
+
+Name und Porträt liegen unter `src/content/people/`, im Editor als Personen. Teamkarten verwenden `personId`, Blogartikel `authorId`. Rollen, Bios und kontextuelle Alt-Texte bleiben in ihren Sprachdateien. Die zentrale Personenliste verwendet relative JSON-Imports, damit CLI und Builder auch aus fremden Arbeitsverzeichnissen dieselben Dateien lesen.
+
+Historische Showdaten liegen in `src/content/project-facts.json`, im Editor unter Website-Daten → Historische Projektfakten. Strukturierte Ausgaben verwenden `{project, field, display?}`; die Auswahl zeigt Ereignis, Faktenfeld und Ausgabeformat. Übersetzte Kunden-/Ortsnamen stehen beim Fakt. Teaser und spätere Aufführungsserien dürfen eigene Ereignisse sein; ein unbekannter Tag wird nicht als tatsächlicher erster Monatstag ausgegeben. VW-Drohnenzahl und unzugeordnete Ereignisse bleiben offen.
+
+Formular, Referenzfilter und Konfigurator verwenden getrennte Anlass-IDs aus `occasions.mjs` mit ausdrücklichem Mapping. `inquiry.mjs` besitzt den Anfrage-URL-Vertrag und die bisherigen Limits. Native No-JS-Anfragen bleiben möglich; Query-Vorbelegung benötigt auf der statischen Site JavaScript. `i18n/public-routes.mjs` verbindet öffentliche Route, AFE-Adresse und Delivery-Projektion; widersprüchliche Redirects und belegte Inhaltsrouten als Redirect-Quellen sind Fehler.

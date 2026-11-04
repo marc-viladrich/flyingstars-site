@@ -19,5 +19,5 @@ test('Prosa-Driftbericht erfasst alle aktuellen Blätter und meldet zentrale sow
 
 import {factText} from '../src/content/show-extras.mjs';
 test('Unbekannte Faktenplatzhalter brechen die Projektion ab',()=>{
- for(const token of ['{{unknown.value}}','{{duration.outdoor.missing}}','{{offer.indoor.missing}}'])assert.throws(()=>factText(token),/Unbekannt/);
+ for(const token of ['{{unknown.value}}','{{contact.constructor}}','{{project.constructor.name}}','{{project.puma-bundesliga.constructor}}','{{project.puma-bundesliga.drones.unknown}}','{{duration.outdoor.missing}}','{{offer.indoor.missing}}'])assert.throws(()=>factText(token),/Unbekannt/);
 });

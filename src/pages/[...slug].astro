@@ -9,20 +9,13 @@ import BlogIndex from '../templates/BlogIndex.astro';
 import BlogPost from '../templates/BlogPost.astro';
 import CasePage from '../templates/CasePage.astro';
 import Chopper404 from '../components/Chopper404.astro';
-import { LOCALES, entryPath, localizedHref, localeOfId, sourceId } from '../i18n/routing.mjs';
+import {publicRouteEntries} from '../i18n/public-routes.mjs';
 import { checkContentCoverage } from '../i18n/content';
 
 export async function getStaticPaths() {
   await checkContentCoverage();
   const [pages, projects, posts] = await Promise.all([getCollection('pages'), getCollection('projects'), getCollection('posts')]);
-  const route = (path: string, props: Record<string, unknown>) => ({ params: { slug: path.replace(/^\/|\/$/g, '') || undefined }, props });
-  return [
-    ...pages.map((page) => route(entryPath(page.id), { kind: 'page', page })),
-    ...projects.filter((p) => !p.data.draft && p.data.showcase).map((project) => route(localizedHref(`/${project.data.showcase!.route}/`, localeOfId(project.id)), { kind: 'case', project })),
-    ...posts.filter((p) => !p.data.draft).map((post) => route(localizedHref(`/blog/${sourceId(post.id)}/`, localeOfId(post.id)), { kind: 'post', post })),
-    ...LOCALES.flatMap((locale) => [route(localizedHref('/drohnenshow-preise/', locale), { kind: 'pricing' }), route(localizedHref('/blog/', locale), { kind: 'blog' })]),
-    ...LOCALES.filter((l) => l !== 'de').map((locale) => route(localizedHref('/404/', locale), { kind: '404' })),
-  ];
+  return publicRouteEntries({pages,projects,posts}).map(({path,...props})=>({params:{slug:path.replace(/^\/|\/$/g,'')||undefined},props}));
 }
 interface Props { kind: string; page?: CollectionEntry<'pages'>; project?: CollectionEntry<'projects'>; post?: CollectionEntry<'posts'>; }
 const { kind, page, project, post } = Astro.props;

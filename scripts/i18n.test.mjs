@@ -42,7 +42,7 @@ test('Every UI message has all locales and exactly the same interpolation fields
 });
 
 test('All real source entries have current EN/NL content and stable structural identities', () => {
-  const identity = new Set(['type', 'id', 'href', 'src', 'file', 'logo', 'video', 'heroVideo', 'route', 'nextRoute', 'icon', 'shape', 'color', 'accent', 'variant', 'zone', 'loop', 'reel', 'occasion', 'package', 'mediaSide']);
+  const identity = new Set(['type', 'id', 'personId', 'authorId', 'project', 'field', 'display', 'href', 'src', 'file', 'logo', 'video', 'heroVideo', 'route', 'nextRoute', 'icon', 'shape', 'color', 'accent', 'variant', 'zone', 'loop', 'reel', 'occasion', 'package', 'mediaSide']);
   const sameStructure = (source, target, at = '') => {
     if (source === null || typeof source !== 'object') {
       assert.equal(typeof target, typeof source, at);

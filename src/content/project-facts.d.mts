@@ -7,6 +7,8 @@ export type ProjectView = Omit<CollectionEntry<'projects'>,'data'> & {data:Omit<
  showcase?:Omit<Showcase,'drones'|'credits'|'numbers'> & {drones:number;credits:{label:string;value:string}[];numbers:{label:string;value:number}[]};
 }};
 export const PROJECT_FACTS:typeof data;
+export const PROJECT_FIELDS:string[];
+export const PROJECT_DISPLAYS:string[];
 export function projectValue(ref:unknown,locale?:string,source?:Record<string,any>):any;
 export function projectText<T>(text:T,locale?:string,source?:Record<string,any>,options?:{markdown?:boolean}):T;
 export function projectValues(value:unknown,locale?:string,source?:Record<string,any>):any;

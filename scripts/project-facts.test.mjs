@@ -23,6 +23,8 @@ test('Alle 19 Projekte besitzen ausschließlich explizite Faktenverweise; Stand 
  assert.throws(()=>projectValue({project:'vw-50-golf',field:'drones'}),/Unbekannter Projektfakt/);
  assert.throws(()=>projectValue({project:'missing',field:'drones'}),/Unbekannter Projektfakt/);
  assert.equal(projectFactsSchema.safeParse({...PROJECT_FACTS,missing:{}}).success,false);
+ const invalid=structuredClone(PROJECT_FACTS);invalid['puma-bundesliga'].date='2026-02-31';assert.equal(projectFactsSchema.safeParse(invalid).success,false);
+ assert.throws(()=>projectValue({project:'bokkenrijders-musical-2026',field:'date',display:'dayMonth'}),/Tag unbekannt/);
 });
 test('AFE bearbeitet denselben historischen Faktenbesitzer; Timeline referenziert vorhandene Ereignisse',async()=>{
  const site=await createSite(process.cwd()),source=site.sourceFor('site/project-facts');assert.deepEqual(source.address,{collection:'projectFacts',id:'configuration'});assert.equal(source.file,'src/content/project-facts.json');

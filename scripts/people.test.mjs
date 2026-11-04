@@ -7,6 +7,7 @@ import {contentSchemas} from '../src/schemas/content-schema.mjs';
 import {createSite} from '../editor/flyingstars-adapter.mjs';
 test('Personen-IDs besitzen Name und Porträt; Team und Autor folgen derselben Änderung',()=>{
  assert.equal(FOUNDERS.length,3);
+ assert.deepEqual(Object.keys(PEOPLE).sort(),readdirSync('src/content/people').filter(n=>n.endsWith('.json')).map(n=>n.slice(0,-5)).sort());
  const changed=structuredClone(PEOPLE);changed['florian-becker'].name='Testname';changed['florian-becker'].image.src='https://flyingstars.art/probe.jpg';
  for(const locale of ['','en/','nl/'])for(const file of ['index','ueber-uns']){
   const page=parse(readFileSync(`src/content/pages/${locale}${file}.yaml`,'utf8'));contentSchemas.pages.parse(page);
