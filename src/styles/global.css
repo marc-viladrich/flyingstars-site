@@ -402,7 +402,8 @@ td.us { color: var(--text); background: var(--fill-soft); }
 .pack.featured::before { content: ""; position: absolute; inset: 0; border-radius: var(--radius); padding: var(--space-0-25); background: var(--grad); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
 .pack canvas { width: 6rem; height: 6rem; }
 .pack .name { display: flex; align-items: center; gap: var(--space-2-5); flex-wrap: wrap; }
-.chip { font: 500 0.65625rem/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; padding: var(--space-1-5) var(--space-2); border-radius: var(--radius-pill); border: 1px solid var(--line-orchid); color: var(--orchid); }
+.chip, .tier .badge { font: 500 0.65625rem/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; padding: var(--space-1-5) var(--space-2); border-radius: var(--radius-pill); }
+.chip { border: 1px solid var(--line-orchid); color: var(--orchid); }
 .pack .meta { color: var(--faint); }
 .pack-note { margin-top: var(--space-5); color: var(--faint); display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-3); }
 
@@ -459,7 +460,7 @@ td.us { color: var(--text); background: var(--fill-soft); }
 .tier canvas { width: 100%; height: 9.375rem; }
 .tier .head { display: flex; justify-content: space-between; align-items: center; gap: var(--space-2-5); }
 .tier .head h3 { font-weight: 700; letter-spacing: 0.04em; font-size: 1.375rem; }
-.tier .badge { font: 500 0.65625rem/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; padding: var(--space-1-5) var(--space-2); border-radius: var(--radius-pill); border: 1px solid var(--line-strong); color: var(--muted); }
+.tier .badge { border: 1px solid var(--line-strong); color: var(--muted); }
 .tier.is-rec .badge { color: var(--orchid); border-color: var(--line-orchid); }
 .tier .tag { color: var(--muted); font-size: var(--text-control); }
 .tier .p { display: grid; gap: var(--space-1); padding: var(--space-3-5) 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
