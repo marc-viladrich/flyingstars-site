@@ -1,3 +1,5 @@
+import {LOCALES} from '../src/i18n/routing.mjs';
+import {readEntry} from './test-support/read.mjs';
 import {sectionSchema} from '../src/schemas/content-schema.mjs';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -5,13 +7,13 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { parse } from 'yaml';
 import { projectShowcaseSchema } from '../src/schemas/project-showcase.mjs';
 const root = new URL('../src/content/', import.meta.url);
-const entry = (path) => { const raw = readFileSync(new URL(path, root), 'utf8'); return parse(path.endsWith('.md') ? raw.split('---')[1] : raw); };
+const entry = (path) => readEntry(new URL(path, root)).data;
 const files = (dir, ext) => readdirSync(new URL(dir, root)).filter((f) => f.endsWith(ext));
 
 test('Every internal section note is identical in DE, EN and NL', () => {
   for (const file of files('pages/', '.yaml')) {
     const de = entry(`pages/${file}`);
-    for (const locale of ['en', 'nl']) {
+    for (const locale of LOCALES.filter(l=>l!=='de')) {
       const target = entry(`pages/${locale}/${file}`);
       assert.deepEqual(target.sections.map((s) => s.todo), de.sections.map((s) => s.todo), `${locale}/${file}`);
     }

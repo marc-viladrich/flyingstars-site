@@ -1,8 +1,8 @@
+import {read} from './test-support/read.mjs';
 // Wächter für Runde 18 (Marc, 02.11.2026). Jeder Test hält eine Klasse fest, nicht einen Einzelfall.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
 
 test('Alle Reveals lösen am selben Punkt aus (3 rem im Bild), kein scroll-gebundener Vorhang', () => {
   for (const file of ['src/scripts/site.ts', 'src/scripts/effects/dotimage.js']) {

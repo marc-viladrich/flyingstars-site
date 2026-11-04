@@ -1,10 +1,10 @@
+import {read} from './test-support/read.mjs';
 // Wächter für Runde 19 (Marc, 03.11.2026). Jeder Test hält eine Klasse fest, nicht einen Einzelfall.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { parse } from 'yaml';
 import {landingSiteContent} from '../src/content/shared-blocks.mjs';
-const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
 
 test('Reveals starten spätestens bei einem halben rem im Bild, und die Kurve öffnet sofort', async () => {
   const { REVEAL_REM, REVEAL_MARGIN } = await import('../src/scripts/reveal-point.js');
