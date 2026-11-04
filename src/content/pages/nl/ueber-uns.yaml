@@ -78,33 +78,48 @@ sections:
       - when: "2022"
         title: De eerste show
         text: Op 13 augustus vliegen 50 drones voor een privéverjaardag.
-      - when: "2022"
+      - when:
+          project: puma-bundesliga
+          field: date
+          display: year
         title: PUMA in Borussia-Park
-        text: Op 11 november, onze zesde show. 100 drones voor de derby Gladbach tegen Dortmund, de aanvraag kwam circa 14 dagen eerder.
+        text: Op {{project.puma-bundesliga.date.dayMonth}}, onze zesde show. {{project.puma-bundesliga.drones}} drones voor de derby Gladbach tegen Dortmund, de aanvraag kwam circa 14 dagen eerder.
       - when: "2023"
         title: De eerste generieke exploitatievergunning in Duitsland
         text: In juli verleent het Duitse luchtvaartagentschap Luftfahrt-Bundesamt ons de vergunning.
-      - when: "2023"
+      - when:
+          project: loreal-prada-rheinturm
+          field: date
+          display: year
         title: L’Oréal × Prada Paradoxe
-        text: Op 11 oktober 350 drones bij de Rheinturm in Düsseldorf.
-      - when: "2023"
+        text: Op {{project.loreal-prada-rheinturm.date.dayMonth}} {{project.loreal-prada-rheinturm.drones}} drones bij de Rheinturm in Düsseldorf.
+      - when:
+          project: boellerciao
+          field: date
+          display: year
         title: "#Böllerciao met Deutsche Umwelthilfe"
-        text: Op 27 november 150 drones in het Cantianstadion in Berlijn, voor pers, politiek en publiek.
+        text: Op {{project.boellerciao.date.dayMonth}} {{project.boellerciao.drones}} drones in het Cantianstadion in Berlijn, voor pers, politiek en publiek.
       - when: "2023"
         title: Verhuizing naar Triple Z
         text: In december betrekken we ons kantoor in het bedrijvencentrum op Zeche Zollverein.
-      - when: "2024"
+      - when:
+          project: vw-50-golf
+          field: date
+          display: year
         title: 50 jaar VW Golf
-        text: Op 22 mei bij Scalaria aan de Wolfgangsee. Lange tijd onze grootste show.
+        text: Op {{project.vw-50-golf.date.dayMonth}} bij Scalaria aan de Wolfgangsee. Lange tijd onze grootste show.
       - when: "2025"
         title: De eerste indoor-show
         text: Op 28 maart voor Siemens op de Hannover Messe.
       - when: "2025"
         title: Kein Bock auf Nazis
         text: Op 8 augustus. Sindsdien vliegen we regelmatig shows voor democratie, diversiteit en saamhorigheid.
-      - when: "2026"
+      - when:
+          project: bokkenrijders-musical-2026
+          field: date
+          display: year
         title: Bokkenrijders in Maastricht
-        text: In juni 20 shows met elk 600 drones in een musical.
+        text: In juni {{project.bokkenrijders-musical-2026.shows}} shows met elk {{project.bokkenrijders-musical-2026.drones}} drones in een musical.
       - when: "2026"
         title: E.ON in Hamburg
         text: In september een dubbele show met 500 drones boven de Elbe bij de Landungsbrücken.
@@ -255,4 +270,4 @@ sections:
     button:
       label: Vraag een show aan
       href: /kontakt/
-translationSourceHash: 9b206245439c618646e98633bac52de316eb13c7561bebd873ea28bfe1267d7e
+translationSourceHash: 87447cb32f90403aef327908cbe8e8f9569df9cd94b049878a43b68a1d81e3f5

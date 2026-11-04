@@ -1,3 +1,4 @@
+import {projectText,projectValue} from './project-facts.mjs';
 import {contactText} from './contact.mjs';
 import {businessValue} from './business-facts.mjs';
 import {createTranslator} from '../i18n/ui.mjs';
@@ -19,7 +20,7 @@ export function offerText(text,locale='de',source=data,{markdown=false}={}){
  });
 }
 export function factText(text,locale='de',options={}) {
- const projected=offerText(durationText(businessValue(typeof text==='string'?contactText(text):text,locale)),locale,data,options);
+ const projected=projectText(offerText(durationText(businessValue(projectValue(typeof text==='string'?contactText(text):text,locale),locale)),locale,data,options),locale,undefined,options);
  if(typeof projected==='string'&&/\{\{[^}]*\}\}/.test(projected))throw Error('Unbekannter Faktenplatzhalter: '+projected.match(/\{\{[^}]*\}\}/)[0]);
  return projected;
 }

@@ -1,14 +1,26 @@
 ---
 {
   "title": "#Böllerciao mit der Deutschen Umwelthilfe",
-  "client": "Deutsche Umwelthilfe",
-  "date": "2023-11-27",
-  "location": "Cantianstadion, Berlin",
+  "client": {
+    "project": "boellerciao",
+    "field": "client"
+  },
+  "date": {
+    "project": "boellerciao",
+    "field": "date"
+  },
+  "location": {
+    "project": "boellerciao",
+    "field": "location"
+  },
   "occasion": "sonstiges",
-  "summary": "150 Drohnen unterstützten die Kampagne #Böllerciao der Deutschen Umwelthilfe im Berliner Cantianstadion.",
+  "summary": "{{project.boellerciao.drones}} Drohnen unterstützten die Kampagne #Böllerciao der Deutschen Umwelthilfe im Berliner Cantianstadion.",
   "featured": false,
   "draft": false,
-  "drones": 150,
+  "drones": {
+    "project": "boellerciao",
+    "field": "drones"
+  },
   "cover": {
     "src": "https://flyingstars.art/wp-content/uploads/2024/07/D_Umwelthilfe_cover_img.png",
     "alt": "#Böllerciao mit der Deutschen Umwelthilfe: Drohnenshow von FlyingStars",

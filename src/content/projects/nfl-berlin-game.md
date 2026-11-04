@@ -1,11 +1,23 @@
 ---
 {
   "title": "NFL Berlin Game",
-  "client": "Indianapolis Colts",
-  "date": "2025-11-01",
-  "location": "Olympiastadion Berlin",
+  "client": {
+    "project": "nfl-berlin-game",
+    "field": "client"
+  },
+  "date": {
+    "project": "nfl-berlin-game",
+    "field": "date"
+  },
+  "location": {
+    "project": "nfl-berlin-game",
+    "field": "location"
+  },
   "occasion": "firma",
-  "drones": 300,
+  "drones": {
+    "project": "nfl-berlin-game",
+    "field": "drones"
+  },
   "summary": "Das Hufeisen der Colts über dem Olympiastadion. Sport · Berlin.",
   "cover": {
     "src": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl.jpg",
@@ -20,8 +32,8 @@
     "order": 2,
     "name": "NFL Berlin Game",
     "meta": {
-      "title": "NFL Berlin Game: 300 Drohnen für die Indianapolis Colts",
-      "description": "Hufeisen, Berlin-Game-Logo und NFL-Shield über dem Olympiastadion: 300 Drohnen für die Indianapolis Colts zum NFL Berlin Game 2025."
+      "title": "NFL Berlin Game: {{project.nfl-berlin-game.drones}} Drohnen für die Indianapolis Colts",
+      "description": "Hufeisen, Berlin-Game-Logo und NFL-Shield über dem Olympiastadion: {{project.nfl-berlin-game.drones}} Drohnen für die Indianapolis Colts zum NFL Berlin Game 2025."
     },
     "cardTitle": "NFL Berlin Game: das Wappen über dem Stadion",
     "category": "Sport · Berlin",
@@ -33,29 +45,45 @@
     "titleChars": 11,
     "tagline": "Das Hufeisen der Colts über dem Olympiastadion.",
     "accent": "#5b8def",
-    "drones": 300,
+    "drones": {
+      "project": "nfl-berlin-game",
+      "field": "drones"
+    },
     "heroVideo": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl.mp4",
     "credits": [
       {
         "label": "Kunde",
-        "value": "Indianapolis Colts"
+        "value": {
+          "project": "nfl-berlin-game",
+          "field": "client"
+        }
       },
       {
         "label": "Ort",
-        "value": "Olympiastadion Berlin"
+        "value": {
+          "project": "nfl-berlin-game",
+          "field": "location"
+        }
       },
       {
         "label": "Datum",
-        "value": "November 2025"
+        "value": "{{project.nfl-berlin-game.date.monthYearCapital}}"
       },
       {
         "label": "Drohnen",
-        "value": "300"
+        "value": {
+          "project": "nfl-berlin-game",
+          "field": "drones",
+          "display": "text"
+        }
       }
     ],
     "numbers": [
       {
-        "value": 300,
+        "value": {
+          "project": "nfl-berlin-game",
+          "field": "drones"
+        },
         "label": "Drohnen über dem Olympiastadion"
       },
       {

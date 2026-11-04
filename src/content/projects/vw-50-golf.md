@@ -1,9 +1,18 @@
 ---
 {
   "title": "50 Jahre VW Golf",
-  "client": "Scalaria",
-  "date": "2024-05-22",
-  "location": "Wolfgangsee (Österreich)",
+  "client": {
+    "project": "vw-50-golf",
+    "field": "client"
+  },
+  "date": {
+    "project": "vw-50-golf",
+    "field": "date"
+  },
+  "location": {
+    "project": "vw-50-golf",
+    "field": "location"
+  },
   "occasion": "firma",
   "summary": "Zum 50. Geburtstag des VW Golf zeigte FlyingStars eine Drohnenshow an der Scalaria am Wolfgangsee.",
   "featured": false,

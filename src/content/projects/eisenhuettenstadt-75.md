@@ -1,14 +1,26 @@
 ---
 {
   "title": "75 Jahre Eisenhüttenstadt",
-  "client": "Stadt Eisenhüttenstadt",
-  "date": "2025-08-30",
-  "location": "Eisenhüttenstadt",
+  "client": {
+    "project": "eisenhuettenstadt-75",
+    "field": "client"
+  },
+  "date": {
+    "project": "eisenhuettenstadt-75",
+    "field": "date"
+  },
+  "location": {
+    "project": "eisenhuettenstadt-75",
+    "field": "location"
+  },
   "occasion": "stadt",
-  "summary": "Zwei Shows mit jeweils 250 Drohnen erzählten beim 75. Stadtjubiläum die Geschichte Eisenhüttenstadts.",
+  "summary": "Zwei Shows mit jeweils {{project.eisenhuettenstadt-75.drones}} Drohnen erzählten beim 75. Stadtjubiläum die Geschichte Eisenhüttenstadts.",
   "featured": false,
   "draft": false,
-  "drones": 250,
+  "drones": {
+    "project": "eisenhuettenstadt-75",
+    "field": "drones"
+  },
   "cover": {
     "src": "https://flyingstars.art/wp-content/uploads/2025/10/Eisenhuettenstadt_exp.jpg",
     "alt": "75 Jahre Eisenhüttenstadt: Drohnenshow von FlyingStars",

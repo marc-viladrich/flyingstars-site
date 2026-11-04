@@ -1,12 +1,24 @@
 ---
 {
   "title": "Ford Explorer",
-  "client": "Ford · Agentur Envy Create",
-  "date": "2024-06-03",
-  "location": "Ford Electric Vehicle Center, Köln",
+  "client": {
+    "project": "exploring-reinvented-der-neue-ford-explorer",
+    "field": "client"
+  },
+  "date": {
+    "project": "exploring-reinvented-der-neue-ford-explorer",
+    "field": "date"
+  },
+  "location": {
+    "project": "exploring-reinvented-der-neue-ford-explorer",
+    "field": "location"
+  },
   "occasion": "firma",
-  "drones": 350,
-  "summary": "350 Drohnen für den neuen Ford Explorer. Automotive · Launch.",
+  "drones": {
+    "project": "exploring-reinvented-der-neue-ford-explorer",
+    "field": "drones"
+  },
+  "summary": "{{project.exploring-reinvented-der-neue-ford-explorer.drones}} Drohnen für den neuen Ford Explorer. Automotive · Launch.",
   "cover": {
     "src": "https://flyingstars-relaunch.vercel.app/media/projekte/ford.jpg",
     "alt": "Ford Explorer – Drohnenshow von FlyingStars",
@@ -20,8 +32,8 @@
     "order": 3,
     "name": "Ford Explorer",
     "meta": {
-      "title": "Exploring Reinvented: 350 Drohnen für den neuen Ford Explorer",
-      "description": "Launch-Clip für den elektrischen Ford Explorer: 350 Drohnen über dem Ford Electric Vehicle Center in Köln, gedreht mit Cinequads für die Agentur Envy Create."
+      "title": "Exploring Reinvented: {{project.exploring-reinvented-der-neue-ford-explorer.drones}} Drohnen für den neuen Ford Explorer",
+      "description": "Launch-Clip für den elektrischen Ford Explorer: {{project.exploring-reinvented-der-neue-ford-explorer.drones}} Drohnen über dem Ford Electric Vehicle Center in Köln, gedreht mit Cinequads für die Agentur Envy Create."
     },
     "cardTitle": "Exploring Reinvented: der neue Ford Explorer",
     "category": "Automotive · Launch",
@@ -31,31 +43,51 @@
       "Reinvented"
     ],
     "titleChars": 10,
-    "tagline": "350 Drohnen für den neuen Ford Explorer.",
+    "tagline": "{{project.exploring-reinvented-der-neue-ford-explorer.drones}} Drohnen für den neuen Ford Explorer.",
     "accent": "#6f9bff",
-    "drones": 350,
+    "drones": {
+      "project": "exploring-reinvented-der-neue-ford-explorer",
+      "field": "drones"
+    },
     "heroVideo": "https://flyingstars-relaunch.vercel.app/media/projekte/ford.mp4",
     "credits": [
       {
         "label": "Kunde",
-        "value": "Ford · Agentur Envy Create"
+        "value": {
+          "project": "exploring-reinvented-der-neue-ford-explorer",
+          "field": "client"
+        }
       },
       {
         "label": "Ort",
-        "value": "Ford Electric Vehicle Center, Köln"
+        "value": {
+          "project": "exploring-reinvented-der-neue-ford-explorer",
+          "field": "location"
+        }
       },
       {
         "label": "Datum",
-        "value": "03.06.2024"
+        "value": {
+          "project": "exploring-reinvented-der-neue-ford-explorer",
+          "field": "date",
+          "display": "numeric"
+        }
       },
       {
         "label": "Drohnen",
-        "value": "350"
+        "value": {
+          "project": "exploring-reinvented-der-neue-ford-explorer",
+          "field": "drones",
+          "display": "text"
+        }
       }
     ],
     "numbers": [
       {
-        "value": 350,
+        "value": {
+          "project": "exploring-reinvented-der-neue-ford-explorer",
+          "field": "drones"
+        },
         "label": "Drohnen über dem Werk"
       },
       {
@@ -168,4 +200,4 @@
 }
 ---
 
-350 Drohnen für den neuen Ford Explorer. Automotive · Launch.
+{{project.exploring-reinvented-der-neue-ford-explorer.drones}} Drohnen für den neuen Ford Explorer. Automotive · Launch.

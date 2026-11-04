@@ -76,15 +76,15 @@ sections:
     items:
       - { when: "2021", title: Gründung, text: Am 1. Dezember melden wir FlyingStars als Gewerbe an. }
       - { when: "2022", title: Die erste Show, text: Am 13. August fliegen 50 Drohnen zu einem privaten Geburtstag. }
-      - { when: "2022", title: PUMA im Borussia-Park, text: "Am 11. November, unsere sechste Show. 100 Drohnen vor dem Derby Gladbach gegen Dortmund, die Anfrage kam etwa 14 Tage vorher." }
+      - { when: { project: puma-bundesliga, field: date, display: year }, title: PUMA im Borussia-Park, text: "Am {{project.puma-bundesliga.date.dayMonth}}, unsere sechste Show. {{project.puma-bundesliga.drones}} Drohnen vor dem Derby Gladbach gegen Dortmund, die Anfrage kam etwa 14 Tage vorher." }
       - { when: "2023", title: Die erste generische Betriebsgenehmigung in Deutschland, text: Im Juli erteilt uns das Luftfahrt-Bundesamt die Genehmigung. }
-      - { when: "2023", title: L’Oréal × Prada Paradoxe, text: Am 11. Oktober 350 Drohnen am Rheinturm in Düsseldorf. }
-      - { when: "2023", title: "#Böllerciao mit der Deutschen Umwelthilfe", text: "Am 27. November 150 Drohnen im Berliner Cantianstadion, vor Presse, Politik und Öffentlichkeit." }
+      - { when: { project: loreal-prada-rheinturm, field: date, display: year }, title: L’Oréal × Prada Paradoxe, text: "Am {{project.loreal-prada-rheinturm.date.dayMonth}} {{project.loreal-prada-rheinturm.drones}} Drohnen am Rheinturm in Düsseldorf." }
+      - { when: { project: boellerciao, field: date, display: year }, title: "#Böllerciao mit der Deutschen Umwelthilfe", text: "Am {{project.boellerciao.date.dayMonth}} {{project.boellerciao.drones}} Drohnen im Berliner Cantianstadion, vor Presse, Politik und Öffentlichkeit." }
       - { when: "2023", title: Einzug ins Triple Z, text: Im Dezember beziehen wir unser Büro im Gründungszentrum auf Zeche Zollverein. }
-      - { when: "2024", title: 50 Jahre VW Golf, text: Am 22. Mai an der Scalaria am Wolfgangsee. Lange unsere größte Show. }
+      - { when: { project: vw-50-golf, field: date, display: year }, title: 50 Jahre VW Golf, text: "Am {{project.vw-50-golf.date.dayMonth}} an der Scalaria am Wolfgangsee. Lange unsere größte Show." }
       - { when: "2025", title: Die erste Indoor-Show, text: Am 28. März für Siemens auf der Hannover Messe. }
       - { when: "2025", title: Kein Bock auf Nazis, text: "Am 8. August. Seitdem fliegen wir regelmäßig Shows für Demokratie, Vielfalt und Zusammenhalt." }
-      - { when: "2026", title: Bokkenrijders in Maastricht, text: Im Juni 20 Shows mit je 600 Drohnen in einem Musical. }
+      - { when: { project: bokkenrijders-musical-2026, field: date, display: year }, title: Bokkenrijders in Maastricht, text: "Im Juni {{project.bokkenrijders-musical-2026.shows}} Shows mit je {{project.bokkenrijders-musical-2026.drones}} Drohnen in einem Musical." }
       - { when: "2026", title: E.ON in Hamburg, text: Im September eine Doppelshow mit 500 Drohnen über der Elbe an den Landungsbrücken. }
       - { when: "2026", title: Indoor im Triple Z, text: "Im September eine Indoor-Show im Gründungszentrum, in dem auch unser Büro ist." }
     todo: FlyingStars muss den historischen LBA-Erstanspruch belegen und VW Golf mit 350/400 Drohnen sowie das E.ON-Datum 15./16.09. klären. Für E.ON und „Kein Bock auf Nazis“ fehlen zugeordnete Showbilder.

@@ -1,14 +1,26 @@
 ---
 {
   "title": "Siemens Mobility",
-  "client": "Siemens Mobility",
-  "date": "2024-09-25",
-  "location": "Wannsee-Terrassen, Berlin",
+  "client": {
+    "project": "siemens-mobility",
+    "field": "client"
+  },
+  "date": {
+    "project": "siemens-mobility",
+    "field": "date"
+  },
+  "location": {
+    "project": "siemens-mobility",
+    "field": "location"
+  },
   "occasion": "firma",
-  "summary": "200 Drohnen visualisierten bei einer Siemens-Mobility-Veranstaltung auf den Wannsee-Terrassen die Rede des CEOs.",
+  "summary": "{{project.siemens-mobility.drones}} Drohnen visualisierten bei einer Siemens-Mobility-Veranstaltung auf den Wannsee-Terrassen die Rede des CEOs.",
   "featured": false,
   "draft": false,
-  "drones": 200,
+  "drones": {
+    "project": "siemens-mobility",
+    "field": "drones"
+  },
   "cover": {
     "src": "https://flyingstars.art/wp-content/uploads/2024/12/Siemens_cover.jpg",
     "alt": "Siemens Mobility: Drohnenshow von FlyingStars",

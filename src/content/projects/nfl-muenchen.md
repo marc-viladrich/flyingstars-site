@@ -1,14 +1,26 @@
 ---
 {
   "title": "NFL-Announcement in München",
-  "client": "brands and emotions × Carolina Panthers",
-  "date": "2024-01-09",
-  "location": "Olympiapark München",
+  "client": {
+    "project": "nfl-muenchen",
+    "field": "client"
+  },
+  "date": {
+    "project": "nfl-muenchen",
+    "field": "date"
+  },
+  "location": {
+    "project": "nfl-muenchen",
+    "field": "location"
+  },
   "occasion": "firma",
-  "summary": "Eine Show mit 250 Drohnen im Münchner Olympiapark kündigte die Carolina Panthers als Heimteam des NFL International Game an.",
+  "summary": "Eine Show mit {{project.nfl-muenchen.drones}} Drohnen im Münchner Olympiapark kündigte die Carolina Panthers als Heimteam des NFL International Game an.",
   "featured": false,
   "draft": false,
-  "drones": 250,
+  "drones": {
+    "project": "nfl-muenchen",
+    "field": "drones"
+  },
   "cover": {
     "src": "https://flyingstars.art/wp-content/uploads/2024/07/NFL_Cover_img-e1721137386133.png",
     "alt": "NFL-Announcement in München: Drohnenshow von FlyingStars",

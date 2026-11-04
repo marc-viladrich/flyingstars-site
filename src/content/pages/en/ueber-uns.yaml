@@ -78,33 +78,48 @@ sections:
       - when: "2022"
         title: The first show
         text: On 13 August, 50 drones fly for a private birthday.
-      - when: "2022"
+      - when:
+          project: puma-bundesliga
+          field: date
+          display: year
         title: PUMA at Borussia-Park
-        text: On 11 November, our sixth show. 100 drones before the Gladbach–Dortmund derby, with the enquiry arriving around 14 days beforehand.
+        text: On {{project.puma-bundesliga.date.dayMonth}}, our sixth show. {{project.puma-bundesliga.drones}} drones before the Gladbach–Dortmund derby, with the enquiry arriving around 14 days beforehand.
       - when: "2023"
         title: Germany's first generic operating authorisation
         text: In July, the German Federal Aviation Office grants us the authorisation.
-      - when: "2023"
+      - when:
+          project: loreal-prada-rheinturm
+          field: date
+          display: year
         title: L’Oréal × Prada Paradoxe
-        text: On 11 October, 350 drones at the Rhine Tower in Düsseldorf.
-      - when: "2023"
+        text: On {{project.loreal-prada-rheinturm.date.dayMonth}}, {{project.loreal-prada-rheinturm.drones}} drones at the Rhine Tower in Düsseldorf.
+      - when:
+          project: boellerciao
+          field: date
+          display: year
         title: "#Böllerciao with Deutsche Umwelthilfe"
-        text: On 27 November, 150 drones at Berlin's Cantianstadion, for the press, politicians and the public.
+        text: On {{project.boellerciao.date.dayMonth}}, {{project.boellerciao.drones}} drones at Berlin's Cantianstadion, for the press, politicians and the public.
       - when: "2023"
         title: Moving into Triple Z
         text: In December, we move into our office at the business centre on Zeche Zollverein.
-      - when: "2024"
+      - when:
+          project: vw-50-golf
+          field: date
+          display: year
         title: 50 years of VW Golf
-        text: On 22 May at Scalaria on Lake Wolfgangsee. Our largest show for a long time.
+        text: On {{project.vw-50-golf.date.dayMonth}} at Scalaria on Lake Wolfgangsee. Our largest show for a long time.
       - when: "2025"
         title: The first indoor show
         text: On 28 March for Siemens at Hannover Messe.
       - when: "2025"
         title: Kein Bock auf Nazis
         text: On 8 August. Since then, we've regularly flown shows for democracy, diversity and solidarity.
-      - when: "2026"
+      - when:
+          project: bokkenrijders-musical-2026
+          field: date
+          display: year
         title: Bokkenrijders in Maastricht
-        text: In June, 20 shows with 600 drones each in a musical.
+        text: In June, {{project.bokkenrijders-musical-2026.shows}} shows with {{project.bokkenrijders-musical-2026.drones}} drones each in a musical.
       - when: "2026"
         title: E.ON in Hamburg
         text: In September, a double show with 500 drones above the Elbe at the Landungsbrücken.
@@ -255,4 +270,4 @@ sections:
     button:
       label: Request a show
       href: /kontakt/
-translationSourceHash: 9b206245439c618646e98633bac52de316eb13c7561bebd873ea28bfe1267d7e
+translationSourceHash: 87447cb32f90403aef327908cbe8e8f9569df9cd94b049878a43b68a1d81e3f5

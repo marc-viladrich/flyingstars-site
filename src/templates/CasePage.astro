@@ -1,11 +1,12 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import {projectView} from '../content/project-facts.mjs';
 import Base from '../layouts/Base.astro';
 import CaseStudy from '../components/projects/CaseStudy.astro';
 
 interface Props { project: CollectionEntry<'projects'>; }
-const { project } = Astro.props;
+const project = projectView(Astro.props.project);
 ---
 <Base title={project.data.showcase!.meta.title} description={project.data.showcase!.meta.description} image={project.data.cover?.src} navSection="/referenzen/">
-  <CaseStudy project={project} />
+  <CaseStudy project={Astro.props.project} />
 </Base>

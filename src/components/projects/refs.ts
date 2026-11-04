@@ -1,3 +1,4 @@
+import {projectView} from '../../content/project-facts.mjs';
 // Gemeinsame Logik für Referenzkarten (ProjectGrid, References): Adresse, Kennzahlen, Filterwerte.
 import type { CollectionEntry } from 'astro:content';
 import { videos } from '../../lib/videos';
@@ -14,11 +15,11 @@ export const DRONE_BANDS = [
 
 /** Fallstudien liegen im Wurzelverzeichnis (/<route>/); andere Referenzen haben keine eigene Seite. */
 export const hrefOf = (p: Project) => (p.data.showcase ? `/${p.data.showcase.route}/` : undefined);
-export const dronesOf = (p: Project) => p.data.drones ?? p.data.showcase?.drones;
-export const yearOf = (p: Project) => p.data.date.getFullYear();
+export const dronesOf = (p: Project) => projectView(p).data.drones ?? projectView(p).data.showcase?.drones;
+export const yearOf = (p: Project) => projectView(p).data.date.getUTCFullYear();
 export const bandOf = (p: Project) => { const n = dronesOf(p); return n ? DRONE_BANDS.find((b) => b.test(n))?.id : undefined; };
-export const kickOf = (p: Project) => p.data.showcase?.category ?? [p.data.client, p.data.location].filter(Boolean).join(' · ');
-export const sortProjects = (list: Project[]) => list.sort((a, b) => (a.data.showcase?.order ?? 999) - (b.data.showcase?.order ?? 999) || Number(b.data.featured) - Number(a.data.featured) || b.data.date.valueOf() - a.data.date.valueOf());
+export const kickOf = (p: Project) => p.data.showcase?.category ?? [projectView(p).data.client, projectView(p).data.location].filter(Boolean).join(' · ');
+export const sortProjects = (list: Project[]) => list.sort((a, b) => (a.data.showcase?.order ?? 999) - (b.data.showcase?.order ?? 999) || Number(b.data.featured) - Number(a.data.featured) || projectView(b).data.date.valueOf() - projectView(a).data.date.valueOf());
 
 /** Referenz mit registriertem Showvideo (dieselbe Prüfung wie in ProjectCard). */
 export const hasVideo = (p: Project) => { const clip = p.data.showcase?.heroVideo; return !!clip && Object.values(videos).some((src) => src === clip); };
@@ -26,4 +27,4 @@ export const hasVideo = (p: Project) => { const clip = p.data.showcase?.heroVide
 export const sortReferences = (list: Project[]) => list.sort((a, b) =>
   Number(hasVideo(b)) - Number(hasVideo(a))
   || (hasVideo(a) ? (a.data.showcase?.order ?? 999) - (b.data.showcase?.order ?? 999) : 0)
-  || b.data.date.valueOf() - a.data.date.valueOf());
+  || projectView(b).data.date.valueOf() - projectView(a).data.date.valueOf());

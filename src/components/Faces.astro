@@ -2,9 +2,9 @@
 // Kleine runde Porträts (Anfrage, FAQ-Abschluss); beim Hovern werden sie zu Lichtpunkten.
 import { optimizedImage } from '../lib/media';
 import {field} from 'astro-frontend-editor/markers';
-import { FOUNDERS, person } from '../content/people.mjs';
+import { FOUNDERS, portraitPerson } from '../content/people.mjs';
 interface Props { people?: string[] }
-const people = Astro.props.people?.length ? Astro.props.people.map(id=>person(id)) : FOUNDERS;
+const people = Astro.props.people?.length ? Astro.props.people.map(id=>portraitPerson(id)) : FOUNDERS;
 const faces = await Promise.all(people.map(async (p) => ({ ...p, img: await optimizedImage(p.image.src, 160) })));
 ---
 <ul class="faces" aria-label={`Ansprechpartner:innen: ${people.map((p) => p.name).join(', ')}`}>

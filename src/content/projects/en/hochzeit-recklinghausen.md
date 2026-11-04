@@ -1,14 +1,26 @@
 ---
 {
   "title": "Wedding surprise",
-  "client": "Private client",
-  "date": "2024-06-29",
-  "location": "Recklinghausen",
+  "client": {
+    "project": "hochzeit-recklinghausen",
+    "field": "client"
+  },
+  "date": {
+    "project": "hochzeit-recklinghausen",
+    "field": "date"
+  },
+  "location": {
+    "project": "hochzeit-recklinghausen",
+    "field": "location"
+  },
   "occasion": "privat",
-  "summary": "A private wedding in Recklinghausen received a custom surprise show with 150 drones.",
+  "summary": "A private wedding in Recklinghausen received a custom surprise show with {{project.hochzeit-recklinghausen.drones}} drones.",
   "featured": false,
   "draft": false,
-  "drones": 150,
+  "drones": {
+    "project": "hochzeit-recklinghausen",
+    "field": "drones"
+  },
   "cover": {
     "src": "https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg",
     "alt": "Two flowers made of purple and blue drones above trees in Recklinghausen",
@@ -20,10 +32,10 @@
     "order": 5,
     "name": "Wedding",
     "meta": {
-      "title": "150 drones for a wedding surprise",
-      "description": "A private wedding in Recklinghausen received a custom surprise show with 150 drones."
+      "title": "{{project.hochzeit-recklinghausen.drones}} drones for a wedding surprise",
+      "description": "A private wedding in Recklinghausen received a custom surprise show with {{project.hochzeit-recklinghausen.drones}} drones."
     },
-    "cardTitle": "150 drones for a wedding surprise",
+    "cardTitle": "{{project.hochzeit-recklinghausen.drones}} drones for a wedding surprise",
     "category": "Wedding · Recklinghausen",
     "titleLines": [
       "WEDDING"
@@ -31,7 +43,10 @@
     "titleChars": 8,
     "tagline": "A surprise with the couple’s own motifs.",
     "accent": "#f5a1cd",
-    "drones": 150,
+    "drones": {
+      "project": "hochzeit-recklinghausen",
+      "field": "drones"
+    },
     "credits": [
       {
         "label": "Occasion",
@@ -39,20 +54,34 @@
       },
       {
         "label": "Location",
-        "value": "Recklinghausen"
+        "value": {
+          "project": "hochzeit-recklinghausen",
+          "field": "location"
+        }
       },
       {
         "label": "Date",
-        "value": "2024-06-29"
+        "value": {
+          "project": "hochzeit-recklinghausen",
+          "field": "date",
+          "display": "iso"
+        }
       },
       {
         "label": "Drones",
-        "value": "150"
+        "value": {
+          "project": "hochzeit-recklinghausen",
+          "field": "drones",
+          "display": "text"
+        }
       }
     ],
     "numbers": [
       {
-        "value": 150,
+        "value": {
+          "project": "hochzeit-recklinghausen",
+          "field": "drones"
+        },
         "label": "Drones"
       },
       {
@@ -63,7 +92,7 @@
     "story": [
       {
         "title": "The family plans the surprise.",
-        "text": "The couple’s family enquired four months before the wedding. A show with 150 drones was prepared for 29 June 2024. Motifs and music were agreed with the family.",
+        "text": "The couple’s family enquired four months before the wedding. A show with {{project.hochzeit-recklinghausen.drones}} drones was prepared for 29 June 2024. Motifs and music were agreed with the family.",
         "image": {
           "src": "https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg",
           "alt": "Two flowers made of purple and blue drones above trees in Recklinghausen",
@@ -109,7 +138,7 @@
       "text": "Send us the date, location and your idea. We will check what kind of show is possible there."
     }
   },
-  "translationSourceHash": "ea690dd6c704f62548ca83a42dcfec1ada100ee6495c7e24693c899149c0a7fa"
+  "translationSourceHash": "63bd2cf92da5bf832699ad811e4e3440546f058a82102dcef473ddbc991a24cd"
 }
 ---
 

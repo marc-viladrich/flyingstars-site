@@ -1,14 +1,26 @@
 ---
 {
   "title": "Frühlingsfest Special",
-  "client": "FlyingStars",
-  "date": "2025-04-05",
-  "location": "Essen",
+  "client": {
+    "project": "fruehlingsfest-essen",
+    "field": "client"
+  },
+  "date": {
+    "project": "fruehlingsfest-essen",
+    "field": "date"
+  },
+  "location": {
+    "project": "fruehlingsfest-essen",
+    "field": "location"
+  },
   "occasion": "stadt",
   "summary": "Beim Frühlingsfest inszenierte FlyingStars eine individuelle Drohnenshow als Veranstaltungsprogramm.",
   "featured": false,
   "draft": false,
-  "drones": 220,
+  "drones": {
+    "project": "fruehlingsfest-essen",
+    "field": "drones"
+  },
   "cover": {
     "src": "https://flyingstars.art/wp-content/uploads/2025/07/Fruehlingsfest-Header-2.jpg",
     "alt": "Frühlingsfest Special: Drohnenshow von FlyingStars",

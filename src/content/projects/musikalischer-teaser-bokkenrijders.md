@@ -1,12 +1,24 @@
 ---
 {
   "title": "Bokkenrijders",
-  "client": "Toneelgroep Maastricht",
-  "date": "2025-09-04",
-  "location": "Stadion De Geusselt, Maastricht",
+  "client": {
+    "project": "musikalischer-teaser-bokkenrijders",
+    "field": "client"
+  },
+  "date": {
+    "project": "musikalischer-teaser-bokkenrijders",
+    "field": "date"
+  },
+  "location": {
+    "project": "musikalischer-teaser-bokkenrijders",
+    "field": "location"
+  },
   "occasion": "kultur",
-  "drones": 600,
-  "summary": "600 Drohnen spielen im Musical mit. Musical · Maastricht.",
+  "drones": {
+    "project": "musikalischer-teaser-bokkenrijders",
+    "field": "drones"
+  },
+  "summary": "{{project.bokkenrijders-musical-2026.drones}} Drohnen spielen im Musical mit. Musical · Maastricht.",
   "cover": {
     "src": "https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijders.jpg",
     "alt": "Bokkenrijders – Drohnenshow von FlyingStars",
@@ -20,8 +32,8 @@
     "order": 1,
     "name": "Bokkenrijders",
     "meta": {
-      "title": "Bokkenrijders: 600 Drohnen im Musical in Maastricht",
-      "description": "600 Drohnen für das Freiluft-Musical Bokkenrijders der Toneelgroep Maastricht: als Teaser 2025 und in 20 Aufführungen im Juni 2026."
+      "title": "Bokkenrijders: {{project.bokkenrijders-musical-2026.drones}} Drohnen im Musical in Maastricht",
+      "description": "{{project.musikalischer-teaser-bokkenrijders.drones}} Drohnen für das Freiluft-Musical Bokkenrijders der Toneelgroep Maastricht: als Teaser 2025 und in 20 Aufführungen im Juni 2026."
     },
     "cardTitle": "Bokkenrijders: unsere bisher größte Show",
     "category": "Musical · Maastricht",
@@ -31,40 +43,62 @@
       "rijders"
     ],
     "titleChars": 7,
-    "tagline": "600 Drohnen spielen im Musical mit.",
+    "tagline": "{{project.bokkenrijders-musical-2026.drones}} Drohnen spielen im Musical mit.",
     "accent": "#ff5a5f",
-    "drones": 600,
+    "drones": {
+      "project": "musikalischer-teaser-bokkenrijders",
+      "field": "drones"
+    },
     "heroVideo": "https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijders.mp4",
     "credits": [
       {
         "label": "Kunde",
-        "value": "Toneelgroep Maastricht"
+        "value": {
+          "project": "musikalischer-teaser-bokkenrijders",
+          "field": "client"
+        }
       },
       {
         "label": "Ort",
-        "value": "Stadion De Geusselt, Maastricht"
+        "value": {
+          "project": "musikalischer-teaser-bokkenrijders",
+          "field": "location"
+        }
       },
       {
         "label": "Termine",
-        "value": "Teaser 04.09.2025 · Musical Juni 2026, 20 Aufführungen"
+        "value": "Teaser {{project.musikalischer-teaser-bokkenrijders.date.numeric}} · Musical Juni 2026, 20 Aufführungen"
       },
       {
         "label": "Drohnen",
-        "value": "600"
+        "value": {
+          "project": "musikalischer-teaser-bokkenrijders",
+          "field": "drones",
+          "display": "text"
+        }
       }
     ],
     "numbers": [
       {
-        "value": 600,
+        "value": {
+          "project": "musikalischer-teaser-bokkenrijders",
+          "field": "drones"
+        },
         "label": "Drohnen, unsere bisher größte Einzelshow"
       },
       {
-        "value": 12000,
+        "value": {
+          "project": "bokkenrijders-musical-2026",
+          "field": "totalDrones"
+        },
         "label": "Drohnen in einem Monat"
       },
       {
-        "value": 20,
-        "label": "Shows im Juni 2026, je 600 Drohnen"
+        "value": {
+          "project": "bokkenrijders-musical-2026",
+          "field": "shows"
+        },
+        "label": "Shows im Juni 2026, je {{project.bokkenrijders-musical-2026.drones}} Drohnen"
       }
     ],
     "story": [
@@ -81,7 +115,7 @@
       {
         "kicker": "02 · Der Teaser",
         "title": "Ein QR-Code als Finale",
-        "text": "Am 4. September 2025 stiegen 600 Drohnen über der Locatie Geusselt auf: der Schriftzug BOKKENRIJDERS, der Teufel, drei mystische Reiter, ein Sternenhimmel. Zum Schluss ein riesiger QR-Code, der direkt zum Ticketverkauf führte.",
+        "text": "Am 4. September 2025 stiegen {{project.musikalischer-teaser-bokkenrijders.drones}} Drohnen über der Locatie Geusselt auf: der Schriftzug BOKKENRIJDERS, der Teufel, drei mystische Reiter, ein Sternenhimmel. Zum Schluss ein riesiger QR-Code, der direkt zum Ticketverkauf führte.",
         "image": {
           "src": "https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijders/06.jpg",
           "alt": "Finale über der Bühne",
@@ -91,7 +125,7 @@
       {
         "kicker": "03 · Das Musical",
         "title": "Die Drohnen gehören zum Finale",
-        "text": "Im Juni 2026 flogen wir 20 Aufführungen mit je 600 Drohnen. Nach der Hinrichtung der Hauptfigur erscheint ihr Totenkopf mit Zylinder am Himmel. Er weint Blut, das zu einem schlagenden Herzen wird. Funken werden zum Sternenhimmel, am Ende blickt der Teufel ins Publikum.",
+        "text": "Im Juni 2026 flogen wir {{project.bokkenrijders-musical-2026.shows}} Aufführungen mit je {{project.bokkenrijders-musical-2026.drones}} Drohnen. Nach der Hinrichtung der Hauptfigur erscheint ihr Totenkopf mit Zylinder am Himmel. Er weint Blut, das zu einem schlagenden Herzen wird. Funken werden zum Sternenhimmel, am Ende blickt der Teufel ins Publikum.",
         "image": {
           "src": "https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijders/01.jpg",
           "alt": "Totenkopf mit Zylinder",
@@ -112,7 +146,7 @@
     "formation": {
       "src": "/media/projekte/bokkenrijders/formation.json",
       "title": "Der Teufel, Drohne für Drohne.",
-      "text": "Diese Punkte stammen aus unserer Original-Showdatei: alle 600 Drohnen an ihrer echten Position, so wie das Publikum von unten auf den Kopf geschaut hat. Bewegt die Maus, er schaut euch hinterher."
+      "text": "Diese Punkte stammen aus unserer Original-Showdatei: alle {{project.bokkenrijders-musical-2026.drones}} Drohnen an ihrer echten Position, so wie das Publikum von unten auf den Kopf geschaut hat. Bewegt die Maus, er schaut euch hinterher."
     },
     "gallery": [
       {
@@ -188,4 +222,4 @@
 }
 ---
 
-600 Drohnen spielen im Musical mit. Musical · Maastricht.
+{{project.musikalischer-teaser-bokkenrijders.drones}} Drohnen spielen im Musical mit. Musical · Maastricht.

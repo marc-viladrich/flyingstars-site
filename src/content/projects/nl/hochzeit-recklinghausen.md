@@ -1,14 +1,26 @@
 ---
 {
   "title": "Bruiloftsverrassing",
-  "client": "Particulier",
-  "date": "2024-06-29",
-  "location": "Recklinghausen",
+  "client": {
+    "project": "hochzeit-recklinghausen",
+    "field": "client"
+  },
+  "date": {
+    "project": "hochzeit-recklinghausen",
+    "field": "date"
+  },
+  "location": {
+    "project": "hochzeit-recklinghausen",
+    "field": "location"
+  },
   "occasion": "privat",
-  "summary": "Een privébruiloft in Recklinghausen kreeg een eigen verrassingsshow met 150 drones.",
+  "summary": "Een privébruiloft in Recklinghausen kreeg een eigen verrassingsshow met {{project.hochzeit-recklinghausen.drones}} drones.",
   "featured": false,
   "draft": false,
-  "drones": 150,
+  "drones": {
+    "project": "hochzeit-recklinghausen",
+    "field": "drones"
+  },
   "cover": {
     "src": "https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg",
     "alt": "Twee bloemen van paarse en blauwe drones boven bomen in Recklinghausen",
@@ -20,10 +32,10 @@
     "order": 5,
     "name": "Bruiloft",
     "meta": {
-      "title": "150 drones als bruiloftsverrassing",
-      "description": "Een privébruiloft in Recklinghausen kreeg een eigen verrassingsshow met 150 drones."
+      "title": "{{project.hochzeit-recklinghausen.drones}} drones als bruiloftsverrassing",
+      "description": "Een privébruiloft in Recklinghausen kreeg een eigen verrassingsshow met {{project.hochzeit-recklinghausen.drones}} drones."
     },
-    "cardTitle": "150 drones als bruiloftsverrassing",
+    "cardTitle": "{{project.hochzeit-recklinghausen.drones}} drones als bruiloftsverrassing",
     "category": "Bruiloft · Recklinghausen",
     "titleLines": [
       "BRUILOFT"
@@ -31,7 +43,10 @@
     "titleChars": 8,
     "tagline": "Een verrassing met de motieven van het bruidspaar.",
     "accent": "#f5a1cd",
-    "drones": 150,
+    "drones": {
+      "project": "hochzeit-recklinghausen",
+      "field": "drones"
+    },
     "credits": [
       {
         "label": "Aanleiding",
@@ -39,20 +54,34 @@
       },
       {
         "label": "Locatie",
-        "value": "Recklinghausen"
+        "value": {
+          "project": "hochzeit-recklinghausen",
+          "field": "location"
+        }
       },
       {
         "label": "Datum",
-        "value": "2024-06-29"
+        "value": {
+          "project": "hochzeit-recklinghausen",
+          "field": "date",
+          "display": "iso"
+        }
       },
       {
         "label": "Drones",
-        "value": "150"
+        "value": {
+          "project": "hochzeit-recklinghausen",
+          "field": "drones",
+          "display": "text"
+        }
       }
     ],
     "numbers": [
       {
-        "value": 150,
+        "value": {
+          "project": "hochzeit-recklinghausen",
+          "field": "drones"
+        },
         "label": "Drones"
       },
       {
@@ -63,7 +92,7 @@
     "story": [
       {
         "title": "De familie plant de verrassing.",
-        "text": "De familie van het bruidspaar nam vier maanden voor de bruiloft contact op. Voor 29 juni 2024 werd een show met 150 drones voorbereid. Motieven en muziek werden met de familie afgestemd.",
+        "text": "De familie van het bruidspaar nam vier maanden voor de bruiloft contact op. Voor 29 juni 2024 werd een show met {{project.hochzeit-recklinghausen.drones}} drones voorbereid. Motieven en muziek werden met de familie afgestemd.",
         "image": {
           "src": "https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg",
           "alt": "Twee bloemen van paarse en blauwe drones boven bomen in Recklinghausen",
@@ -109,7 +138,7 @@
       "text": "Stuur ons de datum, locatie en jullie idee. We bekijken welke show daar mogelijk is."
     }
   },
-  "translationSourceHash": "ea690dd6c704f62548ca83a42dcfec1ada100ee6495c7e24693c899149c0a7fa"
+  "translationSourceHash": "63bd2cf92da5bf832699ad811e4e3440546f058a82102dcef473ddbc991a24cd"
 }
 ---
 

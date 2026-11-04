@@ -11,7 +11,7 @@ export async function readEditorialRecords(root) {
 // no fallback report can be empty merely because no old overlays were found.
 export async function seoFallbackReport(root,dist) {
  const site=await createFlyingStarsAdapter(root),records=await readEditorialRecords(root),ids=new Map(records.map(r=>[r.id,r]));
- for(const record of records.filter(r=>!/^\w+\/(en|nl)\//.test(r.id))){
+ for(const record of records.filter(r=>/^(page|post|project|faq)\/[^/]+$/.test(r.id))){
   const source=site.sourceFor(record.id),bytes=await readFile(path.join(root,source.file)),hash=createHash('sha256').update(bytes).digest('hex');
   const [kind,slug]=record.id.split('/');
   for(const locale of ['en','nl']){

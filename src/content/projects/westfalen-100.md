@@ -1,14 +1,26 @@
 ---
 {
   "title": "100 Jahre Westfalen AG",
-  "client": "Westfalen AG",
-  "date": "2022-09-08",
-  "location": "Münster",
+  "client": {
+    "project": "westfalen-100",
+    "field": "client"
+  },
+  "date": {
+    "project": "westfalen-100",
+    "field": "date"
+  },
+  "location": {
+    "project": "westfalen-100",
+    "field": "location"
+  },
   "occasion": "firma",
-  "summary": "Zum 100-jährigen Jubiläum der Westfalen AG entstand eine individuelle Show mit 150 Drohnen in Münster.",
+  "summary": "Zum 100-jährigen Jubiläum der Westfalen AG entstand eine individuelle Show mit {{project.westfalen-100.drones}} Drohnen in Münster.",
   "featured": false,
   "draft": false,
-  "drones": 150,
+  "drones": {
+    "project": "westfalen-100",
+    "field": "drones"
+  },
   "cover": {
     "src": "https://flyingstars.art/wp-content/uploads/2024/07/Westfalen_cover_img.png",
     "alt": "100 Jahre Westfalen AG: Drohnenshow von FlyingStars",

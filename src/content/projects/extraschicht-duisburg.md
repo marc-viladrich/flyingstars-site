@@ -1,14 +1,26 @@
 ---
 {
   "title": "Extraschicht Duisburg",
-  "client": "Duisburg Kontor",
-  "date": "2025-06-28",
-  "location": "Innenhafen Duisburg",
+  "client": {
+    "project": "extraschicht-duisburg",
+    "field": "client"
+  },
+  "date": {
+    "project": "extraschicht-duisburg",
+    "field": "date"
+  },
+  "location": {
+    "project": "extraschicht-duisburg",
+    "field": "location"
+  },
   "occasion": "stadt",
-  "summary": "250 Drohnen inszenierten zur Extraschicht eine rund 15-minütige Show über dem Duisburger Innenhafen.",
+  "summary": "{{project.extraschicht-duisburg.drones}} Drohnen inszenierten zur Extraschicht eine rund 15-minütige Show über dem Duisburger Innenhafen.",
   "featured": false,
   "draft": false,
-  "drones": 250,
+  "drones": {
+    "project": "extraschicht-duisburg",
+    "field": "drones"
+  },
   "cover": {
     "src": "https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg",
     "alt": "Extraschicht Duisburg: Drohnenshow von FlyingStars",

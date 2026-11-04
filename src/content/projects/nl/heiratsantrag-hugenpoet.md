@@ -1,14 +1,26 @@
 ---
 {
   "title": "Huwelijksaanzoek op Schloss Hugenpoet",
-  "client": "Particulier",
-  "date": "2024-09-10",
-  "location": "Schloss Hugenpoet, Essen",
+  "client": {
+    "project": "heiratsantrag-hugenpoet",
+    "field": "client"
+  },
+  "date": {
+    "project": "heiratsantrag-hugenpoet",
+    "field": "date"
+  },
+  "location": {
+    "project": "heiratsantrag-hugenpoet",
+    "field": "location"
+  },
   "occasion": "privat",
-  "summary": "220 drones begeleidden een huwelijksaanzoek op Schloss Hugenpoet in Essen.",
+  "summary": "{{project.heiratsantrag-hugenpoet.drones}} drones begeleidden een huwelijksaanzoek op Schloss Hugenpoet in Essen.",
   "featured": false,
   "draft": false,
-  "drones": 220,
+  "drones": {
+    "project": "heiratsantrag-hugenpoet",
+    "field": "drones"
+  },
   "cover": {
     "src": "https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg",
     "alt": "Een hand met ring van drones boven de boomtoppen bij Schloss Hugenpoet",
@@ -20,10 +32,10 @@
     "order": 6,
     "name": "Hugenpoet",
     "meta": {
-      "title": "Een huwelijksaanzoek met 220 drones",
-      "description": "220 drones begeleidden een huwelijksaanzoek op Schloss Hugenpoet in Essen."
+      "title": "Een huwelijksaanzoek met {{project.heiratsantrag-hugenpoet.drones}} drones",
+      "description": "{{project.heiratsantrag-hugenpoet.drones}} drones begeleidden een huwelijksaanzoek op Schloss Hugenpoet in Essen."
     },
-    "cardTitle": "Een huwelijksaanzoek met 220 drones",
+    "cardTitle": "Een huwelijksaanzoek met {{project.heiratsantrag-hugenpoet.drones}} drones",
     "category": "Huwelijksaanzoek · Essen",
     "titleLines": [
       "HUGENPOET"
@@ -31,7 +43,10 @@
     "titleChars": 9,
     "tagline": "De vraag verschijnt boven de kasteeltuin.",
     "accent": "#f5a1cd",
-    "drones": 220,
+    "drones": {
+      "project": "heiratsantrag-hugenpoet",
+      "field": "drones"
+    },
     "credits": [
       {
         "label": "Aanleiding",
@@ -39,20 +54,34 @@
       },
       {
         "label": "Locatie",
-        "value": "Schloss Hugenpoet, Essen"
+        "value": {
+          "project": "heiratsantrag-hugenpoet",
+          "field": "location"
+        }
       },
       {
         "label": "Datum",
-        "value": "2024-09-10"
+        "value": {
+          "project": "heiratsantrag-hugenpoet",
+          "field": "date",
+          "display": "iso"
+        }
       },
       {
         "label": "Drones",
-        "value": "220"
+        "value": {
+          "project": "heiratsantrag-hugenpoet",
+          "field": "drones",
+          "display": "text"
+        }
       }
     ],
     "numbers": [
       {
-        "value": 220,
+        "value": {
+          "project": "heiratsantrag-hugenpoet",
+          "field": "drones"
+        },
         "label": "Drones"
       }
     ],
@@ -68,7 +97,7 @@
       },
       {
         "title": "Een ring komt uit het doosje.",
-        "text": "220 drones vormden boven de boomtoppen een sieradendoosje. Een ring bewoog daaruit naar de vinger van een hand van drones. Deze opeenvolging verbond het motief met het aanzoek.",
+        "text": "{{project.heiratsantrag-hugenpoet.drones}} drones vormden boven de boomtoppen een sieradendoosje. Een ring bewoog daaruit naar de vinger van een hand van drones. Deze opeenvolging verbond het motief met het aanzoek.",
         "image": {
           "src": "https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg",
           "alt": "Een hand met ring van drones boven de boomtoppen bij Schloss Hugenpoet",
@@ -106,7 +135,7 @@
       "text": "Stuur ons de datum, locatie en jullie idee. We bekijken welke show daar mogelijk is."
     }
   },
-  "translationSourceHash": "9deb0edab592858e6deb3b360f8e9e723f8d2ad26bfe688b4acfbfdef9ac165f"
+  "translationSourceHash": "08f11f759aef6c11e9a3054333a90fb9a17409f7ac2e2d0cbe92337a3681e14a"
 }
 ---
 

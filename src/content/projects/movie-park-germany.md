@@ -1,14 +1,26 @@
 ---
 {
   "title": "Movie Park Germany",
-  "client": "Movie Park Germany",
-  "date": "2023-12-17",
-  "location": "Bottrop",
+  "client": {
+    "project": "movie-park-germany",
+    "field": "client"
+  },
+  "date": {
+    "project": "movie-park-germany",
+    "field": "date"
+  },
+  "location": {
+    "project": "movie-park-germany",
+    "field": "location"
+  },
   "occasion": "firma",
-  "summary": "100 Drohnen bildeten den Abschluss des „Hollywood Christmas“-Programms im Movie Park Germany in Bottrop.",
+  "summary": "{{project.movie-park-germany.drones}} Drohnen bildeten den Abschluss des „Hollywood Christmas“-Programms im Movie Park Germany in Bottrop.",
   "featured": false,
   "draft": false,
-  "drones": 100,
+  "drones": {
+    "project": "movie-park-germany",
+    "field": "drones"
+  },
   "cover": {
     "src": "https://flyingstars.art/wp-content/uploads/2024/07/Movie_park_cover_img.png",
     "alt": "Movie Park Germany: Drohnenshow von FlyingStars",

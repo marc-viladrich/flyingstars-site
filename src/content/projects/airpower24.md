@@ -1,14 +1,26 @@
 ---
 {
   "title": "AIRPOWER24",
-  "client": "Air Power",
-  "date": "2024-09-05",
-  "location": "Spielberg und Zeltweg (Österreich)",
+  "client": {
+    "project": "airpower24",
+    "field": "client"
+  },
+  "date": {
+    "project": "airpower24",
+    "field": "date"
+  },
+  "location": {
+    "project": "airpower24",
+    "field": "location"
+  },
   "occasion": "stadt",
-  "summary": "FlyingStars zeigte zur AIRPOWER24 an zwei Abenden Shows mit 200 Drohnen in Österreich.",
+  "summary": "FlyingStars zeigte zur AIRPOWER24 an zwei Abenden Shows mit {{project.airpower24.drones}} Drohnen in Österreich.",
   "featured": false,
   "draft": false,
-  "drones": 200,
+  "drones": {
+    "project": "airpower24",
+    "field": "drones"
+  },
   "cover": {
     "src": "https://flyingstars.art/wp-content/uploads/2024/12/AirPower_cover.png",
     "alt": "AIRPOWER24: Drohnenshow von FlyingStars",

@@ -1,12 +1,24 @@
 ---
 {
   "title": "PUMA",
-  "client": "PUMA",
-  "date": "2022-11-11",
-  "location": "Borussia-Park, Mönchengladbach",
+  "client": {
+    "project": "puma-bundesliga",
+    "field": "client"
+  },
+  "date": {
+    "project": "puma-bundesliga",
+    "field": "date"
+  },
+  "location": {
+    "project": "puma-bundesliga",
+    "field": "location"
+  },
   "occasion": "firma",
-  "drones": 100,
-  "summary": "100 Drohnen für PUMA zum Anstoß des Derbys. Sport · Bundesliga.",
+  "drones": {
+    "project": "puma-bundesliga",
+    "field": "drones"
+  },
+  "summary": "{{project.puma-bundesliga.drones}} Drohnen für PUMA zum Anstoß des Derbys. Sport · Bundesliga.",
   "cover": {
     "src": "https://flyingstars-relaunch.vercel.app/media/projekte/puma.jpg",
     "alt": "PUMA – Drohnenshow von FlyingStars",
@@ -20,8 +32,8 @@
     "order": 4,
     "name": "PUMA",
     "meta": {
-      "title": "PUMA: 100 Drohnen zum Anstoß eines Bundesliga-Derbys",
-      "description": "Überraschung vor dem Anpfiff: 100 Drohnen zeigten beim Derby Gladbach gegen Dortmund über dem Borussia-Park PUMAs Botschaft „Stronger Together“."
+      "title": "PUMA: {{project.puma-bundesliga.drones}} Drohnen zum Anstoß eines Bundesliga-Derbys",
+      "description": "Überraschung vor dem Anpfiff: {{project.puma-bundesliga.drones}} Drohnen zeigten beim Derby Gladbach gegen Dortmund über dem Borussia-Park PUMAs Botschaft „Stronger Together“."
     },
     "cardTitle": "PUMA zum Anstoß des Derbys",
     "category": "Sport · Bundesliga",
@@ -31,31 +43,47 @@
       "Together"
     ],
     "titleChars": 8,
-    "tagline": "100 Drohnen für PUMA zum Anstoß des Derbys.",
+    "tagline": "{{project.puma-bundesliga.drones}} Drohnen für PUMA zum Anstoß des Derbys.",
     "accent": "#3ddc84",
-    "drones": 100,
+    "drones": {
+      "project": "puma-bundesliga",
+      "field": "drones"
+    },
     "heroVideo": "https://flyingstars-relaunch.vercel.app/media/projekte/puma.mp4",
     "credits": [
       {
         "label": "Kunde",
-        "value": "PUMA"
+        "value": {
+          "project": "puma-bundesliga",
+          "field": "client"
+        }
       },
       {
         "label": "Ort",
-        "value": "Borussia-Park, Mönchengladbach"
+        "value": {
+          "project": "puma-bundesliga",
+          "field": "location"
+        }
       },
       {
         "label": "Datum",
-        "value": "11.11.2022 · Gladbach – Dortmund"
+        "value": "{{project.puma-bundesliga.date.numeric}} · Gladbach – Dortmund"
       },
       {
         "label": "Drohnen",
-        "value": "100"
+        "value": {
+          "project": "puma-bundesliga",
+          "field": "drones",
+          "display": "text"
+        }
       }
     ],
     "numbers": [
       {
-        "value": 100,
+        "value": {
+          "project": "puma-bundesliga",
+          "field": "drones"
+        },
         "label": "Drohnen über dem Borussia-Park"
       },
       {
@@ -158,4 +186,4 @@
 }
 ---
 
-100 Drohnen für PUMA zum Anstoß des Derbys. Sport · Bundesliga.
+{{project.puma-bundesliga.drones}} Drohnen für PUMA zum Anstoß des Derbys. Sport · Bundesliga.

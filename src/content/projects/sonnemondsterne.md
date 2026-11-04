@@ -1,14 +1,26 @@
 ---
 {
   "title": "SonneMondSterne Festival",
-  "client": "SonneMondSterne",
-  "date": "2023-08-13",
-  "location": "Saalburg-Ebersdorf",
+  "client": {
+    "project": "sonnemondsterne",
+    "field": "client"
+  },
+  "date": {
+    "project": "sonnemondsterne",
+    "field": "date"
+  },
+  "location": {
+    "project": "sonnemondsterne",
+    "field": "location"
+  },
   "occasion": "stadt",
-  "summary": "FlyingStars zeigte beim Sonnemondsterne-Festival vor über 30.000 Besuchern eine Show mit 100 Drohnen.",
+  "summary": "FlyingStars zeigte beim Sonnemondsterne-Festival vor über 30.000 Besuchern eine Show mit {{project.sonnemondsterne.drones}} Drohnen.",
   "featured": false,
   "draft": false,
-  "drones": 100
+  "drones": {
+    "project": "sonnemondsterne",
+    "field": "drones"
+  }
 }
 ---
 

@@ -1,4 +1,5 @@
 ---
+import {projectView} from '../../content/project-facts.mjs';
 import SliderNav from '../SliderNav.astro';
 import SectionHead from '../SectionHead.astro';
 import FactList from '../FactList.astro';
@@ -13,10 +14,10 @@ import CtaBox from '../CtaBox.astro';
 import { optimizedImage } from '../../lib/media';
 
 interface Props { project: CollectionEntry<'projects'> }
-const { project } = Astro.props;
+const project=projectView(Astro.props.project);
 const data = project.data.showcase;
 if (!data) throw new Error(`Project ${project.id} has no showcase content`);
-const available = (await localizedCollection('projects', locale, p => !p.data.draft && Boolean(p.data.showcase)))
+const available = (await localizedCollection('projects', locale, p => !p.data.draft && Boolean(p.data.showcase))).map(projectView)
   .sort((a, b) => a.data.showcase!.order - b.data.showcase!.order);
 // A deliberately hidden case also disappears from related-project navigation.
 const next = available.find((p) => p.data.showcase!.route === data.nextRoute)
@@ -43,10 +44,10 @@ const count = (n: number) => String(n).padStart(2, '0');
       {data.kicker && <span class="c-kick mono">{data.kicker}</span>}
       <h1 id="case-h" class="c-h1"><span class="sr-only">{data.name}: </span><span class="c-name" style={`--chars:${data.titleChars}`} aria-hidden="true">{data.titleLines.map((line) => <span>{line}</span>)}</span><span class="c-tag">{data.tagline}</span></h1>
     </div>
-    <FactList items={data.credits} variant="credits" />
+    <FactList items={Astro.props.project.data.showcase!.credits} variant="credits" />
   </section>
 
-  <section aria-label={t('casestudy.inNumbers')}><FactList variant="numbers" items={data.numbers.map((n) => ({ label: n.label, value: n.value.toLocaleString(formatLocale), count: n.value }))} /></section>
+  <section aria-label={t('casestudy.inNumbers')}><FactList variant="numbers" items={data.numbers.map((n,i) => ({ label: n.label, value: n.value.toLocaleString(formatLocale), count: n.value, factRef:Astro.props.project.data.showcase!.numbers[i].value }))} /></section>
 
   <section class="c-story" aria-label={t('casestudy.theStory')}>
     <div class="c-media" aria-hidden="true">

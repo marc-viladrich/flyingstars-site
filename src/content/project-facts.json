@@ -1,0 +1,170 @@
+{
+  "airpower24": {
+    "date": "2024-09-05",
+    "client": "Air Power",
+    "location": {
+      "de": "Spielberg und Zeltweg (Österreich)",
+      "en": "Spielberg and Zeltweg, Austria",
+      "nl": "Spielberg en Zeltweg, Oostenrijk"
+    },
+    "drones": 200
+  },
+  "boellerciao": {
+    "date": "2023-11-27",
+    "client": "Deutsche Umwelthilfe",
+    "location": "Cantianstadion, Berlin",
+    "drones": 150
+  },
+  "eisenhuettenstadt-75": {
+    "date": "2025-08-30",
+    "client": {
+      "de": "Stadt Eisenhüttenstadt",
+      "en": "City of Eisenhüttenstadt",
+      "nl": "Gemeente Eisenhüttenstadt"
+    },
+    "location": "Eisenhüttenstadt",
+    "drones": 250
+  },
+  "exploring-reinvented-der-neue-ford-explorer": {
+    "date": "2024-06-03",
+    "client": {
+      "de": "Ford · Agentur Envy Create",
+      "en": "Ford · Agency Envy Create",
+      "nl": "Ford · Bureau Envy Create"
+    },
+    "location": {
+      "de": "Ford Electric Vehicle Center, Köln",
+      "en": "Ford Electric Vehicle Center, Cologne",
+      "nl": "Ford Electric Vehicle Center, Keulen"
+    },
+    "drones": 350
+  },
+  "extraschicht-duisburg": {
+    "date": "2025-06-28",
+    "client": "Duisburg Kontor",
+    "location": {
+      "de": "Innenhafen Duisburg",
+      "en": "Duisburg inner harbour",
+      "nl": "Binnenhaven Duisburg"
+    },
+    "drones": 250
+  },
+  "fruehlingsfest-essen": {
+    "date": "2025-04-05",
+    "client": "FlyingStars",
+    "location": "Essen",
+    "drones": 220
+  },
+  "heiratsantrag-hugenpoet": {
+    "date": "2024-09-10",
+    "client": {
+      "de": "Privat",
+      "en": "Private client",
+      "nl": "Particulier"
+    },
+    "location": "Schloss Hugenpoet, Essen",
+    "drones": 220
+  },
+  "hochzeit-recklinghausen": {
+    "date": "2024-06-29",
+    "client": {
+      "de": "Privat",
+      "en": "Private client",
+      "nl": "Particulier"
+    },
+    "location": "Recklinghausen",
+    "drones": 150
+  },
+  "loreal-prada-rheinturm": {
+    "date": "2023-10-11",
+    "client": "L’Oréal Deutschland / Prada",
+    "location": {
+      "de": "Rheinturm, Düsseldorf",
+      "en": "Rhine Tower, Düsseldorf",
+      "nl": "Rheinturm, Düsseldorf"
+    },
+    "drones": 350
+  },
+  "movie-park-germany": {
+    "date": "2023-12-17",
+    "client": "Movie Park Germany",
+    "location": "Bottrop",
+    "drones": 100
+  },
+  "musikalischer-teaser-bokkenrijders": {
+    "date": "2025-09-04",
+    "client": "Toneelgroep Maastricht",
+    "location": "Stadion De Geusselt, Maastricht",
+    "drones": 600
+  },
+  "nfl-berlin-game": {
+    "date": "2025-11-01",
+    "client": "Indianapolis Colts",
+    "location": {
+      "de": "Olympiastadion Berlin",
+      "en": "Olympiastadion Berlin",
+      "nl": "Olympiastadion Berlijn"
+    },
+    "drones": 300
+  },
+  "nfl-muenchen": {
+    "date": "2024-01-09",
+    "client": "brands and emotions × Carolina Panthers",
+    "location": {
+      "de": "Olympiapark München",
+      "en": "Olympiapark, Munich",
+      "nl": "Olympiapark München"
+    },
+    "drones": 250
+  },
+  "puma-bundesliga": {
+    "date": "2022-11-11",
+    "client": "PUMA",
+    "location": {
+      "de": "Borussia-Park, Mönchengladbach",
+      "en": "Borussia Park, Mönchengladbach",
+      "nl": "Borussia Park, Mönchengladbach"
+    },
+    "drones": 100
+  },
+  "siemens-mobility": {
+    "date": "2024-09-25",
+    "client": "Siemens Mobility",
+    "location": "Wannsee-Terrassen, Berlin",
+    "drones": 200
+  },
+  "sonnemondsterne": {
+    "date": "2023-08-13",
+    "client": "SonneMondSterne",
+    "location": "Saalburg-Ebersdorf",
+    "drones": 100
+  },
+  "spotify-luciano-apache": {
+    "date": "2025-01-21",
+    "client": "Spotify",
+    "location": "Prenzlauer Berg, Berlin",
+    "drones": 350
+  },
+  "vw-50-golf": {
+    "date": "2024-05-22",
+    "client": "Scalaria",
+    "location": {
+      "de": "Wolfgangsee (Österreich)",
+      "en": "Lake Wolfgangsee, Austria",
+      "nl": "Wolfgangsee, Oostenrijk"
+    }
+  },
+  "westfalen-100": {
+    "date": "2022-09-08",
+    "client": "Westfalen AG",
+    "location": "Münster",
+    "drones": 150
+  },
+  "bokkenrijders-musical-2026": {
+    "date": "2026-06",
+    "client": "Toneelgroep Maastricht",
+    "location": "Stadion De Geusselt, Maastricht",
+    "drones": 600,
+    "shows": 20
+  }
+}

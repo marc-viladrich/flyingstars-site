@@ -1,14 +1,26 @@
 ---
 {
   "title": "L’Oréal × Prada am Rheinturm",
-  "client": "L’Oréal Deutschland / Prada",
-  "date": "2023-10-11",
-  "location": "Rheinturm, Düsseldorf",
+  "client": {
+    "project": "loreal-prada-rheinturm",
+    "field": "client"
+  },
+  "date": {
+    "project": "loreal-prada-rheinturm",
+    "field": "date"
+  },
+  "location": {
+    "project": "loreal-prada-rheinturm",
+    "field": "location"
+  },
   "occasion": "firma",
   "summary": "Eine Show für L’Oréal inszenierte Prada Paradoxe bei einem Influencer-Event in Düsseldorf.",
   "featured": false,
   "draft": false,
-  "drones": 350,
+  "drones": {
+    "project": "loreal-prada-rheinturm",
+    "field": "drones"
+  },
   "cover": {
     "src": "https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg",
     "alt": "L’Oréal × Prada am Rheinturm: Drohnenshow von FlyingStars",
@@ -20,10 +32,10 @@
     "order": 7,
     "name": "Prada Paradoxe",
     "meta": {
-      "title": "Prada Paradoxe mit 350 Drohnen",
+      "title": "Prada Paradoxe mit {{project.loreal-prada-rheinturm.drones}} Drohnen",
       "description": "Eine Show für L’Oréal inszenierte Prada Paradoxe bei einem Influencer-Event in Düsseldorf."
     },
-    "cardTitle": "Prada Paradoxe mit 350 Drohnen",
+    "cardTitle": "Prada Paradoxe mit {{project.loreal-prada-rheinturm.drones}} Drohnen",
     "category": "Marken · Düsseldorf",
     "titleLines": [
       "PRADA",
@@ -32,7 +44,10 @@
     "titleChars": 8,
     "tagline": "Ein Parfümflacon wird zur Drohnenshow.",
     "accent": "#c5a7ed",
-    "drones": 350,
+    "drones": {
+      "project": "loreal-prada-rheinturm",
+      "field": "drones"
+    },
     "credits": [
       {
         "label": "Anlass",
@@ -40,27 +55,41 @@
       },
       {
         "label": "Ort",
-        "value": "Rheinturm, Düsseldorf"
+        "value": {
+          "project": "loreal-prada-rheinturm",
+          "field": "location"
+        }
       },
       {
         "label": "Datum",
-        "value": "2023-10-11"
+        "value": {
+          "project": "loreal-prada-rheinturm",
+          "field": "date",
+          "display": "iso"
+        }
       },
       {
         "label": "Drohnen",
-        "value": "350"
+        "value": {
+          "project": "loreal-prada-rheinturm",
+          "field": "drones",
+          "display": "text"
+        }
       }
     ],
     "numbers": [
       {
-        "value": 350,
+        "value": {
+          "project": "loreal-prada-rheinturm",
+          "field": "drones"
+        },
         "label": "Drohnen"
       }
     ],
     "story": [
       {
         "title": "Das Produkt gibt die Form vor.",
-        "text": "L’Oréal Deutschland beauftragte die Show zum Influencer-Event für Prada Paradoxe im Düsseldorfer Rheinturm am 11. Oktober 2023. Die Form des Parfümflacons wurde zum Motiv für 350 Drohnen.",
+        "text": "L’Oréal Deutschland beauftragte die Show zum Influencer-Event für Prada Paradoxe im Düsseldorfer Rheinturm am 11. Oktober 2023. Die Form des Parfümflacons wurde zum Motiv für {{project.loreal-prada-rheinturm.drones}} Drohnen.",
         "image": {
           "src": "https://flyingstars.art/wp-content/uploads/2024/07/prada1.png",
           "alt": "Parfümflacon Prada Paradoxe als Produktvorlage",

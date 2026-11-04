@@ -1,3 +1,5 @@
+import {factText} from '../content/show-extras.mjs';
+import {projectFactRefSchema} from './project-facts.mjs';
 import { z } from 'zod';
 import {imageSource,imageMetadata} from './media.mjs';
 /** @template {import('zod').ZodType} T @param {string} group @param {T} schema @returns {T} */
@@ -16,7 +18,7 @@ export const projectShowcaseSchema = z.object({
   order: grouped('Adresse', z.number().int().positive()),
   name: grouped('Titel & Darstellung', z.string().min(1)),
   // Search/social title and description of the case page, without the site name.
-  meta: z.object({ title: z.string().min(1).max(70), description: z.string().min(50).max(160) }),
+  meta: z.object({ title: z.string().refine(v=>factText(v).length>0&&factText(v).length<=70), description: z.string().refine(v=>factText(v).length>=50&&factText(v).length<=160) }),
   cardTitle: grouped('Titel & Darstellung', z.string().min(1)),
   category: grouped('Titel & Darstellung', z.string().min(1)),
   // Meta-Zeile über dem Titel (Anlass · Ort · Datum); optional
@@ -25,12 +27,12 @@ export const projectShowcaseSchema = z.object({
   titleChars: grouped('Titel & Darstellung', z.number().int().positive()),
   tagline: grouped('Titel & Darstellung', z.string().min(1)),
   accent: grouped('Titel & Darstellung', z.string().regex(/^#[a-fA-F0-9]{6}$/)),
-  drones: grouped('Showdaten', z.number().int().positive()),
+  drones: grouped('Showdaten', z.union([z.number().int().positive(),projectFactRefSchema])),
   heroVideo: grouped('Showdaten', z.url().optional()),
   // A published film can be linked without inventing a self-hosted hero loop.
   videoLink: z.object({ href: z.url(), label: z.string().min(1) }).optional(),
-  credits: z.array(z.object({ label: z.string().min(1), value: z.string().min(1) })).min(1),
-  numbers: z.array(z.object({ value: z.number().int().nonnegative(), label: z.string().min(1) })).min(1),
+  credits: z.array(z.object({ label: z.string().min(1), value: z.union([z.string().min(1),projectFactRefSchema]) })).min(1),
+  numbers: z.array(z.object({ value: z.union([z.number().int().nonnegative(),projectFactRefSchema]), label: z.string().min(1) })).min(1),
   story: z.array(z.object({
     kicker: z.string().min(1).optional(),
     title: z.string().min(1),

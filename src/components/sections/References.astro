@@ -1,4 +1,5 @@
 ---
+import {factText} from '../../content/show-extras.mjs';
 import { localizedCollection } from '../../i18n/content';
 import { forPath } from '../../i18n/server';
 const { t } = forPath(Astro.url.pathname);
@@ -82,7 +83,7 @@ const formation = (seed: string) => {
         {p.data.cover ? <ProjectCard project={p} i={i} level={C} year /> : (() => {
           const f = formation(p.id), drones = dronesOf(p), g = `rf-g-${p.id}`;
           const badge = [yearOf(p), drones && t('projectcard.valueDrones', { v0: drones })].filter(Boolean).join(' · ');
-          return <MediaCard class="static rf-ghost" title={p.data.title} level={C} kicker={kickOf(p)} summary={p.data.summary} badge={badge} i={i % 2} dot={false}>
+          return <MediaCard class="static rf-ghost" title={p.data.title} level={C} kicker={kickOf(p)} summary={factText(p.data.summary,locale)} badge={badge} i={i % 2} dot={false}>
               <svg slot="media" viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice" role="img" aria-label={t('references.placeholder')}>
                 <defs><linearGradient id={g} gradientUnits="userSpaceOnUse" x1="44" y1="0" x2="116" y2="0"><stop offset="0" stop-color="#ff9e29" /><stop offset=".5" stop-color="#db64e8" /><stop offset="1" stop-color="#33edf2" /></linearGradient></defs>
                 {f.sky.map((d) => <circle cx={d.x.toFixed(1)} cy={d.y.toFixed(1)} r=".45" fill="#f6f1e8" opacity={d.o.toFixed(2)} />)}

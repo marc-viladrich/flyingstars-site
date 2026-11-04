@@ -6,6 +6,8 @@
 // Eine Jahreszahl, die sich wiederholt, steht nur einmal sichtbar da und bleibt für Screenreader lesbar.
 // Ohne JS, bei reduzierter Bewegung und globaler Pause: alles sofort sichtbar und farbig.
 import type { Section } from '../../content.config';
+import {projectValues} from '../../content/project-facts.mjs';
+import {localeFromPath} from '../../i18n/routing.mjs';
 import ProcessList from '../ProcessList.astro';
 import SectionHead from '../SectionHead.astro';
 type Props = Extract<Section, { type: 'timeline' }> & { index: number };
@@ -16,6 +18,6 @@ const headingId = `${id}-h`;
 ---
 <section class="section ms-sec" id={id} aria-labelledby={headingId}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
-  <ProcessList items={items} variant="milestones" level={T} />
+  <ProcessList items={projectValues(items,localeFromPath(Astro.url.pathname))} variant="milestones" level={T} />
 </section>
 

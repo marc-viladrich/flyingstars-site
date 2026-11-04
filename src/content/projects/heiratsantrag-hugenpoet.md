@@ -1,14 +1,26 @@
 ---
 {
   "title": "Heiratsantrag auf Schloss Hugenpoet",
-  "client": "Privat",
-  "date": "2024-09-10",
-  "location": "Schloss Hugenpoet, Essen",
+  "client": {
+    "project": "heiratsantrag-hugenpoet",
+    "field": "client"
+  },
+  "date": {
+    "project": "heiratsantrag-hugenpoet",
+    "field": "date"
+  },
+  "location": {
+    "project": "heiratsantrag-hugenpoet",
+    "field": "location"
+  },
   "occasion": "privat",
-  "summary": "220 Drohnen begleiteten einen Heiratsantrag am Schloss Hugenpoet in Essen.",
+  "summary": "{{project.heiratsantrag-hugenpoet.drones}} Drohnen begleiteten einen Heiratsantrag am Schloss Hugenpoet in Essen.",
   "featured": false,
   "draft": false,
-  "drones": 220,
+  "drones": {
+    "project": "heiratsantrag-hugenpoet",
+    "field": "drones"
+  },
   "cover": {
     "src": "https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg",
     "alt": "Eine Hand mit Ring aus Drohnen über den Baumkronen am Schloss Hugenpoet",
@@ -20,10 +32,10 @@
     "order": 6,
     "name": "Hugenpoet",
     "meta": {
-      "title": "Ein Heiratsantrag mit 220 Drohnen",
-      "description": "220 Drohnen begleiteten einen Heiratsantrag am Schloss Hugenpoet in Essen."
+      "title": "Ein Heiratsantrag mit {{project.heiratsantrag-hugenpoet.drones}} Drohnen",
+      "description": "{{project.heiratsantrag-hugenpoet.drones}} Drohnen begleiteten einen Heiratsantrag am Schloss Hugenpoet in Essen."
     },
-    "cardTitle": "Ein Heiratsantrag mit 220 Drohnen",
+    "cardTitle": "Ein Heiratsantrag mit {{project.heiratsantrag-hugenpoet.drones}} Drohnen",
     "category": "Heiratsantrag · Essen",
     "titleLines": [
       "HUGENPOET"
@@ -31,7 +43,10 @@
     "titleChars": 9,
     "tagline": "Die Frage erscheint über dem Schlossgarten.",
     "accent": "#f5a1cd",
-    "drones": 220,
+    "drones": {
+      "project": "heiratsantrag-hugenpoet",
+      "field": "drones"
+    },
     "credits": [
       {
         "label": "Anlass",
@@ -39,20 +54,34 @@
       },
       {
         "label": "Ort",
-        "value": "Schloss Hugenpoet, Essen"
+        "value": {
+          "project": "heiratsantrag-hugenpoet",
+          "field": "location"
+        }
       },
       {
         "label": "Datum",
-        "value": "2024-09-10"
+        "value": {
+          "project": "heiratsantrag-hugenpoet",
+          "field": "date",
+          "display": "iso"
+        }
       },
       {
         "label": "Drohnen",
-        "value": "220"
+        "value": {
+          "project": "heiratsantrag-hugenpoet",
+          "field": "drones",
+          "display": "text"
+        }
       }
     ],
     "numbers": [
       {
-        "value": 220,
+        "value": {
+          "project": "heiratsantrag-hugenpoet",
+          "field": "drones"
+        },
         "label": "Drohnen"
       }
     ],
@@ -68,7 +97,7 @@
       },
       {
         "title": "Aus der Schatulle wird ein Ring.",
-        "text": "220 Drohnen bildeten über den Baumkronen eine Schmuckschatulle. Ein Ring bewegte sich daraus an den Finger einer dargestellten Hand. Diese Abfolge verband das Motiv mit dem bevorstehenden Antrag.",
+        "text": "{{project.heiratsantrag-hugenpoet.drones}} Drohnen bildeten über den Baumkronen eine Schmuckschatulle. Ein Ring bewegte sich daraus an den Finger einer dargestellten Hand. Diese Abfolge verband das Motiv mit dem bevorstehenden Antrag.",
         "image": {
           "src": "https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg",
           "alt": "Eine Hand mit Ring aus Drohnen über den Baumkronen am Schloss Hugenpoet",

@@ -1,3 +1,6 @@
+import projectFacts from './content/project-facts.json' with {type:'json'};
+import {projectFactsSchema} from './schemas/project-facts.mjs';
+projectFactsSchema.parse(projectFacts);
 import businessFacts from './content/business-facts.json' with {type:'json'};
 import {businessFactsSchema} from './schemas/business-facts.mjs';
 businessFactsSchema.parse(businessFacts);

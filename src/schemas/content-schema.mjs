@@ -1,3 +1,4 @@
+import {projectFactRefSchema} from './project-facts.mjs';
 import {PERSON_IDS,PEOPLE} from '../content/people.mjs';
 import {businessValueSchema} from './business-facts.mjs';
 import {PACKAGE_NAMES} from '../content/package-identity.mjs';
@@ -221,7 +222,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     // Meilensteine als ruhige Liste (kein Schwarm). Wiederholte Jahreszahlen werden nur einmal gezeigt.
     type: z.literal('timeline'), ...sectionHeading,
     headline: z.string().min(1), text: z.string().optional(),
-    items: z.array(z.object({ when: z.string().min(1), title: z.string().min(1), text: z.string().optional() })).min(2),
+    items: z.array(z.object({ when: z.union([z.string().min(1),projectFactRefSchema]), title: z.string().min(1), text: z.string().optional() })).min(2),
   }),
   z.object({
     // Die drei Pakete. Preis und Drohnenzahl kommen nur aus src/content/show-packages.ts, Texte aus dem YAML.
@@ -428,14 +429,14 @@ export const postSchema = z.object({
 export const projectSchema = z.object({
     ...translationMeta,
     title: z.string().min(1),
-    client: z.string().optional().meta({'x-afe':{group:'Showdaten'}}),
+    client: z.union([z.string(),projectFactRefSchema]).optional().meta({'x-afe':{group:'Showdaten'}}),
     showcase: projectShowcaseSchema.optional().meta({'x-afe':{group:'Fallstudie'}}),
-    date: z.coerce.date(),
-    location: z.string().optional().meta({'x-afe':{group:'Showdaten'}}),
+    date: z.union([projectFactRefSchema,z.coerce.date()]),
+    location: z.union([z.string(),projectFactRefSchema]).optional().meta({'x-afe':{group:'Showdaten'}}),
     // Für den Referenzen-Filter; an jeder Referenz, nicht nur an Fallstudien. Unbekannt: weglassen.
     occasion: z.enum(['firma', 'stadt', 'kultur', 'privat', 'indoor', 'sonstiges']).optional()
       .describe('firma = Marken & Unternehmen, stadt = Städte & Festivals, kultur = Kultur & Bühne, privat = Hochzeit & Privat'),
-    drones: z.number().int().positive().optional().describe('Drohnen in der Show'),
+    drones: z.union([z.number().int().positive(),projectFactRefSchema]).optional().describe('Drohnen in der Show'),
     summary: z.string().min(30).max(200).meta({'x-afe':{group:'Projektkarte'}}),
     cover: image.optional(),
     featured: z.boolean().default(false).meta({'x-afe':{group:'Veröffentlichung'}}),
