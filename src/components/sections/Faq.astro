@@ -7,7 +7,7 @@ import { localeFromPath } from '../../i18n/routing.mjs';
 const locale = localeFromPath(Astro.url.pathname);
 // FAQ im Prototyp-Layout (Kopf links, Fragen rechts). Mit `groups` erscheinen die Fragen in Gruppen mit eigener
 // Zwischenüberschrift; mit `closing` folgt der Abschluss „Eure Frage ist nicht dabei?“ mit Anrufen/Schreiben.
-import { render } from 'astro:content';
+import FaqAnswer from '../FaqAnswer.astro';
 import type { Section } from '../../content.config';
 import Accent from '../Accent.astro';
 import CtaBox from '../CtaBox.astro';
@@ -19,7 +19,7 @@ const H = index === 0 ? 'h1' : 'h2';
 const G = index === 0 ? 'h2' : 'h3';
 const all = (await localizedCollection('faq', locale, e => !e.data.draft)).sort((a,b) => a.data.order-b.data.order);
 const pick = (want?: string[]) => want?.length ? all.filter(e => e.data.tags.some(tag => want.includes(tag))) : all;
-const withContent = (list: typeof all) => Promise.all(list.map(async entry => ({ entry, Content: (await render(entry)).Content })));
+const withContent = (list: typeof all) => list.map(entry => ({ entry }));
 const blocks = groups?.length
   ? await Promise.all(groups.map(async (g, gi) => ({ id: g.id ? `${id}-${g.id}` : `${id}-g${gi + 1}`, headline: g.headline, items: await withContent(pick(g.tags)) })))
   : [{ id: undefined, headline: undefined, items: await withContent(limit ? pick(tags).slice(0, limit) : pick(tags)) }];
@@ -34,7 +34,7 @@ const photo = closing?.image ? await optimizedImage(closing.image.src, 640) : un
     <div class="faq-body">
       {blocks.map((block, bi) => <div class="faq-group" id={block.id} aria-labelledby={block.headline ? `${block.id}-h` : undefined} role={block.headline ? 'group' : undefined}>
         {block.headline && <G class="faq-group-h" id={`${block.id}-h`}>{block.headline}</G>}
-        <div class="faq">{block.items.map(({ entry, Content }, i) => <details open={openFirst && bi === 0 && i === 0}><summary>{entry.data.question}</summary><div class="answer"><Content /></div></details>)}</div>
+        <div class="faq">{block.items.map(({ entry }, i) => <details open={openFirst && bi === 0 && i === 0}><summary>{entry.data.question}</summary><div class="answer"><FaqAnswer entry={entry} /></div></details>)}</div>
       </div>)}
       {closing && <CtaBox headline={closing.headline} text={closing.text} button={{ label: t('chopper404.requestAShow'), href: '/kontakt/' }} level={G} class="faq-cta" />}
     </div>

@@ -1,4 +1,5 @@
 ---
+import {durationText} from '../../content/show-duration.mjs';
 import MediaCard from '../MediaCard.astro';
 import { forPath } from '../../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
@@ -20,7 +21,7 @@ const items = await Promise.all(cards.map(async card => ({ ...card, media: await
   <div class:list={['occasions', { 'occ-slider': slider }]} data-count={items.length} role={slider ? 'region' : undefined} aria-label={slider ? t('occasions.occasionsScrollHorizontally') : undefined} tabindex={slider ? 0 : undefined}>
     {items.map((card, i) => <MediaCard variant="occasion" title={card.title} summary={card.text} kicker={card.category} season={card.season?.join(',')} i={i}>
       <img slot="media" src={card.media.src} srcset={`${card.small.src} 320w, ${card.media.src} 640w`} sizes="(max-width: 40em) calc(100vw - 3rem), (max-width: 68.75em) 45vw, 23vw" width={card.media.width} height={card.media.height} alt={card.image.alt} loading="lazy" decoding="async" />
-      <Fragment slot="facts">{card.facts && card.facts.length > 0 && <ul class="facts">{card.facts.map(fact => <li>{fact}</li>)}</ul>}</Fragment>
+      <Fragment slot="facts">{card.facts && card.facts.length > 0 && <ul class="facts">{card.facts.map(fact => <li>{durationText(fact)}</li>)}</ul>}</Fragment>
       <Fragment slot="actions"><a class="link" href={localHref(card.cta.href)}>{card.cta.label} <span aria-hidden="true">→</span></a>{card.download && <a class="dl mono" href={localHref(card.download.href)} type="application/pdf" target="_blank" rel="noopener">{card.download.label} <span aria-hidden="true">↓</span></a>}</Fragment>
     </MediaCard>)}
   </div>

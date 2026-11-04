@@ -1,4 +1,5 @@
 ---
+import {field} from 'astro-frontend-editor/markers';
 // Ein Renderer für beide Paketansichten. Fachwerte und redaktionelle Leistungen kommen aus dem Paketmodell.
 import { forPath } from '../i18n/server';
 import { SHOW_PACKAGES, type ShowPackage } from '../content/show-packages';
@@ -17,7 +18,7 @@ const money = (v: number) => t('showconfigurator.fromValue', { v0: v.toLocaleStr
       <div class="pack-head"><div class="name"><C id={headingId}>{p.name}</C>{badge && <span class="chip">{badge}</span>}</div><p class="price">{money(p.price)}</p>{label && <p class="meta mono">{label}</p>}{sky && <p class="pack-sky">{sky}</p>}</div>
       {/* Drohnenzahl als eigene Gruppe in der Paketfarbe, darunter die Kernpunkte (Marc, 01.11.2026). Gleiche Vorschau auf
            Startseite und Anlass-Seiten: Punkte aus package-details.ts, sofern die Seite keine eigenen setzt. */}
-      <p class="pack-drones">{dronesLine(p.name)}<span class="pack-time">{showtimeLine(p.name)}</span></p>
+      <p class="pack-drones">{dronesLine(p.name)}<span class="pack-time" {...field({collection:'showDuration',id:'configuration'},['outdoor','min'],{mode:'panel'})}>{showtimeLine(p.name)}</span></p>
       <ul class="pack-points">{(pointsOverride ?? PACKAGE_POINTS[p.name]).map((pt) => <li>{pt}</li>)}</ul>
     </a>
 ) : (
@@ -25,7 +26,7 @@ const money = (v: number) => t('showconfigurator.fromValue', { v0: v.toLocaleStr
       <canvas data-orb={p.shape} data-color={p.color.join(',')} data-n={p.base} aria-hidden="true"></canvas>
       <div class="head"><C id={headingId}>{p.name}</C><span class="badge">{badge ?? PACKAGE_FEATURES[p.name].badge}</span></div>
       <p class="tag">{PACKAGE_FEATURES[p.name].tag}</p>
-      <div class="p"><b>{money(p.price)}</b><span class="mono">{t('packages.for')} {p.base} {t('configuratorteaser.drones')}</span><span class="mono tier-time">{showtimeLine(p.name)}</span></div>
+      <div class="p"><b>{money(p.price)}</b><span class="mono">{t('packages.for')} {p.base} {t('configuratorteaser.drones')}</span><span class="mono tier-time" {...field({collection:'showDuration',id:'configuration'},['outdoor','min'],{mode:'panel'})}>{showtimeLine(p.name)}</span></div>
       {PACKAGE_FEATURES[p.name].plus && <span class="plus">{PACKAGE_FEATURES[p.name].plus}</span>}
       {PACKAGE_FEATURES[p.name].groups.map((g) => <><h4 class="mono">{g.title}</h4><ul>{g.items.map((item) => <li>{item}</li>)}</ul></>)}
       <span class="scale-note mono">{addOnLine(p.name)}</span>

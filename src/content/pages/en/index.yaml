@@ -198,7 +198,7 @@ sections:
           width: 1200
           height: 764
         facts:
-          - 20 to 50 drones, 5 to 8 minutes
+          - "20 to 50 drones, {{duration.indoor.min}} to {{duration.indoor.max}} minutes"
           - Individually priced
         cta:
           label: Indoor drone shows
@@ -521,4 +521,4 @@ sections:
     headline: Tell us about your date.
     text: A date, location and occasion are enough for an initial assessment. Leave anything you don't know yet open.
     todo: FlyingStars und die Datenschutzberatung müssen Versanddienst, Empfängerpostfach, Auftragsverarbeitung, Drittlandtransfers und Löschfristen festlegen und die Datenschutzhinweise freigeben.
-translationSourceHash: c3cc15ee35e0104646f677cf6d5bf6d42ef933fa81f25d32d031e65e0d408eb9
+translationSourceHash: 82acb8670caf94b527f872ea73667ad118d170667ce01ba76dc8a4eb8db49c8d

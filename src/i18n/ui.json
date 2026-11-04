@@ -1145,9 +1145,9 @@
     "nl": "vanaf {v0} drones"
   },
   "packageDetails.showtimeLine": {
-    "de": "10–25 Min Showzeit",
-    "en": "10–25 min show time",
-    "nl": "10–25 min showtijd"
+    "de": "{min}–{max} Min Showzeit",
+    "en": "{min}–{max} min show time",
+    "nl": "{min}–{max} min showtijd"
   },
   "packageDetails.formationsFromOurCatalogue": {
     "de": "Formationen aus unserem Katalog",
@@ -1350,9 +1350,9 @@
     "nl": "Duur"
   },
   "packageDetails.usuallyAround13MinutesUpTo25MinutesPossible": {
-    "de": "In der Regel ca. 13 Minuten, bis 25 Minuten möglich",
-    "en": "Usually around 13 minutes, up to 25 minutes possible",
-    "nl": "Meestal circa 13 minuten, tot 25 minuten mogelijk"
+    "de": "In der Regel ca. {typical} Minuten, bis {max} Minuten möglich",
+    "en": "Usually around {typical} minutes, up to {max} minutes possible",
+    "nl": "Meestal circa {typical} minuten, tot {max} minuten mogelijk"
   },
   "packageDetails.designAndMotifs": {
     "de": "Design und Motive",
@@ -1595,9 +1595,9 @@
     "nl": "Indoor-droneshows"
   },
   "packageDetails.20To50Drones5To8MinutesCeilingHeight": {
-    "de": "20 bis 50 Drohnen, 5 bis 8 Minuten, ab 3 m Deckenhöhe. Jede Indoor-Show kalkulieren wir einzeln.",
-    "en": "20 to 50 drones, 5 to 8 minutes, ceiling height from 3 m. We price each indoor show individually.",
-    "nl": "20 tot 50 drones, 5 tot 8 minuten, vanaf 3 m plafondhoogte. Elke indoor-show berekenen we apart."
+    "de": "20 bis 50 Drohnen, {indoorMin} bis {indoorMax} Minuten, ab 3 m Deckenhöhe. Jede Indoor-Show kalkulieren wir einzeln.",
+    "en": "20 to 50 drones, {indoorMin} to {indoorMax} minutes, ceiling height from 3 m. We price each indoor show individually.",
+    "nl": "20 tot 50 drones, {indoorMin} tot {indoorMax} minuten, vanaf 3 m plafondhoogte. Elke indoor-show berekenen we apart."
   },
   "packageDetails.fromApprox15000ExcludingVatFor20Drones": {
     "de": "ab ca. 15.000 € netto für 20 Drohnen",

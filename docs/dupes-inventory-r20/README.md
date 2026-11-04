@@ -226,3 +226,7 @@ Die unveränderlichen Commit-Stände werden für längere Prüfungen in getrennt
 ### Schritt 2: editorfähiger Kontakt
 
 Kontaktwerte nach `contact.json` mit gemeinsamem Zod-Schema verschoben. CONTACT bleibt die Leseschnittstelle. `site/contact` ist registriert und heißt „Kontakt“; Record-Marker an Footer, ContactWays und contactDetails öffnen diesen Besitzer. Danke und Fehlermeldungen enthalten Platzhalter. Rechtstexte bleiben eigenständig, der separate Driftwächter meldet Änderungen. Die Ausnahme für Danke entfällt aus dem Literale-Guard. Bestehende EN-/NL-Copy wurde ausschließlich parametrisiert, Quellhashes und Provenienz sind fortgeschrieben.
+
+### Schritt 3a: wirksame Dauerpolicy
+
+Die drei toten Paketfelder `dur` sind entfernt. `show-duration.json` besitzt Outdoor 10–25, typisch 13 und Indoor 5–8 als getrennte Fakten. Paketkarten, Konfigurator, Leistungsübersicht, FAQ und Indoor-Ausgaben projizieren diese Werte mit den vorhandenen Sprachfassungen. Die Showzeiten sind im Editor erreichbar und werden tatsächlich gespeichert. Typische FAQ-Aussagen bleiben textgleich.

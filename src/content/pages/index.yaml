@@ -107,7 +107,7 @@ sections:
         title: Drohnen in der Halle
         text: Für Messen, Bühnen und Hallen ab drei Metern Deckenhöhe.
         image: { src: "https://flyingstars.art/wp-content/uploads/2025/04/drohnenshow-indoor-2.jpg", alt: Leuchtende Drohnen in Formation vor der Bühne eines voll besetzten Saals, width: 1200, height: 764 }
-        facts: ["20 bis 50 Drohnen, 5 bis 8 Minuten", Einzeln kalkuliert]
+        facts: ["20 bis 50 Drohnen, {{duration.indoor.min}} bis {{duration.indoor.max}} Minuten", Einzeln kalkuliert]
         cta: { label: Indoor-Drohnenshows, href: /drohnenshow-indoor/ }
     todo: Moritz muss die Anlass-Texte freigeben; FlyingStars muss die Relaunch-Sitemap bestätigen. Eigene Seiten für Städte, Festivals und Silvester sind bislang nicht ausgearbeitet.
 

@@ -1,3 +1,4 @@
+import {SHOW_DURATION,durationValues} from './show-duration.mjs';
 import packageData from './show-packages.json' with {type:'json'};
 import { createTranslator } from '../i18n/ui.mjs';
 import { localeFormat } from '../i18n/routing.mjs';
@@ -7,7 +8,7 @@ import { localeFormat } from '../i18n/routing.mjs';
  * no duration per package, 40 % deposit, cancellation scale from the AGB, extras as confirmed there. */
 import { SHOW_PACKAGES, type ShowPackage } from './show-packages.ts';
 
-export function getPackageDetails(locale = 'de') {
+export function getPackageDetails(locale = 'de', duration = SHOW_DURATION) {
 const t = createTranslator(locale);
 const money = (v: number) => v.toLocaleString(localeFormat(locale));
 
@@ -60,7 +61,7 @@ function dronesLine(name: ShowPackage): string {
  * FlyingStars hat im Fragebogen 21.10.2026 die frühere Staffel 10/13/15 Min korrigiert („Es gibt keine Dauer je Paket“),
  * Marc hat daraus am 02.11.2026 „überall 10–25 Minuten Showzeit“ gemacht. Eine Quelle für Karten und Konfigurator. */
 function showtimeLine(_name?: ShowPackage): string {
-  return t('packageDetails.showtimeLine');
+  return t('packageDetails.showtimeLine',durationValues(duration));
 }
 
 /** "+900 € je 10 Drohnen, bis 150 Drohnen", built from the price table so it can never drift. */
@@ -88,7 +89,7 @@ interface Service {
 function resolveService(value: any): any {
   if (Array.isArray(value)) return value.map(resolveService);
   if (value && typeof value === 'object') {
-    if ('key' in value) return t(value.key);
+    if ('key' in value) return t(value.key,durationValues(duration));
     if ('de' in value && 'en' in value && 'nl' in value) return value[locale] ?? value.de;
     if (value.computed === 'drones') return dronesLine(value.package);
     if (value.computed === 'more-drones') { const p = SHOW_PACKAGES[value.package as ShowPackage]; return t('packageDetails.valuePerValue', { v0: money(p.add), v1: p.step }); }
@@ -132,7 +133,7 @@ const EXTRAS: Extra[] = [
   { id: 'behoerden', short: t('packageDetails.authorityLiaison'), icon: 'landmark', title: t('packageDetails.extendedAuthorityLiaison'), text: t('packageDetails.weHandleAllCommunicationWithPublicOfficesAndAuthorities'), price: t('packageDetails.priceOnRequest') },
   { id: 'kontrollzone', short: t('packageDetails.nearAirports'), icon: 'plane', title: t('packageDetails.controlledAirspaceAndAirportLocations'), text: t('packageDetails.forControlledAirspaceAndSitesNearAirports'), price: t('packageDetails.priceOnRequest') },
   { id: 'schweiz', short: t('packageDetails.switzerland'), icon: 'swiss', title: t('packageDetails.showsInSwitzerland'), text: t('packageDetails.focaApplicationAndCustomsClearanceForOurFleet'), price: t('packageDetails.1900ExcludingVat') },
-  { id: 'indoor', short: 'Indoor', icon: 'building-2', title: t('packageDetails.indoorDroneShows'), text: t('packageDetails.20To50Drones5To8MinutesCeilingHeight'), price: t('packageDetails.fromApprox15000ExcludingVatFor20Drones'), link: { label: t('packageDetails.moreAboutIndoorShows'), href: '/drohnenshow-indoor/' } },
+  { id: 'indoor', short: 'Indoor', icon: 'building-2', title: t('packageDetails.indoorDroneShows'), text: t('packageDetails.20To50Drones5To8MinutesCeilingHeight',durationValues(duration)), price: t('packageDetails.fromApprox15000ExcludingVatFor20Drones'), link: { label: t('packageDetails.moreAboutIndoorShows'), href: '/drohnenshow-indoor/' } },
 ];
 
 return { SERVICES, PRICE_NOTE, PACKAGE_DETAILS, PACKAGE_POINTS, PACKAGE_FEATURES, dronesLine, addOnLine, COMPARISON, COMPARISON_NOTE, INCLUDED, EXTRAS, showtimeLine };

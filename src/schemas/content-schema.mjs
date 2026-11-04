@@ -1,3 +1,4 @@
+import {durationText} from '../content/show-duration.mjs';
 import { z } from 'zod';
 import {imageSource,imageMetadata} from './media.mjs';
 import { projectShowcaseSchema } from './project-showcase.mjs';
@@ -397,7 +398,7 @@ const translationMeta = { translationSourceHash: z.string().regex(/^[a-f0-9]{64}
 export const pageSchema = z.object({
     ...translationMeta,
     title: z.string().min(1),
-    description: z.string().min(50).max(160),
+    description: z.string().refine(text=>{const n=durationText(text).length;return n>=50&&n<=160;},'Beschreibung braucht nach Faktenprojektion 50–160 Zeichen'),
     noindex: z.boolean().default(false),
     // Optional preview image for social shares; must come from an approved media host.
     image: z.url().optional(),
@@ -408,7 +409,7 @@ export const pageSchema = z.object({
 export const postSchema = z.object({
     ...translationMeta,
     title: z.string().min(1),
-    description: z.string().min(50).max(160),
+    description: z.string().refine(text=>{const n=durationText(text).length;return n>=50&&n<=160;},'Beschreibung braucht nach Faktenprojektion 50–160 Zeichen'),
     date: z.coerce.date(),
     updated: z.coerce.date().optional(),
     tags: z.array(z.string()).default([]),

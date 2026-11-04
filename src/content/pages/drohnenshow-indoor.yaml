@@ -12,7 +12,7 @@
 # Alle Texte sind Entwürfe für Moritz; neu formulierte Stellen tragen den Kommentar „Entwurf für Moritz“.
 title: Indoor-Drohnenshow
 navLabel: "Indoor"
-description: "Indoor-Drohnenshows für Messen, Bühnen und Hallen: 20 bis 50 Drohnen, 5 bis 8 Minuten, ab 3 Meter Deckenhöhe. Individuell kalkuliert."
+description: "Indoor-Drohnenshows für Messen, Bühnen und Hallen: 20 bis 50 Drohnen, {{duration.indoor.min}} bis {{duration.indoor.max}} Minuten, ab 3 Meter Deckenhöhe. Individuell kalkuliert."
 image: https://flyingstars.art/wp-content/uploads/2025/04/IMG_0201.jpg
 sections:
   - type: landingHero
@@ -32,7 +32,7 @@ sections:
     # Entwurf für Moritz: Eckdaten aus dem Fragebogen
     facts:
       - { value: 20–50, label: Drohnen }
-      - { value: 5–8 Min, label: Showdauer }
+      - { value: "{{duration.indoor.min}}–{{duration.indoor.max}} Min", label: Showdauer }
       - { value: ab 3 m, label: Deckenhöhe }
     todo: Moritz muss die Endfassung und EN/NL prüfen. FlyingStars muss die Zuordnung von Siemens-Film und Hallen-Standbildern zur Hannover Messe bestätigen; das Standbild belegt diesen Veranstaltungsort bislang nicht.
 
@@ -47,7 +47,7 @@ sections:
       - label: Drohnen
         values: [20 bis 50, ab 100]
       - label: Dauer
-        values: [5 bis 8 Minuten, in der Regel etwa 13 Minuten]
+        values: ["{{duration.indoor.min}} bis {{duration.indoor.max}} Minuten", "in der Regel etwa {{duration.outdoor.typical}} Minuten"]
       - label: Gewicht je Drohne
         values: [188 g, ca. 300 g]
       - label: Ortung

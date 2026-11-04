@@ -1,3 +1,6 @@
+import durationData from './content/show-duration.json' with {type:'json'};
+import {showDurationSchema} from './schemas/show-duration.mjs';
+showDurationSchema.parse(durationData);
 import contactData from './content/contact.json' with {type:'json'};
 import {contactSchema} from './schemas/contact.mjs';
 contactSchema.parse(contactData);

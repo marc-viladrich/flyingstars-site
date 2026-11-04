@@ -1,6 +1,6 @@
 title: Indoor-droneshow
 navLabel: Indoor
-description: "Indoor-droneshows voor beurzen, podia en hallen: 20 tot 50 drones, 5 tot 8 minuten, vanaf 3 meter plafondhoogte. Apart berekend."
+description: "Indoor-droneshows voor beurzen, podia en hallen: 20 tot 50 drones, {{duration.indoor.min}} tot {{duration.indoor.max}} minuten, vanaf 3 meter plafondhoogte. Apart berekend."
 image: https://flyingstars.art/wp-content/uploads/2025/04/IMG_0201.jpg
 sections:
   - type: landingHero
@@ -23,7 +23,7 @@ sections:
     facts:
       - value: 20–50
         label: Drones
-      - value: 5–8 min.
+      - value: "{{duration.indoor.min}}–{{duration.indoor.max}} min."
         label: Showduur
       - value: vanaf 3 m
         label: Plafondhoogte
@@ -44,8 +44,8 @@ sections:
           - vanaf 100
       - label: Duur
         values:
-          - 5 tot 8 minuten
-          - meestal circa 13 minuten
+          - "{{duration.indoor.min}} tot {{duration.indoor.max}} minuten"
+          - "meestal circa {{duration.outdoor.typical}} minuten"
       - label: Gewicht per drone
         values:
           - 188 g
@@ -205,4 +205,4 @@ sections:
     kicker: Aanvraag
     headline: Vertel ons over jullie ruimte.
     text: Plafondhoogte, oppervlakte en datum zijn genoeg voor een eerste inschatting. We reageren binnen 48 uur.
-translationSourceHash: ca98ccc6e6f6e471561e2ef34fff43e28e5426dda8ab950b1ee3e6e0d5497a2c
+translationSourceHash: 61a3e1097bf7b5d867e2baf11e3073c4f295e84fd0842829f9f8f6a7b02e707b

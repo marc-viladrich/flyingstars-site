@@ -4,7 +4,7 @@
 import packageData from './show-packages.json' with {type:'json'};
 export type ShowPackage = Exclude<keyof typeof packageData, 'services'>;
 export const PACKAGE_NAMES = Object.keys(packageData).filter(name => name !== 'services') as ShowPackage[];
-export const SHOW_PACKAGES = Object.fromEntries(PACKAGE_NAMES.map(name=>[name,{...packageData[name],max:packageData[name].max??Infinity}])) as Record<ShowPackage,{base:number;max:number;price:number;step:number;add:number;dur:string;color:number[]}>;
+export const SHOW_PACKAGES = Object.fromEntries(PACKAGE_NAMES.map(name=>[name,{...packageData[name],max:packageData[name].max??Infinity}])) as Record<ShowPackage,{base:number;max:number;price:number;step:number;add:number;color:number[]}>;
 // Source provenance travels with this computed view of the canonical JSON, never with displayed text.
 Object.defineProperty(SHOW_PACKAGES,Symbol.for('afe.source'),{value:{owner:{collection:'showPackages',id:'configuration'},part:'data',path:[]}});
 export function priceFor(name: ShowPackage, drones: number): number | null {

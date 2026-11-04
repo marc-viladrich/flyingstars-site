@@ -1,4 +1,5 @@
 ---
+import {durationText} from '../content/show-duration.mjs';
 import Icon from './Icon.astro';
 import { forPath } from '../i18n/server';
 import { comparisonTone, comparisonIcon, type ComparisonValue } from '../lib/comparison';
@@ -18,7 +19,7 @@ const label = t(tone === 'yes' ? (mobile ? 'pricingpage.mobileIncluded' : 'prici
   {/* Einordnung als Wort ohne Icon (Marc, 02.11.2026: Icons in dieser Vergleichstabelle verwirren) */}
   <span class:list={['m', badge.tone]}>{badge.label}</span>
   {badge.text && (mobile ? <span class="t">{badge.text}</span> : <> {badge.text}</>)}
-</> : tone === 'value' ? value : <span class={tone}>
+</> : tone === 'value' ? durationText(value) : <span class={tone}>
   <Icon name={comparisonIcon(tone)!} size={20} />
   <span class:list={{ 'sr-only': !mobile }}>{label}</span>
 </span>}

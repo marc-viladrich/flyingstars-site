@@ -1,0 +1,11 @@
+{
+  "outdoor": {
+    "min": 10,
+    "max": 25,
+    "typical": 13
+  },
+  "indoor": {
+    "min": 5,
+    "max": 8
+  }
+}

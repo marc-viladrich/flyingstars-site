@@ -4,4 +4,4 @@ tags: [planung, hochzeit, werbung]
 order: 13
 ---
 
-In der Regel etwa 13 Minuten. Bis zu 25 Minuten sind möglich. Eine Indoor-Show dauert 5 bis 8 Minuten.
+In der Regel etwa {{duration.outdoor.typical}} Minuten. Bis zu {{duration.outdoor.max}} Minuten sind möglich. Eine Indoor-Show dauert {{duration.indoor.min}} bis {{duration.indoor.max}} Minuten.

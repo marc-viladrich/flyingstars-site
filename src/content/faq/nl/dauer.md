@@ -5,7 +5,7 @@ tags:
   - hochzeit
   - werbung
 order: 13
-translationSourceHash: c61776019c98797ade765b9a0d47b84fed480102b37ce933a0e6898683a01441
+translationSourceHash: 7e1c7859ad60cf6b66739f935e3b5a877c1db6e76433259194b2d33293a77b26
 ---
 
-Meestal circa 13 minuten. Tot 25 minuten is mogelijk. Een indoor-show duurt 5 tot 8 minuten.
+Meestal circa {{duration.outdoor.typical}} minuten. Tot {{duration.outdoor.max}} minuten is mogelijk. Een indoor-show duurt {{duration.indoor.min}} tot {{duration.indoor.max}} minuten.

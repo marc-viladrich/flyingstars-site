@@ -5,7 +5,7 @@ tags:
   - hochzeit
   - werbung
 order: 13
-translationSourceHash: c61776019c98797ade765b9a0d47b84fed480102b37ce933a0e6898683a01441
+translationSourceHash: 7e1c7859ad60cf6b66739f935e3b5a877c1db6e76433259194b2d33293a77b26
 ---
 
-Usually around 13 minutes. Up to 25 minutes is possible. An indoor show lasts 5 to 8 minutes.
+Usually around {{duration.outdoor.typical}} minutes. Up to {{duration.outdoor.max}} minutes is possible. An indoor show lasts {{duration.indoor.min}} to {{duration.indoor.max}} minutes.

@@ -1,4 +1,6 @@
 ---
+import {record,field} from 'astro-frontend-editor/markers';
+import {durationValues} from '../../content/show-duration.mjs';
 import configuratorStyles from '../../styles/show-configurator.css?url';
 import SectionHead from '../SectionHead.astro';
 import { forPath } from '../../i18n/server';
@@ -140,7 +142,7 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
       <div class="cfg-sum">
         <div class="cfg-result" aria-live="polite">
           <div class="cfg-price"><b id="cfg-pkg">{STEPS[start].pkg}</b><span id="cfg-price">{money(first.price)}</span></div>
-          <p class="cfg-meta mono" id="cfg-meta">{t('packageDetails.showtimeLine')} {t('showconfigurator.excludingVatAndTravel')}</p>
+          <p class="cfg-meta mono" id="cfg-meta" {...field({collection:'showDuration',id:'configuration'},['outdoor','min'],{mode:'panel'})}>{t('packageDetails.showtimeLine',durationValues())} {t('showconfigurator.excludingVatAndTravel')}</p>
         </div>
         <a class="btn primary cfg-cta" id="cfg-cta" href={localHref("/#anfrage")}>{t('showconfigurator.enquireAboutThisShow')}</a>
         <p class="cfg-note" id="cfg-note">{t('showconfigurator.allMotifsShownHereAreExamplesWeCreateOriginalDesigns')}</p>
