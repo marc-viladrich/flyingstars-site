@@ -21,9 +21,9 @@ sections:
       width: 1920
       height: 1281
     facts:
-      - value: "178"
+      - value: { fact: showsTotal }
         label: shows sinds 2022
-      - value: 48 h
+      - value: { fact: responseHours, display: hours }
         label: tot ons antwoord
       - value: 1–2 weken
         label: met express
@@ -262,4 +262,4 @@ sections:
     kicker: Aanvraag
     headline: Vertel ons over jullie campagne.
     text: Datum, locatie en doel zijn genoeg. Jullie logo mogen jullie later per e-mail sturen.
-translationSourceHash: 3cb1dbdbf5be97605ac12bf8ee24820eff996e2004030240133e0c1081ee7250
+translationSourceHash: aa0959e2e05400db7dc08af5fa4eb2adda720052c3fde9137cde136df5190b84

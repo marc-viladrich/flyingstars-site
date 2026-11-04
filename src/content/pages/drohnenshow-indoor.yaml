@@ -144,7 +144,7 @@ sections:
     kicker: Ablauf
     headline: Wenig Aufwand für euch, von der Anfrage bis zur Show.
     marks:
-      - { value: 48 h, label: bis zu unserer Antwort, text: "Ihr erzählt uns von Raum, Anlass und Termin." }
+      - { value: { fact: responseHours, display: hours }, label: bis zu unserer Antwort, text: "Ihr erzählt uns von Raum, Anlass und Termin." }
       - { value: 6–8 Wochen, label: "Vorlauf, ideal", text: "Design und Planung im Raum. Vorab seht ihr die Show als Video oder bei einem Testflug." }
       - { value: 45 Min, label: Aufbau bis startklar, text: Wir beginnen ab zwei Stunden vor der Show. }
     todo: FlyingStars muss 6–8 Wochen Vorlauf, 45 Minuten Aufbau und Ankunft zwei Stunden vor der Show für die aktuelle Indoor-Technik bestätigen; diese Werte stammen bisher nur von der alten Website.

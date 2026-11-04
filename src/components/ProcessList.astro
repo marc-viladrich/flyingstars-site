@@ -1,7 +1,10 @@
 ---
+import {factText} from '../content/show-extras.mjs';
+import {forPath} from '../i18n/server';
+const {locale}=forPath(Astro.url.pathname);
 import Icon from './Icon.astro';
 import { processEntries } from '../lib/lists';
-interface Item { title?: string; text?: string; duration?: string; when?: string; value?: string; label?: string; gate?: boolean }
+interface Item { title?: string; text?: string; duration?: string; when?: string; value?: string | import('../content/business-facts.mjs').BusinessRef; label?: string; gate?: boolean }
 interface Props { items: Item[]; variant: 'steps' | 'milestones' | 'flow' | 'metro'; level?: 'h2' | 'h3' }
 const { items, variant, level: T = 'h3' } = Astro.props;
 const entries = processEntries(items);
@@ -16,7 +19,7 @@ const cls = { steps: 'steps', milestones: 'ms', flow: 'lf-steps', metro: 'ruler'
       <span class="lf-dot" aria-hidden="true">{item.gate && <Icon name="check" size={16} strokeWidth={2.6} />}</span>
       <div class="lf-body"><span class="lf-n mono">{item.ordinal}{item.gate && <> · Freigabe</>}</span><T>{item.title}</T><p>{item.text}</p>{item.duration && <span class="lf-t mono">{item.duration}</span>}</div>
     </> : variant === 'metro' ? <>
-      <span class="dot" aria-hidden="true"></span><b class="v">{item.value}</b><span class="l mono">{item.label}</span>{item.text && <p>{item.text}</p>}
+      <span class="dot" aria-hidden="true"></span><b class="v">{factText(item.value,locale)}</b><span class="l mono">{item.label}</span>{item.text && <p>{item.text}</p>}
     </> : <><T>{item.title}</T><p>{item.text}</p>{item.duration && <span class="t mono">{item.duration}</span>}</>}
   </li>)}
 </ol>

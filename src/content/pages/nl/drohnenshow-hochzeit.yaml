@@ -129,7 +129,7 @@ sections:
     headline: Jullie vieren, wij regelen de rest.
     text: Jullie regelen het feest. Wij melden ons als we een beslissing nodig hebben. Eén tot twee maanden voorbereiding is ideaal.
     marks:
-      - value: 48 h
+      - value: { fact: responseHours, display: hours }
         label: tot ons antwoord
         text: Datum, locatie en jullie idee zijn genoeg. Daarna volgen een kort gesprek en jullie offerte.
       - value: 1–2 maanden
@@ -184,4 +184,4 @@ sections:
     kicker: Aanvraag
     headline: Vertel ons over jullie trouwdag.
     text: Datum en locatie zijn genoeg voor het begin. We reageren binnen 48 uur met een eerste inschatting.
-translationSourceHash: 3b4933c8fb30e3137b8a3291e94ffb44bcd6e1413462e5e50f76fb7f6d19e3ab
+translationSourceHash: 463ee9ca26e21791cd6d3bc3e5e611ce881c0906da93f8f170d5378a5d95e4f0

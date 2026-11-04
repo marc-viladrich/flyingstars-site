@@ -1,3 +1,4 @@
+import {businessValue} from './business-facts.mjs';
 import {createTranslator} from '../i18n/ui.mjs';
 import data from './show-extras.json' with {type:'json'};
 import {durationText} from './show-duration.mjs';
@@ -16,5 +17,5 @@ export function offerText(text,locale='de',source=data,{markdown=false}={}){
   if(typeof value!=='number')throw Error(`Unbekannter Angebotsfakt: ${path}`);return output(value);
  });
 }
-export const factText=(text,locale='de',options={})=>offerText(durationText(text),locale,data,options);
+export const factText=(text,locale='de',options={})=>offerText(durationText(businessValue(text,locale)),locale,data,options);
 export function footageCell(name,locale='de',source=data){return source.film.includedIn.includes(name)?true:(source.film.price.qualifier==='surcharge'?'':'+')+priceLine(source.film.price,locale,{style:'suffix'});}

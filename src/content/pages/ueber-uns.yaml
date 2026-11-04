@@ -190,7 +190,7 @@ sections:
       - { label: Kein Knall, value: leise, text: "Die Drohnen summen, laut ist nur eure Musik. Den Schallschutz hat der TÜV Nord in einem Gutachten untersucht." }
       - { label: Kein Rauch, value: "0", unit: g, text: "Keine Pyrotechnik, also kein Rauch und keine Schwermetalle über dem Publikum." }
       - { label: Kein Müll, value: "0", unit: kg, text: "Keine Hülsen, keine Reste. Dieselben Drohnen fliegen Show für Show." }
-      - { label: Ökostrom, value: "100", unit: "%", text: Ökostrom von naturstrom für unsere Akkus. }
+      - { label: Ökostrom, value: { fact: renewablePercent }, unit: "%", text: Ökostrom von naturstrom für unsere Akkus. }
     # Icon-Raster wie auf der Startseite (pillars), hier mit dem Hersteller als Beleg
     pillars:
       - { icon: eu, title: Gebaut in der EU, text: "Unsere Drohnen wiegen rund 300 Gramm und werden bei Drotek SAS in Frankreich gebaut." }
@@ -205,7 +205,7 @@ sections:
     headline: Erfahrung, die man zählen kann.
     text: Stand 21. Oktober 2026.
     items:
-      - { label: Shows, value: "178", text: Seit der ersten Show im August 2022. In diesem Jahr waren es bis Oktober 50. }
+      - { label: Shows, value: { fact: showsTotal }, text: Seit der ersten Show im August 2022. In diesem Jahr waren es bis Oktober 50. }
       - { label: Gegründet, value: "2021", text: Am 1. Dezember 2021 haben wir das Gewerbe angemeldet. }
       - { label: Größte Einzelshow, value: 600 Drohnen, text: "Im Musical Bokkenrijders in Maastricht, 2025 als Teaser und 2026 an 20 Abenden." }
       - { label: Drohnen-Einsätze in einem Monat, value: "12.000", text: "Im Juni 2026, 20 Shows mit je 600 Drohnen." }

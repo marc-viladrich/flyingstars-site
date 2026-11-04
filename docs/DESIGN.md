@@ -316,3 +316,7 @@ Die Paketbezeichnung wird weiterhin im bestehenden Datensatz „Website-Texte“
 Fakten, die in FAQ-Markdown eingesetzt werden, werden vor dem Markdown-Parser als Text maskiert. Die normalen Astro-Ausgaben bleiben bei ihrer eigenen Text-Escapierung. Der Guard prüft die echte `marked`-Ausgabe mit HTML, Hervorhebung und einem Markdown-Link als UI-Fakt; daraus dürfen keine HTML-Elemente oder Links entstehen.
 
 Projizierte FAQ- und Danke-Texte verwenden im Editor die native Panel-Bearbeitung der Markdown-Quelle. Eine Inline-Bearbeitung des expandierten DOM würde Fakten als Literale zurückspeichern. Die Kontakt-/Dauer-Mutationsprüfungen sichern deshalb zusätzlich den Panel-Vertrag am tatsächlich gebauten Editor-Markup ab. Die Film-Inklusion steuert auch die explizite Paketangabe auf Werbung und den Rohmaterial-Bestandteil der ODYSSEY-Betreuung; frei formulierte Teile dieser Texte bleiben im UI-Wörterbuch.
+
+## Geschäftsfakten
+
+Numerische Geschäftsaussagen mit Geltungsbereich und Stand liegen in `src/content/business-facts.json`, im Editor unter „Geschäftsfakten“. Strukturierte Zahlenfelder können `{fact, display}` referenzieren. Freie Texte bleiben frei; `scripts/check-business-drift.mjs` meldet Abweichungen mit tatsächlichen Feldpfaden. Keine neuen Rohplatzhalter in redaktionelle Texte schreiben. Versicherungs-Bis-Beträge, historische Bestände und Rundungen sind keine erweiterten Leistungszusagen. Quellen-/Freigabestatus steht am Fakt.

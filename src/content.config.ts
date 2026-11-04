@@ -1,3 +1,6 @@
+import businessFacts from './content/business-facts.json' with {type:'json'};
+import {businessFactsSchema} from './schemas/business-facts.mjs';
+businessFactsSchema.parse(businessFacts);
 import extrasData from './content/show-extras.json' with {type:'json'};
 import {showExtrasSchema} from './schemas/show-extras.mjs';
 showExtrasSchema.parse(extrasData);

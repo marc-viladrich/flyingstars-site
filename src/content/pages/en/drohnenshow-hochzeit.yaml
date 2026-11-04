@@ -129,7 +129,7 @@ sections:
     headline: You celebrate, we take care of the rest.
     text: You plan the celebration. We'll get in touch when we need a decision. One to two months' notice is ideal.
     marks:
-      - value: 48 h
+      - value: { fact: responseHours, display: hours }
         label: until our reply
         text: A date, venue and your idea are enough. Then a short conversation and your quote.
       - value: 1–2 months
@@ -184,4 +184,4 @@ sections:
     kicker: Enquiry
     headline: Tell us about your wedding day.
     text: A date and venue are enough to start. We'll reply within 48 hours with an initial assessment.
-translationSourceHash: 3b4933c8fb30e3137b8a3291e94ffb44bcd6e1413462e5e50f76fb7f6d19e3ab
+translationSourceHash: 463ee9ca26e21791cd6d3bc3e5e611ce881c0906da93f8f170d5378a5d95e4f0

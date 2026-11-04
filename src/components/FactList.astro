@@ -3,7 +3,7 @@ import {forPath} from '../i18n/server';
 const {locale}=forPath(Astro.url.pathname);
 import {factText} from '../content/show-extras.mjs';
 import { factColumns } from '../lib/lists';
-interface Fact { label: string; value?: string | number; unit?: string; text?: string; count?: number }
+interface Fact { label: string; value?: string | number | import('../content/business-facts.mjs').BusinessRef; unit?: string; text?: string; count?: number }
 interface Props { items: Fact[]; variant?: 'metrics' | 'tempo' | 'numbers' | 'credits' | 'hero' | 'story' | 'spotlight' | 'eco' | 'spec'; label?: string }
 const { items, variant = 'metrics', label } = Astro.props;
 const root = { metrics: 'sheet', tempo: 'tempo-facts', numbers: 'c-numbers', credits: 'c-credits mono', hero: 'lh-facts', story: 'ls-facts', spotlight: 'sp-facts', eco: 'eco-facts', spec: 'spec mono' }[variant];

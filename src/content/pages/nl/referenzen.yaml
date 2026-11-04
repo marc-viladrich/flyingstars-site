@@ -32,7 +32,7 @@ sections:
         value: "50"
         text: Tot 21 oktober. Onder andere 20 avonden Bokkenrijders met elk 600 drones en E.ON in Hamburg.
       - label: Totaal
-        value: "178"
+        value: { fact: showsTotal }
         text: Voor merken, steden, festivals en stellen, in Duitsland en Europa.
     todo: FlyingStars muss die Jahreszahlen einschließlich 2026 aktualisieren oder den Stand 21.10.2026 ausdrücklich beibehalten; 178 ist keine laufende Live-Zählung.
   - type: logoBar
@@ -87,4 +87,4 @@ sections:
     button:
       label: Vraag een show aan
       href: /kontakt/
-translationSourceHash: befc3c4b90a59902b1178304eff838aef52a666576c2e46e029fe3b05008022a
+translationSourceHash: 46114dc89d082a0c059699b221da11510400f05dd63ca0177dfe5f6a4b4d38ea

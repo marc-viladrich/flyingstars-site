@@ -21,7 +21,7 @@ sections:
       height: 900
     video: https://flyingstars.art/wp-content/uploads/2026/05/Flyingstars-Showreel.mp4
     stats:
-      - { label: Shows, value: "178" }
+      - { label: Shows, value: { fact: showsTotal } }
       - { label: Basis, value: 51.51° N · 7.10° E }
     todo: Moritz muss die Einstiegs- und Anlass-Texte sowie EN/NL prüfen; FlyingStars muss den Showstand aktualisieren oder 178 ausdrücklich mit Stand 21.10.2026 führen.
 
@@ -151,12 +151,12 @@ sections:
     headline: Von der Anfrage bis zum Showabend.
     text: Ideal sind ein bis zwei Monate Vorlauf. Wenn es eilt, geht es auch in ein bis zwei Wochen.
     marks:
-      - { value: 48 h, label: bis zu unserer Antwort, text: "Meist schneller, per Mail, Telefon oder Videocall." }
+      - { value: { fact: responseHours, display: hours }, label: bis zu unserer Antwort, text: "Meist schneller, per Mail, Telefon oder Videocall." }
       - { value: 1–2 Monate, label: "Vorlauf, ideal", text: Genug Zeit für eure Freigaben im Design und für die Genehmigung. }
       - { value: 3 h, label: Aufbau am Showtag, text: "Unser Team baut auf, fliegt die Show und packt wieder ein." }
     shortcut: { value: Express in 1–2 Wochen, label: bei Bedarf zubuchbar, text: "Für PUMA kam die Anfrage 14 Tage vor dem Derby, die Show flog pünktlich zum Anstoß.", href: "/kontakt/?extras=express" }
     facts:
-      - { value: 178 Shows, label: Erfahrung, text: "Seit August 2022, Stand Oktober 2026" }
+      - { value: { fact: showsTotal, display: shows }, label: Erfahrung, text: "Seit August 2022, Stand Oktober 2026" }
       - { value: 600 Drohnen, label: Größte Show, text: "Musical Bokkenrijders in Maastricht, an 20 Abenden" }
       - { value: Design · Genehmigung · Flotte, label: Aus einer Hand, text: "Eigenes Design-Team, eigene Genehmigung, eigene Drohnen" }
 
@@ -193,7 +193,7 @@ sections:
       - { label: Kein Knall, value: leise, text: "Die Drohnen summen, laut ist nur eure Musik. Den Schallschutz hat der TÜV Nord in einem Gutachten untersucht." }
       - { label: Kein Rauch, value: "0", unit: g, text: "Keine Pyrotechnik, also kein Rauch und keine Schwermetalle über dem Publikum." }
       - { label: Kein Müll, value: "0", unit: kg, text: "Keine Hülsen, keine Reste. Dieselben Drohnen fliegen Show für Show." }
-      - { label: Ökostrom, value: "100", unit: "%", text: Ökostrom von naturstrom für unsere Akkus. }
+      - { label: Ökostrom, value: { fact: renewablePercent }, unit: "%", text: Ökostrom von naturstrom für unsere Akkus. }
     # Vier Punkte im Raster unter den vier Zahlen (Marc 31.10.: statt Kasten, mit großen Icons). Nur belegte Aussagen (EmpCo).
     pillars:
       - { icon: eu, title: Gebaut in der EU, text: Unsere Drohnen werden in der EU gefertigt. }

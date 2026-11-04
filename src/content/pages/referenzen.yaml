@@ -22,7 +22,7 @@ sections:
       - { label: "2024", value: "45", text: "Darunter 50 Jahre VW Golf am Wolfgangsee und der neue Ford Explorer in Köln." }
       - { label: "2025", value: "33", text: "Darunter die erste Indoor-Show für Siemens auf der Hannover Messe und das NFL Berlin Game." }
       - { label: "2026", value: "50", text: "Bis 21. Oktober. Darunter 20 Abende Bokkenrijders mit je 600 Drohnen und E.ON in Hamburg." }
-      - { label: Gesamt, value: "178", text: "Für Marken, Städte, Festivals und Paare, in Deutschland und Europa." }
+      - { label: Gesamt, value: { fact: showsTotal }, text: "Für Marken, Städte, Festivals und Paare, in Deutschland und Europa." }
     todo: FlyingStars muss die Jahreszahlen einschließlich 2026 aktualisieren oder den Stand 21.10.2026 ausdrücklich beibehalten; 178 ist keine laufende Live-Zählung.
 
   - type: logoBar

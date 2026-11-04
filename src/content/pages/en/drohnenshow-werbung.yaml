@@ -21,9 +21,9 @@ sections:
       width: 1920
       height: 1281
     facts:
-      - value: "178"
+      - value: { fact: showsTotal }
         label: shows since 2022
-      - value: 48 h
+      - value: { fact: responseHours, display: hours }
         label: until our reply
       - value: 1–2 weeks
         label: with express service
@@ -262,4 +262,4 @@ sections:
     kicker: Enquiry
     headline: Tell us about your campaign.
     text: A date, location and goal are enough. You can send your logo by email later.
-translationSourceHash: 3cb1dbdbf5be97605ac12bf8ee24820eff996e2004030240133e0c1081ee7250
+translationSourceHash: aa0959e2e05400db7dc08af5fa4eb2adda720052c3fde9137cde136df5190b84

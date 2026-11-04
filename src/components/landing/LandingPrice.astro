@@ -47,7 +47,7 @@ const scale = p && Number.isFinite(p.max) ? t('landingprice.upToValueDronesValue
           </li>)}</ul>
         </div>
       ))}
-      {bonus && <div class="lp-bonus"><span class="lp-bonus-v grad">{bonus.value}</span><p>{bonus.text}</p></div>}
+      {bonus && <div class="lp-bonus"><span class="lp-bonus-v grad">{factText(bonus.value,locale)}</span><p>{bonus.text}</p></div>}
     </div>
   </div>
   <CtaBox {...closing} level={T} class="lp-close" />

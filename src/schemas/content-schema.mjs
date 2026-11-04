@@ -1,3 +1,4 @@
+import {businessValueSchema} from './business-facts.mjs';
 import {PACKAGE_NAMES} from '../content/package-identity.mjs';
 import {factText} from '../content/show-extras.mjs';
 import { z } from 'zod';
@@ -36,7 +37,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     headline: z.string().min(1), text: z.string().min(1), eyebrow: z.string().optional().describe('Kicker über der Headline'),
     words: z.array(z.string().min(1)).optional().describe('Wechselndes Wort im Verlauf hinter der Headline'),
     cta: link, secondary: link.optional(),
-    poster: image, video: z.url(), stats: z.array(z.object({ label: z.string(), value: z.string() })).optional(),
+    poster: image, video: z.url(), stats: z.array(z.object({ label: z.string(), value: businessValueSchema })).optional(),
   }),
   z.object({
     type: z.literal('occasions'), ...sectionHeading,
@@ -48,14 +49,14 @@ export const sectionSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('metrics'), ...sectionHeading,
     headline: z.string().min(1), text: z.string().optional(),
-    items: z.array(z.object({ label: z.string(), value: z.string().optional(), text: z.string() })).min(1),
+    items: z.array(z.object({ label: z.string(), value: businessValueSchema.optional(), text: z.string() })).min(1),
     cta: link.optional(),
   }),
   z.object({
     type: z.literal('sustainability'), ...sectionHeading,
     // Nachhaltigkeit in 2D (keine Scrollstory): Kopf, optional bis zu vier Kennzahlen, optional Sätze, optional Beleg.
     headline: z.string().min(1), text: z.string().optional(),
-    facts: z.array(z.object({ label: z.string(), value: z.string(), unit: z.string().optional(),
+    facts: z.array(z.object({ label: z.string(), value: businessValueSchema, unit: z.string().optional(),
       text: z.string(), tone: legacy.describe('Veraltet (Kontur/Verlauf), wird ignoriert') })).max(4).optional(),
     points: z.array(z.string().min(1)).optional().describe('Kurze, belegbare Sätze, je einer pro Punkt'),
     pillars: z.array(z.object({ icon: z.enum(['eu', 'repair', 'ev', 'campaign', 'leaf']), title: z.string().min(1), text: z.string().min(1) })).max(4).optional()
@@ -250,11 +251,11 @@ export const sectionSchema = z.discriminatedUnion('type', [
     // der zeigt, wie schnell es gehen kann; darunter Kennzahlen aus „In Zahlen statt in Adjektiven“.
     type: z.literal('tempo'), ...sectionHeading,
     headline: z.string().min(1), text: z.string().optional(),
-    marks: z.array(z.object({ value: z.string().min(1), label: z.string().min(1), text: z.string().optional() })).min(2).max(5),
-    shortcut: z.object({ value: z.string().min(1), label: z.string().min(1), text: z.string().optional(),
+    marks: z.array(z.object({ value: businessValueSchema, label: z.string().min(1), text: z.string().optional() })).min(2).max(5),
+    shortcut: z.object({ value: businessValueSchema, label: z.string().min(1), text: z.string().optional(),
       href: z.string().optional() }).strict().optional()
       .describe('Abzweigung im Netzplan (MetroLine.astro), z. B. Express: von der ersten zur letzten Station; mit href wird das Schild selbst zum Knopf'),
-    facts: z.array(z.object({ value: z.string().min(1), label: z.string().min(1), text: z.string().optional() })).default([]),
+    facts: z.array(z.object({ value: businessValueSchema, label: z.string().min(1), text: z.string().optional() })).default([]),
     note: z.string().optional(),
   }),
   // --- Anlass-Landingpages (Marc, 31.10.2026: „deutlich mehr in dieses Interaktive … mehr Variation in den Layouts“).
@@ -267,14 +268,14 @@ export const sectionSchema = z.discriminatedUnion('type', [
     video: z.enum(['showreel', 'bokkenrijders', 'nfl', 'ford', 'puma', 'siemensIndoor']).describe('Schlüssel aus src/lib/videos.ts'),
     videoLabel: z.string().optional().describe('Kleine Beschriftung im Rahmen, z. B. "Ford Explorer · Köln"'),
     poster: image.describe('Standbild bis zum ersten Videobild und bei reduzierter Bewegung'),
-    facts: z.array(z.object({ value: z.string().min(1), label: z.string().min(1) })).max(4).default([]),
+    facts: z.array(z.object({ value: businessValueSchema, label: z.string().min(1) })).max(4).default([]),
   }),
   z.object({
     // Referenzen als versetzte Geschichten: großes Bild mit Lichtpunkt-Hover, Ort und Datum, Kennzahlen, kurzer Text.
     type: z.literal('landingStories'), ...sectionHeading,
     headline: z.string().min(1), text: z.string().optional(), cta: link.optional(),
     items: z.array(z.object({ kicker: z.string().min(1), title: z.string().min(1), text: z.string().min(1), image,
-      facts: z.array(z.object({ value: z.string().min(1), label: z.string().min(1) })).max(3).default([]) })).min(1).max(3),
+      facts: z.array(z.object({ value: businessValueSchema, label: z.string().min(1) })).max(3).default([]) })).min(1).max(3),
   }),
   z.object({
     // Ausgewählte Referenzen (Projekte-Sammlung) nach ID, als Karten mit Showvideo wie auf der Startseite.
@@ -298,8 +299,8 @@ export const sectionSchema = z.discriminatedUnion('type', [
     customPrice: z.object({prefix:z.string().optional(),amount:z.string().min(1)}).strict().optional().describe('Eigener Preis in ausdrücklich getrennten Teilen'),
     unit: z.string().optional().describe('Zeile unter dem Preis, z. B. "netto für 20 Drohnen"'),
     groups: z.array(z.object({ title: z.string().min(1),
-      items: z.array(z.object({ label: z.string().min(1), value: z.string().optional() })).min(1) })).min(1).max(3),
-    bonus: z.object({ value: z.string().min(1), text: z.string().min(1) }).optional(),
+      items: z.array(z.object({ label: z.string().min(1), value: businessValueSchema.optional() })).min(1) })).min(1).max(3),
+    bonus: z.object({ value: businessValueSchema, text: z.string().min(1) }).optional(),
     closing: closingBox.describe('Abschluss unter der Preiskarte'),
   }),
   z.object({
@@ -314,7 +315,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
       detailLabel: z.string().min(1), flightLabel: z.string().min(1),
     }).strict(),
     items: z.array(z.object({
-      title: z.string().min(1), text: z.string().min(1), value: z.string().optional(),
+      title: z.string().min(1), text: z.string().min(1), value: businessValueSchema.optional(),
       zone: z.enum(['safety', 'operative', 'start', 'drones', 'guests', 'ceiling', 'floor', 'kit']),
     }).strict()).length(5),
     // Zuständigkeiten als Tabelle (Marc, 02.11.2026: „eine schön aufgearbeitete Tabelle … komprimierter, mehr mit Icons“):
@@ -365,7 +366,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     headline: z.string().min(1), text: z.string().optional(), image,
     tags: z.array(z.string().min(1)).default([]),
     entries: z.array(z.object({ kicker: z.string().min(1), title: z.string().min(1), text: z.string().optional() })).default([]),
-    facts: z.array(z.object({ value: z.string().min(1), label: z.string().min(1) })).max(4).default([]),
+    facts: z.array(z.object({ value: businessValueSchema, label: z.string().min(1) })).max(4).default([]),
   }),
   z.object({
     // Abschluss mit Handlung und den Gesichtern der drei Geschäftsführer:innen.

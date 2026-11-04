@@ -9,8 +9,8 @@
 import ProcessList from './ProcessList.astro';
 import Icon from './Icon.astro';
 import { forPath } from '../i18n/server';
-interface Mark { value: string; label: string; text?: string }
-interface Branch { value: string; label: string; text?: string; href?: string }
+interface Mark { value: string | import('../content/business-facts.mjs').BusinessRef; label: string; text?: string }
+interface Branch { value: string | import('../content/business-facts.mjs').BusinessRef; label: string; text?: string; href?: string }
 interface Props { marks: Mark[]; branch?: Branch }
 const { marks, branch } = Astro.props;
 const { localHref } = forPath(Astro.url.pathname);

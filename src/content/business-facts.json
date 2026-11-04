@@ -1,0 +1,74 @@
+{
+  "responseHours": {
+    "value": 48,
+    "unit": "hours",
+    "scope": "Erste Antwort auf Anfragen, keine Angebots- oder Durchführungsgarantie",
+    "asOf": "2026-10-21",
+    "source": "FlyingStars-Fragebogen 21.10.2026; bestehende FAQ und Sicherheits-/Umwelttexte",
+    "status": "existing-claim"
+  },
+  "depositPercent": {
+    "value": 40,
+    "unit": "percent",
+    "scope": "Anzahlung bei Auftragsbestätigung; übrige Bedingungen bleiben in AGB",
+    "asOf": "2026-10-21",
+    "source": "FlyingStars-Fragebogen 21.10.2026; bestehende FAQ und Sicherheits-/Umwelttexte",
+    "status": "existing-claim"
+  },
+  "earlyBookingPercent": {
+    "value": 10,
+    "unit": "percent",
+    "scope": "Buchung bis Jahresende für das Folgejahr",
+    "asOf": "2026-10-21",
+    "source": "FlyingStars-Fragebogen 21.10.2026; bestehende FAQ und Sicherheits-/Umwelttexte",
+    "status": "existing-claim"
+  },
+  "liabilityEUR": {
+    "value": 1300000,
+    "unit": "EUR",
+    "scope": "Bis-Betrag je Paket; ausdrücklich keine Bestätigung der ungeklärten Indoor-Deckung",
+    "asOf": "2026-10-21",
+    "source": "FlyingStars-Fragebogen 21.10.2026; bestehende FAQ und Sicherheits-/Umwelttexte",
+    "status": "existing-claim"
+  },
+  "renewablePercent": {
+    "value": 100,
+    "unit": "percent",
+    "scope": "Laden der Showakkus mit naturstrom, keine Gesamtbilanz",
+    "asOf": "2026-10-21",
+    "source": "FlyingStars-Fragebogen 21.10.2026; bestehende FAQ und Sicherheits-/Umwelttexte",
+    "status": "existing-claim"
+  },
+  "droneWeightGrams": {
+    "value": 300,
+    "unit": "grams",
+    "scope": "Rundwert der bisherigen Drotek-Showdrohnen",
+    "asOf": "2026-10-21",
+    "source": "FlyingStars-Fragebogen 21.10.2026; bestehende FAQ und Sicherheits-/Umwelttexte",
+    "status": "existing-claim"
+  },
+  "maxAltitudeMetres": {
+    "value": 120,
+    "unit": "metres",
+    "scope": "In der Regel, keine standortunabhängige Genehmigung",
+    "asOf": "2026-10-21",
+    "source": "FlyingStars-Fragebogen 21.10.2026; bestehende FAQ und Sicherheits-/Umwelttexte",
+    "status": "existing-claim"
+  },
+  "windForce": {
+    "value": 5,
+    "unit": "Beaufort",
+    "scope": "Bisherige Aussage; aktuelle Betriebs-/AGB-Grenzen fachlich offen",
+    "asOf": "2026-10-21",
+    "source": "FlyingStars-Fragebogen 21.10.2026; bestehende FAQ und Sicherheits-/Umwelttexte",
+    "status": "existing-claim"
+  },
+  "showsTotal": {
+    "value": 178,
+    "unit": "shows",
+    "scope": "Seit August 2022, Snapshot vom 21.10.2026; über 150 bleibt zulässig",
+    "asOf": "2026-10-21",
+    "source": "FlyingStars-Fragebogen 21.10.2026; bestehende FAQ und Sicherheits-/Umwelttexte",
+    "status": "existing-claim"
+  }
+}

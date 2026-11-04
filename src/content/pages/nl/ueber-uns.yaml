@@ -248,7 +248,7 @@ sections:
     text: Stand 21 oktober 2026.
     items:
       - label: Shows
-        value: "178"
+        value: { fact: showsTotal }
         text: Sinds de eerste show in augustus 2022. Dit jaar waren het er tot oktober 50.
       - label: Opgericht
         value: "2021"
@@ -266,4 +266,4 @@ sections:
     button:
       label: Vraag een show aan
       href: /kontakt/
-translationSourceHash: 312a97ba4bc9297423e399bc0cce66db202ed8d035934dc621a9854d5fafae7d
+translationSourceHash: a540b79b63e2a4f6c211171ea95f6783dcefed54d536743d662db906585a7249

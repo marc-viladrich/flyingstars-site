@@ -161,7 +161,7 @@ sections:
     kicker: Verloop
     headline: Weinig moeite voor jullie, van aanvraag tot show.
     marks:
-      - value: 48 h
+      - value: { fact: responseHours, display: hours }
         label: tot ons antwoord
         text: Vertel ons over de ruimte, de gelegenheid en de datum.
       - value: 6–8 weken
@@ -205,4 +205,4 @@ sections:
     kicker: Aanvraag
     headline: Vertel ons over jullie ruimte.
     text: Plafondhoogte, oppervlakte en datum zijn genoeg voor een eerste inschatting. We reageren binnen 48 uur.
-translationSourceHash: 8b55bfd0d0fb98a0e6500dcabe8c36eb176a12d159e72934d7921adb78aefc84
+translationSourceHash: ca1d9eb7e891722a0b9389308ca44affaf588e85553cfd8dea19eda4b4f22c07

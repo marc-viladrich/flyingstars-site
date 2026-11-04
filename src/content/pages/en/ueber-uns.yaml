@@ -248,7 +248,7 @@ sections:
     text: As of 21 October 2026.
     items:
       - label: Shows
-        value: "178"
+        value: { fact: showsTotal }
         text: Since our first show in August 2022. This year, we had flown 50 by October.
       - label: Founded
         value: "2021"
@@ -266,4 +266,4 @@ sections:
     button:
       label: Request a show
       href: /kontakt/
-translationSourceHash: 312a97ba4bc9297423e399bc0cce66db202ed8d035934dc621a9854d5fafae7d
+translationSourceHash: a540b79b63e2a4f6c211171ea95f6783dcefed54d536743d662db906585a7249

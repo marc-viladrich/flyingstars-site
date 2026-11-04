@@ -25,7 +25,7 @@ sections:
     video: https://flyingstars.art/wp-content/uploads/2026/05/Flyingstars-Showreel.mp4
     stats:
       - label: Shows
-        value: "178"
+        value: { fact: showsTotal }
       - label: Basis
         value: 51.51° N · 7.10° E
     todo: Moritz muss die Einstiegs- und Anlass-Texte sowie EN/NL prüfen; FlyingStars muss den Showstand aktualisieren oder 178 ausdrücklich mit Stand 21.10.2026 führen.
@@ -245,7 +245,7 @@ sections:
     headline: Van aanvraag tot showavond.
     text: Eén tot twee maanden voorbereiding is ideaal. Als het haast heeft, kan het ook binnen één tot twee weken.
     marks:
-      - value: 48 h
+      - value: { fact: responseHours, display: hours }
         label: tot ons antwoord
         text: Meestal sneller, per e-mail, telefoon of videogesprek.
       - value: 1–2 maanden
@@ -260,7 +260,7 @@ sections:
       text: PUMA stuurde de aanvraag 14 dagen voor de derby. De show vloog op tijd voor de aftrap.
       href: /kontakt/?extras=express
     facts:
-      - value: 178 shows
+      - value: { fact: showsTotal, display: shows }
         label: Ervaring
         text: Sinds augustus 2022, stand oktober 2026
       - value: 600 drones
@@ -521,4 +521,4 @@ sections:
     headline: Vertel ons over jullie datum.
     text: Datum, locatie en gelegenheid zijn genoeg voor een eerste inschatting. Laat open wat jullie nog niet weten.
     todo: FlyingStars und die Datenschutzberatung müssen Versanddienst, Empfängerpostfach, Auftragsverarbeitung, Drittlandtransfers und Löschfristen festlegen und die Datenschutzhinweise freigeben.
-translationSourceHash: 3b644e2ca47ad2fcb4c88928a05fa915a9e7655074690c93fcc135f4e5d297f5
+translationSourceHash: 664123c9f434bf777b25a489fbb1e168b8679e009edeab578eb0e3cf202b4954

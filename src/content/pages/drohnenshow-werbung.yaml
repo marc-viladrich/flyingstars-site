@@ -27,8 +27,8 @@ sections:
       height: 1281
     # Entwurf für Moritz: Eckdaten (Startseite und Fragebogen)
     facts:
-      - { value: "178", label: Shows seit 2022 }
-      - { value: 48 h, label: bis zur Antwort }
+      - { value: { fact: showsTotal }, label: Shows seit 2022 }
+      - { value: { fact: responseHours, display: hours }, label: bis zur Antwort }
       - { value: 1–2 Wochen, label: im Express }
     todo: Moritz muss die deutsche Endfassung und die maschinell übersetzten EN-/NL-Texte redaktionell prüfen.
 

@@ -1,0 +1,143 @@
+{
+  "src/content/faq/indoor-kosten.md": {
+    "{{offer.indoor.priceGuide}}": 1,
+    "{{offer.indoor.drones.min}}": 1
+  },
+  "src/content/faq/dauer.md": {
+    "{{duration.indoor.max}}": 1,
+    "{{duration.outdoor.max}}": 1,
+    "{{duration.indoor.min}}": 1,
+    "{{duration.outdoor.typical}}": 1
+  },
+  "src/content/faq/indoor-moeglich.md": {
+    "{{duration.indoor.max}}": 1,
+    "{{offer.indoor.drones.min}}": 1,
+    "{{duration.indoor.min}}": 1,
+    "{{offer.indoor.drones.max}}": 1
+  },
+  "src/content/faq/indoor-raum.md": {
+    "{{offer.indoor.ceilingMin}}": 1
+  },
+  "src/content/pages/danke.yaml": {
+    "{{contact.phone.href}}": 1,
+    "{{contact.email}}": 2,
+    "{{contact.phone.label}}": 1
+  },
+  "src/content/pages/drohnenshow-werbung.yaml": {
+    "{{offer.film.price}}": 1,
+    "{{offer.film.included}}": 1
+  },
+  "src/content/pages/drohnenshow-indoor.yaml": {
+    "{{duration.indoor.max}}": 3,
+    "{{duration.indoor.min}}": 3,
+    "{{duration.outdoor.typical}}": 1,
+    "{{offer.indoor.drones.min}}": 7,
+    "{{offer.indoor.ceilingMin}}": 6,
+    "{{offer.indoor.priceLine}}": 1,
+    "{{offer.indoor.drones.max}}": 4
+  },
+  "src/content/pages/drohnenshow-hochzeit.yaml": {
+    "{{offer.film.priceSuffix}}": 1
+  },
+  "src/content/pages/index.yaml": {
+    "{{duration.indoor.max}}": 1,
+    "{{duration.indoor.min}}": 1,
+    "{{offer.indoor.ceilingWords}}": 1,
+    "{{offer.indoor.drones.min}}": 1,
+    "{{offer.indoor.drones.max}}": 1
+  },
+  "src/content/pages/nl/danke.yaml": {
+    "{{contact.phone.href}}": 1,
+    "{{contact.email}}": 2,
+    "{{contact.phone.label}}": 1
+  },
+  "src/content/pages/nl/drohnenshow-werbung.yaml": {
+    "{{offer.film.price}}": 1,
+    "{{offer.film.included}}": 1
+  },
+  "src/content/pages/nl/drohnenshow-indoor.yaml": {
+    "{{duration.indoor.max}}": 3,
+    "{{duration.indoor.min}}": 3,
+    "{{duration.outdoor.typical}}": 1,
+    "{{offer.indoor.drones.min}}": 7,
+    "{{offer.indoor.ceilingMin}}": 6,
+    "{{offer.indoor.priceLine}}": 1,
+    "{{offer.indoor.drones.max}}": 4
+  },
+  "src/content/pages/nl/drohnenshow-hochzeit.yaml": {
+    "{{offer.film.priceSuffix}}": 1
+  },
+  "src/content/pages/nl/index.yaml": {
+    "{{duration.indoor.max}}": 1,
+    "{{duration.indoor.min}}": 1,
+    "{{offer.indoor.ceilingWords}}": 1,
+    "{{offer.indoor.drones.min}}": 1,
+    "{{offer.indoor.drones.max}}": 1
+  },
+  "src/content/pages/en/danke.yaml": {
+    "{{contact.phone.href}}": 1,
+    "{{contact.email}}": 2,
+    "{{contact.phone.label}}": 1
+  },
+  "src/content/pages/en/drohnenshow-werbung.yaml": {
+    "{{offer.film.price}}": 1,
+    "{{offer.film.included}}": 1
+  },
+  "src/content/pages/en/drohnenshow-indoor.yaml": {
+    "{{duration.indoor.max}}": 3,
+    "{{duration.indoor.min}}": 3,
+    "{{duration.outdoor.typical}}": 1,
+    "{{offer.indoor.drones.min}}": 8,
+    "{{offer.indoor.ceilingMin}}": 6,
+    "{{offer.indoor.priceLine}}": 1,
+    "{{offer.indoor.drones.max}}": 4
+  },
+  "src/content/pages/en/drohnenshow-hochzeit.yaml": {
+    "{{offer.film.priceSuffix}}": 1
+  },
+  "src/content/pages/en/index.yaml": {
+    "{{duration.indoor.max}}": 1,
+    "{{duration.indoor.min}}": 1,
+    "{{offer.indoor.ceilingWords}}": 1,
+    "{{offer.indoor.drones.min}}": 1,
+    "{{offer.indoor.drones.max}}": 1
+  },
+  "src/content/faq/nl/indoor-kosten.md": {
+    "{{offer.indoor.priceGuide}}": 1,
+    "{{offer.indoor.drones.min}}": 1
+  },
+  "src/content/faq/nl/dauer.md": {
+    "{{duration.indoor.max}}": 1,
+    "{{duration.outdoor.max}}": 1,
+    "{{duration.indoor.min}}": 1,
+    "{{duration.outdoor.typical}}": 1
+  },
+  "src/content/faq/nl/indoor-moeglich.md": {
+    "{{duration.indoor.max}}": 1,
+    "{{offer.indoor.drones.min}}": 1,
+    "{{duration.indoor.min}}": 1,
+    "{{offer.indoor.drones.max}}": 1
+  },
+  "src/content/faq/nl/indoor-raum.md": {
+    "{{offer.indoor.ceilingMin}}": 1
+  },
+  "src/content/faq/en/indoor-kosten.md": {
+    "{{offer.indoor.priceGuide}}": 1,
+    "{{offer.indoor.drones.min}}": 1
+  },
+  "src/content/faq/en/dauer.md": {
+    "{{duration.indoor.max}}": 1,
+    "{{duration.outdoor.max}}": 1,
+    "{{duration.indoor.min}}": 1,
+    "{{duration.outdoor.typical}}": 1
+  },
+  "src/content/faq/en/indoor-moeglich.md": {
+    "{{duration.indoor.max}}": 1,
+    "{{offer.indoor.drones.min}}": 1,
+    "{{duration.indoor.min}}": 1,
+    "{{offer.indoor.drones.max}}": 1
+  },
+  "src/content/faq/en/indoor-raum.md": {
+    "{{offer.indoor.ceilingMin}}": 1
+  }
+}

@@ -73,7 +73,7 @@ sections:
           - { label: Anfahrt ab Gelsenkirchen, value: nach Ort }
           - { label: Express unter 14 Tagen Vorlauf, value: nach Aufwand }
           - { label: Rohaufnahmen mit Kameradrohne, value: "{{offer.film.priceSuffix}}" }
-    bonus: { value: "−10 %", text: "Frühbucherrabatt: Bucht ihr bis zum Jahresende für eine Hochzeit im nächsten Jahr." }
+    bonus: { value: { fact: earlyBookingPercent, display: discount }, text: "Frühbucherrabatt: Bucht ihr bis zum Jahresende für eine Hochzeit im nächsten Jahr." }
     closing:
       headline: Euer Datum steht schon?
       text: Ronja, Florian und Erwin beantworten eure Anfrage innerhalb von 48 Stunden.
@@ -135,7 +135,7 @@ sections:
     headline: Ihr feiert, wir kümmern uns um den Rest.
     text: Ihr kümmert euch um die Feier, wir melden uns, wenn wir eine Entscheidung brauchen. Ideal sind ein bis zwei Monate Vorlauf.
     marks:
-      - { value: 48 h, label: bis zu unserer Antwort, text: "Datum, Location und eure Idee reichen. Danach ein kurzes Gespräch und euer Angebot." }
+      - { value: { fact: responseHours, display: hours }, label: bis zu unserer Antwort, text: "Datum, Location und eure Idee reichen. Danach ein kurzes Gespräch und euer Angebot." }
       - { value: 1–2 Monate, label: "Vorlauf, ideal", text: "Genug Zeit für die Genehmigung. In Flughafennähe eher drei Monate." }
       - { value: 3 Wochen, label: "für Motive und Musik, mindestens", text: "Ihr seht einen Entwurf mit eurer Musik, gebt Feedback und am Ende jedes Motiv frei." }
       - { value: 3 h, label: vor der Show vor Ort, text: "Unser Team sperrt die Startfläche, fliegt die Show und baut danach wieder ab." }
