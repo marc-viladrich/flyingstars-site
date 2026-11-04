@@ -191,14 +191,14 @@ sections:
           - 12
       - category: Indoor
         title: Drones inside the hall
-        text: For exhibitions, stages and halls with ceiling heights from three metres.
+        text: "For exhibitions, stages and halls with ceiling heights from {{offer.indoor.ceilingWords}} metres."
         image:
           src: https://flyingstars.art/wp-content/uploads/2025/04/drohnenshow-indoor-2.jpg
           alt: Glowing drones in formation in front of a stage in a packed hall
           width: 1200
           height: 764
         facts:
-          - "20 to 50 drones, {{duration.indoor.min}} to {{duration.indoor.max}} minutes"
+          - "{{offer.indoor.drones.min}} to {{offer.indoor.drones.max}} drones, {{duration.indoor.min}} to {{duration.indoor.max}} minutes"
           - Individually priced
         cta:
           label: Indoor drone shows
@@ -521,4 +521,4 @@ sections:
     headline: Tell us about your date.
     text: A date, location and occasion are enough for an initial assessment. Leave anything you don't know yet open.
     todo: FlyingStars und die Datenschutzberatung müssen Versanddienst, Empfängerpostfach, Auftragsverarbeitung, Drittlandtransfers und Löschfristen festlegen und die Datenschutzhinweise freigeben.
-translationSourceHash: 82acb8670caf94b527f872ea73667ad118d170667ce01ba76dc8a4eb8db49c8d
+translationSourceHash: 3b644e2ca47ad2fcb4c88928a05fa915a9e7655074690c93fcc135f4e5d297f5

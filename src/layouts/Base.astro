@@ -1,5 +1,5 @@
 ---
-import {durationText} from '../content/show-duration.mjs';
+import {factText} from '../content/show-extras.mjs';
 import {record,field} from 'astro-frontend-editor/markers';
 import {CONTACT_OWNER} from '../content/contact.mjs';
 import { localizedCollection } from '../i18n/content';
@@ -52,12 +52,12 @@ const inNav = (href: string) => site.nav.some((item) => item.href === href);
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title} | {site.name}</title>
-    <meta name="description" content={durationText(description)} />
+    <meta name="description" content={factText(description,locale)} />
     <link rel="canonical" href={canonical} />
     {!noindex && <>{LOCALES.map((language) => <link rel="alternate" hreflang={language} href={new URL(localizedHref(sourcePath(canonical.pathname), language), Astro.site)} />)}<link rel="alternate" hreflang="x-default" href={new URL(sourcePath(canonical.pathname), Astro.site)} /></>}
     {noindex && <meta name="robots" content="noindex" />}
     <meta property="og:title" content={`${title} | FlyingStars`} />
-    <meta property="og:description" content={durationText(description)} />
+    <meta property="og:description" content={factText(description,locale)} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
     {social && <meta property="og:image" content={new URL(social.src, Astro.site)} />}

@@ -225,7 +225,7 @@ Die unveränderlichen Commit-Stände werden für längere Prüfungen in getrennt
 
 ### Schritt 2: editorfähiger Kontakt
 
-Kontaktwerte nach `contact.json` mit gemeinsamem Zod-Schema verschoben. CONTACT bleibt die Leseschnittstelle. `site/contact` ist registriert und heißt „Kontakt“; Record-Marker an Footer, ContactWays und contactDetails öffnen diesen Besitzer. Danke und Fehlermeldungen enthalten Platzhalter. Rechtstexte bleiben eigenständig, der separate Driftwächter meldet Änderungen. Die Ausnahme für Danke entfällt aus dem Literale-Guard. Bestehende EN-/NL-Copy wurde ausschließlich parametrisiert, Quellhashes und Provenienz sind fortgeschrieben.
+Kontaktwerte nach `contact.json` mit gemeinsamem Zod-Schema verschoben. CONTACT bleibt die Leseschnittstelle. `site/contact` ist registriert und heißt „Kontakt“; native Panel-Feldmarker mit leerem Feldpfad an Footer, ContactWays und contactDetails öffnen diesen Besitzer; reine Record-Marker würden Kontaktlinks nicht abfangen. Danke und Fehlermeldungen enthalten Platzhalter. Rechtstexte bleiben eigenständig, der separate Driftwächter meldet Änderungen. Die Ausnahme für Danke entfällt aus dem Literale-Guard. Bestehende EN-/NL-Copy wurde ausschließlich parametrisiert, Quellhashes und Provenienz sind fortgeschrieben.
 
 ### Schritt 3a: wirksame Dauerpolicy
 
@@ -234,3 +234,11 @@ Die drei toten Paketfelder `dur` sind entfernt. `show-duration.json` besitzt Out
 ### Schritt 3b: Paketprojektionen und unabhängige Vorschau
 
 Paket-IDs/Reihenfolge, Orb-Formen und Bezeichnungen aus dem Paket-JSON abgeleitet. Zweite Arrays, Orb-Maps und zwei unbenutzte UI-Labelkopien entfernt. Die bisher in TS stehende Vorschaupolicy liegt separat schema-validiert im JSON und ist im Editor ausdrücklich als nicht freigegeben bezeichnet. Preise, Übergänge, kommerzielle SPARK-Grenze 150 und Vorschaugrenze 190 bleiben erhalten.
+
+### Schritt 3c: Sonderangebote und strukturierte Preise
+
+Film-/Schweizpreis und Indoor-Fakten in `show-extras.json` zentralisiert und als „Extras und Sonderangebote“ im Editor registriert. Film-Zellen und inkludierte Kartenpunkte lesen dieselbe Paket-Inklusion. UI-Satzmuster, FAQ, Anlass- und Indoor-Fakten referenzieren die Zahlen. Die früher frei geschriebene Indoor-Preiszeile ist durch einen Angebotsbezug ersetzt; LandingPrice erhält Qualifikator und Betrag direkt. Gemeinsame Geldformatierung für Karten, Vergleich und Server-/Browser-Konfigurator. Die bestehenden Sprachfassungen, Netto-/Anfahrtsqualifikationen und die Suffix-Schreibweise einzelner Preiszeilen bleiben erhalten.
+
+Historische Projektwerte und konkrete Beispiele wie das 20-Drohnen-Startraster bleiben eigenständig. Die technischen Änderungen erteilen keine redaktionelle Freigabe der weiterhin vorläufigen Vorschaupreise oder vorhandenen Leistungszusagen. Etappe B bleibt ausgenommen.
+
+Prüfergebnisse, Einschränkungen und Übergabe an Claude: [Etappe A](etappe-a.md). Die ursprünglichen Inventardateien darüber bleiben der historische Runde-1-Befund.

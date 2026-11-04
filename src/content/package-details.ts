@@ -1,3 +1,4 @@
+import {SHOW_EXTRAS,extraValues,footageCell} from './show-extras.mjs';
 import {packageLabel} from './package-identity.mjs';
 import {SHOW_DURATION,durationValues} from './show-duration.mjs';
 import packageData from './show-packages.json' with {type:'json'};
@@ -9,8 +10,9 @@ import { localeFormat } from '../i18n/routing.mjs';
  * no duration per package, 40 % deposit, cancellation scale from the AGB, extras as confirmed there. */
 import { SHOW_PACKAGES, type ShowPackage } from './show-packages.ts';
 
-export function getPackageDetails(locale = 'de', duration = SHOW_DURATION) {
+export function getPackageDetails(locale = 'de', duration = SHOW_DURATION, extras = SHOW_EXTRAS) {
 const t = createTranslator(locale);
+const values={...durationValues(duration),...extraValues(locale,extras),filmCare:extras.film.includedIn.includes('ODYSSEY')?t('packageDetails.filmCareListItem')+', ':''};
 const money = (v: number) => v.toLocaleString(localeFormat(locale));
 
 /** Hinweis unter den Paketkarten (Marc, 02.11.2026: „einfach Alle Preise netto zzgl. Anfahrt“). Die Showzeit steht auf jeder Karte. */
@@ -46,7 +48,7 @@ const PACKAGE_DETAILS: Record<ShowPackage, PackageDetail> = {
   ODYSSEY: {
     label: packageLabel('ODYSSEY',t),
     sky: t('packageDetails.everythingInHorizonPlus3dStorytellingAnimationAndVolumetricEffects'),
-    care: t('packageDetails.multipleFeedbackRoundsDedicatedProjectManagerRawVideoFootageTimecode'),
+    care: t('packageDetails.multipleFeedbackRoundsDedicatedProjectManagerRawVideoFootageTimecode',values),
     typical: t('packageDetails.campaignsFestivalsLargeEvents'),
   },
 };
@@ -90,15 +92,21 @@ interface Service {
 function resolveService(value: any): any {
   if (Array.isArray(value)) return value.map(resolveService);
   if (value && typeof value === 'object') {
-    if ('key' in value) return t(value.key,durationValues(duration));
+    if ('key' in value) return t(value.key,values);
     if ('de' in value && 'en' in value && 'nl' in value) return value[locale] ?? value.de;
+    if (value.computed === 'extra') return footageCell(value.package,locale,extras);
     if (value.computed === 'drones') return dronesLine(value.package);
     if (value.computed === 'more-drones') { const p = SHOW_PACKAGES[value.package as ShowPackage]; return t('packageDetails.valuePerValue', { v0: money(p.add), v1: p.step }); }
     return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, resolveService(item)]));
   }
   return value === false ? null : value;
 }
-const SERVICES: Service[] = packageData.services.map(resolveService);
+function serviceView(value:any){
+ const {extra:extraId,includedCards,...service}=value;
+ const extra=extraId as 'film'|undefined;
+ return resolveService(extra?{...service,cards:Object.fromEntries(extras[extra].includedIn.map((name:string)=>[name,includedCards]))}:service);
+}
+const SERVICES: Service[] = packageData.services.map(serviceView);
 const COMPARISON = SERVICES.map(({ id, label, cells, all }) => ({ id, label, cells, all }));
 const groupTitles = { design: t('packageDetails.designContent'), music: t('packageDetails.music'), service: t('packageDetails.serviceExtras') };
 const packageCopy = {
@@ -130,11 +138,11 @@ const COMPARISON_NOTE = t('packageDetails.youProvideTheOnSiteSoundSystemAsTheEve
 interface Extra { id: string; short: string; icon: string; title: string; text: string; price: string; link?: { label: string; href: string } }
 const EXTRAS: Extra[] = [
   { id: 'express', short: 'Express', icon: 'zap', title: t('packageDetails.aShowInUnderTwoWeeks'), text: t('packageDetails.lessThan14DaysUntilTheShowWePrioritiseDesign'), price: t('packageDetails.surchargeBasedOnScope') },
-  { id: 'film', short: t('packageDetails.rawFootage'), icon: 'camera', title: t('packageDetails.rawFootageFilmedByCameraDrone'), text: t('packageDetails.footageForYourAftermovieAndSocialMedia'), price: t('packageDetails.900IncludedInOdyssey') },
+  { id: 'film', short: t('packageDetails.rawFootage'), icon: 'camera', title: t('packageDetails.rawFootageFilmedByCameraDrone'), text: t('packageDetails.footageForYourAftermovieAndSocialMedia'), price: t('packageDetails.900IncludedInOdyssey',values) },
   { id: 'behoerden', short: t('packageDetails.authorityLiaison'), icon: 'landmark', title: t('packageDetails.extendedAuthorityLiaison'), text: t('packageDetails.weHandleAllCommunicationWithPublicOfficesAndAuthorities'), price: t('packageDetails.priceOnRequest') },
   { id: 'kontrollzone', short: t('packageDetails.nearAirports'), icon: 'plane', title: t('packageDetails.controlledAirspaceAndAirportLocations'), text: t('packageDetails.forControlledAirspaceAndSitesNearAirports'), price: t('packageDetails.priceOnRequest') },
-  { id: 'schweiz', short: t('packageDetails.switzerland'), icon: 'swiss', title: t('packageDetails.showsInSwitzerland'), text: t('packageDetails.focaApplicationAndCustomsClearanceForOurFleet'), price: t('packageDetails.1900ExcludingVat') },
-  { id: 'indoor', short: 'Indoor', icon: 'building-2', title: t('packageDetails.indoorDroneShows'), text: t('packageDetails.20To50Drones5To8MinutesCeilingHeight',durationValues(duration)), price: t('packageDetails.fromApprox15000ExcludingVatFor20Drones'), link: { label: t('packageDetails.moreAboutIndoorShows'), href: '/drohnenshow-indoor/' } },
+  { id: 'schweiz', short: t('packageDetails.switzerland'), icon: 'swiss', title: t('packageDetails.showsInSwitzerland'), text: t('packageDetails.focaApplicationAndCustomsClearanceForOurFleet'), price: t('packageDetails.1900ExcludingVat',values) },
+  { id: 'indoor', short: 'Indoor', icon: 'building-2', title: t('packageDetails.indoorDroneShows'), text: t('packageDetails.20To50Drones5To8MinutesCeilingHeight',values), price: t('packageDetails.fromApprox15000ExcludingVatFor20Drones',values), link: { label: t('packageDetails.moreAboutIndoorShows'), href: '/drohnenshow-indoor/' } },
 ];
 
 return { SERVICES, PRICE_NOTE, PACKAGE_DETAILS, PACKAGE_POINTS, PACKAGE_FEATURES, dronesLine, addOnLine, COMPARISON, COMPARISON_NOTE, INCLUDED, EXTRAS, showtimeLine };

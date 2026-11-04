@@ -1,7 +1,7 @@
+import {startingPrice} from '../lib/price.mjs';
 import {durationValues} from '../content/show-duration.mjs';
-import { localeFromPath, localizedHref, localeFormat } from '../i18n/routing.mjs';
+import { localeFromPath, localizedHref } from '../i18n/routing.mjs';
 const locale = localeFromPath(location.pathname);
-const formatLocale = localeFormat(locale);
 const { OCCASIONS, STEPS } = getConfiguratorContent(locale);
 import { t as message } from '../i18n/ui.mjs';
 // Show configurator. Anlass picks a sequence of motifs that plays like a little show; Paket and Drohnenzahl set the
@@ -193,7 +193,7 @@ if (form) {
   }));
 
   // ---------- Auswahl: Anlass, Paket, Drohnenzahl, Text, Logo ----------
-  const eur = (v) => message('showconfigurator.fromValue', { v0: v.toLocaleString(formatLocale) });
+  const eur = (v) => startingPrice(v,locale);
   // Anlässe mit dem Monat des Besuchs ordnen (der Build kennt nur seinen eigenen) und den ersten wählen
   const occSelect = $("#cfg-occasion"), ordered = bySeason(OCCASIONS);
   occSelect.replaceChildren(...ordered.map((o) => occSelect.querySelector(`option[value="${o.id}"]`)).filter(Boolean));

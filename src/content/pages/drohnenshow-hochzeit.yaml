@@ -72,7 +72,7 @@ sections:
         items:
           - { label: Anfahrt ab Gelsenkirchen, value: nach Ort }
           - { label: Express unter 14 Tagen Vorlauf, value: nach Aufwand }
-          - { label: Rohaufnahmen mit Kameradrohne, value: 900 € }
+          - { label: Rohaufnahmen mit Kameradrohne, value: "{{offer.film.priceSuffix}}" }
     bonus: { value: "−10 %", text: "Frühbucherrabatt: Bucht ihr bis zum Jahresende für eine Hochzeit im nächsten Jahr." }
     closing:
       headline: Euer Datum steht schon?

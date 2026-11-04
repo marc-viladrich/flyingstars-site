@@ -1,4 +1,7 @@
 ---
+import {field} from 'astro-frontend-editor/markers';
+import {SHOW_EXTRAS,factText} from '../../content/show-extras.mjs';
+import {priceParts} from '../../lib/price.mjs';
 import { forPath } from '../../i18n/server';
 const { t, localHref, formatLocale, locale } = forPath(Astro.url.pathname);
 // Preiskarte (Marc, 31.10.2026: „bei der Hochzeit insbesondere mit den Preisen … viel mehr High Quality“). Links der
@@ -13,14 +16,12 @@ import Icon from '../Icon.astro';
 import { SHOW_PACKAGES } from '../../content/show-packages';
 import { getPackageDetails } from '../../content/package-details';
 type Props = Extract<Section, { type: 'landingPrice' }> & { index: number };
-const { kicker, headline, text, package: pkg, price, unit, groups, bonus, closing, id = 'preise', index } = Astro.props;
+const { kicker, headline, text, package: pkg, offer, customPrice, unit, groups, bonus, closing, id = 'preise', index } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
 const T = index === 0 ? 'h2' : 'h3';
 const p = pkg ? SHOW_PACKAGES[pkg] : undefined;
-const shown = p ? t('showconfigurator.fromValue', { v0: p.price.toLocaleString(formatLocale) }) : price ?? '';
-// „ab“ bzw. „ab ca.“ klein über dem Betrag, damit auch „ab ca. 15.000 €“ in die Spalte passt
-const [, pre = '', amount = shown] = shown.match(/^((?:ab|bis|from|up to|vanaf|tot)(?: ca\.| approx\.)?)\s+(.+)$/) ?? [];
-const sub = unit ?? (p ? t('landingprice.excludingVatForValueDronesPlusTravel', { v0: p.base }) : undefined);
+const {prefix:pre='',amount} = p ? priceParts({amount:p.price,currency:'EUR',qualifier:'from',net:true,travel:'excluded'},locale) : offer ? priceParts(SHOW_EXTRAS[offer].price,locale) : {prefix:customPrice?.prefix,amount:customPrice?.amount??''};
+const sub = factText(unit,locale) ?? (p ? t('landingprice.excludingVatForValueDronesPlusTravel', { v0: p.base }) : undefined);
 // Staffel nur, wenn das Paket nach oben begrenzt ist (SPARK: bis 150 Drohnen, je 10 weitere +900 €)
 // Showzeit wie auf allen Paketkarten (package-details.ts)
 const showtime = pkg ? getPackageDetails(locale).showtimeLine(pkg) : undefined;
@@ -31,7 +32,7 @@ const scale = p && Number.isFinite(p.max) ? t('landingprice.upToValueDronesValue
   <div class="lp-card">
     <div class="lp-price">
       {pkg && p && <div class="lp-pkg"><canvas data-orb={p.orb} data-color={p.color.join(',')} data-n={p.base} aria-hidden="true"></canvas><span class="lp-name">{pkg}</span></div>}
-      <p class="lp-amount">{pre && <span class="lp-pre mono">{pre} </span>}{amount}</p>
+      <p class="lp-amount" {...(offer?field({collection:'showExtras',id:'configuration'},[offer,'price','amount'],{mode:'panel'}):{})}>{pre && <span class="lp-pre mono">{pre} </span>}{amount}</p>
       {sub && <p class="lp-unit">{sub}</p>}
       {showtime && <p class="lp-unit">{showtime}</p>}
       {scale && <p class="lp-scale mono">{scale}</p>}
@@ -42,7 +43,7 @@ const scale = p && Number.isFinite(p.max) ? t('landingprice.upToValueDronesValue
           <T class="mono">{g.title}</T>
           <ul>{g.items.map((it) => <li class:list={{ 'has-value': it.value }}>
             {gi === 0 && pkg ? <Icon name="check" size={18} class="g" /> : gi > 0 && pkg ? <Icon name="plus" size={18} class="g" /> : <span class="lp-pt" aria-hidden="true"></span>}
-            <span>{it.label}</span>{it.value && <b>{it.value}</b>}
+            <span>{it.label}</span>{it.value && <b>{factText(it.value,locale)}</b>}
           </li>)}</ul>
         </div>
       ))}

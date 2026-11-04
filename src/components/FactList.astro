@@ -1,5 +1,7 @@
 ---
-import {durationText} from '../content/show-duration.mjs';
+import {forPath} from '../i18n/server';
+const {locale}=forPath(Astro.url.pathname);
+import {factText} from '../content/show-extras.mjs';
 import { factColumns } from '../lib/lists';
 interface Fact { label: string; value?: string | number; unit?: string; text?: string; count?: number }
 interface Props { items: Fact[]; variant?: 'metrics' | 'tempo' | 'numbers' | 'credits' | 'hero' | 'story' | 'spotlight' | 'eco' | 'spec'; label?: string }
@@ -12,7 +14,7 @@ const labelClass = variant === 'metrics' ? 'k mono' : variant === 'eco' ? 'fk mo
   {items.map((item, i) => <div class={itemClass}>
     <dt class={labelClass}>{item.label}</dt>
     {item.value !== undefined && item.value !== '' && <dd class:list={['fact-value', { v: variant === 'metrics' || variant === 'tempo', fn: variant === 'eco', g: variant === 'eco' && item.unit === '%', o: variant === 'eco' && i === 1 && items.length > 2 }]} data-count={item.count}>
-      {variant === 'spec' ? <b>{durationText(item.value)}</b> : variant === 'eco' && item.unit === '%' ? <span data-to={durationText(item.value)}>{durationText(item.value)}</span> : durationText(item.value)}{item.unit && <small>{item.unit}</small>}
+      {variant === 'spec' ? <b>{factText(item.value,locale)}</b> : variant === 'eco' && item.unit === '%' ? <span data-to={factText(item.value,locale)}>{factText(item.value,locale)}</span> : factText(item.value,locale)}{item.unit && <small>{item.unit}</small>}
     </dd>}
     {item.text && <dd class:list={['fact-text', { ft: variant === 'eco', t: variant === 'tempo' }]}><p>{item.text}</p></dd>}
   </div>)}

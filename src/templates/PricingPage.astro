@@ -1,6 +1,7 @@
 ---
+import {startingPrice} from '../lib/price.mjs';
 import { forPath } from '../i18n/server';
-const { t, localHref, formatLocale } = forPath(Astro.url.pathname);
+const { t, localHref } = forPath(Astro.url.pathname);
 // Preisseite (31.10.2026, Marcs Feedbackrunde 6/8): Aufbau wie im Vercel-Prototyp. Oben die drei Pakete, dann der
 // Show-Konfigurator, danach mit farbigen Punkten je Paket, was immer enthalten ist, alle Leistungen im Vergleich, Extras,
 // Preisversprechen (Fragebogen 21.10.), Fragen zum Preis und Abschluss. Preise und Drohnenzahlen nur aus
@@ -18,7 +19,7 @@ import ComparisonMatrix from '../components/ComparisonMatrix.astro';
 import { SHOW_PACKAGES, PACKAGE_NAMES } from '../content/show-packages';
 import { getPackageDetails } from '../content/package-details';
 const { PACKAGE_DETAILS, COMPARISON, COMPARISON_NOTE, PRICE_NOTE } = getPackageDetails(forPath(Astro.url.pathname).locale);
-const money = (v: number) => t('showconfigurator.fromValue', { v0: v.toLocaleString(formatLocale) });
+const money = (v: number) => startingPrice(v,forPath(Astro.url.pathname).locale);
 const items = PACKAGE_NAMES.map((name) => ({ name, ...PACKAGE_DETAILS[name], badge: PACKAGE_DETAILS[name].often, highlight: Boolean(PACKAGE_DETAILS[name].often) }));
 const featured = PACKAGE_NAMES.findIndex((name) => PACKAGE_DETAILS[name].often);
 ---

@@ -1,6 +1,6 @@
 title: Indoor drone show
 navLabel: Indoor
-description: "Indoor drone shows for exhibitions, stages and halls: 20 to 50 drones, {{duration.indoor.min}} to {{duration.indoor.max}} minutes, ceiling height from 3 metres. Individually priced."
+description: "Indoor drone shows for exhibitions, stages and halls: {{offer.indoor.drones.min}} to {{offer.indoor.drones.max}} drones, {{duration.indoor.min}} to {{duration.indoor.max}} minutes, ceiling height from {{offer.indoor.ceilingMin}} metres. Individually priced."
 image: https://flyingstars.art/wp-content/uploads/2025/04/IMG_0201.jpg
 sections:
   - type: landingHero
@@ -21,11 +21,11 @@ sections:
       width: 2560
       height: 1440
     facts:
-      - value: 20–50
+      - value: "{{offer.indoor.drones.min}}–{{offer.indoor.drones.max}}"
         label: Drones
       - value: "{{duration.indoor.min}}–{{duration.indoor.max}} min"
         label: Show duration
-      - value: from 3 m
+      - value: "from {{offer.indoor.ceilingMin}} m"
         label: Ceiling height
     todo: Moritz muss die Endfassung und EN/NL prüfen. FlyingStars muss die Zuordnung von Siemens-Film und Hallen-Standbildern zur Hannover Messe bestätigen; das Standbild belegt diesen Veranstaltungsort bislang nicht.
   - type: comparison
@@ -40,7 +40,7 @@ sections:
     rows:
       - label: Drones
         values:
-          - 20 to 50
+          - "{{offer.indoor.drones.min}} to {{offer.indoor.drones.max}}"
           - from 100
       - label: Duration
         values:
@@ -60,11 +60,11 @@ sections:
           - usually up to 120 m
       - label: Space
         values:
-          - ceiling height from 3 m and a clear flight area
+          - "ceiling height from {{offer.indoor.ceilingMin}} m and a clear flight area"
           - safety area of approx. 100 × 100 m
       - label: Price
         values:
-          - individually priced, from approx. €15,000 excluding VAT for 20 drones
+          - "individually priced, {{offer.indoor.priceLine}} excluding VAT for {{offer.indoor.drones.min}} drones"
           - Packages from €7,900 excluding VAT
     todo: FlyingStars muss 188 g, UWB und die technischen Indoor-/Outdoor-Vergleichswerte für die aktuelle Flotte bestätigen.
   - type: landingSite
@@ -74,15 +74,15 @@ sections:
     text: The floor plan, ceiling height and audience position form the basis of our show concept.
     variant: indoor
     diagram:
-      description: Room cross-section showing a ceiling height of at least 3 m and the audience beside the clear flight area. Below is a plan view of an example take-off grid for 20 drones, with antennas at the corners of the flight area.
+      description: "Room cross-section showing a ceiling height of at least {{offer.indoor.ceilingMin}} m and the audience beside the clear flight area. Below is a plan view of an example take-off grid for {{offer.indoor.drones.min}} drones, with antennas at the corners of the flight area."
       horizontalLabel: approx. 5 m
-      verticalLabel: min. 3 m
+      verticalLabel: "min. {{offer.indoor.ceilingMin}} m"
       detailLabel: 1 m grid
       flightLabel: Flight altitude up to 8 m, adapted to the room
-      caption: Diagram, not to scale. Example take-off grid for 20 drones on approx. 5 × 5 m. The data sheet specifies approx. 7 × 7 m for 50 drones. We plan the full flight area and audience area for your room.
+      caption: "Diagram, not to scale. Example take-off grid for {{offer.indoor.drones.min}} drones on approx. 5 × 5 m. The data sheet specifies approx. 7 × 7 m for 50 drones. We plan the full flight area and audience area for your room."
     items:
       - title: Ceiling height
-        value: at least 3 m
+        value: "at least {{offer.indoor.ceilingMin}} m"
         text: We adapt the flight paths to your room. The indoor system flies up to 8 m high.
         zone: ceiling
       - title: Flight area
@@ -176,14 +176,14 @@ sections:
     kicker: Prices
     headline: What an indoor show costs.
     text: Indoor shows are priced individually. Outdoor packages do not apply indoors.
-    price: from approx. €15,000
-    unit: excluding VAT for 20 drones, as a guide
+    offer: indoor
+    unit: "excluding VAT for {{offer.indoor.drones.min}} drones, as a guide"
     groups:
       - title: The price depends on
         items:
           - label: your room
           - label: the drone count
-            value: 20–50
+            value: "{{offer.indoor.drones.min}}–{{offer.indoor.drones.max}}"
           - label: the setup
     closing:
       headline: Will your venue work?
@@ -205,4 +205,4 @@ sections:
     kicker: Enquiry
     headline: Tell us about your room.
     text: Ceiling height, floor area and date are enough for an initial assessment. We'll reply within 48 hours.
-translationSourceHash: 61a3e1097bf7b5d867e2baf11e3073c4f295e84fd0842829f9f8f6a7b02e707b
+translationSourceHash: 8b55bfd0d0fb98a0e6500dcabe8c36eb176a12d159e72934d7921adb78aefc84

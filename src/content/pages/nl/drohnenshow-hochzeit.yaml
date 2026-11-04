@@ -65,7 +65,7 @@ sections:
           - label: Express bij minder dan 14 dagen voorbereiding
             value: naar werkzaamheden
           - label: Ruwe opnamen met cameradrone
-            value: 900 €
+            value: "{{offer.film.priceSuffix}}"
     bonus:
       value: −10 %
       text: "Vroegboekkorting: boek vóór het einde van het jaar voor een bruiloft volgend jaar."
@@ -184,4 +184,4 @@ sections:
     kicker: Aanvraag
     headline: Vertel ons over jullie trouwdag.
     text: Datum en locatie zijn genoeg voor het begin. We reageren binnen 48 uur met een eerste inschatting.
-translationSourceHash: ed698716bcdb37591144aed55862f59ae89381577af5543802b0b6d9726e6d50
+translationSourceHash: 3b4933c8fb30e3137b8a3291e94ffb44bcd6e1413462e5e50f76fb7f6d19e3ab

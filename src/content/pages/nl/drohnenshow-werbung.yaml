@@ -96,7 +96,7 @@ sections:
     items:
       - icon: camera
         title: Beelden voor jullie kanalen
-        text: Gasten filmen en delen de show. Ruwe beelden van onze cameradrone kosten € 900 en zijn bij ODYSSEY inbegrepen.
+        text: "Gasten filmen en delen de show. Ruwe beelden van onze cameradrone kosten {{offer.film.price}} en zijn bij {{offer.film.included}} inbegrepen."
       - icon: newspaper
         title: Een aanleiding voor publiciteit
         text: Onder andere ZDF, WDR, ntv en WAZ berichtten over ons en onze shows.
@@ -262,4 +262,4 @@ sections:
     kicker: Aanvraag
     headline: Vertel ons over jullie campagne.
     text: Datum, locatie en doel zijn genoeg. Jullie logo mogen jullie later per e-mail sturen.
-translationSourceHash: 5bbae7c49e9ed2ccb8fffdee2ac5ae14ea694c818c6be47e19aba699cffe4e6b
+translationSourceHash: 3cb1dbdbf5be97605ac12bf8ee24820eff996e2004030240133e0c1081ee7250

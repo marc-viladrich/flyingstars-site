@@ -1,4 +1,5 @@
 ---
+import {field} from 'astro-frontend-editor/markers';
 import { forPath } from '../../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
 // Extras zum Auswählen (Marc, 01.11.2026): offenes Raster ohne Kartenfläche, nur feine Linien zwischen den Zellen. Eine
@@ -19,7 +20,7 @@ const { EXTRAS } = getPackageDetails(forPath(Astro.url.pathname).locale);
       <IconFeature class="ic xc" icon={x.icon} iconClass="xc-ico" title={x.title} text={x.text} textId={`x-${x.id}-t`}>
         <input slot="before" class="xc-box" type="checkbox" id={`x-${x.id}`} value={x.id} data-short={x.short} aria-describedby={`x-${x.id}-t x-${x.id}-p`} />
         <label slot="title" for={`x-${x.id}`}>{x.title}</label>
-        <span class="xc-price mono" id={`x-${x.id}-p`}>{x.price}</span>
+        <span class="xc-price mono" {...(['film','schweiz','indoor'].includes(x.id)?field({collection:'showExtras',id:'configuration'},[x.id,'price','amount'],{mode:'panel'}):{})} id={`x-${x.id}-p`}>{x.price}</span>
         <span class="xc-added mono" aria-hidden="true"><Icon name="check" size={14} strokeWidth={2.4} />{t('extras.addedToEnquiry')}</span>
         {x.link && <a class="link xc-link" href={localHref(x.link.href)}>{x.link.label} <span aria-hidden="true">→</span></a>}
       </IconFeature>

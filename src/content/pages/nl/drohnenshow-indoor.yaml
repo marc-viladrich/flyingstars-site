@@ -1,6 +1,6 @@
 title: Indoor-droneshow
 navLabel: Indoor
-description: "Indoor-droneshows voor beurzen, podia en hallen: 20 tot 50 drones, {{duration.indoor.min}} tot {{duration.indoor.max}} minuten, vanaf 3 meter plafondhoogte. Apart berekend."
+description: "Indoor-droneshows voor beurzen, podia en hallen: {{offer.indoor.drones.min}} tot {{offer.indoor.drones.max}} drones, {{duration.indoor.min}} tot {{duration.indoor.max}} minuten, vanaf {{offer.indoor.ceilingMin}} meter plafondhoogte. Apart berekend."
 image: https://flyingstars.art/wp-content/uploads/2025/04/IMG_0201.jpg
 sections:
   - type: landingHero
@@ -21,11 +21,11 @@ sections:
       width: 2560
       height: 1440
     facts:
-      - value: 20–50
+      - value: "{{offer.indoor.drones.min}}–{{offer.indoor.drones.max}}"
         label: Drones
       - value: "{{duration.indoor.min}}–{{duration.indoor.max}} min."
         label: Showduur
-      - value: vanaf 3 m
+      - value: "vanaf {{offer.indoor.ceilingMin}} m"
         label: Plafondhoogte
     todo: Moritz muss die Endfassung und EN/NL prüfen. FlyingStars muss die Zuordnung von Siemens-Film und Hallen-Standbildern zur Hannover Messe bestätigen; das Standbild belegt diesen Veranstaltungsort bislang nicht.
   - type: comparison
@@ -40,7 +40,7 @@ sections:
     rows:
       - label: Drones
         values:
-          - 20 tot 50
+          - "{{offer.indoor.drones.min}} tot {{offer.indoor.drones.max}}"
           - vanaf 100
       - label: Duur
         values:
@@ -60,11 +60,11 @@ sections:
           - meestal tot 120 m
       - label: Ruimte
         values:
-          - vanaf 3 m plafondhoogte en een vrije vliegzone
+          - "vanaf {{offer.indoor.ceilingMin}} m plafondhoogte en een vrije vliegzone"
           - veiligheidszone van ca. 100 × 100 m
       - label: Prijs
         values:
-          - apart berekend, vanaf ca. € 15.000 exclusief btw voor 20 drones
+          - "apart berekend, {{offer.indoor.priceLine}} exclusief btw voor {{offer.indoor.drones.min}} drones"
           - Pakketten vanaf € 7.900 exclusief btw
     todo: FlyingStars muss 188 g, UWB und die technischen Indoor-/Outdoor-Vergleichswerte für die aktuelle Flotte bestätigen.
   - type: landingSite
@@ -74,15 +74,15 @@ sections:
     text: De plattegrond, plafondhoogte en positie van jullie publiek vormen de basis voor ons showconcept.
     variant: indoor
     diagram:
-      description: Doorsnede van een ruimte met minimaal 3 m plafondhoogte en het publiek naast het vrije vlieggebied. Daaronder een bovenaanzicht van een voorbeeldopstelling voor 20 drones, met antennes op de hoeken van het vlieggebied.
+      description: "Doorsnede van een ruimte met minimaal {{offer.indoor.ceilingMin}} m plafondhoogte en het publiek naast het vrije vlieggebied. Daaronder een bovenaanzicht van een voorbeeldopstelling voor 20 drones, met antennes op de hoeken van het vlieggebied."
       horizontalLabel: ca. 5 m
-      verticalLabel: min. 3 m
+      verticalLabel: "min. {{offer.indoor.ceilingMin}} m"
       detailLabel: 1 m raster
       flightLabel: Vlieghoogte tot 8 m, afgestemd op de ruimte
-      caption: Schema, niet op schaal. Voorbeeldopstelling voor 20 drones op ca. 5 × 5 m. Voor 50 drones vermeldt het gegevensblad ca. 7 × 7 m. We plannen het volledige vlieggebied en de publiekszone voor jullie ruimte.
+      caption: "Schema, niet op schaal. Voorbeeldopstelling voor {{offer.indoor.drones.min}} drones op ca. 5 × 5 m. Voor 50 drones vermeldt het gegevensblad ca. 7 × 7 m. We plannen het volledige vlieggebied en de publiekszone voor jullie ruimte."
     items:
       - title: Plafondhoogte
-        value: minimaal 3 m
+        value: "minimaal {{offer.indoor.ceilingMin}} m"
         text: We passen de vliegroutes aan jullie ruimte aan. Het indoorsysteem vliegt tot 8 m hoog.
         zone: ceiling
       - title: Vlieggebied
@@ -176,14 +176,14 @@ sections:
     kicker: Prijzen
     headline: Wat een indoor-show kost.
     text: Indoor-shows berekenen we apart. De outdoor-pakketten gelden binnen niet.
-    price: vanaf ca. € 15.000
-    unit: exclusief btw voor 20 drones, als richtprijs
+    offer: indoor
+    unit: "exclusief btw voor {{offer.indoor.drones.min}} drones, als richtprijs"
     groups:
       - title: De prijs hangt af van
         items:
           - label: jullie ruimte
           - label: het aantal drones
-            value: 20–50
+            value: "{{offer.indoor.drones.min}}–{{offer.indoor.drones.max}}"
           - label: de opbouw
     closing:
       headline: Is jullie hal geschikt?
@@ -205,4 +205,4 @@ sections:
     kicker: Aanvraag
     headline: Vertel ons over jullie ruimte.
     text: Plafondhoogte, oppervlakte en datum zijn genoeg voor een eerste inschatting. We reageren binnen 48 uur.
-translationSourceHash: 61a3e1097bf7b5d867e2baf11e3073c4f295e84fd0842829f9f8f6a7b02e707b
+translationSourceHash: 8b55bfd0d0fb98a0e6500dcabe8c36eb176a12d159e72934d7921adb78aefc84

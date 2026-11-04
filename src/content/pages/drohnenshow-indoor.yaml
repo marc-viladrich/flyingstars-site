@@ -12,7 +12,7 @@
 # Alle Texte sind Entwürfe für Moritz; neu formulierte Stellen tragen den Kommentar „Entwurf für Moritz“.
 title: Indoor-Drohnenshow
 navLabel: "Indoor"
-description: "Indoor-Drohnenshows für Messen, Bühnen und Hallen: 20 bis 50 Drohnen, {{duration.indoor.min}} bis {{duration.indoor.max}} Minuten, ab 3 Meter Deckenhöhe. Individuell kalkuliert."
+description: "Indoor-Drohnenshows für Messen, Bühnen und Hallen: {{offer.indoor.drones.min}} bis {{offer.indoor.drones.max}} Drohnen, {{duration.indoor.min}} bis {{duration.indoor.max}} Minuten, ab {{offer.indoor.ceilingMin}} Meter Deckenhöhe. Individuell kalkuliert."
 image: https://flyingstars.art/wp-content/uploads/2025/04/IMG_0201.jpg
 sections:
   - type: landingHero
@@ -31,9 +31,9 @@ sections:
       height: 1440
     # Entwurf für Moritz: Eckdaten aus dem Fragebogen
     facts:
-      - { value: 20–50, label: Drohnen }
+      - { value: "{{offer.indoor.drones.min}}–{{offer.indoor.drones.max}}", label: Drohnen }
       - { value: "{{duration.indoor.min}}–{{duration.indoor.max}} Min", label: Showdauer }
-      - { value: ab 3 m, label: Deckenhöhe }
+      - { value: "ab {{offer.indoor.ceilingMin}} m", label: Deckenhöhe }
     todo: Moritz muss die Endfassung und EN/NL prüfen. FlyingStars muss die Zuordnung von Siemens-Film und Hallen-Standbildern zur Hannover Messe bestätigen; das Standbild belegt diesen Veranstaltungsort bislang nicht.
 
   - type: comparison
@@ -45,7 +45,7 @@ sections:
     columns: [Indoor, Outdoor]
     rows:
       - label: Drohnen
-        values: [20 bis 50, ab 100]
+        values: ["{{offer.indoor.drones.min}} bis {{offer.indoor.drones.max}}", "ab 100"]
       - label: Dauer
         values: ["{{duration.indoor.min}} bis {{duration.indoor.max}} Minuten", "in der Regel etwa {{duration.outdoor.typical}} Minuten"]
       - label: Gewicht je Drohne
@@ -55,9 +55,9 @@ sections:
       - label: Flughöhe
         values: [1 bis 8 m, in der Regel bis 120 m]
       - label: Platz
-        values: [ab 3 m Deckenhöhe und eine freie Flugfläche, Sicherheitsbereich von ca. 100 × 100 m]
+        values: ["ab {{offer.indoor.ceilingMin}} m Deckenhöhe und eine freie Flugfläche", "Sicherheitsbereich von ca. 100 × 100 m"]
       - label: Preis
-        values: ["einzeln kalkuliert, ab ca. 15.000 € netto für 20 Drohnen", "Pakete ab 7.900 € netto"]
+        values: ["einzeln kalkuliert, {{offer.indoor.priceLine}} netto für {{offer.indoor.drones.min}} Drohnen", "Pakete ab 7.900 € netto"]
     todo: FlyingStars muss 188 g, UWB und die technischen Indoor-/Outdoor-Vergleichswerte für die aktuelle Flotte bestätigen.
 
   # Textentwurf für Moritz. Quellen und Konflikte: docs/sicherheitskonzept-quellen.md.
@@ -68,15 +68,15 @@ sections:
     text: Grundriss, Deckenhöhe und die Position eures Publikums sind die Grundlage für unser Showkonzept.
     variant: indoor
     diagram:
-      description: "Raumschnitt mit mindestens 3 m Deckenhöhe und Publikum neben der freien Flugfläche. Darunter eine Draufsicht auf ein beispielhaftes Startraster für 20 Drohnen mit Antennen an den Ecken des Fluggebiets."
+      description: "Raumschnitt mit mindestens {{offer.indoor.ceilingMin}} m Deckenhöhe und Publikum neben der freien Flugfläche. Darunter eine Draufsicht auf ein beispielhaftes Startraster für 20 Drohnen mit Antennen an den Ecken des Fluggebiets."
       horizontalLabel: ca. 5 m
-      verticalLabel: mind. 3 m
+      verticalLabel: "mind. {{offer.indoor.ceilingMin}} m"
       detailLabel: 1 m Raster
       flightLabel: Flughöhe bis 8 m, passend zum Raum
-      caption: "Schema, nicht maßstäblich. Startraster als Beispiel für 20 Drohnen auf ca. 5 × 5 m. Für 50 Drohnen nennt das Datenblatt ca. 7 × 7 m. Die gesamte Flugfläche und den Publikumsbereich planen wir für euren Raum."
+      caption: "Schema, nicht maßstäblich. Startraster als Beispiel für {{offer.indoor.drones.min}} Drohnen auf ca. 5 × 5 m. Für 50 Drohnen nennt das Datenblatt ca. 7 × 7 m. Die gesamte Flugfläche und den Publikumsbereich planen wir für euren Raum."
     items:
       - title: Deckenhöhe
-        value: mindestens 3 m
+        value: "mindestens {{offer.indoor.ceilingMin}} m"
         text: "Die Flugbahnen passen wir an euren Raum an. Das Indoor-System fliegt bis zu 8 m hoch."
         zone: ceiling
       - title: Flugbereich
@@ -155,13 +155,13 @@ sections:
     kicker: Preise
     headline: Was eine Indoor-Show kostet.
     text: Indoor-Shows kalkulieren wir einzeln. Die Outdoor-Pakete gelten drinnen nicht.
-    price: ab ca. 15.000 €
-    unit: netto für 20 Drohnen, als Größenordnung
+    offer: indoor
+    unit: "netto für {{offer.indoor.drones.min}} Drohnen, als Größenordnung"
     groups:
       - title: Der Preis hängt ab von
         items:
           - { label: eurem Raum }
-          - { label: der Drohnenzahl, value: 20–50 }
+          - { label: der Drohnenzahl, value: "{{offer.indoor.drones.min}}–{{offer.indoor.drones.max}}" }
           - { label: dem Aufbau }
     closing:
       headline: Passt eure Halle?

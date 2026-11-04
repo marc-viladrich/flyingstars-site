@@ -1,11 +1,13 @@
 ---
+import {forPath} from '../i18n/server';
+const {locale}=forPath(Astro.url.pathname);
 import {render} from 'astro:content';
 import {marked} from 'marked';
 import {address,field} from 'astro-frontend-editor/markers';
-import {durationText} from '../content/show-duration.mjs';
+import {factText} from '../content/show-extras.mjs';
 const {entry}=Astro.props;
 const source=entry.body??'';
-const projected=durationText(source);
+const projected=factText(source,locale,{markdown:true});
 const {Content}=await render(entry);
 ---
 {source===projected?<Content />:<div style="display:contents" {...field(address(entry,[],'body'),{mode:'panel',format:'markdown'})} set:html={await marked.parse(projected)} />}

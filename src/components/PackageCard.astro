@@ -1,4 +1,5 @@
 ---
+import {startingPrice} from '../lib/price.mjs';
 import {field} from 'astro-frontend-editor/markers';
 // Ein Renderer für beide Paketansichten. Fachwerte und redaktionelle Leistungen kommen aus dem Paketmodell.
 import { forPath } from '../i18n/server';
@@ -6,11 +7,11 @@ import { SHOW_PACKAGES, type ShowPackage } from '../content/show-packages';
 import { getPackageDetails } from '../content/package-details';
 interface Props { packageId: ShowPackage; variant?: 'summary' | 'detailed'; headingId: string; level?: 'h2' | 'h3'; highlight?: boolean; badge?: string; pointsOverride?: string[]; label?: string; sky?: string; tabIndex?: number }
 const { packageId, variant = 'summary', headingId, level: C = 'h3', highlight, pointsOverride, tabIndex } = Astro.props;
-const { t, localHref, formatLocale, locale } = forPath(Astro.url.pathname);
+const { t, localHref, locale } = forPath(Astro.url.pathname);
 const { PACKAGE_FEATURES, PACKAGE_POINTS, PACKAGE_DETAILS, dronesLine, addOnLine, showtimeLine } = getPackageDetails(locale);
 const { badge = PACKAGE_DETAILS[packageId].often, label = PACKAGE_DETAILS[packageId].label, sky } = Astro.props;
 const p = { name: packageId, ...SHOW_PACKAGES[packageId], shape: SHOW_PACKAGES[packageId].orb };
-const money = (v: number) => t('showconfigurator.fromValue', { v0: v.toLocaleString(formatLocale) });
+const money = (v: number) => startingPrice(v,forPath(Astro.url.pathname).locale);
 ---
 {variant === 'summary' ? (
 <a class:list={['pack', { featured: highlight }]} aria-labelledby={headingId} href={localHref(`/kontakt/?paket=${p.name}`)} data-pick-paket={p.name} style={`--c:rgb(${p.color.join(',')})`}>

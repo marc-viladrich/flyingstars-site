@@ -1,4 +1,5 @@
 ---
+import {field} from 'astro-frontend-editor/markers';
 import MobileTabs from './MobileTabs.astro';
 import ComparisonCell from './ComparisonCell.astro';
 import { comparisonTone, type ComparisonValue } from '../lib/comparison';
@@ -17,7 +18,7 @@ const { locale } = forPath(Astro.url.pathname);
       <span class:list={{ 'pk-name': column.orb }}>{column.label}</span>{column.price && <span class="mono">{column.price}</span>}
     </th>)}</tr></thead>
     <tbody>{rows.map((row) => <tr data-service={row.id}><th scope="row">{row.label}</th>
-      {row.all ? <td colspan={columns.length}><ComparisonCell value={row.all} /></td> : row.cells.map((cell, i) => <td class:list={[comparisonTone(cell), { us: columns[i].featured }]} style={columns[i].color && `--c:${columns[i].color}`}><ComparisonCell value={cell} /></td>)}
+      {row.all ? <td colspan={columns.length}><ComparisonCell value={row.all} /></td> : row.cells.map((cell, i) => <td {...(row.id==='footage'?field({collection:'showExtras',id:'configuration'},['film','price','amount'],{mode:'panel'}):{})} class:list={[comparisonTone(cell), { us: columns[i].featured }]} style={columns[i].color && `--c:${columns[i].color}`}><ComparisonCell value={cell} /></td>)}
     </tr>)}</tbody>
   </table>
 </div>

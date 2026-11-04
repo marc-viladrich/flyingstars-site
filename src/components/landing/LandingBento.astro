@@ -1,7 +1,8 @@
 ---
+import {factText} from '../../content/show-extras.mjs';
 import IconFeature from '../IconFeature.astro';
 import { forPath } from '../../i18n/server';
-const { localHref } = forPath(Astro.url.pathname);
+const { localHref, locale } = forPath(Astro.url.pathname);
 // Kacheln mit einer Hauptkachel (Bild mit Titel darauf oder eine große Aussage) und bis zu vier kleineren Icon-Kacheln. Bricht die Folge aus Text-Bild-Blöcken auf (Marc, 31.10.2026: „mehr Variation in den Layouts“).
 // Optional unten ein Textlink (cta) oder ein Abschluss-Kasten (closing, CtaBox.astro).
 // Icons: Lucide über src/components/Icon.astro (`icon` je Kachel, `lead.icon` für die Aussage ohne Bild).
@@ -30,7 +31,7 @@ const img = lead.image ? await optimizedImage(lead.image.src, 960, 720) : undefi
       </div>
     </article>
     {items.map((it) => (
-      <IconFeature class="lb-cell lb-feat" icon={it.icon} title={it.title} text={it.text} level={T} />
+      <IconFeature class="lb-cell lb-feat" icon={it.icon} title={it.title} text={factText(it.text,locale)} level={T} />
     ))}
   </div>
   {closing ? <CtaBox {...closing} level={T} class="lb-close" /> : cta && <div class="lb-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></div>}

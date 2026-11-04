@@ -571,20 +571,31 @@
         "key": "packageDetails.showVideoRawFootage"
       },
       "cells": [
-        "+900 €",
-        "+900 €",
-        true
+        {
+          "computed": "extra",
+          "extra": "film",
+          "package": "SPARK"
+        },
+        {
+          "computed": "extra",
+          "extra": "film",
+          "package": "HORIZON"
+        },
+        {
+          "computed": "extra",
+          "extra": "film",
+          "package": "ODYSSEY"
+        }
       ],
-      "cards": {
-        "ODYSSEY": [
-          {
-            "text": {
-              "key": "packageDetails.showVideoRawFootage"
-            },
-            "order": 5
-          }
-        ]
-      }
+      "extra": "film",
+      "includedCards": [
+        {
+          "text": {
+            "key": "packageDetails.showVideoRawFootage"
+          },
+          "order": 5
+        }
+      ]
     },
     {
       "id": "site-visit",

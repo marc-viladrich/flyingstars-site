@@ -1,10 +1,11 @@
 ---
+import {startingPrice} from '../../lib/price.mjs';
 import {record,field} from 'astro-frontend-editor/markers';
 import {durationValues} from '../../content/show-duration.mjs';
 import configuratorStyles from '../../styles/show-configurator.css?url';
 import SectionHead from '../SectionHead.astro';
 import { forPath } from '../../i18n/server';
-const { t, localHref, formatLocale } = forPath(Astro.url.pathname);
+const { t, localHref } = forPath(Astro.url.pathname);
 // Show-Konfigurator als einbettbare Komponente (sechzehnte Fassung, Marc 31.10.2026: „Auf der Preisseite sollte der
 // Konfigurator auf jeden Fall direkt angezeigt werden“). Vorher war er die eigene Seite /show-konfigurator/ (jetzt eine
 // Weiterleitung auf /drohnenshow-preise/#konfigurator). Die Komponente rendert ihre eigene <section> im normalen
@@ -34,7 +35,7 @@ const Heading = headingLevel === 1 ? 'h1' : 'h2';
 // Monat; das Skript ordnet beim Laden mit dem Monat des Besuchs neu und wählt den ersten Anlass (show-configurator.js)
 const list = bySeason(OCCASIONS);
 const start = 1;
-const money = (v: number) => t('showconfigurator.fromValue', { v0: v.toLocaleString(formatLocale) });
+const money = (v: number) => startingPrice(v,forPath(Astro.url.pathname).locale);
 const startPkg = STEPS[start].pkg as keyof typeof SHOW_PACKAGES;
 const first = SHOW_PACKAGES[startPkg];
 const firstCaption = list[0].motifs[0].tiers[startPkg]?.caption ?? '';

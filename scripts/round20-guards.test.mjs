@@ -26,8 +26,8 @@ test('Sprachwahl ist ein natives Popover und kein JS-Menü', () => {
   assert.equal((base.match(/<LanguageSwitch [^>]*id="/g) ?? []).length, 2, 'Kopf und Menü brauchen je eine eigene id (Popover- und Ankername)');
 });
 
-// Nummern und Anschriften stehen nur in CONTACT (src/components/people.ts). Ausnahmen sind redaktionell verantwortete
-// Rechtstexte und die Danke-Seite; das Inventar von Runde 20 (docs/dupes-inventory-r20) entscheidet über sie.
+// Operative Nummern, Mail und Anschriften stehen in contact.json; CONTACT bleibt die Leseschnittstelle.
+// Rechtstexte und der bestehende PoC bleiben eigenständig. Danke verwendet explizite Referenzen.
 const CONTACT_FACTS = [/team@flyingstars\.art/, /883 065 62/, /4920988306562/, /260 86 72/, /4915792608672/, /Bulmker Stra(ß|ss)e/, /Katernberger Str/];
 const ALLOWED = new Set(['src/content/contact.json', 'src/content/pages/impressum.yaml', 'src/content/pages/datenschutz.yaml', 'src/pages/poc/designsprache.astro']);
 const files = (dir) => readdirSync(new URL(`../${dir}`, import.meta.url)).flatMap((name) => {

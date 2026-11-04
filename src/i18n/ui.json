@@ -114,11 +114,6 @@
     "en": "What should happen in the sky?",
     "nl": "Wat mag er aan de hemel gebeuren?"
   },
-  "showconfigurator.fromValue": {
-    "de": "ab {v0} €",
-    "en": "from €{v0}",
-    "nl": "vanaf € {v0}"
-  },
   "showconfigurator.showPreview": {
     "de": "Vorschau der Show",
     "en": "Show preview",
@@ -1115,9 +1110,9 @@
     "nl": "Alles uit HORIZON, plus 3D-animatie met verhaallijn en volumetrische effecten"
   },
   "packageDetails.multipleFeedbackRoundsDedicatedProjectManagerRawVideoFootageTimecode": {
-    "de": "Mehrere Feedbackrunden, eigene Projektleitung, Rohmaterial-Video, Timecode möglich",
-    "en": "Multiple feedback rounds, dedicated project manager, raw video footage, timecode available",
-    "nl": "Meerdere feedbackrondes, eigen projectleiding, ruwe videobeelden, timecode mogelijk"
+    "de": "Mehrere Feedbackrunden, eigene Projektleitung, {filmCare}Timecode möglich",
+    "en": "Multiple feedback rounds, dedicated project manager, {filmCare}timecode available",
+    "nl": "Meerdere feedbackrondes, eigen projectleiding, {filmCare}timecode mogelijk"
   },
   "packageDetails.campaignsFestivalsLargeEvents": {
     "de": "Kampagne, Festival, Großveranstaltung",
@@ -1520,9 +1515,9 @@
     "nl": "Beelden voor de aftermovie en social media."
   },
   "packageDetails.900IncludedInOdyssey": {
-    "de": "900 €, bei ODYSSEY inklusive",
-    "en": "€900, included in ODYSSEY",
-    "nl": "€ 900, inbegrepen bij ODYSSEY"
+    "de": "{filmPrice}, bei {filmIncluded} inklusive",
+    "en": "{filmPrice}, included in {filmIncluded}",
+    "nl": "{filmPrice}, inbegrepen bij {filmIncluded}"
   },
   "packageDetails.authorityLiaison": {
     "de": "Behördensupport",
@@ -1575,9 +1570,9 @@
     "nl": "BAZL-aanvraag en douaneafhandeling voor onze vloot."
   },
   "packageDetails.1900ExcludingVat": {
-    "de": "+1.900 € netto",
-    "en": "+€1,900 excluding VAT",
-    "nl": "+€ 1.900 exclusief btw"
+    "de": "{swissPrice} netto",
+    "en": "{swissPrice} excluding VAT",
+    "nl": "{swissPrice} exclusief btw"
   },
   "packageDetails.indoorDroneShows": {
     "de": "Indoor-Drohnenshows",
@@ -1585,14 +1580,14 @@
     "nl": "Indoor-droneshows"
   },
   "packageDetails.20To50Drones5To8MinutesCeilingHeight": {
-    "de": "20 bis 50 Drohnen, {indoorMin} bis {indoorMax} Minuten, ab 3 m Deckenhöhe. Jede Indoor-Show kalkulieren wir einzeln.",
-    "en": "20 to 50 drones, {indoorMin} to {indoorMax} minutes, ceiling height from 3 m. We price each indoor show individually.",
-    "nl": "20 tot 50 drones, {indoorMin} tot {indoorMax} minuten, vanaf 3 m plafondhoogte. Elke indoor-show berekenen we apart."
+    "de": "{dronesMin} bis {dronesMax} Drohnen, {indoorMin} bis {indoorMax} Minuten, ab {ceilingMin} m Deckenhöhe. Jede Indoor-Show kalkulieren wir einzeln.",
+    "en": "{dronesMin} to {dronesMax} drones, {indoorMin} to {indoorMax} minutes, ceiling height from {ceilingMin} m. We price each indoor show individually.",
+    "nl": "{dronesMin} tot {dronesMax} drones, {indoorMin} tot {indoorMax} minuten, vanaf {ceilingMin} m plafondhoogte. Elke indoor-show berekenen we apart."
   },
   "packageDetails.fromApprox15000ExcludingVatFor20Drones": {
-    "de": "ab ca. 15.000 € netto für 20 Drohnen",
-    "en": "from approx. €15,000 excluding VAT for 20 drones",
-    "nl": "vanaf ca. € 15.000 exclusief btw voor 20 drones"
+    "de": "{indoorPrice} netto für {dronesMin} Drohnen",
+    "en": "{indoorPrice} excluding VAT for {dronesMin} drones",
+    "nl": "{indoorPrice} exclusief btw voor {dronesMin} drones"
   },
   "packageDetails.moreAboutIndoorShows": {
     "de": "Mehr zu Indoor-Shows",
@@ -3499,4 +3494,22 @@
     "en": "The team",
     "nl": "Het team"
   }
+,
+  "price.from": {"de":"ab","en":"from","nl":"vanaf"},
+  "price.fromApprox": {"de":"ab ca.","en":"from approx.","nl":"vanaf ca."},
+  "quantity.number0": {"de":"null","en":"zero","nl":"nul"},
+  "quantity.number1": {"de":"eins","en":"one","nl":"een"},
+  "quantity.number2": {"de":"zwei","en":"two","nl":"twee"},
+  "quantity.number3": {"de":"drei","en":"three","nl":"drie"},
+  "quantity.number4": {"de":"vier","en":"four","nl":"vier"},
+  "quantity.number5": {"de":"fünf","en":"five","nl":"vijf"},
+  "quantity.number6": {"de":"sechs","en":"six","nl":"zes"},
+  "quantity.number7": {"de":"sieben","en":"seven","nl":"zeven"},
+  "quantity.number8": {"de":"acht","en":"eight","nl":"acht"},
+  "quantity.number9": {"de":"neun","en":"nine","nl":"negen"},
+  "quantity.number10": {"de":"zehn","en":"ten","nl":"tien"},
+  "quantity.number11": {"de":"elf","en":"eleven","nl":"elf"},
+  "quantity.number12": {"de":"zwölf","en":"twelve","nl":"twaalf"},
+  "price.fromApproxGuide": {"de":"ab etwa","en":"from around","nl":"vanaf circa"},
+  "packageDetails.filmCareListItem": {"de":"Rohmaterial-Video","en":"raw video footage","nl":"ruwe videobeelden"}
 }

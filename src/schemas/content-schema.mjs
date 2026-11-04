@@ -1,5 +1,5 @@
 import {PACKAGE_NAMES} from '../content/package-identity.mjs';
-import {durationText} from '../content/show-duration.mjs';
+import {factText} from '../content/show-extras.mjs';
 import { z } from 'zod';
 import {imageSource,imageMetadata} from './media.mjs';
 import { projectShowcaseSchema } from './project-showcase.mjs';
@@ -294,7 +294,8 @@ export const sectionSchema = z.discriminatedUnion('type', [
     type: z.literal('landingPrice'), ...sectionHeading,
     headline: z.string().min(1), text: z.string().optional(),
     package: z.enum(PACKAGE_NAMES).optional(),
-    price: z.string().optional().describe('Nur ohne package, z. B. "ab ca. 15.000 €"'),
+    offer: z.literal('indoor').optional().describe('Sonderangebot'),
+    customPrice: z.object({prefix:z.string().optional(),amount:z.string().min(1)}).strict().optional().describe('Eigener Preis in ausdrücklich getrennten Teilen'),
     unit: z.string().optional().describe('Zeile unter dem Preis, z. B. "netto für 20 Drohnen"'),
     groups: z.array(z.object({ title: z.string().min(1),
       items: z.array(z.object({ label: z.string().min(1), value: z.string().optional() })).min(1) })).min(1).max(3),
@@ -399,7 +400,7 @@ const translationMeta = { translationSourceHash: z.string().regex(/^[a-f0-9]{64}
 export const pageSchema = z.object({
     ...translationMeta,
     title: z.string().min(1),
-    description: z.string().refine(text=>{const n=durationText(text).length;return n>=50&&n<=160;},'Beschreibung braucht nach Faktenprojektion 50–160 Zeichen'),
+    description: z.string().refine(text=>{const n=factText(text).length;return n>=50&&n<=160;},'Beschreibung braucht nach Faktenprojektion 50–160 Zeichen'),
     noindex: z.boolean().default(false),
     // Optional preview image for social shares; must come from an approved media host.
     image: z.url().optional(),
@@ -410,7 +411,7 @@ export const pageSchema = z.object({
 export const postSchema = z.object({
     ...translationMeta,
     title: z.string().min(1),
-    description: z.string().refine(text=>{const n=durationText(text).length;return n>=50&&n<=160;},'Beschreibung braucht nach Faktenprojektion 50–160 Zeichen'),
+    description: z.string().refine(text=>{const n=factText(text).length;return n>=50&&n<=160;},'Beschreibung braucht nach Faktenprojektion 50–160 Zeichen'),
     date: z.coerce.date(),
     updated: z.coerce.date().optional(),
     tags: z.array(z.string()).default([]),

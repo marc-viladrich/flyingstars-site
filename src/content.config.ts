@@ -1,3 +1,6 @@
+import extrasData from './content/show-extras.json' with {type:'json'};
+import {showExtrasSchema} from './schemas/show-extras.mjs';
+showExtrasSchema.parse(extrasData);
 import previewPolicy from './content/preview-policy.json' with {type:'json'};
 import {previewPolicySchema} from './schemas/preview-policy.mjs';
 previewPolicySchema.parse(previewPolicy);

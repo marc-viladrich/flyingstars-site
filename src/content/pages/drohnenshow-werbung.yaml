@@ -80,7 +80,7 @@ sections:
         width: 1929
         height: 1133
     items:
-      - { icon: camera, title: Bilder für eure Kanäle, text: "Gäste filmen und teilen die Show. Rohaufnahmen mit unserer Kameradrohne kosten 900 €, bei ODYSSEY sind sie enthalten." }
+      - { icon: camera, title: Bilder für eure Kanäle, text: "Gäste filmen und teilen die Show. Rohaufnahmen mit unserer Kameradrohne kosten {{offer.film.price}}, bei {{offer.film.included}} sind sie enthalten." }
       - { icon: newspaper, title: Ein Anlass für Berichte, text: "Über uns und unsere Shows haben unter anderem ZDF, WDR, ntv und die WAZ berichtet." }
     todo: FlyingStars muss die genannten ZDF-/WDR-Berichte konkret belegen; für Reichweiten- oder Wirkungsaussagen fehlen messbare Projektergebnisse.
 
