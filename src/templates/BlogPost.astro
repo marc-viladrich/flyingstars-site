@@ -39,7 +39,7 @@ const updated = post.data.updated && post.data.updated.valueOf() !== post.data.d
     <div class="post-body" {...body(post)}><Content /></div>
     <aside class="post-author" aria-label={t('blogpost.aboutTheAuthor')}>
       <img class="face" src={face.src} width={face.width} height={face.height} alt={AUTHOR.name} loading="lazy" decoding="async" />
-      <p><b {...field({collection:"people",id:AUTHOR.id},["name"])}>{AUTHOR.name}</b> {t('blogpost.runsFlyingstarsTogetherWithRonjaDonsbachAndErwinWilmsHe')} <a class="link" href={localHref("/ueber-uns/#team")}>{t('contactDetails.team')} <span aria-hidden="true">→</span></a></p>
+      <p><b {...field({collection:"people",id:AUTHOR.id},["name"])}>{AUTHOR.name}</b> {t('blogpost.runsFlyingstarsTogetherWithRonjaDonsbachAndErwinWilmsHe')} <a class="link" href={localHref("/ueber-uns/#team")}>{t('blogpost.theTeam')} <span aria-hidden="true">→</span></a></p>
     </aside>
   </article>
   <Cta type="cta" index={1} headline={t('blogpost.planningYourOwnShow')} text={t('blogpost.aDateLocationAndOccasionAreEnoughForAnInitial')} button={{ label: t('chopper404.requestAShow'), href: '/kontakt/' }} />

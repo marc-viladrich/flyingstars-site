@@ -24,6 +24,16 @@
     "en": "Homepage",
     "nl": "Homepage"
   },
+  "chopper404.viewOurWork": {
+    "de": "Referenzen",
+    "en": "Our work",
+    "nl": "Onze shows"
+  },
+  "chopper404.pricesAndPreview": {
+    "de": "Preise",
+    "en": "Prices",
+    "nl": "Prijzen"
+  },
   "chopper404.requestAShow": {
     "de": "Show anfragen",
     "en": "Request a show",
@@ -758,6 +768,11 @@
     "de": "führt FlyingStars gemeinsam mit Ronja Donsbach und Erwin Wilms. Er kümmert sich um Verwaltung, Personal und Kund:innen in Deutschland und schreibt unseren Blog.",
     "en": "runs FlyingStars together with Ronja Donsbach and Erwin Wilms. He looks after administration, staff and clients in Germany, and writes our blog.",
     "nl": "leidt FlyingStars samen met Ronja Donsbach en Erwin Wilms. Hij regelt de administratie, het personeel en de klanten in Duitsland en schrijft onze blog."
+  },
+  "blogpost.theTeam": {
+    "de": "Das Team",
+    "en": "The team",
+    "nl": "Het team"
   },
   "blogpost.planningYourOwnShow": {
     "de": "Plant ihr eine eigene Show?",
@@ -3478,90 +3493,23 @@
     "de": "Das Team",
     "en": "The team",
     "nl": "Het team"
-  },
-  "price.from": {
-    "de": "ab",
-    "en": "from",
-    "nl": "vanaf"
-  },
-  "price.fromApprox": {
-    "de": "ab ca.",
-    "en": "from approx.",
-    "nl": "vanaf ca."
-  },
-  "quantity.number0": {
-    "de": "null",
-    "en": "zero",
-    "nl": "nul"
-  },
-  "quantity.number1": {
-    "de": "eins",
-    "en": "one",
-    "nl": "een"
-  },
-  "quantity.number2": {
-    "de": "zwei",
-    "en": "two",
-    "nl": "twee"
-  },
-  "quantity.number3": {
-    "de": "drei",
-    "en": "three",
-    "nl": "drie"
-  },
-  "quantity.number4": {
-    "de": "vier",
-    "en": "four",
-    "nl": "vier"
-  },
-  "quantity.number5": {
-    "de": "fünf",
-    "en": "five",
-    "nl": "vijf"
-  },
-  "quantity.number6": {
-    "de": "sechs",
-    "en": "six",
-    "nl": "zes"
-  },
-  "quantity.number7": {
-    "de": "sieben",
-    "en": "seven",
-    "nl": "zeven"
-  },
-  "quantity.number8": {
-    "de": "acht",
-    "en": "eight",
-    "nl": "acht"
-  },
-  "quantity.number9": {
-    "de": "neun",
-    "en": "nine",
-    "nl": "negen"
-  },
-  "quantity.number10": {
-    "de": "zehn",
-    "en": "ten",
-    "nl": "tien"
-  },
-  "quantity.number11": {
-    "de": "elf",
-    "en": "eleven",
-    "nl": "elf"
-  },
-  "quantity.number12": {
-    "de": "zwölf",
-    "en": "twelve",
-    "nl": "twaalf"
-  },
-  "price.fromApproxGuide": {
-    "de": "ab etwa",
-    "en": "from around",
-    "nl": "vanaf circa"
-  },
-  "packageDetails.filmCareListItem": {
-    "de": "Rohmaterial-Video",
-    "en": "raw video footage",
-    "nl": "ruwe videobeelden"
   }
+,
+  "price.from": {"de":"ab","en":"from","nl":"vanaf"},
+  "price.fromApprox": {"de":"ab ca.","en":"from approx.","nl":"vanaf ca."},
+  "quantity.number0": {"de":"null","en":"zero","nl":"nul"},
+  "quantity.number1": {"de":"eins","en":"one","nl":"een"},
+  "quantity.number2": {"de":"zwei","en":"two","nl":"twee"},
+  "quantity.number3": {"de":"drei","en":"three","nl":"drie"},
+  "quantity.number4": {"de":"vier","en":"four","nl":"vier"},
+  "quantity.number5": {"de":"fünf","en":"five","nl":"vijf"},
+  "quantity.number6": {"de":"sechs","en":"six","nl":"zes"},
+  "quantity.number7": {"de":"sieben","en":"seven","nl":"zeven"},
+  "quantity.number8": {"de":"acht","en":"eight","nl":"acht"},
+  "quantity.number9": {"de":"neun","en":"nine","nl":"negen"},
+  "quantity.number10": {"de":"zehn","en":"ten","nl":"tien"},
+  "quantity.number11": {"de":"elf","en":"eleven","nl":"elf"},
+  "quantity.number12": {"de":"zwölf","en":"twelve","nl":"twaalf"},
+  "price.fromApproxGuide": {"de":"ab etwa","en":"from around","nl":"vanaf circa"},
+  "packageDetails.filmCareListItem": {"de":"Rohmaterial-Video","en":"raw video footage","nl":"ruwe videobeelden"}
 }
