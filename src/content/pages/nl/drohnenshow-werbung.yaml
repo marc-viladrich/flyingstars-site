@@ -23,51 +23,70 @@ sections:
     facts:
       - value: { fact: showsTotal }
         label: shows sinds 2022
+        _key: k_d8fa62f46152a3442123
       - value: { fact: responseHours, display: hours }
         label: tot ons antwoord
+        _key: k_ea8a5bf5b47c7af483ff
       - value: 1–2 weken
         label: met express
+        _key: k_63b5beb0dea54789e039
     todo: Moritz muss die deutsche Endfassung und die maschinell übersetzten EN-/NL-Texte redaktionell prüfen.
+    _key: k_cabb99b46c806fc432fa
   - type: logoBar
     id: marken
     headline: Merken waarvoor we vlogen
     logos:
       - name: Ford
         file: /brand/logos/kunde-ford-weiss.svg
+        _key: k_7cb68e08b7052d41473c
       - name: Volkswagen
         file: /brand/logos/kunde-volkswagen-weiss.svg
+        _key: k_9d3e0dc226969af06770
       - name: PUMA
         image:
           src: https://flyingstars.art/wp-content/uploads/2023/04/Puma_Logo_weiss.png
           alt: PUMA
           width: 300
           height: 161
+        _key: k_026697622e1aeb8e03b3
       - name: Prada
         file: /brand/logos/kunde-prada-weiss.svg
+        _key: k_7ee4a9ed1ae5975513e0
       - name: L’Oréal
         file: /brand/logos/kunde-loreal-weiss.svg
+        _key: k_ce391cd91b69d54344cb
       - name: Spotify
         file: /brand/logos/kunde-spotify-weiss.svg
+        _key: k_4fb13f7e880dcef286c7
       - name: Siemens
         file: /brand/logos/kunde-siemens-weiss.svg
+        _key: k_0665349252f0a527ef12
       - name: E.ON
         file: /brand/logos/kunde-eon-weiss.svg
+        _key: k_3bbf957c64a2499e69ff
       - name: REWE
         file: /brand/logos/kunde-rewe-weiss.svg
+        _key: k_0ceba3c63aa32b3ab627
       - name: Bosch
         file: /brand/logos/kunde-bosch-weiss.svg
+        _key: k_01951987a0b92a53cfed
       - name: Amazon
         file: /brand/logos/kunde-amazon-weiss.svg
+        _key: k_be44e8c8ec446c70c8cc
       - name: McKinsey
         file: /brand/logos/kunde-mckinsey-weiss.svg
+        _key: k_401386dfa999f2801f1a
       - name: Bulgari
         file: /brand/logos/kunde-bulgari-weiss.svg
+        _key: k_fec36d49653d51da53bc
       - name: NFL
         image:
           src: https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png
           alt: NFL
           width: 300
           height: 409
+        _key: k_6575c0d35122892e9ce1
+    _key: k_4f396c969776c1714c2c
   - type: landingRefs
     id: referenzen
     kicker: Onze shows
@@ -80,6 +99,7 @@ sections:
     cta:
       label: Al onze shows
       href: /referenzen/
+    _key: k_1f617bd698f4f907e713
   - type: landingBento
     id: wirkung
     kicker: Effect
@@ -97,10 +117,13 @@ sections:
       - icon: camera
         title: Beelden voor jullie kanalen
         text: "Gasten filmen en delen de show. Ruwe beelden van onze cameradrone kosten {{offer.film.price}} en zijn bij {{offer.film.included}} inbegrepen."
+        _key: k_5252e3279b65a4b9c3d3
       - icon: newspaper
         title: Een aanleiding voor publiciteit
         text: Onder andere ZDF, WDR, ntv en WAZ berichtten over ons en onze shows.
+        _key: k_e552a7787fcc44b66b84
     todo: FlyingStars muss die genannten ZDF-/WDR-Berichte konkret belegen; für Reichweiten- oder Wirkungsaussagen fehlen messbare Projektergebnisse.
+    _key: k_c6d958d0420f0a9ef33b
   - type: landingFlow
     id: freigabe
     kicker: Verloop
@@ -110,16 +133,22 @@ sections:
       - title: Aanvraag en offerte
         text: Vertel ons datum, locatie en doel. We reageren binnen 48 uur en sturen na een kort gesprek een offerte.
         duration: Antwoord binnen 48 uur
+        _key: k_195bdede45eea38fcdd2
       - title: Ontwerp
         text: Stuur ons jullie logo. Eerst zien jullie een 2D-ontwerp van de beelden.
+        _key: k_49e43d30a4cf6e87e6d1
       - title: Animatie
         text: Daarna volgt een ruwe animatie met muziek. Vanaf HORIZON krijgen jullie een videopreview van de show.
+        _key: k_321f6a3deb2b1ef07eea
       - title: Goedkeuring
         text: Pas nadat jullie elk beeld hebben goedgekeurd, programmeren we kleuren en lichteffecten op de muziek.
         gate: true
+        _key: k_737c9a5473db3f88034c
       - title: Showdag
         text: Ons team is circa drie uur vooraf ter plaatse, zet de startzone af en vliegt de show.
         duration: ca. 3 uur opbouw
+        _key: k_cdf27dbb327e5fcde319
+    _key: k_a7152263e0461f67ead9
   - type: packages
     id: pakete
     kicker: Pakketten
@@ -129,17 +158,21 @@ sections:
     items:
       - name: SPARK
         label: Klassiek in 2D
+        _key: k_17eea920ec0491047a40
       - name: HORIZON
         label: 3D in beweging
         badge: Bestseller
         highlight: true
+        _key: k_b94e0363e3a39e7426c3
       - name: ODYSSEY
         label: 3D-show met verhaal
+        _key: k_93070fc050069e397d62
     note: Alle prijzen zijn exclusief btw en reiskosten
     cta:
       label: Alle diensten en prijzen
       href: /drohnenshow-preise/
     todo: FlyingStars muss die Paketgrenzen, Aufpreise und Leistungen für den Relaunch bestätigen; die endgültige Preisstruktur für 2027 ist noch offen.
+    _key: k_d26b138f665a8ac9c34d
   - type: landingTeaser
     id: logo
     kicker: Showconfigurator
@@ -149,6 +182,7 @@ sections:
     cta: Probeer jullie logo in de configurator
     loop: marke
     todo: FlyingStars muss die Motive, Drohnenzahlen und Freischaltstufen anhand von docs/show-motive-inventar.md fachlich bestätigen. Die Vorschau ist kein Flugplan.
+    _key: k_1f4f4d01bf5354a2a7ba
   - type: landingBento
     id: agenturen
     kicker: Bureaus
@@ -161,21 +195,26 @@ sections:
       - icon: hat-glasses
         title: White label
         text: Op verzoek vliegen we anoniem. Jullie naam staat voorop, wij leveren de show.
+        _key: k_b1193a740bb23e8ca935
       - icon: file-lock
         title: Vertrouwelijk
         text: We ondertekenen een geheimhoudingsovereenkomst.
+        _key: k_0cf823404746a47edcf6
       - icon: thumbs-up
         title: Goedkeuring
         text: Voor de afstemming met jullie klanten visualiseren we de beelden met hun logo.
+        _key: k_b4cd40f77c941c13df62
       - icon: clipboard-list
         title: Projectleiding
         text: Op verzoek verzorgen we de projectleiding, met vergunning, instanties en techniek ter plaatse.
+        _key: k_3ae3ac2e616a3beabd1b
     closing:
       headline: Een project voor jullie klant?
       text: Vertel ons erover. We reageren binnen 48 uur en stemmen de rest vertrouwelijk met jullie af.
       button:
         label: Aanvragen als bureau
         href: /kontakt/?anlass=agentur
+    _key: k_35809e7974828f33e234
   - type: landingSpotlight
     id: orte
     kicker: Locaties
@@ -187,16 +226,19 @@ sections:
       width: 1920
       height: 985
     tags:
-      - Borussia-Park · Mönchengladbach
-      - Olympiastadion · Berlijn
-      - Rheinturm · Düsseldorf
-      - Binnenhaven · Duisburg
+      - {"_key":"k_eb49b6fefcd25aaa70f2","value":"Borussia-Park · Mönchengladbach"}
+      - {"_key":"k_2f6e086ec17ff7347db1","value":"Olympiastadion · Berlijn"}
+      - {"_key":"k_6c8c7c31c41910ea3274","value":"Rheinturm · Düsseldorf"}
+      - {"_key":"k_051f63270e7a44e41b90","value":"Binnenhaven · Duisburg"}
     facts:
       - value: 4–8 weken
         label: bevestiging per EU-land
+        _key: k_6ec398101306e49f60a4
       - value: ca. 3 maanden
         label: in Italië
+        _key: k_6816b73b403f3db45756
     todo: FlyingStars muss aktuelle Cross-border-Fristen und mögliche Sondergebühren je Land bestätigen. Die Ortsbeispiele belegen keine pauschale Genehmigung oder garantierte Frist.
+    _key: k_671ae5a30eb25ef1930d
   - type: landingSite
     id: standort
     kicker: Locatie
@@ -208,10 +250,13 @@ sections:
       - task: Logo sturen en elk motief goedkeuren
         us: none
         you: full
+        _key: k_f9022e9498a7fad0753a
       - task: Motieven ontwerpen en animeren
         us: full
         you: none
+        _key: k_827a4c6b6a7c553bffad
     safetyRef: safety-concept
+    _key: k_c4fd3256a7a568abb827
   - type: faq
     id: fragen
     kicker: FAQ
@@ -221,8 +266,10 @@ sections:
       href: /faq/
     tags:
       - werbung
+    _key: k_92cbd2df611f3954dfc2
   - type: contactForm
     kicker: Aanvraag
     headline: Vertel ons over jullie campagne.
     text: Datum, locatie en doel zijn genoeg. Jullie logo mogen jullie later per e-mail sturen.
-translationSourceHash: 10090cc34d35857ecdfedff0e7ff2fed0dd0488beae2a14209134a8061438ddc
+    _key: k_0a54e0d092548e4f7d56
+translationSourceHash: ecd0c5079f5976a12709837d4ea581f6cb795a5b71791321df9526320cc2545a

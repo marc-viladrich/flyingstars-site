@@ -18,6 +18,7 @@ sections:
       label: Our milestones
       href: "#meilensteine"
     todo: FlyingStars muss ein freigegebenes Team- oder Arbeitsfoto für den persönlichen Einstieg liefern; derzeit steht hier ein Showbild. Moritz muss die deutsche Endfassung und die maschinell übersetzten EN-/NL-Texte redaktionell prüfen.
+    _key: k_a92f0496058ba6b4cc95
   - type: team
     id: team
     kicker: Team
@@ -35,6 +36,7 @@ sections:
       label: Get to know us
       href: /kontakt/
     todo: FlyingStars muss hochauflösende Porträts von Ronja, Florian und Erwin sowie Fotos von Patrick und Alejandro liefern; die vorhandenen Porträts messen nur 199 × 199 Pixel. Zusätzlich fehlen Choppers Foto und eine abgestimmte Kurzvorstellung.
+    _key: k_c25a7d02d05d2423027c
   - type: textMedia
     kicker: Our story
     headline: How FlyingStars began.
@@ -51,6 +53,7 @@ sections:
       height: 987
     mediaSide: right
     todo: FlyingStars muss ein passendes Gründungs- oder Arbeitsfoto liefern; das aktuelle Bild zeigt die spätere Böllerciao-Show, nicht die Gründung.
+    _key: k_45b2deb9df767eef3032
   - type: timeline
     id: meilensteine
     kicker: Milestones
@@ -60,58 +63,72 @@ sections:
       - when: "2021"
         title: Founded
         text: On 1 December, we register FlyingStars as a business.
+        _key: k_37ee158ca8dcbd140127
       - when: "2022"
         title: The first show
         text: On 13 August, 50 drones fly for a private birthday.
+        _key: k_97b953eb9d5edee0fb57
       - when:
           project: puma-bundesliga
           field: date
           display: year
         title: PUMA at Borussia-Park
         text: On {{project.puma-bundesliga.date.dayMonth}}, our sixth show. {{project.puma-bundesliga.drones}} drones before the Gladbach–Dortmund derby, with the enquiry arriving around 14 days beforehand.
+        _key: k_4ab54f3dd19c3a475f05
       - when: "2023"
         title: Germany's first generic operating authorisation
         text: In July, the German Federal Aviation Office grants us the authorisation.
+        _key: k_b0136ad8d44517045fbc
       - when:
           project: loreal-prada-rheinturm
           field: date
           display: year
         title: L’Oréal × Prada Paradoxe
         text: On {{project.loreal-prada-rheinturm.date.dayMonth}}, {{project.loreal-prada-rheinturm.drones}} drones at the Rhine Tower in Düsseldorf.
+        _key: k_9bbd688fb4d17b4a60fe
       - when:
           project: boellerciao
           field: date
           display: year
         title: "#Böllerciao with Deutsche Umwelthilfe"
         text: On {{project.boellerciao.date.dayMonth}}, {{project.boellerciao.drones}} drones at Berlin's Cantianstadion, for the press, politicians and the public.
+        _key: k_c356c3325b7a41fde72a
       - when: "2023"
         title: Moving into Triple Z
         text: In December, we move into our office at the business centre on Zeche Zollverein.
+        _key: k_bf77e7f02052490ad926
       - when:
           project: vw-50-golf
           field: date
           display: year
         title: 50 years of VW Golf
         text: On {{project.vw-50-golf.date.dayMonth}} at Scalaria on Lake Wolfgangsee. Our largest show for a long time.
+        _key: k_409072bba0558fb767c1
       - when: "2025"
         title: The first indoor show
         text: On 28 March for Siemens at Hannover Messe.
+        _key: k_e5a8ba1d96bf9934fc19
       - when: "2025"
         title: Kein Bock auf Nazis
         text: On 8 August. Since then, we've regularly flown shows for democracy, diversity and solidarity.
+        _key: k_282298482b60b577afdd
       - when:
           project: bokkenrijders-musical-2026
           field: date
           display: year
         title: Bokkenrijders in Maastricht
         text: In June, {{project.bokkenrijders-musical-2026.shows}} shows with {{project.bokkenrijders-musical-2026.drones}} drones each in a musical.
+        _key: k_d8c56b9918b02ef95bc6
       - when: "2026"
         title: E.ON in Hamburg
         text: In September, a double show with 500 drones above the Elbe at the Landungsbrücken.
+        _key: k_45d6f7975038929f9340
       - when: "2026"
         title: Indoor at Triple Z
         text: An indoor show in September at the business centre where our office is based.
+        _key: k_5fbb1e614958b09eeb8c
     todo: FlyingStars muss den historischen LBA-Erstanspruch belegen und VW Golf mit 350/400 Drohnen sowie das E.ON-Datum 15./16.09. klären. Für E.ON und „Kein Bock auf Nazis“ fehlen zugeordnete Showbilder.
+    _key: k_65625cffa99167129c8b
   - type: landingBento
     id: zusammenarbeit
     kicker: From one team
@@ -124,16 +141,21 @@ sections:
       - icon: pencil-ruler
         title: Our own design team
         text: Alejandro designs the motifs and choreography. Your ideas, logo or town crest become drone formations.
+        _key: k_131f77651b316dd9a22e
       - icon: thumbs-up
         title: Approve motifs in advance
         text: You see the designs before the show and approve every motif.
+        _key: k_2327413f096b6acd85f8
       - icon: music
         title: Coordinating music and light
         text: We edit the music to match the animation. Then we programme colours and lighting effects to the musical accents. The music edit is included in every package.
+        _key: k_3947e1f963bd7fd6625a
       - icon: drone
         title: Our own fleet
         text: We fly our own drones. Patrick plans their deployment and looks after the equipment for your show.
+        _key: k_9047aa9bacd4dc446343
     todo: Moritz muss den USP-Entwurf zur Zusammenarbeit redaktionell freigeben; die sachliche Grundlage ist in docs/ueber-uns-usps.md dokumentiert.
+    _key: k_f2457c3cc737e38d2649
   - type: landingSite
     id: sicherheit
     kicker: Safety
@@ -144,17 +166,22 @@ sections:
       - icon: scan-line
         title: Digitally bounded flight area
         text: A geofence limits the show area. If a drone leaves this area, a safety protocol starts automatically.
+        _key: k_69978ff343594b2a3f56
       - icon: shield-check
         title: Multiple safeguards
         text: Automatic and manual safety systems monitor every flight. If a drone fails, it usually returns or lands in the safety area. The outdoor drones weigh around 300 g and have no cameras.
+        _key: k_ef68f4f356d09019ef52
       - icon: users-round
         title: On-site crew
         text: Three to four people, including pilots and technicians, set up the equipment and monitor the show.
+        _key: k_3aecaaf1b44687bfc064
       - icon: wind
         title: Monitoring the weather
         text: Our formations remain stable up to wind force 5 and in light drizzle. Ideally, we review the weather conditions with you one or two days beforehand.
+        _key: k_fb40173475d53cde7ab3
     todo: FlyingStars muss die Startflächen je Drohnenzahl und die standortabhängigen Abstände bestätigen; 15 × 15 und 25 × 25 Meter widersprechen sich in den Quellen. Die Zeichnung bleibt ein Beispiel; Betriebsgenehmigung und aktuelle Versicherungsbestätigung fehlen im Quellenpaket.
     safetyRef: safety-concept
+    _key: k_acabd60ef12b79f89464
   - type: sustainability
     id: nachhaltigkeit
     kicker: Sustainability
@@ -164,21 +191,26 @@ sections:
       - label: No bang
         value: Quiet
         text: The drones hum. Only your music is loud. TÜV Nord has assessed the noise in an acoustic report.
+        _key: k_18107c09a966fa79eaaa
       - label: No smoke
         value: "0"
         unit: g
         text: No pyrotechnics, so no smoke or heavy metals above the audience.
+        _key: k_e9bac39bce573d233925
       - label: No debris
         value: "0"
         unit: kg
         text: No casings, no debris. The same drones fly show after show.
+        _key: k_0613df3d50475052917a
       - label: Green electricity
         value:
           fact: renewablePercent
         unit: "%"
         text: Green electricity from naturstrom for our batteries.
+        _key: k_e0f84ec6b02e192701fd
     todo: Moritz und FlyingStars müssen die Umweltformulierungen vor Veröffentlichung prüfen und die Belege für Ökostrom, Herstellung und das TÜV-Nord-Schallschutzgutachten bereithalten.
     pillarsRef: sustainability-pillars
+    _key: k_0fa41045b869c8273b40
   - type: metrics
     id: zahlen
     kicker: In numbers
@@ -188,20 +220,26 @@ sections:
       - label: Shows
         value: { fact: showsTotal }
         text: Since our first show in August 2022. This year, we had flown 50 by October.
+        _key: k_50c102f56431ca4d2975
       - label: Founded
         value: "2021"
         text: We registered the business on 1 December 2021.
+        _key: k_a66f30ad55c0027af0b7
       - label: Largest individual show
         value: 600 drones
         text: In the musical Bokkenrijders in Maastricht, as a teaser in 2025 and across 20 evenings in 2026.
+        _key: k_15199d974e28adf4247b
       - label: Drone deployments in one month
         value: 12,000
         text: In June 2026, 20 shows with 600 drones each.
+        _key: k_47cc3f18ccf0d2fa265e
     todo: FlyingStars muss den Showstand seit dem 21.10.2026 aktualisieren oder 178 weiterhin ausdrücklich als datierten Bestand kennzeichnen.
+    _key: k_3064cf819511d86712c4
   - type: cta
     headline: Get to know us.
     text: The quickest way is to send an enquiry. If you'd rather talk first, book a video call on our contact page.
     button:
       label: Request a show
       href: /kontakt/
-translationSourceHash: 1f5a879877a739bb986087da9aefdf95bb4430d9a748d1482d35deda16555801
+    _key: k_c92c36f7a77d76a82182
+translationSourceHash: fad653e2b840226865fc0d331d79a89db4d1db3fd4c48dfa22749ad47677a7fb

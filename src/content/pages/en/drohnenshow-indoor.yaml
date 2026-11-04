@@ -23,11 +23,15 @@ sections:
     facts:
       - value: "{{offer.indoor.drones.min}}–{{offer.indoor.drones.max}}"
         label: Drones
+        _key: k_9c43046412c4f98a6eaa
       - value: "{{duration.indoor.min}}–{{duration.indoor.max}} min"
         label: Show duration
+        _key: k_f28af46100a885028278
       - value: "from {{offer.indoor.ceilingMin}} m"
         label: Ceiling height
+        _key: k_44b29fef37672879c7e3
     todo: Moritz muss die Endfassung und EN/NL prüfen. FlyingStars muss die Zuordnung von Siemens-Film und Hallen-Standbildern zur Hannover Messe bestätigen; das Standbild belegt diesen Veranstaltungsort bislang nicht.
+    _key: k_9ad4a65122a9edecb81a
   - type: comparison
     id: unterschied
     kicker: Comparison
@@ -35,38 +39,46 @@ sections:
     text: Fewer, smaller drones, closer to the audience, with a shorter running time. Patterns and moving figures take shape in the room.
     rowHeader: Feature
     columns:
-      - Indoor
-      - Outdoor
+      - {"_key":"k_0591a32ff9b709fdacde","value":"Indoor"}
+      - {"_key":"k_ee204e87e777217cfb4e","value":"Outdoor"}
     rows:
       - label: Drones
         values:
-          - "{{offer.indoor.drones.min}} to {{offer.indoor.drones.max}}"
-          - from 100
+          - {"_key":"k_307f885cad269078c24d","value":"{{offer.indoor.drones.min}} to {{offer.indoor.drones.max}}"}
+          - {"_key":"k_47012a56ccda2adb5571","value":"from 100"}
+        _key: k_0774348dcdeb0da1ae21
       - label: Duration
         values:
-          - "{{duration.indoor.min}} to {{duration.indoor.max}} minutes"
-          - "usually around {{duration.outdoor.typical}} minutes"
+          - {"_key":"k_14122804948070a50b80","value":"{{duration.indoor.min}} to {{duration.indoor.max}} minutes"}
+          - {"_key":"k_a33b0d31bfb9cda903da","value":"usually around {{duration.outdoor.typical}} minutes"}
+        _key: k_8f5eb0d8e15976bfd85a
       - label: Weight per drone
         values:
-          - 188 g
-          - approx. 300 g
+          - {"_key":"k_0efa7f88e21be1dafa8d","value":"188 g"}
+          - {"_key":"k_4f79e53ae13672fbe7fa","value":"approx. 300 g"}
+        _key: k_f836cad3c14d37872532
       - label: Positioning
         values:
-          - Radio stations in the room (UWB)
-          - GPS
+          - {"_key":"k_47c942309519d505809b","value":"Radio stations in the room (UWB)"}
+          - {"_key":"k_6da570c36c6df53b73c7","value":"GPS"}
+        _key: k_680a133fb66e3358188b
       - label: Flight altitude
         values:
-          - 1 to 8 m
-          - usually up to 120 m
+          - {"_key":"k_0ad5517bd0d6a7eca340","value":"1 to 8 m"}
+          - {"_key":"k_e0071e2cbdc5720c09f4","value":"usually up to 120 m"}
+        _key: k_0ea19f4a2d012b7858cb
       - label: Space
         values:
-          - "ceiling height from {{offer.indoor.ceilingMin}} m and a clear flight area"
-          - safety area of approx. 100 × 100 m
+          - {"_key":"k_fa623e1322b769fcd563","value":"ceiling height from {{offer.indoor.ceilingMin}} m and a clear flight area"}
+          - {"_key":"k_f0e611a6496cbd5cdde0","value":"safety area of approx. 100 × 100 m"}
+        _key: k_b65762f2eadf458a2fe9
       - label: Price
         values:
-          - "individually priced, {{offer.indoor.priceLine}} excluding VAT for {{offer.indoor.drones.min}} drones"
-          - Packages from €7,900 excluding VAT
+          - {"_key":"k_970c6f161caafbf326dc","value":"individually priced, {{offer.indoor.priceLine}} excluding VAT for {{offer.indoor.drones.min}} drones"}
+          - {"_key":"k_d2f5d5ea7ac4efcc9bab","value":"Packages from €7,900 excluding VAT"}
+        _key: k_38d0d514deda94496d79
     todo: FlyingStars muss 188 g, UWB und die technischen Indoor-/Outdoor-Vergleichswerte für die aktuelle Flotte bestätigen.
+    _key: k_c030e32b9a3f99dac46e
   - type: landingSite
     id: raum
     kicker: Requirements
@@ -85,29 +97,35 @@ sections:
         value: "at least {{offer.indoor.ceilingMin}} m"
         text: We adapt the flight paths to your room. The indoor system flies up to 8 m high.
         zone: ceiling
+        _key: k_b1de79da73ea068f872c
       - title: Flight area
         text: The take-off and flight area stays clear. Indoors, we use a dedicated drone system with flight paths calculated in advance.
         zone: drones
+        _key: k_0bd5c94f0e07243b0cc8
       - title: Take-off and landing area
         value: 1 m take-off grid
         text: As a guideline, 20 drones need approx. 5 × 5 m, and 50 drones approx. 7 × 7 m. The floor must be level, and all drones take off at the same height.
         zone: floor
+        _key: k_b708426fb85bea29d91e
       - title: Indoor positioning
         text: Antennas stand at the corners of the flight area. The UWB system determines positions inside the room; we bring the drones and equipment.
         zone: kit
+        _key: k_4a99c3eed498d8e2ac37
       - title: Audience area
         text: We agree the position of your guests and the clear flight area with you. The distance from the audience is set out in the show concept for your room.
         zone: guests
+        _key: k_e8a36322c9c72cbbe82f
     responsibilities:
-      - { task: "Planning flight area, audience and choreography", us: full, you: none }
-      - { task: "Indoor drones, positioning system and team", us: full, you: none }
-      - { task: "Send a floor plan with dimensions and ceiling height", us: none, you: full }
-      - { task: "Provide a clear, level take-off and flight area", us: none, you: full }
-      - { task: "Provide a power supply nearby", us: part, you: full, hint: "we coordinate" }
+      - { task: "Planning flight area, audience and choreography", us: full, you: none, "_key": "k_57fdf7ec25d86df06f65" }
+      - { task: "Indoor drones, positioning system and team", us: full, you: none, "_key": "k_ad5f7a3b6c6ebdc8f165" }
+      - { task: "Send a floor plan with dimensions and ceiling height", us: none, you: full, "_key": "k_bf45eb6771550598d8e2" }
+      - { task: "Provide a clear, level take-off and flight area", us: none, you: full, "_key": "k_9ca1677c1a9556085ebf" }
+      - { task: "Provide a power supply nearby", us: part, you: full, hint: "we coordinate", "_key": "k_90cf1d512c775430202a" }
     download:
       label: Technical data sheet · PDF
       href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf
     todo: FlyingStars muss die gesamte Indoor-Flugfläche, Publikumsabstände, Strombedarf und Zugänglichkeit ergänzen; die Rastermaße allein bestimmen den Raumbedarf nicht.
+    _key: k_e6bdd66c6eff6b2abf0c
   - type: landingBento
     id: sicherheit
     kicker: Safety
@@ -125,13 +143,17 @@ sections:
       - icon: gauge
         title: Maximum 1.5 m/s
         text: The drones never fly faster than this indoors.
+        _key: k_e5cf73dc265a9c4310fe
       - icon: move-horizontal
         title: 0.5 m separation
         text: The minimum distance between two drones.
+        _key: k_9190dfff4d61064037d9
       - icon: shield-check
         title: Multiple safeguards
         text: Redundant safety functions, a controlled landing function and CE-certified components.
+        _key: k_4fa60ee8f4b6a4138755
     todo: FlyingStars muss 1,5 m/s, 0,5 m Drohnenabstand, Sicherheitsfunktionen und CE-Angaben mit aktuellen technischen Unterlagen bestätigen.
+    _key: k_1060f8471da9620b9d94
   - type: landingSpotlight
     id: einsatzorte
     kicker: Where to use it
@@ -143,19 +165,22 @@ sections:
       width: 1200
       height: 764
     tags:
-      - Exhibitions
-      - Concerts
-      - Sporting events
-      - Corporate celebrations
-      - Weddings in halls
+      - {"_key":"k_211d03046da62f7b385d","value":"Exhibitions"}
+      - {"_key":"k_1bfb3ba56d6c4740c1ea","value":"Concerts"}
+      - {"_key":"k_05c6d02863d2256cece8","value":"Sporting events"}
+      - {"_key":"k_2d886159ff908cca85d8","value":"Corporate celebrations"}
+      - {"_key":"k_dfdbdf308f06f4f99578","value":"Weddings in halls"}
     entries:
       - kicker: Hannover Messe · March 2025
         title: Siemens
         text: Our first indoor show.
+        _key: k_7c6c021cc1a855fcde60
       - kicker: Essen · September 2026
         title: Triple Z
         text: At the Zeche Zollverein business centre, where our office is based too.
+        _key: k_81843471e629d870eaa4
     todo: Für Siemens Hannover Messe und Triple Z fehlen ausgearbeitete Fallstudien. FlyingStars muss Briefing, Ablauf, konkrete Drohnenzahl, freigegebene Showbilder und die eindeutige Zuordnung des vorhandenen Siemens-Films liefern.
+    _key: k_47a98888ed554656bbf5
   - type: tempo
     id: ablauf
     kicker: The process
@@ -164,13 +189,17 @@ sections:
       - value: { fact: responseHours, display: hours }
         label: until our reply
         text: Tell us about the room, occasion and date.
+        _key: k_5f52880dee9f83ce56cc
       - value: 6–8 weeks
         label: ideal lead time
         text: Design and planning for your room. You see the show in advance on video or during a test flight.
+        _key: k_575c490370bb45474ab4
       - value: 45 min
         label: from setup to ready to fly
         text: We start from two hours before the show.
+        _key: k_ce8b466cf22a08df12d8
     todo: FlyingStars muss 6–8 Wochen Vorlauf, 45 Minuten Aufbau und Ankunft zwei Stunden vor der Show für die aktuelle Indoor-Technik bestätigen; diese Werte stammen bisher nur von der alten Website.
+    _key: k_cca8a7702a948ca38dce
   - type: landingPrice
     id: preise
     kicker: Prices
@@ -182,15 +211,20 @@ sections:
       - title: The price depends on
         items:
           - label: your room
+            _key: k_753be3ee1b98a47fa847
           - label: the drone count
             value: "{{offer.indoor.drones.min}}–{{offer.indoor.drones.max}}"
+            _key: k_c3ef9a4157826d3ef6c2
           - label: the setup
+            _key: k_adbef3f274951eda7f54
+        _key: k_bf63937c697c823dc996
     closing:
       headline: Will your venue work?
       text: Send us photos or a floor plan with the ceiling height. We'll tell you within 48 hours what's possible there.
       button:
         label: Request an indoor quote
         href: "#anfrage"
+    _key: k_2957e41a82a467bac50c
   - type: faq
     id: fragen
     kicker: FAQ
@@ -201,8 +235,10 @@ sections:
     tags:
       - indoor
     todo: FlyingStars muss die Indoor-Antworten zu Flächen und Sicherheitsabständen fachlich abgleichen und die ausdrücklich für Indoor geltende Haftpflichtdeckung belegen.
+    _key: k_b9b4c25755db13474604
   - type: contactForm
     kicker: Enquiry
     headline: Tell us about your room.
     text: Ceiling height, floor area and date are enough for an initial assessment. We'll reply within 48 hours.
-translationSourceHash: ca1d9eb7e891722a0b9389308ca44affaf588e85553cfd8dea19eda4b4f22c07
+    _key: k_bda39ceb090f8b699835
+translationSourceHash: 5f7ad9d314d21c6ef9bcd0ccf188965e208f6e57cc7a0b86c1f6f892ea01af68

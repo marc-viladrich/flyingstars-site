@@ -42,7 +42,7 @@ const count = (n: number) => String(n).padStart(2, '0');
     </div>
     <div class="c-title">
       {data.kicker && <span class="c-kick mono">{data.kicker}</span>}
-      <h1 id="case-h" class="c-h1"><span class="sr-only">{data.name}: </span><span class="c-name" style={`--chars:${data.titleChars}`} aria-hidden="true">{data.titleLines.map((line) => <span>{line}</span>)}</span><span class="c-tag">{data.tagline}</span></h1>
+      <h1 id="case-h" class="c-h1"><span class="sr-only">{data.name}: </span><span class="c-name" style={`--chars:${data.titleChars}`} aria-hidden="true">{data.titleLines.map((line) => <span>{line.value}</span>)}</span><span class="c-tag">{data.tagline}</span></h1>
     </div>
     <FactList items={Astro.props.project.data.showcase!.credits} variant="credits" />
   </section>
@@ -79,7 +79,7 @@ const count = (n: number) => String(n).padStart(2, '0');
     <SliderNav class="c-reel-nav" />
   </section>}
 
-  <section class="c-setlist" aria-labelledby="set-h"><SectionHead variant="contents" headline={t('casestudy.whatAppearedInTheSky')} id="set-h" /><div class="groups">{data.setlist.map((group) => <div><h3>{group.title}</h3><ol>{group.items.map((item) => <li>{item}</li>)}</ol></div>)}</div></section>
+  <section class="c-setlist" aria-labelledby="set-h"><SectionHead variant="contents" headline={t('casestudy.whatAppearedInTheSky')} id="set-h" /><div class="groups">{data.setlist.map((group) => <div><h3>{group.title}</h3><ol>{group.items.map((item) => <li>{item.value}</li>)}</ol></div>)}</div></section>
   {data.press.length > 0 && <section class="c-press" aria-label={t('casestudy.press')}>{data.press.map((clip) => <article class="clip"><div class="mast">{clip.publication}<span>{clip.date}</span></div><b>{clip.title}</b><p>{clip.text}</p></article>)}</section>}
 
   {nextData && nextImage && <a class="c-next" href={localHref(`/${nextData.route}/`)} data-dot-img data-step="10">

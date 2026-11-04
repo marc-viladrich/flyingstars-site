@@ -9,5 +9,5 @@ const Card = tier.cta ? 'a' : 'article';
 ---
 <Card class:list={['pack',{featured:tier.highlight}]} href={localHref(tier.cta?.href)}>
       {tier.orb && <canvas data-orb={tier.orb.shape} data-color={tier.orb.color} data-n={tier.orb.count} aria-hidden="true"></canvas>}
-      <div><div class="name"><h3>{tier.name}</h3>{tier.badge && <span class="chip">{tier.badge}</span>}</div><div class="price">{tier.price}</div>{tier.unit && <div class="meta mono">{tier.unit}</div>}{tier.description && <p>{tier.description}</p>}{tier.features.length>0 && <ul class="facts">{tier.features.map(feature => <li>{feature}</li>)}</ul>}</div>
+      <div><div class="name"><h3>{tier.name}</h3>{tier.badge && <span class="chip">{tier.badge}</span>}</div><div class="price">{tier.price}</div>{tier.unit && <div class="meta mono">{tier.unit}</div>}{tier.description && <p>{tier.description}</p>}{tier.features.length>0 && <ul class="facts">{tier.features.map(feature => <li>{feature.value}</li>)}</ul>}</div>
     </Card>

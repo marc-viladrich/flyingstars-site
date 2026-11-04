@@ -39,8 +39,8 @@
     "category": "Automotive · Lancering",
     "kicker": "Automotive · Keulen · juni 2024",
     "titleLines": [
-      "Exploring",
-      "Reinvented"
+      {"_key":"k_9188a127462380938683","value":"Exploring"},
+      {"_key":"k_a98e4152ab0b21ddcb01","value":"Reinvented"}
     ],
     "titleChars": 10,
     "tagline": "{{project.exploring-reinvented-der-neue-ford-explorer.drones}} drones voor de nieuwe Ford Explorer.",
@@ -56,14 +56,16 @@
         "value": {
           "project": "exploring-reinvented-der-neue-ford-explorer",
           "field": "client"
-        }
+        },
+        "_key": "k_de900d3ace93ed193139"
       },
       {
         "label": "Locatie",
         "value": {
           "project": "exploring-reinvented-der-neue-ford-explorer",
           "field": "location"
-        }
+        },
+        "_key": "k_52ef38cfeb67e85103a9"
       },
       {
         "label": "Datum",
@@ -71,7 +73,8 @@
           "project": "exploring-reinvented-der-neue-ford-explorer",
           "field": "date",
           "display": "numeric"
-        }
+        },
+        "_key": "k_5650e9108ad64753cc7c"
       },
       {
         "label": "Drones",
@@ -79,7 +82,8 @@
           "project": "exploring-reinvented-der-neue-ford-explorer",
           "field": "drones",
           "display": "text"
-        }
+        },
+        "_key": "k_c004744882f01f4047dd"
       }
     ],
     "numbers": [
@@ -88,15 +92,18 @@
           "project": "exploring-reinvented-der-neue-ford-explorer",
           "field": "drones"
         },
-        "label": "Drones boven de fabriek"
+        "label": "Drones boven de fabriek",
+        "_key": "k_53411e5355edb7e4cd2d"
       },
       {
         "value": 2,
-        "label": "volledige uitvoeringen voor de camera"
+        "label": "volledige uitvoeringen voor de camera",
+        "_key": "k_38e13518a53bab062976"
       },
       {
         "value": 1,
-        "label": "dag vóór de start van de serieproductie"
+        "label": "dag vóór de start van de serieproductie",
+        "_key": "k_e50176e09ca888598610"
       }
     ],
     "story": [
@@ -108,7 +115,8 @@
           "src": "https://flyingstars-relaunch.vercel.app/media/projekte/ford/01.jpg",
           "alt": "De Explorer rijdt de fabriekshal uit",
           "caption": "De Explorer rijdt de fabriekshal uit"
-        }
+        },
+        "_key": "k_f36cb6a0d945908b2bb2"
       },
       {
         "kicker": "02 · De choreografie",
@@ -118,7 +126,8 @@
           "src": "https://flyingstars-relaunch.vercel.app/media/projekte/ford/02.jpg",
           "alt": "Auto en droneveld",
           "caption": "Auto en droneveld"
-        }
+        },
+        "_key": "k_acc82addd165b708bd4b"
       },
       {
         "kicker": "03 · De opnamen",
@@ -128,7 +137,8 @@
           "src": "https://flyingstars-relaunch.vercel.app/media/projekte/ford/03.jpg",
           "alt": "Vlucht boven de opstijgende drones",
           "caption": "Vlucht boven de opstijgende drones"
-        }
+        },
+        "_key": "k_6664db31dfd8932d10cc"
       },
       {
         "kicker": "04 · Resultaat",
@@ -138,7 +148,8 @@
           "src": "https://flyingstars-relaunch.vercel.app/media/projekte/ford/06.jpg",
           "alt": "Het Ford logo",
           "caption": "Het Ford logo"
-        }
+        },
+        "_key": "k_8c7df40b8dd221490542"
       }
     ],
     "formation": {
@@ -150,32 +161,38 @@
       {
         "src": "https://flyingstars-relaunch.vercel.app/media/projekte/ford/01.jpg",
         "alt": "De Explorer rijdt de fabriekshal uit, Ford Explorer",
-        "caption": "De Explorer rijdt de fabriekshal uit"
+        "caption": "De Explorer rijdt de fabriekshal uit",
+        "_key": "k_9d58c26410a9987466d6"
       },
       {
         "src": "https://flyingstars-relaunch.vercel.app/media/projekte/ford/02.jpg",
         "alt": "Auto en droneveld, Ford Explorer",
-        "caption": "Auto en droneveld"
+        "caption": "Auto en droneveld",
+        "_key": "k_d0728594b7646ab77f7d"
       },
       {
         "src": "https://flyingstars-relaunch.vercel.app/media/projekte/ford/03.jpg",
         "alt": "Vlucht boven de opstijgende drones, Ford Explorer",
-        "caption": "Vlucht boven de opstijgende drones"
+        "caption": "Vlucht boven de opstijgende drones",
+        "_key": "k_0e61aabef8b1e992e619"
       },
       {
         "src": "https://flyingstars-relaunch.vercel.app/media/projekte/ford/04.jpg",
         "alt": "De Explorer van drones, Ford Explorer",
-        "caption": "De Explorer van drones"
+        "caption": "De Explorer van drones",
+        "_key": "k_4d8ccadc824b29710b93"
       },
       {
         "src": "https://flyingstars-relaunch.vercel.app/media/projekte/ford/05.jpg",
         "alt": "exploring reinvented – Ford Explorer",
-        "caption": "exploring reinvented"
+        "caption": "exploring reinvented",
+        "_key": "k_cf8997caab0bc50b6562"
       },
       {
         "src": "https://flyingstars-relaunch.vercel.app/media/projekte/ford/06.jpg",
         "alt": "Het Ford-logo, Ford Explorer",
-        "caption": "Het Ford logo"
+        "caption": "Het Ford logo",
+        "_key": "k_4ca33aeee37e229c9e03"
       }
     ],
     "portrait": false,
@@ -183,11 +200,12 @@
       {
         "title": "Storyboard",
         "items": [
-          "Sterrenhemel",
-          "De Explorer van drones",
-          "Tekst “exploring reinvented”",
-          "Ford logo"
-        ]
+          {"_key":"k_3ea8db1c0d582db2e44f","value":"Sterrenhemel"},
+          {"_key":"k_8bb9e2ffa7e470ddfd98","value":"De Explorer van drones"},
+          {"_key":"k_2c28288cb279ebb14b27","value":"Tekst “exploring reinvented”"},
+          {"_key":"k_a6b949eec50c248f9a91","value":"Ford logo"}
+        ],
+        "_key": "k_34db476dd9d22cab68f0"
       }
     ],
     "press": [],
@@ -197,7 +215,7 @@
       "text": "We vliegen voor camera en publiek en stemmen rechtstreeks af met bureau en filmteam."
     }
   },
-  "translationSourceHash": "335f0387a861256fe0cd81bdd5dbd9830c7427008c45faa2f76a7d4e83e31c6d"
+  "translationSourceHash": "ca2a3931689123046e497f2144c8880c2d38dab4cc469998d278cd3695cdc2d5"
 }
 ---
 

@@ -38,7 +38,7 @@
     "cardTitle": "{{project.hochzeit-recklinghausen.drones}} drones for a wedding surprise",
     "category": "Wedding · Recklinghausen",
     "titleLines": [
-      "WEDDING"
+      {"_key":"k_1abf150b250ee9490490","value":"WEDDING"}
     ],
     "titleChars": 8,
     "tagline": "A surprise with the couple’s own motifs.",
@@ -50,14 +50,16 @@
     "credits": [
       {
         "label": "Occasion",
-        "value": "Wedding"
+        "value": "Wedding",
+        "_key": "k_4c4d8b0ec8969ed0f291"
       },
       {
         "label": "Location",
         "value": {
           "project": "hochzeit-recklinghausen",
           "field": "location"
-        }
+        },
+        "_key": "k_a64fdc6c62dd204bf099"
       },
       {
         "label": "Date",
@@ -65,7 +67,8 @@
           "project": "hochzeit-recklinghausen",
           "field": "date",
           "display": "iso"
-        }
+        },
+        "_key": "k_55f193634bbf97af2b9d"
       },
       {
         "label": "Drones",
@@ -73,7 +76,8 @@
           "project": "hochzeit-recklinghausen",
           "field": "drones",
           "display": "text"
-        }
+        },
+        "_key": "k_bb0eaedd34f70454b801"
       }
     ],
     "numbers": [
@@ -82,11 +86,13 @@
           "project": "hochzeit-recklinghausen",
           "field": "drones"
         },
-        "label": "Drones"
+        "label": "Drones",
+        "_key": "k_5ebd74e777048e8746da"
       },
       {
         "value": 4,
-        "label": "Months from enquiry to wedding"
+        "label": "Months from enquiry to wedding",
+        "_key": "k_e7c5e0aece1f4207ab09"
       }
     ],
     "story": [
@@ -97,7 +103,8 @@
           "src": "https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg",
           "alt": "Two flowers made of purple and blue drones above trees in Recklinghausen",
           "caption": "Two flowers made of purple and blue drones above trees in Recklinghausen"
-        }
+        },
+        "_key": "k_3559fa87461efa2cb1f4"
       },
       {
         "title": "The launch area stays out of sight.",
@@ -106,7 +113,8 @@
           "src": "https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg",
           "alt": "Two flowers made of purple and blue drones above trees in Recklinghausen",
           "caption": "Two flowers made of purple and blue drones above trees in Recklinghausen"
-        }
+        },
+        "_key": "k_49ef4efd682594afcc86"
       },
       {
         "title": "The show waits for the storm to pass.",
@@ -115,7 +123,8 @@
           "src": "https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg",
           "alt": "Two flowers made of purple and blue drones above trees in Recklinghausen",
           "caption": "Two flowers made of purple and blue drones above trees in Recklinghausen"
-        }
+        },
+        "_key": "k_26b3f06503fe72781b89"
       }
     ],
     "gallery": [],
@@ -123,9 +132,10 @@
       {
         "title": "Show motifs",
         "items": [
-          "Dove, rings and hearts",
-          "The couple’s initials"
-        ]
+          {"_key":"k_f0c0c20e11eb2d6b5ea8","value":"Dove, rings and hearts"},
+          {"_key":"k_ef5603d76e6f86e660fb","value":"The couple’s initials"}
+        ],
+        "_key": "k_a41c9e7a2a252c19f0ec"
       }
     ],
     "videoLink": {
@@ -138,7 +148,7 @@
       "text": "Send us the date, location and your idea. We will check what kind of show is possible there."
     }
   },
-  "translationSourceHash": "63bd2cf92da5bf832699ad811e4e3440546f058a82102dcef473ddbc991a24cd"
+  "translationSourceHash": "fc3446059d9e09ed5226144eca7539bc97540d42bbf06147cd614b912d81a58b"
 }
 ---
 

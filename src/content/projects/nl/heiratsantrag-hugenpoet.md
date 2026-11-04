@@ -38,7 +38,7 @@
     "cardTitle": "Een huwelijksaanzoek met {{project.heiratsantrag-hugenpoet.drones}} drones",
     "category": "Huwelijksaanzoek · Essen",
     "titleLines": [
-      "HUGENPOET"
+      {"_key":"k_9422a007cf0c98a13b63","value":"HUGENPOET"}
     ],
     "titleChars": 9,
     "tagline": "De vraag verschijnt boven de kasteeltuin.",
@@ -50,14 +50,16 @@
     "credits": [
       {
         "label": "Aanleiding",
-        "value": "Huwelijksaanzoek"
+        "value": "Huwelijksaanzoek",
+        "_key": "k_42bf73b26c719f95ce4b"
       },
       {
         "label": "Locatie",
         "value": {
           "project": "heiratsantrag-hugenpoet",
           "field": "location"
-        }
+        },
+        "_key": "k_819241011ca477756ad3"
       },
       {
         "label": "Datum",
@@ -65,7 +67,8 @@
           "project": "heiratsantrag-hugenpoet",
           "field": "date",
           "display": "iso"
-        }
+        },
+        "_key": "k_ea0d10323e50a2ff0e2e"
       },
       {
         "label": "Drones",
@@ -73,7 +76,8 @@
           "project": "heiratsantrag-hugenpoet",
           "field": "drones",
           "display": "text"
-        }
+        },
+        "_key": "k_f4b36c2ccd1bbf311d80"
       }
     ],
     "numbers": [
@@ -82,7 +86,8 @@
           "project": "heiratsantrag-hugenpoet",
           "field": "drones"
         },
-        "label": "Drones"
+        "label": "Drones",
+        "_key": "k_ccaa9cfa2d39e2a07b56"
       }
     ],
     "story": [
@@ -93,7 +98,8 @@
           "src": "https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg",
           "alt": "Een hand met ring van drones boven de boomtoppen bij Schloss Hugenpoet",
           "caption": "Een hand met ring van drones boven de boomtoppen bij Schloss Hugenpoet"
-        }
+        },
+        "_key": "k_674c3883179de135e7a9"
       },
       {
         "title": "Een ring komt uit het doosje.",
@@ -102,7 +108,8 @@
           "src": "https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg",
           "alt": "Een hand met ring van drones boven de boomtoppen bij Schloss Hugenpoet",
           "caption": "Een hand met ring van drones boven de boomtoppen bij Schloss Hugenpoet"
-        }
+        },
+        "_key": "k_30d647b347497c16a128"
       },
       {
         "title": "De vraag staat aan de hemel.",
@@ -111,7 +118,8 @@
           "src": "https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg",
           "alt": "Een hand met ring van drones boven de boomtoppen bij Schloss Hugenpoet",
           "caption": "Een hand met ring van drones boven de boomtoppen bij Schloss Hugenpoet"
-        }
+        },
+        "_key": "k_2a2e2c7ea4c5a4f7a68b"
       }
     ],
     "gallery": [],
@@ -119,10 +127,11 @@
       {
         "title": "Motieven van de show",
         "items": [
-          "Datum 10.09.",
-          "Sieradendoosje, ring en hand",
-          "Do you want to be my Forever?"
-        ]
+          {"_key":"k_029e68cd969f82bda64e","value":"Datum 10.09."},
+          {"_key":"k_82e1c2a0984886669fcf","value":"Sieradendoosje, ring en hand"},
+          {"_key":"k_3d853dfb7341559762f3","value":"Do you want to be my Forever?"}
+        ],
+        "_key": "k_beea2d98b971bb4d89b1"
       }
     ],
     "videoLink": {
@@ -135,7 +144,7 @@
       "text": "Stuur ons de datum, locatie en jullie idee. We bekijken welke show daar mogelijk is."
     }
   },
-  "translationSourceHash": "08f11f759aef6c11e9a3054333a90fb9a17409f7ac2e2d0cbe92337a3681e14a"
+  "translationSourceHash": "d40097a053b9119eb65f4d90364f407ea7bc402c34a2b80b095dc1d249771d20"
 }
 ---
 

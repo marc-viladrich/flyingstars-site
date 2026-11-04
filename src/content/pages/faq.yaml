@@ -11,13 +11,14 @@ sections:
     cta: { label: Show anfragen, href: /kontakt/ }
     openFirst: true
     groups:
-      - { id: planung, headline: Planung und Ablauf, tags: [planung] }
-      - { id: ort, headline: Ort und Genehmigung, tags: [ort] }
-      - { id: sicherheit, headline: Sicherheit, tags: [sicherheit] }
-      - { id: wetter-umwelt, headline: Wetter und Umwelt, tags: [wetter-umwelt] }
-      - { id: kosten, headline: Kosten, tags: [preise] }
-      - { id: indoor, headline: Indoor, tags: [indoor] }
+      - { id: planung, headline: Planung und Ablauf, tags: [planung], "_key": "k_e9f92ed3c7783bd1fbf4" }
+      - { id: ort, headline: Ort und Genehmigung, tags: [ort], "_key": "k_0a8bb2aa4c5e8b0f535c" }
+      - { id: sicherheit, headline: Sicherheit, tags: [sicherheit], "_key": "k_391a213c69c573aa5692" }
+      - { id: wetter-umwelt, headline: Wetter und Umwelt, tags: [wetter-umwelt], "_key": "k_5e1e016053944adc1ed9" }
+      - { id: kosten, headline: Kosten, tags: [preise], "_key": "k_59c0d32ad055003620eb" }
+      - { id: indoor, headline: Indoor, tags: [indoor], "_key": "k_c128d0c95d92e751fce6" }
     closing:
       headline: Eure Frage ist nicht dabei?
       text: Schickt uns eure Frage mit der Anfrage. Wir antworten innerhalb von 48 Stunden.
     todo: FlyingStars muss Wind-/AGB-Grenzen, Indoor-Abstände und die Indoor-Versicherung fachlich klären; Moritz muss die Antworten und EN/NL danach abschließend prüfen.
+    _key: k_96e16b747ea9f5a3c0e9

@@ -16,7 +16,7 @@ const label = plain(headline);
   <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
   <ComparisonMatrix id={id} label={label} regionLabel={t('comparison.table', { label })} rowHeader={rowHeader}
     tabLabel={t('comparison.valueChooseATechnology', { v0: label })}
-    columns={columns.map((label, i) => ({ label, featured: i === 0 }))}
-    rows={rows.map((row) => ({ label: row.label, cells: row.cells ?? row.values }))} />
+    columns={columns.map((label, i) => ({ label: label.value, featured: i === 0 }))}
+    rows={rows.map((row) => ({ label: row.label, cells: row.cells ?? row.values.map(item => item.value) }))} />
   {note && <p class="fine mono">{note}</p>}
 </section>

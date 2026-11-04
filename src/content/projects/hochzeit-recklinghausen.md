@@ -38,7 +38,7 @@
     "cardTitle": "{{project.hochzeit-recklinghausen.drones}} Drohnen als Hochzeitsüberraschung",
     "category": "Hochzeit · Recklinghausen",
     "titleLines": [
-      "HOCHZEIT"
+      {"_key":"k_1abf150b250ee9490490","value":"HOCHZEIT"}
     ],
     "titleChars": 8,
     "tagline": "Eine Überraschung mit den Motiven des Brautpaars.",
@@ -50,14 +50,16 @@
     "credits": [
       {
         "label": "Anlass",
-        "value": "Hochzeit"
+        "value": "Hochzeit",
+        "_key": "k_4c4d8b0ec8969ed0f291"
       },
       {
         "label": "Ort",
         "value": {
           "project": "hochzeit-recklinghausen",
           "field": "location"
-        }
+        },
+        "_key": "k_a64fdc6c62dd204bf099"
       },
       {
         "label": "Datum",
@@ -65,7 +67,8 @@
           "project": "hochzeit-recklinghausen",
           "field": "date",
           "display": "iso"
-        }
+        },
+        "_key": "k_55f193634bbf97af2b9d"
       },
       {
         "label": "Drohnen",
@@ -73,7 +76,8 @@
           "project": "hochzeit-recklinghausen",
           "field": "drones",
           "display": "text"
-        }
+        },
+        "_key": "k_bb0eaedd34f70454b801"
       }
     ],
     "numbers": [
@@ -82,11 +86,13 @@
           "project": "hochzeit-recklinghausen",
           "field": "drones"
         },
-        "label": "Drohnen"
+        "label": "Drohnen",
+        "_key": "k_5ebd74e777048e8746da"
       },
       {
         "value": 4,
-        "label": "Monate vor der Hochzeit angefragt"
+        "label": "Monate vor der Hochzeit angefragt",
+        "_key": "k_e7c5e0aece1f4207ab09"
       }
     ],
     "story": [
@@ -97,7 +103,8 @@
           "src": "https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg",
           "alt": "Zwei Blüten aus violetten und blauen Drohnen über Bäumen in Recklinghausen",
           "caption": "Zwei Blüten aus violetten und blauen Drohnen über Bäumen in Recklinghausen"
-        }
+        },
+        "_key": "k_3559fa87461efa2cb1f4"
       },
       {
         "title": "Die Startfläche bleibt unbemerkt.",
@@ -106,7 +113,8 @@
           "src": "https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg",
           "alt": "Zwei Blüten aus violetten und blauen Drohnen über Bäumen in Recklinghausen",
           "caption": "Zwei Blüten aus violetten und blauen Drohnen über Bäumen in Recklinghausen"
-        }
+        },
+        "_key": "k_49ef4efd682594afcc86"
       },
       {
         "title": "Die Show wartet das Gewitter ab.",
@@ -115,7 +123,8 @@
           "src": "https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg",
           "alt": "Zwei Blüten aus violetten und blauen Drohnen über Bäumen in Recklinghausen",
           "caption": "Zwei Blüten aus violetten und blauen Drohnen über Bäumen in Recklinghausen"
-        }
+        },
+        "_key": "k_26b3f06503fe72781b89"
       }
     ],
     "gallery": [],
@@ -123,9 +132,10 @@
       {
         "title": "Motive der Show",
         "items": [
-          "Taube, Ringe und Herzen",
-          "Initialen des Brautpaars"
-        ]
+          {"_key":"k_f0c0c20e11eb2d6b5ea8","value":"Taube, Ringe und Herzen"},
+          {"_key":"k_ef5603d76e6f86e660fb","value":"Initialen des Brautpaars"}
+        ],
+        "_key": "k_a41c9e7a2a252c19f0ec"
       }
     ],
     "videoLink": {

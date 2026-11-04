@@ -1,3 +1,4 @@
+import {keyedText} from '../i18n/list-keys.mjs';
 import {fieldPolicy} from '../i18n/field-policy.mjs';
 import {factText} from '../content/show-extras.mjs';
 import {projectFactRefSchema} from './project-facts.mjs';
@@ -24,7 +25,7 @@ export const projectShowcaseSchema = z.object({
   category: grouped('Titel & Darstellung', fieldPolicy(z.string().min(1), 'translatable')),
   // Meta-Zeile über dem Titel (Anlass · Ort · Datum); optional
   kicker: grouped('Titel & Darstellung', fieldPolicy(z.string().min(1).optional(), 'translatable')),
-  titleLines: grouped('Titel & Darstellung', z.array(fieldPolicy(z.string().min(1), 'translatable')).min(1).max(2)),
+  titleLines: grouped('Titel & Darstellung', z.array(keyedText(fieldPolicy(z.string().min(1), 'translatable'))).min(1).max(2)),
   titleChars: grouped('Titel & Darstellung', fieldPolicy(z.number().int().positive(), 'shared')),
   tagline: grouped('Titel & Darstellung', fieldPolicy(z.string().min(1), 'translatable')),
   accent: grouped('Titel & Darstellung', fieldPolicy(z.string().regex(/^#[a-fA-F0-9]{6}$/), 'shared')),
@@ -47,7 +48,7 @@ export const projectShowcaseSchema = z.object({
   }).optional(),
   gallery: z.array(photograph).default([]),
   portrait: grouped('Showdaten', fieldPolicy(z.boolean().default(false), 'shared')),
-  setlist: z.array(z.object({ title: fieldPolicy(z.string().min(1), 'translatable'), items: z.array(fieldPolicy(z.string().min(1), 'translatable')).min(1) })).min(1),
+  setlist: z.array(z.object({ title: fieldPolicy(z.string().min(1), 'translatable'), items: z.array(keyedText(fieldPolicy(z.string().min(1), 'translatable'))).min(1) })).min(1),
   press: z.array(z.object({ publication: fieldPolicy(z.string().min(1), 'translatable'), date: fieldPolicy(z.string().min(1), 'translatable'), title: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().min(1), 'translatable') })).default([]),
   nextRoute: grouped('Adresse', fieldPolicy(z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/), 'shared')),
   cta: z.object({ title: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().min(1), 'translatable') }),

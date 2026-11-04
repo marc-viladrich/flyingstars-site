@@ -18,6 +18,7 @@ sections:
       label: Onze mijlpalen
       href: "#meilensteine"
     todo: FlyingStars muss ein freigegebenes Team- oder Arbeitsfoto für den persönlichen Einstieg liefern; derzeit steht hier ein Showbild. Moritz muss die deutsche Endfassung und die maschinell übersetzten EN-/NL-Texte redaktionell prüfen.
+    _key: k_a92f0496058ba6b4cc95
   - type: team
     id: team
     kicker: Team
@@ -35,6 +36,7 @@ sections:
       label: Leer ons kennen
       href: /kontakt/
     todo: FlyingStars muss hochauflösende Porträts von Ronja, Florian und Erwin sowie Fotos von Patrick und Alejandro liefern; die vorhandenen Porträts messen nur 199 × 199 Pixel. Zusätzlich fehlen Choppers Foto und eine abgestimmte Kurzvorstellung.
+    _key: k_c25a7d02d05d2423027c
   - type: textMedia
     kicker: Geschiedenis
     headline: Hoe FlyingStars begon.
@@ -51,6 +53,7 @@ sections:
       height: 987
     mediaSide: right
     todo: FlyingStars muss ein passendes Gründungs- oder Arbeitsfoto liefern; das aktuelle Bild zeigt die spätere Böllerciao-Show, nicht die Gründung.
+    _key: k_45b2deb9df767eef3032
   - type: timeline
     id: meilensteine
     kicker: Mijlpalen
@@ -60,58 +63,72 @@ sections:
       - when: "2021"
         title: Oprichting
         text: Op 1 december schrijven we FlyingStars als bedrijf in.
+        _key: k_37ee158ca8dcbd140127
       - when: "2022"
         title: De eerste show
         text: Op 13 augustus vliegen 50 drones voor een privéverjaardag.
+        _key: k_97b953eb9d5edee0fb57
       - when:
           project: puma-bundesliga
           field: date
           display: year
         title: PUMA in Borussia-Park
         text: Op {{project.puma-bundesliga.date.dayMonth}}, onze zesde show. {{project.puma-bundesliga.drones}} drones voor de derby Gladbach tegen Dortmund, de aanvraag kwam circa 14 dagen eerder.
+        _key: k_4ab54f3dd19c3a475f05
       - when: "2023"
         title: De eerste generieke exploitatievergunning in Duitsland
         text: In juli verleent het Duitse luchtvaartagentschap Luftfahrt-Bundesamt ons de vergunning.
+        _key: k_b0136ad8d44517045fbc
       - when:
           project: loreal-prada-rheinturm
           field: date
           display: year
         title: L’Oréal × Prada Paradoxe
         text: Op {{project.loreal-prada-rheinturm.date.dayMonth}} {{project.loreal-prada-rheinturm.drones}} drones bij de Rheinturm in Düsseldorf.
+        _key: k_9bbd688fb4d17b4a60fe
       - when:
           project: boellerciao
           field: date
           display: year
         title: "#Böllerciao met Deutsche Umwelthilfe"
         text: Op {{project.boellerciao.date.dayMonth}} {{project.boellerciao.drones}} drones in het Cantianstadion in Berlijn, voor pers, politiek en publiek.
+        _key: k_c356c3325b7a41fde72a
       - when: "2023"
         title: Verhuizing naar Triple Z
         text: In december betrekken we ons kantoor in het bedrijvencentrum op Zeche Zollverein.
+        _key: k_bf77e7f02052490ad926
       - when:
           project: vw-50-golf
           field: date
           display: year
         title: 50 jaar VW Golf
         text: Op {{project.vw-50-golf.date.dayMonth}} bij Scalaria aan de Wolfgangsee. Lange tijd onze grootste show.
+        _key: k_409072bba0558fb767c1
       - when: "2025"
         title: De eerste indoor-show
         text: Op 28 maart voor Siemens op de Hannover Messe.
+        _key: k_e5a8ba1d96bf9934fc19
       - when: "2025"
         title: Kein Bock auf Nazis
         text: Op 8 augustus. Sindsdien vliegen we regelmatig shows voor democratie, diversiteit en saamhorigheid.
+        _key: k_282298482b60b577afdd
       - when:
           project: bokkenrijders-musical-2026
           field: date
           display: year
         title: Bokkenrijders in Maastricht
         text: In juni {{project.bokkenrijders-musical-2026.shows}} shows met elk {{project.bokkenrijders-musical-2026.drones}} drones in een musical.
+        _key: k_d8c56b9918b02ef95bc6
       - when: "2026"
         title: E.ON in Hamburg
         text: In september een dubbele show met 500 drones boven de Elbe bij de Landungsbrücken.
+        _key: k_45d6f7975038929f9340
       - when: "2026"
         title: Indoor in het Triple Z
         text: In september een indoor-show in het bedrijvencentrum waar ook ons kantoor zit.
+        _key: k_5fbb1e614958b09eeb8c
     todo: FlyingStars muss den historischen LBA-Erstanspruch belegen und VW Golf mit 350/400 Drohnen sowie das E.ON-Datum 15./16.09. klären. Für E.ON und „Kein Bock auf Nazis“ fehlen zugeordnete Showbilder.
+    _key: k_65625cffa99167129c8b
   - type: landingBento
     id: zusammenarbeit
     kicker: Vanuit één team
@@ -124,16 +141,21 @@ sections:
       - icon: pencil-ruler
         title: Eigen ontwerpteam
         text: Alejandro ontwerpt de motieven en choreografieën. Jullie ideeën, logo of gemeentewapen worden droneformaties.
+        _key: k_131f77651b316dd9a22e
       - icon: thumbs-up
         title: Motieven vooraf goedkeuren
         text: Jullie zien de ontwerpen vóór de show en keuren elk motief goed.
+        _key: k_2327413f096b6acd85f8
       - icon: music
         title: Muziek en licht afstemmen
         text: We monteren de muziek bij de animatie. Daarna programmeren we kleuren en lichteffecten op de muzikale accenten. De muziekmontage is in elk pakket inbegrepen.
+        _key: k_3947e1f963bd7fd6625a
       - icon: drone
         title: Eigen vloot
         text: We vliegen met onze eigen drones. Patrick plant hun inzet en zorgt voor de techniek voor jullie show.
+        _key: k_9047aa9bacd4dc446343
     todo: Moritz muss den USP-Entwurf zur Zusammenarbeit redaktionell freigeben; die sachliche Grundlage ist in docs/ueber-uns-usps.md dokumentiert.
+    _key: k_f2457c3cc737e38d2649
   - type: landingSite
     id: sicherheit
     kicker: Veiligheid
@@ -144,17 +166,22 @@ sections:
       - icon: scan-line
         title: Digitaal begrensd vlieggebied
         text: Een geofence begrenst het showgebied. Als een drone dit gebied verlaat, start automatisch een veiligheidsprotocol.
+        _key: k_69978ff343594b2a3f56
       - icon: shield-check
         title: Meervoudig beveiligd
         text: Automatische en handmatige veiligheidssystemen bewaken elke vlucht. Bij een storing keert de drone meestal terug of landt hij in de veiligheidszone. De outdoordrones wegen ongeveer 300 g en hebben geen camera’s.
+        _key: k_ef68f4f356d09019ef52
       - icon: users-round
         title: Team ter plaatse
         text: Drie tot vier personen, piloten en technici, bouwen de techniek op en bewaken de show.
+        _key: k_3aecaaf1b44687bfc064
       - icon: wind
         title: Het weer in de gaten
         text: We vliegen met stabiele formaties tot windkracht 5 en bij lichte motregen. We bespreken de weersomstandigheden bij voorkeur één tot twee dagen van tevoren met jullie.
+        _key: k_fb40173475d53cde7ab3
     todo: FlyingStars muss die Startflächen je Drohnenzahl und die standortabhängigen Abstände bestätigen; 15 × 15 und 25 × 25 Meter widersprechen sich in den Quellen. Die Zeichnung bleibt ein Beispiel; Betriebsgenehmigung und aktuelle Versicherungsbestätigung fehlen im Quellenpaket.
     safetyRef: safety-concept
+    _key: k_acabd60ef12b79f89464
   - type: sustainability
     id: nachhaltigkeit
     kicker: Duurzaamheid
@@ -164,21 +191,26 @@ sections:
       - label: Geen knal
         value: Stil
         text: De drones zoemen, alleen jullie muziek is luid. TÜV Nord heeft het geluid in een akoestisch rapport onderzocht.
+        _key: k_18107c09a966fa79eaaa
       - label: Geen rook
         value: "0"
         unit: g
         text: Geen pyrotechniek, dus geen rook of zware metalen boven het publiek.
+        _key: k_e9bac39bce573d233925
       - label: Geen afval
         value: "0"
         unit: kg
         text: Geen hulzen, geen resten. Dezelfde drones vliegen show na show.
+        _key: k_0613df3d50475052917a
       - label: Groene stroom
         value:
           fact: renewablePercent
         unit: "%"
         text: Groene stroom van naturstrom voor onze accu's.
+        _key: k_e0f84ec6b02e192701fd
     todo: Moritz und FlyingStars müssen die Umweltformulierungen vor Veröffentlichung prüfen und die Belege für Ökostrom, Herstellung und das TÜV-Nord-Schallschutzgutachten bereithalten.
     pillarsRef: sustainability-pillars
+    _key: k_0fa41045b869c8273b40
   - type: metrics
     id: zahlen
     kicker: In cijfers
@@ -188,20 +220,26 @@ sections:
       - label: Shows
         value: { fact: showsTotal }
         text: Sinds de eerste show in augustus 2022. Dit jaar waren het er tot oktober 50.
+        _key: k_50c102f56431ca4d2975
       - label: Opgericht
         value: "2021"
         text: Op 1 december 2021 hebben we het bedrijf ingeschreven.
+        _key: k_a66f30ad55c0027af0b7
       - label: Grootste afzonderlijke show
         value: 600 drones
         text: In de musical Bokkenrijders in Maastricht, in 2025 als teaser en in 2026 op 20 avonden.
+        _key: k_15199d974e28adf4247b
       - label: Drone-inzetten in één maand
         value: "12.000"
         text: In juni 2026, 20 shows met elk 600 drones.
+        _key: k_47cc3f18ccf0d2fa265e
     todo: FlyingStars muss den Showstand seit dem 21.10.2026 aktualisieren oder 178 weiterhin ausdrücklich als datierten Bestand kennzeichnen.
+    _key: k_3064cf819511d86712c4
   - type: cta
     headline: Leer ons kennen.
     text: Een aanvraag is de snelste weg. Liever eerst praten? Plan een videogesprek via onze contactpagina.
     button:
       label: Vraag een show aan
       href: /kontakt/
-translationSourceHash: 1f5a879877a739bb986087da9aefdf95bb4430d9a748d1482d35deda16555801
+    _key: k_c92c36f7a77d76a82182
+translationSourceHash: fad653e2b840226865fc0d331d79a89db4d1db3fd4c48dfa22749ad47677a7fb

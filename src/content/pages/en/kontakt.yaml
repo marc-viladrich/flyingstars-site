@@ -6,6 +6,7 @@ sections:
     headline: Tell us about your date.
     text: A date, location and occasion are enough for an initial assessment. Leave anything you don't know yet open. Sending this form does not make a booking.
     todo: FlyingStars und die Datenschutzberatung müssen Versanddienst, Empfängerpostfach, Auftragsverarbeitung, Drittlandtransfers und Löschfristen festlegen und die Datenschutzhinweise freigeben.
+    _key: k_f0a092b80d21327d2779
   - type: steps
     id: danach
     kicker: The process
@@ -14,16 +15,22 @@ sections:
       - title: Reply
         text: We reply by email within 48 hours, with questions or an initial assessment.
         duration: 48 h
+        _key: k_72829c00aebbc8f431d5
       - title: First conversation
         text: A short phone or video call to discuss location, motifs and size.
+        _key: k_a160e9ad6c320d2f6921
       - title: Quote
         text: You receive a written quote. A 40% deposit is due when you book.
+        _key: k_f089638c8eafa18d9f2a
       - title: Planning
         text: We check the site, obtain the permit and design the show with you.
+        _key: k_f79e63f76325e9bc1fb5
+    _key: k_fda489b526df488c90a3
   - type: contactDetails
     kicker: Contact
     headline: Rather talk directly?
     text: "Behind every channel is the same team: Ronja, Florian and Erwin."
     visitNote: Please let us know in advance.
     todo: Teamfoto fehlt, bis dahin stehen hier die Porträts der Geschäftsführer:innen. FlyingStars muss den Terminbuchungs-Link und die Kontaktwege vor dem Relaunch bestätigen; Moritz muss die Kontakttexte und EN/NL prüfen.
-translationSourceHash: bf6c7898306ea04cf2ddfc6b86000252cd22d8c3ef3290a0ac299d718449302f
+    _key: k_b12e1279f01fbae7cfb2
+translationSourceHash: bdfce56070838aaaf2350b5053137bcf4401268b099937fff8cd5b79c5c260ce

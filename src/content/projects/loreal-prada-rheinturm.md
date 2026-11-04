@@ -38,8 +38,8 @@
     "cardTitle": "Prada Paradoxe mit {{project.loreal-prada-rheinturm.drones}} Drohnen",
     "category": "Marken · Düsseldorf",
     "titleLines": [
-      "PRADA",
-      "PARADOXE"
+      {"_key":"k_86a8ae099b54f2abbe58","value":"PRADA"},
+      {"_key":"k_7adf8c1cbbc883ee1a48","value":"PARADOXE"}
     ],
     "titleChars": 8,
     "tagline": "Ein Parfümflacon wird zur Drohnenshow.",
@@ -51,14 +51,16 @@
     "credits": [
       {
         "label": "Anlass",
-        "value": "Marken"
+        "value": "Marken",
+        "_key": "k_e2b536ddc8aa091ec8c0"
       },
       {
         "label": "Ort",
         "value": {
           "project": "loreal-prada-rheinturm",
           "field": "location"
-        }
+        },
+        "_key": "k_b9b21d523198773203ba"
       },
       {
         "label": "Datum",
@@ -66,7 +68,8 @@
           "project": "loreal-prada-rheinturm",
           "field": "date",
           "display": "iso"
-        }
+        },
+        "_key": "k_2e8200080f2fc1948e7a"
       },
       {
         "label": "Drohnen",
@@ -74,7 +77,8 @@
           "project": "loreal-prada-rheinturm",
           "field": "drones",
           "display": "text"
-        }
+        },
+        "_key": "k_b10662831ac91ee3b287"
       }
     ],
     "numbers": [
@@ -83,7 +87,8 @@
           "project": "loreal-prada-rheinturm",
           "field": "drones"
         },
-        "label": "Drohnen"
+        "label": "Drohnen",
+        "_key": "k_e5c060f553ce828bc620"
       }
     ],
     "story": [
@@ -94,7 +99,8 @@
           "src": "https://flyingstars.art/wp-content/uploads/2024/07/prada1.png",
           "alt": "Parfümflacon Prada Paradoxe als Produktvorlage",
           "caption": "Parfümflacon Prada Paradoxe als Produktvorlage"
-        }
+        },
+        "_key": "k_6694f6687fb04b693200"
       },
       {
         "title": "Die Marke stimmt jedes Detail ab.",
@@ -103,7 +109,8 @@
           "src": "https://flyingstars.art/wp-content/uploads/2024/07/prada2.png",
           "alt": "Dreidimensionaler Flacon aus Drohnen am Nachthimmel",
           "caption": "Dreidimensionaler Flacon aus Drohnen am Nachthimmel"
-        }
+        },
+        "_key": "k_f3414cf56287d31f1e42"
       },
       {
         "title": "Die Show bleibt vom Rheinturm sichtbar.",
@@ -112,35 +119,40 @@
           "src": "https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg",
           "alt": "Flacon aus Drohnen über der Düsseldorfer Skyline mit Rheinturm",
           "caption": "Flacon aus Drohnen über der Düsseldorfer Skyline mit Rheinturm"
-        }
+        },
+        "_key": "k_efdd733da8454336129f"
       }
     ],
     "gallery": [
       {
         "src": "https://flyingstars.art/wp-content/uploads/2024/07/prada1.png",
         "alt": "Parfümflacon Prada Paradoxe als Produktvorlage",
-        "caption": "Parfümflacon Prada Paradoxe als Produktvorlage"
+        "caption": "Parfümflacon Prada Paradoxe als Produktvorlage",
+        "_key": "k_308c5d9a42d339fa17a8"
       },
       {
         "src": "https://flyingstars.art/wp-content/uploads/2024/07/prada2.png",
         "alt": "Dreidimensionaler Flacon aus Drohnen am Nachthimmel",
-        "caption": "Dreidimensionaler Flacon aus Drohnen am Nachthimmel"
+        "caption": "Dreidimensionaler Flacon aus Drohnen am Nachthimmel",
+        "_key": "k_9fa07299e96a514d8795"
       },
       {
         "src": "https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg",
         "alt": "Flacon aus Drohnen über der Düsseldorfer Skyline mit Rheinturm",
-        "caption": "Flacon aus Drohnen über der Düsseldorfer Skyline mit Rheinturm"
+        "caption": "Flacon aus Drohnen über der Düsseldorfer Skyline mit Rheinturm",
+        "_key": "k_571eeed4f9e285cd6962"
       }
     ],
     "setlist": [
       {
         "title": "Motive der Show",
         "items": [
-          "PARADOXE",
-          "Mobile aus Flacons",
-          "PRADA",
-          "Dreidimensionaler Flacon"
-        ]
+          {"_key":"k_4dfc422fbd8202d3ba41","value":"PARADOXE"},
+          {"_key":"k_58b47e5ab5c352774e19","value":"Mobile aus Flacons"},
+          {"_key":"k_636fe4836f4794f54c21","value":"PRADA"},
+          {"_key":"k_902ca0bdc61817a9a806","value":"Dreidimensionaler Flacon"}
+        ],
+        "_key": "k_a2591c815cfc7a6612c0"
       }
     ],
     "videoLink": {

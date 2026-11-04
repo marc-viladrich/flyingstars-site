@@ -39,8 +39,8 @@
     "category": "Sport · Bundesliga",
     "kicker": "Sport · Mönchengladbach · November 2022",
     "titleLines": [
-      "Stronger",
-      "Together"
+      {"_key":"k_ac4368bfe8886b0b5e13","value":"Stronger"},
+      {"_key":"k_dff8f4905d45eefd189e","value":"Together"}
     ],
     "titleChars": 8,
     "tagline": "{{project.puma-bundesliga.drones}} Drohnen für PUMA zum Anstoß des Derbys.",
@@ -56,18 +56,21 @@
         "value": {
           "project": "puma-bundesliga",
           "field": "client"
-        }
+        },
+        "_key": "k_dd5d3e578dec479fc470"
       },
       {
         "label": "Ort",
         "value": {
           "project": "puma-bundesliga",
           "field": "location"
-        }
+        },
+        "_key": "k_924cfb1e5844dc1cd6e0"
       },
       {
         "label": "Datum",
-        "value": "{{project.puma-bundesliga.date.numeric}} · Gladbach – Dortmund"
+        "value": "{{project.puma-bundesliga.date.numeric}} · Gladbach – Dortmund",
+        "_key": "k_334d7d5656571b3bb5a5"
       },
       {
         "label": "Drohnen",
@@ -75,7 +78,8 @@
           "project": "puma-bundesliga",
           "field": "drones",
           "display": "text"
-        }
+        },
+        "_key": "k_3f5c537eb705aaaa2045"
       }
     ],
     "numbers": [
@@ -84,15 +88,18 @@
           "project": "puma-bundesliga",
           "field": "drones"
         },
-        "label": "Drohnen über dem Borussia-Park"
+        "label": "Drohnen über dem Borussia-Park",
+        "_key": "k_54d2712dba0c7b507abc"
       },
       {
         "value": 14,
-        "label": "Tage von der Anfrage bis zur Show"
+        "label": "Tage von der Anfrage bis zur Show",
+        "_key": "k_6d4c4b3cfce80f2b53e4"
       },
       {
         "value": 4,
-        "label": "Motive, von STRONGER zu TOGETHER"
+        "label": "Motive, von STRONGER zu TOGETHER",
+        "_key": "k_33efee888ee296420aab"
       }
     ],
     "story": [
@@ -104,7 +111,8 @@
           "src": "https://flyingstars-relaunch.vercel.app/media/projekte/puma/01.jpg",
           "alt": "Der Puma über dem Borussia-Park",
           "caption": "Der Puma über dem Borussia-Park"
-        }
+        },
+        "_key": "k_f466acfb15fb31514dd7"
       },
       {
         "kicker": "02 · Die Show",
@@ -114,7 +122,8 @@
           "src": "https://flyingstars-relaunch.vercel.app/media/projekte/puma/02.jpg",
           "alt": "STRONGER",
           "caption": "STRONGER"
-        }
+        },
+        "_key": "k_0d276dc0f53ba0be3767"
       },
       {
         "kicker": "03 · Die Umsetzung",
@@ -124,7 +133,8 @@
           "src": "https://flyingstars-relaunch.vercel.app/media/projekte/puma/03.jpg",
           "alt": "TOGETHER",
           "caption": "TOGETHER"
-        }
+        },
+        "_key": "k_99c3a799bf612b8bbce8"
       },
       {
         "kicker": "04 · Das Echo",
@@ -134,7 +144,8 @@
           "src": "https://flyingstars-relaunch.vercel.app/media/projekte/puma/04.jpg",
           "alt": "Der springende Puma",
           "caption": "Der springende Puma"
-        }
+        },
+        "_key": "k_391764bc483b685c471d"
       }
     ],
     "formation": {
@@ -146,22 +157,26 @@
       {
         "src": "https://flyingstars-relaunch.vercel.app/media/projekte/puma/01.jpg",
         "alt": "Der Puma über dem Borussia-Park – PUMA",
-        "caption": "Der Puma über dem Borussia-Park"
+        "caption": "Der Puma über dem Borussia-Park",
+        "_key": "k_8e1883a3fbe91e04e248"
       },
       {
         "src": "https://flyingstars-relaunch.vercel.app/media/projekte/puma/02.jpg",
         "alt": "STRONGER – PUMA",
-        "caption": "STRONGER"
+        "caption": "STRONGER",
+        "_key": "k_99ca395d8cdb67f8a724"
       },
       {
         "src": "https://flyingstars-relaunch.vercel.app/media/projekte/puma/03.jpg",
         "alt": "TOGETHER – PUMA",
-        "caption": "TOGETHER"
+        "caption": "TOGETHER",
+        "_key": "k_6d9fda1fd15d2dd6771d"
       },
       {
         "src": "https://flyingstars-relaunch.vercel.app/media/projekte/puma/04.jpg",
         "alt": "Der springende Puma – PUMA",
-        "caption": "Der springende Puma"
+        "caption": "Der springende Puma",
+        "_key": "k_8b31ee72d334d746a1f4"
       }
     ],
     "portrait": false,
@@ -169,11 +184,12 @@
       {
         "title": "Storyboard",
         "items": [
-          "Erscheinender Puma",
-          "Schriftzug STRONGER",
-          "Verwandlung zu TOGETHER",
-          "Springender Puma"
-        ]
+          {"_key":"k_c9b9a3983e68e8291920","value":"Erscheinender Puma"},
+          {"_key":"k_1e61913bfebb9958ae70","value":"Schriftzug STRONGER"},
+          {"_key":"k_e706692bfb9dd5af4c5e","value":"Verwandlung zu TOGETHER"},
+          {"_key":"k_f3edddd38f4a1c4854c7","value":"Springender Puma"}
+        ],
+        "_key": "k_24543534845d588df185"
       }
     ],
     "press": [],

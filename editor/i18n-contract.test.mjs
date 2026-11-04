@@ -150,6 +150,39 @@ test('new fingerprints never bypass a stale legacy raw hash, including comment-o
   assert.notEqual(fingerprint(undefined), fingerprint(['undefined']));
 });
 
-for (const scenario of ['reorder plus text change with repeated section types', 'nested and primitive translated list reorder', 'insert/delete retains evidence of surviving items', 'duplicate gets a fresh key; duplicate/missing keys stop', 'pure shared reorder preserves all translation addresses']) {
-  test.todo(`Step 2 stable keys required: ${scenario}`);
-}
+const listSchema = z.object({items: z.array(z.object({_key:s(z.string()),type:s(z.literal('same')),text:t(z.string()),children:z.array(z.object({_key:s(z.string()),value:t(z.string())}))}))});
+const row=(key,text)=>({_key:key,type:'same',text,children:[{_key:key+'_child',value:text+' child'}]});
+const listDE={items:[row('key_first','Erster'),row('key_second','Zweiter')]},listEN={items:[row('key_first','First'),row('key_second','Second')]};
+const listRun=(a=listDE,b=listEN)=>project(listSchema,a,b,'en');
+const listBaseline=listRun(),listEvidence=adoptionEvidence(listBaseline);
+test('stable keys: reorder plus text change with repeated section types',()=>{
+ const after={items:[{...listDE.items[1],text:'Neu'},listDE.items[0]]},out=listRun(after);
+ assert.deepEqual(out.projection.items.map(v=>v.text),['Second','First']);
+ assert.deepEqual(reviewRequired(out,listEvidence),['/items/@key_second/text']);
+ assert.deepEqual(out.fields.find(f=>f.address==='/items/@key_second/text').path,['items',0,'text']);
+});
+test('stable keys: nested primitive text reorder retains source and target association',()=>{
+ const de=structuredClone(listDE),en=structuredClone(listEN);de.items[0].children.push({_key:'another_child',value:'Noch einer'});en.items[0].children.push({_key:'another_child',value:'Another'});
+ const before=listRun(de,en);de.items[0].children.reverse();const out=listRun(de,en);
+ assert.equal(out.sourceFingerprint,before.sourceFingerprint);
+ assert.deepEqual(out.projection.items[0].children.map(v=>v.value),['Another','Erster child'.replace('Erster','First')]);
+});
+test('stable keys: insert/delete requires evidence only for inserted elements',()=>{
+ const de={items:[listDE.items[1],row('key_third','Dritter')]},en={items:[listEN.items[1],row('key_third','Third')]};
+ const out=listRun(de,en),surviving={...listEvidence,fields:listEvidence.fields.filter(f=>!f.address.includes('@key_first/'))};
+ assert.deepEqual(reviewRequired(out,surviving),['/items/@key_third/children/@key_third_child/value','/items/@key_third/text']);
+ assert.throws(()=>reviewRequired(out,listEvidence),/Orphan/);
+});
+test('stable keys: copies get fresh nested identities; missing/duplicate keys stop',async()=>{
+ const {renewKeys}=await import('../src/i18n/keys.mjs'),copy=renewKeys(structuredClone(listDE.items[0]));
+ assert.notEqual(copy._key,listDE.items[0]._key);assert.notEqual(copy.children[0]._key,listDE.items[0].children[0]._key);
+ for(const data of [{items:[listDE.items[0],listDE.items[0]]},{items:[{...listDE.items[0],_key:undefined}]}])assert.throws(()=>listRun(data),/_key/);
+ assert.throws(()=>listRun(listDE,{items:[listEN.items[0],listEN.items[0]]}),/Duplicate/);
+});
+test('stable keys: pure reorder preserves every translated address and review',()=>{
+ const out=listRun({items:[...listDE.items].reverse()});assert.equal(out.sourceFingerprint,listBaseline.sourceFingerprint);
+ assert.deepEqual(reviewRequired(out,listEvidence),[]);assert.deepEqual(out.fields.map(f=>f.address),listBaseline.fields.map(f=>f.address));
+});
+test('portable SHA-256 agrees with Node for Unicode, empty and multiblock input',async()=>{
+ const {sha256}=await import('../src/i18n/sha256.mjs');for(const text of ['', 'abc', 'ä🎉'.repeat(1000)])assert.equal(sha256(text),createHash('sha256').update(text).digest('hex'));
+});

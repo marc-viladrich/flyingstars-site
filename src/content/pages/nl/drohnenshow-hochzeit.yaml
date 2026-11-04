@@ -23,11 +23,15 @@ sections:
     facts:
       - value: vanaf € 7.900
         label: exclusief btw met SPARK
+        _key: k_d6b481df0eeda9dbd41c
       - value: 100 drones
         label: in het pakket
+        _key: k_b54242b2d9dbb9fb4cb8
       - value: inbegrepen
         label: Vergunning
+        _key: k_23f7c52d3dd38daa58dc
     todo: Moritz muss die deutsche Endfassung und die maschinell übersetzten EN-/NL-Texte redaktionell prüfen.
+    _key: k_683af193db254741d0d4
   - type: landingRefs
     id: referenzen
     kicker: Onze shows
@@ -35,6 +39,7 @@ sections:
     projects:
       - hochzeit-recklinghausen
       - heiratsantrag-hugenpoet
+    _key: k_6500b76af74b7dd741ca
   - type: landingTeaser
     id: motive
     kicker: Beelden
@@ -44,6 +49,7 @@ sections:
     cta: Bekijk beelden in de configurator
     loop: hochzeit
     todo: FlyingStars muss die Motive, Drohnenzahlen und Freischaltstufen anhand von docs/show-motive-inventar.md fachlich bestätigen. Die Vorschau ist kein Flugplan.
+    _key: k_3f8f37b2eb211e01710f
   - type: landingPrice
     id: preise
     kicker: Prijzen
@@ -54,18 +60,28 @@ sections:
       - title: Inbegrepen
         items:
           - label: Ontwerp van jullie beelden, met goedkeuring
+            _key: k_37abdcf9a06b01a2027a
           - label: Vergunning
+            _key: k_8f2c8df476eed9be19a0
           - label: Muziekmontage
+            _key: k_2783c106e5d6abc32f17
           - label: Ons team ter plaatse
+            _key: k_0cb78b0d15ef58649c64
           - label: Aansprakelijkheidsdekking tot € 1,3 miljoen
+            _key: k_7905bc184ed46dace247
+        _key: k_6de6ec032d67c38d5810
       - title: Mogelijke extra's
         items:
           - label: Reiskosten vanuit Gelsenkirchen
             value: afhankelijk van locatie
+            _key: k_149ad168bfbf92228a1d
           - label: Express bij minder dan 14 dagen voorbereiding
             value: naar werkzaamheden
+            _key: k_32a04e8638a5ebde994e
           - label: Ruwe opnamen met cameradrone
             value: "{{offer.film.priceSuffix}}"
+            _key: k_903664b3354da0589651
+        _key: k_f5339bfda589f5d657de
     bonus:
       value:
         fact: earlyBookingPercent
@@ -78,6 +94,7 @@ sections:
         label: Vraag een bruiloftshow aan
         href: "#anfrage"
     todo: FlyingStars muss die Paketgrenzen, Aufpreise und Leistungen für den Relaunch bestätigen; die endgültige Preisstruktur für 2027 ist noch offen.
+    _key: k_c2450679c80f554468e8
   - type: landingSite
     id: location
     kicker: Location
@@ -86,6 +103,7 @@ sections:
     variant: outdoor
     todo: FlyingStars muss die Startflächen je Drohnenzahl und die standortabhängigen Abstände bestätigen; 15 × 15 und 25 × 25 Meter widersprechen sich in den Quellen. Die Zeichnung bleibt ein Beispiel.
     safetyRef: safety-concept
+    _key: k_6e4f6206d974feea8611
   - type: tempo
     id: ablauf
     kicker: Verloop
@@ -95,25 +113,31 @@ sections:
       - value: { fact: responseHours, display: hours }
         label: tot ons antwoord
         text: Datum, locatie en jullie idee zijn genoeg. Daarna volgen een kort gesprek en jullie offerte.
+        _key: k_812f6a16e0909c3ee313
       - value: 1–2 maanden
         label: voorbereiding, ideaal
         text: Genoeg tijd voor de vergunning. Bij luchthavens eerder drie maanden.
+        _key: k_64720ed2445e0b41412f
       - value: 3 weken
         label: voor beelden en muziek, minimaal
         text: Jullie zien een ontwerp met de muziek, geven feedback en keuren uiteindelijk elk beeld goed.
+        _key: k_359cc55f5f50e62391b4
       - value: 3 h
         label: voor de show ter plaatse
         text: Ons team zet de startzone af, vliegt de show en bouwt daarna weer af.
+        _key: k_e6032c4bf2b2ae8d96bc
     shortcut:
       value: Express binnen 14 dagen
       label: Toeslag naar werkzaamheden
       href: /kontakt/?extras=express
+    _key: k_bd1dd6072c1145a15939
   - type: landingCta
     headline: Wordt het een *verrassing*?
     text: Of het nu een aanzoek of een cadeau van de familie is, we stemmen alleen met jullie af. De startzone richten we uit het zicht in en de timing regelen we met de locatie.
     button:
       label: Vraag een verrassingsshow aan
       href: "#anfrage"
+    _key: k_ae4a2fbaa25b27dc1ad0
   - type: landingBento
     id: wetter
     kicker: Weer
@@ -126,13 +150,17 @@ sections:
       - icon: wind
         title: Tot windkracht 5
         text: Tot die grens vliegen we, ook bij lichte motregen.
+        _key: k_03f71ddaa0ce9b453da3
       - icon: calendar-sync
         title: Gratis verplaatsen
         text: Is slecht weer voorzien, dan kunnen we verplaatsen zolang we nog niet onderweg zijn.
+        _key: k_142976fe879da98142c8
       - icon: wallet
         title: 40% aanbetaling
         text: Die betalen jullie bij de boeking. Gaat de show helemaal niet door, dan geldt de annuleringsregeling uit onze voorwaarden.
+        _key: k_716afa47ec957d14d420
     todo: FlyingStars muss die Website-Angabe Windstärke 5 mit den Windgrenzen der AGB abstimmen und die aktuelle Ausfall-/Verschiebungsstaffel samt verlinkbarer AGB-Fassung liefern.
+    _key: k_f6a652f50cd3d91604e5
   - type: faq
     id: fragen
     kicker: FAQ
@@ -143,8 +171,10 @@ sections:
       href: /faq/
     tags:
       - hochzeit
+    _key: k_9db54091e8c639b6fa66
   - type: contactForm
     kicker: Aanvraag
     headline: Vertel ons over jullie trouwdag.
     text: Datum en locatie zijn genoeg voor het begin. We reageren binnen 48 uur met een eerste inschatting.
-translationSourceHash: 4dbd092ddb04da59ef37dcc152525ba75aff742a2b5f1ee1ea6e531dd87a016d
+    _key: k_f7f1d08aab8e84a827cd
+translationSourceHash: cb7a4870baab33c9c01ab88d5a8017a2c2f563ab2f61ed244e3e4d23c9870054

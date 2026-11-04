@@ -10,4 +10,5 @@ sections:
 
       Please email [{{contact.email}}](mailto:{{contact.email}}) directly or call [{{contact.phone.label}}]({{contact.phone.href}}).
     todo: FlyingStars muss den tatsächlichen Versandstatus mit dem Betrieb klären; Moritz muss die reine Vorschau-Meldung bei aktivem Versand durch eine passende Rückmeldung in DE/EN/NL ersetzen.
-translationSourceHash: dbf9394d559751264745d7ef5c74ec4b577c53796e814a720a43028a07985907
+    _key: k_7f812f5f0bc5bd9032db
+translationSourceHash: 03ac5849f6f2cb8e52884cb524d2aadb373c1caad0625ae4bae317ac64532457

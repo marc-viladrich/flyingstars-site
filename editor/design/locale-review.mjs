@@ -1,15 +1,23 @@
+import {renewKeys} from '../../src/i18n/keys.mjs';
 const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 export const locales=['en','nl'];
 export const sourceId=id=>id.replace(/^(page|post|project|faq)\/(?:en|nl)\//,'$1/');
 const structuralString=(path,value)=>path.includes('todo')||['type','id','translationSourceHash'].includes(path.at(-1))||(!/\s/.test(value)&&/^(?:https?:|mailto:|tel:|\/|#)/.test(value));
 export function uniqueSection(section,existing){
+ renewKeys(section);
  if(section.id){const stem=section.id.replace(/-kopie(?:-\d+)?$/,'');let id=stem+'-kopie',n=2;while(existing.some(s=>s.id===id))id=stem+'-kopie-'+n++;section.id=id;}return section;
 }
 // Preserve the translation that belongs to an array entry when entries move. A changed entry
 // with a stable id stays matched; positional fallback is used only after exact matches are reserved.
 export function matchEntries(before,after){
- const old=Array.isArray(before)?before:[],used=new Set(),matches=after.map(value=>{const i=old.findIndex((v,i)=>!used.has(i)&&same(v,value));if(i>=0)used.add(i);return i;});
- return after.map((value,i)=>{if(matches[i]>=0)return matches[i];let at=old.findIndex((v,j)=>!used.has(j)&&value?.id&&v?.id===value.id);const available=old.map((v,j)=>({v,j})).filter(({v,j})=>!used.has(j)&&v?.type===value?.type);if(at<0&&available.length===1)at=available[0].j;if(at<0&&old[i]!==undefined&&!used.has(i)&&old[i]?.type===value?.type)at=i;if(at>=0)used.add(at);return at;});
+ const old=Array.isArray(before)?before:[];
+ const keyed=after.some(v=>v&&typeof v==='object'&&'_key' in v)||old.some(v=>v&&typeof v==='object'&&'_key' in v);
+ if(keyed){
+  for(const list of [old,after]){const keys=new Set();for(const value of list){if(!value?._key||keys.has(value._key))throw Error('Missing or duplicate _key');keys.add(value._key);}}
+  return after.map(value=>old.findIndex(v=>v._key===value._key));
+ }
+ // Shared-only primitive lists carry no localized identity.
+ return after.map(value=>old.findIndex(v=>same(v,value)));
 }
 export function synchronize(before,after,target,path=[]){
  if(typeof after==='string'&&structuralString(path,after))return after;

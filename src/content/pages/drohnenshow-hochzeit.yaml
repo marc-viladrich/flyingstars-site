@@ -30,10 +30,11 @@ sections:
       height: 1303
     # Entwurf für Moritz: Eckdaten unter dem Satz (Werte aus show-packages.ts und dem Fragebogen)
     facts:
-      - { value: ab 7.900 €, label: netto mit SPARK }
-      - { value: 100 Drohnen, label: im Paket }
-      - { value: inklusive, label: Genehmigung }
+      - { value: ab 7.900 €, label: netto mit SPARK, "_key": "k_d6b481df0eeda9dbd41c" }
+      - { value: 100 Drohnen, label: im Paket, "_key": "k_b54242b2d9dbb9fb4cb8" }
+      - { value: inklusive, label: Genehmigung, "_key": "k_23f7c52d3dd38daa58dc" }
     todo: Moritz muss die deutsche Endfassung und die maschinell übersetzten EN-/NL-Texte redaktionell prüfen.
+    _key: k_683af193db254741d0d4
   - type: landingRefs
     id: referenzen
     kicker: Referenzen
@@ -41,6 +42,7 @@ sections:
     projects:
       - hochzeit-recklinghausen
       - heiratsantrag-hugenpoet
+    _key: k_6500b76af74b7dd741ca
 
   # Motive: Konfigurator-Teaser statt Text-Banner (Marc, 31.10.2026: „damit man unterschiedliche Motive sieht“)
   - type: landingTeaser
@@ -52,6 +54,7 @@ sections:
     cta: Motive im Konfigurator ansehen
     loop: hochzeit
     todo: FlyingStars muss die Motive, Drohnenzahlen und Freischaltstufen anhand von docs/show-motive-inventar.md fachlich bestätigen. Die Vorschau ist kein Flugplan.
+    _key: k_3f8f37b2eb211e01710f
 
   # Entwurf für Moritz: Preis als Karte. Inhalte wie bisher; „Kontakt“-Satz neu.
   - type: landingPrice
@@ -63,22 +66,25 @@ sections:
     groups:
       - title: Enthalten
         items:
-          - { label: Design eurer Motive mit Freigabe }
-          - { label: Genehmigung }
-          - { label: Musikschnitt }
-          - { label: Unser Team vor Ort }
-          - { label: "Haftpflicht bis 1,3 Mio. €" }
+          - { label: Design eurer Motive mit Freigabe, "_key": "k_37abdcf9a06b01a2027a" }
+          - { label: Genehmigung, "_key": "k_8f2c8df476eed9be19a0" }
+          - { label: Musikschnitt, "_key": "k_2783c106e5d6abc32f17" }
+          - { label: Unser Team vor Ort, "_key": "k_0cb78b0d15ef58649c64" }
+          - { label: "Haftpflicht bis 1,3 Mio. €", "_key": "k_7905bc184ed46dace247" }
+        _key: k_6de6ec032d67c38d5810
       - title: Kann dazukommen
         items:
-          - { label: Anfahrt ab Gelsenkirchen, value: nach Ort }
-          - { label: Express unter 14 Tagen Vorlauf, value: nach Aufwand }
-          - { label: Rohaufnahmen mit Kameradrohne, value: "{{offer.film.priceSuffix}}" }
+          - { label: Anfahrt ab Gelsenkirchen, value: nach Ort, "_key": "k_149ad168bfbf92228a1d" }
+          - { label: Express unter 14 Tagen Vorlauf, value: nach Aufwand, "_key": "k_32a04e8638a5ebde994e" }
+          - { label: Rohaufnahmen mit Kameradrohne, value: "{{offer.film.priceSuffix}}", "_key": "k_903664b3354da0589651" }
+        _key: k_f5339bfda589f5d657de
     bonus: { value: { fact: earlyBookingPercent, display: discount }, text: "Frühbucherrabatt: Bucht ihr bis zum Jahresende für eine Hochzeit im nächsten Jahr." }
     closing:
       headline: Euer Datum steht schon?
       text: Ronja, Florian und Erwin beantworten eure Anfrage innerhalb von 48 Stunden.
       button: { label: Hochzeitsshow anfragen, href: "#anfrage" }
     todo: FlyingStars muss die Paketgrenzen, Aufpreise und Leistungen für den Relaunch bestätigen; die endgültige Preisstruktur für 2027 ist noch offen.
+    _key: k_c2450679c80f554468e8
 
   # Textentwurf für Moritz. Quellen und Konflikte: docs/sicherheitskonzept-quellen.md.
   - type: landingSite
@@ -89,6 +95,7 @@ sections:
     variant: outdoor
     todo: FlyingStars muss die Startflächen je Drohnenzahl und die standortabhängigen Abstände bestätigen; 15 × 15 und 25 × 25 Meter widersprechen sich in den Quellen. Die Zeichnung bleibt ein Beispiel.
     safetyRef: safety-concept
+    _key: k_6e4f6206d974feea8611
 
   # Entwurf für Moritz: Ablauf in Zahlen wie auf der Startseite. Quellen: Fragebogen 21.10. (48 h, mind. 3 Wochen Design,
   # 1–2 Monate ideal, ca. 3 h Aufbau, ca. 3 Monate bei Flughafennähe).
@@ -98,17 +105,19 @@ sections:
     headline: Ihr feiert, wir kümmern uns um den Rest.
     text: Ihr kümmert euch um die Feier, wir melden uns, wenn wir eine Entscheidung brauchen. Ideal sind ein bis zwei Monate Vorlauf.
     marks:
-      - { value: { fact: responseHours, display: hours }, label: bis zu unserer Antwort, text: "Datum, Location und eure Idee reichen. Danach ein kurzes Gespräch und euer Angebot." }
-      - { value: 1–2 Monate, label: "Vorlauf, ideal", text: "Genug Zeit für die Genehmigung. In Flughafennähe eher drei Monate." }
-      - { value: 3 Wochen, label: "für Motive und Musik, mindestens", text: "Ihr seht einen Entwurf mit eurer Musik, gebt Feedback und am Ende jedes Motiv frei." }
-      - { value: 3 h, label: vor der Show vor Ort, text: "Unser Team sperrt die Startfläche, fliegt die Show und baut danach wieder ab." }
+      - { value: { fact: responseHours, display: hours }, label: bis zu unserer Antwort, text: "Datum, Location und eure Idee reichen. Danach ein kurzes Gespräch und euer Angebot.", "_key": "k_812f6a16e0909c3ee313" }
+      - { value: 1–2 Monate, label: "Vorlauf, ideal", text: "Genug Zeit für die Genehmigung. In Flughafennähe eher drei Monate.", "_key": "k_64720ed2445e0b41412f" }
+      - { value: 3 Wochen, label: "für Motive und Musik, mindestens", text: "Ihr seht einen Entwurf mit eurer Musik, gebt Feedback und am Ende jedes Motiv frei.", "_key": "k_359cc55f5f50e62391b4" }
+      - { value: 3 h, label: vor der Show vor Ort, text: "Unser Team sperrt die Startfläche, fliegt die Show und baut danach wieder ab.", "_key": "k_e6032c4bf2b2ae8d96bc" }
     # Express als Abzweigung im Netzplan (Fragebogen: unter 14 Tagen, Aufpreis nach Aufwand), mit Weg in die Anfrage
     shortcut: { value: Express unter 14 Tagen, label: Aufpreis nach Aufwand, href: "/kontakt/?extras=express" }
+    _key: k_bd1dd6072c1145a15939
 
   - type: landingCta
     headline: Es soll eine *Überraschung* werden?
     text: Ob Heiratsantrag oder Geschenk der Familie, wir stimmen uns nur mit euch ab. Die Startfläche richten wir abseits ein und den Startzeitpunkt planen wir mit der Location.
     button: { label: Überraschung anfragen, href: "#anfrage" }
+    _key: k_ae4a2fbaa25b27dc1ad0
 
   # Entwurf für Moritz: Wetter als Kacheln, Inhalte wie bisher
   - type: landingBento
@@ -120,10 +129,11 @@ sections:
       title: Eine Drohnenshow ist keine *Pyrotechnik*.
       text: Kein Knall, kein Rauch, keine Funken und nichts, was danach auf dem Rasen liegt. Laut ist nur eure Musik.
     items:
-      - { icon: wind, title: Bis Windstärke 5, text: "So lange fliegen wir, auch bei leichtem Nieselregen." }
-      - { icon: calendar-sync, title: Kostenlos verschieben, text: "Ist schlechtes Wetter absehbar, verschieben wir, solange wir noch nicht losgefahren sind." }
-      - { icon: wallet, title: 40 % Anzahlung, text: "Zahlt ihr bei der Buchung an. Fällt die Show ganz aus, gilt die Staffel aus unseren AGB." }
+      - { icon: wind, title: Bis Windstärke 5, text: "So lange fliegen wir, auch bei leichtem Nieselregen.", "_key": "k_03f71ddaa0ce9b453da3" }
+      - { icon: calendar-sync, title: Kostenlos verschieben, text: "Ist schlechtes Wetter absehbar, verschieben wir, solange wir noch nicht losgefahren sind.", "_key": "k_142976fe879da98142c8" }
+      - { icon: wallet, title: 40 % Anzahlung, text: "Zahlt ihr bei der Buchung an. Fällt die Show ganz aus, gilt die Staffel aus unseren AGB.", "_key": "k_716afa47ec957d14d420" }
     todo: FlyingStars muss die Website-Angabe Windstärke 5 mit den Windgrenzen der AGB abstimmen und die aktuelle Ausfall-/Verschiebungsstaffel samt verlinkbarer AGB-Fassung liefern.
+    _key: k_f6a652f50cd3d91604e5
 
   - type: faq
     id: fragen
@@ -132,8 +142,10 @@ sections:
     text: Kurz beantwortet. Weitere Antworten findet ihr in den häufigen Fragen.
     cta: { label: Alle Fragen, href: /faq/ }
     tags: [ hochzeit ]
+    _key: k_9db54091e8c639b6fa66
 
   - type: contactForm
     kicker: Anfrage
     headline: Erzählt uns von eurem Hochzeitstag.
     text: Datum und Location reichen für den Anfang. Wir melden uns innerhalb von 48 Stunden mit einer ersten Einschätzung.
+    _key: k_f7f1d08aab8e84a827cd

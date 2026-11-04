@@ -8,6 +8,7 @@ sections:
     headline: Erzählt uns von eurem Termin.
     text: Datum, Ort und Anlass reichen für eine erste Einschätzung. Was ihr noch nicht wisst, lasst ihr offen. Mit dem Absenden bucht ihr noch nichts.
     todo: FlyingStars und die Datenschutzberatung müssen Versanddienst, Empfängerpostfach, Auftragsverarbeitung, Drittlandtransfers und Löschfristen festlegen und die Datenschutzhinweise freigeben.
+    _key: k_f0a092b80d21327d2779
 
   - type: steps
     id: danach
@@ -17,12 +18,17 @@ sections:
       - title: Antwort
         text: Innerhalb von 48 Stunden antworten wir per E-Mail, mit Rückfragen oder einer ersten Einschätzung.
         duration: 48 h
+        _key: k_72829c00aebbc8f431d5
       - title: Erstgespräch
         text: In einem kurzen Gespräch per Telefon oder Video klären wir Ort, Motive und Größe.
+        _key: k_a160e9ad6c320d2f6921
       - title: Angebot
         text: Ihr bekommt ein schriftliches Angebot. Mit der Buchung zahlt ihr 40 % an.
+        _key: k_f089638c8eafa18d9f2a
       - title: Planung
         text: Wir prüfen den Standort, holen die Genehmigung ein und entwerfen die Show mit euch.
+        _key: k_f79e63f76325e9bc1fb5
+    _key: k_fda489b526df488c90a3
 
   - type: contactDetails
     kicker: Kontakt
@@ -30,3 +36,4 @@ sections:
     text: "Hinter allen Wegen steht dasselbe Team: Ronja, Florian und Erwin."
     visitNote: Meldet euch vorher kurz an.
     todo: Teamfoto fehlt, bis dahin stehen hier die Porträts der Geschäftsführer:innen. FlyingStars muss den Terminbuchungs-Link und die Kontaktwege vor dem Relaunch bestätigen; Moritz muss die Kontakttexte und EN/NL prüfen.
+    _key: k_b12e1279f01fbae7cfb2

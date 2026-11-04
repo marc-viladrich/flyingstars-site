@@ -23,11 +23,15 @@ sections:
     facts:
       - value: "{{offer.indoor.drones.min}}–{{offer.indoor.drones.max}}"
         label: Drones
+        _key: k_9c43046412c4f98a6eaa
       - value: "{{duration.indoor.min}}–{{duration.indoor.max}} min."
         label: Showduur
+        _key: k_f28af46100a885028278
       - value: "vanaf {{offer.indoor.ceilingMin}} m"
         label: Plafondhoogte
+        _key: k_44b29fef37672879c7e3
     todo: Moritz muss die Endfassung und EN/NL prüfen. FlyingStars muss die Zuordnung von Siemens-Film und Hallen-Standbildern zur Hannover Messe bestätigen; das Standbild belegt diesen Veranstaltungsort bislang nicht.
+    _key: k_9ad4a65122a9edecb81a
   - type: comparison
     id: unterschied
     kicker: Vergelijking
@@ -35,38 +39,46 @@ sections:
     text: Minder en kleinere drones, dichter bij het publiek, met een kortere duur. In de ruimte ontstaan patronen en bewegende figuren.
     rowHeader: Kenmerk
     columns:
-      - Indoor
-      - Outdoor
+      - {"_key":"k_0591a32ff9b709fdacde","value":"Indoor"}
+      - {"_key":"k_ee204e87e777217cfb4e","value":"Outdoor"}
     rows:
       - label: Drones
         values:
-          - "{{offer.indoor.drones.min}} tot {{offer.indoor.drones.max}}"
-          - vanaf 100
+          - {"_key":"k_307f885cad269078c24d","value":"{{offer.indoor.drones.min}} tot {{offer.indoor.drones.max}}"}
+          - {"_key":"k_47012a56ccda2adb5571","value":"vanaf 100"}
+        _key: k_0774348dcdeb0da1ae21
       - label: Duur
         values:
-          - "{{duration.indoor.min}} tot {{duration.indoor.max}} minuten"
-          - "meestal circa {{duration.outdoor.typical}} minuten"
+          - {"_key":"k_14122804948070a50b80","value":"{{duration.indoor.min}} tot {{duration.indoor.max}} minuten"}
+          - {"_key":"k_a33b0d31bfb9cda903da","value":"meestal circa {{duration.outdoor.typical}} minuten"}
+        _key: k_8f5eb0d8e15976bfd85a
       - label: Gewicht per drone
         values:
-          - 188 g
-          - ca. 300 g
+          - {"_key":"k_0efa7f88e21be1dafa8d","value":"188 g"}
+          - {"_key":"k_4f79e53ae13672fbe7fa","value":"ca. 300 g"}
+        _key: k_f836cad3c14d37872532
       - label: Positionering
         values:
-          - Radiostations in de ruimte (UWB)
-          - GPS
+          - {"_key":"k_47c942309519d505809b","value":"Radiostations in de ruimte (UWB)"}
+          - {"_key":"k_6da570c36c6df53b73c7","value":"GPS"}
+        _key: k_680a133fb66e3358188b
       - label: Vlieghoogte
         values:
-          - 1 tot 8 m
-          - meestal tot 120 m
+          - {"_key":"k_0ad5517bd0d6a7eca340","value":"1 tot 8 m"}
+          - {"_key":"k_e0071e2cbdc5720c09f4","value":"meestal tot 120 m"}
+        _key: k_0ea19f4a2d012b7858cb
       - label: Ruimte
         values:
-          - "vanaf {{offer.indoor.ceilingMin}} m plafondhoogte en een vrije vliegzone"
-          - veiligheidszone van ca. 100 × 100 m
+          - {"_key":"k_fa623e1322b769fcd563","value":"vanaf {{offer.indoor.ceilingMin}} m plafondhoogte en een vrije vliegzone"}
+          - {"_key":"k_f0e611a6496cbd5cdde0","value":"veiligheidszone van ca. 100 × 100 m"}
+        _key: k_b65762f2eadf458a2fe9
       - label: Prijs
         values:
-          - "apart berekend, {{offer.indoor.priceLine}} exclusief btw voor {{offer.indoor.drones.min}} drones"
-          - Pakketten vanaf € 7.900 exclusief btw
+          - {"_key":"k_970c6f161caafbf326dc","value":"apart berekend, {{offer.indoor.priceLine}} exclusief btw voor {{offer.indoor.drones.min}} drones"}
+          - {"_key":"k_d2f5d5ea7ac4efcc9bab","value":"Pakketten vanaf € 7.900 exclusief btw"}
+        _key: k_38d0d514deda94496d79
     todo: FlyingStars muss 188 g, UWB und die technischen Indoor-/Outdoor-Vergleichswerte für die aktuelle Flotte bestätigen.
+    _key: k_c030e32b9a3f99dac46e
   - type: landingSite
     id: raum
     kicker: Voorwaarden
@@ -85,29 +97,35 @@ sections:
         value: "minimaal {{offer.indoor.ceilingMin}} m"
         text: We passen de vliegroutes aan jullie ruimte aan. Het indoorsysteem vliegt tot 8 m hoog.
         zone: ceiling
+        _key: k_b1de79da73ea068f872c
       - title: Vlieggebied
         text: De start- en vliegzone blijft vrij. Indoor gebruiken we een eigen dronesysteem met vooraf berekende vliegroutes.
         zone: drones
+        _key: k_0bd5c94f0e07243b0cc8
       - title: Start- en landingszone
         value: 1 m startraster
         text: Als richtlijn hebben 20 drones ca. 5 × 5 m nodig en 50 drones ca. 7 × 7 m. De vloer moet vlak zijn; alle drones starten op dezelfde hoogte.
         zone: floor
+        _key: k_b708426fb85bea29d91e
       - title: Positionering in de ruimte
         text: Antennes staan op de hoeken van het vlieggebied. Het UWB-systeem bepaalt de posities in de ruimte; wij nemen de drones en techniek mee.
         zone: kit
+        _key: k_4a99c3eed498d8e2ac37
       - title: Publiekszone
         text: We stemmen de positie van jullie gasten en het vrije vlieggebied met jullie af. De afstand tot het publiek leggen we vast in het showconcept voor jullie ruimte.
         zone: guests
+        _key: k_e8a36322c9c72cbbe82f
     responsibilities:
-      - { task: "Planning van vliegzone, publiek en choreografie", us: full, you: none }
-      - { task: "Indoor-drones, positioneringstechniek en team", us: full, you: none }
-      - { task: "Plattegrond met maten en plafondhoogte sturen", us: none, you: full }
-      - { task: "Vrije, vlakke start- en vliegzone beschikbaar stellen", us: none, you: full }
-      - { task: "Stroomaansluiting in de buurt beschikbaar stellen", us: part, you: full, hint: "we stemmen af" }
+      - { task: "Planning van vliegzone, publiek en choreografie", us: full, you: none, "_key": "k_57fdf7ec25d86df06f65" }
+      - { task: "Indoor-drones, positioneringstechniek en team", us: full, you: none, "_key": "k_ad5f7a3b6c6ebdc8f165" }
+      - { task: "Plattegrond met maten en plafondhoogte sturen", us: none, you: full, "_key": "k_bf45eb6771550598d8e2" }
+      - { task: "Vrije, vlakke start- en vliegzone beschikbaar stellen", us: none, you: full, "_key": "k_9ca1677c1a9556085ebf" }
+      - { task: "Stroomaansluiting in de buurt beschikbaar stellen", us: part, you: full, hint: "we stemmen af", "_key": "k_90cf1d512c775430202a" }
     download:
       label: Technisch gegevensblad · PDF
       href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf
     todo: FlyingStars muss die gesamte Indoor-Flugfläche, Publikumsabstände, Strombedarf und Zugänglichkeit ergänzen; die Rastermaße allein bestimmen den Raumbedarf nicht.
+    _key: k_e6bdd66c6eff6b2abf0c
   - type: landingBento
     id: sicherheit
     kicker: Veiligheid
@@ -125,13 +143,17 @@ sections:
       - icon: gauge
         title: Maximaal 1,5 m/s
         text: Sneller vliegen de drones binnen niet.
+        _key: k_e5cf73dc265a9c4310fe
       - icon: move-horizontal
         title: 0,5 m afstand
         text: De minimale afstand tussen twee drones.
+        _key: k_9190dfff4d61064037d9
       - icon: shield-check
         title: Meervoudig beveiligd
         text: Redundante veiligheidsfuncties, een gecontroleerde landingsfunctie en CE-gecertificeerde onderdelen.
+        _key: k_4fa60ee8f4b6a4138755
     todo: FlyingStars muss 1,5 m/s, 0,5 m Drohnenabstand, Sicherheitsfunktionen und CE-Angaben mit aktuellen technischen Unterlagen bestätigen.
+    _key: k_1060f8471da9620b9d94
   - type: landingSpotlight
     id: einsatzorte
     kicker: Locaties
@@ -143,19 +165,22 @@ sections:
       width: 1200
       height: 764
     tags:
-      - Beurzen
-      - Concerten
-      - Sportevenementen
-      - Bedrijfsfeesten
-      - Bruiloften in zalen
+      - {"_key":"k_211d03046da62f7b385d","value":"Beurzen"}
+      - {"_key":"k_1bfb3ba56d6c4740c1ea","value":"Concerten"}
+      - {"_key":"k_05c6d02863d2256cece8","value":"Sportevenementen"}
+      - {"_key":"k_2d886159ff908cca85d8","value":"Bedrijfsfeesten"}
+      - {"_key":"k_dfdbdf308f06f4f99578","value":"Bruiloften in zalen"}
     entries:
       - kicker: Hannover Messe · maart 2025
         title: Siemens
         text: Onze eerste indoor-show.
+        _key: k_7c6c021cc1a855fcde60
       - kicker: Essen · september 2026
         title: Triple Z
         text: In het bedrijvencentrum op Zeche Zollverein, waar ook ons kantoor zit.
+        _key: k_81843471e629d870eaa4
     todo: Für Siemens Hannover Messe und Triple Z fehlen ausgearbeitete Fallstudien. FlyingStars muss Briefing, Ablauf, konkrete Drohnenzahl, freigegebene Showbilder und die eindeutige Zuordnung des vorhandenen Siemens-Films liefern.
+    _key: k_47a98888ed554656bbf5
   - type: tempo
     id: ablauf
     kicker: Verloop
@@ -164,13 +189,17 @@ sections:
       - value: { fact: responseHours, display: hours }
         label: tot ons antwoord
         text: Vertel ons over de ruimte, de gelegenheid en de datum.
+        _key: k_5f52880dee9f83ce56cc
       - value: 6–8 weken
         label: ideale voorbereidingstijd
         text: Ontwerp en planning in de ruimte. Vooraf zien jullie de show op video of tijdens een testvlucht.
+        _key: k_575c490370bb45474ab4
       - value: 45 min.
         label: van opbouw tot startklaar
         text: We beginnen vanaf twee uur vóór de show.
+        _key: k_ce8b466cf22a08df12d8
     todo: FlyingStars muss 6–8 Wochen Vorlauf, 45 Minuten Aufbau und Ankunft zwei Stunden vor der Show für die aktuelle Indoor-Technik bestätigen; diese Werte stammen bisher nur von der alten Website.
+    _key: k_cca8a7702a948ca38dce
   - type: landingPrice
     id: preise
     kicker: Prijzen
@@ -182,15 +211,20 @@ sections:
       - title: De prijs hangt af van
         items:
           - label: jullie ruimte
+            _key: k_753be3ee1b98a47fa847
           - label: het aantal drones
             value: "{{offer.indoor.drones.min}}–{{offer.indoor.drones.max}}"
+            _key: k_c3ef9a4157826d3ef6c2
           - label: de opbouw
+            _key: k_adbef3f274951eda7f54
+        _key: k_bf63937c697c823dc996
     closing:
       headline: Is jullie hal geschikt?
       text: Stuur ons foto's of een plattegrond met de plafondhoogte. We laten jullie binnen 48 uur weten wat daar mogelijk is.
       button:
         label: Vraag een indoor-offerte aan
         href: "#anfrage"
+    _key: k_2957e41a82a467bac50c
   - type: faq
     id: fragen
     kicker: FAQ
@@ -201,8 +235,10 @@ sections:
     tags:
       - indoor
     todo: FlyingStars muss die Indoor-Antworten zu Flächen und Sicherheitsabständen fachlich abgleichen und die ausdrücklich für Indoor geltende Haftpflichtdeckung belegen.
+    _key: k_b9b4c25755db13474604
   - type: contactForm
     kicker: Aanvraag
     headline: Vertel ons over jullie ruimte.
     text: Plafondhoogte, oppervlakte en datum zijn genoeg voor een eerste inschatting. We reageren binnen 48 uur.
-translationSourceHash: ca1d9eb7e891722a0b9389308ca44affaf588e85553cfd8dea19eda4b4f22c07
+    _key: k_bda39ceb090f8b699835
+translationSourceHash: 5f7ad9d314d21c6ef9bcd0ccf188965e208f6e57cc7a0b86c1f6f892ea01af68

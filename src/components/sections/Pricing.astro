@@ -15,7 +15,7 @@ const H = index === 0 ? 'h1' : 'h2';
   <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
   <div class="packs">{tiers.map(tier => {
     return tier.name in SHOW_PACKAGES
-      ? <PackageCard packageId={tier.name as ShowPackage} headingId={`${id}-${tier.name}`} highlight={tier.highlight} badge={tier.badge} pointsOverride={tier.features.length ? tier.features : undefined} />
+      ? <PackageCard packageId={tier.name as ShowPackage} headingId={`${id}-${tier.name}`} highlight={tier.highlight} badge={tier.badge} pointsOverride={tier.features.length ? tier.features.map(item => item.value) : undefined} />
       : <OfferCard tier={tier} />;
   })}</div>
   {(note || cta) && <div class="pack-note">{note && <span class="mono">{note}</span>}{cta && <a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a>}</div>}

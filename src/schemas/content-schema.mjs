@@ -1,3 +1,4 @@
+import {keyedSchema,keyedText} from '../i18n/list-keys.mjs';
 import {responsibilitySchema,siteDiagramSchema,siteItemsSchema,siteDownloadSchema} from './shared-blocks.mjs';
 import {fieldPolicy} from '../i18n/field-policy.mjs';
 import {REFERENCE_OCCASION_IDS} from '../content/occasions.mjs';
@@ -37,11 +38,11 @@ const image = z.object({
   height: fieldPolicy(z.number().int().positive(), 'shared'),
 }).meta(imageMetadata);
 
-export const sectionSchema = z.discriminatedUnion('type', [
+const rawSectionSchema = z.discriminatedUnion('type', [
   z.object({
     type: fieldPolicy(z.literal('showreelHero'), 'shared'), ...todo,
     headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().min(1), 'translatable'), eyebrow: fieldPolicy(z.string().optional().describe('Kicker über der Headline'), 'translatable'),
-    words: z.array(fieldPolicy(z.string().min(1), 'translatable')).optional().describe('Wechselndes Wort im Verlauf hinter der Headline'),
+    words: z.array(keyedText(fieldPolicy(z.string().min(1), 'translatable'))).optional().describe('Wechselndes Wort im Verlauf hinter der Headline'),
     cta: link, secondary: link.optional(),
     poster: image, video: fieldPolicy(z.url(), 'shared'), stats: z.array(z.object({ label: fieldPolicy(z.string(), 'translatable'), value: businessValueSchema })).optional(),
   }),
@@ -49,7 +50,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     type: fieldPolicy(z.literal('occasions'), 'shared'), ...sectionHeading,
     headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
     cards: z.array(z.object({ category: fieldPolicy(z.string().optional(), 'translatable'), title: fieldPolicy(z.string(), 'translatable'), text: fieldPolicy(z.string(), 'translatable'), image,
-      facts: z.array(fieldPolicy(z.string(), 'translatable')).optional(), cta: link, download: link.optional(),
+      facts: z.array(keyedText(fieldPolicy(z.string(), 'translatable'))).optional(), cta: link, download: link.optional(),
       season: z.array(fieldPolicy(z.number().int().min(1).max(12), 'shared')).optional().describe('Monate, in denen die Karte nach vorn rückt (z. B. [11, 12] für Silvester)') })).min(1),
   }),
   z.object({
@@ -64,10 +65,10 @@ export const sectionSchema = z.discriminatedUnion('type', [
     headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
     facts: z.array(z.object({ label: fieldPolicy(z.string(), 'translatable'), value: businessValueSchema, unit: fieldPolicy(z.string().optional(), 'translatable'),
       text: fieldPolicy(z.string(), 'translatable'), tone: legacy.describe('Veraltet (Kontur/Verlauf), wird ignoriert') })).max(4).optional(),
-    points: z.array(fieldPolicy(z.string().min(1), 'translatable')).optional().describe('Kurze, belegbare Sätze, je einer pro Punkt'),
+    points: z.array(keyedText(fieldPolicy(z.string().min(1), 'translatable'))).optional().describe('Kurze, belegbare Sätze, je einer pro Punkt'),
     pillarsRef: fieldPolicy(z.literal('sustainability-pillars').optional().describe('Gemeinsame Nachhaltigkeitspunkte'), 'shared'),
     proofImage: image.optional(), proofText: fieldPolicy(z.string().optional(), 'translatable'), campaign: fieldPolicy(z.string().optional(), 'translatable'),
-    lines: z.array(fieldPolicy(z.string(), 'translatable')).optional().describe('Veraltet (dreizeiliger Titel der Scrollstory), wird nicht mehr angezeigt'),
+    lines: z.array(keyedText(fieldPolicy(z.string(), 'translatable'))).optional().describe('Veraltet (dreizeiliger Titel der Scrollstory), wird nicht mehr angezeigt'),
   }).strict(),
   z.object({
     type: fieldPolicy(z.literal('hero'), 'shared'), ...todo, kicker: fieldPolicy(z.string().optional(), 'translatable'),
@@ -131,7 +132,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
       price: fieldPolicy(z.string().min(1).describe('Freitext inkl. Währung, z. B. "ab 7.900 €"'), 'translatable'),
       unit: fieldPolicy(z.string().optional().describe('Bezugsgröße zum Preis, z. B. "pro Show" oder "netto"'), 'translatable'),
       description: fieldPolicy(z.string().optional(), 'translatable'),
-      features: z.array(fieldPolicy(z.string().min(1), 'translatable')).default([]),
+      features: z.array(keyedText(fieldPolicy(z.string().min(1), 'translatable'))).default([]),
       highlight: fieldPolicy(z.boolean().default(false).describe('Hebt die Karte als Empfehlung hervor'), 'shared'),
       cta: link.optional(),
     })).min(1),
@@ -152,11 +153,11 @@ export const sectionSchema = z.discriminatedUnion('type', [
     headline: fieldPolicy(z.string().min(1), 'translatable'),
     text: fieldPolicy(z.string().optional(), 'translatable'),
     rowHeader: fieldPolicy(z.string().optional().describe('Beschriftung der ersten Spalte'), 'translatable'),
-    columns: z.array(fieldPolicy(z.string().min(1), 'translatable')).min(2),
+    columns: z.array(keyedText(fieldPolicy(z.string().min(1), 'translatable'))).min(2),
     rows: z.array(z.object({
       label: fieldPolicy(z.string().min(1), 'translatable'),
       cells: z.array(z.object({ label: fieldPolicy(z.string(), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'), tone: fieldPolicy(z.enum(['y','n','p']), 'shared') })).optional(),
-      values: z.array(fieldPolicy(z.string(), 'translatable')).describe('Genau ein Wert je Spalte, in derselben Reihenfolge'),
+      values: z.array(keyedText(fieldPolicy(z.string(), 'translatable'))).describe('Genau ein Wert je Spalte, in derselben Reihenfolge'),
     })).min(1),
     note: fieldPolicy(z.string().optional(), 'translatable'),
   }).superRefine((s, ctx) => {
@@ -238,7 +239,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
       sky: fieldPolicy(z.string().optional().describe('Am Himmel'), 'translatable'),
       care: fieldPolicy(z.string().optional().describe('Betreuung'), 'translatable'),
       typical: fieldPolicy(z.string().optional().describe('Typisch für'), 'translatable'),
-      points: z.array(fieldPolicy(z.string(), 'translatable')).max(4).optional().describe('Kernpunkte auf der Kurzfassung (Startseite), die Drohnenzahl steht automatisch davor'),
+      points: z.array(keyedText(fieldPolicy(z.string(), 'translatable'))).max(4).optional().describe('Kernpunkte auf der Kurzfassung (Startseite), die Drohnenzahl steht automatisch davor'),
     })).default(PACKAGE_NAMES.map(name=>({name,highlight:false}))),
   }),
   z.object({
@@ -355,7 +356,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     // Breites Bild mit Orten oder Einsatzarten als Markierungen, darunter Einträge und Kennzahlen.
     type: fieldPolicy(z.literal('landingSpotlight'), 'shared'), ...sectionHeading,
     headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'), image,
-    tags: z.array(fieldPolicy(z.string().min(1), 'translatable')).default([]),
+    tags: z.array(keyedText(fieldPolicy(z.string().min(1), 'translatable'))).default([]),
     entries: z.array(z.object({ kicker: fieldPolicy(z.string().min(1), 'translatable'), title: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable') })).default([]),
     facts: z.array(z.object({ value: businessValueSchema, label: fieldPolicy(z.string().min(1), 'translatable') })).max(4).default([]),
   }),
@@ -388,8 +389,9 @@ export const sectionSchema = z.discriminatedUnion('type', [
 // ---------------------------------------------------------------------------
 // Collections
 // ---------------------------------------------------------------------------
+export const sectionSchema = keyedSchema(rawSectionSchema, true);
 const translationMeta = { translationSourceHash: fieldPolicy(z.string().regex(/^[a-f0-9]{64}$/).optional().describe('SHA-256 der deutschen Quelldatei zum Übersetzungszeitpunkt'), 'shared') };
-export const pageSchema = z.object({
+export const pageSchema = keyedSchema(z.object({
     ...translationMeta,
     title: fieldPolicy(z.string().min(1), 'translatable'),
     description: fieldPolicy(z.string().refine(text=>{const n=factText(text).length;return n>=50&&n<=160;},'Beschreibung braucht nach Faktenprojektion 50–160 Zeichen'), 'translatable'),
@@ -398,9 +400,9 @@ export const pageSchema = z.object({
     image: fieldPolicy(z.url().optional(), 'shared'),
     navLabel: fieldPolicy(z.string().optional().describe('Kurzer Name in Footer-Listen, z. B. "Hochzeit" (Anlass-Seiten drohnenshow-*)'), 'translatable'),
     sections: z.array(sectionSchema).min(1),
-  });
+  }));
 
-export const postSchema = z.object({
+export const postSchema = keyedSchema(z.object({
     authorId:personId,
     ...translationMeta,
     title: fieldPolicy(z.string().min(1), 'translatable'),
@@ -412,9 +414,9 @@ export const postSchema = z.object({
     draft: fieldPolicy(z.boolean().default(false), 'shared'),
     // Herkunft für Nachvollziehbarkeit: Issue-Nummer des Intake, falls vorhanden.
     sourceIssue: fieldPolicy(z.number().int().positive().optional().meta({'x-afe':{group:'Herkunft'}}), 'shared'),
-  });
+  }));
 
-export const projectSchema = z.object({
+export const projectSchema = keyedSchema(z.object({
     ...translationMeta,
     title: fieldPolicy(z.string().min(1), 'translatable'),
     client: z.union([fieldPolicy(z.string(), 'translatable'),projectFactRefSchema]).optional().meta({'x-afe':{group:'Showdaten'}}),
@@ -430,16 +432,16 @@ export const projectSchema = z.object({
     featured: fieldPolicy(z.boolean().default(false).meta({'x-afe':{group:'Veröffentlichung'}}), 'shared'),
     draft: fieldPolicy(z.boolean().default(false), 'shared'),
     sourceIssue: fieldPolicy(z.number().int().positive().optional().meta({'x-afe':{group:'Herkunft'}}), 'shared'),
-  });
+  }));
 
-export const faqSchema = z.object({
+export const faqSchema = keyedSchema(z.object({
     ...translationMeta,
     question: fieldPolicy(z.string().min(5), 'translatable'),
     tags: z.array(fieldPolicy(z.string(), 'shared')).default([]),
     order: fieldPolicy(z.number().int().default(100), 'shared'),
     draft: fieldPolicy(z.boolean().default(false), 'shared'),
     sourceIssue: fieldPolicy(z.number().int().positive().optional().meta({'x-afe':{group:'Herkunft'}}), 'shared'),
-  });
+  }));
 
 export const contentSchemas = { pages: pageSchema, posts: postSchema, projects: projectSchema, faq: faqSchema };
 

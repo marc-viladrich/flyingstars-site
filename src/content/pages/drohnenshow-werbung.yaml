@@ -27,31 +27,35 @@ sections:
       height: 1281
     # Entwurf für Moritz: Eckdaten (Startseite und Fragebogen)
     facts:
-      - { value: { fact: showsTotal }, label: Shows seit 2022 }
-      - { value: { fact: responseHours, display: hours }, label: bis zur Antwort }
-      - { value: 1–2 Wochen, label: im Express }
+      - { value: { fact: showsTotal }, label: Shows seit 2022, "_key": "k_d8fa62f46152a3442123" }
+      - { value: { fact: responseHours, display: hours }, label: bis zur Antwort, "_key": "k_ea8a5bf5b47c7af483ff" }
+      - { value: 1–2 Wochen, label: im Express, "_key": "k_63b5beb0dea54789e039" }
     todo: Moritz muss die deutsche Endfassung und die maschinell übersetzten EN-/NL-Texte redaktionell prüfen.
+    _key: k_cabb99b46c806fc432fa
 
   - type: logoBar
     id: marken
     headline: Marken, für die wir geflogen sind
     logos:
-      - { name: Ford, file: /brand/logos/kunde-ford-weiss.svg }
-      - { name: Volkswagen, file: /brand/logos/kunde-volkswagen-weiss.svg }
+      - { name: Ford, file: /brand/logos/kunde-ford-weiss.svg, "_key": "k_7cb68e08b7052d41473c" }
+      - { name: Volkswagen, file: /brand/logos/kunde-volkswagen-weiss.svg, "_key": "k_9d3e0dc226969af06770" }
       - name: PUMA
         image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Puma_Logo_weiss.png, alt: PUMA, width: 300, height: 161 }
-      - { name: Prada, file: /brand/logos/kunde-prada-weiss.svg }
-      - { name: L’Oréal, file: /brand/logos/kunde-loreal-weiss.svg }
-      - { name: Spotify, file: /brand/logos/kunde-spotify-weiss.svg }
-      - { name: Siemens, file: /brand/logos/kunde-siemens-weiss.svg }
-      - { name: E.ON, file: /brand/logos/kunde-eon-weiss.svg }
-      - { name: REWE, file: /brand/logos/kunde-rewe-weiss.svg }
-      - { name: Bosch, file: /brand/logos/kunde-bosch-weiss.svg }
-      - { name: Amazon, file: /brand/logos/kunde-amazon-weiss.svg }
-      - { name: McKinsey, file: /brand/logos/kunde-mckinsey-weiss.svg }
-      - { name: Bulgari, file: /brand/logos/kunde-bulgari-weiss.svg }
+        _key: k_026697622e1aeb8e03b3
+      - { name: Prada, file: /brand/logos/kunde-prada-weiss.svg, "_key": "k_7ee4a9ed1ae5975513e0" }
+      - { name: L’Oréal, file: /brand/logos/kunde-loreal-weiss.svg, "_key": "k_ce391cd91b69d54344cb" }
+      - { name: Spotify, file: /brand/logos/kunde-spotify-weiss.svg, "_key": "k_4fb13f7e880dcef286c7" }
+      - { name: Siemens, file: /brand/logos/kunde-siemens-weiss.svg, "_key": "k_0665349252f0a527ef12" }
+      - { name: E.ON, file: /brand/logos/kunde-eon-weiss.svg, "_key": "k_3bbf957c64a2499e69ff" }
+      - { name: REWE, file: /brand/logos/kunde-rewe-weiss.svg, "_key": "k_0ceba3c63aa32b3ab627" }
+      - { name: Bosch, file: /brand/logos/kunde-bosch-weiss.svg, "_key": "k_01951987a0b92a53cfed" }
+      - { name: Amazon, file: /brand/logos/kunde-amazon-weiss.svg, "_key": "k_be44e8c8ec446c70c8cc" }
+      - { name: McKinsey, file: /brand/logos/kunde-mckinsey-weiss.svg, "_key": "k_401386dfa999f2801f1a" }
+      - { name: Bulgari, file: /brand/logos/kunde-bulgari-weiss.svg, "_key": "k_fec36d49653d51da53bc" }
       - name: NFL
         image: { src: https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png, alt: NFL, width: 300, height: 409 }
+        _key: k_6575c0d35122892e9ce1
+    _key: k_4f396c969776c1714c2c
 
   # Nur Markenshows (vorher: die ersten vier Referenzen, darunter das Musical Bokkenrijders). Ford steht schon im Hero.
   - type: landingRefs
@@ -64,6 +68,7 @@ sections:
       - exploring-reinvented-der-neue-ford-explorer
       - loreal-prada-rheinturm
     cta: { label: Alle Referenzen, href: /referenzen/ }
+    _key: k_1f617bd698f4f907e713
 
   # Entwurf für Moritz: Wirkung als Kacheln, Inhalte wie bisher
   - type: landingBento
@@ -80,9 +85,10 @@ sections:
         width: 1929
         height: 1133
     items:
-      - { icon: camera, title: Bilder für eure Kanäle, text: "Gäste filmen und teilen die Show. Rohaufnahmen mit unserer Kameradrohne kosten {{offer.film.price}}, bei {{offer.film.included}} sind sie enthalten." }
-      - { icon: newspaper, title: Ein Anlass für Berichte, text: "Über uns und unsere Shows haben unter anderem ZDF, WDR, ntv und die WAZ berichtet." }
+      - { icon: camera, title: Bilder für eure Kanäle, text: "Gäste filmen und teilen die Show. Rohaufnahmen mit unserer Kameradrohne kosten {{offer.film.price}}, bei {{offer.film.included}} sind sie enthalten.", "_key": "k_5252e3279b65a4b9c3d3" }
+      - { icon: newspaper, title: Ein Anlass für Berichte, text: "Über uns und unsere Shows haben unter anderem ZDF, WDR, ntv und die WAZ berichtet.", "_key": "k_e552a7787fcc44b66b84" }
     todo: FlyingStars muss die genannten ZDF-/WDR-Berichte konkret belegen; für Reichweiten- oder Wirkungsaussagen fehlen messbare Projektergebnisse.
+    _key: k_c6d958d0420f0a9ef33b
 
   # Entwurf für Moritz: Freigabe als Strahl mit Schranke, Inhalte wie bisher
   - type: landingFlow
@@ -94,16 +100,22 @@ sections:
       - title: Anfrage und Angebot
         text: Ihr nennt uns Termin, Ort und Ziel. Wir antworten innerhalb von 48 Stunden und schicken nach einem kurzen Gespräch ein Angebot.
         duration: 48 h Antwort
+        _key: k_195bdede45eea38fcdd2
       - title: Entwurf
         text: Ihr schickt uns euer Logo. Zuerst seht ihr einen 2D-Entwurf der Motive.
+        _key: k_49e43d30a4cf6e87e6d1
       - title: Animation
         text: Danach eine Rohanimation mit Musik. Ab HORIZON bekommt ihr eine Videovorschau der Show.
+        _key: k_321f6a3deb2b1ef07eea
       - title: Freigabe
         text: Erst wenn ihr jedes Motiv freigegeben habt, programmieren wir Farben und Lichteffekte auf die Musik.
         gate: true
+        _key: k_737c9a5473db3f88034c
       - title: Showtag
         text: Unser Team ist etwa drei Stunden vorher vor Ort, sperrt die Startfläche und fliegt die Show.
         duration: ca. 3 h Aufbau
+        _key: k_cdf27dbb327e5fcde319
+    _key: k_a7152263e0461f67ead9
 
   - type: packages
     id: pakete
@@ -112,12 +124,13 @@ sections:
     text: Ein Logo in 2D reicht für viele Firmenfeiern. Für Launches mit 3D-Objekten und einer Geschichte eignen sich HORIZON oder ODYSSEY.
     compact: true
     items:
-      - { name: SPARK, label: Klassisch in 2D }
-      - { name: HORIZON, label: 3D in Bewegung, badge: Bestseller, highlight: true }
-      - { name: ODYSSEY, label: Erzählte 3D-Show }
+      - { name: SPARK, label: Klassisch in 2D, "_key": "k_17eea920ec0491047a40" }
+      - { name: HORIZON, label: 3D in Bewegung, badge: Bestseller, highlight: true, "_key": "k_b94e0363e3a39e7426c3" }
+      - { name: ODYSSEY, label: Erzählte 3D-Show, "_key": "k_93070fc050069e397d62" }
     note: Alle Preise netto zzgl. Anfahrt
     cta: { label: Alle Leistungen und Preise, href: "/drohnenshow-preise/" }
     todo: FlyingStars muss die Paketgrenzen, Aufpreise und Leistungen für den Relaunch bestätigen; die endgültige Preisstruktur für 2027 ist noch offen.
+    _key: k_d26b138f665a8ac9c34d
 
   # Neugier aus dem Fragebogen („Wie sieht mein Unternehmen als Drohnenshow aus?“). Entwurf für Moritz.
   - type: landingTeaser
@@ -129,6 +142,7 @@ sections:
     cta: Logo im Konfigurator ausprobieren
     loop: marke
     todo: FlyingStars muss die Motive, Drohnenzahlen und Freischaltstufen anhand von docs/show-motive-inventar.md fachlich bestätigen. Die Vorschau ist kein Flugplan.
+    _key: k_1f4f4d01bf5354a2a7ba
 
   # Icon-Kacheln (Marc, 01.11.2026): großes Icon und kleine Überschrift, „White Label“ statt „Im Hintergrund“.
   # Entwurf für Moritz: Agenturen mit Aussage-Kachel („Wir fliegen, ihr glänzt“ von der Startseite) und Gesichtern
@@ -141,14 +155,15 @@ sections:
       title: Wir fliegen, *ihr glänzt*.
       text: Ihr bleibt bei euren Kund:innen vorn. Wie viel ihr selbst organisiert und wie viel wir übernehmen, entscheidet ihr.
     items:
-      - { icon: hat-glasses, title: White Label, text: "Auf Wunsch fliegen wir anonym. Euer Name steht vorn, wir liefern die Show." }
-      - { icon: file-lock, title: Vertraulich, text: Wir unterschreiben eine Vertraulichkeitsvereinbarung. }
-      - { icon: thumbs-up, title: Freigabe, text: "Für die Abstimmung mit euren Kund:innen visualisieren wir die Motive mit deren Logo." }
-      - { icon: clipboard-list, title: Projektleitung, text: "Auf Wunsch übernehmen wir die Projektleitung, mit Genehmigung, Behörden und Technik vor Ort." }
+      - { icon: hat-glasses, title: White Label, text: "Auf Wunsch fliegen wir anonym. Euer Name steht vorn, wir liefern die Show.", "_key": "k_b1193a740bb23e8ca935" }
+      - { icon: file-lock, title: Vertraulich, text: Wir unterschreiben eine Vertraulichkeitsvereinbarung., "_key": "k_0cf823404746a47edcf6" }
+      - { icon: thumbs-up, title: Freigabe, text: "Für die Abstimmung mit euren Kund:innen visualisieren wir die Motive mit deren Logo.", "_key": "k_b4cd40f77c941c13df62" }
+      - { icon: clipboard-list, title: Projektleitung, text: "Auf Wunsch übernehmen wir die Projektleitung, mit Genehmigung, Behörden und Technik vor Ort.", "_key": "k_3ae3ac2e616a3beabd1b" }
     closing:
       headline: Ein Projekt für eure Kund:innen?
       text: Erzählt uns davon. Wir melden uns innerhalb von 48 Stunden und stimmen alles Weitere vertraulich mit euch ab.
       button: { label: Als Agentur anfragen, href: "/kontakt/?anlass=agentur" }
+    _key: k_35809e7974828f33e234
 
   # Entwurf für Moritz: Orte als Markierungen auf dem Bild, Zeiten als Kennzahlen; Inhalte wie bisher
   - type: landingSpotlight
@@ -161,11 +176,12 @@ sections:
       alt: Drohnenformation über der Skyline von Düsseldorf mit Rheinturm
       width: 1920
       height: 985
-    tags: [ Borussia-Park · Mönchengladbach, Olympiastadion · Berlin, Rheinturm · Düsseldorf, Innenhafen · Duisburg ]
+    tags: [ {"_key":"k_eb49b6fefcd25aaa70f2","value":"Borussia-Park · Mönchengladbach"}, {"_key":"k_2f6e086ec17ff7347db1","value":"Olympiastadion · Berlin"}, {"_key":"k_6c8c7c31c41910ea3274","value":"Rheinturm · Düsseldorf"}, {"_key":"k_051f63270e7a44e41b90","value":"Innenhafen · Duisburg"} ]
     facts:
-      - { value: 4–8 Wochen, label: Bestätigung je EU-Land }
-      - { value: ca. 3 Monate, label: in Italien }
+      - { value: 4–8 Wochen, label: Bestätigung je EU-Land, "_key": "k_6ec398101306e49f60a4" }
+      - { value: ca. 3 Monate, label: in Italien, "_key": "k_6816b73b403f3db45756" }
     todo: FlyingStars muss aktuelle Cross-border-Fristen und mögliche Sondergebühren je Land bestätigen. Die Ortsbeispiele belegen keine pauschale Genehmigung oder garantierte Frist.
+    _key: k_671ae5a30eb25ef1930d
 
   # Entwurf für Moritz (Marc, 03.11.2026: „was übernehmen wir, was übernehmt ihr“ ist für Marken genauso relevant).
   # Zonen und Maße wie auf der Hochzeitsseite, Quellen: docs/sicherheitskonzept-quellen.md. Aufgaben nach dem Ablauf oben
@@ -181,10 +197,13 @@ sections:
       - task: Logo schicken und jedes Motiv freigeben
         us: none
         you: full
+        _key: k_f9022e9498a7fad0753a
       - task: Motive entwerfen und animieren
         us: full
         you: none
+        _key: k_827a4c6b6a7c553bffad
     safetyRef: safety-concept
+    _key: k_c4fd3256a7a568abb827
 
   - type: faq
     id: fragen
@@ -192,8 +211,10 @@ sections:
     headline: Fragen von Marken und Agenturen.
     cta: { label: Alle Fragen, href: /faq/ }
     tags: [ werbung ]
+    _key: k_92cbd2df611f3954dfc2
 
   - type: contactForm
     kicker: Anfrage
     headline: Erzählt uns von eurer Kampagne.
     text: Termin, Ort und Ziel reichen. Euer Logo könnt ihr uns später per E-Mail schicken.
+    _key: k_0a54e0d092548e4f7d56

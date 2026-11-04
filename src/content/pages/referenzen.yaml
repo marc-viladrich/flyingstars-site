@@ -11,44 +11,51 @@ sections:
     text: 178 Shows seit 2022, Stand 21. Oktober 2026. Hier findet ihr eine Auswahl mit sieben ausführlichen Fallstudien.
     filters: [occasion, year, drones]
     todo: Für die verbleibenden Kurzreferenzen fehlen Projektgeschichten und teilweise weitere Bilder. FlyingStars muss priorisierte Briefings und Nutzungsfreigaben liefern; freigegebene Kundenzitate liegen laut Fragebogen nicht vor.
+    _key: k_6aab7fa758be0d59fffb
 
   - type: metrics
     id: pro-jahr
     kicker: In Zahlen
     headline: Shows pro *Jahr*.
     items:
-      - { label: "2022", value: "8", text: "Die erste am 13. August: 50 Drohnen zu einem privaten Geburtstag. Im November PUMA im Borussia-Park." }
-      - { label: "2023", value: "42", text: "Darunter L’Oréal × Prada am Rheinturm in Düsseldorf und #Böllerciao mit der Deutschen Umwelthilfe in Berlin." }
-      - { label: "2024", value: "45", text: "Darunter 50 Jahre VW Golf am Wolfgangsee und der neue Ford Explorer in Köln." }
-      - { label: "2025", value: "33", text: "Darunter die erste Indoor-Show für Siemens auf der Hannover Messe und das NFL Berlin Game." }
-      - { label: "2026", value: "50", text: "Bis 21. Oktober. Darunter 20 Abende Bokkenrijders mit je 600 Drohnen und E.ON in Hamburg." }
-      - { label: Gesamt, value: { fact: showsTotal }, text: "Für Marken, Städte, Festivals und Paare, in Deutschland und Europa." }
+      - { label: "2022", value: "8", text: "Die erste am 13. August: 50 Drohnen zu einem privaten Geburtstag. Im November PUMA im Borussia-Park.", "_key": "k_558285939749d8a5ecdc" }
+      - { label: "2023", value: "42", text: "Darunter L’Oréal × Prada am Rheinturm in Düsseldorf und #Böllerciao mit der Deutschen Umwelthilfe in Berlin.", "_key": "k_6bd86bfa991317b66002" }
+      - { label: "2024", value: "45", text: "Darunter 50 Jahre VW Golf am Wolfgangsee und der neue Ford Explorer in Köln.", "_key": "k_971a2ffe477a6c410563" }
+      - { label: "2025", value: "33", text: "Darunter die erste Indoor-Show für Siemens auf der Hannover Messe und das NFL Berlin Game.", "_key": "k_6cc90756de99e77daa63" }
+      - { label: "2026", value: "50", text: "Bis 21. Oktober. Darunter 20 Abende Bokkenrijders mit je 600 Drohnen und E.ON in Hamburg.", "_key": "k_ddcd9f398dfdb07dbe49" }
+      - { label: Gesamt, value: { fact: showsTotal }, text: "Für Marken, Städte, Festivals und Paare, in Deutschland und Europa.", "_key": "k_2eb3255fbe18749fd330" }
     todo: FlyingStars muss die Jahreszahlen einschließlich 2026 aktualisieren oder den Stand 21.10.2026 ausdrücklich beibehalten; 178 ist keine laufende Live-Zählung.
+    _key: k_f41a9c016c41af101b3b
 
   - type: logoBar
     id: marken
     headline: Kund:innen von FlyingStars
     logos:
-      - { name: E.ON, file: /brand/logos/kunde-eon-weiss.svg }
-      - { name: REWE, file: /brand/logos/kunde-rewe-weiss.svg }
-      - { name: Spotify, file: /brand/logos/kunde-spotify-weiss.svg }
-      - { name: L’Oréal, file: /brand/logos/kunde-loreal-weiss.svg }
-      - { name: Bosch, file: /brand/logos/kunde-bosch-weiss.svg }
-      - { name: Amazon, file: /brand/logos/kunde-amazon-weiss.svg }
+      - { name: E.ON, file: /brand/logos/kunde-eon-weiss.svg, "_key": "k_d348c9ba134424121753" }
+      - { name: REWE, file: /brand/logos/kunde-rewe-weiss.svg, "_key": "k_38c6c4c0143d8518e357" }
+      - { name: Spotify, file: /brand/logos/kunde-spotify-weiss.svg, "_key": "k_94e1649c0c79af708791" }
+      - { name: L’Oréal, file: /brand/logos/kunde-loreal-weiss.svg, "_key": "k_3a84b9b49598c3078c3b" }
+      - { name: Bosch, file: /brand/logos/kunde-bosch-weiss.svg, "_key": "k_88919f9d5d0054ca40ca" }
+      - { name: Amazon, file: /brand/logos/kunde-amazon-weiss.svg, "_key": "k_89fca65d167a2a6348a8" }
       - name: NFL
         image: { src: https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png, alt: NFL, width: 300, height: 409 }
-      - { name: McKinsey, file: /brand/logos/kunde-mckinsey-weiss.svg }
+        _key: k_4134829d3e210965460d
+      - { name: McKinsey, file: /brand/logos/kunde-mckinsey-weiss.svg, "_key": "k_1018ce7a22e92b18f011" }
       - name: PUMA
         image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Puma_Logo_weiss.png, alt: PUMA, width: 300, height: 161 }
-      - { name: Prada, file: /brand/logos/kunde-prada-weiss.svg }
-      - { name: Volkswagen, file: /brand/logos/kunde-volkswagen-weiss.svg }
-      - { name: Bulgari, file: /brand/logos/kunde-bulgari-weiss.svg }
-      - { name: Ford, file: /brand/logos/kunde-ford-weiss.svg }
-      - { name: Siemens, file: /brand/logos/kunde-siemens-weiss.svg }
+        _key: k_a26d3bd58a3517710106
+      - { name: Prada, file: /brand/logos/kunde-prada-weiss.svg, "_key": "k_3cd14713f52a1f878606" }
+      - { name: Volkswagen, file: /brand/logos/kunde-volkswagen-weiss.svg, "_key": "k_29cdfefa34bc5c5a690b" }
+      - { name: Bulgari, file: /brand/logos/kunde-bulgari-weiss.svg, "_key": "k_8ccf4d0e487852a452ec" }
+      - { name: Ford, file: /brand/logos/kunde-ford-weiss.svg, "_key": "k_c45fe385388e4eb43006" }
+      - { name: Siemens, file: /brand/logos/kunde-siemens-weiss.svg, "_key": "k_a068be2a16fed074f7dd" }
       - name: Deutsche Umwelthilfe
         image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Deutsche_Umwelthilfe_weiss.png, alt: Deutsche Umwelthilfe, width: 300, height: 37 }
+        _key: k_0e11a0bbd30ec783e5b2
+    _key: k_7e591746d03a417c3c9c
 
   - type: cta
     headline: Euer Anlass ist nicht dabei?
     text: Schreibt uns Datum, Ort und Idee. Wir sagen euch, was möglich ist.
     button: { label: Show anfragen, href: /kontakt/ }
+    _key: k_c1a5be42dc3124d739c0

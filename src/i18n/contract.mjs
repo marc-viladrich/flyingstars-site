@@ -1,10 +1,9 @@
-import {createHash} from 'node:crypto';
+import {sha256} from './sha256.mjs';
 import {policyTree} from './field-policy.mjs';
 import {tokenDependency, referenceDependency, structuredFactDependency} from './contract-dependencies.mjs';
 
 export const CONTRACT_VERSION = 2;
-// Deliberately not an activation-ready identity format. Step 2 must replace numeric list addresses.
-export const ADDRESSING = 'positional-pre-keys';
+export const ADDRESSING = 'stable-keys';
 const pointer = path => '/' + path.map(part => String(part).replaceAll('~', '~0').replaceAll('/', '~1')).join('/');
 const equal = (a, b) => canonical(a) === canonical(b);
 export function canonical(value) {
@@ -14,7 +13,7 @@ export function canonical(value) {
   if (value && typeof value === 'object') return '{' + Object.keys(value).sort().map(key => JSON.stringify(key) + ':' + canonical(value[key])).join(',') + '}';
   return JSON.stringify(value);
 }
-export const fingerprint = value => createHash('sha256').update(canonical(value)).digest('hex');
+export const fingerprint = value => sha256(canonical(value));
 
 function matches(node, value) {
   if (value === undefined) return node.optional;
@@ -81,7 +80,20 @@ export function project(schema, source, target, locale, dependencies = {}) {
     if (node.kind === 'array' || node.kind === 'tuple') {
       if (!Array.isArray(de)) throw Error(`Invalid source list at ${pointer(path)}`);
       if (translated !== undefined && !Array.isArray(translated)) throw Error(`Invalid translated list at ${pointer(path)}`);
-      if (hasText(node) && translated?.length > de.length) throw Error(`Orphan translation at ${pointer(path)}`);
+      if (node.kind === 'array' && hasText(node.element)) {
+        const index = (items, label) => {
+          const byKey = new Map();
+          for (const item of items ?? []) {
+            if (!item || typeof item._key !== 'string' || !/^[a-zA-Z0-9_-]{8,80}$/.test(item._key)) throw Error(`Missing or invalid _key in ${label} at ${pointer(path)}`);
+            if (byKey.has(item._key)) throw Error(`Duplicate _key at ${pointer(path)}: ${item._key}`);
+            byKey.set(item._key, item);
+          }
+          return byKey;
+        };
+        const originals = index(de, 'source'), targets = index(translated, 'translation');
+        if ([...targets.keys()].some(key => !originals.has(key))) throw Error(`Orphan translation key at ${pointer(path)}`);
+        return de.map(item => walk(node.element, item, targets.get(item._key), [...path, '@' + item._key], inheritedDependencies));
+      }
       return de.map((item, i) => walk(node.element ?? node.items[i], item, translated?.[i], [...path, i], inheritedDependencies));
     }
     if (!matches(node, de)) throw Error(`Invalid source value at ${pointer(path)}`);
@@ -108,6 +120,7 @@ export function project(schema, source, target, locale, dependencies = {}) {
     // Shared values have already been projected, but constraints on translated prose still apply.
     schema.parse(projection);
   }
+  for (const field of fields) { let value = projection; field.path = field.path.map(part => { const key = typeof part === 'string' && part.startsWith('@') && Array.isArray(value) ? value.findIndex(item => item._key === part.slice(1)) : part; value = value?.[key]; return key; }); }
   fields.sort((a, b) => a.address.localeCompare(b.address, 'en'));
   const contractFields = fields.map(field => {
     const reviewDependencies = [...new Map([...field.dependencies, ...globalDependencies].map(dependency => [canonical(dependency), dependency])).values()].sort((a, b) => canonical(a).localeCompare(canonical(b), 'en'));
@@ -146,7 +159,7 @@ export function reviewRequired(result, evidence) {
 
 /** Shadow check ONLY. The legacy raw hash remains mandatory until atomic step 4. */
 export function checkParallel({schema, source, target, locale, dependencies, sourceRaw, evidence}) {
-  const rawHash = createHash('sha256').update(sourceRaw).digest('hex');
+  const rawHash = sha256(sourceRaw);
   if (target.translationSourceHash !== rawHash) throw Error('Stale legacy translationSourceHash');
   const result = project(schema, source, target, locale, dependencies);
   return {...result, rawHash, rawCurrent: true, reviewRequired: evidence ? reviewRequired(result, evidence) : null};

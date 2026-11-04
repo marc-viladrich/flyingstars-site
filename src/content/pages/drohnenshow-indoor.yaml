@@ -31,10 +31,11 @@ sections:
       height: 1440
     # Entwurf für Moritz: Eckdaten aus dem Fragebogen
     facts:
-      - { value: "{{offer.indoor.drones.min}}–{{offer.indoor.drones.max}}", label: Drohnen }
-      - { value: "{{duration.indoor.min}}–{{duration.indoor.max}} Min", label: Showdauer }
-      - { value: "ab {{offer.indoor.ceilingMin}} m", label: Deckenhöhe }
+      - { value: "{{offer.indoor.drones.min}}–{{offer.indoor.drones.max}}", label: Drohnen, "_key": "k_9c43046412c4f98a6eaa" }
+      - { value: "{{duration.indoor.min}}–{{duration.indoor.max}} Min", label: Showdauer, "_key": "k_f28af46100a885028278" }
+      - { value: "ab {{offer.indoor.ceilingMin}} m", label: Deckenhöhe, "_key": "k_44b29fef37672879c7e3" }
     todo: Moritz muss die Endfassung und EN/NL prüfen. FlyingStars muss die Zuordnung von Siemens-Film und Hallen-Standbildern zur Hannover Messe bestätigen; das Standbild belegt diesen Veranstaltungsort bislang nicht.
+    _key: k_9ad4a65122a9edecb81a
 
   - type: comparison
     id: unterschied
@@ -42,23 +43,31 @@ sections:
     headline: Drinnen fliegt eine andere Show.
     text: Weniger und kleinere Drohnen, näher am Publikum, kürzer. Im Raum entstehen Muster und Figuren in Bewegung.
     rowHeader: Merkmal
-    columns: [Indoor, Outdoor]
+    columns: [{"_key":"k_0591a32ff9b709fdacde","value":"Indoor"}, {"_key":"k_ee204e87e777217cfb4e","value":"Outdoor"}]
     rows:
       - label: Drohnen
-        values: ["{{offer.indoor.drones.min}} bis {{offer.indoor.drones.max}}", "ab 100"]
+        values: [{"_key":"k_307f885cad269078c24d","value":"{{offer.indoor.drones.min}} bis {{offer.indoor.drones.max}}"}, {"_key":"k_47012a56ccda2adb5571","value":"ab 100"}]
+        _key: k_0774348dcdeb0da1ae21
       - label: Dauer
-        values: ["{{duration.indoor.min}} bis {{duration.indoor.max}} Minuten", "in der Regel etwa {{duration.outdoor.typical}} Minuten"]
+        values: [{"_key":"k_14122804948070a50b80","value":"{{duration.indoor.min}} bis {{duration.indoor.max}} Minuten"}, {"_key":"k_a33b0d31bfb9cda903da","value":"in der Regel etwa {{duration.outdoor.typical}} Minuten"}]
+        _key: k_8f5eb0d8e15976bfd85a
       - label: Gewicht je Drohne
-        values: [188 g, ca. 300 g]
+        values: [{"_key":"k_0efa7f88e21be1dafa8d","value":"188 g"}, {"_key":"k_4f79e53ae13672fbe7fa","value":"ca. 300 g"}]
+        _key: k_f836cad3c14d37872532
       - label: Ortung
-        values: [Funkstationen im Raum (UWB), GPS]
+        values: [{"_key":"k_47c942309519d505809b","value":"Funkstationen im Raum (UWB)"}, {"_key":"k_6da570c36c6df53b73c7","value":"GPS"}]
+        _key: k_680a133fb66e3358188b
       - label: Flughöhe
-        values: [1 bis 8 m, in der Regel bis 120 m]
+        values: [{"_key":"k_0ad5517bd0d6a7eca340","value":"1 bis 8 m"}, {"_key":"k_e0071e2cbdc5720c09f4","value":"in der Regel bis 120 m"}]
+        _key: k_0ea19f4a2d012b7858cb
       - label: Platz
-        values: ["ab {{offer.indoor.ceilingMin}} m Deckenhöhe und eine freie Flugfläche", "Sicherheitsbereich von ca. 100 × 100 m"]
+        values: [{"_key":"k_fa623e1322b769fcd563","value":"ab {{offer.indoor.ceilingMin}} m Deckenhöhe und eine freie Flugfläche"}, {"_key":"k_f0e611a6496cbd5cdde0","value":"Sicherheitsbereich von ca. 100 × 100 m"}]
+        _key: k_b65762f2eadf458a2fe9
       - label: Preis
-        values: ["einzeln kalkuliert, {{offer.indoor.priceLine}} netto für {{offer.indoor.drones.min}} Drohnen", "Pakete ab 7.900 € netto"]
+        values: [{"_key":"k_970c6f161caafbf326dc","value":"einzeln kalkuliert, {{offer.indoor.priceLine}} netto für {{offer.indoor.drones.min}} Drohnen"}, {"_key":"k_d2f5d5ea7ac4efcc9bab","value":"Pakete ab 7.900 € netto"}]
+        _key: k_38d0d514deda94496d79
     todo: FlyingStars muss 188 g, UWB und die technischen Indoor-/Outdoor-Vergleichswerte für die aktuelle Flotte bestätigen.
+    _key: k_c030e32b9a3f99dac46e
 
   # Textentwurf für Moritz. Quellen und Konflikte: docs/sicherheitskonzept-quellen.md.
   - type: landingSite
@@ -79,27 +88,33 @@ sections:
         value: "mindestens {{offer.indoor.ceilingMin}} m"
         text: "Die Flugbahnen passen wir an euren Raum an. Das Indoor-System fliegt bis zu 8 m hoch."
         zone: ceiling
+        _key: k_b1de79da73ea068f872c
       - title: Flugbereich
         text: "Die Start- und Flugfläche bleibt frei. Indoor nutzen wir ein eigenes Drohnensystem mit vorab berechneten Bahnen."
         zone: drones
+        _key: k_0bd5c94f0e07243b0cc8
       - title: Start- und Landefläche
         value: 1 m Startraster
         text: "Als Richtwert brauchen 20 Drohnen ca. 5 × 5 m, 50 Drohnen ca. 7 × 7 m. Der Boden muss eben sein, alle Drohnen starten auf derselben Höhe."
         zone: floor
+        _key: k_b708426fb85bea29d91e
       - title: Positionierung im Raum
         text: "Antennen stehen an den Ecken des Fluggebiets. Das UWB-System bestimmt die Positionen im Raum; Drohnen und Technik bringen wir mit."
         zone: kit
+        _key: k_4a99c3eed498d8e2ac37
       - title: Publikumsbereich
         text: "Wir stimmen die Position eurer Gäste und die freie Flugfläche mit euch ab. Der Abstand zum Publikum wird im Showkonzept für euren Raum festgelegt."
         zone: guests
+        _key: k_e8a36322c9c72cbbe82f
     responsibilities:
-      - { task: "Planung von Flugfläche, Publikum und Choreografie", us: full, you: none }
-      - { task: "Indoor-Drohnen, Positionierungstechnik und Team", us: full, you: none }
-      - { task: "Grundriss mit Maßen und Deckenhöhe schicken", us: none, you: full }
-      - { task: "Freie, ebene Start- und Flugfläche bereitstellen", us: none, you: full }
-      - { task: "Stromanschluss in der Nähe bereitstellen", us: part, you: full, hint: "wir stimmen ab" }
+      - { task: "Planung von Flugfläche, Publikum und Choreografie", us: full, you: none, "_key": "k_57fdf7ec25d86df06f65" }
+      - { task: "Indoor-Drohnen, Positionierungstechnik und Team", us: full, you: none, "_key": "k_ad5f7a3b6c6ebdc8f165" }
+      - { task: "Grundriss mit Maßen und Deckenhöhe schicken", us: none, you: full, "_key": "k_bf45eb6771550598d8e2" }
+      - { task: "Freie, ebene Start- und Flugfläche bereitstellen", us: none, you: full, "_key": "k_9ca1677c1a9556085ebf" }
+      - { task: "Stromanschluss in der Nähe bereitstellen", us: part, you: full, hint: "wir stimmen ab", "_key": "k_90cf1d512c775430202a" }
     download: { label: Technik-Datenblatt · PDF, href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf }
     todo: FlyingStars muss die gesamte Indoor-Flugfläche, Publikumsabstände, Strombedarf und Zugänglichkeit ergänzen; die Rastermaße allein bestimmen den Raumbedarf nicht.
+    _key: k_e6bdd66c6eff6b2abf0c
 
   # Entwurf für Moritz: Sicherheit als Kacheln (Werte von der Live-Seite, siehe Kopfkommentar)
   - type: landingBento
@@ -116,10 +131,11 @@ sections:
         width: 2560
         height: 1708
     items:
-      - { icon: gauge, title: "Höchstens 1,5 m/s", text: Schneller fliegen die Drohnen im Raum nicht. }
-      - { icon: move-horizontal, title: "0,5 m Abstand", text: So weit bleiben zwei Drohnen mindestens auseinander. }
-      - { icon: shield-check, title: Mehrfach abgesichert, text: "Redundante Sicherheitsfunktionen, eine kontrollierte Landefunktion und CE-zertifizierte Komponenten." }
+      - { icon: gauge, title: "Höchstens 1,5 m/s", text: Schneller fliegen die Drohnen im Raum nicht., "_key": "k_e5cf73dc265a9c4310fe" }
+      - { icon: move-horizontal, title: "0,5 m Abstand", text: So weit bleiben zwei Drohnen mindestens auseinander., "_key": "k_9190dfff4d61064037d9" }
+      - { icon: shield-check, title: Mehrfach abgesichert, text: "Redundante Sicherheitsfunktionen, eine kontrollierte Landefunktion und CE-zertifizierte Komponenten.", "_key": "k_4fa60ee8f4b6a4138755" }
     todo: FlyingStars muss 1,5 m/s, 0,5 m Drohnenabstand, Sicherheitsfunktionen und CE-Angaben mit aktuellen technischen Unterlagen bestätigen.
+    _key: k_1060f8471da9620b9d94
 
   # Entwurf für Moritz: Einsatzorte als Markierungen auf dem Bild, Referenzen darunter; Inhalte wie bisher
   - type: landingSpotlight
@@ -132,11 +148,12 @@ sections:
       alt: Leuchtende Drohnen in Formation vor der Bühne eines voll besetzten Saals
       width: 1200
       height: 764
-    tags: [Messen, Konzerte, Sportevents, Firmenfeiern, Hochzeiten in Sälen]
+    tags: [{"_key":"k_211d03046da62f7b385d","value":"Messen"}, {"_key":"k_1bfb3ba56d6c4740c1ea","value":"Konzerte"}, {"_key":"k_05c6d02863d2256cece8","value":"Sportevents"}, {"_key":"k_2d886159ff908cca85d8","value":"Firmenfeiern"}, {"_key":"k_dfdbdf308f06f4f99578","value":"Hochzeiten in Sälen"}]
     entries:
-      - { kicker: Hannover Messe · März 2025, title: Siemens, text: Unsere erste Indoor-Show. }
-      - { kicker: Essen · September 2026, title: Triple Z, text: "Im Gründungszentrum auf Zeche Zollverein, in dem auch unser Büro ist." }
+      - { kicker: Hannover Messe · März 2025, title: Siemens, text: Unsere erste Indoor-Show., "_key": "k_7c6c021cc1a855fcde60" }
+      - { kicker: Essen · September 2026, title: Triple Z, text: "Im Gründungszentrum auf Zeche Zollverein, in dem auch unser Büro ist.", "_key": "k_81843471e629d870eaa4" }
     todo: Für Siemens Hannover Messe und Triple Z fehlen ausgearbeitete Fallstudien. FlyingStars muss Briefing, Ablauf, konkrete Drohnenzahl, freigegebene Showbilder und die eindeutige Zuordnung des vorhandenen Siemens-Films liefern.
+    _key: k_47a98888ed554656bbf5
 
   # Entwurf für Moritz: Ablauf in Zahlen wie auf der Startseite (Werte von der Live-Seite, siehe Kopfkommentar)
   - type: tempo
@@ -144,10 +161,11 @@ sections:
     kicker: Ablauf
     headline: Wenig Aufwand für euch, von der Anfrage bis zur Show.
     marks:
-      - { value: { fact: responseHours, display: hours }, label: bis zu unserer Antwort, text: "Ihr erzählt uns von Raum, Anlass und Termin." }
-      - { value: 6–8 Wochen, label: "Vorlauf, ideal", text: "Design und Planung im Raum. Vorab seht ihr die Show als Video oder bei einem Testflug." }
-      - { value: 45 Min, label: Aufbau bis startklar, text: Wir beginnen ab zwei Stunden vor der Show. }
+      - { value: { fact: responseHours, display: hours }, label: bis zu unserer Antwort, text: "Ihr erzählt uns von Raum, Anlass und Termin.", "_key": "k_5f52880dee9f83ce56cc" }
+      - { value: 6–8 Wochen, label: "Vorlauf, ideal", text: "Design und Planung im Raum. Vorab seht ihr die Show als Video oder bei einem Testflug.", "_key": "k_575c490370bb45474ab4" }
+      - { value: 45 Min, label: Aufbau bis startklar, text: Wir beginnen ab zwei Stunden vor der Show., "_key": "k_ce8b466cf22a08df12d8" }
     todo: FlyingStars muss 6–8 Wochen Vorlauf, 45 Minuten Aufbau und Ankunft zwei Stunden vor der Show für die aktuelle Indoor-Technik bestätigen; diese Werte stammen bisher nur von der alten Website.
+    _key: k_cca8a7702a948ca38dce
 
   # Entwurf für Moritz: Preis als Karte, Inhalte wie bisher
   - type: landingPrice
@@ -160,13 +178,15 @@ sections:
     groups:
       - title: Der Preis hängt ab von
         items:
-          - { label: eurem Raum }
-          - { label: der Drohnenzahl, value: "{{offer.indoor.drones.min}}–{{offer.indoor.drones.max}}" }
-          - { label: dem Aufbau }
+          - { label: eurem Raum, "_key": "k_753be3ee1b98a47fa847" }
+          - { label: der Drohnenzahl, value: "{{offer.indoor.drones.min}}–{{offer.indoor.drones.max}}", "_key": "k_c3ef9a4157826d3ef6c2" }
+          - { label: dem Aufbau, "_key": "k_adbef3f274951eda7f54" }
+        _key: k_bf63937c697c823dc996
     closing:
       headline: Passt eure Halle?
       text: Schickt uns Fotos oder einen Grundriss mit der Deckenhöhe. Wir sagen euch innerhalb von 48 Stunden, was dort möglich ist.
       button: { label: Indoor-Angebot anfragen, href: "#anfrage" }
+    _key: k_2957e41a82a467bac50c
 
   - type: faq
     id: fragen
@@ -175,8 +195,10 @@ sections:
     cta: { label: Alle Fragen, href: /faq/ }
     tags: [indoor]
     todo: FlyingStars muss die Indoor-Antworten zu Flächen und Sicherheitsabständen fachlich abgleichen und die ausdrücklich für Indoor geltende Haftpflichtdeckung belegen.
+    _key: k_b9b4c25755db13474604
 
   - type: contactForm
     kicker: Anfrage
     headline: Erzählt uns von eurem Raum.
     text: Deckenhöhe, Fläche und Datum reichen für eine erste Einschätzung. Wir melden uns innerhalb von 48 Stunden.
+    _key: k_bda39ceb090f8b699835

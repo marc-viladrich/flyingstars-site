@@ -16,7 +16,7 @@ const C = index === 0 ? 'h2' : 'h3';
 ---
 <section class="section alt" id={id} aria-labelledby={`${id}-h`}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
-  {compact ? <div class="packs">{items.map((p) => <PackageCard packageId={p.name} variant="summary" headingId={`${id}-${p.name}`} level={C} highlight={p.highlight} badge={p.badge} label={p.label} sky={p.sky} pointsOverride={p.points} />)}</div> : (
+  {compact ? <div class="packs">{items.map((p) => <PackageCard packageId={p.name} variant="summary" headingId={`${id}-${p.name}`} level={C} highlight={p.highlight} badge={p.badge} label={p.label} sky={p.sky} pointsOverride={p.points?.map(item => item.value)} />)}</div> : (
     <div data-mtabs>
       <MobileTabs name={`${id}-tab`} label={t('mobileTabs.choosePackage')} initial={Math.max(0, items.findIndex((p) => p.highlight))} tabs={items.map((p) => ({ label: p.name, color: `rgb(${SHOW_PACKAGES[p.name].color.join(',')})` }))} />
       <div class="tiers-grid">{items.map((p, i) => <PackageCard packageId={p.name} variant="detailed" headingId={`${id}-${p.name}`} level={C} highlight={p.highlight} badge={p.badge} tabIndex={i} />)}</div>

@@ -36,7 +36,7 @@ const proof = proofImage ? await optimizedLogo(proofImage.src, 60) : undefined;
   {pillars.length > 0 && <ul {...field({collection:"sustainabilityPillars",id:"configuration"},[locale,"pillars"],{mode:"panel"})} class="eco-pillars">{pillars.map((p) => <IconFeature as="li" icon={PICON[p.icon]} title={p.title} text={p.text} />)}</ul>}
   {(points.length > 0 || campaign || proofText) && <div class="eco-proof">
     {proofImage && proof && <img src={proof.src} width={proof.width / 2} height={proof.height / 2} alt={proofImage.alt} loading="lazy" decoding="async" />}
-    {points.length > 0 && <ul class="eco-points">{points.map((point) => <li><span>{parts(point).map((part) => part.includes('-') ? <span class="nowrap">{part}</span> : part)}</span></li>)}</ul>}
+    {points.length > 0 && <ul class="eco-points">{points.map((point) => <li><span>{parts(point.value).map((part) => part.includes('-') ? <span class="nowrap">{part}</span> : part)}</span></li>)}</ul>}
     {(proofText || campaign) && <p>{proofText}{campaign && <> <b>#Böllerciao:</b> {campaign}</>}</p>}
   </div>}
 </section>

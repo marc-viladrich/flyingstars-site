@@ -21,7 +21,7 @@ const narrow = await optimizedImage(image.src, 640, 480);
         <img src={wide.src} width={wide.width} height={wide.height} alt={image.alt} loading="lazy" decoding="async" />
       </picture>
     </div>
-    {tags.length > 0 && <ul class="sp-tags" data-reveal-group>{tags.map((t, i) => <li class="mono" data-reveal style={`--i:${i}`}><span class="sp-pin" aria-hidden="true"></span>{t}</li>)}</ul>}
+    {tags.length > 0 && <ul class="sp-tags" data-reveal-group>{tags.map((t, i) => <li class="mono" data-reveal style={`--i:${i}`}><span class="sp-pin" aria-hidden="true"></span>{t.value}</li>)}</ul>}
   </figure>
   {(entries.length > 0 || facts.length > 0) && (
     <div class:list={['sp-below', { 'only-facts': entries.length === 0 }]}>

@@ -23,11 +23,15 @@ sections:
     facts:
       - value: from €7,900
         label: excluding VAT with SPARK
+        _key: k_d6b481df0eeda9dbd41c
       - value: 100 drones
         label: in the package
+        _key: k_b54242b2d9dbb9fb4cb8
       - value: included
         label: Permit
+        _key: k_23f7c52d3dd38daa58dc
     todo: Moritz muss die deutsche Endfassung und die maschinell übersetzten EN-/NL-Texte redaktionell prüfen.
+    _key: k_683af193db254741d0d4
   - type: landingRefs
     id: referenzen
     kicker: Our work
@@ -35,6 +39,7 @@ sections:
     projects:
       - hochzeit-recklinghausen
       - heiratsantrag-hugenpoet
+    _key: k_6500b76af74b7dd741ca
   - type: landingTeaser
     id: motive
     kicker: Motifs
@@ -44,6 +49,7 @@ sections:
     cta: See motifs in the configurator
     loop: hochzeit
     todo: FlyingStars muss die Motive, Drohnenzahlen und Freischaltstufen anhand von docs/show-motive-inventar.md fachlich bestätigen. Die Vorschau ist kein Flugplan.
+    _key: k_3f8f37b2eb211e01710f
   - type: landingPrice
     id: preise
     kicker: Prices
@@ -54,18 +60,28 @@ sections:
       - title: Included
         items:
           - label: Design of your motifs, with approval
+            _key: k_37abdcf9a06b01a2027a
           - label: Permit
+            _key: k_8f2c8df476eed9be19a0
           - label: Music editing
+            _key: k_2783c106e5d6abc32f17
           - label: Our crew on site
+            _key: k_0cb78b0d15ef58649c64
           - label: Liability cover up to €1.3 million
+            _key: k_7905bc184ed46dace247
+        _key: k_6de6ec032d67c38d5810
       - title: Optional additions
         items:
           - label: Travel from Gelsenkirchen
             value: based on location
+            _key: k_149ad168bfbf92228a1d
           - label: Express with under 14 days' notice
             value: based on scope
+            _key: k_32a04e8638a5ebde994e
           - label: Raw footage filmed by camera drone
             value: "{{offer.film.priceSuffix}}"
+            _key: k_903664b3354da0589651
+        _key: k_f5339bfda589f5d657de
     bonus:
       value:
         fact: earlyBookingPercent
@@ -78,6 +94,7 @@ sections:
         label: Enquire about a wedding show
         href: "#anfrage"
     todo: FlyingStars muss die Paketgrenzen, Aufpreise und Leistungen für den Relaunch bestätigen; die endgültige Preisstruktur für 2027 ist noch offen.
+    _key: k_c2450679c80f554468e8
   - type: landingSite
     id: location
     kicker: Location
@@ -86,6 +103,7 @@ sections:
     variant: outdoor
     todo: FlyingStars muss die Startflächen je Drohnenzahl und die standortabhängigen Abstände bestätigen; 15 × 15 und 25 × 25 Meter widersprechen sich in den Quellen. Die Zeichnung bleibt ein Beispiel.
     safetyRef: safety-concept
+    _key: k_6e4f6206d974feea8611
   - type: tempo
     id: ablauf
     kicker: The process
@@ -95,25 +113,31 @@ sections:
       - value: { fact: responseHours, display: hours }
         label: until our reply
         text: A date, venue and your idea are enough. Then a short conversation and your quote.
+        _key: k_812f6a16e0909c3ee313
       - value: 1–2 months
         label: lead time, ideally
         text: Enough time for the permit. Near airports, allow about three months.
+        _key: k_64720ed2445e0b41412f
       - value: 3 weeks
         label: for motifs and music, minimum
         text: You see a draft with your music, give feedback and approve every motif at the end.
+        _key: k_359cc55f5f50e62391b4
       - value: 3 h
         label: on site before the show
         text: Our crew secures the take-off area, flies the show and packs everything away afterwards.
+        _key: k_e6032c4bf2b2ae8d96bc
     shortcut:
       value: Express in under 14 days
       label: Surcharge based on scope
       href: /kontakt/?extras=express
+    _key: k_bd1dd6072c1145a15939
   - type: landingCta
     headline: Planning a *surprise*?
     text: Whether it's a proposal or a family gift, we coordinate only with you. We set up the take-off area out of sight and agree the timing with the venue.
     button:
       label: Enquire about a surprise
       href: "#anfrage"
+    _key: k_ae4a2fbaa25b27dc1ad0
   - type: landingBento
     id: wetter
     kicker: Weather
@@ -126,13 +150,17 @@ sections:
       - icon: wind
         title: Up to wind force 5
         text: We fly in these conditions, including light drizzle.
+        _key: k_03f71ddaa0ce9b453da3
       - icon: calendar-sync
         title: Reschedule free of charge
         text: If bad weather is forecast, we can reschedule as long as we haven't set off yet.
+        _key: k_142976fe879da98142c8
       - icon: wallet
         title: 40% deposit
         text: Payable when booking. If the show is cancelled altogether, the cancellation scale in our terms applies.
+        _key: k_716afa47ec957d14d420
     todo: FlyingStars muss die Website-Angabe Windstärke 5 mit den Windgrenzen der AGB abstimmen und die aktuelle Ausfall-/Verschiebungsstaffel samt verlinkbarer AGB-Fassung liefern.
+    _key: k_f6a652f50cd3d91604e5
   - type: faq
     id: fragen
     kicker: FAQ
@@ -143,8 +171,10 @@ sections:
       href: /faq/
     tags:
       - hochzeit
+    _key: k_9db54091e8c639b6fa66
   - type: contactForm
     kicker: Enquiry
     headline: Tell us about your wedding day.
     text: A date and venue are enough to start. We'll reply within 48 hours with an initial assessment.
-translationSourceHash: 4dbd092ddb04da59ef37dcc152525ba75aff742a2b5f1ee1ea6e531dd87a016d
+    _key: k_f7f1d08aab8e84a827cd
+translationSourceHash: cb7a4870baab33c9c01ab88d5a8017a2c2f563ab2f61ed244e3e4d23c9870054

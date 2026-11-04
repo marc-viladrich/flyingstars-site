@@ -38,8 +38,8 @@
     "cardTitle": "Prada Paradoxe with {{project.loreal-prada-rheinturm.drones}} drones",
     "category": "Brands · Düsseldorf",
     "titleLines": [
-      "PRADA",
-      "PARADOXE"
+      {"_key":"k_86a8ae099b54f2abbe58","value":"PRADA"},
+      {"_key":"k_7adf8c1cbbc883ee1a48","value":"PARADOXE"}
     ],
     "titleChars": 8,
     "tagline": "A perfume bottle becomes a drone show.",
@@ -51,14 +51,16 @@
     "credits": [
       {
         "label": "Occasion",
-        "value": "Brands"
+        "value": "Brands",
+        "_key": "k_e2b536ddc8aa091ec8c0"
       },
       {
         "label": "Location",
         "value": {
           "project": "loreal-prada-rheinturm",
           "field": "location"
-        }
+        },
+        "_key": "k_b9b21d523198773203ba"
       },
       {
         "label": "Date",
@@ -66,7 +68,8 @@
           "project": "loreal-prada-rheinturm",
           "field": "date",
           "display": "iso"
-        }
+        },
+        "_key": "k_2e8200080f2fc1948e7a"
       },
       {
         "label": "Drones",
@@ -74,7 +77,8 @@
           "project": "loreal-prada-rheinturm",
           "field": "drones",
           "display": "text"
-        }
+        },
+        "_key": "k_b10662831ac91ee3b287"
       }
     ],
     "numbers": [
@@ -83,7 +87,8 @@
           "project": "loreal-prada-rheinturm",
           "field": "drones"
         },
-        "label": "Drones"
+        "label": "Drones",
+        "_key": "k_e5c060f553ce828bc620"
       }
     ],
     "story": [
@@ -94,7 +99,8 @@
           "src": "https://flyingstars.art/wp-content/uploads/2024/07/prada1.png",
           "alt": "Prada Paradoxe perfume bottle used as a product reference",
           "caption": "Prada Paradoxe perfume bottle used as a product reference"
-        }
+        },
+        "_key": "k_6694f6687fb04b693200"
       },
       {
         "title": "The brand reviews the details.",
@@ -103,7 +109,8 @@
           "src": "https://flyingstars.art/wp-content/uploads/2024/07/prada2.png",
           "alt": "Three-dimensional bottle formed by drones in the night sky",
           "caption": "Three-dimensional bottle formed by drones in the night sky"
-        }
+        },
+        "_key": "k_f3414cf56287d31f1e42"
       },
       {
         "title": "The show stays visible from the Rheinturm.",
@@ -112,35 +119,40 @@
           "src": "https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg",
           "alt": "Bottle formed by drones above Düsseldorf’s skyline and Rheinturm",
           "caption": "Bottle formed by drones above Düsseldorf’s skyline and Rheinturm"
-        }
+        },
+        "_key": "k_efdd733da8454336129f"
       }
     ],
     "gallery": [
       {
         "src": "https://flyingstars.art/wp-content/uploads/2024/07/prada1.png",
         "alt": "Prada Paradoxe perfume bottle used as a product reference",
-        "caption": "Prada Paradoxe perfume bottle used as a product reference"
+        "caption": "Prada Paradoxe perfume bottle used as a product reference",
+        "_key": "k_308c5d9a42d339fa17a8"
       },
       {
         "src": "https://flyingstars.art/wp-content/uploads/2024/07/prada2.png",
         "alt": "Three-dimensional bottle formed by drones in the night sky",
-        "caption": "Three-dimensional bottle formed by drones in the night sky"
+        "caption": "Three-dimensional bottle formed by drones in the night sky",
+        "_key": "k_9fa07299e96a514d8795"
       },
       {
         "src": "https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg",
         "alt": "Bottle formed by drones above Düsseldorf’s skyline and Rheinturm",
-        "caption": "Bottle formed by drones above Düsseldorf’s skyline and Rheinturm"
+        "caption": "Bottle formed by drones above Düsseldorf’s skyline and Rheinturm",
+        "_key": "k_571eeed4f9e285cd6962"
       }
     ],
     "setlist": [
       {
         "title": "Show motifs",
         "items": [
-          "PARADOXE",
-          "Mobile made of bottles",
-          "PRADA",
-          "Three-dimensional bottle"
-        ]
+          {"_key":"k_4dfc422fbd8202d3ba41","value":"PARADOXE"},
+          {"_key":"k_58b47e5ab5c352774e19","value":"Mobile made of bottles"},
+          {"_key":"k_636fe4836f4794f54c21","value":"PRADA"},
+          {"_key":"k_902ca0bdc61817a9a806","value":"Three-dimensional bottle"}
+        ],
+        "_key": "k_a2591c815cfc7a6612c0"
       }
     ],
     "videoLink": {
@@ -153,7 +165,7 @@
       "text": "Send us the date, location and your idea. We will check what kind of show is possible there."
     }
   },
-  "translationSourceHash": "9dc6ccfcafc434edb8d2bb450dccc5aac216f7559a51874d771a41b85df451e4"
+  "translationSourceHash": "dd5f0879fe3b5e74102bb31416ebb20b11572f0daba95410c023a3fe5927ae83"
 }
 ---
 

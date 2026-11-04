@@ -7,10 +7,10 @@ sections:
     headline: Wij geven jullie stukje hemel vorm.
     text: Droneshows voor bedrijven, steden, festivals en stellen. We ontwerpen de beelden, regelen de vergunning en vliegen met onze eigen vloot.
     words:
-      - Nieuw.
-      - Uniek.
-      - Anders.
-      - Spectaculair.
+      - {"_key":"k_82666e15854364d54a3f","value":"Nieuw."}
+      - {"_key":"k_15bf5aebc23a1a9fea87","value":"Uniek."}
+      - {"_key":"k_e17a63a6eba973950fc3","value":"Anders."}
+      - {"_key":"k_13a7892bb90ecceca0d2","value":"Spectaculair."}
     cta:
       label: Vraag een show aan
       href: "#anfrage"
@@ -26,63 +26,83 @@ sections:
     stats:
       - label: Shows
         value: { fact: showsTotal }
+        _key: k_1abc2d9b5b6179bc92c4
       - label: Basis
         value: 51.51° N · 7.10° E
+        _key: k_da45d9dfcf5870f4b0cc
     todo: Moritz muss die Einstiegs- und Anlass-Texte sowie EN/NL prüfen; FlyingStars muss den Showstand aktualisieren oder 178 ausdrücklich mit Stand 21.10.2026 führen.
+    _key: k_ff90806e01cb10448a60
   - type: logoBar
     id: kundinnen
     headline: Klanten van FlyingStars
     logos:
       - name: E.ON
         file: /brand/logos/kunde-eon-weiss.svg
+        _key: k_5ed46311387955e2857c
       - name: NFL
         image:
           src: https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png
           alt: NFL
           width: 300
           height: 409
+        _key: k_96d6920ee9e3018e33f6
       - name: REWE
         file: /brand/logos/kunde-rewe-weiss.svg
+        _key: k_1a399e3ba47608b2a429
       - name: Spotify
         file: /brand/logos/kunde-spotify-weiss.svg
+        _key: k_e9c10d6391d8d7fcd449
       - name: L’Oréal
         file: /brand/logos/kunde-loreal-weiss.svg
+        _key: k_029386fb557c94733691
       - name: Bosch
         file: /brand/logos/kunde-bosch-weiss.svg
+        _key: k_68b7e8778280697119ac
       - name: Amazon
         file: /brand/logos/kunde-amazon-weiss.svg
+        _key: k_f6cb639885bedbe1012a
       - name: McKinsey
         file: /brand/logos/kunde-mckinsey-weiss.svg
+        _key: k_d8b216f1b29a48bcde19
       - name: PUMA
         image:
           src: https://flyingstars.art/wp-content/uploads/2023/04/Puma_Logo_weiss.png
           alt: PUMA
           width: 300
           height: 161
+        _key: k_c8b04d4bb211cfc5ff25
       - name: Prada
         file: /brand/logos/kunde-prada-weiss.svg
+        _key: k_135f6b274f5ff8f93c25
       - name: Volkswagen
         file: /brand/logos/kunde-volkswagen-weiss.svg
+        _key: k_241fa1a44078fdf4ba7d
       - name: Red Bull
         image:
           src: https://flyingstars.art/wp-content/uploads/2024/10/RED-BULL_white.png
           alt: Red Bull
           width: 400
           height: 200
+        _key: k_0c8b8a711577f92aa65f
       - name: Bulgari
         file: /brand/logos/kunde-bulgari-weiss.svg
+        _key: k_836b51e7d3d32cad742e
       - name: Ford
         file: /brand/logos/kunde-ford-weiss.svg
+        _key: k_7f6e1360484198d9116b
       - name: Siemens
         file: /brand/logos/kunde-siemens-weiss.svg
+        _key: k_0f17650e43d86db6b9cc
       - name: Lamborghini
         file: /brand/logos/kunde-lamborghini-weiss.svg
+        _key: k_ad9c625d212ceff25d60
       - name: Deutsche Umwelthilfe
         image:
           src: https://flyingstars.art/wp-content/uploads/2023/04/Deutsche_Umwelthilfe_weiss.png
           alt: Deutsche Umwelthilfe
           width: 300
           height: 37
+        _key: k_756c13577a99a532844d
       - name: Bentley
         detail: true
         image:
@@ -90,13 +110,16 @@ sections:
           alt: Bentley
           width: 400
           height: 200
+        _key: k_51df7215f7dcf70ddb96
       - name: ABUS
         image:
           src: https://flyingstars.art/wp-content/uploads/2023/04/ABUS_Logo_weiss.png
           alt: ABUS
           width: 400
           height: 200
+        _key: k_7d170b53d2934dc76107
     todo: FlyingStars muss konkrete Show-Belege für Red Bull, Lamborghini, Bentley und ABUS liefern oder die betreffenden Logos aus der Auswahl nehmen.
+    _key: k_820f4f09cb95dca51817
   - type: occasions
     id: anlaesse
     kicker: Gelegenheden
@@ -111,11 +134,12 @@ sections:
           width: 1920
           height: 1281
         facts:
-          - Jullie keuren elk beeld vooraf goed
-          - Voor gasten, medewerkers en de camera
+          - {"_key":"k_007118b5e9ffcd14eef2","value":"Jullie keuren elk beeld vooraf goed"}
+          - {"_key":"k_63a43ea364f279f5fefc","value":"Voor gasten, medewerkers en de camera"}
         cta:
           label: Droneshows voor merken
           href: /drohnenshow-werbung/
+        _key: k_b81c8aa30611eb91692a
       - category: Bureaus
         title: Wij vliegen, jullie stralen
         text: We vliegen voor jullie klanten en blijven op verzoek op de achtergrond.
@@ -125,11 +149,12 @@ sections:
           width: 1600
           height: 900
         facts:
-          - NDA en projectleiding op verzoek
-          - Visualisatie met het logo van jullie klant
+          - {"_key":"k_dc926dab5427817b78ea","value":"NDA en projectleiding op verzoek"}
+          - {"_key":"k_6258bdc9a4e82100ad4f","value":"Visualisatie met het logo van jullie klant"}
         cta:
           label: Voor bureaus
           href: /drohnenshow-werbung/#agenturen
+        _key: k_a03e52c907d2cd5b020d
       - category: Steden & gemeenten
         title: Een hoogtepunt waarover de hele stad spreekt
         text: Stadsfeesten en jubilea zonder pyrotechniek, ook in de droogste zomer.
@@ -139,11 +164,12 @@ sections:
           width: 2544
           height: 1493
         facts:
-          - Stadswapens, jubileumgetallen, jullie verhaal
-          - 10% korting bij boeking in het voorgaande jaar
+          - {"_key":"k_b6fc36af25244b4800fa","value":"Stadswapens, jubileumgetallen, jullie verhaal"}
+          - {"_key":"k_5d179d4f79075dc747a2","value":"10% korting bij boeking in het voorgaande jaar"}
         cta:
           label: Vraag een show voor jullie stad aan
           href: /kontakt/?anlass=stadt
+        _key: k_1304e6d833f230e8e89e
       - category: Bruiloft & privé
         title: Jullie moment, geschreven aan de hemel
         text: Initialen, harten en jullie datum boven het feest, ook voor een huwelijksaanzoek.
@@ -153,11 +179,12 @@ sections:
           width: 1518
           height: 854
         facts:
-          - Ook als verrassing of aanzoek
-          - SPARK vanaf € 7.900 exclusief btw
+          - {"_key":"k_f1c256e9612564dafb06","value":"Ook als verrassing of aanzoek"}
+          - {"_key":"k_a6c6bb4cf0af06e2051d","value":"SPARK vanaf € 7.900 exclusief btw"}
         cta:
           label: Droneshow voor jullie bruiloft
           href: /drohnenshow-hochzeit/
+        _key: k_e784a3482a7296d6e2a3
       - category: Festivals & concerten
         title: Een hoogtepunt dat jullie verhaal verder vertelt
         text: De show sluit aan op podium, muziek en licht, ook op veel avonden achter elkaar.
@@ -167,11 +194,12 @@ sections:
           width: 1600
           height: 900
         facts:
-          - Elke avond dezelfde show, ook 20 keer achter elkaar
-          - 10% korting bij boeking in het voorgaande jaar
+          - {"_key":"k_d735315be617ff7ce135","value":"Elke avond dezelfde show, ook 20 keer achter elkaar"}
+          - {"_key":"k_54806831014428403459","value":"10% korting bij boeking in het voorgaande jaar"}
         cta:
           label: 600 drones in een musical
           href: /musikalischer-teaser-bokkenrijders/
+        _key: k_d47a8ce2e40175c20824
       - category: Oud en nieuw & kerst
         title: Oud en nieuw zonder knalvuurwerk
         text: Een countdown van licht zonder knallen of rook, voor steden, gemeenten en organisatoren.
@@ -181,14 +209,15 @@ sections:
           width: 1920
           height: 987
         facts:
-          - Met Deutsche Umwelthilfe boven Berlijn gevlogen
-          - Vraag vroeg aan, de data zijn snel vol
+          - {"_key":"k_7ae3ee58ddbdd7a12350","value":"Met Deutsche Umwelthilfe boven Berlijn gevlogen"}
+          - {"_key":"k_c819cd79ee439cafde3f","value":"Vraag vroeg aan, de data zijn snel vol"}
         cta:
           label: Vraag een oud-en-nieuwshow aan
           href: /kontakt/?anlass=stadt
         season:
           - 11
           - 12
+        _key: k_5839d7de4f86e547a828
       - category: Indoor
         title: Drones in de zaal
         text: "Voor beurzen, podia en hallen vanaf {{offer.indoor.ceilingWords}} meter plafondhoogte."
@@ -198,12 +227,14 @@ sections:
           width: 1200
           height: 764
         facts:
-          - "{{offer.indoor.drones.min}} tot {{offer.indoor.drones.max}} drones, {{duration.indoor.min}} tot {{duration.indoor.max}} minuten"
-          - Apart berekend
+          - {"_key":"k_c881c18ff51e194445e2","value":"{{offer.indoor.drones.min}} tot {{offer.indoor.drones.max}} drones, {{duration.indoor.min}} tot {{duration.indoor.max}} minuten"}
+          - {"_key":"k_49446aabb98c56f9ed53","value":"Apart berekend"}
         cta:
           label: Indoor-droneshows
           href: /drohnenshow-indoor/
+        _key: k_b52ddd7e74db16f54f73
     todo: Moritz muss die Anlass-Texte freigeben; FlyingStars muss die Relaunch-Sitemap bestätigen. Eigene Seiten für Städte, Festivals und Silvester sind bislang nicht ausgearbeitet.
+    _key: k_a953dd6748c619e1514d
   - type: packages
     id: pakete
     kicker: Pakketten
@@ -213,23 +244,28 @@ sections:
     items:
       - name: SPARK
         label: Klassiek in 2D
+        _key: k_78ff5c91db9f274ba535
       - name: HORIZON
         label: 3D in beweging
         badge: Bestseller
         highlight: true
+        _key: k_703112fe18cc7e56257b
       - name: ODYSSEY
         label: 3D-show met verhaal
+        _key: k_66a45070285e9c202f30
     note: Alle prijzen zijn exclusief btw en reiskosten
     cta:
       label: Alle diensten en prijzen
       href: /drohnenshow-preise/
     todo: FlyingStars muss die Paketgrenzen, Aufpreise und Leistungen für den Relaunch bestätigen; die endgültige Preisstruktur für 2027 ist noch offen.
+    _key: k_4cd3525886c1008cebc1
   - type: configuratorTeaser
     id: konfigurator
     kicker: Showconfigurator
     headline: Stel jullie show *zelf* samen.
     text: Van een hart tot een maanlanding, met 100 tot 600 drones. In de configurator zien jullie wat bij de gelegenheid past.
     todo: FlyingStars muss die Motive, Drohnenzahlen und Freischaltstufen anhand von docs/show-motive-inventar.md fachlich bestätigen. Die Vorschau ist kein Flugplan.
+    _key: k_bb613fb3a85d23de53b1
   - type: projectGrid
     id: projekte
     kicker: Onze shows
@@ -239,6 +275,7 @@ sections:
     cta:
       label: Al onze shows
       href: /referenzen/
+    _key: k_c25f10c971a03e70f6ba
   - type: tempo
     id: ablauf
     kicker: Het verloop in cijfers
@@ -248,12 +285,15 @@ sections:
       - value: { fact: responseHours, display: hours }
         label: tot ons antwoord
         text: Meestal sneller, per e-mail, telefoon of videogesprek.
+        _key: k_12ee5d7850288534c525
       - value: 1–2 maanden
         label: ideale voorbereidingstijd
         text: Genoeg tijd voor jullie goedkeuring van het ontwerp en voor de vergunning.
+        _key: k_c162ae445d3c6042dd99
       - value: 3 h
         label: Opbouw op de showdag
         text: Ons team bouwt op, vliegt de show en pakt weer in.
+        _key: k_bdefb1590b04acd8d57c
     shortcut:
       value: Express binnen 1–2 weken
       label: bij te boeken
@@ -263,12 +303,16 @@ sections:
       - value: { fact: showsTotal, display: shows }
         label: Ervaring
         text: Sinds augustus 2022, stand oktober 2026
+        _key: k_215f84e9bdc2ef00952c
       - value: 600 drones
         label: Grootste show
         text: Musical Bokkenrijders in Maastricht, op 20 avonden
+        _key: k_557632cf0b68f22396ec
       - value: Ontwerp · Vergunning · Vloot
         label: Vanuit één team
         text: Eigen ontwerpteam, eigen vergunning, eigen drones
+        _key: k_6ff47e9613c7b705dfbe
+    _key: k_22cad4004e6677e22092
   - type: logoBar
     id: presse
     kicker: Pers & kwaliteit
@@ -278,54 +322,66 @@ sections:
         cleared: true
         knock: true
         note: 1, 2 oder 3
+        _key: k_4791d0a73285012bba9c
       - name: WDR
         logo: /brand/logos/presse-wdr.svg
         cleared: true
         note: Televisie en interviews
+        _key: k_e6e05aa8a4af009df49f
       - name: ntv
         logo: /brand/logos/presse-ntv.svg
         cleared: true
         knock: true
         note: Startup News
         href: https://www.n-tv.de/mediathek/magazine/startup_news/Drohnen-verwandeln-Nachthimmel-in-Showbuehne-article25835436.html
+        _key: k_b210d92e4cbf25bd0560
       - name: tagesschau
         logo: /brand/logos/presse-tagesschau.svg
         cleared: true
         note: "#Böllerciao in Berlijn"
+        _key: k_7e2f5b75404ce92a0143
       - name: Tagesspiegel
         logo: /brand/logos/presse-tagesspiegel.svg
         cleared: true
         note: "#Böllerciao in Berlijn"
+        _key: k_9c511b2a3a599bedc675
       - name: WAZ
         logo: /brand/logos/presse-waz.svg
         cleared: true
         note: Ruhrorter Hafenfest
         href: https://www.waz.de/lokales/duisburg/article409722481/ruhrorter-hafenfest-die-geheimnisse-hinter-dem-neuen-highlight.html
+        _key: k_af6d26f3bd912a26bb0f
     quality:
       - title: Exploitatievergunning van het Duitse Luftfahrt-Bundesamt
         text: sinds juli 2023
         icon: permit
         logo: /brand/logos/quali-lba-weiss.png
         cleared: true
+        _key: k_d056058898547d0bb1a9
       - title: In de hele EU volgens EASA-regels
         text: Shows in de hele EU, ook in Oostenrijk en Nederland
         icon: permit
         logo: /brand/logos/quali-easa-weiss.png
         cleared: true
+        _key: k_5a63e48e8e1aaad88bfe
       - title: 100% groene stroom van naturstrom
         text: voor de hele vloot
         icon: leaf
         logo: /brand/logos/quali-naturstrom.svg
         cleared: true
+        _key: k_0a1a774c6de0621af71d
       - title: Akoestisch onderzoek
         text: van TÜV Nord
         icon: sound
         secondary: true
+        _key: k_539c699593a4797b96ed
       - title: Aansprakelijkheidsdekking tot € 1,3 miljoen
         text: in elk pakket
         icon: shield
         secondary: true
+        _key: k_24d9a99577b50e68c686
     todo: FlyingStars muss schriftliche Nutzungsfreigaben für Presse-, LBA-, EASA- und naturstrom-Logos sowie konkrete Beiträge von ZDF/WDR liefern. tagesschau und Tagesspiegel belegen bisher keinen namentlichen FlyingStars-Bezug.
+    _key: k_be1f7b63a53602c36e3f
   - type: sustainability
     id: nachhaltigkeit
     kicker: Duurzaamheid
@@ -335,21 +391,26 @@ sections:
       - label: Geen knal
         value: Stil
         text: De drones zoemen, alleen jullie muziek is luid. TÜV Nord heeft het geluid in een akoestisch rapport onderzocht.
+        _key: k_20d9386f213523952598
       - label: Geen rook
         value: "0"
         unit: g
         text: Geen pyrotechniek, dus geen rook of zware metalen boven het publiek.
+        _key: k_2f6c2a2e8d48eea5522d
       - label: Geen afval
         value: "0"
         unit: kg
         text: Geen hulzen, geen resten. Dezelfde drones vliegen show na show.
+        _key: k_a69ce4ddf7966109fb50
       - label: Groene stroom
         value:
           fact: renewablePercent
         unit: "%"
         text: Groene stroom van naturstrom voor onze accu's.
+        _key: k_f24c1ffbe1647069ab03
     todo: Moritz und FlyingStars müssen die Umweltformulierungen vor Veröffentlichung prüfen und die Belege für Ökostrom, Herstellung und das TÜV-Nord-Schallschutzgutachten bereithalten.
     pillarsRef: sustainability-pillars
+    _key: k_001c02ae39915e989410
   - type: comparison
     id: vergleich
     kicker: Eerlijke vergelijking
@@ -357,102 +418,127 @@ sections:
     text: Elke techniek heeft haar sterke kanten. Zo verschillen de drie bij de vragen die we het vaakst krijgen.
     rowHeader: Criterium
     columns:
-      - Droneshow
-      - Vuurwerk
-      - Lasershow
+      - {"_key":"k_35fe1e9bdcb35ca70a40","value":"Droneshow"}
+      - {"_key":"k_8a5793729caf7ee7bb24","value":"Vuurwerk"}
+      - {"_key":"k_1348f142b68b9a4f7dec","value":"Lasershow"}
     rows:
       - label: Logo's en teksten aan de hemel
         values:
-          - Ja, ook in 3D
-          - Nee
-          - Deels, alleen op oppervlakken of nevel
+          - {"_key":"k_4e20011953c10abc050d","value":"Ja, ook in 3D"}
+          - {"_key":"k_0c7303d47e59ca436045","value":"Nee"}
+          - {"_key":"k_c89afa5926ba3d943a64","value":"Deels, alleen op oppervlakken of nevel"}
         cells:
           - label: Ja
             text: ook in 3D
             tone: y
+            _key: k_47b9b5b5261e69a115d5
           - label: Nee
             text: ""
             tone: n
+            _key: k_fc487fc59fd960d1928d
           - label: Deels
             text: alleen op oppervlakken of waas
             tone: p
+            _key: k_c8549edec154ca598860
+        _key: k_832f851d4228bc7b635c
       - label: Geluidsniveau
         values:
-          - Stil, met muziek naar keuze
-          - Zeer luid
-          - Stil
+          - {"_key":"k_23c94aafe60c3db818be","value":"Stil, met muziek naar keuze"}
+          - {"_key":"k_34f3061f02f4783d2bcd","value":"Zeer luid"}
+          - {"_key":"k_4ce91fd2da007514a0c8","value":"Stil"}
         cells:
           - label: Stil
             text: Muziek naar keuze
             tone: y
+            _key: k_8c7fc056c0e8c4889751
           - label: Zeer luid
             text: ""
             tone: n
+            _key: k_7a91eeceac4f9ba38f9d
           - label: Stil
             text: ""
             tone: y
+            _key: k_bc839abc217de9f2cb10
+        _key: k_ccbc8181493982d85be6
       - label: Rook, fijnstof en afval ter plaatse
         values:
-          - Geen
-          - Veel
-          - Nevel nodig voor zichtbare stralen
+          - {"_key":"k_25db6102f99916845e78","value":"Geen"}
+          - {"_key":"k_d66d6e5146a806d685ec","value":"Veel"}
+          - {"_key":"k_bebbb013f1b9a8760c6d","value":"Nevel nodig voor zichtbare stralen"}
         cells:
           - label: Geen
             text: ""
             tone: y
+            _key: k_715f746a641bd26d2e9b
           - label: Veel
             text: ""
             tone: n
+            _key: k_75099aa0524ac5661485
           - label: Nevel
             text: nodig voor zichtbare stralen
             tone: p
+            _key: k_eae712d0bb9edf3fae70
+        _key: k_d6c122d68757ae0de7b7
       - label: Brandgevaar
         values:
-          - Geen
-          - Ja, verboden bij droogte
-          - Geen
+          - {"_key":"k_4fdf93f596e48ed9c82b","value":"Geen"}
+          - {"_key":"k_80b9b7607ee8d5f3d7fc","value":"Ja, verboden bij droogte"}
+          - {"_key":"k_273861c12cef59a766b4","value":"Geen"}
         cells:
           - label: Geen
             text: ""
             tone: y
+            _key: k_d2f3d2eee631c726274c
           - label: Ja
             text: Verboden bij droogte
             tone: n
+            _key: k_192172d42ff044ee3d97
           - label: Geen
             text: ""
             tone: y
+            _key: k_1f636ff0cddb84d5ad79
+        _key: k_a4610cf4e6b52b972490
       - label: Wind en weer
         values:
-          - Tot windkracht 5, geen zware regen
-          - Afgelast bij storm
-          - Robuust, ook binnen
+          - {"_key":"k_ff1616c3600b5160eed8","value":"Tot windkracht 5, geen zware regen"}
+          - {"_key":"k_84552799aa00e81076cd","value":"Afgelast bij storm"}
+          - {"_key":"k_6a7fb8d0d23eb40526b1","value":"Robuust, ook binnen"}
         cells:
           - label: Grens
             text: tot windkracht 5, geen zware regen
             tone: p
+            _key: k_6923259ce0022d5bca96
           - label: Grens
             text: afgelast bij storm
             tone: p
+            _key: k_36b0759b0ef049cb050a
           - label: Robuust
             text: ook binnen
             tone: y
+            _key: k_6c0c91681fe469a53e8f
+        _key: k_949dafe1bb004359a38c
       - label: Zichtbaar vanaf een afstand
         values:
-          - Kilometers ver
-          - Kilometers ver
-          - Beperkt, werkt het best van dichtbij
+          - {"_key":"k_dee3ad99fecfac37d147","value":"Kilometers ver"}
+          - {"_key":"k_4205b85538883a0f08a1","value":"Kilometers ver"}
+          - {"_key":"k_99ca4806542ca85de600","value":"Beperkt, werkt het best van dichtbij"}
         cells:
           - label: Kilometers ver
             text: ""
             tone: y
+            _key: k_009cfa94e3aad9f61751
           - label: Kilometers ver
             text: ""
             tone: y
+            _key: k_3c610e42f2648067c680
           - label: Beperkt
             text: werkt het best van dichtbij
             tone: p
+            _key: k_6b4b6557cb4cea32f81d
+        _key: k_fc6ae6fbb20592fec251
     note: Concept · inhoudelijke controle volgt
     todo: FlyingStars muss den Vergleich fachlich prüfen, insbesondere pauschale Aussagen zu Brandgefahr, Lautstärke und Umweltwirkung; der Block ist bereits als Entwurf gekennzeichnet.
+    _key: k_7dc43c73dfe78acc44f9
   - type: team
     id: team
     kicker: Team
@@ -469,6 +555,7 @@ sections:
       label: Meer over ons
       href: /ueber-uns/
     todo: FlyingStars muss hochauflösende Porträts von Ronja, Florian und Erwin sowie Fotos von Patrick und Alejandro liefern; die vorhandenen Porträts messen nur 199 × 199 Pixel.
+    _key: k_43486c946660a912fde1
   - type: faq
     id: faq
     kicker: FAQ
@@ -480,9 +567,11 @@ sections:
     limit: 4
     tags:
       - startseite
+    _key: k_4e0f713fd6a63fd1a144
   - type: contactForm
     kicker: Aanvraag
     headline: Vertel ons over jullie datum.
     text: Datum, locatie en gelegenheid zijn genoeg voor een eerste inschatting. Laat open wat jullie nog niet weten.
     todo: FlyingStars und die Datenschutzberatung müssen Versanddienst, Empfängerpostfach, Auftragsverarbeitung, Drittlandtransfers und Löschfristen festlegen und die Datenschutzhinweise freigeben.
-translationSourceHash: bf35d26e965d561d5e31bd81ed29c5104715eab0dedab253de74bb6a7b963598
+    _key: k_101f174c707888bef85a
+translationSourceHash: c0d247570ca2cf84ac42b6c5eab8dc5778b1cba8c5faf597b80a1f91571545f0

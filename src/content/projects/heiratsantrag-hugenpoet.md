@@ -38,7 +38,7 @@
     "cardTitle": "Ein Heiratsantrag mit {{project.heiratsantrag-hugenpoet.drones}} Drohnen",
     "category": "Heiratsantrag · Essen",
     "titleLines": [
-      "HUGENPOET"
+      {"_key":"k_9422a007cf0c98a13b63","value":"HUGENPOET"}
     ],
     "titleChars": 9,
     "tagline": "Die Frage erscheint über dem Schlossgarten.",
@@ -50,14 +50,16 @@
     "credits": [
       {
         "label": "Anlass",
-        "value": "Heiratsantrag"
+        "value": "Heiratsantrag",
+        "_key": "k_42bf73b26c719f95ce4b"
       },
       {
         "label": "Ort",
         "value": {
           "project": "heiratsantrag-hugenpoet",
           "field": "location"
-        }
+        },
+        "_key": "k_819241011ca477756ad3"
       },
       {
         "label": "Datum",
@@ -65,7 +67,8 @@
           "project": "heiratsantrag-hugenpoet",
           "field": "date",
           "display": "iso"
-        }
+        },
+        "_key": "k_ea0d10323e50a2ff0e2e"
       },
       {
         "label": "Drohnen",
@@ -73,7 +76,8 @@
           "project": "heiratsantrag-hugenpoet",
           "field": "drones",
           "display": "text"
-        }
+        },
+        "_key": "k_f4b36c2ccd1bbf311d80"
       }
     ],
     "numbers": [
@@ -82,7 +86,8 @@
           "project": "heiratsantrag-hugenpoet",
           "field": "drones"
         },
-        "label": "Drohnen"
+        "label": "Drohnen",
+        "_key": "k_ccaa9cfa2d39e2a07b56"
       }
     ],
     "story": [
@@ -93,7 +98,8 @@
           "src": "https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg",
           "alt": "Eine Hand mit Ring aus Drohnen über den Baumkronen am Schloss Hugenpoet",
           "caption": "Eine Hand mit Ring aus Drohnen über den Baumkronen am Schloss Hugenpoet"
-        }
+        },
+        "_key": "k_674c3883179de135e7a9"
       },
       {
         "title": "Aus der Schatulle wird ein Ring.",
@@ -102,7 +108,8 @@
           "src": "https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg",
           "alt": "Eine Hand mit Ring aus Drohnen über den Baumkronen am Schloss Hugenpoet",
           "caption": "Eine Hand mit Ring aus Drohnen über den Baumkronen am Schloss Hugenpoet"
-        }
+        },
+        "_key": "k_30d647b347497c16a128"
       },
       {
         "title": "Die Frage steht am Himmel.",
@@ -111,7 +118,8 @@
           "src": "https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg",
           "alt": "Eine Hand mit Ring aus Drohnen über den Baumkronen am Schloss Hugenpoet",
           "caption": "Eine Hand mit Ring aus Drohnen über den Baumkronen am Schloss Hugenpoet"
-        }
+        },
+        "_key": "k_2a2e2c7ea4c5a4f7a68b"
       }
     ],
     "gallery": [],
@@ -119,10 +127,11 @@
       {
         "title": "Motive der Show",
         "items": [
-          "Datum 10.09.",
-          "Schmuckschatulle, Ring und Hand",
-          "Do you want to be my Forever?"
-        ]
+          {"_key":"k_029e68cd969f82bda64e","value":"Datum 10.09."},
+          {"_key":"k_82e1c2a0984886669fcf","value":"Schmuckschatulle, Ring und Hand"},
+          {"_key":"k_3d853dfb7341559762f3","value":"Do you want to be my Forever?"}
+        ],
+        "_key": "k_beea2d98b971bb4d89b1"
       }
     ],
     "videoLink": {
