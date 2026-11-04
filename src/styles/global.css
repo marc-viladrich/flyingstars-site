@@ -91,7 +91,9 @@ p { margin: 0; }
 .grad { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: 0.06em; }
 /* Icons mit Verlaufskontur: Verlauf #fs-grad steht einmal im Layout (Base.astro) */
 .ico { width: 1.25rem; height: 1.25rem; flex: none; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-.ico.g { stroke: var(--accent); } .ico.g .ico-fill { fill: var(--accent); } /* früher Logoverlauf; Marc 31.10.: Icons einfarbig in Orange */
+.ico.g { stroke: var(--accent); } .ico.g .ico-fill { fill: var(--accent); }
+/* Markenlogos (brand-icons.ts) sind Flächen: keine Kontur, Farbe über .ico-fill */
+.ico.ico-brand, .ico.g.ico-brand { stroke: none; } /* früher Logoverlauf; Marc 31.10.: Icons einfarbig in Orange */
 
 /* buttons */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.625rem; height: 3rem; padding: 0 1.375rem; border-radius: 0.25rem; font: 500 var(--text-control)/1 var(--body); border: 1px solid var(--line-strong); color: var(--text); background: transparent; cursor: pointer; transition: background 0.2s, border-color 0.2s, transform 0.2s; white-space: nowrap; }
@@ -99,12 +101,33 @@ p { margin: 0; }
 .btn.primary { background: var(--text); color: var(--ground); border-color: var(--text); }
 .btn.primary:hover { background: #fff; transform: translateY(-0.0625rem); }
 .btn.small { height: 2.5rem; padding: 0 1rem; font-size: var(--text-sm); }
-.link { display: inline-flex; gap: 0.5rem; align-items: center; width: fit-content; justify-self: start; align-self: start; color: var(--accent); border-bottom: 1px solid var(--accent-line); padding-bottom: 0.1875rem; transition: border-color 0.2s, color 0.2s; }
-.link:hover { border-color: var(--accent); color: #ffbe6b; }
+.link { display: inline-flex; gap: 0.5rem; align-items: center; width: fit-content; justify-self: start; align-self: start; color: var(--accent); padding-bottom: 0.1875rem; }
+.link:hover { color: #ffbe6b; }
 /* Textlink neben einem Knopf: auf dessen Mitte, nicht oben (Marc, 02.11.2026) */
 .btn ~ .link, .link:has(~ .btn) { align-self: center; }
 .link span { transition: transform 0.2s; }
 .link:hover span { transform: translateX(0.1875rem); }
+
+/* Bewegung: EIN Schalter für die ganze Seite (Runde 20c, Marc 04.11.2026). html.motion-paused setzt der Pause-Knopf im Kopf;
+   der Startwert kommt aus prefers-reduced-motion (Kopfskript in Base.astro, vor dem ersten Bild). Dann enden alle
+   CSS-Übergänge und -Animationen sofort: Hover-Zustände (Unterstrich, Box, Farbe) bleiben sichtbar, aber nichts bewegt sich.
+   Videos, Lichtpunkte, Konfigurator und Teaser halten über motion-policy.ts bzw. dieselbe Klasse an. Kleine Dauer statt 0,
+   damit transitionend/animationend weiter feuern. */
+html.motion-paused *, html.motion-paused *::before, html.motion-paused *::after { animation-duration: 0.01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; transition-delay: 0s !important; }
+html.motion-paused { scroll-behavior: auto !important; }
+/* wie motion-policy.ts (reduced || paused): die Systemeinstellung hält Bewegung auch an, wenn der Knopf nicht gedrückt ist */
+@media (prefers-reduced-motion: reduce) {
+  html *, html *::before, html *::after { animation-duration: 0.01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; transition-delay: 0s !important; }
+  html { scroll-behavior: auto !important; }
+}
+
+/* Unterstrich-Effekt für eigenständige Textlinks: EINE Regel für die ganze Seite (Runde 20c, Marc 04.11.2026: einheitlich
+   und zentral gepflegt). Linie im Logoverlauf, zeichnet sich in 0,4 s von links ein und zieht sich nach rechts zurück,
+   auf derselben Höhe, ohne Versatz und ohne Einblenden. Klasse .hover-line oder einer der Selektoren unten; --line-y hebt
+   die Linie an (Navigation). Grundregel in :where() (Spezifität 0), sonst schlägt sie den Auslöser „Karte gehovert“. Links mitten im Fließtext behalten ihre feste Unterstreichung (sonst im Text nicht als Link
+   erkennbar). */
+:where(.hover-line, .link, .nav nav > a, .nav-drop > a, .footer ul a:not(:has(.hover-line)), .footer address a, .footer .base nav a, .crumbs a, .member h3) { background-image: var(--grad); background-repeat: no-repeat; background-size: 0% 0.125rem; background-position: right 0 bottom var(--line-y, 0rem); -webkit-box-decoration-break: clone; box-decoration-break: clone; transition: background-size 0.4s cubic-bezier(0.3, 0.7, 0.2, 1), color 0.25s ease; }
+:is(.hover-line, .link, .nav nav > a, .footer ul a:not(:has(.hover-line)), .footer address a, .footer .base nav a, .crumbs a):is(:hover, :focus-visible), .nav nav > a[aria-current], a:is(:hover, :focus-visible) .hover-line, .member:is(:hover, :focus-within) h3, .nav-drop:is(:hover, :focus-within) > a, .nav-drop:has(a[aria-current]) > a { background-size: 100% 0.125rem; background-position-x: left; }
 
 /* header */
 .nav { position: fixed; z-index: 20; inset: 0 0 auto 0; display: flex; align-items: center; gap: 1.875rem; padding: calc(1.125rem + env(safe-area-inset-top, 0rem)) var(--gutter) 1.125rem; transition: background 0.3s, border-color 0.3s, padding 0.3s; border-bottom: 1px solid transparent; }
@@ -480,8 +503,7 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
 .portrait .ini { position: absolute; inset: 0; display: grid; place-items: center; font: 700 clamp(5.25rem, 9.5vw, 10rem)/1 var(--display); letter-spacing: -0.05em; color: transparent; -webkit-text-stroke: 1.5px rgba(246, 241, 232, 0.55); background: radial-gradient(90% 70% at 50% 30%, rgba(219, 100, 232, 0.14), transparent 70%), radial-gradient(80% 60% at 50% 100%, rgba(255, 158, 41, 0.1), transparent 70%); }
 .portrait .soon { position: absolute; left: 0.75rem; bottom: 0.75rem; z-index: 2; color: rgba(246, 241, 232, 0.65); }
 .member .role { color: var(--amber); }
-.member h3 { font-size: var(--text-lg); width: fit-content; padding-bottom: 0.125rem; background: var(--grad) no-repeat 0 100% / 0% 0.125rem; transition: background-size 0.5s; }
-.member:hover h3, .member:focus-within h3 { background-size: 100% 0.125rem; }
+.member h3 { font-size: var(--text-lg); width: fit-content; padding-bottom: 0.125rem; }
 .member p { color: var(--muted); font-size: var(--text-sm); }
 .crew-note { margin-top: clamp(1.625rem, 4vw, 2.5rem); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.875rem 1.75rem; padding-top: 1.375rem; border-top: 1px solid var(--line); color: var(--muted); }
 .crew-note b { color: var(--text); font-weight: 500; }
@@ -501,6 +523,9 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
 .footer h4 { margin: 0 0 0.875rem; font: 400 var(--text-xs)/1.4 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
 .footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; color: var(--muted); font-size: var(--text-control); }
 .footer ul a:hover { color: var(--text); }
+/* Social-Links im Footer: Logo vor dem Namen, Unterstrich nur unter dem Namen */
+.footer .social a { display: inline-flex; align-items: center; gap: 0.625rem; }
+.footer .social .ico { width: 1.125rem; height: 1.125rem; }
 .footer address { font-style: normal; color: var(--muted); font-size: var(--text-control); display: grid; gap: 0.875rem; }
 .footer .base { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem; padding-top: 1.5rem; border-top: 1px solid var(--line); color: var(--faint); }
 .footer .base nav { display: flex; flex-wrap: wrap; gap: 1.125rem; }
@@ -575,7 +600,6 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
 .hero .video-player video { position:absolute;inset:0;z-index:1; }
 .hero { min-height:40rem; }
 @media (max-width:43.75em) { .hero .hero-copy { left:var(--pad);bottom:7.5rem; } .hero .spec { display:none; } .hero .video-play { bottom:1.875rem; } .logo span { letter-spacing:.17em; } }
-@media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
 .form fieldset { border:0;margin:0;padding:0;display:grid;gap:1.125rem; }
 .form .field>label, .form #occasion-label { font-size:var(--text-sm);color:var(--muted); }
 .form-status { color:var(--text);font-size:var(--text-control);line-height:1.6; }
@@ -730,50 +754,59 @@ td.us { color: var(--text); background: rgba(246, 241, 232, 0.035); }
 .footer-sub { margin-top: 1.75rem; }
 .ref-item[hidden] { display: none; }
 
-/* Hauptnavigation (Runde 20/20b, Marc 04.11.2026). Hauptpunkte: eigener Unterstrich je Link im Logoverlauf, kein
-   gemeinsamer Marker (Marc: „in sich geschlossen“, der bekannte Effekt). Er zeichnet sich von links ein, startet ein paar
-   Pixel tiefer bei Deckkraft 0 und zieht sich beim Verlassen nach rechts zurück. Der aktuelle Punkt behält ihn. */
+/* Hauptnavigation (Runde 20–20c, Marc 04.11.2026): Unterstrich je Link über den zentralen Unterstrich-Effekt (oben),
+   der aktuelle Punkt behält ihn, „Anlässe“ auch dann, wenn eine Anlass-Seite offen ist. */
 .nav { --glide: cubic-bezier(0.3, 0.7, 0.2, 1); --move: 0.4s; }
 .nav nav { align-items: center; }
-.nav nav > a, .nav-drop > a { position: relative; display: inline-flex; align-items: center; min-height: 2.5rem; transition: color 0.25s ease; }
+.nav nav > a, .nav-drop > a { display: inline-flex; align-items: center; min-height: 2.5rem; --line-y: 0.3125rem; }
 .nav nav > a:hover, .nav nav > a[aria-current], .nav-drop:hover > a, .nav-drop:focus-within > a, .nav-drop:has(a[aria-current]) > a { color: var(--text); }
-.nav nav > a::after, .nav-drop > a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0.3125rem; height: 0.125rem; border-radius: 0.0625rem; background: linear-gradient(90deg, var(--amber), var(--orchid), var(--cyan)); opacity: 0; transform: translateY(0.25rem) scaleX(0); transform-origin: right center; pointer-events: none; transition: transform var(--move) var(--glide), opacity var(--move) ease; }
-.nav nav > a:hover::after, .nav nav > a:focus-visible::after, .nav nav > a[aria-current]::after, .nav-drop:hover > a::after, .nav-drop:focus-within > a::after, .nav-drop:has(a[aria-current]) > a::after { opacity: 1; transform: none; transform-origin: left center; }
 
 /* „Anlässe“ öffnet beim Zeigen oder per Tastatur (focus-within). Schließen mit kurzer Verzögerung, damit ein schräger
    Mausweg zur Liste sie nicht zuklappt. clip-path statt visibility: die Einträge bleiben für Screenreader erreichbar. */
 .nav-drop { position: relative; }
 .nav-drop > a { gap: 0.375rem; }
 .nav-drop .caret { width: 0.5625rem; height: 0.375rem; fill: none; stroke: currentColor; stroke-width: 1.4; transition: transform 0.3s var(--glide); }
-.nav-drop > ul { position: absolute; left: -1rem; top: calc(100% + 0.375rem); min-width: 13.125rem; list-style: none; margin: 0; padding: 0.5rem; display: grid; background: rgba(22, 19, 17, 0.96); backdrop-filter: blur(0.875rem); -webkit-backdrop-filter: blur(0.875rem); border: 1px solid var(--line); border-radius: 0.75rem; box-shadow: 0 1.5rem 3rem -1.5rem rgba(0, 0, 0, 0.7); opacity: 0; transform: translateY(-0.375rem) scale(0.98); transform-origin: 1.5rem 0; pointer-events: none; clip-path: inset(0 0 100% 0); transition: opacity 0.2s ease 0.12s, transform 0.25s var(--glide) 0.12s, clip-path 0s 0.37s; }
+.nav-drop > ul { position: absolute; left: -1rem; top: calc(100% + 0.375rem); min-width: 13.125rem; list-style: none; margin: 0; padding: 0.5rem; --glide-pad: 0.5rem; display: grid; background: rgba(22, 19, 17, 0.96); backdrop-filter: blur(0.875rem); -webkit-backdrop-filter: blur(0.875rem); border: 1px solid var(--line); border-radius: 0.75rem; box-shadow: 0 1.5rem 3rem -1.5rem rgba(0, 0, 0, 0.7); opacity: 0; transform: translateY(-0.375rem) scale(0.98); transform-origin: 1.5rem 0; pointer-events: none; clip-path: inset(0 0 100% 0); transition: opacity 0.2s ease 0.12s, transform 0.25s var(--glide) 0.12s, clip-path 0s 0.37s; }
 .nav-drop > ul::before { content: ""; position: absolute; inset: -0.75rem 0 auto; height: 0.75rem; }
 .nav-drop:hover > ul, .nav-drop:focus-within > ul { opacity: 1; transform: none; pointer-events: auto; clip-path: inset(-1.25rem -1.25rem -3.75rem -1.25rem); transition: opacity 0.2s ease, transform 0.3s var(--glide); }
 .nav-drop:hover .caret, .nav-drop:focus-within .caret { transform: rotate(180deg); }
 .nav-drop li a { display: block; padding: 0.5625rem 0.75rem; border-radius: 0.5rem; white-space: nowrap; }
 
-/* Gleitende Box in Auswahllisten (Anlässe, Sprache), wie der Paketrahmen im Konfigurator, reines CSS über Anchor
-   Positioning: Den Ankernamen trägt der Eintrag unter Maus oder Tastaturfokus, sonst der aktuelle; wandert er, gleitet
-   die Box. Ohne aktuellen Eintrag (z. B. Startseite) blendet sie am ersten Ziel ein, statt aus dem Nichts zu springen.
-   Die Box ist ein echtes Element (li.glide-mark, aria-hidden), kein ::after: WebKit (Safari 26.6) bricht an
-   Pseudo-Elementen jeden Übergang ab, sobald eine :has()-Regel sie neu berechnet, auch über geerbte Variablen.
-   Kein Abstand zwischen den Einträgen, sonst verliert die Maus zwischen zwei Zeilen kurz das Ziel. */
-.glide-list { --glide: cubic-bezier(0.3, 0.7, 0.2, 1); --move: 0.35s; gap: 0; }
+/* Gleitende Box in Auswahllisten (Anlässe, Sprache). Zwei Wege, ein Element (li.glide-mark, aria-hidden; kein ::after,
+   weil WebKit an Pseudo-Elementen Übergänge abbricht, sobald :has() sie neu berechnet):
+   1. Standard, von Marc bevorzugt: Anchor Positioning (@supports unten). Den Ankernamen trägt der Eintrag unter Maus oder
+      Fokus, sonst der aktuelle; wandert er, gleitet die Box. Ohne aktuellen Eintrag blendet sie am ersten Ziel ein.
+   2. Ersatz für Browser ohne Anchor Positioning (Safari bis 18, Marcs Safari 18.6): wie der Paketrahmen im Konfigurator.
+      :has() bestimmt den Index --gi, die Box verschiebt sich per transform um ganze Zeilenhöhen. Voraussetzungen: gleich
+      hohe Einträge ohne Abstand, --n = Zahl der Einträge am <ul>, --glide-pad = Innenabstand des <ul>. Ohne aktuellen
+      Eintrag merkt sich die Box beim Verlassen ihre Stelle (Übergang von --gi mit sehr langer Verzögerung). */
+@property --gi { syntax: '<number>'; inherits: true; initial-value: 0; }
+.glide-list { --glide: cubic-bezier(0.3, 0.7, 0.2, 1); --move: 0.35s; --gi: 0; gap: 0; transition: --gi 0s; }
 .glide-list a { position: relative; z-index: 1; color: rgba(246, 241, 232, 0.78); transition: color 0.2s ease; }
 .glide-list a:hover, .glide-list a:focus-visible, .glide-list a[aria-current] { color: var(--text); }
-.glide-mark { display: none; }
-@supports not (anchor-name: --a) {
-  .glide-list a:hover, .glide-list a[aria-current] { background: rgba(246, 241, 232, 0.06); }
-}
+.glide-list:has(> li:nth-child(1) > a[aria-current]) { --gi: 0; }
+.glide-list:has(> li:nth-child(2) > a[aria-current]) { --gi: 1; }
+.glide-list:has(> li:nth-child(3) > a[aria-current]) { --gi: 2; }
+.glide-list:has(> li:nth-child(4) > a[aria-current]) { --gi: 3; }
+.glide-list:has(> li:nth-child(5) > a[aria-current]) { --gi: 4; }
+.glide-list:has(> li:nth-child(6) > a[aria-current]) { --gi: 5; }
+.glide-list:has(> li:nth-child(7) > a[aria-current]) { --gi: 6; }
+.glide-list:has(> li:nth-child(8) > a[aria-current]) { --gi: 7; }
+.glide-list:has(> li:nth-child(1) > a:is(:hover, :focus-visible)) { --gi: 0; }
+.glide-list:has(> li:nth-child(2) > a:is(:hover, :focus-visible)) { --gi: 1; }
+.glide-list:has(> li:nth-child(3) > a:is(:hover, :focus-visible)) { --gi: 2; }
+.glide-list:has(> li:nth-child(4) > a:is(:hover, :focus-visible)) { --gi: 3; }
+.glide-list:has(> li:nth-child(5) > a:is(:hover, :focus-visible)) { --gi: 4; }
+.glide-list:has(> li:nth-child(6) > a:is(:hover, :focus-visible)) { --gi: 5; }
+.glide-list:has(> li:nth-child(7) > a:is(:hover, :focus-visible)) { --gi: 6; }
+.glide-list:has(> li:nth-child(8) > a:is(:hover, :focus-visible)) { --gi: 7; }
+.glide-list:not(:has(a[aria-current], a:hover, a:focus-visible)) { transition: --gi 0s 86400s; }
+.glide-mark { position: absolute; z-index: 0; top: var(--glide-pad, 0rem); left: var(--glide-pad, 0rem); right: var(--glide-pad, 0rem); height: calc((100% - 2 * var(--glide-pad, 0rem)) / var(--n, 1)); transform: translateY(calc(var(--gi) * 100%)); border-radius: 0.5rem; background: rgba(246, 241, 232, 0.07); box-shadow: inset 0 0 0 1px rgba(246, 241, 232, 0.08); opacity: 0; pointer-events: none; transition: transform var(--move) var(--glide), opacity 0.25s ease; }
+.glide-list:has(a:hover, a:focus-visible, a[aria-current]) > .glide-mark { opacity: 1; }
 @supports (anchor-name: --a) {
   .glide-list { anchor-scope: --glide-mark; }
   .glide-list:not(:has(a:hover, a:focus-visible)) a[aria-current], .glide-list a:hover, .glide-list a:focus-visible { anchor-name: --glide-mark; }
-  .glide-mark { display: block; position: absolute; z-index: 0; position-anchor: --glide-mark; top: anchor(top); right: anchor(right); bottom: anchor(bottom); left: anchor(left); border-radius: 0.5rem; background: rgba(246, 241, 232, 0.07); box-shadow: inset 0 0 0 1px rgba(246, 241, 232, 0.08); opacity: 0; pointer-events: none; transition: top var(--move) var(--glide), bottom var(--move) var(--glide), left var(--move) var(--glide), right var(--move) var(--glide), opacity 0.25s ease; }
-  .glide-list:has(a:hover, a:focus-visible, a[aria-current]) > .glide-mark { opacity: 1; }
-}
-/* Reduzierte Bewegung: Unterstrich und Box blenden nur, sie zeichnen und gleiten nicht; die Liste öffnet ohne Versatz */
-@media (prefers-reduced-motion: reduce) {
-  .nav, .glide-list { --move: 0s; }
-  .nav-drop > ul { transform: none; }
+  .glide-mark { position-anchor: --glide-mark; top: anchor(top); bottom: anchor(bottom); left: anchor(left); right: anchor(right); height: auto; transform: none; transition: top var(--move) var(--glide), bottom var(--move) var(--glide), left var(--move) var(--glide), right var(--move) var(--glide), opacity 0.25s ease; }
 }
 /* „Anlässe“ im Mobile-Menü als Dropdown, eingeklappt (Marc, 02.11.2026) */
 .mobile-menu .sub-drop summary { display: flex; align-items: center; gap: 0.75rem; width: fit-content; font: 500 2.125rem/1.25 var(--display); letter-spacing: -0.02em; cursor: pointer; list-style: none; }

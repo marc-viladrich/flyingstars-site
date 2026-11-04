@@ -1,7 +1,11 @@
 ---
+// Titel im Unterstrich-Effekt (.hover-line, Runde 20c). WebKit wendet text-wrap: balance nicht auf Text in einem
+// Inline-Element an; deshalb verbindet joinLastWords die letzten zwei Wörter (sonst Einzelwort in der letzten Zeile).
+import { joinLastWords } from '../lib/no-orphans';
 // Die Fachadapter liefern Bild und Inhalte; Rahmen, Badge und Hover-Ziel gehören dieser Karte.
 interface Props { variant?: 'reference' | 'editorial' | 'story' | 'occasion'; href?: string; title: string; level?: 'h2' | 'h3' | 'h4'; summary?: string; kicker?: string; badge?: string; i?: number; hasMedia?: boolean; dot?: boolean; loop?: 'auto' | 'hover'; season?: string; class?: string; [key: string]: unknown }
 const { variant = 'reference', href, title, level: H = 'h3', summary, kicker, badge, i = 0, hasMedia = true, dot = true, loop, season, class: cls, ...rest } = Astro.props;
+const titleHtml = joinLastWords(title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'));
 if (href && Astro.slots.has('actions')) throw new Error('Eine verlinkte MediaCard darf keine weiteren Aktionslinks enthalten.');
 const Tag = href ? 'a' : 'article';
 const root = variant === 'occasion' ? 'occ' : variant === 'story' ? 'ls-card' : 'proj';
@@ -16,7 +20,7 @@ const kickerClass = variant === 'occasion' ? 'cat mono' : variant === 'story' ? 
   </div>}
   <div class={bodyClass}>
     <slot name="meta">{kicker && <span class={kickerClass}>{kicker}</span>}</slot>
-    <H>{title}</H>{summary && <p>{summary}</p>}
+    <H><span class="hover-line" set:html={titleHtml} /></H>{summary && <p>{summary}</p>}
     <slot name="facts" /><slot name="actions" />
   </div>
 </Tag>

@@ -14,7 +14,6 @@
 .proj .count { z-index: 2; position: absolute; left: 0.75rem; bottom: 0.75rem; background: rgba(15, 13, 12, 0.72); backdrop-filter: blur(0.5rem); -webkit-backdrop-filter: blur(0.5rem); color: var(--text); padding: 0.375rem 0.5625rem; border-radius: 0.25rem; }
 .proj .kick { color: var(--amber); }
 .proj :is(h2, h3, h4) { font: 500 var(--text-lg)/1.15 var(--display); letter-spacing: -0.02em; color: var(--head); margin: 0; text-wrap: balance; }
-a.proj:hover :is(h2, h3, h4) { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.3125rem; }
 @media (max-width: 40em) {
   .proj .img { aspect-ratio: 16 / 10; }
 }

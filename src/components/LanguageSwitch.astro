@@ -1,7 +1,8 @@
 ---
 // Sprachwahl als Dropdown (Runde 20, Marc 04.11.2026: nicht alle drei Sprachen als eigene Einträge im Kopf). Knopf mit
-// Lucide-Symbol „languages“ und dem Kürzel der aktuellen Sprache; die Liste ist ein natives Popover (öffnet per Klick
-// oder Tippen, schließt mit Esc oder Klick daneben, kein eigenes JS) und hängt per Anchor Positioning unter dem Knopf.
+// Lucide-Symbol „languages“ und dem Kürzel der aktuellen Sprache. Öffnet wie „Anlässe“ beim Zeigen und per Fokus
+// (Runde 20c, Marc: „genauso wie der andere Dropdown“), reines CSS, Liste absolut unter dem Knopf. Kein Popover und kein
+// Anchor Positioning mehr: Safari setzte die Liste damit neben den Knopf bzw. nach dem Scrollen aus dem Bild.
 // Gleitende Box wie im Anlässe-Menü (.glide-list, global.css). Vergleich ohne Kürzel: ?sprache=icon.
 import { LOCALES, LOCALE_NAMES, localizedHref, type Locale } from '../i18n/routing.mjs';
 import { createTranslator } from '../i18n/ui.mjs';
@@ -12,13 +13,13 @@ const t = createTranslator(locale);
 const popId = `lang-${id}`;
 ---
 <div class="language-switch">
-  <button type="button" class="lang-btn" popovertarget={popId} aria-label={`${t('language.choose')}: ${LOCALE_NAMES[locale]}`} style={`anchor-name: --${popId}`}>
+  <button type="button" class="lang-btn" aria-label={`${t('language.choose')}: ${LOCALE_NAMES[locale]}`} aria-controls={popId}>
     <Icon name="languages" size={18} />
     <span class="lang-code" aria-hidden="true">{locale.toUpperCase()}</span>
     <svg class="lang-caret" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" /></svg>
   </button>
-  <div popover id={popId} class="lang-pop" style={`position-anchor: --${popId}`}>
-    <ul class="glide-list" aria-label={t('language.choose')}>
+  <div id={popId} class="lang-pop">
+    <ul class="glide-list" style={`--n: ${LOCALES.length}`} aria-label={t('language.choose')}>
       {LOCALES.map((language) => <li><a href={localizedHref(path, language)} lang={language} hreflang={language} aria-current={language === locale ? 'page' : undefined} data-language-link><span>{LOCALE_NAMES[language]}</span><span class="lang-code">{language.toUpperCase()}</span></a></li>)}
       <li class="glide-mark" aria-hidden="true"></li>
     </ul>
@@ -35,37 +36,26 @@ const popId = `lang-${id}`;
   if (new URLSearchParams(location.search).get('sprache') === 'icon') document.documentElement.dataset.langSwitch = 'icon';
 </script>
 <style>
-  .language-switch { flex-shrink: 0; }
-  .lang-btn { --glide: cubic-bezier(0.3, 0.7, 0.2, 1); display: inline-flex; align-items: center; gap: 0.375rem; height: 2.5rem; padding: 0 0.75rem 0 0.6875rem; border-radius: 62.4375rem; border: 1px solid var(--line-strong); background: rgba(15, 13, 12, 0.5); color: var(--text); font: 500 var(--text-xs)/1 var(--mono); letter-spacing: 0.08em; cursor: pointer; transition: border-color 0.25s ease, background-color 0.25s ease; }
-  .lang-btn:hover, .language-switch:has(.lang-pop:popover-open) .lang-btn { border-color: var(--text); background: rgba(246, 241, 232, 0.06); }
+  .language-switch { position: relative; flex-shrink: 0; --glide: cubic-bezier(0.3, 0.7, 0.2, 1); }
+  .lang-btn { display: inline-flex; align-items: center; gap: 0.375rem; height: 2.5rem; padding: 0 0.75rem 0 0.6875rem; border-radius: 62.4375rem; border: 1px solid var(--line-strong); background: rgba(15, 13, 12, 0.5); color: var(--text); font: 500 var(--text-xs)/1 var(--mono); letter-spacing: 0.08em; cursor: pointer; transition: border-color 0.25s ease, background-color 0.25s ease; }
+  .language-switch:is(:hover, :focus-within) .lang-btn { border-color: var(--text); background: rgba(246, 241, 232, 0.06); }
   .lang-btn:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offset: 0.1875rem; }
   .lang-btn :global(.ico) { width: 1.125rem; height: 1.125rem; flex: none; }
-  .lang-caret { width: 0.5625rem; height: 0.375rem; fill: none; stroke: currentColor; stroke-width: 1.4; transition: transform 0.3s var(--glide); }
-  .language-switch:has(.lang-pop:popover-open) .lang-caret { transform: rotate(180deg); }
+  .lang-caret { display: block; width: 0.5625rem; height: 0.375rem; fill: none; stroke: currentColor; stroke-width: 1.4; transform-origin: 50% 50%; transition: transform 0.3s var(--glide); }
+  .language-switch:is(:hover, :focus-within) .lang-caret { transform: rotate(180deg); }
   :global(html[data-lang-switch="icon"]) .lang-btn { width: 2.5rem; padding: 0; justify-content: center; }
   :global(html[data-lang-switch="icon"]) .lang-btn > .lang-code, :global(html[data-lang-switch="icon"]) .lang-caret { display: none; }
   /* Handy: so hoch wie Pause- und Menüknopf (global.css, max-width 62.5em) */
   @media (max-width: 62.5em) { .lang-btn { height: 2.75rem; } :global(html[data-lang-switch="icon"]) .lang-btn { width: 2.75rem; } }
 
-  /* Popover: UA-Vorgaben (inset 0, margin auto, Canvas-Farben) zurücksetzen; Öffnen mit @starting-style, Schließen über
-     display/overlay allow-discrete, damit es ausblendet statt zu verschwinden */
-  .lang-pop { --glide: cubic-bezier(0.3, 0.7, 0.2, 1); position: fixed; inset: auto; top: anchor(bottom); right: anchor(right); position-try-fallbacks: flip-inline; margin: 0.5rem 0 0; min-width: 12rem; padding: 0.5rem; border: 1px solid var(--line); border-radius: 0.75rem; background: rgba(22, 19, 17, 0.96); -webkit-backdrop-filter: blur(0.875rem); backdrop-filter: blur(0.875rem); color: var(--text); box-shadow: 0 1.5rem 3rem -1.5rem rgba(0, 0, 0, 0.7); overflow: visible; opacity: 0; transform: translateY(-0.375rem) scale(0.98); transform-origin: right top; transition: opacity 0.2s ease, transform 0.3s var(--glide), display 0.3s allow-discrete, overlay 0.3s allow-discrete; }
-  .lang-pop:popover-open { opacity: 1; transform: none; }
-  @starting-style { .lang-pop:popover-open { opacity: 0; transform: translateY(-0.375rem) scale(0.98); } }
-  /* Mit Maus öffnet die Liste beim Zeigen wie „Anlässe“ (Marc, 04.11.2026), ohne JS: das geschlossene Popover wird per CSS
-     eingeblendet; Klick, Tippen und Tastatur laufen weiter über das native Popover. ::before überbrückt den Abstand. */
-  @media (hover: hover) {
-    .language-switch:hover .lang-pop, .language-switch:focus-within .lang-pop { display: block; opacity: 1; transform: none; }
-    @starting-style { .language-switch:hover .lang-pop, .language-switch:focus-within .lang-pop { opacity: 0; transform: translateY(-0.375rem) scale(0.98); } }
-    .language-switch:hover .lang-btn { border-color: var(--text); background: rgba(246, 241, 232, 0.06); }
-    .language-switch:hover .lang-caret, .language-switch:focus-within .lang-caret { transform: rotate(180deg); }
-  }
+  /* Liste wie „Anlässe“: öffnet beim Zeigen und per Fokus (auch Tippen), schließt mit kurzer Verzögerung. visibility
+     statt clip-path, damit die Links geschlossen nicht per Tab erreichbar sind; ::before überbrückt den Abstand. */
+  .lang-pop { position: absolute; z-index: 30; top: calc(100% + 0.5rem); right: 0; min-width: 12rem; padding: 0.5rem; border: 1px solid var(--line); border-radius: 0.75rem; background: rgba(22, 19, 17, 0.96); -webkit-backdrop-filter: blur(0.875rem); backdrop-filter: blur(0.875rem); color: var(--text); box-shadow: 0 1.5rem 3rem -1.5rem rgba(0, 0, 0, 0.7); opacity: 0; visibility: hidden; transform: translateY(-0.375rem) scale(0.98); transform-origin: right top; transition: opacity 0.2s ease 0.12s, transform 0.25s var(--glide) 0.12s, visibility 0s 0.37s; }
   .lang-pop::before { content: ""; position: absolute; inset: -0.75rem 0 auto; height: 0.75rem; }
-  @supports not (anchor-name: --a) { .lang-pop { top: calc(env(safe-area-inset-top, 0rem) + 4.25rem); right: var(--gutter); } }
+  .language-switch:is(:hover, :focus-within) .lang-pop { opacity: 1; visibility: visible; transform: none; transition: opacity 0.2s ease, transform 0.3s var(--glide), visibility 0s; }
   .lang-pop ul { position: relative; list-style: none; margin: 0; padding: 0; display: grid; }
   .lang-pop a { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; min-height: 2.75rem; padding: 0 0.75rem; border-radius: 0.5rem; font-size: var(--text-sm); text-decoration: none; }
   .lang-pop .lang-code { font: 500 var(--text-xs)/1 var(--mono); letter-spacing: 0.08em; color: var(--faint); transition: color 0.2s ease; }
   .lang-pop a:hover .lang-code, .lang-pop a[aria-current] .lang-code { color: var(--accent); }
   .lang-pop a:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offset: 0; }
-  @media (prefers-reduced-motion: reduce) { .lang-pop, .lang-pop:popover-open { transform: none; } .lang-caret { transition: none; } }
 </style>

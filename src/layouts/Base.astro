@@ -15,6 +15,12 @@ import { optimizedImage } from '../lib/media';
 import { LOCALES, localeFromPath, sourcePath, sourceId, localizedHref } from '../i18n/routing.mjs';
 import LanguageSwitch from '../components/LanguageSwitch.astro';
 import { CONTACT } from '../components/people';
+const SOCIAL = [
+  { label: 'Instagram', icon: 'instagram', href: 'https://www.instagram.com/flyingstars.art/' },
+  { label: 'YouTube', icon: 'youtube', href: 'https://www.youtube.com/@flyingstars.' },
+  { label: 'TikTok', icon: 'tiktok', href: 'https://www.tiktok.com/@flyingstars_art' },
+  { label: 'Facebook', icon: 'facebook', href: 'https://www.facebook.com/FlyingStars.Art/' },
+];
 import Consent from '../components/Consent.astro';
 import { trackingConfig } from '../lib/consent.mjs';
 const tracking = trackingConfig({
@@ -65,7 +71,7 @@ const inNav = (href: string) => site.nav.some((item) => item.href === href);
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     {/* Reveal-Startzustand vor dem ersten Bild: nur mit Bewegung (keine reduzierte Bewegung, keine gespeicherte Pause) */}
-    <script is:inline>(function(){var s=null;try{s=sessionStorage.getItem('flyingstars:motion')}catch(e){}var still=s?s==='paused':matchMedia('(prefers-reduced-motion: reduce)').matches;if(!still&&'IntersectionObserver' in window)document.documentElement.classList.add('reveal')})();</script>
+    <script is:inline>(function(){var s=null;try{s=sessionStorage.getItem('flyingstars:motion')}catch(e){}var still=s?s==='paused':matchMedia('(prefers-reduced-motion: reduce)').matches;if(still)document.documentElement.classList.add('motion-paused');if(!still&&'IntersectionObserver' in window)document.documentElement.classList.add('reveal')})();</script>
   </head>
   <body>
     <a class="skip" href="#main">{t('base.skipToContent')}</a>
@@ -74,7 +80,7 @@ const inNav = (href: string) => site.nav.some((item) => item.href === href);
     <div class="nav-sentinel" aria-hidden="true"></div>
     <header class="nav">
       <Logo />
-      <nav aria-label={t('base.mainNavigation')}>{site.nav.map((item) => item.children ? <div class="nav-drop"><a href={localHref(item.href)} aria-current={navState(item.href)}>{item.label} <svg class="caret" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" /></svg></a><ul class="glide-list">{item.children.map((c) => <li><a href={localHref(c.href)} aria-current={navState(c.href)}>{c.label}</a></li>)}<li class="glide-mark" aria-hidden="true"></li></ul></div> : <a href={localHref(item.href)} aria-current={navState(item.href)}>{item.label}</a>)}</nav>
+      <nav aria-label={t('base.mainNavigation')}>{site.nav.map((item) => item.children ? <div class="nav-drop"><a href={localHref(item.href)} aria-current={navState(item.href)}>{item.label} <svg class="caret" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" /></svg></a><ul class="glide-list" style={`--n: ${item.children.length}`}>{item.children.map((c) => <li><a href={localHref(c.href)} aria-current={navState(c.href)}>{c.label}</a></li>)}<li class="glide-mark" aria-hidden="true"></li></ul></div> : <a href={localHref(item.href)} aria-current={navState(item.href)}>{item.label}</a>)}</nav>
       <LanguageSwitch locale={locale} path={current} id="header" />
       <button class="motion-btn" type="button" data-motion-toggle data-motion-pause={t('base.pauseMotion')} data-motion-resume={t('site.resumeMotion')} aria-pressed="false" aria-label={t('base.pauseMotion')} title={t('base.pauseMotion')}><svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="7" y="6" width="3.2" height="12" rx="1" /><rect x="13.8" y="6" width="3.2" height="12" rx="1" /></svg><svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 6.2v11.6a.8.8 0 0 0 1.2.7l9-5.8a.8.8 0 0 0 0-1.4l-9-5.8a.8.8 0 0 0-1.2.7z" /></svg></button>
       <a class="btn small primary" href={localHref(site.cta.href)}>{site.cta.label}</a>
@@ -91,7 +97,7 @@ const inNav = (href: string) => site.nav.some((item) => item.href === href);
         <div class="footer-brand"><Logo /><p>{t('base.droneShowsSince2022')} {SHOWS_TOTAL} {t('base.showsInGermanyAndEurope')}</p><p class="eco"><img src="/brand/logos/quali-naturstrom.svg" alt="naturstrom" width="120" height="30" loading="lazy" decoding="async" /><span>{t('base.100GreenElectricityForTheEntireFleet')}</span></p></div>
         <div><h2 class="footer-heading">{t('base.contact')}</h2><address {...record(CONTACT_OWNER)}><span>{t('base.visitUs')}{CONTACT.visit.map((line,i) => <><br /><span {...field(CONTACT_OWNER,[],{mode:'panel'})}>{line}</span></>)}</span><span>{t('base.post')}{CONTACT.post.map((line,i) => <><br /><span {...field(CONTACT_OWNER,[],{mode:'panel'})}>{line}</span></>)}</span><span><a {...field(CONTACT_OWNER,[],{mode:'panel'})} href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a><br /><a {...field(CONTACT_OWNER,[],{mode:'panel'})} href={CONTACT.phone.href}>{CONTACT.phone.label}</a></span></address></div>
         <div><h2 class="footer-heading">{t('base.pages')}</h2><ul>{site.nav.map((item) => <li><a href={localHref(item.href)}>{item.label}</a></li>)}{!inNav('/blog/') && <li><a href={localHref("/blog/")}>Blog</a></li>}<li><a href={localHref(site.cta.href)}>{site.cta.label}</a></li></ul>{occasionPages.length > 0 && <><h2 class="footer-heading footer-sub">{t('base.occasions')}</h2><ul>{occasionPages.map((item) => <li><a href={localHref(item.href)}>{item.label}</a></li>)}</ul></>}</div>
-        <div><h2 class="footer-heading">{t('base.followUs')}</h2><ul><li><a href="https://www.instagram.com/flyingstars.art/" rel="noopener noreferrer" target="_blank">Instagram</a></li><li><a href="https://www.youtube.com/@flyingstars." rel="noopener noreferrer" target="_blank">YouTube</a></li><li><a href="https://www.tiktok.com/@flyingstars_art" rel="noopener noreferrer" target="_blank">TikTok</a></li><li><a href="https://www.facebook.com/FlyingStars.Art/" rel="noopener noreferrer" target="_blank">Facebook</a></li></ul></div>
+        <div><h2 class="footer-heading">{t('base.followUs')}</h2><ul class="social">{SOCIAL.map((s) => <li><a href={s.href} rel="noopener noreferrer" target="_blank"><Icon name={s.icon} size={18} class="g" /><span class="hover-line">{s.label}</span></a></li>)}</ul></div>
       </div>
       <div class="base mono"><span>© {new Date().getFullYear()} FlyingStars GmbH</span><nav aria-label={t('base.legal')}>{site.footer.legal.map((item) => <a href={localHref(item.href)}>{item.label}</a>)}</nav><button type="button" class="consent-reopen" data-consent-open hidden aria-label={t('consent.reopen')} title={t('consent.reopen')}><Icon name="cookie" size={18} /></button></div>
     </footer>

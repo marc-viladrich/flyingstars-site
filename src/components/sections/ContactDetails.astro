@@ -31,7 +31,7 @@ const crew = image ? [] : await Promise.all(FOUNDERS.map(async (p) => ({ ...p, i
   <div class="cd-main">
     <SectionHead variant="embedded" kicker={kicker} headline={headline} text={text} id={id} level={H} textClass="cd-lead" />
     <ul class="cd-grid" {...record(CONTACT_OWNER)}>
-      {ways.map((w) => <IconFeature as="li" icon={w.icon} title={w.title} level={Item}><a {...field(CONTACT_OWNER,[],{mode:'panel'})} class="cd-link" href={localHref(w.href)} rel={w.external ? 'noopener' : undefined} target={w.external ? '_blank' : undefined}>{w.label}</a></IconFeature>)}
+      {ways.map((w) => <IconFeature as="li" icon={w.icon} title={w.title} level={Item}><a {...field(CONTACT_OWNER,[],{mode:'panel'})} class="cd-link hover-line" href={localHref(w.href)} rel={w.external ? 'noopener' : undefined} target={w.external ? '_blank' : undefined}>{w.label}</a></IconFeature>)}
       <IconFeature as="li" icon="map-pin" title={t('contactDetails.visit')} level={Item}><address>{CONTACT.visit.map((line,i) => <span {...field(CONTACT_OWNER,[],{mode:'panel'})}>{line}</span>)}</address>{visitNote && <p class="cd-note">{visitNote}</p>}</IconFeature>
       <IconFeature as="li" icon="mailbox" title={t('contactDetails.post')} level={Item}><address>{CONTACT.post.map((line,i) => <span {...field(CONTACT_OWNER,[],{mode:'panel'})}>{line}</span>)}</address></IconFeature>
     </ul>
@@ -48,8 +48,7 @@ const crew = image ? [] : await Promise.all(FOUNDERS.map(async (p) => ({ ...p, i
   .cd-grid :global(.icon-feature) { gap: 0.5rem; }
   .cd-grid :global(.icon-feature > .ico) { width: 1.75rem; height: 1.75rem; margin-bottom: 0.25rem; }
   .cd-grid :global(.ic-h) { font: 500 var(--text-xs)/1.2 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
-  .cd-link { color: var(--text); font-size: var(--text-copy); border-bottom: 1px solid var(--line-strong); transition: color 0.2s ease, border-color 0.2s ease; }
-  .cd-link:hover { color: var(--amber); border-color: var(--amber); }
+  .cd-link { color: var(--text); font-size: var(--text-copy); }
   /* eine Zeile je Adresszeile wie auf dem Umschlag; muss eine umbrechen, dann ausgewogen („Gründungszentrum / Zeche Zollverein“) */
   address { font-style: normal; font-size: var(--text-copy); line-height: 1.5; color: var(--text); }
   address span { display: block; text-wrap: balance; }
