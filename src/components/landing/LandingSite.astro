@@ -1,4 +1,6 @@
 ---
+import {field} from 'astro-frontend-editor/markers';
+import {landingSiteContent} from '../../content/shared-blocks.mjs';
 import {factText} from '../../content/show-extras.mjs';
 import IconFeature from '../IconFeature.astro';
 import { forPath } from '../../i18n/server';
@@ -15,7 +17,8 @@ import SectionHead from '../SectionHead.astro';
 import Icon from '../Icon.astro';
 import ComparisonCell from '../ComparisonCell.astro';
 type Props = Extract<Section, { type: 'landingSite' }> & { index: number };
-const { kicker, headline, text, variant, diagram, items, responsibilities, safeguards, download, id = 'location', index } = Astro.props;
+const { kicker, headline, text, variant, diagram, items, responsibilities, safeguards, download, id = 'location', index } = landingSiteContent(Astro.props,locale);
+const sharedField=(key:string)=>Astro.props.safetyRef?field({collection:'safetyConcept',id:'configuration'},[locale,key],{mode:'panel'}):{};
 const H = index === 0 ? 'h1' : 'h2';
 const T = index === 0 ? 'h2' : 'h3';
 const numbers = Object.fromEntries(items.map((item, i) => [item.zone, i + 1]));
@@ -50,7 +53,7 @@ const markers = variant === 'outdoor'
 <section class="section ls-site" id={id} aria-labelledby={`${id}-h`}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
   <div class="st">
-    <figure class="st-fig">
+    <figure {...sharedField("diagram")} class="st-fig">
       <svg viewBox={variant === 'outdoor' ? '0 0 400 400' : '0 0 400 490'} role="img" aria-labelledby={`${id}-diagram-title ${id}-diagram-desc`}>
         <title id={`${id}-diagram-title`}>{variant === 'outdoor' ? t('landingsite.outdoorTitle') : t('landingsite.indoorTitle')}</title>
         <desc id={`${id}-diagram-desc`}>{factText(diagram.description,locale)} {t('landingsite.numberedList')} {factText(diagram.caption,locale)}</desc>
@@ -100,7 +103,7 @@ const markers = variant === 'outdoor'
       <p class="st-height"><Icon name="move-up" size={20} class="g" /><span>{factText(diagram.flightLabel,locale)}</span></p>
       <figcaption>{factText(diagram.caption,locale)}</figcaption>
     </figure>
-    <ol class="st-items">
+    <ol {...sharedField("items")} class="st-items">
       {items.map((item, i) => <li data-zone={item.zone} data-pick={item.zone} style={`--zc: ${zoneColor[item.zone]}`}>
         <span class="st-n mono" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
         <div>
@@ -117,7 +120,7 @@ const markers = variant === 'outdoor'
     <T id={`${id}-who`}>{t('landingsite.more')}</T>
     <table aria-labelledby={`${id}-who`}>
       <thead data-sticky-strip><tr><th scope="col">{t('landingsite.task')}</th><th scope="col" class="c">FlyingStars</th><th scope="col" class="c">{t('landingsite.you')}</th></tr></thead>
-      <tbody>{responsibilities.map((row) => <tr>
+      <tbody>{responsibilities.map((row,i) => <tr {...(Astro.props.safetyRef && i >= (Astro.props.additionalResponsibilities?.length??0) ? sharedField("responsibilities") : {})}>
         <th scope="row">{row.task}</th>
         {[row.us, row.you].map((v) => <td class:list={['c', v]}>
           <ComparisonCell value={null} responsibility={v} hint={row.hint} />
@@ -125,7 +128,7 @@ const markers = variant === 'outdoor'
       </tr>)}</tbody>
     </table>
     <p class="st-legend mono">{(['full', 'part', 'none'] as const).map((v) => <span><ComparisonCell value={null} responsibility={v} legend /> {t(`landingsite.${v}`)}</span>)}</p>
-    {download && <a class="link st-download" href={localHref(download.href)} type="application/pdf" target="_blank" rel="noopener">{download.label}<Icon name="download" size={18} class="g" /></a>}
+    {download && <a {...sharedField("download")} class="link st-download" href={localHref(download.href)} type="application/pdf" target="_blank" rel="noopener">{download.label}<Icon name="download" size={18} class="g" /></a>}
   </div>
 </section>
 

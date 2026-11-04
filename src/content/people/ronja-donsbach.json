@@ -6,5 +6,20 @@
     "src": "https://flyingstars.art/wp-content/uploads/2024/08/Ronja_Teamfoto.jpg",
     "width": 800,
     "height": 1000
+  },
+  "role": {
+    "de": "Geschäftsführerin",
+    "en": "Managing director",
+    "nl": "Directeur"
+  },
+  "bio": {
+    "de": "Beantwortet die meisten Anfragen und stimmt Design und Musik mit Partner:innen ab. Auch auf Englisch.",
+    "en": "Handles most enquiries and coordinates design and music with partners. In English too.",
+    "nl": "Beantwoordt de meeste aanvragen en stemt ontwerp en muziek af met partners. Ook in het Engels."
+  },
+  "imageAlt": {
+    "de": "Ronja Donsbach mit einer Drohne in der Hand",
+    "en": "Ronja Donsbach holding a drone",
+    "nl": "Ronja Donsbach met een drone in haar hand"
   }
 }

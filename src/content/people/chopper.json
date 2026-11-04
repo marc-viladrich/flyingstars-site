@@ -1,5 +1,15 @@
 {
   "name": "Chopper",
   "order": 6,
-  "founder": false
+  "founder": false,
+  "role": {
+    "de": "Bürohund",
+    "en": "Office dog",
+    "nl": "Kantoorhond"
+  },
+  "bio": {
+    "de": "Neu im Team.",
+    "en": "New to the team.",
+    "nl": "Nieuw in het team."
+  }
 }

@@ -87,45 +87,8 @@ sections:
     headline: Passt eure Location?
     text: Schickt uns die Adresse und die geplante Position eurer Gäste. Vor dem Angebot prüfen wir, ob und wie die Show dort möglich ist.
     variant: outdoor
-    diagram:
-      description: "Draufsicht mit äußerem und innerem Sicherheitsbereich, Flugbereich, Start- und Landebereich sowie Publikum außerhalb. Die Drohnenlinie liegt quer zur Blickrichtung."
-      horizontalLabel: ca. 100 m
-      verticalLabel: ca. 100 m
-      detailLabel: ca. 60 m
-      flightLabel: In der Regel bis 120 m Flughöhe
-      caption: "Beispiel nach dem Technik-Datenblatt, nicht maßstäblich. Alle Zonen und Abstände berechnen wir für euren Standort. Die 60 m beziehen sich auf die Drohnenlinie in diesem Beispiel."
-    items:
-      - title: Äußerer Sicherheitsbereich
-        value: ca. 100 × 100 m
-        text: "Er umfasst auch die inneren Bereiche. Während der Show bleibt er frei von Unbeteiligten, für etwa 15 Minuten. Die Größe hängt von Drohnenzahl, Motiven und Flughöhe ab."
-        zone: safety
-      - title: Innerer Sicherheitsbereich
-        text: "Der operative Sicherheitsbereich umgibt den Flugbereich. Seine Grenzen legen wir mit der Flugplanung fest."
-        zone: operative
-      - title: Flugbereich
-        value: bis 120 m hoch
-        text: "Hier fliegen die Drohnen die Motive. Von oben bilden sie eine Linie quer zur Blickrichtung, damit eure Gäste die Motive frontal sehen."
-        zone: drones
-      - title: Start- und Landebereich
-        value: ca. 3 h vor der Show gesperrt
-        text: "Ab unserer Ankunft bauen wir auf einer freien, ebenen Fläche das Drohnenraster, Antennenstative und die Kontrollstation auf. Die benötigte Fläche hängt von der Drohnenzahl ab."
-        zone: start
-      - title: Publikumsbereich
-        text: "Eure Gäste stehen außerhalb des äußeren Sicherheitsbereichs und brauchen freie Sicht auf die Show. Ihre Position planen wir mit euch, mit Abstand zu Hauswänden und Bäumen."
-        zone: guests
-    responsibilities:
-      - { task: "Standort prüfen, Sicherheitskonzept und Flugplanung", us: full, you: none }
-      - { task: "Luftrechtliche Genehmigungen (LBA, DFS, Wasserstraßen, EU-Länder)", us: full, you: none }
-      - { task: "Zustimmung der Grundstückseigentümer:innen einholen", us: part, you: full, hint: "Vorlage von uns" }
-      - { task: "Flächen für Start, Sicherheitsbereich und Publikum bereitstellen", us: none, you: full }
-      - { task: "Sicherheitsbereich absichern (Flatterband, ggf. Ordner:innen)", us: part, you: full, hint: "nach Absprache" }
-      - { task: "Pilot:innen, Technik, Auf- und Abbau", us: full, you: none }
-      - { task: "Musikschnitt passend zur Show", us: full, you: none }
-      - { task: "Beschallung vor Ort organisieren", us: part, you: full, hint: "Box für kleine Gruppen" }
-      - { task: "Ansprechperson für den Showtag benennen", us: none, you: full }
-      - { task: "Haftpflicht bis 1,3 Mio. €", us: full, you: none }
-    download: { label: Technik-Datenblatt · PDF, href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf }
     todo: FlyingStars muss die Startflächen je Drohnenzahl und die standortabhängigen Abstände bestätigen; 15 × 15 und 25 × 25 Meter widersprechen sich in den Quellen. Die Zeichnung bleibt ein Beispiel.
+    safetyRef: safety-concept
 
   # Entwurf für Moritz: Ablauf in Zahlen wie auf der Startseite. Quellen: Fragebogen 21.10. (48 h, mind. 3 Wochen Design,
   # 1–2 Monate ideal, ca. 3 h Aufbau, ca. 3 Monate bei Flughafennähe).
@@ -168,7 +131,7 @@ sections:
     headline: Fragen von Paaren.
     text: Kurz beantwortet. Weitere Antworten findet ihr in den häufigen Fragen.
     cta: { label: Alle Fragen, href: /faq/ }
-    tags: [hochzeit]
+    tags: [ hochzeit ]
 
   - type: contactForm
     kicker: Anfrage

@@ -24,27 +24,12 @@ sections:
     headline: The people behind the shows.
     text: You reach us as a team, and on show night we're out on the field ourselves.
     members:
-      - role: Managing director
-        bio: Handles most enquiries and coordinates design and music with partners. In English too.
-        personId: ronja-donsbach
-        imageAlt: Ronja Donsbach holding a drone
-      - role: Managing director
-        bio: Administration, staff and clients in Germany. Writes our blog.
-        personId: florian-becker
-        imageAlt: Florian Becker holding a drone
-      - role: Managing director
-        bio: Applications, authorities and aviation law. Makes sure your show is cleared to fly. In English too.
-        personId: erwin-wilms
-        imageAlt: Erwin Wilms holding a drone
-      - role: Head of Technology
-        bio: Fleet, availability, purchasing and the technical setup of every show.
-        personId: patrick
-      - role: Head of Design
-        bio: Designs our shows and their choreographies.
-        personId: alejandro
-      - role: Office dog
-        bio: New to the team.
-        personId: chopper
+      - personId: ronja-donsbach
+      - personId: florian-becker
+      - personId: erwin-wilms
+      - personId: patrick
+      - personId: alejandro
+      - personId: chopper
     note: Around ten part-time crew members help us set up, secure the site and pack away.
     cta:
       label: Get to know us
@@ -155,32 +140,6 @@ sections:
     headline: "Safety you don't have to worry about."
     text: We coordinate safety zones, flight planning and responsibilities for every site.
     variant: outdoor
-    diagram:
-      description: Plan view showing the outer and inner safety areas, flight area, take-off and landing area, and the audience outside. The line of drones runs across the viewing direction.
-      horizontalLabel: approx. 100 m
-      verticalLabel: approx. 100 m
-      detailLabel: approx. 60 m
-      flightLabel: Usually up to 120 m flight altitude
-      caption: Example based on the technical data sheet, not to scale. We calculate all zones and distances for your site. The 60 m dimension refers to the line of drones in this example.
-    items:
-      - title: Outer safety area
-        value: approx. 100 × 100 m
-        text: This also includes the inner areas. It stays clear of uninvolved people during the show, for around 15 minutes. Its size depends on the number of drones, motifs and flight altitude.
-        zone: safety
-      - title: Inner safety area
-        text: The operational safety area surrounds the flight area. We define its boundaries as part of flight planning.
-        zone: operative
-      - title: Flight area
-        value: up to 120 m high
-        text: This is where the drones fly the motifs. Seen from above, they form a line across the viewing direction so that your guests see the motifs from the front.
-        zone: drones
-      - title: Take-off and landing area
-        value: closed approx. 3 hours before the show
-        text: From our arrival, we set up the drone grid, antenna stands and control station on a clear, level area. The space required depends on the number of drones.
-        zone: start
-      - title: Audience area
-        text: Your guests stand outside the outer safety area and need a clear view of the show. We plan their position with you, keeping a distance from walls and trees.
-        zone: guests
     safeguards:
       - icon: scan-line
         title: Digitally bounded flight area
@@ -194,21 +153,8 @@ sections:
       - icon: wind
         title: Monitoring the weather
         text: Our formations remain stable up to wind force 5 and in light drizzle. Ideally, we review the weather conditions with you one or two days beforehand.
-    responsibilities:
-      - { task: "Site check, safety concept and flight plan", us: full, you: none }
-      - { task: "Aviation permits (LBA, DFS, waterways, other EU countries)", us: full, you: none }
-      - { task: "Obtain consent from the landowners", us: part, you: full, hint: "Template from us" }
-      - { task: "Provide space for take-off, safety zone and audience", us: none, you: full }
-      - { task: "Securing the safety zone (barrier tape, stewards if needed)", us: part, you: full, hint: "by arrangement" }
-      - { task: "Pilots, equipment, set-up and dismantling", us: full, you: none }
-      - { task: "Music edited to the show", us: full, you: none }
-      - { task: "Arrange sound on site", us: part, you: full, hint: "Speaker for small groups" }
-      - { task: "Name a contact person for show day", us: none, you: full }
-      - { task: "Liability insurance up to €1.3m", us: full, you: none }
-    download:
-      label: Technical data sheet · PDF
-      href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf
     todo: FlyingStars muss die Startflächen je Drohnenzahl und die standortabhängigen Abstände bestätigen; 15 × 15 und 25 × 25 Meter widersprechen sich in den Quellen. Die Zeichnung bleibt ein Beispiel; Betriebsgenehmigung und aktuelle Versicherungsbestätigung fehlen im Quellenpaket.
+    safetyRef: safety-concept
   - type: sustainability
     id: nachhaltigkeit
     kicker: Sustainability
@@ -231,20 +177,8 @@ sections:
           fact: renewablePercent
         unit: "%"
         text: Green electricity from naturstrom for our batteries.
-    pillars:
-      - icon: eu
-        title: Built in the EU
-        text: Our drones weigh around 300 grams and are built by Drotek SAS in France.
-      - icon: repair
-        title: Repair rather than replace
-        text: We replace batteries, motors and rotors individually, so the drone keeps flying.
-      - icon: ev
-        title: Electric travel to the show
-        text: We travel to shows in an electric Ford E-Transit.
-      - icon: campaign
-        title: "#Böllerciao"
-        text: With Deutsche Umwelthilfe above Berlin in November 2023, as an alternative to New Year's Eve fireworks.
     todo: Moritz und FlyingStars müssen die Umweltformulierungen vor Veröffentlichung prüfen und die Belege für Ökostrom, Herstellung und das TÜV-Nord-Schallschutzgutachten bereithalten.
+    pillarsRef: sustainability-pillars
   - type: metrics
     id: zahlen
     kicker: In numbers
@@ -270,4 +204,4 @@ sections:
     button:
       label: Request a show
       href: /kontakt/
-translationSourceHash: 87447cb32f90403aef327908cbe8e8f9569df9cd94b049878a43b68a1d81e3f5
+translationSourceHash: 1f5a879877a739bb986087da9aefdf95bb4430d9a748d1482d35deda16555801

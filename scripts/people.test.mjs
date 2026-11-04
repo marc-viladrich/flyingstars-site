@@ -13,8 +13,8 @@ test('Personen-IDs besitzen Name und PortrÃ¤t; Team und Autor folgen derselben Ã
   const page=parse(readFileSync(`src/content/pages/${locale}${file}.yaml`,'utf8'));contentSchemas.pages.parse(page);
   for(const section of page.sections.filter(s=>s.type==='team'))for(const member of section.members){
    assert.ok(!('name'in member)&&!('image'in member));const resolved=teamMember(member,changed);
-   assert.equal(resolved.bio,member.bio);assert.equal(resolved.role,member.role);
-   if(member.personId==='florian-becker'){assert.equal(resolved.name,'Testname');assert.equal(resolved.image.src,'https://flyingstars.art/probe.jpg');assert.equal(resolved.image.alt,member.imageAlt);}
+   assert.equal(resolved.bio,changed[member.personId].bio.de);assert.equal(resolved.role,changed[member.personId].role.de);
+   if(member.personId==='florian-becker'){assert.equal(resolved.name,'Testname');assert.equal(resolved.image.src,'https://flyingstars.art/probe.jpg');assert.equal(resolved.image.alt,changed[member.personId].imageAlt.de);}
   }
  }
  for(const file of readdirSync('src/content/posts',{recursive:true}).filter(n=>n.endsWith('.md'))){const post=contentSchemas.posts.parse(parse(readFileSync('src/content/posts/'+file,'utf8').split('---')[1]));assert.equal(person(post.authorId,changed).name,'Testname');}

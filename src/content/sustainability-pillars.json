@@ -1,0 +1,74 @@
+{
+  "de": {
+    "pillars": [
+      {
+        "icon": "eu",
+        "title": "Gebaut in der EU",
+        "text": "Unsere Drohnen wiegen rund 300 Gramm und werden bei Drotek SAS in Frankreich gebaut."
+      },
+      {
+        "icon": "repair",
+        "title": "Reparieren statt ersetzen",
+        "text": "Akkus, Motoren und Rotoren tauschen wir einzeln, die Drohne fliegt weiter."
+      },
+      {
+        "icon": "ev",
+        "title": "Elektrisch zur Show",
+        "text": "Zu den Shows fahren wir mit einem elektrischen Ford E-Transit."
+      },
+      {
+        "icon": "campaign",
+        "title": "#Böllerciao",
+        "text": "Mit der Deutschen Umwelthilfe im November 2023 über Berlin, als Alternative zum Silvesterfeuerwerk."
+      }
+    ]
+  },
+  "en": {
+    "pillars": [
+      {
+        "icon": "eu",
+        "title": "Built in the EU",
+        "text": "Our drones weigh around 300 grams and are built by Drotek SAS in France."
+      },
+      {
+        "icon": "repair",
+        "title": "Repair rather than replace",
+        "text": "We replace batteries, motors and rotors individually, so the drone keeps flying."
+      },
+      {
+        "icon": "ev",
+        "title": "Electric travel to the show",
+        "text": "We travel to shows in an electric Ford E-Transit."
+      },
+      {
+        "icon": "campaign",
+        "title": "#Böllerciao",
+        "text": "With Deutsche Umwelthilfe above Berlin in November 2023, as an alternative to New Year's Eve fireworks."
+      }
+    ]
+  },
+  "nl": {
+    "pillars": [
+      {
+        "icon": "eu",
+        "title": "Gebouwd in de EU",
+        "text": "Onze drones wegen circa 300 gram en worden gebouwd door Drotek SAS in Frankrijk."
+      },
+      {
+        "icon": "repair",
+        "title": "Repareren in plaats van vervangen",
+        "text": "Accu's, motoren en rotoren vervangen we afzonderlijk, zodat de drone blijft vliegen."
+      },
+      {
+        "icon": "ev",
+        "title": "Elektrisch naar de show",
+        "text": "We rijden naar shows met een elektrische Ford E-Transit."
+      },
+      {
+        "icon": "campaign",
+        "title": "#Böllerciao",
+        "text": "Met Deutsche Umwelthilfe boven Berlijn in november 2023, als alternatief voor oud-en-nieuwvuurwerk."
+      }
+    ]
+  }
+}

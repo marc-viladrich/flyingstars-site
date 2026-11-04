@@ -194,13 +194,8 @@ sections:
       - { label: Kein Rauch, value: "0", unit: g, text: "Keine Pyrotechnik, also kein Rauch und keine Schwermetalle über dem Publikum." }
       - { label: Kein Müll, value: "0", unit: kg, text: "Keine Hülsen, keine Reste. Dieselben Drohnen fliegen Show für Show." }
       - { label: Ökostrom, value: { fact: renewablePercent }, unit: "%", text: Ökostrom von naturstrom für unsere Akkus. }
-    # Vier Punkte im Raster unter den vier Zahlen (Marc 31.10.: statt Kasten, mit großen Icons). Nur belegte Aussagen (EmpCo).
-    pillars:
-      - { icon: eu, title: Gebaut in der EU, text: Unsere Drohnen werden in der EU gefertigt. }
-      - { icon: repair, title: Reparieren statt ersetzen, text: "Akkus, Motoren und Rotoren tauschen wir einzeln, die Drohne fliegt weiter." }
-      - { icon: ev, title: Elektrisch zur Show, text: Zu den Shows fahren wir mit einem elektrischen Ford E-Transit. }
-      - { icon: campaign, title: "#Böllerciao", text: "Mit der Deutschen Umwelthilfe im November 2023 über Berlin, als Alternative zum Silvesterfeuerwerk." }
     todo: Moritz und FlyingStars müssen die Umweltformulierungen vor Veröffentlichung prüfen und die Belege für Ökostrom, Herstellung und das TÜV-Nord-Schallschutzgutachten bereithalten.
+    pillarsRef: sustainability-pillars
 
   - type: comparison
     id: vergleich
@@ -255,24 +250,11 @@ sections:
     headline: Die Menschen hinter dem Himmel.
     text: Ronja, Florian und Erwin führen FlyingStars gemeinsam. Ihr erreicht uns als Team, und am Showabend stehen wir selbst mit auf dem Feld.
     members:
-      - role: Geschäftsführerin
-        bio: Beantwortet die meisten Anfragen, auch auf Englisch, und stimmt Design und Musik ab.
-        personId: ronja-donsbach
-        imageAlt: Ronja Donsbach mit einer Drohne in der Hand
-      - role: Geschäftsführer
-        bio: Kümmert sich um Verwaltung, Personal und Kund:innen in Deutschland. Schreibt den Blog.
-        personId: florian-becker
-        imageAlt: Florian Becker mit einer Drohne in der Hand
-      - role: Geschäftsführer
-        bio: Anträge, Behörden und Luftfahrtrecht. Sorgt dafür, dass eure Show fliegen darf.
-        personId: erwin-wilms
-        imageAlt: Erwin Wilms mit einer Drohne in der Hand
-      - role: Head of Technik
-        bio: Drohnenflotte, Verfügbarkeit, Einkauf und das technische Setup jeder Show.
-        personId: patrick
-      - role: Head of Design
-        bio: Entwirft alle Shows und Choreografien, Bild für Bild, im Takt der Musik.
-        personId: alejandro
+      - personId: ronja-donsbach
+      - personId: florian-becker
+      - personId: erwin-wilms
+      - personId: patrick
+      - personId: alejandro
     note: Dazu eine Crew aus Pilot:innen und Techniker:innen, die jede Show vor Ort aufbaut und fliegt.
     cta: { label: Mehr über uns, href: /ueber-uns/ }
     todo: FlyingStars muss hochauflösende Porträts von Ronja, Florian und Erwin sowie Fotos von Patrick und Alejandro liefern; die vorhandenen Porträts messen nur 199 × 199 Pixel.

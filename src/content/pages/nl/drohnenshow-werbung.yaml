@@ -180,9 +180,7 @@ sections:
     id: orte
     kicker: Locaties
     headline: We vliegen waar jullie publiek is.
-    text: Met onze generieke exploitatievergunning kunnen we de meeste vlieglocaties zelf vrijgeven. Voor
-      gecontroleerd luchtruim, locaties bij luchthavens en federale waterwegen regelen we de benodigde
-      bijzondere vergunningen. Dat vraagt meer voorbereidingstijd.
+    text: Met onze generieke exploitatievergunning kunnen we de meeste vlieglocaties zelf vrijgeven. Voor gecontroleerd luchtruim, locaties bij luchthavens en federale waterwegen regelen we de benodigde bijzondere vergunningen. Dat vraagt meer voorbereidingstijd.
     image:
       src: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
       alt: Droneformatie boven de skyline van Düsseldorf met de Rheinturm
@@ -206,49 +204,15 @@ sections:
     headline: Is jullie locatie geschikt?
     text: Stuur ons het adres en de geplande positie van jullie publiek. Voordat we een offerte maken, beoordelen we of en hoe een show daar mogelijk is.
     variant: outdoor
-    diagram:
-      description: Bovenaanzicht met de buitenste en binnenste veiligheidszone, het vlieggebied, de start- en landingszone en het publiek daarbuiten. De rij drones staat dwars op de kijkrichting.
-      horizontalLabel: ca. 100 m
-      verticalLabel: ca. 100 m
-      detailLabel: ca. 60 m
-      flightLabel: Meestal tot 120 m vlieghoogte
-      caption: Voorbeeld op basis van het technische gegevensblad, niet op schaal. We berekenen alle zones en afstanden voor jullie locatie. De 60 m heeft betrekking op de rij drones in dit voorbeeld.
-    items:
-      - title: Buitenste veiligheidszone
-        value: ca. 100 × 100 m
-        text: Deze omvat ook de binnenste zones. Tijdens de show blijft dit gebied ongeveer 15 minuten vrij van niet-betrokken personen. De grootte hangt af van het aantal drones, de motieven en de vlieghoogte.
-        zone: safety
-      - title: Binnenste veiligheidszone
-        text: De operationele veiligheidszone ligt rondom het vlieggebied. We bepalen de grenzen bij de vluchtplanning.
-        zone: operative
-      - title: Vlieggebied
-        value: tot 120 m hoog
-        text: Hier vliegen de drones de motieven. Van bovenaf vormen ze een rij dwars op de kijkrichting, zodat jullie publiek de motieven van voren ziet.
-        zone: drones
-      - title: Start- en landingszone
-        value: ca. 3 uur voor de show afgesloten
-        text: Vanaf onze aankomst bouwen we de droneopstelling, antennestatieven en het controlestation op een vrije, vlakke plek op. De benodigde oppervlakte hangt af van het aantal drones.
-        zone: start
-      - title: Publiekszone
-        text: Jullie publiek staat buiten de buitenste veiligheidszone en heeft vrij zicht op de show nodig. We plannen de positie samen met jullie, op afstand van gevels en bomen.
-        zone: guests
-    responsibilities:
-      - { task: "Logo sturen en elk motief goedkeuren", us: none, you: full }
-      - { task: "Motieven ontwerpen en animeren", us: full, you: none }
-      - { task: "Locatiecheck, veiligheidsconcept en vluchtplan", us: full, you: none }
-      - { task: "Luchtvaartvergunningen (LBA, DFS, waterwegen, andere EU-landen)", us: full, you: none }
-      - { task: "Toestemming van de grondeigenaren regelen", us: part, you: full, hint: "Sjabloon van ons" }
-      - { task: "Ruimte voor start, veiligheidszone en publiek beschikbaar stellen", us: none, you: full }
-      - { task: "Veiligheidszone afzetten (lint, zo nodig stewards)", us: part, you: full, hint: "in overleg" }
-      - { task: "Piloten, techniek, op- en afbouw", us: full, you: none }
-      - { task: "Muziekmontage op de show", us: full, you: none }
-      - { task: "Geluid ter plaatse regelen", us: part, you: full, hint: "Box voor kleine groepen" }
-      - { task: "Contactpersoon voor de showdag aanwijzen", us: none, you: full }
-      - { task: "Aansprakelijkheid tot € 1,3 mln.", us: full, you: none }
-    download:
-      label: Technisch gegevensblad · PDF
-      href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf
     todo: FlyingStars muss die Startflächen je Drohnenzahl und die standortabhängigen Abstände bestätigen; 15 × 15 und 25 × 25 Meter widersprechen sich in den Quellen. Die Zeichnung bleibt ein Beispiel. Moritz muss die Aufgabenliste für Markenshows freigeben.
+    additionalResponsibilities:
+      - task: Logo sturen en elk motief goedkeuren
+        us: none
+        you: full
+      - task: Motieven ontwerpen en animeren
+        us: full
+        you: none
+    safetyRef: safety-concept
   - type: faq
     id: fragen
     kicker: FAQ
@@ -262,4 +226,4 @@ sections:
     kicker: Aanvraag
     headline: Vertel ons over jullie campagne.
     text: Datum, locatie en doel zijn genoeg. Jullie logo mogen jullie later per e-mail sturen.
-translationSourceHash: aa0959e2e05400db7dc08af5fa4eb2adda720052c3fde9137cde136df5190b84
+translationSourceHash: 14d08c7ac0425e93947dac3c66ce81ce3f8d36701ef4696a1762f820f7fa1dee

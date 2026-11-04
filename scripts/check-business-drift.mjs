@@ -10,7 +10,9 @@ export function businessDocuments(root=fileURLToPath(new URL('../',import.meta.u
   const file=`src/content/${dir}/${name}`,raw=readFileSync(resolve(root,file),'utf8');
   const data=name.endsWith('.yaml')?parse(raw):{...parse(raw.split('---')[1]),body:raw.split('---').slice(2).join('---')};
   const walk=(v,path=[])=>{if(typeof v==='string'&&!['todo','translationSourceHash'].includes(path.at(-1)))result.push({file,path,text:v});else if(v&&typeof v==='object')Object.entries(v).forEach(([k,x])=>walk(x,[...path,Array.isArray(v)?Number(k):k]));};walk(data);
- }return result;
+ }
+ for(const name of ['safety-concept','sustainability-pillars']){const file=`src/content/${name}.json`,data=JSON.parse(readFileSync(resolve(root,file),'utf8'));const walk=(v,path=[])=>{if(typeof v==='string')result.push({file,path,text:v});else if(v&&typeof v==='object')Object.entries(v).forEach(([k,x])=>walk(x,[...path,Array.isArray(v)?Number(k):k]));};walk(data);}
+ return result;
 }
 const rules=[
  ['responseHours',/antwort|reply|respond|response|reactie|reager|antwoor/i,/(\d+)\s*(?:Stunden|hours|uur|h)\b/gi,1],

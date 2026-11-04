@@ -6,5 +6,20 @@
     "src": "https://flyingstars.art/wp-content/uploads/2024/08/Florian_Teamfoto.jpg",
     "width": 800,
     "height": 1000
+  },
+  "role": {
+    "de": "Geschäftsführer",
+    "en": "Managing director",
+    "nl": "Directeur"
+  },
+  "bio": {
+    "de": "Verwaltung, Personal und Kund:innen in Deutschland. Schreibt unseren Blog.",
+    "en": "Administration, staff and clients in Germany. Writes our blog.",
+    "nl": "Administratie, personeel en klanten in Duitsland. Schrijft onze blog."
+  },
+  "imageAlt": {
+    "de": "Florian Becker mit einer Drohne in der Hand",
+    "en": "Florian Becker holding a drone",
+    "nl": "Florian Becker met een drone in zijn hand"
   }
 }

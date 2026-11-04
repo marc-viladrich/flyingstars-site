@@ -1,3 +1,4 @@
+import {responsibilitySchema,siteDiagramSchema,siteItemsSchema,siteDownloadSchema} from './shared-blocks.mjs';
 import {REFERENCE_OCCASION_IDS} from '../content/occasions.mjs';
 import {projectFactRefSchema} from './project-facts.mjs';
 import {PERSON_IDS} from '../content/people.mjs';
@@ -63,11 +64,10 @@ export const sectionSchema = z.discriminatedUnion('type', [
     facts: z.array(z.object({ label: z.string(), value: businessValueSchema, unit: z.string().optional(),
       text: z.string(), tone: legacy.describe('Veraltet (Kontur/Verlauf), wird ignoriert') })).max(4).optional(),
     points: z.array(z.string().min(1)).optional().describe('Kurze, belegbare Sätze, je einer pro Punkt'),
-    pillars: z.array(z.object({ icon: z.enum(['eu', 'repair', 'ev', 'campaign', 'leaf']), title: z.string().min(1), text: z.string().min(1) })).max(4).optional()
-      .describe('Vier belegbare Punkte unter der Scrollstory, je mit großem Icon (Marc 31.10.: Raster statt Kasten)'),
+    pillarsRef: z.literal('sustainability-pillars').optional().describe('Gemeinsame Nachhaltigkeitspunkte'),
     proofImage: image.optional(), proofText: z.string().optional(), campaign: z.string().optional(),
     lines: z.array(z.string()).optional().describe('Veraltet (dreizeiliger Titel der Scrollstory), wird nicht mehr angezeigt'),
-  }),
+  }).strict(),
   z.object({
     type: z.literal('hero'), ...todo, kicker: z.string().optional(),
     headline: z.string().min(1),
@@ -176,10 +176,7 @@ export const sectionSchema = z.discriminatedUnion('type', [
     text: z.string().optional(),
     members: z.array(z.object({
       personId,
-      imageAlt:z.string().optional().describe('Alt-Text im Kontext'),
-      role: z.string().min(1),
-      bio: z.string().optional(),
-    })).min(1),
+    }).strict()).min(1),
   }),
   z.object({
     // Kund:innen als Laufband, darunter optional Presse und „Qualität und Sicherheit“ (docs/DESIGN.md, Studie 6).
@@ -313,33 +310,22 @@ export const sectionSchema = z.discriminatedUnion('type', [
     type: z.literal('landingSite'), ...sectionHeading,
     headline: z.string().min(1), text: z.string().optional(),
     variant: z.enum(['outdoor', 'indoor']),
-    diagram: z.object({
-      description: z.string().min(1), caption: z.string().min(1),
-      horizontalLabel: z.string().min(1), verticalLabel: z.string().min(1),
-      detailLabel: z.string().min(1), flightLabel: z.string().min(1),
-    }).strict(),
-    items: z.array(z.object({
-      title: z.string().min(1), text: z.string().min(1), value: businessValueSchema.optional(),
-      zone: z.enum(['safety', 'operative', 'start', 'drones', 'guests', 'ceiling', 'floor', 'kit']),
-    }).strict()).length(5),
-    // Zuständigkeiten als Tabelle (Marc, 02.11.2026: „eine schön aufgearbeitete Tabelle … komprimierter, mehr mit Icons“):
-    // je Zeile eine Aufgabe, wer sie übernimmt (full ✓, part ◐ mit kurzem Hinweis, none –)
-    responsibilities: z.array(z.object({
-      task: z.string().min(1).max(70),
-      us: z.enum(['full', 'part', 'none']), you: z.enum(['full', 'part', 'none']),
-      hint: z.string().max(32).optional().describe('Kurz, nur bei part, z. B. "Vorlage von uns"'),
-    }).strict()).min(3).max(12),
+    safetyRef: z.literal('safety-concept').optional().describe('Gemeinsames Outdoor-Sicherheitskonzept'),
+    additionalResponsibilities: z.array(responsibilitySchema).max(2).optional().describe('Zusätzliche Aufgaben dieser Seite'),
+    diagram: siteDiagramSchema.optional(),
+    items: siteItemsSchema.optional(),
+    responsibilities: z.array(responsibilitySchema).min(3).max(12).optional(),
     safeguards: z.array(z.object({
       icon: z.string().min(1), title: z.string().min(1), text: z.string().min(1),
     }).strict()).min(1).max(4).optional(),
-    download: link.strict().optional(),
+    download: siteDownloadSchema.optional(),
   }).strict().superRefine((section, ctx) => {
-    const expected = section.variant === 'outdoor'
-      ? ['safety', 'operative', 'drones', 'start', 'guests']
-      : ['ceiling', 'drones', 'floor', 'kit', 'guests'];
-    if (new Set(section.items.map((item) => item.zone)).size !== expected.length ||
-        expected.some((zone) => !section.items.some((item) => item.zone === zone))) {
-      ctx.addIssue({ code: 'custom', path: ['items'], message: `Jede Zone genau einmal: ${expected.join(', ')}` });
+    if(section.variant==='outdoor'){
+      if(section.safetyRef!=='safety-concept'||['diagram','items','responsibilities','download'].some(k=>section[k]!==undefined))ctx.addIssue({code:'custom',message:'Outdoor verwendet ausschließlich das gemeinsame Sicherheitskonzept.'});
+    }else{
+      if(section.safetyRef||section.additionalResponsibilities||!section.diagram||!section.items||!section.responsibilities)ctx.addIssue({code:'custom',message:'Indoor benötigt sein eigenes vollständiges Sicherheitskonzept.'});
+      const expected=['ceiling','drones','floor','kit','guests'];
+      if(section.items&&(new Set(section.items.map(item=>item.zone)).size!==5||expected.some(zone=>!section.items.some(item=>item.zone===zone))))ctx.addIssue({code:'custom',path:['items'],message:'Jede Indoor-Zone genau einmal'});
     }
   }),
   z.object({

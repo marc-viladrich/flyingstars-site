@@ -6,5 +6,20 @@
     "src": "https://flyingstars.art/wp-content/uploads/2024/08/Erwin_Teamfoto.jpg",
     "width": 800,
     "height": 1000
+  },
+  "role": {
+    "de": "Geschäftsführer",
+    "en": "Managing director",
+    "nl": "Directeur"
+  },
+  "bio": {
+    "de": "Anträge, Behörden und Luftfahrtrecht. Sorgt dafür, dass eure Show fliegen darf. Auch auf Englisch.",
+    "en": "Applications, authorities and aviation law. Makes sure your show is cleared to fly. In English too.",
+    "nl": "Aanvragen, instanties en luchtvaartrecht. Zorgt dat jullie show mag vliegen. Ook in het Engels."
+  },
+  "imageAlt": {
+    "de": "Erwin Wilms mit einer Drohne in der Hand",
+    "en": "Erwin Wilms holding a drone",
+    "nl": "Erwin Wilms met een drone in zijn hand"
   }
 }

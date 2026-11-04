@@ -49,7 +49,7 @@ test('Zuständigkeiten: jede Aufgabe, die ihr übernehmt, nennt ein Verb', () =>
 
 test('Marken & Werbung hat die Zuständigkeitstabelle wie Hochzeit und Indoor', () => {
   for (const f of ['drohnenshow-werbung', 'drohnenshow-hochzeit', 'drohnenshow-indoor']) {
-    assert.ok(parse(read(`src/content/pages/${f}.yaml`)).sections.some((s) => s.type === 'landingSite' && s.responsibilities?.length), f);
+    assert.ok(parse(read(`src/content/pages/${f}.yaml`)).sections.some((s) => s.type === 'landingSite' && (s.safetyRef === 'safety-concept' || s.responsibilities?.length)), f);
   }
 });
 

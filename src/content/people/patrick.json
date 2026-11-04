@@ -1,5 +1,15 @@
 {
   "name": "Patrick",
   "order": 4,
-  "founder": false
+  "founder": false,
+  "role": {
+    "de": "Head of Technik",
+    "en": "Head of Technology",
+    "nl": "Hoofd Techniek"
+  },
+  "bio": {
+    "de": "Flotte, Verfügbarkeit, Einkauf und das technische Setup jeder Show.",
+    "en": "Fleet, availability, purchasing and the technical setup of every show.",
+    "nl": "Vloot, beschikbaarheid, inkoop en de technische opbouw van elke show."
+  }
 }

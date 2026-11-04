@@ -348,20 +348,8 @@ sections:
           fact: renewablePercent
         unit: "%"
         text: Groene stroom van naturstrom voor onze accu's.
-    pillars:
-      - icon: eu
-        title: Gebouwd in de EU
-        text: Onze drones worden in de EU gemaakt.
-      - icon: repair
-        title: Repareren in plaats van vervangen
-        text: Accu's, motoren en rotoren vervangen we afzonderlijk, zodat de drone blijft vliegen.
-      - icon: ev
-        title: Elektrisch naar de show
-        text: We rijden naar shows met een elektrische Ford E-Transit.
-      - icon: campaign
-        title: "#Böllerciao"
-        text: Met Deutsche Umwelthilfe boven Berlijn in november 2023, als alternatief voor oud-en-nieuwvuurwerk.
     todo: Moritz und FlyingStars müssen die Umweltformulierungen vor Veröffentlichung prüfen und die Belege für Ökostrom, Herstellung und das TÜV-Nord-Schallschutzgutachten bereithalten.
+    pillarsRef: sustainability-pillars
   - type: comparison
     id: vergleich
     kicker: Eerlijke vergelijking
@@ -471,24 +459,11 @@ sections:
     headline: De mensen achter de hemel.
     text: Ronja, Florian en Erwin leiden FlyingStars samen. Jullie bereiken ons als team en op de showavond staan we zelf op het veld.
     members:
-      - role: Directeur
-        bio: Beantwoordt de meeste aanvragen, ook in het Engels, en stemt ontwerp en muziek af.
-        personId: ronja-donsbach
-        imageAlt: Ronja Donsbach met een drone in haar hand
-      - role: Directeur
-        bio: Regelt administratie, personeel en klanten in Duitsland. Schrijft de blog.
-        personId: florian-becker
-        imageAlt: Florian Becker met een drone in zijn hand
-      - role: Directeur
-        bio: Aanvragen, instanties en luchtvaartrecht. Zorgt dat jullie show mag vliegen.
-        personId: erwin-wilms
-        imageAlt: Erwin Wilms met een drone in zijn hand
-      - role: Hoofd Techniek
-        bio: Dronevloot, beschikbaarheid, inkoop en de technische opbouw van elke show.
-        personId: patrick
-      - role: Hoofd ontwerp
-        bio: Ontwerpt alle shows en choreografieën, beeld voor beeld, op het ritme van de muziek.
-        personId: alejandro
+      - personId: ronja-donsbach
+      - personId: florian-becker
+      - personId: erwin-wilms
+      - personId: patrick
+      - personId: alejandro
     note: Daarnaast een crew van piloten en technici die elke show ter plaatse opbouwt en vliegt.
     cta:
       label: Meer over ons
@@ -510,4 +485,4 @@ sections:
     headline: Vertel ons over jullie datum.
     text: Datum, locatie en gelegenheid zijn genoeg voor een eerste inschatting. Laat open wat jullie nog niet weten.
     todo: FlyingStars und die Datenschutzberatung müssen Versanddienst, Empfängerpostfach, Auftragsverarbeitung, Drittlandtransfers und Löschfristen festlegen und die Datenschutzhinweise freigeben.
-translationSourceHash: 29a5761534de13cb50a10b193a38ea3de7f82aabf1a9431d5a74207150c13e87
+translationSourceHash: bf35d26e965d561d5e31bd81ed29c5104715eab0dedab253de74bb6a7b963598

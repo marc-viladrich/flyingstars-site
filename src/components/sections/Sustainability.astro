@@ -1,4 +1,8 @@
 ---
+import {field} from 'astro-frontend-editor/markers';
+import {SUSTAINABILITY_PILLARS,localizedBlock} from '../../content/shared-blocks.mjs';
+import {forPath} from '../../i18n/server';
+const {locale}=forPath(Astro.url.pathname);
 import IconFeature from '../IconFeature.astro';
 import SectionHead from '../SectionHead.astro';
 import FactList from '../FactList.astro';
@@ -12,7 +16,8 @@ import { optimizedLogo } from '../../lib/media';
 import Icon from '../Icon.astro';
 const PICON = { eu: 'eu', repair: 'wrench', ev: 'e-car', campaign: 'megaphone', leaf: 'leaf' } as const;
 type Props = Extract<Section, { type: 'sustainability' }> & { index: number };
-const { headline, text, id = 'nachhaltigkeit', facts = [], points = [], pillars = [], proofImage, proofText, campaign, index, kicker } = Astro.props;
+const { headline, text, id = 'nachhaltigkeit', facts = [], points = [], pillarsRef, proofImage, proofText, campaign, index, kicker } = Astro.props;
+const pillars=pillarsRef?localizedBlock(SUSTAINABILITY_PILLARS,locale).pillars:[];
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const lines = headline.split(/(?<=\.)\s+/).filter(Boolean);
@@ -28,7 +33,7 @@ const proof = proofImage ? await optimizedLogo(proofImage.src, 60) : undefined;
     <FactList items={facts} variant="eco" />
     <ol class="eco-steps mono" aria-hidden="true">{facts.map((fact, i) => <li style={`--k:${i}`}>{fact.label}</li>)}</ol>
   </div></div>}
-  {pillars.length > 0 && <ul class="eco-pillars">{pillars.map((p) => <IconFeature as="li" icon={PICON[p.icon]} title={p.title} text={p.text} />)}</ul>}
+  {pillars.length > 0 && <ul {...field({collection:"sustainabilityPillars",id:"configuration"},[locale,"pillars"],{mode:"panel"})} class="eco-pillars">{pillars.map((p) => <IconFeature as="li" icon={PICON[p.icon]} title={p.title} text={p.text} />)}</ul>}
   {(points.length > 0 || campaign || proofText) && <div class="eco-proof">
     {proofImage && proof && <img src={proof.src} width={proof.width / 2} height={proof.height / 2} alt={proofImage.alt} loading="lazy" decoding="async" />}
     {points.length > 0 && <ul class="eco-points">{points.map((point) => <li><span>{parts(point).map((part) => part.includes('-') ? <span class="nowrap">{part}</span> : part)}</span></li>)}</ul>}
