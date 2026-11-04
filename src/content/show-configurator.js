@@ -1,3 +1,4 @@
+import {formOccasionFor} from './occasions.mjs';
 import { createTranslator } from '../i18n/ui.mjs';
 /**
  * Show configurator prototype v9 (Marc, 7 October 2026). Two choices:
@@ -86,7 +87,7 @@ export function unlockAt(m, drones) {
 function occasionsFor(locale) { const t = createTranslator(locale);
 return  [
   // Reihenfolge der Motive = Ablauf der Show. Die letzte Angabe ist die Sprosse der Freischalt-Leiter (ohne Angabe: SPARK-Einstieg).
-  { id: 'launch', label: 'Launch', anlass: 'firma', motifs: [
+  { id: 'launch', label: 'Launch', motifs: [
     motif('rakete', t('showConfigurator.rocket'), v('rocket', t('showConfigurator.rocketWithFlame')), v('rocket3d', t('showConfigurator.theRocketAsABodyFloatsAndRotates')), v('rocketLaunch', t('showConfigurator.launchFromThePadTheRocketEntersOrbitAroundA'))),
     motif('mond', t('showConfigurator.moonLanding'), null, null, v('moonStory', t('showConfigurator.theRocketLeavesOrbitAndLandsOnTheMoonA')), O1),
     motif('logo', 'Logo', v('logo', t('showConfigurator.exampleLogoWithLightSkating')), v('logo3d', t('showConfigurator.exampleLogoIn3dWithLightGlimmer')), v('logoStory', t('showConfigurator.yourLogoBecomesA3dRingOfLight'))),
@@ -95,7 +96,7 @@ return  [
     motif('qr', 'QR-Code', v('qr2d', t('showConfigurator.qrCodeWithScanMe')), v('qrHorizon', t('showConfigurator.aLightBeamScansTheQrCodeBuildsUp')), v('qrStory', t('showConfigurator.aMessageArrivesItBecomesAScannableQrCode')), H1),
     motif('spirale', t('showConfigurator.spiral'), v('spiral2d', t('showConfigurator.aSpiralLightRunningInwards')), v('spiral3d', t('showConfigurator.aSpiralIn3dLightRisesTheWindings')), v('spiralStory', t('showConfigurator.theSpiralBecomesTheTorusThatRotatesByItself')), S1),
   ] },
-  { id: 'jubilaeum', label: t('showConfigurator.jubilee'), anlass: 'sonstiges', motifs: [
+  { id: 'jubilaeum', label: t('showConfigurator.jubilee'), motifs: [
     motif('wappen', t('showConfigurator.arms'), v('shield', t('showConfigurator.coatOfArmsWithStarAndFlyingFlag')), v('shield3d', t('showConfigurator.3dCoatOfArmsWithYourNumberAndWavingFlag')), v('shieldStory', t('showConfigurator.fromTheStarInTheCoatOfArmsBecomesYour'))),
     motif('fussball', t('showConfigurator.football'), v('kick2d', t('showConfigurator.aPlayerTheBallRotatesOverHisFoot')), v('kickHorizon', t('showConfigurator.thePlayerShootsTheBallSpinsThroughTheAir')), v('kickStory', t('showConfigurator.aPlayerScoresTheBallBecomesYourNumber')), S1),
     motif('wahrzeichen', t('showConfigurator.landmarks'), v('tower', t('showConfigurator.exampleBerlinTvTowerWithWarningLight')), v('tower3d', t('showConfigurator.theTvTowerIn3dLightRunsAroundTheBall')), v('towerStory', t('showConfigurator.theTvTowerBroadcastsAndBecomesTheBrandenburgGate'))),
@@ -103,7 +104,7 @@ return  [
     motif('sprung', t('showConfigurator.head'), null, v('diveHorizon', t('showConfigurator.theJumperDipsInTheWaterMovesInRings')), v('diveStory', t('showConfigurator.divingBoardTakeOffSplashRipplesSpread')), H1),
     motif('medaille', t('showConfigurator.medal'), null, null, v('medalStory', t('showConfigurator.theRipplesBecomeYourNumberOnAMedalRibbon')), O1),
   ] },
-  { id: 'festival', label: t('showConfigurator.cityFestival'), anlass: 'stadt', motifs: [
+  { id: 'festival', label: t('showConfigurator.cityFestival'), motifs: [
     motif('reise', t('showConfigurator.travel'), v('compass2d', t('showConfigurator.aCompassTheNeedleSeeksTheNorth')), v('compass3d', t('showConfigurator.theCompassIn3dTheNeedleSwingsIn')), v('travelStory', t('showConfigurator.theCityBecomesAMapPinsLightUpAndA'))),
     // der Papierflieger setzt die Reise fort (dieselbe Karte): direkt dahinter, ab ODYSSEY 450 ist es wieder eine Geschichte
     motif('flieger', t('showConfigurator.paperPlane'), null, null, v('planeStory', t('showConfigurator.aPaperPlaneFollowsTheRouteAndCirclesTheCompass')), O1),
@@ -112,7 +113,7 @@ return  [
     motif('delfin', t('showConfigurator.dolphin'), v('dolphin2d', t('showConfigurator.aDolphinOverAWave')), v('dolphin3d', t('showConfigurator.aDolphinJumpsOutOfTheWaterIn3d')), v('dolphinStory', t('showConfigurator.wavesOneDolphinJumpsDivesInTwoDolphinsJumpIn'))),
     motif('drache', t('showConfigurator.dragon'), null, v('dragon3d', t('showConfigurator.aDragonIn3dThatBeatsWings')), v('dragonStory', t('showConfigurator.aDragonRisesCirclesAndBreathesFireworks')), H1),
   ] },
-  { id: 'hochzeit', label: t('site.wedding'), anlass: 'privat', motifs: [
+  { id: 'hochzeit', label: t('site.wedding'), motifs: [
     motif('ring', t('showConfigurator.rings'), v('weddingRings2d', t('showConfigurator.twoWeddingRingsTheStoneSparkles')), v('rings3d', t('showConfigurator.aSolitaireIn3dRingAndBrilliantSpin')), v('ringsLink', t('showConfigurator.twoWeddingRingsIntertwineIn3dAndBecomeASolitaire'))),
     motif('herz', t('showConfigurator.heart'), v('heart2d', t('showConfigurator.aHeartLightTravelsAlongItsOutline')), v('heartTunnel', t('showConfigurator.aTunnelOfHeartsLightFlowingThrough')), v('heartsStory', t('showConfigurator.cupidSArrowStrikesA3dHeartTwoHeartsOrbit'))),
     motif('lotus', t('showConfigurator.lotusFlowers'), null, v('lotus3d', t('showConfigurator.twoLotusFlowersIn3dRotateIntoEachOther')), v('lotusStory', t('showConfigurator.twoBudsBloomRotateIntoEachOtherAndBecomeA')), H1),
@@ -120,7 +121,7 @@ return  [
     motif('glaeser', t('showConfigurator.sparklingGlasses'), v('flutes2d', t('showConfigurator.twoChampagneGlassesClinkLightGlidesAcrossTheGlass')), v('flutes3d', t('showConfigurator.sparklingGlassesIn3dThePearlsRise')), v('flutesStory', t('showConfigurator.theGlassesStrikeThePearlsRiseAsHeart'))),
     motif('antrag', t('showConfigurator.proposal'), null, null, v('ringStory', t('showConfigurator.aRingBoxOpensTheRingFindsTheRingFinger')), O1),
   ] },
-  { id: 'kultur', label: t('showConfigurator.culture'), anlass: 'sonstiges', motifs: [
+  { id: 'kultur', label: t('showConfigurator.culture'), motifs: [
     motif('buch', t('showConfigurator.book'), v('book2d', t('showConfigurator.anOpenBookLightFlipsThePages')), v('book3d', t('showConfigurator.theBookOpensIn3dOnePageTurns')), v('bookStory', t('showConfigurator.theBookOpensAPenWritesTheLinesRise'))),
     motif('vorhang', t('showConfigurator.curtain'), v('curtain', t('showConfigurator.theCurtainMovesInTheAirDraft')), v('curtainStar', t('showConfigurator.curtainOnA3dStarIsReleased')), v('curtainStory', t('showConfigurator.curtainOnGoldRainFallsAStarRises'))),
     motif('maske', t('showConfigurator.masks'), v('masks', t('showConfigurator.theatreMasksComedyAndTragedyWeighThemselves')), v('masks3d', t('showConfigurator.theMasksIn3d')), v('maskStory', t('showConfigurator.comedyAndTragedyJoinToFormTheTheatreSymbol')), S1),
@@ -129,7 +130,7 @@ return  [
     motif('tanz', t('showConfigurator.dance'), v('dancer2d', t('showConfigurator.aDancerHerRockSwings')), v('dancer3d', t('showConfigurator.theDancerTurnsIn3dTheRockFlies')), v('dancerStory', t('showConfigurator.theDancerTurnsTheSkirtBecomesTheFlowerTheFlower')), H1),
     motif('teufel', 'Bokkenrijders', null, null, v('devilStory', t('showConfigurator.theDevilFromOurBokkenrijdersShowAnActual3dFormation')), O1),
   ] },
-  { id: 'silvester', label: t('showConfigurator.winterAndNewYear'), anlass: 'stadt', season: [11, 12], motifs: [
+  { id: 'silvester', label: t('showConfigurator.winterAndNewYear'), season: [11, 12], motifs: [
     motif('uhr', t('showConfigurator.clock'), v('clock', t('showConfigurator.theHandsRunToTwelve')), v('clock3d', t('showConfigurator.3dWatchTheHandsAreRunning')), v('clockStory', t('showConfigurator.midnightSparksSwirlOutAndWriteTheNewYear'))),
     motif('sekt', t('showConfigurator.champagneCork'), null, v('champagne3d', t('showConfigurator.aChampagneBottleIn3dBubblesRiseInTheLight')), v('champagneStory', t('showConfigurator.aChampagneBottleTheCorkPopsAndFliesInAn')), H1),
     motif('schnee', t('showConfigurator.lightTree'), v('snow2d', t('showConfigurator.aSnowflakeTurns')), v('tree3d', t('showConfigurator.aLightTreeAsASpiralLightAscends')), v('treeStory', t('showConfigurator.aSnowflakeBecomesATreeOfLightsAStarAppears'))),
@@ -137,7 +138,7 @@ return  [
     motif('finale', t('showConfigurator.finale'), null, null, v('fireworkFinale', t('showConfigurator.finaleAllStarsAtOnceThenGoldenRainFalls')), O1),
     motif('klee', t('showConfigurator.clover'), v('clover2d', t('showConfigurator.aLuckyCloverTurns')), v('clover3d', t('showConfigurator.theLuckyCloverIn3d')), v('cloverStory', t('showConfigurator.threeLeavesBecomeFourHappinessForTheNewYear'))),
   ] },
-];
+].map(occasion=>({...occasion,anlass:formOccasionFor(occasion.id)}));
 }
 export const OCCASIONS = occasionsFor('de');
 export const getConfiguratorContent = (locale = 'de') => ({ STEPS: stepsFor(locale), OCCASIONS: occasionsFor(locale) });

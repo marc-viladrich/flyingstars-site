@@ -1,3 +1,4 @@
+import {REFERENCE_OCCASION_IDS} from '../content/occasions.mjs';
 import {projectFactRefSchema} from './project-facts.mjs';
 import {PERSON_IDS,PEOPLE} from '../content/people.mjs';
 import {businessValueSchema} from './business-facts.mjs';
@@ -434,7 +435,7 @@ export const projectSchema = z.object({
     date: z.union([projectFactRefSchema,z.coerce.date()]),
     location: z.union([z.string(),projectFactRefSchema]).optional().meta({'x-afe':{group:'Showdaten'}}),
     // Für den Referenzen-Filter; an jeder Referenz, nicht nur an Fallstudien. Unbekannt: weglassen.
-    occasion: z.enum(['firma', 'stadt', 'kultur', 'privat', 'indoor', 'sonstiges']).optional()
+    occasion: z.enum(REFERENCE_OCCASION_IDS).optional()
       .describe('firma = Marken & Unternehmen, stadt = Städte & Festivals, kultur = Kultur & Bühne, privat = Hochzeit & Privat'),
     drones: z.union([z.number().int().positive(),projectFactRefSchema]).optional().describe('Drohnen in der Show'),
     summary: z.string().min(30).max(200).meta({'x-afe':{group:'Projektkarte'}}),

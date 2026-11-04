@@ -1,4 +1,5 @@
 ---
+import {formOccasions} from '../../content/occasions.mjs';
 import {PACKAGE_NAMES,packageLabel} from '../../content/package-identity.mjs';
 import {CONTACT} from '../people';
 import SectionHead from '../SectionHead.astro';
@@ -17,7 +18,7 @@ import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'contactForm' }> & { index?: number };
 const { headline, text, people, index = 0, kicker } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
-const occasions: [string, string][] = [['firma', t('contactform.corporateEvent')], ['stadt', t('contactform.cityFestival')], ['agentur', t('contactform.agency')], ['privat', t('contactform.weddingPrivate')], ['indoor', 'Indoor'], ['sonstiges', t('contactform.other')]];
+const occasions = formOccasions(t);
 const packs: [string,string,string][] = [...PACKAGE_NAMES.map(name=>[name,name,packageLabel(name,t,{form:true})] as [string,string,string]),['offen',t('contactform.notSureYet'),'']];
 const sources = [['Google', 'Google'], ['Empfehlung', t('contactform.recommendation')], ['Social Media', 'Social Media'], ['Presse', t('casestudy.press')], ['Eine Show gesehen', t('contactform.sawAShow')], ['Sonstiges', t('contactform.other')]];
 ---

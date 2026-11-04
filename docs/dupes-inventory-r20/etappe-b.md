@@ -27,3 +27,9 @@ Gezielt 13/13 Tests einschließlich echter Inhaltsschemas, ID-Auflösung, Änder
 Die Timeline verknüpft fünf belegte Ereignisse mit Datum/Jahr beziehungsweise Drohnenzahl. `{{project.<id>.<field>[.<display>]}}` ergänzt explizite Prosa-Verweise, darunter datumsgenaue Credits und Timeline-Texte. Historische Pressetitel bleiben zitierte Originale. Der Musical-Monat Juni 2026 ist ein eigenes Ereignis neben dem Teaser vom 04.09.2025; 12.000 Drohneneinsätze ergeben sich dort aus 20 × 600. Für VW bleibt die Drohnenzahl bewusst leer. Die noch nicht zugeordneten Indoor-/E.ON-Ereignisse werden nicht aus ähnlich benannten Referenzen abgeleitet.
 
 Guards prüfen sämtliche 57 Dateien, reale Schemas, unbekannte Referenzen, Mutationen von Zahl/Datum/Kunde/Ort und die native AFE-Adresse. Direkte Panelmarker an Karten-Drohnenzahl und Fallstudien-Credits/-Kennzahlen führen zum Faktenbesitzer. Gezielt 20/20 Tests bestanden; Build und i18n grün. Wieder 96 HTML-Dateien ohne Text- oder Vertragsabweichung zur Vergleichsbasis.
+
+## Schritt 6a
+
+`content/occasions.mjs` besitzt die getrennten Formular- und Referenztaxonomien sowie das ausdrückliche Konfigurator→Formular- und Referenz→Formular-Mapping. ContactForm, Referenzfilter, Projektschema, Konfigurator und API verwenden diese Quelle. Die alten Listen und sechs eingestreuten `anlass`-Werte sind entfernt. Die bisherige Zuordnung von Jubiläum und Kultur zu `sonstiges` bleibt erhalten. Unbekannte Konfigurator-IDs schlagen fehl; die Kategorien werden nicht aufgrund gleicher Beschriftungen zusammengelegt.
+
+24/24 betroffene Tests grün, darunter sämtliche Formularanlässe am tatsächlichen API-Validator in DE/EN/NL. Build/i18n grün und 96 HTML-Dateien text- und vertragsgleich.
