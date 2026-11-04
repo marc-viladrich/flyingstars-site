@@ -38,3 +38,6 @@ export function projectValues(value,locale='de',source=data){
 }
 /** @returns {any} */
 export function projectView(entry){return {...entry,data:projectValues(entry.data,/^(en|nl)\//.exec(entry.id)?.[1]??'de')};}
+
+/** A derived total opens its existing fact owner; no editable totalDrones property exists. */
+export const projectFactPath=ref=>ref.field==='totalDrones'?[String(ref.project)]:[String(ref.project),String(ref.field)];

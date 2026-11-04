@@ -2,14 +2,14 @@ import {readFileSync,readdirSync} from 'node:fs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {codecs} from 'astro-frontend-editor/runtime/extensions';
-import {project,reviewRequired} from '../../src/i18n/contract.mjs';
+import {project,reviewRequired,parseContent} from '../../src/i18n/contract.mjs';
 import {metadataKeys,contentData,dependenciesFromRecords,isSource,baseId,localeOf,seedTranslation,stamp,survivingEvidence,verifyCurrent,same} from '../../src/i18n/transaction.mjs';
 const failure=message=>Object.assign(new Error(message),{status:409});
 export function localeTransactions(root,sourceFor) {
  const fileRecords=files=>{
   const paths=readdirSync(path.join(root,'src/content'),{recursive:true}).map(f=>'src/content/'+f);paths.push('src/i18n/ui.json');
   return paths.flatMap(file=>{const id=file==='src/i18n/ui.json'?'site/ui':file==='src/content/contact.json'?'site/contact':file==='src/content/show-extras.json'?'site/show-extras':file==='src/content/show-duration.json'?'site/show-duration':file==='src/content/project-facts.json'?'site/project-facts':file==='src/content/business-facts.json'?'site/business-facts':/^src\/content\/(pages|posts|projects|faq|people)\/(.+)\.(yaml|md|json)$/.test(file)?file.replace(/^src\/content\/(pages|posts|projects|faq|people)\/(.+)\.(yaml|md|json)$/,(_,kind,slug)=>({pages:'page',posts:'post',projects:'project',faq:'faq',people:'person'}[kind])+'/'+slug):null;
-   const source=id&&sourceFor(id);if(!source)return [];const raw=files.has(file)?files.get(file):readFileSync(path.join(root,file),'utf8');return raw===null?[]:[{id,file,data:source.schema.parse(codecs[source.format].parse(raw))}];
+   const source=id&&sourceFor(id);if(!source)return [];const raw=files.has(file)?files.get(file):readFileSync(path.join(root,file),'utf8');return raw===null?[]:[{id,file,data:parseContent(source.schema,codecs[source.format].parse(raw))}];
   });
  };
  return {

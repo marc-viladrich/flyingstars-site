@@ -1,3 +1,4 @@
+import {assertKnownFields} from '../src/i18n/contract.mjs';
 import {sharedPaths,localeOf} from '../src/i18n/transaction.mjs';
 import path from 'node:path';
 import {readFileSync} from 'node:fs';
@@ -10,6 +11,10 @@ import {templates} from './design/templates.mjs';
 import {routeTools} from './extensions/flyingstars/web/routing.mjs';
 import {localeTransactions} from './design/locale-transactions.mjs';
 export {compatibility} from './extensions/flyingstars/runtime-compatibility.mjs';
+
+class FlyingStarsSourceAdapter extends LegacySourceAdapter {
+ decode(source,text){const decoded=super.decode(source,text);assertKnownFields(source.schema,decoded.raw);return decoded;}
+}
 
 /** The visitor schema is authoritative. Old package/site/translation records are deliberately not registered. */
 export async function createFlyingStarsAdapter(root) {
@@ -44,7 +49,7 @@ export async function createFlyingStarsAdapter(root) {
  const {LEGACY_MEDIA_ORIGIN,LEGACY_MEDIA_HOSTS}=await import(pathToFileURL(path.join(root,'src/site-policy.mjs')));
  const site={label:'FlyingStars · Designsprache',types,sourceFor,sourcesFromFiles,recordId,recordRoute,sectionSchema,sectionPolicy:{},
   editorialHref:/^(?:(?:https?:|mailto:|tel:)\/?.*|\/(?!\/)[^\s]*|#[^\s]*|\{\{contact\.phone\.href\}\})$/,
-  createSourceAdapter:options=>new LegacySourceAdapter(options),previewPrefix:routeTools.previewPrefix,
+  createSourceAdapter:options=>new FlyingStarsSourceAdapter(options),previewPrefix:routeTools.previewPrefix,
   contentRoot:'src',contentCollections:types.map(t=>`src/content/${t.directory}/`),assetRoot:'public/assets',
   mediaOrigin:LEGACY_MEDIA_ORIGIN,mediaHosts:LEGACY_MEDIA_HOSTS,
   requiredOutput:['index.html','drohnenshow-preise/index.html','en/index.html','nl/index.html'],

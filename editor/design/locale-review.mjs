@@ -70,8 +70,15 @@ export async function reviewLocales({draft,api}){
 
 /** The package routes inspector list insertion/duplication through siteChange. */
 export function keyedListChange(id,path,value,{draft}){
- if(!isSource(id)||!Array.isArray(value)||!value.some(v=>v&&typeof v==='object'&&'_key' in v))return false;
- const current=path.reduce((v,k)=>v?.[k],draft.get(id).data)??[],old=new Set(current.map(v=>v?._key)),seen=new Set(),next=structuredClone(value);
- for(const item of next){if(!item._key||!old.has(item._key)||seen.has(item._key))renewKeys(item);seen.add(item._key);}
- draft.set(id,path,next);return true;
+ if(!isSource(id)||!value||typeof value!=='object')return false;
+ const current=path.reduce((v,k)=>v?.[k],draft.get(id).data),next=structuredClone(value);let keyed=false;
+ const prepare=(before,after)=>{
+  if(Array.isArray(after)){
+   const old=new Map((Array.isArray(before)?before:[]).filter(v=>v?._key).map(v=>[v._key,v])),seen=new Set();
+   for(const item of after){
+    if(item&&typeof item==='object'&&'_key' in item){keyed=true;const original=old.get(item._key);if(!original||seen.has(item._key)){renewKeys(item);}else prepare(original,item);seen.add(item._key);}
+    else prepare(undefined,item);
+   }
+  }else if(after&&typeof after==='object')for(const [key,child]of Object.entries(after))prepare(before?.[key],child);
+ };prepare(current,next);if(!keyed)return false;draft.set(id,path,next);return true;
 }

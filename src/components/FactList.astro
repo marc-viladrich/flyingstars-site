@@ -1,4 +1,5 @@
 ---
+import {projectFactPath} from '../content/project-facts.mjs';
 import {field} from 'astro-frontend-editor/markers';
 import {forPath} from '../i18n/server';
 const {locale}=forPath(Astro.url.pathname);
@@ -6,7 +7,7 @@ import {factText} from '../content/show-extras.mjs';
 import { factColumns } from '../lib/lists';
 interface Fact { factRef?: unknown; label: string; value?: string | number | import('../content/business-facts.mjs').BusinessRef | {project:string;field:string;display?:string}; unit?: string; text?: string; count?: number }
 interface Props { items: Fact[]; variant?: 'metrics' | 'tempo' | 'numbers' | 'credits' | 'hero' | 'story' | 'spotlight' | 'eco' | 'spec'; label?: string }
-const marker=(value:unknown)=>value&&typeof value==='object'&&'project'in value&&'field'in value?field({collection:'projectFacts',id:'configuration'},[String(value.project),String(value.field)],{mode:'panel'}):{};
+const marker=(value:unknown)=>value&&typeof value==='object'&&'project'in value&&'field'in value?field({collection:'projectFacts',id:'configuration'},projectFactPath(value),{mode:'panel'}):{};
 const { items, variant = 'metrics', label } = Astro.props;
 const root = { metrics: 'sheet', tempo: 'tempo-facts', numbers: 'c-numbers', credits: 'c-credits mono', hero: 'lh-facts', story: 'ls-facts', spotlight: 'sp-facts', eco: 'eco-facts', spec: 'spec mono' }[variant];
 const itemClass = variant === 'metrics' ? 'cell' : variant === 'numbers' ? 'c-num' : variant === 'eco' ? 'fact' : undefined;

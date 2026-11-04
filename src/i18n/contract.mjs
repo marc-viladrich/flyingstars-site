@@ -161,3 +161,20 @@ export function reviewRequired(result, evidence) {
   return needed;
 }
 
+
+/** Validate the raw file boundary before Zod can strip unknown properties. */
+export function assertKnownFields(schema,data){
+ const walk=(node,value,path=[])=>{
+  if(value==null)return;node=selected(node,value,path);
+  if(node.kind==='object'){
+   for(const key of Object.keys(value))if(!Object.hasOwn(node.properties,key))throw Error('Unknown i18n field: '+pointer([...path,key]));
+   for(const[key,child]of Object.entries(node.properties))walk(child,value[key],[...path,key]);
+  }else if(node.kind==='array'&&Array.isArray(value)){
+   const keyed=element=>!!element.properties?._key||element.options?.some(keyed);
+   if(keyed(node.element)){const keys=new Set();for(const item of value){if(!item?._key)throw Error('Missing _key at '+pointer(path));if(keys.has(item._key))throw Error('Duplicate _key at '+pointer(path));keys.add(item._key);}}
+   value.forEach((v,i)=>walk(node.element,v,[...path,i]));
+  }
+  else if(node.kind==='tuple'&&Array.isArray(value))value.forEach((v,i)=>walk(node.items[i],v,[...path,i]));
+ };walk(policyTree(schema),data);return data;
+}
+export const parseContent=(schema,data)=>schema.parse(assertKnownFields(schema,data));

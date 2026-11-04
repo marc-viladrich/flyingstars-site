@@ -27,3 +27,21 @@ test('Build readers reject target-only structural reorder even with unchanged te
  [target.data.sections[0],target.data.sections[1]]=[target.data.sections[1],target.data.sections[0]];
  assert.throws(()=>verifyCurrent(source.schema,source.data,target.data,'en',dependenciesFromRecords(records)),/stale/);
 });
+
+test('The raw-file boundary rejects unknown nested fields before schema stripping',async()=>{
+ const {assertKnownFields}=await import('../src/i18n/contract.mjs');const source=record('page/index'),data=structuredClone(source.data);data.sections[0].unknown='must not disappear';assert.throws(()=>assertKnownFields(site.sourceFor(source.id).schema,data),/Unknown i18n field/);
+});
+test('Only the existing contact href token is accepted as a Markdown link template',()=>{
+ assert.equal(site.editorialHref.test('{{contact.phone.href}}'),true);assert.equal(site.editorialHref.test('{{contact.unknown.href}}'),false);assert.equal(site.editorialHref.test('javascript:alert(1)'),false);
+});
+
+test('Derived total-drone markers resolve their existing project-fact object',async()=>{
+ const {projectFactPath}=await import('../src/content/project-facts.mjs');const owner=record('site/project-facts').data;
+ const total={project:'bokkenrijders-musical-2026',field:'totalDrones'},ordinary={...total,field:'drones'};
+ assert.equal(projectFactPath(total).reduce((v,k)=>v[k],owner),owner[total.project]);assert.equal(typeof projectFactPath(ordinary).reduce((v,k)=>v[k],owner),'number');
+});
+
+test('The installed source adapter rejects unknown raw fields and duplicate list keys on decode',async()=>{
+ const {readFile}=await import('node:fs/promises'),{codecs}=await import('astro-frontend-editor/runtime/extensions'),source=site.sourceFor('page/index'),adapter=site.createSourceAdapter({root,site,git:()=>{}}),raw=await readFile(root+source.file,'utf8');
+ assert.throws(()=>adapter.decode(source,raw+'\nunknownForContract: true\n'),/Unknown i18n field/);const data=codecs.yaml.parse(raw);data.sections[1]._key=data.sections[0]._key;assert.throws(()=>adapter.decode(source,codecs.yaml.create(data)),/Duplicate _key/);
+});

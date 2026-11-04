@@ -81,7 +81,7 @@ function panelSnapshot(records){
 }
 
 test('pure panel parity covers every current file model and all schema variants',async()=>{
- const {site,records}=await recordFixtures();for(const record of records){const server=describeSchema(siteFor(record).schema,record.data).fields.filter(f=>f.value!==undefined&&f.path.at(-1)!=='type'&&f.path[0]!=='translationSourceHash');const browser=describe(record.schema,record.data,{omitPath:(data,p)=>omitRecordField(record,data,p)}).fields;assert.deepEqual(browser.map(f=>f.path),server.map(f=>f.path),record.id);}
+ const {site,records}=await recordFixtures();for(const record of records){const server=describeSchema(siteFor(record).schema,record.data).fields.filter(f=>f.value!==undefined&&f.path.at(-1)!=='type'&&f['x-afe']?.visibility!=='hidden'&&!site.extensions.some('omitField',siteFor(record),record.data,f.path));const browser=describe(record.schema,record.data,{omitPath:(data,p)=>omitRecordField(record,data,p)}).fields;assert.deepEqual(browser.map(f=>f.path),server.map(f=>f.path),record.id);}
  function siteFor(record){return record.id.startsWith('variant/')?{schema:site.sectionSchema.options.find(s=>s.shape.type.value===record.data.type)}:site.sourceFor(record.id);}
 });
 test('all actual schema widgets are registered and every actual collection declares its ownership',async()=>{const {site}=await recordFixtures();const walk=node=>{if(node['x-afe']?.widget)assert.ok(siteWidgets[node['x-afe'].widget]);Object.values(node.properties||{}).forEach(walk);node.options?.forEach(walk);if(node.element)walk(node.element);node.items?.forEach(walk);};for(const type of site.types){const schema=schemaDescription(type.schema);assert.ok(schema['x-afe']?.collection,type.prefix);walk(schema);}});
