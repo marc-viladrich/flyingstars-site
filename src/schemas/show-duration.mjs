@@ -1,5 +1,6 @@
+import {fieldPolicy} from '../i18n/field-policy.mjs';
 import {z} from 'zod';
-const minutes=z.number().int().positive();
+const minutes=fieldPolicy(z.number().int().positive(), 'shared');
 const range=z.object({min:minutes.describe('Kürzeste Show in Minuten'),max:minutes.describe('Längste Show in Minuten')}).strict();
 export const showDurationSchema=z.object({outdoor:range.extend({typical:minutes.describe('Typische Show in Minuten')}).describe('Outdoor'),indoor:range.describe('Indoor')}).strict().superRefine((data,ctx)=>{
  for(const [kind,value]of Object.entries(data))if(value.min>value.max)ctx.addIssue({code:'custom',path:[kind,'max'],message:'Maximum muss mindestens dem Minimum entsprechen.'});

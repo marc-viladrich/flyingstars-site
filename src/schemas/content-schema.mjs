@@ -1,4 +1,5 @@
 import {responsibilitySchema,siteDiagramSchema,siteItemsSchema,siteDownloadSchema} from './shared-blocks.mjs';
+import {fieldPolicy} from '../i18n/field-policy.mjs';
 import {REFERENCE_OCCASION_IDS} from '../content/occasions.mjs';
 import {projectFactRefSchema} from './project-facts.mjs';
 import {PERSON_IDS} from '../content/people.mjs';
@@ -14,150 +15,150 @@ import { projectShowcaseSchema } from './project-showcase.mjs';
 // Jede Section hat genau einen Typ, typisierte Props und eine Komponente in
 // src/components/sections/. Der Agent darf Seiten nur aus diesen Typen bauen.
 // ---------------------------------------------------------------------------
-const link = z.object({ label: z.string().min(1), href: z.string().min(1) });
+const link = z.object({ label: fieldPolicy(z.string().min(1), 'translatable'), href: fieldPolicy(z.string().min(1), 'shared') });
 // Abschluss-Kasten (CtaBox.astro): immer Überschrift, Text und genau ein Knopf, dazu die Gesichter (Marc, 02.11.2026:
 // „solche empty-looking CTAs darf es niemals geben. Immer ein Heading und ein Text dazu“)
-const closingBox = z.object({ headline: z.string().min(1), text: z.string().min(1), button: link }).strict();
+const closingBox = z.object({ headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().min(1), 'translatable'), button: link }).strict();
 // Section-Köpfe (docs/DESIGN.md): Kicker in Orange über der Headline, einspaltig; `text` ist der optionale Satz darunter.
 // Headlines dürfen einzelne Begriffe mit *Sternchen* markieren, sie erscheinen dann im Logoverlauf.
 // Kicker sind seit 31.10.2026 wieder sichtbar (Marc: „die Eyebrow-Headings brauchen Farbe“, wie im Vercel-Prototyp).
-const legacy = z.string().optional().describe('Veraltet, wird nicht mehr angezeigt');
+const legacy = fieldPolicy(z.string().optional().describe('Veraltet, wird nicht mehr angezeigt'), 'translatable');
 // Redaktioneller Hinweis je Section (Marc, 02.11.2026: „bei den Seiten, bei denen inhaltlich noch was fehlt, das markieren“).
 // Erscheint nur im lokalen Dev-Server (SectionRenderer.astro); kein Build, auch keine Preview, enthält ihn.
-const todo = { todo: z.string().optional().describe('Was hier inhaltlich fehlt oder von FlyingStars kommen muss; nur in der Vorschau sichtbar') };
-const sectionHeading = { id: z.string().optional(), kicker: z.string().optional().describe('Kicker über der Headline, z. B. "Anlässe"'), ...todo };
-const brandPath = z.string().regex(/^\/brand\/[a-z0-9/._-]+\.(svg|png|webp)$/).describe('Lokale Datei unter public/brand/');
+const todo = { todo: fieldPolicy(z.string().optional().describe('Was hier inhaltlich fehlt oder von FlyingStars kommen muss; nur in der Vorschau sichtbar'), 'shared') };
+const sectionHeading = { id: fieldPolicy(z.string().optional(), 'shared'), kicker: fieldPolicy(z.string().optional().describe('Kicker über der Headline, z. B. "Anlässe"'), 'translatable'), ...todo };
+const brandPath = fieldPolicy(z.string().regex(/^\/brand\/[a-z0-9/._-]+\.(svg|png|webp)$/).describe('Lokale Datei unter public/brand/'), 'shared');
 
-const personId=z.enum(PERSON_IDS).describe('Person').meta({'x-afe':{reference:{collection:'people',encoding:'id'}}});
+const personId=fieldPolicy(z.enum(PERSON_IDS).describe('Person').meta({'x-afe':{reference:{collection:'people',encoding:'id'}}}), 'shared');
 const image = z.object({
   src: imageSource,
-  alt: z.string().min(1).describe('Pflicht. Leerer Alt-Text nur für Dekoration, dann alt: ""'),
-  width: z.number().int().positive(),
-  height: z.number().int().positive(),
+  alt: fieldPolicy(z.string().min(1).describe('Pflicht. Leerer Alt-Text nur für Dekoration, dann alt: ""'), 'translatable'),
+  width: fieldPolicy(z.number().int().positive(), 'shared'),
+  height: fieldPolicy(z.number().int().positive(), 'shared'),
 }).meta(imageMetadata);
 
 export const sectionSchema = z.discriminatedUnion('type', [
   z.object({
-    type: z.literal('showreelHero'), ...todo,
-    headline: z.string().min(1), text: z.string().min(1), eyebrow: z.string().optional().describe('Kicker über der Headline'),
-    words: z.array(z.string().min(1)).optional().describe('Wechselndes Wort im Verlauf hinter der Headline'),
+    type: fieldPolicy(z.literal('showreelHero'), 'shared'), ...todo,
+    headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().min(1), 'translatable'), eyebrow: fieldPolicy(z.string().optional().describe('Kicker über der Headline'), 'translatable'),
+    words: z.array(fieldPolicy(z.string().min(1), 'translatable')).optional().describe('Wechselndes Wort im Verlauf hinter der Headline'),
     cta: link, secondary: link.optional(),
-    poster: image, video: z.url(), stats: z.array(z.object({ label: z.string(), value: businessValueSchema })).optional(),
+    poster: image, video: fieldPolicy(z.url(), 'shared'), stats: z.array(z.object({ label: fieldPolicy(z.string(), 'translatable'), value: businessValueSchema })).optional(),
   }),
   z.object({
-    type: z.literal('occasions'), ...sectionHeading,
-    headline: z.string().min(1), text: z.string().optional(),
-    cards: z.array(z.object({ category: z.string().optional(), title: z.string(), text: z.string(), image,
-      facts: z.array(z.string()).optional(), cta: link, download: link.optional(),
-      season: z.array(z.number().int().min(1).max(12)).optional().describe('Monate, in denen die Karte nach vorn rückt (z. B. [11, 12] für Silvester)') })).min(1),
+    type: fieldPolicy(z.literal('occasions'), 'shared'), ...sectionHeading,
+    headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
+    cards: z.array(z.object({ category: fieldPolicy(z.string().optional(), 'translatable'), title: fieldPolicy(z.string(), 'translatable'), text: fieldPolicy(z.string(), 'translatable'), image,
+      facts: z.array(fieldPolicy(z.string(), 'translatable')).optional(), cta: link, download: link.optional(),
+      season: z.array(fieldPolicy(z.number().int().min(1).max(12), 'shared')).optional().describe('Monate, in denen die Karte nach vorn rückt (z. B. [11, 12] für Silvester)') })).min(1),
   }),
   z.object({
-    type: z.literal('metrics'), ...sectionHeading,
-    headline: z.string().min(1), text: z.string().optional(),
-    items: z.array(z.object({ label: z.string(), value: businessValueSchema.optional(), text: z.string() })).min(1),
+    type: fieldPolicy(z.literal('metrics'), 'shared'), ...sectionHeading,
+    headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
+    items: z.array(z.object({ label: fieldPolicy(z.string(), 'translatable'), value: businessValueSchema.optional(), text: fieldPolicy(z.string(), 'translatable') })).min(1),
     cta: link.optional(),
   }),
   z.object({
-    type: z.literal('sustainability'), ...sectionHeading,
+    type: fieldPolicy(z.literal('sustainability'), 'shared'), ...sectionHeading,
     // Nachhaltigkeit in 2D (keine Scrollstory): Kopf, optional bis zu vier Kennzahlen, optional Sätze, optional Beleg.
-    headline: z.string().min(1), text: z.string().optional(),
-    facts: z.array(z.object({ label: z.string(), value: businessValueSchema, unit: z.string().optional(),
-      text: z.string(), tone: legacy.describe('Veraltet (Kontur/Verlauf), wird ignoriert') })).max(4).optional(),
-    points: z.array(z.string().min(1)).optional().describe('Kurze, belegbare Sätze, je einer pro Punkt'),
-    pillarsRef: z.literal('sustainability-pillars').optional().describe('Gemeinsame Nachhaltigkeitspunkte'),
-    proofImage: image.optional(), proofText: z.string().optional(), campaign: z.string().optional(),
-    lines: z.array(z.string()).optional().describe('Veraltet (dreizeiliger Titel der Scrollstory), wird nicht mehr angezeigt'),
+    headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
+    facts: z.array(z.object({ label: fieldPolicy(z.string(), 'translatable'), value: businessValueSchema, unit: fieldPolicy(z.string().optional(), 'translatable'),
+      text: fieldPolicy(z.string(), 'translatable'), tone: legacy.describe('Veraltet (Kontur/Verlauf), wird ignoriert') })).max(4).optional(),
+    points: z.array(fieldPolicy(z.string().min(1), 'translatable')).optional().describe('Kurze, belegbare Sätze, je einer pro Punkt'),
+    pillarsRef: fieldPolicy(z.literal('sustainability-pillars').optional().describe('Gemeinsame Nachhaltigkeitspunkte'), 'shared'),
+    proofImage: image.optional(), proofText: fieldPolicy(z.string().optional(), 'translatable'), campaign: fieldPolicy(z.string().optional(), 'translatable'),
+    lines: z.array(fieldPolicy(z.string(), 'translatable')).optional().describe('Veraltet (dreizeiliger Titel der Scrollstory), wird nicht mehr angezeigt'),
   }).strict(),
   z.object({
-    type: z.literal('hero'), ...todo, kicker: z.string().optional(),
-    headline: z.string().min(1),
-    text: z.string().optional(),
+    type: fieldPolicy(z.literal('hero'), 'shared'), ...todo, kicker: fieldPolicy(z.string().optional(), 'translatable'),
+    headline: fieldPolicy(z.string().min(1), 'translatable'),
+    text: fieldPolicy(z.string().optional(), 'translatable'),
     image: image.optional(),
     cta: link.optional(),
     secondary: link.optional(),
   }),
   z.object({
-    type: z.literal('textMedia'), ...todo, id: z.string().optional().describe('Sprungmarke, z. B. "geschichte"'), kicker: z.string().optional(),
-    headline: z.string().min(1),
-    body: z.string().min(1).describe('Markdown erlaubt').meta({'x-afe': {format: 'markdown'}}),
+    type: fieldPolicy(z.literal('textMedia'), 'shared'), ...todo, id: fieldPolicy(z.string().optional().describe('Sprungmarke, z. B. "geschichte"'), 'shared'), kicker: fieldPolicy(z.string().optional(), 'translatable'),
+    headline: fieldPolicy(z.string().min(1), 'translatable'),
+    body: fieldPolicy(z.string().min(1).describe('Markdown erlaubt').meta({'x-afe': {format: 'markdown'}}), 'translatable'),
     image: image.optional(),
-    mediaSide: z.enum(['left', 'right']).default('right'),
+    mediaSide: fieldPolicy(z.enum(['left', 'right']).default('right'), 'shared'),
   }),
   z.object({
-    type: z.literal('faq'), ...sectionHeading,
-    text: z.string().optional(), cta: link.optional(), openFirst: z.boolean().default(false),
-    headline: z.string().optional(),
-    tags: z.array(z.string()).optional().describe('Nur FAQ-Einträge mit einem dieser Tags (ohne groups)'),
-    limit: z.number().int().positive().optional(),
+    type: fieldPolicy(z.literal('faq'), 'shared'), ...sectionHeading,
+    text: fieldPolicy(z.string().optional(), 'translatable'), cta: link.optional(), openFirst: fieldPolicy(z.boolean().default(false), 'shared'),
+    headline: fieldPolicy(z.string().optional(), 'translatable'),
+    tags: z.array(fieldPolicy(z.string(), 'shared')).optional().describe('Nur FAQ-Einträge mit einem dieser Tags (ohne groups)'),
+    limit: fieldPolicy(z.number().int().positive().optional(), 'shared'),
     groups: z.array(z.object({
-      id: z.string().regex(/^[a-z0-9-]+$/).optional().describe('Sprungmarke, z. B. "planung"'),
-      headline: z.string().min(1),
-      tags: z.array(z.string()).min(1).describe('FAQ-Einträge mit einem dieser Tags'),
+      id: fieldPolicy(z.string().regex(/^[a-z0-9-]+$/).optional().describe('Sprungmarke, z. B. "planung"'), 'shared'),
+      headline: fieldPolicy(z.string().min(1), 'translatable'),
+      tags: z.array(fieldPolicy(z.string(), 'shared')).min(1).describe('FAQ-Einträge mit einem dieser Tags'),
     })).optional().describe('Fragen in Gruppen; ersetzt tags/limit'),
     closing: z.object({
-      headline: z.string().min(1),
-      text: z.string().min(1),
+      headline: fieldPolicy(z.string().min(1), 'translatable'),
+      text: fieldPolicy(z.string().min(1), 'translatable'),
       image: image.optional().describe('Foto der drei Geschäftsführer:innen; ohne Bild erscheinen ihre drei Porträts'),
     }).optional().describe('Abschluss mit Anrufen/Schreiben'),
   }),
   z.object({
     // Abschluss-CTA: genau ein Knopf, keine Zeile über der Überschrift (Marc, 01.11.2026: „keine multiplen CTAs“)
-    type: z.literal('cta'), ...todo,
-    headline: z.string().min(1),
-    text: z.string().min(1),
+    type: fieldPolicy(z.literal('cta'), 'shared'), ...todo,
+    headline: fieldPolicy(z.string().min(1), 'translatable'),
+    text: fieldPolicy(z.string().min(1), 'translatable'),
     button: link,
   }),
   z.object({
-    type: z.literal('postList'), ...todo,
-    headline: z.string().optional(),
-    limit: z.number().int().positive().default(3),
+    type: fieldPolicy(z.literal('postList'), 'shared'), ...todo,
+    headline: fieldPolicy(z.string().optional(), 'translatable'),
+    limit: fieldPolicy(z.number().int().positive().default(3), 'shared'),
   }),
   z.object({
-    type: z.literal('projectGrid'), ...sectionHeading,
-    text: z.string().optional(), cta: link.optional(),
-    headline: z.string().optional(),
-    limit: z.number().int().positive().default(6),
+    type: fieldPolicy(z.literal('projectGrid'), 'shared'), ...sectionHeading,
+    text: fieldPolicy(z.string().optional(), 'translatable'), cta: link.optional(),
+    headline: fieldPolicy(z.string().optional(), 'translatable'),
+    limit: fieldPolicy(z.number().int().positive().default(6), 'shared'),
   }),
   z.object({
-    type: z.literal('pricing'), ...sectionHeading,
+    type: fieldPolicy(z.literal('pricing'), 'shared'), ...sectionHeading,
     cta: link.optional(),
-    headline: z.string().min(1),
-    text: z.string().optional(),
+    headline: fieldPolicy(z.string().min(1), 'translatable'),
+    text: fieldPolicy(z.string().optional(), 'translatable'),
     tiers: z.array(z.object({
-      name: z.string().min(1),
-      badge: z.string().optional(),
-      orb: z.object({ shape: z.enum(['ring','sphere','torus']), color: z.string().regex(/^\d{1,3},\d{1,3},\d{1,3}$/), count: z.number().int().positive() }).optional(),
-      price: z.string().min(1).describe('Freitext inkl. Währung, z. B. "ab 7.900 €"'),
-      unit: z.string().optional().describe('Bezugsgröße zum Preis, z. B. "pro Show" oder "netto"'),
-      description: z.string().optional(),
-      features: z.array(z.string().min(1)).default([]),
-      highlight: z.boolean().default(false).describe('Hebt die Karte als Empfehlung hervor'),
+      name: fieldPolicy(z.string().min(1), 'translatable'),
+      badge: fieldPolicy(z.string().optional(), 'translatable'),
+      orb: z.object({ shape: fieldPolicy(z.enum(['ring','sphere','torus']), 'shared'), color: fieldPolicy(z.string().regex(/^\d{1,3},\d{1,3},\d{1,3}$/), 'translatable'), count: fieldPolicy(z.number().int().positive(), 'shared') }).optional(),
+      price: fieldPolicy(z.string().min(1).describe('Freitext inkl. Währung, z. B. "ab 7.900 €"'), 'translatable'),
+      unit: fieldPolicy(z.string().optional().describe('Bezugsgröße zum Preis, z. B. "pro Show" oder "netto"'), 'translatable'),
+      description: fieldPolicy(z.string().optional(), 'translatable'),
+      features: z.array(fieldPolicy(z.string().min(1), 'translatable')).default([]),
+      highlight: fieldPolicy(z.boolean().default(false).describe('Hebt die Karte als Empfehlung hervor'), 'shared'),
       cta: link.optional(),
     })).min(1),
-    note: z.string().optional().describe('Kleingedrucktes unter den Karten'),
+    note: fieldPolicy(z.string().optional().describe('Kleingedrucktes unter den Karten'), 'translatable'),
   }),
   z.object({
-    type: z.literal('steps'), ...sectionHeading,
-    headline: z.string().min(1),
-    text: z.string().optional(),
+    type: fieldPolicy(z.literal('steps'), 'shared'), ...sectionHeading,
+    headline: fieldPolicy(z.string().min(1), 'translatable'),
+    text: fieldPolicy(z.string().optional(), 'translatable'),
     steps: z.array(z.object({
-      title: z.string().min(1),
-      text: z.string().min(1),
-      duration: z.string().optional().describe('Kurzer Zeitrahmen, z. B. "48 h Antwortzeit"'),
+      title: fieldPolicy(z.string().min(1), 'translatable'),
+      text: fieldPolicy(z.string().min(1), 'translatable'),
+      duration: fieldPolicy(z.string().optional().describe('Kurzer Zeitrahmen, z. B. "48 h Antwortzeit"'), 'translatable'),
     })).min(2),
   }),
   z.object({
-    type: z.literal('comparison'), ...sectionHeading,
-    headline: z.string().min(1),
-    text: z.string().optional(),
-    rowHeader: z.string().optional().describe('Beschriftung der ersten Spalte'),
-    columns: z.array(z.string().min(1)).min(2),
+    type: fieldPolicy(z.literal('comparison'), 'shared'), ...sectionHeading,
+    headline: fieldPolicy(z.string().min(1), 'translatable'),
+    text: fieldPolicy(z.string().optional(), 'translatable'),
+    rowHeader: fieldPolicy(z.string().optional().describe('Beschriftung der ersten Spalte'), 'translatable'),
+    columns: z.array(fieldPolicy(z.string().min(1), 'translatable')).min(2),
     rows: z.array(z.object({
-      label: z.string().min(1),
-      cells: z.array(z.object({ label: z.string(), text: z.string().optional(), tone: z.enum(['y','n','p']) })).optional(),
-      values: z.array(z.string()).describe('Genau ein Wert je Spalte, in derselben Reihenfolge'),
+      label: fieldPolicy(z.string().min(1), 'translatable'),
+      cells: z.array(z.object({ label: fieldPolicy(z.string(), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'), tone: fieldPolicy(z.enum(['y','n','p']), 'shared') })).optional(),
+      values: z.array(fieldPolicy(z.string(), 'translatable')).describe('Genau ein Wert je Spalte, in derselben Reihenfolge'),
     })).min(1),
-    note: z.string().optional(),
+    note: fieldPolicy(z.string().optional(), 'translatable'),
   }).superRefine((s, ctx) => {
     s.rows.forEach((row, i) => {
       if (row.values.length !== s.columns.length || (row.cells && row.cells.length !== s.columns.length)) {
@@ -170,153 +171,153 @@ export const sectionSchema = z.discriminatedUnion('type', [
     });
   }),
   z.object({
-    type: z.literal('team'), ...sectionHeading,
-    note: z.string().optional(), cta: link.optional(),
-    headline: z.string().min(1),
-    text: z.string().optional(),
+    type: fieldPolicy(z.literal('team'), 'shared'), ...sectionHeading,
+    note: fieldPolicy(z.string().optional(), 'translatable'), cta: link.optional(),
+    headline: fieldPolicy(z.string().min(1), 'translatable'),
+    text: fieldPolicy(z.string().optional(), 'translatable'),
     members: z.array(z.object({
       personId,
     }).strict()).min(1),
   }),
   z.object({
     // Kund:innen als Laufband, darunter optional Presse und „Qualität und Sicherheit“ (docs/DESIGN.md, Studie 6).
-    type: z.literal('logoBar'), ...sectionHeading,
-    headline: z.string().optional().describe('Name des Laufbands für Screenreader, z. B. "Kund:innen von FlyingStars"'),
+    type: fieldPolicy(z.literal('logoBar'), 'shared'), ...sectionHeading,
+    headline: fieldPolicy(z.string().optional().describe('Name des Laufbands für Screenreader, z. B. "Kund:innen von FlyingStars"'), 'translatable'),
     press: legacy.describe('Veraltet (Textzeile „Bekannt aus“), ersetzt durch pressItems'),
     logos: z.array(z.object({
-      name: z.string().min(1),
+      name: fieldPolicy(z.string().min(1), 'translatable'),
       file: brandPath.optional().describe('Bevorzugt: weißes SVG unter /brand/logos/'),
       image: image.optional().describe('Sonst Live-PNG vom Medienspeicher'),
-      detail: z.boolean().default(false).describe('PNG mit dunklen Innendetails (Bentley): nicht weiß einfärben'),
-      href: z.string().min(1).optional(),
-      tall: z.boolean().default(false).describe('Veraltet: die optische Größe wird berechnet'),
+      detail: fieldPolicy(z.boolean().default(false).describe('PNG mit dunklen Innendetails (Bentley): nicht weiß einfärben'), 'shared'),
+      href: fieldPolicy(z.string().min(1).optional(), 'shared'),
+      tall: fieldPolicy(z.boolean().default(false).describe('Veraltet: die optische Größe wird berechnet'), 'shared'),
     })).default([]),
-    pressHeadline: z.string().optional(),
+    pressHeadline: fieldPolicy(z.string().optional(), 'translatable'),
     pressItems: z.array(z.object({
-      name: z.string().min(1),
+      name: fieldPolicy(z.string().min(1), 'translatable'),
       logo: brandPath.optional(),
-      cleared: z.boolean().default(false).describe('Schriftliche Freigabe für das Logo liegt vor; sonst erscheint der Name als Text'),
-      knock: z.boolean().default(false).describe('Logo mit ausgesparter Schrift (ZDF, ntv)'),
-      href: z.url().optional().describe('Beitrag, falls öffentlich'),
-      note: z.string().optional().describe('Kurzinfo als Tooltip, z. B. Sendung'),
+      cleared: fieldPolicy(z.boolean().default(false).describe('Schriftliche Freigabe für das Logo liegt vor; sonst erscheint der Name als Text'), 'shared'),
+      knock: fieldPolicy(z.boolean().default(false).describe('Logo mit ausgesparter Schrift (ZDF, ntv)'), 'shared'),
+      href: fieldPolicy(z.url().optional().describe('Beitrag, falls öffentlich'), 'shared'),
+      note: fieldPolicy(z.string().optional().describe('Kurzinfo als Tooltip, z. B. Sendung'), 'translatable'),
     })).default([]),
-    qualityHeadline: z.string().optional(),
+    qualityHeadline: fieldPolicy(z.string().optional(), 'translatable'),
     quality: z.array(z.object({
-      title: z.string().min(1), text: z.string().optional(),
-      icon: z.enum(['permit', 'sound', 'shield', 'leaf']).describe('Verlaufs-Icon, wenn kein freigegebenes Logo'),
+      title: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
+      icon: fieldPolicy(z.enum(['permit', 'sound', 'shield', 'leaf']).describe('Verlaufs-Icon, wenn kein freigegebenes Logo'), 'shared'),
       logo: brandPath.optional(),
-      cleared: z.boolean().default(false).describe('Logo darf gezeigt werden (LBA-Signet gemeinfrei; naturstrom nur nach Freigabe)'),
-      secondary: z.boolean().default(false).describe('Nachrangig: klein als Textzeile unter den Logos (Marc 31.10.: TÜV-Gutachten, Haftpflicht)'),
+      cleared: fieldPolicy(z.boolean().default(false).describe('Logo darf gezeigt werden (LBA-Signet gemeinfrei; naturstrom nur nach Freigabe)'), 'shared'),
+      secondary: fieldPolicy(z.boolean().default(false).describe('Nachrangig: klein als Textzeile unter den Logos (Marc 31.10.: TÜV-Gutachten, Haftpflicht)'), 'shared'),
     })).default([]),
   }),
   z.object({
     // Alle Referenzen (Projekte-Sammlung) mit Filter nach Anlass, Jahr und Drohnenzahl. Ohne JS: Abschnitte je Anlass
     // mit Sprunglinks; mit JS: eine Liste mit Filter-Radiogruppen und Statusansage. Fallstudien verlinken auf ihre Seite.
-    type: z.literal('references'), ...sectionHeading,
-    headline: z.string().min(1), text: z.string().optional(),
-    filters: z.array(z.enum(['occasion', 'year', 'drones'])).default(['occasion', 'year', 'drones']),
+    type: fieldPolicy(z.literal('references'), 'shared'), ...sectionHeading,
+    headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
+    filters: z.array(fieldPolicy(z.enum(['occasion', 'year', 'drones']), 'shared')).default(['occasion', 'year', 'drones']),
   }),
   z.object({
     // Meilensteine als ruhige Liste (kein Schwarm). Wiederholte Jahreszahlen werden nur einmal gezeigt.
-    type: z.literal('timeline'), ...sectionHeading,
-    headline: z.string().min(1), text: z.string().optional(),
-    items: z.array(z.object({ when: z.union([z.string().min(1),projectFactRefSchema]), title: z.string().min(1), text: z.string().optional() })).min(2),
+    type: fieldPolicy(z.literal('timeline'), 'shared'), ...sectionHeading,
+    headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
+    items: z.array(z.object({ when: z.union([fieldPolicy(z.string().min(1), 'translatable'),projectFactRefSchema]), title: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable') })).min(2),
   }),
   z.object({
     // Die drei Pakete. Preis und Drohnenzahl kommen nur aus src/content/show-packages.ts, Texte aus dem YAML.
-    type: z.literal('packages'), ...sectionHeading,
-    headline: z.string().min(1), text: z.string().optional(),
-    note: z.string().optional().describe('Kleingedrucktes unter den Karten'),
+    type: fieldPolicy(z.literal('packages'), 'shared'), ...sectionHeading,
+    headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
+    note: fieldPolicy(z.string().optional().describe('Kleingedrucktes unter den Karten'), 'translatable'),
     cta: link.optional(),
-    compact: z.boolean().default(false).describe('Kurzfassung (Startseite): Name, Preis, Drohnen, eine Zeile'),
+    compact: fieldPolicy(z.boolean().default(false).describe('Kurzfassung (Startseite): Name, Preis, Drohnen, eine Zeile'), 'shared'),
     items: z.array(z.object({
-      name: z.enum(PACKAGE_NAMES),
-      label: z.string().optional().describe('z. B. "Klassisch in 2D"'),
-      badge: z.string().optional().describe('z. B. "Am häufigsten gebucht"'),
-      highlight: z.boolean().default(false),
-      sky: z.string().optional().describe('Am Himmel'),
-      care: z.string().optional().describe('Betreuung'),
-      typical: z.string().optional().describe('Typisch für'),
-      points: z.array(z.string()).max(4).optional().describe('Kernpunkte auf der Kurzfassung (Startseite), die Drohnenzahl steht automatisch davor'),
+      name: fieldPolicy(z.enum(PACKAGE_NAMES), 'shared'),
+      label: fieldPolicy(z.string().optional().describe('z. B. "Klassisch in 2D"'), 'translatable'),
+      badge: fieldPolicy(z.string().optional().describe('z. B. "Am häufigsten gebucht"'), 'translatable'),
+      highlight: fieldPolicy(z.boolean().default(false), 'shared'),
+      sky: fieldPolicy(z.string().optional().describe('Am Himmel'), 'translatable'),
+      care: fieldPolicy(z.string().optional().describe('Betreuung'), 'translatable'),
+      typical: fieldPolicy(z.string().optional().describe('Typisch für'), 'translatable'),
+      points: z.array(fieldPolicy(z.string(), 'translatable')).max(4).optional().describe('Kernpunkte auf der Kurzfassung (Startseite), die Drohnenzahl steht automatisch davor'),
     })).default(PACKAGE_NAMES.map(name=>({name,highlight:false}))),
   }),
   z.object({
     // Konfigurator-Teaser (Startseite): Anlass-Chips und Drohnen-Regler, Übergabe an den Konfigurator auf der Preisseite.
-    type: z.literal('configuratorTeaser'), ...sectionHeading,
-    headline: z.string().min(1), text: z.string().optional(),
-    occasion: z.string().optional().describe('Anlass beim Laden, ID aus content/show-configurator.js'),
-    drones: z.number().int().positive().optional(),
+    type: fieldPolicy(z.literal('configuratorTeaser'), 'shared'), ...sectionHeading,
+    headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
+    occasion: fieldPolicy(z.string().optional().describe('Anlass beim Laden, ID aus content/show-configurator.js'), 'shared'),
+    drones: fieldPolicy(z.number().int().positive().optional(), 'shared'),
   }),
   z.object({
     // Ablauf in Zahlen (Marc, 31.10.2026): statt nummerierter Schritte ein Zeitstrahl von der Anfrage bis zum Showabend,
     // der zeigt, wie schnell es gehen kann; darunter Kennzahlen aus „In Zahlen statt in Adjektiven“.
-    type: z.literal('tempo'), ...sectionHeading,
-    headline: z.string().min(1), text: z.string().optional(),
-    marks: z.array(z.object({ value: businessValueSchema, label: z.string().min(1), text: z.string().optional() })).min(2).max(5),
-    shortcut: z.object({ value: businessValueSchema, label: z.string().min(1), text: z.string().optional(),
-      href: z.string().optional() }).strict().optional()
+    type: fieldPolicy(z.literal('tempo'), 'shared'), ...sectionHeading,
+    headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
+    marks: z.array(z.object({ value: businessValueSchema, label: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable') })).min(2).max(5),
+    shortcut: z.object({ value: businessValueSchema, label: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
+      href: fieldPolicy(z.string().optional(), 'shared') }).strict().optional()
       .describe('Abzweigung im Netzplan (MetroLine.astro), z. B. Express: von der ersten zur letzten Station; mit href wird das Schild selbst zum Knopf'),
-    facts: z.array(z.object({ value: businessValueSchema, label: z.string().min(1), text: z.string().optional() })).default([]),
-    note: z.string().optional(),
+    facts: z.array(z.object({ value: businessValueSchema, label: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable') })).default([]),
+    note: fieldPolicy(z.string().optional(), 'translatable'),
   }),
   // --- Anlass-Landingpages (Marc, 31.10.2026: „deutlich mehr in dieses Interaktive … mehr Variation in den Layouts“).
   // Komponenten unter src/components/landing/. Kennzahlen überall als { value, label, text? }.
   z.object({
     // Seitenkopf mit kleinem Showreel im Bildrahmen: stumm, Loop, startet erst im Bild (ab 701 px automatisch, auf dem
     // Handy per Knopf), pausiert bei globaler Pause und reduzierter Bewegung. Nur registrierte Videos (src/lib/videos.ts).
-    type: z.literal('landingHero'), ...todo, kicker: z.string().optional(),
-    headline: z.string().min(1), text: z.string().min(1), cta: link, secondary: link.optional(),
-    video: z.enum(['showreel', 'bokkenrijders', 'nfl', 'ford', 'puma', 'siemensIndoor']).describe('Schlüssel aus src/lib/videos.ts'),
-    videoLabel: z.string().optional().describe('Kleine Beschriftung im Rahmen, z. B. "Ford Explorer · Köln"'),
+    type: fieldPolicy(z.literal('landingHero'), 'shared'), ...todo, kicker: fieldPolicy(z.string().optional(), 'translatable'),
+    headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().min(1), 'translatable'), cta: link, secondary: link.optional(),
+    video: fieldPolicy(z.enum(['showreel', 'bokkenrijders', 'nfl', 'ford', 'puma', 'siemensIndoor']).describe('Schlüssel aus src/lib/videos.ts'), 'shared'),
+    videoLabel: fieldPolicy(z.string().optional().describe('Kleine Beschriftung im Rahmen, z. B. "Ford Explorer · Köln"'), 'translatable'),
     poster: image.describe('Standbild bis zum ersten Videobild und bei reduzierter Bewegung'),
-    facts: z.array(z.object({ value: businessValueSchema, label: z.string().min(1) })).max(4).default([]),
+    facts: z.array(z.object({ value: businessValueSchema, label: fieldPolicy(z.string().min(1), 'translatable') })).max(4).default([]),
   }),
   z.object({
     // Referenzen als versetzte Geschichten: großes Bild mit Lichtpunkt-Hover, Ort und Datum, Kennzahlen, kurzer Text.
-    type: z.literal('landingStories'), ...sectionHeading,
-    headline: z.string().min(1), text: z.string().optional(), cta: link.optional(),
-    items: z.array(z.object({ kicker: z.string().min(1), title: z.string().min(1), text: z.string().min(1), image,
-      facts: z.array(z.object({ value: businessValueSchema, label: z.string().min(1) })).max(3).default([]) })).min(1).max(3),
+    type: fieldPolicy(z.literal('landingStories'), 'shared'), ...sectionHeading,
+    headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'), cta: link.optional(),
+    items: z.array(z.object({ kicker: fieldPolicy(z.string().min(1), 'translatable'), title: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().min(1), 'translatable'), image,
+      facts: z.array(z.object({ value: businessValueSchema, label: fieldPolicy(z.string().min(1), 'translatable') })).max(3).default([]) })).min(1).max(3),
   }),
   z.object({
     // Ausgewählte Referenzen (Projekte-Sammlung) nach ID, als Karten mit Showvideo wie auf der Startseite.
-    type: z.literal('landingRefs'), ...sectionHeading,
-    headline: z.string().min(1), text: z.string().optional(), cta: link.optional(),
-    projects: z.array(z.string().min(1).meta({'x-afe':{reference:{collection:'projects',encoding:'id'}}})).min(1).max(6).describe('Dateinamen aus src/content/projects ohne .md'),
+    type: fieldPolicy(z.literal('landingRefs'), 'shared'), ...sectionHeading,
+    headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'), cta: link.optional(),
+    projects: z.array(fieldPolicy(z.string().min(1).meta({'x-afe':{reference:{collection:'projects',encoding:'id'}}}), 'shared')).min(1).max(6).describe('Dateinamen aus src/content/projects ohne .md'),
   }),
   z.object({
     // Konfigurator-Teaser mit Kopf, Ziel und Knopfbeschriftung je Anlass.
-    type: z.literal('landingTeaser'), ...sectionHeading,
-    headline: z.string().min(1), text: z.string().optional(), href: z.string().min(1).optional(), cta: z.string().optional(),
-    loop: z.enum(['marke', 'hochzeit', 'start']).optional().describe('Anlassspezifischer Ablauf des Teasers (Runde 9)'),
+    type: fieldPolicy(z.literal('landingTeaser'), 'shared'), ...sectionHeading,
+    headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'), href: fieldPolicy(z.string().min(1).optional(), 'shared'), cta: fieldPolicy(z.string().optional(), 'translatable'),
+    loop: fieldPolicy(z.enum(['marke', 'hochzeit', 'start']).optional().describe('Anlassspezifischer Ablauf des Teasers (Runde 9)'), 'shared'),
   }),
   z.object({
     // Preiskarte: ein Preis groß (aus show-packages.ts, wenn `package` gesetzt; sonst `price`), daneben Gruppen wie ein
     // Kassenzettel, optional ein Bonus (Frühbucher) im Verlauf, darunter Gesichter und Anfrage.
-    type: z.literal('landingPrice'), ...sectionHeading,
-    headline: z.string().min(1), text: z.string().optional(),
-    package: z.enum(PACKAGE_NAMES).optional(),
-    offer: z.literal('indoor').optional().describe('Sonderangebot'),
-    customPrice: z.object({prefix:z.string().optional(),amount:z.string().min(1)}).strict().optional().describe('Eigener Preis in ausdrücklich getrennten Teilen'),
-    unit: z.string().optional().describe('Zeile unter dem Preis, z. B. "netto für 20 Drohnen"'),
-    groups: z.array(z.object({ title: z.string().min(1),
-      items: z.array(z.object({ label: z.string().min(1), value: businessValueSchema.optional() })).min(1) })).min(1).max(3),
-    bonus: z.object({ value: businessValueSchema, text: z.string().min(1) }).optional(),
+    type: fieldPolicy(z.literal('landingPrice'), 'shared'), ...sectionHeading,
+    headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
+    package: fieldPolicy(z.enum(PACKAGE_NAMES).optional(), 'shared'),
+    offer: fieldPolicy(z.literal('indoor').optional().describe('Sonderangebot'), 'shared'),
+    customPrice: z.object({prefix:fieldPolicy(z.string().optional(), 'translatable'),amount:fieldPolicy(z.string().min(1), 'translatable')}).strict().optional().describe('Eigener Preis in ausdrücklich getrennten Teilen'),
+    unit: fieldPolicy(z.string().optional().describe('Zeile unter dem Preis, z. B. "netto für 20 Drohnen"'), 'translatable'),
+    groups: z.array(z.object({ title: fieldPolicy(z.string().min(1), 'translatable'),
+      items: z.array(z.object({ label: fieldPolicy(z.string().min(1), 'translatable'), value: businessValueSchema.optional() })).min(1) })).min(1).max(3),
+    bonus: z.object({ value: businessValueSchema, text: fieldPolicy(z.string().min(1), 'translatable') }).optional(),
     closing: closingBox.describe('Abschluss unter der Preiskarte'),
   }),
   z.object({
     // Quellen und Konflikte: docs/sicherheitskonzept-quellen.md. Alle Maße kommen aus dem Inhalt.
     // Fünf eindeutige Zonen je Variante halten Zeichnung und nummerierte Erläuterung zusammen.
-    type: z.literal('landingSite'), ...sectionHeading,
-    headline: z.string().min(1), text: z.string().optional(),
-    variant: z.enum(['outdoor', 'indoor']),
-    safetyRef: z.literal('safety-concept').optional().describe('Gemeinsames Outdoor-Sicherheitskonzept'),
+    type: fieldPolicy(z.literal('landingSite'), 'shared'), ...sectionHeading,
+    headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
+    variant: fieldPolicy(z.enum(['outdoor', 'indoor']), 'shared'),
+    safetyRef: fieldPolicy(z.literal('safety-concept').optional().describe('Gemeinsames Outdoor-Sicherheitskonzept'), 'shared'),
     additionalResponsibilities: z.array(responsibilitySchema).max(2).optional().describe('Zusätzliche Aufgaben dieser Seite'),
     diagram: siteDiagramSchema.optional(),
     items: siteItemsSchema.optional(),
     responsibilities: z.array(responsibilitySchema).min(3).max(12).optional(),
     safeguards: z.array(z.object({
-      icon: z.string().min(1), title: z.string().min(1), text: z.string().min(1),
+      icon: fieldPolicy(z.string().min(1), 'shared'), title: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().min(1), 'translatable'),
     }).strict()).min(1).max(4).optional(),
     download: siteDownloadSchema.optional(),
   }).strict().superRefine((section, ctx) => {
@@ -331,54 +332,54 @@ export const sectionSchema = z.discriminatedUnion('type', [
   z.object({
     // Ablauf mit Freigabe-Schranke: Kopf bleibt links stehen, rechts die Schritte am Verlaufsstrahl; der Schritt mit
     // `gate` ist als Freigabe hervorgehoben.
-    type: z.literal('landingFlow'), ...sectionHeading,
-    headline: z.string().min(1), text: z.string().optional(),
-    steps: z.array(z.object({ title: z.string().min(1), text: z.string().min(1), duration: z.string().optional(),
-      gate: z.boolean().default(false) })).min(2).max(7),
+    type: fieldPolicy(z.literal('landingFlow'), 'shared'), ...sectionHeading,
+    headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
+    steps: z.array(z.object({ title: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().min(1), 'translatable'), duration: fieldPolicy(z.string().optional(), 'translatable'),
+      gate: fieldPolicy(z.boolean().default(false), 'shared') })).min(2).max(7),
   }),
   z.object({
     // Kacheln mit einer großen Hauptkachel (Bild oder Aussage) und bis zu vier kleineren mit Kennzahl.
-    type: z.literal('landingBento'), ...sectionHeading,
-    headline: z.string().min(1), text: z.string().optional(),
+    type: fieldPolicy(z.literal('landingBento'), 'shared'), ...sectionHeading,
+    headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
     // Icon-Kacheln ohne Zeile neben dem Icon (Marc, 01.11.2026: „überall keine Eyebrow, größere Icons“): großes Icon,
     // Überschrift, Text. strict(), damit label/value nicht unbemerkt zurückkommen. Die Zeile über dem Titel gibt es nur
     // noch auf der Bildkachel (z. B. Kund:innen auf dem Foto), nicht neben einem Icon.
-    lead: z.object({ label: z.string().optional().describe('Nur mit image'), title: z.string().min(1), text: z.string().optional(), image: image.optional(),
-      icon: z.string().optional().describe('Lucide-Name, nur für die Aussage ohne Bild') }).strict()
+    lead: z.object({ label: fieldPolicy(z.string().optional().describe('Nur mit image'), 'translatable'), title: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'), image: image.optional(),
+      icon: fieldPolicy(z.string().optional().describe('Lucide-Name, nur für die Aussage ohne Bild'), 'shared') }).strict()
       .refine((l) => !l.label || l.image, { message: 'label nur auf der Bildkachel, nicht neben einem Icon' }),
-    items: z.array(z.object({ icon: z.string().min(1).describe('Lucide-Name in kebab-case, z. B. "wind"'), title: z.string().min(1), text: z.string().min(1) }).strict()).min(1).max(4),
+    items: z.array(z.object({ icon: fieldPolicy(z.string().min(1).describe('Lucide-Name in kebab-case, z. B. "wind"'), 'shared'), title: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().min(1), 'translatable') }).strict()).min(1).max(4),
     cta: link.optional().describe('Weiterführender Textlink unter dem Raster'),
     closing: closingBox.optional().describe('Abschluss-Kasten mit Gesichtern statt Textlink'),
   }).refine((b) => !(b.cta && b.closing), { message: 'entweder cta (Textlink) oder closing (Abschluss-Kasten)' }),
   z.object({
     // Breites Bild mit Orten oder Einsatzarten als Markierungen, darunter Einträge und Kennzahlen.
-    type: z.literal('landingSpotlight'), ...sectionHeading,
-    headline: z.string().min(1), text: z.string().optional(), image,
-    tags: z.array(z.string().min(1)).default([]),
-    entries: z.array(z.object({ kicker: z.string().min(1), title: z.string().min(1), text: z.string().optional() })).default([]),
-    facts: z.array(z.object({ value: businessValueSchema, label: z.string().min(1) })).max(4).default([]),
+    type: fieldPolicy(z.literal('landingSpotlight'), 'shared'), ...sectionHeading,
+    headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'), image,
+    tags: z.array(fieldPolicy(z.string().min(1), 'translatable')).default([]),
+    entries: z.array(z.object({ kicker: fieldPolicy(z.string().min(1), 'translatable'), title: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable') })).default([]),
+    facts: z.array(z.object({ value: businessValueSchema, label: fieldPolicy(z.string().min(1), 'translatable') })).max(4).default([]),
   }),
   z.object({
     // Abschluss mit Handlung und den Gesichtern der drei Geschäftsführer:innen.
     // Wie `cta`: ein Knopf, keine Zeile über der Überschrift (Marc, 01.11.2026)
-    type: z.literal('landingCta'), ...todo,
-    headline: z.string().min(1), text: z.string().min(1), button: link,
+    type: fieldPolicy(z.literal('landingCta'), 'shared'), ...todo,
+    headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().min(1), 'translatable'), button: link,
   }),
   z.object({
     // Alle Kontaktwege, Besuchs- und Postanschrift mit Icons, daneben das Team (Runde 20, Marc 04.11.2026). Nummern,
     // Adressen und Links kommen aus CONTACT (src/components/people.ts), nicht aus dem Text, damit sie nur an einer Stelle
     // stehen. Ohne Teamfoto erscheinen die Porträts der drei Geschäftsführer:innen.
-    type: z.literal('contactDetails'), ...sectionHeading,
-    headline: z.string().min(1), text: z.string().optional(),
-    visitNote: z.string().optional().describe('Satz unter der Besuchsadresse, z. B. "Meldet euch vorher kurz an."'),
+    type: fieldPolicy(z.literal('contactDetails'), 'shared'), ...sectionHeading,
+    headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
+    visitNote: fieldPolicy(z.string().optional().describe('Satz unter der Besuchsadresse, z. B. "Meldet euch vorher kurz an."'), 'translatable'),
     image: image.optional().describe('Teamfoto; ohne Bild die Porträts der Geschäftsführer:innen'),
   }),
   z.object({
     // Anfrage in zwei Schritten (docs/DESIGN.md). Gesichter: ohne Angabe die drei Geschäftsführer:innen.
-    type: z.literal('contactForm'), ...todo,
-    kicker: z.string().optional(),
-    headline: z.string().min(1),
-    text: z.string().optional(),
+    type: fieldPolicy(z.literal('contactForm'), 'shared'), ...todo,
+    kicker: fieldPolicy(z.string().optional(), 'translatable'),
+    headline: fieldPolicy(z.string().min(1), 'translatable'),
+    text: fieldPolicy(z.string().optional(), 'translatable'),
     people: z.array(personId).max(4).optional(),
   }),
 ]);
@@ -387,57 +388,57 @@ export const sectionSchema = z.discriminatedUnion('type', [
 // ---------------------------------------------------------------------------
 // Collections
 // ---------------------------------------------------------------------------
-const translationMeta = { translationSourceHash: z.string().regex(/^[a-f0-9]{64}$/).optional().describe('SHA-256 der deutschen Quelldatei zum Übersetzungszeitpunkt') };
+const translationMeta = { translationSourceHash: fieldPolicy(z.string().regex(/^[a-f0-9]{64}$/).optional().describe('SHA-256 der deutschen Quelldatei zum Übersetzungszeitpunkt'), 'shared') };
 export const pageSchema = z.object({
     ...translationMeta,
-    title: z.string().min(1),
-    description: z.string().refine(text=>{const n=factText(text).length;return n>=50&&n<=160;},'Beschreibung braucht nach Faktenprojektion 50–160 Zeichen'),
-    noindex: z.boolean().default(false),
+    title: fieldPolicy(z.string().min(1), 'translatable'),
+    description: fieldPolicy(z.string().refine(text=>{const n=factText(text).length;return n>=50&&n<=160;},'Beschreibung braucht nach Faktenprojektion 50–160 Zeichen'), 'translatable'),
+    noindex: fieldPolicy(z.boolean().default(false), 'shared'),
     // Optional preview image for social shares; must come from an approved media host.
-    image: z.url().optional(),
-    navLabel: z.string().optional().describe('Kurzer Name in Footer-Listen, z. B. "Hochzeit" (Anlass-Seiten drohnenshow-*)'),
+    image: fieldPolicy(z.url().optional(), 'shared'),
+    navLabel: fieldPolicy(z.string().optional().describe('Kurzer Name in Footer-Listen, z. B. "Hochzeit" (Anlass-Seiten drohnenshow-*)'), 'translatable'),
     sections: z.array(sectionSchema).min(1),
   });
 
 export const postSchema = z.object({
     authorId:personId,
     ...translationMeta,
-    title: z.string().min(1),
-    description: z.string().refine(text=>{const n=factText(text).length;return n>=50&&n<=160;},'Beschreibung braucht nach Faktenprojektion 50–160 Zeichen'),
-    date: z.coerce.date(),
-    updated: z.coerce.date().optional(),
-    tags: z.array(z.string()).default([]),
+    title: fieldPolicy(z.string().min(1), 'translatable'),
+    description: fieldPolicy(z.string().refine(text=>{const n=factText(text).length;return n>=50&&n<=160;},'Beschreibung braucht nach Faktenprojektion 50–160 Zeichen'), 'translatable'),
+    date: fieldPolicy(z.coerce.date(), 'shared'),
+    updated: fieldPolicy(z.coerce.date().optional(), 'shared'),
+    tags: z.array(fieldPolicy(z.string(), 'shared')).default([]),
     cover: image.optional(),
-    draft: z.boolean().default(false),
+    draft: fieldPolicy(z.boolean().default(false), 'shared'),
     // Herkunft für Nachvollziehbarkeit: Issue-Nummer des Intake, falls vorhanden.
-    sourceIssue: z.number().int().positive().optional().meta({'x-afe':{group:'Herkunft'}}),
+    sourceIssue: fieldPolicy(z.number().int().positive().optional().meta({'x-afe':{group:'Herkunft'}}), 'shared'),
   });
 
 export const projectSchema = z.object({
     ...translationMeta,
-    title: z.string().min(1),
-    client: z.union([z.string(),projectFactRefSchema]).optional().meta({'x-afe':{group:'Showdaten'}}),
+    title: fieldPolicy(z.string().min(1), 'translatable'),
+    client: z.union([fieldPolicy(z.string(), 'translatable'),projectFactRefSchema]).optional().meta({'x-afe':{group:'Showdaten'}}),
     showcase: projectShowcaseSchema.optional().meta({'x-afe':{group:'Fallstudie'}}),
-    date: z.union([projectFactRefSchema,z.coerce.date()]),
-    location: z.union([z.string(),projectFactRefSchema]).optional().meta({'x-afe':{group:'Showdaten'}}),
+    date: z.union([projectFactRefSchema,fieldPolicy(z.coerce.date(), 'shared')]),
+    location: z.union([fieldPolicy(z.string(), 'translatable'),projectFactRefSchema]).optional().meta({'x-afe':{group:'Showdaten'}}),
     // Für den Referenzen-Filter; an jeder Referenz, nicht nur an Fallstudien. Unbekannt: weglassen.
-    occasion: z.enum(REFERENCE_OCCASION_IDS).optional()
-      .describe('firma = Marken & Unternehmen, stadt = Städte & Festivals, kultur = Kultur & Bühne, privat = Hochzeit & Privat'),
-    drones: z.union([z.number().int().positive(),projectFactRefSchema]).optional().describe('Drohnen in der Show'),
-    summary: z.string().min(30).max(200).meta({'x-afe':{group:'Projektkarte'}}),
+    occasion: fieldPolicy(z.enum(REFERENCE_OCCASION_IDS).optional()
+      .describe('firma = Marken & Unternehmen, stadt = Städte & Festivals, kultur = Kultur & Bühne, privat = Hochzeit & Privat'), 'shared'),
+    drones: z.union([fieldPolicy(z.number().int().positive(), 'shared'),projectFactRefSchema]).optional().describe('Drohnen in der Show'),
+    summary: fieldPolicy(z.string().min(30).max(200).meta({'x-afe':{group:'Projektkarte'}}), 'translatable'),
     cover: image.optional(),
-    featured: z.boolean().default(false).meta({'x-afe':{group:'Veröffentlichung'}}),
-    draft: z.boolean().default(false),
-    sourceIssue: z.number().int().positive().optional().meta({'x-afe':{group:'Herkunft'}}),
+    featured: fieldPolicy(z.boolean().default(false).meta({'x-afe':{group:'Veröffentlichung'}}), 'shared'),
+    draft: fieldPolicy(z.boolean().default(false), 'shared'),
+    sourceIssue: fieldPolicy(z.number().int().positive().optional().meta({'x-afe':{group:'Herkunft'}}), 'shared'),
   });
 
 export const faqSchema = z.object({
     ...translationMeta,
-    question: z.string().min(5),
-    tags: z.array(z.string()).default([]),
-    order: z.number().int().default(100),
-    draft: z.boolean().default(false),
-    sourceIssue: z.number().int().positive().optional().meta({'x-afe':{group:'Herkunft'}}),
+    question: fieldPolicy(z.string().min(5), 'translatable'),
+    tags: z.array(fieldPolicy(z.string(), 'shared')).default([]),
+    order: fieldPolicy(z.number().int().default(100), 'shared'),
+    draft: fieldPolicy(z.boolean().default(false), 'shared'),
+    sourceIssue: fieldPolicy(z.number().int().positive().optional().meta({'x-afe':{group:'Herkunft'}}), 'shared'),
   });
 
 export const contentSchemas = { pages: pageSchema, posts: postSchema, projects: projectSchema, faq: faqSchema };
