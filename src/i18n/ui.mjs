@@ -2,14 +2,16 @@ import {translatorFor} from './ui-core.mjs';
 import messages from './ui.json' with { type: 'json' };
 import { LOCALES } from './routing.mjs';
 const server = import.meta.env?.SSR ?? (typeof process !== 'undefined' && Boolean(process.versions?.node));
-let browserDictionary;
-if (!server) {
-  const language = document.documentElement.lang;
-  const locale = LOCALES.includes(language) ? language : 'de';
-  // A per-language static module, generated from the editor's canonical dictionary.
-  browserDictionary = (await import(/* @vite-ignore */ `/media/ui/${locale}.js`)).default;
+// Im Browser liegt das Wörterbuch der Seitensprache schon global bereit: /media/i18n/<sprache>.js, ein klassisches
+// Skript mit defer im <head> (Base.astro), läuft vor allen Modul-Skripten. Kein Top-Level-await (Runde 23): Safari bis
+// 26.6 wertet parallel importierte Module mit Top-Level-await fehlerhaft aus (WebKit-Bug 242740), dort lud u. a. der
+// Konfigurator gar nicht.
+function dictionary() {
+  if (server) return messages;
+  const browser = globalThis.__FS_UI__;
+  if (!browser) throw new Error('UI-Wörterbuch fehlt: /media/i18n/<sprache>.js wurde nicht vor den Modulen geladen');
+  return browser;
 }
-function dictionary() { return server ? messages : browserDictionary; }
 /** Build-time projection; browser consumers do not receive the other languages. */
 export function messagesForLocale(locale) {
   if (!LOCALES.includes(locale)) throw new Error(`Unknown UI locale: ${locale}`);

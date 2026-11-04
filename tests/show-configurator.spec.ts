@@ -780,8 +780,23 @@ test('Runde 11: im November und Dezember steht Winter & Silvester vorn und ist g
   await expect(page.locator('#cfg-cta')).toHaveAttribute('href', /anlass=stadt/);
 });
 
-test('Runde 11: der Auswahlrahmen gleitet zum neuen Paket (Klick und Regler), der Schatten beim Zeigen gedämpft', async ({ page }, info) => {
+test('Bewegung pausiert: der Auswahlrahmen springt ohne Zwischenwerte (Marc, Runde 20c)', async ({ page }) => {
   await paused(page);
+  await page.goto(`${CFG}#konfigurator`);
+  const sel = '.cfg-ind-sel';
+  await expect.poll(() => shiftX(page, sel)).toBeCloseTo(await columnX(page, 1), 0);
+  const [from, to] = [await columnX(page, 1), await columnX(page, 2)];
+  await sample(page, sel);
+  await pkg(page, 2);
+  await page.waitForTimeout(500);
+  const xs = await stopSample(page);
+  expect(xs.some((x) => x > from + 4 && x < to - 4), `keine Zwischenwerte erwartet: ${xs.map(Math.round).join(',')}`).toBe(false);
+  expect(xs.at(-1)).toBeCloseTo(to, 0);
+});
+
+test('Runde 11: der Auswahlrahmen gleitet zum neuen Paket (Klick und Regler), der Schatten beim Zeigen gedämpft', async ({ page }, info) => {
+  // Runde 20c: bei pausierter Bewegung gleitet nichts (zentraler Schalter in global.css), dieser Test prüft das Gleiten
+  // deshalb mit laufender Bewegung; das Springen bei Pause prüft der Test „Bewegung pausiert: der Rahmen springt“.
   await page.goto(`${CFG}#konfigurator`);
   const sel = '.cfg-ind-sel', ghost = page.locator('.cfg-ind-hover');
   await expect.poll(() => shiftX(page, sel)).toBeCloseTo(await columnX(page, 1), 0); // HORIZON zu Beginn

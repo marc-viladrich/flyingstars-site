@@ -195,17 +195,21 @@ if (form) {
 
   // ---------- Auswahl: Anlass, Paket, Drohnenzahl, Text, Logo ----------
   const eur = (v) => startingPrice(v,locale);
-  // Anlässe mit dem Monat des Besuchs ordnen (der Build kennt nur seinen eigenen) und den ersten wählen
-  // Anlass-Pills (Radio-Gruppe, Runde 22): in Saison-Reihenfolge stellen, den ersten wählen
+  // Anlass-Pills (Radio-Gruppe, Runde 22): mit dem Monat des Besuchs ordnen (der Build kennt nur seinen eigenen) und den
+  // ersten wählen. Runde 23: Dieses Modul lädt erst nach (whenNear). Was jemand vorher schon angeklickt hat (Anlass, Paket,
+  // Regler), weicht vom Ausgangswert des HTML ab (checked ≠ defaultChecked) und hat Vorrang vor dem Startzustand.
   const occGroup = $("#cfg-occasion"), ordered = bySeason(OCCASIONS);
   occGroup.replaceChildren(...ordered.map((o) => occGroup.querySelector(`label[data-occasion="${o.id}"]`)).filter(Boolean));
   const occRadio = (id) => occGroup.querySelector(`input[value="${id}"]`);
   const occValue = () => occGroup.querySelector("input:checked")?.value;
-  occRadio(ordered[0].id).checked = true;
-  let occasion = ordered[0], job = 0, text = "", style = "script", tour = false;
+  const chosenEarly = (inputs) => [...inputs].find((i) => i.checked && !i.defaultChecked);
+  const earlyOccasion = OCCASIONS.find((o) => o.id === chosenEarly(occGroup.querySelectorAll("input"))?.value);
+  occRadio((earlyOccasion ?? ordered[0]).id).checked = true;
+  let occasion = earlyOccasion ?? ordered[0], job = 0, text = "", style = "script", tour = false;
   let logo = null, logoId = 0, logoURL = null;
   const slider = $("#cfg-drones");
-  let drones = Number(slider.value);
+  const earlyPkg = chosenEarly(form.querySelectorAll("[name=pkg]"));
+  let drones = earlyPkg && slider.value === slider.defaultValue ? DRONE_RANGES[STEPS[+earlyPkg.value].pkg].min : Number(slider.value);
   // the visitor's own text joins the show as its finale (round 11); one version per package like every motif
   const CAPTIONS = { SPARK: message('showConfigurator.yourTextInTheSky'), HORIZON: message('showConfigurator.lightWritesYourText'), ODYSSEY: message('showconfigurator.yourText') };
   const textMotif = (s) => ({ id: `text-${s}`, label: message('showconfigurator.yourText'), tiers: Object.fromEntries(Object.entries(CAPTIONS).map(([k, caption]) => [k, { build: `text${k}`, caption, value: text, style: s, occasion: occasion.id }])) });

@@ -55,6 +55,8 @@ const inNav = (href: string) => site.nav.some((item) => item.href === href);
 <html lang={locale}>
   <head>
     <meta charset="utf-8" />
+    {/* UI-Wörterbuch der Seitensprache vor allen Modul-Skripten (defer läuft in Dokumentreihenfolge), siehe src/i18n/ui.mjs */}
+    <script is:inline defer src={`/media/i18n/${locale}.js`}></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title} | {site.name}</title>
     <meta name="description" content={factText(description,locale)} />
