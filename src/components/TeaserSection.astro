@@ -1,7 +1,7 @@
 ---
 // Gemeinsame Hülle; die beiden Adapter besitzen ihre fachlichen Teaser-Props weiter.
 import SectionHead from './SectionHead.astro';
-interface Props { id: string; index: number; kicker?: string; headline: string; text?: string }
+interface Props { __afe?: Record<string, unknown>; type?: string; id: string; index: number; kicker?: string; headline: string; text?: string }
 const {id,index,kicker,headline,text}=Astro.props;
 const H=index===0?'h1':'h2';
 ---

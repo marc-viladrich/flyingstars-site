@@ -9,6 +9,6 @@ type Props = Extract<Section, { type: 'landingTeaser' }> & { index: number };
 // `loop` (marke | hochzeit | start): anlassspezifischer Ablauf des Teasers (Runde 9, Prop `reel` am Teaser)
 const { kicker, headline, text, href, cta, loop, id = 'motive', index } = Astro.props;
 ---
-<TeaserSection id={id} index={index} kicker={kicker} headline={headline} text={text}>
+<TeaserSection __afe={(Astro.props as any).__afe} type={Astro.props.type} id={id} index={index} kicker={kicker} headline={headline} text={text}>
   <ConfiguratorTeaser id={`${id}-cft`} href={href} cta={cta} reel={loop} />
 </TeaserSection>

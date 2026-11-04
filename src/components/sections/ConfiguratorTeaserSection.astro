@@ -8,6 +8,6 @@ import ConfiguratorTeaser from '../configurator/ConfiguratorTeaser.astro';
 type Props = Extract<Section, { type: 'configuratorTeaser' }> & { index: number };
 const { headline, text, kicker, occasion, drones, id = 'konfigurator', index } = Astro.props;
 ---
-<TeaserSection id={id} index={index} kicker={kicker} headline={headline} text={text}>
+<TeaserSection __afe={(Astro.props as any).__afe} type={Astro.props.type} id={id} index={index} kicker={kicker} headline={headline} text={text}>
   <ConfiguratorTeaser occasion={occasion} drones={drones} />
 </TeaserSection>
