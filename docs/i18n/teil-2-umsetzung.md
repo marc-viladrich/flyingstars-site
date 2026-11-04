@@ -83,3 +83,10 @@ Maschinenlesbare Ergebnisse, genaue Logpfade und ergänzende Diagnose: [teil-2-p
 Keine neue menschliche Sprachfreigabe, kein Live-Betrieb, kein echter Mailversand und kein echter Übersetzungsanbieter geprüft. Die Provider-Szenarien verwenden die vorhandene Fake-Übersetzung. Keine Videoaufnahme gemäß Auftrag. Die Builds und Tests liefen mit Node 22.22.1; das veröffentlichte AFE-Paket verlangt weiterhin Node >=24.15.0. Ein Node-24-Betriebsnachweis gehört nicht zu diesem Lauf.
 
 Keine offene fachliche Entscheidung. Technisch offen bleibt das Zeitbudget des kalten Git-Sync-/Speicher-Fixture-Tests. Die serverseitigen atomaren Schreib-, Review-, Konflikt- und Buildfehler-Szenarien bestehen. CSS-Dateien und Styleblöcke sind unverändert.
+
+### Nachprüfung der Save-Latenz
+
+Die Korrektur auf `codex/i18n-p3`, ihre Benchmarks gegen `399419f` und der neue
+Gesamtlauf sind in [Teil 3: Save-Latenz](teil-3-save-latenz.md) dokumentiert.
+Der warme Shared-Save überschreitet dort weiterhin das Ziel von höchstens +10 %
+gegenüber main. Der Branch ist deshalb noch nicht vollständig mergebereit.
