@@ -14,6 +14,8 @@ import {PACKAGE_NAMES,packageLabel} from './package-identity.mjs';
 import { DRONE_RANGES, DRONE_STEP } from './show-packages.ts';
 
 export const PACKAGE_ORDER = PACKAGE_NAMES;
+// The browser receives only its page dictionary; eager exports must use that same locale.
+const defaultLocale=typeof document==='undefined'?'de':document.documentElement.lang;
 
 const stepIncludes={
  SPARK:'showConfigurator.predefinedFormationsSuchAsHeartsOrRingsAndUpTo',
@@ -23,7 +25,7 @@ const stepIncludes={
 function stepsFor(locale) { const t=createTranslator(locale);
  return PACKAGE_ORDER.map(pkg=>({pkg,label:packageLabel(pkg,t),includes:t(stepIncludes[pkg])}));
 }
-export const STEPS = stepsFor('de');
+export const STEPS = stepsFor(defaultLocale);
 
 /**
  * Sechzehnte Fassung (Marc, 31.10.2026: „Sehe ich das richtig, dass bei den meisten Anlässen keine neuen Motive
@@ -140,8 +142,8 @@ return  [
   ] },
 ].map(occasion=>({...occasion,anlass:formOccasionFor(occasion.id)}));
 }
-export const OCCASIONS = occasionsFor('de');
-export const getConfiguratorContent = (locale = 'de') => ({ STEPS: stepsFor(locale), OCCASIONS: occasionsFor(locale) });
+export const OCCASIONS = occasionsFor(defaultLocale);
+export const getConfiguratorContent = (locale = defaultLocale) => ({ STEPS: stepsFor(locale), OCCASIONS: occasionsFor(locale) });
 
 /**
  * Saisonale Ordnung wie bei den Anlass-Karten der Startseite (Occasions.astro): Einträge, deren `season` den Monat

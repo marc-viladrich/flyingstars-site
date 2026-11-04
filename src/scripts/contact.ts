@@ -1,3 +1,4 @@
+import {parseInquiry} from '../content/inquiry.mjs';
 import {contact as CONTACT} from '../content/contact.mjs';
 import { t } from '../i18n/ui.mjs';
 let selectPackage: ((name: string) => void) | undefined;
@@ -56,19 +57,20 @@ if (form) {
     if (error) error.textContent = '';
   }));
   const params = new URLSearchParams(location.search);
-  const selected = params.get('paket');
+  const prefill=parseInquiry(params);
+  const selected = prefill.paket;
   const packs = [...form.querySelectorAll<HTMLInputElement>('[name=paket]')];
   const pick = selected ? packs.find((input) => input.value === selected) : undefined;
   if (pick) pick.checked = true;
-  const drones = Number(params.get('drohnen'));
-  if (Number.isInteger(drones) && drones >= 100 && drones <= 1000) {
+  const drones = prefill.drohnen;
+  if (drones !== undefined) {
     const input = document.createElement('input'); input.type = 'hidden'; input.name = 'drohnen'; input.value = String(drones); form.append(input);
   }
   packs.forEach((input) => input.addEventListener('change', () => form.querySelector('[name=drohnen]')?.remove()));
   // Text typed into the price calculator's sky preview and the show put together in the configurator, written into
   // the message as an editable draft. Values are only assigned, never parsed as HTML.
-  const skyText = params.get('text')?.replace(/\s+/g, ' ').trim().slice(0, 60);
-  const showSummary = params.get('show')?.replace(/\r/g, '').trim().slice(0, 600);
+  const skyText = prefill.text;
+  const showSummary = prefill.show;
   const message = form.querySelector<HTMLTextAreaElement>('[name=message]');
   const draft = [showSummary, skyText && t('contact.textInTheSkyValue', { v0: skyText })].filter(Boolean).join('\n');
   if (draft && message && !message.value) message.value = draft;
@@ -83,14 +85,14 @@ if (form) {
     history.replaceState(null, '', '#anfrage');
   };
   // Extras von der Preisseite: Feld einblenden und vorbelegen
-  const extras = (params.get('extras') ?? '').split(',').filter(Boolean);
+  const extras = prefill.extras;
   const extraInputs = [...form.querySelectorAll<HTMLInputElement>('[name=extras]')];
   const extraPicks = extraInputs.filter((input) => extras.includes(input.value));
   if (extraPicks.length) {
     extraPicks.forEach((input) => { input.checked = true; });
     form.querySelector<HTMLElement>('[data-extras-field]')!.hidden = false;
   }
-  const occasion = params.get('anlass');
+  const occasion = prefill.anlass;
   const occasionInput = occasion ? [...form.querySelectorAll<HTMLInputElement>('[name=anlass]')].find((input) => input.value === occasion) : undefined;
   if (occasionInput && !form.querySelector('[name=anlass]:checked')) occasionInput.checked = true;
   // Freitext gehört nicht dauerhaft in die URL. Der erste HTTP-Aufruf ist zu diesem

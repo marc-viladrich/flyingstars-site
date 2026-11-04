@@ -1,4 +1,5 @@
 ---
+import {inquiryHref} from '../content/inquiry.mjs';
 import {startingPrice} from '../lib/price.mjs';
 import {field} from 'astro-frontend-editor/markers';
 // Ein Renderer für beide Paketansichten. Fachwerte und redaktionelle Leistungen kommen aus dem Paketmodell.
@@ -14,7 +15,7 @@ const p = { name: packageId, ...SHOW_PACKAGES[packageId], shape: SHOW_PACKAGES[p
 const money = (v: number) => startingPrice(v,forPath(Astro.url.pathname).locale);
 ---
 {variant === 'summary' ? (
-<a class:list={['pack', { featured: highlight }]} aria-labelledby={headingId} href={localHref(`/kontakt/?paket=${p.name}`)} data-pick-paket={p.name} style={`--c:rgb(${p.color.join(',')})`}>
+<a class:list={['pack', { featured: highlight }]} aria-labelledby={headingId} href={inquiryHref({paket:p.name},locale)} data-pick-paket={p.name} style={`--c:rgb(${p.color.join(',')})`}>
       <canvas data-orb={p.shape} data-color={p.color.join(',')} data-n={p.base} aria-hidden="true"></canvas>
       <div class="pack-head"><div class="name"><C id={headingId}>{p.name}</C>{badge && <span class="chip">{badge}</span>}</div><p class="price">{money(p.price)}</p>{label && <p class="meta mono">{label}</p>}{sky && <p class="pack-sky">{sky}</p>}</div>
       {/* Drohnenzahl als eigene Gruppe in der Paketfarbe, darunter die Kernpunkte (Marc, 01.11.2026). Gleiche Vorschau auf
@@ -31,6 +32,6 @@ const money = (v: number) => startingPrice(v,forPath(Astro.url.pathname).locale)
       {PACKAGE_FEATURES[p.name].plus && <span class="plus">{PACKAGE_FEATURES[p.name].plus}</span>}
       {PACKAGE_FEATURES[p.name].groups.map((g) => <><h4 class="mono">{g.title}</h4><ul>{g.items.map((item) => <li>{item}</li>)}</ul></>)}
       <span class="scale-note mono">{addOnLine(p.name)}</span>
-      <div class="tier-actions"><a class:list={['btn', { primary: highlight }]} href={localHref(`/kontakt/?paket=${p.name}`)}>{p.name} {t('packages.enquiry')}</a><a class="link" href={localHref(`/drohnenshow-preise/?paket=${p.name}#konfigurator`)}>{t('packages.viewInTheConfigurator')} <span aria-hidden="true">→</span></a></div>
+      <div class="tier-actions"><a class:list={['btn', { primary: highlight }]} href={inquiryHref({paket:p.name},locale)}>{p.name} {t('packages.enquiry')}</a><a class="link" href={localHref(`/drohnenshow-preise/?paket=${p.name}#konfigurator`)}>{t('packages.viewInTheConfigurator')} <span aria-hidden="true">→</span></a></div>
     </article>
 )}

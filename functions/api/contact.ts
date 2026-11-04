@@ -1,5 +1,5 @@
+import {INQUIRY_PACKAGES,INQUIRY_LIMITS} from '../../src/content/inquiry.mjs';
 import {FORM_OCCASION_IDS} from '../../src/content/occasions.mjs';
-import {PACKAGE_NAMES} from '../../src/content/package-identity.mjs';
 import { createTranslator } from '../../src/i18n/ui.mjs';
 import { LOCALES, localizedHref, localeFromPath } from '../../src/i18n/routing.mjs';
 
@@ -14,8 +14,8 @@ interface Env {
   SITE_NAME?: string;
 }
 
-const MAX_BODY = 64 * 1024; // Auch ohne oder mit falschem Content-Length durchsetzen.
-const MAX = { name: 120, email: 200, message: 5000 };
+const MAX_BODY = INQUIRY_LIMITS.body; // Auch ohne oder mit falschem Content-Length durchsetzen.
+const MAX = INQUIRY_LIMITS;
 const EXTRA_FIELDS = ['anlass', 'datum', 'datum-offen', 'ort', 'paket', 'drohnen', 'telefon', 'firma', 'quelle'];
 const CONTROL = /[\u0000-\u001f\u007f]/;
 
@@ -60,7 +60,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
 
   // Es gibt keinen Datei-Upload im Kontaktformular. Auch unerwartete Dateien und
   // mehrdeutige Mehrfachfelder ablehnen, bevor etwas an einen Dienst weitergeht.
-  if ([...form].length > 40 || [...form].some(([key, value]) => typeof value !== 'string' || (key !== 'extras' && form.getAll(key).length !== 1))) {
+  if ([...form].length > INQUIRY_LIMITS.fields || [...form].some(([key, value]) => typeof value !== 'string' || (key !== 'extras' && form.getAll(key).length !== 1))) {
     return problem(400, t('contactAPI.invalidForm'));
   }
   locale = LOCALES.find((value) => value === form.get('locale')) ?? 'de';
@@ -77,14 +77,14 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
   const name = get('name'), email = get('email'), message = get('message');
   const extra: Record<string, string> = Object.fromEntries(EXTRA_FIELDS.map((key) => [key, get(key)]));
   const extras = form.getAll('extras').map((value) => String(value).trim()).filter(Boolean);
-  if (extras.length > 10 || extras.some((value) => !/^[a-z]+(-[a-z]+)*$/.test(value) || value.length > 30)) return problem(400, t('contactAPI.extras'));
+  if (extras.length > INQUIRY_LIMITS.extras || extras.some((value) => !/^[a-z]+(-[a-z]+)*$/.test(value) || value.length > INQUIRY_LIMITS.extraId)) return problem(400, t('contactAPI.extras'));
   if (!name || !email || (!message && !extra.anlass)) return problem(400, t('contactAPI.required'));
-  if (Object.values(extra).some((value) => value.length > 200 || CONTROL.test(value))) return problem(400, t('contactAPI.additional'));
+  if (Object.values(extra).some((value) => value.length > INQUIRY_LIMITS.extra || CONTROL.test(value))) return problem(400, t('contactAPI.additional'));
   if (extra.anlass && !FORM_OCCASION_IDS.includes(extra.anlass)) return problem(400, t('contactAPI.occasion'));
-  if (extra.paket && extra.paket!=='offen' && !PACKAGE_NAMES.some(name=>name===extra.paket)) return problem(400, t('contactAPI.package'));
+  if (extra.paket && !INQUIRY_PACKAGES.includes(extra.paket)) return problem(400, t('contactAPI.package'));
   if (extra['datum-offen'] && extra['datum-offen'] !== 'ja') return problem(400, t('contactAPI.openDate'));
   if (extra.datum && (!/^\d{4}-\d{2}-\d{2}$/.test(extra.datum) || !Number.isFinite(Date.parse(extra.datum)) || new Date(extra.datum).toISOString().slice(0, 10) !== extra.datum)) return problem(400, t('contactAPI.date'));
-  if (extra.drohnen && (!/^\d+$/.test(extra.drohnen) || Number(extra.drohnen) < 100 || Number(extra.drohnen) > 1000)) return problem(400, t('contactAPI.drones'));
+  if (extra.drohnen && (!/^\d+$/.test(extra.drohnen) || Number(extra.drohnen) < INQUIRY_LIMITS.dronesMin || Number(extra.drohnen) > INQUIRY_LIMITS.dronesMax)) return problem(400, t('contactAPI.drones'));
   if (name.length > MAX.name || email.length > MAX.email || message.length > MAX.message) return problem(400, t('contactAPI.length'));
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return problem(400, t('contactAPI.email'));
   if (CONTROL.test(name) || CONTROL.test(email) || /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(message)) return problem(400, t('contactAPI.characters'));

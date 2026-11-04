@@ -70,8 +70,9 @@ const { EXTRAS } = getPackageDetails(forPath(Astro.url.pathname).locale);
 </style>
 
 <script>
+  import {inquiryHref} from '../../content/inquiry.mjs';
   import { t } from '../../i18n/ui.mjs';
-  import { localizedHref, localeFromPath } from '../../i18n/routing.mjs';
+  import { localeFromPath } from '../../i18n/routing.mjs';
   const grid = document.querySelector<HTMLElement>('[data-extras]');
   const bar = document.querySelector<HTMLElement>('[data-extras-bar]');
   if (grid && bar) {
@@ -81,11 +82,8 @@ const { EXTRAS } = getPackageDetails(forPath(Astro.url.pathname).locale);
     const chosen = () => boxes.filter((b) => b.checked);
     // Anfrage-Link mit den gewählten Extras; Indoor setzt zusätzlich den Anlass
     const withExtras = (href: string) => {
-      const url = new URL(localizedHref(href, localeFromPath(location.pathname)), location.href);
       const ids = chosen().map((b) => b.value);
-      if (ids.length) url.searchParams.set('extras', ids.join(',')); else url.searchParams.delete('extras');
-      if (ids.includes('indoor')) url.searchParams.set('anlass', 'indoor');
-      return url.pathname + url.search + url.hash;
+      return inquiryHref({extras:ids,...ids.includes('indoor')?{anlass:'indoor'}:{}},localeFromPath(location.pathname),href,location.origin);
     };
     const sync = () => {
       const list = chosen();

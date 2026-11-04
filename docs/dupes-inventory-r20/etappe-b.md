@@ -33,3 +33,11 @@ Guards prüfen sämtliche 57 Dateien, reale Schemas, unbekannte Referenzen, Muta
 `content/occasions.mjs` besitzt die getrennten Formular- und Referenztaxonomien sowie das ausdrückliche Konfigurator→Formular- und Referenz→Formular-Mapping. ContactForm, Referenzfilter, Projektschema, Konfigurator und API verwenden diese Quelle. Die alten Listen und sechs eingestreuten `anlass`-Werte sind entfernt. Die bisherige Zuordnung von Jubiläum und Kultur zu `sonstiges` bleibt erhalten. Unbekannte Konfigurator-IDs schlagen fehl; die Kategorien werden nicht aufgrund gleicher Beschriftungen zusammengelegt.
 
 24/24 betroffene Tests grün, darunter sämtliche Formularanlässe am tatsächlichen API-Validator in DE/EN/NL. Build/i18n grün und 96 HTML-Dateien text- und vertragsgleich.
+
+## Schritt 6b
+
+`content/inquiry.mjs` besitzt Anfrage-Paket-/Extra-IDs, unveränderte Feld-/Body-/Mengenlimits und den URL-Builder/Parser. Paketkarten, Showkonfigurator und Extras verwenden denselben Builder; ContactForm und der tatsächliche API-Handler lesen dieselben Grenzen. Der alte clientseitige Vorbelegungsparser und die getrennten URL-Konstruktionen sind entfernt. Extra-Präsentation und Reihenfolge werden aus denselben IDs abgeleitet. Freitext bleibt eine begrenzte Plain-Text-Vorbelegung und verschwindet nach Übernahme aus der Browser-URL.
+
+Die API behält Body-Streaminggrenze, Origin-Prüfung, Datei-/Mehrfachfeld-Abweisung, Zeitfalle, Kontrollzeichen-, Datums- und Turnstile-Prüfung, Timeouts, minimierte Metadaten sowie ihre bisherige syntaktische Extra-Abweisung. Insbesondere wird ihre akzeptierte Extra-Menge nicht still auf den UI-Katalog eingeschränkt.
+
+29/29 gezielte Tests bestanden, einschließlich Sonderzeichen-/Extras-Roundtrips in DE/EN/NL und des tatsächlichen No-JS-303-Handlers. Build/i18n grün; alle 96 HTML-Dateien weiterhin text- und vertragsgleich. Die neue Playwright-Spec für echte Klicks und native Formularabgabe läuft einmal mit den übrigen betroffenen Specs am Endstand. Eine statische Site kann ohne JavaScript keine Query-Vorbelegung ausführen; der bestehende No-JS-Weg bleibt eine vollständig manuell ausfüllbare native Anfrage mit sprachgleicher Danke-Seite.

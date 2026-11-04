@@ -1,3 +1,4 @@
+import {EXTRA_IDS} from './inquiry.mjs';
 import {SHOW_EXTRAS,extraValues,footageCell} from './show-extras.mjs';
 import {packageLabel} from './package-identity.mjs';
 import {SHOW_DURATION,durationValues} from './show-duration.mjs';
@@ -136,14 +137,15 @@ const COMPARISON_NOTE = t('packageDetails.youProvideTheOnSiteSoundSystemAsTheEve
  * inquiry form (field „Extras“, src/components/sections/ContactForm.astro). `id` is that URL/form value, `short` the chip
  * label in the form and in the summary bar. No eyebrow line in the card any more. */
 interface Extra { id: string; short: string; icon: string; title: string; text: string; price: string; link?: { label: string; href: string } }
-const EXTRAS: Extra[] = [
-  { id: 'express', short: 'Express', icon: 'zap', title: t('packageDetails.aShowInUnderTwoWeeks'), text: t('packageDetails.lessThan14DaysUntilTheShowWePrioritiseDesign'), price: t('packageDetails.surchargeBasedOnScope') },
-  { id: 'film', short: t('packageDetails.rawFootage'), icon: 'camera', title: t('packageDetails.rawFootageFilmedByCameraDrone'), text: t('packageDetails.footageForYourAftermovieAndSocialMedia'), price: t('packageDetails.900IncludedInOdyssey',values) },
-  { id: 'behoerden', short: t('packageDetails.authorityLiaison'), icon: 'landmark', title: t('packageDetails.extendedAuthorityLiaison'), text: t('packageDetails.weHandleAllCommunicationWithPublicOfficesAndAuthorities'), price: t('packageDetails.priceOnRequest') },
-  { id: 'kontrollzone', short: t('packageDetails.nearAirports'), icon: 'plane', title: t('packageDetails.controlledAirspaceAndAirportLocations'), text: t('packageDetails.forControlledAirspaceAndSitesNearAirports'), price: t('packageDetails.priceOnRequest') },
-  { id: 'schweiz', short: t('packageDetails.switzerland'), icon: 'swiss', title: t('packageDetails.showsInSwitzerland'), text: t('packageDetails.focaApplicationAndCustomsClearanceForOurFleet'), price: t('packageDetails.1900ExcludingVat',values) },
-  { id: 'indoor', short: 'Indoor', icon: 'building-2', title: t('packageDetails.indoorDroneShows'), text: t('packageDetails.20To50Drones5To8MinutesCeilingHeight',values), price: t('packageDetails.fromApprox15000ExcludingVatFor20Drones',values), link: { label: t('packageDetails.moreAboutIndoorShows'), href: '/drohnenshow-indoor/' } },
-];
+const extraDetails = {
+  express: { short: 'Express', icon: 'zap', title: t('packageDetails.aShowInUnderTwoWeeks'), text: t('packageDetails.lessThan14DaysUntilTheShowWePrioritiseDesign'), price: t('packageDetails.surchargeBasedOnScope') },
+  film: { short: t('packageDetails.rawFootage'), icon: 'camera', title: t('packageDetails.rawFootageFilmedByCameraDrone'), text: t('packageDetails.footageForYourAftermovieAndSocialMedia'), price: t('packageDetails.900IncludedInOdyssey',values) },
+  behoerden: { short: t('packageDetails.authorityLiaison'), icon: 'landmark', title: t('packageDetails.extendedAuthorityLiaison'), text: t('packageDetails.weHandleAllCommunicationWithPublicOfficesAndAuthorities'), price: t('packageDetails.priceOnRequest') },
+  kontrollzone: { short: t('packageDetails.nearAirports'), icon: 'plane', title: t('packageDetails.controlledAirspaceAndAirportLocations'), text: t('packageDetails.forControlledAirspaceAndSitesNearAirports'), price: t('packageDetails.priceOnRequest') },
+  schweiz: { short: t('packageDetails.switzerland'), icon: 'swiss', title: t('packageDetails.showsInSwitzerland'), text: t('packageDetails.focaApplicationAndCustomsClearanceForOurFleet'), price: t('packageDetails.1900ExcludingVat',values) },
+  indoor: { short: 'Indoor', icon: 'building-2', title: t('packageDetails.indoorDroneShows'), text: t('packageDetails.20To50Drones5To8MinutesCeilingHeight',values), price: t('packageDetails.fromApprox15000ExcludingVatFor20Drones',values), link: { label: t('packageDetails.moreAboutIndoorShows'), href: '/drohnenshow-indoor/' } },
+};
+const EXTRAS: Extra[]=EXTRA_IDS.map(id=>({id,...extraDetails[id as keyof typeof extraDetails]}));
 
 return { SERVICES, PRICE_NOTE, PACKAGE_DETAILS, PACKAGE_POINTS, PACKAGE_FEATURES, dronesLine, addOnLine, COMPARISON, COMPARISON_NOTE, INCLUDED, EXTRAS, showtimeLine };
 }

@@ -1,6 +1,7 @@
+import {inquiryHref} from '../content/inquiry.mjs';
 import {startingPrice} from '../lib/price.mjs';
 import {durationValues} from '../content/show-duration.mjs';
-import { localeFromPath, localizedHref } from '../i18n/routing.mjs';
+import { localeFromPath } from '../i18n/routing.mjs';
 const locale = localeFromPath(location.pathname);
 const { OCCASIONS, STEPS } = getConfiguratorContent(locale);
 import { t as message } from '../i18n/ui.mjs';
@@ -291,7 +292,7 @@ if (form) {
       ...(logo ? [message('showConfigurator.customLogoTriedInThePreview')] : []),
       message('showConfigurator.complexityValueValueValueDronesValueExcludingVatConfiguratorPrice', { v0: s.label, v1: s.pkg, v2: drones, v3: eur(price) }),
     ].join("\n");
-    const inquiry = localizedHref(`/?${new URLSearchParams({ paket: s.pkg, drohnen: String(drones), anlass: occasion.anlass, show: summary })}#anfrage`, locale);
+    const inquiry = inquiryHref({paket:s.pkg,drohnen:drones,anlass:occasion.anlass,show:summary},locale,'/#anfrage');
     $("#cfg-cta").href = inquiry; $("#cfg-bar-cta").href = inquiry;
     drawLocks();
     // while the slider moves, the picture follows once it rests for a moment (every drone count is its own formation)

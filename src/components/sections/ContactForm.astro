@@ -1,4 +1,5 @@
 ---
+import {INQUIRY_LIMITS} from '../../content/inquiry.mjs';
 import {formOccasions} from '../../content/occasions.mjs';
 import {PACKAGE_NAMES,packageLabel} from '../../content/package-identity.mjs';
 import {CONTACT} from '../people';
@@ -44,7 +45,7 @@ const sources = [['Google', 'Google'], ['Empfehlung', t('contactform.recommendat
         <div class="row2">
           <div class="field">
             <label class="lbl" for="f-ort">{t('contactform.whereWillItTakePlace')}</label>
-            <input autocomplete="address-level2" id="f-ort" maxlength="200" name="ort" required type="text" aria-describedby="f-ort-hint" data-msg={t('contactform.whereWillTheShowTakePlaceATownOrPostcode')} />
+            <input autocomplete="address-level2" id="f-ort" maxlength={INQUIRY_LIMITS.extra} name="ort" required type="text" aria-describedby="f-ort-hint" data-msg={t('contactform.whereWillTheShowTakePlaceATownOrPostcode')} />
             <span class="hint" id="f-ort-hint">{t('contactform.townOrPostcodePlusCountryForShowsAbroad')}</span>
             <span class="err" data-err-for="ort" role="alert"></span>
           </div>
@@ -75,18 +76,18 @@ const sources = [['Google', 'Google'], ['Empfehlung', t('contactform.recommendat
       <fieldset class="step" data-step>
         <legend class="sr-only">{t('contactform.step2Of2AboutYou')}</legend>
         <div class="row2">
-          <div class="field"><label class="lbl" for="f-name">{t('contactform.yourName')}</label><input autocomplete="name" data-msg={t('contactform.whatShouldWeCallYou')} id="f-name" maxlength="120" name="name" required type="text" /><span class="err" data-err-for="name" role="alert"></span></div>
-          <div class="field"><label class="lbl" for="f-mail">{t('contactform.yourEmailAddress')}</label><input autocomplete="email" data-msg={t('contactform.whereCanWeReply')} id="f-mail" maxlength="200" name="email" required type="email" /><span class="err" data-err-for="email" role="alert"></span></div>
+          <div class="field"><label class="lbl" for="f-name">{t('contactform.yourName')}</label><input autocomplete="name" data-msg={t('contactform.whatShouldWeCallYou')} id="f-name" maxlength={INQUIRY_LIMITS.name} name="name" required type="text" /><span class="err" data-err-for="name" role="alert"></span></div>
+          <div class="field"><label class="lbl" for="f-mail">{t('contactform.yourEmailAddress')}</label><input autocomplete="email" data-msg={t('contactform.whereCanWeReply')} id="f-mail" maxlength={INQUIRY_LIMITS.email} name="email" required type="email" /><span class="err" data-err-for="email" role="alert"></span></div>
         </div>
         {/* Optionale Angaben treten zurück (Marc, 02.11.2026: „aus dem Weg räumen, skippable“): eine Zeile kleiner
              Knöpfe, jeder blendet sein Feld weich ein. Vorbelegte Felder sind offen; ohne JavaScript ist alles sichtbar. */}
         <div class="opt-add" data-opt-bar hidden><span class="opt-add-l">{t('contactform.addOptional')}</span>
           {[['tel', t('contactform.addPhone')], ['firma', t('contactform.addCompany')], ['msg', t('contactform.addMessage')], ['quelle', t('contactform.addSource')]].map(([key, label]) => <button class="opt-chip" type="button" data-opt-add={key} aria-controls={`opt-${key}`} aria-expanded="false"><span aria-hidden="true">+</span> {label}</button>)}
         </div>
-        <div class="opt" id="opt-tel" data-opt="tel"><div><div class="field"><label class="lbl" for="f-tel">{t('contactform.yourPhoneNumber')} <em>{t('contactform.optional')}</em></label><input autocomplete="tel" id="f-tel" maxlength="200" name="telefon" type="tel" aria-describedby="f-tel-hint" /><span class="hint" id="f-tel-hint">{t('contactform.forACallBackIfYouDLike')}</span></div></div></div>
-        <div class="opt" id="opt-firma" data-opt="firma"><div><div class="field"><label class="lbl" for="f-firma">{t('contactform.companyOrOrganisation')} <em>{t('contactform.optional')}</em></label><input autocomplete="organization" id="f-firma" maxlength="200" name="firma" type="text" /></div></div></div>
+        <div class="opt" id="opt-tel" data-opt="tel"><div><div class="field"><label class="lbl" for="f-tel">{t('contactform.yourPhoneNumber')} <em>{t('contactform.optional')}</em></label><input autocomplete="tel" id="f-tel" maxlength={INQUIRY_LIMITS.extra} name="telefon" type="tel" aria-describedby="f-tel-hint" /><span class="hint" id="f-tel-hint">{t('contactform.forACallBackIfYouDLike')}</span></div></div></div>
+        <div class="opt" id="opt-firma" data-opt="firma"><div><div class="field"><label class="lbl" for="f-firma">{t('contactform.companyOrOrganisation')} <em>{t('contactform.optional')}</em></label><input autocomplete="organization" id="f-firma" maxlength={INQUIRY_LIMITS.extra} name="firma" type="text" /></div></div></div>
         {/* Freitext erst am Ende (Marc, 31.10.2026: im ersten Schritt ist das zu viel auf einmal) */}
-        <div class="opt" id="opt-msg" data-opt="msg"><div><div class="field"><label class="lbl" for="f-msg">{t('contactform.anythingElseYouDLikeToTellUs')} <em>{t('contactform.optional')}</em></label><textarea id="f-msg" maxlength="5000" name="message" rows="3"></textarea></div></div></div>
+        <div class="opt" id="opt-msg" data-opt="msg"><div><div class="field"><label class="lbl" for="f-msg">{t('contactform.anythingElseYouDLikeToTellUs')} <em>{t('contactform.optional')}</em></label><textarea id="f-msg" maxlength={INQUIRY_LIMITS.message} name="message" rows="3"></textarea></div></div></div>
         <div class="opt" id="opt-quelle" data-opt="quelle"><div><div class="field"><label class="lbl" for="f-quelle">{t('contactform.howDidYouHearAboutUs')} <em>{t('contactform.optional')}</em></label><select class="native-select" id="f-quelle" name="quelle"><option value="">{t('contactform.pleaseSelect')}</option>{sources.map(([value, label]) => <option value={value}>{label}</option>)}</select></div></div></div>
         <div class="actions"><button class="btn primary" type="submit">{t('contactform.sendEnquiry')}</button><button class="btn" data-back type="button">{t('contactform.back')}</button></div>
         <p class="hint">{t('contactform.processingNotice')} <a href={localHref("/datenschutz/")}>{t('contactform.privacyPolicy')}</a>.</p>
