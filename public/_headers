@@ -1,3 +1,7 @@
+# The Pages hostname is staging. Keep a future custom production domain indexable.
+https://flyingstars-site.pages.dev/*
+  X-Robots-Tag: noindex
+
 /media/video/showreel-preview-v1.mp4
   Content-Length: 1176210
   Cache-Control: public, max-age=31536000, immutable, no-transform
