@@ -17,7 +17,10 @@ const serve=async root=>{
 };
 const servers=await Promise.all([before,after].map(p=>serve(path.resolve(p)))),report=[];
 try{for(const [engine,type] of [['chromium',chromium],['webkit',webkit]]){
+ if(process.env.PIXEL_ENGINE&&process.env.PIXEL_ENGINE!==engine)continue;
  const browser=await type.launch();try{for(const width of [390,1440,2560])for(const route of ['/','/drohnenshow-preise/','/referenzen/','/ueber-uns/','/kontakt/','/faq/']){
+  if(process.env.PIXEL_WIDTH&&Number(process.env.PIXEL_WIDTH)!==width)continue;
+  if(process.env.PIXEL_ROUTE&&process.env.PIXEL_ROUTE!==route)continue;
   const shots=[],geometry=[];
   for(let i=0;i<servers.length;i++){
    const context=await browser.newContext({viewport:{width,height:900},reducedMotion:'reduce'});
@@ -28,6 +31,9 @@ try{for(const [engine,type] of [['chromium',chromium],['webkit',webkit]]){
    await page.evaluate(async()=>{await document.fonts.ready;for(const img of document.images){img.loading='eager';}await Promise.all([...document.images].map(img=>img.decode().catch(()=>{})));});
    await page.addStyleTag({content:'canvas { visibility: hidden !important; } *, *::before, *::after { animation: none !important; transition: none !important; caret-color: transparent !important; } [data-reveal] { opacity: 1 !important; transform: none !important; }'});
    await page.evaluate(()=>{for(const video of document.querySelectorAll('video')){video.pause();video.removeAttribute('autoplay');}});
+   await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+   // WebKit muss die zuvor außerhalb des Viewports liegenden Flächen zuerst malen.
+   await page.screenshot({fullPage:true,animations:'disabled'});
    geometry.push(await page.locator('main').evaluate(el=>({height:el.scrollHeight,width:el.scrollWidth})));
    const name=`${engine}-${width}-${route.replaceAll('/','')||'home'}-${i}.png`;
    const png=await page.screenshot({path:path.join(out,name),fullPage:true,animations:'disabled'});
