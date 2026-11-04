@@ -1,0 +1,108 @@
+{
+  "version": 2,
+  "addressing": "positional-pre-keys",
+  "sources": 66,
+  "localeFiles": 132,
+  "rawCurrent": 132,
+  "shadowPass": 127,
+  "blockers": [
+    {
+      "file": "src/content/pages/en/drohnenshow-indoor.yaml",
+      "reason": "Fact token mismatch at /sections/2/diagram/description"
+    },
+    {
+      "file": "src/content/pages/en/drohnenshow-werbung.yaml",
+      "reason": "Unknown i18n field: /sections/8/facts/0/vorab"
+    },
+    {
+      "file": "src/content/pages/nl/drohnenshow-werbung.yaml",
+      "reason": "Unknown i18n field: /sections/8/facts/0/vorab"
+    },
+    {
+      "file": "src/content/projects/en/nfl-muenchen.md",
+      "reason": "Fact token mismatch at /summary"
+    },
+    {
+      "file": "src/content/projects/en/sonnemondsterne.md",
+      "reason": "Fact token mismatch at /summary"
+    }
+  ],
+  "sharedDrift": [],
+  "policy": {
+    "page/index": {
+      "shared": 240,
+      "translatable": 252
+    },
+    "post/test": {
+      "shared": 11,
+      "translatable": 4
+    },
+    "project/test": {
+      "shared": 47,
+      "translatable": 35
+    },
+    "faq/test": {
+      "shared": 5,
+      "translatable": 2
+    },
+    "person/test": {
+      "shared": 7,
+      "translatable": 0
+    },
+    "media/test": {
+      "shared": 4,
+      "translatable": 2
+    },
+    "site/contact": {
+      "shared": 7,
+      "translatable": 0
+    },
+    "site/navigation": {
+      "shared": 8,
+      "translatable": 0
+    },
+    "site/show-duration": {
+      "shared": 5,
+      "translatable": 0
+    },
+    "site/show-extras": {
+      "shared": 19,
+      "translatable": 0
+    },
+    "site/business-facts": {
+      "shared": 54,
+      "translatable": 0
+    },
+    "site/project-facts": {
+      "shared": 60,
+      "translatable": 160
+    },
+    "site/preview-policy": {
+      "shared": 11,
+      "translatable": 0
+    },
+    "package/configuration": {
+      "shared": 68,
+      "translatable": 56
+    },
+    "site/ui": {
+      "shared": 0,
+      "translatable": 2148
+    }
+  },
+  "commentOnly": {
+    "checked": 127,
+    "rawStale": 127,
+    "fingerprintUnchanged": 127
+  },
+  "technicalField": {
+    "checked": 127,
+    "rawStale": 127,
+    "fingerprintUnchanged": 127
+  },
+  "textField": {
+    "checked": 127,
+    "rawStale": 127,
+    "fingerprintChanged": 127
+  }
+}

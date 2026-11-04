@@ -1,6 +1,6 @@
 # Schritt 7 / I01: gemeinsame Werte und Übersetzungen
 
-Entwurf für Claude als Lead, 4. November 2026. Noch nicht genehmigt und nicht umgesetzt. Grundlage ist `origin/main` nach Fetch, `3e42814570eaf13ba227f4b5beb3af0ee7665e80`. Arbeitsort `/tmp/fs-i18n-design`, Branch `codex/i18n-design`. Parallel laufende Inhaltsänderungen sind ausdrücklich nicht enthalten. Vor einer Umsetzung muss die Bestandsaufnahme auf dem dann freigegebenen Inhaltsstand wiederholt werden.
+Entwurf für Claude als Lead, 4. November 2026. Von Claude als Lead geprüft und freigegeben; Entscheidungen und Teilumsetzung siehe unten. Grundlage ist `origin/main` nach Fetch, `3e42814570eaf13ba227f4b5beb3af0ee7665e80`. Arbeitsort `/tmp/fs-i18n-design`, Branch `codex/i18n-design`. Parallel laufende Inhaltsänderungen sind ausdrücklich nicht enthalten. Vor einer Umsetzung muss die Bestandsaufnahme auf dem dann freigegebenen Inhaltsstand wiederholt werden.
 
 ## Empfehlung
 
@@ -189,3 +189,17 @@ Permanente Mutationsmatrix: CTA-URL und Maße folgen ohne unnötigen Textreview;
 3. **Umgang mit neuer menschlicher Freigabe:** Soll die reine technische Migration den bisherigen vollständigen Stand als übernommen dokumentieren, ohne neue sprachliche Freigabe, oder ist zugleich eine erneute menschliche Prüfung aller Sprachtexte gewünscht? Empfehlung ersteres; die bestehende Provenienz enthält maschinelle und teilweise historisch fehlerhafte Review-Angaben. Die Architektur darf daraus keine zusätzliche Freigabe ableiten.
 
 Keine offene technische Grundsatzfrage sind Index-Fallbacks, das automatische Setzen von reviewed oder ein stiller deutscher Ersatztext. Diese Wege verletzen den geforderten Erhalt von Zuordnung, Herkunft und Sprachabdeckung. Getrennte Veröffentlichung nach Sprache bleibt außerhalb dieses Schritts; der heutige Gleichlauf wird beibehalten.
+
+
+## Entscheidungen 04.11.
+
+Verbindliche Freigabe von Claude für die Umsetzung:
+
+1. Variante c wird umgesetzt: volle Sprachdateien, deren gemeinsame Felder automatisch synchronisiert werden. Varianten a/b und die optionalen Schritte 6/7 entfallen.
+2. Keine zusätzlichen gemeinsamen Anzeigenamen. Gleichlautende Namen, Alt-Texte und Labels bleiben übersetzbar. Zentral bleiben ausschließlich die vorhandenen Datensätze für Kontakt, Personen, Projekt-/Showfakten und Faktenplatzhalter.
+3. Migration ohne neue menschliche Freigabe. Der bisherige Stand wird als übernommen dokumentiert. Historische `editorReviewed`-Angaben bleiben Herkunft und werden nicht als neue Freigabe ausgelegt.
+4. Keine Videoaufnahme als Abnahmebeleg. Editor-Szenarien werden mit temporärem `AFE_STATE_DIR` getestet. Die frühere Aufnahmeforderung in diesem Entwurf ist damit aufgehoben.
+
+Dieser Teilauftrag umfasst ausschließlich Schritt 1 und die Vorbereitung aus Schritt 3, auf `origin/main` bei `3e42814`. Keine Inhaltsmigration, keine stabilen Keys, keine Änderung an bestehenden Nachweisen und keine Aktivierung des neuen Hashs. Die Raw-SHA-Prüfer bleiben verbindlich. Parallel ergänzte Schemafelder aus `codex/t02-shared-blocks` werden nach dessen Merge annotiert.
+
+Umsetzung, Schnittstellen, Bestandsabweichungen und Prüfergebnisse: [Teil 1: Feldpolicy und Vertrag](teil-1-umsetzung.md).
