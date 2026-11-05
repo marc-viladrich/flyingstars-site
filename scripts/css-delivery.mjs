@@ -12,7 +12,9 @@ export function inspectCssDelivery(directory){
     if(!html.includes('id="main"'))continue;
     const path='/'+relative(root,file).replace(/index\.html$/,'');
     if(html.split('</head>')[1]?.includes('data-style-owner='))throw Error(`Owner CSS leaked into body structure: ${path}`);
-    const links=[...html.matchAll(/<link\b[^>]*>/g)].map(m=>m[0]).filter(t=>attr(t,'rel')==='stylesheet');
+    const activeHtml=html.replace(/<noscript\b[\s\S]*?<\/noscript>/g,'');
+    const links=[...activeHtml.matchAll(/<link\b[^>]*>/g)].map(m=>m[0]).filter(t=>attr(t,'rel')==='stylesheet');
+    for(const link of links.filter(t=>Boolean(attr(t,'media')))){const href=attr(link,'href');if(!html.includes(`<noscript data-style-fallback><link rel="stylesheet" href="${href}"`))throw Error(`Missing no-JS CSS fallback: ${path}: ${href}`);}
     const urls=links.map(t=>attr(t,'href'));
     if(urls.length!==new Set(urls).size)throw Error(`Duplicate CSS asset on ${path}`);
     const global=links.find(t=>attr(t,'data-style-owner')==='global');
@@ -24,16 +26,17 @@ export function inspectCssDelivery(directory){
       const file=join(root,href);if(!existsSync(file))throw Error(`Missing built CSS: ${href}`);
       return readFileSync(file,'utf8');
     });
-    let criticalBytes=0;
+    let criticalBytes=0,criticalShellBytes=0;
     for(const m of html.matchAll(/<style\b([^>]*)>([\s\S]*?)<\/style>/g)){
       if(attr(m[1],'data-style-owner')){const size=Buffer.byteLength(m[2]);if(size>6*1024)throw Error(`Critical CSS budget exceeded: ${path}`);criticalBytes+=size;}
+      if(/\bdata-critical-shell\b/.test(m[1])){criticalShellBytes=Buffer.byteLength(m[2]);if(criticalShellBytes>16*1024)throw Error(`Critical shell budget exceeded: ${path}`);}
       sheets.push(m[2]);
     }
     for(const sheet of sheets){if(/@media\s*\(\s*--/.test(sheet))throw Error(`Unresolved custom media: ${path}`);}
     if(path==='/'){
       for(const sheet of sheets)postcss.parse(sheet).walkRules(rule=>{if(/\.(?:chopper|page-404|st-fig|post-body)(?:\b|-)/.test(rule.selector))throw Error(`Unrelated route styles on home: ${rule.selector}`);});
     }
-    pages.push({path,owners,urls,criticalBytes,externalBytes:urls.reduce((n,url)=>n+statSync(join(root,url)).size,0)});
+    pages.push({path,owners,urls,criticalBytes,criticalShellBytes,externalBytes:urls.reduce((n,url)=>n+statSync(join(root,url)).size,0)});
   }
   if(!pages.length)throw Error('No rendered site pages audited');
   if(globals.size!==1)throw Error('Shared CSS URL differs between site pages');

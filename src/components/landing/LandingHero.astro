@@ -17,7 +17,7 @@ import { optimizedImage } from '../../lib/media';
 import { videos, videoPath } from '../../lib/videos';
 type Props = Extract<Section, { type: 'landingHero' }> & { index: number };
 const { kicker, headline, text, cta, secondary, video, videoLabel = t('common.showreel'), poster, facts } = Astro.props;
-const still = await optimizedImage(poster.src, 960);
+const [still, small, medium] = await Promise.all([960,480,768].map(width => optimizedImage(poster.src,width)));
 const src = videoPath(videos[video], 'preview');
 ---
 <Styles href={ownerStyle0} id="components/landing/LandingHero.css" />
@@ -30,7 +30,7 @@ const src = videoPath(videos[video], 'preview');
     {facts.length > 0 && <FactList items={facts} variant="hero" />}
   </div>
   <MediaFrame class="lh-media" corners="inset" data-lh-reel>
-    <img src={still.src} width={still.width} height={still.height} alt={poster.alt} loading="eager" fetchpriority="high" decoding="async" />
+    <img src={still.src} srcset={`${small.src} ${small.width}w, ${medium.src} ${medium.width}w, ${still.src} ${still.width}w`} sizes="(max-width: 56.25em) 92vw, 48vw" width={still.width} height={still.height} alt={poster.alt} loading="eager" fetchpriority="high" decoding="async" />
     <video data-src={src} muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
     <span class="lh-rec mono" aria-hidden="true">{videoLabel}</span>
     <button class="lh-toggle mono" type="button" data-lh-toggle aria-pressed="false" hidden>

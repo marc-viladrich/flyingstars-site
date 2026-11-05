@@ -1,10 +1,11 @@
 ---
 import Styles from './Styles.astro';
 import ownerStyle0 from './MediaFrame.css?url';
+import frameStyles from './MediaFrame.css?inline';
 interface Props { corners?: 'content' | 'inset' | 'none'; class?: string; as?: 'div' | 'figure'; [key: string]: unknown }
 const { corners = 'none', class: cls, as: Tag = 'figure', ...rest } = Astro.props;
 ---
-<Styles href={ownerStyle0} id="components/MediaFrame.css" />
+<Styles href={ownerStyle0} id="components/MediaFrame.css" critical={frameStyles} />
 <Tag class:list={['media-frame', { frame: corners === 'content' }, cls]} data-corners={corners} {...rest}>
   <slot />
   {corners !== 'none' && <span class="frame-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>}

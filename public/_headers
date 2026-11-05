@@ -91,3 +91,7 @@ https://flyingstars-site.pages.dev/*
 /media/video-lab/loop16-h264-1440-v8.mp4
   Content-Type: video/mp4
   Content-Length: 2917485
+
+# Vite content hashes change whenever the asset bytes change.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable

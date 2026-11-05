@@ -5,7 +5,14 @@ import {CONTACT_OWNER} from '../content/contact.mjs';
 import { localizedCollection } from '../i18n/content';
 import { forPath } from '../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
-import '../styles/fonts.css';
+import fontStyles from '../styles/fonts.css?inline';
+import globalCss from '../styles/global.css?inline';
+import consentStyles from '../styles/consent-bundle.css?url';
+import consentCss from '../styles/consent-bundle.css?inline';
+import {criticalShell} from '../lib/critical-css.mjs';
+import languageStyleDependencies from '../components/LanguageSwitch.astro?raw';
+import iconStyleDependencies from '../components/Icon.astro?raw';
+import StyleLink from '../components/StyleLink.astro';
 import globalStyles from '../styles/global.css?url';
 import type {StyleLocals} from '../lib/style-assets';
 import { getSite } from '../site.config';
@@ -22,13 +29,13 @@ const SOCIAL = [
   { label: 'TikTok', icon: 'tiktok', href: 'https://www.tiktok.com/@flyingstars_art' },
   { label: 'Facebook', icon: 'facebook', href: 'https://www.facebook.com/FlyingStars.Art/' },
 ];
-import Consent from '../components/Consent.astro';
 import { trackingConfig } from '../lib/consent.mjs';
 const tracking = trackingConfig({
   ga: import.meta.env.PUBLIC_GA_ID ?? '',
   ads: import.meta.env.PUBLIC_GOOGLE_ADS_ID ?? '',
   label: import.meta.env.PUBLIC_GOOGLE_ADS_LABEL ?? '',
 });
+const Consent = (tracking.ga || tracking.ads) ? (await import('../components/Consent.astro')).default : undefined;
 import { SHOWS_TOTAL } from '../components/facts';
 interface Props { title: string; description: string; noindex?: boolean; canonicalPath?: string; image?: string; navSection?: string; fullBleed?: boolean; }
 const { title, description, noindex: pageNoindex = false, canonicalPath, image, navSection, fullBleed: bleed = false } = Astro.props;
@@ -56,18 +63,29 @@ const inNav = (href: string) => site.nav.some((item) => item.href === href);
 const content = await Astro.slots.render('default');
 const pageStyles = [...((Astro.locals as StyleLocals).styleAssets?.values() ?? [])]
   .sort((a,b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
+const enhancedCss = pageStyles.some(style => style.initialViewport);
+const shellCss = enhancedCss ? criticalShell(globalCss, [languageStyleDependencies, iconStyleDependencies, ...pageStyles.flatMap(style => style.critical ? [style.critical] : []), ...((tracking.ga || tracking.ads) ? [consentCss] : [])]) : undefined;
 ---
 <!doctype html>
 <html lang={locale}>
   <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href={globalStyles} data-style-owner="global" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style is:inline data-font-styles set:html={fontStyles} />
+    <link rel="preload" href="/fonts/space-grotesk-0.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/inter-latin-400-700-v1.woff2" as="font" type="font/woff2" crossorigin />
+    {shellCss && <style is:inline data-critical-shell set:html={shellCss} />}
+    <StyleLink href={globalStyles} owner="global" deferred={enhancedCss} />
     {pageStyles.map(({href,id,critical}) => critical
       ? <style is:inline data-style-owner={id} set:html={critical} />
-      : <link rel="stylesheet" href={href} data-style-owner={id} />)}
+      : <StyleLink href={href} owner={id} deferred={enhancedCss} />)}
+    {(tracking.ga || tracking.ads) && <StyleLink href={consentStyles} consent deferred />}
     {/* UI-Wörterbuch der Seitensprache vor allen Modul-Skripten (defer läuft in Dokumentreihenfolge), siehe src/i18n/ui.mjs */}
     <script is:inline defer src={`/media/i18n/${locale}.js`}></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {enhancedCss && <script is:inline>
+      // A cold fragment navigation starts outside the critical hero: use full blocking CSS.
+      if(location.hash)document.querySelectorAll('link[data-style-owner][media]').forEach(link=>{link.setAttribute('blocking','render');link.media='all'});
+    </script>}
     <title>{title} | {site.name}</title>
     <meta name="description" content={factText(description,locale)} />
     <link rel="canonical" href={canonical} />
@@ -113,14 +131,9 @@ const pageStyles = [...((Astro.locals as StyleLocals).styleAssets?.values() ?? [
       </div>
       <div class="base mono"><span>© {new Date().getFullYear()} FlyingStars GmbH</span><nav aria-label={t('base.legal')}>{site.footer.legal.map((item) => <a href={localHref(item.href)}>{item.label}</a>)}</nav><button type="button" class="consent-reopen" data-consent-open hidden aria-label={t('consent.reopen')} title={t('consent.reopen')}><Icon name="cookie" size={18} /></button></div>
     </footer>
-    {(tracking.ga || tracking.ads) && <Consent config={tracking} />}
+    {Consent && <Consent config={tracking} />}
     <script>
       import '../scripts/site';
     </script>
   </body>
 </html>
-<style>
-  /* Datenschutz-Einstellungen als Cookie-Symbol rechts in der Fußzeile, statt „Website-Vorschau“ (Marc, 02.11.2026) */
-  .consent-reopen { flex: none; display: grid; place-items: center; width: 2.5rem; height: 2.5rem; padding: 0; border-radius: var(--radius-round); border: 1px solid var(--line-strong); background: none; color: var(--muted); cursor: pointer; transition: color var(--dur-control), border-color var(--dur-control); }
-  .consent-reopen:hover { color: var(--text); border-color: var(--text); }
-</style>
