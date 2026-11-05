@@ -1,0 +1,1292 @@
+{
+ "texts": {
+  "caption": {
+   "de": "{name}, eine Formation aus dem FlyingStars-Katalog",
+   "en": "{name}, a formation from the FlyingStars catalogue",
+   "nl": "{name}, een formatie uit de FlyingStars-catalogus"
+  },
+  "body": {
+   "de": "{name} als Körper in 3D",
+   "en": "{name} as a 3D body",
+   "nl": "{name} als 3D-lichaam"
+  },
+  "story": {
+   "de": "{name}: Licht zeichnet die Form, dann wird sie lebendig",
+   "en": "{name}: light draws the shape, then it comes alive",
+   "nl": "{name}: licht tekent de vorm, dan komt hij tot leven"
+  },
+  "lightDraws": {
+   "de": "Licht zeichnet: {name}",
+   "en": "Light draws: {name}",
+   "nl": "Licht tekent: {name}"
+  },
+  "comesAlive": {
+   "de": "{name} wird lebendig",
+   "en": "{name} comes alive",
+   "nl": "{name} komt tot leven"
+  },
+  "becomesBody": {
+   "de": "{name} wird zum Körper",
+   "en": "{name} becomes a body",
+   "nl": "{name} wordt een lichaam"
+  }
+ },
+ "source": {
+  "title": "FlyingStars-Motivkatalog",
+  "url": "https://flyingstars-katalog-web.vercel.app/",
+  "snapshot": "2026-11-05",
+  "note": "Eingebetteter Katalogstand, Punkte gezählt; Auswahl ist ein Vorschlag an FlyingStars, keine Flugfreigabe."
+ },
+ "motifs": {
+  "anstossen": {
+   "nr": 17,
+   "name": {
+    "de": "Anstoßende Gläser",
+    "en": "Clinking glasses",
+    "nl": "Klinkende glazen"
+   },
+   "theme": "feiern-genuss",
+   "labels": [
+    "Hochzeit",
+    "Firmenfeier/Jubiläum",
+    "Silvester",
+    "Stadtfest/Regional",
+    "Weihnachten",
+    "Ostern/Frühling",
+    "Karneval",
+    "Sport"
+   ],
+   "motion": "clink",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-a819a681c8cee7a2",
+     "points": 72,
+     "declared": 70,
+     "depth": 0.365,
+     "clip": true,
+     "sizeM": [
+      59.43,
+      66.26,
+      23.1
+     ]
+    },
+    {
+     "id": "m-c0934127db49df2e",
+     "points": 88,
+     "declared": 90,
+     "depth": 0.419,
+     "clip": true,
+     "sizeM": [
+      49.62,
+      58.67,
+      24.41
+     ]
+    },
+    {
+     "id": "m-d4538cee3c87fc1b",
+     "points": 108,
+     "declared": 110,
+     "depth": 0.259,
+     "clip": true,
+     "sizeM": [
+      54.27,
+      68.59,
+      17.57
+     ]
+    },
+    {
+     "id": "m-de8bd2e761a7d1ed",
+     "points": 148,
+     "declared": 140,
+     "depth": 0.401,
+     "clip": false,
+     "sizeM": [
+      49.85,
+      60.74,
+      21.86
+     ]
+    }
+   ]
+  },
+  "doppelherz": {
+   "nr": 75,
+   "name": {
+    "de": "Doppelherz",
+    "en": "Double heart",
+    "nl": "Dubbel hart"
+   },
+   "theme": "liebe-hochzeit",
+   "labels": [
+    "Hochzeit",
+    "Firmenfeier/Jubiläum",
+    "Stadtfest/Regional",
+    "Weihnachten",
+    "Musik/Festival"
+   ],
+   "motion": "breathe",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-2ca68bd12b55abee",
+     "points": 80,
+     "declared": 80,
+     "depth": 0.188,
+     "clip": true,
+     "sizeM": [
+      62.29,
+      59.8,
+      10.8
+     ]
+    },
+    {
+     "id": "m-dde71ef7e8d3ecd1",
+     "points": 100,
+     "declared": 100,
+     "depth": 0.231,
+     "clip": false,
+     "sizeM": [
+      54.42,
+      47.71,
+      12.55
+     ]
+    }
+   ]
+  },
+  "initialen": {
+   "nr": 123,
+   "name": {
+    "de": "Herz mit Initialen",
+    "en": "Heart with initials",
+    "nl": "Hart met initialen"
+   },
+   "theme": "liebe-hochzeit",
+   "labels": [
+    "Hochzeit"
+   ],
+   "motion": "breathe",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-c27b74f581fec4ef",
+     "points": 80,
+     "declared": 80,
+     "depth": 0.238,
+     "clip": false,
+     "sizeM": [
+      70.92,
+      45.11,
+      16.87
+     ]
+    }
+   ]
+  },
+  "taube": {
+   "nr": 14,
+   "name": {
+    "de": "Friedenstaube",
+    "en": "Dove of peace",
+    "nl": "Vredesduif"
+   },
+   "theme": "tiere",
+   "labels": [
+    "Hochzeit",
+    "Demo/Politik",
+    "Firmenfeier/Jubiläum",
+    "Stadtfest/Regional",
+    "Musik/Festival",
+    "Kinderfest"
+   ],
+   "motion": "glide",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-93eb7e1b843ab09d",
+     "points": 80,
+     "declared": 80,
+     "depth": 0.3,
+     "clip": true,
+     "sizeM": [
+      56,
+      62.54,
+      18.76
+     ]
+    }
+   ]
+  },
+  "blueten": {
+   "nr": 85,
+   "name": {
+    "de": "Zwei Blüten",
+    "en": "Two blossoms",
+    "nl": "Twee bloesems"
+   },
+   "theme": "natur-himmel",
+   "labels": [
+    "Hochzeit",
+    "Stadtfest/Regional",
+    "Firmenfeier/Jubiläum",
+    "Ostern/Frühling",
+    "Karneval"
+   ],
+   "motion": "spin",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-46c75761c1a84b3a",
+     "points": 120,
+     "declared": 120,
+     "depth": 0.117,
+     "clip": true,
+     "sizeM": [
+      62.8,
+      31.43,
+      7.33
+     ]
+    }
+   ]
+  },
+  "unendlich": {
+   "nr": 88,
+   "name": {
+    "de": "Unendlich-Zeichen",
+    "en": "Infinity sign",
+    "nl": "Oneindigteken"
+   },
+   "theme": "symbole-zeichen",
+   "labels": [
+    "Hochzeit"
+   ],
+   "motion": "run",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-3f693223dd034092",
+     "points": 120,
+     "declared": 120,
+     "depth": 0.435,
+     "clip": false,
+     "sizeM": [
+      47.85,
+      19.4,
+      20.81
+     ]
+    }
+   ]
+  },
+  "schmetterling": {
+   "nr": 86,
+   "name": {
+    "de": "Schmetterling",
+    "en": "Butterfly",
+    "nl": "Vlinder"
+   },
+   "theme": "natur-himmel",
+   "labels": [
+    "Ostern/Frühling",
+    "Stadtfest/Regional",
+    "Hochzeit"
+   ],
+   "motion": "turn",
+   "dimension": "3D",
+   "variants": [
+    {
+     "id": "m-6adbdce3f2e78e98",
+     "points": 120,
+     "declared": 120,
+     "depth": 0.458,
+     "clip": true,
+     "sizeM": [
+      56.4,
+      30.27,
+      13.86
+     ]
+    },
+    {
+     "id": "m-b04c382d7117c798",
+     "points": 144,
+     "declared": 140,
+     "depth": 0.456,
+     "clip": true,
+     "sizeM": [
+      71.16,
+      51.8,
+      19.78
+     ]
+    }
+   ]
+  },
+  "ballons": {
+   "nr": 47,
+   "name": {
+    "de": "Ballons",
+    "en": "Balloons",
+    "nl": "Ballonnen"
+   },
+   "theme": "feiern-genuss",
+   "labels": [
+    "Firmenfeier/Jubiläum",
+    "Hochzeit",
+    "Karneval",
+    "Ostern/Frühling",
+    "Kinderfest",
+    "Musik/Festival",
+    "Stadtfest/Regional",
+    "Sport"
+   ],
+   "motion": "bob",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-009abd7f70e4b396",
+     "points": 100,
+     "declared": 100,
+     "depth": 0.588,
+     "clip": false,
+     "sizeM": [
+      60.19,
+      45.56,
+      35.15
+     ]
+    },
+    {
+     "id": "m-09ce35bc02b7d583",
+     "points": 150,
+     "declared": 150,
+     "depth": 0.444,
+     "clip": true,
+     "sizeM": [
+      84.26,
+      51.21,
+      36.17
+     ]
+    }
+   ]
+  },
+  "fahnen": {
+   "nr": 118,
+   "name": {
+    "de": "Wehende Fahnen",
+    "en": "Waving flags",
+    "nl": "Wapperende vlaggen"
+   },
+   "theme": "orte-laender",
+   "labels": [
+    "Firmenfeier/Jubiläum",
+    "Sport",
+    "Stadtfest/Regional"
+   ],
+   "motion": "wave",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-24d4d38a01f7e6f4",
+     "points": 117,
+     "declared": 120,
+     "depth": 0.191,
+     "clip": true,
+     "sizeM": [
+      50.01,
+      36.87,
+      9.42
+     ]
+    }
+   ]
+  },
+  "handschlag": {
+   "nr": 115,
+   "name": {
+    "de": "Handschlag",
+    "en": "Handshake",
+    "nl": "Handdruk"
+   },
+   "theme": "menschen-figuren",
+   "labels": [
+    "Firmenfeier/Jubiläum"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-3a2eec826186dbb9",
+     "points": 104,
+     "declared": 100,
+     "depth": 0,
+     "clip": true,
+     "sizeM": [
+      117.41,
+      46.58,
+      0.01
+     ]
+    }
+   ]
+  },
+  "stern": {
+   "nr": 13,
+   "name": {
+    "de": "Stern",
+    "en": "Star",
+    "nl": "Ster"
+   },
+   "theme": "symbole-zeichen",
+   "labels": [
+    "Weihnachten",
+    "Silvester",
+    "Firmenfeier/Jubiläum",
+    "Hochzeit",
+    "Stadtfest/Regional",
+    "Ostern/Frühling",
+    "Halloween",
+    "Kinderfest",
+    "Demo/Politik",
+    "Karneval",
+    "Sport",
+    "Musik/Festival"
+   ],
+   "motion": "twinkle",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-88798db3bc0143b7",
+     "points": 100,
+     "declared": 100,
+     "depth": 0.375,
+     "clip": true,
+     "sizeM": [
+      56.72,
+      49.81,
+      21.09
+     ]
+    },
+    {
+     "id": "m-b2c9b2eef941b2f1",
+     "points": 143,
+     "declared": 140,
+     "depth": 0.243,
+     "clip": true,
+     "sizeM": [
+      56.7,
+      52.74,
+      13.77
+     ]
+    }
+   ]
+  },
+  "golfer": {
+   "nr": 90,
+   "name": {
+    "de": "Golfer",
+    "en": "Golfer",
+    "nl": "Golfer"
+   },
+   "theme": "menschen-figuren",
+   "labels": [
+    "Firmenfeier/Jubiläum",
+    "Stadtfest/Regional",
+    "Sport"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-d3cdbe5aeb47875a",
+     "points": 80,
+     "declared": 80,
+     "depth": 0.302,
+     "clip": false,
+     "sizeM": [
+      46.22,
+      34.84,
+      13.45
+     ]
+    }
+   ]
+  },
+  "konfetti": {
+   "nr": 55,
+   "name": {
+    "de": "Konfetti-Kanone",
+    "en": "Confetti cannon",
+    "nl": "Confettikanon"
+   },
+   "theme": "feiern-genuss",
+   "labels": [
+    "Firmenfeier/Jubiläum",
+    "Silvester",
+    "Hochzeit",
+    "Stadtfest/Regional",
+    "Ostern/Frühling",
+    "Karneval",
+    "Musik/Festival",
+    "Kinderfest"
+   ],
+   "motion": "confetti",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-cef98ff37d5b9b24",
+     "points": 158,
+     "declared": 160,
+     "depth": 0.129,
+     "clip": true,
+     "sizeM": [
+      80.66,
+      86.42,
+      9.15
+     ]
+    }
+   ]
+  },
+  "sportwagen": {
+   "nr": 127,
+   "name": {
+    "de": "Sportwagen",
+    "en": "Sports car",
+    "nl": "Sportwagen"
+   },
+   "theme": "fahrzeuge",
+   "labels": [
+    "Sport",
+    "Firmenfeier/Jubiläum"
+   ],
+   "motion": "drive",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-30a79cb8a4e9bd4c",
+     "points": 147,
+     "declared": 150,
+     "depth": 0.128,
+     "clip": false,
+     "sizeM": [
+      104.89,
+      35.48,
+      12.75
+     ]
+    }
+   ]
+  },
+  "drehzahl": {
+   "nr": 126,
+   "name": {
+    "de": "Drehzahlmesser",
+    "en": "Rev counter",
+    "nl": "Toerenteller"
+   },
+   "theme": "fahrzeuge",
+   "labels": [
+    "Sport",
+    "Firmenfeier/Jubiläum"
+   ],
+   "motion": "needle",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-8ed5934f241eb537",
+     "points": 113,
+     "declared": 110,
+     "depth": 0.023,
+     "clip": false,
+     "sizeM": [
+      48.54,
+      48.44,
+      1.12
+     ]
+    }
+   ]
+  },
+  "galaxie": {
+   "nr": 4,
+   "name": {
+    "de": "Galaxie",
+    "en": "Galaxy",
+    "nl": "Melkweg"
+   },
+   "theme": "muster-3d",
+   "labels": [
+    "Hochzeit",
+    "Stadtfest/Regional",
+    "Firmenfeier/Jubiläum",
+    "Weihnachten",
+    "Silvester",
+    "Halloween",
+    "Ostern/Frühling",
+    "Kinderfest",
+    "Musik/Festival",
+    "Karneval",
+    "Demo/Politik",
+    "Sport"
+   ],
+   "motion": "swirl",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-9a051170d803cb16",
+     "points": 100,
+     "declared": 100,
+     "depth": 0.288,
+     "clip": true,
+     "sizeM": [
+      68.8,
+      56.12,
+      15.53
+     ]
+    }
+   ]
+  },
+  "moebius": {
+   "nr": 3,
+   "name": {
+    "de": "Möbius-Schleife",
+    "en": "Möbius strip",
+    "nl": "Möbiusband"
+   },
+   "theme": "muster-3d",
+   "labels": [
+    "Hochzeit",
+    "Firmenfeier/Jubiläum",
+    "Stadtfest/Regional",
+    "Ostern/Frühling",
+    "Kinderfest",
+    "Halloween",
+    "Musik/Festival",
+    "Silvester",
+    "Sport",
+    "Weihnachten",
+    "Karneval",
+    "Demo/Politik"
+   ],
+   "motion": "turn",
+   "dimension": "3D",
+   "variants": [
+    {
+     "id": "m-af6abdcd758604ed",
+     "points": 100,
+     "declared": 100,
+     "depth": 0.775,
+     "clip": true,
+     "sizeM": [
+      50.32,
+      63.24,
+      49
+     ]
+    }
+   ]
+  },
+  "kugel": {
+   "nr": 87,
+   "name": {
+    "de": "Kugel",
+    "en": "Sphere",
+    "nl": "Bol"
+   },
+   "theme": "muster-3d",
+   "labels": [
+    "Stadtfest/Regional",
+    "Ostern/Frühling",
+    "Musik/Festival",
+    "Kinderfest",
+    "Firmenfeier/Jubiläum",
+    "Silvester",
+    "Halloween",
+    "Sport",
+    "Karneval",
+    "Demo/Politik",
+    "Weihnachten",
+    "Hochzeit"
+   ],
+   "motion": "turn",
+   "dimension": "3D",
+   "variants": [
+    {
+     "id": "m-3f44e9b580c17828",
+     "points": 120,
+     "declared": 120,
+     "depth": 0.976,
+     "clip": true,
+     "sizeM": [
+      43.75,
+      35.8,
+      42.21
+     ]
+    },
+    {
+     "id": "m-8b17885a380498eb",
+     "points": 150,
+     "declared": 150,
+     "depth": 0.982,
+     "clip": true,
+     "sizeM": [
+      43.57,
+      39.91,
+      42.47
+     ]
+    }
+   ]
+  },
+  "atom": {
+   "nr": 72,
+   "name": {
+    "de": "Atom",
+    "en": "Atom",
+    "nl": "Atoom"
+   },
+   "theme": "muster-3d",
+   "labels": [
+    "Hochzeit",
+    "Weihnachten",
+    "Karneval",
+    "Demo/Politik",
+    "Sport",
+    "Silvester",
+    "Firmenfeier/Jubiläum",
+    "Musik/Festival",
+    "Halloween",
+    "Kinderfest",
+    "Ostern/Frühling",
+    "Stadtfest/Regional"
+   ],
+   "motion": "turn",
+   "dimension": "3D",
+   "variants": [
+    {
+     "id": "m-760e89119af3b760",
+     "points": 147,
+     "declared": 150,
+     "depth": 0.31,
+     "clip": true,
+     "sizeM": [
+      55.54,
+      55.33,
+      17.23
+     ]
+    },
+    {
+     "id": "m-8098c062d26f4a02",
+     "points": 162,
+     "declared": 160,
+     "depth": 0.308,
+     "clip": true,
+     "sizeM": [
+      55.72,
+      55.65,
+      17.17
+     ]
+    },
+    {
+     "id": "m-a300ca052ba95aab",
+     "points": 220,
+     "declared": 220,
+     "depth": 0.307,
+     "clip": true,
+     "sizeM": [
+      55.81,
+      55.81,
+      17.15
+     ]
+    }
+   ]
+  },
+  "pyramide": {
+   "nr": 2,
+   "name": {
+    "de": "Umgedrehte Pyramide",
+    "en": "Inverted pyramid",
+    "nl": "Omgekeerde piramide"
+   },
+   "theme": "muster-3d",
+   "labels": [
+    "Kinderfest",
+    "Musik/Festival",
+    "Sport",
+    "Demo/Politik",
+    "Karneval",
+    "Weihnachten",
+    "Hochzeit",
+    "Silvester",
+    "Firmenfeier/Jubiläum",
+    "Halloween",
+    "Ostern/Frühling",
+    "Stadtfest/Regional"
+   ],
+   "motion": "turn",
+   "dimension": "3D",
+   "variants": [
+    {
+     "id": "m-087666c8bf53f47f",
+     "points": 150,
+     "declared": 150,
+     "depth": 0.547,
+     "clip": true,
+     "sizeM": [
+      50.96,
+      48.01,
+      27.89
+     ]
+    },
+    {
+     "id": "m-53de50764a706946",
+     "points": 162,
+     "declared": 160,
+     "depth": 0.547,
+     "clip": true,
+     "sizeM": [
+      52.98,
+      48.32,
+      27.87
+     ]
+    }
+   ]
+  },
+  "spirale": {
+   "nr": 73,
+   "name": {
+    "de": "Spirale",
+    "en": "Spiral",
+    "nl": "Spiraal"
+   },
+   "theme": "muster-3d",
+   "labels": [],
+   "motion": "turn",
+   "dimension": "3D",
+   "variants": [
+    {
+     "id": "m-88b9847845e4a8a5",
+     "points": 112,
+     "declared": 110,
+     "depth": 1.108,
+     "clip": true,
+     "sizeM": [
+      40.37,
+      50.74,
+      43.53
+     ]
+    },
+    {
+     "id": "m-d876a67a5ab3885c",
+     "points": 120,
+     "declared": 120,
+     "depth": 1.033,
+     "clip": true,
+     "sizeM": [
+      50.8,
+      59.04,
+      51.51
+     ]
+    },
+    {
+     "id": "m-a407fa0e9a9f48e5",
+     "points": 150,
+     "declared": 150,
+     "depth": 0.94,
+     "clip": true,
+     "sizeM": [
+      32.29,
+      34.95,
+      30.32
+     ]
+    }
+   ]
+  },
+  "palme": {
+   "nr": 83,
+   "name": {
+    "de": "Palmeninsel",
+    "en": "Palm island",
+    "nl": "Palmeiland"
+   },
+   "theme": "natur-himmel",
+   "labels": [
+    "Stadtfest/Regional",
+    "Firmenfeier/Jubiläum",
+    "Hochzeit",
+    "Ostern/Frühling",
+    "Kinderfest",
+    "Musik/Festival"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-7d6887cb2af21ec0",
+     "points": 120,
+     "declared": 120,
+     "depth": 0.602,
+     "clip": true,
+     "sizeM": [
+      45.65,
+      46.37,
+      27.86
+     ]
+    }
+   ]
+  },
+  "bierkrug": {
+   "nr": 117,
+   "name": {
+    "de": "Bierkrug",
+    "en": "Beer mug",
+    "nl": "Bierpul"
+   },
+   "theme": "feiern-genuss",
+   "labels": [
+    "Stadtfest/Regional",
+    "Firmenfeier/Jubiläum",
+    "Ostern/Frühling",
+    "Musik/Festival"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-71c50a65760ab7a1",
+     "points": 120,
+     "declared": 120,
+     "depth": 0.181,
+     "clip": false,
+     "sizeM": [
+      58.3,
+      64.02,
+      11.6
+     ]
+    }
+   ]
+  },
+  "cocktail": {
+   "nr": 84,
+   "name": {
+    "de": "Cocktailglas",
+    "en": "Cocktail glass",
+    "nl": "Cocktailglas"
+   },
+   "theme": "feiern-genuss",
+   "labels": [
+    "Hochzeit",
+    "Firmenfeier/Jubiläum",
+    "Stadtfest/Regional",
+    "Karneval"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-2a0a03a163257cc6",
+     "points": 100,
+     "declared": 100,
+     "depth": 0.413,
+     "clip": true,
+     "sizeM": [
+      31.98,
+      59.64,
+      22.28
+     ]
+    },
+    {
+     "id": "m-18cd70eab64b0585",
+     "points": 120,
+     "declared": 120,
+     "depth": 0.44,
+     "clip": false,
+     "sizeM": [
+      50.56,
+      60.2,
+      23.39
+     ]
+    }
+   ]
+  },
+  "regenbogen": {
+   "nr": 59,
+   "name": {
+    "de": "Regenbogen",
+    "en": "Rainbow",
+    "nl": "Regenboog"
+   },
+   "theme": "natur-himmel",
+   "labels": [
+    "Stadtfest/Regional",
+    "Musik/Festival",
+    "Firmenfeier/Jubiläum",
+    "Hochzeit",
+    "Ostern/Frühling",
+    "Demo/Politik",
+    "Kinderfest"
+   ],
+   "motion": "rainbow",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-1a99044c19f00ded",
+     "points": 92,
+     "declared": 90,
+     "depth": 0.189,
+     "clip": true,
+     "sizeM": [
+      63.2,
+      27.36,
+      10.07
+     ]
+    },
+    {
+     "id": "m-8f7081f4b0a6b832",
+     "points": 201,
+     "declared": 200,
+     "depth": 0.087,
+     "clip": true,
+     "sizeM": [
+      81.1,
+      42.4,
+      7.03
+     ]
+    }
+   ]
+  },
+  "kuhufo": {
+   "nr": 70,
+   "name": {
+    "de": "Kuh und UFO",
+    "en": "Cow and UFO",
+    "nl": "Koe en ufo"
+   },
+   "theme": "tiere",
+   "labels": [
+    "Halloween"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-1cdb64d926d7130a",
+     "points": 153,
+     "declared": 100,
+     "depth": 0.892,
+     "clip": true,
+     "sizeM": [
+      52.18,
+      66.33,
+      50.49
+     ]
+    }
+   ]
+  },
+  "schiff": {
+   "nr": 37,
+   "name": {
+    "de": "Schiff",
+    "en": "Ship",
+    "nl": "Schip"
+   },
+   "theme": "maritim",
+   "labels": [
+    "Stadtfest/Regional",
+    "Firmenfeier/Jubiläum"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-44d9dda0e98ef025",
+     "points": 200,
+     "declared": 180,
+     "depth": 0.164,
+     "clip": true,
+     "sizeM": [
+      178.32,
+      45.31,
+      15.02
+     ]
+    },
+    {
+     "id": "m-846086171dfbe84e",
+     "points": 248,
+     "declared": 220,
+     "depth": 0.213,
+     "clip": true,
+     "sizeM": [
+      126.08,
+      42.35,
+      19.56
+     ]
+    }
+   ]
+  },
+  "welle": {
+   "nr": 137,
+   "name": {
+    "de": "3D-Welle",
+    "en": "3D wave",
+    "nl": "3D-golf"
+   },
+   "theme": "muster-3d",
+   "labels": [
+    "Hochzeit",
+    "Karneval",
+    "Weihnachten",
+    "Firmenfeier/Jubiläum",
+    "Stadtfest/Regional",
+    "Ostern/Frühling",
+    "Kinderfest",
+    "Musik/Festival",
+    "Halloween",
+    "Silvester",
+    "Sport",
+    "Demo/Politik"
+   ],
+   "motion": "surf",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-12f0c99c605f160d",
+     "points": 150,
+     "declared": 150,
+     "depth": 0.474,
+     "clip": true,
+     "sizeM": [
+      46.1,
+      16.28,
+      21.86
+     ]
+    },
+    {
+     "id": "m-679f6ce119251af4",
+     "points": 192,
+     "declared": 190,
+     "depth": 0.545,
+     "clip": true,
+     "sizeM": [
+      48.94,
+      15.4,
+      26.66
+     ]
+    },
+    {
+     "id": "m-855691241980ecfe",
+     "points": 200,
+     "declared": 200,
+     "depth": 0.544,
+     "clip": true,
+     "sizeM": [
+      48.93,
+      15.81,
+      26.63
+     ]
+    }
+   ]
+  },
+  "lebensbaum": {
+   "nr": 114,
+   "name": {
+    "de": "Lebensbaum",
+    "en": "Tree of life",
+    "nl": "Levensboom"
+   },
+   "theme": "natur-himmel",
+   "labels": [
+    "Firmenfeier/Jubiläum",
+    "Hochzeit"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-7ff8bdaf8404b08e",
+     "points": 250,
+     "declared": 250,
+     "depth": 0.281,
+     "clip": false,
+     "sizeM": [
+      75.38,
+      72.4,
+      21.17
+     ]
+    }
+   ]
+  },
+  "mandala": {
+   "nr": 71,
+   "name": {
+    "de": "Mandala",
+    "en": "Mandala",
+    "nl": "Mandala"
+   },
+   "theme": "muster-3d",
+   "labels": [
+    "Hochzeit",
+    "Firmenfeier/Jubiläum",
+    "Stadtfest/Regional",
+    "Ostern/Frühling",
+    "Halloween",
+    "Silvester",
+    "Weihnachten",
+    "Demo/Politik",
+    "Karneval",
+    "Sport",
+    "Musik/Festival",
+    "Kinderfest"
+   ],
+   "motion": "spin",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-398acba98832f5a1",
+     "points": 300,
+     "declared": 300,
+     "depth": 0.297,
+     "clip": true,
+     "sizeM": [
+      65.71,
+      63.61,
+      19.5
+     ]
+    }
+   ]
+  },
+  "sektflasche": {
+   "nr": 16,
+   "name": {
+    "de": "Sektflasche",
+    "en": "Champagne bottle",
+    "nl": "Champagnefles"
+   },
+   "theme": "feiern-genuss",
+   "labels": [
+    "Hochzeit",
+    "Firmenfeier/Jubiläum",
+    "Silvester",
+    "Stadtfest/Regional",
+    "Weihnachten",
+    "Ostern/Frühling",
+    "Karneval",
+    "Sport"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-ca9282aba8d6db4a",
+     "points": 75,
+     "declared": 70,
+     "depth": 0.243,
+     "clip": true,
+     "sizeM": [
+      59.98,
+      55.67,
+      12.84
+     ]
+    },
+    {
+     "id": "m-87d870772a5e42c5",
+     "points": 131,
+     "declared": 120,
+     "depth": 0.169,
+     "clip": true,
+     "sizeM": [
+      71.39,
+      58.71,
+      11.52
+     ]
+    }
+   ]
+  }
+ }
+}

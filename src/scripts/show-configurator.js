@@ -126,21 +126,26 @@ if (form) {
   };
   const hideTip = () => { tip.classList.remove("is-on", "is-locked"); tipAt = null; };
 
-  // Gesperrte Motive (sechzehnte Fassung): je Motiv, das bei dieser Drohnenzahl noch nicht spielt, ein ungeleuchteter
-  // Lichtpunkt rechts neben der Spur, nach Schwelle geordnet. Zeigen oder Fokus nennt Motiv und Schwelle, ein Klick
-  // stellt die Schwelle ein (die Meldung erscheint, die Bühne fliegt durch die Wolke dorthin).
+  // Gesperrte Motive (sechzehnte Fassung): ungeleuchtete Lichtpunkte rechts neben der Spur, nach Schwelle geordnet.
+  // Zeigen oder Fokus nennt Motiv und Schwelle, ein Klick stellt die Schwelle ein (die Meldung erscheint, die Bühne fliegt
+  // durch die Wolke dorthin). Runde 24: ein Punkt je Schwelle, nicht je Motiv. Mit den Katalogmotiven schalten sich bei
+  // 120, 150 und 160 Drohnen mehrere Motive zugleich frei; je Motiv ein Punkt drückte auf dem Handy die Tempo-Knöpfe aus
+  // dem Bild.
   function drawLocks() {
     const list = occasion.motifs.map((m) => [m, unlockAt(m, drones)]).filter(([, at]) => at !== null).sort((a, b) => a[1] - b[1]);
     const key = `${occasion.id}:` + list.map(([m, at]) => `${m.id}@${at}`).join(",");
     if (locks.dataset.key === key) return;
     locks.dataset.key = key;
     locks.hidden = !list.length;
-    locks.replaceChildren(...list.map(([m, at]) => {
+    const groups = [];
+    for (const [m, at] of list) { const g = groups.at(-1); if (g && g.at === at) g.motifs.push(m); else groups.push({ at, motifs: [m] }); }
+    locks.replaceChildren(...groups.map(({ at, motifs }) => {
+      const names = motifs.map((m) => m.label), short = names.length > 2 ? `${names.slice(0, 2).join(", ")} +${names.length - 2}` : names.join(", ");
       const b = document.createElement("button");
-      b.type = "button"; b.className = "cfg-lock"; b.dataset.motif = m.id; b.dataset.at = String(at);
-      b.setAttribute("aria-label", message('showConfigurator.valueFromValueDronesSetDroneCountToValue', { v0: m.label, v1: at, v2: at }));
+      b.type = "button"; b.className = "cfg-lock"; b.dataset.motif = motifs.map((m) => m.id).join(" "); b.dataset.at = String(at);
+      b.setAttribute("aria-label", message('showConfigurator.valueFromValueDronesSetDroneCountToValue', { v0: names.join(", "), v1: at, v2: at }));
       b.innerHTML = '<i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i>';
-      const show = () => { setTip(m.label, at); const r = b.getBoundingClientRect(); placeTip((r.left + r.right) / 2); tip.classList.add("is-on", "is-locked"); tipAt = null; };
+      const show = () => { setTip(short, at); const r = b.getBoundingClientRect(); placeTip((r.left + r.right) / 2); tip.classList.add("is-on", "is-locked"); tipAt = null; };
       b.addEventListener("pointerenter", show); b.addEventListener("focus", show);
       b.addEventListener("pointerleave", () => { if (document.activeElement !== b) hideTip(); }); b.addEventListener("blur", hideTip);
       b.addEventListener("click", () => { hideTip(); first = false; setDrones(at); });

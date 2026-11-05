@@ -19,7 +19,7 @@ import { flute2d, flute3d, bubbles, trophy2d, trophy3d, bulb2d, bulb3d, bulbGlas
 import { solitaire, rocketSolid, globe, launchPad, moonHorizon, flagStar, starField } from "./show-shapes.js";
 import { share, shield, shield3d, crestStar3d, CREST_NUMBER, inCrestFlag, crown, rocket, rocket3d, flame, maskPair, maskPair3d, mask3d, MASKS, curtain, clockRim, clockDial, hand, sparkleShell, tower, tower3d, waves, TOWER_SPHERE, gate3d, arrowPaths, inside, bottle3d, cork } from "./show-shapes.js";
 
-let figure = null, extra = null;
+let figure = null, extra = null, catalogModule = null;
 const loadExtra = () => (extra ||= import("./scenes/index.js").then((m) => m.BUILDERS).catch((e) => { extra = null; throw e; }));
 const loadHearts = loadHeartData;
 const loadFigure = () => (figure ||= fetch("/media/projekte/bokkenrijders/formation.json").then((r) => { if (!r.ok) throw new Error(`Formation HTTP ${r.status}`); return r.json(); }).catch((e) => { figure = null; throw e; }));
@@ -202,6 +202,8 @@ async function buildBeats(version, n) {
     if (first) beats[0] = { ...beats[0], caption: first }; // ein Motiv, das mitten in einer Geschichte beginnt, bekommt einen eigenen ersten Satz
     return { ...all, beats };
   };
+  // Runde 24: Motive aus dem FlyingStars-Katalog (scenes/catalog.js, erst bei Bedarf geladen); Bauname catalog:<Motiv>:<Paket>:<Anlass>
+  if (version.build.startsWith("catalog:")) { const [, key, tier] = version.build.split(":"); const { catalogScene } = await (catalogModule ||= import("./scenes/catalog.js")); return catalogScene(key, tier, n, caption); }
   switch (version.build) {
     case "diveStory": if (!version.whole) return sliceExtra("diveStory", 0, 4); break;
     case "medalStory": return sliceExtra("diveStory", 4, 5, "Die Ringe im Wasser werden zu eurer Zahl");
