@@ -1,0 +1,14 @@
+/* pageHero: component-owned delivery; see docs/css-delivery.md. */
+
+.page-hero { padding: clamp(var(--space-9), 6vw, var(--space-20)) var(--gutter) clamp(var(--space-12), 7vw, var(--space-24)); display: grid; gap: clamp(var(--space-7), 5vw, var(--space-18)); align-items: center; }
+.page-hero.has-media { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.page-hero-copy { display: grid; gap: var(--space-5-5); justify-items: start; align-self: start; }
+.page-hero h1 { font-size: var(--text-page); line-height: 1; letter-spacing: -0.035em; max-width: 16ch; }
+.page-hero .lead { max-width: 52ch; }
+.page-hero-media { margin: 0; border-radius: var(--radius); overflow: hidden; --curtain-r: var(--radius); background: var(--media-ground); }
+.page-hero-media img { width: 100%; height: auto; }
+
+@media (--nav-collapsed) {
+  .page-hero.has-media { grid-template-columns: 1fr; }
+}
+.page-hero-copy > .kicker { margin-bottom: calc(-1 * var(--space-2)); }

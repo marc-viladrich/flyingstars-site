@@ -1,0 +1,38 @@
+
+
+  .lb-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: minmax(12.5rem, auto); gap: clamp(var(--space-3), 1.4vw, var(--space-5)); }
+  .lb-lead { grid-column: span 2; grid-row: span 2; position: relative; border-radius: var(--radius); overflow: hidden; background: var(--surface-2); border: 1px solid var(--line); display: grid; align-content: end; min-height: 26.25rem; }
+  .lb-lead.has-img { border: 0; }
+  /* Aussage ohne Bild: ruhiges Raster aus Lichtpunkten, nach oben rechts ausblendend, wie Drohnen am Boden vor dem Start */
+  .lb-lead:not(.has-img)::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(circle, rgb(var(--rgb-amber) / 0.5) 0.0625rem, transparent 0.1rem); background-size: 1.375rem 1.375rem; -webkit-mask-image: radial-gradient(120% 90% at 100% 0%, #000, transparent 62%); mask-image: radial-gradient(120% 90% at 100% 0%, #000, transparent 62%); opacity: 0.55; pointer-events: none; }
+  .lb-img { position: absolute; inset: 0; --curtain-r: var(--radius); }
+  .lb-img img { width: 100%; height: 100%; object-fit: cover; }
+  .lb-lead.has-img::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, rgb(var(--rgb-ground) / 0.86)); pointer-events: none; z-index: 1; }
+  .lb-lead-copy { position: relative; z-index: 2; display: grid; gap: var(--space-3); justify-items: start; padding: clamp(var(--space-6), 3vw, var(--space-11)); }
+  .lb-lead h2, .lb-lead h3 { font-size: clamp(1.75rem, 3.2vw, 3rem); line-height: 1.04; letter-spacing: -0.03em; max-width: 16ch; }
+  .lb-lead p { color: var(--muted); max-width: 44ch; margin: 0; }
+  .lb-lead.has-img p { color: var(--ink-prominent); }
+  .lb-k { color: var(--accent); }
+  .lb-cell { border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); padding: clamp(var(--space-5-5), 2.4vw, var(--space-8)); display: grid; gap: var(--space-2-5); align-content: start; }
+  /* zwei Kacheln: je eine ganze Zeile rechts; drei: die letzte rechts unten über zwei Spalten */
+  .lb-grid[data-n='2'] .lb-cell { grid-column: span 2; }
+  .lb-grid[data-n='3'] .lb-cell:last-child { grid-column: span 2; }
+  .lb-grid[data-n='1'] .lb-cell { grid-column: span 2; grid-row: span 2; }
+  .lb-feat { gap: var(--space-3); }
+  /* Icon und Überschrift wie im Icon-Raster der Preisseite (.ic-ico/.ic-h in global.css) */
+  /* CtaBox ist eine eigene Komponente: Abstand über :global, sonst greift das Komponenten-CSS nicht */
+  .lb-close { margin-top: clamp(var(--space-8), 4vw, var(--space-14)); }
+  .lb-more { margin-top: clamp(var(--space-6), 3vw, var(--space-10)); }
+  /* Aussage ohne Bild: Inhalt in der Mitte statt unten, Icon darüber */
+  .lb-lead:not(.has-img) { align-content: center; }
+  .lb-lead-copy .lb-lead-ico { width: 2.5rem; height: 2.5rem; margin-bottom: var(--space-1-5); }
+  @media (--grid-stacked) {
+    .lb-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .lb-lead { grid-column: 1 / -1; grid-row: auto; min-height: 23.75rem; }
+    .lb-grid[data-n='3'] .lb-cell:last-child { grid-column: 1 / -1; }
+  }
+  @media (--compact) {
+    .lb-grid { grid-template-columns: 1fr; grid-auto-rows: auto; }
+    .lb-grid .lb-cell, .lb-grid[data-n] .lb-cell { grid-column: auto; grid-row: auto; }
+    .lb-lead { min-height: 21.25rem; }
+  }

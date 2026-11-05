@@ -1,0 +1,5 @@
+
+
+  .post-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(var(--space-8), 3vw, var(--space-12)) var(--card-grid-gap); }
+  @media (--grid-stacked) { .post-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 45em) { .post-grid { grid-template-columns: minmax(0, 1fr); } }

@@ -1,14 +1,15 @@
+import {readStyles,styleFiles} from './test-support/styles.mjs';
 // Quellprüfung ist hier Absicht: der Vertrag ist ein gemeinsamer CSS-Besitzer, nicht nur derselbe berechnete Wert.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import postcss from 'postcss';
 import {read} from './test-support/read.mjs';
-const css=postcss.parse(read('src/styles/global.css'));
+const css=postcss.parse(readStyles());
 const declarations=(selector)=>{const result={};css.walkRules(selector,rule=>rule.walkDecls(d=>{result[d.prop]=d.value;}));return result;};
 test('K02: Blog- und Projektraster teilen den Spaltenabstand und behalten ihre Raster',()=>{
  assert.equal(declarations(':root')['--card-grid-gap'],'clamp(var(--space-4), 2vw, var(--space-7))');
  assert.equal(declarations('.projects').gap,'var(--card-grid-gap)');
- assert.ok(read('src/components/blog/PostGrid.astro').includes('var(--card-grid-gap)'));
+ assert.ok(read('src/components/blog/PostGrid.css').includes('var(--card-grid-gap)'));
 });
 test('K03: Slider und Schließknopf teilen Geometrie, Zustände bleiben am Slider',()=>{
  const shared=declarations('.reel-close, .slider-btn');

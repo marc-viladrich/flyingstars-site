@@ -1,0 +1,35 @@
+/* faq: component-owned delivery; see docs/css-delivery.md. */
+
+.faq-grid { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(var(--space-7), 5vw, var(--space-20)); align-items: start; }
+.faq-grid .intro { display: grid; gap: var(--space-4-5); position: sticky; top: 6.875rem; }
+.faq-grid .intro p { color: var(--muted); max-width: 40ch; }
+.faq { border-top: 1px solid var(--line-strong); }
+.faq details { border-bottom: 1px solid var(--line); }
+.faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: var(--space-5); padding: var(--space-5-5) 0; font: 500 clamp(1.125rem, 1.5vw, 1.3125rem)/1.3 var(--display); letter-spacing: -0.01em; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: ""; flex: 0 0 0.875rem; height: 0.875rem; background: linear-gradient(var(--text), var(--text)) center / 0.875rem 0.09375rem no-repeat, linear-gradient(var(--text), var(--text)) center / 0.09375rem 0.875rem no-repeat; transition: transform var(--dur-color); }
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq .answer { padding: 0 0 var(--space-6); color: var(--muted); display: grid; gap: var(--space-2-5); max-width: 64ch; }
+.faq .answer ul { margin: 0; padding-left: var(--space-4-5); display: grid; gap: var(--space-1-5); }
+.faq .answer a { color: var(--text); border-bottom: 1px solid var(--line-strong); transition: border-color var(--dur-control); }
+.faq .answer a:hover { border-color: var(--text); }
+@media (--nav-collapsed) {
+  .faq-grid { grid-template-columns: 1fr; }
+  .faq-grid .intro { position: static; }
+}
+.faq-body { display: grid; gap: clamp(var(--space-9), 5vw, var(--space-14)); min-width: 0; }
+.faq-group-h { font-size: clamp(1.3125rem, 1.8vw, 1.625rem); letter-spacing: -0.02em; margin-bottom: var(--space-3-5); }
+.faq-grouped .faq-grid { grid-template-columns: 1fr; }
+.faq-grouped .faq-grid .intro { position: static; max-width: 52rem; margin-bottom: clamp(var(--space-4), 3vw, var(--space-8)); }
+.faq-grouped .faq-body { gap: 0; }
+.faq-grouped .faq-group { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(var(--space-7), 5vw, var(--space-20)); align-items: start; padding: clamp(var(--space-7), 4vw, var(--space-12)) 0; border-top: 1px solid var(--line-strong); }
+.faq-grouped .faq-group-h { position: sticky; top: 6.5rem; margin: 0; padding-top: var(--space-4-5); font: 500 clamp(1.625rem, 2.6vw, 2.375rem)/1.08 var(--display); letter-spacing: -0.025em; color: var(--head); }
+.faq-grouped .faq-group-h::before { content: counter(faqgroup, decimal-leading-zero); counter-increment: faqgroup; display: block; margin-bottom: var(--space-3); font: 400 var(--text-xs)/1.5 var(--mono); letter-spacing: 0.1em; color: var(--accent); }
+.faq-grouped .faq-body { counter-reset: faqgroup; }
+.faq-grouped .faq { border-top: 0; }
+@media (--nav-collapsed) {
+  .faq-grouped .faq-group { grid-template-columns: 1fr; gap: var(--space-1-5); }
+  .faq-grouped .faq-group-h { top: 3.625rem; z-index: 2; padding: var(--space-3-5) 0 var(--space-3); background: color-mix(in srgb, var(--ground) 92%, transparent); backdrop-filter: blur(0.625rem); -webkit-backdrop-filter: blur(0.625rem); font-size: 1.5rem; }
+  .faq-grouped .faq-group-h::before { display: inline; margin: 0 var(--space-2-5) 0 0; }
+}
+.faq-cta { margin-top: clamp(var(--space-10), 5vw, var(--space-18)); width: 100%; }

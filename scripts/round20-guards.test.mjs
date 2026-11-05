@@ -1,3 +1,4 @@
+import {readStyles,styleFiles} from './test-support/styles.mjs';
 import {read} from './test-support/read.mjs';
 // Runde 20 (04.11.2026): Header-Hover, Sprachwahl als Popover, Kontaktdaten aus einer Quelle.
 import test from 'node:test';
@@ -7,7 +8,7 @@ import { join } from 'node:path';
 
 
 test('Hover im Kopf: Unterstrich je Link, gleitende Box als echtes Element (WebKit-Falle)', () => {
-  const css = read('src/styles/global.css');
+  const css = readStyles();
   // Unterstrich je Hauptpunkt (Marc 04.11.: „in sich geschlossen“) über den zentralen Unterstrich-Effekt, kein gemeinsamer Marker
   assert.match(css, /:where\(\.hover-line, \.link, \.nav nav > a, \.nav-drop > a,/);
   assert.doesNotMatch(css, /\.nav nav::after/);
@@ -33,22 +34,22 @@ test('Sprachwahl öffnet wie „Anlässe“: Zeigen und Fokus, reines CSS, Liste
 });
 
 test('Gleitende Box: Anchor Positioning als Standard, Index-Ersatz für Browser ohne (Safari 18)', () => {
-  const css = read('src/styles/global.css');
+  const css = readStyles();
   assert.match(css, /@supports \(anchor-name: --a\) \{\s*\.glide-list \{ anchor-scope/);
   assert.match(css, /\.glide-mark \{[^}]*transform: translateY\(calc\(var\(--gi\) \* 100%\)\)/);
   for (const [file, re] of [['src/layouts/Base.astro', /class="glide-list" style=\{`--n: /], ['src/components/LanguageSwitch.astro', /class="glide-list" style=\{`--n: /]]) assert.match(read(file), re, file);
 });
 
 test('Ein Unterstrich-Effekt für alle eigenständigen Textlinks, Grundregel ohne Spezifität', () => {
-  const css = read('src/styles/global.css');
+  const css = readStyles();
   assert.match(css, /:where\(\.hover-line, \.link, \.nav nav > a,[^{]*\) \{ background-image: var\(--grad\)/, 'Grundregel in :where(), sonst schlägt sie die Auslöser (Kartentitel blieb unterstrichlos)');
   assert.match(read('src/components/MediaCard.astro'), /<span class="hover-line" set:html=\{titleHtml\} \/>/);
-  assert.doesNotMatch(read('src/styles/media-card.css'), /text-decoration: underline/);
+  assert.doesNotMatch(read('src/components/MediaCard.css'), /text-decoration: underline/);
   assert.doesNotMatch(css, /\.nav nav > a::after|\.member:hover h3, \.member:focus-within h3 \{ background-size/);
 });
 
 test('Bewegung: ein Schalter für die ganze Seite (Pause-Knopf und prefers-reduced-motion)', () => {
-  const css = read('src/styles/global.css');
+  const css = readStyles();
   assert.match(css, /html\.motion-paused \*, html\.motion-paused \*::before, html\.motion-paused \*::after \{ animation-duration: 0\.01ms !important;[^}]*transition-duration: 0\.01ms !important/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\) \{\s*html \*, html \*::before, html \*::after \{ animation-duration: 0\.01ms !important/);
   assert.match(read('src/layouts/Base.astro'), /if\(still\)document\.documentElement\.classList\.add\('motion-paused'\)/, 'Klasse vor dem ersten Bild');

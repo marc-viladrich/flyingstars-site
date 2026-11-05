@@ -1,4 +1,6 @@
 ---
+import Styles from '../Styles.astro';
+import ownerStyle0 from './Faq.css?url';
 import SectionHead from '../SectionHead.astro';
 import { localizedCollection } from '../../i18n/content';
 import { forPath } from '../../i18n/server';
@@ -26,6 +28,7 @@ const blocks = groups?.length
 const external = cta?.href.startsWith('https://');
 const photo = closing?.image ? await optimizedImage(closing.image.src, 640) : undefined;
 ---
+<Styles href={ownerStyle0} id="components/sections/Faq.css" />
 <section class:list={['section', { 'faq-grouped': groups?.length }]} id={id} aria-labelledby={headingId}>
   {/* Mit Gruppen (FAQ-Seite): Kopf oben, je Gruppe links die Kategorie, die beim Scrollen mitläuft (sticky), rechts die
        Fragen. So ist klar, was Kategorie und was Frage ist (Marc, 31.10.2026). */}

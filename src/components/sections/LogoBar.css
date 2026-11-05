@@ -1,0 +1,33 @@
+/* logo: component-owned delivery; see docs/css-delivery.md. */
+
+.band { border-bottom: 1px solid var(--line); padding: var(--space-7-5) var(--gutter); overflow: hidden; }
+@keyframes logo-slide { to { transform: translateX(-100%); } }
+.proof { display: grid; }
+.proof .press ul { list-style: none; padding: 0; margin: 0; display: grid; }
+.proof .press a, .proof .press .noref { place-items: center start; transition: background var(--dur-control); }
+.proof .press img { height: 1.625rem; }
+.proof .press b { font: 600 1.375rem/1.1 var(--display); letter-spacing: -0.02em; color: var(--head); }
+.proof .quality ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-6); }
+.proof .quality .q-logo { width: auto; object-fit: contain; object-position: left; filter: brightness(0) invert(1); opacity: 0.85; }
+
+@media (--nav-collapsed) {
+  .proof .quality ul { grid-template-columns: 1fr 1fr; }
+}
+@media (--compact) {
+  .proof .quality ul { grid-template-columns: 1fr; }
+}
+.proof { gap: clamp(var(--space-10), 5vw, var(--space-16)); }
+.proof .quality ul:not(.q-minor) { grid-template-columns: repeat(auto-fit, minmax(min(12.5rem, 100%), 1fr)); }
+.proof .quality .q-logo { height: 3.25rem; max-width: 11.25rem; margin-bottom: var(--space-3-5); }
+.proof .quality .q-minor { list-style: none; margin: var(--space-7-5) 0 0; padding: var(--space-4-5) 0 0; border-top: 1px solid var(--line); display: flex !important; flex-wrap: wrap; gap: var(--space-2-5) var(--space-8); }
+.proof .q-minor li { display: flex; align-items: center; gap: var(--space-2-5); color: var(--faint); font-size: var(--text-sm); }
+.proof .q-minor .ico { width: 1.125rem; height: 1.125rem; }
+.proof .press ul { grid-template-columns: repeat(auto-fit, minmax(min(9.375rem, 100%), 1fr)); gap: var(--space-7) var(--space-6); }
+.proof .press a, .proof .press .noref { display: grid; gap: var(--space-3); align-content: start; justify-items: start; padding: 0; background: none; min-height: 0; border-radius: 0; height: auto; }
+.proof .press a:hover { background: none; }
+.proof .press a:hover img { opacity: 1; }
+.proof .press img { width: auto; max-width: 9.375rem; object-fit: contain; object-position: left bottom; filter: brightness(0) invert(1); opacity: 0.82; transition: opacity var(--dur-control); }
+.proof .press img.knock { filter: grayscale(1) brightness(0.85) contrast(1.15); opacity: 1; }
+.proof .press .note { color: var(--faint); font-size: var(--text-sm); line-height: 1.4; }
+.proof .press a .note { color: var(--muted); }
+.proof .press :is(a, .noref) { min-height: 3rem; align-content: center; }

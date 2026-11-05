@@ -1,0 +1,19 @@
+/* text: component-owned delivery; see docs/css-delivery.md. */
+
+.prose { max-width:70ch;font-size:var(--text-md);line-height:1.75; }
+.prose h2, .prose h3 { margin-top:1.5em; }
+.prose p, .prose ul { margin:1em 0; }
+.text-media { display: grid; gap: clamp(var(--space-7), 5vw, var(--space-18)); align-items: start; }
+.text-media.has-media { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.text-media.media-left .tm-media { order: -1; }
+.text-media .prose h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.02; letter-spacing: -0.035em; margin-bottom: 0.6em; }
+.text-media .prose p, .text-media .prose li { color: var(--muted); }
+.text-media .prose a { color: var(--text); border-bottom: 1px solid var(--line-strong); }
+.tm-media { margin: 0; border-radius: var(--radius); overflow: hidden; --curtain-r: var(--radius); }
+.tm-media img { width: 100%; height: auto; }
+
+@media (--nav-collapsed) {
+  .text-media.has-media { grid-template-columns: 1fr; }
+}
+.prose > .kicker { margin-bottom: var(--space-3-5); }
+.prose > .kicker + :is(h1, h2, h3) { margin-top: 0; }

@@ -1,0 +1,19 @@
+/* features: component-owned delivery; see docs/css-delivery.md. */
+
+.ig { --ig-cols: 3; display: grid; grid-template-columns: repeat(var(--ig-cols), minmax(0, 1fr)); overflow: hidden; }
+.ig.cols-4 { --ig-cols: 4; }
+.ig > .ic { margin: calc(-1 * var(--space-0-25)) 0 0 calc(-1 * var(--space-0-25)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.ic { position: relative; display: grid; gap: var(--space-2-5); align-content: start; justify-items: start; padding: clamp(var(--space-6-5), 2.6vw, var(--space-9-5)) clamp(var(--space-5-5), 2.4vw, var(--space-8-5)) clamp(var(--space-7), 2.8vw, var(--space-10)); }
+.ic-ico { width: 2.25rem; height: 2.25rem; margin-bottom: var(--space-2-5); }
+.ic-h, .ic h3 { margin: 0; font: 500 var(--text-lg)/1.2 var(--display); letter-spacing: -0.015em; color: var(--head); }
+.ic > p { margin: 0; color: var(--muted); font-size: var(--text-control); max-width: 40ch; }
+@media (--grid-stacked) { .ig, .ig.cols-4 { --ig-cols: 2; } }
+@media (--compact) { .ig, .ig.cols-4 { --ig-cols: 1; } }
+
+
+  .icon-feature { display: grid; gap: var(--space-2-5); align-content: start; justify-items: start; }
+  .icon-feature > .ico { width: 2.25rem; height: 2.25rem; }
+  .icon-feature > p { margin: 0; color: var(--muted); font-size: var(--text-control); }
+  .icon-feature-compact { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--space-1-5); }
+  .icon-feature-compact > .ico { width: 1.125rem; height: 1.125rem; align-self: center; margin: 0 var(--space-1) 0 0; }
+  .icon-feature-compact > .ic-h, .icon-feature-compact > p { font: inherit; color: inherit; }

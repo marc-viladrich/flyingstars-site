@@ -1,4 +1,6 @@
 ---
+import Styles from '../Styles.astro';
+import ownerStyle0 from '../MediaCard.css?url';
 import { localizedCollection } from '../../i18n/content';
 import { forPath } from '../../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
@@ -19,6 +21,7 @@ const H = index === 0 ? 'h1' : 'h2';
 const more = cta ?? (home ? { label: t('projectgrid.allOurWork'), href: '/referenzen/' } : undefined);
 const projects = sortProjects(await localizedCollection('projects', locale, p => !p.data.draft)).slice(0, limit);
 ---
+<Styles href={ownerStyle0} id="components/MediaCard.css" />
 <section class="section" id={sectionId} aria-labelledby={id}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={id} level={H} />
   <div class="projects">{projects.map((project, i) => <ProjectCard project={project} i={i} level={index === 0 ? 'h2' : 'h3'} autoplay={i === 0} />)}</div>

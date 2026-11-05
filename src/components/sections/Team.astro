@@ -1,4 +1,7 @@
 ---
+import Styles from '../Styles.astro';
+import portraitStyles from '../Portrait.css?url';
+import ownerStyle0 from './Team.css?url';
 import {teamMember} from '../../content/people.mjs';
 import {field} from 'astro-frontend-editor/markers';
 import { forPath } from '../../i18n/server';
@@ -19,6 +22,8 @@ const n = members.length;
 const cols = n <= 5 ? n : n % 4 === 0 ? 4 : n % 3 === 0 ? 3 : 4;
 const crew = await Promise.all(members.map(async item => {const member=teamMember(item,undefined,locale);return {...member, media: member.image ? await optimizedImage(member.image.src, 640) : undefined};}));
 ---
+<Styles href={ownerStyle0} id="components/sections/Team.css" />
+<Styles href={portraitStyles} id="components/Portrait.css" />
 <section class="team-sec" id={id} aria-labelledby={headingId}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
   <ul class="crew" style={`--cols:${cols}`} data-odd={n % 2 === 1 ? '' : undefined}>{crew.map((member,i) => <li class="member" style={`--i:${i}`} data-dot-host>

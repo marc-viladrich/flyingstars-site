@@ -1,4 +1,6 @@
 ---
+import Styles from '../Styles.astro';
+import ownerStyle0 from './LandingHero.css?url';
 import MediaFrame from '../MediaFrame.astro';
 import FactList from '../FactList.astro';
 import { forPath } from '../../i18n/server';
@@ -18,6 +20,7 @@ const { kicker, headline, text, cta, secondary, video, videoLabel = t('common.sh
 const still = await optimizedImage(poster.src, 960);
 const src = videoPath(videos[video], 'preview');
 ---
+<Styles href={ownerStyle0} id="components/landing/LandingHero.css" />
 <section class="lh" aria-labelledby="hero-h">
   <div class="lh-copy">
     {kicker && <span class="kicker mono">{kicker}</span>}
@@ -63,27 +66,3 @@ const src = videoPath(videos[video], 'preview');
 
   });
 </script>
-
-<style>
-  .lh { position: relative; display: grid; grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); gap: clamp(var(--space-8), 5vw, var(--space-20)); align-items: center; padding: clamp(var(--space-9), 6vw, var(--space-22)) var(--gutter) clamp(var(--space-14), 7vw, var(--space-28)); overflow: hidden; }
-  /* ruhiges Leuchten hinter dem Rahmen, wie Restlicht einer Show */
-  .lh::before { content: ""; position: absolute; right: -10%; top: 0; width: 70%; height: 100%; background: radial-gradient(closest-side, rgb(var(--rgb-logo-orchid) / 0.12), rgb(var(--rgb-cyan) / 0.04) 60%, transparent); pointer-events: none; }
-  /* Text oben am Bild, damit die erste Zeile auf jeder Seite auf --hero-top steht, auch wenn das Bild höher ist (Runde 18) */
-  .lh-copy { position: relative; display: grid; gap: var(--space-5-5); justify-items: start; align-self: start; }
-  .lh-copy .kicker { margin: 0 0 calc(-1 * var(--space-2-5)); }
-  .lh h1 { font-size: var(--text-page); line-height: 1; letter-spacing: -0.035em; max-width: 16ch; }
-  .lh .lead { max-width: 48ch; }
-  .actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
-  /* Rahmen wie im Startseiten-Hero (Vercel-Prototyp): Label und Knopf rasten innen in den Ecken ein, mittig auf Höhe des
-     Schenkelendes und 14 px neben dem senkrechten Schenkel. --c-in: Abstand der Ecken vom Rand, --c-arm: Schenkellänge */
-  /* Knopf (Marc, 02.11.2026): läuft das Video, sitzt „Video anhalten“ unten rechts in der Ecke. Angehalten (oder noch nicht
-     gestartet) wandert er weich in die Mitte, verliert die Beschriftung und wird zum großen Play-Knopf; das Bild des
-     Videos bleibt stehen. Lage über left/top/transform, damit sich die Bewegung überblenden lässt. */
-  @media (--timeline-stacked) {
-    .lh { grid-template-columns: 1fr; }
-    .lh::before { width: 120%; right: -40%; top: 40%; height: 60%; }
-  }
-  @media (--small-facts) {
-    /* Handy: Eckdaten als gleich breite Spalten, damit nichts einzeln umbricht */
-  }
-</style>

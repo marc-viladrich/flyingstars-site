@@ -1,46 +1,11 @@
 ---
+import Styles from './Styles.astro';
+import ownerStyle0 from './MediaFrame.css?url';
 interface Props { corners?: 'content' | 'inset' | 'none'; class?: string; as?: 'div' | 'figure'; [key: string]: unknown }
 const { corners = 'none', class: cls, as: Tag = 'figure', ...rest } = Astro.props;
 ---
+<Styles href={ownerStyle0} id="components/MediaFrame.css" />
 <Tag class:list={['media-frame', { frame: corners === 'content' }, cls]} data-corners={corners} {...rest}>
   <slot />
   {corners !== 'none' && <span class="frame-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>}
 </Tag>
-<style is:global>
-  .media-frame[data-corners="content"] { --corner-in: 0rem; --corner-arm: var(--fr-arm); --corner-color: rgb(var(--rgb-text) / 0.45); }
-  .media-frame[data-corners="inset"] { --corner-in: 0.75rem; --corner-arm: 1.125rem; --corner-color: var(--ink-subtle); --c-in: var(--corner-in); --c-arm: var(--corner-arm); }
-  .frame-corners i { position: absolute; z-index: 2; width: var(--corner-arm); height: var(--corner-arm); border: 0 solid var(--corner-color); }
-  .frame-corners i:nth-child(1) { left: var(--corner-in); top: var(--corner-in); border-width: 1px 0 0 1px; }
-  .frame-corners i:nth-child(2) { right: var(--corner-in); top: var(--corner-in); border-width: 1px 1px 0 0; }
-  .frame-corners i:nth-child(3) { left: var(--corner-in); bottom: var(--corner-in); border-width: 0 0 1px 1px; }
-  .frame-corners i:nth-child(4) { right: var(--corner-in); bottom: var(--corner-in); border-width: 0 1px 1px 0; }
-
-  .lh-media { position: relative; margin: 0; aspect-ratio: 16 / 11; border-radius: var(--radius); overflow: hidden; background: var(--media-ground); box-shadow: 0 1.875rem 5rem -2.5rem rgb(var(--rgb-logo-orchid) / 0.35); }
-  .lh-media img, .lh-media video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .lh-media video { opacity: 0; transition: opacity var(--dur-image) var(--ease-default); }
-  .lh-media.is-on video, .lh-media.has-played video { opacity: 1; }
-  .lh-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(var(--rgb-ground) / 0.45), transparent 26%, transparent 70%, var(--overlay-shade)); pointer-events: none; }
-  .lh-media { }
-  .lh-rec { position: absolute; z-index: 2; left: calc(var(--c-in) + 0.875rem); top: calc(var(--c-in) + var(--c-arm)); transform: translateY(-50%); line-height: 1; display: inline-flex; align-items: center; gap: var(--space-2); color: var(--text); }
-  .lh-rec::before { content: ""; width: 0.4375rem; height: 0.4375rem; border-radius: var(--radius-round); background: var(--faint); transition: background var(--dur-standard), box-shadow var(--dur-standard); }
-  .lh-media.is-on .lh-rec::before { background: var(--bad); box-shadow: 0 0 0.625rem var(--bad); }
-  .lh-toggle { position: absolute; z-index: 3; left: calc(100% - var(--c-in) - 0.875rem); top: calc(100% - var(--c-in) - var(--c-arm)); transform: translate(-100%, -50%); display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); height: 2.25rem; min-width: 2.25rem; padding: 0 var(--space-3-5) 0 var(--space-2-5); border-radius: var(--radius-pill); border: 1px solid var(--line-bold); background: rgb(var(--rgb-ground) / 0.66); -webkit-backdrop-filter: blur(0.5rem); backdrop-filter: blur(0.5rem); color: var(--text); cursor: pointer; opacity: 0; transition: left var(--dur-fade-long) var(--ease-enter), top var(--dur-fade-long) var(--ease-enter), transform var(--dur-fade-long) var(--ease-enter), height var(--dur-enter) var(--ease-default), min-width var(--dur-enter) var(--ease-default), padding var(--dur-enter) var(--ease-default), gap var(--dur-enter) var(--ease-default), background-color var(--dur-standard) var(--ease-default), border-color var(--dur-standard) var(--ease-default), opacity var(--dur-standard) var(--ease-default); }
-  .lh-media.ready .lh-toggle { opacity: 1; }
-  .lh-toggle [data-lh-label] { display: inline-block; max-width: 14em; overflow: hidden; white-space: nowrap; transition: max-width var(--dur-enter) var(--ease-default), opacity var(--dur-color) var(--ease-default); }
-  .lh-media:not(.is-on) .lh-toggle { left: 50%; top: 50%; transform: translate(-50%, -50%); height: 4.75rem; min-width: 4.75rem; padding: 0; gap: 0; background: var(--overlay-shade); border-color: var(--ink-half); }
-  .lh-media:not(.is-on) .lh-toggle [data-lh-label] { max-width: 0; opacity: 0; }
-  .lh-media:not(.is-on) .lh-toggle .ico { width: 1.875rem; height: 1.875rem; margin-left: var(--space-1); }
-  .lh-media:not(.is-on):hover .lh-toggle { background: rgb(var(--rgb-ground) / 0.75); border-color: var(--text); }
-  @media (prefers-reduced-motion: reduce) { .lh-toggle, .lh-toggle [data-lh-label] { transition: none; } }
-  .lh-media.can-toggle { cursor: pointer; }
-  .lh-toggle:hover, .lh-media.can-toggle:hover .lh-toggle { border-color: rgb(var(--rgb-text) / 0.6); }
-  .lh-toggle:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offset: 0.1875rem; }
-  .lh-toggle .ico { width: 1rem; height: 1rem; flex: 0 0 auto; transition: width var(--dur-enter) var(--ease-default), height var(--dur-enter) var(--ease-default), margin var(--dur-enter) var(--ease-default); }
-  .lh-toggle .i-pause { display: none; }
-  .lh-media.is-on .i-play { display: none; }
-  .lh-media.is-on .i-pause { display: inline; }
-  @media (--timeline-stacked) {
-    .lh-media { aspect-ratio: 16 / 10; }
-  }
-.frame { position: absolute; inset: var(--fr-t) var(--gutter) var(--fr-b); pointer-events: none; }
-</style>

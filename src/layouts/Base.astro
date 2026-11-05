@@ -6,7 +6,8 @@ import { localizedCollection } from '../i18n/content';
 import { forPath } from '../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
 import '../styles/fonts.css';
-import '../styles/global.css';
+import globalStyles from '../styles/global.css?url';
+import type {StyleLocals} from '../lib/style-assets';
 import { getSite } from '../site.config';
 const site = getSite(forPath(Astro.url.pathname).locale);
 import Logo from '../components/Logo.astro';
@@ -50,11 +51,20 @@ const occasionPages = (await localizedCollection('pages', locale, p => sourceId(
   .map((p) => ({ label: p.data.navLabel ?? p.data.title, href: href(`/${sourceId(p.id)}/`) }))
   .sort((a, b) => a.label.localeCompare(b.label, locale));
 const inNav = (href: string) => site.nav.some((item) => item.href === href);
+// Render once before the head so actual components can register their assets. Static
+// output stays identical; links never become children that change :first-child/grid rules.
+const content = await Astro.slots.render('default');
+const pageStyles = [...((Astro.locals as StyleLocals).styleAssets?.values() ?? [])]
+  .sort((a,b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
 ---
 <!doctype html>
 <html lang={locale}>
   <head>
     <meta charset="utf-8" />
+    <link rel="stylesheet" href={globalStyles} data-style-owner="global" />
+    {pageStyles.map(({href,id,critical}) => critical
+      ? <style is:inline data-style-owner={id} set:html={critical} />
+      : <link rel="stylesheet" href={href} data-style-owner={id} />)}
     {/* UI-Wörterbuch der Seitensprache vor allen Modul-Skripten (defer läuft in Dokumentreihenfolge), siehe src/i18n/ui.mjs */}
     <script is:inline defer src={`/media/i18n/${locale}.js`}></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -93,7 +103,7 @@ const inNav = (href: string) => site.nav.some((item) => item.href === href);
       <div class="top"><Logo /><LanguageSwitch locale={locale} path={current} id="menu" /><button class="motion-btn" type="button" data-motion-toggle data-motion-pause={t('base.pauseMotion')} data-motion-resume={t('site.resumeMotion')} aria-pressed="false" aria-label={t('base.pauseMotion')} title={t('base.pauseMotion')}><svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="7" y="6" width="3.2" height="12" rx="1" /><rect x="13.8" y="6" width="3.2" height="12" rx="1" /></svg><svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 6.2v11.6a.8.8 0 0 0 1.2.7l9-5.8a.8.8 0 0 0 0-1.4l-9-5.8a.8.8 0 0 0-1.2.7z" /></svg></button><button class="menu-btn menu-close" type="button" data-menu-close aria-label={t('base.closeMenu')}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg></button></div>
       <nav aria-label={t('base.mobileNavigation')}>{site.nav.map((item) => item.children ? <details class="sub-drop"><summary>{item.label}<svg class="caret" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" /></svg></summary><ul class="sub">{item.children.map((c) => <li><a href={localHref(c.href)}>{c.label}</a></li>)}</ul></details> : <a href={localHref(item.href)}>{item.label}</a>)}{!inNav('/blog/') && <a href={localHref("/blog/")}>Blog</a>}<a href={localHref(site.cta.href)}>{site.cta.label}</a></nav>
     </dialog>
-    <main id="main" class:list={{ 'content-page': !fullBleed, 'page-top': !flushTop }}><slot /></main>
+    <main id="main" class:list={{ 'content-page': !fullBleed, 'page-top': !flushTop }}><Fragment set:html={content} /></main>
     <footer class="footer">
       <div class="cols">
         <div class="footer-brand"><Logo /><p>{t('base.droneShowsSince2022')} {SHOWS_TOTAL} {t('base.showsInGermanyAndEurope')}</p><p class="eco"><img src="/brand/logos/quali-naturstrom.svg" alt="naturstrom" width="120" height="30" loading="lazy" decoding="async" /><span>{t('base.100GreenElectricityForTheEntireFleet')}</span></p></div>

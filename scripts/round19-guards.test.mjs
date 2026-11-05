@@ -1,3 +1,4 @@
+import {readStyles,styleFiles} from './test-support/styles.mjs';
 import {read} from './test-support/read.mjs';
 // Wächter für Runde 19 (Marc, 03.11.2026). Jeder Test hält eine Klasse fest, nicht einen Einzelfall.
 import test from 'node:test';
@@ -10,7 +11,7 @@ test('Reveals starten spätestens bei einem halben rem im Bild, und die Kurve ö
   const { REVEAL_REM, REVEAL_MARGIN } = await import('../src/scripts/reveal-point.js');
   assert.ok(REVEAL_REM <= 0.5, `Auslösepunkt ${REVEAL_REM} rem ist zu spät`);
   assert.match(REVEAL_MARGIN, /^0px 0px -\d+px 0px$/);
-  const css=read('src/styles/global.css');
+  const css=readStyles();
   const tokens=Object.fromEntries([...css.matchAll(/(--(?:dur|ease)-[\w-]+):\s*([^;]+);/g)].map(m=>[m[1],m[2]]));
   const resolved=css.replace(/var\((--(?:dur|ease)-[\w-]+)\)/g,(_,name)=>tokens[name]);
   const curtain = resolved.match(/\[data-curtain\] \{[^}]*transition: clip-path [\d.]+s cubic-bezier\(([\d.]+),/);
@@ -35,7 +36,7 @@ test('Jeder horizontale Slider hat Pfeile unter sich, auf allen Breiten', () => 
   for (const file of ['src/components/sections/Occasions.astro', 'src/components/projects/CaseStudy.astro']) {
     assert.match(read(file), /<SliderNav\b/, `${file} ohne SliderNav`);
   }
-  const css = read('src/styles/global.css');
+  const css = readStyles();
   assert.doesNotMatch(css, /@media[^{]*\{[^}]*\.slider-nav \{ display: none/, 'Pfeile auf schmalen Breiten ausgeblendet');
   assert.doesNotMatch(css, /\.occ-nav|\.c-reel-head \.ctrl/, 'alte Pfeile oberhalb des Sliders sind zurück');
 });
@@ -72,7 +73,7 @@ test('Cookie-Entscheidung in einer kleinen Karte mit Schaltern, kein zweiter Dia
 });
 
 test('Beobachtete Reveal-Elemente sind im Startzustand nicht verschoben (sonst misst der Observer die verschobene Box)', () => {
-  const css = ['src/styles/global.css', 'src/styles/facts.css', 'src/styles/media-card.css'].map(read).join('\n');
+  const css = readStyles();
   // Regeln, die das Element selbst im Zustand „noch nicht drin“ treffen (kein Kind, kein Pseudo-Element danach)
   for (const [, selector, body] of css.matchAll(/([^{}]*:not\(\.is-in\))\s*\{([^}]*)\}/g)) {
     assert.doesNotMatch(body, /transform|translate/, `${selector.trim()} verschiebt das beobachtete Element`);
@@ -80,13 +81,13 @@ test('Beobachtete Reveal-Elemente sind im Startzustand nicht verschoben (sonst m
 });
 
 test('404: Text ohne ch-Begrenzung, Schriftgrößen in rem', () => {
-  const block = read('src/styles/global.css').split('\n').filter((l) => l.startsWith('.chopper')).join('\n');
+  const block = readStyles().split('\n').filter((l) => l.startsWith('.chopper')).join('\n');
   assert.doesNotMatch(block, /max-width: \d+ch/);
   assert.doesNotMatch(block, /font(-size)?:[^;]*\d+px/);
 });
 
 test('Auto-Raster erzwingen keine Mindestspalte breiter als der Platz (Reflow bei 320 px und großer Schrift)', () => {
-  const files = ['src/styles/global.css', 'src/styles/facts.css', 'src/styles/media-card.css',
+  const files = [...styleFiles(),
     ...readdirSync(new URL('../src/components/', import.meta.url), { recursive: true }).filter((f) => f.endsWith('.astro')).map((f) => `src/components/${f}`)];
   for (const f of files) {
     const bad = read(f).match(/repeat\((auto-fit|auto-fill), minmax\((?!min\()[0-9.]+(rem|px|em)/g);

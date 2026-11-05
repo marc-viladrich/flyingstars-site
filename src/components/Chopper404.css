@@ -1,0 +1,14 @@
+/* chopper: component-owned delivery; see docs/css-delivery.md. */
+
+.chopper { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(var(--space-6), 4vw, var(--space-14)); align-items: center; }
+.chopper-stage { width: 100%; aspect-ratio: 4 / 3; display: block; border-radius: var(--radius); background: radial-gradient(90% 70% at 50% 100%, rgb(var(--rgb-logo-amber) / 0.08), transparent 60%), var(--media-ground); }
+.chopper-copy { display: grid; gap: var(--space-4); justify-items: start; }
+.chopper-copy .code { font: 700 1.125rem/1 var(--display); background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.chopper-h { font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.04; }
+.chopper-copy > p:not(.code) { color: var(--muted); font-size: 1.125rem; }
+.chopper-ways { display: flex; flex-wrap: wrap; gap: var(--space-2-5); margin-top: var(--space-2); }
+.page-404 { padding: 8.75rem var(--gutter) 6.25rem; min-height: 100vh; }
+
+@media (--nav-collapsed) {
+  .chopper { grid-template-columns: 1fr; }
+}

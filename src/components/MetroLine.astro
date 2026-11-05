@@ -1,4 +1,6 @@
 ---
+import Styles from './Styles.astro';
+import ownerStyle0 from './MetroLine.css?url';
 // Zeitstrahl als Linie mit Stationen, im Stil schlichter Netzpläne und Git-Graphen (Marc, 02.11.2026: „minimal branching
 // timeline … inspiriert von minimal metro maps“). Die Hauptlinie im Logoverlauf führt von Station zu Station; eine
 // Abzweigung (z. B. Express) zweigt an der ersten Station ab und mündet an der letzten wieder ein, gestrichelt und
@@ -15,6 +17,7 @@ interface Props { marks: Mark[]; branch?: Branch }
 const { marks, branch } = Astro.props;
 const { localHref } = forPath(Astro.url.pathname);
 ---
+<Styles href={ownerStyle0} id="components/MetroLine.css" />
 <div class:list={['metro', { 'has-branch': branch }]} style={`--n:${marks.length}`}>
   {branch && <span class="metro-branch" aria-hidden="true"></span>}
   {branch && (branch.href

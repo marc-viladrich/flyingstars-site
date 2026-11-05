@@ -1,0 +1,16 @@
+/* landingStories: component-owned delivery; see docs/css-delivery.md. */
+
+  .ls-facts { display: flex; flex-wrap: wrap; gap: 0 var(--space-7); margin: var(--space-1-5) 0 0; padding-top: var(--space-4); border-top: 1px solid var(--line); width: 100%; }
+  .ls-facts > div { display: grid; gap: var(--space-0-5); }
+  .ls-facts dt { order: 2; color: var(--faint); }
+  .ls-facts dd { margin: 0; font: 500 1.375rem/1.15 var(--display); letter-spacing: -0.02em; color: var(--head); }
+
+
+  .ls-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(var(--space-5), 4vw, var(--space-18)); align-items: start; }
+  .ls-grid[data-n='3'] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ls-grid[data-n='1'] { grid-template-columns: minmax(0, 1fr); max-width: 60rem; }
+  /* versetzt: die zweite Karte beginnt tiefer, das bricht die gleichförmige Reihe auf */
+  .ls-more { margin-top: clamp(var(--space-8), 4vw, var(--space-12)); }
+  @media (max-width: 47.5em) {
+    .ls-grid, .ls-grid[data-n='3'] { grid-template-columns: 1fr; gap: var(--space-14); }
+  }

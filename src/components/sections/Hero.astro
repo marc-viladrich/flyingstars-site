@@ -1,13 +1,17 @@
 ---
+import Styles from '../Styles.astro';
+import ownerStyle0 from './Hero.css?url';
+import criticalStyle from './Hero.css?inline';
 import { forPath } from '../../i18n/server';
 const { localHref } = forPath(Astro.url.pathname);
 // Seitenkopf für Unterseiten: große Headline, ein Satz, Aktionen; optional ein Bild mit Vorhang-Reveal.
 import Picture from '../Picture.astro';
 import Accent from '../Accent.astro';
 import type { Section } from '../../content.config';
-type Props = Extract<Section, { type: 'hero' }>;
+type Props = Extract<Section, { type: 'hero' }> & { index?: number };
 const { headline, text, image, cta, secondary, kicker } = Astro.props;
 ---
+<Styles href={ownerStyle0} id="components/sections/Hero.css" critical={Astro.props.index === 0 ? criticalStyle : undefined} />
 <section class:list={['page-hero', { 'has-media': image }]} aria-labelledby="hero-h">
   <div class="page-hero-copy">
     {kicker && <span class="kicker mono">{kicker}</span>}

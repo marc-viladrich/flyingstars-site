@@ -1,4 +1,6 @@
 ---
+import Styles from '../Styles.astro';
+import ownerStyle0 from './ContactForm.css?url';
 import {INQUIRY_LIMITS} from '../../content/inquiry.mjs';
 import {formOccasions} from '../../content/occasions.mjs';
 import {PACKAGE_NAMES,packageLabel} from '../../content/package-identity.mjs';
@@ -23,6 +25,7 @@ const occasions = formOccasions(t);
 const packs: [string,string,string][] = [...PACKAGE_NAMES.map(name=>[name,name,packageLabel(name,t,{form:true})] as [string,string,string]),['offen',t('contactform.notSureYet'),'']];
 const sources = [['Google', 'Google'], ['Empfehlung', t('contactform.recommendation')], ['Social Media', 'Social Media'], ['Presse', t('casestudy.press')], ['Eine Show gesehen', t('contactform.sawAShow')], ['Sonstiges', t('contactform.other')]];
 ---
+<Styles href={ownerStyle0} id="components/sections/ContactForm.css" />
 <section aria-labelledby="anfrage-h" class="section alt" id="anfrage">
   <div class="inquiry">
     <SectionHead variant="embedded" class="intro" kicker={kicker} headline={headline} text={text} textClass="lead" id="anfrage-h" level={H}>

@@ -1,4 +1,6 @@
 ---
+import Styles from './Styles.astro';
+import ownerStyle0 from './Chopper404.css?url';
 import { forPath } from '../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
 // Chopper, der Bürohund, als Drohnenformation. Genutzt auf der 404-Seite und in der Designsprache-Probe.
@@ -7,6 +9,7 @@ interface Props { headline?: string; level?: 'h1' | 'h2'; }
 const { headline = t('chopper404.thisPageDoesnTExist'), level = 'h1' } = Astro.props;
 const H = level;
 ---
+<Styles href={ownerStyle0} id="components/Chopper404.css" />
 {/* Der Seitenrahmen (Ränder, Abstand oben) gehört zur Komponente, damit DE und EN/NL nicht auseinanderlaufen (Runde 22: EN/NL-404 hatte keinen Rahmen) */}
 <div class="page-404">
 <div class="chopper" data-chopper>

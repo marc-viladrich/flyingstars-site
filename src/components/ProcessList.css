@@ -1,0 +1,13 @@
+
+
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--line-strong); counter-reset: step; }
+.steps li { counter-increment: step; padding: var(--space-6) var(--space-5-5) var(--space-2) 0; display: grid; gap: var(--space-2-5); align-content: start; position: relative; }
+.steps li + li { padding-left: var(--space-5-5); border-left: 1px solid var(--line); }
+.steps li::before { content: counter(step, decimal-leading-zero); color: var(--accent); font: 400 var(--text-xs)/1.5 var(--mono); letter-spacing: 0.1em; }
+.steps p { color: var(--muted); font-size: var(--text-control); }
+.steps .t { color: var(--faint); }
+@media (--grid-stacked) {
+  .steps { grid-template-columns: 1fr; }
+  .steps li + li { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); }
+  .steps li { padding: var(--space-5) 0; }
+}

@@ -10,7 +10,3 @@ const { kicker, headline, text, id, level: H = 'h2', class: cls, variant = 'defa
   {text && <p class={textClass}>{text}</p>}
   <slot />
 </div>
-<style is:global>
-  .section-head[data-section-head] > :is(h1, h2, h3) { margin-top: 0; }
-  .section-head[data-section-head="contents"] { display: contents; }
-</style>

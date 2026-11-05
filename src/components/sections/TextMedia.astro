@@ -1,4 +1,6 @@
 ---
+import Styles from '../Styles.astro';
+import ownerStyle0 from './TextMedia.css?url';
 import {field,editorBuild} from 'astro-frontend-editor/markers';
 import Picture from '../Picture.astro';
 import SectionHead from '../SectionHead.astro';
@@ -13,6 +15,7 @@ const id = `${anchor ?? `s${index}`}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const html = await marked.parse(contactText(body));
 ---
+<Styles href={ownerStyle0} id="components/sections/TextMedia.css" />
 <section class:list={['section', 'text-media', { 'has-media': image, 'media-left': image && mediaSide === 'left' }]} id={anchor} aria-labelledby={id}>
   <div class="prose">
     <SectionHead variant="embedded" kicker={kicker} headline={headline} id={id} level={H} />

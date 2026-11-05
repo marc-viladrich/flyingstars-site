@@ -1,0 +1,9 @@
+
+  .media-frame[data-corners="content"] { --corner-in: 0rem; --corner-arm: var(--fr-arm); --corner-color: rgb(var(--rgb-text) / 0.45); }
+  .media-frame[data-corners="inset"] { --corner-in: 0.75rem; --corner-arm: 1.125rem; --corner-color: var(--ink-subtle); --c-in: var(--corner-in); --c-arm: var(--corner-arm); }
+  .frame-corners i { position: absolute; z-index: 2; width: var(--corner-arm); height: var(--corner-arm); border: 0 solid var(--corner-color); }
+  .frame-corners i:nth-child(1) { left: var(--corner-in); top: var(--corner-in); border-width: 1px 0 0 1px; }
+  .frame-corners i:nth-child(2) { right: var(--corner-in); top: var(--corner-in); border-width: 1px 1px 0 0; }
+  .frame-corners i:nth-child(3) { left: var(--corner-in); bottom: var(--corner-in); border-width: 0 0 1px 1px; }
+  .frame-corners i:nth-child(4) { right: var(--corner-in); bottom: var(--corner-in); border-width: 0 1px 1px 0; }
+.frame { position: absolute; inset: var(--fr-t) var(--gutter) var(--fr-b); pointer-events: none; }

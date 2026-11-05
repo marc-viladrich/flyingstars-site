@@ -1,0 +1,16 @@
+/* cta: component-owned delivery; see docs/css-delivery.md. */
+
+
+.promise { align-items: center; }
+.promise-copy { display: grid; }
+.promise .actions { flex: 0 1 auto; }
+.promise { position: relative; max-width: 53.75rem; margin-inline: auto; display: grid; justify-items: center; gap: var(--space-5-5); text-align: center; padding: clamp(var(--space-9), 5vw, var(--space-16)) clamp(var(--space-6), 5vw, var(--space-18)); border-radius: var(--radius); background: var(--surface); }
+.promise::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: var(--space-0-25); background: var(--grad); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
+.promise :is(h1, h2, h3) { font-size: clamp(1.75rem, 3vw, 2.75rem); line-height: 1.08; letter-spacing: -0.03em; max-width: 20ch; margin-inline: auto; }
+.promise p { color: var(--muted); margin: var(--space-3-5) auto 0; max-width: 48ch; }
+.promise .kicker { margin-bottom: var(--space-3); }
+.promise .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); }
+.promise .faces { justify-content: center; margin: 0; }
+.promise-copy { justify-items: center; gap: 0; }
+
+.promise { grid-template-columns: minmax(0, 1fr); }

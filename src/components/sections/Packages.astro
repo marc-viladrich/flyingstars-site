@@ -1,4 +1,6 @@
 ---
+import Styles from '../Styles.astro';
+import ownerStyle0 from '../PackageCard.css?url';
 import { forPath } from '../../i18n/server';
 const { t, localHref, formatLocale } = forPath(Astro.url.pathname);
 import SectionHead from '../SectionHead.astro';
@@ -14,6 +16,7 @@ const { headline, text, note, cta, compact, items, id = 'pakete', index, kicker 
 const H = index === 0 ? 'h1' : 'h2';
 const C = index === 0 ? 'h2' : 'h3';
 ---
+<Styles href={ownerStyle0} id="components/PackageCard.css" />
 <section class="section alt" id={id} aria-labelledby={`${id}-h`}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
   {compact ? <div class="packs">{items.map((p) => <PackageCard packageId={p.name} variant="summary" headingId={`${id}-${p.name}`} level={C} highlight={p.highlight} badge={p.badge} label={p.label} sky={p.sky} pointsOverride={p.points?.map(item => item.value)} />)}</div> : (
