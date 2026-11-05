@@ -831,7 +831,7 @@ Marcs Rückmeldung zum Konfigurator auf der Preisseite und zum Teaser.
 
 Anlass: FlyingStars hat im Meeting am 5.11. den internen Motivkatalog gezeigt. Laut Marcs Gesprächsbericht liegen die meisten geflogenen Shows zwischen 100 und 150 Drohnen. SPARK braucht deshalb die größte Auswahl. Die Einzelheiten stehen in [show-katalog-motive.md](show-katalog-motive.md).
 
-- 31 Katalogmotive mit 50 Varianten, gezählte Punkte, eigene Farben. Sie spielen ab der Punktzahl ihrer kleinsten Variante, in Zehnerschritten. SPARK zeigt je Anlass jetzt 5–6 Motive bei 100 Drohnen und 7–11 bei 150 (vorher 3 und 4).
+- 32 Katalogmotive mit 50 Varianten, gezählte Punkte, eigene Farben. Sie spielen ab der Punktzahl ihrer kleinsten Variante, in Zehnerschritten. SPARK zeigt je Anlass jetzt 4–7 Motive bei 100 Drohnen und 7–11 bei 150 (vorher 3 und 4).
 - Je Paket eine eigene Fassung, damit ein größeres Paket nie weniger zeigt (Wächter `show-unlock`): SPARK die Formation, HORIZON als Körper mit zweiter Ebene, ODYSSEY Licht zeichnet die Form, dann wird sie zum Körper.
 - Die Bewegung ist abgeleitet, nicht aus Flugdaten: Räder, Nadel, Ballons, Gläser, Fahnen; 3D-Formationen drehen sich schon in SPARK. Das korrigiert die Vereinfachung „SPARK = Standbild“, wo FlyingStars' eigene Daten 3D mit 100–160 Drohnen belegen.
 - Gesperrte Motive: ein Lichtpunkt je Schwelle, nicht je Motiv. Mit 13 Motiven drückten die Einzelpunkte auf dem Handy die Tempo-Knöpfe aus dem Bild.

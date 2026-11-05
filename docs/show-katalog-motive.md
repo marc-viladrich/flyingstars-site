@@ -1,6 +1,6 @@
 # Motive aus dem FlyingStars-Katalog im Konfigurator (Runde 24, 05.11.2026)
 
-Am 05.11.2026 hat FlyingStars den internen Motivkatalog gezeigt (https://flyingstars-katalog-web.vercel.app). Dazu kam die Information, dass die meisten geflogenen Shows zwischen 100 und 150 Drohnen liegen. Der Konfigurator braucht deshalb schon in SPARK viel Auswahl. Diese Runde übernimmt 31 Katalogmotive mit 50 Varianten als echte FlyingStars-Formationen.
+Am 05.11.2026 hat FlyingStars den internen Motivkatalog gezeigt (https://flyingstars-katalog-web.vercel.app). Dazu kam die Information, dass die meisten geflogenen Shows zwischen 100 und 150 Drohnen liegen. Der Konfigurator braucht deshalb schon in SPARK viel Auswahl. Diese Runde übernimmt 32 Katalogmotive mit 50 Varianten als echte FlyingStars-Formationen.
 
 Die Recherche und die Rohdaten liegen intern im akomo-Hub unter `freelance/clients/flyingstars/20-katalog-und-materialinventar-2026-11-05/`, nicht im Repo.
 
@@ -26,18 +26,25 @@ Die Recherche und die Rohdaten liegen intern im akomo-Hub unter `freelance/clien
 
 ## Bewegungsprofile (abgeleitet, `src/scripts/scenes/catalog.js`)
 
-| Profil | Motive | Bewegung |
-|---|---|---|
-| drive | Sportwagen | Die Räder drehen sich um ihre Mitte, die Fahrtlinien leuchten nach hinten ab, der Wagen steht. Die Räder findet der Import selbst: die weißen Ringe unten links und rechts. |
-| needle | Drehzahlmesser | Die rote Nadel schwingt um ihre Nabe über die Skala und zurück. |
-| bob | Ballons | Jeder Ballon schwebt in eigenem Takt etwas auf und ab und pendelt um seine Schnur. |
-| clink | Anstoßende Gläser | Die beiden Gläser kippen um ihren Fuß und stoßen an, wie die eigenen Sektgläser. |
-| wave | Wehende Fahnen | Eine Welle läuft vom Mast nach außen. |
-| turn | Kugel, Spirale, Atom, Möbius-Schleife, Pyramide, Schmetterling | Die Form dreht sich langsam um die Hochachse, Licht gleitet darüber. |
-| swirl, spin | Galaxie, Blüten, Mandala | Drehung in der Bildebene. |
-| rainbow, surf | Regenbogen, 3D-Welle | Licht läuft durch die Bögen; die Welle wogt. |
-| breathe, twinkle, glide | Herzen, Stern, Taube | ruhiges Atmen, Licht läuft die Zacken entlang, sanftes Gleiten. |
-| shimmer | alle übrigen | ein feiner Schein läuft die Linien entlang (Marcs „magisch, premium“ vom Schmetterling). |
+Grundlage ist die Sichtung aller 54 Katalogclips (Recherche `clip-analyse/`). Bewegt wird nur, was FlyingStars' eigene Vorschau zeigt oder der Körper eindeutig nahelegt (Räder, Nadel). Wo der Clip nur Licht zeigt, bewegt sich in SPARK auch nur Licht.
+
+| Profil | Motive | Bewegung | Beleg |
+|---|---|---|---|
+| drive | Sportwagen | Räder drehen sich um ihre Mitte, Fahrtlinien leuchten nach hinten ab, der Wagen steht | kein Clip; Radkreise geometrisch gefittet, beim Traktor-Clip drehen sich die Räder genauso |
+| needle | Drehzahlmesser | die rote Nadel schwingt um ihre Nabe über die Skala und zurück | kein Clip, abgeleitet |
+| bob | Ballons | jeder Ballon schwebt einzeln auf und ab, samt Schnur | Clip Ballons 150 |
+| clink | Anstoßende Gläser | die Gläser neigen sich zueinander und stoßen an | Clips 72/88/108 |
+| blossoms | Zwei Blüten | die Blätter drehen sich um die Mitte der Blüte | Clip Zwei Blüten |
+| palm | Palmeninsel | die Wedel wiegen sich leicht | Clip Palmeninsel |
+| sail | Schiff | das Schiff wiegt sich auf und ab | Clip Schiff 200 |
+| turn | Kugel, Spirale, Wasserball | Drehung um die Hochachse | Clips Kugel, Spirale; Wasserball dreht sich im Plimmiri-Entwurf starr (≈ 5°/s real) |
+| swirl, spin | Galaxie, Mandala | Drehung in der Bildebene | Clip Galaxie; Mandala abgeleitet |
+| glow | Atom, Möbius-Schleife, Pyramide | Licht läuft über die Bahnen; erst als Körper (HORIZON, ODYSSEY) dreht sich die Form | Clips zeigen nur Licht |
+| surf | 3D-Welle | die Fläche wogt | Clips 3D-Welle |
+| wave | Wehende Fahnen | eine Welle läuft vom Mast nach außen | abgeleitet; der Clip zeigt wechselnde Länderflaggen (Licht) |
+| confetti | Konfetti-Kanone, Sektflasche | Licht schießt aus der Mündung bzw. funkelt am Flaschenhals | Clips Konfetti, Sektflasche (der fliegende Korken ist nicht nachgebaut) |
+| breathe, twinkle, rainbow | Herzen, Stern, Regenbogen | ruhiges Atmen, Licht läuft die Zacken bzw. Bögen entlang | Clips Stern, Doppelherz |
+| shimmer | alle übrigen, auch Schmetterling und Taube | ein feiner Schein läuft die Linien entlang | Clips Schmetterling, Taube: Licht, kein Flügelschlag |
 
 Alle Profile laufen über `steadyClock()` an und kommen zum Stehen, also ohne Finte (`scripts/show-finte.test.mjs`). Kein Profil funkelt dauerhaft, das hätte als ruhende Wolke gegolten (`scripts/show-clouds.test.mjs`).
 
@@ -49,12 +56,12 @@ Die Katalogmotive ergänzen die eigenen Motive, sie ersetzen sie nicht. An drei 
 |---|---|
 | Launch | Galaxie, Atom, Drehzahlmesser, Sportwagen, Kugel, Möbius-Schleife, Pyramide (Spirale als SPARK-Fassung) |
 | Jubiläum | Ballons, Wehende Fahnen, Golfer, Handschlag, Stern, Konfetti-Kanone |
-| Stadtfest | Palmeninsel, Cocktailglas, Bierkrug, Regenbogen, Kuh und UFO, Schiff |
+| Stadtfest | Palmeninsel, Cocktailglas, Bierkrug, Regenbogen, Kuh und UFO, Wasserball, Schiff |
 | Hochzeit | Doppelherz, Herz mit Initialen, Friedenstaube, Zwei Blüten, Unendlich-Zeichen (Gläser und Schmetterling als SPARK-Fassung) |
 | Kultur | Friedenstaube, 3D-Welle, Kugel, Pyramide, Regenbogen, Lebensbaum, Mandala |
 | Winter & Silvester | Sektflasche, Stern, Galaxie, Anstoßende Gläser, Konfetti-Kanone |
 
-Motive in SPARK je Anlass bei 100 / 150 Drohnen: vorher 3 / 4, jetzt 5–6 / 7–11.
+Motive in SPARK je Anlass bei 100 / 150 / 190 Drohnen: vorher 3 / 4 / 4, jetzt 4–7 / 7–11 / 8–11.
 
 ## Eigener Text: Drohnenbedarf
 
