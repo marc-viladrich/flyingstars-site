@@ -1398,5 +1398,11 @@
   {"key":"price.fromApproxGuide","locale":"en","origin":"editor-revised","revision":"dedupe-r20-a-offers","components":["src/lib/price.mjs"],"note":"Unveränderten Qualifikator aus der bestehenden Indoor-FAQ als Ausgabeteil übernommen."},
   {"key":"price.fromApproxGuide","locale":"nl","origin":"editor-revised","revision":"dedupe-r20-a-offers","components":["src/lib/price.mjs"],"note":"Unveränderten Qualifikator aus der bestehenden Indoor-FAQ als Ausgabeteil übernommen."},
   {"key":"packageDetails.filmCareListItem","locale":"en","origin":"editor-revised","revision":"dedupe-r20-a-offers","components":["src/content/package-details.ts"],"note":"Vorhandenen Film-Listeneintrag aus der unveränderten Betreuungscopy als bedingten Ausgabeteil übernommen."},
-  {"key":"packageDetails.filmCareListItem","locale":"nl","origin":"editor-revised","revision":"dedupe-r20-a-offers","components":["src/content/package-details.ts"],"note":"Vorhandenen Film-Listeneintrag aus der unveränderten Betreuungscopy als bedingten Ausgabeteil übernommen."}
+  {"key":"packageDetails.filmCareListItem","locale":"nl","origin":"editor-revised","revision":"dedupe-r20-a-offers","components":["src/content/package-details.ts"],"note":"Vorhandenen Film-Listeneintrag aus der unveränderten Betreuungscopy als bedingten Ausgabeteil übernommen."},
+  {"key":"showConfigurator.textBudget","locale":"en","origin":"machine-new","components":["src/scripts/show-configurator.js"]},
+  {"key":"showConfigurator.textBudget","locale":"nl","origin":"machine-new","components":["src/scripts/show-configurator.js"]},
+  {"key":"showConfigurator.textRaised","locale":"en","origin":"machine-new","components":["src/scripts/show-configurator.js"]},
+  {"key":"showConfigurator.textRaised","locale":"nl","origin":"machine-new","components":["src/scripts/show-configurator.js"]},
+  {"key":"showConfigurator.textHolds","locale":"en","origin":"machine-new","components":["src/scripts/show-configurator.js"]},
+  {"key":"showConfigurator.textHolds","locale":"nl","origin":"machine-new","components":["src/scripts/show-configurator.js"]}
 ]

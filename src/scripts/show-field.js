@@ -340,7 +340,7 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
         // Das Verlöschen läuft auch nach dem Start einer Drohne weiter (kein Helligkeitssprung, wenn sie losfliegt).
         const fading = fromAlpha[i] > 0.05 ? fromAlpha[i] * Math.max(0, 1 - (elapsed / flightC) * 3) : 0;
         if (q <= 0) alpha[i] = fromAlpha[i] > 0.05 ? Math.max(TEMPO.cloudDim, fading) : fromAlpha[i];
-        else if (q < 0.88) alpha[i] = Math.max(fading, hash(i * 0.731 + Math.floor(t * 7 + hash(i) * 7) * 1.917) < TEMPO.cloudTwinkle ? TEMPO.cloudSpark : TEMPO.cloudDim);
+        else if (q < 0.88) alpha[i] = Math.max(fading, hash(i * 0.731 + Math.floor(t / TEMPO.cloudBlink + hash(i) * 7) * 1.917) < TEMPO.cloudTwinkle ? TEMPO.cloudSpark : TEMPO.cloudDim);
         else alpha[i] = TEMPO.cloudDim + (r[3] - TEMPO.cloudDim) * ((q - 0.88) / 0.12);
         continue;
       }

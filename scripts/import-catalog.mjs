@@ -28,6 +28,10 @@ const OUT_MEDIA = path.join(ROOT, 'public/media/katalog');
 const OUT_META = path.join(ROOT, 'src/content/catalog-motifs.json');
 
 /**
+ * Bewegungsprofile nach der Sichtung der Katalogclips (Recherche clip-analyse/, 05.11.): Bewegung nur dort, wo FlyingStars'
+ * eigene Vorschau sie zeigt oder der Körper sie nahelegt (Räder, Nadel). Atom, Möbius-Schleife, Pyramide, Stern,
+ * Schmetterling und Taube leben in den Clips vom Licht, nicht von einer Drehung; Kugel, Spirale und Galaxie drehen sich;
+ * die Blüten drehen ihre Blätter um die eigene Mitte; Ballons schweben einzeln; Gläser neigen sich zueinander.
  * key: stabiler Schlüssel im Konfigurator. nr: Motivnummer im Katalog. motion: Bewegungsprofil in
  * src/scripts/scenes/catalog.js. name: Anzeigename je Sprache.
  */
@@ -35,10 +39,10 @@ const CURATED = [
   { key: 'anstossen', nr: 17, motion: 'clink', name: { de: 'Anstoßende Gläser', en: 'Clinking glasses', nl: 'Klinkende glazen' } },
   { key: 'doppelherz', nr: 75, motion: 'breathe', name: { de: 'Doppelherz', en: 'Double heart', nl: 'Dubbel hart' } },
   { key: 'initialen', nr: 123, motion: 'breathe', name: { de: 'Herz mit Initialen', en: 'Heart with initials', nl: 'Hart met initialen' } },
-  { key: 'taube', nr: 14, motion: 'glide', name: { de: 'Friedenstaube', en: 'Dove of peace', nl: 'Vredesduif' } },
-  { key: 'blueten', nr: 85, motion: 'spin', name: { de: 'Zwei Blüten', en: 'Two blossoms', nl: 'Twee bloesems' } },
+  { key: 'taube', nr: 14, motion: 'shimmer', name: { de: 'Friedenstaube', en: 'Dove of peace', nl: 'Vredesduif' } },
+  { key: 'blueten', nr: 85, motion: 'blossoms', name: { de: 'Zwei Blüten', en: 'Two blossoms', nl: 'Twee bloesems' } },
   { key: 'unendlich', nr: 88, motion: 'run', name: { de: 'Unendlich-Zeichen', en: 'Infinity sign', nl: 'Oneindigteken' } },
-  { key: 'schmetterling', nr: 86, motion: 'turn', name: { de: 'Schmetterling', en: 'Butterfly', nl: 'Vlinder' } },
+  { key: 'schmetterling', nr: 86, motion: 'shimmer', name: { de: 'Schmetterling', en: 'Butterfly', nl: 'Vlinder' } },
   { key: 'ballons', nr: 47, motion: 'bob', name: { de: 'Ballons', en: 'Balloons', nl: 'Ballonnen' } },
   { key: 'fahnen', nr: 118, motion: 'wave', name: { de: 'Wehende Fahnen', en: 'Waving flags', nl: 'Wapperende vlaggen' } },
   { key: 'handschlag', nr: 115, motion: 'shimmer', name: { de: 'Handschlag', en: 'Handshake', nl: 'Handdruk' } },
@@ -48,22 +52,24 @@ const CURATED = [
   { key: 'sportwagen', nr: 127, motion: 'drive', name: { de: 'Sportwagen', en: 'Sports car', nl: 'Sportwagen' } },
   { key: 'drehzahl', nr: 126, motion: 'needle', name: { de: 'Drehzahlmesser', en: 'Rev counter', nl: 'Toerenteller' } },
   { key: 'galaxie', nr: 4, motion: 'swirl', name: { de: 'Galaxie', en: 'Galaxy', nl: 'Melkweg' } },
-  { key: 'moebius', nr: 3, motion: 'turn', name: { de: 'Möbius-Schleife', en: 'Möbius strip', nl: 'Möbiusband' } },
+  { key: 'moebius', nr: 3, motion: 'glow', name: { de: 'Möbius-Schleife', en: 'Möbius strip', nl: 'Möbiusband' } },
   { key: 'kugel', nr: 87, motion: 'turn', name: { de: 'Kugel', en: 'Sphere', nl: 'Bol' } },
-  { key: 'atom', nr: 72, motion: 'turn', name: { de: 'Atom', en: 'Atom', nl: 'Atoom' } },
-  { key: 'pyramide', nr: 2, motion: 'turn', name: { de: 'Umgedrehte Pyramide', en: 'Inverted pyramid', nl: 'Omgekeerde piramide' } },
+  { key: 'atom', nr: 72, motion: 'glow', name: { de: 'Atom', en: 'Atom', nl: 'Atoom' } },
+  { key: 'pyramide', nr: 2, motion: 'glow', name: { de: 'Umgedrehte Pyramide', en: 'Inverted pyramid', nl: 'Omgekeerde piramide' } },
   { key: 'spirale', nr: 73, motion: 'turn', name: { de: 'Spirale', en: 'Spiral', nl: 'Spiraal' } },
-  { key: 'palme', nr: 83, motion: 'shimmer', name: { de: 'Palmeninsel', en: 'Palm island', nl: 'Palmeiland' } },
+  { key: 'palme', nr: 83, motion: 'palm', name: { de: 'Palmeninsel', en: 'Palm island', nl: 'Palmeiland' } },
   { key: 'bierkrug', nr: 117, motion: 'shimmer', name: { de: 'Bierkrug', en: 'Beer mug', nl: 'Bierpul' } },
   { key: 'cocktail', nr: 84, motion: 'shimmer', name: { de: 'Cocktailglas', en: 'Cocktail glass', nl: 'Cocktailglas' } },
   // die 92-Punkt-Variante ist ein schräges Punktraster und liest sich nicht als Regenbogen (Sichtung 05.11.): erst ab 201
   { key: 'regenbogen', nr: 59, motion: 'rainbow', skip: ['m-1a99044c19f00ded'], name: { de: 'Regenbogen', en: 'Rainbow', nl: 'Regenboog' } },
   { key: 'kuhufo', nr: 70, motion: 'shimmer', name: { de: 'Kuh und UFO', en: 'Cow and UFO', nl: 'Koe en ufo' } },
-  { key: 'schiff', nr: 37, motion: 'shimmer', name: { de: 'Schiff', en: 'Ship', nl: 'Schip' } },
+  { key: 'schiff', nr: 37, motion: 'sail', name: { de: 'Schiff', en: 'Ship', nl: 'Schip' } },
+  // dreht sich in FlyingStars' Plimmiri-Entwurf starr um rund 5° je Sekunde (Recherche show-bewegung-messung/)
+  { key: 'wasserball', nr: 42, motion: 'turn', name: { de: 'Wasserball', en: 'Beach ball', nl: 'Strandbal' } },
   { key: 'welle', nr: 137, motion: 'surf', name: { de: '3D-Welle', en: '3D wave', nl: '3D-golf' } },
   { key: 'lebensbaum', nr: 114, motion: 'shimmer', name: { de: 'Lebensbaum', en: 'Tree of life', nl: 'Levensboom' } },
   { key: 'mandala', nr: 71, motion: 'spin', name: { de: 'Mandala', en: 'Mandala', nl: 'Mandala' } },
-  { key: 'sektflasche', nr: 16, motion: 'shimmer', name: { de: 'Sektflasche', en: 'Champagne bottle', nl: 'Champagnefles' } },
+  { key: 'sektflasche', nr: 16, motion: 'confetti', name: { de: 'Sektflasche', en: 'Champagne bottle', nl: 'Champagnefles' } },
 ];
 
 const inv = JSON.parse(fs.readFileSync(path.join(SRC, 'katalog-inventar.json'), 'utf8'));
@@ -113,6 +119,18 @@ function groupsFor(motion, pts) {
       return { glasses: [left, right].map((idx) => ({ idx, base: r3(Math.min(...idx.map((j) => pts[j][1]))), cx: r3(idx.reduce((s, j) => s + pts[j][0], 0) / idx.length) })) };
     }
     return { balloons: out };
+  }
+  if (motion === 'blossoms') {
+    // zwei Blüten links und rechts; Mitte je Blüte = Schwerpunkt ihrer Punkte
+    const sides = [pts.map((p, j) => [p, j]).filter(([p]) => p[0] < 0), pts.map((p, j) => [p, j]).filter(([p]) => p[0] >= 0)];
+    return { blossoms: sides.map((g) => ({ cx: r3(g.reduce((a, [p]) => a + p[0], 0) / g.length), cy: r3(g.reduce((a, [p]) => a + p[1], 0) / g.length), idx: g.map(([, j]) => j) })) };
+  }
+  if (motion === 'palm') {
+    // Wedel: die grünen Punkte; sie wiegen sich um den obersten Punkt des Stamms (nicht grün, höchster Punkt darunter)
+    const green = pts.map((p, j) => [p, j]).filter(([p]) => p[4] > 150 && p[3] < 120 && p[5] < 120);
+    const lowGreen = Math.min(...green.map(([p]) => p[1]));
+    const trunk = pts.filter((p) => !(p[4] > 150 && p[3] < 120 && p[5] < 120) && p[1] <= lowGreen + 0.05).sort((a, b) => b[1] - a[1])[0];
+    return { fronds: { idx: green.map(([, j]) => j), cx: r3(trunk[0]), cy: r3(trunk[1]) } };
   }
   return undefined;
 }

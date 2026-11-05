@@ -14,6 +14,10 @@ export const TEMPO = {
   cloudDim: 0.07,
   cloudTwinkle: 0.1,
   cloudSpark: 1.15,
+  // Runde 24 (Plimmiri-Messung, Recherche show-bewegung-messung/): In FlyingStars' dunklen Wechseln leuchten rund 10 % der
+  // Drohnen, aber in zusammenhängenden Phasen von etwa 0,83 s real (Median), in der dreifach schnellen Vorschau 0,28 s.
+  // Vorher wurde siebenmal je Sekunde neu ausgewählt (0,14 s), das flackerte statt zu blinken.
+  cloudBlink: 0.28,
   /** Automatische Neupositionierung zwischen zwei Bildern ohne Wolke: langsamer als die Klick-Reaktion. */
   flight: { min: 1.8, max: 4.3 },
   /** Wie lange das letzte Bild eines Motivs steht, in allen Paketen (vorher 3,5 / 5 / 3,5 s). */

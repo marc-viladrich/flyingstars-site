@@ -197,7 +197,7 @@
     "Musik/Festival",
     "Kinderfest"
    ],
-   "motion": "glide",
+   "motion": "shimmer",
    "dimension": "2D",
    "variants": [
     {
@@ -229,7 +229,7 @@
     "Ostern/Frühling",
     "Karneval"
    ],
-   "motion": "spin",
+   "motion": "blossoms",
    "dimension": "2D",
    "variants": [
     {
@@ -287,7 +287,7 @@
     "Stadtfest/Regional",
     "Hochzeit"
    ],
-   "motion": "turn",
+   "motion": "shimmer",
    "dimension": "3D",
    "variants": [
     {
@@ -656,7 +656,7 @@
     "Karneval",
     "Demo/Politik"
    ],
-   "motion": "turn",
+   "motion": "glow",
    "dimension": "3D",
    "variants": [
     {
@@ -746,7 +746,7 @@
     "Ostern/Frühling",
     "Stadtfest/Regional"
    ],
-   "motion": "turn",
+   "motion": "glow",
    "dimension": "3D",
    "variants": [
     {
@@ -809,7 +809,7 @@
     "Ostern/Frühling",
     "Stadtfest/Regional"
    ],
-   "motion": "turn",
+   "motion": "glow",
    "dimension": "3D",
    "variants": [
     {
@@ -904,7 +904,7 @@
     "Kinderfest",
     "Musik/Festival"
    ],
-   "motion": "shimmer",
+   "motion": "palm",
    "dimension": "2D",
    "variants": [
     {
@@ -1069,7 +1069,7 @@
     "Stadtfest/Regional",
     "Firmenfeier/Jubiläum"
    ],
-   "motion": "shimmer",
+   "motion": "sail",
    "dimension": "2D",
    "variants": [
     {
@@ -1094,6 +1094,45 @@
       126.08,
       42.35,
       19.56
+     ]
+    }
+   ]
+  },
+  "wasserball": {
+   "nr": 42,
+   "name": {
+    "de": "Wasserball",
+    "en": "Beach ball",
+    "nl": "Strandbal"
+   },
+   "theme": "muster-3d",
+   "labels": [
+    "Stadtfest/Regional",
+    "Firmenfeier/Jubiläum",
+    "Hochzeit",
+    "Weihnachten",
+    "Halloween",
+    "Silvester",
+    "Ostern/Frühling",
+    "Kinderfest",
+    "Musik/Festival",
+    "Sport",
+    "Karneval",
+    "Demo/Politik"
+   ],
+   "motion": "turn",
+   "dimension": "3D",
+   "variants": [
+    {
+     "id": "m-35cf79a2cef84960",
+     "points": 186,
+     "declared": 190,
+     "depth": 0.981,
+     "clip": false,
+     "sizeM": [
+      67.65,
+      74.45,
+      59.72
      ]
     }
    ]
@@ -1247,7 +1286,7 @@
     "Karneval",
     "Sport"
    ],
-   "motion": "shimmer",
+   "motion": "confetti",
    "dimension": "2D",
    "variants": [
     {

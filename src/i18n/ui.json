@@ -3511,5 +3511,20 @@
   "quantity.number11": {"de":"elf","en":"eleven","nl":"elf"},
   "quantity.number12": {"de":"zwölf","en":"twelve","nl":"twaalf"},
   "price.fromApproxGuide": {"de":"ab etwa","en":"from around","nl":"vanaf circa"},
-  "packageDetails.filmCareListItem": {"de":"Rohmaterial-Video","en":"raw video footage","nl":"ruwe videobeelden"}
+  "packageDetails.filmCareListItem": {"de":"Rohmaterial-Video","en":"raw video footage","nl":"ruwe videobeelden"},
+  "showConfigurator.textBudget": {
+    "de": "{used} von {max} Zeichen bei {drones} Drohnen",
+    "en": "{used} of {max} characters with {drones} drones",
+    "nl": "{used} van {max} tekens bij {drones} drones"
+  },
+  "showConfigurator.textRaised": {
+    "de": "Für {used} Zeichen braucht der Text mindestens {need} Drohnen, darum haben wir die Drohnenzahl angehoben.",
+    "en": "For {used} characters the text needs at least {need} drones, so we raised the drone count.",
+    "nl": "Voor {used} tekens heeft de tekst minstens {need} drones nodig, daarom hebben we het aantal drones verhoogd."
+  },
+  "showConfigurator.textHolds": {
+    "de": "Mit eurem Text bleiben es mindestens {need} Drohnen.",
+    "en": "With your text it stays at {need} drones or more.",
+    "nl": "Met jullie tekst blijven het minstens {need} drones."
+  }
 }

@@ -155,7 +155,7 @@ test('Die Anfrage übernimmt Anlass, Motive und Paket', async ({ page }) => {
   const form = page.locator('#inquiry-form');
   await expect(form.locator('[name=paket]:checked')).toHaveValue(/SPARK/); // seit der Designsprache-Übertragung (Lead) eine Auswahl statt eines Feldes
   await expect(form.locator('[name=anlass][value=firma]')).toBeChecked();
-  await expect(form.locator('[name=message]')).toHaveValue('Anlass: Launch\nBeispielmotive: Rakete, Logo, Glühbirne\nAufwand: Klassisch in 2D (SPARK, 100 Drohnen, ab 7.900 € netto, Preis laut Konfigurator)');
+  await expect(form.locator('[name=message]')).toHaveValue('Anlass: Launch\nBeispielmotive: Rakete, Galaxie, Logo, Glühbirne, Möbius-Schleife\nAufwand: Klassisch in 2D (SPARK, 100 Drohnen, ab 7.900 € netto, Preis laut Konfigurator)');
 });
 
 test('Nach schnellem Umschalten leuchten nie mehr Drohnen, als das Paket hat', async ({ page }) => {
@@ -175,12 +175,12 @@ test('Die Bilder lassen sich vor und zurück schalten, im Kreis', async ({ page 
   await page.goto(`${CFG}#konfigurator`);
   await occasion(page, 'launch'); await pkg(page, 0);
   await expect(scene(page)).toHaveText('Rakete mit Flamme');
-  await page.locator('#cfg-prev').click(); // before the first picture comes the last one (SPARK 100: Rakete, Logo, Glühbirne)
-  await expect(scene(page)).toHaveText('Eine Glühbirne: die Idee');
+  // Runde 24: SPARK 100 spielt Rakete, Galaxie, Logo, Glühbirne, Möbius-Schleife (Katalogmotive dazwischen)
+  await page.locator('#cfg-prev').click(); // before the first picture comes the last one
+  await expect(scene(page)).toHaveText('Möbius-Schleife, eine Formation aus dem FlyingStars-Katalog');
   await page.locator('#cfg-next').click(); // after the last picture comes the first one
   await expect(scene(page)).toHaveText('Rakete mit Flamme');
-  await page.locator('#cfg-next').click();
-  await page.locator('#cfg-next').click();
+  for (let i = 0; i < 3; i++) await page.locator('#cfg-next').click();
   await expect(scene(page)).toHaveText('Eine Glühbirne: die Idee');
   await pkg(page, 1);
   await expect(scene(page)).toHaveText('Die Glühbirne in 3D, der Glühfaden leuchtet');
@@ -242,7 +242,7 @@ test('SPARK lässt Motive aus, die 100 Drohnen nicht tragen; der Paketwechsel sp
   await pkg(page, 0);
   await expect(scene(page)).toHaveText('Ein Kompass, die Nadel sucht den Norden'); // the dragon is the last motif: round the loop
   await page.locator('#cfg-cta').click();
-  await expect(page.locator('#inquiry-form [name=message]')).toHaveValue(/Beispielmotive: Reise, Kolibri, Delfin\n/);
+  await expect(page.locator('#inquiry-form [name=message]')).toHaveValue(/Beispielmotive: Reise, Kolibri, Cocktailglas, Delfin\n/);
 });
 
 
@@ -476,11 +476,11 @@ test('Paketwechsel und Regler melden alle neuen Motive auf einmal und fliegen zu
   await occasion(page, 'hochzeit'); await pkg(page, 0);
   await page.waitForTimeout(400);
   await recordBeats(page);
-  // SPARK 100 → HORIZON 200: der Schmetterling ist neu (Freischalt-Leiter: ab SPARK 150, sechzehnte Fassung). Der
+  // SPARK 100 → HORIZON 200: neu sind Blüten, Unendlich-Zeichen (Katalog, ab 120) und der Schmetterling. Der
   // Paketknopf meldet ihn und bleibt beim Motiv auf der Bühne (dasselbe Motiv, größeres Paket)
   await expect(scene(page)).toHaveText('Zwei Eheringe, der Stein funkelt');
   await pkg(page, 1);
-  await expect(page.locator('#cfg-toast')).toHaveText('Neues Motiv freigeschaltet: Schmetterling');
+  await expect(page.locator('#cfg-toast')).toHaveText('3 neue Motive: Zwei Blüten, Unendlich-Zeichen, Schmetterling');
   await expect(scene(page)).toHaveText('Ein Solitär in 3D: Ring und Brillant drehen sich');
   // HORIZON, then the slider to the end in one go: two motifs at once, the stage goes to the first
   await pkg(page, 1);

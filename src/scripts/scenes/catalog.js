@@ -22,6 +22,8 @@ function load(id) {
   return cache.get(id);
 }
 export const CATALOG = catalog.motifs;
+/** Profile, deren Motive in SPARK nur Licht bewegen, auch wenn sie räumlich sind (siehe glow, shimmer). */
+const LIGHT_ONLY = new Set(['glow', 'shimmer', 'twinkle', 'breathe', 'run', 'confetti', 'rainbow']);
 const lang = () => { const l = typeof document === 'undefined' ? 'de' : document.documentElement?.lang; return ['de', 'en', 'nl'].includes(l) ? l : 'de'; };
 /** Text aus catalog-motifs.json (texts) in der Seitensprache, {name} eingesetzt. */
 const say = (key, name) => (catalog.texts[key][lang()] ?? catalog.texts[key].de).replace('{name}', name);
@@ -98,6 +100,24 @@ function profile(motion, f, pts, { body = false } = {}) {
       const x0 = Math.min(...pts.map((p) => p[0]));
       return (b, j, t, o) => { const k = (b[0] - x0) / 2; o[1] += 0.05 * k * (Math.sin(t * 2.2 - b[0] * 5) - Math.sin(-b[0] * 5)); if (body) o[2] += 0.08 * k * Math.sin(t * 1.6 - b[0] * 4); if (body) swayAll(o, t); };
     }
+    case 'blossoms': {
+      // die Blüten drehen ihre Blätter langsam um die eigene Mitte, gegenläufig (Katalogclip „Zwei Blüten“)
+      const of = new Map(); (g.blossoms ?? []).forEach((q, k) => q.idx.forEach((j) => of.set(j, [q, k])));
+      return (b, j, t, o) => { const hit = of.get(j); if (hit) roll(o, (hit[1] ? -1 : 1) * t * 0.22, hit[0].cx, hit[0].cy); o[3] = lift(j, t); if (body) pitch(o, 0.4); };
+    }
+    case 'palm': {
+      // die Wedel wiegen sich leicht um die Krone (Katalogclip „Palmeninsel“), dazu läuft Licht über die Wellen
+      const idx = new Set(g.fronds?.idx ?? []), cx = g.fronds?.cx ?? 0, cy = g.fronds?.cy ?? 0, a = settle(0.08, 1.1);
+      return (b, j, t, o) => { if (idx.has(j)) roll(o, a(t), cx, cy); o[3] = lift(j, t); if (body) swayAll(o, t); };
+    }
+    case 'sail': {
+      // das ganze Schiff wiegt sich auf und ab und ein wenig vor und zurück (Katalogclip „Das Schiff“)
+      const a = settle(0.05, 0.9), c = settle(0.025, 0.6);
+      return (b, j, t, o) => { o[1] += a(t); o[0] -= c(t); roll(o, 0.02 * Math.sin((t * TAU) / 7)); o[3] = lift(j, t); if (body) swayAll(o, t); };
+    }
+    // räumliche Muster, die in FlyingStars' Clips vom Licht leben (Atom, Möbius-Schleife, Pyramide): Licht läuft über die
+    // Bahnen; erst als Körper (HORIZON, ODYSSEY) dreht sich die Form
+    case 'glow': return (b, j, t, o) => { o[3] = wander(rank[j], t, 4.4, 0.45, 0.09) * glint(b[1], t, 5, 0.2, -1.2, 1.2); if (body) turnAll(o, t * 0.8); };
     case 'swirl': return (b, j, t, o) => { roll(o, t * 0.18); o[3] = lift(j, t); if (body) pitch(o, 0.5); };
     // als Körper nur gekippt (feste Neigung zeigt die zweite Ebene), Drehen und Schwenken zugleich ergäben ungleiche Wege
     case 'spin': return (b, j, t, o) => { roll(o, t * 0.12); o[3] = lift(j, t); if (body) pitch(o, 0.45); };
@@ -134,7 +154,7 @@ export async function catalogScene(key, tier, n, caption) {
   const v = variantFor(key, layered ? Math.floor(n / 2) : n) ?? variantFor(key, n);
   if (!v) throw new Error(`Katalogmotiv ${key}: keine Variante für ${n} Drohnen`);
   const f = await load(v.id), front = prepare(f, !deep);
-  const live = profile(m.motion, f, front, { body: tier !== 'SPARK' || deep });
+  const live = profile(m.motion, f, front, { body: tier !== 'SPARK' || (deep && !LIGHT_ONLY.has(m.motion)) });
   if (!layered || 2 * front.length > n) {
     // eine Ebene (SPARK, 3D-Formationen, oder die zweite Ebene passt nicht in die Drohnenzahl)
     const rest = reserve(n - front.length, front), k = front.length;

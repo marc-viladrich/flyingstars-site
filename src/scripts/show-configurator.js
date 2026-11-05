@@ -357,7 +357,7 @@ if (form) {
   function setDrones(n, { delay = 0, fly = true } = {}) {
     const before = { pkg: pkgName(), drones }, need = textNeed(text);
     // mit eigenem Text nie unter seinen Bedarf (Regler, Paketknopf, Link); der Hinweis am Text sagt, warum
-    if (need && n < need) { textNote = "holds"; n = need; } else textNote = "";
+    if (need && n < need) { textNote = "holds"; n = need; } else if (snapDrones(n) !== drones) textNote = ""; // dieselbe Zahl (change nach input) behält den Hinweis
     drones = snapDrones(n);
     // only more drones unlock: going down to a smaller package can bring back its simpler versions, that is no news
     const after = { pkg: pkgName(), drones }, now = after.drones > before.drones ? freshMotifs(occasion.motifs, before, after) : [];
