@@ -43,7 +43,11 @@ export function tokenDependency(token, dependencies, locale) {
       meaning = {renderer: 'priceLine-v1', price: priceMeaning,
         copy: Object.fromEntries(['price.from', 'price.fromApprox', 'price.fromApproxGuide'].map(key => [key, own(ui, key)]))};
     } else if (parts.join('.') === 'indoor.ceilingWords') {
-      meaning = {ceilingMin: source.indoor.ceilingMin, ui: own(dependencies, 'ui')};
+      const ceilingMin = source.indoor.ceilingMin;
+      // Match offerTextCore: only integer values 0–12 read a number word.
+      const keys = Number.isInteger(ceilingMin) && ceilingMin >= 0 && ceilingMin <= 12
+        ? [`quantity.number${ceilingMin}`] : [];
+      meaning = {ceilingMin, ui: Object.fromEntries(keys.map(key => [key, own(own(dependencies, 'ui'), key)]))};
     } else meaning = value;
   } else throw Error(`Unknown fact token: ${token}`);
   if (value === undefined) throw Error(`Missing fact value: ${token}`);
