@@ -45,8 +45,9 @@ function bright([x, y, z, r, g, b]) {
   const k = 200 / m;
   return [x, y, z, Math.round(r * k), Math.round(g * k), Math.round(b * k)];
 }
-/** Reserve: k dunkle Drohnen in einer Reihe unter dem Bild. */
-const reserve = (k, y = -1.55) => Array.from({ length: k }, (_, i) => [((i + 0.5) / Math.max(1, k) - 0.5) * 2.2, y - 0.08 * (i % 2), -0.4, 60, 60, 60]);
+/** Reserve: k dunkle Drohnen, die hinter der Form warten (auf ihren Linien, eine Ebene tiefer). Eine Reihe unter dem Bild
+ * blitzte beim Start der lebendigen Wolke als Fremdkörper auf; hinter der Form steigen sie aus dem Motiv auf. */
+const reserve = (k, form, depth = 0.55) => Array.from({ length: k }, (_, i) => { const p = form[(i * 7) % form.length]; return [p[0], p[1], (p[2] || 0) - depth - 0.04 * (i % 3), 60, 60, 60]; });
 /** Ganze Form: Drehung in der Bildebene, die bei t = 0 genau null ist (keine Finte, kein Sprung beim Ankommen). */
 const settle = (amp, w) => (t) => amp * (1 - Math.cos(t * w)) / 2; // 0 → amp → 0, Hin- und Rückweg gleich lang
 
@@ -136,7 +137,7 @@ export async function catalogScene(key, tier, n, caption) {
   const live = profile(m.motion, f, front, { body: tier !== 'SPARK' || deep });
   if (!layered || 2 * front.length > n) {
     // eine Ebene (SPARK, 3D-Formationen, oder die zweite Ebene passt nicht in die Drohnenzahl)
-    const rest = reserve(n - front.length), k = front.length;
+    const rest = reserve(n - front.length, front), k = front.length;
     const run = (b, j, t, o) => { if (j >= k) { o[3] = 0; return; } live(b, j, t, o); };
     if (tier !== 'ODYSSEY') return { beats: [{ pts: [...front, ...rest], fitPts: front, caption, live: run, shimmer: false }] };
     const order = lightRank(front);
@@ -147,7 +148,7 @@ export async function catalogScene(key, tier, n, caption) {
   }
   // zwei Ebenen: die Formation vorn und dieselbe Formation dahinter, etwas dunkler; als Körper schwenkt sie
   const D = 0.2, back = front.map(([x, y, z, r, g, b]) => [x, y, z - D, ...mix([r, g, b], [0, 0, 0], 0.18)]), k = front.length;
-  const shifted = front.map(([x, y, z, ...c]) => [x, y, z + D, ...c]), rest = reserve(n - 2 * k);
+  const shifted = front.map(([x, y, z, ...c]) => [x, y, z + D, ...c]), rest = reserve(n - 2 * k, back);
   const bodyLive = (b, j, t, o) => { if (j >= 2 * k) { o[3] = 0; return; } live(b, j % k, t, o); };
   if (tier === 'HORIZON') return { beats: [{ pts: [...shifted, ...back, ...rest], fitPts: [...shifted, ...back], caption, live: bodyLive, shimmer: false }] };
   const order = lightRank(front);

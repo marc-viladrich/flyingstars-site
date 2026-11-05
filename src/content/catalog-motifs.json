@@ -1016,18 +1016,6 @@
    "dimension": "2D",
    "variants": [
     {
-     "id": "m-1a99044c19f00ded",
-     "points": 92,
-     "declared": 90,
-     "depth": 0.189,
-     "clip": true,
-     "sizeM": [
-      63.2,
-      27.36,
-      10.07
-     ]
-    },
-    {
      "id": "m-8f7081f4b0a6b832",
      "points": 201,
      "declared": 200,

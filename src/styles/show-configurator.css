@@ -106,6 +106,8 @@
   @media (prefers-reduced-motion: reduce) { .cfg-legal, .cfg-legal.is-open { transition: opacity var(--dur-quick) var(--ease-default), visibility 0s var(--dur-quick); transform: none; } }
   .cfg-logo-status { margin: 0; font-size: var(--text-label); color: var(--muted); }
   .cfg-logo-status:empty { display: none; }
+  .cfg-text-budget { margin: 0; font-size: var(--text-label); color: var(--muted); text-wrap: pretty; }
+  .cfg-text-budget[hidden] { display: none; }
 
   .cfg-error { position: absolute; inset: auto 1.25rem 4.75rem; color: var(--muted); font-size: var(--text-sm); }
   /* Freischalt-Meldung (dreizehnte Fassung), fünfzehnte Fassung in der Sprache der Seite (Marc: die Toast-UI war „gar

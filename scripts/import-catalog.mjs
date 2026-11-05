@@ -56,7 +56,8 @@ const CURATED = [
   { key: 'palme', nr: 83, motion: 'shimmer', name: { de: 'Palmeninsel', en: 'Palm island', nl: 'Palmeiland' } },
   { key: 'bierkrug', nr: 117, motion: 'shimmer', name: { de: 'Bierkrug', en: 'Beer mug', nl: 'Bierpul' } },
   { key: 'cocktail', nr: 84, motion: 'shimmer', name: { de: 'Cocktailglas', en: 'Cocktail glass', nl: 'Cocktailglas' } },
-  { key: 'regenbogen', nr: 59, motion: 'rainbow', name: { de: 'Regenbogen', en: 'Rainbow', nl: 'Regenboog' } },
+  // die 92-Punkt-Variante ist ein schräges Punktraster und liest sich nicht als Regenbogen (Sichtung 05.11.): erst ab 201
+  { key: 'regenbogen', nr: 59, motion: 'rainbow', skip: ['m-1a99044c19f00ded'], name: { de: 'Regenbogen', en: 'Rainbow', nl: 'Regenboog' } },
   { key: 'kuhufo', nr: 70, motion: 'shimmer', name: { de: 'Kuh und UFO', en: 'Cow and UFO', nl: 'Koe en ufo' } },
   { key: 'schiff', nr: 37, motion: 'shimmer', name: { de: 'Schiff', en: 'Ship', nl: 'Schip' } },
   { key: 'welle', nr: 137, motion: 'surf', name: { de: '3D-Welle', en: '3D wave', nl: '3D-golf' } },
@@ -125,6 +126,7 @@ for (const c of CURATED) {
   if (!variants.length) fail(`Motiv Nr. ${c.nr} (${c.key}) fehlt im Inventar`);
   const used = [];
   for (const v of variants) {
+    if (c.skip?.includes(path.basename(v.formation ?? '', '.json'))) { report.push(`${c.key}: ${path.basename(v.formation, '.json')} bewusst nicht übernommen`); continue; }
     if (!v.formation) { report.push(`${c.key}: Variante ${v.variante} (${v.drohnen} lt. Katalog) ohne Punktdaten, übersprungen`); continue; }
     const file = path.join(SRC, 'quellen', `katalog-formations-${path.basename(v.formation)}`);
     const raw = JSON.parse(fs.readFileSync(file, 'utf8'));

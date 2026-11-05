@@ -44,6 +44,7 @@ import { createField } from "./show-field.js";
 import { buildSequence, preloadScenes } from "./show-scenes.js";
 import { composeShow, canPlay, possibleFrom, minDronesOf, freshMotifs, unlockNote, LOGO_SEGMENT, TOUR_SEGMENT, TOUR_STYLES } from "./show-tempo.js";
 import { formation, liftColor } from "./formation/index.js";
+import { chars } from "./text-formation.js";
 
 const form = document.querySelector("#cfg");
 if (form) {
@@ -221,6 +222,23 @@ if (form) {
   const motifs = () => (text ? [...occasion.motifs, textMotif(style)] : occasion.motifs);
   const STYLE_LABEL = { script: message('showconfigurator.handwriting'), print: message('showconfigurator.printLettering'), initials: message('showconfigurator.initials') };
   const isText = (seg) => seg === occasion.motifs.length || seg >= TOUR_SEGMENT;
+  // ---------- Runde 24: Drohnenbedarf des eigenen Textes (wie im FlyingStars-Katalog) ----------
+  // Zehn Drohnen je Zeichen, Leerzeichen zählen nicht (chars() in text-formation.js), auf Zehner gerundet, mindestens der
+  // Einstieg des Reglers. Das ist die Vorab-Regel des Katalogs, keine Lesbarkeitsgarantie: Die Schrift selbst plant mit
+  // genau den gewählten Drohnen und wechselt ab 30 je Zeichen zum Umriss. Obergrenze: das Feld nimmt 24 Zeichen, das
+  // sind höchstens 240 Drohnen und damit immer im Regler (bis 600); ein unbegrenzter Regler entsteht so nie.
+  const PER_CHAR = 10, textInput = $("#cfg-text"), budget = $("#cfg-text-budget");
+  const textNeed = (value) => (value ? Math.max(DRONES_MIN, Math.ceil((chars(value) * PER_CHAR) / 10) * 10) : 0);
+  let textNote = ""; // "raised": die Zahl wurde für den Text angehoben; "holds": ein Absenken unter den Bedarf wurde gehalten
+  function drawBudget() {
+    if (!budget) return;
+    const used = chars(text), max = Math.min(Number(textInput.maxLength) || 24, Math.floor(drones / PER_CHAR));
+    budget.hidden = !text;
+    if (!text) { budget.textContent = ""; return; }
+    const line = message('showConfigurator.textBudget', { used, max, drones });
+    const note = textNote === "raised" ? message('showConfigurator.textRaised', { used, need: textNeed(text) }) : textNote === "holds" ? message('showConfigurator.textHolds', { need: textNeed(text) }) : "";
+    budget.textContent = note ? `${line} · ${note}` : line;
+  }
   /** The text style the stage shows is marked in the picker (Text-Durchlauf), without changing the chosen one. */
   const showStyle = (s) => { const r = form.querySelector(`[name=textstyle][value="${s}"]`); if (r && !r.checked) r.checked = true; };
 
@@ -307,6 +325,7 @@ if (form) {
     const inquiry = inquiryHref({paket:s.pkg,drohnen:drones,anlass:occasion.anlass,show:summary},locale,'/#anfrage');
     $("#cfg-cta").href = inquiry; $("#cfg-bar-cta").href = inquiry;
     drawLocks();
+    drawBudget();
     // while the slider moves, the picture follows once it rests for a moment (every drone count is its own formation)
     clearTimeout(building);
     if (delay) building = setTimeout(() => render(keep, to, { cloud }), delay); else render(keep, to, { cloud });
@@ -336,7 +355,9 @@ if (form) {
   // Paketknopf (fly: false) meldet es, bleibt aber beim Motiv auf der Bühne (der Vergleich „dasselbe Motiv, größeres
   // Paket“); Regler und gesperrte Lichtpunkte fliegen wie bisher zum neuen Motiv.
   function setDrones(n, { delay = 0, fly = true } = {}) {
-    const before = { pkg: pkgName(), drones };
+    const before = { pkg: pkgName(), drones }, need = textNeed(text);
+    // mit eigenem Text nie unter seinen Bedarf (Regler, Paketknopf, Link); der Hinweis am Text sagt, warum
+    if (need && n < need) { textNote = "holds"; n = need; } else textNote = "";
     drones = snapDrones(n);
     // only more drones unlock: going down to a smaller package can bring back its simpler versions, that is no news
     const after = { pkg: pkgName(), drones }, now = after.drones > before.drones ? freshMotifs(occasion.motifs, before, after) : [];
@@ -377,12 +398,16 @@ if (form) {
 
   // ---------- Eigener Text: einmal durch alle drei Schriften, dann weiter mit den Motiven ----------
   let typing = 0;
-  const textInput = $("#cfg-text"), styles = $("#cfg-styles");
+  const styles = $("#cfg-styles");
   const showText = () => {
     const next = textInput.value.trim();
     if (next === text) return;
     const was = segment;
     text = next; styles.hidden = !text; tour = Boolean(text);
+    // Runde 24: braucht der Text mehr Drohnen als gewählt, steigt die Drohnenzahl (und damit Paket und Preis) sichtbar mit
+    const need = textNeed(text);
+    textNote = need > drones ? "raised" : "";
+    if (need > drones) { drones = snapDrones(need); fresh = []; unlockTo = null; }
     update(true, text ? TOUR_SEGMENT : isText(was) ? (logo ? LOGO_SEGMENT : 0) : was);
   };
   textInput.addEventListener("input", () => { clearTimeout(typing); typing = setTimeout(showText, 450); });

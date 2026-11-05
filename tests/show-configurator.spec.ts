@@ -859,3 +859,36 @@ test('Runde 11: Paket, Preis und Anfrage als eigene Fläche mit Abstand zur Bedi
   expect(await sum.evaluate((el) => getComputedStyle(el).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
 });
 
+
+test('Runde 24: Katalogmotive spielen ab ihrer Punktzahl, der eigene Text hebt die Drohnenzahl auf seinen Bedarf', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  // Sportwagen (147 Punkte) spielt ab 150 Drohnen; ein Link mit weniger öffnet ihn mit genug Drohnen
+  await page.goto(`${CFG}?anlass=launch&paket=SPARK&drohnen=100&motiv=sportwagen#konfigurator`);
+  await expect(page.locator('#cfg-dronecount')).toHaveText('150');
+  await expect(scene(page)).toHaveText('Sportwagen, eine Formation aus dem FlyingStars-Katalog');
+  await expect(field(page)).toHaveAttribute('data-points', '150');
+  // ein Lichtpunkt je Schwelle: bei 100 Drohnen schalten 120 und 150 je mehrere Motive frei
+  await page.goto(`${CFG}?anlass=launch&paket=SPARK&drohnen=100#konfigurator`);
+  const locks = page.locator('#cfg-locks .cfg-lock');
+  await expect(locks.first()).toHaveAttribute('data-at', '120');
+  const thresholds = await locks.evaluateAll((els) => els.map((el) => Number((el as HTMLElement).dataset.at)));
+  expect(new Set(thresholds).size).toBe(thresholds.length);
+  // Text: 10 Drohnen je Zeichen ohne Leerzeichen; „ANNA & BEN TOM“ = 11 Zeichen → 110 Drohnen
+  const budget = page.locator('#cfg-text-budget');
+  await expect(budget).toBeHidden();
+  await page.locator('#cfg-text').fill('ANNA & BEN');
+  await page.locator('#cfg-text').press('Enter');
+  await expect(budget).toHaveText('8 von 10 Zeichen bei 100 Drohnen');
+  await expect(page.locator('#cfg-dronecount')).toHaveText('100');
+  await page.locator('#cfg-text').fill('ANNA & BEN TOM');
+  await page.locator('#cfg-text').press('Enter');
+  await expect(page.locator('#cfg-dronecount')).toHaveText('110');
+  await expect(budget).toContainText('11 von 11 Zeichen bei 110 Drohnen');
+  await expect(budget).toContainText('mindestens 110 Drohnen');
+  // ein Absenken unter den Bedarf hält der Regler fest
+  await page.locator('#cfg-drones').fill('100');
+  await expect(page.locator('#cfg-dronecount')).toHaveText('110');
+  await expect(budget).toContainText('Mit eurem Text bleiben es mindestens 110 Drohnen');
+  expect(errors).toEqual([]);
+});

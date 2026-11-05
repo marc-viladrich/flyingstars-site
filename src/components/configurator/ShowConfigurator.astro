@@ -128,6 +128,8 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
         </div>
         {/* Runde 9 (Marc: „ein bisschen zu viel Text“): der Hinweis steht hinter dem Info-Zeichen an der Überschrift, Klick, Fokus
              oder Zeigen öffnet, Esc schließt; die Logo-Auswahl verweist weiter darauf (aria-describedby) */}
+        {/* Runde 24: Zeichen und Drohnenbedarf des eigenen Textes (Regel des FlyingStars-Katalogs, show-configurator.js) */}
+        <p class="cfg-text-budget mono" id="cfg-text-budget" role="status" hidden></p>
         <p class="cfg-logo-status" id="cfg-logo-status" role="status"></p>
       </fieldset>
       {/* außerhalb des fieldset: dessen Positionierungs-Bezug liegt unter der Legende, nicht an der Kante */}

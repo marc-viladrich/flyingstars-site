@@ -1,6 +1,6 @@
 # Show-Konfigurator (Prototyp)
 
-Stand: 31. Oktober 2026, sechzehnte Fassung (Abschnitt „Sechzehnte Fassung“ ganz unten). Frühere Stände sind als Tags erhalten: `konfigurator-v6`, `konfigurator-v8`, `konfigurator-v9`, `konfigurator-v10`. Seit der sechzehnten Fassung ist der Konfigurator eine Komponente (`src/components/configurator/ShowConfigurator.astro`) direkt auf der Preisseite, Anker `#konfigurator`; `/show-konfigurator/` leitet dorthin weiter. Für die Startseite gibt es einen Teaser als sich selbst abspielendes Showreel (`ConfiguratorTeaser.astro`, Abschnitt „Startseiten-Teaser als Showreel“). Der Konfigurator ist ein Vorschlag an FlyingStars.
+Stand: 5. November 2026, Runde 24 (Abschnitt ganz unten: Motive aus dem FlyingStars-Katalog, Drohnenbedarf des Textes). Davor sechzehnte Fassung. Frühere Stände sind als Tags erhalten: `konfigurator-v6`, `konfigurator-v8`, `konfigurator-v9`, `konfigurator-v10`. Seit der sechzehnten Fassung ist der Konfigurator eine Komponente (`src/components/configurator/ShowConfigurator.astro`) direkt auf der Preisseite, Anker `#konfigurator`; `/show-konfigurator/` leitet dorthin weiter. Für die Startseite gibt es einen Teaser als sich selbst abspielendes Showreel (`ConfiguratorTeaser.astro`, Abschnitt „Startseiten-Teaser als Showreel“). Der Konfigurator ist ein Vorschlag an FlyingStars.
 
 ## Das Modell: zwei Entscheidungen, die sich nicht gegenseitig verändern
 
@@ -826,3 +826,14 @@ Marcs Rückmeldung zum Konfigurator auf der Preisseite und zum Teaser.
   - Unit-Wächter 52/52 und `show-clouds` 5/5
 - Offen: `tests/show-physics.spec.ts` wählt den Anlass noch über `label:has([name=occasion][value=…])` und muss auf `page.locator('#cfg-occasion').selectOption(…)` umgestellt werden.
 - Screenshots in Chromium und WebKit (1440 und 390 px, Zwischenframes beim Gleiten): `/tmp/fs-r11-cfg/`.
+
+## Runde 24: Motive aus dem FlyingStars-Katalog, Drohnenbedarf des Textes (5.11.2026)
+
+Anlass: FlyingStars hat im Meeting am 5.11. den internen Motivkatalog gezeigt. Laut Marcs Gesprächsbericht liegen die meisten geflogenen Shows zwischen 100 und 150 Drohnen. SPARK braucht deshalb die größte Auswahl. Die Einzelheiten stehen in [show-katalog-motive.md](show-katalog-motive.md).
+
+- 31 Katalogmotive mit 50 Varianten, gezählte Punkte, eigene Farben. Sie spielen ab der Punktzahl ihrer kleinsten Variante, in Zehnerschritten. SPARK zeigt je Anlass jetzt 5–6 Motive bei 100 Drohnen und 7–11 bei 150 (vorher 3 und 4).
+- Je Paket eine eigene Fassung, damit ein größeres Paket nie weniger zeigt (Wächter `show-unlock`): SPARK die Formation, HORIZON als Körper mit zweiter Ebene, ODYSSEY Licht zeichnet die Form, dann wird sie zum Körper.
+- Die Bewegung ist abgeleitet, nicht aus Flugdaten: Räder, Nadel, Ballons, Gläser, Fahnen; 3D-Formationen drehen sich schon in SPARK. Das korrigiert die Vereinfachung „SPARK = Standbild“, wo FlyingStars' eigene Daten 3D mit 100–160 Drohnen belegen.
+- Gesperrte Motive: ein Lichtpunkt je Schwelle, nicht je Motiv. Mit 13 Motiven drückten die Einzelpunkte auf dem Handy die Tempo-Knöpfe aus dem Bild.
+- Eigener Text: zehn Drohnen je Zeichen ohne Leerzeichen (Regel des Katalogs). Unter dem Feld steht „8 von 10 Zeichen bei 100 Drohnen“. Braucht der Text mehr, steigen Drohnenzahl, Paket und Preis sichtbar mit. Ein Absenken darunter hält der Regler und sagt warum. Höchstens 24 Zeichen, also 240 Drohnen.
+- Wächter: `scripts/catalog-motifs.test.mjs` (Daten, Mindestzahlen, Varianten wachsen mit), dazu die bestehenden `show-unlock`, `show-counts`, `show-finte`, `show-clouds`.
