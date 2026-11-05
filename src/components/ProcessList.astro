@@ -1,4 +1,8 @@
 ---
+import Styles from './Styles.astro';
+import stepStyles from './ProcessList.css?url';
+import milestoneStyles from './ProcessList.milestones.css?url';
+import flowStyles from './ProcessList.flow.css?url';
 import {factText} from '../content/show-extras.mjs';
 import {forPath} from '../i18n/server';
 const {locale}=forPath(Astro.url.pathname);
@@ -10,6 +14,7 @@ const { items, variant, level: T = 'h3' } = Astro.props;
 const entries = processEntries(items);
 const cls = { steps: 'steps', milestones: 'ms', flow: 'lf-steps', metro: 'ruler' }[variant];
 ---
+{variant !== 'metro' && <Styles href={{steps: stepStyles, milestones: milestoneStyles, flow: flowStyles}[variant]} id={`components/ProcessList.${variant}.css`} />}
 <ol class:list={['process-list', cls]} data-tl={variant === 'milestones' ? '' : undefined} data-reveal-group={['flow', 'metro'].includes(variant) ? '' : undefined} style={`--n:${items.length}`}>
   {entries.map((item) => <li class:list={['process-item', { 'ms-item': variant === 'milestones', 'ms-repeat': variant === 'milestones' && item.repeat, 'ms-last': variant === 'milestones' && item.last, gate: variant === 'flow' && item.gate }]} data-reveal={['flow', 'metro'].includes(variant) ? '' : undefined} style={`--i:${item.i};--c:${item.color};--c2:${item.nextColor}`}>
     {variant === 'milestones' ? <>
@@ -24,74 +29,7 @@ const cls = { steps: 'steps', milestones: 'ms', flow: 'lf-steps', metro: 'ruler'
   </li>)}
 </ol>
 
-<style is:global>
 
-  .ms { list-style: none; margin: 0; padding: 0; max-width: 64rem; }
-  .ms-item { display: grid; grid-template-columns: 7.5rem 1rem minmax(0, 1fr); grid-template-areas: 'when rail body'; column-gap: clamp(var(--space-5), 2.6vw, var(--space-10)); }
-  .ms-when { grid-area: when; font: 600 clamp(1.875rem, 3vw, 2.75rem)/0.9 var(--display); letter-spacing: -0.04em; color: var(--c); text-align: right; padding-top: var(--space-0-25); transition: color var(--dur-fade), opacity var(--dur-fade); }
-  .ms-repeat .ms-when { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  .ms-item:not(.ms-repeat):not(:first-child) .ms-body, .ms-item:not(.ms-repeat):not(:first-child) .ms-when { margin-top: clamp(var(--space-3-5), 2vw, var(--space-7)); }
-  .ms-item:not(.ms-repeat):not(:first-child) .ms-rail { padding-top: clamp(var(--space-3-5), 2vw, var(--space-7)); }
-
-  /* Schiene: Punkt oben, Linie vom Punkt bis zum nächsten Punkt (Spur grau, darüber der Verlauf, der sich aufzieht) */
-  .ms-rail { grid-area: rail; position: relative; }
-  .ms-dot { position: absolute; z-index: 1; left: 0; top: 0.3125rem; width: 1rem; height: 1rem; border-radius: var(--radius-round); background: var(--c); border: 2px solid var(--c); box-shadow: 0 0 0.875rem var(--c), 0 0 2px var(--white) inset; transition: background var(--dur-fade), border-color var(--dur-fade), box-shadow var(--dur-fade); }
-  .ms-line { position: absolute; left: 0.4375rem; width: 2px; top: 0.8125rem; bottom: -0.8125rem; border-radius: var(--radius-2); background: var(--line-strong); overflow: hidden; }
-  .ms-item:not(.ms-repeat):not(:first-child) .ms-dot { top: calc(0.3125rem + clamp(0.875rem, 2vw, 1.75rem)); }
-  .ms-item:not(.ms-repeat):not(:first-child) .ms-line { top: calc(0.8125rem + clamp(0.875rem, 2vw, 1.75rem)); }
-  /* die Linie des Vorgängers reicht bis zum Punkt des nächsten Eintrags; bei einem neuen Jahr liegt der etwas tiefer */
-  .ms-item:has(+ .ms-item:not(.ms-repeat)) .ms-line { bottom: calc(-0.8125rem - clamp(0.875rem, 2vw, 1.75rem)); }
-  .ms-last .ms-line { display: none; }
-  .ms-line::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, var(--c), var(--c2)); transform-origin: top; transform: scaleY(1); transition: transform var(--dur-fade-long) var(--ease-ruler) var(--dur-quick); }
-
-  .ms-body { grid-area: body; display: grid; gap: var(--space-1-5); padding-bottom: clamp(var(--space-6-5), 3vw, var(--space-10)); transition: opacity var(--dur-reveal) var(--ease-default), transform var(--dur-reveal-move) var(--ease-reveal); }
-  .ms-body :is(h2, h3) { font-size: clamp(1.1875rem, 1.6vw, 1.4375rem); line-height: 1.25; letter-spacing: -0.015em; }
-  .ms-body p { color: var(--muted); max-width: 60ch; }
-  .ms-last .ms-body { padding-bottom: 0; }
-
-  /* Startzustand vor dem Erscheinen (html.reveal setzt das Inline-Skript im Kopf, nur mit Bewegung) */
-  html.reveal .ms-item:not(.lit) .ms-dot { background: var(--ground); border-color: var(--line-strong); box-shadow: none; }
-  html.reveal .ms-item:not(.lit) .ms-line::after { transform: scaleY(0); }
-  /* noch nicht erreichte Jahre gedämpft, aber lesbar (große Schrift, mind. 3:1; axe 02.11.2026) */
-  html.reveal .ms-item:not(.lit) .ms-when { color: var(--faint); }
-  html.reveal .ms-item:not(.lit) .ms-body { opacity: 0; transform: translateY(0.5em); }
-  @media (prefers-reduced-motion: reduce) { .ms-dot, .ms-line::after, .ms-when, .ms-body { transition: none; } }
-
-  @media (max-width: 45em) {
-    .ms-item { grid-template-columns: 1rem minmax(0, 1fr); grid-template-areas: 'rail when' 'rail body'; column-gap: var(--space-4-5); }
-    .ms-when { text-align: left; font-size: 1.75rem; margin-bottom: var(--space-2); }
-    .ms-rail { grid-row: 1 / span 2; }
-    .ms-item:not(.ms-repeat):not(:first-child) .ms-body { margin-top: 0; }
-  }
-
-  .lf-grid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(var(--space-8), 6vw, var(--space-28)); align-items: start; }
-  .lf-head { position: sticky; top: 6.875rem; }
-  .lf-head .sec-head { margin-bottom: 0; }
-  .lf-steps { list-style: none; margin: 0; padding: 0 0 0 var(--space-11); position: relative; display: grid; gap: clamp(var(--space-3-5), 2vw, var(--space-5-5)); }
-  .lf-steps::before, .lf-steps::after { content: ""; position: absolute; left: 0.6875rem; top: 0.75rem; bottom: 0.75rem; width: 2px; border-radius: var(--radius-2); }
-  .lf-steps::before { background: var(--line-strong); }
-  .lf-steps::after { background: linear-gradient(180deg, var(--logo-amber), var(--logo-orchid) 50%, var(--cyan)); transform-origin: top; transition: transform var(--dur-twinkle) var(--ease-ruler); }
-  .reveal .lf-steps:not(.is-in)::after { transform: scaleY(0); }
-  .lf-steps li { position: relative; }
-  .lf-dot { position: absolute; z-index: 1; left: -2.75rem; top: 1.375rem; width: 1.5rem; height: 1.5rem; display: grid; place-items: center; border-radius: var(--radius-round); background: var(--surface); border: 2px solid var(--line-strong); }
-  .lf-steps li:not(.gate) .lf-dot::after { content: ""; width: 0.5rem; height: 0.5rem; border-radius: var(--radius-round); background: var(--accent); box-shadow: 0 0 0.625rem var(--accent); }
-  .gate .lf-dot { width: 2rem; height: 2rem; left: -3rem; top: 1.625rem; border: 0; background: var(--grad-soft); }
-  .gate .lf-dot .ico { width: 1rem; height: 1rem; color: var(--ground); stroke: var(--ground); }
-  .lf-body { display: grid; gap: var(--space-2); justify-items: start; padding: var(--space-5) 0 var(--space-5-5); border-bottom: 1px solid var(--line); }
-  .gate .lf-body { position: relative; padding: clamp(var(--space-5-5), 2.6vw, var(--space-8)); border: 0; border-radius: var(--radius); background: var(--ground); margin: var(--space-1-5) 0; }
-  .gate .lf-body::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: var(--space-0-25); background: var(--grad); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
-  .lf-n { color: var(--accent); }
-  .lf-body h2, .lf-body h3 { font-size: clamp(1.3125rem, 1.8vw, 1.625rem); }
-  .gate .lf-body h2, .gate .lf-body h3 { font-size: clamp(1.625rem, 2.4vw, 2.125rem); }
-  .lf-body p { margin: 0; color: var(--muted); max-width: 50ch; }
-  .lf-t { color: var(--faint); padding: var(--space-1-25) var(--space-2-25); border: 1px solid var(--line); border-radius: var(--radius-pill); }
-  @media (max-width: 60em) {
-    .lf-grid { grid-template-columns: 1fr; }
-    .lf-head { position: static; }
-  }
-  @media (prefers-reduced-motion: reduce) { .lf-steps::after { transition: none; } }
-
-</style>
 <script>
   import { REVEAL_MARGIN } from '../scripts/reveal-point.js';
   // Punkte schalten der Reihe nach ein: Was ins Bild kommt, wird angefordert, eingeschaltet wird immer der nächste

@@ -1,0 +1,105 @@
+
+
+  :where(.ls-site) .st { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(var(--space-8), 5vw, var(--space-22)); align-items: start; }
+  :where(.ls-site) .st-fig { margin: 0; position: sticky; top: 6rem; padding: clamp(var(--space-4), 2.4vw, var(--space-9)); border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); }
+  :where(.ls-site) .st-fig > svg { width: 100%; max-width: 35rem; height: auto; display: block; margin-inline: auto; }
+  :where(.ls-site) .st-fig figcaption { margin-top: var(--space-4-5); color: var(--faint); font-size: var(--text-sm); }
+  :where(.ls-site) .st-height { display: flex; align-items: center; gap: var(--space-2-5); margin: var(--space-5) 0 0; color: var(--head); font-size: var(--text-base); }
+  :where(.ls-site) .st-height .ico { flex: 0 0 auto; }
+  /* Lageplan (outdoor): Straßen, Häuser und Park nur als ruhiger Grund, die Zonen tragen die Farbe */
+  :where(.ls-site) .plan .road { fill: none; stroke: rgb(var(--rgb-head) / 5%); stroke-width: 12; }
+  :where(.ls-site) .plan .house { fill: rgb(var(--rgb-head) / 5%); stroke: rgb(var(--rgb-head) / 9%); }
+  :where(.ls-site) .plan .park { fill: rgb(var(--rgb-good) / 5%); }
+  :where(.ls-site) .plan .tree { fill: rgb(var(--rgb-good) / 11%); }
+  :where(.ls-site) .zone { cursor: pointer; }
+  :where(.ls-site) .zone .under { fill: var(--surface); }
+  :where(.ls-site) .shape { fill: color-mix(in srgb, var(--zc) 20%, transparent); stroke: color-mix(in srgb, var(--zc) 70%, transparent); stroke-width: 1.5; }
+  :where(.ls-site) [data-zone="operative"] .shape { fill: color-mix(in srgb, var(--zc) 30%, transparent); }
+  :where(.ls-site) [data-zone="guests"] .shape { fill: color-mix(in srgb, var(--zc) 30%, transparent); }
+  :where(.ls-site) .shape.pad { fill: color-mix(in srgb, var(--zc) 80%, transparent); stroke: var(--zc); }
+  :where(.ls-site) .drone { fill: var(--logo-amber); stroke: var(--surface); stroke-width: 0.8; }
+  :where(.ls-site) .pill rect { fill: var(--ground); stroke: var(--line-strong); }
+  /* SVG-Text bleibt in viewBox-Benutzerkoordinaten und skaliert mit der gesamten Zeichnung. */
+  :where(.ls-site) .pill text { fill: var(--head); font: 500 11px var(--mono); letter-spacing: 0.04em; }
+  /* Innenraum (indoor): dieselben Zonenfarben, sparsamer */
+  :where(.ls-site) .flight { fill: color-mix(in srgb, var(--zc, var(--good)) 8%, transparent); stroke: color-mix(in srgb, var(--zc, var(--good)) 55%, transparent); stroke-dasharray: 3 4; }
+  :where(.ls-site) .pad { fill: color-mix(in srgb, var(--zc, var(--diagram-blue)) 14%, transparent); stroke: color-mix(in srgb, var(--zc, var(--diagram-blue)) 80%, transparent); stroke-width: 1; }
+  :where(.ls-site) .dim, :where(.ls-site) .wall, :where(.ls-site) .hatch, :where(.ls-site) .view { fill: none; stroke: var(--faint); stroke-width: 1; }
+  :where(.ls-site) .hatch { stroke: var(--zc, var(--faint)); opacity: 0.7; }
+  :where(.ls-site) .view { stroke: var(--zc, var(--faint)); stroke-dasharray: 3 4; opacity: 0.8; }
+  :where(.ls-site) .divider { stroke: var(--line); }
+  :where(.ls-site) .lbl { fill: var(--head); font: 400 17px var(--display); }
+  :where(.ls-site) .seed { fill: var(--head); }
+  :where(.ls-site) .guest { fill: var(--zc, var(--head)); opacity: 0.85; }
+  :where(.ls-site) .guest-body { fill: none; stroke: var(--zc, var(--head)); stroke-width: 1.5; opacity: 0.85; }
+  :where(.ls-site) .antenna { fill: var(--zc, var(--accent)); stroke: var(--ground); stroke-width: 2; }
+  :where(.ls-site) .marker circle { fill: var(--surface); stroke: var(--zc, var(--accent)); stroke-width: 1.4; }
+  :where(.ls-site) .marker text { fill: var(--zc, var(--accent)); font: 600 13px var(--display); }
+  :where(.ls-site) .st-items { list-style: none; margin: 0; padding: 0; }
+  /* Schrittweise: nicht gewählte Zonen treten zurück, ihr Text klappt zu (Höhe über grid-template-rows, weich).
+     Gedämpft wird nur die Farbe, nicht die Unterlage (.under), sonst schimmern die äußeren Zonen durch die inneren. */
+  :where(.ls-site) .is-live :is(.zone > *, .marker) { transition: opacity var(--dur-glide) var(--ease-default), stroke-width var(--dur-color) var(--ease-default); }
+  :where(.ls-site) .is-stepped .zone:not(.on) > :not(.under) { opacity: 0.4; }
+  :where(.ls-site) .is-stepped .zone.on .shape { stroke: var(--zc); stroke-width: 2.4; stroke-dasharray: 7 5; animation: st-march var(--dur-ambient) var(--ease-linear) infinite; }
+  /* Startfläche: gefüllt, darauf wäre eine Kontur in derselben Farbe unsichtbar; die laufende Kontur liegt als Rahmen mit
+     Abstand darum (Marc, 03.11.2026: „das einzige, wo wir aktuell keine Traveling-Dashed Border haben“) */
+  :where(.ls-site) .ring { fill: none; stroke: none; }
+  :where(.ls-site) .is-stepped .zone.on .shape.pad { stroke-dasharray: none; animation: none; }
+  :where(.ls-site) .is-stepped .zone.on .ring { stroke: var(--zc); stroke-width: 2; stroke-dasharray: 6 4; animation: st-march var(--dur-ambient) var(--ease-linear) infinite; }
+  :where(.ls-site) .is-stepped .zone.on .drone { animation: st-twinkle var(--dur-branch) var(--ease-ambient) infinite; animation-delay: var(--d, 0s); }
+  @keyframes st-march { to { stroke-dashoffset: -24; } }
+  @keyframes st-twinkle { 50% { fill: #ffe7b0; } }
+  :where(.ls-site) .is-stepped .marker { cursor: pointer; }
+  :where(.ls-site) .is-stepped .marker:not(.on) { opacity: 0.6; }
+  :where(.ls-site) .is-live .marker :is(circle, text) { transition: fill var(--dur-standard) var(--ease-default); }
+  :where(.ls-site) .is-stepped .marker.on circle { fill: var(--zc, var(--accent)); }
+  :where(.ls-site) .is-stepped .marker.on text { fill: var(--ground); }
+  :where(.ls-site) .st-row { all: unset; cursor: pointer; display: block; width: 100%; font: inherit; color: inherit; }
+  :where(.ls-site) .st-row:focus-visible { outline: 2px solid var(--cyan); outline-offset: 0.25rem; border-radius: var(--radius-4); }
+  :where(.ls-site) .st-body { display: grid; grid-template-rows: 1fr; }
+  :where(.ls-site) .is-live .st-body { transition: grid-template-rows var(--dur-underline) var(--ease-default), opacity var(--dur-glide) var(--ease-default), visibility 0s; }
+  :where(.ls-site) .st-body > div { overflow: hidden; min-height: 0; }
+  /* zugeklappt wirklich verborgen (auch für Screenreader, passend zu aria-expanded), erst nach dem Zuklappen */
+  :where(.ls-site) .is-stepped li:not(.on) .st-body { grid-template-rows: 0fr; opacity: 0; visibility: hidden; }
+  :where(.ls-site) .is-live li:not(.on) .st-body { transition: grid-template-rows var(--dur-underline) var(--ease-default), opacity var(--dur-glide) var(--ease-default), visibility 0s var(--dur-underline); }
+  :where(.ls-site) .is-live .st-items li { transition: color var(--dur-standard) var(--ease-default); }
+  :where(.ls-site) .is-stepped .st-items li:not(.on) :is(h2, h3) { color: var(--muted); }
+  :where(.ls-site) .is-stepped .st-items li:not(.on) .st-n { color: var(--faint); }
+  :where(.ls-site) .is-stepped .st-items li { cursor: pointer; }
+  /* Wer macht was: Tabelle, Aufgaben links, je Spalte ein Zeichen */
+  :where(.ls-site) .st-who { margin-top: clamp(var(--space-12), 6vw, var(--space-22)); }
+  :where(.ls-site) .st-who > :is(h2, h3) { font-size: var(--text-2xl); margin-bottom: var(--space-5); }
+  :where(.ls-site) .st-who table { width: 100%; min-width: 0; max-width: 61.25rem; border-collapse: collapse; table-layout: fixed; } /* Aufgabe nimmt den Rest, die Zeichenspalten bleiben schmal */
+  :where(.ls-site) .st-who th, :where(.ls-site) .st-who td { padding: var(--space-3-5) var(--space-3); border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+  /* Kopfzeile klebt auf dem Handy unter dem Header wie die Reiter der Vergleiche (Marc, 02.11.2026: „bei ALLEN Tabellen“) */
+  @media (--mobile) { :where(.ls-site) .st-who thead th { position: sticky; top: var(--nav-h); z-index: 2; padding-top: var(--space-3); background: var(--strip, var(--ground)); }
+    /* deckender Streifen bis an die Fensterränder, nur an den äußeren Zellen, sonst überdeckt ein Schatten die Nachbarzelle */
+    :where(.ls-site) .st-who thead th:first-child { box-shadow: -100vmax 0 0 0 var(--strip, var(--ground)); }
+    :where(.ls-site) .st-who thead th:last-child { box-shadow: 100vmax 0 0 0 var(--strip, var(--ground)); } }
+  :where(.ls-site) .st-who thead th { padding-top: 0; font: 400 var(--text-xs)/1.4 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); border-bottom-color: var(--line-strong); }
+  :where(.ls-site) .st-who tbody th { font-weight: 400; color: var(--text); font-size: var(--text-base); padding-left: 0; hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; }
+  :where(.ls-site) .st-who .c { width: 8.25rem; text-align: center; }
+  :where(.ls-site) .st-who td.c { color: var(--muted); }
+  :where(.ls-site) .st-who tbody tr { transition: background-color var(--dur-control) var(--ease-default); }
+  :where(.ls-site) .st-who tbody tr:hover { background: var(--fill-quiet); }
+  :where(.ls-site) .st-legend { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5-5); margin: var(--space-4) 0 0; color: var(--faint); font-size: var(--text-xs); }
+  :where(.ls-site) .st-legend > span { display: inline-flex; align-items: center; gap: var(--space-2); }
+  @media (--small-facts) { :where(.ls-site) .st-who .c { width: 5.375rem; } :where(.ls-site) .st-who th, :where(.ls-site) .st-who td { padding: var(--space-3) var(--space-1); } :where(.ls-site) .st-who tbody th { font-size: var(--text-control); padding-right: var(--space-2); } :where(.ls-site) .st-who thead th { letter-spacing: 0.04em; font-size: var(--text-xs); } }
+  @media (prefers-reduced-motion: reduce) { :where(.ls-site) .zone, :where(.ls-site) .zone *, :where(.ls-site) .marker, :where(.ls-site) .st-body { transition: none; animation: none !important; } }
+  :where(.ls-site) .st-items li { display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); gap: var(--space-2); padding: var(--space-5-5) 0; border-top: 1px solid var(--line); }
+  :where(.ls-site) .st-items li:first-child { padding-top: 0; border: 0; }
+  :where(.ls-site) .st-n { color: var(--zc, var(--accent)); padding-top: var(--space-1); }
+  :where(.ls-site) .st-items h2, :where(.ls-site) .st-items h3 { font-size: clamp(1.25rem, 1.6vw, 1.5rem); }
+  :where(.ls-site) .st-value { display: block; margin-top: var(--space-2); color: var(--zc, var(--accent)); font: 500 clamp(1.0625rem, 1.3vw, 1.25rem)/1.2 var(--display); }
+  .ls-site :is(.st-height, .st-body p, .st-legend) { line-height: 1.65; }
+  :where(.ls-site) .st-safeguards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-8); margin-top: clamp(var(--space-10), 5vw, var(--space-18)); padding-block: var(--space-8); border-block: 1px solid var(--line); }
+  :where(.ls-site) .st-download { margin-top: var(--space-7); display: flex; align-items: center; gap: var(--space-2-5); }
+  :where(.ls-site) .st-download .ico { width: 1.125rem; height: 1.125rem; flex: 0 0 auto; }
+  @media (max-width: 60em) {
+    :where(.ls-site) .st { grid-template-columns: 1fr; }
+    :where(.ls-site) .st-fig { position: static; }
+    :where(.ls-site) .st-safeguards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (--small-facts) {
+    :where(.ls-site) .st-safeguards { grid-template-columns: 1fr; gap: var(--space-7); }
+  }

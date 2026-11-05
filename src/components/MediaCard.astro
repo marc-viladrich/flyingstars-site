@@ -1,4 +1,6 @@
 ---
+import Styles from './Styles.astro';
+import ownerStyle0 from './MediaCard.css?url';
 // Titel im Unterstrich-Effekt (.hover-line, Runde 20c). WebKit wendet text-wrap: balance nicht auf Text in einem
 // Inline-Element an; deshalb verbindet joinLastWords die letzten zwei Wörter (sonst Einzelwort in der letzten Zeile).
 import { joinLastWords } from '../lib/no-orphans';
@@ -13,6 +15,7 @@ const mediaClass = variant === 'story' ? 'ls-img' : 'img';
 const bodyClass = variant === 'occasion' ? 'body' : variant === 'story' ? 'ls-body' : 'media-card-body';
 const kickerClass = variant === 'occasion' ? 'cat mono' : variant === 'story' ? 'kicker mono' : 'kick mono';
 ---
+<Styles href={ownerStyle0} id="components/MediaCard.css" />
 <Tag class:list={[root, cls]} href={href} data-dot-host={dot ? '' : undefined} data-loop-host={loop} data-season={season} {...rest}>
   {hasMedia && <div class={mediaClass} data-curtain data-dot-img={dot ? '' : undefined} style={`--i:${i}`}>
     <slot name="media" />
@@ -24,6 +27,3 @@ const kickerClass = variant === 'occasion' ? 'cat mono' : variant === 'story' ? 
     <slot name="facts" /><slot name="actions" />
   </div>
 </Tag>
-<style is:global>
-  .media-card-body { display: contents; }
-</style>

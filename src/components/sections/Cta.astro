@@ -1,4 +1,6 @@
 ---
+import Styles from '../Styles.astro';
+import ownerStyle0 from '../CtaBox.css?url';
 // Abschluss mit Handlung (Marc, 31.10./01./02.11.2026): ein Knopf, keine Kicker-Zeile, immer Gesichter, Überschrift und Text.
 // Darstellung: CtaBox.astro (ein Kasten für alle Abschlüsse).
 import type { Section } from '../../content.config';
@@ -7,6 +9,7 @@ type Props = Extract<Section, { type: 'cta' }> & { index: number };
 const { headline, text, button, index } = Astro.props;
 const id = `s${index}-h`;
 ---
+<Styles href={ownerStyle0} id="components/CtaBox.css" />
 <section class="section" aria-labelledby={id}>
   <CtaBox headline={headline} text={text} button={button} id={id} level={index === 0 ? 'h1' : 'h2'} />
 </section>

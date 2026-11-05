@@ -1,4 +1,7 @@
 ---
+import Styles from '../Styles.astro';
+import ownerStyle0 from './LandingRefs.css?url';
+import ownerStyle1 from '../MediaCard.css?url';
 import { localizedCollection } from '../../i18n/content';
 import { forPath } from '../../i18n/server';
 const { localHref } = forPath(Astro.url.pathname);
@@ -19,12 +22,10 @@ const list = ids.map((pid) => {
   return p;
 });
 ---
+<Styles href={ownerStyle0} id="components/landing/LandingRefs.css" />
+<Styles href={ownerStyle1} id="components/MediaCard.css" />
 <section class="section" id={id} aria-labelledby={`${id}-h`}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
   <div class="projects">{list.map((project, i) => <ProjectCard project={project} i={i} level={index === 0 ? 'h2' : 'h3'} year autoplay={i === 0} />)}</div>
   {cta && <div class="lr-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></div>}
 </section>
-
-<style>
-  .lr-more { margin-top: clamp(var(--space-7), 4vw, var(--space-11)); }
-</style>

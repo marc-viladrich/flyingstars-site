@@ -1,4 +1,6 @@
 ---
+import Styles from './Styles.astro';
+import ownerStyle0 from './PackageCard.css?url';
 import {inquiryHref} from '../content/inquiry.mjs';
 import {startingPrice} from '../lib/price.mjs';
 import {field} from 'astro-frontend-editor/markers';
@@ -14,6 +16,7 @@ const { badge = PACKAGE_DETAILS[packageId].often, label = PACKAGE_DETAILS[packag
 const p = { name: packageId, ...SHOW_PACKAGES[packageId], shape: SHOW_PACKAGES[packageId].orb };
 const money = (v: number) => startingPrice(v,forPath(Astro.url.pathname).locale);
 ---
+<Styles href={ownerStyle0} id="components/PackageCard.css" />
 {variant === 'summary' ? (
 <a class:list={['pack', { featured: highlight }]} aria-labelledby={headingId} href={inquiryHref({paket:p.name},locale)} data-pick-paket={p.name} style={`--c:rgb(${p.color.join(',')})`}>
       <canvas data-orb={p.shape} data-color={p.color.join(',')} data-n={p.base} aria-hidden="true"></canvas>

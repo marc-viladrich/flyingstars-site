@@ -1,0 +1,15 @@
+/* tabs: component-owned delivery; see docs/css-delivery.md. */
+
+.mtabs { display: none; }
+@media (--mobile) {
+  .mtabs { display: grid; grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr)); gap: var(--space-1-5); padding: var(--space-1-25); margin-bottom: var(--space-4-5); border: 1px solid var(--line-strong); border-radius: var(--radius-12); position: sticky; top: calc(var(--nav-h) + 0.5rem); z-index: 6; background: var(--strip, var(--ground)); box-shadow: 0 0 0 100vmax var(--strip, var(--ground)); clip-path: inset(-0.5625rem -100vmax -0.75rem -100vmax); }
+  .mtabs label { position: relative; cursor: pointer; }
+  .mtabs input { position: absolute; left: 0; top: 0; width: 1px; height: 1px; opacity: 0; margin: 0; pointer-events: none; }
+  .mtabs span { display: block; padding: var(--space-2-5) var(--space-1); border-radius: var(--radius-8); text-align: center; font: 500 var(--text-label)/1.2 var(--body); color: var(--muted); transition: background-color var(--dur-control), color var(--dur-control); }
+  .mtabs label[style*="--c"] span { font: 600 var(--text-xs)/1.2 var(--mono); letter-spacing: 0.08em; color: color-mix(in srgb, var(--c) 55%, var(--faint)); }
+  .mtabs input:checked + span { background: var(--surface-2); color: var(--text); }
+  .mtabs label[style*="--c"] input:checked + span { color: var(--c); box-shadow: inset 0 -2px 0 var(--c); }
+  .mtabs label.us:not([style*="--c"]) input:checked + span { box-shadow: inset 0 -2px 0 var(--logo-orchid); }
+  .mtabs input:focus-visible + span { outline: 2px solid var(--cyan); outline-offset: 0.125rem; }
+  [data-mtabs]:has(> .mtabs label:nth-child(1) input:checked) [data-mtab]:not([data-mtab="0"]), [data-mtabs]:has(> .mtabs label:nth-child(2) input:checked) [data-mtab]:not([data-mtab="1"]), [data-mtabs]:has(> .mtabs label:nth-child(3) input:checked) [data-mtab]:not([data-mtab="2"]), [data-mtabs]:has(> .mtabs label:nth-child(4) input:checked) [data-mtab]:not([data-mtab="3"]) { display: none; }
+}

@@ -1,0 +1,23 @@
+/* team: component-owned delivery; see docs/css-delivery.md. */
+
+.member:is(:hover, :focus-within) h3 { background-size: 100% 0.125rem; background-position-x: left; }
+.team-sec { padding: var(--section) var(--gutter); background: radial-gradient(70% 45% at 50% 0%, rgb(var(--rgb-logo-orchid) / 0.07), transparent 70%), var(--media-ground); border-bottom: 1px solid var(--line); }
+.crew { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--cols, 5), minmax(0, 1fr)); gap: clamp(var(--space-3), 1.6vw, var(--space-5-5)); }
+.member { display: grid; gap: var(--space-2-5); align-content: start; transition: opacity var(--dur-fade) var(--ease-default); transition-delay: calc(var(--i, 0) * var(--dur-stagger)); }
+.member > :not(.portrait) { transition: transform var(--dur-reveal) var(--ease-curtain); transition-delay: calc(var(--i, 0) * var(--dur-stagger)); }
+.member.shown, .member.shown > *, .member.shown .portrait img { transition-delay: 0s; }
+.member .role { color: var(--amber); }
+.member h3 { font-size: var(--text-lg); width: fit-content; padding-bottom: var(--space-0-5); }
+.member p { color: var(--muted); font-size: var(--text-sm); }
+.crew-note { margin-top: clamp(var(--space-6-5), 4vw, var(--space-10)); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3-5) var(--space-7); padding-top: var(--space-5-5); border-top: 1px solid var(--line); color: var(--muted); }
+.crew-note b { color: var(--text); font-weight: 500; }
+@media (--grid-stacked) {
+  .crew { grid-template-columns: repeat(min(var(--cols, 5), 3), minmax(0, 1fr)); }
+}
+@media (--compact) {
+  .crew { grid-template-columns: 1fr 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .member { transition: none; }
+}
+@media (--compact) { .crew[data-odd] { grid-template-columns: 1fr; } .crew[data-odd] .portrait { aspect-ratio: 4 / 3; } .crew[data-odd] .portrait img { object-position: 50% 25%; } }

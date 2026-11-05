@@ -1,0 +1,13 @@
+---
+interface Props { href: string; owner?: string; deferred?: boolean; consent?: boolean }
+const {href, owner, deferred = false, consent = false} = Astro.props;
+// At tall first viewports additional sections enter the screen. Keep native render
+// blocking there; the non-blocking path is bounded by the verified critical viewport.
+// The mobile hero stacks naturally instead of filling 100svh, so its safe height is lower.
+const firstViewportFallback = '(min-height: 68.75em), (max-width: 43.75em) and (min-height: 56.25em)';
+---
+<link rel="stylesheet" href={href} data-style-owner={owner} data-consent-styles={consent || undefined}
+  media={deferred ? firstViewportFallback : undefined}
+  onload={deferred ? "this.media='all';this.onload=null" : undefined}
+  onerror={deferred ? "this.media='all';this.onerror=null" : undefined} />
+{deferred && <noscript data-style-fallback><link rel="stylesheet" href={href} /></noscript>}

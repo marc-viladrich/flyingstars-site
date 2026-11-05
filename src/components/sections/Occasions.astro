@@ -1,4 +1,6 @@
 ---
+import Styles from '../Styles.astro';
+import ownerStyle0 from '../MediaCard.css?url';
 import {factText} from '../../content/show-extras.mjs';
 import MediaCard from '../MediaCard.astro';
 import { forPath } from '../../i18n/server';
@@ -16,6 +18,7 @@ const slider = cards.length > 4;
 const H = index === 0 ? 'h1' : 'h2';
 const items = await Promise.all(cards.map(async card => ({ ...card, media: await optimizedImage(card.image.src, 640, 480), small: await optimizedImage(card.image.src, 320, 240) })));
 ---
+<Styles href={ownerStyle0} id="components/MediaCard.css" />
 <section class="section" id={id} aria-labelledby={headingId}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
   <div class:list={['occasions', { 'occ-slider': slider }]} data-count={items.length} role={slider ? 'region' : undefined} aria-label={slider ? t('occasions.occasionsScrollHorizontally') : undefined} tabindex={slider ? 0 : undefined}>

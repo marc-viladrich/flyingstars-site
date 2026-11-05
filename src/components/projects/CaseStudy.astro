@@ -1,4 +1,6 @@
 ---
+import Styles from '../Styles.astro';
+import ownerStyle0 from './CaseStudy.css?url';
 import {projectView} from '../../content/project-facts.mjs';
 import SliderNav from '../SliderNav.astro';
 import SectionHead from '../SectionHead.astro';
@@ -29,6 +31,7 @@ const nextImage = next?.data.cover ? await optimizedImage(next.data.cover.src) :
 const still = project.data.cover ? await optimizedImage(project.data.cover.src, 960) : undefined;
 const count = (n: number) => String(n).padStart(2, '0');
 ---
+<Styles href={ownerStyle0} id="components/projects/CaseStudy.css" />
 <div class="case" style={`--accent:${data.accent}`}>
   {/* Kopf wie auf der Startseite (Marc, 01.11.2026): Showvideo rechts, stumm im Loop, nach links ins Schwarz ausgeblendet;
        kein Abspielknopf. Bis das Video läuft (und auf dem Handy), steht das Titelbild. Skript: src/scripts/hero-reel.ts */}
@@ -90,10 +93,3 @@ const count = (n: number) => String(n).padStart(2, '0');
 </div>
 <script>import './case.js';</script>
 <script>import '../../scripts/hero-reel';</script>
-<style>
-
-  /* Teaser aufs nächste Projekt: beim Hovern Lichtpunkte statt Foto-Zoom (dotimage.js), Abdunklung bleibt darüber */
-  .next-poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.75; }
-  .c-next :global(.dot-cv) { opacity: 0.85; }
-
-</style>

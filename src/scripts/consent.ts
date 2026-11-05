@@ -1,6 +1,4 @@
 import * as CookieConsent from 'vanilla-cookieconsent';
-import libraryStyles from 'vanilla-cookieconsent/dist/cookieconsent.css?url';
-import siteStyles from '../styles/consent.css?url';
 import { CONSENT_KEY, CONSENT_LIFETIME, DENIED, consentRevision, readConsent, consentSignals, trackingConfig } from '../lib/consent.mjs';
 
 type Choices = { analytics: boolean; marketing: boolean };
@@ -152,14 +150,14 @@ async function initConsent(element: HTMLElement) {
       warning.hidden = false;
     }
   };
-  // Astro hoists ordinary CSS imports even when this component is not rendered.
-  // URL imports keep both stylesheets behind the same configured-ID boundary as JS.
-  await Promise.all([libraryStyles, siteStyles].map((href) => new Promise<void>((resolve, reject) => {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet'; link.href = href;
-    link.onload = () => resolve(); link.onerror = () => reject(new Error('Consent stylesheet failed to load'));
-    document.head.append(link);
-  })));
+  // The configured-only stylesheet starts loading in the head, alongside the page.
+  // Wait for its actual completion before showing or focusing the consent controls.
+  const stylesheet = document.querySelector<HTMLLinkElement>('link[data-consent-styles]');
+  if (!stylesheet) throw new Error('Consent stylesheet missing');
+  if (!stylesheet.sheet) await new Promise<void>((resolve, reject) => {
+    stylesheet.addEventListener('load', () => resolve(), {once:true});
+    stylesheet.addEventListener('error', () => reject(new Error('Consent stylesheet failed to load')), {once:true});
+  });
   await CookieConsent.run({
     mode: 'opt-in', revision: consentRevision(config), autoShow: false,
     hideFromBots: false, disablePageInteraction: false, manageScriptTags: false,

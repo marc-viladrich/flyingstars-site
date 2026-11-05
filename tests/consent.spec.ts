@@ -54,7 +54,7 @@ test('without IDs no library, CSS, queue, dialog or reopen control downloads', a
   await page.goto('/', { waitUntil: 'networkidle' });
   await expect(page.locator('#cc-main, #consent-config')).toHaveCount(0);
   await expect(page.locator('[data-consent-open]')).toBeHidden();
-  expect(assets.some((url) => /\/(?:cookieconsent|consent)\.[^/]+\.(js|css)/.test(url))).toBe(false);
+  expect(assets.some((url) => /\/(?:cookieconsent|consent(?:-bundle)?|Consent\.astro_astro_type_script_index_0_lang)\.[^/]+\.(js|css)/.test(url))).toBe(false);
   expect(await commands(page)).toEqual([]);
   expect(requests.get(page)).toEqual([]);
 });
@@ -133,13 +133,16 @@ test.describe('configured public IDs', () => {
   });
 
   test('corrupt, expired, future-dated, old native and changed-revision records never restore tracking', async ({ page }) => {
+    // This case intentionally performs five full reloads; WebKit needs their combined budget.
+    test.slow();
     await page.goto('/');
     await consent(page).getByRole('button', { name: 'Ablehnen', exact: true }).click();
     await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), key)).not.toBeNull();
     const record = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), key);
     for (const raw of ['{', JSON.stringify({ ...record, expirationTime: 1 }), JSON.stringify({ ...record, lastConsentTimestamp: new Date(Date.now() + 86400000).toISOString() }), JSON.stringify({ ...record, revision: 0, categories: ['necessary', 'analytics', 'marketing'] }), JSON.stringify({ version: 1, ads: true, analytics: true })]) {
       await page.evaluate(({ key, raw }) => localStorage.setItem(key, raw), { key, raw });
-      await page.reload({ waitUntil: 'networkidle' });
+      // Video downloads are unrelated to consent readiness. Assert the notice after the DOM is ready.
+      await page.reload({ waitUntil: 'domcontentloaded' });
       await expect(consent(page)).toBeVisible();
     }
     expect(requests.get(page)).toEqual([]);

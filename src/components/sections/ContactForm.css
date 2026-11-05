@@ -1,0 +1,74 @@
+/* contact: component-owned delivery; see docs/css-delivery.md. */
+
+.inquiry { display: grid; align-items: start; }
+.form { background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(var(--space-5-5), 3vw, var(--space-8-5)); display: grid; gap: var(--space-4-5); }
+.form .progress { display: flex; justify-content: space-between; color: var(--faint); }
+.form .bar { height: 2px; background: var(--line); border-radius: var(--radius-2); overflow: hidden; }
+.form .bar i { display: block; height: 100%; width: 50%; background: var(--grad); transition: width var(--dur-underline); }
+.fields { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3-5); }
+.fields .full { grid-column: 1 / -1; }
+.field { display: grid; gap: var(--space-1-5); }
+.field label { font-size: var(--text-sm); color: var(--muted); }
+.field .err { font-size: var(--text-label); color: var(--bad); min-height: 0; }
+.form .row { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+.form .hint { font-size: var(--text-label); color: var(--faint); max-width: 36ch; }
+.success { display: grid; gap: var(--space-3); }
+.success h3 { font-size: 1.625rem; }
+@media (--compact) {
+  .fields { grid-template-columns: 1fr; }
+}
+.form fieldset { border:0;margin:0;padding:0;display:grid;gap:var(--space-4-5); }
+.form .field>label, .form #occasion-label { font-size:var(--text-sm);color:var(--muted); }
+.honeypot { position:absolute;left:-624.9375rem;width:1px;height:1px;overflow:hidden; }
+.form button:disabled { opacity:.6;cursor:wait; }
+.inquiry { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: clamp(var(--space-6), 4vw, var(--space-14)); }
+.inquiry .intro { display: grid; gap: var(--space-4-5); align-content: start; }
+.inquiry .intro h1, .inquiry .intro h2 { font-size: var(--text-3xl); line-height: 1.04; max-width: 16ch; }
+.inquiry .intro .lead { max-width: 40ch; }
+.ask { padding: clamp(var(--space-5-5), 3vw, var(--space-9)); border: 1px solid var(--line); border-radius: var(--radius); background: var(--ground); display: grid; gap: var(--space-4-5); min-width: 0; }
+.ask .ask-steps { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2-5) var(--space-4); font-size: var(--text-label); color: var(--faint); }
+.ask .ask-steps .on { color: var(--text); }
+.ask .ask-steps i { grid-column: 1 / -1; height: 2px; background: var(--line); border-radius: var(--radius-2); position: relative; overflow: hidden; }
+.ask .ask-steps i::after { content: ""; position: absolute; inset: 0 50% 0 0; background: var(--grad); transition: right var(--dur-fade); }
+.ask.is-2 .ask-steps i::after { right: 0; }
+.ask .step { border: 0; padding: 0; margin: 0; display: grid; gap: var(--space-4-5); min-width: 0; }
+.ask .field { display: grid; gap: var(--space-1-75); min-width: 0; align-content: start; }
+.ask .lbl { font-size: var(--text-sm); color: var(--text); }
+.ask .lbl em { font-style: normal; color: var(--faint); margin-left: var(--space-1); }
+.ask input[type=text], .ask input[type=email], .ask input[type=tel], .ask input[type=date], .ask select, .ask textarea { width: 100%; height: var(--field-height, 3rem); min-height: 3rem; padding: var(--space-2-75) var(--space-3-5); background-color: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--radius-12); color: var(--text); font: inherit; font-size: var(--text-base); color-scheme: dark; }
+.ask input:disabled { opacity: 0.5; }
+.ask textarea { --field-height: 6.875rem; resize: vertical; }
+.ask input:focus-visible, .ask select:focus-visible, .ask textarea:focus-visible { outline: 2px solid var(--cyan); outline-offset: 0.0625rem; }
+.ask .hint { font-size: var(--text-label); color: var(--faint); }
+.ask .hint.check { display: flex; gap: var(--space-2); align-items: center; cursor: pointer; }
+.ask .hint a { text-decoration: underline; text-underline-offset: 0.1875rem; color: var(--muted); }
+.ask .hint input { accent-color: var(--orchid); width: 1rem; height: 1rem; margin: 0; }
+.ask .err { font-size: var(--text-label); color: var(--bad); }
+.ask .err:empty { display: none; }
+.ask .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3-5); }
+.ask .step > .btn, .ask .actions { justify-self: start; }
+.ask .opt-add { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.ask .opt-add[hidden] { display: none; }
+.ask .opt-add-l { font-size: var(--text-sm); color: var(--faint); margin-right: var(--space-1); }
+.ask .opt-chip { display: inline-flex; align-items: center; gap: var(--space-1-5); min-height: 2.125rem; padding: var(--space-1-5) 0.8125rem; border: 1px dashed var(--line-strong); border-radius: var(--radius-pill); background: transparent; color: var(--muted); font: 400 var(--text-sm)/1.2 var(--body); cursor: pointer; transition: color var(--dur-control), border-color var(--dur-control), opacity var(--dur-color), transform var(--dur-color); }
+.ask .opt-chip span { color: var(--accent); }
+.ask .opt-chip:hover { color: var(--text); border-color: var(--ink-subtle); }
+.ask .opt-chip:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offset: 0.1875rem; }
+.ask .opt-chip[aria-expanded="true"] { display: none; }
+.ask.has-opt .opt:not(.open) { display: none; }
+.ask.has-opt .opt.open { animation: opt-in var(--dur-enter) var(--ease-enter); }
+@keyframes opt-in { from { opacity: 0; transform: translateY(-0.5rem); clip-path: inset(0 0 100% 0); } to { opacity: 1; transform: none; clip-path: inset(0); } }
+@media (prefers-reduced-motion: reduce) { .ask.has-opt .opt.open { animation: none; } }
+.ask .actions { display: flex; gap: var(--space-2-5); }
+.ask [aria-invalid="true"] { border-color: var(--bad); }
+
+@media (--nav-collapsed) {
+  .inquiry { grid-template-columns: 1fr; }
+}
+@media (--compact) {
+  .ask .row2 { grid-template-columns: 1fr; }
+  .ask .step > .btn, .ask .actions { justify-self: stretch; }
+  .ask .actions .btn { flex: 1 1 auto; }
+}
+.ask :is(input[type="text"], input[type="email"], input[type="tel"], input[type="date"], select, textarea):hover { border-color: rgb(var(--rgb-text) / 0.4); }
+.ask .hint.check:hover { color: var(--text); }

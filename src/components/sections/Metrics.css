@@ -1,0 +1,25 @@
+/* metrics: component-owned delivery; see docs/css-delivery.md. */
+
+.sheet { display: grid; grid-template-columns: repeat(var(--fact-columns), minmax(0, 1fr)); border-top: 1px solid var(--line-strong); }
+@media (--grid-expanded) { .sheet:has(> .cell:nth-child(4):last-child) { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.cell { padding: var(--space-6-5) var(--space-6) var(--space-7-5) 0; border-bottom: 1px solid var(--line); display: grid; gap: var(--space-2-5); align-content: start; }
+.sheet[data-columns]:not([data-columns="4"]) .cell:not(:nth-child(3n + 1)) { padding-left: var(--space-6); border-left: 1px solid var(--line); }
+.cell .k { color: var(--faint); display: flex; justify-content: space-between; }
+.cell .v { font: 500 clamp(1.625rem, 2.4vw, 2.125rem)/1.1 var(--display); letter-spacing: -0.02em; }
+.cell p { color: var(--muted); font-size: var(--text-control); max-width: 36ch; }
+@media (--nav-collapsed) {
+  .sheet { grid-template-columns: 1fr 1fr; }
+}
+@media (--nav-collapsed) {
+  .sheet[data-columns]:not([data-columns="4"]) .cell:not(:nth-child(3n + 1)) { padding-left: 0; border-left: 0; }
+}
+@media (--nav-collapsed) {
+  .cell:nth-child(2n) { padding-left: var(--space-5); border-left: 1px solid var(--line); }
+}
+@media (--compact) {
+  .sheet { grid-template-columns: 1fr; }
+}
+@media (--compact) {
+  .cell:nth-child(2n) { padding-left: 0; border-left: 0; }
+}
+@media (--grid-expanded) { .sheet[data-columns="4"] .cell + .cell { padding-left: var(--space-6); border-left: 1px solid var(--line); } }

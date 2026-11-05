@@ -1,14 +1,11 @@
 ---
+import Styles from '../Styles.astro';
+import ownerStyle0 from './PostGrid.css?url';
 // Raster für Blogkarten: drei Spalten ab 1100 px, darunter zwei, auf dem Handy eine.
 import type { CollectionEntry } from 'astro:content';
 import PostCard from './PostCard.astro';
 interface Props { posts: CollectionEntry<'posts'>[]; level?: 'h2' | 'h3' }
 const { posts, level = 'h2' } = Astro.props;
 ---
+<Styles href={ownerStyle0} id="components/blog/PostGrid.css" />
 <div class="post-grid">{posts.map((post, i) => <PostCard post={post} i={i} level={level} />)}</div>
-
-<style>
-  .post-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(var(--space-8), 3vw, var(--space-12)) var(--card-grid-gap); }
-  @media (--grid-stacked) { .post-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (max-width: 45em) { .post-grid { grid-template-columns: minmax(0, 1fr); } }
-</style>

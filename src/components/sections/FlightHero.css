@@ -1,0 +1,73 @@
+/* hero: component-owned delivery; see docs/css-delivery.md. */
+
+
+.spec { position: absolute; z-index: 3; margin: 0; right: calc(var(--gutter) + 0.875rem); bottom: calc(var(--fr-b) + var(--fr-arm) - var(--fr-lh) / 2); display: grid; grid-template-columns: auto auto; gap: var(--space-1) var(--space-4-5); line-height: var(--fr-lh); color: rgb(var(--rgb-text) / 0.66); }
+.spec dd { margin: 0; }
+.spec b { color: var(--text); font-weight: 500; }
+@media (--nav-collapsed) {
+  .spec { display: none; }
+}
+
+.spec > div { display: contents; }
+.hero { position: relative; height: max(40rem, 100svh); overflow: hidden; background: var(--video-ground);
+  /* Aufnahme-Rahmen (Marc, 02.11.2026, nach dem Vercel-Prototyp): Ecken genau auf der Content-Breite; die Beschriftungen
+     rasten innen ein: mittig auf Höhe des Schenkelendes, 14 px neben dem senkrechten Schenkel.
+     --fr-t/--fr-b: Abstand der Rahmenlinien von oben/unten, --fr-arm: Länge der Eckschenkel */
+  --fr-t: clamp(5rem, 11vh, 6.75rem); --fr-b: clamp(1.5rem, 4vh, 2.5rem); --fr-arm: 1.375rem; --fr-lh: 1.125rem; }
+.hero video, .hero .poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hero .shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgb(var(--rgb-night) / 0.88) 0%, var(--night-half) 45%, rgb(var(--rgb-night) / 0.12) 78%), linear-gradient(rgb(var(--rgb-night) / 0) 58%, var(--night-panel) 100%); }
+.rec { position: absolute; top: calc(var(--fr-t) + var(--fr-arm) - var(--fr-lh) / 2); right: calc(var(--gutter) + 0.875rem); z-index: 3; display: flex; align-items: center; gap: var(--space-2-5); line-height: var(--fr-lh); color: rgb(var(--rgb-text) / 0.8); }
+@keyframes blink { 50% { opacity: 0.2; } }
+.hero-copy { position: absolute; z-index: 3; left: calc(var(--gutter) + 1.75rem); right: var(--gutter); bottom: clamp(4rem, 12vh, 7.75rem); max-width: 48.75rem; display: grid; gap: var(--space-5-5); }
+.hero h1 { font-size: var(--text-4xl); line-height: 1; letter-spacing: -0.035em; max-width: 14ch; }
+.word { display: block; width: fit-content; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; transition: opacity var(--dur-fade), filter var(--dur-fade); }
+.word.out { opacity: 0; filter: blur(0.625rem); }
+.hero .lead { color: var(--ink-prominent); }
+@media (--nav-collapsed) {
+  .rec { display: none; }
+  .hero-copy { left: var(--pad); }
+}
+.hero .hero-media { position:absolute;inset:0;width:100%;height:100%; }
+.hero .shade { pointer-events:none; }
+.hero .video-play { bottom:2rem;right:var(--gutter); }
+.hero .hero-copy { pointer-events:none; }
+.hero .hero-copy a { pointer-events:auto; }
+.hero .kicker { margin:0; }
+.hero .video-player video { position:absolute;inset:0;z-index:1; }
+.hero { min-height:40rem; }
+@media (--mobile) { .hero .hero-copy { left:var(--pad);bottom:7.5rem; } .hero .spec { display:none; } .hero .video-play { bottom:1.875rem; } }
+.hero .hero-media { isolation:auto; }
+.hero:has(.video-active) .hero-copy, .hero:has(.video-active)>.shade, .hero:has(.video-active)>.frame, .hero:has(.video-active)>.spec { opacity:0;pointer-events:none; }
+.hero .reel { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; opacity: 0; transition: opacity var(--dur-reel) var(--ease-default); pointer-events: none; }
+.hero.reel-on .reel { opacity: 1; }
+.hero .shade, .hero .frame, .hero .rec { z-index: 2; }
+.hero:has(.video-active) .reel, .hero:has(.video-active) .rec { opacity: 0; }
+.rec::before { content: ""; width: 0.4375rem; height: 0.4375rem; border-radius: var(--radius-round); background: var(--bad); box-shadow: 0 0 0.625rem var(--bad); animation: rec var(--dur-record) var(--ease-ambient) infinite; }
+@media (prefers-reduced-motion: reduce) { .rec::before { animation: none; } }
+@keyframes rec { 50% { opacity: 0.3; } }
+.hero:not(.reel-on) .rec { display: none; }
+@media (--mobile) { .rec { display: none; } }
+.hero-copy > .kicker { margin-bottom: calc(-1 * var(--space-2)); }
+@media (min-width: 56.3125em) {
+  .hero.side { background: var(--ground); }
+  .hero.side .hero-media, .hero.side .reel { left: auto; right: 0; width: 64%; -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.55) 18%, #000 42%); mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.55) 18%, #000 42%); }
+  .hero.side .hero-media { position: absolute; top: 0; bottom: 0; }
+  .hero.side .shade { background: linear-gradient(0deg, rgb(var(--rgb-ground) / 0.85) 0%, rgb(var(--rgb-ground) / 0) 30%), linear-gradient(90deg, var(--ground) 30%, rgb(var(--rgb-ground) / 0) 52%); }
+}
+.hero h1 { filter: drop-shadow(0 2px 1.125rem var(--night-shade)) drop-shadow(0 1px 0.1875rem rgb(var(--rgb-night) / 0.45)); }
+.hero .hero-media { z-index: 0; pointer-events: none; }
+.hero .hero-media > img { transition: opacity var(--dur-reel) var(--ease-default); }
+.hero.reel-on .hero-media > img { opacity: 0; }
+.hero .hero-copy { z-index: 4; }
+.hero .hero-media.video-player { background: transparent; }
+@media (--mobile) {
+  .hero { height: auto; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "media" "copy"; padding: calc(var(--space-19) + env(safe-area-inset-top, 0rem)) var(--pad) var(--space-11); background: var(--ground); --fr-arm: 1rem; }
+  .hero > .hero-media, .hero > .reel, .hero > .rec { grid-area: media; position: relative; inset: auto; left: auto; right: auto; top: auto; bottom: auto; width: 100%; }
+  .hero > .frame { grid-area: media; position: relative; inset: auto; left: auto; right: auto; top: auto; bottom: auto; }
+  .hero > .hero-media, .hero > .reel { height: auto; aspect-ratio: 16 / 10; border-radius: var(--radius-14); overflow: hidden; -webkit-mask-image: none; mask-image: none; }
+  .hero > .hero-media img { width: 100%; height: 100%; object-fit: cover; }
+  .hero > .shade { display: none; }
+  .hero > .frame { width: auto; margin: var(--space-2-5); z-index: 3; }
+  .hero.reel-on > .rec { display: flex; width: auto; align-self: start; justify-self: end; margin: calc(var(--space-2-5) + var(--fr-arm) - var(--space-2-25)) var(--space-6) 0 0; z-index: 3; }
+  .hero > .hero-copy { grid-area: copy; position: relative; left: auto; right: auto; bottom: auto; padding-top: var(--space-7); max-width: none; }
+}

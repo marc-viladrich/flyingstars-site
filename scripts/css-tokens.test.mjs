@@ -13,7 +13,7 @@ function files(dir) {
 }
 function regions(source, file) {
   if (file.endsWith('.css')) return [source];
-  return [...source.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/g)].map(m => m[1])
+  return [...source.matchAll(/<style\b(?![^>]*\/>)[^>]*>([\s\S]*?)<\/style>/g)].map(m => m[1])
     .concat([...source.matchAll(/\bstyle=(?:"([^"]*)"|'([^']*)'|\{`((?:\\.|[^`])*)`\})/g)].map(m => `.inline{${(m[1] ?? m[2] ?? m[3]).replace(/\$\{[^}]*\}/g, '0')}}`));
 }
 const channels = [...read('src/styles/global.css').matchAll(/--rgb-[\w-]+:\s*(\d+) (\d+) (\d+);/g)].map(m => m.slice(1).map(Number));
@@ -73,7 +73,7 @@ const astroColorExceptions = [
 test('Astro erlaubt Markenliterale außerhalb von CSS nur in belegten SVG-Daten', () => {
   const used = new Map(), errors = [];
   for (const file of files('src').filter(f=>f.endsWith('.astro'))) {
-    const source=read(file).replace(/<style\b[^>]*>[\s\S]*?<\/style>/g,'');
+    const source=read(file).replace(/<style\b(?![^>]*\/>)[^>]*>[\s\S]*?<\/style>/g,'');
     for (const line of source.split('\n')) {
       const count=numericColors(line).filter(c=>brand.has(c)).length;
       if (!count) continue;
@@ -127,4 +127,10 @@ test('Masken enthalten keine Variablen (WebKit verliert sonst mask-composite und
   const sources = files('src').flatMap(file => regions(read(file), file).map(css => ({file, css})));
   const bad = declarations(sources).filter(d => MASK.test(d.prop) && /var\(/.test(d.value)).map(d => d.file + ': ' + d.prop);
   assert.deepEqual(bad, []);
+});
+
+test('Dynamische selbstschließende Styles verschlucken keine nachfolgenden CSS- und SVG-Quellen', () => {
+ const source='<style is:inline set:html={processedCss} /><svg fill="#ff9e29" /><style>.sample { color: red; }</style>';
+ assert.deepEqual(regions(source,'sample.astro'), ['.sample { color: red; }']);
+ assert.equal(declarations(regions(source,'sample.astro').map(css=>({file:'sample.astro',css})))[0].value,'red');
 });

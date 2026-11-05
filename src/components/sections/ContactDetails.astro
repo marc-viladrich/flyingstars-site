@@ -1,4 +1,7 @@
 ---
+import Styles from '../Styles.astro';
+import portraitStyles from '../Portrait.css?url';
+import ownerStyle0 from './ContactDetails.css?url';
 import {record,field} from 'astro-frontend-editor/markers';
 import {CONTACT_OWNER} from '../../content/contact.mjs';
 // Kontaktwege und Anschriften mit Icons, daneben das Team (Runde 20, Marc 04.11.2026: „deutlich nicer und ansprechender“,
@@ -27,6 +30,8 @@ const ways = [
 ];
 const crew = image ? [] : await Promise.all(FOUNDERS.map(async (p) => ({ ...p, img: await optimizedImage(p.image.src, 480) })));
 ---
+<Styles href={ownerStyle0} id="components/sections/ContactDetails.css" />
+<Styles href={portraitStyles} id="components/Portrait.css" />
 <section class="section contact-details" id={anchor} aria-labelledby={id}>
   <div class="cd-main">
     <SectionHead variant="embedded" kicker={kicker} headline={headline} text={text} id={id} level={H} textClass="cd-lead" />
@@ -41,33 +46,3 @@ const crew = image ? [] : await Promise.all(FOUNDERS.map(async (p) => ({ ...p, i
     ? <figure class="cd-photo"><Picture {...image} /></figure>
     : <ul class="cd-crew" aria-label={t('contactDetails.team')}>{crew.map((p) => <li><div class="portrait" data-dot-img data-step="6"><img src={p.img.src} width={p.img.width} height={p.img.height} alt={p.image.alt} loading="lazy" decoding="async" /></div><span>{p.name}</span></li>)}</ul>}
 </section>
-<style>
-  .contact-details { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: clamp(var(--space-10), 6vw, var(--space-28)); align-items: center; }
-  .cd-main :global(.cd-lead) { margin: var(--space-4) 0 0; color: var(--muted); }
-  .cd-grid { list-style: none; margin: var(--space-11) 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-9) var(--space-10); }
-  .cd-grid :global(.icon-feature) { gap: var(--space-2); }
-  .cd-grid :global(.icon-feature > .ico) { width: 1.75rem; height: 1.75rem; margin-bottom: var(--space-1); }
-  .cd-grid :global(.ic-h) { font: 500 var(--text-xs)/1.2 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
-  .cd-link { color: var(--text); font-size: var(--text-copy); }
-  /* eine Zeile je Adresszeile wie auf dem Umschlag; muss eine umbrechen, dann ausgewogen („Gründungszentrum / Zeche Zollverein“) */
-  address { font-style: normal; font-size: var(--text-copy); line-height: 1.5; color: var(--text); }
-  address span { display: block; text-wrap: balance; }
-  .cd-note { margin: var(--space-1) 0 0; font-size: var(--text-sm); color: var(--muted); }
-  .cd-video { margin-top: var(--space-11); }
-  .cd-photo { margin: 0; border-radius: var(--radius); overflow: hidden; }
-  .cd-photo :global(img) { display: block; width: 100%; height: auto; }
-  /* Drei Porträts, die mittlere versetzt: wirkt wie eine Gruppe statt wie drei Passbilder */
-  .cd-crew { list-style: none; margin: 0; padding: 0 0 var(--space-10); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); }
-  .cd-crew li:nth-child(2) { translate: 0 2.5rem; }
-  .cd-crew .portrait { margin-bottom: var(--space-2-5); }
-  .cd-crew span { font-size: var(--text-sm); color: var(--muted); }
-  /* unter 75em gestapelt: zwei Spalten ließen den Kontaktwegen zu wenig Breite (bei 940 px brachen Adresszeilen um) */
-  @media (max-width: 75em) {
-    .contact-details { grid-template-columns: 1fr; }
-    .cd-crew { max-width: 40rem; }
-  }
-  @media (max-width: 30em) {
-    .cd-grid { grid-template-columns: 1fr; gap: var(--space-7); }
-    .cd-crew li:nth-child(2) { translate: 0 1.5rem; }
-  }
-</style>

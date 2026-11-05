@@ -1,3 +1,4 @@
+import {readStyles} from './test-support/styles.mjs';
 // Node-22-Wächter: node --test scripts/no-px.test.mjs, auch aus einem anderen Arbeitsverzeichnis.
 // Absichtlich strenger als nur font-size: alle sicheren CSS-Längen sowie
 // unbekannte CSS/JS-Einheiten werden gemeldet. Keine pauschale Datei-Ausnahme.
@@ -19,7 +20,7 @@ export function cssRegions(source, file) {
   if(file.endsWith('.css')) return [{start:0,end:source.length,kind:'css'}];
   if(!file.endsWith('.astro')) return [];
   const regions=[];
-  for(const m of source.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style\s*>/gi)) { const start=m.index+m[0].indexOf('>')+1; regions.push({start,end:start+m[1].length,kind:'style'}); }
+  for(const m of source.matchAll(/<style\b(?![^>]*\/>)[^>]*>([\s\S]*?)<\/style\s*>/gi)) { const start=m.index+m[0].indexOf('>')+1; regions.push({start,end:start+m[1].length,kind:'style'}); }
   // Quoted HTML values and direct template literals only. Any other expression is reported by the raw scan.
   for(const m of source.matchAll(/\bstyle\s*=\s*(?:"([^"]*)"|'([^']*)'|\{`((?:\\.|[^`])*)`\})/g)) {
     if(regions.some(r=>m.index>=r.start&&m.index<r.end)) continue;
@@ -91,8 +92,8 @@ export function scan(root) {
   }
   return result;
 }
-export function selectorAt(source,index) { const clean=maskComments(source), open=clean.lastIndexOf('{',index); const style=[...clean.slice(0,open).matchAll(/<style\b[^>]*>/gi)].at(-1); const begin=Math.max(clean.lastIndexOf('}',open-1),clean.lastIndexOf('{',open-1),style?style.index+style[0].length-1:-1); return clean.slice(begin+1,open).trim(); }
-export function svgTextRule(file, d, source) { const selector=selectorAt(source,d.start); return file==='src/components/landing/LandingSite.astro' && ((selector==='.lbl' && d.prop==='font' && compact(d.value)==='40017pxvar(--display)') || (selector==='.pill text' && d.prop==='font' && compact(d.value)==='50011pxvar(--mono)') || (selector==='.marker text' && d.prop==='font' && compact(d.value)==='60013pxvar(--display)')); }
+export function selectorAt(source,index) { const clean=maskComments(source), open=clean.lastIndexOf('{',index); const style=[...clean.slice(0,open).matchAll(/<style\b(?![^>]*\/>)[^>]*>/gi)].at(-1); const begin=Math.max(clean.lastIndexOf('}',open-1),clean.lastIndexOf('{',open-1),style?style.index+style[0].length-1:-1); return clean.slice(begin+1,open).trim(); }
+export function svgTextRule(file, d, source) { const selector=selectorAt(source,d.start).replace(/^:where\(\.ls-site\) /,''); return ['src/components/landing/LandingSite.astro','src/components/landing/LandingSite.css'].includes(file) && ((selector==='.lbl' && d.prop==='font' && compact(d.value)==='40017pxvar(--display)') || (selector==='.pill text' && d.prop==='font' && compact(d.value)==='50011pxvar(--mono)') || (selector==='.marker text' && d.prop==='font' && compact(d.value)==='60013pxvar(--display)')); }
 export function disposition(d, raw, source='') {
   const p=d.prop,n=Number(raw.slice(0,-2));
   if(p==='--nav-h' && compact(d.value)==='calc(4.25rem+1px+env(safe-area-inset-top,0px))')return {action:'keep',reason:'Exakte Header-Hairline plus Safe-Area-Fallback; die Layout-Höhe selbst ist rem.'};
@@ -226,7 +227,7 @@ test('Aktiver Konfigurator: Regler und Skala verwenden bei jeder Root-Größe di
 
 test('Video folgt der mobilen em-Grenze bei größerer Grundschrift; minAutoWidth bleibt Pixel-API',async()=>{
  const {createVideoController,VIDEO_MOBILE_QUERY}=await import('../src/scripts/video-controller.ts');
- const css=readFileSync(join(REPO,'src/styles/global.css'),'utf8');
+ const css=readStyles();
  assert.ok(css.replace(/@media ([^{]+)/g,(_,query)=>'@media '+expandMedia(query)).includes('@media '+VIDEO_MOBILE_QUERY), 'CSS und Video-Quelle müssen dieselbe Grenze verwenden.');
  assert.match(readFileSync(join(REPO,'src/components/landing/LandingHero.astro'),'utf8'),/autoMediaQuery: `not all and \$\{VIDEO_MOBILE_QUERY\}`/);
  const names=['document','navigator','matchMedia','MutationObserver','window'];

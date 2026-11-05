@@ -1,4 +1,6 @@
 ---
+import Styles from '../Styles.astro';
+import ownerStyle0 from './LandingSpotlight.css?url';
 import FactList from '../FactList.astro';
 // Breites Bild als Bühne: Orte (Werbung) oder Einsatzarten (Indoor) liegen als Markierungen auf dem Bild, darunter
 // Einträge (z. B. Referenzen mit Datum) links und Kennzahlen rechts. Bild mit Vorhang-Reveal, ohne Hover-Effekt.
@@ -12,6 +14,7 @@ const T = index === 0 ? 'h2' : 'h3';
 const wide = await optimizedImage(image.src, 960, 480);
 const narrow = await optimizedImage(image.src, 640, 480);
 ---
+<Styles href={ownerStyle0} id="components/landing/LandingSpotlight.css" />
 <section class="section alt sp" id={id} aria-labelledby={`${id}-h`}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
   <figure class="sp-stage">
@@ -30,28 +33,3 @@ const narrow = await optimizedImage(image.src, 640, 480);
     </div>
   )}
 </section>
-
-<style>
-  .sp-stage { position: relative; margin: 0; }
-  .sp-img { aspect-ratio: 2 / 1; border-radius: var(--radius); overflow: hidden; background: var(--media-ground); --curtain-r: var(--radius); }
-  .sp-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .sp-stage::after { content: ""; position: absolute; inset: 0; border-radius: var(--radius); background: linear-gradient(transparent 45%, rgb(var(--rgb-ground) / 0.82)); pointer-events: none; }
-  .sp-tags { position: absolute; z-index: 2; left: clamp(1rem, 3vw, 2.5rem); right: clamp(1rem, 3vw, 2.5rem); bottom: clamp(1rem, 3vw, 2.25rem); list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2-5); }
-  .sp-tags li { display: inline-flex; align-items: center; gap: var(--space-2-25); padding: var(--space-2-25) var(--space-3-5) var(--space-2-25) var(--space-2-75); border-radius: var(--radius-pill); background: rgb(var(--rgb-ground) / 0.7); -webkit-backdrop-filter: blur(0.5rem); backdrop-filter: blur(0.5rem); border: 1px solid var(--line-emphasis); color: var(--text); letter-spacing: 0.06em; }
-  .sp-pin { width: 0.5rem; height: 0.5rem; border-radius: var(--radius-round); background: var(--accent); box-shadow: 0 0 0.625rem var(--accent); flex: none; }
-  .sp-below { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: clamp(var(--space-7), 5vw, var(--space-20)); margin-top: clamp(var(--space-8), 4vw, var(--space-14)); align-items: start; }
-  .sp-entries { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr)); gap: clamp(var(--space-5), 3vw, var(--space-10)); }
-  .sp-entries article { display: grid; gap: var(--space-2-5); align-content: start; padding-top: var(--space-4-5); border-top: 1px solid var(--line); }
-  .sp-entries .kicker { margin: 0; }
-  .sp-entries h2, .sp-entries h3 { font-size: var(--text-xl); }
-  .sp-entries p { margin: 0; color: var(--muted); max-width: 44ch; }
-  /* nur Kennzahlen: als Reihe nebeneinander, Wert über der Beschriftung */
-  .sp-below.only-facts { grid-template-columns: 1fr; }
-  @media (--timeline-stacked) { .sp-below { grid-template-columns: 1fr; } }
-  @media (--mobile) {
-    .sp-img { aspect-ratio: 4 / 3; }
-    .sp-tags { position: static; margin-top: var(--space-3-5); }
-    .sp-stage::after { display: none; }
-    .sp-tags li { background: var(--surface-2); }
-  }
-</style>

@@ -1,4 +1,7 @@
 ---
+import Styles from '../Styles.astro';
+import ownerStyle0 from './LogoBar.css?url';
+import initialStyles from './LogoBar.css?inline';
 import IconFeature from '../IconFeature.astro';
 import LocalImage from '../LocalImage.astro';
 import SectionHead from '../SectionHead.astro';
@@ -55,6 +58,7 @@ const press = pressItems.map((p) => ({ ...p, show: p.cleared && has(p.logo), h: 
 const seals = quality.filter((q) => !q.secondary).map((q) => ({ ...q, show: q.cleared && has(q.logo) }));
 const minor = quality.filter((q) => q.secondary);
 ---
+<Styles href={ownerStyle0} id="components/sections/LogoBar.css" critical={Astro.props.index <= 1 ? initialStyles : undefined} />
 {marks.length > 0 && <div class="band" role="region" aria-label={headline ?? t('logobar.flyingstarsClients')}>
   <div class="logo-marquee">
     {[0, 1].map((copy) => <ul class="track" aria-hidden={copy === 1 ? 'true' : undefined}>{marks.map((m) => {

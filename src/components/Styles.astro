@@ -1,0 +1,15 @@
+---
+/** Render-owned CSS: importing a component must not load its styles on unrelated routes. */
+import type {StyleAsset, StyleLocals} from '../lib/style-assets';
+type Props = StyleAsset;
+const {href, id, critical, initialViewport} = Astro.props;
+if (initialViewport && !critical) throw new Error(`Initial viewport owner requires inline CSS: ${id}`);
+const locals = Astro.locals as StyleLocals;
+const assets = locals.styleAssets ??= new Map<string, StyleAsset>();
+if (critical && new TextEncoder().encode(critical).length > 6 * 1024) {
+  throw new Error(`Critical CSS exceeds the 6 KiB owner budget: ${id}`);
+}
+const previous = assets.get(href);
+if (previous && previous.id !== id) throw new Error(`CSS asset has conflicting owners: ${id}, ${previous.id}`);
+assets.set(href, {href, id, critical: previous?.critical ?? critical, initialViewport: previous?.initialViewport || initialViewport});
+---

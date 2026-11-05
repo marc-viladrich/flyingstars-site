@@ -1,3 +1,4 @@
+import {readStyles,styleFiles} from './test-support/styles.mjs';
 import {read} from './test-support/read.mjs';
 // Wächter für Runde 18 (Marc, 02.11.2026). Jeder Test hält eine Klasse fest, nicht einen Einzelfall.
 import test from 'node:test';
@@ -9,7 +10,7 @@ test('Alle Reveals lösen am selben Punkt aus (3 rem im Bild), kein scroll-gebun
     assert.match(src, /import \{ REVEAL_MARGIN \}/, `${file} nutzt REVEAL_MARGIN`);
     assert.doesNotMatch(src, /rootMargin: ['"]0px 0px -\d/, `${file}: eigener Auslösepunkt statt REVEAL_MARGIN`);
   }
-  assert.doesNotMatch(read('src/styles/global.css'), /animation-timeline:\s*view\(\)/, 'scroll-gebundener Vorhang öffnet zu spät');
+  assert.doesNotMatch(readStyles(), /animation-timeline:\s*view\(\)/, 'scroll-gebundener Vorhang öffnet zu spät');
 });
 
 test('Showzeit kommt aus einer Quelle (Paketkarten und Konfigurator)', () => {

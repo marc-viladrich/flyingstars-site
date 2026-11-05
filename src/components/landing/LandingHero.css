@@ -1,0 +1,68 @@
+/* landingHero: component-owned delivery; see docs/css-delivery.md. */
+
+  .lh-facts { display: flex; flex-wrap: wrap; gap: 0; margin: var(--space-2-5) 0 0; padding-top: var(--space-5-5); border-top: 1px solid var(--line); width: 100%; max-width: 40rem; }
+  .lh-facts > div { display: grid; gap: var(--space-1); padding-right: clamp(var(--space-4-5), 2.4vw, var(--space-8)); margin-right: clamp(var(--space-4-5), 2.4vw, var(--space-8)); border-right: 1px solid var(--line); }
+  .lh-facts > div:last-child { border-right: 0; margin-right: 0; padding-right: 0; }
+  .lh-facts dt { color: var(--faint); order: 2; }
+  .lh-facts dd { margin: 0; font: 500 clamp(1.25rem, 1.8vw, 1.625rem)/1.1 var(--display); letter-spacing: -0.02em; color: var(--head); white-space: nowrap; }
+  @media (--small-facts) {
+    .lh-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); }
+  }
+  @media (--small-facts) {
+    .lh-facts > div { padding-right: var(--space-2-5); margin-right: var(--space-2-5); }
+  }
+  @media (--small-facts) {
+    .lh-facts dd { font-size: var(--text-copy); white-space: normal; }
+  }
+
+
+
+  .lh-media { position: relative; margin: 0; aspect-ratio: 16 / 11; border-radius: var(--radius); overflow: hidden; background: var(--media-ground); box-shadow: 0 1.875rem 5rem -2.5rem rgb(var(--rgb-logo-orchid) / 0.35); }
+  .lh-media img, .lh-media video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .lh-media video { opacity: 0; transition: opacity var(--dur-image) var(--ease-default); }
+  .lh-media.is-on video, .lh-media.has-played video { opacity: 1; }
+  .lh-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(var(--rgb-ground) / 0.45), transparent 26%, transparent 70%, var(--overlay-shade)); pointer-events: none; }
+  .lh-media { }
+  .lh-rec { position: absolute; z-index: 2; left: calc(var(--c-in) + 0.875rem); top: calc(var(--c-in) + var(--c-arm)); transform: translateY(-50%); line-height: 1; display: inline-flex; align-items: center; gap: var(--space-2); color: var(--text); }
+  .lh-rec::before { content: ""; width: 0.4375rem; height: 0.4375rem; border-radius: var(--radius-round); background: var(--faint); transition: background var(--dur-standard), box-shadow var(--dur-standard); }
+  .lh-media.is-on .lh-rec::before { background: var(--bad); box-shadow: 0 0 0.625rem var(--bad); }
+  .lh-toggle { position: absolute; z-index: 3; left: calc(100% - var(--c-in) - 0.875rem); top: calc(100% - var(--c-in) - var(--c-arm)); transform: translate(-100%, -50%); display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); height: 2.25rem; min-width: 2.25rem; padding: 0 var(--space-3-5) 0 var(--space-2-5); border-radius: var(--radius-pill); border: 1px solid var(--line-bold); background: rgb(var(--rgb-ground) / 0.66); -webkit-backdrop-filter: blur(0.5rem); backdrop-filter: blur(0.5rem); color: var(--text); cursor: pointer; opacity: 0; transition: left var(--dur-fade-long) var(--ease-enter), top var(--dur-fade-long) var(--ease-enter), transform var(--dur-fade-long) var(--ease-enter), height var(--dur-enter) var(--ease-default), min-width var(--dur-enter) var(--ease-default), padding var(--dur-enter) var(--ease-default), gap var(--dur-enter) var(--ease-default), background-color var(--dur-standard) var(--ease-default), border-color var(--dur-standard) var(--ease-default), opacity var(--dur-standard) var(--ease-default); }
+  .lh-media.ready .lh-toggle { opacity: 1; }
+  .lh-toggle [data-lh-label] { display: inline-block; max-width: 14em; overflow: hidden; white-space: nowrap; transition: max-width var(--dur-enter) var(--ease-default), opacity var(--dur-color) var(--ease-default); }
+  .lh-media:not(.is-on) .lh-toggle { left: 50%; top: 50%; transform: translate(-50%, -50%); height: 4.75rem; min-width: 4.75rem; padding: 0; gap: 0; background: var(--overlay-shade); border-color: var(--ink-half); }
+  .lh-media:not(.is-on) .lh-toggle [data-lh-label] { max-width: 0; opacity: 0; }
+  .lh-media:not(.is-on) .lh-toggle .ico { width: 1.875rem; height: 1.875rem; margin-left: var(--space-1); }
+  .lh-media:not(.is-on):hover .lh-toggle { background: rgb(var(--rgb-ground) / 0.75); border-color: var(--text); }
+  @media (prefers-reduced-motion: reduce) { .lh-toggle, .lh-toggle [data-lh-label] { transition: none; } }
+  .lh-media.can-toggle { cursor: pointer; }
+  .lh-toggle:hover, .lh-media.can-toggle:hover .lh-toggle { border-color: rgb(var(--rgb-text) / 0.6); }
+  .lh-toggle:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offset: 0.1875rem; }
+  .lh-toggle .ico { width: 1rem; height: 1rem; flex: 0 0 auto; transition: width var(--dur-enter) var(--ease-default), height var(--dur-enter) var(--ease-default), margin var(--dur-enter) var(--ease-default); }
+  .lh-toggle .i-pause { display: none; }
+  .lh-media.is-on .i-play { display: none; }
+  .lh-media.is-on .i-pause { display: inline; }
+  @media (--timeline-stacked) {
+    .lh-media { aspect-ratio: 16 / 10; }
+  }
+
+  .lh { position: relative; display: grid; grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); gap: clamp(var(--space-8), 5vw, var(--space-20)); align-items: center; padding: clamp(var(--space-9), 6vw, var(--space-22)) var(--gutter) clamp(var(--space-14), 7vw, var(--space-28)); overflow: hidden; }
+  /* ruhiges Leuchten hinter dem Rahmen, wie Restlicht einer Show */
+  .lh::before { content: ""; position: absolute; right: -10%; top: 0; width: 70%; height: 100%; background: radial-gradient(closest-side, rgb(var(--rgb-logo-orchid) / 0.12), rgb(var(--rgb-cyan) / 0.04) 60%, transparent); pointer-events: none; }
+  /* Text oben am Bild, damit die erste Zeile auf jeder Seite auf --hero-top steht, auch wenn das Bild höher ist (Runde 18) */
+  .lh-copy { position: relative; display: grid; gap: var(--space-5-5); justify-items: start; align-self: start; }
+  .lh-copy .kicker { margin: 0 0 calc(-1 * var(--space-2-5)); }
+  .lh h1 { font-size: var(--text-page); line-height: 1; letter-spacing: -0.035em; max-width: 16ch; }
+  .lh .lead { max-width: 48ch; }
+  .lh .actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+  /* Rahmen wie im Startseiten-Hero (Vercel-Prototyp): Label und Knopf rasten innen in den Ecken ein, mittig auf Höhe des
+     Schenkelendes und 14 px neben dem senkrechten Schenkel. --c-in: Abstand der Ecken vom Rand, --c-arm: Schenkellänge */
+  /* Knopf (Marc, 02.11.2026): läuft das Video, sitzt „Video anhalten“ unten rechts in der Ecke. Angehalten (oder noch nicht
+     gestartet) wandert er weich in die Mitte, verliert die Beschriftung und wird zum großen Play-Knopf; das Bild des
+     Videos bleibt stehen. Lage über left/top/transform, damit sich die Bewegung überblenden lässt. */
+  @media (--timeline-stacked) {
+    .lh { grid-template-columns: 1fr; }
+    .lh::before { width: 120%; right: -40%; top: 40%; height: 60%; }
+  }
+  @media (--small-facts) {
+    /* Handy: Eckdaten als gleich breite Spalten, damit nichts einzeln umbricht */
+  }

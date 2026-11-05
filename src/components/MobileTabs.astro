@@ -1,4 +1,6 @@
 ---
+import Styles from './Styles.astro';
+import ownerStyle0 from './MobileTabs.css?url';
 // Reiter für Vergleiche auf dem Handy (Marc, 02.11.2026: „den Tab-Component on mobile … auch für alle anderen Bereiche,
 // in denen wir vergleichen“). Ein Mechanismus für alle: Der Container trägt data-mtabs, darin stehen diese Reiter als
 // direktes Kind und beliebig tief die Tafeln mit data-mtab="<index>". Bis 700 px Breite ist nur die Tafel des gewählten
@@ -8,6 +10,7 @@ interface Tab { label: string; color?: string; featured?: boolean }
 interface Props { name: string; label: string; tabs: Tab[]; initial?: number }
 const { name, label, tabs, initial = 0 } = Astro.props;
 ---
+<Styles href={ownerStyle0} id="components/MobileTabs.css" />
 <div class="mtabs" data-sticky-strip role="radiogroup" aria-label={label} style={`--n: ${tabs.length}`}>
   {tabs.map((t, i) => <label class:list={{ us: t.featured }} style={t.color ? `--c: ${t.color}` : undefined}><input type="radio" name={name} value={i} checked={i === initial} /><span>{t.label}</span></label>)}
 </div>

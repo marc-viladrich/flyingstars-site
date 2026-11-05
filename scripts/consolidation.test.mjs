@@ -1,3 +1,4 @@
+import {readStyles,styleFiles} from './test-support/styles.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
@@ -56,22 +57,22 @@ test('Alle aktiven Reels verwenden den gemeinsamen Video-Controller', () => {
   }
 });
 
-test('Globales CSS hat keine mehrfachen Eigenschaftsbesitzer im selben Kontext', async () => {
+test('CSS-Eigenschaften behalten einen Besitzer; komponenteninterne Kaskaden bleiben lokal', async () => {
   const { default: postcss } = await import('postcss');
   const seen = new Map(), duplicates = [];
-  for (const sheet of ['global.css', 'facts.css', 'media-card.css']) postcss.parse(read(`src/styles/${sheet}`)).walkRules(rule => {
+  for (const sheet of styleFiles()) postcss.parse(read(sheet)).walkRules(rule => {
     const parents=[];for(let n=rule.parent;n.type!=='root';n=n.parent)parents.unshift(`@${n.name} ${n.params.replace(/\s+/g,'')}`);
     const local = new Set();
     for (const declaration of rule.nodes.filter(n=>n.type==='decl')) {
       for(const selector of postcss.list.comma(rule.selector)) {
         const key = parents.join('|')+'|'+selector+'|'+declaration.prop;
-        if(seen.has(key)&&!local.has(key))duplicates.push(key);
-        seen.set(key,declaration);local.add(key);
+        if(seen.has(key)&&!local.has(key)&&(seen.get(key)!==sheet||['src/styles/global.css','src/layouts/shell.css'].includes(sheet)))duplicates.push(key);
+        seen.set(key,sheet);local.add(key);
       }
     }
   });
   assert.deepEqual(duplicates, []);
-  assert.doesNotMatch(read('src/styles/global.css'), /\.(?:inclusive|tier-facts|tl-item|faq-closing|ref-filter|ref-count|lang)\b/);
+  assert.doesNotMatch(readStyles(), /\.(?:inclusive|tier-facts|tl-item|faq-closing|ref-filter|ref-count|lang)\b/);
 });
 
 test('Filter und Textstile erben Auswahlzustände; alle aktiven Selects erben dieselbe Basis', () => {
@@ -84,7 +85,7 @@ test('Filter und Textstile erben Auswahlzustände; alle aktiven Selects erben di
   for(const path of ['src/components/sections/References.astro','src/components/sections/ContactForm.astro']) {
     const selects=read(path).replace(/<!--[\s\S]*?-->|\/\*[\s\S]*?\*\//g,'').match(/<select\b[^>]*>/g)??[];assert.ok(selects.length);for(const s of selects)assert.match(s,/class="native-select"/);
   }
-  assert.doesNotMatch(read('src/styles/global.css'),/\.field input[, {]|\.field select[, {]|\.field textarea[, {]/);
+  assert.doesNotMatch(readStyles(),/\.field input[, {]|\.field select[, {]|\.field textarea[, {]/);
 });
 
 test('Alle redaktionellen Faktenlisten und Prozesslisten delegieren an ihre Besitzer', () => {
@@ -94,8 +95,8 @@ test('Alle redaktionellen Faktenlisten und Prozesslisten delegieren an ihre Besi
   for(const file of ['sections/Steps','sections/Timeline','landing/LandingFlow','MetroLine']) {
     const s=read(`src/components/${file}.astro`);assert.match(s,/<ProcessList /);assert.doesNotMatch(s,/<ol\b/);
   }
-  assert.doesNotMatch(read('src/styles/global.css'),/\.ruler li:nth-child\(\d/);
-  assert.match(read('src/styles/global.css'), /\.steps \{[^}]*repeat\(var\(--n\)/);
+  assert.doesNotMatch(readStyles(),/\.ruler li:nth-child\(\d/);
+  assert.match(readStyles(), /\.steps \{[^}]*repeat\(var\(--n\)/);
   const script=read('src/components/projects/case.js');assert.match(script,/\.c-story \[data-story-step\]/);assert.doesNotMatch(script,/querySelectorAll\("\[data-step\]"\)/);
 });
 

@@ -28,7 +28,9 @@ test('Gebaute Browser-Chunks ohne Top-Level-await', { skip: !existsSync(new URL(
 
 test('UI-Wörterbuch als klassisches Skript vor den Modulen, ui.mjs liest synchron', () => {
   const base = read('src/layouts/Base.astro');
-  assert.match(base, /<meta charset="utf-8" \/>\n[^\n]*\n\s*<script is:inline defer src=\{`\/media\/i18n\/\$\{locale\}\.js`\}><\/script>/);
+  // Styles may precede it; the dictionary must remain the first script in the head.
+  const firstScript=base.split("<head>")[1]?.match(/<script\b[^>]*>[\s\S]*?<\/script>/)?.[0];
+  assert.equal(firstScript, '<script is:inline defer src={`/media/i18n/${locale}.js`}></script>');
   assert.match(read('src/pages/media/i18n/[locale].js.ts'), /globalThis\.__FS_UI__=/);
   assert.doesNotMatch(read('src/i18n/ui.mjs'), /^[^/\n]*\bawait\b/m);
 });

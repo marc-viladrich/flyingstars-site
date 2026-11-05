@@ -1,4 +1,6 @@
 ---
+import Styles from './Styles.astro';
+import ownerStyle0 from './CtaBox.css?url';
 // Der eine Abschluss-Kasten der Seite (Marc, 02.11.2026: „solche empty-looking CTAs darf es niemals geben. Immer ein
 // Heading und ein Text dazu“). Gesichter der drei Geschäftsführer:innen, Überschrift, Text, genau ein Knopf, zentriert im
 // Kasten mit Verlaufsrand (.promise in global.css). Genutzt von Cta, LandingCta, LandingPrice, LandingBento, FAQ,
@@ -11,6 +13,7 @@ const { headline, text, button, id, level = 'h2', class: cls, faces = true } = A
 const { localHref } = forPath(Astro.url.pathname);
 const H = level;
 ---
+<Styles href={ownerStyle0} id="components/CtaBox.css" />
 <div class:list={['promise', cls]}>
   {faces && <Faces />}
   <div class="promise-copy">
