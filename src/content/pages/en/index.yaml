@@ -626,14 +626,14 @@ sections:
     text: A date, location and occasion are enough for an initial assessment. Leave anything you don't know yet open.
     todo: FlyingStars und die Datenschutzberatung müssen Versanddienst, Empfängerpostfach, Auftragsverarbeitung, Drittlandtransfers und Löschfristen festlegen und die Datenschutzhinweise freigeben.
     _key: k_101f174c707888bef85a
-translationSourceHash: 30282d4f16315e127a45ddf7043cdc8b3f581e148a781f4cb5e4205918a42448
+translationSourceHash: ae6c09851591fd47c033dd60bbce9b66cc603b2f893cc12c72d4eead1854be9e
 noindex: false
 translationContractVersion: 2
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 30282d4f16315e127a45ddf7043cdc8b3f581e148a781f4cb5e4205918a42448
+  sourceFingerprint: ae6c09851591fd47c033dd60bbce9b66cc603b2f893cc12c72d4eead1854be9e
   legacy:
     provenanceFile: docs/i18n/content-provenance.json
     migration: I01-v2-2026-11-04
@@ -1559,7 +1559,7 @@ translationEvidence:
       targetFingerprint: b7577657ee6cddf57bf8ba23cde5f3d6ce5f9e8e53fbede835838e6bbe2d42a2
       status: adopted-existing
     - address: /sections/@k_a953dd6748c619e1514d/cards/@k_b52ddd7e74db16f54f73/text
-      sourceFingerprint: e16a333e87bbec7f66368e29b3dba9e701619bf131a187666ebaf23cb32f30bb
+      sourceFingerprint: 0aa5701f3fac36275c15eaed084a006bf94de5c5e08579b4711050c652c1e34b
       targetFingerprint: c0938a104a15f0e28b130e91ecbc5bad4b575a983a993758e9dac22ecde5daa7
       status: adopted-existing
     - address: /sections/@k_a953dd6748c619e1514d/cards/@k_b52ddd7e74db16f54f73/title
