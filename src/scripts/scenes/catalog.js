@@ -23,7 +23,7 @@ function load(id) {
 }
 export const CATALOG = catalog.motifs;
 /** Profile, deren Motive in SPARK nur Licht bewegen, auch wenn sie räumlich sind (siehe glow, shimmer). */
-const LIGHT_ONLY = new Set(['glow', 'shimmer', 'twinkle', 'breathe', 'run', 'confetti', 'rainbow']);
+const LIGHT_ONLY = new Set(['glow', 'shimmer', 'twinkle', 'breathe', 'run', 'confetti', 'rainbow', 'charge']);
 const lang = () => { const l = typeof document === 'undefined' ? 'de' : document.documentElement?.lang; return ['de', 'en', 'nl'].includes(l) ? l : 'de'; };
 /** Text aus catalog-motifs.json (texts) in der Seitensprache, {name} eingesetzt. */
 const say = (key, name) => (catalog.texts[key][lang()] ?? catalog.texts[key].de).replace('{name}', name);
@@ -118,6 +118,9 @@ function profile(motion, f, pts, { body = false } = {}) {
     // räumliche Muster, die in FlyingStars' Clips vom Licht leben (Atom, Möbius-Schleife, Pyramide): Licht läuft über die
     // Bahnen; erst als Körper (HORIZON, ODYSSEY) dreht sich die Form
     case 'glow': return (b, j, t, o) => { o[3] = wander(rank[j], t, 4.4, 0.45, 0.09) * glint(b[1], t, 5, 0.2, -1.2, 1.2); if (body) turnAll(o, t * 0.8); };
+    // Runde 24b, Showformationen: die Batterie lädt (Licht füllt sie von links nach rechts), die Glocke schwingt um ihre Aufhängung
+    case 'charge': { const xs = pts.map((p) => p[0]), x0 = Math.min(...xs), w = Math.max(...xs) - x0 || 1; return (b, j, t, o) => { const u = (b[0] - x0) / w, level = (t / 3.2) % 1.25; o[3] = u <= level ? 1.2 : 0.85; if (body) swayAll(o, t); }; }
+    case 'bell': { const top = Math.max(...pts.map((p) => p[1])), a = settle(0.12, 1.6); return (b, j, t, o) => { roll(o, a(t) - 0.06 * (1 - Math.cos(t * 0.8)), 0, top); o[3] = lift(j, t); if (body) swayAll(o, t); }; }
     case 'swirl': return (b, j, t, o) => { roll(o, t * 0.18); o[3] = lift(j, t); if (body) pitch(o, 0.5); };
     // als Körper nur gekippt (feste Neigung zeigt die zweite Ebene), Drehen und Schwenken zugleich ergäben ungleiche Wege
     case 'spin': return (b, j, t, o) => { roll(o, t * 0.12); o[3] = lift(j, t); if (body) pitch(o, 0.45); };

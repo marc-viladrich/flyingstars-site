@@ -79,7 +79,7 @@ const catalogName = (key, locale) => catalog.motifs[key].name[locale] ?? catalog
 const CATALOG_CAPTION = { SPARK: 'caption', HORIZON: 'body', ODYSSEY: 'story' };
 /** Eine Fassung aus dem Katalog; der Bauname trägt Anlass und Paket, weil jede Fassung ihren eigenen Namen braucht. */
 const catalogText = (key, locale, name) => (catalog.texts[key][locale] ?? catalog.texts[key].de).replace('{name}', name);
-const cv = (key, pkg, occasion, t, locale) => v(`catalog:${key}:${pkg}:${occasion}`, catalogText(CATALOG_CAPTION[pkg], locale, catalogName(key, locale)));
+const cv = (key, pkg, occasion, t, locale) => v(`catalog:${key}:${pkg}:${occasion}`, catalogText(pkg === 'SPARK' && catalog.motifs[key].source === 'show' ? 'captionShow' : CATALOG_CAPTION[pkg], locale, catalogName(key, locale)));
 /** Ein Motiv nur aus dem Katalog, in jedem Paket ab der Drohnenzahl seiner kleinsten Variante. */
 function catalogMotif(key, occasion, t, locale, id = key) {
   const min = catalogMin(key), first = PACKAGE_ORDER.findIndex((p) => min <= DRONE_RANGES[p].max);
@@ -123,11 +123,14 @@ return  [
     motif('rakete', t('showConfigurator.rocket'), v('rocket', t('showConfigurator.rocketWithFlame')), v('rocket3d', t('showConfigurator.theRocketAsABodyFloatsAndRotates')), v('rocketLaunch', t('showConfigurator.launchFromThePadTheRocketEntersOrbitAroundA'))),
     motif('mond', t('showConfigurator.moonLanding'), null, null, v('moonStory', t('showConfigurator.theRocketLeavesOrbitAndLandsOnTheMoonA')), O1),
     catalogMotif('galaxie', 'launch', t, locale),
+    catalogMotif('batterie', 'launch', t, locale),
     motif('logo', 'Logo', v('logo', t('showConfigurator.exampleLogoWithLightSkating')), v('logo3d', t('showConfigurator.exampleLogoIn3dWithLightGlimmer')), v('logoStory', t('showConfigurator.yourLogoBecomesA3dRingOfLight'))),
     catalogMotif('atom', 'launch', t, locale),
     motif('idee', t('showConfigurator.lightBulb'), v('bulb2d', t('showConfigurator.aLightBulbTheIdea')), v('bulb3d', t('showConfigurator.theLightBulbIn3dTheLightFadeNIs')), v('bulbStory', t('showConfigurator.aLightBulbFormsAroundAFilamentAndShines'))),
     catalogMotif('drehzahl', 'launch', t, locale),
     catalogMotif('sportwagen', 'launch', t, locale),
+    catalogMotif('hubschrauber', 'launch', t, locale),
+    catalogMotif('flugzeug', 'launch', t, locale),
     catalogMotif('kugel', 'launch', t, locale),
     catalogMotif('moebius', 'launch', t, locale),
     catalogMotif('pyramide', 'launch', t, locale),
@@ -140,6 +143,7 @@ return  [
     catalogMotif('fahnen', 'jubilaeum', t, locale),
     motif('fussball', t('showConfigurator.football'), v('kick2d', t('showConfigurator.aPlayerTheBallRotatesOverHisFoot')), v('kickHorizon', t('showConfigurator.thePlayerShootsTheBallSpinsThroughTheAir')), v('kickStory', t('showConfigurator.aPlayerScoresTheBallBecomesYourNumber')), S1),
     catalogMotif('golfer', 'jubilaeum', t, locale),
+    catalogMotif('smiley', 'jubilaeum', t, locale),
     motif('wahrzeichen', t('showConfigurator.landmarks'), v('tower', t('showConfigurator.exampleBerlinTvTowerWithWarningLight')), v('tower3d', t('showConfigurator.theTvTowerIn3dLightRunsAroundTheBall')), v('towerStory', t('showConfigurator.theTvTowerBroadcastsAndBecomesTheBrandenburgGate'))),
     catalogMotif('handschlag', 'jubilaeum', t, locale),
     catalogMotif('stern', 'jubilaeum', t, locale),
@@ -154,12 +158,16 @@ return  [
     motif('flieger', t('showConfigurator.paperPlane'), null, null, v('planeStory', t('showConfigurator.aPaperPlaneFollowsTheRouteAndCirclesTheCompass')), O1),
     motif('kolibri', t('showConfigurator.kolibrium'), v('hummingbird2d', t('showConfigurator.aHummingbirdTheWingsSwirlInTheLight')), v('hummingbird3d', t('showConfigurator.aHummingbirdIn3dThatBeatsWings')), v('hummingbirdStory', t('showConfigurator.aHummingbirdFliesToFlowerDrinksAndAscends'))),
     catalogMotif('palme', 'festival', t, locale),
+    catalogMotif('strandliege', 'festival', t, locale),
     catalogMotif('cocktail', 'festival', t, locale),
     catalogMotif('ballons', 'festival', t, locale),
     catalogMotif('stern', 'festival', t, locale),
     catalogMotif('bierkrug', 'festival', t, locale),
     motif('riesenrad', t('showConfigurator.ferrisWheel'), v('wheel2d', t('showConfigurator.aFerrisWheelTurnsItsGondolasHangStill')), v('wheel3d', t('showConfigurator.theFerrisWheelIn3dTheGondolasLightUp')), v('wheelStory', t('showConfigurator.aFerrisWheelTakesShapeAndTurnsAStarBlooms')), S1),
     catalogMotif('regenbogen', 'festival', t, locale),
+    catalogMotif('elefant', 'festival', t, locale),
+    catalogMotif('hund', 'festival', t, locale),
+    catalogMotif('hasen', 'festival', t, locale),
     catalogMotif('kuhufo', 'festival', t, locale),
     catalogMotif('wasserball', 'festival', t, locale),
     motif('delfin', t('showConfigurator.dolphin'), v('dolphin2d', t('showConfigurator.aDolphinOverAWave')), v('dolphin3d', t('showConfigurator.aDolphinJumpsOutOfTheWaterIn3d')), v('dolphinStory', t('showConfigurator.wavesOneDolphinJumpsDivesInTwoDolphinsJumpIn'))),
@@ -169,10 +177,12 @@ return  [
   { id: 'hochzeit', label: t('site.wedding'), motifs: [
     motif('ring', t('showConfigurator.rings'), v('weddingRings2d', t('showConfigurator.twoWeddingRingsTheStoneSparkles')), v('rings3d', t('showConfigurator.aSolitaireIn3dRingAndBrilliantSpin')), v('ringsLink', t('showConfigurator.twoWeddingRingsIntertwineIn3dAndBecomeASolitaire'))),
     catalogMotif('doppelherz', 'hochzeit', t, locale),
+    catalogMotif('torte', 'hochzeit', t, locale),
     motif('herz', t('showConfigurator.heart'), v('heart2d', t('showConfigurator.aHeartLightTravelsAlongItsOutline')), v('heartTunnel', t('showConfigurator.aTunnelOfHeartsLightFlowingThrough')), v('heartsStory', t('showConfigurator.cupidSArrowStrikesA3dHeartTwoHeartsOrbit'))),
     catalogMotif('initialen', 'hochzeit', t, locale),
     catalogMotif('taube', 'hochzeit', t, locale),
     withCatalogSpark(motif('glaeser', t('showConfigurator.sparklingGlasses'), v('flutes2d', t('showConfigurator.twoChampagneGlassesClinkLightGlidesAcrossTheGlass')), v('flutes3d', t('showConfigurator.sparklingGlassesIn3dThePearlsRise')), v('flutesStory', t('showConfigurator.theGlassesStrikeThePearlsRiseAsHeart'))), 'anstossen', 'hochzeit', t, locale),
+    catalogMotif('schleife', 'hochzeit', t, locale),
     catalogMotif('blueten', 'hochzeit', t, locale),
     catalogMotif('unendlich', 'hochzeit', t, locale),
     withCatalogSpark(motif('falter', t('showConfigurator.butterfly'), v('butterfly2d', t('showConfigurator.aButterflyTheWingsShimmering')), v('butterfly3d', t('showConfigurator.aButterflyIn3dStrikesWithItsWings')), v('butterflyStory', t('showConfigurator.a3dButterflyLandsOnAFlowerTheFlowerBecomes')), S1), 'schmetterling', 'hochzeit', t, locale),
@@ -184,6 +194,7 @@ return  [
     motif('vorhang', t('showConfigurator.curtain'), v('curtain', t('showConfigurator.theCurtainMovesInTheAirDraft')), v('curtainStar', t('showConfigurator.curtainOnA3dStarIsReleased')), v('curtainStory', t('showConfigurator.curtainOnGoldRainFallsAStarRises'))),
     catalogMotif('taube', 'kultur', t, locale),
     catalogMotif('galaxie', 'kultur', t, locale),
+    catalogMotif('peace', 'kultur', t, locale),
     motif('maske', t('showConfigurator.masks'), v('masks', t('showConfigurator.theatreMasksComedyAndTragedyWeighThemselves')), v('masks3d', t('showConfigurator.theMasksIn3d')), v('maskStory', t('showConfigurator.comedyAndTragedyJoinToFormTheTheatreSymbol')), S1),
     motif('noten', t('packageDetails.music'), v('notes2d', t('showConfigurator.twoNotesWeighInTime')), v('harpHorizon', t('showConfigurator.aHarpLightPlucksTheStringsNotesRise')), v('harpStory', t('showConfigurator.theStringsSoundNTheNotesFlyNOfThem'))),
     catalogMotif('welle', 'kultur', t, locale),
@@ -201,7 +212,11 @@ return  [
     catalogMotif('sektflasche', 'silvester', t, locale),
     catalogMotif('stern', 'silvester', t, locale),
     catalogMotif('galaxie', 'silvester', t, locale),
+    catalogMotif('glocke', 'silvester', t, locale),
+    catalogMotif('schneemann', 'silvester', t, locale),
     motif('schnee', t('showConfigurator.lightTree'), v('snow2d', t('showConfigurator.aSnowflakeTurns')), v('tree3d', t('showConfigurator.aLightTreeAsASpiralLightAscends')), v('treeStory', t('showConfigurator.aSnowflakeBecomesATreeOfLightsAStarAppears'))),
+    catalogMotif('lebkuchen', 'silvester', t, locale),
+    catalogMotif('zuckerstange', 'silvester', t, locale),
     catalogMotif('anstossen', 'silvester', t, locale),
     motif('feuerwerk', t('showConfigurator.fireworks'), v('fireworkSpark', t('showConfigurator.fireworkStarsLightUpOneAfterTheOther')), v('fireworkHorizon', t('showConfigurator.fireworksOfLightStarsBloomAndBurn')), v('fireworkStory', t('showConfigurator.aTrailOfLightRisesStarsBloomInWaves')), S1),
     catalogMotif('konfetti', 'silvester', t, locale),

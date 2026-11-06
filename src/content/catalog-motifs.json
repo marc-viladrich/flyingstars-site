@@ -5,6 +5,11 @@
    "en": "{name}, a formation from the FlyingStars catalogue",
    "nl": "{name}, een formatie uit de FlyingStars-catalogus"
   },
+  "captionShow": {
+   "de": "{name}, eine Formation aus einer FlyingStars-Show",
+   "en": "{name}, a formation from a FlyingStars show",
+   "nl": "{name}, een formatie uit een FlyingStars-show"
+  },
   "body": {
    "de": "{name} als Körper in 3D",
    "en": "{name} as a 3D body",
@@ -1312,6 +1317,395 @@
       58.71,
       11.52
      ]
+    }
+   ]
+  },
+  "torte": {
+   "nr": null,
+   "source": "show",
+   "photo": "-_HG6n-Mo_Q-016.5s-torte-3d.jpg",
+   "name": {
+    "de": "Hochzeitstorte",
+    "en": "Wedding cake",
+    "nl": "Bruidstaart"
+   },
+   "theme": "show",
+   "labels": [
+    "hochzeit"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-hochzeitstorte",
+     "points": 120,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "schleife": {
+   "nr": null,
+   "source": "show",
+   "photo": "7Q6oANf_MAA-054s-schleifen-ornament.jpg",
+   "name": {
+    "de": "Schleifenornament",
+    "en": "Loop ornament",
+    "nl": "Lusornament"
+   },
+   "theme": "show",
+   "labels": [
+    "festival",
+    "kultur"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-schleifenornament",
+     "points": 99,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "peace": {
+   "nr": null,
+   "source": "show",
+   "photo": "1UsiwEM5x6xhIQ-5iOrH0QQc2z-Ggxuzq.jpg",
+   "name": {
+    "de": "Peace-Zeichen",
+    "en": "Peace symbol",
+    "nl": "Vredesteken"
+   },
+   "theme": "show",
+   "labels": [
+    "festival",
+    "kultur"
+   ],
+   "motion": "spin",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-peace",
+     "points": 70,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "batterie": {
+   "nr": null,
+   "source": "show",
+   "photo": "UFeJ-nvj97s-022.0s-batterie.jpg",
+   "name": {
+    "de": "Batterie",
+    "en": "Battery",
+    "nl": "Batterij"
+   },
+   "theme": "show",
+   "labels": [
+    "launch",
+    "jubilaeum"
+   ],
+   "motion": "charge",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-batterie",
+     "points": 168,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "hubschrauber": {
+   "nr": null,
+   "source": "show",
+   "photo": "7xGWbTy0AP0-028.0s-hubschrauber.jpg",
+   "name": {
+    "de": "Hubschrauber",
+    "en": "Helicopter",
+    "nl": "Helikopter"
+   },
+   "theme": "show",
+   "labels": [
+    "launch",
+    "jubilaeum"
+   ],
+   "motion": "sail",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-hubschrauber",
+     "points": 150,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "flugzeug": {
+   "nr": null,
+   "source": "show",
+   "photo": "7xGWbTy0AP0-022.4s-flugzeug.jpg",
+   "name": {
+    "de": "Flugzeug",
+    "en": "Airplane",
+    "nl": "Vliegtuig"
+   },
+   "theme": "show",
+   "labels": [
+    "launch",
+    "jubilaeum"
+   ],
+   "motion": "sail",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-flugzeug",
+     "points": 135,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "smiley": {
+   "nr": null,
+   "source": "show",
+   "photo": "UFeJ-nvj97s-049.0s-emoji.jpg",
+   "name": {
+    "de": "Lachendes Gesicht",
+    "en": "Smiling face",
+    "nl": "Lachend gezicht"
+   },
+   "theme": "show",
+   "labels": [
+    "festival",
+    "jubilaeum"
+   ],
+   "motion": "breathe",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-smiley",
+     "points": 105,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "elefant": {
+   "nr": null,
+   "source": "show",
+   "photo": "S3fuZRsYIvc-030s-elefant-blueten.jpg",
+   "name": {
+    "de": "Elefant",
+    "en": "Elephant",
+    "nl": "Olifant"
+   },
+   "theme": "show",
+   "labels": [
+    "festival",
+    "kultur"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-elefant",
+     "points": 109,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "hasen": {
+   "nr": null,
+   "source": "show",
+   "photo": "4YFclytGqlo-0027-hasen-nase-an-nase.jpg",
+   "name": {
+    "de": "Zwei Hasen",
+    "en": "Two rabbits",
+    "nl": "Twee konijnen"
+   },
+   "theme": "show",
+   "labels": [
+    "festival",
+    "kultur"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-hasen",
+     "points": 139,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "hund": {
+   "nr": null,
+   "source": "show",
+   "photo": "4YFclytGqlo-0022-hund-umriss-ball.jpg",
+   "name": {
+    "de": "Hund mit Ball",
+    "en": "Dog with ball",
+    "nl": "Hond met bal"
+   },
+   "theme": "show",
+   "labels": [
+    "festival",
+    "kultur"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-hund",
+     "points": 142,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "strandliege": {
+   "nr": null,
+   "source": "show",
+   "photo": "UFeJ-nvj97s-026.0s-strandliege.jpg",
+   "name": {
+    "de": "Strandliege mit Sonnenschirm",
+    "en": "Deck chair with parasol",
+    "nl": "Strandstoel met parasol"
+   },
+   "theme": "show",
+   "labels": [
+    "festival",
+    "jubilaeum"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-strandliege",
+     "points": 153,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "glocke": {
+   "nr": null,
+   "source": "show",
+   "photo": "xs7snNnzZxY-0011-glocke-schleife.jpg",
+   "name": {
+    "de": "Glocke mit Schleife",
+    "en": "Bell with bow",
+    "nl": "Klok met strik"
+   },
+   "theme": "show",
+   "labels": [
+    "silvester",
+    "kultur"
+   ],
+   "motion": "bell",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-glocke",
+     "points": 97,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "schneemann": {
+   "nr": null,
+   "source": "show",
+   "photo": "xs7snNnzZxY-0133-schneemann.jpg",
+   "name": {
+    "de": "Schneemann",
+    "en": "Snowman",
+    "nl": "Sneeuwpop"
+   },
+   "theme": "show",
+   "labels": [
+    "kultur",
+    "silvester"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-schneemann",
+     "points": 96,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "lebkuchen": {
+   "nr": null,
+   "source": "show",
+   "photo": "xs7snNnzZxY-0060-lebkuchenmann.jpg",
+   "name": {
+    "de": "Lebkuchenmann",
+    "en": "Gingerbread man",
+    "nl": "Peperkoekmannetje"
+   },
+   "theme": "show",
+   "labels": [
+    "kultur",
+    "silvester"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-lebkuchenmann",
+     "points": 99,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "zuckerstange": {
+   "nr": null,
+   "source": "show",
+   "photo": "xs7snNnzZxY-0050-zuckerstange.jpg",
+   "name": {
+    "de": "Zuckerstange",
+    "en": "Candy cane",
+    "nl": "Zuurstok"
+   },
+   "theme": "show",
+   "labels": [
+    "kultur",
+    "silvester"
+   ],
+   "motion": "twinkle",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-zuckerstange",
+     "points": 73,
+     "declared": null,
+     "depth": 0,
+     "clip": false
     }
    ]
   }

@@ -170,10 +170,59 @@ for (const c of CURATED) {
   motifs[c.key] = { nr: c.nr, name: c.name, theme: first.thema, labels: String(first.anlaesse || '').split(';').map((s) => s.trim()).filter(Boolean), motion: c.motion, dimension: variants.some((v) => v.dimension === '3D') ? '3D' : '2D', variants: used };
 }
 
+// ---------- Runde 24b (06.11.): Formationen aus FlyingStars' Showfotos und Videos ----------
+// Marc: „nicht nur aus dem Katalog, sondern auch aus den Show-Impressionen … Screenshots aus bestimmten Videos“. Codex hat
+// 459 Bilder (Drive-Fotos, Frames der YouTube-Shows) gesichtet und die Lichtpunkte geeigneter Formationen ausgelesen
+// (Recherche show-formationen/, je Motiv Overlay und Nachzeichnung zur Kontrolle). Jeder Punkt ist eine sichtbare Drohne.
+// Nur, was sich in der Nachzeichnung klar liest; Filmklappe und Bär nicht (zu unruhig), Weihnachtsstrumpf vorerst nicht.
+const SHOWS = [
+  { key: 'torte', slug: 'hochzeitstorte', motion: 'shimmer' },
+  { key: 'schleife', slug: 'schleifenornament', motion: 'shimmer' },
+  { key: 'peace', slug: 'peace', motion: 'spin' },
+  { key: 'batterie', slug: 'batterie', motion: 'charge' },
+  { key: 'hubschrauber', slug: 'hubschrauber', motion: 'sail' },
+  { key: 'flugzeug', slug: 'flugzeug', motion: 'sail' },
+  { key: 'smiley', slug: 'smiley', motion: 'breathe' },
+  { key: 'elefant', slug: 'elefant', motion: 'shimmer' },
+  { key: 'hasen', slug: 'hasen', motion: 'shimmer' },
+  // der Ball links vom Hund ist im Foto rot; die vier blauen Punkte an den Pfoten sind Kamerarauschen
+  { key: 'hund', slug: 'hund', motion: 'shimmer', paint: (x, y) => (x < -0.8 && y < -0.2 ? [235, 40, 45] : WARM_WHITE) },
+  { key: 'strandliege', slug: 'strandliege', motion: 'shimmer' },
+  { key: 'glocke', slug: 'glocke', motion: 'bell' },
+  { key: 'schneemann', slug: 'schneemann', motion: 'shimmer' },
+  { key: 'lebkuchen', slug: 'lebkuchenmann', motion: 'shimmer' },
+  // rot-weiße Streifen schräg über die Stange (im Foto rosa überstrahlt, die Drohnen fliegen rot und weiß)
+  { key: 'zuckerstange', slug: 'zuckerstange', motion: 'twinkle', paint: (x, y) => (Math.floor((x + y) * 5) % 2 ? [235, 40, 45] : WARM_WHITE) },
+];
+// Farben: Ein Foto färbt weiße Drohnen oft violett oder rosa (Kamera, Dunst). Punkte nahe am mittleren Farbton gelten als
+// weiß und nehmen wie die eigenen Motive die Paketfarbe an; deutlich andere Punkte (der rote Ball des Hundes, die Flamme
+// einer Kerze) behalten ihre Farbe.
+const WARM_WHITE = [246, 241, 232];
+function photoColours(pts) {
+  const med = [3, 4, 5].map((c) => pts.map((p) => p[c]).sort((a, b) => a - b)[Math.floor(pts.length / 2)]);
+  const vivid = (p) => Math.hypot(p[3] - med[0], p[4] - med[1], p[5] - med[2]) > 90 && Math.max(p[3], p[4], p[5]) - Math.min(p[3], p[4], p[5]) > 110; // blasse Ausreißer sind Kamerarauschen
+  const keep = (p) => vivid(p) && pts.filter((q) => vivid(q) && Math.hypot(q[3] - p[3], q[4] - p[4], q[5] - p[5]) < 80).length >= 4; // nur Farbgruppen, keine Einzelpunkte
+  return pts.map((p) => (keep(p) ? p : [p[0], p[1], p[2], ...WARM_WHITE]));
+}
+const showDir = path.join(SRC, 'show-formationen', 'points');
+for (const c of SHOWS) {
+  const raw = JSON.parse(fs.readFileSync(path.join(showDir, `${c.slug}.json`), 'utf8'));
+  if (!Array.isArray(raw.points) || raw.points.length < 40) fail(`${c.slug}: zu wenige Punkte`);
+  for (const p of raw.points) if (p.length !== 6 || !p.every(Number.isFinite)) fail(`${c.slug}: ungültiger Punkt`);
+  const xs = raw.points.map((p) => p[0]), ys = raw.points.map((p) => p[1]);
+  const mx = (Math.max(...xs) + Math.min(...xs)) / 2, my = (Math.max(...ys) + Math.min(...ys)) / 2, half = Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)) / 2;
+  const base = photoColours(raw.points.map(([x, y, , r, g, b]) => [r3((x - mx) / half), r3((y - my) / half), 0, r, g, b]));
+  const pts = c.paint ? base.map(([x, y, z]) => [x, y, z, ...c.paint(x, y)]) : base;
+  const id = `show-${c.slug}`;
+  fs.writeFileSync(path.join(OUT_MEDIA, `${id}.json`), JSON.stringify({ id, key: c.key, points: pts, groups: groupsFor(c.motion, pts) }));
+  motifs[c.key] = { nr: null, source: 'show', photo: path.basename(raw.source), name: { de: raw.motif_de, en: raw.motif_en, nl: raw.motif_nl }, theme: 'show', labels: raw.occasions, motion: c.motion, dimension: '2D', variants: [{ id, points: pts.length, declared: null, depth: 0, clip: false }] };
+}
+
 // Texte der Katalogmotive je Sprache. Bewusst hier und nicht in src/i18n/ui.json: Jede Änderung dort macht die
 // Übersetzungsnachweise aller Inhaltsdateien ungültig (site/ui ist eine Abhängigkeit des Übersetzungsvertrags).
 const TEXTS = {
   caption: { de: '{name}, eine Formation aus dem FlyingStars-Katalog', en: '{name}, a formation from the FlyingStars catalogue', nl: '{name}, een formatie uit de FlyingStars-catalogus' },
+  captionShow: { de: '{name}, eine Formation aus einer FlyingStars-Show', en: '{name}, a formation from a FlyingStars show', nl: '{name}, een formatie uit een FlyingStars-show' },
   body: { de: '{name} als Körper in 3D', en: '{name} as a 3D body', nl: '{name} als 3D-lichaam' },
   story: { de: '{name}: Licht zeichnet die Form, dann wird sie lebendig', en: '{name}: light draws the shape, then it comes alive', nl: '{name}: licht tekent de vorm, dan komt hij tot leven' },
   lightDraws: { de: 'Licht zeichnet: {name}', en: 'Light draws: {name}', nl: 'Licht tekent: {name}' },
