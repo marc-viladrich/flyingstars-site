@@ -82,3 +82,26 @@ Die Auswahl steht als `CURATED` im Importskript. Ein Motiv kommt hinzu, indem es
 2. Gibt es für die Katalogclips die Originalanimationen mit Flugspuren? Dann könnten Räder, Flügel und Drehungen aus euren Daten kommen statt aus unserer Ableitung.
 3. Dürfen alle hier gezeigten Motive öffentlich als Beispiel stehen?
 4. Welche weiteren Kundenpreviews wie Plimmiri dürfen wir als Bewegungsreferenz nutzen?
+
+## Runde 24b (06.11.2026): Formationen aus FlyingStars' Showfotos und Videos
+
+Marc: nicht nur aus dem Katalog, auch aus den Show-Impressionen. Codex hat 459 Bilder gesichtet (191 Drive-Fotos, Frames aus 17 YouTube-Shows) und 142 Motivkandidaten erfasst. Logos, Kundennamen, Slogans, Ortsnamen, Porträts und Regionskarten sind ausgeschlossen. 18 allgemeine Formationen hat Codex ausgelesen: Jede sichtbare Drohne im Bild ist ein Punkt. Die Recherche liegt unter `show-formationen/`, mit Overlay und Nachzeichnung je Motiv zur Kontrolle.
+
+Übernommen sind 15 Formationen, über denselben Import (`SHOWS` in `scripts/import-catalog.mjs`):
+
+| Anlass | Motive aus Shows |
+|---|---|
+| Launch | Batterie (Licht lädt sie von links nach rechts), Hubschrauber, Flugzeug |
+| Jubiläum | Lachendes Gesicht |
+| Stadtfest | Strandliege mit Sonnenschirm, Elefant, Hund mit Ball, Zwei Hasen |
+| Hochzeit | Hochzeitstorte, Schleifenornament |
+| Kultur | Peace-Zeichen |
+| Winter & Silvester | Glocke (schwingt), Schneemann, Lebkuchenmann, Zuckerstange (rot-weiß) |
+
+Nicht übernommen: Filmklappe und Bär (Nachzeichnung zu unruhig), Weihnachtsstrumpf (Winter wäre zu lang geworden).
+
+Farben: Kameras färben weiße Drohnen oft violett oder rosa. Darum werden Punkte nahe am mittleren Farbton weiß und nehmen die Paketfarbe an; nur echte Farbgruppen ab vier Punkten bleiben farbig. Zuckerstange und Hund (roter Ball) sind ausdrücklich eingefärbt. Tiefe lässt sich aus einem Foto nicht rekonstruieren, alle Showformationen sind flach (HORIZON setzt die zweite Ebene dazu).
+
+Motive je Anlass in SPARK bei 100 / 150 / 190 Drohnen jetzt: Launch 5/13/14, Jubiläum 6/10/11, Stadtfest 6/12/15, Hochzeit 7/11/11, Kultur 6/10/10, Winter & Silvester 11/12/13. Wächter: am Einstieg jedes Pakets mindestens fünf Motive je Anlass (`scripts/show-unlock.test.mjs`, Marc 06.11.).
+
+Die Wolkenplanung (`planClouds`) ist seit dieser Runde eine dynamische Programmierung. Mit 20 Motiven kostete die alte Suche über alle Teilmengen 190 ms je Aufbau, jetzt unter 1 ms, mit denselben Kosten, derselben Wolkenzahl und derselben ersten Wolke.
