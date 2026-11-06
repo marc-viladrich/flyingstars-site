@@ -64,6 +64,6 @@ test('SPARK (100–150 Drohnen) hat je Anlass deutlich mehr Motive als vor dem K
   for (const o of OCCASIONS) {
     const at100 = o.motifs.filter((m) => playable(m, 'SPARK', 100)).length, at150 = o.motifs.filter((m) => playable(m, 'SPARK', 150)).length;
     assert.ok(at150 >= 6, `${o.id}: bei 150 Drohnen nur ${at150} Motive`);
-    assert.ok(at100 >= 3, `${o.id}: bei 100 Drohnen nur ${at100} Motive`);
+    assert.ok(at100 >= 5, `${o.id}: bei 100 Drohnen nur ${at100} Motive`);
   }
 });
