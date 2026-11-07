@@ -242,7 +242,7 @@ test('SPARK lässt Motive aus, die 100 Drohnen nicht tragen; der Paketwechsel sp
   await pkg(page, 0);
   await expect(scene(page)).toHaveText('Ein Kompass, die Nadel sucht den Norden'); // the dragon is the last motif: round the loop
   await page.locator('#cfg-cta').click();
-  await expect(page.locator('#inquiry-form [name=message]')).toHaveValue(/Beispielmotive: Reise, Kolibri, Cocktailglas, Ballons, Stern, Delfin\n/);
+  await expect(page.locator('#inquiry-form [name=message]')).toHaveValue(/Beispielmotive: Reise, Kolibri, Cocktailglas, Ballons, Stern, Biene, Delfin\n/);
 });
 
 
@@ -476,11 +476,11 @@ test('Paketwechsel und Regler melden alle neuen Motive auf einmal und fliegen zu
   await occasion(page, 'hochzeit'); await pkg(page, 0);
   await page.waitForTimeout(400);
   await recordBeats(page);
-  // SPARK 100 → HORIZON 200: neu sind Hochzeitstorte (Show, ab 120), Blüten, Unendlich-Zeichen (Katalog) und der Schmetterling. Der
+  // SPARK 100 → HORIZON 200: neu ist der Schmetterling (flache Katalog-/Showbilder spielen seit Runde 25 nur in SPARK). Der
   // Paketknopf meldet ihn und bleibt beim Motiv auf der Bühne (dasselbe Motiv, größeres Paket)
   await expect(scene(page)).toHaveText('Zwei Eheringe, der Stein funkelt');
   await pkg(page, 1);
-  await expect(page.locator('#cfg-toast')).toHaveText('4 neue Motive: Hochzeitstorte, Zwei Blüten, Unendlich-Zeichen, Schmetterling');
+  await expect(page.locator('#cfg-toast')).toHaveText('Neues Motiv freigeschaltet: Schmetterling');
   await expect(scene(page)).toHaveText('Ein Solitär in 3D: Ring und Brillant drehen sich');
   // HORIZON, then the slider to the end in one go: two motifs at once, the stage goes to the first
   await pkg(page, 1);

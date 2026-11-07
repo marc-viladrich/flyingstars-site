@@ -529,6 +529,14 @@
    "dimension": "2D",
    "variants": [
     {
+     "id": "bild-55-1-konfetti",
+     "points": 100,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/konfetti-100.jpg"
+    },
+    {
      "id": "m-cef98ff37d5b9b24",
      "points": 158,
      "declared": 160,
@@ -1992,6 +2000,637 @@
      "declared": null,
      "depth": 0,
      "clip": false
+    }
+   ]
+  },
+  "diskokugel": {
+   "nr": 12,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Diskokugel",
+    "en": "Disco ball",
+    "nl": "Discobal"
+   },
+   "theme": "bild",
+   "labels": [
+    "Musik"
+   ],
+   "motion": "twinkle",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-12-1-die-diskokugel",
+     "points": 128,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/discokugel-100.jpg"
+    }
+   ]
+  },
+  "blume": {
+   "nr": 20,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Blume",
+    "en": "Flower",
+    "nl": "Bloem"
+   },
+   "theme": "bild",
+   "labels": [],
+   "motion": "spin",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-20-1-blume-var-2",
+     "points": 102,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/blume2.jpg"
+    }
+   ]
+  },
+  "blume2": {
+   "nr": 19,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Blume am Stiel",
+    "en": "Flower on a stem",
+    "nl": "Bloem aan een steel"
+   },
+   "theme": "bild",
+   "labels": [],
+   "motion": "glide",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-19-1-blume-var-1",
+     "points": 66,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/blume1.jpg"
+    }
+   ]
+  },
+  "biene": {
+   "nr": 22,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Biene",
+    "en": "Bee",
+    "nl": "Bij"
+   },
+   "theme": "bild",
+   "labels": [
+    "Tiere"
+   ],
+   "motion": "glide",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-22-1-die-biene",
+     "points": 83,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/biene.jpg"
+    }
+   ]
+  },
+  "marienkaefer": {
+   "nr": 25,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Marienkäfer",
+    "en": "Ladybird",
+    "nl": "Lieveheersbeestje"
+   },
+   "theme": "bild",
+   "labels": [
+    "Tiere"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-25-1-der-marienkafer",
+     "points": 97,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/marienkaefer.jpg"
+    }
+   ]
+  },
+  "roboter": {
+   "nr": 27,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Kleiner Roboter",
+    "en": "Little robot",
+    "nl": "Kleine robot"
+   },
+   "theme": "bild",
+   "labels": [],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-27-1-der-kleine-roboter",
+     "points": 101,
+     "declared": 150,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/roboter.jpg"
+    }
+   ]
+  },
+  "schluessel": {
+   "nr": 28,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Schraubenschlüssel",
+    "en": "Spanners",
+    "nl": "Moersleutels"
+   },
+   "theme": "bild",
+   "labels": [],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-28-1-der-schraubenschlussel",
+     "points": 100,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/schraube.jpg"
+    }
+   ]
+  },
+  "zahnraeder": {
+   "nr": 29,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Zahnräder",
+    "en": "Gears",
+    "nl": "Tandwielen"
+   },
+   "theme": "bild",
+   "labels": [],
+   "motion": "spin",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-29-1-drehende-zahnrader",
+     "points": 102,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/zahnraeder.jpg"
+    }
+   ]
+  },
+  "lkw": {
+   "nr": 30,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Lastwagen",
+    "en": "Truck",
+    "nl": "Vrachtwagen"
+   },
+   "theme": "bild",
+   "labels": [
+    "Fahrzeuge"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-30-1-der-ausladende-lkw",
+     "points": 101,
+     "declared": 150,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/lkw.jpg"
+    }
+   ]
+  },
+  "bagger": {
+   "nr": 31,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Bagger",
+    "en": "Excavator",
+    "nl": "Graafmachine"
+   },
+   "theme": "bild",
+   "labels": [
+    "Fahrzeuge"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-31-1-der-bagger",
+     "points": 99,
+     "declared": 150,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/bagger.jpg"
+    }
+   ]
+  },
+  "feuerwehr": {
+   "nr": 36,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Feuerwehrauto",
+    "en": "Fire engine",
+    "nl": "Brandweerwagen"
+   },
+   "theme": "bild",
+   "labels": [
+    "Fahrzeuge"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-36-2-das-feuerwehrauto",
+     "points": 164,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/feuerwehrauto-100.jpg"
+    }
+   ]
+  },
+  "foerderturm": {
+   "nr": 39,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Förderturm",
+    "en": "Headframe",
+    "nl": "Schachttoren"
+   },
+   "theme": "bild",
+   "labels": [],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-39-1-der-forderturm",
+     "points": 101,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/foerderturm-100.jpg"
+    }
+   ]
+  },
+  "basketball": {
+   "nr": 40,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Basketball",
+    "en": "Basketball",
+    "nl": "Basketbal"
+   },
+   "theme": "bild",
+   "labels": [
+    "Sport"
+   ],
+   "motion": "spin",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-40-1-der-basketball",
+     "points": 99,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/basketball.jpg"
+    }
+   ]
+  },
+  "amor": {
+   "nr": 46,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Amor",
+    "en": "Cupid",
+    "nl": "Cupido"
+   },
+   "theme": "bild",
+   "labels": [
+    "Hochzeit"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-46-1-amor",
+     "points": 146,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/amor-100.jpg"
+    }
+   ]
+  },
+  "jubilaeum30": {
+   "nr": 48,
+   "source": "katalog-bild",
+   "name": {
+    "de": "30 Jahre",
+    "en": "30 years",
+    "nl": "30 jaar"
+   },
+   "theme": "bild",
+   "labels": [
+    "Firmen"
+   ],
+   "motion": "twinkle",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-48-1-jubilaum",
+     "points": 150,
+     "declared": 150,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/jubilaeum-1150.jpg"
+    }
+   ]
+  },
+  "kind": {
+   "nr": 49,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Kind mit Ballons",
+    "en": "Child with balloons",
+    "nl": "Kind met ballonnen"
+   },
+   "theme": "bild",
+   "labels": [],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-49-1-das-kind",
+     "points": 121,
+     "declared": 150,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/kind-150.jpg"
+    }
+   ]
+  },
+  "sparschwein": {
+   "nr": 50,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Sparschwein",
+    "en": "Piggy bank",
+    "nl": "Spaarvarken"
+   },
+   "theme": "bild",
+   "labels": [
+    "Firmen"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-50-1-das-sparschwein",
+     "points": 106,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/sparschwein-100.jpg"
+    }
+   ]
+  },
+  "heldin": {
+   "nr": 51,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Superheldin",
+    "en": "Superheroine",
+    "nl": "Superheldin"
+   },
+   "theme": "bild",
+   "labels": [],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-51-1-die-superheldin",
+     "points": 149,
+     "declared": 150,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/superheldin-150.jpg"
+    }
+   ]
+  },
+  "geburtstag": {
+   "nr": 52,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Geburtstagstorte",
+    "en": "Birthday cake",
+    "nl": "Verjaardagstaart"
+   },
+   "theme": "bild",
+   "labels": [
+    "Hochzeit"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-52-1-die-torte",
+     "points": 138,
+     "declared": 150,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/torte-150.jpg"
+    }
+   ]
+  },
+  "robbe": {
+   "nr": 60,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Robbe",
+    "en": "Seal",
+    "nl": "Zeehond"
+   },
+   "theme": "bild",
+   "labels": [
+    "Tiere",
+    "Maritim"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-60-1-die-robbe",
+     "points": 150,
+     "declared": 150,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/robbe-150.jpg"
+    }
+   ]
+  },
+  "anker": {
+   "nr": 61,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Anker",
+    "en": "Anchor",
+    "nl": "Anker"
+   },
+   "theme": "bild",
+   "labels": [
+    "Maritim"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-61-1-der-anker",
+     "points": 119,
+     "declared": 150,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/anker-150.jpg"
+    }
+   ]
+  },
+  "autoscooter": {
+   "nr": 62,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Autoscooter",
+    "en": "Bumper car",
+    "nl": "Botsauto"
+   },
+   "theme": "bild",
+   "labels": [
+    "Stadtfest"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-62-1-der-autoscooter",
+     "points": 102,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/autoscooter-100.jpg"
+    }
+   ]
+  },
+  "leuchtturm": {
+   "nr": 64,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Leuchtturm",
+    "en": "Lighthouse",
+    "nl": "Vuurtoren"
+   },
+   "theme": "bild",
+   "labels": [
+    "Maritim"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-64-1-der-leuchtturm",
+     "points": 161,
+     "declared": 150,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/leuchtturm-150.jpg"
+    }
+   ]
+  },
+  "mikrofon": {
+   "nr": 65,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Mikrofon",
+    "en": "Microphone",
+    "nl": "Microfoon"
+   },
+   "theme": "bild",
+   "labels": [
+    "Musik"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-65-1-das-mikrofon",
+     "points": 149,
+     "declared": 150,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/micro-150.jpg"
+    }
+   ]
+  },
+  "lotusblume": {
+   "nr": 67,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Lotusblume",
+    "en": "Lotus flower",
+    "nl": "Lotusbloem"
+   },
+   "theme": "bild",
+   "labels": [],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-67-1-die-lotusblume",
+     "points": 150,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/lotusblume-100.jpg"
+    }
+   ]
+  },
+  "sonne": {
+   "nr": 5,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Sonne",
+    "en": "Sun",
+    "nl": "Zon"
+   },
+   "theme": "bild",
+   "labels": [],
+   "motion": "spin",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-5-1-die-sich-drehende-sonne",
+     "points": 141,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/sonne.jpg"
     }
    ]
   }

@@ -99,7 +99,7 @@ function clusters(pts, idx) {
 }
 /** Bewegliche Teile, die das Bewegungsprofil braucht (in Einheitskoordinaten). */
 function groupsFor(motion, pts) {
-  const white = (p) => p[3] > 200 && p[4] > 200 && p[5] > 200;
+  const white = (p) => Math.min(p[3], p[4], p[5]) > 150 && Math.max(p[3], p[4], p[5]) - Math.min(p[3], p[4], p[5]) < 110; // weiß oder hell getönt (Katalogbilder sind leicht bläulich)
   if (motion === 'drive') {
     // Räder: weiße Ringe im unteren Teil, als zusammenhängende Gruppen (Sportwagen 2, Traktor mit Anhänger 4). Mitte =
     // Schwerpunkt der Gruppe; Gruppen unter 6 Punkten sind Zierlinien, keine Räder.
@@ -107,7 +107,7 @@ function groupsFor(motion, pts) {
     const cand = pts.map((p, j) => j).filter((j) => white(pts[j]) && pts[j][1] < low);
     const wheels = clusters(pts, cand).filter((g) => g.length >= 6).map((g) => ({ cx: r3(g.reduce((s, j) => s + pts[j][0], 0) / g.length), cy: r3(g.reduce((s, j) => s + pts[j][1], 0) / g.length), idx: g }))
       .filter((w) => { const r = w.idx.map((j) => Math.hypot(pts[j][0] - w.cx, pts[j][1] - w.cy)), m = r.reduce((a, b) => a + b, 0) / r.length, sd = Math.sqrt(r.reduce((a, b) => a + (b - m) ** 2, 0) / r.length); return sd / m < 0.35; }); // nur Ringe: Abstand zur Mitte etwa gleich
-    if (wheels.length < 2) fail('Fahrzeug: keine zwei Räder gefunden');
+    if (wheels.length < 2) throw new Error('Fahrzeug: keine zwei Räder gefunden');
     return { wheels };
   }
   if (motion === 'gate') {
@@ -243,6 +243,57 @@ for (const c of SHOWS) {
   const id = `show-${c.slug}`;
   fs.writeFileSync(path.join(OUT_MEDIA, `${id}.json`), JSON.stringify({ id, key: c.key, points: pts, groups: groupsFor(c.motion, pts) }));
   motifs[c.key] = { nr: null, source: 'show', photo: path.basename(raw.source), name: { de: raw.motif_de, en: raw.motif_en, nl: raw.motif_nl }, theme: 'show', labels: raw.occasions, motion: c.motion, dimension: '2D', variants: [{ id, points: pts.length, declared: null, depth: 0, clip: false }] };
+}
+
+// ---------- Runde 25 (07.11.): Katalogmotive ohne Punktdatei, aus dem Vorschaubild des Katalogs gelesen ----------
+// Rund die Hälfte des Katalogs hat nur ein Bild (jede Drohne ein Punkt). Codex hat 65 Bilder gelesen (Recherche
+// katalog-bildpunkte/, Overlay und Nachzeichnung je Motiv); übernommen ist, was sich in der Nachzeichnung klar liest und
+// nicht doppelt vorkommt. Farben wie im Katalogbild. `into` hängt die Formation als weitere Variante an ein Motiv an.
+const BILD = [
+  { key: 'diskokugel', file: '12-1-die-diskokugel', motion: 'twinkle' },
+  { key: 'blume', file: '20-1-blume-var-2', motion: 'spin', de: 'Blume', en: 'Flower', nl: 'Bloem' },
+  { key: 'blume2', file: '19-1-blume-var-1', motion: 'glide', de: 'Blume am Stiel', en: 'Flower on a stem', nl: 'Bloem aan een steel' },
+  { key: 'biene', file: '22-1-die-biene', motion: 'glide' },
+  { key: 'marienkaefer', file: '25-1-der-marienkafer', motion: 'shimmer' },
+  { key: 'roboter', file: '27-1-der-kleine-roboter', motion: 'shimmer', de: 'Kleiner Roboter', en: 'Little robot', nl: 'Kleine robot' },
+  { key: 'schluessel', file: '28-1-der-schraubenschlussel', motion: 'shimmer' },
+  { key: 'zahnraeder', file: '29-1-drehende-zahnrader', motion: 'spin', de: 'Zahnräder', en: 'Gears', nl: 'Tandwielen' },
+  { key: 'lkw', file: '30-1-der-ausladende-lkw', motion: 'drive', de: 'Lastwagen', en: 'Truck', nl: 'Vrachtwagen' },
+  { key: 'bagger', file: '31-1-der-bagger', motion: 'shimmer' },
+  { key: 'feuerwehr', file: '36-2-das-feuerwehrauto', motion: 'drive' },
+  { key: 'foerderturm', file: '39-1-der-forderturm', motion: 'shimmer' },
+  { key: 'basketball', file: '40-1-der-basketball', motion: 'spin' },
+  { key: 'amor', file: '46-1-amor', motion: 'shimmer' },
+  { key: 'jubilaeum30', file: '48-1-jubilaum', motion: 'twinkle', de: '30 Jahre', en: '30 years', nl: '30 jaar' },
+  { key: 'kind', file: '49-1-das-kind', motion: 'shimmer', de: 'Kind mit Ballons', en: 'Child with balloons', nl: 'Kind met ballonnen' },
+  { key: 'sparschwein', file: '50-1-das-sparschwein', motion: 'shimmer' },
+  { key: 'heldin', file: '51-1-die-superheldin', motion: 'shimmer' },
+  { key: 'geburtstag', file: '52-1-die-torte', motion: 'shimmer', de: 'Geburtstagstorte', en: 'Birthday cake', nl: 'Verjaardagstaart' },
+  { key: 'robbe', file: '60-1-die-robbe', motion: 'shimmer' },
+  { key: 'anker', file: '61-1-der-anker', motion: 'shimmer' },
+  { key: 'autoscooter', file: '62-1-der-autoscooter', motion: 'shimmer' },
+  { key: 'leuchtturm', file: '64-1-der-leuchtturm', motion: 'shimmer' },
+  { key: 'mikrofon', file: '65-1-das-mikrofon', motion: 'shimmer' },
+  { key: 'lotusblume', file: '67-1-die-lotusblume', motion: 'shimmer' },
+  { key: 'sonne', file: '5-1-die-sich-drehende-sonne', motion: 'spin', de: 'Sonne', en: 'Sun', nl: 'Zon' },
+  { key: 'konfetti', file: '55-1-konfetti', into: true },
+];
+const bildDir = path.join(SRC, 'katalog-bildpunkte', 'points');
+const article = (s) => (s ?? '').replace(/^(Der|Die|Das) /, '');
+for (const c of BILD) {
+  const raw = JSON.parse(fs.readFileSync(path.join(bildDir, `${c.file}.json`), 'utf8'));
+  if (!Array.isArray(raw.points) || raw.points.length < 40) fail(`${c.file}: zu wenige Punkte`);
+  for (const p of raw.points) if (p.length !== 6 || !p.every(Number.isFinite)) fail(`${c.file}: ungültiger Punkt`);
+  const xs = raw.points.map((p) => p[0]), ys = raw.points.map((p) => p[1]);
+  const mx = (Math.max(...xs) + Math.min(...xs)) / 2, my = (Math.max(...ys) + Math.min(...ys)) / 2, half = Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)) / 2;
+  const pts = raw.points.map(([x, y, , r, g, b]) => [r3((x - mx) / half), r3((y - my) / half), 0, r, g, b]);
+  const id = `bild-${c.file}`;
+  let motion = c.into ? motifs[c.key].motion : c.motion, groups;
+  try { groups = groupsFor(motion, pts); } catch { motion = 'shimmer'; groups = undefined; report.push(`${c.key}: Teile im Bild nicht gefunden, nur Lichtlauf`); }
+  fs.writeFileSync(path.join(OUT_MEDIA, `${id}.json`), JSON.stringify({ id, key: c.key, points: pts, groups }));
+  const variant = { id, points: pts.length, declared: Number(raw.declared) || null, depth: 0, clip: false, fromImage: raw.source };
+  if (c.into) { motifs[c.key].variants.push(variant); motifs[c.key].variants.sort((a, b) => a.points - b.points); continue; }
+  motifs[c.key] = { nr: Number(raw.nr), source: 'katalog-bild', name: { de: c.de ?? article(raw.motif_de ?? raw.motiv), en: c.en ?? raw.motif_en, nl: c.nl ?? raw.motif_nl }, theme: 'bild', labels: String(raw.anlaesse || '').split(';').map((s) => s.trim()).filter(Boolean), motion, dimension: '2D', variants: [variant] };
 }
 
 // Texte der Katalogmotive je Sprache. Bewusst hier und nicht in src/i18n/ui.json: Jede Änderung dort macht die
