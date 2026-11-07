@@ -147,36 +147,26 @@ function prepare(f, flatten) {
 
 /**
  * Szene eines Katalogmotivs für ein Paket mit n Drohnen. tier: SPARK | HORIZON | ODYSSEY.
- * Jedes Bild hat genau n Drohnen; was die Formation nicht braucht, wartet dunkel unter dem Bild.
+ * Jedes Bild hat genau n Drohnen; was die Formation nicht braucht, wartet dunkel hinter der Form.
+ * Runde 25 (Marc, 07.11.2026: die verdoppelte Ebene wirkt „uncanny“, lieber eine schönere 3D-Darstellung oder ein
+ * anderes Motiv): Flache Formationen spielen nur in SPARK. HORIZON und ODYSSEY zeigen nur Formationen, die im Katalog
+ * selbst räumlich sind (Kugel, Spirale, Atom …), mit der größten passenden Variante; ODYSSEY zeichnet sie zuerst mit Licht.
  */
 export async function catalogScene(key, tier, n, caption) {
   const m = CATALOG[key];
   if (!m) throw new Error(`Katalogmotiv ${key} fehlt`);
   const deep = m.dimension === '3D', name = m.name[lang()] ?? m.name.de;
-  const layered = tier !== 'SPARK' && !deep;
-  const v = variantFor(key, layered ? Math.floor(n / 2) : n) ?? variantFor(key, n);
+  if (tier !== 'SPARK' && !deep) throw new Error(`Katalogmotiv ${key} ist flach und spielt nur in SPARK`);
+  const v = variantFor(key, n);
   if (!v) throw new Error(`Katalogmotiv ${key}: keine Variante für ${n} Drohnen`);
   const f = await load(v.id), front = prepare(f, !deep);
   const live = profile(m.motion, f, front, { body: tier !== 'SPARK' || (deep && !LIGHT_ONLY.has(m.motion)) });
-  if (!layered || 2 * front.length > n) {
-    // eine Ebene (SPARK, 3D-Formationen, oder die zweite Ebene passt nicht in die Drohnenzahl)
-    const rest = reserve(n - front.length, front), k = front.length;
-    const run = (b, j, t, o) => { if (j >= k) { o[3] = 0; return; } live(b, j, t, o); };
-    if (tier !== 'ODYSSEY') return { beats: [{ pts: [...front, ...rest], fitPts: front, caption, live: run, shimmer: false }] };
-    const order = lightRank(front);
-    return { beats: [
-      act([part('form', front), part('reserve', rest, { offstage: true })], { caption: say('lightDraws', name), hold: 1.6, live: (b, j, t, o) => { if (j >= k) { o[3] = 0; return; } o[3] = trace(order[j], t, 2.2); } }),
-      act([part('form', front), part('reserve', rest, { offstage: true })], { caption: say('comesAlive', name), clock: 'continue', live: run }),
-    ] };
-  }
-  // zwei Ebenen: die Formation vorn und dieselbe Formation dahinter, etwas dunkler; als Körper schwenkt sie
-  const D = 0.2, back = front.map(([x, y, z, r, g, b]) => [x, y, z - D, ...mix([r, g, b], [0, 0, 0], 0.18)]), k = front.length;
-  const shifted = front.map(([x, y, z, ...c]) => [x, y, z + D, ...c]), rest = reserve(n - 2 * k, back);
-  const bodyLive = (b, j, t, o) => { if (j >= 2 * k) { o[3] = 0; return; } live(b, j % k, t, o); };
-  if (tier === 'HORIZON') return { beats: [{ pts: [...shifted, ...back, ...rest], fitPts: [...shifted, ...back], caption, live: bodyLive, shimmer: false }] };
+  const rest = reserve(n - front.length, front), k = front.length;
+  const run = (b, j, t, o) => { if (j >= k) { o[3] = 0; return; } live(b, j, t, o); };
+  if (tier !== 'ODYSSEY') return { beats: [{ pts: [...front, ...rest], fitPts: front, caption, live: run, shimmer: false }] };
   const order = lightRank(front);
   return { beats: [
-    act([part('front', shifted), part('back', back), part('reserve', rest, { offstage: true })], { caption: say('lightDraws', name), hold: 1.6, live: (b, j, t, o) => { if (j >= 2 * k) { o[3] = 0; return; } o[3] = j < k ? trace(order[j], t, 2.2) : 0; } }),
-    act([part('front', shifted), part('back', back), part('reserve', rest, { offstage: true })], { caption: say('becomesBody', name), live: bodyLive }),
+    act([part('form', front), part('reserve', rest, { offstage: true })], { caption: say('lightDraws', name), hold: 1.6, live: (b, j, t, o) => { if (j >= k) { o[3] = 0; return; } o[3] = trace(order[j], t, 2.2); } }),
+    act([part('form', front), part('reserve', rest, { offstage: true })], { caption: say('comesAlive', name), clock: 'continue', live: run }),
   ] };
 }

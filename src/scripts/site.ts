@@ -29,6 +29,24 @@ import { whenNear } from './when-near.mjs';
   const nav = document.querySelector("header.nav");
   const sentinel = document.querySelector(".nav-sentinel");
   if (nav && sentinel) new IntersectionObserver(([entry]) => nav.classList.toggle("scrolled", !entry.isIntersecting)).observe(sentinel);
+  // Runde 25 (Marc, 07.11.2026: am Handy „vertically ein bisschen zu eng … Header mit headroom on scroll down raus“): Auf
+  // schmalen Bildschirmen weicht die Kopfzeile beim Runterscrollen nach oben aus und kommt beim Hochscrollen zurück.
+  // Die Klasse liegt am <html>, damit klebende Elemente (Konfigurator-Bühne) den frei werdenden Platz nutzen können.
+  const narrow = matchMedia("(max-width: 62.5em)");
+  let lastY = scrollY, ticking = false;
+  const root = document.documentElement;
+  const onScroll = () => {
+    ticking = false;
+    const y = scrollY, dy = y - lastY;
+    if (!narrow.matches || y < 80 || document.querySelector("dialog[open]")) { root.classList.remove("nav-away"); lastY = y; return; }
+    if (Math.abs(dy) < 8) return; // kleine Zitterer (Trägheit, Adressleiste) ändern nichts
+    root.classList.toggle("nav-away", dy > 0);
+    lastY = y;
+  };
+  addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+  narrow.addEventListener("change", onScroll);
+  // Tastatur: wer per Tab in die Kopfzeile springt, holt sie zurück
+  nav?.addEventListener("focusin", () => root.classList.remove("nav-away"));
   const menu = document.getElementById("mobile-menu");
   const opener = document.querySelector("[data-menu-open]");
   if (menu && opener) {

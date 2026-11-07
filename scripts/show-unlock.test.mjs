@@ -45,18 +45,21 @@ test('In jedem Paket schaltet mehr Drohnen mindestens ein Motiv frei, und die Me
 test('Mehr Drohnen nehmen nie ein Motiv weg (über den ganzen Regler), jede neue Zahl meldet genau die neuen Motive', () => {
   for (const o of OCCASIONS) for (let i = 1; i < counts.length; i++) {
     const a = counts[i - 1], b = counts[i], A = playing(o, a), B = playing(o, b);
-    for (const m of A) assert.ok(B.includes(m), `${o.id}: ${m.id} spielt bei ${a}, aber nicht bei ${b}`);
+    // Runde 25 (Marc, 07.11.2026): flache Katalog- und Showformationen sind SPARK-Bilder; ab HORIZON zeigt der Konfigurator
+    // nur 3D. Sie fallen also beim Wechsel SPARK → HORIZON bewusst weg, alles andere bleibt.
+    for (const m of A) if (!(m.flat && packageForDrones(b) !== 'SPARK')) assert.ok(B.includes(m), `${o.id}: ${m.id} spielt bei ${a}, aber nicht bei ${b}`);
     const fresh = freshMotifs(o.motifs, { pkg: packageForDrones(a), drones: a }, { pkg: packageForDrones(b), drones: b });
     assert.deepEqual(fresh.map((m) => m.id), B.filter((m) => !A.includes(m)).map((m) => m.id), `${o.id} ${a} → ${b}`);
   }
 });
 
-test('Größere Pakete zeigen nie weniger: ODYSSEY ⊇ HORIZON ⊇ SPARK bei jeder Drohnenzahl', () => {
+test('Größere Pakete zeigen nie weniger: ODYSSEY ⊇ HORIZON ⊇ SPARK ohne flache Bilder', () => {
   for (const o of OCCASIONS) for (let p = 1; p < PACKAGE_ORDER.length; p++) {
     const lo = PACKAGE_ORDER[p - 1], hi = PACKAGE_ORDER[p];
     const most = playing(o, DRONE_RANGES[lo].max), least = playing(o, DRONE_RANGES[hi].min);
-    for (const m of most) assert.ok(least.includes(m), `${o.id}: ${m.id} in ${lo} ${DRONE_RANGES[lo].max}, nicht in ${hi} ${DRONE_RANGES[hi].min}`);
-    assert.ok(least.length >= most.length, `${o.id}: ${hi} zeigt weniger als ${lo}`);
+    for (const m of most) if (!m.flat) assert.ok(least.includes(m), `${o.id}: ${m.id} in ${lo} ${DRONE_RANGES[lo].max}, nicht in ${hi} ${DRONE_RANGES[hi].min}`);
+    // Marc (Runde 4): ODYSSEY nie weniger Motive als HORIZON. SPARK darf seit Runde 25 mehr (flache) Bilder haben als HORIZON.
+    if (lo !== 'SPARK') assert.ok(least.length >= most.length, `${o.id}: ${hi} zeigt weniger als ${lo}`);
   }
 });
 
@@ -76,6 +79,7 @@ test('Gesperrte Motive nennen ihre Schwelle: unlockAt, Hinweis an der Spur und F
   for (const o of OCCASIONS) for (const n of counts) for (const m of o.motifs) {
     const pkg = packageForDrones(n), at = unlockAt(m, n);
     if (playable(m, pkg, n)) { assert.equal(at, null, `${o.id} ${m.id} ${n}: spielt schon`); continue; }
+    if (m.flat && pkg !== 'SPARK') { assert.equal(at, null, `${o.id} ${m.id} ${n}: flaches Bild schaltet ab HORIZON nicht mehr frei`); continue; } // Runde 25
     assert.ok(at > n, `${o.id} ${m.id} ${n}: Schwelle ${at}`);
     assert.ok(canPlay(m, packageForDrones(at), at) && !canPlay(m, packageForDrones(at - DRONE_STEP), at - DRONE_STEP), `${o.id} ${m.id}: spielt ab ${at}, nicht bei ${at - DRONE_STEP}`);
     // dieselbe Zahl, die der Hinweis an der Spur im Paket der Schwelle nennt

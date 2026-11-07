@@ -167,7 +167,7 @@ for (const c of CURATED) {
   if (!used.length) fail(`${c.key}: keine nutzbare Variante`);
   used.sort((a, b) => a.points - b.points);
   const first = variants[0];
-  motifs[c.key] = { nr: c.nr, name: c.name, theme: first.thema, labels: String(first.anlaesse || '').split(';').map((s) => s.trim()).filter(Boolean), motion: c.motion, dimension: variants.some((v) => v.dimension === '3D') ? '3D' : '2D', variants: used };
+  motifs[c.key] = { nr: c.nr, name: c.name, theme: first.thema, labels: String(first.anlaesse || '').split(';').map((s) => s.trim()).filter(Boolean), motion: c.motion, dimension: variants.some((v) => v.dimension === '3D') || (first.thema === 'muster-3d' && used.some((u) => u.depth >= 0.4)) ? '3D' : '2D' /* 3D-Welle: im Katalog „2D“, aber eine gewölbte Fläche mit Tiefe 0,5 */, variants: used };
 }
 
 // ---------- Runde 24b (06.11.): Formationen aus FlyingStars' Showfotos und Videos ----------

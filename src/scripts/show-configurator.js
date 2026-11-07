@@ -485,8 +485,14 @@ if (form) {
   stage.addEventListener("pointerleave", () => { endInvite(); stage.classList.remove("is-done"); });
   file.addEventListener("change", () => { done(); takeFile(file.files?.[0]); });
   // pointing at „Logo“ shows where a file can also be dropped: the stage steps back
-  upload.addEventListener("pointerenter", () => { invited = true; stage.classList.add("is-target"); }); // the invitation is no longer needed
+  // Runde 25 (Marc: am Handy bleibt das Overlay manchmal stehen): nur mit der Maus. Ein Tippen löst auf Touch-Geräten
+  // pointerenter aus, das passende pointerleave kommt nach dem Dateidialog (oder dessen Abbruch) oft nie an.
+  upload.addEventListener("pointerenter", (e) => { if (e.pointerType !== "mouse") return; invited = true; stage.classList.add("is-target"); }); // the invitation is no longer needed
   upload.addEventListener("pointerleave", () => { stage.classList.remove("is-target", "is-done"); });
+  // wer den Dateidialog öffnet (Tippen, Tastatur), sieht die Bühne danach ohne Overlay, auch nach Abbruch
+  file.addEventListener("click", () => { stage.classList.remove("is-target", "is-invite"); });
+  file.addEventListener("cancel", () => { stage.classList.remove("is-target", "is-done"); });
+  window.addEventListener("focus", () => { if (!stage.matches(":hover")) stage.classList.remove("is-target"); });
   // Dateien ziehen: die Bühne (und der Knopf) nehmen sie an; überall sonst wird nichts geöffnet
   const hasFiles = (e) => Array.from(e.dataTransfer?.types ?? []).includes("Files");
   const onTarget = (e) => stage.contains(e.target) || upload.contains(e.target);

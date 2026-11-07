@@ -82,11 +82,14 @@ const catalogText = (key, locale, name) => (catalog.texts[key][locale] ?? catalo
 const cv = (key, pkg, occasion, t, locale) => v(`catalog:${key}:${pkg}:${occasion}`, catalogText(pkg === 'SPARK' && catalog.motifs[key].source === 'show' ? 'captionShow' : CATALOG_CAPTION[pkg], locale, catalogName(key, locale)));
 /** Ein Motiv nur aus dem Katalog, in jedem Paket ab der Drohnenzahl seiner kleinsten Variante. */
 function catalogMotif(key, occasion, t, locale, id = key) {
-  const min = catalogMin(key), first = PACKAGE_ORDER.findIndex((p) => min <= DRONE_RANGES[p].max);
+  // Runde 25: flache Formationen nur in SPARK (HORIZON und ODYSSEY zeigen nur echte 3D-Formationen, siehe scenes/catalog.js)
+  const min = catalogMin(key), flat = catalog.motifs[key].dimension !== '3D';
+  const packages = flat ? ['SPARK'] : PACKAGE_ORDER, first = packages.findIndex((p) => min <= DRONE_RANGES[p].max);
+  if (first < 0) throw new Error(`Katalogmotiv ${key} passt in kein Paket (${min} Drohnen)`);
   /** @type {Partial<Record<'SPARK' | 'HORIZON' | 'ODYSSEY', Version>>} */
   const tiers = {};
-  PACKAGE_ORDER.forEach((pkg, i) => { if (i >= first) tiers[pkg] = { ...cv(key, pkg, occasion, t, locale), minDrones: i === first ? Math.max(min, DRONE_RANGES[pkg].min) : DRONE_RANGES[pkg].min }; });
-  return { id, label: catalogName(key, locale), tiers, minDrones: tiers[PACKAGE_ORDER[first]].minDrones, catalog: key };
+  packages.forEach((pkg, i) => { if (i >= first) tiers[pkg] = { ...cv(key, pkg, occasion, t, locale), minDrones: i === first ? Math.max(min, DRONE_RANGES[pkg].min) : DRONE_RANGES[pkg].min }; });
+  return { id, label: catalogName(key, locale), tiers, minDrones: tiers[packages[first]].minDrones, catalog: key, flat };
 }
 /** Ein eigenes Motiv bekommt die Katalogformation als SPARK-Fassung; es spielt ab deren Mindestzahl. */
 function withCatalogSpark(m, key, occasion, t, locale) {
@@ -147,6 +150,8 @@ return  [
     motif('wahrzeichen', t('showConfigurator.landmarks'), v('tower', t('showConfigurator.exampleBerlinTvTowerWithWarningLight')), v('tower3d', t('showConfigurator.theTvTowerIn3dLightRunsAroundTheBall')), v('towerStory', t('showConfigurator.theTvTowerBroadcastsAndBecomesTheBrandenburgGate'))),
     catalogMotif('handschlag', 'jubilaeum', t, locale),
     catalogMotif('stern', 'jubilaeum', t, locale),
+    catalogMotif('atom', 'jubilaeum', t, locale),
+    catalogMotif('pyramide', 'jubilaeum', t, locale),
     motif('pokal', t('showConfigurator.cup'), v('trophy2d', t('showConfigurator.aCupAboveItSparklingStars')), v('trophy3d', t('showConfigurator.theCupIn3dLightGlidesOverIt')), v('trophyStory', t('showConfigurator.theCupGrowsYourNumberRisesOut'))),
     catalogMotif('konfetti', 'jubilaeum', t, locale),
     motif('sprung', t('showConfigurator.head'), null, v('diveHorizon', t('showConfigurator.theJumperDipsInTheWaterMovesInRings')), v('diveStory', t('showConfigurator.divingBoardTakeOffSplashRipplesSpread')), H1),
@@ -164,14 +169,12 @@ return  [
     catalogMotif('stern', 'festival', t, locale),
     catalogMotif('bierkrug', 'festival', t, locale),
     motif('riesenrad', t('showConfigurator.ferrisWheel'), v('wheel2d', t('showConfigurator.aFerrisWheelTurnsItsGondolasHangStill')), v('wheel3d', t('showConfigurator.theFerrisWheelIn3dTheGondolasLightUp')), v('wheelStory', t('showConfigurator.aFerrisWheelTakesShapeAndTurnsAStarBlooms')), S1),
-    catalogMotif('regenbogen', 'festival', t, locale),
     catalogMotif('elefant', 'festival', t, locale),
     catalogMotif('hund', 'festival', t, locale),
     catalogMotif('hasen', 'festival', t, locale),
     catalogMotif('kuhufo', 'festival', t, locale),
     catalogMotif('wasserball', 'festival', t, locale),
     motif('delfin', t('showConfigurator.dolphin'), v('dolphin2d', t('showConfigurator.aDolphinOverAWave')), v('dolphin3d', t('showConfigurator.aDolphinJumpsOutOfTheWaterIn3d')), v('dolphinStory', t('showConfigurator.wavesOneDolphinJumpsDivesInTwoDolphinsJumpIn'))),
-    catalogMotif('schiff', 'festival', t, locale),
     motif('drache', t('showConfigurator.dragon'), null, v('dragon3d', t('showConfigurator.aDragonIn3dThatBeatsWings')), v('dragonStory', t('showConfigurator.aDragonRisesCirclesAndBreathesFireworks')), H1),
   ] },
   { id: 'hochzeit', label: t('site.wedding'), motifs: [
@@ -185,6 +188,7 @@ return  [
     catalogMotif('schleife', 'hochzeit', t, locale),
     catalogMotif('blueten', 'hochzeit', t, locale),
     catalogMotif('unendlich', 'hochzeit', t, locale),
+    catalogMotif('moebius', 'hochzeit', t, locale),
     withCatalogSpark(motif('falter', t('showConfigurator.butterfly'), v('butterfly2d', t('showConfigurator.aButterflyTheWingsShimmering')), v('butterfly3d', t('showConfigurator.aButterflyIn3dStrikesWithItsWings')), v('butterflyStory', t('showConfigurator.a3dButterflyLandsOnAFlowerTheFlowerBecomes')), S1), 'schmetterling', 'hochzeit', t, locale),
     motif('lotus', t('showConfigurator.lotusFlowers'), null, v('lotus3d', t('showConfigurator.twoLotusFlowersIn3dRotateIntoEachOther')), v('lotusStory', t('showConfigurator.twoBudsBloomRotateIntoEachOtherAndBecomeA')), H1),
     motif('antrag', t('showConfigurator.proposal'), null, null, v('ringStory', t('showConfigurator.aRingBoxOpensTheRingFindsTheRingFinger')), O1),
@@ -200,18 +204,17 @@ return  [
     catalogMotif('welle', 'kultur', t, locale),
     catalogMotif('kugel', 'kultur', t, locale),
     catalogMotif('pyramide', 'kultur', t, locale),
-    catalogMotif('regenbogen', 'kultur', t, locale),
     // die Tänzerin dreht sich erst als Körper (HORIZON 250); dancer2d bleibt ungespielt
     motif('tanz', t('showConfigurator.dance'), v('dancer2d', t('showConfigurator.aDancerHerRockSwings')), v('dancer3d', t('showConfigurator.theDancerTurnsIn3dTheRockFlies')), v('dancerStory', t('showConfigurator.theDancerTurnsTheSkirtBecomesTheFlowerTheFlower')), H1),
-    catalogMotif('lebensbaum', 'kultur', t, locale),
     motif('teufel', 'Bokkenrijders', null, null, v('devilStory', t('showConfigurator.theDevilFromOurBokkenrijdersShowAnActual3dFormation')), O1),
-    catalogMotif('mandala', 'kultur', t, locale),
   ] },
   { id: 'silvester', label: t('showConfigurator.winterAndNewYear'), season: [11, 12], motifs: [
     motif('uhr', t('showConfigurator.clock'), v('clock', t('showConfigurator.theHandsRunToTwelve')), v('clock3d', t('showConfigurator.3dWatchTheHandsAreRunning')), v('clockStory', t('showConfigurator.midnightSparksSwirlOutAndWriteTheNewYear'))),
     catalogMotif('sektflasche', 'silvester', t, locale),
     catalogMotif('stern', 'silvester', t, locale),
     catalogMotif('galaxie', 'silvester', t, locale),
+    catalogMotif('kugel', 'silvester', t, locale),
+    catalogMotif('atom', 'silvester', t, locale),
     catalogMotif('glocke', 'silvester', t, locale),
     catalogMotif('schneemann', 'silvester', t, locale),
     motif('schnee', t('showConfigurator.lightTree'), v('snow2d', t('showConfigurator.aSnowflakeTurns')), v('tree3d', t('showConfigurator.aLightTreeAsASpiralLightAscends')), v('treeStory', t('showConfigurator.aSnowflakeBecomesATreeOfLightsAStarAppears'))),
