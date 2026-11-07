@@ -121,6 +121,11 @@ function profile(motion, f, pts, { body = false } = {}) {
     // Runde 24b, Showformationen: die Batterie lädt (Licht füllt sie von links nach rechts), die Glocke schwingt um ihre Aufhängung
     case 'charge': { const xs = pts.map((p) => p[0]), x0 = Math.min(...xs), w = Math.max(...xs) - x0 || 1; return (b, j, t, o) => { const u = (b[0] - x0) / w, level = (t / 3.2) % 1.25; o[3] = u <= level ? 1.2 : 0.85; if (body) swayAll(o, t); }; }
     case 'bell': { const top = Math.max(...pts.map((p) => p[1])), a = settle(0.12, 1.6); return (b, j, t, o) => { roll(o, a(t) - 0.06 * (1 - Math.cos(t * 0.8)), 0, top); o[3] = lift(j, t); if (body) swayAll(o, t); }; }
+    case 'gate': {
+      // die Flügel schwingen um ihre Angel nach hinten auf und wieder zu (Katalogclip „Tor“)
+      const of = new Map(), a = settle(1.15, 0.55); (g.wings ?? []).forEach((w, k) => w.idx.forEach((j) => of.set(j, [w, k])));
+      return (b, j, t, o) => { const hit = of.get(j); if (hit) yaw(o, (hit[1] ? 1 : -1) * a(t), hit[0].hinge, 0); o[3] = lift(j, t); if (body) swayAll(o, t); };
+    }
     case 'swirl': return (b, j, t, o) => { roll(o, t * 0.18); o[3] = lift(j, t); if (body) pitch(o, 0.5); };
     // als Körper nur gekippt (feste Neigung zeigt die zweite Ebene), Drehen und Schwenken zugleich ergäben ungleiche Wege
     case 'spin': return (b, j, t, o) => { roll(o, t * 0.12); o[3] = lift(j, t); if (body) pitch(o, 0.45); };

@@ -1273,6 +1273,292 @@
     }
    ]
   },
+  "traktor": {
+   "nr": 38,
+   "name": {
+    "de": "Traktor",
+    "en": "Tractor",
+    "nl": "Tractor"
+   },
+   "theme": "fahrzeuge",
+   "labels": [
+    "Kinderfest",
+    "Ostern/Frühling",
+    "Firmenfeier/Jubiläum",
+    "Stadtfest/Regional"
+   ],
+   "motion": "drive",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-6d659abc95e63690",
+     "points": 179,
+     "declared": 180,
+     "depth": 0.145,
+     "clip": true,
+     "sizeM": [
+      79.86,
+      39.38,
+      11.33
+     ]
+    },
+    {
+     "id": "m-b8f08b4638806fc0",
+     "points": 200,
+     "declared": 200,
+     "depth": 0.146,
+     "clip": true,
+     "sizeM": [
+      89.77,
+      39.72,
+      11.36
+     ]
+    }
+   ]
+  },
+  "tor": {
+   "nr": 89,
+   "name": {
+    "de": "Tor",
+    "en": "Gate",
+    "nl": "Poort"
+   },
+   "theme": "orte-laender",
+   "labels": [
+    "Hochzeit",
+    "Firmenfeier/Jubiläum",
+    "Stadtfest/Regional"
+   ],
+   "motion": "gate",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-4d6910686b694773",
+     "points": 80,
+     "declared": 80,
+     "depth": 0.121,
+     "clip": true,
+     "sizeM": [
+      56.21,
+      40.24,
+      6.78
+     ]
+    }
+   ]
+  },
+  "eheringe": {
+   "nr": 122,
+   "name": {
+    "de": "Verschlungene Eheringe",
+    "en": "Entwined wedding rings",
+    "nl": "Verstrengelde trouwringen"
+   },
+   "theme": "liebe-hochzeit",
+   "labels": [
+    "Hochzeit"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-e39180a77e437c23",
+     "points": 80,
+     "declared": 80,
+     "depth": 0.306,
+     "clip": true,
+     "sizeM": [
+      42.87,
+      24.35,
+      13.13
+     ]
+    }
+   ]
+  },
+  "golfplatz": {
+   "nr": 91,
+   "name": {
+    "de": "Golfplatz",
+    "en": "Golf course",
+    "nl": "Golfbaan"
+   },
+   "theme": "sport-spiel",
+   "labels": [
+    "Sport",
+    "Firmenfeier/Jubiläum",
+    "Stadtfest/Regional"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-70f6687501a1a205",
+     "points": 74,
+     "declared": 80,
+     "depth": 0.24,
+     "clip": false,
+     "sizeM": [
+      75.96,
+      57.62,
+      16.14
+     ]
+    }
+   ]
+  },
+  "golfcaddy": {
+   "nr": 32,
+   "name": {
+    "de": "Golfcaddy",
+    "en": "Golf cart",
+    "nl": "Golfkarretje"
+   },
+   "theme": "fahrzeuge",
+   "labels": [
+    "Sport"
+   ],
+   "motion": "drive",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-e68e6c984f0d0c19",
+     "points": 79,
+     "declared": 80,
+     "depth": 0.195,
+     "clip": false,
+     "sizeM": [
+      50.5,
+      31.92,
+      7.89
+     ]
+    }
+   ]
+  },
+  "planierraupe": {
+   "nr": 93,
+   "name": {
+    "de": "Planierraupe",
+    "en": "Bulldozer",
+    "nl": "Bulldozer"
+   },
+   "theme": "fahrzeuge",
+   "labels": [
+    "Stadtfest/Regional"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-bf8ba45b4a71b5e7",
+     "points": 100,
+     "declared": 100,
+     "depth": 0.172,
+     "clip": false,
+     "sizeM": [
+      58.86,
+      29.71,
+      5.96
+     ]
+    }
+   ]
+  },
+  "berge": {
+   "nr": 74,
+   "name": {
+    "de": "Berglandschaft",
+    "en": "Mountain landscape",
+    "nl": "Berglandschap"
+   },
+   "theme": "natur-himmel",
+   "labels": [
+    "Ostern/Frühling",
+    "Kinderfest",
+    "Hochzeit",
+    "Stadtfest/Regional"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-25ebd3fa03b21c63",
+     "points": 132,
+     "declared": 120,
+     "depth": 0.307,
+     "clip": true,
+     "sizeM": [
+      55.01,
+      40.48,
+      16.88
+     ]
+    }
+   ]
+  },
+  "fledermaeuse": {
+   "nr": 131,
+   "name": {
+    "de": "Drei Fledermäuse",
+    "en": "Three bats",
+    "nl": "Drie vleermuizen"
+   },
+   "theme": "tiere",
+   "labels": [
+    "Halloween"
+   ],
+   "motion": "glide",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-5e6426e90cc6c5bc",
+     "points": 116,
+     "declared": 40,
+     "depth": 0.088,
+     "clip": false,
+     "sizeM": [
+      93.27,
+      49.58,
+      7.95
+     ]
+    }
+   ]
+  },
+  "hexenkessel": {
+   "nr": 130,
+   "name": {
+    "de": "Hexenkessel",
+    "en": "Witch's cauldron",
+    "nl": "Heksenketel"
+   },
+   "theme": "feste-jahreszeiten",
+   "labels": [
+    "Halloween"
+   ],
+   "motion": "turn",
+   "dimension": "3D",
+   "variants": [
+    {
+     "id": "m-4ac529507b7992b7",
+     "points": 181,
+     "declared": 170,
+     "depth": 0.524,
+     "clip": true,
+     "sizeM": [
+      53.45,
+      59.35,
+      31.1
+     ]
+    },
+    {
+     "id": "m-4118595c3e444e67",
+     "points": 182,
+     "declared": 180,
+     "depth": 0.525,
+     "clip": true,
+     "sizeM": [
+      53.57,
+      59.34,
+      31.14
+     ]
+    }
+   ]
+  },
   "sektflasche": {
    "nr": 16,
    "name": {

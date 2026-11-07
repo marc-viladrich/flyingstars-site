@@ -69,6 +69,15 @@ const CURATED = [
   { key: 'welle', nr: 137, motion: 'surf', name: { de: '3D-Welle', en: '3D wave', nl: '3D-golf' } },
   { key: 'lebensbaum', nr: 114, motion: 'shimmer', name: { de: 'Lebensbaum', en: 'Tree of life', nl: 'Levensboom' } },
   { key: 'mandala', nr: 71, motion: 'spin', name: { de: 'Mandala', en: 'Mandala', nl: 'Mandala' } },
+  { key: 'traktor', nr: 38, motion: 'drive', name: { de: 'Traktor', en: 'Tractor', nl: 'Tractor' } },
+  { key: 'tor', nr: 89, motion: 'gate', name: { de: 'Tor', en: 'Gate', nl: 'Poort' } },
+  { key: 'eheringe', nr: 122, motion: 'shimmer', name: { de: 'Verschlungene Eheringe', en: 'Entwined wedding rings', nl: 'Verstrengelde trouwringen' } },
+  { key: 'golfplatz', nr: 91, motion: 'shimmer', name: { de: 'Golfplatz', en: 'Golf course', nl: 'Golfbaan' } },
+  { key: 'golfcaddy', nr: 32, motion: 'drive', name: { de: 'Golfcaddy', en: 'Golf cart', nl: 'Golfkarretje' } },
+  { key: 'planierraupe', nr: 93, motion: 'shimmer', name: { de: 'Planierraupe', en: 'Bulldozer', nl: 'Bulldozer' } },
+  { key: 'berge', nr: 74, motion: 'shimmer', name: { de: 'Berglandschaft', en: 'Mountain landscape', nl: 'Berglandschap' } },
+  { key: 'fledermaeuse', nr: 131, motion: 'glide', name: { de: 'Drei Fledermäuse', en: 'Three bats', nl: 'Drie vleermuizen' } },
+  { key: 'hexenkessel', nr: 130, motion: 'turn', name: { de: 'Hexenkessel', en: "Witch's cauldron", nl: 'Heksenketel' } },
   { key: 'sektflasche', nr: 16, motion: 'confetti', name: { de: 'Sektflasche', en: 'Champagne bottle', nl: 'Champagnefles' } },
 ];
 
@@ -76,20 +85,38 @@ const inv = JSON.parse(fs.readFileSync(path.join(SRC, 'katalog-inventar.json'), 
 const fail = (msg) => { console.error(`Importwächter: ${msg}`); process.exit(1); };
 const r3 = (v) => Math.round(v * 1000) / 1000;
 
+/** Zusammenhängende Gruppen unter den Punkten idx (Nachbarn näher als 1,9 × typischer Abstand der Formation). */
+function clusters(pts, idx) {
+  const nn = pts.map((p, i) => Math.min(...pts.map((q, k) => (k === i ? Infinity : Math.hypot(p[0] - q[0], p[1] - q[1])))));
+  const step = nn.slice().sort((a, b) => a - b)[Math.floor(nn.length / 2)] * 1.9, left = new Set(idx), out = [];
+  for (const i of idx) {
+    if (!left.has(i)) continue;
+    const g = [i], stack = [i]; left.delete(i);
+    while (stack.length) { const a = stack.pop(); for (const k of [...left]) if (Math.hypot(pts[a][0] - pts[k][0], pts[a][1] - pts[k][1]) < step) { left.delete(k); g.push(k); stack.push(k); } }
+    out.push(g);
+  }
+  return out;
+}
 /** Bewegliche Teile, die das Bewegungsprofil braucht (in Einheitskoordinaten). */
 function groupsFor(motion, pts) {
   const white = (p) => p[3] > 200 && p[4] > 200 && p[5] > 200;
   if (motion === 'drive') {
-    // Räder: die weißen Ringe unten am Wagen, links und rechts der Mitte. Mitte = Schwerpunkt, Radius = mittlerer Abstand.
-    const ys = pts.map((p) => p[1]), low = Math.min(...ys) + (Math.max(...ys) - Math.min(...ys)) * 0.36;
-    const cand = pts.map((p, j) => [p, j]).filter(([p]) => white(p) && p[1] < low);
-    const xs = cand.map(([p]) => p[0]).sort((a, b) => a - b), split = (xs[0] + xs[xs.length - 1]) / 2;
-    const wheels = [cand.filter(([p]) => p[0] < split), cand.filter(([p]) => p[0] >= split)].map((g) => {
-      const cx = g.reduce((s, [p]) => s + p[0], 0) / g.length, cy = g.reduce((s, [p]) => s + p[1], 0) / g.length;
-      return { cx: r3(cx), cy: r3(cy), idx: g.map(([, j]) => j) };
-    });
-    if (wheels.some((w) => w.idx.length < 6)) fail('Sportwagen: Räder nicht gefunden');
+    // Räder: weiße Ringe im unteren Teil, als zusammenhängende Gruppen (Sportwagen 2, Traktor mit Anhänger 4). Mitte =
+    // Schwerpunkt der Gruppe; Gruppen unter 6 Punkten sind Zierlinien, keine Räder.
+    const ys = pts.map((p) => p[1]), low = Math.min(...ys) + (Math.max(...ys) - Math.min(...ys)) * 0.4;
+    const cand = pts.map((p, j) => j).filter((j) => white(pts[j]) && pts[j][1] < low);
+    const wheels = clusters(pts, cand).filter((g) => g.length >= 6).map((g) => ({ cx: r3(g.reduce((s, j) => s + pts[j][0], 0) / g.length), cy: r3(g.reduce((s, j) => s + pts[j][1], 0) / g.length), idx: g }))
+      .filter((w) => { const r = w.idx.map((j) => Math.hypot(pts[j][0] - w.cx, pts[j][1] - w.cy)), m = r.reduce((a, b) => a + b, 0) / r.length, sd = Math.sqrt(r.reduce((a, b) => a + (b - m) ** 2, 0) / r.length); return sd / m < 0.35; }); // nur Ringe: Abstand zur Mitte etwa gleich
+    if (wheels.length < 2) fail('Fahrzeug: keine zwei Räder gefunden');
     return { wheels };
+  }
+  if (motion === 'gate') {
+    // Tor (Katalogclip: zwei Flügel öffnen sich aus der Mitte zu den Seiten, die roten Pfosten stehen): Flügel = alles
+    // zwischen den Pfosten, Angel = innere Kante des jeweiligen Pfostens
+    const red = (p) => p[3] > 180 && p[4] < 90 && p[5] < 90;
+    const posts = pts.filter(red), inner = pts.map((p, j) => j).filter((j) => !red(pts[j]));
+    const hingeL = Math.max(...posts.filter((p) => p[0] < 0).map((p) => p[0])), hingeR = Math.min(...posts.filter((p) => p[0] > 0).map((p) => p[0]));
+    return { wings: [{ hinge: r3(hingeL), idx: inner.filter((j) => pts[j][0] < 0) }, { hinge: r3(hingeR), idx: inner.filter((j) => pts[j][0] >= 0) }] };
   }
   if (motion === 'needle') {
     // Nadel: die roten Punkte; Drehpunkt ist ihr unteres Ende (zur Skalenmitte hin).
