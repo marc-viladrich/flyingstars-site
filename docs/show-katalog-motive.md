@@ -105,3 +105,15 @@ Farben: Kameras färben weiße Drohnen oft violett oder rosa. Darum werden Punkt
 Motive je Anlass in SPARK bei 100 / 150 / 190 Drohnen jetzt: Launch 5/13/14, Jubiläum 6/10/11, Stadtfest 6/12/15, Hochzeit 7/11/11, Kultur 6/10/10, Winter & Silvester 11/12/13. Wächter: am Einstieg jedes Pakets mindestens fünf Motive je Anlass (`scripts/show-unlock.test.mjs`, Marc 06.11.).
 
 Die Wolkenplanung (`planClouds`) ist seit dieser Runde eine dynamische Programmierung. Mit 20 Motiven kostete die alte Suche über alle Teilmengen 190 ms je Aufbau, jetzt unter 1 ms, mit denselben Kosten, derselben Wolkenzahl und derselben ersten Wolke.
+
+## Runde 25 (07.11.2026): mehr Katalog, echtes 3D, mobil
+
+Marc: In SPARK kamen gefühlt nur 5–10 Katalogmotive vor, obwohl der Katalog mehrere Dutzend hat. In HORIZON/ODYSSEY wirkte die verdoppelte zweite Ebene „uncanny“. Er wollte entweder eine schönere 3D-Darstellung oder ein anderes Motiv.
+
+- **Keine Verdopplung mehr.** Flache Formationen (Katalog, Katalogbilder, Showfotos) spielen nur in SPARK. HORIZON und ODYSSEY zeigen die eigenen Motive und die Formationen, die im Katalog selbst räumlich sind: Kugel, Spirale, Atom, Möbius-Schleife, Pyramide, 3D-Welle, Wasserball, Schmetterling. ODYSSEY zeichnet sie zuerst mit Licht.
+- **Wächter angepasst:** ODYSSEY ⊇ HORIZON ⊇ SPARK ohne flache Bilder. ODYSSEY zeigt nie weniger Motive als HORIZON (Marc, Runde 4). Am Einstieg jedes Pakets laufen mindestens fünf Motive. SPARK darf jetzt mehr Bilder haben als HORIZON.
+- **26 Katalogmotive ohne Punktdatei**, aus dem Vorschaubild des Katalogs gelesen (Recherche `katalog-bildpunkte/`, `BILD` im Importskript): Diskokugel, zwei Blumen, Biene, Marienkäfer, Roboter, Schraubenschlüssel, Zahnräder, Lastwagen, Bagger, Feuerwehrauto, Förderturm, Basketball, Amor, 30 Jahre, Kind mit Ballons, Sparschwein, Superheldin, Geburtstagstorte, Robbe, Anker, Autoscooter, Leuchtturm, Mikrofon, Lotusblume und Sonne. Dazu kommt Konfetti als 100er-Variante. Nicht übernommen sind unruhige Nachzeichnungen (Libelle, Glühwürmchen, kleiner Traktor) und Dubletten (Herz, Kompass, Hasen, Berge).
+- **Zu streng Aussortiertes ist zurück:** Traktor (drei Räder drehen sich), Tor (die Flügel schwingen auf, wie im Clip), Eheringe, Golfplatz, Golfcaddy, Planierraupe, Berglandschaft. Halloween (Fledermäuse, Hexenkessel) liegt vorerst bei Kultur, ein eigener Anlass fehlt.
+- **Insgesamt 82 Motive aus FlyingStars-Quellen.** Motive in SPARK bei 100 / 190 Drohnen: Launch 5/16, Jubiläum 13/24, Stadtfest 7/24, Hochzeit 11/18, Kultur 6/16, Winter & Silvester 13/17. In HORIZON (200) sind es 5–8 echte 3D-Motive je Anlass.
+- **Mobil:** Die Kopfzeile weicht bei eigenem Scrollen nach unten aus, die Bühne klebt dann ganz oben und die Preisleiste weicht ebenfalls. Anker-Sprünge zählen nicht als Scrollen. Das Logo-Overlay reagiert nur auf eine echte Maus, auf iOS blieb es nach dem Dateidialog stehen. Beim Sprung auf `#konfigurator` steht die Bühne direkt unter der Kopfzeile, 82 px höher als vorher.
+- **Schon vorher rot, nicht aus dieser Runde:** In mobile-webkit scheitern „Auf den ersten Blick“ und „Auswahlrahmen gleitet“ auch auf dem Stand vor Runde 25.
