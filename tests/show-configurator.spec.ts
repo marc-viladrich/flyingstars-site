@@ -687,9 +687,9 @@ test('Sechzehnte Fassung: gesperrte Motive stehen neben der Spur, ein Klick stel
   await expect(page.locator('#cfg-toast')).toHaveText('Neues Motiv freigeschaltet: Lotusblüten');
   await expect(scene(page)).toHaveText('Zwei Lotusblüten in 3D drehen sich ineinander');
   await expect(locks).toHaveCount(1);
-  // SPARK mit 100 Drohnen: drei Motive spielen, drei sind gesperrt (150, 250, 450)
+  // SPARK mit 100 Drohnen: gesperrt sind die Schwellen 110, 120, 150 (Katalog- und Showmotive), 250 und 450 (Runde 25: ein Punkt je Schwelle)
   await pkg(page, 0);
-  await expect(locks).toHaveCount(3);
+  await expect(locks).toHaveCount(5);
   expect(errors).toEqual([]);
 });
 
@@ -871,7 +871,7 @@ test('Runde 24: Katalogmotive spielen ab ihrer Punktzahl, der eigene Text hebt d
   // ein Lichtpunkt je Schwelle: bei 100 Drohnen schalten 120 und 150 je mehrere Motive frei
   await page.goto(`${CFG}?anlass=launch&paket=SPARK&drohnen=100#konfigurator`);
   const locks = page.locator('#cfg-locks .cfg-lock');
-  await expect(locks.first()).toHaveAttribute('data-at', '120');
+  await expect(locks.first()).toHaveAttribute('data-at', '110'); // Roboter, Zahnräder (Runde 25)
   const thresholds = await locks.evaluateAll((els) => els.map((el) => Number((el as HTMLElement).dataset.at)));
   expect(new Set(thresholds).size).toBe(thresholds.length);
   // Text: 10 Drohnen je Zeichen ohne Leerzeichen; „ANNA & BEN TOM“ = 11 Zeichen → 110 Drohnen
