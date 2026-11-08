@@ -3526,5 +3526,10 @@
     "de": "Mit eurem Text bleiben es mindestens {need} Drohnen.",
     "en": "With your text it stays at {need} drones or more.",
     "nl": "Met jullie tekst blijven het minstens {need} drones."
+  },
+  "showConfigurator.logoTooFine": {
+    "de": "Euer Logo ist für {n} Drohnen sehr fein. Mit mehr Drohnen oder einer vereinfachten Fassung (etwa nur das Zeichen) wird es klarer.",
+    "en": "Your logo is very detailed for {n} drones. More drones or a simplified version (for example just the mark) make it clearer.",
+    "nl": "Jullie logo is erg fijn voor {n} drones. Met meer drones of een vereenvoudigde versie (bijvoorbeeld alleen het beeldmerk) wordt het duidelijker."
   }
 }

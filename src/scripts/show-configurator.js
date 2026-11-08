@@ -269,8 +269,11 @@ if (form) {
   };
   /** Points of the uploaded logo for n drones, colours as in the logo (dark ones lifted so they light). */
   const logoPoints = async (source, n) => {
-    const pts = await formation(source, n);
+    // Runde 26: Logos als Strichgraph (Mittellinien, Enden und Ecken zuerst, 2 m Mindestabstand), lesbar mit 100–150 Drohnen
+    const pts = await formation(source, n, { sampler: "stroke" });
     if (!pts.length) throw new Error("leer");
+    // ehrlich sagen, wenn das Logo für diese Drohnenzahl sehr fein ist (Linien mussten weit auseinanderrücken)
+    if (source === logo) $("#cfg-logo-status").textContent = pts.meta?.simplified ? message('showConfigurator.logoTooFine', { n }) : "";
     const tint = pkg().color;
     return pts.map((p) => [p.x, -p.y, 0, ...(p.c ? liftColor(p.c) : tint)]);
   };

@@ -1404,5 +1404,7 @@
   {"key":"showConfigurator.textRaised","locale":"en","origin":"machine-new","components":["src/scripts/show-configurator.js"]},
   {"key":"showConfigurator.textRaised","locale":"nl","origin":"machine-new","components":["src/scripts/show-configurator.js"]},
   {"key":"showConfigurator.textHolds","locale":"en","origin":"machine-new","components":["src/scripts/show-configurator.js"]},
-  {"key":"showConfigurator.textHolds","locale":"nl","origin":"machine-new","components":["src/scripts/show-configurator.js"]}
+  {"key":"showConfigurator.textHolds","locale":"nl","origin":"machine-new","components":["src/scripts/show-configurator.js"]},
+  {"key":"showConfigurator.logoTooFine","locale":"en","origin":"machine-new","components":["src/scripts/show-configurator.js"]},
+  {"key":"showConfigurator.logoTooFine","locale":"nl","origin":"machine-new","components":["src/scripts/show-configurator.js"]}
 ]

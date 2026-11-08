@@ -136,7 +136,7 @@ export function liftColor([r, g, b], min = 0.62) {
  * Der Rest füllt große Flächen locker und etwas gedimmt. Der Abstand entlang der Linien und in der
  * Fläche wird gemeinsam aus der Drohnenzahl bestimmt, damit nichts an den Rändern klumpt.
  */
-export function sampleShape({ w, h, rgba, label, area }, n) {
+export function sampleShapeLegacy({ w, h, rgba, label, area }, n) {
   const N = w * h;
   const big = i => label[i] < 0 ? Infinity : area[label[i]];
   // Grenzpixel: Nachbar hat eine andere Fläche; „ink“ ist nur die kleinere Seite (bzw. die Form gegen den Hintergrund)
@@ -183,4 +183,216 @@ export function sampleShape({ w, h, rgba, label, area }, n) {
     const k = (y * w + x) * 4;
     return { x: (x - w / 2) * sc, y: (y - h / 2) * sc, c: [rgba[k], rgba[k + 1], rgba[k + 2]], wt: kind ? 1 : 0.6 };
   });
+}
+
+/* ---------- Runde 26: Strichgraph statt Flächenabtastung (Marc, 08.11.2026) ----------
+ * Ziel: Logos mit 100–150 Drohnen scharf. Die Recherche (akomo-Hub, flyingstars/21-logo-algorithmus) zeigte: Am besten
+ * liest sich ein Logo, wenn jede Linie genau eine Drohnenreihe bekommt (Mittellinie statt zweier Ränder) und Enden,
+ * Kreuzungen und Ecken zuerst besetzt werden. Dazwischen stehen die Drohnen gleichmäßig nach Bogenlänge, nie enger als
+ * der Mindestabstand (2 m bei 70 m Bildbreite = 1/35 der Breite). Kräftige Flächen bekommen eine eingerückte Kontur,
+ * aber nur, wenn die Drohnenzahl dafür reicht; sonst auch dort die Mittellinie.
+ * Deterministisch: keine Zufallszahlen, feste Reihenfolgen.
+ */
+
+const N8 = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
+
+/** Zhang-Suen-Verdünnung: Maske (Uint8Array, 1 = Form) → ein Pixel breite Mittellinie. */
+function thin(mask, w, h) {
+  const m = mask.slice(), del = [];
+  const at = (x, y) => (x < 0 || y < 0 || x >= w || y >= h ? 0 : m[y * w + x]);
+  for (let changed = true, iter = 0; changed && iter < 200; iter++) {
+    changed = false;
+    for (const pass of [0, 1]) {
+      del.length = 0;
+      for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+        if (!m[y * w + x]) continue;
+        const p = [at(x, y - 1), at(x + 1, y - 1), at(x + 1, y), at(x + 1, y + 1), at(x, y + 1), at(x - 1, y + 1), at(x - 1, y), at(x - 1, y - 1)];
+        const B = p.reduce((a, b) => a + b, 0); if (B < 2 || B > 6) continue;
+        let A = 0; for (let k = 0; k < 8; k++) if (!p[k] && p[(k + 1) % 8]) A++;
+        if (A !== 1) continue;
+        if (pass === 0 ? (p[0] * p[2] * p[4] || p[2] * p[4] * p[6]) : (p[0] * p[2] * p[6] || p[0] * p[4] * p[6])) continue;
+        del.push(y * w + x);
+      }
+      if (del.length) { changed = true; for (const i of del) m[i] = 0; }
+    }
+  }
+  return m;
+}
+
+/** Übergänge 0→1 rund um ein Pixel: 1 = Ende, 2 = Linie, ≥ 3 = Kreuzung (robuster als die reine Nachbarzahl). */
+function crossings(sk, w, x, y) {
+  let c = 0;
+  for (let k = 0; k < 8; k++) { const [ax, ay] = N8[k], [bx, by] = N8[(k + 1) % 8]; if (!sk[(y + ay) * w + x + ax] && sk[(y + by) * w + x + bx]) c++; }
+  return c;
+}
+
+/** Zerlegt die Mittellinie in Wege zwischen Knoten (Enden, Kreuzungen) und geschlossene Schleifen. */
+function trace(sk, w, h) {
+  const node = new Uint8Array(w * h), used = new Uint8Array(w * h), paths = [], nodes = [];
+  for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+    const i = y * w + x; if (!sk[i]) continue;
+    const c = crossings(sk, w, x, y); if (c !== 2) { node[i] = c === 1 ? 1 : 2; nodes.push([x, y, node[i]]); }
+  }
+  const nbrs = (x, y) => { const out = []; for (const [dx, dy] of [[1, 0], [0, 1], [-1, 0], [0, -1], [1, 1], [-1, 1], [-1, -1], [1, -1]]) { const j = (y + dy) * w + x + dx; if (sk[j]) out.push([x + dx, y + dy]); } return out; };
+  const walk = (sx, sy, nx, ny) => {
+    const path = [[sx, sy]], start = sy * w + sx; let x = nx, y = ny;
+    for (let guard = 0; guard < w * h; guard++) {
+      path.push([x, y]); const i = y * w + x;
+      if (node[i]) break;
+      used[i] = 1;
+      const nb = nbrs(x, y);
+      // ein angrenzender Knoten beendet den Weg (nicht der Startknoten direkt nach dem Start); sonst weiter auf der Linie
+      const toNode = nb.find(([qx, qy]) => { const j = qy * w + qx; return node[j] && (j !== start || path.length > 3); });
+      const next = toNode ?? nb.find(([qx, qy]) => { const j = qy * w + qx; return !node[j] && !used[j]; });
+      if (!next) break;
+      [x, y] = next;
+    }
+    return path;
+  };
+  for (const [x, y] of nodes) for (const [nx, ny] of nbrs(x, y)) {
+    const j = ny * w + nx; if (used[j]) continue;
+    if (node[j]) { if (x < nx || (x === nx && y < ny)) paths.push([[x, y], [nx, ny]]); continue; }
+    paths.push(walk(x, y, nx, ny));
+  }
+  // übrige Pixel liegen auf Schleifen ohne Knoten (o, Ring): oben links beginnen
+  for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+    const i = y * w + x; if (!sk[i] || used[i] || node[i]) continue;
+    used[i] = 1; const n0 = nbrs(x, y).find(([qx, qy]) => !used[qy * w + qx]);
+    if (!n0) continue;
+    const p = walk(x, y, n0[0], n0[1]); p.loop = true; paths.push(p);
+  }
+  return { paths, nodes };
+}
+
+const len = (p) => { let L = 0; for (let i = 1; i < p.length; i++) L += Math.hypot(p[i][0] - p[i - 1][0], p[i][1] - p[i - 1][1]); return L; };
+/** Douglas–Peucker: Indizes der Ecken eines Weges (Anfang und Ende immer dabei). */
+function corners(p, eps) {
+  const keep = new Uint8Array(p.length); keep[0] = keep[p.length - 1] = 1;
+  const rec = (a, b) => {
+    const [ax, ay] = p[a], [bx, by] = p[b], L = Math.hypot(bx - ax, by - ay) || 1e-9; let best = -1, bd = eps;
+    for (let i = a + 1; i < b; i++) { const d = Math.abs((bx - ax) * (ay - p[i][1]) - (ax - p[i][0]) * (by - ay)) / L; if (d > bd) { bd = d; best = i; } }
+    if (best >= 0) { keep[best] = 1; rec(a, best); rec(best, b); }
+  };
+  if (p.length > 2) rec(0, p.length - 1);
+  return [...keep.keys()].filter((i) => keep[i]);
+}
+/** Punkte im Abstand ≈ s entlang eines Teilwegs, ohne seine beiden Enden. */
+function along(p, a, b, s) {
+  const seg = p.slice(a, b + 1), L = len(seg), k = Math.max(1, Math.round(L / s)), out = [];
+  if (k < 2) return out;
+  let acc = 0, j = 1, target = L / k;
+  for (let q = 1; q < k; q++) {
+    const want = (q * L) / k;
+    while (j < seg.length && acc + Math.hypot(seg[j][0] - seg[j - 1][0], seg[j][1] - seg[j - 1][1]) < want) { acc += Math.hypot(seg[j][0] - seg[j - 1][0], seg[j][1] - seg[j - 1][1]); j++; }
+    if (j >= seg.length) break;
+    const l = Math.hypot(seg[j][0] - seg[j - 1][0], seg[j][1] - seg[j - 1][1]) || 1, u = (want - acc) / l;
+    out.push([seg[j - 1][0] + (seg[j][0] - seg[j - 1][0]) * u, seg[j - 1][1] + (seg[j][1] - seg[j - 1][1]) * u]);
+  }
+  void target;
+  return out;
+}
+/** Kurze Äste (Sporne der Verdünnung an Ecken dicker Striche) entfernen: Wege mit freiem Ende kürzer als minLen. */
+function pruneSpurs(sk, w, h, minLen) {
+  for (let round = 0; round < 3; round++) {
+    const { paths } = trace(sk, w, h); let removed = false;
+    for (const p of paths) {
+      if (p.loop || len(p) >= minLen) continue;
+      const end = (q) => crossings(sk, w, q[0], q[1]) === 1, a = end(p[0]), b = end(p[p.length - 1]);
+      if (a === b) continue; // freistehende kurze Linie oder Brücke zwischen zwei Kreuzungen bleibt
+      for (const q of p.slice(a ? 0 : 1, b ? p.length : p.length - 1)) sk[q[1] * w + q[0]] = 0;
+      removed = true;
+    }
+    if (!removed) break;
+  }
+  return sk;
+}
+
+/** Linienmaske: Striche, deren halbe Breite höchstens T Pixel misst, werden zur Mittellinie; dickere Bereiche zur
+ * eingerückten Kontur (eine halbe Drohnenreihe innerhalb des Randes). */
+function lineMask(fg, dIn, w, h, d, T) {
+  const N = w * h, core = new Uint8Array(N);
+  for (let i = 0; i < N; i++) if (fg[i] && dIn[i] > T) core[i] = 1;
+  const dCore = distance(core, w, h), thickRegion = new Uint8Array(N), thinPart = new Uint8Array(N), ring = new Uint8Array(N);
+  for (let i = 0; i < N; i++) if (fg[i]) { if (dCore[i] <= T + 1) thickRegion[i] = 1; else thinPart[i] = 1; }
+  for (let i = 0; i < N; i++) if (thickRegion[i] && dIn[i] >= 0.5 * d - 0.5 && dIn[i] < 0.5 * d + 1.5) ring[i] = 1;
+  const a = pruneSpurs(thin(thinPart, w, h), w, h, d * 0.9), b = thin(ring, w, h);
+  for (let i = 0; i < N; i++) if (b[i]) a[i] = 1;
+  return a;
+}
+
+/**
+ * Verteilt höchstens n Drohnen auf eine gerasterte Form (Ergebnis von analyze). Weniger als n, wenn das Logo mit
+ * Mindestabstand nicht mehr braucht; die übrigen Drohnen bleiben dunkel. Rückgabe wie bisher { x, y, c, wt }.
+ * Zusätzlich an der Liste: .meta = { mode, spacing, simplified } (simplified: Linien mussten ausgedünnt werden).
+ */
+export function sampleShape({ w, h, rgba, label, area }, n, { spacing = 1 / 45 } = {}) {
+  // Abstand: 2 m bei rund 90 m Bildbreite. FlyingStars' Textplaner skaliert ein Bild mit der Drohnenzahl (2 m Abstand, bis
+  // 80 m Höhe); 1/35 (70 m) war zu streng und machte volle Formen lichter als nötig.
+  const N = w * h, d = Math.max(w, h) * spacing;
+  // jede größere Farbfläche für sich: das schwarze Pferd auf gelbem Grund ist eine eigene Form, kein Loch in der Fläche.
+  // Kleine Farbgruppen (Kantenglättung, Zwischentöne) gehören zur benachbarten großen Fläche, sonst zerfällt ein weißes
+  // Logo mit grauen Kantenpixeln in lauter dünne Ränder.
+  const counts = new Map(); let fgN = 0;
+  for (let i = 0; i < N; i++) if (label[i] >= 0) { counts.set(label[i], (counts.get(label[i]) || 0) + 1); fgN++; }
+  const major = new Set([...counts].filter(([, c]) => c >= fgN * 0.08).map(([L]) => L));
+  if (!major.size && counts.size) major.add([...counts].sort((a, b) => b[1] - a[1])[0][0]);
+  const own = new Int16Array(N).fill(-1), queue = [];
+  for (let i = 0; i < N; i++) if (major.has(label[i])) { own[i] = label[i]; queue.push(i); }
+  for (let q = 0; q < queue.length; q++) { const i = queue[q], x = i % w; for (const j of [i - 1, i + 1, i - w, i + w]) { if (j < 0 || j >= N || (j === i - 1 && x === 0) || (j === i + 1 && x === w - 1)) continue; if (label[j] >= 0 && own[j] < 0) { own[j] = own[i]; queue.push(j); } } }
+  const masks = [...major].map((L) => {
+    const fg = new Uint8Array(N), seed = new Uint8Array(N);
+    for (let i = 0; i < N; i++) if (own[i] === L) fg[i] = 1;
+    for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) { const i = y * w + x; if (fg[i] && (!fg[i - 1] || !fg[i + 1] || !fg[i - w] || !fg[i + w])) seed[i] = 1; }
+    return { fg, dIn: distance(seed, w, h) };
+  });
+  if (!masks.length) return [];
+  const build = (T) => {
+    const sk = new Uint8Array(N);
+    for (const { fg, dIn } of masks) { const m = lineMask(fg, dIn, w, h, d, T); for (let i = 0; i < N; i++) if (m[i]) sk[i] = 1; }
+    const { paths, nodes } = trace(sk, w, h);
+    let total = 0; for (const p of paths) total += len(p);
+    return { paths, nodes, total, T };
+  };
+  // Die reichste Darstellung, die in n Drohnen passt: zuerst auch kräftige Schrift als Kontur (T klein), dann immer mehr
+  // Striche als Mittellinie. Volle Flächen (halbe Breite über 4 Drohnenabstände: Apfel, Schild) bleiben immer Kontur,
+  // ihre Mittellinie wäre nur ein Gerüst. Passt auch das nicht, rücken die Drohnen weiter auseinander (unten).
+  let g = null;
+  for (const k of [1, 1.6, 2.5, 4]) { g = build(k * d); if (g.total / d <= n * 1.3) break; } // bis 30 % lichter für die reichere Form
+  const mode = `T=${(g.T / d).toFixed(1)}d`;
+  if (!g.total && !g.nodes.length) return [];
+  // Anker: Kreuzungen, Enden, Ecken (Douglas–Peucker). Längste Wege zuerst, damit bei Knappheit Kleines wegfällt.
+  const eps = Math.max(1.5, d * 0.45); // Ecken erst ab einer halben Drohnenreihe Abweichung, sonst wird jede Pixeltreppe zur Ecke
+  const paths = g.paths.map((p) => ({ p, L: len(p), c: p.length > 2 ? corners(p, eps) : [0, p.length - 1] })).sort((a, b) => b.L - a.L);
+  const tryWith = (s) => {
+    // alle Punkte, auch Knoten und Ecken, mindestens r auseinander: bei knappem Budget werden auch die Anker lichter, statt
+    // alles andere zu verdrängen (vorher fehlte bei Ferrari das Schild, bei der NFL alles außer den Sternen)
+    const r = Math.max(d, 0.8 * s), grid = new Map(), out = [], cell = r;
+    const free = (x, y) => { const gx = Math.floor(x / cell), gy = Math.floor(y / cell); for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) for (const q of grid.get(`${gx + i},${gy + j}`) || []) if ((q[0] - x) ** 2 + (q[1] - y) ** 2 < r * r) return false; return true; };
+    const put = (x, y) => { if (!free(x, y)) return false; const k = `${Math.floor(x / cell)},${Math.floor(y / cell)}`; if (!grid.has(k)) grid.set(k, []); grid.get(k).push([x, y]); out.push([x, y]); return true; };
+    for (const [x, y, kind] of [...g.nodes].sort((a, b) => b[2] - a[2] || a[1] - b[1] || a[0] - b[0])) if (kind === 2) put(x, y); // Kreuzungen
+    for (const [x, y, kind] of g.nodes) if (kind === 1) put(x, y); // Enden
+    for (const { p, c } of paths) for (const i of c) put(p[i][0], p[i][1]); // Ecken
+    for (const { p, c } of paths) {
+      const idx = p.loop && c.length < 3 ? [0, Math.floor(p.length / 3), Math.floor((2 * p.length) / 3), p.length - 1] : c;
+      for (let k = 1; k < idx.length; k++) for (const [x, y] of along(p, idx[k - 1], idx[k], s)) put(x, y);
+    }
+    return out;
+  };
+  // Abstand s so wählen, dass möglichst viele, aber höchstens n Drohnen gesetzt werden (Bisektion; die Zahl fällt mit s)
+  let s = d, pts = tryWith(s), simplified = false;
+  if (pts.length > n) {
+    let lo = d, hi = d * 2;
+    while (tryWith(hi).length > n && hi < Math.max(w, h)) hi *= 2;
+    for (let it = 0; it < 14; it++) { const mid = (lo + hi) / 2; if (tryWith(mid).length > n) lo = mid; else hi = mid; }
+    s = hi; pts = tryWith(s);
+  }
+  if (pts.length > n) { pts = pts.slice(0, n); simplified = true; }
+  if (s > d * 2.4) simplified = true; // Linien mehr als doppelt so licht wie der Mindestabstand: für n Drohnen sehr fein (VW, GitHub bei 100 lesen sich noch; Ferrari, NFL nicht)
+  const sc = 2 / Math.max(w, h);
+  const result = pts.map(([x, y]) => {
+    const xi = Math.min(w - 1, Math.max(0, Math.round(x))), yi = Math.min(h - 1, Math.max(0, Math.round(y))), k = (yi * w + xi) * 4;
+    return { x: (x - w / 2) * sc, y: (y - h / 2) * sc, c: [rgba[k], rgba[k + 1], rgba[k + 2]], wt: 1 };
+  });
+  result.meta = { mode, spacing: s / Math.max(w, h), simplified };
+  return result;
 }
