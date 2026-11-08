@@ -194,9 +194,21 @@ if (form) {
     flash.dataset.state = field.paused() ? "pause" : "play";
     flash.classList.remove("is-on"); void flash.offsetWidth; flash.classList.add("is-on");
   });
+  // Runde 25b (Marc, 08.11.2026, zum Testen): der schnelle Knopf wird mit jedem weiteren Klick schneller, 2× → 4× → 6× →
+  // 8× → 10× und wieder 2×. Die Show-Uhr deckelt nur die echte Zeit je Bild (0,1 s), das Tempo selbst nicht.
+  const FAST = [2, 4, 6, 8, 10];
   form.closest(".cfg").querySelectorAll("[data-rate]").forEach((b) => b.addEventListener("click", () => {
-    field.setRate(Number(b.dataset.rate));
-    b.parentElement.querySelectorAll("[data-rate]").forEach((o) => o.setAttribute("aria-pressed", String(o === b)));
+    let r = Number(b.dataset.rate);
+    if (r >= 2) {
+      const was = b.getAttribute("aria-pressed") === "true" ? Number(b.dataset.current || 2) : 0;
+      r = was ? FAST[(FAST.indexOf(was) + 1) % FAST.length] : 2;
+      b.dataset.current = String(r); b.textContent = `${r}×`;
+    }
+    field.setRate(r);
+    b.parentElement.querySelectorAll("[data-rate]").forEach((o) => {
+      o.setAttribute("aria-pressed", String(o === b));
+      if (o !== b && Number(o.dataset.rate) >= 2) { o.dataset.current = "2"; o.textContent = "2×"; } // zurück auf 2×, sobald ein anderes Tempo gewählt ist
+    });
   }));
 
   // ---------- Auswahl: Anlass, Paket, Drohnenzahl, Text, Logo ----------

@@ -153,19 +153,19 @@ function prepare(f, flatten) {
 /**
  * Szene eines Katalogmotivs für ein Paket mit n Drohnen. tier: SPARK | HORIZON | ODYSSEY.
  * Jedes Bild hat genau n Drohnen; was die Formation nicht braucht, wartet dunkel hinter der Form.
- * Runde 25 (Marc, 07.11.2026: die verdoppelte Ebene wirkt „uncanny“, lieber eine schönere 3D-Darstellung oder ein
- * anderes Motiv): Flache Formationen spielen nur in SPARK. HORIZON und ODYSSEY zeigen nur Formationen, die im Katalog
- * selbst räumlich sind (Kugel, Spirale, Atom …), mit der größten passenden Variante; ODYSSEY zeichnet sie zuerst mit Licht.
+ * Runde 25 (Marc, 07.11.2026: die verdoppelte Ebene wirkt „uncanny“): keine zweite Ebene mehr. 3D-Formationen aus dem
+ * Katalog (Kugel, Spirale, Atom …) drehen sich ab HORIZON; flache Formationen spielen ab Runde 25b auch in HORIZON und
+ * ODYSSEY, als Formation mit der größten passenden Variante, nach den 3D-Motiven. ODYSSEY zeichnet jede zuerst mit Licht.
  */
 export async function catalogScene(key, tier, n, caption) {
   const m = CATALOG[key];
   if (!m) throw new Error(`Katalogmotiv ${key} fehlt`);
   const deep = m.dimension === '3D', name = m.name[lang()] ?? m.name.de;
-  if (tier !== 'SPARK' && !deep) throw new Error(`Katalogmotiv ${key} ist flach und spielt nur in SPARK`);
   const v = variantFor(key, n);
   if (!v) throw new Error(`Katalogmotiv ${key}: keine Variante für ${n} Drohnen`);
   const f = await load(v.id), front = prepare(f, !deep);
-  const live = profile(m.motion, f, front, { body: tier !== 'SPARK' || (deep && !LIGHT_ONLY.has(m.motion)) });
+  // flache Formationen bewegen sich in jedem Paket wie in SPARK (kein Schwenk, der die fehlende Tiefe zeigen würde)
+  const live = profile(m.motion, f, front, { body: deep && (tier !== 'SPARK' || !LIGHT_ONLY.has(m.motion)) });
   const rest = reserve(n - front.length, front), k = front.length;
   const run = (b, j, t, o) => { if (j >= k) { o[3] = 0; return; } live(b, j, t, o); };
   if (tier !== 'ODYSSEY') return { beats: [{ pts: [...front, ...rest], fitPts: front, caption, live: run, shimmer: false }] };

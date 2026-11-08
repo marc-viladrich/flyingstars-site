@@ -25,6 +25,8 @@
   .cfg-rate { display: flex; flex: none; padding-left: var(--space-1); border-left: 1px solid var(--line); }
   .cfg-rate button { font: 500 var(--text-xs)/1 var(--mono); letter-spacing: 0.02em; padding: 0 var(--space-1-75); min-width: 0; }
   .cfg-rate button[aria-pressed="true"] { color: var(--text); background: var(--line); }
+  /* Runde 25b: der schnelle Knopf zählt 2× … 10× hoch; feste Breite, damit „10×“ die Leiste nicht verschiebt */
+  .cfg-rate button[data-rate="2"] { min-width: 3.4em; font-variant-numeric: tabular-nums; }
   /* Drohnenregler: Spur in den Paketfarben, Lücke zwischen den Bereichen leer */
   .cfg-drones-head { display: flex; align-items: baseline; justify-content: space-between; }
   .cfg-drones-head label { font-size: var(--text-control); color: var(--text); }

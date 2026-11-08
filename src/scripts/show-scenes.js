@@ -131,7 +131,9 @@ const nearWhite = (r, g, b) => Math.min(r, g, b) > 190 && Math.max(r, g, b) - Ma
 export async function buildSequence(motifs, pkg, n, tint, occasion = "") {
   // a motif may skip a package or need more drones: minDrones an der Fassung des Pakets (Freischalt-Leiter, sechzehnte
   // Fassung, content/show-configurator.js)
-  const beats = [], shown = motifs.map((m, segment) => [m, segment]).filter(([m]) => m.tiers[pkg] && (m.tiers[pkg].minDrones ?? 0) <= n);
+  const playing = motifs.map((m, segment) => [m, segment]).filter(([m]) => m.tiers[pkg] && (m.tiers[pkg].minDrones ?? 0) <= n);
+  // Runde 25b: ab HORIZON laufen die 3D- und eigenen Motive zuerst, die flachen Katalog- und Showformationen füllen danach auf
+  const beats = [], shown = pkg === "SPARK" ? playing : [...playing.filter(([m]) => !m.flat), ...playing.filter(([m]) => m.flat)];
   const plan = transitions(occasion, shown.length, pkg);
   const tinted = (pts) => (tint ? pts.map((p) => (nearWhite(p[3], p[4], p[5]) ? [p[0], p[1], p[2], ...mix(WARM, tint, 0.7)] : p)) : pts);
   // a transition belongs to the next motif, so a package switch never lands on a figure

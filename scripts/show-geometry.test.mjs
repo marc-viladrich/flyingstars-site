@@ -56,7 +56,6 @@ test('Jeder Anlass hat vier bis dreißig Motive (Runde 24: Katalog- und Showmoti
       // SPARK may leave out a motif that its drones cannot draw; every motif has an ODYSSEY version, a package that has
       // the motif keeps it in every larger package (sechzehnte Fassung: Freischalt-Leiter, minDrones je Fassung)
       const builds = PACKAGE_ORDER.map((pkg) => motif.tiers[pkg]?.build).filter(Boolean);
-      if (motif.flat) { assert.deepEqual(Object.keys(motif.tiers), ['SPARK'], `${occasion.id}/${motif.id}: flache Formation nur in SPARK`); continue; } // Runde 25
       assert.ok(motif.tiers.ODYSSEY?.build, `${occasion.id}/${motif.id} misses ODYSSEY`);
       const first = PACKAGE_ORDER.findIndex((pkg) => motif.tiers[pkg]);
       PACKAGE_ORDER.slice(first).forEach((pkg) => assert.ok(motif.tiers[pkg], `${occasion.id}/${motif.id}: ${pkg} fehlt nach ${PACKAGE_ORDER[first]}`));

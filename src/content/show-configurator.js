@@ -76,20 +76,23 @@ const v = (build, caption) => ({ build, caption });
  */
 const catalogMin = (key) => { const m = catalog.motifs[key]; if (!m) throw new Error(`Katalogmotiv ${key} fehlt`); return Math.ceil(m.variants[0].points / DRONE_STEP) * DRONE_STEP; };
 const catalogName = (key, locale) => catalog.motifs[key].name[locale] ?? catalog.motifs[key].name.de;
-const CATALOG_CAPTION = { SPARK: 'caption', HORIZON: 'body', ODYSSEY: 'story' };
 /** Eine Fassung aus dem Katalog; der Bauname trägt Anlass und Paket, weil jede Fassung ihren eigenen Namen braucht. */
 const catalogText = (key, locale, name) => (catalog.texts[key][locale] ?? catalog.texts[key].de).replace('{name}', name);
-const cv = (key, pkg, occasion, t, locale) => v(`catalog:${key}:${pkg}:${occasion}`, catalogText(pkg === 'SPARK' && catalog.motifs[key].source === 'show' ? 'captionShow' : CATALOG_CAPTION[pkg], locale, catalogName(key, locale)));
+/** Bildunterschrift: flache Formationen bleiben in HORIZON eine Formation (kein „Körper in 3D“), ODYSSEY zeichnet sie mit Licht. */
+const captionKey = (key, pkg, flat) => (pkg === 'ODYSSEY' ? 'story' : pkg === 'HORIZON' && !flat ? 'body' : catalog.motifs[key].source === 'show' ? 'captionShow' : 'caption');
+const cv = (key, pkg, occasion, t, locale, flat = false) => v(`catalog:${key}:${pkg}:${occasion}`, catalogText(captionKey(key, pkg, flat), locale, catalogName(key, locale)));
 /** Ein Motiv nur aus dem Katalog, in jedem Paket ab der Drohnenzahl seiner kleinsten Variante. */
 function catalogMotif(key, occasion, t, locale, id = key) {
-  // Runde 25: flache Formationen nur in SPARK (HORIZON und ODYSSEY zeigen nur echte 3D-Formationen, siehe scenes/catalog.js)
+  // Runde 25b (Marc, 08.11.2026: HORIZON „mit einigen aus SPARK auffüllen, solange klar bleibt, dass viele Motive bei
+  // HORIZON komplexer und 3D sind“): flache Formationen spielen wieder in jedem Paket, aber ohne zweite Ebene und in
+  // HORIZON/ODYSSEY hinter den 3D-Motiven (buildSequence in show-scenes.js)
   const min = catalogMin(key), flat = catalog.motifs[key].dimension !== '3D';
-  const packages = flat ? ['SPARK'] : PACKAGE_ORDER, first = packages.findIndex((p) => min <= DRONE_RANGES[p].max);
+  const first = PACKAGE_ORDER.findIndex((p) => min <= DRONE_RANGES[p].max);
   if (first < 0) throw new Error(`Katalogmotiv ${key} passt in kein Paket (${min} Drohnen)`);
   /** @type {Partial<Record<'SPARK' | 'HORIZON' | 'ODYSSEY', Version>>} */
   const tiers = {};
-  packages.forEach((pkg, i) => { if (i >= first) tiers[pkg] = { ...cv(key, pkg, occasion, t, locale), minDrones: i === first ? Math.max(min, DRONE_RANGES[pkg].min) : DRONE_RANGES[pkg].min }; });
-  return { id, label: catalogName(key, locale), tiers, minDrones: tiers[packages[first]].minDrones, catalog: key, flat };
+  PACKAGE_ORDER.forEach((pkg, i) => { if (i >= first) tiers[pkg] = { ...cv(key, pkg, occasion, t, locale, flat), minDrones: i === first ? Math.max(min, DRONE_RANGES[pkg].min) : DRONE_RANGES[pkg].min }; });
+  return { id, label: catalogName(key, locale), tiers, minDrones: tiers[PACKAGE_ORDER[first]].minDrones, catalog: key, flat };
 }
 /** Ein eigenes Motiv bekommt die Katalogformation als SPARK-Fassung; es spielt ab deren Mindestzahl. */
 function withCatalogSpark(m, key, occasion, t, locale) {
