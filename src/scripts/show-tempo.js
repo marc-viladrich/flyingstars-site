@@ -172,6 +172,10 @@ export function composeShow({ main, tour = null, logo = null, logoCaption = mess
   const loopBeat = logo?.length ? { pts: logo, caption: logoCaption, motif: "Logo", hold: TEMPO.logoHold, cloud: true, segment: LOGO_SEGMENT, logo: true } : null;
   // fünfzehnte Fassung: das Logo glänzt immer, mit dem Lichtlauf aus Studie 1 (runFits() hätte einer Fläche keinen gegeben)
   if (loopBeat) { loopBeat.run = true; loopBeat.runLight = TEMPO.logoRun; }
+  // Runde 26: schwarze Punkte am Ende sind Reserve-Drohnen (der Strichgraph braucht oft weniger als n); sie bleiben ganz
+  // dunkel, auch der Lichtlauf erfasst sie nicht (er hellt nur Drohnen ab voller Helligkeit auf)
+  const dark = loopBeat ? logo.findIndex((p) => p[3] + p[4] + p[5] === 0) : -1;
+  if (dark >= 0) loopBeat.live = (b, j, t, o) => { if (j >= dark) o[3] = 0; };
   const round = [];
   let motifs = 0, last = null, afterLogo = false, body = main.beats;
   // with a logo the round begins with it: a figure that led back into the first motif (SPARK) is not needed there

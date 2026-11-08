@@ -274,8 +274,11 @@ if (form) {
     if (!pts.length) throw new Error("leer");
     // ehrlich sagen, wenn das Logo für diese Drohnenzahl sehr fein ist (Linien mussten weit auseinanderrücken)
     if (source === logo) $("#cfg-logo-status").textContent = pts.meta?.simplified ? message('showConfigurator.logoTooFine', { n }) : "";
-    const tint = pkg().color;
-    return pts.map((p) => [p.x, -p.y, 0, ...(p.c ? liftColor(p.c) : tint)]);
+    const tint = pkg().color, lit = pts.map((p) => [p.x, -p.y, 0, ...(p.c ? liftColor(p.c) : tint)]);
+    // Drohnen, die das Logo nicht braucht (der Strichgraph nimmt oft weniger als n), warten dunkel hinter dem Logo:
+    // jedes Bild hat genau die Drohnen des Pakets, wie bei den Katalogmotiven
+    const reserve = Array.from({ length: Math.max(0, n - lit.length) }, (_, i) => { const q = lit[(i * 7) % lit.length]; return [q[0], q[1], -0.45 - 0.04 * (i % 3), 0, 0, 0]; });
+    return [...lit, ...reserve];
   };
   const logoFailed = (id) => {
     if (id !== logoId) return;
