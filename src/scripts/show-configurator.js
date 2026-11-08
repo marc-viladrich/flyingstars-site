@@ -83,6 +83,7 @@ if (form) {
       drawn = tl.beats;
       marks.replaceChildren(...tl.beats.map((b, k) => { const s = document.createElement("span"); s.style.flexGrow = String(tl.est[k]); if (k && b.segment !== tl.beats[k - 1].segment) s.className = "is-motif"; return s; }));
       track.setAttribute("aria-valuemax", String(tl.beats.length));
+      if (tl.beats.length > 40) marks.dataset.dense = "2"; else if (tl.beats.length > 16) marks.dataset.dense = "1"; else delete marks.dataset.dense;
     }
     const total = tl.est.reduce((a, b) => a + b, 0), before = tl.est.slice(0, tl.beat).reduce((a, b) => a + b, 0);
     const at = (preview ?? (before + tl.frac * tl.est[tl.beat]) / total) * total;

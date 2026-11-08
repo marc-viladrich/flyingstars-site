@@ -22,6 +22,13 @@
   .cfg-marks { position: absolute; left: 0.375rem; right: 0.375rem; top: 50%; height: 0.1875rem; margin-top: -0.09375rem; display: flex; gap: var(--space-0-5); }
   .cfg-marks span { flex: 1 1 0; min-width: 0.125rem; border-radius: var(--radius-2); background: linear-gradient(90deg, var(--pkg, var(--amber)) var(--f, 0%), var(--line-emphasis) var(--f, 0%)); }
   .cfg-marks span.is-motif { margin-left: var(--space-1); }
+  /* Runde 25b: mit den Katalogmotiven hat eine Runde bis zu 50 Bilder; dichte Spuren rücken enger zusammen, und die Spur
+     schneidet am Rand ab, statt über die Knöpfe daneben zu laufen (auf dem Handy lag sie über ›) */
+  .cfg-marks { overflow: clip; }
+  .cfg-marks[data-dense] { gap: 0.0625rem; }
+  .cfg-marks[data-dense] span { min-width: 0.0625rem; }
+  .cfg-marks[data-dense] span.is-motif { margin-left: 0.1875rem; }
+  .cfg-marks[data-dense="2"] span.is-motif { margin-left: 0.125rem; }
   .cfg-rate { display: flex; flex: none; padding-left: var(--space-1); border-left: 1px solid var(--line); }
   .cfg-rate button { font: 500 var(--text-xs)/1 var(--mono); letter-spacing: 0.02em; padding: 0 var(--space-1-75); min-width: 0; }
   .cfg-rate button[aria-pressed="true"] { color: var(--text); background: var(--line); }

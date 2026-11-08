@@ -476,11 +476,11 @@ test('Paketwechsel und Regler melden alle neuen Motive auf einmal und fliegen zu
   await occasion(page, 'hochzeit'); await pkg(page, 0);
   await page.waitForTimeout(400);
   await recordBeats(page);
-  // SPARK 100 → HORIZON 200: neu ist der Schmetterling (flache Katalog-/Showbilder spielen seit Runde 25 nur in SPARK). Der
+  // SPARK 100 → HORIZON 200: neu sind alle SPARK-Motive ab 110 Drohnen und der Schmetterling (Runde 25b). Der
   // Paketknopf meldet ihn und bleibt beim Motiv auf der Bühne (dasselbe Motiv, größeres Paket)
   await expect(scene(page)).toHaveText('Zwei Eheringe, der Stein funkelt');
   await pkg(page, 1);
-  await expect(page.locator('#cfg-toast')).toHaveText('Neues Motiv freigeschaltet: Schmetterling');
+  await expect(page.locator('#cfg-toast')).toHaveText('7 neue Motive: Hochzeitstorte, Amor, Zwei Blüten, Blume, Lotusblume, Unendlich-Zeichen, Schmetterling');
   await expect(scene(page)).toHaveText('Ein Solitär in 3D: Ring und Brillant drehen sich');
   // HORIZON, then the slider to the end in one go: two motifs at once, the stage goes to the first
   await pkg(page, 1);
@@ -524,7 +524,7 @@ test('Lebendige Wolke beim Wechsel des Anlasses und beim Rücksprung vom letzten
 const LOGO_PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAHgAAABaCAYAAABzAJLvAAACk0lEQVR42u2doVLDUBBFk5XofAKiGlVRhUDxaXwHX4BCI/gERBU6GlsUM0wm07y2eXm7d8+1MOR1D/dukpduug4hhBBCCCGEEEIIIYQQqqu+5cGPu8Op9Hfvvz56cDkHfAlQgAcCvCZYQDsBXBMqsMtlKnBbHjeNgz0VGDevDPhauCUgav5tADu83OHyakPApcWuUeiWx04BuKTAWxTXyzqkAC8VtUVBPa4p5GWS10IuHTfjZVSv6JLj7nB6fHhJF8ffr/v+JgdHiUAujyrcyaKowQGfcy9wgwMGLhGNFAHjXgHAbMEldTDuFQCMe5M6GPdyFo0AjJoCpv8mdTD9l4hGAG6nn/dnAKvDzQSZiAawZjRncbFl7rsZIFv2kyp1yOl68N3TGz24E9lhmrrzD+4UsrKLTfWO1aXQVCFb1mjOEtWSgIdhOJXAzBDVpjYqYQo3+61MU9o5moO7FMVzP1eCbMoDT0r7rHI/NpX939K+WwpZxcWmMFXn1r6r3I8lz6LHcey5y3UB4HMx3drFU/deC1c1qm2NZ7FaQa4VzUpRbVGn3M3BvdW9ipdOpjLk5D/cNdah0o/7iFN2zvXdtde2do+X+G5STSef67tb/ONt1ffTTrqbc1TtdUR2cahZldNCfw67rtWxo0C2rcYnHXeH0y3RfW001jofiBLVIeZFzxWzxL2120MEJ4eY+L4fv5rDjRrVvfd3J1wKd4vdr0iQzfOsyClcr1ubnvux6/cmlbjXC1SvLnb75rMluB4eRIgA2eW7C+ei2WPxIpxVUzTx9Zrq0xmszyHgqLcDp+v0dFZtKg+sqz2ALx/R0fZdva7XiGbtqO6JMm13G3C1PydjlDq+H4x7+bwIIYQQQgghpKJfeZOW/W2RGroAAAAASUVORK5CYII=', 'base64');
 
 test('Eigenes Logo per Dateiauswahl und Drag&Drop: eigenes Bild im Ablauf, die Datei bleibt im Browser', async ({ page }, info) => {
-  test.setTimeout(90_000);
+  test.setTimeout(240_000); // Runde 25b: HORIZON-Runde mit rund 40 Bildern, die der Test einzeln durchklickt
   const errors: string[] = [], requests: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto(`${CFG}#konfigurator`);
