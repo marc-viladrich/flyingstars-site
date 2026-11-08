@@ -117,3 +117,10 @@ Marc: In SPARK kamen gefühlt nur 5–10 Katalogmotive vor, obwohl der Katalog m
 - **Insgesamt 82 Motive aus FlyingStars-Quellen.** Motive in SPARK bei 100 / 190 Drohnen: Launch 5/16, Jubiläum 13/24, Stadtfest 7/24, Hochzeit 11/18, Kultur 6/16, Winter & Silvester 13/17. In HORIZON (200) sind es 5–8 echte 3D-Motive je Anlass.
 - **Mobil:** Die Kopfzeile weicht bei eigenem Scrollen nach unten aus, die Bühne klebt dann ganz oben und die Preisleiste weicht ebenfalls. Anker-Sprünge zählen nicht als Scrollen. Das Logo-Overlay reagiert nur auf eine echte Maus, auf iOS blieb es nach dem Dateidialog stehen. Beim Sprung auf `#konfigurator` steht die Bühne direkt unter der Kopfzeile, 82 px höher als vorher.
 - **Schon vorher rot, nicht aus dieser Runde:** In mobile-webkit scheitern „Auf den ersten Blick“ und „Auswahlrahmen gleitet“ auch auf dem Stand vor Runde 25.
+
+### Runde 25b (08.11.2026)
+
+- **HORIZON aufgefüllt:** Marc wollte HORIZON „mit einigen aus SPARK auffüllen, solange klar bleibt, dass viele Motive bei HORIZON komplexer und 3D sind“. Flache Formationen spielen wieder in jedem Paket, ohne zweite Ebene, mit der größten passenden Variante. Ab HORIZON laufen zuerst die 3D- und die eigenen Motive, danach die flachen (`buildSequence`). Der Wächter ist wieder streng: ODYSSEY ⊇ HORIZON ⊇ SPARK bei jeder Drohnenzahl.
+- **Halloween:** kein eigener Anlass (Marc). Fledermäuse und Hexenkessel bleiben bei Kultur.
+- **Tempo zum Testen:** Der schnelle Knopf zählt mit jedem Klick 2×, 4×, 6×, 8×, 10× und dann wieder 2×. Wird ein anderes Tempo gewählt, steht er wieder auf 2×.
+- **Spur:** Ab 17 Bildern rückt die Spur enger zusammen, ab 41 noch enger, und sie schneidet am Rand ab. Mit 27 Bildern lag sie auf dem Handy über dem ›-Knopf.
