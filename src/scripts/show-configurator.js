@@ -1,3 +1,4 @@
+import { prepareLogoInquiry, clearLogoInquiry } from './logo-inquiry.mjs';
 import { budgetFormation } from "./logo-v10/budget-formation.mjs";
 import {inquiryHref} from '../content/inquiry.mjs';
 import {startingPrice} from '../lib/price.mjs';
@@ -736,9 +737,12 @@ if (form) {
   }
   // Runde 27, vierte Runde: im Logo-Anlass keine Preisanfrage (der Preis gilt der ganzen Show, nicht dem Logo allein):
   // „Dieses Logo in der Show verwenden“ geht zurück zum Anlass davor, mit dem Logo und der empfohlenen Drohnenzahl
-  $("#cfg-use-logo").addEventListener("click", () => {
+  $("#cfg-use-logo").addEventListener("click", async () => {
+    if (!logo?.file || !lastLogoPts?.length) return;
     const need = lastLogoPts?.length ?? 0;
     if (need) { const st = +slider.step || 1; drones = snapDrones(Math.max(+slider.min, Math.min(+slider.max, Math.ceil(need / st) * st))); slider.value = String(drones); } // die Empfehlung gilt in beide Richtungen (Cupra mit 92 → SPARK)
+    try { if (logo.example) clearLogoInquiry(); else await prepareLogoInquiry(logo.file, lastLogoPts, drones); }
+    catch { $("#cfg-logo-status").textContent = message("logoInquiry.invalid"); return; }
     back.click();
   });
   back.addEventListener("click", () => { occRadio(occasion.id).checked = true; occGroup.dispatchEvent(new Event("change", { bubbles: true })); occRadio(occasion.id).focus(); });

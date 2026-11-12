@@ -1,0 +1,2 @@
+import {defineConfig,devices} from '@playwright/test';
+export default defineConfig({testDir:'.',testMatch:'logo-attachment.spec.ts',workers:1,retries:0,use:{baseURL:'http://127.0.0.1:4402',trace:'retain-on-failure'},projects:[{name:'chromium',use:devices['Desktop Chrome']},{name:'webkit',use:devices['Desktop Safari']}],webServer:{cwd:new URL('..',import.meta.url).pathname,command:'/opt/homebrew/bin/node node_modules/astro/bin/astro.mjs dev --ignore-lock --host 127.0.0.1 --port 4402',url:'http://127.0.0.1:4402',reuseExistingServer:false,timeout:60000}});
