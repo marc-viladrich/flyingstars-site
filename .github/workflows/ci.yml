@@ -1,5 +1,5 @@
 name: CI
-# Volle Qualitäts-Gates (15–20 min) für Code-Änderungen per PR (Branch-Schutz verlangt `gates`) und auf Abruf
+# Volle Qualitäts-Gates für Code-Änderungen per PR (Branch-Schutz verlangt `gates`) und auf Abruf
 # (Actions → CI → Run workflow). Inhalte aus dem Editor gehen ohne diesen Lauf online (deploy-cloudflare.yml).
 # Alles hier ist host-unabhängig.
 on:
@@ -9,9 +9,9 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  gates:
+  checks:
     runs-on: ubuntu-latest
-    # Ein PR-Lauf dauerte 15 min, derselbe Stand auf main 20+ (Physik-Tests je ~1,5 min, Runner schwanken).
+    # Unit-/Build-Gates und bestehende Link-, Lighthouse- und Consent-Prüfungen.
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v6
@@ -49,11 +49,12 @@ jobs:
         run: |
           if [ "${{ steps.playwright-cache.outputs.cache-hit }}" = true ]; then npx playwright install-deps chromium webkit
           else npx playwright install --with-deps chromium webkit; fi
-      - name: Playwright (axe, Request-Allowlist, HTML-Hygiene)
-        run: npx playwright test
-        env:
-          CI: 'true'
-          MEDIA_HOST: ${{ vars.MEDIA_HOST }}
+      # Vor dem Consent-Testbuild sichern: alle Browser prüfen denselben Produktionsoutput.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: production-build
+          path: dist/
+          retention-days: 1
       - name: Interne Links (lychee)
         uses: lycheeverse/lychee-action@v2
         with:
@@ -80,8 +81,71 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: reports
+          name: reports-checks
           path: |
             playwright-report/
             .lighthouseci/
           retention-days: 7
+
+  browsers:
+    needs: checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [desktop, mobile, webkit, mobile-webkit, physics]
+    steps:
+      - uses: actions/checkout@v6
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v6
+        with: { node-version-file: .nvmrc, cache: npm, registry-url: 'https://npm.pkg.github.com', scope: '@marc-viladrich' }
+      - run: npm ci
+        env: { NODE_AUTH_TOKEN: '${{ secrets.PACKAGES_READ_TOKEN }}' }
+      - uses: actions/download-artifact@v4
+        with: { name: production-build, path: dist }
+      - name: Playwright-Version
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-webkit-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+      - name: Playwright-Browser
+        timeout-minutes: 6
+        run: |
+          if [ "${{ steps.playwright-cache.outputs.cache-hit }}" = true ]; then npx playwright install-deps chromium webkit
+          else npx playwright install --with-deps chromium webkit; fi
+      - name: Playwright (axe, Request-Allowlist, HTML-Hygiene und Physik)
+        # Physik isoliert und seriell: keine anderen Browser belasten diesen Runner.
+        # Die übrigen Projekte behalten alle Tests, außer den hier separat geprüften Physikfällen.
+        run: |
+          physics='Physikalisch fliegbar:|Logo, Text-Durchlauf, Anlasswechsel und Rücksprung bleiben fliegbar'
+          if [ "$LANE" = physics ]; then
+            npx playwright test --project=desktop --grep "$physics" --workers=1
+          else
+            npx playwright test --project="$LANE" --grep-invert "$physics" --workers=2
+          fi
+        env:
+          CI: 'true'
+          LANE: ${{ matrix.lane }}
+          MEDIA_HOST: ${{ vars.MEDIA_HOST }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reports-${{ matrix.lane }}
+          path: playwright-report/
+          retention-days: 7
+
+  # Branch-Schutz verlangt weiterhin genau diesen Check. Kein Gate darf übersprungen sein.
+  gates:
+    if: always()
+    needs: [checks, browsers]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Alle Qualitäts-Gates erfolgreich
+        run: test "$CHECKS" = success && test "$BROWSERS" = success
+        env:
+          CHECKS: ${{ needs.checks.result }}
+          BROWSERS: ${{ needs.browsers.result }}
