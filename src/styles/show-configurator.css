@@ -265,11 +265,12 @@
 .cfg-over-close { position: absolute; right: var(--space-1-5); top: var(--space-1-5); width: 1.75rem; height: 1.75rem; border: 0; border-radius: var(--radius-round); background: transparent; color: var(--muted); font-size: var(--text-md); cursor: pointer; }
 .cfg-drones { position: relative; }
 @media (prefers-reduced-motion: reduce) { .cfg-minimap { transition: none; } }
-/* schmale Bühne: Karte kompakt über die volle Breite, Minimap nach oben, damit das Logo frei bleibt */
+/* schmale Bühne: Karte kompakt über die volle Breite, keine Minimap (Marc: nimmt nur Platz weg) */
 @media (--nav-collapsed) {
   .cfg-over-card { right: 0.875rem; max-width: none; }
+  .cfg-over-card p { max-height: 2.9em; overflow: hidden; -webkit-mask-image: linear-gradient(180deg, var(--ground) 55%, transparent); mask-image: linear-gradient(180deg, var(--ground) 55%, transparent); }
   .cfg-over-card a { margin-top: var(--space-1); }
-  .cfg-minimap { top: 0.875rem; bottom: auto; width: 5rem; height: 3.5rem; }
+  .cfg-minimap { display: none; }
 }
 /* Runde 27, dritte Runde: große Zahl = Bedarf, rot über der gewünschten Zahl; Beispiele als Textknöpfe; Bühne niedriger */
 .cfg-logo-count { margin: 0 0 var(--space-3); display: flex; align-items: baseline; gap: var(--space-2); color: var(--muted); font-size: var(--text-sm); }
@@ -301,5 +302,9 @@ fieldset.cfg-tool { margin: 0; padding: 0; border: 0; min-width: 0; }
 #cfg-detail { --track: linear-gradient(90deg, var(--logo-coral) 0 14%, var(--line-soft) 14%, var(--muted) 100%); }
 @media (--nav-expanded) { .cfg.is-logomode { grid-template-columns: clamp(22.5rem, 30vw, 36rem) minmax(0, 1fr); } }
 @media (prefers-reduced-motion: reduce) { .cfg-logo-marker, .cfg-over-card { transition: none; } }
-.cfg.is-logomode .cfg-result, .cfg.is-logomode .cfg-cta, .cfg.is-logomode .cfg-note, .cfg.is-logomode .cfg-bar { display: none; }
+/* im Logo-Anlass: Paketname der Empfehlung ohne Preis (der gilt der ganzen Show), dazu „Dieses Logo in der Show verwenden“;
+   ohne eigenes Logo keine leere Karte */
+.cfg.is-logomode #cfg-price, .cfg.is-logomode .cfg-meta, .cfg.is-logomode .cfg-cta, .cfg.is-logomode .cfg-note, .cfg.is-logomode .cfg-bar { display: none; }
+.cfg.is-logomode:not(.has-logo) .cfg-sum { display: none; }
+.cfg-drone-slider .cfg-range { display: block; }
 .cfg-use-logo[hidden] { display: none; }

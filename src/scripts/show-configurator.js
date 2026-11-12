@@ -264,7 +264,7 @@ if (form) {
   const pkg = () => SHOW_PACKAGES[pkgName()];
   // same spacing between drones: the picture's area grows with the drone count up to ODYSSEY's 300, above that the
   // picture keeps the stage's size and gets denser
-  const size = () => logoMode ? 1.15 : Math.min(1, Math.sqrt(drones / SHOW_PACKAGES.ODYSSEY.base));
+  const size = () => logoMode ? 1 : Math.min(1, Math.sqrt(drones / SHOW_PACKAGES.ODYSSEY.base));
   const cache = new Map();
   const memo = (key, make) => {
     if (cache.size > 60) cache.clear();
@@ -345,9 +345,22 @@ if (form) {
     const pts = Array.from({ length: drones }, (_, i) => { const a = i * 2.39996, r = Math.sqrt((i + 0.5) / drones); return [Math.cos(a) * r * 0.95, Math.sin(a) * r * 0.55, Math.sin(i * 1.7) * 0.25, 210, 220, 255]; });
     field.show({ beats: [{ pts, caption: message('logoMode.computing'), motif: "cloud", hold: 600, cloud: true, segment: LOGO_SEGMENT, live: cloudLive }], loopTo: 0 }, drones, size(), { cloud: true });
   }
+  /** Runde 27, vierte Runde (Marc: „Logo zentriert und ein ganzes Stück größer“): im Logo-Anlass so groß, wie die Bühne
+   * erlaubt — bis 88 % ihrer Breite oder 80 % ihrer Höhe (die Abbildung von show-field.js: Halbbreite 1,15, Halbhöhe 0,75,
+   * Maßstab S = min(0,36 W, 0,6 H bzw. 0,38 H unter 600 px)). */
+  const logoZoom = (pts) => {
+    const r = $(".cfg-stage").getBoundingClientRect(), W = r.width, H = r.height;
+    if (!pts.length || !W || !H) return 1;
+    let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+    for (const p of pts) { x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]); }
+    const hw = (x1 - x0) / 2 || 1e-6, hh = (y1 - y0) / 2 || 1e-6, k = 1 / Math.max(hw / 1.15, hh / 0.75);
+    const S = Math.min(W * 0.36, H * (W < 600 ? 0.38 : 0.6));
+    return Math.max(0.6, Math.min(0.44 * W / (hw * k * S), 0.4 * H / (hh * k * S), 1.6));
+  };
   /** Ein Logo als Bild der Show (Lichtlauf, dunkle Reserve wie bei composeShow). */
   const logoBeat = (pts, caption, segment, hold = TEMPO.logoHold) => {
     const b = { pts, caption, motif: caption, hold, cloud: true, segment, logo: true, run: true, runLight: TEMPO.logoRun };
+    if (logoMode) { b.fitPts = pts.filter((p) => p[3] + p[4] + p[5] > 0); b.zoom = logoZoom(b.fitPts); }
     if (pts.length > drones) b.drones = pts.length; // über der Zahl: die Lichter so groß wie bei einer Show dieser Größe
     const dark = pts.findIndex((p) => p[3] + p[4] + p[5] === 0);
     if (dark >= 0) b.live = (_, j, t, o) => { if (j >= dark) o[3] = 0; };
@@ -635,6 +648,7 @@ if (form) {
     const mine = logoMode && !!logo;
     field.setMotionIndependent(logoMode);
     form.closest(".cfg").classList.toggle("is-logomode", logoMode);
+    form.closest(".cfg").classList.toggle("has-logo", mine);
     back.hidden = !logoMode; tools.hidden = !logoMode; $("#cfg-use-logo").hidden = !mine; own.hidden = !mine; minimap.hidden = !mine || !minimapURL;
     if (logoMode) { field.setPaused(false); setPlay(false); }
     const wrap = $(".cfg-own-wrap");
@@ -647,10 +661,10 @@ if (form) {
     if (!mine) $("#cfg-over-card").hidden = true;
   }
   // Runde 27, vierte Runde: im Logo-Anlass keine Preisanfrage (der Preis gilt der ganzen Show, nicht dem Logo allein):
-  // „Dieses Logo in der Show verwenden“ geht zurück zum Anlass davor, mit dem Logo und mindestens seinem Drohnenbedarf
+  // „Dieses Logo in der Show verwenden“ geht zurück zum Anlass davor, mit dem Logo und der empfohlenen Drohnenzahl
   $("#cfg-use-logo").addEventListener("click", () => {
     const need = lastLogoPts?.length ?? 0;
-    if (need > drones) { const st = +slider.step || 1; drones = snapDrones(Math.min(+slider.max, Math.ceil(need / st) * st)); slider.value = String(drones); }
+    if (need) { const st = +slider.step || 1; drones = snapDrones(Math.max(+slider.min, Math.min(+slider.max, Math.ceil(need / st) * st))); slider.value = String(drones); } // die Empfehlung gilt in beide Richtungen (Cupra mit 92 → SPARK)
     back.click();
   });
   back.addEventListener("click", () => { occRadio(occasion.id).checked = true; occGroup.dispatchEvent(new Event("change", { bubbles: true })); occRadio(occasion.id).focus(); });
