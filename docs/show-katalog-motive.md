@@ -124,3 +124,7 @@ Marc: In SPARK kamen gefühlt nur 5–10 Katalogmotive vor, obwohl der Katalog m
 - **Halloween:** kein eigener Anlass (Marc). Fledermäuse und Hexenkessel bleiben bei Kultur.
 - **Tempo zum Testen:** Der schnelle Knopf zählt mit jedem Klick 2×, 4×, 6×, 8×, 10× und dann wieder 2×. Wird ein anderes Tempo gewählt, steht er wieder auf 2×.
 - **Spur:** Ab 17 Bildern rückt die Spur enger zusammen, ab 41 noch enger, und sie schneidet am Rand ab. Mit 27 Bildern lag sie auf dem Handy über dem ›-Knopf.
+
+## Motivaktionen vom 12.11.2026
+
+Smiley, Handschlag, Konfettikanone und Anstoßende Gläser verwenden nun eigene Aktionen vor dem allgemeinen Bewegungsprofil. Die statischen `motion`-Angaben im Katalog bleiben erhalten. Ursachen, Quellensichtung, Paketverhalten, Kontaktbögen und einzeln ausführbare Wächter stehen in [Motiv-Animationen](motiv-animationen/README.md). Besonders wichtig: Gläser nicht nach der Bildmitte trennen, da Kelchkonturen diese überschreiten. ODYSSEYs Lichtaufbau darf geparkte Konfettipunkte nicht einschalten.
