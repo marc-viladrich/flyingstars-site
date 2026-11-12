@@ -3532,10 +3532,15 @@
     "en": "Your logo is very detailed for {n} drones. More drones or a simplified version (for example just the mark) make it clearer.",
     "nl": "Jullie logo is erg fijn voor {n} drones. Met meer drones of een vereenvoudigde versie (bijvoorbeeld alleen het beeldmerk) wordt het duidelijker."
   },
-  "logoMode.toggle": {
-    "de": "Logo-Modus",
-    "en": "Logo mode",
-    "nl": "Logomodus"
+  "logoMode.occasion": {
+    "de": "Euer Logo",
+    "en": "Your logo",
+    "nl": "Jullie logo"
+  },
+  "logoMode.needs": {
+    "de": "Logo braucht ca. {n}",
+    "en": "logo needs approx. {n}",
+    "nl": "logo heeft ca. {n} nodig"
   },
   "logoMode.detail": {
     "de": "Detailgrad",

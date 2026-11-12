@@ -21,9 +21,12 @@ export async function customerLogos(n) {
     const s = logo.steps[step];
     if (!s || s.n > n * 1.1) continue;
     const pts = []; for (let i = 0; i < s.p.length; i += 2) pts.push([s.p[i] / 1000, s.p[i + 1] / 1000]);
-    out.push({ id: logo.id, name: logo.name, pts, n: s.n });
+    out.push({ id: logo.id, name: logo.name, pts, n: s.n, best: s.flex === "flexible" });
   }
-  return out;
+  // nur die beste (flexible) Fassung zeigt, was FlyingStars kann; die strenge (dünne Linien) nur, wenn sonst keine drei
+  // Logos in die Zahl passen (Marc 12.11.: „wenn wir nicht mal unsere eigenen Logos hinkriegen …“)
+  const best = out.filter((x) => x.best);
+  return best.length >= 3 ? best : [...best, ...out.filter((x) => !x.best).slice(0, 3 - best.length)];
 }
 
 /**

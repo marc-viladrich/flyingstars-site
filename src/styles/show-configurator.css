@@ -233,11 +233,7 @@
 
 /* Runde 27: Logo-Modus. Schalter in „Euer Text, euer Logo“; die Regler erscheinen erst mit einem eigenen Logo; Teile
    entfernen in einer flachen Ansicht über der Bühne (logo-mode.js) */
-.cfg-logomode { margin-top: var(--space-3); display: inline-flex; align-items: center; gap: var(--space-1-5); min-height: 2.375rem; padding: 0 var(--space-3-5); border: 1px solid var(--line-strong); border-radius: var(--radius-pill); background: transparent; color: var(--text); font: 400 var(--text-control)/1 var(--body); cursor: pointer; }
-.cfg-logomode::before { content: ""; width: 0.5rem; height: 0.5rem; border-radius: var(--radius-round); background: var(--line-bold); }
-.cfg-logomode[aria-pressed="true"] { border-color: var(--pkg, var(--amber)); }
-.cfg-logomode[aria-pressed="true"]::before { background: var(--pkg, var(--amber)); box-shadow: 0 0 0.375rem var(--pkg, var(--amber)); }
-.cfg-logomode:focus-visible, .cfg-auto:focus-visible, .cfg-logo-edit:focus-visible, .cfg-edit button:focus-visible { outline: 2px solid var(--focus, var(--amber)); outline-offset: 0.125rem; }
+.cfg-auto:focus-visible, .cfg-logo-edit:focus-visible, .cfg-edit button:focus-visible { outline: 2px solid var(--focus, var(--amber)); outline-offset: 0.125rem; }
 .cfg-logo-tools { display: grid; gap: var(--space-4); margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--line); }
 .cfg-tool { display: grid; gap: var(--space-1-5); }
 .cfg-tool-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); font-size: var(--text-sm); color: var(--text); }
@@ -256,7 +252,19 @@
 .cfg-edit-bar span { flex: 1 1 12rem; min-width: 0; }
 .cfg-edit-bar button { min-height: 2.25rem; padding: 0 var(--space-3); border: 1px solid var(--line-strong); border-radius: var(--radius-pill); background: transparent; color: var(--text); font: 400 var(--text-sm)/1 var(--body); cursor: pointer; }
 .cfg-edit-bar .cfg-edit-done { border-color: var(--pkg, var(--amber)); }
-.cfg-range-zones { --track: linear-gradient(90deg, rgb(var(--rgb-cyan) / 0.45) 0 33.3%, rgb(var(--rgb-logo-orchid) / 0.55) 33.3% 66.6%, rgb(var(--rgb-logo-amber) / 0.75) 66.6% 100%); }
+.cfg-range-zones { --track: linear-gradient(90deg, var(--line-soft) 0 33.3%, var(--line-strong) 33.3% 66.6%, var(--muted) 66.6% 100%); }
 .cfg-zones { display: grid; grid-template-columns: repeat(3, 1fr); font-size: var(--text-label); color: var(--muted); }
 .cfg-zones span:nth-child(2) { text-align: center; } .cfg-zones span:nth-child(3) { text-align: right; }
 .cfg-logo-over a { display: block; margin-top: var(--space-1-5); color: var(--amber); }
+/* Anlass „Euer Logo“: Verlaufsrahmen in den Logofarben, solange er nicht gewählt ist */
+.cfg-occ-logo span { position: relative; }
+.cfg-occ-logo span::before { content: ""; position: absolute; inset: -1px; padding: 1px; border-radius: inherit; background: linear-gradient(90deg, rgb(var(--rgb-logo-amber)), rgb(var(--rgb-logo-orchid)), rgb(var(--rgb-cyan))); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); pointer-events: none; }
+/* Bedarf des Logos am Drohnenregler: Band vom Griff bis zur Marke, durchscheinend, gleitet bei jeder neuen Zahl */
+.cfg-drones { position: relative; }
+.cfg-need { position: relative; height: 0; pointer-events: none; }
+.cfg-need-band, .cfg-need-mark { position: absolute; top: 0.95rem; transition: left var(--dur-standard) var(--ease-default), width var(--dur-standard) var(--ease-default); }
+.cfg-need-band { left: calc(var(--from) * 100%); width: calc((var(--to) - var(--from)) * 100%); height: 0.25rem; border-radius: var(--radius-2); background: repeating-linear-gradient(90deg, rgb(var(--rgb-white, 255 255 255) / 0.55) 0 0.25rem, transparent 0.25rem 0.5rem); animation: cfg-need-in var(--dur-standard) var(--ease-default); }
+.cfg-need-mark { left: calc(var(--to) * 100% - 0.375rem); top: 0.7rem; width: 0.75rem; height: 0.75rem; border-radius: var(--radius-round); border: 1px dashed var(--text); background: transparent; }
+.cfg-need-label { margin-left: auto; margin-right: var(--space-2); font-size: var(--text-xs); color: var(--muted); }
+@keyframes cfg-need-in { from { opacity: 0; transform: scaleX(0.2); transform-origin: left; } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .cfg-need-band, .cfg-need-mark { transition: none; animation: none; } }

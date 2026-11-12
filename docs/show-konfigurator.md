@@ -869,3 +869,9 @@ Budget-Flexibilität als ein Regler (Zonen wie die Paketfarben am Drohnenregler)
 - Offen: Text-Drohnenkopplung an die Budget-Flexibilität (Marcs Idee: bei strengem Budget nur so viele Zeichen wie Drohnen);
   „Was zeigen“ (ganzes Logo / nur Symbol) bewusst weggelassen; die Wolke als Ladezustand beim ersten Rechnen fehlt im
   Konfigurator noch (bis das Logo fertig ist, läuft die bisherige Show weiter).
+- Nachtrag (12.11. abends, Marc): „Euer Logo“ ist jetzt ein Anlass (letzte Pill, Verlaufsrahmen in den Logofarben) statt
+  eines Logo-Modus-Schalters; ein Upload wählt ihn. Die Zonen des Detailgrad-Reglers sind neutral (nicht die Paketfarben).
+  Braucht das eigene Logo mehr Drohnen als gewählt, zeigt der Drohnenregler den Bedarf: Band vom Griff bis zu einer
+  gestrichelten Marke (gleitet bei jeder neuen Berechnung), daneben „Logo braucht ca. N“. Die Kundenlogo-Folge zeigt nur die
+  beste (flexible) Fassung; die strenge nur, wenn sonst keine drei Logos in die Zahl passen (bei 200 Drohnen: DKB, Prada,
+  REWE, Spotify). Unit-Tests 727/731 nach den Korrekturen; die zwei bekannten Fehler bestehen auch ohne diese Runde.

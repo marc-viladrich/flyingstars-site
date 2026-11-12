@@ -217,7 +217,7 @@ if (form) {
   // ersten wählen. Runde 23: Dieses Modul lädt erst nach (whenNear). Was jemand vorher schon angeklickt hat (Anlass, Paket,
   // Regler), weicht vom Ausgangswert des HTML ab (checked ≠ defaultChecked) und hat Vorrang vor dem Startzustand.
   const occGroup = $("#cfg-occasion"), ordered = bySeason(OCCASIONS);
-  occGroup.replaceChildren(...ordered.map((o) => occGroup.querySelector(`label[data-occasion="${o.id}"]`)).filter(Boolean));
+  occGroup.replaceChildren(...ordered.map((o) => occGroup.querySelector(`label[data-occasion="${o.id}"]`)).filter(Boolean), occGroup.querySelector('label[data-occasion="logo"]'));
   const occRadio = (id) => occGroup.querySelector(`input[value="${id}"]`);
   const occValue = () => occGroup.querySelector("input:checked")?.value;
   const chosenEarly = (inputs) => [...inputs].find((i) => i.checked && !i.defaultChecked);
@@ -283,8 +283,19 @@ if (form) {
     const lit = pts.map((p) => [p.x, -p.y, 0, ...p.c]);
     return [...lit, ...darkReserve(lit, n)];
   };
+  /** Runde 27: Bedarf am Drohnenregler. Die gewählte Zahl bleibt der Griff; braucht das Logo mehr, zeigt ein Band vom Griff
+   * bis zu einer Marke den Bedarf (über dem Reglerende an dessen Ende), daneben die Zahl. Band und Marke gleiten. */
+  function drawNeed(need) {
+    const box = $("#cfg-need"), label = $("#cfg-need-label"), on = need != null && need > drones;
+    box.hidden = !on; label.hidden = !on;
+    if (!on) return;
+    const at = (v) => Math.max(0, Math.min(1, (v - Number(slider.min)) / (Number(slider.max) - Number(slider.min))));
+    box.style.setProperty("--from", String(at(drones))); box.style.setProperty("--to", String(at(need)));
+    label.textContent = message('logoMode.needs', { n: need > Number(slider.max) ? `${need}` : need });
+  }
   function showOver(pts, n) {
     const box = $("#cfg-logo-over");
+    drawNeed(logoMode && pts.meta?.over ? pts.meta.wanted : null);
     box.hidden = !pts.meta?.over;
     if (pts.meta?.over) $("#cfg-logo-over-text").textContent = message('logoMode.over', { wanted: pts.meta.wanted, n });
   }
@@ -423,8 +434,11 @@ if (form) {
   slider.addEventListener("change", () => setDrones(Number(slider.value)));
   // a new occasion is reached through the living cloud (Marc: „beim Wechsel des Anlasses immer“)
   occGroup.addEventListener("change", () => {
-    const next = OCCASIONS.find((o) => o.id === occValue());
-    if (!next || next === occasion) return;
+    // Runde 27: „Euer Logo“ ist der Logo-Modus; der Anlass davor bleibt für Zusammenfassung und Rückweg
+    if (occValue() === "logo") { logoMode = true; drawLogoMode(); void logoModule(); fresh = []; unlockTo = null; update(false, logo ? LOGO_SEGMENT : undefined, { cloud: true }); return; }
+    const next = OCCASIONS.find((o) => o.id === occValue()), was = logoMode;
+    logoMode = false; drawLogoMode();
+    if (!next || (next === occasion && !was)) return;
     occasion = next; tour = false; fresh = []; unlockTo = null;
     update(false, undefined, { cloud: true });
   });
@@ -505,7 +519,7 @@ if (form) {
       dropLogo(); logo = source; logoId++;
       if (source.kind === "image") logoURL = source.src;
       off.hidden = false; upload.classList.add("has-logo");
-      logoMode = true; drawLogoMode(); // Runde 27: ein eigenes Logo öffnet den Logo-Modus mit seinen Reglern
+      logoMode = true; occRadio("logo").checked = true; drawLogoMode(); // Runde 27: ein eigenes Logo öffnet den Anlass „Euer Logo“ mit seinen Reglern
       first = false; fresh = []; unlockTo = null; tour = false; // the logo comes now; the text run-through is over
       update(true, LOGO_SEGMENT, { cloud: true });
     };
@@ -560,18 +574,12 @@ if (form) {
   });
 
   // ---------- Runde 27: Logo-Modus ----------
-  const modeBtn = $("#cfg-logomode"), tools = $("#cfg-logo-tools"), detail = $("#cfg-detail"), detailAuto = $("#cfg-detail-auto");
+  const tools = $("#cfg-logo-tools"), detail = $("#cfg-detail"), detailAuto = $("#cfg-detail-auto");
   function drawLogoMode() {
-    modeBtn.setAttribute("aria-pressed", String(logoMode));
     form.closest(".cfg").classList.toggle("is-logomode", logoMode);
     tools.hidden = !(logoMode && logo);
+    if (!(logoMode && logo)) drawNeed(null);
   }
-  modeBtn.addEventListener("click", () => {
-    logoMode = !logoMode; drawLogoMode();
-    if (logoMode) void logoModule();
-    fresh = []; unlockTo = null;
-    update(false, logoMode && logo ? LOGO_SEGMENT : undefined, { cloud: true });
-  });
   /** Detailgrad (0–100): die Zone ist die Budget-Flexibilität (Streng, Mittel, Flexibel), die Stelle in der Zone die
    * Liniendichte (rechts lockerer, mehr Formen). Automatisch: der Konverter wählt beides (Flexibel). */
   const optionsOf = (v) => { const z = Math.min(2, Math.floor(v / (100 / 3))), u = (v - z * (100 / 3)) / (100 / 3); return { flex: ["strict", "medium", "flexible"][z], density: +(0.75 - 0.35 * u).toFixed(3) }; };
