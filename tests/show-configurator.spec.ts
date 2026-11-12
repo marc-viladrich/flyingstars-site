@@ -775,6 +775,24 @@ const stopSample = (page: Page) => page.evaluate(() => { const w = window as unk
 /** Linke Kante der Paketspalte k relativ zur Gruppe (dort sitzt der Rahmen am Ende). */
 const columnX = (page: Page, k: number) => page.locator('.cfg-pkgs').evaluate((g, i) => (g.querySelectorAll('label')[i] as HTMLElement).getBoundingClientRect().left - (g.querySelector('.cfg-ind-sel') as HTMLElement).offsetLeft - g.getBoundingClientRect().left - g.clientLeft, k);
 
+/** Sample the real CSS transition at a fixed point; rAF can miss its middle on loaded CI WebKit. */
+const armTransition = (page: Page, selector: string) => page.locator(selector).evaluate((el) => {
+  const w = window as unknown as { __transitionX: number | null };
+  w.__transitionX = null;
+  const capture = (event: Event) => {
+    if ((event as TransitionEvent).propertyName !== 'transform') return;
+    const animation = el.getAnimations().find(a => (a as Animation & { transitionProperty?: string }).transitionProperty === 'transform');
+    if (!animation) return;
+    animation.pause();
+    animation.currentTime = Number(animation.effect!.getComputedTiming().duration) / 4;
+    w.__transitionX = new DOMMatrixReadOnly(getComputedStyle(el).transform).m41;
+    animation.play();
+    el.removeEventListener('transitionrun', capture);
+  };
+  el.addEventListener('transitionrun', capture);
+});
+const transitionX = (page: Page) => page.evaluate(() => (window as unknown as { __transitionX: number | null }).__transitionX);
+
 test('Runde 22: Anlass als Pills in der Ordnung der Startseite, der erste ist gewählt, ?anlass gewinnt', async ({ page }) => {
   await page.clock.setFixedTime(new Date('2026-06-15T12:00:00'));
   await page.goto(`${CFG}#konfigurator`);
@@ -832,27 +850,32 @@ test('Runde 11: der Auswahlrahmen gleitet zum neuen Paket (Klick und Regler), de
   // Runde 20c: bei pausierter Bewegung gleitet nichts (zentraler Schalter in global.css), dieser Test prüft das Gleiten
   // deshalb mit laufender Bewegung; das Springen bei Pause prüft der Test „Bewegung pausiert: der Rahmen springt“.
   await page.goto(`${CFG}#konfigurator`);
+  // Only the preview engine pauses; global motion and the native CSS transitions stay enabled.
+  await page.locator('#cfg-play').click();
+  await expect(page.locator('#cfg-play')).toHaveAttribute('data-paused', 'true');
   const sel = '.cfg-ind-sel', ghost = page.locator('.cfg-ind-hover');
   await expect.poll(() => shiftX(page, sel)).toBeCloseTo(await columnX(page, 1), 0); // HORIZON zu Beginn
   // Klick: der Rahmen läuft über Zwischenwerte von HORIZON nach ODYSSEY
   const [from, to] = [await columnX(page, 1), await columnX(page, 2)];
-  await sample(page, sel);
+  await armTransition(page, sel);
   await pkg(page, 2);
-  await page.waitForTimeout(800);
-  const xs = await stopSample(page);
-  expect(xs.some((x) => x > from + 4 && x < to - 4), `Zwischenwerte zwischen ${from} und ${to}: ${xs.map(Math.round).join(',')}`).toBe(true);
-  expect(xs.at(-1)).toBeCloseTo(to, 0);
+  await expect.poll(() => transitionX(page)).not.toBeNull();
+  const middle = (await transitionX(page))!;
+  expect(middle).toBeGreaterThan(from + 4);
+  expect(middle).toBeLessThan(to - 4);
+  await expect.poll(() => shiftX(page, sel)).toBeCloseTo(to, 0);
   await expect(page.locator(sel)).toHaveCSS('border-top-color', 'rgb(51, 237, 242)'); // in der Farbe von ODYSSEY
   // der Regler stellt das Paket um: auch dann gleitet der Rahmen
-  await sample(page, sel);
+  await armTransition(page, sel);
   const slider = page.locator('#cfg-drones');
   await slider.focus();
   for (let i = 0; i < 11; i++) await page.keyboard.press('ArrowLeft'); // 300 → 190: SPARK
   await expect(page.locator('#cfg-pkg')).toHaveText('SPARK');
-  await page.waitForTimeout(800);
-  const back = await stopSample(page);
-  expect(back.some((x) => x > 4 && x < to - 4), 'Zwischenwerte beim Wechsel über den Regler').toBe(true);
-  expect(back.at(-1)).toBeCloseTo(0, 0);
+  await expect.poll(() => transitionX(page)).not.toBeNull();
+  const back = (await transitionX(page))!;
+  expect(back).toBeGreaterThan(4);
+  expect(back).toBeLessThan(to - 4);
+  await expect.poll(() => shiftX(page, sel)).toBeCloseTo(0, 0);
   if (info.project.use.isMobile) return; // Zeigen gibt es nur mit Maus
   // Zeigen auf ein anderes Paket: der Schatten gleitet gedämpft dorthin, der Rahmen bleibt beim gewählten
   const box = (await page.locator('label:has([name=pkg][value="2"])').boundingBox())!;

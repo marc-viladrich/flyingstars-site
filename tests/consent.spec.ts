@@ -133,6 +133,7 @@ test.describe('configured public IDs', () => {
   });
 
   test('corrupt, expired, future-dated, old native and changed-revision records never restore tracking', async ({ page }) => {
+    test.setTimeout(60_000); // Five real reloads, including a fresh dialog each time.
     await page.goto('/');
     await consent(page).getByRole('button', { name: 'Ablehnen', exact: true }).click();
     await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), key)).not.toBeNull();
@@ -151,10 +152,13 @@ test.describe('configured public IDs', () => {
     await other.goto('/en/', { waitUntil: 'networkidle' });
     await expect.poll(() => requests.get(page)!.length).toBe(2);
     await openSettings(page);
+    const reloaded = other.waitForEvent('framenavigated', frame => frame === other.mainFrame());
     await settings(page).getByRole('button', { name: 'Ablehnen', exact: true }).click();
     await expect(page.locator('script[data-consent-tag]')).toHaveCount(0);
-    await expect(other.locator('script[data-consent-tag]')).toHaveCount(0);
+    // Arm before withdrawal: an already-idle old document must not satisfy this wait.
+    await reloaded;
     await other.waitForLoadState('networkidle');
+    await expect(other.locator('script[data-consent-tag]')).toHaveCount(0);
     expect(requests.get(page)).toHaveLength(2);
     await other.close();
   });

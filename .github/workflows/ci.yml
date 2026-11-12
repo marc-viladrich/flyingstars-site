@@ -82,7 +82,7 @@ jobs:
         # Auch im aktivierten Build bleibt die Netzwerk-Allowlist ohne Zustimmung strikt.
         run: |
           npm run build
-          npx playwright test tests/consent.spec.ts tests/network-allowlist.spec.ts --workers=3
+          npx playwright test tests/consent.spec.ts tests/network-allowlist.spec.ts --workers=1
         env:
           CI: 'true'
           CONSENT_TEST_ENABLED: '1'
@@ -140,7 +140,10 @@ jobs:
           if [ "$LANE" = physics ]; then
             npx playwright test --project=desktop --grep "$physics" --workers=1
           else
-            npx playwright test --project="$LANE" --grep-invert "$physics" --workers=2
+            # WebKit's software rendering must not compete with another active show.
+            workers=2
+            case "$LANE" in *webkit*) workers=1 ;; esac
+            npx playwright test --project="$LANE" --grep-invert "$physics" --workers="$workers"
           fi
         env:
           CI: 'true'
