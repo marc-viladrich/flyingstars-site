@@ -1,0 +1,90 @@
+{
+  "smiley/show-smiley": {
+    "times": [
+      0,
+      0.5,
+      1,
+      1.4,
+      1.8,
+      2.6
+    ],
+    "points": 105
+  },
+  "handschlag/m-3a2eec826186dbb9": {
+    "times": [
+      0,
+      0.7,
+      1.5,
+      2.3,
+      3.3,
+      4.5
+    ],
+    "points": 104
+  },
+  "konfetti/bild-55-1-konfetti": {
+    "times": [
+      0,
+      0.7,
+      1.5,
+      2.3,
+      3.3,
+      4.5
+    ],
+    "points": 100
+  },
+  "konfetti/m-cef98ff37d5b9b24": {
+    "times": [
+      0,
+      0.7,
+      1.5,
+      2.3,
+      3.3,
+      4.5
+    ],
+    "points": 158
+  },
+  "anstossen/m-a819a681c8cee7a2": {
+    "times": [
+      0,
+      0.7,
+      1.5,
+      2.3,
+      3.3,
+      4.5
+    ],
+    "points": 72
+  },
+  "anstossen/m-c0934127db49df2e": {
+    "times": [
+      0,
+      0.7,
+      1.5,
+      2.3,
+      3.3,
+      4.5
+    ],
+    "points": 88
+  },
+  "anstossen/m-d4538cee3c87fc1b": {
+    "times": [
+      0,
+      0.7,
+      1.5,
+      2.3,
+      3.3,
+      4.5
+    ],
+    "points": 108
+  },
+  "anstossen/m-de8bd2e761a7d1ed": {
+    "times": [
+      0,
+      0.7,
+      1.5,
+      2.3,
+      3.3,
+      4.5
+    ],
+    "points": 148
+  }
+}

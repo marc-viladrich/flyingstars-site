@@ -1,13 +1,23 @@
-# Übergabe nach Logo-Runde 4
+# Übergabe nach Logo-Runde 5 (Runde 28)
 
-Stand 12.11.2026. Kein Push, keine Veröffentlichung. Design und Konfigurator-Steuerung bearbeitet Claude parallel; Konverter und Funktionsprüfung Codex. Bestehenden uncommitteten Stand erhalten.
+Stand 12.11.2026 (spät), Branch `feat/logo-runde-5` (Basis `main` 96d2646). Nicht gepusht.
 
-## Offene Punkte nach Marc
+## Erledigt in Runde 28
 
-- Motiv-Animationen nutzen ihr Potenzial nicht. Smiley soll zwinkern. Beim Jubiläums-Handschlag gehen die Hände wie ursprünglich im Katalog ineinander. Die Konfettikanone wird gezogen, danach tritt Konfetti aus. Beim Anstoßen schiebt sich ausschließlich das rechte Glas vor das linke, das linke verschwindet dahinter. Heute nimmt das rechte Glas scheinbar den oberen rechten Teil des linken mit.
-- Text-Drohnenkopplung an die Budget-Flexibilität.
-- Hochgeladenes Logo als Anhang im Kontaktformular. Recherche: `23-logo-drohnen-konverter/integration/recherche-logo-anhang.md` im FlyingStars-Kundenordner des Geschäftshubs. Keine bloße Dateinamensübertragung als fertige Anhangslösung ausgeben.
-- Playwright-WebKit stürzt beim Verkleinern von 1440 auf 390 px auf jeder Site-Seite ab, auch „Über uns“, aber nicht auf leerer Seite. Frisch in Zielbreite öffnen. Untersuchen, ob echtes Safari betroffen ist. Aus einem Playwright-WebKit-Absturz keine Safari-Aussage ableiten.
+- Logo kehrt seltener zurück: im Mittel vier Motive zwischen zwei Logos, gleichmäßig über die Runde (`show-tempo.js`, `TEMPO.logoEvery = 4`, Test in `scripts/show-price.test.mjs`).
+- Drohnenregler im Logo-Anlass hat nur noch einen Griff (die gewünschte Zahl, Farbe der Zone, in der er steht); die Empfehlung steht allein in der großen Zahl. Bedarfspunkt entfernt.
+- Über dem Paketnamen „Passendes Paket für euer Logo“. Paket, Preis und Anfrage rechnen mit der buchbaren Zehnerstufe (Puma 194 → 200 → HORIZON, vorher SPARK).
+- „Dieses Logo in der Show verwenden“ ist deaktiviert, bis das Logo berechnet ist.
+- Motiv-Animationen (Codex, Branch `feat/motiv-animationen`, gemergt): Smiley zwinkert (Lid aus jeder zweiten Augendrohne), Handschlag schließt zum Griff, Konfettikanone wird gezogen und stößt dann aus, beim Anstoßen schiebt sich nur das rechte Glas vor das linke (geprüfte Glasmasken statt `x < 0`). Nachweise `docs/motiv-animationen/`.
+- Logo als Anhang der Anfrage (Codex, Branch `feat/logo-anhang`, gemergt; Doku `docs/integrations/logo-attachments.md`). Im Formular Schritt 1 als Feld „Euer Logo“ mit Original, Punktbild und Drohnenzahl, je entfernbar; Versand erst mit der Anfrage über Brevo. Upload-Hinweis im Konfigurator entsprechend geändert.
+- WebKit-Absturz beim Verkleinern: auf 96d2646 mit Playwright-WebKit 26.6 in zehn Läufen nicht reproduzierbar (Bericht im Worktree `/tmp/fs-webkit-resize/research/`). Keine Safari-Aussage.
+- Text-Drohnenkopplung an die Budget-Flexibilität entfällt: der Regler wurde in Runde 27 entfernt.
+
+## Offen
+
+- Logo-Anhang: echte Brevo-Zustellung prüfen; Datenschutzerklärung für Anhänge ergänzen (Cloudflare, Brevo, Aufbewahrung/Löschung) — Entscheidung bei FlyingStars.
+- Anstoßen: das linke Glas blendet als Ganzes aus, keine punktgenaue Verdeckung. Handschlag-Endform ist aus späten Clipframes angenähert. Mindestabstände echter Drohnen für die vier Animationen nicht geprüft.
+- Nicht geprüft: Marcs Safari 18.6, echte Handys.
 
 ## Technischer Einstieg
 

@@ -63,6 +63,9 @@ const sources = [['Google', 'Google'], ['Empfehlung', t('contactform.recommendat
           </div>
           <span class="hint" id="paket-hint">{t('contactform.sparkClassic2dHorizon3dInMotionOdyssey3dStorytelling')}</span>
         </div>
+        {/* Runde 28: das im Konfigurator übernommene Logo als Angabe zur Show, im ersten Schritt nach dem Paket; Inhalt
+             zeichnet logo-inquiry-form.ts. Gesendet wird erst mit der Anfrage. */}
+        <div class="field logo-att" data-logo-inquiry hidden aria-live="polite"></div>
         {/* Extras von der Preisseite (?extras=express,film): erscheint nur, wenn dort welche gewählt wurden, damit der erste
              Schritt sonst kurz bleibt; dann abwählbar und ergänzbar (Marc, 01.11.2026) */}
         <div class="field" data-extras-field hidden>
@@ -104,6 +107,7 @@ const sources = [['Google', 'Google'], ['Empfehlung', t('contactform.recommendat
   if (form) {
     const enhance = deferredForm(form, () => import('../../scripts/contact'));
     const load = whenNear(form, enhance);
+    window.addEventListener('flyingstars:logo-inquiry', () => { void load(); });
     const start = () => { void load().catch((error: unknown) => console.warn('Form enhancement could not load', error)); };
     // Prefill and remove private draft text from the address immediately on arrival.
     if (location.search || location.hash || form.contains(document.activeElement)) start();

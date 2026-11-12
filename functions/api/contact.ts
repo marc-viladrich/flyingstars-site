@@ -1,3 +1,4 @@
+import { LOGO_BODY_LIMIT, brevoAttachments } from '../../src/content/logo-attachments.mjs';
 import {INQUIRY_PACKAGES,INQUIRY_LIMITS} from '../../src/content/inquiry.mjs';
 import {FORM_OCCASION_IDS} from '../../src/content/occasions.mjs';
 import { createTranslator } from '../../src/i18n/ui.mjs';
@@ -14,7 +15,7 @@ interface Env {
   SITE_NAME?: string;
 }
 
-const MAX_BODY = INQUIRY_LIMITS.body; // Auch ohne oder mit falschem Content-Length durchsetzen.
+const MAX_BODY = LOGO_BODY_LIMIT; // Auch ohne oder mit falschem Content-Length durchsetzen.
 const MAX = INQUIRY_LIMITS;
 const EXTRA_FIELDS = ['anlass', 'datum', 'datum-offen', 'ort', 'paket', 'drohnen', 'telefon', 'firma', 'quelle'];
 const CONTROL = /[\u0000-\u001f\u007f]/;
@@ -34,8 +35,9 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
   const ct = request.headers.get('content-type') ?? '';
   if (!/^(application\/x-www-form-urlencoded|multipart\/form-data)(;|$)/i.test(ct)) return problem(415, t('contactAPI.formData'));
   let form: FormData;
+  let bodySize = 0;
   try {
-    if (Number(request.headers.get('content-length')) > MAX_BODY) return problem(413, t('contactAPI.bodySize'));
+    if (Number(request.headers.get('content-length')) > (/^application\/x-www-form-urlencoded/i.test(ct) ? INQUIRY_LIMITS.body : MAX_BODY)) return problem(413, t('contactAPI.bodySize'));
     const reader = request.body?.getReader();
     if (!reader) return problem(400, t('contactAPI.empty'));
     const chunks: Uint8Array[] = [];
@@ -55,14 +57,15 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
     const bytes = new Uint8Array(size);
     let offset = 0;
     for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+    bodySize = size;
     form = await new Response(bytes, { headers: { 'content-type': ct } }).formData();
   } catch { return problem(400, t('contactAPI.unreadable')); }
 
-  // Es gibt keinen Datei-Upload im Kontaktformular. Auch unerwartete Dateien und
-  // mehrdeutige Mehrfachfelder ablehnen, bevor etwas an einen Dienst weitergeht.
-  if ([...form].length > INQUIRY_LIMITS.fields || [...form].some(([key, value]) => typeof value !== 'string' || (key !== 'extras' && form.getAll(key).length !== 1))) {
+  // Only the two named attachments are accepted, each at most once.
+  if ([...form].length > INQUIRY_LIMITS.fields || [...form].some(([key, value]) => (typeof value !== 'string' && !['logo-original', 'logo-preview'].includes(key)) || (key !== 'extras' && form.getAll(key).length !== 1))) {
     return problem(400, t('contactAPI.invalidForm'));
   }
+  if (![...form].some(([,value]) => typeof value !== 'string') && bodySize > INQUIRY_LIMITS.body) return problem(413, t('contactAPI.bodySize'));
   locale = LOCALES.find((value) => value === form.get('locale')) ?? 'de';
   t = createTranslator(locale);
   const get = (key: string) => String(form.get(key) ?? '').trim();
@@ -91,6 +94,10 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
   if (extra['datum-offen']) extra.datum = ''; // Nicht zugleich offenes und festes Datum versenden.
   if (extras.length) extra.extras = [...new Set(extras)].join(', ');
 
+  let attachment;
+  try { attachment = await brevoAttachments(form); }
+  catch { return problem(400, t('logoInquiry.invalid')); }
+
   if (env.TURNSTILE_SECRET) {
     const token = get('cf-turnstile-response');
     if (!token || token.length > 2048) return problem(403, t('contactAPI.spam'));
@@ -112,6 +119,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
       method: 'POST', signal: AbortSignal.timeout(10_000),
       headers: { 'api-key': env.BREVO_API_KEY, 'content-type': 'application/json', accept: 'application/json' },
       body: JSON.stringify({
+        ...(attachment.length ? { attachment } : {}),
         sender: { email: env.CONTACT_FROM, name: site }, to: [{ email: env.CONTACT_TO }], replyTo: { email, name },
         // Namen nicht zusätzlich in den Betreff und damit in Betreff-/Benachrichtigungslogs schreiben.
         subject: `Anfrage über ${site}`,

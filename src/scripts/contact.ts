@@ -1,3 +1,5 @@
+import { logoInquiryReady } from './logo-inquiry.mjs';
+import { logoInquiryForm } from './logo-inquiry-form';
 import {parseInquiry} from '../content/inquiry.mjs';
 import {contact as CONTACT} from '../content/contact.mjs';
 import { t } from '../i18n/ui.mjs';
@@ -5,6 +7,7 @@ let selectPackage: ((name: string) => void) | undefined;
 export function pickPackage(name: string) { selectPackage?.(name); }
 const form = document.querySelector<HTMLFormElement>('#inquiry-form');
 if (form) {
+  const logoInquiry = logoInquiryForm(form);
   const steps = [...form.querySelectorAll<HTMLFieldSetElement>('[data-step]')];
   const status = form.querySelector<HTMLElement>('[data-form-status]')!;
   const label = form.querySelector<HTMLElement>('[data-step-label]')!;
@@ -107,10 +110,13 @@ if (form) {
     const invalid = steps.findIndex((fieldset) => !validate(fieldset));
     if (invalid >= 0) { show(invalid, false); validate(steps[invalid]); return; }
     const button = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+    form.querySelectorAll<HTMLButtonElement>('[data-logo-inquiry] button').forEach(b => b.disabled = true);
     button.disabled = true; button.textContent = t('contact.sending'); status.textContent = '';
     try {
+      await logoInquiryReady;
       started.value = String(Math.floor(performance.now() - opened));
-      const response = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+      const data = new FormData(form); logoInquiry.append(data);
+      const response = await fetch(form.action, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
       const result = await response.json();
       if (!response.ok || result.ok !== true) throw new Error(result.detail || t('contact.yourEnquiryCouldNotBeSent'));
       if (result.state === 'not-configured') {
@@ -120,12 +126,12 @@ if (form) {
         // Only the provider-confirmed response carries an opaque request UUID.
         // Honeypots intentionally show success but never carry this confirmation.
         if (typeof result.requestId === 'string') window.dispatchEvent(new CustomEvent('flyingstars:lead-confirmed', { detail: { requestId: result.requestId } }));
-        form.reset(); restartTimer(); syncDate(); show(0, false);
+        logoInquiry.clear(); form.reset(); restartTimer(); syncDate(); show(0, false);
       } else {
         throw new Error(t('contact.yourEnquiryCouldNotBeSent'));
       }
     } catch (error) { status.textContent = t('contact.valuePleaseTryAgainLaterOrEmailTeamFlyingstarsArt', { email:CONTACT.email, v0: error instanceof Error ? error.message : t('contact.deliveryFailed') }); }
-    finally { button.disabled = false; button.textContent = t('contactform.sendEnquiry'); status.focus(); }
+    finally { form.querySelectorAll<HTMLButtonElement>('[data-logo-inquiry] button').forEach(b => b.disabled = false); button.disabled = false; button.textContent = logoInquiry.buttonText(); status.focus(); }
   });
   // Optionale Angaben (Marc, 02.11.2026: „aus dem Weg räumen“): ein Knopf je Feld blendet es ein; Felder mit Inhalt
   // (Entwurf aus dem Konfigurator, Autofill des Browsers) sind von Anfang an offen. Ohne JavaScript bleibt alles sichtbar.

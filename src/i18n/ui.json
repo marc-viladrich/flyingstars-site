@@ -245,9 +245,9 @@
     "nl": "Initialen"
   },
   "showconfigurator.onlyUploadLogosYouHavePermissionToUseSuchAs": {
-    "de": "Lade nur Logos hoch, die du verwenden darfst, zum Beispiel dein eigenes. Die Datei bleibt in deinem Browser: Wir speichern und übertragen sie nicht.",
-    "en": "Only upload logos you have permission to use, such as your own. The file stays in your browser. We do not store or transfer it.",
-    "nl": "Upload alleen logo's die jullie mogen gebruiken, bijvoorbeeld jullie eigen logo. Het bestand blijft in jullie browser. We slaan het niet op en versturen het niet."
+    "de": "Lade nur Logos hoch, die du verwenden darfst. Die Umrechnung läuft in deinem Browser. Übertragen wird das Logo erst, wenn du es mit einer Anfrage absendest.",
+    "en": "Only upload logos you may use. The conversion runs in your browser. The logo is only transferred when you send it with an enquiry.",
+    "nl": "Upload alleen logo’s die jullie mogen gebruiken. De omzetting gebeurt in jullie browser. Het logo wordt pas verstuurd als jullie het met een aanvraag meesturen."
   },
   "showconfigurator.excludingVatAndTravel": {
     "de": "· netto zzgl. Anfahrt",
@@ -3612,6 +3612,11 @@
     "en": "Use this logo in the show",
     "nl": "Dit logo in de show gebruiken"
   },
+  "logoMode.fittingPackage": {
+    "de": "Passendes Paket für euer Logo",
+    "en": "Matching package for your logo",
+    "nl": "Passend pakket voor jullie logo"
+  },
   "logoMode.densityRisk": {
     "de": "kann unleserlich werden",
     "en": "may become unreadable",
@@ -3696,5 +3701,12 @@
     "de": "Gewünschte Drohnenanzahl",
     "en": "Desired number of drones",
     "nl": "Gewenst aantal drones"
-  }
+  },
+  "logoInquiry.purpose": {"de": "Wir senden das Logo erst mit eurer Anfrage und nutzen es nur für Motivprüfung, Entwurf und Angebot, nicht für Veröffentlichungen. Bitte sendet nur Logos, die ihr dafür verwenden dürft.", "en": "We only send the logo with your enquiry and use it solely to review the motif, prepare a draft and quote, not for publication. Please send only logos you may use for this.", "nl": "We versturen het logo pas met jullie aanvraag en gebruiken het alleen om het motief te beoordelen, een ontwerp te maken en een offerte op te stellen, niet voor publicatie. Stuur alleen logo’s die jullie hiervoor mogen gebruiken."},
+  "logoInquiry.original": {"de": "Original-Logo", "en": "Original logo", "nl": "Origineel logo"},
+  "logoInquiry.preview": {"de": "Punkte-Vorschau", "en": "Dot preview", "nl": "Stippenvoorbeeld"},
+  "logoInquiry.drones": {"de": "{n} Drohnen gewählt", "en": "{n} drones selected", "nl": "{n} drones gekozen"},
+  "logoInquiry.remove": {"de": "Entfernen", "en": "Remove", "nl": "Verwijderen"},
+  "logoInquiry.send": {"de": "Anfrage mit Logo senden", "en": "Send enquiry with logo", "nl": "Aanvraag met logo verzenden"},
+  "logoInquiry.invalid": {"de": "Das Logo kann nicht angehängt werden. Bitte verwendet eine statische SVG-, PNG-, JPG- oder WebP-Datei bis 2 MiB. SVGs dürfen keine aktiven oder externen Inhalte enthalten.", "en": "The logo cannot be attached. Use a static SVG, PNG, JPG or WebP file up to 2 MiB. SVGs must not contain active or external content.", "nl": "Het logo kan niet worden bijgevoegd. Gebruik een statisch SVG-, PNG-, JPG- of WebP-bestand tot 2 MiB. SVG’s mogen geen actieve of externe inhoud bevatten."}
 }

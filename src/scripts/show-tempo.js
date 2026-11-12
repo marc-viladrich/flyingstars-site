@@ -31,10 +31,11 @@ export const TEMPO = {
    * Pause von −0,3 bis 1,3 der Linienreihenfolge (1,6 / 0,45 ≈ 3,6 s), eine symmetrische Glocke, die nur aufhellt; er
    * beginnt mit der Ankunft und blendet über 0,8 s ein, so blitzt beim Start nichts auf. */
   logoRun: { delay: 0, duration: 3.56, period: 3.56, width: 0.06, tail: 1, strength: 0.6, fadeIn: 0.8 },
-  /** Vierzehnte Fassung: das hochgeladene Logo steht 5 s (wie in Studie 1 der Designsprache-Probe) und kehrt vor jedem
-   * zweiten Motiv zurück. */
+  /** Vierzehnte Fassung: das hochgeladene Logo steht 5 s (wie in Studie 1 der Designsprache-Probe). Runde 28 (Marc
+   * 12.11.: „nicht jedes dritte Motiv, eher jedes fünfte, sonst zu viel Logo in your face“): im Mittel liegen
+   * logoEvery Motive zwischen zwei Logos, gleichmäßig über die Runde verteilt. */
   logoHold: 5,
-  logoEvery: 2,
+  logoEvery: 4,
   /** Text-Durchlauf nach dem Tippen: je Schrift so viele Bilder, bis sie mindestens so lange stand. */
   tourHold: 5,
 };
@@ -149,8 +150,10 @@ export const TOUR_STYLES = ["script", "print", "initials"];
  *   bzw. dem ersten Motiv. Je Schrift nur so viele Bilder, bis sie TEMPO.tourHold stand (ODYSSEY erzählt den Text in
  *   drei Akten, der letzte verwandelt ihn in eine andere Schrift; im Durchlauf entfällt das, im Finale bleibt es).
  *   Ein Bild mit tour: false lässt der Durchlauf aus.
- * - Das Logo eröffnet die Runde und kehrt vor jedem TEMPO.logoEvery-ten Motiv zurück; es wird durch die lebendige
- *   Wolke erreicht, das Bild danach dann ohne eine zweite Wolke.
+ * - Das Logo eröffnet die Runde und kehrt so oft zurück, dass im Mittel TEMPO.logoEvery Motive dazwischen liegen
+ *   (Anzahl = max(1, round(Motive / logoEvery)), gleichmäßig verteilt; eine Runde wiederholt sich, darum zählt auch der
+ *   Abstand vom letzten Logo zum Logo der nächsten Runde). Es wird durch die lebendige Wolke erreicht, das Bild danach
+ *   dann ohne eine zweite Wolke.
  * Die Bilder werden kopiert (die gebauten Sequenzen liegen im Cache und bleiben unverändert). tourCaption(caption,
  * style) benennt die Bilder des Durchlaufs für die Bildbeschreibung (z. B. „…, in Druckschrift“).
  */
@@ -180,10 +183,14 @@ export function composeShow({ main, tour = null, logo = null, logoCaption = mess
   let motifs = 0, last = null, afterLogo = false, body = main.beats;
   // with a logo the round begins with it: a figure that led back into the first motif (SPARK) is not needed there
   if (loopBeat) { let e = body.length; while (e > 0 && body[e - 1].interlude) e--; body = body.slice(0, e); }
+  let total = 0;
+  for (let i = 0, prev = null; i < body.length; i++) { const s = body[i].segment ?? 0; if (s !== prev) total++; prev = s; }
+  const returns = Math.max(1, Math.round(total / TEMPO.logoEvery));
+  const logoAt = new Set(Array.from({ length: returns }, (_, k) => Math.round((k * total) / returns)));
   for (const b of body) {
     const s = b.segment ?? 0, starts = s !== last;
     last = s;
-    if (starts && loopBeat && motifs % TEMPO.logoEvery === 0) { round.push(copy(loopBeat)); afterLogo = true; }
+    if (starts && loopBeat && logoAt.has(motifs)) { round.push(copy(loopBeat)); afterLogo = true; }
     if (starts) motifs++;
     // one cloud is enough: the picture after the logo is reached by a normal flight
     const extra = afterLogo && b.cloud === true ? { cloud: false } : {};

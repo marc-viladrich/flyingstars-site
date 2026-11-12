@@ -132,7 +132,7 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
       <div class="cfg-block cfg-drones">
         <p class="cfg-logo-count" id="cfg-logo-count" role="status" hidden><b id="cfg-logo-n"></b> <span>{t('logoMode.needed')}</span></p>
         <div class="cfg-drones-head"><label for="cfg-drones" id="cfg-drones-label">{t('configuratorteaser.drones')}</label><output id="cfg-dronecount" for="cfg-drones">{first.base}</output></div>
-        <div class="cfg-drone-slider"><span id="cfg-logo-marker" class="cfg-logo-marker" hidden aria-hidden="true"></span><input class="cfg-range" id="cfg-drones" {...record({collection:'previewPolicy',id:'configuration'})} type="range" min={DRONES_MIN} max={DRONES_MAX} step={DRONE_STEP} value={first.base} style={`--track: ${rangeTrack}`} /></div>
+        <div class="cfg-drone-slider"><input class="cfg-range" id="cfg-drones" {...record({collection:'previewPolicy',id:'configuration'})} type="range" min={DRONES_MIN} max={DRONES_MAX} step={DRONE_STEP} value={first.base} style={`--track: ${rangeTrack}`} /></div>
         <div class="cfg-ticks mono" aria-hidden="true">{ticks.map((n) => <span style={`--p: ${at(n) / 100}`}>{n}</span>)}</div>
       </div>
 
@@ -182,6 +182,7 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
            (LADDER in content/show-configurator.js) sind nicht mit FlyingStars abgestimmt. */}
       <div class="cfg-sum">
         <div class="cfg-result" aria-live="polite">
+          <p class="cfg-pkg-label" id="cfg-pkg-label" hidden></p>
           <div class="cfg-price"><b id="cfg-pkg">{STEPS[start].pkg}</b><span id="cfg-price">{money(first.price)}</span></div>
           <p class="cfg-meta mono" id="cfg-meta" {...field({collection:'showDuration',id:'configuration'},['outdoor','min'],{mode:'panel'})}>{t('packageDetails.showtimeLine',durationValues())} {t('showconfigurator.excludingVatAndTravel')}</p>
         </div>
