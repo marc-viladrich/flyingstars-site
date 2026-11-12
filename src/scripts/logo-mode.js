@@ -6,7 +6,7 @@
 // - Eigenes Logo: logo-v10 (Kontur, Budget-Flexibilität, Detailgrad), Entfernen von Teilen in einer flachen Ansicht über der
 //   Bühne (die Bühne selbst ist gekippt und fliegt; dort wäre ein Klick nicht verlässlich einer Drohne zuzuordnen).
 import { decodePoints } from "./logo-v10/prepared.mjs";
-import { exampleRaster } from "./logo-v10/example-raster.mjs";
+import { exampleRaster, exampleOptions } from "./logo-v10/example-raster.mjs";
 import { logoFormations } from "./logo-v10/logo-formation.js";
 import { colourRuns, targetKey, selectedPoints, widenSelection, selectElement, selectionForAction } from "./logo-v10/groups.mjs";
 import { nearestHit, rectUnits } from "./logo-v10/pick.mjs";
@@ -40,17 +40,20 @@ export async function customerLogos(n) {
  */
 export function logoSession(file, init = {}) {
   const raster = exampleRaster(file);
+  let defaultOptions, disposed = false;
+  const defaults = () => defaultOptions ??= exampleOptions(file);
+  let base = {};
   let opts = { flex: "auto", part: "auto", ...init }, inst = null, removed = [];
   if (opts.density == null) delete opts.density;
-  const removals = () => ({ exclude: removed.filter((r) => !r.erase).flatMap((r) => r.anchors), erase: removed.filter((r) => r.erase).flatMap((r) => r.anchors) });
-  const fresh = () => { inst?.dispose(); inst = logoFormations(file, { opts: { ...opts }, raster }); if (removed.length) inst.setRemovals(removals()); };
+  const removals = () => ({ exclude: [...(base.exclude || []), ...removed.filter((r) => !r.erase).flatMap((r) => r.anchors)], erase: [...(base.erase || []), ...removed.filter((r) => r.erase).flatMap((r) => r.anchors)] });
+  const fresh = () => { inst?.dispose(); inst = logoFormations(file, { opts: { ...base, ...opts }, raster }); inst.setRemovals(removals()); };
   return {
-    formation: (n, o) => { if (!inst) fresh(); return inst.formation(n, o); },
+    formation: async (n, o) => { base = await defaults(); if (disposed) throw new Error("disposed"); if (!inst) fresh(); return inst.formation(n, o); },
     setOptions(next) { const o = { ...opts, ...next }; if (o.density == null) delete o.density; if (JSON.stringify(o) === JSON.stringify(opts)) return false; opts = o; inst?.dispose(); inst = null; return true; },
     get options() { return { ...opts }; },
     get removed() { return removed; },
     setRemoved(list) { removed = list; inst?.setRemovals(removals()); },
-    dispose() { inst?.dispose(); inst = null; },
+    dispose() { disposed = true; inst?.dispose(); inst = null; },
   };
 }
 

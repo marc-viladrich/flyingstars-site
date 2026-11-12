@@ -16,3 +16,18 @@ for(const id of ids) test(`prepared logo ${id}: all slider steps, bounded payloa
   assert.ok(s.frame&&s.elements&&s.colourGroups);
  }
 });
+
+test('prepared example removals are persisted for live recalculation',()=>{
+ const read=id=>JSON.parse(fs.readFileSync(new URL(`public/media/logo-modus/beispiele/${id}.json`,root)));
+ const adidas=read('adidas'),ikea=read('ikea');
+ assert.deepEqual(adidas.options.erase,[{box:[0,230,512,366]}]);
+ assert.equal(ikea.options.erase.length,3);
+ assert.equal(ikea.options.removalRim,0);
+ const points=decodePoints(ikea.steps[400].p);
+ let oval=0;for(let i=0;i<points.length;i+=5){const [r,g,b]=ikea.palette[points[i+2]];if(r>200&&g>150&&b<100)oval++;}
+ assert.ok(oval>=30,`oval contour lost: ${oval} yellow points`);
+ for(const step of Object.values(adidas.steps)){
+  const values=decodePoints(step.p),f=step.frame;
+  for(let i=0;i<values.length;i+=5)assert.ok((values[i+1]/1000-f.oy)/f.sy<230,'lettering attachment survived erasure');
+ }
+});

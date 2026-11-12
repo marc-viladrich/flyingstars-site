@@ -25,9 +25,13 @@ export async function contentPipeline(raster,convert,opts,{single=false,sourceLo
  const image=await raster(512),identity=transform([0,0,image.width,image.height],image.width,image.height);
  // v8: the first pass is a probe (no density retries, no schematic trials); it only decides the crop. When no crop
  // follows and the probe is not clean within the budget, the same raster is converted once more with everything on.
- const first=await convert(image,{...opts,probe:true});const plan=single?null:planFit(image,first.points,sourceLong);
+ const manualAuto=opts.density!=null && (opts.part??'auto')==='auto';
+ const first=await convert(image,manualAuto?{...opts,density:undefined,densityManual:undefined,probe:false}:{...opts,probe:true});
+ // Decide content and crop at automatic density once, then retain that choice for the manual geometry.
+ if(manualAuto)opts={...opts,part:first.meta.part};
+ const plan=single?null:planFit(image,first.points,sourceLong);
  if(!plan){
-  const full=first.meta?.probeWouldChange!==false;
+  const full=manualAuto||first.meta?.probeWouldChange!==false;
   return {result:full?await convert(image,opts):first,passes:[identity],image};
  }
  const high=await raster(plan.size);
@@ -38,7 +42,7 @@ export async function contentPipeline(raster,convert,opts,{single=false,sourceLo
  for(let y=0;y<height;y++)data.set(high.data.subarray(((y+top)*high.width+left)*4,((y+top)*high.width+left+width)*4),y*width*4);
  const t={x:left*image.width/high.width,y:top*image.height/high.height,sx:high.width/image.width,sy:high.height/image.height};
  const cropped={width,height,data};
- const result=await convert(cropped,{...opts,exclude:(opts.exclude||[]).map(p=>mapPoint(p,t)),erase:(opts.erase||[]).map(p=>mapPoint(p,t))});
+ const result=await convert(cropped,{...opts,exclude:(opts.exclude||[]).map(p=>mapPoint(p,t)),erase:(opts.erase||[]).map(p=>p.box?{box:mapBox(p.box,t)}:mapPoint(p,t))});
  // Preserve the selected content semantics when the crop itself is now a full logo.
  result.meta ||= {};
  if(first.meta?.part==='mark'){result.meta.part='mark';result.meta.partRequested=opts.part;}

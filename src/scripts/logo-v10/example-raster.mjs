@@ -19,3 +19,14 @@ export function exampleRaster(file) {
   return {width:image.width,height:image.height,data};
  };
 }
+
+// Same source identity as the canonical raster; prepared options live in the example file.
+export async function exampleOptions(file) {
+ const hash=[...new Uint8Array(await crypto.subtle.digest('SHA-256',await file.arrayBuffer()))].map(x=>x.toString(16).padStart(2,'0')).join('');
+ index??=fetch('/media/logo-modus/beispiele/rasters-index.json').then(r=>r.ok?r.json():{}).catch(()=>({}));
+ const id=(await index)[hash];
+ if(!id)return {};
+ const response=await fetch(`/media/logo-modus/beispiele/${id}.json`);
+ if(!response.ok)throw new Error(`Beispiel ${id}: ${response.status}`);
+ return (await response.json()).options||{};
+}

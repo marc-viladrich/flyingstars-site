@@ -13,7 +13,7 @@ export function logoFormations(file,{opts={},raster=rasterizeFile}={}) {
  const cache=new Map(),fast=new Set(),completed=new Set();let sourceLong=Infinity;
  const ready=(async()=>{if(!/\.svg$/i.test(file.name||'')&&file.type!=='image/svg+xml'){const b=await createImageBitmap(file);sourceLong=Math.max(b.width,b.height);b.close();}return raster(file,512);})();
  function cancel(){if(job){job.worker?.kill();cache.delete(job.key);job=null;}}
- const keyOf=n=>JSON.stringify([n,...[removal.exclude,removal.erase].map(a=>a.map(p=>[p.x,p.y]).sort((a,b)=>a[0]-b[0]||a[1]-b[1]))]);
+ const keyOf=n=>JSON.stringify([n,...[removal.exclude,removal.erase].map(a=>a.map(p=>p.box||[p.x,p.y]).sort((a,b)=>a[0]-b[0]||a[1]-b[1]))]);
  async function pack(result,n,t){const pts=await fitToShow(result,n);const f=pts.frame; if(f)pts.meta.frame=t?{sx:f.sx*t.sx,sy:f.sy*t.sy,ox:f.ox-t.x*t.sx*f.sx,oy:f.oy-t.y*t.sy*f.sy}:f;if(t){pts.meta.elements=(result.meta?.elements||[]).map(e=>({...e,anchor:e.anchor?mapPoint(e.anchor,t,true):null}));pts.meta.colourGroups=(result.meta?.colourGroups||[]).map(g=>({...g,anchor:g.anchor?mapPoint(g.anchor,t,true):null}));}return pts;}
  function formation(n,{onCompute,debounceMs=0}={}) {
   if(!Number.isFinite(Number(n))||Number(n)<1)return Promise.reject(new RangeError('Bitte eine positive Drohnenzahl angeben.'));

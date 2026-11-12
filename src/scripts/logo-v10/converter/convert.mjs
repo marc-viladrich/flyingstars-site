@@ -1265,7 +1265,21 @@ export function convertCore(image, opts = {}, pre = null) {
   };
 
   let pic, stop, reason, densityEff = 1, cleanAt = null, stepA = null;
-  if (opts.s) {
+  if (contour && (opts.densityManual ?? opts.density != null)) {
+    // A manual setting spends the points the geometry needs. Above 1, trace finer
+    // contours and retain small pieces instead of solving the same contour back to N.
+    const detail = Math.max(1, density);
+    const act = density > 1 ? all : core;
+    const fs = [...act].map(i => ctx.figs[i]).filter(F => !F.blob && !F.field);
+    const k = 0.9 / (INSET + 0.5 * ROW_SEP + TWO_MARGIN);
+    const sorted = fs.slice().sort((a,b)=>a.hwThin-b.hwThin);
+    const ink = sorted.reduce((t,F)=>t+F.area,0);
+    let sum=0, width=s0*2;
+    for(const F of sorted) {sum+=F.area;if(sum>=ink/2){width=k*F.hwThin;break;}}
+    const spacing = Math.max(0.5, Math.max(3,Math.min(s0 * 2, width)) / detail);
+    const b = buildAt(ctx, spacing, act, ALLF, { density: Math.min(1, density), adaptive: false });
+    pic = { s: spacing, b, two: ALLF, act }; stop = 'manual'; reason = 'manual density';
+  } else if (opts.s) {
     // fixed spacing (debugging, tests): every unit in the v5 regime, no budget
     const act = new Set([...core, ...secondary]);
     const tw = rowsMode === 'two' ? ALLF : rowsMode === 'one' ? NONE : null;
@@ -1562,7 +1576,7 @@ export function convertCore(image, opts = {}, pre = null) {
   }
   // Manual risk range: keep the chosen contour, but let the user thin its rows.
   // B() enforces the automatic contour floor, so sample the retained nets directly.
-  if (contour && (opts.densityManual ?? opts.density != null) && density < DENSITY_SAFE) {
+  if (contour && (opts.densityManual ?? opts.density != null) && density < DENSITY_SAFE && stop !== 'manual') {
     const b = buildAt(ctx, pic.b.s, pic.act, pic.two, sampReq, pic.b);
     pic = { ...pic, b };
     record('density', pic, { density });
@@ -1626,7 +1640,7 @@ export function convertCore(image, opts = {}, pre = null) {
     },
   };
   // (for the wrapper: the figure of every dot, and the figures, to name each dot's element)
-  Object.defineProperty(result, '_map', { value: { fis, figs: ctx.figs, seg }, enumerable: false });
+  Object.defineProperty(result, '_map', { value: { fis, figs: ctx.figs, seg, parts: ctx.parts }, enumerable: false });
   // v8.5: the resampler. The picture's structure (content, rows, spacing s) stays; only the spacing of the dots along the
   // rows (the density) is solved so that the count is the largest at or below n. Cheap: the traced nets are reused.
   if (!fillMeta) Object.defineProperty(result, '_resampleCore', { enumerable: false, value: n => resampleAt(ctx, pic, n, density) });
@@ -1695,7 +1709,7 @@ function outlineCore(image, ctx, active, { opts, maxDrones, minDrones, part, dro
       clean: true, quality: null, defaults: { flex: FLEX_AUTO },
     },
   };
-  Object.defineProperty(result, '_map', { value: { fis, figs: ctx.figs, seg: ctx.seg }, enumerable: false });
+  Object.defineProperty(result, '_map', { value: { fis, figs: ctx.figs, seg: ctx.seg, parts: ctx.parts }, enumerable: false });
   // retarget: the same plan for another count on the same outlines (nothing else depends on n): the exact answer
   Object.defineProperty(result, '_resampleCore', { enumerable: false, value: n => {
     const q = plan(n);
@@ -1779,12 +1793,27 @@ function coreUnderPlan(image, o, pre, auto) {
   return r;
 }
 export function convert(image, opts0 = {}) {
+  // Manual density changes geometry, never the automatic mark/wordmark decision for N.
+  if (opts0.contour !== false && !opts0.s && opts0.density != null && (opts0.densityManual ?? true) && (opts0.part ?? 'auto') === 'auto') {
+    const automatic = { ...opts0, probe: false }; delete automatic.density; delete automatic.densityManual;
+    const choice = convert(image, automatic).meta.part;
+    const result = convert(image, { ...opts0, part: choice });
+    result.meta.partRequested = 'auto';
+    return result;
+  }
   const { opts, auto } = budgetPlan(opts0);
   const contMode = opts.container ?? 'keep';
   if (!CONTAINER_MODES.includes(contMode)) throw new Error(`opts.container must be one of ${CONTAINER_MODES.join(', ')}`);
   // v9: no automatic schematic (Marc: no half-baked pictures); 'schematic' only when asked for
   const style = (opts.style ?? 'auto') === 'auto' ? 'detailed' : opts.style;
   if (!STYLES.includes(style)) throw new Error(`opts.style must be one of ${STYLES.join(', ')}`);
+  // Rectangular source erasures also handle lettering physically touching a mark.
+  const erasedRects = (opts.erase || []).filter(p => p.box?.length === 4);
+  if (erasedRects.length) {
+    const data = image.data.slice();
+    for (const {box: [x0,y0,x1,y1]} of erasedRects) for (let y=Math.max(0,Math.floor(y0));y<Math.min(image.height,y1);y++) for(let x=Math.max(0,Math.floor(x0));x<Math.min(image.width,x1);x++) data[(y*image.width+x)*4+3]=0;
+    image = {...image, data};
+  }
   const seg0 = segment(image), st0 = structure(seg0, { flat: !!opts._flat });
   const W = seg0.W, H = seg0.H;
   if (!st0.figures.length) {
@@ -1855,7 +1884,8 @@ export function convert(image, opts0 = {}) {
     }
     return best;
   };
-  const erased = new Set(), removedPixels = new Uint8Array(W * H);
+  const erased = new Set(), removedPixels = new Uint8Array(W * H), rectPixels = new Uint8Array(W * H);
+  for (const {box:[x0,y0,x1,y1]} of erasedRects) for(let y=Math.max(0,Math.floor(y0));y<Math.min(H,y1);y++) for(let x=Math.max(0,Math.floor(x0));x<Math.min(W,x1);x++) rectPixels[y*W+x]=1;
   if (ex.size || excludedContainer) for (let i = 0; i < W * H; i++) if (ex.has(E.pix[i]) || (excludedContainer && E.pix[i] === contId)) removedPixels[i] = 1;
   if ((opts.erase || []).length) {
     const sgB = drop ? segE : seg0, ids = new Set();
@@ -1929,7 +1959,7 @@ export function convert(image, opts0 = {}) {
   if (!r) { r = coreUnderPlan(base, opts, null, auto); lap('detailed'); }
   // v10 (Marc 12.11.: Puma at 100 drew cat and lettering, needed 204): part 'auto' takes the Bildmarke alone when the whole
   // logo does not fit N and the mark alone does (or needs clearly fewer drones). v8/v9 did this only past hardMax.
-  if ((opts.part ?? 'auto') === 'auto' && !opts.probe && r && r.meta.budget?.over && r.meta.part === 'full' && r._map) {
+  if ((opts.part ?? 'auto') === 'auto' && !opts.probe && r && r.meta.budget?.over && r.meta.part === 'full' && r._map?.parts?.hasMark && r._map.parts.wordmark) {
     const m = coreUnderPlan(base, { ...opts, part: 'mark' }, null, auto);
     lap('mark only');
     if (m && m._map && m.meta.part === 'mark' && m.points.length && (!m.meta.budget.over || m.points.length <= 0.7 * r.points.length)) { m.meta.partRequested = 'auto'; m.meta.markInstead = r.points.length; r = m; }
@@ -1963,7 +1993,7 @@ export function convert(image, opts0 = {}) {
   if (core) Object.defineProperty(r, 'resample', { enumerable: false, value: n => {
     const q = core(Math.max(1, Math.round(n)));
     const points = q.pts.map(p => ({ x: +p.x.toFixed(2), y: +p.y.toFixed(2), ...q.colour(p), e: figElem(p.fi), cg: cgOf(p) }));
-    const kept = filterRemoved(points, removedPixels, W, H);
+    const kept = filterRemoved(filterRemoved(points, removedPixels, W, H, opts.removalRim ?? 2), rectPixels, W, H, 0);
     return { points: kept, density: q.density, spacing: q.exact ? +q.s.toFixed(3) : r.spacing, placements: q.placements, fits: kept.length <= n, ...(q.exact ? { exact: true, over: kept.length > n, wanted: q.wanted } : {}) };
   } });
   // v9: result.retarget(n) -> { points, density, fits, final }: the picture for another drone count on the same structure.
@@ -1977,7 +2007,7 @@ export function convert(image, opts0 = {}) {
     if (q.exact) return { ...q, final: true };
     return { ...q, final: q.fits && q.density >= RETARGET_BAND[0] && q.density <= RETARGET_BAND[1] && q.points.length >= DRONES_FLOOR * n - 1 };
   } });
-  r.points = filterRemoved(r.points, removedPixels, W, H);
+  r.points = filterRemoved(filterRemoved(r.points, removedPixels, W, H, opts.removalRim ?? 2), rectPixels, W, H, 0);
   const nOf = new Map(); for (const p of r.points) nOf.set(p.e, (nOf.get(p.e) || 0) + 1);
   lap('elements');
   r.meta.timing = timing;
