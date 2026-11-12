@@ -282,7 +282,7 @@ test('Die Vorschau zeigt nur das Paket; Bildbeschreibung bleibt für assistive T
 const droneCount = (page: Page) => page.locator('#cfg-dronecount');
 
 test('Der Drohnenregler wechselt an der Bereichsgrenze sichtbar das Paket, mit echter Maus und Tastatur', async ({ page }, info) => {
-  test.skip(info.project.use.isMobile, 'Maus-Ziehen auf dem Desktop; die Tastatur deckt dieselbe Logik ab.');
+  test.skip(!!info.project.use.isMobile, 'Maus-Ziehen auf dem Desktop; die Tastatur deckt dieselbe Logik ab.');
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto(`${CFG}#konfigurator`);
@@ -327,7 +327,7 @@ test('Der Drohnenregler wechselt an der Bereichsgrenze sichtbar das Paket, mit e
 });
 
 test('Kein Hin und Her zwischen SPARK und HORIZON: Ziehen und Verweilen mit echter Maus', async ({ page }, info) => {
-  test.skip(info.project.use.isMobile, 'Maus auf dem Desktop.');
+  test.skip(!!info.project.use.isMobile, 'Maus auf dem Desktop.');
   await page.goto(`${CFG}#konfigurator`);
   await pkg(page, 0);
   // every change of the package label, in order
@@ -352,7 +352,7 @@ test('Kein Hin und Her zwischen SPARK und HORIZON: Ziehen und Verweilen mit echt
 });
 
 test('Mehr Drohnen schalten ein Motiv frei: Meldung auf der Bühne, die Bühne fliegt durch die Wolke dorthin', async ({ page }, info) => {
-  test.skip(info.project.use.isMobile, 'Maus auf dem Desktop.');
+  test.skip(!!info.project.use.isMobile, 'Maus auf dem Desktop.');
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto(`${CFG}#konfigurator`);
