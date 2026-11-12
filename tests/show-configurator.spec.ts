@@ -886,9 +886,11 @@ test('Runde 11: Paket, Preis und Anfrage als eigene Fläche mit Abstand zur Bedi
   const gap = await page.evaluate(() => {
     const own = document.querySelector('.cfg-own')!.getBoundingClientRect(), s = document.querySelector('.cfg-sum')!.getBoundingClientRect();
     const blocks = [...document.querySelectorAll('.cfg-panel > .cfg-block')].map((b) => b.getBoundingClientRect());
-    return { sum: s.top - own.bottom, between: Math.min(...blocks.slice(1).map((b, i) => b.top - blocks[i].bottom)) };
+    return { sum: s.top - own.bottom, between: Math.min(...blocks.slice(1).map((b, i) => b.top - blocks[i].bottom)),
+      compact: matchMedia('(max-width: 62.5em) and (max-height: 45em)').matches };
   });
-  expect(gap.between, 'Abstand zwischen den Eingabegruppen').toBeGreaterThanOrEqual(18);
+  // Niedrige Handys (Runde 27): bewusst 1rem statt des geräumigen Desktop-Abstands.
+  expect(gap.between, 'Abstand zwischen den Eingabegruppen').toBeGreaterThanOrEqual(gap.compact ? 16 : 18);
   expect(gap.sum, 'Abstand zur Ergebnisfläche').toBeGreaterThan(gap.between);
   expect(await sum.evaluate((el) => getComputedStyle(el).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
 });
