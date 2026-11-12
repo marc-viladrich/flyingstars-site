@@ -258,12 +258,13 @@ if (form) {
   /** The text style the stage shows is marked in the picker (Text-Durchlauf), without changing the chosen one. */
   const showStyle = (s) => { const r = form.querySelector(`[name=textstyle][value="${s}"]`); if (r && !r.checked) r.checked = true; };
 
-  const pkgName = () => packageForDrones(drones);
+  const pricedDrones = () => logoMode && lastLogoPts?.length ? lastLogoPts.length : drones;
+  const pkgName = () => packageForDrones(pricedDrones());
   const step = () => STEPS.find((s) => s.pkg === pkgName());
   const pkg = () => SHOW_PACKAGES[pkgName()];
   // same spacing between drones: the picture's area grows with the drone count up to ODYSSEY's 300, above that the
   // picture keeps the stage's size and gets denser
-  const size = () => Math.min(1, Math.sqrt(drones / SHOW_PACKAGES.ODYSSEY.base));
+  const size = () => logoMode ? 1.15 : Math.min(1, Math.sqrt(drones / SHOW_PACKAGES.ODYSSEY.base));
   const cache = new Map();
   const memo = (key, make) => {
     if (cache.size > 60) cache.clear();
@@ -276,7 +277,8 @@ if (form) {
   const logoPoints = async (source, n) => {
     const mod = await logoModule();
     session ??= mod.logoSession(source.file, logoOptions());
-    const pts = await session.formation(n);
+    const pts = source.example && detailAuto.getAttribute("aria-pressed") === "true" && !session.removed.length
+      ? await mod.exampleFormation(source.example, n) : await session.formation(n);
     if (!pts.length) throw new Error("leer");
     if (source === logo) {
       lastLogoPts = pts; $("#cfg-logo-status").textContent = "";
@@ -298,9 +300,16 @@ if (form) {
     const own = logoMode && !!logo, box = $("#cfg-logo-count");
     $("#cfg-drones-label").textContent = message(logoMode ? 'logoMode.wanted' : 'configuratorteaser.drones');
     box.hidden = !own || !pts;
+    $("#cfg-logo-marker").hidden = !own || !pts;
     if (!own || !pts) return;
     $("#cfg-logo-n").textContent = String(pts.length);
-    box.classList.toggle("is-over", pts.length > drones);
+    // Runde 27, vierte Runde: Zahl und Bedarfspunkt in der Farbe des Pakets, das diese Zahl braucht (über dem Regler: Koralle);
+    // der gewünschte Griff und seine Zahl treten blass zurück
+    const lo = +slider.min, hi = +slider.max, need = pts.length;
+    const color = need > hi ? "var(--logo-coral)" : `rgb(${SHOW_PACKAGES[packageForDrones(need)].color.join(",")})`;
+    form.closest(".cfg").style.setProperty("--logo-need", color);
+    $("#cfg-logo-marker").style.setProperty("--need-p", String(Math.max(0, Math.min(1, (need - lo) / (hi - lo)))));
+    drawPrice();
   }
   function showOver(pts, n) {
     const over = pts.length > n, card = $("#cfg-over-card");
@@ -312,8 +321,27 @@ if (form) {
     $("#cfg-over-text").replaceChildren(lead ?? "", b, tail ?? "");
   }
   /** Lebendige Wolke als eigenes Bild, sofort beim Hochladen und solange gerechnet wird (keine Rechenzeit nötig). */
-  const cloudLive = (p, j, t, o) => { o[0] += 0.05 * Math.sin(t * 0.8 + j * 1.31); o[1] += 0.04 * Math.cos(t * 0.65 + j * 2.17); o[2] += 0.05 * Math.sin(t * 0.5 + j * 0.73); o[3] = 0.55 + 0.35 * Math.sin(t * 1.3 + j * 0.9) ** 2; };
+  // Runde 27, vierte Runde (Marc: „zu predictable“): eine verzerrte Uhr gibt Tempowechsel (mal fast still, mal schnell),
+  // Breite, Höhe, Lage und Drehung der Wolke wandern unregelmäßig, ab und zu ballt sie sich in drei lose Haufen und löst
+  // sich wieder; jede Drohne hat ihre eigene Phase, jede siebte schweift weiter aus. Nichts davon ergibt ein Motiv.
+  const stillQuery = matchMedia("(prefers-reduced-motion: reduce)");
+  const CLUMPS = [[-0.42, -0.12], [0.36, 0.2], [0.18, -0.3]];
+  const cloudLive = (p, j, t, o) => {
+    if (stillQuery.matches) return;
+    const w = t * 0.75 + 1.5 * Math.sin(t * 0.21) + 0.8 * Math.sin(t * 0.47 + 2.1);
+    const sx = 1 + 0.18 * Math.sin(t * 0.17 + 0.6) + 0.07 * Math.sin(t * 0.41);
+    const sy = 1 + 0.25 * Math.sin(t * 0.23 + 2.4) + 0.1 * Math.sin(t * 0.53 + 1);
+    const rot = 0.4 * Math.sin(t * 0.11 + 0.5) * Math.sin(t * 0.07 + 1.2), c = Math.cos(rot), s = Math.sin(rot);
+    const gather = Math.max(0, Math.sin(t * 0.09 + 2.2)) ** 4 * 0.55, [kx, ky] = CLUMPS[j % 3];
+    const amp = j % 7 === 0 ? 0.12 : 0.05, x = p[0] * sx, y = p[1] * sy;
+    const ox = x * c - y * s + 0.12 * Math.sin(t * 0.13 + 1.3) + amp * Math.sin(w * 1.1 + j * 1.31) + 0.03 * Math.sin(w * 2.3 + j * 0.37);
+    const oy = x * s + y * c + 0.08 * Math.sin(t * 0.19 + 4) + amp * 0.8 * Math.cos(w * 0.9 + j * 2.17);
+    o[0] = ox + (kx + 0.35 * p[0] - ox) * gather; o[1] = oy + (ky + 0.35 * p[1] - oy) * gather;
+    o[2] = p[2] + 0.12 * Math.sin(w * 0.6 + j * 0.73);
+    o[3] = 0.5 + 0.45 * Math.sin(w * 1.3 + j * 0.9) ** 2;
+  };
   function showCloud() {
+    if (logoMode) { field.setPaused(false); setPlay(false); }
     const pts = Array.from({ length: drones }, (_, i) => { const a = i * 2.39996, r = Math.sqrt((i + 0.5) / drones); return [Math.cos(a) * r * 0.95, Math.sin(a) * r * 0.55, Math.sin(i * 1.7) * 0.25, 210, 220, 255]; });
     field.show({ beats: [{ pts, caption: message('logoMode.computing'), motif: "cloud", hold: 600, cloud: true, segment: LOGO_SEGMENT, live: cloudLive }], loopTo: 0 }, drones, size(), { cloud: true });
   }
@@ -371,7 +399,8 @@ if (form) {
       if (k < 0 && at !== null && at >= 0 && at < TOUR_SEGMENT) k = land((s) => s > at && s < TOUR_SEGMENT);
       if (k < 0) k = built.loopTo;
       // the first picture of the page stands already, like a show that is already in the sky
-      field.show(built, drones, size(), { instant: first, at: k, cloud });
+      if (logoMode) { field.setPaused(false); setPlay(false); }
+      field.show(built, drones, size(), { instant: first, at: k, cloud: logo?.example ? false : cloud }); // Beispiele: sofort fliegen, ohne Wolke, aber mit Übergang
       first = false;
       drawTrack(field.timeline());
       if (document.activeElement === track) showTip(field.beat());
@@ -381,8 +410,8 @@ if (form) {
   }
 
   let building = 0;
-  function update(keep, to, { delay = 0, cloud = false } = {}) {
-    const s = step(), p = pkg(), price = configuratorPrice(drones);
+  function drawPrice() {
+    const s = step(), p = pkg(), price = configuratorPrice(pricedDrones());
     document.documentElement.style.setProperty("--pkg", `rgb(${p.color.join(",")})`);
     const radio = form.querySelector(`[name=pkg][value="${STEPS.indexOf(s)}"]`);
     if (!radio.checked) radio.checked = true;
@@ -397,10 +426,13 @@ if (form) {
       ...(logo ? [message('showConfigurator.customLogoTriedInThePreview')] : []),
       message('showConfigurator.complexityValueValueValueDronesValueExcludingVatConfiguratorPrice', { v0: s.label, v1: s.pkg, v2: drones, v3: eur(price) }),
     ].join("\n");
-    const inquiry = inquiryHref({paket:s.pkg,drohnen:drones,anlass:occasion.anlass,show:summary},locale,'/#anfrage');
+    const inquiry = inquiryHref({paket:s.pkg,drohnen:pricedDrones(),anlass:occasion.anlass,show:summary},locale,'/#anfrage');
     $("#cfg-cta").href = inquiry; $("#cfg-bar-cta").href = inquiry;
     drawLocks();
     drawBudget();
+  }
+  function update(keep, to, { delay = 0, cloud = false } = {}) {
+    drawPrice();
     // while the slider moves, the picture follows once it rests for a moment (every drone count is its own formation)
     clearTimeout(building);
     if (delay) building = setTimeout(() => render(keep, to, { cloud }), delay); else render(keep, to, { cloud });
@@ -529,18 +561,18 @@ if (form) {
     logoURL = null; off.hidden = true; upload.classList.remove("has-logo"); file.value = "";
   }
   /** Reads the file in the browser only: SVG as text, pictures as a blob URL. Nothing leaves the page. */
-  function takeFile(f) {
+  function takeFile(f, example = null) {
     if (!f) return;
     const status = $("#cfg-logo-status");
     if (!/^image\/(svg\+xml|png|jpeg|webp)$/.test(f.type)) { status.textContent = message('showConfigurator.pleaseChooseAnSvgPngOrJpg'); return; }
     status.textContent = "";
     const use = (source) => {
-      dropLogo(); logo = source; logoId++;
+      dropLogo(); logo = { ...source, example }; logoId++;
       if (source.kind === "image") logoURL = source.src;
       off.hidden = false; upload.classList.add("has-logo");
       logoMode = true; occRadio("logo").checked = true; // Runde 27: ein eigenes Logo öffnet den Anlass „Euer Logo“
       if (source.file) { minimapURL = URL.createObjectURL(source.file); $("#cfg-minimap-img").src = minimapURL; }
-      drawLogoMode(); showCloud(); // sofort die lebendige Wolke, bis das Logo gerechnet ist
+      drawLogoMode(); if (!example) showCloud(); // sofort die lebendige Wolke, bis das Logo gerechnet ist
       first = false; fresh = []; unlockTo = null; tour = false; // the logo comes now; the text run-through is over
       update(true, LOGO_SEGMENT, { cloud: true });
     };
@@ -601,33 +633,63 @@ if (form) {
   const tools = $("#cfg-logo-tools"), own = $("#cfg-logo-own"), detail = $("#cfg-detail"), detailAuto = $("#cfg-detail-auto"), back = $("#cfg-back"), minimap = $("#cfg-minimap");
   function drawLogoMode() {
     const mine = logoMode && !!logo;
+    field.setMotionIndependent(logoMode);
     form.closest(".cfg").classList.toggle("is-logomode", logoMode);
-    back.hidden = !logoMode; tools.hidden = !logoMode; own.hidden = !mine; minimap.hidden = !mine || !minimapURL;
-    $("#cfg-hit").hidden = mine; // ein Klick auf die Bühne wählt Formen statt anzuhalten
+    back.hidden = !logoMode; tools.hidden = !logoMode; $("#cfg-use-logo").hidden = !mine; own.hidden = !mine; minimap.hidden = !mine || !minimapURL;
+    if (logoMode) { field.setPaused(false); setPlay(false); }
+    const wrap = $(".cfg-own-wrap");
+    if (logoMode) {
+      $(".cfg-logo-own").before($(".cfg-drones"));
+    } else { form.insertBefore($(".cfg-drones"), wrap); }
+    $("#cfg-hit").hidden = logoMode; // ein Klick auf die Bühne wählt Formen statt anzuhalten
     editor?.setActive(mine);
     drawCount(mine ? lastLogoPts : null);
     if (!mine) $("#cfg-over-card").hidden = true;
   }
+  // Runde 27, vierte Runde: im Logo-Anlass keine Preisanfrage (der Preis gilt der ganzen Show, nicht dem Logo allein):
+  // „Dieses Logo in der Show verwenden“ geht zurück zum Anlass davor, mit dem Logo und mindestens seinem Drohnenbedarf
+  $("#cfg-use-logo").addEventListener("click", () => {
+    const need = lastLogoPts?.length ?? 0;
+    if (need > drones) { const st = +slider.step || 1; drones = snapDrones(Math.min(+slider.max, Math.ceil(need / st) * st)); slider.value = String(drones); }
+    back.click();
+  });
   back.addEventListener("click", () => { occRadio(occasion.id).checked = true; occGroup.dispatchEvent(new Event("change", { bubbles: true })); occRadio(occasion.id).focus(); });
   minimap.addEventListener("click", () => { const big = minimap.getAttribute("aria-pressed") !== "true"; minimap.setAttribute("aria-pressed", String(big)); });
   $("#cfg-over-close").addEventListener("click", () => { overClosed = true; $("#cfg-over-card").hidden = true; });
   // Beispiele: wie ein eigenes Logo (die Datei kommt aus public/media/logo-modus/beispiele/)
+  let exampleRequest = 0;
+  const preloadExample = id => logoModule().then(mod => mod.loadExample(id));
+  for (const button of $("#cfg-examples").querySelectorAll("button")) {
+    button.addEventListener("pointerenter", () => void preloadExample(button.dataset.example));
+    button.addEventListener("focus", () => void preloadExample(button.dataset.example));
+  }
   $("#cfg-examples").addEventListener("click", async (e) => {
     const id = e.target.closest("[data-example]")?.dataset.example; if (!id) return;
-    const r = await fetch(`/media/logo-modus/beispiele/${id}.svg`); if (!r.ok) return;
-    takeFile(new File([await r.blob()], `${id}.svg`, { type: "image/svg+xml" }));
+    const request = ++exampleRequest;
+    try {
+      const mod = await logoModule(); await mod.loadExample(id);
+      const r = await fetch(`/media/logo-modus/beispiele/${id}.svg`); if (!r.ok || request !== exampleRequest) return;
+      const f = new File([await r.blob()], `${id}.svg`, { type: "image/svg+xml" });
+      if (request !== exampleRequest) return;
+      detailAuto.setAttribute("aria-pressed", "true"); takeFile(f, id);
+    } catch { $("#cfg-logo-status").textContent = message('showConfigurator.weCouldnTReadThisFile'); }
   });
   /** Regler wie im Prototyp: Liniendichte (Automatisch oder von Hand), Budget-Flexibilität, Was zeigen. Gelten auch für das
    * nächste Logo. */
-  const densityOf = (v) => +(0.15 + 0.009 * v).toFixed(3);
-  const logoOptions = () => ({ flex: form.querySelector("[name=logoflex]:checked")?.value ?? "auto", part: form.querySelector("[name=logopart]:checked")?.value ?? "auto", ...(detailAuto.getAttribute("aria-pressed") === "true" ? {} : { density: densityOf(+detail.value) }) });
+  // Runde 27, vierte Runde (Marc): unten drei Risikostufen, oben fünf Stufen mehr Detail für komplexe Wappen
+  const DENSITIES = [0.07, 0.1, 0.12, 0.15, 0.24, 0.33, 0.42, 0.51, 0.6, 0.69, 0.78, 0.87, 0.96, 1.05, 1.3, 1.6, 2, 2.5, 3], RISKY = 2;
+  const densityOf = (v) => DENSITIES[v];
+  const logoOptions = () => ({ flex: "auto", part: "auto", ...(detailAuto.getAttribute("aria-pressed") === "true" ? {} : { density: densityOf(+detail.value) }) });
   function setLogoOptions() {
-    if (!session?.setOptions({ density: undefined, ...logoOptions() })) return;
+    if (!session) return;
+    session.setOptions({ density: undefined, ...logoOptions() });
     logoVer++; showCloud(); update(true, LOGO_SEGMENT, { cloud: true });
   }
-  detail.addEventListener("change", () => { detailAuto.setAttribute("aria-pressed", "false"); setLogoOptions(); });
-  detailAuto.addEventListener("click", () => { const on = detailAuto.getAttribute("aria-pressed") !== "true"; detailAuto.setAttribute("aria-pressed", String(on)); setLogoOptions(); });
-  for (const r of form.querySelectorAll("[name=logoflex], [name=logopart]")) r.addEventListener("change", setLogoOptions);
+  // die untersten drei Stufen sind der Risikobereich (rot auf der Spur); der kurze Hinweis steht nur, solange der Griff dort ist
+  const drawRisk = () => { $("#cfg-density-risk").hidden = detailAuto.getAttribute("aria-pressed") === "true" || +detail.value > RISKY; };
+  detail.addEventListener("input", () => { detailAuto.setAttribute("aria-pressed", "false"); drawRisk(); });
+  detail.addEventListener("change", () => { detailAuto.setAttribute("aria-pressed", "false"); drawRisk(); setLogoOptions(); });
+  detailAuto.addEventListener("click", () => { const on = detailAuto.getAttribute("aria-pressed") !== "true"; detailAuto.setAttribute("aria-pressed", String(on)); drawRisk(); setLogoOptions(); });
 
   // on phones the stage sticks on top and the price bar at the bottom: a focused field is scrolled between them
   // (scroll-margin in the CSS does it in Chromium; WebKit ignores it when focusing)

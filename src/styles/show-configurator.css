@@ -257,7 +257,8 @@
 .cfg-minimap img { width: 100%; height: 100%; object-fit: contain; }
 .cfg-minimap[aria-pressed="true"] { width: min(24rem, 45%); height: min(16rem, 40%); cursor: zoom-out; }
 /* Hinweis bei zu vielen Drohnen: Karte unten auf der Bühne */
-.cfg-over-card { position: absolute; z-index: 6; left: 0.875rem; right: 8.5rem; bottom: 0.875rem; padding: var(--space-3) var(--space-8) var(--space-3) var(--space-3); border: 1px solid var(--line); border-left: 0.125rem solid var(--amber); border-radius: var(--radius-10); background: var(--overlay-panel); font-size: var(--text-sm); color: var(--text); text-wrap: pretty; }
+.cfg-over-card { position: absolute; z-index: 6; left: 0.875rem; bottom: 0.875rem; max-width: min(31rem, calc(100% - 9.5rem)); padding: var(--space-2) var(--space-7) var(--space-2) var(--space-2-5); border: 1px solid var(--line); border-left: 0.125rem solid var(--amber); border-radius: var(--radius-10); background: rgb(var(--rgb-media-ground) / 0.55); -webkit-backdrop-filter: blur(0.5rem); backdrop-filter: blur(0.5rem); font-size: var(--text-xs); line-height: 1.45; color: var(--text); text-wrap: pretty; opacity: 0.78; transition: opacity var(--dur-standard) var(--ease-default); }
+.cfg-over-card:hover, .cfg-over-card:focus-within { opacity: 1; }
 .cfg-over-card p { margin: 0; }
 .cfg-over-card b { font-size: 1.15em; }
 .cfg-over-card a { display: inline-block; margin-top: var(--space-1-5); color: var(--amber); }
@@ -266,14 +267,14 @@
 @media (prefers-reduced-motion: reduce) { .cfg-minimap { transition: none; } }
 /* schmale Bühne: Karte kompakt über die volle Breite, Minimap nach oben, damit das Logo frei bleibt */
 @media (--nav-collapsed) {
-  .cfg-over-card { right: 0.875rem; padding: var(--space-2) var(--space-8) var(--space-2) var(--space-2-5); font-size: var(--text-xs); line-height: 1.4; }
+  .cfg-over-card { right: 0.875rem; max-width: none; }
   .cfg-over-card a { margin-top: var(--space-1); }
   .cfg-minimap { top: 0.875rem; bottom: auto; width: 5rem; height: 3.5rem; }
 }
 /* Runde 27, dritte Runde: große Zahl = Bedarf, rot über der gewünschten Zahl; Beispiele als Textknöpfe; Bühne niedriger */
 .cfg-logo-count { margin: 0 0 var(--space-3); display: flex; align-items: baseline; gap: var(--space-2); color: var(--muted); font-size: var(--text-sm); }
 .cfg-logo-count b { font: 600 clamp(2.25rem, 3vw, 3rem)/1 var(--display, var(--body)); color: var(--text); transition: color var(--dur-standard) var(--ease-default); }
-.cfg-logo-count.is-over b { color: var(--logo-coral); }
+.cfg-logo-count b { color: var(--logo-need, var(--text)); }
 .cfg-examples { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); }
 .cfg-examples button { padding: 0; border: 0; background: none; color: var(--muted); font: 400 var(--text-sm)/1.6 var(--body); text-decoration: underline; text-underline-offset: 0.2em; cursor: pointer; }
 .cfg-examples button:hover { color: var(--text); }
@@ -281,4 +282,24 @@
 .cfg-logo-own[hidden] { display: none; }
 fieldset.cfg-tool { margin: 0; padding: 0; border: 0; min-width: 0; }
 .cfg-seg { --chip-height: 2rem; --chip-padding: 0 var(--space-3); --chip-font-size: var(--text-sm); --chips-gap: var(--space-1-5); }
-.cfg.is-logomode .cfg-stage { height: min(calc(100svh - 6.75rem), 34rem); min-height: 22rem; }
+
+
+/* Runde 27, vierte Runde: Upload oben, dann Beispiele, Bedarf + Regler, Liniendichte. Bedarfspunkt auf dem Regler in der
+   Paketfarbe des Bedarfs (wie die große Zahl), der gewünschte Griff und seine Zahl blass; Liniendichte mit Risikobereich */
+.cfg.is-logomode .cfg-own > legend, .cfg.is-logomode .cfg-text, .cfg.is-logomode .cfg-styles, .cfg.is-logomode .cfg-text-budget { display: none; }
+.cfg.is-logomode .cfg-own-wrap { order: 0; }
+.cfg.is-logomode .cfg-own { display: grid; gap: var(--space-4); }
+.cfg.is-logomode .cfg-drones { margin-top: var(--space-4); }
+.cfg.is-logomode .cfg-drones-head, .cfg.is-logomode .cfg-drones-head output { color: var(--muted); }
+.cfg-drone-slider { position: relative; }
+.cfg-logo-marker { position: absolute; z-index: 2; left: calc(0.625rem + (100% - 1.25rem) * var(--need-p, 0)); top: 50%; width: 1.25rem; height: 1.25rem; transform: translate(-50%, -50%); border-radius: var(--radius-round); background: var(--text); border: 0.25rem solid var(--logo-need); box-shadow: 0 0 0 0.25rem var(--overlay-heavy); pointer-events: none; transition: left var(--dur-standard) var(--ease-default), border-color var(--dur-standard) var(--ease-default); }
+.cfg-logo-marker[hidden] { display: none; }
+.cfg.is-logomode #cfg-drones::-webkit-slider-thumb { border-color: var(--muted); opacity: 0.5; }
+.cfg.is-logomode #cfg-drones::-moz-range-thumb { border-color: var(--muted); opacity: 0.5; }
+.cfg-density-risk { display: block; margin-top: var(--space-1); color: var(--logo-coral); font-size: var(--text-xs); }
+.cfg-density-risk[hidden] { display: none; }
+#cfg-detail { --track: linear-gradient(90deg, var(--logo-coral) 0 14%, var(--line-soft) 14%, var(--muted) 100%); }
+@media (--nav-expanded) { .cfg.is-logomode { grid-template-columns: clamp(22.5rem, 30vw, 36rem) minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .cfg-logo-marker, .cfg-over-card { transition: none; } }
+.cfg.is-logomode .cfg-result, .cfg.is-logomode .cfg-cta, .cfg.is-logomode .cfg-note, .cfg.is-logomode .cfg-bar { display: none; }
+.cfg-use-logo[hidden] { display: none; }

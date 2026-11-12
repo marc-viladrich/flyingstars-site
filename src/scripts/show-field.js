@@ -60,7 +60,8 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
   let W = 0, H = 0, DPR = 1, frame = 0, visible = true, lastT = 0;
   let scene = null, beat = 0, beatAt = 0, flight = 0, spread = 0, order = null, active = 0, leaveEnd = 0, size = 1, fitK = 1, fitX = 0, fitY = 0;
   const glow = new Map();
-  const held = () => reduceQuery.matches || document.documentElement.classList.contains("motion-paused") || document.hidden;
+  let motionIndependent = false;
+  const held = () => reduceQuery.matches || (!motionIndependent && document.documentElement.classList.contains("motion-paused")) || document.hidden;
   // Show-Uhr: vt rückt nur in der Render-Schleife vor, um die echte Zeit seit dem letzten Bild mal rate (höchstens
   // 0,1 s je Bild, damit ein ruckelndes Gerät die Show verlangsamt statt springen lässt)
   let droneCount = 300, radNow = 0, radAt = 0; // Drohnenzahl der Show (Größe der Lichter), aktuelle Lichtgröße
@@ -465,5 +466,5 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
     }
     return out;
   }
-  return { show, replay: () => goto(0), goto, beat: () => beat, setPaused, paused: () => userPaused, setRate: (r) => { rate = r; tick(); }, timeline, screenOf };
+  return { setMotionIndependent(v) { motionIndependent = !!v; sync(); tick(); }, show, replay: () => goto(0), goto, beat: () => beat, setPaused, paused: () => userPaused, setRate: (r) => { rate = r; tick(); }, timeline, screenOf };
 }

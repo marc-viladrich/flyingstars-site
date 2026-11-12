@@ -132,7 +132,7 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
       <div class="cfg-block cfg-drones">
         <p class="cfg-logo-count" id="cfg-logo-count" role="status" hidden><b id="cfg-logo-n"></b> <span>{t('logoMode.needed')}</span></p>
         <div class="cfg-drones-head"><label for="cfg-drones" id="cfg-drones-label">{t('configuratorteaser.drones')}</label><output id="cfg-dronecount" for="cfg-drones">{first.base}</output></div>
-        <input class="cfg-range" id="cfg-drones" {...record({collection:'previewPolicy',id:'configuration'})} type="range" min={DRONES_MIN} max={DRONES_MAX} step={DRONE_STEP} value={first.base} style={`--track: ${rangeTrack}`} />
+        <div class="cfg-drone-slider"><span id="cfg-logo-marker" class="cfg-logo-marker" hidden aria-hidden="true"></span><input class="cfg-range" id="cfg-drones" {...record({collection:'previewPolicy',id:'configuration'})} type="range" min={DRONES_MIN} max={DRONES_MAX} step={DRONE_STEP} value={first.base} style={`--track: ${rangeTrack}`} /></div>
         <div class="cfg-ticks mono" aria-hidden="true">{ticks.map((n) => <span style={`--p: ${at(n) / 100}`}>{n}</span>)}</div>
       </div>
 
@@ -152,21 +152,14 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
         <div class="cfg-logo-tools" id="cfg-logo-tools" hidden>
           <div class="cfg-tool">
             <span class="cfg-tool-head">{t('logoMode.examples')}</span>
-            <div class="cfg-examples" id="cfg-examples">{[["mastercard", "Mastercard"], ["ikea", "IKEA"], ["dhl", "DHL"], ["firefox", "Firefox"], ["spotify", "Spotify"], ["nike", "Nike"], ["apple", "Apple"], ["mcdonalds", "McDonald’s"], ["adidas", "Adidas"]].map(([id, name]) => <button type="button" data-example={id}>{name}</button>)}</div>
+            <div class="cfg-examples" id="cfg-examples">{[["mastercard", "Mastercard"], ["ikea", "IKEA"], ["dhl", "DHL"], ["firefox", "Firefox"], ["spotify", "Spotify"], ["nike", "Nike"], ["apple", "Apple"], ["mcdonalds", "McDonald’s"], ["adidas", "Adidas"], ["puma", "Puma"], ["cupra", "Cupra"], ["duolingo", "Duolingo"], ["energizer", "Energizer"], ["lamborghini", "Lamborghini"], ["shell", "Shell"], ["target", "Target"]].map(([id, name]) => <button type="button" data-example={id}>{name}</button>)}</div>
           </div>
           <div class="cfg-logo-own" id="cfg-logo-own" hidden>
             <div class="cfg-tool">
               <div class="cfg-tool-head"><label for="cfg-detail">{t('logoMode.density')}</label><button type="button" class="cfg-auto" id="cfg-detail-auto" aria-pressed="true">{t('logoMode.auto')}</button></div>
-              <input class="cfg-range cfg-range-plain" id="cfg-detail" type="range" min="0" max="100" step="1" value="50" />
+              <input class="cfg-range cfg-range-plain" id="cfg-detail" type="range" min="0" max="18" step="1" value="8" aria-describedby="cfg-density-risk" />
+              <span class="cfg-density-risk" id="cfg-density-risk" hidden>{t('logoMode.densityRisk')}</span>
             </div>
-            <fieldset class="cfg-tool">
-              <legend class="cfg-tool-head">{t('logoMode.flex')}</legend>
-              <div class="chips cfg-seg" id="cfg-flex">{[['auto', t('logoMode.auto')], ['strict', t('logoMode.flexStrict')], ['medium', t('logoMode.flexMedium')], ['flexible', t('logoMode.flexFlexible')]].map(([v, l]) => <label><input type="radio" name="logoflex" value={v} checked={v === 'auto'} /><span>{l}</span></label>)}</div>
-            </fieldset>
-            <fieldset class="cfg-tool">
-              <legend class="cfg-tool-head">{t('logoMode.part')}</legend>
-              <div class="chips cfg-seg" id="cfg-part">{[['auto', t('logoMode.auto')], ['full', t('logoMode.partFull')], ['mark', t('logoMode.partMark')]].map(([v, l]) => <label><input type="radio" name="logopart" value={v} checked={v === 'auto'} /><span>{l}</span></label>)}</div>
-            </fieldset>
           </div>
         </div>
         <div class="chips cfg-styles" id="cfg-styles" hidden>
@@ -193,6 +186,7 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
           <p class="cfg-meta mono" id="cfg-meta" {...field({collection:'showDuration',id:'configuration'},['outdoor','min'],{mode:'panel'})}>{t('packageDetails.showtimeLine',durationValues())} {t('showconfigurator.excludingVatAndTravel')}</p>
         </div>
         <a class="btn primary cfg-cta" id="cfg-cta" href={localHref("/#anfrage")}>{t('showconfigurator.enquireAboutThisShow')}</a>
+        <button type="button" class="btn primary cfg-use-logo" id="cfg-use-logo" hidden>{t('logoMode.useLogo')}</button>
         <p class="cfg-note" id="cfg-note">{t('showconfigurator.allMotifsShownHereAreExamplesWeCreateOriginalDesigns')}</p>
       </div>
     </form>

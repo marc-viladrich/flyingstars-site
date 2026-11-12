@@ -5,6 +5,8 @@
 //   23-logo-drohnen-konverter/tools/v10/examples.mjs). Gezeigt werden je Drohnenzahl nur die Logos, die in diese Zahl passen.
 // - Eigenes Logo: logo-v10 (Kontur, Budget-Flexibilität, Detailgrad), Entfernen von Teilen in einer flachen Ansicht über der
 //   Bühne (die Bühne selbst ist gekippt und fliegt; dort wäre ein Klick nicht verlässlich einer Drohne zuzuordnen).
+import { decodePoints } from "./logo-v10/prepared.mjs";
+import { exampleRaster } from "./logo-v10/example-raster.mjs";
 import { logoFormations } from "./logo-v10/logo-formation.js";
 import { colourRuns, targetKey, selectedPoints, widenSelection, selectElement, selectionForAction } from "./logo-v10/groups.mjs";
 import { nearestHit, rectUnits } from "./logo-v10/pick.mjs";
@@ -37,17 +39,17 @@ export async function customerLogos(n) {
  * formation(n) → Punkte [{ x, y, c: [r, g, b] }] mit meta { n, wanted, over, … } (Farben schon für den Nachthimmel).
  */
 export function logoSession(file, init = {}) {
+  const raster = exampleRaster(file);
   let opts = { flex: "auto", part: "auto", ...init }, inst = null, removed = [];
   if (opts.density == null) delete opts.density;
   const removals = () => ({ exclude: removed.filter((r) => !r.erase).flatMap((r) => r.anchors), erase: removed.filter((r) => r.erase).flatMap((r) => r.anchors) });
-  const fresh = () => { inst?.dispose(); inst = logoFormations(file, { opts: { ...opts } }); if (removed.length) inst.setRemovals(removals()); };
-  fresh();
+  const fresh = () => { inst?.dispose(); inst = logoFormations(file, { opts: { ...opts }, raster }); if (removed.length) inst.setRemovals(removals()); };
   return {
-    formation: (n, o) => inst.formation(n, o),
-    setOptions(next) { const o = { ...opts, ...next }; if (o.density == null) delete o.density; if (JSON.stringify(o) === JSON.stringify(opts)) return false; opts = o; fresh(); return true; },
+    formation: (n, o) => { if (!inst) fresh(); return inst.formation(n, o); },
+    setOptions(next) { const o = { ...opts, ...next }; if (o.density == null) delete o.density; if (JSON.stringify(o) === JSON.stringify(opts)) return false; opts = o; inst?.dispose(); inst = null; return true; },
     get options() { return { ...opts }; },
     get removed() { return removed; },
-    setRemoved(list) { removed = list; inst.setRemovals(removals()); },
+    setRemoved(list) { removed = list; inst?.setRemovals(removals()); },
     dispose() { inst?.dispose(); inst = null; },
   };
 }
@@ -163,3 +165,19 @@ export function cloudPoints(n) {
   return pts;
 }
 export const cloudLive = (p, j, t, o) => { o[0] += 0.05 * Math.sin(t * 0.8 + j * 1.31); o[1] += 0.04 * Math.cos(t * 0.65 + j * 2.17); o[2] += 0.05 * Math.sin(t * 0.5 + j * 0.73); o[3] = 0.55 + 0.35 * Math.sin(t * 1.3 + j * 0.9) ** 2; };
+
+const preparedExamples = new Map();
+export function loadExample(id) {
+  if (!preparedExamples.has(id)) preparedExamples.set(id, fetch(`/media/logo-modus/beispiele/${id}.json`).then(r => {
+    if (!r.ok) throw new Error(`Beispiel ${id}: ${r.status}`); return r.json();
+  }).catch(error => { preparedExamples.delete(id); throw error; }));
+  return preparedExamples.get(id);
+}
+export async function exampleFormation(id, n) {
+  const data = await loadExample(id), step = data.steps[n];
+  if (!step) throw new Error(`Unbekannte Drohnenstufe ${n}`);
+  const p = decodePoints(step.p), pts = [];
+  for (let i=0;i<p.length;i+=5) pts.push({ x:p[i]/1000, y:p[i+1]/1000, c:data.palette[p[i+2]], e:p[i+3], cg:p[i+4], wt:1 });
+  pts.meta = { frame:step.frame, elements:step.elements, colourGroups:step.colourGroups, spacing:step.spacing, n, over:pts.length>n };
+  return pts;
+}

@@ -3597,6 +3597,16 @@
     "en": "All occasions",
     "nl": "Alle gelegenheden"
   },
+  "logoMode.useLogo": {
+    "de": "Dieses Logo in der Show verwenden",
+    "en": "Use this logo in the show",
+    "nl": "Dit logo in de show gebruiken"
+  },
+  "logoMode.densityRisk": {
+    "de": "kann unleserlich werden",
+    "en": "may become unreadable",
+    "nl": "kan onleesbaar worden"
+  },
   "logoMode.density": {
     "de": "Liniendichte",
     "en": "Line density",

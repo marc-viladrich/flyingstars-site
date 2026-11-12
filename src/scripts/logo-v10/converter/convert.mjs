@@ -1,3 +1,4 @@
+import { filterRemoved } from './removed-mask.mjs';
 // Logo raster -> drone points. See DESIGN.md for the contract and the four ideas.
 import { segment } from './segment.mjs';
 import { structure } from './structure.mjs';
@@ -17,7 +18,7 @@ import { keepScore } from './keep.mjs';
 import { noiseOf, noiseClusters, fieldFigure, PAT_SHARE, PAT_MIN } from './pattern.mjs';
 import { detectContainer, withoutContainer, computeElements, elementAt, paintOut } from './elements.mjs';
 import { schematicImage, crestOf, SCH_TEXT_LABEL } from './schematic.mjs';
-import { outlineNets, outlineBuild, solveSpacingFor, strokeWidth, strokeOf, OUTLINE_WIDTH } from './outline.mjs';
+import { outlineLoops, outlineNets, outlineBuild, solveSpacingFor, strokeWidth, strokeOf, OUTLINE_WIDTH } from './outline.mjs';
 
 // Fidelity threshold: share of the salient fine-scale structure that must survive at the chosen spacing.
 // quality scales the allowed loss: loss <= (1 - TAU) / quality.
@@ -254,6 +255,20 @@ export function buildAt(ctx, s, active = null, two = null, samp = null, reuse = 
     // specks far below one drone's footprint (anti-aliasing debris, tiny marks) would only add noise
     if (F.area < 0.12 * s * s && F.region.width < 0.3 * s) return;
     let net = netOf(F, s);
+    // A connected stroke can lose the return side during band thinning near its width threshold.
+    // In contour mode repair disconnected open fragments from its single closed inset boundary.
+    if (ctx.contour && F.twoRows && !F.blob && !F.field && net.edges.length > 1 && net.edges.every(e => !e.closed)) {
+      const parent = new Map(), root = x => { if (!parent.has(x)) parent.set(x,x); const p=parent.get(x); if(p!==x)parent.set(x,root(p)); return parent.get(x); };
+      for(const e of net.edges) parent.set(root(e.a),root(e.b));
+      if(new Set(net.edges.map(e=>root(e.a))).size > 1 || (net.edges.some(e=>e.a===e.b) && net.edges.some(e=>e.a!==e.b))) {
+        const loops=outlineLoops(F, Math.min(INSET*s, .5*F.hwThin));
+        if(loops.length===1) {
+          const pts=loops[0].concat([loops[0][0]]);let len=0;
+          for(let i=1;i<pts.length;i++)len+=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);
+          net={edges:[{pts,len,closed:true,a:-1,b:-1}],nodes:[],points:[]};
+        }
+      }
+    }
     // v5 (P1): a blob too small to carry an outline of BLOB_DOTS dots at s: one dot (when it is big enough to
     // be seen as one) or nothing; a main blob keeps its outline (the spacing is capped for it, see settle)
     if (F.blob && !F.mainBlob && !F.touching) {
@@ -543,8 +558,8 @@ const LADDER_STEP = Math.sqrt(DEPICT_STEP), LOOK_AHEAD = 3;
 const QSTEP = 1.06; // v6.1: step of the coarsening walk for quality < 1
 
 // v7: defaults of the two controls (the app reads them): see TRAJECTORY.md, "v7 (author's notes)"
-// (DENSITY_MIN is only a guard against division by zero: every density from 0.05 up is honoured, see DENSITY_SAFE)
-export const DEFAULT_QUALITY = 1.3, DEFAULT_DENSITY = 0.6, DENSITY_MIN = 0.01, DENSITY_MAX = 3;
+// (DENSITY_MIN is only a guard against division by zero: every density from 0.03 up is honoured, see DENSITY_SAFE)
+export const DEFAULT_QUALITY = 1.3, DEFAULT_DENSITY = 0.6, DENSITY_MIN = 0.002, DENSITY_MAX = 3;
 // v9: contour mode. CONTOUR_DMIN: the sparsest line density a contour is drawn with; CONTOUR_INK: units with at least this
 // share of the ink set the contour spacing (rows 'two' used a fifth: a word of seven letters set none)
 export const CONTOUR_DMIN = 0.3, CONTOUR_INK = 0.03, CONTOUR_AREA = 0.01, CONTOUR_OVER = 2, CONTOUR_HARD = 3, CONTOUR_HAIR = 1, CONTOUR_THIN_P = 0.2;
@@ -601,7 +616,7 @@ export function convertCore(image, opts = {}, pre = null) {
   if (!(fillMode in FILL_MODES)) throw new Error(`opts.fill must be one of ${Object.keys(FILL_MODES).join(', ')}`);
   const seg = pre ? pre.seg : segment(image);
   const st = pre ? pre.st : structure(seg, { flat: !!opts._flat });
-  const ctx = { seg, st, figs: st.figures };
+  const ctx = { seg, st, figs: st.figures, contour };
   const budget = { min: minDrones, max: maxDrones, wanted: 0, over: false, cleanAt: null };
   if (!ctx.figs.length) return { width: image.width, height: image.height, points: [], spacing: 1, meta: { n: 0, part: 'full', dropped: st.dropped, simplified: [], note: 'nothing to draw', budget } };
   const [lx0, ly0, lx1, ly1] = st.logoBox;
@@ -1545,6 +1560,13 @@ export function convertCore(image, opts = {}, pre = null) {
       if (bd.pts.length) { pic = { ...pic, b: bd }; record('density', pic, { density }); }
     }
   }
+  // Manual risk range: keep the chosen contour, but let the user thin its rows.
+  // B() enforces the automatic contour floor, so sample the retained nets directly.
+  if (contour && (opts.densityManual ?? opts.density != null) && density < DENSITY_SAFE) {
+    const b = buildAt(ctx, pic.b.s, pic.act, pic.two, sampReq, pic.b);
+    pic = { ...pic, b };
+    record('density', pic, { density });
+  }
   const build = pic.b, s = build.s, active = pic.act;
   // v8: over the budget, the count the same structure would have at sparser rows (opts.densityProbe), so the caller
   // re-solves at a lower density only when that can fit (a dense crest's rows are capped by their clearance and do not
@@ -1786,6 +1808,7 @@ export function convert(image, opts0 = {}) {
   for (const p of opts.exclude || []) { if (!p || !Number.isFinite(+p.x) || !Number.isFinite(+p.y)) continue; const e = elementAt(E, W, H, +p.x, +p.y); if (e >= 0) ex.add(e); }
   const contId = extra.length ? 0 : -1;
   const drop = contId === 0 && (contMode === 'drop' || ex.has(contId));
+  const excludedContainer = ex.has(contId);
   ex.delete(contId);
   let base = drop ? imgE : image, pre = drop ? { seg: segE, st: stE } : { seg: seg0, st: st0 };
   if (ex.size) { base = paintOut(base, E.pix, ex); pre = null; }
@@ -1832,7 +1855,8 @@ export function convert(image, opts0 = {}) {
     }
     return best;
   };
-  const erased = new Set();
+  const erased = new Set(), removedPixels = new Uint8Array(W * H);
+  if (ex.size || excludedContainer) for (let i = 0; i < W * H; i++) if (ex.has(E.pix[i]) || (excludedContainer && E.pix[i] === contId)) removedPixels[i] = 1;
   if ((opts.erase || []).length) {
     const sgB = drop ? segE : seg0, ids = new Set();
     for (const p of opts.erase) { if (!p || !Number.isFinite(+p.x) || !Number.isFinite(+p.y)) continue; const k = compAt(sgB, +p.x, +p.y); if (k >= 0) ids.add(k); }
@@ -1849,6 +1873,7 @@ export function convert(image, opts0 = {}) {
           for (const j of [x > 0 ? i - 1 : -1, x < Wd - 1 ? i + 1 : -1, i - Wd, i + Wd]) { if (j < 0 || j >= N) continue; const q = C.lab[j]; if (q >= 0 && !ids.has(q) && near(k, q)) { ids.add(q); grew = true; } }
         }
       }
+      for (let i = 0; i < W * H; i++) if (ids.has(C.lab[i])) removedPixels[i] = 1;
       base = paintOut(base, C.lab, ids); pre = null;
     }
   }
@@ -1938,17 +1963,21 @@ export function convert(image, opts0 = {}) {
   if (core) Object.defineProperty(r, 'resample', { enumerable: false, value: n => {
     const q = core(Math.max(1, Math.round(n)));
     const points = q.pts.map(p => ({ x: +p.x.toFixed(2), y: +p.y.toFixed(2), ...q.colour(p), e: figElem(p.fi), cg: cgOf(p) }));
-    return { points, density: q.density, spacing: q.exact ? +q.s.toFixed(3) : r.spacing, placements: q.placements, fits: q.fits, ...(q.exact ? { exact: true, over: q.over, wanted: q.wanted } : {}) };
+    const kept = filterRemoved(points, removedPixels, W, H);
+    return { points: kept, density: q.density, spacing: q.exact ? +q.s.toFixed(3) : r.spacing, placements: q.placements, fits: kept.length <= n, ...(q.exact ? { exact: true, over: kept.length > n, wanted: q.wanted } : {}) };
   } });
   // v9: result.retarget(n) -> { points, density, fits, final }: the picture for another drone count on the same structure.
   // final = true when the line density it needs stays within RETARGET_BAND: then this IS the answer for n (shown as the
   // result, never replaced); otherwise the caller converts anew at n (and shows the living cloud meanwhile)
   if (core) Object.defineProperty(r, 'retarget', { enumerable: false, value: n => {
+    // Retarget solves density onto n. A manual density must instead be recomputed unchanged.
+    if (opts.densityManual ?? opts.density != null) return { final: false };
     const q = r.resample(n);
     // (v10 outline: the plan for n on the same outlines is the conversion's own answer, over N included)
     if (q.exact) return { ...q, final: true };
     return { ...q, final: q.fits && q.density >= RETARGET_BAND[0] && q.density <= RETARGET_BAND[1] && q.points.length >= DRONES_FLOOR * n - 1 };
   } });
+  r.points = filterRemoved(r.points, removedPixels, W, H);
   const nOf = new Map(); for (const p of r.points) nOf.set(p.e, (nOf.get(p.e) || 0) + 1);
   lap('elements');
   r.meta.timing = timing;
@@ -1965,6 +1994,7 @@ export function convert(image, opts0 = {}) {
     for (let y = Math.max(0, cy - r); y <= Math.min(H0 - 1, cy + r); y++) for (let x = Math.max(0, cx - r); x <= Math.min(W0 - 1, cx + r); x++) { if (lab[y * W0 + x] !== g.id) continue; const d = (x + 0.5 - g.at.x) ** 2 + (y + 0.5 - g.at.y) ** 2; if (d < bd) { bd = d; best = { x: x + 0.5, y: y + 0.5 }; } }
     return { id: g.id, n: g.n, e: g.e, anchor: best, rgb: [g.at.r, g.at.g, g.at.b] };
   });
+  r.meta.n = r.points.length; r.meta.budget.over = r.points.length > r.meta.budget.max;
   if (erased.size) r.meta.erased = erased.size;
   return r;
 }

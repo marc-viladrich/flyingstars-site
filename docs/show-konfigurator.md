@@ -898,3 +898,14 @@ Budget-Flexibilität als ein Regler (Zonen wie die Paketfarben am Drohnenregler)
   Puma 97, Mastercard 98/100; 390 px: Puma „Ganzes Logo“ = 207, rot, Karte). Bekannt: Playwright-WebKit stürzt beim
   Verkleinern des Fensters von 1440 auf 390 px auf jeder Seite der Site ab (auch „Über uns“, nicht auf einer leeren Seite);
   frisch mit 390 px geöffnet läuft alles. Nicht geprüft: Handys, Marcs Safari 18.6.
+- Nachtrag 4 (12.11. nachts, Marc): Leiste im Anlass „Euer Logo“: „Alle Anlässe“, Upload „Euer Logo“ (ohne Textfeld),
+  Beispiele (16, vorberechnet: Klick zeigt das Bild sofort, erst Liniendichte oder Entfernen rechnet live), große Zahl,
+  Drohnenregler, Liniendichte. Budget-Flexibilität und „Was zeigen“ entfernt (intern immer Automatisch; Marc hat sie bei
+  keinem Logo geändert). Liniendichte mit fünf neuen, sparsameren Stufen unten; die Spur ist dort korallrot, und solange
+  der Griff dort steht, steht darunter „kann unleserlich werden“. Der Bedarf bestimmt Paket und Preis; auf dem Drohnenregler
+  sitzt ein Bedarfspunkt in der Paketfarbe des Bedarfs (über 600: Koralle), die große Zahl hat dieselbe Farbe, der
+  gewünschte Griff und seine Zahl treten blass zurück. Bühne wieder in voller Höhe, Logo größer, Leiste ab Desktop breiter
+  (`clamp(22.5rem, 30vw, 36rem)`). Hinweiskarte schmal unten links, halbtransparent mit Weichzeichner, voll deckend bei
+  Hover/Fokus. Lebendige Wolke: verzerrte Uhr (Tempowechsel bis fast Stillstand), Breite/Höhe/Lage/Drehung wandern,
+  gelegentlich drei lose Haufen. Der Logo-Modus läuft auch, wenn die Show vorher pausiert war (`setMotionIndependent`).
+  Beim Entfernen eines Teils tauchen im entfernten Bereich keine neuen Punkte mehr auf (`removed-mask.mjs`).

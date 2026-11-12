@@ -29,6 +29,8 @@ export function recommendPackage(drones: number): ShowPackage {
  * 160–190 gilt ein eigener Aufpreis (SPARK_EXTRA), damit SPARK mit 190 Drohnen günstiger bleibt als HORIZON mit 200.
  * PLATZHALTER: Bereichsgrenzen und Aufpreise sind noch nicht mit FlyingStars geklärt.
  */
+// Marc, 12.11.2026: ODYSSEY reicht in der Vorschau bis 1000 Drohnen.
+// Preise folgen weiterhin dem bestehenden ODYSSEY-Aufpreis; die Policy bleibt vorläufig.
 export const DRONE_RANGES_PLACEHOLDER = previewPolicy.placeholder;
 export const DRONE_STEP = previewPolicy.step;
 export const DRONE_RANGES = previewPolicy.ranges;

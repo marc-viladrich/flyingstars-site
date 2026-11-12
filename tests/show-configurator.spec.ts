@@ -40,6 +40,20 @@ const picture = (page: Page) => field(page).evaluate((node) => {
 });
 const pictureWidth = async (page: Page) => (await picture(page)).width;
 
+test('Deep-Link mit 1000 Drohnen zeigt ODYSSEY, fortgerechneten Preis und die neue Endmarke', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  await page.goto(`${CFG}?drohnen=1000#konfigurator`);
+  await expect(page.locator('#cfg-drones')).toHaveAttribute('max', '1000');
+  await expect(page.locator('#cfg-drones')).toHaveValue('1000');
+  await expect(page.locator('#cfg-pkg')).toHaveText('ODYSSEY');
+  await expect(page.locator('#cfg-price')).toHaveText('ab 104.200 €');
+  await expect(page.locator('.cfg-ticks span')).toHaveText(['100', '200', '300', '1000']);
+  await expect(field(page)).toHaveAttribute('data-points', '1000');
+  await expect(field(page)).toHaveAttribute('data-running', 'true');
+  expect(errors).toEqual([]);
+});
+
 test('Preis nur über den Aufwand; jeder Anlass zeigt drei Motive, jedes Bild mit genau den Drohnen des Pakets', async ({ page }, info) => {
   test.setTimeout(180_000);
   const errors: string[] = [];
@@ -486,7 +500,7 @@ test('Paketwechsel und Regler melden alle neuen Motive auf einmal und fliegen zu
   await pkg(page, 1);
   await page.locator('#cfg-drones').focus();
   await page.keyboard.press('End');
-  await expect(droneCount(page)).toHaveText('600');
+  await expect(droneCount(page)).toHaveText('1000');
   await expect(page.locator('#cfg-toast')).toHaveText('2 neue Motive: Lotusblüten, Antrag');
   await expect(scene(page)).toHaveText('Zwei Knospen');
   expect(await beatsSeen(page)).toEqual(expect.arrayContaining([expect.stringMatching(/:all$/)])); // durch die Wolke

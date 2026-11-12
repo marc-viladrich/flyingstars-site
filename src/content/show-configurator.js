@@ -31,8 +31,8 @@ export const STEPS = stepsFor(defaultLocale);
 /**
  * Sechzehnte Fassung (Marc, 31.10.2026: „Sehe ich das richtig, dass bei den meisten Anlässen keine neuen Motive
  * freigeschaltet werden, wenn wir mehr Drohnen auswählen? … mit mehr Drohnen neue, komplexere Motive freischalten“):
- * eine Freischalt-Leiter in jedem Paket. Jedes Paket hat zwei Sprossen, abgeleitet aus seinem Drohnenbereich
- * (DRONE_RANGES in show-packages.ts): der Einstieg und die Mitte des Bereichs, auf 50 gerundet. Mit den heutigen Bereichen
+ * eine Freischalt-Leiter in jedem Paket. Der Einstieg folgt dem Drohnenbereich; die zweite Sprosse ist eine
+ * feste inhaltliche Freischaltschwelle, unabhängig vom Vorschau-Maximum. Die Sprossen bleiben
  * SPARK 100/150, HORIZON 200/250, ODYSSEY 300/450.
  * Jedes Motiv nennt mit `from` die Sprosse, ab der es spielt ([Paket, 0 | 1]). Daraus bekommt jede Fassung ihr
  * `minDrones`: im ersten Paket die Zahl der Sprosse, in jedem größeren Paket dessen Einstieg. So gilt über den ganzen
@@ -41,8 +41,8 @@ export const STEPS = stepsFor(defaultLocale);
  * mindestens eine Freischaltung innerhalb des Bereichs, die komplexeren Motive (mehr Teile, 3D, Geschichte) später.
  * PLATZHALTER: Die Zuordnung ist nicht mit FlyingStars abgestimmt (docs/show-motive-inventar.md, „Freischalt-Leiter“).
  */
-const roundTo = (v, step) => Math.round(v / step) * step;
-export const LADDER = Object.fromEntries(Object.entries(DRONE_RANGES).map(([pkg, { min, max }]) => [pkg, [min, Math.max(min + DRONE_STEP, min + roundTo((max - min) / 2, 50))]]));
+const SECOND_UNLOCK = { SPARK: 150, HORIZON: 250, ODYSSEY: 450 };
+export const LADDER = Object.fromEntries(Object.entries(DRONE_RANGES).map(([pkg, { min }]) => [pkg, [min, SECOND_UNLOCK[pkg]]]));
 /** Sprossen als Kurzform für die Motivliste. */
 /** @type {[string, number]} */ const S0 = ['SPARK', 0];
 /** @type {[string, number]} */ const S1 = ['SPARK', 1];

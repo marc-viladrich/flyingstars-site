@@ -2,7 +2,7 @@
 import { contentPipeline, mapPoint } from './content-fit.mjs';
 import { rasterizeFile } from './raster.js';
 import { fitToShow } from './formation-core.mjs';
-export function logoFormations(file,{opts={}}={}) {
+export function logoFormations(file,{opts={},raster=rasterizeFile}={}) {
  opts={...opts};
  const spawn=()=>{const w=new Worker(new URL('./logo-worker.js',import.meta.url),{type:'module'}),waiting=new Map();let seq=0;
   w.onmessage=e=>{const x=waiting.get(e.data.id);waiting.delete(e.data.id);e.data.error?x?.reject(new Error(e.data.error)):x?.resolve(e.data);};
@@ -11,7 +11,7 @@ export function logoFormations(file,{opts={}}={}) {
  };
  let server=null,job=null,passes=null,disposed=false,version=0,removal={exclude:(opts.exclude||[]).map(p=>({...p})),erase:(opts.erase||[]).map(p=>({...p}))};
  const cache=new Map(),fast=new Set(),completed=new Set();let sourceLong=Infinity;
- const ready=(async()=>{if(!/\.svg$/i.test(file.name||'')&&file.type!=='image/svg+xml'){const b=await createImageBitmap(file);sourceLong=Math.max(b.width,b.height);b.close();}return rasterizeFile(file,512);})();
+ const ready=(async()=>{if(!/\.svg$/i.test(file.name||'')&&file.type!=='image/svg+xml'){const b=await createImageBitmap(file);sourceLong=Math.max(b.width,b.height);b.close();}return raster(file,512);})();
  function cancel(){if(job){job.worker?.kill();cache.delete(job.key);job=null;}}
  const keyOf=n=>JSON.stringify([n,...[removal.exclude,removal.erase].map(a=>a.map(p=>[p.x,p.y]).sort((a,b)=>a[0]-b[0]||a[1]-b[1]))]);
  async function pack(result,n,t){const pts=await fitToShow(result,n);const f=pts.frame; if(f)pts.meta.frame=t?{sx:f.sx*t.sx,sy:f.sy*t.sy,ox:f.ox-t.x*t.sx*f.sx,oy:f.oy-t.y*t.sy*f.sy}:f;if(t){pts.meta.elements=(result.meta?.elements||[]).map(e=>({...e,anchor:e.anchor?mapPoint(e.anchor,t,true):null}));pts.meta.colourGroups=(result.meta?.colourGroups||[]).map(g=>({...g,anchor:g.anchor?mapPoint(g.anchor,t,true):null}));}return pts;}
@@ -27,7 +27,7 @@ export function logoFormations(file,{opts={}}={}) {
    if(debounceMs)await new Promise(resolve=>setTimeout(resolve,debounceMs));
    if(disposed||version!==v||job!==mine)throw new Error('stopped');
    const W=mine.worker=spawn();
-   const out=await contentPipeline(size=>size===512?first:rasterizeFile(file,size),async(image,o)=>(await W.ask({image,opts:o})).result,{...opts,...removal,drones:n},{sourceLong});
+   const out=await contentPipeline(size=>size===512?first:raster(file,size),async(image,o)=>(await W.ask({image,opts:o})).result,{...opts,...removal,drones:n},{sourceLong});
    if(disposed||version!==v||job!==mine){W.kill();throw new Error('stopped');}
    server?.kill();server=W;passes=out.passes;mine.worker=null;
    return pack(out.result,n,passes.at(-1));

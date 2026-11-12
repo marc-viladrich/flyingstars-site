@@ -59,7 +59,7 @@ function ornament(occasion, k, halfWidth, top) {
 }
 /** The frame of the initials: a heart for a wedding, a circle otherwise. */
 const frame = (occasion, k, r) => (occasion === "hochzeit"
-  ? heartOutline(k < 160 ? k : 159).concat([]).slice(0, k).map(([x, y]) => [(x / 16) * r * 1.15, (y / 16) * r * 1.15 + 0.08, 0])
+  ? heartOutline(k).map(([x, y]) => [(x / 16) * r * 1.15, (y / 16) * r * 1.15 + 0.08, 0])
   : sampleOutline([circle(0, 0, r, 160)], k).map(([x, y]) => [x, y, 0]));
 
 const height = (pts) => { const ys = pts.map((p) => p[1]); return Math.max(...ys) - Math.min(...ys); };

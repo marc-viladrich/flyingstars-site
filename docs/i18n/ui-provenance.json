@@ -1464,5 +1464,9 @@
   {"key":"logoMode.needed","locale":"en","origin":"machine-new","components":["src/components/configurator/ShowConfigurator.astro","src/scripts/show-configurator.js"]},
   {"key":"logoMode.needed","locale":"nl","origin":"machine-new","components":["src/components/configurator/ShowConfigurator.astro","src/scripts/show-configurator.js"]},
   {"key":"logoMode.wanted","locale":"en","origin":"machine-new","components":["src/components/configurator/ShowConfigurator.astro","src/scripts/show-configurator.js"]},
-  {"key":"logoMode.wanted","locale":"nl","origin":"machine-new","components":["src/components/configurator/ShowConfigurator.astro","src/scripts/show-configurator.js"]}
+  {"key":"logoMode.wanted","locale":"nl","origin":"machine-new","components":["src/components/configurator/ShowConfigurator.astro","src/scripts/show-configurator.js"]},
+{"key":"logoMode.densityRisk","locale":"en","origin":"machine-new","components":["src/components/configurator/ShowConfigurator.astro"]},
+{"key":"logoMode.densityRisk","locale":"nl","origin":"machine-new","components":["src/components/configurator/ShowConfigurator.astro"]},
+{"key":"logoMode.useLogo","locale":"en","origin":"machine-new","components":["src/components/configurator/ShowConfigurator.astro"]},
+{"key":"logoMode.useLogo","locale":"nl","origin":"machine-new","components":["src/components/configurator/ShowConfigurator.astro"]}
 ]
