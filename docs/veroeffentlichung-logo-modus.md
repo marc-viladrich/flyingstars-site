@@ -131,3 +131,10 @@ Die zusätzliche Logo-Hinweisbox auf der Bühne ist vollständig aus Markup und 
 ### Korrektur des lokalen Audit-Ziels
 
 Der erste Audit auf Port 4398 verwendete einen bereits vorhandenen Server; der eigene Preview war auf 4399 ausgewichen. Der bestehende Server auf 4398 wurde beim Aufräumen versehentlich beendet. Port 4391 blieb unberührt. Deshalb wurde der Audit vollständig gegen einen vorher geprüft freien, ausdrücklich mit `/opt/homebrew/bin/node` gestarteten Produktionspreview auf 44781 wiederholt: Chromium und WebKit jeweils 22 Seiten × fünf Breiten, null Befunde. Maßgebliche Logs: `/tmp/fs-publish-layout-final-chromium.log` und `/tmp/fs-publish-layout-final-webkit.log`; der eigene Prozess auf 44781 ist beendet.
+
+## Blocker behoben (Claude, 12.11.2026)
+
+Mobiles WebKit (iPhone 13, 664 px Sichthöhe): Die dritte Anlass-Chipreihe („Euer Logo“) schob die Paketknöpfe unter die
+Preisleiste. Für niedrige Handys (`(--nav-collapsed) and (max-height: 45em)`) ist die Bühne 36svh (min. 14rem) hoch, der
+Panel-Abstand knapper, und der Sprung auf `#konfigurator` scrollt den Kicker unter die Bühne. Gemessen: Paketknöpfe
+516–587 px, Preisleiste ab 599 px. „Auf den ersten Blick“ und „Die Anfrage übernimmt …“ grün auf allen vier Profilen.

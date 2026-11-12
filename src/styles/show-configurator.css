@@ -230,6 +230,13 @@
     /* angesteuerte Felder (Fokus, Tastatur) bleiben zwischen der klebenden Bühne und der Preisleiste sichtbar */
     .cfg-panel :is(input, select, button, .cfg-upload) { scroll-margin: calc(4rem + max(42svh, 17.5rem) + 1rem) 0 6rem; }
   }
+  /* niedrige Handys (iPhone 13: 664 px Sichthöhe): Bühne und Abstände etwas knapper, damit Anlass, Paket und Preisleiste
+     beim Sprung auf #konfigurator gemeinsam zu sehen sind (der Anlass „Euer Logo“ bringt eine dritte Chipreihe) */
+  @media (--nav-collapsed) and (max-height: 45em) {
+    .cfg { scroll-margin-top: calc(var(--nav-h) - var(--space-3) - 8.5rem); } /* der Kicker darf beim Sprung unter der Bühne liegen; die Paketknöpfe stehen über der Preisleiste */
+    .cfg-stage { height: 36svh; min-height: 14rem; }
+    .cfg-panel { gap: var(--space-4); }
+  }
 
 /* Runde 27: Anlass „Euer Logo“ (Marc 12.11., zweite Runde). Im Anlass treten Anlass- und Paketwahl, Abspielleiste und
    Motiv-Hinweise zurück; Formen werden direkt auf der Bühne gewählt (.cfg-pick über dem Feld) */
