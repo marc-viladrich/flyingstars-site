@@ -549,7 +549,7 @@ test('Eigenes Logo per Dateiauswahl und Drag&Drop: eigenes Bild im Ablauf, die D
   await page.waitForTimeout(300);
   const storage = await page.evaluate(() => JSON.stringify([{ ...localStorage }, { ...sessionStorage }]));
   page.on('request', (r) => { if (!r.url().startsWith('blob:') && !r.url().startsWith('data:')) requests.push(`${r.method()} ${r.url()} ${r.postData() ?? ''}`); });
-  await expect(page.locator('#cfg-legal')).toHaveText('Lade nur Logos hoch, die du verwenden darfst, zum Beispiel dein eigenes. Die Datei bleibt in deinem Browser: Wir speichern und übertragen sie nicht.');
+  await expect(page.locator('#cfg-legal')).toHaveText('Lade nur Logos hoch, die du verwenden darfst. Die Umrechnung läuft in deinem Browser. Übertragen wird das Logo erst, wenn du es mit einer Anfrage absendest.');
   await expect(page.locator('#cfg-file')).toHaveAccessibleDescription(/Lade nur Logos hoch/);
   await recordBeats(page);
   // Der Budgetvertrag erlaubt nur die vollständige Mindestfassung oberhalb des Show-Budgets.
@@ -607,7 +607,9 @@ test('Eigenes Logo per Dateiauswahl und Drag&Drop: eigenes Bild im Ablauf, die D
   // nothing left the browser: no request with the file, no storage
   expect(requests.filter((r) => !r.startsWith('GET ')), 'keine Übertragung').toEqual([]);
   expect(requests.filter((r) => !/^GET http:\/\/127\.0\.0\.1:\d+\//.test(r)), 'nur eigene Dateien der Seite').toEqual([]);
-  expect(await page.evaluate(() => JSON.stringify([{ ...localStorage }, { ...sessionStorage }]))).toBe(storage);
+  // Runde 28: „Dieses Logo in der Show verwenden“ bereitet den Anfrage-Anhang tabgebunden in sessionStorage vor
+  // (docs/integrations/logo-attachments.md); sonst bleibt der Speicher unverändert, und gesendet wird erst mit der Anfrage
+  expect(await page.evaluate(() => { const ss: Record<string, string> = { ...sessionStorage }; delete ss['flyingstars:logo-inquiry']; return JSON.stringify([{ ...localStorage }, ss]); })).toBe(storage);
   expect(errors).toEqual([]);
 });
 

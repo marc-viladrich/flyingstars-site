@@ -63,6 +63,9 @@ const sources = [['Google', 'Google'], ['Empfehlung', t('contactform.recommendat
           </div>
           <span class="hint" id="paket-hint">{t('contactform.sparkClassic2dHorizon3dInMotionOdyssey3dStorytelling')}</span>
         </div>
+        {/* Runde 28: das im Konfigurator übernommene Logo als Angabe zur Show, im ersten Schritt nach dem Paket; Inhalt
+             zeichnet logo-inquiry-form.ts. Gesendet wird erst mit der Anfrage. */}
+        <div class="field logo-att" data-logo-inquiry hidden aria-live="polite"></div>
         {/* Extras von der Preisseite (?extras=express,film): erscheint nur, wenn dort welche gewählt wurden, damit der erste
              Schritt sonst kurz bleibt; dann abwählbar und ergänzbar (Marc, 01.11.2026) */}
         <div class="field" data-extras-field hidden>
@@ -93,7 +96,6 @@ const sources = [['Google', 'Google'], ['Empfehlung', t('contactform.recommendat
         <p class="hint">{t('contactform.processingNotice')} <a href={localHref("/datenschutz/")}>{t('contactform.privacyPolicy')}</a>.</p>
         <div aria-hidden="true" class="honeypot"><label>Website<input autocomplete="off" name="website" tabindex="-1" /></label></div>
       </fieldset>
-      <div data-logo-inquiry hidden aria-live="polite"></div>
       <p class="form-status" data-form-status data-load-error={t('contact.valuePleaseTryAgainLaterOrEmailTeamFlyingstarsArt', { email:CONTACT.email, v0: t('contact.deliveryFailed') })} role="status" tabindex="-1"></p>
     </form>
   </div>

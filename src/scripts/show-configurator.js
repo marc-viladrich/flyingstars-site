@@ -360,6 +360,8 @@ if (form) {
     box.hidden = !own || !pts;
     const label = $("#cfg-pkg-label");
     label.hidden = !own || !pts;
+    // Runde 28: „Dieses Logo in der Show verwenden“ erst, wenn das Logo berechnet ist (vorher übernahm ein schneller Klick nichts)
+    $("#cfg-use-logo").disabled = !pts;
     if (!own || !pts) return;
     $("#cfg-logo-n").textContent = String(pts.length);
     // Runde 27, vierte Runde: die Zahl in der Farbe des Pakets, das diese Zahl braucht (über dem Regler: Koralle)
@@ -741,9 +743,13 @@ if (form) {
     if (!logo?.file || !lastLogoPts?.length) return;
     const need = lastLogoPts?.length ?? 0;
     if (need) { const st = +slider.step || 1; drones = snapDrones(Math.max(+slider.min, Math.min(+slider.max, Math.ceil(need / st) * st))); slider.value = String(drones); } // die Empfehlung gilt in beide Richtungen (Cupra mit 92 → SPARK)
-    try { if (logo.example) clearLogoInquiry(); else await prepareLogoInquiry(logo.file, lastLogoPts, drones); }
-    catch { $("#cfg-logo-status").textContent = message("logoInquiry.invalid"); return; }
+    // Runde 28: erst zurück zur Show, dann den Anfrage-Anhang im Hintergrund vorbereiten (das Punktbild zu kodieren dauert
+    // spürbar). Ein Anhang, der sich nicht vorbereiten lässt, hält die Übernahme nicht auf; die Anfrage geht dann ohne ihn.
+    const file = logo.file, example = logo.example, pts = lastLogoPts, n = drones;
     back.click();
+    if (example) { clearLogoInquiry(); return; }
+    try { await prepareLogoInquiry(file, pts, n); }
+    catch { clearLogoInquiry(); $("#cfg-logo-status").textContent = message("logoInquiry.invalid"); }
   });
   back.addEventListener("click", () => { occRadio(occasion.id).checked = true; occGroup.dispatchEvent(new Event("change", { bubbles: true })); occRadio(occasion.id).focus(); });
   minimap.addEventListener("click", () => { const big = minimap.getAttribute("aria-pressed") !== "true"; minimap.setAttribute("aria-pressed", String(big)); });

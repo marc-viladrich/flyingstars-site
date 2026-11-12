@@ -310,6 +310,7 @@ fieldset.cfg-tool { margin: 0; padding: 0; border: 0; min-width: 0; }
 .cfg.is-logomode:not(.has-logo) .cfg-sum { display: none; }
 .cfg-drone-slider .cfg-range { display: block; }
 .cfg-use-logo[hidden] { display: none; }
+.cfg-use-logo:disabled { opacity: 0.45; cursor: progress; }
 /* Runde 28: „Passendes Paket für N Drohnen“ über dem Paketnamen, als Beschriftung des Werts (keine Eyebrow) */
 .cfg-pkg-label { margin: 0; color: var(--muted); font-size: var(--text-sm); line-height: 1.3; }
 .cfg-pkg-label[hidden] { display: none; }

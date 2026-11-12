@@ -896,6 +896,20 @@ td.us { color: var(--text); background: var(--fill-soft); }
 @keyframes opt-in { from { opacity: 0; transform: translateY(-0.5rem); clip-path: inset(0 0 100% 0); } to { opacity: 1; transform: none; clip-path: inset(0); } }
 @media (prefers-reduced-motion: reduce) { .ask.has-opt .opt.open { animation: none; } }
 .ask .actions { display: flex; gap: var(--space-2-5); }
+/* Runde 28: übernommenes Logo als Angabe im ersten Schritt (Kacheln wie Anhänge, je einzeln entfernbar) */
+.ask .logo-att-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2-5); }
+.ask .logo-att-list li { display: flex; align-items: center; gap: var(--space-3); min-height: 3rem; padding: var(--space-1-5) var(--space-1-5) var(--space-1-5) var(--space-1-5); border: 1px solid var(--line-strong); border-radius: var(--radius-12); background: var(--surface); min-width: 0; }
+.ask .logo-att-list li[data-logo-item="drones"] { padding-left: var(--space-3-5); }
+.ask .logo-att-thumb { flex: none; display: grid; place-items: center; width: 4rem; height: 4rem; border-radius: var(--radius-9); overflow: hidden; }
+.ask .logo-att-thumb.is-original { background: var(--text); padding: var(--space-1-5); }
+.ask .logo-att-thumb.is-preview { background: rgb(var(--rgb-media-ground)); }
+.ask .logo-att-thumb img { width: 100%; height: 100%; object-fit: contain; }
+.ask .logo-att-cap { display: grid; gap: var(--space-0-5); min-width: 0; font-size: var(--text-sm); color: var(--text); }
+.ask .logo-att-cap b { font-weight: 400; }
+.ask .logo-att-cap small { font-size: var(--text-label); color: var(--faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 12rem; }
+.ask .logo-att-x { flex: none; width: 2.25rem; height: 2.25rem; border: 0; border-radius: var(--radius-round); background: transparent; color: var(--muted); font: 400 var(--text-md)/1 var(--body); cursor: pointer; }
+.ask .logo-att-x:hover { color: var(--text); background: var(--line-soft); }
+.ask .logo-att-x:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offset: 0.0625rem; }
 .ask [aria-invalid="true"] { border-color: var(--bad); }
 
 /* Presse und „Qualität und Sicherheit“ (Studie 6) */
