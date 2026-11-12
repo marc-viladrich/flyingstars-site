@@ -7,6 +7,9 @@ import { routes } from './routes';
 for (const route of routes) {
   test(`axe: ${route}`, async ({ page }) => {
     await page.goto(route);
+    // WebKit applies the dropdown's delayed visibility transition at initial paint.
+    // Scan the settled closed state, not translucent text during that transition.
+    await expect(page.locator('#lang-header')).toBeHidden();
     // Alle FAQ-Akkordeons öffnen, damit auch verborgener Inhalt geprüft wird.
     await page.locator('details').evaluateAll((els) => els.forEach((d) => d.setAttribute('open', '')));
     const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']).analyze();

@@ -29,6 +29,17 @@ test('Locale URLs keep page, query and anchor identities; assets and external UR
   assert.equal(localeOfId('kontakt'), 'de');
 });
 
+test('404 language links target Astro’s emitted files in every direction', () => {
+  for (const source of ['/404/', '/404.html', '/en/404/', '/nl/404/']) {
+    for (const locale of LOCALES) {
+      const suffix = '?from=missing#help';
+      const target = locale === 'de' ? '/404.html' : `/${locale}/404/`;
+      assert.equal(localizedHref(source + suffix, locale), target + suffix);
+      assert.equal(localizedHref(target, locale), target);
+    }
+  }
+});
+
 test('Every UI message has all locales and exactly the same interpolation fields', () => {
   const tokens = (text) => [...new Set(text.match(/\{\w+\}/g) ?? [])].sort();
   for (const [key, values] of Object.entries(messages)) for (const locale of LOCALES) {

@@ -1,0 +1,9 @@
+{
+  "$comment": "Ausnahme nur für das freigegebene Hero-Video, identisch auf main (3a3859d) und in PR 35: 2.842.185 Bytes H.264/1440 plus 2 % Transferpuffer. Entscheidung Marc offen (Nachhaltigkeit/Ladegewicht). Kein neues Encoding. Alle Nicht-Media-Ressourcen zusammen behalten das bisherige 1-MB-Gesamtbudget; Script-, CSS- und Bild-Gates bleiben unverändert. Andere Media-Dateien sind nicht ausgenommen.",
+  "nonMediaBytes": 1000000,
+  "approvedMedia": {
+    "path": "/media/video-lab/loop16-h264-1440-v9.mp4",
+    "bytes": 2842185,
+    "transferBuffer": 0.02
+  }
+}

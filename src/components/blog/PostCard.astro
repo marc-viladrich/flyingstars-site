@@ -5,15 +5,15 @@ const { t, localHref } = forPath(Astro.url.pathname);
 // Blogkarte im Look der Referenzkarten (global .proj): Bild mit Vorhang und Lichtpunkt-Hover über die ganze Karte,
 // Lesezeit auf dem Bild, Kicker mit Thema und Datum, Titel, ein Satz.
 import type { CollectionEntry } from 'astro:content';
-import { optimizedImage } from '../../lib/media';
+import Picture from '../Picture.astro';
 import { sourceId } from '../../i18n/routing.mjs';
 import { dateOf, readingMinutes, topicOf } from './post-meta';
 interface Props { post: CollectionEntry<'posts'>; i?: number; level?: 'h2' | 'h3' }
 const { post, i = 0, level = 'h2' } = Astro.props;
 const T = level;
-const image = post.data.cover ? await optimizedImage(post.data.cover.src) : undefined;
+const image = post.data.cover;
 ---
 <MediaCard variant="editorial" class="post-card" href={localHref(`/blog/${sourceId(post.id)}/`)} title={post.data.title} level={T} summary={post.data.description} hasMedia={Boolean(image)} i={i % 3} badge={`${readingMinutes(post)} ${t('postcard.minRead')}`}>
-  <Fragment slot="media">{image && <img src={image.src} {...image.attributes} width={image.width} height={image.height} alt={post.data.cover!.alt} loading="lazy" decoding="async" />}</Fragment>
+  <Fragment slot="media">{image && <Picture {...image} sizes="(max-width: 45em) 92vw, (max-width: 68.75em) 45vw, 30vw" />}</Fragment>
   <span class="kick mono" slot="meta">{topicOf(post)} · <time datetime={post.data.date.toISOString()}>{dateOf(post)}</time></span>
 </MediaCard>
