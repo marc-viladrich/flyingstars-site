@@ -1444,5 +1444,7 @@
   {"key":"logoMode.close","locale":"en","origin":"machine-new","components":["src/components/configurator/ShowConfigurator.astro","src/scripts/show-configurator.js"]},
   {"key":"logoMode.close","locale":"nl","origin":"machine-new","components":["src/components/configurator/ShowConfigurator.astro","src/scripts/show-configurator.js"]},
   {"key":"logoMode.original","locale":"en","origin":"machine-new","components":["src/components/configurator/ShowConfigurator.astro","src/scripts/show-configurator.js"]},
-  {"key":"logoMode.original","locale":"nl","origin":"machine-new","components":["src/components/configurator/ShowConfigurator.astro","src/scripts/show-configurator.js"]}
+  {"key":"logoMode.original","locale":"nl","origin":"machine-new","components":["src/components/configurator/ShowConfigurator.astro","src/scripts/show-configurator.js"]},
+  {"key":"logoMode.customerFrom","locale":"en","origin":"machine-new","components":["src/scripts/show-configurator.js"]},
+  {"key":"logoMode.customerFrom","locale":"nl","origin":"machine-new","components":["src/scripts/show-configurator.js"]}
 ]

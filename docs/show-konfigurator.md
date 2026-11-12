@@ -875,3 +875,14 @@ Budget-Flexibilität als ein Regler (Zonen wie die Paketfarben am Drohnenregler)
   gestrichelten Marke (gleitet bei jeder neuen Berechnung), daneben „Logo braucht ca. N“. Die Kundenlogo-Folge zeigt nur die
   beste (flexible) Fassung; die strenge nur, wenn sonst keine drei Logos in die Zahl passen (bei 200 Drohnen: DKB, Prada,
   REWE, Spotify). Unit-Tests 727/731 nach den Korrekturen; die zwei bekannten Fehler bestehen auch ohne diese Runde.
+- Nachtrag 2 (12.11. nachts, Marc): Im Anlass „Euer Logo“ nur Drohnenzahl, Liniendichte (statt Detailgrad; die
+  Budget-Flexibilität ist fest „Mittel“), „Euer Text, euer Logo“ und die Preiskachel; Anlass, Paket, Abspielleiste,
+  Bildunterschrift und Motiv-Hinweise treten zurück, „Alle Anlässe“ führt zurück. Hochladen zeigt sofort die lebendige
+  Wolke (eigenes Bild mit live-Bewegung), bis das Logo gerechnet ist. Braucht das Logo mehr Drohnen: große Zahl = Bedarf in
+  der Paketfarbe, gewählte Zahl durchgestrichen, Griff blass, gestrichelter Bogen zum Bedarf; × am Bogen legt das Logo in die
+  gewählte Zahl (strenge Flexibilität); kurzer Fokus auf den Regler; der Hinweis steht als Karte auf der Bühne. Formen
+  werden direkt auf der Bühne gewählt (`createField().screenOf()` liefert die Bildschirmlage je Punkt), ein Klick auf die
+  Bühne hält dort nicht mehr an. Minimap mit dem Original oben rechts. Kundenlogos: nur von Hand freigegebene Bilder
+  (`ok` in kundenlogos.json, Begründungen in `23-logo-drohnen-konverter/screens/v10-kundenlogos/README.md`); passen weniger
+  als zwei, laufen bis zu vier mit ihrer eigenen Zahl („mit 400 Drohnen“). Geprüft in Chromium und WebKit (Upload, Wolke,
+  Bedarf, Karte, Klick- und Rahmenauswahl, Entfernen, Liniendichte, ×).

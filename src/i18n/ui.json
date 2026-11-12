@@ -3626,5 +3626,10 @@
     "de": "Original zeigen",
     "en": "Show original",
     "nl": "Origineel tonen"
+  },
+  "logoMode.customerFrom": {
+    "de": "Kundenlogo: {name} · mit {n} Drohnen",
+    "en": "Client logo: {name} · with {n} drones",
+    "nl": "Klantlogo: {name} · met {n} drones"
   }
 }

@@ -347,7 +347,7 @@ if (form) {
     }
     const mod = await logoModule(), list = await mod.customerLogos(drones);
     if (!list.length) return null;
-    return { beats: list.map((x, i) => { const lit = x.pts.map(([px, py]) => [px, -py, 0, 255, 255, 255]); return logoBeat([...lit, ...darkReserve(lit, drones)], message('logoMode.customer', { name: x.name }), i, 3.4); }), loopTo: 0 };
+    return { beats: list.map((x, i) => { const lit = x.pts.map(([px, py]) => [px, -py, 0, 255, 255, 255]); return logoBeat([...lit, ...darkReserve(lit, drones)], x.fits ? message('logoMode.customer', { name: x.name }) : message('logoMode.customerFrom', { name: x.name, n: x.n }), i, 3.4); }), loopTo: 0 };
   }
   const logoFailed = (id) => {
     if (id !== logoId) return;

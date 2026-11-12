@@ -15,18 +15,21 @@ let examples = null;
 export async function customerLogos(n) {
   examples ??= fetch("/media/logo-modus/kundenlogos.json").then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.json(); });
   const data = await examples;
-  const step = [...data.counts].reverse().find((c) => c <= n) ?? data.counts[0];
+  // nur von Hand freigegebene Bilder (ok: geprüft in 23-logo-drohnen-konverter/screens/v10-kundenlogos); je Logo das größte
+  // freigegebene Bild bis zur gewählten Zahl. Passen weniger als zwei, kommen die kleinsten freigegebenen Bilder darüber
+  // dazu, mit ihrer eigenen Zahl (die Bildunterschrift nennt sie): lieber ein ehrliches „ab 400“ als ein wackliges Logo
+  const pick = (logo, test) => { const c = [...data.counts].filter((k) => logo.steps[k]?.ok && test(k)); return c.length ? c : null; };
   const out = [];
-  for (const logo of data.logos) {
-    const s = logo.steps[step];
-    if (!s || s.n > n * 1.1) continue;
-    const pts = []; for (let i = 0; i < s.p.length; i += 2) pts.push([s.p[i] / 1000, s.p[i + 1] / 1000]);
-    out.push({ id: logo.id, name: logo.name, pts, n: s.n, best: s.flex === "flexible" });
+  for (const logo of data.logos) { const c = pick(logo, (k) => k <= n && logo.steps[k].n <= n * 1.05); if (c) out.push({ logo, k: c.at(-1), fits: true }); }
+  if (out.length < 2) {
+    const more = [];
+    for (const logo of data.logos) { if (out.some((x) => x.logo === logo)) continue; const c = pick(logo, (k) => k > n); if (c) more.push({ logo, k: c[0], fits: false }); }
+    out.push(...more.sort((x, y) => x.k - y.k).slice(0, 4 - out.length));
   }
-  // nur die beste (flexible) Fassung zeigt, was FlyingStars kann; die strenge (dünne Linien) nur, wenn sonst keine drei
-  // Logos in die Zahl passen (Marc 12.11.: „wenn wir nicht mal unsere eigenen Logos hinkriegen …“)
-  const best = out.filter((x) => x.best);
-  return best.length >= 3 ? best : [...best, ...out.filter((x) => !x.best).slice(0, 3 - best.length)];
+  return out.map(({ logo, k, fits }) => {
+    const s = logo.steps[k], pts = []; for (let i = 0; i < s.p.length; i += 2) pts.push([s.p[i] / 1000, s.p[i + 1] / 1000]);
+    return { id: logo.id, name: logo.name, pts, n: s.n, fits };
+  });
 }
 
 /**
