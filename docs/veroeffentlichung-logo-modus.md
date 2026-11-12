@@ -115,3 +115,15 @@ Die zusätzliche Logo-Hinweisbox auf der Bühne ist vollständig aus Markup und 
 
 - Layout-Audit gegen Produktionspreview: Chromium und WebKit jeweils 22 Seiten × fünf Breiten (390, 940, 1440, 1920, 2560), null Befunde.
 - Erster Konfiguratorlauf: 26 bestanden, drei veraltete Erwartungen, ein Timeout; 134 nicht ausgeführt. Timeout-Ursache: Der Upload öffnet seit Runde 27 den Logo-Anlass; der Test versuchte dort das verborgene Textfeld zu füllen. Upload- und Physiktest übernehmen das Logo nun ausdrücklich über den Button in die Show. Ein vollständiger Wiederholungslauf folgt. Die ersten drei korrigierten Desktop-Mausfälle bestanden gezielt.
+
+## Abschluss und Blocker
+
+- Vollständiger Konfigurator-Wiederholungslauf: 164 Fälle, 140 bestanden, zwölf übersprungen, zwölf fehlgeschlagen; 11,8 Minuten. Acht Fehler betrafen die inzwischen korrigierte Anlassliste; ein Fehler den Touch-Hover-Marker; drei Fehler die Behandlung von mobilem WebKit als Desktop.
+- Gezielte Wiederholung der Anlasslisten und des vollständigen Upload-/Drop-Ablaufs: 12/12 grün auf allen vier Profilen.
+- Gerätezuordnung jetzt aus Playwrights `isMobile` statt aus dem einzelnen Profilnamen. Gezielter Lauf aller sieben betroffenen Fälle: 21 bestanden, sechs passende Mausfälle auf Touch übersprungen, ein echter Layoutfehler auf mobilem WebKit.
+- Verbleibender Layoutfehler: `Auf den ersten Blick: Anlass, Aufwand, Preis und Anfrage`, mobiles WebKit. Nach Navigation zu `#konfigurator` sind die Paketknöpfe nur zu 54,8 Prozent statt vollständig im Viewport. Der ursprüngliche Sichtbarkeitsvertrag bleibt unverändert. Kein Merge nach main.
+- Der zuvor hängende Physiktest besteht mit dem expliziten Logo-Übernahmeschritt in 2,7 Minuten. Grenzwerte blieben unverändert.
+- GitHub-CI für `ac82594`: fehlgeschlagen im vollständigen Unit-Schritt nach dessen 600-Sekunden-Prozesslimit. Der lokal grüne Lauf dauert 763,5 Sekunden. Nur der vollständige Unit-Schritt erhält deshalb 1200 Sekunden; Check und Build behalten 600 Sekunden, der Workflow seinen bisherigen Gesamtumfang und sein Gesamtlimit. Neuer Pipeline-Lauf nach Push erforderlich; kein grüner Pipeline-Nachweis behauptet.
+- Cloudflare-Preview erfolgreich: https://7f5840f5.flyingstars-site.pages.dev . Logo-Anlass und Adidas per Browser geklickt, Zustand `ready`, 200 Punkte, keine sichtbare Fehleranzeige, keine zusätzliche Logo-Hinweisbox oder Dev-Markierungen auf der geprüften Seite. Prüftab geschlossen.
+- Produktion https://flyingstars-site.pages.dev unverändert, kein Merge-Commit, Produktionsprüfung daher nicht durchgeführt. Kein Nachweis für Marcs Safari 18.6 oder reale Mobilgeräte. Die noch fachlich offenen Aufgaben aus der Übergabe bleiben offen.
+- Der T3-PR-Watcher ist in dieser Sitzung nicht verfügbar. Der Feature-PR bleibt wegen des belegten lokalen Layoutfehlers ausdrücklich ungemergt.

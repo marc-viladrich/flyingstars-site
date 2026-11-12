@@ -156,7 +156,7 @@ test('Paketknöpfe lassen sich per Tastatur wählen', async ({ page }) => {
 test('Auf den ersten Blick: Anlass, Aufwand, Preis und Anfrage', async ({ page }, info) => {
   await page.goto(`${CFG}#konfigurator`);
   await expect(page.locator('[name=pkg]').first()).toBeAttached();
-  if (info.project.name === 'mobile') { await expect(page.locator('#cfg-bar-cta')).toBeInViewport(); await expect(page.locator('.cfg-pkgs')).toBeInViewport({ ratio: 1 }); }
+  if (info.project.use.isMobile) { await expect(page.locator('#cfg-bar-cta')).toBeInViewport(); await expect(page.locator('.cfg-pkgs')).toBeInViewport({ ratio: 1 }); }
   else { await expect(page.locator('#cfg-cta')).toBeInViewport(); await expect(page.locator('.cfg-pkgs')).toBeInViewport({ ratio: 1 }); }
 });
 
@@ -282,7 +282,7 @@ test('Die Vorschau zeigt nur das Paket; Bildbeschreibung bleibt für assistive T
 const droneCount = (page: Page) => page.locator('#cfg-dronecount');
 
 test('Der Drohnenregler wechselt an der Bereichsgrenze sichtbar das Paket, mit echter Maus und Tastatur', async ({ page }, info) => {
-  test.skip(info.project.name === 'mobile', 'Maus-Ziehen auf dem Desktop; die Tastatur deckt dieselbe Logik ab.');
+  test.skip(info.project.use.isMobile, 'Maus-Ziehen auf dem Desktop; die Tastatur deckt dieselbe Logik ab.');
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto(`${CFG}#konfigurator`);
@@ -327,7 +327,7 @@ test('Der Drohnenregler wechselt an der Bereichsgrenze sichtbar das Paket, mit e
 });
 
 test('Kein Hin und Her zwischen SPARK und HORIZON: Ziehen und Verweilen mit echter Maus', async ({ page }, info) => {
-  test.skip(info.project.name === 'mobile', 'Maus auf dem Desktop.');
+  test.skip(info.project.use.isMobile, 'Maus auf dem Desktop.');
   await page.goto(`${CFG}#konfigurator`);
   await pkg(page, 0);
   // every change of the package label, in order
@@ -352,7 +352,7 @@ test('Kein Hin und Her zwischen SPARK und HORIZON: Ziehen und Verweilen mit echt
 });
 
 test('Mehr Drohnen schalten ein Motiv frei: Meldung auf der Bühne, die Bühne fliegt durch die Wolke dorthin', async ({ page }, info) => {
-  test.skip(info.project.name === 'mobile', 'Maus auf dem Desktop.');
+  test.skip(info.project.use.isMobile, 'Maus auf dem Desktop.');
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto(`${CFG}#konfigurator`);
@@ -393,7 +393,7 @@ test('Vorführ-Steuerung: Pause friert das Bild ein, Tempo und Bildsprung über 
   await expect(page.locator('[data-rate="1"]')).toHaveAttribute('aria-pressed', 'false');
   // the track: a click near its end jumps to a later picture; keyboard steps one picture
   const track = page.locator('#cfg-track'), box = (await track.boundingBox())!;
-  if (info.project.name === 'mobile') await page.touchscreen.tap(box.x + box.width * 0.9, box.y + box.height / 2);
+  if (info.project.use.isMobile) await page.touchscreen.tap(box.x + box.width * 0.9, box.y + box.height / 2);
   else await page.mouse.click(box.x + box.width * 0.9, box.y + box.height / 2);
   await expect.poll(async () => Number(await track.getAttribute('aria-valuenow'))).toBeGreaterThan(6); // ODYSSEY Launch with 300 drones: 9 pictures
   const at = Number(await track.getAttribute('aria-valuenow'));
@@ -404,7 +404,7 @@ test('Vorführ-Steuerung: Pause friert das Bild ein, Tempo und Bildsprung über 
 });
 
 test('Große Bildschirme: Bedienung links, Bühne rechts; mobil gestapelt', async ({ page }, info) => {
-  for (const [w, h] of info.project.name === 'mobile' ? [[390, 844]] : [[1440, 900], [2560, 1440]]) {
+  for (const [w, h] of info.project.use.isMobile ? [[390, 844]] : [[1440, 900], [2560, 1440]]) {
     await page.setViewportSize({ width: w, height: h });
     await page.goto(`${CFG}#konfigurator`);
     const panel = (await page.locator('#cfg').boundingBox())!, stage = (await page.locator('.cfg-stage').boundingBox())!;
@@ -597,7 +597,9 @@ test('Eigenes Logo per Dateiauswahl und Drag&Drop: eigenes Bild im Ablauf, die D
   await expect(page.locator('.cfg-drop')).toHaveCSS('opacity', '1');
   await page.locator('#cfg-hit').dispatchEvent('drop', { dataTransfer: dt });
   // the drop zone is gone at once, even with the mouse still on the stage
-  await expect(stage).toHaveClass(/is-done/);
+  // is-done unterdrückt nur Maus-Hover; Touch darf den Marker bei pointerleave entfernen.
+  if (!info.project.name.startsWith('mobile')) await expect(stage).toHaveClass(/is-done/);
+  await expect(stage).not.toHaveClass(/is-drag/);
   await expect(page.locator('.cfg-drop')).toHaveCSS('opacity', '0');
   await expect(page.locator('#cfg-use-logo')).toBeVisible();
   await page.locator('#cfg-use-logo').click();
@@ -777,7 +779,7 @@ test('Runde 22: Anlass als Pills in der Ordnung der Startseite, der erste ist ge
   await page.clock.setFixedTime(new Date('2026-06-15T12:00:00'));
   await page.goto(`${CFG}#konfigurator`);
   await expect(page.getByRole('group', { name: 'Anlass' })).toBeVisible();
-  await expect(page.locator('#cfg-occasion label')).toHaveText(['Launch', 'Jubiläum', 'Stadtfest', 'Hochzeit', 'Kultur', 'Winter & Silvester']);
+  await expect(page.locator('#cfg-occasion label')).toHaveText(['Launch', 'Jubiläum', 'Stadtfest', 'Hochzeit', 'Kultur', 'Winter & Silvester', 'Euer Logo']);
   await expect(chosenOccasion(page)).toHaveValue('launch');
   await expect(scene(page)).toHaveText('Die Rakete als Körper schwebt und dreht sich');
   // ein Klick wechselt den Anlass (Marc: kein zusätzlicher Klick wie beim Dropdown)
@@ -806,7 +808,7 @@ test('Runde 22: nicht gewählte Anlässe gedämpft, aber über 4,5:1, beim Zeige
 test('Runde 11: im November und Dezember steht Winter & Silvester vorn und ist gewählt, wie die Karte der Startseite', async ({ page }) => {
   await page.clock.setFixedTime(new Date('2026-11-01T12:00:00'));
   await page.goto(`${CFG}#konfigurator`);
-  await expect(page.locator('#cfg-occasion label')).toHaveText(['Winter & Silvester', 'Launch', 'Jubiläum', 'Stadtfest', 'Hochzeit', 'Kultur']);
+  await expect(page.locator('#cfg-occasion label')).toHaveText(['Winter & Silvester', 'Launch', 'Jubiläum', 'Stadtfest', 'Hochzeit', 'Kultur', 'Euer Logo']);
   await expect(chosenOccasion(page)).toHaveValue('silvester');
   await page.locator('#cfg-cta').scrollIntoViewIfNeeded();
   await expect(page.locator('#cfg-cta')).toHaveAttribute('href', /anlass=stadt/);
@@ -851,7 +853,7 @@ test('Runde 11: der Auswahlrahmen gleitet zum neuen Paket (Klick und Regler), de
   const back = await stopSample(page);
   expect(back.some((x) => x > 4 && x < to - 4), 'Zwischenwerte beim Wechsel über den Regler').toBe(true);
   expect(back.at(-1)).toBeCloseTo(0, 0);
-  if (info.project.name === 'mobile') return; // Zeigen gibt es nur mit Maus
+  if (info.project.use.isMobile) return; // Zeigen gibt es nur mit Maus
   // Zeigen auf ein anderes Paket: der Schatten gleitet gedämpft dorthin, der Rahmen bleibt beim gewählten
   const box = (await page.locator('label:has([name=pkg][value="2"])').boundingBox())!;
   await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 4 });
