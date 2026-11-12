@@ -93,6 +93,7 @@ const sources = [['Google', 'Google'], ['Empfehlung', t('contactform.recommendat
         <p class="hint">{t('contactform.processingNotice')} <a href={localHref("/datenschutz/")}>{t('contactform.privacyPolicy')}</a>.</p>
         <div aria-hidden="true" class="honeypot"><label>Website<input autocomplete="off" name="website" tabindex="-1" /></label></div>
       </fieldset>
+      <div data-logo-inquiry hidden aria-live="polite"></div>
       <p class="form-status" data-form-status data-load-error={t('contact.valuePleaseTryAgainLaterOrEmailTeamFlyingstarsArt', { email:CONTACT.email, v0: t('contact.deliveryFailed') })} role="status" tabindex="-1"></p>
     </form>
   </div>
@@ -104,6 +105,7 @@ const sources = [['Google', 'Google'], ['Empfehlung', t('contactform.recommendat
   if (form) {
     const enhance = deferredForm(form, () => import('../../scripts/contact'));
     const load = whenNear(form, enhance);
+    window.addEventListener('flyingstars:logo-inquiry', () => { void load(); });
     const start = () => { void load().catch((error: unknown) => console.warn('Form enhancement could not load', error)); };
     // Prefill and remove private draft text from the address immediately on arrival.
     if (location.search || location.hash || form.contains(document.activeElement)) start();
