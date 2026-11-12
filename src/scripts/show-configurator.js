@@ -40,7 +40,7 @@ import { t as message } from '../i18n/ui.mjs';
 // - der gleitende Rahmen an den Paketknöpfen ist reines CSS (ShowConfigurator.astro): er folgt dem Radio, also auch dem
 //   Regler, der unten in update() das Paket umstellt
 import { getConfiguratorContent, unlockAt, bySeason } from "../content/show-configurator.js";
-import { SHOW_PACKAGES, DRONE_RANGES, DRONES_MIN, packageForDrones, snapDrones, clampToPackage, configuratorPrice } from "../content/show-packages";
+import { SHOW_PACKAGES, DRONE_RANGES, DRONES_MIN, DRONE_STEP, packageForDrones, snapDrones, clampToPackage, configuratorPrice } from "../content/show-packages";
 import { createField } from "./show-field.js";
 import { buildSequence, preloadScenes } from "./show-scenes.js";
 import { composeShow, canPlay, possibleFrom, minDronesOf, freshMotifs, unlockNote, LOGO_SEGMENT, TOUR_SEGMENT, TOUR_STYLES, TEMPO } from "./show-tempo.js";
@@ -259,7 +259,9 @@ if (form) {
   /** The text style the stage shows is marked in the picker (Text-Durchlauf), without changing the chosen one. */
   const showStyle = (s) => { const r = form.querySelector(`[name=textstyle][value="${s}"]`); if (r && !r.checked) r.checked = true; };
 
-  const pricedDrones = () => logoMode && lastLogoPts?.length ? lastLogoPts.length : drones;
+  // Runde 28: im Logo-Anlass zählt die buchbare Zahl, also die Empfehlung auf die nächste Zehnerstufe aufgerundet (wie
+  // „Dieses Logo in der Show verwenden“ sie setzt). Sonst zeigt Puma mit 194 SPARK, die Show bekommt aber 200 = HORIZON.
+  const pricedDrones = () => logoMode && lastLogoPts?.length ? snapDrones(Math.ceil(lastLogoPts.length / DRONE_STEP) * DRONE_STEP) : drones;
   const pkgName = () => packageForDrones(pricedDrones());
   const step = () => STEPS.find((s) => s.pkg === pkgName());
   const pkg = () => SHOW_PACKAGES[pkgName()];
@@ -346,22 +348,24 @@ if (form) {
     if (lit.length > n) out.minimum = lit.length;
     return out;
   };
-  /** Runde 27 (Marc 12.11., dritte Runde, wie im lokalen Prototyp): Im Anlass „Euer Logo“ ist die große Zahl der Bedarf
-   * („N Drohnen werden benötigt“, rot über der gewünschten Zahl); der Regler ist die gewünschte Drohnenanzahl. Der Hinweis
-   * steht als Karte unten auf der Bühne. */
+  /** Runde 27 (Marc 12.11., dritte Runde, wie im lokalen Prototyp): Im Anlass „Euer Logo“ ist die große Zahl die
+   * Empfehlung; der Regler ist die gewünschte Drohnenanzahl. Der Hinweis steht als Karte unten auf der Bühne.
+   * Runde 28 (Marc: „zwei Knobs sind verwirrend“): der Regler hat nur noch den einen, bedienbaren Griff; die Empfehlung
+   * steht allein in der großen Zahl. Über dem Paketnamen sagt „Passendes Paket für euer Logo“, woher das Paket kommt (ohne
+   * Zahl: die buchbare Zehnerstufe, z. B. 200 bei 194 empfohlenen, stünde sonst widersprüchlich unter der großen Zahl). */
   function drawCount(pts) {
     const own = logoMode && !!logo, box = $("#cfg-logo-count");
     $("#cfg-drones-label").textContent = message(logoMode ? 'logoMode.wanted' : 'configuratorteaser.drones');
     box.hidden = !own || !pts;
-    $("#cfg-logo-marker").hidden = !own || !pts;
+    const label = $("#cfg-pkg-label");
+    label.hidden = !own || !pts;
     if (!own || !pts) return;
     $("#cfg-logo-n").textContent = String(pts.length);
-    // Runde 27, vierte Runde: Zahl und Bedarfspunkt in der Farbe des Pakets, das diese Zahl braucht (über dem Regler: Koralle);
-    // der gewünschte Griff und seine Zahl treten blass zurück
-    const lo = +slider.min, hi = +slider.max, need = pts.length;
-    const color = need > hi ? "var(--logo-coral)" : `rgb(${SHOW_PACKAGES[packageForDrones(need)].color.join(",")})`;
+    // Runde 27, vierte Runde: die Zahl in der Farbe des Pakets, das diese Zahl braucht (über dem Regler: Koralle)
+    const hi = +slider.max, need = pts.length;
+    const color = need > hi ? "var(--logo-coral)" : `rgb(${SHOW_PACKAGES[packageForDrones(pricedDrones())].color.join(",")})`;
     form.closest(".cfg").style.setProperty("--logo-need", color);
-    $("#cfg-logo-marker").style.setProperty("--need-p", String(Math.max(0, Math.min(1, (need - lo) / (hi - lo)))));
+    label.textContent = message('logoMode.fittingPackage');
     drawPrice();
   }
   function showOver(pts, n) {
@@ -488,6 +492,10 @@ if (form) {
     if (!radio.checked) radio.checked = true;
     const displayedDrones = logoMode ? (logoWanted ?? drones) : drones;
     if (Number(slider.value) !== displayedDrones) slider.value = String(displayedDrones);
+    // Runde 28: im Logo-Anlass gilt das Paket der Empfehlung, der Griff zeigt aber die gewünschte Zahl; er trägt deshalb
+    // die Farbe der Zone, in der er steht (wie im normalen Konfigurator), nicht die des empfohlenen Pakets
+    if (logoMode) slider.style.setProperty("--pkg", `rgb(${SHOW_PACKAGES[packageForDrones(displayedDrones)].color.join(",")})`);
+    else slider.style.removeProperty("--pkg");
     slider.setAttribute("aria-valuetext", message('showConfigurator.valueDronesValue', { v0: displayedDrones, v1: s.pkg }));
     for (const [sel, txt] of [["#cfg-pkg", s.pkg], ["#cfg-bar-pkg", s.pkg], ["#cfg-price", eur(price)], ["#cfg-bar-price", eur(price)], ["#cfg-dronecount", String(displayedDrones)]]) $(sel).textContent = txt;
     $("#cfg-meta").textContent = message('showConfigurator.valueExcludingVatAndTravel', { v0: message('packageDetails.showtimeLine',durationValues()) }); // Drohnenzahl steht am Regler (Runde 9), Showzeit für alle Pakete gleich (Runde 18)

@@ -298,20 +298,18 @@ fieldset.cfg-tool { margin: 0; padding: 0; border: 0; min-width: 0; }
 .cfg.is-logomode .cfg-own-wrap { order: 0; }
 .cfg.is-logomode .cfg-own { display: grid; gap: var(--space-4); }
 .cfg.is-logomode .cfg-drones { margin-top: var(--space-4); }
-.cfg.is-logomode .cfg-drones-head, .cfg.is-logomode .cfg-drones-head output { color: var(--muted); }
 .cfg-drone-slider { position: relative; }
-.cfg-logo-marker { position: absolute; z-index: 2; left: calc(0.625rem + (100% - 1.25rem) * var(--need-p, 0)); top: 50%; width: 1.25rem; height: 1.25rem; transform: translate(-50%, -50%); border-radius: var(--radius-round); background: var(--text); border: 0.25rem solid var(--logo-need); box-shadow: 0 0 0 0.25rem var(--overlay-heavy); pointer-events: none; transition: left var(--dur-standard) var(--ease-default), border-color var(--dur-standard) var(--ease-default); }
-.cfg-logo-marker[hidden] { display: none; }
-.cfg.is-logomode #cfg-drones::-webkit-slider-thumb { border-color: var(--muted); opacity: 0.5; }
-.cfg.is-logomode #cfg-drones::-moz-range-thumb { border-color: var(--muted); opacity: 0.5; }
 .cfg-density-risk { display: block; margin-top: var(--space-1); color: var(--logo-coral); font-size: var(--text-xs); }
 .cfg-density-risk[hidden] { display: none; }
 #cfg-detail { --track: linear-gradient(90deg, var(--logo-coral) 0 14%, var(--line-soft) 14%, var(--muted) 100%); }
 @media (--nav-expanded) { .cfg.is-logomode { grid-template-columns: clamp(22.5rem, 30vw, 36rem) minmax(0, 1fr); } }
-@media (prefers-reduced-motion: reduce) { .cfg-logo-marker, .cfg-over-card { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .cfg-over-card { transition: none; } }
 /* im Logo-Anlass: Paketname der Empfehlung ohne Preis (der gilt der ganzen Show), dazu „Dieses Logo in der Show verwenden“;
    ohne eigenes Logo keine leere Karte */
 .cfg.is-logomode #cfg-price, .cfg.is-logomode .cfg-meta, .cfg.is-logomode .cfg-cta, .cfg.is-logomode .cfg-note, .cfg.is-logomode .cfg-bar { display: none; }
 .cfg.is-logomode:not(.has-logo) .cfg-sum { display: none; }
 .cfg-drone-slider .cfg-range { display: block; }
 .cfg-use-logo[hidden] { display: none; }
+/* Runde 28: „Passendes Paket für N Drohnen“ über dem Paketnamen, als Beschriftung des Werts (keine Eyebrow) */
+.cfg-pkg-label { margin: 0; color: var(--muted); font-size: var(--text-sm); line-height: 1.3; }
+.cfg-pkg-label[hidden] { display: none; }

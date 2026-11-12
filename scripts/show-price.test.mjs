@@ -113,7 +113,7 @@ test('Mindestzahl: minDrones vor min, der Hinweis an der Spur nie unter dem Pake
 });
 
 const line = (n, dx = 1) => Array.from({ length: n }, (_, i) => [(i / n) * dx, 0, 0, 255, 255, 255]);
-test('Abfolge: Text-Durchlauf einmal vorn, Logo eröffnet die Runde und kehrt jedes zweite Motiv zurück', () => {
+test('Abfolge: Text-Durchlauf einmal vorn, Logo eröffnet die Runde und kehrt etwa alle vier Motive zurück', () => {
   const b = (segment, extra = {}) => ({ segment, pts: line(10), hold: 2, ...extra });
   const main = { beats: [b(0), b(0, { cloud: true }), b(1, { cloud: true }), b(2, { cloud: true }), b(3, { interlude: true, cloud: true }), b(3), b(4, { interlude: true, cloud: true }), b(4), b(0, { interlude: true, cloud: true })], loopTo: 0 };
   const tour = { beats: [b(0, { hold: 3 }), b(0, { hold: 3 }), b(0, { hold: 9 }), b(1, { hold: 9 }), b(2, { interlude: true }), b(2, { hold: 9, tour: false }), b(2, { hold: 9 })] };
@@ -122,11 +122,14 @@ test('Abfolge: Text-Durchlauf einmal vorn, Logo eröffnet die Runde und kehrt je
   assert.deepEqual(intro.map((x) => x.textStyle), ['script', 'script', 'print', 'initials'], 'je Schrift bis sie 5 s stand, ohne Figuren und ohne tour: false');
   assert.deepEqual(intro.map((x) => x.segment), [TOUR_SEGMENT, TOUR_SEGMENT, TOUR_SEGMENT + 1, TOUR_SEGMENT + 2]);
   assert.equal(intro[0].caption, 'T script');
-  assert.deepEqual(round.map((x) => (x.logo ? 'L' : x.segment)), ['L', 0, 0, 1, 'L', 2, 3, 3, 'L', 4, 4], 'Logo vorn, dann vor jedem zweiten Motiv (vor dessen Figur); die Schlussfigur entfällt');
+  assert.deepEqual(round.map((x) => (x.logo ? 'L' : x.segment)), ['L', 0, 0, 1, 2, 3, 3, 4, 4], 'fünf Motive: das Logo nur vorn (die Runde wiederholt sich, also jedes sechste Bild); die Schlussfigur entfällt');
   assert.ok(round.filter((x) => x.logo).every((x) => x.cloud === true && x.hold === TEMPO.logoHold && x.segment === LOGO_SEGMENT));
-  assert.equal(round[5].cloud, false, 'nach dem Logo keine zweite Wolke');
-  assert.equal(round[9].cloud, false, 'auch eine Figur nach dem Logo fliegt normal');
+  assert.equal(round[1].cloud, undefined, 'nach dem Logo keine zweite Wolke (das erste Bild hatte keine)');
   assert.equal(round[2].cloud, true, 'Wolken mitten im Motiv bleiben');
+  // acht Motive: zweimal Logo, gleichmäßig (vor Motiv 0 und 4), nie zwei Logos kurz hintereinander
+  const eight = composeShow({ main: { beats: Array.from({ length: 8 }, (_, i) => b(i, { cloud: true })) }, logo: line(10) });
+  assert.deepEqual(eight.beats.map((x) => (x.logo ? 'L' : x.segment)), ['L', 0, 1, 2, 3, 'L', 4, 5, 6, 7]);
+  assert.equal(eight.beats[6].cloud, false, 'auch eine Figur nach dem Logo fliegt normal');
   assert.equal(round.at(-1).textStyle, 'print', 'das Text-Finale trägt die gewählte Schrift');
   assert.equal(main.beats[2].cloud, true, 'die gebauten Bilder bleiben unverändert (Cache)');
   // ohne Text und Logo: die Show des Anlasses unverändert

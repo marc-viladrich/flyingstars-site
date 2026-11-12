@@ -3612,6 +3612,11 @@
     "en": "Use this logo in the show",
     "nl": "Dit logo in de show gebruiken"
   },
+  "logoMode.fittingPackage": {
+    "de": "Passendes Paket für euer Logo",
+    "en": "Matching package for your logo",
+    "nl": "Passend pakket voor jullie logo"
+  },
   "logoMode.densityRisk": {
     "de": "kann unleserlich werden",
     "en": "may become unreadable",
