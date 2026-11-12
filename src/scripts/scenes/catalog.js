@@ -15,6 +15,8 @@
 import catalog from '../../content/catalog-motifs.json' with { type: 'json' };
 import { TAU, mix, frac, hash, yaw, roll, pitch, sway, breathe, glint, sparkle, chase, trace, wander, lightRank, part, act } from '../show-motion.js';
 
+import { catalogAction } from './catalog-actions.js';
+
 const cache = new Map();
 /** Formation einer Variante, einmal geladen (fetch auf public/, in Node-Tests aus scripts/show-node-env.mjs). */
 function load(id) {
@@ -90,11 +92,6 @@ function profile(motion, f, pts, { body = false } = {}) {
         if (body) swayAll(o, t);
       };
     }
-    case 'clink': {
-      // Zwei Gläser kippen um ihren Fuß zueinander und stoßen an, dazu ein feiner Schein (wie die eigenen Sektgläser).
-      const left = new Set(g.glasses?.[0]?.idx ?? []), base = Math.min(...pts.map((p) => p[1]));
-      return (b, j, t, o) => { const side = left.has(j) ? -1 : 1; roll(o, side * 0.07 * Math.sin((Math.PI * t) / 3) ** 8, side * 0.5, base); o[3] = lift(j, t); if (body) swayAll(o, t); };
-    }
     case 'wave': {
       // Fahnen wehen: eine Welle läuft vom Mast nach außen, je weiter vom Mast, desto mehr.
       const x0 = Math.min(...pts.map((p) => p[0]));
@@ -163,15 +160,17 @@ export async function catalogScene(key, tier, n, caption) {
   const deep = m.dimension === '3D', name = m.name[lang()] ?? m.name.de;
   const v = variantFor(key, n);
   if (!v) throw new Error(`Katalogmotiv ${key}: keine Variante für ${n} Drohnen`);
-  const f = await load(v.id), front = prepare(f, !deep);
+  const f = await load(v.id), source = prepare(f, !deep);
+  const action = catalogAction(key, f, source), front = action?.pts ?? source;
+  const fit = action ? [...front, ...source, ...front.map((p, j) => { const o = [...p.slice(0, 3), 1]; action.live(p, j, action.duration, o); return o.slice(0, 3); })] : front;
   // flache Formationen bewegen sich in jedem Paket wie in SPARK (kein Schwenk, der die fehlende Tiefe zeigen würde)
-  const live = profile(m.motion, f, front, { body: deep && (tier !== 'SPARK' || !LIGHT_ONLY.has(m.motion)) });
+  const live = action?.live ?? profile(m.motion, f, front, { body: deep && (tier !== 'SPARK' || !LIGHT_ONLY.has(m.motion)) });
   const rest = reserve(n - front.length, front), k = front.length;
   const run = (b, j, t, o) => { if (j >= k) { o[3] = 0; return; } live(b, j, t, o); };
-  if (tier !== 'ODYSSEY') return { beats: [{ pts: [...front, ...rest], fitPts: front, caption, live: run, shimmer: false }] };
+  if (tier !== 'ODYSSEY') return { beats: [{ pts: [...front, ...rest], fitPts: fit, caption, live: run, shimmer: false, ...(action ? { hold: action.duration } : {}) }] };
   const order = lightRank(front);
   return { beats: [
-    act([part('form', front), part('reserve', rest, { offstage: true })], { caption: say('lightDraws', name), hold: 1.6, live: (b, j, t, o) => { if (j >= k) { o[3] = 0; return; } o[3] = trace(order[j], t, 2.2); } }),
-    act([part('form', front), part('reserve', rest, { offstage: true })], { caption: say('comesAlive', name), clock: 'continue', live: run }),
+    act([part('form', front), part('reserve', rest, { offstage: true })], { caption: say('lightDraws', name), hold: 1.6, live: (b, j, t, o) => { if (j >= k) { o[3] = 0; return; } if (action) action.live(b, j, 0, o); o[3] *= trace(order[j], t, 2.2); } }),
+    act([part('form', front), part('reserve', rest, { offstage: true })], { caption: say('comesAlive', name), clock: action ? undefined : 'continue', fitPts: fit, ...(action ? { hold: action.duration } : {}), live: run }),
   ] };
 }
