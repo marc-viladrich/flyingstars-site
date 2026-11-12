@@ -42,8 +42,7 @@ import { getConfiguratorContent, unlockAt, bySeason } from "../content/show-conf
 import { SHOW_PACKAGES, DRONE_RANGES, DRONES_MIN, packageForDrones, snapDrones, clampToPackage, configuratorPrice } from "../content/show-packages";
 import { createField } from "./show-field.js";
 import { buildSequence, preloadScenes } from "./show-scenes.js";
-import { composeShow, canPlay, possibleFrom, minDronesOf, freshMotifs, unlockNote, LOGO_SEGMENT, TOUR_SEGMENT, TOUR_STYLES } from "./show-tempo.js";
-import { formation, liftColor } from "./formation/index.js";
+import { composeShow, canPlay, possibleFrom, minDronesOf, freshMotifs, unlockNote, LOGO_SEGMENT, TOUR_SEGMENT, TOUR_STYLES, TEMPO } from "./show-tempo.js";
 import { chars } from "./text-formation.js";
 
 const form = document.querySelector("#cfg");
@@ -226,6 +225,10 @@ if (form) {
   occRadio((earlyOccasion ?? ordered[0]).id).checked = true;
   let occasion = earlyOccasion ?? ordered[0], job = 0, text = "", style = "script", tour = false;
   let logo = null, logoId = 0, logoURL = null;
+  // Runde 27: Logo-Modus. logoMode: die Bühne zeigt Logos (Kundenlogos, bis ein eigenes da ist); lm: logo-mode.js, erst bei
+  // Bedarf geladen; session: der Konverter für das eigene Logo (logo-v10); logoVer zählt Änderungen an Reglern/Entfernungen
+  let logoMode = false, lm = null, session = null, logoVer = 0, lastLogoPts = null, editor = null;
+  const logoModule = () => (lm ??= import("./logo-mode.js"));
   const slider = $("#cfg-drones");
   const earlyPkg = chosenEarly(form.querySelectorAll("[name=pkg]"));
   let drones = earlyPkg && slider.value === slider.defaultValue ? DRONE_RANGES[STEPS[+earlyPkg.value].pkg].min : Number(slider.value);
@@ -267,30 +270,54 @@ if (form) {
     if (!cache.has(key)) cache.set(key, make().catch((error) => { cache.delete(key); throw error; }));
     return cache.get(key);
   };
-  /** Points of the uploaded logo for n drones, colours as in the logo (dark ones lifted so they light). */
+  /** Points of the uploaded logo for n drones (logo-v10, Kontur; Farben schon für den Nachthimmel aufgehellt). Braucht das
+   * Logo mehr als n Drohnen, steht es mit seiner eigenen Zahl da, und der Hinweis im Logo-Modus sagt es ehrlich. */
+  const darkReserve = (lit, n) => Array.from({ length: Math.max(0, n - lit.length) }, (_, i) => { const q = lit[(i * 7) % lit.length]; return [q[0], q[1], -0.45 - 0.04 * (i % 3), 0, 0, 0]; });
   const logoPoints = async (source, n) => {
-    // Runde 26: Logos als Strichgraph (Mittellinien, Enden und Ecken zuerst, 2 m Mindestabstand), lesbar mit 100–150 Drohnen
-    const pts = await formation(source, n, { sampler: "stroke" });
+    const mod = await logoModule();
+    session ??= mod.logoSession(source.file);
+    const pts = await session.formation(n);
     if (!pts.length) throw new Error("leer");
-    // ehrlich sagen, wenn das Logo für diese Drohnenzahl sehr fein ist (Linien mussten weit auseinanderrücken)
-    if (source === logo) $("#cfg-logo-status").textContent = pts.meta?.simplified ? message('showConfigurator.logoTooFine', { n }) : "";
-    const tint = pkg().color, lit = pts.map((p) => [p.x, -p.y, 0, ...(p.c ? liftColor(p.c) : tint)]);
-    // Drohnen, die das Logo nicht braucht (der Strichgraph nimmt oft weniger als n), warten dunkel hinter dem Logo:
-    // jedes Bild hat genau die Drohnen des Pakets, wie bei den Katalogmotiven
-    const reserve = Array.from({ length: Math.max(0, n - lit.length) }, (_, i) => { const q = lit[(i * 7) % lit.length]; return [q[0], q[1], -0.45 - 0.04 * (i % 3), 0, 0, 0]; });
-    return [...lit, ...reserve];
+    if (source === logo) { lastLogoPts = pts; $("#cfg-logo-status").textContent = ""; showOver(pts, n); editor?.show(pts, session.removed); }
+    // Drohnen, die das Logo nicht braucht, warten dunkel dahinter: jedes Bild hat mindestens die Drohnen des Pakets
+    const lit = pts.map((p) => [p.x, -p.y, 0, ...p.c]);
+    return [...lit, ...darkReserve(lit, n)];
   };
+  function showOver(pts, n) {
+    const box = $("#cfg-logo-over");
+    box.hidden = !pts.meta?.over;
+    if (pts.meta?.over) $("#cfg-logo-over-text").textContent = message('logoMode.over', { wanted: pts.meta.wanted, n });
+  }
+  /** Ein Logo als Bild der Show (Lichtlauf, dunkle Reserve wie bei composeShow). */
+  const logoBeat = (pts, caption, segment, hold = TEMPO.logoHold) => {
+    const b = { pts, caption, motif: caption, hold, cloud: true, segment, logo: true, run: true, runLight: TEMPO.logoRun };
+    if (pts.length > drones) b.drones = pts.length; // über der Zahl: die Lichter so groß wie bei einer Show dieser Größe
+    const dark = pts.findIndex((p) => p[3] + p[4] + p[5] === 0);
+    if (dark >= 0) b.live = (_, j, t, o) => { if (j >= dark) o[3] = 0; };
+    return b;
+  };
+  /** Logo-Modus: das eigene Logo allein, sonst die Kundenlogos, die in diese Drohnenzahl passen. */
+  async function logoShow() {
+    if (logo) {
+      const pts = await memo(`logo|${logoId}|${drones}|${logoVer}`, () => logoPoints(logo, drones));
+      return { beats: [logoBeat(pts, message('showConfigurator.yourLogo'), LOGO_SEGMENT, 30)], loopTo: 0 };
+    }
+    const mod = await logoModule(), list = await mod.customerLogos(drones);
+    if (!list.length) return null;
+    return { beats: list.map((x, i) => { const lit = x.pts.map(([px, py]) => [px, -py, 0, 255, 255, 255]); return logoBeat([...lit, ...darkReserve(lit, drones)], message('logoMode.customer', { name: x.name }), i, 3.4); }), loopTo: 0 };
+  }
   const logoFailed = (id) => {
     if (id !== logoId) return;
     $("#cfg-logo-status").textContent = message('showConfigurator.weCouldnTConvertThisFileAnSvgOrA');
     dropLogo();
   };
-  const sequence = () => {
+  const sequence = async () => {
+    if (logoMode) { const shown = await memo(`logomode|${drones}|${logoId}|${logoVer}`, () => logoShow().then((x) => x ?? Promise.reject(new Error("keine Logos")))).catch(() => null); if (shown) return shown; }
     const p = pkgName(), base = `${occasion.id}|${p}|${drones}`, id = logoId, src = logo, withTour = tour && text;
     const main = memo(`main|${base}|${text}|${style}`, () => buildSequence(motifs(), p, drones, pkg().color, occasion.id));
     const tourSeq = withTour ? memo(`tour|${base}|${text}`, () => buildSequence(TOUR_STYLES.map(textMotif), p, drones, pkg().color, occasion.id)) : null;
-    const logoPts = src ? memo(`logo|${id}|${drones}|${p}`, () => logoPoints(src, drones)).catch(() => { logoFailed(id); return null; }) : null;
-    return memo(`show|${base}|${text}|${style}|${withTour}|${src ? id : 0}`, async () => composeShow({
+    const logoPts = src ? memo(`logo|${id}|${drones}|${logoVer}`, () => logoPoints(src, drones)).catch((error) => { console.warn("Logo konnte nicht umgerechnet werden", error); logoFailed(id); return null; }) : null;
+    return memo(`show|${base}|${text}|${style}|${withTour}|${src ? id + "." + logoVer : 0}`, async () => composeShow({
       main: await main, tour: await tourSeq, logo: await logoPts, textStyle: text ? style : null, textSegment: occasion.motifs.length,
       tourCaption: (caption, s) => message('configurator.captionStyle', { caption, style: STYLE_LABEL[s] }),
     }));
@@ -463,7 +490,8 @@ if (form) {
   // ---------- Eigenes Logo (vierzehnte Fassung) ----------
   const file = $("#cfg-file"), upload = $("#cfg-upload"), off = $("#cfg-logo-off");
   function dropLogo() {
-    logo = null; logoId++;
+    logo = null; logoId++; session?.dispose(); session = null; lastLogoPts = null; logoVer = 0;
+    $("#cfg-edit").hidden = true; $("#cfg-logo-over").hidden = true; drawLogoMode();
     if (logoURL) URL.revokeObjectURL(logoURL);
     logoURL = null; off.hidden = true; upload.classList.remove("has-logo"); file.value = "";
   }
@@ -477,11 +505,12 @@ if (form) {
       dropLogo(); logo = source; logoId++;
       if (source.kind === "image") logoURL = source.src;
       off.hidden = false; upload.classList.add("has-logo");
+      logoMode = true; drawLogoMode(); // Runde 27: ein eigenes Logo öffnet den Logo-Modus mit seinen Reglern
       first = false; fresh = []; unlockTo = null; tour = false; // the logo comes now; the text run-through is over
       update(true, LOGO_SEGMENT, { cloud: true });
     };
-    if (f.type === "image/svg+xml") f.text().then((markup) => use({ kind: "svg", markup }), () => { status.textContent = message('showConfigurator.weCouldnTReadThisFile'); });
-    else use({ kind: "image", src: URL.createObjectURL(f) });
+    if (f.type === "image/svg+xml") f.text().then((markup) => use({ kind: "svg", markup, file: f }), () => { status.textContent = message('showConfigurator.weCouldnTReadThisFile'); });
+    else use({ kind: "image", src: URL.createObjectURL(f), file: f });
   }
   off.addEventListener("click", () => {
     const was = segment; dropLogo(); $("#cfg-logo-status").textContent = "";
@@ -529,6 +558,43 @@ if (form) {
     e.preventDefault(); endDrag();
     if (onTarget(e)) { done(); takeFile(e.dataTransfer.files?.[0]); }
   });
+
+  // ---------- Runde 27: Logo-Modus ----------
+  const modeBtn = $("#cfg-logomode"), tools = $("#cfg-logo-tools"), detail = $("#cfg-detail"), detailAuto = $("#cfg-detail-auto");
+  function drawLogoMode() {
+    modeBtn.setAttribute("aria-pressed", String(logoMode));
+    form.closest(".cfg").classList.toggle("is-logomode", logoMode);
+    tools.hidden = !(logoMode && logo);
+  }
+  modeBtn.addEventListener("click", () => {
+    logoMode = !logoMode; drawLogoMode();
+    if (logoMode) void logoModule();
+    fresh = []; unlockTo = null;
+    update(false, logoMode && logo ? LOGO_SEGMENT : undefined, { cloud: true });
+  });
+  /** Detailgrad (0–100): die Zone ist die Budget-Flexibilität (Streng, Mittel, Flexibel), die Stelle in der Zone die
+   * Liniendichte (rechts lockerer, mehr Formen). Automatisch: der Konverter wählt beides (Flexibel). */
+  const optionsOf = (v) => { const z = Math.min(2, Math.floor(v / (100 / 3))), u = (v - z * (100 / 3)) / (100 / 3); return { flex: ["strict", "medium", "flexible"][z], density: +(0.75 - 0.35 * u).toFixed(3) }; };
+  function setLogoOptions(o) {
+    if (!session?.setOptions(o)) return;
+    logoVer++; update(true, LOGO_SEGMENT, { cloud: true });
+  }
+  detail.addEventListener("change", () => { detailAuto.setAttribute("aria-pressed", "false"); setLogoOptions(optionsOf(+detail.value)); });
+  detail.addEventListener("input", () => detail.setAttribute("aria-valuetext", message(`logoMode.flex${({ strict: "Strict", medium: "Medium", flexible: "Flexible" })[optionsOf(+detail.value).flex]}`)));
+  detailAuto.addEventListener("click", () => { const on = detailAuto.getAttribute("aria-pressed") !== "true"; detailAuto.setAttribute("aria-pressed", String(on)); if (on) detail.value = "83"; setLogoOptions(on ? { flex: "auto", density: undefined } : optionsOf(+detail.value)); });
+  // Teile entfernen: flache Ansicht über der Bühne (logo-mode.js)
+  const edit = $("#cfg-edit");
+  $("#cfg-logo-edit").addEventListener("click", async () => {
+    const mod = await logoModule();
+    editor ??= mod.logoEditor({ root: edit, canvas: $("#cfg-edit-canvas"), band: $("#cfg-edit-band"), text: $("#cfg-edit-text"), remove: $("#cfg-edit-remove"), restore: $("#cfg-edit-restore"), clear: $("#cfg-edit-clear"), all: $("#cfg-edit-all"), close: $("#cfg-edit-close") }, {
+      t: message,
+      onChange: (list) => { if (!session) return; session.setRemoved(list); logoVer++; update(true, LOGO_SEGMENT, { cloud: true }); },
+    });
+    edit.hidden = false;
+    if (lastLogoPts && session) editor.show(lastLogoPts, session.removed);
+    $("#cfg-edit-close").focus();
+  });
+  $("#cfg-edit-close").addEventListener("click", () => { edit.hidden = true; $("#cfg-logo-edit").focus(); });
 
   // on phones the stage sticks on top and the price bar at the bottom: a focused field is scrolled between them
   // (scroll-margin in the CSS does it in Chromium; WebKit ignores it when focusing)

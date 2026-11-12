@@ -185,9 +185,9 @@
     "nl": "Gelegenheid"
   },
   "showconfigurator.howComplex": {
-    "de": "Wie aufwendig?",
-    "en": "How complex?",
-    "nl": "Hoe uitgebreid?"
+    "de": "Paket",
+    "en": "Package",
+    "nl": "Pakket"
   },
   "showconfigurator.yourTextYourLogo": {
     "de": "Euer Text, euer Logo",
@@ -3531,5 +3531,100 @@
     "de": "Euer Logo ist für {n} Drohnen sehr fein. Mit mehr Drohnen oder einer vereinfachten Fassung (etwa nur das Zeichen) wird es klarer.",
     "en": "Your logo is very detailed for {n} drones. More drones or a simplified version (for example just the mark) make it clearer.",
     "nl": "Jullie logo is erg fijn voor {n} drones. Met meer drones of een vereenvoudigde versie (bijvoorbeeld alleen het beeldmerk) wordt het duidelijker."
+  },
+  "logoMode.toggle": {
+    "de": "Logo-Modus",
+    "en": "Logo mode",
+    "nl": "Logomodus"
+  },
+  "logoMode.detail": {
+    "de": "Detailgrad",
+    "en": "Level of detail",
+    "nl": "Detailniveau"
+  },
+  "logoMode.auto": {
+    "de": "Automatisch",
+    "en": "Automatic",
+    "nl": "Automatisch"
+  },
+  "logoMode.flexStrict": {
+    "de": "Streng",
+    "en": "Strict",
+    "nl": "Strikt"
+  },
+  "logoMode.flexMedium": {
+    "de": "Mittel",
+    "en": "Medium",
+    "nl": "Gemiddeld"
+  },
+  "logoMode.flexFlexible": {
+    "de": "Flexibel",
+    "en": "Flexible",
+    "nl": "Flexibel"
+  },
+  "logoMode.flexHelp": {
+    "de": "Links bleibt das Logo nah an der gewählten Drohnenzahl (höchstens etwa +10 %), rechts zeigt es, wie viele Drohnen es für die genaueste Darstellung braucht.",
+    "en": "On the left the logo stays close to the chosen number of drones (at most about +10 %); on the right it shows how many drones it needs for the most accurate picture.",
+    "nl": "Links blijft het logo dicht bij het gekozen aantal drones (hooguit ongeveer +10 %), rechts laat het zien hoeveel drones het nodig heeft voor de nauwkeurigste weergave."
+  },
+  "logoMode.edit": {
+    "de": "Teile entfernen",
+    "en": "Remove parts",
+    "nl": "Delen verwijderen"
+  },
+  "logoMode.editHint": {
+    "de": "Formen anklicken oder einen Rahmen aufziehen. Ein zweiter Klick wählt das ganze Element.",
+    "en": "Click shapes or drag a frame. A second click selects the whole element.",
+    "nl": "Klik op vormen of trek een kader. Een tweede klik selecteert het hele element."
+  },
+  "logoMode.selected": {
+    "de": "{n} ausgewählt",
+    "en": "{n} selected",
+    "nl": "{n} geselecteerd"
+  },
+  "logoMode.remove": {
+    "de": "Entfernen",
+    "en": "Remove",
+    "nl": "Verwijderen"
+  },
+  "logoMode.restore": {
+    "de": "Wiederherstellen",
+    "en": "Restore",
+    "nl": "Herstellen"
+  },
+  "logoMode.clear": {
+    "de": "Auswahl aufheben",
+    "en": "Clear selection",
+    "nl": "Selectie opheffen"
+  },
+  "logoMode.restoreAll": {
+    "de": "Alle wiederherstellen",
+    "en": "Restore all",
+    "nl": "Alles herstellen"
+  },
+  "logoMode.done": {
+    "de": "Fertig",
+    "en": "Done",
+    "nl": "Klaar"
+  },
+  "logoMode.over": {
+    "de": "Unser automatischer Algorithmus berechnet für euer Logo etwa {wanted} Drohnen. Sendet uns gern eine Anfrage, damit unsere Designer einschätzen können, ob und wie eine vereinfachte Fassung mit {n} Drohnen möglich wäre.",
+    "en": "Our automatic algorithm calculates about {wanted} drones for your logo. Send us an enquiry and our designers will assess whether and how a simplified version with {n} drones is possible.",
+    "nl": "Ons automatische algoritme berekent voor jullie logo ongeveer {wanted} drones. Stuur ons gerust een aanvraag, dan beoordelen onze ontwerpers of en hoe een vereenvoudigde versie met {n} drones mogelijk is."
+  },
+  "logoMode.overCta": {
+    "de": "Anfrage senden",
+    "en": "Send an enquiry",
+    "nl": "Aanvraag sturen"
+  },
+  "logoMode.customer": {
+    "de": "Kundenlogo: {name}",
+    "en": "Client logo: {name}",
+    "nl": "Klantlogo: {name}"
+  },
+  "logoMode.computing": {
+    "de": "Euer Logo wird berechnet …",
+    "en": "Calculating your logo …",
+    "nl": "Jullie logo wordt berekend …"
   }
 }

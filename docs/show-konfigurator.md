@@ -837,3 +837,35 @@ Anlass: FlyingStars hat im Meeting am 5.11. den internen Motivkatalog gezeigt. L
 - Gesperrte Motive: ein Lichtpunkt je Schwelle, nicht je Motiv. Mit 13 Motiven drückten die Einzelpunkte auf dem Handy die Tempo-Knöpfe aus dem Bild.
 - Eigener Text: zehn Drohnen je Zeichen ohne Leerzeichen (Regel des Katalogs). Unter dem Feld steht „8 von 10 Zeichen bei 100 Drohnen“. Braucht der Text mehr, steigen Drohnenzahl, Paket und Preis sichtbar mit. Ein Absenken darunter hält der Regler und sagt warum. Höchstens 24 Zeichen, also 240 Drohnen.
 - Wächter: `scripts/catalog-motifs.test.mjs` (Daten, Mindestzahlen, Varianten wachsen mit), dazu die bestehenden `show-unlock`, `show-counts`, `show-finte`, `show-clouds`.
+
+## Runde 27: Logo-Modus mit dem Logo-Konverter v10 (12.11.2026)
+
+Marc (12.11.): eigener Logo-Modus im echten Konfigurator; die Logo-Regler erscheinen nur, wenn jemand ein Logo hochlädt
+oder in den Modus wechselt; im Modus laufen Kundenlogos als Formation durch; „Paket“ statt „Wie aufwendig?“; Hinweis bei
+zu vielen Drohnen ohne Versprechen („…damit unsere Designer einschätzen können, ob und wie…“). Detailgrad und
+Budget-Flexibilität als ein Regler (Zonen wie die Paketfarben am Drohnenregler).
+
+- Schalter „Logo-Modus“ in „Euer Text, euer Logo“. Ohne eigenes Logo zeigt die Bühne die Kundenlogos
+  (`public/brand/logos/kunde-*-weiss.svg`), vorberechnet in `public/media/logo-modus/kundenlogos.json` (erzeugt mit
+  `freelance/clients/flyingstars/23-logo-drohnen-konverter/tools/v10/examples.mjs`, 8 Drohnenzahlen von 100 bis 600). Es
+  laufen nur Logos, die in die gewählte Zahl passen (flexibel, sonst die strenge Fassung bis +10 %).
+- Ein hochgeladenes Logo schaltet den Modus ein. Es läuft durch den Konverter v10 (`src/scripts/logo-v10/`, vendored mit
+  `node integration/vendor.mjs` aus Ordner 23, nicht hier ändern): Kontur, keine Mischung aus Kontur und Mittellinie in einem
+  Zeichen. Statt Strichgraph (Runde 26) und dunkler Reserve gilt: Braucht das Logo mehr als die gewählte Zahl, steht es mit
+  seiner eigenen Zahl da (Lichtgröße wie bei einer Show dieser Größe) und der Hinweis sagt es.
+- Regler „Detailgrad“ (nur mit eigenem Logo): drei Zonen Streng / Mittel / Flexibel = Budget-Flexibilität des Konverters
+  (opts.flex), die Stelle in der Zone = Liniendichte (rechts lockerer, mehr Formen). „Automatisch“ = Flexibel.
+- „Teile entfernen“: flache Ansicht über der Bühne (die Bühne ist gekippt und fliegt, Klicks wären dort nicht verlässlich):
+  Klick wählt ein zusammenhängendes Farbstück, ein zweiter Klick das ganze Element, Rahmen aufziehen wählt mehrere; Entf,
+  Esc; entfernte Teile bleiben als Geister sichtbar und lassen sich wiederherstellen. Alles entfernen geht nicht.
+- Laden: `logo-mode.js` und der Konverter kommen erst beim Wechsel in den Modus bzw. mit der ersten Datei (dynamischer
+  Import, der Konverter rechnet im Worker); die Kundenlogo-Daten (312 KB) erst im Modus.
+- Das Logo verlässt den Browser weiterhin nicht: „Anfrage senden“ führt nur zum Formular (`/#anfrage`). Ein Logo-Anhang
+  am Formular ist vorbereitet, aber nicht gebaut (Rechtsrecherche:
+  `23-logo-drohnen-konverter/integration/recherche-logo-anhang.md`).
+- Geprüft: Chromium und WebKit (Playwright, 1440 px): Kundenlogo-Folge, Upload (Energizer), Hinweis über der Zahl, Teile
+  entfernen und Neuberechnung. Unit-Tests: 726 von 731; die drei Fehler bestehen auch ohne diese Runde bzw. sind behoben
+  (px-Wert). Nicht geprüft: Playwright-Specs des Konfigurators (`tests/show-*.spec.ts`), Handys, Marcs Safari 18.6.
+- Offen: Text-Drohnenkopplung an die Budget-Flexibilität (Marcs Idee: bei strengem Budget nur so viele Zeichen wie Drohnen);
+  „Was zeigen“ (ganzes Logo / nur Symbol) bewusst weggelassen; die Wolke als Ladezustand beim ersten Rechnen fehlt im
+  Konfigurator noch (bis das Logo fertig ist, läuft die bisherige Show weiter).

@@ -63,6 +63,19 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
       <div class="cfg-drop" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0-5 5m5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg><span>{t('showconfigurator.dragYourLogoHere')}</span><small>{t('showconfigurator.svgPngOrJpg')}</small></div>
       <span class="sr-only" id="cfg-scene">{firstCaption}</span>
       <p class="cfg-toast" id="cfg-toast" role="status"></p>
+      {/* Runde 27 (Logo-Modus): flache Ansicht zum Entfernen von Teilen des eigenen Logos, über der Bühne (logo-mode.js) */}
+      <div class="cfg-edit" id="cfg-edit" role="dialog" aria-label={t('logoMode.edit')} hidden>
+        <canvas id="cfg-edit-canvas" aria-label={t('logoMode.editHint')}></canvas>
+        <div class="cfg-edit-band" id="cfg-edit-band" hidden></div>
+        <div class="cfg-edit-bar">
+          <span id="cfg-edit-text"></span>
+          <button type="button" id="cfg-edit-remove" hidden>{t('logoMode.remove')}</button>
+          <button type="button" id="cfg-edit-restore" hidden>{t('logoMode.restore')}</button>
+          <button type="button" id="cfg-edit-clear" hidden>{t('logoMode.clear')}</button>
+          <button type="button" id="cfg-edit-all" hidden>{t('logoMode.restoreAll')}</button>
+          <button type="button" class="cfg-edit-done" id="cfg-edit-close">{t('logoMode.done')}</button>
+        </div>
+      </div>
       <p class="cfg-error" id="cfg-error" role="status" hidden>{t('showconfigurator.thePreviewIsCurrentlyUnavailableYouCanStillChooseA')}</p>
       <div class="cfg-player" id="cfg-player" role="group" aria-label={t('showconfigurator.previewPlayback')}>
         <button type="button" class="cfg-play" id="cfg-play" aria-label={t('showconfigurator.pauseThePreview2')} data-paused="false">
@@ -122,6 +135,21 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
           <input class="cfg-text" id="cfg-text" name="text" type="text" maxlength="24" autocomplete="off" placeholder={t('showconfigurator.eGAnnaBen')} aria-label={t('showconfigurator.yourText')} />
           <label class="cfg-upload" id="cfg-upload"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0-5 5m5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg><span>{t('showConfigurator.yourLogo')}</span><input id="cfg-file" type="file" accept="image/svg+xml,image/png,image/jpeg,image/webp" aria-describedby="cfg-legal" /></label>
           <button type="button" class="cfg-logo-off" id="cfg-logo-off" aria-label={t('showconfigurator.removeLogo')} hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+        </div>
+        {/* Runde 27: Logo-Modus. Die Bühne zeigt Kundenlogos als Formation (nur die, die in die Drohnenzahl passen), ein
+             eigenes Logo kommt per Ziehen oder Datei; erst dann erscheinen Detailgrad, Budget-Flexibilität und Teile entfernen */}
+        <button type="button" class="cfg-logomode" id="cfg-logomode" aria-pressed="false" aria-controls="cfg-logo-tools">{t('logoMode.toggle')}</button>
+        <div class="cfg-logo-tools" id="cfg-logo-tools" hidden>
+          {/* Marc 12.11.: ein Regler statt zwei. Die Zonen der Spur sind die Budget-Flexibilität (wie die Paketfarben am
+               Drohnenregler), die Stelle in der Zone die Liniendichte (rechts lockerere Linien, mehr Formen) */}
+          <div class="cfg-tool">
+            <div class="cfg-tool-head"><label for="cfg-detail">{t('logoMode.detail')}</label><button type="button" class="cfg-auto" id="cfg-detail-auto" aria-pressed="true">{t('logoMode.auto')}</button></div>
+            <input class="cfg-range cfg-range-zones" id="cfg-detail" type="range" min="0" max="100" step="1" value="83" aria-describedby="cfg-detail-help" />
+            <div class="cfg-zones mono" aria-hidden="true"><span>{t('logoMode.flexStrict')}</span><span>{t('logoMode.flexMedium')}</span><span>{t('logoMode.flexFlexible')}</span></div>
+            <p class="cfg-tool-help" id="cfg-detail-help">{t('logoMode.flexHelp')}</p>
+          </div>
+          <button type="button" class="btn small cfg-logo-edit" id="cfg-logo-edit">{t('logoMode.edit')}</button>
+          <p class="cfg-logo-over" id="cfg-logo-over" hidden><span id="cfg-logo-over-text"></span> <a href={localHref("/#anfrage")} id="cfg-logo-over-cta">{t('logoMode.overCta')}</a></p>
         </div>
         <div class="chips cfg-styles" id="cfg-styles" hidden>
           {[['script', t('showconfigurator.handwriting')], ['print', t('showconfigurator.printLettering')], ['initials', t('showconfigurator.initials')]].map(([v, l], i) => <label><input type="radio" name="textstyle" value={v} checked={i === 0} /><span>{l}</span></label>)}
