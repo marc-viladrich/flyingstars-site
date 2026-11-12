@@ -127,3 +127,7 @@ Die zusätzliche Logo-Hinweisbox auf der Bühne ist vollständig aus Markup und 
 - Cloudflare-Preview erfolgreich: https://7f5840f5.flyingstars-site.pages.dev . Logo-Anlass und Adidas per Browser geklickt, Zustand `ready`, 200 Punkte, keine sichtbare Fehleranzeige, keine zusätzliche Logo-Hinweisbox oder Dev-Markierungen auf der geprüften Seite. Prüftab geschlossen.
 - Produktion https://flyingstars-site.pages.dev unverändert, kein Merge-Commit, Produktionsprüfung daher nicht durchgeführt. Kein Nachweis für Marcs Safari 18.6 oder reale Mobilgeräte. Die noch fachlich offenen Aufgaben aus der Übergabe bleiben offen.
 - Der T3-PR-Watcher ist in dieser Sitzung nicht verfügbar. Der Feature-PR bleibt wegen des belegten lokalen Layoutfehlers ausdrücklich ungemergt.
+
+### Korrektur des lokalen Audit-Ziels
+
+Der erste Audit auf Port 4398 verwendete einen bereits vorhandenen Server; der eigene Preview war auf 4399 ausgewichen. Der bestehende Server auf 4398 wurde beim Aufräumen versehentlich beendet. Port 4391 blieb unberührt. Deshalb wurde der Audit vollständig gegen einen vorher geprüft freien, ausdrücklich mit `/opt/homebrew/bin/node` gestarteten Produktionspreview auf 44781 wiederholt: Chromium und WebKit jeweils 22 Seiten × fünf Breiten, null Befunde. Maßgebliche Logs: `/tmp/fs-publish-layout-final-chromium.log` und `/tmp/fs-publish-layout-final-webkit.log`; der eigene Prozess auf 44781 ist beendet.
