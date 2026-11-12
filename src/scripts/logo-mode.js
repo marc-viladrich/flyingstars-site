@@ -37,7 +37,7 @@ export async function customerLogos(n) {
  * formation(n) → Punkte [{ x, y, c: [r, g, b] }] mit meta { n, wanted, over, … } (Farben schon für den Nachthimmel).
  */
 export function logoSession(file, init = {}) {
-  let opts = { flex: "medium", ...init }, inst = null, removed = [];
+  let opts = { flex: "auto", part: "auto", ...init }, inst = null, removed = [];
   if (opts.density == null) delete opts.density;
   const removals = () => ({ exclude: removed.filter((r) => !r.erase).flatMap((r) => r.anchors), erase: removed.filter((r) => r.erase).flatMap((r) => r.anchors) });
   const fresh = () => { inst?.dispose(); inst = logoFormations(file, { opts: { ...opts } }); if (removed.length) inst.setRemovals(removals()); };

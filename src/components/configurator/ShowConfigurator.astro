@@ -130,9 +130,8 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
       </fieldset>
 
       <div class="cfg-block cfg-drones">
-        <div class="cfg-drones-head"><label for="cfg-drones">{t('configuratorteaser.drones')}</label><span class="cfg-drones-out"><s class="cfg-wish" id="cfg-wish" hidden></s><output id="cfg-dronecount" for="cfg-drones">{first.base}</output></span></div>
-        {/* Runde 27: braucht das eigene Logo mehr Drohnen als gewählt, zeigt die Spur den Bedarf als Band bis zu einer Marke */}
-        <div class="cfg-need" id="cfg-need" hidden><svg aria-hidden="true"><path id="cfg-need-path" /></svg><span class="cfg-need-mark"></span><button type="button" class="cfg-need-x" id="cfg-need-x"></button></div>
+        <p class="cfg-logo-count" id="cfg-logo-count" role="status" hidden><b id="cfg-logo-n"></b> <span>{t('logoMode.needed')}</span></p>
+        <div class="cfg-drones-head"><label for="cfg-drones" id="cfg-drones-label">{t('configuratorteaser.drones')}</label><output id="cfg-dronecount" for="cfg-drones">{first.base}</output></div>
         <input class="cfg-range" id="cfg-drones" {...record({collection:'previewPolicy',id:'configuration'})} type="range" min={DRONES_MIN} max={DRONES_MAX} step={DRONE_STEP} value={first.base} style={`--track: ${rangeTrack}`} />
         <div class="cfg-ticks mono" aria-hidden="true">{ticks.map((n) => <span style={`--p: ${at(n) / 100}`}>{n}</span>)}</div>
       </div>
@@ -148,12 +147,26 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
         </div>
         {/* Runde 27: Logo-Modus. Die Bühne zeigt Kundenlogos als Formation (nur die, die in die Drohnenzahl passen), ein
              eigenes Logo kommt per Ziehen oder Datei; erst dann erscheinen Detailgrad, Budget-Flexibilität und Teile entfernen */}
+        {/* Runde 27 (Marc 12.11., dritte Runde): Logik und Regler wie im lokalen Prototyp (23-logo-drohnen-konverter/app-v10),
+             ohne Beschreibungstexte: Beispiele, Liniendichte, Budget-Flexibilität, Was zeigen */}
         <div class="cfg-logo-tools" id="cfg-logo-tools" hidden>
-          {/* Marc 12.11. (zweite Runde): nur die Liniendichte; die Budget-Flexibilität ist fest „Mittel“ */}
           <div class="cfg-tool">
-            <div class="cfg-tool-head"><label for="cfg-detail">{t('logoMode.density')}</label><button type="button" class="cfg-auto" id="cfg-detail-auto" aria-pressed="true">{t('logoMode.auto')}</button></div>
-            <input class="cfg-range cfg-range-plain" id="cfg-detail" type="range" min="0" max="100" step="1" value="50" />
-            <div class="cfg-scale mono" aria-hidden="true"><span>{t('logoMode.looser')}</span><span>{t('logoMode.denser')}</span></div>
+            <span class="cfg-tool-head">{t('logoMode.examples')}</span>
+            <div class="cfg-examples" id="cfg-examples">{[["mastercard", "Mastercard"], ["ikea", "IKEA"], ["dhl", "DHL"], ["firefox", "Firefox"], ["spotify", "Spotify"], ["nike", "Nike"], ["apple", "Apple"], ["mcdonalds", "McDonald’s"], ["adidas", "Adidas"]].map(([id, name]) => <button type="button" data-example={id}>{name}</button>)}</div>
+          </div>
+          <div class="cfg-logo-own" id="cfg-logo-own" hidden>
+            <div class="cfg-tool">
+              <div class="cfg-tool-head"><label for="cfg-detail">{t('logoMode.density')}</label><button type="button" class="cfg-auto" id="cfg-detail-auto" aria-pressed="true">{t('logoMode.auto')}</button></div>
+              <input class="cfg-range cfg-range-plain" id="cfg-detail" type="range" min="0" max="100" step="1" value="50" />
+            </div>
+            <fieldset class="cfg-tool">
+              <legend class="cfg-tool-head">{t('logoMode.flex')}</legend>
+              <div class="chips cfg-seg" id="cfg-flex">{[['auto', t('logoMode.auto')], ['strict', t('logoMode.flexStrict')], ['medium', t('logoMode.flexMedium')], ['flexible', t('logoMode.flexFlexible')]].map(([v, l]) => <label><input type="radio" name="logoflex" value={v} checked={v === 'auto'} /><span>{l}</span></label>)}</div>
+            </fieldset>
+            <fieldset class="cfg-tool">
+              <legend class="cfg-tool-head">{t('logoMode.part')}</legend>
+              <div class="chips cfg-seg" id="cfg-part">{[['auto', t('logoMode.auto')], ['full', t('logoMode.partFull')], ['mark', t('logoMode.partMark')]].map(([v, l]) => <label><input type="radio" name="logopart" value={v} checked={v === 'auto'} /><span>{l}</span></label>)}</div>
+            </fieldset>
           </div>
         </div>
         <div class="chips cfg-styles" id="cfg-styles" hidden>

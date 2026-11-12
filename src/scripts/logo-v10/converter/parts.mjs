@@ -182,7 +182,10 @@ export function findParts(ctx) {
         const b = bboxOf(sym), m = 0.15 * Math.max(b.w, b.h);
         for (const [j, r] of list.entries()) {
           if (fit[j] === 'out' || r.rim || Math.min(r.w, r.h) <= Math.max(2, 0.04 * L.H)) continue;
-          const ix = Math.max(0, Math.min(r.x1, b.x1 + m) - Math.max(r.x0, b.x0 - m) + 1), iy = Math.max(0, Math.min(r.y1, b.y1 + m) - Math.max(r.y0, b.y0 - m) + 1);
+          // (a letter of full line height on the baseline must lie inside the symbol's own box, not only inside the
+          // grown one, when the symbol reaches over it: the PUMA cat's tail above the A, and the A is still a letter of the word)
+          const mm = fit[j] === 'glyph' && r.h >= 0.8 * L.H && r.h <= 1.2 * L.H && r.w >= 0.4 * r.h && r.x0 >= b.x0 && r.x1 <= b.x1 && Math.abs(r.y1 - L.B) <= 0.12 * L.H ? 0 : m;
+          const ix = Math.max(0, Math.min(r.x1, b.x1 + mm) - Math.max(r.x0, b.x0 - mm) + 1), iy = Math.max(0, Math.min(r.y1, b.y1 + mm) - Math.max(r.y0, b.y0 - mm) + 1);
           if (ix * iy >= 0.8 * r.w * r.h) { fit[j] = 'out'; r.symOf = o; grew = true; }
         }
       }
@@ -208,6 +211,9 @@ export function findParts(ctx) {
     }
     const runs = []; let cur = [], lastX1 = null;
     for (const [k, r] of list.entries()) {
+      // (a symbol floating above the word, overlapping the letter before it, does not cut the word: the PUMA cat
+      // leaping over the A)
+      if (fit[k] === 'out' && cur.length && lastX1 !== null && r.x0 < lastX1 && r.y1 < L.B - 0.12 * L.H && r.h >= L.H && r.w >= L.H) { runs.push([r]); continue; }
       if (fit[k] === 'out') { if (cur.length) runs.push(cur); cur = []; lastX1 = null; runs.push([r]); continue; }
       if (fit[k] === 'glyph' && lastX1 !== null && r.x0 - lastX1 > gBreak) { runs.push(cur); cur = []; }
       cur.push(r);

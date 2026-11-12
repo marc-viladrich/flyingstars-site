@@ -3612,11 +3612,6 @@
     "en": "denser",
     "nl": "dichter"
   },
-  "logoMode.fitAnchor": {
-    "de": "Logo auf {n} Drohnen begrenzen",
-    "en": "Limit the logo to {n} drones",
-    "nl": "Logo beperken tot {n} drones"
-  },
   "logoMode.close": {
     "de": "Schließen",
     "en": "Close",
@@ -3631,5 +3626,55 @@
     "de": "Kundenlogo: {name} · mit {n} Drohnen",
     "en": "Client logo: {name} · with {n} drones",
     "nl": "Klantlogo: {name} · met {n} drones"
+  },
+  "logoMode.examples": {
+    "de": "Beispiele",
+    "en": "Examples",
+    "nl": "Voorbeelden"
+  },
+  "logoMode.flex": {
+    "de": "Budget-Flexibilität",
+    "en": "Budget flexibility",
+    "nl": "Budgetflexibiliteit"
+  },
+  "logoMode.flexStrict": {
+    "de": "Streng",
+    "en": "Strict",
+    "nl": "Strikt"
+  },
+  "logoMode.flexMedium": {
+    "de": "Mittel",
+    "en": "Medium",
+    "nl": "Gemiddeld"
+  },
+  "logoMode.flexFlexible": {
+    "de": "Flexibel",
+    "en": "Flexible",
+    "nl": "Flexibel"
+  },
+  "logoMode.part": {
+    "de": "Was zeigen",
+    "en": "What to show",
+    "nl": "Wat tonen"
+  },
+  "logoMode.partFull": {
+    "de": "Ganzes Logo",
+    "en": "Whole logo",
+    "nl": "Heel logo"
+  },
+  "logoMode.partMark": {
+    "de": "Nur Symbol",
+    "en": "Symbol only",
+    "nl": "Alleen symbool"
+  },
+  "logoMode.needed": {
+    "de": "Drohnen werden benötigt",
+    "en": "drones needed",
+    "nl": "drones nodig"
+  },
+  "logoMode.wanted": {
+    "de": "Gewünschte Drohnenanzahl",
+    "en": "Desired number of drones",
+    "nl": "Gewenst aantal drones"
   }
 }

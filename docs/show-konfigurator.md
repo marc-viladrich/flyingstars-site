@@ -886,3 +886,15 @@ Budget-Flexibilität als ein Regler (Zonen wie die Paketfarben am Drohnenregler)
   (`ok` in kundenlogos.json, Begründungen in `23-logo-drohnen-konverter/screens/v10-kundenlogos/README.md`); passen weniger
   als zwei, laufen bis zu vier mit ihrer eigenen Zahl („mit 400 Drohnen“). Geprüft in Chromium und WebKit (Upload, Wolke,
   Bedarf, Karte, Klick- und Rahmenauswahl, Entfernen, Liniendichte, ×).
+- Nachtrag 3 (12.11. nachts, Marc: „das funktioniert gar nicht … zurück zur Logik des lokalen Prototyps“): Der Anlass
+  „Euer Logo“ rechnet jetzt genau wie der Prototyp `app-v10`: feste gewünschte Drohnenzahl, Liniendichte (Automatisch oder
+  Regler), Budget-Flexibilität (Automatisch/Streng/Mittel/Flexibel) und „Was zeigen“ (Automatisch/Ganzes Logo/Nur
+  Symbol). Automatisch nimmt nur das Symbol, wenn das ganze Logo nicht in die Zahl passt (Puma bei 100: 97 Drohnen, nur die
+  Raubkatze). Beschreibungstexte, Zonen, Bogen, Durchstreichen und das × am Bogen sind entfernt. Oben steht die große Zahl
+  „N Drohnen werden benötigt“ (Korallrot über der gewünschten Zahl), der Regler heißt „Gewünschte Drohnenanzahl“.
+  „Beispiele“: Mastercard, IKEA, DHL, Firefox, Spotify, Nike, Apple, McDonald’s, Adidas als SVG unter
+  `public/media/logo-modus/beispiele/` (laden wie ein Upload). Bühne niedriger, Minimap und Hinweiskarte unten; auf dem
+  Handy ist die Karte kompakt über die volle Breite, die Minimap oben rechts. Geprüft in Chromium und WebKit (1440 px:
+  Puma 97, Mastercard 98/100; 390 px: Puma „Ganzes Logo“ = 207, rot, Karte). Bekannt: Playwright-WebKit stürzt beim
+  Verkleinern des Fensters von 1440 auf 390 px auf jeder Seite der Site ab (auch „Über uns“, nicht auf einer leeren Seite);
+  frisch mit 390 px geöffnet läuft alles. Nicht geprüft: Handys, Marcs Safari 18.6.

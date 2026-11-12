@@ -1875,7 +1875,7 @@ export function convert(image, opts0 = {}) {
     const wants = style === 'schematic' || (style === 'auto' && !(r.meta.clean && !r.meta.budget.over));
     let sch = false;
     if (wants) { const segB = segment(base), stB = structure(segB); sch = !!schematicImage(base, segB, stB, { force: style === 'schematic', withCharge: false, keepText: true }); }
-    r.meta.probeWouldChange = !!r.meta.autoWouldRetry || sch;
+    r.meta.probeWouldChange = !!r.meta.autoWouldRetry || sch || ((opts.part ?? 'auto') === 'auto' && !!r.meta.budget?.over && r.meta.part === 'full'); // (v10: the mark-only retry below)
   }
   if (style === 'schematic' || (style === 'auto' && !opts.probe && !(r && r.meta.clean && !r.meta.budget.over))) {
     schemPrep();
@@ -1902,6 +1902,13 @@ export function convert(image, opts0 = {}) {
   // (crest first, and no schematic variant is clean within the budget: the detailed over-budget path after all, on a fresh
   // segmentation, since the stopped conversion has marked the figures of pre)
   if (!r) { r = coreUnderPlan(base, opts, null, auto); lap('detailed'); }
+  // v10 (Marc 12.11.: Puma at 100 drew cat and lettering, needed 204): part 'auto' takes the Bildmarke alone when the whole
+  // logo does not fit N and the mark alone does (or needs clearly fewer drones). v8/v9 did this only past hardMax.
+  if ((opts.part ?? 'auto') === 'auto' && !opts.probe && r && r.meta.budget?.over && r.meta.part === 'full' && r._map) {
+    const m = coreUnderPlan(base, { ...opts, part: 'mark' }, null, auto);
+    lap('mark only');
+    if (m && m._map && m.meta.part === 'mark' && m.points.length && (!m.meta.budget.over || m.points.length <= 0.7 * r.points.length)) { m.meta.partRequested = 'auto'; m.meta.markInstead = r.points.length; r = m; }
+  }
   // (everything excluded or erased: nothing to draw, an empty picture rather than an error)
   if (!r._map) { Object.assign(r.meta, { style: styleOut, elements: [], colourGroups: [], container: { found: !!cont.found, dropped: drop, box: cont.box || null } }); return r; }
   // the element of every dot: the element most of its figure's own pixels belong to

@@ -243,42 +243,42 @@
 .cfg-tool-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); font-size: var(--text-sm); color: var(--text); }
 .cfg-auto { min-height: 1.75rem; padding: 0 var(--space-2-5); border: 1px solid var(--line-strong); border-radius: var(--radius-pill); background: transparent; color: var(--muted); font: 400 var(--text-xs)/1 var(--body); cursor: pointer; }
 .cfg-auto[aria-pressed="true"] { color: var(--text); border-color: var(--text); background: var(--line-soft); }
-.cfg-auto:focus-visible, .cfg-back:focus-visible, .cfg-edit-bar button:focus-visible, .cfg-minimap:focus-visible, .cfg-need-x:focus-visible, .cfg-over-close:focus-visible { outline: 0.125rem solid var(--cyan); outline-offset: 0.125rem; }
+.cfg-auto:focus-visible, .cfg-back:focus-visible, .cfg-edit-bar button:focus-visible, .cfg-minimap:focus-visible, .cfg-over-close:focus-visible, .cfg-examples button:focus-visible { outline: 0.125rem solid var(--cyan); outline-offset: 0.125rem; }
 .cfg-range-plain { --track: linear-gradient(90deg, var(--line-soft), var(--muted)); }
 .cfg-scale { display: flex; justify-content: space-between; font-size: var(--text-label); color: var(--muted); }
 /* Formen wählen auf der Bühne */
 .cfg-pick { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
 .cfg-edit-band { position: absolute; z-index: 4; border: 1px dashed var(--text); background: var(--line-soft); pointer-events: none; }
-.cfg-edit-bar { position: absolute; z-index: 5; left: 0.875rem; right: 0.875rem; bottom: 0.875rem; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1-5); padding: var(--space-1-5) var(--space-2); border: 1px solid var(--line); border-radius: var(--radius-10); background: var(--overlay-media); font-size: var(--text-sm); color: var(--muted); }
+.cfg-edit-bar { position: absolute; z-index: 5; left: 0.875rem; right: 0.875rem; top: 0.875rem; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1-5); padding: var(--space-1-5) var(--space-2); border: 1px solid var(--line); border-radius: var(--radius-10); background: var(--overlay-media); font-size: var(--text-sm); color: var(--muted); }
 .cfg-edit-bar span { flex: 1 1 12rem; min-width: 0; }
 .cfg-edit-bar button { min-height: 2.25rem; padding: 0 var(--space-3); border: 1px solid var(--line-strong); border-radius: var(--radius-pill); background: transparent; color: var(--text); font: 400 var(--text-sm)/1 var(--body); cursor: pointer; }
 /* Minimap mit dem Original; ein Klick vergrößert sie */
-.cfg-minimap { position: absolute; z-index: 5; right: 0.875rem; top: 0.875rem; width: 6.5rem; height: 4.5rem; padding: var(--space-1-5); border: 1px solid var(--line); border-radius: var(--radius-6); background: var(--text); cursor: zoom-in; transition: width var(--dur-standard) var(--ease-default), height var(--dur-standard) var(--ease-default); }
+.cfg-minimap { position: absolute; z-index: 5; right: 0.875rem; bottom: 0.875rem; width: 6.5rem; height: 4.5rem; padding: var(--space-1-5); border: 1px solid var(--line); border-radius: var(--radius-6); background: var(--text); cursor: zoom-in; transition: width var(--dur-standard) var(--ease-default), height var(--dur-standard) var(--ease-default); }
 .cfg-minimap img { width: 100%; height: 100%; object-fit: contain; }
 .cfg-minimap[aria-pressed="true"] { width: min(24rem, 45%); height: min(16rem, 40%); cursor: zoom-out; }
-/* Hinweis bei zu vielen Drohnen: Karte oben auf der Bühne */
-.cfg-over-card { position: absolute; z-index: 6; left: 0.875rem; right: 8.5rem; top: 0.875rem; padding: var(--space-3) var(--space-8) var(--space-3) var(--space-3); border: 1px solid var(--line); border-left: 0.125rem solid var(--amber); border-radius: var(--radius-10); background: var(--overlay-panel); font-size: var(--text-sm); color: var(--text); text-wrap: pretty; }
+/* Hinweis bei zu vielen Drohnen: Karte unten auf der Bühne */
+.cfg-over-card { position: absolute; z-index: 6; left: 0.875rem; right: 8.5rem; bottom: 0.875rem; padding: var(--space-3) var(--space-8) var(--space-3) var(--space-3); border: 1px solid var(--line); border-left: 0.125rem solid var(--amber); border-radius: var(--radius-10); background: var(--overlay-panel); font-size: var(--text-sm); color: var(--text); text-wrap: pretty; }
 .cfg-over-card p { margin: 0; }
 .cfg-over-card b { font-size: 1.15em; }
 .cfg-over-card a { display: inline-block; margin-top: var(--space-1-5); color: var(--amber); }
 .cfg-over-close { position: absolute; right: var(--space-1-5); top: var(--space-1-5); width: 1.75rem; height: 1.75rem; border: 0; border-radius: var(--radius-round); background: transparent; color: var(--muted); font-size: var(--text-md); cursor: pointer; }
-/* Bedarf am Drohnenregler: große Zahl = Bedarf, Wunsch durchgestrichen, Griff blass, Bogen zum Bedarf */
 .cfg-drones { position: relative; }
-.cfg-drones-out { display: inline-flex; align-items: baseline; gap: var(--space-2); }
-.cfg-wish { color: var(--muted); font-size: var(--text-sm); }
-.cfg-drones.is-over #cfg-dronecount { font-weight: 600; transition: color var(--dur-standard) var(--ease-default); }
-.cfg-drones.is-over .cfg-range::-webkit-slider-thumb { opacity: 0.4; }
-.cfg-drones.is-over .cfg-range::-moz-range-thumb { opacity: 0.4; }
-.cfg-need { position: absolute; left: 0; right: 0; height: 2.5rem; pointer-events: none; }
-.cfg-need svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.cfg-need path { fill: none; stroke: var(--text); stroke-width: 1.5; stroke-dasharray: 3 4; stroke-linecap: round; pointer-events: stroke; animation: cfg-need-draw var(--dur-standard) var(--ease-default); }
-.cfg-need-mark { position: absolute; left: calc(var(--x2) - 0.4375rem); top: calc(1.875rem - 0.4375rem); width: 0.875rem; height: 0.875rem; border-radius: var(--radius-round); border: 0.125rem solid var(--text); background: var(--ground); transition: left var(--dur-standard) var(--ease-default); }
-.cfg-need-x { position: absolute; left: calc(var(--xm) - 0.75rem); top: -0.375rem; width: 1.5rem; height: 1.5rem; border: 1px solid var(--line-strong); border-radius: var(--radius-round); background: var(--overlay-panel); color: var(--text); font: 400 var(--text-sm)/1 var(--body); cursor: pointer; opacity: 0; pointer-events: auto; transition: opacity var(--dur-quick); }
-.cfg-need-x::before { content: "×"; }
-.cfg-need:hover .cfg-need-x, .cfg-need-x:focus-visible, .cfg-need:has(path:hover) .cfg-need-x { opacity: 1; }
-@media (hover: none) { .cfg-need-x { opacity: 1; } }
-@keyframes cfg-need-draw { from { stroke-dashoffset: 40; opacity: 0; } to { stroke-dashoffset: 0; opacity: 1; } }
-/* Fokus auf den Drohnenregler, wenn ein Logo mehr Drohnen braucht */
-.cfg.is-spot .cfg-panel > :not(.cfg-drones) { opacity: 0.28; transition: opacity var(--dur-standard) var(--ease-default); }
-.cfg.is-spot .cfg-drones { position: relative; z-index: 1; }
-@media (prefers-reduced-motion: reduce) { .cfg-need path { animation: none; } .cfg-need-mark, .cfg-minimap { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .cfg-minimap { transition: none; } }
+/* schmale Bühne: Karte kompakt über die volle Breite, Minimap nach oben, damit das Logo frei bleibt */
+@media (--nav-collapsed) {
+  .cfg-over-card { right: 0.875rem; padding: var(--space-2) var(--space-8) var(--space-2) var(--space-2-5); font-size: var(--text-xs); line-height: 1.4; }
+  .cfg-over-card a { margin-top: var(--space-1); }
+  .cfg-minimap { top: 0.875rem; bottom: auto; width: 5rem; height: 3.5rem; }
+}
+/* Runde 27, dritte Runde: große Zahl = Bedarf, rot über der gewünschten Zahl; Beispiele als Textknöpfe; Bühne niedriger */
+.cfg-logo-count { margin: 0 0 var(--space-3); display: flex; align-items: baseline; gap: var(--space-2); color: var(--muted); font-size: var(--text-sm); }
+.cfg-logo-count b { font: 600 clamp(2.25rem, 3vw, 3rem)/1 var(--display, var(--body)); color: var(--text); transition: color var(--dur-standard) var(--ease-default); }
+.cfg-logo-count.is-over b { color: var(--logo-coral); }
+.cfg-examples { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); }
+.cfg-examples button { padding: 0; border: 0; background: none; color: var(--muted); font: 400 var(--text-sm)/1.6 var(--body); text-decoration: underline; text-underline-offset: 0.2em; cursor: pointer; }
+.cfg-examples button:hover { color: var(--text); }
+.cfg-logo-own { display: grid; gap: var(--space-4); }
+.cfg-logo-own[hidden] { display: none; }
+fieldset.cfg-tool { margin: 0; padding: 0; border: 0; min-width: 0; }
+.cfg-seg { --chip-height: 2rem; --chip-padding: 0 var(--space-3); --chip-font-size: var(--text-sm); --chips-gap: var(--space-1-5); }
+.cfg.is-logomode .cfg-stage { height: min(calc(100svh - 6.75rem), 34rem); min-height: 22rem; }
