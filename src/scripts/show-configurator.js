@@ -227,7 +227,7 @@ if (form) {
   let logo = null, logoId = 0, logoURL = null;
   // Runde 27: Logo-Modus. logoMode: die Bühne zeigt Logos (Kundenlogos, bis ein eigenes da ist); lm: logo-mode.js, erst bei
   // Bedarf geladen; session: der Konverter für das eigene Logo (logo-v10); logoVer zählt Änderungen an Reglern/Entfernungen
-  let logoMode = false, lm = null, session = null, logoVer = 0, lastLogoPts = null, editor = null;
+  let logoMode = false, lm = null, session = null, logoVer = 0, lastLogoPts = null, editor = null, anchorFit = false, overClosed = false, spotFor = "", minimapURL = null;
   const logoModule = () => (lm ??= import("./logo-mode.js"));
   const slider = $("#cfg-drones");
   const earlyPkg = chosenEarly(form.querySelectorAll("[name=pkg]"));
@@ -275,29 +275,61 @@ if (form) {
   const darkReserve = (lit, n) => Array.from({ length: Math.max(0, n - lit.length) }, (_, i) => { const q = lit[(i * 7) % lit.length]; return [q[0], q[1], -0.45 - 0.04 * (i % 3), 0, 0, 0]; });
   const logoPoints = async (source, n) => {
     const mod = await logoModule();
-    session ??= mod.logoSession(source.file);
+    session ??= mod.logoSession(source.file, logoOptions());
     const pts = await session.formation(n);
     if (!pts.length) throw new Error("leer");
-    if (source === logo) { lastLogoPts = pts; $("#cfg-logo-status").textContent = ""; showOver(pts, n); editor?.show(pts, session.removed); }
+    if (source === logo) {
+      lastLogoPts = pts; $("#cfg-logo-status").textContent = "";
+      editor ??= mod.stageEditor({ canvas: $("#cfg-pick"), band: $("#cfg-edit-band"), bar: $("#cfg-edit-bar"), text: $("#cfg-edit-text"), remove: $("#cfg-edit-remove"), restore: $("#cfg-edit-restore"), clear: $("#cfg-edit-clear"), all: $("#cfg-edit-all") }, {
+        screenOf: field.screenOf, t: message,
+        onChange: (list) => { if (!session) return; session.setRemoved(list); logoVer++; showCloud(); update(true, LOGO_SEGMENT, { cloud: true }); },
+      });
+      editor.show(pts, session.removed); drawLogoMode();
+      if (n === drones) showOver(pts, n);
+    }
     // Drohnen, die das Logo nicht braucht, warten dunkel dahinter: jedes Bild hat mindestens die Drohnen des Pakets
     const lit = pts.map((p) => [p.x, -p.y, 0, ...p.c]);
     return [...lit, ...darkReserve(lit, n)];
   };
-  /** Runde 27: Bedarf am Drohnenregler. Die gewählte Zahl bleibt der Griff; braucht das Logo mehr, zeigt ein Band vom Griff
-   * bis zu einer Marke den Bedarf (über dem Reglerende an dessen Ende), daneben die Zahl. Band und Marke gleiten. */
+  /** Runde 27: Bedarf am Drohnenregler (Marc 12.11.). Braucht das Logo mehr Drohnen als gewählt: die große Zahl wird der
+   * Bedarf (in der Farbe des Pakets, in das er fällt), die gewählte Zahl steht durchgestrichen davor, der eigene Griff wird
+   * blass, ein gestrichelter Bogen führt vom Griff zum Bedarf. Über dem Bogen erscheint ×: zurück zum eigenen Griff, das
+   * Logo wird dann in diese Zahl gelegt (strenge Budget-Flexibilität). */
+  const atSlider = (v) => Math.max(0, Math.min(1, (v - Number(slider.min)) / (Number(slider.max) - Number(slider.min))));
   function drawNeed(need) {
-    const box = $("#cfg-need"), label = $("#cfg-need-label"), on = need != null && need > drones;
-    box.hidden = !on; label.hidden = !on;
+    const box = $("#cfg-need"), wish = $("#cfg-wish"), out = $("#cfg-dronecount"), on = need != null && need > drones;
+    box.hidden = !on; wish.hidden = !on; $(".cfg-drones").classList.toggle("is-over", on);
+    out.textContent = String(on ? need : drones); out.style.color = on ? `rgb(${SHOW_PACKAGES[packageForDrones(Math.min(need, Number(slider.max)))].color.join(",")})` : "";
     if (!on) return;
-    const at = (v) => Math.max(0, Math.min(1, (v - Number(slider.min)) / (Number(slider.max) - Number(slider.min))));
-    box.style.setProperty("--from", String(at(drones))); box.style.setProperty("--to", String(at(need)));
-    label.textContent = message('logoMode.needs', { n: need > Number(slider.max) ? `${need}` : need });
+    wish.textContent = String(drones);
+    const r = 9, w = slider.clientWidth, x1 = r + atSlider(drones) * (w - 2 * r), x2 = r + atSlider(need) * (w - 2 * r), y = 30;
+    box.style.top = `${(slider.offsetTop + slider.offsetHeight / 2 - y) / 16}rem`; // (rem: Wächter gegen px-Werte)
+    $("#cfg-need-path").setAttribute("d", `M ${x1} ${y} Q ${(x1 + x2) / 2} ${y - 34} ${x2} ${y}`);
+    box.style.setProperty("--x2", `${x2 / 16}rem`); box.style.setProperty("--xm", `${(x1 + x2) / 32}rem`);
+    $("#cfg-need-x").setAttribute("aria-label", message('logoMode.fitAnchor', { n: drones }));
   }
+  /** Hinweis als Karte auf der Bühne, die Zahl fett in der Paketfarbe; beim ersten Mal je Logo und Zahl ein kurzer Fokus
+   * auf den Drohnenregler (der Rest der Bedienung tritt zurück). */
   function showOver(pts, n) {
-    const box = $("#cfg-logo-over");
-    drawNeed(logoMode && pts.meta?.over ? pts.meta.wanted : null);
-    box.hidden = !pts.meta?.over;
-    if (pts.meta?.over) $("#cfg-logo-over-text").textContent = message('logoMode.over', { wanted: pts.meta.wanted, n });
+    const over = !anchorFit && pts.length > n, need = pts.length, card = $("#cfg-over-card");
+    drawNeed(logoMode && over ? need : null);
+    card.hidden = !(logoMode && over) || overClosed;
+    if (!over) return;
+    const [lead, tail] = message('logoMode.over', { wanted: "\u0000", n }).split("\u0000"), b = document.createElement("b");
+    b.textContent = String(need); b.style.color = $("#cfg-dronecount").style.color;
+    $("#cfg-over-text").replaceChildren(lead ?? "", b, tail ?? "");
+    const key = `${logoId}|${n}`;
+    if (logoMode && spotFor !== key) {
+      spotFor = key; const cfg = form.closest(".cfg"); cfg.classList.add("is-spot");
+      const end = () => { cfg.classList.remove("is-spot"); document.removeEventListener("pointerdown", end, true); };
+      setTimeout(end, 3800); document.addEventListener("pointerdown", end, true);
+    }
+  }
+  /** Lebendige Wolke als eigenes Bild, sofort beim Hochladen und solange gerechnet wird (keine Rechenzeit nötig). */
+  const cloudLive = (p, j, t, o) => { o[0] += 0.05 * Math.sin(t * 0.8 + j * 1.31); o[1] += 0.04 * Math.cos(t * 0.65 + j * 2.17); o[2] += 0.05 * Math.sin(t * 0.5 + j * 0.73); o[3] = 0.55 + 0.35 * Math.sin(t * 1.3 + j * 0.9) ** 2; };
+  function showCloud() {
+    const pts = Array.from({ length: drones }, (_, i) => { const a = i * 2.39996, r = Math.sqrt((i + 0.5) / drones); return [Math.cos(a) * r * 0.95, Math.sin(a) * r * 0.55, Math.sin(i * 1.7) * 0.25, 210, 220, 255]; });
+    field.show({ beats: [{ pts, caption: message('logoMode.computing'), motif: "cloud", hold: 600, cloud: true, segment: LOGO_SEGMENT, live: cloudLive }], loopTo: 0 }, drones, size(), { cloud: true });
   }
   /** Ein Logo als Bild der Show (Lichtlauf, dunkle Reserve wie bei composeShow). */
   const logoBeat = (pts, caption, segment, hold = TEMPO.logoHold) => {
@@ -383,6 +415,7 @@ if (form) {
     $("#cfg-cta").href = inquiry; $("#cfg-bar-cta").href = inquiry;
     drawLocks();
     drawBudget();
+    if (logoMode && logo) drawNeed(null); // der Bedarf kommt mit der nächsten Berechnung zurück
     // while the slider moves, the picture follows once it rests for a moment (every drone count is its own formation)
     clearTimeout(building);
     if (delay) building = setTimeout(() => render(keep, to, { cloud }), delay); else render(keep, to, { cloud });
@@ -419,7 +452,7 @@ if (form) {
     // only more drones unlock: going down to a smaller package can bring back its simpler versions, that is no news
     const after = { pkg: pkgName(), drones }, now = after.drones > before.drones ? freshMotifs(occasion.motifs, before, after) : [];
     fresh = occasion.motifs.filter((m) => (fresh.includes(m) || now.includes(m)) && canPlay(m, after.pkg, after.drones));
-    if (now.length) showToast(unlockNote(fresh));
+    if (now.length && !logoMode) showToast(unlockNote(fresh)); // im Anlass „Euer Logo“ gibt es keine Motive
     if (!fly) fresh = [];
     unlockTo = fresh.length ? occasion.motifs.indexOf(fresh[0]) : null;
     update(true, logo && !fresh.length ? LOGO_SEGMENT : undefined, { delay });
@@ -505,7 +538,8 @@ if (form) {
   const file = $("#cfg-file"), upload = $("#cfg-upload"), off = $("#cfg-logo-off");
   function dropLogo() {
     logo = null; logoId++; session?.dispose(); session = null; lastLogoPts = null; logoVer = 0;
-    $("#cfg-edit").hidden = true; $("#cfg-logo-over").hidden = true; drawLogoMode();
+    anchorFit = false; overClosed = false; editor?.reset(); $("#cfg-over-card").hidden = true; drawNeed(null);
+    if (minimapURL) URL.revokeObjectURL(minimapURL); minimapURL = null; drawLogoMode();
     if (logoURL) URL.revokeObjectURL(logoURL);
     logoURL = null; off.hidden = true; upload.classList.remove("has-logo"); file.value = "";
   }
@@ -519,7 +553,9 @@ if (form) {
       dropLogo(); logo = source; logoId++;
       if (source.kind === "image") logoURL = source.src;
       off.hidden = false; upload.classList.add("has-logo");
-      logoMode = true; occRadio("logo").checked = true; drawLogoMode(); // Runde 27: ein eigenes Logo öffnet den Anlass „Euer Logo“ mit seinen Reglern
+      logoMode = true; occRadio("logo").checked = true; // Runde 27: ein eigenes Logo öffnet den Anlass „Euer Logo“
+      if (source.file) { minimapURL = URL.createObjectURL(source.file); $("#cfg-minimap-img").src = minimapURL; }
+      drawLogoMode(); showCloud(); // sofort die lebendige Wolke, bis das Logo gerechnet ist
       first = false; fresh = []; unlockTo = null; tour = false; // the logo comes now; the text run-through is over
       update(true, LOGO_SEGMENT, { cloud: true });
     };
@@ -573,36 +609,32 @@ if (form) {
     if (onTarget(e)) { done(); takeFile(e.dataTransfer.files?.[0]); }
   });
 
-  // ---------- Runde 27: Logo-Modus ----------
-  const tools = $("#cfg-logo-tools"), detail = $("#cfg-detail"), detailAuto = $("#cfg-detail-auto");
+  // ---------- Runde 27: Anlass „Euer Logo“ ----------
+  // Marc 12.11. (zweite Runde): im Anlass nur Drohnenzahl, Liniendichte, „Euer Text, euer Logo“ und die Preiskachel; Anlass-
+  // und Paketwahl treten zurück (ein Knopf führt zurück zu den Anlässen); kein Abspielen/Anhalten, keine Motiv-Leiste; Formen
+  // direkt auf der Bühne anklicken und entfernen; Minimap mit dem Original
+  const tools = $("#cfg-logo-tools"), detail = $("#cfg-detail"), detailAuto = $("#cfg-detail-auto"), back = $("#cfg-back"), minimap = $("#cfg-minimap");
   function drawLogoMode() {
+    const own = logoMode && !!logo;
     form.closest(".cfg").classList.toggle("is-logomode", logoMode);
-    tools.hidden = !(logoMode && logo);
-    if (!(logoMode && logo)) drawNeed(null);
+    back.hidden = !logoMode; tools.hidden = !own; minimap.hidden = !own || !minimapURL;
+    $("#cfg-hit").hidden = own; // ein Klick auf die Bühne wählt Formen statt anzuhalten
+    editor?.setActive(own);
+    if (!own) { drawNeed(null); $("#cfg-over-card").hidden = true; }
   }
-  /** Detailgrad (0–100): die Zone ist die Budget-Flexibilität (Streng, Mittel, Flexibel), die Stelle in der Zone die
-   * Liniendichte (rechts lockerer, mehr Formen). Automatisch: der Konverter wählt beides (Flexibel). */
-  const optionsOf = (v) => { const z = Math.min(2, Math.floor(v / (100 / 3))), u = (v - z * (100 / 3)) / (100 / 3); return { flex: ["strict", "medium", "flexible"][z], density: +(0.75 - 0.35 * u).toFixed(3) }; };
+  back.addEventListener("click", () => { occRadio(occasion.id).checked = true; occGroup.dispatchEvent(new Event("change", { bubbles: true })); occRadio(occasion.id).focus(); });
+  minimap.addEventListener("click", () => { const big = minimap.getAttribute("aria-pressed") !== "true"; minimap.setAttribute("aria-pressed", String(big)); });
+  $("#cfg-over-close").addEventListener("click", () => { overClosed = true; $("#cfg-over-card").hidden = true; });
+  $("#cfg-need-x").addEventListener("click", () => { anchorFit = true; drawNeed(null); $("#cfg-over-card").hidden = true; setLogoOptions({ flex: "strict" }); });
+  /** Liniendichte (0–100, rechts dichter, mehr Drohnen); Automatisch: der Konverter wählt. Gilt auch für das nächste Logo. */
+  const densityOf = (v) => +(0.25 + 0.0075 * v).toFixed(3);
+  const logoOptions = () => ({ flex: anchorFit ? "strict" : "medium", ...(detailAuto.getAttribute("aria-pressed") === "true" ? {} : { density: densityOf(+detail.value) }) });
   function setLogoOptions(o) {
     if (!session?.setOptions(o)) return;
-    logoVer++; update(true, LOGO_SEGMENT, { cloud: true });
+    logoVer++; showCloud(); update(true, LOGO_SEGMENT, { cloud: true });
   }
-  detail.addEventListener("change", () => { detailAuto.setAttribute("aria-pressed", "false"); setLogoOptions(optionsOf(+detail.value)); });
-  detail.addEventListener("input", () => detail.setAttribute("aria-valuetext", message(`logoMode.flex${({ strict: "Strict", medium: "Medium", flexible: "Flexible" })[optionsOf(+detail.value).flex]}`)));
-  detailAuto.addEventListener("click", () => { const on = detailAuto.getAttribute("aria-pressed") !== "true"; detailAuto.setAttribute("aria-pressed", String(on)); if (on) detail.value = "83"; setLogoOptions(on ? { flex: "auto", density: undefined } : optionsOf(+detail.value)); });
-  // Teile entfernen: flache Ansicht über der Bühne (logo-mode.js)
-  const edit = $("#cfg-edit");
-  $("#cfg-logo-edit").addEventListener("click", async () => {
-    const mod = await logoModule();
-    editor ??= mod.logoEditor({ root: edit, canvas: $("#cfg-edit-canvas"), band: $("#cfg-edit-band"), text: $("#cfg-edit-text"), remove: $("#cfg-edit-remove"), restore: $("#cfg-edit-restore"), clear: $("#cfg-edit-clear"), all: $("#cfg-edit-all"), close: $("#cfg-edit-close") }, {
-      t: message,
-      onChange: (list) => { if (!session) return; session.setRemoved(list); logoVer++; update(true, LOGO_SEGMENT, { cloud: true }); },
-    });
-    edit.hidden = false;
-    if (lastLogoPts && session) editor.show(lastLogoPts, session.removed);
-    $("#cfg-edit-close").focus();
-  });
-  $("#cfg-edit-close").addEventListener("click", () => { edit.hidden = true; $("#cfg-logo-edit").focus(); });
+  detail.addEventListener("change", () => { detailAuto.setAttribute("aria-pressed", "false"); setLogoOptions({ density: densityOf(+detail.value) }); });
+  detailAuto.addEventListener("click", () => { const on = detailAuto.getAttribute("aria-pressed") !== "true"; detailAuto.setAttribute("aria-pressed", String(on)); if (on) detail.value = "50"; setLogoOptions({ density: on ? undefined : densityOf(+detail.value) }); });
 
   // on phones the stage sticks on top and the price bar at the bottom: a focused field is scrolled between them
   // (scroll-margin in the CSS does it in Chromium; WebKit ignores it when focusing)

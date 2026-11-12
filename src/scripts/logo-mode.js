@@ -33,8 +33,9 @@ export async function customerLogos(n) {
  * Eine Sitzung je hochgeladener Datei. opts: { flex: 'auto'|'strict'|'medium'|'flexible', density?: Zahl }.
  * formation(n) → Punkte [{ x, y, c: [r, g, b] }] mit meta { n, wanted, over, … } (Farben schon für den Nachthimmel).
  */
-export function logoSession(file) {
-  let opts = { flex: "auto" }, inst = null, removed = [];
+export function logoSession(file, init = {}) {
+  let opts = { flex: "medium", ...init }, inst = null, removed = [];
+  if (opts.density == null) delete opts.density;
   const removals = () => ({ exclude: removed.filter((r) => !r.erase).flatMap((r) => r.anchors), erase: removed.filter((r) => r.erase).flatMap((r) => r.anchors) });
   const fresh = () => { inst?.dispose(); inst = logoFormations(file, { opts: { ...opts } }); if (removed.length) inst.setRemovals(removals()); };
   fresh();
@@ -49,60 +50,77 @@ export function logoSession(file) {
 }
 
 /**
- * Flache Bearbeitungsansicht über der Bühne: Formen anklicken (Farblinie, zweiter Klick das ganze Element), Rahmen
- * aufziehen, entfernen, wiederherstellen. el: { root, canvas, band, text, remove, restore, clear, all, close }.
- * onChange(removedList) rechnet neu; t(key, vars) liefert die Texte.
+ * Teile entfernen direkt auf der Bühne (Marc 12.11.: wie im Prototyp, ohne eigenen Knopf). Die Punkte stehen dort, wo das
+ * Feld sie zeichnet (screenOf(): Bildschirmlage je Punktindex); entfernte Teile als Geister, über eine Ausgleichsabbildung
+ * Logo → Bildschirm aus den aktuellen Punkten gelegt. el: { canvas, band, bar, text, remove, restore, clear, all }.
  */
-export function logoEditor(el, { onChange, t }) {
+export function stageEditor(el, { screenOf, onChange, t }) {
   const c = el.canvas, g = c.getContext("2d");
-  let shown = null, groups = null, removed = [], selected = new Set(), hover = null;
-  const screen = (p) => ({ x: c.width / 2 + p.x * 0.42 * Math.min(c.width, c.height), y: c.height / 2 + p.y * 0.42 * Math.min(c.width, c.height) });
+  let shown = null, groups = null, removed = [], selected = new Set(), hover = null, raf = 0, on = false;
+  /** Logo-Koordinaten → Bildschirm: kleinste Quadrate über alle Punkte mit Lage (x' = a x + b, y' = c y + d) */
+  function mapper(scr) {
+    let n = 0, sx = 0, sy = 0, sX = 0, sY = 0, sxx = 0, syy = 0, sxX = 0, syY = 0;
+    shown.forEach((p, j) => { const q = scr[j]; if (!q) return; n++; sx += p.x; sy += p.y; sX += q[0]; sY += q[1]; sxx += p.x * p.x; syy += p.y * p.y; sxX += p.x * q[0]; syY += p.y * q[1]; });
+    if (n < 2) return null;
+    const a = (n * sxX - sx * sX) / Math.max(1e-9, n * sxx - sx * sx), b = (sX - a * sx) / n, cc = (n * syY - sy * sY) / Math.max(1e-9, n * syy - sy * sy), d = (sY - cc * sy) / n;
+    return (p) => [a * p.x + b, cc * p.y + d];
+  }
   const ghostsOf = (r) => { const f = shown?.meta.frame; return r.ghost.map((p) => (f && p.source ? { ...p, x: p.source.x * f.sx + f.ox, y: p.source.y * f.sy + f.oy } : p)); };
   const pointsFor = (key) => (key[0] === "g" ? ghostsOf(removed[+key.slice(1)]) : selectedPoints(groups, shown, key));
+  let frame = null; // { scr, map } of the current animation frame
+  function measure() {
+    const scr = screenOf(); if (!scr || !shown) return (frame = null);
+    const map = mapper(scr);
+    frame = { scr, map, pos: (p) => { const j = shown.indexOf(p); return j >= 0 && scr[j] ? scr[j] : map ? map(p) : null; } };
+    return frame;
+  }
+  const candidates = () => {
+    const f = frame ?? measure(); if (!f) return [];
+    const out = [];
+    shown.forEach((p, j) => { if (p.e >= 0 && f.scr[j]) out.push({ x: f.scr[j][0], y: f.scr[j][1], key: targetKey(groups, p) }); });
+    removed.forEach((r, i) => { for (const p of ghostsOf(r)) { const q = f.map?.(p); if (q) out.push({ x: q[0], y: q[1], key: "g" + i }); } });
+    return out;
+  };
   function draw() {
-    if (el.root.hidden) return;
-    const d = Math.min(2, devicePixelRatio || 1);
-    c.width = c.clientWidth * d; c.height = c.clientHeight * d;
-    g.clearRect(0, 0, c.width, c.height);
-    if (!shown) return;
-    const radius = Math.max(1.2 * d, (shown.meta.spacing || 0.03) * 0.42 * Math.min(c.width, c.height) * 0.3);
-    const dot = (p, ghost = false) => { const q = screen(p); g.fillStyle = `rgba(${p.c.join(",")},${ghost ? 0.22 : 1})`; g.beginPath(); g.arc(q.x, q.y, radius, 0, Math.PI * 2); g.fill(); };
-    removed.forEach((r) => ghostsOf(r).forEach((p) => dot(p, true)));
-    shown.forEach((p) => dot(p));
+    const d = Math.min(2, devicePixelRatio || 1), w = c.clientWidth, h = c.clientHeight;
+    if (c.width !== Math.round(w * d) || c.height !== Math.round(h * d)) { c.width = Math.round(w * d); c.height = Math.round(h * d); }
+    g.setTransform(d, 0, 0, d, 0, 0); g.clearRect(0, 0, w, h);
+    const f = measure(); if (!f || !on) return;
+    const rad = Math.max(3, Math.min(w, h) * 0.006);
+    if (f.map) for (const r of removed) for (const p of ghostsOf(r)) { const q = f.map(p); g.fillStyle = `rgba(${p.c.join(",")},0.22)`; g.beginPath(); g.arc(q[0], q[1], rad * 0.7, 0, Math.PI * 2); g.fill(); }
     for (const key of new Set([...selected, hover].filter(Boolean))) {
-      g.strokeStyle = selected.has(key) ? "#ffb36b" : "rgba(255,255,255,.85)"; g.lineWidth = 1.5 * d;
-      for (const p of pointsFor(key)) { const q = screen(p); g.beginPath(); g.arc(q.x, q.y, radius + 2.5 * d, 0, Math.PI * 2); g.stroke(); }
+      g.strokeStyle = selected.has(key) ? "#ffb36b" : "rgba(255,255,255,.9)"; g.lineWidth = 1.5;
+      for (const p of pointsFor(key)) { const q = key[0] === "g" ? f.map?.(p) : f.pos(p); if (!q) continue; g.beginPath(); g.arc(q[0], q[1], rad + 2.5, 0, Math.PI * 2); g.stroke(); }
     }
   }
+  const loop = () => { raf = 0; draw(); if (on && (hover || selected.size || removed.length)) raf = requestAnimationFrame(loop); };
+  const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
   function bar() {
     const s = [...selected];
+    el.bar.hidden = !on || (!s.length && !removed.length);
     el.text.textContent = s.length ? t("logoMode.selected", { n: s.length }) : t("logoMode.editHint");
     el.remove.hidden = !s.some((k) => k[0] !== "g"); el.restore.hidden = !s.some((k) => k[0] === "g");
     el.clear.hidden = !s.length; el.all.hidden = !removed.length;
   }
-  const candidates = () => [
-    ...shown.filter((p) => p.e >= 0).map((p) => ({ ...screen(p), key: targetKey(groups, p) })),
-    ...removed.flatMap((r, i) => ghostsOf(r).map((p) => ({ ...screen(p), key: "g" + i }))),
-  ];
   function hit(e) {
-    if (!shown) return null;
-    const r = c.getBoundingClientRect(), k = c.width / r.width;
-    return nearestHit(candidates(), (e.clientX - r.left) * k, (e.clientY - r.top) * k, Math.max(14 * k, (shown.meta.spacing || 0.03) * 0.42 * Math.min(c.width, c.height) * 1.2))?.key ?? null;
+    if (!shown || !on) return null;
+    const r = c.getBoundingClientRect(); measure();
+    return nearestHit(candidates(), e.clientX - r.left, e.clientY - r.top, 16)?.key ?? null;
   }
   const band = bindRubberBand(c, {
     hit, overlay: el.band, candidates,
-    select(d, add) {
-      const r = c.getBoundingClientRect(), k = c.width / r.width;
-      const rect = { x0: (Math.min(d.x0, d.x1) - r.left) * k, y0: (Math.min(d.y0, d.y1) - r.top) * k, x1: (Math.max(d.x0, d.x1) - r.left) * k, y1: (Math.max(d.y0, d.y1) - r.top) * k };
+    select(dr, add) {
+      const r = c.getBoundingClientRect();
+      const rect = { x0: Math.min(dr.x0, dr.x1) - r.left, y0: Math.min(dr.y0, dr.y1) - r.top, x1: Math.max(dr.x0, dr.x1) - r.left, y1: Math.max(dr.y0, dr.y1) - r.top };
       if (!add) selected.clear();
-      for (const key of rectUnits(candidates(), rect)) widenSelection(selected, key, groups);
-      bar(); draw();
+      measure(); for (const key of rectUnits(candidates(), rect)) widenSelection(selected, key, groups);
+      bar(); kick();
     },
   });
-  c.addEventListener("pointermove", (e) => { if (band.active) return; hover = hit(e); c.style.cursor = hover ? "pointer" : "crosshair"; draw(); });
-  c.addEventListener("pointerleave", () => { hover = null; draw(); });
-  c.addEventListener("click", (e) => { if (band.suppressClick()) return; const h = hit(e); if (h) widenSelection(selected, h, groups); else selected.clear(); bar(); draw(); });
-  c.addEventListener("dblclick", (e) => { const h = hit(e); if (h?.[0] === "r") { selectElement(selected, groups.runs[+h.slice(1)].e, groups); bar(); draw(); } });
+  c.addEventListener("pointermove", (e) => { if (band.active) return; const h = hit(e); if (h !== hover) { hover = h; c.style.cursor = hover ? "pointer" : "crosshair"; kick(); } });
+  c.addEventListener("pointerleave", () => { hover = null; kick(); });
+  c.addEventListener("click", (e) => { if (band.suppressClick()) return; const h = hit(e); if (h) widenSelection(selected, h, groups); else selected.clear(); bar(); kick(); });
+  c.addEventListener("dblclick", (e) => { const h = hit(e); if (h?.[0] === "r") { selectElement(selected, groups.runs[+h.slice(1)].e, groups); bar(); kick(); } });
   function apply(mode) {
     const chosen = selectionForAction(selected, mode), keep = removed.filter((r, i) => !chosen.has("g" + i));
     // (nie alles entfernen: ohne Punkte bliebe kein Logo; die Auswahl bleibt dann stehen)
@@ -116,22 +134,29 @@ export function logoEditor(el, { onChange, t }) {
         : (shown.meta.elements || []).filter((q) => q.id === +key.slice(1)).map((q) => q.anchor);
       if (anchors.length) keep.push({ erase: key[0] === "r", anchors, ghost: dots.map((p) => ({ ...p, source: { x: (p.x - f.ox) / f.sx, y: (p.y - f.oy) / f.sy } })) });
     }
-    removed = keep; selected.clear(); hover = null; bar(); onChange(removed);
+    removed = keep; selected.clear(); hover = null; bar(); kick(); onChange(removed);
   }
   el.remove.addEventListener("click", () => apply("remove"));
   el.restore.addEventListener("click", () => apply("restore"));
-  el.clear.addEventListener("click", () => { selected.clear(); bar(); draw(); });
+  el.clear.addEventListener("click", () => { selected.clear(); bar(); kick(); });
   el.all.addEventListener("click", () => { removed = []; selected.clear(); bar(); onChange(removed); });
-  const keys = (e) => { if (el.root.hidden) return; if (e.key === "Escape") { if (selected.size) { selected.clear(); bar(); draw(); } else el.close.click(); } else if ((e.key === "Delete" || e.key === "Backspace") && selected.size && !/input|textarea/i.test(document.activeElement?.tagName)) { e.preventDefault(); apply("remove"); } };
-  document.addEventListener("keydown", keys);
-  new ResizeObserver(draw).observe(c);
+  document.addEventListener("keydown", (e) => { if (!on) return; if (e.key === "Escape" && selected.size) { selected.clear(); bar(); kick(); } else if ((e.key === "Delete" || e.key === "Backspace") && selected.size && !/input|textarea/i.test(document.activeElement?.tagName)) { e.preventDefault(); apply("remove"); } });
   return {
-    /** neue Formation (nach dem Rechnen) zeigen; removedList: die Entfernungen der Sitzung */
-    show(pts, removedList) {
-      shown = pts; removed = removedList; selected.clear(); hover = null;
-      groups = colourRuns({ points: pts.map((p) => Object.assign(p, { r: p.c[0], g: p.c[1], b: p.c[2] })), spacing: pts.meta.spacing });
-      bar(); draw();
-    },
-    redraw: draw,
+    /** neue Formation des eigenen Logos (removedList: die Entfernungen der Sitzung) */
+    show(pts, removedList) { shown = pts; removed = removedList; selected.clear(); hover = null; groups = colourRuns({ points: pts.map((p) => Object.assign(p, { r: p.c[0], g: p.c[1], b: p.c[2] })), spacing: pts.meta.spacing }); bar(); kick(); },
+    /** an/aus: nur im Anlass „Euer Logo“ mit eigenem Logo, wenn das Bild steht */
+    setActive(v) { on = v; c.hidden = !v; if (!v) { selected.clear(); hover = null; } bar(); kick(); },
+    reset() { shown = null; removed = []; selected.clear(); hover = null; bar(); kick(); },
   };
 }
+
+/** Lebendige Wolke als eigenes Bild: n Drohnen in einer lockeren, atmenden Wolke (für die Wartezeit beim Rechnen). */
+export function cloudPoints(n) {
+  const pts = [];
+  for (let i = 0; i < n; i++) {
+    const a = i * 2.39996, r = Math.sqrt((i + 0.5) / n);
+    pts.push([Math.cos(a) * r * 0.95, Math.sin(a) * r * 0.55, Math.sin(i * 1.7) * 0.25, 210, 220, 255]);
+  }
+  return pts;
+}
+export const cloudLive = (p, j, t, o) => { o[0] += 0.05 * Math.sin(t * 0.8 + j * 1.31); o[1] += 0.04 * Math.cos(t * 0.65 + j * 2.17); o[2] += 0.05 * Math.sin(t * 0.5 + j * 0.73); o[3] = 0.55 + 0.35 * Math.sin(t * 1.3 + j * 0.9) ** 2; };

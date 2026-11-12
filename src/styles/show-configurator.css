@@ -231,40 +231,54 @@
     .cfg-panel :is(input, select, button, .cfg-upload) { scroll-margin: calc(4rem + max(42svh, 17.5rem) + 1rem) 0 6rem; }
   }
 
-/* Runde 27: Logo-Modus. Schalter in „Euer Text, euer Logo“; die Regler erscheinen erst mit einem eigenen Logo; Teile
-   entfernen in einer flachen Ansicht über der Bühne (logo-mode.js) */
-.cfg-auto:focus-visible, .cfg-logo-edit:focus-visible, .cfg-edit button:focus-visible { outline: 2px solid var(--focus, var(--amber)); outline-offset: 0.125rem; }
+/* Runde 27: Anlass „Euer Logo“ (Marc 12.11., zweite Runde). Im Anlass treten Anlass- und Paketwahl, Abspielleiste und
+   Motiv-Hinweise zurück; Formen werden direkt auf der Bühne gewählt (.cfg-pick über dem Feld) */
+.cfg.is-logomode .cfg-caption, .cfg.is-logomode .cfg-occasion, .cfg.is-logomode .cfg-block:has(.cfg-pkgs), .cfg.is-logomode .cfg-player, .cfg.is-logomode .cfg-locks, .cfg.is-logomode .cfg-toast { display: none; }
+.cfg-back { justify-self: start; min-height: 2.25rem; padding: 0 var(--space-3); border: 1px solid var(--line-strong); border-radius: var(--radius-pill); background: transparent; color: var(--muted); font: 400 var(--text-sm)/1 var(--body); cursor: pointer; }
+.cfg-back:hover { color: var(--text); }
+.cfg-occ-logo span { position: relative; }
+.cfg-occ-logo span::before { content: ""; position: absolute; inset: -0.0625rem; padding: 0.0625rem; border-radius: inherit; background: linear-gradient(90deg, rgb(var(--rgb-logo-amber)), rgb(var(--rgb-logo-orchid)), rgb(var(--rgb-cyan))); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); pointer-events: none; }
 .cfg-logo-tools { display: grid; gap: var(--space-4); margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--line); }
 .cfg-tool { display: grid; gap: var(--space-1-5); }
 .cfg-tool-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); font-size: var(--text-sm); color: var(--text); }
 .cfg-auto { min-height: 1.75rem; padding: 0 var(--space-2-5); border: 1px solid var(--line-strong); border-radius: var(--radius-pill); background: transparent; color: var(--muted); font: 400 var(--text-xs)/1 var(--body); cursor: pointer; }
-.cfg-auto[aria-pressed="true"] { color: var(--text); border-color: var(--pkg, var(--amber)); background: var(--line-soft); }
+.cfg-auto[aria-pressed="true"] { color: var(--text); border-color: var(--text); background: var(--line-soft); }
+.cfg-auto:focus-visible, .cfg-back:focus-visible, .cfg-edit-bar button:focus-visible, .cfg-minimap:focus-visible, .cfg-need-x:focus-visible, .cfg-over-close:focus-visible { outline: 0.125rem solid var(--cyan); outline-offset: 0.125rem; }
+.cfg-range-plain { --track: linear-gradient(90deg, var(--line-soft), var(--muted)); }
 .cfg-scale { display: flex; justify-content: space-between; font-size: var(--text-label); color: var(--muted); }
-.cfg-tool-help { margin: 0; font-size: var(--text-xs); color: var(--muted); text-wrap: pretty; }
-.cfg-flex { --chips-gap: var(--space-1-5); }
-.cfg-logo-edit { justify-self: start; }
-.cfg-logo-over { margin: 0; padding: var(--space-3); border: 1px solid var(--line); border-left: 2px solid var(--pkg, var(--amber)); border-radius: var(--radius-6); font-size: var(--text-sm); color: var(--text); text-wrap: pretty; }
-.cfg-logo-over a { white-space: nowrap; }
-.cfg-edit { position: absolute; inset: 0; z-index: 5; background: rgb(var(--rgb-media-ground) / 0.96); }
-.cfg-edit canvas { position: absolute; inset: 0 0 3.75rem; width: 100%; height: calc(100% - 3.75rem); touch-action: none; cursor: crosshair; }
-.cfg-edit-band { position: absolute; border: 1px dashed var(--text); background: var(--line-soft); pointer-events: none; }
-.cfg-edit-bar { position: absolute; left: 0.875rem; right: 0.875rem; bottom: 0.875rem; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1-5); padding: var(--space-1-5) var(--space-2); border: 1px solid var(--line); border-radius: var(--radius-10); background: var(--overlay-media); font-size: var(--text-sm); color: var(--muted); }
+/* Formen wählen auf der Bühne */
+.cfg-pick { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
+.cfg-edit-band { position: absolute; z-index: 4; border: 1px dashed var(--text); background: var(--line-soft); pointer-events: none; }
+.cfg-edit-bar { position: absolute; z-index: 5; left: 0.875rem; right: 0.875rem; bottom: 0.875rem; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1-5); padding: var(--space-1-5) var(--space-2); border: 1px solid var(--line); border-radius: var(--radius-10); background: var(--overlay-media); font-size: var(--text-sm); color: var(--muted); }
 .cfg-edit-bar span { flex: 1 1 12rem; min-width: 0; }
 .cfg-edit-bar button { min-height: 2.25rem; padding: 0 var(--space-3); border: 1px solid var(--line-strong); border-radius: var(--radius-pill); background: transparent; color: var(--text); font: 400 var(--text-sm)/1 var(--body); cursor: pointer; }
-.cfg-edit-bar .cfg-edit-done { border-color: var(--pkg, var(--amber)); }
-.cfg-range-zones { --track: linear-gradient(90deg, var(--line-soft) 0 33.3%, var(--line-strong) 33.3% 66.6%, var(--muted) 66.6% 100%); }
-.cfg-zones { display: grid; grid-template-columns: repeat(3, 1fr); font-size: var(--text-label); color: var(--muted); }
-.cfg-zones span:nth-child(2) { text-align: center; } .cfg-zones span:nth-child(3) { text-align: right; }
-.cfg-logo-over a { display: block; margin-top: var(--space-1-5); color: var(--amber); }
-/* Anlass „Euer Logo“: Verlaufsrahmen in den Logofarben, solange er nicht gewählt ist */
-.cfg-occ-logo span { position: relative; }
-.cfg-occ-logo span::before { content: ""; position: absolute; inset: -1px; padding: 1px; border-radius: inherit; background: linear-gradient(90deg, rgb(var(--rgb-logo-amber)), rgb(var(--rgb-logo-orchid)), rgb(var(--rgb-cyan))); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); pointer-events: none; }
-/* Bedarf des Logos am Drohnenregler: Band vom Griff bis zur Marke, durchscheinend, gleitet bei jeder neuen Zahl */
+/* Minimap mit dem Original; ein Klick vergrößert sie */
+.cfg-minimap { position: absolute; z-index: 5; right: 0.875rem; top: 0.875rem; width: 6.5rem; height: 4.5rem; padding: var(--space-1-5); border: 1px solid var(--line); border-radius: var(--radius-6); background: var(--text); cursor: zoom-in; transition: width var(--dur-standard) var(--ease-default), height var(--dur-standard) var(--ease-default); }
+.cfg-minimap img { width: 100%; height: 100%; object-fit: contain; }
+.cfg-minimap[aria-pressed="true"] { width: min(24rem, 45%); height: min(16rem, 40%); cursor: zoom-out; }
+/* Hinweis bei zu vielen Drohnen: Karte oben auf der Bühne */
+.cfg-over-card { position: absolute; z-index: 6; left: 0.875rem; right: 8.5rem; top: 0.875rem; padding: var(--space-3) var(--space-8) var(--space-3) var(--space-3); border: 1px solid var(--line); border-left: 0.125rem solid var(--amber); border-radius: var(--radius-10); background: var(--overlay-panel); font-size: var(--text-sm); color: var(--text); text-wrap: pretty; }
+.cfg-over-card p { margin: 0; }
+.cfg-over-card b { font-size: 1.15em; }
+.cfg-over-card a { display: inline-block; margin-top: var(--space-1-5); color: var(--amber); }
+.cfg-over-close { position: absolute; right: var(--space-1-5); top: var(--space-1-5); width: 1.75rem; height: 1.75rem; border: 0; border-radius: var(--radius-round); background: transparent; color: var(--muted); font-size: var(--text-md); cursor: pointer; }
+/* Bedarf am Drohnenregler: große Zahl = Bedarf, Wunsch durchgestrichen, Griff blass, Bogen zum Bedarf */
 .cfg-drones { position: relative; }
-.cfg-need { position: relative; height: 0; pointer-events: none; }
-.cfg-need-band, .cfg-need-mark { position: absolute; top: 0.95rem; transition: left var(--dur-standard) var(--ease-default), width var(--dur-standard) var(--ease-default); }
-.cfg-need-band { left: calc(var(--from) * 100%); width: calc((var(--to) - var(--from)) * 100%); height: 0.25rem; border-radius: var(--radius-2); background: repeating-linear-gradient(90deg, rgb(var(--rgb-white, 255 255 255) / 0.55) 0 0.25rem, transparent 0.25rem 0.5rem); animation: cfg-need-in var(--dur-standard) var(--ease-default); }
-.cfg-need-mark { left: calc(var(--to) * 100% - 0.375rem); top: 0.7rem; width: 0.75rem; height: 0.75rem; border-radius: var(--radius-round); border: 1px dashed var(--text); background: transparent; }
-.cfg-need-label { margin-left: auto; margin-right: var(--space-2); font-size: var(--text-xs); color: var(--muted); }
-@keyframes cfg-need-in { from { opacity: 0; transform: scaleX(0.2); transform-origin: left; } to { opacity: 1; transform: none; } }
-@media (prefers-reduced-motion: reduce) { .cfg-need-band, .cfg-need-mark { transition: none; animation: none; } }
+.cfg-drones-out { display: inline-flex; align-items: baseline; gap: var(--space-2); }
+.cfg-wish { color: var(--muted); font-size: var(--text-sm); }
+.cfg-drones.is-over #cfg-dronecount { font-weight: 600; transition: color var(--dur-standard) var(--ease-default); }
+.cfg-drones.is-over .cfg-range::-webkit-slider-thumb { opacity: 0.4; }
+.cfg-drones.is-over .cfg-range::-moz-range-thumb { opacity: 0.4; }
+.cfg-need { position: absolute; left: 0; right: 0; height: 2.5rem; pointer-events: none; }
+.cfg-need svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.cfg-need path { fill: none; stroke: var(--text); stroke-width: 1.5; stroke-dasharray: 3 4; stroke-linecap: round; pointer-events: stroke; animation: cfg-need-draw var(--dur-standard) var(--ease-default); }
+.cfg-need-mark { position: absolute; left: calc(var(--x2) - 0.4375rem); top: calc(1.875rem - 0.4375rem); width: 0.875rem; height: 0.875rem; border-radius: var(--radius-round); border: 0.125rem solid var(--text); background: var(--ground); transition: left var(--dur-standard) var(--ease-default); }
+.cfg-need-x { position: absolute; left: calc(var(--xm) - 0.75rem); top: -0.375rem; width: 1.5rem; height: 1.5rem; border: 1px solid var(--line-strong); border-radius: var(--radius-round); background: var(--overlay-panel); color: var(--text); font: 400 var(--text-sm)/1 var(--body); cursor: pointer; opacity: 0; pointer-events: auto; transition: opacity var(--dur-quick); }
+.cfg-need-x::before { content: "×"; }
+.cfg-need:hover .cfg-need-x, .cfg-need-x:focus-visible, .cfg-need:has(path:hover) .cfg-need-x { opacity: 1; }
+@media (hover: none) { .cfg-need-x { opacity: 1; } }
+@keyframes cfg-need-draw { from { stroke-dashoffset: 40; opacity: 0; } to { stroke-dashoffset: 0; opacity: 1; } }
+/* Fokus auf den Drohnenregler, wenn ein Logo mehr Drohnen braucht */
+.cfg.is-spot .cfg-panel > :not(.cfg-drones) { opacity: 0.28; transition: opacity var(--dur-standard) var(--ease-default); }
+.cfg.is-spot .cfg-drones { position: relative; z-index: 1; }
+@media (prefers-reduced-motion: reduce) { .cfg-need path { animation: none; } .cfg-need-mark, .cfg-minimap { transition: none; } }

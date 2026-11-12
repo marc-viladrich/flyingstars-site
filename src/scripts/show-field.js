@@ -452,5 +452,18 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
   document.addEventListener("visibilitychange", sync);
   reduceQuery.addEventListener("change", sync);
   resize();
-  return { show, replay: () => goto(0), goto, beat: () => beat, setPaused, paused: () => userPaused, setRate: (r) => { rate = r; tick(); }, timeline };
+  /** Runde 27: where the points of the current picture stand on the canvas (CSS px), by point index; null for points without
+   * a drone. For picking on the stage (logo mode): the same projection as render(). */
+  function screenOf() {
+    const b = scene?.beats[beat]; if (!b || !order) return null;
+    const ct = TILT_C, st = TILT_S, narrow = W < 600;
+    const S = Math.min(W * 0.36, H * (narrow ? 0.38 : 0.6)), ox = W * 0.5, oy = H * (narrow ? 0.52 : 0.5), out = new Array(b.pts.length).fill(null);
+    for (let i = 0; i < active; i++) {
+      const j = order[i]; if (j < 0 || j >= b.pts.length) continue;
+      const k = i * 3, y = pos[k + 1], z = pos[k + 2], Y = y * ct - z * st, Z = y * st + z * ct, pr = 3.4 / (3.4 - Z);
+      out[j] = [ox + pos[k] * S * pr, oy - Y * S * pr];
+    }
+    return out;
+  }
+  return { show, replay: () => goto(0), goto, beat: () => beat, setPaused, paused: () => userPaused, setRate: (r) => { rate = r; tick(); }, timeline, screenOf };
 }

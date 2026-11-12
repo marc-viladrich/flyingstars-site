@@ -3537,45 +3537,10 @@
     "en": "Your logo",
     "nl": "Jullie logo"
   },
-  "logoMode.needs": {
-    "de": "Logo braucht ca. {n}",
-    "en": "logo needs approx. {n}",
-    "nl": "logo heeft ca. {n} nodig"
-  },
-  "logoMode.detail": {
-    "de": "Detailgrad",
-    "en": "Level of detail",
-    "nl": "Detailniveau"
-  },
   "logoMode.auto": {
     "de": "Automatisch",
     "en": "Automatic",
     "nl": "Automatisch"
-  },
-  "logoMode.flexStrict": {
-    "de": "Streng",
-    "en": "Strict",
-    "nl": "Strikt"
-  },
-  "logoMode.flexMedium": {
-    "de": "Mittel",
-    "en": "Medium",
-    "nl": "Gemiddeld"
-  },
-  "logoMode.flexFlexible": {
-    "de": "Flexibel",
-    "en": "Flexible",
-    "nl": "Flexibel"
-  },
-  "logoMode.flexHelp": {
-    "de": "Links bleibt das Logo nah an der gewählten Drohnenzahl (höchstens etwa +10 %), rechts zeigt es, wie viele Drohnen es für die genaueste Darstellung braucht.",
-    "en": "On the left the logo stays close to the chosen number of drones (at most about +10 %); on the right it shows how many drones it needs for the most accurate picture.",
-    "nl": "Links blijft het logo dicht bij het gekozen aantal drones (hooguit ongeveer +10 %), rechts laat het zien hoeveel drones het nodig heeft voor de nauwkeurigste weergave."
-  },
-  "logoMode.edit": {
-    "de": "Teile entfernen",
-    "en": "Remove parts",
-    "nl": "Delen verwijderen"
   },
   "logoMode.editHint": {
     "de": "Formen anklicken oder einen Rahmen aufziehen. Ein zweiter Klick wählt das ganze Element.",
@@ -3607,11 +3572,6 @@
     "en": "Restore all",
     "nl": "Alles herstellen"
   },
-  "logoMode.done": {
-    "de": "Fertig",
-    "en": "Done",
-    "nl": "Klaar"
-  },
   "logoMode.over": {
     "de": "Unser automatischer Algorithmus berechnet für euer Logo etwa {wanted} Drohnen. Sendet uns gern eine Anfrage, damit unsere Designer einschätzen können, ob und wie eine vereinfachte Fassung mit {n} Drohnen möglich wäre.",
     "en": "Our automatic algorithm calculates about {wanted} drones for your logo. Send us an enquiry and our designers will assess whether and how a simplified version with {n} drones is possible.",
@@ -3631,5 +3591,40 @@
     "de": "Euer Logo wird berechnet …",
     "en": "Calculating your logo …",
     "nl": "Jullie logo wordt berekend …"
+  },
+  "logoMode.back": {
+    "de": "Alle Anlässe",
+    "en": "All occasions",
+    "nl": "Alle gelegenheden"
+  },
+  "logoMode.density": {
+    "de": "Liniendichte",
+    "en": "Line density",
+    "nl": "Lijndichtheid"
+  },
+  "logoMode.looser": {
+    "de": "lockerer",
+    "en": "looser",
+    "nl": "losser"
+  },
+  "logoMode.denser": {
+    "de": "dichter",
+    "en": "denser",
+    "nl": "dichter"
+  },
+  "logoMode.fitAnchor": {
+    "de": "Logo auf {n} Drohnen begrenzen",
+    "en": "Limit the logo to {n} drones",
+    "nl": "Logo beperken tot {n} drones"
+  },
+  "logoMode.close": {
+    "de": "Schließen",
+    "en": "Close",
+    "nl": "Sluiten"
+  },
+  "logoMode.original": {
+    "de": "Original zeigen",
+    "en": "Show original",
+    "nl": "Origineel tonen"
   }
 }
