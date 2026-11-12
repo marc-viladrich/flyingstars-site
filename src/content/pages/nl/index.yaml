@@ -304,7 +304,7 @@ sections:
     id: konfigurator
     kicker: Showconfigurator
     headline: Stel jullie show *zelf* samen.
-    text: Van een hart tot een maanlanding, met 100 tot 600 drones. In de configurator zien jullie wat bij de gelegenheid past.
+    text: Van een hart tot een maanlanding, met 100 tot 1000 drones. In de configurator zien jullie wat bij de gelegenheid past.
     todo: FlyingStars muss die Motive, Drohnenzahlen und Freischaltstufen anhand von docs/show-motive-inventar.md fachlich bestätigen. Die Vorschau ist kein Flugplan.
     _key: k_bb613fb3a85d23de53b1
   - type: projectGrid
@@ -626,14 +626,14 @@ sections:
     text: Datum, locatie en gelegenheid zijn genoeg voor een eerste inschatting. Laat open wat jullie nog niet weten.
     todo: FlyingStars und die Datenschutzberatung müssen Versanddienst, Empfängerpostfach, Auftragsverarbeitung, Drittlandtransfers und Löschfristen festlegen und die Datenschutzhinweise freigeben.
     _key: k_101f174c707888bef85a
-translationSourceHash: 30282d4f16315e127a45ddf7043cdc8b3f581e148a781f4cb5e4205918a42448
+translationSourceHash: 9ebf6943b49de5e8d87d569977ee37bd5530ac2ac0a4e8629f371cf69a2aa872
 noindex: false
 translationContractVersion: 2
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 30282d4f16315e127a45ddf7043cdc8b3f581e148a781f4cb5e4205918a42448
+  sourceFingerprint: 9ebf6943b49de5e8d87d569977ee37bd5530ac2ac0a4e8629f371cf69a2aa872
   legacy:
     provenanceFile: docs/i18n/content-provenance.json
     migration: I01-v2-2026-11-04
@@ -1559,7 +1559,7 @@ translationEvidence:
       targetFingerprint: b3f9a3e5505b05749e58a2b4bfb559bb4a3287df78bb6f70345db9eeaa951c96
       status: adopted-existing
     - address: /sections/@k_a953dd6748c619e1514d/cards/@k_b52ddd7e74db16f54f73/text
-      sourceFingerprint: e16a333e87bbec7f66368e29b3dba9e701619bf131a187666ebaf23cb32f30bb
+      sourceFingerprint: 0aa5701f3fac36275c15eaed084a006bf94de5c5e08579b4711050c652c1e34b
       targetFingerprint: 7f16c9e13e4da80f97d602d16d3c8d610110635af9382622c481c780d284825e
       status: adopted-existing
     - address: /sections/@k_a953dd6748c619e1514d/cards/@k_b52ddd7e74db16f54f73/title
@@ -1683,9 +1683,9 @@ translationEvidence:
       targetFingerprint: 2161e400a7eea57c3596fb5924a28cb907646bbe9dc4d221541e498361e3da7a
       status: adopted-existing
     - address: /sections/@k_bb613fb3a85d23de53b1/text
-      sourceFingerprint: 9e120174002da1cd4aa8642777b2d231a85617da666fc293963f4eb9c5ff7953
-      targetFingerprint: 922a4747aada84c8ace1ec98152e224ff8861d2841ba862a0f9665eff4f947d5
-      status: adopted-existing
+      sourceFingerprint: 48392a33d73c796394150b0b8624a875ceb6f3db67c273b6c5619a9ef8ee05ef
+      targetFingerprint: b673948785711591adcc5a120fb5d83cd23b2c5223271d8f69f593e6eb9424da
+      status: reviewed
     - address: /sections/@k_be1f7b63a53602c36e3f/headline
       sourceFingerprint: 7283f8d7f0a84bed6361d000370ff52ad2afb195411d8d0fdd17be541941da08
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17

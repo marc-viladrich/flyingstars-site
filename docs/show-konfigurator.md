@@ -1,6 +1,6 @@
 # Show-Konfigurator (Prototyp)
 
-Stand: 31. Oktober 2026, sechzehnte Fassung (Abschnitt „Sechzehnte Fassung“ ganz unten). Frühere Stände sind als Tags erhalten: `konfigurator-v6`, `konfigurator-v8`, `konfigurator-v9`, `konfigurator-v10`. Seit der sechzehnten Fassung ist der Konfigurator eine Komponente (`src/components/configurator/ShowConfigurator.astro`) direkt auf der Preisseite, Anker `#konfigurator`; `/show-konfigurator/` leitet dorthin weiter. Für die Startseite gibt es einen Teaser als sich selbst abspielendes Showreel (`ConfiguratorTeaser.astro`, Abschnitt „Startseiten-Teaser als Showreel“). Der Konfigurator ist ein Vorschlag an FlyingStars.
+Stand: 5. November 2026, Runde 24 (Abschnitt ganz unten: Motive aus dem FlyingStars-Katalog, Drohnenbedarf des Textes). Davor sechzehnte Fassung. Frühere Stände sind als Tags erhalten: `konfigurator-v6`, `konfigurator-v8`, `konfigurator-v9`, `konfigurator-v10`. Seit der sechzehnten Fassung ist der Konfigurator eine Komponente (`src/components/configurator/ShowConfigurator.astro`) direkt auf der Preisseite, Anker `#konfigurator`; `/show-konfigurator/` leitet dorthin weiter. Für die Startseite gibt es einen Teaser als sich selbst abspielendes Showreel (`ConfiguratorTeaser.astro`, Abschnitt „Startseiten-Teaser als Showreel“). Der Konfigurator ist ein Vorschlag an FlyingStars.
 
 ## Das Modell: zwei Entscheidungen, die sich nicht gegenseitig verändern
 
@@ -826,3 +826,86 @@ Marcs Rückmeldung zum Konfigurator auf der Preisseite und zum Teaser.
   - Unit-Wächter 52/52 und `show-clouds` 5/5
 - Offen: `tests/show-physics.spec.ts` wählt den Anlass noch über `label:has([name=occasion][value=…])` und muss auf `page.locator('#cfg-occasion').selectOption(…)` umgestellt werden.
 - Screenshots in Chromium und WebKit (1440 und 390 px, Zwischenframes beim Gleiten): `/tmp/fs-r11-cfg/`.
+
+## Runde 24: Motive aus dem FlyingStars-Katalog, Drohnenbedarf des Textes (5.11.2026)
+
+Anlass: FlyingStars hat im Meeting am 5.11. den internen Motivkatalog gezeigt. Laut Marcs Gesprächsbericht liegen die meisten geflogenen Shows zwischen 100 und 150 Drohnen. SPARK braucht deshalb die größte Auswahl. Die Einzelheiten stehen in [show-katalog-motive.md](show-katalog-motive.md).
+
+- 32 Katalogmotive mit 50 Varianten, gezählte Punkte, eigene Farben. Sie spielen ab der Punktzahl ihrer kleinsten Variante, in Zehnerschritten. SPARK zeigt je Anlass jetzt 4–7 Motive bei 100 Drohnen und 7–11 bei 150 (vorher 3 und 4).
+- Je Paket eine eigene Fassung, damit ein größeres Paket nie weniger zeigt (Wächter `show-unlock`): SPARK die Formation, HORIZON als Körper mit zweiter Ebene, ODYSSEY Licht zeichnet die Form, dann wird sie zum Körper.
+- Die Bewegung ist abgeleitet, nicht aus Flugdaten: Räder, Nadel, Ballons, Gläser, Fahnen; 3D-Formationen drehen sich schon in SPARK. Das korrigiert die Vereinfachung „SPARK = Standbild“, wo FlyingStars' eigene Daten 3D mit 100–160 Drohnen belegen.
+- Gesperrte Motive: ein Lichtpunkt je Schwelle, nicht je Motiv. Mit 13 Motiven drückten die Einzelpunkte auf dem Handy die Tempo-Knöpfe aus dem Bild.
+- Eigener Text: zehn Drohnen je Zeichen ohne Leerzeichen (Regel des Katalogs). Unter dem Feld steht „8 von 10 Zeichen bei 100 Drohnen“. Braucht der Text mehr, steigen Drohnenzahl, Paket und Preis sichtbar mit. Ein Absenken darunter hält der Regler und sagt warum. Höchstens 24 Zeichen, also 240 Drohnen.
+- Wächter: `scripts/catalog-motifs.test.mjs` (Daten, Mindestzahlen, Varianten wachsen mit), dazu die bestehenden `show-unlock`, `show-counts`, `show-finte`, `show-clouds`.
+
+## Runde 27: Logo-Modus mit dem Logo-Konverter v10 (12.11.2026)
+
+Marc (12.11.): eigener Logo-Modus im echten Konfigurator; die Logo-Regler erscheinen nur, wenn jemand ein Logo hochlädt
+oder in den Modus wechselt; im Modus laufen Kundenlogos als Formation durch; „Paket“ statt „Wie aufwendig?“; Hinweis bei
+zu vielen Drohnen ohne Versprechen („…damit unsere Designer einschätzen können, ob und wie…“). Detailgrad und
+Budget-Flexibilität als ein Regler (Zonen wie die Paketfarben am Drohnenregler).
+
+- Schalter „Logo-Modus“ in „Euer Text, euer Logo“. Ohne eigenes Logo zeigt die Bühne die Kundenlogos
+  (`public/brand/logos/kunde-*-weiss.svg`), vorberechnet in `public/media/logo-modus/kundenlogos.json` (erzeugt mit
+  `freelance/clients/flyingstars/23-logo-drohnen-konverter/tools/v10/examples.mjs`, 8 Drohnenzahlen von 100 bis 600). Es
+  laufen nur Logos, die in die gewählte Zahl passen (flexibel, sonst die strenge Fassung bis +10 %).
+- Ein hochgeladenes Logo schaltet den Modus ein. Es läuft durch den Konverter v10 (`src/scripts/logo-v10/`, vendored mit
+  `node integration/vendor.mjs` aus Ordner 23, nicht hier ändern): Kontur, keine Mischung aus Kontur und Mittellinie in einem
+  Zeichen. Statt Strichgraph (Runde 26) und dunkler Reserve gilt: Braucht das Logo mehr als die gewählte Zahl, steht es mit
+  seiner eigenen Zahl da (Lichtgröße wie bei einer Show dieser Größe) und der Hinweis sagt es.
+- Regler „Detailgrad“ (nur mit eigenem Logo): drei Zonen Streng / Mittel / Flexibel = Budget-Flexibilität des Konverters
+  (opts.flex), die Stelle in der Zone = Liniendichte (rechts lockerer, mehr Formen). „Automatisch“ = Flexibel.
+- „Teile entfernen“: flache Ansicht über der Bühne (die Bühne ist gekippt und fliegt, Klicks wären dort nicht verlässlich):
+  Klick wählt ein zusammenhängendes Farbstück, ein zweiter Klick das ganze Element, Rahmen aufziehen wählt mehrere; Entf,
+  Esc; entfernte Teile bleiben als Geister sichtbar und lassen sich wiederherstellen. Alles entfernen geht nicht.
+- Laden: `logo-mode.js` und der Konverter kommen erst beim Wechsel in den Modus bzw. mit der ersten Datei (dynamischer
+  Import, der Konverter rechnet im Worker); die Kundenlogo-Daten (312 KB) erst im Modus.
+- Das Logo verlässt den Browser weiterhin nicht: „Anfrage senden“ führt nur zum Formular (`/#anfrage`). Ein Logo-Anhang
+  am Formular ist vorbereitet, aber nicht gebaut (Rechtsrecherche:
+  `23-logo-drohnen-konverter/integration/recherche-logo-anhang.md`).
+- Geprüft: Chromium und WebKit (Playwright, 1440 px): Kundenlogo-Folge, Upload (Energizer), Hinweis über der Zahl, Teile
+  entfernen und Neuberechnung. Unit-Tests: 726 von 731; die drei Fehler bestehen auch ohne diese Runde bzw. sind behoben
+  (px-Wert). Nicht geprüft: Playwright-Specs des Konfigurators (`tests/show-*.spec.ts`), Handys, Marcs Safari 18.6.
+- Offen: Text-Drohnenkopplung an die Budget-Flexibilität (Marcs Idee: bei strengem Budget nur so viele Zeichen wie Drohnen);
+  „Was zeigen“ (ganzes Logo / nur Symbol) bewusst weggelassen; die Wolke als Ladezustand beim ersten Rechnen fehlt im
+  Konfigurator noch (bis das Logo fertig ist, läuft die bisherige Show weiter).
+- Nachtrag (12.11. abends, Marc): „Euer Logo“ ist jetzt ein Anlass (letzte Pill, Verlaufsrahmen in den Logofarben) statt
+  eines Logo-Modus-Schalters; ein Upload wählt ihn. Die Zonen des Detailgrad-Reglers sind neutral (nicht die Paketfarben).
+  Braucht das eigene Logo mehr Drohnen als gewählt, zeigt der Drohnenregler den Bedarf: Band vom Griff bis zu einer
+  gestrichelten Marke (gleitet bei jeder neuen Berechnung), daneben „Logo braucht ca. N“. Die Kundenlogo-Folge zeigt nur die
+  beste (flexible) Fassung; die strenge nur, wenn sonst keine drei Logos in die Zahl passen (bei 200 Drohnen: DKB, Prada,
+  REWE, Spotify). Unit-Tests 727/731 nach den Korrekturen; die zwei bekannten Fehler bestehen auch ohne diese Runde.
+- Nachtrag 2 (12.11. nachts, Marc): Im Anlass „Euer Logo“ nur Drohnenzahl, Liniendichte (statt Detailgrad; die
+  Budget-Flexibilität ist fest „Mittel“), „Euer Text, euer Logo“ und die Preiskachel; Anlass, Paket, Abspielleiste,
+  Bildunterschrift und Motiv-Hinweise treten zurück, „Alle Anlässe“ führt zurück. Hochladen zeigt sofort die lebendige
+  Wolke (eigenes Bild mit live-Bewegung), bis das Logo gerechnet ist. Braucht das Logo mehr Drohnen: große Zahl = Bedarf in
+  der Paketfarbe, gewählte Zahl durchgestrichen, Griff blass, gestrichelter Bogen zum Bedarf; × am Bogen legt das Logo in die
+  gewählte Zahl (strenge Flexibilität); kurzer Fokus auf den Regler; der Hinweis steht als Karte auf der Bühne. Formen
+  werden direkt auf der Bühne gewählt (`createField().screenOf()` liefert die Bildschirmlage je Punkt), ein Klick auf die
+  Bühne hält dort nicht mehr an. Minimap mit dem Original oben rechts. Kundenlogos: nur von Hand freigegebene Bilder
+  (`ok` in kundenlogos.json, Begründungen in `23-logo-drohnen-konverter/screens/v10-kundenlogos/README.md`); passen weniger
+  als zwei, laufen bis zu vier mit ihrer eigenen Zahl („mit 400 Drohnen“). Geprüft in Chromium und WebKit (Upload, Wolke,
+  Bedarf, Karte, Klick- und Rahmenauswahl, Entfernen, Liniendichte, ×).
+- Nachtrag 3 (12.11. nachts, Marc: „das funktioniert gar nicht … zurück zur Logik des lokalen Prototyps“): Der Anlass
+  „Euer Logo“ rechnet jetzt genau wie der Prototyp `app-v10`: feste gewünschte Drohnenzahl, Liniendichte (Automatisch oder
+  Regler), Budget-Flexibilität (Automatisch/Streng/Mittel/Flexibel) und „Was zeigen“ (Automatisch/Ganzes Logo/Nur
+  Symbol). Automatisch nimmt nur das Symbol, wenn das ganze Logo nicht in die Zahl passt (Puma bei 100: 97 Drohnen, nur die
+  Raubkatze). Beschreibungstexte, Zonen, Bogen, Durchstreichen und das × am Bogen sind entfernt. Oben steht die große Zahl
+  „N Drohnen werden benötigt“ (Korallrot über der gewünschten Zahl), der Regler heißt „Gewünschte Drohnenanzahl“.
+  „Beispiele“: Mastercard, IKEA, DHL, Firefox, Spotify, Nike, Apple, McDonald’s, Adidas als SVG unter
+  `public/media/logo-modus/beispiele/` (laden wie ein Upload). Bühne niedriger, Minimap und Hinweiskarte unten; auf dem
+  Handy ist die Karte kompakt über die volle Breite, die Minimap oben rechts. Geprüft in Chromium und WebKit (1440 px:
+  Puma 97, Mastercard 98/100; 390 px: Puma „Ganzes Logo“ = 207, rot, Karte). Bekannt: Playwright-WebKit stürzt beim
+  Verkleinern des Fensters von 1440 auf 390 px auf jeder Seite der Site ab (auch „Über uns“, nicht auf einer leeren Seite);
+  frisch mit 390 px geöffnet läuft alles. Nicht geprüft: Handys, Marcs Safari 18.6.
+- Nachtrag 4 (12.11. nachts, Marc): Leiste im Anlass „Euer Logo“: „Alle Anlässe“, Upload „Euer Logo“ (ohne Textfeld),
+  Beispiele (16, vorberechnet: Klick zeigt das Bild sofort, erst Liniendichte oder Entfernen rechnet live), große Zahl,
+  Drohnenregler, Liniendichte. Budget-Flexibilität und „Was zeigen“ entfernt (intern immer Automatisch; Marc hat sie bei
+  keinem Logo geändert). Liniendichte mit fünf neuen, sparsameren Stufen unten; die Spur ist dort korallrot, und solange
+  der Griff dort steht, steht darunter „kann unleserlich werden“. Der Bedarf bestimmt Paket und Preis; auf dem Drohnenregler
+  sitzt ein Bedarfspunkt in der Paketfarbe des Bedarfs (über 600: Koralle), die große Zahl hat dieselbe Farbe, der
+  gewünschte Griff und seine Zahl treten blass zurück. Bühne wieder in voller Höhe, Logo größer, Leiste ab Desktop breiter
+  (`clamp(22.5rem, 30vw, 36rem)`). Hinweiskarte schmal unten links, halbtransparent mit Weichzeichner, voll deckend bei
+  Hover/Fokus. Lebendige Wolke: verzerrte Uhr (Tempowechsel bis fast Stillstand), Breite/Höhe/Lage/Drehung wandern,
+  gelegentlich drei lose Haufen. Der Logo-Modus läuft auch, wenn die Show vorher pausiert war (`setMotionIndependent`).
+  Beim Entfernen eines Teils tauchen im entfernten Bereich keine neuen Punkte mehr auf (`removed-mask.mjs`).

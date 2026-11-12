@@ -33,6 +33,22 @@ export function hilbertSort(points) {
 
 const loadImage = src => new Promise((res, rej) => { const i = new Image(); i.decoding = 'async'; i.onload = () => res(i); i.onerror = rej; i.src = src; });
 
+/**
+ * Runde 26: Ein SVG nur mit viewBox (ohne width/height, z. B. viele Logo-Downloads) hat im Browser keine eigene Größe;
+ * das Bild meldet dann 300 × 150 Pixel, und der Zuschnitt schnitt das Logo ab (VW: nur ein Viertel des Kreises).
+ * Breite und Höhe kommen deshalb aus der viewBox (längere Seite 1000), vorhandene Angaben bleiben, wenn es Pixel sind.
+ */
+function sizedSvg(markup) {
+  const root = /<svg\b[^>]*>/i.exec(markup); if (!root) return markup;
+  const tag = root[0], vb = /viewBox\s*=\s*["']([^"']+)["']/i.exec(tag);
+  const px = (name) => { const m = new RegExp(`\\s${name}\\s*=\\s*["']\\s*([\\d.]+)(px)?\\s*["']`, 'i').exec(tag); return m ? Number(m[1]) : null; };
+  if (!vb || (px('width') && px('height'))) return markup;
+  const [, , vw, vh] = vb[1].trim().split(/[\s,]+/).map(Number); if (!(vw > 0 && vh > 0)) return markup;
+  const k = 1000 / Math.max(vw, vh);
+  const fixed = tag.replace(/\s(width|height)\s*=\s*["'][^"']*["']/gi, '').replace(/<svg\b/i, `<svg width="${Math.round(vw * k)}" height="${Math.round(vh * k)}"`);
+  return markup.replace(tag, fixed);
+}
+
 /** Zeichnet eine Quelle (kind 'image' | 'svg' | 'text') auf höchstens `box` Pixel Kantenlänge. Nur das braucht den Hauptthread. */
 async function paint(source, box) {
   const c = document.createElement('canvas');
@@ -56,7 +72,7 @@ async function paint(source, box) {
     if (source.spacing && 'letterSpacing' in g) g.letterSpacing = `${source.spacing * px0}px`;
     lines.forEach((l, i) => g.fillText(l, tw / 2, lh * (i + 0.5)));
   } else {
-    const url = source.kind === 'svg' ? URL.createObjectURL(new Blob([source.markup], { type: 'image/svg+xml' })) : source.src;
+    const url = source.kind === 'svg' ? URL.createObjectURL(new Blob([sizedSvg(source.markup)], { type: 'image/svg+xml' })) : source.src;
     const img = await loadImage(url);
     if (source.kind === 'svg') URL.revokeObjectURL(url);
     const [sx, sy, iw, ih] = source.crop || [0, 0, img.naturalWidth || 300, img.naturalHeight || 300];
@@ -82,7 +98,9 @@ function core(job) {
   }
   if (!worker) return import('./shape-core.js').then(c => {
     const a = c.analyze(job.rgba, job.w, job.h, job.M, job);
-    return a.crop ? a : { points: c.sampleShape(a, job.n) };
+    if (a.crop) return a;
+    const points = job.sampler === 'stroke' ? c.sampleShape(a, job.n) : c.sampleShapeLegacy(a, job.n);
+    return { points, meta: points.meta ?? null };
   });
   return new Promise(res => { const id = ++seq; pending.set(id, res); worker.postMessage({ ...job, id }, [job.rgba.buffer]); });
 }
@@ -90,12 +108,14 @@ function core(job) {
 const cache = new WeakMap(); // je Quellobjekt und Drohnenzahl nur einmal rechnen
 /**
  * Formation aus einer Quelle: deterministisch, gleiche Quelle und Drohnenzahl ergeben dieselben Punkte.
+ * opts.sampler = 'stroke': Strichgraph mit Mindestabstand (Runde 26, Logo-Upload); sonst die bisherige Abtastung.
  * @returns {Promise<Array<{ x: number, y: number, c: number[], wt: number }>>}
  */
 export function formation(source, n, opts = {}) {
   let byN = cache.get(source); if (!byN) cache.set(source, byN = new Map());
-  if (!byN.has(n)) byN.set(n, compute(source, n, opts.box || 420).catch(e => { byN.delete(n); throw e; }));
-  return byN.get(n);
+  const key = `${n}|${opts.sampler || ''}`;
+  if (!byN.has(key)) byN.set(key, compute(source, n, opts.box || 420, opts.sampler).catch(e => { byN.delete(key); throw e; }));
+  return byN.get(key);
 }
 // Text fliegt wie in echten FlyingStars-Shows in der Einstrich-Schrift ihres eigenen Textplaners
 // (Drohne auf jeder Ecke und jedem Ende, gleichmäßige Abstände), nicht als abgetastete Pixelschrift.
@@ -107,23 +127,25 @@ async function strokeText(text, n) {
   const sc = 2 / Math.max(r.size[0], r.size[1], 1e-6);
   return r.pts.map(([x, y]) => ({ x: x * sc, y: -y * sc, c: null, wt: 1 }));
 }
-async function compute(source, n, box) {
+async function compute(source, n, box, sampler) {
   if (source.kind === 'text' && !source.raster) {
     const pts = await strokeText(source.text, n);
     if (pts) return hilbertSort(pts);
   }
   let r = await paint(source, box);
   const canCrop = !!r.meta && !source.noCrop;
-  let out = await core({ rgba: new Uint8ClampedArray(r.rgba), w: r.w, h: r.h, M: r.M, invert: !!source.invert, canCrop, n });
+  let out = await core({ rgba: new Uint8ClampedArray(r.rgba), w: r.w, h: r.h, M: r.M, invert: !!source.invert, canCrop, n, sampler });
   if (out.crop) {
     // Leerraum abschneiden (3 % Rand bleiben, damit die Randfarbe erkennbar bleibt) und neu rastern
     const [x0, y0, x1, y1] = out.crop, [sx, sy, iw, ih] = r.meta.img, k = r.meta.scale, M = r.M, pad = Math.max(x1 - x0, y1 - y0) * 0.03 / k;
     const cx0 = Math.max(sx, sx + (x0 - M) / k - pad), cy0 = Math.max(sy, sy + (y0 - M) / k - pad);
     const cx1 = Math.min(sx + iw, sx + (x1 - M + 1) / k + pad), cy1 = Math.min(sy + ih, sy + (y1 - M + 1) / k + pad);
     r = await paint({ ...source, crop: [cx0, cy0, cx1 - cx0, cy1 - cy0] }, box);
-    out = await core({ rgba: new Uint8ClampedArray(r.rgba), w: r.w, h: r.h, M: r.M, invert: !!source.invert, canCrop: false, n });
+    out = await core({ rgba: new Uint8ClampedArray(r.rgba), w: r.w, h: r.h, M: r.M, invert: !!source.invert, canCrop: false, n, sampler });
   }
-  return hilbertSort(out.points);
+  const sorted = hilbertSort(out.points);
+  sorted.meta = out.meta ?? null; // z. B. { simplified: true }: das Logo ist für n Drohnen sehr fein
+  return sorted;
 }
 
 /**

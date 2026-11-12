@@ -1,6 +1,17 @@
 import { test, expect, type Page } from '@playwright/test';
 
 // Findings from the second comparison pass against the shared Vercel reference.
+// Base.astro has rendered social previews as JPEG since ead2146, at the configured build origin.
+// Read that origin from the canonical URL so preview/CI builds exercise the same contract.
+const expectSocialImage = async (page: Page) => {
+  const canonical = new URL((await page.locator('link[rel="canonical"]').getAttribute('href'))!);
+  const image = new URL((await page.locator('meta[property="og:image"]').getAttribute('content'))!);
+  expect(image.origin).toBe(canonical.origin);
+  expect(image.pathname).toMatch(/^\/_astro\/[^/?#]+\.jpg$/);
+  const response = await page.request.get(`${image.pathname}${image.search}`);
+  expect(response.ok()).toBe(true);
+  expect(response.headers()['content-type']).toMatch(/^image\/jpeg/);
+};
 
 const cases = [
   { route: '/musikalischer-teaser-bokkenrijders/', nextChars: 6, title: 'Bokkenrijders: 600 Drohnen im Musical in Maastricht | FlyingStars' },
@@ -42,7 +53,7 @@ for (const project of cases) {
   test(`Case übernimmt Metadaten, Navigation und Titelgröße der Referenz: ${project.route}`, async ({ page }) => {
     await page.goto(project.route);
     await expect(page).toHaveTitle(project.title);
-    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /^https:\/\/flyingstars\.art\/_astro\/[^/?#]+\.webp$/);
+    await expectSocialImage(page);
     if (await page.getByRole('navigation', { name: 'Hauptnavigation', exact: true }).isVisible()) {
       await expect(page.locator('header.nav nav a[href="/referenzen/"]')).toHaveAttribute('aria-current', 'true');
     }
@@ -55,7 +66,7 @@ test('Startseite trägt Titel, Beschreibung und Vorschaubild der Referenz', asyn
   await page.goto('/');
   await expect(page).toHaveTitle('Drohnenshows buchen – über 150 Shows seit 2022 | FlyingStars');
   await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /über 150 Shows seit 2022, eigene Flotte/);
-  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /^https:\/\/flyingstars\.art\/_astro\/[^/?#]+\.webp$/);
+  await expectSocialImage(page);
 });
 
 // Der alte Preisrechner ist seit dem 30.10.2026 nicht mehr auf der Preisseite; das Formular übernimmt den Text weiterhin aus der Adresse.

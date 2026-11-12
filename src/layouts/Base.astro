@@ -57,6 +57,9 @@ const inNav = (href: string) => site.nav.some((item) => item.href === href);
     <meta charset="utf-8" />
     {/* UI-Wörterbuch der Seitensprache vor allen Modul-Skripten (defer läuft in Dokumentreihenfolge), siehe src/i18n/ui.mjs */}
     <script is:inline defer src={`/media/i18n/${locale}.js`}></script>
+    {/* Above-the-fold fonts: avoid moving the blog grid when fallback metrics are replaced. */}
+    <link rel="preload" href="/fonts/space-grotesk-0.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/inter-latin-400-700-v1.woff2" as="font" type="font/woff2" crossorigin />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title} | {site.name}</title>
     <meta name="description" content={factText(description,locale)} />

@@ -1,0 +1,82 @@
+[
+  {
+    "id": "mastercard",
+    "bytes": 34761,
+    "gzip": 8354
+  },
+  {
+    "id": "ikea",
+    "bytes": 41353,
+    "gzip": 7463
+  },
+  {
+    "id": "dhl",
+    "bytes": 160643,
+    "gzip": 16164
+  },
+  {
+    "id": "firefox",
+    "bytes": 33944,
+    "gzip": 7589
+  },
+  {
+    "id": "spotify",
+    "bytes": 43387,
+    "gzip": 8534
+  },
+  {
+    "id": "nike",
+    "bytes": 19996,
+    "gzip": 3680
+  },
+  {
+    "id": "apple",
+    "bytes": 22904,
+    "gzip": 4888
+  },
+  {
+    "id": "mcdonalds",
+    "bytes": 38463,
+    "gzip": 4720
+  },
+  {
+    "id": "adidas",
+    "bytes": 22725,
+    "gzip": 4545
+  },
+  {
+    "id": "puma",
+    "bytes": 46907,
+    "gzip": 8939
+  },
+  {
+    "id": "cupra",
+    "bytes": 41543,
+    "gzip": 9273
+  },
+  {
+    "id": "duolingo",
+    "bytes": 50959,
+    "gzip": 8717
+  },
+  {
+    "id": "energizer",
+    "bytes": 252504,
+    "gzip": 44454
+  },
+  {
+    "id": "lamborghini",
+    "bytes": 101372,
+    "gzip": 20163
+  },
+  {
+    "id": "shell",
+    "bytes": 25792,
+    "gzip": 7435
+  },
+  {
+    "id": "target",
+    "bytes": 42813,
+    "gzip": 10267
+  }
+]

@@ -38,3 +38,5 @@ node --test editor/i18n-field-policy.test.mjs editor/i18n-contract.test.mjs
 Der bestehende Stand wurde ohne neue menschliche Freigabe als `adopted-existing` übernommen. Historische `editorReviewed`-Flags bleiben unverändert in [content-provenance.json](content-provenance.json). Sie sind keine neue Review-Freigabe. [key-migration.json](key-migration.json) dokumentiert die ausdrücklichen Sprachzuordnungen.
 
 [Entwurf](umbau-entwurf.md), [Teil 1](teil-1-umsetzung.md), [Teil 2 und Prüfungen](teil-2-umsetzung.md), [frühere Übernahmeberichte](historie-bis-i01.md).
+
+Die [mechanische UI-Abhängigkeitsmigration](ui-dependency-migration.md) dokumentiert die Eingrenzung der Token-Fingerprints und die unveränderten Bestandsnachweise.

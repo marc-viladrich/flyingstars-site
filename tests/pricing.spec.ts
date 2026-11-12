@@ -10,8 +10,8 @@ test('Preisseite zeigt die drei Pakete mit Preisen aus einer Quelle und führt i
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/drohnenshow-preise/');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Drei Pakete. Feste Einstiegspreise.');
-  // Erst die Pakete, dann der Konfigurator (Marc, 31.10.2026)
-  await expect(page.locator('#konfigurator canvas')).toHaveCount(1);
+  // Erst die Pakete, dann die Konfigurator-Bühne; die Logo-Bearbeitung hat eine zweite Canvas.
+  await expect(page.locator('#konfigurator canvas#cfg-field')).toHaveCount(1);
   // über den Index statt über die Rolle: auf dem Handy stehen nicht gewählte Karten hinter Reitern (unsichtbar)
   for (const [i, name] of PACKAGE_NAMES.entries()) {
     const card = page.locator(`#pakete article[data-mtab="${i}"]`);

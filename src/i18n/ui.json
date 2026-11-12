@@ -1,4 +1,14 @@
 {
+  "logoMode.minimum": {
+    "de": "Euer Logo braucht mindestens {n} Drohnen",
+    "en": "Your logo needs at least {n} drones",
+    "nl": "Jullie logo heeft minstens {n} drones nodig"
+  },
+  "logoMode.simplified": {
+    "de": "Euer Logo, vereinfacht für {n} Drohnen",
+    "en": "Your logo, simplified for {n} drones",
+    "nl": "Jullie logo, vereenvoudigd voor {n} drones"
+  },
   "chopper404.thisPageDoesnTExist": {
     "de": "Diese Seite gibt es nicht.",
     "en": "This page doesn't exist.",
@@ -185,9 +195,9 @@
     "nl": "Gelegenheid"
   },
   "showconfigurator.howComplex": {
-    "de": "Wie aufwendig?",
-    "en": "How complex?",
-    "nl": "Hoe uitgebreid?"
+    "de": "Paket",
+    "en": "Package",
+    "nl": "Pakket"
   },
   "showconfigurator.yourTextYourLogo": {
     "de": "Euer Text, euer Logo",
@@ -3511,5 +3521,180 @@
   "quantity.number11": {"de":"elf","en":"eleven","nl":"elf"},
   "quantity.number12": {"de":"zwölf","en":"twelve","nl":"twaalf"},
   "price.fromApproxGuide": {"de":"ab etwa","en":"from around","nl":"vanaf circa"},
-  "packageDetails.filmCareListItem": {"de":"Rohmaterial-Video","en":"raw video footage","nl":"ruwe videobeelden"}
+  "packageDetails.filmCareListItem": {"de":"Rohmaterial-Video","en":"raw video footage","nl":"ruwe videobeelden"},
+  "showConfigurator.textBudget": {
+    "de": "{used} von {max} Zeichen bei {drones} Drohnen",
+    "en": "{used} of {max} characters with {drones} drones",
+    "nl": "{used} van {max} tekens bij {drones} drones"
+  },
+  "showConfigurator.textRaised": {
+    "de": "Für {used} Zeichen braucht der Text mindestens {need} Drohnen, darum haben wir die Drohnenzahl angehoben.",
+    "en": "For {used} characters the text needs at least {need} drones, so we raised the drone count.",
+    "nl": "Voor {used} tekens heeft de tekst minstens {need} drones nodig, daarom hebben we het aantal drones verhoogd."
+  },
+  "showConfigurator.textHolds": {
+    "de": "Mit eurem Text bleiben es mindestens {need} Drohnen.",
+    "en": "With your text it stays at {need} drones or more.",
+    "nl": "Met jullie tekst blijven het minstens {need} drones."
+  },
+  "showConfigurator.logoTooFine": {
+    "de": "Euer Logo ist für {n} Drohnen sehr fein. Mit mehr Drohnen oder einer vereinfachten Fassung (etwa nur das Zeichen) wird es klarer.",
+    "en": "Your logo is very detailed for {n} drones. More drones or a simplified version (for example just the mark) make it clearer.",
+    "nl": "Jullie logo is erg fijn voor {n} drones. Met meer drones of een vereenvoudigde versie (bijvoorbeeld alleen het beeldmerk) wordt het duidelijker."
+  },
+  "logoMode.occasion": {
+    "de": "Euer Logo",
+    "en": "Your logo",
+    "nl": "Jullie logo"
+  },
+  "logoMode.auto": {
+    "de": "Automatisch",
+    "en": "Automatic",
+    "nl": "Automatisch"
+  },
+  "logoMode.editHint": {
+    "de": "Formen anklicken oder einen Rahmen aufziehen. Ein zweiter Klick wählt das ganze Element.",
+    "en": "Click shapes or drag a frame. A second click selects the whole element.",
+    "nl": "Klik op vormen of trek een kader. Een tweede klik selecteert het hele element."
+  },
+  "logoMode.selected": {
+    "de": "{n} ausgewählt",
+    "en": "{n} selected",
+    "nl": "{n} geselecteerd"
+  },
+  "logoMode.remove": {
+    "de": "Entfernen",
+    "en": "Remove",
+    "nl": "Verwijderen"
+  },
+  "logoMode.restore": {
+    "de": "Wiederherstellen",
+    "en": "Restore",
+    "nl": "Herstellen"
+  },
+  "logoMode.clear": {
+    "de": "Auswahl aufheben",
+    "en": "Clear selection",
+    "nl": "Selectie opheffen"
+  },
+  "logoMode.restoreAll": {
+    "de": "Alle wiederherstellen",
+    "en": "Restore all",
+    "nl": "Alles herstellen"
+  },
+  "logoMode.over": {
+    "de": "Unser automatischer Algorithmus berechnet für euer Logo etwa {wanted} Drohnen. Sendet uns gern eine Anfrage, damit unsere Designer einschätzen können, ob und wie eine vereinfachte Fassung mit {n} Drohnen möglich wäre.",
+    "en": "Our automatic algorithm calculates about {wanted} drones for your logo. Send us an enquiry and our designers will assess whether and how a simplified version with {n} drones is possible.",
+    "nl": "Ons automatische algoritme berekent voor jullie logo ongeveer {wanted} drones. Stuur ons gerust een aanvraag, dan beoordelen onze ontwerpers of en hoe een vereenvoudigde versie met {n} drones mogelijk is."
+  },
+  "logoMode.overCta": {
+    "de": "Anfrage senden",
+    "en": "Send an enquiry",
+    "nl": "Aanvraag sturen"
+  },
+  "logoMode.customer": {
+    "de": "Kundenlogo: {name}",
+    "en": "Client logo: {name}",
+    "nl": "Klantlogo: {name}"
+  },
+  "logoMode.computing": {
+    "de": "Euer Logo wird berechnet …",
+    "en": "Calculating your logo …",
+    "nl": "Jullie logo wordt berekend …"
+  },
+  "logoMode.back": {
+    "de": "Alle Anlässe",
+    "en": "All occasions",
+    "nl": "Alle gelegenheden"
+  },
+  "logoMode.useLogo": {
+    "de": "Dieses Logo in der Show verwenden",
+    "en": "Use this logo in the show",
+    "nl": "Dit logo in de show gebruiken"
+  },
+  "logoMode.densityRisk": {
+    "de": "kann unleserlich werden",
+    "en": "may become unreadable",
+    "nl": "kan onleesbaar worden"
+  },
+  "logoMode.density": {
+    "de": "Liniendichte",
+    "en": "Line density",
+    "nl": "Lijndichtheid"
+  },
+  "logoMode.looser": {
+    "de": "lockerer",
+    "en": "looser",
+    "nl": "losser"
+  },
+  "logoMode.denser": {
+    "de": "dichter",
+    "en": "denser",
+    "nl": "dichter"
+  },
+  "logoMode.close": {
+    "de": "Schließen",
+    "en": "Close",
+    "nl": "Sluiten"
+  },
+  "logoMode.original": {
+    "de": "Original zeigen",
+    "en": "Show original",
+    "nl": "Origineel tonen"
+  },
+  "logoMode.customerFrom": {
+    "de": "Kundenlogo: {name} · mit {n} Drohnen",
+    "en": "Client logo: {name} · with {n} drones",
+    "nl": "Klantlogo: {name} · met {n} drones"
+  },
+  "logoMode.examples": {
+    "de": "Beispiele",
+    "en": "Examples",
+    "nl": "Voorbeelden"
+  },
+  "logoMode.flex": {
+    "de": "Budget-Flexibilität",
+    "en": "Budget flexibility",
+    "nl": "Budgetflexibiliteit"
+  },
+  "logoMode.flexStrict": {
+    "de": "Streng",
+    "en": "Strict",
+    "nl": "Strikt"
+  },
+  "logoMode.flexMedium": {
+    "de": "Mittel",
+    "en": "Medium",
+    "nl": "Gemiddeld"
+  },
+  "logoMode.flexFlexible": {
+    "de": "Flexibel",
+    "en": "Flexible",
+    "nl": "Flexibel"
+  },
+  "logoMode.part": {
+    "de": "Was zeigen",
+    "en": "What to show",
+    "nl": "Wat tonen"
+  },
+  "logoMode.partFull": {
+    "de": "Ganzes Logo",
+    "en": "Whole logo",
+    "nl": "Heel logo"
+  },
+  "logoMode.partMark": {
+    "de": "Nur Symbol",
+    "en": "Symbol only",
+    "nl": "Alleen symbool"
+  },
+  "logoMode.needed": {
+    "de": "Drohnen empfohlen",
+    "en": "drones recommended",
+    "nl": "drones aanbevolen"
+  },
+  "logoMode.wanted": {
+    "de": "Gewünschte Drohnenanzahl",
+    "en": "Desired number of drones",
+    "nl": "Gewenst aantal drones"
+  }
 }

@@ -1,0 +1,317 @@
+#!/usr/bin/env node
+// Übernimmt kuratierte Formationen aus dem FlyingStars-Motivkatalog (https://flyingstars-katalog-web.vercel.app, Stand
+// 05.11.2026) in den Show-Konfigurator. Quelle ist der gesicherte Rechercheordner im akomo-Hub
+// (freelance/clients/flyingstars/20-katalog-und-materialinventar-2026-11-05: katalog-inventar.json + quellen/), nicht
+// die Live-Seite: Der Katalog-Endpunkt lieferte HTTP 500, der eingebettete Stand ist die belegte Quelle.
+//
+// Aufruf: node scripts/import-catalog.mjs <rechercheordner>
+// Schreibt:
+//   public/media/katalog/<variante>.json   eine Formation je Variante, auf Einheitsgröße gebracht (Mitte 0, halbe
+//                                          Breite oder Höhe 1), x rechts, y oben, z Tiefe, Farben wie im Katalog
+//   src/content/catalog-motifs.json        Metadaten: Motiv, Namen, Varianten (gezählte Punkte, Katalogangabe), Bewegung,
+//                                          Herkunft. Der Konfigurator liest nur diese Datei.
+//
+// Importwächter (bricht ab, statt still zu übernehmen): Punktliste nicht leer, alle Werte endlich, Farben 0–255,
+// `exact` gleich der Zahl der Punkte. Die Drohnenzahl im Katalog (`drones`) steht getrennt als `declared`; gezählt wird
+// immer das Punktearray (41 von 85 Dateien weichen ab, z. B. Sportwagen „150“ mit 147 Punkten). Varianten ohne
+// Punktdaten (z. B. Golfcaddy 100) werden nicht erfunden.
+//
+// Kuratiert, nicht alles: Wappen, Flaggen, Karten, Kundenslogans, Kundenlogos und Porträts bleiben draußen (keine
+// Nutzungsfreigabe, siehe docs/show-katalog-motive.md). Jede Auswahl hier ist ein Vorschlag an FlyingStars.
+import fs from 'node:fs';
+import path from 'node:path';
+
+const SRC = process.argv[2];
+if (!SRC) { console.error('Aufruf: node scripts/import-catalog.mjs <rechercheordner>'); process.exit(2); }
+const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+const OUT_MEDIA = path.join(ROOT, 'public/media/katalog');
+const OUT_META = path.join(ROOT, 'src/content/catalog-motifs.json');
+
+/**
+ * Bewegungsprofile nach der Sichtung der Katalogclips (Recherche clip-analyse/, 05.11.): Bewegung nur dort, wo FlyingStars'
+ * eigene Vorschau sie zeigt oder der Körper sie nahelegt (Räder, Nadel). Atom, Möbius-Schleife, Pyramide, Stern,
+ * Schmetterling und Taube leben in den Clips vom Licht, nicht von einer Drehung; Kugel, Spirale und Galaxie drehen sich;
+ * die Blüten drehen ihre Blätter um die eigene Mitte; Ballons schweben einzeln; Gläser neigen sich zueinander.
+ * key: stabiler Schlüssel im Konfigurator. nr: Motivnummer im Katalog. motion: Bewegungsprofil in
+ * src/scripts/scenes/catalog.js. name: Anzeigename je Sprache.
+ */
+const CURATED = [
+  { key: 'anstossen', nr: 17, motion: 'clink', name: { de: 'Anstoßende Gläser', en: 'Clinking glasses', nl: 'Klinkende glazen' } },
+  { key: 'doppelherz', nr: 75, motion: 'breathe', name: { de: 'Doppelherz', en: 'Double heart', nl: 'Dubbel hart' } },
+  { key: 'initialen', nr: 123, motion: 'breathe', name: { de: 'Herz mit Initialen', en: 'Heart with initials', nl: 'Hart met initialen' } },
+  { key: 'taube', nr: 14, motion: 'shimmer', name: { de: 'Friedenstaube', en: 'Dove of peace', nl: 'Vredesduif' } },
+  { key: 'blueten', nr: 85, motion: 'blossoms', name: { de: 'Zwei Blüten', en: 'Two blossoms', nl: 'Twee bloesems' } },
+  { key: 'unendlich', nr: 88, motion: 'run', name: { de: 'Unendlich-Zeichen', en: 'Infinity sign', nl: 'Oneindigteken' } },
+  { key: 'schmetterling', nr: 86, motion: 'shimmer', name: { de: 'Schmetterling', en: 'Butterfly', nl: 'Vlinder' } },
+  { key: 'ballons', nr: 47, motion: 'bob', name: { de: 'Ballons', en: 'Balloons', nl: 'Ballonnen' } },
+  { key: 'fahnen', nr: 118, motion: 'wave', name: { de: 'Wehende Fahnen', en: 'Waving flags', nl: 'Wapperende vlaggen' } },
+  { key: 'handschlag', nr: 115, motion: 'shimmer', name: { de: 'Handschlag', en: 'Handshake', nl: 'Handdruk' } },
+  { key: 'stern', nr: 13, motion: 'twinkle', name: { de: 'Stern', en: 'Star', nl: 'Ster' } },
+  { key: 'golfer', nr: 90, motion: 'shimmer', name: { de: 'Golfer', en: 'Golfer', nl: 'Golfer' } },
+  { key: 'konfetti', nr: 55, motion: 'confetti', name: { de: 'Konfetti-Kanone', en: 'Confetti cannon', nl: 'Confettikanon' } },
+  { key: 'sportwagen', nr: 127, motion: 'drive', name: { de: 'Sportwagen', en: 'Sports car', nl: 'Sportwagen' } },
+  { key: 'drehzahl', nr: 126, motion: 'needle', name: { de: 'Drehzahlmesser', en: 'Rev counter', nl: 'Toerenteller' } },
+  { key: 'galaxie', nr: 4, motion: 'swirl', name: { de: 'Galaxie', en: 'Galaxy', nl: 'Melkweg' } },
+  { key: 'moebius', nr: 3, motion: 'glow', name: { de: 'Möbius-Schleife', en: 'Möbius strip', nl: 'Möbiusband' } },
+  { key: 'kugel', nr: 87, motion: 'turn', name: { de: 'Kugel', en: 'Sphere', nl: 'Bol' } },
+  { key: 'atom', nr: 72, motion: 'glow', name: { de: 'Atom', en: 'Atom', nl: 'Atoom' } },
+  { key: 'pyramide', nr: 2, motion: 'glow', name: { de: 'Umgedrehte Pyramide', en: 'Inverted pyramid', nl: 'Omgekeerde piramide' } },
+  { key: 'spirale', nr: 73, motion: 'turn', name: { de: 'Spirale', en: 'Spiral', nl: 'Spiraal' } },
+  { key: 'palme', nr: 83, motion: 'palm', name: { de: 'Palmeninsel', en: 'Palm island', nl: 'Palmeiland' } },
+  { key: 'bierkrug', nr: 117, motion: 'shimmer', name: { de: 'Bierkrug', en: 'Beer mug', nl: 'Bierpul' } },
+  { key: 'cocktail', nr: 84, motion: 'shimmer', name: { de: 'Cocktailglas', en: 'Cocktail glass', nl: 'Cocktailglas' } },
+  // die 92-Punkt-Variante ist ein schräges Punktraster und liest sich nicht als Regenbogen (Sichtung 05.11.): erst ab 201
+  { key: 'regenbogen', nr: 59, motion: 'rainbow', skip: ['m-1a99044c19f00ded'], name: { de: 'Regenbogen', en: 'Rainbow', nl: 'Regenboog' } },
+  { key: 'kuhufo', nr: 70, motion: 'shimmer', name: { de: 'Kuh und UFO', en: 'Cow and UFO', nl: 'Koe en ufo' } },
+  { key: 'schiff', nr: 37, motion: 'sail', name: { de: 'Schiff', en: 'Ship', nl: 'Schip' } },
+  // dreht sich in FlyingStars' Plimmiri-Entwurf starr um rund 5° je Sekunde (Recherche show-bewegung-messung/)
+  { key: 'wasserball', nr: 42, motion: 'turn', name: { de: 'Wasserball', en: 'Beach ball', nl: 'Strandbal' } },
+  { key: 'welle', nr: 137, motion: 'surf', name: { de: '3D-Welle', en: '3D wave', nl: '3D-golf' } },
+  { key: 'lebensbaum', nr: 114, motion: 'shimmer', name: { de: 'Lebensbaum', en: 'Tree of life', nl: 'Levensboom' } },
+  { key: 'mandala', nr: 71, motion: 'spin', name: { de: 'Mandala', en: 'Mandala', nl: 'Mandala' } },
+  { key: 'traktor', nr: 38, motion: 'drive', name: { de: 'Traktor', en: 'Tractor', nl: 'Tractor' } },
+  { key: 'tor', nr: 89, motion: 'gate', name: { de: 'Tor', en: 'Gate', nl: 'Poort' } },
+  { key: 'eheringe', nr: 122, motion: 'shimmer', name: { de: 'Verschlungene Eheringe', en: 'Entwined wedding rings', nl: 'Verstrengelde trouwringen' } },
+  { key: 'golfplatz', nr: 91, motion: 'shimmer', name: { de: 'Golfplatz', en: 'Golf course', nl: 'Golfbaan' } },
+  { key: 'golfcaddy', nr: 32, motion: 'drive', name: { de: 'Golfcaddy', en: 'Golf cart', nl: 'Golfkarretje' } },
+  { key: 'planierraupe', nr: 93, motion: 'shimmer', name: { de: 'Planierraupe', en: 'Bulldozer', nl: 'Bulldozer' } },
+  { key: 'berge', nr: 74, motion: 'shimmer', name: { de: 'Berglandschaft', en: 'Mountain landscape', nl: 'Berglandschap' } },
+  { key: 'fledermaeuse', nr: 131, motion: 'glide', name: { de: 'Drei Fledermäuse', en: 'Three bats', nl: 'Drie vleermuizen' } },
+  { key: 'hexenkessel', nr: 130, motion: 'turn', name: { de: 'Hexenkessel', en: "Witch's cauldron", nl: 'Heksenketel' } },
+  { key: 'sektflasche', nr: 16, motion: 'confetti', name: { de: 'Sektflasche', en: 'Champagne bottle', nl: 'Champagnefles' } },
+];
+
+const inv = JSON.parse(fs.readFileSync(path.join(SRC, 'katalog-inventar.json'), 'utf8'));
+const fail = (msg) => { console.error(`Importwächter: ${msg}`); process.exit(1); };
+const r3 = (v) => Math.round(v * 1000) / 1000;
+
+/** Zusammenhängende Gruppen unter den Punkten idx (Nachbarn näher als 1,9 × typischer Abstand der Formation). */
+function clusters(pts, idx) {
+  const nn = pts.map((p, i) => Math.min(...pts.map((q, k) => (k === i ? Infinity : Math.hypot(p[0] - q[0], p[1] - q[1])))));
+  const step = nn.slice().sort((a, b) => a - b)[Math.floor(nn.length / 2)] * 1.9, left = new Set(idx), out = [];
+  for (const i of idx) {
+    if (!left.has(i)) continue;
+    const g = [i], stack = [i]; left.delete(i);
+    while (stack.length) { const a = stack.pop(); for (const k of [...left]) if (Math.hypot(pts[a][0] - pts[k][0], pts[a][1] - pts[k][1]) < step) { left.delete(k); g.push(k); stack.push(k); } }
+    out.push(g);
+  }
+  return out;
+}
+/** Bewegliche Teile, die das Bewegungsprofil braucht (in Einheitskoordinaten). */
+function groupsFor(motion, pts) {
+  const white = (p) => Math.min(p[3], p[4], p[5]) > 150 && Math.max(p[3], p[4], p[5]) - Math.min(p[3], p[4], p[5]) < 110; // weiß oder hell getönt (Katalogbilder sind leicht bläulich)
+  if (motion === 'drive') {
+    // Räder: weiße Ringe im unteren Teil, als zusammenhängende Gruppen (Sportwagen 2, Traktor mit Anhänger 4). Mitte =
+    // Schwerpunkt der Gruppe; Gruppen unter 6 Punkten sind Zierlinien, keine Räder.
+    const ys = pts.map((p) => p[1]), low = Math.min(...ys) + (Math.max(...ys) - Math.min(...ys)) * 0.4;
+    const cand = pts.map((p, j) => j).filter((j) => white(pts[j]) && pts[j][1] < low);
+    const wheels = clusters(pts, cand).filter((g) => g.length >= 6).map((g) => ({ cx: r3(g.reduce((s, j) => s + pts[j][0], 0) / g.length), cy: r3(g.reduce((s, j) => s + pts[j][1], 0) / g.length), idx: g }))
+      .filter((w) => { const r = w.idx.map((j) => Math.hypot(pts[j][0] - w.cx, pts[j][1] - w.cy)), m = r.reduce((a, b) => a + b, 0) / r.length, sd = Math.sqrt(r.reduce((a, b) => a + (b - m) ** 2, 0) / r.length); return sd / m < 0.35; }); // nur Ringe: Abstand zur Mitte etwa gleich
+    if (wheels.length < 2) throw new Error('Fahrzeug: keine zwei Räder gefunden');
+    return { wheels };
+  }
+  if (motion === 'gate') {
+    // Tor (Katalogclip: zwei Flügel öffnen sich aus der Mitte zu den Seiten, die roten Pfosten stehen): Flügel = alles
+    // zwischen den Pfosten, Angel = innere Kante des jeweiligen Pfostens
+    const red = (p) => p[3] > 180 && p[4] < 90 && p[5] < 90;
+    const posts = pts.filter(red), inner = pts.map((p, j) => j).filter((j) => !red(pts[j]));
+    const hingeL = Math.max(...posts.filter((p) => p[0] < 0).map((p) => p[0])), hingeR = Math.min(...posts.filter((p) => p[0] > 0).map((p) => p[0]));
+    return { wings: [{ hinge: r3(hingeL), idx: inner.filter((j) => pts[j][0] < 0) }, { hinge: r3(hingeR), idx: inner.filter((j) => pts[j][0] >= 0) }] };
+  }
+  if (motion === 'needle') {
+    // Nadel: die roten Punkte; Drehpunkt ist ihr unteres Ende (zur Skalenmitte hin).
+    const idx = pts.map((p, j) => [p, j]).filter(([p]) => p[3] > 200 && p[4] < 60 && p[5] < 60).map(([, j]) => j);
+    const cx = pts.filter((p) => !(p[3] > 200 && p[4] < 60)).reduce((s, p) => s + p[0], 0) / (pts.length - idx.length);
+    const cy = pts.filter((p) => !(p[3] > 200 && p[4] < 60)).reduce((s, p) => s + p[1], 0) / (pts.length - idx.length);
+    // Drehpunkt: das Nadelende, das der Skalenmitte am nächsten liegt (die Nabe), nicht die Skalenmitte selbst
+    const hub = idx.map((j) => pts[j]).sort((a, b) => Math.hypot(a[0] - cx, a[1] - cy) - Math.hypot(b[0] - cx, b[1] - cy))[0];
+    return { needle: { idx, cx: r3(hub[0]), cy: r3(hub[1]) } };
+  }
+  if (motion === 'bob' || motion === 'clink') {
+    // Einzelne Ballons / Gläser: zusammenhängende Gruppen (Nachbarn näher als 1,8 × typischer Abstand).
+    const d = pts.map((p, i) => Math.min(...pts.map((q, k) => (k === i ? Infinity : Math.hypot(p[0] - q[0], p[1] - q[1])))));
+    const step = d.slice().sort((a, b) => a - b)[Math.floor(d.length / 2)] * 1.9;
+    const label = new Array(pts.length).fill(-1); let g = 0;
+    for (let i = 0; i < pts.length; i++) {
+      if (label[i] >= 0) continue;
+      const stack = [i]; label[i] = g;
+      while (stack.length) { const a = stack.pop(); for (let k = 0; k < pts.length; k++) if (label[k] < 0 && Math.hypot(pts[a][0] - pts[k][0], pts[a][1] - pts[k][1]) < step) { label[k] = g; stack.push(k); } }
+      g++;
+    }
+    const members = Array.from({ length: g }, (_, q) => label.map((l, j) => (l === q ? j : -1)).filter((j) => j >= 0)).filter((m) => m.length >= 4);
+    const out = members.map((m) => ({ cx: r3(m.reduce((s, j) => s + pts[j][0], 0) / m.length), base: r3(Math.min(...m.map((j) => pts[j][1]))), idx: m }));
+    if (motion === 'clink') {
+      // Gläser: links und rechts der Mitte (die Gläser berühren sich am Rand, darum nicht nach Zusammenhang)
+      const left = pts.map((p, j) => [p, j]).filter(([p]) => p[0] < 0).map(([, j]) => j), right = pts.map((_, j) => j).filter((j) => !left.includes(j));
+      return { glasses: [left, right].map((idx) => ({ idx, base: r3(Math.min(...idx.map((j) => pts[j][1]))), cx: r3(idx.reduce((s, j) => s + pts[j][0], 0) / idx.length) })) };
+    }
+    return { balloons: out };
+  }
+  if (motion === 'blossoms') {
+    // zwei Blüten links und rechts; Mitte je Blüte = Schwerpunkt ihrer Punkte
+    const sides = [pts.map((p, j) => [p, j]).filter(([p]) => p[0] < 0), pts.map((p, j) => [p, j]).filter(([p]) => p[0] >= 0)];
+    return { blossoms: sides.map((g) => ({ cx: r3(g.reduce((a, [p]) => a + p[0], 0) / g.length), cy: r3(g.reduce((a, [p]) => a + p[1], 0) / g.length), idx: g.map(([, j]) => j) })) };
+  }
+  if (motion === 'palm') {
+    // Wedel: die grünen Punkte; sie wiegen sich um den obersten Punkt des Stamms (nicht grün, höchster Punkt darunter)
+    const green = pts.map((p, j) => [p, j]).filter(([p]) => p[4] > 150 && p[3] < 120 && p[5] < 120);
+    const lowGreen = Math.min(...green.map(([p]) => p[1]));
+    const trunk = pts.filter((p) => !(p[4] > 150 && p[3] < 120 && p[5] < 120) && p[1] <= lowGreen + 0.05).sort((a, b) => b[1] - a[1])[0];
+    return { fronds: { idx: green.map(([, j]) => j), cx: r3(trunk[0]), cy: r3(trunk[1]) } };
+  }
+  return undefined;
+}
+
+fs.mkdirSync(OUT_MEDIA, { recursive: true });
+for (const f of fs.readdirSync(OUT_MEDIA)) if (f.endsWith('.json')) fs.rmSync(path.join(OUT_MEDIA, f)); // nur die aktuelle Auswahl ausliefern
+
+const motifs = {}, report = [];
+for (const c of CURATED) {
+  const variants = inv.variants.filter((v) => Number(v.nr) === c.nr);
+  if (!variants.length) fail(`Motiv Nr. ${c.nr} (${c.key}) fehlt im Inventar`);
+  const used = [];
+  for (const v of variants) {
+    if (c.skip?.includes(path.basename(v.formation ?? '', '.json'))) { report.push(`${c.key}: ${path.basename(v.formation, '.json')} bewusst nicht übernommen`); continue; }
+    if (!v.formation) { report.push(`${c.key}: Variante ${v.variante} (${v.drohnen} lt. Katalog) ohne Punktdaten, übersprungen`); continue; }
+    const file = path.join(SRC, 'quellen', `katalog-formations-${path.basename(v.formation)}`);
+    const raw = JSON.parse(fs.readFileSync(file, 'utf8'));
+    if (!Array.isArray(raw.points) || raw.points.length === 0) { report.push(`${c.key}: ${raw.id} leer, übersprungen`); continue; }
+    if (raw.exact !== raw.points.length) fail(`${raw.id}: exact ${raw.exact} ≠ ${raw.points.length} Punkte`);
+    for (const p of raw.points) {
+      if (p.length !== 6 || !p.every(Number.isFinite)) fail(`${raw.id}: ungültiger Punkt ${JSON.stringify(p)}`);
+      if (p.slice(3).some((v) => v < 0 || v > 255)) fail(`${raw.id}: Farbe außerhalb 0–255`);
+    }
+    const xs = raw.points.map((p) => p[0]), ys = raw.points.map((p) => p[1]), zs = raw.points.map((p) => p[2]);
+    const mx = (Math.max(...xs) + Math.min(...xs)) / 2, my = (Math.max(...ys) + Math.min(...ys)) / 2, mz = (Math.max(...zs) + Math.min(...zs)) / 2;
+    const half = Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)) / 2;
+    const pts = raw.points.map(([x, y, z, r, g, b]) => [r3((x - mx) / half), r3((y - my) / half), r3((z - mz) / half), r, g, b]);
+    const depth = r3((Math.max(...zs) - Math.min(...zs)) / (2 * half));
+    const out = { id: raw.id, key: c.key, points: pts, groups: groupsFor(c.motion, pts) };
+    fs.writeFileSync(path.join(OUT_MEDIA, `${raw.id}.json`), JSON.stringify(out));
+    if (Number(v.drohnen) !== pts.length) report.push(`${c.key}: ${raw.id} Katalog ${v.drohnen} Drohnen, gezählt ${pts.length} Punkte (gezählt gilt)`);
+    used.push({ id: raw.id, points: pts.length, declared: Number(v.drohnen), depth, clip: Boolean(v.clip_id), sizeM: raw.sizeM });
+  }
+  if (!used.length) fail(`${c.key}: keine nutzbare Variante`);
+  used.sort((a, b) => a.points - b.points);
+  const first = variants[0];
+  motifs[c.key] = { nr: c.nr, name: c.name, theme: first.thema, labels: String(first.anlaesse || '').split(';').map((s) => s.trim()).filter(Boolean), motion: c.motion, dimension: variants.some((v) => v.dimension === '3D') || (first.thema === 'muster-3d' && used.some((u) => u.depth >= 0.4)) ? '3D' : '2D' /* 3D-Welle: im Katalog „2D“, aber eine gewölbte Fläche mit Tiefe 0,5 */, variants: used };
+}
+
+// ---------- Runde 24b (06.11.): Formationen aus FlyingStars' Showfotos und Videos ----------
+// Marc: „nicht nur aus dem Katalog, sondern auch aus den Show-Impressionen … Screenshots aus bestimmten Videos“. Codex hat
+// 459 Bilder (Drive-Fotos, Frames der YouTube-Shows) gesichtet und die Lichtpunkte geeigneter Formationen ausgelesen
+// (Recherche show-formationen/, je Motiv Overlay und Nachzeichnung zur Kontrolle). Jeder Punkt ist eine sichtbare Drohne.
+// Nur, was sich in der Nachzeichnung klar liest; Filmklappe und Bär nicht (zu unruhig), Weihnachtsstrumpf vorerst nicht.
+const SHOWS = [
+  { key: 'torte', slug: 'hochzeitstorte', motion: 'shimmer' },
+  { key: 'schleife', slug: 'schleifenornament', motion: 'shimmer' },
+  { key: 'peace', slug: 'peace', motion: 'spin' },
+  { key: 'batterie', slug: 'batterie', motion: 'charge' },
+  { key: 'hubschrauber', slug: 'hubschrauber', motion: 'sail' },
+  { key: 'flugzeug', slug: 'flugzeug', motion: 'sail' },
+  { key: 'smiley', slug: 'smiley', motion: 'breathe' },
+  { key: 'elefant', slug: 'elefant', motion: 'shimmer' },
+  { key: 'hasen', slug: 'hasen', motion: 'shimmer' },
+  // der Ball links vom Hund ist im Foto rot; die vier blauen Punkte an den Pfoten sind Kamerarauschen
+  { key: 'hund', slug: 'hund', motion: 'shimmer', paint: (x, y) => (x < -0.8 && y < -0.2 ? [235, 40, 45] : WARM_WHITE) },
+  { key: 'strandliege', slug: 'strandliege', motion: 'shimmer' },
+  { key: 'glocke', slug: 'glocke', motion: 'bell' },
+  { key: 'schneemann', slug: 'schneemann', motion: 'shimmer' },
+  { key: 'lebkuchen', slug: 'lebkuchenmann', motion: 'shimmer' },
+  // rot-weiße Streifen schräg über die Stange (im Foto rosa überstrahlt, die Drohnen fliegen rot und weiß)
+  { key: 'zuckerstange', slug: 'zuckerstange', motion: 'twinkle', paint: (x, y) => (Math.floor((x + y) * 5) % 2 ? [235, 40, 45] : WARM_WHITE) },
+];
+// Farben: Ein Foto färbt weiße Drohnen oft violett oder rosa (Kamera, Dunst). Punkte nahe am mittleren Farbton gelten als
+// weiß und nehmen wie die eigenen Motive die Paketfarbe an; deutlich andere Punkte (der rote Ball des Hundes, die Flamme
+// einer Kerze) behalten ihre Farbe.
+const WARM_WHITE = [246, 241, 232];
+function photoColours(pts) {
+  const med = [3, 4, 5].map((c) => pts.map((p) => p[c]).sort((a, b) => a - b)[Math.floor(pts.length / 2)]);
+  const vivid = (p) => Math.hypot(p[3] - med[0], p[4] - med[1], p[5] - med[2]) > 90 && Math.max(p[3], p[4], p[5]) - Math.min(p[3], p[4], p[5]) > 110; // blasse Ausreißer sind Kamerarauschen
+  const keep = (p) => vivid(p) && pts.filter((q) => vivid(q) && Math.hypot(q[3] - p[3], q[4] - p[4], q[5] - p[5]) < 80).length >= 4; // nur Farbgruppen, keine Einzelpunkte
+  return pts.map((p) => (keep(p) ? p : [p[0], p[1], p[2], ...WARM_WHITE]));
+}
+const showDir = path.join(SRC, 'show-formationen', 'points');
+for (const c of SHOWS) {
+  const raw = JSON.parse(fs.readFileSync(path.join(showDir, `${c.slug}.json`), 'utf8'));
+  if (!Array.isArray(raw.points) || raw.points.length < 40) fail(`${c.slug}: zu wenige Punkte`);
+  for (const p of raw.points) if (p.length !== 6 || !p.every(Number.isFinite)) fail(`${c.slug}: ungültiger Punkt`);
+  const xs = raw.points.map((p) => p[0]), ys = raw.points.map((p) => p[1]);
+  const mx = (Math.max(...xs) + Math.min(...xs)) / 2, my = (Math.max(...ys) + Math.min(...ys)) / 2, half = Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)) / 2;
+  const base = photoColours(raw.points.map(([x, y, , r, g, b]) => [r3((x - mx) / half), r3((y - my) / half), 0, r, g, b]));
+  const pts = c.paint ? base.map(([x, y, z]) => [x, y, z, ...c.paint(x, y)]) : base;
+  const id = `show-${c.slug}`;
+  fs.writeFileSync(path.join(OUT_MEDIA, `${id}.json`), JSON.stringify({ id, key: c.key, points: pts, groups: groupsFor(c.motion, pts) }));
+  motifs[c.key] = { nr: null, source: 'show', photo: path.basename(raw.source), name: { de: raw.motif_de, en: raw.motif_en, nl: raw.motif_nl }, theme: 'show', labels: raw.occasions, motion: c.motion, dimension: '2D', variants: [{ id, points: pts.length, declared: null, depth: 0, clip: false }] };
+}
+
+// ---------- Runde 25 (07.11.): Katalogmotive ohne Punktdatei, aus dem Vorschaubild des Katalogs gelesen ----------
+// Rund die Hälfte des Katalogs hat nur ein Bild (jede Drohne ein Punkt). Codex hat 65 Bilder gelesen (Recherche
+// katalog-bildpunkte/, Overlay und Nachzeichnung je Motiv); übernommen ist, was sich in der Nachzeichnung klar liest und
+// nicht doppelt vorkommt. Farben wie im Katalogbild. `into` hängt die Formation als weitere Variante an ein Motiv an.
+const BILD = [
+  { key: 'diskokugel', file: '12-1-die-diskokugel', motion: 'twinkle' },
+  { key: 'blume', file: '20-1-blume-var-2', motion: 'spin', de: 'Blume', en: 'Flower', nl: 'Bloem' },
+  { key: 'blume2', file: '19-1-blume-var-1', motion: 'glide', de: 'Blume am Stiel', en: 'Flower on a stem', nl: 'Bloem aan een steel' },
+  { key: 'biene', file: '22-1-die-biene', motion: 'glide' },
+  { key: 'marienkaefer', file: '25-1-der-marienkafer', motion: 'shimmer' },
+  { key: 'roboter', file: '27-1-der-kleine-roboter', motion: 'shimmer', de: 'Kleiner Roboter', en: 'Little robot', nl: 'Kleine robot' },
+  { key: 'schluessel', file: '28-1-der-schraubenschlussel', motion: 'shimmer' },
+  { key: 'zahnraeder', file: '29-1-drehende-zahnrader', motion: 'spin', de: 'Zahnräder', en: 'Gears', nl: 'Tandwielen' },
+  { key: 'lkw', file: '30-1-der-ausladende-lkw', motion: 'drive', de: 'Lastwagen', en: 'Truck', nl: 'Vrachtwagen' },
+  { key: 'bagger', file: '31-1-der-bagger', motion: 'shimmer' },
+  { key: 'feuerwehr', file: '36-2-das-feuerwehrauto', motion: 'drive' },
+  { key: 'foerderturm', file: '39-1-der-forderturm', motion: 'shimmer' },
+  { key: 'basketball', file: '40-1-der-basketball', motion: 'spin' },
+  { key: 'amor', file: '46-1-amor', motion: 'shimmer' },
+  { key: 'jubilaeum30', file: '48-1-jubilaum', motion: 'twinkle', de: '30 Jahre', en: '30 years', nl: '30 jaar' },
+  { key: 'kind', file: '49-1-das-kind', motion: 'shimmer', de: 'Kind mit Ballons', en: 'Child with balloons', nl: 'Kind met ballonnen' },
+  { key: 'sparschwein', file: '50-1-das-sparschwein', motion: 'shimmer' },
+  { key: 'heldin', file: '51-1-die-superheldin', motion: 'shimmer' },
+  { key: 'geburtstag', file: '52-1-die-torte', motion: 'shimmer', de: 'Geburtstagstorte', en: 'Birthday cake', nl: 'Verjaardagstaart' },
+  { key: 'robbe', file: '60-1-die-robbe', motion: 'shimmer' },
+  { key: 'anker', file: '61-1-der-anker', motion: 'shimmer' },
+  { key: 'autoscooter', file: '62-1-der-autoscooter', motion: 'shimmer' },
+  { key: 'leuchtturm', file: '64-1-der-leuchtturm', motion: 'shimmer' },
+  { key: 'mikrofon', file: '65-1-das-mikrofon', motion: 'shimmer' },
+  { key: 'lotusblume', file: '67-1-die-lotusblume', motion: 'shimmer' },
+  { key: 'sonne', file: '5-1-die-sich-drehende-sonne', motion: 'spin', de: 'Sonne', en: 'Sun', nl: 'Zon' },
+  { key: 'konfetti', file: '55-1-konfetti', into: true },
+];
+const bildDir = path.join(SRC, 'katalog-bildpunkte', 'points');
+const article = (s) => (s ?? '').replace(/^(Der|Die|Das) /, '');
+for (const c of BILD) {
+  const raw = JSON.parse(fs.readFileSync(path.join(bildDir, `${c.file}.json`), 'utf8'));
+  if (!Array.isArray(raw.points) || raw.points.length < 40) fail(`${c.file}: zu wenige Punkte`);
+  for (const p of raw.points) if (p.length !== 6 || !p.every(Number.isFinite)) fail(`${c.file}: ungültiger Punkt`);
+  const xs = raw.points.map((p) => p[0]), ys = raw.points.map((p) => p[1]);
+  const mx = (Math.max(...xs) + Math.min(...xs)) / 2, my = (Math.max(...ys) + Math.min(...ys)) / 2, half = Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)) / 2;
+  const pts = raw.points.map(([x, y, , r, g, b]) => [r3((x - mx) / half), r3((y - my) / half), 0, r, g, b]);
+  const id = `bild-${c.file}`;
+  let motion = c.into ? motifs[c.key].motion : c.motion, groups;
+  try { groups = groupsFor(motion, pts); } catch { motion = 'shimmer'; groups = undefined; report.push(`${c.key}: Teile im Bild nicht gefunden, nur Lichtlauf`); }
+  fs.writeFileSync(path.join(OUT_MEDIA, `${id}.json`), JSON.stringify({ id, key: c.key, points: pts, groups }));
+  const variant = { id, points: pts.length, declared: Number(raw.declared) || null, depth: 0, clip: false, fromImage: raw.source };
+  if (c.into) { motifs[c.key].variants.push(variant); motifs[c.key].variants.sort((a, b) => a.points - b.points); continue; }
+  motifs[c.key] = { nr: Number(raw.nr), source: 'katalog-bild', name: { de: c.de ?? article(raw.motif_de ?? raw.motiv), en: c.en ?? raw.motif_en, nl: c.nl ?? raw.motif_nl }, theme: 'bild', labels: String(raw.anlaesse || '').split(';').map((s) => s.trim()).filter(Boolean), motion, dimension: '2D', variants: [variant] };
+}
+
+// Texte der Katalogmotive je Sprache. Bewusst hier und nicht in src/i18n/ui.json: Jede Änderung dort macht die
+// Übersetzungsnachweise aller Inhaltsdateien ungültig (site/ui ist eine Abhängigkeit des Übersetzungsvertrags).
+const TEXTS = {
+  caption: { de: '{name}, eine Formation aus dem FlyingStars-Katalog', en: '{name}, a formation from the FlyingStars catalogue', nl: '{name}, een formatie uit de FlyingStars-catalogus' },
+  captionShow: { de: '{name}, eine Formation aus einer FlyingStars-Show', en: '{name}, a formation from a FlyingStars show', nl: '{name}, een formatie uit een FlyingStars-show' },
+  body: { de: '{name} als Körper in 3D', en: '{name} as a 3D body', nl: '{name} als 3D-lichaam' },
+  story: { de: '{name}: Licht zeichnet die Form, dann wird sie lebendig', en: '{name}: light draws the shape, then it comes alive', nl: '{name}: licht tekent de vorm, dan komt hij tot leven' },
+  lightDraws: { de: 'Licht zeichnet: {name}', en: 'Light draws: {name}', nl: 'Licht tekent: {name}' },
+  comesAlive: { de: '{name} wird lebendig', en: '{name} comes alive', nl: '{name} komt tot leven' },
+  becomesBody: { de: '{name} wird zum Körper', en: '{name} becomes a body', nl: '{name} wordt een lichaam' },
+};
+const meta = {
+  texts: TEXTS,
+  source: { title: 'FlyingStars-Motivkatalog', url: 'https://flyingstars-katalog-web.vercel.app/', snapshot: '2026-11-05', note: 'Eingebetteter Katalogstand, Punkte gezählt; Auswahl ist ein Vorschlag an FlyingStars, keine Flugfreigabe.' },
+  motifs,
+};
+fs.writeFileSync(OUT_META, JSON.stringify(meta, null, 1) + '\n');
+console.log(`${Object.keys(motifs).length} Motive, ${Object.values(motifs).reduce((s, m) => s + m.variants.length, 0)} Varianten übernommen.`);
+for (const line of report) console.log(`- ${line}`);

@@ -58,27 +58,38 @@ export function transitions(occasion, k, pkg = "SPARK") {
  * Returns the indices of all cloud beats.
  */
 export function planClouds(beats) {
-  const L = beats.length, fixed = [], cand = [];
+  const L = beats.length, fixed = new Set(), cand = new Set();
   // vierzehnte Fassung: das erste Bild wird beim Rücksprung immer durch die Wolke erreicht (show-field.js)
   if (L > 1) beats[0].cloud ||= true;
   beats.forEach((b, k) => {
-    if (b.cloud) fixed.push(k);
-    else if (L > 1) { const prev = beats[(k - 1 + L) % L]; if (prev.segment !== b.segment && !prev.interlude) cand.push(k); }
+    if (b.cloud) fixed.add(k);
+    else if (L > 1) { const prev = beats[(k - 1 + L) % L]; if (prev.segment !== b.segment && !prev.interlude) cand.add(k); }
   });
-  const costOf = (set) => {
-    if (!set.length) return Infinity;
-    let cost = 0;
-    set.forEach((k, i) => { const g = (i + 1 < set.length ? set[i + 1] : set[0] + L) - k; cost += g > 5 ? 100 * (g - 5) : g < 3 ? 10 * (3 - g) : g === 5 ? 1 : 0; });
-    return cost;
-  };
-  let best = null, bestCost = Infinity;
-  for (let mask = 0; mask < 1 << cand.length; mask++) {
-    const set = [...fixed, ...cand.filter((_, i) => (mask >> i) & 1)].sort((a, b) => a - b), cost = costOf(set);
-    if (!set.length) continue;
-    // on a tie: fewer clouds, then the first cloud of the round as early as possible (the first view starts at 0)
-    const first = (q) => q.find((k) => k > 0) ?? L;
-    if (cost < bestCost || (cost === bestCost && (set.length < best.length || (set.length === best.length && first(set) < first(best))))) { best = set; bestCost = cost; }
+  if (!fixed.size) return [];
+  // Kosten einer Lücke zwischen zwei Wolken (Bilder bis zur nächsten): 3–4 ideal, 5 knapp, darüber teuer, darunter etwas
+  const gap = (g) => (g > 5 ? 100 * (g - 5) : g < 3 ? 10 * (3 - g) : g === 5 ? 1 : 0);
+  // Runde 24: dynamische Programmierung statt aller Teilmengen. Mit den Katalogmotiven hat ein Anlass bis zu 20 Motive;
+  // 2^20 Teilmengen kosteten 190 ms je Aufbau (auf dem Handy ein Vielfaches). Bild 0 ist immer eine Wolke, also beginnt
+  // jede Auswahl dort; best[k] = günstigster Weg von 0 bis zur Wolke k, verglichen nach Kosten, dann weniger Wolken, dann
+  // die erste Wolke nach 0 so früh wie möglich (dieselben Gleichstandsregeln wie zuvor). Zwischen zwei gewählten Wolken
+  // darf keine feste liegen.
+  const better = (a, b) => !b || a.cost < b.cost || (a.cost === b.cost && (a.count < b.count || (a.count === b.count && a.first < b.first)));
+  const best = new Array(L).fill(null);
+  best[0] = { cost: 0, count: 1, first: L, prev: -1 };
+  for (let k = 1; k < L; k++) {
+    if (!fixed.has(k) && !cand.has(k)) continue;
+    for (let j = k - 1; j >= 0; j--) {
+      if (best[j]) { const s = { cost: best[j].cost + gap(k - j), count: best[j].count + 1, first: j === 0 ? k : best[j].first, prev: j }; if (better(s, best[k])) best[k] = s; }
+      if (fixed.has(j)) break; // eine feste Wolke dazwischen darf nicht übersprungen werden
+    }
   }
-  for (const k of best ?? []) beats[k].cloud ||= true;
-  return best ?? [];
+  let end = null, at = -1;
+  for (let j = L - 1; j >= 0; j--) {
+    if (best[j]) { const s = { cost: best[j].cost + gap(L - j), count: best[j].count, first: best[j].first }; if (better(s, end)) { end = s; at = j; } }
+    if (fixed.has(j)) break; // nach der letzten festen Wolke endet die Runde
+  }
+  const set = [];
+  for (let k = at; k >= 0; k = best[k].prev) set.unshift(k);
+  for (const k of set) beats[k].cloud ||= true;
+  return set;
 }

@@ -15,7 +15,8 @@ import { freshMotifs, canPlay, possibleFrom } from '../src/scripts/show-tempo.js
 const counts = []; for (let n = DRONES_MIN; n <= DRONES_MAX; n += DRONE_STEP) counts.push(n);
 const playing = (o, n) => o.motifs.filter((m) => playable(m, packageForDrones(n), n));
 
-test('Leiter: aus den Drohnenbereichen abgeleitet, zwei Sprossen je Paket, beide im Bereich', () => {
+test('Leiter: feste Inhaltsschwellen bleiben unabhängig vom Reglermaximum im Paketbereich', () => {
+  assert.deepEqual(LADDER, { SPARK: [100, 150], HORIZON: [200, 250], ODYSSEY: [300, 450] });
   for (const pkg of PACKAGE_ORDER) {
     const { min, max } = DRONE_RANGES[pkg], [a, b] = LADDER[pkg];
     assert.equal(a, min, `${pkg}: erste Sprosse = Einstieg`);
@@ -23,10 +24,11 @@ test('Leiter: aus den Drohnenbereichen abgeleitet, zwei Sprossen je Paket, beide
   }
 });
 
-test('Am Einstieg jedes Pakets spielen je Anlass mindestens drei Motive', () => {
+// Runde 24 (Marc, 06.11.2026: „pro Zielgruppe mindestens 5 Motive“): vorher drei
+test('Am Einstieg jedes Pakets spielen je Anlass mindestens fünf Motive', () => {
   for (const o of OCCASIONS) for (const pkg of PACKAGE_ORDER) {
     const n = DRONE_RANGES[pkg].min, list = playing(o, n);
-    assert.ok(list.length >= 3, `${o.id} ${pkg} ${n}: ${list.map((m) => m.id).join(', ')}`);
+    assert.ok(list.length >= 5, `${o.id} ${pkg} ${n}: ${list.map((m) => m.id).join(', ')}`);
   }
 });
 

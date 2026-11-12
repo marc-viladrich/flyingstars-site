@@ -19,7 +19,7 @@ import { flute2d, flute3d, bubbles, trophy2d, trophy3d, bulb2d, bulb3d, bulbGlas
 import { solitaire, rocketSolid, globe, launchPad, moonHorizon, flagStar, starField } from "./show-shapes.js";
 import { share, shield, shield3d, crestStar3d, CREST_NUMBER, inCrestFlag, crown, rocket, rocket3d, flame, maskPair, maskPair3d, mask3d, MASKS, curtain, clockRim, clockDial, hand, sparkleShell, tower, tower3d, waves, TOWER_SPHERE, gate3d, arrowPaths, inside, bottle3d, cork } from "./show-shapes.js";
 
-let figure = null, extra = null;
+let figure = null, extra = null, catalogModule = null;
 const loadExtra = () => (extra ||= import("./scenes/index.js").then((m) => m.BUILDERS).catch((e) => { extra = null; throw e; }));
 const loadHearts = loadHeartData;
 const loadFigure = () => (figure ||= fetch("/media/projekte/bokkenrijders/formation.json").then((r) => { if (!r.ok) throw new Error(`Formation HTTP ${r.status}`); return r.json(); }).catch((e) => { figure = null; throw e; }));
@@ -55,6 +55,14 @@ function logo3d(n) { const layers = [...mark(0.22), ...mark(-0.22)]; return [...
 async function devil(n) {
   const data = await loadFigure(), mx = Math.max(...data.dots.map((d) => Math.max(Math.abs(d[0]), Math.abs(d[1]))));
   return evenSubset(data.dots.map(([x, y, r, g, b, , z]) => [x / mx, y / mx, (z ?? 0) / mx, ...(r + g + b === 0 ? [70, 70, 70] : [r, g, b])]), n);
+}
+/** Fixed customer formation: keep its source resolution; unused drones wait offstage, never duplicate dots. */
+async function devilBeat(n, caption, hold) {
+  const pts = await devil(n);
+  return { pts, offstageDrones: n - pts.length, caption, ...(hold ? { hold } : {}), live: (b, j, t, o) => {
+    if (b[3] > 200 && b[4] > 100) o[3] = 0.8 + 0.5 * Math.abs(Math.sin(t * 1.5));
+    sway(o, t, 0.35);
+  } };
 }
 const star3d = (n, s = 0.5, dx = 0, dy = 0) => place(paint(extrude(star(n), n, 0.35), GOLD), s, dx, dy);
 /** Columns of drones (rain, rising rockets): positions stay, the light does the falling or rising. */
@@ -131,7 +139,9 @@ const nearWhite = (r, g, b) => Math.min(r, g, b) > 190 && Math.max(r, g, b) - Ma
 export async function buildSequence(motifs, pkg, n, tint, occasion = "") {
   // a motif may skip a package or need more drones: minDrones an der Fassung des Pakets (Freischalt-Leiter, sechzehnte
   // Fassung, content/show-configurator.js)
-  const beats = [], shown = motifs.map((m, segment) => [m, segment]).filter(([m]) => m.tiers[pkg] && (m.tiers[pkg].minDrones ?? 0) <= n);
+  const playing = motifs.map((m, segment) => [m, segment]).filter(([m]) => m.tiers[pkg] && (m.tiers[pkg].minDrones ?? 0) <= n);
+  // Runde 25b: ab HORIZON laufen die 3D- und eigenen Motive zuerst, die flachen Katalog- und Showformationen füllen danach auf
+  const beats = [], shown = pkg === "SPARK" ? playing : [...playing.filter(([m]) => !m.flat), ...playing.filter(([m]) => m.flat)];
   const plan = transitions(occasion, shown.length, pkg);
   const tinted = (pts) => (tint ? pts.map((p) => (nearWhite(p[3], p[4], p[5]) ? [p[0], p[1], p[2], ...mix(WARM, tint, 0.7)] : p)) : pts);
   // a transition belongs to the next motif, so a package switch never lands on a figure
@@ -154,11 +164,11 @@ export async function buildSequence(motifs, pkg, n, tint, occasion = "") {
   planClouds(beats);
   return { beats, loopTo: 0 };
 }
-/** Bewegt live() die Drohnen (nicht nur ihr Licht)? Stichproben an einigen Punkten und Zeitpunkten. */
+/** Prüfe jeden Punkt: bei großen Reserven überspringt eine Stichprobe sonst kleine bewegte Teile wie Räder. */
 function moves(b) {
   if (!b.live) return false;
   const n = b.pts.length, o = [0, 0, 0, 1];
-  for (let j = 0; j < n; j += Math.max(1, Math.floor(n / 24))) {
+  for (let j = 0; j < n; j++) {
     const p = b.pts[j];
     for (const t of [0, 0.35, 0.9, 1.7, 2.6, 4.1, 6.3]) {
       o[0] = p[0]; o[1] = p[1]; o[2] = p[2] || 0; o[3] = 1; b.live(p, j, t, o);
@@ -202,6 +212,8 @@ async function buildBeats(version, n) {
     if (first) beats[0] = { ...beats[0], caption: first }; // ein Motiv, das mitten in einer Geschichte beginnt, bekommt einen eigenen ersten Satz
     return { ...all, beats };
   };
+  // Runde 24: Motive aus dem FlyingStars-Katalog (scenes/catalog.js, erst bei Bedarf geladen); Bauname catalog:<Motiv>:<Paket>:<Anlass>
+  if (version.build.startsWith("catalog:")) { const [, key, tier] = version.build.split(":"); const { catalogScene } = await (catalogModule ||= import("./scenes/catalog.js")); return catalogScene(key, tier, n, caption); }
   switch (version.build) {
     case "diveStory": if (!version.whole) return sliceExtra("diveStory", 0, 4); break;
     case "medalStory": return sliceExtra("diveStory", 4, 5, "Die Ringe im Wasser werden zu eurer Zahl");
@@ -212,7 +224,7 @@ async function buildBeats(version, n) {
     case "rocketLaunch": return slice("rocketStory", 0, 3);
     case "moonStory": return slice("rocketStory", 2, 4);
     case "maskStory": if (!version.whole) return slice("maskStoryAll", 0, 3); break;
-    case "devilStory": return { beats: [{ pts: await devil(n), caption: message('showScenes.theDevilFromOurBokkenrijdersShow'), hold: 4, live: (b, j, t, o) => { if (b[3] > 200 && b[4] > 100) o[3] = 0.8 + 0.5 * Math.abs(Math.sin(t * 1.5)); sway(o, t, 0.35); } }] };
+    case "devilStory": return { beats: [await devilBeat(n, message('showScenes.theDevilFromOurBokkenrijdersShow'), 4)] };
     case "clockStory": if (!version.whole) return slice("clockStoryAll", 0, 4); break;
     case "champagneStory": { const all = await buildBeats({ ...version, build: "clockStoryAll" }, n); const pop = all.beats[all.beats.length - 1]; return { beats: [{ ...pop, caption: message('showScenes.aChampagneBottleTheCorkPops'), hold: 4.5 }] }; }
   }
@@ -496,7 +508,7 @@ async function buildBeats(version, n) {
         act([part("comedy", paint(mask3d(n, false), GOLD))], { caption: message('showScenes.comedy'), hold: 1.2, live: (b, j, t, o) => sway(o, t, 0.3) }),
         act(pair(...apart), { caption: message('showScenes.tragedyJoinsIn'), hold: 1, live: (b, j, t, o) => sway(o, t, 0.3) }),
         act(pair(trag, com), { caption: message('showScenes.theyFormTheTheatreSymbol'), hold: 1.6, live: (b, j, t, o) => { sway(o, t, 0.3); o[3] = glint(b[0], t, 3.4, 0.35); } }),
-        { pts: await devil(n), caption: message('showScenes.andBecomeTheDevilFromOurBokkenrijdersShow'), live: (b, j, t, o) => { if (b[3] > 200 && b[4] > 100) o[3] = 0.8 + 0.5 * Math.abs(Math.sin(t * 1.5)); sway(o, t, 0.35); } },
+        await devilBeat(n, message('showScenes.andBecomeTheDevilFromOurBokkenrijdersShow')),
       ] };
     }
     // ---- Kultur · Vorhang ----

@@ -795,6 +795,12 @@ td.us { color: var(--text); background: var(--fill-soft); }
 .motion-btn:focus-visible { outline:0.1875rem solid var(--cyan);outline-offset:0.1875rem; }
 /* Handy: Logo links, alle Knöpfe rechts; die Sprachwahl führt die Gruppe an (Runde 20), im Menükopf genauso */
 @media (--nav-collapsed) { .nav { gap:var(--space-2-5); } .motion-btn { margin-left:auto;width:2.75rem;height:2.75rem; } .language-switch { margin-left:auto; } .language-switch ~ .motion-btn, .motion-btn ~ .menu-btn { margin-left:0; } }
+/* Runde 25: Kopfzeile weicht auf schmalen Bildschirmen beim Runterscrollen aus (nav-away, site.ts); klebende Reiter rücken nach */
+@media (--nav-collapsed) {
+  .nav { transition: background var(--dur-standard), border-color var(--dur-standard), padding var(--dur-standard), transform var(--dur-standard) var(--ease-default); }
+  :root.nav-away .nav { transform: translateY(-100%); }
+  :root.nav-away .mtabs { top: 0.5rem; }
+}
 .motion-paused * { animation-play-state:paused !important; }
 /* Keyboard focus must remain visible over light gradient buttons. */
 .btn:focus-visible { outline:0.1875rem solid var(--cyan);outline-offset:0.25rem; }

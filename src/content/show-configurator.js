@@ -12,6 +12,7 @@ import { createTranslator } from '../i18n/ui.mjs';
 
 import {PACKAGE_NAMES,packageLabel} from './package-identity.mjs';
 import { DRONE_RANGES, DRONE_STEP } from './show-packages.ts';
+import catalog from './catalog-motifs.json' with { type: 'json' };
 
 export const PACKAGE_ORDER = PACKAGE_NAMES;
 // The browser receives only its page dictionary; eager exports must use that same locale.
@@ -30,8 +31,8 @@ export const STEPS = stepsFor(defaultLocale);
 /**
  * Sechzehnte Fassung (Marc, 31.10.2026: „Sehe ich das richtig, dass bei den meisten Anlässen keine neuen Motive
  * freigeschaltet werden, wenn wir mehr Drohnen auswählen? … mit mehr Drohnen neue, komplexere Motive freischalten“):
- * eine Freischalt-Leiter in jedem Paket. Jedes Paket hat zwei Sprossen, abgeleitet aus seinem Drohnenbereich
- * (DRONE_RANGES in show-packages.ts): der Einstieg und die Mitte des Bereichs, auf 50 gerundet. Mit den heutigen Bereichen
+ * eine Freischalt-Leiter in jedem Paket. Der Einstieg folgt dem Drohnenbereich; die zweite Sprosse ist eine
+ * feste inhaltliche Freischaltschwelle, unabhängig vom Vorschau-Maximum. Die Sprossen bleiben
  * SPARK 100/150, HORIZON 200/250, ODYSSEY 300/450.
  * Jedes Motiv nennt mit `from` die Sprosse, ab der es spielt ([Paket, 0 | 1]). Daraus bekommt jede Fassung ihr
  * `minDrones`: im ersten Paket die Zahl der Sprosse, in jedem größeren Paket dessen Einstieg. So gilt über den ganzen
@@ -40,8 +41,8 @@ export const STEPS = stepsFor(defaultLocale);
  * mindestens eine Freischaltung innerhalb des Bereichs, die komplexeren Motive (mehr Teile, 3D, Geschichte) später.
  * PLATZHALTER: Die Zuordnung ist nicht mit FlyingStars abgestimmt (docs/show-motive-inventar.md, „Freischalt-Leiter“).
  */
-const roundTo = (v, step) => Math.round(v / step) * step;
-export const LADDER = Object.fromEntries(Object.entries(DRONE_RANGES).map(([pkg, { min, max }]) => [pkg, [min, Math.max(min + DRONE_STEP, min + roundTo((max - min) / 2, 50))]]));
+const SECOND_UNLOCK = { SPARK: 150, HORIZON: 250, ODYSSEY: 450 };
+export const LADDER = Object.fromEntries(Object.entries(DRONE_RANGES).map(([pkg, { min }]) => [pkg, [min, SECOND_UNLOCK[pkg]]]));
 /** Sprossen als Kurzform für die Motivliste. */
 /** @type {[string, number]} */ const S0 = ['SPARK', 0];
 /** @type {[string, number]} */ const S1 = ['SPARK', 1];
@@ -64,6 +65,40 @@ const motif = (id, label, spark, horizon, odyssey, from = S0) => {
   return { id, label, tiers, minDrones: LADDER[from[0]][from[1]] };
 };
 const v = (build, caption) => ({ build, caption });
+
+/**
+ * Runde 24 (Marc, 05.11.2026: „die meisten Shows … in der 100- bis 150-Drohnen-Range … sehr viel Variation auch schon in
+ * der Spark-Range“): Motive aus dem FlyingStars-Katalog (catalog-motifs.json, scripts/import-catalog.mjs). Die Mindestzahl
+ * kommt aus den gezählten Punkten der kleinsten Variante (auf Zehner aufgerundet), nicht aus der Katalogbeschriftung und
+ * nicht aus der Freischalt-Leiter: Ein Motiv mit 72 Punkten spielt ab 100, eins mit 113 ab 120, eins mit 153 ab 160.
+ * Jedes Paket ab dem ersten passenden hat eine eigene Fassung (scenes/catalog.js): SPARK die Formation, HORIZON als
+ * Körper, ODYSSEY Licht zeichnet die Form, dann wird sie zum Körper.
+ */
+const catalogMin = (key) => { const m = catalog.motifs[key]; if (!m) throw new Error(`Katalogmotiv ${key} fehlt`); return Math.ceil(m.variants[0].points / DRONE_STEP) * DRONE_STEP; };
+const catalogName = (key, locale) => catalog.motifs[key].name[locale] ?? catalog.motifs[key].name.de;
+/** Eine Fassung aus dem Katalog; der Bauname trägt Anlass und Paket, weil jede Fassung ihren eigenen Namen braucht. */
+const catalogText = (key, locale, name) => (catalog.texts[key][locale] ?? catalog.texts[key].de).replace('{name}', name);
+/** Bildunterschrift: flache Formationen bleiben in HORIZON eine Formation (kein „Körper in 3D“), ODYSSEY zeichnet sie mit Licht. */
+const captionKey = (key, pkg, flat) => (pkg === 'ODYSSEY' ? 'story' : pkg === 'HORIZON' && !flat ? 'body' : catalog.motifs[key].source === 'show' ? 'captionShow' : 'caption');
+const cv = (key, pkg, occasion, t, locale, flat = false) => v(`catalog:${key}:${pkg}:${occasion}`, catalogText(captionKey(key, pkg, flat), locale, catalogName(key, locale)));
+/** Ein Motiv nur aus dem Katalog, in jedem Paket ab der Drohnenzahl seiner kleinsten Variante. */
+function catalogMotif(key, occasion, t, locale, id = key) {
+  // Runde 25b (Marc, 08.11.2026: HORIZON „mit einigen aus SPARK auffüllen, solange klar bleibt, dass viele Motive bei
+  // HORIZON komplexer und 3D sind“): flache Formationen spielen wieder in jedem Paket, aber ohne zweite Ebene und in
+  // HORIZON/ODYSSEY hinter den 3D-Motiven (buildSequence in show-scenes.js)
+  const min = catalogMin(key), flat = catalog.motifs[key].dimension !== '3D';
+  const first = PACKAGE_ORDER.findIndex((p) => min <= DRONE_RANGES[p].max);
+  if (first < 0) throw new Error(`Katalogmotiv ${key} passt in kein Paket (${min} Drohnen)`);
+  /** @type {Partial<Record<'SPARK' | 'HORIZON' | 'ODYSSEY', Version>>} */
+  const tiers = {};
+  PACKAGE_ORDER.forEach((pkg, i) => { if (i >= first) tiers[pkg] = { ...cv(key, pkg, occasion, t, locale, flat), minDrones: i === first ? Math.max(min, DRONE_RANGES[pkg].min) : DRONE_RANGES[pkg].min }; });
+  return { id, label: catalogName(key, locale), tiers, minDrones: tiers[PACKAGE_ORDER[first]].minDrones, catalog: key, flat };
+}
+/** Ein eigenes Motiv bekommt die Katalogformation als SPARK-Fassung; es spielt ab deren Mindestzahl. */
+function withCatalogSpark(m, key, occasion, t, locale) {
+  const min = Math.max(catalogMin(key), DRONE_RANGES.SPARK.min);
+  return { ...m, tiers: { ...m.tiers, SPARK: { ...cv(key, 'SPARK', occasion, t, locale), minDrones: min } }, minDrones: min, catalog: key };
+}
 
 /** Sprossen der Leiter in Reihenfolge (alle Pakete), z. B. [100, 150, 200, 250, 300, 450]. */
 export const UNLOCK = Object.values(LADDER).flat().sort((a, b) => a - b);
@@ -89,20 +124,52 @@ export function unlockAt(m, drones) {
 function occasionsFor(locale) { const t = createTranslator(locale);
 return  [
   // Reihenfolge der Motive = Ablauf der Show. Die letzte Angabe ist die Sprosse der Freischalt-Leiter (ohne Angabe: SPARK-Einstieg).
+  // Runde 24: Katalogmotive (catalogMotif) spielen ab ihrer gezählten Punktzahl; withCatalogSpark ersetzt nur die SPARK-Fassung.
   { id: 'launch', label: 'Launch', motifs: [
     motif('rakete', t('showConfigurator.rocket'), v('rocket', t('showConfigurator.rocketWithFlame')), v('rocket3d', t('showConfigurator.theRocketAsABodyFloatsAndRotates')), v('rocketLaunch', t('showConfigurator.launchFromThePadTheRocketEntersOrbitAroundA'))),
     motif('mond', t('showConfigurator.moonLanding'), null, null, v('moonStory', t('showConfigurator.theRocketLeavesOrbitAndLandsOnTheMoonA')), O1),
+    catalogMotif('galaxie', 'launch', t, locale),
+    catalogMotif('batterie', 'launch', t, locale),
     motif('logo', 'Logo', v('logo', t('showConfigurator.exampleLogoWithLightSkating')), v('logo3d', t('showConfigurator.exampleLogoIn3dWithLightGlimmer')), v('logoStory', t('showConfigurator.yourLogoBecomesA3dRingOfLight'))),
+    catalogMotif('atom', 'launch', t, locale),
+    catalogMotif('roboter', 'launch', t, locale),
+    catalogMotif('zahnraeder', 'launch', t, locale),
     motif('idee', t('showConfigurator.lightBulb'), v('bulb2d', t('showConfigurator.aLightBulbTheIdea')), v('bulb3d', t('showConfigurator.theLightBulbIn3dTheLightFadeNIs')), v('bulbStory', t('showConfigurator.aLightBulbFormsAroundAFilamentAndShines'))),
-    // der echte, scannbare Code braucht seine 198 Module plus Rahmen: erst ab HORIZON 250 (qr2d bleibt ungespielt)
+    catalogMotif('drehzahl', 'launch', t, locale),
+    catalogMotif('sportwagen', 'launch', t, locale),
+    catalogMotif('hubschrauber', 'launch', t, locale),
+    catalogMotif('flugzeug', 'launch', t, locale),
+    catalogMotif('kugel', 'launch', t, locale),
+    catalogMotif('moebius', 'launch', t, locale),
+    catalogMotif('pyramide', 'launch', t, locale),
     motif('qr', 'QR-Code', v('qr2d', t('showConfigurator.qrCodeWithScanMe')), v('qrHorizon', t('showConfigurator.aLightBeamScansTheQrCodeBuildsUp')), v('qrStory', t('showConfigurator.aMessageArrivesItBecomesAScannableQrCode')), H1),
-    motif('spirale', t('showConfigurator.spiral'), v('spiral2d', t('showConfigurator.aSpiralLightRunningInwards')), v('spiral3d', t('showConfigurator.aSpiralIn3dLightRisesTheWindings')), v('spiralStory', t('showConfigurator.theSpiralBecomesTheTorusThatRotatesByItself')), S1),
+    withCatalogSpark(motif('spirale', t('showConfigurator.spiral'), v('spiral2d', t('showConfigurator.aSpiralLightRunningInwards')), v('spiral3d', t('showConfigurator.aSpiralIn3dLightRisesTheWindings')), v('spiralStory', t('showConfigurator.theSpiralBecomesTheTorusThatRotatesByItself')), S1), 'spirale', 'launch', t, locale),
   ] },
   { id: 'jubilaeum', label: t('showConfigurator.jubilee'), motifs: [
     motif('wappen', t('showConfigurator.arms'), v('shield', t('showConfigurator.coatOfArmsWithStarAndFlyingFlag')), v('shield3d', t('showConfigurator.3dCoatOfArmsWithYourNumberAndWavingFlag')), v('shieldStory', t('showConfigurator.fromTheStarInTheCoatOfArmsBecomesYour'))),
+    catalogMotif('ballons', 'jubilaeum', t, locale),
+    catalogMotif('fahnen', 'jubilaeum', t, locale),
     motif('fussball', t('showConfigurator.football'), v('kick2d', t('showConfigurator.aPlayerTheBallRotatesOverHisFoot')), v('kickHorizon', t('showConfigurator.thePlayerShootsTheBallSpinsThroughTheAir')), v('kickStory', t('showConfigurator.aPlayerScoresTheBallBecomesYourNumber')), S1),
+    catalogMotif('jubilaeum30', 'jubilaeum', t, locale),
+    catalogMotif('geburtstag', 'jubilaeum', t, locale),
+    catalogMotif('golfer', 'jubilaeum', t, locale),
+    catalogMotif('golfplatz', 'jubilaeum', t, locale),
+    catalogMotif('golfcaddy', 'jubilaeum', t, locale),
+    catalogMotif('planierraupe', 'jubilaeum', t, locale),
+    catalogMotif('bagger', 'jubilaeum', t, locale),
+    catalogMotif('lkw', 'jubilaeum', t, locale),
+    catalogMotif('feuerwehr', 'jubilaeum', t, locale),
+    catalogMotif('schluessel', 'jubilaeum', t, locale),
+    catalogMotif('sparschwein', 'jubilaeum', t, locale),
+    catalogMotif('basketball', 'jubilaeum', t, locale),
+    catalogMotif('smiley', 'jubilaeum', t, locale),
     motif('wahrzeichen', t('showConfigurator.landmarks'), v('tower', t('showConfigurator.exampleBerlinTvTowerWithWarningLight')), v('tower3d', t('showConfigurator.theTvTowerIn3dLightRunsAroundTheBall')), v('towerStory', t('showConfigurator.theTvTowerBroadcastsAndBecomesTheBrandenburgGate'))),
+    catalogMotif('handschlag', 'jubilaeum', t, locale),
+    catalogMotif('stern', 'jubilaeum', t, locale),
+    catalogMotif('atom', 'jubilaeum', t, locale),
+    catalogMotif('pyramide', 'jubilaeum', t, locale),
     motif('pokal', t('showConfigurator.cup'), v('trophy2d', t('showConfigurator.aCupAboveItSparklingStars')), v('trophy3d', t('showConfigurator.theCupIn3dLightGlidesOverIt')), v('trophyStory', t('showConfigurator.theCupGrowsYourNumberRisesOut'))),
+    catalogMotif('konfetti', 'jubilaeum', t, locale),
     motif('sprung', t('showConfigurator.head'), null, v('diveHorizon', t('showConfigurator.theJumperDipsInTheWaterMovesInRings')), v('diveStory', t('showConfigurator.divingBoardTakeOffSplashRipplesSpread')), H1),
     motif('medaille', t('showConfigurator.medal'), null, null, v('medalStory', t('showConfigurator.theRipplesBecomeYourNumberOnAMedalRibbon')), O1),
   ] },
@@ -111,32 +178,92 @@ return  [
     // der Papierflieger setzt die Reise fort (dieselbe Karte): direkt dahinter, ab ODYSSEY 450 ist es wieder eine Geschichte
     motif('flieger', t('showConfigurator.paperPlane'), null, null, v('planeStory', t('showConfigurator.aPaperPlaneFollowsTheRouteAndCirclesTheCompass')), O1),
     motif('kolibri', t('showConfigurator.kolibrium'), v('hummingbird2d', t('showConfigurator.aHummingbirdTheWingsSwirlInTheLight')), v('hummingbird3d', t('showConfigurator.aHummingbirdIn3dThatBeatsWings')), v('hummingbirdStory', t('showConfigurator.aHummingbirdFliesToFlowerDrinksAndAscends'))),
+    catalogMotif('palme', 'festival', t, locale),
+    catalogMotif('strandliege', 'festival', t, locale),
+    catalogMotif('cocktail', 'festival', t, locale),
+    catalogMotif('ballons', 'festival', t, locale),
+    catalogMotif('kind', 'festival', t, locale),
+    catalogMotif('autoscooter', 'festival', t, locale),
+    catalogMotif('stern', 'festival', t, locale),
+    catalogMotif('bierkrug', 'festival', t, locale),
     motif('riesenrad', t('showConfigurator.ferrisWheel'), v('wheel2d', t('showConfigurator.aFerrisWheelTurnsItsGondolasHangStill')), v('wheel3d', t('showConfigurator.theFerrisWheelIn3dTheGondolasLightUp')), v('wheelStory', t('showConfigurator.aFerrisWheelTakesShapeAndTurnsAStarBlooms')), S1),
+    catalogMotif('traktor', 'festival', t, locale),
+    catalogMotif('berge', 'festival', t, locale),
+    catalogMotif('biene', 'festival', t, locale),
+    catalogMotif('elefant', 'festival', t, locale),
+    catalogMotif('hund', 'festival', t, locale),
+    catalogMotif('hasen', 'festival', t, locale),
+    catalogMotif('kuhufo', 'festival', t, locale),
+    catalogMotif('wasserball', 'festival', t, locale),
+    catalogMotif('robbe', 'festival', t, locale),
+    catalogMotif('anker', 'festival', t, locale),
+    catalogMotif('leuchtturm', 'festival', t, locale),
+    catalogMotif('foerderturm', 'festival', t, locale),
     motif('delfin', t('showConfigurator.dolphin'), v('dolphin2d', t('showConfigurator.aDolphinOverAWave')), v('dolphin3d', t('showConfigurator.aDolphinJumpsOutOfTheWaterIn3d')), v('dolphinStory', t('showConfigurator.wavesOneDolphinJumpsDivesInTwoDolphinsJumpIn'))),
     motif('drache', t('showConfigurator.dragon'), null, v('dragon3d', t('showConfigurator.aDragonIn3dThatBeatsWings')), v('dragonStory', t('showConfigurator.aDragonRisesCirclesAndBreathesFireworks')), H1),
   ] },
   { id: 'hochzeit', label: t('site.wedding'), motifs: [
     motif('ring', t('showConfigurator.rings'), v('weddingRings2d', t('showConfigurator.twoWeddingRingsTheStoneSparkles')), v('rings3d', t('showConfigurator.aSolitaireIn3dRingAndBrilliantSpin')), v('ringsLink', t('showConfigurator.twoWeddingRingsIntertwineIn3dAndBecomeASolitaire'))),
+    catalogMotif('doppelherz', 'hochzeit', t, locale),
+    catalogMotif('tor', 'hochzeit', t, locale),
+    catalogMotif('eheringe', 'hochzeit', t, locale),
+    catalogMotif('torte', 'hochzeit', t, locale),
     motif('herz', t('showConfigurator.heart'), v('heart2d', t('showConfigurator.aHeartLightTravelsAlongItsOutline')), v('heartTunnel', t('showConfigurator.aTunnelOfHeartsLightFlowingThrough')), v('heartsStory', t('showConfigurator.cupidSArrowStrikesA3dHeartTwoHeartsOrbit'))),
+    catalogMotif('initialen', 'hochzeit', t, locale),
+    catalogMotif('amor', 'hochzeit', t, locale),
+    catalogMotif('taube', 'hochzeit', t, locale),
+    withCatalogSpark(motif('glaeser', t('showConfigurator.sparklingGlasses'), v('flutes2d', t('showConfigurator.twoChampagneGlassesClinkLightGlidesAcrossTheGlass')), v('flutes3d', t('showConfigurator.sparklingGlassesIn3dThePearlsRise')), v('flutesStory', t('showConfigurator.theGlassesStrikeThePearlsRiseAsHeart'))), 'anstossen', 'hochzeit', t, locale),
+    catalogMotif('schleife', 'hochzeit', t, locale),
+    catalogMotif('blueten', 'hochzeit', t, locale),
+    catalogMotif('blume', 'hochzeit', t, locale),
+    catalogMotif('blume2', 'hochzeit', t, locale),
+    catalogMotif('lotusblume', 'hochzeit', t, locale),
+    catalogMotif('unendlich', 'hochzeit', t, locale),
+    catalogMotif('moebius', 'hochzeit', t, locale),
+    withCatalogSpark(motif('falter', t('showConfigurator.butterfly'), v('butterfly2d', t('showConfigurator.aButterflyTheWingsShimmering')), v('butterfly3d', t('showConfigurator.aButterflyIn3dStrikesWithItsWings')), v('butterflyStory', t('showConfigurator.a3dButterflyLandsOnAFlowerTheFlowerBecomes')), S1), 'schmetterling', 'hochzeit', t, locale),
     motif('lotus', t('showConfigurator.lotusFlowers'), null, v('lotus3d', t('showConfigurator.twoLotusFlowersIn3dRotateIntoEachOther')), v('lotusStory', t('showConfigurator.twoBudsBloomRotateIntoEachOtherAndBecomeA')), H1),
-    motif('falter', t('showConfigurator.butterfly'), v('butterfly2d', t('showConfigurator.aButterflyTheWingsShimmering')), v('butterfly3d', t('showConfigurator.aButterflyIn3dStrikesWithItsWings')), v('butterflyStory', t('showConfigurator.a3dButterflyLandsOnAFlowerTheFlowerBecomes')), S1),
-    motif('glaeser', t('showConfigurator.sparklingGlasses'), v('flutes2d', t('showConfigurator.twoChampagneGlassesClinkLightGlidesAcrossTheGlass')), v('flutes3d', t('showConfigurator.sparklingGlassesIn3dThePearlsRise')), v('flutesStory', t('showConfigurator.theGlassesStrikeThePearlsRiseAsHeart'))),
     motif('antrag', t('showConfigurator.proposal'), null, null, v('ringStory', t('showConfigurator.aRingBoxOpensTheRingFindsTheRingFinger')), O1),
   ] },
   { id: 'kultur', label: t('showConfigurator.culture'), motifs: [
     motif('buch', t('showConfigurator.book'), v('book2d', t('showConfigurator.anOpenBookLightFlipsThePages')), v('book3d', t('showConfigurator.theBookOpensIn3dOnePageTurns')), v('bookStory', t('showConfigurator.theBookOpensAPenWritesTheLinesRise'))),
     motif('vorhang', t('showConfigurator.curtain'), v('curtain', t('showConfigurator.theCurtainMovesInTheAirDraft')), v('curtainStar', t('showConfigurator.curtainOnA3dStarIsReleased')), v('curtainStory', t('showConfigurator.curtainOnGoldRainFallsAStarRises'))),
+    catalogMotif('taube', 'kultur', t, locale),
+    catalogMotif('galaxie', 'kultur', t, locale),
+    catalogMotif('mikrofon', 'kultur', t, locale),
+    catalogMotif('diskokugel', 'kultur', t, locale),
+    catalogMotif('heldin', 'kultur', t, locale),
+    catalogMotif('sonne', 'kultur', t, locale),
+    catalogMotif('peace', 'kultur', t, locale),
+    // Halloween (sechs Halloween-Events in FlyingStars' Showliste) hat keinen eigenen Anlass; vorerst bei Kultur
+    catalogMotif('fledermaeuse', 'kultur', t, locale),
+    catalogMotif('hexenkessel', 'kultur', t, locale),
     motif('maske', t('showConfigurator.masks'), v('masks', t('showConfigurator.theatreMasksComedyAndTragedyWeighThemselves')), v('masks3d', t('showConfigurator.theMasksIn3d')), v('maskStory', t('showConfigurator.comedyAndTragedyJoinToFormTheTheatreSymbol')), S1),
     motif('noten', t('packageDetails.music'), v('notes2d', t('showConfigurator.twoNotesWeighInTime')), v('harpHorizon', t('showConfigurator.aHarpLightPlucksTheStringsNotesRise')), v('harpStory', t('showConfigurator.theStringsSoundNTheNotesFlyNOfThem'))),
+    catalogMotif('welle', 'kultur', t, locale),
+    catalogMotif('kugel', 'kultur', t, locale),
+    catalogMotif('pyramide', 'kultur', t, locale),
     // die Tänzerin dreht sich erst als Körper (HORIZON 250); dancer2d bleibt ungespielt
     motif('tanz', t('showConfigurator.dance'), v('dancer2d', t('showConfigurator.aDancerHerRockSwings')), v('dancer3d', t('showConfigurator.theDancerTurnsIn3dTheRockFlies')), v('dancerStory', t('showConfigurator.theDancerTurnsTheSkirtBecomesTheFlowerTheFlower')), H1),
     motif('teufel', 'Bokkenrijders', null, null, v('devilStory', t('showConfigurator.theDevilFromOurBokkenrijdersShowAnActual3dFormation')), O1),
   ] },
   { id: 'silvester', label: t('showConfigurator.winterAndNewYear'), season: [11, 12], motifs: [
     motif('uhr', t('showConfigurator.clock'), v('clock', t('showConfigurator.theHandsRunToTwelve')), v('clock3d', t('showConfigurator.3dWatchTheHandsAreRunning')), v('clockStory', t('showConfigurator.midnightSparksSwirlOutAndWriteTheNewYear'))),
-    motif('sekt', t('showConfigurator.champagneCork'), null, v('champagne3d', t('showConfigurator.aChampagneBottleIn3dBubblesRiseInTheLight')), v('champagneStory', t('showConfigurator.aChampagneBottleTheCorkPopsAndFliesInAn')), H1),
+    catalogMotif('sektflasche', 'silvester', t, locale),
+    catalogMotif('stern', 'silvester', t, locale),
+    catalogMotif('diskokugel', 'silvester', t, locale),
+    catalogMotif('marienkaefer', 'silvester', t, locale),
+    catalogMotif('galaxie', 'silvester', t, locale),
+    catalogMotif('kugel', 'silvester', t, locale),
+    catalogMotif('atom', 'silvester', t, locale),
+    catalogMotif('glocke', 'silvester', t, locale),
+    catalogMotif('schneemann', 'silvester', t, locale),
     motif('schnee', t('showConfigurator.lightTree'), v('snow2d', t('showConfigurator.aSnowflakeTurns')), v('tree3d', t('showConfigurator.aLightTreeAsASpiralLightAscends')), v('treeStory', t('showConfigurator.aSnowflakeBecomesATreeOfLightsAStarAppears'))),
+    catalogMotif('lebkuchen', 'silvester', t, locale),
+    catalogMotif('zuckerstange', 'silvester', t, locale),
+    catalogMotif('anstossen', 'silvester', t, locale),
     motif('feuerwerk', t('showConfigurator.fireworks'), v('fireworkSpark', t('showConfigurator.fireworkStarsLightUpOneAfterTheOther')), v('fireworkHorizon', t('showConfigurator.fireworksOfLightStarsBloomAndBurn')), v('fireworkStory', t('showConfigurator.aTrailOfLightRisesStarsBloomInWaves')), S1),
+    catalogMotif('konfetti', 'silvester', t, locale),
+    motif('sekt', t('showConfigurator.champagneCork'), null, v('champagne3d', t('showConfigurator.aChampagneBottleIn3dBubblesRiseInTheLight')), v('champagneStory', t('showConfigurator.aChampagneBottleTheCorkPopsAndFliesInAn')), H1),
     motif('finale', t('showConfigurator.finale'), null, null, v('fireworkFinale', t('showConfigurator.finaleAllStarsAtOnceThenGoldenRainFalls')), O1),
     motif('klee', t('showConfigurator.clover'), v('clover2d', t('showConfigurator.aLuckyCloverTurns')), v('clover3d', t('showConfigurator.theLuckyCloverIn3d')), v('cloverStory', t('showConfigurator.threeLeavesBecomeFourHappinessForTheNewYear'))),
   ] },

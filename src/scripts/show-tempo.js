@@ -14,6 +14,10 @@ export const TEMPO = {
   cloudDim: 0.07,
   cloudTwinkle: 0.1,
   cloudSpark: 1.15,
+  // Runde 24 (Plimmiri-Messung, Recherche show-bewegung-messung/): In FlyingStars' dunklen Wechseln leuchten rund 10 % der
+  // Drohnen, aber in zusammenhängenden Phasen von etwa 0,83 s real (Median), in der dreifach schnellen Vorschau 0,28 s.
+  // Vorher wurde siebenmal je Sekunde neu ausgewählt (0,14 s), das flackerte statt zu blinken.
+  cloudBlink: 0.28,
   /** Automatische Neupositionierung zwischen zwei Bildern ohne Wolke: langsamer als die Klick-Reaktion. */
   flight: { min: 1.8, max: 4.3 },
   /** Wie lange das letzte Bild eines Motivs steht, in allen Paketen (vorher 3,5 / 5 / 3,5 s). */
@@ -168,6 +172,10 @@ export function composeShow({ main, tour = null, logo = null, logoCaption = mess
   const loopBeat = logo?.length ? { pts: logo, caption: logoCaption, motif: "Logo", hold: TEMPO.logoHold, cloud: true, segment: LOGO_SEGMENT, logo: true } : null;
   // fünfzehnte Fassung: das Logo glänzt immer, mit dem Lichtlauf aus Studie 1 (runFits() hätte einer Fläche keinen gegeben)
   if (loopBeat) { loopBeat.run = true; loopBeat.runLight = TEMPO.logoRun; }
+  // Runde 26: schwarze Punkte am Ende sind Reserve-Drohnen (der Strichgraph braucht oft weniger als n); sie bleiben ganz
+  // dunkel, auch der Lichtlauf erfasst sie nicht (er hellt nur Drohnen ab voller Helligkeit auf)
+  const dark = loopBeat ? logo.findIndex((p) => p[3] + p[4] + p[5] === 0) : -1;
+  if (dark >= 0) loopBeat.live = (b, j, t, o) => { if (j >= dark) o[3] = 0; };
   const round = [];
   let motifs = 0, last = null, afterLogo = false, body = main.beats;
   // with a logo the round begins with it: a figure that led back into the first motif (SPARK) is not needed there

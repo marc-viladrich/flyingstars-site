@@ -234,15 +234,15 @@ export const builders = {
     const [EG] = share(n, [1.15, 1]), edge = moebiusEdge(), RUNGS = 16, rungN = share(n - EG, Array(RUNGS).fill(1)), rungs = [];
     rungN.forEach((c, q) => { const u = (q / RUNGS) * TAU; for (let k = 0; k < c; k++) { const s = -0.3 + (0.6 * (k + 0.5)) / c; rungs.push([(TR + s * Math.cos(u / 2)) * Math.cos(u), s * Math.sin(u / 2), (TR + s * Math.cos(u / 2)) * Math.sin(u)]); } });
     const edgeAt = (j, t) => edge.at(((j + 0.5) / EG) * edge.total + run(t, 0.32));
-    const wobble = (t) => TILT + 0.3 * Math.sin((TAU * t) / 11); // the torus tips slowly back and forth
     const at = (fn, t, tilt) => (j) => { const o = fn(j, t); tipped(o, tilt); return o; };
     return { beats: [
-      act([part("spiral", paint(helix.map((p) => { const o = [...p]; tipped(o, 0.32); return o; }), (p, i) => cool(i / n)))], { caption: message('launch.aSpiral'), hold: 3, live: (b, j, t, o) => { put(o, helix[j]); yaw(o, t * 0.32); tipped(o, 0.32); o[3] = chase(j / n, t, 0.09, 0.34, 0.6, 1.5); } }),
+      act([part("spiral", paint(helix.map((p) => { const o = [...p]; tipped(o, 0.32); return o; }), (p, i) => cool(i / n)))], { caption: message('launch.aSpiral'), zoom: 0.85, hold: 3, live: (b, j, t, o) => { put(o, helix[j]); yaw(o, t * 0.32); tipped(o, 0.32); o[3] = chase(j / n, t, 0.09, 0.34, 0.6, 1.5); } }),
       act([part("spiral", paint(Array.from({ length: n }, (_, j) => at(coilAt, 0)(j)), (p, i) => cool(0.5 + 0.5 * Math.cos((TAU * 3 * i) / n))))], { caption: message('launch.itClosesIntoATorusLightsFollowTheCoils'), hold: 4.5, live: (b, j, t, o) => {
         put(o, coilAt(j, t)); yaw(o, t * 0.12); tipped(o);
       } }),
       act([part("spiral", paint(Array.from({ length: n }, (_, j) => at(ringAt, 0)(j)), (p, i) => cool(0.5 - 0.5 * Math.cos(vOf[i]))))], { caption: message('launch.theTorusTurnsThroughItself'), hold: 6, live: (b, j, t, o) => {
-        put(o, ringAt(j, t)); yaw(o, t * 0.1); tipped(o, wobble(t));
+        // Only the tube turns: superimposed yaw and tipping caused short reversals in the visible paths.
+        put(o, ringAt(j, t)); tipped(o);
       } }),
       act([part("spiral", paint([...edge.spread(EG), ...rungs].map((p) => { const o = [...p]; tipped(o); return o; }), (p, i) => (i < EG ? cool(0.5 + 0.5 * Math.sin((TAU * 2 * i) / EG)) : mix(BLUE, WARM, 0.25))))], { caption: message('launch.andTwistsIntoAnEndlessLoop'), live: (b, j, t, o) => {
         if (j < EG) put(o, edgeAt(j, t)); else { put(o, rungs[j - EG]); o[3] = 0.85 * glint(Math.atan2(rungs[j - EG][2], rungs[j - EG][0]), t, 6, 0.6, -Math.PI, Math.PI); }

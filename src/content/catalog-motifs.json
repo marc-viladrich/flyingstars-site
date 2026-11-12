@@ -1,0 +1,2638 @@
+{
+ "texts": {
+  "caption": {
+   "de": "{name}, eine Formation aus dem FlyingStars-Katalog",
+   "en": "{name}, a formation from the FlyingStars catalogue",
+   "nl": "{name}, een formatie uit de FlyingStars-catalogus"
+  },
+  "captionShow": {
+   "de": "{name}, eine Formation aus einer FlyingStars-Show",
+   "en": "{name}, a formation from a FlyingStars show",
+   "nl": "{name}, een formatie uit een FlyingStars-show"
+  },
+  "body": {
+   "de": "{name} als Körper in 3D",
+   "en": "{name} as a 3D body",
+   "nl": "{name} als 3D-lichaam"
+  },
+  "story": {
+   "de": "{name}: Licht zeichnet die Form, dann wird sie lebendig",
+   "en": "{name}: light draws the shape, then it comes alive",
+   "nl": "{name}: licht tekent de vorm, dan komt hij tot leven"
+  },
+  "lightDraws": {
+   "de": "Licht zeichnet: {name}",
+   "en": "Light draws: {name}",
+   "nl": "Licht tekent: {name}"
+  },
+  "comesAlive": {
+   "de": "{name} wird lebendig",
+   "en": "{name} comes alive",
+   "nl": "{name} komt tot leven"
+  },
+  "becomesBody": {
+   "de": "{name} wird zum Körper",
+   "en": "{name} becomes a body",
+   "nl": "{name} wordt een lichaam"
+  }
+ },
+ "source": {
+  "title": "FlyingStars-Motivkatalog",
+  "url": "https://flyingstars-katalog-web.vercel.app/",
+  "snapshot": "2026-11-05",
+  "note": "Eingebetteter Katalogstand, Punkte gezählt; Auswahl ist ein Vorschlag an FlyingStars, keine Flugfreigabe."
+ },
+ "motifs": {
+  "anstossen": {
+   "nr": 17,
+   "name": {
+    "de": "Anstoßende Gläser",
+    "en": "Clinking glasses",
+    "nl": "Klinkende glazen"
+   },
+   "theme": "feiern-genuss",
+   "labels": [
+    "Hochzeit",
+    "Firmenfeier/Jubiläum",
+    "Silvester",
+    "Stadtfest/Regional",
+    "Weihnachten",
+    "Ostern/Frühling",
+    "Karneval",
+    "Sport"
+   ],
+   "motion": "clink",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-a819a681c8cee7a2",
+     "points": 72,
+     "declared": 70,
+     "depth": 0.365,
+     "clip": true,
+     "sizeM": [
+      59.43,
+      66.26,
+      23.1
+     ]
+    },
+    {
+     "id": "m-c0934127db49df2e",
+     "points": 88,
+     "declared": 90,
+     "depth": 0.419,
+     "clip": true,
+     "sizeM": [
+      49.62,
+      58.67,
+      24.41
+     ]
+    },
+    {
+     "id": "m-d4538cee3c87fc1b",
+     "points": 108,
+     "declared": 110,
+     "depth": 0.259,
+     "clip": true,
+     "sizeM": [
+      54.27,
+      68.59,
+      17.57
+     ]
+    },
+    {
+     "id": "m-de8bd2e761a7d1ed",
+     "points": 148,
+     "declared": 140,
+     "depth": 0.401,
+     "clip": false,
+     "sizeM": [
+      49.85,
+      60.74,
+      21.86
+     ]
+    }
+   ]
+  },
+  "doppelherz": {
+   "nr": 75,
+   "name": {
+    "de": "Doppelherz",
+    "en": "Double heart",
+    "nl": "Dubbel hart"
+   },
+   "theme": "liebe-hochzeit",
+   "labels": [
+    "Hochzeit",
+    "Firmenfeier/Jubiläum",
+    "Stadtfest/Regional",
+    "Weihnachten",
+    "Musik/Festival"
+   ],
+   "motion": "breathe",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-2ca68bd12b55abee",
+     "points": 80,
+     "declared": 80,
+     "depth": 0.188,
+     "clip": true,
+     "sizeM": [
+      62.29,
+      59.8,
+      10.8
+     ]
+    },
+    {
+     "id": "m-dde71ef7e8d3ecd1",
+     "points": 100,
+     "declared": 100,
+     "depth": 0.231,
+     "clip": false,
+     "sizeM": [
+      54.42,
+      47.71,
+      12.55
+     ]
+    }
+   ]
+  },
+  "initialen": {
+   "nr": 123,
+   "name": {
+    "de": "Herz mit Initialen",
+    "en": "Heart with initials",
+    "nl": "Hart met initialen"
+   },
+   "theme": "liebe-hochzeit",
+   "labels": [
+    "Hochzeit"
+   ],
+   "motion": "breathe",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-c27b74f581fec4ef",
+     "points": 80,
+     "declared": 80,
+     "depth": 0.238,
+     "clip": false,
+     "sizeM": [
+      70.92,
+      45.11,
+      16.87
+     ]
+    }
+   ]
+  },
+  "taube": {
+   "nr": 14,
+   "name": {
+    "de": "Friedenstaube",
+    "en": "Dove of peace",
+    "nl": "Vredesduif"
+   },
+   "theme": "tiere",
+   "labels": [
+    "Hochzeit",
+    "Demo/Politik",
+    "Firmenfeier/Jubiläum",
+    "Stadtfest/Regional",
+    "Musik/Festival",
+    "Kinderfest"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-93eb7e1b843ab09d",
+     "points": 80,
+     "declared": 80,
+     "depth": 0.3,
+     "clip": true,
+     "sizeM": [
+      56,
+      62.54,
+      18.76
+     ]
+    }
+   ]
+  },
+  "blueten": {
+   "nr": 85,
+   "name": {
+    "de": "Zwei Blüten",
+    "en": "Two blossoms",
+    "nl": "Twee bloesems"
+   },
+   "theme": "natur-himmel",
+   "labels": [
+    "Hochzeit",
+    "Stadtfest/Regional",
+    "Firmenfeier/Jubiläum",
+    "Ostern/Frühling",
+    "Karneval"
+   ],
+   "motion": "blossoms",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-46c75761c1a84b3a",
+     "points": 120,
+     "declared": 120,
+     "depth": 0.117,
+     "clip": true,
+     "sizeM": [
+      62.8,
+      31.43,
+      7.33
+     ]
+    }
+   ]
+  },
+  "unendlich": {
+   "nr": 88,
+   "name": {
+    "de": "Unendlich-Zeichen",
+    "en": "Infinity sign",
+    "nl": "Oneindigteken"
+   },
+   "theme": "symbole-zeichen",
+   "labels": [
+    "Hochzeit"
+   ],
+   "motion": "run",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-3f693223dd034092",
+     "points": 120,
+     "declared": 120,
+     "depth": 0.435,
+     "clip": false,
+     "sizeM": [
+      47.85,
+      19.4,
+      20.81
+     ]
+    }
+   ]
+  },
+  "schmetterling": {
+   "nr": 86,
+   "name": {
+    "de": "Schmetterling",
+    "en": "Butterfly",
+    "nl": "Vlinder"
+   },
+   "theme": "natur-himmel",
+   "labels": [
+    "Ostern/Frühling",
+    "Stadtfest/Regional",
+    "Hochzeit"
+   ],
+   "motion": "shimmer",
+   "dimension": "3D",
+   "variants": [
+    {
+     "id": "m-6adbdce3f2e78e98",
+     "points": 120,
+     "declared": 120,
+     "depth": 0.458,
+     "clip": true,
+     "sizeM": [
+      56.4,
+      30.27,
+      13.86
+     ]
+    },
+    {
+     "id": "m-b04c382d7117c798",
+     "points": 144,
+     "declared": 140,
+     "depth": 0.456,
+     "clip": true,
+     "sizeM": [
+      71.16,
+      51.8,
+      19.78
+     ]
+    }
+   ]
+  },
+  "ballons": {
+   "nr": 47,
+   "name": {
+    "de": "Ballons",
+    "en": "Balloons",
+    "nl": "Ballonnen"
+   },
+   "theme": "feiern-genuss",
+   "labels": [
+    "Firmenfeier/Jubiläum",
+    "Hochzeit",
+    "Karneval",
+    "Ostern/Frühling",
+    "Kinderfest",
+    "Musik/Festival",
+    "Stadtfest/Regional",
+    "Sport"
+   ],
+   "motion": "bob",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-009abd7f70e4b396",
+     "points": 100,
+     "declared": 100,
+     "depth": 0.588,
+     "clip": false,
+     "sizeM": [
+      60.19,
+      45.56,
+      35.15
+     ]
+    },
+    {
+     "id": "m-09ce35bc02b7d583",
+     "points": 150,
+     "declared": 150,
+     "depth": 0.444,
+     "clip": true,
+     "sizeM": [
+      84.26,
+      51.21,
+      36.17
+     ]
+    }
+   ]
+  },
+  "fahnen": {
+   "nr": 118,
+   "name": {
+    "de": "Wehende Fahnen",
+    "en": "Waving flags",
+    "nl": "Wapperende vlaggen"
+   },
+   "theme": "orte-laender",
+   "labels": [
+    "Firmenfeier/Jubiläum",
+    "Sport",
+    "Stadtfest/Regional"
+   ],
+   "motion": "wave",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-24d4d38a01f7e6f4",
+     "points": 117,
+     "declared": 120,
+     "depth": 0.191,
+     "clip": true,
+     "sizeM": [
+      50.01,
+      36.87,
+      9.42
+     ]
+    }
+   ]
+  },
+  "handschlag": {
+   "nr": 115,
+   "name": {
+    "de": "Handschlag",
+    "en": "Handshake",
+    "nl": "Handdruk"
+   },
+   "theme": "menschen-figuren",
+   "labels": [
+    "Firmenfeier/Jubiläum"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-3a2eec826186dbb9",
+     "points": 104,
+     "declared": 100,
+     "depth": 0,
+     "clip": true,
+     "sizeM": [
+      117.41,
+      46.58,
+      0.01
+     ]
+    }
+   ]
+  },
+  "stern": {
+   "nr": 13,
+   "name": {
+    "de": "Stern",
+    "en": "Star",
+    "nl": "Ster"
+   },
+   "theme": "symbole-zeichen",
+   "labels": [
+    "Weihnachten",
+    "Silvester",
+    "Firmenfeier/Jubiläum",
+    "Hochzeit",
+    "Stadtfest/Regional",
+    "Ostern/Frühling",
+    "Halloween",
+    "Kinderfest",
+    "Demo/Politik",
+    "Karneval",
+    "Sport",
+    "Musik/Festival"
+   ],
+   "motion": "twinkle",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-88798db3bc0143b7",
+     "points": 100,
+     "declared": 100,
+     "depth": 0.375,
+     "clip": true,
+     "sizeM": [
+      56.72,
+      49.81,
+      21.09
+     ]
+    },
+    {
+     "id": "m-b2c9b2eef941b2f1",
+     "points": 143,
+     "declared": 140,
+     "depth": 0.243,
+     "clip": true,
+     "sizeM": [
+      56.7,
+      52.74,
+      13.77
+     ]
+    }
+   ]
+  },
+  "golfer": {
+   "nr": 90,
+   "name": {
+    "de": "Golfer",
+    "en": "Golfer",
+    "nl": "Golfer"
+   },
+   "theme": "menschen-figuren",
+   "labels": [
+    "Firmenfeier/Jubiläum",
+    "Stadtfest/Regional",
+    "Sport"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-d3cdbe5aeb47875a",
+     "points": 80,
+     "declared": 80,
+     "depth": 0.302,
+     "clip": false,
+     "sizeM": [
+      46.22,
+      34.84,
+      13.45
+     ]
+    }
+   ]
+  },
+  "konfetti": {
+   "nr": 55,
+   "name": {
+    "de": "Konfetti-Kanone",
+    "en": "Confetti cannon",
+    "nl": "Confettikanon"
+   },
+   "theme": "feiern-genuss",
+   "labels": [
+    "Firmenfeier/Jubiläum",
+    "Silvester",
+    "Hochzeit",
+    "Stadtfest/Regional",
+    "Ostern/Frühling",
+    "Karneval",
+    "Musik/Festival",
+    "Kinderfest"
+   ],
+   "motion": "confetti",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-55-1-konfetti",
+     "points": 100,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/konfetti-100.jpg"
+    },
+    {
+     "id": "m-cef98ff37d5b9b24",
+     "points": 158,
+     "declared": 160,
+     "depth": 0.129,
+     "clip": true,
+     "sizeM": [
+      80.66,
+      86.42,
+      9.15
+     ]
+    }
+   ]
+  },
+  "sportwagen": {
+   "nr": 127,
+   "name": {
+    "de": "Sportwagen",
+    "en": "Sports car",
+    "nl": "Sportwagen"
+   },
+   "theme": "fahrzeuge",
+   "labels": [
+    "Sport",
+    "Firmenfeier/Jubiläum"
+   ],
+   "motion": "drive",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-30a79cb8a4e9bd4c",
+     "points": 147,
+     "declared": 150,
+     "depth": 0.128,
+     "clip": false,
+     "sizeM": [
+      104.89,
+      35.48,
+      12.75
+     ]
+    }
+   ]
+  },
+  "drehzahl": {
+   "nr": 126,
+   "name": {
+    "de": "Drehzahlmesser",
+    "en": "Rev counter",
+    "nl": "Toerenteller"
+   },
+   "theme": "fahrzeuge",
+   "labels": [
+    "Sport",
+    "Firmenfeier/Jubiläum"
+   ],
+   "motion": "needle",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-8ed5934f241eb537",
+     "points": 113,
+     "declared": 110,
+     "depth": 0.023,
+     "clip": false,
+     "sizeM": [
+      48.54,
+      48.44,
+      1.12
+     ]
+    }
+   ]
+  },
+  "galaxie": {
+   "nr": 4,
+   "name": {
+    "de": "Galaxie",
+    "en": "Galaxy",
+    "nl": "Melkweg"
+   },
+   "theme": "muster-3d",
+   "labels": [
+    "Hochzeit",
+    "Stadtfest/Regional",
+    "Firmenfeier/Jubiläum",
+    "Weihnachten",
+    "Silvester",
+    "Halloween",
+    "Ostern/Frühling",
+    "Kinderfest",
+    "Musik/Festival",
+    "Karneval",
+    "Demo/Politik",
+    "Sport"
+   ],
+   "motion": "swirl",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-9a051170d803cb16",
+     "points": 100,
+     "declared": 100,
+     "depth": 0.288,
+     "clip": true,
+     "sizeM": [
+      68.8,
+      56.12,
+      15.53
+     ]
+    }
+   ]
+  },
+  "moebius": {
+   "nr": 3,
+   "name": {
+    "de": "Möbius-Schleife",
+    "en": "Möbius strip",
+    "nl": "Möbiusband"
+   },
+   "theme": "muster-3d",
+   "labels": [
+    "Hochzeit",
+    "Firmenfeier/Jubiläum",
+    "Stadtfest/Regional",
+    "Ostern/Frühling",
+    "Kinderfest",
+    "Halloween",
+    "Musik/Festival",
+    "Silvester",
+    "Sport",
+    "Weihnachten",
+    "Karneval",
+    "Demo/Politik"
+   ],
+   "motion": "glow",
+   "dimension": "3D",
+   "variants": [
+    {
+     "id": "m-af6abdcd758604ed",
+     "points": 100,
+     "declared": 100,
+     "depth": 0.775,
+     "clip": true,
+     "sizeM": [
+      50.32,
+      63.24,
+      49
+     ]
+    }
+   ]
+  },
+  "kugel": {
+   "nr": 87,
+   "name": {
+    "de": "Kugel",
+    "en": "Sphere",
+    "nl": "Bol"
+   },
+   "theme": "muster-3d",
+   "labels": [
+    "Stadtfest/Regional",
+    "Ostern/Frühling",
+    "Musik/Festival",
+    "Kinderfest",
+    "Firmenfeier/Jubiläum",
+    "Silvester",
+    "Halloween",
+    "Sport",
+    "Karneval",
+    "Demo/Politik",
+    "Weihnachten",
+    "Hochzeit"
+   ],
+   "motion": "turn",
+   "dimension": "3D",
+   "variants": [
+    {
+     "id": "m-3f44e9b580c17828",
+     "points": 120,
+     "declared": 120,
+     "depth": 0.976,
+     "clip": true,
+     "sizeM": [
+      43.75,
+      35.8,
+      42.21
+     ]
+    },
+    {
+     "id": "m-8b17885a380498eb",
+     "points": 150,
+     "declared": 150,
+     "depth": 0.982,
+     "clip": true,
+     "sizeM": [
+      43.57,
+      39.91,
+      42.47
+     ]
+    }
+   ]
+  },
+  "atom": {
+   "nr": 72,
+   "name": {
+    "de": "Atom",
+    "en": "Atom",
+    "nl": "Atoom"
+   },
+   "theme": "muster-3d",
+   "labels": [
+    "Hochzeit",
+    "Weihnachten",
+    "Karneval",
+    "Demo/Politik",
+    "Sport",
+    "Silvester",
+    "Firmenfeier/Jubiläum",
+    "Musik/Festival",
+    "Halloween",
+    "Kinderfest",
+    "Ostern/Frühling",
+    "Stadtfest/Regional"
+   ],
+   "motion": "glow",
+   "dimension": "3D",
+   "variants": [
+    {
+     "id": "m-760e89119af3b760",
+     "points": 147,
+     "declared": 150,
+     "depth": 0.31,
+     "clip": true,
+     "sizeM": [
+      55.54,
+      55.33,
+      17.23
+     ]
+    },
+    {
+     "id": "m-8098c062d26f4a02",
+     "points": 162,
+     "declared": 160,
+     "depth": 0.308,
+     "clip": true,
+     "sizeM": [
+      55.72,
+      55.65,
+      17.17
+     ]
+    },
+    {
+     "id": "m-a300ca052ba95aab",
+     "points": 220,
+     "declared": 220,
+     "depth": 0.307,
+     "clip": true,
+     "sizeM": [
+      55.81,
+      55.81,
+      17.15
+     ]
+    }
+   ]
+  },
+  "pyramide": {
+   "nr": 2,
+   "name": {
+    "de": "Umgedrehte Pyramide",
+    "en": "Inverted pyramid",
+    "nl": "Omgekeerde piramide"
+   },
+   "theme": "muster-3d",
+   "labels": [
+    "Kinderfest",
+    "Musik/Festival",
+    "Sport",
+    "Demo/Politik",
+    "Karneval",
+    "Weihnachten",
+    "Hochzeit",
+    "Silvester",
+    "Firmenfeier/Jubiläum",
+    "Halloween",
+    "Ostern/Frühling",
+    "Stadtfest/Regional"
+   ],
+   "motion": "glow",
+   "dimension": "3D",
+   "variants": [
+    {
+     "id": "m-087666c8bf53f47f",
+     "points": 150,
+     "declared": 150,
+     "depth": 0.547,
+     "clip": true,
+     "sizeM": [
+      50.96,
+      48.01,
+      27.89
+     ]
+    },
+    {
+     "id": "m-53de50764a706946",
+     "points": 162,
+     "declared": 160,
+     "depth": 0.547,
+     "clip": true,
+     "sizeM": [
+      52.98,
+      48.32,
+      27.87
+     ]
+    }
+   ]
+  },
+  "spirale": {
+   "nr": 73,
+   "name": {
+    "de": "Spirale",
+    "en": "Spiral",
+    "nl": "Spiraal"
+   },
+   "theme": "muster-3d",
+   "labels": [],
+   "motion": "turn",
+   "dimension": "3D",
+   "variants": [
+    {
+     "id": "m-88b9847845e4a8a5",
+     "points": 112,
+     "declared": 110,
+     "depth": 1.108,
+     "clip": true,
+     "sizeM": [
+      40.37,
+      50.74,
+      43.53
+     ]
+    },
+    {
+     "id": "m-d876a67a5ab3885c",
+     "points": 120,
+     "declared": 120,
+     "depth": 1.033,
+     "clip": true,
+     "sizeM": [
+      50.8,
+      59.04,
+      51.51
+     ]
+    },
+    {
+     "id": "m-a407fa0e9a9f48e5",
+     "points": 150,
+     "declared": 150,
+     "depth": 0.94,
+     "clip": true,
+     "sizeM": [
+      32.29,
+      34.95,
+      30.32
+     ]
+    }
+   ]
+  },
+  "palme": {
+   "nr": 83,
+   "name": {
+    "de": "Palmeninsel",
+    "en": "Palm island",
+    "nl": "Palmeiland"
+   },
+   "theme": "natur-himmel",
+   "labels": [
+    "Stadtfest/Regional",
+    "Firmenfeier/Jubiläum",
+    "Hochzeit",
+    "Ostern/Frühling",
+    "Kinderfest",
+    "Musik/Festival"
+   ],
+   "motion": "palm",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-7d6887cb2af21ec0",
+     "points": 120,
+     "declared": 120,
+     "depth": 0.602,
+     "clip": true,
+     "sizeM": [
+      45.65,
+      46.37,
+      27.86
+     ]
+    }
+   ]
+  },
+  "bierkrug": {
+   "nr": 117,
+   "name": {
+    "de": "Bierkrug",
+    "en": "Beer mug",
+    "nl": "Bierpul"
+   },
+   "theme": "feiern-genuss",
+   "labels": [
+    "Stadtfest/Regional",
+    "Firmenfeier/Jubiläum",
+    "Ostern/Frühling",
+    "Musik/Festival"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-71c50a65760ab7a1",
+     "points": 120,
+     "declared": 120,
+     "depth": 0.181,
+     "clip": false,
+     "sizeM": [
+      58.3,
+      64.02,
+      11.6
+     ]
+    }
+   ]
+  },
+  "cocktail": {
+   "nr": 84,
+   "name": {
+    "de": "Cocktailglas",
+    "en": "Cocktail glass",
+    "nl": "Cocktailglas"
+   },
+   "theme": "feiern-genuss",
+   "labels": [
+    "Hochzeit",
+    "Firmenfeier/Jubiläum",
+    "Stadtfest/Regional",
+    "Karneval"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-2a0a03a163257cc6",
+     "points": 100,
+     "declared": 100,
+     "depth": 0.413,
+     "clip": true,
+     "sizeM": [
+      31.98,
+      59.64,
+      22.28
+     ]
+    },
+    {
+     "id": "m-18cd70eab64b0585",
+     "points": 120,
+     "declared": 120,
+     "depth": 0.44,
+     "clip": false,
+     "sizeM": [
+      50.56,
+      60.2,
+      23.39
+     ]
+    }
+   ]
+  },
+  "regenbogen": {
+   "nr": 59,
+   "name": {
+    "de": "Regenbogen",
+    "en": "Rainbow",
+    "nl": "Regenboog"
+   },
+   "theme": "natur-himmel",
+   "labels": [
+    "Stadtfest/Regional",
+    "Musik/Festival",
+    "Firmenfeier/Jubiläum",
+    "Hochzeit",
+    "Ostern/Frühling",
+    "Demo/Politik",
+    "Kinderfest"
+   ],
+   "motion": "rainbow",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-8f7081f4b0a6b832",
+     "points": 201,
+     "declared": 200,
+     "depth": 0.087,
+     "clip": true,
+     "sizeM": [
+      81.1,
+      42.4,
+      7.03
+     ]
+    }
+   ]
+  },
+  "kuhufo": {
+   "nr": 70,
+   "name": {
+    "de": "Kuh und UFO",
+    "en": "Cow and UFO",
+    "nl": "Koe en ufo"
+   },
+   "theme": "tiere",
+   "labels": [
+    "Halloween"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-1cdb64d926d7130a",
+     "points": 153,
+     "declared": 100,
+     "depth": 0.892,
+     "clip": true,
+     "sizeM": [
+      52.18,
+      66.33,
+      50.49
+     ]
+    }
+   ]
+  },
+  "schiff": {
+   "nr": 37,
+   "name": {
+    "de": "Schiff",
+    "en": "Ship",
+    "nl": "Schip"
+   },
+   "theme": "maritim",
+   "labels": [
+    "Stadtfest/Regional",
+    "Firmenfeier/Jubiläum"
+   ],
+   "motion": "sail",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-44d9dda0e98ef025",
+     "points": 200,
+     "declared": 180,
+     "depth": 0.164,
+     "clip": true,
+     "sizeM": [
+      178.32,
+      45.31,
+      15.02
+     ]
+    },
+    {
+     "id": "m-846086171dfbe84e",
+     "points": 248,
+     "declared": 220,
+     "depth": 0.213,
+     "clip": true,
+     "sizeM": [
+      126.08,
+      42.35,
+      19.56
+     ]
+    }
+   ]
+  },
+  "wasserball": {
+   "nr": 42,
+   "name": {
+    "de": "Wasserball",
+    "en": "Beach ball",
+    "nl": "Strandbal"
+   },
+   "theme": "muster-3d",
+   "labels": [
+    "Stadtfest/Regional",
+    "Firmenfeier/Jubiläum",
+    "Hochzeit",
+    "Weihnachten",
+    "Halloween",
+    "Silvester",
+    "Ostern/Frühling",
+    "Kinderfest",
+    "Musik/Festival",
+    "Sport",
+    "Karneval",
+    "Demo/Politik"
+   ],
+   "motion": "turn",
+   "dimension": "3D",
+   "variants": [
+    {
+     "id": "m-35cf79a2cef84960",
+     "points": 186,
+     "declared": 190,
+     "depth": 0.981,
+     "clip": false,
+     "sizeM": [
+      67.65,
+      74.45,
+      59.72
+     ]
+    }
+   ]
+  },
+  "welle": {
+   "nr": 137,
+   "name": {
+    "de": "3D-Welle",
+    "en": "3D wave",
+    "nl": "3D-golf"
+   },
+   "theme": "muster-3d",
+   "labels": [
+    "Hochzeit",
+    "Karneval",
+    "Weihnachten",
+    "Firmenfeier/Jubiläum",
+    "Stadtfest/Regional",
+    "Ostern/Frühling",
+    "Kinderfest",
+    "Musik/Festival",
+    "Halloween",
+    "Silvester",
+    "Sport",
+    "Demo/Politik"
+   ],
+   "motion": "surf",
+   "dimension": "3D",
+   "variants": [
+    {
+     "id": "m-12f0c99c605f160d",
+     "points": 150,
+     "declared": 150,
+     "depth": 0.474,
+     "clip": true,
+     "sizeM": [
+      46.1,
+      16.28,
+      21.86
+     ]
+    },
+    {
+     "id": "m-679f6ce119251af4",
+     "points": 192,
+     "declared": 190,
+     "depth": 0.545,
+     "clip": true,
+     "sizeM": [
+      48.94,
+      15.4,
+      26.66
+     ]
+    },
+    {
+     "id": "m-855691241980ecfe",
+     "points": 200,
+     "declared": 200,
+     "depth": 0.544,
+     "clip": true,
+     "sizeM": [
+      48.93,
+      15.81,
+      26.63
+     ]
+    }
+   ]
+  },
+  "lebensbaum": {
+   "nr": 114,
+   "name": {
+    "de": "Lebensbaum",
+    "en": "Tree of life",
+    "nl": "Levensboom"
+   },
+   "theme": "natur-himmel",
+   "labels": [
+    "Firmenfeier/Jubiläum",
+    "Hochzeit"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-7ff8bdaf8404b08e",
+     "points": 250,
+     "declared": 250,
+     "depth": 0.281,
+     "clip": false,
+     "sizeM": [
+      75.38,
+      72.4,
+      21.17
+     ]
+    }
+   ]
+  },
+  "mandala": {
+   "nr": 71,
+   "name": {
+    "de": "Mandala",
+    "en": "Mandala",
+    "nl": "Mandala"
+   },
+   "theme": "muster-3d",
+   "labels": [
+    "Hochzeit",
+    "Firmenfeier/Jubiläum",
+    "Stadtfest/Regional",
+    "Ostern/Frühling",
+    "Halloween",
+    "Silvester",
+    "Weihnachten",
+    "Demo/Politik",
+    "Karneval",
+    "Sport",
+    "Musik/Festival",
+    "Kinderfest"
+   ],
+   "motion": "spin",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-398acba98832f5a1",
+     "points": 300,
+     "declared": 300,
+     "depth": 0.297,
+     "clip": true,
+     "sizeM": [
+      65.71,
+      63.61,
+      19.5
+     ]
+    }
+   ]
+  },
+  "traktor": {
+   "nr": 38,
+   "name": {
+    "de": "Traktor",
+    "en": "Tractor",
+    "nl": "Tractor"
+   },
+   "theme": "fahrzeuge",
+   "labels": [
+    "Kinderfest",
+    "Ostern/Frühling",
+    "Firmenfeier/Jubiläum",
+    "Stadtfest/Regional"
+   ],
+   "motion": "drive",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-6d659abc95e63690",
+     "points": 179,
+     "declared": 180,
+     "depth": 0.145,
+     "clip": true,
+     "sizeM": [
+      79.86,
+      39.38,
+      11.33
+     ]
+    },
+    {
+     "id": "m-b8f08b4638806fc0",
+     "points": 200,
+     "declared": 200,
+     "depth": 0.146,
+     "clip": true,
+     "sizeM": [
+      89.77,
+      39.72,
+      11.36
+     ]
+    }
+   ]
+  },
+  "tor": {
+   "nr": 89,
+   "name": {
+    "de": "Tor",
+    "en": "Gate",
+    "nl": "Poort"
+   },
+   "theme": "orte-laender",
+   "labels": [
+    "Hochzeit",
+    "Firmenfeier/Jubiläum",
+    "Stadtfest/Regional"
+   ],
+   "motion": "gate",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-4d6910686b694773",
+     "points": 80,
+     "declared": 80,
+     "depth": 0.121,
+     "clip": true,
+     "sizeM": [
+      56.21,
+      40.24,
+      6.78
+     ]
+    }
+   ]
+  },
+  "eheringe": {
+   "nr": 122,
+   "name": {
+    "de": "Verschlungene Eheringe",
+    "en": "Entwined wedding rings",
+    "nl": "Verstrengelde trouwringen"
+   },
+   "theme": "liebe-hochzeit",
+   "labels": [
+    "Hochzeit"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-e39180a77e437c23",
+     "points": 80,
+     "declared": 80,
+     "depth": 0.306,
+     "clip": true,
+     "sizeM": [
+      42.87,
+      24.35,
+      13.13
+     ]
+    }
+   ]
+  },
+  "golfplatz": {
+   "nr": 91,
+   "name": {
+    "de": "Golfplatz",
+    "en": "Golf course",
+    "nl": "Golfbaan"
+   },
+   "theme": "sport-spiel",
+   "labels": [
+    "Sport",
+    "Firmenfeier/Jubiläum",
+    "Stadtfest/Regional"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-70f6687501a1a205",
+     "points": 74,
+     "declared": 80,
+     "depth": 0.24,
+     "clip": false,
+     "sizeM": [
+      75.96,
+      57.62,
+      16.14
+     ]
+    }
+   ]
+  },
+  "golfcaddy": {
+   "nr": 32,
+   "name": {
+    "de": "Golfcaddy",
+    "en": "Golf cart",
+    "nl": "Golfkarretje"
+   },
+   "theme": "fahrzeuge",
+   "labels": [
+    "Sport"
+   ],
+   "motion": "drive",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-e68e6c984f0d0c19",
+     "points": 79,
+     "declared": 80,
+     "depth": 0.195,
+     "clip": false,
+     "sizeM": [
+      50.5,
+      31.92,
+      7.89
+     ]
+    }
+   ]
+  },
+  "planierraupe": {
+   "nr": 93,
+   "name": {
+    "de": "Planierraupe",
+    "en": "Bulldozer",
+    "nl": "Bulldozer"
+   },
+   "theme": "fahrzeuge",
+   "labels": [
+    "Stadtfest/Regional"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-bf8ba45b4a71b5e7",
+     "points": 100,
+     "declared": 100,
+     "depth": 0.172,
+     "clip": false,
+     "sizeM": [
+      58.86,
+      29.71,
+      5.96
+     ]
+    }
+   ]
+  },
+  "berge": {
+   "nr": 74,
+   "name": {
+    "de": "Berglandschaft",
+    "en": "Mountain landscape",
+    "nl": "Berglandschap"
+   },
+   "theme": "natur-himmel",
+   "labels": [
+    "Ostern/Frühling",
+    "Kinderfest",
+    "Hochzeit",
+    "Stadtfest/Regional"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-25ebd3fa03b21c63",
+     "points": 132,
+     "declared": 120,
+     "depth": 0.307,
+     "clip": true,
+     "sizeM": [
+      55.01,
+      40.48,
+      16.88
+     ]
+    }
+   ]
+  },
+  "fledermaeuse": {
+   "nr": 131,
+   "name": {
+    "de": "Drei Fledermäuse",
+    "en": "Three bats",
+    "nl": "Drie vleermuizen"
+   },
+   "theme": "tiere",
+   "labels": [
+    "Halloween"
+   ],
+   "motion": "glide",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-5e6426e90cc6c5bc",
+     "points": 116,
+     "declared": 40,
+     "depth": 0.088,
+     "clip": false,
+     "sizeM": [
+      93.27,
+      49.58,
+      7.95
+     ]
+    }
+   ]
+  },
+  "hexenkessel": {
+   "nr": 130,
+   "name": {
+    "de": "Hexenkessel",
+    "en": "Witch's cauldron",
+    "nl": "Heksenketel"
+   },
+   "theme": "feste-jahreszeiten",
+   "labels": [
+    "Halloween"
+   ],
+   "motion": "turn",
+   "dimension": "3D",
+   "variants": [
+    {
+     "id": "m-4ac529507b7992b7",
+     "points": 181,
+     "declared": 170,
+     "depth": 0.524,
+     "clip": true,
+     "sizeM": [
+      53.45,
+      59.35,
+      31.1
+     ]
+    },
+    {
+     "id": "m-4118595c3e444e67",
+     "points": 182,
+     "declared": 180,
+     "depth": 0.525,
+     "clip": true,
+     "sizeM": [
+      53.57,
+      59.34,
+      31.14
+     ]
+    }
+   ]
+  },
+  "sektflasche": {
+   "nr": 16,
+   "name": {
+    "de": "Sektflasche",
+    "en": "Champagne bottle",
+    "nl": "Champagnefles"
+   },
+   "theme": "feiern-genuss",
+   "labels": [
+    "Hochzeit",
+    "Firmenfeier/Jubiläum",
+    "Silvester",
+    "Stadtfest/Regional",
+    "Weihnachten",
+    "Ostern/Frühling",
+    "Karneval",
+    "Sport"
+   ],
+   "motion": "confetti",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "m-ca9282aba8d6db4a",
+     "points": 75,
+     "declared": 70,
+     "depth": 0.243,
+     "clip": true,
+     "sizeM": [
+      59.98,
+      55.67,
+      12.84
+     ]
+    },
+    {
+     "id": "m-87d870772a5e42c5",
+     "points": 131,
+     "declared": 120,
+     "depth": 0.169,
+     "clip": true,
+     "sizeM": [
+      71.39,
+      58.71,
+      11.52
+     ]
+    }
+   ]
+  },
+  "torte": {
+   "nr": null,
+   "source": "show",
+   "photo": "-_HG6n-Mo_Q-016.5s-torte-3d.jpg",
+   "name": {
+    "de": "Hochzeitstorte",
+    "en": "Wedding cake",
+    "nl": "Bruidstaart"
+   },
+   "theme": "show",
+   "labels": [
+    "hochzeit"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-hochzeitstorte",
+     "points": 120,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "schleife": {
+   "nr": null,
+   "source": "show",
+   "photo": "7Q6oANf_MAA-054s-schleifen-ornament.jpg",
+   "name": {
+    "de": "Schleifenornament",
+    "en": "Loop ornament",
+    "nl": "Lusornament"
+   },
+   "theme": "show",
+   "labels": [
+    "festival",
+    "kultur"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-schleifenornament",
+     "points": 99,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "peace": {
+   "nr": null,
+   "source": "show",
+   "photo": "1UsiwEM5x6xhIQ-5iOrH0QQc2z-Ggxuzq.jpg",
+   "name": {
+    "de": "Peace-Zeichen",
+    "en": "Peace symbol",
+    "nl": "Vredesteken"
+   },
+   "theme": "show",
+   "labels": [
+    "festival",
+    "kultur"
+   ],
+   "motion": "spin",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-peace",
+     "points": 70,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "batterie": {
+   "nr": null,
+   "source": "show",
+   "photo": "UFeJ-nvj97s-022.0s-batterie.jpg",
+   "name": {
+    "de": "Batterie",
+    "en": "Battery",
+    "nl": "Batterij"
+   },
+   "theme": "show",
+   "labels": [
+    "launch",
+    "jubilaeum"
+   ],
+   "motion": "charge",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-batterie",
+     "points": 168,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "hubschrauber": {
+   "nr": null,
+   "source": "show",
+   "photo": "7xGWbTy0AP0-028.0s-hubschrauber.jpg",
+   "name": {
+    "de": "Hubschrauber",
+    "en": "Helicopter",
+    "nl": "Helikopter"
+   },
+   "theme": "show",
+   "labels": [
+    "launch",
+    "jubilaeum"
+   ],
+   "motion": "sail",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-hubschrauber",
+     "points": 150,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "flugzeug": {
+   "nr": null,
+   "source": "show",
+   "photo": "7xGWbTy0AP0-022.4s-flugzeug.jpg",
+   "name": {
+    "de": "Flugzeug",
+    "en": "Airplane",
+    "nl": "Vliegtuig"
+   },
+   "theme": "show",
+   "labels": [
+    "launch",
+    "jubilaeum"
+   ],
+   "motion": "sail",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-flugzeug",
+     "points": 135,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "smiley": {
+   "nr": null,
+   "source": "show",
+   "photo": "UFeJ-nvj97s-049.0s-emoji.jpg",
+   "name": {
+    "de": "Lachendes Gesicht",
+    "en": "Smiling face",
+    "nl": "Lachend gezicht"
+   },
+   "theme": "show",
+   "labels": [
+    "festival",
+    "jubilaeum"
+   ],
+   "motion": "breathe",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-smiley",
+     "points": 105,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "elefant": {
+   "nr": null,
+   "source": "show",
+   "photo": "S3fuZRsYIvc-030s-elefant-blueten.jpg",
+   "name": {
+    "de": "Elefant",
+    "en": "Elephant",
+    "nl": "Olifant"
+   },
+   "theme": "show",
+   "labels": [
+    "festival",
+    "kultur"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-elefant",
+     "points": 109,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "hasen": {
+   "nr": null,
+   "source": "show",
+   "photo": "4YFclytGqlo-0027-hasen-nase-an-nase.jpg",
+   "name": {
+    "de": "Zwei Hasen",
+    "en": "Two rabbits",
+    "nl": "Twee konijnen"
+   },
+   "theme": "show",
+   "labels": [
+    "festival",
+    "kultur"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-hasen",
+     "points": 139,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "hund": {
+   "nr": null,
+   "source": "show",
+   "photo": "4YFclytGqlo-0022-hund-umriss-ball.jpg",
+   "name": {
+    "de": "Hund mit Ball",
+    "en": "Dog with ball",
+    "nl": "Hond met bal"
+   },
+   "theme": "show",
+   "labels": [
+    "festival",
+    "kultur"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-hund",
+     "points": 142,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "strandliege": {
+   "nr": null,
+   "source": "show",
+   "photo": "UFeJ-nvj97s-026.0s-strandliege.jpg",
+   "name": {
+    "de": "Strandliege mit Sonnenschirm",
+    "en": "Deck chair with parasol",
+    "nl": "Strandstoel met parasol"
+   },
+   "theme": "show",
+   "labels": [
+    "festival",
+    "jubilaeum"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-strandliege",
+     "points": 153,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "glocke": {
+   "nr": null,
+   "source": "show",
+   "photo": "xs7snNnzZxY-0011-glocke-schleife.jpg",
+   "name": {
+    "de": "Glocke mit Schleife",
+    "en": "Bell with bow",
+    "nl": "Klok met strik"
+   },
+   "theme": "show",
+   "labels": [
+    "silvester",
+    "kultur"
+   ],
+   "motion": "bell",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-glocke",
+     "points": 97,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "schneemann": {
+   "nr": null,
+   "source": "show",
+   "photo": "xs7snNnzZxY-0133-schneemann.jpg",
+   "name": {
+    "de": "Schneemann",
+    "en": "Snowman",
+    "nl": "Sneeuwpop"
+   },
+   "theme": "show",
+   "labels": [
+    "kultur",
+    "silvester"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-schneemann",
+     "points": 96,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "lebkuchen": {
+   "nr": null,
+   "source": "show",
+   "photo": "xs7snNnzZxY-0060-lebkuchenmann.jpg",
+   "name": {
+    "de": "Lebkuchenmann",
+    "en": "Gingerbread man",
+    "nl": "Peperkoekmannetje"
+   },
+   "theme": "show",
+   "labels": [
+    "kultur",
+    "silvester"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-lebkuchenmann",
+     "points": 99,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "zuckerstange": {
+   "nr": null,
+   "source": "show",
+   "photo": "xs7snNnzZxY-0050-zuckerstange.jpg",
+   "name": {
+    "de": "Zuckerstange",
+    "en": "Candy cane",
+    "nl": "Zuurstok"
+   },
+   "theme": "show",
+   "labels": [
+    "kultur",
+    "silvester"
+   ],
+   "motion": "twinkle",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "show-zuckerstange",
+     "points": 73,
+     "declared": null,
+     "depth": 0,
+     "clip": false
+    }
+   ]
+  },
+  "diskokugel": {
+   "nr": 12,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Diskokugel",
+    "en": "Disco ball",
+    "nl": "Discobal"
+   },
+   "theme": "bild",
+   "labels": [
+    "Musik"
+   ],
+   "motion": "twinkle",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-12-1-die-diskokugel",
+     "points": 128,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/discokugel-100.jpg"
+    }
+   ]
+  },
+  "blume": {
+   "nr": 20,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Blume",
+    "en": "Flower",
+    "nl": "Bloem"
+   },
+   "theme": "bild",
+   "labels": [],
+   "motion": "spin",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-20-1-blume-var-2",
+     "points": 102,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/blume2.jpg"
+    }
+   ]
+  },
+  "blume2": {
+   "nr": 19,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Blume am Stiel",
+    "en": "Flower on a stem",
+    "nl": "Bloem aan een steel"
+   },
+   "theme": "bild",
+   "labels": [],
+   "motion": "glide",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-19-1-blume-var-1",
+     "points": 66,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/blume1.jpg"
+    }
+   ]
+  },
+  "biene": {
+   "nr": 22,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Biene",
+    "en": "Bee",
+    "nl": "Bij"
+   },
+   "theme": "bild",
+   "labels": [
+    "Tiere"
+   ],
+   "motion": "glide",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-22-1-die-biene",
+     "points": 83,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/biene.jpg"
+    }
+   ]
+  },
+  "marienkaefer": {
+   "nr": 25,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Marienkäfer",
+    "en": "Ladybird",
+    "nl": "Lieveheersbeestje"
+   },
+   "theme": "bild",
+   "labels": [
+    "Tiere"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-25-1-der-marienkafer",
+     "points": 97,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/marienkaefer.jpg"
+    }
+   ]
+  },
+  "roboter": {
+   "nr": 27,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Kleiner Roboter",
+    "en": "Little robot",
+    "nl": "Kleine robot"
+   },
+   "theme": "bild",
+   "labels": [],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-27-1-der-kleine-roboter",
+     "points": 101,
+     "declared": 150,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/roboter.jpg"
+    }
+   ]
+  },
+  "schluessel": {
+   "nr": 28,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Schraubenschlüssel",
+    "en": "Spanners",
+    "nl": "Moersleutels"
+   },
+   "theme": "bild",
+   "labels": [],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-28-1-der-schraubenschlussel",
+     "points": 100,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/schraube.jpg"
+    }
+   ]
+  },
+  "zahnraeder": {
+   "nr": 29,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Zahnräder",
+    "en": "Gears",
+    "nl": "Tandwielen"
+   },
+   "theme": "bild",
+   "labels": [],
+   "motion": "spin",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-29-1-drehende-zahnrader",
+     "points": 102,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/zahnraeder.jpg"
+    }
+   ]
+  },
+  "lkw": {
+   "nr": 30,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Lastwagen",
+    "en": "Truck",
+    "nl": "Vrachtwagen"
+   },
+   "theme": "bild",
+   "labels": [
+    "Fahrzeuge"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-30-1-der-ausladende-lkw",
+     "points": 101,
+     "declared": 150,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/lkw.jpg"
+    }
+   ]
+  },
+  "bagger": {
+   "nr": 31,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Bagger",
+    "en": "Excavator",
+    "nl": "Graafmachine"
+   },
+   "theme": "bild",
+   "labels": [
+    "Fahrzeuge"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-31-1-der-bagger",
+     "points": 99,
+     "declared": 150,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/bagger.jpg"
+    }
+   ]
+  },
+  "feuerwehr": {
+   "nr": 36,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Feuerwehrauto",
+    "en": "Fire engine",
+    "nl": "Brandweerwagen"
+   },
+   "theme": "bild",
+   "labels": [
+    "Fahrzeuge"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-36-2-das-feuerwehrauto",
+     "points": 164,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/feuerwehrauto-100.jpg"
+    }
+   ]
+  },
+  "foerderturm": {
+   "nr": 39,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Förderturm",
+    "en": "Headframe",
+    "nl": "Schachttoren"
+   },
+   "theme": "bild",
+   "labels": [],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-39-1-der-forderturm",
+     "points": 101,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/foerderturm-100.jpg"
+    }
+   ]
+  },
+  "basketball": {
+   "nr": 40,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Basketball",
+    "en": "Basketball",
+    "nl": "Basketbal"
+   },
+   "theme": "bild",
+   "labels": [
+    "Sport"
+   ],
+   "motion": "spin",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-40-1-der-basketball",
+     "points": 99,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/basketball.jpg"
+    }
+   ]
+  },
+  "amor": {
+   "nr": 46,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Amor",
+    "en": "Cupid",
+    "nl": "Cupido"
+   },
+   "theme": "bild",
+   "labels": [
+    "Hochzeit"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-46-1-amor",
+     "points": 146,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/amor-100.jpg"
+    }
+   ]
+  },
+  "jubilaeum30": {
+   "nr": 48,
+   "source": "katalog-bild",
+   "name": {
+    "de": "30 Jahre",
+    "en": "30 years",
+    "nl": "30 jaar"
+   },
+   "theme": "bild",
+   "labels": [
+    "Firmen"
+   ],
+   "motion": "twinkle",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-48-1-jubilaum",
+     "points": 150,
+     "declared": 150,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/jubilaeum-1150.jpg"
+    }
+   ]
+  },
+  "kind": {
+   "nr": 49,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Kind mit Ballons",
+    "en": "Child with balloons",
+    "nl": "Kind met ballonnen"
+   },
+   "theme": "bild",
+   "labels": [],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-49-1-das-kind",
+     "points": 121,
+     "declared": 150,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/kind-150.jpg"
+    }
+   ]
+  },
+  "sparschwein": {
+   "nr": 50,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Sparschwein",
+    "en": "Piggy bank",
+    "nl": "Spaarvarken"
+   },
+   "theme": "bild",
+   "labels": [
+    "Firmen"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-50-1-das-sparschwein",
+     "points": 106,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/sparschwein-100.jpg"
+    }
+   ]
+  },
+  "heldin": {
+   "nr": 51,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Superheldin",
+    "en": "Superheroine",
+    "nl": "Superheldin"
+   },
+   "theme": "bild",
+   "labels": [],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-51-1-die-superheldin",
+     "points": 149,
+     "declared": 150,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/superheldin-150.jpg"
+    }
+   ]
+  },
+  "geburtstag": {
+   "nr": 52,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Geburtstagstorte",
+    "en": "Birthday cake",
+    "nl": "Verjaardagstaart"
+   },
+   "theme": "bild",
+   "labels": [
+    "Hochzeit"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-52-1-die-torte",
+     "points": 138,
+     "declared": 150,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/torte-150.jpg"
+    }
+   ]
+  },
+  "robbe": {
+   "nr": 60,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Robbe",
+    "en": "Seal",
+    "nl": "Zeehond"
+   },
+   "theme": "bild",
+   "labels": [
+    "Tiere",
+    "Maritim"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-60-1-die-robbe",
+     "points": 150,
+     "declared": 150,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/robbe-150.jpg"
+    }
+   ]
+  },
+  "anker": {
+   "nr": 61,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Anker",
+    "en": "Anchor",
+    "nl": "Anker"
+   },
+   "theme": "bild",
+   "labels": [
+    "Maritim"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-61-1-der-anker",
+     "points": 119,
+     "declared": 150,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/anker-150.jpg"
+    }
+   ]
+  },
+  "autoscooter": {
+   "nr": 62,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Autoscooter",
+    "en": "Bumper car",
+    "nl": "Botsauto"
+   },
+   "theme": "bild",
+   "labels": [
+    "Stadtfest"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-62-1-der-autoscooter",
+     "points": 102,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/autoscooter-100.jpg"
+    }
+   ]
+  },
+  "leuchtturm": {
+   "nr": 64,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Leuchtturm",
+    "en": "Lighthouse",
+    "nl": "Vuurtoren"
+   },
+   "theme": "bild",
+   "labels": [
+    "Maritim"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-64-1-der-leuchtturm",
+     "points": 161,
+     "declared": 150,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/leuchtturm-150.jpg"
+    }
+   ]
+  },
+  "mikrofon": {
+   "nr": 65,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Mikrofon",
+    "en": "Microphone",
+    "nl": "Microfoon"
+   },
+   "theme": "bild",
+   "labels": [
+    "Musik"
+   ],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-65-1-das-mikrofon",
+     "points": 149,
+     "declared": 150,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/micro-150.jpg"
+    }
+   ]
+  },
+  "lotusblume": {
+   "nr": 67,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Lotusblume",
+    "en": "Lotus flower",
+    "nl": "Lotusbloem"
+   },
+   "theme": "bild",
+   "labels": [],
+   "motion": "shimmer",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-67-1-die-lotusblume",
+     "points": 150,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/lotusblume-100.jpg"
+    }
+   ]
+  },
+  "sonne": {
+   "nr": 5,
+   "source": "katalog-bild",
+   "name": {
+    "de": "Sonne",
+    "en": "Sun",
+    "nl": "Zon"
+   },
+   "theme": "bild",
+   "labels": [],
+   "motion": "spin",
+   "dimension": "2D",
+   "variants": [
+    {
+     "id": "bild-5-1-die-sich-drehende-sonne",
+     "points": 141,
+     "declared": 100,
+     "depth": 0,
+     "clip": false,
+     "fromImage": "https://flyingstars-katalog-web.vercel.app/images/sonne.jpg"
+    }
+   ]
+  }
+ }
+}

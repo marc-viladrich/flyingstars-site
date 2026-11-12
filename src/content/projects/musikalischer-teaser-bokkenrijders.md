@@ -123,7 +123,7 @@
       {
         "kicker": "02 · Der Teaser",
         "title": "Ein QR-Code als Finale",
-        "text": "Am 4. September 2025 stiegen {{project.musikalischer-teaser-bokkenrijders.drones}} Drohnen über der Locatie Geusselt auf: der Schriftzug BOKKENRIJDERS, der Teufel, drei mystische Reiter, ein Sternenhimmel. Zum Schluss ein riesiger QR-Code, der direkt zum Ticketverkauf führte.",
+        "text": "Am {{project.musikalischer-teaser-bokkenrijders.date.long}} stiegen {{project.musikalischer-teaser-bokkenrijders.drones}} Drohnen über der Locatie Geusselt auf: der Schriftzug BOKKENRIJDERS, der Teufel, drei mystische Reiter, ein Sternenhimmel. Zum Schluss ein riesiger QR-Code, der direkt zum Ticketverkauf führte.",
         "image": {
           "src": "https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijders/06.jpg",
           "alt": "Finale über der Bühne",

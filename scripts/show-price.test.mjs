@@ -58,6 +58,20 @@ test('Einstiegspreise bleiben die bekannten Paketpreise', () => {
   assert.equal(configuratorPrice(190), 15200);
 });
 
+test('ODYSSEY reicht bis 1000; höhere Drohnenzahlen bleiben im Paket und rechnen den bestehenden Aufpreis weiter', () => {
+  assert.equal(DRONES_MAX, 1000);
+  assert.equal(DRONE_RANGES.ODYSSEY.max, 1000);
+  for (const [n, price] of [[600, 64600], [800, 84400], [1000, 104200]]) {
+    assert.equal(snapDrones(n), n, `Deep-Link-Wert ${n} bleibt erhalten`);
+    assert.equal(packageForDrones(n), 'ODYSSEY');
+    assert.equal(clampToPackage('ODYSSEY', n), n);
+    assert.equal(configuratorPrice(n), price);
+    assert.equal(priceFor('ODYSSEY', n), price);
+  }
+  assert.equal(snapDrones(1010), 1000);
+  assert.equal(clampToPackage('ODYSSEY', 1100), 1000);
+});
+
 // ---------- Vierzehnte Fassung (A): Freischalten, Hinweis an der Spur, Abfolge, Lichtlauf ----------
 import { OCCASIONS } from '../src/content/show-configurator.js';
 import { canPlay, freshMotifs, unlockNote, possibleFrom, minDronesOf, composeShow, rankOf, runLight, hilbertOrder, LOGO_SEGMENT, TOUR_SEGMENT, TEMPO } from '../src/scripts/show-tempo.js';
@@ -72,11 +86,11 @@ test('Freischalten: auch ein Paketwechsel meldet alle neuen Motive, in der Reihe
       assert.deepEqual(freshMotifs(o.motifs, b, a).filter((m) => fresh.includes(m)), [], 'zurück: nichts davon ist neu');
     }
   }
-  // Hochzeit (sechzehnte Fassung, Freischalt-Leiter): Schmetterling ab SPARK 150, Lotusblüten ab HORIZON 250, Antrag
-  // ab ODYSSEY 450. Wer mit 100 Drohnen auf HORIZON klickt (200), bekommt den Schmetterling gemeldet.
+  // Hochzeit mit Motivkatalog: Die Katalogmotive haben eigene Freischaltgrenzen.
+  // Der Schmetterling spielt ab 200, Lotusblüten weiterhin ab 250 und der Antrag ab 450.
   const wedding = OCCASIONS.find((o) => o.id === 'hochzeit').motifs, ids = (list) => list.map((m) => m.id);
-  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'SPARK', drones: 140 }, { pkg: 'SPARK', drones: 150 })), ['falter']);
-  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'SPARK', drones: 100 }, { pkg: 'HORIZON', drones: 200 })), ['falter']);
+  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'SPARK', drones: 140 }, { pkg: 'SPARK', drones: 150 })), ['amor', 'lotusblume']);
+  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'SPARK', drones: 100 }, { pkg: 'HORIZON', drones: 200 })), ['torte', 'amor', 'blueten', 'blume', 'lotusblume', 'unendlich', 'falter']);
   assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 240 }, { pkg: 'HORIZON', drones: 250 })), ['lotus']);
   assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 290 }, { pkg: 'ODYSSEY', drones: 300 })), []);
   assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 200 }, { pkg: 'ODYSSEY', drones: 600 })), ['lotus', 'antrag']);

@@ -57,7 +57,7 @@ for (const occasion of OCCASIONS) {
     test.skip(info.project.name !== 'desktop', 'Die Bewegung ist auf allen Geräten dieselbe.');
     test.setTimeout(900_000);
     await page.clock.install();
-    await page.goto(`${CFG}?anlass=${occasion}&paket=ODYSSEY&drohnen=600`);
+    await page.goto(`${CFG}?anlass=${occasion}&paket=ODYSSEY&drohnen=600#konfigurator`); // ohne Anker lädt der Konfigurator unter der simulierten Uhr nie (whenNear)
     await page.clock.runFor(1000);
     await expect(page.locator('#cfg-field')).toHaveAttribute('data-points', '600');
     await page.evaluate(() => { (window as unknown as { __showTrace: unknown[] }).__showTrace = []; });
@@ -76,7 +76,7 @@ for (const occasion of OCCASIONS) {
     test.setTimeout(900_000);
     await page.clock.install();
     for (const [n, seconds] of [[190, 60], [290, 70]] as const) {
-      await page.goto(`${CFG}?anlass=${occasion}&drohnen=${n}`);
+      await page.goto(`${CFG}?anlass=${occasion}&drohnen=${n}#konfigurator`);
       await page.clock.runFor(1000);
       await expect(page.locator('#cfg-field')).toHaveAttribute('data-points', String(n));
       await page.evaluate(() => { (window as unknown as { __showTrace: unknown[] }).__showTrace = []; });

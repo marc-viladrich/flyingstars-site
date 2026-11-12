@@ -22,9 +22,18 @@
   .cfg-marks { position: absolute; left: 0.375rem; right: 0.375rem; top: 50%; height: 0.1875rem; margin-top: -0.09375rem; display: flex; gap: var(--space-0-5); }
   .cfg-marks span { flex: 1 1 0; min-width: 0.125rem; border-radius: var(--radius-2); background: linear-gradient(90deg, var(--pkg, var(--amber)) var(--f, 0%), var(--line-emphasis) var(--f, 0%)); }
   .cfg-marks span.is-motif { margin-left: var(--space-1); }
+  /* Runde 25b: mit den Katalogmotiven hat eine Runde bis zu 50 Bilder; dichte Spuren rücken enger zusammen, und die Spur
+     schneidet am Rand ab, statt über die Knöpfe daneben zu laufen (auf dem Handy lag sie über ›) */
+  .cfg-marks { overflow: clip; }
+  .cfg-marks[data-dense] { gap: 0.0625rem; }
+  .cfg-marks[data-dense] span { min-width: 0.0625rem; }
+  .cfg-marks[data-dense] span.is-motif { margin-left: 0.1875rem; }
+  .cfg-marks[data-dense="2"] span.is-motif { margin-left: 0.125rem; }
   .cfg-rate { display: flex; flex: none; padding-left: var(--space-1); border-left: 1px solid var(--line); }
   .cfg-rate button { font: 500 var(--text-xs)/1 var(--mono); letter-spacing: 0.02em; padding: 0 var(--space-1-75); min-width: 0; }
   .cfg-rate button[aria-pressed="true"] { color: var(--text); background: var(--line); }
+  /* Runde 25b: der schnelle Knopf zählt 2× … 10× hoch; feste Breite, damit „10×“ die Leiste nicht verschiebt */
+  .cfg-rate button[data-rate="2"] { min-width: 3.4em; font-variant-numeric: tabular-nums; }
   /* Drohnenregler: Spur in den Paketfarben, Lücke zwischen den Bereichen leer */
   .cfg-drones-head { display: flex; align-items: baseline; justify-content: space-between; }
   .cfg-drones-head label { font-size: var(--text-control); color: var(--text); }
@@ -60,7 +69,9 @@
   .cfg-drop svg { width: 1.875rem; height: 1.875rem; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
   .cfg-drop span { font: 500 var(--text-md)/1.2 var(--display); }
   .cfg-drop small { font-size: var(--text-label); color: var(--muted); }
-  .cfg-stage.is-target .cfg-drop, .cfg-stage.is-page-drag .cfg-drop, .cfg-stage.is-invite .cfg-drop, .cfg-stage[data-drop-hover]:hover .cfg-drop { opacity: 1; background: rgb(var(--rgb-media-ground) / 0.42); -webkit-backdrop-filter: blur(0.1875rem); backdrop-filter: blur(0.1875rem); }
+  .cfg-stage.is-target .cfg-drop, .cfg-stage.is-page-drag .cfg-drop, .cfg-stage.is-invite .cfg-drop { opacity: 1; background: rgb(var(--rgb-media-ground) / 0.42); -webkit-backdrop-filter: blur(0.1875rem); backdrop-filter: blur(0.1875rem); }
+  /* Runde 25: :hover bleibt auf Touch-Geräten nach dem Tippen hängen, darum nur mit echtem Zeiger */
+  @media (hover: hover) { .cfg-stage[data-drop-hover]:hover .cfg-drop { opacity: 1; background: rgb(var(--rgb-media-ground) / 0.42); -webkit-backdrop-filter: blur(0.1875rem); backdrop-filter: blur(0.1875rem); } }
   .cfg-stage.is-drag .cfg-drop { opacity: 1; border-color: var(--pkg, var(--amber)); background: rgb(var(--rgb-media-ground) / 0.55); -webkit-backdrop-filter: blur(0.25rem); backdrop-filter: blur(0.25rem); }
   .cfg-stage.is-done .cfg-drop { opacity: 0; transition: none; }
   /* Spur: beim Überfahren und mit Fokus ein kleiner Hinweis, ab wie vielen Drohnen die Sequenz möglich ist */
@@ -106,6 +117,8 @@
   @media (prefers-reduced-motion: reduce) { .cfg-legal, .cfg-legal.is-open { transition: opacity var(--dur-quick) var(--ease-default), visibility 0s var(--dur-quick); transform: none; } }
   .cfg-logo-status { margin: 0; font-size: var(--text-label); color: var(--muted); }
   .cfg-logo-status:empty { display: none; }
+  .cfg-text-budget { margin: 0; font-size: var(--text-label); color: var(--muted); text-wrap: pretty; }
+  .cfg-text-budget[hidden] { display: none; }
 
   .cfg-error { position: absolute; inset: auto 1.25rem 4.75rem; color: var(--muted); font-size: var(--text-sm); }
   /* Freischalt-Meldung (dreizehnte Fassung), fünfzehnte Fassung in der Sprache der Seite (Marc: die Toast-UI war „gar
@@ -194,8 +207,13 @@
     .cfg-sum { margin-top: var(--space-0-5); padding: var(--space-4) var(--space-4-5); gap: var(--space-3); }
   }
   @media (--nav-collapsed) {
-    .cfg { grid-template-columns: 1fr; padding-top: var(--space-16); gap: var(--space-5-5); padding-bottom: 7.5rem; }
-    .cfg-stage { order: 0; top: 4rem; z-index: 5; height: 42svh; min-height: 17.5rem; margin: 0 calc(var(--cfg-gutter) * -1); border-radius: 0; border-left: 0; border-right: 0; }
+    /* Runde 25 (Marc: „ein Ticken weniger Padding nach oben“): der Sprung auf #konfigurator scrollt nach unten, die Kopfzeile
+       weicht aus (nav-away); die Bühne steht beim Sprung direkt unter der Kopfzeile statt unter weiteren 4 rem Leerraum (5,5 rem = scroll-padding-top in global.css) */
+    .cfg { grid-template-columns: 1fr; padding-top: var(--space-3); scroll-margin-top: calc(var(--nav-h) - var(--space-3) - 5.5rem); gap: var(--space-5-5); padding-bottom: 7.5rem; }
+    .cfg-stage { order: 0; top: 4rem; z-index: 5; height: 42svh; min-height: 17.5rem; margin: 0 calc(var(--cfg-gutter) * -1); border-radius: 0; border-left: 0; border-right: 0; transition: top var(--dur-standard) var(--ease-default); }
+    /* Runde 25: ist die Kopfzeile ausgewichen (nav-away), klebt die Bühne ganz oben; die Preisleiste weicht mit nach unten aus */
+    :root.nav-away .cfg-stage { top: 0; }
+    :root.nav-away .cfg.is-near .cfg-bar { transform: translateY(105%); }
     /* on phones the picture is the headline: the question stays for screen readers, the slider moves into view */
     .cfg-h { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
     .cfg-panel { gap: var(--space-6-5); }
@@ -212,3 +230,88 @@
     /* angesteuerte Felder (Fokus, Tastatur) bleiben zwischen der klebenden Bühne und der Preisleiste sichtbar */
     .cfg-panel :is(input, select, button, .cfg-upload) { scroll-margin: calc(4rem + max(42svh, 17.5rem) + 1rem) 0 6rem; }
   }
+  /* niedrige Handys (iPhone 13: 664 px Sichthöhe): Bühne und Abstände etwas knapper, damit Anlass, Paket und Preisleiste
+     beim Sprung auf #konfigurator gemeinsam zu sehen sind (der Anlass „Euer Logo“ bringt eine dritte Chipreihe) */
+  @media (--nav-collapsed) and (max-height: 45em) {
+    .cfg { scroll-margin-top: calc(var(--nav-h) - var(--space-3) - 8.5rem); } /* der Kicker darf beim Sprung unter der Bühne liegen; die Paketknöpfe stehen über der Preisleiste */
+    .cfg-stage { height: 36svh; min-height: 14rem; }
+    .cfg-panel { gap: var(--space-4); }
+  }
+
+/* Runde 27: Anlass „Euer Logo“ (Marc 12.11., zweite Runde). Im Anlass treten Anlass- und Paketwahl, Abspielleiste und
+   Motiv-Hinweise zurück; Formen werden direkt auf der Bühne gewählt (.cfg-pick über dem Feld) */
+.cfg.is-logomode .cfg-caption, .cfg.is-logomode .cfg-occasion, .cfg.is-logomode .cfg-block:has(.cfg-pkgs), .cfg.is-logomode .cfg-player, .cfg.is-logomode .cfg-locks, .cfg.is-logomode .cfg-toast { display: none; }
+.cfg-back { justify-self: start; min-height: 2.25rem; padding: 0 var(--space-3); border: 1px solid var(--line-strong); border-radius: var(--radius-pill); background: transparent; color: var(--muted); font: 400 var(--text-sm)/1 var(--body); cursor: pointer; }
+.cfg-back:hover { color: var(--text); }
+.cfg-occ-logo span { position: relative; }
+.cfg-occ-logo span::before { content: ""; position: absolute; inset: -0.0625rem; padding: 0.0625rem; border-radius: inherit; background: linear-gradient(90deg, rgb(var(--rgb-logo-amber)), rgb(var(--rgb-logo-orchid)), rgb(var(--rgb-cyan))); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); pointer-events: none; }
+.cfg-logo-tools { display: grid; gap: var(--space-4); margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--line); }
+.cfg-tool { display: grid; gap: var(--space-1-5); }
+.cfg-tool-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); font-size: var(--text-sm); color: var(--text); }
+.cfg-auto { min-height: 1.75rem; padding: 0 var(--space-2-5); border: 1px solid var(--line-strong); border-radius: var(--radius-pill); background: transparent; color: var(--muted); font: 400 var(--text-xs)/1 var(--body); cursor: pointer; }
+.cfg-auto[aria-pressed="true"] { color: var(--text); border-color: var(--text); background: var(--line-soft); }
+.cfg-auto:focus-visible, .cfg-back:focus-visible, .cfg-edit-bar button:focus-visible, .cfg-minimap:focus-visible, .cfg-over-close:focus-visible, .cfg-examples button:focus-visible { outline: 0.125rem solid var(--cyan); outline-offset: 0.125rem; }
+.cfg-range-plain { --track: linear-gradient(90deg, var(--line-soft), var(--muted)); }
+.cfg-scale { display: flex; justify-content: space-between; font-size: var(--text-label); color: var(--muted); }
+/* Formen wählen auf der Bühne */
+.cfg-pick { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
+.cfg-edit-band { position: absolute; z-index: 4; border: 1px dashed var(--text); background: var(--line-soft); pointer-events: none; }
+.cfg-edit-bar { position: absolute; z-index: 5; left: 0.875rem; right: 0.875rem; top: 0.875rem; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1-5); padding: var(--space-1-5) var(--space-2); border: 1px solid var(--line); border-radius: var(--radius-10); background: var(--overlay-media); font-size: var(--text-sm); color: var(--muted); }
+.cfg-edit-bar span { flex: 1 1 12rem; min-width: 0; }
+.cfg-edit-bar button { min-height: 2.25rem; padding: 0 var(--space-3); border: 1px solid var(--line-strong); border-radius: var(--radius-pill); background: transparent; color: var(--text); font: 400 var(--text-sm)/1 var(--body); cursor: pointer; }
+/* Minimap mit dem Original; ein Klick vergrößert sie */
+.cfg-minimap { position: absolute; z-index: 5; right: 0.875rem; bottom: 0.875rem; width: 6.5rem; height: 4.5rem; padding: var(--space-1-5); border: 1px solid var(--line); border-radius: var(--radius-6); background: var(--text); cursor: zoom-in; transition: width var(--dur-standard) var(--ease-default), height var(--dur-standard) var(--ease-default); }
+.cfg-minimap img { width: 100%; height: 100%; object-fit: contain; }
+.cfg-minimap[aria-pressed="true"] { width: min(24rem, 45%); height: min(16rem, 40%); cursor: zoom-out; }
+/* Hinweis bei zu vielen Drohnen: Karte unten auf der Bühne */
+.cfg-over-card { position: absolute; z-index: 6; left: 0.875rem; bottom: 0.875rem; max-width: min(31rem, calc(100% - 9.5rem)); padding: var(--space-2) var(--space-7) var(--space-2) var(--space-2-5); border: 1px solid var(--line); border-left: 0.125rem solid var(--amber); border-radius: var(--radius-10); background: rgb(var(--rgb-media-ground) / 0.55); -webkit-backdrop-filter: blur(0.5rem); backdrop-filter: blur(0.5rem); font-size: var(--text-xs); line-height: 1.45; color: var(--text); text-wrap: pretty; opacity: 0.78; transition: opacity var(--dur-standard) var(--ease-default); }
+.cfg-over-card:hover, .cfg-over-card:focus-within { opacity: 1; }
+.cfg-over-card p { margin: 0; }
+.cfg-over-card b { font-size: 1.15em; }
+.cfg-over-card a { display: inline-block; margin-top: var(--space-1-5); color: var(--amber); }
+.cfg-over-close { position: absolute; right: var(--space-1-5); top: var(--space-1-5); width: 1.75rem; height: 1.75rem; border: 0; border-radius: var(--radius-round); background: transparent; color: var(--muted); font-size: var(--text-md); cursor: pointer; }
+.cfg-drones { position: relative; }
+@media (prefers-reduced-motion: reduce) { .cfg-minimap { transition: none; } }
+/* schmale Bühne: Karte kompakt über die volle Breite, keine Minimap (Marc: nimmt nur Platz weg) */
+@media (--nav-collapsed) {
+  .cfg-over-card { right: 0.875rem; max-width: none; }
+  .cfg-over-card p { max-height: 2.9em; overflow: hidden; } /* zwei Zeilen; der volle Text bleibt für Screenreader im DOM */
+  .cfg-over-card a { margin-top: var(--space-1); }
+  .cfg-minimap { display: none; }
+}
+/* Runde 27, dritte Runde: große Zahl = Bedarf, rot über der gewünschten Zahl; Beispiele als Textknöpfe; Bühne niedriger */
+.cfg-logo-count { margin: 0 0 var(--space-3); display: flex; align-items: baseline; gap: var(--space-2); color: var(--muted); font-size: var(--text-sm); }
+.cfg-logo-count b { font: 600 clamp(2.25rem, 3vw, 3rem)/1 var(--display, var(--body)); color: var(--text); transition: color var(--dur-standard) var(--ease-default); }
+.cfg-logo-count b { color: var(--logo-need, var(--text)); }
+.cfg-examples { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); }
+.cfg-examples button { padding: 0; border: 0; background: none; color: var(--muted); font: 400 var(--text-sm)/1.6 var(--body); text-decoration: underline; text-underline-offset: 0.2em; cursor: pointer; }
+.cfg-examples button:hover { color: var(--text); }
+.cfg-logo-own { display: grid; gap: var(--space-4); }
+.cfg-logo-own[hidden] { display: none; }
+fieldset.cfg-tool { margin: 0; padding: 0; border: 0; min-width: 0; }
+.cfg-seg { --chip-height: 2rem; --chip-padding: 0 var(--space-3); --chip-font-size: var(--text-sm); --chips-gap: var(--space-1-5); }
+
+
+/* Runde 27, vierte Runde: Upload oben, dann Beispiele, Bedarf + Regler, Liniendichte. Bedarfspunkt auf dem Regler in der
+   Paketfarbe des Bedarfs (wie die große Zahl), der gewünschte Griff und seine Zahl blass; Liniendichte mit Risikobereich */
+.cfg.is-logomode .cfg-own > legend, .cfg.is-logomode .cfg-text, .cfg.is-logomode .cfg-styles, .cfg.is-logomode .cfg-text-budget { display: none; }
+.cfg.is-logomode .cfg-own-wrap { order: 0; }
+.cfg.is-logomode .cfg-own { display: grid; gap: var(--space-4); }
+.cfg.is-logomode .cfg-drones { margin-top: var(--space-4); }
+.cfg.is-logomode .cfg-drones-head, .cfg.is-logomode .cfg-drones-head output { color: var(--muted); }
+.cfg-drone-slider { position: relative; }
+.cfg-logo-marker { position: absolute; z-index: 2; left: calc(0.625rem + (100% - 1.25rem) * var(--need-p, 0)); top: 50%; width: 1.25rem; height: 1.25rem; transform: translate(-50%, -50%); border-radius: var(--radius-round); background: var(--text); border: 0.25rem solid var(--logo-need); box-shadow: 0 0 0 0.25rem var(--overlay-heavy); pointer-events: none; transition: left var(--dur-standard) var(--ease-default), border-color var(--dur-standard) var(--ease-default); }
+.cfg-logo-marker[hidden] { display: none; }
+.cfg.is-logomode #cfg-drones::-webkit-slider-thumb { border-color: var(--muted); opacity: 0.5; }
+.cfg.is-logomode #cfg-drones::-moz-range-thumb { border-color: var(--muted); opacity: 0.5; }
+.cfg-density-risk { display: block; margin-top: var(--space-1); color: var(--logo-coral); font-size: var(--text-xs); }
+.cfg-density-risk[hidden] { display: none; }
+#cfg-detail { --track: linear-gradient(90deg, var(--logo-coral) 0 14%, var(--line-soft) 14%, var(--muted) 100%); }
+@media (--nav-expanded) { .cfg.is-logomode { grid-template-columns: clamp(22.5rem, 30vw, 36rem) minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .cfg-logo-marker, .cfg-over-card { transition: none; } }
+/* im Logo-Anlass: Paketname der Empfehlung ohne Preis (der gilt der ganzen Show), dazu „Dieses Logo in der Show verwenden“;
+   ohne eigenes Logo keine leere Karte */
+.cfg.is-logomode #cfg-price, .cfg.is-logomode .cfg-meta, .cfg.is-logomode .cfg-cta, .cfg.is-logomode .cfg-note, .cfg.is-logomode .cfg-bar { display: none; }
+.cfg.is-logomode:not(.has-logo) .cfg-sum { display: none; }
+.cfg-drone-slider .cfg-range { display: block; }
+.cfg-use-logo[hidden] { display: none; }
