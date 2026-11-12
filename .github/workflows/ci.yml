@@ -14,10 +14,10 @@ jobs:
     # Gemeinsame Unit-/Build-Gates; Browser und Audits prüfen danach denselben Output.
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         # Editor-Tests lesen ältere Stände (Migrationen, Revisionsnachweise) aus der Git-Geschichte.
         with: { fetch-depth: 0 }
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with: { node-version-file: .nvmrc, cache: npm, registry-url: 'https://npm.pkg.github.com', scope: '@marc-viladrich' }
       - run: npm ci
         # Private editor package (GitHub Packages): classic token with read:packages only.
@@ -36,7 +36,7 @@ jobs:
           MEDIA_HOST: ${{ vars.MEDIA_HOST || 'media.example.invalid' }}
           PUBLIC_FORM_ENDPOINT: ${{ vars.PUBLIC_FORM_ENDPOINT }}
       # Vor dem Consent-Testbuild sichern: alle Browser prüfen denselben Produktionsoutput.
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: production-build
           path: dist/
@@ -47,18 +47,18 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with: { fetch-depth: 0 }
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with: { node-version-file: .nvmrc, cache: npm, registry-url: 'https://npm.pkg.github.com', scope: '@marc-viladrich' }
       - run: npm ci
         env: { NODE_AUTH_TOKEN: '${{ secrets.PACKAGES_READ_TOKEN }}' }
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with: { name: production-build, path: dist }
       - name: Playwright-Version
         id: playwright
         run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
@@ -92,7 +92,7 @@ jobs:
           SITE_URL: ${{ vars.SITE_URL || 'https://example.invalid' }}
           MEDIA_HOST: ${{ vars.MEDIA_HOST || 'media.example.invalid' }}
           PUBLIC_FORM_ENDPOINT: ${{ vars.PUBLIC_FORM_ENDPOINT }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: reports-checks
@@ -111,18 +111,18 @@ jobs:
       matrix:
         lane: [desktop, mobile, webkit, mobile-webkit, physics]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with: { fetch-depth: 0 }
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with: { node-version-file: .nvmrc, cache: npm, registry-url: 'https://npm.pkg.github.com', scope: '@marc-viladrich' }
       - run: npm ci
         env: { NODE_AUTH_TOKEN: '${{ secrets.PACKAGES_READ_TOKEN }}' }
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with: { name: production-build, path: dist }
       - name: Playwright-Version
         id: playwright
         run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
@@ -149,7 +149,7 @@ jobs:
           CI: 'true'
           LANE: ${{ matrix.lane }}
           MEDIA_HOST: ${{ vars.MEDIA_HOST }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: reports-${{ matrix.lane }}
