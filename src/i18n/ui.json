@@ -1,4 +1,9 @@
 {
+  "logoMode.simplified": {
+    "de": "Euer Logo, vereinfacht für {n} Drohnen",
+    "en": "Your logo, simplified for {n} drones",
+    "nl": "Jullie logo, vereenvoudigd voor {n} drones"
+  },
   "chopper404.thisPageDoesnTExist": {
     "de": "Diese Seite gibt es nicht.",
     "en": "This page doesn't exist.",

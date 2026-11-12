@@ -54,6 +54,9 @@ if (form) {
   const field = createField($("#cfg-field"), {
     onBeat: (k, beat) => {
       $("#cfg-scene").textContent = beat.caption;
+      const logoCaption = $("#cfg-logo-caption");
+      logoCaption.hidden = !(beat.logo && !logoMode && drones < (lastLogoPts?.length ?? 0));
+      logoCaption.textContent = logoCaption.hidden ? "" : beat.caption;
       segment = beat.segment ?? 0;
       if (tour && current && k >= current.loopTo) tour = false; // the text ran through once; the round goes on without it
       showStyle(beat.textStyle ?? style);
@@ -274,24 +277,72 @@ if (form) {
   /** Points of the uploaded logo for n drones (logo-v10, Kontur; Farben schon für den Nachthimmel aufgehellt). Braucht das
    * Logo mehr als n Drohnen, steht es mit seiner eigenen Zahl da, und der Hinweis im Logo-Modus sagt es ehrlich. */
   const darkReserve = (lit, n) => Array.from({ length: Math.max(0, n - lit.length) }, (_, i) => { const q = lit[(i * 7) % lit.length]; return [q[0], q[1], -0.45 - 0.04 * (i % 3), 0, 0, 0]; });
+  // Only an explicit choice in the logo occasion changes the recommendation anchor.
+  // Applying the recommendation or changing the show package must never feed back into it.
+  const LOGO_ANCHOR_MAX = 200;
+  let logoWanted = null, sessionAnchor = null;
+  const logoAnchor = () => Math.max(DRONES_MIN, Math.min(logoWanted ?? drones, LOGO_ANCHOR_MAX));
+  const recommendation = (source) => memo(`logo-recommendation|${logoId}|${logoAnchor()}|${logoVer}`, () => logoPoints(source, logoAnchor()));
   const logoPoints = async (source, n) => {
     const mod = await logoModule();
+    if (source !== logo) throw new Error("stopped");
+    if (session && sessionAnchor !== null && sessionAnchor !== n) {
+      const removed = session.removed, options = session.options;
+      session.dispose(); session = mod.logoSession(source.file, options); session.setRemoved(removed);
+    }
     session ??= mod.logoSession(source.file, logoOptions());
-    const pts = source.example && detailAuto.getAttribute("aria-pressed") === "true" && !session.removed.length
-      ? await mod.exampleFormation(source.example, n) : await session.formation(n);
+    sessionAnchor = n;
+    const activeSession = session, version = logoVer;
+    // Old prepared files omit the density. Use the worker so the slider can report the real value.
+    let pts;
+    if (source.example && detailAuto.getAttribute("aria-pressed") === "true" && !session.removed.length) {
+      const prepared = await mod.exampleFormation(source.example, n).catch(() => null);
+      if (Number.isFinite(prepared?.meta?.density)) pts = prepared;
+    }
+    pts ??= await activeSession.formation(n);
     if (!pts.length) throw new Error("leer");
-    if (source === logo) {
+    if (source === logo && activeSession === session && version === logoVer) {
+      form.dataset.logoState = "ready";
       lastLogoPts = pts; $("#cfg-logo-status").textContent = "";
+      if (detailAuto.getAttribute("aria-pressed") === "true") {
+        const used = pts.meta?.density ?? pts.meta?.auto?.density;
+        if (Number.isFinite(used)) {
+          detail.value = String(DENSITIES.reduce((best, d, i) => Math.abs(d - used) < Math.abs(DENSITIES[best] - used) ? i : best, 0));
+          detail.dataset.usedDensity = String(used);
+        }
+      }
       editor ??= mod.stageEditor({ canvas: $("#cfg-pick"), band: $("#cfg-edit-band"), bar: $("#cfg-edit-bar"), text: $("#cfg-edit-text"), remove: $("#cfg-edit-remove"), restore: $("#cfg-edit-restore"), clear: $("#cfg-edit-clear"), all: $("#cfg-edit-all") }, {
         screenOf: field.screenOf, t: message,
         onChange: (list) => { if (!session) return; session.setRemoved(list); logoVer++; showCloud(); update(true, LOGO_SEGMENT, { cloud: true }); },
       });
       editor.show(pts, session.removed); drawLogoMode();
-      if (n === drones) showOver(pts, n);
+      showOver(pts, logoWanted ?? drones);
     }
-    // Drohnen, die das Logo nicht braucht, warten dunkel dahinter: jedes Bild hat mindestens die Drohnen des Pakets
+    // Die Empfehlung zählt ausschließlich leuchtende Punkte; Reserven gehören nur zur Show.
     const lit = pts.map((p) => [p.x, -p.y, 0, ...p.c]);
-    return [...lit, ...darkReserve(lit, n)];
+    return lit;
+  };
+  // Strict show conversions have their own lifetime; they cannot replace the editor/recommendation session.
+  const showLogoPoints = async (source, n) => {
+    const recommended = await recommendation(source);
+    if (source !== logo) throw new Error("stopped");
+    if (n >= recommended.length) return [...recommended, ...darkReserve(recommended, n)];
+    const mod = await logoModule(), options = logoOptions();
+    let density = lastLogoPts?.meta?.density ?? densityOf(+detail.value);
+    const strict = mod.logoSession(source.file, { ...options, flex: "strict", hardMax: n, density: undefined });
+    strict.setRemoved(session.removed);
+    try {
+      for (let attempt = 0; attempt < 8; attempt++) {
+        const pts = await strict.formation(n);
+        if (pts.length && pts.length <= n && (pts.meta?.density ?? density) <= density) {
+          const lit = pts.map(p => [p.x, -p.y, 0, ...p.c]);
+          return [...lit, ...darkReserve(lit, n)];
+        }
+        density = Math.max(0.03, density * Math.min(0.8, n / Math.max(1, pts.length) * 0.9));
+        strict.setOptions({ density });
+      }
+      throw new Error("Logo passt nicht in das strenge Show-Budget");
+    } finally { strict.dispose(); }
   };
   /** Runde 27 (Marc 12.11., dritte Runde, wie im lokalen Prototyp): Im Anlass „Euer Logo“ ist die große Zahl der Bedarf
    * („N Drohnen werden benötigt“, rot über der gewünschten Zahl); der Regler ist die gewünschte Drohnenanzahl. Der Hinweis
@@ -369,7 +420,7 @@ if (form) {
   /** Logo-Modus: das eigene Logo allein, sonst die Kundenlogos, die in diese Drohnenzahl passen. */
   async function logoShow() {
     if (logo) {
-      const pts = await memo(`logo|${logoId}|${drones}|${logoVer}`, () => logoPoints(logo, drones));
+      const pts = await recommendation(logo);
       return { beats: [logoBeat(pts, message('showConfigurator.yourLogo'), LOGO_SEGMENT, 30)], loopTo: 0 };
     }
     const mod = await logoModule(), list = await mod.customerLogos(drones);
@@ -382,12 +433,14 @@ if (form) {
     dropLogo();
   };
   const sequence = async () => {
-    if (logoMode) { const shown = await memo(`logomode|${drones}|${logoId}|${logoVer}`, () => logoShow().then((x) => x ?? Promise.reject(new Error("keine Logos")))).catch(() => null); if (shown) return shown; }
-    const p = pkgName(), base = `${occasion.id}|${p}|${drones}`, id = logoId, src = logo, withTour = tour && text;
-    const main = memo(`main|${base}|${text}|${style}`, () => buildSequence(motifs(), p, drones, pkg().color, occasion.id));
-    const tourSeq = withTour ? memo(`tour|${base}|${text}`, () => buildSequence(TOUR_STYLES.map(textMotif), p, drones, pkg().color, occasion.id)) : null;
-    const logoPts = src ? memo(`logo|${id}|${drones}|${logoVer}`, () => logoPoints(src, drones)).catch((error) => { console.warn("Logo konnte nicht umgerechnet werden", error); logoFailed(id); return null; }) : null;
-    return memo(`show|${base}|${text}|${style}|${withTour}|${src ? id + "." + logoVer : 0}`, async () => composeShow({
+    const showDrones = drones;
+    if (logoMode) { const shown = await memo(`logomode|${showDrones}|${logoAnchor()}|${logoId}|${logoVer}`, () => logoShow().then((x) => x ?? Promise.reject(new Error("keine Logos")))).catch(() => null); if (shown) return shown; }
+    const p = pkgName(), base = `${occasion.id}|${p}|${showDrones}`, id = logoId, src = logo, withTour = tour && text;
+    const main = memo(`main|${base}|${text}|${style}`, () => buildSequence(motifs(), p, showDrones, pkg().color, occasion.id));
+    const tourSeq = withTour ? memo(`tour|${base}|${text}`, () => buildSequence(TOUR_STYLES.map(textMotif), p, showDrones, pkg().color, occasion.id)) : null;
+    const logoPts = src ? memo(`logo-show|${id}|${showDrones}|${logoAnchor()}|${logoVer}`, () => showLogoPoints(src, showDrones)).catch((error) => { console.warn("Logo konnte nicht umgerechnet werden", error); if (id === logoId) $("#cfg-logo-status").textContent = message('showConfigurator.weCouldnTConvertThisFileAnSvgOrA'); return null; }) : null;
+    return memo(`show|${base}|${text}|${style}|${withTour}|${src ? id + "." + logoVer + "." + logoAnchor() : 0}`, async () => composeShow({
+      logoCaption: src && showDrones < (await recommendation(src)).length ? message('logoMode.simplified', { n: showDrones }) : message('showConfigurator.yourLogo'),
       main: await main, tour: await tourSeq, logo: await logoPts, textStyle: text ? style : null, textSegment: occasion.motifs.length,
       tourCaption: (caption, s) => message('configurator.captionStyle', { caption, style: STYLE_LABEL[s] }),
     }));
@@ -428,9 +481,10 @@ if (form) {
     document.documentElement.style.setProperty("--pkg", `rgb(${p.color.join(",")})`);
     const radio = form.querySelector(`[name=pkg][value="${STEPS.indexOf(s)}"]`);
     if (!radio.checked) radio.checked = true;
-    if (Number(slider.value) !== drones) slider.value = String(drones);
-    slider.setAttribute("aria-valuetext", message('showConfigurator.valueDronesValue', { v0: drones, v1: s.pkg }));
-    for (const [sel, txt] of [["#cfg-pkg", s.pkg], ["#cfg-bar-pkg", s.pkg], ["#cfg-price", eur(price)], ["#cfg-bar-price", eur(price)], ["#cfg-dronecount", String(drones)]]) $(sel).textContent = txt;
+    const displayedDrones = logoMode ? (logoWanted ?? drones) : drones;
+    if (Number(slider.value) !== displayedDrones) slider.value = String(displayedDrones);
+    slider.setAttribute("aria-valuetext", message('showConfigurator.valueDronesValue', { v0: displayedDrones, v1: s.pkg }));
+    for (const [sel, txt] of [["#cfg-pkg", s.pkg], ["#cfg-bar-pkg", s.pkg], ["#cfg-price", eur(price)], ["#cfg-bar-price", eur(price)], ["#cfg-dronecount", String(displayedDrones)]]) $(sel).textContent = txt;
     $("#cfg-meta").textContent = message('showConfigurator.valueExcludingVatAndTravel', { v0: message('packageDetails.showtimeLine',durationValues()) }); // Drohnenzahl steht am Regler (Runde 9), Showzeit für alle Pakete gleich (Runde 18)
     const summary = [
       message('showConfigurator.occasionValue', { v0: occasion.label }),
@@ -475,10 +529,15 @@ if (form) {
   // Paketknopf (fly: false) meldet es, bleibt aber beim Motiv auf der Bühne (der Vergleich „dasselbe Motiv, größeres
   // Paket“); Regler und gesperrte Lichtpunkte fliegen wie bisher zum neuen Motiv.
   function setDrones(n, { delay = 0, fly = true } = {}) {
-    const before = { pkg: pkgName(), drones }, need = textNeed(text);
+    const before = { pkg: pkgName(), drones }, need = textNeed(text), previousAnchor = logoAnchor();
     // mit eigenem Text nie unter seinen Bedarf (Regler, Paketknopf, Link); der Hinweis am Text sagt, warum
     if (need && n < need) { textNote = "holds"; n = need; } else if (snapDrones(n) !== drones) textNote = ""; // dieselbe Zahl (change nach input) behält den Hinweis
     drones = snapDrones(n);
+    if (logoMode) {
+      logoWanted = drones;
+      if (previousAnchor !== logoAnchor()) logoVer++;
+    }
+    else if (logo && drones < (lastLogoPts?.length ?? 0)) showCloud();
     // only more drones unlock: going down to a smaller package can bring back its simpler versions, that is no news
     const after = { pkg: pkgName(), drones }, now = after.drones > before.drones ? freshMotifs(occasion.motifs, before, after) : [];
     fresh = occasion.motifs.filter((m) => (fresh.includes(m) || now.includes(m)) && canPlay(m, after.pkg, after.drones));
@@ -567,7 +626,8 @@ if (form) {
   // ---------- Eigenes Logo (vierzehnte Fassung) ----------
   const file = $("#cfg-file"), upload = $("#cfg-upload"), off = $("#cfg-logo-off");
   function dropLogo() {
-    logo = null; logoId++; session?.dispose(); session = null; lastLogoPts = null; logoVer = 0;
+    logo = null; logoId++; session?.dispose(); session = null; sessionAnchor = null; lastLogoPts = null; logoVer = 0;
+    delete detail.dataset.usedDensity;
     overClosed = false; editor?.reset(); $("#cfg-over-card").hidden = true; drawCount(null);
     if (minimapURL) URL.revokeObjectURL(minimapURL); minimapURL = null; drawLogoMode();
     if (logoURL) URL.revokeObjectURL(logoURL);
@@ -580,12 +640,13 @@ if (form) {
     if (!/^image\/(svg\+xml|png|jpeg|webp)$/.test(f.type)) { status.textContent = message('showConfigurator.pleaseChooseAnSvgPngOrJpg'); return; }
     status.textContent = "";
     const use = (source) => {
-      dropLogo(); logo = { ...source, example }; logoId++;
+      form.dataset.logoExample = example ?? "";
+      dropLogo(); logoWanted ??= drones; logo = { ...source, example }; logoId++;
       if (source.kind === "image") logoURL = source.src;
       off.hidden = false; upload.classList.add("has-logo");
       logoMode = true; occRadio("logo").checked = true; // Runde 27: ein eigenes Logo öffnet den Anlass „Euer Logo“
       if (source.file) { minimapURL = URL.createObjectURL(source.file); $("#cfg-minimap-img").src = minimapURL; }
-      drawLogoMode(); if (!example) showCloud(); // sofort die lebendige Wolke, bis das Logo gerechnet ist
+      drawLogoMode(); showCloud(); // sofort die lebendige Wolke, bis das Logo gerechnet ist
       first = false; fresh = []; unlockTo = null; tour = false; // the logo comes now; the text run-through is over
       update(true, LOGO_SEGMENT, { cloud: true });
     };
@@ -679,6 +740,7 @@ if (form) {
   }
   $("#cfg-examples").addEventListener("click", async (e) => {
     const id = e.target.closest("[data-example]")?.dataset.example; if (!id) return;
+    form.dataset.logoState = "computing";
     const request = ++exampleRequest;
     try {
       const mod = await logoModule(); await mod.loadExample(id);
