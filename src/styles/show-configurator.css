@@ -268,7 +268,7 @@
 /* schmale Bühne: Karte kompakt über die volle Breite, keine Minimap (Marc: nimmt nur Platz weg) */
 @media (--nav-collapsed) {
   .cfg-over-card { right: 0.875rem; max-width: none; }
-  .cfg-over-card p { max-height: 2.9em; overflow: hidden; -webkit-mask-image: linear-gradient(180deg, var(--ground) 55%, transparent); mask-image: linear-gradient(180deg, var(--ground) 55%, transparent); }
+  .cfg-over-card p { max-height: 2.9em; overflow: hidden; } /* zwei Zeilen; der volle Text bleibt für Screenreader im DOM */
   .cfg-over-card a { margin-top: var(--space-1); }
   .cfg-minimap { display: none; }
 }
