@@ -305,7 +305,8 @@ test('Der Drohnenregler wechselt an der Bereichsgrenze sichtbar das Paket, mit e
   await expect(page.locator('#cfg-pkg')).toHaveText('SPARK');
   // mouse: drag the thumb to the far right, the package becomes ODYSSEY, the picture gets the new drone count
   const box = (await slider.boundingBox())!;
-  const x = (n: number) => box.x + 10 + ((n - 100) / 500) * (box.width - 20);
+  const min = Number(await slider.getAttribute('min')), max = Number(await slider.getAttribute('max'));
+  const x = (n: number) => box.x + 10 + ((n - min) / (max - min)) * (box.width - 20);
   await page.mouse.move(x(190), box.y + box.height / 2);
   await page.mouse.down();
   await page.mouse.move(x(250), box.y + box.height / 2, { steps: 8 });
@@ -332,7 +333,8 @@ test('Kein Hin und Her zwischen SPARK und HORIZON: Ziehen und Verweilen mit echt
   // every change of the package label, in order
   await page.locator('#cfg-pkg').evaluate((node) => { const w = window as unknown as { __pkgs: string[] }; w.__pkgs = [node.textContent ?? '']; new MutationObserver(() => w.__pkgs.push(node.textContent ?? '')).observe(node, { childList: true, characterData: true, subtree: true }); });
   const slider = page.locator('#cfg-drones'), box = (await slider.boundingBox())!, y = box.y + box.height / 2;
-  const x = (n: number) => box.x + 10 + ((n - 100) / 500) * (box.width - 20);
+  const min = Number(await slider.getAttribute('min')), max = Number(await slider.getAttribute('max'));
+  const x = (n: number) => box.x + 10 + ((n - min) / (max - min)) * (box.width - 20);
   await page.mouse.move(x(100), y); await page.mouse.down();
   // slowly over the former gap (150–200) and the boundary, resting with a trembling hand at several places
   for (const n of [140, 160, 170, 180, 190]) {
@@ -358,7 +360,8 @@ test('Mehr Drohnen schalten ein Motiv frei: Meldung auf der Bühne, die Bühne f
   await page.locator('#cfg-cta').evaluate((a) => a.getAttribute('href')).then((href) => expect(decodeURIComponent(href ?? '')).not.toContain('Antrag'));
   await page.locator('#cfg-field').evaluate((node) => { const w = window as unknown as { __clouds: string[] }; w.__clouds = []; new MutationObserver(() => w.__clouds.push((node as HTMLElement).dataset.cloud ?? '')).observe(node, { attributes: true, attributeFilter: ['data-cloud'] }); });
   const slider = page.locator('#cfg-drones'), box = (await slider.boundingBox())!, y = box.y + box.height / 2;
-  const x = (n: number) => box.x + 10 + ((n - 100) / 500) * (box.width - 20);
+  const min = Number(await slider.getAttribute('min')), max = Number(await slider.getAttribute('max'));
+  const x = (n: number) => box.x + 10 + ((n - min) / (max - min)) * (box.width - 20);
   await page.mouse.move(x(300), y); await page.mouse.down();
   await page.mouse.move(x(460), y, { steps: 12 });
   await page.mouse.up();
@@ -549,30 +552,42 @@ test('Eigenes Logo per Dateiauswahl und Drag&Drop: eigenes Bild im Ablauf, die D
   await expect(page.locator('#cfg-legal')).toHaveText('Lade nur Logos hoch, die du verwenden darfst, zum Beispiel dein eigenes. Die Datei bleibt in deinem Browser: Wir speichern und übertragen sie nicht.');
   await expect(page.locator('#cfg-file')).toHaveAccessibleDescription(/Lade nur Logos hoch/);
   await recordBeats(page);
+  // Der Budgetvertrag erlaubt nur die vollständige Mindestfassung oberhalb des Show-Budgets.
+  const expectLogo = async (budget: number) => {
+    await expect.poll(async () => {
+      const points = Number(await field(page).getAttribute('data-points'));
+      const caption = await scene(page).textContent();
+      return points === budget
+        ? ['Euer Logo', `Euer Logo, vereinfacht für ${budget} Drohnen`].includes(caption ?? '')
+        : points > budget && caption === `Euer Logo braucht mindestens ${points} Drohnen`;
+    }, { timeout: 90000 }).toBe(true);
+    return (await scene(page).textContent())!;
+  };
   // 1) file picker
   await page.locator('#cfg-file').setInputFiles({ name: 'logo.png', mimeType: 'image/png', buffer: LOGO_PNG });
-  await expect(scene(page)).toHaveText('Euer Logo');
-  await expect(field(page)).toHaveAttribute('data-points', '200');
+  await expect(page.locator('#cfg-use-logo')).toBeVisible();
+  await page.locator('#cfg-use-logo').click();
+  await pkg(page, 1);
+  const logoCaption = await expectLogo(200);
   await expect.poll(() => beatsSeen(page)).toContainEqual(expect.stringMatching(/:all$/)); // through the living cloud
   await expect(page.locator('#cfg-logo-off')).toBeVisible();
   // the logo stands 5 s and comes back in the round: the round has it before every second motif
   const pictures = Number(await page.locator('#cfg-track').getAttribute('aria-valuemax')), captions: string[] = [];
   for (let i = 0; i < pictures; i++) { captions.push((await scene(page).textContent()) ?? ''); await page.locator('#cfg-next').click(); }
-  expect(captions[0]).toBe('Euer Logo');
-  expect(captions.filter((c) => c === 'Euer Logo').length).toBeGreaterThanOrEqual(2);
-  await expect(scene(page)).toHaveText('Euer Logo'); // round the loop: the round starts with the logo
+  expect(captions[0]).toBe(logoCaption);
+  expect(captions.filter((c) => c === logoCaption).length).toBeGreaterThanOrEqual(2);
+  await expect(scene(page)).toHaveText(logoCaption); // round the loop: the round starts with the logo
   // a new drone count goes back to the logo
   await page.locator('#cfg-next').click();
-  await expect(scene(page)).not.toHaveText('Euer Logo');
+  await expect(scene(page)).not.toHaveText(logoCaption);
   await page.locator('#cfg-drones').focus();
   await page.keyboard.press('ArrowRight'); // 210: nothing new to unlock, so back to the logo
-  await expect(scene(page)).toHaveText('Euer Logo');
-  await expect(field(page)).toHaveAttribute('data-points', '210');
+  await expectLogo(210);
   await expect(page.locator('#cfg-cta')).toHaveAttribute('href', /Eigenes\+Logo/);
   // 2) remove, then drag & drop onto the stage
   await page.locator('#cfg-logo-off').click();
   await expect(page.locator('#cfg-logo-off')).toBeHidden();
-  await expect(scene(page)).not.toHaveText('Euer Logo');
+  await expect(scene(page)).not.toHaveText(logoCaption);
   const stage = page.locator('.cfg-stage');
   const dt = await page.evaluateHandle((b64) => { const d = new DataTransfer(); const bin = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0)); d.items.add(new File([bin], 'logo.png', { type: 'image/png' })); return d; }, LOGO_PNG.toString('base64'));
   if (!info.project.name.startsWith('mobile')) { const b = (await stage.boundingBox())!; await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2); }
@@ -584,7 +599,9 @@ test('Eigenes Logo per Dateiauswahl und Drag&Drop: eigenes Bild im Ablauf, die D
   // the drop zone is gone at once, even with the mouse still on the stage
   await expect(stage).toHaveClass(/is-done/);
   await expect(page.locator('.cfg-drop')).toHaveCSS('opacity', '0');
-  await expect(scene(page)).toHaveText('Euer Logo');
+  await expect(page.locator('#cfg-use-logo')).toBeVisible();
+  await page.locator('#cfg-use-logo').click();
+  await expectLogo(Number(await droneCount(page).textContent()));
   // nothing left the browser: no request with the file, no storage
   expect(requests.filter((r) => !r.startsWith('GET ')), 'keine Übertragung').toEqual([]);
   expect(requests.filter((r) => !/^GET http:\/\/127\.0\.0\.1:\d+\//.test(r)), 'nur eigene Dateien der Seite').toEqual([]);
@@ -675,6 +692,7 @@ test('Logo, Text-Durchlauf, Anlasswechsel und Rücksprung bleiben fliegbar (Gren
   await page.locator('#cfg-file').setInputFiles({ name: 'logo.png', mimeType: 'image/png', buffer: LOGO_PNG });
   await page.clock.runFor(2000);
   await expect(scene(page)).toHaveText('Euer Logo');
+  await page.locator('#cfg-use-logo').click();
   await page.locator('#cfg-text').fill('Anna & Ben');
   await page.locator('#cfg-text').press('Enter');
   await page.clock.runFor(90_000); // the run-through, the logo, motifs

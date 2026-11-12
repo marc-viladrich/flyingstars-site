@@ -1,0 +1,117 @@
+# Veröffentlichung Motivkatalog und Logo-Modus
+
+Stand 12.11.2026. Ausgangs-HEAD `5bc87f5`, `origin/main` bei Prüfung `3a3859d`. Fetch erfolgreich. `git merge origin/main --no-edit` meldet „Already up to date“; keine Konflikte. Keine weiteren Branches gemergt.
+
+## Branchinventar vor Veröffentlichung
+
+„Enthalten“ bedeutet Commit-Abstammung. Patchgleiche Commits können trotz abweichender Historie bereits integriert sein. Offene PRs sind kein Beweis, dass deren Inhalt noch fehlt.
+
+| Branch | Enthalten | Zusätzliche Patches laut git cherry |
+|---|---|---|
+| `claude/showreel-seamless-loop-2026-11-03` | ja | – |
+| `codex/afe-030` | ja | – |
+| `codex/analytics-consent` | ja | – |
+| `codex/consent-library` | ja | – |
+| `codex/css-tokens` | nein | 0 |
+| `codex/dedupe-r20-a` | nein | 1 |
+| `codex/dedupe-r20-b` | nein | 1 |
+| `codex/dupes-inventory-r20` | nein | 1 |
+| `codex/dupes-report` | nein | 1 |
+| `codex/editor-migration` | ja | – |
+| `codex/i18n-contract` | nein | 1 |
+| `codex/i18n-design` | nein | 0 |
+| `codex/i18n-en-nl` | ja | – |
+| `codex/i18n-merge-r13` | ja | – |
+| `codex/i18n-p2` | ja | – |
+| `codex/i18n-p3` | ja | – |
+| `codex/inhalte-fallstudien` | ja | – |
+| `codex/konsolidierung` | ja | – |
+| `codex/kontaktformular-dsgvo` | ja | – |
+| `codex/node26` | nein | 0 |
+| `codex/pages-noindex-2026-11-04` | ja | – |
+| `codex/referenzen-sheet-daten` | ja | – |
+| `codex/rem-sweep` | ja | – |
+| `codex/rest-pflege` | ja | – |
+| `codex/showreel-dynamic-ending-2026-11-03` | ja | – |
+| `codex/showreel-loop-transition-2026-11-03` | ja | – |
+| `codex/showreel-motifs-2026-11-03` | ja | – |
+| `codex/showreel-pacing-2026-11-03` | ja | – |
+| `codex/showreel-qr-transition-2026-11-03` | ja | – |
+| `codex/sicherheitskonzept` | ja | – |
+| `codex/site-afe-031` | nein | 0 |
+| `codex/t02-shared-blocks` | nein | 0 |
+| `codex/ueber-uns-usps` | ja | – |
+| `codex/ui-dependency-narrow` | ja | – |
+| `codex/video-diaet` | ja | – |
+| `codex/video-header-budget-2026-11-03` | ja | – |
+| `codex/video-vergleich-2026-11-03` | ja | – |
+| `feat/designsprache-poc` | ja | – |
+| `feat/elevate-2026-10-30` | nein | 8 |
+| `feat/flyingstars-reference` | ja | – |
+| `feat/katalog-motive` | ja | – |
+| `feat/logo-modus` | ja | – |
+| `feat/show-konfigurator` | ja | – |
+| `fix/minimal-fonts` | ja | – |
+| `fix/publication-flow` | ja | – |
+| `main` | ja | – |
+| `merge/designsprache-main` | ja | – |
+| `review/flyingstars-opus-pass` | ja | – |
+| `origin/afe/editor-package` | ja | – |
+| `origin/ci/direct-deploy` | ja | – |
+| `origin/ci/timeout` | ja | – |
+| `origin/claude/issue-2-20261006-1509` | nein | 1 |
+| `origin/claude/issue-2-20261006-1512` | nein | 1 |
+| `origin/codex/afe-030` | ja | – |
+| `origin/codex/consent-library` | ja | – |
+| `origin/codex/editor-migration` | ja | – |
+| `origin/codex/inhalte-fallstudien` | ja | – |
+| `origin/codex/konsolidierung` | ja | – |
+| `origin/codex/pages-noindex-2026-11-04` | ja | – |
+| `origin/codex/showreel-dynamic-ending-2026-11-03` | ja | – |
+| `origin/codex/showreel-loop-transition-2026-11-03` | ja | – |
+| `origin/codex/showreel-motifs-2026-11-03` | ja | – |
+| `origin/codex/showreel-pacing-2026-11-03` | ja | – |
+| `origin/codex/showreel-qr-transition-2026-11-03` | ja | – |
+| `origin/codex/video-header-budget-2026-11-03` | ja | – |
+| `origin/codex/video-vergleich-2026-11-03` | ja | – |
+| `origin/content/draft` | ja | – |
+| `origin/content/issue-1` | ja | – |
+| `origin/dependabot/github_actions/actions-824dd6882b` | nein | 1 |
+| `origin/dependabot/npm_and_yarn/minor-and-patch-42d2a8f015` | nein | 1 |
+| `origin/dependabot/npm_and_yarn/minor-and-patch-5fc082f472` | nein | 1 |
+| `origin/dependabot/npm_and_yarn/minor-and-patch-7d15e1a3a4` | nein | 1 |
+| `origin/dependabot/npm_and_yarn/typescript-7.0.2` | nein | 1 |
+| `origin/deps/editor-0.2.3` | ja | – |
+| `origin/feat/designsprache-poc` | ja | – |
+| `origin/feat/elevate-2026-10-30` | nein | 8 |
+| `origin/feat/flyingstars-reference` | nein | 0 |
+| `origin/feat/show-konfigurator` | ja | – |
+| `origin/fix/minimal-fonts` | ja | – |
+| `origin/fix/publication-flow` | ja | – |
+| `origin/fix/stale-translation` | ja | – |
+| `origin/main` | ja | – |
+| `origin/merge/designsprache-main` | ja | – |
+| `origin/perf/css-delivery` | nein | 3 |
+
+## Korrektur der bekannten Unit-Fehler
+
+- Locale-Test: `auditContracts` validiert weiterhin alle 132 vollständigen Locale-Dateien inklusive Version, Hash, Feldbelegen und Review-Frische. Zulässig sind sowohl initial übernommene als auch später geprüfte Felder. Der alte Test verlangte irrtümlich ausschließlich den einmaligen Migrationsstatus.
+- Freischalt-Test: Die generische Prüfung über alle Anlässe bleibt unverändert. Die konkreten Hochzeits-Erwartungen berücksichtigen die Katalogmotive ab 150 und 200 Drohnen; die alten Erwartungen stammten aus der Zeit vor dem Katalog. Keine Änderung der Produktlogik.
+
+## Geltungsgrenzen
+
+Die fachlich noch offenen Arbeiten stehen in [der Übergabe](uebergabe-naechste-runde.md). Sie werden mit dieser Veröffentlichung nicht als erledigt erklärt.
+
+## Nachtrag von Marc
+
+Die zusätzliche Logo-Hinweisbox auf der Bühne ist vollständig aus Markup und Controller entfernt, in allen Sprachen und bei allen Show-Budgets. Die unsichtbare Bildbeschreibung `cfg-scene` bleibt für assistive Technik erhalten. Der schnelle Unit-Wächter `src/scripts/logo-caption.test.mjs` und die Logo-Browserspec verhindern die Rückkehr der Box.
+
+## Lokale Vorprüfung
+
+- Unit-Gesamtlauf: 765 Tests, 763 bestanden, zwei übersprungen, keine Fehler; 763,5 Sekunden. Der anschließend hinzugefügte Box-Wächter besteht separat.
+- Astro check: null Fehler, null Warnungen, 312 Hinweise. Produktionsbuild erfolgreich.
+- Logo-Budget-Browserspec: 16/16 auf Desktop/Mobil in Chromium und WebKit gegen den Produktionsbuild.
+- Die alten Regler-Mausprüfungen verwenden jetzt die nativen Inputgrenzen statt einer hartcodierten 600er-Skala. Der Upload-Test prüft das neue Budget-/Mindestbedarfsmodell ausdrücklich, einschließlich konsistenter Bildbeschreibung.
+
+- Layout-Audit gegen Produktionspreview: Chromium und WebKit jeweils 22 Seiten × fünf Breiten (390, 940, 1440, 1920, 2560), null Befunde.
+- Erster Konfiguratorlauf: 26 bestanden, drei veraltete Erwartungen, ein Timeout; 134 nicht ausgeführt. Timeout-Ursache: Der Upload öffnet seit Runde 27 den Logo-Anlass; der Test versuchte dort das verborgene Textfeld zu füllen. Upload- und Physiktest übernehmen das Logo nun ausdrücklich über den Button in die Show. Ein vollständiger Wiederholungslauf folgt. Die ersten drei korrigierten Desktop-Mausfälle bestanden gezielt.

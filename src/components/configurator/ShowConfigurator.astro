@@ -59,7 +59,7 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
            YouTube); als echter Knopf erreichbar, Leertaste und Eingabe schalten um */}
       <button type="button" class="cfg-hit" id="cfg-hit" aria-label={t('showconfigurator.pauseThePreview')} aria-pressed="false"></button>
       <span class="cfg-flash" id="cfg-flash" aria-hidden="true"><svg class="i-pause" viewBox="0 0 16 16"><rect x="4" y="3" width="2.6" height="10" rx="1"/><rect x="9.4" y="3" width="2.6" height="10" rx="1"/></svg><svg class="i-play" viewBox="0 0 16 16"><path d="M5 3.2v9.6a.6.6 0 0 0 .9.5l7.6-4.8a.6.6 0 0 0 0-1L5.9 2.7a.6.6 0 0 0-.9.5z"/></svg></span>
-      <div class="cfg-caption"><em id="cfg-new">{STEPS[start].pkg}</em><span id="cfg-logo-caption" hidden></span></div>
+      <div class="cfg-caption"><em id="cfg-new">{STEPS[start].pkg}</em></div>
       <div class="cfg-drop" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0-5 5m5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg><span>{t('showconfigurator.dragYourLogoHere')}</span><small>{t('showconfigurator.svgPngOrJpg')}</small></div>
       <span class="sr-only" id="cfg-scene">{firstCaption}</span>
       <p class="cfg-toast" id="cfg-toast" role="status"></p>

@@ -48,8 +48,7 @@ test('HORIZON-Logo wird in SPARK vereinfacht; Automatisch zeigt die genutzte Dic
   await expect(page.locator('#cfg-scene')).toHaveText('Euer Logo, vereinfacht für 100 Drohnen', { timeout: 90000 });
   await expect(page.locator('#cfg-field')).toHaveAttribute('data-points', '100');
   await expect(page.locator('#cfg-detail')).not.toBeVisible();
-  await expect(page.locator('#cfg-logo-caption')).toBeVisible();
-  await expect(page.locator('#cfg-logo-caption')).toHaveText('Euer Logo, vereinfacht für 100 Drohnen');
+  await expect(page.locator('#cfg-logo-caption')).toHaveCount(0);
   await expect.poll(async () => Number(await page.locator('#cfg-field').getAttribute('data-lit')), {timeout:15000}).toBeLessThanOrEqual(100);
   expect(page.workers().filter(worker => worker.url().includes('logo-worker'))).toEqual([]);
   await page.screenshot({ path: `/tmp/logo-budget-${test.info().project.name}-spark.png` });
@@ -83,7 +82,7 @@ test('Eine nicht passende strenge Fassung bleibt sichtbar mit Mindestbedarf und 
   await page.locator('#cfg-use-logo').click();
   await page.locator('label:has([name=pkg][value="0"])').click();
   await expect(page.locator('#cfg-scene')).toHaveText(`Euer Logo braucht mindestens ${need} Drohnen`);
-  await expect(page.locator('#cfg-logo-caption')).toHaveText(`Euer Logo braucht mindestens ${need} Drohnen`);
+  await expect(page.locator('#cfg-logo-caption')).toHaveCount(0);
   await expect(page.locator('#cfg-logo-status')).toHaveText('');
   await expect(page.locator('#cfg-error')).toBeHidden();
   await expect(page.locator('#cfg-field')).toHaveAttribute('data-points', String(need));

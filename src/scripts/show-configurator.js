@@ -55,9 +55,6 @@ if (form) {
   const field = createField($("#cfg-field"), {
     onBeat: (k, beat) => {
       $("#cfg-scene").textContent = beat.caption;
-      const logoCaption = $("#cfg-logo-caption");
-      logoCaption.hidden = !(beat.logo && !logoMode && drones < (lastLogoPts?.length ?? 0));
-      logoCaption.textContent = logoCaption.hidden ? "" : beat.caption;
       segment = beat.segment ?? 0;
       if (tour && current && k >= current.loopTo) tour = false; // the text ran through once; the round goes on without it
       showStyle(beat.textStyle ?? style);
