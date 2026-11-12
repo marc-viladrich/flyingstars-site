@@ -27,7 +27,12 @@ for(const key of ['smiley','handschlag','konfetti','anstossen']) {
 test('wink closes only right eye into a line and returns to the identical open pose',async()=>{
  const b=(await catalogScene('smiley','SPARK',105,'')).beats[0]; const closed=pose(b,1.5),end=pose(b,3);
  const moved=closed.flatMap((p,j)=>Math.abs(p[1]-b.pts[j][1])>1e-8?[j]:[]);
- assert.ok(moved.length>10);for(const j of moved){assert.ok(b.pts[j][0]>.12);assert.equal(closed[j][1],.18);}
+ assert.ok(moved.length>5);for(const j of moved){assert.ok(b.pts[j][0]>.12);assert.ok(closed[j][1]>=.169&&closed[j][1]<=.206,'Lid als flacher Bogen');}
+ // the lid is not denser than the open eye: only every second eye drone forms it, the others are dark meanwhile
+ const lid=moved.map(j=>closed[j][0]).sort((a,c)=>a-c), gaps=lid.slice(1).map((x,i)=>x-lid[i]);
+ assert.ok(Math.min(...gaps)>.02,`Abstand im Lid ${Math.min(...gaps)}`);
+ const dark=closed.flatMap((p,j)=>p[3]<.05?[j]:[]);
+ assert.ok(dark.length>=moved.length-1&&dark.every(j=>b.pts[j][0]>.12&&!moved.includes(j)));
  assert.deepEqual(end,b.pts.map(p=>[...p.slice(0,3),1]));
 });
 test('glass masks own complete crossing bowls; only right glass flies, rear dims to zero',async()=>{

@@ -24,8 +24,13 @@ const interpolate = (p,q,u,o) => { for(let k=0;k<3;k++) o[k]=p[k]+(q[k]-p[k])*u;
 export function catalogAction(key,f,pts) {
   if(key==='smiley') {
     const eye=pts.flatMap((p,j)=>p[0]>.12&&p[0]<.55&&p[1]>.02&&p[1]<.36?[j]:[]).sort((a,b)=>pts[a][0]-pts[b][0]);
-    const targets=new Map(eye.map((j,i)=>[j,[.18+.32*i/(eye.length-1),.18,pts[j][2]]]));
-    return { live:(b,j,t,o)=>{const q=targets.get(j); if(q) {const u=progress(t,.5,.9)*(1-progress(t,1.65,.9)); interpolate(b,q,u,o);} }, duration:3 };
+    // Claude, Runde 28: alle Augendrohnen auf einer kurzen Linie standen dichter als jede andere Stelle des Bildes und
+    // lasen sich als Balken. Jede zweite Drohne (in x-Reihenfolge) bildet das geschlossene Lid als flachen Bogen über die
+    // Breite des offenen Auges; die anderen bleiben an ihrem Platz und schalten für das Zwinkern das Licht aus.
+    const xs=eye.map(j=>pts[j][0]), x0=Math.min(...xs), x1=Math.max(...xs), lid=eye.filter((_,i)=>i%2===0);
+    const targets=new Map(lid.map((j,i)=>{const s=i/Math.max(1,lid.length-1); return [j,[x0+(x1-x0)*s,.17+.035*(1-(2*s-1)**2),pts[j][2]]];}));
+    const off=new Set(eye.filter((_,i)=>i%2===1));
+    return { live:(b,j,t,o)=>{const u=progress(t,.5,.9)*(1-progress(t,1.65,.9)); const q=targets.get(j); if(q) interpolate(b,q,u,o); else if(off.has(j)) o[3]*=1-progress(t,.5,.35)*(1-progress(t,1.75,.35)); }, duration:3 };
   }
   if(key==='handschlag') {
     // The source is the OPEN pose (clip 24, 0.63 s). Separate hands first; fold fingers into the clasp, then hold.
