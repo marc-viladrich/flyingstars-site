@@ -1,82 +1,82 @@
 [
   {
     "id": "mastercard",
-    "bytes": 446685,
-    "gzip": 78968
-  },
-  {
-    "id": "dhl",
-    "bytes": 652438,
-    "gzip": 54784
-  },
-  {
-    "id": "firefox",
-    "bytes": 470385,
-    "gzip": 92925
-  },
-  {
-    "id": "spotify",
-    "bytes": 405013,
-    "gzip": 88543
-  },
-  {
-    "id": "nike",
-    "bytes": 339424,
-    "gzip": 20361
-  },
-  {
-    "id": "apple",
-    "bytes": 363360,
-    "gzip": 33322
-  },
-  {
-    "id": "mcdonalds",
-    "bytes": 366635,
-    "gzip": 67270
-  },
-  {
-    "id": "puma",
-    "bytes": 436087,
-    "gzip": 60537
-  },
-  {
-    "id": "cupra",
-    "bytes": 389045,
-    "gzip": 47249
-  },
-  {
-    "id": "duolingo",
-    "bytes": 483258,
-    "gzip": 105239
-  },
-  {
-    "id": "energizer",
-    "bytes": 837671,
-    "gzip": 18920
-  },
-  {
-    "id": "lamborghini",
-    "bytes": 530757,
-    "gzip": 11816
-  },
-  {
-    "id": "shell",
-    "bytes": 392875,
-    "gzip": 78013
-  },
-  {
-    "id": "target",
-    "bytes": 410556,
-    "gzip": 75721
+    "bytes": 34761,
+    "gzip": 8354
   },
   {
     "id": "ikea",
-    "bytes": 445169,
-    "gzip": 68885
+    "bytes": 41353,
+    "gzip": 7463
+  },
+  {
+    "id": "dhl",
+    "bytes": 160643,
+    "gzip": 16164
+  },
+  {
+    "id": "firefox",
+    "bytes": 33944,
+    "gzip": 7589
+  },
+  {
+    "id": "spotify",
+    "bytes": 43387,
+    "gzip": 8534
+  },
+  {
+    "id": "nike",
+    "bytes": 19996,
+    "gzip": 3680
+  },
+  {
+    "id": "apple",
+    "bytes": 22904,
+    "gzip": 4888
+  },
+  {
+    "id": "mcdonalds",
+    "bytes": 38463,
+    "gzip": 4720
   },
   {
     "id": "adidas",
-    "bytes": 375940,
-    "gzip": 30135
+    "bytes": 22725,
+    "gzip": 4545
+  },
+  {
+    "id": "puma",
+    "bytes": 46907,
+    "gzip": 8939
+  },
+  {
+    "id": "cupra",
+    "bytes": 41543,
+    "gzip": 9273
+  },
+  {
+    "id": "duolingo",
+    "bytes": 50959,
+    "gzip": 8717
+  },
+  {
+    "id": "energizer",
+    "bytes": 252504,
+    "gzip": 44454
+  },
+  {
+    "id": "lamborghini",
+    "bytes": 101372,
+    "gzip": 20163
+  },
+  {
+    "id": "shell",
+    "bytes": 25792,
+    "gzip": 7435
+  },
+  {
+    "id": "target",
+    "bytes": 42813,
+    "gzip": 10267
   }
 ]

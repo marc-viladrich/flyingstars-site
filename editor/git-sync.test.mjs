@@ -6,24 +6,27 @@ import {GitSync} from 'astro-frontend-editor/runtime';
 import {i18nFixture} from './i18n-test-fixture.mjs';
 import {git} from 'astro-frontend-editor/runtime';
 
-test('A slow remote push never holds the save lock; later content is pushed in the next round', {timeout:20000}, async t => {
+test('Git-Sync mit isolierter Site-Fixture', async t => {
   const {store}=await i18nFixture(t);
-  let pushing, finishPush;
-  const started=new Promise(resolve=>pushing=resolve),gate=new Promise(resolve=>finishPush=resolve);
-  let first=true,pushed=[];
-  store.sync=new GitSync(store,async(root,args,options)=>{
-    if(args[0]!=='push')return git(root,args,options);
-    pushed.push(args.at(-1).split(':')[0]);
-    if(first){first=false;pushing();await gate;}
-    return '';
-  },'origin');
-  t.after(()=>{finishPush();store.sync.close();});
-  const pendingPush=store.sync.flush();await started;
-  const state=await store.state(),record=state.records.find(r=>r.id==='page/en/index');
-  const saved=await store.save({expectedHead:state.head,requestId:randomUUID(),changes:[{id:record.id,expectedRevision:record.revision,patches:[{path:['title'],value:'Speichern während eines langsamen Pushs'}]}]});
-  assert.notEqual(saved.head,state.head);
-  finishPush();await pendingPush;assert.equal(store.sync.status.pending,true);
-  await store.sync.flush();assert.equal(store.sync.status.pending,false);assert.equal(pushed.at(-1),saved.head);
+  // Copying the real site is setup, not part of the 20-second lock/push contract.
+  await t.test('A slow remote push never holds the save lock; later content is pushed in the next round', {timeout:20000}, async t => {
+    let pushing, finishPush;
+    const started=new Promise(resolve=>pushing=resolve),gate=new Promise(resolve=>finishPush=resolve);
+    let first=true,pushed=[];
+    store.sync=new GitSync(store,async(root,args,options)=>{
+      if(args[0]!=='push')return git(root,args,options);
+      pushed.push(args.at(-1).split(':')[0]);
+      if(first){first=false;pushing();await gate;}
+      return '';
+    },'origin');
+    t.after(()=>{finishPush();store.sync.close();});
+    const pendingPush=store.sync.flush();await started;
+    const state=await store.state(),record=state.records.find(r=>r.id==='page/en/index');
+    const saved=await store.save({expectedHead:state.head,requestId:randomUUID(),changes:[{id:record.id,expectedRevision:record.revision,patches:[{path:['title'],value:'Speichern während eines langsamen Pushs'}]}]});
+    assert.notEqual(saved.head,state.head);
+    finishPush();await pendingPush;assert.equal(store.sync.status.pending,true);
+    await store.sync.flush();assert.equal(store.sync.status.pending,false);assert.equal(pushed.at(-1),saved.head);
+  });
 });
 
 test('Push failure keeps a successful save; retry backs up that exact commit to a local bare remote', async t => {

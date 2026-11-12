@@ -1,4 +1,9 @@
 {
+  "logoMode.minimum": {
+    "de": "Euer Logo braucht mindestens {n} Drohnen",
+    "en": "Your logo needs at least {n} drones",
+    "nl": "Jullie logo heeft minstens {n} drones nodig"
+  },
   "logoMode.simplified": {
     "de": "Euer Logo, vereinfacht für {n} Drohnen",
     "en": "Your logo, simplified for {n} drones",

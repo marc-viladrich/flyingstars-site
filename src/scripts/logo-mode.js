@@ -176,11 +176,13 @@ export function loadExample(id) {
   }).catch(error => { preparedExamples.delete(id); throw error; }));
   return preparedExamples.get(id);
 }
-export async function exampleFormation(id, n) {
-  const data = await loadExample(id), step = data.steps[n];
+export async function exampleFormation(id, n, showBudget) {
+  const data = await loadExample(id);
+  const ref = showBudget == null ? data.steps[n] : data.strict?.[n]?.[showBudget];
+  const step = typeof ref === "string" ? data.formations?.[ref] : ref;
   if (!step) throw new Error(`Unbekannte Drohnenstufe ${n}`);
   const p = decodePoints(step.p), pts = [];
   for (let i=0;i<p.length;i+=5) pts.push({ x:p[i]/1000, y:p[i+1]/1000, c:data.palette[p[i+2]], e:p[i+3], cg:p[i+4], wt:1 });
-  pts.meta = { frame:step.frame, elements:step.elements, colourGroups:step.colourGroups, spacing:step.spacing, n, over:pts.length>n };
+  pts.meta = { frame:step.frame, elements:step.elements, colourGroups:step.colourGroups, spacing:step.spacing, density:step.density, part:step.part, auto:step.auto, n:showBudget ?? n, over:pts.length>(showBudget ?? n) };
   return pts;
 }

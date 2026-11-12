@@ -1,3 +1,4 @@
+import { budgetFormation } from "./logo-v10/budget-formation.mjs";
 import {inquiryHref} from '../content/inquiry.mjs';
 import {startingPrice} from '../lib/price.mjs';
 import {durationValues} from '../content/show-duration.mjs';
@@ -293,7 +294,7 @@ if (form) {
     session ??= mod.logoSession(source.file, logoOptions());
     sessionAnchor = n;
     const activeSession = session, version = logoVer;
-    // Old prepared files omit the density. Use the worker so the slider can report the real value.
+    // Prepared examples carry the converter density; edited logos use the worker.
     let pts;
     if (source.example && detailAuto.getAttribute("aria-pressed") === "true" && !session.removed.length) {
       const prepared = await mod.exampleFormation(source.example, n).catch(() => null);
@@ -328,21 +329,25 @@ if (form) {
     if (source !== logo) throw new Error("stopped");
     if (n >= recommended.length) return [...recommended, ...darkReserve(recommended, n)];
     const mod = await logoModule(), options = logoOptions();
-    let density = lastLogoPts?.meta?.density ?? densityOf(+detail.value);
-    const strict = mod.logoSession(source.file, { ...options, flex: "strict", hardMax: n, density: undefined });
-    strict.setRemoved(session.removed);
-    try {
-      for (let attempt = 0; attempt < 8; attempt++) {
-        const pts = await strict.formation(n);
-        if (pts.length && pts.length <= n && (pts.meta?.density ?? density) <= density) {
-          const lit = pts.map(p => [p.x, -p.y, 0, ...p.c]);
-          return [...lit, ...darkReserve(lit, n)];
-        }
-        density = Math.max(0.03, density * Math.min(0.8, n / Math.max(1, pts.length) * 0.9));
-        strict.setOptions({ density });
-      }
-      throw new Error("Logo passt nicht in das strenge Show-Budget");
-    } finally { strict.dispose(); }
+    const maxDensity = lastLogoPts?.meta?.density ?? lastLogoPts?.meta?.auto?.density ?? densityOf(+detail.value);
+    let pts;
+    if (source.example && detailAuto.getAttribute("aria-pressed") === "true" && !session.removed.length) {
+      pts = await mod.exampleFormation(source.example, logoAnchor(), n).catch(() => null);
+    }
+    if (!pts) {
+      const strict = mod.logoSession(source.file, { ...options, flex: "strict", hardMax: n, density: undefined });
+      strict.setRemoved(session.removed);
+      try {
+        pts = await budgetFormation(async density => {
+          strict.setOptions({ density });
+          return strict.formation(n);
+        }, n, maxDensity);
+      } finally { strict.dispose(); }
+    }
+    const lit = pts.map(p => [p.x, -p.y, 0, ...p.c]);
+    const out = [...lit, ...darkReserve(lit, n)];
+    if (lit.length > n) out.minimum = lit.length;
+    return out;
   };
   /** Runde 27 (Marc 12.11., dritte Runde, wie im lokalen Prototyp): Im Anlass „Euer Logo“ ist die große Zahl der Bedarf
    * („N Drohnen werden benötigt“, rot über der gewünschten Zahl); der Regler ist die gewünschte Drohnenanzahl. Der Hinweis
@@ -439,11 +444,14 @@ if (form) {
     const main = memo(`main|${base}|${text}|${style}`, () => buildSequence(motifs(), p, showDrones, pkg().color, occasion.id));
     const tourSeq = withTour ? memo(`tour|${base}|${text}`, () => buildSequence(TOUR_STYLES.map(textMotif), p, showDrones, pkg().color, occasion.id)) : null;
     const logoPts = src ? memo(`logo-show|${id}|${showDrones}|${logoAnchor()}|${logoVer}`, () => showLogoPoints(src, showDrones)).catch((error) => { console.warn("Logo konnte nicht umgerechnet werden", error); if (id === logoId) $("#cfg-logo-status").textContent = message('showConfigurator.weCouldnTConvertThisFileAnSvgOrA'); return null; }) : null;
-    return memo(`show|${base}|${text}|${style}|${withTour}|${src ? id + "." + logoVer + "." + logoAnchor() : 0}`, async () => composeShow({
-      logoCaption: src && showDrones < (await recommendation(src)).length ? message('logoMode.simplified', { n: showDrones }) : message('showConfigurator.yourLogo'),
-      main: await main, tour: await tourSeq, logo: await logoPts, textStyle: text ? style : null, textSegment: occasion.motifs.length,
-      tourCaption: (caption, s) => message('configurator.captionStyle', { caption, style: STYLE_LABEL[s] }),
-    }));
+    return memo(`show|${base}|${text}|${style}|${withTour}|${src ? id + "." + logoVer + "." + logoAnchor() : 0}`, async () => {
+      const points = await logoPts;
+      return composeShow({
+        logoCaption: points?.minimum ? message('logoMode.minimum', { n: points.minimum }) : src && showDrones < (await recommendation(src)).length ? message('logoMode.simplified', { n: showDrones }) : message('showConfigurator.yourLogo'),
+        main: await main, tour: await tourSeq, logo: points, textStyle: text ? style : null, textSegment: occasion.motifs.length,
+        tourCaption: (caption, s) => message('configurator.captionStyle', { caption, style: STYLE_LABEL[s] }),
+      });
+    });
   };
 
   /** keep: stay on the motif on stage (package or drone switch); otherwise start the occasion's show from its first
