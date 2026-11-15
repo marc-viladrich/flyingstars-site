@@ -1,0 +1,64 @@
+/* Himmel: Schwarm, Himmelszeile, Punktübergänge zwischen Sections und der Lichtlauf der H1 (docs/himmel.md).
+   Schwarm und Himmelszeile fügt src/scripts/himmel/schwarm.ts ein; die Regeln dafür greifen nur an eingefügten Elementen. */
+
+/* ---------- Schwarm ---------- */
+/* Ebene in Seitenkoordinaten: scrollt mit dem Inhalt, stehende Bilder brauchen kein JavaScript */
+.hm-layer { position: absolute; left: 0; top: 0; width: 100%; height: 0; z-index: 5; pointer-events: none; }
+.hm-layer canvas { position: absolute; display: block; }
+
+/* Platz im Seitenfluss: nur auf schmalen Bildschirmen oder in vollen Sections, über der Überschrift */
+.hm-own { display: none; }
+.hm-gap-on .hm-own-head { display: block; width: 100%; height: 13rem; margin-bottom: var(--space-4); }
+
+/* Himmelsfenster über dem Formular: die Anfrage zeigt, was man gerade beschreibt */
+.hm-own-form {
+  display: block; height: 10.5rem;
+  margin: calc(-1 * clamp(var(--space-5-5), 3vw, var(--space-9))) calc(-1 * clamp(var(--space-5-5), 3vw, var(--space-9))) 0;
+  border-bottom: 1px solid var(--line); border-radius: var(--radius) var(--radius) 0 0;
+  background: radial-gradient(120% 90% at 50% 120%, rgb(var(--rgb-text) / 0.045), transparent 60%), rgb(var(--rgb-night) / 0.55);
+}
+
+@media (max-width: 43.75em) {
+  .hm-gap-on .hm-own-head { height: 11rem; }
+  .hm-own-form { height: 8.75rem; }
+}
+
+/* Himmelszeile: ein Stück Himmel über die ganze Inhaltsbreite, darunter eine Eingabe.
+   Das Eingabefeld ist das einzige Bedienelement; die Linie darunter ist eine Linie. */
+.hm-zeile { padding: clamp(var(--space-6), 4vw, var(--space-12)) var(--gutter) clamp(var(--space-9), 6vw, var(--space-16)); display: grid; gap: var(--space-6); }
+.hm-zeile .hm-own { display: block; width: 100%; height: clamp(11rem, 26vw, 23rem); }
+.hm-zeile-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: var(--space-2) var(--space-6); max-width: 56rem; }
+.hm-zeile-l { grid-column: 1 / -1; font-family: var(--mono); font-size: var(--text-xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+.hm-zeile-row input { min-width: 0; padding: var(--space-2) 0 var(--space-3); border: 0; border-bottom: 1px solid var(--line-strong); border-radius: 0; background: none; color: var(--head); font-family: var(--display); font-size: clamp(1.5rem, 3vw, 2.5rem); line-height: 1.1; letter-spacing: -0.02em; text-transform: uppercase; transition: border-color var(--dur-control); }
+.hm-zeile-row input::placeholder { color: var(--faint); opacity: 0.75; text-transform: none; }
+.hm-zeile-row input:focus-visible { outline: none; border-bottom-color: var(--head); }
+.hm-zeile-row .link { white-space: nowrap; align-self: end; margin-bottom: var(--space-3); }
+@media (max-width: 43.75em) {
+  .hm-zeile-row { grid-template-columns: minmax(0, 1fr); }
+  .hm-zeile-row .link { margin: var(--space-2) 0 0; }
+  .hm-zeile-row input { font-size: 1.25rem; }
+}
+
+/* ---------- Übergänge zwischen zwei Sectionfarben: Punktauflösung statt Haarlinie ----------
+   Maske aus tools/himmel/uebergang.mjs (576 × 128 px, Kante bei 84 px). Oben lösen sich Punkte der Fläche auf,
+   unten tauchen Punkte des Grundtons ein. Folgen zwei gleichfarbige Sections aufeinander, bleibt dort die Linie. */
+.section.alt { position: relative; border-color: transparent; }
+.section.alt::before, .section.alt::after {
+  content: ''; position: absolute; left: 0; right: 0; height: 8rem; pointer-events: none;
+  background: linear-gradient(to bottom, var(--surface) 65.625%, var(--ground) 65.625%);
+  -webkit-mask: url(/media/uebergang.svg) repeat-x 0 0 / 36rem 8rem; mask: url(/media/uebergang.svg) repeat-x 0 0 / 36rem 8rem;
+}
+.section.alt::before { top: -5.25rem; }
+.section.alt::after { bottom: -5.25rem; transform: scaleY(-1); -webkit-mask-position: 13rem 0; mask-position: 13rem 0; }
+.section.alt + .section.alt { border-top-color: var(--line); }
+.section.alt + .section.alt::before, .section.alt:has(+ .section.alt)::after { content: none; }
+
+/* ---------- Lichtlauf der H1 ----------
+   Einmal beim Laden: zusätzliches Licht läuft Buchstabe für Buchstabe durch die Überschrift. Die Schrift steht von Anfang an
+   voll da; nur die Helligkeit wandert (ein weicher Schein um jeden Buchstaben, kein Wechsel der Schriftform). */
+@keyframes hm-licht {
+  0%, 100% { text-shadow: 0 0 0 transparent, 0 0 0 transparent; }
+  38% { text-shadow: 0 0 0.06em rgb(var(--rgb-text) / 0.9), 0 0 0.4em rgb(var(--rgb-text) / 0.38); }
+}
+.hm-wd { white-space: nowrap; }
+.hm-lauf .hm-c { animation: hm-licht var(--dur-fade) var(--ease-ambient) var(--d, 0ms) both; }

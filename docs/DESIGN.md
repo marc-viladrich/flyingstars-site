@@ -1,6 +1,6 @@
 # FlyingStars – Designsprache
 
-Stand 31.10.2026 (Feedbackrunde 6: näher an den Vercel-Prototyp), davor abgeleitet aus vier Bewertungsrunden der Designsprache-Probe (`/poc/designsprache/`, Branch `feat/designsprache-poc`; alle PoC-Seiten am 04.11.2026 gelöscht, Stand in der Git-Historie). Grundlage ist der erste Prototyp (Branch `fix/minimal-fonts`); die Elevation „Lichtpunkt“ ist als Designrichtung verworfen, ihre Inhalte und Fakten bleiben gültig. Belege und Bewertungsverlauf: Kundenordner `freelance/clients/flyingstars/17-designsprache-poc-2026-10-30/README.md`.
+Stand 31.10.2026 (Feedbackrunde 6: näher an den Vercel-Prototyp), Himmel ergänzt am 15.11.2026, davor abgeleitet aus vier Bewertungsrunden der Designsprache-Probe (`/poc/designsprache/`, Branch `feat/designsprache-poc`; alle PoC-Seiten am 04.11.2026 gelöscht, Stand in der Git-Historie). Grundlage ist der erste Prototyp (Branch `fix/minimal-fonts`); die Elevation „Lichtpunkt“ ist als Designrichtung verworfen, ihre Inhalte und Fakten bleiben gültig. Belege und Bewertungsverlauf: Kundenordner `freelance/clients/flyingstars/17-designsprache-poc-2026-10-30/README.md`.
 
 ## Was die Marke trägt (nicht verhandelbar)
 
@@ -11,6 +11,7 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 - **Das warme Orange** aus dem Logo (`--accent`, `#f5a73c`) ist die Akzentfarbe für Texte und Icons: Kicker, Links, Kartenkicker, Icons. Marc, 31.10.: „Mir fehlt ein Schuss Farbe, den hatten wir durch die Eyebrow-Headings.“
 - **Space Grotesk** als Display-Schrift (mit durchgestrichener Null), Inter für Fließtext.
 - **Bewegung**: lebendige Wolke, Lichtlauf, Vorhang-Reveals, Laufband. Ruhig und magisch, nie hektisch.
+- **Der Himmel** (seit 15.11.2026 fest): ein Schwarm aus 300 Drohnen begleitet den Besuch, eine Himmelszeile lässt Besucher:innen ihr eigenes Wort an den Himmel schreiben, Punktübergänge zwischen den Sectionfarben, ein Lichtlauf über die H1. Regeln im Abschnitt „Himmel“.
 
 ## Grundlagen
 
@@ -24,7 +25,8 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 **Schrift:**
 - Space Grotesk aus `public/fonts/space-grotesk-0.woff2` (Version 2.000, mit `zero`), auf der ganzen Seite `font-feature-settings: 'zero'`
 - Keine weiteren Ziffern-Varianten, kein Stilset, keine weiteren Webfonts (der Font-Wächter in `tests/network-allowlist.spec.ts` erlaubt genau Inter und Space Grotesk)
-- Kein Lichtlauf durch Schriftachsen
+- Kein Lichtlauf durch Schriftachsen. Der Lichtlauf der H1 (Abschnitt „Himmel“) arbeitet nur mit Helligkeit
+- Pixelschriften sind geprüft und verworfen (Schrift-Labor, Runde 3, 13.11.2026: Geist Pixel und eine Ableitung mit weichen Ecken); Space Grotesk bleibt
 - Hervorhebung = Verlauf auf einzelnen Begriffen (`.grad`)
 
 **Section-Köpfe (alle Seiten):** eine Komponente, `src/components/SectionHead.astro`
@@ -161,6 +163,29 @@ Astro/Vite verwendet PostCSS; das bereits transitiv installierte Lightning CSS a
 
 **Reduzierte Bewegung und globale Pause** (`html.motion-paused`) werden überall respektiert.
 
+## Himmel
+
+Verbindlich seit 15.11.2026 (Abschluss des Schrift-Labors). Konzept, Bühnenplan und Technik: `docs/himmel.md`. Code: `src/scripts/himmel/`, `src/styles/himmel.css`.
+
+**Maßstab** (Marc, 13.11.2026): „Seamless, tasteful and subtle. Weniger ist mehr.“ Mehr Ideen heißt mehr Vielfalt an verschiedenen Stellen, nicht mehr gleichzeitig an einer.
+
+**Der Schwarm:**
+- Ein Schwarm aus 300 Drohnen bildet jedes Bild der Seite. Nichts entsteht, nichts verschwindet. Wechsel folgen den Regeln oben (lebendige Wolke, kein Einrasten, keine Finten)
+- Nur echte Formationen: Motive aus dem Katalog (`src/content/catalog-motifs.json`, `public/media/katalog/`), Schrift über `text-formation.js`. Einzige Ausnahme ist die Feuerwerksblüte bei `#warum-drohnen`, parametrisch erzeugt
+- Zugaben brauchen Luft: Ein Bild steht nur dort, wo es mit 40 px Abstand nichts berührt, was Blicke bindet (`free()`). Ist kein Platz, bleibt die Stelle leer; lieber weglassen. Bei 1440 und 1920 px ansehen
+- Keine Beschriftung am Bild: keine Namen, Drohnenzahlen oder Maße
+- Funktionale Elemente (Linien, Rahmen, Raster, Icons) werden nie mit Punkten überzogen
+- Bewegung startet früh: Der Schwarm fliegt los, sobald die nächste Bühne ins Bild kommt. Niemand wartet vor einer leeren Fläche, besonders am Formular
+- Auf schmalen Bildschirmen (unter 900 px) spielt der Schwarm nur an Himmelszeile, Preisen und Formular
+- Die Seite antwortet: Zeigen auf eine Anlass-Karte oder ein Paket, Eingaben im Formular und in der Himmelszeile ändern das Bild. Die Zuordnung läuft über stabile Merkmale (Kartenkicker, Link-Ziel, Formularwert), nie über die Position
+- Reduzierte Bewegung und Pause: Jede Bühne zeigt ihr Bild, nichts fliegt
+
+**Himmelszeile:** ein eigener Abschnitt direkt nach `#kundinnen` (Startseite). Vor der ersten Eingabe Worte und Bilder im Wechsel; wer etwas eintippt, sieht es als Formation, ein genanntes Katalogmotiv („Herz“) folgt als Bild. „Damit anfragen“ nimmt das Wort ins Formular mit.
+
+**Punktübergänge:** Wo eine Fläche (`.section.alt`) an den Grundton grenzt, ersetzt eine Punktauflösung die Haarlinie (`public/media/uebergang.svg`, Generator `tools/himmel/uebergang.mjs`). Folgen zwei Flächen aufeinander, bleibt dort die Linie.
+
+**Lichtlauf der H1:** nur die H1 jeder Seite, einmal beim Laden, unter einer Sekunde: zusätzliches Licht läuft Buchstabe für Buchstabe durch die Überschrift, die Schrift steht von Anfang an voll da. Nur Helligkeit, keine Schriftachse, kein Einblenden. Keine Auftritte an H2.
+
 ## Komponenten
 
 **Kopfzeile und Links (Runde 20–20c, 04.11.2026):**
@@ -246,6 +271,8 @@ Astro/Vite verwendet PostCSS; das bereits transitiv installierte Lightning CSS a
 - Meilensteine als wachsender Schwarm („wirkt cheap“): Meilensteine als ruhige Timeline
 - Interaktive 3D-Demos
 - Lichtlauf durch Schriftachsen, Hubot Sans und Geologica
+- Pixelschriften (Geist Pixel, „FS Pixel Weich“), Auftritte an H2, Bedienleiste und URL-Schalter des Schrift-Labors
+- Musterschicht aus Punktlinien, Startfeld-Ecken und Wolken hinter Kästen (Schrift-Labor Runde 1: „Tapete“)
 - Hover-Lupe mit Drohnen
 - Scrollstory nur gezielt: Nachhaltigkeit auf der Startseite (aus dem Prototyp zurückgeholt, Marc 31.10.: „das Scrollytelling finde ich ganz nice“), einmal Über uns nach persönlicher Vorstellung und frühem CTA
 - Rechter Fülltext, Microcopy, die nur wiederholt, was man sieht (Eyebrows sind seit 31.10. wieder Pflicht, siehe Section-Köpfe)

@@ -1,5 +1,5 @@
-// Punktübergang zwischen zwei Sectionfarben: erzeugt eine kachelbare SVG-Maske (public/media/labor/uebergang.svg).
-// Aufruf: node tools/labor/uebergang.mjs [seed=7]
+// Punktübergang zwischen zwei Sectionfarben: erzeugt eine kachelbare SVG-Maske (public/media/uebergang.svg).
+// Aufruf: node tools/himmel/uebergang.mjs [seed=7]
 // Oben (über der Kante) lösen sich Punkte der unteren Farbe nach oben auf, unten tauchen Punkte der oberen Farbe ein.
 // Unregelmäßig, aber gleichmäßig verteilt (Mindestabstand wächst mit der Entfernung zur Kante), in der Breite nahtlos.
 import { writeFileSync } from 'node:fs';
@@ -25,5 +25,5 @@ for (const p of dots) { const k = (Math.round(p.r * 4) / 4).toFixed(2); (bins.ge
 const n = (v) => Math.round(v);
 const paths = [...bins].map(([r, list]) => `<path stroke-width="${+(r * 2).toFixed(1)}" d="${list.map((p) => `M${n(p.x)} ${n(p.y)}h0`).join('')}"/>`).join('');
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><g fill="none" stroke="#fff" stroke-linecap="round">${paths}</g></svg>`;
-writeFileSync(new URL('../../public/media/labor/uebergang.svg', import.meta.url), svg);
+writeFileSync(new URL('../../public/media/uebergang.svg', import.meta.url), svg);
 console.log(`${dots.length} Punkte, ${svg.length} Bytes, Kachel ${W} × ${H} px, Kante bei ${UP} px`);
