@@ -679,6 +679,8 @@ td.us { color: var(--text); background: var(--fill-soft); }
 /* nach dem Auftritt reagieren Hover ohne Verzögerung; kein Foto-Zoom, die Lichtpunkte übernehmen */
 .member.shown, .member.shown > *, .member.shown .portrait img { transition-delay: 0s; }
 .portrait .ini { position: absolute; inset: 0; display: grid; place-items: center; font: 700 clamp(5.25rem, 9.5vw, 10rem)/1 var(--display); letter-spacing: -0.05em; color: transparent; -webkit-text-stroke: 1.5px var(--ink-subtle); background: radial-gradient(90% 70% at 50% 30%, rgb(var(--rgb-logo-orchid) / 0.14), transparent 70%), radial-gradient(80% 60% at 50% 100%, rgb(var(--rgb-logo-amber) / 0.1), transparent 70%); }
+/* Referenz ohne Showbild: Kundenname als Konturschrift, gleiche Sprache wie das Porträt ohne Foto */
+.ref-ph { position: absolute; inset: 0; display: grid; place-items: center; font: 700 clamp(3.5rem, 7vw, 7rem)/1 var(--display); letter-spacing: -0.04em; color: transparent; -webkit-text-stroke: 1.5px var(--ink-subtle); background: radial-gradient(90% 70% at 50% 30%, rgb(var(--rgb-logo-orchid) / 0.14), transparent 70%), radial-gradient(80% 60% at 50% 100%, rgb(var(--rgb-logo-amber) / 0.1), transparent 70%); }
 .portrait .soon { position: absolute; left: 0.75rem; bottom: 0.75rem; z-index: 2; color: rgb(var(--rgb-text) / 0.65); }
 .member .role { color: var(--amber); }
 .member h3 { font-size: var(--text-lg); width: fit-content; padding-bottom: var(--space-0-5); }

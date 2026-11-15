@@ -25,9 +25,10 @@ export function lichtlauf(): void {
   const units: HTMLElement[] = [];
   for (const text of texts) {
     const frag = document.createDocumentFragment();
-    for (const part of text.textContent!.split(/(\s+)/)) {
+    // Weiche Trennstriche (U+00AD) bleiben als Text zwischen den Wortteilen, damit lange Wörter weiter umbrechen dürfen
+    for (const part of text.textContent!.split(/(\s+|\u00AD)/)) {
       if (!part) continue;
-      if (/^\s+$/.test(part)) { frag.append(part); continue; }
+      if (/^(\s+|\u00AD)$/.test(part)) { frag.append(part); continue; }
       const word = document.createElement('span'); word.className = 'hm-wd';
       for (const ch of Array.from(part)) { const c = document.createElement('span'); c.className = 'hm-c'; c.textContent = ch; word.append(c); units.push(c); }
       frag.append(word);
