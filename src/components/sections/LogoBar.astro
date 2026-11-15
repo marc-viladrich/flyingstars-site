@@ -14,7 +14,7 @@ import { optimizedLogo } from '../../lib/media';
 type Props = Extract<Section, { type: 'logoBar' }> & { index: number };
 import Icon from '../Icon.astro';
 const QICON = { permit: 'file-badge', sound: 'audio-lines', shield: 'shield-check', leaf: 'leaf' } as const;
-const { headline, logos, pressHeadline = t('logoBar.pressHeadline'), pressItems, qualityHeadline = t('logoBar.qualityHeadline'), quality, kicker, id = `s${Astro.props.index}` } = Astro.props;
+const { headline, label, pressLabel, logos, pressHeadline = t('logoBar.pressHeadline'), pressItems, qualityHeadline = t('logoBar.qualityHeadline'), quality, kicker, id = `s${Astro.props.index}` } = Astro.props;
 
 const file = (path: string) => join(process.cwd(), 'public', path);
 const has = (path?: string) => Boolean(path && existsSync(file(path)));
@@ -51,19 +51,27 @@ const marks = (await Promise.all(logos.map(async (logo): Promise<Mark | null> =>
 // Presselogos im Raster wie „Qualität und Sicherheit“ (Marc 31.10.: die Kästen wirkten „out of whack“), optisch gleich
 // schwer: breite Wortmarken flacher, kompakte Marken höher
 const pressHeight = (path?: string) => { const v = path && has(path) ? svgSize(path) : undefined; return v ? Math.round(Math.min(40, Math.max(18, 26 * Math.sqrt(2.4 / (v.w / v.h))))) : 26; };
-const press = pressItems.map((p) => ({ ...p, show: p.cleared && has(p.logo), h: pressHeight(p.logo) }));
+const pressAll = pressItems.map((p) => ({ ...p, show: p.cleared && has(p.logo), h: pressHeight(p.logo) }));
+// Presse als Zeile unter dem Laufband (Moritz, 15.11.2026: „Geflogen für: #Logos / Ihr kennt uns aus: ZDF, WDR, NTV, WAZ“)
+const inlinePress = pressLabel ? pressAll : [];
+const press = pressLabel ? [] : pressAll;
 const seals = quality.filter((q) => !q.secondary).map((q) => ({ ...q, show: q.cleared && has(q.logo) }));
 const minor = quality.filter((q) => q.secondary);
 ---
-{marks.length > 0 && <div class="band" role="region" aria-label={headline ?? t('logobar.flyingstarsClients')}>
-  <div class="logo-marquee">
+{(marks.length > 0 || inlinePress.length > 0) && <div class="band" id={id} role="region" aria-label={headline ?? t('logobar.flyingstarsClients')}>
+  {label && <p class="band-label mono">{label}</p>}
+  {marks.length > 0 && <div class="logo-marquee">
     {[0, 1].map((copy) => <ul class="track" aria-hidden={copy === 1 ? 'true' : undefined}>{marks.map((m) => {
       const img = <img class:list={{ detail: m.detail }} src={m.src} width={m.width} height={m.height} style={`height:${m.height / 16}rem;padding:${m.pad}`} alt={copy ? '' : m.name} loading="lazy" decoding="async" />;
       return <li>{m.href && !copy ? <a href={localHref(m.href)}>{img}</a> : img}</li>;
     })}</ul>)}
-  </div>
+  </div>}
+  {inlinePress.length > 0 && <div class="band-press"><p class="band-label mono">{pressLabel}</p><ul>{inlinePress.map((p) => {
+    const inner = <>{p.show && p.logo ? <LocalImage class:list={{ knock: p.knock }} src={p.logo} alt={p.name} style={`height:${p.h / 16}rem`} loading="lazy" decoding="async" /> : <b>{p.name}</b>}</>;
+    return <li>{p.href ? <a href={localHref(p.href)} rel="noopener" target="_blank" title={p.note ? `${p.name}: ${p.note}` : undefined}>{inner}</a> : <span title={p.note}>{inner}</span>}</li>;
+  })}</ul></div>}
 </div>}
-{(press.length > 0 || seals.length > 0) && <section class="section proof" id={id} aria-label={[press.length && pressHeadline, seals.length && qualityHeadline].filter(Boolean).join(', ')}>
+{(press.length > 0 || seals.length > 0) && <section class="section proof" id={marks.length > 0 || inlinePress.length > 0 ? `${id}-belege` : id} aria-label={[press.length && pressHeadline, seals.length && qualityHeadline].filter(Boolean).join(', ')}>
   {press.length > 0 && <div class="press">
     <SectionHead variant="embedded" kicker={kicker} headline={pressHeadline} id={`${id}-press-h`} titleClass="proof-h" />
     <ul>{press.map((p) => {
@@ -77,3 +85,15 @@ const minor = quality.filter((q) => q.secondary);
     {minor.length > 0 && <ul class="q-minor">{minor.map((q) => <IconFeature as="li" variant="compact" icon={QICON[q.icon]} title={q.title} text={q.text} />)}</ul>}
   </div>}
 </section>}
+
+<style>
+  .band-label { color: var(--faint); margin: 0 0 var(--space-4); text-align: center; }
+  .band-press:not(:first-child) { margin-top: var(--space-6); }
+  .band-press { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-3) var(--space-8); }
+  .band-press .band-label { margin: 0; }
+  .band-press ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-4) var(--space-8); }
+  .band-press img { width: auto; max-width: 7.5rem; object-fit: contain; filter: brightness(0) invert(1); opacity: 0.66; transition: opacity var(--dur-control); }
+  .band-press img.knock { filter: grayscale(1) brightness(0.85) contrast(1.15); opacity: 0.9; }
+  .band-press a:hover img { opacity: 1; }
+  .band-press b { font: 600 1rem/1.1 var(--display); color: var(--head); }
+</style>

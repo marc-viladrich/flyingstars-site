@@ -39,13 +39,13 @@ sections:
     todo: FlyingStars und die Datenschutzberatung müssen Versanddienst, Empfängerpostfach, Auftragsverarbeitung, Drittlandtransfers und Löschfristen festlegen und die Datenschutzhinweise freigeben. Auch die EN-/NL-Fassungen brauchen eine rechtliche und sprachliche Prüfung.
     _key: k_80839b70c619f180158b
     mediaSide: right
-translationSourceHash: 7440a9972e2f64b1aeec834ed6c5fbd69c9f3731c08c1694c88c37dcb866787a
+translationSourceHash: 489d603218ff09a997074ee5f56de39108aa6eaccda040732c94a4874d877bc2
 translationContractVersion: 2
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 7440a9972e2f64b1aeec834ed6c5fbd69c9f3731c08c1694c88c37dcb866787a
+  sourceFingerprint: 489d603218ff09a997074ee5f56de39108aa6eaccda040732c94a4874d877bc2
   legacy:
     provenanceFile: docs/i18n/content-provenance.json
     migration: I01-v2-2026-11-04
@@ -61,6 +61,10 @@ translationEvidence:
     - address: /sections/@k_80839b70c619f180158b/body
       sourceFingerprint: 17be14a12595a308e8289abdbe1d7523e5081e0152ba0395cdc1ee5bd6d53628
       targetFingerprint: 1cdee63b7e6b3819475371e8a7a6153d4acdb77073ed9186560df159c8e3533d
+      status: adopted-existing
+    - address: /sections/@k_80839b70c619f180158b/cta
+      sourceFingerprint: e96e217609964868341df54c8819af9ad2940564bf5e56ff9c8d434c1872aac4
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_80839b70c619f180158b/headline
       sourceFingerprint: cc9564f63001cdcbd16b7010a232e9ade93300be73e8935f25a4b5518bd7eec2

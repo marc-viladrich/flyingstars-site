@@ -20,8 +20,7 @@ const src = videoPath(videos[video], 'preview');
 ---
 <section class="lh" aria-labelledby="hero-h">
   <div class="lh-copy">
-    {kicker && <span class="kicker mono">{kicker}</span>}
-    <h1 id="hero-h"><Accent text={headline} /></h1>
+    <h1 id="hero-h">{kicker && <><span class="kicker mono">{kicker}</span>{' '}</>}<Accent text={headline} /></h1>
     <p class="lead">{text}</p>
     <div class="actions"><a class="btn primary" href={localHref(cta.href)}>{cta.label}</a>{secondary && <a class="btn" href={localHref(secondary.href)}>{secondary.label}</a>}</div>
     {facts.length > 0 && <FactList items={facts} variant="hero" />}
@@ -70,7 +69,8 @@ const src = videoPath(videos[video], 'preview');
   .lh::before { content: ""; position: absolute; right: -10%; top: 0; width: 70%; height: 100%; background: radial-gradient(closest-side, rgb(var(--rgb-logo-orchid) / 0.12), rgb(var(--rgb-cyan) / 0.04) 60%, transparent); pointer-events: none; }
   /* Text oben am Bild, damit die erste Zeile auf jeder Seite auf --hero-top steht, auch wenn das Bild höher ist (Runde 18) */
   .lh-copy { position: relative; display: grid; gap: var(--space-5-5); justify-items: start; align-self: start; }
-  .lh-copy .kicker { margin: 0 0 calc(-1 * var(--space-2-5)); }
+  /* Kicker in der h1 (Moritz' Keyword-Zeile), Abstand wie vorher außerhalb */
+  .lh-copy h1 > .kicker { margin: 0 0 var(--space-3); }
   .lh h1 { font-size: var(--text-page); line-height: 1; letter-spacing: -0.035em; max-width: 16ch; }
   .lh .lead { max-width: 48ch; }
   .actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }

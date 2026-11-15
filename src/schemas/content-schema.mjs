@@ -84,6 +84,7 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     body: fieldPolicy(z.string().min(1).describe('Markdown erlaubt').meta({'x-afe': {format: 'markdown'}}), 'translatable'),
     image: image.optional(),
     mediaSide: fieldPolicy(z.enum(['left', 'right']).default('right'), 'shared'),
+    cta: link.optional().describe('Weiterführender Link unter dem Text'),
   }),
   z.object({
     type: fieldPolicy(z.literal('faq'), 'shared'), ...sectionHeading,
@@ -144,9 +145,11 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     text: fieldPolicy(z.string().optional(), 'translatable'),
     steps: z.array(z.object({
       title: fieldPolicy(z.string().min(1), 'translatable'),
+      subtitle: fieldPolicy(z.string().optional().describe('Zeile unter dem Titel, z. B. "Präsentiert Produkte spektakulär"'), 'translatable'),
       text: fieldPolicy(z.string().min(1), 'translatable'),
       duration: fieldPolicy(z.string().optional().describe('Kurzer Zeitrahmen, z. B. "zwei Tage"'), 'translatable'),
     })).min(2),
+    ownNumbers: fieldPolicy(z.boolean().default(false).describe('Ohne automatische Nummer (01, 02 …), z. B. wenn die Titel selbst nummeriert sind („#1 Anfrage“) oder keine Abfolge sind'), 'shared'),
   }),
   z.object({
     type: fieldPolicy(z.literal('comparison'), 'shared'), ...sectionHeading,
@@ -173,7 +176,7 @@ const rawSectionSchema = z.discriminatedUnion('type', [
   }),
   z.object({
     type: fieldPolicy(z.literal('team'), 'shared'), ...sectionHeading,
-    note: fieldPolicy(z.string().optional(), 'translatable'), cta: link.optional(),
+    note: fieldPolicy(z.string().optional(), 'translatable'), cta: link.optional(), secondary: link.optional().describe('Zweiter Link neben cta'),
     headline: fieldPolicy(z.string().min(1), 'translatable'),
     text: fieldPolicy(z.string().optional(), 'translatable'),
     members: z.array(z.object({
@@ -184,6 +187,8 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     // Kund:innen als Laufband, darunter optional Presse und „Qualität und Sicherheit“ (docs/DESIGN.md, Studie 6).
     type: fieldPolicy(z.literal('logoBar'), 'shared'), ...sectionHeading,
     headline: fieldPolicy(z.string().optional().describe('Name des Laufbands für Screenreader, z. B. "Kund:innen von FlyingStars"'), 'translatable'),
+    label: fieldPolicy(z.string().optional().describe('Sichtbare Zeile vor dem Laufband, z. B. "Geflogen für" (Moritz, 15.11.2026)'), 'translatable'),
+    pressLabel: fieldPolicy(z.string().optional().describe('Mit Zeile: Presse steht als kurze Zeile direkt unter dem Laufband statt als eigene Section, z. B. "Ihr kennt uns aus"'), 'translatable'),
     press: legacy.describe('Veraltet (Textzeile „Bekannt aus“), ersetzt durch pressItems'),
     logos: z.array(z.object({
       name: fieldPolicy(z.string().min(1), 'translatable'),
@@ -285,6 +290,9 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     type: fieldPolicy(z.literal('landingRefs'), 'shared'), ...sectionHeading,
     headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'), cta: link.optional(),
     projects: z.array(fieldPolicy(z.string().min(1).meta({'x-afe':{reference:{collection:'projects',encoding:'id'}}}), 'shared')).min(1).max(6).describe('Dateinamen aus src/content/projects ohne .md'),
+    cards: z.array(z.object({ ref: fieldPolicy(z.string().min(1).meta({'x-afe':{reference:{collection:'projects',encoding:'id'}}}), 'shared'),
+      title: fieldPolicy(z.string().min(1), 'translatable'), kicker: fieldPolicy(z.string().optional(), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable') }).strict()).optional()
+      .describe('Eigener Kartentitel und eigene Zeile je Referenz (z. B. „Bokkenrijders: 20 Musicals“ / „Konzert – Maastricht – 600 Drohnen“)'),
   }),
   z.object({
     // Konfigurator-Teaser mit Kopf, Ziel und Knopfbeschriftung je Anlass.
@@ -359,6 +367,7 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     tags: z.array(keyedText(fieldPolicy(z.string().min(1), 'translatable'))).default([]),
     entries: z.array(z.object({ kicker: fieldPolicy(z.string().min(1), 'translatable'), title: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable') })).default([]),
     facts: z.array(z.object({ value: businessValueSchema, label: fieldPolicy(z.string().min(1), 'translatable') })).max(4).default([]),
+    cta: link.optional().describe('Weiterführender Link unter den Einträgen'),
   }),
   z.object({
     // Abschluss mit Handlung und den Gesichtern der drei Geschäftsführer:innen.

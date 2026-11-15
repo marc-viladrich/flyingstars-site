@@ -1073,6 +1073,7 @@ html.motion-paused .rec::before { animation: none; }
 .promise .faces { justify-content: center; margin: 0; }
 
 .cfg-kicker { margin-bottom: calc(-1 * var(--space-1-5)); }
+.cfg-h { --kicker-gap: 1.625rem; } /* Kicker im h2 (SectionHead): derselbe Abstand wie vorher außerhalb */
 
 /* Netzplan-Zeitstrahl (MetroLine.astro): Hauptlinie mit Stationen (.ruler oben), Abzweigung als durchgezogene orange
    Linie mit runden Ecken von der ersten zur letzten Station, Schild mittig darauf. --n: Zahl der Stationen. */

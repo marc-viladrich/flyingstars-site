@@ -144,14 +144,14 @@ sections:
       label: Request a show
       href: /kontakt/
     _key: k_c1a5be42dc3124d739c0
-translationSourceHash: 2c6ce4b8fc1bd34a5e95c49be0fcb10c054157c26b8aa25ede19a0aa02dae2d4
+translationSourceHash: 71aca7b959c373dd1fce54b8f277ce8978fd1ac4d92b09cea0881a54dbc85834
 noindex: false
 translationContractVersion: 2
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 2c6ce4b8fc1bd34a5e95c49be0fcb10c054157c26b8aa25ede19a0aa02dae2d4
+  sourceFingerprint: 71aca7b959c373dd1fce54b8f277ce8978fd1ac4d92b09cea0881a54dbc85834
   legacy:
     provenanceFile: docs/i18n/content-provenance.json
     migration: I01-v2-2026-11-04
@@ -182,6 +182,10 @@ translationEvidence:
       status: adopted-existing
     - address: /sections/@k_7e591746d03a417c3c9c/kicker
       sourceFingerprint: f36b8049fbddfd83ceaddc079fe3f2199b4adc52b22167fee7ae574278e2ec20
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
+    - address: /sections/@k_7e591746d03a417c3c9c/label
+      sourceFingerprint: a05bd13479c13e12776005b799476beef8c2356deea1118a536c956c929ccdfc
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_7e591746d03a417c3c9c/logos/@k_0e11a0bbd30ec783e5b2/image/alt
@@ -310,6 +314,10 @@ translationEvidence:
       status: adopted-existing
     - address: /sections/@k_7e591746d03a417c3c9c/pressHeadline
       sourceFingerprint: 3da0241bfccf141f834e4c28f50a5dc10575a65749238b450a11705e97784a86
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
+    - address: /sections/@k_7e591746d03a417c3c9c/pressLabel
+      sourceFingerprint: 3b4dced1bea7bcbc12f491c1fd1b8c2a807864a5fbb52c4e71be9a66ca861008
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_7e591746d03a417c3c9c/qualityHeadline

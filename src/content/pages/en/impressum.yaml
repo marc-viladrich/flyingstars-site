@@ -30,13 +30,13 @@ sections:
     todo: FlyingStars muss Vertretung und Register-/Kontaktangaben zum Veröffentlichungszeitpunkt bestätigen, insbesondere Manuel Contreras Hernandez. Die Rechtsberatung muss die Anbieterkennzeichnung und ihre EN-/NL-Fassungen freigeben.
     _key: k_ea941ce80067e7369de9
     mediaSide: right
-translationSourceHash: 26944c1b8c1536606206f73492bd50dd7a127dd3ef0f3f681fb988a2861ebbb7
+translationSourceHash: 7716bcd13cda89687e0fea0110d0af744c14c8658577de0fa5b171f0027a8d5b
 translationContractVersion: 2
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 26944c1b8c1536606206f73492bd50dd7a127dd3ef0f3f681fb988a2861ebbb7
+  sourceFingerprint: 7716bcd13cda89687e0fea0110d0af744c14c8658577de0fa5b171f0027a8d5b
   legacy:
     provenanceFile: docs/i18n/content-provenance.json
     migration: I01-v2-2026-11-04
@@ -52,6 +52,10 @@ translationEvidence:
     - address: /sections/@k_ea941ce80067e7369de9/body
       sourceFingerprint: 6c70f4a504f3ff09efb64d3e0b6658c094b56727e070e0fa39ceb8d5eadd150f
       targetFingerprint: 11042cc79283242b2984b8e9d24ba86469b5f24383b612aee7781c0a6fe48df0
+      status: adopted-existing
+    - address: /sections/@k_ea941ce80067e7369de9/cta
+      sourceFingerprint: eed6d507b8a1e26be79efb4a60165592c87d948b0517fa5742c592c4c573bd27
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_ea941ce80067e7369de9/headline
       sourceFingerprint: f5ac020c0218c5ed6b714dff1104548944b413e2bd51c6ba4c539ca8787e7fec

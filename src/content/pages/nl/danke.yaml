@@ -12,13 +12,13 @@ sections:
     todo: FlyingStars muss den tatsächlichen Versandstatus mit dem Betrieb klären; Moritz muss die reine Vorschau-Meldung bei aktivem Versand durch eine passende Rückmeldung in DE/EN/NL ersetzen.
     _key: k_7f812f5f0bc5bd9032db
     mediaSide: right
-translationSourceHash: b59df6dd442fc62a9b94740e2b93f237ce19c9e2ecd2c0eac482dec881f815af
+translationSourceHash: 44d77deb53fd11aff7f25e386148bf3f04da45fbb13010317a76e41b08fe1dbd
 translationContractVersion: 2
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: b59df6dd442fc62a9b94740e2b93f237ce19c9e2ecd2c0eac482dec881f815af
+  sourceFingerprint: 44d77deb53fd11aff7f25e386148bf3f04da45fbb13010317a76e41b08fe1dbd
   legacy:
     provenanceFile: docs/i18n/content-provenance.json
     migration: I01-v2-2026-11-04
@@ -34,6 +34,10 @@ translationEvidence:
     - address: /sections/@k_7f812f5f0bc5bd9032db/body
       sourceFingerprint: 7d1d0a47c706f97af244b37d8e69efa6cafdb285b1f92efdc192bf4becbce0a9
       targetFingerprint: cea65da6e11fee32c45ca1148a94b627cbf31a847b61275843a3abbb6f0ffb89
+      status: adopted-existing
+    - address: /sections/@k_7f812f5f0bc5bd9032db/cta
+      sourceFingerprint: 3b181d83ff247d4197bc638bdb977a77ab6b6ac43c1da13fcdafafb14af98e2e
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_7f812f5f0bc5bd9032db/headline
       sourceFingerprint: 8505ec5a72d0bd8a72906eaac7bd2f28b9909d527f413f5204ad0489ea7d9e2c

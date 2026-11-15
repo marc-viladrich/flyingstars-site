@@ -24,8 +24,8 @@ const sources = video === videos.showreel ? heroVideoSources() : undefined;
   <div class="rec mono" aria-hidden="true">Showreel</div>
   <MediaFrame corners="content" as="div" aria-hidden="true" />
   <div class="hero-copy">
-    {eyebrow && <span class="kicker mono">{eyebrow}</span>}
-    <h1 id="hero-h"><Accent text={headline} />{words && words.length > 0 && <> <span class="word" data-rotate={words.map(word => word.value).join('|')}>{words[0].value}</span></>}</h1>
+    {/* Keyword-Zeile (Moritz, 15.11.2026: „H1: Drohnenshow buchen / Gestalte dein Stück Himmel“) gehört zur h1 */}
+    <h1 id="hero-h">{eyebrow && <><span class="kicker mono">{eyebrow}</span>{' '}</>}<Accent text={headline} />{words && words.length > 0 && <> <span class="word" data-rotate={words.map(word => word.value).join('|')}>{words[0].value}</span></>}</h1>
     <p class="lead">{text}</p>
     <div class="actions"><a class="btn primary" href={localHref(cta.href)}>{cta.label}</a>{secondary && <a class="btn" href={localHref(secondary.href)}>{secondary.label}</a>}</div>
   </div>
@@ -36,4 +36,7 @@ const sources = video === videos.showreel ? heroVideoSources() : undefined;
   // Zum Vergleich (Marc, 31.10.2026: „beide Varianten zeigen“): ?hero=voll zeigt die vollflächige Fassung
   if (new URLSearchParams(location.search).get('hero') === 'voll') document.querySelector('.hero.side')?.classList.remove('side');
 </script>
+<style>
+  .hero h1 > .kicker { margin: 0 0 var(--space-3-5); }
+</style>
 <script>import '../../scripts/hero-reel';</script>

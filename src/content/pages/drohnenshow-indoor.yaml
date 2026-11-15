@@ -1,27 +1,17 @@
-# Landingpage Indoor. Konzept IN-01 bis IN-10.
-# Bestätigt im Fragebogen 21.10.2026: 20–50 Drohnen, 5–8 Min, mind. 3 m Deckenhöhe, ab ca. 15.000 € netto für 20 Drohnen,
-# Referenzen Siemens Hannover Messe 03/2025 und Triple Z 09/2026.
-# Nur von der Live-Indoor-Seite (nicht im Fragebogen bestätigt): 188 g, max. 1,5 m/s, 1–8 m Flughöhe, 0,5 m Abstand, UWB,
-# CE-zertifizierte Komponenten, Ablauf 6–8 Wochen / Aufbau ab 2 h vorher / ca. 45 Min Aufbau. Vor Launch von FlyingStars bestätigen lassen.
-# Inhalte aus Elevate (30.10.), übertragen auf die Designsprache.
-# Runde 8 (31.10.2026, Marc: „deutlich mehr in dieses Interaktive … mehr Variation in den Layouts“): Hero mit Showreel im
-# Rahmen, Raum als Schnitt mit Deckenhöhe und Checkliste, Sicherheit als Kacheln, Einsatzorte auf einem Bild, Ablauf als
-# Zeitstrahl in Zahlen, Preis als Preiskarte mit Gesichtern. Bausteine: src/components/landing/.
-# Runde 9: Abschluss als .promise, Zeitstrahl nur mit Zahlen, keine doppelten Kennzahlen, Icons in den Sicherheits-Kacheln.
-# Kein Konfigurator-Teaser: Der Konfigurator zeigt die Outdoor-Pakete, die drinnen nicht gelten.
-# Alle Texte sind Entwürfe für Moritz; neu formulierte Stellen tragen den Kommentar „Entwurf für Moritz“.
-title: Indoor-Drohnenshow
+# Landingpage Indoor nach Moritz' Webtext (15.11.2026, „Webtext Indoor FlyingStars“): Abschnittsfolge, Überschriften und Texte
+# wortgetreu, Ansprache „ihr“. Route bleibt /drohnenshow-indoor/ (Moritz: /drohnenshow/indoor/, Umstellung offen).
+# Zahlen nach Moritz (ab 15.000 €, ab 20 Drohnen, 10 x 10 m, mind. 3 m Deckenhöhe), Klartext statt Faktenplatzhalter.
+title: Magische Indoor-Drohnenshow buchen (20+ Drohnen)
 navLabel: "Indoor"
-description: "Indoor-Drohnenshows für Messen, Bühnen und Hallen: {{offer.indoor.drones.min}} bis {{offer.indoor.drones.max}} Drohnen, {{duration.indoor.min}} bis {{duration.indoor.max}} Minuten, ab {{offer.indoor.ceilingMin}} Meter Deckenhöhe. Individuell kalkuliert."
+description: "Indoor-Drohnenshows für Messen, Konzerte & Co. ✓ Projekte u.a. für Siemens ✓ Ab 15.000 € ☎︎ +49 209 88306562"
 image: https://flyingstars.art/wp-content/uploads/2025/04/IMG_0201.jpg
 sections:
   - type: landingHero
-    kicker: Indoor
-    headline: Drohnenshows für Messen, Bühnen und *Hallen*.
-    text: Kleine Drohnen mit Rotorschutz fliegen im Raum, abgestimmt auf Musik und Licht. Jede Indoor-Show planen wir für euren Raum und kalkulieren sie einzeln.
-    cta: { label: Indoor-Show anfragen, href: "#anfrage" }
-    secondary: { label: Was drinnen anders ist, href: "#unterschied" }
-    # Echte Indoor-Show (Siemens, Hannover Messe 03/2025), Recherche 31.10.2026 (codex-befunde/videos-je-anlass)
+    kicker: Indoor-Drohnenshow
+    headline: Holt den Himmel rein
+    text: Tiefschwarze Dunkelheit, knisternde Stimmung – dann fliegt unser Leuchtschwarm los und reißt die komplette Halle mit. Profitiert von der Erfahrung aus 150+ Drohnenshows, jetzt auch indoor.
+    cta: { label: Show anfragen, href: "#anfrage" }
+    secondary: { label: "☎︎ +49 209 88306562", href: "tel:+4920988306562" }
     video: siemensIndoor
     videoLabel: Siemens · Hannover Messe
     poster:
@@ -29,176 +19,171 @@ sections:
       alt: Dutzende leuchtende Drohnen in Reihen über dem Boden einer abgedunkelten Sporthalle
       width: 2560
       height: 1440
-    # Entwurf für Moritz: Eckdaten aus dem Fragebogen
-    facts:
-      - { value: "{{offer.indoor.drones.min}}–{{offer.indoor.drones.max}}", label: Drohnen, "_key": "k_9c43046412c4f98a6eaa" }
-      - { value: "{{duration.indoor.min}}–{{duration.indoor.max}} Min", label: Showdauer, "_key": "k_f28af46100a885028278" }
-      - { value: "ab {{offer.indoor.ceilingMin}} m", label: Deckenhöhe, "_key": "k_44b29fef37672879c7e3" }
-    todo: Moritz muss die Endfassung und EN/NL prüfen. FlyingStars muss die Zuordnung von Siemens-Film und Hallen-Standbildern zur Hannover Messe bestätigen; das Standbild belegt diesen Veranstaltungsort bislang nicht.
+    todo: FlyingStars muss die Zuordnung von Siemens-Film und Hallen-Standbildern zur Hannover Messe bestätigen.
     _key: k_9ad4a65122a9edecb81a
 
-  - type: comparison
+  - type: logoBar
+    id: kundinnen
+    headline: Kund:innen von FlyingStars
+    label: Geflogen für
+    logos:
+      - { name: E.ON, file: /brand/logos/kunde-eon-weiss.svg, "_key": "k_5ed46311387955e2857c" }
+      - name: NFL
+        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png, alt: NFL, width: 300, height: 409 }
+        _key: k_96d6920ee9e3018e33f6
+      - { name: REWE, file: /brand/logos/kunde-rewe-weiss.svg, "_key": "k_1a399e3ba47608b2a429" }
+      - { name: Spotify, file: /brand/logos/kunde-spotify-weiss.svg, "_key": "k_e9c10d6391d8d7fcd449" }
+      - { name: L’Oréal, file: /brand/logos/kunde-loreal-weiss.svg, "_key": "k_029386fb557c94733691" }
+      - { name: Bosch, file: /brand/logos/kunde-bosch-weiss.svg, "_key": "k_68b7e8778280697119ac" }
+      - { name: Amazon, file: /brand/logos/kunde-amazon-weiss.svg, "_key": "k_f6cb639885bedbe1012a" }
+      - { name: McKinsey, file: /brand/logos/kunde-mckinsey-weiss.svg, "_key": "k_d8b216f1b29a48bcde19" }
+      - name: PUMA
+        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Puma_Logo_weiss.png, alt: PUMA, width: 300, height: 161 }
+        _key: k_c8b04d4bb211cfc5ff25
+      - { name: Prada, file: /brand/logos/kunde-prada-weiss.svg, "_key": "k_135f6b274f5ff8f93c25" }
+      - { name: Volkswagen, file: /brand/logos/kunde-volkswagen-weiss.svg, "_key": "k_241fa1a44078fdf4ba7d" }
+      - name: Red Bull
+        image: { src: https://flyingstars.art/wp-content/uploads/2024/10/RED-BULL_white.png, alt: Red Bull, width: 400, height: 200 }
+        _key: k_0c8b8a711577f92aa65f
+      - { name: Bulgari, file: /brand/logos/kunde-bulgari-weiss.svg, "_key": "k_836b51e7d3d32cad742e" }
+      - { name: Ford, file: /brand/logos/kunde-ford-weiss.svg, "_key": "k_7f6e1360484198d9116b" }
+      - { name: Siemens, file: /brand/logos/kunde-siemens-weiss.svg, "_key": "k_0f17650e43d86db6b9cc" }
+      - { name: Lamborghini, file: /brand/logos/kunde-lamborghini-weiss.svg, "_key": "k_ad9c625d212ceff25d60" }
+      - name: Deutsche Umwelthilfe
+        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Deutsche_Umwelthilfe_weiss.png, alt: Deutsche Umwelthilfe, width: 300, height: 37 }
+        _key: k_756c13577a99a532844d
+      - name: Bentley
+        detail: true
+        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Bentley_logo_weiss.png, alt: Bentley, width: 400, height: 200 }
+        _key: k_51df7215f7dcf70ddb96
+      - name: ABUS
+        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/ABUS_Logo_weiss.png, alt: ABUS, width: 400, height: 200 }
+        _key: k_7d170b53d2934dc76107
+    pressLabel: Ihr kennt uns aus
+    pressItems:
+      - { name: ZDF, logo: /brand/logos/presse-zdf.svg, cleared: true, knock: true, note: "1, 2 oder 3", "_key": "k_4791d0a73285012bba9c" }
+      - { name: WDR, logo: /brand/logos/presse-wdr.svg, cleared: true, note: Fernsehen und Interviews, "_key": "k_e6e05aa8a4af009df49f" }
+      - { name: ntv, logo: /brand/logos/presse-ntv.svg, cleared: true, knock: true, note: Startup News, href: "https://www.n-tv.de/mediathek/magazine/startup_news/Drohnen-verwandeln-Nachthimmel-in-Showbuehne-article25835436.html", "_key": "k_b210d92e4cbf25bd0560" }
+      - { name: WAZ, logo: /brand/logos/presse-waz.svg, cleared: true, note: Ruhrorter Hafenfest, href: "https://www.waz.de/lokales/duisburg/article409722481/ruhrorter-hafenfest-die-geheimnisse-hinter-dem-neuen-highlight.html", "_key": "k_af6d26f3bd912a26bb0f" }
+    _key: k_48c987e8cc523f41aa47
+
+  - type: steps
+    id: anlaesse
+    kicker: Anlässe
+    headline: Das Highlight jeder Feier
+    ownNumbers: true
+    steps:
+      - { title: Firmen, subtitle: Präsentiert Produkte spektakulär, text: "Individuelle Motive mit Logos, Claims und Co. in euren Farben.", "_key": "k_e68fdbc492329c6e83ff" }
+      - { title: Konzerte, subtitle: Fordert zum Tanz auf, text: "Maßgeschneiderte Choreografie, synchron zur Musik.", "_key": "k_2ea3934f368683201be3" }
+      - { title: Privat, subtitle: Verzaubert eure Gäste, text: "Initialen, Jahreszahlen und mehr von Brautpaaren oder Geburtstagskindern.", "_key": "k_fe65755e9b1413b0df53" }
+    _key: k_dc6df0ca92933bbd74d6
+
+  - type: textMedia
     id: unterschied
-    kicker: Vergleich
-    headline: Drinnen fliegt eine andere Show.
-    text: Weniger und kleinere Drohnen, näher am Publikum, kürzer. Im Raum entstehen Muster und Figuren in Bewegung.
-    rowHeader: Merkmal
-    columns: [{"_key":"k_0591a32ff9b709fdacde","value":"Indoor"}, {"_key":"k_ee204e87e777217cfb4e","value":"Outdoor"}]
-    rows:
-      - label: Drohnen
-        values: [{"_key":"k_307f885cad269078c24d","value":"{{offer.indoor.drones.min}} bis {{offer.indoor.drones.max}}"}, {"_key":"k_47012a56ccda2adb5571","value":"ab 100"}]
-        _key: k_0774348dcdeb0da1ae21
-      - label: Dauer
-        values: [{"_key":"k_14122804948070a50b80","value":"{{duration.indoor.min}} bis {{duration.indoor.max}} Minuten"}, {"_key":"k_a33b0d31bfb9cda903da","value":"in der Regel etwa {{duration.outdoor.typical}} Minuten"}]
-        _key: k_8f5eb0d8e15976bfd85a
-      - label: Gewicht je Drohne
-        values: [{"_key":"k_0efa7f88e21be1dafa8d","value":"188 g"}, {"_key":"k_4f79e53ae13672fbe7fa","value":"ca. 300 g"}]
-        _key: k_f836cad3c14d37872532
-      - label: Ortung
-        values: [{"_key":"k_47c942309519d505809b","value":"Funkstationen im Raum (UWB)"}, {"_key":"k_6da570c36c6df53b73c7","value":"GPS"}]
-        _key: k_680a133fb66e3358188b
-      - label: Flughöhe
-        values: [{"_key":"k_0ad5517bd0d6a7eca340","value":"1 bis 8 m"}, {"_key":"k_e0071e2cbdc5720c09f4","value":"in der Regel bis 120 m"}]
-        _key: k_0ea19f4a2d012b7858cb
-      - label: Platz
-        values: [{"_key":"k_fa623e1322b769fcd563","value":"ab {{offer.indoor.ceilingMin}} m Deckenhöhe und eine freie Flugfläche"}, {"_key":"k_f0e611a6496cbd5cdde0","value":"Sicherheitsbereich von ca. 100 × 100 m"}]
-        _key: k_b65762f2eadf458a2fe9
-      - label: Preis
-        values: [{"_key":"k_970c6f161caafbf326dc","value":"einzeln kalkuliert, {{offer.indoor.priceLine}} netto für {{offer.indoor.drones.min}} Drohnen"}, {"_key":"k_d2f5d5ea7ac4efcc9bab","value":"Pakete ab 7.900 € netto"}]
-        _key: k_38d0d514deda94496d79
-    todo: FlyingStars muss 188 g, UWB und die technischen Indoor-/Outdoor-Vergleichswerte für die aktuelle Flotte bestätigen.
+    kicker: Alternative zur Lichtshow
+    headline: Faszinierend wie Feuerwerk, sicher wie Laser
+    body: |-
+      Wir holen das Funkeln, den Glanz und die staunenden Gäste des Feuerwerks unter euer Dach. Ohne Abfall, Rauch und nur mit einem leisen Surren.
+
+      Eure Indoor-Drohnenshow ist eine fünf- bis achtminütige Choreografie, die die Aufmerksamkeit aller Besucher:innen fesselt. Denn kaum ein Gast hat bereits einen der magischen Tänze gesehen – geschweige denn im Innenraum.
+
+      Deshalb gestalten wir faszinierende Motive unterlegt mit Musik, die eure Geschichte erzählen. Ab 50 Drohnen auch mit individuellen Figuren wie eurem Logo oder euren Initialen.
+    cta: { label: Show anfragen, href: "#anfrage" }
     _key: k_c030e32b9a3f99dac46e
 
-  # Textentwurf für Moritz. Quellen und Konflikte: docs/sicherheitskonzept-quellen.md.
-  - type: landingSite
-    id: raum
-    kicker: Voraussetzungen
-    headline: Was euer Raum mitbringen muss.
-    text: Grundriss, Deckenhöhe und die Position eures Publikums sind die Grundlage für unser Showkonzept.
-    variant: indoor
-    diagram:
-      description: "Raumschnitt mit mindestens {{offer.indoor.ceilingMin}} m Deckenhöhe und Publikum neben der freien Flugfläche. Darunter eine Draufsicht auf ein beispielhaftes Startraster für 20 Drohnen mit Antennen an den Ecken des Fluggebiets."
-      horizontalLabel: ca. 5 m
-      verticalLabel: "mind. {{offer.indoor.ceilingMin}} m"
-      detailLabel: 1 m Raster
-      flightLabel: Flughöhe bis 8 m, passend zum Raum
-      caption: "Schema, nicht maßstäblich. Startraster als Beispiel für {{offer.indoor.drones.min}} Drohnen auf ca. 5 × 5 m. Für 50 Drohnen nennt das Datenblatt ca. 7 × 7 m. Die gesamte Flugfläche und den Publikumsbereich planen wir für euren Raum."
-    items:
-      - title: Deckenhöhe
-        value: "mindestens {{offer.indoor.ceilingMin}} m"
-        text: "Die Flugbahnen passen wir an euren Raum an. Das Indoor-System fliegt bis zu 8 m hoch."
-        zone: ceiling
-        _key: k_b1de79da73ea068f872c
-      - title: Flugbereich
-        text: "Die Start- und Flugfläche bleibt frei. Indoor nutzen wir ein eigenes Drohnensystem mit vorab berechneten Bahnen."
-        zone: drones
-        _key: k_0bd5c94f0e07243b0cc8
-      - title: Start- und Landefläche
-        value: 1 m Startraster
-        text: "Als Richtwert brauchen 20 Drohnen ca. 5 × 5 m, 50 Drohnen ca. 7 × 7 m. Der Boden muss eben sein, alle Drohnen starten auf derselben Höhe."
-        zone: floor
-        _key: k_b708426fb85bea29d91e
-      - title: Positionierung im Raum
-        text: "Antennen stehen an den Ecken des Fluggebiets. Das UWB-System bestimmt die Positionen im Raum; Drohnen und Technik bringen wir mit."
-        zone: kit
-        _key: k_4a99c3eed498d8e2ac37
-      - title: Publikumsbereich
-        text: "Wir stimmen die Position eurer Gäste und die freie Flugfläche mit euch ab. Der Abstand zum Publikum wird im Showkonzept für euren Raum festgelegt."
-        zone: guests
-        _key: k_e8a36322c9c72cbbe82f
-    responsibilities:
-      - { task: "Planung von Flugfläche, Publikum und Choreografie", us: full, you: none, "_key": "k_57fdf7ec25d86df06f65" }
-      - { task: "Indoor-Drohnen, Positionierungstechnik und Team", us: full, you: none, "_key": "k_ad5f7a3b6c6ebdc8f165" }
-      - { task: "Grundriss mit Maßen und Deckenhöhe schicken", us: none, you: full, "_key": "k_bf45eb6771550598d8e2" }
-      - { task: "Freie, ebene Start- und Flugfläche bereitstellen", us: none, you: full, "_key": "k_9ca1677c1a9556085ebf" }
-      - { task: "Stromanschluss in der Nähe bereitstellen", us: part, you: full, hint: "wir stimmen ab", "_key": "k_90cf1d512c775430202a" }
-    download: { label: Technik-Datenblatt · PDF, href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf }
-    todo: FlyingStars muss die gesamte Indoor-Flugfläche, Publikumsabstände, Strombedarf und Zugänglichkeit ergänzen; die Rastermaße allein bestimmen den Raumbedarf nicht.
-    _key: k_e6bdd66c6eff6b2abf0c
+  - type: textMedia
+    id: komplettpaket
+    kicker: Komplettpaket
+    headline: Seid Gast auf eurem eigenen Event
+    body: |-
+      Wir kümmern uns um die komplette Planung, Durchführung und den Abbau. Ihr genießt die Aufführung.
 
-  # Entwurf für Moritz: Sicherheit als Kacheln (Werte von der Live-Seite, siehe Kopfkommentar)
-  - type: landingBento
+      - Ab 20 Drohnen, aufwärts unbegrenzt.
+      - Synchronisiert mit Musik.
+      - Auf Wunsch mit Foto- und Videoaufnahmen.
+      - Wir übernehmen alle Genehmigungen.
+      - Strenge Sicherheitsstandards.
+      - Vorbereitung in unter zwei Wochen möglich.
+      - In Deutschland, Europa und weltweit.
+    cta: { label: Show anfragen, href: "#anfrage" }
+    _key: k_261100f50aa3e8f06fcd
+
+  - type: textMedia
     id: sicherheit
     kicker: Sicherheit
-    headline: Sicher in der Nähe des Publikums.
-    text: Indoor-Drohnen sind leichter und langsamer als unsere Outdoor-Flotte und fliegen vorab berechnete Bahnen.
-    lead:
-      label: Rotoren
-      title: Ein Schutzrahmen um jeden *Rotor*.
-      image:
-        src: https://flyingstars.art/wp-content/uploads/2025/04/0L9A4365.jpg
-        alt: Kleine Drohnen mit Rotorschutz leuchten blau auf einem dunklen Boden
-        width: 2560
-        height: 1708
-    items:
-      - { icon: gauge, title: "Höchstens 1,5 m/s", text: Schneller fliegen die Drohnen im Raum nicht., "_key": "k_e5cf73dc265a9c4310fe" }
-      - { icon: move-horizontal, title: "0,5 m Abstand", text: So weit bleiben zwei Drohnen mindestens auseinander., "_key": "k_9190dfff4d61064037d9" }
-      - { icon: shield-check, title: Mehrfach abgesichert, text: "Redundante Sicherheitsfunktionen, eine kontrollierte Landefunktion und CE-zertifizierte Komponenten.", "_key": "k_4fa60ee8f4b6a4138755" }
-    todo: FlyingStars muss 1,5 m/s, 0,5 m Drohnenabstand, Sicherheitsfunktionen und CE-Angaben mit aktuellen technischen Unterlagen bestätigen.
+    headline: Für eine sorglose Darbietung
+    body: |-
+      Wir erfüllen die strengen Sicherheitsauflagen, die für Indoor-Drohnenshows gelten. Deshalb benötigen wir eine Freifläche von etwa 10 x 10 Metern und eine Deckenhöhe von mindestens drei Metern. Ein Vorteil im Inneren: Wind und Wetter stellen kein (Absage-)Risiko dar.
+
+      Zusätzlich setzen wir auf redundante Sicherheitsmechanismen. Die Rotoren sind physikalisch geschützt, alle Komponenten CE-zertifizert. Die Drohnen fliegen langsam und wiegen unter 200 Gramm.
+
+      Wir sind zertifiziert nach Luftfahrt-Bundesamt und EU Aviation Safety. Der TÜV NORD bescheinigt unserer Flotte zudem die Einhaltung des Schallschutzes. Im Fall der Fälle sichert euch unsere Haftpflicht bis 1,3 Mio. Euro ab.
+    todo: "Moritz: Tippfehler „CE-zertifizert“ wortgetreu übernommen. FlyingStars muss Indoor-Flugfläche, Sicherheitsfunktionen und die für Indoor geltende Haftpflichtdeckung bestätigen."
     _key: k_1060f8471da9620b9d94
 
-  # Entwurf für Moritz: Einsatzorte als Markierungen auf dem Bild, Referenzen darunter; Inhalte wie bisher
+  - type: textMedia
+    id: preise
+    kicker: Preise
+    headline: Volle Kontrolle über eure Show
+    body: Unsere Indoor-Drohnenshows beginnen bei 15.000 Euro (netto) zuzüglich Anfahrt. Gerne stellen wir euch ein individuelles Paket zusammen, bei dem es bleibt – keine Überraschungen.
+    cta: { label: Show anfragen, href: "#anfrage" }
+    _key: k_2957e41a82a467bac50c
+
+  - type: steps
+    id: ablauf
+    kicker: Ablauf
+    headline: Ein etablierter Prozess
+    ownNumbers: true
+    steps:
+      - { title: "#1 Anfrage", text: "Teilt ihr uns das Datum, den Ort und den Anlass mit, melden wir uns innerhalb von 48 Stunden mit Ideen zurück. Ein Erstgespräch ist der nächste Schritt, ein Vor-Ort-Termin selten nötig.", "_key": "k_bcd783da285c16316e38" }
+      - { title: "#2 Planung", text: "Wir bauen Storyline und Motive. Gerne könnt ihr Wünsche einbringen. Wir kümmern uns zudem um alle Genehmigungen, ihr liefert nur die Zustimmung der Grundstückseigentümer:innen.", "_key": "k_1a7a9d6124366c37cbbf" }
+      - { title: "#3 Showtag", text: "Während ihr eure Gäste betreut, bauen wir auf (dreieinhalb Stunden), führen die Show durch (fünf bis acht Minuten) und bauen geräuschlos wieder ab.", "_key": "k_2a47818390caa6ae1614" }
+    _key: k_cca8a7702a948ca38dce
+
   - type: landingSpotlight
-    id: einsatzorte
-    kicker: Einsatzorte
-    headline: Ein Highlight für Messe, Gala und Bühne.
-    text: Markenfarben und Musik stimmen wir auf euren Auftritt ab.
+    id: referenzen
+    kicker: Referenzen
+    headline: Einige unserer liebsten Darbietungen
     image:
       src: https://flyingstars.art/wp-content/uploads/2025/04/drohnenshow-indoor-2.jpg
       alt: Leuchtende Drohnen in Formation vor der Bühne eines voll besetzten Saals
       width: 1200
       height: 764
-    tags: [{"_key":"k_211d03046da62f7b385d","value":"Messen"}, {"_key":"k_1bfb3ba56d6c4740c1ea","value":"Konzerte"}, {"_key":"k_05c6d02863d2256cece8","value":"Sportevents"}, {"_key":"k_2d886159ff908cca85d8","value":"Firmenfeiern"}, {"_key":"k_dfdbdf308f06f4f99578","value":"Hochzeiten in Sälen"}]
     entries:
-      - { kicker: Hannover Messe · März 2025, title: Siemens, text: Unsere erste Indoor-Show., "_key": "k_7c6c021cc1a855fcde60" }
-      - { kicker: Essen · September 2026, title: Triple Z, text: "Im Gründungszentrum auf Zeche Zollverein, in dem auch unser Büro ist.", "_key": "k_81843471e629d870eaa4" }
-    todo: Für Siemens Hannover Messe und Triple Z fehlen ausgearbeitete Fallstudien. FlyingStars muss Briefing, Ablauf, konkrete Drohnenzahl, freigegebene Showbilder und die eindeutige Zuordnung des vorhandenen Siemens-Films liefern.
+      - { kicker: Messestand mal anders, title: Siemens, text: Auf der Hannover Messe 2025 konnten wir die digitalen Innovationen von Siemens visualisieren., "_key": "k_7c6c021cc1a855fcde60" }
+      - { kicker: Ein Blick in die Zukunft, title: Triple Z, text: "Im Juni 2026 durften wir im Gründungszentrum Zeche Zollverein die Start-up-Szene NRWs begeistern.", "_key": "k_81843471e629d870eaa4" }
+    cta: { label: Alle Referenzen, href: /referenzen/ }
+    todo: "Für Siemens Hannover Messe und Triple Z fehlen Fallstudien und eindeutig zugeordnete Showbilder. Triple Z: Moritz nennt Juni 2026, der Fragebogen September 2026."
     _key: k_47a98888ed554656bbf5
 
-  # Entwurf für Moritz: Ablauf in Zahlen wie auf der Startseite (Werte von der Live-Seite, siehe Kopfkommentar)
-  - type: tempo
-    id: ablauf
-    kicker: Ablauf
-    headline: Wenig Aufwand für euch, von der Anfrage bis zur Show.
-    marks:
-      - { value: { fact: responseHours, display: hours }, label: bis zu unserer Antwort, text: "Ihr erzählt uns von Raum, Anlass und Termin.", "_key": "k_5f52880dee9f83ce56cc" }
-      - { value: 6–8 Wochen, label: "Vorlauf, ideal", text: "Design und Planung im Raum. Vorab seht ihr die Show als Video oder bei einem Testflug.", "_key": "k_575c490370bb45474ab4" }
-      - { value: 45 Min, label: Aufbau bis startklar, text: Wir beginnen ab zwei Stunden vor der Show., "_key": "k_ce8b466cf22a08df12d8" }
-    todo: FlyingStars muss 6–8 Wochen Vorlauf, 45 Minuten Aufbau und Ankunft zwei Stunden vor der Show für die aktuelle Indoor-Technik bestätigen; diese Werte stammen bisher nur von der alten Website.
-    _key: k_cca8a7702a948ca38dce
+  - type: team
+    id: ueber
+    kicker: Über FlyingStars
+    headline: Große Spektakel – ohne Kompromisse
+    text: Wir glauben, dass jedes Event eine gute Show verdient – egal, ob indoor oder outdoor. Deshalb bringen wir die Erfahrung aus über 150 Aufführungen im Freien für Weltmarken wie VW, Spotify oder die NFL seit 2025 auch in Hallen auf der ganzen Welt.
+    members:
+      - personId: ronja-donsbach
+      - personId: florian-becker
+      - personId: erwin-wilms
+      - personId: patrick
+      - personId: alejandro
+    note: "Ihr kennt uns aus: ZDF, WDR, NTV, WAZ"
+    cta: { label: Über uns, href: /ueber-uns/ }
+    secondary: { label: In der Presse, href: "#kundinnen" }
+    todo: FlyingStars muss ein Teamfoto liefern; eine Presseseite für „In der Presse“ fehlt.
+    _key: k_3f360cd3359685940aa9
 
-  # Entwurf für Moritz: Preis als Karte, Inhalte wie bisher
-  - type: landingPrice
-    id: preise
-    kicker: Preise
-    headline: Was eine Indoor-Show kostet.
-    text: Indoor-Shows kalkulieren wir einzeln. Die Outdoor-Pakete gelten drinnen nicht.
-    offer: indoor
-    unit: "netto für {{offer.indoor.drones.min}} Drohnen, als Größenordnung"
-    groups:
-      - title: Der Preis hängt ab von
-        items:
-          - { label: eurem Raum, "_key": "k_753be3ee1b98a47fa847" }
-          - { label: der Drohnenzahl, value: "{{offer.indoor.drones.min}}–{{offer.indoor.drones.max}}", "_key": "k_c3ef9a4157826d3ef6c2" }
-          - { label: dem Aufbau, "_key": "k_adbef3f274951eda7f54" }
-        _key: k_bf63937c697c823dc996
-    closing:
-      headline: Passt eure Halle?
-      text: Schickt uns Fotos oder einen Grundriss mit der Deckenhöhe. Wir sagen euch innerhalb von 48 Stunden, was dort möglich ist.
-      button: { label: Indoor-Angebot anfragen, href: "#anfrage" }
-    _key: k_2957e41a82a467bac50c
+  - type: contactForm
+    kicker: Indoor-Drohnenshow buchen
+    headline: Wir freuen uns auf eure Anfrage
+    text: Wie können wir eure Geschichte per Indoor-Drohnenshow erzählen? Reserviert einen der freien Termine 2027 und 2028 oder lasst uns über eure Vorstellungen sprechen. Wir antworten innerhalb von 48 Stunden.
+    _key: k_bda39ceb090f8b699835
 
   - type: faq
     id: fragen
     kicker: FAQ
-    headline: Fragen zu Indoor-Shows.
-    cta: { label: Alle Fragen, href: /faq/ }
-    tags: [indoor]
-    todo: FlyingStars muss die Indoor-Antworten zu Flächen und Sicherheitsabständen fachlich abgleichen und die ausdrücklich für Indoor geltende Haftpflichtdeckung belegen.
+    headline: Häufige Fragen
+    cta: { label: Alle Shows, href: /referenzen/ }
+    openFirst: true
+    tags: [ indoor-moritz ]
     _key: k_b9b4c25755db13474604
-
-  - type: contactForm
-    kicker: Anfrage
-    headline: Erzählt uns von eurem Raum.
-    text: Deckenhöhe, Fläche und Datum reichen für eine erste Einschätzung. Wir melden uns innerhalb von 48 Stunden.
-    _key: k_bda39ceb090f8b699835

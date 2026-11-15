@@ -3,11 +3,17 @@ import type { Section } from '../../content.config';
 import ProcessList from '../ProcessList.astro';
 import SectionHead from '../SectionHead.astro';
 type Props = Extract<Section, { type: 'steps' }> & { index: number };
-const { headline, text, steps, id = `s${Astro.props.index}`, index, kicker } = Astro.props;
+const { headline, text, steps, ownNumbers, id = `s${Astro.props.index}`, index, kicker } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 ---
 <section class="section" id={id} aria-labelledby={headingId}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
-  <ProcessList items={steps} variant="steps" />
+  <ProcessList items={steps} variant="steps" class={ownNumbers ? 'own-n' : undefined} />
 </section>
+
+<style is:global>
+  /* Titel tragen ihre Nummer selbst („#1 Anfrage“) oder sind keine Abfolge („Komplett“, „Schnell“) */
+  .steps.own-n li::before { content: none; }
+  .steps .st-sub { color: var(--head); font-size: var(--text-md); margin-top: calc(-1 * var(--space-1)); }
+</style>

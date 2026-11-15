@@ -9,7 +9,7 @@ import { optimizedImage } from '../../lib/media';
 import Accent from '../Accent.astro';
 import SectionHead from '../SectionHead.astro';
 type Props = Extract<Section, { type: 'team' }> & { index: number };
-const { headline, text, members, note, cta, id = `s${Astro.props.index}`, index, kicker } = Astro.props;
+const { headline, text, members, note, cta, secondary, id = `s${Astro.props.index}`, index, kicker } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const Name = index === 0 ? 'h2' : 'h3';
@@ -25,5 +25,9 @@ const crew = await Promise.all(members.map(async item => {const member=teamMembe
     <div {...field({collection:"people",id:member.personId},["image"],{mode:"panel"})} class="portrait" data-dot-img={member.media ? '' : undefined} data-step="6">{member.image && member.media ? <img src={member.media.src} width={member.media.width} height={member.media.height} alt={member.image.alt} loading="lazy" decoding="async" /> : <><span class="ini" aria-hidden="true">{initials(member.name)}</span><span class="soon mono">{t('team.photoComingSoon')}</span></>}</div>
     <span {...field({collection:"people",id:member.personId},["role",locale])} class="role mono">{member.role}</span><Name {...field({collection:"people",id:member.personId},["name"])}>{member.name}</Name>{member.bio && <p {...field({collection:"people",id:member.personId},["bio",locale])}>{member.bio}</p>}
   </li>)}</ul>
-  {(note || cta) && <p class="crew-note">{note && <span>{note}</span>}{cta && <a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a>}</p>}
+  {(note || cta || secondary) && <p class="crew-note">{note && <span>{note}</span>}{(cta || secondary) && <span class="crew-links">{cta && <a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a>}{secondary && <a class="link" href={localHref(secondary.href)}>{secondary.label} <span aria-hidden="true">→</span></a>}</span>}</p>}
 </section>
+
+<style>
+  .crew-links { display: flex; flex-wrap: wrap; gap: var(--space-3-5) var(--space-7); }
+</style>

@@ -1,16 +1,19 @@
 ---
 // Ein Besitzer für Kicker, Überschrift und Einleitung. Einbettungen behalten ihre Fachlayouts.
+// Kicker und Schlagzeile bilden gemeinsam die Überschrift (Moritz' Texte, 15.11.2026: „H2: Kicker / Headline“, die
+// erste Zeile ist die SEO-Zeile). Der Kicker steht deshalb als Block im h2; der Abstand bleibt wie vorher (--kicker-gap).
 import Accent from './Accent.astro';
 interface Props { kicker?: string; headline: string; text?: string; id: string; level?: 'h1' | 'h2' | 'h3'; class?: string; variant?: 'default' | 'embedded' | 'contents' | 'display'; titleClass?: string; textClass?: string; kickerClass?: string; revealTitle?: boolean }
 const { kicker, headline, text, id, level: H = 'h2', class: cls, variant = 'default', titleClass, textClass, kickerClass, revealTitle } = Astro.props;
 ---
 <div class:list={['section-head', { 'sec-head': variant === 'default' }, cls]} data-section-head={variant}>
-  {kicker && <span class:list={['kicker mono', kickerClass]}>{kicker}</span>}
-  <H id={id} class={titleClass} data-reveal-group={revealTitle ? '' : undefined}><slot name="title"><Accent text={headline} /></slot></H>
+  <H id={id} class={titleClass} data-reveal-group={revealTitle ? '' : undefined}>{kicker && <><span class:list={['kicker mono', kickerClass]}>{kicker}</span>{' '}</>}<span class="head-line"><slot name="title"><Accent text={headline} /></slot></span></H>
   {text && <p class={textClass}>{text}</p>}
   <slot />
 </div>
 <style is:global>
   .section-head[data-section-head] > :is(h1, h2, h3) { margin-top: 0; }
   .section-head[data-section-head="contents"] { display: contents; }
+  .section-head :is(h1, h2, h3) > .kicker { margin: 0 0 var(--kicker-gap, var(--space-3-5)); }
+  .section-head :is(h1, h2, h3) > .head-line { display: block; }
 </style>

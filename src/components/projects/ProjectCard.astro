@@ -12,8 +12,8 @@ import { hrefOf, dronesOf, yearOf, kickOf } from './refs';
 import { videos, videoPath } from '../../lib/videos';
 // Referenzen mit Showvideo zeigen das Video statt des Lichtpunkt-Hovers (Marc, 31.10.2026, wie im Vercel-Prototyp):
 // `autoplay` läuft, sobald die Karte im Bild ist; die anderen spielen beim Zeigen auf die Karte, auf Touch-Geräten im Bild.
-interface Props { project: CollectionEntry<'projects'>; i?: number; level?: 'h2' | 'h3' | 'h4'; year?: boolean; autoplay?: boolean }
-const { i = 0, level = 'h3', year = false, autoplay = false } = Astro.props;
+interface Props { project: CollectionEntry<'projects'>; i?: number; level?: 'h2' | 'h3' | 'h4'; year?: boolean; autoplay?: boolean; title?: string; kicker?: string; summary?: string }
+const { i = 0, level = 'h3', year = false, autoplay = false, title: ownTitle, kicker: ownKicker, summary: ownSummary } = Astro.props;
 const project=projectView(Astro.props.project);
 const clip = project.data.showcase?.heroVideo;
 const loop = clip && Object.values(videos).some((src) => src === clip) ? videoPath(clip, 'preview') : undefined;
@@ -24,7 +24,7 @@ const image = project.data.cover ? await optimizedImage(project.data.cover.src) 
 const drones = dronesOf(project);
 const badge = [year && yearOf(project), drones && t('projectcard.valueDrones', { v0: drones })].filter(Boolean).join(' · ');
 ---
-<MediaCard variant="reference" class={`${!href ? 'static' : ''} ${loop ? 'has-loop' : ''}`}  href={localHref(href)} title={project.data.showcase?.cardTitle ?? project.data.title} level={T} summary={!project.data.showcase ? project.data.summary : undefined} kicker={kickOf(project)} badge={badge || undefined} badgeAttributes={drones?field({collection:"projectFacts",id:"configuration"},[project.id.replace(/^(en|nl)\//,''),"drones"],{mode:"panel"}):{}} i={i % 2} hasMedia={Boolean(image)} dot={!loop} loop={loop ? (autoplay ? 'auto' : 'hover') : undefined}>
+<MediaCard variant="reference" class={`${!href ? 'static' : ''} ${loop ? 'has-loop' : ''}`}  href={localHref(href)} title={ownTitle ?? project.data.showcase?.cardTitle ?? project.data.title} level={T} summary={ownSummary ?? (!project.data.showcase && !ownTitle ? project.data.summary : undefined)} kicker={ownKicker ?? kickOf(project)} badge={badge || undefined} badgeAttributes={drones?field({collection:"projectFacts",id:"configuration"},[project.id.replace(/^(en|nl)\//,''),"drones"],{mode:"panel"}):{}} i={i % 2} hasMedia={Boolean(image)} dot={!loop} loop={loop ? (autoplay ? 'auto' : 'hover') : undefined}>
   <Fragment slot="media">{image && <img src={image.src} {...image.attributes} width={image.width} height={image.height} alt={project.data.cover!.alt} loading="lazy" decoding="async" />}{loop && <video class="loop" data-src={loop} muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>}</Fragment>
 </MediaCard>
 

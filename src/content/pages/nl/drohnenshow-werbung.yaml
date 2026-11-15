@@ -12,7 +12,7 @@ sections:
       href: "#anfrage"
     secondary:
       label: Voor bureaus
-      href: "#agenturen"
+      href: tel:+4920988306562
     video: ford
     videoLabel: Ford Explorer · Keulen
     poster:
@@ -20,949 +20,772 @@ sections:
       alt: Volkswagen-logo van drones boven de Wolfgangsee, gasten filmen vanaf een terras
       width: 1920
       height: 1281
-    facts:
-      - value: { fact: showsTotal, "display": "number" }
-        label: shows sinds 2022
-        _key: k_d8fa62f46152a3442123
-      - value: { fact: responseHours, display: hours }
-        label: tot ons antwoord
-        _key: k_ea8a5bf5b47c7af483ff
-      - value: 1–2 weken
-        label: met express
-        _key: k_63b5beb0dea54789e039
-    todo: Moritz muss die deutsche Endfassung und die maschinell übersetzten EN-/NL-Texte redaktionell prüfen.
+    facts: []
     _key: k_cabb99b46c806fc432fa
   - type: logoBar
     id: marken
     headline: Merken waarvoor we vlogen
+    label: Geflogen für
+    pressLabel: Ihr kennt uns aus
     logos:
       - name: Ford
         file: /brand/logos/kunde-ford-weiss.svg
-        _key: k_7cb68e08b7052d41473c
         detail: false
         tall: false
+        _key: k_7cb68e08b7052d41473c
       - name: Volkswagen
         file: /brand/logos/kunde-volkswagen-weiss.svg
-        _key: k_9d3e0dc226969af06770
         detail: false
         tall: false
+        _key: k_9d3e0dc226969af06770
       - name: PUMA
         image:
           src: https://flyingstars.art/wp-content/uploads/2023/04/Puma_Logo_weiss.png
           alt: PUMA
           width: 300
           height: 161
-        _key: k_026697622e1aeb8e03b3
         detail: false
         tall: false
+        _key: k_026697622e1aeb8e03b3
       - name: Prada
         file: /brand/logos/kunde-prada-weiss.svg
-        _key: k_7ee4a9ed1ae5975513e0
         detail: false
         tall: false
+        _key: k_7ee4a9ed1ae5975513e0
       - name: L’Oréal
         file: /brand/logos/kunde-loreal-weiss.svg
-        _key: k_ce391cd91b69d54344cb
         detail: false
         tall: false
+        _key: k_ce391cd91b69d54344cb
       - name: Spotify
         file: /brand/logos/kunde-spotify-weiss.svg
-        _key: k_4fb13f7e880dcef286c7
         detail: false
         tall: false
+        _key: k_4fb13f7e880dcef286c7
       - name: Siemens
         file: /brand/logos/kunde-siemens-weiss.svg
-        _key: k_0665349252f0a527ef12
         detail: false
         tall: false
+        _key: k_0665349252f0a527ef12
       - name: E.ON
         file: /brand/logos/kunde-eon-weiss.svg
-        _key: k_3bbf957c64a2499e69ff
         detail: false
         tall: false
+        _key: k_3bbf957c64a2499e69ff
       - name: REWE
         file: /brand/logos/kunde-rewe-weiss.svg
-        _key: k_0ceba3c63aa32b3ab627
         detail: false
         tall: false
+        _key: k_0ceba3c63aa32b3ab627
       - name: Bosch
         file: /brand/logos/kunde-bosch-weiss.svg
-        _key: k_01951987a0b92a53cfed
         detail: false
         tall: false
+        _key: k_01951987a0b92a53cfed
       - name: Amazon
         file: /brand/logos/kunde-amazon-weiss.svg
-        _key: k_be44e8c8ec446c70c8cc
         detail: false
         tall: false
+        _key: k_be44e8c8ec446c70c8cc
       - name: McKinsey
         file: /brand/logos/kunde-mckinsey-weiss.svg
-        _key: k_401386dfa999f2801f1a
         detail: false
         tall: false
+        _key: k_401386dfa999f2801f1a
       - name: Bulgari
         file: /brand/logos/kunde-bulgari-weiss.svg
-        _key: k_fec36d49653d51da53bc
         detail: false
         tall: false
+        _key: k_fec36d49653d51da53bc
       - name: NFL
         image:
           src: https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png
           alt: NFL
           width: 300
           height: 409
-        _key: k_6575c0d35122892e9ce1
         detail: false
         tall: false
-    _key: k_4f396c969776c1714c2c
-    pressItems: []
+        _key: k_6575c0d35122892e9ce1
+    pressItems:
+      - name: ZDF
+        logo: /brand/logos/presse-zdf.svg
+        cleared: true
+        knock: true
+        note: 1, 2 oder 3
+        _key: k_4791d0a73285012bba9c
+      - name: WDR
+        logo: /brand/logos/presse-wdr.svg
+        cleared: true
+        knock: false
+        note: Fernsehen und Interviews
+        _key: k_e6e05aa8a4af009df49f
+      - name: ntv
+        logo: /brand/logos/presse-ntv.svg
+        cleared: true
+        knock: true
+        href: https://www.n-tv.de/mediathek/magazine/startup_news/Drohnen-verwandeln-Nachthimmel-in-Showbuehne-article25835436.html
+        note: Startup News
+        _key: k_b210d92e4cbf25bd0560
+      - name: WAZ
+        logo: /brand/logos/presse-waz.svg
+        cleared: true
+        knock: false
+        href: https://www.waz.de/lokales/duisburg/article409722481/ruhrorter-hafenfest-die-geheimnisse-hinter-dem-neuen-highlight.html
+        note: Ruhrorter Hafenfest
+        _key: k_af6d26f3bd912a26bb0f
     quality: []
+    _key: k_4f396c969776c1714c2c
+  - type: textMedia
+    todo: "Moritz: im letzten Absatz fehlt ein Verb („Unsere Drohnenshows [sind] eine Alternative …“), bewusst wortgetreu übernommen."
+    id: marketing
+    kicker: Werbung und Marketing mit Drohnen
+    headline: Euer Unternehmen auf der größten Bühne der Welt
+    body: |-
+      Das neue Produkt, von dessen Launch jede:r etwas mitbekommen soll. Das Werbevideo mit Wow-Effekt. Die Brand-Kampagne, die euer Logo wieder in den Köpfen einbrennt.
+  
+      Gemeinsam bauen wir eine individuelle Choreografie, die die Geschichte eurer Marke erzählt. Mehr als nur euer Logo, ein Claim oder euer Firmenname – sondern emotionales Storytelling, das verzaubert.
+  
+      Unsere Drohnenshows eine Alternative zum Feuerwerk, die noch kaum jemand kennt. Aufmerksamkeit garantiert, selbst aus Kilometern Entfernung.
+    mediaSide: right
+    cta:
+      label: Show anfragen
+      href: "#anfrage"
+    _key: k_7abf894f6f4dfb7d5b8c
+  - type: textMedia
+    id: komplettpaket
+    kicker: Komplettpaket
+    headline: Alles drin für euer Marketing
+    body: |-
+      Von der Idee bis zum Applaus begleiten wir euch in der gesamten Planung und Durchführung.
+  
+      - Technik: Wir stellen Hardware, Software und Lichtdrohnen.
+      - Musik: Lasst die Drohnen zu eurer Playlist tanzen.
+      - Werbematerial: Auf Wunsch kreieren wir Fotos und Filmaufnahmen.
+      - Genehmigungen: Wir übernehmen die komplette Bürokratie.
+      - Sicherheit: LBA- und EASA-zertifiziert, Haftpflicht bis 1,3 Mio. Euro.
+      - Schnelligkeit: Planung in unter zwei Wochen möglich.
+      - International: In Deutschland, Europa und weltweit
+    mediaSide: right
+    cta:
+      label: Show anfragen
+      href: "#anfrage"
+    _key: k_5fce2f823d9e547c9f3a
+  - type: steps
+    id: agenturen
+    kicker: Bureaus
+    headline: Jullie blijven het gezicht, wij leveren de show.
+    steps:
+      - title: Wir fliegen, ihr glänzt
+        text: Gerne unterschreiben wir NDAs für eure Werbe- oder Marketing-Agentur.
+        _key: k_8949ebf1a13706740934
+      - title: Markensicher
+        text: Ihr gebt alle Motive frei, um die Kontrolle über eure Brand zu behalten.
+        _key: k_fbb4c3639f44f4ea8804
+      - title: KPI-orientiert
+        text: "Die Ergebnisse zählen: Wir arbeiten mit euch zusammen, um Erfolge zu messen."
+        _key: k_cee3e178d47544d71e22
+    ownNumbers: true
+    _key: k_35809e7974828f33e234
   - type: landingRefs
     id: referenzen
     kicker: Onze shows
+    todo: Für E.ON fehlen Showbild, genaues Datum und Fallstudie.
     headline: Grote merken, grote podia.
-    projects:
-      - nfl-berlin-game
-      - puma-bundesliga
-      - exploring-reinvented-der-neue-ford-explorer
-      - loreal-prada-rheinturm
     cta:
       label: Al onze shows
       href: /referenzen/
+    projects:
+      - spotify-luciano-apache
+      - loreal-prada-rheinturm
+      - eon-hamburg
+    cards:
+      - ref: spotify-luciano-apache
+        title: Spotify
+        kicker: Visueller Album-Release
+        text: Wenn Luciano und Apache 207 kollaborieren, entsteht Großes. Ihre neue EP durften wir zur Veröffentlichung mit 350 Drohnen über dem Prenzlauer Berg visuell inszenieren.
+        _key: k_78b56031fa52bc4e444c
+      - ref: loreal-prada-rheinturm
+        title: L’Oréal x Prada
+        kicker: Unübersehbarer Produktlaunch
+        text: "Ein Parfüm, das heller leuchtet als der Rheinturm: Mit 350 Drohnen mitten in Düsseldorf veranstalteten wir eine Aufführung, die hundertfach geteilt wurde."
+        _key: k_da7261ca4e5d1bd54a6d
+      - ref: eon-hamburg
+        title: E.ON
+        kicker: The Future is Now
+        text: Mit 500 Drohnen machten wir den Hamburger Hafen zur größten Bühne der E.ON New Energy Experience 2026. Die Hommage an die Hansestadt begeisterte tausende Zuschauer:innen.
+        _key: k_c4bbae2e1586193f7306
     _key: k_1f617bd698f4f907e713
-  - type: landingBento
-    id: wirkung
-    kicker: Effect
-    headline: Wat een merkshow kan bereiken.
-    lead:
-      label: Ford · Volkswagen · PUMA
-      title: Een logo dat mensen *herkennen*.
-      text: We vertalen jullie logo naar lichtpunten, drone voor drone.
-      image:
-        src: https://flyingstars.art/wp-content/uploads/2024/12/FORD_comp.png
-        alt: Ford-tekst van blauwe drones boven het fabrieksterrein in Keulen
-        width: 1929
-        height: 1133
-    items:
-      - icon: camera
-        title: Beelden voor jullie kanalen
-        text: "Gasten filmen en delen de show. Ruwe beelden van onze cameradrone kosten {{offer.film.price}} en zijn bij {{offer.film.included}} inbegrepen."
-        _key: k_5252e3279b65a4b9c3d3
-      - icon: newspaper
-        title: Een aanleiding voor publiciteit
-        text: Onder andere ZDF, WDR, ntv en WAZ berichtten over ons en onze shows.
-        _key: k_e552a7787fcc44b66b84
-    todo: FlyingStars muss die genannten ZDF-/WDR-Berichte konkret belegen; für Reichweiten- oder Wirkungsaussagen fehlen messbare Projektergebnisse.
-    _key: k_c6d958d0420f0a9ef33b
-  - type: landingFlow
-    id: freigabe
+  - type: steps
+    id: ablauf
     kicker: Verloop
     headline: Van logo tot complete show.
-    text: Er vliegt niets zonder jullie goedkeuring.
     steps:
-      - title: Aanvraag en offerte
-        text: Vertel ons datum, locatie en doel. We reageren binnen 48 uur en sturen na een kort gesprek een offerte.
-        duration: Antwoord binnen 48 uur
-        _key: k_195bdede45eea38fcdd2
-        gate: false
-      - title: Ontwerp
-        text: Stuur ons jullie logo. Eerst zien jullie een 2D-ontwerp van de beelden.
-        _key: k_49e43d30a4cf6e87e6d1
-        gate: false
-      - title: Animatie
-        text: Daarna volgt een ruwe animatie met muziek. Vanaf HORIZON krijgen jullie een videopreview van de show.
-        _key: k_321f6a3deb2b1ef07eea
-        gate: false
-      - title: Goedkeuring
-        text: Pas nadat jullie elk beeld hebben goedgekeurd, programmeren we kleuren en lichteffecten op de muziek.
-        gate: true
-        _key: k_737c9a5473db3f88034c
-      - title: Showdag
-        text: Ons team is circa drie uur vooraf ter plaatse, zet de startzone af en vliegt de show.
-        duration: ca. 3 uur opbouw
-        _key: k_cdf27dbb327e5fcde319
-        gate: false
+      - title: "#1 Anfrage"
+        text: Ihr erzählt uns von Datum, Ort und Anlass. Wir melden uns innerhalb von 48 Stunden zurück, um ein Erstgespräch zu vereinbaren. Eine Begehung ist selten nötig.
+        _key: k_e01bd8edb2e65fef3485
+      - title: "#2 Planung"
+        text: Wir entwickeln die Choreo samt Motiven und Musik. Ihr seid so viel involviert, wie ihr möchtet. Mit Zustimmung der Grundstückseigentümer:innen holen wir alle Genehmigungen ein.
+        _key: k_b22b05daa48eb35fd92c
+      - title: "#3 Showtag"
+        text: "Wir kümmern uns um alles: Aufbau dreieinhalb Stunden vor der Aufführung, Sicherheit, Abbau. Die Drohnen-Werbung selbst läuft für bis zu 25 Minuten."
+        _key: k_9ebfd8a7c65e0d2211e6
+    ownNumbers: true
     _key: k_a7152263e0461f67ead9
-  - type: packages
-    id: pakete
-    kicker: Pakketten
-    headline: Hoe uitgebreid mag jullie show zijn?
-    text: Voor veel bedrijfsfeesten is een 2D-logo voldoende. Voor lanceringen met 3D-objecten en een verhaal passen HORIZON of ODYSSEY.
-    compact: true
-    items:
-      - name: SPARK
-        label: Klassiek in 2D
-        _key: k_17eea920ec0491047a40
-        highlight: false
-      - name: HORIZON
-        label: 3D in beweging
-        badge: Bestseller
-        highlight: true
-        _key: k_b94e0363e3a39e7426c3
-      - name: ODYSSEY
-        label: 3D-show met verhaal
-        _key: k_93070fc050069e397d62
-        highlight: false
-    note: Alle prijzen zijn exclusief btw en reiskosten
-    cta:
-      label: Alle diensten en prijzen
-      href: /drohnenshow-preise/
-    todo: FlyingStars muss die Paketgrenzen, Aufpreise und Leistungen für den Relaunch bestätigen; die endgültige Preisstruktur für 2027 ist noch offen.
-    _key: k_d26b138f665a8ac9c34d
   - type: landingTeaser
-    id: logo
+    id: preise
     kicker: Showconfigurator
+    todo: FlyingStars muss die Motive, Drohnenzahlen und Freischaltstufen anhand von docs/show-motive-inventar.md fachlich bestätigen. Die Vorschau ist kein Flugplan.
     headline: Hoe ziet jullie *logo* er aan de hemel uit?
     text: Upload jullie logo in de configurator en bekijk het als droneformatie, met beelden van SPARK tot ODYSSEY.
     href: /drohnenshow-preise/?anlass=launch#konfigurator
     cta: Probeer jullie logo in de configurator
     loop: marke
-    todo: FlyingStars muss die Motive, Drohnenzahlen und Freischaltstufen anhand von docs/show-motive-inventar.md fachlich bestätigen. Die Vorschau ist kein Flugplan.
     _key: k_1f4f4d01bf5354a2a7ba
-  - type: landingBento
-    id: agenturen
-    kicker: Bureaus
-    headline: Jullie blijven het gezicht, wij leveren de show.
-    lead:
-      icon: sparkles
-      title: Wij vliegen, *jullie stralen*.
-      text: Jullie blijven vooraan bij jullie klanten. Jullie bepalen wat jullie zelf organiseren en wat wij overnemen.
-    items:
-      - icon: hat-glasses
-        title: White label
-        text: Op verzoek vliegen we anoniem. Jullie naam staat voorop, wij leveren de show.
-        _key: k_b1193a740bb23e8ca935
-      - icon: file-lock
-        title: Vertrouwelijk
-        text: We ondertekenen een geheimhoudingsovereenkomst.
-        _key: k_0cf823404746a47edcf6
-      - icon: thumbs-up
-        title: Goedkeuring
-        text: Voor de afstemming met jullie klanten visualiseren we de beelden met hun logo.
-        _key: k_b4cd40f77c941c13df62
-      - icon: clipboard-list
-        title: Projectleiding
-        text: Op verzoek verzorgen we de projectleiding, met vergunning, instanties en techniek ter plaatse.
-        _key: k_3ae3ac2e616a3beabd1b
-    closing:
-      headline: Een project voor jullie klant?
-      text: Vertel ons erover. We reageren binnen 48 uur en stemmen de rest vertrouwelijk met jullie af.
-      button:
-        label: Aanvragen als bureau
-        href: /kontakt/?anlass=agentur
-    _key: k_35809e7974828f33e234
-  - type: landingSpotlight
-    id: orte
-    kicker: Locaties
-    headline: We vliegen waar jullie publiek is.
-    text: Met onze generieke exploitatievergunning kunnen we de meeste vlieglocaties zelf vrijgeven. Voor gecontroleerd luchtruim, locaties bij luchthavens en federale waterwegen regelen we de benodigde bijzondere vergunningen. Dat vraagt meer voorbereidingstijd.
-    image:
-      src: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
-      alt: Droneformatie boven de skyline van Düsseldorf met de Rheinturm
-      width: 1920
-      height: 985
-    tags:
-      - {"_key":"k_eb49b6fefcd25aaa70f2","value":"Borussia-Park · Mönchengladbach"}
-      - {"_key":"k_2f6e086ec17ff7347db1","value":"Olympiastadion · Berlijn"}
-      - {"_key":"k_6c8c7c31c41910ea3274","value":"Rheinturm · Düsseldorf"}
-      - {"_key":"k_051f63270e7a44e41b90","value":"Binnenhaven · Duisburg"}
-    facts:
-      - value: 4–8 weken
-        label: bevestiging per EU-land
-        _key: k_6ec398101306e49f60a4
-      - value: ca. 3 maanden
-        label: in Italië
-        _key: k_6816b73b403f3db45756
-    todo: FlyingStars muss aktuelle Cross-border-Fristen und mögliche Sondergebühren je Land bestätigen. Die Ortsbeispiele belegen keine pauschale Genehmigung oder garantierte Frist.
-    _key: k_671ae5a30eb25ef1930d
-    entries: []
-  - type: landingSite
-    id: standort
-    kicker: Locatie
-    headline: Is jullie locatie geschikt?
-    text: Stuur ons het adres en de geplande positie van jullie publiek. Voordat we een offerte maken, beoordelen we of en hoe een show daar mogelijk is.
-    variant: outdoor
-    todo: FlyingStars muss die Startflächen je Drohnenzahl und die standortabhängigen Abstände bestätigen; 15 × 15 und 25 × 25 Meter widersprechen sich in den Quellen. Die Zeichnung bleibt ein Beispiel. Moritz muss die Aufgabenliste für Markenshows freigeben.
-    additionalResponsibilities:
-      - task: Logo sturen en elk motief goedkeuren
-        us: none
-        you: full
-        _key: k_f9022e9498a7fad0753a
-      - task: Motieven ontwerpen en animeren
-        us: full
-        you: none
-        _key: k_827a4c6b6a7c553bffad
-    safetyRef: safety-concept
-    _key: k_c4fd3256a7a568abb827
-  - type: faq
-    id: fragen
-    kicker: FAQ
-    headline: Vragen van merken en bureaus.
+  - type: team
+    id: ueber
+    kicker: Über FlyingStars
+    todo: FlyingStars muss ein Teamfoto liefern; eine Presseseite für „In der Presse“ fehlt.
+    note: "Ihr kennt uns aus: ZDF, WDR, NTV, WAZ"
     cta:
-      label: Alle vragen
-      href: /faq/
-    tags:
-      - werbung
-    _key: k_92cbd2df611f3954dfc2
-    openFirst: false
+      label: Über uns
+      href: /ueber-uns/
+    secondary:
+      label: In der Presse
+      href: "#marken"
+    headline: Nach 150+ Shows noch immer wie beim ersten Mal
+    text: Die allermeisten Menschen sehen zum ersten Mal eine Drohnenshow. Es ist unsere Aufgabe, sie mitzureißen! Deshalb führen wir seit 2021 Aufführungen durch, die lange im Kopf und tief im Herzen bleiben.
+    members:
+      - personId: ronja-donsbach
+      - personId: florian-becker
+      - personId: erwin-wilms
+      - personId: patrick
+      - personId: alejandro
+    _key: k_b75368d6c59a6a7e8123
   - type: contactForm
     kicker: Aanvraag
     headline: Vertel ons over jullie campagne.
     text: Datum, locatie en doel zijn genoeg. Jullie logo mogen jullie later per e-mail sturen.
     _key: k_0a54e0d092548e4f7d56
-translationSourceHash: 6cef1afcc9789bd102748a1f4e19ddef2467d35d4331561d4bdd0638e917680b
+  - type: faq
+    id: fragen
+    kicker: FAQ
+    cta:
+      label: Alle vragen
+      href: /faq/
+    openFirst: true
+    headline: Vragen van merken en bureaus.
+    tags:
+      - werbung-moritz
+    _key: k_92cbd2df611f3954dfc2
+translationSourceHash: 18d152a10784bebc139283a48dae03097d94821a63c9c644a479e9d86732a25e
 noindex: false
 translationContractVersion: 2
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 6cef1afcc9789bd102748a1f4e19ddef2467d35d4331561d4bdd0638e917680b
+  sourceFingerprint: 18d152a10784bebc139283a48dae03097d94821a63c9c644a479e9d86732a25e
   legacy:
     provenanceFile: docs/i18n/content-provenance.json
     migration: I01-v2-2026-11-04
   fields:
     - address: /description
-      sourceFingerprint: 5ee08f5794efd8784832028b5c162e56598317eb3c702d978a6a969f8513f7f2
+      sourceFingerprint: 7f9937cf24f294a129630bb011ce2b64a0a603338c41a4090706636efc49b94e
       targetFingerprint: ca9500dae7ff3abb80511d57d4508a2ce2e474e890b65e07c290aff421ca2301
       status: adopted-existing
     - address: /navLabel
-      sourceFingerprint: d703cc4b30685f80625a32b4e4b8c73f0bbbb589de4754b7bf1e221f331fd634
+      sourceFingerprint: 55f7b3701ced12769d97b91ecbe3f227c18dab815dd64ca86c5d3f63f4cdb3fb
       targetFingerprint: 7dfa4add2d615a8e65c0f3e635caaac9377c75503c30b60928e9f20de53128b2
       status: adopted-existing
     - address: /sections/@k_0a54e0d092548e4f7d56/headline
-      sourceFingerprint: 3932e440633b347ace13794ef466db8cf18d695af2cc2c442facb4fa712f43ea
+      sourceFingerprint: 0769707a9561bd8763493d26d065a90ee62ae398f7d7993ef9ff4344640e4501
       targetFingerprint: 463c98310f40c38485942c8a85791fb6a3ec487c5629369aea5158deb827a0cb
       status: adopted-existing
     - address: /sections/@k_0a54e0d092548e4f7d56/kicker
-      sourceFingerprint: ffcb26ab4500f347b80e97fd47ac8f9ef39c39183c25cbd85bd16a5894b4d908
+      sourceFingerprint: b8e1258622be91e7f449e6d6373451fbf775e1ce2cf9a70b473247bf4b255f84
       targetFingerprint: e27c58de6ffa148438f0cfc949fd6e9e3c838e7fbeb45e9a1e176841ff597c80
       status: adopted-existing
     - address: /sections/@k_0a54e0d092548e4f7d56/text
-      sourceFingerprint: 7b02cef873078691c228035ce356a42be455a23e69f5356eabf4a078acc84b0a
+      sourceFingerprint: 9bec6e84cc94b9a8808a6abe98ed8639f98ae225c73cc9b8564becca45d4116f
       targetFingerprint: 7ca70a1cf467bdaeed20ab0662229ac53aab602ec643d0a043872db8ea810e23
       status: adopted-existing
     - address: /sections/@k_1f4f4d01bf5354a2a7ba/cta
-      sourceFingerprint: b4b6be6b3ce2342e8c273a3fd6bba96d20feae46ac206d99761b83b3b7dd2bc6
+      sourceFingerprint: 755886052822054f8defdde2065b68f242c3b83ed33be7b1347f8dfe000bcdbb
       targetFingerprint: 5f67834a37c913b6fed812882f696ae58d5e20c9ae49a5bc4d39dd646b3e044b
       status: adopted-existing
     - address: /sections/@k_1f4f4d01bf5354a2a7ba/headline
-      sourceFingerprint: 2acf91f5000530a923fda04d3e0fdb3fbe18fda2ea162450d72d61aca12937d9
+      sourceFingerprint: 3fb3e2e01444ccd2a4eae8b7b58e22d54bd047d4992ba08adea02c172dc4abc6
       targetFingerprint: 7a222cbdce3f82948395b26de91675b8e8c10f6d4729b2a7e250059bf038104d
       status: adopted-existing
     - address: /sections/@k_1f4f4d01bf5354a2a7ba/kicker
-      sourceFingerprint: f109876d5ef8c4c1e972b2d4558c35e046015098e362fc02245c3871989b1f34
+      sourceFingerprint: 45deead92fa3c76ea1d6287a3e3d748cb5b64ba806223e793990a016e2200768
       targetFingerprint: 2161e400a7eea57c3596fb5924a28cb907646bbe9dc4d221541e498361e3da7a
       status: adopted-existing
     - address: /sections/@k_1f4f4d01bf5354a2a7ba/text
-      sourceFingerprint: 8422b95c702f1fbcf15aac02b6c9e2fa5ea0980907f249ac1e6c2aef834b263a
+      sourceFingerprint: 8b82add55231ef9afd70545bf9f6eb7b4592e6752a6a20bb3d3a3a9457d4ae94
       targetFingerprint: 5ebcec3fbc06e5601906be755b1796e770f2f12d497632640a3f0e74d5c69fd1
       status: adopted-existing
+    - address: /sections/@k_1f617bd698f4f907e713/cards/@k_78b56031fa52bc4e444c/kicker
+      sourceFingerprint: 6cb0e51d8c7f5c2840bf13df5d653a2b5f21ef0844329e636b56c62271911c18
+      targetFingerprint: f8d6e7a77392987a4d3686c14518f81f6d38e9bf7c36a8c1246a9b02eab7d4b3
+      status: adopted-existing
+    - address: /sections/@k_1f617bd698f4f907e713/cards/@k_78b56031fa52bc4e444c/text
+      sourceFingerprint: 785bd98a74519a6214f2ed09e10ceb187be22f61213ea82a0d64a9811cb2f20e
+      targetFingerprint: 3506d9d44b8c05585dc336357e8577288eef1c4886202fb03cdf4b5a7682b3c0
+      status: adopted-existing
+    - address: /sections/@k_1f617bd698f4f907e713/cards/@k_78b56031fa52bc4e444c/title
+      sourceFingerprint: 63a0481583354eb61ca7f1526173f634cecefe78c9baa69a4445335271d96524
+      targetFingerprint: 9066a73ced45cbd56a8bec57de15ffcce701be804ff016e62578ab30b25fc394
+      status: adopted-existing
+    - address: /sections/@k_1f617bd698f4f907e713/cards/@k_c4bbae2e1586193f7306/kicker
+      sourceFingerprint: 95690286fd6632791faf3067d452f8b4b7c2855e54e6401b0be9d20ae2db7111
+      targetFingerprint: a55484fe0679e1f857bb7325cb178a96d2fb19e1dec62bd5536b64765bf4b1b9
+      status: adopted-existing
+    - address: /sections/@k_1f617bd698f4f907e713/cards/@k_c4bbae2e1586193f7306/text
+      sourceFingerprint: 732ead2511e0644870041612b420c6b88cb480c9e43113f116da3379a5cf300d
+      targetFingerprint: 9b2a8c53f606bce5b71473d21e62c35a4cafed6eb3e0e12db129fde68cc9cbcf
+      status: adopted-existing
+    - address: /sections/@k_1f617bd698f4f907e713/cards/@k_c4bbae2e1586193f7306/title
+      sourceFingerprint: bd9237d5dedbad11f5f7fb2f2f0742a4c83b7f79cb68a74c8020d7f6abc47930
+      targetFingerprint: 46502a016d25a3fd3c4adcad35fa0b21dc72380dba8c082203c3fb55789b5697
+      status: adopted-existing
+    - address: /sections/@k_1f617bd698f4f907e713/cards/@k_da7261ca4e5d1bd54a6d/kicker
+      sourceFingerprint: cd2f87185750a66affc435e4b1b579bb3420f81c8fbe697694ada7b7d7bd5c0e
+      targetFingerprint: 3df6bc55b1c2a9ea4f8e218e6cc0f7b63266125937d61f0de846659dd4470cff
+      status: adopted-existing
+    - address: /sections/@k_1f617bd698f4f907e713/cards/@k_da7261ca4e5d1bd54a6d/text
+      sourceFingerprint: 557da75d0f1fcd272c5d9a6082b5098f3520a26a218473b54f933cf3cd2606a9
+      targetFingerprint: 24c627b94040d90533fb5854378ba5bc93df5a0fe0aedeb7c4592579d2fab388
+      status: adopted-existing
+    - address: /sections/@k_1f617bd698f4f907e713/cards/@k_da7261ca4e5d1bd54a6d/title
+      sourceFingerprint: 89f12be7493e69488548f23f19a62d3b991dc88538bd710b85e21d303f65eb06
+      targetFingerprint: 765b8f1d15506427615deed75afb997dafb8e7834cb7bff5a9838b4a8bd36530
+      status: adopted-existing
     - address: /sections/@k_1f617bd698f4f907e713/cta/label
-      sourceFingerprint: 3bd8550a92a0cdecbe5e38a4f5e454612b503210c8796196e08a703bc190e9e3
+      sourceFingerprint: 04709c4c43ee99fce9f29301696d1c946f287572188cae074c7ee8af121e908a
       targetFingerprint: a6afbc97a644ab63976ea3203d3318f161f04e520fbe12b79e633873bb8bd9ed
       status: adopted-existing
     - address: /sections/@k_1f617bd698f4f907e713/headline
-      sourceFingerprint: 525fb0256d945d74ec8d9ca5a916719a91bcd747ac8dd30f33034f78d43efde0
+      sourceFingerprint: 52272349d373f41aed7b488d914b87d2b3c594913ec1af737c286516d66db597
       targetFingerprint: a60a59ad931c0e1fc40bef37c4506512b8908202aa119089d17a610307ecca57
       status: adopted-existing
     - address: /sections/@k_1f617bd698f4f907e713/kicker
-      sourceFingerprint: 6892df056de13175d2c6cf91818166616fff310f8d12c5ef77a300b1d5748c97
+      sourceFingerprint: b98d20ec34b0563af39b5501579d1a7e466878087daadcb1c4df6e3b4f4c7b51
       targetFingerprint: f0cd2622f22d8ebedc8546d76b5403d9f123004c8e63288ea8b1e5dc7a0a44c3
       status: adopted-existing
     - address: /sections/@k_1f617bd698f4f907e713/text
-      sourceFingerprint: 3fc2bbf4121941781c5ac6636f44f02b8c2de87d78aa27a1d505fcce4d9f3862
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
-      status: adopted-existing
-    - address: /sections/@k_35809e7974828f33e234/closing/button/label
-      sourceFingerprint: 60110e18dc6ffd36f12c3c237839c5241e21a25274345412233776fa850c415e
-      targetFingerprint: d63bf7d69344b2926edd69b4dda5396f1da68606cc2f4d072a36a4505d1fd5b0
-      status: adopted-existing
-    - address: /sections/@k_35809e7974828f33e234/closing/headline
-      sourceFingerprint: fc17891f93ca9c21f4d4c00d4f17be712a8a34083268a30a72bf9cb94cbe79ca
-      targetFingerprint: 6458680a347020c91e2ef28d2774488894039933c2a5e998295f51cb6f9f8949
-      status: adopted-existing
-    - address: /sections/@k_35809e7974828f33e234/closing/text
-      sourceFingerprint: 0716477e37ce81b90e8a82f144710026524d24fa88c20c295be5a50cf7e75127
-      targetFingerprint: 05c2eaffedc664ebe4d20ffe785535c9a3f9fb8792977e88b2eb31b427f81057
-      status: adopted-existing
-    - address: /sections/@k_35809e7974828f33e234/cta
-      sourceFingerprint: 494584636dcbfe304e84c30a83372ea8efd30d9d9acabbfb72a97b67e5740e45
+      sourceFingerprint: 89964724e022d240f445549579f11ae61c93091aa7e01feeb4ae1e42ef6808c4
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_35809e7974828f33e234/headline
-      sourceFingerprint: d930c811c7f6908c216ad5e0919e8dfc6ef602624bd79ef9b1b0f47a0f5e604c
+      sourceFingerprint: dfe7100b0c68969a14edc5b21896dc130078306bb4efdbb341a449d9f422c45d
       targetFingerprint: 6b1785807023b0125dc1dd1853a065f9d417ec441c6d276bfd8c04264d8bdc3b
       status: adopted-existing
-    - address: /sections/@k_35809e7974828f33e234/items/@k_0cf823404746a47edcf6/text
-      sourceFingerprint: 7db29d1010d8eda84181d1ebe48cdc09e283013d30f664fad9e0b26f2339a621
-      targetFingerprint: 428d93b0fc2abf9dfd3faf98eb599676866ffc8e8db15f4c845decb8c3f4bece
-      status: adopted-existing
-    - address: /sections/@k_35809e7974828f33e234/items/@k_0cf823404746a47edcf6/title
-      sourceFingerprint: ba4cbf66cddc1e4ef4668edf7084c9c0f941fe008f1c5112ba1ed480216628f3
-      targetFingerprint: 528e183f5071dd239707701827bc2af51134c71f2d74b1b102d0d64249ee7ba1
-      status: adopted-existing
-    - address: /sections/@k_35809e7974828f33e234/items/@k_3ae3ac2e616a3beabd1b/text
-      sourceFingerprint: 547a7d9a194992610d6bf338d8c0015f99cee93022244ae1078f1903a2531d08
-      targetFingerprint: 9dc9cd3cff401e92bc53d1be8ac7c73f514ffcdf31b309e631ce8d4b586889d8
-      status: adopted-existing
-    - address: /sections/@k_35809e7974828f33e234/items/@k_3ae3ac2e616a3beabd1b/title
-      sourceFingerprint: 5c52a33b7ac0dcf5f66ad10c0d777900d087290c37ee75a166fa1a9c2e79e83d
-      targetFingerprint: 038128a76a9a94b71147e232e7f642ac5588473d1f8d785001df6732f634386d
-      status: adopted-existing
-    - address: /sections/@k_35809e7974828f33e234/items/@k_b1193a740bb23e8ca935/text
-      sourceFingerprint: 13d59d1366b8eb094ac28e7bbdeb49b5dfa3ab25b9cecc5df334b1126d03e151
-      targetFingerprint: 304639c494b970ababaf53cae3d5dc68c09f9f02055b8a1cf7594d926d126c4f
-      status: adopted-existing
-    - address: /sections/@k_35809e7974828f33e234/items/@k_b1193a740bb23e8ca935/title
-      sourceFingerprint: 66082ad75edc991f46e0f314de50575f335389957d2a5ec69e4596d48ddd1d50
-      targetFingerprint: 317896f0418df39102bfb92f6697b06ddfc3d4b53e0c2655defb9e0ce6fe8d10
-      status: adopted-existing
-    - address: /sections/@k_35809e7974828f33e234/items/@k_b4cd40f77c941c13df62/text
-      sourceFingerprint: 8b7f240603e361283bb3913f20f9a4f68d844bfb297c7a50207d4556b5a2c7ee
-      targetFingerprint: a1743a886c3fb8dedd13337ec9c076383da55b837556bc42aa0e973633290057
-      status: adopted-existing
-    - address: /sections/@k_35809e7974828f33e234/items/@k_b4cd40f77c941c13df62/title
-      sourceFingerprint: 9274adbc8bcad286e0b7804693be89d23577095ed7fdf59fb24e0f2caa676a8e
-      targetFingerprint: d9b528935f2a409f007ee97f4c3d5f60f2b42fa6ce45a7ddb1ddbc16d87a1f25
-      status: adopted-existing
     - address: /sections/@k_35809e7974828f33e234/kicker
-      sourceFingerprint: dba8a925e780d1df4b5be80dd6bd1b14eb1bbf91468270d2c0a997911c35749f
+      sourceFingerprint: 4d6d0a02217fe91ba99f8dc0e8065ef7cd0495eccc2a3ced26c4968c4562255b
       targetFingerprint: 808973a7e257fd8e7d0ffb4bf1917a2f9a19754a66734d141aa91e16c0d6269d
       status: adopted-existing
-    - address: /sections/@k_35809e7974828f33e234/lead/image
-      sourceFingerprint: 1172a59cd85362bef76c368a60b07a9a82831e2e49c870bb1e57e6dc076b3862
+    - address: /sections/@k_35809e7974828f33e234/steps/@k_8949ebf1a13706740934/duration
+      sourceFingerprint: 2952d8f64a8b4676384b48d4269f66fca48c7d4c93ae292350d4a60c4fc20f2e
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
-    - address: /sections/@k_35809e7974828f33e234/lead/label
-      sourceFingerprint: e2e78f28fb05e0fd8656f602950dd9194b9d3f7e01ce55bfcc5b0b0b01e583e8
+    - address: /sections/@k_35809e7974828f33e234/steps/@k_8949ebf1a13706740934/subtitle
+      sourceFingerprint: 87ebba7521961ff9c834be17ec5cef5404a434a2ce14405437a2e9aa63bd78b7
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
-    - address: /sections/@k_35809e7974828f33e234/lead/text
-      sourceFingerprint: 9b41f39aa57c4ea1f3d8526425ff67ccfe79b2f6e98e939feac57a49e09b048c
-      targetFingerprint: e8141c312149f1f055361b44d722ce303382a77fc8abb627f9435fdfd812abaa
+    - address: /sections/@k_35809e7974828f33e234/steps/@k_8949ebf1a13706740934/text
+      sourceFingerprint: 9d8a9e02192b2d36a38f5f4be50faa90fd687ff5fde723f9fdb986df7538987d
+      targetFingerprint: f73770ec951eddb71b8253b8eb6b2d9ba0f0eeab33a837225c7f536f99a1729a
       status: adopted-existing
-    - address: /sections/@k_35809e7974828f33e234/lead/title
-      sourceFingerprint: 10c44a56f038c328aadc2b809c8f832adb2f8bfa86033193604e9ac297dc6d21
-      targetFingerprint: a022d52b367e86984b5a7443d9dbcd8a048b69ef8e7efbe1c1da7ae02604f0f9
+    - address: /sections/@k_35809e7974828f33e234/steps/@k_8949ebf1a13706740934/title
+      sourceFingerprint: f45557dbc7e4178aa203ba1f2ad2b3a6a0b53de690b6d932b89b7354ba2a6d0a
+      targetFingerprint: 03ad5ad313f328f459a806863991f63ec217b13d8eb1c200a9b05756195fceeb
+      status: adopted-existing
+    - address: /sections/@k_35809e7974828f33e234/steps/@k_cee3e178d47544d71e22/duration
+      sourceFingerprint: 478a9d66e56de0f45306b4c77bbafa5538b136c2dc2c552142328fe7170c4979
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
+    - address: /sections/@k_35809e7974828f33e234/steps/@k_cee3e178d47544d71e22/subtitle
+      sourceFingerprint: 696affa3f5c8af3ff7adf3844e0115b7b314f440e358c84a6073cbfcb0bb2096
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
+    - address: /sections/@k_35809e7974828f33e234/steps/@k_cee3e178d47544d71e22/text
+      sourceFingerprint: 9335a1a3c4f60f2b738334f5530f44479e160b27472cbf62be6fcdfafbdced37
+      targetFingerprint: 58ba09eb178b374ca0ee9245951a291bc5ffa26734f361eaf0dffa67e5872689
+      status: adopted-existing
+    - address: /sections/@k_35809e7974828f33e234/steps/@k_cee3e178d47544d71e22/title
+      sourceFingerprint: 56bf066108990d49a5396ec64ea7d130c7ef63863cd6adfdf1faa154c22c8e3e
+      targetFingerprint: d1a57d182d70aaafa6f20d1abffdc37a1f4a7e3e45db3be663b88c6eda30fa3a
+      status: adopted-existing
+    - address: /sections/@k_35809e7974828f33e234/steps/@k_fbb4c3639f44f4ea8804/duration
+      sourceFingerprint: 67d4aeed745f4eb322686fc40f9ec05afda44f82ffecb4aaec1e2d6366b9debf
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
+    - address: /sections/@k_35809e7974828f33e234/steps/@k_fbb4c3639f44f4ea8804/subtitle
+      sourceFingerprint: ad0dff576860605504c50df65d6e6971a4b04836bfaaa14cd13452c4d3d41e2e
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
+    - address: /sections/@k_35809e7974828f33e234/steps/@k_fbb4c3639f44f4ea8804/text
+      sourceFingerprint: 3e934dc362ed6097a1f43638e25f5330b330d1d02f0c55ecbea7db70f7589c17
+      targetFingerprint: efac0f4aeb0fb3bd24d9d2add748f03f1b5d2a917faaafdcc8bbe87f09a5e98d
+      status: adopted-existing
+    - address: /sections/@k_35809e7974828f33e234/steps/@k_fbb4c3639f44f4ea8804/title
+      sourceFingerprint: 538e8c7b648e57270edfe1ca78df6a505631c4d6d68249cb2f13da781fdcf609
+      targetFingerprint: 1310380bd19d8ea730363d595fa0756996cd1c73440a62e2ffa1bbba0f97ced9
       status: adopted-existing
     - address: /sections/@k_35809e7974828f33e234/text
-      sourceFingerprint: f21319f16de5d39f2817abc8ec0240cc538983dc6843093122543754f79960ed
+      sourceFingerprint: 581e206c195ca1517eb8db08a1adf56d38bfb553a164308c84924ed1c3cda06f
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/headline
-      sourceFingerprint: 7467b22fc549fc9e7921846f371e9042bc92e80fc008d2ccf5b9cf8ad9114979
+      sourceFingerprint: 603b034f69664639238d14aa754cd676d2303051bcbdd31c64e09fd85512caee
       targetFingerprint: 238fda98df2bd67f62dfe61ffa967043b7709835e101546db2ef071891066bf4
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/kicker
-      sourceFingerprint: 733aa6423c7ba4829d984ad7893fb39eeee779ba708d51e4c2fbed559e067c99
+      sourceFingerprint: f5c31034e6f5512112c96871f4df45c9c34b2f15c25080fb0cf479072173346c
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
+    - address: /sections/@k_4f396c969776c1714c2c/label
+      sourceFingerprint: c0f2178305ee1b7a2874a8557cce5b42bdb3c707b483291d4594040653cbeec8
+      targetFingerprint: e87f9b007fc3a8a6bc5b5ca3e96ec33b7c250e97222265bee72560097660c440
+      status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_01951987a0b92a53cfed/image
-      sourceFingerprint: 7571e7db05929bc6dfd5f9b389e6042b4ffe2874a29da38f5526f1ad062b3ca3
+      sourceFingerprint: f0e2fe3d0b2c3bdf92304fe5e2549a23185156e446fc04adfd769b88488b8b02
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_01951987a0b92a53cfed/name
-      sourceFingerprint: 3f14e0124af40637419585c9d78b1a98565d9561a765907334cd387de3e66cf5
+      sourceFingerprint: 15fb0848ec4d9391d2c8e74af21a5c04b240f26733aa867a1b63268452f1e2ac
       targetFingerprint: 16a0f1fec5bbab90b3ce7ea9e1f6d02c7c81517c1457a47edadf013ec04e519b
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_026697622e1aeb8e03b3/image/alt
-      sourceFingerprint: 98bbc3c9e200c95877bec7c46624b80101a587704d79ea3af1bcdb84dc4e705d
+      sourceFingerprint: ab400588b23b6ec5c80f139df2fe98caadde63b94581fb8d6e9a18da58c4ff57
       targetFingerprint: c4cab2190987ab30acdb791cdf25f456af092358f9b3f5b8ce5d6ef372db4a7f
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_026697622e1aeb8e03b3/name
-      sourceFingerprint: 22b4a9717bb0a2cda4b1e3375dfe0303ffbc18dfc30142fd2e97a32a74003f52
+      sourceFingerprint: 87100ef4b3d7c65adfd3ae2aebd0e0c980c0e2918282432eb14a7f8a09684bb3
       targetFingerprint: c4cab2190987ab30acdb791cdf25f456af092358f9b3f5b8ce5d6ef372db4a7f
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_0665349252f0a527ef12/image
-      sourceFingerprint: 1f9ab6503d09328f20e7831eb25c3d42a126895eab51069848cb8f1c2260176c
+      sourceFingerprint: c6b4a3b51011668803bda2cc9475936f62ed946501d00220ed09631c1e666587
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_0665349252f0a527ef12/name
-      sourceFingerprint: 8c5141c77108ffdd5299895ebb4c351321a92e85f26857ae95c5570260b8df31
+      sourceFingerprint: 9d7b31331607f4b6a1bf0efae611d9f2b4de2566f305c07de05715feea66cdbe
       targetFingerprint: 4cca751c63bccbf03c7f24371a75927dab5b1dfb05f894f67b3dc7de0652a7db
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_0ceba3c63aa32b3ab627/image
-      sourceFingerprint: 7e243981060a14187981111e75e0ba3977fc385f1b3d533a696a72099a797022
+      sourceFingerprint: 29b7360e85b684a7c963318c2e0f0d21b5e5473d82166a13b581f6b18f8b0dfb
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_0ceba3c63aa32b3ab627/name
-      sourceFingerprint: 3067abf1cb6ac3d616e9148a623d1cb1c3efa0f41482bc84248a121d55b47c79
+      sourceFingerprint: 503976c257fbc7b998f37ec5a4622b36f19efb8c47d46505065dbc1ead3df3c0
       targetFingerprint: ad99ad6ea4acdff1b6795db64b7e6f0b1c127b9c96297187c1953ad4e089d2d6
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_3bbf957c64a2499e69ff/image
-      sourceFingerprint: 90b73c58a9c92762a8dc59d7bd67946f3fb25acdded1d67393e3037b01b7c550
+      sourceFingerprint: 5feb796c7cf91db3a38938fc90f7fa8710a4e242947463a6b1fd8ba4985f0d47
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_3bbf957c64a2499e69ff/name
-      sourceFingerprint: 6f8160fe8f08423343b72069725576ff24b19aa94418b1daed1c24545a22a98f
+      sourceFingerprint: 66fcac858f306440c5e6bd7d464b73a8676bd2e0865bdb7d00c038724f2b6846
       targetFingerprint: 46502a016d25a3fd3c4adcad35fa0b21dc72380dba8c082203c3fb55789b5697
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_401386dfa999f2801f1a/image
-      sourceFingerprint: 58cde1a28a82860da2d8180be5ab4e9d83c3fb74635770486d6dfdf3ae332451
+      sourceFingerprint: e1ce84fa13378a66598d1d0ec83ba360d774a62dba7c99582c449115a69736be
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_401386dfa999f2801f1a/name
-      sourceFingerprint: 3481d91bfd9f5b30a3b67235064ee95abcad457d5956c4154fbab80612362b27
+      sourceFingerprint: b0b8068aaf261f62edcd576cce89aa6cf1b84f40723602cd0a05f9d13f7df512
       targetFingerprint: efe15f6f5cdfdc6247078d944e127930c920292e3a36d160122736b7af1f3522
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_4fb13f7e880dcef286c7/image
-      sourceFingerprint: 41bf74ab7a76e02412ae80457e6a2182c0320357d08b8b2bd0217a8d3fa85bcc
+      sourceFingerprint: 87b8171d00c9ebfc24d93a797e84bee80564efe9e924ec649b70381d0176e20e
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_4fb13f7e880dcef286c7/name
-      sourceFingerprint: 14d275610893cd2da62eb178d5c047d364f5033236f3ff9147c9d96b8b900bf4
+      sourceFingerprint: 1166044a215bbe64292ccfb0cb33add2f3ab23f14f1d874381915c1dc7742a95
       targetFingerprint: 9066a73ced45cbd56a8bec57de15ffcce701be804ff016e62578ab30b25fc394
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_6575c0d35122892e9ce1/image/alt
-      sourceFingerprint: 335ebfa87c372a29533330c397a5a4af9fcac3b4f4182a89e7172cf059da6b75
+      sourceFingerprint: 1042c3c42375be5fdcf2525e8fd62f045d73f8c27b6aa6ab5ebc2dbef7bf7fe4
       targetFingerprint: df0b1a109174f5bd4a8f61c6aff6e9ab01f329d727aaca02088bff9da0cda315
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_6575c0d35122892e9ce1/name
-      sourceFingerprint: c7c0b04275f9433b8dd2033aa820edd695b22cbcb580db78d3aec13333c7f9dd
+      sourceFingerprint: f0d4bb672f42bf4fcfbaeb7b038f1a958d6e7eb07fc940fd1c8fb6d0c57d3d42
       targetFingerprint: df0b1a109174f5bd4a8f61c6aff6e9ab01f329d727aaca02088bff9da0cda315
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_7cb68e08b7052d41473c/image
-      sourceFingerprint: eca73be6ba8ce6b722b27570974edfebe83be9b72a31d160b2e070760a02779e
+      sourceFingerprint: c3ea5f52a22aa86838d550777b8bb1bec62b73e90b832a83bf58afeb35343834
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_7cb68e08b7052d41473c/name
-      sourceFingerprint: 32884d0944e248449ae181acff99cf081997161134de057a5a7ce43f6de16649
+      sourceFingerprint: 1a8e0d8f89328e9cf24668374c23bab21bcb6aeabdb7287b8ebf74f18a78e67e
       targetFingerprint: 936ff7bdb0ccf3729dffd0db4ab0dc0208b245a672ba0602116545094a73299e
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_7ee4a9ed1ae5975513e0/image
-      sourceFingerprint: 7c846d99fab3d25cd4d5cf64fb97d989091613737be548b207dd473c56abc5d6
+      sourceFingerprint: c0e2a4f652bde35df0102ebb5710a70e8e62d6310efdc6cbc355a8a893f995b5
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_7ee4a9ed1ae5975513e0/name
-      sourceFingerprint: d4af786c5b768b30a77d743fd8e0407e6c8d7eb2af21053870be6b913de049e3
+      sourceFingerprint: 048991cb00ac4896c9a7bc95f8ba8a96f719eefa672b3e7be454928d87b13902
       targetFingerprint: 5512591d6019b30f17e893b78815faf874b93ac96bbb66dc2a4b71a99dfb4119
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_9d3e0dc226969af06770/image
-      sourceFingerprint: 8c26e38c6ad6f124067ad6b50714300dc5f267c80c4bb0a4619d3000b21ee679
+      sourceFingerprint: 1706f734c00f97f7b111de8d247e358d8e5ee32dcb9ca204077d3f2ecd19a217
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_9d3e0dc226969af06770/name
-      sourceFingerprint: 1f8c116ca6f3adaa1ad2a3d7fa49f50948ff708a643952907b41beee053f9068
+      sourceFingerprint: 34ecf7a04f99cdd41640dac6be212554b0cc1cb87f265fdfcca21c4eda327377
       targetFingerprint: cf76df4f3be939d409cdc3735c8dcebaf53f173ba8abe5c6a48e3719aafc4fa2
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_be44e8c8ec446c70c8cc/image
-      sourceFingerprint: d93bf9368d5549abc6b2281e33108e0f1f220c452e571df81ad77a0bfdd01766
+      sourceFingerprint: 306717592503790896316dcac3776e8c792fb2f00dfed9d2976e86fc085004fd
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_be44e8c8ec446c70c8cc/name
-      sourceFingerprint: 8ffe37ec18296ac264a90198c8bfa91f5b07fface6bdb39c6190eadaa74398ff
+      sourceFingerprint: e94530f2914183226951e6079e1ba998a726cdcb58c09921bc662caaa6d44dbe
       targetFingerprint: dbd6ded82fc7f0bcd58093d7f1ed4b2b56699b6074f743f6ee0b189e5b5b9688
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_ce391cd91b69d54344cb/image
-      sourceFingerprint: 9c5f85d13dbeeaf4d52ad67bd17d88c8d98a42b16aa02197c35dcc678ff350ee
+      sourceFingerprint: 0ceb9ad0fd4cd745ff6156288f39d875a03abcc209d584d6528abec4c1352d3d
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_ce391cd91b69d54344cb/name
-      sourceFingerprint: 8d5f6b542ffd6d87a385772fc128b4496f60b3a26f6dec6dcc860f0e33c10e85
+      sourceFingerprint: fed04feb1c88d4f22a16bc8c56f2679d148d57ff62a5f79df7692d8fa29106e6
       targetFingerprint: d58d0adf7503c75667cf76bcb064fd77f0ea2349ac93fb2d9d2bfa46f5efc139
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_fec36d49653d51da53bc/image
-      sourceFingerprint: 5549ccf41f73d666420d7d46e80bc8a93c93c76a94943ef2dc90e003d79fa15e
+      sourceFingerprint: 70373d5b2e25ce04b79665ce366bc6e3270f75d6d9514b0ed05e9e9798eafa63
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/logos/@k_fec36d49653d51da53bc/name
-      sourceFingerprint: a6c17ddd8fcadc914106f8c49f4ef1d89e0c2e71a83df12619ac77940df6da59
+      sourceFingerprint: 44cd04d517bb60377d5688c1c113a412eed186b0f8a7fe4e28e07f593c3e03bc
       targetFingerprint: d7f946cc8e6c981b5784e20dd6620ee18d35d0cf7334eb95bc240c4c5b0bf256
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/press
-      sourceFingerprint: 16168d9c28ccd594069870bade46eb92868c34ab2b56f0e7a3660a28f07b7f70
+      sourceFingerprint: bbaf0eaa4ae7ce2bb653a1c41b3a1324ecf9ebb003c2e82b756a8908e289fbe4
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/pressHeadline
-      sourceFingerprint: 5344a8298ed76988dcf71d4ea507f1e3b0ca8aa16d0ff2f2cacac9aadefce8fa
+      sourceFingerprint: a282fea6a60a24c8a84f131f6be7e771fae7dbb98f633b79ffb6c973d5cd6212
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
+    - address: /sections/@k_4f396c969776c1714c2c/pressItems/@k_4791d0a73285012bba9c/name
+      sourceFingerprint: b22271db132ac11fff11103dace0d659e5115b1ff80f9ac70eae912a9c9c1739
+      targetFingerprint: cfb7f0f3cdec33993ec1c2c7febcd56cdca6ecbc8819095aff8b78e22d5764bb
+      status: adopted-existing
+    - address: /sections/@k_4f396c969776c1714c2c/pressItems/@k_4791d0a73285012bba9c/note
+      sourceFingerprint: a10ff82d43c16c52ac263ac9938a0f4e0cdbb7c0d8bed865361f1394a16257d8
+      targetFingerprint: 104fc8905cf538f84c7e63c81c2e3125c2e79f40f4bd3aa552eda6da0ff6551a
+      status: adopted-existing
+    - address: /sections/@k_4f396c969776c1714c2c/pressItems/@k_af6d26f3bd912a26bb0f/name
+      sourceFingerprint: 25a619b886eaf0b76dc50dec3d507d21a65562482d00d20631bbabb91535be63
+      targetFingerprint: 97096d2b6bc647acec67a273ad4ccd8357dd9ea682aa381a582cbf5597ab22fe
+      status: adopted-existing
+    - address: /sections/@k_4f396c969776c1714c2c/pressItems/@k_af6d26f3bd912a26bb0f/note
+      sourceFingerprint: 7f2cae4dbf01a0ed9e38dd8bd44b6b42708b2eae52cbdc1edaac40277f1119e8
+      targetFingerprint: 8755ba37345da76f5f42915df2f85f34f1790c90b44704e1b0c216847ebf5f52
+      status: adopted-existing
+    - address: /sections/@k_4f396c969776c1714c2c/pressItems/@k_b210d92e4cbf25bd0560/name
+      sourceFingerprint: 56a90cc27e187abfa22e0ebc8b32d7e1c00937e3b8e1c953fa6f49868bc5fa47
+      targetFingerprint: 6b80d773504dcae6f7fad3aed85f8c5ffa9818360c20ce22e2edab2b7da9ef68
+      status: adopted-existing
+    - address: /sections/@k_4f396c969776c1714c2c/pressItems/@k_b210d92e4cbf25bd0560/note
+      sourceFingerprint: f57f5aa1f4638ab56f526a5519ad17dac407fd99859d6c3eeb0dfbb8c7f4a38f
+      targetFingerprint: 0d0c650e78b9badbc0b41700665f99eb18e0f6f7261453c7b76cfa1134b46ad1
+      status: adopted-existing
+    - address: /sections/@k_4f396c969776c1714c2c/pressItems/@k_e6e05aa8a4af009df49f/name
+      sourceFingerprint: 8f6f36030b9a1ab2d1414ce2004292b7eab8c16aea25b6861019a0e2d66bb868
+      targetFingerprint: 2fe0762af6ce0bde9cdf5e11ff70d5fe9555df6bcaa29c9b91a7428ac5fe34bb
+      status: adopted-existing
+    - address: /sections/@k_4f396c969776c1714c2c/pressItems/@k_e6e05aa8a4af009df49f/note
+      sourceFingerprint: 3386606215e2170cb84244de644a55b38f9bc752c17cf2e8b1c22e26c2e7e7c5
+      targetFingerprint: ebf4a63807514a43207fc3cd1a6fa55bfcfbb36dbc4a0a3507a4b1f94c14fb52
+      status: adopted-existing
+    - address: /sections/@k_4f396c969776c1714c2c/pressLabel
+      sourceFingerprint: d9691225fa97d55094e06870626316c412635b642f25069fdb4d15d7d66195e8
+      targetFingerprint: 174f9ca4ff08af8228fe77f2faddc4b379c178e297b90de62f5bff95a93d8b30
       status: adopted-existing
     - address: /sections/@k_4f396c969776c1714c2c/qualityHeadline
-      sourceFingerprint: 046964d8a9434408d0710d903529015085a4aece903eff5b084c4ddaecae6287
+      sourceFingerprint: 05afcb1586a1ba9988668a4c9e1f7d31cf6e3c35863f5d2be5745b74195fea61
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
-    - address: /sections/@k_671ae5a30eb25ef1930d/facts/@k_6816b73b403f3db45756/label
-      sourceFingerprint: 73a24a9433defda0f122f21a89c6d3315ffbd1187e832965f4db59b6fe110ad6
-      targetFingerprint: 98d5eb9af0cb2a636f86d31cafa5cd46c0c2200117eab37e1ee9ef2835bb214a
+    - address: /sections/@k_5fce2f823d9e547c9f3a/body
+      sourceFingerprint: c5ac2cf6e3d5aa945168fdd76c50bb310b46b6834c8332497bcef43759abe626
+      targetFingerprint: a6b10853976a95c104d016ae66cf5408c89cf291bc211885e3c7425a3367564b
       status: adopted-existing
-    - address: /sections/@k_671ae5a30eb25ef1930d/facts/@k_6816b73b403f3db45756/value
-      sourceFingerprint: 8aca4e76f2deb886f8eab9e115fdbd3411e83a6b085d8f6886b90b69adaa1e1a
-      targetFingerprint: 209c000de347398dd0f55db689d7c5ccdb3d50d4c7ef8625b0f1b7c748892328
+    - address: /sections/@k_5fce2f823d9e547c9f3a/cta/label
+      sourceFingerprint: 1ba02c26f50f31a9f7f68b455a91ebc41e3ac72266732100e0e5d6afa07c1622
+      targetFingerprint: 5050a6603d73922b34b1c7ecce710c1ae539142a7116f6ec5c198e357f486629
       status: adopted-existing
-    - address: /sections/@k_671ae5a30eb25ef1930d/facts/@k_6ec398101306e49f60a4/label
-      sourceFingerprint: 9db54e7ac6393dcca3a99e5475fe6aca8528f20444aa772ba115c0463144c478
-      targetFingerprint: 34de737bfab2c93288d2f5c7b8cae30e575a58c515f028ca6130300a459b4543
+    - address: /sections/@k_5fce2f823d9e547c9f3a/headline
+      sourceFingerprint: 97d508095574a72a71b6a625f3808c60d2a25c722d813d7256ac1c3419e00ffc
+      targetFingerprint: 3afbdf1c54a0f98e3ce6b3d94604526839fd0211d5e6783d73b517cdedfa82ab
       status: adopted-existing
-    - address: /sections/@k_671ae5a30eb25ef1930d/facts/@k_6ec398101306e49f60a4/value
-      sourceFingerprint: b3f6ff3bdad085f02c53d5c60589130e7c8627f34472f248f9dad0c4209698e2
-      targetFingerprint: be593ef005d30ae0ac9018735c77bdd9eea00139e846e8eeed0e7a97a3a4a156
+    - address: /sections/@k_5fce2f823d9e547c9f3a/image
+      sourceFingerprint: 01979501611dd64f51cc9e8b1c63c5134c2b9a43d4c3cb6b8ec54f553e6682cf
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
-    - address: /sections/@k_671ae5a30eb25ef1930d/headline
-      sourceFingerprint: b348c6cafa33ad98eefde58f2774991bb357ff0fb8776e9b4b3be0a7cbfc0d33
-      targetFingerprint: 96f1a3691d4de963abec2e58c01d0cf24a201cac1428cb1fce8ace138db31927
+    - address: /sections/@k_5fce2f823d9e547c9f3a/kicker
+      sourceFingerprint: cf8f69877aebf4f4f9d7d6b56334aa53c08b98eb3d5af7338dbeb7d3f7eb494d
+      targetFingerprint: d8a9125af7d718e79d2178cf53ca743dfdc01e37dab26e20733206a02c9d513a
       status: adopted-existing
-    - address: /sections/@k_671ae5a30eb25ef1930d/image/alt
-      sourceFingerprint: 524b9fa2892d168019c865d021dd626b83f3b8f8f096abf7d481b8196ae9a872
-      targetFingerprint: aca16ae42b837a22c5a54cc9677c13cda1910f3cf2399f5fd5c15eb3990c40ab
+    - address: /sections/@k_7abf894f6f4dfb7d5b8c/body
+      sourceFingerprint: e0bff313a8db7555b2b7aa4469f01e54d92785e620993f29060a7a1a86e88994
+      targetFingerprint: c3bde2b7d882da33948866b55b2ab598810c85fac6847f56e834ddf5ead3a4bd
       status: adopted-existing
-    - address: /sections/@k_671ae5a30eb25ef1930d/kicker
-      sourceFingerprint: ade795b47395201ca880e9d822747bb1c0c0a4ded75d84582204d616c01b1aeb
-      targetFingerprint: 1a15c6f8a8cae70ac99aae63f421de45709f9be6d1ab757b8edbac3996e43436
+    - address: /sections/@k_7abf894f6f4dfb7d5b8c/cta/label
+      sourceFingerprint: 82b80bfa3b057cd8e5912879f7a97317e6eb322e71ee1a7754d77bf970d8c24c
+      targetFingerprint: 5050a6603d73922b34b1c7ecce710c1ae539142a7116f6ec5c198e357f486629
       status: adopted-existing
-    - address: /sections/@k_671ae5a30eb25ef1930d/tags/@k_051f63270e7a44e41b90/value
-      sourceFingerprint: 2ce2b7e711d85d72eb81affa11e2edc9455a7f99189ae9298853100815cca01f
-      targetFingerprint: 489b39559b97dff92715dce68f5ff67793278140adceced142f7a8f4800b34f3
+    - address: /sections/@k_7abf894f6f4dfb7d5b8c/headline
+      sourceFingerprint: 01dd87cd5d9cc8400710c59c222caf5865e546c26817397fa7dd0e5465c0e169
+      targetFingerprint: d2f1d17b1db4d4f521284edce03636f9b4d178d5f3c207b0d349220a74fc784b
       status: adopted-existing
-    - address: /sections/@k_671ae5a30eb25ef1930d/tags/@k_2f6e086ec17ff7347db1/value
-      sourceFingerprint: 767660879d450e2cd133c45751db3ac1d1273659719b46d968a50d393a26dec7
-      targetFingerprint: e5b6b56b2a600df8348f1347829c566d3a0cb3c2eb42d6f848c0a4f6bc74691a
+    - address: /sections/@k_7abf894f6f4dfb7d5b8c/image
+      sourceFingerprint: bbb980abaec662901fe3b095f10ad7259fa320f58ade1b2ca71816b69a27f04b
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
-    - address: /sections/@k_671ae5a30eb25ef1930d/tags/@k_6c8c7c31c41910ea3274/value
-      sourceFingerprint: 7012add2da51e3ba63813bcabb47dc0bf2ebe41f4d68896fc11fae973b012125
-      targetFingerprint: 824223078c7b3144fb660cc247dc97b497fe15efdc416a7c0071285c7e0aeae8
-      status: adopted-existing
-    - address: /sections/@k_671ae5a30eb25ef1930d/tags/@k_eb49b6fefcd25aaa70f2/value
-      sourceFingerprint: 39ea5785129106d673d330ca4726c44251c579f0d43ba39554904a8950228773
-      targetFingerprint: 15a4e44e2961010fc0099140d9c089340feda33478cd9b7adbb2e70a473715c8
-      status: adopted-existing
-    - address: /sections/@k_671ae5a30eb25ef1930d/text
-      sourceFingerprint: ea87eab245f4eb95e55f1b138042e5331ccc27eb6b5538d969e4641eddd3242f
-      targetFingerprint: ca4b81536d0a9f012fe46a5cf63f6883c660001ccd08acde065f4001ce77a0ce
+    - address: /sections/@k_7abf894f6f4dfb7d5b8c/kicker
+      sourceFingerprint: 257c2e1d0af59db0eae223f443afcc9b85ad67b8bcbdef37abf0f28251d8ce4c
+      targetFingerprint: e197723f2de45b3a8f9a185f77d7a2ebc102a2e5de02a774479d39f64061d104
       status: adopted-existing
     - address: /sections/@k_92cbd2df611f3954dfc2/closing
-      sourceFingerprint: bc65b9057329917c9ade954185652b394b5db10309e1dbac3d3bb4135f1dccc4
+      sourceFingerprint: ff1bb27690210d9ce36b0e1b290bedb0cca91a0f54b0a4f28ae3be84a82491e8
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_92cbd2df611f3954dfc2/cta/label
-      sourceFingerprint: 10d2c4652fccea8db3234b838e75f6dfe0bb2389cd864ed7572356259b2c72d6
+      sourceFingerprint: 2adbe7de44e331ba812cf542f900e697976bb567aa5627c500aea31047d0d062
       targetFingerprint: bc7d7c1aa1b636c415b9e259152a555baf03c7482267d52419410d05a662117c
       status: adopted-existing
     - address: /sections/@k_92cbd2df611f3954dfc2/groups
-      sourceFingerprint: b56277269c3b1ed4bc6efc36ac8c0a3ec378f66559c2fc33e7ad4d345f998950
+      sourceFingerprint: e9289b7d75be07793ef81fc2c237607d4bc83ab4a106630199ac9b176103ec02
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_92cbd2df611f3954dfc2/headline
-      sourceFingerprint: 602c71d1194fd656dd1d21587812beff77d45d0ef8728f0133b0181bf505abab
+      sourceFingerprint: 5254ca18f199abd4cae5a5ac70d195db5909049acbe9fb0db0e51bf4670ba9b9
       targetFingerprint: b5c44f0524afb65955d3f323de7cd3f939d35452ce5c8b60027dd1de0aadee2e
       status: adopted-existing
     - address: /sections/@k_92cbd2df611f3954dfc2/kicker
-      sourceFingerprint: 907b354969805122b5d01c36eac42f2f41958fedc03a1a36ca80b066c5338b09
+      sourceFingerprint: 7576a5989e410d1fdded2c359dbed8d2e5be657bea4c58bb5ff31915f59f5faf
       targetFingerprint: 71797a538155e7ab9482306dd31e0b1d464574abcdf9f5531f0ef3eb98325d34
       status: adopted-existing
     - address: /sections/@k_92cbd2df611f3954dfc2/text
-      sourceFingerprint: 7b05041bae05debcb37b9ac704d40ce4fad5493171fbafbf2357b9753e5407dc
+      sourceFingerprint: 196fe1e9d7aa2a8285fd7c807bfa66034907a8ff5ffa510a0c89c0a7c04ce5e8
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_a7152263e0461f67ead9/headline
-      sourceFingerprint: 6089ca7164b5e0eec7f5b3c1bb840b2d4c908ab4830a7c71e680427d87c80c75
+      sourceFingerprint: 1a2c95f687d0f68b90db7e3fb72107a8a6c98de19d85222dae8586c8f282da98
       targetFingerprint: 8b2e7e18b4a40ac58928be3a41d6c56e8613848a6ffd6768b29f32864e4ab43c
       status: adopted-existing
     - address: /sections/@k_a7152263e0461f67ead9/kicker
-      sourceFingerprint: 2c6246066b24c7693e10d91cf8374770eefc459eba40b882d26bcde47d495ba5
+      sourceFingerprint: d5d3ea1389de624e4db22f451d1f835ee96d85b95eb99dfac68276d5e7c1d109
       targetFingerprint: f88e53d0a676bd317d49bcffd51aaffc59a4cbe34d7a0f847599a45a22a91f6f
       status: adopted-existing
-    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_195bdede45eea38fcdd2/duration
-      sourceFingerprint: 7d68fb8899abbf2877e6d038085dc0d054de92661a355791216f47de8309d4aa
-      targetFingerprint: 145c5dcc6b85e3b0faf0558c006778318e3a3e08046ac817bb2c56b4974597ad
-      status: adopted-existing
-    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_195bdede45eea38fcdd2/text
-      sourceFingerprint: 9bcdea6d2574fb98b3cf490b8ec1c0be9ddee98b34449beea76586cfcec67fd9
-      targetFingerprint: 4a103e5ce4597506a244479315a5e9d585e4cc14b8608ecf6f8d5061a956ed69
-      status: adopted-existing
-    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_195bdede45eea38fcdd2/title
-      sourceFingerprint: 4a61284338684f232b936dab0024b8b7c859185ff8f8e6830b258e8be8cec9a8
-      targetFingerprint: 883e8d2bd00404c47208a3967ba92b40d7739cfafa4b443098b7732f24512054
-      status: adopted-existing
-    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_321f6a3deb2b1ef07eea/duration
-      sourceFingerprint: fad98495bff6697cb76c86a7a7649b5742be168c46a93ce43af83720589d0677
+    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_9ebfd8a7c65e0d2211e6/duration
+      sourceFingerprint: ba4abdb2110e0c8096b898004803528df142f3f57b88715e21357078dba8821e
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
-    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_321f6a3deb2b1ef07eea/text
-      sourceFingerprint: 5b5da97270a977efff1b2692d3b86a6f775fd1ae8ff41abee8a29d439be4e401
-      targetFingerprint: c4fac33badbc1e4f3f05b871664549fcd24bb33e0e425e492db00512b1fc25b4
-      status: adopted-existing
-    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_321f6a3deb2b1ef07eea/title
-      sourceFingerprint: 832b82adc80fe82f20c6d54ee12c107d8890b4142e4a958fa4a1b93f5e323bbe
-      targetFingerprint: 12e1922e48e94622432d09f79a1f67759612be809b13b1d5ffd6e55ef888e26f
-      status: adopted-existing
-    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_49e43d30a4cf6e87e6d1/duration
-      sourceFingerprint: 74bbef9ede6a83be7e9bd75b3a5473148eeb57e2e1f2cf44da1739fa97ce2c45
+    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_9ebfd8a7c65e0d2211e6/subtitle
+      sourceFingerprint: 1b27e9632867370e1076b09905a91915e9b25e1076c168fdcea42ba2131000d9
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
-    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_49e43d30a4cf6e87e6d1/text
-      sourceFingerprint: 3766e3d008a52d14665fc27cad6adfde316c60bbd0765b6962d132caa47e4e90
-      targetFingerprint: 664d8febc1ca22eabafae678507308544ac302f02e8caf8bda014fbeb35f1ebc
+    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_9ebfd8a7c65e0d2211e6/text
+      sourceFingerprint: fff9a1a253ca1ef84b403cce73441a13871126c6991190e02cbad75635e45e01
+      targetFingerprint: 179a9a6e4b42a1cc371012e253ff22790688574bdf5945a2a22ed3f4e0541b70
       status: adopted-existing
-    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_49e43d30a4cf6e87e6d1/title
-      sourceFingerprint: 24da91b3a591c9088b93190b0eacbe7252307cdeab8d8d4aa7168e2f1edb5a4e
-      targetFingerprint: a87a780608ddf305893d1cf001ba0cbf9985c5053fa882d6121accf6b8a9b129
+    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_9ebfd8a7c65e0d2211e6/title
+      sourceFingerprint: d6a57cf1c1fd0b5fd65ae0b0fc3c1a544559e860e6ca153bb3900942bcb3607c
+      targetFingerprint: 68f1db2fa307be2270ba2e72ba294b869d51e4be021af2bf297723e27e12af85
       status: adopted-existing
-    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_737c9a5473db3f88034c/duration
-      sourceFingerprint: b4517ea6f980f92d743511d7728b86d99995e58e54baa6544acd339104eebbef
+    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_b22b05daa48eb35fd92c/duration
+      sourceFingerprint: 9fe9a2623fb2dbabb59f21c0e02c71e9c04c4bf0cbdc25937a5780dadb548644
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
-    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_737c9a5473db3f88034c/text
-      sourceFingerprint: 892685247341bbb3b0a5d226238312bd1583b3d56915cfcddede40f3b6f2e538
-      targetFingerprint: f5666e8f15e65233876bbeeda7457c9db16a43b26d19fc1c0c5b7f70b11c99a2
+    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_b22b05daa48eb35fd92c/subtitle
+      sourceFingerprint: 4bddb21bb1784130702afcfc115239b936e5b36d25a6fe5bd5c2348a16550d17
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
-    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_737c9a5473db3f88034c/title
-      sourceFingerprint: fa1ed0b62b8417d4bb4105b474c3a8cd6a68f800a451e658950676d7fc1f2b16
-      targetFingerprint: d9b528935f2a409f007ee97f4c3d5f60f2b42fa6ce45a7ddb1ddbc16d87a1f25
+    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_b22b05daa48eb35fd92c/text
+      sourceFingerprint: 919789646aca8cf99fcee64201cea3d2aee9a7898045476851dfe514dd89eec6
+      targetFingerprint: 4167cf79de781806057bf9c62ed57dffd37c55ed97435ed6d1a70480a274ac17
       status: adopted-existing
-    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_cdf27dbb327e5fcde319/duration
-      sourceFingerprint: 5409cab7b02d6ed64823bafa60c5d4741e7944020df71e32262e11873991aafc
-      targetFingerprint: 49bbf9f0d975bf553ea2f2b4aa0202e55021343d88dee9c3eb074f16a8184c64
+    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_b22b05daa48eb35fd92c/title
+      sourceFingerprint: 823d6ffdefeeb2138e3241bf96a3c4c16d39824d03c612412adcd72bcb7e6a72
+      targetFingerprint: 0d372b780f37441da8f85d5211c4a238f968bbb9cbe8acee10432f02425e2c8d
       status: adopted-existing
-    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_cdf27dbb327e5fcde319/text
-      sourceFingerprint: 583f1ab8e4dd262513a09ee6eeae88970941c8c8a38ea810b616e21d8b8c10e2
-      targetFingerprint: 3ba2bf4c8d3399d9c844b8e7aaa35851ca46141f7c6622f5a6e60dd150378b85
+    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_e01bd8edb2e65fef3485/duration
+      sourceFingerprint: 0ae3629a3be8832574a105db50a717862cb3d66ca3ee2a3c489e31d8a3c55e4f
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
-    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_cdf27dbb327e5fcde319/title
-      sourceFingerprint: 26e7197e267fd14ae5462bf962b49dd359090188ce167edcc8d2262958556261
-      targetFingerprint: fcdfde12df9b99fe3b374717820416020c4c8ac439bd48ef69f62e95aede95d2
+    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_e01bd8edb2e65fef3485/subtitle
+      sourceFingerprint: ce210de315cb63e91fac84ccc1298b402416edfd81e40512b09e04a1b00d646d
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
+    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_e01bd8edb2e65fef3485/text
+      sourceFingerprint: a98ec841faca89225f776ebdcde518db575ed3440705eecacfe528b2e850c2e9
+      targetFingerprint: fdedc603d5006eab8712aaa3a959ae35b6c47b69278b05922555f98584270e1e
+      status: adopted-existing
+    - address: /sections/@k_a7152263e0461f67ead9/steps/@k_e01bd8edb2e65fef3485/title
+      sourceFingerprint: d7469faa2499b91f79a68ffacdb18e4315e040a13501ed85996c13e91094683a
+      targetFingerprint: ad09c27348f1930ed9f68f2504a7ea90a7b7fe243873212d25503fd8eb9667bf
       status: adopted-existing
     - address: /sections/@k_a7152263e0461f67ead9/text
-      sourceFingerprint: 2439ad8dfc0fe59e7973a34ffd833e72f57490f41fb916d10d05b0e837aab5d7
-      targetFingerprint: aad1a85741390249b537702b4874b5b692697b0a298550bd8a2169a54ee9dd7f
-      status: adopted-existing
-    - address: /sections/@k_c4fd3256a7a568abb827/additionalResponsibilities/@k_827a4c6b6a7c553bffad/hint
-      sourceFingerprint: 27c291cf9d12099a6965b3a7c24a2b8b170fc3bfea7a1594f57d03e9032765a5
+      sourceFingerprint: 5de5ca1ca076c8df1b7353eaa26cdaa8538b25ed654869c7af798739647e8ffb
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
-    - address: /sections/@k_c4fd3256a7a568abb827/additionalResponsibilities/@k_827a4c6b6a7c553bffad/task
-      sourceFingerprint: ec2d398499b9ced5e5e1a15a898b6d8032017e768129b03830df2d763711275c
-      targetFingerprint: 37bf8d589e9c1d9fe0107197427e89ebab3712acce944cbca34e31e74d2db1e3
+    - address: /sections/@k_b75368d6c59a6a7e8123/cta/label
+      sourceFingerprint: a66b90656219dc2d24b9c20c34e96253642839c0fcd7ba9760f94def860586ed
+      targetFingerprint: 577609501262e674cea0c77f9bf8dd5d134c8b04c9e9ad8620534eccea10e054
       status: adopted-existing
-    - address: /sections/@k_c4fd3256a7a568abb827/additionalResponsibilities/@k_f9022e9498a7fad0753a/hint
-      sourceFingerprint: 3a2d98d4d62f3d7f32f93903eb021b19a9b7fc626101c139623c24bd47b60b41
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+    - address: /sections/@k_b75368d6c59a6a7e8123/headline
+      sourceFingerprint: cb3ba648c8bc520fce8ac778d36931932a1af356bf5cec2bd312064a73900d21
+      targetFingerprint: 2bd763ae9fd460c9fb89d13fbcc5af80563df8ff65f82e77949c20a91365bebc
       status: adopted-existing
-    - address: /sections/@k_c4fd3256a7a568abb827/additionalResponsibilities/@k_f9022e9498a7fad0753a/task
-      sourceFingerprint: 3498c0a995fc9998804b23712ae354f871a85ad78c089aab7b414019abd7cf7b
-      targetFingerprint: 29af3fce4c516e9911abab1e9acffe7f2eda7e5994aef9986f7a3dd105e8c54c
+    - address: /sections/@k_b75368d6c59a6a7e8123/kicker
+      sourceFingerprint: c0cdce735a13e2eded83d11767fc1e58fea2ebf43d8cd3825a563ac7cf84182d
+      targetFingerprint: 57dad7234b4c4e1211ad36edc13ca5c49a1dd2f41c72b06e6b0ebf9011e77bce
       status: adopted-existing
-    - address: /sections/@k_c4fd3256a7a568abb827/diagram
-      sourceFingerprint: 579fd2f639bee9ee6b9f6efc3f2df87952c1683e56145905fca0bca13aa2290e
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+    - address: /sections/@k_b75368d6c59a6a7e8123/note
+      sourceFingerprint: 7a8114272e084dcb0ad533f1b5e90d9eea6e971a95ea5b29a0b862b078a22a42
+      targetFingerprint: 4bfd5a44582f18e215d58cefd437bfebbeb33b75961e8be7a7244b194c9e6ff4
       status: adopted-existing
-    - address: /sections/@k_c4fd3256a7a568abb827/download
-      sourceFingerprint: 913ac49e00113e1b9fb49676e2dd735aff1fb701c3f282ead861f96269699f17
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+    - address: /sections/@k_b75368d6c59a6a7e8123/secondary/label
+      sourceFingerprint: d7769a005149a77124bb62642a13b5d864015a22f8c8ba3fe7a46ef0294c616a
+      targetFingerprint: d6ea4baedf0049d2c603929f42b551c1da920cc47b14fa9884cb09189e57f5b1
       status: adopted-existing
-    - address: /sections/@k_c4fd3256a7a568abb827/headline
-      sourceFingerprint: f8f2ffa9a3e1564119de4567e52831d5bb68805ae0cf44d15c9b09b8a44ad6ff
-      targetFingerprint: 268952952fb5b5d948fa578dd7192833d1b3a6ccb009643953017f2f7284ce3d
-      status: adopted-existing
-    - address: /sections/@k_c4fd3256a7a568abb827/items
-      sourceFingerprint: 943fd04fbea2655a7482d5e0a5e308f4d0f3d1f9565f2cc90adafd61ea144d90
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
-      status: adopted-existing
-    - address: /sections/@k_c4fd3256a7a568abb827/kicker
-      sourceFingerprint: 1469d6fed75c8989331da88f66cbe81be8dcb37cd14f242ff3a3626011977878
-      targetFingerprint: df1402cde645f401efc57d560a280b1744a34e821849720482bd7482bb400b15
-      status: adopted-existing
-    - address: /sections/@k_c4fd3256a7a568abb827/responsibilities
-      sourceFingerprint: 29b097d22a34da01040c35fc5f30938765fa2d483108e6573ed9a6b5c82e5f5b
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
-      status: adopted-existing
-    - address: /sections/@k_c4fd3256a7a568abb827/safeguards
-      sourceFingerprint: 4b73da8c7f1565c0af1afc3cc1ed2a5a422660f61fa5d2cd6f571fe95ca4eed9
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
-      status: adopted-existing
-    - address: /sections/@k_c4fd3256a7a568abb827/text
-      sourceFingerprint: 548d65687fef10d160c6b1892eae4d7e89c1355470fd0d5559c048eeb9a3818e
-      targetFingerprint: 639e6f1a923664cae01fbd6285c816f9594f16a9a25ad063ecfa2cacd015e492
-      status: adopted-existing
-    - address: /sections/@k_c6d958d0420f0a9ef33b/closing
-      sourceFingerprint: b5107dbd92359bb19742207798852c4e49a2741be37e41d45388de275f3ffafc
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
-      status: adopted-existing
-    - address: /sections/@k_c6d958d0420f0a9ef33b/cta
-      sourceFingerprint: 912cd626b82d1a8324405a4bf75e5461435101a3d443ad0da0be99544fccc0bc
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
-      status: adopted-existing
-    - address: /sections/@k_c6d958d0420f0a9ef33b/headline
-      sourceFingerprint: eba72ede1392016aea572aac8ed9ac1c2d4f50b61a51f9a190da55fd697451a5
-      targetFingerprint: e3898efdf0fc8213bb2676ffc1ef349850a168f19c45dc280a3e4b4424c18fa2
-      status: adopted-existing
-    - address: /sections/@k_c6d958d0420f0a9ef33b/items/@k_5252e3279b65a4b9c3d3/text
-      sourceFingerprint: 0225419d7c2ba3d18d8af6101796402111da6170472342b95355689953e4f358
-      targetFingerprint: 45f348088142433c76687ed66b1e8aafc1de08f561b595440b16c644db7ae3c1
-      status: adopted-existing
-    - address: /sections/@k_c6d958d0420f0a9ef33b/items/@k_5252e3279b65a4b9c3d3/title
-      sourceFingerprint: 3ec3fffad66372b7e306ae8776d5c9cb302ad387f776a960ec43ec091313a517
-      targetFingerprint: b297270c3e53da95f3868165b3f66a39836ab02535749395a30c084460af662b
-      status: adopted-existing
-    - address: /sections/@k_c6d958d0420f0a9ef33b/items/@k_e552a7787fcc44b66b84/text
-      sourceFingerprint: b97e92e1413709817defc531a352584a38c5636215b9625a516583fd95d8c5f7
-      targetFingerprint: 4c1ef5616d84a8b54e934f6ed3e150eb6aacbb693eea43f23f79efb83681ef05
-      status: adopted-existing
-    - address: /sections/@k_c6d958d0420f0a9ef33b/items/@k_e552a7787fcc44b66b84/title
-      sourceFingerprint: 95062bb55d7f4387dacc8ab837fe75540dda680028bfa878b6c989388f82554d
-      targetFingerprint: 13fa3761fd8307c7f61f06d1a86e99cc9f6c31a108dd6243729321cbefff507c
-      status: adopted-existing
-    - address: /sections/@k_c6d958d0420f0a9ef33b/kicker
-      sourceFingerprint: 2a3abe72d86019bbfb7e43fd8e0c4117732a2f351bc8481f72ea8ac679849411
-      targetFingerprint: b1e92b6efff3ae76b86df2c53346750cc7d7e3966f759e903a7528fcb73f6e9f
-      status: adopted-existing
-    - address: /sections/@k_c6d958d0420f0a9ef33b/lead/image/alt
-      sourceFingerprint: acad9c21d230342b1e30dbe60a658654d8de87d43fc7ee6db6cb7ecaeedc0b87
-      targetFingerprint: eda9bcad47ae4b026cba0011b8a42aad3c2921b1304e34ef923353ec38262799
-      status: adopted-existing
-    - address: /sections/@k_c6d958d0420f0a9ef33b/lead/label
-      sourceFingerprint: 84a168f286191b12235b077ff69bf9ee6531cde2833dfff5b0f9ab7bd667d26b
-      targetFingerprint: bb261898da571b1d0d1a116abf3926a881fffe45e2db852a00dda0bcba8b3d6c
-      status: adopted-existing
-    - address: /sections/@k_c6d958d0420f0a9ef33b/lead/text
-      sourceFingerprint: 6215ca626f64524856ef1df6307a1b19616b7dec9f4319f2e752b5166431e7e1
-      targetFingerprint: f9a039678c3e4200b5d1ffd009a74ce3a8670a22358c9139064f8eb956b1ece9
-      status: adopted-existing
-    - address: /sections/@k_c6d958d0420f0a9ef33b/lead/title
-      sourceFingerprint: 57fe2b778c56d1839d830dea82306cdf6bc3bd3f2e17cc83c93a9a3cbb3876be
-      targetFingerprint: d19b63b06dfa1829754ee853f0c277117c00b4b1c909da14d515cf3cc74a7f63
-      status: adopted-existing
-    - address: /sections/@k_c6d958d0420f0a9ef33b/text
-      sourceFingerprint: d34101c71aa53594ab1db2ec8c27b52aad829d0430bdc863e3a89d6566f9616d
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+    - address: /sections/@k_b75368d6c59a6a7e8123/text
+      sourceFingerprint: 175dca9ff8c28225edaba2714b2f4817dc5f3dbe9098c45a6006c0e2d51f7bd6
+      targetFingerprint: cccaa4bccc8aae850f71a5152b26557a0c647fca663c82e0f7ea2d8a7d74e9ad
       status: adopted-existing
     - address: /sections/@k_cabb99b46c806fc432fa/cta/label
-      sourceFingerprint: 65b80373f1734359d2425a1aa88482fa207891be7a947e52d91faeb5fa2f70ec
+      sourceFingerprint: b41b2bcfcaf1874b98dfd929fa44168745b84159e15d4a8338fc7692f331e6a7
       targetFingerprint: 7e4e5ca32299a1ca8592b0ce1c8d0d6bcec4bbc4098da94e4d329d475d0fce87
       status: adopted-existing
-    - address: /sections/@k_cabb99b46c806fc432fa/facts/@k_63b5beb0dea54789e039/label
-      sourceFingerprint: 231bc1e0a0e3c2eb205f3adee34e7d269b5d98c501819f57fe6141eace17b9d0
-      targetFingerprint: 72ddcf7e9f39d1806416f20fc393d56dba4a4d8c9f1650fbf99051d0560b2ca4
-      status: adopted-existing
-    - address: /sections/@k_cabb99b46c806fc432fa/facts/@k_63b5beb0dea54789e039/value
-      sourceFingerprint: a09769d93b88df3a26753a31c327e72f2920c8bc9f4940cc54f1fc6596c0eab9
-      targetFingerprint: 6ee1ee7ce603cc23d868a7513043ff49fb3192365378b152cd9c59fa74d09a2b
-      status: adopted-existing
-    - address: /sections/@k_cabb99b46c806fc432fa/facts/@k_d8fa62f46152a3442123/label
-      sourceFingerprint: 8b7a96c831a1bddeec25ff245dce8c2a382147d2b6617f7d4a970db8b788effe
-      targetFingerprint: 1252bfeac3276b87e3afa5e298993d9fd89466aa2146f2472e0259418d185773
-      status: adopted-existing
-    - address: /sections/@k_cabb99b46c806fc432fa/facts/@k_ea8a5bf5b47c7af483ff/label
-      sourceFingerprint: 6374eb07f24eb07cc98d3bbaf69bcd0f0b3adba6e9c191e34d86dbab2ce6ad6c
-      targetFingerprint: d753a731ef2ffc7ab2260f287dc2959108fb579bc511814bf1bc00e673c155f6
-      status: adopted-existing
     - address: /sections/@k_cabb99b46c806fc432fa/headline
-      sourceFingerprint: 989fac9e4369780c8da694abdfb33c74ad2880f5dc5dfabd7e0aba474ff7f964
+      sourceFingerprint: d67d7ae0eaa600e8f2bab50465f41e1782abf10967971c26cccfb9bf623b4e62
       targetFingerprint: e092be606c6ca765b89e0d4ac50d39a8c995a7fd710a21c0f505754dcecf2039
       status: adopted-existing
     - address: /sections/@k_cabb99b46c806fc432fa/kicker
-      sourceFingerprint: c6027fadc9223a7d0fda869ee9ac240878c8d8b5b2b5d31ee12cb63aadecc6c5
+      sourceFingerprint: 972e671b1a36f008ffe032828535ebcb126f80ebaf6fa5d1a1f2919b9550e9cf
       targetFingerprint: 7dfa4add2d615a8e65c0f3e635caaac9377c75503c30b60928e9f20de53128b2
       status: adopted-existing
     - address: /sections/@k_cabb99b46c806fc432fa/poster/alt
-      sourceFingerprint: 3f10842d281c346e6eb3474914f9c0a5d0ee12fe58484d12d5ce2c5d23aeb143
+      sourceFingerprint: 2d3dcb0b8d94b6413a1af5d95fd2b277c8127f6216186c4b3ce7e358de9bacd2
       targetFingerprint: a2db9ee0bf6e11327f8e786ff768d27b917208b289bf72507228291d94abd33f
       status: adopted-existing
     - address: /sections/@k_cabb99b46c806fc432fa/secondary/label
-      sourceFingerprint: 6fb7e4ae9c9956656424112bfbee46d96ad627d26f48ef2bb5e0263fd13b97be
+      sourceFingerprint: d46eaf6e6126b1529cc97d8fe23054e5462d8987d459d928e252b268e2444ea1
       targetFingerprint: 1e8531b1d8d09204227d13f56e1eb95f373bd964ebd297210c675e14c18d4967
       status: adopted-existing
     - address: /sections/@k_cabb99b46c806fc432fa/text
-      sourceFingerprint: f24e8e85d6c58310d17d51846d0a26f075788a90cdc12c173c909e32ba65f7e3
+      sourceFingerprint: edcdff15aea5554d6ad37e6c49588323e44cdeb69826214a48ffe366bdecb404
       targetFingerprint: 2ee1cf084d98443d054ac803428a220bc80dc73759b7dd46afa02ec12daefd13
       status: adopted-existing
     - address: /sections/@k_cabb99b46c806fc432fa/videoLabel
-      sourceFingerprint: 350907effa8a4d44433d796f998a3eba3de39883178aa8c32d4f5bd30c58e11b
+      sourceFingerprint: 6b67a2d5a508d8abd7d70a904ea3fd79fd19056898b3bfd5c0ed5071e0522469
       targetFingerprint: 6623d25269965bbfb4441d08d7a98adc07ceaeb57f69842f7c4154a192e8af16
       status: adopted-existing
-    - address: /sections/@k_d26b138f665a8ac9c34d/cta/label
-      sourceFingerprint: 09131cc4db6bf5b2e4eaf6c42a8d71e417e337e9c9ca12f7a137d2bf0a5e71ca
-      targetFingerprint: 652c647e643c0aadbde1e32aa94bafb04933bbdb740ffbee81dcbf0c1ce73bb1
-      status: adopted-existing
-    - address: /sections/@k_d26b138f665a8ac9c34d/headline
-      sourceFingerprint: e655f9eac9d84932538e7c31f48a389a85cb291051730b824ebf8c5ff312d3bb
-      targetFingerprint: 61ba95e2aded13a4933647cd6025a8079ac9169516bb3c15320743f4c8a3e89e
-      status: adopted-existing
-    - address: /sections/@k_d26b138f665a8ac9c34d/items/@k_17eea920ec0491047a40/badge
-      sourceFingerprint: 2fbdffd53514282f9c8841ca8d4064728cc9d2d65ff363dfae4087b65bed914e
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
-      status: adopted-existing
-    - address: /sections/@k_d26b138f665a8ac9c34d/items/@k_17eea920ec0491047a40/care
-      sourceFingerprint: eb68a9e7168aba08072e38dc8eae5d95141c43ff47f9a62637822b669883f75c
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
-      status: adopted-existing
-    - address: /sections/@k_d26b138f665a8ac9c34d/items/@k_17eea920ec0491047a40/label
-      sourceFingerprint: 1c983ea0b045e861bd46f7fde42bdd327155a7e67cd6fde4d8f8d751a3c7f4e4
-      targetFingerprint: edc23cd0195cddb05d147ab2e358caf2079d3b1448711e4ab7f7757a3379c5e4
-      status: adopted-existing
-    - address: /sections/@k_d26b138f665a8ac9c34d/items/@k_17eea920ec0491047a40/points
-      sourceFingerprint: 060b6a3f7cfdf07ec7734b594a08517447697d6f47a5821776509a02b48a02fb
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
-      status: adopted-existing
-    - address: /sections/@k_d26b138f665a8ac9c34d/items/@k_17eea920ec0491047a40/sky
-      sourceFingerprint: 5588451f864453260a98620321c7ca7c80d47d95822dc95a59f39ebee1a8b01b
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
-      status: adopted-existing
-    - address: /sections/@k_d26b138f665a8ac9c34d/items/@k_17eea920ec0491047a40/typical
-      sourceFingerprint: b366bfd892c02e5cf0f6d2ff539ddb406d009f74d9af187bf38c162331a85766
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
-      status: adopted-existing
-    - address: /sections/@k_d26b138f665a8ac9c34d/items/@k_93070fc050069e397d62/badge
-      sourceFingerprint: c9aa1bea5186d05d2368e5caf952f15978b9bea85b5127d36d2480c384912353
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
-      status: adopted-existing
-    - address: /sections/@k_d26b138f665a8ac9c34d/items/@k_93070fc050069e397d62/care
-      sourceFingerprint: 4f7aecaa4052f4572c21a17f386e348fe90083add5a9d6af39c1935954ee7a26
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
-      status: adopted-existing
-    - address: /sections/@k_d26b138f665a8ac9c34d/items/@k_93070fc050069e397d62/label
-      sourceFingerprint: 28b79c1f4cc9b9bb8b8c6d3af4b8ae0d414ab069a91ac93ae082f5b833ad7a0f
-      targetFingerprint: 811be23e0b5e6d77baf5f937087666be139eca857e6de76fd2205a0b766213de
-      status: adopted-existing
-    - address: /sections/@k_d26b138f665a8ac9c34d/items/@k_93070fc050069e397d62/points
-      sourceFingerprint: e5a68c0cb60bb5ba35870e456e0993effcc126709a40591b79357ebb10c14c1e
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
-      status: adopted-existing
-    - address: /sections/@k_d26b138f665a8ac9c34d/items/@k_93070fc050069e397d62/sky
-      sourceFingerprint: bbb1d17a28e44cac9b7737f80138b81bd17a5d61aa3ea14068fd821a8f1f68c9
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
-      status: adopted-existing
-    - address: /sections/@k_d26b138f665a8ac9c34d/items/@k_93070fc050069e397d62/typical
-      sourceFingerprint: d21d12119c9848b23a6dce43d1ad9ff8c42af5799088ee7da799eae61e12a719
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
-      status: adopted-existing
-    - address: /sections/@k_d26b138f665a8ac9c34d/items/@k_b94e0363e3a39e7426c3/badge
-      sourceFingerprint: 449919498c0f9150bb99f3ddcdac5f37c0584020e53f218b2706e93c045f47a5
-      targetFingerprint: 9a0b278e720fe540ee4f48bcb9c9f681ed8e4754bbad1b3132605131c3b27eec
-      status: adopted-existing
-    - address: /sections/@k_d26b138f665a8ac9c34d/items/@k_b94e0363e3a39e7426c3/care
-      sourceFingerprint: 501390ae72fa590884b48d5e12c40592567a42472c7ef39916d3f9f93e6a1ce9
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
-      status: adopted-existing
-    - address: /sections/@k_d26b138f665a8ac9c34d/items/@k_b94e0363e3a39e7426c3/label
-      sourceFingerprint: 1e5c07364c8435ea0061e2f33bc1a573e8dd8e8caba8e79eb241ebd6abe90c0d
-      targetFingerprint: db6b8005874aa7c6932c03392d64011dd9035b7d4c0a0268588359b9273de082
-      status: adopted-existing
-    - address: /sections/@k_d26b138f665a8ac9c34d/items/@k_b94e0363e3a39e7426c3/points
-      sourceFingerprint: 0101667b5746f9ed48c886a03d4150c0c4c9eada146577d98139e1b4ee35456a
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
-      status: adopted-existing
-    - address: /sections/@k_d26b138f665a8ac9c34d/items/@k_b94e0363e3a39e7426c3/sky
-      sourceFingerprint: 9be87aa63266f1e7a390729cf47f90ffd86831b3d7e2e719c1e2fe8f6624349b
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
-      status: adopted-existing
-    - address: /sections/@k_d26b138f665a8ac9c34d/items/@k_b94e0363e3a39e7426c3/typical
-      sourceFingerprint: 1fa83e63fe0d6a659e0f9fdd17f1f649af78fa696cddeab4b80f3d16c7d3c2c8
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
-      status: adopted-existing
-    - address: /sections/@k_d26b138f665a8ac9c34d/kicker
-      sourceFingerprint: d940c14a73c0ea538222804a34c95d336491ac0bf51670431750290e9addab7d
-      targetFingerprint: c6141b51bd2b373bbf50176b194e88499225ab98b2315e18eb3c8ba81b9666e4
-      status: adopted-existing
-    - address: /sections/@k_d26b138f665a8ac9c34d/note
-      sourceFingerprint: 0ed8163586fa188f66b2c11a927dadf7f1e91d954b30f1d9cde6fef9b6d13d4e
-      targetFingerprint: 40514ba10c9782ca8a6a6cad3f85e809492f0a6dd787b076cdf9dcb5a2a78fbc
-      status: adopted-existing
-    - address: /sections/@k_d26b138f665a8ac9c34d/text
-      sourceFingerprint: 5915376c6f562391c3031ec17f5a2930e6e34c0a0cba5416a6e20c0372cd758c
-      targetFingerprint: 91da4455f590e51ecf5cf8a2ffcdcf15f6cb9283c602a38af9827409279e2b24
-      status: adopted-existing
     - address: /title
-      sourceFingerprint: a7149976af98d49d6740c429e4cf6998be86272df35019a213157b49b3a62497
+      sourceFingerprint: a4d422bde9ad26e8c7881482636d9298818a9e7b44735ff5e05be567d3d1a6bc
       targetFingerprint: bca18ce923e46c23268205ce6adedb0a6b727d11644eda5c202a65d615310451
       status: adopted-existing

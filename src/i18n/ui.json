@@ -495,17 +495,17 @@
     "nl": "Een show gezien"
   },
   "contactform.1YourShow": {
-    "de": "1 Deine Show",
+    "de": "1 Eure Show",
     "en": "1 Your show",
     "nl": "1 Jullie show"
   },
   "contactform.2AboutYou": {
-    "de": "2 Du",
+    "de": "2 Ihr",
     "en": "2 About you",
     "nl": "2 Over jullie"
   },
   "contactform.step1Of2YourShow": {
-    "de": "Schritt 1 von 2: Deine Show",
+    "de": "Schritt 1 von 2: Eure Show",
     "en": "Step 1 of 2: Your show",
     "nl": "Stap 1 van 2: Jullie show"
   },
@@ -565,22 +565,22 @@
     "nl": "Verder"
   },
   "contactform.step2Of2AboutYou": {
-    "de": "Schritt 2 von 2: Du",
+    "de": "Schritt 2 von 2: Ihr",
     "en": "Step 2 of 2: About you",
     "nl": "Stap 2 van 2: Over jullie"
   },
   "contactform.yourName": {
-    "de": "Dein Name",
+    "de": "Euer Name",
     "en": "Your name",
     "nl": "Jullie naam"
   },
   "contactform.whatShouldWeCallYou": {
-    "de": "Wie dürfen wir dich ansprechen?",
+    "de": "Wie dürfen wir euch ansprechen?",
     "en": "What should we call you?",
     "nl": "Hoe mogen we jullie aanspreken?"
   },
   "contactform.yourEmailAddress": {
-    "de": "Deine E-Mail-Adresse",
+    "de": "Eure E-Mail-Adresse",
     "en": "Your email address",
     "nl": "Jullie e-mailadres"
   },
@@ -590,12 +590,12 @@
     "nl": "Waar mogen we antwoorden?"
   },
   "contactform.yourPhoneNumber": {
-    "de": "Deine Telefonnummer",
+    "de": "Eure Telefonnummer",
     "en": "Your phone number",
     "nl": "Jullie telefoonnummer"
   },
   "contactform.forACallBackIfYouDLike": {
-    "de": "Für einen Rückruf, wenn du magst",
+    "de": "Für einen Rückruf, wenn ihr mögt",
     "en": "For a call back, if you'd like",
     "nl": "Voor een terugbelverzoek, als jullie dat willen"
   },
@@ -605,7 +605,7 @@
     "nl": "Bedrijf of organisatie"
   },
   "contactform.howDidYouHearAboutUs": {
-    "de": "Wie hast du von uns erfahren?",
+    "de": "Wie habt ihr von uns erfahren?",
     "en": "How did you hear about us?",
     "nl": "Hoe hebben jullie ons gevonden?"
   },
@@ -615,12 +615,12 @@
     "nl": "Maak een keuze"
   },
   "contactform.anythingElseYouDLikeToTellUs": {
-    "de": "Möchtest du uns noch etwas mitteilen?",
+    "de": "Möchtet ihr uns noch etwas mitteilen?",
     "en": "Anything else you'd like to tell us?",
     "nl": "Willen jullie ons nog iets vertellen?"
   },
   "contactform.bySubmittingYouAgreeThatWeMayUseYourDetails": {
-    "de": "Mit dem Absenden werden deine Angaben zur Bearbeitung der Anfrage verwendet. Mehr dazu in der",
+    "de": "Mit dem Absenden werden eure Angaben zur Bearbeitung der Anfrage verwendet. Mehr dazu in der",
     "en": "By submitting, you agree that we may use your details to handle your enquiry. Read more in our",
     "nl": "We gebruiken jullie gegevens om de aanvraag te behandelen. Lees meer in onze"
   },
@@ -1030,7 +1030,7 @@
     "nl": "Deze pagina bestaat niet. Chopper helpt jullie verder."
   },
   "site.droneShowsForBusinessesCitiesFestivalsAndWeddingsDesignPermits": {
-    "de": "Drohnenshows für Unternehmen, Städte, Festivals und Hochzeiten. Motive, Genehmigung und eigene Flotte aus einer Hand.",
+    "de": "FlyingStars ist ein Anbieter individueller Drohnenshows in Deutschland und weltweit. Seit 2021 sind wir über 150 Shows geflogen, unter anderem für VW, REWE und die Umwelthilfe.",
     "en": "Drone shows for businesses, cities, festivals and weddings. Design, permits and our own fleet from one team.",
     "nl": "Droneshows voor bedrijven, steden, festivals en bruiloften. Ontwerp, vergunning en eigen vloot vanuit één team."
   },
@@ -2300,7 +2300,7 @@
     "nl": "Het verzenden van het formulier is nog niet ingesteld. Er is niets verzonden. De formulierapplicatie heeft jullie aanvraag niet opgeslagen. Mail ons rechtstreeks op {email}."
   },
   "contact.yourEnquiryHasBeenSentWeLlGetBackTo": {
-    "de": "Deine Anfrage wurde gesendet. Wir melden uns innerhalb von 48 Stunden.",
+    "de": "Eure Anfrage wurde gesendet. Wir melden uns innerhalb von 48 Stunden.",
     "en": "Your enquiry has been sent. We'll get back to you within 48 hours.",
     "nl": "Jullie aanvraag is verstuurd. We reageren binnen 48 uur."
   },

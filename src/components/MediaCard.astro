@@ -19,8 +19,10 @@ const kickerClass = variant === 'occasion' ? 'cat mono' : variant === 'story' ? 
     {badge && <span {...badgeAttributes} class:list={['mono', variant === 'story' ? 'ls-badge' : 'count']}>{badge}</span>}
   </div>}
   <div class={bodyClass}>
+    {/* Anlasskarten: Zielgruppe und Nutzen bilden gemeinsam die h3 (Moritz, 15.11.2026: „H3: Unternehmen“ + Zeile) */}
+    {variant === 'occasion' ? <H>{kicker && <><span class={kickerClass}>{kicker}</span>{' '}</>}<span class="hover-line" set:html={titleHtml} /></H> : <>
     <slot name="meta">{kicker && <span class={kickerClass}>{kicker}</span>}</slot>
-    <H><span class="hover-line" set:html={titleHtml} /></H>{summary && <p>{summary}</p>}
+    <H><span class="hover-line" set:html={titleHtml} /></H></>}{summary && <p>{summary}</p>}
     <slot name="facts" /><slot name="actions" />
   </div>
 </Tag>

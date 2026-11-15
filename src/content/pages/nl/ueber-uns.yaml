@@ -243,14 +243,14 @@ sections:
       label: Vraag een show aan
       href: /kontakt/
     _key: k_c92c36f7a77d76a82182
-translationSourceHash: 4736d0f999cd5f595f10c3750a2169fd2a2a2ff65daacf136d69bba6a37075cb
+translationSourceHash: 87f4f2c6e04e5bb3a4c74680a3f85caa0f8a96101be7a5210407feb2add16657
 noindex: false
 translationContractVersion: 2
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 4736d0f999cd5f595f10c3750a2169fd2a2a2ff65daacf136d69bba6a37075cb
+  sourceFingerprint: 87f4f2c6e04e5bb3a4c74680a3f85caa0f8a96101be7a5210407feb2add16657
   legacy:
     provenanceFile: docs/i18n/content-provenance.json
     migration: I01-v2-2026-11-04
@@ -434,6 +434,10 @@ translationEvidence:
     - address: /sections/@k_45b2deb9df767eef3032/body
       sourceFingerprint: ced2b4e128780d0e733737415c28157a2d3f4b594a65dda885d7f0e6dce22ace
       targetFingerprint: bd9add8e379acaad05f125fbbf981a37d6654d257d6c7a3922496277957b4f03
+      status: adopted-existing
+    - address: /sections/@k_45b2deb9df767eef3032/cta
+      sourceFingerprint: 6f03d31400c8e0e6461b88ff03cca09a41e65165522ee4f8eddb71bf52b6c29b
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_45b2deb9df767eef3032/headline
       sourceFingerprint: 575270aa6f30a3c3e8b5bc4b3fbcea1af7628af0c4a04356ebd437d42b6bde82
@@ -698,6 +702,10 @@ translationEvidence:
     - address: /sections/@k_c25a7d02d05d2423027c/note
       sourceFingerprint: 14ba07adc0ba61ab5639a748ca8b345cd5cc6e205d6663fc5351021099d5a2fd
       targetFingerprint: e66cc5f6c5ff79c47a28488823bf383b29e1e0b9f633ab9de44729e5e0fbd29b
+      status: adopted-existing
+    - address: /sections/@k_c25a7d02d05d2423027c/secondary
+      sourceFingerprint: 9edfa574fb36df15b82c4f5b46b56afc150f4fb375af82ad7562c0433719cc4f
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_c25a7d02d05d2423027c/text
       sourceFingerprint: ad182e98aacdfe87dc41ba1b642af7f4c3e6cc846b021935eb54793bb2e1fe0f

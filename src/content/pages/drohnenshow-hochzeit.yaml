@@ -1,26 +1,16 @@
-# Landingpage Hochzeit (nicht im Menü). Konzept HZ-01 bis HZ-10, Fakten: Fragebogen 21.10.2026. Inhalte aus Elevate (30.10.).
-# Runde 8 (31.10.2026, Marc: „deutlich mehr in dieses Interaktive … bei der Hochzeit insbesondere mit den Preisen und der
-# Location und dem Ablauf“): Hero mit Showreel im Rahmen, Referenzen als Geschichten, Motive im Konfigurator-Teaser,
-# Preis als Preiskarte, Location als Schema mit Checkliste, Ablauf als Zeitstrahl in Zahlen, Überraschung mit Gesichtern,
-# Wetter als Kacheln. Bausteine: src/components/landing/.
-# Runde 9 (Marc: CTAs schmal und zentriert, „ein paar Sachen sind noch ein bisschen random“): Abschlüsse als .promise,
-# Wiederholungen raus (48 h stand viermal da), Express als Abkürzung am Strahl, Icons in den Wetter-Kacheln.
-# Preise: src/content/show-packages.ts (SPARK 7.900 €, +900 € je 10 Drohnen bis 150), die Karte rechnet daraus.
-# Referenzen: Live-Seiten „Hochzeitsüberraschung“ (Recklinghausen, 29.06.2024, 150 Drohnen) und „Heiratsantrag“
-# (Schloss Hugenpoet, 10.09.2024, 220 Drohnen). Zonen der Location: Technik-Datenblatt 09/2026 (public/media/downloads).
-# Offen: Größe der Startfläche (15 × 15 oder 25 × 25 m), deshalb ohne Maß.
-# Alle Texte sind Entwürfe für Moritz; neu formulierte Stellen tragen den Kommentar „Entwurf für Moritz“.
-title: Drohnenshow zur Hochzeit
+# Landingpage Hochzeit nach Moritz' Webtext (15.11.2026, „Webtext Hochzeit FlyingStars“): Abschnittsfolge, Überschriften und
+# Texte wortgetreu (schon in Ihr-Form). Route bleibt /drohnenshow-hochzeit/ (Moritz: /drohnenshow/hochzeit/, Umstellung offen).
+title: "Drohnenshow für eure Hochzeit buchen: magische Momente"
 navLabel: "Hochzeit"
-description: "Eine Drohnenshow für eure Hochzeit: Initialen, Herz und Datum am Nachthimmel. SPARK mit 100 Drohnen ab 7.900 € netto, Genehmigung inklusive."
+description: "Malt eure Liebesgeschichte in den Himmel ✓ 150+ Shows ✓ Familienfreundlich & wenig Aufwand ☎︎ +49 209 88306562"
 image: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg
 sections:
   - type: landingHero
-    kicker: Hochzeit
-    headline: Eine Drohnenshow für eure Hochzeit.
-    text: Eure Initialen, ein Herz und euer Datum am Nachthimmel. Wir planen die Show mit euch, holen die Genehmigung ein und fliegen am Abend eurer Feier.
-    cta: { label: Hochzeitsshow anfragen, href: "#anfrage" }
-    secondary: { label: So läuft es ab, href: "#ablauf" }
+    kicker: Drohnenshow zur Hochzeit buchen
+    headline: Malt eure Liebesgeschichte in den Himmel
+    text: Dürfen wir euch zum Tanz auffordern? Auf eurer Hochzeit erweckt unsere Drohnenshow euer Märchen zum Leben. Für Tränenmomente und einen Höhepunkt im Hochzeitsvideo.
+    cta: { label: Show anfragen, href: "#anfrage" }
+    secondary: { label: "☎︎ +49 209 88306562", href: "tel:+4920988306562" }
     video: showreel
     videoLabel: Showreel
     poster:
@@ -28,124 +18,107 @@ sections:
       alt: Hand mit Ring aus Drohnen am blauen Abendhimmel über Baumkronen, bei einem Heiratsantrag am Schloss Hugenpoet
       width: 2063
       height: 1303
-    # Entwurf für Moritz: Eckdaten unter dem Satz (Werte aus show-packages.ts und dem Fragebogen)
-    facts:
-      - { value: ab 7.900 €, label: netto mit SPARK, "_key": "k_d6b481df0eeda9dbd41c" }
-      - { value: 100 Drohnen, label: im Paket, "_key": "k_b54242b2d9dbb9fb4cb8" }
-      - { value: inklusive, label: Genehmigung, "_key": "k_23f7c52d3dd38daa58dc" }
-    todo: Moritz muss die deutsche Endfassung und die maschinell übersetzten EN-/NL-Texte redaktionell prüfen.
     _key: k_683af193db254741d0d4
+
+  # Moritz: „Du kennst uns aus: ZDF, WDR, NTV, WAZ + ‚Featured on Hochzeitsportal24‘“, ohne Kund:innen-Logos
+  - type: logoBar
+    id: presse
+    headline: Bekannt aus
+    pressLabel: Ihr kennt uns aus
+    pressItems:
+      - { name: ZDF, logo: /brand/logos/presse-zdf.svg, cleared: true, knock: true, note: "1, 2 oder 3", "_key": "k_4791d0a73285012bba9c" }
+      - { name: WDR, logo: /brand/logos/presse-wdr.svg, cleared: true, note: Fernsehen und Interviews, "_key": "k_e6e05aa8a4af009df49f" }
+      - { name: ntv, logo: /brand/logos/presse-ntv.svg, cleared: true, knock: true, note: Startup News, href: "https://www.n-tv.de/mediathek/magazine/startup_news/Drohnen-verwandeln-Nachthimmel-in-Showbuehne-article25835436.html", "_key": "k_b210d92e4cbf25bd0560" }
+      - { name: WAZ, logo: /brand/logos/presse-waz.svg, cleared: true, note: Ruhrorter Hafenfest, href: "https://www.waz.de/lokales/duisburg/article409722481/ruhrorter-hafenfest-die-geheimnisse-hinter-dem-neuen-highlight.html", "_key": "k_af6d26f3bd912a26bb0f" }
+      - { name: Featured on Hochzeitsportal24, "_key": "k_bbafa3e80787a8a9454a" }
+    todo: Für Hochzeitsportal24 fehlen Logo, Freigabe und Link auf den Beitrag.
+    _key: k_fa0160e7a8afe4f1a3f7
+
+  - type: textMedia
+    id: choreografie
+    kicker: Individuelle Choreografie
+    headline: So einzigartig wie eure Lovestory
+    body: Ein Schwarm strahlender Lichtshow-Drohnen zeichnet eure Initialen, Liebesschwüre und Insider ans Firmament. Passend zur Musik und maßgeschneidert auf eure Wünsche.
+    _key: k_52056666f5076b5e0423
+
+  - type: textMedia
+    id: familienfreundlich
+    kicker: Familienfreundlich
+    headline: Kinder und Hunde willkommen
+    body: Im Gegensatz zum Feuerwerk gibt es beim Drohnenballett keinen lauten Knall, störenden Rauch oder Abfall mit Brandgefahr. Nur ein leises Surren – und das Staunen der Gäste.
+    _key: k_59a09168d2946ce16e34
+
+  - type: steps
+    id: vorteile
+    kicker: Vorteile
+    headline: Unsere Versprechen
+    ownNumbers: true
+    steps:
+      - { title: Umfassend, text: "Design, Musik, Show, Genehmigungen: Wir nehmen euch alles aus einer Hand ab.", "_key": "k_856e2a0f8b72501f0a1b" }
+      - { title: International, text: "Egal, wo ihr feiert – wir sind dabei: In Deutschland, Österreich, der Schweiz oder weltweit.", "_key": "k_f070569c03c9b4b11034" }
+      - { title: Sicher, text: Wir sind LBA- und EASA-zertifiziert und stellen einen Sicherheitsbereich von 100 x 100 Metern., "_key": "k_85e68777aa937b3e85b1" }
+    _key: k_9d2cf9c04b90b456039c
+
   - type: landingRefs
     id: referenzen
     kicker: Referenzen
-    headline: So sah das bei anderen *Paaren* aus.
+    headline: Nächte, die wir nie vergessen
     projects:
-      - hochzeit-recklinghausen
       - heiratsantrag-hugenpoet
+      - hochzeit-recklinghausen
+    cards:
+      - { ref: heiratsantrag-hugenpoet, title: Heiratsantrag in Essen, kicker: Sie hat Ja gesagt!, text: "Mit 220 Drohnen durften wir unserem Klienten Armin dabei helfen, seine Berina zu gewinnen. Begleitet von einer Violinistin hüllten wir den Himmel über dem Schloss Hugenpoet in zartes Weiß.", "_key": "k_1cd45074068daabdd5a2" }
+      - { ref: hochzeit-recklinghausen, title: Hochzeit in Recklinghausen, kicker: Überraschung für das Brautpaar, text: "Veronika und Felix staunten, als plötzlich ihre Liebesgeschichte über ihnen aufflammte. Auf Wunsch der Familie durften wir die Choreografie im Geheimen vorbereiten.", "_key": "k_0df1ee61f7ea5938057b" }
     _key: k_6500b76af74b7dd741ca
 
-  # Motive: Konfigurator-Teaser statt Text-Banner (Marc, 31.10.2026: „damit man unterschiedliche Motive sieht“)
   - type: landingTeaser
-    id: motive
-    kicker: Motive
-    headline: Was am Himmel *stehen* kann.
-    text: Herzen und Ringe aus unserem Katalog, dazu eure Initialen oder euer Datum. Eure eigene Show entwerfen wir mit euch.
+    id: preise
+    kicker: Kosten
+    headline: Stellt eure Show zusammen
+    text: Unsere Drohnenshows starten bei 7900 Euro (netto) zuzüglich Anfahrt. Mit mehr Drohnen, Individualisierung und Zusätzen wie Fotos oder Videos der Aufführung könnt ihr euer Paket anpassen.
     href: "/drohnenshow-preise/?anlass=hochzeit&paket=SPARK#konfigurator"
-    cta: Motive im Konfigurator ansehen
+    cta: Pakete ansehen
     loop: hochzeit
     todo: FlyingStars muss die Motive, Drohnenzahlen und Freischaltstufen anhand von docs/show-motive-inventar.md fachlich bestätigen. Die Vorschau ist kein Flugplan.
     _key: k_3f8f37b2eb211e01710f
 
-  # Entwurf für Moritz: Preis als Karte. Inhalte wie bisher; „Kontakt“-Satz neu.
-  - type: landingPrice
-    id: preise
-    kicker: Preise
-    headline: Was eine Hochzeitsshow kostet.
-    text: Für Hochzeiten ist SPARK gedacht. Alle Preise netto zuzüglich Anfahrt.
-    package: SPARK
-    groups:
-      - title: Enthalten
-        items:
-          - { label: Design eurer Motive mit Freigabe, "_key": "k_37abdcf9a06b01a2027a" }
-          - { label: Genehmigung, "_key": "k_8f2c8df476eed9be19a0" }
-          - { label: Musikschnitt, "_key": "k_2783c106e5d6abc32f17" }
-          - { label: Unser Team vor Ort, "_key": "k_0cb78b0d15ef58649c64" }
-          - { label: "Haftpflicht bis 1,3 Mio. €", "_key": "k_7905bc184ed46dace247" }
-        _key: k_6de6ec032d67c38d5810
-      - title: Kann dazukommen
-        items:
-          - { label: Anfahrt ab Gelsenkirchen, value: nach Ort, "_key": "k_149ad168bfbf92228a1d" }
-          - { label: Express unter 14 Tagen Vorlauf, value: nach Aufwand, "_key": "k_32a04e8638a5ebde994e" }
-          - { label: Rohaufnahmen mit Kameradrohne, value: "{{offer.film.priceSuffix}}", "_key": "k_903664b3354da0589651" }
-        _key: k_f5339bfda589f5d657de
-    bonus: { value: { fact: earlyBookingPercent, display: discount }, text: "Frühbucherrabatt: Bucht ihr bis zum Jahresende für eine Hochzeit im nächsten Jahr." }
-    closing:
-      headline: Euer Datum steht schon?
-      text: Ronja, Florian und Erwin beantworten eure Anfrage innerhalb von 48 Stunden.
-      button: { label: Hochzeitsshow anfragen, href: "#anfrage" }
-    todo: FlyingStars muss die Paketgrenzen, Aufpreise und Leistungen für den Relaunch bestätigen; die endgültige Preisstruktur für 2027 ist noch offen.
-    _key: k_c2450679c80f554468e8
-
-  # Textentwurf für Moritz. Quellen und Konflikte: docs/sicherheitskonzept-quellen.md.
-  - type: landingSite
-    id: location
-    kicker: Location
-    headline: Passt eure Location?
-    text: Schickt uns die Adresse und die geplante Position eurer Gäste. Vor dem Angebot prüfen wir, ob und wie die Show dort möglich ist.
-    variant: outdoor
-    todo: FlyingStars muss die Startflächen je Drohnenzahl und die standortabhängigen Abstände bestätigen; 15 × 15 und 25 × 25 Meter widersprechen sich in den Quellen. Die Zeichnung bleibt ein Beispiel.
-    safetyRef: safety-concept
-    _key: k_6e4f6206d974feea8611
-
-  # Entwurf für Moritz: Ablauf in Zahlen wie auf der Startseite. Quellen: Fragebogen 21.10. (48 h, mind. 3 Wochen Design,
-  # 1–2 Monate ideal, ca. 3 h Aufbau, ca. 3 Monate bei Flughafennähe).
-  - type: tempo
+  - type: steps
     id: ablauf
     kicker: Ablauf
-    headline: Ihr feiert, wir kümmern uns um den Rest.
-    text: Ihr kümmert euch um die Feier, wir melden uns, wenn wir eine Entscheidung brauchen. Ideal sind ein bis zwei Monate Vorlauf.
-    marks:
-      - { value: { fact: responseHours, display: hours }, label: bis zu unserer Antwort, text: "Datum, Location und eure Idee reichen. Danach ein kurzes Gespräch und euer Angebot.", "_key": "k_812f6a16e0909c3ee313" }
-      - { value: 1–2 Monate, label: "Vorlauf, ideal", text: "Genug Zeit für die Genehmigung. In Flughafennähe eher drei Monate.", "_key": "k_64720ed2445e0b41412f" }
-      - { value: 3 Wochen, label: "für Motive und Musik, mindestens", text: "Ihr seht einen Entwurf mit eurer Musik, gebt Feedback und am Ende jedes Motiv frei.", "_key": "k_359cc55f5f50e62391b4" }
-      - { value: 3 h, label: vor der Show vor Ort, text: "Unser Team sperrt die Startfläche, fliegt die Show und baut danach wieder ab.", "_key": "k_e6032c4bf2b2ae8d96bc" }
-    # Express als Abzweigung im Netzplan (Fragebogen: unter 14 Tagen, Aufpreis nach Aufwand), mit Weg in die Anfrage
-    shortcut: { value: Express unter 14 Tagen, label: Aufpreis nach Aufwand, href: "/kontakt/?extras=express" }
+    headline: Wir planen, ihr lehnt euch zurück
+    ownNumbers: true
+    steps:
+      - { title: "#1 Anfrage", text: "Wann und wo heiratet ihr? In 48 Stunden melden wir uns zurück, um uns kennenzulernen und euch ein festes Angebot zu unterbreiten. Eine Begehung eurer Location ist selten nötig.", "_key": "k_6b92c66eeb04fdf588fc" }
+      - { title: "#2 Vorbereitung", text: "Ihr erzählt uns von eurer Liebesgeschichte. Wir bauen daraus eine Choreografie. Und weil die Hochzeitsplanung schon stressig genug ist, kümmern wir uns auch um Genehmigungen und Co.", "_key": "k_54439060443f507bff93" }
+      - { title: "#3 Hochzeit", text: "Ab dreieinhalb Stunden vor dem Drohnentanz bereiten wir vor. Die Show selbst dauert bis zu 25 Minuten. Ihr dürft zuschauen und staunen – Auf- und Abbau sowie Sicherheit organisieren wir.", "_key": "k_77816c393a12e22dfcb5" }
     _key: k_bd1dd6072c1145a15939
 
-  - type: landingCta
-    headline: Es soll eine *Überraschung* werden?
-    text: Ob Heiratsantrag oder Geschenk der Familie, wir stimmen uns nur mit euch ab. Die Startfläche richten wir abseits ein und den Startzeitpunkt planen wir mit der Location.
-    button: { label: Überraschung anfragen, href: "#anfrage" }
-    _key: k_ae4a2fbaa25b27dc1ad0
+  - type: team
+    id: ueber
+    kicker: Über FlyingStars
+    headline: Es ist uns eine Ehre, eure Gäste sein zu dürfen
+    text: "Normalerweise fliegen wir für Städte, Festivals und Weltkonzerne wie L’Oréal, Prada oder Spotify. Einen besonderen Platz in unserem Fotoalbum nehmen aber die Brautpaare ein, deren Hochzeit wir unvergesslich machen durften. Deshalb sind wir einer der wenigen Anbieter, die auch für private Feiern fliegen. Auf eurem Fest sorgen wir mit kleiner Mannschaft im Hintergrund dafür, dass alles reibungslos abläuft."
+    members:
+      - personId: ronja-donsbach
+      - personId: florian-becker
+      - personId: erwin-wilms
+      - personId: patrick
+      - personId: alejandro
+    cta: { label: Über uns, href: /ueber-uns/ }
+    todo: FlyingStars muss ein Teamfoto liefern.
+    _key: k_3ed49f154258b655d578
 
-  # Entwurf für Moritz: Wetter als Kacheln, Inhalte wie bisher
-  - type: landingBento
-    id: wetter
-    kicker: Wetter
-    headline: Und wenn das Wetter nicht mitspielt?
-    lead:
-      icon: shield-check
-      title: Eine Drohnenshow ist keine *Pyrotechnik*.
-      text: Kein Knall, kein Rauch, keine Funken und nichts, was danach auf dem Rasen liegt. Laut ist nur eure Musik.
-    items:
-      - { icon: wind, title: Bis Windstärke 5, text: "So lange fliegen wir, auch bei leichtem Nieselregen.", "_key": "k_03f71ddaa0ce9b453da3" }
-      - { icon: calendar-sync, title: Kostenlos verschieben, text: "Ist schlechtes Wetter absehbar, verschieben wir, solange wir noch nicht losgefahren sind.", "_key": "k_142976fe879da98142c8" }
-      - { icon: wallet, title: 40 % Anzahlung, text: "Zahlt ihr bei der Buchung an. Fällt die Show ganz aus, gilt die Staffel aus unseren AGB.", "_key": "k_716afa47ec957d14d420" }
-    todo: FlyingStars muss die Website-Angabe Windstärke 5 mit den Windgrenzen der AGB abstimmen und die aktuelle Ausfall-/Verschiebungsstaffel samt verlinkbarer AGB-Fassung liefern.
-    _key: k_f6a652f50cd3d91604e5
+  - type: contactForm
+    kicker: Drohnenshow zur Hochzeit buchen
+    headline: Lasst uns eure Choreografie planen
+    text: Reserviert euer Hochzeitsdatum rechtzeitig, stellt uns eure Fragen oder erzählt uns von eurer Showidee. Wir antworten innerhalb von 48 Stunden.
+    _key: k_f7f1d08aab8e84a827cd
 
   - type: faq
     id: fragen
     kicker: FAQ
-    headline: Fragen von Paaren.
-    text: Kurz beantwortet. Weitere Antworten findet ihr in den häufigen Fragen.
+    headline: Häufige Fragen
     cta: { label: Alle Fragen, href: /faq/ }
-    tags: [ hochzeit ]
+    openFirst: true
+    tags: [ hochzeit-moritz ]
     _key: k_9db54091e8c639b6fa66
-
-  - type: contactForm
-    kicker: Anfrage
-    headline: Erzählt uns von eurem Hochzeitstag.
-    text: Datum und Location reichen für den Anfang. Wir melden uns innerhalb von 48 Stunden mit einer ersten Einschätzung.
-    _key: k_f7f1d08aab8e84a827cd

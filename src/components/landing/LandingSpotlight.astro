@@ -6,7 +6,9 @@ import type { Section } from '../../content.config';
 import SectionHead from '../SectionHead.astro';
 import { optimizedImage } from '../../lib/media';
 type Props = Extract<Section, { type: 'landingSpotlight' }> & { index: number };
-const { kicker, headline, text, image, tags, entries, facts, id = `s${Astro.props.index}`, index } = Astro.props;
+const { kicker, headline, text, image, tags, entries, facts, cta, id = `s${Astro.props.index}`, index } = Astro.props;
+import { forPath } from '../../i18n/server';
+const { localHref } = forPath(Astro.url.pathname);
 const H = index === 0 ? 'h1' : 'h2';
 const T = index === 0 ? 'h2' : 'h3';
 const wide = await optimizedImage(image.src, 960, 480);
@@ -29,9 +31,11 @@ const narrow = await optimizedImage(image.src, 640, 480);
       {facts.length > 0 && <FactList items={facts} variant="spotlight" />}
     </div>
   )}
+  {cta && <div class="sp-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></div>}
 </section>
 
 <style>
+  .sp-more { margin-top: clamp(var(--space-7), 4vw, var(--space-11)); }
   .sp-stage { position: relative; margin: 0; }
   .sp-img { aspect-ratio: 2 / 1; border-radius: var(--radius); overflow: hidden; background: var(--media-ground); --curtain-r: var(--radius); }
   .sp-img img { width: 100%; height: 100%; object-fit: cover; display: block; }

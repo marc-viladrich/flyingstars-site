@@ -26,6 +26,7 @@ sections:
         text: We controleren de locatie, regelen de vergunning en ontwerpen de show samen met jullie.
         _key: k_f79e63f76325e9bc1fb5
     _key: k_fda489b526df488c90a3
+    ownNumbers: false
   - type: contactDetails
     kicker: Contact
     headline: Liever direct praten?
@@ -33,14 +34,14 @@ sections:
     visitNote: Meld jullie vooraf even aan.
     todo: Teamfoto fehlt, bis dahin stehen hier die Porträts der Geschäftsführer:innen. FlyingStars muss den Terminbuchungs-Link und die Kontaktwege vor dem Relaunch bestätigen; Moritz muss die Kontakttexte und EN/NL prüfen.
     _key: k_b12e1279f01fbae7cfb2
-translationSourceHash: 5d090d950497dd2eb8dc86b729dca10cc2d53cd28efa2a5f874abf3f936fb164
+translationSourceHash: b4a5bdff258ae1dd4b2c8abb050654e1d4b8b98354ba154543d16c6b0aaf8d3b
 noindex: false
 translationContractVersion: 2
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 5d090d950497dd2eb8dc86b729dca10cc2d53cd28efa2a5f874abf3f936fb164
+  sourceFingerprint: b4a5bdff258ae1dd4b2c8abb050654e1d4b8b98354ba154543d16c6b0aaf8d3b
   legacy:
     provenanceFile: docs/i18n/content-provenance.json
     migration: I01-v2-2026-11-04
@@ -97,6 +98,10 @@ translationEvidence:
       sourceFingerprint: 6d22922a8398de0437304e318c3704820473753bd5e5be68defa95e8e0ca5ab1
       targetFingerprint: 14e3db7fa763e8046eb9d1fe3f4cad8800986308a4e48196b26782eb5c75c896
       status: adopted-existing
+    - address: /sections/@k_fda489b526df488c90a3/steps/@k_72829c00aebbc8f431d5/subtitle
+      sourceFingerprint: a203b6ddfa42f38380db6b068c5177ee2c108373ec0b80a6469de818517f498f
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
     - address: /sections/@k_fda489b526df488c90a3/steps/@k_72829c00aebbc8f431d5/text
       sourceFingerprint: e9a163cd6649645f36941b30dd34a396aa7a17a854edf30e9defee98699634de
       targetFingerprint: 3b827d08a25dcdcb4b181ac771f16bf4f0630b504faf910b102d10e71ead7deb
@@ -107,6 +112,10 @@ translationEvidence:
       status: adopted-existing
     - address: /sections/@k_fda489b526df488c90a3/steps/@k_a160e9ad6c320d2f6921/duration
       sourceFingerprint: 9b95217c5e385d5dd2a3f4caae82a4450694d5f97c457d3fdc406dc358bb9dd3
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
+    - address: /sections/@k_fda489b526df488c90a3/steps/@k_a160e9ad6c320d2f6921/subtitle
+      sourceFingerprint: 061012d1452813c19152705e5aaf8e2bc364a693e9d08a6bf5fd86008f4b018a
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_fda489b526df488c90a3/steps/@k_a160e9ad6c320d2f6921/text
@@ -121,6 +130,10 @@ translationEvidence:
       sourceFingerprint: 6f204bed25cfc95f1c5f5da75e4c0ab1b97138a6ee349497d921789de66038ea
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
+    - address: /sections/@k_fda489b526df488c90a3/steps/@k_f089638c8eafa18d9f2a/subtitle
+      sourceFingerprint: 57e966d38c33938bbf82f940a01f0b9a49896a99c6d2e57b893aa59e62e49c5f
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
     - address: /sections/@k_fda489b526df488c90a3/steps/@k_f089638c8eafa18d9f2a/text
       sourceFingerprint: d6d2a8965014aa2bbd86cf029717cad0ab4f514a44ccc4816a2a9c549ae6403d
       targetFingerprint: f0ceffa5ab126ef456d48fd68b93f888c9cdd6a5c217d9e7e4c037e7bf1b40ad
@@ -131,6 +144,10 @@ translationEvidence:
       status: adopted-existing
     - address: /sections/@k_fda489b526df488c90a3/steps/@k_f79e63f76325e9bc1fb5/duration
       sourceFingerprint: 94d668278b5cb42c8698c2a200ce37915228a58edf6a1b42a44b24a16eac71bf
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
+    - address: /sections/@k_fda489b526df488c90a3/steps/@k_f79e63f76325e9bc1fb5/subtitle
+      sourceFingerprint: 22ff3c3e14cff6e5adc6de566a40379653aad686db8545339664d7477f2bf9d3
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_fda489b526df488c90a3/steps/@k_f79e63f76325e9bc1fb5/text

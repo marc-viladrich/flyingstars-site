@@ -5,12 +5,12 @@ const {locale}=forPath(Astro.url.pathname);
 import Icon from './Icon.astro';
 import { processEntries } from '../lib/lists';
 interface Item { title?: string; text?: string; duration?: string; when?: string; value?: string | import('../content/business-facts.mjs').BusinessRef; label?: string; gate?: boolean }
-interface Props { items: Item[]; variant: 'steps' | 'milestones' | 'flow' | 'metro'; level?: 'h2' | 'h3' }
-const { items, variant, level: T = 'h3' } = Astro.props;
+interface Props { items: Item[]; variant: 'steps' | 'milestones' | 'flow' | 'metro'; level?: 'h2' | 'h3'; class?: string }
+const { items, variant, level: T = 'h3', class: extra } = Astro.props;
 const entries = processEntries(items);
 const cls = { steps: 'steps', milestones: 'ms', flow: 'lf-steps', metro: 'ruler' }[variant];
 ---
-<ol class:list={['process-list', cls]} data-tl={variant === 'milestones' ? '' : undefined} data-reveal-group={['flow', 'metro'].includes(variant) ? '' : undefined} style={`--n:${items.length}`}>
+<ol class:list={['process-list', cls, extra]} data-tl={variant === 'milestones' ? '' : undefined} data-reveal-group={['flow', 'metro'].includes(variant) ? '' : undefined} style={`--n:${items.length}`}>
   {entries.map((item) => <li class:list={['process-item', { 'ms-item': variant === 'milestones', 'ms-repeat': variant === 'milestones' && item.repeat, 'ms-last': variant === 'milestones' && item.last, gate: variant === 'flow' && item.gate }]} data-reveal={['flow', 'metro'].includes(variant) ? '' : undefined} style={`--i:${item.i};--c:${item.color};--c2:${item.nextColor}`}>
     {variant === 'milestones' ? <>
       <span class="ms-when">{item.when}</span><span class="ms-rail" aria-hidden="true"><span class="ms-line"></span><span class="ms-dot"></span></span>
@@ -20,7 +20,7 @@ const cls = { steps: 'steps', milestones: 'ms', flow: 'lf-steps', metro: 'ruler'
       <div class="lf-body"><span class="lf-n mono">{item.ordinal}{item.gate && <> · Freigabe</>}</span><T>{item.title}</T><p>{item.text}</p>{item.duration && <span class="lf-t mono">{item.duration}</span>}</div>
     </> : variant === 'metro' ? <>
       <span class="dot" aria-hidden="true"></span><b class="v">{factText(item.value,locale)}</b><span class="l mono">{item.label}</span>{item.text && <p>{item.text}</p>}
-    </> : <><T>{item.title}</T><p>{item.text}</p>{item.duration && <span class="t mono">{item.duration}</span>}</>}
+    </> : <><T>{item.title}</T>{(item as any).subtitle && <p class="st-sub">{(item as any).subtitle}</p>}<p>{item.text}</p>{item.duration && <span class="t mono">{item.duration}</span>}</>}
   </li>)}
 </ol>
 

@@ -4,9 +4,11 @@ import Picture from '../Picture.astro';
 import SectionHead from '../SectionHead.astro';
 import {contactText} from '../../content/contact.mjs';
 import { marked } from 'marked';
+import { forPath } from '../../i18n/server';
+const { localHref } = forPath(Astro.url.pathname);
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'textMedia' }> & { index: number };
-const { headline, body, image, mediaSide, index, id: anchor, kicker } = Astro.props;
+const { headline, body, image, mediaSide, index, id: anchor, kicker, cta } = Astro.props;
 // Projected contact facts must be edited as their source template, never materialized from the visible DOM.
 const editorFieldOptions={mode:body.includes('{{contact.')?'panel':'inline',format:'markdown'} as const;
 const id = `${anchor ?? `s${index}`}-h`;
@@ -17,6 +19,18 @@ const html = await marked.parse(contactText(body));
   <div class="prose">
     <SectionHead variant="embedded" kicker={kicker} headline={headline} id={id} level={H} />
     {editorBuild() && (Astro.props as any).__afe?.body ? <div {...field((Astro.props as any).__afe.body,editorFieldOptions)} set:html={html} /> : <Fragment set:html={html} />}
+    {cta && <p class="tm-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
   </div>
   {image && <figure class="tm-media" data-curtain><Picture {...image} /></figure>}
 </section>
+
+<style>
+  /* wie .more unter Raster und Listen */
+  .tm-more { margin-top: clamp(var(--space-6), 3vw, var(--space-9)); }
+  .text-media .prose .tm-more a { border-bottom: 0; color: var(--accent); }
+  .text-media .prose .tm-more a:hover { color: var(--amber-light); }
+  /* Aufzählungen wie .facts (Punkte in Amber) statt Browser-Standard */
+  .text-media .prose :global(ul) { list-style: none; padding: 0; display: grid; gap: var(--space-2); }
+  .text-media .prose :global(li) { display: grid; grid-template-columns: 0.875rem minmax(0, 1fr); gap: var(--space-2-5); align-items: baseline; }
+  .text-media .prose :global(li)::before { content: ""; width: 0.375rem; height: 0.375rem; border-radius: var(--radius-round); background: var(--amber); transform: translateY(-0.125rem); }
+</style>
