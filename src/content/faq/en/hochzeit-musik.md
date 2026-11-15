@@ -1,5 +1,5 @@
 ---
-question: Fliegen die Drohnen synchron zur Musik?
+question: Do the drones fly in sync with the music?
 tags:
   - hochzeit-moritz
 order: 4
@@ -14,12 +14,12 @@ translationEvidence:
   fields:
     - address: /body
       sourceFingerprint: 59556635135531173bfaaff46aea6fb1f6220aabc280584d819c98058de2e44c
-      targetFingerprint: 7b05664c87f208e946d35f895bdfe271a2cf2206f1a1e0dcefb2c2654e73fa9a
+      targetFingerprint: 107641afde3352dd0a05c10f24bcd9399ab16410ca1bf05c66c3979be029f1bd
       status: adopted-existing
     - address: /question
       sourceFingerprint: 384e295675d750ce2053d8145e6b2ea086698f55993b47a64e2cabb90a82bf53
-      targetFingerprint: e0d8a2cd4d4e50c950da35084743a37b38e62298e607de68427b26b3f95d3c90
+      targetFingerprint: 6d0d24a33f007d8c83db8c5e45c207fe0760f613d882b581e087b02b8684fded
       status: adopted-existing
 ---
 
-Absolut. Wir passen die Aufführung an die Playlist an, gerne auch in Zusammenarbeit mit eurem musikalischen Act.
+Absolutely. We adapt the performance to the playlist, and are happy to work with your musical act.

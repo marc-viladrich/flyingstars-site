@@ -1,5 +1,5 @@
 ---
-question: Welche Voraussetzungen gibt es?
+question: What are the requirements?
 tags:
   - indoor-moritz
 order: 3
@@ -14,12 +14,12 @@ translationEvidence:
   fields:
     - address: /body
       sourceFingerprint: f406f60bba99c790cd70c1e5eb54fcd3f5090fd8829c648a1ecd0fce4fbd5832
-      targetFingerprint: 46322cc27dbab169423ec74b6282d4e0cd95e9f32a2e120fbdd7103cd3a269d3
+      targetFingerprint: 5e679e878a2b9abdf7ded20d573c92cb7423f63ec7d332f680f13c191f08516c
       status: adopted-existing
     - address: /question
       sourceFingerprint: 4f43b0c05a09d8c2c2cc4b543474f2dba87043a79ba4817e61ec0ebb96bc88c8
-      targetFingerprint: a7294ae723ab7c6530a089142891da21da77f44c7d16c425aff3f3a557dff173
+      targetFingerprint: da629790babd7d640fb7142cbb83c6cef95b125d6d9d4a1c75fb1cf656522cd9
       status: adopted-existing
 ---
 
-Wir benötigen eine freie Start- und Flugfläche von rund 10 x 10 Metern. Zusätzlich muss die Deckenhöhe mindestens 3 Meter betragen.
+We need a clear take-off and flight area of around 10 x 10 metres. In addition, the ceiling height must be at least 3 metres.

@@ -1,5 +1,5 @@
 ---
-question: Was sind die Unterschiede zur Outdoor-Aufführung?
+question: How does it differ from an outdoor performance?
 tags:
   - indoor-moritz
 order: 2
@@ -14,14 +14,14 @@ translationEvidence:
   fields:
     - address: /body
       sourceFingerprint: da8a83a0f22a2c1274f7672c6942bc96013f53cc89467940c3e189bf574418e5
-      targetFingerprint: af87ae93e3daadc1f044654f4977985ccc713e058137c607a96c009eaf87abde
+      targetFingerprint: dcbe8d87e45ae57527a114cece5fd1c0d0759240d75c44c75eeb01c4a5b78bb0
       status: adopted-existing
     - address: /question
       sourceFingerprint: d0b50b51a76c128a870087d05f81a2bfb2a08c69b3a9bf8448892ab8c015c96d
-      targetFingerprint: 385956ded92f01392d588cb47709e066031797c5fcb247d4d751ea110e4bf223
+      targetFingerprint: 3182884060d4c2cf24a52f8a3d80a02888e0afd01c4123d66836cd527907d39d
       status: adopted-existing
 ---
 
-Klar: Die Drohnen fliegen drinnen, nicht draußen. Dadurch legen wir auch mit weniger Flugobjekten einen magischen Auftritt hin. Denn in einem dunklen Raum auf niedriger Höhe wirken die Lichtpunkte noch größer, noch näher und noch zauberhafter.
+Obviously, the drones fly indoors rather than outdoors. This means we can put on a magical performance even with fewer drones, because in a dark room at a low height, the points of light look even bigger, even closer and even more enchanting.
 
-Zudem ist die Choreografie im Innenraum kontrollierter. Wind und Wetter können nicht dazwischenkommen. Auch die Uhrzeit spielt keine Rolle. Gleichzeitig gelten strenge Sicherheitsauflagen, etwa was die Deckenhöhe angeht.
+The choreography is also more controlled indoors. Wind and weather can't get in the way, and the time of day doesn't matter. At the same time, strict safety requirements apply, for example regarding ceiling height.

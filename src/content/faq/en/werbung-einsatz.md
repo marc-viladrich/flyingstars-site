@@ -1,5 +1,5 @@
 ---
-question: Können Drohnen für Werbung eingesetzt werden?
+question: Can drones be used for advertising?
 tags:
   - werbung-moritz
 order: 1
@@ -14,12 +14,12 @@ translationEvidence:
   fields:
     - address: /body
       sourceFingerprint: d807335df535ee1fc869ada956edb5ff545e20d24c5ab5df44c2c84f3ba5355f
-      targetFingerprint: 803f7fc2350cfe46e67623160cd98fa40302b82853cd6d452bb8da8b4942539e
+      targetFingerprint: b10101139f7ebeb0b6af7562eec6eab48556a70faa38d566d656034babc4d039
       status: adopted-existing
     - address: /question
       sourceFingerprint: 79cedb71bd93e40d2f8ba8f2a775231965ccc587a89590362c6bcf940e266fa0
-      targetFingerprint: be97d625df1849ddcb76145be582bd2077cd04473e9ecf067b7540b413034caa
+      targetFingerprint: 24c15e1665af2e70c0fae0a1d600199475a391f2c1c79c0aff5eac3c04e89d6f
       status: adopted-existing
 ---
 
-Ja! Drohnen werden bereits in der Werbung eingesetzt. Zum Beispiel, um einen Launch auf die größte Bühne zu holen. Um einem Videodreh die Krone aufzusetzen. Oder um die eigenen Produkte, Marken und Claims in unvergesslicher Weise in den Köpfen der Konsument:innen zu verankern.
+Yes! Drones are already being used in advertising. For example, to put a launch on the biggest stage. To crown a video shoot. Or to anchor your own products, brands and claims in consumers' minds in an unforgettable way.

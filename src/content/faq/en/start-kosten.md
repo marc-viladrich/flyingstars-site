@@ -1,5 +1,5 @@
 ---
-question: Wie viel kostet eine Drohnenshow?
+question: How much does a drone show cost?
 tags:
   - startseite-moritz
 order: 3
@@ -14,12 +14,12 @@ translationEvidence:
   fields:
     - address: /body
       sourceFingerprint: 5f03053cb54df5d51f35c0b477aca227ec2e6b01591f7341117755482e7341a0
-      targetFingerprint: 30221db75983b585711665ce4053d5deafe090e4876501674b867d31dfb0a9d0
+      targetFingerprint: 0aa21dd2229b6d26c64c8c20e0860445cf17b77b800d9ab55b1a84f3b99fb545
       status: adopted-existing
     - address: /question
       sourceFingerprint: e709f5105c9dfcd0cb79af5c3c06e48b1a9b6c7d4d404906bd3c2d85bc0c52f4
-      targetFingerprint: 160c2228337cef7b63864616c0fe3f481fcee01ec72dd8ade509bcfad4d5a2be
+      targetFingerprint: cc52c4c2cee3c60498ef808483382310ac1cec8aee2a046ea0d4fa4de2e0a54d
       status: adopted-existing
 ---
 
-Unsere Drohnenshows könnt ihr ab 7.900 Euro (netto) mieten. Mit mehr Drohnen, Musik und Zusatzoptionen personalisiert ihr eure Veranstaltungen.
+You can hire our drone shows from €7,900 (net). With more drones, music and additional options, you can personalise your event.

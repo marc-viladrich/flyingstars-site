@@ -1,5 +1,5 @@
 ---
-question: Können wir auch im Geheimen planen?
+question: Can we plan it in secret?
 tags:
   - hochzeit-moritz
 order: 5
@@ -14,12 +14,12 @@ translationEvidence:
   fields:
     - address: /body
       sourceFingerprint: 3a2b826bbbfd6ee426ff9a588865ac2889433ce9a7c77f318b22ae224c52ed8a
-      targetFingerprint: 3632eba5bd21d5db5566f13c45877cc764619e26f522244eb8bd256556e265dd
+      targetFingerprint: aff920d2f90700afde5bbb45c6bf5d8aec2da65250adc9d17cf707783e499454
       status: adopted-existing
     - address: /question
       sourceFingerprint: 19ce8122d360f1d20b0dcedf47adfdd432b3696a1a8c0c7d056b3b84434d9e15
-      targetFingerprint: b1655dcb3777daa373e8918e7985c0c5c8ec713397d12c9ed4bb30486ee082b5
+      targetFingerprint: 522678c1d9f5c9b5af7897d94532202f3ce1004bd24eccf430321d7c1def81e2
       status: adopted-existing
 ---
 
-Natürlich! Wir sind schon ganz gespannt darauf, das Brautpaar oder eure Gäste zu überraschen. Wir benötigen nur die Zustimmung der Grundstückseigentümer:innen, alles andere kann geheim geplant werden.
+Of course! We can't wait to surprise the bride and groom or your guests. All we need is the landowners' consent; everything else can be planned in secret.

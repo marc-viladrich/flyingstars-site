@@ -1,5 +1,5 @@
 ---
-question: Fliegen die Drohnen synchron zur Musik?
+question: Vliegen de drones synchroon met de muziek?
 tags:
   - hochzeit-moritz
 order: 4
@@ -14,12 +14,12 @@ translationEvidence:
   fields:
     - address: /body
       sourceFingerprint: 59556635135531173bfaaff46aea6fb1f6220aabc280584d819c98058de2e44c
-      targetFingerprint: 7b05664c87f208e946d35f895bdfe271a2cf2206f1a1e0dcefb2c2654e73fa9a
+      targetFingerprint: 9bc49d7dbc5a0fd41b27597942a1fa1eae5a0d970647198c50dd1f59b9a3ddfe
       status: adopted-existing
     - address: /question
       sourceFingerprint: 384e295675d750ce2053d8145e6b2ea086698f55993b47a64e2cabb90a82bf53
-      targetFingerprint: e0d8a2cd4d4e50c950da35084743a37b38e62298e607de68427b26b3f95d3c90
+      targetFingerprint: 3e553b815d869bbdb8796f24fb24444b64c87608569a39af2bcaefaebbbc56f6
       status: adopted-existing
 ---
 
-Absolut. Wir passen die Aufführung an die Playlist an, gerne auch in Zusammenarbeit mit eurem musikalischen Act.
+Absoluut. We stemmen de voorstelling af op de playlist, graag ook in samenwerking met jullie muzikale act.

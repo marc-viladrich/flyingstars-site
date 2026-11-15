@@ -1,5 +1,5 @@
 ---
-question: Was kostet eine Drohnenshow zur Hochzeit?
+question: Wat kost een droneshow voor een bruiloft?
 tags:
   - hochzeit-moritz
 order: 1
@@ -14,12 +14,12 @@ translationEvidence:
   fields:
     - address: /body
       sourceFingerprint: 37a1e743818c34a1da9ad2639dee98df6046beb0afcae8feeef1afcb7a3c42ec
-      targetFingerprint: 9fdacd5e386682e3e850be597b124d731f97342dd3d24f62846cc7557bab9274
+      targetFingerprint: aa3171f0dbc034b3ff51d45139fe08e02f9e1434ed6f7dfdc9f6ebd68dc6847d
       status: adopted-existing
     - address: /question
       sourceFingerprint: 86c232f154069fb33181cb2281dfd874278772473a3f563e3a9e6d44a670d309
-      targetFingerprint: 675a89fe4cb0daf59b574699b814ac3b0f221affbe743a2c9a3c0a3df3bc695c
+      targetFingerprint: be0776463f0c2370f0d4c88ab96bda04a400af9a48314aec218e8f1cee9f022b
       status: adopted-existing
 ---
 
-Unsere Pakete beginnen bei 7900 Euro (netto) zuzüglich Anfahrt. Wie viel eure Hochzeitsshow am Ende kostet, hängt unter anderem von der Anzahl der Drohnen, der individuellen Gestaltung und der Anfahrt ab. Gemeinsam besprechen wir, was am besten zu euch passt. Ganz sicher geben wir euch aber einen Festpreis ohne Überraschungen. Buchungen im Voraus erhalten zusätzlich einen Rabatt von 10 %.
+Onze pakketten beginnen bij € 7.900 (excl. btw) plus reiskosten. Wat jullie bruiloftsshow uiteindelijk kost, hangt onder meer af van het aantal drones, het ontwerp op maat en de reisafstand. Samen bespreken we wat het beste bij jullie past. Wat zeker is: we geven jullie een vaste prijs zonder verrassingen. Boekingen ruim van tevoren krijgen bovendien 10% korting.

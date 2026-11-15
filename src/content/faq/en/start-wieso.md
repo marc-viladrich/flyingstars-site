@@ -1,5 +1,5 @@
 ---
-question: Wieso FlyingStars?
+question: Why FlyingStars?
 tags:
   - startseite-moritz
 order: 4
@@ -14,12 +14,12 @@ translationEvidence:
   fields:
     - address: /body
       sourceFingerprint: f4459f0a2659585295502c84af9ddf5a97dcf812a5ac5ed728e7f7d9d4efc455
-      targetFingerprint: 35a4ee2763ec07d577a97cfa6f27e424d00ea105fdeee8ecf88c587cd34bc60a
+      targetFingerprint: f1b35d9865f746e9bf69fe401de862db55058e93d5fe36e36c2429892f441be4
       status: adopted-existing
     - address: /question
       sourceFingerprint: 85d5a370678f6459936243cc21f411b2b4ff725af3bda97097f1c3cc09fc496c
-      targetFingerprint: c29ee6b530f298e713aea30cb6fab8752848eb64e586e673e25bde5773fa37c7
+      targetFingerprint: b1aef3ed1074315d641966a49752a218fe938c0d7311f3605fd4ba92612f2c94
       status: adopted-existing
 ---
 
-Wir bringen die Erfahrung von mehr als 150 Events für Firmen, Agenturen, Gemeinden, Festivals und Privatpersonen in Deutschland, Österreich, der Schweiz und weltweit mit. Mit individuellen Paketen auch für kleine Veranstaltungen und einer Planung in unter zwei Wochen können wir außerdem fast alle Wünsche ermöglichen.
+We bring the experience of more than 150 events for businesses, agencies, municipalities, festivals and private clients in Germany, Austria, Switzerland and worldwide. With bespoke packages for smaller events too, and planning in under two weeks, we can make almost any wish come true.

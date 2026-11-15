@@ -1,5 +1,5 @@
 ---
-question: Was ist eine Drohnenshow?
+question: Wat is een droneshow?
 tags:
   - startseite-moritz
 order: 1
@@ -14,12 +14,12 @@ translationEvidence:
   fields:
     - address: /body
       sourceFingerprint: 30ef9f66818345a740e1040c802d258696ace9e960aa6c8ce3a8b5bf8eae0e80
-      targetFingerprint: 15917d785d5e1b440cbade0d71ba226652679eff67ab4441b7e94e503665ab51
+      targetFingerprint: 104a1c8291e10a2b62f7a4e64d00f7b182ec01fa110b924b365285dae64b9283
       status: adopted-existing
     - address: /question
       sourceFingerprint: 5d2a6462fc908f619970958e67103287eb1f2e65c2ea58674463cc5447e7af7b
-      targetFingerprint: be5e01e128a9ce5fa7297c161f11b94323fb09f8da4a1d00c5e9467b7e8c8410
+      targetFingerprint: ebc130bec9f23895f03f66521e07e7d15d3fa23f32a86dc8c3043560712a3823
       status: adopted-existing
 ---
 
-Eine Drohnenshow ist ein Event, in dem leuchtende Drohnen im Formationsflug Motive in den Himmel malen. Die Choreografie kann als Drohnenkonzert von Musik und anderen Effekten begleitet werden.
+Een droneshow is een evenement waarbij lichtgevende drones in formatievlucht motieven aan de hemel schilderen. Als droneconcert kan de choreografie worden begeleid door muziek en andere effecten.

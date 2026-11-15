@@ -1,11 +1,11 @@
 ---
 title: "E.ON: The Future is Now"
 client: E.ON
-date: 2026-09-15T00:00:00.000Z
+date: "2026-09-15T00:00:00.000Z"
 location: Hamburg
 occasion: firma
 drones: 500
-summary: Mit 500 Drohnen machten wir den Hamburger Hafen zur größten Bühne der E.ON New Energy Experience 2026.
+summary: "With 500 drones, we turned the Port of Hamburg into the biggest stage of the E.ON New Energy Experience 2026."
 featured: false
 draft: false
 translationContractVersion: 2
@@ -18,7 +18,7 @@ translationEvidence:
   fields:
     - address: /body
       sourceFingerprint: 262df867096a02c330d092a7e7876df55c2037c6a40019ad2e993361a7222525
-      targetFingerprint: 8539d47c5dba8a0f155f4457eb35297baf797420be024ffb81e0590698cde2f4
+      targetFingerprint: f41caef963554cabf5022a5109d6b6f21aeb92420c1afbe77f68f8b6ac220f18
       status: adopted-existing
     - address: /client
       sourceFingerprint: 08202eac8280a3cbb2617886329bc014a62fe740969947c1bc4307ec0e01ba82
@@ -38,7 +38,7 @@ translationEvidence:
       status: adopted-existing
     - address: /summary
       sourceFingerprint: 137089b6335f380252a0b231147c48a2f3c0d4650b72c77462c09a16018bafdc
-      targetFingerprint: d1d95936ed5e9e301e3d85d6b2d5e977fe343b7b4db0594d21a779357ad1ddba
+      targetFingerprint: fa3695d14d73d90ee952d139c38ba6a1525abb947bafe0fded01b3d68fcbced6
       status: adopted-existing
     - address: /title
       sourceFingerprint: b7b1be4abcb14ed0f3284352358133e2e9712db360ef7bb42f51d1a195c64cdb
@@ -46,4 +46,4 @@ translationEvidence:
       status: adopted-existing
 ---
 
-<!-- Minimal angelegt am 15.11.2026 für die Startseite nach Moritz' Webtext („E.ON: The Future is Now“, Marketing – Hamburg – 500 Drohnen). Datum laut ueber-uns.yaml „im September“, 15.09. oder 15./16.09. offen; Showbild und Fallstudie fehlen. -->
+<!-- Minimal entry created on 15 Nov 2026 for the home page based on Moritz's web copy ("E.ON: The Future is Now", Marketing – Hamburg – 500 drones). Date per ueber-uns.yaml "in September"; 15 Sep or 15/16 Sep still open; show image and case study missing. -->

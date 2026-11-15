@@ -1,5 +1,5 @@
 ---
-question: Wie viel kostet Drohnen-Marketing?
+question: How much does drone marketing cost?
 tags:
   - werbung-moritz
 order: 3
@@ -14,12 +14,12 @@ translationEvidence:
   fields:
     - address: /body
       sourceFingerprint: cd25aee6e615921e3765a1837b241211fb4a1baf9e5f90d0c1ecce93c455b385
-      targetFingerprint: 969646a3fa45b1162d0b4d6c275cc9701e5602debf4f8da551958abe24954a49
+      targetFingerprint: bbd8e90effde64b2750e2b8725d488a7cc138db900d08c32c93a71e9040ae190
       status: adopted-existing
     - address: /question
       sourceFingerprint: 6a64157b2a00f39e68b12c2be8554096499cccfe00aee113cd3c61eba43f1493
-      targetFingerprint: 1637d297b5b8efe04b336b98e864f391057e4fc18b5d626daf2edd3f60a0f0ec
+      targetFingerprint: 51b63861f1b8ade7062fd6e69548fd682502ffd484f879cef404b7fcac629c1a
       status: adopted-existing
 ---
 
-Unsere Pakete beginnen bei 7900 Euro (netto) zuzüglich Anfahrt. Dafür bekommt ihr das volle Paket mit individueller Storyline und Motiven aus 100 Drohnen. Damit könnt ihr bereits einige Logos, Claims und Co. darstellen. Je komplexer die Motive und je spektakulärer der Act werden soll, desto mehr kostet die Aufführung.
+Our packages start at €7,900 (net) plus travel. For that you get the full package with a bespoke storyline and motifs made of 100 drones, enough to show a number of logos, claims and the like. The more complex the motifs and the more spectacular the act, the more the performance costs.

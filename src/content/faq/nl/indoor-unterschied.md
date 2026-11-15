@@ -1,5 +1,5 @@
 ---
-question: Was sind die Unterschiede zur Outdoor-Aufführung?
+question: Wat zijn de verschillen met een outdoorvoorstelling?
 tags:
   - indoor-moritz
 order: 2
@@ -14,14 +14,14 @@ translationEvidence:
   fields:
     - address: /body
       sourceFingerprint: da8a83a0f22a2c1274f7672c6942bc96013f53cc89467940c3e189bf574418e5
-      targetFingerprint: af87ae93e3daadc1f044654f4977985ccc713e058137c607a96c009eaf87abde
+      targetFingerprint: 15b7459f4f03f1e3695a3bc3ccf5612dd5e7df12328495086113e47d8d1cfcea
       status: adopted-existing
     - address: /question
       sourceFingerprint: d0b50b51a76c128a870087d05f81a2bfb2a08c69b3a9bf8448892ab8c015c96d
-      targetFingerprint: 385956ded92f01392d588cb47709e066031797c5fcb247d4d751ea110e4bf223
+      targetFingerprint: 9fe9b484ae752c1577189d5a67c0ca88fa274b5f70ef477235624065d90215c4
       status: adopted-existing
 ---
 
-Klar: Die Drohnen fliegen drinnen, nicht draußen. Dadurch legen wir auch mit weniger Flugobjekten einen magischen Auftritt hin. Denn in einem dunklen Raum auf niedriger Höhe wirken die Lichtpunkte noch größer, noch näher und noch zauberhafter.
+Logisch: de drones vliegen binnen, niet buiten. Daardoor zetten we ook met minder drones een magisch optreden neer. Want in een donkere ruimte op lage hoogte lijken de lichtpunten nog groter, nog dichterbij en nog betoverender.
 
-Zudem ist die Choreografie im Innenraum kontrollierter. Wind und Wetter können nicht dazwischenkommen. Auch die Uhrzeit spielt keine Rolle. Gleichzeitig gelten strenge Sicherheitsauflagen, etwa was die Deckenhöhe angeht.
+Bovendien is de choreografie binnen beter te controleren. Wind en weer kunnen niet roet in het eten gooien. Ook het tijdstip speelt geen rol. Tegelijk gelden er strenge veiligheidseisen, bijvoorbeeld wat de plafondhoogte betreft.

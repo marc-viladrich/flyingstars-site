@@ -1,5 +1,5 @@
 ---
-question: Wie funktioniert eine Drohnenshow?
+question: How does a drone show work?
 tags:
   - startseite-moritz
 order: 2
@@ -14,12 +14,12 @@ translationEvidence:
   fields:
     - address: /body
       sourceFingerprint: ed790bcc0ec658db3af00224bc9a7cefe555163f4fed6338ca09be46861593d4
-      targetFingerprint: cf870a585810226bcbb276a6f91cf8cb2355b7f644a5c0d6fd857d15393c885b
+      targetFingerprint: e705f461d3ddb941b981cdb57653ce1b75e1402a711388d32af52e88ccd4de61
       status: adopted-existing
     - address: /question
       sourceFingerprint: dd272b9a57b1a0c111859773bf131d937ee078a0a1509211dabf5ac4330d9e3d
-      targetFingerprint: 169ce2e2a0cc6b2fd6cd12923324eef425d5706cfff6c03c09e4976cedc75286
+      targetFingerprint: e0479f3b591b678b96c312b6efaa476ae2a050f97be0a4eae737a6bc34d2120c
       status: adopted-existing
 ---
 
-Bei einer Drohnenshow setzen sich hunderte beleuchtete Drohnen – jede als ein Pixel – zu einem Bild zusammen. Jedes Motiv wird dabei im Vorhinein festgelegt, die Flugrouten programmiert. Während der Aufführung ist so keine Steuerung mehr nötig.
+In a drone show, hundreds of illuminated drones – each one a pixel – come together to form an image. Every motif is defined in advance and the flight paths are programmed. This means no manual control is needed during the performance.

@@ -1,5 +1,5 @@
 ---
-question: Welche Voraussetzungen gibt es?
+question: Welke voorwaarden zijn er?
 tags:
   - indoor-moritz
 order: 3
@@ -14,12 +14,12 @@ translationEvidence:
   fields:
     - address: /body
       sourceFingerprint: f406f60bba99c790cd70c1e5eb54fcd3f5090fd8829c648a1ecd0fce4fbd5832
-      targetFingerprint: 46322cc27dbab169423ec74b6282d4e0cd95e9f32a2e120fbdd7103cd3a269d3
+      targetFingerprint: 1034650052b9b36c1109337997fa2ed3319213c72f8fb35a7fc0feea7962f75a
       status: adopted-existing
     - address: /question
       sourceFingerprint: 4f43b0c05a09d8c2c2cc4b543474f2dba87043a79ba4817e61ec0ebb96bc88c8
-      targetFingerprint: a7294ae723ab7c6530a089142891da21da77f44c7d16c425aff3f3a557dff173
+      targetFingerprint: 50372dd5955f9b2b788066a882dfeff626e683eadc493cfcf8b0c73be62ead4e
       status: adopted-existing
 ---
 
-Wir benötigen eine freie Start- und Flugfläche von rund 10 x 10 Metern. Zusätzlich muss die Deckenhöhe mindestens 3 Meter betragen.
+We hebben een vrije start- en vliegruimte van ongeveer 10 x 10 meter nodig. Daarnaast moet de plafondhoogte minstens 3 meter zijn.

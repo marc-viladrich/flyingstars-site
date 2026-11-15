@@ -1,5 +1,5 @@
 ---
-question: Sind persönliche Wünsche möglich?
+question: Zijn persoonlijke wensen mogelijk?
 tags:
   - hochzeit-moritz
 order: 3
@@ -14,12 +14,12 @@ translationEvidence:
   fields:
     - address: /body
       sourceFingerprint: f73bb0951dc3d171f3bf38e771948295980d391aabe2c080b7b3bc4a6effb862
-      targetFingerprint: 98988111d9b4f100aff6ec45d811979e11158499605edcb72aa8d1a47e656036
+      targetFingerprint: c8573fa46243d9faf75c7275b4f7e3429a8acda2734bfa9739a303e579c63071
       status: adopted-existing
     - address: /question
       sourceFingerprint: 9b46cf5be3a14e7058fe7312f881c2d075b915e95c42bc08aa5c01e3a711d848
-      targetFingerprint: 0d1a81725c6e5f3a5b59bf715c4b1d71ca29b55808e7e5978a42d1363b924791
+      targetFingerprint: b82d791536d135eb766de67ee330ea0afe7d0bfb5c7be7fc5e3cdc2fc30eb251
       status: adopted-existing
 ---
 
-Klar! Ob Initialen, Namen oder Motive mit Bedeutung: Wir ermöglichen so gut wie jeden Wunsch.
+Zeker! Of het nu initialen, namen of motieven met betekenis zijn: we maken bijna elke wens mogelijk.

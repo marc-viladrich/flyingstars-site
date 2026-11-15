@@ -1,5 +1,5 @@
 ---
-question: Wie schnell ist die Planung möglich?
+question: Hoe snel kan het worden gepland?
 tags:
   - hochzeit-moritz
 order: 2
@@ -14,12 +14,12 @@ translationEvidence:
   fields:
     - address: /body
       sourceFingerprint: 2bcd148d519b9cf714db6dba38178434d77f2b8f963ce9f7ff4c7854afcdb088
-      targetFingerprint: 4d7c7a866c4d5a38c700d014b2c93bc8d685b91ec0eca5a035be7ea9dc2e2e28
+      targetFingerprint: 974868804f7d4b9d3fced353595e39770f63218283a26a48350e7b845a6d7e69
       status: adopted-existing
     - address: /question
       sourceFingerprint: c715311a6e82cbe6900ba13024b40d9553f0b2051922c14f1e002888d7063350
-      targetFingerprint: cd1c0f5cea4731b462b545c6beb75e1d6236903e72c8017fcc0a642340d130c2
+      targetFingerprint: c1a08e17aa1bf44aae19ffea84115c074e399f655327f6154e75ca45eccc8f77
       status: adopted-existing
 ---
 
-Am besten fragt ihr bereits drei Monate vor der Hochzeitsfeier an. In eiligen Fällen können wir Events aber auch innerhalb von zwei Wochen oder kürzer planen.
+Het beste vragen jullie al drie maanden voor het bruiloftsfeest aan. In dringende gevallen kunnen we evenementen ook binnen twee weken of korter plannen.

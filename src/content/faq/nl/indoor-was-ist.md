@@ -1,5 +1,5 @@
 ---
-question: Was ist eine Indoor-Drohnenshow?
+question: Wat is een indoor-droneshow?
 tags:
   - indoor-moritz
 order: 1
@@ -14,12 +14,12 @@ translationEvidence:
   fields:
     - address: /body
       sourceFingerprint: 69ab29cae9fc5d09a6c9a3bb12185445959a9f7f8d3babcf8a6faa7602a2358d
-      targetFingerprint: b19e5dc921207498a5eff7c6e74f63b695b2495a67d06e3782ccaa5e67ef46fc
+      targetFingerprint: a3ffd9c8e4909bfd130cae3ef41b71e893e8b5b6c66db887bc7cfedde05dbfd6
       status: adopted-existing
     - address: /question
       sourceFingerprint: 2c5f94cbe0ed0899097cd2de878b3cc99026efbfd42e1cd58bb42aa200b2c127
-      targetFingerprint: 153596474890d15854cff260dc33e808140bbde5b2324b158919273525d591ce
+      targetFingerprint: eb8feeba876f11d636ce80afd6ff1bc716c9346964a06b380e05a8e63ad08228
       status: adopted-existing
 ---
 
-Eine Indoor-Drohnenshow ist eine beleuchtete Flugaufführung mit Drohnen. Dabei stellt jede Drohne einen farblichen Pixel dar. Die vorprogrammierten Drohnen fliegen eine Choreografie nach individuellem Wunsch, synchron mit Musik.
+Een indoor-droneshow is een verlichte vliegvoorstelling met drones. Elke drone vormt daarbij één gekleurde pixel. De voorgeprogrammeerde drones vliegen een choreografie naar jullie wensen, synchroon met muziek.

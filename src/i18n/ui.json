@@ -65,7 +65,7 @@
     "nl": "Bekijk de showvideo"
   },
   "video.theVideoIsCurrentlyUnavailablePleaseTryAgainLater": {
-    "de": "Das Video ist gerade nicht verfügbar. Bitte versuche es später erneut.",
+    "de": "Das Video ist gerade nicht verfügbar. Bitte versucht es später erneut.",
     "en": "The video is currently unavailable. Please try again later.",
     "nl": "De video is momenteel niet beschikbaar. Probeer het later opnieuw."
   },
@@ -135,7 +135,7 @@
     "nl": "Preview pauzeren"
   },
   "showconfigurator.dragYourLogoHere": {
-    "de": "Dein Logo hier reinziehen",
+    "de": "Euer Logo hier reinziehen",
     "en": "Drag your logo here",
     "nl": "Sleep jullie logo hierheen"
   },
@@ -145,7 +145,7 @@
     "nl": "SVG, PNG of JPG"
   },
   "showconfigurator.thePreviewIsCurrentlyUnavailableYouCanStillChooseA": {
-    "de": "Die Vorschau ist gerade nicht verfügbar. Du kannst weiterhin ein Paket wählen und anfragen.",
+    "de": "Die Vorschau ist gerade nicht verfügbar. Ihr könnt weiterhin ein Paket wählen und anfragen.",
     "en": "The preview is currently unavailable. You can still choose a package and send an enquiry.",
     "nl": "De preview is momenteel niet beschikbaar. Jullie kunnen wel een pakket kiezen en een aanvraag sturen."
   },
@@ -245,7 +245,7 @@
     "nl": "Initialen"
   },
   "showconfigurator.onlyUploadLogosYouHavePermissionToUseSuchAs": {
-    "de": "Lade nur Logos hoch, die du verwenden darfst. Die Umrechnung läuft in deinem Browser. Übertragen wird das Logo erst, wenn du es mit einer Anfrage absendest.",
+    "de": "Ladet nur Logos hoch, die ihr verwenden dürft. Die Umrechnung läuft in eurem Browser. Übertragen wird das Logo erst, wenn ihr es mit einer Anfrage absendet.",
     "en": "Only upload logos you may use. The conversion runs in your browser. The logo is only transferred when you send it with an enquiry.",
     "nl": "Upload alleen logo’s die jullie mogen gebruiken. De omzetting gebeurt in jullie browser. Het logo wordt pas verstuurd als jullie het met een aanvraag meesturen."
   },
@@ -270,7 +270,7 @@
     "nl": "Aanvragen"
   },
   "showconfigurator.theShowConfiguratorRequiresJavascriptFindOurPackagesAndPrices": {
-    "de": "Der Show-Konfigurator benötigt JavaScript. Die Pakete mit Preisen findest du unter",
+    "de": "Der Show-Konfigurator benötigt JavaScript. Die Pakete mit Preisen findet ihr unter",
     "en": "The show configurator requires JavaScript. Find our packages and prices under",
     "nl": "De showconfigurator heeft JavaScript nodig. Onze pakketten en prijzen staan onder"
   },
@@ -1031,8 +1031,8 @@
   },
   "site.droneShowsForBusinessesCitiesFestivalsAndWeddingsDesignPermits": {
     "de": "FlyingStars ist ein Anbieter individueller Drohnenshows in Deutschland und weltweit. Seit 2021 sind wir über 150 Shows geflogen, unter anderem für VW, REWE und die Umwelthilfe.",
-    "en": "Drone shows for businesses, cities, festivals and weddings. Design, permits and our own fleet from one team.",
-    "nl": "Droneshows voor bedrijven, steden, festivals en bruiloften. Ontwerp, vergunning en eigen vloot vanuit één team."
+    "en": "FlyingStars is a provider of bespoke drone shows in Germany and worldwide. Since 2021 we have flown more than 150 shows, for clients including VW, REWE and Deutsche Umwelthilfe.",
+    "nl": "FlyingStars is een aanbieder van droneshows op maat in Duitsland en wereldwijd. Sinds 2021 hebben we meer dan 150 shows gevlogen, onder meer voor VW, REWE en de Deutsche Umwelthilfe."
   },
   "site.businesses": {
     "de": "Unternehmen",
@@ -2265,12 +2265,12 @@
     "nl": "Stap {v0} van {v1}"
   },
   "contact.pleaseChooseAnOccasion": {
-    "de": "Bitte wähle einen Anlass.",
+    "de": "Bitte wählt einen Anlass.",
     "en": "Please choose an occasion.",
     "nl": "Kies een gelegenheid."
   },
   "contact.pleaseEnterAValidEmailAddress": {
-    "de": "Bitte gib eine gültige E-Mail-Adresse ein.",
+    "de": "Bitte gebt eine gültige E-Mail-Adresse ein.",
     "en": "Please enter a valid email address.",
     "nl": "Vul een geldig e-mailadres in."
   },
@@ -2305,7 +2305,7 @@
     "nl": "Jullie aanvraag is verstuurd. We reageren binnen 48 uur."
   },
   "contact.valuePleaseTryAgainLaterOrEmailTeamFlyingstarsArt": {
-    "de": "{v0} Bitte versuche es später erneut oder schreibe direkt an {email}.",
+    "de": "{v0} Bitte versucht es später erneut oder schreibt direkt an {email}.",
     "en": "{v0} Please try again later or email {email} directly.",
     "nl": "{v0} Probeer het later opnieuw of mail rechtstreeks naar {email}."
   },

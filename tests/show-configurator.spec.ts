@@ -549,8 +549,8 @@ test('Eigenes Logo per Dateiauswahl und Drag&Drop: eigenes Bild im Ablauf, die D
   await page.waitForTimeout(300);
   const storage = await page.evaluate(() => JSON.stringify([{ ...localStorage }, { ...sessionStorage }]));
   page.on('request', (r) => { if (!r.url().startsWith('blob:') && !r.url().startsWith('data:')) requests.push(`${r.method()} ${r.url()} ${r.postData() ?? ''}`); });
-  await expect(page.locator('#cfg-legal')).toHaveText('Lade nur Logos hoch, die du verwenden darfst. Die Umrechnung läuft in deinem Browser. Übertragen wird das Logo erst, wenn du es mit einer Anfrage absendest.');
-  await expect(page.locator('#cfg-file')).toHaveAccessibleDescription(/Lade nur Logos hoch/);
+  await expect(page.locator('#cfg-legal')).toHaveText('Ladet nur Logos hoch, die ihr verwenden dürft. Die Umrechnung läuft in eurem Browser. Übertragen wird das Logo erst, wenn ihr es mit einer Anfrage absendet.');
+  await expect(page.locator('#cfg-file')).toHaveAccessibleDescription(/Ladet nur Logos hoch/);
   await recordBeats(page);
   // Der Budgetvertrag erlaubt nur die vollständige Mindestfassung oberhalb des Show-Budgets.
   const expectLogo = async (budget: number) => {
@@ -747,7 +747,7 @@ test('Runde 9: weniger Text; der Hinweis zum Logo steht hinter dem Info-Zeichen 
   await expect(tip).toBeVisible();
   await page.mouse.click(2, 400); // irgendwo anders hin (am Rand, außerhalb des Hinweises)
   await expect(tip).toBeHidden();
-  await expect(page.locator('#cfg-file')).toHaveAccessibleDescription(/Lade nur Logos hoch/);
+  await expect(page.locator('#cfg-file')).toHaveAccessibleDescription(/Ladet nur Logos hoch/);
 });
 
 test('Runde 10: nicht gewählte Pakete behalten ihre Farbe, gedämpft und mit mindestens 4,5:1 Kontrast', async ({ page }) => {

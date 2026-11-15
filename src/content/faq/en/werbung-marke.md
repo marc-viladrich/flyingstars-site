@@ -1,5 +1,5 @@
 ---
-question: Wie können wir unsere Marke darstellen?
+question: How can we present our brand?
 tags:
   - werbung-moritz
 order: 2
@@ -14,12 +14,12 @@ translationEvidence:
   fields:
     - address: /body
       sourceFingerprint: 4988da6daa0828aa114aebe6367ede5036a29c984362e70b9378eac466df9f52
-      targetFingerprint: 4ce35a6450ccbd55c5b73f835bd8329688da0dbe51e91b06d74ed375c494d116
+      targetFingerprint: 2534959102974d1641ef4004ea5c34753c980f2b2104ed21bf9317c34be867fa
       status: adopted-existing
     - address: /question
       sourceFingerprint: 4446eb2831571563cd7e88617bf57305ac1944fc0c4282fed532da5898a46f9f
-      targetFingerprint: 383f6cc6eca757ebef07f10a98bbd40fc0cd17bfb9c06ac8fd2f7da57d971b90
+      targetFingerprint: dda5999e6f311ffed01f8876db59e377830a36fc4ef58a22d5dd477b3e8fc510
       status: adopted-existing
 ---
 
-Dem sind kaum Grenzen gesetzt! Im Gegensatz zum Feuerwerk können Drohnentänze eine bildliche Geschichte erzählen und ganze Filmszenen in den Himmel werfen. Je mehr Drohnen, desto komplexere Motive sind möglich. 100 bis 200 Drohnen reichen für Logos und Schriftzüge, 300+ Pixel eignen sich für emotionale 3D-Visualisierungen.
+There are hardly any limits! Unlike fireworks, drone dances can tell a visual story and project whole film scenes into the sky. The more drones, the more complex the motifs can be. 100 to 200 drones are enough for logos and lettering; 300+ pixels are suitable for emotional 3D visualisations.

@@ -1,5 +1,5 @@
 ---
-question: Wie viel kostet eine Indoor-Drohnenshow?
+question: Hoeveel kost een indoor-droneshow?
 tags:
   - indoor-moritz
 order: 4
@@ -14,12 +14,12 @@ translationEvidence:
   fields:
     - address: /body
       sourceFingerprint: f8ee201ff4558b6232380023072f46e4464e14da134809c89c61a6e6b043c275
-      targetFingerprint: 362fdd97b47a8346d630489ab6978f63b013cf8c097ce820423dda0f60dbac7f
+      targetFingerprint: 725f25765d71a9da173a4292c6ba1aef0166455a4e6c89afa41e91b05089f709
       status: adopted-existing
     - address: /question
       sourceFingerprint: e5c533ebfccb6a58f227417481c15d48e6de1ee408242e9c427f166043e30d1e
-      targetFingerprint: a6e5400db241ad03f7b6ae5f2a9daf08d27b87bd3bd5b177b3df21a62d1da161
+      targetFingerprint: f9c3c95663318f5e1edc393643b685578dedbbf2a345049a6369d7b7039cd618
       status: adopted-existing
 ---
 
-Unsere Indoor-Drohnenshows beginnen bei 15.000 Euro (netto) zuzüglich Anfahrt. Mit mehr Drohnen und weiteren Extras könnt ihr euer Spektakel personalisieren.
+Onze indoor-droneshows beginnen bij € 15.000 (excl. btw) plus reiskosten. Met meer drones en extra opties maken jullie het spektakel persoonlijk.

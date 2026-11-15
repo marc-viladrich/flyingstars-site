@@ -115,10 +115,10 @@ sections:
     body: |-
       Wir erfüllen die strengen Sicherheitsauflagen, die für Indoor-Drohnenshows gelten. Deshalb benötigen wir eine Freifläche von etwa 10 x 10 Metern und eine Deckenhöhe von mindestens drei Metern. Ein Vorteil im Inneren: Wind und Wetter stellen kein (Absage-)Risiko dar.
 
-      Zusätzlich setzen wir auf redundante Sicherheitsmechanismen. Die Rotoren sind physikalisch geschützt, alle Komponenten CE-zertifizert. Die Drohnen fliegen langsam und wiegen unter 200 Gramm.
+      Zusätzlich setzen wir auf redundante Sicherheitsmechanismen. Die Rotoren sind physikalisch geschützt, alle Komponenten CE-zertifiziert. Die Drohnen fliegen langsam und wiegen unter 200 Gramm.
 
       Wir sind zertifiziert nach Luftfahrt-Bundesamt und EU Aviation Safety. Der TÜV NORD bescheinigt unserer Flotte zudem die Einhaltung des Schallschutzes. Im Fall der Fälle sichert euch unsere Haftpflicht bis 1,3 Mio. Euro ab.
-    todo: "Moritz: Tippfehler „CE-zertifizert“ wortgetreu übernommen. FlyingStars muss Indoor-Flugfläche, Sicherheitsfunktionen und die für Indoor geltende Haftpflichtdeckung bestätigen."
+    todo: "FlyingStars muss Indoor-Flugfläche, Sicherheitsfunktionen und die für Indoor geltende Haftpflichtdeckung bestätigen."
     _key: k_1060f8471da9620b9d94
 
   - type: textMedia

@@ -1,5 +1,5 @@
 ---
-question: Können wir auch im Geheimen planen?
+question: Kunnen we het ook in het geheim plannen?
 tags:
   - hochzeit-moritz
 order: 5
@@ -14,12 +14,12 @@ translationEvidence:
   fields:
     - address: /body
       sourceFingerprint: 3a2b826bbbfd6ee426ff9a588865ac2889433ce9a7c77f318b22ae224c52ed8a
-      targetFingerprint: 3632eba5bd21d5db5566f13c45877cc764619e26f522244eb8bd256556e265dd
+      targetFingerprint: 60a5019f6cc5eb02230f866b83e3d99203c6232e1f451f1da5e2f48730d808aa
       status: adopted-existing
     - address: /question
       sourceFingerprint: 19ce8122d360f1d20b0dcedf47adfdd432b3696a1a8c0c7d056b3b84434d9e15
-      targetFingerprint: b1655dcb3777daa373e8918e7985c0c5c8ec713397d12c9ed4bb30486ee082b5
+      targetFingerprint: 943ca0a5e5908219b71d874e515b70979982e6facb51f51051145c2b95c07c3f
       status: adopted-existing
 ---
 
-Natürlich! Wir sind schon ganz gespannt darauf, das Brautpaar oder eure Gäste zu überraschen. Wir benötigen nur die Zustimmung der Grundstückseigentümer:innen, alles andere kann geheim geplant werden.
+Natuurlijk! We kijken er al naar uit om het bruidspaar of jullie gasten te verrassen. We hebben alleen de toestemming van de grondeigenaren nodig, al het andere kan in het geheim worden gepland.

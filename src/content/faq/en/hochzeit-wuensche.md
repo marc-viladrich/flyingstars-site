@@ -1,5 +1,5 @@
 ---
-question: Sind persönliche Wünsche möglich?
+question: Are personal requests possible?
 tags:
   - hochzeit-moritz
 order: 3
@@ -14,12 +14,12 @@ translationEvidence:
   fields:
     - address: /body
       sourceFingerprint: f73bb0951dc3d171f3bf38e771948295980d391aabe2c080b7b3bc4a6effb862
-      targetFingerprint: 98988111d9b4f100aff6ec45d811979e11158499605edcb72aa8d1a47e656036
+      targetFingerprint: 07eb8e6de73d958f02a02751def9d36e635796d40a5f3a260468835e67e8f70a
       status: adopted-existing
     - address: /question
       sourceFingerprint: 9b46cf5be3a14e7058fe7312f881c2d075b915e95c42bc08aa5c01e3a711d848
-      targetFingerprint: 0d1a81725c6e5f3a5b59bf715c4b1d71ca29b55808e7e5978a42d1363b924791
+      targetFingerprint: 221e5ef839da198cfbd42de362e35c694d866dac9c3b20f8173c714648519be7
       status: adopted-existing
 ---
 
-Klar! Ob Initialen, Namen oder Motive mit Bedeutung: Wir ermöglichen so gut wie jeden Wunsch.
+Of course! Whether initials, names or meaningful motifs: we can make almost any wish come true.
