@@ -51,10 +51,12 @@ test('Every published case has a unique route/order and an existing next case', 
   for (const c of cases) assert.ok(cases.some((next) => next.route === c.nextRoute && next.route !== c.route), c.route);
 });
 
-test('Internal section notes render only in the local dev server, never in a build or preview', () => {
+test('Internal section notes never render in a build or preview, and in the local dev server only on request', () => {
   const renderer = readFileSync(new URL('../src/components/SectionRenderer.astro', import.meta.url), 'utf8');
   const gate = renderer.match(/const annotate = (.+);/)?.[1];
-  assert.equal(gate, 'import.meta.env.DEV', 'todo notes must depend on the dev server alone, not on a build flag');
+  // DEV muss die erste Bedingung bleiben (kein Build-Flag kann die Hinweise in ein Deployment bringen);
+  // FS_HINWEISE=1 schaltet sie im Dev-Server ein, ohne die Variable bleiben sie aus (Marc, 13.11.2026).
+  assert.equal(gate, "import.meta.env.DEV && process.env.FS_HINWEISE === '1'", 'todo notes: dev server only, and off unless asked for');
 });
 
 test('Alle Section-Typen erben dieselbe Dev-only-Hilfe aus dem Schema',()=>{

@@ -7,6 +7,9 @@ import { forPath } from '../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
 import '../styles/fonts.css';
 import '../styles/global.css';
+// Schrift-Labor (Branch feat/schrift-labor): Kandidatenschriften, Auftritt und Musterschicht, alles hinter html[data-lab-*]
+import '../styles/labor.css';
+import '../styles/labor-himmel.css';
 import { getSite } from '../site.config';
 const site = getSite(forPath(Astro.url.pathname).locale);
 import Logo from '../components/Logo.astro';
@@ -75,6 +78,8 @@ const inNav = (href: string) => site.nav.some((item) => item.href === href);
     {social && <meta property="og:image:height" content={String(social.height)} />}
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {/* Schrift-Labor: Zustand vor dem ersten Bild setzen (URL-Parameter gewinnen, sonst letzter Stand) */}
+    <script is:inline>(function(){var K={schrift:'font',einsatz:'scope',etiketten:'labels',auftritt:'motion',himmel:'himmel',kante:'kante',pixel:'elsh',ecken:'soft'},D={font:'space-grotesk',scope:'h2',labels:'standard',motion:'lauf',himmel:'aus',kante:'linie',elsh:'rund',soft:'voll'},s={};try{s=JSON.parse(localStorage.getItem('flyingstars:labor')||'{}')}catch(e){}var q=new URLSearchParams(location.search),hit=false;for(var k in K){var v=q.get(k);if(v){s[K[k]]=v;hit=true}}if(hit){try{localStorage.setItem('flyingstars:labor',JSON.stringify(s))}catch(e){}}var h=document.documentElement;for(var a in D)h.setAttribute('data-lab-'+a,s[a]||D[a])})();</script>
     {/* Reveal-Startzustand vor dem ersten Bild: nur mit Bewegung (keine reduzierte Bewegung, keine gespeicherte Pause) */}
     <script is:inline>(function(){var s=null;try{s=sessionStorage.getItem('flyingstars:motion')}catch(e){}var still=s?s==='paused':matchMedia('(prefers-reduced-motion: reduce)').matches;if(still)document.documentElement.classList.add('motion-paused');if(!still&&'IntersectionObserver' in window)document.documentElement.classList.add('reveal')})();</script>
   </head>
@@ -109,6 +114,7 @@ const inNav = (href: string) => site.nav.some((item) => item.href === href);
     {(tracking.ga || tracking.ads) && <Consent config={tracking} />}
     <script>
       import '../scripts/site';
+      import '../scripts/labor/index';
     </script>
   </body>
 </html>

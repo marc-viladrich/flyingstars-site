@@ -1,0 +1,131 @@
+/* Schrift-Labor (Branch feat/schrift-labor, nicht für main).
+   Kandidaten für die Überschriften, ihr Auftritt beim Erscheinen und die Bedienleiste.
+   Alles hängt an html[data-lab-*]; mit data-lab-font="space-grotesk" ist die Seite der Ist-Stand.
+   Runde 3 (13.11.2026): Marc entscheidet zwischen Space Grotesk und Geist Pixel; Handjet, Bitcount und Doto sind entfernt.
+   Quellen, Lizenzen und Achsen: docs/schrift-labor/fonts-runde-2.md, docs/schrift-labor/pixel-weich.md */
+
+/* ---------- Schriften ----------
+   size-adjust gleicht die Laufweite an Space Grotesk an: Dadurch gelten alle bestehenden Schriftgrößen und
+   ch-Breiten weiter, ohne dass eine einzige Größenregel angefasst wird. */
+@font-face { font-family: 'Geist Pixel'; font-style: normal; font-weight: 400; font-display: block; src: url(/fonts/labor/geist-pixel/geist-pixel-variable.woff2) format('woff2'); size-adjust: 97%; }
+/* „FS Pixel Weich“: Geist Pixel mit abgerundeten Ecken der gefüllten Buchstabenform (Achse ROND 0–100), gebaut mit
+   tools/labor/weich/build.py. Gleiche Laufweiten wie Geist Pixel, 16 KB. */
+@font-face { font-family: 'FS Pixel Weich'; font-style: normal; font-weight: 400; font-display: block; src: url(/fonts/labor/pixel-weich/fs-pixel-weich.woff2) format('woff2'); size-adjust: 97%; }
+
+/* ---------- Rezept je Schrift ----------
+   --lab-w  Gewicht der Schlagzeilen, --lab-w3 der Kartentitel, --lab-wl der Etiketten, --lab-fvs die Achsen */
+html[data-lab-font="geist-pixel"] { --lab-face: 'Geist Pixel'; --lab-w: 400; --lab-w3: 400; --lab-wl: 400; --lab-track: -0.02em; --lab-track3: -0.01em; --lab-lh: 1.04; --lab-px: 20; --lab-fvs: 'ELSH' var(--lab-px); }
+/* Pixelform: 1 = Quadrat, 20 = Kreis (die Achse formt jeden Pixel einzeln um; die Kreise berühren sich) */
+html[data-lab-font="geist-pixel"][data-lab-elsh="eckig"] { --lab-px: 1; }
+html[data-lab-font="pixel-weich"] { --lab-face: 'FS Pixel Weich'; --lab-w: 400; --lab-w3: 400; --lab-wl: 400; --lab-track: -0.02em; --lab-track3: -0.01em; --lab-lh: 1.04; --lab-soft: 100; --lab-fvs: 'ROND' var(--lab-soft); }
+html[data-lab-font="pixel-weich"][data-lab-soft="halb"] { --lab-soft: 50; }
+html:is([data-lab-font="geist-pixel"], [data-lab-font="pixel-weich"])[data-lab-scope="alles"] body { font-variation-settings: var(--lab-fvs); }
+
+/* ---------- Einsatz ---------- */
+/* Schlagzeilen: H1, H2 und die großen Schauwörter (Nachhaltigkeit, Fallstudien). Die Fußzeilen-Rubriken sind Etiketten. */
+html:not([data-lab-font="space-grotesk"]) :is(h1, h2:not(.footer-heading), .eco-title, .fact-value.fn, .c-name, .c-next b) {
+  font-family: var(--lab-face), var(--display); font-weight: var(--lab-w); letter-spacing: var(--lab-track);
+  font-synthesis: none; font-feature-settings: normal; font-variation-settings: var(--lab-fvs, normal);
+}
+html:not([data-lab-font="space-grotesk"]) :is(h1, h2:not(.footer-heading, .proof-h)) { line-height: var(--lab-lh); }
+/* Kartentitel und Zahlen: H3 (ohne die Paketnamen, die sind Etiketten), Icon-Kacheln, FAQ-Fragen, Preise, Kennzahlen */
+html:not([data-lab-font="space-grotesk"]):is([data-lab-scope="h3"], [data-lab-scope="alles"]) :is(h3:not(.name > h3, .head > h3), .ic-h, .faq summary, .st-row, .pack .price, .ruler .v, .fact-value:not(.fn), .metro-sign b, .cft-count b, .c-tag) {
+  font-family: var(--lab-face), var(--display); font-weight: var(--lab-w3); letter-spacing: var(--lab-track3);
+  font-synthesis: none; font-feature-settings: normal; font-variation-settings: var(--lab-fvs, normal);
+}
+
+/* ---------- Etiketten (Kicker, Tabellenköpfe, Meta-Zeilen: alles, was über --mono läuft) ---------- */
+html[data-lab-labels="gleich"]:not([data-lab-font="space-grotesk"]) { --mono: var(--lab-face), "Space Grotesk", system-ui, sans-serif; }
+html[data-lab-labels="gleich"]:not([data-lab-font="space-grotesk"]) :is(.mono, .kicker, thead th, .m, .chip, .footer-heading, .name > h3, .head > h3) { font-family: var(--mono); font-weight: var(--lab-wl); font-synthesis: none; font-feature-settings: normal; font-variation-settings: var(--lab-fvs, normal); }
+
+/* Einsatz „alles“: Die Kandidatin ersetzt Space Grotesk auf der ganzen Seite (alles, was über --display und --mono läuft:
+   Überschriften aller Stufen, Kartentitel, Zahlen, Kicker, Tabellenköpfe, Menü auf dem Handy). Damit bleiben es zwei Schriften. */
+html[data-lab-scope="alles"]:not([data-lab-font="space-grotesk"]) { --display: var(--lab-face), "Space Grotesk", "Segoe UI", system-ui, sans-serif; --mono: var(--display); }
+html[data-lab-scope="alles"]:not([data-lab-font="space-grotesk"]) :is(h3, h4, h5, .mono, .kicker, thead th, .m, .chip, .footer-heading, .name > h3, .head > h3, .tier .p b, .faq summary, .mobile-menu nav a, .c-setlist li, .hm-zeile-l, .hm-zeile-row input) { font-synthesis: none; font-variation-settings: var(--lab-fvs, normal); }
+html[data-lab-scope="alles"]:not([data-lab-font="space-grotesk"]) :is(.mono, .kicker, thead th, .m, .chip, .footer-heading, .name > h3, .head > h3, .hm-zeile-l) { font-weight: var(--lab-wl); }
+
+/* ---------- Auftritt ----------
+   Der Startzustand gilt ab dem ersten Bild, rein über CSS (sonst steht die Schlagzeile kurz voll da, bevor das Skript
+   sie zurücksetzt). Das Skript setzt .lab-h an jede Schlagzeile und .lab-in, sobald sie im Bild ist.
+   Ohne html.reveal (reduzierte Bewegung, Pause) gibt es keinen Startzustand: Alles steht sofort fertig da. */
+html { --lab-ease: cubic-bezier(0.45, 0, 0.2, 1); }
+
+/* Geist Pixel: Formachse ELSH. Die Pixel laufen von Linien über Punkte zur Zielform zusammen. */
+html.reveal[data-lab-font="geist-pixel"]:not([data-lab-motion="aus"]) :is(h1, h2:not(.footer-heading), .eco-title):not(.lab-in, [data-lab-still]) { font-variation-settings: 'ELSH' 80; }
+html.reveal[data-lab-font="geist-pixel"]:not([data-lab-motion="aus"]) .lab-h.lab-in { transition: font-variation-settings 1.2s var(--lab-ease); }
+html.reveal[data-lab-font="geist-pixel"][data-lab-motion="lauf"] .lab-h .lab-c { font-variation-settings: 'ELSH' 80; }
+html.reveal[data-lab-font="geist-pixel"][data-lab-motion="lauf"] .lab-h.lab-in .lab-c { font-variation-settings: 'ELSH' var(--lab-px); transition: font-variation-settings 0.8s var(--lab-ease) var(--d, 0ms); }
+
+/* FS Pixel Weich: Der Auftritt beginnt in Geist Pixel (Linien, dann Punkte, dann gefüllt) und wechselt im gefüllten
+   Zustand die Datei: ROND 0 sieht aus wie das Quadrat von Geist Pixel, danach werden die Ecken weich. Kein Sprung,
+   aber zwei Dateien; eine Datei mit beiden Zuständen ist der nächste Schritt (docs/schrift-labor/pixel-weich.md). */
+@keyframes lab-weich {
+  0% { font-family: 'Geist Pixel', var(--display); font-variation-settings: 'ELSH' 80, 'ROND' 0; }
+  28% { font-family: 'Geist Pixel', var(--display); font-variation-settings: 'ELSH' 20, 'ROND' 0; }
+  62% { font-family: 'Geist Pixel', var(--display); font-variation-settings: 'ELSH' 1, 'ROND' 0; }
+  62.1% { font-family: 'FS Pixel Weich', var(--display); font-variation-settings: 'ELSH' 1, 'ROND' 0; }
+  100% { font-family: 'FS Pixel Weich', var(--display); font-variation-settings: 'ELSH' 1, 'ROND' var(--lab-soft); }
+}
+html.reveal[data-lab-font="pixel-weich"]:not([data-lab-motion="aus"]) :is(h1, h2:not(.footer-heading), .eco-title):not(.lab-in, [data-lab-still]) { font-family: 'Geist Pixel', var(--display); font-variation-settings: 'ELSH' 80; }
+html.reveal[data-lab-font="pixel-weich"][data-lab-motion="ganz"] .lab-h.lab-in { animation: lab-weich 1.6s var(--lab-ease) both; }
+html.reveal[data-lab-font="pixel-weich"][data-lab-motion="lauf"] .lab-h .lab-c { font-family: 'Geist Pixel', var(--display); font-variation-settings: 'ELSH' 80; }
+html.reveal[data-lab-font="pixel-weich"][data-lab-motion="lauf"] .lab-h.lab-in .lab-c { animation: lab-weich 1.25s var(--lab-ease) var(--d, 0ms) both; }
+
+
+/* ---------- Bedienleiste ---------- */
+.labbar { position: fixed; right: 1rem; bottom: 1rem; display: grid; justify-items: end; z-index: 90; width: min(24rem, calc(100vw - 2rem)); font: 400 0.8125rem/1.35 "Inter", system-ui, sans-serif; letter-spacing: 0; color: var(--text); }
+.labbar * { box-sizing: border-box; }
+.labbar-panel { background: rgb(22 19 17 / 0.97); border: 1px solid var(--line-emphasis); border-radius: 0.875rem; box-shadow: 0 1.25rem 3.5rem rgb(0 0 0 / 0.55); padding: 0.875rem; display: grid; gap: 0.625rem; -webkit-backdrop-filter: blur(0.75rem); backdrop-filter: blur(0.75rem); max-height: calc(100svh - 5rem); overflow: auto; }
+.labbar:not([data-open]) .labbar-panel { display: none; }
+.labbar-toggle { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; padding: 0.5rem 0.75rem; border-radius: 62rem; border: 1px solid var(--line-emphasis); background: rgb(22 19 17 / 0.94); color: var(--text); font: inherit; cursor: pointer; box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 0.45); }
+.labbar-toggle b { font-weight: 600; color: var(--head); }
+.labbar-toggle i { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--grad); flex: none; }
+.labbar-toggle:hover { border-color: var(--line-bold); }
+.labbar-row { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); align-items: center; gap: 0.625rem; margin: 0; padding: 0; border: 0; min-width: 0; }
+.labbar-row[hidden] { display: none; }
+.labbar-l { color: var(--muted); padding: 0; float: none; }
+.labbar-font { display: grid; grid-template-columns: 2rem minmax(0, 1fr) 2rem; gap: 0.25rem; }
+.labbar-font select, .labbar-font button, .labbar-foot button, .labbar-foot a { font: inherit; color: var(--text); background: var(--fill-soft); border: 1px solid var(--line); border-radius: 0.5rem; height: 2rem; cursor: pointer; }
+.labbar-font select { padding: 0 0.5rem; min-width: 0; appearance: none; -webkit-appearance: none; font-weight: 600; color: var(--head); }
+.labbar-font button:hover, .labbar-foot button:hover, .labbar-foot a:hover, .labbar-font select:hover { background: var(--fill-hover); border-color: var(--line-emphasis); }
+.labbar-seg { display: flex; gap: 0.125rem; padding: 0.125rem; border-radius: 0.5rem; background: var(--fill-soft); border: 1px solid var(--line); min-width: 0; }
+.labbar-seg label { flex: 1 1 auto; min-width: 0; position: relative; }
+.labbar-seg input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.labbar-seg span { display: block; text-align: center; padding: 0.3125rem 0.375rem; border-radius: 0.375rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.labbar-seg input:checked + span { background: rgb(var(--rgb-text) / 0.14); color: var(--head); font-weight: 600; }
+.labbar-seg label:hover input:not(:checked) + span { color: var(--text); }
+.labbar-seg input:focus-visible + span, .labbar :is(button, select, a):focus-visible { outline: 2px solid var(--cyan); outline-offset: 1px; }
+.labbar-note { margin: 0; color: var(--muted); font-size: 0.75rem; line-height: 1.4; }
+.labbar-note[hidden] { display: none; }
+.labbar-note b { color: var(--accent); font-weight: 500; }
+.labbar-foot { display: flex; gap: 0.375rem; padding-top: 0.625rem; border-top: 1px solid var(--line); }
+.labbar-foot button, .labbar-foot a { flex: 1 1 auto; display: inline-flex; align-items: center; justify-content: center; padding: 0 0.625rem; text-decoration: none; white-space: nowrap; }
+@media (max-width: 43.75em) {
+  .labbar { right: 0.5rem; bottom: 0.5rem; width: calc(100vw - 1rem); }
+  .labbar-panel { max-height: 62svh; }
+}
+@media print { .labbar { display: none; } }
+
+/* ---------- Zeilenmaß ----------
+   Die Überschriften begrenzen ihre Breite in ch. Ein ch ist die Breite der Null, und die ist je Schrift verschieden
+   (Space Grotesk 0,644 em, Doto 0,516 em). Damit jede Kandidatin dieselbe Spalte bekommt, stehen die Maße hier in em. */
+html:not([data-lab-font="space-grotesk"]) .hero h1 { max-width: 9.02em; }
+html:not([data-lab-font="space-grotesk"]) :is(.sec-head h1, .sec-head h2, .promise :is(h1, h2, h3)) { max-width: 12.88em; }
+html:not([data-lab-font="space-grotesk"]) :is(.page-hero h1, .inquiry .intro h1, .inquiry .intro h2) { max-width: 10.3em; }
+
+/* Buchstaben des Lichtlaufs bleiben im Textfluss, auch wo eine Überschrift ihre span-Kinder zu Blöcken macht (.eco-title) */
+.lab-h :is(.lab-wd, .lab-c) { display: inline; width: auto; }
+
+/* ---------- Übergänge zwischen zwei Sectionfarben: Punktauflösung statt Haarlinie ----------
+   Maske aus tools/labor/uebergang.mjs (576 × 128 px, Kante bei 84 px, rund 4 KB). Oben lösen sich Punkte der Fläche auf,
+   unten tauchen Punkte des Grundtons ein. Folgen zwei gleichfarbige Sections aufeinander, bleibt dort die Linie. */
+html[data-lab-kante="punkte"] .section.alt { position: relative; border-color: transparent; }
+html[data-lab-kante="punkte"] .section.alt::before, html[data-lab-kante="punkte"] .section.alt::after {
+  content: ''; position: absolute; left: 0; right: 0; height: 8rem; pointer-events: none;
+  background: linear-gradient(to bottom, var(--surface) 65.625%, var(--ground) 65.625%);
+  -webkit-mask: url(/media/labor/uebergang.svg) repeat-x 0 0 / 36rem 8rem; mask: url(/media/labor/uebergang.svg) repeat-x 0 0 / 36rem 8rem;
+}
+html[data-lab-kante="punkte"] .section.alt::before { top: -5.25rem; }
+html[data-lab-kante="punkte"] .section.alt::after { bottom: -5.25rem; transform: scaleY(-1); -webkit-mask-position: 13rem 0; mask-position: 13rem 0; }
+html[data-lab-kante="punkte"] .section.alt + .section.alt { border-top-color: var(--line); }
+html[data-lab-kante="punkte"] .section.alt + .section.alt::before, html[data-lab-kante="punkte"] .section.alt:has(+ .section.alt)::after { content: none; }

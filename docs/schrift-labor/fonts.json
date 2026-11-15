@@ -1,0 +1,1225 @@
+[
+  {
+    "slug": "doto",
+    "family": "Doto",
+    "nameTableFamily": "Doto Black",
+    "source": "https://github.com/google/fonts/tree/main/ofl/doto",
+    "license": "SIL Open Font License 1.1",
+    "licenseOkForCommercialSelfHosting": true,
+    "files": [
+      {
+        "path": "/fonts/labor/doto/doto-variable.woff2",
+        "family": "Doto",
+        "style/variant": "Black",
+        "weightRange": [
+          100.0,
+          900.0
+        ],
+        "axes": {
+          "ROND": {
+            "min": 0.0,
+            "default": 0.0,
+            "max": 100.0
+          },
+          "wght": {
+            "min": 100.0,
+            "default": 900.0,
+            "max": 900.0
+          }
+        },
+        "bytes": 7208,
+        "nameTableFamily": "Doto Black",
+        "namedInstances": [
+          {
+            "name": "Thin",
+            "coordinates": {
+              "ROND": 0.0,
+              "wght": 100.0
+            }
+          },
+          {
+            "name": "ExtraLight",
+            "coordinates": {
+              "ROND": 0.0,
+              "wght": 200.0
+            }
+          },
+          {
+            "name": "Light",
+            "coordinates": {
+              "ROND": 0.0,
+              "wght": 300.0
+            }
+          },
+          {
+            "name": "Regular",
+            "coordinates": {
+              "ROND": 0.0,
+              "wght": 400.0
+            }
+          },
+          {
+            "name": "Medium",
+            "coordinates": {
+              "ROND": 0.0,
+              "wght": 500.0
+            }
+          },
+          {
+            "name": "SemiBold",
+            "coordinates": {
+              "ROND": 0.0,
+              "wght": 600.0
+            }
+          },
+          {
+            "name": "Bold",
+            "coordinates": {
+              "ROND": 0.0,
+              "wght": 700.0
+            }
+          },
+          {
+            "name": "ExtraBold",
+            "coordinates": {
+              "ROND": 0.0,
+              "wght": 800.0
+            }
+          },
+          {
+            "name": "Black",
+            "coordinates": {
+              "ROND": 0.0,
+              "wght": 900.0
+            }
+          }
+        ],
+        "unitsPerEm": 1000,
+        "capHeight": 700,
+        "xHeight": 500,
+        "capHeightRatio": 0.7,
+        "xHeightRatio": 0.5,
+        "monospaced": true,
+        "asciiAdvanceWidths": [
+          600
+        ],
+        "missingGlyphsOriginal": [
+          "ĳ",
+          "Ĳ",
+          "→"
+        ],
+        "missingGlyphs": [
+          "ẞ",
+          "ĳ",
+          "Ĳ",
+          "→"
+        ],
+        "sourceFile": "doto/Doto[ROND,wght].ttf",
+        "originalSha256": "6f4fe7d37853b91df3698daa84cde2dbe1c9695d88c986e6510134910337d426"
+      }
+    ],
+    "monospaced": true,
+    "capHeightRatio": 0.7,
+    "xHeightRatio": 0.5,
+    "missingGlyphs": {
+      "doto-variable.woff2": {
+        "original": [
+          "ĳ",
+          "Ĳ",
+          "→"
+        ],
+        "woff2": [
+          "ẞ",
+          "ĳ",
+          "Ĳ",
+          "→"
+        ]
+      }
+    },
+    "notes": "Google-Fonts-Original aus ofl/doto; beide variablen Achsen erhalten.",
+    "designer": "Óliver Lalan",
+    "licenseSource": "https://github.com/google/fonts/blob/main/ofl/doto/OFL.txt",
+    "licenseQuote": "The OFL allows the licensed fonts to be used, studied, modified and redistributed freely as long as they are not sold by themselves."
+  },
+  {
+    "slug": "array",
+    "family": "Array",
+    "nameTableFamily": "Array",
+    "source": "https://www.fontshare.com/fonts/array",
+    "license": "ITF Free Font License (FFL) 2.0, 17.08.2026",
+    "licenseOkForCommercialSelfHosting": true,
+    "files": [
+      {
+        "path": "/fonts/labor/array/array-bold.woff2",
+        "family": "Array",
+        "style/variant": "Bold",
+        "weightRange": null,
+        "axes": {},
+        "bytes": 26396,
+        "nameTableFamily": "Array",
+        "namedInstances": [],
+        "unitsPerEm": 1600,
+        "capHeight": 1000,
+        "xHeight": 800,
+        "capHeightRatio": 0.625,
+        "xHeightRatio": 0.5,
+        "monospaced": false,
+        "asciiAdvanceWidths": [
+          500,
+          700,
+          800,
+          900,
+          1000,
+          1100,
+          1200,
+          1300,
+          1400,
+          1500,
+          1700,
+          1800,
+          2200
+        ],
+        "missingGlyphsOriginal": [
+          "ẞ",
+          "→"
+        ],
+        "missingGlyphs": [
+          "ẞ",
+          "→"
+        ],
+        "sourceFile": "array/Array_Complete/Fonts/OTF/Array-Bold.otf",
+        "originalSha256": "cdeaf38947a639a3b7f044638a19f53555e306bd0104b354cc77435aecbc1fa0",
+        "weight": 700
+      },
+      {
+        "path": "/fonts/labor/array/array-bold-wide.woff2",
+        "family": "Array Wide",
+        "style/variant": "Bold Wide",
+        "weightRange": null,
+        "axes": {},
+        "bytes": 26532,
+        "nameTableFamily": "Array Bold Wide",
+        "namedInstances": [],
+        "unitsPerEm": 1600,
+        "capHeight": 1000,
+        "xHeight": 800,
+        "capHeightRatio": 0.625,
+        "xHeightRatio": 0.5,
+        "monospaced": false,
+        "asciiAdvanceWidths": [
+          600,
+          800,
+          900,
+          1000,
+          1100,
+          1200,
+          1300,
+          1400,
+          1500,
+          1600,
+          1700,
+          1800,
+          1900,
+          2300
+        ],
+        "missingGlyphsOriginal": [
+          "ẞ",
+          "→"
+        ],
+        "missingGlyphs": [
+          "ẞ",
+          "→"
+        ],
+        "sourceFile": "array/Array_Complete/Fonts/OTF/Array-BoldWide.otf",
+        "originalSha256": "19823d5176b13196f778dbea3e8850881afcf928c88b4d5a7c4bf17d282fb661",
+        "weight": 700
+      },
+      {
+        "path": "/fonts/labor/array/array-regular.woff2",
+        "family": "Array",
+        "style/variant": "Regular",
+        "weightRange": null,
+        "axes": {},
+        "bytes": 17912,
+        "nameTableFamily": "Array",
+        "namedInstances": [],
+        "unitsPerEm": 1600,
+        "capHeight": 1000,
+        "xHeight": 800,
+        "capHeightRatio": 0.625,
+        "xHeightRatio": 0.5,
+        "monospaced": false,
+        "asciiAdvanceWidths": [
+          300,
+          500,
+          600,
+          700,
+          800,
+          900,
+          1000,
+          1100,
+          1300,
+          1400,
+          1500
+        ],
+        "missingGlyphsOriginal": [
+          "ẞ",
+          "→"
+        ],
+        "missingGlyphs": [
+          "ẞ",
+          "→"
+        ],
+        "sourceFile": "array/Array_Complete/Fonts/OTF/Array-Regular.otf",
+        "originalSha256": "ad5023e0bc4aacbb35af6a5cb82d8f5b6ba35ab0897b45b98e3b00dea4488df6",
+        "weight": 400
+      },
+      {
+        "path": "/fonts/labor/array/array-semibold.woff2",
+        "family": "Array",
+        "style/variant": "Semibold",
+        "weightRange": null,
+        "axes": {},
+        "bytes": 21980,
+        "nameTableFamily": "Array Semibold",
+        "namedInstances": [],
+        "unitsPerEm": 1600,
+        "capHeight": 1000,
+        "xHeight": 800,
+        "capHeightRatio": 0.625,
+        "xHeightRatio": 0.5,
+        "monospaced": false,
+        "asciiAdvanceWidths": [
+          400,
+          600,
+          700,
+          800,
+          900,
+          1000,
+          1100,
+          1200,
+          1300,
+          1400,
+          1600,
+          1700
+        ],
+        "missingGlyphsOriginal": [
+          "ẞ",
+          "→"
+        ],
+        "missingGlyphs": [
+          "ẞ",
+          "→"
+        ],
+        "sourceFile": "array/Array_Complete/Fonts/OTF/Array-Semibold.otf",
+        "originalSha256": "b5b382cb597a2ffabccf4cc47f8542638892c9b3926b06ce0e62b78d158bb118",
+        "weight": 500
+      },
+      {
+        "path": "/fonts/labor/array/array-semibold-wide.woff2",
+        "family": "Array Wide",
+        "style/variant": "Semibold Wide",
+        "weightRange": null,
+        "axes": {},
+        "bytes": 22120,
+        "nameTableFamily": "Array Semibold Wide",
+        "namedInstances": [],
+        "unitsPerEm": 1600,
+        "capHeight": 1000,
+        "xHeight": 800,
+        "capHeightRatio": 0.625,
+        "xHeightRatio": 0.5,
+        "monospaced": false,
+        "asciiAdvanceWidths": [
+          500,
+          700,
+          800,
+          900,
+          1000,
+          1100,
+          1200,
+          1300,
+          1400,
+          1500,
+          1700,
+          1800
+        ],
+        "missingGlyphsOriginal": [
+          "ẞ",
+          "→"
+        ],
+        "missingGlyphs": [
+          "ẞ",
+          "→"
+        ],
+        "sourceFile": "array/Array_Complete/Fonts/OTF/Array-SemiboldWide.otf",
+        "originalSha256": "6d31cb08680309f73652b5451155e081f332ef41297d636ccd667a81419dbb7b",
+        "weight": 500
+      },
+      {
+        "path": "/fonts/labor/array/array-wide.woff2",
+        "family": "Array Wide",
+        "style/variant": "Wide",
+        "weightRange": null,
+        "axes": {},
+        "bytes": 17948,
+        "nameTableFamily": "Array Wide",
+        "namedInstances": [],
+        "unitsPerEm": 1600,
+        "capHeight": 1000,
+        "xHeight": 800,
+        "capHeightRatio": 0.625,
+        "xHeightRatio": 0.5,
+        "monospaced": false,
+        "asciiAdvanceWidths": [
+          400,
+          600,
+          700,
+          800,
+          900,
+          1000,
+          1100,
+          1200,
+          1500,
+          1600
+        ],
+        "missingGlyphsOriginal": [
+          "ẞ",
+          "→"
+        ],
+        "missingGlyphs": [
+          "ẞ",
+          "→"
+        ],
+        "sourceFile": "array/Array_Complete/Fonts/OTF/Array-Wide.otf",
+        "originalSha256": "e5b9d67608e232a7d30d21577da8214c4a8c0c9a8eb12cef337e5d8899acbdca",
+        "weight": 400
+      }
+    ],
+    "monospaced": false,
+    "capHeightRatio": 0.625,
+    "xHeightRatio": 0.5,
+    "missingGlyphs": {
+      "array-bold.woff2": {
+        "original": [
+          "ẞ",
+          "→"
+        ],
+        "woff2": [
+          "ẞ",
+          "→"
+        ]
+      },
+      "array-bold-wide.woff2": {
+        "original": [
+          "ẞ",
+          "→"
+        ],
+        "woff2": [
+          "ẞ",
+          "→"
+        ]
+      },
+      "array-regular.woff2": {
+        "original": [
+          "ẞ",
+          "→"
+        ],
+        "woff2": [
+          "ẞ",
+          "→"
+        ]
+      },
+      "array-semibold.woff2": {
+        "original": [
+          "ẞ",
+          "→"
+        ],
+        "woff2": [
+          "ẞ",
+          "→"
+        ]
+      },
+      "array-semibold-wide.woff2": {
+        "original": [
+          "ẞ",
+          "→"
+        ],
+        "woff2": [
+          "ẞ",
+          "→"
+        ]
+      },
+      "array-wide.woff2": {
+        "original": [
+          "ẞ",
+          "→"
+        ],
+        "woff2": [
+          "ẞ",
+          "→"
+        ]
+      }
+    },
+    "notes": "Kein Subsetting und keine Konvertierung: FFL §02 verbietet beides ausdrücklich. Offizielle WOFF2 unverändert übernommen. Kommerzielle Nutzung und Selfhosting laut §01 erlaubt; Kunde muss eigene Kopie direkt von Fontshare beziehen (§02/04). Keine Weitergabe als allgemeine Fontbibliothek. Kostenlos, keine Triallizenz. Designer aus name-ID 9. Alte eingebettete Lizenzmetadaten weichen von der aktuellen Paketlizenz ab; maßgeblich hier die mitgelieferte FFL 2.0.",
+    "designer": "Frode Helland / Indian Type Foundry",
+    "licenseSource": "https://api.fontshare.com/v2/fonts/download/array",
+    "licenseQuote": "Self-hosting by end users is permitted and recommended for greater control, reliability and performance."
+  },
+  {
+    "slug": "geist-pixel",
+    "family": "Geist Pixel",
+    "nameTableFamily": "Geist Pixel Circle",
+    "source": "https://github.com/vercel/geist-font",
+    "license": "SIL Open Font License 1.1",
+    "licenseOkForCommercialSelfHosting": true,
+    "files": [
+      {
+        "path": "/fonts/labor/geist-pixel/geist-pixel-circle.woff2",
+        "family": "Geist Pixel Circle",
+        "style/variant": "Circle",
+        "weightRange": null,
+        "axes": {},
+        "bytes": 21332,
+        "nameTableFamily": "Geist Pixel Circle",
+        "namedInstances": [],
+        "unitsPerEm": 1000,
+        "capHeight": 722,
+        "xHeight": 532,
+        "capHeightRatio": 0.722,
+        "xHeightRatio": 0.532,
+        "monospaced": false,
+        "asciiAdvanceWidths": [
+          152,
+          190,
+          228,
+          266,
+          304,
+          342,
+          380,
+          418,
+          456,
+          494,
+          532,
+          570,
+          608,
+          646,
+          684,
+          760,
+          836,
+          912
+        ],
+        "missingGlyphsOriginal": [],
+        "missingGlyphs": [
+          "ẞ"
+        ],
+        "sourceFile": "geist-pixel/GeistPixel-Circle.ttf",
+        "originalSha256": "9cd6bed2ba14b5a2ff6a04a2fdfafa3fbed201fc858910ef9e78a004206ad6a0",
+        "weight": 400
+      },
+      {
+        "path": "/fonts/labor/geist-pixel/geist-pixel-grid.woff2",
+        "family": "Geist Pixel Grid",
+        "style/variant": "Grid",
+        "weightRange": null,
+        "axes": {},
+        "bytes": 21276,
+        "nameTableFamily": "Geist Pixel Grid",
+        "namedInstances": [],
+        "unitsPerEm": 1000,
+        "capHeight": 722,
+        "xHeight": 532,
+        "capHeightRatio": 0.722,
+        "xHeightRatio": 0.532,
+        "monospaced": false,
+        "asciiAdvanceWidths": [
+          152,
+          190,
+          228,
+          266,
+          304,
+          342,
+          380,
+          418,
+          456,
+          494,
+          532,
+          570,
+          608,
+          646,
+          684,
+          760,
+          836,
+          912
+        ],
+        "missingGlyphsOriginal": [],
+        "missingGlyphs": [
+          "ẞ"
+        ],
+        "sourceFile": "geist-pixel/GeistPixel-Grid.ttf",
+        "originalSha256": "49e93728ed05157fdeb5258fdee58aa955c44ebede8c59c96dda04e78ce0d90c",
+        "weight": 400
+      },
+      {
+        "path": "/fonts/labor/geist-pixel/geist-pixel-line.woff2",
+        "family": "Geist Pixel Line",
+        "style/variant": "Line",
+        "weightRange": null,
+        "axes": {},
+        "bytes": 13024,
+        "nameTableFamily": "Geist Pixel Line",
+        "namedInstances": [],
+        "unitsPerEm": 1000,
+        "capHeight": 722,
+        "xHeight": 532,
+        "capHeightRatio": 0.722,
+        "xHeightRatio": 0.532,
+        "monospaced": false,
+        "asciiAdvanceWidths": [
+          152,
+          190,
+          228,
+          266,
+          304,
+          342,
+          380,
+          418,
+          456,
+          494,
+          532,
+          570,
+          608,
+          646,
+          684,
+          760,
+          836,
+          912
+        ],
+        "missingGlyphsOriginal": [],
+        "missingGlyphs": [
+          "ẞ"
+        ],
+        "sourceFile": "geist-pixel/GeistPixel-Line.ttf",
+        "originalSha256": "c744abcc65c25d5c64f659ef8a82e53fe94050b8dc92bfe5e937ebd6a0d7948b",
+        "weight": 400
+      },
+      {
+        "path": "/fonts/labor/geist-pixel/geist-pixel-square.woff2",
+        "family": "Geist Pixel Square",
+        "style/variant": "Square",
+        "weightRange": null,
+        "axes": {},
+        "bytes": 21132,
+        "nameTableFamily": "Geist Pixel Square",
+        "namedInstances": [],
+        "unitsPerEm": 1000,
+        "capHeight": 722,
+        "xHeight": 532,
+        "capHeightRatio": 0.722,
+        "xHeightRatio": 0.532,
+        "monospaced": false,
+        "asciiAdvanceWidths": [
+          152,
+          190,
+          228,
+          266,
+          304,
+          342,
+          380,
+          418,
+          456,
+          494,
+          532,
+          570,
+          608,
+          646,
+          684,
+          760,
+          836,
+          912
+        ],
+        "missingGlyphsOriginal": [],
+        "missingGlyphs": [
+          "ẞ"
+        ],
+        "sourceFile": "geist-pixel/GeistPixel-Square.ttf",
+        "originalSha256": "c1fbf7316997c1749857708998958e8ca0343416b3f8d2c7156d634a9520e997",
+        "weight": 400
+      },
+      {
+        "path": "/fonts/labor/geist-pixel/geist-pixel-triangle.woff2",
+        "family": "Geist Pixel Triangle",
+        "style/variant": "Triangle",
+        "weightRange": null,
+        "axes": {},
+        "bytes": 20796,
+        "nameTableFamily": "Geist Pixel Triangle",
+        "namedInstances": [],
+        "unitsPerEm": 1000,
+        "capHeight": 722,
+        "xHeight": 532,
+        "capHeightRatio": 0.722,
+        "xHeightRatio": 0.532,
+        "monospaced": false,
+        "asciiAdvanceWidths": [
+          152,
+          190,
+          228,
+          266,
+          304,
+          342,
+          380,
+          418,
+          456,
+          494,
+          532,
+          570,
+          608,
+          646,
+          684,
+          760,
+          836,
+          912
+        ],
+        "missingGlyphsOriginal": [],
+        "missingGlyphs": [
+          "ẞ"
+        ],
+        "sourceFile": "geist-pixel/GeistPixel-Triangle.ttf",
+        "originalSha256": "981e4e468804f25c299beaa5d8f10054e9f1f74b73fdf7f820fcc7976e309a99",
+        "weight": 400
+      },
+      {
+        "path": "/fonts/labor/geist-pixel/geist-pixel-variable.woff2",
+        "family": "Geist Pixel",
+        "style/variant": "Regular",
+        "weightRange": null,
+        "axes": {
+          "ELSH": {
+            "min": 0.0,
+            "default": 0.0,
+            "max": 100.0
+          }
+        },
+        "bytes": 29488,
+        "nameTableFamily": "Geist Pixel",
+        "namedInstances": [
+          {
+            "name": "Regular",
+            "coordinates": {
+              "ELSH": 0.0
+            }
+          },
+          {
+            "name": "Square",
+            "coordinates": {
+              "ELSH": 1.0
+            }
+          },
+          {
+            "name": "Circle",
+            "coordinates": {
+              "ELSH": 20.0
+            }
+          },
+          {
+            "name": "Grid",
+            "coordinates": {
+              "ELSH": 40.0
+            }
+          },
+          {
+            "name": "Triangle",
+            "coordinates": {
+              "ELSH": 60.0
+            }
+          },
+          {
+            "name": "Line",
+            "coordinates": {
+              "ELSH": 80.0
+            }
+          }
+        ],
+        "unitsPerEm": 1000,
+        "capHeight": 722,
+        "xHeight": 532,
+        "capHeightRatio": 0.722,
+        "xHeightRatio": 0.532,
+        "monospaced": false,
+        "asciiAdvanceWidths": [
+          152,
+          190,
+          228,
+          266,
+          304,
+          342,
+          380,
+          418,
+          456,
+          494,
+          532,
+          570,
+          608,
+          646,
+          684,
+          760,
+          836,
+          912
+        ],
+        "missingGlyphsOriginal": [],
+        "missingGlyphs": [
+          "ẞ"
+        ],
+        "sourceFile": "geist-pixel/GeistPixel[ELSH].ttf",
+        "originalSha256": "dcde0e2ae59aad779e71ee3fa45ade3a7146c2498024fdbb79c8cb619e60a238",
+        "weight": 400
+      }
+    ],
+    "monospaced": false,
+    "capHeightRatio": 0.722,
+    "xHeightRatio": 0.532,
+    "missingGlyphs": {
+      "geist-pixel-circle.woff2": {
+        "original": [],
+        "woff2": [
+          "ẞ"
+        ]
+      },
+      "geist-pixel-grid.woff2": {
+        "original": [],
+        "woff2": [
+          "ẞ"
+        ]
+      },
+      "geist-pixel-line.woff2": {
+        "original": [],
+        "woff2": [
+          "ẞ"
+        ]
+      },
+      "geist-pixel-square.woff2": {
+        "original": [],
+        "woff2": [
+          "ẞ"
+        ]
+      },
+      "geist-pixel-triangle.woff2": {
+        "original": [],
+        "woff2": [
+          "ẞ"
+        ]
+      },
+      "geist-pixel-variable.woff2": {
+        "original": [],
+        "woff2": [
+          "ẞ"
+        ]
+      }
+    },
+    "notes": "Variable ELSH-Datei und alle fünf offiziellen statischen Varianten erfasst. ELSH wählt Pixelformen; keine Gewichtsachse.",
+    "designer": "Andrés Briganti in Zusammenarbeit mit Vercel",
+    "licenseSource": "https://github.com/vercel/geist-font/blob/main/OFL.txt",
+    "licenseQuote": "The OFL allows the licensed fonts to be used, studied, modified and redistributed freely as long as they are not sold by themselves."
+  },
+  {
+    "slug": "fontlab-font",
+    "family": "Fontlab",
+    "nameTableFamily": "Fontlab",
+    "source": "https://github.com/brycewilner/Fontlab-Font",
+    "license": "SIL Open Font License 1.1",
+    "licenseOkForCommercialSelfHosting": "unclear",
+    "files": [
+      {
+        "path": "/fonts/labor/fontlab-font/fontlab-regular.woff2",
+        "family": "Fontlab",
+        "style/variant": "Regular",
+        "weightRange": null,
+        "axes": {},
+        "bytes": 25872,
+        "nameTableFamily": "Fontlab",
+        "namedInstances": [],
+        "unitsPerEm": 1000,
+        "capHeight": 789,
+        "xHeight": 578,
+        "capHeightRatio": 0.789,
+        "xHeightRatio": 0.578,
+        "monospaced": false,
+        "asciiAdvanceWidths": [
+          189,
+          200,
+          214,
+          221,
+          225,
+          228,
+          300,
+          301,
+          303,
+          383,
+          387,
+          391,
+          398,
+          402,
+          403,
+          422,
+          425,
+          458,
+          459,
+          472,
+          492,
+          493,
+          496,
+          503,
+          508,
+          509,
+          511,
+          513,
+          517,
+          520,
+          521,
+          523,
+          524,
+          544,
+          549,
+          554,
+          557,
+          558,
+          562,
+          567,
+          570,
+          571,
+          572,
+          573,
+          574,
+          575,
+          576,
+          577,
+          578,
+          579,
+          581,
+          583,
+          585,
+          586,
+          595,
+          598,
+          602,
+          603,
+          610,
+          624,
+          625,
+          626,
+          627,
+          628,
+          632,
+          635,
+          637,
+          643,
+          647,
+          659,
+          670,
+          672,
+          675,
+          678,
+          679,
+          695,
+          699,
+          711,
+          726,
+          732,
+          744
+        ],
+        "missingGlyphsOriginal": [
+          "ẞ",
+          "ĳ",
+          "Ĳ",
+          "→"
+        ],
+        "missingGlyphs": [
+          "ẞ",
+          "ĳ",
+          "Ĳ",
+          "→"
+        ],
+        "sourceFile": "fontlab-font/Fontlab.otf",
+        "originalSha256": "e7928b33aec545338dede3637314e944ae6d98c8ca7e886f3a00045199010591",
+        "weight": 400
+      }
+    ],
+    "monospaced": false,
+    "capHeightRatio": 0.789,
+    "xHeightRatio": 0.578,
+    "missingGlyphs": {
+      "fontlab-regular.woff2": {
+        "original": [
+          "ẞ",
+          "ĳ",
+          "Ĳ",
+          "→"
+        ],
+        "woff2": [
+          "ẞ",
+          "ĳ",
+          "Ĳ",
+          "→"
+        ]
+      }
+    },
+    "notes": "Autor nennt die Schrift Fontlab Font; name-ID 1 lautet Fontlab. README weist OFL zu. Die OTF enthält abweichend „Copyright 2014 Adobe Systems Incorporated. All rights reserved.“ und keine Lizenz-name-IDs 13/14. Dieser Metadatenwiderspruch ist ungeklärt; kommerziellen Einsatz vor Klärung mit Autor zurückstellen.",
+    "designer": "Bryce Wilner",
+    "licenseSource": "https://github.com/brycewilner/Fontlab-Font/blob/master/README.md",
+    "licenseQuote": "The OFL allows the licensed fonts to be used, studied, modified and redistributed freely as long as they are not sold by themselves."
+  },
+  {
+    "slug": "adaxi",
+    "family": "ADAXI",
+    "nameTableFamily": "ADAXI",
+    "source": "https://github.com/lascuolaopensource/bca-font-Adaxi",
+    "license": "SIL Open Font License 1.1",
+    "licenseOkForCommercialSelfHosting": true,
+    "files": [
+      {
+        "path": "/fonts/labor/adaxi/adaxi-regular.woff2",
+        "family": "ADAXI",
+        "style/variant": "Regular",
+        "weightRange": null,
+        "axes": {},
+        "bytes": 10640,
+        "nameTableFamily": "ADAXI",
+        "namedInstances": [],
+        "unitsPerEm": 2000,
+        "capHeight": 1400,
+        "xHeight": 1000,
+        "capHeightRatio": 0.7,
+        "xHeightRatio": 0.5,
+        "monospaced": false,
+        "asciiAdvanceWidths": [
+          475,
+          570,
+          600,
+          650,
+          665,
+          760,
+          855,
+          1045,
+          1140,
+          1235,
+          1236,
+          1330,
+          1395,
+          1425,
+          1520,
+          1615,
+          1625,
+          1900,
+          2090,
+          2375
+        ],
+        "missingGlyphsOriginal": [
+          "Ä",
+          "Ö",
+          "Ü",
+          "ä",
+          "ö",
+          "ü",
+          "ß",
+          "ẞ",
+          "ê",
+          "ë",
+          "ï",
+          "ó",
+          "ç",
+          "ĳ",
+          "Ĳ",
+          "€",
+          "–",
+          "—",
+          "„",
+          "“",
+          "‚",
+          "‘",
+          "’",
+          "«",
+          "»",
+          "…",
+          "·",
+          "×",
+          "→",
+          "%",
+          "#",
+          "+",
+          "/"
+        ],
+        "missingGlyphs": [
+          "Ä",
+          "Ö",
+          "Ü",
+          "ä",
+          "ö",
+          "ü",
+          "ß",
+          "ẞ",
+          "ê",
+          "ë",
+          "ï",
+          "ó",
+          "ç",
+          "ĳ",
+          "Ĳ",
+          "€",
+          "–",
+          "—",
+          "„",
+          "“",
+          "‚",
+          "‘",
+          "’",
+          "«",
+          "»",
+          "…",
+          "·",
+          "×",
+          "→",
+          "%",
+          "#",
+          "+",
+          "/"
+        ],
+        "sourceFile": "adaxi/ADAXI.ttf",
+        "originalSha256": "e329824efac3517f4f9b07ff633ee606af279f0d93ffe48596ea76994990ca07",
+        "weight": 400
+      }
+    ],
+    "monospaced": false,
+    "capHeightRatio": 0.7,
+    "xHeightRatio": 0.5,
+    "missingGlyphs": {
+      "adaxi-regular.woff2": {
+        "original": [
+          "Ä",
+          "Ö",
+          "Ü",
+          "ä",
+          "ö",
+          "ü",
+          "ß",
+          "ẞ",
+          "ê",
+          "ë",
+          "ï",
+          "ó",
+          "ç",
+          "ĳ",
+          "Ĳ",
+          "€",
+          "–",
+          "—",
+          "„",
+          "“",
+          "‚",
+          "‘",
+          "’",
+          "«",
+          "»",
+          "…",
+          "·",
+          "×",
+          "→",
+          "%",
+          "#",
+          "+",
+          "/"
+        ],
+        "woff2": [
+          "Ä",
+          "Ö",
+          "Ü",
+          "ä",
+          "ö",
+          "ü",
+          "ß",
+          "ẞ",
+          "ê",
+          "ë",
+          "ï",
+          "ó",
+          "ç",
+          "ĳ",
+          "Ĳ",
+          "€",
+          "–",
+          "—",
+          "„",
+          "“",
+          "‚",
+          "‘",
+          "’",
+          "«",
+          "»",
+          "…",
+          "·",
+          "×",
+          "→",
+          "%",
+          "#",
+          "+",
+          "/"
+        ]
+      }
+    },
+    "notes": "Beta / Work in progress laut Original-README; alternative Formen über stylistic sets.",
+    "designer": "Kollektiv des Bari Città Aperta XYZ-Workshops, La Scuola Open Source, 2025",
+    "licenseSource": "https://github.com/lascuolaopensource/bca-font-Adaxi/blob/main/OFL.txt",
+    "licenseQuote": "The OFL allows the licensed fonts to be used, studied, modified and redistributed freely as long as they are not sold by themselves."
+  },
+  {
+    "slug": "departure-mono",
+    "family": "Departure Mono",
+    "nameTableFamily": "Departure Mono",
+    "source": "https://github.com/rektdeckard/departure-mono",
+    "license": "SIL Open Font License 1.1",
+    "licenseOkForCommercialSelfHosting": true,
+    "files": [
+      {
+        "path": "/fonts/labor/departure-mono/departure-mono-regular.woff2",
+        "family": "Departure Mono",
+        "style/variant": "Regular",
+        "weightRange": null,
+        "axes": {},
+        "bytes": 8080,
+        "nameTableFamily": "Departure Mono",
+        "namedInstances": [],
+        "unitsPerEm": 550,
+        "capHeight": 400,
+        "xHeight": 300,
+        "capHeightRatio": 0.7272727272727273,
+        "xHeightRatio": 0.5454545454545454,
+        "monospaced": true,
+        "asciiAdvanceWidths": [
+          350
+        ],
+        "missingGlyphsOriginal": [],
+        "missingGlyphs": [
+          "ẞ"
+        ],
+        "sourceFile": "departure-mono/DepartureMono-1.500.otf",
+        "originalSha256": "4d53f663155cf8bf7ffc8e688776e719625f7bbb80a8d90073438b249261a2e0",
+        "weight": 400
+      }
+    ],
+    "monospaced": true,
+    "capHeightRatio": 0.7272727272727273,
+    "xHeightRatio": 0.5454545454545454,
+    "missingGlyphs": {
+      "departure-mono-regular.woff2": {
+        "original": [],
+        "woff2": [
+          "ẞ"
+        ]
+      }
+    },
+    "notes": "Font unter OFL; MIT im Repository-Root gilt für die Website. Version 1.500 gewählt. Autor empfiehlt Schriftgrößen in 11-px-Schritten.",
+    "designer": "Helena Zhang",
+    "licenseSource": "https://github.com/rektdeckard/departure-mono/blob/main/public/assets/LICENSE",
+    "licenseQuote": "The OFL allows the licensed fonts to be used, studied, modified and redistributed freely as long as they are not sold by themselves."
+  }
+]
