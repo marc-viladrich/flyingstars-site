@@ -172,11 +172,12 @@ Verbindlich seit 15.11.2026 (Abschluss des Schrift-Labors). Konzept, Bühnenplan
 **Der Schwarm:**
 - Ein Schwarm aus 300 Drohnen bildet jedes Bild der Seite. Nichts entsteht, nichts verschwindet. Wechsel folgen den Regeln oben (lebendige Wolke, kein Einrasten, keine Finten)
 - Nur echte Formationen: Motive aus dem Katalog (`src/content/catalog-motifs.json`, `public/media/katalog/`), Schrift über `text-formation.js`. Einzige Ausnahme ist die Feuerwerksblüte bei `#warum-drohnen`, parametrisch erzeugt
+- Bei `#warum-drohnen` spielt nach der Blüte eine endlos wirkende Show-Folge mit der Engine des Konfigurators: Runde für Runde SPARK (2D, ~100 Drohnen) → HORIZON (3D, dreht sich, ~200) → ODYSSEY (Geschichte, 300), gemischt ohne Wiederholung. Die Eskalation sieht man an Bild und Drohnenzahl, nie an einer Beschriftung (`docs/himmel.md`)
 - Zugaben brauchen Luft: Ein Bild steht nur dort, wo es mit 40 px Abstand nichts berührt, was Blicke bindet (`free()`). Ist kein Platz, bleibt die Stelle leer; lieber weglassen. Bei 1440 und 1920 px ansehen
 - Keine Beschriftung am Bild: keine Namen, Drohnenzahlen oder Maße
 - Funktionale Elemente (Linien, Rahmen, Raster, Icons) werden nie mit Punkten überzogen
 - Bewegung startet früh: Der Schwarm fliegt los, sobald die nächste Bühne ins Bild kommt. Niemand wartet vor einer leeren Fläche, besonders am Formular
-- Auf schmalen Bildschirmen (unter 900 px) spielt der Schwarm nur an Himmelszeile, Preisen und Formular
+- Auf schmalen Bildschirmen (unter 900 px) spielt der Schwarm nur an Himmelszeile, `#warum-drohnen` (eigene Fläche unter dem Text), Preisen und Formular
 - Die Seite antwortet: Zeigen auf eine Anlass-Karte oder ein Paket, Eingaben im Formular und in der Himmelszeile ändern das Bild. Die Zuordnung läuft über stabile Merkmale (Kartenkicker, Link-Ziel, Formularwert), nie über die Position
 - Reduzierte Bewegung und Pause: Jede Bühne zeigt ihr Bild, nichts fliegt
 

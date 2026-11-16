@@ -56,7 +56,11 @@ const outside = (i, out) => {
 // verkürzen bzw. beruhigen die lebendige Wolke (Mindestdauer bzw. Versatz der Bahn-Mittelpunkte, 1 = wie bisher); ein
 // Bild darf mit `drones` eine eigene Drohnenzahl für die Größe der Lichter nennen (Schärfe-Effekt beim Logo), die
 // Lichtgröße folgt dann in kleinen Stufen über etwa eine halbe Sekunde, ohne zu springen.
-export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread = 1 } = {}) {
+// Himmel (15.11.2026, additiv, Konfigurator und Teaser setzen nichts davon): outside(i, out) legt fest, woher hinzukommende
+// Drohnen kommen und wohin überzählige fliegen (Anzeigeeinheiten; die Show-Folge bei #warum-drohnen lässt sie von unten
+// aufsteigen statt seitlich einzufliegen). drones(n) liefert Lage, Licht und Farbe der ersten n Drohnen in Canvas-Pixeln,
+// radius() die aktuelle Lichtgröße in Gerätepixeln: Damit übernimmt der Himmel-Schwarm die Drohnen ohne Sprung.
+export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread = 1, outside: away = outside } = {}) {
   const ctx = canvas.getContext("2d");
   const reduceQuery = matchMedia("(prefers-reduced-motion: reduce)");
   let capacity = INITIAL_CAPACITY;
@@ -67,7 +71,7 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
   let mid = new Float64Array(capacity * 3), rankNow = new Float32Array(capacity); // Wolke: Mittelpunkt der Bahn, Stelle im Lichtlauf
   let inCloud = new Uint8Array(capacity); // diese Drohne fliegt im laufenden Übergang durch die lebendige Wolke
   const spot = [0, 0, 0], out = [0, 0, 0], live = [0, 0, 0, 1], rest = [0, 0, 0, 1];
-  for (let i = 0; i < capacity; i++) { outside(i, spot); pos.set(spot, i * 3); col.set([246, 241, 232], i * 3); }
+  for (let i = 0; i < capacity; i++) { away(i, spot); pos.set(spot, i * 3); col.set([246, 241, 232], i * 3); }
   function ensureCapacity(required) {
     if (required <= capacity) return;
     const old = capacity, next = Math.max(required, capacity * 2);
@@ -77,7 +81,7 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
     delay = grow(delay); prev = grow(prev, 3); flowOf = grow(flowOf); localOf = grow(localOf);
     mid = grow(mid, 3); rankNow = grow(rankNow); inCloud = grow(inCloud);
     groupOf.length = next; groupOf.fill("", old);
-    for (let i = old; i < next; i++) { outside(i, spot); pos.set(spot, i * 3); col.set([246, 241, 232], i * 3); }
+    for (let i = old; i < next; i++) { away(i, spot); pos.set(spot, i * 3); col.set([246, 241, 232], i * 3); }
     capacity = next;
   }
   let W = 0, H = 0, DPR = 1, frame = 0, visible = true, lastT = 0;
@@ -246,7 +250,7 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
     useFit(b);
     for (let j = 0; j < n; j++) { const p = b.pts[j]; target[j * 3] = (p[0] - fitX) * fitK * size; target[j * 3 + 1] = (p[1] - fitY) * fitK * size; target[j * 3 + 2] = (p[2] || 0) * fitK * size; }
     // drones joining come from outside (dark there); every drone beyond this beat that is still lit flies out
-    for (let i = active; i < n; i++) if (alpha[i] < 0.02) { outside(i, spot); pos.set(spot, i * 3); vel.fill(0, i * 3, i * 3 + 3); groupOf[i] = ""; }
+    for (let i = active; i < n; i++) if (alpha[i] < 0.02) { away(i, spot); pos.set(spot, i * 3); vel.fill(0, i * 3, i * 3 + 3); groupOf[i] = ""; }
     const previousEnd = Math.max(active, leaveEnd);
     leaveEnd = n;
     for (let i = n; i < previousEnd; i++) if (alpha[i] > 0.01) leaveEnd = i + 1;
@@ -265,7 +269,7 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
     for (let i = 0; i < n; i++) { const j = order[i]; ordered[i * 3] = target[j * 3]; ordered[i * 3 + 1] = target[j * 3 + 1]; ordered[i * 3 + 2] = target[j * 3 + 2]; if (!inCloud[i]) plain.push(i); }
     let longest = plain.length ? flightTime(Float64Array.from(plain.flatMap((i) => [from[i * 3], from[i * 3 + 1], from[i * 3 + 2]])), Float64Array.from(plain.flatMap((i) => [ordered[i * 3], ordered[i * 3 + 1], ordered[i * 3 + 2]])), Int32Array.from(plain, (_, r) => r), ...(auto ? [TEMPO.flight.min, TEMPO.flight.max] : [])) : 0;
     let back = 0;
-    for (let i = n; i < leaveEnd; i++) { outside(i, spot); back = Math.max(back, Math.hypot(from[i * 3] - spot[0], from[i * 3 + 1] - spot[1], from[i * 3 + 2] - spot[2])); }
+    for (let i = n; i < leaveEnd; i++) { away(i, spot); back = Math.max(back, Math.hypot(from[i * 3] - spot[0], from[i * 3 + 1] - spot[1], from[i * 3 + 2] - spot[2])); }
     if (back) longest = Math.max(longest, flightTime(Float64Array.of(0, 0, 0), Float64Array.of(back, 0, 0), [0]));
     // drones that still move fast from the last picture's own motion (a leaping dolphin, a beating wing) carry that
     // velocity into the flight and shed it over the flight (Hermite term in step: peak deceleration 4·v/flight), so
@@ -330,7 +334,7 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
     // live motion shown at a calm, fully formed moment; the picture still stands its full hold from now on
     flight = 0; spread = 0; flightN = 0; flightC = 0; cloud = false; inCloud.fill(0); beatAt = t - 2.5; settled = 2.5;
     for (let i = 0; i < n; i++) { const r = restAt(i, t); pos[i * 3] = r[0]; pos[i * 3 + 1] = r[1]; pos[i * 3 + 2] = r[2]; alpha[i] = r[3]; col.set(b.pts[i].slice(3, 6), i * 3); }
-    for (let i = n; i < previousEnd; i++) { outside(i, spot); pos.set(spot, i * 3); alpha[i] = 0; }
+    for (let i = n; i < previousEnd; i++) { away(i, spot); pos.set(spot, i * 3); alpha[i] = 0; }
     vel.fill(0); leaveEnd = n;
     canvas.dataset.beat = String(k); canvas.dataset.points = String(n); canvas.dataset.cloud = ""; onBeat?.(k, b, scene.beats.length);
   }
@@ -395,7 +399,7 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
     }
     // drones no longer needed fly out of the picture and switch off
     for (let i = active; i < leaveEnd; i++) {
-      const k = i * 3, u = flight ? Math.min(1, elapsed / flight) : 1, carry = flight * (u - 2 * u * u + u * u * u); outside(i, spot);
+      const k = i * 3, u = flight ? Math.min(1, elapsed / flight) : 1, carry = flight * (u - 2 * u * u + u * u * u); away(i, spot);
       along(from[k], from[k + 1], from[k + 2], spot[0], spot[1], spot[2], u, t, out);
       pos[k] = out[0] + fromVel[k] * carry; pos[k + 1] = out[1] + fromVel[k + 1] * carry; pos[k + 2] = out[2] + fromVel[k + 2] * carry; alpha[i] = Math.max(0, fromAlpha[i] * (1 - u * 1.6));
     }
@@ -498,5 +502,15 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
     }
     return out;
   }
-  return { setMotionIndependent(v) { motionIndependent = !!v; sync(); tick(); }, show, replay: () => goto(0), goto, beat: () => beat, setPaused, paused: () => userPaused, setRate: (r) => { rate = r; tick(); }, timeline, screenOf };
+  /** Lage (Canvas-Pixel, Projektion wie render()), Licht und Farbe der ersten n Drohnen; nicht fliegende sind dunkel. */
+  function drones(n) {
+    ensureCapacity(n);
+    const narrow = W < 600, S = Math.min(W * 0.36, H * (narrow ? 0.38 : 0.6)), ox = W * 0.5, oy = H * (narrow ? 0.52 : 0.5), lit = Math.max(active, leaveEnd), out = [];
+    for (let i = 0; i < n; i++) {
+      const k = i * 3, y = pos[k + 1], z = pos[k + 2], Y = y * TILT_C - z * TILT_S, Z = y * TILT_S + z * TILT_C, pr = 3.4 / (3.4 - Z);
+      out.push([ox + pos[k] * S * pr, oy - Y * S * pr, i < lit ? alpha[i] : 0, col[k] | 0, col[k + 1] | 0, col[k + 2] | 0]);
+    }
+    return out;
+  }
+  return { drones, radius: () => radNow, setMotionIndependent(v) { motionIndependent = !!v; sync(); tick(); }, show, replay: () => goto(0), goto, beat: () => beat, setPaused, paused: () => userPaused, setRate: (r) => { rate = r; tick(); }, timeline, screenOf };
 }

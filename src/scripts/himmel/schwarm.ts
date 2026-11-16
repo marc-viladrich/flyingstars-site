@@ -7,6 +7,8 @@
 // 3. Die Seite antwortet mit dem Himmel: Anlass zeigen, Paket zeigen, Ort eintippen ändert das Bild.
 // 4. Nur echte Formationen: Motive aus FlyingStars' Katalog (public/media/katalog/), Schrift aus dem Einstrich-Textplaner
 //    (text-formation.js). Einzige Ausnahme ist die Feuerwerksblüte bei #warum-drohnen, parametrisch erzeugt.
+// 6. Bei #warum-drohnen übergibt der Schwarm an eine eigene Show-Folge (folge.js, Engine des Konfigurators): Er fliegt als
+//    Blüte ein, die Folge spielt SPARK → HORIZON → ODYSSEY in Runden, beim Weiterscrollen übernimmt er die Drohnen wieder.
 // 5. Nur mit Luft: ein Bild steht nur dort, wo es mit Abstand nichts berührt (free()); sonst bleibt die Stelle leer.
 //
 // Reduzierte Bewegung oder Pause (html.motion-paused): jede Bühne zeigt ihr Bild, nichts fliegt.
@@ -24,7 +26,9 @@ type React = (slot: Slot, on: (spec: Spec) => void) => void;
 interface Scene { id: string; n: number; pts: Float32Array; col: Uint8Array; rank: Float32Array; ax: number; ay: number; turn: boolean }
 /** Eine Bühne. deskOnly: spielt nur ab 900 px Breite. then: einmal je Besuch wird aus spec dieses Bild (Feuerwerk → Stern).
  *  when: spielt nur, wenn die Section es zulässt (z. B. keine eigene Formation darin). max: größte Bildbreite in px (kleines Motiv). */
-interface SlotDef { sel: string; place: Place; spec: Spec | ((host: HTMLElement) => Spec); deskOnly?: boolean; then?: Spec; react?: React; when?: (host: HTMLElement) => boolean; max?: number }
+interface SlotDef { sel: string; place: Place; spec: Spec | ((host: HTMLElement) => Spec); deskOnly?: boolean; then?: Spec; react?: React; when?: (host: HTMLElement) => boolean; max?: number; folge?: boolean }
+/** Die Show-Folge (folge.js), erst nahe an ihrer Section geladen. */
+interface Folge { ready: Promise<void>; canEnter(): boolean; place(box: Box): unknown; enter(box: Box): { pts: number[][]; radius: number } | null; peek(): number[][]; play(): void; leave(): number[][]; hide(): void }
 interface Slot { def: SlotDef; host: HTMLElement; box: Box; scene: Scene | null; want: string; spec: Spec; first: Spec; seqAt: number; own: HTMLElement | null; turned: boolean }
 
 const N = 300;
@@ -96,6 +100,9 @@ function burst(): number[][] {
   return raw;
 }
 
+/** Die Blüte als Punkte mit Farbe für die Show-Folge (dieselbe Reihenfolge wie die Szene: Drohne i ↔ Punkt i). */
+const burstPts = (): number[][] => burst().map(([x, y, z, t]) => [x, y, z, 255, Math.round(178 + 62 * t), Math.round(96 + 130 * t)]);
+
 function load(spec: Spec): Promise<Scene> {
   const id = idOf(spec);
   let p = scenes.get(id);
@@ -162,6 +169,7 @@ function measure(slot: Slot): void {
   const { host, def } = slot, wide = innerWidth >= DESK;
   if (def.place === 'zeile') { const b = page(slot.own!); slot.box = { x: b.x, y: b.y + 8, w: b.w, h: b.h - 16 }; return; }
   if (def.place === 'form') { const b = page(slot.own!); slot.box = { x: b.x + 20, y: b.y + 18, w: b.w - 40, h: b.h - 36 }; return; }
+  if (def.folge) { slot.box = folgeBox(host, wide); return; }
   // Kopf der Section: der Section-Kopf, sonst (einspaltiger Text ohne Kopf-Komponente) die ganze Section
   const head = host.querySelector<HTMLElement>(HEAD) ?? host;
   let used = 0, top = Infinity, bottom = -Infinity;
@@ -184,6 +192,26 @@ function measure(slot: Slot): void {
   // Schmale Bildschirme und volle Sections: Nur Bühnen, die dort etwas zeigen, was man nicht schon sieht, bekommen eigenen Platz
   host.classList.toggle('hm-gap-on', !roomy && !def.deskOnly);
   slot.box = roomy ? box : def.deskOnly || !slot.own ? NONE : page(slot.own);
+}
+
+/** Bühne der Show-Folge (#warum-drohnen). Breit: rechts neben dem Text, das dominante Element der Section (bei 1440 px gut
+ *  480 px, bei 1920 px bis 690 px breit), 64 px vom Text, mit der free()-Prüfung. Schmal: die Fläche, die himmel.css unter
+ *  dem Text reserviert (::after, Höhe steht von Anfang an fest, nichts springt). */
+function folgeBox(host: HTMLElement, wide: boolean): Box {
+  const hostBox = page(host), cs = getComputedStyle(host), right = hostBox.x + hostBox.w - num(cs.paddingRight);
+  if (!wide) {
+    const h = num(getComputedStyle(host, '::after').height); if (h < 80) return NONE;
+    const left = hostBox.x + num(cs.paddingLeft);
+    return { x: left, y: hostBox.y + hostBox.h - num(cs.paddingBottom) - h, w: right - left, h };
+  }
+  let used = 0, top = Infinity, bottom = -Infinity;
+  for (const el of host.querySelectorAll<HTMLElement>(`${SOLID}, .kicker`)) { const b = page(el); if (!b.w || !b.h) continue; used = Math.max(used, b.x + b.w); top = Math.min(top, b.y); bottom = Math.max(bottom, b.y + b.h); }
+  if (!Number.isFinite(top)) return NONE;
+  const max = clamp(innerWidth * 0.36, 420, 720), left = Math.max(used + 64, right - max), w = right - left;
+  if (w < 340) return NONE;
+  const tall = Math.min(500, w * 0.95), mid = (top + bottom) / 2, h = Math.min(tall, bottom - top + 80);
+  const box = { x: left, y: mid - h / 2, w, h };
+  return free(host, box, null) ? box : NONE;
 }
 
 /* ---------- Zeichnen ---------- */
@@ -220,6 +248,10 @@ class Himmel {
   top = 0; left = 0; W = 0; wide = true; H = 0; d = 1; raf = 0; dirty: number[] | null = null; spin = 0; last = 0;
   px = -1e5; py = -1e5; pt = 0;
   dir = 1; sy = 0;
+  // Show-Folge (#warum-drohnen): fol geladen, folPts Ziele des Anflugs (Seitenkoordinaten), handed = die Folge spielt
+  fol: Folge | null = null; folReady = false; folPts: number[][] | null = null; folRad = 0; handed = false; burstScene: Scene | null = null;
+  // Farbe und Lichtgröße im Flug: von der zuletzt gezeigten Farbe (cc) zur Farbe des Ziels, Gewicht cw je Drohne
+  cc = new Uint8Array(N * 3); fc = new Uint8Array(N * 3); cw = new Float32Array(N).fill(1); rad0 = 0; rad1 = 0;
 
   constructor(defs: SlotDef[]) {
     this.layer.className = 'hm-layer'; this.layer.setAttribute('aria-hidden', 'true');
@@ -255,8 +287,25 @@ class Himmel {
     // Pause oder Fortsetzen (html.motion-paused): neu zeichnen, stehend oder fliegend
     new MutationObserver(() => { this.last = 0; this.kick(); }).observe(html(), { attributes: true, attributeFilter: ['class'] });
     document.fonts?.ready.then(again);
+    const fs = this.slots.find((s) => s.def.folge);
+    if (fs) this.loadFolge(fs);
     this.frame = this.frame.bind(this);
     this.layout(); this.kick();
+  }
+  /** Die Show-Folge laden, sobald ihre Section näher als zwei Bildschirmhöhen ist (die Engine des Konfigurators ist groß). */
+  loadFolge(slot: Slot) {
+    void load({ burst: true }).then((sc) => { this.burstScene = sc; });
+    const io = new IntersectionObserver((es) => {
+      if (!es.some((e) => e.isIntersecting)) return;
+      io.disconnect();
+      const cv = document.createElement('canvas'); cv.className = 'hm-folge'; this.layer.append(cv);
+      import('./folge.js').then(({ createFolge }) => {
+        const f = createFolge(cv, { locale: lang(), burst: burstPts() }) as unknown as Folge;
+        f.place(slot.box);
+        return f.ready.then(() => { this.fol = f; this.folReady = true; this.last = 0; this.kick(); });
+      }).catch((e) => console.warn('Show-Folge nicht verfügbar:', e));
+    }, { rootMargin: '200% 0px' });
+    io.observe(slot.host);
   }
   own(place: Place) { const el = document.createElement('div'); el.className = `hm-own hm-own-${place}`; el.setAttribute('aria-hidden', 'true'); return el; }
   kick() { if (!this.raf) this.raf = requestAnimationFrame(this.frame); }
@@ -283,6 +332,8 @@ class Himmel {
       if (dx || dy) for (let i = 0; i < N; i++) { this.x[i] += dx; this.y[i] += dy; this.fx[i] += dx; this.fy[i] += dy; this.mx[i] += dx; this.my[i] += dy; }
     }
     this.H = 0; this.W = 0; this.last = 0; // Canvas neu ankern
+    const fs = this.slots.find((s) => s.def.folge);
+    if (this.fol && fs && fs.box.w) { this.fol.place(fs.box); if (this.folPts && !this.handed) this.folPts = this.fol.peek(); }
   }
 
   /** Canvas in Seitenkoordinaten. Im Flug (und stehend) ein Fenster von 1,7 Bildschirmhöhen, das nur wandert, wenn der Rand
@@ -329,6 +380,8 @@ class Himmel {
   /** Ziele der Formation in Seitenkoordinaten (mit Blickwinkel und Drehung). */
   aim(slot: Slot, sc: Scene) {
     const { box } = slot, vh = innerHeight, stop = still();
+    // Anflug auf die Show-Folge: genau dorthin, wo deren Blüte steht (Übergabe ohne Sprung)
+    if (this.folPts && slot.def.folge && !stop) { for (let i = 0; i < N; i++) { const p = this.folPts[i]; this.tx[i] = p[0]; this.ty[i] = p[1]; this.tz[i] = 0; } return; }
     const rad = innerWidth < 700 ? 0.86 : 0.92;
     const S = Math.min((box.w * rad) / 2 / Math.max(sc.ax, 0.2), (box.h * rad) / 2 / Math.max(sc.ay, 0.2));
     const cx = box.x + box.w / 2, cy = box.y + box.h / 2;
@@ -344,8 +397,16 @@ class Himmel {
 
   /** Flug zur Bühne starten: von dort, wo jede Drohne gerade ist. */
   go(slot: Slot, base = 0) {
+    // Show-Folge: Der Schwarm kommt als Blüte; die Folge stellt ihre Blüte bereit und nennt, wo jede Drohne hin soll
+    this.folPts = null;
+    if (slot.def.folge && this.folReady && this.fol && this.burstScene && !still()) {
+      slot.scene = this.burstScene; slot.want = idOf(slot.first); slot.spec = slot.first; slot.turned = false;
+      const e = this.fol.enter(slot.box);
+      if (e) { this.folPts = e.pts; this.folRad = e.radius; }
+    }
     const sc = slot.scene; if (!sc) return;
     const now = performance.now();
+    this.fc.set(this.cc); this.rad0 = this.rad1 || this.radius(slot.box);
     this.aim(slot, sc);
     const first = !this.born, vh = innerHeight;
     let far = 0;
@@ -381,12 +442,19 @@ class Himmel {
     if (document.hidden) return;
     const stop = still();
     if (stop) {
+      if (this.fol && (this.handed || this.folPts)) { this.fol.hide(); this.handed = false; this.folPts = null; }
       // Stehende Fassung: jede Bühne zeigt ihr (End-)Bild, nichts fliegt
       for (const s of this.slots) if (s.def.then && !s.turned) { s.turned = true; this.want(s, s.def.then); }
       const moved = this.anchor(true);
       if (moved || this.last !== -1) this.drawStill();
       this.last = -1; this.born = false; this.active = null; this.shown = null;
       return;
+    }
+    // Die Show-Folge spielt: Der Schwarm zeichnet nichts, bis eine andere Bühne dran ist; dann übernimmt er die Drohnen
+    if (this.handed) {
+      const next = this.pick();
+      if (!next || next === this.active) return;
+      this.takeBack();
     }
     const flight = (this.kind !== 'none' && performance.now() - this.t0 < this.dur + 80) || !this.shown;
     this.anchor(flight);
@@ -400,6 +468,10 @@ class Himmel {
     this.aim(slot, sc);
     const u = clamp((now - this.t0) / this.dur), flying = u < 1 && this.kind !== 'none';
     if (!flying && !this.arrived) this.arrived = now;
+    // Angekommen: Übergabe an die Show-Folge, die dieselbe Blüte an derselben Stelle zeigt
+    if (!flying && this.folPts && slot.def.folge && this.fol) { this.fol.play(); this.handed = true; this.clear(); return; }
+    // Die nächste Runde war beim Anflug noch nicht gebaut: Die Blüte steht, bis sie fertig ist, dann kurzer Flug in deren Blüte
+    if (!flying && !this.folPts && slot.def.folge && this.fol?.canEnter() && now - this.arrived > 300) this.go(slot, 900);
     // Geschichte in Akten (ODYSSEY, Worte der Himmelszeile): nach einer Standzeit folgt das nächste Bild
     if (!flying && 'seq' in slot.spec && seen && now - this.arrived > 4200) {
       slot.seqAt = (slot.seqAt + 1) % slot.spec.seq.length; const next = slot.spec.seq[slot.seqAt], want = slot.want;
@@ -408,15 +480,17 @@ class Himmel {
     }
     // Verwandlung (Feuerwerk → Stern): einmal, sobald das Bild gut anderthalb Sekunden ganz im Blick stand
     const inView = slot.box.y > scrollY + vh * 0.04 && slot.box.y + slot.box.h < scrollY + vh * 0.96;
-    if (!flying && slot.def.then && !slot.turned && inView && now - this.arrived > 1600) { slot.turned = true; this.want(slot, slot.def.then); }
+    if (!flying && slot.def.then && !slot.turned && inView && now - this.arrived > 1600 && !(slot.def.folge && this.folReady)) { slot.turned = true; this.want(slot, slot.def.then); }
     const since = this.arrived ? (now - this.arrived) / 1000 : 0, wave = this.arrived && since >= 0 ? ((since % 9) / 1.7) * 1.5 - 0.25 : -9;
     const near = clamp(1 - (now - this.pt) / 900);
     let busy = flying || near > 0;
     for (let i = 0; i < N; i++) {
       const lit = i < sc.n ? 0.86 + 0.14 * (this.tz[i] + 1) / 2 : 0;
       let bright = lit;
+      this.cw[i] = 1;
       if (flying) {
         const k = clamp((u - this.d0[i]) / (this.kind === 'rise' ? 0.55 : 0.6));
+        this.cw[i] = this.kind === 'rise' ? 1 : Math.round(clamp(k * 1.4) * 4) / 4; // Farbe in vier Stufen (wenige Sprites)
         if (this.kind === 'rise') {
           const e = 1 - (1 - k) ** 3;
           this.x[i] = this.fx[i] + (this.tx[i] - this.fx[i]) * e; this.y[i] = this.fy[i] + (this.ty[i] - this.fy[i]) * e;
@@ -437,17 +511,27 @@ class Himmel {
       }
       this.b[i] = bright;
     }
-    this.draw(sc);
+    this.draw(sc, flying ? u : 1);
     if (!seen) return;
     if (!busy) busy = sc.turn || (wave > -0.3 && wave < 1.35) || 'seq' in slot.spec || (!!slot.def.then && !slot.turned);
     if (busy) this.kick(); else { const wait = (9 - (since % 9)) * 1000; setTimeout(() => this.kick(), Math.min(wait, 9000)); }
   }
 
+  /** Die Show-Folge gibt ihre Drohnen zurück: Lage, Licht und Farbe so, wie sie gerade zu sehen sind. */
+  takeBack() {
+    const pts = this.fol!.leave();
+    for (let i = 0; i < N; i++) { const p = pts[i]; this.x[i] = p[0]; this.y[i] = p[1]; this.b[i] = p[2]; this.cc[i * 3] = p[3]; this.cc[i * 3 + 1] = p[4]; this.cc[i * 3 + 2] = p[5]; }
+    this.handed = false; this.folPts = null; this.rad1 = this.folRad; this.last = 0;
+  }
+
   /** Seitenwechsel: Lage und Farbe jeder Drohne (relativ zum Bildschirm) für ein paar Sekunden mitnehmen. */
   remember() {
     if (!this.born || !this.shown || still()) return;
-    const sc = this.shown, out: number[] = [];
-    for (let i = 0; i < N; i++) { const j = (i < sc.n ? i : i % sc.n) * 3; out.push(Math.round(this.x[i] - scrollX), Math.round(this.y[i] - scrollY), Math.round(this.b[i] * 100), sc.col[j], sc.col[j + 1], sc.col[j + 2]); }
+    const sc = this.shown, out: number[] = [], live = this.handed ? this.fol!.peek() : null;
+    for (let i = 0; i < N; i++) {
+      if (live) { const p = live[i]; out.push(Math.round(p[0] - scrollX), Math.round(p[1] - scrollY), Math.round(p[2] * 100), p[3], p[4], p[5]); continue; }
+      const j = (i < sc.n ? i : i % sc.n) * 3; out.push(Math.round(this.x[i] - scrollX), Math.round(this.y[i] - scrollY), Math.round(this.b[i] * 100), sc.col[j], sc.col[j + 1], sc.col[j + 2]);
+    }
     try { sessionStorage.setItem('flyingstars:himmel', JSON.stringify({ t: Date.now(), d: out })); } catch { /* privater Modus */ }
   }
   recall() {
@@ -475,11 +559,19 @@ class Himmel {
     if (dirty) { dirty[0] = Math.min(dirty[0], X - R); dirty[1] = Math.min(dirty[1], Y - R); dirty[2] = Math.max(dirty[2], X + R); dirty[3] = Math.max(dirty[3], Y + R); }
   }
   radius(box: Box) { return Math.max(1, Math.round((box.w < 320 ? 1.5 : 1.9) * this.d * 4) / 4); }
-  draw(sc: Scene) {
+  /** u: Fortschritt des Flugs (1 = steht). Farbe und Lichtgröße wandern vom letzten Bild zum neuen (keine Sprünge, auch nicht
+   *  bei der Übergabe an die Show-Folge, deren Lichter etwas größer sind). */
+  draw(sc: Scene, u = 1) {
     this.clear();
-    const { g } = this, rad = this.radius(this.active!.box);
+    const { g, cc, fc, cw } = this, goal = this.folPts && this.active?.def.folge ? this.folRad : this.radius(this.active!.box);
+    const rad = this.rad1 = u >= 1 || !this.rad0 ? goal : Math.round((this.rad0 + (goal - this.rad0) * u) * 4) / 4;
     g.globalCompositeOperation = 'lighter';
-    for (let i = 0; i < N; i++) { const j = (i < sc.n ? i : i % sc.n) * 3; this.dot(this.x[i], this.y[i], this.b[i], sc.col[j], sc.col[j + 1], sc.col[j + 2], rad); }
+    for (let i = 0; i < N; i++) {
+      const j = (i < sc.n ? i : i % sc.n) * 3, q = i * 3, w = cw[i];
+      if (w >= 1) { cc[q] = sc.col[j]; cc[q + 1] = sc.col[j + 1]; cc[q + 2] = sc.col[j + 2]; }
+      else { cc[q] = fc[q] + (sc.col[j] - fc[q]) * w; cc[q + 1] = fc[q + 1] + (sc.col[j + 1] - fc[q + 1]) * w; cc[q + 2] = fc[q + 2] + (sc.col[j + 2] - fc[q + 2]) * w; }
+      this.dot(this.x[i], this.y[i], this.b[i], cc[q], cc[q + 1], cc[q + 2], rad);
+    }
     g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
   }
   /** Stehende Fassung: jede Bühne im Fenster zeigt ihr Bild. */
@@ -622,7 +714,8 @@ function plan(): SlotDef[] {
   if (p === '/') return [
     { sel: 'main #kundinnen', place: 'zeile', spec: examples, react: zeileReact },
     { sel: '#anlaesse', place: 'head', deskOnly: true, spec: { motif: 'anstossen' }, react: anlaesse },
-    { sel: '#warum-drohnen', place: 'head', deskOnly: true, spec: { burst: true }, then: { motif: 'stern', budget: N } },
+    // Show-Folge: Blüte, dann SPARK → HORIZON → ODYSSEY in Runden (folge.js); stehend (Pause, reduzierte Bewegung) der Stern
+    { sel: '#warum-drohnen', place: 'head', folge: true, spec: { burst: true }, then: { motif: 'stern', budget: N } },
     { sel: '#projekte', place: 'head', deskOnly: true, spec: { motif: 'galaxie' } },
     { sel: '#preise', place: 'head', spec: priceSpec, react: packs, when: priceRoom },
     { sel: '#ueber', place: 'head', deskOnly: true, spec: { motif: 'smiley' } },

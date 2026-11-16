@@ -6,6 +6,15 @@
 .hm-layer { position: absolute; left: 0; top: 0; width: 100%; height: 0; z-index: 5; pointer-events: none; }
 .hm-layer canvas { position: absolute; display: block; }
 
+/* Show-Folge bei #warum-drohnen (folge.js): eigenes Canvas, sichtbar erst, wenn der Schwarm übergeben hat */
+.hm-layer canvas.hm-folge { visibility: hidden; }
+/* Auf schmalen Bildschirmen spielt die Folge in einer eigenen Fläche unter dem Text. Die Höhe steht von Anfang an fest
+   (Klasse reveal bzw. motion-paused setzt das Inline-Skript im Kopf vor dem ersten Bild), darum springt nichts; ohne
+   JavaScript bleibt die Fläche weg. */
+@media (max-width: 56.24em) {
+  html:is(.reveal, .motion-paused) #warum-drohnen::after { content: ''; display: block; height: clamp(14rem, 62vw, 20rem); }
+}
+
 /* Platz im Seitenfluss: nur auf schmalen Bildschirmen oder in vollen Sections, über der Überschrift */
 .hm-own { display: none; }
 .hm-gap-on .hm-own-head { display: block; width: 100%; height: 13rem; margin-bottom: var(--space-4); }
