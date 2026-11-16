@@ -631,7 +631,8 @@ const PACK: Record<string, Spec> = {
 /** Preise: Stehen dort Paketkarten, zeigt der Himmel das Paket, auf das man zeigt; sonst ein ruhiges Motiv.
  *  Zeigt die Section schon eine eigene Formation (Konfigurator), bleibt der Himmel dort leer: zwei Formationen übereinander sind zu viel. */
 const priceSpec = (host: HTMLElement): Spec => (host.querySelector('[data-pick-paket]') ? PACK.HORIZON : { motif: 'sonne' });
-const priceRoom = (host: HTMLElement) => !!host.querySelector('[data-pick-paket]') || !host.querySelector('[data-cft], #cfg-field');
+// Wo der Konfigurator-Teaser schon eine eigene Formation zeigt, bleibt der Schwarm weg (nie zwei Formationen in einer Section)
+const priceRoom = (host: HTMLElement) => !host.querySelector('[data-cft], #cfg-field');
 const packs: React = (slot, on) => {
   if (!slot.host.querySelector('[data-pick-paket]')) return;
   hover(slot.host, ['[data-pick-paket]'], (el) => PACK[el.dataset.pickPaket ?? ''] ?? null, on);
