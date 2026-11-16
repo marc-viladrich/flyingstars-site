@@ -8,7 +8,8 @@ const { kicker, headline, text, id, level: H = 'h2', class: cls, variant = 'defa
 ---
 <div class:list={['section-head', { 'sec-head': variant === 'default' }, cls]} data-section-head={variant}>
   <H id={id} class={titleClass} data-reveal-group={revealTitle ? '' : undefined}>{kicker && <><span class:list={['kicker mono', kickerClass]}>{kicker}</span>{' '}</>}<span class="head-line"><slot name="title"><Accent text={headline} /></slot></span></H>
-  {text && <p class={textClass}>{text}</p>}
+  {/* Mehrere Absätze (Leerzeile im YAML) werden mehrere p, z. B. Moritz' dreiteilige Einleitungen */}
+  {text && text.split(/\n\s*\n/).map((para) => <p class={textClass}>{para.trim()}</p>)}
   <slot />
 </div>
 <style is:global>

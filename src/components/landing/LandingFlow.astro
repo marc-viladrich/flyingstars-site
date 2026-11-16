@@ -6,11 +6,11 @@ import type { Section } from '../../content.config';
 import SectionHead from '../SectionHead.astro';
 import ProcessList from '../ProcessList.astro';
 type Props = Extract<Section, { type: 'landingFlow' }> & { index: number };
-const { kicker, headline, text, steps, id = 'ablauf', index } = Astro.props;
+const { kicker, headline, text, steps, id = 'ablauf', index, surface = 'alt' } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
 const T = index === 0 ? 'h2' : 'h3';
 ---
-<section class="section alt lf" id={id} aria-labelledby={`${id}-h`}>
+<section class:list={['section', 'lf', { alt: surface === 'alt' }]} id={id} aria-labelledby={`${id}-h`}>
   <div class="lf-grid">
     <div class="lf-head"><SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} /></div>
     <ProcessList items={steps} variant="flow" level={T} />

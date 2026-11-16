@@ -38,6 +38,27 @@ const image = z.object({
   height: fieldPolicy(z.number().int().positive(), 'shared'),
 }).meta(imageMetadata);
 
+// Fläche der Section (15.11.2026, Rhythmus wie im Original): „alt“ = hellere Fläche, „plain“ = Grundton. Ohne Angabe gilt
+// der bisherige Standard der Komponente.
+const surface = { surface: fieldPolicy(z.enum(['alt', 'plain']).optional().describe('Hintergrund der Section; ohne Angabe der Standard der Komponente'), 'shared') };
+const packageItem = z.object({
+  name: fieldPolicy(z.enum(PACKAGE_NAMES), 'shared'),
+  label: fieldPolicy(z.string().optional().describe('z. B. "Klassisch in 2D"'), 'translatable'),
+  badge: fieldPolicy(z.string().optional().describe('z. B. "Am häufigsten gebucht"'), 'translatable'),
+  highlight: fieldPolicy(z.boolean().default(false), 'shared'),
+  sky: fieldPolicy(z.string().optional().describe('Am Himmel'), 'translatable'),
+  care: fieldPolicy(z.string().optional().describe('Betreuung'), 'translatable'),
+  typical: fieldPolicy(z.string().optional().describe('Typisch für'), 'translatable'),
+  points: z.array(keyedText(fieldPolicy(z.string(), 'translatable'))).max(4).optional().describe('Kernpunkte auf der Kurzfassung (Startseite), die Drohnenzahl steht automatisch davor'),
+});
+const qualityItem = z.object({
+  title: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
+  icon: fieldPolicy(z.enum(['permit', 'sound', 'shield', 'leaf']).describe('Verlaufs-Icon, wenn kein freigegebenes Logo'), 'shared'),
+  logo: brandPath.optional(),
+  cleared: fieldPolicy(z.boolean().default(false).describe('Logo darf gezeigt werden (LBA-Signet gemeinfrei; naturstrom nur nach Freigabe)'), 'shared'),
+  secondary: fieldPolicy(z.boolean().default(false).describe('Nachrangig: klein als Textzeile unter den Logos (Marc 31.10.: TÜV-Gutachten, Haftpflicht)'), 'shared'),
+});
+
 const rawSectionSchema = z.discriminatedUnion('type', [
   z.object({
     type: fieldPolicy(z.literal('showreelHero'), 'shared'), ...todo,
@@ -68,6 +89,8 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     points: z.array(keyedText(fieldPolicy(z.string().min(1), 'translatable'))).optional().describe('Kurze, belegbare Sätze, je einer pro Punkt'),
     pillarsRef: fieldPolicy(z.literal('sustainability-pillars').optional().describe('Gemeinsame Nachhaltigkeitspunkte'), 'shared'),
     proofImage: image.optional(), proofText: fieldPolicy(z.string().optional(), 'translatable'), campaign: fieldPolicy(z.string().optional(), 'translatable'),
+    image: image.optional().describe('Foto neben der Einleitung (z. B. #Böllerciao), mit Vorhang-Reveal'),
+    cta: link.optional().describe('Weiterführender Link unter der Einleitung'),
     lines: z.array(keyedText(fieldPolicy(z.string(), 'translatable'))).optional().describe('Veraltet (dreizeiliger Titel der Scrollstory), wird nicht mehr angezeigt'),
   }).strict(),
   z.object({
@@ -84,6 +107,7 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     body: fieldPolicy(z.string().min(1).describe('Markdown erlaubt').meta({'x-afe': {format: 'markdown'}}), 'translatable'),
     image: image.optional(),
     mediaSide: fieldPolicy(z.enum(['left', 'right']).default('right'), 'shared'),
+    headAbove: fieldPolicy(z.boolean().optional().describe('Kopf über voller Breite, darunter Text und Bild nebeneinander'), 'shared'),
     cta: link.optional().describe('Weiterführender Link unter dem Text'),
   }),
   z.object({
@@ -146,11 +170,13 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     steps: z.array(z.object({
       title: fieldPolicy(z.string().min(1), 'translatable'),
       subtitle: fieldPolicy(z.string().optional().describe('Zeile unter dem Titel, z. B. "Präsentiert Produkte spektakulär"'), 'translatable'),
-      text: fieldPolicy(z.string().min(1), 'translatable'),
+      text: fieldPolicy(z.string().min(1).optional().describe('Pflicht ohne Icon'), 'translatable'),
       duration: fieldPolicy(z.string().optional().describe('Kurzer Zeitrahmen, z. B. "zwei Tage"'), 'translatable'),
+      icon: fieldPolicy(z.string().min(1).optional().describe('Lucide-Name; mit Icons erscheinen die Schritte als Icon-Raster'), 'shared'),
     })).min(2),
+    cta: link.optional().describe('Weiterführender Link unter den Schritten'), ...surface,
     ownNumbers: fieldPolicy(z.boolean().default(false).describe('Ohne automatische Nummer (01, 02 …), z. B. wenn die Titel selbst nummeriert sind („#1 Anfrage“) oder keine Abfolge sind'), 'shared'),
-  }),
+  }).superRefine((s, ctx) => { s.steps.forEach((step, i) => { if (!step.icon && !step.text) ctx.addIssue({ code: 'custom', path: ['steps', i, 'text'], message: 'Schritte ohne Icon brauchen einen Text' }); }); }),
   z.object({
     type: fieldPolicy(z.literal('comparison'), 'shared'), ...sectionHeading,
     headline: fieldPolicy(z.string().min(1), 'translatable'),
@@ -163,6 +189,7 @@ const rawSectionSchema = z.discriminatedUnion('type', [
       values: z.array(keyedText(fieldPolicy(z.string(), 'translatable'))).describe('Genau ein Wert je Spalte, in derselben Reihenfolge'),
     })).min(1),
     note: fieldPolicy(z.string().optional(), 'translatable'),
+    cta: link.optional().describe('Weiterführender Link unter der Tabelle'),
   }).superRefine((s, ctx) => {
     s.rows.forEach((row, i) => {
       if (row.values.length !== s.columns.length || (row.cells && row.cells.length !== s.columns.length)) {
@@ -208,13 +235,7 @@ const rawSectionSchema = z.discriminatedUnion('type', [
       note: fieldPolicy(z.string().optional().describe('Kurzinfo als Tooltip, z. B. Sendung'), 'translatable'),
     })).default([]),
     qualityHeadline: fieldPolicy(z.string().optional(), 'translatable'),
-    quality: z.array(z.object({
-      title: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
-      icon: fieldPolicy(z.enum(['permit', 'sound', 'shield', 'leaf']).describe('Verlaufs-Icon, wenn kein freigegebenes Logo'), 'shared'),
-      logo: brandPath.optional(),
-      cleared: fieldPolicy(z.boolean().default(false).describe('Logo darf gezeigt werden (LBA-Signet gemeinfrei; naturstrom nur nach Freigabe)'), 'shared'),
-      secondary: fieldPolicy(z.boolean().default(false).describe('Nachrangig: klein als Textzeile unter den Logos (Marc 31.10.: TÜV-Gutachten, Haftpflicht)'), 'shared'),
-    })).default([]),
+    quality: z.array(qualityItem).default([]),
   }),
   z.object({
     // Alle Referenzen (Projekte-Sammlung) mit Filter nach Anlass, Jahr und Drohnenzahl. Ohne JS: Abschnitte je Anlass
@@ -236,16 +257,7 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     note: fieldPolicy(z.string().optional().describe('Kleingedrucktes unter den Karten'), 'translatable'),
     cta: link.optional(),
     compact: fieldPolicy(z.boolean().default(false).describe('Kurzfassung (Startseite): Name, Preis, Drohnen, eine Zeile'), 'shared'),
-    items: z.array(z.object({
-      name: fieldPolicy(z.enum(PACKAGE_NAMES), 'shared'),
-      label: fieldPolicy(z.string().optional().describe('z. B. "Klassisch in 2D"'), 'translatable'),
-      badge: fieldPolicy(z.string().optional().describe('z. B. "Am häufigsten gebucht"'), 'translatable'),
-      highlight: fieldPolicy(z.boolean().default(false), 'shared'),
-      sky: fieldPolicy(z.string().optional().describe('Am Himmel'), 'translatable'),
-      care: fieldPolicy(z.string().optional().describe('Betreuung'), 'translatable'),
-      typical: fieldPolicy(z.string().optional().describe('Typisch für'), 'translatable'),
-      points: z.array(keyedText(fieldPolicy(z.string(), 'translatable'))).max(4).optional().describe('Kernpunkte auf der Kurzfassung (Startseite), die Drohnenzahl steht automatisch davor'),
-    })).default(PACKAGE_NAMES.map(name=>({name,highlight:false}))),
+    items: z.array(packageItem).default(PACKAGE_NAMES.map(name=>({name,highlight:false}))),
   }),
   z.object({
     // Konfigurator-Teaser (Startseite): Anlass-Chips und Drohnen-Regler, Übergabe an den Konfigurator auf der Preisseite.
@@ -264,7 +276,7 @@ const rawSectionSchema = z.discriminatedUnion('type', [
       href: fieldPolicy(z.string().optional(), 'shared') }).strict().optional()
       .describe('Abzweigung im Netzplan (MetroLine.astro), z. B. Express: von der ersten zur letzten Station; mit href wird das Schild selbst zum Knopf'),
     facts: z.array(z.object({ value: businessValueSchema, label: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable') })).default([]),
-    note: fieldPolicy(z.string().optional(), 'translatable'),
+    note: fieldPolicy(z.string().optional(), 'translatable'), ...surface,
   }),
   // --- Anlass-Landingpages (Marc, 31.10.2026: „deutlich mehr in dieses Interaktive … mehr Variation in den Layouts“).
   // Komponenten unter src/components/landing/. Kennzahlen überall als { value, label, text? }.
@@ -299,6 +311,9 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     type: fieldPolicy(z.literal('landingTeaser'), 'shared'), ...sectionHeading,
     headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'), href: fieldPolicy(z.string().min(1).optional(), 'shared'), cta: fieldPolicy(z.string().optional(), 'translatable'),
     loop: fieldPolicy(z.enum(['marke', 'hochzeit', 'start']).optional().describe('Anlassspezifischer Ablauf des Teasers (Runde 9)'), 'shared'),
+    packages: z.array(packageItem).max(3).optional().describe('Paketkarten in Paketfarbe unter dem Teaser (Kurzfassung)'),
+    note: fieldPolicy(z.string().optional().describe('Kleingedrucktes unter den Paketkarten'), 'translatable'),
+    more: link.optional().describe('Textlink neben dem Kleingedruckten, z. B. „Alle Leistungen und Preise“'),
   }),
   z.object({
     // Preiskarte: ein Preis groß (aus show-packages.ts, wenn `package` gesetzt; sonst `price`), daneben Gruppen wie ein
@@ -313,6 +328,7 @@ const rawSectionSchema = z.discriminatedUnion('type', [
       items: z.array(z.object({ label: fieldPolicy(z.string().min(1), 'translatable'), value: businessValueSchema.optional() })).min(1) })).min(1).max(3),
     bonus: z.object({ value: businessValueSchema, text: fieldPolicy(z.string().min(1), 'translatable') }).optional(),
     closing: closingBox.describe('Abschluss unter der Preiskarte'),
+    cta: link.optional().describe('Textlink unter der Preiskarte, z. B. in den Konfigurator'),
   }),
   z.object({
     // Quellen und Konflikte: docs/sicherheitskonzept-quellen.md. Alle Maße kommen aus dem Inhalt.
@@ -329,6 +345,9 @@ const rawSectionSchema = z.discriminatedUnion('type', [
       icon: fieldPolicy(z.string().min(1), 'shared'), title: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().min(1), 'translatable'),
     }).strict()).min(1).max(4).optional(),
     download: siteDownloadSchema.optional(),
+    points: z.array(keyedText(fieldPolicy(z.string().min(1), 'translatable'))).max(5).optional().describe('Kurze Punkte unter der Einleitung, mit Haken'),
+    cta: link.optional().describe('Textlink unter den Punkten'),
+    quality: z.array(qualityItem).max(6).optional().describe('Zulassungen und Belege (LBA, EASA …) als Logo- bzw. Icon-Reihe'),
   }).strict().superRefine((section, ctx) => {
     if(section.variant==='outdoor'){
       if(section.safetyRef!=='safety-concept'||['diagram','items','responsibilities','download'].some(k=>section[k]!==undefined))ctx.addIssue({code:'custom',message:'Outdoor verwendet ausschließlich das gemeinsame Sicherheitskonzept.'});
@@ -344,7 +363,7 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     type: fieldPolicy(z.literal('landingFlow'), 'shared'), ...sectionHeading,
     headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
     steps: z.array(z.object({ title: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().min(1), 'translatable'), duration: fieldPolicy(z.string().optional(), 'translatable'),
-      gate: fieldPolicy(z.boolean().default(false), 'shared') })).min(2).max(7),
+      gate: fieldPolicy(z.boolean().default(false), 'shared') })).min(2).max(7), ...surface,
   }),
   z.object({
     // Kacheln mit einer großen Hauptkachel (Bild oder Aussage) und bis zu vier kleineren mit Kennzahl.
@@ -356,7 +375,9 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     lead: z.object({ label: fieldPolicy(z.string().optional().describe('Nur mit image'), 'translatable'), title: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'), image: image.optional(),
       icon: fieldPolicy(z.string().optional().describe('Lucide-Name, nur für die Aussage ohne Bild'), 'shared') }).strict()
       .refine((l) => !l.label || l.image, { message: 'label nur auf der Bildkachel, nicht neben einem Icon' }),
-    items: z.array(z.object({ icon: fieldPolicy(z.string().min(1).describe('Lucide-Name in kebab-case, z. B. "wind"'), 'shared'), title: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().min(1), 'translatable') }).strict()).min(1).max(4),
+    items: z.array(z.object({ icon: fieldPolicy(z.string().min(1).describe('Lucide-Name in kebab-case, z. B. "wind"'), 'shared'), title: fieldPolicy(z.string().min(1), 'translatable'),
+      subtitle: fieldPolicy(z.string().optional().describe('Zeile unter der Überschrift, z. B. "Fordert zum Tanz auf"'), 'translatable'), text: fieldPolicy(z.string().min(1), 'translatable') }).strict()).min(1).max(4),
+    ...surface,
     cta: link.optional().describe('Weiterführender Textlink unter dem Raster'),
     closing: closingBox.optional().describe('Abschluss-Kasten mit Gesichtern statt Textlink'),
   }).refine((b) => !(b.cta && b.closing), { message: 'entweder cta (Textlink) oder closing (Abschluss-Kasten)' }),

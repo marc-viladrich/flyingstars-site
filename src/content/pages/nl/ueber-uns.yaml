@@ -219,7 +219,9 @@ sections:
     text: Stand 21 oktober 2026.
     items:
       - label: Shows
-        value: { fact: showsTotal, "display": "number" }
+        value:
+          fact: showsTotal
+          display: number
         text: Sinds de eerste show in augustus 2022. Dit jaar waren het er tot oktober 50.
         _key: k_50c102f56431ca4d2975
       - label: Opgericht
@@ -243,14 +245,14 @@ sections:
       label: Vraag een show aan
       href: /kontakt/
     _key: k_c92c36f7a77d76a82182
-translationSourceHash: 87f4f2c6e04e5bb3a4c74680a3f85caa0f8a96101be7a5210407feb2add16657
+translationSourceHash: 16a002752c8ec078243d79d437f5495aa8de6a23f29b202efd43346c589bad58
 noindex: false
 translationContractVersion: 2
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 87f4f2c6e04e5bb3a4c74680a3f85caa0f8a96101be7a5210407feb2add16657
+  sourceFingerprint: 16a002752c8ec078243d79d437f5495aa8de6a23f29b202efd43346c589bad58
   legacy:
     provenanceFile: docs/i18n/content-provenance.json
     migration: I01-v2-2026-11-04
@@ -265,6 +267,10 @@ translationEvidence:
       status: adopted-existing
     - address: /sections/@k_0fa41045b869c8273b40/campaign
       sourceFingerprint: d94c807d44f23ffa654ff1f8ef70baf80c6ec22d76cec3301fb2cdaf7eeda9e7
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
+    - address: /sections/@k_0fa41045b869c8273b40/cta
+      sourceFingerprint: 53e4a1285940fb08201d22c8a53c65f670d1a240f376def5bc8b5db78645c725
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_0fa41045b869c8273b40/facts/@k_0613df3d50475052917a/label
@@ -346,6 +352,10 @@ translationEvidence:
     - address: /sections/@k_0fa41045b869c8273b40/headline
       sourceFingerprint: b68542614419c3eb0554e28bc6c807e6859bedd2fdf637817e101dbc5beba913
       targetFingerprint: 13c42909f36bf31d06b4eb837b9786d1a0d981394032045f75d0325d4cf967db
+      status: adopted-existing
+    - address: /sections/@k_0fa41045b869c8273b40/image
+      sourceFingerprint: 9a3665c86627f8b70cafd7dfc55c9627453d98c9ac2c0044ca131424aa23f232
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_0fa41045b869c8273b40/kicker
       sourceFingerprint: f1751f019bd6170150a4cc37c528d6751c7b4e0e7e0a233b6659766695a59799
@@ -627,6 +637,10 @@ translationEvidence:
       sourceFingerprint: 1b73d3eaf5a4b0b20b04d19596b51eae702d4f2ef585e0dd0469f64a4460631e
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
+    - address: /sections/@k_acabd60ef12b79f89464/cta
+      sourceFingerprint: 3255d688f4fd35d4f2f26a5f7b985f5522f6e50bbf3d8ef9bd2893f58ca36d94
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
     - address: /sections/@k_acabd60ef12b79f89464/diagram
       sourceFingerprint: 5fb13524f7ed708b03fd4fb39b4816c555ba94b638cb9ae07809aa2246595e2d
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
@@ -646,6 +660,14 @@ translationEvidence:
     - address: /sections/@k_acabd60ef12b79f89464/kicker
       sourceFingerprint: 58b6449513aab1adfd167568803c21f6b8c07b08386e88f16f551fede9bed504
       targetFingerprint: 40342d2f22fe678b9d08c495da5843ea2f41f31295819837ae1c1876b47a6331
+      status: adopted-existing
+    - address: /sections/@k_acabd60ef12b79f89464/points
+      sourceFingerprint: 9d484d9a6f279a4c0927c845816c4da8207762b55660531e2308c63881888d1a
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
+    - address: /sections/@k_acabd60ef12b79f89464/quality
+      sourceFingerprint: c48dac60b847c1443d52b91d88e31690c3bfbd4ac1308b928d5ec51f4b5ccbe3
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_acabd60ef12b79f89464/responsibilities
       sourceFingerprint: 185aedef3fb5cd7820cb27624c212a701f8b3f79938b0c3da07c6955d8ef0f49
@@ -735,6 +757,10 @@ translationEvidence:
       sourceFingerprint: 49857dfe525e0d7dce9c0126fec9e338d842b10c6f007ccc8e58348ffea58919
       targetFingerprint: 444987ead2baf447d27ec642b05b929dbf038775de45ca22e4d70e6e181eec06
       status: adopted-existing
+    - address: /sections/@k_f2457c3cc737e38d2649/items/@k_131f77651b316dd9a22e/subtitle
+      sourceFingerprint: 758d1debe7b4627ca9ea34a2be21e7c1ca4503876eabb6d36da3c57f3a64b7b8
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
     - address: /sections/@k_f2457c3cc737e38d2649/items/@k_131f77651b316dd9a22e/text
       sourceFingerprint: abdaed5cc479ce4a4339f303eb606b47f1f616537801b75f09e163df07df8c17
       targetFingerprint: 6ca74dcfb5d2929866ae44b8010692dd34371695d9db4e3e19f7cfcb8d42746a
@@ -742,6 +768,10 @@ translationEvidence:
     - address: /sections/@k_f2457c3cc737e38d2649/items/@k_131f77651b316dd9a22e/title
       sourceFingerprint: a72b3c2960d36c01fef463d96c72e5e8b5e84bc5d388a056e5db569cb4fdf476
       targetFingerprint: c59543c3da5d712df0decd33dced48bab166a52e6fd3ba4368729db372378566
+      status: adopted-existing
+    - address: /sections/@k_f2457c3cc737e38d2649/items/@k_2327413f096b6acd85f8/subtitle
+      sourceFingerprint: abf434228061684cecb03317bfbf558cc8c290ffbba98f332e9144e9000e15bd
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_f2457c3cc737e38d2649/items/@k_2327413f096b6acd85f8/text
       sourceFingerprint: 13cb2f64117439aacfea4c85ada5e74ee6a23634ff1d30333cdb5936661120cf
@@ -751,6 +781,10 @@ translationEvidence:
       sourceFingerprint: 36eda9b22b613b73535fe9ca65b69ab5ac149031cbc6757918389632a78b34c5
       targetFingerprint: 968b3f282f132335e43a2ad307c3e08d30762db60799615c6435081a58541bd7
       status: adopted-existing
+    - address: /sections/@k_f2457c3cc737e38d2649/items/@k_3947e1f963bd7fd6625a/subtitle
+      sourceFingerprint: e86b19af45c65d7601a3df93694cb37b225c4ff7a01624ddafb9a5f2e013a72d
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
     - address: /sections/@k_f2457c3cc737e38d2649/items/@k_3947e1f963bd7fd6625a/text
       sourceFingerprint: 03a5dfcfd3c17ffdab9ea12bf582ea6a622409c2efdf5ba3640e1848d1acda92
       targetFingerprint: 313f332277d5531b25c04acccbf15e4dd7d77b186968eda265490c97baabe454
@@ -758,6 +792,10 @@ translationEvidence:
     - address: /sections/@k_f2457c3cc737e38d2649/items/@k_3947e1f963bd7fd6625a/title
       sourceFingerprint: 080bc6d9ecf7ce67b04eb0de46d9320704371ad055172200719ab8ceb6f2c865
       targetFingerprint: ec74e27d73276788bb1d76b328b7219f6c7ea000ea6baa0fa81f4a37b44925ec
+      status: adopted-existing
+    - address: /sections/@k_f2457c3cc737e38d2649/items/@k_9047aa9bacd4dc446343/subtitle
+      sourceFingerprint: 545490cfacff49b77f47472a076840a549d2eeedf1eb4bb6af5f3959f72db201
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_f2457c3cc737e38d2649/items/@k_9047aa9bacd4dc446343/text
       sourceFingerprint: 282263302a2c6c023d6013d229f1d04a1583ad7cfa7a3caa9566d1e77b13e67a

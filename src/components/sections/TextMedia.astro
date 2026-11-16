@@ -8,16 +8,18 @@ import { forPath } from '../../i18n/server';
 const { localHref } = forPath(Astro.url.pathname);
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'textMedia' }> & { index: number };
-const { headline, body, image, mediaSide, index, id: anchor, kicker, cta } = Astro.props;
+const { headline, body, image, mediaSide, index, id: anchor, kicker, cta, headAbove } = Astro.props;
 // Projected contact facts must be edited as their source template, never materialized from the visible DOM.
 const editorFieldOptions={mode:body.includes('{{contact.')?'panel':'inline',format:'markdown'} as const;
 const id = `${anchor ?? `s${index}`}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const html = await marked.parse(contactText(body));
 ---
-<section class:list={['section', 'text-media', { 'has-media': image, 'media-left': image && mediaSide === 'left' }]} id={anchor} aria-labelledby={id}>
+<section class:list={['section', 'text-media', { 'has-media': image, 'media-left': image && mediaSide === 'left', 'head-above': headAbove }]} id={anchor} aria-labelledby={id}>
+  {/* Kopf über beiden Spalten (Werbung #marketing): rechts neben dem Kopf bleibt Luft, darunter Text und Bild im Split */}
+  {headAbove && <SectionHead kicker={kicker} headline={headline} id={id} level={H} class="tm-head" />}
   <div class="prose">
-    <SectionHead variant="embedded" kicker={kicker} headline={headline} id={id} level={H} />
+    {!headAbove && <SectionHead variant="embedded" kicker={kicker} headline={headline} id={id} level={H} />}
     {editorBuild() && (Astro.props as any).__afe?.body ? <div {...field((Astro.props as any).__afe.body,editorFieldOptions)} set:html={html} /> : <Fragment set:html={html} />}
     {cta && <p class="tm-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
   </div>
@@ -27,6 +29,11 @@ const html = await marked.parse(contactText(body));
 <style>
   /* wie .more unter Raster und Listen */
   .tm-more { margin-top: clamp(var(--space-6), 3vw, var(--space-9)); }
+  .text-media.head-above.has-media { align-items: center; }
+  .text-media.head-above :global(.tm-head) { grid-column: 1 / -1; margin-bottom: 0; }
+  .text-media .prose :global(p) { max-width: 60ch; }
+  /* Hervorhebung im Fließtext (Startseite #warum-drohnen: spektakulärer, emotionaler, einzigartiger) */
+  .text-media .prose :global(strong) { font: 600 1.18em/1 var(--display); letter-spacing: -0.01em; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .text-media .prose .tm-more a { border-bottom: 0; color: var(--accent); }
   .text-media .prose .tm-more a:hover { color: var(--amber-light); }
   /* Aufzählungen wie .facts (Punkte in Amber) statt Browser-Standard */

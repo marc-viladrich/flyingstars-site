@@ -16,18 +16,37 @@ import { optimizedLogo } from '../../lib/media';
 import Icon from '../Icon.astro';
 const PICON = { eu: 'eu', repair: 'wrench', ev: 'e-car', campaign: 'megaphone', leaf: 'leaf' } as const;
 type Props = Extract<Section, { type: 'sustainability' }> & { index: number };
-const { headline, text, id = 'nachhaltigkeit', facts = [], points = [], pillarsRef, proofImage, proofText, campaign, index, kicker } = Astro.props;
+const { headline, text, id = 'nachhaltigkeit', facts = [], points = [], pillarsRef, proofImage, proofText, campaign, index, kicker, image, cta } = Astro.props;
+import Picture from '../Picture.astro';
+import { accentParts, plain } from '../accent';
+import { forPath as forPathLink } from '../../i18n/server';
+const { localHref } = forPathLink(Astro.url.pathname);
 const pillars=pillarsRef?localizedBlock(SUSTAINABILITY_PILLARS,locale).pillars:[];
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
-const lines = headline.split(/(?<=\.)\s+/).filter(Boolean);
+const lines = headline.split(/(?<=\.\*?)\s+/).filter(Boolean);
+// Ohne Markierung: letzte Zeile im Verlauf, bei drei Zeilen die mittlere als Kontur (wie im Prototyp). Mit *Markierung*
+// (Moritz' Reihenfolge Knall, Müll, Rauch; DESIGN: „Kein Müll.“ im Verlauf) trägt die markierte Zeile den Verlauf,
+// weitere Zeilen nach der ersten werden Kontur. Einzeilige Köpfe („Kinder und *Hunde* willkommen“) färben nur das Wort.
+const marked = /\*[^*]+\*/.test(headline);
+const whole = (line: string) => /^\*[^*]+\*$/.test(line.trim());
+const lineClass = (line: string, i: number) => marked
+  ? { grad: whole(line), o: lines.length > 2 && i > 0 && !whole(line) }
+  : { grad: i === lines.length - 1 && lines.length > 1, o: lines.length > 2 && i === 1 };
 const parts = (point: string) => point.split(/(\S+-\S+)/).filter(Boolean);
 const proof = proofImage ? await optimizedLogo(proofImage.src, 60) : undefined;
 ---
 <section class="eco-sec" id={id} aria-labelledby={headingId}>
-  <SectionHead variant="display" class="eco-head" titleClass="eco-title" revealTitle kicker={kicker} headline={headline} text={text} id={headingId} level={H}>
-    <Fragment slot="title">{lines.map((line, i) => <span data-reveal style={`--i:${i}`} class:list={{ grad: i === lines.length - 1 && lines.length > 1, o: lines.length > 2 && i === 1 }}>{line} </span>)}</Fragment>
+  <SectionHead variant="display" class="eco-head" titleClass="eco-title" revealTitle kicker={kicker} headline={plain(headline)} text={image || cta ? undefined : text} id={headingId} level={H}>
+    <Fragment slot="title">{lines.map((line, i) => <span data-reveal style={`--i:${i}`} class:list={lineClass(line, i)}>{whole(line) ? plain(line) : accentParts(line).map((p) => p.g ? <span class="grad">{p.t}</span> : p.t)} </span>)}</Fragment>
   </SectionHead>
+  {(image || cta) && <div class:list={['eco-lead', { 'has-img': image }]}>
+    <div class="eco-lead-copy">
+      {text && text.split(/\n\s*\n/).map((para) => <p>{para.trim()}</p>)}
+      {cta && <p class="eco-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
+    </div>
+    {image && <figure class="eco-photo" data-curtain><Picture {...image} /></figure>}
+  </div>}
   {facts.length > 0 && <div class="eco-scrolly" data-scrolly><div class="eco-pin">
     <canvas class="eco-canvas" aria-hidden="true"></canvas>
     <FactList items={facts} variant="eco" />
@@ -60,3 +79,16 @@ const proof = proofImage ? await optimizedLogo(proofImage.src, 60) : undefined;
     }
   }
 </script>
+
+<style>
+  /* Einleitung mit Foto (Startseite: #Böllerciao), Text links, Bild rechts; auf dem Handy untereinander */
+  /* Einzelwort im Verlauf bleibt in der Zeile (global: .eco-title span ist sonst block) */
+  :global(.eco-title [data-reveal] > .grad) { display: inline; }
+  .eco-lead { display: grid; gap: clamp(var(--space-7), 4vw, var(--space-14)); margin: calc(-1 * clamp(var(--space-2), 2vw, var(--space-6))) 0 clamp(var(--space-10), 6vw, var(--space-20)); }
+  .eco-lead.has-img { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: center; }
+  .eco-lead-copy p { color: var(--muted); max-width: 44ch; margin: 0 0 var(--space-4); font-size: var(--text-lead); }
+  .eco-lead-copy .eco-more { margin-top: clamp(var(--space-5), 2.6vw, var(--space-8)); }
+  .eco-photo { margin: 0; border-radius: var(--radius); overflow: hidden; aspect-ratio: 16 / 9; --curtain-r: var(--radius); }
+  .eco-photo :global(img) { width: 100%; height: 100%; object-fit: cover; display: block; }
+  @media (--grid-stacked) { .eco-lead.has-img { grid-template-columns: 1fr; } }
+</style>

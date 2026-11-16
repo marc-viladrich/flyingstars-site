@@ -266,6 +266,14 @@ Verbindlich seit 15.11.2026 (Abschluss des Schrift-Labors). Konzept, Bühnenplan
 - Logo-Upload und eigener Text gehören dorthin
 - Hinweis am Upload: „Lade nur Logos hoch, die du verwenden darfst, zum Beispiel dein eigenes. Die Datei bleibt in deinem Browser: Wir speichern und übertragen sie nicht.“
 
+## Neue Texte in bestehende Komponenten (16.11.2026)
+
+Marc nach dem Umbau auf Moritz' Texte: „Why did you strip out the whole personality of the original design? … mehr Variation im Layout.“ Regeln:
+- Moritz liefert Reihenfolge, Überschriften und Wortlaut; das Layout je Abschnitt kommt vom Prototyp. Kein Abschnitt ist ein nackter Textblock oder eine Schrittliste ohne Icon, Zahl oder Bild, wenn eine reichere Komponente passt.
+- Rhythmus: keine zwei aufeinanderfolgenden Abschnitte mit demselben Aufbau. `surface: alt | plain` an `steps`, `tempo`, `landingFlow`, `landingBento` steuert die Fläche, damit Moritz' Reihenfolge nicht zwei helle Flächen nebeneinander erzwingt.
+- Verlaufsworte: je Seite mehrere Schlagzeilen mit einem `*Begriff*`, nie zwei in einer Zeile. Die Nachhaltigkeits-Section wertet `*…*` je Zeile aus (markierte Zeile im Verlauf, weitere Zeilen als Kontur).
+- Optionale Felder dafür: `steps[].icon` (Icon-Raster statt Liste, Text dann optional; bei sieben Punkten füllt `cta` die achte Zelle), `landingTeaser.packages/note/more` (Paketkarten unter dem Konfigurator-Teaser, `[data-pick-paket]` für den Himmel), `landingSite.points/cta/quality` (Punkte mit Haken, Zulassungen als Logo-Reihe), `sustainability.image/cta`, `textMedia.headAbove`, `landingBento.items[].subtitle`, `comparison.cta`, `landingPrice.cta`. Section-Köpfe trennen mehrere Absätze an Leerzeilen.
+
 ## Bewusst nicht (mehr)
 
 - Drei Titelschnitte (voll/Kontur/Verlauf) als AI-Tell

@@ -16,7 +16,7 @@ import Icon from '../Icon.astro';
 import { SHOW_PACKAGES } from '../../content/show-packages';
 import { getPackageDetails } from '../../content/package-details';
 type Props = Extract<Section, { type: 'landingPrice' }> & { index: number };
-const { kicker, headline, text, package: pkg, offer, customPrice, unit, groups, bonus, closing, id = 'preise', index } = Astro.props;
+const { kicker, headline, text, package: pkg, offer, customPrice, unit, groups, bonus, closing, cta, id = 'preise', index } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
 const T = index === 0 ? 'h2' : 'h3';
 const p = pkg ? SHOW_PACKAGES[pkg] : undefined;
@@ -50,10 +50,12 @@ const scale = p && Number.isFinite(p.max) ? t('landingprice.upToValueDronesValue
       {bonus && <div class="lp-bonus"><span class="lp-bonus-v grad">{factText(bonus.value,locale)}</span><p>{bonus.text}</p></div>}
     </div>
   </div>
+  {cta && <p class="lp-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
   <CtaBox {...closing} level={T} class="lp-close" />
 </section>
 
 <style>
+  .lp-more { margin: clamp(var(--space-5), 2.6vw, var(--space-8)) 0 0; }
   .lp-card { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr); border-radius: var(--radius); background: var(--ground); border: 1px solid var(--line-strong); }
   .lp-price { display: grid; gap: var(--space-2-5); align-content: start; padding: clamp(var(--space-7), 4vw, var(--space-14)); border-right: 1px solid var(--line); }
   .lp-pkg { display: flex; align-items: center; gap: var(--space-3-5); margin-bottom: clamp(var(--space-2-5), 2vw, var(--space-6)); }

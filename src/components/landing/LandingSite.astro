@@ -17,7 +17,14 @@ import SectionHead from '../SectionHead.astro';
 import Icon from '../Icon.astro';
 import ComparisonCell from '../ComparisonCell.astro';
 type Props = Extract<Section, { type: 'landingSite' }> & { index: number };
-const { kicker, headline, text, variant, diagram, items, responsibilities, safeguards, download, id = 'location', index } = landingSiteContent(Astro.props,locale);
+const { kicker, headline, text, variant, diagram, items, responsibilities, safeguards, download, points, cta, quality, id = 'location', index } = landingSiteContent(Astro.props,locale);
+// Zulassungen und Belege wie die Leiste „Presse & Qualität“ im Prototyp (LBA-, EASA-, naturstrom-Logo nur mit Freigabe
+// und vorhandener Datei, sonst Verlaufs-Icon); nachrangige Belege klein als Zeile darunter (Startseite #sicherheit, Indoor).
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+const QICON = { permit: 'file-badge', sound: 'audio-lines', shield: 'shield-check', leaf: 'leaf' } as const;
+const seals = (quality ?? []).filter((q) => !q.secondary).map((q) => ({ ...q, show: Boolean(q.cleared && q.logo && existsSync(join(process.cwd(), 'public', q.logo))) }));
+const minor = (quality ?? []).filter((q) => q.secondary);
 const sharedField=(key:string)=>Astro.props.safetyRef?field({collection:'safetyConcept',id:'configuration'},[locale,key],{mode:'panel'}):{};
 const H = index === 0 ? 'h1' : 'h2';
 const T = index === 0 ? 'h2' : 'h3';
@@ -51,7 +58,10 @@ const markers = variant === 'outdoor'
   : [{ zone: 'ceiling', x: 49, y: 28 }, { zone: 'drones', x: 262, y: 83 }, { zone: 'floor', x: 118, y: 285 }, { zone: 'kit', x: 305, y: 442 }, { zone: 'guests', x: 350, y: 160 }];
 ---
 <section class="section ls-site" id={id} aria-labelledby={`${id}-h`}>
-  <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
+  <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H}>
+    {points && points.length > 0 && <ul class="st-points">{points.map((point) => <li><Icon name="check" size={20} class="g" /><span>{point.value}</span></li>)}</ul>}
+    {cta && <p class="st-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
+  </SectionHead>
   <div class="st">
     <figure {...sharedField("diagram")} class="st-fig">
       <svg viewBox={variant === 'outdoor' ? '0 0 400 400' : '0 0 400 490'} role="img" aria-labelledby={`${id}-diagram-title ${id}-diagram-desc`}>
@@ -116,6 +126,10 @@ const markers = variant === 'outdoor'
   {safeguards && <div class="st-safeguards">
     {safeguards.map((item) => <IconFeature icon={item.icon} title={item.title} text={factText(item.text,locale)} level={T} />)}
   </div>}
+  {(seals.length > 0 || minor.length > 0) && <div class="proof st-proof"><div class="quality">
+    {seals.length > 0 && <ul>{seals.map((q) => <IconFeature as="li" icon={QICON[q.icon]} logo={q.show ? q.logo : undefined} title={q.title} text={q.text} level={T} />)}</ul>}
+    {minor.length > 0 && <ul class="q-minor">{minor.map((q) => <IconFeature as="li" variant="compact" icon={QICON[q.icon]} title={q.title} text={q.text} />)}</ul>}
+  </div></div>}
   <div class="st-who">
     <T id={`${id}-who`}>{t('landingsite.more')}</T>
     <table aria-labelledby={`${id}-who`}>
@@ -253,6 +267,11 @@ const markers = variant === 'outdoor'
   .st-items h2, .st-items h3 { font-size: clamp(1.25rem, 1.6vw, 1.5rem); }
   .st-value { display: block; margin-top: var(--space-2); color: var(--zc, var(--accent)); font: 500 clamp(1.0625rem, 1.3vw, 1.25rem)/1.2 var(--display); }
   .ls-site p { line-height: 1.65; }
+  .st-points { list-style: none; margin: clamp(var(--space-5), 2.4vw, var(--space-7)) 0 0; padding: 0; display: grid; gap: var(--space-3); max-width: 46rem; }
+  .st-points li { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); gap: var(--space-3); align-items: start; color: var(--head); font-size: var(--text-copy); }
+  .st-points li :global(.ico) { margin-top: var(--space-0-5); }
+  .st-more { margin-top: clamp(var(--space-5), 2.6vw, var(--space-8)); }
+  .st-proof { margin-top: clamp(var(--space-10), 5vw, var(--space-18)); padding-block: clamp(var(--space-8), 4vw, var(--space-12)); border-block: 1px solid var(--line); }
   .st-safeguards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-8); margin-top: clamp(var(--space-10), 5vw, var(--space-18)); padding-block: var(--space-8); border-block: 1px solid var(--line); }
   .st-download { margin-top: var(--space-7); display: flex; align-items: center; gap: var(--space-2-5); }
   .st-download :global(.ico) { width: 1.125rem; height: 1.125rem; flex: 0 0 auto; }

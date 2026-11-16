@@ -2,18 +2,37 @@
 import type { Section } from '../../content.config';
 import ProcessList from '../ProcessList.astro';
 import SectionHead from '../SectionHead.astro';
+import IconFeature from '../IconFeature.astro';
+import { forPath } from '../../i18n/server';
+const { localHref } = forPath(Astro.url.pathname);
 type Props = Extract<Section, { type: 'steps' }> & { index: number };
-const { headline, text, steps, ownNumbers, id = `s${Astro.props.index}`, index, kicker } = Astro.props;
+const { headline, text, steps, ownNumbers, id = `s${Astro.props.index}`, index, kicker, cta, surface } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
+const T = index === 0 ? 'h2' : 'h3';
+// Tragen alle Schritte ein Icon, erscheinen sie als offenes Icon-Raster (.ig/.ic wie „Immer inklusive“), z. B. Moritz'
+// Aufzählungen „Komplettpaket“ (15.11.2026: „sieben Haken → Icon-Raster“). Bei sieben Punkten füllt der Link die achte Zelle.
+const icons = steps.every((step) => step.icon);
+const cols = icons && (steps.length % 4 === 0 || steps.length % 4 === 3) ? 4 : 3;
+const ctaInGrid = icons && cta && steps.length % cols !== 0;
 ---
-<section class="section" id={id} aria-labelledby={headingId}>
+<section class:list={['section', { alt: surface === 'alt', 'steps-ig': icons }]} id={id} aria-labelledby={headingId}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
-  <ProcessList items={steps} variant="steps" class={ownNumbers ? 'own-n' : undefined} />
+  {icons ? (
+    <ul class:list={['ig', { 'cols-4': cols === 4 }]} role="list">
+      {steps.map((step) => <IconFeature as="li" class="ic" icon={step.icon} title={step.title} text={step.text} level={T}>{step.subtitle && <p slot="sub" class="ic-sub">{step.subtitle}</p>}</IconFeature>)}
+      {ctaInGrid && <li class="ic ic-more"><a class="link" href={localHref(cta!.href)}>{cta!.label} <span aria-hidden="true">→</span></a></li>}
+    </ul>
+  ) : <ProcessList items={steps} variant="steps" class={ownNumbers ? 'own-n' : undefined} />}
+  {cta && !ctaInGrid && <p class="steps-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
 </section>
 
 <style is:global>
   /* Titel tragen ihre Nummer selbst („#1 Anfrage“) oder sind keine Abfolge („Komplett“, „Schnell“) */
   .steps.own-n li::before { content: none; }
   .steps .st-sub { color: var(--head); font-size: var(--text-md); margin-top: calc(-1 * var(--space-1)); }
+  .steps-ig .ig { list-style: none; margin: 0; padding: 0; }
+  .steps-ig .ic-sub { margin: calc(-1 * var(--space-1-5)) 0 0; color: var(--accent); font: 500 var(--text-md)/1.3 var(--display); }
+  .steps-ig .ic-more { align-content: center; }
+  .steps-more { margin-top: clamp(var(--space-6), 3vw, var(--space-9)); }
 </style>

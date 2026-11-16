@@ -6,11 +6,11 @@ import type { Section } from '../../content.config';
 import SectionHead from '../SectionHead.astro';
 import MetroLine from '../MetroLine.astro';
 type Props = Extract<Section, { type: 'tempo' }> & { index: number };
-const { headline, text, marks, shortcut, facts = [], note, id = 'ablauf', index, kicker } = Astro.props;
+const { headline, text, marks, shortcut, facts = [], note, id = 'ablauf', index, kicker, surface = 'alt' } = Astro.props;
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 ---
-<section class="section alt tempo" id={id} aria-labelledby={headingId}>
+<section class:list={['section', 'tempo', { alt: surface === 'alt' }]} id={id} aria-labelledby={headingId}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
   <MetroLine marks={marks} branch={shortcut} />
   {facts.length > 0 && <FactList items={facts} variant="tempo" />}

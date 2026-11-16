@@ -7,7 +7,8 @@ import SectionHead from '../SectionHead.astro';
 import { plain } from '../accent';
 import ComparisonMatrix from '../ComparisonMatrix.astro';
 type Props = Extract<Section, { type: 'comparison' }> & { index: number };
-const { headline, text, rowHeader = t('comparison.criterion'), columns, rows, note, id = `s${Astro.props.index}`, index, kicker } = Astro.props;
+const { headline, text, rowHeader = t('comparison.criterion'), columns, rows, note, cta, id = `s${Astro.props.index}`, index, kicker } = Astro.props;
+const { localHref } = forPath(Astro.url.pathname);
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const label = plain(headline);
@@ -19,4 +20,6 @@ const label = plain(headline);
     columns={columns.map((label, i) => ({ label: label.value, featured: i === 0 }))}
     rows={rows.map((row) => ({ label: row.label, cells: row.cells ?? row.values.map(item => item.value) }))} />
   {note && <p class="fine mono">{note}</p>}
+  {cta && <p class="cmp-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
 </section>
+<style>.cmp-more { margin-top: clamp(var(--space-6), 3vw, var(--space-9)); }</style>

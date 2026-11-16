@@ -7,7 +7,7 @@ const { icon, logo, title, text, level: H = 'h3', as: Tag = 'div', variant = 'de
 <Tag class:list={['icon-feature', { 'icon-feature-compact': variant === 'compact' }, cls]} {...rest}>
   <slot name="before" />
   {logo ? <LocalImage class="q-logo" src={logo} alt="" loading="lazy" decoding="async" /> : icon && <Icon name={icon} size={variant === 'compact' ? 18 : 36} class={`g ic-ico ${iconClass ?? ''}`} />}
-  <H class="ic-h"><slot name="title">{title}</slot></H>{text && <p id={textId}>{text}</p>}
+  <H class="ic-h"><slot name="title">{title}</slot></H><slot name="sub" />{text && <p id={textId}>{text}</p>}
   <slot />
 </Tag>
 <style is:global>

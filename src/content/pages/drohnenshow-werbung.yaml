@@ -8,8 +8,8 @@ image: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
 sections:
   - type: landingHero
     kicker: Drohnenshow für Werbung und Marketing
-    # weicher Trennstrich: das Wort ist breiter als die Textspalte des Heros (1440 px)
-    headline: "Macht den Himmel zu eurem Produkt\u00ADbotschafter"
+    # weicher Trennstrich: das Wort ist breiter als die Textspalte des Heros (1440 px); „Himmel“ im Logoverlauf
+    headline: "Macht den *Himmel* zu eurem Produkt­botschafter"
     text: "An eurem Logo kommt niemand vorbei: Mit der Erfahrung von über 100 Drohnenshows für Start-ups, KMUs und Weltkonzerne bauen wir Choreografien, die Herzen und Konto füllen."
     cta: { label: Show anfragen, href: "#anfrage" }
     secondary: { label: "☎︎ +49 209 88306562", href: "tel:+4920988306562" }
@@ -20,6 +20,11 @@ sections:
       alt: Volkswagen-Logo aus Drohnen über dem Wolfgangsee, Gäste filmen von einer Terrasse
       width: 1920
       height: 1281
+    # Eckdaten wie im Prototyp; Werte aus Moritz' Texten (48 Stunden, unter zwei Wochen, 1,3 Mio. Euro)
+    facts:
+      - { value: { fact: responseHours, display: hours }, label: bis zur Antwort, "_key": "k_ea8a5bf5b47c7af483ff" }
+      - { value: < 2 Wochen, label: Planung möglich, "_key": "k_63b5beb0dea54789e039" }
+      - { value: "1,3 Mio. €", label: Haftpflicht, "_key": "k_483deeb0d6c7d2d900aa" }
     _key: k_cabb99b46c806fc432fa
 
   - type: logoBar
@@ -53,51 +58,68 @@ sections:
       - { name: WAZ, logo: /brand/logos/presse-waz.svg, cleared: true, note: Ruhrorter Hafenfest, href: "https://www.waz.de/lokales/duisburg/article409722481/ruhrorter-hafenfest-die-geheimnisse-hinter-dem-neuen-highlight.html", "_key": "k_af6d26f3bd912a26bb0f" }
     _key: k_4f396c969776c1714c2c
 
+  # Kopf über voller Breite (rechts daneben fliegt der Himmel), darunter Moritz' Text neben der Ford-Formation aus der
+  # früheren Bildkachel „Ein Logo, das man erkennt“.
   - type: textMedia
     id: marketing
     kicker: Werbung und Marketing mit Drohnen
-    headline: Euer Unternehmen auf der größten Bühne der Welt
+    headline: Euer Unternehmen auf der *größten Bühne* der Welt
+    headAbove: true
     body: |-
       Das neue Produkt, von dessen Launch jede:r etwas mitbekommen soll. Das Werbevideo mit Wow-Effekt. Die Brand-Kampagne, die euer Logo wieder in den Köpfen einbrennt.
 
       Gemeinsam bauen wir eine individuelle Choreografie, die die Geschichte eurer Marke erzählt. Mehr als nur euer Logo, ein Claim oder euer Firmenname – sondern emotionales Storytelling, das verzaubert.
 
       Unsere Drohnenshows sind eine Alternative zum Feuerwerk, die noch kaum jemand kennt. Aufmerksamkeit garantiert, selbst aus Kilometern Entfernung.
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2024/12/FORD_comp.png
+      alt: Ford-Schriftzug aus blauen Drohnen über dem Werksgelände in Köln
+      width: 1929
+      height: 1133
     cta: { label: Show anfragen, href: "#anfrage" }
     _key: k_7abf894f6f4dfb7d5b8c
 
-  - type: textMedia
+  # Moritz' sieben Punkte als Icon-Raster (wie „Immer inklusive“), Bezeichnung als Überschrift, der Satz darunter
+  - type: steps
     id: komplettpaket
     kicker: Komplettpaket
     headline: Alles drin für euer Marketing
-    body: |-
-      Von der Idee bis zum Applaus begleiten wir euch in der gesamten Planung und Durchführung.
-
-      - Technik: Wir stellen Hardware, Software und Lichtdrohnen.
-      - Musik: Lasst die Drohnen zu eurer Playlist tanzen.
-      - Werbematerial: Auf Wunsch kreieren wir Fotos und Filmaufnahmen.
-      - Genehmigungen: Wir übernehmen die komplette Bürokratie.
-      - Sicherheit: LBA- und EASA-zertifiziert, Haftpflicht bis 1,3 Mio. Euro.
-      - Schnelligkeit: Planung in unter zwei Wochen möglich.
-      - International: In Deutschland, Europa und weltweit
+    text: Von der Idee bis zum Applaus begleiten wir euch in der gesamten Planung und Durchführung.
+    surface: alt
+    steps:
+      - { icon: cpu, title: Technik, text: "Wir stellen Hardware, Software und Lichtdrohnen.", "_key": "k_af05b8945c8be9debc06" }
+      - { icon: music, title: Musik, text: Lasst die Drohnen zu eurer Playlist tanzen., "_key": "k_6fde2934223b459a104b" }
+      - { icon: camera, title: Werbematerial, text: Auf Wunsch kreieren wir Fotos und Filmaufnahmen., "_key": "k_b70646235e480f243d27" }
+      - { icon: file-badge, title: Genehmigungen, text: Wir übernehmen die komplette Bürokratie., "_key": "k_a6468dcb0adc9a4e3750" }
+      - { icon: shield-check, title: Sicherheit, text: "LBA- und EASA-zertifiziert, Haftpflicht bis 1,3 Mio. Euro.", "_key": "k_9730a94aee3b6c9a4cd7" }
+      - { icon: timer, title: Schnelligkeit, text: Planung in unter zwei Wochen möglich., "_key": "k_d8f5a13e0b38775b6e79" }
+      - { icon: globe, title: International, text: "In Deutschland, Europa und weltweit", "_key": "k_763f57501b2e5cc8475e" }
     cta: { label: Show anfragen, href: "#anfrage" }
     _key: k_5fce2f823d9e547c9f3a
 
-  - type: steps
+  # Vorteile als Kacheln wie „Agenturen“ im Prototyp: „Wir fliegen, ihr glänzt“ als große Aussage, zwei Icon-Kacheln,
+  # darunter der Agentur-Abschluss mit Gesichtern (Text aus dem Prototyp). #agenturen ist Ziel der Agentur-Links.
+  - type: landingBento
     id: agenturen
     kicker: Vorteile
     headline: Unsere Erfahrung aus 150+ B2B-Shows
-    ownNumbers: true
-    steps:
-      - { title: "Wir fliegen, ihr glänzt", text: Gerne unterschreiben wir NDAs für eure Werbe- oder Marketing-Agentur., "_key": "k_8949ebf1a13706740934" }
-      - { title: Markensicher, text: "Ihr gebt alle Motive frei, um die Kontrolle über eure Brand zu behalten.", "_key": "k_fbb4c3639f44f4ea8804" }
-      - { title: KPI-orientiert, text: "Die Ergebnisse zählen: Wir arbeiten mit euch zusammen, um Erfolge zu messen.", "_key": "k_cee3e178d47544d71e22" }
+    lead:
+      icon: sparkles
+      title: Wir fliegen, *ihr glänzt*
+      text: Gerne unterschreiben wir NDAs für eure Werbe- oder Marketing-Agentur.
+    items:
+      - { icon: thumbs-up, title: Markensicher, text: "Ihr gebt alle Motive frei, um die Kontrolle über eure Brand zu behalten.", "_key": "k_fbb4c3639f44f4ea8804" }
+      - { icon: chart-line, title: KPI-orientiert, text: "Die Ergebnisse zählen: Wir arbeiten mit euch zusammen, um Erfolge zu messen.", "_key": "k_cee3e178d47544d71e22" }
+    closing:
+      headline: Ein Projekt für eure Kund:innen?
+      text: Erzählt uns davon. Wir melden uns innerhalb von 48 Stunden und stimmen alles Weitere vertraulich mit euch ab.
+      button: { label: Als Agentur anfragen, href: "/kontakt/?anlass=agentur" }
     _key: k_35809e7974828f33e234
 
   - type: landingRefs
     id: referenzen
     kicker: Referenzen
-    headline: Von Hunderttausenden gesehen
+    headline: Von *Hunderttausenden* gesehen
     projects:
       - spotify-luciano-apache
       - loreal-prada-rheinturm
@@ -110,32 +132,61 @@ sections:
     todo: Für E.ON fehlen Showbild, genaues Datum und Fallstudie.
     _key: k_1f617bd698f4f907e713
 
-  - type: steps
+  # Ablauf als Verlaufsstrahl wie „Freigabe“ im Prototyp, Zeitangaben aus Moritz' Texten
+  - type: landingFlow
     id: ablauf
     kicker: Ablauf
-    headline: In drei Schritten zur Show
-    ownNumbers: true
+    headline: In drei Schritten zur *Show*
     steps:
-      - { title: "#1 Anfrage", text: "Ihr erzählt uns von Datum, Ort und Anlass. Wir melden uns innerhalb von 48 Stunden zurück, um ein Erstgespräch zu vereinbaren. Eine Begehung ist selten nötig.", "_key": "k_e01bd8edb2e65fef3485" }
-      - { title: "#2 Planung", text: "Wir entwickeln die Choreo samt Motiven und Musik. Ihr seid so viel involviert, wie ihr möchtet. Mit Zustimmung der Grundstückseigentümer:innen holen wir alle Genehmigungen ein.", "_key": "k_b22b05daa48eb35fd92c" }
-      - { title: "#3 Showtag", text: "Wir kümmern uns um alles: Aufbau dreieinhalb Stunden vor der Aufführung, Sicherheit, Abbau. Die Drohnen-Werbung selbst läuft für bis zu 25 Minuten.", "_key": "k_9ebfd8a7c65e0d2211e6" }
+      - { title: "#1 Anfrage", text: "Ihr erzählt uns von Datum, Ort und Anlass. Wir melden uns innerhalb von 48 Stunden zurück, um ein Erstgespräch zu vereinbaren. Eine Begehung ist selten nötig.", duration: 48 h, "_key": "k_e01bd8edb2e65fef3485" }
+      - { title: "#2 Planung", text: "Wir entwickeln die Choreo samt Motiven und Musik. Ihr seid so viel involviert, wie ihr möchtet. Mit Zustimmung der Grundstückseigentümer:innen holen wir alle Genehmigungen ein.", duration: unter 2 Wochen möglich, "_key": "k_b22b05daa48eb35fd92c" }
+      - { title: "#3 Showtag", text: "Wir kümmern uns um alles: Aufbau dreieinhalb Stunden vor der Aufführung, Sicherheit, Abbau. Die Drohnen-Werbung selbst läuft für bis zu 25 Minuten.", duration: "3,5 h Aufbau · bis 25 Min Show", "_key": "k_9ebfd8a7c65e0d2211e6" }
     _key: k_a7152263e0461f67ead9
 
+  # Entwurf für Moritz (Marc, 03.11.2026: „was übernehmen wir, was übernehmt ihr“ ist für Marken genauso relevant).
+  # Zonen und Maße wie auf der Hochzeitsseite, Quellen: docs/sicherheitskonzept-quellen.md. Aufgaben nach dem Ablauf oben
+  # (Logo schicken, jedes Motiv freigeben) und dem Technik-Datenblatt.
+  - type: landingSite
+    id: standort
+    kicker: Standort
+    headline: Passt euer Standort?
+    text: Schickt uns die Adresse und die geplante Position eures Publikums. Vor dem Angebot prüfen wir, ob und wie die Show dort möglich ist.
+    variant: outdoor
+    todo: FlyingStars muss die Startflächen je Drohnenzahl und die standortabhängigen Abstände bestätigen; 15 × 15 und 25 × 25 Meter widersprechen sich in den Quellen. Die Zeichnung bleibt ein Beispiel. Moritz muss die Aufgabenliste für Markenshows freigeben.
+    additionalResponsibilities:
+      - task: Logo schicken und jedes Motiv freigeben
+        us: none
+        you: full
+        _key: k_f9022e9498a7fad0753a
+      - task: Motive entwerfen und animieren
+        us: full
+        you: none
+        _key: k_827a4c6b6a7c553bffad
+    safetyRef: safety-concept
+    _key: k_c4fd3256a7a568abb827
+
+  # Preise: Konfigurator-Teaser mit Logo-Ablauf und die Paketkarten in ihren Farben (Prototyp: „Pakete“ + „Logo“)
   - type: landingTeaser
     id: preise
     kicker: Preise
-    headline: Stellt eure Show zusammen
+    headline: Stellt *eure Show* zusammen
     text: Startet mit unseren Basis-Paketen und ergänzt sie um mehr Drohnen, mehr Individualisierung, mehr Spektakel. Immer im Festpaket ohne Überraschungen.
     href: "/drohnenshow-preise/?anlass=launch#konfigurator"
     cta: Show planen
     loop: marke
-    todo: FlyingStars muss die Motive, Drohnenzahlen und Freischaltstufen anhand von docs/show-motive-inventar.md fachlich bestätigen. Die Vorschau ist kein Flugplan.
+    packages:
+      - { name: SPARK, label: Klassisch in 2D, "_key": "k_17eea920ec0491047a40" }
+      - { name: HORIZON, label: 3D in Bewegung, badge: Bestseller, highlight: true, "_key": "k_b94e0363e3a39e7426c3" }
+      - { name: ODYSSEY, label: Erzählte 3D-Show, "_key": "k_93070fc050069e397d62" }
+    note: Alle Preise netto zzgl. Anfahrt
+    more: { label: Alle Leistungen und Preise, href: /drohnenshow-preise/ }
+    todo: FlyingStars muss die Motive, Drohnenzahlen und Freischaltstufen anhand von docs/show-motive-inventar.md fachlich bestätigen. Die Vorschau ist kein Flugplan. Paketgrenzen und Preisstruktur 2027 sind noch offen.
     _key: k_1f4f4d01bf5354a2a7ba
 
   - type: team
     id: ueber
     kicker: Über FlyingStars
-    headline: Nach 150+ Shows noch immer wie beim ersten Mal
+    headline: Nach 150+ Shows noch immer wie beim *ersten Mal*
     text: Die allermeisten Menschen sehen zum ersten Mal eine Drohnenshow. Es ist unsere Aufgabe, sie mitzureißen! Deshalb führen wir seit 2021 Aufführungen durch, die lange im Kopf und tief im Herzen bleiben.
     members:
       - personId: ronja-donsbach
@@ -151,7 +202,7 @@ sections:
 
   - type: contactForm
     kicker: Drohnen-Werbung und -Marketing buchen
-    headline: Erzählt uns von eurer Kampagne
+    headline: Erzählt uns von eurer *Kampagne*
     text: Lasst uns brainstormen, wie eure Marke am Himmel aussehen könnte – oder sichert euch gleich einen der freien Termine 2027 und 2028.
     _key: k_0a54e0d092548e4f7d56
 

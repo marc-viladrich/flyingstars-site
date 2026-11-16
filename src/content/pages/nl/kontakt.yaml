@@ -34,14 +34,14 @@ sections:
     visitNote: Meld jullie vooraf even aan.
     todo: Teamfoto fehlt, bis dahin stehen hier die Porträts der Geschäftsführer:innen. FlyingStars muss den Terminbuchungs-Link und die Kontaktwege vor dem Relaunch bestätigen; Moritz muss die Kontakttexte und EN/NL prüfen.
     _key: k_b12e1279f01fbae7cfb2
-translationSourceHash: b4a5bdff258ae1dd4b2c8abb050654e1d4b8b98354ba154543d16c6b0aaf8d3b
+translationSourceHash: dc7b0baadf290e389ea4a4ea8c9ea53b6d79fb066cfa9448b9b26af380201efe
 noindex: false
 translationContractVersion: 2
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: b4a5bdff258ae1dd4b2c8abb050654e1d4b8b98354ba154543d16c6b0aaf8d3b
+  sourceFingerprint: dc7b0baadf290e389ea4a4ea8c9ea53b6d79fb066cfa9448b9b26af380201efe
   legacy:
     provenanceFile: docs/i18n/content-provenance.json
     migration: I01-v2-2026-11-04
@@ -86,6 +86,10 @@ translationEvidence:
       sourceFingerprint: 8fa2ee945b6e019216bb0f0b69e2fbda14b8c045e468036c38c29a13ff349a5f
       targetFingerprint: 7d5195dd5ef9305028229d72ee507b1f96244b271d0e563cf9e0b8362bc227bf
       status: adopted-existing
+    - address: /sections/@k_fda489b526df488c90a3/cta
+      sourceFingerprint: 493ca0d646689f26a117a5f67a8f72b810c4e85dd2743df7e931e9160130d29e
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
     - address: /sections/@k_fda489b526df488c90a3/headline
       sourceFingerprint: 400ae2e2a8597c04d0b9f9b9ddc86815eaa421fb58dbc738c137cac5af37be7c
       targetFingerprint: 9608a55f310c0d3557f000311322dfeed62636db473ada04fc7cf09c6def14e4
@@ -103,7 +107,7 @@ translationEvidence:
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_fda489b526df488c90a3/steps/@k_72829c00aebbc8f431d5/text
-      sourceFingerprint: e9a163cd6649645f36941b30dd34a396aa7a17a854edf30e9defee98699634de
+      sourceFingerprint: 85d7b327973b87240d078589558e72ff9aa97fe96f6b4223efb4f0e4765da866
       targetFingerprint: 3b827d08a25dcdcb4b181ac771f16bf4f0630b504faf910b102d10e71ead7deb
       status: adopted-existing
     - address: /sections/@k_fda489b526df488c90a3/steps/@k_72829c00aebbc8f431d5/title
@@ -119,7 +123,7 @@ translationEvidence:
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_fda489b526df488c90a3/steps/@k_a160e9ad6c320d2f6921/text
-      sourceFingerprint: 976c266b9990a1bb18d866cedd3e4f92baf39d8516fb5645119a7c01d29ec72b
+      sourceFingerprint: caa1a893aa6d357673376e7ee495b9647d653127ac53c4fe03553612c13e7139
       targetFingerprint: 05f1cb99ad3c44ffa36b3d53e3b57f90fb885e76d5cd29449b3535e0897f64d6
       status: adopted-existing
     - address: /sections/@k_fda489b526df488c90a3/steps/@k_a160e9ad6c320d2f6921/title
@@ -135,7 +139,7 @@ translationEvidence:
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_fda489b526df488c90a3/steps/@k_f089638c8eafa18d9f2a/text
-      sourceFingerprint: d6d2a8965014aa2bbd86cf029717cad0ab4f514a44ccc4816a2a9c549ae6403d
+      sourceFingerprint: d14026c506b41bd7d35be673d0b627759ba4af3dc1c8bfcdad8528cca7a4c880
       targetFingerprint: f0ceffa5ab126ef456d48fd68b93f888c9cdd6a5c217d9e7e4c037e7bf1b40ad
       status: adopted-existing
     - address: /sections/@k_fda489b526df488c90a3/steps/@k_f089638c8eafa18d9f2a/title
@@ -151,7 +155,7 @@ translationEvidence:
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_fda489b526df488c90a3/steps/@k_f79e63f76325e9bc1fb5/text
-      sourceFingerprint: 84bb7866596d934d48544dc8462fe6bef7a50ef8e558b2f54f810bef785e33e7
+      sourceFingerprint: 671119fd7e6eaf581d2a3613c1bcf84e1b84a5b590174d274e4c21f22cfe9dec
       targetFingerprint: 0304ac5a133221ef323e0f3911ab817642c31672571ee02b6a01293d2a4d7859
       status: adopted-existing
     - address: /sections/@k_fda489b526df488c90a3/steps/@k_f79e63f76325e9bc1fb5/title

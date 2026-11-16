@@ -17,7 +17,7 @@ const cls = { steps: 'steps', milestones: 'ms', flow: 'lf-steps', metro: 'ruler'
       <div class="ms-body"><T>{item.title}</T>{item.text && <p>{item.text}</p>}</div>
     </> : variant === 'flow' ? <>
       <span class="lf-dot" aria-hidden="true">{item.gate && <Icon name="check" size={16} strokeWidth={2.6} />}</span>
-      <div class="lf-body"><span class="lf-n mono">{item.ordinal}{item.gate && <> · Freigabe</>}</span><T>{item.title}</T><p>{item.text}</p>{item.duration && <span class="lf-t mono">{item.duration}</span>}</div>
+      <div class="lf-body">{/* Titel mit eigener Nummer („#1 Anfrage“, Moritz) brauchen keine zweite */}{!/^#\d/.test(item.title ?? '') && <span class="lf-n mono">{item.ordinal}{item.gate && <> · Freigabe</>}</span>}<T>{item.title}</T><p>{item.text}</p>{item.duration && <span class="lf-t mono">{item.duration}</span>}</div>
     </> : variant === 'metro' ? <>
       <span class="dot" aria-hidden="true"></span><b class="v">{factText(item.value,locale)}</b><span class="l mono">{item.label}</span>{item.text && <p>{item.text}</p>}
     </> : <><T>{item.title}</T>{(item as any).subtitle && <p class="st-sub">{(item as any).subtitle}</p>}<p>{item.text}</p>{item.duration && <span class="t mono">{item.duration}</span>}</>}

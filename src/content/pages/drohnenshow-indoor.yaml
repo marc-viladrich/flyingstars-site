@@ -8,7 +8,7 @@ image: https://flyingstars.art/wp-content/uploads/2025/04/IMG_0201.jpg
 sections:
   - type: landingHero
     kicker: Indoor-Drohnenshow
-    headline: Holt den Himmel rein
+    headline: Holt den *Himmel* rein
     text: Tiefschwarze Dunkelheit, knisternde Stimmung – dann fliegt unser Leuchtschwarm los und reißt die komplette Halle mit. Profitiert von der Erfahrung aus 150+ Drohnenshows, jetzt auch indoor.
     cta: { label: Show anfragen, href: "#anfrage" }
     secondary: { label: "☎︎ +49 209 88306562", href: "tel:+4920988306562" }
@@ -19,6 +19,11 @@ sections:
       alt: Dutzende leuchtende Drohnen in Reihen über dem Boden einer abgedunkelten Sporthalle
       width: 2560
       height: 1440
+    # Eckdaten wie im Prototyp, Werte aus den Faktenbesitzern (deckungsgleich mit Moritz: ab 20 Drohnen, fünf bis acht Minuten, mindestens drei Meter)
+    facts:
+      - { value: "ab {{offer.indoor.drones.min}}", label: Drohnen, "_key": "k_9c43046412c4f98a6eaa" }
+      - { value: "{{duration.indoor.min}}–{{duration.indoor.max}} Min", label: Showdauer, "_key": "k_f28af46100a885028278" }
+      - { value: "ab {{offer.indoor.ceilingMin}} m", label: Deckenhöhe, "_key": "k_44b29fef37672879c7e3" }
     todo: FlyingStars muss die Zuordnung von Siemens-Film und Hallen-Standbildern zur Hannover Messe bestätigen.
     _key: k_9ad4a65122a9edecb81a
 
@@ -67,83 +72,187 @@ sections:
       - { name: WAZ, logo: /brand/logos/presse-waz.svg, cleared: true, note: Ruhrorter Hafenfest, href: "https://www.waz.de/lokales/duisburg/article409722481/ruhrorter-hafenfest-die-geheimnisse-hinter-dem-neuen-highlight.html", "_key": "k_af6d26f3bd912a26bb0f" }
     _key: k_48c987e8cc523f41aa47
 
-  - type: steps
+  # Anlässe als Kacheln: Firmen als Bildkachel, Konzerte und Privat mit Verlaufs-Icons; Moritz' Unterzeilen bleiben
+  - type: landingBento
     id: anlaesse
     kicker: Anlässe
-    headline: Das Highlight jeder Feier
-    ownNumbers: true
-    steps:
-      - { title: Firmen, subtitle: Präsentiert Produkte spektakulär, text: "Individuelle Motive mit Logos, Claims und Co. in euren Farben.", "_key": "k_e68fdbc492329c6e83ff" }
-      - { title: Konzerte, subtitle: Fordert zum Tanz auf, text: "Maßgeschneiderte Choreografie, synchron zur Musik.", "_key": "k_2ea3934f368683201be3" }
-      - { title: Privat, subtitle: Verzaubert eure Gäste, text: "Initialen, Jahreszahlen und mehr von Brautpaaren oder Geburtstagskindern.", "_key": "k_fe65755e9b1413b0df53" }
+    headline: Das *Highlight* jeder Feier
+    lead:
+      label: Firmen
+      title: Präsentiert Produkte spektakulär
+      text: "Individuelle Motive mit Logos, Claims und Co. in euren Farben."
+      image:
+        src: https://flyingstars.art/wp-content/uploads/2025/04/0L9A4365.jpg
+        alt: Kleine Drohnen mit Rotorschutz leuchten blau auf einem dunklen Boden
+        width: 2560
+        height: 1708
+    items:
+      - { icon: music, title: Konzerte, subtitle: Fordert zum Tanz auf, text: "Maßgeschneiderte Choreografie, synchron zur Musik.", "_key": "k_2ea3934f368683201be3" }
+      - { icon: heart, title: Privat, subtitle: Verzaubert eure Gäste, text: "Initialen, Jahreszahlen und mehr von Brautpaaren oder Geburtstagskindern.", "_key": "k_fe65755e9b1413b0df53" }
     _key: k_dc6df0ca92933bbd74d6
 
-  - type: textMedia
+  # „Faszinierend wie Feuerwerk, sicher wie Laser“ mit dem farbigen Vergleich Drohne/Feuerwerk/Laser aus dem Prototyp
+  # (Startseite), auf die Zeilen beschränkt, die auch drinnen gelten
+  - type: comparison
     id: unterschied
     kicker: Alternative zur Lichtshow
-    headline: Faszinierend wie Feuerwerk, sicher wie Laser
-    body: |-
+    headline: Faszinierend wie *Feuerwerk*, sicher wie Laser
+    text: |-
       Wir holen das Funkeln, den Glanz und die staunenden Gäste des Feuerwerks unter euer Dach. Ohne Abfall, Rauch und nur mit einem leisen Surren.
 
       Eure Indoor-Drohnenshow ist eine fünf- bis achtminütige Choreografie, die die Aufmerksamkeit aller Besucher:innen fesselt. Denn kaum ein Gast hat bereits einen der magischen Tänze gesehen – geschweige denn im Innenraum.
 
       Deshalb gestalten wir faszinierende Motive unterlegt mit Musik, die eure Geschichte erzählen. Ab 50 Drohnen auch mit individuellen Figuren wie eurem Logo oder euren Initialen.
+    rowHeader: Kriterium
+    columns: [ {"_key":"k_35fe1e9bdcb35ca70a40","value":"Drohnenshow"}, {"_key":"k_8a5793729caf7ee7bb24","value":"Feuerwerk"}, {"_key":"k_1348f142b68b9a4f7dec","value":"Lasershow"} ]
+    rows:
+      - label: Logos und Schriftzüge am Himmel
+        values: [ {"_key":"k_4e20011953c10abc050d","value":"Ja, auch in 3D"}, {"_key":"k_0c7303d47e59ca436045","value":"Nein"}, {"_key":"k_c89afa5926ba3d943a64","value":"Teilweise, nur auf Flächen oder Dunst"} ]
+        cells:
+          - { label: Ja, text: auch in 3D, tone: y, "_key": "k_47b9b5b5261e69a115d5" }
+          - { label: Nein, text: "", tone: n, "_key": "k_fc487fc59fd960d1928d" }
+          - { label: Teilweise, text: nur auf Flächen oder Dunst, tone: p, "_key": "k_c8549edec154ca598860" }
+        _key: k_832f851d4228bc7b635c
+      - label: Lautstärke
+        values: [ {"_key":"k_23c94aafe60c3db818be","value":"Leise, Musik nach Wahl"}, {"_key":"k_34f3061f02f4783d2bcd","value":"Sehr laut"}, {"_key":"k_4ce91fd2da007514a0c8","value":"Leise"} ]
+        cells:
+          - { label: Leise, text: Musik nach Wahl, tone: y, "_key": "k_8c7fc056c0e8c4889751" }
+          - { label: Sehr laut, text: "", tone: n, "_key": "k_7a91eeceac4f9ba38f9d" }
+          - { label: Leise, text: "", tone: y, "_key": "k_bc839abc217de9f2cb10" }
+        _key: k_ccbc8181493982d85be6
+      - label: Rauch, Feinstaub, Müll vor Ort
+        values: [ {"_key":"k_25db6102f99916845e78","value":"Keine"}, {"_key":"k_d66d6e5146a806d685ec","value":"Viel"}, {"_key":"k_bebbb013f1b9a8760c6d","value":"Dunst für sichtbare Strahlen nötig"} ]
+        cells:
+          - { label: Keine, text: "", tone: y, "_key": "k_715f746a641bd26d2e9b" }
+          - { label: Viel, text: "", tone: n, "_key": "k_75099aa0524ac5661485" }
+          - { label: Dunst, text: für sichtbare Strahlen nötig, tone: p, "_key": "k_eae712d0bb9edf3fae70" }
+        _key: k_d6c122d68757ae0de7b7
+      - label: Brandgefahr
+        values: [ {"_key":"k_4fdf93f596e48ed9c82b","value":"Keine"}, {"_key":"k_80b9b7607ee8d5f3d7fc","value":"Ja, Verbote bei Trockenheit"}, {"_key":"k_273861c12cef59a766b4","value":"Keine"} ]
+        cells:
+          - { label: Keine, text: "", tone: y, "_key": "k_d2f3d2eee631c726274c" }
+          - { label: Ja, text: Verbote bei Trockenheit, tone: n, "_key": "k_192172d42ff044ee3d97" }
+          - { label: Keine, text: "", tone: y, "_key": "k_1f636ff0cddb84d5ad79" }
+        _key: k_a4610cf4e6b52b972490
+    note: Entwurf · fachliche Prüfung ausstehend
     cta: { label: Show anfragen, href: "#anfrage" }
+    todo: FlyingStars muss den Vergleich fachlich prüfen, insbesondere pauschale Aussagen zu Brandgefahr, Lautstärke und Umweltwirkung, und ob Feuerwerk drinnen überhaupt Vergleichsmaßstab sein soll.
     _key: k_c030e32b9a3f99dac46e
 
-  - type: textMedia
+  # Moritz' sieben Punkte als Icon-Raster, der Link füllt die achte Zelle
+  - type: steps
     id: komplettpaket
     kicker: Komplettpaket
-    headline: Seid Gast auf eurem eigenen Event
-    body: |-
-      Wir kümmern uns um die komplette Planung, Durchführung und den Abbau. Ihr genießt die Aufführung.
-
-      - Ab 20 Drohnen, aufwärts unbegrenzt.
-      - Synchronisiert mit Musik.
-      - Auf Wunsch mit Foto- und Videoaufnahmen.
-      - Wir übernehmen alle Genehmigungen.
-      - Strenge Sicherheitsstandards.
-      - Vorbereitung in unter zwei Wochen möglich.
-      - In Deutschland, Europa und weltweit.
+    headline: Seid *Gast* auf eurem eigenen Event
+    text: Wir kümmern uns um die komplette Planung, Durchführung und den Abbau. Ihr genießt die Aufführung.
+    steps:
+      - { icon: sparkles, title: "Ab 20 Drohnen, aufwärts unbegrenzt.", "_key": "k_741d87d671268b7a4706" }
+      - { icon: music, title: Synchronisiert mit Musik., "_key": "k_b17b57f09d1ab8a23432" }
+      - { icon: camera, title: Auf Wunsch mit Foto- und Videoaufnahmen., "_key": "k_5f9ac98cf48e7581ae35" }
+      - { icon: file-badge, title: Wir übernehmen alle Genehmigungen., "_key": "k_60fa91a53171da4aa79d" }
+      - { icon: shield-check, title: Strenge Sicherheitsstandards., "_key": "k_cd14d7c2170aa043b6b2" }
+      - { icon: timer, title: Vorbereitung in unter zwei Wochen möglich., "_key": "k_3701d0446d37b2dab436" }
+      - { icon: globe, title: "In Deutschland, Europa und weltweit.", "_key": "k_132d95147c2d0a913a48" }
     cta: { label: Show anfragen, href: "#anfrage" }
     _key: k_261100f50aa3e8f06fcd
 
-  - type: textMedia
+  # Sicherheit mit der Indoor-Zeichnung aus dem Prototyp (Raumschnitt, Startraster, Zonen zum Antippen, Aufgaben-Tabelle),
+  # Moritz' drei Absätze als Einleitung, darunter LBA/EASA als Logo-Reihe; 10 × 10 m Freifläche nach Moritz am Flugbereich
+  - type: landingSite
     id: sicherheit
     kicker: Sicherheit
     headline: Für eine sorglose Darbietung
-    body: |-
+    text: |-
       Wir erfüllen die strengen Sicherheitsauflagen, die für Indoor-Drohnenshows gelten. Deshalb benötigen wir eine Freifläche von etwa 10 x 10 Metern und eine Deckenhöhe von mindestens drei Metern. Ein Vorteil im Inneren: Wind und Wetter stellen kein (Absage-)Risiko dar.
 
       Zusätzlich setzen wir auf redundante Sicherheitsmechanismen. Die Rotoren sind physikalisch geschützt, alle Komponenten CE-zertifiziert. Die Drohnen fliegen langsam und wiegen unter 200 Gramm.
 
       Wir sind zertifiziert nach Luftfahrt-Bundesamt und EU Aviation Safety. Der TÜV NORD bescheinigt unserer Flotte zudem die Einhaltung des Schallschutzes. Im Fall der Fälle sichert euch unsere Haftpflicht bis 1,3 Mio. Euro ab.
-    todo: "FlyingStars muss Indoor-Flugfläche, Sicherheitsfunktionen und die für Indoor geltende Haftpflichtdeckung bestätigen."
+    variant: indoor
+    diagram:
+      description: "Raumschnitt mit mindestens {{offer.indoor.ceilingMin}} m Deckenhöhe und Publikum neben der freien Flugfläche. Darunter eine Draufsicht auf ein beispielhaftes Startraster für 20 Drohnen mit Antennen an den Ecken des Fluggebiets."
+      horizontalLabel: ca. 5 m
+      verticalLabel: "mind. {{offer.indoor.ceilingMin}} m"
+      detailLabel: 1 m Raster
+      flightLabel: Flughöhe bis 8 m, passend zum Raum
+      caption: "Schema, nicht maßstäblich. Startraster als Beispiel für {{offer.indoor.drones.min}} Drohnen auf ca. 5 × 5 m. Für 50 Drohnen nennt das Datenblatt ca. 7 × 7 m. Die gesamte Flugfläche und den Publikumsbereich planen wir für euren Raum."
+    items:
+      - title: Deckenhöhe
+        value: "mindestens {{offer.indoor.ceilingMin}} m"
+        text: "Die Flugbahnen passen wir an euren Raum an. Das Indoor-System fliegt bis zu 8 m hoch."
+        zone: ceiling
+        _key: k_b1de79da73ea068f872c
+      - title: Flugbereich
+        value: ca. 10 × 10 m Freifläche
+        text: "Die Start- und Flugfläche bleibt frei. Indoor nutzen wir ein eigenes Drohnensystem mit vorab berechneten Bahnen."
+        zone: drones
+        _key: k_0bd5c94f0e07243b0cc8
+      - title: Start- und Landefläche
+        value: 1 m Startraster
+        text: "Als Richtwert brauchen 20 Drohnen ca. 5 × 5 m, 50 Drohnen ca. 7 × 7 m. Der Boden muss eben sein, alle Drohnen starten auf derselben Höhe."
+        zone: floor
+        _key: k_b708426fb85bea29d91e
+      - title: Positionierung im Raum
+        text: "Antennen stehen an den Ecken des Fluggebiets. Das UWB-System bestimmt die Positionen im Raum; Drohnen und Technik bringen wir mit."
+        zone: kit
+        _key: k_4a99c3eed498d8e2ac37
+      - title: Publikumsbereich
+        text: "Wir stimmen die Position eurer Gäste und die freie Flugfläche mit euch ab. Der Abstand zum Publikum wird im Showkonzept für euren Raum festgelegt."
+        zone: guests
+        _key: k_e8a36322c9c72cbbe82f
+    responsibilities:
+      - { task: "Planung von Flugfläche, Publikum und Choreografie", us: full, you: none, "_key": "k_57fdf7ec25d86df06f65" }
+      - { task: "Indoor-Drohnen, Positionierungstechnik und Team", us: full, you: none, "_key": "k_ad5f7a3b6c6ebdc8f165" }
+      - { task: "Grundriss mit Maßen und Deckenhöhe schicken", us: none, you: full, "_key": "k_bf45eb6771550598d8e2" }
+      - { task: "Freie, ebene Start- und Flugfläche bereitstellen", us: none, you: full, "_key": "k_9ca1677c1a9556085ebf" }
+      - { task: "Stromanschluss in der Nähe bereitstellen", us: part, you: full, hint: "wir stimmen ab", "_key": "k_90cf1d512c775430202a" }
+    download: { label: Technik-Datenblatt · PDF, href: /media/downloads/FlyingStars-Technik-Datenblatt.pdf }
+    quality:
+      - { title: Betriebsgenehmigung des Luftfahrt-Bundesamts, text: seit Juli 2023, icon: permit, logo: /brand/logos/quali-lba-weiss.png, cleared: true, "_key": "k_d056058898547d0bb1a9" }
+      - { title: EU-weit nach EASA-Regeln, text: "Shows in der ganzen EU, auch in Österreich und den Niederlanden", icon: permit, logo: /brand/logos/quali-easa-weiss.png, cleared: true, "_key": "k_5a63e48e8e1aaad88bfe" }
+      - { title: Schallschutz-Gutachten, text: vom TÜV Nord, icon: sound, secondary: true, "_key": "k_539c699593a4797b96ed" }
+      - { title: "Haftpflicht bis 1,3 Mio. €", text: in jedem Paket, icon: shield, secondary: true, "_key": "k_24d9a99577b50e68c686" }
+    todo: "FlyingStars muss Indoor-Flugfläche, Publikumsabstände, Strombedarf, Sicherheitsfunktionen und die für Indoor geltende Haftpflichtdeckung bestätigen; die Rastermaße allein bestimmen den Raumbedarf nicht."
     _key: k_1060f8471da9620b9d94
 
-  - type: textMedia
+  # Preis als Preiskarte wie im Prototyp, Moritz' Kopf und Text
+  - type: landingPrice
     id: preise
     kicker: Preise
-    headline: Volle Kontrolle über eure Show
-    body: Unsere Indoor-Drohnenshows beginnen bei 15.000 Euro (netto) zuzüglich Anfahrt. Gerne stellen wir euch ein individuelles Paket zusammen, bei dem es bleibt – keine Überraschungen.
-    cta: { label: Show anfragen, href: "#anfrage" }
+    headline: Volle *Kontrolle* über eure Show
+    text: Unsere Indoor-Drohnenshows beginnen bei 15.000 Euro (netto) zuzüglich Anfahrt. Gerne stellen wir euch ein individuelles Paket zusammen, bei dem es bleibt – keine Überraschungen.
+    offer: indoor
+    unit: "netto für {{offer.indoor.drones.min}} Drohnen, als Größenordnung"
+    groups:
+      - title: Der Preis hängt ab von
+        items:
+          - { label: eurem Raum, "_key": "k_753be3ee1b98a47fa847" }
+          - { label: der Drohnenzahl, value: "{{offer.indoor.drones.min}}–{{offer.indoor.drones.max}}", "_key": "k_c3ef9a4157826d3ef6c2" }
+          - { label: dem Aufbau, "_key": "k_adbef3f274951eda7f54" }
+        _key: k_bf63937c697c823dc996
+    closing:
+      headline: Passt eure Halle?
+      text: Schickt uns Fotos oder einen Grundriss mit der Deckenhöhe. Wir sagen euch innerhalb von 48 Stunden, was dort möglich ist.
+      button: { label: Show anfragen, href: "#anfrage" }
     _key: k_2957e41a82a467bac50c
 
-  - type: steps
+  # Ablauf in Zahlen wie im Prototyp, Zahlen aus Moritz' Texten
+  - type: tempo
     id: ablauf
     kicker: Ablauf
     headline: Ein etablierter Prozess
-    ownNumbers: true
-    steps:
-      - { title: "#1 Anfrage", text: "Teilt ihr uns das Datum, den Ort und den Anlass mit, melden wir uns innerhalb von 48 Stunden mit Ideen zurück. Ein Erstgespräch ist der nächste Schritt, ein Vor-Ort-Termin selten nötig.", "_key": "k_bcd783da285c16316e38" }
-      - { title: "#2 Planung", text: "Wir bauen Storyline und Motive. Gerne könnt ihr Wünsche einbringen. Wir kümmern uns zudem um alle Genehmigungen, ihr liefert nur die Zustimmung der Grundstückseigentümer:innen.", "_key": "k_1a7a9d6124366c37cbbf" }
-      - { title: "#3 Showtag", text: "Während ihr eure Gäste betreut, bauen wir auf (dreieinhalb Stunden), führen die Show durch (fünf bis acht Minuten) und bauen geräuschlos wieder ab.", "_key": "k_2a47818390caa6ae1614" }
+    surface: plain
+    marks:
+      - { value: 48 h, label: "#1 Anfrage", text: "Teilt ihr uns das Datum, den Ort und den Anlass mit, melden wir uns innerhalb von 48 Stunden mit Ideen zurück. Ein Erstgespräch ist der nächste Schritt, ein Vor-Ort-Termin selten nötig.", "_key": "k_bcd783da285c16316e38" }
+      - { value: < 2 Wochen, label: "#2 Planung", text: "Wir bauen Storyline und Motive. Gerne könnt ihr Wünsche einbringen. Wir kümmern uns zudem um alle Genehmigungen, ihr liefert nur die Zustimmung der Grundstückseigentümer:innen.", "_key": "k_1a7a9d6124366c37cbbf" }
+      - { value: "3,5 h", label: "#3 Showtag", text: "Während ihr eure Gäste betreut, bauen wir auf (dreieinhalb Stunden), führen die Show durch (fünf bis acht Minuten) und bauen geräuschlos wieder ab.", "_key": "k_2a47818390caa6ae1614" }
+      - { value: "{{duration.indoor.min}}–{{duration.indoor.max}} Min", label: Show, "_key": "k_46482fb214bdc46258be" }
     _key: k_cca8a7702a948ca38dce
 
   - type: landingSpotlight
     id: referenzen
     kicker: Referenzen
-    headline: Einige unserer liebsten Darbietungen
+    headline: Einige unserer *liebsten* Darbietungen
     image:
       src: https://flyingstars.art/wp-content/uploads/2025/04/drohnenshow-indoor-2.jpg
       alt: Leuchtende Drohnen in Formation vor der Bühne eines voll besetzten Saals
@@ -159,7 +268,7 @@ sections:
   - type: team
     id: ueber
     kicker: Über FlyingStars
-    headline: Große Spektakel – ohne Kompromisse
+    headline: Große *Spektakel* – ohne Kompromisse
     text: Wir glauben, dass jedes Event eine gute Show verdient – egal, ob indoor oder outdoor. Deshalb bringen wir die Erfahrung aus über 150 Aufführungen im Freien für Weltmarken wie VW, Spotify oder die NFL seit 2025 auch in Hallen auf der ganzen Welt.
     members:
       - personId: ronja-donsbach

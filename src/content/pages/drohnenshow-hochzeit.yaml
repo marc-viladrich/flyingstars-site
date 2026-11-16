@@ -7,7 +7,7 @@ image: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbi
 sections:
   - type: landingHero
     kicker: Drohnenshow zur Hochzeit buchen
-    headline: Malt eure Liebesgeschichte in den Himmel
+    headline: Malt eure *Liebesgeschichte* in den Himmel
     text: Dürfen wir euch zum Tanz auffordern? Auf eurer Hochzeit erweckt unsere Drohnenshow euer Märchen zum Leben. Für Tränenmomente und einen Höhepunkt im Hochzeitsvideo.
     cta: { label: Show anfragen, href: "#anfrage" }
     secondary: { label: "☎︎ +49 209 88306562", href: "tel:+4920988306562" }
@@ -18,6 +18,11 @@ sections:
       alt: Hand mit Ring aus Drohnen am blauen Abendhimmel über Baumkronen, bei einem Heiratsantrag am Schloss Hugenpoet
       width: 2063
       height: 1303
+    # Eckdaten wie im Prototyp (Werte aus show-packages.ts, Preis wie bei Moritz)
+    facts:
+      - { value: ab 7.900 €, label: netto mit SPARK, "_key": "k_d6b481df0eeda9dbd41c" }
+      - { value: 100 Drohnen, label: im Paket, "_key": "k_b54242b2d9dbb9fb4cb8" }
+      - { value: inklusive, label: Genehmigung, "_key": "k_23f7c52d3dd38daa58dc" }
     _key: k_683af193db254741d0d4
 
   # Moritz: „Du kennst uns aus: ZDF, WDR, NTV, WAZ + ‚Featured on Hochzeitsportal24‘“, ohne Kund:innen-Logos
@@ -34,35 +39,48 @@ sections:
     todo: Für Hochzeitsportal24 fehlen Logo, Freigabe und Link auf den Beitrag.
     _key: k_fa0160e7a8afe4f1a3f7
 
-  - type: textMedia
+  # Choreografie mit dem Konfigurator-Teaser (Herzen, Ringe, Initialen) wie „Motive“ im Prototyp
+  - type: landingTeaser
     id: choreografie
     kicker: Individuelle Choreografie
-    headline: So einzigartig wie eure Lovestory
-    body: Ein Schwarm strahlender Lichtshow-Drohnen zeichnet eure Initialen, Liebesschwüre und Insider ans Firmament. Passend zur Musik und maßgeschneidert auf eure Wünsche.
+    headline: So einzigartig wie eure *Lovestory*
+    text: Ein Schwarm strahlender Lichtshow-Drohnen zeichnet eure Initialen, Liebesschwüre und Insider ans Firmament. Passend zur Musik und maßgeschneidert auf eure Wünsche.
+    href: "/drohnenshow-preise/?anlass=hochzeit&paket=SPARK#konfigurator"
+    cta: Motive im Konfigurator ansehen
+    loop: hochzeit
     _key: k_52056666f5076b5e0423
 
-  - type: textMedia
+  # Kurzfassung der Nachhaltigkeits-Section: große Aussage, daneben ein Foto mit Kind und Drohne
+  - type: sustainability
     id: familienfreundlich
     kicker: Familienfreundlich
-    headline: Kinder und Hunde willkommen
-    body: Im Gegensatz zum Feuerwerk gibt es beim Drohnenballett keinen lauten Knall, störenden Rauch oder Abfall mit Brandgefahr. Nur ein leises Surren – und das Staunen der Gäste.
+    headline: Kinder und *Hunde* willkommen
+    text: Im Gegensatz zum Feuerwerk gibt es beim Drohnenballett keinen lauten Knall, störenden Rauch oder Abfall mit Brandgefahr. Nur ein leises Surren – und das Staunen der Gäste.
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2025/01/lehrer-zeigt-wie-drohnenshow-funktioniert.jpg
+      alt: Ein Mann erklärt eine weiße Drohne, während ein Kind eine grüne Drohne hält.
+      width: 1600
+      height: 1067
     _key: k_59a09168d2946ce16e34
 
-  - type: steps
+  # Versprechen als Kacheln mit Verlaufs-Icons
+  - type: landingBento
     id: vorteile
     kicker: Vorteile
     headline: Unsere Versprechen
-    ownNumbers: true
-    steps:
-      - { title: Umfassend, text: "Design, Musik, Show, Genehmigungen: Wir nehmen euch alles aus einer Hand ab.", "_key": "k_856e2a0f8b72501f0a1b" }
-      - { title: International, text: "Egal, wo ihr feiert – wir sind dabei: In Deutschland, Österreich, der Schweiz oder weltweit.", "_key": "k_f070569c03c9b4b11034" }
-      - { title: Sicher, text: Wir sind LBA- und EASA-zertifiziert und stellen einen Sicherheitsbereich von 100 x 100 Metern., "_key": "k_85e68777aa937b3e85b1" }
+    lead:
+      icon: heart-handshake
+      title: Umfassend
+      text: "Design, Musik, Show, Genehmigungen: Wir nehmen euch alles aus einer Hand ab."
+    items:
+      - { icon: globe, title: International, text: "Egal, wo ihr feiert – wir sind dabei: In Deutschland, Österreich, der Schweiz oder weltweit.", "_key": "k_f070569c03c9b4b11034" }
+      - { icon: shield-check, title: Sicher, text: Wir sind LBA- und EASA-zertifiziert und stellen einen Sicherheitsbereich von 100 x 100 Metern., "_key": "k_85e68777aa937b3e85b1" }
     _key: k_9d2cf9c04b90b456039c
 
   - type: landingRefs
     id: referenzen
     kicker: Referenzen
-    headline: Nächte, die wir nie vergessen
+    headline: Nächte, die wir *nie vergessen*
     projects:
       - heiratsantrag-hugenpoet
       - hochzeit-recklinghausen
@@ -71,32 +89,70 @@ sections:
       - { ref: hochzeit-recklinghausen, title: Hochzeit in Recklinghausen, kicker: Überraschung für das Brautpaar, text: "Veronika und Felix staunten, als plötzlich ihre Liebesgeschichte über ihnen aufflammte. Auf Wunsch der Familie durften wir die Choreografie im Geheimen vorbereiten.", "_key": "k_0df1ee61f7ea5938057b" }
     _key: k_6500b76af74b7dd741ca
 
-  - type: landingTeaser
+  # Kosten als Preiskarte wie im Prototyp (SPARK aus show-packages.ts, Kassenzettel und Frühbucher aus dem Prototyp),
+  # Moritz' Kopf und Text, sein Link „Pakete ansehen“ in den Konfigurator
+  - type: landingPrice
     id: preise
     kicker: Kosten
-    headline: Stellt eure Show zusammen
+    headline: Stellt *eure Show* zusammen
     text: Unsere Drohnenshows starten bei 7900 Euro (netto) zuzüglich Anfahrt. Mit mehr Drohnen, Individualisierung und Zusätzen wie Fotos oder Videos der Aufführung könnt ihr euer Paket anpassen.
-    href: "/drohnenshow-preise/?anlass=hochzeit&paket=SPARK#konfigurator"
-    cta: Pakete ansehen
-    loop: hochzeit
-    todo: FlyingStars muss die Motive, Drohnenzahlen und Freischaltstufen anhand von docs/show-motive-inventar.md fachlich bestätigen. Die Vorschau ist kein Flugplan.
+    package: SPARK
+    groups:
+      - title: Enthalten
+        items:
+          - { label: Design eurer Motive mit Freigabe, "_key": "k_37abdcf9a06b01a2027a" }
+          - { label: Genehmigung, "_key": "k_8f2c8df476eed9be19a0" }
+          - { label: Musikschnitt, "_key": "k_2783c106e5d6abc32f17" }
+          - { label: Unser Team vor Ort, "_key": "k_0cb78b0d15ef58649c64" }
+          - { label: "Haftpflicht bis 1,3 Mio. €", "_key": "k_7905bc184ed46dace247" }
+        _key: k_6de6ec032d67c38d5810
+      - title: Kann dazukommen
+        items:
+          - { label: Anfahrt ab Gelsenkirchen, value: nach Ort, "_key": "k_149ad168bfbf92228a1d" }
+          - { label: Express unter 14 Tagen Vorlauf, value: nach Aufwand, "_key": "k_32a04e8638a5ebde994e" }
+          - { label: Rohaufnahmen mit Kameradrohne, value: "{{offer.film.priceSuffix}}", "_key": "k_903664b3354da0589651" }
+        _key: k_f5339bfda589f5d657de
+    bonus: { value: { fact: earlyBookingPercent, display: discount }, text: "Frühbucherrabatt: Bucht ihr bis zum Jahresende für eine Hochzeit im nächsten Jahr." }
+    cta: { label: Pakete ansehen, href: "/drohnenshow-preise/?anlass=hochzeit&paket=SPARK#konfigurator" }
+    closing:
+      headline: Euer Datum steht schon?
+      text: Ronja, Florian und Erwin beantworten eure Anfrage innerhalb von 48 Stunden.
+      button: { label: Show anfragen, href: "#anfrage" }
+    todo: FlyingStars muss die Paketgrenzen, Aufpreise und Leistungen für den Relaunch bestätigen; die endgültige Preisstruktur für 2027 ist noch offen.
     _key: k_3f8f37b2eb211e01710f
 
-  - type: steps
+  # Textentwurf für Moritz. Quellen und Konflikte: docs/sicherheitskonzept-quellen.md.
+  - type: landingSite
+    id: location
+    kicker: Location
+    headline: Passt eure Location?
+    text: Schickt uns die Adresse und die geplante Position eurer Gäste. Vor dem Angebot prüfen wir, ob und wie die Show dort möglich ist.
+    variant: outdoor
+    todo: FlyingStars muss die Startflächen je Drohnenzahl und die standortabhängigen Abstände bestätigen; 15 × 15 und 25 × 25 Meter widersprechen sich in den Quellen. Die Zeichnung bleibt ein Beispiel.
+    safetyRef: safety-concept
+    _key: k_6e4f6206d974feea8611
+
+  # Ablauf als Verlaufsstrahl, Zeitangaben aus Moritz' Texten; danach der Überraschungs-Abschluss aus dem Prototyp
+  - type: landingFlow
     id: ablauf
     kicker: Ablauf
-    headline: Wir planen, ihr lehnt euch zurück
-    ownNumbers: true
+    headline: Wir planen, ihr *lehnt euch zurück*
     steps:
-      - { title: "#1 Anfrage", text: "Wann und wo heiratet ihr? In 48 Stunden melden wir uns zurück, um uns kennenzulernen und euch ein festes Angebot zu unterbreiten. Eine Begehung eurer Location ist selten nötig.", "_key": "k_6b92c66eeb04fdf588fc" }
+      - { title: "#1 Anfrage", text: "Wann und wo heiratet ihr? In 48 Stunden melden wir uns zurück, um uns kennenzulernen und euch ein festes Angebot zu unterbreiten. Eine Begehung eurer Location ist selten nötig.", duration: 48 h, "_key": "k_6b92c66eeb04fdf588fc" }
       - { title: "#2 Vorbereitung", text: "Ihr erzählt uns von eurer Liebesgeschichte. Wir bauen daraus eine Choreografie. Und weil die Hochzeitsplanung schon stressig genug ist, kümmern wir uns auch um Genehmigungen und Co.", "_key": "k_54439060443f507bff93" }
-      - { title: "#3 Hochzeit", text: "Ab dreieinhalb Stunden vor dem Drohnentanz bereiten wir vor. Die Show selbst dauert bis zu 25 Minuten. Ihr dürft zuschauen und staunen – Auf- und Abbau sowie Sicherheit organisieren wir.", "_key": "k_77816c393a12e22dfcb5" }
+      - { title: "#3 Hochzeit", text: "Ab dreieinhalb Stunden vor dem Drohnentanz bereiten wir vor. Die Show selbst dauert bis zu 25 Minuten. Ihr dürft zuschauen und staunen – Auf- und Abbau sowie Sicherheit organisieren wir.", duration: "3,5 h vorher · bis 25 Min Show", "_key": "k_77816c393a12e22dfcb5" }
     _key: k_bd1dd6072c1145a15939
+
+  - type: landingCta
+    headline: Es soll eine *Überraschung* werden?
+    text: Ob Heiratsantrag oder Geschenk der Familie, wir stimmen uns nur mit euch ab. Die Startfläche richten wir abseits ein und den Startzeitpunkt planen wir mit der Location.
+    button: { label: Überraschung anfragen, href: "#anfrage" }
+    _key: k_ae4a2fbaa25b27dc1ad0
 
   - type: team
     id: ueber
     kicker: Über FlyingStars
-    headline: Es ist uns eine Ehre, eure Gäste sein zu dürfen
+    headline: Es ist uns eine *Ehre*, eure Gäste sein zu dürfen
     text: "Normalerweise fliegen wir für Städte, Festivals und Weltkonzerne wie L’Oréal, Prada oder Spotify. Einen besonderen Platz in unserem Fotoalbum nehmen aber die Brautpaare ein, deren Hochzeit wir unvergesslich machen durften. Deshalb sind wir einer der wenigen Anbieter, die auch für private Feiern fliegen. Auf eurem Fest sorgen wir mit kleiner Mannschaft im Hintergrund dafür, dass alles reibungslos abläuft."
     members:
       - personId: ronja-donsbach

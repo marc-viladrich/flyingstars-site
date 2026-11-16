@@ -8,8 +8,10 @@ image: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
 sections:
   - type: showreelHero
     eyebrow: Drohnenshow buchen
-    headline: Gestaltet euer Stück Himmel
+    # „euer“ im Logoverlauf, darunter wie im Prototyp das wechselnde Wort (Marc, 15.11.2026: Persönlichkeit zurück)
+    headline: Gestaltet *euer* Stück Himmel
     text: Mit der Erfahrung aus über 150 Drohnenshows in Deutschland und weltweit malen wir eure Geschichte für alle sichtbar ans Firmament.
+    words: [ {"_key":"k_82666e15854364d54a3f","value":"Neu."}, {"_key":"k_15bf5aebc23a1a9fea87","value":"Einzigartig."}, {"_key":"k_e17a63a6eba973950fc3","value":"Anders."}, {"_key":"k_13a7892bb90ecceca0d2","value":"Spektakulär."} ]
     cta: { label: Show anfragen, href: "#anfrage" }
     secondary: { label: "☎︎ +49 209 88306562", href: "tel:+4920988306562" }
     poster:
@@ -18,6 +20,10 @@ sections:
       width: 1600
       height: 900
     video: https://flyingstars.art/wp-content/uploads/2026/05/Flyingstars-Showreel.mp4
+    # Eckdaten in den Rahmenecken wie im Prototyp; Showzahl nach Moritz („über 150“)
+    stats:
+      - { label: Shows, value: "150+", "_key": "k_1abc2d9b5b6179bc92c4" }
+      - { label: Basis, value: 51.51° N · 7.10° E, "_key": "k_da45d9dfcf5870f4b0cc" }
     _key: k_ff90806e01cb10448a60
 
   # „Geflogen für“ + Presse direkt darunter (nur die vier Sender aus Moritz' Text). Logos wie bisher; Red Bull,
@@ -71,7 +77,7 @@ sections:
   - type: occasions
     id: anlaesse
     kicker: Veranstaltungen
-    headline: Für jeden Anlass das passende Spektakel
+    headline: Für jeden Anlass das passende *Spektakel*
     cards:
       - category: Unternehmen
         title: An eurem Logo kommt niemand vorbei
@@ -117,15 +123,20 @@ sections:
         _key: k_b52ddd7e74db16f54f73
     _key: k_a953dd6748c619e1514d
 
-  # Einspaltig ohne Bild: rechts neben dem Text erscheint später ein Schwarm (Himmel-Agent)
+  # Einspaltig ohne Bild: rechts neben dem Text spielt der Schwarm eine eigene Show-Folge (Himmel-Agent).
+  # Die drei Aussagen als eigene Absätze mit hervorgehobenem Begriff im Logoverlauf; Wortlaut unverändert (Moritz).
   - type: textMedia
     id: warum-drohnen
     kicker: Individuelle Drohnenshows
-    headline: Feuerwerk? War gestern
+    headline: Feuerwerk? *War gestern*
     body: |-
       Willkommen in der Zukunft der Unterhaltung. Drohnen-Lichtshows sind die Alternative für Gäste, die sich an Pyrotechnik sattgesehen haben.
 
-      Sie sind spektakulärer: 3D statt 2D, kilometerweit sichtbar, bisher kaum bekannt – Aufmerksamkeit garantiert. Emotionaler: Böller knallen. Drohnenshows erzählen Geschichten, die begeistern bis berühren. Und einzigartiger: Aus 100 bis 1000+ Leuchtpixeln können wir fast jedes Motiv bauen.
+      Sie sind **spektakulärer**: 3D statt 2D, kilometerweit sichtbar, bisher kaum bekannt – Aufmerksamkeit garantiert.
+
+      **Emotionaler**: Böller knallen. Drohnenshows erzählen Geschichten, die begeistern bis berühren.
+
+      Und **einzigartiger**: Aus 100 bis 1000+ Leuchtpixeln können wir fast jedes Motiv bauen.
 
       Wie sieht eure Geschichte in den Himmel gezeichnet aus? Finden wir es heraus!
     cta: { label: Drohnenshow planen, href: /drohnenshow-preise/ }
@@ -134,7 +145,7 @@ sections:
   - type: landingRefs
     id: projekte
     kicker: Referenzen
-    headline: Nächte, die wir nie vergessen
+    headline: Nächte, die wir *nie vergessen*
     text: Seit 2021 fliegen wir jährlich über 30 Shows, insgesamt über 150.
     projects:
       - musikalischer-teaser-bokkenrijders
@@ -150,67 +161,97 @@ sections:
     todo: Für E.ON (Hamburg, 2026) fehlen Showbild, genaues Datum und eine Fallstudie.
     _key: k_c25f10c971a03e70f6ba
 
-  - type: steps
+  # „Gut zu wissen“ als Kacheln wie „Wirkung“ im Prototyp: Bildkachel (Team mit Drohne und Laptop) für „Komplett“,
+  # Verlaufs-Icons für „Schnell“ und „International“. Fläche hell, damit der Rhythmus wechselt.
+  - type: landingBento
     id: darum
     kicker: Darum FlyingStars
     headline: Gut zu wissen
-    ownNumbers: true
-    steps:
-      - { title: Komplett, text: "Vom Design über die Genehmigung bis zur Flotte und Sicherheit: Bei uns bekommt ihr alles aus einer Hand von einem eingespielten Team.", "_key": "k_4161b97d77cfdcb1c686" }
-      - { title: Schnell, text: Wir ermöglichen Shows auch in ein bis zwei Wochen. Als autorisierter Betreiber dürfen wir viele Genehmigungsprozesse überspringen., "_key": "k_e8d0aa1d372af5e42c97" }
-      - { title: International, text: "Wir fliegen in Deutschland, Österreich und der Schweiz – und dank umfassender Genehmigungen auch schnell in der EU und weltweit.", "_key": "k_c8740dc80d6854f37ae5" }
+    surface: alt
+    lead:
+      title: Komplett
+      text: "Vom Design über die Genehmigung bis zur Flotte und Sicherheit: Bei uns bekommt ihr alles aus einer Hand von einem eingespielten Team."
+      image:
+        src: https://flyingstars.art/wp-content/uploads/2025/05/drohnenprogrammierung-1.jpg
+        alt: Ein Mann hält eine Drohne neben einem Laptop, während eine Frau mit einem Tablet danebensteht.
+        width: 1680
+        height: 1120
+    items:
+      - { icon: timer, title: Schnell, text: Wir ermöglichen Shows auch in ein bis zwei Wochen. Als autorisierter Betreiber dürfen wir viele Genehmigungsprozesse überspringen., "_key": "k_e8d0aa1d372af5e42c97" }
+      - { icon: globe, title: International, text: "Wir fliegen in Deutschland, Österreich und der Schweiz – und dank umfassender Genehmigungen auch schnell in der EU und weltweit.", "_key": "k_c8740dc80d6854f37ae5" }
     _key: k_92d0a7f1633ea84ff104
 
-  - type: textMedia
+  # Sicherheit mit der interaktiven Standortkarte (wie Werbung/Hochzeit im Prototyp), Moritz' Text und drei Punkte über
+  # der Karte, darunter Zulassungen als Logo-Reihe (früher „Presse & Qualität“).
+  - type: landingSite
     id: sicherheit
     kicker: Sicherheit
-    headline: Damit alles rund fliegt
-    body: |-
-      Damit ihr die Aufführung sorglos genießen könnt, arbeiten wir nach höchsten Sicherheitsstandards. Wir kümmern uns um alle Genehmigungen, sichern den Flugbereich von 100 x 100 Metern und stellen gerne Ordner:innen.
-
-      - Zertifiziert nach Luftfahrt-Bundesamt (LBA) und EU Aviation Safety (EASA)
-      - Haftpflicht bis 1,3 Mio. € in jedem Paket schützt euch bei Schäden
-      - Shows können bis Windstärke 5 und Nieselregen stattfinden
+    headline: Damit alles rund *fliegt*
+    text: Damit ihr die Aufführung sorglos genießen könnt, arbeiten wir nach höchsten Sicherheitsstandards. Wir kümmern uns um alle Genehmigungen, sichern den Flugbereich von 100 x 100 Metern und stellen gerne Ordner:innen.
+    points:
+      - { value: Zertifiziert nach Luftfahrt-Bundesamt (LBA) und EU Aviation Safety (EASA), "_key": "k_2f9d9d4b4d3dd87a1323" }
+      - { value: "Haftpflicht bis 1,3 Mio. € in jedem Paket schützt euch bei Schäden", "_key": "k_bfb109faeedc4b18ba44" }
+      - { value: Shows können bis Windstärke 5 und Nieselregen stattfinden, "_key": "k_79d0791028d994100866" }
     cta: { label: Das brauchen wir von euch, href: "/faq/#planung" }
-    todo: FlyingStars muss die Website-Angabe Windstärke 5 mit den Windgrenzen der AGB abstimmen.
+    variant: outdoor
+    safetyRef: safety-concept
+    quality:
+      - { title: Betriebsgenehmigung des Luftfahrt-Bundesamts, text: seit Juli 2023, icon: permit, logo: /brand/logos/quali-lba-weiss.png, cleared: true, "_key": "k_d056058898547d0bb1a9" }
+      - { title: EU-weit nach EASA-Regeln, text: "Shows in der ganzen EU, auch in Österreich und den Niederlanden", icon: permit, logo: /brand/logos/quali-easa-weiss.png, cleared: true, "_key": "k_5a63e48e8e1aaad88bfe" }
+      - { title: 100 % Ökostrom von naturstrom, text: für die ganze Flotte, icon: leaf, logo: /brand/logos/quali-naturstrom.svg, cleared: true, "_key": "k_0a1a774c6de0621af71d" }
+      - { title: Schallschutz-Gutachten, text: vom TÜV Nord, icon: sound, secondary: true, "_key": "k_539c699593a4797b96ed" }
+      - { title: "Haftpflicht bis 1,3 Mio. €", text: in jedem Paket, icon: shield, secondary: true, "_key": "k_24d9a99577b50e68c686" }
+    todo: FlyingStars muss die Website-Angabe Windstärke 5 mit den Windgrenzen der AGB abstimmen, die Startflächen je Drohnenzahl bestätigen und schriftliche Nutzungsfreigaben für LBA-, EASA- und naturstrom-Logos liefern.
     _key: k_80f57143a3d7d816104c
 
-  - type: textMedia
+  # Nachhaltigkeit wieder als Scrollstory aus dem Prototyp (Marc, 31.10.2026: „das Scrollytelling finde ich ganz nice“),
+  # in Moritz' Reihenfolge Knall, Müll, Rauch; „Kein Müll.“ im Verlauf (DESIGN). Einleitung neben dem #Böllerciao-Foto.
+  # Die großen Werte (leise, 0 kg, 0 g) stammen aus dem Prototyp, die Sätze von Moritz.
+  - type: sustainability
     id: nachhaltigkeit
     kicker: Nachhaltigkeit
-    headline: Kein Knall. Kein Müll. Kein Rauch.
-    body: |-
-      Bei unseren Drohnen-Veranstaltungen sind auch Hunde und Kinder herzlich willkommen: Sie sind abfallfrei, lokal emissionsfrei und surren leiser als Feuerwerke. Mit Shows für die Deutsche Umwelthilfe und Kein Bock auf Nazis setzen wir zudem regelmäßig ökologische und soziale Zeichen in den Himmel.
-
-      - Kein Knall: Der TÜV NORD bestätigt den Schallschutz unserer Technik.
-      - Kein Müll: Wiederverwendbare Drohnen, geladen mit 100 % Ökostrom.
-      - Kein Rauch: Vor Ort entstehen keine schädlichen Emissionen.
+    headline: Kein Knall. *Kein Müll.* Kein Rauch.
+    text: "Bei unseren Drohnen-Veranstaltungen sind auch Hunde und Kinder herzlich willkommen: Sie sind abfallfrei, lokal emissionsfrei und surren leiser als Feuerwerke. Mit Shows für die Deutsche Umwelthilfe und Kein Bock auf Nazis setzen wir zudem regelmäßig ökologische und soziale Zeichen in den Himmel."
     image: { src: "https://flyingstars.art/wp-content/uploads/2024/07/D_Umwelthilfe_cover_img.png", alt: "Bunte Feuerwerksblüte aus Drohnen über Berlin bei der Kampagne #Böllerciao der Deutschen Umwelthilfe", width: 1920, height: 987 }
     cta: { label: Über die Nachhaltigkeit, href: "/ueber-uns/#nachhaltigkeit" }
+    facts:
+      - { label: Kein Knall, value: leise, text: "Der TÜV NORD bestätigt den Schallschutz unserer Technik.", "_key": "k_20d9386f213523952598" }
+      - { label: Kein Müll, value: "0", unit: kg, text: "Wiederverwendbare Drohnen, geladen mit 100 % Ökostrom.", "_key": "k_a69ce4ddf7966109fb50" }
+      - { label: Kein Rauch, value: "0", unit: g, text: "Vor Ort entstehen keine schädlichen Emissionen.", "_key": "k_2f6c2a2e8d48eea5522d" }
+    pillarsRef: sustainability-pillars
     todo: Moritz und FlyingStars müssen die Umweltformulierungen vor Veröffentlichung prüfen und die Belege für Ökostrom und das TÜV-Nord-Schallschutzgutachten bereithalten.
     _key: k_001c02ae39915e989410
 
-  - type: steps
+  # Ablauf in Zahlen wie im Prototyp (Netzplan-Zeitstrahl): Moritz' drei Schritte als Stationen, die Zahlen aus seinen
+  # Texten (48 Stunden, ein bis zwei Wochen aus „Schnell“, dreieinhalb Stunden), am Ende die Showzeit bis zum Applaus.
+  - type: tempo
     id: ablauf
     kicker: Ablauf
-    headline: Von der Idee bis zum Applaus
-    ownNumbers: true
-    steps:
-      - { title: "#1 Anfrage", text: "Sagt uns Datum, Ort und Anlass. In spätestens 48 Stunden geben wir euch eine Einschätzung. Nach dem Erstgespräch erhaltet ihr das Angebot, eine Begehung ist selten notwendig.", "_key": "k_07593dae179ab85954fb" }
-      - { title: "#2 Planung", text: "Gemeinsam entwickeln wir Storyline, Motive und Musik. Ihr seid so viel eingebunden, wie ihr möchtet. Mit Zustimmung der Grundstückseigentümer:innen holen wir alle Genehmigungen ein.", "_key": "k_8712fd69e4210fc7f3f1" }
-      - { title: "#3 Showtag", text: "Wir organisieren Sicherheit, Aufbau und Abbau ab rund dreieinhalb Stunden vor der Show. Das Spektakel dauert bis zu 25 Minuten. Ihr genießt mit euren Gästen.", "_key": "k_002bb2a1e4204dd1d7d4" }
+    headline: Von der Idee bis zum *Applaus*
+    marks:
+      - { value: 48 h, label: "#1 Anfrage", text: "Sagt uns Datum, Ort und Anlass. In spätestens 48 Stunden geben wir euch eine Einschätzung. Nach dem Erstgespräch erhaltet ihr das Angebot, eine Begehung ist selten notwendig.", "_key": "k_07593dae179ab85954fb" }
+      - { value: 1–2 Wochen, label: "#2 Planung", text: "Gemeinsam entwickeln wir Storyline, Motive und Musik. Ihr seid so viel eingebunden, wie ihr möchtet. Mit Zustimmung der Grundstückseigentümer:innen holen wir alle Genehmigungen ein.", "_key": "k_8712fd69e4210fc7f3f1" }
+      - { value: "3,5 h", label: "#3 Showtag", text: "Wir organisieren Sicherheit, Aufbau und Abbau ab rund dreieinhalb Stunden vor der Show. Das Spektakel dauert bis zu 25 Minuten. Ihr genießt mit euren Gästen.", "_key": "k_002bb2a1e4204dd1d7d4" }
+      - { value: 25 Min, label: Applaus, "_key": "k_3c30dd0af9bfae6075dc" }
     _key: k_22cad4004e6677e22092
 
-  # „Interaktives Tool“: der selbstlaufende Konfigurator-Teaser mit Weg in den Konfigurator auf der Preisseite
+  # Preise wie im Prototyp: der selbstlaufende Konfigurator-Teaser und darunter die Paketkarten in ihren Farben, beides
+  # unter Moritz' Kopf in #preise (der Himmel bindet sich an die Paketkarten, [data-pick-paket]).
   - type: landingTeaser
     id: preise
     kicker: Preise
-    headline: Stellt eure Show zusammen
+    headline: Stellt *eure Show* zusammen
     text: "Wir machen alles möglich: Kleine Veranstaltungen für schmale Budgets bis große Spektakel mit mehr Drohnen, mehr Musik und mehr Wow. Immer transparent, immer im Festpreis ohne Überraschungen."
     href: "/drohnenshow-preise/#konfigurator"
     cta: Show planen
     loop: start
-    todo: FlyingStars muss die Motive, Drohnenzahlen und Freischaltstufen anhand von docs/show-motive-inventar.md fachlich bestätigen. Die Vorschau ist kein Flugplan.
+    packages:
+      - { name: SPARK, label: Klassisch in 2D, "_key": "k_78ff5c91db9f274ba535" }
+      - { name: HORIZON, label: 3D in Bewegung, badge: Bestseller, highlight: true, "_key": "k_703112fe18cc7e56257b" }
+      - { name: ODYSSEY, label: Erzählte 3D-Show, "_key": "k_66a45070285e9c202f30" }
+    note: Alle Preise netto zzgl. Anfahrt
+    more: { label: Alle Leistungen und Preise, href: /drohnenshow-preise/ }
+    todo: FlyingStars muss die Motive, Drohnenzahlen und Freischaltstufen anhand von docs/show-motive-inventar.md fachlich bestätigen. Die Vorschau ist kein Flugplan. Paketgrenzen und Preisstruktur 2027 sind noch offen.
     _key: k_bb613fb3a85d23de53b1
 
   # Presse steht als Logos oben bei „Geflogen für“; hier dieselbe Zeile als Text, damit die Logos nicht doppelt stehen.
@@ -219,7 +260,7 @@ sections:
   - type: team
     id: ueber
     kicker: Über FlyingStars
-    headline: Leuchtende Drohnen für leuchtende Augen
+    headline: Leuchtende Drohnen für *leuchtende Augen*
     text: "Wir möchten Menschen faszinieren, mitreißen, bewegen. Deshalb zeigen wir seit 2021, dass unvergessliche Momente voller Magie stecken – und gleichzeitig leise, sauber und rücksichtsvoll sein können."
     members:
       - personId: ronja-donsbach
