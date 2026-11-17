@@ -37,11 +37,14 @@ export function ecoScrolly(scrolly) {
     const xs = (pts) => [Math.min(...pts.map((p) => p[0])), Math.max(...pts.map((p) => p[0]))];
     const SPAN = [[-1.15, 1.15], [-0.72, 0.72], xs(PAD), xs(BOLT)]; // every figure gets the whole brand gradient from left to right
 
+    // Figur je Kennzahl aus data-figs (Sustainability.astro, nach Einheit), sonst nach Position
+    const FIGS = (scrolly.dataset.figs || "").split(",").filter(Boolean).map(Number);
+    const figOf = (i) => { const k = Math.max(0, i); return Number.isInteger(FIGS[k]) ? Math.min(3, FIGS[k]) : Math.min(3, k); };
     const D = Array.from({ length: N }, () => ({ x: 0, y: 0, vx: 0, vy: 0, s: 1, delay: 1e9 }));
     const launch = () => { launched = true; D.forEach((d, i) => { d.x = W * (0.1 + Math.random() * 0.8); d.y = H + 20; d.vx = d.vy = 0; d.delay = (i / N) * 1.1 + Math.random() * 0.3; }); };
     const step = (dt) => {
       t += dt; since += dt;
-      const k = 7, c = 2 * Math.sqrt(k) * 0.8, fig = Math.max(0, cur);
+      const k = 7, c = 2 * Math.sqrt(k) * 0.8, fig = figOf(cur);
       D.forEach((d, i) => {
         if (d.delay > 0) { d.delay -= dt; return; }
         const [sx, sy, ss] = shape(fig, i), tx = fit.cx + sx * fit.s, ty = fit.cy + sy * fit.s;
@@ -67,7 +70,7 @@ export function ecoScrolly(scrolly) {
     };
     const draw = () => {
       g.setTransform(DPR, 0, 0, DPR, 0, 0); g.clearRect(0, 0, W, H);
-      const [x0, x1] = SPAN[Math.max(0, cur)], core = Math.max(1.2, fit.s * 0.0125), left = fit.cx + x0 * fit.s, span = (x1 - x0) * fit.s, parked = cur === 2;
+      const [x0, x1] = SPAN[figOf(cur)], core = Math.max(1.2, fit.s * 0.0125), left = fit.cx + x0 * fit.s, span = (x1 - x0) * fit.s, parked = figOf(cur) === 2;
       const list = D.filter((d) => d.delay <= 0).map((d, i) => [d, colAt((d.x - left) / span), parked ? 0.5 + 0.2 * Math.sin(t * 1.6 + i * 0.7) : 0.9]);
       g.globalCompositeOperation = "lighter";
       for (const [d, col, a] of list) { const R = core * 5 * d.s; g.globalAlpha = a * 0.6; g.drawImage(sprite(col), d.x - R, d.y - R, R * 2, R * 2); }

@@ -116,17 +116,26 @@ sections:
       button: { label: Als Agentur anfragen, href: "/kontakt/?anlass=agentur" }
     _key: k_35809e7974828f33e234
 
+  # Moritz' drei Referenzen plus Ford, NFL und PUMA mit Showvideo (Marc, 17.11.2026: bewegte Case Studies wie im
+  # Prototyp, ausdrücklich Ford). Ford zuerst, weil die erste Karte von selbst spielt; je Zeile eine bewegte Karte.
+  # Texte zu Ford, NFL und PUMA sind Entwürfe nach den Projektdaten (nicht von Moritz).
   - type: landingRefs
     id: referenzen
     kicker: Referenzen
     headline: Von *Hunderttausenden* gesehen
     projects:
+      - exploring-reinvented-der-neue-ford-explorer
       - spotify-luciano-apache
       - loreal-prada-rheinturm
+      - nfl-berlin-game
       - eon-hamburg
+      - puma-bundesliga
     cards:
       - { ref: spotify-luciano-apache, title: Spotify, kicker: Visueller Album-Release, text: "Wenn Luciano und Apache 207 kollaborieren, entsteht Großes. Ihre neue EP durften wir zur Veröffentlichung mit 350 Drohnen über dem Prenzlauer Berg visuell inszenieren.", "_key": "k_78b56031fa52bc4e444c" }
       - { ref: loreal-prada-rheinturm, title: "L’Oréal x Prada", kicker: Unübersehbarer Produktlaunch, text: "Ein Parfüm, das heller leuchtet als der Rheinturm: Mit 350 Drohnen mitten in Düsseldorf veranstalteten wir eine Aufführung, die hundertfach geteilt wurde.", "_key": "k_da7261ca4e5d1bd54a6d" }
+      - { ref: exploring-reinvented-der-neue-ford-explorer, title: Ford, kicker: Fahrzeug-Launch, text: "Zum Start des neuen Ford Explorer schrieben 350 Drohnen den Schriftzug über das Electric Vehicle Center in Köln.", "_key": "k_d03a5549db87ffe48729" }
+      - { ref: nfl-berlin-game, title: NFL, kicker: Sport-Event, text: "Zum NFL Berlin Game 2025 flogen 300 Drohnen das Hufeisen der Indianapolis Colts über dem Olympiastadion.", "_key": "k_de73f7479d245b809aec" }
+      - { ref: puma-bundesliga, title: PUMA, kicker: Kurzfristige Aktion, text: "Die Anfrage kam 14 Tage vor dem Derby: 100 Drohnen zeigten das PUMA-Logo pünktlich zum Anstoß im Borussia-Park.", "_key": "k_87ccd298edb04bc4e9f7" }
       - { ref: eon-hamburg, title: E.ON, kicker: The Future is Now, text: "Mit 500 Drohnen machten wir den Hamburger Hafen zur größten Bühne der E.ON New Energy Experience 2026. Die Hommage an die Hansestadt begeisterte tausende Zuschauer:innen.", "_key": "k_c4bbae2e1586193f7306" }
     cta: { label: Alle Referenzen, href: /referenzen/ }
     todo: Für E.ON fehlen Showbild, genaues Datum und Fallstudie.
@@ -143,25 +152,19 @@ sections:
       - { title: "#3 Showtag", text: "Wir kümmern uns um alles: Aufbau dreieinhalb Stunden vor der Aufführung, Sicherheit, Abbau. Die Drohnen-Werbung selbst läuft für bis zu 25 Minuten.", duration: "3,5 h Aufbau · bis 25 Min Show", "_key": "k_9ebfd8a7c65e0d2211e6" }
     _key: k_a7152263e0461f67ead9
 
-  # Entwurf für Moritz (Marc, 03.11.2026: „was übernehmen wir, was übernehmt ihr“ ist für Marken genauso relevant).
-  # Zonen und Maße wie auf der Hochzeitsseite, Quellen: docs/sicherheitskonzept-quellen.md. Aufgaben nach dem Ablauf oben
-  # (Logo schicken, jedes Motiv freigeben) und dem Technik-Datenblatt.
+  # Entwurf für Moritz: Standortkarte kompakt wie auf allen Seiten (Marc, 17.11.2026), Zonen erklären sich per Popover,
+  # keine Zuständigkeitstabelle mehr. Darunter LBA, EASA und naturstrom. Quellen: docs/sicherheitskonzept-quellen.md.
   - type: landingSite
     id: standort
     kicker: Standort
     headline: Passt euer Standort?
     text: Schickt uns die Adresse und die geplante Position eures Publikums. Vor dem Angebot prüfen wir, ob und wie die Show dort möglich ist.
     variant: outdoor
-    todo: FlyingStars muss die Startflächen je Drohnenzahl und die standortabhängigen Abstände bestätigen; 15 × 15 und 25 × 25 Meter widersprechen sich in den Quellen. Die Zeichnung bleibt ein Beispiel. Moritz muss die Aufgabenliste für Markenshows freigeben.
-    additionalResponsibilities:
-      - task: Logo schicken und jedes Motiv freigeben
-        us: none
-        you: full
-        _key: k_f9022e9498a7fad0753a
-      - task: Motive entwerfen und animieren
-        us: full
-        you: none
-        _key: k_827a4c6b6a7c553bffad
+    todo: FlyingStars muss die Startflächen je Drohnenzahl und die standortabhängigen Abstände bestätigen; 15 × 15 und 25 × 25 Meter widersprechen sich in den Quellen. Die Zeichnung bleibt ein Beispiel. Schriftliche Nutzungsfreigaben für LBA-, EASA- und naturstrom-Logos fehlen.
+    quality:
+      - { title: Betriebsgenehmigung des Luftfahrt-Bundesamts, text: seit Juli 2023, icon: permit, logo: /brand/logos/quali-lba-weiss.png, cleared: true, "_key": "k_d056058898547d0bb1a9" }
+      - { title: EU-weit nach EASA-Regeln, text: "Shows in der ganzen EU, auch in Österreich und den Niederlanden", icon: permit, logo: /brand/logos/quali-easa-weiss.png, cleared: true, "_key": "k_5a63e48e8e1aaad88bfe" }
+      - { title: 100 % Ökostrom von naturstrom, text: für die ganze Flotte, icon: leaf, logo: /brand/logos/quali-naturstrom.svg, cleared: true, "_key": "k_0a1a774c6de0621af71d" }
     safetyRef: safety-concept
     _key: k_c4fd3256a7a568abb827
 

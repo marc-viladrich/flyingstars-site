@@ -909,3 +909,34 @@ Budget-Flexibilität als ein Regler (Zonen wie die Paketfarben am Drohnenregler)
   Hover/Fokus. Lebendige Wolke: verzerrte Uhr (Tempowechsel bis fast Stillstand), Breite/Höhe/Lage/Drehung wandern,
   gelegentlich drei lose Haufen. Der Logo-Modus läuft auch, wenn die Show vorher pausiert war (`setMotionIndependent`).
   Beim Entfernen eines Teils tauchen im entfernten Bereich keine neuen Punkte mehr auf (`removed-mask.mjs`).
+
+## Preisseite nach Moritz' Preistext: keine Paketwahl, „Individuelles Paket“ (17.11.2026)
+
+Moritz' Konzept, mit Marc abgestimmt: Der Konfigurator ist der Hauptabschnitt direkt nach dem Kopf der Preisseite. Die
+drei Pakete sind feste Beispiele mit Festpreis darunter (Paketkarten, je „X anfragen“ und „X anpassen“).
+
+- Keine Paketwahl mehr im Konfigurator. Drohnenregler 100–1000 ohne Paketfarben (Spur füllt sich neutral, `--fill`),
+  Marken 100/300/500/1000. Anlässe in Moritz' Reihenfolge: Winter & Silvester, Marketing (ID bleibt `launch`), Jubiläum,
+  Stadtfest, Hochzeit, Kultur, Logo (vorher „Euer Logo“). Neu: Upgrades als Pills (dieselben sechs Extras wie im Raster
+  „Upgrades“, beide Auswahlen bleiben gleich) und „Immer dabei“ als ruhige Liste.
+- Zwei Zustände (`preset` in `src/scripts/show-configurator.js`):
+  - Startpunkt aus einer Paketkarte („SPARK anpassen“ = `?paket=SPARK#konfigurator`; auf derselben Seite ohne Neuladen):
+    Drohnenzahl des Pakets (100/200/300), Name und Festpreis ohne „ab“, „Festes Paket · Festpreis“ darüber, Paketmarke auf
+    der Bühne, Show in der Paketfarbe.
+  - „Individuelles Paket“ (Standard): Preis frei aus `individualPrice()` mit „ab“, Show warmweiß ohne Farbton, keine
+    Paketnamen. Eine Änderung an Drohnenzahl, Upgrades oder Logo verlässt den Startpunkt und nimmt `?paket=` aus der
+    Adresse. Anlass, eigener Text (solange er keine Drohnen nachfordert) und Wiedergabe ändern das Paket nicht.
+  - Links mit `?paket=X&drohnen=N`: weicht N von der Paketzahl ab, ist das schon eine Änderung (individuell).
+- `individualPrice()` (`src/content/show-packages.ts`): bis 190 Drohnen wie bisher, ab 200 der HORIZON-Aufpreis ohne
+  Obergrenze. Trifft Moritz' Zahlen 100 = 7.900, 200 = 15.900, 300 = 25.700, 500 = 45.300; 1000 = 94.300 €. Foto & Video
+  +900 €, Indoor hebt auf mindestens 15.000 €, die übrigen Upgrades stehen „nach Aufwand“ nur in der Anfrage.
+  ODYSSEY (300 Drohnen, 34.900 €) ist ein Festpaket mit Mehrleistung und liegt über der freien Kurve. Test:
+  `scripts/individual-price.test.mjs`.
+- Intern bleibt die Fassung der Motive an der Drohnenzahl (`packageForDrones`: 2D bis 190, 3D ab 200, Geschichten ab 300),
+  Freischalt-Leiter und Hinweise unverändert.
+- Die Anfrage aus dem Konfigurator geht an das Formular auf der Preisseite (`/drohnenshow-preise/#anfrage`), mit Paket nur
+  beim Startpunkt, sonst Drohnenzahl, Upgrades (`extras`) und Zusammenfassung.
+- Startseiten-Teaser: das Wireframe zeigt keine Paketknöpfe mehr, der Regler ist neutral (nur CSS,
+  `configurator-teaser.css`); Ablauf und Bühne unverändert.
+- Offen: Die Playwright-Specs `tests/show-configurator.spec.ts`, `logo-show-budget.spec.ts`, `show-physics.spec.ts` und
+  `i18n.spec.ts` prüfen noch die alte Paketwahl bzw. den Leistungsvergleich und müssen nachgezogen werden.

@@ -91,6 +91,7 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     proofImage: image.optional(), proofText: fieldPolicy(z.string().optional(), 'translatable'), campaign: fieldPolicy(z.string().optional(), 'translatable'),
     image: image.optional().describe('Foto neben der Einleitung (z. B. #Böllerciao), mit Vorhang-Reveal'),
     cta: link.optional().describe('Weiterführender Link unter der Einleitung'),
+    icon: fieldPolicy(z.string().min(1).optional().describe('Lucide-Name: Kachel mit Icon und Punktmuster statt Foto neben der Einleitung'), 'shared'),
     lines: z.array(keyedText(fieldPolicy(z.string(), 'translatable'))).optional().describe('Veraltet (dreizeiliger Titel der Scrollstory), wird nicht mehr angezeigt'),
   }).strict(),
   z.object({
@@ -209,6 +210,13 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     members: z.array(z.object({
       personId,
     }).strict()).min(1),
+    // Seitenspezifische Rolle und Kurzvorstellung (Über uns nach Moritz, 17.11.2026). Ohne Eintrag gelten Rolle und Bio
+    // aus src/content/people/. Eigene Liste statt Feldern an members, damit Seiten ohne Überschreibung keine _key brauchen.
+    memberTexts: z.array(z.object({
+      personId,
+      role: fieldPolicy(z.string().min(1).optional(), 'translatable'),
+      bio: fieldPolicy(z.string().min(1).optional(), 'translatable'),
+    }).strict()).optional().describe('Rolle und Kurzvorstellung nur auf dieser Seite'),
   }),
   z.object({
     // Kund:innen als Laufband, darunter optional Presse und „Qualität und Sicherheit“ (docs/DESIGN.md, Studie 6).
@@ -249,7 +257,22 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     type: fieldPolicy(z.literal('timeline'), 'shared'), ...sectionHeading,
     headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
     items: z.array(z.object({ when: z.union([fieldPolicy(z.string().min(1), 'translatable'),projectFactRefSchema]), title: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable') })).min(2),
+    cta: link.optional().describe('Weiterführender Link unter dem Zeitstrahl, z. B. „Alle Referenzen“'), ...surface,
   }),
+  z.object({
+    // Standort als Punktkarte (Über uns, 17.11.2026): NRW aus Lichtpunkten (public/media/standort-nrw.svg, Generator
+    // tools/standort/nrw-punkte.mjs), Orte als leuchtende Markierungen. Für Abschnitte ohne Gebäudefoto.
+    type: fieldPolicy(z.literal('location'), 'shared'), ...sectionHeading,
+    headline: fieldPolicy(z.string().min(1), 'translatable'),
+    text: fieldPolicy(z.string().optional().describe('Absätze durch Leerzeile getrennt'), 'translatable'),
+    places: z.array(z.object({
+      label: fieldPolicy(z.string().min(1).describe('Beschriftung in der Legende, z. B. "Büro · Triple Z, Essen"'), 'translatable'),
+      lat: fieldPolicy(z.number().min(50.3).max(52.6), 'shared'),
+      lon: fieldPolicy(z.number().min(5.8).max(9.5), 'shared'),
+    }).strict()).min(1).max(4),
+    note: fieldPolicy(z.string().optional().describe('Kleine Zeile unter der Karte, z. B. Koordinaten'), 'translatable'),
+    cta: link.optional(), ...surface,
+  }).strict(),
   z.object({
     // Die drei Pakete. Preis und Drohnenzahl kommen nur aus src/content/show-packages.ts, Texte aus dem YAML.
     type: fieldPolicy(z.literal('packages'), 'shared'), ...sectionHeading,
@@ -352,7 +375,8 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     if(section.variant==='outdoor'){
       if(section.safetyRef!=='safety-concept'||['diagram','items','responsibilities','download'].some(k=>section[k]!==undefined))ctx.addIssue({code:'custom',message:'Outdoor verwendet ausschließlich das gemeinsame Sicherheitskonzept.'});
     }else{
-      if(section.safetyRef||section.additionalResponsibilities||!section.diagram||!section.items||!section.responsibilities)ctx.addIssue({code:'custom',message:'Indoor benötigt sein eigenes vollständiges Sicherheitskonzept.'});
+      // Zuständigkeiten sind seit der kompakten Variante (17.11.2026) optional; LandingSite.astro zeigt sie nicht mehr.
+      if(section.safetyRef||section.additionalResponsibilities||!section.diagram||!section.items)ctx.addIssue({code:'custom',message:'Indoor benötigt sein eigenes vollständiges Sicherheitskonzept.'});
       const expected=['ceiling','drones','floor','kit','guests'];
       if(section.items&&(new Set(section.items.map(item=>item.zone)).size!==5||expected.some(zone=>!section.items.some(item=>item.zone===zone))))ctx.addIssue({code:'custom',path:['items'],message:'Jede Indoor-Zone genau einmal'});
     }

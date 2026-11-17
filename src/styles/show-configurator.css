@@ -314,3 +314,20 @@ fieldset.cfg-tool { margin: 0; padding: 0; border: 0; min-width: 0; }
 /* Runde 28: „Passendes Paket für N Drohnen“ über dem Paketnamen, als Beschriftung des Werts (keine Eyebrow) */
 .cfg-pkg-label { margin: 0; color: var(--muted); font-size: var(--text-sm); line-height: 1.3; }
 .cfg-pkg-label[hidden] { display: none; }
+/* Preisseite nach Moritz (17.11.2026): keine Paketwahl, der Regler ohne Paketfarben. Die Spur füllt sich neutral bis zum
+   Griff (--fill setzt show-configurator.js); im individuellen Paket trägt der Griff das Orange der Seite, aus einer
+   Paketkarte heraus die Farbe dieses Pakets (--pkg) */
+.cfg-range-fill { --track: linear-gradient(90deg, var(--text) 0 var(--fill, 0%), transparent var(--fill, 0%)); }
+.cfg.is-individual { --pkg: var(--accent); }
+/* Upgrades: Mehrfachauswahl in der gemeinsamen Pill-Komponente, Preis als kleiner Zusatz in der Pill */
+.cfg-up { --chips-gap: var(--space-1-5); }
+.cfg-up span small { color: var(--faint); font-size: var(--text-xs); letter-spacing: 0.02em; }
+/* Immer dabei: ruhige Liste mit Icons, zwei Spalten; kein Bedienelement */
+.cfg-always { gap: var(--space-2-5); }
+.cfg-always-h { margin: 0; font-size: var(--text-control); color: var(--text); }
+.cfg-always-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2) var(--space-4); font-size: var(--text-sm); line-height: 1.3; color: var(--muted); }
+.cfg-always-list li { display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
+.cfg-always-list .ico { flex: none; }
+/* lange Wörter (NL „Aansprakelijkheidsverzekering“) trennen statt die Spalte zu sprengen */
+.cfg-always-list li > span { min-width: 0; overflow-wrap: anywhere; -webkit-hyphens: auto; hyphens: auto; }
+.cfg.is-logomode .cfg-upgrades, .cfg.is-logomode .cfg-always { display: none; }

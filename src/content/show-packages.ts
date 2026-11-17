@@ -64,6 +64,20 @@ export function configuratorPrice(drones: number): number {
   return p.price + Math.max(0, Math.ceil((drones - p.base) / p.step)) * p.add;
 }
 
+/**
+ * Preis einer freien Konfiguration („Individuelles Paket“, Moritz' Preistext 17.11.2026). Der Konfigurator kennt keine
+ * Paketwahl mehr; die Pakete sind feste Beispiele mit Festpreis (SHOW_PACKAGES[name].price). Frei gerechnet wird bis 190
+ * Drohnen wie bisher (SPARK-Aufpreis, ab 150 die Vorschau-Erweiterung), ab 200 Drohnen mit dem HORIZON-Aufpreis ohne
+ * Obergrenze. Das trifft Moritz' Zahlen: 100 = 7.900, 200 = 15.900, 300 = 25.700, 500 = 45.300, 1000 = 94.300 € („hoher
+ * fünfstelliger Bereich“). ODYSSEY mit 300 Drohnen (34.900 €) ist ein Festpaket mit Mehrleistung, kein Stück dieser Kurve.
+ * Weiterhin vorläufig wie die Vorschaupolicy (Aufpreise in Stufen: ab 200 je angefangene 50 Drohnen).
+ */
+export function individualPrice(drones: number): number {
+  const n = snapDrones(drones), horizon = SHOW_PACKAGES.HORIZON;
+  if (n < horizon.base) return configuratorPrice(Math.min(n, DRONE_RANGES.SPARK.max));
+  return horizon.price + Math.max(0, Math.ceil((n - horizon.base) / horizon.step)) * horizon.add;
+}
+
 /** Joint build invariant: the preview remains independent, but its prices must stay valid for the current commercial facts. */
 export function assertPreviewPricing(): void {
   if (priceFor(SPARK_EXTRA.package as ShowPackage, SPARK_EXTRA.from) === null)

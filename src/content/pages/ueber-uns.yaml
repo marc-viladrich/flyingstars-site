@@ -1,177 +1,132 @@
-# Über uns (30.10.2026). Reihenfolge nach Marc: zuerst die persönliche Vorstellung mit frühem CTA, danach die
-# Meilensteine als ruhige Timeline. Inhalte aus Elevate, Fakten aus Fragebogen (21.10.) und Moritz' Notizen (30.10.).
-# Thomas (freier Designer) wird laut Notizen nicht genannt; Bürohund Chopper darf vorkommen.
-# Offen: VW Golf 350 (Fragebogen) oder 400 Drohnen (Notizen), deshalb ohne Zahl; E.ON 15.09. oder 15./16.09., deshalb „im September“.
-title: Über uns
-description: "FlyingStars aus dem Ruhrgebiet: Team, Geschichte und Meilensteine. 178 Shows seit 2022, eigenes Design-Team, eigene Flotte, Büro auf Zollverein."
+# Über uns nach Moritz' Webtext (17.11.2026, „Webtext Über uns FlyingStars“): Titel, Meta, Abschnittsfolge, Überschriften und
+# Texte wortgetreu, Ansprache durchgehend „ihr“ statt „du“. URL bleibt /ueber-uns/ (Moritz schreibt /ueber).
+# Layout je Abschnitt aus dem Prototyp (docs/DESIGN.md „Neue Texte in bestehende Komponenten“): Showreel im Rahmen statt
+# #Teamfoto (es gibt kein Teamfoto; das Bild auf der Startseite ist ein Stockfoto), Nachhaltigkeit als große Überschrift
+# mit Foto, Werte als Icon-Raster, Porträts, farbiger Zeitstrahl, Punktkarte NRW statt #FotoDesGebäudes, Anfrage, FAQ.
+# Flächen wechseln: Werte hell, Team dunkel, Meilensteine hell, Standort dunkel, Anfrage hell, FAQ dunkel.
+title: "Über FlyingStars: Team, Mission und Meilensteine"
+description: "Lernt unsere Vision und die Menschen dahinter kennen ✓ 150+ Drohnenshows in aller Welt ☎︎ +49 209 88306562"
 image: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
 sections:
-  - type: hero
-    kicker: Über uns
-    headline: Ein Team aus dem Ruhrgebiet, das den *Nachthimmel* bespielt.
-    text: Ronja, Florian und Erwin führen FlyingStars gemeinsam, mit einem kleinen Team aus dem Ruhrgebiet. Unser Büro ist im Triple Z auf Zeche Zollverein in Essen. Dort könnt ihr uns auch besuchen.
-    image:
-      src: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
-      alt: Weltkugel aus Drohnen über dem Rhein bei der Extraschicht in Duisburg
-      width: 2544
-      height: 1493
-    cta: { label: Show anfragen, href: /kontakt/ }
-    secondary: { label: Unsere Meilensteine, href: "#meilensteine" }
-    todo: FlyingStars muss ein freigegebenes Team- oder Arbeitsfoto für den persönlichen Einstieg liefern; derzeit steht hier ein Showbild. Moritz muss die deutsche Endfassung und die maschinell übersetzten EN-/NL-Texte redaktionell prüfen.
-    _key: k_a92f0496058ba6b4cc95
+  # Eckdaten aus Moritz' Text (seit 2021, über 150 Shows) und aus seinen Meilensteinen (600 Drohnen, 2026).
+  - type: landingHero
+    kicker: Über FlyingStars
+    headline: Wir *verzaubern* Gäste mit eurer Geschichte
+    text: Menschen unterhalten, Emotionen erzeugen und in Erinnerung bleiben. Wir möchten zeigen, dass das auch ohne Knall, Müll und Rauch geht. Dafür fliegen wir seit 2021 mehr als 150 magische Drohnenshows für zehntausende Besucher:innen.
+    cta: { label: Lernt uns kennen, href: "#team" }
+    video: showreel
+    poster:
+      src: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
+      alt: Drohnenformation über der Skyline von Düsseldorf mit Rheinturm
+      width: 1600
+      height: 900
+    facts:
+      - { value: "2021", label: gegründet, "_key": "k_07f319e4f08e855ed3c2" }
+      - { value: "150+", label: Drohnenshows, "_key": "k_61cf80d1d9046e824f10" }
+      - { value: "600", label: Drohnen in der größten Show, "_key": "k_1ad8788ba42c8951f048" }
+    todo: "FlyingStars muss ein freigegebenes Teamfoto liefern (Moritz' Platzhalter #Teamfoto); bis dahin läuft hier das Showreel."
+    _key: k_b7135e5f4ccf1ef0e1c1
 
+  # Große Überschrift der Nachhaltigkeit mit Foto einer Feier daneben; die Scrollstory mit Knall, Müll, Rauch steht auf
+  # /nachhaltigkeit/, hier führt der Link dorthin.
+  - type: sustainability
+    id: nachhaltigkeit
+    kicker: Nachhaltigkeit
+    headline: Feste feiern, bei denen alle *willkommen* sind
+    text: "Hunde, Kinder, die Natur: Große Teile unserer Gesellschaft bleiben einem Feuerwerk lieber fern. Wir feiern lieber Feste, die uns alle begeistern. Mit Drohnenshows bieten wir deshalb eine Alternative zu Knall, Müll und Rauch des Feuerwerks. Und setzen regelmäßig Zeichen für Demokratie und Umweltschutz in den Himmel."
+    image: { src: "https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg", alt: Zwei Blüten aus Drohnen am Abendhimmel über einer Hochzeitsfeier, width: 1518, height: 854 }
+    cta: { label: Zur Nachhaltigkeit, href: /nachhaltigkeit/ }
+    _key: k_0fa41045b869c8273b40
+
+  - type: steps
+    id: haltung
+    kicker: Unsere Haltung
+    headline: Diese Werte fliegen immer mit
+    surface: alt
+    steps:
+      - icon: handshake
+        title: Teamarbeit
+        subtitle: Alle zusammen für einen Moment
+        text: Unsere Choreografien entstehen nicht im Alleingang. Sondern im vertrauten Zusammenspiel unseres Teams und mit euch. Mit vielen Kundinnen und Kunden pflegen wir deshalb seit Jahren einen engen Kontakt.
+        _key: k_f25977eef0b3c3073f86
+      - icon: telescope
+        title: Neugier
+        subtitle: Wie leuchtet eure Geschichte?
+        text: "Wir finden immer neue Wege, Menschen zu verzaubern. Mal durch mehr Spektakel: modernste Technik, größere Tänze, mehr Wumms. Mal durch Kreativität und Ästhetik, um mit nur ein paar Pixeln am Himmel eine ganze Welt zu erschaffen."
+        _key: k_1705c70732105b287ad3
+      - icon: list-checks
+        title: Gründlichkeit
+        subtitle: Jedes Detail zählt
+        text: Damit ihr die märchenhafte Atmosphäre gemeinsam mit euren Gästen aufsaugen könnt, planen wir jeden Schritt sorgfältig. Dank der Erfahrung aus über 150 Veranstaltungen in aller Welt sind wir auf wohl jede Eventualität vorbereitet.
+        _key: k_4cbe7266c56990c2d263
+    _key: k_5f577f27ee53584bc075
+
+  # Reihenfolge und Kurzvorstellungen nach Moritz; Rollen und Bios gelten nur auf dieser Seite (memberTexts), damit die
+  # Personendaten und die Übersetzungsverträge der anderen Seiten unverändert bleiben. Patrick und Alejandro ohne Nachnamen.
   - type: team
     id: team
-    kicker: Team
-    headline: Die Menschen hinter den Shows.
-    text: Ihr erreicht uns als Team, und am Showabend stehen wir selbst mit auf dem Feld.
+    kicker: Unser Team
+    headline: Alles aus einer Hand
+    text: Wenn ihr FlyingStars bucht, bekommt ihr FlyingStars – keine externen Dienstleister:innen. Wir decken alle Aufgaben intern in einem eingespielten Team ab. Zusätzlich unterstützen uns rund zehn Aushilfskräfte beim Auf- und Abbau und der Absicherung unserer Auftritte.
     members:
-      - personId: ronja-donsbach
       - personId: florian-becker
+      - personId: ronja-donsbach
       - personId: erwin-wilms
       - personId: patrick
       - personId: alejandro
       - personId: chopper
-    note: Dazu kommen rund zehn Aushilfen, die mit uns aufbauen, absichern und wieder abbauen.
-    cta: { label: Lernt uns kennen, href: /kontakt/ }
-    todo: FlyingStars muss hochauflösende Porträts von Ronja, Florian und Erwin sowie Fotos von Patrick und Alejandro liefern; die vorhandenen Porträts messen nur 199 × 199 Pixel. Zusätzlich fehlen Choppers Foto und eine abgestimmte Kurzvorstellung.
+    memberTexts:
+      - { personId: florian-becker, role: Geschäftsführer, bio: Flo übernimmt unsere interne Verwaltung. Außerdem schreibt er auf unserem Blog., "_key": "k_b465446582054e981d9b" }
+      - { personId: ronja-donsbach, role: Geschäftsführerin, bio: Ronja bearbeitet vermutlich eure Anfrage und koordiniert die Zusammenarbeit unseres Teams., "_key": "k_354002e2469c5de0d5ce" }
+      - { personId: erwin-wilms, role: Geschäftsführer, bio: Erwin kümmert sich um Anträge und Genehmigungen und betreut internationale Projekte., "_key": "k_5fe478b35edaa77dd0a2" }
+      - { personId: patrick, role: Technik, bio: Patrick stellt unsere Flotte zusammen und stellt den reibungslosen technischen Ablauf sicher., "_key": "k_c27f497bc32276117ae9" }
+      - { personId: alejandro, role: Design, bio: Alejandro verwandelt eure Geschichte in eine einzigartige Choreografie in 2D und 3D., "_key": "k_9216ad57906a5ee4167a" }
+      - { personId: chopper, role: Happiness, bio: Chopper sorgt für den Wau-Effekt eurer Show und für die gute Laune im Büro., "_key": "k_33354ce5e5195eb00295" }
+    todo: FlyingStars muss Fotos von Patrick, Alejandro und Chopper liefern sowie hochauflösende Porträts der drei Geschäftsführer:innen; Nachnamen von Patrick und Alejandro fehlen in Moritz' Text.
     _key: k_c25a7d02d05d2423027c
 
-  - type: textMedia
-    kicker: Geschichte
-    headline: Wie FlyingStars angefangen hat.
-    body: |
-      FlyingStars begann als Corona-Projekt. In Asien gab es damals schon viele große Drohnenshows, in Europa noch nicht. Wir wollten wissen, warum, und haben angefangen zu tüfteln. Am 1. Dezember 2021 haben wir das Gewerbe angemeldet.
-
-      Unsere erste Show flogen wir am 13. August 2022, zu einem privaten Geburtstag mit 50 Drohnen. Im selben Jahr kamen sieben weitere dazu.
-
-      Unser Firmensitz und unsere Postadresse sind in Gelsenkirchen.
-    image:
-      src: https://flyingstars.art/wp-content/uploads/2024/07/D_Umwelthilfe_cover_img.png
-      alt: Kreis aus bunten Drohnen über Berlin, Zuschauer:innen filmen die Show mit dem Handy
-      width: 1920
-      height: 987
-    mediaSide: right
-    todo: FlyingStars muss ein passendes Gründungs- oder Arbeitsfoto liefern; das aktuelle Bild zeigt die spätere Böllerciao-Show, nicht die Gründung.
-    _key: k_45b2deb9df767eef3032
-
+  # Jahreszahlen und Texte von Moritz; die kurzen Titel je Jahr fasst sein Text zusammen (Entwurf, von Moritz zu prüfen).
   - type: timeline
     id: meilensteine
-    kicker: Meilensteine
-    # Vertikaler Zeitstrahl mit derselben Animation wie der Ablauf auf der Startseite (Runde 8, 31.10.2026)
-    headline: Von 50 auf *600* Drohnen.
-    text: Vom ersten Geburtstag 2022 bis zum Musical in Maastricht.
+    kicker: Unsere Meilensteine
+    headline: Vom privaten Geburtstag bis ans andere Ende der *Welt*
+    surface: alt
     items:
-      - { when: "2021", title: Gründung, text: Am 1. Dezember melden wir FlyingStars als Gewerbe an., "_key": "k_37ee158ca8dcbd140127" }
-      - { when: "2022", title: Die erste Show, text: Am 13. August fliegen 50 Drohnen zu einem privaten Geburtstag., "_key": "k_97b953eb9d5edee0fb57" }
-      - { when: { project: puma-bundesliga, field: date, display: year }, title: PUMA im Borussia-Park, text: "Am {{project.puma-bundesliga.date.dayMonth}}, unsere sechste Show. {{project.puma-bundesliga.drones}} Drohnen vor dem Derby Gladbach gegen Dortmund, die Anfrage kam etwa 14 Tage vorher.", "_key": "k_4ab54f3dd19c3a475f05" }
-      - { when: "2023", title: Die erste generische Betriebsgenehmigung in Deutschland, text: Im Juli erteilt uns das Luftfahrt-Bundesamt die Genehmigung., "_key": "k_b0136ad8d44517045fbc" }
-      - { when: { project: loreal-prada-rheinturm, field: date, display: year }, title: L’Oréal × Prada Paradoxe, text: "Am {{project.loreal-prada-rheinturm.date.dayMonth}} {{project.loreal-prada-rheinturm.drones}} Drohnen am Rheinturm in Düsseldorf.", "_key": "k_9bbd688fb4d17b4a60fe" }
-      - { when: { project: boellerciao, field: date, display: year }, title: "#Böllerciao mit der Deutschen Umwelthilfe", text: "Am {{project.boellerciao.date.dayMonth}} {{project.boellerciao.drones}} Drohnen im Berliner Cantianstadion, vor Presse, Politik und Öffentlichkeit.", "_key": "k_c356c3325b7a41fde72a" }
-      - { when: "2023", title: Einzug ins Triple Z, text: Im Dezember beziehen wir unser Büro im Gründungszentrum auf Zeche Zollverein., "_key": "k_bf77e7f02052490ad926" }
-      - { when: { project: vw-50-golf, field: date, display: year }, title: 50 Jahre VW Golf, text: "Am {{project.vw-50-golf.date.dayMonth}} an der Scalaria am Wolfgangsee. Lange unsere größte Show.", "_key": "k_409072bba0558fb767c1" }
-      - { when: "2025", title: Die erste Indoor-Show, text: Am 28. März für Siemens auf der Hannover Messe., "_key": "k_e5a8ba1d96bf9934fc19" }
-      - { when: "2025", title: Kein Bock auf Nazis, text: "Am 8. August. Seitdem fliegen wir regelmäßig Shows für Demokratie, Vielfalt und Zusammenhalt.", "_key": "k_282298482b60b577afdd" }
-      - { when: { project: bokkenrijders-musical-2026, field: date, display: year }, title: Bokkenrijders in Maastricht, text: "Im Juni {{project.bokkenrijders-musical-2026.shows}} Shows mit je {{project.bokkenrijders-musical-2026.drones}} Drohnen in einem Musical.", "_key": "k_d8c56b9918b02ef95bc6" }
-      - { when: "2026", title: E.ON in Hamburg, text: Im September eine Doppelshow mit 500 Drohnen über der Elbe an den Landungsbrücken., "_key": "k_45d6f7975038929f9340" }
-      - { when: "2026", title: Indoor im Triple Z, text: "Im September eine Indoor-Show im Gründungszentrum, in dem auch unser Büro ist.", "_key": "k_5fbb1e614958b09eeb8c" }
-    todo: FlyingStars muss den historischen LBA-Erstanspruch belegen und VW Golf mit 350/400 Drohnen sowie das E.ON-Datum 15./16.09. klären. Für E.ON und „Kein Bock auf Nazis“ fehlen zugeordnete Showbilder.
+      - { when: "2021", title: Gründung, text: "Unsere Gründer:innen wundern sich, wieso es Drohnenshows bisher fast nur in Asien gibt. Also holen sie sie einfach nach Deutschland. Am 01.12.2021 gründen sie FlyingStars.", "_key": "k_6c6ce3555dadeb7f9c19" }
+      - { when: "2022", title: Die erste Show, text: "Unsere erste Drohnenshow findet im August auf einem privaten Geburtstag mit 50 Drohnen statt. Aufregend! Im selben Jahr folgen noch sieben weitere, unter anderem für PUMA.", "_key": "k_7d0e13be5f980d2587f6" }
+      - { when: "2023", title: 42 Aufführungen, text: "2023 fliegen wir schon 42 Aufführungen. Unter anderem für die Deutsche Umwelthilfe, um die Kampagne #BÖLLERCIAO zu unterstützen. Außerdem ziehen wir ins Triple Z in Essen ein.", "_key": "k_53114f06e4c47ca208dc" }
+      - { when: "2024", title: 400 Drohnen für VW, text: "Mit 400 Drohnen setzen wir für VW in Österreich einen Meilenstein. Wir fliegen insgesamt 45 Shows und verfeinern unsere Prozesse.", "_key": "k_73251c0c3357108c15e8" }
+      - { when: "2025", title: Die erste Indoor-Show, text: "Im März fliegen wir unsere erste Indoor-Show für Siemens auf der Hannover-Messe. Mit Kein Bock auf Nazis dürfen wir seit dem August 2025 regelmäßig ein Zeichen setzen.", "_key": "k_41fdee284e0f1ec28380" }
+      - { when: "2026", title: Rekordjahr, text: "Rekordjahr: Unsere größte Show mit 600 Drohnen fliegen wir für ein niederländisches Musical – gleich 20 Nächte hintereinander! Unser bisher weitester Auftrag führt uns in die Karibik.", "_key": "k_72e4446870d686464b34" }
+    cta: { label: Alle Referenzen, href: /referenzen/ }
+    todo: "Moritz' Zahlen weichen vom Bestand ab: VW Golf 350 oder 400 Drohnen (Fragebogen 350), Showzahlen je Jahr (Bestand: 178 Shows bis 21.10.2026). Titel je Jahr sind ein Entwurf."
     _key: k_65625cffa99167129c8b
 
-  # USP-Entwurf für Moritz. Quellen, Auswahl und Faktenabgleich: docs/ueber-uns-usps.md.
-  # Ersetzt die bisherige Sammelliste durch Zusammenarbeit/Produktion.
-  - type: landingBento
-    id: zusammenarbeit
-    kicker: Aus einer Hand
-    headline: Eure Idee wird zur *Choreografie*.
-    lead:
-      icon: users
-      title: Mit euch entwickelt.
-      text: Wir entwickeln mit euch Storyline, Motive und Musik für euren Anlass.
-    items:
-      - icon: pencil-ruler
-        title: Eigenes Design-Team
-        text: Alejandro entwirft die Motive und Choreografien. Eure Ideen, euer Logo oder euer Stadtwappen werden zu Drohnenformationen.
-        _key: k_131f77651b316dd9a22e
-      - icon: thumbs-up
-        title: Motive vorab freigeben
-        text: Ihr seht die Entwürfe vor der Show und gebt jedes Motiv frei.
-        _key: k_2327413f096b6acd85f8
-      - icon: music
-        title: Musik und Licht abstimmen
-        text: Wir schneiden die Musik zur Animation. Danach programmieren wir Farben und Lichteffekte auf die musikalischen Akzente. Der Musikschnitt ist in jedem Paket enthalten.
-        _key: k_3947e1f963bd7fd6625a
-      - icon: drone
-        title: Eigene Flotte
-        text: Wir fliegen mit unseren eigenen Drohnen. Patrick plant ihren Einsatz und kümmert sich um die Technik für eure Show.
-        _key: k_9047aa9bacd4dc446343
-    todo: Moritz muss den USP-Entwurf zur Zusammenarbeit redaktionell freigeben; die sachliche Grundlage ist in docs/ueber-uns-usps.md dokumentiert.
-    _key: k_f2457c3cc737e38d2649
+  # Kein Gebäudefoto im Bestand (Moritz' Platzhalter #FotoDesGebäudes): Punktkarte NRW mit Büro und Hauptsitz.
+  - type: location
+    id: standort
+    kicker: Standort
+    headline: Zu Hause in *NRW*
+    text: Besucht ihr uns mal auf einen Kaffee? Dann laden wir euch gerne in unser Büro in der Katernberger Straße 107, 45327 Essen, ein. Hier sitzen wir im Triple Z, dem Gründungszentrum Zeche Zollverein, umgeben von innovativem Start-up-Spirit und nordrhein-westfälischer Industrietradition. Über Post freuen wir uns an unserem Hauptsitz in der Bulmker Straße 107, 45888 Gelsenkirchen.
+    places:
+      - { label: "Büro · Triple Z, Essen", lat: 51.492, lon: 7.041, "_key": "k_e306a90123055df8f90a" }
+      - { label: "Hauptsitz · Gelsenkirchen", lat: 51.508, lon: 7.104, "_key": "k_4f2fced46fdc7f3b8b94" }
+    note: Basis 51.51° N · 7.10° E
+    todo: FlyingStars muss ein Foto des Triple Z bzw. des Büros liefern, falls es statt der Karte stehen soll.
+    _key: k_29290f927e580af77d9b
 
-  # Genehmigungen (Codex-Entwurf 02.11.) stehen nicht als eigene Section hier: Das Sicherheitskonzept direkt darunter nennt
-  # LBA-Genehmigung, DFS, Cross-border und Grundstückszustimmung ausführlicher („Das übernehmen wir / Das braucht ihr“).
+  - type: contactForm
+    kicker: Kontakt
+    headline: Lernen wir uns kennen?
+    text: Wir freuen uns darauf, eure Showidee gemeinsam zum Leben zu erwecken. Gerne sprechen wir in einem unverbindlichen Gespräch über eure Vision.
+    todo: FlyingStars und die Datenschutzberatung müssen Versanddienst, Empfängerpostfach, Auftragsverarbeitung, Drittlandtransfers und Löschfristen festlegen und die Datenschutzhinweise freigeben.
+    _key: k_1a36714a535d7dea8441
 
-  # Textentwurf für Moritz. Quellen und Konflikte: docs/sicherheitskonzept-quellen.md.
-  - type: landingSite
-    id: sicherheit
-    kicker: Sicherheit
-    headline: Sicherheit, um die ihr euch nicht kümmern müsst.
-    text: Sicherheitszonen, Flugplanung und Zuständigkeiten stimmen wir für jeden Standort ab.
-    variant: outdoor
-    safeguards:
-      - icon: scan-line
-        title: Digital begrenzter Flugbereich
-        text: "Ein Geofence begrenzt den Showbereich. Verlässt eine Drohne diesen Bereich, startet automatisch ein Sicherheitsprotokoll."
-        _key: k_69978ff343594b2a3f56
-      - icon: shield-check
-        title: Mehrfach abgesichert
-        text: "Automatische und manuelle Sicherheitssysteme überwachen jeden Flug. Bei einem Ausfall kehrt die Drohne meist zurück oder landet im Sicherheitsbereich. Die Outdoor-Drohnen wiegen rund 300 g und haben keine Kameras."
-        _key: k_ef68f4f356d09019ef52
-      - icon: users-round
-        title: Team vor Ort
-        text: "Drei bis vier Personen, Pilot:innen und Techniker:innen, bauen die Technik auf und überwachen die Show."
-        _key: k_3aecaaf1b44687bfc064
-      - icon: wind
-        title: Wetter im Blick
-        text: "Wir fliegen formstabil bis Windstärke 5 und bei leichtem Nieselregen. Die Wetterlage stimmen wir idealerweise ein bis zwei Tage vorher mit euch ab."
-        _key: k_fb40173475d53cde7ab3
-    todo: FlyingStars muss die Startflächen je Drohnenzahl und die standortabhängigen Abstände bestätigen; 15 × 15 und 25 × 25 Meter widersprechen sich in den Quellen. Die Zeichnung bleibt ein Beispiel; Betriebsgenehmigung und aktuelle Versicherungsbestätigung fehlen im Quellenpaket.
-    safetyRef: safety-concept
-    _key: k_acabd60ef12b79f89464
-
-  # Nachhaltigkeit (Marc, 31.10.2026, Runde 8): dieselbe Scrollstory wie auf der Startseite, mit denselben Fakten, statt
-  # einer schwächeren Kopie. docs/DESIGN.md sieht genau eine Scrollstory auf Über uns vor. Der Unterschied zur Startseite
-  # liegt im Satz unter der Headline (Gründungsmotiv) und im Hersteller als Beleg für „Gebaut in der EU“.
-  # Nur Aussagen über die Show vor Ort (EmpCo).
-  - type: sustainability
-    id: nachhaltigkeit
-    kicker: Nachhaltigkeit
-    headline: Kein Knall. Kein Rauch. Kein Müll.
-    text: Nachhaltigkeit ist der Grund, aus dem wir FlyingStars gegründet haben. Wir denken sie bei jeder Entscheidung mit.
-    facts:
-      - { label: Kein Knall, value: leise, text: "Die Drohnen summen, laut ist nur eure Musik. Den Schallschutz hat der TÜV Nord in einem Gutachten untersucht.", "_key": "k_18107c09a966fa79eaaa" }
-      - { label: Kein Rauch, value: "0", unit: g, text: "Keine Pyrotechnik, also kein Rauch und keine Schwermetalle über dem Publikum.", "_key": "k_e9bac39bce573d233925" }
-      - { label: Kein Müll, value: "0", unit: kg, text: "Keine Hülsen, keine Reste. Dieselben Drohnen fliegen Show für Show.", "_key": "k_0613df3d50475052917a" }
-      - { label: Ökostrom, value: { fact: renewablePercent }, unit: "%", text: Ökostrom von naturstrom für unsere Akkus., "_key": "k_e0f84ec6b02e192701fd" }
-    todo: Moritz und FlyingStars müssen die Umweltformulierungen vor Veröffentlichung prüfen und die Belege für Ökostrom, Herstellung und das TÜV-Nord-Schallschutzgutachten bereithalten.
-    pillarsRef: sustainability-pillars
-    _key: k_0fa41045b869c8273b40
-
-  - type: metrics
-    id: zahlen
-    kicker: In Zahlen
-    headline: Erfahrung, die man zählen kann.
-    text: Stand 21. Oktober 2026.
-    items:
-      - { label: Shows, value: { fact: showsTotal }, text: Seit der ersten Show im August 2022. In diesem Jahr waren es bis Oktober 50., "_key": "k_50c102f56431ca4d2975" }
-      - { label: Gegründet, value: "2021", text: Am 1. Dezember 2021 haben wir das Gewerbe angemeldet., "_key": "k_a66f30ad55c0027af0b7" }
-      - { label: Größte Einzelshow, value: 600 Drohnen, text: "Im Musical Bokkenrijders in Maastricht, 2025 als Teaser und 2026 an 20 Abenden.", "_key": "k_15199d974e28adf4247b" }
-      - { label: Drohnen-Einsätze in einem Monat, value: "12.000", text: "Im Juni 2026, 20 Shows mit je 600 Drohnen.", "_key": "k_47cc3f18ccf0d2fa265e" }
-    todo: FlyingStars muss den Showstand seit dem 21.10.2026 aktualisieren oder 178 weiterhin ausdrücklich als datierten Bestand kennzeichnen.
-    _key: k_3064cf819511d86712c4
-
-  - type: cta
-    headline: Lernt uns kennen.
-    text: Am schnellsten geht es per Anfrage. Wenn ihr lieber erst sprechen wollt, vereinbart auf der Kontaktseite einen Videocall.
-    button: { label: Show anfragen, href: /kontakt/ }
-    _key: k_c92c36f7a77d76a82182
+  - type: faq
+    id: faq
+    kicker: FAQ
+    headline: Häufige Fragen
+    cta: { label: Alle Fragen, href: /faq/ }
+    openFirst: true
+    tags: [ ueber-uns-moritz ]
+    _key: k_89bce7cd130ab4ebbd41

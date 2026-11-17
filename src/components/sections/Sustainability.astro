@@ -16,7 +16,7 @@ import { optimizedLogo } from '../../lib/media';
 import Icon from '../Icon.astro';
 const PICON = { eu: 'eu', repair: 'wrench', ev: 'e-car', campaign: 'megaphone', leaf: 'leaf' } as const;
 type Props = Extract<Section, { type: 'sustainability' }> & { index: number };
-const { headline, text, id = 'nachhaltigkeit', facts = [], points = [], pillarsRef, proofImage, proofText, campaign, index, kicker, image, cta } = Astro.props;
+const { headline, text, id = 'nachhaltigkeit', facts = [], points = [], pillarsRef, proofImage, proofText, campaign, index, kicker, image, cta, icon } = Astro.props;
 import Picture from '../Picture.astro';
 import { accentParts, plain } from '../accent';
 import { forPath as forPathLink } from '../../i18n/server';
@@ -33,21 +33,29 @@ const whole = (line: string) => /^\*[^*]+\*$/.test(line.trim());
 const lineClass = (line: string, i: number) => marked
   ? { grad: whole(line), o: lines.length > 2 && i > 0 && !whole(line) }
   : { grad: i === lines.length - 1 && lines.length > 1, o: lines.length > 2 && i === 1 };
+// Figur der Scrollstory je Kennzahl nach Einheit, damit die Reihenfolge frei bleibt (Moritz: Knall, Müll, Rauch):
+// ohne Einheit Schallwelle, g die Null, kg die geparkte Flotte („nichts bleibt zurück“), % der Blitz für den Strom.
+const FIG: Record<string, number> = { g: 1, kg: 2, '%': 3 };
+const figs = facts.map((fact, i) => fact.unit ? FIG[fact.unit.trim()] ?? i : 0).join(',');
+// Mit Foto oder Icon-Kachel: Einleitung links, Bild rechts. Sonst wie im Prototyp: Einleitung schmal unter dem Titel,
+// der Link direkt darunter.
+const lead = Boolean(image || icon);
 const parts = (point: string) => point.split(/(\S+-\S+)/).filter(Boolean);
 const proof = proofImage ? await optimizedLogo(proofImage.src, 60) : undefined;
 ---
 <section class="eco-sec" id={id} aria-labelledby={headingId}>
-  <SectionHead variant="display" class="eco-head" titleClass="eco-title" revealTitle kicker={kicker} headline={plain(headline)} text={image || cta ? undefined : text} id={headingId} level={H}>
+  <SectionHead variant="display" class="eco-head" titleClass="eco-title" revealTitle kicker={kicker} headline={plain(headline)} text={lead ? undefined : text} id={headingId} level={H}>
     <Fragment slot="title">{lines.map((line, i) => <span data-reveal style={`--i:${i}`} class:list={lineClass(line, i)}>{whole(line) ? plain(line) : accentParts(line).map((p) => p.g ? <span class="grad">{p.t}</span> : p.t)} </span>)}</Fragment>
+    {!lead && cta && <p class="eco-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
   </SectionHead>
-  {(image || cta) && <div class:list={['eco-lead', { 'has-img': image }]}>
+  {lead && <div class="eco-lead has-img">
     <div class="eco-lead-copy">
       {text && text.split(/\n\s*\n/).map((para) => <p>{para.trim()}</p>)}
       {cta && <p class="eco-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
     </div>
-    {image && <figure class="eco-photo" data-curtain><Picture {...image} /></figure>}
+    {image ? <figure class="eco-photo" data-curtain><Picture {...image} /></figure> : <div class="eco-photo eco-dots" aria-hidden="true"><Icon name={icon!} size={56} class="g" /></div>}
   </div>}
-  {facts.length > 0 && <div class="eco-scrolly" data-scrolly><div class="eco-pin">
+  {facts.length > 0 && <div class="eco-scrolly" data-scrolly data-figs={figs}><div class="eco-pin">
     <canvas class="eco-canvas" aria-hidden="true"></canvas>
     <FactList items={facts} variant="eco" />
     <ol class="eco-steps mono" aria-hidden="true">{facts.map((fact, i) => <li style={`--k:${i}`}>{fact.label}</li>)}</ol>
@@ -90,5 +98,11 @@ const proof = proofImage ? await optimizedLogo(proofImage.src, 60) : undefined;
   .eco-lead-copy .eco-more { margin-top: clamp(var(--space-5), 2.6vw, var(--space-8)); }
   .eco-photo { margin: 0; border-radius: var(--radius); overflow: hidden; aspect-ratio: 16 / 9; --curtain-r: var(--radius); }
   .eco-photo :global(img) { width: 100%; height: 100%; object-fit: cover; display: block; }
+  /* Ohne echtes Showfoto: Kachel mit Icon und Punktmuster wie die Aussage-Kachel (LandingBento, Werbung #agenturen) */
+  .eco-dots { position: relative; display: grid; place-items: center; background: var(--surface-2); border: 1px solid var(--line); }
+  .eco-dots::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(circle, rgb(var(--rgb-amber) / 0.5) 0.0625rem, transparent 0.1rem); background-size: 1.375rem 1.375rem; -webkit-mask-image: radial-gradient(120% 90% at 100% 0%, #000, transparent 62%); mask-image: radial-gradient(120% 90% at 100% 0%, #000, transparent 62%); opacity: 0.55; pointer-events: none; }
+  .eco-dots :global(.ico) { position: relative; width: 3.5rem; height: 3.5rem; }
+  /* Link unter der schmalen Einleitung (ohne Foto) */
+  :global(.eco-head) > .eco-more { margin: var(--space-2) 0 0; }
   @media (--grid-stacked) { .eco-lead.has-img { grid-template-columns: 1fr; } }
 </style>

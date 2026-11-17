@@ -200,9 +200,9 @@
     "nl": "Pakket"
   },
   "showconfigurator.yourTextYourLogo": {
-    "de": "Euer Text, euer Logo",
-    "en": "Your text, your logo",
-    "nl": "Jullie tekst, jullie logo"
+    "de": "Euer Text oder Logo",
+    "en": "Your text or logo",
+    "nl": "Jullie tekst of logo"
   },
   "showconfigurator.optional": {
     "de": "(optional)",
@@ -3239,6 +3239,11 @@
     "en": "Flight and safety areas from above",
     "nl": "Vlieg- en veiligheidszones van bovenaf"
   },
+  "landingsite.tapHint": {
+    "de": "Zeigt oder tippt auf eine Nummer: Dann erklären wir die Zone.",
+    "en": "Point at or tap a number to see what the zone is for.",
+    "nl": "Wijs of tik een nummer aan voor uitleg over de zone."
+  },
   "landingsite.indoorTitle": {
     "de": "Raumschnitt und Startraster von oben",
     "en": "Room cross-section and take-off grid from above",
@@ -3543,9 +3548,9 @@
     "nl": "Jullie logo is erg fijn voor {n} drones. Met meer drones of een vereenvoudigde versie (bijvoorbeeld alleen het beeldmerk) wordt het duidelijker."
   },
   "logoMode.occasion": {
-    "de": "Euer Logo",
-    "en": "Your logo",
-    "nl": "Jullie logo"
+    "de": "Logo",
+    "en": "Logo",
+    "nl": "Logo"
   },
   "logoMode.auto": {
     "de": "Automatisch",
@@ -3613,9 +3618,9 @@
     "nl": "Dit logo in de show gebruiken"
   },
   "logoMode.fittingPackage": {
-    "de": "Passendes Paket für euer Logo",
-    "en": "Matching package for your logo",
-    "nl": "Passend pakket voor jullie logo"
+    "de": "Passend für euer Logo",
+    "en": "Matched to your logo",
+    "nl": "Passend bij jullie logo"
   },
   "logoMode.densityRisk": {
     "de": "kann unleserlich werden",
@@ -3708,5 +3713,550 @@
   "logoInquiry.drones": {"de": "{n} Drohnen gewählt", "en": "{n} drones selected", "nl": "{n} drones gekozen"},
   "logoInquiry.remove": {"de": "Entfernen", "en": "Remove", "nl": "Verwijderen"},
   "logoInquiry.send": {"de": "Anfrage mit Logo senden", "en": "Send enquiry with logo", "nl": "Aanvraag met logo verzenden"},
-  "logoInquiry.invalid": {"de": "Das Logo kann nicht angehängt werden. Bitte verwendet eine statische SVG-, PNG-, JPG- oder WebP-Datei bis 2 MiB. SVGs dürfen keine aktiven oder externen Inhalte enthalten.", "en": "The logo cannot be attached. Use a static SVG, PNG, JPG or WebP file up to 2 MiB. SVGs must not contain active or external content.", "nl": "Het logo kan niet worden bijgevoegd. Gebruik een statisch SVG-, PNG-, JPG- of WebP-bestand tot 2 MiB. SVG’s mogen geen actieve of externe inhoud bevatten."}
+  "logoInquiry.invalid": {"de": "Das Logo kann nicht angehängt werden. Bitte verwendet eine statische SVG-, PNG-, JPG- oder WebP-Datei bis 2 MiB. SVGs dürfen keine aktiven oder externen Inhalte enthalten.", "en": "The logo cannot be attached. Use a static SVG, PNG, JPG or WebP file up to 2 MiB. SVGs must not contain active or external content.", "nl": "Het logo kan niet worden bijgevoegd. Gebruik een statisch SVG-, PNG-, JPG- of WebP-bestand tot 2 MiB. SVG’s mogen geen actieve of externe inhoud bevatten."},
+  "preise.metaTitle": {
+    "de": "Wie viel kosten Drohnenshows? (Preise 2027)",
+    "en": "How much do drone shows cost? (Prices 2027)",
+    "nl": "Wat kost een droneshow? (Prijzen 2027)"
+  },
+  "preise.metaDescription": {
+    "de": "Baut eure Traum-Drohnenshow selbst zusammen ✓ Transparente Kosten ✓ 10 % Rabatt sichern ☎︎ +49 209 88306562",
+    "en": "Build your dream drone show yourself ✓ Transparent costs ✓ Get 10% off ☎︎ +49 209 88306562",
+    "nl": "Stel jullie droomdroneshow zelf samen ✓ Transparante kosten ✓ 10% korting ☎︎ +49 209 88306562"
+  },
+  "preise.heroKicker": {
+    "de": "Kosten für Drohnenshows",
+    "en": "Drone show costs",
+    "nl": "Kosten van een droneshow"
+  },
+  "preise.heroHeadline": {
+    "de": "Erstellt das Paket, das eure *Geschichte* erzählt",
+    "en": "Create the package that tells your *story*",
+    "nl": "Stel het pakket samen dat jullie *verhaal* vertelt"
+  },
+  "preise.heroText": {
+    "de": "Unsere Outdoor-Drohnenshows beginnen bei 7900 Euro (netto) zuzüglich Anfahrt. Mehr Drohnen, mehr Personalisierung, mehr Spektakel? Können wir. Vollkommen transparent und ohne Überraschungen, damit ihr den Preis immer im Blick behaltet.",
+    "en": "Our outdoor drone shows start at 7,900 euros (excluding VAT) plus travel. More drones, more personalisation, more spectacle? We can do that. Fully transparent and without surprises, so you always keep track of the price.",
+    "nl": "Onze outdoor-droneshows beginnen bij 7.900 euro (exclusief btw) plus reiskosten. Meer drones, meer personalisatie, meer spektakel? Kunnen we. Volledig transparant en zonder verrassingen, zodat jullie de prijs altijd in beeld houden."
+  },
+  "preise.heroCta": {
+    "de": "Baut eure Show",
+    "en": "Build your show",
+    "nl": "Bouw jullie show"
+  },
+  "preise.factNet": {
+    "de": "netto zzgl. Anfahrt",
+    "en": "excl. VAT, plus travel",
+    "nl": "excl. btw, plus reiskosten"
+  },
+  "preise.factDrones": {
+    "de": "Drohnen",
+    "en": "drones",
+    "nl": "drones"
+  },
+  "preise.factEarly": {
+    "de": "Frühbuchungs\u00adrabatt",
+    "en": "early booking discount",
+    "nl": "vroegboekkorting"
+  },
+  "preise.cfgKicker": {
+    "de": "Konfigurator",
+    "en": "Configurator",
+    "nl": "Configurator"
+  },
+  "preise.cfgHeadline": {
+    "de": "Baut eure Show *selbst* zusammen",
+    "en": "Build your show *yourself*",
+    "nl": "Stel jullie show *zelf* samen"
+  },
+  "preise.individual": {
+    "de": "Individuelles Paket",
+    "en": "Custom package",
+    "nl": "Individueel pakket"
+  },
+  "preise.fixedPrice": {
+    "de": "Festes Paket · Festpreis",
+    "en": "Fixed package · fixed price",
+    "nl": "Vast pakket · vaste prijs"
+  },
+  "preise.upgrades": {
+    "de": "Upgrades",
+    "en": "Upgrades",
+    "nl": "Upgrades"
+  },
+  "preise.alwaysIncluded": {
+    "de": "Immer dabei",
+    "en": "Always included",
+    "nl": "Altijd inbegrepen"
+  },
+  "preise.inc.design": {
+    "de": "Design",
+    "en": "Design",
+    "nl": "Design"
+  },
+  "preise.inc.music": {
+    "de": "Musik",
+    "en": "Music",
+    "nl": "Muziek"
+  },
+  "preise.inc.tech": {
+    "de": "Technik",
+    "en": "Technology",
+    "nl": "Techniek"
+  },
+  "preise.inc.permit": {
+    "de": "EU-weite Genehmigung",
+    "en": "EU-wide permit",
+    "nl": "EU-brede vergunning"
+  },
+  "preise.inc.safety": {
+    "de": "Sicherheitskonzept",
+    "en": "Safety plan",
+    "nl": "Veiligheidsplan"
+  },
+  "preise.inc.insurance": {
+    "de": "Haftpflichtversicherung",
+    "en": "Liability insurance",
+    "nl": "Aansprakelijkheidsverzekering"
+  },
+  "preise.inc.crew": {
+    "de": "Team vor Ort",
+    "en": "On-site crew",
+    "nl": "Team ter plaatse"
+  },
+  "preise.inc.flight": {
+    "de": "Flug bis {max} Minuten",
+    "en": "Flight up to {max} minutes",
+    "nl": "Vlucht tot {max} minuten"
+  },
+  "preise.up.express": {
+    "de": "Express",
+    "en": "Express",
+    "nl": "Express"
+  },
+  "preise.up.film": {
+    "de": "Foto & Video",
+    "en": "Photo & video",
+    "nl": "Foto & video"
+  },
+  "preise.up.kontrollzone": {
+    "de": "Sondergenehmigung",
+    "en": "Special permit",
+    "nl": "Speciale vergunning"
+  },
+  "preise.up.behoerden": {
+    "de": "Erweiterter Behördensupport",
+    "en": "Extended authority support",
+    "nl": "Uitgebreide ondersteuning bij instanties"
+  },
+  "preise.up.schweiz": {
+    "de": "International",
+    "en": "International",
+    "nl": "Internationaal"
+  },
+  "preise.up.indoor": {
+    "de": "Indoor",
+    "en": "Indoor",
+    "nl": "Indoor"
+  },
+  "preise.upDesc.express": {
+    "de": "Planung in unter 14 Tagen",
+    "en": "Planning in under 14 days",
+    "nl": "Planning in minder dan 14 dagen"
+  },
+  "preise.upDesc.film": {
+    "de": "Rohaufnahmen von Drohnen- und Bodenkameras",
+    "en": "Raw footage from drone and ground cameras",
+    "nl": "Ruwe opnamen van drone- en grondcamera's"
+  },
+  "preise.upDesc.kontrollzone": {
+    "de": "Für Kontrollzonen wie (Flug-)Häfen und Menschenmengen",
+    "en": "For controlled zones such as (air)ports and crowds",
+    "nl": "Voor gecontroleerde zones zoals (lucht)havens en mensenmassa's"
+  },
+  "preise.upDesc.behoerden": {
+    "de": "Wir übernehmen die komplette Kommunikation",
+    "en": "We handle all communication",
+    "nl": "Wij nemen de volledige communicatie over"
+  },
+  "preise.upDesc.schweiz": {
+    "de": "Flug in Nicht-EU-Ländern",
+    "en": "Flights in non-EU countries",
+    "nl": "Vlucht in niet-EU-landen"
+  },
+  "preise.upDesc.indoor": {
+    "de": "Wir holen den Himmel rein",
+    "en": "We bring the sky indoors",
+    "nl": "Wij halen de hemel naar binnen"
+  },
+  "preise.upPrice.effort": {
+    "de": "nach Aufwand",
+    "en": "based on scope",
+    "nl": "op basis van omvang"
+  },
+  "preise.upPrice.request": {
+    "de": "nach Anfrage",
+    "en": "on request",
+    "nl": "op aanvraag"
+  },
+  "preise.summaryIndividual": {
+    "de": "Individuelles Paket: {drones} Drohnen, {price} netto (Preis laut Konfigurator)",
+    "en": "Custom package: {drones} drones, {price} excluding VAT (configurator price)",
+    "nl": "Individueel pakket: {drones} drones, {price} exclusief btw (prijs volgens configurator)"
+  },
+  "preise.summaryPackage": {
+    "de": "Paket {name}: {drones} Drohnen, {price} netto (Festpreis)",
+    "en": "Package {name}: {drones} drones, {price} excluding VAT (fixed price)",
+    "nl": "Pakket {name}: {drones} drones, {price} exclusief btw (vaste prijs)"
+  },
+  "preise.summaryUpgrades": {
+    "de": "Upgrades: {list}",
+    "en": "Upgrades: {list}",
+    "nl": "Upgrades: {list}"
+  },
+  "preise.promiseHeadline": {
+    "de": "Euer Budget, unsere *Garantie*",
+    "en": "Your budget, our *guarantee*",
+    "nl": "Jullie budget, onze *garantie*"
+  },
+  "preise.promise1": {
+    "de": "Der Preis steht im Vorhinein fest. Keine Überraschungen.",
+    "en": "The price is fixed in advance. No surprises.",
+    "nl": "De prijs staat vooraf vast. Geen verrassingen."
+  },
+  "preise.promise2": {
+    "de": "Woanders günstiger gesehen? Wir gehen mit.",
+    "en": "Seen it cheaper elsewhere? We'll match it.",
+    "nl": "Ergens anders goedkoper gezien? Wij gaan mee."
+  },
+  "preise.promise3": {
+    "de": "10 % Frühbuchungsrabatt bei Buchung im Vorjahr.",
+    "en": "10% early booking discount when you book in the previous year.",
+    "nl": "10% vroegboekkorting bij boeking in het jaar ervoor."
+  },
+  "preise.promiseCta": {
+    "de": "Angebot prüfen",
+    "en": "Check a quote",
+    "nl": "Offerte laten checken"
+  },
+  "preise.pkgKicker": {
+    "de": "Beispielhafte Preise",
+    "en": "Example prices",
+    "nl": "Voorbeeldprijzen"
+  },
+  "preise.pkgHeadline": {
+    "de": "… oder wählt eines unserer *festen Pakete*",
+    "en": "… or choose one of our *fixed packages*",
+    "nl": "… of kies een van onze *vaste pakketten*"
+  },
+  "preise.pkgText": {
+    "de": "Unsere Pakete bieten euch einen praktischen Startpunkt. Ihr könnt sie beliebig erweitern.",
+    "en": "Our packages give you a practical starting point. You can extend them as you like.",
+    "nl": "Onze pakketten bieden jullie een praktisch startpunt. Jullie kunnen ze naar wens uitbreiden."
+  },
+  "preise.drones": {
+    "de": "{n} Drohnen",
+    "en": "{n} drones",
+    "nl": "{n} drones"
+  },
+  "preise.pkgEnquire": {
+    "de": "{name} anfragen",
+    "en": "Enquire about {name}",
+    "nl": "{name} aanvragen"
+  },
+  "preise.pkgAdjust": {
+    "de": "{name} anpassen",
+    "en": "Customise {name}",
+    "nl": "{name} aanpassen"
+  },
+  "preise.spark.tag": {
+    "de": "Der funkelnde Höhepunkt für Hochzeiten, Jubiläen und kleine Firmen- und Kulturfeiern.",
+    "en": "The sparkling highlight for weddings, anniversaries and small corporate and cultural celebrations.",
+    "nl": "Het fonkelende hoogtepunt voor bruiloften, jubilea en kleine bedrijfs- en cultuurfeesten."
+  },
+  "preise.spark.story": {
+    "de": "Individuelle 2D-Storyline aus Initialen, Logos oder Stadtwappen, kombiniert mit beliebten Formationen wie Herzen, Ringe und Sektgläser.",
+    "en": "Custom 2D storyline with initials, logos or coats of arms, combined with popular formations such as hearts, rings and champagne glasses.",
+    "nl": "Individuele 2D-verhaallijn met initialen, logo's of stadswapens, gecombineerd met populaire formaties zoals harten, ringen en champagneglazen."
+  },
+  "preise.spark.p1": {
+    "de": "Wir erstellen die Designs, ihr gebt sie frei",
+    "en": "We create the designs, you approve them",
+    "nl": "Wij maken de ontwerpen, jullie keuren ze goed"
+  },
+  "preise.spark.p2": {
+    "de": "GEMA-freie oder bei Anmeldung lizenzierte Musik",
+    "en": "Royalty-free music or music licensed on registration",
+    "nl": "GEMA-vrije muziek of bij aanmelding gelicentieerde muziek"
+  },
+  "preise.spark.p3": {
+    "de": "Standard-Genehmigungsverfahren für simple Locations",
+    "en": "Standard permit procedure for simple locations",
+    "nl": "Standaard vergunningsprocedure voor eenvoudige locaties"
+  },
+  "preise.horizon.tag": {
+    "de": "Die individuelle Inszenierung für Launches, große Firmenevents und Stadtmarketing.",
+    "en": "The custom production for launches, large corporate events and city marketing.",
+    "nl": "De individuele enscenering voor lanceringen, grote bedrijfsevenementen en citymarketing."
+  },
+  "preise.horizon.story": {
+    "de": "Vollständig individuelle 2D- und 3D-Storyline für präzise Logos, komplexe Schriftzüge und einfache 3D-Elemente.",
+    "en": "Fully custom 2D and 3D storyline for precise logos, complex lettering and simple 3D elements.",
+    "nl": "Volledig individuele 2D- en 3D-verhaallijn voor precieze logo's, complexe teksten en eenvoudige 3D-elementen."
+  },
+  "preise.horizon.p1": {
+    "de": "Kreativ-Workshop mit Storyboard plus Videovorschau",
+    "en": "Creative workshop with storyboard plus video preview",
+    "nl": "Creatieve workshop met storyboard plus videopreview"
+  },
+  "preise.horizon.p2": {
+    "de": "Synchron zu eurer Wunschmusik",
+    "en": "Synchronised to your chosen music",
+    "nl": "Synchroon met jullie gewenste muziek"
+  },
+  "preise.horizon.p3": {
+    "de": "Komplexe Genehmigungen, zum Beispiel in Flughafennähe",
+    "en": "Complex permits, for example near airports",
+    "nl": "Complexe vergunningen, bijvoorbeeld in de buurt van luchthavens"
+  },
+  "preise.odyssey.tag": {
+    "de": "Das immersive Erlebnis für große Kampagnen, Festivals und Events mit maximaler Reichweite.",
+    "en": "The immersive experience for major campaigns, festivals and events with maximum reach.",
+    "nl": "De meeslepende ervaring voor grote campagnes, festivals en evenementen met maximaal bereik."
+  },
+  "preise.odyssey.story": {
+    "de": "Komplexe individuelle 3D-Storyline mit dramaturgischer Kurve und volumetrischen Effekten, etwa der Visualisierung von Produkten im Einsatz.",
+    "en": "Complex custom 3D storyline with a dramatic arc and volumetric effects, such as visualising products in use.",
+    "nl": "Complexe individuele 3D-verhaallijn met een dramatische boog en volumetrische effecten, zoals de visualisatie van producten in gebruik."
+  },
+  "preise.odyssey.p1": {
+    "de": "Eigene Projektleitung, mehrere Feedbackschleifen",
+    "en": "Dedicated project manager, several feedback rounds",
+    "nl": "Eigen projectleiding, meerdere feedbackrondes"
+  },
+  "preise.odyssey.p2": {
+    "de": "Auf Wunsch Vor-Ort-Termin vorab",
+    "en": "On-site visit in advance on request",
+    "nl": "Op verzoek vooraf een afspraak ter plaatse"
+  },
+  "preise.odyssey.p3": {
+    "de": "Professionelle Videodokumentation",
+    "en": "Professional video documentation",
+    "nl": "Professionele videodocumentatie"
+  },
+  "preise.incKicker": {
+    "de": "Im Preis enthalten",
+    "en": "Included in the price",
+    "nl": "Inbegrepen in de prijs"
+  },
+  "preise.incHeadline": {
+    "de": "Diese Dienstleistungen sind *immer dabei*",
+    "en": "These services are *always included*",
+    "nl": "Deze diensten zijn *altijd inbegrepen*"
+  },
+  "preise.incText": {
+    "de": "Egal, ob fertiges Paket oder maßgeschneidert: Unsere Drohnenfeuerwerke bestehen immer aus allem, was eine gute Show braucht.",
+    "en": "Whether a ready-made package or tailor-made: our drone fireworks always include everything a good show needs.",
+    "nl": "Of het nu een kant-en-klaar pakket is of maatwerk: ons dronevuurwerk bevat altijd alles wat een goede show nodig heeft."
+  },
+  "preise.incItem.design": {
+    "de": "Maßgeschneiderte Kombination aus Motiven und Musik.",
+    "en": "A tailor-made combination of motifs and music.",
+    "nl": "Een combinatie van motieven en muziek op maat."
+  },
+  "preise.incItem.tech": {
+    "de": "Drohnen, Hard- und Software sind im Paket enthalten.",
+    "en": "Drones, hardware and software are included in the package.",
+    "nl": "Drones, hardware en software zitten in het pakket."
+  },
+  "preise.incItem.permit": {
+    "de": "Wir kümmern uns um alle Anträge.",
+    "en": "We take care of all applications.",
+    "nl": "Wij regelen alle aanvragen."
+  },
+  "preise.incItem.safety": {
+    "de": "100 x 100 Meter Sicherheitszone und Absicherung.",
+    "en": "100 x 100 metre safety zone and protection.",
+    "nl": "Veiligheidszone van 100 x 100 meter en beveiliging."
+  },
+  "preise.incItem.insurance": {
+    "de": "Absicherung bis 1,3 Mio. Euro in jedem Paket.",
+    "en": "Cover up to 1.3 million euros in every package.",
+    "nl": "Dekking tot 1,3 miljoen euro in elk pakket."
+  },
+  "preise.incItem.crew": {
+    "de": "Pilot:innen, Techniker:innen und Sicherheitskräfte.",
+    "en": "Pilots, technicians and security staff.",
+    "nl": "Piloten, technici en beveiligingspersoneel."
+  },
+  "preise.incItem.flightTitle": {
+    "de": "Flug",
+    "en": "Flight",
+    "nl": "Vlucht"
+  },
+  "preise.incItem.flight": {
+    "de": "Im Schnitt circa {typical} Minuten, bis {max} Minuten möglich.",
+    "en": "On average around {typical} minutes, up to {max} minutes possible.",
+    "nl": "Gemiddeld circa {typical} minuten, tot {max} minuten mogelijk."
+  },
+  "preise.incNote": {
+    "de": "Ihr stellt nur das Einverständnis der Grundstückseigentümer:innen, die Freigabe der Motive und die musikalische Beschallung vor Ort. Den Rest erledigen wir.",
+    "en": "You only provide the landowners' consent, the approval of the motifs and the on-site sound system. We take care of the rest.",
+    "nl": "Jullie zorgen alleen voor de toestemming van de grondeigenaren, de goedkeuring van de motieven en de geluidsinstallatie ter plaatse. De rest regelen wij."
+  },
+  "preise.upKicker": {
+    "de": "Upgrades",
+    "en": "Upgrades",
+    "nl": "Upgrades"
+  },
+  "preise.upHeadline": {
+    "de": "Alles ist *möglich*",
+    "en": "Everything is *possible*",
+    "nl": "Alles is *mogelijk*"
+  },
+  "preise.upText": {
+    "de": "Mit diesen Extras macht ihr ein Event zu eurem Event. Wunsch nicht dabei? Wir erfüllen ihn trotzdem.",
+    "en": "With these extras you make an event your event. Your wish isn't listed? We'll make it happen anyway.",
+    "nl": "Met deze extra's maken jullie van een evenement jullie evenement. Wens er niet bij? We vervullen hem toch."
+  },
+  "preise.x.indoor.title": {
+    "de": "Indoor-Drohnenshow",
+    "en": "Indoor drone show",
+    "nl": "Indoor-droneshow"
+  },
+  "preise.x.indoor.sub": {
+    "de": "Holt den Himmel rein",
+    "en": "Bring the sky indoors",
+    "nl": "Haal de hemel naar binnen"
+  },
+  "preise.x.indoor.text": {
+    "de": "Indoor-Drohnenshows sind aufwändiger. Wir kalkulieren jedes Paket individuell.",
+    "en": "Indoor drone shows are more complex. We price every package individually.",
+    "nl": "Indoor-droneshows zijn bewerkelijker. We berekenen elk pakket individueel."
+  },
+  "preise.x.indoor.price": {
+    "de": "Ab {price} (netto) zuzüglich Anfahrt",
+    "en": "From {price} (excluding VAT) plus travel",
+    "nl": "Vanaf {price} (exclusief btw) plus reiskosten"
+  },
+  "preise.x.express.title": {
+    "de": "Express",
+    "en": "Express",
+    "nl": "Express"
+  },
+  "preise.x.express.sub": {
+    "de": "Planung in unter 14 Tagen",
+    "en": "Planning in under 14 days",
+    "nl": "Planning in minder dan 14 dagen"
+  },
+  "preise.x.express.text": {
+    "de": "Durch schnellere Genehmigungsverfahren können wir den Prozess beschleunigen.",
+    "en": "Faster permit procedures let us speed up the process.",
+    "nl": "Door snellere vergunningsprocedures kunnen we het proces versnellen."
+  },
+  "preise.x.film.title": {
+    "de": "Foto & Video",
+    "en": "Photo & video",
+    "nl": "Foto & video"
+  },
+  "preise.x.film.sub": {
+    "de": "Hält den Moment fest",
+    "en": "Captures the moment",
+    "nl": "Legt het moment vast"
+  },
+  "preise.x.film.text": {
+    "de": "Kameradrohne und Bodenkameras sammeln Rohaufnahmen für Aftermovies.",
+    "en": "A camera drone and ground cameras collect raw footage for aftermovies.",
+    "nl": "Een cameradrone en grondcamera's verzamelen ruwe opnamen voor aftermovies."
+  },
+  "preise.x.film.price": {
+    "de": "{price} (netto)",
+    "en": "{price} (excluding VAT)",
+    "nl": "{price} (exclusief btw)"
+  },
+  "preise.x.kontrollzone.title": {
+    "de": "Sondergenehmigungen",
+    "en": "Special permits",
+    "nl": "Speciale vergunningen"
+  },
+  "preise.x.kontrollzone.sub": {
+    "de": "Flughäfen, Häfen, Menschenmengen",
+    "en": "Airports, ports, crowds",
+    "nl": "Luchthavens, havens, mensenmassa's"
+  },
+  "preise.x.kontrollzone.text": {
+    "de": "Wir holen komplizierte Sondergenehmigungen für Kontrollzonen und Co. ein.",
+    "en": "We obtain complicated special permits for controlled zones and the like.",
+    "nl": "We vragen ingewikkelde speciale vergunningen aan voor gecontroleerde zones en dergelijke."
+  },
+  "preise.x.behoerden.title": {
+    "de": "Verwaltung",
+    "en": "Administration",
+    "nl": "Administratie"
+  },
+  "preise.x.behoerden.sub": {
+    "de": "Erweiterter Behördensupport",
+    "en": "Extended authority support",
+    "nl": "Uitgebreide ondersteuning bij instanties"
+  },
+  "preise.x.behoerden.text": {
+    "de": "Wir übernehmen die komplette Kommunikation mit allen notwendigen Ämtern und Behörden.",
+    "en": "We handle all communication with every office and authority involved.",
+    "nl": "Wij nemen de volledige communicatie met alle benodigde instanties en overheden over."
+  },
+  "preise.x.schweiz.title": {
+    "de": "International",
+    "en": "International",
+    "nl": "Internationaal"
+  },
+  "preise.x.schweiz.sub": {
+    "de": "Überall auf der Welt",
+    "en": "Anywhere in the world",
+    "nl": "Overal ter wereld"
+  },
+  "preise.x.schweiz.text": {
+    "de": "Genehmigungen und Zoll für unsere Flotte in Nicht-EU-Ländern.",
+    "en": "Permits and customs for our fleet in non-EU countries.",
+    "nl": "Vergunningen en douane voor onze vloot in niet-EU-landen."
+  },
+  "preise.x.effort": {
+    "de": "Aufpreis nach Aufwand",
+    "en": "Surcharge based on scope",
+    "nl": "Meerprijs op basis van omvang"
+  },
+  "preise.contactKicker": {
+    "de": "Drohnenshow buchen & Kosten klären",
+    "en": "Book a drone show & clarify costs",
+    "nl": "Droneshow boeken & kosten bespreken"
+  },
+  "preise.contactHeadline": {
+    "de": "Lasst uns eure *Choreografie* planen",
+    "en": "Let's plan your *choreography*",
+    "nl": "Laten we jullie *choreografie* plannen"
+  },
+  "preise.contactText": {
+    "de": "Baut mit uns eure Drohnenshow, klärt den Preis oder reserviert einen der freien Termine 2027 oder 2028. Wir antworten innerhalb von 48 Stunden.",
+    "en": "Build your drone show with us, clarify the price or reserve one of the free dates in 2027 or 2028. We reply within 48 hours.",
+    "nl": "Bouw met ons jullie droneshow, bespreek de prijs of reserveer een van de vrije data in 2027 of 2028. We antwoorden binnen 48 uur."
+  },
+  "preise.faqKicker": {
+    "de": "FAQ",
+    "en": "FAQ",
+    "nl": "FAQ"
+  },
+  "preise.faqHeadline": {
+    "de": "Häufige Fragen",
+    "en": "Frequently asked questions",
+    "nl": "Veelgestelde vragen"
+  },
+  "showConfigurator.marketing": {
+    "de": "Marketing",
+    "en": "Marketing",
+    "nl": "Marketing"
+  },
+  "preise.heroPosterAlt": {
+    "de": "Drohnenformation über der Skyline von Düsseldorf mit Rheinturm",
+    "en": "Drone formation above the Düsseldorf skyline with the Rhine Tower",
+    "nl": "Droneformatie boven de skyline van Düsseldorf met de Rheinturm"
+  }
 }

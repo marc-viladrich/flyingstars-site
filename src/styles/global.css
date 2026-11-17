@@ -647,6 +647,9 @@ td.us { color: var(--text); background: var(--fill-soft); }
 .eco-proof > :not(img) { grid-column: 2; }
 .eco-proof:not(:has(img)) { grid-template-columns: 1fr; }
 .eco-proof:not(:has(img)) > * { grid-column: 1; }
+/* Handy: Logo über den Punkten statt daneben, sonst bleibt für die Punkte eine schmale Spalte (17.11.2026). Mit .eco-sec,
+   weil global.css in mehreren CSS-Chunks landet und ein später geladener Chunk sonst die Grundregel zurücksetzt. */
+@media (--compact) { .eco-sec .eco-proof { grid-template-columns: 1fr; } .eco-sec .eco-proof > * { grid-column: 1; } .eco-sec .eco-proof img { grid-row: auto; justify-self: start; } }
 .eco-proof img { height: 1.875rem; width: auto; opacity: 0.9; grid-row: span 2; }
 .eco-proof p { color: var(--muted); }
 .eco-proof b { color: var(--text); font-weight: 500; }
@@ -767,6 +770,9 @@ td.us { color: var(--text); background: var(--fill-soft); }
 .prose { max-width:70ch;font-size:var(--text-md);line-height:1.75; }
 .prose h2, .prose h3 { margin-top:1.5em; }
 .prose p, .prose ul { margin:1em 0; }
+/* Hervorhebung im Fließtext (Markdown **…**): Marken-Orange. Der Logoverlauf bleibt den Schlagzeilen vorbehalten, die ihr
+   Verlaufswort mit *…* markieren (Accent.astro). Marc, 17.11.2026. */
+.prose strong { color: var(--accent); }
 .video-player { position:relative;isolation:isolate;overflow:hidden;background:var(--surface); }
 .video-player>img, .video-player>video { width:100%;height:100%;object-fit:cover; }
 .video-play { position:absolute;bottom:1.5rem;right:1.5rem;z-index:4;background:rgb(var(--rgb-ground) / .88);max-width:calc(100% - 3rem); }

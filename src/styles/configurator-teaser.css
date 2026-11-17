@@ -65,3 +65,8 @@
     .cft-pkg { min-height: 2.75rem; font-size: var(--text-xs); }
     .cft-count b { font-size: 1.375rem; }
   }
+/* Preisseite nach Moritz (17.11.2026): der Konfigurator hat keine Paketwahl mehr und der Regler keine Paketfarben. Das
+   Wireframe folgt ihm: keine Paketknöpfe, Regler neutral mit orangem Griff. Ablauf und Bühne bleiben (show-teaser.js). */
+.cft .cft-group:first-child { display: none; }
+.cft .cft-slider { --track: linear-gradient(90deg, var(--text), var(--text)) !important; }
+.cft .cft-thumb { border-color: var(--accent); box-shadow: 0 0 0 0.25rem var(--overlay-heavy), 0 0 1rem 2px rgb(var(--rgb-amber) / 0.45); }

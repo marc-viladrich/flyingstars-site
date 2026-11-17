@@ -46,6 +46,7 @@ function assignScalable(from, to) {
 }
 const TILT = 0.14, TILT_C = Math.cos(TILT), TILT_S = Math.sin(TILT); // Kippung der Bühne (render), auch für die Wolkenbahnen
 const hash = (x) => { const s = Math.sin(x * 12.9898 + 78.233) * 43758.5453; return s - Math.floor(s); };
+const smooth = (u) => (u <= 0 ? 0 : u >= 1 ? 1 : u * u * (3 - 2 * u));
 /** Outside place of drone i (display units): where drones join from and leave to, dark when idle. */
 const outside = (i, out) => {
   const a = hash(i) * Math.PI * 2, r = 1.2 + 0.2 * hash(i + 0.5);
@@ -60,7 +61,11 @@ const outside = (i, out) => {
 // Drohnen kommen und wohin überzählige fliegen (Anzeigeeinheiten; die Show-Folge bei #warum-drohnen lässt sie von unten
 // aufsteigen statt seitlich einzufliegen). drones(n) liefert Lage, Licht und Farbe der ersten n Drohnen in Canvas-Pixeln,
 // radius() die aktuelle Lichtgröße in Gerätepixeln: Damit übernimmt der Himmel-Schwarm die Drohnen ohne Sprung.
-export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread = 1, outside: away = outside } = {}) {
+// Himmel, Runde 3 (17.11.2026, additiv, Konfigurator und Teaser setzen nichts davon): flightRate = Tempo der Show-Uhr,
+// solange ein Bild angeflogen wird (Wolke oder Flug), unabhängig vom Tempo des Bildes selbst (setRate); null = wie bisher.
+// joinLate: Drohnen, die dunkel dazukommen, bleiben im Flug dunkel und leuchten erst kurz vor ihrem Platz auf, überzählige
+// gehen gleich zu Beginn ihres Rückflugs aus (sonst stehen sie beim Wechsel 2D → 3D als lose Punktwolke neben dem Bild).
+export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread = 1, outside: away = outside, flightRate = null, joinLate = false } = {}) {
   const ctx = canvas.getContext("2d");
   const reduceQuery = matchMedia("(prefers-reduced-motion: reduce)");
   let capacity = INITIAL_CAPACITY;
@@ -375,7 +380,8 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
         // wartend: das alte Bild verlischt; im Flug gedimmt, einzelne Drohnen blitzen auf; kurz vor der Ankunft an.
         // Das Verlöschen läuft auch nach dem Start einer Drohne weiter (kein Helligkeitssprung, wenn sie losfliegt).
         const fading = fromAlpha[i] > 0.05 ? fromAlpha[i] * Math.max(0, 1 - (elapsed / flightC) * 3) : 0;
-        if (q <= 0) alpha[i] = fromAlpha[i] > 0.05 ? Math.max(TEMPO.cloudDim, fading) : fromAlpha[i];
+        if (joinLate && fromAlpha[i] < 0.02) alpha[i] = q < 0.7 ? 0 : r[3] * smooth((q - 0.7) / 0.3); // kommt dunkel dazu
+        else if (q <= 0) alpha[i] = fromAlpha[i] > 0.05 ? Math.max(TEMPO.cloudDim, fading) : fromAlpha[i];
         else if (q < 0.88) alpha[i] = Math.max(fading, hash(i * 0.731 + Math.floor(t / TEMPO.cloudBlink + hash(i) * 7) * 1.917) < TEMPO.cloudTwinkle ? TEMPO.cloudSpark : TEMPO.cloudDim);
         else alpha[i] = TEMPO.cloudDim + (r[3] - TEMPO.cloudDim) * ((q - 0.88) / 0.12);
         continue;
@@ -394,14 +400,14 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
         pos[k] = x + fromVel[k] * carry; pos[k + 1] = y + fromVel[k + 1] * carry; pos[k + 2] = out[2] + fromVel[k + 2] * carry;
         const f = Math.min(1, u * 1.4);
         for (let q = 0; q < 3; q++) col[k + q] = fromCol[k + q] + (c[3 + q] - fromCol[k + q]) * f;
-        alpha[i] = fromAlpha[i] + (r[3] - fromAlpha[i]) * Math.min(1, u * 2.5); // joining drones light up as they fly in
+        alpha[i] = joinLate && fromAlpha[i] < 0.02 ? r[3] * smooth((u - 0.6) / 0.4) : fromAlpha[i] + (r[3] - fromAlpha[i]) * Math.min(1, u * 2.5); // joining drones light up as they fly in
       } else { pos[k] = r[0]; pos[k + 1] = r[1]; pos[k + 2] = r[2]; alpha[i] = r[3]; col[k] = c[3]; col[k + 1] = c[4]; col[k + 2] = c[5]; }
     }
     // drones no longer needed fly out of the picture and switch off
     for (let i = active; i < leaveEnd; i++) {
       const k = i * 3, u = flight ? Math.min(1, elapsed / flight) : 1, carry = flight * (u - 2 * u * u + u * u * u); away(i, spot);
       along(from[k], from[k + 1], from[k + 2], spot[0], spot[1], spot[2], u, t, out);
-      pos[k] = out[0] + fromVel[k] * carry; pos[k + 1] = out[1] + fromVel[k + 1] * carry; pos[k + 2] = out[2] + fromVel[k + 2] * carry; alpha[i] = Math.max(0, fromAlpha[i] * (1 - u * 1.6));
+      pos[k] = out[0] + fromVel[k] * carry; pos[k + 1] = out[1] + fromVel[k + 1] * carry; pos[k + 2] = out[2] + fromVel[k + 2] * carry; alpha[i] = Math.max(0, fromAlpha[i] * (1 - u * (joinLate ? 4 : 1.6)));
     }
     const arrived = elapsed >= flight + spread;
     if (arrived) leaveEnd = active;
@@ -451,7 +457,7 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
     frame = 0;
     if (!visible || still() || !scene) return;
     const real = ms / 1000;
-    if (lastReal) vt += Math.min(0.1, Math.max(0, real - lastReal)) * rate;
+    if (lastReal) vt += Math.min(0.1, Math.max(0, real - lastReal)) * (flightRate && vt - beatAt < flight + spread ? flightRate : rate);
     lastReal = real;
     const t = vt, busy = step(t);
     render(); tick();

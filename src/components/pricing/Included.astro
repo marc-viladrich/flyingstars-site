@@ -1,20 +1,48 @@
 ---
-// „Immer inklusive“ auf der Preisseite (Marc, 02.11.2026: „cleane Icon-Darstellung mit colour injection und proper heading so
-// wie bei den zubuchbaren Extras“). Gleiches offenes Icon-Raster wie die Extras (.ig/.ic in global.css), nur ohne Auswahl.
-// Inhalte aus INCLUDED in content/package-details.ts.
+// „Im Preis enthalten“ auf der Preisseite. Erste Fassung (Marc, 02.11.2026): offenes Icon-Raster wie die Extras.
+// Moritz' Preistext (17.11.2026): sieben Leistungen und ein Hinweis, was ihr selbst stellt. Damit dieser Abschnitt nicht
+// genauso aussieht wie das Upgrade-Raster direkt danach, steht der Kopf links und die sieben Leistungen rechts im
+// zweispaltigen Raster; die achte Zelle trägt den Hinweis (ℹ). Ohne Items gilt die frühere Auswahl aus package-details.ts.
 import IconFeature from '../IconFeature.astro';
+import Icon from '../Icon.astro';
 import SectionHead from '../SectionHead.astro';
 import { forPath } from '../../i18n/server';
 import { getPackageDetails } from '../../content/package-details';
 const { INCLUDED } = getPackageDetails(forPath(Astro.url.pathname).locale);
-interface Props { id?: string; kicker?: string; headline: string; text?: string }
-const { id = 'inklusive', kicker, headline, text } = Astro.props;
+interface Item { icon: string; title: string; text: string }
+interface Props { id?: string; kicker?: string; headline: string; text?: string; items?: Item[]; note?: string; surface?: 'alt' | 'plain' }
+const { id = 'inklusive', kicker, headline, text, items, note, surface = 'alt' } = Astro.props;
+const list: Item[] = items ?? INCLUDED;
 ---
-<section class="section alt" id={id} aria-labelledby={`${id}-h`}>
-  <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} />
-  <div class:list={['ig', { 'cols-4': INCLUDED.length === 4 }]}>
-    {INCLUDED.map((item) => (
-      <IconFeature class="ic" icon={item.icon} title={item.title} text={item.text} />
-    ))}
-  </div>
+<section class:list={['section', { alt: surface === 'alt' }, { 'inc-split': items }]} id={id} aria-labelledby={`${id}-h`}>
+  {items ? (
+    <div class="inc">
+      <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} class="inc-head" />
+      <ul class="ig inc-grid" role="list">
+        {list.map((item) => <IconFeature as="li" class="ic" icon={item.icon} title={item.title} text={item.text} />)}
+        {note && <li class="ic inc-note"><Icon name="info" size={22} class="g" /><p>{note}</p></li>}
+      </ul>
+    </div>
+  ) : (
+    <>
+      <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} />
+      <div class:list={['ig', { 'cols-4': list.length === 4 }]}>
+        {list.map((item) => <IconFeature class="ic" icon={item.icon} title={item.title} text={item.text} />)}
+      </div>
+    </>
+  )}
 </section>
+
+<style>
+  .inc { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(var(--space-8), 5vw, var(--space-16)); align-items: start; }
+  .inc :global(.inc-head) { position: sticky; top: calc(var(--nav-h) + var(--space-8)); }
+  .inc-grid { --ig-cols: 2; list-style: none; margin: 0; padding: 0; }
+  .inc-note { display: flex; align-items: flex-start; gap: var(--space-3); align-content: center; }
+  .inc-note p { margin: 0; color: var(--text); font-size: var(--text-control); line-height: 1.5; max-width: 40ch; }
+  .inc-note :global(.ico) { flex: none; margin-top: var(--space-0-5); }
+  @media (--grid-stacked) {
+    .inc { grid-template-columns: 1fr; }
+    .inc :global(.inc-head) { position: static; }
+  }
+  @media (--compact) { .inc-grid { --ig-cols: 1; } }
+</style>

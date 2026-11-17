@@ -1,87 +1,121 @@
 ---
 import {startingPrice} from '../lib/price.mjs';
 import { forPath } from '../i18n/server';
-const { t, localHref } = forPath(Astro.url.pathname);
-// Preisseite (31.10.2026, Marcs Feedbackrunde 6/8): Aufbau wie im Vercel-Prototyp. Oben die drei Pakete, dann der
-// Show-Konfigurator, danach mit farbigen Punkten je Paket, was immer enthalten ist, alle Leistungen im Vergleich, Extras,
-// Preisversprechen (Fragebogen 21.10.), Fragen zum Preis und Abschluss. Preise und Drohnenzahlen nur aus
-// show-packages.ts, Texte aus package-details.ts.
+const { t, locale } = forPath(Astro.url.pathname);
+// Preisseite nach Moritz' Preistext (17.11.2026, mit Marc abgestimmt): Abschnittsfolge, Überschriften und Wortlaut von
+// Moritz, durchgehend in Ihr-Form; das Layout je Abschnitt aus den Bestandskomponenten (docs/DESIGN.md, „Neue Texte in
+// bestehende Komponenten“). Der Konfigurator ist der Hauptabschnitt direkt nach dem Kopf, ohne Paketwahl. Die drei Pakete
+// sind feste Beispiele mit Festpreis: anfragen (Formular unten, Paket vorbelegt) oder anpassen (Konfigurator startet mit
+// dem Paket, nach der ersten Änderung „Individuelles Paket“). Flächen wechseln ab dem Konfigurator: Preisversprechen hell,
+// Pakete auf Grund, Leistungen hell, Upgrades auf Grund, Anfrage hell, FAQ auf Grund. Texte unter preise.* im UI-Wörterbuch.
+// Entfallen gegenüber der Fassung vom 31.10.: Leistungsvergleich (Tabelle mit Aufpreisen je Paket, passt nicht mehr zu
+// festen Paketen) und der Abschluss „Noch unsicher, welches Paket?“ (das Formular steht jetzt auf der Seite).
 import Base from '../layouts/Base.astro';
 import Packages from '../components/sections/Packages.astro';
-import Cta from '../components/sections/Cta.astro';
 import Faq from '../components/sections/Faq.astro';
-import SectionHead from '../components/SectionHead.astro';
-import CtaBox from '../components/CtaBox.astro';
+import ContactForm from '../components/sections/ContactForm.astro';
+import { LandingHero } from '../components/landing';
 import ShowConfigurator from '../components/configurator/ShowConfigurator.astro';
 import Extras from '../components/pricing/Extras.astro';
 import Included from '../components/pricing/Included.astro';
-import ComparisonMatrix from '../components/ComparisonMatrix.astro';
-import { SHOW_PACKAGES, PACKAGE_NAMES } from '../content/show-packages';
+import Accent from '../components/Accent.astro';
+import Faces from '../components/Faces.astro';
+import Icon from '../components/Icon.astro';
+import { SHOW_PACKAGES, PACKAGE_NAMES, DRONES_MIN, DRONES_MAX } from '../content/show-packages';
+import { durationValues } from '../content/show-duration.mjs';
 import { getPackageDetails } from '../content/package-details';
-const { PACKAGE_DETAILS, COMPARISON, COMPARISON_NOTE, PRICE_NOTE } = getPackageDetails(forPath(Astro.url.pathname).locale);
-const money = (v: number) => startingPrice(v,forPath(Astro.url.pathname).locale);
+const { PACKAGE_DETAILS, PRICE_NOTE } = getPackageDetails(locale);
 const items = PACKAGE_NAMES.map((name) => ({ name, ...PACKAGE_DETAILS[name], badge: PACKAGE_DETAILS[name].often, highlight: Boolean(PACKAGE_DETAILS[name].often) }));
-const featured = PACKAGE_NAMES.findIndex((name) => PACKAGE_DETAILS[name].often);
+const number = (n: number) => n.toLocaleString(locale === 'en' ? 'en-GB' : locale === 'nl' ? 'nl-NL' : 'de-DE');
+const d = durationValues();
+const included = [
+  ['design', 'pen-tool', t('preise.inc.design'), t('preise.incItem.design')],
+  ['tech', 'cpu', t('preise.inc.tech'), t('preise.incItem.tech')],
+  ['permit', 'stamp', t('preise.inc.permit'), t('preise.incItem.permit')],
+  ['safety', 'shield-check', t('preise.inc.safety'), t('preise.incItem.safety')],
+  ['insurance', 'umbrella', t('preise.inc.insurance'), t('preise.incItem.insurance')],
+  ['crew', 'users', t('preise.inc.crew'), t('preise.incItem.crew')],
+  ['flight', 'timer', t('preise.incItem.flightTitle'), t('preise.incItem.flight', d)],
+].map(([, icon, title, text]) => ({ icon, title, text }));
+const promises = [['lock', t('preise.promise1')], ['scale', t('preise.promise2')], ['calendar-check', t('preise.promise3')]];
 ---
-<Base title={t('pricingpage.droneShowPricesThreePackagesFrom7900')} description={t('pricingpage.threeDroneShowPackagesFrom7900ExcludingVatAnd')}>
+<Base title={t('preise.metaTitle')} description={t('preise.metaDescription')}>
+
+  <LandingHero
+    type="landingHero"
+    index={0}
+    kicker={t('preise.heroKicker')}
+    headline={t('preise.heroHeadline')}
+    text={t('preise.heroText')}
+    cta={{ label: t('preise.heroCta'), href: '#konfigurator' }}
+    video="showreel"
+    poster={{ src: 'https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg', alt: t('preise.heroPosterAlt'), width: 1600, height: 900 }}
+    facts={[
+      { value: startingPrice(SHOW_PACKAGES.SPARK.price, locale), label: t('preise.factNet') },
+      { value: `${number(DRONES_MIN)}–${number(DRONES_MAX)}`, label: t('preise.factDrones') },
+      { value: '10 %', label: t('preise.factEarly') },
+    ]}
+  />
+
+  <ShowConfigurator id="konfigurator" headingLevel={2} kicker={t('preise.cfgKicker')} heading={t('preise.cfgHeadline')} />
+
+  {/* Preisversprechen (Moritz: H3 unter dem Konfigurator): Kasten mit Verlaufsrand wie jeder Abschluss, die drei Zusagen als
+       Zeilen mit Icon statt Fließtext, ein Knopf */}
+  <section class="section alt promise-sec" aria-labelledby="versprechen-h">
+    <div class="promise pv">
+      <Faces />
+      <div class="promise-copy"><h3 id="versprechen-h"><Accent text={t('preise.promiseHeadline')} /></h3></div>
+      <ul class="pv-list" role="list">{promises.map(([icon, line]) => <li><Icon name={icon} size={22} class="g" /><span>{line}</span></li>)}</ul>
+      <div class="actions"><a class="btn primary" href={forPath(Astro.url.pathname).localHref('/kontakt/?anliegen=vergleich')}>{t('preise.promiseCta')}</a></div>
+    </div>
+  </section>
 
   <Packages
     type="packages"
-    index={0}
+    index={2}
     id="pakete"
-    kicker={t('pricingpage.pricesPackages')}
-    headline={t('pricingpage.threePackagesClearStartingPrices')}
-    text={t('pricingpage.addMoreDronesAndExtrasToAnyPackageAllPrices')}
+    kicker={t('preise.pkgKicker')}
+    headline={t('preise.pkgHeadline')}
+    text={t('preise.pkgText')}
     note={PRICE_NOTE}
     compact={false}
     items={items}
+    surface="plain"
   />
-
-  {/* Reihenfolge (Marc, 31.10.2026): erst die Pakete, dann der Konfigurator */}
-  <ShowConfigurator id="konfigurator" headingLevel={2} kicker={t('pricingpage.showConfigurator')} heading={t('pricingpage.howComplexWouldYouLikeIt')} />
 
   <Included
-    kicker={t('pricingpage.alwaysIncluded')}
-    headline={t('pricingpage.whatYouReActuallyPayingFor')}
-    text={t('pricingpage.mostOfTheWorkGoesIntoDesignPermitsAndA')}
+    kicker={t('preise.incKicker')}
+    headline={t('preise.incHeadline')}
+    text={t('preise.incText')}
+    items={included}
+    note={t('preise.incNote')}
   />
 
-  <section class="section" id="leistungen" aria-labelledby="leistungen-h">
-    <SectionHead kicker={t('pricingpage.comparison')} headline={t('pricingpage.compareAllServices')} id="leistungen-h" />
-    <ComparisonMatrix id="leistungen" label={t('pricingpage.servicesInTheSparkHorizonAndOdysseyPackages')}
-      regionLabel={t('pricingpage.serviceComparisonTableScrollHorizontally')} rowHeader={t('pricingpage.service')}
-      tabLabel={t('mobileTabs.choosePackage')} initial={featured}
-      columns={PACKAGE_NAMES.map((name, i) => ({ label: name, color: `rgb(${SHOW_PACKAGES[name].color.join(',')})`, featured: i === featured,
-        price: money(SHOW_PACKAGES[name].price), panelLabel: `${name}, ${money(SHOW_PACKAGES[name].price)}`,
-        orb: { shape: SHOW_PACKAGES[name].orb, color: SHOW_PACKAGES[name].color.join(','), count: Math.round(SHOW_PACKAGES[name].base * 0.6) } }))}
-      rows={COMPARISON.map((row) => ({ ...row, cells: row.cells ?? [] }))} />
-    <p class="fine mono">{t('pricingpage.allPricesExcludeVatAndTravel')} {COMPARISON_NOTE}</p>
-  </section>
+  <Extras surface="plain" />
 
-  <Extras />
-
-  {/* Preisversprechen: von FlyingStars im Fragebogen (21.10.2026) bestätigt */}
-  <section class="section promise-sec" aria-labelledby="versprechen-h">
-    <CtaBox headline={t('pricingpage.foundTheSameServiceForLessWeLlBeatThe')} text={t('pricingpage.sendUsTheOtherQuoteForTheSameScopeOf')} button={{ label: t('pricingpage.haveAQuoteChecked'), href: '/kontakt/?anliegen=vergleich' }} id="versprechen-h" />
-  </section>
+  <ContactForm
+    type="contactForm"
+    index={5}
+    kicker={t('preise.contactKicker')}
+    headline={t('preise.contactHeadline')}
+    text={t('preise.contactText')}
+  />
 
   <Faq
     type="faq"
-    index={5}
+    index={6}
     id="preisfragen"
-    kicker={t('pricingpage.pricingQuestions')}
-    headline={t('pricingpage.whatDoesADroneShowReallyCost')}
-    text={t('pricingpage.theQuestionsWeHearMostOftenWhenDiscussingBudgets')}
+    kicker={t('preise.faqKicker')}
+    headline={t('preise.faqHeadline')}
     cta={{ label: t('pricingpage.allQuestions'), href: '/faq/' }}
     openFirst={true}
-    tags={['preise']}
-  />
-
-  <Cta
-    type="cta"
-    index={6}
-    headline={t('pricingpage.notSureWhichPackageToChoose')}
-    text={t('pricingpage.sendUsYourDateAndLocationIfYouHavenT')}
-    button={{ label: t('chopper404.requestAShow'), href: '/kontakt/?paket=offen' }}
+    tags={['preise-moritz']}
   />
 </Base>
+
+<style>
+  /* Preisversprechen: drei Zusagen als ruhige Zeilen im Kasten, links bündig in einer zentrierten Spalte */
+  .pv-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); justify-items: start; text-align: left; }
+  .pv-list li { display: flex; align-items: flex-start; gap: var(--space-3); color: var(--text); font-size: var(--text-md); line-height: 1.4; }
+  .pv-list :global(.ico) { flex: none; margin-top: var(--space-0-25); }
+</style>

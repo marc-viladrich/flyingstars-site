@@ -34,6 +34,17 @@ function draw(lines, count, style) { // one formation in metres, or null when it
   if (!c.feasible) return null;
   return { pts: c._layout.drones.map((d) => [d.p[0] * c.s, d.p[1] * c.s, 0]), status: c.status, low: !!c.lowDensity, d: c.d_m, unknown: lay.unknown || [] };
 }
+// Himmel, Runde 3 (17.11.2026, additiv): eine fertig berechnete Formation für (value, count) hinterlegen. Der Planer kostet
+// am Stück mehrere hundert Millisekunden (die „25“ der Medaille: 0,8 s in Node); die Show-Folge der Startseite legt ihre
+// Zahl vorberechnet ab, textFormation() liefert sie dann ohne Planer, und hasTextFormation() sagt, ob er laden muss.
+const keyOf = (value, count) => wrap(value).join("/") + "|" + count;
+export const hasTextFormation = (value, count) => cache.has(keyOf(value, count));
+export function primeTextFormation(value, count, pts, style = "Umriss") {
+  if (cache.has(keyOf(value, count))) return;
+  const xs = pts.map((q) => q[0]), ys = pts.map((q) => q[1]), w = Math.max(...xs) - Math.min(...xs), hgt = Math.max(...ys) - Math.min(...ys);
+  if (cache.size > 60) cache.clear();
+  cache.set(keyOf(value, count), { n: count, used: pts.length, lines: wrap(value), style, perChar: count / Math.max(1, chars(value)), unknown: [], d: 2, size: [w, hgt, 0], pts: pts.map((q) => [q[0], q[1], 0]), spare: [] });
+}
 export function textFormation(value, count) { // engine must be loaded (loadTextEngine)
   const lines = wrap(value), perChar = count / Math.max(1, chars(value)), key = lines.join("/") + "|" + count;
   if (cache.has(key)) return cache.get(key);

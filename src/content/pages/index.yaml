@@ -8,10 +8,9 @@ image: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
 sections:
   - type: showreelHero
     eyebrow: Drohnenshow buchen
-    # „euer“ im Logoverlauf, darunter wie im Prototyp das wechselnde Wort (Marc, 15.11.2026: Persönlichkeit zurück)
+    # „euer“ im Logoverlauf. Das wechselnde Wort darunter steht nicht in Moritz' Text und ist entfallen (Marc, 17.11.2026).
     headline: Gestaltet *euer* Stück Himmel
     text: Mit der Erfahrung aus über 150 Drohnenshows in Deutschland und weltweit malen wir eure Geschichte für alle sichtbar ans Firmament.
-    words: [ {"_key":"k_82666e15854364d54a3f","value":"Neu."}, {"_key":"k_15bf5aebc23a1a9fea87","value":"Einzigartig."}, {"_key":"k_e17a63a6eba973950fc3","value":"Anders."}, {"_key":"k_13a7892bb90ecceca0d2","value":"Spektakulär."} ]
     cta: { label: Show anfragen, href: "#anfrage" }
     secondary: { label: "☎︎ +49 209 88306562", href: "tel:+4920988306562" }
     poster:
@@ -147,42 +146,44 @@ sections:
     kicker: Referenzen
     headline: Nächte, die wir *nie vergessen*
     text: Seit 2021 fliegen wir jährlich über 30 Shows, insgesamt über 150.
+    # Moritz' vier Referenzen plus Ford und NFL mit Showvideo (Marc, 17.11.2026: bewegte Case Studies wie im Prototyp,
+    # ausdrücklich Ford). Videos je zweite Zeile versetzt, damit jede Zeile eine bewegte Karte hat.
     projects:
       - musikalischer-teaser-bokkenrijders
       - eon-hamburg
       - boellerciao
+      - exploring-reinvented-der-neue-ford-explorer
       - hochzeit-recklinghausen
+      - nfl-berlin-game
     cards:
       - { ref: musikalischer-teaser-bokkenrijders, title: "Bokkenrijders: 20 Musicals", kicker: Konzert – Maastricht – 600 Drohnen, "_key": "k_2ef60090e51cf375bec9" }
       - { ref: eon-hamburg, title: "E.ON: The Future is Now", kicker: Marketing – Hamburg – 500 Drohnen, "_key": "k_ef262c704d79d8f32e03" }
       - { ref: boellerciao, title: "Umwelthilfe: #BÖLLERCIAO", kicker: Guter Zweck – Berlin – 150 Drohnen, "_key": "k_2e558b9c482302e73d70" }
       - { ref: hochzeit-recklinghausen, title: "Hochzeit: Veronika & Felix", kicker: Privat – Recklinghausen – 150 Drohnen, "_key": "k_919446ff3fbd624a8349" }
+      - { ref: exploring-reinvented-der-neue-ford-explorer, title: "Ford: Exploring Reinvented", kicker: Marketing – Köln – 350 Drohnen, "_key": "k_728285b99bc8bfcc3264" }
+      - { ref: nfl-berlin-game, title: "NFL: Berlin Game", kicker: Sport – Berlin – 300 Drohnen, "_key": "k_0ef2d7cdd80a2a4b9f1a" }
     cta: { label: Entdeckt mehr, href: /referenzen/ }
     todo: Für E.ON (Hamburg, 2026) fehlen Showbild, genaues Datum und eine Fallstudie.
     _key: k_c25f10c971a03e70f6ba
 
-  # „Gut zu wissen“ als Kacheln wie „Wirkung“ im Prototyp: Bildkachel (Team mit Drohne und Laptop) für „Komplett“,
-  # Verlaufs-Icons für „Schnell“ und „International“. Fläche hell, damit der Rhythmus wechselt.
+  # „Gut zu wissen“ als Kacheln: „Komplett“ als große Aussage mit Icon und Punktmuster wie Werbung #agenturen (Marc,
+  # 17.11.2026: kein Stockfoto), Verlaufs-Icons für „Schnell“ und „International“. Fläche hell, damit der Rhythmus wechselt.
   - type: landingBento
     id: darum
     kicker: Darum FlyingStars
     headline: Gut zu wissen
     surface: alt
     lead:
+      icon: package-check
       title: Komplett
       text: "Vom Design über die Genehmigung bis zur Flotte und Sicherheit: Bei uns bekommt ihr alles aus einer Hand von einem eingespielten Team."
-      image:
-        src: https://flyingstars.art/wp-content/uploads/2025/05/drohnenprogrammierung-1.jpg
-        alt: Ein Mann hält eine Drohne neben einem Laptop, während eine Frau mit einem Tablet danebensteht.
-        width: 1680
-        height: 1120
     items:
       - { icon: timer, title: Schnell, text: Wir ermöglichen Shows auch in ein bis zwei Wochen. Als autorisierter Betreiber dürfen wir viele Genehmigungsprozesse überspringen., "_key": "k_e8d0aa1d372af5e42c97" }
       - { icon: globe, title: International, text: "Wir fliegen in Deutschland, Österreich und der Schweiz – und dank umfassender Genehmigungen auch schnell in der EU und weltweit.", "_key": "k_c8740dc80d6854f37ae5" }
     _key: k_92d0a7f1633ea84ff104
 
-  # Sicherheit mit der interaktiven Standortkarte (wie Werbung/Hochzeit im Prototyp), Moritz' Text und drei Punkte über
-  # der Karte, darunter Zulassungen als Logo-Reihe (früher „Presse & Qualität“).
+  # Sicherheit kompakt (Marc, 17.11.2026): links Moritz' Text und drei Punkte, rechts nur die Standortkarte mit Popovern,
+  # darunter LBA, EASA und naturstrom als Logo-Reihe.
   - type: landingSite
     id: sicherheit
     kicker: Sicherheit
@@ -199,31 +200,31 @@ sections:
       - { title: Betriebsgenehmigung des Luftfahrt-Bundesamts, text: seit Juli 2023, icon: permit, logo: /brand/logos/quali-lba-weiss.png, cleared: true, "_key": "k_d056058898547d0bb1a9" }
       - { title: EU-weit nach EASA-Regeln, text: "Shows in der ganzen EU, auch in Österreich und den Niederlanden", icon: permit, logo: /brand/logos/quali-easa-weiss.png, cleared: true, "_key": "k_5a63e48e8e1aaad88bfe" }
       - { title: 100 % Ökostrom von naturstrom, text: für die ganze Flotte, icon: leaf, logo: /brand/logos/quali-naturstrom.svg, cleared: true, "_key": "k_0a1a774c6de0621af71d" }
-      - { title: Schallschutz-Gutachten, text: vom TÜV Nord, icon: sound, secondary: true, "_key": "k_539c699593a4797b96ed" }
-      - { title: "Haftpflicht bis 1,3 Mio. €", text: in jedem Paket, icon: shield, secondary: true, "_key": "k_24d9a99577b50e68c686" }
     todo: FlyingStars muss die Website-Angabe Windstärke 5 mit den Windgrenzen der AGB abstimmen, die Startflächen je Drohnenzahl bestätigen und schriftliche Nutzungsfreigaben für LBA-, EASA- und naturstrom-Logos liefern.
     _key: k_80f57143a3d7d816104c
 
-  # Nachhaltigkeit wieder als Scrollstory aus dem Prototyp (Marc, 31.10.2026: „das Scrollytelling finde ich ganz nice“),
-  # in Moritz' Reihenfolge Knall, Müll, Rauch; „Kein Müll.“ im Verlauf (DESIGN). Einleitung neben dem #Böllerciao-Foto.
-  # Die großen Werte (leise, 0 kg, 0 g) stammen aus dem Prototyp, die Sätze von Moritz.
+  # Nachhaltigkeit als Scrollstory wie auf main (Marc, 17.11.2026: „die war im Original viel besser“): drei Zeilen,
+  # die mittlere als Kontur, die letzte im Verlauf, kurze Einleitung unter dem Titel, ohne Foto, vier große Werte wie im
+  # Prototyp (leise, 0 kg, 0 g, 100 %). Reihenfolge und Sätze nach Moritz; sein Satz zu Müll und Ökostrom ist auf die
+  # Werte „Kein Müll“ und „Ökostrom“ verteilt. Die Figur je Wert wählt die Einheit (Sustainability.astro).
   - type: sustainability
     id: nachhaltigkeit
     kicker: Nachhaltigkeit
-    headline: Kein Knall. *Kein Müll.* Kein Rauch.
+    headline: Kein Knall. Kein Müll. Kein Rauch.
     text: "Bei unseren Drohnen-Veranstaltungen sind auch Hunde und Kinder herzlich willkommen: Sie sind abfallfrei, lokal emissionsfrei und surren leiser als Feuerwerke. Mit Shows für die Deutsche Umwelthilfe und Kein Bock auf Nazis setzen wir zudem regelmäßig ökologische und soziale Zeichen in den Himmel."
-    image: { src: "https://flyingstars.art/wp-content/uploads/2024/07/D_Umwelthilfe_cover_img.png", alt: "Bunte Feuerwerksblüte aus Drohnen über Berlin bei der Kampagne #Böllerciao der Deutschen Umwelthilfe", width: 1920, height: 987 }
-    cta: { label: Über die Nachhaltigkeit, href: "/ueber-uns/#nachhaltigkeit" }
+    cta: { label: Über die Nachhaltigkeit, href: /nachhaltigkeit/ }
     facts:
       - { label: Kein Knall, value: leise, text: "Der TÜV NORD bestätigt den Schallschutz unserer Technik.", "_key": "k_20d9386f213523952598" }
-      - { label: Kein Müll, value: "0", unit: kg, text: "Wiederverwendbare Drohnen, geladen mit 100 % Ökostrom.", "_key": "k_a69ce4ddf7966109fb50" }
+      - { label: Kein Müll, value: "0", unit: kg, text: "Wiederverwendbare Drohnen.", "_key": "k_a69ce4ddf7966109fb50" }
       - { label: Kein Rauch, value: "0", unit: g, text: "Vor Ort entstehen keine schädlichen Emissionen.", "_key": "k_2f6c2a2e8d48eea5522d" }
+      - { label: Ökostrom, value: { fact: renewablePercent }, unit: "%", text: "Geladen mit 100 % Ökostrom.", "_key": "k_f24c1ffbe1647069ab03" }
     pillarsRef: sustainability-pillars
     todo: Moritz und FlyingStars müssen die Umweltformulierungen vor Veröffentlichung prüfen und die Belege für Ökostrom und das TÜV-Nord-Schallschutzgutachten bereithalten.
     _key: k_001c02ae39915e989410
 
   # Ablauf in Zahlen wie im Prototyp (Netzplan-Zeitstrahl): Moritz' drei Schritte als Stationen, die Zahlen aus seinen
-  # Texten (48 Stunden, ein bis zwei Wochen aus „Schnell“, dreieinhalb Stunden), am Ende die Showzeit bis zum Applaus.
+  # Texten (48 Stunden, ein bis zwei Wochen aus „Schnell“, dreieinhalb Stunden), am Ende die Showdauer (bis zu 25 Minuten,
+  # Moritz), danach der Applaus: das Label sagt beides (Marc, 17.11.2026: „25 Min Applaus“ war missverständlich).
   - type: tempo
     id: ablauf
     kicker: Ablauf
@@ -232,7 +233,12 @@ sections:
       - { value: 48 h, label: "#1 Anfrage", text: "Sagt uns Datum, Ort und Anlass. In spätestens 48 Stunden geben wir euch eine Einschätzung. Nach dem Erstgespräch erhaltet ihr das Angebot, eine Begehung ist selten notwendig.", "_key": "k_07593dae179ab85954fb" }
       - { value: 1–2 Wochen, label: "#2 Planung", text: "Gemeinsam entwickeln wir Storyline, Motive und Musik. Ihr seid so viel eingebunden, wie ihr möchtet. Mit Zustimmung der Grundstückseigentümer:innen holen wir alle Genehmigungen ein.", "_key": "k_8712fd69e4210fc7f3f1" }
       - { value: "3,5 h", label: "#3 Showtag", text: "Wir organisieren Sicherheit, Aufbau und Abbau ab rund dreieinhalb Stunden vor der Show. Das Spektakel dauert bis zu 25 Minuten. Ihr genießt mit euren Gästen.", "_key": "k_002bb2a1e4204dd1d7d4" }
-      - { value: 25 Min, label: Applaus, "_key": "k_3c30dd0af9bfae6075dc" }
+      - { value: bis 25 Min, label: "Show, dann Applaus", "_key": "k_3c30dd0af9bfae6075dc" }
+    # Zahlenreihe darunter wie auf main („Ablauf in Zahlen“), nur mit Moritz' Zahlen (Referenzen, „Warum Drohnen“)
+    facts:
+      - { value: 150+ Shows, label: Erfahrung, text: "Seit 2021, jährlich über 30", "_key": "k_b579ad8ba169056a0009" }
+      - { value: 600 Drohnen, label: Größte Show, text: "Bokkenrijders in Maastricht, 20 Musicals", "_key": "k_b930bc25babc12d85414" }
+      - { value: 100–1000+, label: Leuchtpixel, text: "Daraus bauen wir fast jedes Motiv", "_key": "k_1fdf5b88627e30e8650f" }
     _key: k_22cad4004e6677e22092
 
   # Preise wie im Prototyp: der selbstlaufende Konfigurator-Teaser und darunter die Paketkarten in ihren Farben, beides

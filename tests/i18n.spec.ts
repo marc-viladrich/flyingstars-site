@@ -37,17 +37,21 @@ for (const locale of ['en', 'nl']) {
     await expect(page.locator('#leistungen [data-mtab="0"]')).toContainText(t('pricingpage.mobileNotIncluded'));
     await page.goto(`/${locale}/ueber-uns/`);
     await expect(page.locator('#zusammenarbeit')).toBeVisible();
-    await expect(page.locator('#sicherheit .st-items > li')).toHaveCount(5);
-    await expect(page.locator('#sicherheit .st-safeguards > div')).toHaveCount(4);
-    // Zuständigkeiten als Tabelle (seit 02.11.2026): Überschrift, Zeichenlegende, Zeilen mit FlyingStars/Ihr
-    await expect(page.locator('#sicherheit .st-who')).toContainText(t('landingsite.more'));
-    await expect(page.locator('#sicherheit .st-who tbody tr')).toHaveCount(10);
-    await expect(page.locator('#sicherheit .st-legend')).toContainText(t('landingsite.part'));
-    await expect(page.locator('#sicherheit svg title')).toHaveText(t('landingsite.outdoorTitle'));
+    // Standortkarte kompakt (17.11.2026): Zonen als Popover an der Karte, keine Zuständigkeitstabelle mehr.
+    // Über uns hat seit Moritz' Text keine Karte mehr; geprüft wird die Startseite (#sicherheit).
+    await page.goto(`/${locale}/`);
+    const site = page.locator('#sicherheit.ls-site');
+    await expect(site.locator('.st-tips > li')).toHaveCount(5);
+    await expect(site.locator('.st-who')).toHaveCount(0);
+    await expect(site.locator('svg title')).toHaveText(t('landingsite.outdoorTitle'));
     for (const route of ['drohnenshow-hochzeit', 'drohnenshow-indoor']) {
       await page.goto(`/${locale}/${route}/`);
-      await expect(page.locator('.ls-site .st-items > li')).toHaveCount(5);
-      await expect(page.locator('.ls-site .st-who thead th')).toHaveCount(3);
+      const map = page.locator('.ls-site').first();
+      await expect(map.locator('.st-tips > li')).toHaveCount(5);
+      await map.locator('[data-hot]').first().click();
+      await expect(map.locator('.st-tips > li.on')).toBeVisible();
+      await page.keyboard.press('Escape');
+      await expect(map.locator('.st-tips > li.on')).toHaveCount(0);
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
     }
     expect(errors).toEqual([]);

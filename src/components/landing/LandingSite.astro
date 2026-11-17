@@ -7,24 +7,21 @@ import { forPath } from '../../i18n/server';
 const { t, localHref, locale } = forPath(Astro.url.pathname);
 // Ein Schema für alle Standort- und Sicherheitsabschnitte. Maßangaben sind Content,
 // die Geometrie ist bewusst schematisch. Belege: docs/sicherheitskonzept-quellen.md.
-// Schrittweise (Marc, 02.11.2026: „zu viel auf einmal … erstmal nur den ersten Punkt gehighlighted, on hover werden die
-// dazugehörigen Bereiche revealed“): Zeichnung und Liste zeigen eine Zone zugleich, anfangs die erste. Zeigen, Fokus oder
-// Tippen auf einen Titel oder eine Nummer in der Zeichnung wechselt die Zone. Ohne JavaScript ist alles offen.
-// Zuständigkeiten als Tabelle mit ✓/◐/– (Marc: „keine Akkordeons, sondern Informationsdesign“); der Vorlauf steht im
-// Netzplan-Zeitstrahl der Tempo-Section, die Haftpflicht als Zeile der Tabelle.
+// Kompakt (Marc, 17.11.2026: „deutlich kleiner“): links Kicker, Schlagzeile, Text und Punkte, rechts nur die Karte. Die
+// Zonen erklären sich über Popover an der Karte (Zeigen, Fokus, Tippen; Esc schließt), keine Liste und keine
+// Zuständigkeitstabelle mehr daneben. Die Popover positioniert JavaScript klassisch (Safari 18 kann kein CSS Anchor
+// Positioning). Ohne JavaScript stehen die Zonen als nummerierte Legende unter der Karte. Darunter Zulassungs-Logos.
 import type { Section } from '../../content.config';
 import SectionHead from '../SectionHead.astro';
 import Icon from '../Icon.astro';
-import ComparisonCell from '../ComparisonCell.astro';
 type Props = Extract<Section, { type: 'landingSite' }> & { index: number };
-const { kicker, headline, text, variant, diagram, items, responsibilities, safeguards, download, points, cta, quality, id = 'location', index } = landingSiteContent(Astro.props,locale);
-// Zulassungen und Belege wie die Leiste „Presse & Qualität“ im Prototyp (LBA-, EASA-, naturstrom-Logo nur mit Freigabe
-// und vorhandener Datei, sonst Verlaufs-Icon); nachrangige Belege klein als Zeile darunter (Startseite #sicherheit, Indoor).
+const { kicker, headline, text, variant, diagram, items, safeguards, download, points, cta, quality, id = 'location', index } = landingSiteContent(Astro.props,locale);
+// Zulassungen als Logo-Reihe unter Text und Karte (LBA, EASA, naturstrom nur mit Freigabe und vorhandener Datei, sonst
+// Verlaufs-Icon). Nachrangige Belege (secondary) stehen nicht mehr in der kompakten Section.
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 const QICON = { permit: 'file-badge', sound: 'audio-lines', shield: 'shield-check', leaf: 'leaf' } as const;
 const seals = (quality ?? []).filter((q) => !q.secondary).map((q) => ({ ...q, show: Boolean(q.cleared && q.logo && existsSync(join(process.cwd(), 'public', q.logo))) }));
-const minor = (quality ?? []).filter((q) => q.secondary);
 const sharedField=(key:string)=>Astro.props.safetyRef?field({collection:'safetyConcept',id:'configuration'},[locale,key],{mode:'panel'}):{};
 const H = index === 0 ? 'h1' : 'h2';
 const T = index === 0 ? 'h2' : 'h3';
@@ -56,131 +53,154 @@ const plan = {
 const markers = variant === 'outdoor'
   ? [{ zone: 'safety', x: 302, y: 70 }, { zone: 'operative', x: 318, y: 160 }, { zone: 'drones', x: 268, y: 222 }, { zone: 'start', x: 192, y: 127 }, { zone: 'guests', x: 290, y: 320 }]
   : [{ zone: 'ceiling', x: 49, y: 28 }, { zone: 'drones', x: 262, y: 83 }, { zone: 'floor', x: 118, y: 285 }, { zone: 'kit', x: 305, y: 442 }, { zone: 'guests', x: 350, y: 160 }];
+// Tippflächen über den Nummern der Zeichnung, in Prozent der viewBox. Draußen liegen die Nummern in der um −14° gedrehten
+// Gruppe: dieselbe Drehung hier nachrechnen, damit Knopf und gezeichnete Nummer deckungsgleich sind.
+const VB = variant === 'outdoor' ? { w: 400, h: 400 } : { w: 400, h: 490 };
+const turn = (x: number, y: number) => { const a = -14 * Math.PI / 180, dx = x - 204, dy = y - 172; return [204 + dx * Math.cos(a) - dy * Math.sin(a), 172 + dx * Math.sin(a) + dy * Math.cos(a)]; };
+const hotspots = markers.filter((m) => numbers[m.zone]).map((m) => { const [x, y] = variant === 'outdoor' ? turn(m.x, m.y) : [m.x, m.y]; return { zone: m.zone, x: (x / VB.w * 100).toFixed(2), y: (y / VB.h * 100).toFixed(2) }; }).sort((a, b) => numbers[a.zone] - numbers[b.zone]);
+const itemOf = Object.fromEntries(items.map((item, i) => [item.zone, { ...item, n: i + 1 }]));
 ---
 <section class="section ls-site" id={id} aria-labelledby={`${id}-h`}>
-  <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H}>
-    {points && points.length > 0 && <ul class="st-points">{points.map((point) => <li><Icon name="check" size={20} class="g" /><span>{point.value}</span></li>)}</ul>}
-    {cta && <p class="st-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
-  </SectionHead>
-  <div class="st">
+  <div class:list={['st', `st-${variant}`]}>
+    <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} class="st-copy">
+      {points && points.length > 0 && <ul class="st-points">{points.map((point) => <li><Icon name="check" size={20} class="g" /><span>{point.value}</span></li>)}</ul>}
+      {(cta || download) && <p class="st-more">
+        {cta && <a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a>}
+        {download && <a {...sharedField("download")} class="link st-download" href={localHref(download.href)} type="application/pdf" target="_blank" rel="noopener">{download.label}<Icon name="download" size={18} class="g" /></a>}
+      </p>}
+    </SectionHead>
     <figure {...sharedField("diagram")} class="st-fig">
-      <svg viewBox={variant === 'outdoor' ? '0 0 400 400' : '0 0 400 490'} role="img" aria-labelledby={`${id}-diagram-title ${id}-diagram-desc`}>
-        <title id={`${id}-diagram-title`}>{variant === 'outdoor' ? t('landingsite.outdoorTitle') : t('landingsite.indoorTitle')}</title>
-        <desc id={`${id}-diagram-desc`}>{factText(diagram.description,locale)} {t('landingsite.numberedList')} {factText(diagram.caption,locale)}</desc>
-        {variant === 'outdoor' ? <>
-          <g class="plan" aria-hidden="true">
-            <path class="road" d="M362 0v374M0 374h400" />
-            {plan.buildings.map(([x, y, w, h]) => <rect class="house" x={x} y={y} width={w} height={h} rx="3" />)}
-            <path class="park" d={rounded([[-4, 92], [50, 88], [56, 292], [-4, 296]], 8)} />
-            {plan.trees.map(([x, y, r]) => <circle class="tree" cx={x} cy={y} r={r} />)}
-          </g>
-          <g transform="rotate(-14 204 172)">
-            <g class="zone" data-zone="safety" data-pick="safety" style={`--zc: ${zoneColor.safety}`}><path class="shape" d={plan.outer} />
-              <path class="dim" d="M70 30L330 30M70 24v12M330 24v12" />
-              <g class="pill" transform="translate(200 30)"><rect x="-34" y="-10" width="68" height="20" rx="10" /><text y="4.5" text-anchor="middle">{factText(diagram.horizontalLabel,locale)}</text></g></g>
-            <g class="zone" data-zone="operative" data-pick="operative" style={`--zc: ${zoneColor.operative}`}><path class="under" d={plan.operative} /><path class="shape" d={plan.operative} /></g>
-            <g class="zone" data-zone="drones" data-pick="drones" style={`--zc: ${zoneColor.drones}`}><path class="under" d={plan.flight} /><path class="shape" d={plan.flight} />
-              <path class="dim" d="M146 172h126M146 166v12M272 166v12" />
-              <g class="pill" transform="translate(209 172)"><rect x="-30" y="-10" width="60" height="20" rx="10" /><text y="4.5" text-anchor="middle">{factText(diagram.detailLabel,locale)}</text></g>
-              {plan.drones.map((d, i) => <circle class="drone" cx={d.x} cy={d.y} r="2.9" style={`--d: ${(i * 0.11).toFixed(2)}s`} />)}</g>
-            <g class="zone" data-zone="start" data-pick="start" style={`--zc: ${zoneColor.start}`}><rect class="shape pad" x="132" y="118" width="40" height="17" rx="4" /><rect class="ring" x="126" y="112" width="52" height="29" rx="7" />
-              {Array.from({ length: 12 }, (_, i) => <circle class="seed" cx={138 + (i % 6) * 5.6} cy={123 + Math.floor(i / 6) * 6} r="1.2" />)}</g>
-            <g class="zone" data-zone="guests" data-pick="guests" style={`--zc: ${zoneColor.guests}`}><rect class="shape" x="140" y="308" width="134" height="26" rx="7" />
-              {Array.from({ length: 20 }, (_, i) => <circle class="guest" cx={150 + (i % 10) * 12.7} cy={316 + Math.floor(i / 10) * 10} r="2.3" />)}
-              <path class="view" d="M207 302v-38m-5 8 5-8 5 8" /></g>
-            {markers.map((m) => <g class="marker" data-zone={m.zone} data-pick={m.zone} style={`--zc: ${zoneColor[m.zone]}`} transform={`translate(${m.x} ${m.y}) rotate(14)`}><circle r="11" /><text y="4.5" text-anchor="middle">{numbers[m.zone]}</text></g>)}
-          </g>
-        </> : <>
-          <path class="wall" d="M49 28h324M49 210h324" />
-          <g class="zone" data-zone="ceiling" data-pick="ceiling" style={`--zc: ${zoneColor.ceiling}`}>{Array.from({ length: 17 }, (_, i) => <path class="hatch" d={`M${53 + i * 19} 28l-9 -12`} />)}
-          <path class="dim" d="M31 34v176M25 34h12M25 210h12" />
-          <text class="lbl" x="17" y="123" text-anchor="middle" transform="rotate(-90 17 123)">{factText(diagram.verticalLabel,locale)}</text></g>
-          <g class="zone" data-zone="drones" data-pick="drones" style={`--zc: ${zoneColor.drones}`}><rect class="flight" x="73" y="53" width="211" height="155" rx="8" />
-          {swarm.map((d) => <circle cx={d.x} cy={d.y} r="3.3" fill={d.color} />)}</g>
-          <g class="zone" data-zone="guests" data-pick="guests" style={`--zc: ${zoneColor.guests}`}>{[0, 1, 2].map((i) => <><circle class="guest" cx={312 + i * 23} cy="180" r="5" /><path class="guest-body" d={`M${304 + i * 23} 210v-13a8 8 0 0 1 16 0v13`} /></>)}</g>
-          <path class="divider" d="M49 238h324" />
-          <g class="zone" data-zone="floor" data-pick="floor" style={`--zc: ${zoneColor.floor}`}><rect class="pad" x="88" y="202" width="179" height="8" rx="3" />
-          <path class="dim" d="M118 270h156M118 264v12M274 264v12" />
-          <text class="lbl" x="196" y="261" text-anchor="middle">{factText(diagram.horizontalLabel,locale)}</text>
-          <rect class="flight" x="105" y="279" width="182" height="174" rx="6" />
-          <rect class="pad" x="118" y="292" width="156" height="148" rx="4" />
-          {grid.map((d) => <circle class="seed" cx={d.x} cy={d.y} r="3" />)}</g>
-          <g class="zone" data-zone="kit" data-pick="kit" style={`--zc: ${zoneColor.kit}`}>{[[105, 279], [287, 279], [105, 453], [287, 453]].map(([x, y]) => <circle class="antenna" cx={x} cy={y} r="5" />)}
-          <text class="lbl" x="196" y="482" text-anchor="middle">{factText(diagram.detailLabel,locale)}</text></g>
-        </>}
-        {variant === 'indoor' && markers.map((m) => <g class="marker" data-zone={m.zone} data-pick={m.zone} style={`--zc: ${zoneColor[m.zone]}`} transform={`translate(${m.x} ${m.y})`}><circle r="12" /><text y="4.5" text-anchor="middle">{numbers[m.zone]}</text></g>)}
-      </svg>
-      <p class="st-height"><Icon name="move-up" size={20} class="g" /><span>{factText(diagram.flightLabel,locale)}</span></p>
-      <figcaption>{factText(diagram.caption,locale)}</figcaption>
+      <div class="st-map" data-st-map>
+        <svg viewBox={variant === 'outdoor' ? '0 0 400 400' : '0 0 400 490'} role="img" aria-labelledby={`${id}-diagram-title ${id}-diagram-desc`}>
+          <title id={`${id}-diagram-title`}>{variant === 'outdoor' ? t('landingsite.outdoorTitle') : t('landingsite.indoorTitle')}</title>
+          <desc id={`${id}-diagram-desc`}>{factText(diagram.description,locale)} {t('landingsite.numberedList')} {factText(diagram.caption,locale)}</desc>
+          {variant === 'outdoor' ? <>
+            <g class="plan" aria-hidden="true">
+              <path class="road" d="M362 0v374M0 374h400" />
+              {plan.buildings.map(([x, y, w, h]) => <rect class="house" x={x} y={y} width={w} height={h} rx="3" />)}
+              <path class="park" d={rounded([[-4, 92], [50, 88], [56, 292], [-4, 296]], 8)} />
+              {plan.trees.map(([x, y, r]) => <circle class="tree" cx={x} cy={y} r={r} />)}
+            </g>
+            <g transform="rotate(-14 204 172)">
+              <g class="zone" data-zone="safety" data-pick="safety" style={`--zc: ${zoneColor.safety}`}><path class="shape" d={plan.outer} />
+                <path class="dim" d="M70 30L330 30M70 24v12M330 24v12" />
+                <g class="pill" transform="translate(200 30)"><rect x="-34" y="-10" width="68" height="20" rx="10" /><text y="4.5" text-anchor="middle">{factText(diagram.horizontalLabel,locale)}</text></g></g>
+              <g class="zone" data-zone="operative" data-pick="operative" style={`--zc: ${zoneColor.operative}`}><path class="under" d={plan.operative} /><path class="shape" d={plan.operative} /></g>
+              <g class="zone" data-zone="drones" data-pick="drones" style={`--zc: ${zoneColor.drones}`}><path class="under" d={plan.flight} /><path class="shape" d={plan.flight} />
+                <path class="dim" d="M146 172h126M146 166v12M272 166v12" />
+                <g class="pill" transform="translate(209 172)"><rect x="-30" y="-10" width="60" height="20" rx="10" /><text y="4.5" text-anchor="middle">{factText(diagram.detailLabel,locale)}</text></g>
+                {plan.drones.map((d, i) => <circle class="drone" cx={d.x} cy={d.y} r="2.9" style={`--d: ${(i * 0.11).toFixed(2)}s`} />)}</g>
+              <g class="zone" data-zone="start" data-pick="start" style={`--zc: ${zoneColor.start}`}><rect class="shape pad" x="132" y="118" width="40" height="17" rx="4" /><rect class="ring" x="126" y="112" width="52" height="29" rx="7" />
+                {Array.from({ length: 12 }, (_, i) => <circle class="seed" cx={138 + (i % 6) * 5.6} cy={123 + Math.floor(i / 6) * 6} r="1.2" />)}</g>
+              <g class="zone" data-zone="guests" data-pick="guests" style={`--zc: ${zoneColor.guests}`}><rect class="shape" x="140" y="308" width="134" height="26" rx="7" />
+                {Array.from({ length: 20 }, (_, i) => <circle class="guest" cx={150 + (i % 10) * 12.7} cy={316 + Math.floor(i / 10) * 10} r="2.3" />)}
+                <path class="view" d="M207 302v-38m-5 8 5-8 5 8" /></g>
+              {markers.map((m) => <g class="marker" data-zone={m.zone} data-pick={m.zone} style={`--zc: ${zoneColor[m.zone]}`} transform={`translate(${m.x} ${m.y}) rotate(14)`}><circle r="11" /><text y="4.5" text-anchor="middle">{numbers[m.zone]}</text></g>)}
+            </g>
+          </> : <>
+            <path class="wall" d="M49 28h324M49 210h324" />
+            <g class="zone" data-zone="ceiling" data-pick="ceiling" style={`--zc: ${zoneColor.ceiling}`}>{Array.from({ length: 17 }, (_, i) => <path class="hatch" d={`M${53 + i * 19} 28l-9 -12`} />)}
+            <path class="dim" d="M31 34v176M25 34h12M25 210h12" />
+            <text class="lbl" x="17" y="123" text-anchor="middle" transform="rotate(-90 17 123)">{factText(diagram.verticalLabel,locale)}</text></g>
+            <g class="zone" data-zone="drones" data-pick="drones" style={`--zc: ${zoneColor.drones}`}><rect class="flight" x="73" y="53" width="211" height="155" rx="8" />
+            {swarm.map((d) => <circle cx={d.x} cy={d.y} r="3.3" fill={d.color} />)}</g>
+            <g class="zone" data-zone="guests" data-pick="guests" style={`--zc: ${zoneColor.guests}`}>{[0, 1, 2].map((i) => <><circle class="guest" cx={312 + i * 23} cy="180" r="5" /><path class="guest-body" d={`M${304 + i * 23} 210v-13a8 8 0 0 1 16 0v13`} /></>)}</g>
+            <path class="divider" d="M49 238h324" />
+            <g class="zone" data-zone="floor" data-pick="floor" style={`--zc: ${zoneColor.floor}`}><rect class="pad" x="88" y="202" width="179" height="8" rx="3" />
+            <path class="dim" d="M118 270h156M118 264v12M274 264v12" />
+            <text class="lbl" x="196" y="261" text-anchor="middle">{factText(diagram.horizontalLabel,locale)}</text>
+            <rect class="flight" x="105" y="279" width="182" height="174" rx="6" />
+            <rect class="pad" x="118" y="292" width="156" height="148" rx="4" />
+            {grid.map((d) => <circle class="seed" cx={d.x} cy={d.y} r="3" />)}</g>
+            <g class="zone" data-zone="kit" data-pick="kit" style={`--zc: ${zoneColor.kit}`}>{[[105, 279], [287, 279], [105, 453], [287, 453]].map(([x, y]) => <circle class="antenna" cx={x} cy={y} r="5" />)}
+            <text class="lbl" x="196" y="482" text-anchor="middle">{factText(diagram.detailLabel,locale)}</text></g>
+          </>}
+          {variant === 'indoor' && markers.map((m) => <g class="marker" data-zone={m.zone} data-pick={m.zone} style={`--zc: ${zoneColor[m.zone]}`} transform={`translate(${m.x} ${m.y})`}><circle r="12" /><text y="4.5" text-anchor="middle">{numbers[m.zone]}</text></g>)}
+        </svg>
+        {hotspots.map((h) => <button type="button" class="st-hot" data-zone={h.zone} data-hot={h.zone} style={`--x: ${h.x}%; --y: ${h.y}%; --zc: ${zoneColor[h.zone]}`} aria-expanded="false" aria-controls={`${id}-z${h.zone}`}><span class="sr-only">{itemOf[h.zone].n}. {itemOf[h.zone].title}</span></button>)}
+        <ol {...sharedField("items")} class="st-tips">
+          {items.map((item, i) => <li id={`${id}-z${item.zone}`} data-tip={item.zone} style={`--zc: ${zoneColor[item.zone]}`}>
+            <span class="st-n mono" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <T class="st-t">{item.title}</T>
+            {item.value && <span class="st-value">{factText(item.value,locale)}</span>}
+            <p>{factText(item.text,locale)}</p>
+          </li>)}
+        </ol>
+      </div>
+      <figcaption><span class="st-hint">{t('landingsite.tapHint')}</span> <span class="st-height"><Icon name="move-up" size={16} class="g" />{factText(diagram.flightLabel,locale)}</span> <span class="st-cap">{factText(diagram.caption,locale)}</span></figcaption>
     </figure>
-    <ol {...sharedField("items")} class="st-items">
-      {items.map((item, i) => <li data-zone={item.zone} data-pick={item.zone} style={`--zc: ${zoneColor[item.zone]}`}>
-        <span class="st-n mono" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-        <div>
-          <T><button type="button" class="st-row" aria-expanded="true" aria-controls={`${id}-z${i}`}>{item.title}</button></T>
-          <div class="st-body" id={`${id}-z${i}`}><div>{item.value && <span class="st-value">{factText(item.value,locale)}</span>}<p>{factText(item.text,locale)}</p></div></div>
-        </div>
-      </li>)}
-    </ol>
   </div>
   {safeguards && <div class="st-safeguards">
     {safeguards.map((item) => <IconFeature icon={item.icon} title={item.title} text={factText(item.text,locale)} level={T} />)}
   </div>}
-  {(seals.length > 0 || minor.length > 0) && <div class="proof st-proof"><div class="quality">
-    {seals.length > 0 && <ul>{seals.map((q) => <IconFeature as="li" icon={QICON[q.icon]} logo={q.show ? q.logo : undefined} title={q.title} text={q.text} level={T} />)}</ul>}
-    {minor.length > 0 && <ul class="q-minor">{minor.map((q) => <IconFeature as="li" variant="compact" icon={QICON[q.icon]} title={q.title} text={q.text} />)}</ul>}
+  {seals.length > 0 && <div class="proof st-proof"><div class="quality">
+    <ul>{seals.map((q) => <IconFeature as="li" icon={QICON[q.icon]} logo={q.show ? q.logo : undefined} title={q.title} text={q.text} level={T} />)}</ul>
   </div></div>}
-  <div class="st-who">
-    <T id={`${id}-who`}>{t('landingsite.more')}</T>
-    <table aria-labelledby={`${id}-who`}>
-      <thead data-sticky-strip><tr><th scope="col">{t('landingsite.task')}</th><th scope="col" class="c">FlyingStars</th><th scope="col" class="c">{t('landingsite.you')}</th></tr></thead>
-      <tbody>{responsibilities.map((row,i) => <tr {...(Astro.props.safetyRef && i >= (Astro.props.additionalResponsibilities?.length??0) ? sharedField("responsibilities") : {})}>
-        <th scope="row">{row.task}</th>
-        {[row.us, row.you].map((v) => <td class:list={['c', v]}>
-          <ComparisonCell value={null} responsibility={v} hint={row.hint} />
-        </td>)}
-      </tr>)}</tbody>
-    </table>
-    <p class="st-legend mono">{(['full', 'part', 'none'] as const).map((v) => <span><ComparisonCell value={null} responsibility={v} legend /> {t(`landingsite.${v}`)}</span>)}</p>
-    {download && <a {...sharedField("download")} class="link st-download" href={localHref(download.href)} type="application/pdf" target="_blank" rel="noopener">{download.label}<Icon name="download" size={18} class="g" /></a>}
-  </div>
 </section>
 
 <script>
-  // Eine Zone zugleich: anfangs die erste; Zeigen (Maus), Fokus oder Tippen wechselt. Die Zone bleibt, bis eine andere kommt.
-  document.querySelectorAll<HTMLElement>('.ls-site .st').forEach((st) => {
-    const rows = [...st.querySelectorAll<HTMLButtonElement>('.st-row')];
-    const show = (zone: string) => {
-      st.querySelectorAll<SVGElement | HTMLElement>('[data-zone]').forEach((el) => el.classList.toggle('on', el.dataset.zone === zone));
-      rows.forEach((b) => b.setAttribute('aria-expanded', String(b.closest('li')!.dataset.zone === zone)));
+  // Popover an der Karte: Zeigen (Maus) auf Nummer oder Zone, Fokus oder Tippen öffnet die Erklärung der Zone neben der
+  // Nummer. Esc, Tippen daneben oder Verlassen der Karte mit der Maus schließt. Positionierung klassisch per JavaScript,
+  // innerhalb der Kartenbreite geklemmt (kein seitliches Scrollen auf dem Handy).
+  document.querySelectorAll<HTMLElement>('.ls-site [data-st-map]').forEach((map) => {
+    const fig = map.closest('.st-fig') as HTMLElement;
+    const hots = [...map.querySelectorAll<HTMLButtonElement>('[data-hot]')];
+    const tips = [...map.querySelectorAll<HTMLElement>('[data-tip]')];
+    let current = '';
+    const place = (zone: string) => {
+      const hot = hots.find((b) => b.dataset.hot === zone), tip = tips.find((el) => el.dataset.tip === zone);
+      if (!hot || !tip || getComputedStyle(tip).position !== 'absolute') return;
+      const m = map.getBoundingClientRect(), b = hot.getBoundingClientRect(), gap = 6;
+      const w = tip.offsetWidth, h = tip.offsetHeight;
+      const cx = b.left + b.width / 2 - m.left;
+      const left = Math.max(0, Math.min(m.width - w, cx - w / 2));
+      const below = b.bottom - m.top + gap, above = b.top - m.top - h - gap;
+      const top = below + h <= m.height || above < 0 ? below : above;
+      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+      tip.style.left = `${(left / rem).toFixed(3)}rem`; tip.style.top = `${(top / rem).toFixed(3)}rem`;
     };
-    // Zeigen wählt nur bei echter Mausbewegung: Klappt nach einem Klick der Text zu, rutscht die nächste Zeile unter den
-    // stehenden Zeiger und meldete „pointerenter“ — die Auswahl sprang auf die falsche Zone (gefunden 03.11.2026).
+    const show = (zone: string) => {
+      current = zone;
+      fig.classList.toggle('has-on', Boolean(zone));
+      map.querySelectorAll<SVGElement | HTMLElement>('[data-zone], [data-tip]').forEach((el) => el.classList.toggle('on', (el.dataset.zone ?? el.dataset.tip) === zone));
+      hots.forEach((b) => b.setAttribute('aria-expanded', String(b.dataset.hot === zone)));
+      if (zone) place(zone);
+    };
+    // Zeigen wählt nur bei echter Mausbewegung, nicht wenn sich der Inhalt unter dem stehenden Zeiger verschiebt
     let last = { x: -1, y: -1 };
-    st.addEventListener('pointermove', (e) => { last = { x: e.clientX, y: e.clientY }; });
-    st.querySelectorAll<HTMLElement | SVGElement>('[data-pick]').forEach((el) => {
-      const zone = el.dataset.pick!;
+    map.addEventListener('pointermove', (e) => { last = { x: e.clientX, y: e.clientY }; });
+    map.querySelectorAll<HTMLElement | SVGElement>('[data-pick], [data-hot]').forEach((el) => {
+      const zone = (el as HTMLElement).dataset.pick ?? (el as HTMLElement).dataset.hot!;
       el.addEventListener('pointerenter', (e) => {
         const p = e as PointerEvent;
         if (p.pointerType === 'mouse' && (p.clientX !== last.x || p.clientY !== last.y)) show(zone);
       });
-      el.addEventListener('click', () => show(zone));
+      el.addEventListener('click', (e) => { e.stopPropagation(); show(zone); });
     });
-    rows.forEach((b) => b.addEventListener('focus', () => show(b.closest('li')!.dataset.zone!)));
-    // Anfangszustand ohne Überblendung setzen, Übergänge erst ab dem nächsten Bild (sonst blendet die Seite beim Laden um)
-    st.classList.add('is-stepped');
-    show(rows[0]?.closest('li')?.dataset.zone ?? '');
-    requestAnimationFrame(() => requestAnimationFrame(() => st.classList.add('is-live')));
+    let restoring = false; // Esc gibt den Fokus an die Nummer zurück, ohne das Popover wieder zu öffnen
+    hots.forEach((b) => b.addEventListener('focus', () => { if (!restoring) show(b.dataset.hot!); }));
+    map.addEventListener('focusout', (e) => { if (!map.contains(e.relatedTarget as Node)) show(''); });
+    map.addEventListener('pointerleave', (e) => { if ((e as PointerEvent).pointerType === 'mouse' && !map.contains(document.activeElement)) show(''); });
+    map.addEventListener('keydown', (e) => { if (e.key === 'Escape' && current) { const hot = hots.find((b) => b.dataset.hot === current); show(''); restoring = true; hot?.focus({ preventScroll: true }); restoring = false; } });
+    document.addEventListener('click', (e) => { if (current && !map.contains(e.target as Node)) show(''); });
+    addEventListener('resize', () => { if (current) place(current); }, { passive: true });
+    fig.classList.add('is-live');
   });
 </script>
 
 <style>
-  .st { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(var(--space-8), 5vw, var(--space-22)); align-items: start; }
-  .st-fig { margin: 0; position: sticky; top: 6rem; padding: clamp(var(--space-4), 2.4vw, var(--space-9)); border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); }
-  .st-fig svg { width: 100%; max-width: 35rem; height: auto; display: block; margin-inline: auto; }
-  .st-fig figcaption { margin-top: var(--space-4-5); color: var(--faint); font-size: var(--text-sm); }
-  .st-height { display: flex; align-items: center; gap: var(--space-2-5); margin: var(--space-5) 0 0; color: var(--head); font-size: var(--text-base); }
-  .st-height :global(.ico) { flex: 0 0 auto; }
+  /* Text links, Karte rechts; die Karte bleibt klein (max. ~30rem), damit die Section nicht mehr dominiert */
+  .st { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 30rem); gap: clamp(var(--space-8), 6vw, var(--space-22)); align-items: center; }
+  .st-indoor { grid-template-columns: minmax(0, 1fr) minmax(0, 26rem); }
+  .st :global(.st-copy) { margin: 0; }
+  .st-fig { margin: 0; padding: clamp(var(--space-3-5), 1.6vw, var(--space-5-5)); border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); }
+  .st-map { position: relative; }
+  .st-map svg { width: 100%; height: auto; display: block; }
+  .st-fig figcaption { margin-top: var(--space-3-5); color: var(--faint); font-size: var(--text-xs); line-height: 1.5; display: grid; gap: var(--space-1-5); }
+  .st-hint { color: var(--muted); }
+  .st-height { display: inline-flex; align-items: center; gap: var(--space-1-5); color: var(--muted); }
+  .st-height :global(.ico) { flex: 0 0 auto; width: 1rem; height: 1rem; }
+  .st-fig:not(.is-live) .st-hint { display: none; }
   /* Lageplan (outdoor): Straßen, Häuser und Park nur als ruhiger Grund, die Zonen tragen die Farbe */
   .plan .road { fill: none; stroke: rgb(var(--rgb-head) / 5%); stroke-width: 12; }
   .plan .house { fill: rgb(var(--rgb-head) / 5%); stroke: rgb(var(--rgb-head) / 9%); }
@@ -210,77 +230,62 @@ const markers = variant === 'outdoor'
   .antenna { fill: var(--zc, var(--accent)); stroke: var(--ground); stroke-width: 2; }
   .marker circle { fill: var(--surface); stroke: var(--zc, var(--accent)); stroke-width: 1.4; }
   .marker text { fill: var(--zc, var(--accent)); font: 600 13px var(--display); }
-  .st-items { list-style: none; margin: 0; padding: 0; }
-  /* Schrittweise: nicht gewählte Zonen treten zurück, ihr Text klappt zu (Höhe über grid-template-rows, weich).
-     Gedämpft wird nur die Farbe, nicht die Unterlage (.under), sonst schimmern die äußeren Zonen durch die inneren. */
+  /* Gewählte Zone: die anderen treten zurück, die gewählte bekommt die laufende Kontur. Gedämpft wird nur die Farbe,
+     nicht die Unterlage (.under), sonst schimmern die äußeren Zonen durch die inneren. */
   .is-live :is(.zone > *, .marker) { transition: opacity var(--dur-glide) var(--ease-default), stroke-width var(--dur-color) var(--ease-default); }
-  .is-stepped .zone:not(.on) > :not(.under) { opacity: 0.4; }
-  .is-stepped .zone.on .shape { stroke: var(--zc); stroke-width: 2.4; stroke-dasharray: 7 5; animation: st-march var(--dur-ambient) var(--ease-linear) infinite; }
-  /* Startfläche: gefüllt, darauf wäre eine Kontur in derselben Farbe unsichtbar; die laufende Kontur liegt als Rahmen mit
-     Abstand darum (Marc, 03.11.2026: „das einzige, wo wir aktuell keine Traveling-Dashed Border haben“) */
+  .has-on .zone:not(.on) > :not(.under) { opacity: 0.4; }
+  .has-on .zone.on .shape { stroke: var(--zc); stroke-width: 2.4; stroke-dasharray: 7 5; animation: st-march var(--dur-ambient) var(--ease-linear) infinite; }
   .ring { fill: none; stroke: none; }
-  .is-stepped .zone.on .shape.pad { stroke-dasharray: none; animation: none; }
-  .is-stepped .zone.on .ring { stroke: var(--zc); stroke-width: 2; stroke-dasharray: 6 4; animation: st-march var(--dur-ambient) var(--ease-linear) infinite; }
-  .is-stepped .zone.on .drone { animation: st-twinkle var(--dur-branch) var(--ease-ambient) infinite; animation-delay: var(--d, 0s); }
+  .has-on .zone.on .shape.pad { stroke-dasharray: none; animation: none; }
+  .has-on .zone.on .ring { stroke: var(--zc); stroke-width: 2; stroke-dasharray: 6 4; animation: st-march var(--dur-ambient) var(--ease-linear) infinite; }
+  .has-on .zone.on .drone { animation: st-twinkle var(--dur-branch) var(--ease-ambient) infinite; animation-delay: var(--d, 0s); }
   @keyframes st-march { to { stroke-dashoffset: -24; } }
   @keyframes st-twinkle { 50% { fill: #ffe7b0; } }
-  .is-stepped .marker { cursor: pointer; }
-  .is-stepped .marker:not(.on) { opacity: 0.6; }
+  .has-on .marker:not(.on) { opacity: 0.6; }
   .is-live .marker :is(circle, text) { transition: fill var(--dur-standard) var(--ease-default); }
-  .is-stepped .marker.on circle { fill: var(--zc, var(--accent)); }
-  .is-stepped .marker.on text { fill: var(--ground); }
-  .st-row { all: unset; cursor: pointer; display: block; width: 100%; font: inherit; color: inherit; }
-  .st-row:focus-visible { outline: 2px solid var(--cyan); outline-offset: 0.25rem; border-radius: var(--radius-4); }
-  .st-body { display: grid; grid-template-rows: 1fr; }
-  .is-live .st-body { transition: grid-template-rows var(--dur-underline) var(--ease-default), opacity var(--dur-glide) var(--ease-default), visibility 0s; }
-  .st-body > div { overflow: hidden; min-height: 0; }
-  /* zugeklappt wirklich verborgen (auch für Screenreader, passend zu aria-expanded), erst nach dem Zuklappen */
-  .is-stepped li:not(.on) .st-body { grid-template-rows: 0fr; opacity: 0; visibility: hidden; }
-  .is-live li:not(.on) .st-body { transition: grid-template-rows var(--dur-underline) var(--ease-default), opacity var(--dur-glide) var(--ease-default), visibility 0s var(--dur-underline); }
-  .is-live .st-items li { transition: color var(--dur-standard) var(--ease-default); }
-  .is-stepped .st-items li:not(.on) :is(h2, h3) { color: var(--muted); }
-  .is-stepped .st-items li:not(.on) .st-n { color: var(--faint); }
-  .is-stepped .st-items li { cursor: pointer; }
-  /* Wer macht was: Tabelle, Aufgaben links, je Spalte ein Zeichen */
-  .st-who { margin-top: clamp(var(--space-12), 6vw, var(--space-22)); }
-  .st-who > :is(h2, h3) { font-size: var(--text-2xl); margin-bottom: var(--space-5); }
-  .st-who table { width: 100%; min-width: 0; max-width: 61.25rem; border-collapse: collapse; table-layout: fixed; } /* Aufgabe nimmt den Rest, die Zeichenspalten bleiben schmal */
-  .st-who th, .st-who td { padding: var(--space-3-5) var(--space-3); border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
-  /* Kopfzeile klebt auf dem Handy unter dem Header wie die Reiter der Vergleiche (Marc, 02.11.2026: „bei ALLEN Tabellen“) */
-  @media (--mobile) { .st-who thead th { position: sticky; top: var(--nav-h); z-index: 2; padding-top: var(--space-3); background: var(--strip, var(--ground)); }
-    /* deckender Streifen bis an die Fensterränder, nur an den äußeren Zellen, sonst überdeckt ein Schatten die Nachbarzelle */
-    .st-who thead th:first-child { box-shadow: -100vmax 0 0 0 var(--strip, var(--ground)); }
-    .st-who thead th:last-child { box-shadow: 100vmax 0 0 0 var(--strip, var(--ground)); } }
-  .st-who thead th { padding-top: 0; font: 400 var(--text-xs)/1.4 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); border-bottom-color: var(--line-strong); }
-  .st-who tbody th { font-weight: 400; color: var(--text); font-size: var(--text-base); padding-left: 0; hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; }
-  .st-who .c { width: 8.25rem; text-align: center; }
-  .st-who td.c { color: var(--muted); }
-  .st-who tbody tr { transition: background-color var(--dur-control) var(--ease-default); }
-  .st-who tbody tr:hover { background: var(--fill-quiet); }
-  .st-legend { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5-5); margin: var(--space-4) 0 0; color: var(--faint); font-size: var(--text-xs); }
-  .st-legend > span { display: inline-flex; align-items: center; gap: var(--space-2); }
-  @media (--small-facts) { .st-who .c { width: 5.375rem; } .st-who th, .st-who td { padding: var(--space-3) var(--space-1); } .st-who tbody th { font-size: var(--text-control); padding-right: var(--space-2); } .st-who thead th { letter-spacing: 0.04em; font-size: var(--text-xs); } }
-  @media (prefers-reduced-motion: reduce) { .zone, .zone *, .marker, .st-body { transition: none; animation: none !important; } }
-  .st-items li { display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); gap: var(--space-2); padding: var(--space-5-5) 0; border-top: 1px solid var(--line); }
-  .st-items li:first-child { padding-top: 0; border: 0; }
-  .st-n { color: var(--zc, var(--accent)); padding-top: var(--space-1); }
-  .st-items h2, .st-items h3 { font-size: clamp(1.25rem, 1.6vw, 1.5rem); }
-  .st-value { display: block; margin-top: var(--space-2); color: var(--zc, var(--accent)); font: 500 clamp(1.0625rem, 1.3vw, 1.25rem)/1.2 var(--display); }
+  .marker.on circle { fill: var(--zc, var(--accent)); }
+  .marker.on text { fill: var(--ground); }
+  /* Tippfläche über der gezeichneten Nummer: 44 px Ziel, unsichtbar bis auf den Fokusring */
+  .st-hot { position: absolute; left: var(--x); top: var(--y); width: 2.75rem; height: 2.75rem; margin: -1.375rem 0 0 -1.375rem; padding: 0; border: 0; border-radius: var(--radius-round); background: transparent; cursor: pointer; display: none; }
+  .is-live .st-hot { display: block; }
+  .st-hot:focus-visible { outline: 2px solid var(--zc, var(--cyan)); outline-offset: -0.5rem; }
+  /* Ohne JavaScript: nummerierte Legende unter der Karte. Mit JavaScript: je Zone ein Popover an ihrer Nummer. */
+  .st-tips { list-style: none; margin: var(--space-4) 0 0; padding: 0; display: grid; gap: var(--space-3); }
+  .st-tips li { display: grid; grid-template-columns: 1.75rem minmax(0, 1fr); column-gap: var(--space-1-5); align-items: baseline; font-size: var(--text-sm); }
+  .st-tips li > :not(.st-n) { grid-column: 2; }
+  .st-n { color: var(--zc, var(--accent)); grid-row: span 3; }
+  .st-tips .st-t { font: 500 var(--text-base)/1.3 var(--display); color: var(--head); }
+  .st-value { display: block; margin-top: var(--space-0-5); color: var(--zc, var(--accent)); font: 500 var(--text-sm)/1.3 var(--display); }
+  .ls-site .st-tips p { margin: var(--space-1) 0 0; color: var(--muted); font-size: var(--text-sm); line-height: 1.5; }
+  .is-live .st-tips { margin: 0; position: static; }
+  .is-live .st-tips li { position: absolute; z-index: 5; width: min(17.5rem, 100%); padding: var(--space-3-5) var(--space-4); border-radius: var(--radius-12); background: var(--surface-2); border: 1px solid color-mix(in srgb, var(--zc) 55%, var(--line)); box-shadow: var(--shadow-popover); visibility: hidden; opacity: 0; transform: translateY(0.25rem); transition: opacity var(--dur-control) var(--ease-default), transform var(--dur-control) var(--ease-default), visibility 0s var(--dur-control); pointer-events: none; }
+  .is-live .st-tips li.on { visibility: visible; opacity: 1; transform: none; transition-delay: 0s; }
+  /* Popover lassen Zeiger und Tippen durch: ein offenes Popover darf die nächste Nummer nie verdecken */
+  /* Schmal (Handy): die Erklärung steht als Fläche direkt unter der Karte statt über ihr */
+  @media (max-width: 40em) {
+    .is-live .st-tips { margin-top: var(--space-3); }
+    .is-live .st-tips li { position: relative; left: auto !important; top: auto !important; width: auto; display: none; transform: none; }
+    .is-live .st-tips li.on { display: grid; }
+  }
   .ls-site p { line-height: 1.65; }
   .st-points { list-style: none; margin: clamp(var(--space-5), 2.4vw, var(--space-7)) 0 0; padding: 0; display: grid; gap: var(--space-3); max-width: 46rem; }
   .st-points li { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); gap: var(--space-3); align-items: start; color: var(--head); font-size: var(--text-copy); }
   .st-points li :global(.ico) { margin-top: var(--space-0-5); }
-  .st-more { margin-top: clamp(var(--space-5), 2.6vw, var(--space-8)); }
-  .st-proof { margin-top: clamp(var(--space-10), 5vw, var(--space-18)); padding-block: clamp(var(--space-8), 4vw, var(--space-12)); border-block: 1px solid var(--line); }
-  .st-safeguards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-8); margin-top: clamp(var(--space-10), 5vw, var(--space-18)); padding-block: var(--space-8); border-block: 1px solid var(--line); }
-  .st-download { margin-top: var(--space-7); display: flex; align-items: center; gap: var(--space-2-5); }
+  .st-more { margin-top: clamp(var(--space-5), 2.6vw, var(--space-8)); display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-7); }
+  .st-download { display: inline-flex; align-items: center; gap: var(--space-2-5); }
   .st-download :global(.ico) { width: 1.125rem; height: 1.125rem; flex: 0 0 auto; }
+  /* Zulassungen als ruhige Logo-Reihe unter Text und Karte */
+  .st-proof { margin-top: clamp(var(--space-9), 4.5vw, var(--space-14)); padding-top: clamp(var(--space-6), 3vw, var(--space-9)); border-top: 1px solid var(--line); }
+  .st-proof :global(.quality ul) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .st-safeguards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-8); margin-top: clamp(var(--space-10), 5vw, var(--space-18)); padding-block: var(--space-8); border-block: 1px solid var(--line); }
+  @media (prefers-reduced-motion: reduce) { .zone, .zone *, .marker, .st-tips li { transition: none !important; animation: none !important; } }
   @media (max-width: 60em) {
-    .st { grid-template-columns: 1fr; }
-    .st-fig { position: static; }
+    .st, .st-indoor { grid-template-columns: 1fr; }
+    .st-fig { width: 100%; max-width: 30rem; }
     .st-safeguards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (--small-facts) {
     .st-safeguards { grid-template-columns: 1fr; gap: var(--space-7); }
+    .st-proof :global(.quality ul) { grid-template-columns: 1fr; }
   }
 </style>

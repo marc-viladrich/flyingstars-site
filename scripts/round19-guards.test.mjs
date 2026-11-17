@@ -51,16 +51,22 @@ test('Zuständigkeiten: jede Aufgabe, die ihr übernehmt, nennt ein Verb', () =>
   }
 });
 
-test('Marken & Werbung hat die Zuständigkeitstabelle wie Hochzeit und Indoor', () => {
-  for (const f of ['drohnenshow-werbung', 'drohnenshow-hochzeit', 'drohnenshow-indoor']) {
-    assert.ok(parse(read(`src/content/pages/${f}.yaml`)).sections.some((s) => s.type === 'landingSite' && landingSiteContent(s,'de').responsibilities?.length), f);
+test('Standortkarte kompakt (17.11.2026): Karte mit Popovern statt Liste und Zuständigkeitstabelle, Logos darunter', () => {
+  const src = read('src/components/landing/LandingSite.astro');
+  assert.doesNotMatch(src, /st-who|<table/, 'Zuständigkeitstabelle ist zurück');
+  assert.match(src, /data-hot=\{h\.zone\}/, 'Tippflächen an den Nummern fehlen');
+  assert.match(src, /e\.key === 'Escape'/, 'Popover muss mit Esc schließen');
+  assert.doesNotMatch(src, /anchor-name|position-anchor/, 'Safari 18 kann kein Anchor Positioning');
+  for (const f of ['index', 'drohnenshow-werbung', 'drohnenshow-hochzeit', 'drohnenshow-indoor']) {
+    const site = parse(read(`src/content/pages/${f}.yaml`)).sections.find((s) => s.type === 'landingSite');
+    assert.ok(site?.quality?.filter((q) => !q.secondary).length >= 2, `${f}: Zulassungs-Logos unter der Karte fehlen`);
   }
 });
 
 test('Zonen-Zeichnung: Farben wie im Datenblatt, Zeigen wählt nur bei echter Mausbewegung', () => {
   const src = read('src/components/landing/LandingSite.astro');
   for (const zone of ['safety', 'operative', 'drones', 'start', 'guests']) assert.match(src, new RegExp(`${zone}: '#[0-9a-f]{6}'`), zone);
-  assert.match(src, /clientX !== last\.x \|\| p\.clientY !== last\.y/, 'Zuklappen unter dem Zeiger wählt sonst die falsche Zone');
+  assert.match(src, /clientX !== last\.x \|\| p\.clientY !== last\.y/, 'Verschiebt sich der Inhalt unter dem Zeiger, wählt Zeigen sonst die falsche Zone');
 });
 
 test('Cookie-Entscheidung in einer kleinen Karte mit Schaltern, kein zweiter Dialog', () => {

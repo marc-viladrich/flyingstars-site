@@ -125,7 +125,29 @@ function occasionsFor(locale) { const t = createTranslator(locale);
 return  [
   // Reihenfolge der Motive = Ablauf der Show. Die letzte Angabe ist die Sprosse der Freischalt-Leiter (ohne Angabe: SPARK-Einstieg).
   // Runde 24: Katalogmotive (catalogMotif) spielen ab ihrer gezählten Punktzahl; withCatalogSpark ersetzt nur die SPARK-Fassung.
-  { id: 'launch', label: 'Launch', motifs: [
+  // Moritz' Preistext (17.11.2026): Winter & Silvester zuerst, „Launch“ heißt „Marketing“ (die ID bleibt für bestehende Links)
+  { id: 'silvester', label: t('showConfigurator.winterAndNewYear'), season: [11, 12], motifs: [
+    motif('uhr', t('showConfigurator.clock'), v('clock', t('showConfigurator.theHandsRunToTwelve')), v('clock3d', t('showConfigurator.3dWatchTheHandsAreRunning')), v('clockStory', t('showConfigurator.midnightSparksSwirlOutAndWriteTheNewYear'))),
+    catalogMotif('sektflasche', 'silvester', t, locale),
+    catalogMotif('stern', 'silvester', t, locale),
+    catalogMotif('diskokugel', 'silvester', t, locale),
+    catalogMotif('marienkaefer', 'silvester', t, locale),
+    catalogMotif('galaxie', 'silvester', t, locale),
+    catalogMotif('kugel', 'silvester', t, locale),
+    catalogMotif('atom', 'silvester', t, locale),
+    catalogMotif('glocke', 'silvester', t, locale),
+    catalogMotif('schneemann', 'silvester', t, locale),
+    motif('schnee', t('showConfigurator.lightTree'), v('snow2d', t('showConfigurator.aSnowflakeTurns')), v('tree3d', t('showConfigurator.aLightTreeAsASpiralLightAscends')), v('treeStory', t('showConfigurator.aSnowflakeBecomesATreeOfLightsAStarAppears'))),
+    catalogMotif('lebkuchen', 'silvester', t, locale),
+    catalogMotif('zuckerstange', 'silvester', t, locale),
+    catalogMotif('anstossen', 'silvester', t, locale),
+    motif('feuerwerk', t('showConfigurator.fireworks'), v('fireworkSpark', t('showConfigurator.fireworkStarsLightUpOneAfterTheOther')), v('fireworkHorizon', t('showConfigurator.fireworksOfLightStarsBloomAndBurn')), v('fireworkStory', t('showConfigurator.aTrailOfLightRisesStarsBloomInWaves')), S1),
+    catalogMotif('konfetti', 'silvester', t, locale),
+    motif('sekt', t('showConfigurator.champagneCork'), null, v('champagne3d', t('showConfigurator.aChampagneBottleIn3dBubblesRiseInTheLight')), v('champagneStory', t('showConfigurator.aChampagneBottleTheCorkPopsAndFliesInAn')), H1),
+    motif('finale', t('showConfigurator.finale'), null, null, v('fireworkFinale', t('showConfigurator.finaleAllStarsAtOnceThenGoldenRainFalls')), O1),
+    motif('klee', t('showConfigurator.clover'), v('clover2d', t('showConfigurator.aLuckyCloverTurns')), v('clover3d', t('showConfigurator.theLuckyCloverIn3d')), v('cloverStory', t('showConfigurator.threeLeavesBecomeFourHappinessForTheNewYear'))),
+  ] },
+  { id: 'launch', label: t('showConfigurator.marketing'), motifs: [
     motif('rakete', t('showConfigurator.rocket'), v('rocket', t('showConfigurator.rocketWithFlame')), v('rocket3d', t('showConfigurator.theRocketAsABodyFloatsAndRotates')), v('rocketLaunch', t('showConfigurator.launchFromThePadTheRocketEntersOrbitAroundA'))),
     motif('mond', t('showConfigurator.moonLanding'), null, null, v('moonStory', t('showConfigurator.theRocketLeavesOrbitAndLandsOnTheMoonA')), O1),
     catalogMotif('galaxie', 'launch', t, locale),
@@ -245,27 +267,6 @@ return  [
     // die Tänzerin dreht sich erst als Körper (HORIZON 250); dancer2d bleibt ungespielt
     motif('tanz', t('showConfigurator.dance'), v('dancer2d', t('showConfigurator.aDancerHerRockSwings')), v('dancer3d', t('showConfigurator.theDancerTurnsIn3dTheRockFlies')), v('dancerStory', t('showConfigurator.theDancerTurnsTheSkirtBecomesTheFlowerTheFlower')), H1),
     motif('teufel', 'Bokkenrijders', null, null, v('devilStory', t('showConfigurator.theDevilFromOurBokkenrijdersShowAnActual3dFormation')), O1),
-  ] },
-  { id: 'silvester', label: t('showConfigurator.winterAndNewYear'), season: [11, 12], motifs: [
-    motif('uhr', t('showConfigurator.clock'), v('clock', t('showConfigurator.theHandsRunToTwelve')), v('clock3d', t('showConfigurator.3dWatchTheHandsAreRunning')), v('clockStory', t('showConfigurator.midnightSparksSwirlOutAndWriteTheNewYear'))),
-    catalogMotif('sektflasche', 'silvester', t, locale),
-    catalogMotif('stern', 'silvester', t, locale),
-    catalogMotif('diskokugel', 'silvester', t, locale),
-    catalogMotif('marienkaefer', 'silvester', t, locale),
-    catalogMotif('galaxie', 'silvester', t, locale),
-    catalogMotif('kugel', 'silvester', t, locale),
-    catalogMotif('atom', 'silvester', t, locale),
-    catalogMotif('glocke', 'silvester', t, locale),
-    catalogMotif('schneemann', 'silvester', t, locale),
-    motif('schnee', t('showConfigurator.lightTree'), v('snow2d', t('showConfigurator.aSnowflakeTurns')), v('tree3d', t('showConfigurator.aLightTreeAsASpiralLightAscends')), v('treeStory', t('showConfigurator.aSnowflakeBecomesATreeOfLightsAStarAppears'))),
-    catalogMotif('lebkuchen', 'silvester', t, locale),
-    catalogMotif('zuckerstange', 'silvester', t, locale),
-    catalogMotif('anstossen', 'silvester', t, locale),
-    motif('feuerwerk', t('showConfigurator.fireworks'), v('fireworkSpark', t('showConfigurator.fireworkStarsLightUpOneAfterTheOther')), v('fireworkHorizon', t('showConfigurator.fireworksOfLightStarsBloomAndBurn')), v('fireworkStory', t('showConfigurator.aTrailOfLightRisesStarsBloomInWaves')), S1),
-    catalogMotif('konfetti', 'silvester', t, locale),
-    motif('sekt', t('showConfigurator.champagneCork'), null, v('champagne3d', t('showConfigurator.aChampagneBottleIn3dBubblesRiseInTheLight')), v('champagneStory', t('showConfigurator.aChampagneBottleTheCorkPopsAndFliesInAn')), H1),
-    motif('finale', t('showConfigurator.finale'), null, null, v('fireworkFinale', t('showConfigurator.finaleAllStarsAtOnceThenGoldenRainFalls')), O1),
-    motif('klee', t('showConfigurator.clover'), v('clover2d', t('showConfigurator.aLuckyCloverTurns')), v('clover3d', t('showConfigurator.theLuckyCloverIn3d')), v('cloverStory', t('showConfigurator.threeLeavesBecomeFourHappinessForTheNewYear'))),
   ] },
 ].map(occasion=>({...occasion,anlass:formOccasionFor(occasion.id)}));
 }

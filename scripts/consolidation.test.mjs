@@ -38,9 +38,11 @@ test('Paketansichten haben genau einen Kartenbesitzer; ungenutzter Altbestand bl
 });
 
 test('Alle Vergleiche delegieren Tabelle, Tafeln und Statuszeichen an dieselben Besitzer', () => {
+  // Die Preisseite zeigt seit Moritz' Preistext (17.11.2026) keinen Leistungsvergleich mehr; baut sie wieder einen, dann
+  // nur über ComparisonMatrix, nie als eigene Tabelle
   for (const path of ['src/components/sections/Comparison.astro', 'src/templates/PricingPage.astro']) {
     const source = read(path);
-    assert.match(source, /<ComparisonMatrix /);
+    if (path.includes('sections/')) assert.match(source, /<ComparisonMatrix /);
     assert.doesNotMatch(source, /<table|<td|class="cmp-panel"/);
   }
   const matrix = read('src/components/ComparisonMatrix.astro');

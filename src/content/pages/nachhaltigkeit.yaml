@@ -1,0 +1,72 @@
+# Nachhaltigkeit nach Moritz' Webtext (17.11.2026, „Webtext Nachhaltigkeit FlyingStars“): Titel, Meta, Abschnittsfolge,
+# Überschriften und Texte wortgetreu, Ansprache „ihr“. Im Sitemap-Entwurf unter „Über“ (Ebene 3), deshalb im Menü unter
+# „Über uns“. Kein Vergleich Drohne/Feuerwerk/Laser (Moritz). Nur Aussagen über die Show vor Ort (EmpCo).
+title: "Nachhaltigkeit: Drohnenshows von FlyingStars (vs. Feuerwerk)"
+description: "Kein Knall. Kein Müll. Kein Rauch. ✓ Drohnenshows für soziales und ökologisches Engagement. ☎︎ +49 209 88306562"
+image: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
+sections:
+  # „Kein Müll.“ im Logoverlauf wie auf der Startseite (DESIGN); Weltkugel aus Drohnen bei der Extraschicht als Bild.
+  - type: hero
+    kicker: Nachhaltigkeit
+    headline: Kein Knall. *Kein Müll.* Kein Rauch.
+    text: Unsere Drohnenshows zeigen, dass großes Spektakel auch leise, lokal emissionsfrei und aufgeräumt geht. Und heißt so alle Gäste herzlich willkommen – auch Hunde, Kinder und die Natur vor Ort.
+    image:
+      src: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
+      alt: Weltkugel aus Drohnen über dem Rhein bei der Extraschicht in Duisburg, Publikum am Ufer
+      width: 2544
+      height: 1493
+    _key: k_ef572ac0e4ba13d454af
+
+  # Scrollstory aus dem Prototyp: Moritz' drei Punkte als große Werte (leise, 0 kg, 0 g aus dem Prototyp), seine Sätze daneben.
+  - type: sustainability
+    id: alternative
+    kicker: Drohnenshows
+    headline: Die *Alternative* zum Feuerwerk
+    text: Unsere Drohnenshows dürfen oft dort fliegen, wo Feuerwerke wegen Lärmschutz, Feinstaub oder Brandgefahr verboten oder unerwünscht sind.
+    facts:
+      - { label: Kein Knall, value: leise, text: "Unsere Drohnen surren nur leise. Der TÜV NORD bestätigt unseren Schallschutz. So können auch sensible Gäste teilnehmen.", "_key": "k_5dfd76d168b4a97a8cff" }
+      - { label: Kein Müll, value: "0", unit: kg, text: "Unsere Drohnen sind wiederverwendbar. Wir laden sie mit 100 % Ökostrom von naturstrom immer wieder auf.", "_key": "k_2a3281e1e1ce468cb8ed" }
+      - { label: Kein Rauch, value: "0", unit: g, text: "Unsere Drohnen produzieren vor Ort weder Feinstaub noch Stickoxide oder Schwermetall. Es kommen keine offenen Flammen zum Einsatz.", "_key": "k_85941100bf952a64e766" }
+    # Belege als Karte unter den Werten (wie im Prototyp): naturstrom-Logo, TÜV NORD ohne Zeichen (DESIGN). Die zwei Zeilen
+    # sind Kurzfassungen aus Moritz' Sätzen.
+    proofImage: { src: "https://flyingstars.art/wp-content/uploads/2024/10/NATURSTROM-Logo_weiss.png", alt: naturstrom, width: 301, height: 71 }
+    points:
+      - { value: Schallschutz vom TÜV NORD bestätigt, "_key": "k_4ecbfd8bacb8dad1a3e9" }
+      - { value: 100 % Ökostrom von naturstrom, "_key": "k_8fd4b4570f848e1175a8" }
+    todo: Moritz und FlyingStars müssen die Umweltformulierungen vor Veröffentlichung prüfen, die Belege für Ökostrom und das TÜV-NORD-Schallschutzgutachten bereithalten und die Nutzung des naturstrom-Logos schriftlich freigeben lassen.
+    _key: k_b58e8e802d7c6c5c47eb
+
+  # Referenzen als Bühne mit Showfoto: #Böllerciao (Deutsche Umwelthilfe, Berlin). Für Kein Bock auf Nazis gibt es im
+  # Bestand weder Foto noch Projekt; der Eintrag steht deshalb als Text neben der Umwelthilfe.
+  - type: landingSpotlight
+    id: referenzen
+    kicker: Referenzen
+    headline: Wir fliegen mit *Engagement*
+    text: Als Partner von NGOs dürfen wir regelmäßig Zeichen für Demokratie und Umweltschutz in den Himmel setzen.
+    image: { src: "https://flyingstars.art/wp-content/uploads/2024/07/D_Umwelthilfe_cover_img.png", alt: "Bunte Feuerwerksblüte aus Drohnen über Berlin bei der Kampagne #Böllerciao der Deutschen Umwelthilfe, Zuschauer:innen filmen mit dem Handy", width: 1920, height: 987 }
+    tags: [ { value: "#BÖLLERCIAO · Berlin", "_key": "k_189b36fdbb3bf810d7d6" } ]
+    entries:
+      - { kicker: Kein Bock e.V., title: Kein Bock auf Nazis, text: Unsere Drohnenshows mobilisieren für mehr gesellschaftlichen Zusammenhalt., "_key": "k_e6753824ae3f10493a00" }
+      - { kicker: Deutsche Umwelthilfe, title: "#BÖLLERCIAO", text: "Seit 2023 dürfen wir zeigen, dass es kein Feuerwerk braucht, um die Öffentlichkeit mitzureißen.", "_key": "k_f7fcb999361464ffdc9c" }
+    # Jahreszahlen aus Moritz' Meilensteinen (Über uns): Kein Bock auf Nazis seit August 2025, #Böllerciao seit 2023.
+    facts:
+      - { value: seit 2025, label: Kein Bock auf Nazis, "_key": "k_e87e2228c45bc9d2a903" }
+      - { value: seit 2023, label: "#BÖLLERCIAO", "_key": "k_9d577b6e57e572327c0c" }
+    todo: FlyingStars muss ein Showfoto oder einen kurzen Loop von Kein Bock auf Nazis liefern (z. B. Open Flair 08.08.2025 oder Erfurt 02.07.2026) und die Namensnennung beider Partner freigeben.
+    _key: k_7b3ad6aa4b4e3680cb02
+
+  - type: contactForm
+    kicker: Kontakt
+    headline: Stellt uns eure Fragen zur *Nachhaltigkeit*
+    text: Wir sind häufig Ansprechpartner, wenn es um soziale und ökologische Aspekte von Drohnenshows im Vergleich zum Feuerwerk geht.
+    todo: FlyingStars und die Datenschutzberatung müssen Versanddienst, Empfängerpostfach, Auftragsverarbeitung, Drittlandtransfers und Löschfristen festlegen und die Datenschutzhinweise freigeben.
+    _key: k_b8cb61fd4f874a1403ea
+
+  - type: faq
+    id: faq
+    kicker: FAQ
+    headline: Häufige Fragen
+    cta: { label: Alle Fragen, href: "/faq/#wetter-umwelt" }
+    openFirst: true
+    tags: [ nachhaltigkeit-moritz ]
+    _key: k_f58d716d01838151fc17

@@ -16,7 +16,11 @@ const { t, localHref } = forPath(Astro.url.pathname);
 // Direktlinks lesen Query-Parameter: /drohnenshow-preise/?anlass=launch&paket=ODYSSEY&drohnen=450&motiv=mond#konfigurator
 import { getConfiguratorContent, bySeason } from '../../content/show-configurator.js';
 const { OCCASIONS, STEPS } = getConfiguratorContent(forPath(Astro.url.pathname).locale);
-import { SHOW_PACKAGES, DRONE_RANGES, DRONES_MIN, DRONES_MAX, DRONE_STEP } from '../../content/show-packages';
+import { SHOW_PACKAGES, DRONE_RANGES, DRONES_MIN, DRONES_MAX, DRONE_STEP, individualPrice } from '../../content/show-packages';
+import { SHOW_EXTRAS } from '../../content/show-extras.mjs';
+import { durationValues as durations } from '../../content/show-duration.mjs';
+import { money as euro } from '../../lib/price.mjs';
+import Icon from '../Icon.astro';
 
 interface Props {
   /** Anker der Section (Sprungziel, z. B. /drohnenshow-preise/#konfigurator) */
@@ -38,28 +42,33 @@ const start = 1;
 const money = (v: number) => startingPrice(v,forPath(Astro.url.pathname).locale);
 const startPkg = STEPS[start].pkg as keyof typeof SHOW_PACKAGES;
 const first = SHOW_PACKAGES[startPkg];
+const locale = forPath(Astro.url.pathname).locale;
+// Preisseite nach Moritz (17.11.2026): keine Paketwahl mehr. Der Konfigurator startet als „Individuelles Paket“; ein
+// Startpunkt aus einer Paketkarte (?paket=SPARK) zeigt Namen und Festpreis, bis zur ersten Änderung (show-configurator.js).
+// Upgrades in Moritz' Reihenfolge; IDs wie im Anfragevertrag (EXTRA_IDS), damit sie als ?extras=… ins Formular gehen.
+const effort = t('preise.upPrice.effort');
+const upgrades = [
+  ['express', effort], ['film', '+' + euro(SHOW_EXTRAS.film.price.amount, locale)], ['kontrollzone', effort],
+  ['behoerden', effort], ['schweiz', t('preise.upPrice.request')], ['indoor', `${t('price.from')} ${euro(SHOW_EXTRAS.indoor.price.amount, locale)}`],
+] as const;
+const always = [['design', 'pen-tool'], ['music', 'music'], ['tech', 'cpu'], ['permit', 'stamp'], ['safety', 'shield-check'], ['insurance', 'umbrella'], ['crew', 'users'], ['flight', 'timer']] as const;
 const firstCaption = list[0].motifs[0].tiers[startPkg]?.caption ?? '';
-// Drohnenregler (zwölfte Fassung): die Spur zeigt die Bereiche der Pakete in ihrer Farbe. Seit der dreizehnten Fassung
-// schließen die Bereiche lückenlos aneinander an (eine Lücke bliebe hier leer)
+// Drohnenregler: 100 bis 1000 ohne Paketfarben (Moritz, 17.11.2026). Die Spur füllt sich neutral bis zum Griff (--fill
+// setzt das Skript), die Marken nennen die Zahlen aus Moritz' Preisfragen
 const at = (n: number) => ((n - DRONES_MIN) / (DRONES_MAX - DRONES_MIN)) * 100;
-const rgb = (k: keyof typeof SHOW_PACKAGES) => `rgb(${SHOW_PACKAGES[k].color.join(',')})`;
-const rangeTrack = `linear-gradient(90deg, ${(Object.keys(DRONE_RANGES) as (keyof typeof SHOW_PACKAGES)[]).map((k, i, all) => {
-  const r = DRONE_RANGES[k], next = all[i + 1] ? DRONE_RANGES[all[i + 1]].min : null;
-  return [`${rgb(k)} ${at(r.min)}%`, `${rgb(k)} ${at(r.max)}%`, ...(next !== null && next - r.max > DRONE_STEP ? [`transparent ${at(r.max)}%`, `transparent ${at(next)}%`] : [])].join(', ');
-}).join(', ')})`;
-const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.min), DRONES_MAX];
+const ticks = [DRONES_MIN, 300, 500, DRONES_MAX];
 ---
 {/* Explicit URL: the catch-all route imports the pricing template on every page.
      Keep its namespaced styles on pages that actually render the configurator. */}
 <link rel="stylesheet" href={configuratorStyles} />
-<section class="cfg" id={id} aria-labelledby="cfg-h" style={`--pkg0: ${rgb(startPkg)}`}>
+<section class="cfg is-individual" id={id} aria-labelledby="cfg-h">
     <div class="cfg-stage" aria-label={t('showconfigurator.showPreview')} aria-describedby="cfg-scene" data-bleed>
       <canvas id="cfg-field" aria-hidden="true"></canvas>
       {/* vierzehnte Fassung: ein Klick irgendwo auf die Bühne hält die Vorführung an oder lässt sie weiterlaufen (wie bei
            YouTube); als echter Knopf erreichbar, Leertaste und Eingabe schalten um */}
       <button type="button" class="cfg-hit" id="cfg-hit" aria-label={t('showconfigurator.pauseThePreview')} aria-pressed="false"></button>
       <span class="cfg-flash" id="cfg-flash" aria-hidden="true"><svg class="i-pause" viewBox="0 0 16 16"><rect x="4" y="3" width="2.6" height="10" rx="1"/><rect x="9.4" y="3" width="2.6" height="10" rx="1"/></svg><svg class="i-play" viewBox="0 0 16 16"><path d="M5 3.2v9.6a.6.6 0 0 0 .9.5l7.6-4.8a.6.6 0 0 0 0-1L5.9 2.7a.6.6 0 0 0-.9.5z"/></svg></span>
-      <div class="cfg-caption"><em id="cfg-new">{STEPS[start].pkg}</em></div>
+      <div class="cfg-caption"><em id="cfg-new" hidden>{STEPS[start].pkg}</em></div>
       <div class="cfg-drop" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0-5 5m5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg><span>{t('showconfigurator.dragYourLogoHere')}</span><small>{t('showconfigurator.svgPngOrJpg')}</small></div>
       <span class="sr-only" id="cfg-scene">{firstCaption}</span>
       <p class="cfg-toast" id="cfg-toast" role="status"></p>
@@ -77,7 +86,7 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
       <button type="button" class="cfg-minimap" id="cfg-minimap" aria-pressed="false" aria-label={t('logoMode.original')} hidden><img id="cfg-minimap-img" alt="" /></button>
       <div class="cfg-over-card" id="cfg-over-card" role="status" hidden>
         <p id="cfg-over-text"></p>
-        <a href={localHref("/#anfrage")} id="cfg-over-cta">{t('logoMode.overCta')}</a>
+        <a href={localHref("/drohnenshow-preise/#anfrage")} id="cfg-over-cta">{t('logoMode.overCta')}</a>
         <button type="button" class="cfg-over-close" id="cfg-over-close" aria-label={t('logoMode.close')}>×</button>
       </div>
       <p class="cfg-error" id="cfg-error" role="status" hidden>{t('showconfigurator.thePreviewIsCurrentlyUnavailableYouCanStillChooseA')}</p>
@@ -117,22 +126,12 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
         </div>
       </fieldset>
 
-      <fieldset class="cfg-block">
-        <legend>{t('showconfigurator.howComplex')}</legend>
-        {/* Runde 11: ein gleitender Rahmen statt harter Wechsel. .cfg-ind-sel zeigt das gewählte Paket und gleitet beim
-             Wechsel (Klick, Tastatur, Regler) dorthin; .cfg-ind-hover gleitet gedämpft zum Paket unter der Maus. Position
-             und Farbe kommen allein aus CSS (:has), also folgt der Rahmen jeder Änderung des Radios */}
-        <div class="cfg-pkgs" style={STEPS.map((s, i) => `--c${i}: ${rgb(s.pkg as keyof typeof SHOW_PACKAGES)}`).join('; ')}>
-          {STEPS.map((s, i) => <label style={`--c: var(--c${i})`}><input type="radio" name="pkg" value={i} checked={i === start} /><span><b>{s.pkg}</b><small>{s.label}</small></span></label>)}
-          <span class="cfg-ind cfg-ind-hover" aria-hidden="true"></span>
-          <span class="cfg-ind cfg-ind-sel" aria-hidden="true"></span>
-        </div>
-      </fieldset>
+      {/* Paketwahl entfällt (Moritz, 17.11.2026: „Paket: Rausnehmen“). Ein Startpunkt kommt nur noch aus den Paketkarten. */}
 
       <div class="cfg-block cfg-drones">
         <p class="cfg-logo-count" id="cfg-logo-count" role="status" hidden><b id="cfg-logo-n"></b> <span>{t('logoMode.needed')}</span></p>
         <div class="cfg-drones-head"><label for="cfg-drones" id="cfg-drones-label">{t('configuratorteaser.drones')}</label><output id="cfg-dronecount" for="cfg-drones">{first.base}</output></div>
-        <div class="cfg-drone-slider"><input class="cfg-range" id="cfg-drones" {...record({collection:'previewPolicy',id:'configuration'})} type="range" min={DRONES_MIN} max={DRONES_MAX} step={DRONE_STEP} value={first.base} style={`--track: ${rangeTrack}`} /></div>
+        <div class="cfg-drone-slider"><input class="cfg-range cfg-range-fill" id="cfg-drones" {...record({collection:'previewPolicy',id:'configuration'})} type="range" min={DRONES_MIN} max={DRONES_MAX} step={DRONE_STEP} value={first.base} style={`--fill: ${at(first.base).toFixed(2)}%`} /></div>
         <div class="cfg-ticks mono" aria-hidden="true">{ticks.map((n) => <span style={`--p: ${at(n) / 100}`}>{n}</span>)}</div>
       </div>
 
@@ -180,19 +179,36 @@ const ticks = [DRONES_MIN, ...Object.values(DRONE_RANGES).slice(1).map((r) => r.
            Bedienung. Darunter nur noch die Einordnung der Motive. PLATZHALTER, bewusst nicht mehr sichtbar: Drohnenbereiche
            und Aufpreise (DRONE_RANGES_PLACEHOLDER, SPARK_EXTRA in content/show-packages.ts) und die Freischalt-Leiter
            (LADDER in content/show-configurator.js) sind nicht mit FlyingStars abgestimmt. */}
+      {/* Upgrades und „Immer dabei“ aus Moritz' Konfigurator-Text. Upgrades sind dieselben Extras wie im Raster weiter unten
+           (Extras.astro); beide Auswahlen bleiben gleich (show-configurator.js). Foto & Video rechnet in den Preis, Indoor
+           hebt ihn auf mindestens den Indoor-Einstieg, der Rest steht „nach Aufwand“ in der Anfrage. */}
+      <fieldset class="cfg-block cfg-upgrades">
+        <legend>{t('preise.upgrades')} <span class="cfg-opt">{t('showconfigurator.optional')}</span></legend>
+        <div class="chips cfg-up" id="cfg-upgrades">
+          {upgrades.map(([id, price]) => <label title={t(`preise.upDesc.${id}`)}><input type="checkbox" name="upgrade" value={id} /><span>{t(`preise.up.${id}`)}<small class="mono">{price}</small></span></label>)}
+        </div>
+      </fieldset>
+
+      <div class="cfg-block cfg-always">
+        <p class="cfg-always-h" id="cfg-always-h">{t('preise.alwaysIncluded')}</p>
+        <ul class="cfg-always-list" aria-labelledby="cfg-always-h">
+          {always.map(([id, icon]) => <li><Icon name={icon} size={16} class="g" /><span>{t(`preise.inc.${id}`, durations())}</span></li>)}
+        </ul>
+      </div>
+
       <div class="cfg-sum">
         <div class="cfg-result" aria-live="polite">
           <p class="cfg-pkg-label" id="cfg-pkg-label" hidden></p>
-          <div class="cfg-price"><b id="cfg-pkg">{STEPS[start].pkg}</b><span id="cfg-price">{money(first.price)}</span></div>
+          <div class="cfg-price"><b id="cfg-pkg">{t('preise.individual')}</b><span id="cfg-price">{money(individualPrice(first.base))}</span></div>
           <p class="cfg-meta mono" id="cfg-meta" {...field({collection:'showDuration',id:'configuration'},['outdoor','min'],{mode:'panel'})}>{t('packageDetails.showtimeLine',durationValues())} {t('showconfigurator.excludingVatAndTravel')}</p>
         </div>
-        <a class="btn primary cfg-cta" id="cfg-cta" href={localHref("/#anfrage")}>{t('showconfigurator.enquireAboutThisShow')}</a>
+        <a class="btn primary cfg-cta" id="cfg-cta" href={localHref("/drohnenshow-preise/#anfrage")}>{t('showconfigurator.enquireAboutThisShow')}</a>
         <button type="button" class="btn primary cfg-use-logo" id="cfg-use-logo" hidden>{t('logoMode.useLogo')}</button>
         <p class="cfg-note" id="cfg-note">{t('showconfigurator.allMotifsShownHereAreExamplesWeCreateOriginalDesigns')}</p>
       </div>
     </form>
 
-    <div class="cfg-bar" aria-hidden="true"><span><b id="cfg-bar-pkg">{STEPS[start].pkg}</b> <span id="cfg-bar-price">{money(first.price)}</span></span><a class="btn small primary" href={localHref("/#anfrage")} id="cfg-bar-cta" tabindex="-1">{t('showconfigurator.sendAnEnquiry')}</a></div>
+    <div class="cfg-bar" aria-hidden="true"><span><b id="cfg-bar-pkg">{t('preise.individual')}</b> <span id="cfg-bar-price">{money(individualPrice(first.base))}</span></span><a class="btn small primary" href={localHref("/drohnenshow-preise/#anfrage")} id="cfg-bar-cta" tabindex="-1">{t('showconfigurator.sendAnEnquiry')}</a></div>
   </section>
 
 <noscript><p class="cfg-noscript">{t('showconfigurator.theShowConfiguratorRequiresJavascriptFindOurPackagesAndPrices')} <a href={localHref("/drohnenshow-preise/#pakete")}>{t('showconfigurator.packages')}</a>.</p></noscript>

@@ -11,16 +11,28 @@ import Icon from '../Icon.astro';
 import IconFeature from '../IconFeature.astro';
 import SectionHead from '../SectionHead.astro';
 import { getPackageDetails } from '../../content/package-details';
-const { EXTRAS } = getPackageDetails(forPath(Astro.url.pathname).locale);
+import { SHOW_EXTRAS } from '../../content/show-extras.mjs';
+import { money } from '../../lib/price.mjs';
+const locale = forPath(Astro.url.pathname).locale;
+const { EXTRAS } = getPackageDetails(locale);
+// Moritz' Preistext (17.11.2026): Upgrades in seiner Reihenfolge, je Überschrift, Zeile darunter, Text und Preis. Die IDs
+// bleiben die des Anfragevertrags; dieselben sechs stehen als Pills im Konfigurator und bleiben mit diesem Raster gleich.
+const ORDER = ['indoor', 'express', 'film', 'kontrollzone', 'behoerden', 'schweiz'] as const;
+const priceOf = (id: string) => id === 'film' ? t('preise.x.film.price', { price: money(SHOW_EXTRAS.film.price.amount, locale) })
+  : id === 'indoor' ? t('preise.x.indoor.price', { price: money(SHOW_EXTRAS.indoor.price.amount, locale) }) : t('preise.x.effort');
+const items = ORDER.map((id) => { const x = EXTRAS.find((e) => e.id === id)!; return { ...x, title: t(`preise.x.${id}.title`), sub: t(`preise.x.${id}.sub`), text: t(`preise.x.${id}.text`), price: priceOf(id) }; });
+interface Props { kicker?: string; headline?: string; text?: string; surface?: 'alt' | 'plain' }
+const { kicker = t('preise.upKicker'), headline = t('preise.upHeadline'), text = t('preise.upText'), surface = 'alt' } = Astro.props;
 ---
-<section class="section alt" id="zusaetze" aria-labelledby="zusaetze-h">
-  <SectionHead kicker={t('extras.extrasUpgrades')} headline={t('extras.roomForMore')} text={t('extras.chooseTheExtrasYouDLikeTheyGoStraightInto')} id="zusaetze-h" />
+<section class:list={['section', { alt: surface === 'alt' }]} id="zusaetze" aria-labelledby="zusaetze-h">
+  <SectionHead kicker={kicker} headline={headline} text={text} id="zusaetze-h" />
   <div class="ig xg" data-extras>
-    {EXTRAS.map((x) => (
+    {items.map((x) => (
       <IconFeature class="ic xc" icon={x.icon} iconClass="xc-ico" title={x.title} text={x.text} textId={`x-${x.id}-t`}>
-        <input slot="before" class="xc-box" type="checkbox" id={`x-${x.id}`} value={x.id} data-short={x.short} aria-describedby={`x-${x.id}-t x-${x.id}-p`} />
+        <input slot="before" class="xc-box" type="checkbox" id={`x-${x.id}`} value={x.id} data-short={x.short} aria-describedby={`x-${x.id}-s x-${x.id}-t x-${x.id}-p`} />
         <label slot="title" for={`x-${x.id}`}>{x.title}</label>
-        <span class="xc-price mono" {...(['film','schweiz','indoor'].includes(x.id)?field({collection:'showExtras',id:'configuration'},[x.id,'price','amount'],{mode:'panel'}):{})} id={`x-${x.id}-p`}>{x.price}</span>
+        <p slot="sub" class="xc-sub" id={`x-${x.id}-s`}>{x.sub}</p>
+        <span class="xc-price mono" {...(['film','indoor'].includes(x.id)?field({collection:'showExtras',id:'configuration'},[x.id,'price','amount'],{mode:'panel'}):{})} id={`x-${x.id}-p`}>{x.price}</span>
         <span class="xc-added mono" aria-hidden="true"><Icon name="check" size={14} strokeWidth={2.4} />{t('extras.addedToEnquiry')}</span>
         {x.link && <a class="link xc-link" href={localHref(x.link.href)}>{x.link.label} <span aria-hidden="true">→</span></a>}
       </IconFeature>
@@ -28,7 +40,7 @@ const { EXTRAS } = getPackageDetails(forPath(Astro.url.pathname).locale);
   </div>
   <div class="xbar" data-extras-bar inert>
     <p class="xbar-t" role="status"><span data-extras-sum></span></p>
-    <a class="btn primary" href={localHref("/#anfrage")} data-extras-cta>{t('extras.requestAShowWithTheseExtras')}</a>
+    <a class="btn primary" href={localHref("/drohnenshow-preise/#anfrage")} data-extras-cta>{t('extras.requestAShowWithTheseExtras')}</a>
   </div>
 </section>
 
@@ -40,6 +52,7 @@ const { EXTRAS } = getPackageDetails(forPath(Astro.url.pathname).locale);
   .xc label { cursor: pointer; }
   .xc label::after { content: ""; position: absolute; inset: 0; z-index: 1; }
   .xc-price { color: var(--text); margin-top: var(--space-1); }
+  .xc-sub { margin: calc(-1 * var(--space-1-5)) 0 0; color: var(--accent); font: 500 var(--text-md)/1.3 var(--display); }
   .xc :global(.xc-ico) { transition: transform var(--dur-standard) var(--ease-default); }
   .xc-link { position: relative; z-index: 2; margin-top: var(--space-0-5); }
   /* Kontrollkästchen in Orange mit Leuchten wie ein Lichtpunkt; ungewählt erst beim Zeigen sichtbar */
@@ -96,7 +109,7 @@ const { EXTRAS } = getPackageDetails(forPath(Astro.url.pathname).locale);
         count.textContent = list.length === 1 ? t('extras.1Extra') : t('pricing.extrasCount', { count: list.length });
         sum.append(count, t('pricing.extrasSummary', { list: list.map((b) => b.dataset.short).join(', ') }));
       }
-      cta.href = withExtras('/#anfrage');
+      cta.href = withExtras('/drohnenshow-preise/#anfrage'); // Formular auf derselben Seite
     };
     boxes.forEach((b) => b.addEventListener('change', sync));
     sync();

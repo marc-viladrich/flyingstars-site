@@ -32,7 +32,17 @@
     },
     {
       "label": "site.aboutUs",
-      "href": "/ueber-uns/"
+      "href": "/ueber-uns/",
+      "children": [
+        {
+          "label": "site.aboutUs",
+          "href": "/ueber-uns/"
+        },
+        {
+          "label": "blog.sustainability",
+          "href": "/nachhaltigkeit/"
+        }
+      ]
     },
     {
       "label": "FAQ",

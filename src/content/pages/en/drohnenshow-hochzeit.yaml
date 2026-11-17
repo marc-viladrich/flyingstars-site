@@ -85,12 +85,8 @@ sections:
     kicker: Family-friendly
     headline: Children and *dogs* welcome
     text: Unlike fireworks, a drone ballet has no loud bang, no bothersome smoke and no fire-risk debris. Just a soft hum – and your guests' amazement.
-    image:
-      src: https://flyingstars.art/wp-content/uploads/2025/01/lehrer-zeigt-wie-drohnenshow-funktioniert.jpg
-      alt: A man explains a white drone while a child holds a green drone.
-      width: 1600
-      height: 1067
     _key: k_59a09168d2946ce16e34
+    icon: paw-print
   - type: landingBento
     id: vorteile
     kicker: Advantages
@@ -179,12 +175,34 @@ sections:
   - type: landingSite
     id: location
     kicker: Location
-    todo: FlyingStars muss die Startflächen je Drohnenzahl und die standortabhängigen Abstände bestätigen; 15 × 15 und 25 × 25 Meter widersprechen sich in den Quellen. Die Zeichnung bleibt ein Beispiel.
+    todo: "FlyingStars muss die Startflächen je Drohnenzahl und die standortabhängigen Abstände bestätigen; 15 × 15 und 25 × 25 Meter widersprechen sich in den Quellen. Die Zeichnung bleibt ein Beispiel. Schriftliche Nutzungsfreigaben für LBA-, EASA- und naturstrom-Logos fehlen."
     headline: Is your venue suitable?
     text: Send us the address and the planned position of your guests. Before quoting, we check whether and how a show is possible there.
     variant: outdoor
     safetyRef: safety-concept
     _key: k_6e4f6206d974feea8611
+    quality:
+      - title: Operating authorisation from Germany's Federal Aviation Office
+        text: since July 2023
+        icon: permit
+        logo: /brand/logos/quali-lba-weiss.png
+        cleared: true
+        secondary: false
+        _key: k_d056058898547d0bb1a9
+      - title: Across the EU under EASA rules
+        text: Shows across the EU, including Austria and the Netherlands
+        icon: permit
+        logo: /brand/logos/quali-easa-weiss.png
+        cleared: true
+        secondary: false
+        _key: k_5a63e48e8e1aaad88bfe
+      - title: 100% green electricity from naturstrom
+        text: for the entire fleet
+        icon: leaf
+        logo: /brand/logos/quali-naturstrom.svg
+        cleared: true
+        secondary: false
+        _key: k_0a1a774c6de0621af71d
   - type: landingFlow
     id: ablauf
     kicker: Process
@@ -245,12 +263,12 @@ sections:
       - hochzeit-moritz
     _key: k_9db54091e8c639b6fa66
 translationContractVersion: 2
-translationSourceHash: 3905fd62457750a0316d9ab0326c00e1f3bef0a9bdf57a427d5fca851c9b9daf
+translationSourceHash: aeebff83c6c622d8e53cad2c844a803054d8007de8d7f6a916949ca1f99caa35
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 3905fd62457750a0316d9ab0326c00e1f3bef0a9bdf57a427d5fca851c9b9daf
+  sourceFingerprint: aeebff83c6c622d8e53cad2c844a803054d8007de8d7f6a916949ca1f99caa35
   fields:
     - address: /description
       sourceFingerprint: 04103f48ef87f505f7497b4af8b550b944307b9353ee75c963d52ec01cc9946a
@@ -271,6 +289,10 @@ translationEvidence:
     - address: /sections/@k_3ed49f154258b655d578/kicker
       sourceFingerprint: 4165777e6be7dfaa69a527efe84a9282a02b2fd378f91a02f4640e6c2f5adbe5
       targetFingerprint: d2a283f7ff751aead18d9e59d269ad8ad8d8bf981d215b9f8448eec6933906aa
+      status: adopted-existing
+    - address: /sections/@k_3ed49f154258b655d578/memberTexts
+      sourceFingerprint: 1bf5e9f27036235f349829789f17f28d646bdac858f09ad81030e1519b91b85a
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_3ed49f154258b655d578/note
       sourceFingerprint: f4d49d8c7aac356fc8649625a13128cb7d62d7db012221c2cc2120de670826e1
@@ -440,9 +462,9 @@ translationEvidence:
       sourceFingerprint: 65d467ef795ba92b1ce9f8ecc3eb3de0957b08c01c9f9cf5639cdaf2ca4f58a2
       targetFingerprint: ebcccdd4b386c02433c8830ac5b7dc24eed3ee9ca2dce99d0412a899f4863e4f
       status: adopted-existing
-    - address: /sections/@k_59a09168d2946ce16e34/image/alt
-      sourceFingerprint: 416b6331257f17338bc9b1bf9ddccc8d5e92a62cd799f51538671b5d444bc106
-      targetFingerprint: 32adb80a2f487ebfc9dd3ebd6a0b96310f60a006f6c17c0bd0538628eb31cc06
+    - address: /sections/@k_59a09168d2946ce16e34/image
+      sourceFingerprint: 59176b7fd555805e4c382cee86b3c668e4818bd7f3f9ad0f6c0f02d39999ef1e
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_59a09168d2946ce16e34/kicker
       sourceFingerprint: 0733cb83548e03832576dba4a7969f940e2a8bbe2f1379216c7e34f8c9f4397d
@@ -592,9 +614,29 @@ translationEvidence:
       sourceFingerprint: 42555464cb31d120547d1cc48565ad7986bd362db51f4be8c6c155abd8bed5cf
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
-    - address: /sections/@k_6e4f6206d974feea8611/quality
-      sourceFingerprint: 980a63d5381f978c63637cc0bf837433e5b09ea9faec76a7340bc724cd83573e
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+    - address: /sections/@k_6e4f6206d974feea8611/quality/@k_0a1a774c6de0621af71d/text
+      sourceFingerprint: f5c478b3db46f08481316abf55ecc6982f2a9d5a4f1a7f31ff3d260f9ea9991c
+      targetFingerprint: b0908edf515dcc3064cfedd249884fc8bad501e55bc21251ce5af5fed700a40a
+      status: adopted-existing
+    - address: /sections/@k_6e4f6206d974feea8611/quality/@k_0a1a774c6de0621af71d/title
+      sourceFingerprint: 43a2a3cec9d0022d5e9fea334594b06e33731c162b042a718c57d99f906a33a2
+      targetFingerprint: 5927bc79be87ad892172c4c5651213afe8cbcfa6540ab132e3eda8064ba882bd
+      status: adopted-existing
+    - address: /sections/@k_6e4f6206d974feea8611/quality/@k_5a63e48e8e1aaad88bfe/text
+      sourceFingerprint: f2b15e98c8d0f41638d2cce123ab1b61d5a52508da614d2ee82e941873d906d9
+      targetFingerprint: 121d357a565c8f3eab8930b65d429527d557c4bd0ba96dee68471a438b3cb753
+      status: adopted-existing
+    - address: /sections/@k_6e4f6206d974feea8611/quality/@k_5a63e48e8e1aaad88bfe/title
+      sourceFingerprint: 93dba78d4a41c8bf227412b98cda07642a56a2bd191527c570896ad3fc0e215f
+      targetFingerprint: 4cbc19e2dccb19668efcb565085969948b28fe38a43013efc4983674dbb92a1b
+      status: adopted-existing
+    - address: /sections/@k_6e4f6206d974feea8611/quality/@k_d056058898547d0bb1a9/text
+      sourceFingerprint: 72490a51d7c3f1fe675c58296d4601a2b8afddbb4bc58c267725d64bb63a88ed
+      targetFingerprint: b82855692e7c3bf7027aefe3822a4d9924ee1c5240bbe0ed4d1bc5542a66ac16
+      status: adopted-existing
+    - address: /sections/@k_6e4f6206d974feea8611/quality/@k_d056058898547d0bb1a9/title
+      sourceFingerprint: 2f82b458c36a2e98bd979cc89353d2d55862f1194b2625adbfc8d5f8df83b057
+      targetFingerprint: 9aa0185e7422789d4794024f67364353e75d5246a6d799e2244db84fe0b62578
       status: adopted-existing
     - address: /sections/@k_6e4f6206d974feea8611/responsibilities
       sourceFingerprint: f77358487a4a8f4f6f5dc7d1f0ab279546350159f187a060c994e320a039b341

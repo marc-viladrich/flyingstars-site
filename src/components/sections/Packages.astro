@@ -9,12 +9,13 @@ import type { Section } from '../../content.config';
 import { SHOW_PACKAGES } from '../../content/show-packages';
 import PackageCard from '../PackageCard.astro';
 import MobileTabs from '../MobileTabs.astro';
-type Props = Extract<Section, { type: 'packages' }> & { index: number };
-const { headline, text, note, cta, compact, items, id = 'pakete', index, kicker } = Astro.props;
+// surface: nur die Preisseite (Template) setzt sie, damit Moritz' Abschnittsfolge keine zwei hellen Flächen hintereinander erzwingt
+type Props = Extract<Section, { type: 'packages' }> & { index: number; surface?: 'alt' | 'plain' };
+const { headline, text, note, cta, compact, items, id = 'pakete', index, kicker, surface = 'alt' } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
 const C = index === 0 ? 'h2' : 'h3';
 ---
-<section class="section alt" id={id} aria-labelledby={`${id}-h`}>
+<section class:list={['section', { alt: surface === 'alt' }]} id={id} aria-labelledby={`${id}-h`}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
   {compact ? <div class="packs">{items.map((p) => <PackageCard packageId={p.name} variant="summary" headingId={`${id}-${p.name}`} level={C} highlight={p.highlight} badge={p.badge} label={p.label} sky={p.sky} pointsOverride={p.points?.map(item => item.value)} />)}</div> : (
     <div data-mtabs>
@@ -24,3 +25,11 @@ const C = index === 0 ? 'h2' : 'h3';
   )}
   {(note || cta) && <div class="pack-note">{note && <span class="mono">{note}</span>}{cta && <a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a>}</div>}
 </section>
+
+<style is:global>
+  /* Moritz' Storyline-Satz je Paket: zwischen Preis und Leistungen, heller als die Liste */
+  .tier .tier-story { margin: 0; color: var(--text); font-size: var(--text-sm); line-height: 1.5; }
+  /* anfragen und anpassen untereinander: bei allen drei Karten gleich, auch wenn ein langer Paketname nicht in eine Zeile passt */
+  .tiers-grid .tier-actions { flex-direction: column; align-items: flex-start; }
+  .tiers-grid .tier-actions .btn ~ .link { align-self: flex-start; }
+</style>

@@ -32,8 +32,9 @@ const html = await marked.parse(contactText(body));
   .text-media.head-above.has-media { align-items: center; }
   .text-media.head-above :global(.tm-head) { grid-column: 1 / -1; margin-bottom: 0; }
   .text-media .prose :global(p) { max-width: 60ch; }
-  /* Hervorhebung im Fließtext (Startseite #warum-drohnen: spektakulärer, emotionaler, einzigartiger) */
-  .text-media .prose :global(strong) { font: 600 1.18em/1 var(--display); letter-spacing: -0.01em; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  /* Hervorhebung im Fließtext (Startseite #warum-drohnen: spektakulärer, emotionaler, einzigartiger): Display-Schnitt,
+     Farbe aus .prose strong in global.css (Marken-Orange, kein Verlauf im Fließtext) */
+  .text-media .prose :global(strong) { font: 600 1.18em/1 var(--display); letter-spacing: -0.01em; }
   .text-media .prose .tm-more a { border-bottom: 0; color: var(--accent); }
   .text-media .prose .tm-more a:hover { color: var(--amber-light); }
   /* Aufzählungen wie .facts (Punkte in Amber) statt Browser-Standard */

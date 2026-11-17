@@ -50,17 +50,14 @@ sections:
     loop: hochzeit
     _key: k_52056666f5076b5e0423
 
-  # Kurzfassung der Nachhaltigkeits-Section: große Aussage, daneben ein Foto mit Kind und Drohne
+  # Kurzfassung der Nachhaltigkeits-Section: große Aussage, daneben Icon und Punktmuster statt des Stockfotos (Marc,
+  # 17.11.2026: kein Stockbild, solange es kein echtes FlyingStars-Showfoto mit Kindern und Hunden gibt)
   - type: sustainability
     id: familienfreundlich
     kicker: Familienfreundlich
     headline: Kinder und *Hunde* willkommen
     text: Im Gegensatz zum Feuerwerk gibt es beim Drohnenballett keinen lauten Knall, störenden Rauch oder Abfall mit Brandgefahr. Nur ein leises Surren – und das Staunen der Gäste.
-    image:
-      src: https://flyingstars.art/wp-content/uploads/2025/01/lehrer-zeigt-wie-drohnenshow-funktioniert.jpg
-      alt: Ein Mann erklärt eine weiße Drohne, während ein Kind eine grüne Drohne hält.
-      width: 1600
-      height: 1067
+    icon: paw-print
     _key: k_59a09168d2946ce16e34
 
   # Versprechen als Kacheln mit Verlaufs-Icons
@@ -121,14 +118,19 @@ sections:
     todo: FlyingStars muss die Paketgrenzen, Aufpreise und Leistungen für den Relaunch bestätigen; die endgültige Preisstruktur für 2027 ist noch offen.
     _key: k_3f8f37b2eb211e01710f
 
-  # Textentwurf für Moritz. Quellen und Konflikte: docs/sicherheitskonzept-quellen.md.
+  # Textentwurf für Moritz. Quellen und Konflikte: docs/sicherheitskonzept-quellen.md. Kompakt wie auf allen Seiten
+  # (Marc, 17.11.2026): Karte mit Popovern, keine Zuständigkeitstabelle, darunter LBA, EASA und naturstrom.
   - type: landingSite
     id: location
     kicker: Location
     headline: Passt eure Location?
     text: Schickt uns die Adresse und die geplante Position eurer Gäste. Vor dem Angebot prüfen wir, ob und wie die Show dort möglich ist.
     variant: outdoor
-    todo: FlyingStars muss die Startflächen je Drohnenzahl und die standortabhängigen Abstände bestätigen; 15 × 15 und 25 × 25 Meter widersprechen sich in den Quellen. Die Zeichnung bleibt ein Beispiel.
+    todo: FlyingStars muss die Startflächen je Drohnenzahl und die standortabhängigen Abstände bestätigen; 15 × 15 und 25 × 25 Meter widersprechen sich in den Quellen. Die Zeichnung bleibt ein Beispiel. Schriftliche Nutzungsfreigaben für LBA-, EASA- und naturstrom-Logos fehlen.
+    quality:
+      - { title: Betriebsgenehmigung des Luftfahrt-Bundesamts, text: seit Juli 2023, icon: permit, logo: /brand/logos/quali-lba-weiss.png, cleared: true, "_key": "k_d056058898547d0bb1a9" }
+      - { title: EU-weit nach EASA-Regeln, text: "Shows in der ganzen EU, auch in Österreich und den Niederlanden", icon: permit, logo: /brand/logos/quali-easa-weiss.png, cleared: true, "_key": "k_5a63e48e8e1aaad88bfe" }
+      - { title: 100 % Ökostrom von naturstrom, text: für die ganze Flotte, icon: leaf, logo: /brand/logos/quali-naturstrom.svg, cleared: true, "_key": "k_0a1a774c6de0621af71d" }
     safetyRef: safety-concept
     _key: k_6e4f6206d974feea8611
 
