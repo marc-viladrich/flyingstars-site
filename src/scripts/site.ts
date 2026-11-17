@@ -98,7 +98,10 @@ import { whenNear } from './when-near.mjs';
     c, x: c.getContext("2d"), kind: c.dataset.orb, pts: shapes[c.dataset.orb](+c.dataset.n), col: c.dataset.color.split(",").map(Number), vis: false,
   }));
   if (orbs.length) {
-    const io = new IntersectionObserver((es) => es.forEach((e) => { const o = orbs.find((q) => q.c === e.target); if (o) o.vis = e.isIntersecting; }));
+    // Die Schleife läuft nur, solange eine Kugel im Bild ist (vorher 60 Aufrufe pro Sekunde auf der ganzen Seite)
+    let running = false;
+    const loop = (now) => { if (!orbs.some((o) => o.vis)) { running = false; return; } orbs.forEach((o) => o.vis && !paused && !document.hidden && draw(o, now / 1000)); requestAnimationFrame(loop); };
+    const io = new IntersectionObserver((es) => { es.forEach((e) => { const o = orbs.find((q) => q.c === e.target); if (o) o.vis = e.isIntersecting; }); if (!reduce && !running && orbs.some((o) => o.vis)) { running = true; requestAnimationFrame(loop); } });
     orbs.forEach((o) => io.observe(o.c));
     const draw = (o, t) => {
       const r = o.c.getBoundingClientRect(), d = Math.min(2, devicePixelRatio || 1), w = Math.round(r.width * d), h = Math.round(r.height * d);
@@ -116,7 +119,7 @@ import { whenNear } from './when-near.mjs';
       }
     };
     if (reduce) orbs.forEach((o) => draw(o, 0.8));
-    else { const loop = (now) => { orbs.forEach((o) => o.vis && !paused && !document.hidden && draw(o, now / 1000)); requestAnimationFrame(loop); }; requestAnimationFrame(loop); }
+
   }
 
   // Reveal beim Scrollen: den Startzustand setzt das Inline-Skript im <head> (html.reveal), vor dem ersten Bild.

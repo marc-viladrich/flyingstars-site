@@ -103,6 +103,9 @@ function burst(): number[][] {
 /** Die Blüte als Punkte mit Farbe für die Show-Folge (dieselbe Reihenfolge wie die Szene: Drohne i ↔ Punkt i). */
 const burstPts = (): number[][] => burst().map(([x, y, z, t]) => [x, y, z, 255, Math.round(178 + 62 * t), Math.round(96 + 130 * t)]);
 
+let fixed: Promise<Record<string, number[][]>> | null = null;
+const fixedTexts = () => (fixed ??= fetch(`/media/himmel/texte-${lang()}.json`).then((r) => (r.ok ? r.json() : {})).catch(() => ({})));
+
 function load(spec: Spec): Promise<Scene> {
   const id = idOf(spec);
   let p = scenes.get(id);
@@ -120,6 +123,9 @@ async function build(spec: Spec, id: string): Promise<Scene> {
     return finish(id, raw, (i) => { const t = raw[i][3]; return [255, Math.round(178 + 62 * t), Math.round(96 + 130 * t)]; }, {});
   }
   if ('text' in spec) {
+    // Feste Worte liegen vorberechnet bereit (tools/himmel/texte-vorberechnen.mjs); der Textplaner lädt erst für Eigenes
+    const ready = (await fixedTexts())[id];
+    if (ready) return finish(id, ready.map(([x, y]) => [x, y, 0]), (_i, x) => gradientAt((x + 1) / 2), {});
     await loadTextEngine();
     const f = textFormation(spec.text, spec.count);
     if (!f || !f.pts.length) throw new Error('Text ergibt keine Formation');
