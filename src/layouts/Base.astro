@@ -7,7 +7,7 @@ import { forPath } from '../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
 import '../styles/fonts.css';
 import '../styles/global.css';
-// Himmel: Schwarm, Himmelszeile, Punktübergänge zwischen Sections, Lichtlauf der H1 (docs/himmel.md)
+// Himmel: Schwarm, Punktübergänge zwischen Sections, Lichtlauf der H1 (docs/himmel.md)
 import '../styles/himmel.css';
 import { getSite } from '../site.config';
 const site = getSite(forPath(Astro.url.pathname).locale);

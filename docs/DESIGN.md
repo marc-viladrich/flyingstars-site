@@ -11,7 +11,7 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 - **Das warme Orange** aus dem Logo (`--accent`, `#f5a73c`) ist die Akzentfarbe für Texte und Icons: Kicker, Links, Kartenkicker, Icons. Marc, 31.10.: „Mir fehlt ein Schuss Farbe, den hatten wir durch die Eyebrow-Headings.“
 - **Space Grotesk** als Display-Schrift (mit durchgestrichener Null), Inter für Fließtext.
 - **Bewegung**: lebendige Wolke, Lichtlauf, Vorhang-Reveals, Laufband. Ruhig und magisch, nie hektisch.
-- **Der Himmel** (seit 15.11.2026 fest): ein Schwarm aus 300 Drohnen begleitet den Besuch, eine Himmelszeile lässt Besucher:innen ihr eigenes Wort an den Himmel schreiben, Punktübergänge zwischen den Sectionfarben, ein Lichtlauf über die H1. Regeln im Abschnitt „Himmel“.
+- **Der Himmel** (seit 15.11.2026 fest): ein Schwarm aus 300 Drohnen begleitet den Besuch, Punktübergänge zwischen den Sectionfarben, ein Lichtlauf über die H1. Regeln im Abschnitt „Himmel“.
 
 ## Grundlagen
 
@@ -69,7 +69,7 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 - Zeiten und Vorlauf als Netzplan-Zeitstrahl (`MetroLine.astro`, über Tempo): Hauptlinie im Logoverlauf mit Stationen, Express als gestrichelte, gedämpfte Abzweigung von der ersten zur letzten Station (Nebenweg, nicht Hauptweg); das Schild ist selbst der Knopf („Express in 1–2 Wochen · bei Bedarf zubuchbar →“), kein zweiter Link daneben (Marc, 02.11.2026). Handy senkrecht.
 - Consent: erste Stufe als kleine Karte unten rechts (380 px), nicht modal, ohne Abdunkeln; die optionalen Google-Dienste als zwei Punkte. Nur die Einstellungen sind ein echter Dialog (Marc, 02.11.2026, Details `docs/analytics-consent.md`).
 
-**Formular:** Knöpfe linksbündig, Hauptknopf zuerst. Optionale Angaben im zweiten Schritt als Zeile kleiner „+ Telefon / Firma / Nachricht / Woher“-Knöpfe; ein Klick blendet das Feld ein und setzt den Fokus, vorbelegte Felder sind offen.
+**Formular:** Knöpfe linksbündig, Hauptknopf zuerst. Optionale Angaben im zweiten Schritt als Zeile kleiner „+ Telefon / Firma / Nachricht“-Knöpfe (die Frage nach der Quelle steht seit Runde 5 nur auf der Danke-Seite); ein Klick blendet das Feld ein und setzt den Fokus, vorbelegte Felder sind offen.
 
 **Video auf dem Handy:** Startseiten-Hero und Referenz-Kopf zeigen das Showreel bis 700 px als gerahmtes Bild im Seitenfluss über der Überschrift (kleine Fassung, `data-src-small`), nicht als Hintergrund.
 
@@ -178,11 +178,11 @@ Verbindlich seit 15.11.2026 (Abschluss des Schrift-Labors). Konzept, Bühnenplan
 - Keine Beschriftung am Bild: keine Namen, Drohnenzahlen oder Maße
 - Funktionale Elemente (Linien, Rahmen, Raster, Icons) werden nie mit Punkten überzogen
 - Bewegung startet früh: Der Schwarm fliegt los, sobald die nächste Bühne ins Bild kommt. Niemand wartet vor einer leeren Fläche, besonders am Formular
-- Auf schmalen Bildschirmen (unter 900 px) spielt der Schwarm nur an Himmelszeile, `#warum-drohnen` (eigene Fläche unter dem Text), Preisen und Formular
-- Die Seite antwortet: Zeigen auf eine Anlass-Karte oder ein Paket, Eingaben im Formular und in der Himmelszeile ändern das Bild. Die Zuordnung läuft über stabile Merkmale (Kartenkicker, Link-Ziel, Formularwert), nie über die Position
+- Auf schmalen Bildschirmen (unter 900 px) spielt der Schwarm nur an `#warum-drohnen` (eigene Fläche unter dem Text), Preisen und Formular
+- Die Seite antwortet: Zeigen auf eine Anlass-Karte oder ein Paket, Eingaben im Formular ändern das Bild; der Mauszeiger verdrängt die Drohnen eines stehenden Bilds, eine Feder holt sie zurück (kein Aufleuchten). Die Zuordnung läuft über stabile Merkmale (Kartenkicker, Link-Ziel, Formularwert), nie über die Position
 - Reduzierte Bewegung und Pause: Jede Bühne zeigt ihr Bild, nichts fliegt
 
-**Himmelszeile:** ein eigener Abschnitt direkt nach `#kundinnen` (Startseite). Vor der ersten Eingabe Worte und Bilder im Wechsel; wer etwas eintippt, sieht es als Formation, ein genanntes Katalogmotiv („Herz“) folgt als Bild. „Damit anfragen“ nimmt das Wort ins Formular mit.
+**Himmelszeile:** seit Runde 5 (18.11.2026) entfernt (Marc: „bringt erstmal nicht so viel“, der Wechsel von dort zur nächsten Section ruckelte).
 
 **Punktübergänge:** Wo eine Fläche (`.section.alt`) an den Grundton grenzt, ersetzt eine Punktauflösung die Haarlinie (`public/media/uebergang.svg`, Generator `tools/himmel/uebergang.mjs`). Folgen zwei Flächen aufeinander, bleibt dort die Linie.
 
@@ -228,7 +228,7 @@ Verbindlich seit 15.11.2026 (Abschluss des Schrift-Labors). Konzept, Bühnenplan
 **Anfrage:**
 - Headline oben bündig mit dem Formular
 - Darunter Satz, Gesichter der drei Geschäftsführer:innen, Kontaktwege mit Verlaufs-Icons (E-Mail, Telefon, Videocall, WhatsApp)
-- Formular in genau zwei Schritten: Schritt 1 „Deine Show“ (Anlass, Ort, Datum oder „noch offen“, Paket, Idee), Schritt 2 „Du“ (Name, E-Mail, Telefon, Firma, Quelle, Datenschutzhinweis)
+- Formular in genau zwei Schritten: Schritt 1 „Deine Show“ (Anlass, Ort, Datum oder „noch offen“, Paket, Idee), Schritt 2 „Du“ (Name, E-Mail, Telefon, Firma, Datenschutzhinweis)
 
 **Team:** große Porträts mit Vorhang-Reveal und Lichtpunkt-Hover.
 

@@ -25,8 +25,17 @@ const reach = {
   visit: { icon: 'phone', label: CONTACT.phone.label, href: CONTACT.phone.href, path: ['phone'] },
   post: { icon: 'mail', label: CONTACT.email, href: `mailto:${CONTACT.email}`, path: ['email'] },
 } as const;
+// Runde 5 (Marc: „den Abstand zwischen dem Büro und dem Hauptsitz künstlich ein bisschen höher machen, sonst ist es schwer,
+// die direkt zu treffen“): Liegen die Orte auf der Karte enger als MIN_GAP (Prozent der Kartenbreite, echte Seitenverhältnisse),
+// rücken sie entlang ihrer echten Verbindung vom gemeinsamen Mittelpunkt auseinander, bis der Abstand MIN_GAP erreicht.
+const MIN_GAP = 4.6, ASPECT = NRW_MAP.height / NRW_MAP.width;
+const raw = places.map((place) => nrwPosition(place.lat, place.lon));
+const cx = raw.reduce((a, p) => a + p.x, 0) / raw.length, cy = raw.reduce((a, p) => a + p.y, 0) / raw.length;
+const gap = raw.length > 1 ? Math.min(...raw.flatMap((p, i) => raw.slice(i + 1).map((q) => Math.hypot(p.x - q.x, (p.y - q.y) * ASPECT)))) : Infinity;
+const spread = gap < MIN_GAP ? MIN_GAP / gap : 1;
+const spot = raw.map((p) => ({ x: cx + (p.x - cx) * spread, y: cy + (p.y - cy) * spread }));
 const pins = places.map((place, i) => ({
-  ...place, tone: TONES[i], ...nrwPosition(place.lat, place.lon),
+  ...place, tone: TONES[i], ...spot[i],
   lines: place.address ? CONTACT[place.address] : undefined,
   route: `https://www.openstreetmap.org/directions?route=%3B${place.lat}%2C${place.lon}#map=15/${place.lat}/${place.lon}`,
   reach: place.address ? reach[place.address] : undefined,
@@ -89,12 +98,16 @@ const withAddress = pins.some((pin) => pin.lines);
   .loc-map { margin: 0; justify-self: center; width: min(100%, 40rem); }
   .loc-stage { position: relative; }
   .loc-stage img { display: block; width: 100%; height: auto; }
-  /* Markierung wie eine leuchtende Drohne: heller Kern, weicher Schein. Büro und Hauptsitz liegen nur 4 km auseinander und
-     stehen auf der Karte als Doppelstern nebeneinander, deshalb kein Ring, der sie überdecken würde. */
-  .loc-pin { position: absolute; width: 0.5rem; height: 0.5rem; margin: -0.25rem 0 0 -0.25rem; border-radius: var(--radius-round); background: var(--pin); box-shadow: 0 0 0.375rem var(--pin), 0 0 1.75rem 0.5rem rgb(var(--pin-rgb) / 0.35); transition: transform var(--dur-standard) var(--ease-default), box-shadow var(--dur-standard) var(--ease-default); }
-  /* größere Zeigefläche, ohne den Punkt zu vergrößern */
-  .loc-pin::before { content: ""; position: absolute; inset: -0.25rem; border-radius: inherit; }
-  .loc-pin.is-hot { z-index: 1; transform: scale(1.9); box-shadow: 0 0 0.375rem var(--pin), 0 0 2.5rem 1rem rgb(var(--pin-rgb) / 0.5); }
+  /* Markierung wie eine leuchtende Drohne: heller Kern (::before), weicher Schein; die Markierung selbst ist die größere,
+     unsichtbare Zeigefläche (1,75 rem, berührt die Nachbarin dank MIN_GAP nicht). Zeigen/Fokus: Kern wächst, ein Lichthof
+     blendet weich ein; animiert werden nur transform und opacity. */
+  .loc-pin { position: absolute; width: 1.75rem; height: 1.75rem; margin: -0.875rem 0 0 -0.875rem; border-radius: var(--radius-round); cursor: default; }
+  .loc-pin::before, .loc-pin::after { content: ""; position: absolute; left: 50%; top: 50%; border-radius: var(--radius-round); pointer-events: none; }
+  .loc-pin::before { width: 0.5rem; height: 0.5rem; margin: -0.25rem 0 0 -0.25rem; background: var(--pin); box-shadow: 0 0 0.375rem var(--pin), 0 0 1.75rem 0.5rem rgb(var(--pin-rgb) / 0.35); transition: transform var(--dur-standard) var(--ease-default); }
+  .loc-pin::after { width: 4rem; height: 4rem; margin: -2rem 0 0 -2rem; background: radial-gradient(circle, rgb(var(--pin-rgb) / 0.32), transparent 70%); opacity: 0; transform: scale(0.6); transition: opacity var(--dur-standard) var(--ease-default), transform var(--dur-standard) var(--ease-default); }
+  .loc-pin.is-hot { z-index: 1; }
+  .loc-pin.is-hot::before { transform: scale(1.75); }
+  .loc-pin.is-hot::after { opacity: 1; transform: scale(1); }
   .amber { --pin: var(--amber); --pin-rgb: var(--rgb-amber); }
   .cyan { --pin: var(--cyan); --pin-rgb: var(--rgb-cyan); }
   .orchid { --pin: var(--orchid); --pin-rgb: var(--rgb-orchid); }
@@ -107,10 +120,12 @@ const withAddress = pins.some((pin) => pin.lines);
   /* Anschriften: zwei Blöcke nebeneinander unter dem Text, je eine Haarlinie in der Punktfarbe oben */
   .loc-places { list-style: none; margin: clamp(var(--space-8), 3.6vw, var(--space-12)) 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14.5rem), 1fr)); gap: var(--space-8) clamp(var(--space-6), 3vw, var(--space-10)); }
   .loc-place { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-4); align-items: start; padding-top: var(--space-5); border-top: 1px solid var(--line); }
-  .loc-place::before { content: ""; position: absolute; left: 0; top: -1px; width: 2.5rem; height: 1px; background: var(--pin); transition: width var(--dur-standard) var(--ease-default); }
-  .loc-place.is-hot::before { width: 100%; }
-  .loc-ico { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: var(--radius-round); color: var(--pin); background: rgb(var(--pin-rgb) / 0.1); box-shadow: inset 0 0 0 1px rgb(var(--pin-rgb) / 0.35); transition: box-shadow var(--dur-standard) var(--ease-default); }
-  .loc-place.is-hot .loc-ico { box-shadow: inset 0 0 0 1px rgb(var(--pin-rgb) / 0.7), 0 0 1.25rem rgb(var(--pin-rgb) / 0.35); }
+  /* Haarlinie in Punktfarbe: kurz im Ruhezustand, beim Zeigen läuft sie über die ganze Breite (scaleX statt width) */
+  .loc-place::before { content: ""; position: absolute; left: 0; top: -1px; width: 100%; height: 1px; background: var(--pin); transform: scaleX(0.16); transform-origin: left; transition: transform 0.5s var(--ease-default); }
+  .loc-place.is-hot::before { transform: scaleX(1); }
+  .loc-ico { position: relative; display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: var(--radius-round); color: var(--pin); background: rgb(var(--pin-rgb) / 0.1); box-shadow: inset 0 0 0 1px rgb(var(--pin-rgb) / 0.35); }
+  .loc-ico::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgb(var(--pin-rgb) / 0.75); opacity: 0; transition: opacity var(--dur-standard) var(--ease-default); }
+  .loc-place.is-hot .loc-ico::after { opacity: 1; }
   .loc-body { display: grid; gap: var(--space-3); min-width: 0; }
   .loc-name { margin: 0; display: grid; gap: var(--space-1); font: 500 var(--text-copy)/1.3 var(--body); color: var(--head); }
   .loc-label { font-size: var(--text-xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--pin); font-weight: 400; }
@@ -119,6 +134,6 @@ const withAddress = pins.some((pin) => pin.lines);
   .loc-links { margin: var(--space-1) 0 0; display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-size: var(--text-sm); }
   .loc-links a { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--text); }
   .loc-links a :global(.ico) { flex: none; color: var(--pin); }
-  @media (prefers-reduced-motion: reduce) { .loc-pin, .loc-place::before, .loc-ico { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .loc-pin::before, .loc-pin::after, .loc-place::before, .loc-ico::after { transition: none; } }
   @media (--grid-stacked) { .loc-grid { grid-template-columns: 1fr; } .loc-map { justify-self: start; } }
 </style>

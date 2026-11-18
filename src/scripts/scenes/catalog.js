@@ -16,6 +16,7 @@ import catalog from '../../content/catalog-motifs.json' with { type: 'json' };
 import { TAU, mix, frac, hash, yaw, roll, pitch, sway, breathe, glint, sparkle, chase, trace, wander, lightRank, part, act } from '../show-motion.js';
 
 import { catalogAction } from './catalog-actions.js';
+import { analyse, resample, placeDerived, derive } from './catalog-resample.js';
 
 const cache = new Map();
 /** Formation einer Variante, einmal geladen (fetch auf public/, in Node-Tests aus scripts/show-node-env.mjs). */
@@ -24,6 +25,14 @@ function load(id) {
   return cache.get(id);
 }
 export const CATALOG = catalog.motifs;
+/** Neue Drohnen einer Variante für n Drohnen, einmal je Variante und Zahl berechnet (scenes/catalog-resample.js). */
+const dense = new Map(), analysed = new Map();
+function densify(id, pts, n, flat) {
+  const key = `${id}|${n}`;
+  if (!analysed.has(id)) analysed.set(id, analyse(pts, { flat })); // Linien und Flächen: einmal je Variante
+  if (!dense.has(key)) { if (dense.size > 300) dense.clear(); dense.set(key, resample(pts, n, { flat, analysis: analysed.get(id) })); }
+  return dense.get(key);
+}
 /** Profile, deren Motive in SPARK nur Licht bewegen, auch wenn sie räumlich sind (siehe glow, shimmer). */
 const LIGHT_ONLY = new Set(['glow', 'shimmer', 'twinkle', 'breathe', 'run', 'confetti', 'rainbow', 'charge']);
 const lang = () => { const l = typeof document === 'undefined' ? 'de' : document.documentElement?.lang; return ['de', 'en', 'nl'].includes(l) ? l : 'de'; };
@@ -161,16 +170,22 @@ export async function catalogScene(key, tier, n, caption) {
   const v = variantFor(key, n);
   if (!v) throw new Error(`Katalogmotiv ${key}: keine Variante für ${n} Drohnen`);
   const f = await load(v.id), source = prepare(f, !deep);
-  const action = catalogAction(key, f, source), front = action?.pts ?? source;
-  const fit = action ? [...front, ...source, ...front.map((p, j) => { const o = [...p.slice(0, 3), 1]; action.live(p, j, action.duration, o); return o.slice(0, 3); })] : front;
+  const action = catalogAction(key, f, source), base = action?.pts ?? source;
+  // Runde 5 (Marc, 18.11.2026: „mehr Drohnen bringen mehr Schärfe“): die Katalogvariante auf n Drohnen abtasten, entlang
+  // der Linien (Außenkontur zuerst, dann Binnenlinien, dann Füllung), statt die übrigen Drohnen dunkel warten zu lassen.
+  // Die Katalogpunkte behalten Platz und Index; neue Drohnen folgen ihren Eltern (scenes/catalog-resample.js).
+  const derived = densify(v.id, source, n, !deep), front = derived.length ? [...base, ...placeDerived(base, derived)] : base;
+  const fitBase = action ? [...base, ...source, ...base.map((p, j) => { const o = [...p.slice(0, 3), 1]; action.live(p, j, action.duration, o); return o.slice(0, 3); })] : base;
+  const fit = derived.length && !action ? front : fitBase;
   // flache Formationen bewegen sich in jedem Paket wie in SPARK (kein Schwenk, der die fehlende Tiefe zeigen würde)
-  const live = action?.live ?? profile(m.motion, f, front, { body: deep && (tier !== 'SPARK' || !LIGHT_ONLY.has(m.motion)) });
+  const live = derive(action?.live ?? profile(m.motion, f, base, { body: deep && (tier !== 'SPARK' || !LIGHT_ONLY.has(m.motion)) }), base, derived);
   const rest = reserve(n - front.length, front), k = front.length;
   const run = (b, j, t, o) => { if (j >= k) { o[3] = 0; return; } live(b, j, t, o); };
   if (tier !== 'ODYSSEY') return { beats: [{ pts: [...front, ...rest], fitPts: fit, caption, live: run, shimmer: false, ...(action ? { hold: action.duration } : {}) }] };
-  const order = lightRank(front);
+  const order = lightRank(base);
+  const draw = derive((b, j, t, o) => { if (action) action.live(b, j, 0, o); o[3] *= trace(order[j], t, 2.2); }, base, derived);
   return { beats: [
-    act([part('form', front), part('reserve', rest, { offstage: true })], { caption: say('lightDraws', name), hold: 1.6, live: (b, j, t, o) => { if (j >= k) { o[3] = 0; return; } if (action) action.live(b, j, 0, o); o[3] *= trace(order[j], t, 2.2); } }),
+    act([part('form', front), part('reserve', rest, { offstage: true })], { caption: say('lightDraws', name), hold: 1.6, live: (b, j, t, o) => { if (j >= k) { o[3] = 0; return; } draw(b, j, t, o); } }),
     act([part('form', front), part('reserve', rest, { offstage: true })], { caption: say('comesAlive', name), clock: action ? undefined : 'continue', fitPts: fit, ...(action ? { hold: action.duration } : {}), live: run }),
   ] };
 }

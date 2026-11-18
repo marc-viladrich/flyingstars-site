@@ -940,3 +940,58 @@ drei Pakete sind feste Beispiele mit Festpreis darunter (Paketkarten, je „X an
   `configurator-teaser.css`); Ablauf und Bühne unverändert.
 - Offen: Die Playwright-Specs `tests/show-configurator.spec.ts`, `logo-show-budget.spec.ts`, `show-physics.spec.ts` und
   `i18n.spec.ts` prüfen noch die alte Paketwahl bzw. den Leistungsvergleich und müssen nachgezogen werden.
+
+## Runde 5: Art der Show, ruhiger Einstieg, Katalogmotive mit der Drohnenzahl (18.11.2026)
+
+Marcs Rückmeldung zur Preisseite: Einstieg zu voll; neben der Drohnenzahl soll die Art der Show (2D, 3D, 3D mit
+Storytelling) die zweite Hauptgröße sein; die FlyingStars-Katalogmotive reagierten nicht auf die Drohnenzahl.
+
+**Einstieg.** Kopf (Kicker, H1, Einleitung, Eckdaten) steht mit deutlich mehr Abstand über dem Werkzeug
+(`--cfg-head-gap`, PricingPage.astro). Links nur die Eingaben: Anlass, Art der Show, Drohnen, Text/Logo, darunter die
+Upgrades als eingeklappte Zeile mit Zähler („2 gewählt“; `grid-template-rows` 0fr → 1fr, geschlossen `inert`). Rechts
+die Ergebnis-Spalte `.cfg-out`: Vorschau, darunter die Preis-Box als ruhige Zeile (Name, Preis, Art · Drohnen ·
+Showzeit, Anfrage-Knopf), darunter „Immer dabei“ in vier Spalten. Die Preis-Box konnte unter den Eingaben bei
+1440 × 900 nicht mehr im ersten Bildschirm stehen (gemessen: Oberkante 1128 px), unter der Vorschau steht sie bei
+781 px. Die Bühnenhöhe lässt dafür Platz (`calc(100svh - 12.9vw - 20.75rem)`). Handy: `.cfg-out` ist `display: contents`,
+Reihenfolge Vorschau (klebt), Eingaben, Preis-Box, Immer dabei, Einleitung; die Preisleiste unten bleibt.
+
+**Art der Show** (`SHOW_ARTS`, `ART_TIER`, `artMin`, `showArtPrice` in content/show-packages.ts). Drei Segmente mit
+gleitendem Rahmen, ohne Paketnamen; darunter ein Satz aus Moritz' Paketbeschreibungen samt Musik. Die Art bestimmt die
+Fassung der Motive (2D = SPARK-Fassung flach, 3D = HORIZON als Körper mit Schwenk, Storytelling = ODYSSEY in Akten) über
+den ganzen Regler; ein Wechsel startet die Folge von vorn, weil ab 3D die räumlichen Motive zuerst laufen. Freischalten
+(`unlockAt(m, drones, tier)`) gilt je Art. Mindestzahl wie das Paket, das die Art einführt: 2D 100, 3D 200, Storytelling
+300. Darunter hält der Regler an, die Spur ist dort gedämpft, und ein Hinweis ersetzt kurz die Skala („3D-Show mit
+Storytelling ab 300 Drohnen“).
+
+Preise, hergeleitet aus Moritz' Text: 2D = Preis je Drohnenzahl (`individualPrice`; 100 = 7.900, 300 = 25.700, 500 =
+45.300 €). 3D = derselbe Preis ab 200 (HORIZON 200 = 15.900 € = Preis je Drohnenzahl bei 200, also kein 3D-Aufpreis).
+Storytelling = ODYSSEY: 300 = 34.900 €; darüber der ODYSSEY-Aufpreis aus FlyingStars' Vercel-Referenz (+9.900 € je
+angefangene 100 Drohnen, `priceFor('ODYSSEY')`), den Moritz' Text nicht nennt. Damit erklärt sich die Lücke ODYSSEY
+34.900 € gegen „300 Drohnen ab 25.700 €“ als Storytelling-Aufpreis (9.200 € bei 300), und jedes feste Paket kostet genau
+so viel wie dieselbe Art mit derselben Drohnenzahl im individuellen Paket (Wächter scripts/individual-price.test.mjs).
+Musik: 2D mit GEMA-freier oder bei Anmeldung lizenzierter Musik, ab 3D synchron zur Wunschmusik, beides inklusive.
+Pakete setzen beim Anpassen Drohnenzahl und Art; jede Änderung, auch der Art, macht „Individuelles Paket“. Direktlink
+`?art=2d|3d|story`. Die Anfrage trägt „Art der Show: …“ in der Zusammenfassung.
+
+Offene Preisfragen an Moritz: (1) Storytelling über 300 Drohnen: gilt +9.900 € je angefangene 100 Drohnen aus der
+Vercel-Referenz? (2) 3D unter 200 und Storytelling unter 300 Drohnen: möglich, zu welchem Preis? (3) 2D mit 200+
+Drohnen: wirklich derselbe Preis wie 3D? (4) Wunschmusik synchron bei einer 2D-Show: Aufpreis oder inklusive?
+(5) Zwischenstufen 110–190 Drohnen: der Aufpreis (+900 € je 10 bis 150, dann +700 €) ist ein Platzhalter.
+(6) Sind HORIZON-Leistungen (Workshop, Videovorschau, komplexe Genehmigungen) bei jeder individuellen 3D-Show dabei?
+
+**Katalogmotive** (scenes/catalog-resample.js, Wächter scripts/catalog-resample.test.mjs). Vorher stand jedes
+Katalogmotiv mit den Punkten seiner Katalogvariante auf der Bühne, alle weiteren Drohnen warteten dunkel; mehr Drohnen
+änderten nichts. Jetzt wird jede Variante auf die gewählte Drohnenzahl abgetastet: Linien werden aus den Punkten
+zurückgewonnen (Relative-Neighbourhood-Graph mit Reichweitengrenze, damit Augen nicht mit dem Umriss verbunden werden),
+neue Drohnen kommen erst auf die Außenkontur, dann auf Binnenlinien (Gewicht 0,72), Einzelheiten (bis vier Punkte)
+wachsen als kleiner Lichtring, und bei großen geschlossenen Innenflächen (≥ 16 % der Silhouette) kommt ab dreifacher
+Liniendichte eine gedimmte Rasterfüllung dazu. Ohne Füllung werden die Linien weiter verdichtet (eine echte Show mit
+mehr Drohnen fliegt das Bild größer; auf der Bühne steht es gleich groß mit kleineren Lichtern). Katalogpunkte behalten
+Platz und Index (Bewegungsgruppen, Aktionen in catalog-actions.js), neue Drohnen folgen ihren Eltern (`derive`).
+Mindestzahl je Motiv unverändert (Katalogvariante). Rechenzeit: Analyse einmal je Variante (Median 0,5 ms), Abtastung je
+Drohnenzahl im Median 0,1 ms; beim Reglerziehen mit 4× CPU-Drossel bleibt die Bildzeit bei 17 ms, der Neuaufbau nach
+dem Loslassen liegt wie vorher bei rund 300 ms.
+
+Tests: tests/show-configurator.spec.ts neu geschnitten (Tests der Paketknöpfe, des Bereichswechsels, der Paketfarben und
+des Paketrahmens entfernt, sieben Tests für den neuen Ablauf), logo-show-budget.spec.ts auf „2D-Show, Regler auf 100“
+umgestellt.

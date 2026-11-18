@@ -1,65 +1,71 @@
 // Kuratierte Anordnung der Bildgalerien (Gallery.astro). Material, Maße, Alt-Texte und Belege (Kunde, Ort, Drohnenzahl)
 // stehen in public/media/galerie/manifest.json; hier steht nur, welches Bild wo sitzt und wie es zugeschnitten wird.
 //
-// Breit (ab --grid-expanded): drei Spalten 4fr · 6fr · 3fr. Links der Text darüber; das letzte Bild jeder Spalte wächst
-// bis zur gemeinsamen Unterkante (fill, nur Motive, die einen höheren Zuschnitt vertragen); Mitte das dominante Bild oben; rechts schmale Spalte, die mit Kopf neben der Überschrift
-// beginnt (rise) oder abgesetzt tiefer anfängt. ar = Seitenverhältnis, pos = object-position (Fokus aufs Logo).
-// Schmal: dichtes Raster aus drei Spalten (Plain „Some of our favourite moments“). m.o = Reihenfolge, m.s = Breite in
-// Spalten (Summe je Reihe 3), m.ar = Seitenverhältnis; ohne m.ar übernimmt die Kachel die Höhe ihrer Nachbarin.
-// Jeder Zuschnitt ist an den echten Bildern geprüft: Logo und Formation liegen immer vollständig im Rahmen.
+// Runde 5 (Marc, 18.11.2026: „viel zu eng … viel zu wenig Platz zum restlichen Content“, Referenzen „NOIR“ und die
+// gestreute Schwarz-Galerie): gleich breite, kleine Spalten (rund ein Sechstel der Seite), großzügige Fugen, jede Spalte
+// endet unten bündig und beginnt auf anderer Höhe, so entsteht eine Treppe nach rechts oben. Der Text steht frei im
+// Weißraum links oben (text = Spalten, die er überspannt), die Spalten darunter sind kurz, die rechts daneben steigen auf.
+// Kleine Leuchtpunkt-Akzente (accent) sitzen wie die Farbquadrate der zweiten Referenz in Lücken, sparsam.
+// ar = Seitenverhältnis der Kachel, pos = object-position (Fokus aufs Motiv). Jeder Zuschnitt ist an den echten Bildern
+// geprüft: Logo und Formation liegen vollständig im Rahmen. Höhen der Spalten in Spaltenbreiten (w) stehen als Kommentar.
 //
 // Nicht verwendet (Sichtung 18.11.2026): nfl-loop-1 und ford-loop-1 (zu dunkel), rewe-fc-1 (neblig, Logo kaum zu
-// erkennen, Bildrechte offen), publikum-1 (angeschnitten, unbelegt), nfl-2 (Hufeisen fast nur Schwarz), bokkenrijders-1 (identisch mit dem Poster des Loops).
+// erkennen, Bildrechte offen), publikum-1 (angeschnitten, unbelegt), nfl-2 (Hufeisen fast nur Schwarz),
+// bokkenrijders-loop-1 (Marc, Runde 5: kein Video in dieser Section; dasselbe Motiv steht als bokkenrijders-1 drin).
 
-/** @typedef {{ o: number, s: 1 | 2 | 3, ar?: string }} Mobile */
-/** @typedef {{ slug: string, ar: string, pos?: string, fill?: boolean, m: Mobile }} Tile */
-/** @typedef {{ lead: Tile[], cols: [Tile[], Tile[]], rise?: boolean }} Layout */
+/** @typedef {{ slug: string, ar: string, pos?: string }} Photo */
+/** @typedef {{ accent: 'grid' | 'dot', size?: 's' | 'm', side?: 'start' | 'end' }} Accent */
+/** @typedef {{ cols: number, text: number, top?: number, columns: (Photo | Accent)[][] }} Layout */
 
 /** @type {Record<string, Layout>} */
 export const GALLERY_LAYOUTS = {
-  // Werbung #marketing: Logos großer Marken. PUMA über dem Stadion trägt, die rechte Spalte steigt neben die Überschrift.
+  // Werbung #marketing: Logo-Shows großer Marken. Fünf Spalten, der Kopf überspannt vier, der Text zwei; die rechte
+  // Spalte steigt neben der Überschrift bis ganz nach oben (dort flog vorher das Auto des Schwarms, schwarm.ts lässt es
+  // aus, sobald die Fläche belegt ist). Höhen in Spaltenbreiten: 0,4 · 0,6 | 1,4 · 2,1 | 3,5.
   logos: {
-    rise: true,
-    lead: [
-      { slug: 'vw-1', ar: '3 / 2', pos: '60% 40%', fill: true, m: { o: 9, s: 1 } },
-    ],
-    cols: [
-      [
-        { slug: 'puma-1', ar: '16 / 9', pos: '50% 0%', m: { o: 1, s: 3, ar: '16 / 9' } },
-        { slug: 'bokkenrijders-loop-1', ar: '16 / 9', pos: '50% 40%', m: { o: 4, s: 2, ar: '16 / 9' } },
-        { slug: 'siemens-1', ar: '800 / 343', pos: '50% 60%', fill: true, m: { o: 3, s: 2, ar: '800 / 343' } },
-      ],
-      [
-        { slug: 'nfl-1', ar: '1 / 1', m: { o: 2, s: 1 } },
-        { slug: 'prada-1', ar: '800 / 410', pos: '50% 60%', m: { o: 8, s: 2, ar: '800 / 410' } },
-        { slug: 'bokkenrijders-2', ar: '1 / 1', pos: '41% 50%', m: { o: 5, s: 1 } },
-        { slug: 'spotify-1', ar: '800 / 433', m: { o: 7, s: 2, ar: '800 / 433' } },
-        { slug: 'ford-1', ar: '4 / 3', pos: '50% 45%', fill: true, m: { o: 6, s: 1 } },
-      ],
+    cols: 5, text: 2, top: 1,
+    columns: [
+      [{ accent: 'dot', side: 'end' }, { slug: 'siemens-1', ar: '800 / 343' }],
+      [{ slug: 'ford-1', ar: '16 / 9', pos: '50% 45%' }],
+      [{ accent: 'grid', side: 'start' }, { slug: 'prada-1', ar: '4 / 3', pos: '45% 60%' }, { slug: 'spotify-1', ar: '800 / 433' }],
+      [{ slug: 'bokkenrijders-1', ar: '4 / 3', pos: '45% 40%' }, { slug: 'vw-1', ar: '4 / 5', pos: '60% 40%' }],
+      [{ slug: 'puma-1', ar: '4 / 5', pos: '44% 30%' }, { slug: 'nfl-1', ar: '1 / 1' }, { slug: 'bokkenrijders-2', ar: '1 / 1', pos: '41% 50%' }],
     ],
   },
-  // Über uns #nachhaltigkeit: Feste für alle. #Böllerciao trägt, die rechte Spalte beginnt abgesetzt tiefer.
+  // Über uns #nachhaltigkeit: Feste für alle. Höhen 0,6 · 0,8 | 1,2 · 1,9 · 2,4.
   willkommen: {
-    // Unter dem Text zwei Bilder, sonst würde ein einzelnes bei 1920 px zum überlangen Hochformat
-    lead: [
-      { slug: 'hochzeit-1', ar: '16 / 9', pos: '50% 35%', m: { o: 5, s: 2, ar: '16 / 9' } },
-      { slug: 'sea-you-1', ar: '1 / 1', pos: '50% 30%', fill: true, m: { o: 8, s: 1 } },
+    cols: 5, text: 2,
+    columns: [
+      [{ slug: 'hochzeit-1', ar: '16 / 9', pos: '50% 35%' }],
+      [{ accent: 'dot', side: 'start' }, { slug: 'frieden-1', ar: '4 / 3', pos: '47% 30%' }],
+      [{ accent: 'grid', side: 'end' }, { slug: 'herz-1', ar: '1 / 1', pos: '48% 15%' }],
+      [{ slug: 'extraschicht-1', ar: '4 / 3', pos: '50% 55%' }, { slug: 'abendhimmel-1', ar: '1 / 1', pos: '55% 50%' }],
+      [{ slug: 'sea-you-1', ar: '4 / 5', pos: '50% 30%' }, { slug: 'boellerciao-1', ar: '1 / 1', pos: '50% 40%' }],
     ],
-    cols: [
-      [
-        { slug: 'boellerciao-1', ar: '800 / 411', pos: '50% 40%', m: { o: 1, s: 3, ar: '800 / 411' } },
-        { slug: 'extraschicht-1', ar: '800 / 469', pos: '50% 60%', fill: true, m: { o: 2, s: 2, ar: '800 / 469' } },
-      ],
-      [
-        { slug: 'herz-1', ar: '1 / 1', pos: '48% 15%', m: { o: 3, s: 1 } },
-        { slug: 'frieden-1', ar: '1 / 1', pos: '47% 20%', m: { o: 4, s: 1 } },
-        { slug: 'abendhimmel-1', ar: '4 / 3', pos: '60% 50%', fill: true, m: { o: 7, s: 2, ar: '800 / 505' } },
-      ],
+  },
+  // Nachhaltigkeit #referenzen „Wir fliegen mit Engagement“: Zeichen für Demokratie und Umweltschutz. Dieselben fünf
+  // Spalten wie oben (gleiche Bildgröße auf allen Seiten), die Einträge überspannen drei. Für Kein Bock auf Nazis gibt es (Stand 18.11.2026) kein Showfoto im Bestand;
+  // sobald eins kommt, gehört es hier rechts oben hin.
+  engagement: {
+    cols: 5, text: 3,
+    columns: [
+      [], [], [],
+      [{ accent: 'grid', side: 'end' }, { slug: 'herz-1', ar: '4 / 3', pos: '48% 30%' }],
+      [{ slug: 'boellerciao-1', ar: '4 / 5', pos: '50% 40%' }, { slug: 'frieden-1', ar: '4 / 3', pos: '47% 30%' }],
+    ],
+  },
+  // Indoor #referenzen: Standbilder aus dem Siemens-Video der Hannover Messe 2025 (echte FlyingStars-Show).
+  indoor: {
+    cols: 5, text: 3,
+    columns: [
+      [], [], [],
+      [{ accent: 'grid', side: 'start' }, { slug: 'siemens-indoor-1', ar: '4 / 3', pos: '50% 60%' }],
+      [{ slug: 'siemens-indoor-2', ar: '4 / 5', pos: '50% 35%' }, { slug: 'siemens-indoor-3', ar: '16 / 10', pos: '50% 40%' }],
     ],
   },
 };
 
-export const GALLERY_SETS = /** @type {const} */ (['logos', 'willkommen']);
+export const GALLERY_SETS = /** @type {const} */ (['logos', 'willkommen', 'engagement', 'indoor']);
 
 // Hover-Zeile „Kunde · Ort · Drohnenzahl“: nur Werte aus dem Manifest. name ersetzt den Kunden, wo das Manifest einen
 // Agentur- oder Privatnamen führt; place kürzt den Ort auf die Stadt (Übersetzung wie im übrigen Site-Text).
@@ -71,6 +77,8 @@ export const GALLERY_TEXT = {
     alt: { en: 'Red and blue PUMA logo made of drones above the illuminated stadium.', nl: 'Rood-blauw PUMA-logo van drones boven het verlichte stadion.' } },
   'bokkenrijders-loop-1': { name: { de: 'Bokkenrijders', en: 'Bokkenrijders', nl: 'Bokkenrijders' }, place: { de: 'Maastricht', en: 'Maastricht', nl: 'Maastricht' },
     alt: { en: 'Above the open-air stage the Bokkenrijders lettering and a glowing skull take turns.', nl: 'Boven het openluchtpodium wisselen de Bokkenrijders-letters en een lichtgevende doodskop elkaar af.' } },
+  'bokkenrijders-1': { name: { de: 'Bokkenrijders', en: 'Bokkenrijders', nl: 'Bokkenrijders' }, place: { de: 'Maastricht', en: 'Maastricht', nl: 'Maastricht' },
+    alt: { en: 'The Bokkenrijders lettering made of drones above a blue-lit open-air stage.', nl: 'De Bokkenrijders-letters van drones boven een blauw verlicht openluchtpodium.' } },
   'bokkenrijders-2': { name: { de: 'Bokkenrijders', en: 'Bokkenrijders', nl: 'Bokkenrijders' }, place: { de: 'Maastricht', en: 'Maastricht', nl: 'Maastricht' },
     alt: { en: 'Red face with horns made of drones, the motif of the musical Bokkenrijders.', nl: 'Rood gezicht met hoorns van drones, het motief van de musical Bokkenrijders.' } },
   'siemens-1': { place: { de: 'Berlin', en: 'Berlin', nl: 'Berlijn' },
@@ -97,6 +105,12 @@ export const GALLERY_TEXT = {
     alt: { en: 'Purple flowers made of drones glow above the treetops in the evening.', nl: 'Paarse bloemen van drones lichten ’s avonds op boven de boomkruinen.' } },
   'sea-you-1': { name: { de: 'Sea You', en: 'Sea You', nl: 'Sea You' },
     alt: { en: 'Above the festival crowd, blue drone lights spell “SEA YOU”.', nl: 'Boven het festivalpubliek staat in blauwe dronelichten „SEA YOU”.' } },
+  'siemens-indoor-1': { name: { de: 'Siemens', en: 'Siemens', nl: 'Siemens' }, place: { de: 'Hannover Messe', en: 'Hannover Messe', nl: 'Hannover Messe' },
+    alt: { en: 'Glowing drones hover above the stage of the Siemens trade-fair show in Hanover, the presenter below.', nl: 'Lichtgevende drones zweven boven het podium van de Siemens-beursshow in Hannover, met de presentator eronder.' } },
+  'siemens-indoor-2': { name: { de: 'Siemens', en: 'Siemens', nl: 'Siemens' }, place: { de: 'Hannover Messe', en: 'Hannover Messe', nl: 'Hannover Messe' },
+    alt: { en: 'Drones frame the Siemens Xcelerator symbol on the LED wall above the presenter.', nl: 'Drones omlijsten het Siemens Xcelerator-symbool op de ledwand boven de presentator.' } },
+  'siemens-indoor-3': { name: { de: 'Siemens', en: 'Siemens', nl: 'Siemens' }, place: { de: 'Hannover Messe', en: 'Hannover Messe', nl: 'Hannover Messe' },
+    alt: { en: 'Drones fly in front of an LED wall showing the drawing of an aircraft, the presenter on stage in front.', nl: 'Drones vliegen voor een ledwand met de tekening van een vliegtuig, met de presentator op het podium ervoor.' } },
 };
 
 export const DRONES = { de: 'Drohnen', en: 'drones', nl: 'drones' };

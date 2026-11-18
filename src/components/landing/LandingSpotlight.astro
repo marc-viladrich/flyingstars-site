@@ -6,21 +6,28 @@ import type { Section } from '../../content.config';
 import SectionHead from '../SectionHead.astro';
 import { optimizedImage } from '../../lib/media';
 type Props = Extract<Section, { type: 'landingSpotlight' }> & { index: number };
-const { kicker, headline, text, image, tags, entries, facts, cta, id = `s${Astro.props.index}`, index } = Astro.props;
+const { kicker, headline, text, image, tags, entries, facts, cta, gallery, id = `s${Astro.props.index}`, index } = Astro.props;
+import Gallery from '../gallery/Gallery.astro';
 import { forPath } from '../../i18n/server';
 const { localHref } = forPath(Astro.url.pathname);
 const H = index === 0 ? 'h1' : 'h2';
 const T = index === 0 ? 'h2' : 'h3';
-const wide = await optimizedImage(image.src, 960, 480);
-const narrow = await optimizedImage(image.src, 640, 480);
+const wide = gallery ? undefined : await optimizedImage(image.src, 960, 480);
+const narrow = gallery ? undefined : await optimizedImage(image.src, 640, 480);
 ---
 <section class="section alt sp" id={id} aria-labelledby={`${id}-h`}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
+  {/* Galerie (Nachhaltigkeit, Indoor, Runde 5): Einträge links oben im Weißraum, Bilder treppenartig daneben */}
+  {gallery ? <Gallery set={gallery} class="sp-gallery">
+    {entries.length > 0 && <div class="sp-entries sp-stack">{entries.map((e) => <article><span class="kicker mono">{e.kicker}</span><T>{e.title}</T>{e.text && <p>{e.text}</p>}</article>)}</div>}
+    {facts.length > 0 && <FactList items={facts} variant="spotlight" />}
+    {cta && <div class="sp-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></div>}
+  </Gallery> : <>
   <figure class="sp-stage">
     <div class="sp-img" data-curtain>
       <picture>
-        <source media="(max-width: 43.75em)" srcset={narrow.src} width={narrow.width} height={narrow.height} />
-        <img src={wide.src} width={wide.width} height={wide.height} alt={image.alt} loading="lazy" decoding="async" />
+        <source media="(max-width: 43.75em)" srcset={narrow!.src} width={narrow!.width} height={narrow!.height} />
+        <img src={wide!.src} width={wide!.width} height={wide!.height} alt={image.alt} loading="lazy" decoding="async" />
       </picture>
     </div>
     {tags.length > 0 && <ul class="sp-tags" data-reveal-group>{tags.map((t, i) => <li class="mono" data-reveal style={`--i:${i}`}><span class="sp-pin" aria-hidden="true"></span>{t.value}</li>)}</ul>}
@@ -32,10 +39,14 @@ const narrow = await optimizedImage(image.src, 640, 480);
     </div>
   )}
   {cta && <div class="sp-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></div>}
+  </>}
 </section>
 
 <style>
   .sp-more { margin-top: clamp(var(--space-7), 4vw, var(--space-11)); }
+  /* in der Galerie: Einträge untereinander, Kennzahlen darunter */
+  .sp-entries.sp-stack { grid-template-columns: 1fr; gap: clamp(var(--space-5), 2.4vw, var(--space-8)); }
+  :global(.sp-gallery .sp-facts) { margin-top: clamp(var(--space-6), 3vw, var(--space-10)); }
   .sp-stage { position: relative; margin: 0; }
   .sp-img { aspect-ratio: 2 / 1; border-radius: var(--radius); overflow: hidden; background: var(--media-ground); --curtain-r: var(--radius); }
   .sp-img img { width: 100%; height: 100%; object-fit: cover; display: block; }

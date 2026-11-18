@@ -59,6 +59,13 @@ sections:
         subtitle: Jedes Detail zählt
         text: Damit ihr die märchenhafte Atmosphäre gemeinsam mit euren Gästen aufsaugen könnt, planen wir jeden Schritt sorgfältig. Dank der Erfahrung aus über 150 Veranstaltungen in aller Welt sind wir auf wohl jede Eventualität vorbereitet.
         _key: k_4cbe7266c56990c2d263
+      # Runde 5 (Marc: „Nachhaltigkeit ist eigentlich der vierte Wert, der auf jeden Fall immer mitfliegt“); Unterzeile und
+      # Text aus Moritz' Nachhaltigkeits-Text verdichtet
+      - icon: leaf
+        title: Nachhaltigkeit
+        subtitle: Kein Knall. Kein Müll. Kein Rauch.
+        text: Großes Spektakel geht auch leise, lokal emissionsfrei und aufgeräumt. Unsere Drohnen sind wiederverwendbar, wir laden sie mit 100 % Ökostrom von naturstrom immer wieder auf.
+        _key: k_7e2a41c9d05b38f6a1c4
     _key: k_5f577f27ee53584bc075
 
   # Reihenfolge und Kurzvorstellungen nach Moritz; Rollen und Bios gelten nur auf dieser Seite (memberTexts), damit die

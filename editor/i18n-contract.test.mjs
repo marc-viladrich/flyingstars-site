@@ -17,8 +17,8 @@ const baseline = run(), evidence = adoptionEvidence(baseline, {editorReviewed: t
 
 const knownShadowBlockers = {};
 
-test('all 220 version 2 contracts are valid without any bestandsblocker', () => {
-  assert.equal(pairs.length, 220);
+test('all 194 version 2 contracts are valid without any bestandsblocker', () => {
+  assert.equal(pairs.length, 194);
   const blockers = {};
   for (const pair of pairs) {
     assert.equal(pair.target.translationContractVersion,2,pair.id);

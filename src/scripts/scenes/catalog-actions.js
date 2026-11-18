@@ -49,14 +49,26 @@ export function catalogAction(key,f,pts) {
     return {pts:start, duration:4.5, live:(b,j,t,o)=>interpolate(b,targets.get(j),progress(t,.5,3.5),o)};
   }
   if(key==='anstossen') {
-    const {left,right}=glassGroups(f);
-    const centroid=(idx)=>[0,1].map(k=>[...idx].reduce((s,j)=>s+pts[j][k],0)/idx.size);
-    const l=centroid(left),r=centroid(right),delta=[l[0]-r[0],l[1]-r[1]];
+    // Runde 5 (Marc, 18.11.: „kaputt, schon lange“): Vorher schob sich das rechte Glas ganz auf das linke, das linke erlosch,
+    // übrig blieb ein Glas. Jetzt stoßen beide an: Jedes Glas schwenkt um seinen Fuß nach außen, schwingt zurück, bis die
+    // Ränder sich berühren (die Ruhelage des Katalogbilds), prallt kaum merklich ab und steht wieder. Im Moment der Berührung
+    // springen die Funken über den Rändern nach außen und leuchten auf. Am Ende steht exakt das Katalogbild.
+    const {left,right,sparks}=glassGroups(f);
+    const foot=(idx)=>{const low=[...idx].sort((a,c)=>pts[a][1]-pts[c][1]).slice(0,6); return [0,1].map(k=>low.reduce((s,j)=>s+pts[j][k],0)/low.length);};
+    const pl=foot(left),pr=foot(right),hit=[(pl[0]+pr[0])/2,Math.max(...[...left,...right].map(j=>pts[j][1]))*.92];
+    const OPEN=.12,BOUNCE=.022,CLINK=1.95;
+    const angle=(t)=>OPEN*(progress(t,.4,.9)-progress(t,CLINK-.6,.6))+BOUNCE*(progress(t,CLINK,.25)-progress(t,CLINK+.25,.5));
+    const turn=(o,p,a)=>{const dx=o[0]-p[0],dy=o[1]-p[1],c=Math.cos(a),s=Math.sin(a); o[0]=p[0]+dx*c-dy*s; o[1]=p[1]+dx*s+dy*c;};
     return { duration:4.5, live:(b,j,t,o)=>{
-      const u=progress(t,.5,3.3);
-      if(right.has(j)) { o[0]+=delta[0]*u; o[1]+=delta[1]*u; o[2]+=.16*u; }
-      // Rear drones hold position and dim as the front glass covers them; no flight through the front glass.
-      if(left.has(j)) o[3]=1-progress(t,1.4,2.4);
+      const a=angle(t);
+      if(left.has(j)) turn(o,pl,a); else if(right.has(j)) turn(o,pr,-a);
+      else if(sparks.has(j)) {
+        const out=.14*progress(t,CLINK,.7)*(1-progress(t,3.1,1.1)), dx=b[0]-hit[0], dy=b[1]-hit[1], d=Math.hypot(dx,dy)||1;
+        o[0]+=dx/d*out; o[1]+=dy/d*out;
+        // vor dem Anstoßen gedimmt, beim Klirren hell, danach wieder normal
+        const base=t<CLINK?1-.65*progress(t,.4,.6):.35+.65*progress(t,2.6,1), flash=Math.max(0,1-Math.abs(t-CLINK-.1)/.5)*1.1;
+        o[3]*=base+flash;
+      }
     }};
   }
   if(key==='konfetti') {

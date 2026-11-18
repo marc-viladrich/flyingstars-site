@@ -12,6 +12,7 @@ import type { Section } from '../../content.config';
 import Accent from '../Accent.astro';
 import { plain } from '../accent';
 import CtaBox from '../CtaBox.astro';
+import Icon from '../Icon.astro';
 import { optimizedImage } from '../../lib/media';
 import { factText } from '../../content/show-extras.mjs';
 type Props = Extract<Section, { type: 'faq' }> & { index: number };
@@ -43,7 +44,7 @@ const ld = groups?.length ? JSON.stringify({ '@context': 'https://schema.org', '
     <div class="faq-body">
       {blocks.map((block, bi) => <div class="faq-group" id={block.id} aria-labelledby={block.headline ? `${block.id}-h` : undefined} role={block.headline ? 'group' : undefined}>
         {block.headline && <G class="faq-group-h" id={`${block.id}-h`}>{block.headline}</G>}
-        <div class="faq">{block.items.map(({ entry }, i) => <details open={openFirst && bi === 0 && i === 0}><summary>{Q ? <Q class="faq-q">{entry.data.question}</Q> : entry.data.question}</summary><div class="answer"><FaqAnswer entry={entry} /></div></details>)}</div>
+        <div class="faq">{block.items.map(({ entry }, i) => <details open={openFirst && bi === 0 && i === 0}><summary>{Q ? <Q class="faq-q">{entry.data.question}</Q> : <span>{entry.data.question}</span>}<Icon name="plus" size={20} class="faq-ico" /></summary><div class="answer"><FaqAnswer entry={entry} /></div></details>)}</div>
       </div>)}
       {closing && <CtaBox headline={closing.headline} text={closing.text} button={{ label: t('chopper404.requestAShow'), href: '/kontakt/' }} level={G} class="faq-cta" />}
     </div>
@@ -51,10 +52,42 @@ const ld = groups?.length ? JSON.stringify({ '@context': 'https://schema.org', '
   {ld && <script type="application/ld+json" set:html={ld} />}
 </section>
 
+<script>
+  // Weiches Öffnen/Schließen für Browser ohne interpolate-size (Safari 18, Firefox); Chromium macht es per CSS.
+  // Animiert die Höhe der Antwort mit Web Animations; bei reduzierter Bewegung oder pausierter Bewegung sofort.
+  if (!CSS.supports('interpolate-size', 'allow-keywords')) {
+    const still = () => matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('motion-paused');
+    const opts = { duration: 420, easing: 'cubic-bezier(0.3, 0.7, 0.2, 1)' };
+    for (const details of document.querySelectorAll<HTMLDetailsElement>('.faq details')) {
+      const summary = details.querySelector('summary'), answer = details.querySelector<HTMLElement>('.answer');
+      if (!summary || !answer) continue;
+      let running: Animation | null = null;
+      summary.addEventListener('click', (event) => {
+        if (still()) return;
+        event.preventDefault();
+        const from = running ? answer.getBoundingClientRect().height : (details.open ? answer.offsetHeight : 0);
+        running?.cancel();
+        answer.style.overflow = 'clip';
+        if (!details.open || answer.dataset.closing) {
+          delete answer.dataset.closing; details.open = true;
+          running = answer.animate([{ height: `${from}px`, opacity: from ? 1 : 0 }, { height: `${answer.scrollHeight}px`, opacity: 1 }], opts);
+          running.onfinish = () => { running = null; answer.style.overflow = ''; };
+        } else {
+          answer.dataset.closing = '1';
+          running = answer.animate([{ height: `${from}px`, opacity: 1 }, { height: '0px', opacity: 0 }], opts);
+          running.onfinish = () => { running = null; delete answer.dataset.closing; details.open = false; answer.style.overflow = ''; };
+        }
+      });
+    }
+  }
+</script>
+
 <style>
   /* Sprungmarken zu den Gruppen (FAQ-Seite): eine Zeile großer Links mit Anzahl der Fragen */
   .faq-jump { margin-top: var(--space-4); }
   .faq-jump ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2-5) var(--space-3); }
+  /* Desktop: alle Gruppen in einer Reihe (Marc, Runde 5) */
+  @media (min-width: 64em) { .faq-jump ul { flex-wrap: nowrap; } .faq-jump a { white-space: nowrap; } }
   .faq-jump a { display: inline-flex; align-items: baseline; gap: var(--space-2); padding: var(--space-2-5) var(--space-4); border: 1px solid var(--line-strong); border-radius: 999px; color: var(--text); font: 500 1rem/1.2 var(--display); transition: border-color var(--dur-control), background-color var(--dur-control); }
   .faq-jump a:hover, .faq-jump a:focus-visible { border-color: var(--accent); background: rgb(var(--rgb-amber) / 0.08); }
   .faq-jump .mono { font-size: var(--text-xs); color: var(--accent); }

@@ -344,6 +344,11 @@
     "en": "Choose the extras you'd like. They go straight into your enquiry. We'll include the price in your quote.",
     "nl": "Kies wat jullie willen toevoegen. Het komt direct in jullie aanvraag, de prijs staat in onze offerte."
   },
+  "steps.foundersReply": {
+    "de": "{names} antworten euch innerhalb von 48 Stunden.",
+    "en": "{names} will reply within 48 hours.",
+    "nl": "{names} antwoorden jullie binnen 48 uur."
+  },
   "extras.addedToEnquiry": {
     "de": "In der Anfrage",
     "en": "Added to enquiry",
@@ -484,16 +489,6 @@
     "en": "Not sure yet",
     "nl": "Dat weten we nog niet"
   },
-  "contactform.recommendation": {
-    "de": "Empfehlung",
-    "en": "Recommendation",
-    "nl": "Aanbeveling"
-  },
-  "contactform.sawAShow": {
-    "de": "Eine Show gesehen",
-    "en": "Saw a show",
-    "nl": "Een show gezien"
-  },
   "contactform.1YourShow": {
     "de": "1 Eure Show",
     "en": "1 Your show",
@@ -603,16 +598,6 @@
     "de": "Firma oder Organisation",
     "en": "Company or organisation",
     "nl": "Bedrijf of organisatie"
-  },
-  "contactform.howDidYouHearAboutUs": {
-    "de": "Wie habt ihr von uns erfahren?",
-    "en": "How did you hear about us?",
-    "nl": "Hoe hebben jullie ons gevonden?"
-  },
-  "contactform.pleaseSelect": {
-    "de": "Bitte wählen",
-    "en": "Please select",
-    "nl": "Maak een keuze"
   },
   "contactform.anythingElseYouDLikeToTellUs": {
     "de": "Möchtet ihr uns noch etwas mitteilen?",
@@ -3444,11 +3429,6 @@
     "en": "Message",
     "nl": "Bericht"
   },
-  "contactform.addSource": {
-    "de": "Woher ihr uns kennt",
-    "en": "How you found us",
-    "nl": "Hoe jullie ons vonden"
-  },
   "consent.revision": {
     "de": "Unsere Zwecke oder Dienste haben sich geändert. Bitte trefft eure Auswahl erneut.",
     "en": "Our purposes or services have changed. Please choose again.",
@@ -3924,6 +3904,81 @@
     "en": "Upgrades: {list}",
     "nl": "Upgrades: {list}"
   },
+  "preise.art": {
+    "de": "Art der Show",
+    "en": "Type of show",
+    "nl": "Soort show"
+  },
+  "preise.art.2d": {
+    "de": "2D",
+    "en": "2D",
+    "nl": "2D"
+  },
+  "preise.art.3d": {
+    "de": "3D",
+    "en": "3D",
+    "nl": "3D"
+  },
+  "preise.art.story": {
+    "de": "3D mit Storytelling",
+    "en": "3D with storytelling",
+    "nl": "3D met storytelling"
+  },
+  "preise.artFrom": {
+    "de": "ab {n}",
+    "en": "from {n}",
+    "nl": "vanaf {n}"
+  },
+  "preise.artName.2d": {
+    "de": "2D-Show",
+    "en": "2D show",
+    "nl": "2D-show"
+  },
+  "preise.artName.3d": {
+    "de": "3D-Show",
+    "en": "3D show",
+    "nl": "3D-show"
+  },
+  "preise.artName.story": {
+    "de": "3D-Show mit Storytelling",
+    "en": "3D show with storytelling",
+    "nl": "3D-show met storytelling"
+  },
+  "preise.artDesc.2d": {
+    "de": "Initialen, Logos oder Stadtwappen mit Formationen wie Herzen, Ringen und Sektgläsern. GEMA-freie oder bei Anmeldung lizenzierte Musik.",
+    "en": "Initials, logos or city crests with formations such as hearts, rings and champagne glasses. Royalty-free music, or licensed music if registered.",
+    "nl": "Initialen, logo's of stadswapens met formaties zoals harten, ringen en champagneglazen. Rechtenvrije muziek, of gelicentieerde muziek bij aanmelding."
+  },
+  "preise.artDesc.3d": {
+    "de": "Präzise Logos, komplexe Schriftzüge und einfache 3D-Elemente, synchron zu eurer Wunschmusik.",
+    "en": "Precise logos, complex lettering and simple 3D elements, in sync with the music of your choice.",
+    "nl": "Precieze logo's, complexe teksten en eenvoudige 3D-elementen, synchroon met jullie muziek naar keuze."
+  },
+  "preise.artDesc.story": {
+    "de": "Komplexe 3D-Storyline mit dramaturgischer Kurve und volumetrischen Effekten, synchron zu eurer Wunschmusik.",
+    "en": "A complex 3D storyline with a dramatic arc and volumetric effects, in sync with the music of your choice.",
+    "nl": "Een complexe 3D-verhaallijn met dramatische opbouw en volumetrische effecten, synchroon met jullie muziek naar keuze."
+  },
+  "preise.artFloor": {
+    "de": "{art} ab {n} Drohnen",
+    "en": "{art} from {n} drones",
+    "nl": "{art} vanaf {n} drones"
+  },
+  "preise.artLine": {
+    "de": "{art} · {n} Drohnen",
+    "en": "{art} · {n} drones",
+    "nl": "{art} · {n} drones"
+  },
+  "preise.summaryArt": {
+    "de": "Art der Show: {art}",
+    "en": "Type of show: {art}",
+    "nl": "Soort show: {art}"
+  },
+  "preise.upCount": {
+    "de": "{n} gewählt",
+    "en": "{n} selected",
+    "nl": "{n} gekozen"
+  },
   "preise.promiseHeadline": {
     "de": "Euer Budget, unsere *Garantie*",
     "en": "Your budget, our *guarantee*",
@@ -4109,6 +4164,11 @@
     "en": "On average around {typical} minutes, up to {max} minutes possible.",
     "nl": "Gemiddeld circa {typical} minuten, tot {max} minuten mogelijk."
   },
+  "preise.incNoteTitle": {
+    "de": "Das macht ihr",
+    "en": "Your part",
+    "nl": "Dit doen jullie"
+  },
   "preise.incNote": {
     "de": "Ihr stellt nur das Einverständnis der Grundstückseigentümer:innen, die Freigabe der Motive und die musikalische Beschallung vor Ort. Den Rest erledigen wir.",
     "en": "You only provide the landowners' consent, the approval of the motifs and the on-site sound system. We take care of the rest.",
@@ -4273,11 +4333,6 @@
     "de": "Chopper, unser Bürohund, als Drohnenformation: Er wedelt mit dem Schwanz und schlägt vor Freude einen Salto",
     "en": "Chopper, our office dog, as a drone formation: he wags his tail and does a somersault for joy",
     "nl": "Chopper, onze kantoorhond, als droneformatie: hij kwispelt en maakt van blijdschap een salto"
-  },
-  "chopper.sadLabel": {
-    "de": "Chopper, unser Bürohund, als Drohnenformation: Er lässt Kopf und Schwanz hängen, der Propeller auf seiner Mütze steht still",
-    "en": "Chopper, our office dog, as a drone formation: head and tail hanging, the propeller on his cap standing still",
-    "nl": "Chopper, onze kantoorhond, als droneformatie: kop en staart hangen, de propeller op zijn pet staat stil"
   },
   "chopper.playLabel": {
     "de": "Chopper, unser Bürohund, und zwei Kinder als Drohnenformation: Das Mädchen wirft einen Ball, Chopper springt und fängt ihn, der Junge jubelt",

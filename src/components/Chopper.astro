@@ -1,13 +1,13 @@
 ---
-// Chopper, der Bürohund, als Drohnenformation mit Stimmung (Runde 4): happy (Danke), sad (404), play (Hochzeit, mit zwei
+// Chopper, der Bürohund, als Drohnenformation mit Stimmung (Runde 4): happy (Danke, Team), play (Hochzeit, mit zwei
 // Kindern und Ball). Leichtgewichtig: ein Canvas, das Modul lädt erst kurz bevor die Bühne ins Bild kommt, bei
 // reduzierter Bewegung steht ein ruhiges Standbild. Aussehen und Teile: src/scripts/effects/chopper.js, Stimmungen:
 // chopper-moods.js. Rahmen und Fläche gibt die einbettende Seite vor; die Komponente hat keinen eigenen Karton.
 import { forPath } from '../i18n/server';
 const { t } = forPath(Astro.url.pathname);
-interface Props { mood: 'happy' | 'sad' | 'play'; label?: string; class?: string }
+interface Props { mood: 'happy' | 'play'; label?: string; class?: string }
 const { mood, label, class: cls } = Astro.props;
-const fallback = { happy: t('chopper.happyLabel'), sad: t('chopper.sadLabel'), play: t('chopper.playLabel') }[mood];
+const fallback = { happy: t('chopper.happyLabel'), play: t('chopper.playLabel') }[mood];
 ---
 <canvas class:list={['chopper-mood', `is-${mood}`, cls]} data-chopper-mood={mood} role="img" aria-label={label ?? fallback}></canvas>
 
@@ -19,7 +19,7 @@ const fallback = { happy: t('chopper.happyLabel'), sad: t('chopper.sadLabel'), p
       for (const e of entries) {
         if (!e.isIntersecting) continue;
         io.unobserve(e.target);
-        const cv = e.target as HTMLCanvasElement, mood = cv.dataset.chopperMood as 'happy' | 'sad' | 'play';
+        const cv = e.target as HTMLCanvasElement, mood = cv.dataset.chopperMood as 'happy' | 'play';
         void (async () => {
           const [{ Swarm }, { chopperMood, MOOD_COUNT, PLAY_SCALE }] = await Promise.all([import('../scripts/effects/swarm.js'), import('../scripts/effects/chopper-moods.js')]);
           const play = mood === 'play';

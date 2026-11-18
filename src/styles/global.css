@@ -415,8 +415,19 @@ td.us { color: var(--text); background: var(--fill-soft); }
 .faq details { border-bottom: 1px solid var(--line); }
 .faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: var(--space-5); padding: var(--space-5-5) 0; font: 500 clamp(1.125rem, 1.5vw, 1.3125rem)/1.3 var(--display); letter-spacing: -0.01em; }
 .faq summary::-webkit-details-marker { display: none; }
-.faq summary::after { content: ""; flex: 0 0 0.875rem; height: 0.875rem; background: linear-gradient(var(--text), var(--text)) center / 0.875rem 0.09375rem no-repeat, linear-gradient(var(--text), var(--text)) center / 0.09375rem 0.875rem no-repeat; transition: transform var(--dur-color); }
-.faq details[open] summary::after { transform: rotate(45deg); }
+/* Akkordeon-Icon: Lucide „plus“ (Icon.astro), dreht beim Öffnen weich zum X (Runde 5) */
+.faq-ico { flex: 0 0 auto; color: var(--text); transition: transform 0.38s var(--ease-glide), color var(--dur-control); }
+.faq summary:hover .faq-ico { color: var(--accent); }
+.faq details[open] > summary .faq-ico { transform: rotate(45deg); }
+/* Öffnen und Schließen weich über die Höhe. Moderner Weg: ::details-content + interpolate-size (Chromium). Browser ohne
+   interpolate-size (Safari 18, Firefox) übernimmt ein kleines Skript in Faq.astro (Web Animations auf .answer). */
+@supports (interpolate-size: allow-keywords) {
+  .faq details { interpolate-size: allow-keywords; }
+  .faq details::details-content { block-size: 0; overflow-y: clip; opacity: 0; transition: block-size 0.42s var(--ease-glide), opacity 0.3s ease, content-visibility 0.42s allow-discrete; }
+  .faq details[open]::details-content { block-size: auto; opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .faq details::details-content, .faq-ico { transition: none; } }
+html.motion-paused .faq details::details-content { transition: none; }
 .faq .answer { padding: 0 0 var(--space-6); color: var(--muted); display: grid; gap: var(--space-2-5); max-width: 64ch; }
 .faq .answer ul { margin: 0; padding-left: var(--space-4-5); display: grid; gap: var(--space-1-5); }
 .faq .answer a { color: var(--text); border-bottom: 1px solid var(--line-strong); transition: border-color var(--dur-control); }
@@ -1158,7 +1169,9 @@ a.pack:hover, a.pack:focus-visible { border-color: color-mix(in srgb, var(--c) 7
 
 /* FAQ mit Kategorien: Kopf über die volle Breite, je Kategorie eine Zeile mit mitlaufendem Kategorietitel links */
 .faq-grouped .faq-grid { grid-template-columns: 1fr; }
-.faq-grouped .faq-grid .intro { position: static; max-width: 52rem; margin-bottom: clamp(var(--space-4), 3vw, var(--space-8)); }
+.faq-grouped .faq-grid { row-gap: clamp(var(--space-6), 3vw, var(--space-9)); }
+.faq-grouped .faq-grid .intro { position: static; max-width: none; margin-bottom: 0; }
+.faq-grouped .faq-grid .intro > p { max-width: 52ch; }
 .faq-grouped .faq-body { gap: 0; }
 .faq-grouped .faq-group { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(var(--space-7), 5vw, var(--space-20)); align-items: start; padding: clamp(var(--space-7), 4vw, var(--space-12)) 0; border-top: 1px solid var(--line-strong); }
 .faq-grouped .faq-group-h { position: sticky; top: 6.5rem; margin: 0; padding-top: var(--space-4-5); font: 500 clamp(1.625rem, 2.6vw, 2.375rem)/1.08 var(--display); letter-spacing: -0.025em; color: var(--head); }
@@ -1304,6 +1317,31 @@ a.pack { grid-template-rows: auto auto 1fr; align-items: start; row-gap: var(--s
 .ic > p { margin: 0; color: var(--muted); font-size: var(--text-control); max-width: 40ch; }
 @media (--grid-stacked) { .ig, .ig.cols-4 { --ig-cols: 2; } }
 @media (--compact) { .ig, .ig.cols-4 { --ig-cols: 1; } }
+/* Hover im Icon-Raster (Marc, 18.11.2026: „performanter, CSS-only Card-Snapping-Hover mit Background-Glow“): EINE weiche
+   Fläche mit warmem Schein vom Icon her springt von Zelle zu Zelle und rastet ein. Gleiche Mechanik und Kurven wie die
+   gleitende Box der Navigation (.glide-mark oben): mit Anchor Positioning ist die gezeigte oder per Tastatur fokussierte
+   Zelle Anker von .ig::before; ohne Zeiger merkt sich die Fläche ihre Stelle (Übergang mit --dur-hold) und blendet nur aus.
+   Ersatz ohne Anchor Positioning (Safari 18): jede Zelle trägt dieselbe Fläche selbst und blendet sie weich ein. */
+.ig { position: relative; --glide: var(--ease-glide); --move: var(--dur-glide); --ig-gap: var(--space-1-5);
+  --ig-mark: radial-gradient(85% 75% at 0% 0%, rgb(var(--rgb-logo-amber) / 0.12), rgb(var(--rgb-logo-coral) / 0.035) 45%, transparent 75%), radial-gradient(70% 60% at 100% 100%, rgb(var(--rgb-logo-orchid) / 0.035), transparent 70%), var(--fill-quiet);
+  --ig-mark-edge: inset 0 1px 0 rgb(var(--rgb-logo-amber) / 0.16), inset 0 0 0 1px var(--line-soft), 0 1rem 2.5rem -1.75rem rgb(var(--rgb-logo-amber) / 0.14); }
+.ig > .ic { isolation: isolate; }
+.ig::before, .ig > .ic::before { content: ""; position: absolute; z-index: -1; border-radius: var(--radius-12); background: var(--ig-mark); box-shadow: var(--ig-mark-edge); opacity: 0; pointer-events: none; }
+.ig::before { display: none; }
+@supports (anchor-name: --a) {
+  .ig { anchor-scope: --ig-mark; }
+  .ig > .ic::before { display: none; }
+  .ig::before { display: block; z-index: 0; position-anchor: --ig-mark; top: calc(anchor(top) + var(--ig-gap)); bottom: calc(anchor(bottom) + var(--ig-gap)); left: calc(anchor(left) + var(--ig-gap)); right: calc(anchor(right) + var(--ig-gap)); transition: top var(--move) var(--glide), bottom var(--move) var(--glide), left var(--move) var(--glide), right var(--move) var(--glide), opacity var(--dur-standard) var(--ease-default); }
+  /* Zeiger vor Tastatur; ohne beides bleibt die erste Zelle Anker, die Fläche aber an ihrer letzten Stelle */
+  .ig > .ic:hover, .ig:not(:has(> .ic:hover)) > .ic:has(:focus-visible), .ig:not(:has(> .ic:hover, > .ic :focus-visible)) > .ic:first-child { anchor-name: --ig-mark; }
+  .ig:has(> .ic:hover, > .ic :focus-visible)::before { opacity: 1; }
+  .ig:not(:has(> .ic:hover, > .ic :focus-visible))::before { transition: top 0s var(--dur-hold), bottom 0s var(--dur-hold), left 0s var(--dur-hold), right 0s var(--dur-hold), opacity var(--dur-standard) var(--ease-default); }
+}
+@supports not (anchor-name: --a) {
+  .ig > .ic::before { inset: var(--ig-gap); transition: opacity var(--dur-standard) var(--ease-default); }
+  .ig > .ic:hover::before, .ig > .ic:has(:focus-visible)::before { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .ig::before { transition: opacity var(--dur-standard) var(--ease-default) !important; } }
 
 /* Redaktionelle Hinweise im lokalen Dev-Server (SectionRenderer): gestrichelt in Orange, in der Content-Breite */
 .todo-note { position: relative; z-index: 6; display: flex; gap: var(--space-3); align-items: flex-start; margin: var(--space-6) var(--gutter) calc(-1 * var(--space-2)); padding: var(--space-3) var(--space-4); border: 1px dashed rgb(var(--rgb-amber) / 0.7); border-radius: var(--radius-10); background: rgb(var(--rgb-amber) / 0.08); color: var(--text); font-size: var(--text-sm); line-height: 1.5; }

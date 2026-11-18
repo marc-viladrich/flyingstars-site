@@ -1,7 +1,6 @@
 // Chopper in Stimmungen (Runde 4, 18.11.2026): derselbe Hund wie in chopper.js (gleiche Silhouette, Ohr, Schwanz,
 // Propellermütze), hier nicht fliegend, sondern mit Gefühl:
 //   happy  – Danke-Seite: wedelt, Propeller dreht, alle paar Sekunden ein Rückwärtssalto
-//   sad    – 404: Kopf hängt, Schwanz hängt, Propeller steht, ab und zu ein Seufzer; kühle Farben
 //   play   – Hochzeit: zwei Kinder aus Lichtpunkten werfen ihm einen Ball zu, er springt und fängt ihn
 // Alles in denselben normierten Koordinaten wie chopper.js (400 × 300 Rahmen). Bei reduzierter Bewegung ruft der
 // Schwarm die Formation mit T = 0 auf; jede Stimmung zeigt dann ein ruhiges Standbild (POSTER).
@@ -50,7 +49,7 @@ async function kids() {
 }
 
 export const PLAY_SCALE = 0.56;
-export const MOOD_COUNT = { happy: CHOPPER_COUNT, sad: CHOPPER_COUNT, play: CHOPPER_COUNT + 2 * (KID.body + 2 * KID.arm) + BALL };
+export const MOOD_COUNT = { happy: CHOPPER_COUNT, play: CHOPPER_COUNT + 2 * (KID.body + 2 * KID.arm) + BALL };
 
 const rot = (x, y, cx, cy, a) => { const c = Math.cos(a), s = Math.sin(a), dx = x - cx, dy = y - cy; return [cx + dx * c - dy * s, cy + dx * s + dy * c]; };
 const ease = (k) => k * k * (3 - 2 * k);
@@ -101,7 +100,7 @@ function dogColors(p, out, i, tone) {
 
 /**
  * Stimmung als Formation für Swarm.follow(). Liefert { count, colors, behaviour }.
- * @param {'happy'|'sad'|'play'} mood
+ * @param {'happy'|'play'} mood
  */
 export async function chopperMood(mood) {
   const p = await chopperParts();
@@ -109,7 +108,7 @@ export async function chopperMood(mood) {
   const count = MOOD_COUNT[mood];
   const colors = new Uint8Array(count * 3);
   // traurig: nur der kühle Teil des Verlaufs (Violett bis Cyan), sonst der volle FlyingStars-Verlauf
-  const tone = mood === 'sad' ? (t) => gradientAt(0.55 + t * 0.45) : gradientAt;
+  const tone = gradientAt;
   let ci = dogColors(p, colors, 0, tone);
   let k = null;
   if (mood === 'play') {
@@ -123,7 +122,7 @@ export async function chopperMood(mood) {
   let t0 = null;
   const behaviour = (T, tx, ty, sw) => {
     if (t0 === null && T) t0 = T;
-    const POSTER = { happy: 0.6, sad: 0, play: 2.15 }[mood];
+    const POSTER = { happy: 0.6, play: 2.15 }[mood];
     const t = T ? T - t0 : POSTER;
     if (mood === 'happy') {
       // alle 5 s ein Salto (1,3 s), dazwischen fröhliches Schweben
@@ -134,15 +133,6 @@ export async function chopperMood(mood) {
         x: 0, y: 0.04 + Math.sin(t * 2.2) * 0.025 + jump, size: 0.8, spin: flip,
         head: Math.sin(t * 2.2) * 0.06, tail: Math.sin(t * 13) * 0.55, ear: Math.sin(t * 5) * 0.22 - (sal >= 0 ? 0.3 : 0),
         blade: t * (sal >= 0 ? 16 : 9),
-      });
-      return;
-    }
-    if (mood === 'sad') {
-      // Seufzer alle 7 s: Kopf hebt sich kurz und sinkt wieder
-      const u = t % 7, sigh = u > 4 && u < 6 ? Math.sin(Math.PI * (u - 4) / 2) : 0;
-      putDog(p, mask, tx, ty, 0, {
-        x: 0, y: 0.2 + Math.sin(t * 0.9) * 0.006, size: 0.8, lie: 1,
-        head: 0.22 - sigh * 0.14, headDrop: 0.17 - sigh * 0.05, tail: -1.25 + Math.sin(t * 0.7) * 0.04, ear: 0.35, blade: 0.35, bladeLen: 0.8,
       });
       return;
     }

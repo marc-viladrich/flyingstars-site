@@ -18,7 +18,7 @@ interface Env {
 
 const MAX_BODY = LOGO_BODY_LIMIT; // Auch ohne oder mit falschem Content-Length durchsetzen.
 const MAX = INQUIRY_LIMITS;
-const EXTRA_FIELDS = ['anlass', 'datum', 'datum-offen', 'ort', 'paket', 'drohnen', 'telefon', 'firma', 'quelle', 'ref'];
+const EXTRA_FIELDS = ['anlass', 'datum', 'datum-offen', 'ort', 'paket', 'drohnen', 'telefon', 'firma', 'ref'];
 const CONTROL = /[\u0000-\u001f\u007f]/;
 
 export const onRequestPost = async ({ request, env }: { request: Request; env: Env }): Promise<Response> => {

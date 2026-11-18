@@ -58,6 +58,11 @@ sections:
         text: So that you can soak up the fairytale atmosphere together with your guests, we plan every step carefully. Thanks to the experience of more than 150 events around the world, we are prepared for just about any eventuality.
         icon: list-checks
         _key: k_4cbe7266c56990c2d263
+      - title: Sustainability
+        subtitle: No bang. No litter. No smoke.
+        text: A big spectacle can also be quiet, free of local emissions and tidy. Our drones are reusable, and we recharge them again and again with 100% green electricity from naturstrom.
+        icon: leaf
+        _key: k_7e2a41c9d05b38f6a1c4
     surface: alt
     ownNumbers: false
     _key: k_5f577f27ee53584bc075
@@ -176,12 +181,12 @@ sections:
       - ueber-uns-moritz
     _key: k_89bce7cd130ab4ebbd41
 translationContractVersion: 2
-translationSourceHash: 7623495e85c804254b89111e9d2ad64ef2bf8bc7c42882710b8c3f561d2497aa
+translationSourceHash: bace669ee28fb0905b33b33369ebac469fbfe12082d8e24cc07b2f73d7b5f094
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 7623495e85c804254b89111e9d2ad64ef2bf8bc7c42882710b8c3f561d2497aa
+  sourceFingerprint: bace669ee28fb0905b33b33369ebac469fbfe12082d8e24cc07b2f73d7b5f094
   fields:
     - address: /description
       sourceFingerprint: c42b328abd1be1e5bda1f0f0944e7f99b67c47cda9aa59693a409de9378e1549
@@ -326,6 +331,22 @@ translationEvidence:
     - address: /sections/@k_5f577f27ee53584bc075/steps/@k_4cbe7266c56990c2d263/title
       sourceFingerprint: 96700cd6503bfc52b597e7cec498ee26deceddf343ea12cfacf00863c1a73355
       targetFingerprint: e1742f93a8bb53714f5e83bc62e4b3d718be7161891b19c287832cfa674bb30d
+      status: adopted-existing
+    - address: /sections/@k_5f577f27ee53584bc075/steps/@k_7e2a41c9d05b38f6a1c4/duration
+      sourceFingerprint: 953ab107ec698540f5096a4947dfcfa0acfffb21e4621b25ccd8524de6ed5b81
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
+    - address: /sections/@k_5f577f27ee53584bc075/steps/@k_7e2a41c9d05b38f6a1c4/subtitle
+      sourceFingerprint: e4337a8479448875d257e4ee8dbf8069f624fcfaf46c41fa852ca3be6b742da6
+      targetFingerprint: 52ecaa1acc4ef6997d5c428b399c5ffbc86d78c4b8df6f552dc855cbd15d3c8c
+      status: adopted-existing
+    - address: /sections/@k_5f577f27ee53584bc075/steps/@k_7e2a41c9d05b38f6a1c4/text
+      sourceFingerprint: 83fffd8986460f5396e55ce6c8701b6bdf99cea9f244c7fc2718761e139ef36d
+      targetFingerprint: 8cb338d7fc485c0f10e2bc47f03cd1893287e17f0282a29b40d095b88af9e026
+      status: adopted-existing
+    - address: /sections/@k_5f577f27ee53584bc075/steps/@k_7e2a41c9d05b38f6a1c4/title
+      sourceFingerprint: 1288fa80b1429cb79c4572e7f415e341ae88f764a311aa4edb9f0324227c73c0
+      targetFingerprint: e065a3d523addddf54f6b25501d90b3b24a713ab3d424496e90bedb9b1095984
       status: adopted-existing
     - address: /sections/@k_5f577f27ee53584bc075/steps/@k_f25977eef0b3c3073f86/duration
       sourceFingerprint: 31d93eb4808a3fa60b304534e9e47fd88be792beed92720427f9424287e05107

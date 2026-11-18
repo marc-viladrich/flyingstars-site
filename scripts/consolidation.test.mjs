@@ -85,7 +85,8 @@ test('Filter und Textstile erben Auswahlzustände; alle aktiven Selects erben di
   }
   assert.doesNotMatch(read('src/styles/show-configurator.css'),/\.cfg-occasions[^\n]*(?:input|:checked|:focus-visible|:hover)/);
   for(const path of ['src/components/sections/References.astro','src/components/sections/ContactForm.astro']) {
-    const selects=read(path).replace(/<!--[\s\S]*?-->|\/\*[\s\S]*?\*\//g,'').match(/<select\b[^>]*>/g)??[];assert.ok(selects.length);for(const s of selects)assert.match(s,/class="native-select"/);
+    const selects=read(path).replace(/<!--[\s\S]*?-->|\/\*[\s\S]*?\*\//g,'').match(/<select\b[^>]*>/g)??[];if(path.includes("References"))assert.ok(selects.length); // das Kontaktformular hat seit Runde 5 kein Select mehr (Herkunftsfrage steht auf der Danke-Seite)
+    for(const s of selects)assert.match(s,/class="native-select"/);
   }
   assert.doesNotMatch(read('src/styles/global.css'),/\.field input[, {]|\.field select[, {]|\.field textarea[, {]/);
 });

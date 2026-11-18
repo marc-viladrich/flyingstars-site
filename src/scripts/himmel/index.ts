@@ -1,9 +1,5 @@
 // Himmel: der Schwarm (schwarm.ts) und der Lichtlauf der H1 (lichtlauf.ts). Konzept: docs/himmel.md
 import { lichtlauf } from './lichtlauf';
-import { zeileVorab } from './zeile';
-
-// Die Himmelszeile steht sofort (wie zuvor beim Start des Schwarms), nur ihr Himmel kommt später
-zeileVorab();
 
 // Der Lichtlauf startet erst mit geladener Überschriftenschrift, sonst läuft das Licht über die Ersatzschrift
 (document.fonts?.ready ?? Promise.resolve()).then(lichtlauf);

@@ -70,6 +70,9 @@ sections:
       - { name: WDR, logo: /brand/logos/presse-wdr.svg, cleared: true, note: Fernsehen und Interviews, "_key": "k_e6e05aa8a4af009df49f" }
       - { name: ntv, logo: /brand/logos/presse-ntv.svg, cleared: true, knock: true, note: Startup News, href: "https://www.n-tv.de/mediathek/magazine/startup_news/Drohnen-verwandeln-Nachthimmel-in-Showbuehne-article25835436.html", "_key": "k_b210d92e4cbf25bd0560" }
       - { name: WAZ, logo: /brand/logos/presse-waz.svg, cleared: true, note: Ruhrorter Hafenfest, href: "https://www.waz.de/lokales/duisburg/article409722481/ruhrorter-hafenfest-die-geheimnisse-hinter-dem-neuen-highlight.html", "_key": "k_af6d26f3bd912a26bb0f" }
+      - { name: heise online, logo: /brand/logos/presse-heise.svg, cleared: true, note: "Technische Innovation", "_key": "k_5e1f0a7c3b9d24e8a611" }
+      - { name: NDR, logo: /brand/logos/presse-ndr.svg, cleared: true, note: "Hallo Niedersachsen", "_key": "k_8c2d4f6a1e3b5d7f9a02" }
+      - { name: Tagesspiegel, logo: /brand/logos/presse-tagesspiegel.svg, cleared: true, note: "#BÖLLERCIAO", href: "https://www.tagesspiegel.de/berlin/drohnen-statt-boller-deutsche-umwelthilfe-zeigt-alternative-zum-berliner-silvester-feuerwerk-10846906.html", "_key": "k_3a7e9c1b5d2f4a6c8e13" }
     _key: k_48c987e8cc523f41aa47
 
   # Anlässe als Kacheln: Firmen als Bildkachel, Konzerte und Privat mit Verlaufs-Icons; Moritz' Unterzeilen bleiben
@@ -78,6 +81,7 @@ sections:
     kicker: Anlässe
     headline: Das *Highlight* jeder Feier
     lead:
+      icon: presentation
       label: Firmen
       title: Präsentiert Produkte spektakulär
       text: "Individuelle Motive mit Logos, Claims und Co. in euren Farben."
@@ -273,6 +277,7 @@ sections:
       - { kicker: Ein Blick in die Zukunft, title: Triple Z, text: "Im Juni 2026 durften wir im Gründungszentrum Zeche Zollverein die Start-up-Szene NRWs begeistern.", "_key": "k_81843471e629d870eaa4" }
     cta: { label: Alle Referenzen, href: /referenzen/ }
     todo: "Für Siemens Hannover Messe und Triple Z fehlen Fallstudien und eindeutig zugeordnete Showbilder. Triple Z: Moritz nennt Juni 2026, der Fragebogen September 2026."
+    gallery: indoor
     _key: k_47a98888ed554656bbf5
 
   - type: team

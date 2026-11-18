@@ -36,6 +36,46 @@ sections:
     todo: Moritz und FlyingStars müssen die Umweltformulierungen vor Veröffentlichung prüfen, die Belege für Ökostrom und das TÜV-NORD-Schallschutzgutachten bereithalten und die Nutzung des naturstrom-Logos schriftlich freigeben lassen.
     _key: k_b58e8e802d7c6c5c47eb
 
+  # Vergleich Drohne/Feuerwerk/Laser (Marc, 18.11.2026 Runde 5: „diese Vergleichstabelle mit reinnehmen … auch mit
+  # Lasershows. Das ist ja schon sehr essentiell“). Outdoor-Fassung aus dem Prototyp (am Himmel, Verbote bei Trockenheit).
+  - type: comparison
+    id: vergleich
+    kicker: Vergleich
+    headline: Drohne, *Feuerwerk* oder Laser?
+    rowHeader: Kriterium
+    columns: [ {"_key":"k_25c7b51894fea29324b9","value":"Drohnenshow"}, {"_key":"k_2060882c19dc049928a0","value":"Feuerwerk"}, {"_key":"k_a1cc1dd9230abdeb3916","value":"Lasershow"} ]
+    rows:
+      - label: Logos und Schriftzüge am Himmel
+        values: [ {"_key":"k_6a4bf674f58749eae053","value":"Ja, auch in 3D"}, {"_key":"k_c5a1467aed931ce60c29","value":"Nein"}, {"_key":"k_0e41ea28c2c82de21f4c","value":"Teilweise, nur auf Flächen oder Dunst"} ]
+        cells:
+          - { label: Ja, text: auch in 3D, tone: y, "_key": "k_3b293645922b07d2e3de" }
+          - { label: Nein, text: "", tone: n, "_key": "k_18993f04f9454ae9359e" }
+          - { label: Teilweise, text: nur auf Flächen oder Dunst, tone: p, "_key": "k_17327b296b18e8a37404" }
+        _key: k_db6a4c9c65c904886683
+      - label: Lautstärke
+        values: [ {"_key":"k_b1084a2b87bd61002632","value":"Leise, Musik nach Wahl"}, {"_key":"k_f030bb871ee4ededc6f1","value":"Sehr laut"}, {"_key":"k_f92dfc1d6a69e1e64788","value":"Leise"} ]
+        cells:
+          - { label: Leise, text: Musik nach Wahl, tone: y, "_key": "k_21d9a21f7918a46eda98" }
+          - { label: Sehr laut, text: "", tone: n, "_key": "k_6719403a443206e40af3" }
+          - { label: Leise, text: "", tone: y, "_key": "k_cd0773ebdba2e007768a" }
+        _key: k_cce74eeec1f70aabfbc5
+      - label: Rauch, Feinstaub, Müll vor Ort
+        values: [ {"_key":"k_9b823bd9910b23c083d2","value":"Keine"}, {"_key":"k_cf3f65611c61cba7e6a9","value":"Viel"}, {"_key":"k_06da2993d52f317ec46a","value":"Dunst für sichtbare Strahlen nötig"} ]
+        cells:
+          - { label: Keine, text: "", tone: y, "_key": "k_9361cc59d72c89e35f86" }
+          - { label: Viel, text: "", tone: n, "_key": "k_7e2740ff807722babf7b" }
+          - { label: Dunst, text: für sichtbare Strahlen nötig, tone: p, "_key": "k_a24e3bfc7472e3bf13f9" }
+        _key: k_ae883a76c875eafd7f9d
+      - label: Brandgefahr
+        values: [ {"_key":"k_0526342ac93e95226784","value":"Keine"}, {"_key":"k_2d67556585620d14cfce","value":"Ja, Verbote bei Trockenheit"}, {"_key":"k_26d9c1a7244e6bd3b073","value":"Keine"} ]
+        cells:
+          - { label: Keine, text: "", tone: y, "_key": "k_c112dcb5ecb7a6db1e77" }
+          - { label: Ja, text: Verbote bei Trockenheit, tone: n, "_key": "k_c52023407bff00b9f377" }
+          - { label: Keine, text: "", tone: y, "_key": "k_325b4770afefdddbc88f" }
+        _key: k_37b5b5e74c7bd7792e72
+    todo: FlyingStars muss den Vergleich fachlich prüfen, insbesondere pauschale Aussagen zu Brandgefahr, Lautstärke und Umweltwirkung.
+    _key: k_29dc0deb99426b60f61d
+
   # Referenzen als Bühne mit Showfoto: #Böllerciao (Deutsche Umwelthilfe, Berlin). Für Kein Bock auf Nazis gibt es im
   # Bestand weder Foto noch Projekt; der Eintrag steht deshalb als Text neben der Umwelthilfe.
   - type: landingSpotlight
@@ -53,6 +93,7 @@ sections:
       - { value: seit 2025, label: Kein Bock auf Nazis, "_key": "k_e87e2228c45bc9d2a903" }
       - { value: seit 2023, label: "#BÖLLERCIAO", "_key": "k_9d577b6e57e572327c0c" }
     todo: FlyingStars muss ein Showfoto oder einen kurzen Loop von Kein Bock auf Nazis liefern (z. B. Open Flair 08.08.2025 oder Erfurt 02.07.2026) und die Namensnennung beider Partner freigeben.
+    gallery: engagement
     _key: k_7b3ad6aa4b4e3680cb02
 
   - type: contactForm
@@ -66,7 +107,7 @@ sections:
     id: faq
     kicker: FAQ
     headline: Häufige Fragen
-    cta: { label: Alle Fragen, href: "/faq/#wetter-umwelt" }
+    cta: { label: Alle Fragen, href: "/faq/#drohnenshows" }
     openFirst: true
     tags: [ nachhaltigkeit-moritz ]
     _key: k_f58d716d01838151fc17

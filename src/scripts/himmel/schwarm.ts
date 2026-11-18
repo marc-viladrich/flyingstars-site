@@ -4,7 +4,7 @@
 // 1. Ein Schwarm, viele Bilder: dieselben Drohnen bilden jedes Bild der Seite. Nichts entsteht, nichts verschwindet.
 // 2. Bilder stehen, Wechsel sind dunkel: neben dem Text steht das Bild still; unterwegs fliegen die Drohnen gedimmt,
 //    etwa jede zehnte funkelt, das Licht geht erst am Ziel an (lebendige Wolke, kein Einrasten, keine Finten).
-// 3. Die Seite antwortet mit dem Himmel: Anlass zeigen, Paket zeigen, Ort eintippen ändert das Bild.
+// 3. Die Seite antwortet mit dem Himmel: Anlass zeigen, Paket zeigen, im Formular den Ort eintippen ändert das Bild.
 // 4. Nur echte Formationen: Motive aus FlyingStars' Katalog (public/media/katalog/), Schrift aus dem Einstrich-Textplaner
 //    (text-formation.js). Einzige Ausnahme ist die Feuerwerksblüte bei #warum-drohnen, parametrisch erzeugt.
 // 6. Bei #warum-drohnen übergibt der Schwarm an eine eigene Show-Folge (folge.js, Engine des Konfigurators): Er fliegt als
@@ -19,16 +19,16 @@ import { gradientAt } from '../effects/swarm.js';
 import { hash, lightOrder } from '../formation/index.js';
 import { evenSubset } from '../show-geometry.js';
 import { loadTextEngine, textFormation } from '../text-formation.js';
-import { zeile } from './zeile';
 
 type Spec = { motif: string; budget?: number } | { figure: 'bokkenrijders' } | { text: string; count: number } | { burst: true } | { seq: Spec[] };
 type Box = { x: number; y: number; w: number; h: number };
-type Place = 'head' | 'form' | 'zeile';
+type Place = 'head' | 'form';
 type React = (slot: Slot, on: (spec: Spec) => void) => void;
-interface Scene { id: string; n: number; pts: Float32Array; col: Uint8Array; rank: Float32Array; ax: number; ay: number; turn: boolean }
-/** Eine Bühne. deskOnly: spielt nur ab 900 px Breite. then: einmal je Besuch wird aus spec dieses Bild (Feuerwerk → Stern).
+/** pose: feste Ansicht eines räumlichen Bilds (Drehung yaw, Neigung pitch in rad) mit sanftem Hin-und-her-Schwenk (amp, period s). */
+interface Scene { id: string; n: number; pts: Float32Array; col: Uint8Array; rank: Float32Array; ax: number; ay: number; turn: boolean; pose?: { yaw: number; pitch: number; amp: number; period: number } }
+/** Eine Bühne. up/tall: die Bühne darf bis up px über den Kopf wachsen (unten bündig mit dem Kopf), höchstens tall px hoch. deskOnly: spielt nur ab 900 px Breite. then: einmal je Besuch wird aus spec dieses Bild (Feuerwerk → Stern).
  *  when: spielt nur, wenn die Section es zulässt (z. B. keine eigene Formation darin). max: größte Bildbreite in px (kleines Motiv). */
-interface SlotDef { sel: string; place: Place; spec: Spec | ((host: HTMLElement) => Spec); deskOnly?: boolean; then?: Spec; react?: React; when?: (host: HTMLElement) => boolean; max?: number; folge?: boolean }
+interface SlotDef { sel: string; place: Place; spec: Spec | ((host: HTMLElement) => Spec); deskOnly?: boolean; then?: Spec; react?: React; when?: (host: HTMLElement) => boolean; max?: number; folge?: boolean; up?: number; tall?: number }
 /** Die Show-Folge (folge.js), erst nahe an ihrer Section geladen. */
 interface Folge { ready: Promise<void>; canEnter(): boolean; place(box: Box): unknown; enter(box: Box): { pts: number[][]; radius: number } | null; peek(): number[][]; play(): void; leave(): number[][]; hide(): void }
 interface Slot { def: SlotDef; host: HTMLElement; box: Box; scene: Scene | null; want: string; spec: Spec; first: Spec; seqAt: number; own: HTMLElement | null; turned: boolean }
@@ -46,25 +46,6 @@ const idOf = (s: Spec): string => ('motif' in s ? `m:${s.motif}:${s.budget ?? N}
 type Motif = { name: Record<string, string>; dimension: string; variants: Array<{ id: string; points: number }> };
 const MOTIFS = (catalog as unknown as { motifs: Record<string, Motif> }).motifs;
 const scenes = new Map<string, Promise<Scene>>();
-
-/** Wer ein Motiv beim Namen nennt („Herz“, „Stern“, „Leuchtturm“), bekommt neben dem Wort auch das Bild aus dem Katalog. */
-const norm = (v: string) => v.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ß/g, 'ss').replace(/[^a-z0-9 ]/g, '').trim();
-const ALIAS: Record<string, string> = {
-  herz: 'doppelherz', liebe: 'doppelherz', love: 'doppelherz', heart: 'doppelherz', hart: 'doppelherz', ringe: 'eheringe', ring: 'eheringe', rings: 'eheringe', ringen: 'eheringe',
-  bier: 'bierkrug', beer: 'bierkrug', sekt: 'sektflasche', champagner: 'sektflasche', champagne: 'sektflasche', prost: 'anstossen', cheers: 'anstossen', proost: 'anstossen',
-  torte: 'torte', geburtstag: 'geburtstag', birthday: 'geburtstag', verjaardag: 'geburtstag', auto: 'sportwagen', car: 'sportwagen', ufo: 'kuhufo', kuh: 'kuhufo', palme: 'palme', insel: 'palme',
-  baum: 'lebensbaum', tree: 'lebensbaum', frieden: 'peace', ballon: 'ballons', balloon: 'ballons', konfetti: 'konfetti', confetti: 'konfetti', hase: 'hasen', smiley: 'smiley', unendlich: 'unendlich', infinity: 'unendlich',
-  welle: 'welle', wave: 'welle', cocktail: 'cocktail', glocke: 'glocke', roboter: 'roboter', robot: 'roboter', taube: 'taube', pyramide: 'pyramide', disco: 'diskokugel', disko: 'diskokugel', lotus: 'lotusblume',
-};
-let words: Map<string, string> | null = null;
-function motifFor(text: string): string | null {
-  if (!words) {
-    words = new Map();
-    for (const [key, m] of Object.entries(MOTIFS)) for (const name of [key, ...Object.values(m.name)]) { const k = norm(name); if (k && !words.has(k)) words.set(k, key); }
-    for (const [a, key] of Object.entries(ALIAS)) if (MOTIFS[key]) words.set(a, key);
-  }
-  return words.get(norm(text)) ?? null;
-}
 
 function finish(id: string, raw: number[][], colors: (i: number, x: number) => number[], extra: Partial<Scene>): Scene {
   const n = raw.length;
@@ -140,7 +121,8 @@ async function build(spec: Spec, id: string): Promise<Scene> {
     if (!r.ok) throw new Error(`Formation ${spec.figure}: HTTP ${r.status}`);
     const d = (await r.json()) as { dots: number[][] };
     const raw = (evenSubset(d.dots.map(([x, y, cr, cg, cb, , z]) => [x, y, z ?? 0, cr, cg, cb]), N) as number[][]);
-    return finish(id, raw, (i) => (raw[i][3] + raw[i][4] + raw[i][5] === 0 ? [150, 150, 150] : lit(raw[i][3], raw[i][4], raw[i][5])), {});
+    // Dreiviertelansicht mit langsamem Schwenk (Marc, 18.11.: „größer und eingedrehter, damit man sie besser erkennt“)
+    return finish(id, raw, (i) => (raw[i][3] + raw[i][4] + raw[i][5] === 0 ? [70, 70, 70] : lit(raw[i][3], raw[i][4], raw[i][5])), { pose: { yaw: 0.38, pitch: 0, amp: 0.22, period: 9 } });
   }
   const m = MOTIFS[spec.motif];
   if (!m) throw new Error(`Katalogmotiv ${spec.motif} fehlt`);
@@ -184,7 +166,6 @@ const NONE: Box = { x: 0, y: 0, w: 0, h: 0 };
 const HEAD = '.sec-head, .intro, .faq-intro';
 function measure(slot: Slot): void {
   const { host, def } = slot, wide = innerWidth >= DESK;
-  if (def.place === 'zeile') { const b = page(slot.own!); slot.box = { x: b.x, y: b.y + 8, w: b.w, h: b.h - 16 }; return; }
   if (def.place === 'form') { const b = page(slot.own!); slot.box = { x: b.x + 20, y: b.y + 18, w: b.w - 40, h: b.h - 36 }; return; }
   if (def.folge) { slot.box = folgeBox(host, wide); return; }
   // Kopf der Section: der Section-Kopf, sonst (einspaltiger Text ohne Kopf-Komponente) die ganze Section
@@ -200,9 +181,9 @@ function measure(slot: Slot): void {
   const left = Math.max(used + 96, right - (def.max ?? 480)), w = right - left;
   let box = NONE, roomy = wide && w >= Math.min(340, def.max ?? 340) && Number.isFinite(top);
   if (roomy) {
-    let y0 = Math.max(hostBox.y + 24, Math.min(top - 64, bottom - 230)), y1 = bottom;
-    const tall = Math.min(380, def.max ?? 380);
-    if (y1 - y0 > tall) { const mid = (top + bottom) / 2; y0 = mid - tall / 2; y1 = mid + tall / 2; }
+    let y0 = Math.max(hostBox.y + 24, Math.min(top - (def.up ?? 64), bottom - 230)), y1 = bottom;
+    const tall = def.tall ?? Math.min(380, def.max ?? 380);
+    if (y1 - y0 > tall) { if (def.up) y0 = y1 - tall; else { const mid = (top + bottom) / 2; y0 = mid - tall / 2; y1 = mid + tall / 2; } }
     box = { x: left, y: y0, w, h: y1 - y0 };
     roomy = box.h >= Math.min(170, tall) && free(host, box, head === host ? null : head);
   }
@@ -224,9 +205,13 @@ function folgeBox(host: HTMLElement, wide: boolean): Box {
   let used = 0, top = Infinity, bottom = -Infinity;
   for (const el of host.querySelectorAll<HTMLElement>(`${SOLID}, .kicker`)) { const b = page(el); if (!b.w || !b.h) continue; used = Math.max(used, b.x + b.w); top = Math.min(top, b.y); bottom = Math.max(bottom, b.y + b.h); }
   if (!Number.isFinite(top)) return NONE;
-  const max = clamp(innerWidth * 0.36, 420, 720), left = Math.max(used + 64, right - max), w = right - left;
+  // Runde 5 (Marc, 18.11.2026: „insbesondere on a big screen … noch um einiges größer, wir haben mehr Platz“): die ganze
+  // Fläche rechts vom Text bis zur Content-Kante und über die Höhe der Section (bis 24 px an ihre Kanten), nicht mehr
+  // höchstens 720 × 500 px. Abstand zum Text 64–112 px; free() prüft weiter, dass nichts berührt wird.
+  const gap = clamp(innerWidth * 0.05, 64, 112), left = used + gap, w = right - left;
   if (w < 340) return NONE;
-  const tall = Math.min(500, w * 0.95), mid = (top + bottom) / 2, h = Math.min(tall, bottom - top + 80);
+  const y0 = hostBox.y + 24, y1 = hostBox.y + hostBox.h - 24, h = Math.min(y1 - y0, Math.max(bottom - top + 80, w * 1.1));
+  const mid = Math.min(y1 - h / 2, Math.max(y0 + h / 2, (top + bottom) / 2));
   const box = { x: left, y: mid - h / 2, w, h };
   return free(host, box, null) ? box : NONE;
 }
@@ -250,10 +235,16 @@ function sprite(r: number, g: number, b: number, rad: number, hot: boolean) {
 
 /* ---------- Der Schwarm ---------- */
 
+/** Eine Zeichenfläche in Seitenkoordinaten. pw/ph: angelegte Pixelgröße (nur bei Änderung neu anlegen, das kostet). */
+interface Surface { cv: HTMLCanvasElement; g: CanvasRenderingContext2D; left: number; top: number; W: number; H: number; d: number; pw: number; ph: number; dirty: number[] | null }
+const surface = (): Surface => { const cv = document.createElement('canvas'); return { cv, g: cv.getContext('2d')!, left: 0, top: 0, W: 0, H: 0, d: 1, pw: 0, ph: 0, dirty: null }; };
+
 class Himmel {
   layer = document.createElement('div');
-  cv = document.createElement('canvas');
-  g = this.cv.getContext('2d')!;
+  // Zwei feste Flächen statt einer, die bei jedem Abflug und jeder Landung neu angelegt wurde (Runde 5, Marc: Ruckeln beim
+  // Wechsel der Section; WebKit-Messung in docs/himmel.md): Flug = seitenbreit, 1,7 Bildschirmhöhen, Pixeldichte 1 (bewegte,
+  // gedimmte Lichter); Bühne = nur so groß wie das stehende Bild, Pixeldichte bis 1,5. Geometrie in CSS-Pixeln.
+  fly = surface(); stand = surface(); sf = this.stand;
   slots: Slot[] = [];
   active: Slot | null = null;
   shown: Scene | null = null;
@@ -262,8 +253,9 @@ class Himmel {
   mx = new Float32Array(N); my = new Float32Array(N); d0 = new Float32Array(N);
   tx = new Float32Array(N); ty = new Float32Array(N); tz = new Float32Array(N);
   t0 = 0; dur = 1; kind: 'cloud' | 'rise' | 'none' = 'none'; arrived = 0; born = false;
-  top = 0; left = 0; W = 0; wide = true; H = 0; d = 1; raf = 0; dirty: number[] | null = null; spin = 0; last = 0;
-  px = -1e5; py = -1e5; pt = 0;
+  raf = 0; spin = 0; last = 0;
+  // Zeiger (Bildschirmkoordinaten) und je Drohne Versatz + Tempo der Verdrängung (Feder wie in der Nachhaltigkeits-Scrollstory)
+  ptr: { x: number; y: number } | null = null; ox = new Float32Array(N); oy = new Float32Array(N); ovx = new Float32Array(N); ovy = new Float32Array(N);
   dir = 1; sy = 0;
   // Show-Folge (#warum-drohnen): fol geladen, folPts Ziele des Anflugs (Seitenkoordinaten), handed = die Folge spielt
   fol: Folge | null = null; folReady = false; folPts: number[][] | null = null; folRad = 0; handed = false; burstScene: Scene | null = null;
@@ -272,16 +264,14 @@ class Himmel {
 
   constructor(defs: SlotDef[]) {
     this.layer.className = 'hm-layer'; this.layer.setAttribute('aria-hidden', 'true');
-    this.layer.append(this.cv); document.body.append(this.layer);
+    for (const f of [this.fly, this.stand]) { f.cv.style.left = '0'; f.cv.style.top = '0'; f.cv.style.visibility = 'hidden'; this.layer.append(f.cv); }
+    document.body.append(this.layer);
     for (const def of defs) {
-      let host = document.querySelector<HTMLElement>(def.sel); if (!host || (def.when && !def.when(host))) continue;
-      let made: HTMLElement | null = null;
-      if (def.place === 'zeile') { made = zeile(host); host = made; } // steht meist schon (index.ts → zeileVorab)
+      const host = document.querySelector<HTMLElement>(def.sel); if (!host || (def.when && !def.when(host))) continue;
       const first = typeof def.spec === 'function' ? def.spec(host) : def.spec;
       const slot: Slot = { def, host, box: NONE, scene: null, want: '', spec: first, first, seqAt: 0, own: null, turned: false };
-      // Platz im Seitenfluss: auf dem Handy über der Überschrift, im Formular als Himmelsfenster, in der Himmelszeile vorhanden
-      if (made) slot.own = made.querySelector<HTMLElement>('.hm-own');
-      else if (def.place === 'form') { slot.own = this.own('form'); host.prepend(slot.own); }
+      // Platz im Seitenfluss: auf dem Handy über der Überschrift, im Formular als Himmelsfenster
+      if (def.place === 'form') { slot.own = this.own('form'); host.prepend(slot.own); }
       else if (!def.deskOnly) { slot.own = this.own('head'); (host.querySelector(HEAD) ?? host).prepend(slot.own); }
       this.slots.push(slot);
       def.react?.(slot, (spec) => this.want(slot, spec));
@@ -302,12 +292,15 @@ class Himmel {
     this.sy = scrollY;
     addEventListener('scroll', () => { const dy = scrollY - this.sy; if (Math.abs(dy) > 4) { this.dir = dy > 0 ? 1 : -1; this.sy = scrollY; } this.kick(); }, { passive: true });
     addEventListener('resize', again);
-    // Licht am Mauszeiger: Drohnen in der Nähe leuchten auf (nur Licht, keine Bewegung)
+    // Zeiger verdrängt die Drohnen im Raum, eine Feder holt sie weich zurück (Runde 5, Marc: das Aufleuchten wirkte „cheap“;
+    // dieselbe Mechanik wie die Punktwolke der Nachhaltigkeits-Scrollstory, effects/eco-scrolly.js). Licht bleibt, wie es ist.
     addEventListener('pointermove', (e) => {
       if (e.pointerType === 'touch' || still()) return;
-      this.px = e.pageX; this.py = e.pageY; this.pt = performance.now();
-      const a = this.active?.box; if (a && this.px > a.x - 60 && this.px < a.x + a.w + 60 && this.py > a.y - 60 && this.py < a.y + a.h + 60) this.kick();
+      this.ptr = { x: e.clientX, y: e.clientY };
+      const a = this.active?.box, px = e.pageX, py = e.pageY;
+      if (a && px > a.x - 120 && px < a.x + a.w + 120 && py > a.y - 120 && py < a.y + a.h + 120) this.kick();
     }, { passive: true });
+    document.documentElement.addEventListener('pointerleave', () => { this.ptr = null; this.kick(); });
     addEventListener('pagehide', () => this.remember());
     this.recall();
     // Pause oder Fortsetzen (html.motion-paused): neu zeichnen, stehend oder fliegend
@@ -357,32 +350,41 @@ class Himmel {
       const dx = this.active.box.x + this.active.box.w / 2 - (old.x + old.w / 2), dy = this.active.box.y + this.active.box.h / 2 - (old.y + old.h / 2);
       if (dx || dy) for (let i = 0; i < N; i++) { this.x[i] += dx; this.y[i] += dy; this.fx[i] += dx; this.fy[i] += dy; this.mx[i] += dx; this.my[i] += dy; }
     }
-    this.H = 0; this.W = 0; this.last = 0; // Canvas neu ankern
+    this.fly.H = 0; this.stand.H = 0; this.last = 0; // Flächen neu ankern (angelegt wird nur bei neuer Pixelgröße)
     const fs = this.slots.find((s) => s.def.folge);
     if (this.fol && fs && fs.box.w) { this.fol.place(fs.box); if (this.folPts && !this.handed) this.folPts = this.fol.peek(); }
   }
 
-  /** Canvas in Seitenkoordinaten. Im Flug (und stehend) ein Fenster von 1,7 Bildschirmhöhen, das nur wandert, wenn der Rand
-   *  naht; steht ein Bild, schrumpft das Canvas auf dessen Bühne (kleine Textur, wenig Grafikzeit). */
-  anchor(wide = true): boolean {
-    const vh = innerHeight, w = html().clientWidth, doc = Math.max(html().scrollHeight, vh), d = Math.min(1.5, devicePixelRatio || 1);
+  /** Zeichenfläche wählen und in Seitenkoordinaten ankern. Flug (wide): ein Fenster von 1,7 Bildschirmhöhen über die ganze
+   *  Breite, das nur wandert, wenn der Rand naht; steht ein Bild, zeichnet die Bühnenfläche (nur so groß wie die Bühne). Wandern
+   *  heißt nur transform; neu angelegt wird eine Fläche allein bei neuer Pixelgröße. crisp: auch die Flugfläche in voller
+   *  Pixeldichte (stehende Fassung bei Pause und reduzierter Bewegung). */
+  anchor(wide = true, crisp = false): boolean {
+    const vh = innerHeight, w = html().clientWidth, doc = Math.max(html().scrollHeight, vh), full = Math.min(1.5, devicePixelRatio || 1);
     const a = this.active?.box;
-    if (!wide && a && a.w) {
-      const L = Math.max(0, Math.floor(a.x - 70)), T = Math.max(0, Math.floor(a.y - 70)), W = Math.min(w - L, Math.ceil(a.w + 140)), H = Math.min(doc - T, Math.ceil(a.h + 140));
-      if (!this.wide && this.left === L && this.top === T && this.W === W && this.H === H && this.d === d) return false;
-      this.wide = false; this.left = L; this.top = T; this.W = W; this.H = H; this.d = d;
+    const f = !wide && a && a.w ? this.stand : this.fly, prev = this.sf;
+    let L: number, T: number, W: number, H: number;
+    const d = f === this.stand || crisp ? full : 1;
+    if (f === this.stand) {
+      L = Math.max(0, Math.floor(a!.x - 70)); T = Math.max(0, Math.floor(a!.y - 70)); W = Math.min(w - L, Math.ceil(a!.w + 140)); H = Math.min(doc - T, Math.ceil(a!.h + 140));
     } else {
-      const H = Math.min(doc, Math.round(vh * 1.7));
-      const near = scrollY < this.top + vh * 0.06 || scrollY + vh > this.top + this.H - vh * 0.06;
-      if (this.wide && this.H === H && this.W === w && this.d === d && !near) return false;
-      this.wide = true; this.left = 0; this.W = w; this.H = H; this.d = d; this.top = Math.round(clamp(scrollY - (H - vh) / 2, 0, doc - H));
+      H = Math.min(doc, Math.round(vh * 1.7)); W = w; L = 0;
+      const near = scrollY < f.top + vh * 0.06 || scrollY + vh > f.top + f.H - vh * 0.06;
+      T = f.H === H && !near ? f.top : Math.round(clamp(scrollY - (H - vh) / 2, 0, doc - H));
     }
-    this.cv.width = Math.round(this.W * d); this.cv.height = Math.round(this.H * d);
-    const s = this.cv.style;
+    if (f === prev && f.left === L && f.top === T && f.W === W && f.H === H && f.d === d) return false;
+    const pw = Math.round(W * d), ph = Math.round(H * d), st = f.cv.style;
+    if (f.pw !== pw || f.ph !== ph) { f.cv.width = f.pw = pw; f.cv.height = f.ph = ph; st.width = W + 'px'; st.height = H + 'px'; f.dirty = null; }
+    else if (f.left !== L || f.top !== T || f.d !== d) { f.g.setTransform(1, 0, 0, 1, 0, 0); f.g.clearRect(0, 0, pw, ph); f.dirty = null; }
+    f.left = L; f.top = T; f.W = W; f.H = H; f.d = d;
     // Lage per transform statt left/top: Ein verschobenes Canvas zählte sonst bei jedem Mitwandern als Layout-Verschiebung
     // (CLS bis 1,0 je Scrollstrecke bei echten Besuchern; Lighthouse scrollt nicht und sah es nie)
-    s.left = '0'; s.top = '0'; s.transform = 'translate(' + this.left + 'px, ' + this.top + 'px)'; s.width = this.W + 'px'; s.height = this.H + 'px';
-    this.dirty = null;
+    st.transform = 'translate(' + L + 'px, ' + T + 'px)';
+    if (f !== prev) {
+      // Wechsel der Fläche: die andere leeren und verstecken (kein Neuanlegen)
+      prev.g.setTransform(1, 0, 0, 1, 0, 0); prev.g.clearRect(0, 0, prev.pw, prev.ph); prev.dirty = null; prev.cv.style.visibility = 'hidden';
+      st.visibility = 'visible'; this.sf = f;
+    } else st.visibility = 'visible';
     return true;
   }
 
@@ -414,10 +416,12 @@ class Himmel {
     const S = Math.min((box.w * rad) / 2 / Math.max(sc.ax, 0.2), (box.h * rad) / 2 / Math.max(sc.ay, 0.2));
     const cx = box.x + box.w / 2, cy = box.y + box.h / 2;
     // Blickwinkel: wer am Bild vorbeiscrollt, sieht es leicht von der Seite (eine Formation steht im Raum)
-    const look = stop ? 0 : clamp((cy - (scrollY + vh / 2)) / vh, -1, 1) * 0.42;
-    const yaw = look + (sc.turn && !stop ? this.spin : 0), c = Math.cos(yaw), s = Math.sin(yaw);
+    const look = stop ? 0 : clamp((cy - (scrollY + vh / 2)) / vh, -1, 1) * (sc.pose ? 0.2 : 0.42); // eine feste Ansicht nur wenig mitdrehen
+    const po = sc.pose, swing = po && !stop ? po.amp * Math.sin((performance.now() / 1000 / po.period) * Math.PI * 2) : 0;
+    const yaw = look + (sc.turn && !stop ? this.spin : 0) + (po ? po.yaw + swing : 0), c = Math.cos(yaw), s = Math.sin(yaw);
+    const pc = Math.cos(po?.pitch ?? 0), ps = Math.sin(po?.pitch ?? 0);
     for (let i = 0; i < N; i++) {
-      const j = (i < sc.n ? i : i % sc.n) * 3, X = sc.pts[j], Y = sc.pts[j + 1], Z = sc.pts[j + 2];
+      const j = (i < sc.n ? i : i % sc.n) * 3, X = sc.pts[j], Y0 = sc.pts[j + 1], Z0 = sc.pts[j + 2], Y = Y0 * pc - Z0 * ps, Z = Y0 * ps + Z0 * pc;
       const xr = X * c + Z * s, zr = -X * s + Z * c, p = 1 / (1 - zr * 0.16);
       this.tx[i] = cx + xr * S * p; this.ty[i] = cy - Y * S * p; this.tz[i] = zr;
     }
@@ -430,11 +434,12 @@ class Himmel {
     if (slot.def.folge && this.folReady && this.fol && this.burstScene && !still()) {
       slot.scene = this.burstScene; slot.want = idOf(slot.first); slot.spec = slot.first; slot.turned = false;
       const e = this.fol.enter(slot.box);
-      if (e) { this.folPts = e.pts; this.folRad = e.radius; }
+      if (e) { this.folPts = e.pts; this.folRad = e.radius / Math.min(1.5, devicePixelRatio || 1); } // Gerätepixel der Folge → CSS-Pixel
     }
     const sc = slot.scene; if (!sc) return;
     const now = performance.now();
     this.fc.set(this.cc); this.rad0 = this.rad1 || this.radius(slot.box);
+    this.ox.fill(0); this.oy.fill(0); this.ovx.fill(0); this.ovy.fill(0); // der Abflug beginnt an der sichtbaren Lage (x, y)
     this.aim(slot, sc);
     const first = !this.born, vh = innerHeight;
     let far = 0;
@@ -473,7 +478,7 @@ class Himmel {
       if (this.fol && (this.handed || this.folPts)) { this.fol.hide(); this.handed = false; this.folPts = null; }
       // Stehende Fassung: jede Bühne zeigt ihr (End-)Bild, nichts fliegt
       for (const s of this.slots) if (s.def.then && !s.turned) { s.turned = true; this.want(s, s.def.then); }
-      const moved = this.anchor(true);
+      const moved = this.anchor(true, true);
       if (moved || this.last !== -1) this.drawStill();
       this.last = -1; this.born = false; this.active = null; this.shown = null;
       return;
@@ -500,7 +505,7 @@ class Himmel {
     if (!flying && this.folPts && slot.def.folge && this.fol) { this.fol.play(); this.handed = true; this.clear(); return; }
     // Die nächste Runde war beim Anflug noch nicht gebaut: Die Blüte steht, bis sie fertig ist, dann kurzer Flug in deren Blüte
     if (!flying && !this.folPts && slot.def.folge && this.fol?.canEnter() && now - this.arrived > 300) this.go(slot, 900);
-    // Geschichte in Akten (ODYSSEY, Worte der Himmelszeile): nach einer Standzeit folgt das nächste Bild
+    // Geschichte in Akten (ODYSSEY, Formular: Datum → Countdown): nach einer Standzeit folgt das nächste Bild
     if (!flying && 'seq' in slot.spec && seen && now - this.arrived > 4200) {
       slot.seqAt = (slot.seqAt + 1) % slot.spec.seq.length; const next = slot.spec.seq[slot.seqAt], want = slot.want;
       this.arrived = now + 1e6; // wartet auf die geladene Szene
@@ -510,8 +515,11 @@ class Himmel {
     const inView = slot.box.y > scrollY + vh * 0.04 && slot.box.y + slot.box.h < scrollY + vh * 0.96;
     if (!flying && slot.def.then && !slot.turned && inView && now - this.arrived > 1600 && !(slot.def.folge && this.folReady)) { slot.turned = true; this.want(slot, slot.def.then); }
     const since = this.arrived ? (now - this.arrived) / 1000 : 0, wave = this.arrived && since >= 0 ? ((since % 9) / 1.7) * 1.5 - 0.25 : -9;
-    const near = clamp(1 - (now - this.pt) / 900);
-    let busy = flying || near > 0;
+    // Verdrängung nur am stehenden Bild; im Flug ruht sie (der Abflug startet dort, wo jede Drohne gerade ist)
+    const P = !flying && this.ptr ? { x: this.ptr.x + scrollX, y: this.ptr.y + scrollY } : null;
+    let busy = flying, stir = 0;
+    // Wirkradius nach Bühnengröße: im flachen Schriftzug über dem Formular rund 56 px, an großen Bildern 110 px wie in der Scrollstory
+    const reach = clamp(Math.min(slot.box.w, slot.box.h) * 0.4, 56, 110), push = 2600 * (reach / 110), lim = reach * 0.55;
     for (let i = 0; i < N; i++) {
       const lit = i < sc.n ? 0.86 + 0.14 * (this.tz[i] + 1) / 2 : 0;
       let bright = lit;
@@ -532,16 +540,27 @@ class Himmel {
           else bright = this.fb[i] > 0.05 ? Math.max(0.07, this.fb[i] * (1 - u * 3)) : 0;
         }
       } else {
-        this.x[i] = this.tx[i]; this.y[i] = this.ty[i];
+        if (i < sc.n && dt) {
+          const K = 7, C = 2 * Math.sqrt(K) * 0.8; // Feder zurück an den Platz, leicht unterkritisch gedämpft
+          let vx = this.ovx[i] + (-K * this.ox[i] - C * this.ovx[i]) * dt, vy = this.ovy[i] + (-K * this.oy[i] - C * this.ovy[i]) * dt;
+          if (P) { const mx = this.tx[i] + this.ox[i] - P.x, my = this.ty[i] + this.oy[i] - P.y, md = Math.hypot(mx, my); if (md < reach && md > 0.1) { const f = (1 - md / reach) ** 2 * push * dt; vx += (mx / md) * f; vy += (my / md) * f; } }
+          this.ovx[i] = vx; this.ovy[i] = vy; this.ox[i] = clamp(this.ox[i] + vx * dt, -lim, lim); this.oy[i] = clamp(this.oy[i] + vy * dt, -lim, lim);
+          stir = Math.max(stir, Math.abs(this.ox[i]) + Math.abs(this.oy[i]) + Math.abs(vx) + Math.abs(vy));
+        }
+        this.x[i] = this.tx[i] + this.ox[i]; this.y[i] = this.ty[i] + this.oy[i];
         // Lichtlauf: zusätzliche Helligkeit läuft die Linien der Form entlang, die Form bleibt voll hell
         if (wave > -1 && i < sc.n) { const dd = sc.rank[i] - wave; bright += 0.75 * Math.min(1, since / 0.6) * Math.exp(-(dd * dd) / 0.012); }
-        if (near && i < sc.n) { const ddx = this.x[i] - this.px, ddy = this.y[i] - this.py; bright += 0.9 * near * Math.exp(-(ddx * ddx + ddy * ddy) / 3600); }
+        // Augen der Maske glühen wie in der Show (show-scenes.js → devilBeat), sanft pulsierend
+        if (sc.pose && i < sc.n) { const q = i * 3; if (sc.col[q] > 200 && sc.col[q + 1] > 100 && sc.col[q + 2] < 160) bright = 1.35 + 0.35 * Math.abs(Math.sin(T * 1.5)); }
       }
       this.b[i] = bright;
     }
     this.draw(sc, flying ? u : 1);
     if (!seen) return;
-    if (!busy) busy = sc.turn || (wave > -0.3 && wave < 1.35) || 'seq' in slot.spec || (!!slot.def.then && !slot.turned);
+    // in Bewegung, solange der Zeiger nahe ist oder eine Drohne noch zurückschwingt
+    if (P && P.x > slot.box.x - 120 && P.x < slot.box.x + slot.box.w + 120 && P.y > slot.box.y - 120 && P.y < slot.box.y + slot.box.h + 120) busy = true;
+    if (stir > 0.05) busy = true;
+    if (!busy) busy = sc.turn || !!sc.pose || (wave > -0.3 && wave < 1.35) || 'seq' in slot.spec || (!!slot.def.then && !slot.turned);
     if (busy) this.kick(); else { const wait = (9 - (since % 9)) * 1000; setTimeout(() => this.kick(), Math.min(wait, 9000)); }
   }
 
@@ -573,26 +592,28 @@ class Himmel {
   }
 
   clear() {
-    const { g } = this; g.setTransform(1, 0, 0, 1, 0, 0);
-    if (this.dirty) g.clearRect(this.dirty[0] - 2, this.dirty[1] - 2, this.dirty[2] - this.dirty[0] + 4, this.dirty[3] - this.dirty[1] + 4); else g.clearRect(0, 0, this.cv.width, this.cv.height);
-    this.dirty = [Infinity, Infinity, -Infinity, -Infinity];
+    const f = this.sf, { g } = f; g.setTransform(1, 0, 0, 1, 0, 0);
+    if (f.dirty) { if (f.dirty[2] > f.dirty[0]) g.clearRect(f.dirty[0] - 2, f.dirty[1] - 2, f.dirty[2] - f.dirty[0] + 4, f.dirty[3] - f.dirty[1] + 4); } else g.clearRect(0, 0, f.pw, f.ph);
+    f.dirty = [Infinity, Infinity, -Infinity, -Infinity];
   }
+  /** rad in CSS-Pixeln; die Fläche rechnet in ihre Pixeldichte um (Sprites in Viertelpixel-Stufen). */
   dot(xp: number, yp: number, br: number, r: number, gg: number, b: number, rad: number) {
-    const { g, d, dirty } = this, X = (xp - this.left) * d, Y = (yp - this.top) * d;
-    if (Y < -40 || Y > this.cv.height + 40 || br < 0.02) return;
-    const sp = sprite(r, gg, b, rad, false);
+    const f = this.sf, { g, d, dirty } = f, X = (xp - f.left) * d, Y = (yp - f.top) * d;
+    if (Y < -40 || Y > f.ph + 40 || br < 0.02) return;
+    const px = Math.max(1, Math.round(rad * d * 4) / 4), sp = sprite(r, gg, b, px, false);
     g.globalAlpha = Math.min(1, br); g.drawImage(sp.c, X - sp.R, Y - sp.R);
     let R = sp.R;
-    if (br > 1.02) { const hot = sprite(r, gg, b, rad, true); g.globalAlpha = Math.min(1, br - 1); g.drawImage(hot.c, X - hot.R, Y - hot.R); R = hot.R; }
+    if (br > 1.02) { const hot = sprite(r, gg, b, px, true); g.globalAlpha = Math.min(1, br - 1); g.drawImage(hot.c, X - hot.R, Y - hot.R); R = hot.R; }
     if (dirty) { dirty[0] = Math.min(dirty[0], X - R); dirty[1] = Math.min(dirty[1], Y - R); dirty[2] = Math.max(dirty[2], X + R); dirty[3] = Math.max(dirty[3], Y + R); }
   }
-  radius(box: Box) { return Math.max(1, Math.round((box.w < 320 ? 1.5 : 1.9) * this.d * 4) / 4); }
+  /** Lichtgröße in CSS-Pixeln. */
+  radius(box: Box) { return box.w < 320 ? 1.5 : 1.9; }
   /** u: Fortschritt des Flugs (1 = steht). Farbe und Lichtgröße wandern vom letzten Bild zum neuen (keine Sprünge, auch nicht
    *  bei der Übergabe an die Show-Folge, deren Lichter etwas größer sind). */
   draw(sc: Scene, u = 1) {
     this.clear();
-    const { g, cc, fc, cw } = this, goal = this.folPts && this.active?.def.folge ? this.folRad : this.radius(this.active!.box);
-    const rad = this.rad1 = u >= 1 || !this.rad0 ? goal : Math.round((this.rad0 + (goal - this.rad0) * u) * 4) / 4;
+    const { cc, fc, cw } = this, { g } = this.sf, goal = this.folPts && this.active?.def.folge ? this.folRad : this.radius(this.active!.box);
+    const rad = this.rad1 = u >= 1 || !this.rad0 ? goal : this.rad0 + (goal - this.rad0) * u;
     g.globalCompositeOperation = 'lighter';
     for (let i = 0; i < N; i++) {
       const j = (i < sc.n ? i : i % sc.n) * 3, q = i * 3, w = cw[i];
@@ -605,11 +626,11 @@ class Himmel {
   /** Stehende Fassung: jede Bühne im Fenster zeigt ihr Bild. */
   drawStill() {
     this.clear();
-    const { g } = this;
+    const { g, top, H } = this.sf;
     g.globalCompositeOperation = 'lighter';
     for (const s of this.slots) {
       const sc = s.scene; if (!sc || !s.box.w) continue;
-      if (s.box.y + s.box.h < this.top || s.box.y > this.top + this.H) continue;
+      if (s.box.y + s.box.h < top || s.box.y > top + H) continue;
       this.aim(s, sc);
       const rad = this.radius(s.box);
       for (let i = 0; i < sc.n; i++) this.dot(this.tx[i], this.ty[i], 1, sc.col[i * 3], sc.col[i * 3 + 1], sc.col[i * 3 + 2], rad);
@@ -670,9 +691,9 @@ const packs: React = (slot, on) => {
 
 /** Texte am Himmel (Entwürfe, nicht mit FlyingStars abgestimmt). */
 const SKY = {
-  de: { ex: ['JA', '25 JAHRE', 'KÖLN', 'DANKE'], start: 'EURE SHOW', days: (n: number) => `NOCH ${n} TAGE`, thanks: 'DANKE' },
-  en: { ex: ['YES', '25 YEARS', 'COLOGNE', 'THANK YOU'], start: 'YOUR SHOW', days: (n: number) => `${n} DAYS TO GO`, thanks: 'THANK YOU' },
-  nl: { ex: ['JA', '25 JAAR', 'KEULEN', 'BEDANKT'], start: 'JULLIE SHOW', days: (n: number) => `NOG ${n} DAGEN`, thanks: 'BEDANKT' },
+  de: { start: 'EURE SHOW', days: (n: number) => `NOCH ${n} TAGE`, thanks: 'DANKE' },
+  en: { start: 'YOUR SHOW', days: (n: number) => `${n} DAYS TO GO`, thanks: 'THANK YOU' },
+  nl: { start: 'JULLIE SHOW', days: (n: number) => `NOG ${n} DAGEN`, thanks: 'BEDANKT' },
 };
 const clean = (v: string, max = 24) => v.replace(/[^\p{L}\p{N} .&-]/gu, '').replace(/\s+/g, ' ').trim().slice(0, max);
 
@@ -699,31 +720,9 @@ const form: React = (slot, on) => {
       lastText = `${d}.${mo}.${y.slice(2)}`; after = days > 0 && days < 1500 ? SKY[lang()].days(days) : ''; show();
     } }
   };
-  // Aus der Himmelszeile mitgenommen
-  document.addEventListener('hm:text', (e) => { lastText = clean((e as CustomEvent<string>).detail, 18); after = ''; show(); });
   // Abgeschickt: Der Himmel bedankt sich beim Namen, danach steht der Stern
   window.addEventListener('flyingstars:lead-confirmed', () => { const first = clean(f.querySelector<HTMLInputElement>('#f-name')?.value ?? '', 30).split(' ')[0].slice(0, 10).toUpperCase(); on({ seq: [word(`${SKY[lang()].thanks} ${first}`.trim()), { motif: 'stern', budget: N }] }); });
   f.addEventListener('input', h); f.addEventListener('change', h);
-};
-
-/** Himmelszeile: ein eigener Abschnitt nach den Kundenlogos. Wer etwas eintippt, sieht es als Formation. */
-const big = () => (innerWidth < 700 ? 140 : N);
-/** Vor dem ersten Tastendruck zeigt die Himmelszeile, was am Himmel stehen kann: Worte und Bilder im Wechsel. */
-const examples = (): Spec => {
-  const t = SKY[lang()].ex.map((text): Spec => ({ text, count: big() }));
-  const pics: Spec[] = ['eheringe', 'sektflasche'].map((motif) => ({ motif, budget: big() }));
-  return { seq: [t[0], pics[0], t[1], pics[1], ...t.slice(2)] };
-};
-const zeileReact: React = (slot, on) => {
-  const input = slot.host.querySelector<HTMLInputElement>('input')!, formEl = slot.host.querySelector<HTMLFormElement>('form')!;
-  let t = 0;
-  input.addEventListener('input', () => { clearTimeout(t); t = window.setTimeout(() => {
-    const v = clean(input.value), pic = v ? motifFor(v) : null;
-    if (!v) on(examples()); else if (pic) on({ seq: [{ text: v, count: big() }, { motif: pic, budget: big() }] }); else on({ text: v, count: big() });
-  }, 420); });
-  const carry = () => { const v = clean(input.value); if (v) document.dispatchEvent(new CustomEvent('hm:text', { detail: v })); };
-  formEl.addEventListener('submit', (e) => { e.preventDefault(); carry(); document.querySelector('#anfrage')?.scrollIntoView({ behavior: still() ? 'auto' : 'smooth' }); });
-  slot.host.querySelector('a')!.addEventListener('click', carry);
 };
 
 /* ---------- Bühnenplan ---------- */
@@ -735,12 +734,11 @@ function plan(): SlotDef[] {
   const p = path();
   // Startseite: Die Show läuft vom Kopf bis zur Anfrage. Ohne Bild: #darum, #sicherheit, #nachhaltigkeit, #ablauf, #faq.
   if (p === '/') return [
-    { sel: 'main #kundinnen', place: 'zeile', spec: examples, react: zeileReact },
     { sel: '#anlaesse', place: 'head', deskOnly: true, spec: { motif: 'anstossen' }, react: anlaesse },
     // Show-Folge: Blüte, dann SPARK → HORIZON → ODYSSEY in Runden (folge.js); stehend (Pause, reduzierte Bewegung) der Stern
     { sel: '#warum-drohnen', place: 'head', folge: true, spec: { burst: true }, then: { motif: 'stern', budget: N } },
     // Referenzen: die Maske aus der Bokkenrijders-Show (erstes Referenzbild), statt der Galaxie (Marc, 18.11.: Spirale „zu lame“)
-    { sel: '#projekte', place: 'head', deskOnly: true, spec: { figure: 'bokkenrijders' } },
+    { sel: '#projekte', place: 'head', deskOnly: true, spec: { figure: 'bokkenrijders' }, up: 190, tall: 440, max: 540 },
     { sel: '#preise', place: 'head', spec: priceSpec, react: packs, when: priceRoom },
     { sel: '#ueber', place: 'head', deskOnly: true, spec: { motif: 'smiley' } },
     FORM,

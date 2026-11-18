@@ -6,7 +6,7 @@ function request(fields) {
   for (const [key,value] of Object.entries(fields)) data.set(key,value);
   return new Request('https://example.test/api/contact',{method:'POST',headers:{Accept:'application/json'},body:data});
 }
-const details = {name:'Marc',email:'marc@example.test',anlass:'firma',datum:'2026-12-01',ort:'Osnabrück',paket:'HORIZON',drohnen:'220',telefon:'01234'};
+const details = {name:'Marc',email:'marc@example.test',anlass:'firma',datum:'2026-12-01',ort:'Osnabrück',paket:'HORIZON',drohnen:'194',telefon:'01234'};
 test('Unconfigured inquiry accepts reference fields and reports that nothing was sent',async()=>{
  const result=await onRequestPost({request:request(details),env:{}});
  assert.equal(result.status,200);assert.deepEqual(await result.json(),{ok:true,state:'not-configured'});

@@ -3,7 +3,7 @@ import {factText} from '../../content/show-extras.mjs';
 import IconFeature from '../IconFeature.astro';
 import { forPath } from '../../i18n/server';
 const { localHref, locale } = forPath(Astro.url.pathname);
-// Kacheln mit einer Hauptkachel (Bild mit Titel darauf oder eine große Aussage) und bis zu vier kleineren Icon-Kacheln. Bricht die Folge aus Text-Bild-Blöcken auf (Marc, 31.10.2026: „mehr Variation in den Layouts“).
+// Kacheln mit einer Hauptkachel (große Aussage mit Icon; ein Bild kommt nur aus der Ecke rechts unten herein, Marc 18.11.2026) und bis zu vier kleineren Icon-Kacheln. Bricht die Folge aus Text-Bild-Blöcken auf (Marc, 31.10.2026: „mehr Variation in den Layouts“).
 // Optional unten ein Textlink (cta) oder ein Abschluss-Kasten (closing, CtaBox.astro).
 // Icons: Lucide über src/components/Icon.astro (`icon` je Kachel, `lead.icon` für die Aussage ohne Bild).
 import type { Section } from '../../content.config';
@@ -24,7 +24,7 @@ const img = lead.image ? await optimizedImage(lead.image.src, 960, 720) : undefi
     <article class:list={['lb-lead', { 'has-img': img }]} data-dot-host={img ? '' : undefined}>
       {img && <div class="lb-img" data-curtain data-dot-img><img src={img.src} width={img.width} height={img.height} alt={lead.image!.alt} loading="lazy" decoding="async" /></div>}
       <div class="lb-lead-copy">
-        {!img && lead.icon && <Icon name={lead.icon} size={40} class="g lb-lead-ico" />}
+        {lead.icon && <Icon name={lead.icon} size={40} class="g lb-lead-ico" />}
         {img && lead.label && <span class="mono lb-k">{lead.label}</span>}
         <T><Accent text={lead.title} /></T>
         {lead.text && <p>{lead.text}</p>}
@@ -40,16 +40,19 @@ const img = lead.image ? await optimizedImage(lead.image.src, 960, 720) : undefi
 <style>
   .lb-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: minmax(12.5rem, auto); gap: clamp(var(--space-3), 1.4vw, var(--space-5)); }
   .lb-lead { grid-column: span 2; grid-row: span 2; position: relative; border-radius: var(--radius); overflow: hidden; background: var(--surface-2); border: 1px solid var(--line); display: grid; align-content: end; min-height: 26.25rem; }
-  .lb-lead.has-img { border: 0; }
   /* Aussage ohne Bild: ruhiges Raster aus Lichtpunkten, nach oben rechts ausblendend, wie Drohnen am Boden vor dem Start */
   .lb-lead:not(.has-img)::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(circle, rgb(var(--rgb-amber) / 0.5) 0.0625rem, transparent 0.1rem); background-size: 1.375rem 1.375rem; -webkit-mask-image: radial-gradient(120% 90% at 100% 0%, #000, transparent 62%); mask-image: radial-gradient(120% 90% at 100% 0%, #000, transparent 62%); opacity: 0.55; pointer-events: none; }
-  .lb-img { position: absolute; inset: 0; --curtain-r: var(--radius); }
-  .lb-img img { width: 100%; height: 100%; object-fit: cover; }
-  .lb-lead.has-img::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, rgb(var(--rgb-ground) / 0.86)); pointer-events: none; z-index: 1; }
+  /* Bild in der Hauptkachel (Marc, 18.11.2026: „nicht full width, sondern nur auf einer Ecke so reinkommen, und dass wir
+     dann immer noch primär mit einem Icon arbeiten“): Icon, Titel und Text oben links tragen die Kachel, das Foto steht
+     rechts unten und läuft mit einer weichen Viertelkreis-Maske ins Kartendunkel aus. Nie hinter dem Text. */
+  .lb-lead.has-img { align-content: start; }
+  /* lighten: das Schwarz des Nachtfotos wird nie dunkler als die Karte, es stehen nur die Lichter darauf; die Maske läuft
+     bis zur linken und oberen Bildkante ganz aus, damit sich kein Rechteck abzeichnet */
+  .lb-img { position: absolute; right: 0; bottom: 0; width: 72%; height: 78%; z-index: 0; --curtain-r: 0rem; mix-blend-mode: lighten; -webkit-mask-image: radial-gradient(100% 100% at 100% 100%, #000 30%, rgb(0 0 0 / 0.6) 58%, transparent 96%); mask-image: radial-gradient(100% 100% at 100% 100%, #000 30%, rgb(0 0 0 / 0.6) 58%, transparent 96%); }
+  .lb-img img { width: 100%; height: 100%; object-fit: cover; object-position: 60% 60%; }
   .lb-lead-copy { position: relative; z-index: 2; display: grid; gap: var(--space-3); justify-items: start; padding: clamp(var(--space-6), 3vw, var(--space-11)); }
   .lb-lead h2, .lb-lead h3 { font-size: clamp(1.75rem, 3.2vw, 3rem); line-height: 1.04; letter-spacing: -0.03em; max-width: 16ch; }
   .lb-lead p { color: var(--muted); max-width: 44ch; margin: 0; }
-  .lb-lead.has-img p { color: var(--ink-prominent); }
   .lb-k { color: var(--accent); }
   .lb-cell { border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); padding: clamp(var(--space-5-5), 2.4vw, var(--space-8)); display: grid; gap: var(--space-2-5); align-content: start; }
   /* zwei Kacheln: je eine ganze Zeile rechts; drei: die letzte rechts unten über zwei Spalten */
@@ -74,5 +77,8 @@ const img = lead.image ? await optimizedImage(lead.image.src, 960, 720) : undefi
     .lb-grid { grid-template-columns: 1fr; grid-auto-rows: auto; }
     .lb-grid .lb-cell, .lb-grid[data-n] .lb-cell { grid-column: auto; grid-row: auto; }
     .lb-lead { min-height: 21.25rem; }
+    /* schmal: das Bild bekommt unter dem Text eigenen Platz, statt hinter die Zeilen zu laufen */
+    .lb-lead.has-img .lb-lead-copy { padding-bottom: 11rem; }
+    .lb-img { width: 100%; height: 13rem; }
   }
 </style>

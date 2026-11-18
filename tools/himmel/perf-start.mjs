@@ -4,12 +4,11 @@
 //     der Videodatei; Lighthouse mobil maß dafür 3,7 statt 2,1 s).
 //  2. Vor dem LCP startet kein Request für Schwarm, Show-Folge oder (außer auf der Preisseite) Katalog-Formationen.
 //  3. Durchscrollen der Startseite erzeugt höchstens 0,1 CLS (das mitwandernde Canvas erzeugte vorher 5–8).
+//  4. An keiner Section-Grenze der Startseite ruckelt es (Frames, Long Tasks; siehe unten und tools/himmel/grenzen.mjs).
 // Zeiten unter Last schwanken; geprüft wird die Struktur. Die Lighthouse-Werte stehen in docs/himmel.md.
-import { createServer } from 'node:http';
-import { createReadStream, existsSync, statSync } from 'node:fs';
-import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
+import { measure, serveDist, table } from './grenzen.mjs';
 
 const PAGES = ['/', '/drohnenshow-werbung/', '/drohnenshow-preise/'];
 // Was erst nach dem ersten Bild laden darf. Die Preisseite lädt ihren Konfigurator (eigene Szenen und Katalogdaten) bewusst
@@ -17,27 +16,8 @@ const PAGES = ['/', '/drohnenshow-werbung/', '/drohnenshow-preise/'];
 const LATE = /\/(schwarm|folge)\.[\w-]+\.js$|\/media\/himmel\//, LATE_SHOW = /\/(scenes|show-scenes)\.[\w-]+\.js$|\/media\/katalog\//;
 const lateRe = (path) => (path === '/drohnenshow-preise/' ? LATE.source : `${LATE.source}|${LATE_SHOW.source}`);
 // Eigener kleiner Server für dist/ (astro preview läuft je Projekt nur einmal), mit Range-Anfragen fürs Video
-const DIST = fileURLToPath(new URL('../../dist/', import.meta.url));
-const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.avif': 'image/avif', '.jpg': 'image/jpeg', '.png': 'image/png', '.woff2': 'font/woff2', '.mp4': 'video/mp4', '.webm': 'video/webm', '.xml': 'application/xml' };
-function serve(req, res) {
-  let file = join(DIST, normalize(decodeURIComponent(new URL(req.url, 'http://x').pathname)));
-  if (!file.startsWith(DIST)) { res.writeHead(403).end(); return; }
-  if (existsSync(file) && statSync(file).isDirectory()) file = join(file, 'index.html');
-  if (!existsSync(file)) { res.writeHead(404).end(); return; }
-  const size = statSync(file).size, type = TYPES[extname(file)] ?? 'application/octet-stream', range = /bytes=(\d*)-(\d*)/.exec(req.headers.range ?? '');
-  if (range) {
-    const start = range[1] ? +range[1] : size - +range[2], end = range[1] && range[2] ? +range[2] : size - 1;
-    res.writeHead(206, { 'content-type': type, 'accept-ranges': 'bytes', 'content-range': `bytes ${start}-${end}/${size}`, 'content-length': end - start + 1 });
-    createReadStream(file, { start, end }).pipe(res);
-  } else { res.writeHead(200, { 'content-type': type, 'accept-ranges': 'bytes', 'content-length': size }); createReadStream(file).pipe(res); }
-}
 let base = process.argv[2], server;
-if (!base) {
-  if (!existsSync(join(DIST, 'index.html'))) throw new Error('dist/ fehlt: vorher npm run build');
-  server = createServer(serve);
-  await new Promise((r) => server.listen(0, '127.0.0.1', r));
-  base = `http://127.0.0.1:${server.address().port}`;
-}
+if (!base) { server = await serveDist(fileURLToPath(new URL('../../dist/', import.meta.url))); base = server.base; }
 const fail = [];
 const browser = await chromium.launch();
 try {
@@ -77,6 +57,17 @@ try {
   }
 } finally {
   await browser.close();
-  server?.close();
 }
+// 4. Section-Grenzen der Startseite (Runde 5, Marc: „beim Wechsel von einer Section zur nächsten … mega kacke“): zeitgesteuert
+//    durchscrollen, Chromium mit GPU, CPU 4×, 1440 px. Je Grenze höchstens ein ausgelassener Frame (rAF ≤ 34 ms bei 60 Hz;
+//    33,4 ms = genau ein Frame zu spät), p95 im Takt, keine Long Tasks > 50 ms. WebKit (Safari) lässt sich nicht drosseln und
+//    schwankt mit der Last der Maschine; dessen Messung steht in docs/himmel.md (node tools/himmel/grenzen.mjs --engines webkit).
+try {
+  const rows = (await measure(base, { engines: ['chromium'], widths: [1440], runs: 1, cpu: 4 })).filter((r) => r.kind === 'Grenze');
+  console.log('\n' + table(rows));
+  for (const r of rows) {
+    if (r.max > 34 || r.p95 > 17.5) fail.push(`Grenze ${r.key}: Frames p95 ${r.p95} / max ${r.max} ms (Budget p95 17,5 / max 34 ms)`);
+    if (r.lt) fail.push(`Grenze ${r.key}: ${r.lt} Long Tasks > 50 ms (längster ${Math.round(r.ltMax)} ms)`);
+  }
+} finally { server?.close(); }
 if (fail.length) { console.error('\n' + fail.join('\n')); process.exitCode = 1; } else console.log('\nLadeprüfung bestanden.');

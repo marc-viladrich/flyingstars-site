@@ -107,7 +107,10 @@ export const playable = (m, pkg, drones) => Boolean(m.tiers[pkg]) && (m.tiers[pk
 /** Paket, dessen Bereich die Drohnenzahl enthält (wie packageForDrones in show-packages.ts, hier ohne TS-Import im Skript). */
 const pkgOf = (drones) => PACKAGE_ORDER.find((p) => drones <= DRONE_RANGES[p].max) ?? PACKAGE_ORDER[PACKAGE_ORDER.length - 1];
 /** Ab welcher Drohnenzahl über `drones` hinaus das Motiv spielt (auf dem ganzen Regler); null, wenn es schon spielt. */
-export function unlockAt(m, drones) {
+// Runde 5 (Show-Art): mit `tier` gilt die Fassung der gewählten Art der Show (2D = SPARK, 3D = HORIZON, Storytelling =
+// ODYSSEY) über den ganzen Regler, unabhängig vom früheren Drohnenbereich des Pakets.
+export function unlockAt(m, drones, tier) {
+  if (tier) { const at = m.tiers[tier]?.minDrones; return at !== undefined && at > drones ? at : null; }
   if (playable(m, pkgOf(drones), drones)) return null;
   const at = PACKAGE_ORDER.filter((p) => m.tiers[p]).map((p) => Math.max(m.tiers[p].minDrones ?? 0, DRONE_RANGES[p].min)).filter((c) => c > drones && pkgOf(c) && c <= DRONE_RANGES[pkgOf(c)].max);
   return at.length ? Math.min(...at) : null;

@@ -185,6 +185,25 @@ sections:
         href: https://www.waz.de/lokales/duisburg/article409722481/ruhrorter-hafenfest-die-geheimnisse-hinter-dem-neuen-highlight.html
         note: Ruhrorter Hafenfest
         _key: k_af6d26f3bd912a26bb0f
+      - name: heise online
+        logo: /brand/logos/presse-heise.svg
+        cleared: true
+        knock: false
+        note: "Technische innovatie"
+        _key: k_5e1f0a7c3b9d24e8a611
+      - name: NDR
+        logo: /brand/logos/presse-ndr.svg
+        cleared: true
+        knock: false
+        note: "Hallo Niedersachsen"
+        _key: k_8c2d4f6a1e3b5d7f9a02
+      - name: Tagesspiegel
+        logo: /brand/logos/presse-tagesspiegel.svg
+        cleared: true
+        knock: false
+        href: https://www.tagesspiegel.de/berlin/drohnen-statt-boller-deutsche-umwelthilfe-zeigt-alternative-zum-berliner-silvester-feuerwerk-10846906.html
+        note: "#BÖLLERCIAO"
+        _key: k_3a7e9c1b5d2f4a6c8e13
     quality: []
     _key: k_48c987e8cc523f41aa47
   - type: landingBento
@@ -192,6 +211,7 @@ sections:
     kicker: Gelegenheden
     headline: Het *hoogtepunt* van elk feest
     lead:
+      icon: presentation
       label: Bedrijven
       title: Presenteer producten spectaculair
       text: Motieven op maat met logo's, claims en meer in jullie kleuren.
@@ -522,6 +542,7 @@ sections:
     cta:
       label: Alle referenties
       href: /referenzen/
+    gallery: indoor
     _key: k_47a98888ed554656bbf5
   - type: team
     id: ueber
@@ -560,12 +581,12 @@ sections:
       - indoor-moritz
     _key: k_b9b4c25755db13474604
 translationContractVersion: 2
-translationSourceHash: 0c7fb8b70aa4edc7ca29196fc6aac3b2be228086c102ac348bb98c31a5e8ae97
+translationSourceHash: e9c6996d80cb525c10226afc5f302b97e35ed466b64eda7981b49b05c3774b8a
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 0c7fb8b70aa4edc7ca29196fc6aac3b2be228086c102ac348bb98c31a5e8ae97
+  sourceFingerprint: e9c6996d80cb525c10226afc5f302b97e35ed466b64eda7981b49b05c3774b8a
   fields:
     - address: /description
       sourceFingerprint: 5d7a47a66e130654aaf32af5051cbe4cd04ae04b11e51948b197e3b71a375cf0
@@ -1199,6 +1220,14 @@ translationEvidence:
       sourceFingerprint: 0565c9b2741f42408192dc2d253be56c9c5ab3764f2668b55aaee9bf8a25d6e2
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
+    - address: /sections/@k_48c987e8cc523f41aa47/pressItems/@k_3a7e9c1b5d2f4a6c8e13/name
+      sourceFingerprint: 44a7d8f37014ca4448966fbb09d5b25cdc33428ede7168eba866fa18609fc379
+      targetFingerprint: f661b3370f0aba650701d8fd2ca0d9abfb0fa9e8acdbed451de52198575f426d
+      status: adopted-existing
+    - address: /sections/@k_48c987e8cc523f41aa47/pressItems/@k_3a7e9c1b5d2f4a6c8e13/note
+      sourceFingerprint: 9139decb1502f60acb4bc4957959c43e1d7c2d008ec43a31773b824898967718
+      targetFingerprint: 320a7430e9faea7941e60573c69a850006349f48c55b147daa32ccaf98e759f9
+      status: adopted-existing
     - address: /sections/@k_48c987e8cc523f41aa47/pressItems/@k_4791d0a73285012bba9c/name
       sourceFingerprint: 32ee99842558f5c8517fb72f61555162a1d8cc31367d05dfadba99d9de302c34
       targetFingerprint: cfb7f0f3cdec33993ec1c2c7febcd56cdca6ecbc8819095aff8b78e22d5764bb
@@ -1206,6 +1235,22 @@ translationEvidence:
     - address: /sections/@k_48c987e8cc523f41aa47/pressItems/@k_4791d0a73285012bba9c/note
       sourceFingerprint: 4d8ac36baa2b9956203bbc2d1dfd289af0116a7b8369c8beb01b10ec8953a4fc
       targetFingerprint: 104fc8905cf538f84c7e63c81c2e3125c2e79f40f4bd3aa552eda6da0ff6551a
+      status: adopted-existing
+    - address: /sections/@k_48c987e8cc523f41aa47/pressItems/@k_5e1f0a7c3b9d24e8a611/name
+      sourceFingerprint: 28b17f7b93d35d9d24e653afa3bbf394bec076db6624da58f997b13644edf9d6
+      targetFingerprint: 4dcb92ad9e5a1c8918e88238f397f4dc936c7bc4dac178c55af41497f5c494aa
+      status: adopted-existing
+    - address: /sections/@k_48c987e8cc523f41aa47/pressItems/@k_5e1f0a7c3b9d24e8a611/note
+      sourceFingerprint: 4702ec783f60cd33732cc1c071afb56dbe6a951b8607f74f2439fe97791eb70b
+      targetFingerprint: 0cc7092cfedee066f57d8c130e7aa39ae9fd525ed89d994b12177519028397a3
+      status: adopted-existing
+    - address: /sections/@k_48c987e8cc523f41aa47/pressItems/@k_8c2d4f6a1e3b5d7f9a02/name
+      sourceFingerprint: 8549f177faa93ab35eff376d5ff4eac9e05e8818558f8defd56b3c27f93f6d63
+      targetFingerprint: 219ee04c6f29864b6f78e47a5f3080bc6b04147104cae1cdae5addc959bf22c8
+      status: adopted-existing
+    - address: /sections/@k_48c987e8cc523f41aa47/pressItems/@k_8c2d4f6a1e3b5d7f9a02/note
+      sourceFingerprint: 020d6963198bc9c88e355f8d0f95531eca70a836249a9f1031486d9dae3623eb
+      targetFingerprint: f15bc76bde350f34747d99450d22fa56d3812e7a4dd5b5badd2938e45f54b308
       status: adopted-existing
     - address: /sections/@k_48c987e8cc523f41aa47/pressItems/@k_af6d26f3bd912a26bb0f/name
       sourceFingerprint: 8118c1ca8403849289bb2e60a6a9a7cfccde60f5f47851098f9c4c5d3f94338b

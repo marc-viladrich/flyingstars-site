@@ -91,7 +91,7 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     pillarsRef: fieldPolicy(z.literal('sustainability-pillars').optional().describe('Gemeinsame Nachhaltigkeitspunkte'), 'shared'),
     proofImage: image.optional(), proofText: fieldPolicy(z.string().optional(), 'translatable'), campaign: fieldPolicy(z.string().optional(), 'translatable'),
     image: image.optional().describe('Foto neben der Einleitung (z. B. #Böllerciao), mit Vorhang-Reveal'),
-    gallery: fieldPolicy(z.enum(['logos', 'willkommen']).optional().describe('Bildgalerie statt Foto neben der Einleitung (Sätze in public/media/galerie)'), 'shared'),
+    gallery: fieldPolicy(z.enum(['logos', 'willkommen', 'engagement', 'indoor']).optional().describe('Bildgalerie statt Foto neben der Einleitung (Sätze in public/media/galerie)'), 'shared'),
     cta: link.optional().describe('Weiterführender Link unter der Einleitung'),
     icon: fieldPolicy(z.string().min(1).optional().describe('Lucide-Name: Kachel mit Icon und Punktmuster statt Foto neben der Einleitung'), 'shared'),
     show: fieldPolicy(z.enum(['indoor']).optional().describe('Drohnen-Animation neben der Einleitung statt Foto oder Icon-Kachel (Indoor-Reihe, scripts/himmel/folge.js)'), 'shared'),
@@ -111,7 +111,7 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     headline: fieldPolicy(z.string().min(1), 'translatable'),
     body: fieldPolicy(z.string().min(1).describe('Markdown erlaubt').meta({'x-afe': {format: 'markdown'}}), 'translatable'),
     image: image.optional(),
-    gallery: fieldPolicy(z.enum(['logos', 'willkommen']).optional().describe('Bildgalerie statt Bild: Text links schmal, Galerie groß daneben (Sätze in public/media/galerie)'), 'shared'),
+    gallery: fieldPolicy(z.enum(['logos', 'willkommen', 'engagement', 'indoor']).optional().describe('Bildgalerie statt Bild: Text links schmal, Galerie groß daneben (Sätze in public/media/galerie)'), 'shared'),
     mediaSide: fieldPolicy(z.enum(['left', 'right']).default('right'), 'shared'),
     headAbove: fieldPolicy(z.boolean().optional().describe('Kopf über voller Breite, darunter Text und Bild nebeneinander'), 'shared'),
     cta: link.optional().describe('Weiterführender Link unter dem Text'),
@@ -418,7 +418,7 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     // Überschrift, Text. strict(), damit label/value nicht unbemerkt zurückkommen. Die Zeile über dem Titel gibt es nur
     // noch auf der Bildkachel (z. B. Kund:innen auf dem Foto), nicht neben einem Icon.
     lead: z.object({ label: fieldPolicy(z.string().optional().describe('Nur mit image'), 'translatable'), title: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'), image: image.optional(),
-      icon: fieldPolicy(z.string().optional().describe('Lucide-Name, nur für die Aussage ohne Bild'), 'shared') }).strict()
+      icon: fieldPolicy(z.string().optional().describe('Lucide-Name; trägt die Hauptkachel, auch wenn ein Bild aus der Ecke hereinkommt'), 'shared') }).strict()
       .refine((l) => !l.label || l.image, { message: 'label nur auf der Bildkachel, nicht neben einem Icon' }),
     items: z.array(z.object({ icon: fieldPolicy(z.string().min(1).describe('Lucide-Name in kebab-case, z. B. "wind"'), 'shared'), title: fieldPolicy(z.string().min(1), 'translatable'),
       subtitle: fieldPolicy(z.string().optional().describe('Zeile unter der Überschrift, z. B. "Fordert zum Tanz auf"'), 'translatable'), text: fieldPolicy(z.string().min(1), 'translatable') }).strict()).min(1).max(4),
@@ -434,6 +434,7 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     entries: z.array(z.object({ kicker: fieldPolicy(z.string().min(1), 'translatable'), title: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable') })).default([]),
     facts: z.array(z.object({ value: businessValueSchema, label: fieldPolicy(z.string().min(1), 'translatable') })).max(4).default([]),
     cta: link.optional().describe('Weiterführender Link unter den Einträgen'),
+    gallery: fieldPolicy(z.enum(['logos', 'willkommen', 'engagement', 'indoor']).optional().describe('Bildgalerie statt des Bildes: Einträge links oben, Bilder treppenartig daneben (Sätze in public/media/galerie)'), 'shared'),
   }),
   z.object({
     // Abschluss mit Handlung und den Gesichtern der drei Geschäftsführer:innen.

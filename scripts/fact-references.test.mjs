@@ -13,7 +13,7 @@ test('Alle ausdrücklichen Dauer-/Angebotsreferenzen der tatsächlichen Inhaltsd
 });
 test('Migrierte operative Aussagen enthalten keine zweite Dauer-, Indoor- oder Filmpreisquelle',()=>{
  for(const locale of ['','en/','nl/']){
-  for(const file of [`pages/${locale}index.yaml`,`pages/${locale}drohnenshow-indoor.yaml`,`faq/${locale}indoor-moeglich.md`,`faq/${locale}indoor-raum.md`,`faq/${locale}indoor-kosten.md`]){
+  for(const file of [`pages/${locale}index.yaml`,`pages/${locale}drohnenshow-indoor.yaml`,`faq/${locale}indoor-moeglich.md`,`faq/${locale}indoor-kosten.md`]){
    const text=readFileSync(new URL(file,root),'utf8').split('\n').filter(line=>!line.startsWith('#')).join('\n');
    assert.doesNotMatch(text,/20(?:–| (?:bis|to|tot) )50|5(?:–| (?:bis|to|tot) )8|15[.,]000|(?:mindestens|minimaal|at least|ab|from|vanaf) 3 [mM]/i,file);
   }

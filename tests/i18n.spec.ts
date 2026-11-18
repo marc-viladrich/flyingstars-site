@@ -74,12 +74,9 @@ for (const locale of ['en', 'nl']) {
     await expect(page.locator('#inquiry-form a')).toHaveAttribute('href', `/${locale}/datenschutz/`);
     await page.locator('#f-name').fill('Integration Test');
     await page.locator('#f-mail').fill('test@example.test');
-    // optionale Felder öffnen sich über ihren Knopf (seit 02.11.2026)
-    await page.locator('[data-opt-add=quelle]').click();
-    await page.locator('#f-quelle').selectOption('Empfehlung');
     await page.locator('button[type=submit]').click();
     await expect(page.locator('[data-form-status]')).toHaveText(t('contact.formDeliveryHasNotBeenSetUpYetNothingWas',{email:CONTACT.email}));
-    for (const value of [locale, 'offen', 'express', 'Empfehlung', 'Custom', 'Hello']) expect(submitted).toContain(value);
+    for (const value of [locale, 'offen', 'express', 'Custom', 'Hello']) expect(submitted).toContain(value);
     await expect(page.locator('#f-name')).toHaveValue('Integration Test');
   });
 }

@@ -93,9 +93,12 @@ const itemOf = Object.fromEntries(items.map((item, i) => [item.zone, { ...item, 
   // Popover an der Karte: Zeigen (Maus) auf Nummer oder Zone, Fokus oder Tippen öffnet die Erklärung der Zone neben der
   // Nummer. Esc, Tippen daneben oder Verlassen der Karte mit der Maus schließt. Positionierung klassisch per JavaScript,
   // innerhalb der Kartenbreite geklemmt (kein seitliches Scrollen auf dem Handy).
-  // Eintritt (Runde 4): erst wenn die Karte ins Bild kommt, einmalig: Ebenen fahren auseinander, Drohnen stehen im
-  // Startraster, heben als Raster ab und formen das Motiv (ca. 3 s), danach pulsen die Nummern einmal. Ohne
-  // IntersectionObserver oder bei reduzierter Bewegung steht sofort der Endzustand. Keine Dauerschleife.
+  // Eintritt (Runde 4): wenn die Karte ins Bild kommt: Ebenen fahren auseinander, Drohnen stehen im Startraster, heben
+  // als Raster ab und formen das Motiv (ca. 3 s), danach pulsen die Nummern einmal. Runde 5 (Marc, 18.11.2026: „sollten
+  // wir die Animation eigentlich immer anzeigen und nicht nur beim allerersten Mal“): war die Karte ganz aus dem Bild,
+  // setzt sie sich unsichtbar zurück (ohne Übergänge) und spielt beim nächsten Eintritt erneut, in beide Scrollrichtungen.
+  // Zeigen, Tippen oder Fokus während des Eintritts springt sofort in den Endzustand; ein offenes Popover schließt beim
+  // Verlassen. Ohne IntersectionObserver oder bei reduzierter Bewegung steht sofort der Endzustand. Keine Dauerschleife.
   document.querySelectorAll<HTMLElement>('.ls-site [data-st-map]').forEach((map) => {
     const fig = map.closest('.st-fig') as HTMLElement;
     const hots = [...map.querySelectorAll<HTMLButtonElement>('[data-hot]')];
@@ -148,12 +151,12 @@ const itemOf = Object.fromEntries(items.map((item, i) => [item.zone, { ...item, 
     addEventListener('resize', () => { if (current) place(current); }, { passive: true });
     fig.classList.add('is-live');
     if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) { map.classList.add('is-ready'); return; }
+    let armed = true; // true: Ausgangslage steht, der nächste Eintritt spielt
     running = true;
     map.classList.add('is-pre');
     phase('grid');
-    const io = new IntersectionObserver((entries) => {
-      if (!entries.some((e) => e.isIntersecting)) return;
-      io.disconnect();
+    const play = () => {
+      armed = false;
       requestAnimationFrame(() => requestAnimationFrame(() => {
         if (!running) return;
         map.classList.remove('is-pre');
@@ -161,8 +164,21 @@ const itemOf = Object.fromEntries(items.map((item, i) => [item.zone, { ...item, 
         timers.push(window.setTimeout(() => phase('motif'), 1950));
         timers.push(window.setTimeout(() => { running = false; map.classList.add('is-ready'); }, 2800));
       }));
-    }, { rootMargin: REVEAL_MARGIN });
-    io.observe(map);
+    };
+    const reset = () => {
+      if (current) show('');
+      timers.forEach(clearTimeout); timers = [];
+      map.classList.add('is-reset');
+      map.classList.remove('is-ready');
+      map.classList.add('is-pre');
+      phase('grid');
+      void map.getBoundingClientRect(); // Ausgangslage ohne Übergang übernehmen, erst dann Übergänge wieder an
+      map.classList.remove('is-reset');
+      running = true; armed = true;
+    };
+    // Eintritt beim halben rem im Bild (wie alle Reveals), Zurücksetzen erst, wenn die Karte ganz draußen ist
+    new IntersectionObserver((entries) => { if (armed && entries[entries.length - 1].isIntersecting) play(); }, { rootMargin: REVEAL_MARGIN }).observe(map);
+    new IntersectionObserver((entries) => { if (!armed && !entries[entries.length - 1].isIntersecting) reset(); }).observe(map);
   });
 </script>
 
@@ -180,6 +196,8 @@ const itemOf = Object.fromEntries(items.map((item, i) => [item.zone, { ...item, 
   .is-pre .ly { transform: translateY(var(--from)); opacity: 0; }
   .ly-drones { transition: opacity var(--dur-fade) var(--ease-out) var(--dur-slow-long); }
   .is-pre .ly-drones, .is-pre .dr { opacity: 0; transition: none; }
+  /* unsichtbares Zurücksetzen nach dem Verlassen: alles springt ohne Übergang in die Ausgangslage */
+  .is-reset, .is-reset * { transition: none !important; animation: none !important; }
 
   /* Boden, Raster, Publikum (innen) */
   .slab { fill: rgb(var(--rgb-head) / 3.5%); stroke: rgb(var(--rgb-head) / 14%); stroke-width: 0.8; }

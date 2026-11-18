@@ -1,5 +1,5 @@
-/* Himmel: Schwarm, Himmelszeile, Punktübergänge zwischen Sections und der Lichtlauf der H1 (docs/himmel.md).
-   Schwarm und Himmelszeile fügt src/scripts/himmel/schwarm.ts ein; die Regeln dafür greifen nur an eingefügten Elementen. */
+/* Himmel: Schwarm, Punktübergänge zwischen Sections und der Lichtlauf der H1 (docs/himmel.md).
+   Den Schwarm fügt src/scripts/himmel/schwarm.ts ein; die Regeln dafür greifen nur an eingefügten Elementen. */
 
 /* ---------- Schwarm ---------- */
 /* Ebene in Seitenkoordinaten: scrollt mit dem Inhalt, stehende Bilder brauchen kein JavaScript */
@@ -11,8 +11,16 @@
 /* Auf schmalen Bildschirmen spielt die Folge in einer eigenen Fläche unter dem Text. Die Höhe steht von Anfang an fest
    (Klasse reveal bzw. motion-paused setzt das Inline-Skript im Kopf vor dem ersten Bild), darum springt nichts; ohne
    JavaScript bleibt die Fläche weg. */
+/* Runde 5: Breit füllt die Show-Folge die Höhe der Section; oben steht dafür weniger Leerraum (Marc, 18.11.2026) */
+@media (min-width: 56.25em) { html:is(.reveal, .motion-paused) #warum-drohnen { padding-top: clamp(5rem, 6vw, 6.5rem); } }
 @media (max-width: 56.24em) {
   html:is(.reveal, .motion-paused) #warum-drohnen::after { content: ''; display: block; height: clamp(14rem, 62vw, 20rem); }
+}
+
+/* Referenzen: Luft über dem Kopf für die Maske der Bokkenrijders (Marc, 18.11.: „größer“), nur wo der Schwarm sie zeigt
+   (ab 900 px, mit JavaScript; die Klasse setzt das Inline-Skript im Kopf vor dem ersten Bild, darum springt nichts) */
+@media (min-width: 56.25em) {
+  html:is(.reveal, .motion-paused) #projekte { padding-top: calc(var(--section) + 6rem); }
 }
 
 /* Platz im Seitenfluss: nur auf schmalen Bildschirmen oder in vollen Sections, über der Überschrift */
@@ -30,22 +38,6 @@
 @media (max-width: 43.75em) {
   .hm-gap-on .hm-own-head { height: 11rem; }
   .hm-own-form { height: 8.75rem; }
-}
-
-/* Himmelszeile: ein Stück Himmel über die ganze Inhaltsbreite, darunter eine Eingabe.
-   Das Eingabefeld ist das einzige Bedienelement; die Linie darunter ist eine Linie. */
-.hm-zeile { padding: clamp(var(--space-6), 4vw, var(--space-12)) var(--gutter) clamp(var(--space-9), 6vw, var(--space-16)); display: grid; gap: var(--space-6); }
-.hm-zeile .hm-own { display: block; width: 100%; height: clamp(11rem, 26vw, 23rem); }
-.hm-zeile-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: var(--space-2) var(--space-6); max-width: 56rem; }
-.hm-zeile-l { grid-column: 1 / -1; font-family: var(--mono); font-size: var(--text-xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
-.hm-zeile-row input { min-width: 0; padding: var(--space-2) 0 var(--space-3); border: 0; border-bottom: 1px solid var(--line-strong); border-radius: 0; background: none; color: var(--head); font-family: var(--display); font-size: clamp(1.5rem, 3vw, 2.5rem); line-height: 1.1; letter-spacing: -0.02em; text-transform: uppercase; transition: border-color var(--dur-control); }
-.hm-zeile-row input::placeholder { color: var(--faint); opacity: 0.75; text-transform: none; }
-.hm-zeile-row input:focus-visible { outline: none; border-bottom-color: var(--head); }
-.hm-zeile-row .link { white-space: nowrap; align-self: end; margin-bottom: var(--space-3); }
-@media (max-width: 43.75em) {
-  .hm-zeile-row { grid-template-columns: minmax(0, 1fr); }
-  .hm-zeile-row .link { margin: var(--space-2) 0 0; }
-  .hm-zeile-row input { font-size: 1.25rem; }
 }
 
 /* ---------- Übergänge zwischen zwei Sectionfarben: Punktauflösung statt Haarlinie ----------

@@ -3,8 +3,10 @@ import type { Section } from '../../content.config';
 import ProcessList from '../ProcessList.astro';
 import SectionHead from '../SectionHead.astro';
 import IconFeature from '../IconFeature.astro';
+import Faces from '../Faces.astro';
+import { FOUNDERS } from '../../content/people.mjs';
 import { forPath } from '../../i18n/server';
-const { localHref } = forPath(Astro.url.pathname);
+const { localHref, t, locale } = forPath(Astro.url.pathname);
 type Props = Extract<Section, { type: 'steps' }> & { index: number };
 const { headline, text, steps, ownNumbers, id = `s${Astro.props.index}`, index, kicker, cta, surface } = Astro.props;
 const headingId = `${id}-h`;
@@ -15,13 +17,16 @@ const T = index === 0 ? 'h2' : 'h3';
 const icons = steps.every((step) => step.icon);
 const cols = icons && (steps.length % 4 === 0 || steps.length % 4 === 3) ? 4 : 3;
 const ctaInGrid = icons && cta && steps.length % cols !== 0;
+// Anfrage-Kachel als Abschluss des Rasters (Marc, 18.11.2026: „einladender, u. a. mit den Bildern von Ronja, Erwin und Flo“):
+// Gesichter wie im Abschluss-Kasten (Faces.astro), eine Zeile mit der Antwortzeit aus Moritz' Texten, ein Knopf.
+const founders = new Intl.ListFormat(locale, { type: 'conjunction' }).format(FOUNDERS.map((p) => p.name.split(' ')[0]));
 ---
 <section class:list={['section', { alt: surface === 'alt', 'steps-ig': icons }]} id={id} aria-labelledby={headingId}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
   {icons ? (
     <ul class:list={['ig', { 'cols-4': cols === 4 }]} role="list">
       {steps.map((step) => <IconFeature as="li" class="ic" icon={step.icon} title={step.title} text={step.text} level={T}>{step.subtitle && <p slot="sub" class="ic-sub">{step.subtitle}</p>}</IconFeature>)}
-      {ctaInGrid && <li class="ic ic-more"><a class="link" href={localHref(cta!.href)}>{cta!.label} <span aria-hidden="true">→</span></a></li>}
+      {ctaInGrid && <li class="ic ic-more"><div class="ic-more-in"><Faces /><p>{t('steps.foundersReply', { names: founders })}</p><a class="btn primary small" href={localHref(cta!.href)}>{cta!.label}</a></div></li>}
     </ul>
   ) : <ProcessList items={steps} variant="steps" class={ownNumbers ? 'own-n' : undefined} />}
   {cta && !ctaInGrid && <p class="steps-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
@@ -33,6 +38,15 @@ const ctaInGrid = icons && cta && steps.length % cols !== 0;
   .steps .st-sub { color: var(--head); font-size: var(--text-md); margin-top: calc(-1 * var(--space-1)); }
   .steps-ig .ig { list-style: none; margin: 0; padding: 0; }
   .steps-ig .ic-sub { margin: calc(-1 * var(--space-1-5)) 0 0; color: var(--accent); font: 500 var(--text-md)/1.3 var(--display); }
-  .steps-ig .ic-more { align-content: center; }
+  /* Anfrage-Kachel: feine Fläche mit Verlaufsrand wie der Abschluss-Kasten (.promise), so weit eingerückt wie die
+     Hover-Fläche des Rasters (--ig-gap), damit der Schein beim Zeigen genau dahinter einrastet */
+  .steps-ig .ic-more { padding: var(--ig-gap); align-content: stretch; justify-items: stretch; }
+  .ic-more-in { position: relative; display: grid; align-content: space-between; justify-items: start; gap: var(--space-4); height: 100%; padding: clamp(var(--space-5), 2vw, var(--space-7)); border-radius: var(--radius-12); background: radial-gradient(90% 80% at 100% 100%, rgb(var(--rgb-logo-orchid) / 0.07), transparent 70%), radial-gradient(80% 70% at 0% 0%, rgb(var(--rgb-logo-amber) / 0.06), transparent 70%), var(--fill-soft); }
+  .ic-more-in::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; background: var(--grad); opacity: 0.45; -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; transition: opacity var(--dur-standard) var(--ease-default); }
+  .ic-more:hover .ic-more-in::before, .ic-more:has(:focus-visible) .ic-more-in::before { opacity: 0.8; }
+  /* Ring um die Gesichter in der Farbe der Fläche (Grund bzw. alt-Fläche plus --fill-soft) */
+  .ic-more-in .faces .face { width: 3rem; height: 3rem; margin-right: calc(-1 * var(--space-2-5)); border-color: color-mix(in srgb, var(--ground), var(--text) 3.5%); }
+  .alt .ic-more-in .faces .face { border-color: color-mix(in srgb, var(--surface), var(--text) 3.5%); }
+  .ic-more-in p { margin: 0; color: var(--head); font: 500 var(--text-md)/1.35 var(--display); letter-spacing: -0.01em; max-width: 24ch; }
   .steps-more { margin-top: clamp(var(--space-6), 3vw, var(--space-9)); }
 </style>

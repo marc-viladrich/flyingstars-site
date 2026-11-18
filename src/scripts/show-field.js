@@ -92,7 +92,7 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
     for (let i = old; i < next; i++) { away(i, spot); pos.set(spot, i * 3); col.set([246, 241, 232], i * 3); }
     capacity = next;
   }
-  let W = 0, H = 0, DPR = 1, frame = 0, visible = true, lastT = 0;
+  let W = 0, H = 0, DPR = 1, frame = 0, again = false, visible = true, lastT = 0;
   let scene = null, beat = 0, beatAt = 0, flight = 0, spread = 0, order = null, active = 0, leaveEnd = 0, size = 1, fitK = 1, fitX = 0, fitY = 0;
   const glow = new Map();
   let motionIndependent = false;
@@ -457,9 +457,13 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
     ctx.globalCompositeOperation = "source-over"; ctx.globalAlpha = 1;
   }
 
+  // Himmel, Runde 5 (18.11.2026): Während eines Bildes steht frame auf −1. Startet jemand aus dem Bild heraus eine neue
+  // Szene (onTick → show() → sync(), so wechselt die Show-Folge ihre Stücke), darf sync() keine zweite Schleife anstoßen.
+  // Vorher lief nach jedem Wechsel eine Schleife mehr: nach 5 Minuten rund 15 parallel, die Show-Uhr rückte je Frame
+  // mehrfach vor und die Frame-Zeit stieg bei 4× gedrosselter CPU von 17 auf 83 ms.
   function loop(ms) {
-    frame = 0;
-    if (!visible || still() || !scene) return;
+    frame = -1; again = false;
+    if (!visible || still() || !scene) { frame = 0; return; }
     const real = ms / 1000;
     if (lastReal) vt += Math.min(0.1, Math.max(0, real - lastReal)) * (flightRate && vt - beatAt < flight + spread ? Math.max(flightRate, flightMax ? (flight + spread) / flightMax : 0) : rate);
     lastReal = real;
@@ -467,13 +471,14 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
     render(); tick();
     // physics test hook: positions of every drone in the air, in display units
     if (window.__showTrace) window.__showTrace.push([t, Array.from(pos.subarray(0, Math.max(active, leaveEnd) * 3)), beat, active, leaveEnd]);
-    if (busy) frame = requestAnimationFrame(loop);
-    else canvas.dataset.running = "false"; // nothing moves: no more frames until the next change
+    if (frame !== -1) return; // sync() hat in diesem Bild angehalten (oder schon neu angestoßen)
+    if (busy || again) frame = requestAnimationFrame(loop);
+    else { frame = 0; canvas.dataset.running = "false"; } // nothing moves: no more frames until the next change
   }
   function sync() {
-    if (visible && !still()) { if (!frame && scene) { canvas.dataset.running = "true"; lastReal = 0; frame = requestAnimationFrame(loop); } }
+    if (visible && !still()) { if (frame === -1) again = true; else if (!frame && scene) { canvas.dataset.running = "true"; lastReal = 0; frame = requestAnimationFrame(loop); } }
     else {
-      if (frame) cancelAnimationFrame(frame);
+      if (frame > 0) cancelAnimationFrame(frame);
       frame = 0; canvas.dataset.running = "false";
       // reduzierte Bewegung, globale Pause, verdeckter Tab: das Motiv in Ruhe; Pause der Vorführ-Steuerung: genau dieses Bild
       if (scene && held()) settle(now(), beat);

@@ -1095,6 +1095,153 @@
           "upscaled": false
         }
       ]
+    },
+    {
+      "set": "indoor",
+      "slug": "siemens-indoor-1",
+      "kind": "image",
+      "client": "Siemens",
+      "show": "Siemens auf der Hannover Messe",
+      "location": "Hannover Messe",
+      "year": 2025,
+      "drones": null,
+      "alt": "Leuchtende Drohnen schweben über der Bühne der Siemens-Messeshow in Hannover, darunter der Moderator.",
+      "source": {
+        "url": "https://flyingstars.art/wp-content/uploads/2025/04/Siemens-Overview.mp4",
+        "timestampSeconds": 5.5
+      },
+      "reference": null,
+      "rightsNote": "Standbild aus dem Siemens-Video der Live-Seite; Urheberangabe und Freigabe für die Galerie bestätigen.",
+      "files": [
+        {
+          "file": "indoor/siemens-indoor-1-800.webp",
+          "width": 800,
+          "height": 501,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "indoor/siemens-indoor-1-800.avif",
+          "width": 800,
+          "height": 501,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "indoor/siemens-indoor-1-1600.webp",
+          "width": 1600,
+          "height": 1001,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "indoor/siemens-indoor-1-1600.avif",
+          "width": 1600,
+          "height": 1001,
+          "format": "avif",
+          "upscaled": false
+        }
+      ],
+      "sourceWidth": 1726,
+      "sourceHeight": 1080
+    },
+    {
+      "set": "indoor",
+      "slug": "siemens-indoor-2",
+      "kind": "image",
+      "client": "Siemens",
+      "show": "Siemens auf der Hannover Messe",
+      "location": "Hannover Messe",
+      "year": 2025,
+      "drones": null,
+      "alt": "Drohnen rahmen das Siemens-Xcelerator-Zeichen auf der LED-Wand über dem Moderator ein.",
+      "source": {
+        "url": "https://flyingstars.art/wp-content/uploads/2025/04/Siemens-Overview.mp4",
+        "timestampSeconds": 12.5
+      },
+      "reference": null,
+      "rightsNote": "Standbild aus dem Siemens-Video der Live-Seite; Urheberangabe und Freigabe für die Galerie bestätigen.",
+      "files": [
+        {
+          "file": "indoor/siemens-indoor-2-800.webp",
+          "width": 800,
+          "height": 501,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "indoor/siemens-indoor-2-800.avif",
+          "width": 800,
+          "height": 501,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "indoor/siemens-indoor-2-1600.webp",
+          "width": 1600,
+          "height": 1001,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "indoor/siemens-indoor-2-1600.avif",
+          "width": 1600,
+          "height": 1001,
+          "format": "avif",
+          "upscaled": false
+        }
+      ],
+      "sourceWidth": 1726,
+      "sourceHeight": 1080
+    },
+    {
+      "set": "indoor",
+      "slug": "siemens-indoor-3",
+      "kind": "image",
+      "client": "Siemens",
+      "show": "Siemens auf der Hannover Messe",
+      "location": "Hannover Messe",
+      "year": 2025,
+      "drones": null,
+      "alt": "Drohnen fliegen vor einer LED-Wand mit der Zeichnung eines Flugzeugs, davor der Moderator auf der Bühne.",
+      "source": {
+        "url": "https://flyingstars.art/wp-content/uploads/2025/04/Siemens-Overview.mp4",
+        "timestampSeconds": 61.5
+      },
+      "reference": null,
+      "rightsNote": "Standbild aus dem Siemens-Video der Live-Seite; Urheberangabe und Freigabe für die Galerie bestätigen.",
+      "files": [
+        {
+          "file": "indoor/siemens-indoor-3-800.webp",
+          "width": 800,
+          "height": 501,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "indoor/siemens-indoor-3-800.avif",
+          "width": 800,
+          "height": 501,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "indoor/siemens-indoor-3-1600.webp",
+          "width": 1600,
+          "height": 1001,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "indoor/siemens-indoor-3-1600.avif",
+          "width": 1600,
+          "height": 1001,
+          "format": "avif",
+          "upscaled": false
+        }
+      ],
+      "sourceWidth": 1726,
+      "sourceHeight": 1080
     }
   ]
 }

@@ -1,5 +1,10 @@
 import { test, expect, type Page } from '@playwright/test';
 
+// Runde 5 (18.11.2026): seit Moritz' Preistext gibt es keine Paketknöpfe mehr. Der Konfigurator startet als „Individuelles
+// Paket“; Drohnenzahl und Art der Show (2D · 3D · 3D mit Storytelling) bestimmen Vorschau und Preis, die drei Pakete sind
+// feste Startpunkte („SPARK anpassen“). Die Tests der alten Paketwahl (Paketknöpfe, Bereichswechsel am Regler, Paketfarben,
+// gleitender Paketrahmen) sind entfernt und durch die Tests am Ende dieser Datei ersetzt.
+
 // Show configurator v13 (seamless drone ranges, motifs unlocked by the drone count, see docs). v12: Anlass plays a sequence of four or five motifs; package buttons and the drone slider set package
 // and price (every package has its own drone range, crossing it switches the package); switching the package turns the
 // motif on stage into its version for that package. The player bar (pause, tempo, a track with one mark per picture)
@@ -40,72 +45,6 @@ const picture = (page: Page) => field(page).evaluate((node) => {
 });
 const pictureWidth = async (page: Page) => (await picture(page)).width;
 
-test('Deep-Link mit 1000 Drohnen zeigt ODYSSEY, fortgerechneten Preis und die neue Endmarke', async ({ page }) => {
-  const errors: string[] = [];
-  page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto(`${CFG}?drohnen=1000#konfigurator`);
-  await expect(page.locator('#cfg-drones')).toHaveAttribute('max', '1000');
-  await expect(page.locator('#cfg-drones')).toHaveValue('1000');
-  await expect(page.locator('#cfg-pkg')).toHaveText('ODYSSEY');
-  await expect(page.locator('#cfg-price')).toHaveText('ab 104.200 €');
-  await expect(page.locator('.cfg-ticks span')).toHaveText(['100', '200', '300', '1000']);
-  await expect(field(page)).toHaveAttribute('data-points', '1000');
-  await expect(field(page)).toHaveAttribute('data-running', 'true');
-  expect(errors).toEqual([]);
-});
-
-test('Preis nur über den Aufwand; jeder Anlass zeigt drei Motive, jedes Bild mit genau den Drohnen des Pakets', async ({ page }, info) => {
-  test.setTimeout(180_000);
-  const errors: string[] = [];
-  page.on('pageerror', (error) => errors.push(error.message));
-  await paused(page);
-  await page.goto(`${CFG}#konfigurator`);
-  await expect(page.locator('#cfg-motifs')).toHaveCount(0); // motifs are not chosen, they play
-  const singles = new Set<string>();
-  for (const id of OCCASIONS) {
-    await occasion(page, id);
-    for (const [k, [name, price, drones]] of STEPS.entries()) {
-      await pkg(page, k);
-      await expect(page.locator('#cfg-pkg')).toHaveText(name);
-      await expect(page.locator('#cfg-price')).toHaveText(`ab ${price} €`);
-      await expect(page.locator('#cfg-new')).toHaveText(name);
-      if (info.project.name !== 'desktop') continue;
-      const seen = await walk(page);
-      expect(seen.every((s) => s.points === drones), `${id} ${name}: every picture has ${drones} drones`).toBe(true);
-      if (k < 2) { expect(seen.length, `${id} ${name}: three motifs or more`).toBeGreaterThanOrEqual(3); seen.forEach((s) => singles.add(s.caption)); }
-      else expect(seen.length, `${id} ODYSSEY tells every motif in acts`).toBeGreaterThanOrEqual(8);
-    }
-  }
-  if (info.project.name === 'desktop') expect(singles.size).toBeGreaterThanOrEqual(OCCASIONS.length * 3 * 2 - 1); // own versions per package
-  expect(errors).toEqual([]);
-});
-
-test('Der Anlass ändert weder Paket noch Preis', async ({ page }) => {
-  await page.goto(`${CFG}#konfigurator`);
-  await pkg(page, 2);
-  for (const id of OCCASIONS) {
-    await occasion(page, id);
-    await expect(page.locator('label:has([name=pkg][value="2"]) input')).toBeChecked();
-    await expect(page.locator('#cfg-price')).toHaveText('ab 34.900 €');
-  }
-});
-
-test('Die Motive laufen von selbst durch, ein Paketwechsel bleibt beim Motiv', async ({ page }) => {
-  await page.goto(`${CFG}#konfigurator`);
-  await occasion(page, 'launch'); await pkg(page, 0);
-  await expect(scene(page)).toHaveText('Rakete mit Flamme');
-  await expect(scene(page)).toHaveText('Beispiel-Logo mit Lichtlauf', { timeout: 15_000 }); // the show moves on by itself
-  await pkg(page, 1);
-  await expect(scene(page)).toHaveText('Beispiel-Logo in 3D mit Lichtschimmer'); // same motif, next package
-  // sechzehnte Fassung: ODYSSEY mit 300 Drohnen bleibt beim Motiv; die Mondlandung kommt erst ab 450 (Freischalt-Leiter)
-  await pkg(page, 2);
-  await expect(scene(page)).toHaveText('Euer Logo');
-  await page.locator('#cfg-drones').focus();
-  for (let i = 0; i < 15; i++) await page.keyboard.press('ArrowRight');
-  await expect(page.locator('#cfg-toast')).toHaveText('Neues Motiv freigeschaltet: Mondlandung');
-  await expect(scene(page)).toHaveText('im Orbit um einen Planeten');
-});
-
 test('Dasselbe Motiv wird mit dem Paket größer', async ({ page }) => {
   await paused(page);
   const areas: number[] = [];
@@ -119,20 +58,6 @@ test('Dasselbe Motiv wird mit dem Paket größer', async ({ page }) => {
   expect(areas[1] / areas[0]).toBeGreaterThan(1.5); // three times the drones at the same spacing: a larger picture
 });
 
-test('Jedes Paket bewegt sich nach dem Aufbau weiter', async ({ page }) => {
-  await page.goto(`${CFG}#konfigurator`);
-  await occasion(page, 'launch');
-  const frame = () => field(page).evaluate((c) => (c as HTMLCanvasElement).toDataURL());
-  for (const [k, caption] of [[0, 'Rakete mit Flamme'], [1, 'Die Rakete als Körper schwebt und dreht sich']] as const) {
-    await pkg(page, k);
-    await expect(scene(page)).toHaveText(caption);
-    await page.waitForTimeout(2500);
-    await expect(field(page)).toHaveAttribute('data-running', 'true');
-    const before = await frame(); await page.waitForTimeout(400);
-    expect(await frame()).not.toBe(before);
-  }
-});
-
 test('ODYSSEY erzählt jedes Motiv in Akten, ↻ beginnt die Show von vorn', async ({ page }) => {
   await page.goto(`${CFG}#konfigurator`);
   await page.goto(`${CFG}?anlass=launch&paket=ODYSSEY&motiv=idee#konfigurator`);
@@ -143,106 +68,6 @@ test('ODYSSEY erzählt jedes Motiv in Akten, ↻ beginnt die Show von vorn', asy
   await expect(scene(page)).toHaveText('Startklar');
 });
 
-test('Paketknöpfe lassen sich per Tastatur wählen', async ({ page }) => {
-  await paused(page);
-  await page.goto(`${CFG}#konfigurator`);
-  await page.locator('label:has([name=pkg][value="1"]) input').focus();
-  await page.keyboard.press('ArrowRight');
-  await expect(page.locator('label:has([name=pkg][value="2"]) input')).toBeChecked();
-  await expect(page.locator('#cfg-pkg')).toHaveText('ODYSSEY');
-  await expect.poll(() => pictureWidth(page)).toBeGreaterThan(100);
-});
-
-test('Auf den ersten Blick: Anlass, Aufwand, Preis und Anfrage', async ({ page }, info) => {
-  await page.goto(`${CFG}#konfigurator`);
-  await expect(page.locator('[name=pkg]').first()).toBeAttached();
-  if (info.project.use.isMobile) { await expect(page.locator('#cfg-bar-cta')).toBeInViewport(); await expect(page.locator('.cfg-pkgs')).toBeInViewport({ ratio: 1 }); }
-  else { await expect(page.locator('#cfg-cta')).toBeInViewport(); await expect(page.locator('.cfg-pkgs')).toBeInViewport({ ratio: 1 }); }
-});
-
-test('Die Anfrage übernimmt Anlass, Motive und Paket', async ({ page }) => {
-  await page.goto(`${CFG}#konfigurator`);
-  await occasion(page, 'launch');
-  await pkg(page, 0);
-  await page.locator('#cfg-cta').click();
-  await expect(page).toHaveURL(/#anfrage$/);
-  const form = page.locator('#inquiry-form');
-  await expect(form.locator('[name=paket]:checked')).toHaveValue(/SPARK/); // seit der Designsprache-Übertragung (Lead) eine Auswahl statt eines Feldes
-  await expect(form.locator('[name=anlass][value=firma]')).toBeChecked();
-  await expect(form.locator('[name=message]')).toHaveValue('Anlass: Launch\nBeispielmotive: Rakete, Galaxie, Logo, Glühbirne, Möbius-Schleife\nAufwand: Klassisch in 2D (SPARK, 100 Drohnen, ab 7.900 € netto, Preis laut Konfigurator)');
-});
-
-test('Nach schnellem Umschalten leuchten nie mehr Drohnen, als das Paket hat', async ({ page }) => {
-  await page.goto(`${CFG}#konfigurator`);
-  await occasion(page, 'kultur'); await pkg(page, 2); await page.waitForTimeout(400);
-  for (const [id, k] of [['silvester', 0], ['launch', 1], ['hochzeit', 0], ['jubilaeum', 1]] as const) {
-    await occasion(page, id); await pkg(page, k); await page.waitForTimeout(250);
-  }
-  await page.waitForTimeout(6500); // every landing drone has landed
-  const [lit, points] = await field(page).evaluate((c) => [Number(c.dataset.lit), Number(c.dataset.points)]);
-  expect(points).toBe(200);
-  expect(lit).toBeLessThanOrEqual(points);
-});
-
-test('Die Bilder lassen sich vor und zurück schalten, im Kreis', async ({ page }) => {
-  await paused(page);
-  await page.goto(`${CFG}#konfigurator`);
-  await occasion(page, 'launch'); await pkg(page, 0);
-  await expect(scene(page)).toHaveText('Rakete mit Flamme');
-  // Runde 24: SPARK 100 spielt Rakete, Galaxie, Logo, Glühbirne, Möbius-Schleife (Katalogmotive dazwischen)
-  await page.locator('#cfg-prev').click(); // before the first picture comes the last one
-  await expect(scene(page)).toHaveText('Möbius-Schleife, eine Formation aus dem FlyingStars-Katalog');
-  await page.locator('#cfg-next').click(); // after the last picture comes the first one
-  await expect(scene(page)).toHaveText('Rakete mit Flamme');
-  for (let i = 0; i < 3; i++) await page.locator('#cfg-next').click();
-  await expect(scene(page)).toHaveText('Eine Glühbirne: die Idee');
-  await pkg(page, 1);
-  await expect(scene(page)).toHaveText('Die Glühbirne in 3D, der Glühfaden leuchtet');
-  // ODYSSEY bleibt bei der Glühbirne (sechzehnte Fassung), pausiert am Ende ihrer Geschichte; zurück geht es Akt für Akt
-  await pkg(page, 2);
-  await expect(scene(page)).toHaveText('…und sie strahlt');
-  await page.locator('#cfg-prev').click();
-  await expect(scene(page)).toHaveText('um ihn formt sich die Glühbirne');
-});
-
-test('Eigener Text: einmal durch Schreibschrift, Druckschrift und Initialen, die Auswahl folgt der Bühne; dann die Motive', async ({ page }) => {
-  test.setTimeout(90_000);
-  const errors: string[] = [];
-  page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto(`${CFG}#konfigurator`);
-  await occasion(page, 'hochzeit'); await pkg(page, 0);
-  await page.locator('[data-rate="2"]').click();
-  await expect(page.locator('#cfg-styles')).toBeHidden();
-  await page.locator('#cfg-text').fill('Anna & Ben');
-  const checked = () => page.locator('[name=textstyle]:checked');
-  await expect(scene(page)).toHaveText('Euer Text am Himmel, in Schreibschrift');
-  await expect(field(page)).toHaveAttribute('data-points', '100');
-  await expect(page.locator('#cfg-styles')).toBeVisible();
-  await expect(checked()).toHaveValue('script');
-  // the stage runs through the styles by itself, the picker marks the style on stage
-  await expect(scene(page)).toHaveText('Euer Text am Himmel, in Druckschrift', { timeout: 20_000 });
-  await expect(checked()).toHaveValue('print');
-  await expect(scene(page)).toHaveText('Euer Text am Himmel, in Initialen', { timeout: 20_000 });
-  await expect(checked()).toHaveValue('initials');
-  // then on with the motifs of the occasion; the picker shows the chosen style again
-  await expect(scene(page)).toHaveText('Zwei Eheringe, der Stein funkelt', { timeout: 20_000 });
-  await expect(checked()).toHaveValue('script');
-  // the text comes back as the finale in the chosen style; choosing a style shows it
-  for (const style of ['print', 'initials', 'script']) {
-    await page.locator(`label:has([name=textstyle][value=${style}])`).click();
-    await expect(scene(page)).toHaveText('Euer Text am Himmel');
-    await expect(checked()).toHaveValue(style);
-  }
-  await pkg(page, 1);
-  await expect(scene(page)).toHaveText('Licht schreibt euren Text'); // the package switch stays on the text
-  await expect(field(page)).toHaveAttribute('data-points', '200');
-  await expect(page.locator('#cfg-cta')).toHaveAttribute('href', /Eigener\+Text%3A\+%E2%80%9EAnna\+%26\+Ben%E2%80%9C\+%28Schreibschrift%29/);
-  await page.locator('#cfg-text').fill('');
-  await expect(page.locator('#cfg-styles')).toBeHidden();
-  await expect(page.locator('#cfg-cta')).not.toHaveAttribute('href', /Eigener/);
-  expect(errors).toEqual([]);
-});
-
 test('Direktlink öffnet Anlass, Paket und Motiv', async ({ page }) => {
   await page.goto(`${CFG}?anlass=launch&paket=HORIZON&motiv=rakete#konfigurator`);
   await expect(chosenOccasion(page)).toHaveValue('launch');
@@ -250,128 +75,8 @@ test('Direktlink öffnet Anlass, Paket und Motiv', async ({ page }) => {
   await expect(scene(page)).toHaveText('Die Rakete als Körper schwebt und dreht sich');
 });
 
-test('SPARK lässt Motive aus, die 100 Drohnen nicht tragen; der Paketwechsel springt aufs nächste Motiv', async ({ page }) => {
-  await page.goto(`${CFG}?anlass=festival&paket=ODYSSEY&motiv=drache#konfigurator`);
-  await expect(scene(page)).toHaveText('Ein Drache steigt auf');
-  await pkg(page, 0);
-  await expect(scene(page)).toHaveText('Ein Kompass, die Nadel sucht den Norden'); // the dragon is the last motif: round the loop
-  await page.locator('#cfg-cta').click();
-  await expect(page.locator('#inquiry-form [name=message]')).toHaveValue(/Beispielmotive: Reise, Kolibri, Cocktailglas, Ballons, Stern, Biene, Delfin\n/);
-});
-
-
-test('Die Vorschau zeigt nur das Paket; Bildbeschreibung bleibt für assistive Technik verfügbar', async ({ page }) => {
-  await paused(page);
-  await page.goto(`${CFG}#konfigurator`);
-  await expect(page.locator('#cfg-count')).toHaveCount(0);
-  await expect(page.locator('.cfg-caption')).toHaveText('HORIZON');
-  for (const id of OCCASIONS) {
-    await occasion(page, id);
-    await expect(scene(page)).not.toHaveText('');
-    const style = await scene(page).evaluate((node) => {
-      const s = getComputedStyle(node);
-      return { width: s.width, height: s.height, overflow: s.overflow, position: s.position };
-    });
-    expect(style).toEqual({ width: '1px', height: '1px', overflow: 'hidden', position: 'absolute' });
-    await expect(page.locator('.cfg-stage')).toHaveAttribute('aria-describedby', 'cfg-scene');
-    await expect(page.locator('#cfg-error')).toBeHidden();
-  }
-});
-
 /** Drone count shown next to the slider. */
 const droneCount = (page: Page) => page.locator('#cfg-dronecount');
-
-test('Der Drohnenregler wechselt an der Bereichsgrenze sichtbar das Paket, mit echter Maus und Tastatur', async ({ page }, info) => {
-  test.skip(!!info.project.use.isMobile, 'Maus-Ziehen auf dem Desktop; die Tastatur deckt dieselbe Logik ab.');
-  const errors: string[] = [];
-  page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto(`${CFG}#konfigurator`);
-  await pkg(page, 0);
-  await expect(droneCount(page)).toHaveText('100');
-  await expect(page.locator('#cfg-price')).toHaveText('ab 7.900 €');
-  // keyboard: the ranges are seamless (13th version): SPARK up to 190, one step more is HORIZON's first count
-  const slider = page.locator('#cfg-drones');
-  await slider.focus();
-  for (let i = 0; i < 9; i++) await page.keyboard.press('ArrowRight');
-  await expect(droneCount(page)).toHaveText('190');
-  await expect(page.locator('#cfg-pkg')).toHaveText('SPARK');
-  await expect(page.locator('#cfg-price')).toHaveText('ab 15.200 €');
-  await page.keyboard.press('ArrowRight');
-  await expect(droneCount(page)).toHaveText('200');
-  await expect(page.locator('#cfg-pkg')).toHaveText('HORIZON');
-  await expect(page.locator('label:has([name=pkg][value="1"]) input')).toBeChecked();
-  await page.keyboard.press('ArrowLeft');
-  await expect(droneCount(page)).toHaveText('190');
-  await expect(page.locator('#cfg-pkg')).toHaveText('SPARK');
-  // mouse: drag the thumb to the far right, the package becomes ODYSSEY, the picture gets the new drone count
-  const box = (await slider.boundingBox())!;
-  const min = Number(await slider.getAttribute('min')), max = Number(await slider.getAttribute('max'));
-  const x = (n: number) => box.x + 10 + ((n - min) / (max - min)) * (box.width - 20);
-  await page.mouse.move(x(190), box.y + box.height / 2);
-  await page.mouse.down();
-  await page.mouse.move(x(250), box.y + box.height / 2, { steps: 8 });
-  await expect(page.locator('#cfg-pkg')).toHaveText('HORIZON');
-  await page.mouse.move(x(420), box.y + box.height / 2, { steps: 8 });
-  await page.mouse.up();
-  await expect(page.locator('#cfg-pkg')).toHaveText('ODYSSEY');
-  const n = Number(await droneCount(page).textContent());
-  expect(n).toBeGreaterThanOrEqual(380); expect(n).toBeLessThanOrEqual(440);
-  await expect(field(page)).toHaveAttribute('data-points', String(n));
-  // the inquiry carries the count; a package button goes back to that package's entry count
-  await expect(page.locator('#cfg-cta')).toHaveAttribute('href', new RegExp(`drohnen=${n}`));
-  await pkg(page, 1);
-  await expect(droneCount(page)).toHaveText('200');
-  await expect(page.locator('#cfg-price')).toHaveText('ab 15.900 €');
-  await expect(page.locator('.cfg')).not.toContainText('Platzhalter'); // Runde 11: nur noch als Code-Kommentar
-  expect(errors).toEqual([]);
-});
-
-test('Kein Hin und Her zwischen SPARK und HORIZON: Ziehen und Verweilen mit echter Maus', async ({ page }, info) => {
-  test.skip(!!info.project.use.isMobile, 'Maus auf dem Desktop.');
-  await page.goto(`${CFG}#konfigurator`);
-  await pkg(page, 0);
-  // every change of the package label, in order
-  await page.locator('#cfg-pkg').evaluate((node) => { const w = window as unknown as { __pkgs: string[] }; w.__pkgs = [node.textContent ?? '']; new MutationObserver(() => w.__pkgs.push(node.textContent ?? '')).observe(node, { childList: true, characterData: true, subtree: true }); });
-  const slider = page.locator('#cfg-drones'), box = (await slider.boundingBox())!, y = box.y + box.height / 2;
-  const min = Number(await slider.getAttribute('min')), max = Number(await slider.getAttribute('max'));
-  const x = (n: number) => box.x + 10 + ((n - min) / (max - min)) * (box.width - 20);
-  await page.mouse.move(x(100), y); await page.mouse.down();
-  // slowly over the former gap (150–200) and the boundary, resting with a trembling hand at several places
-  for (const n of [140, 160, 170, 180, 190]) {
-    await page.mouse.move(x(n), y, { steps: 6 });
-    for (let k = 0; k < 12; k++) await page.mouse.move(x(n) + (k % 2 ? 0.6 : -0.6), y + (k % 3) - 1);
-    await expect(droneCount(page)).toHaveText(String(n));
-    await expect(page.locator('#cfg-pkg')).toHaveText('SPARK');
-  }
-  await page.mouse.move(x(220), y, { steps: 6 });
-  for (let k = 0; k < 12; k++) await page.mouse.move(x(220) + (k % 2 ? 0.6 : -0.6), y);
-  await expect(page.locator('#cfg-pkg')).toHaveText('HORIZON');
-  await page.mouse.up();
-  const seen = await page.evaluate(() => (window as unknown as { __pkgs: string[] }).__pkgs);
-  expect(seen.filter((p, i) => i === 0 || p !== seen[i - 1])).toEqual(['SPARK', 'HORIZON']);
-});
-
-test('Mehr Drohnen schalten ein Motiv frei: Meldung auf der Bühne, die Bühne fliegt durch die Wolke dorthin', async ({ page }, info) => {
-  test.skip(!!info.project.use.isMobile, 'Maus auf dem Desktop.');
-  const errors: string[] = [];
-  page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto(`${CFG}#konfigurator`);
-  await occasion(page, 'hochzeit'); await pkg(page, 2);
-  await page.locator('#cfg-cta').evaluate((a) => a.getAttribute('href')).then((href) => expect(decodeURIComponent(href ?? '')).not.toContain('Antrag'));
-  await page.locator('#cfg-field').evaluate((node) => { const w = window as unknown as { __clouds: string[] }; w.__clouds = []; new MutationObserver(() => w.__clouds.push((node as HTMLElement).dataset.cloud ?? '')).observe(node, { attributes: true, attributeFilter: ['data-cloud'] }); });
-  const slider = page.locator('#cfg-drones'), box = (await slider.boundingBox())!, y = box.y + box.height / 2;
-  const min = Number(await slider.getAttribute('min')), max = Number(await slider.getAttribute('max'));
-  const x = (n: number) => box.x + 10 + ((n - min) / (max - min)) * (box.width - 20);
-  await page.mouse.move(x(300), y); await page.mouse.down();
-  await page.mouse.move(x(460), y, { steps: 12 });
-  await page.mouse.up();
-  await expect(page.locator('#cfg-toast')).toHaveText(/Neues Motiv freigeschaltet: Antrag/);
-  await expect(page.locator('#cfg-toast')).toHaveClass(/is-on/);
-  await expect(scene(page)).toHaveText('Ein Schmuckkästchen öffnet sich');
-  expect(await page.evaluate(() => (window as unknown as { __clouds: string[] }).__clouds)).toContain('all');
-  await expect(page.locator('#cfg-toast')).toHaveText('', { timeout: 6000 }); // it goes away by itself
-  expect(errors).toEqual([]);
-});
 
 test('Vorführ-Steuerung: Pause friert das Bild ein, Tempo und Bildsprung über die Spur', async ({ page }, info) => {
   const errors: string[] = [];
@@ -486,167 +191,8 @@ test('Spur: Überfahren und Fokus zeigen, ab wie vielen Drohnen eine Sequenz mö
   await expect(track).toHaveAttribute('aria-describedby', 'cfg-tip');
 });
 
-test('Paketwechsel und Regler melden alle neuen Motive auf einmal und fliegen zum ersten', async ({ page }) => {
-  const errors: string[] = [];
-  page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto(`${CFG}#konfigurator`);
-  await occasion(page, 'hochzeit'); await pkg(page, 0);
-  await page.waitForTimeout(400);
-  await recordBeats(page);
-  // SPARK 100 → HORIZON 200: neu sind alle SPARK-Motive ab 110 Drohnen und der Schmetterling (Runde 25b). Der
-  // Paketknopf meldet ihn und bleibt beim Motiv auf der Bühne (dasselbe Motiv, größeres Paket)
-  await expect(scene(page)).toHaveText('Zwei Eheringe, der Stein funkelt');
-  await pkg(page, 1);
-  await expect(page.locator('#cfg-toast')).toHaveText('7 neue Motive: Hochzeitstorte, Amor, Zwei Blüten, Blume, Lotusblume, Unendlich-Zeichen, Schmetterling');
-  await expect(scene(page)).toHaveText('Ein Solitär in 3D: Ring und Brillant drehen sich');
-  // HORIZON, then the slider to the end in one go: two motifs at once, the stage goes to the first
-  await pkg(page, 1);
-  await page.locator('#cfg-drones').focus();
-  await page.keyboard.press('End');
-  await expect(droneCount(page)).toHaveText('1000');
-  await expect(page.locator('#cfg-toast')).toHaveText('2 neue Motive: Lotusblüten, Antrag');
-  await expect(scene(page)).toHaveText('Zwei Knospen');
-  expect(await beatsSeen(page)).toEqual(expect.arrayContaining([expect.stringMatching(/:all$/)])); // durch die Wolke
-  // going down is no news
-  await page.keyboard.press('Home');
-  await expect(droneCount(page)).toHaveText('100');
-  await page.waitForTimeout(300);
-  await expect(page.locator('#cfg-toast')).not.toHaveText(/neu/i, { timeout: 6000 });
-  // the explanatory microcopy is gone (Marc: visible at slider and picker anyway)
-  for (const id of ['#cfg-range', '#cfg-switch', '#cfg-more', '#cfg-includes']) await expect(page.locator(id)).toHaveCount(0);
-  await expect(page.locator('.cfg')).not.toContainText('Paket gewechselt');
-  await expect(page.locator('.cfg')).not.toContainText('Enthalten:');
-  expect(errors).toEqual([]);
-});
-
-test('Lebendige Wolke beim Wechsel des Anlasses und beim Rücksprung vom letzten zum ersten Bild', async ({ page }) => {
-  test.setTimeout(90_000);
-  await page.goto(`${CFG}#konfigurator`);
-  await pkg(page, 0); await occasion(page, 'launch');
-  await page.waitForTimeout(500);
-  await recordBeats(page);
-  await occasion(page, 'kultur');
-  await expect.poll(() => beatsSeen(page)).toContain('0:all');
-  // the last picture, then wait for the loop
-  await page.locator('[data-rate="2"]').click();
-  const track = page.locator('#cfg-track');
-  await track.focus(); await page.keyboard.press('End');
-  const last = Number(await track.getAttribute('aria-valuemax')) - 1;
-  await expect.poll(async () => Number(await track.getAttribute('aria-valuenow'))).toBe(last + 1);
-  await recordBeats(page);
-  await expect.poll(() => beatsSeen(page), { timeout: 40_000 }).toContain('0:all');
-});
-
 /** A test PNG: a red ring, a blue box and a black triangle on transparent ground (black lights as warm white). */
 const LOGO_PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAHgAAABaCAYAAABzAJLvAAACk0lEQVR42u2doVLDUBBFk5XofAKiGlVRhUDxaXwHX4BCI/gERBU6GlsUM0wm07y2eXm7d8+1MOR1D/dukpduug4hhBBCCCGEEEIIIYQQqqu+5cGPu8Op9Hfvvz56cDkHfAlQgAcCvCZYQDsBXBMqsMtlKnBbHjeNgz0VGDevDPhauCUgav5tADu83OHyakPApcWuUeiWx04BuKTAWxTXyzqkAC8VtUVBPa4p5GWS10IuHTfjZVSv6JLj7nB6fHhJF8ffr/v+JgdHiUAujyrcyaKowQGfcy9wgwMGLhGNFAHjXgHAbMEldTDuFQCMe5M6GPdyFo0AjJoCpv8mdTD9l4hGAG6nn/dnAKvDzQSZiAawZjRncbFl7rsZIFv2kyp1yOl68N3TGz24E9lhmrrzD+4UsrKLTfWO1aXQVCFb1mjOEtWSgIdhOJXAzBDVpjYqYQo3+61MU9o5moO7FMVzP1eCbMoDT0r7rHI/NpX939K+WwpZxcWmMFXn1r6r3I8lz6LHcey5y3UB4HMx3drFU/deC1c1qm2NZ7FaQa4VzUpRbVGn3M3BvdW9ipdOpjLk5D/cNdah0o/7iFN2zvXdtde2do+X+G5STSef67tb/ONt1ffTTrqbc1TtdUR2cahZldNCfw67rtWxo0C2rcYnHXeH0y3RfW001jofiBLVIeZFzxWzxL2120MEJ4eY+L4fv5rDjRrVvfd3J1wKd4vdr0iQzfOsyClcr1ubnvux6/cmlbjXC1SvLnb75rMluB4eRIgA2eW7C+ei2WPxIpxVUzTx9Zrq0xmszyHgqLcDp+v0dFZtKg+sqz2ALx/R0fZdva7XiGbtqO6JMm13G3C1PydjlDq+H4x7+bwIIYQQQgghpKJfeZOW/W2RGroAAAAASUVORK5CYII=', 'base64');
-
-test('Eigenes Logo per Dateiauswahl und Drag&Drop: eigenes Bild im Ablauf, die Datei bleibt im Browser', async ({ page }, info) => {
-  test.setTimeout(240_000); // Runde 25b: HORIZON-Runde mit rund 40 Bildern, die der Test einzeln durchklickt
-  const errors: string[] = [], requests: string[] = [];
-  page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto(`${CFG}#konfigurator`);
-  await occasion(page, 'hochzeit');
-  await page.waitForTimeout(300);
-  const storage = await page.evaluate(() => JSON.stringify([{ ...localStorage }, { ...sessionStorage }]));
-  page.on('request', (r) => { if (!r.url().startsWith('blob:') && !r.url().startsWith('data:')) requests.push(`${r.method()} ${r.url()} ${r.postData() ?? ''}`); });
-  await expect(page.locator('#cfg-legal')).toHaveText('Ladet nur Logos hoch, die ihr verwenden dürft. Die Umrechnung läuft in eurem Browser. Übertragen wird das Logo erst, wenn ihr es mit einer Anfrage absendet.');
-  await expect(page.locator('#cfg-file')).toHaveAccessibleDescription(/Ladet nur Logos hoch/);
-  await recordBeats(page);
-  // Der Budgetvertrag erlaubt nur die vollständige Mindestfassung oberhalb des Show-Budgets.
-  const expectLogo = async (budget: number) => {
-    await expect.poll(async () => {
-      const points = Number(await field(page).getAttribute('data-points'));
-      const caption = await scene(page).textContent();
-      return points === budget
-        ? ['Euer Logo', `Euer Logo, vereinfacht für ${budget} Drohnen`].includes(caption ?? '')
-        : points > budget && caption === `Euer Logo braucht mindestens ${points} Drohnen`;
-    }, { timeout: 90000 }).toBe(true);
-    return (await scene(page).textContent())!;
-  };
-  // 1) file picker
-  await page.locator('#cfg-file').setInputFiles({ name: 'logo.png', mimeType: 'image/png', buffer: LOGO_PNG });
-  await expect(page.locator('#cfg-use-logo')).toBeVisible();
-  await page.locator('#cfg-use-logo').click();
-  await pkg(page, 1);
-  const logoCaption = await expectLogo(200);
-  await expect.poll(() => beatsSeen(page)).toContainEqual(expect.stringMatching(/:all$/)); // through the living cloud
-  await expect(page.locator('#cfg-logo-off')).toBeVisible();
-  // the logo stands 5 s and comes back in the round: the round has it before every second motif
-  const pictures = Number(await page.locator('#cfg-track').getAttribute('aria-valuemax')), captions: string[] = [];
-  for (let i = 0; i < pictures; i++) { captions.push((await scene(page).textContent()) ?? ''); await page.locator('#cfg-next').click(); }
-  expect(captions[0]).toBe(logoCaption);
-  expect(captions.filter((c) => c === logoCaption).length).toBeGreaterThanOrEqual(2);
-  await expect(scene(page)).toHaveText(logoCaption); // round the loop: the round starts with the logo
-  // a new drone count goes back to the logo
-  await page.locator('#cfg-next').click();
-  await expect(scene(page)).not.toHaveText(logoCaption);
-  await page.locator('#cfg-drones').focus();
-  await page.keyboard.press('ArrowRight'); // 210: nothing new to unlock, so back to the logo
-  await expectLogo(210);
-  await expect(page.locator('#cfg-cta')).toHaveAttribute('href', /Eigenes\+Logo/);
-  // 2) remove, then drag & drop onto the stage
-  await page.locator('#cfg-logo-off').click();
-  await expect(page.locator('#cfg-logo-off')).toBeHidden();
-  await expect(scene(page)).not.toHaveText(logoCaption);
-  const stage = page.locator('.cfg-stage');
-  const dt = await page.evaluateHandle((b64) => { const d = new DataTransfer(); const bin = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0)); d.items.add(new File([bin], 'logo.png', { type: 'image/png' })); return d; }, LOGO_PNG.toString('base64'));
-  if (!info.project.name.startsWith('mobile')) { const b = (await stage.boundingBox())!; await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2); }
-  await page.locator('#cfg-hit').dispatchEvent('dragenter', { dataTransfer: dt });
-  await page.locator('#cfg-hit').dispatchEvent('dragover', { dataTransfer: dt });
-  await expect(stage).toHaveClass(/is-drag/);
-  await expect(page.locator('.cfg-drop')).toHaveCSS('opacity', '1');
-  await page.locator('#cfg-hit').dispatchEvent('drop', { dataTransfer: dt });
-  // the drop zone is gone at once, even with the mouse still on the stage
-  // is-done unterdrückt nur Maus-Hover; Touch darf den Marker bei pointerleave entfernen.
-  if (!info.project.name.startsWith('mobile')) await expect(stage).toHaveClass(/is-done/);
-  await expect(stage).not.toHaveClass(/is-drag/);
-  await expect(page.locator('.cfg-drop')).toHaveCSS('opacity', '0');
-  await expect(page.locator('#cfg-use-logo')).toBeVisible();
-  await page.locator('#cfg-use-logo').click();
-  await expectLogo(Number(await droneCount(page).textContent()));
-  // nothing left the browser: no request with the file, no storage
-  expect(requests.filter((r) => !r.startsWith('GET ')), 'keine Übertragung').toEqual([]);
-  expect(requests.filter((r) => !/^GET http:\/\/127\.0\.0\.1:\d+\//.test(r)), 'nur eigene Dateien der Seite').toEqual([]);
-  // Runde 28: „Dieses Logo in der Show verwenden“ bereitet den Anfrage-Anhang tabgebunden in sessionStorage vor
-  // (docs/integrations/logo-attachments.md); sonst bleibt der Speicher unverändert, und gesendet wird erst mit der Anfrage
-  expect(await page.evaluate(() => { const ss: Record<string, string> = { ...sessionStorage }; delete ss['flyingstars:logo-inquiry']; return JSON.stringify([{ ...localStorage }, ss]); })).toBe(storage);
-  expect(errors).toEqual([]);
-});
-
-test('Fünfzehnte Fassung: die Dropzone lädt beim ersten Überfahren der Bühne einmal ein, die Freischalt-Meldung trägt den Namen im Verlauf', async ({ page }, info) => {
-  test.skip(info.project.name.startsWith('mobile'), 'Überfahren mit der Maus gibt es nur am Desktop.');
-  const errors: string[] = [];
-  page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto(`${CFG}?anlass=hochzeit&paket=ODYSSEY&drohnen=440#konfigurator`);
-  const stage = page.locator('.cfg-stage'), drop = page.locator('.cfg-drop'), b = (await stage.boundingBox())!;
-  const centre = () => page.mouse.move(b.x + b.width / 2, b.y + b.height / 2, { steps: 4 });
-  await page.mouse.move(b.x - 60, b.y + 40);
-  await expect(drop).toHaveCSS('opacity', '0');
-  // erstes Überfahren: die Einladung
-  await centre();
-  await expect(stage).toHaveClass(/is-invite/);
-  await expect(drop).toHaveCSS('opacity', '1');
-  // Maus raus: weg; wieder rein: keine zweite Einladung
-  await page.mouse.move(b.x - 60, b.y + 40);
-  await expect(drop).toHaveCSS('opacity', '0');
-  await centre();
-  await page.waitForTimeout(500);
-  await expect(stage).not.toHaveClass(/is-invite/);
-  await expect(drop).toHaveCSS('opacity', '0');
-  // zeigen auf „Logo“ zeigt sie weiter
-  await page.locator('#cfg-upload').hover();
-  await expect(drop).toHaveCSS('opacity', '1');
-  await page.mouse.move(b.x - 60, b.y + 40);
-  await expect(drop).toHaveCSS('opacity', '0');
-  // Freischalt-Meldung: derselbe Satz für Screenreader, der Name des Motivs im FlyingStars-Verlauf
-  await page.locator('#cfg-drones').focus();
-  await page.keyboard.press('ArrowRight');
-  await expect(page.locator('#cfg-toast')).toHaveText('Neues Motiv freigeschaltet: Antrag');
-  await expect(page.locator('#cfg-toast b')).toHaveText('Antrag');
-  await expect(page.locator('#cfg-toast b')).toHaveCSS('background-image', /linear-gradient\(90deg, rgb\(255, 158, 41\).*rgb\(219, 100, 232\).*rgb\(51, 237, 242\)/);
-  await expect(page.locator('#cfg-toast')).toHaveCSS('border-top-width', '0px'); // kein Kasten
-  expect(errors).toEqual([]);
-});
 
 test('Ein Klick auf die Bühne beendet die Einladung und hält die Show an', async ({ page }, info) => {
   test.skip(info.project.name.startsWith('mobile'), 'Überfahren mit der Maus gibt es nur am Desktop.');
@@ -658,15 +204,6 @@ test('Ein Klick auf die Bühne beendet die Einladung und hält die Show an', asy
   await expect(stage).not.toHaveClass(/is-invite/);
   await expect(page.locator('.cfg-drop')).toHaveCSS('opacity', '0');
   await expect(page.locator('#cfg-hit')).toHaveAttribute('aria-pressed', 'true');
-});
-
-test('Euer Text und Logo stehen bei den Auswahlen, vor Preis und Anfrage', async ({ page }) => {
-  await page.goto(`${CFG}#konfigurator`);
-  const y = async (sel: string) => (await page.locator(sel).boundingBox())!.y;
-  expect(await y('#cfg-text')).toBeGreaterThan(await y('#cfg-drones'));
-  expect(await y('#cfg-text')).toBeLessThan(await y('#cfg-price'));
-  expect(Math.abs(await y('#cfg-upload') - await y('#cfg-text'))).toBeLessThan(4); // side by side
-  expect(await y('#cfg-cta')).toBeGreaterThan(await y('#cfg-text'));
 });
 
 test('Logo, Text-Durchlauf, Anlasswechsel und Rücksprung bleiben fliegbar (Grenzen wie tests/show-physics.spec.ts)', async ({ page }, info) => {
@@ -707,112 +244,7 @@ test('Logo, Text-Durchlauf, Anlasswechsel und Rücksprung bleiben fliegbar (Gren
   expect.soft(accel, 'acceleration').toBeLessThanOrEqual(LIMITS.accel);
 });
 
-test('Sechzehnte Fassung: gesperrte Motive stehen neben der Spur, ein Klick stellt ihre Drohnenzahl ein', async ({ page }) => {
-  const errors: string[] = [];
-  page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto(`${CFG}?anlass=hochzeit&paket=HORIZON#konfigurator`);
-  const locks = page.locator('#cfg-locks .cfg-lock');
-  await expect(locks).toHaveCount(2);
-  await expect(locks.nth(0)).toHaveAttribute('aria-label', 'Lotusblüten: ab 250 Drohnen, Drohnenzahl auf 250 stellen');
-  await expect(locks.nth(1)).toHaveAttribute('aria-label', 'Antrag: ab 450 Drohnen, Drohnenzahl auf 450 stellen');
-  await locks.nth(0).focus();
-  await expect(page.locator('#cfg-tip')).toHaveClass(/is-on/);
-  await expect(page.locator('#cfg-tip')).toHaveText('Lotusblüten · ab 250 Drohnen');
-  await page.keyboard.press('Enter');
-  await expect(page.locator('#cfg-dronecount')).toHaveText('250');
-  await expect(page.locator('#cfg-toast')).toHaveText('Neues Motiv freigeschaltet: Lotusblüten');
-  await expect(scene(page)).toHaveText('Zwei Lotusblüten in 3D drehen sich ineinander');
-  await expect(locks).toHaveCount(1);
-  // SPARK mit 100 Drohnen: gesperrt sind die Schwellen 110, 120, 150 (Katalog- und Showmotive), 250 und 450 (Runde 25: ein Punkt je Schwelle)
-  await pkg(page, 0);
-  await expect(locks).toHaveCount(5);
-  expect(errors).toEqual([]);
-});
-
-test('Runde 9: weniger Text; der Hinweis zum Logo steht hinter dem Info-Zeichen (Klick, Fokus, Esc)', async ({ page }, info) => {
-  await page.goto(`${CFG}#konfigurator`);
-  const tip = page.locator('#cfg-legal'), button = page.locator('#cfg-info');
-  await expect(tip).toBeHidden();
-  await expect(page.locator('#cfg-meta')).not.toContainText('Drohnen'); // die Zahl steht am Regler
-  await expect(page.locator('#cfg-note')).toHaveText('Alle Motive hier sind Beispiele. Für eure Show entwerfen wir eigene.'); // Runde 11
-  // per Tastatur: Fokus öffnet, Esc schließt
-  await button.focus();
-  await expect(tip).toBeVisible();
-  await expect(button).toHaveAttribute('aria-expanded', 'true');
-  await page.keyboard.press('Escape');
-  await expect(tip).toBeHidden();
-  await expect(button).toHaveAttribute('aria-expanded', 'false');
-  // per Klick (bzw. Tippen): bleibt offen, bis man woanders hintippt
-  if (info.project.name.startsWith('mobile')) await button.tap(); else await button.click();
-  await expect(tip).toBeVisible();
-  await page.mouse.click(2, 400); // irgendwo anders hin (am Rand, außerhalb des Hinweises)
-  await expect(tip).toBeHidden();
-  await expect(page.locator('#cfg-file')).toHaveAccessibleDescription(/Ladet nur Logos hoch/);
-});
-
-test('Runde 10: nicht gewählte Pakete behalten ihre Farbe, gedämpft und mit mindestens 4,5:1 Kontrast', async ({ page }) => {
-  await page.goto(`${CFG}#konfigurator`);
-  const colours = await page.locator('.cfg-pkgs input:not(:checked) + span b').evaluateAll((els) => els.map((el) => getComputedStyle(el).color));
-  expect(colours).toHaveLength(2);
-  const L = (c: number[]) => { const [r, g, b] = c.map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
-  for (const c of colours) {
-    const rgb = (c.match(/[\d.]+/g) ?? []).map(Number).slice(0, 3).map((v) => (c.startsWith('color(') ? v * 255 : v)); // color-mix kommt als color(srgb 0–1)
-    expect(Math.max(...rgb) - Math.min(...rgb), `${c} ist farbig, nicht grau`).toBeGreaterThan(30);
-    expect((L(rgb) + 0.05) / (L([15, 13, 12]) + 0.05), `${c} auf --ground`).toBeGreaterThanOrEqual(4.5);
-  }
-});
-
-// ---------- Runde 11 (Marc, 1.11.2026): Anlass als Dropdown, Ordnung der Startseite, gleitender Paketrahmen, Luft ----------
-
-/** x-Verschiebung eines Elements aus seiner berechneten transform-Matrix. */
-const shiftX = (page: Page, sel: string) => page.locator(sel).evaluate((el) => new DOMMatrixReadOnly(getComputedStyle(el).transform).m41);
-/** Zeichnet die x-Verschiebung eines Elements je Bild auf, bis stop() gerufen wird. */
-const sample = (page: Page, sel: string) => page.evaluate((s) => {
-  const el = document.querySelector(s)!, w = window as unknown as { __xs: number[]; __stop: boolean };
-  w.__xs = []; w.__stop = false;
-  const tick = () => { w.__xs.push(new DOMMatrixReadOnly(getComputedStyle(el).transform).m41); if (!w.__stop) requestAnimationFrame(tick); };
-  tick();
-}, sel);
-const stopSample = (page: Page) => page.evaluate(() => { const w = window as unknown as { __xs: number[]; __stop: boolean }; w.__stop = true; return w.__xs; });
-/** Linke Kante der Paketspalte k relativ zur Gruppe (dort sitzt der Rahmen am Ende). */
-const columnX = (page: Page, k: number) => page.locator('.cfg-pkgs').evaluate((g, i) => (g.querySelectorAll('label')[i] as HTMLElement).getBoundingClientRect().left - (g.querySelector('.cfg-ind-sel') as HTMLElement).offsetLeft - g.getBoundingClientRect().left - g.clientLeft, k);
-
-/** Sample the real CSS transition at a fixed point; rAF can miss its middle on loaded CI WebKit. */
-const armTransition = (page: Page, selector: string) => page.locator(selector).evaluate((el) => {
-  const w = window as unknown as { __transitionX: number | null };
-  w.__transitionX = null;
-  const capture = (event: Event) => {
-    if ((event as TransitionEvent).propertyName !== 'transform') return;
-    const animation = el.getAnimations().find(a => (a as Animation & { transitionProperty?: string }).transitionProperty === 'transform');
-    if (!animation) return;
-    animation.pause();
-    animation.currentTime = Number(animation.effect!.getComputedTiming().duration) / 4;
-    w.__transitionX = new DOMMatrixReadOnly(getComputedStyle(el).transform).m41;
-    animation.play();
-    el.removeEventListener('transitionrun', capture);
-  };
-  el.addEventListener('transitionrun', capture);
-});
 const transitionX = (page: Page) => page.evaluate(() => (window as unknown as { __transitionX: number | null }).__transitionX);
-
-test('Runde 22: Anlass als Pills in der Ordnung der Startseite, der erste ist gewählt, ?anlass gewinnt', async ({ page }) => {
-  await page.clock.setFixedTime(new Date('2026-06-15T12:00:00'));
-  await page.goto(`${CFG}#konfigurator`);
-  await expect(page.getByRole('group', { name: 'Anlass' })).toBeVisible();
-  await expect(page.locator('#cfg-occasion label')).toHaveText(['Launch', 'Jubiläum', 'Stadtfest', 'Hochzeit', 'Kultur', 'Winter & Silvester', 'Euer Logo']);
-  await expect(chosenOccasion(page)).toHaveValue('launch');
-  await expect(scene(page)).toHaveText('Die Rakete als Körper schwebt und dreht sich');
-  // ein Klick wechselt den Anlass (Marc: kein zusätzlicher Klick wie beim Dropdown)
-  await occasion(page, 'hochzeit');
-  await expect(chosenOccasion(page)).toHaveValue('hochzeit');
-  await expect(scene(page)).toHaveText(/Solitär|Ring/);
-  // Tastatur: Pfeiltaste wechselt innerhalb der Radio-Gruppe
-  await chosenOccasion(page).focus();
-  await page.keyboard.press('ArrowRight');
-  await expect(chosenOccasion(page)).toHaveValue('kultur');
-  await page.goto(`${CFG}?anlass=kultur#konfigurator`);
-  await expect(chosenOccasion(page)).toHaveValue('kultur');
-});
 
 test('Runde 22: nicht gewählte Anlässe gedämpft, aber über 4,5:1, beim Zeigen voll', async ({ page }) => {
   await page.goto(`${CFG}?anlass=launch#konfigurator`);
@@ -824,102 +256,6 @@ test('Runde 22: nicht gewählte Anlässe gedämpft, aber über 4,5:1, beim Zeige
   await page.locator('#cfg-occasion label[data-occasion="hochzeit"]').hover();
   await expect.poll(async () => ratio(await span('hochzeit').evaluate((e) => getComputedStyle(e).color))).toBeGreaterThan(15);
 });
-
-test('Runde 11: im November und Dezember steht Winter & Silvester vorn und ist gewählt, wie die Karte der Startseite', async ({ page }) => {
-  await page.clock.setFixedTime(new Date('2026-11-01T12:00:00'));
-  await page.goto(`${CFG}#konfigurator`);
-  await expect(page.locator('#cfg-occasion label')).toHaveText(['Winter & Silvester', 'Launch', 'Jubiläum', 'Stadtfest', 'Hochzeit', 'Kultur', 'Euer Logo']);
-  await expect(chosenOccasion(page)).toHaveValue('silvester');
-  await page.locator('#cfg-cta').scrollIntoViewIfNeeded();
-  await expect(page.locator('#cfg-cta')).toHaveAttribute('href', /anlass=stadt/);
-});
-
-test('Bewegung pausiert: der Auswahlrahmen springt ohne Zwischenwerte (Marc, Runde 20c)', async ({ page }) => {
-  await paused(page);
-  await page.goto(`${CFG}#konfigurator`);
-  const sel = '.cfg-ind-sel';
-  await expect.poll(() => shiftX(page, sel)).toBeCloseTo(await columnX(page, 1), 0);
-  const [from, to] = [await columnX(page, 1), await columnX(page, 2)];
-  await sample(page, sel);
-  await pkg(page, 2);
-  await page.waitForTimeout(500);
-  const xs = await stopSample(page);
-  expect(xs.some((x) => x > from + 4 && x < to - 4), `keine Zwischenwerte erwartet: ${xs.map(Math.round).join(',')}`).toBe(false);
-  expect(xs.at(-1)).toBeCloseTo(to, 0);
-});
-
-test('Runde 11: der Auswahlrahmen gleitet zum neuen Paket (Klick und Regler), der Schatten beim Zeigen gedämpft', async ({ page }, info) => {
-  // Runde 20c: bei pausierter Bewegung gleitet nichts (zentraler Schalter in global.css), dieser Test prüft das Gleiten
-  // deshalb mit laufender Bewegung; das Springen bei Pause prüft der Test „Bewegung pausiert: der Rahmen springt“.
-  await page.goto(`${CFG}#konfigurator`);
-  // Only the preview engine pauses; global motion and the native CSS transitions stay enabled.
-  await page.locator('#cfg-play').click();
-  await expect(page.locator('#cfg-play')).toHaveAttribute('data-paused', 'true');
-  const sel = '.cfg-ind-sel', ghost = page.locator('.cfg-ind-hover');
-  await expect.poll(() => shiftX(page, sel)).toBeCloseTo(await columnX(page, 1), 0); // HORIZON zu Beginn
-  // Klick: der Rahmen läuft über Zwischenwerte von HORIZON nach ODYSSEY
-  const [from, to] = [await columnX(page, 1), await columnX(page, 2)];
-  await armTransition(page, sel);
-  await pkg(page, 2);
-  await expect.poll(() => transitionX(page)).not.toBeNull();
-  const middle = (await transitionX(page))!;
-  expect(middle).toBeGreaterThan(from + 4);
-  expect(middle).toBeLessThan(to - 4);
-  await expect.poll(() => shiftX(page, sel)).toBeCloseTo(to, 0);
-  await expect(page.locator(sel)).toHaveCSS('border-top-color', 'rgb(51, 237, 242)'); // in der Farbe von ODYSSEY
-  // der Regler stellt das Paket um: auch dann gleitet der Rahmen
-  await armTransition(page, sel);
-  const slider = page.locator('#cfg-drones');
-  await slider.focus();
-  for (let i = 0; i < 11; i++) await page.keyboard.press('ArrowLeft'); // 300 → 190: SPARK
-  await expect(page.locator('#cfg-pkg')).toHaveText('SPARK');
-  await expect.poll(() => transitionX(page)).not.toBeNull();
-  const back = (await transitionX(page))!;
-  expect(back).toBeGreaterThan(4);
-  expect(back).toBeLessThan(to - 4);
-  await expect.poll(() => shiftX(page, sel)).toBeCloseTo(0, 0);
-  if (info.project.use.isMobile) return; // Zeigen gibt es nur mit Maus
-  // Zeigen auf ein anderes Paket: der Schatten gleitet gedämpft dorthin, der Rahmen bleibt beim gewählten
-  const box = (await page.locator('label:has([name=pkg][value="2"])').boundingBox())!;
-  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 4 });
-  await expect.poll(async () => Number(await ghost.evaluate((el) => getComputedStyle(el).opacity))).toBeCloseTo(0.5, 1);
-  await expect.poll(() => shiftX(page, '.cfg-ind-hover')).toBeCloseTo(to, 0);
-  expect(await shiftX(page, sel)).toBeCloseTo(0, 0);
-  await expect(ghost).toHaveCSS('border-top-color', 'rgb(51, 237, 242)');
-  // Maus raus: der Schatten blendet aus und gleitet zurück zum gewählten Paket
-  await page.mouse.move(box.x + box.width / 2, box.y + box.height + 160, { steps: 4 });
-  await expect.poll(async () => Number(await ghost.evaluate((el) => getComputedStyle(el).opacity))).toBe(0);
-  await expect.poll(() => shiftX(page, '.cfg-ind-hover')).toBeCloseTo(0, 0);
-});
-
-test('Runde 11: bei reduzierter Bewegung wechselt der Rahmen sofort', async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto(`${CFG}#konfigurator`);
-  // die Site setzt bei reduzierter Bewegung global 0,01 ms (global.css), die Komponente selbst „none“
-  await expect.poll(() => page.locator('.cfg-ind-sel').evaluate((el) => Math.max(...getComputedStyle(el).transitionDuration.split(',').map(parseFloat)))).toBeLessThan(0.001);
-  await pkg(page, 0);
-  expect(await shiftX(page, '.cfg-ind-sel')).toBeCloseTo(0, 0);
-});
-
-test('Runde 11: Paket, Preis und Anfrage als eigene Fläche mit Abstand zur Bedienung', async ({ page }) => {
-  await page.goto(`${CFG}#konfigurator`);
-  const sum = page.locator('.cfg-sum');
-  await expect(sum.locator('#cfg-pkg')).toBeVisible();
-  await expect(sum.locator('#cfg-price')).toBeVisible();
-  await expect(sum.locator('#cfg-meta')).toBeVisible();
-  await expect(sum.locator('#cfg-cta')).toBeVisible();
-  const gap = await page.evaluate(() => {
-    const own = document.querySelector('.cfg-own')!.getBoundingClientRect(), s = document.querySelector('.cfg-sum')!.getBoundingClientRect();
-    const blocks = [...document.querySelectorAll('.cfg-panel > .cfg-block')].map((b) => b.getBoundingClientRect());
-    return { sum: s.top - own.bottom, between: Math.min(...blocks.slice(1).map((b, i) => b.top - blocks[i].bottom)),
-      compact: matchMedia('(max-width: 62.5em) and (max-height: 45em)').matches };
-  });
-  // Niedrige Handys (Runde 27): bewusst 1rem statt des geräumigen Desktop-Abstands.
-  expect(gap.between, 'Abstand zwischen den Eingabegruppen').toBeGreaterThanOrEqual(gap.compact ? 16 : 18);
-  expect(gap.sum, 'Abstand zur Ergebnisfläche').toBeGreaterThan(gap.between);
-  expect(await sum.evaluate((el) => getComputedStyle(el).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
-});
-
 
 test('Runde 24: Katalogmotive spielen ab ihrer Punktzahl, der eigene Text hebt die Drohnenzahl auf seinen Bedarf', async ({ page }) => {
   const errors: string[] = [];
@@ -953,3 +289,142 @@ test('Runde 24: Katalogmotive spielen ab ihrer Punktzahl, der eigene Text hebt d
   await expect(budget).toContainText('Mit eurem Text bleiben es mindestens 110 Drohnen');
   expect(errors).toEqual([]);
 });
+
+// ---------- Runde 5: Show-Art, Paket als Startpunkt, Upgrades eingeklappt, erster Bildschirm, Katalogmotive ----------
+const art = (page: Page, id: '2d' | '3d' | 'story') => page.locator(`#cfg-arts label[data-art="${id}"]`).click();
+const price = (page: Page) => page.locator('#cfg-price');
+
+test('Runde 5: Start als individuelles 3D-Paket; Drohnenzahl und Art der Show bestimmen den Preis', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  await page.goto(`${CFG}#konfigurator`);
+  await expect(page.locator('#cfg-pkg')).toHaveText('Individuelles Paket');
+  await expect(page.locator('#cfg-arts input[value="3d"]')).toBeChecked();
+  await expect(droneCount(page)).toHaveText('200');
+  await expect(price(page)).toHaveText('ab 15.900 €');
+  await expect(page.locator('#cfg-meta')).toContainText('3D-Show · 200 Drohnen');
+  // 2D: dieselbe Zahl, derselbe Preis (HORIZON = Preis je Drohnenzahl); erst mit 100 Drohnen 7.900 €
+  await art(page, '2d');
+  await expect(price(page)).toHaveText('ab 15.900 €');
+  await page.locator('#cfg-drones').focus(); await page.keyboard.press('Home');
+  await expect(droneCount(page)).toHaveText('100');
+  await expect(price(page)).toHaveText('ab 7.900 €');
+  // Storytelling beginnt bei 300 Drohnen: die Zahl steigt mit, der Hinweis sagt warum
+  await art(page, 'story');
+  await expect(droneCount(page)).toHaveText('300');
+  await expect(price(page)).toHaveText('ab 34.900 €');
+  await expect(page.locator('#cfg-floor-note')).toHaveText('3D-Show mit Storytelling ab 300 Drohnen');
+  await expect(page.locator('#cfg-art-desc')).toContainText('dramaturgischer Kurve');
+  // der Regler bleibt an der Mindestzahl stehen
+  await page.locator('#cfg-drones').focus(); await page.keyboard.press('Home');
+  await expect(droneCount(page)).toHaveText('300');
+  await page.keyboard.press('End');
+  await expect(price(page)).toHaveText('ab 104.200 €');
+  expect(errors).toEqual([]);
+});
+
+test('Runde 5: die Art der Show steuert die Vorschau (2D flach, 3D als Körper, Storytelling in Akten)', async ({ page }) => {
+  await page.goto(`${CFG}?anlass=hochzeit&drohnen=300#konfigurator`);
+  const captions: Record<string, string[]> = {};
+  for (const id of ['2d', '3d', 'story'] as const) {
+    await art(page, id);
+    await expect(field(page)).toHaveAttribute('data-points', '300');
+    await page.waitForTimeout(400);
+    captions[id] = [];
+    for (let i = 0; i < 3; i++) { captions[id].push((await scene(page).textContent()) ?? ''); await page.locator('#cfg-next').click(); }
+  }
+  // jede Art zeigt eigene Fassungen derselben Motive
+  expect(captions['2d'][0]).not.toBe(captions['3d'][0]);
+  expect(captions['3d'][0]).not.toBe(captions.story[0]);
+  expect(new Set([...captions['2d'], ...captions['3d'], ...captions.story]).size).toBeGreaterThanOrEqual(7);
+});
+
+test('Runde 5: ein Paket ist ein fester Startpunkt; jede Änderung, auch die Show-Art, macht ein individuelles Paket', async ({ page }) => {
+  await page.goto(`${CFG}?paket=HORIZON#konfigurator`);
+  await expect(page.locator('#cfg-pkg')).toHaveText('HORIZON');
+  await expect(price(page)).toHaveText('15.900 €'); // Festpreis ohne „ab“
+  await expect(page.locator('#cfg-pkg-label')).toHaveText('Festes Paket · Festpreis');
+  await expect(page.locator('#cfg-arts input[value="3d"]')).toBeChecked();
+  await art(page, '2d');
+  await expect(page.locator('#cfg-pkg')).toHaveText('Individuelles Paket');
+  await expect(price(page)).toHaveText('ab 15.900 €');
+  expect(new URL(page.url()).searchParams.get('paket')).toBeNull();
+  // ODYSSEY: Storytelling mit 300 Drohnen, Festpreis; mehr Drohnen = individuell mit dem Storytelling-Preis
+  await page.goto(`${CFG}?paket=ODYSSEY#konfigurator`);
+  await expect(page.locator('#cfg-arts input[value="story"]')).toBeChecked();
+  await expect(droneCount(page)).toHaveText('300');
+  await expect(price(page)).toHaveText('34.900 €');
+  await page.locator('#cfg-drones').focus(); await page.keyboard.press('ArrowRight');
+  await expect(page.locator('#cfg-pkg')).toHaveText('Individuelles Paket');
+  await expect(price(page)).toHaveText('ab 44.800 €');
+  // „SPARK anpassen“ auf derselben Seite setzt Drohnenzahl und Show-Art des Pakets
+  // auf dem Handy liegt die feste Preisleiste über dem Link, solange er am unteren Rand steht: Klick per Skript
+  await page.locator('a[data-cfg-preset="SPARK"]').evaluate((a: HTMLElement) => a.click());
+  await expect(page.locator('#cfg-pkg')).toHaveText('SPARK');
+  await expect(page.locator('#cfg-arts input[value="2d"]')).toBeChecked();
+  await expect(droneCount(page)).toHaveText('100');
+  await expect(price(page)).toHaveText('7.900 €');
+});
+
+test('Runde 5: Upgrades eingeklappt mit Zähler, klappen weich auf, rechnen in den Preis', async ({ page }) => {
+  await page.goto(`${CFG}#konfigurator`);
+  const toggle = page.locator('#cfg-up-toggle'), inner = page.locator('.cfg-up-inner');
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  expect(await inner.evaluate((el) => (el as HTMLElement).inert)).toBe(true);
+  expect((await inner.boundingBox())?.height ?? 0).toBeLessThan(2);
+  expect(await page.locator('.cfg-up-body').evaluate((el) => getComputedStyle(el).transitionProperty)).toContain('grid-template-rows');
+  await expect(page.locator('#cfg-up-count')).toHaveText('(optional)');
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  expect(await inner.evaluate((el) => (el as HTMLElement).inert)).toBe(false);
+  await page.locator('#cfg-upgrades label:has([value="film"])').click();
+  await expect(page.locator('#cfg-up-count')).toHaveText('1 gewählt');
+  await expect(price(page)).toHaveText('ab 16.800 €');
+  await page.locator('#cfg-upgrades label:has([value="indoor"])').click();
+  await expect(page.locator('#cfg-up-count')).toHaveText('2 gewählt');
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.locator('#cfg-up-count')).toHaveText('2 gewählt');
+});
+
+test('Runde 5: erster Bildschirm bei 1440 × 900 zeigt Vorschau und Preis, „Immer dabei“ steht unter der Preis-Box', async ({ page }, info) => {
+  test.skip(Boolean(info.project.use.isMobile), 'Desktop-Anordnung');
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(CFG);
+  await expect(page.locator('.cfg-stage')).toBeInViewport({ ratio: 0.95 });
+  await expect(price(page)).toBeInViewport();
+  await expect(page.locator('#cfg-cta')).toBeInViewport();
+  const box = async (sel: string) => (await page.locator(sel).boundingBox())!;
+  const sum = await box('.cfg-sum'), always = await box('.cfg-always'), stage = await box('.cfg-stage');
+  expect(always.y).toBeGreaterThan(sum.y + sum.height - 1);
+  expect(sum.y).toBeGreaterThan(stage.y + stage.height - 1);
+  // deutlich mehr Abstand zwischen Seitenkopf und Werkzeug als zwischen den Eingabegruppen
+  const h1 = await box('.cfg-head h1'), panel = await box('.cfg-panel');
+  expect(panel.y - (h1.y + h1.height)).toBeGreaterThanOrEqual(64);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(1440);
+});
+
+test('Runde 5: die Anfrage nimmt Art der Show, Drohnenzahl und Paket mit', async ({ page }) => {
+  await page.goto(`${CFG}#konfigurator`);
+  await art(page, 'story');
+  await expect(droneCount(page)).toHaveText('300');
+  const href = decodeURIComponent((await page.locator('#cfg-cta').getAttribute('href')) ?? '').replace(/\+/g, ' ');
+  expect(href).toContain('Art der Show: 3D-Show mit Storytelling');
+  expect(href).toMatch(/drohnen=300/);
+  await page.goto(`${CFG}?paket=SPARK#konfigurator`);
+  await expect(page.locator('#cfg-pkg')).toHaveText('SPARK');
+  const fixed = decodeURIComponent((await page.locator('#cfg-cta').getAttribute('href')) ?? '').replace(/\+/g, ' ');
+  expect(fixed).toMatch(/paket=SPARK/);
+  expect(fixed).toContain('Art der Show: 2D-Show');
+});
+
+test('Runde 5: Katalogmotive zeichnen mit mehr Drohnen dichter (alle Drohnen leuchten in der Form)', async ({ page }) => {
+  for (const n of [200, 600]) {
+    await page.goto(`${CFG}?anlass=silvester&motiv=lebkuchen&drohnen=${n}&art=2d#konfigurator`);
+    await expect(scene(page)).toContainText('Lebkuchen');
+    await expect(field(page)).toHaveAttribute('data-points', String(n));
+    // vorher leuchteten immer die 99 Katalogpunkte, der Rest wartete dunkel
+    await expect.poll(async () => Number(await field(page).getAttribute('data-lit')), { timeout: 15_000 }).toBeGreaterThan(n * 0.9);
+  }
+});
+

@@ -8,4 +8,3 @@ export const SOURCE_TEXT_MAX = 120;
 /** Bezug zur Anfrage: 12 Hex-Zeichen, im Browser erzeugt, steht in beiden Meldungen */
 export const INQUIRY_REF = /^[a-f0-9]{12}$/;
 export const INQUIRY_REF_KEY = 'fs-anfrage-ref';
-export const INQUIRY_SOURCE_KEY = 'fs-anfrage-quelle';

@@ -34,8 +34,25 @@ test('Hero: Standbild ist das erste Bild, das Video wird auf dem Handy nicht zum
 
 test('Schwarm-Canvas wandert per transform (kein CLS beim Scrollen)', () => {
   const src = read('src/scripts/himmel/schwarm.ts');
-  assert.match(src, /s\.transform\s*=\s*'translate\('/);
-  assert.doesNotMatch(src, /s\.(left|top)\s*=\s*this\.(left|top)/, 'left/top am Canvas zählt als Layout-Verschiebung');
+  assert.match(src, /\.transform\s*=\s*'translate\('/);
+  assert.doesNotMatch(src, /style\.(left|top)\s*=\s*(this\.|f\.)?(left|top|L|T)\b/, 'left/top am Canvas zählt als Layout-Verschiebung');
+});
+
+test('Runde 5: Zeichenflächen werden nur bei neuer Pixelgröße angelegt, Flug in Pixeldichte 1', () => {
+  // WebKit-Messung 18.11.: Jedes Neuanlegen der seitenbreiten Fläche (gut 5 Mio. Pixel) beim Abflug, bei der Landung und beim
+  // Mitwandern kostete Frames bis 200–700 ms an den Section-Grenzen (docs/himmel.md → Performance)
+  const src = read('src/scripts/himmel/schwarm.ts');
+  assert.match(src, /fly = surface\(\); stand = surface\(\)/, 'zwei feste Flächen');
+  assert.match(src, /if \(f\.pw !== pw \|\| f\.ph !== ph\) \{ f\.cv\.width = /, 'width/height nur bei neuer Pixelgröße setzen');
+  assert.equal((src.match(/\.cv\.width\s*=/g) ?? []).length, 1, 'kein weiteres Neuanlegen');
+  assert.match(src, /const d = f === this\.stand \|\| crisp \? full : 1;/, 'Flugfläche in Pixeldichte 1');
+});
+
+test('Runde 5: Zeiger verdrängt (Feder wie Scrollstory), kein Aufleuchten; Himmelszeile entfernt', () => {
+  const src = read('src/scripts/himmel/schwarm.ts');
+  assert.match(src, /const f = \(1 - md \/ reach\) \*\* 2 \* push \* dt/);
+  assert.doesNotMatch(src, /near \* Math\.exp/, 'Glow-Hover ist ersetzt');
+  for (const f of ['src/scripts/himmel/index.ts', 'src/scripts/himmel/schwarm.ts', 'src/styles/himmel.css']) assert.doesNotMatch(read(f), /hm-zeile|zeileVorab|from '\.\/zeile'/, `${f}: Reste der Himmelszeile`);
 });
 
 test('Schwarm bestellt Bilder erst nahe ihrer Bühne', () => {

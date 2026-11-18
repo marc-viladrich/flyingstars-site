@@ -41,16 +41,18 @@ import { t as message } from '../i18n/ui.mjs';
 // - der gleitende Rahmen an den Paketknöpfen ist reines CSS (ShowConfigurator.astro): er folgt dem Radio, also auch dem
 //   Regler, der unten in update() das Paket umstellt
 import { getConfiguratorContent, unlockAt, bySeason } from "../content/show-configurator.js";
-import { SHOW_PACKAGES, DRONE_RANGES, DRONES_MIN, DRONES_MAX, DRONE_STEP, PACKAGE_NAMES, packageForDrones, snapDrones, individualPrice } from "../content/show-packages";
+import { SHOW_PACKAGES, DRONES_MIN, DRONES_MAX, DRONE_STEP, PACKAGE_NAMES, SHOW_ARTS, ART_TIER, artMin, artOfPackage, showArtPrice, snapDrones } from "../content/show-packages";
 import { SHOW_EXTRAS } from "../content/show-extras.mjs";
 import { money } from "../lib/price.mjs";
 // Preisseite nach Moritz (17.11.2026): keine Paketwahl mehr. Zwei Zustände:
 // - preset (SPARK/HORIZON/ODYSSEY): Startpunkt aus einer Paketkarte („SPARK anpassen“, ?paket=SPARK). Feste Drohnenzahl des
 //   Pakets, Name und Festpreis, Show in der Paketfarbe.
-// - null: „Individuelles Paket“. Der Preis rechnet frei (individualPrice), die Show leuchtet warmweiß, die Pakete tauchen
+// - null: „Individuelles Paket“. Der Preis rechnet frei (showArtPrice), die Show leuchtet warmweiß, die Pakete tauchen
 //   nirgends auf. Jede Änderung an Drohnenzahl, Upgrades oder Logo verlässt den Startpunkt; Anlass, eigener Text (solange
 //   er keine Drohnen nachfordert) und die Wiedergabe ändern nichts am Paket.
-// Intern bleibt die Fassung der Motive an der Drohnenzahl (packageForDrones): 2D bis 190, 3D ab 200, Geschichten ab 300.
+// Runde 5 (Marc, 18.11.2026): die Fassung der Motive folgt der Art der Show (2D · 3D · 3D mit Storytelling, ART_TIER), nicht
+// mehr der Drohnenzahl. Jede Art hat eine Mindestzahl (2D 100, 3D 200, Storytelling 300); darunter bleibt der Regler stehen,
+// und ein kurzer Hinweis unter dem Regler sagt warum. Preis: showArtPrice (content/show-packages.ts).
 import { createField } from "./show-field.js";
 import { buildSequence, preloadScenes } from "./show-scenes.js";
 import { composeShow, canPlay, possibleFrom, minDronesOf, freshMotifs, unlockNote, LOGO_SEGMENT, TOUR_SEGMENT, TOUR_STYLES, TEMPO } from "./show-tempo.js";
@@ -107,7 +109,7 @@ if (form) {
   // Hinweis an der Spur (vierzehnte Fassung): Name der Sequenz und ab wie vielen Drohnen sie möglich ist
   /** What the sequence of beat b is and from how many drones it can be flown (its minimum, at least the package's range). */
   function tipText(b) {
-    const range = DRONE_RANGES[pkgName()].min;
+    const range = artMin(art);
     if (b.logo) return [message('showConfigurator.yourLogo'), DRONES_MIN];
     const seg = b.segment ?? 0;
     const m = seg < occasion.motifs.length && seg >= 0 ? occasion.motifs[seg] : textMotif(style);
@@ -144,8 +146,8 @@ if (form) {
   // 120, 150 und 160 Drohnen mehrere Motive zugleich frei; je Motiv ein Punkt drückte auf dem Handy die Tempo-Knöpfe aus
   // dem Bild.
   function drawLocks() {
-    const list = occasion.motifs.map((m) => [m, unlockAt(m, drones)]).filter(([, at]) => at !== null).sort((a, b) => a[1] - b[1]);
-    const key = `${occasion.id}:` + list.map(([m, at]) => `${m.id}@${at}`).join(",");
+    const list = occasion.motifs.map((m) => [m, unlockAt(m, drones, pkgName())]).filter(([, at]) => at !== null).sort((a, b) => a[1] - b[1]);
+    const key = `${occasion.id}:${art}:` + list.map(([m, at]) => `${m.id}@${at}`).join(",");
     if (locks.dataset.key === key) return;
     locks.dataset.key = key;
     locks.hidden = !list.length;
@@ -284,7 +286,9 @@ if (form) {
   // Runde 28: im Logo-Anlass zählt die buchbare Zahl, also die Empfehlung auf die nächste Zehnerstufe aufgerundet (wie
   // „Dieses Logo in der Show verwenden“ sie setzt). Sonst zeigt Puma mit 194 SPARK, die Show bekommt aber 200 = HORIZON.
   const pricedDrones = () => logoMode && lastLogoPts?.length ? snapDrones(Math.ceil(lastLogoPts.length / DRONE_STEP) * DRONE_STEP) : drones;
-  const pkgName = () => packageForDrones(pricedDrones());
+  const artGroup = $("#cfg-arts"), artRadios = [...artGroup.querySelectorAll("input[name=art]")];
+  let art = artRadios.find((r) => r.checked && !r.defaultChecked)?.value ?? artRadios.find((r) => r.checked)?.value ?? "3d";
+  const pkgName = () => ART_TIER[art];
   const step = () => STEPS.find((s) => s.pkg === pkgName());
   // same spacing between drones: the picture's area grows with the drone count up to ODYSSEY's 300, above that the
   // picture keeps the stage's size and gets denser
@@ -515,7 +519,7 @@ if (form) {
   function currentPrice() {
     if (preset) return SHOW_PACKAGES[preset].price;
     const up = chosenUpgrades();
-    const price = individualPrice(pricedDrones()) + (up.includes("film") ? SHOW_EXTRAS.film.price.amount : 0);
+    const price = showArtPrice(art, pricedDrones()) + (up.includes("film") ? SHOW_EXTRAS.film.price.amount : 0);
     return up.includes("indoor") ? Math.max(price, SHOW_EXTRAS.indoor.price.amount) : price;
   }
   function drawPrice() {
@@ -525,16 +529,21 @@ if (form) {
     if (preset) document.documentElement.style.setProperty("--pkg", `rgb(${SHOW_PACKAGES[preset].color.join(",")})`);
     const displayedDrones = logoMode ? (logoWanted ?? drones) : drones;
     if (Number(slider.value) !== displayedDrones) slider.value = String(displayedDrones);
-    slider.style.setProperty("--fill", `${(((displayedDrones - DRONES_MIN) / (DRONES_MAX - DRONES_MIN)) * 100).toFixed(2)}%`);
+    const pct = (n) => `${(((n - DRONES_MIN) / (DRONES_MAX - DRONES_MIN)) * 100).toFixed(2)}%`;
+    slider.style.setProperty("--fill", pct(displayedDrones));
+    slider.style.setProperty("--floor", pct(logoMode ? DRONES_MIN : artMin(art)));
+    drawArt();
     slider.setAttribute("aria-valuetext", message('showConfigurator.valueDronesValue', { v0: displayedDrones, v1: name }));
     // Festpreis ohne „ab“, frei gerechnet mit „ab“ (Anfahrt und Aufpreise nach Aufwand kommen dazu)
     const amount = preset ? money(price, locale) : eur(price);
     for (const [sel, txt] of [["#cfg-pkg", name], ["#cfg-bar-pkg", name], ["#cfg-price", amount], ["#cfg-bar-price", amount], ["#cfg-dronecount", String(displayedDrones)]]) $(sel).textContent = txt;
     if (!logoMode) { const label = $("#cfg-pkg-label"); label.hidden = !preset; label.textContent = preset ? message("preise.fixedPrice") : ""; }
-    $("#cfg-meta").textContent = message('showConfigurator.valueExcludingVatAndTravel', { v0: message('packageDetails.showtimeLine',durationValues()) }); // Drohnenzahl steht am Regler (Runde 9), Showzeit für alle Pakete gleich (Runde 18)
+    // Runde 5: Art und Drohnenzahl stehen in der Preis-Box, seit sie unter der Vorschau steht (der Regler ist links)
+    $("#cfg-meta").textContent = `${message('preise.artLine', { art: message(`preise.artName.${art}`), n: pricedDrones() })} · ${message('showConfigurator.valueExcludingVatAndTravel', { v0: message('packageDetails.showtimeLine',durationValues()) })}`;
     const up = chosenUpgrades();
     const summary = [
       message('showConfigurator.occasionValue', { v0: occasion.label }),
+      message('preise.summaryArt', { art: message(`preise.artName.${art}`) }),
       message('configurator.motifs', { list: occasion.motifs.filter((m) => canPlay(m, s.pkg, drones)).map((m) => m.label).join(', ') }),
       ...(text ? [message('showConfigurator.customTextValueValue', { v0: text, v1: STYLE_LABEL[style] })] : []),
       ...(logo ? [message('showConfigurator.customLogoTriedInThePreview')] : []),
@@ -545,6 +554,7 @@ if (form) {
     $("#cfg-cta").href = inquiry; $("#cfg-bar-cta").href = inquiry;
     drawLocks();
     drawBudget();
+    drawUpCount();
   }
   function update(keep, to, { delay = 0, cloud = false } = {}) {
     drawPrice();
@@ -580,6 +590,8 @@ if (form) {
     const before = { pkg: pkgName(), drones }, need = textNeed(text), previousAnchor = logoAnchor();
     // mit eigenem Text nie unter seinen Bedarf (Regler, Paketknopf, Link); der Hinweis am Text sagt, warum
     if (need && n < need) { textNote = "holds"; n = need; } else if (snapDrones(n) !== drones) textNote = ""; // dieselbe Zahl (change nach input) behält den Hinweis
+    // Runde 5: nie unter die Mindestzahl der Show-Art (3D ab 200, Storytelling ab 300); der Hinweis ersetzt kurz die Skala
+    if (!logoMode && n < artMin(art)) { n = artMin(art); floorNote(); }
     if (snapDrones(n) !== drones) leavePreset(); // eine andere Drohnenzahl ist eine Änderung am Paket
     drones = snapDrones(n);
     if (logoMode) {
@@ -595,6 +607,57 @@ if (form) {
     unlockTo = fresh.length ? occasion.motifs.indexOf(fresh[0]) : null;
     update(true, logo && !fresh.length ? LOGO_SEGMENT : undefined, { delay });
   }
+
+  // ---------- Runde 5: Art der Show, Hinweis an der Mindestzahl, Upgrades eingeklappt ----------
+  const artDesc = $("#cfg-art-desc"), floorEl = $("#cfg-floor-note"), upToggle = $("#cfg-up-toggle"), upInner = $(".cfg-up-inner"), upCount = $("#cfg-up-count");
+  /** Auswahl und Beschreibung der Show-Art zeigen, was gilt (auch nach einem Paket-Startpunkt oder Direktlink). */
+  function drawArt() {
+    for (const r of artRadios) if (r.checked !== (r.value === art)) r.checked = r.value === art;
+    const text = message(`preise.artDesc.${art}`);
+    if (artDesc.dataset.art === art) return;
+    const first = !artDesc.dataset.art;
+    artDesc.dataset.art = art;
+    if (first) { artDesc.textContent = text; return; }
+    // weich überblenden statt hart umschalten (Marc, Runde 5): ausblenden, Text tauschen, einblenden
+    artDesc.classList.add("is-swap");
+    clearTimeout(artDesc._t);
+    artDesc._t = setTimeout(() => { artDesc.textContent = text; artDesc.classList.remove("is-swap"); }, 160);
+  }
+  let floorTimer = 0;
+  /** Kurzer Hinweis, warum der Regler nicht tiefer geht (z. B. „3D-Show ab 200 Drohnen“). */
+  function floorNote() {
+    floorEl.textContent = message('preise.artFloor', { art: message(`preise.artName.${art}`), n: artMin(art) });
+    floorEl.parentElement.classList.add("is-note");
+    clearTimeout(floorTimer);
+    floorTimer = setTimeout(() => floorEl.parentElement.classList.remove("is-note"), 2600);
+  }
+  function drawUpCount() {
+    const n = chosenUpgrades().length;
+    upCount.textContent = n ? message('preise.upCount', { n }) : message('showconfigurator.optional');
+    upCount.classList.toggle("is-set", n > 0);
+  }
+  upToggle.addEventListener("click", () => {
+    const open = upToggle.getAttribute("aria-expanded") !== "true";
+    upToggle.setAttribute("aria-expanded", String(open));
+    upInner.inert = !open;
+  });
+  /** Neue Show-Art: die Motive auf der Bühne wechseln in ihre Fassung dieser Art (durch die lebendige Wolke), unter der
+   * Mindestzahl steigt die Drohnenzahl mit. Eine Änderung am Paket wie jede andere: aus SPARK wird „Individuelles Paket“. */
+  artGroup.addEventListener("change", (e) => {
+    const next = e.target?.value;
+    if (!SHOW_ARTS.includes(next) || next === art) return;
+    const before = { pkg: pkgName(), drones };
+    leavePreset();
+    art = next;
+    if (drones < artMin(art)) { drones = artMin(art); floorNote(); }
+    const up = SHOW_ARTS.indexOf(art) > SHOW_ARTS.indexOf(artOfPackage(before.pkg)); // nur aufwärts ist es Neues
+    const now = up ? freshMotifs(occasion.motifs, before, { pkg: pkgName(), drones }) : [];
+    if (now.length && !logoMode) showToast(unlockNote(now));
+    fresh = []; unlockTo = null;
+    // von vorn: ab 3D laufen die räumlichen und erzählten Motive zuerst (buildSequence), so zeigt der Wechsel sofort,
+    // was die Art ausmacht; auf dem laufenden Motiv zu bleiben zeigte oft eine flache Katalogformation
+    update(false, undefined, { cloud: true });
+  });
 
   // only the untouched first view of the page appears already formed; a choice made before it loaded plays normally
   for (const type of ["input", "click"]) form.addEventListener(type, () => { first = false; }, { capture: true });
@@ -631,7 +694,11 @@ if (form) {
   // ?paket=SPARK (Paketkarte „SPARK anpassen“, ältere Links): Startpunkt mit den festen Werten des Pakets. Nennt der Link
   // zusätzlich eine andere Drohnenzahl (z. B. der Teaser der Startseite), ist das schon eine Änderung: individuell.
   const linkedPkg = PACKAGE_NAMES.find((x) => x === params.get("paket")?.toUpperCase());
-  if (linkedPkg) { preset = linkedPkg; drones = SHOW_PACKAGES[linkedPkg].base; }
+  if (linkedPkg) { preset = linkedPkg; drones = SHOW_PACKAGES[linkedPkg].base; art = artOfPackage(linkedPkg); }
+  // ?art=2d|3d|story (Runde 5); eine andere Art als die des Pakets ist schon eine Änderung
+  const linkedArt = SHOW_ARTS.find((a) => a === params.get("art"));
+  if (linkedArt && linkedArt !== art) { leavePreset(); art = linkedArt; }
+  if (drones < artMin(art)) { if (preset) leavePreset(); drones = artMin(art); }
   if (params.get("drohnen")) { const n = snapDrones(Number(params.get("drohnen")) || drones); if (n !== drones) leavePreset(); drones = n; }
   const linkedMotif = occasion.motifs.findIndex((m) => m.id === params.get("motiv"));
   if (linkedMotif >= 0) first = false; // a linked motif plays from its first act
@@ -787,7 +854,7 @@ if (form) {
   $("#cfg-use-logo").addEventListener("click", async () => {
     if (!logo?.file || !lastLogoPts?.length) return;
     const need = lastLogoPts?.length ?? 0;
-    if (need) { const st = +slider.step || 1; leavePreset(); drones = snapDrones(Math.max(+slider.min, Math.min(+slider.max, Math.ceil(need / st) * st))); slider.value = String(drones); } // die Empfehlung gilt in beide Richtungen (Cupra mit 92 → SPARK)
+    if (need) { const st = +slider.step || 1; leavePreset(); drones = snapDrones(Math.max(+slider.min, artMin(art), Math.min(+slider.max, Math.ceil(need / st) * st))); slider.value = String(drones); } // die Empfehlung gilt in beide Richtungen (Cupra mit 92 → SPARK)
     // Runde 28: erst zurück zur Show, dann den Anfrage-Anhang im Hintergrund vorbereiten (das Punktbild zu kodieren dauert
     // spürbar). Ein Anhang, der sich nicht vorbereiten lässt, hält die Übernahme nicht auf; die Anfrage geht dann ohne ihn.
     const file = logo.file, example = logo.example, pts = lastLogoPts, n = drones;
@@ -858,7 +925,7 @@ if (form) {
     if (!name || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
     if (logoMode) back.click();
-    preset = name; drones = SHOW_PACKAGES[name].base; textNote = "";
+    preset = name; drones = SHOW_PACKAGES[name].base; art = artOfPackage(name); textNote = "";
     upBoxes.forEach((b) => { if (b.checked) { b.checked = false; syncGrid(b.value, false); } });
     if (textNeed(text) > drones) { leavePreset(); drones = snapDrones(textNeed(text)); }
     const url = new URL(location.href); if (preset) url.searchParams.set("paket", name); url.hash = section.id; history.replaceState(history.state, "", url);

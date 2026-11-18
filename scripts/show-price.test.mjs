@@ -142,7 +142,7 @@ test('Lichtlauf folgt den Linien: kein Sprung zwischen Bildvierteln, weicher Kop
   // zwei Linien: ein Kreis und eine Linie darunter. Nachbarn im Rang liegen fast immer auch räumlich nebeneinander
   const circle = Array.from({ length: 160 }, (_, i) => { const a = (i / 160) * Math.PI * 2; return [Math.cos(a), Math.sin(a) + 0.3, 0]; });
   const base = Array.from({ length: 60 }, (_, i) => [-1 + (2 * i) / 59, -1.2, 0]);
-  const all = [...circle, ...base], pts = all.map((_, i) => all[(i * 37) % all.length]); // Eingabereihenfolge egal (37 teilerfremd zu 220)
+  const all = [...circle, ...base], pts = all.map((_, i) => all[(i * 37) % all.length]); // Eingabereihenfolge egal (37 teilerfremd zu 194)
   const gap = (2 * Math.PI / 160) * 1.6;
   const jumpsOf = (order) => order.slice(1).filter((p, i) => Math.hypot(p[0] - order[i][0], p[1] - order[i][1]) > gap * 2).length;
   const rank = rankOf({ pts }), order = pts.map((p, j) => [rank[j], p]).sort((a, b) => a[0] - b[0]).map(([, p]) => p);

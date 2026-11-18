@@ -46,7 +46,8 @@ export const N = 300;
 
 /** Schritt: build = Bauname aus show-scenes.js/scenes/, pkg = Paket (Farbe), n = Drohnen, swing = Schwenk (rad) in der
  *  Standzeit, lead = flaches Bild vor der Verwandlung, from = erster Akt einer Geschichte, story = Standzeit gesamt (s),
- *  rate/hold = eigenes Tempo und eigene Standzeit (s) des letzten Bildes. */
+ *  rate/hold = eigenes Tempo und eigene Standzeit (s) des letzten Bildes, to = Akt, vor dem eine Geschichte endet,
+ *  whole = die ganze Geschichte statt der im Konfigurator geteilten (Feuerwerk mit Goldregen). */
 const S = (build, n = 100) => ({ build, pkg: "SPARK", n, lead: true });
 const H = (build, n = 200, extra = {}) => ({ build, pkg: "HORIZON", n, swing: SWING, ...extra });
 const O = (build, extra = {}) => ({ build, pkg: "ODYSSEY", n: N, ...extra });
@@ -54,10 +55,12 @@ const O = (build, extra = {}) => ({ build, pkg: "ODYSSEY", n: N, ...extra });
 const PIECES = {
   maske: { kind: "raum", tags: ["gesicht"], steps: [O("devilStory", { swing: SWING })] }, // Teufel aus der Bokkenrijders-Show, echte 3D-Formation
   logo: { kind: "esc", tags: ["zeichen"], steps: [S("logo"), H("logo3d")] }, // FlyingStars-Zeichen: flach, dann zwei Ebenen in der Tiefe
-  qr: { kind: "story", tags: ["zeichen", "eckig"], steps: [O("qrStory")] }, // Nachricht kommt an → QR-Code „Scan me“
+  qr: { kind: "story", tags: ["zeichen", "eckig"], steps: [O("qrStory", { story: 3.0 })] }, // Nachricht kommt an → QR-Code „Scan me“; Runde 5: gestrafft (Marc: „ein bisschen langsam“)
   wappen: { kind: "esc", tags: ["zeichen", "eckig"], steps: [S("shield"), H("shield3d", N)] }, // Jubiläum: Wappen mit Stern → Wappen mit „125“ und wehender Fahne
-  turm: { kind: "esc", tags: ["hoch"], steps: [S("tower"), H("tower3d")] }, // Berliner Fernsehturm mit Warnlicht
-  kolibri: { kind: "esc", tags: ["tier"], steps: [S("hummingbird2d"), H("hummingbird3d")] },
+  // Berliner Fernsehturm mit Warnlicht; Runde 5 (Marc: „diese Funkwellen vom Turm“): dann sendet er, die Wellenbögen aus
+  // towerStory (Akt 1 und 2, ohne das Brandenburger Tor) laufen nacheinander nach außen
+  turm: { kind: "esc", tags: ["hoch"], steps: [S("tower"), H("towerStory", N, { to: 2, swing: 0, rate: 1.6, hold: 2.8 })] },
+  kolibri: { kind: "story", tags: ["tier"], steps: [O("hummingbirdStory")] }, // Runde 5: fliegt zur Blüte, trinkt, steigt auf, die Knospen blühen
   riesenrad: { kind: "esc", tags: ["rund"], steps: [S("wheel2d", 150), H("wheel3d", N, WHEEL)] }, // dreht sich um die Nabe, Gondeln hängen
   delfine: { kind: "story", tags: ["tier", "wasser"], steps: [O("dolphinStory", { from: 1 })] }, // Sprung, Ringe, zwei Delfine, Herz
   buch: { kind: "story", tags: ["eckig"], steps: [O("bookStory")] }, // ODYSSEY: das Buch öffnet sich, eine Feder schreibt
@@ -65,10 +68,12 @@ const PIECES = {
   taenzerin: { kind: "story", tags: ["gesicht", "musik"], steps: [O("dancerStory")] }, // Tänzerin dreht sich, der Rock wird zur Blüte
   kugel: { kind: "raum", tags: ["rund"], steps: [{ build: "sphere3d", pkg: "HORIZON", n: N, swing: 0 }] }, // Kugel aus Breiten- und Längenkreisen, dreht sich selbst
   baum: { kind: "esc", tags: ["hoch"], steps: [S("snow2d"), H("tree3d")] }, // Schneeflocke → Lichterbaum als Spirale
-  feuerwerk: { kind: "story", tags: ["feuer"], steps: [O("fireworkStory")] }, // Feuerwerk aus Drohnen: Leuchtspur, Sterne blühen
+  // Feuerwerk aus Drohnen: Leuchtspur, Sterne blühen, Finale; Runde 5 (Marc: „da fehlt dieser Feuerregen“): die ganze
+  // Geschichte bis zum Goldregen (whole), der Regen steht 3 s und läuft langsamer, damit man ihn fallen sieht
+  feuerwerk: { kind: "story", tags: ["feuer"], steps: [O("fireworkStory", { whole: true, rate: 1.5, hold: 3.0 })] },
 };
 /** Erster Besuch: unser Feuerwerk (Finale), dann sofort groß. Danach die Wunschliste in dieser Reihenfolge, später gemischt. */
-const OPENING = { kind: "story", tags: ["feuer"], steps: [O("fireworkFinale", { story: 2.4 })] };
+const OPENING = { kind: "story", tags: ["feuer"], steps: [O("fireworkFinale", { story: 2.0, rate: 1.5, hold: 2.6 })] }; // Finale, dann Goldregen
 const FIRST = ["maske", "logo", "kugel", "delfine", "turm", "qr", "wappen", "musik", "kolibri", "buch", "baum", "taenzerin", "riesenrad", "feuerwerk"];
 
 /** Indoor-Reihe (scenes/indoor.js): 50 Drohnen, einfache Motive, je 2 s, in fester Runde. */
@@ -78,7 +83,7 @@ const INDOOR = Object.fromEntries(["herz", "welle", "initialen", "stern", "ring"
 
 /** Varianten: Startseite (Übergabe vom Himmel-Schwarm) und Indoor-Seite (eigene Bühne in #unterschied). */
 const VARIANTS = {
-  himmel: { n: N, pieces: PIECES, first: FIRST, opening: OPENING, mixed: true, fill: 0.86, light: 1, cloud: { cloudTime: 0.45, cloudSpread: 0.55 } },
+  himmel: { n: N, pieces: PIECES, first: FIRST, opening: OPENING, mixed: true, fill: 0.9, light: 1, cloud: { cloudTime: 0.45, cloudSpread: 0.55 } },
   indoor: { n: NI, pieces: INDOOR, first: Object.keys(INDOOR), opening: null, mixed: false, fill: 0.74, light: 1.6, cloud: { cloudTime: 0.4, cloudSpread: 0.45 } },
 };
 
@@ -151,11 +156,11 @@ export function createFolge(canvas, { burst = [], rnd = Math.random, variant = "
       all = indoorScene(build.slice(7), n).beats.map(steadyBeat);
     } else {
       const [{ buildSequence }, { SHOW_PACKAGES }] = await Promise.all([import("../show-scenes.js"), import("../../content/show-packages.ts")]);
-      const seq = await buildSequence([{ id: "m", label: "", tiers: { [pkg]: { build, caption: "", minDrones: 0 } } }], pkg, n, SHOW_PACKAGES[pkg].color, "");
+      const seq = await buildSequence([{ id: "m", label: "", tiers: { [pkg]: { build, caption: "", minDrones: 0, ...(step.whole ? { whole: true } : {}) } } }], pkg, n, SHOW_PACKAGES[pkg].color, "");
       all = seq.beats;
     }
     const s = seg++;
-    const beats = all.filter((b) => !b.interlude).slice(step.from ?? 0);
+    const beats = all.filter((b) => !b.interlude).slice(step.from ?? 0, step.to);
     const total = beats.reduce((sum, b) => sum + (b.hold ?? 2.2), 0);
     const storyRate = Math.max(STORY_RATE, total / (step.story ?? STORY_BEAT * beats.length + 1));
     return beats.map((b, i) => {

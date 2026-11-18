@@ -30,9 +30,6 @@ async function fillInquiry(page: Page) {
   await page.locator('[data-next]').click();
   await page.locator('#f-name').fill('Integration Test');
   await page.locator('#f-mail').fill('test@example.test');
-  // Seit Runde 15 liegt „Wie habt ihr uns gefunden?“ hinter einem „+“-Chip.
-  await page.locator('[data-opt-add=quelle]').click();
-  await page.locator('#f-quelle').selectOption('Empfehlung');
 }
 
 test.beforeEach(async ({ page }) => {

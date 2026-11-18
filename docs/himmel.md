@@ -6,7 +6,9 @@ Git-Historie, Commit `b31d7c9`). Verbindliche Regeln: `docs/DESIGN.md` → „Hi
 ## Was dazugehört
 
 - **Schwarm:** ein Schwarm aus 300 Drohnen begleitet den Besuch von Bühne zu Bühne. Bilder stehen, Wechsel sind dunkel.
-- **Himmelszeile:** eingefügt direkt nach `#kundinnen` (Startseite): ein Stück Himmel über die Inhaltsbreite und eine Eingabe.
+- **Zeiger:** Wer mit der Maus über ein stehendes Bild fährt, verdrängt die Drohnen im Raum, eine Feder holt sie weich zurück
+  (dieselbe Mechanik wie die Punktwolke der Nachhaltigkeits-Scrollstory, `effects/eco-scrolly.js`). Bis Runde 4 leuchteten sie
+  stattdessen auf; Marc, 18.11.: „zu cheap-looking“. Wirkradius nach Bühnengröße (Formular-Schriftzug 56 px, große Bilder 110 px).
 - **Punktübergänge** zwischen `.section.alt` und dem Grundton.
 - **Lichtlauf der H1**, einmal beim Laden, nur über Helligkeit.
 
@@ -16,10 +18,9 @@ Eine Bühne spielt nur, wenn ihre ID im DOM steht und neben dem Section-Kopf Pla
 
 | Seite | Bühne | Bild | Reaktion |
 |---|---|---|---|
-| Start | Himmelszeile nach `#kundinnen` | Worte und Katalogbilder im Wechsel | Eingabe als Formation, genanntes Motiv („Herz“) folgt als Bild |
 | Start | `#anlaesse` | Anstoßende Gläser | Zeigen auf eine Karte: Unternehmen → Sportwagen, Agenturen → Handschlag, Gemeinden → Förderturm, Konzerte & Festivals → Mikrofon, Privat → Doppelherz, Indoor → Diskokugel. Zuordnung über Kartenkicker, dann Link-Ziel, dann Kartentitel |
 | Start | `#warum-drohnen` | Feuerwerksblüte, danach die Show-Folge (siehe unten), auch unter 900 px | keine |
-| Start | `#projekte` | Maske der Bokkenrijders (Kundenformation aus dem ersten Referenzbild, statt der Galaxie: Marc, 18.11.: Spirale „zu lame“) | keine |
+| Start | `#projekte` | Maske der Bokkenrijders (Kundenformation aus dem ersten Referenzbild, statt der Galaxie: Marc, 18.11.: Spirale „zu lame“). Runde 5 („größer und eingedrehter“): Dreiviertelansicht (0,38 rad), schwenkt in 9 s um ±0,22 rad, Augen glühen; Bühne wächst bis 190 px über den Kopf, `#projekte` hat dafür ab 900 px 6 rem mehr Luft oben (`himmel.css`). Rund 375 statt 245 px hoch | keine |
 | Start | `#preise` | mit Paketkarten Wasserball, ohne Sonne; steht dort der Konfigurator (eigene Formation), bleibt der Himmel leer | Zeigen auf ein Paket: SPARK Stern, HORIZON Wasserball, ODYSSEY Atom → Mandala → Welle |
 | Start | `#ueber` | Lachendes Gesicht | keine |
 | alle | Formular `#inquiry-form` | „EURE SHOW“ | Anlass → Motiv, Ort → Schrift, Datum → Schrift und „NOCH n TAGE“, Paket → Drohnenzahl, `flyingstars:lead-confirmed` → „DANKE <Vorname>“, dann Stern |
@@ -28,15 +29,20 @@ Eine Bühne spielt nur, wenn ihre ID im DOM steht und neben dem Section-Kopf Pla
 | Marken & Werbung | `#marketing`, `#agenturen` | Sportwagen, Handschlag | keine |
 
 Ohne Bild: `#darum`, `#sicherheit`, `#nachhaltigkeit`, `#ablauf`, `#faq`. Die Show endet am Formular.
-Unter 900 px spielen nur Himmelszeile, `#warum-drohnen`, `#preise` und Formular.
+Unter 900 px spielen nur `#warum-drohnen`, `#preise` und Formular.
 
-## Show-Folge bei `#warum-drohnen` (Runde 3, 17.11.2026; Runde 4, 18.11.2026)
+Die Himmelszeile (Eingabefeld nach `#kundinnen`, Besucher tippen ein Wort, der Schwarm schreibt es) ist seit Runde 5 entfernt
+(Marc, 18.11.: „bringt erstmal nicht so viel“; dort ruckelte der Wechsel zur nächsten Section am stärksten, siehe Performance).
+
+## Show-Folge bei `#warum-drohnen` (Runde 3, 17.11.2026; Runden 4 und 5, 18.11.2026)
 
 Marc, 15.11.: „quasi never-ending loop … Spark-Horizon-Odyssey-Transformationen und -Eskalationen“. 17.11.: „Die Motive müssen
 viel schneller a) sich bewegen und b) rotieren … Das Feuerwerk-Finale kann gerne am Anfang kommen. Aber dann relativ schnell
 eskalieren in diese großen, beeindruckenden Sachen.“ Glühbirne raus, dazu eine feste Wunschliste. 18.11. zur Umdrehung: „Das muss
 nicht, das nimmt dem ganzen voll die Dynamik weg, dauert zu lange … Und das Riesenrad in 3D kann sich gerne drehen wie im
-Konfigurator“; zu den Wechseln: „Können auch etwas schneller sein.“ Code: `src/scripts/himmel/folge.js`.
+Konfigurator“; zu den Wechseln: „Können auch etwas schneller sein.“ Runde 5: Bühne „on a big screen … noch um einiges größer“,
+Funkwellen am Fernsehturm, Kolibri mit Blüte, QR schneller, Feuerregen zurück, Leistung über die Zeit. Code:
+`src/scripts/himmel/folge.js`.
 
 - **Auftakt:** Der Schwarm kommt wie bisher als Feuerwerksblüte an (der Knall von gestern, gut 1 s) und übergibt seine 300 Drohnen
   an die Show-Folge, die mit der Engine des Konfigurators spielt (`show-field.js`, `show-scenes.js`, `scenes/`). Beim ersten Besuch
@@ -46,11 +52,15 @@ Konfigurator“; zu den Wechseln: „Können auch etwas schneller sein.“ Code:
   - *raum* – ein räumliches Bild: Maske der Bokkenrijders (`devilStory`, echte 3D-Formation) schwenkt an; die Kugel
     (`sphere3d`, `scenes/kugel.js`) dreht sich um ihre eigene Achse
   - *esc* – erst flach (SPARK, ~100 Drohnen, 1 s), dann fliegen dieselben Drohnen in den Körper (HORIZON), der anschwenkt;
-    die hinzukommenden steigen dunkel von unten auf und leuchten erst an ihrem Platz: Logo (`logo` → `logo3d`), Fernsehturm,
-    Kolibri, Schneeflocke → Lichterbaum, Wappen mit Stern → Wappen „125“ mit wehender Fahne (`shield` → `shield3d`, 300),
+    die hinzukommenden steigen dunkel von unten auf und leuchten erst an ihrem Platz: Logo (`logo` → `logo3d`), Fernsehturm
+    (`tower` → `towerStory` Akt 1–2: der Turm sendet, die Funkwellen laufen nacheinander nach außen; ohne Brandenburger Tor),
+    Schneeflocke → Lichterbaum, Wappen mit Stern → Wappen „125“ mit wehender Fahne (`shield` → `shield3d`, 300),
     Riesenrad (`wheel2d` 150 → `wheel3d` 300, dreht sich um die Nabe, kein Schwenk)
-  - *story* – eine Geschichte in Akten (ODYSSEY, 300), gerafft auf etwa 1,3 s je Akt: QR-Code (`qrStory`), Delfine (`dolphinStory`
-    ab dem Sprung), Buch (`bookStory`), Musik (`harpStory`: Harfe, Noten), Tänzerin (`dancerStory`), Feuerwerk (`fireworkStory`)
+  - *story* – eine Geschichte in Akten (ODYSSEY, 300), gerafft auf etwa 1,3 s je Akt: QR-Code (`qrStory`, Runde 5 auf 3 s Show-Zeit
+    gestrafft, real gut 4 s), Delfine (`dolphinStory` ab dem Sprung), Buch (`bookStory`), Musik (`harpStory`: Harfe, Noten),
+    Tänzerin (`dancerStory`), Kolibri (`hummingbirdStory`: fliegt zur Blüte, trinkt, steigt auf, die Knospen blühen; Runde 5 statt
+    flach → 3D), Feuerwerk (`fireworkStory` ganz, `whole`: Leuchtspur, Stern, Wellen, Finale und Goldregen; der Regen steht 3 s)
+  - Auftakt beim ersten Besuch: `fireworkFinale` (Finale und Goldregen, der Regen steht 2,6 s; Runde 4 war er nach gut 1 s weg)
 - **Schwenk statt Umdrehung (Runde 4):** `restage()` legt das letzte Bild eines räumlichen Stücks auf eine eigene `steadyClock`:
   Es kommt bei −20° an und schwenkt in seiner Standzeit in einer Richtung nach +20° (`SWING`), langsam an und aus, keine Finte.
   Standzeit 1,5 s plus Anlauf und Bremsen (vorher 2,6 s mit einer ganzen Umdrehung). Das Riesenrad nutzt die Drehung aus
@@ -69,8 +79,10 @@ Konfigurator“; zu den Wechseln: „Können auch etwas schneller sein.“ Code:
   beim Wechsel 2D → 3D bleibt behoben (`joinLate`, gesichtet in den Kontaktbögen). Räumliche Bilder bewegen sich 1,6-mal so
   schnell wie im Konfigurator, Geschichten mindestens 2-mal so schnell. Stehen bleibt nichts länger als gut 3 s außer dem
   Riesenrad.
-- **Größe:** Breit rechts neben dem Text, 64 px Abstand, mit `free()`: bei 1440 px etwa 465 × 445 px, bei 1920 px bis 690 px breit.
-  Jedes Motiv wird so gezoomt, dass es die Bühne in Breite oder Höhe zu 86 % füllt; bei Bildern mit eigener Uhr (Schwenk,
+- **Größe (Runde 5):** Breit die ganze Fläche rechts vom Text (Abstand 5 % der Fensterbreite, 64–112 px) bis zur Content-Kante und
+  über die Höhe der Section bis 24 px an ihre Kanten (`folgeBox()` in `schwarm.ts`, mit `free()`); oben hat die Section dafür
+  weniger Polster (`himmel.css`, 80–104 statt 140 px). Gemessen: 1440 px etwa 458 × 614, 1920 px etwa 900 × 740, 2560 px etwa
+  885 × 740 px (Runde 4: höchstens 720 × 500). Jedes Motiv wird so gezoomt, dass es die Bühne in Breite oder Höhe zu 90 % füllt; bei Bildern mit eigener Uhr (Schwenk,
   Riesenrad, Kugel) nach dem, was sie in ihrer Standzeit wirklich überstreichen (neun Zeitpunkte gemessen). Unter 900 px spielt
   die Folge in einer Fläche unter dem Text; deren Höhe reserviert `himmel.css` von Anfang an (`#warum-drohnen::after`, nur mit
   `html.reveal` bzw. `html.motion-paused`).
@@ -88,6 +100,17 @@ Konfigurator“; zu den Wechseln: „Können auch etwas schneller sein.“ Code:
 - **Gemessen** (17.11.2026, Produktions-Build, Chromium, 390 × 844, CPU 4× gedrosselt, `PerformanceObserver('longtask')` und
   `long-animation-frame`, 30 s ab Scrollbeginn bis zur Bühne, je 3 Läufe): vorher 630 / 717 / 514 ms Long Tasks, längster
   363–522 ms; nachher 103 / 174 / 50 ms, längster 50–60 ms. Runde 4 siehe unten.
+- **Leistung über die Zeit (Runde 5):** Marc: „Je weiter man in der Animation drin ist, ab irgendwann scheint es ein Performance-
+  Problem zu geben.“ Ursache: Wechselt die Folge ihr Stück aus dem Bild heraus (`onTick` → `show()` → `sync()`), startete
+  `show-field.js` eine zweite Zeichenschleife, ohne die laufende zu beenden; nach jedem Wechsel lief eine mehr. Behoben: `frame`
+  steht während eines Bildes auf −1, `sync()` merkt sich dann nur, dass weitergezeichnet werden soll. Gemessen (Dev-Server,
+  Chromium 1440 × 900, CPU 4× gedrosselt, 300 s, je 30 s): vorher Frame-Zeit p50 16,7 → 83 ms, p95 16,8 → 117 ms, Long Tasks
+  0 → 300 je 30 s, rAF-Aufrufe je Frame 3,5 → 50, Heap 19 → 46 MB; nachher in allen zehn Abschnitten p50 16,7 / p95 16,8 ms,
+  0–6 Long Tasks je 30 s, ein rAF-Aufruf je Frame, Heap 19–30 MB ohne Trend. Außerhalb des Bildes: 0 Frames. Werkzeug:
+  `/private/tmp/claude-501/fs-r5/show/tools/longrun.mjs` (nicht im Repo). Die Zeiten der Runde-4-Zeitleiste waren durch den
+  Fehler zu kurz; neu gemessen (1920 × 1080, ohne Drosselung): Feuerwerk-Finale mit Goldregen 2,3 · Maske 8,4 · Logo 10,9 ·
+  Kugel 15,0 · Delfine 17,5 · Fernsehturm 25,9 · QR 32,9 · Wappen 37,5 · Musik 41,6 · Kolibri 50,0 · Buch 58,3 ·
+  Lichterbaum 66,8 · Tänzerin 70,9 · Riesenrad 79,2 · Feuerwerk 85,1 · ab 97 gemischt.
 - **Engine (additiv, Konfigurator und Teaser setzen nichts davon):** `show-field.js` – `outside`, `drones(n)`/`radius()`
   (Übergabe), `flightRate` (Tempo der Show-Uhr nur in Übergängen), `flightMax` (längster Anflug in echten Sekunden), `joinLate`
   (dunkel hinzukommende Drohnen leuchten erst kurz vor ihrem Platz), `lightScale` (größere Lichter, Indoor), `data-flight` am
@@ -113,14 +136,16 @@ wie auf der Startseite sehr gut passen.“ Dieselbe Technik, `createFolge(canvas
 
 ## Technik
 
-- `src/scripts/himmel/index.ts` setzt die Himmelszeile (`zeile.ts`), startet `lichtlauf.ts` und lädt `schwarm.ts` (Bühnenplan in
-  `plan()`) erst nach dem ersten Bild nach (siehe Performance); `src/styles/himmel.css`.
-- Ein Canvas in Seitenkoordinaten (`position: absolute`), das mit dem Inhalt scrollt. Im Flug 1,7 Bildschirmhöhen groß, im Stand nur
-  so groß wie die Bühne. Stehende flache Bilder zeichnen nur beim Lichtlauf (alle 9 s) neu.
+- `src/scripts/himmel/index.ts` startet `lichtlauf.ts` und lädt `schwarm.ts` (Bühnenplan in `plan()`) erst nach dem ersten Bild
+  nach (siehe Performance); `src/styles/himmel.css`.
+- Zwei feste Canvas in Seitenkoordinaten (`position: absolute`, Lage per `transform`), die mit dem Inhalt scrollen: die Flugfläche
+  (Seitenbreite × 1,7 Bildschirmhöhen, Pixeldichte 1) und die Bühnenfläche (nur so groß wie das stehende Bild, Pixeldichte bis
+  1,5). Neu angelegt wird eine Fläche nur bei neuer Pixelgröße. Stehende flache Bilder zeichnen nur beim Lichtlauf (alle 9 s),
+  unter dem Zeiger und an der Maske (Schwenk) neu.
 - Feste Worte liegen vorberechnet in `public/media/himmel/texte-*.json` (`tools/himmel/texte-vorberechnen.mjs`); der Textplaner
-  (rund 43 KB gzip) lädt erst für eigene Eingaben (Himmelszeile, Formular).
-- Pixeldichte höchstens 1,5, vorgerenderte Lichtpunkte. Pause und reduzierte Bewegung: jede Bühne zeigt ihr Bild, nichts fliegt;
-  die Umschaltung greift ohne Neuladen.
+  (rund 43 KB gzip) lädt erst, wenn im Formular Ort oder Datum eingetragen werden.
+- Vorgerenderte Lichtpunkte; Lichtgröße in CSS-Pixeln, jede Fläche rechnet in ihre Pixeldichte um. Pause und reduzierte
+  Bewegung: jede Bühne zeigt ihr Bild, nichts fliegt; die Umschaltung greift ohne Neuladen.
 - Seitenwechsel: Lage und Farbe der Drohnen bleiben für einige Sekunden in `sessionStorage` (`flyingstars:himmel`), damit der
   Schwarm auf der nächsten Seite von dort weiterfliegt. Sonst wird kein Zustand gespeichert.
 - Skriptzeit messen: `node tools/himmel/perf.mjs <url> <selector>`. Übergangsmaske neu erzeugen: `node tools/himmel/uebergang.mjs [seed]`.
@@ -139,8 +164,8 @@ LCP 1,1–1,9 s; Vorschau 96 Punkte, LCP 2,7 s.
   sichtbar, wenn es spielt, und das `poster` lud ein zweites Standbild im kritischen Pfad.
 - **Schwarm nach dem ersten Bild:** `index.ts` lädt `schwarm.ts` per `import()` erst nach `load` und dem ersten Bild des
   Hero-Videos (spätestens 2,5 s nach `load`, Seiten ohne Video 1,5 s), dann im Leerlauf; wer vorher scrollt, bekommt ihn sofort.
-  Motive lädt der Schwarm erst, wenn ihre Bühne näher als gut eine Bildschirmhöhe ist. Die Himmelszeile (`zeile.ts`, gut 1 KB)
-  steht weiter sofort, damit beim späteren Laden nichts springt.
+  Motive lädt der Schwarm erst, wenn ihre Bühne näher als gut eine Bildschirmhöhe ist. (Die Himmelszeile stand dafür sofort im
+  Markup; seit Runde 5 entfernt.)
 - **CLS beim Scrollen:** Das Schwarm-Canvas wanderte per `left/top` mit und zählte bei jedem Schritt als Layout-Verschiebung
   (beim Durchscrollen der Startseite CLS 5,7 bei 390 px und 7,7 bei 1440 px; Lighthouse scrollt nicht und sah es nie, echte
   Besucher:innen schon). Jetzt per `transform`: 0,011 bzw. 0,027 wie `main`.
@@ -164,12 +189,38 @@ LCP 1,1–1,9 s; Vorschau 96 Punkte, LCP 2,7 s.
   bleibt unter 0,1 CLS. Lighthouse-Vergleich von Hand: `lighthouse <url> --only-categories=performance`, `main` und Zweig
   abwechselnd, Median; unter Last streuen Einzelläufe um 0,3–1 s.
 
+## Ruckeln an den Section-Grenzen (Runde 5, 18.11.2026)
+
+Marc: „Wenn ich wechsle von diesem Input-Field zu der Anlass-Section … ist die Performance mega kacke“, ebenso Team → Formular.
+
+- **Messung:** `node tools/himmel/grenzen.mjs [dist|url] --engines chromium,webkit --widths 1440,1920 --runs 3` scrollt die Seite
+  zeitgesteuert (600 px/s) und ordnet jeden Frame und Long Task der Grenze zu, die gerade im Bild ist. Chromium mit echter GPU
+  (Metal), Pixeldichte 2, CPU 4×, dazu der Compositor-Trace; WebKit ungedrosselt (Playwright kann WebKit nicht drosseln).
+  `--block <regex>` sperrt ein Modul, `--css` spielt CSS ein, um einen Effekt einzeln abzuschalten.
+- **Befund:** Chromium zeigt in keinem Stand Ruckeln (alle Grenzen p95 16,8 ms, keine Long Tasks). WebKit, das wie Safari auf dem
+  Hauptthread malt, ruckelte unter Last (andere Prozesse, wie auf Marcs Mac): `hm-zeile → anlaesse` p95 61 / max 138–330 ms,
+  `(anlaesse)` bis 730 ms, `ueber → anfrage` p95 132 / max 267 ms. Mit gesperrtem Schwarm verschwanden diese Spitzen, ohne Show-Folge
+  und ohne Punktübergänge nicht. Ursache im Schwarm: Er legte sein Canvas bei jedem Abflug, jeder Landung und jedem Mitwandern neu an
+  (`cv.width = …`), die Flugfläche seitenbreit × 1,7 Bildschirmhöhen in Pixeldichte 1,5 (5,0 Mio. Pixel bei 1440 px, 7,9 bei 1920).
+  Gezählt beim Durchscrollen der Startseite: 9 bzw. 13 Neuanlagen mit zusammen 33 bzw. 70 Mio. Pixeln.
+- **Änderung:** zwei feste Flächen (Flug in Pixeldichte 1, Bühne bis 1,5), Lage nur per `transform`, neu angelegt nur bei neuer
+  Pixelgröße. Danach: 5 bzw. 4 Neuanlagen mit 5,1 bzw. 6,9 Mio. Pixeln, größte Fläche 2,2 bzw. 3,5 Mio. Pixel. Dazu ist die
+  Himmelszeile entfernt. Der Textplaner war dort schon vorberechnet und kein Faktor.
+- **Gemessen nachher** (WebKit, Median aus 3 Läufen, vorher und nachher abwechselnd unter derselben Last): 1440 px `(anlaesse)` max
+  59 → 15 ms, `anlaesse → warum-drohnen` max 50 → 21 ms; 1920 px fiel der alte Stand ab `warum-drohnen` dauerhaft auf halbe Bildrate
+  (p50 33 ms bis zum Seitenende), der neue hält überall p50 17 / p95 18 ms. Unverändert: `ablauf → preise` max 93–141 ms auch ohne
+  Schwarm; die Spitze kommt vom Konfigurator-Teaser in `#preise`.
+- **Wächter:** `npm run perf:start` misst die Grenzen der Startseite (Chromium, GPU, 4×, 1440 px): je Grenze p95 ≤ 17,5 ms, höchstens
+  ein ausgelassener Frame (max ≤ 34 ms, bei 60 Hz ist 33,4 ms genau ein Frame zu spät), keine Long Tasks > 50 ms.
+  `scripts/himmel-perf.test.mjs` wacht über die Quelltext-Regeln (zwei Flächen, Neuanlegen nur bei neuer Größe, Verdrängung statt
+  Aufleuchten, keine Himmelszeile).
+- **Startseite Lighthouse** nach Runde 5 (mobil, lokal, `astro preview`, je 6 Läufe abwechselnd mit dem Runde-4-Stand `dababaf`):
+  beide 99 Punkte, LCP 2,112 s (Standbild), TBT 0, CLS 0.
+
 ## Offen
 
-- Texte der Himmelszeile, „NOCH n TAGE“ und „DANKE <Vorname>“ sind Entwürfe, nicht mit FlyingStars abgestimmt; ebenso die
+- „EURE SHOW“, „NOCH n TAGE“ und „DANKE <Vorname>“ sind Entwürfe, nicht mit FlyingStars abgestimmt; ebenso die
   Zuordnung Anlass → Motiv.
-- Die Himmelszeile entsteht per Skript (`zeile.ts`, sofort beim Start, vor dem Schwarm); ohne JavaScript fehlt sie (gewollt),
-  mit JavaScript verschiebt sie den Inhalt darunter einmal beim Start (unterhalb des ersten Bildschirms, ohne CLS gemessen).
 - Bewegte Inhalte über 5 s (drehende 3D-Motive, Lichtlauf alle 9 s): Die Pause-Taste im Seitenkopf hält sie an; ob das für
   WCAG 2.2.2 reicht, ist nicht geprüft.
 - Kein Wächter-Test für Bewegung und Bilder von Schwarm und Show-Folge (für die Ladezeit siehe Performance).

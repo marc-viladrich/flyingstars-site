@@ -90,3 +90,34 @@ export function assertPreviewPricing(): void {
     previous = price;
   }
 }
+
+/**
+ * Art der Show (Runde 5, Marc 18.11.2026: „will ich eine 2D-Show, eine 3D-Show oder eine 3D-Show mit Storytelling? Das
+ * sind die Main-Aspekte. Drohnenanzahl und welche Art von Show“). Die zweite Hauptgröße neben der Drohnenzahl; Paketnamen
+ * erscheinen dabei nicht. Hergeleitet aus Moritz' Preistext (17.11.2026):
+ * - 2D: SPARK ist eine „individuelle 2D-Storyline“ mit 100 Drohnen zu 7.900 €. Der Preis je Drohnenzahl (FAQ: 100 = 7.900,
+ *   300 = 25.700, 500 = 45.300 €, „ab“) ist der Preis der einfachsten Show, also 2D: individualPrice.
+ * - 3D: HORIZON ist die erste Show mit 3D-Elementen, 200 Drohnen zu 15.900 € – genau der Preis je Drohnenzahl bei 200. 3D
+ *   kostet also keinen eigenen Aufpreis; unter 200 Drohnen kennt der Text kein 3D, darum beginnt 3D bei 200.
+ * - Storytelling: ODYSSEY ist die erste Show mit dramaturgischer Kurve, 300 Drohnen zu 34.900 €, 9.200 € über dem Preis je
+ *   Drohnenzahl (25.700 €). Das erklärt die Lücke zwischen ODYSSEY und „300 Drohnen ab 25.700 €“. Über 300 Drohnen nennt
+ *   Moritz' Text keinen Preis; es gilt der ODYSSEY-Aufpreis aus FlyingStars' Vercel-Referenz (show-packages.json: +9.900 €
+ *   je angefangene 100 Drohnen, damals schon Grundlage des Konfigurators). OFFEN: mit Moritz klären (docs/show-konfigurator.md).
+ * Musik: 2D mit GEMA-freier oder bei Anmeldung lizenzierter Musik (SPARK), ab 3D synchron zu eurer Wunschmusik (HORIZON);
+ * beides inklusive („Immer dabei: Musik“), kein Upgrade.
+ * Damit gilt: jedes feste Paket kostet genau so viel wie dieselbe Show-Art mit derselben Drohnenzahl im individuellen Paket.
+ */
+export type ShowArt = '2d' | '3d' | 'story';
+export const SHOW_ARTS: ShowArt[] = ['2d', '3d', 'story'];
+/** Fassung der Motive in der Vorschau je Show-Art (die Engine kennt sie unter den Paketnamen). */
+export const ART_TIER: Record<ShowArt, ShowPackage> = { '2d': 'SPARK', '3d': 'HORIZON', story: 'ODYSSEY' };
+/** Show-Art eines festen Pakets (Startpunkt aus einer Paketkarte). */
+export const artOfPackage = (name: ShowPackage): ShowArt => SHOW_ARTS.find((a) => ART_TIER[a] === name) ?? '2d';
+/** Kleinste Drohnenzahl einer Show-Art: 2D 100, 3D 200, Storytelling 300 (wie die Pakete, die sie einführen). */
+export const artMin = (art: ShowArt): number => SHOW_PACKAGES[ART_TIER[art]].base;
+/** Preis einer individuellen Show dieser Art mit dieser Drohnenzahl (netto, zzgl. Anfahrt, ohne Upgrades). */
+export function showArtPrice(art: ShowArt, drones: number): number {
+  const n = Math.max(snapDrones(drones), artMin(art));
+  if (art === 'story') return priceFor('ODYSSEY', n) as number;
+  return individualPrice(n);
+}
