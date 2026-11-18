@@ -66,7 +66,10 @@ async function run(browser, url, { width, height, cpu, speed = 600, block, css }
     const tick = (now) => {
       if (!t0) { t0 = now; last = now; }
       const y = Math.min(H, (now - t0) / 1000 * speed);
-      scrollTo(0, y);
+      // instant: die Seite hat html { scroll-behavior: smooth }. Chromium startete damit bei jedem scrollTo eine neue
+      // weiche Bewegung und kam kaum vom Fleck (Ziel 6000 px, Ist 911 px; Messung 18.11.2026), die Frames wurden also
+      // falschen Grenzen zugeordnet. WebKit folgte auch vorher.
+      scrollTo({ top: y, behavior: 'instant' });
       frames.push([now, now - last, y]); last = now;
       if (y < H) requestAnimationFrame(tick); else done({ frames: frames.slice(1), tops, vh: innerHeight, lt: window.__lt, mark });
     };

@@ -40,7 +40,16 @@ export function coverCrop(nw, nh, W, H, cols, rows, step, pos = { x: 0.5, y: 0.5
   return { sx: rx + gx / k, sy: ry + gy / k, sw: (cols * step) / k, sh: (rows * step) / k, k, rx, ry, gx, gy };
 }
 
-function buildLayers(img, W, H, step, pos = { x: 0.5, y: 0.5 }) {
+// 18.11.2026 (Long Task an der Grenze warum-drohnen → projekte, Chromium 4×: eine Karte kostete am Stück 60–75 ms): der
+// Aufbau als Folge kleiner Schritte. buildLayers() läuft sie wie bisher in einem Zug durch (erster Hover vor dem Leerlauf),
+// prepare() verteilt sie auf Leerlauf-Tasks von höchstens etwa 8 ms. Das Ergebnis ist in beiden Fällen dasselbe.
+function buildLayers(img, W, H, step, pos) {
+  const it = layerSteps(img, W, H, step, pos);
+  let r = it.next();
+  while (!r.done) r = it.next();
+  return r.value;
+}
+function* layerSteps(img, W, H, step, pos = { x: 0.5, y: 0.5 }) {
   // Raster immer mindestens so groß wie der Rahmen (aufgerundet, mittig, Überstand wird abgeschnitten). Abgerundet blieb
   // ein dunkler Rand von bis zu einer Zelle, und beim Zurückwechseln aufs Foto „schnappte“ das Bild (Marc, 31.10.2026, Team)
   const cols = Math.max(1, Math.ceil(W / step)), rows = Math.max(1, Math.ceil(H / step));
@@ -52,6 +61,7 @@ function buildLayers(img, W, H, step, pos = { x: 0.5, y: 0.5 }) {
   const tg = t.getContext('2d', { willReadFrequently: true });
   tg.drawImage(img, sx, sy, sw, sh, 0, 0, cols * F, rows * F);
   const px = tg.getImageData(0, 0, cols * F, rows * F).data, TW = cols * F;
+  yield;
   const mk = () => { const c = document.createElement('canvas'); c.width = W; c.height = H; return c; };
   const bands = Array.from({ length: BANDS }, mk), ctx = bands.map(c => c.getContext('2d'));
   const halo = mk(), hg = halo.getContext('2d'); hg.globalCompositeOperation = 'lighter';
@@ -64,8 +74,11 @@ function buildLayers(img, W, H, step, pos = { x: 0.5, y: 0.5 }) {
       sum += l; if (l > best) { best = l; k = q; }
     }
     L[y * cols + x] = (0.65 * best + 0.35 * sum / (F * F)) / 255; K[y * cols + x] = k;
+    if (x === cols - 1 && y % 8 === 7) yield;
   }
+  yield;
   for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+    if (x === 0 && y % 4 === 3) yield;
     const lum = L[y * cols + x], k = K[y * cols + x], r = px[k], g = px[k + 1], b = px[k + 2];
     // Band: schräge Welle von links unten nach rechts oben, mit Rauschen, damit die Kante organisch wirkt
     const sweep = 0.62 * (x / cols) + 0.38 * (1 - y / rows) + (hash(x, y) - 0.5) * 0.28;
@@ -173,12 +186,28 @@ export function dotImage(wrap, { step = 8 } = {}) {
   // zum Erscheinen verborgen (.dot-pending); beim Hereinscrollen zeichnet eine Lichtpunkt-Welle das Bild, das kurz
   // glüht und dann zum Foto wird. Sicherung: Kommt das Bild nicht rechtzeitig, erscheint nach 250 ms einfach das Foto.
   // Ebenen im Leerlauf vorbereiten, sobald das Bild in der Nähe ist: der erste Hover bzw. Reveal startet ohne Wartezeit
+  const idle = window.requestIdleCallback || (f => setTimeout(f, 200));
+  /** Ebenen in Stücken vorbereiten (je Leerlauf höchstens etwa 8 ms); ändert sich die Größe unterwegs, gilt das Ergebnis nicht. */
+  function prepareLayers() {
+    if (layers || !img.complete || !img.naturalWidth || !W) return;
+    const src = source(img);
+    if (!src.ok) { src.copy.addEventListener('load', () => { src.ok = true; idle(prepareLayers); }, { once: true }); return; }
+    const pos = objectPos(img), key = `${src.url}|${pos.x}|${pos.y}`, w = W, h = H, it = layerSteps(src.copy, w, h, step, pos);
+    const run = () => {
+      if (layers || w !== W || h !== H) return; // inzwischen synchron gebaut (Hover) oder neue Größe
+      const t = performance.now();
+      let r = it.next();
+      while (!r.done && performance.now() - t < 8) r = it.next();
+      if (!r.done) { setTimeout(run, 0); return; }
+      layers = r.value; built = key;
+    };
+    run();
+  }
   function prepare() {
-    const idle = window.requestIdleCallback || (f => setTimeout(f, 200));
     new IntersectionObserver((es, o) => {
       if (!es[0].isIntersecting) return; o.disconnect();
       if (img.loading === 'lazy') img.loading = 'eager';
-      const prep = () => idle(() => { source(img); idle(() => ready()); });
+      const prep = () => idle(() => { source(img); idle(prepareLayers); });
       if (img.complete) prep(); else img.addEventListener('load', prep, { once: true });
     }, { rootMargin: '600px' }).observe(wrap);
   }

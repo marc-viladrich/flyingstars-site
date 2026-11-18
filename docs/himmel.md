@@ -208,7 +208,7 @@ Marc: „Wenn ich wechsle von diesem Input-Field zu der Anlass-Section … ist d
   Himmelszeile entfernt. Der Textplaner war dort schon vorberechnet und kein Faktor.
 - **Gemessen nachher** (WebKit, Median aus 3 Läufen, vorher und nachher abwechselnd unter derselben Last): 1440 px `(anlaesse)` max
   59 → 15 ms, `anlaesse → warum-drohnen` max 50 → 21 ms; 1920 px fiel der alte Stand ab `warum-drohnen` dauerhaft auf halbe Bildrate
-  (p50 33 ms bis zum Seitenende), der neue hält überall p50 17 / p95 18 ms. Unverändert: `ablauf → preise` max 93–141 ms auch ohne
+  (p50 33 ms bis zum Seitenende), der neue hält überall p50 17 / p95 18 ms. Damals unverändert (behoben, Abschnitt „Konfigurator-Teaser“ unten): `ablauf → preise` max 93–141 ms auch ohne
   Schwarm; die Spitze kommt vom Konfigurator-Teaser in `#preise`.
 - **Wächter:** `npm run perf:start` misst die Grenzen der Startseite (Chromium, GPU, 4×, 1440 px): je Grenze p95 ≤ 17,5 ms, höchstens
   ein ausgelassener Frame (max ≤ 34 ms, bei 60 Hz ist 33,4 ms genau ein Frame zu spät), keine Long Tasks > 50 ms.
@@ -216,6 +216,32 @@ Marc: „Wenn ich wechsle von diesem Input-Field zu der Anlass-Section … ist d
   Aufleuchten, keine Himmelszeile).
 - **Startseite Lighthouse** nach Runde 5 (mobil, lokal, `astro preview`, je 6 Läufe abwechselnd mit dem Runde-4-Stand `dababaf`):
   beide 99 Punkte, LCP 2,112 s (Standbild), TBT 0, CLS 0.
+
+## Konfigurator-Teaser und Preisseite: Ruckeln beim Eintritt (Nachtrag Runde 5, 18.11.2026)
+
+- **Messwerkzeug korrigiert:** `grenzen.mjs` scrollte mit `scrollTo(0, y)`; die Seite hat `html { scroll-behavior: smooth }`.
+  Chromium startete damit je Frame eine neue weiche Bewegung und kam kaum vom Fleck (Ziel 6000 px, Ist 911 px), die Frames wurden
+  der Zielposition zugeordnet. Alle früheren Chromium-Werte für Grenzen unterhalb des ersten Bildschirms sind deshalb ungültig
+  („Chromium zeigt in keinem Stand Ruckeln“). Jetzt `scrollTo({ top, behavior: 'instant' })`; WebKit folgte schon vorher. Damit
+  misst auch `perf:start` die Startseite erstmals wirklich bis zum Ende.
+- **Teaser (`#preise`, `ablauf → preise`):** Ursache war der Schriftzug FLYINGSTΛRS (Logo ab 450 Drohnen), den der Textplaner beim
+  Eintritt am Stück setzte (rund 120 ms in Node, ein Frame von 95–105 ms in WebKit). Die beiden Formationen liegen jetzt
+  vorberechnet in `src/data/teaser-lettering.json` (`node tools/himmel/teaser-schriftzug.mjs`, über `primeTextFormation`), der
+  Planer lädt im Teaser nicht mehr. Dazu lädt der Teaser mit 1500 px Vorlauf statt 300 px, baut jedes Bild in einem eigenen Task,
+  und `buildSequence` gibt den Hauptthread frei, sobald es 8 ms am Stück gerechnet hat.
+- **Preisseite, Start (Chromium 4×):** Das Konfigurator-Modul wird in Stufen ausgewertet (Intl-Daten, Engine, Szenen, Inhalte,
+  Bedienung, je ein Task); die Standbild-Prüfung liest die Leinwand nicht mehr zurück (`data-lit` statt `getImageData`); Sections
+  unter dem Konfigurator mit `content-visibility: auto`. Die Drohnen-Zuordnung beim Bildwechsel (`assign`, show-flight.js) startet
+  mit der Spaltenreduktion nach Jonker-Volgenant (gleich viele Drohnen und Plätze, Ergebnis bleibt optimal,
+  `scripts/show-assign.test.mjs`); der erste Bildwechsel war bei 200 Drohnen ein Long Task von 62–83 ms.
+- **Bildkarten (`warum-drohnen → projekte`):** Die Lichtpunkt-Ebenen (`dotimage.js`) entstanden im Leerlauf als ein Block je Karte
+  (60–75 ms bei 4×); jetzt in Schritten von höchstens etwa 8 ms. Erst mit dem korrigierten Werkzeug sichtbar geworden.
+- **Gemessen** (1440 px, Median aus 3 Läufen, vorher = Stand d3335a6): WebKit `ablauf → preise` max 105 → 17–21 ms; Chromium 4×
+  `ablauf → preise` 3 Long Tasks (längster 223 ms) → keiner, `warum-drohnen → projekte` 1 (63 ms) → keiner. Werbung WebKit
+  `standort → preise` max 115 → 23 ms. Preisseite Start: Long Tasks 60–84 ms in jedem Lauf → in 3 von 3 Läufen keiner.
+- **Offen:** Bildwechsel des laufenden Teasers zwischen sehr verschiedenen Formen (QR, Rakete, Logo mit Schriftzug, bis 600 Drohnen)
+  kosten die optimale Zuordnung auch ungedrosselt 15–90 ms; in Chromium 4× bleibt in `(preise)` ein Long Task von rund 60 ms (vorher
+  62 ms), WebKit max 28–36 ms. Abhilfe wäre, die Zuordnung des nächsten Bildes während des Haltens im Leerlauf vorzurechnen.
 
 ## Offen
 

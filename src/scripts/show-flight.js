@@ -13,7 +13,24 @@ export function assign(from, to) {
   if (n > m) throw new Error("assign: more rows than columns");
   const u = new Float64Array(n + 1), v = new Float64Array(m + 1), minv = new Float64Array(m + 1);
   const p = new Int32Array(m + 1), way = new Int32Array(m + 1), used = new Uint8Array(m + 1);
+  // 18.11.2026 (Long Task beim Bildwechsel, 4× Drossel: die Zuordnung kostete bei 200 Drohnen rund 50 ms am Stück):
+  // Spaltenreduktion nach Jonker-Volgenant als Start. Jeder Platz bekommt als Dual seinen kleinsten Abstand, jede Drohne,
+  // die für einen Platz die nächste ist, bekommt ihn sofort (enge Kante, zulässige Duale); nur die übrigen Drohnen laufen
+  // durch die Suche unten. Die Summe der Abstandsquadrate bleibt optimal (scripts/show-assign.test.mjs); bei Gleichstand
+  // kann eine andere, gleich gute Zuordnung herauskommen. Nur für gleich viele Drohnen und Plätze (rechteckig wären freie
+  // Plätze mit positivem Dual nicht mehr optimal; eine Zeilenreduktion brachte an den echten Teaser-Bildern nichts).
+  const done = new Uint8Array(n + 1);
+  if (n === m) {
+    for (let j = 1; j <= m; j++) {
+      const k = (j - 1) * 3, tx = to[k], ty = to[k + 1], tz = to[k + 2];
+      let best = INF, bi = 0;
+      for (let i = 1; i <= n; i++) { const q = (i - 1) * 3, dx = from[q] - tx, dy = from[q + 1] - ty, dz = from[q + 2] - tz, c = dx * dx + dy * dy + dz * dz; if (c < best) { best = c; bi = i; } }
+      v[j] = best;
+      if (!done[bi]) { done[bi] = 1; p[j] = bi; }
+    }
+  }
   for (let i = 1; i <= n; i++) {
+    if (done[i]) continue;
     p[0] = i; let j0 = 0;
     minv.fill(INF); used.fill(0);
     do {

@@ -112,6 +112,10 @@ const promises = [['lock', t('preise.promise1')], ['scale', t('preise.promise2')
 </Base>
 
 <style>
+  /* 18.11.2026 (Long Task beim Start, 4× Drossel): Das erste Layout der ganzen Seite kostete am Stück rund 60 ms. Die Sections
+     unter dem Konfigurator legt der Browser erst aus, wenn sie in die Nähe kommen (Safari ab 18, Chrome ab 85); die
+     gemerkte Größe (auto) hält die Bildlaufleiste ruhig. Sprungziele (#anfrage, #pakete) funktionieren weiter. */
+  :global(main > section.section:not(.cfg)) { content-visibility: auto; contain-intrinsic-size: auto 56rem; }
   /* Garantie direkt unter dem Konfigurator (Marc, Runde 5: „oben und unten etwas weniger Abstand, aktuell floatet es sehr
      im Nichts“): eigene Abstände knapp, und die Section rückt in den Bodenabstand des Konfigurators hinein */
   .promise-sec { padding-block: clamp(var(--space-8), 3.5vw, var(--space-14)); margin-top: calc(-1 * clamp(var(--space-10), 5vw, var(--space-20))); }

@@ -264,24 +264,32 @@ const ticks = [DRONES_MIN, 300, 500, DRONES_MAX];
 <script>
   import { whenNear } from '../../scripts/when-near.mjs';
   const root = document.querySelector<HTMLElement>('.cfg');
-  // Standbild ausblenden, sobald die Leinwand etwas zeigt: einmal je Bild eine 16×9-Verkleinerung prüfen, höchstens 6 s
+  // Standbild ausblenden, sobald die Leinwand etwas zeigt. 18.11.2026: ohne Rücklesen der Leinwand (drawImage +
+  // getImageData je Bild kostete bei Pixeldichte 2 und 4× Drossel spürbar Zeit im Start); die Engine schreibt die Zahl der
+  // leuchtenden Drohnen ohnehin in data-lit. Höchstens 6 s, dann geht das Standbild trotzdem.
   const live = () => {
-    const field = root?.querySelector<HTMLCanvasElement>('#cfg-field'), probe = document.createElement('canvas');
-    probe.width = 16; probe.height = 9;
-    const ctx = probe.getContext('2d', { willReadFrequently: true }), until = performance.now() + 6000;
+    const field = root?.querySelector<HTMLCanvasElement>('#cfg-field'), until = performance.now() + 6000;
     const check = () => {
-      if (!root || !field || !ctx) return;
-      if (field.width && field.height) {
-        ctx.clearRect(0, 0, 16, 9); ctx.drawImage(field, 0, 0, 16, 9);
-        const px = ctx.getImageData(0, 0, 16, 9).data;
-        for (let i = 3; i < px.length; i += 4) if (px[i] > 0) { root.classList.add('is-live'); return; }
-      }
-      if (performance.now() < until) requestAnimationFrame(check); else root.classList.add('is-live');
+      if (!root || !field) return;
+      if (Number(field.dataset.lit) > 0 || performance.now() >= until) { root.classList.add('is-live'); return; }
+      requestAnimationFrame(check);
     };
     requestAnimationFrame(check);
   };
   if (root) {
-    const load = whenNear(root, () => import('../../scripts/show-configurator.js').then((m) => { live(); return m; }));
+    // 18.11.2026 (Long Task beim Start, 4× Drossel): den Modulgraphen in Stufen auswerten, je Stufe ein eigener Task. Am
+    // Stück kostete das Auswerten (Szenen, Inhalte, Bedienung) zusammen mit dem ersten Layout über 60 ms.
+    const nextTask = () => new Promise((resolve) => setTimeout(resolve, 0));
+    const load = whenNear(root, async () => {
+      // die erste Zahlformatierung lädt die Sprachdaten von Intl (bei 4× Drossel rund 15 ms): vorab in einem eigenen Task
+      (7900).toLocaleString({ en: 'en-GB', nl: 'nl-NL' }[document.documentElement.lang] ?? 'de-DE'); await nextTask();
+      await import('../../scripts/show-field.js'); await nextTask();
+      await import('../../scripts/show-scenes.js'); await nextTask();
+      await import('../../content/show-configurator.js'); await nextTask();
+      const m = await import('../../scripts/show-configurator.js');
+      live();
+      return m;
+    });
     if (location.hash || root.contains(document.activeElement)) void load().catch((error: unknown) => console.warn('Configurator could not load', error));
   }
 </script>

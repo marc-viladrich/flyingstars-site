@@ -136,6 +136,12 @@ const nearWhite = (r, g, b) => Math.min(r, g, b) > 190 && Math.max(r, g, b) - Ma
  * - The living cloud every three to four pictures, at most five (planClouds() in scenes/interludes.js); builders may
  *   ask for it inside a story, also for single parts (beat.cloud = ["star"]).
  */
+const now = () => (typeof performance === "undefined" ? Date.now() : performance.now());
+/** Gibt den Hauptthread für einen Task frei (MessageChannel: ohne die 4-ms-Mindestpause von setTimeout). */
+const nextTask = () => new Promise((resolve) => {
+  if (typeof MessageChannel === "undefined") { setTimeout(resolve, 0); return; }
+  const c = new MessageChannel(); c.port1.onmessage = () => { c.port1.close(); resolve(); }; c.port2.postMessage(0);
+});
 export async function buildSequence(motifs, pkg, n, tint, occasion = "") {
   // a motif may skip a package or need more drones: minDrones an der Fassung des Pakets (Freischalt-Leiter, sechzehnte
   // Fassung, content/show-configurator.js)
@@ -146,7 +152,11 @@ export async function buildSequence(motifs, pkg, n, tint, occasion = "") {
   const tinted = (pts) => (tint ? pts.map((p) => (nearWhite(p[3], p[4], p[5]) ? [p[0], p[1], p[2], ...mix(WARM, tint, 0.7)] : p)) : pts);
   // a transition belongs to the next motif, so a package switch never lands on a figure
   const through = (tr, [m, segment]) => { const b = tr.figure(n); beats.push({ ...b, pts: tinted(b.pts), segment, motif: m.label, cloud: true }); };
+  // 18.11.2026 (Ruckeln beim Start der Preisseite und am Teaser): der Aufbau gibt den Hauptthread frei, sobald er 8 ms am
+  // Stück gerechnet hat (eigener Task je Motiv statt eines langen Tasks über alle Motive)
+  let slice = now();
   for (const [s, [m, segment]] of shown.entries()) {
+    if (now() - slice > 8) { await nextTask(); slice = now(); }
     const tr = s > 0 && plan.find((q) => q.before === s);
     if (tr?.figure) through(tr, [m, segment]);
     const scene = await buildBeats(m.tiers[pkg], n);
@@ -159,8 +169,9 @@ export async function buildSequence(motifs, pkg, n, tint, occasion = "") {
   }
   const loop = shown.length && plan.find((q) => q.before === shown.length); // before the round starts again
   if (loop?.figure) through(loop, shown[0]);
-  steady(beats);
-  for (const b of beats) b.run = runFits(b);
+  const pause = async () => { if (now() - slice > 8) { await nextTask(); slice = now(); } };
+  await steady(beats, pause);
+  for (const b of beats) { await pause(); b.run = runFits(b); }
   planClouds(beats);
   return { beats, loopTo: 0 };
 }
@@ -183,9 +194,10 @@ function moves(b) {
  * `clock: "continue"` setzt die Uhr des vorigen Bildes fort (dieselbe Drehung, derselbe Flügelschlag), statt sie
  * zurückzudrehen.
  */
-function steady(beats) {
+async function steady(beats, pause = async () => {}) {
   let prev = null;
   for (const b of beats) {
+    await pause(); // je Bild ein Stück: moves() prüft jede Drohne zu sieben Zeitpunkten
     if (!moves(b)) { prev = null; continue; }
     const own = b.live, from = b.clock === "continue" && prev && prev.segment === b.segment ? prev.clockEnd : 0;
     const clock = steadyClock(b.hold ?? 2.2, { from });

@@ -89,6 +89,8 @@ const labels = {
 <script>
   import { whenNear } from '../../scripts/when-near.mjs';
   for (const root of document.querySelectorAll<HTMLElement>('[data-cft-root]')) {
-    whenNear(root, () => import('../../scripts/show-teaser.js').then((m) => m.initTeaser(root)), { rootMargin: '300px 0px' });
+    // 18.11.2026 (Ruckeln an der Grenze in Safari): mit großem Vorlauf laden (rund 2,5 s Lesen bei ruhigem Scrollen) und den
+    // Aufbau in Stücken erledigen, bevor die Bühne ins Bild kommt; vorher waren es 300 px und ein Aufbau am Stück
+    whenNear(root, () => import('../../scripts/show-teaser.js').then((m) => m.initTeaser(root)), { rootMargin: '1500px 0px' });
   }
 </script>

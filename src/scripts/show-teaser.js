@@ -35,6 +35,15 @@ import { createField } from "./show-field.js";
 import { buildSequence } from "./show-scenes.js";
 import { liftColor } from "./formation/index.js";
 import logoDots from "../data/logo-dots.json";
+import lettering from "../data/teaser-lettering.json";
+import { primeTextFormation } from "./text-formation.js";
+// Ruckeln an der Grenze #ablauf → #preise (WebKit/Safari, 18.11.2026): Der Textplaner setzte den Schriftzug FLYINGSTΛRS
+// (450 und 600 Drohnen) beim Eintritt der Section am Stück, rund 120 ms. Die beiden Formationen liegen jetzt vorberechnet
+// bei (tools/himmel/teaser-schriftzug.mjs), der Planer lädt im Teaser gar nicht mehr.
+for (const [n, f] of Object.entries(lettering.formations)) primeTextFormation(lettering.value, Number(n), f.pts, f.style);
+/** Ein eigener Task, wenn der Browser Luft hat (Safari 18 kennt requestIdleCallback nicht: setTimeout). Der Aufbau des
+ * Showreels läuft so in Stücken statt in einem langen Task. */
+const idle = () => new Promise((res) => (typeof requestIdleCallback === "function" ? requestIdleCallback(() => res(), { timeout: 600 }) : setTimeout(res, 16)));
 
 /** Tempo des Showreels gegenüber der Vorschau im Konfigurator (1×). */
 export const REEL_RATE = 3.4; // Runde 10: jeder Ablauf unter 25 s
@@ -133,6 +142,7 @@ export async function buildReel(reel = REEL) {
   for (const [segment, r] of items.entries()) {
     const occasion = OCCASIONS.find((o) => o.id === r.occasion), motif = r.motif && occasion?.motifs.find((m) => m.id === r.motif);
     for (const [step, n] of r.drones.entries()) {
+      await idle(); // jedes Bild in einem eigenen Task
       const pkg = packageForDrones(n);
       let pick;
       if (r.kind === "logo") pick = [await logoBeat(n)];
