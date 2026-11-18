@@ -1,9 +1,7 @@
 ---
-question: Was braucht ihr von uns?
-tags: [planung]
-order: 11
+question: "Was braucht ihr von uns, um einen Drohnentanz zu planen?"
+tags: [faq-planung]
+order: 3
 ---
 
-- Datum, Anlass und den Ort, an dem euer Publikum steht. Daran prüfen wir, wo die Show am besten fliegt.
-- Die Zustimmung der Grundstückseigentümer:innen. Dabei helfen wir euch.
-- Eure Ideen für Motive, Geschichte und Musik. Daran arbeiten wir gemeinsam.
+Vor allem den Standort, das Datum und den Anlass. Daraus können wir gemeinsam mit euch eure individuelle Show planen. Zusätzlich stellt ihr uns im besten Fall die Zustimmung aller Grundstückseigentümer:innen zur Verfügung (oder wir helfen euch dabei). Um den Rest kümmern wir uns.

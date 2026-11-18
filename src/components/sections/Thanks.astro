@@ -1,0 +1,111 @@
+---
+// Danke-Seite (Runde 4, Moritz 18.11.2026): links Kopf, Text und die freiwillige Frage nach der Quelle, rechts Chopper,
+// der sich als Drohnenformation freut. Die Antwort geht als zweite kleine Meldung über denselben Weg wie die Anfrage
+// (/api/contact, kind=quelle) und trägt den Zufallswert der Anfrage aus sessionStorage. Ohne JavaScript sendet das
+// Formular normal; ohne Bezug, aber auch ohne erneute Dateneingabe.
+import type { Section } from '../../content.config';
+import SectionHead from '../SectionHead.astro';
+import Chopper from '../Chopper.astro';
+import { site } from '../../site.config';
+import { forPath } from '../../i18n/server';
+import { SOURCE_OTHER, SOURCE_TEXT_MAX } from '../../content/inquiry-source.mjs';
+import { CONTACT } from '../people';
+type Props = Extract<Section, { type: 'thanks' }> & { index: number };
+const { kicker, headline, text, question, options, otherLabel, sendLabel, doneText, cta, index, id = 'danke' } = Astro.props;
+const { t, locale, localHref } = forPath(Astro.url.pathname);
+const H = index === 0 ? 'h1' : 'h2';
+const headingId = `${id}-h`;
+---
+<section class="section thanks" id={id} aria-labelledby={headingId}>
+  <div class="thanks-grid">
+    <div class="thanks-copy">
+      <SectionHead variant="embedded" kicker={kicker} headline={headline} text={text} textClass="lead" id={headingId} level={H} />
+      <p class="thanks-note" data-thanks-preview hidden>{t('contact.formDeliveryHasNotBeenSetUpYetNothingWas', { email: CONTACT.email })}</p>
+      <form class="thanks-ask" action={site.formEndpoint} method="post" data-source-form data-done={doneText}>
+        <input type="hidden" name="kind" value="quelle" />
+        <input type="hidden" name="locale" value={locale} />
+        <input type="hidden" name="ref" value="" data-source-ref />
+        <fieldset>
+          <legend class="lbl">{question}</legend>
+          <div class="chips">
+            {options.map((o) => <label><input type="radio" name="quelle" value={o.value} data-other={o.value === SOURCE_OTHER ? '' : undefined} /><span>{o.label}</span></label>)}
+          </div>
+        </fieldset>
+        <div class="field thanks-other" data-source-other>
+          <label class="lbl" for="f-quelle-text">{otherLabel} <em>{t('contactform.optional')}</em></label>
+          <input id="f-quelle-text" name="quelle-text" type="text" maxlength={SOURCE_TEXT_MAX} autocomplete="off" />
+        </div>
+        <div aria-hidden="true" class="honeypot"><label>Website<input autocomplete="off" name="website" tabindex="-1" /></label></div>
+        <div class="thanks-actions"><button class="btn primary" type="submit">{sendLabel}</button>{cta && <a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a>}</div>
+        <p class="form-status" data-source-status role="status" tabindex="-1"></p>
+      </form>
+    </div>
+    <div class="thanks-stage"><Chopper mood="happy" /></div>
+  </div>
+</section>
+
+<script>
+  import { INQUIRY_REF_KEY, INQUIRY_SOURCE_KEY } from '../../content/inquiry-source.mjs';
+  const form = document.querySelector<HTMLFormElement>('[data-source-form]');
+  if (form) {
+    const read = (key: string) => { try { return sessionStorage.getItem(key); } catch { return null; } };
+    const status = form.querySelector<HTMLElement>('[data-source-status]')!;
+    const other = form.querySelector<HTMLElement>('[data-source-other]')!;
+    const params = new URLSearchParams(location.search);
+    // Ohne eingerichteten Versand (nur ohne JavaScript erreichbar): ehrlich sagen, dass nichts angekommen ist
+    if (params.get('state') === 'not-configured') {
+      document.querySelector<HTMLElement>('[data-thanks-preview]')!.hidden = false;
+      form.hidden = true;
+    }
+    // Ohne JavaScript gesendet: Rückmeldung nach dem Neuladen
+    if (params.get('quelle') === 'sent') { form.querySelector('fieldset')!.hidden = true; form.querySelector<HTMLElement>('.thanks-actions')!.hidden = true; form.querySelector<HTMLElement>('[data-source-status]')!.textContent = form.dataset.done ?? ''; }
+    // Quelle schon im Formular angegeben: nicht noch einmal fragen
+    if (read(INQUIRY_SOURCE_KEY) === '1') form.hidden = true;
+    form.querySelector<HTMLInputElement>('[data-source-ref]')!.value = read(INQUIRY_REF_KEY) ?? '';
+    other.hidden = true;
+    form.addEventListener('change', () => {
+      const pick = form.querySelector<HTMLInputElement>('[name=quelle]:checked');
+      other.hidden = !pick?.hasAttribute('data-other');
+    });
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!form.querySelector('[name=quelle]:checked')) { form.querySelector<HTMLInputElement>('[name=quelle]')?.focus(); return; }
+      const button = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+      button.disabled = true;
+      try {
+        const response = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+        const result = await response.json();
+        if (!response.ok || result.ok !== true) throw new Error(result.detail || '');
+        try { sessionStorage.setItem(INQUIRY_SOURCE_KEY, '1'); } catch { /* privat */ }
+        form.querySelector('fieldset')!.hidden = true; other.hidden = true;
+        form.querySelector<HTMLElement>('.thanks-actions')!.hidden = true;
+        status.textContent = form.dataset.done ?? '';
+      } catch (error) {
+        status.textContent = error instanceof Error && error.message ? error.message : '…';
+        button.disabled = false;
+      }
+      status.focus();
+    });
+  }
+</script>
+
+<style>
+  .thanks-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(var(--space-8), 5vw, var(--space-16)); align-items: center; min-height: min(78vh, 46rem); }
+  .thanks-copy { display: grid; gap: var(--space-6); max-width: 36rem; }
+  .thanks-copy :global(.section-head) { display: grid; gap: var(--space-4); }
+  .thanks-copy :global(.lead) { color: var(--muted); margin: 0; }
+  .thanks-ask { display: grid; gap: var(--space-4); margin-top: var(--space-2); }
+  .thanks-ask fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: var(--space-3-5); }
+  .thanks-ask legend { padding: 0; margin-bottom: var(--space-3-5); font-size: 1.0625rem; color: var(--fg); line-height: 1.45; }
+  .thanks-other { display: grid; gap: var(--space-2); max-width: 24rem; }
+  .thanks-other[hidden] { display: none; }
+  .thanks-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4) var(--space-6); }
+  .thanks-note { color: var(--muted); border-left: 2px solid var(--accent); padding-left: var(--space-4); }
+  .thanks-ask .form-status:empty { display: none; }
+  .thanks-ask .form-status { margin: 0; font-size: var(--text-lead); color: var(--fg); }
+  .thanks-stage { min-width: 0; }
+  @media (--grid-stacked) {
+    .thanks-grid { grid-template-columns: 1fr; min-height: 0; }
+    .thanks-stage { order: -1; margin: 0 auto; width: min(100%, 26rem); }
+  }
+</style>

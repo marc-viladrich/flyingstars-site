@@ -1,34 +1,24 @@
 ---
-question: What is a drone show's environmental impact?
-tags:
-  - wetter-umwelt
-order: 32
-translationSourceHash: 1d6df26c716abb02b6cc48d9bc795e9c80b10875f9cbbf0b0088aa4bb3705d3e
+question: "How sustainable is a drone show?"
+tags: [faq-drohnenshows]
+order: 6
 draft: false
 translationContractVersion: 2
+translationSourceHash: a9a4d412ef4a838dddf22c954f1c4ff67ebeb7f786d1dd564bf062167d0fdc6b
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 1d6df26c716abb02b6cc48d9bc795e9c80b10875f9cbbf0b0088aa4bb3705d3e
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
+  sourceFingerprint: a9a4d412ef4a838dddf22c954f1c4ff67ebeb7f786d1dd564bf062167d0fdc6b
   fields:
     - address: /body
-      sourceFingerprint: 73b9e04d24fae8069b4f12551a4e2acc536474ebd84df439a42244c1ffae1ebf
-      targetFingerprint: e667d51c00186fccfae2e74c3dcb39f292173bf5c959392fd2720c4aba859f33
+      sourceFingerprint: d40b1afb689a76f09a147dc954dcc78b032d82557c5de24afc8d28f4428500a9
+      targetFingerprint: 7a0eba103119c42f825653af785e7edc24d5654cdc2283aa436ef683b7588b15
       status: adopted-existing
     - address: /question
-      sourceFingerprint: 70492c6989fbf2623aecba5d5fd282fdcc42848fcd6e9caeccb432d7069e604b
-      targetFingerprint: 30e9287d8187a595b3e7b37d31011e5bb762ea5444cfe4138c08e5bd30eabc4b
+      sourceFingerprint: e3b3aea80890a55b99f0117cef7acc205c15982f9381cdc605d555bdb918c176
+      targetFingerprint: 11468981a46065290f0fb6396d4ff0c3648c05945c0474678b837c795cd2a77c
       status: adopted-existing
 ---
 
-- No fine particles, debris or bangs are produced at the venue. Sound comes only from the music.
-- We charge our batteries with 100% green electricity from naturstrom.
-- The drones weigh around 300 grams and are built in the EU by Drotek SAS in France.
-- They run on two standard AA rechargeable batteries. Batteries, motors and rotors can be replaced individually.
-- We travel to shows in an electric Ford E-Transit.
-
-TÜV Nord has assessed the noise of our shows in an acoustic report.
+Everyone can enjoy a drone show – including people who are otherwise afraid of fireworks because they are too loud, pose a fire risk or release emissions on site. Drone shows, by contrast, are smoke-free locally: no particulate matter on site. They are reusable and produce no waste. We charge our drones with 100 % green electricity. And they only hum quietly instead of banging. TÜV NORD has confirmed our noise protection. [Find out more about the environmental impact here](/en/nachhaltigkeit/).

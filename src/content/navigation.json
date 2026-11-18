@@ -41,6 +41,10 @@
         {
           "label": "blog.sustainability",
           "href": "/nachhaltigkeit/"
+        },
+        {
+          "label": "nav.press",
+          "href": "/presse/"
         }
       ]
     },

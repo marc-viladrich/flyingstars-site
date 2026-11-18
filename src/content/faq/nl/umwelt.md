@@ -1,34 +1,24 @@
 ---
-question: Wat betekent een droneshow voor het milieu?
-tags:
-  - wetter-umwelt
-order: 32
-translationSourceHash: 1d6df26c716abb02b6cc48d9bc795e9c80b10875f9cbbf0b0088aa4bb3705d3e
+question: "Hoe duurzaam is een droneshow?"
+tags: [faq-drohnenshows]
+order: 6
 draft: false
 translationContractVersion: 2
+translationSourceHash: a9a4d412ef4a838dddf22c954f1c4ff67ebeb7f786d1dd564bf062167d0fdc6b
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 1d6df26c716abb02b6cc48d9bc795e9c80b10875f9cbbf0b0088aa4bb3705d3e
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
+  sourceFingerprint: a9a4d412ef4a838dddf22c954f1c4ff67ebeb7f786d1dd564bf062167d0fdc6b
   fields:
     - address: /body
-      sourceFingerprint: 73b9e04d24fae8069b4f12551a4e2acc536474ebd84df439a42244c1ffae1ebf
-      targetFingerprint: a1ac390c939c6de28c292b0f6ee990dd424658bf89333120d98e81cbf923caa8
+      sourceFingerprint: d40b1afb689a76f09a147dc954dcc78b032d82557c5de24afc8d28f4428500a9
+      targetFingerprint: 3b8f746a01c9fe6ab8f3fb8578009ed49c9a02ee248ce0c8cf42381ce2cca9fb
       status: adopted-existing
     - address: /question
-      sourceFingerprint: 70492c6989fbf2623aecba5d5fd282fdcc42848fcd6e9caeccb432d7069e604b
-      targetFingerprint: f98c65ea59b0c9c305ef61d6f3293a1cce6803a339ad8352ee3eb7a581978145
+      sourceFingerprint: e3b3aea80890a55b99f0117cef7acc205c15982f9381cdc605d555bdb918c176
+      targetFingerprint: 2b4721bea011a316b5ef3a7e931775de183edf345be9539adfb23b2cc0bb9a93
       status: adopted-existing
 ---
 
-- Op locatie ontstaan geen fijnstof, afval of knallen. Geluid komt alleen van de muziek.
-- We laden onze accu's met 100% groene stroom van naturstrom.
-- De drones wegen circa 300 gram en worden in de EU gebouwd, bij Drotek SAS in Frankrijk.
-- Ze werken op twee gewone oplaadbare AA-batterijen. Accu's, motoren en rotoren zijn afzonderlijk te vervangen.
-- We rijden naar shows met een elektrische Ford E-Transit.
-
-TÜV Nord heeft het geluid van onze shows in een akoestisch rapport onderzocht.
+Iedereen kan van een droneshow genieten – ook wie normaal bang is voor vuurwerk omdat het te luid is, brandgevaar oplevert of ter plaatse uitstoot veroorzaakt. Droneshows zijn daarentegen lokaal rookvrij: geen fijnstof ter plaatse. Ze zijn herbruikbaar en produceren geen afval. We laden onze drones op met 100 % groene stroom. Bovendien zoemen ze alleen zachtjes in plaats van te knallen. TÜV NORD bevestigt onze geluidsbescherming. [Meer over de milieu-impact lezen jullie hier](/nl/nachhaltigkeit/).

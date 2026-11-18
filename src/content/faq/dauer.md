@@ -1,7 +1,7 @@
 ---
-question: Wie lange dauert eine Drohnenshow?
-tags: [planung, hochzeit, werbung]
-order: 13
+question: "Wie lange dauert eine Drohnenshow?"
+tags: [faq-drohnenshows]
+order: 5
 ---
 
-In der Regel etwa {{duration.outdoor.typical}} Minuten. Bis zu {{duration.outdoor.max}} Minuten sind möglich. Eine Indoor-Show dauert {{duration.indoor.min}} bis {{duration.indoor.max}} Minuten.
+Eine Outdoor-Drohnenshow dauert bis zu 25 Minuten. Im Schnitt liegt der Flug bei rund 13 Minuten. Indoor sind fünf bis acht Minuten möglich.

@@ -1,28 +1,24 @@
 ---
-question: Can a drone show take place indoors?
-tags:
-  - indoor
-order: 50
-translationSourceHash: 98fc3ad62bfcd662bf791c1068734f8f2acac1161646877d2ce3b45daa4fcdc8
+question: "Can drone shows also take place indoors?"
+tags: [faq-drohnenshows]
+order: 7
 draft: false
 translationContractVersion: 2
+translationSourceHash: 691e36bd83b02b5f623cb06832a9ca6957adfa87cfc1007042bf192d87e5ce68
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 98fc3ad62bfcd662bf791c1068734f8f2acac1161646877d2ce3b45daa4fcdc8
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
+  sourceFingerprint: 691e36bd83b02b5f623cb06832a9ca6957adfa87cfc1007042bf192d87e5ce68
   fields:
     - address: /body
-      sourceFingerprint: 9a13adbf44dc3df4ab2d70d1911c3d724528cdbfcc05757614d133d7674e960f
-      targetFingerprint: 0ddf681fad9bba3fd2e67c970af29ff08739f8fa2b4036bd2b5692e978bb129c
+      sourceFingerprint: a5c6299129b1b6237a86039e7994054cf3b31a0b53e0821b0488a2ef62b466bb
+      targetFingerprint: cc6b1f52818cf8507f8aaebb5ad0bbc917eae60a92de98704adbf1c5d9436300
       status: adopted-existing
     - address: /question
-      sourceFingerprint: 23fd78c315d64be51edc5c044e92fd409497739ebdf6ea286409d0b4efec5d56
-      targetFingerprint: 4deebf58345a569012bc6f2932174dfdd9cc6f197f08e650073b83243b8b85ae
+      sourceFingerprint: 1eb3daecfaf340ebec0b97691be6f77dca5d18a16e7f109df4308fd8b46d02c5
+      targetFingerprint: 77ca1fc9b843741d04d8620ed7c16b91bc820f74b84ac3888c9fef845a94223f
       status: adopted-existing
 ---
 
-Yes, with a separate indoor system. Indoors, we usually fly {{offer.indoor.drones.min}} to {{offer.indoor.drones.max}} smaller drones for {{duration.indoor.min}} to {{duration.indoor.max}} minutes. They locate themselves using radio stations in the room, rather than GPS.
+Yes. As long as there is a ceiling height of at least three metres and a clear area of 10 x 10 metres, we can also fly indoors.

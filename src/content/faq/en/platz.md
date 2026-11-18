@@ -1,24 +1,19 @@
 ---
-question: How much space does a drone show need?
-tags:
-  - startseite
-  - ort
-order: 2
-translationSourceHash: 28942667ee5fe22d89c890fd6adfcbb98f92193dd03283a316d1723fe850e2fb
+question: "How much space does a drone show need?"
+tags: [faq-planung]
+order: 4
 draft: false
 translationContractVersion: 2
+translationSourceHash: 83466948ac311565fd7aa821f84e7a6ba82f1b1985f5aeef4a4a42ca3d588604
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 28942667ee5fe22d89c890fd6adfcbb98f92193dd03283a316d1723fe850e2fb
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
+  sourceFingerprint: 83466948ac311565fd7aa821f84e7a6ba82f1b1985f5aeef4a4a42ca3d588604
   fields:
     - address: /body
-      sourceFingerprint: 723fc048e21b5fe5daf4b9efc919bb55ab62b8ce41fda3e18f0143cccea2fe68
-      targetFingerprint: 718b6d47862ff77fd4f3f900f3aa4d1056c53f7bab4a7f91b9ff58b60d64d178
+      sourceFingerprint: d743bb6fc1e10330b58859233eb53c98c0b08b4a27b5244941a0c2fabfe0f0a5
+      targetFingerprint: b5cbe846438c92e1b9736b12fd8fcacc5bf3d1d644d77b7fa6d4f3f8d9b4a060
       status: adopted-existing
     - address: /question
       sourceFingerprint: e7e83a30cc3567bc70bc75ec03b272707de1e8d02ed621caf636aebb6d4682c2
@@ -26,8 +21,4 @@ translationEvidence:
       status: adopted-existing
 ---
 
-- A safety area of around 100 × 100 metres, with no uninvolved people inside during the show.
-- A clear take-off and landing area sized to suit the drone count. It is closed off from our arrival, around three hours before the show.
-- Consent from the owners of any land we fly over.
-
-The exact size depends on drone count and altitude. Send us your location, and we'll check it and suggest an alternative if needed. Dimensions and setup at a glance: [technical data sheet (PDF)](/media/downloads/FlyingStars-Technik-Datenblatt.pdf).
+Rule of thumb: we plan a show area of 100 x 100 metres in which no uninvolved persons are present during the performance. It also contains a take-off and landing area of around 25 x 25 metres, where we set up the drones from about 3.5 hours before the event and which is not accessible to the audience. The exact size depends on the number of drones and the flight altitude. Not sure? Send us the location. We’ll check it and find an alternative if necessary.

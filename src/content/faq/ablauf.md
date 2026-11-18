@@ -1,7 +1,7 @@
 ---
-question: Wie läuft eine Buchung ab?
-tags: [planung]
-order: 10
+question: "Wie ist der Ablauf?"
+tags: [faq-planung]
+order: 1
 ---
 
-Ihr schickt uns eine Anfrage, wir sprechen kurz miteinander und schicken euch ein Angebot. Danach planen wir gemeinsam Standort, Motive und Musik und kümmern uns um die Genehmigung. Am Showtag sperren wir das Gelände ab, bauen auf, fliegen und bauen wieder ab. Eine Begehung vor Ort ist selten nötig.
+Nach eurer Anfrage sprechen wir gemeinsam über eure Vorstellungen. Danach geht unser festes Angebot raus. Dabei bleibt es auch, keine Überraschungen! Eine Begehung vor Ort ist selten nötig. In den kommenden Wochen planen wir gemeinsam die Choreografie, die Motive, die Musik und die Organisation. Ihr seid so viel oder so wenig involviert, wie ihr möchtet. Um die Genehmigungen kümmern wir uns. Am Showtag beginnen wir rund 3,5 Stunden vor Abflug mit dem Aufbau. Kurz davor richten wir den Sicherheitsbereich ein. Das Drohnenballett dauert im Schnitt 13 Minuten, danach bauen wir ab.

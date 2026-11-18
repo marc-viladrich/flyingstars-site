@@ -1,9 +1,7 @@
 ---
-question: Wie viel Vorlauf braucht ihr?
-tags: [startseite, planung, hochzeit]
-order: 1
+question: "Wie viel Vorlauf braucht ihr?"
+tags: [faq-planung]
+order: 2
 ---
 
-Ideal sind ein bis zwei Monate, in der Hauptsaison gern mehr. Für das Design mit eurem Feedback plant mindestens drei Wochen ein. Bei aufwendigen Genehmigungen, etwa in Flughafennähe, eher drei Monate.
-
-Alles unter 14 Tagen ist bei uns Express. Eine feste Untergrenze gibt es nicht, wir versuchen es möglich zu machen. Der Aufpreis richtet sich nach dem Aufwand.
+Fragt gerne so früh wie möglich an. Zwei oder drei Monate Vorbereitungszeit sind optimal, vor allem bei aufwändigen Genehmigungen. Denkt dran: Es gibt sogar einen Frühbucherrabatt von 10 % für Buchungen im Vorjahr! Wenn es eilt, können wir eure Show gegen einen Express-Aufschlag aber auch innerhalb von ein oder zwei Wochen planen.

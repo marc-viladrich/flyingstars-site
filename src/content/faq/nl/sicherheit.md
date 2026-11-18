@@ -1,35 +1,24 @@
 ---
-question: Is een drone show veilig?
-tags:
-  - sicherheit
-order: 30
-translationSourceHash: aef8a3c0d1e546d6a156f69fe345a78ef4c0399c8380da429e8461950147578c
+question: "Zijn droneshows veilig?"
+tags: [faq-sicherheit]
+order: 3
 draft: false
 translationContractVersion: 2
+translationSourceHash: d49aec8b84f8363ff29b644614fb55ff1781c2cd43a446357dddf8d5cf082075
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: aef8a3c0d1e546d6a156f69fe345a78ef4c0399c8380da429e8461950147578c
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
+  sourceFingerprint: d49aec8b84f8363ff29b644614fb55ff1781c2cd43a446357dddf8d5cf082075
   fields:
     - address: /body
-      sourceFingerprint: 4a6f1dbfd94a8c1ff67da722b6e64230ee5feaad2fa6bb2e47d2e4b2b25ac80d
-      targetFingerprint: 8e5ab1457600c235eeccb60202d5850e0ad5e1b6e2917a692d139dfc00dc7376
+      sourceFingerprint: eba3749c28a739a8f8b5b19b928b7e49e225f5197ecc74a826173d28d1c1a0e1
+      targetFingerprint: 084e2f33f649037849868cc54880108aeada5a54f2b7b00d7e3c5509b51e0bb4
       status: adopted-existing
     - address: /question
-      sourceFingerprint: dba22f92072d7b5e23bed0721ab166009b95545db3b44548b94b13dda027d8b3
-      targetFingerprint: 222ed447501a4227459748b6c354d6ac3d928ee587eab6fb8ce6248f25664370
+      sourceFingerprint: ef6d24c9624bb22c3fa79229bfddfc2704cdf8f671623b6c0e8f4cf28e258d08
+      targetFingerprint: b8270f689ca2d5c0846776486c153d07be02b471bf3b8df2c63c40a4e37cb626
       status: adopted-existing
 ---
 
-- Onze drones wegen circa 300 gram.
-- De show vliegt binnen een afgezette veiligheidszone waar niemand aanwezig is.
-- Een digitale grens, of geofence, begrenst het vlieggebied. Verlaat een drone die zone, dan start automatisch een veiligheidsprotocol.
-- Automatische en handmatige veiligheidssystemen zijn meervoudig beveiligd.
-- Opgeleide piloten en technici bewaken elke vlucht ter plaatse.
-- We vliegen meestal niet hoger dan 120 meter.
-- Elk pakket bevat een aansprakelijkheidsverzekering tot € 1,3 miljoen.
-- Onze showdrones hebben geen camera's.
+Veiligheid heeft voor ons de hoogste prioriteit. Sinds onze oprichting in 2021 en in meer dan 150 droneshows is er daarom nog nooit een ongeluk gebeurd. Daar doen we veel voor: ons team bestaat uit gecertificeerde en ervaren piloten en technici die elk evenement ter plaatse begeleiden. Redundante automatische en handmatige veiligheidssystemen bewaken elke vlucht. Mocht een drone toch eens neerstorten, dan weegt die maar zo’n 300 gram en valt hij in de veiligheidszone van 100 x 100 meter, waar geen gasten zijn. Automatische geofencing voorkomt dat de drones daaruit breken. Anders dan bij vuurwerk is het brandgevaar zonder open vuur ook veel kleiner.

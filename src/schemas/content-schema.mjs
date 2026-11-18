@@ -7,6 +7,7 @@ import {PERSON_IDS} from '../content/people.mjs';
 import {businessValueSchema} from './business-facts.mjs';
 import {PACKAGE_NAMES} from '../content/package-identity.mjs';
 import {factText} from '../content/show-extras.mjs';
+import {SOURCE_IDS} from '../content/inquiry-source.mjs';
 import { z } from 'zod';
 import {imageSource,imageMetadata} from './media.mjs';
 import { projectShowcaseSchema } from './project-showcase.mjs';
@@ -90,8 +91,11 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     pillarsRef: fieldPolicy(z.literal('sustainability-pillars').optional().describe('Gemeinsame Nachhaltigkeitspunkte'), 'shared'),
     proofImage: image.optional(), proofText: fieldPolicy(z.string().optional(), 'translatable'), campaign: fieldPolicy(z.string().optional(), 'translatable'),
     image: image.optional().describe('Foto neben der Einleitung (z. B. #Böllerciao), mit Vorhang-Reveal'),
+    gallery: fieldPolicy(z.enum(['logos', 'willkommen']).optional().describe('Bildgalerie statt Foto neben der Einleitung (Sätze in public/media/galerie)'), 'shared'),
     cta: link.optional().describe('Weiterführender Link unter der Einleitung'),
     icon: fieldPolicy(z.string().min(1).optional().describe('Lucide-Name: Kachel mit Icon und Punktmuster statt Foto neben der Einleitung'), 'shared'),
+    show: fieldPolicy(z.enum(['indoor']).optional().describe('Drohnen-Animation neben der Einleitung statt Foto oder Icon-Kachel (Indoor-Reihe, scripts/himmel/folge.js)'), 'shared'),
+    scene: fieldPolicy(z.enum(['chopper-play']).optional().describe('Leuchtpunkt-Szene neben der Einleitung statt Foto oder Icon: Chopper spielt mit zwei Kindern Ball'), 'shared'),
     lines: z.array(keyedText(fieldPolicy(z.string(), 'translatable'))).optional().describe('Veraltet (dreizeiliger Titel der Scrollstory), wird nicht mehr angezeigt'),
   }).strict(),
   z.object({
@@ -107,6 +111,7 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     headline: fieldPolicy(z.string().min(1), 'translatable'),
     body: fieldPolicy(z.string().min(1).describe('Markdown erlaubt').meta({'x-afe': {format: 'markdown'}}), 'translatable'),
     image: image.optional(),
+    gallery: fieldPolicy(z.enum(['logos', 'willkommen']).optional().describe('Bildgalerie statt Bild: Text links schmal, Galerie groß daneben (Sätze in public/media/galerie)'), 'shared'),
     mediaSide: fieldPolicy(z.enum(['left', 'right']).default('right'), 'shared'),
     headAbove: fieldPolicy(z.boolean().optional().describe('Kopf über voller Breite, darunter Text und Bild nebeneinander'), 'shared'),
     cta: link.optional().describe('Weiterführender Link unter dem Text'),
@@ -265,8 +270,13 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     type: fieldPolicy(z.literal('location'), 'shared'), ...sectionHeading,
     headline: fieldPolicy(z.string().min(1), 'translatable'),
     text: fieldPolicy(z.string().optional().describe('Absätze durch Leerzeile getrennt'), 'translatable'),
+    // Marc, 18.11.2026: Adressen als eigene Blöcke mit Icon in der Farbe ihres Kartenpunkts unter dem Text. Die
+    // Anschrift kommt aus den Kontaktdaten (content/contact.json, visit bzw. post), nicht aus der Seite.
     places: z.array(z.object({
-      label: fieldPolicy(z.string().min(1).describe('Beschriftung in der Legende, z. B. "Büro · Triple Z, Essen"'), 'translatable'),
+      label: fieldPolicy(z.string().min(1).describe('Name des Orts, z. B. "Büro"'), 'translatable'),
+      role: fieldPolicy(z.string().min(1).optional().describe('Wofür der Ort da ist, z. B. "Besuch auf einen Kaffee"'), 'translatable'),
+      address: fieldPolicy(z.enum(['visit', 'post']).optional().describe('Anschrift aus den Kontaktdaten'), 'shared'),
+      icon: fieldPolicy(z.string().min(1).optional().describe('Lucide-Name'), 'shared'),
       lat: fieldPolicy(z.number().min(50.3).max(52.6), 'shared'),
       lon: fieldPolicy(z.number().min(5.8).max(9.5), 'shared'),
     }).strict()).min(1).max(4),
@@ -352,6 +362,17 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     bonus: z.object({ value: businessValueSchema, text: fieldPolicy(z.string().min(1), 'translatable') }).optional(),
     closing: closingBox.describe('Abschluss unter der Preiskarte'),
     cta: link.optional().describe('Textlink unter der Preiskarte, z. B. in den Konfigurator'),
+    // Indoor (Marc, 18.11.2026: „sieht mega leer aus“): mit Preisfaktoren wird die Karte zweigeteilt wie bei Stripe. Links
+    // Preis, Abschluss (Überschrift, Satz, Knopf) und Datenblatt; rechts gleich große Zellen je Faktor; die erste Gruppe
+    // läuft als Zeile „immer enthalten“ unter beiden Hälften. Ohne Faktoren bleibt die Kassenzettel-Karte (Hochzeit).
+    factors: z.array(z.object({
+      icon: fieldPolicy(z.string().min(1).describe('Lucide-Name'), 'shared'),
+      title: fieldPolicy(z.string().min(1).describe('Faktor, z. B. "Raum"'), 'translatable'),
+      value: businessValueSchema.describe('Wert groß, z. B. "10 × 10 m"'),
+      text: fieldPolicy(z.string().min(1).describe('Ein Satz'), 'translatable'),
+      dots: fieldPolicy(z.enum(['area', 'drones', 'duration']).optional().describe('Punktfeld zum Wert: Fläche 10 × 10 m, Drohnen min–max, Showdauer min–max'), 'shared'),
+    }).strict()).min(2).max(4).optional().describe('Preisfaktoren als Zellen neben dem Preis'),
+    download: siteDownloadSchema.optional(),
   }),
   z.object({
     // Quellen und Konflikte: docs/sicherheitskonzept-quellen.md. Alle Maße kommen aus dem Inhalt.
@@ -428,6 +449,38 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
     visitNote: fieldPolicy(z.string().optional().describe('Satz unter der Besuchsadresse, z. B. "Meldet euch vorher kurz an."'), 'translatable'),
     image: image.optional().describe('Teamfoto; ohne Bild die Porträts der Geschäftsführer:innen'),
+  }),
+  z.object({
+    // Danke-Seite (Runde 4, Moritz 18.11.2026): Kopf, Text, Chopper freut sich, dazu die freiwillige Frage nach der Quelle.
+    // Die Antwort geht als zweite kleine Meldung über /api/contact (src/content/inquiry-source.mjs).
+    type: fieldPolicy(z.literal('thanks'), 'shared'), ...sectionHeading,
+    headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
+    question: fieldPolicy(z.string().min(1), 'translatable'),
+    options: z.array(z.object({ value: fieldPolicy(z.enum(SOURCE_IDS), 'shared'), label: fieldPolicy(z.string().min(1), 'translatable') })).min(2),
+    otherLabel: fieldPolicy(z.string().min(1).describe('Beschriftung des Freitextfelds bei „Andere“'), 'translatable'),
+    sendLabel: fieldPolicy(z.string().min(1), 'translatable'),
+    doneText: fieldPolicy(z.string().min(1).describe('Rückmeldung nach dem Senden'), 'translatable'),
+    cta: link.optional().describe('Weiterführender Link unter der Frage'),
+  }),
+  z.object({
+    // Presse (Runde 4, Moritz 18.11.2026): Kopf mit Logoreihe als Sprungmarken, darunter die Beiträge als Zeitleiste mit
+    // großem Medienlogo, Datum und Titel; ein Beitrag kann hervorgehoben sein. Link nur, wenn er belegt ist.
+    type: fieldPolicy(z.literal('press'), 'shared'), ...sectionHeading,
+    headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
+    cta: link.optional(),
+    items: z.array(z.object({
+      id: fieldPolicy(z.string().regex(/^[a-z0-9-]+$/).describe('Sprungmarke, z. B. "ntv"'), 'shared'),
+      name: fieldPolicy(z.string().min(1).describe('Medium, erscheint als Überschrift'), 'translatable'),
+      logo: brandPath.optional(),
+      cleared: fieldPolicy(z.boolean().default(false).describe('Logo darf gezeigt werden; sonst der Name als Text'), 'shared'),
+      knock: fieldPolicy(z.boolean().default(false).describe('Logo mit ausgesparter Schrift (ZDF, ntv)'), 'shared'),
+      title: fieldPolicy(z.string().min(1).describe('Thema des Beitrags'), 'translatable'),
+      date: fieldPolicy(z.string().regex(/^\d{4}-\d{2}(-\d{2})?$/).describe('Datum, z. B. 2025-06-21 oder 2026-01'), 'shared'),
+      text: fieldPolicy(z.string().min(1), 'translatable'),
+      href: fieldPolicy(z.url().optional().describe('Beitrag, nur wenn belegt'), 'shared'),
+      linkLabel: fieldPolicy(z.string().optional().describe('z. B. "Zum Artikel"'), 'translatable'),
+      featured: fieldPolicy(z.boolean().default(false), 'shared'),
+    })).min(1),
   }),
   z.object({
     // Anfrage in zwei Schritten (docs/DESIGN.md). Gesichter: ohne Angabe die drei Geschäftsführer:innen.

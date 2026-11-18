@@ -1,35 +1,24 @@
 ---
-question: Is a drone show safe?
-tags:
-  - sicherheit
-order: 30
-translationSourceHash: aef8a3c0d1e546d6a156f69fe345a78ef4c0399c8380da429e8461950147578c
+question: "Are drone shows safe?"
+tags: [faq-sicherheit]
+order: 3
 draft: false
 translationContractVersion: 2
+translationSourceHash: d49aec8b84f8363ff29b644614fb55ff1781c2cd43a446357dddf8d5cf082075
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: aef8a3c0d1e546d6a156f69fe345a78ef4c0399c8380da429e8461950147578c
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
+  sourceFingerprint: d49aec8b84f8363ff29b644614fb55ff1781c2cd43a446357dddf8d5cf082075
   fields:
     - address: /body
-      sourceFingerprint: 4a6f1dbfd94a8c1ff67da722b6e64230ee5feaad2fa6bb2e47d2e4b2b25ac80d
-      targetFingerprint: 91849fc582fb6dc77b5da60888d7b17c5355ec3197f55bced7572bc784caf8fe
+      sourceFingerprint: eba3749c28a739a8f8b5b19b928b7e49e225f5197ecc74a826173d28d1c1a0e1
+      targetFingerprint: 2691115f427ad7a22925a82169a1ce3d03a7041ae1c1d1c52c1b610bb72ed800
       status: adopted-existing
     - address: /question
-      sourceFingerprint: dba22f92072d7b5e23bed0721ab166009b95545db3b44548b94b13dda027d8b3
-      targetFingerprint: 05ebecdff3d9392fd0a6c8b8b3b6438a2e20f062052ed8c0a58972ede6d8467c
+      sourceFingerprint: ef6d24c9624bb22c3fa79229bfddfc2704cdf8f671623b6c0e8f4cf28e258d08
+      targetFingerprint: d4c5ec8f07a6cd8f712f5b77dcc0a9bee4a1f76e3321bd365b5286ca50c79c91
       status: adopted-existing
 ---
 
-- Our drones weigh around 300 grams.
-- The show flies inside a secured safety area, with nobody inside.
-- A digital fence, or geofence, limits the flight area. If a drone leaves it, a safety protocol starts automatically.
-- Automatic and manual safety systems have multiple safeguards.
-- Trained pilots and technicians monitor every flight on site.
-- We usually fly no higher than 120 metres.
-- Every package includes liability cover up to €1.3 million.
-- Our show drones have no cameras.
+Safety is our top priority. That’s why there has never been an accident since we were founded in 2021 and in more than 150 drone shows. We do a lot for this: our team consists of certified and experienced pilots and technicians who accompany every event on site. Redundant automatic and manual safety systems monitor every flight. Should a drone ever fall, it weighs only around 300 grams and lands in the 100 x 100 metre safety zone, where no guests are present. Automatic geofencing prevents the drones from leaving it. Unlike fireworks, the fire risk is also much lower without an open flame.

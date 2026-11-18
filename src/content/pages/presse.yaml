@@ -1,0 +1,29 @@
+# Presse nach Moritz' Webtext (18.11.2026, „Presse“), Ansprache „ihr“. Links nur, wo belegt: ntv und WAZ (Seite abgerufen,
+# Namensnennung bestätigt), Tagesspiegel (Artikel zur DUH-Show, Namensnennung im frei lesbaren Teil nicht gefunden),
+# siehe freelance/clients/flyingstars/17-designsprache-poc-2026-10-30/recherche-runde-2.md. heise online und NDR: kein
+# belegter Link, daher ohne Knopf; ZDF laut Moritz nicht online. NDR- und heise-Logo von Wikimedia Commons (gemeinfrei,
+# Marke), wie die übrigen Presselogos; schriftliche Freigaben der Medien stehen für alle Logos aus.
+title: FlyingStars in der Presse (ZDF, WDR, ntv und Co.)
+navLabel: Presse
+description: "Evtl. kennt ihr uns von hier: Wir reden oft über Nachhaltigkeit & Innovation von Drohnenshows ☎︎ +49 209 88306562"
+sections:
+  - type: press
+    id: presse
+    kicker: FlyingStars in der Presse
+    headline: Vielleicht kennt ihr uns *bereits*?
+    text: Als junges Start-up aus NRW sind wir häufig Ansprechpartner:innen der Medien. Oft geht es dabei um unsere Drohnenshows, ihre Nachhaltigkeit im Vergleich zum Feuerwerk oder technische Innovationen. Könnte sein, dass ihr uns schon einmal gesehen habt …
+    cta: { label: Kontakt aufnehmen, href: "#anfrage" }
+    items:
+      - { id: heise, name: heise online, logo: /brand/logos/presse-heise.svg, cleared: true, title: Technische Innovation, date: "2026-01", text: "Im Januar 2026 durften wir heise online empfangen, um über den aktuellen Stand und die zukünftige Entwicklung der Drohnentechnologie zu reden.", "_key": "k_7afe9802c73cf1eaac21" }
+      - { id: ndr, name: NDR, logo: /brand/logos/presse-ndr.svg, cleared: true, title: "#BÖLLERCIAO", date: "2025-12-17", text: "Hallo Niedersachsen berichtet am 17.12.2025 über unsere Drohnenshow für die Deutsche Umwelthilfe in Lüneburg.", "_key": "k_6b732df4e174a565ed1f" }
+      - { id: waz, name: WAZ, logo: /brand/logos/presse-waz.svg, cleared: true, title: Ruhrorter Hafenfest, date: "2025-08-13", text: "Wir bringen Drohnenspektakel nach Duisburg. Am 13.08.2025 stellt die WAZ das Konzept vor und interviewt unseren Mitgründer Erwin.", href: "https://www.waz.de/lokales/duisburg/article409722481/ruhrorter-hafenfest-die-geheimnisse-hinter-dem-neuen-highlight.html", linkLabel: Zum Artikel, "_key": "k_9fca4e32123469ec0311" }
+      - { id: ntv, name: ntv, logo: /brand/logos/presse-ntv.svg, cleared: true, knock: true, featured: true, title: FlyingStars als Start-up, date: "2025-06-21", text: "Im ntv Startup Magazin durften wir unser Team und unsere Mission vorstellen. Die Ausstrahlung erfolgte am 21.06.2025.", href: "https://www.n-tv.de/mediathek/magazine/startup_news/Drohnen-verwandeln-Nachthimmel-in-Showbuehne-article25835436.html", linkLabel: Zum Beitrag, "_key": "k_3f9037c3b9c946fc7bdb" }
+      - { id: tagesspiegel, name: Tagesspiegel, logo: /brand/logos/presse-tagesspiegel.svg, cleared: true, title: Alternative zum Feuerwerk, date: "2023-11-27", text: "Bereits am 27.11.2023 berichtete der Tagesspiegel über unsere Drohnenshow für die Kampagne #BÖLLERCIAO der Deutschen Umwelthilfe.", href: "https://www.tagesspiegel.de/berlin/drohnen-statt-boller-deutsche-umwelthilfe-zeigt-alternative-zum-berliner-silvester-feuerwerk-10846906.html", linkLabel: Zum Artikel, "_key": "k_248dbccc35d6581abd74" }
+      - { id: zdf, name: ZDF, logo: /brand/logos/presse-zdf.svg, cleared: true, knock: true, title: Spektakuläre Schwärme, date: "2023-05-21", text: "In der KiKa-Quizshow „1, 2 oder 3“ durften wir Kinder für Drohnenshows begeistern. Die Folge wurde am 21.05.2023 ausgestrahlt. Aktuell ist sie online leider nicht verfügbar.", "_key": "k_1724569aec737d2bba0d" }
+    _key: k_3203e6063dedf526e6f1
+
+  - type: contactForm
+    kicker: Kontakt
+    headline: Show planen oder *Fragen* stellen
+    text: "Ob ihr eine eigene Drohnenshow veranstalten oder ein Interview mit uns führen möchtet: Wir stehen euch gerne zur Verfügung."
+    _key: k_499edb9f3b385f242d3a

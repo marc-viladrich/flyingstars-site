@@ -1,7 +1,7 @@
 ---
-question: Wann kann die Show starten?
-tags: [planung, hochzeit]
-order: 15
+question: "Wann kann die Aufführung starten?"
+tags: [faq-planung]
+order: 7
 ---
 
-Ab 30 Minuten nach Sonnenuntergang bis 30 Minuten vor Sonnenaufgang. Im Hochsommer ist das oft erst gegen 22 Uhr. Für euren Ort und euer Datum nennen wir euch die genaue Zeit.
+Eine Drohnenshow findet (outdoor) in der Nacht statt. Wir starten ab 30 Minuten nach Sonnenuntergang und können bis 30 Minuten vor Sonnenaufgang fliegen. Im Sommer starten Vorführungen deshalb oft erst gegen 22 Uhr. Wir nennen euch im Vorhinein die genaue Startzeit.

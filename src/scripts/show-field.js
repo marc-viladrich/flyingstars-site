@@ -65,7 +65,10 @@ const outside = (i, out) => {
 // solange ein Bild angeflogen wird (Wolke oder Flug), unabhängig vom Tempo des Bildes selbst (setRate); null = wie bisher.
 // joinLate: Drohnen, die dunkel dazukommen, bleiben im Flug dunkel und leuchten erst kurz vor ihrem Platz auf, überzählige
 // gehen gleich zu Beginn ihres Rückflugs aus (sonst stehen sie beim Wechsel 2D → 3D als lose Punktwolke neben dem Bild).
-export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread = 1, outside: away = outside, flightRate = null, joinLate = false } = {}) {
+// Himmel, Runde 4 (18.11.2026, additiv): lightScale vergrößert die Lichter (Indoor-Reihe mit 50 Drohnen: Indoor-Drohnen
+// stehen nah und leuchten groß; 1 = wie bisher). flightMax: längste Dauer eines Anflugs in echten Sekunden; ein längerer
+// Anflug läuft entsprechend schneller als flightRate (0 = keine Grenze, wie bisher).
+export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread = 1, outside: away = outside, flightRate = null, joinLate = false, lightScale = 1, flightMax = 0 } = {}) {
   const ctx = canvas.getContext("2d");
   const reduceQuery = matchMedia("(prefers-reduced-motion: reduce)");
   let capacity = INITIAL_CAPACITY;
@@ -322,6 +325,7 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
       delay[i] = flowOf[i] && i < n ? hash(i * 1.37 + k * 7.1) * spreadN * Math.min(1, d / 0.3) : 0;
     }
     canvas.dataset.points = String(n); canvas.dataset.beat = String(k); canvas.dataset.cloud = cloud ? (parts ? "part" : "all") : "";
+    canvas.dataset.flight = (flight + spread).toFixed(2); // Dauer des Anflugs in Sekunden der Show-Uhr (Prüfwerkzeuge der Show-Folge)
     onBeat?.(k, b, scene.beats.length);
     if (still()) settle(t, k);
   }
@@ -438,7 +442,7 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
     canvas.dataset.lit = String(list.length); // drones lit right now, read by the tests
     // alle Lichter additiv wie in der Probe (die Reihenfolge spielt dabei keine Rolle); Tiefe macht ein Licht etwas
     // größer bzw. kleiner (Perspektive), Licht über 1 legt das helle Sprite darüber
-    const goal = dotRadius(scene.beats[beat]?.drones ?? droneCount, S / DPR), halo = haloOf(S / DPR);
+    const goal = Math.round(dotRadius(scene.beats[beat]?.drones ?? droneCount, S / DPR) * lightScale * 4) / 4, halo = haloOf(S / DPR);
     // ein Bild mit eigener Drohnenzahl: die Lichtgröße wandert in Viertelpixel-Schritten dorthin (kein Sprung)
     const wall = performance.now();
     if (!(radNow > 0) || still()) radNow = goal;
@@ -457,7 +461,7 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
     frame = 0;
     if (!visible || still() || !scene) return;
     const real = ms / 1000;
-    if (lastReal) vt += Math.min(0.1, Math.max(0, real - lastReal)) * (flightRate && vt - beatAt < flight + spread ? flightRate : rate);
+    if (lastReal) vt += Math.min(0.1, Math.max(0, real - lastReal)) * (flightRate && vt - beatAt < flight + spread ? Math.max(flightRate, flightMax ? (flight + spread) / flightMax : 0) : rate);
     lastReal = real;
     const t = vt, busy = step(t);
     render(); tick();

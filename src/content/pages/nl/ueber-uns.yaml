@@ -33,11 +33,7 @@ sections:
     kicker: Duurzaamheid
     headline: Feesten waarbij *iedereen* welkom is
     text: "Honden, kinderen, de natuur: grote delen van onze samenleving blijven liever weg bij vuurwerk. Wij vieren liever feesten waar we allemaal enthousiast van worden. Daarom bieden we met droneshows een alternatief voor de knallen, het afval en de rook van vuurwerk. En zetten we regelmatig tekens voor democratie en milieubescherming aan de hemel."
-    image:
-      src: https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg
-      alt: Twee bloemen van drones aan de avondhemel boven een bruiloft
-      width: 1518
-      height: 854
+    gallery: willkommen
     cta:
       label: Meer over duurzaamheid
       href: /nachhaltigkeit/
@@ -144,16 +140,22 @@ sections:
     kicker: Locatie
     todo: FlyingStars muss ein Foto des Triple Z bzw. des Büros liefern, falls es statt der Karte stehen soll.
     headline: Thuis in *NRW*
-    text: Komen jullie een keer langs voor een kop koffie? Dan nodigen we jullie graag uit in ons kantoor aan de Katernberger Straße 107, 45327 Essen. Daar zitten we in Triple Z, het oprichterscentrum op Zeche Zollverein, omringd door innovatieve start-upgeest en de industriële traditie van Noordrijn-Westfalen. Post ontvangen we graag op ons hoofdkantoor aan de Bulmker Straße 107, 45888 Gelsenkirchen.
+    text: "Komen jullie een keer langs voor een kop koffie? Dan nodigen we jullie graag uit in ons kantoor. Daar zitten we in Triple Z, het oprichterscentrum op Zeche Zollverein, omringd door innovatieve start-upgeest en de industriële traditie van Noordrijn-Westfalen."
     places:
-      - label: Kantoor · Triple Z, Essen
+      - label: Kantoor
         lat: 51.492
         lon: 7.041
         _key: k_e306a90123055df8f90a
-      - label: Hoofdkantoor · Gelsenkirchen
+        role: Langskomen voor koffie
+        address: visit
+        icon: coffee
+      - label: Hoofdkantoor
         lat: 51.508
         lon: 7.104
         _key: k_4f2fced46fdc7f3b8b94
+        role: Post
+        address: post
+        icon: mailbox
     note: Basis 51.51° N · 7.10° E
     _key: k_29290f927e580af77d9b
   - type: contactForm
@@ -174,12 +176,12 @@ sections:
       - ueber-uns-moritz
     _key: k_89bce7cd130ab4ebbd41
 translationContractVersion: 2
-translationSourceHash: 68f3b738b8d5fded0805d8fe86393f54c80fbc464fa6e36665d4571f79de25ce
+translationSourceHash: 7623495e85c804254b89111e9d2ad64ef2bf8bc7c42882710b8c3f561d2497aa
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 68f3b738b8d5fded0805d8fe86393f54c80fbc464fa6e36665d4571f79de25ce
+  sourceFingerprint: 7623495e85c804254b89111e9d2ad64ef2bf8bc7c42882710b8c3f561d2497aa
   fields:
     - address: /description
       sourceFingerprint: c42b328abd1be1e5bda1f0f0944e7f99b67c47cda9aa59693a409de9378e1549
@@ -205,9 +207,9 @@ translationEvidence:
       sourceFingerprint: 7ae6c282e322a029502668686daf51ebeca85c878afa944aab57d593f6e5afdf
       targetFingerprint: a7a9e5ba4b10d81e6674b95e9b67a3f4365c986734a06e8ac91b76b70d8c9a85
       status: adopted-existing
-    - address: /sections/@k_0fa41045b869c8273b40/image/alt
-      sourceFingerprint: 534cd40f2570a17ef89d1384e99d216302d751e8eaf1a3a9169855e40517c4f2
-      targetFingerprint: ea6857a8909cf8548e33bb25a3c96368d81c6e44f3a4bf859c624213858758c6
+    - address: /sections/@k_0fa41045b869c8273b40/image
+      sourceFingerprint: 0cd73a31e6ffa86f9f39f2f72e3138fee7a7ed531185cbb8812e59e21caf60b7
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_0fa41045b869c8273b40/kicker
       sourceFingerprint: 7c2454fce8696f895adb0e588703ad043f56a842dd823d0ce992cca525d15c8e
@@ -262,16 +264,24 @@ translationEvidence:
       targetFingerprint: 7f55aca988a14e554ca8ff7c1aab6aa50fba496b347d6c02978e5216b8551619
       status: adopted-existing
     - address: /sections/@k_29290f927e580af77d9b/places/@k_4f2fced46fdc7f3b8b94/label
-      sourceFingerprint: 6464a5bb9e602db3a3f2af2e3326b0d05ed11cfd8dd18314a1d2964f0cb7d4fe
-      targetFingerprint: 03cfdc51d66904dfb9326708d6126bb333dbd68a2e6e4f0f542ef62daebfe632
+      sourceFingerprint: 5cb7102e3368f4db501b3c1bdea79461f9d592360226c2a4053d1a858cb846b9
+      targetFingerprint: baa62a134c1f4037fc823879a38479f51d6848b44a17322bff7a9a8585b7073d
+      status: adopted-existing
+    - address: /sections/@k_29290f927e580af77d9b/places/@k_4f2fced46fdc7f3b8b94/role
+      sourceFingerprint: 3553f55ce104831d972231ed92048eb62f2e04ad7186f0db3705ff3c2edf9671
+      targetFingerprint: befcadaa5a6c7cd1a0649d06df2d007a9d298d4929ef9928f9c59521f8159dcd
       status: adopted-existing
     - address: /sections/@k_29290f927e580af77d9b/places/@k_e306a90123055df8f90a/label
-      sourceFingerprint: 8620f25e84220142e736e6529fc037a5cd001e7e50775c28463de25efbc211be
-      targetFingerprint: 9d6fbce23415053337bc175aa80fe5a44213f4e632ca4fa214ac84c7913d957b
+      sourceFingerprint: 43fd668d65757f7260f7643a53f2b9f2d9aceedbfd2de2b12c7d69a38bb5255a
+      targetFingerprint: c03f755d3a0af7fb132915fd73fbcf5cdb8bb971d0fc138648fec71b06eccea3
+      status: adopted-existing
+    - address: /sections/@k_29290f927e580af77d9b/places/@k_e306a90123055df8f90a/role
+      sourceFingerprint: 3fa65920ab4b70627f63a8d238e0c979f79fe4d8b57c2da624cfbc1931e2bf3f
+      targetFingerprint: 0ce354fa85076e907e9384d05548cdecec2045369a148ded1a2f078498c73ce0
       status: adopted-existing
     - address: /sections/@k_29290f927e580af77d9b/text
-      sourceFingerprint: 5811f92462e33a5fa1f9398efc9e169fd309973a3e9a504afecb171a7198e463
-      targetFingerprint: 60bbd2b12f39c43c1a758ee0a9b3893298fef59a47b7a66a52a70d83d60fcf54
+      sourceFingerprint: 6650831350fce9951e5882a1dffb091a822bf44f6a54c91af21e7f12bcaa3a23
+      targetFingerprint: 03271ea49bf250cc72ac40c715daaf2187eb11199dfb3f2c66df668feca62133
       status: adopted-existing
     - address: /sections/@k_5f577f27ee53584bc075/cta
       sourceFingerprint: e8d4cd1f8aa4fc8b130803e746a5fadfd3a3f6b0b719fa6eb5bcc405345d6fee

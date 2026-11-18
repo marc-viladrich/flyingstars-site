@@ -1,28 +1,24 @@
 ---
-question: Is there an early booking discount?
-tags:
-  - preise
-order: 41
-translationSourceHash: 2a2d5ab040d5697026455dbde740a6612739bcfe28c0ade76f388e12f8ba8d02
+question: "Is there an early-booking discount?"
+tags: [faq-kosten]
+order: 3
 draft: false
 translationContractVersion: 2
+translationSourceHash: bfc8f570fee6af56e6b89ea6c86980cc666b38f830ebff3a5c6e91e640253c16
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 2a2d5ab040d5697026455dbde740a6612739bcfe28c0ade76f388e12f8ba8d02
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
+  sourceFingerprint: bfc8f570fee6af56e6b89ea6c86980cc666b38f830ebff3a5c6e91e640253c16
   fields:
     - address: /body
-      sourceFingerprint: f9c62f0b1aac0638b011588a321676aad7289bd2dda04208333c10556b5e2e86
-      targetFingerprint: 0c9109c9d346f5a61f01c78efce8be6554132ad743d6e1ca855dbbd94111e6ce
+      sourceFingerprint: 17f0c953d1cd9877a9abc975759748f634c2843dbddfc97c1a61147beb503b1f
+      targetFingerprint: bd2772902d9e58477b9943c9d663b25e739de56f973d7a4ff2afe074de900fe3
       status: adopted-existing
     - address: /question
-      sourceFingerprint: c03e359d6442d2a96c3ad0cc54bd39bdf48f2f8627af6538b9371e01c238e40f
-      targetFingerprint: a89dfe6acc1f6d9f14ea9221465bbd386f745781c8eef61b0253ee7f132a4c45
+      sourceFingerprint: 29ecbf69b780e0979614aec03cf9dec10427aecb2d1ebd9a5b5ea3ed242aa391
+      targetFingerprint: a1b9f4883a6220ad882f0796e415ccae4abf9999d0ceb3c74352a0477bc9da20
       status: adopted-existing
 ---
 
-Yes. Book a show for next year by the end of this year and receive a 10% discount. This is particularly useful for cities and festivals planning their season early.
+Yes! The early-booking discount is 10 % if you book in the previous year.

@@ -1,29 +1,24 @@
 ---
-question: Wanneer kan de show beginnen?
-tags:
-  - planung
-  - hochzeit
-order: 15
-translationSourceHash: ed662cbf67e2418c88d23fc6a42cad0f9fecf0aa92595fc26e6702589d5ab400
+question: "Wanneer kan de voorstelling beginnen?"
+tags: [faq-planung]
+order: 7
 draft: false
 translationContractVersion: 2
+translationSourceHash: fda3fae0b9559283e6e1a69bb8e34cf088f6a959b48d0cab0ebc96b7367049ae
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: ed662cbf67e2418c88d23fc6a42cad0f9fecf0aa92595fc26e6702589d5ab400
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
+  sourceFingerprint: fda3fae0b9559283e6e1a69bb8e34cf088f6a959b48d0cab0ebc96b7367049ae
   fields:
     - address: /body
-      sourceFingerprint: f41237dad34cf6eb00d03d0aa278bc908167cdafdce0f481508f3941546d7e5e
-      targetFingerprint: 58e221998cc8703fd2f70fc5d57ff790e7b86bd9f9ef6b56af117b933c2a53d7
+      sourceFingerprint: 9c16d64c64c7c9d3e92ddbd90ad454ae82353214e419e72e5bdd2cbcd35a1c23
+      targetFingerprint: 2ed347750827ed4651b3e348b82f9b9a55e0b4e40fd38845d55cc257ae4ad1a5
       status: adopted-existing
     - address: /question
-      sourceFingerprint: efba94b2b9c2a011c9b07c91928d6022359d63d151bd1207f3135c82855a245b
-      targetFingerprint: 082772c1ec447e0468477532411044c8b1b809e6d167d056a7c500123054aeb0
+      sourceFingerprint: ad197e5bdee5b79688698835d31b335821cb6a56cfd8bd2d75ac535caa899883
+      targetFingerprint: fe0773f0fbff365e1aa1e35c58a62f893aa4d10e409235edff1d12cdcd375638
       status: adopted-existing
 ---
 
-Vanaf 30 minuten na zonsondergang tot 30 minuten vóór zonsopgang. Midden in de zomer is dat vaak pas rond 22 uur. Voor jullie locatie en datum geven we de exacte tijd.
+Een droneshow (buiten) vindt ’s nachts plaats. We starten vanaf 30 minuten na zonsondergang en kunnen vliegen tot 30 minuten voor zonsopgang. In de zomer beginnen voorstellingen daarom vaak pas rond 22 uur. We laten jullie vooraf het precieze starttijdstip weten.

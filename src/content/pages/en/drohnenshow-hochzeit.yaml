@@ -86,7 +86,7 @@ sections:
     headline: Children and *dogs* welcome
     text: Unlike fireworks, a drone ballet has no loud bang, no bothersome smoke and no fire-risk debris. Just a soft hum – and your guests' amazement.
     _key: k_59a09168d2946ce16e34
-    icon: paw-print
+    scene: chopper-play
   - type: landingBento
     id: vorteile
     kicker: Advantages
@@ -263,12 +263,12 @@ sections:
       - hochzeit-moritz
     _key: k_9db54091e8c639b6fa66
 translationContractVersion: 2
-translationSourceHash: aeebff83c6c622d8e53cad2c844a803054d8007de8d7f6a916949ca1f99caa35
+translationSourceHash: 75229a40e871f7a0d3f473ff41a8cab5fedce751b97278eeed45b6676db70e27
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: aeebff83c6c622d8e53cad2c844a803054d8007de8d7f6a916949ca1f99caa35
+  sourceFingerprint: 75229a40e871f7a0d3f473ff41a8cab5fedce751b97278eeed45b6676db70e27
   fields:
     - address: /description
       sourceFingerprint: 04103f48ef87f505f7497b4af8b550b944307b9353ee75c963d52ec01cc9946a
@@ -328,6 +328,14 @@ translationEvidence:
       status: adopted-existing
     - address: /sections/@k_3f8f37b2eb211e01710f/customPrice
       sourceFingerprint: 0aa7ecb0f6a9e2d7342086c83696ed957782356ba4970fb33e211a0b8a8d66ef
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
+    - address: /sections/@k_3f8f37b2eb211e01710f/download
+      sourceFingerprint: 7bf90de4e2ace35bff5e155bab99fd0a69dacc16ab9e563948d07a40e2c5dcd1
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
+    - address: /sections/@k_3f8f37b2eb211e01710f/factors
+      sourceFingerprint: 451664b71a5284ad01752c8b3e19dce3455f42b83628ba98f460b40aab7974a9
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_3f8f37b2eb211e01710f/groups/@k_6de6ec032d67c38d5810/items/@k_0cb78b0d15ef58649c64/label

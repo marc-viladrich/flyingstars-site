@@ -1,31 +1,24 @@
 ---
-question: Regelen jullie de vergunningen?
-tags:
-  - ort
-  - werbung
-order: 20
-translationSourceHash: 203c6a4a57c19ca49748d031f08b98ed0ec3ceb7b6a91a3d463417b1fbd25410
+question: "Welke vergunningen regelt FlyingStars?"
+tags: [faq-sicherheit]
+order: 2
 draft: false
 translationContractVersion: 2
+translationSourceHash: 85f16fb69e9472688330d6748a9d3200842279ce4701fd55395162c3e25c6671
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 203c6a4a57c19ca49748d031f08b98ed0ec3ceb7b6a91a3d463417b1fbd25410
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
+  sourceFingerprint: 85f16fb69e9472688330d6748a9d3200842279ce4701fd55395162c3e25c6671
   fields:
     - address: /body
-      sourceFingerprint: e059829e3db623fc2c64b936d16c10b26e884875d7d37d8fc1177d0e6d7b767d
-      targetFingerprint: d2f6a470d1d1cc25aa3ccd47eb47ad29a92a473b92efc7f3dce3860f7993bb07
+      sourceFingerprint: 797f86e01190911ae1200cd029a4f7a3b44dc8cf1bbf7ef0d6c3bbbe0a9253b3
+      targetFingerprint: b22ec0919e44ddb17e3fa176eba05d187f57ff70e883c5397789aab047cfc235
       status: adopted-existing
     - address: /question
-      sourceFingerprint: f8c998ee153525881bfc2222abaa4c19ae644f70ccf00bcd6c45ae131fe4815a
-      targetFingerprint: ea15c61379c175e9ee7791bf52454dd04c742095215f313e98dcf997b9babc46
+      sourceFingerprint: 525b256151ce2d4278f12ea226b41173712f8f6159d6d3d17da54fad7fe2f429
+      targetFingerprint: 223c4d36f5b73c6321a58d1478e6fb3c414fc62d05f42b200c0a1d7cb3b18038
       status: adopted-existing
 ---
 
-Ja. We hebben een exploitatievergunning van het Luftfahrt-Bundesamt die in de hele EU geldt. Dankzij deze generieke vergunning kunnen we de meeste vlieglocaties zelf vrijgeven. Aanvullende aanvragen, bijvoorbeeld bij de Duitse luchtverkeersleiding, regelen wij.
-
-Van jullie hebben we toestemming van de grondeigenaren nodig, bij openbaar terrein van de stad of gemeente. Daarvoor hebben we een brief die we aan jullie geven of rechtstreeks naar de gemeente sturen.
+Alle, behalve de toestemming van de grondeigenaren. We hebben een vergaande vergunning van het Duitse Luftfahrt-Bundesamt en een EU-brede exploitatievergunning. Daardoor mogen we veel shows – bijvoorbeeld op privéterrein – zonder extra vergunningsprocedure uitvoeren. Aanvragen in complexere gevallen – bijvoorbeeld bij de Duitse luchtverkeersleiding of bij vluchten elders in de EU – regelen wij voor jullie.

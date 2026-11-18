@@ -1,7 +1,7 @@
 ---
-question: Was kostet eine Indoor-Show?
-tags: [indoor]
-order: 52
+question: "Wie viel kosten Indoor-Drohnenshows?"
+tags: [faq-kosten]
+order: 2
 ---
 
-Indoor-Shows kalkulieren wir immer einzeln, weil Raum, Drohnenzahl und Aufbau sehr unterschiedlich sind. Als Größenordnung: {{offer.indoor.priceGuide}} netto für {{offer.indoor.drones.min}} Drohnen. Die Outdoor-Pakete gelten drinnen nicht.
+Indoor-Shows sind etwas aufwändiger, vor allem, was das Sicherheitskonzept angeht. Deshalb beginnen unsere Indoor-Veranstaltungen bei 15.000 Euro (netto) zuzüglich Anfahrt.

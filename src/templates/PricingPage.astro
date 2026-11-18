@@ -14,7 +14,8 @@ import Base from '../layouts/Base.astro';
 import Packages from '../components/sections/Packages.astro';
 import Faq from '../components/sections/Faq.astro';
 import ContactForm from '../components/sections/ContactForm.astro';
-import { LandingHero } from '../components/landing';
+import SectionHead from '../components/SectionHead.astro';
+import FactList from '../components/FactList.astro';
 import ShowConfigurator from '../components/configurator/ShowConfigurator.astro';
 import Extras from '../components/pricing/Extras.astro';
 import Included from '../components/pricing/Included.astro';
@@ -37,27 +38,24 @@ const included = [
   ['crew', 'users', t('preise.inc.crew'), t('preise.incItem.crew')],
   ['flight', 'timer', t('preise.incItem.flightTitle'), t('preise.incItem.flight', d)],
 ].map(([, icon, title, text]) => ({ icon, title, text }));
+const facts = [
+  { value: startingPrice(SHOW_PACKAGES.SPARK.price, locale), label: t('preise.factNet') },
+  { value: `${number(DRONES_MIN)}–${number(DRONES_MAX)}`, label: t('preise.factDrones') },
+  { value: '10 %', label: t('preise.factEarly') },
+];
 const promises = [['lock', t('preise.promise1')], ['scale', t('preise.promise2')], ['calendar-check', t('preise.promise3')]];
 ---
 <Base title={t('preise.metaTitle')} description={t('preise.metaDescription')}>
 
-  <LandingHero
-    type="landingHero"
-    index={0}
-    kicker={t('preise.heroKicker')}
-    headline={t('preise.heroHeadline')}
-    text={t('preise.heroText')}
-    cta={{ label: t('preise.heroCta'), href: '#konfigurator' }}
-    video="showreel"
-    poster={{ src: 'https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg', alt: t('preise.heroPosterAlt'), width: 1600, height: 900 }}
-    facts={[
-      { value: startingPrice(SHOW_PACKAGES.SPARK.price, locale), label: t('preise.factNet') },
-      { value: `${number(DRONES_MIN)}–${number(DRONES_MAX)}`, label: t('preise.factDrones') },
-      { value: '10 %', label: t('preise.factEarly') },
-    ]}
-  />
-
-  <ShowConfigurator id="konfigurator" headingLevel={2} kicker={t('preise.cfgKicker')} heading={t('preise.cfgHeadline')} />
+  {/* Marc, 18.11.2026 („For the Preise page we should open with the configurator, as Moritz mentioned“): die Seite beginnt
+       mit dem Konfigurator. Moritz' H1, Einleitung und Eckdaten sind sein Kopf, die Live-Vorschau ist das Bild des ersten
+       Bildschirms; das Showreel entfällt hier. Ab Desktop steht die H1 über der Bedienung, Einleitung und Eckdaten über
+       der Vorschau; auf dem Handy H1 und Eckdaten, dann Vorschau und Regler, die Einleitung nach dem Konfigurator. */}
+  <ShowConfigurator id="konfigurator">
+    <SectionHead slot="head" variant="embedded" kicker={t('preise.heroKicker')} headline={t('preise.heroHeadline')} id="cfg-h" level="h1" titleClass="pp-h1" />
+    <FactList slot="facts" variant="hero" items={facts} />
+    <p slot="intro" class="pp-intro">{t('preise.heroText')}</p>
+  </ShowConfigurator>
 
   {/* Preisversprechen (Moritz: H3 unter dem Konfigurator): Kasten mit Verlaufsrand wie jeder Abschluss, die drei Zusagen als
        Zeilen mit Icon statt Fließtext, ein Knopf */}
@@ -118,4 +116,24 @@ const promises = [['lock', t('preise.promise1')], ['scale', t('preise.promise2')
   .pv-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); justify-items: start; text-align: left; }
   .pv-list li { display: flex; align-items: flex-start; gap: var(--space-3); color: var(--text); font-size: var(--text-md); line-height: 1.4; }
   .pv-list :global(.ico) { flex: none; margin-top: var(--space-0-25); }
+  /* Kopf im Konfigurator (has-head, ShowConfigurator.astro). Desktop: H1 über der Bedienung, Einleitung und Eckdaten über
+     der Vorschau, beide unten bündig; Handy: H1, Eckdaten, Vorschau, Regler, Einleitung zuletzt */
+  :global(.cfg.has-head) { --cfg-top: clamp(7rem, 9vw, 9rem); grid-template-areas: "head intro" "head facts" "panel stage"; row-gap: var(--space-5); }
+  /* Die Bühne passt mit Steuerleiste in den ersten Bildschirm (1440 × 900: Kopf ≈ 24 rem); beim Scrollen klebt sie in
+     derselben Höhe neben der Bedienung */
+  @media (--nav-expanded) { :global(.cfg.has-head > .cfg-stage) { height: clamp(28.75rem, calc(100svh - 24.5rem), 48rem); } }
+  :global(.cfg.has-head > .cfg-head) { grid-area: head; align-self: end; }
+  :global(.cfg.has-head > .cfg-intro) { grid-area: intro; align-self: end; }
+  :global(.cfg.has-head > .cfg-facts) { grid-area: facts; align-self: end; }
+  :global(.cfg.has-head > .cfg-panel) { grid-area: panel; margin-top: clamp(var(--space-4), 2vw, var(--space-8)); }
+  :global(.cfg.has-head > .cfg-stage) { grid-area: stage; margin-top: clamp(var(--space-4), 2vw, var(--space-8)); }
+  :global(.cfg-head .pp-h1) { margin: 0; font-size: clamp(2.125rem, 3vw, 3.25rem); line-height: 1.02; letter-spacing: -0.035em; text-wrap: balance; }
+  .pp-intro { margin: 0; max-width: 64ch; color: var(--muted); font-size: var(--text-copy); line-height: 1.6; text-wrap: pretty; }
+  :global(.cfg-facts .lh-facts) { margin: 0; max-width: none; }
+  @media (--nav-collapsed) {
+    :global(.cfg.has-head) { grid-template-areas: "head" "facts" "stage" "panel" "intro"; padding-top: calc(var(--nav-h, 4rem) + var(--space-5)); row-gap: var(--space-5-5); }
+    :global(.cfg.has-head > .cfg-panel), :global(.cfg.has-head > .cfg-stage) { margin-top: 0; }
+    :global(.cfg-head .pp-h1) { font-size: clamp(1.875rem, 7.4vw, 2.5rem); }
+    :global(.cfg.has-head > .cfg-intro) { margin-top: var(--space-4); }
+  }
 </style>

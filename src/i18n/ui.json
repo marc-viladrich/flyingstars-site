@@ -3235,9 +3235,9 @@
     "nl": "Kies een pakket"
   },
   "landingsite.outdoorTitle": {
-    "de": "Flug- und Sicherheitsbereich von oben",
-    "en": "Flight and safety areas from above",
-    "nl": "Vlieg- en veiligheidszones van bovenaf"
+    "de": "Flug- und Sicherheitsbereiche als gestaffelte Ebenen",
+    "en": "Flight and safety areas as stacked layers",
+    "nl": "Vlieg- en veiligheidszones als gestapelde lagen"
   },
   "landingsite.tapHint": {
     "de": "Zeigt oder tippt auf eine Nummer: Dann erklären wir die Zone.",
@@ -3245,9 +3245,9 @@
     "nl": "Wijs of tik een nummer aan voor uitleg over de zone."
   },
   "landingsite.indoorTitle": {
-    "de": "Raumschnitt und Startraster von oben",
-    "en": "Room cross-section and take-off grid from above",
-    "nl": "Doorsnede van de ruimte en startopstelling van bovenaf"
+    "de": "Raum mit Startraster, Flugvolumen und Decke als gestaffelte Ebenen",
+    "en": "Room with take-off grid, flight volume and ceiling as stacked layers",
+    "nl": "Ruimte met startopstelling, vliegvolume en plafond als gestapelde lagen"
   },
   "landingsite.numberedList": {
     "de": "Die Nummern entsprechen der folgenden Liste.",
@@ -3503,6 +3503,16 @@
     "de": "Post",
     "en": "Post",
     "nl": "Post"
+  },
+  "location.route": {
+    "de": "Route",
+    "en": "Directions",
+    "nl": "Route"
+  },
+  "location.routeLabel": {
+    "de": "Route zu {v0} auf OpenStreetMap (öffnet in neuem Tab)",
+    "en": "Directions to {v0} on OpenStreetMap (opens in a new tab)",
+    "nl": "Route naar {v0} op OpenStreetMap (opent in een nieuw tabblad)"
   },
   "contactDetails.team": {
     "de": "Das Team",
@@ -4258,5 +4268,45 @@
     "de": "Drohnenformation über der Skyline von Düsseldorf mit Rheinturm",
     "en": "Drone formation above the Düsseldorf skyline with the Rhine Tower",
     "nl": "Droneformatie boven de skyline van Düsseldorf met de Rheinturm"
+  },
+  "chopper.happyLabel": {
+    "de": "Chopper, unser Bürohund, als Drohnenformation: Er wedelt mit dem Schwanz und schlägt vor Freude einen Salto",
+    "en": "Chopper, our office dog, as a drone formation: he wags his tail and does a somersault for joy",
+    "nl": "Chopper, onze kantoorhond, als droneformatie: hij kwispelt en maakt van blijdschap een salto"
+  },
+  "chopper.sadLabel": {
+    "de": "Chopper, unser Bürohund, als Drohnenformation: Er lässt Kopf und Schwanz hängen, der Propeller auf seiner Mütze steht still",
+    "en": "Chopper, our office dog, as a drone formation: head and tail hanging, the propeller on his cap standing still",
+    "nl": "Chopper, onze kantoorhond, als droneformatie: kop en staart hangen, de propeller op zijn pet staat stil"
+  },
+  "chopper.playLabel": {
+    "de": "Chopper, unser Bürohund, und zwei Kinder als Drohnenformation: Das Mädchen wirft einen Ball, Chopper springt und fängt ihn, der Junge jubelt",
+    "en": "Chopper, our office dog, and two children as a drone formation: the girl throws a ball, Chopper jumps and catches it, the boy cheers",
+    "nl": "Chopper, onze kantoorhond, en twee kinderen als droneformatie: het meisje gooit een bal, Chopper springt en vangt hem, de jongen juicht"
+  },
+  "404.kicker": {
+    "de": "Error 404",
+    "en": "Error 404",
+    "nl": "Error 404"
+  },
+  "404.headline": {
+    "de": "Die Seite, die ihr sucht, wurde nicht gefunden",
+    "en": "The page you're looking for could not be found",
+    "nl": "De pagina die jullie zoeken, is niet gevonden"
+  },
+  "404.text": {
+    "de": "Chopper hat sich verlaufen. Helft ihr ihm zurück zur Startseite?",
+    "en": "Chopper has lost his way. Will you help him back to the homepage?",
+    "nl": "Chopper is verdwaald. Helpen jullie hem terug naar de homepage?"
+  },
+  "404.cta": {
+    "de": "Zur Startseite",
+    "en": "To the homepage",
+    "nl": "Naar de homepage"
+  },
+  "nav.press": {
+    "de": "Presse",
+    "en": "Press",
+    "nl": "Pers"
   }
 }

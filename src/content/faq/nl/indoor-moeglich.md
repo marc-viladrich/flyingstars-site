@@ -1,28 +1,24 @@
 ---
-question: Kan een droneshow ook binnen?
-tags:
-  - indoor
-order: 50
-translationSourceHash: 98fc3ad62bfcd662bf791c1068734f8f2acac1161646877d2ce3b45daa4fcdc8
+question: "Kunnen droneshows ook binnen plaatsvinden?"
+tags: [faq-drohnenshows]
+order: 7
 draft: false
 translationContractVersion: 2
+translationSourceHash: 691e36bd83b02b5f623cb06832a9ca6957adfa87cfc1007042bf192d87e5ce68
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 98fc3ad62bfcd662bf791c1068734f8f2acac1161646877d2ce3b45daa4fcdc8
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
+  sourceFingerprint: 691e36bd83b02b5f623cb06832a9ca6957adfa87cfc1007042bf192d87e5ce68
   fields:
     - address: /body
-      sourceFingerprint: 9a13adbf44dc3df4ab2d70d1911c3d724528cdbfcc05757614d133d7674e960f
-      targetFingerprint: a5c19f29e110b9739f6224ca6f1c71150b8187c410aabaf4fa4dd6bd2c5219d0
+      sourceFingerprint: a5c6299129b1b6237a86039e7994054cf3b31a0b53e0821b0488a2ef62b466bb
+      targetFingerprint: a44d3bb0136cceaa2b1054c525739b67851b9a1a40c76d3b10258b6738782d71
       status: adopted-existing
     - address: /question
-      sourceFingerprint: 23fd78c315d64be51edc5c044e92fd409497739ebdf6ea286409d0b4efec5d56
-      targetFingerprint: 9dfa3c946c5e41803515cecfcacb408af47199737e89205e60a9433b6245ab8a
+      sourceFingerprint: 1eb3daecfaf340ebec0b97691be6f77dca5d18a16e7f109df4308fd8b46d02c5
+      targetFingerprint: db2011701e521fb7c6d043bcef1f7795b9a4022841c5991065a62bd35d76f6cb
       status: adopted-existing
 ---
 
-Ja, met een apart indoor-systeem. Binnen vliegen we meestal met {{offer.indoor.drones.min}} tot {{offer.indoor.drones.max}} kleinere drones, {{duration.indoor.min}} tot {{duration.indoor.max}} minuten lang. Ze bepalen hun positie via radiostations in de ruimte, niet via GPS.
+Ja. Zolang er een plafondhoogte van minstens drie meter en een vrije ruimte van 10 x 10 meter is, kunnen we ook binnen vliegen.

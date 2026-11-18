@@ -1,6 +1,7 @@
 ---
 import {field,editorBuild} from 'astro-frontend-editor/markers';
 import Picture from '../Picture.astro';
+import Gallery from '../gallery/Gallery.astro';
 import SectionHead from '../SectionHead.astro';
 import {contactText} from '../../content/contact.mjs';
 import { marked } from 'marked';
@@ -8,14 +9,24 @@ import { forPath } from '../../i18n/server';
 const { localHref } = forPath(Astro.url.pathname);
 import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'textMedia' }> & { index: number };
-const { headline, body, image, mediaSide, index, id: anchor, kicker, cta, headAbove } = Astro.props;
+const { headline, body, image, mediaSide, index, id: anchor, kicker, cta, headAbove, gallery } = Astro.props;
 // Projected contact facts must be edited as their source template, never materialized from the visible DOM.
 const editorFieldOptions={mode:body.includes('{{contact.')?'panel':'inline',format:'markdown'} as const;
 const id = `${anchor ?? `s${index}`}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const html = await marked.parse(contactText(body));
 ---
-<section class:list={['section', 'text-media', { 'has-media': image, 'media-left': image && mediaSide === 'left', 'head-above': headAbove }]} id={anchor} aria-labelledby={id}>
+{gallery ? <section class="section text-media has-gallery" id={anchor} aria-labelledby={id}>
+  {/* Galerie (Werbung #marketing): Kopf über Text und dominanter Spalte, die schmale Spalte steigt daneben auf */}
+  <Gallery set={gallery}>
+    {headAbove && <SectionHead slot="head" kicker={kicker} headline={headline} id={id} level={H} class="tm-head" />}
+    <div class="prose">
+      {!headAbove && <SectionHead variant="embedded" kicker={kicker} headline={headline} id={id} level={H} />}
+      {editorBuild() && (Astro.props as any).__afe?.body ? <div {...field((Astro.props as any).__afe.body,editorFieldOptions)} set:html={html} /> : <Fragment set:html={html} />}
+      {cta && <p class="tm-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
+    </div>
+  </Gallery>
+</section> : <section class:list={['section', 'text-media', { 'has-media': image, 'media-left': image && mediaSide === 'left', 'head-above': headAbove }]} id={anchor} aria-labelledby={id}>
   {/* Kopf über beiden Spalten (Werbung #marketing): rechts neben dem Kopf bleibt Luft, darunter Text und Bild im Split */}
   {headAbove && <SectionHead kicker={kicker} headline={headline} id={id} level={H} class="tm-head" />}
   <div class="prose">
@@ -24,7 +35,7 @@ const html = await marked.parse(contactText(body));
     {cta && <p class="tm-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
   </div>
   {image && <figure class="tm-media" data-curtain><Picture {...image} /></figure>}
-</section>
+</section>}
 
 <style>
   /* wie .more unter Raster und Listen */
@@ -32,6 +43,7 @@ const html = await marked.parse(contactText(body));
   .text-media.head-above.has-media { align-items: center; }
   .text-media.head-above :global(.tm-head) { grid-column: 1 / -1; margin-bottom: 0; }
   .text-media .prose :global(p) { max-width: 60ch; }
+  .text-media.has-gallery { display: block; }
   /* Hervorhebung im Fließtext (Startseite #warum-drohnen: spektakulärer, emotionaler, einzigartiger): Display-Schnitt,
      Farbe aus .prose strong in global.css (Marken-Orange, kein Verlauf im Fließtext) */
   .text-media .prose :global(strong) { font: 600 1.18em/1 var(--display); letter-spacing: -0.01em; }

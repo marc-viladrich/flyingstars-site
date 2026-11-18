@@ -14,10 +14,12 @@ import FactList from '../FactList.astro';
 import type { Section } from '../../content.config';
 import { optimizedLogo } from '../../lib/media';
 import Icon from '../Icon.astro';
+import Chopper from '../Chopper.astro';
 const PICON = { eu: 'eu', repair: 'wrench', ev: 'e-car', campaign: 'megaphone', leaf: 'leaf' } as const;
 type Props = Extract<Section, { type: 'sustainability' }> & { index: number };
-const { headline, text, id = 'nachhaltigkeit', facts = [], points = [], pillarsRef, proofImage, proofText, campaign, index, kicker, image, cta, icon } = Astro.props;
+const { headline, text, id = 'nachhaltigkeit', facts = [], points = [], pillarsRef, proofImage, proofText, campaign, index, kicker, image, cta, icon, scene, show, gallery } = Astro.props;
 import Picture from '../Picture.astro';
+import Gallery from '../gallery/Gallery.astro';
 import { accentParts, plain } from '../accent';
 import { forPath as forPathLink } from '../../i18n/server';
 const { localHref } = forPathLink(Astro.url.pathname);
@@ -39,7 +41,7 @@ const FIG: Record<string, number> = { g: 1, kg: 2, '%': 3 };
 const figs = facts.map((fact, i) => fact.unit ? FIG[fact.unit.trim()] ?? i : 0).join(',');
 // Mit Foto oder Icon-Kachel: Einleitung links, Bild rechts. Sonst wie im Prototyp: Einleitung schmal unter dem Titel,
 // der Link direkt darunter.
-const lead = Boolean(image || icon);
+const lead = Boolean(image || icon || scene || show || gallery);
 const parts = (point: string) => point.split(/(\S+-\S+)/).filter(Boolean);
 const proof = proofImage ? await optimizedLogo(proofImage.src, 60) : undefined;
 ---
@@ -48,12 +50,17 @@ const proof = proofImage ? await optimizedLogo(proofImage.src, 60) : undefined;
     <Fragment slot="title">{lines.map((line, i) => <span data-reveal style={`--i:${i}`} class:list={lineClass(line, i)}>{whole(line) ? plain(line) : accentParts(line).map((p) => p.g ? <span class="grad">{p.t}</span> : p.t)} </span>)}</Fragment>
     {!lead && cta && <p class="eco-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
   </SectionHead>
-  {lead && <div class="eco-lead has-img">
+  {/* Galerie (Über uns): Einleitung links schmal, Bilder von Festen groß daneben */}
+  {gallery && <Gallery set={gallery} class="eco-gallery"><div class="eco-lead-copy">
+    {text && text.split(/\n\s*\n/).map((para) => <p>{para.trim()}</p>)}
+    {cta && <p class="eco-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
+  </div></Gallery>}
+  {lead && !gallery && <div class:list={['eco-lead has-img', { 'has-scene': scene, 'has-show': show }]}>
     <div class="eco-lead-copy">
       {text && text.split(/\n\s*\n/).map((para) => <p>{para.trim()}</p>)}
       {cta && <p class="eco-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
     </div>
-    {image ? <figure class="eco-photo" data-curtain><Picture {...image} /></figure> : <div class="eco-photo eco-dots" aria-hidden="true"><Icon name={icon!} size={56} class="g" /></div>}
+    {show ? <div class="eco-show" data-folge={show} aria-hidden="true"><canvas></canvas></div> : scene ? <div class="eco-scene"><Chopper mood="play" /></div> : image ? <figure class="eco-photo" data-curtain><Picture {...image} /></figure> : <div class="eco-photo eco-dots" aria-hidden="true"><Icon name={icon!} size={56} class="g" /></div>}
   </div>}
   {facts.length > 0 && <div class="eco-scrolly" data-scrolly data-figs={figs}><div class="eco-pin">
     <canvas class="eco-canvas" aria-hidden="true"></canvas>
@@ -69,6 +76,10 @@ const proof = proofImage ? await optimizedLogo(proofImage.src, 60) : undefined;
 </section>
 <script>
   import { whenNear } from '../../scripts/when-near.mjs';
+  // Indoor-Reihe (show: indoor): Engine erst nahe der Bühne laden; Bau in Leerlauf-Tasks, Start bei Sichtbarkeit (folge.js)
+  for (const stage of document.querySelectorAll<HTMLElement>('[data-folge]')) {
+    whenNear(stage, async () => { const { mountFolge } = await import('../../scripts/himmel/folge.js'); mountFolge(stage); }, { rootMargin: '300px 0px' });
+  }
   import { prepareEcoScrolly, resetEcoScrolly } from '../../scripts/effects/eco-scrolly-setup.mjs';
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
     for (const el of document.querySelectorAll<HTMLElement>('[data-scrolly]')) {
@@ -94,6 +105,7 @@ const proof = proofImage ? await optimizedLogo(proofImage.src, 60) : undefined;
   :global(.eco-title [data-reveal] > .grad) { display: inline; }
   .eco-lead { display: grid; gap: clamp(var(--space-7), 4vw, var(--space-14)); margin: calc(-1 * clamp(var(--space-2), 2vw, var(--space-6))) 0 clamp(var(--space-10), 6vw, var(--space-20)); }
   .eco-lead.has-img { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: center; }
+  .eco-gallery { margin-top: calc(-1 * clamp(var(--space-2), 2vw, var(--space-6))); }
   .eco-lead-copy p { color: var(--muted); max-width: 44ch; margin: 0 0 var(--space-4); font-size: var(--text-lead); }
   .eco-lead-copy .eco-more { margin-top: clamp(var(--space-5), 2.6vw, var(--space-8)); }
   .eco-photo { margin: 0; border-radius: var(--radius); overflow: hidden; aspect-ratio: 16 / 9; --curtain-r: var(--radius); }
@@ -104,5 +116,15 @@ const proof = proofImage ? await optimizedLogo(proofImage.src, 60) : undefined;
   .eco-dots :global(.ico) { position: relative; width: 3.5rem; height: 3.5rem; }
   /* Link unter der schmalen Einleitung (ohne Foto) */
   :global(.eco-head) > .eco-more { margin: var(--space-2) 0 0; }
-  @media (--grid-stacked) { .eco-lead.has-img { grid-template-columns: 1fr; } }
+  /* Leuchtpunkt-Szene (Hochzeit, Runde 4): kein Karton, die Szene ist das dominante Element und bekommt die breitere Spalte */
+  .eco-lead.has-scene { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); }
+  .eco-scene { margin: 0; }
+  /* Indoor-Reihe (show: indoor, Runde 4): kein Karton, die Animation ist das dominante Element. Das Canvas reicht oben und
+     unten über die Bühne hinaus (Licht und aufsteigende Drohnen werden nicht abgeschnitten, die Feldmitte bleibt die
+     Bühnenmitte); ohne JavaScript bleibt die Bühne weg und der Text steht allein. */
+  .eco-lead.has-show { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+  .eco-show { position: relative; display: none; min-height: clamp(18rem, 30vw, 28rem); }
+  :global(html:is(.reveal, .motion-paused)) .eco-show { display: block; }
+  .eco-show canvas { position: absolute; left: 0; width: 100%; top: max(-15rem, -60%); height: calc(100% + 2 * min(15rem, 60%)); pointer-events: none; }
+  @media (--grid-stacked) { .eco-lead.has-img, .eco-lead.has-scene { grid-template-columns: 1fr; } .eco-show { min-height: clamp(15rem, 70vw, 22rem); } }
 </style>

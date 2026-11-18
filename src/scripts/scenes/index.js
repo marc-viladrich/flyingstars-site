@@ -8,9 +8,10 @@ import { builders as kultur } from "./kultur.js";
 import { builders as winter } from "./winter.js";
 import { builders as festival } from "./festival.js";
 import { builders as natur } from "./natur.js";
+import { builders as kugel } from "./kugel.js"; // Show-Folge der Startseite (Himmel, Runde 4)
 
 export const BUILDERS = {
-  ...hochzeit, ...jubilaeum, ...launch, ...kultur, ...winter, ...festival, ...natur,
+  ...hochzeit, ...jubilaeum, ...launch, ...kultur, ...winter, ...festival, ...natur, ...kugel,
   textSPARK: (n, caption, v) => textScene(n, caption, v, "SPARK"),
   textHORIZON: (n, caption, v) => textScene(n, caption, v, "HORIZON"),
   textODYSSEY: (n, caption, v) => textScene(n, caption, v, "ODYSSEY"),

@@ -1,9 +1,7 @@
 ---
-question: Was kostet eine Drohnenshow?
-tags: [startseite, preise, werbung]
-order: 4
+question: "Wie viel kosten Drohnenshows?"
+tags: [faq-kosten]
+order: 1
 ---
 
-Das hängt vor allem von der Zahl der Drohnen, dem Design und dem Ort ab. Als Startpunkt gibt es drei Pakete: SPARK mit 100 Drohnen ab 7.900 €, HORIZON mit 200 Drohnen ab 15.900 € und ODYSSEY mit 300 und mehr Drohnen ab 34.900 €. Alle Preise netto zuzüglich Anfahrt.
-
-Genehmigung, Musikschnitt und Haftpflicht sind in jedem Paket enthalten. Alle Details findet ihr auf der [Preisseite](/drohnenshow-preise/). Im [Show-Konfigurator](/drohnenshow-preise/#konfigurator) stellt ihr eure Show selbst zusammen und seht den Preis.
+Unsere Drohnenshows kosten ab 7900 Euro (netto) zuzüglich Anfahrt. Wo der Preis für euer Event liegt, hängt vor allem von drei Faktoren ab: wie viele Drohnen ihr benötigt, wo die Veranstaltung stattfindet und welche Zusatzleistungen ihr benötigt. In unserem [Konfigurator](/drohnenshow-preise/#konfigurator) stellt ihr euch euer Paket selbst zusammen.

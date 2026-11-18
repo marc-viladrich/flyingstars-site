@@ -10,7 +10,7 @@ import { t as message } from '../i18n/ui.mjs';
 import logo from "../data/logo-dots.json";
 import { heartPicture } from "./heart-formation.js";
 import { loadHeartData } from "./heart-data.js";
-import { loadTextEngine, textFormation } from "./text-formation.js";
+import { loadTextEngine, textFormation, hasTextFormation } from "./text-formation.js";
 import { TAU, DIAMOND, GREEN, WARM, GOLD, PINK, VIOLET, CYAN, BLUE, ORANGE, RED, MOON, mix, paint, place, frac, smooth, hash, yaw, roll, pitch, sway, breathe, glint, sparkle, chase, part, act, steadyClock, drift, wander, lightRank } from "./show-motion.js";
 import { transitions, planClouds } from "./scenes/interludes.js";
 import { TEMPO, runFits } from "./show-tempo.js";
@@ -41,7 +41,7 @@ const heartLine = (n) => heartOutline(n).map(([x, y]) => [x / 16, y / 16 + 0.05,
 // a single outline (heartOutline adds an inner line from 160 points on) as the area in which the arrow stays dark
 const HEART_POLY = heartOutline(150).map(([x, y]) => [x / 16, y / 16 + 0.05]);
 async function words(value, n, halfWidth, cx = 0, cy = 0, z = 0) {
-  await loadTextEngine();
+  if (!hasTextFormation(value, n)) await loadTextEngine(); // Himmel, Runde 4: vorberechnete Zahl (Wappen „125“) ohne Planer
   const r = textFormation(value, n);
   if (!r) return sampleOutline([circle(cx, cy, halfWidth * 0.6, 120)], n).map(([x, y]) => [x, y, z]);
   const pts = r.pts.slice(0, n), xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);

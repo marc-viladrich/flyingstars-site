@@ -1,32 +1,24 @@
 ---
-question: What does a drone show cost?
-tags:
-  - startseite
-  - preise
-  - werbung
-order: 4
-translationSourceHash: d03570436eda868b164fbf34f6a69a8ca58584a3e4a98b7cc55e5534b72faf62
+question: "How much do drone shows cost?"
+tags: [faq-kosten]
+order: 1
 draft: false
 translationContractVersion: 2
+translationSourceHash: 8fb23813167794ea1f1e96789996197a7d24326c73866417256e3e09d83617fa
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: d03570436eda868b164fbf34f6a69a8ca58584a3e4a98b7cc55e5534b72faf62
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
+  sourceFingerprint: 8fb23813167794ea1f1e96789996197a7d24326c73866417256e3e09d83617fa
   fields:
     - address: /body
-      sourceFingerprint: 2ce8c4bdd53ed2c206289e48ecab6929a86d9d189acf1c526a56fca3aac409a3
-      targetFingerprint: 4af913a15ed33aa2b3f801a82cd748ada28be43555d81a7a54032d6eb7962aac
+      sourceFingerprint: 989872c4fd4e63343b17215aed0a418a5574ff39a4f0e2392cac0a74a17c5566
+      targetFingerprint: 8c93b9081fa20d6d27422009f818b28f04bcb1f3d70cd9de84501adde05008da
       status: adopted-existing
     - address: /question
-      sourceFingerprint: 2deb2adf453d38df30838489582fbc6e3a6c1a00647a9a8190f153a40f9764b2
-      targetFingerprint: 5e4782e930e1b2aecfdfdcd353794446d1531cbcd3cd5ab6f38659251ea28949
+      sourceFingerprint: cfb2a6fe38a33c505f1fa51d93d2acf5ceeafb4bb7111335bdc05ee5665f4602
+      targetFingerprint: d0388bf75f7377f3343d87846214830adae7b116f4635632c9e969d75b07e94d
       status: adopted-existing
 ---
 
-It mainly depends on drone count, design and location. Three packages provide a starting point: SPARK with 100 drones from €7,900, HORIZON with 200 drones from €15,900 and ODYSSEY with 300 or more drones from €34,900. All prices exclude VAT and travel.
-
-Permits, music editing and liability insurance are included in every package. Find all details on the [pricing page](/en/drohnenshow-preise/). Use the [show configurator](/en/drohnenshow-preise/#konfigurator) to put together your show and see the price.
+Our drone shows cost from 7,900 euros (net) plus travel. Where the price for your event lies depends mainly on three factors: how many drones you need, where the event takes place and which additional services you need. In our [configurator](/en/drohnenshow-preise/#konfigurator) you can put together your own package.

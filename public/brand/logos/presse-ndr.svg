@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="500"
+   width="525"
+   version="1.1"
+   id="svg2063"
+  
+  >
+  
+  <defs
+     id="defs2067" />
+  
+  <g
+     transform="matrix(4.9456311,0,0,-4.9456311,-282.85527,3958.7025)"
+     id="g2061"
+     style="fill:#173e7d">
+    <path
+       d="m 90.747365,800.02382 h 5.013129 v -39.82313 h -5.013129 z"
+       id="path2049"
+      
+       style="fill:#22377e;fill-opacity:1;stroke-width:1.03641295" />
+    <path
+       d="m 90.747365,717.86841 h 5.013129 V 699.783 h -5.013129 z"
+       id="path2051"
+      
+       style="fill:#22377e;fill-opacity:1;stroke-width:1.03641295" />
+    <path
+       d="m 81.767573,760.20079 h 8.979481 v -42.33332 h -9.969255 l -13.703452,24.68218 v -24.68218 h -8.979481 v 42.3354 l 9.368136,-10e-4 14.304571,-26.36842 z"
+       id="path2053"
+      
+       style="fill:#22377e;fill-opacity:1;stroke-width:1.03641295" />
+    <path
+       d="m 110.73874,760.20618 c 10.17654,0 15.13992,-4.69495 15.81255,-14.75333 v -12.73959 c -0.77006,-10.7704 -5.63601,-14.84351 -15.81255,-14.84351 H 95.759458 V 760.201 Z m -0.88199,-8.01458 -4.49181,0.003 v -26.34872 h 4.49181 c 4.45139,0 7.57825,1.86139 7.57825,7.7762 v 10.88752 c 0,5.61632 -2.84184,7.68189 -7.57825,7.68189"
+       id="path2055"
+      
+       style="fill:#22377e;fill-opacity:1;fill-rule:evenodd;stroke-width:1.03641295" />
+    <path
+       d="m 146.04642,752.70307 -5.96041,0.002 v -10.93933 h 5.96041 c 3.6347,0 6.00187,2.05935 6.00187,5.73654 0,3.67823 -1.67692,5.20072 -6.00187,5.20072 m -0.68403,-18.57044 7.55234,-16.26443 h 10.11435 l -8.97222,17.94652 c 5.06598,2.00754 7.07352,6.08789 6.96987,11.57363 -0.15649,8.34416 -4.32287,12.81213 -15.36482,12.81213 H 130.90858 V 717.8682 h 9.35984 v 16.23333 z"
+       id="path2057"
+      
+       style="fill:#22377e;fill-opacity:1;fill-rule:evenodd;stroke-width:1.03641295" />
+  </g>
+</svg>

@@ -48,7 +48,8 @@ test('Alle Vergleiche delegieren Tabelle, Tafeln und Statuszeichen an dieselben 
   const matrix = read('src/components/ComparisonMatrix.astro');
   assert.equal((matrix.match(/<ComparisonCell /g) ?? []).length, 3, 'Spannzelle, Einzelzelle und mobile Zelle');
   assert.match(matrix, /<MobileTabs /);
-  assert.match(read('src/components/landing/LandingSite.astro'), /<ComparisonCell /);
+  // LandingSite zeigt seit Runde 3 (17.11.2026) keine Zuständigkeitstabelle mehr, nur die Zeichnung mit Popovern
+  assert.doesNotMatch(read('src/components/landing/LandingSite.astro'), /<table|<td/);
   assert.doesNotMatch(read('src/components/ComparisonCell.astro'), /<svg|<path/);
 });
 

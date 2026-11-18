@@ -1,28 +1,24 @@
 ---
-question: Hoe verloopt een boeking?
-tags:
-  - planung
-order: 10
-translationSourceHash: 2e3ad5e559941b742d0c04785f047d253b65f2f5d492ec0ea127474c230ccecd
+question: "Hoe verloopt het?"
+tags: [faq-planung]
+order: 1
 draft: false
 translationContractVersion: 2
+translationSourceHash: eb9a46970830993df864278ae2afdee770649756c73a7f3e901ea49c885f6690
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 2e3ad5e559941b742d0c04785f047d253b65f2f5d492ec0ea127474c230ccecd
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
+  sourceFingerprint: eb9a46970830993df864278ae2afdee770649756c73a7f3e901ea49c885f6690
   fields:
     - address: /body
-      sourceFingerprint: 96eccb317a2190b6a842b57b0be7b94e485f9e344e0558ff48515463654c9aeb
-      targetFingerprint: c9be82189d4bec51ea56cd1076aa97dd58e92430cbb84d641a8eb5247b855cd0
+      sourceFingerprint: 04024764288896999445816855c4f2f31204d5290d4f13180b3f5d9c740d49f0
+      targetFingerprint: 91f1c3c97f6d09edf2087e9e2100954c33c02d39078aa8258daae41d0365fc62
       status: adopted-existing
     - address: /question
-      sourceFingerprint: b81d78b160a55a28edf7cee1b485206666943cc22657c9454271be32a94d19d2
-      targetFingerprint: 983b1476434bf6dedaf9cf1cf7042a5965ad1cd7a558eea61c068aee9c742711
+      sourceFingerprint: f70facafe831632212cfc015f8adab11d0908f4f35de8c15a61a44fbefb2ec6b
+      targetFingerprint: bf898da36be8d64e090dde6701a42d1486dba511e2da903b4d4c897bde7072e5
       status: adopted-existing
 ---
 
-Jullie sturen een aanvraag, we spreken elkaar kort en sturen een offerte. Daarna plannen we samen locatie, beelden en muziek en regelen we de vergunning. Op de showdag zetten we het terrein af, bouwen op, vliegen en bouwen weer af. Een locatiebezoek vooraf is zelden nodig.
+Na jullie aanvraag bespreken we samen jullie wensen. Daarna sturen we onze vaste offerte. Daar blijft het ook bij, geen verrassingen! Een bezoek ter plaatse is zelden nodig. In de weken daarna plannen we samen de choreografie, de motieven, de muziek en de organisatie. Jullie zijn zo veel of zo weinig betrokken als jullie willen. Voor de vergunningen zorgen wij. Op de showdag beginnen we zo’n 3,5 uur voor de start met de opbouw. Kort daarvoor richten we het veiligheidsgebied in. Het droneballet duurt gemiddeld 13 minuten, daarna breken we af.

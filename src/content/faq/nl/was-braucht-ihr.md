@@ -1,30 +1,24 @@
 ---
-question: Wat hebben jullie van ons nodig?
-tags:
-  - planung
-order: 11
-translationSourceHash: 6a1223b5789e5815af327c37fb032034e8837eed7dfc9e8aea065ede6ef4cf27
+question: "Wat hebben jullie van ons nodig om een dronedans te plannen?"
+tags: [faq-planung]
+order: 3
 draft: false
 translationContractVersion: 2
+translationSourceHash: 45d2e2eaee31340abb9e17f92c6792122ae2f520c5930bf76bf3271c5b2f443f
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 6a1223b5789e5815af327c37fb032034e8837eed7dfc9e8aea065ede6ef4cf27
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
+  sourceFingerprint: 45d2e2eaee31340abb9e17f92c6792122ae2f520c5930bf76bf3271c5b2f443f
   fields:
     - address: /body
-      sourceFingerprint: 367686b0290dd8d4584b320d26b3539f8bc21f7a0ce662f045abe7681dc8a7fe
-      targetFingerprint: 0af1e019fd91f28635d78cb16d717474ed043e16c767e37c45c1a63b87cf8a87
+      sourceFingerprint: 3b2ffa0d3d8b93a86133118690431e8585b4ff06bfb6ab7ed73ad99b259e1ce3
+      targetFingerprint: be03e0cf501f4fc638c694d71e07255bf74582ac660f717083763205a57fc227
       status: adopted-existing
     - address: /question
-      sourceFingerprint: e19cb30d7cc69e1d34587df9edb67dcf19f2b1c02216f237b6787f5aa9acf3cf
-      targetFingerprint: c08eb2245b599c6c23bb1beeb2576a89fd6d8d819ac13b9be048f2dd9cd8624a
+      sourceFingerprint: 27405de8a30b5376eb6a746d747c39308cbaccc951a754984d14ba82d279171e
+      targetFingerprint: 75deae81ef059454b47327617dd9b0312ca940b3732fa8093229c30cdbc6ea18
       status: adopted-existing
 ---
 
-- Datum, gelegenheid en de plek waar jullie publiek staat. Daarmee bepalen we waar de show het best kan vliegen.
-- Toestemming van de grondeigenaren. Daar helpen we bij.
-- Jullie ideeën voor beelden, verhaal en muziek. Daar werken we samen aan.
+Vooral de locatie, de datum en de aanleiding. Daarmee kunnen we samen met jullie jullie eigen show plannen. Daarnaast bezorgen jullie ons het liefst de toestemming van alle grondeigenaren (of we helpen jullie daarbij). Voor de rest zorgen wij.

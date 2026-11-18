@@ -1,25 +1,19 @@
 ---
-question: How much lead time do you need?
-tags:
-  - startseite
-  - planung
-  - hochzeit
-order: 1
-translationSourceHash: cbd0f64e4856a331b13bda9e3dc0464e3e2bdbf51dbdee282ec0313a9f65f27b
+question: "How much lead time do you need?"
+tags: [faq-planung]
+order: 2
 draft: false
 translationContractVersion: 2
+translationSourceHash: d1c6e54ac3c071b2368d2ef9dcd5062c8e12d0418a4f0ddb25058af7608c0fd9
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: cbd0f64e4856a331b13bda9e3dc0464e3e2bdbf51dbdee282ec0313a9f65f27b
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
+  sourceFingerprint: d1c6e54ac3c071b2368d2ef9dcd5062c8e12d0418a4f0ddb25058af7608c0fd9
   fields:
     - address: /body
-      sourceFingerprint: ec899e9d3f56d89263cc08ba84ae32157bad4111d25a91b93b2f20b21b16037b
-      targetFingerprint: 934c2dd257f2c25138090c031acc1ef3bc3d7a540da06eb87076babf4ee290c0
+      sourceFingerprint: 01efa175b7cf0dc5140d16cd0e935440189eae530be31cd241a25bd432a56f55
+      targetFingerprint: 02f3e89bfc04cf1fe45d2994a66fad7c82bb672fa1be32cf99b265c4f9924fa1
       status: adopted-existing
     - address: /question
       sourceFingerprint: 90f610ee0798dccb0834e9abf951f45d1b8482ac44b4c9bbf44f9b8a2f89e7fc
@@ -27,6 +21,4 @@ translationEvidence:
       status: adopted-existing
 ---
 
-One to two months is ideal, preferably more during peak season. Allow at least three weeks for design and your feedback. Complex permits, such as near airports, may need around three months.
-
-Anything under 14 days is an express service. There is no fixed minimum notice; we try to make it work. The surcharge depends on the scope.
+Feel free to get in touch as early as possible. Two or three months of preparation time are ideal, especially for complex permits. Remember: there’s even an early-booking discount of 10 % for bookings made the year before! If it’s urgent, we can also plan your show within one or two weeks for an express surcharge.

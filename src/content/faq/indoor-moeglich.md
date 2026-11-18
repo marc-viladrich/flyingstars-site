@@ -1,7 +1,7 @@
 ---
-question: Geht eine Drohnenshow auch drinnen?
-tags: [indoor]
-order: 50
+question: "Können Drohnenshows auch indoor stattfinden?"
+tags: [faq-drohnenshows]
+order: 7
 ---
 
-Ja, mit einem eigenen Indoor-System. Wir fliegen drinnen meist mit {{offer.indoor.drones.min}} bis {{offer.indoor.drones.max}} kleineren Drohnen, {{duration.indoor.min}} bis {{duration.indoor.max}} Minuten lang. Die Drohnen orten sich über Funkstationen im Raum, nicht über GPS.
+Ja. Solange es eine Deckenhöhe von mindestens drei Metern und eine freie Fläche von 10 x 10 Metern gibt, können wir auch in Innenräumen fliegen.

@@ -17,9 +17,11 @@
 import catalog from '../../content/catalog-motifs.json';
 import { gradientAt } from '../effects/swarm.js';
 import { hash, lightOrder } from '../formation/index.js';
+import { evenSubset } from '../show-geometry.js';
 import { loadTextEngine, textFormation } from '../text-formation.js';
+import { zeile } from './zeile';
 
-type Spec = { motif: string; budget?: number } | { text: string; count: number } | { burst: true } | { seq: Spec[] };
+type Spec = { motif: string; budget?: number } | { figure: 'bokkenrijders' } | { text: string; count: number } | { burst: true } | { seq: Spec[] };
 type Box = { x: number; y: number; w: number; h: number };
 type Place = 'head' | 'form' | 'zeile';
 type React = (slot: Slot, on: (spec: Spec) => void) => void;
@@ -37,7 +39,7 @@ const html = () => document.documentElement;
 const still = () => matchMedia('(prefers-reduced-motion: reduce)').matches || html().classList.contains('motion-paused');
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const lang = () => (['de', 'en', 'nl'].includes(html().lang) ? html().lang : 'de') as 'de' | 'en' | 'nl';
-const idOf = (s: Spec): string => ('motif' in s ? `m:${s.motif}:${s.budget ?? N}` : 'text' in s ? `t:${s.text}:${s.count}` : 'burst' in s ? 'burst' : `q:${s.seq.map(idOf).join('+')}`);
+const idOf = (s: Spec): string => ('motif' in s ? `m:${s.motif}:${s.budget ?? N}` : 'figure' in s ? `f:${s.figure}` : 'text' in s ? `t:${s.text}:${s.count}` : 'burst' in s ? 'burst' : `q:${s.seq.map(idOf).join('+')}`);
 
 /* ---------- Szenen: echte Formationen ---------- */
 
@@ -104,7 +106,7 @@ function burst(): number[][] {
 const burstPts = (): number[][] => burst().map(([x, y, z, t]) => [x, y, z, 255, Math.round(178 + 62 * t), Math.round(96 + 130 * t)]);
 
 let fixed: Promise<Record<string, number[][]>> | null = null;
-const fixedTexts = () => (fixed ??= fetch(`/media/himmel/texte-${lang()}.json`).then((r) => (r.ok ? r.json() : {})).catch(() => ({})));
+const fixedTexts = () => (fixed ??= fetch(`/media/himmel/texte-${lang()}.json`).then((r) => (r.ok ? r.json() : {}) as Promise<Record<string, number[][]>>).catch(() => ({} as Record<string, number[][]>)));
 
 function load(spec: Spec): Promise<Scene> {
   const id = idOf(spec);
@@ -130,6 +132,15 @@ async function build(spec: Spec, id: string): Promise<Scene> {
     const f = textFormation(spec.text, spec.count);
     if (!f || !f.pts.length) throw new Error('Text ergibt keine Formation');
     return finish(id, f.pts, (_i, x) => gradientAt((x + 1) / 2), {});
+  }
+  if ('figure' in spec) {
+    // Kundenformation aus einer echten Show (Maske der Bokkenrijders, 600 Punkte, räumlich), gleichmäßig auf den Schwarm
+    // ausgedünnt wie in der Show-Folge (show-scenes.js → devil). Steht ruhig; Tiefe zeigt sich im Blickwinkel beim Scrollen.
+    const r = await fetch(`/media/projekte/${spec.figure}/formation.json`);
+    if (!r.ok) throw new Error(`Formation ${spec.figure}: HTTP ${r.status}`);
+    const d = (await r.json()) as { dots: number[][] };
+    const raw = (evenSubset(d.dots.map(([x, y, cr, cg, cb, , z]) => [x, y, z ?? 0, cr, cg, cb]), N) as number[][]);
+    return finish(id, raw, (i) => (raw[i][3] + raw[i][4] + raw[i][5] === 0 ? [150, 150, 150] : lit(raw[i][3], raw[i][4], raw[i][5])), {});
   }
   const m = MOTIFS[spec.motif];
   if (!m) throw new Error(`Katalogmotiv ${spec.motif} fehlt`);
@@ -265,7 +276,7 @@ class Himmel {
     for (const def of defs) {
       let host = document.querySelector<HTMLElement>(def.sel); if (!host || (def.when && !def.when(host))) continue;
       let made: HTMLElement | null = null;
-      if (def.place === 'zeile') { made = zeile(); host.after(made); host = made; }
+      if (def.place === 'zeile') { made = zeile(host); host = made; } // steht meist schon (index.ts → zeileVorab)
       const first = typeof def.spec === 'function' ? def.spec(host) : def.spec;
       const slot: Slot = { def, host, box: NONE, scene: null, want: '', spec: first, first, seqAt: 0, own: null, turned: false };
       // Platz im Seitenfluss: auf dem Handy über der Überschrift, im Formular als Himmelsfenster, in der Himmelszeile vorhanden
@@ -273,10 +284,19 @@ class Himmel {
       else if (def.place === 'form') { slot.own = this.own('form'); host.prepend(slot.own); }
       else if (!def.deskOnly) { slot.own = this.own('head'); (host.querySelector(HEAD) ?? host).prepend(slot.own); }
       this.slots.push(slot);
-      this.want(slot, still() && def.then ? def.then : first);
-      if (still() && def.then) slot.turned = true;
       def.react?.(slot, (spec) => this.want(slot, spec));
     }
+    // Bilder (Katalog-JSON, Worte) erst bestellen, wenn ihre Bühne näher als gut eine Bildschirmhöhe ist; beim Start lud der
+    // Schwarm sonst alle Motive der Seite auf einmal (docs/himmel.md → Performance)
+    const near = new IntersectionObserver((es) => es.forEach((e) => {
+      if (!e.isIntersecting) return;
+      near.unobserve(e.target);
+      for (const slot of this.slots) if (slot.host === e.target && !slot.want) {
+        this.want(slot, still() && slot.def.then ? slot.def.then : slot.first);
+        if (still() && slot.def.then) slot.turned = true;
+      }
+    }), { rootMargin: '120% 0px' });
+    for (const slot of this.slots) near.observe(slot.host);
     const again = () => { this.layout(); this.kick(); };
     new ResizeObserver(again).observe(document.body);
     this.sy = scrollY;
@@ -310,7 +330,7 @@ class Himmel {
         f.place(slot.box);
         return f.ready.then(() => { this.fol = f; this.folReady = true; this.last = 0; this.kick(); });
       }).catch((e) => console.warn('Show-Folge nicht verfügbar:', e));
-    }, { rootMargin: '200% 0px' });
+    }, { rootMargin: '120% 0px' });
     io.observe(slot.host);
   }
   own(place: Place) { const el = document.createElement('div'); el.className = `hm-own hm-own-${place}`; el.setAttribute('aria-hidden', 'true'); return el; }
@@ -359,7 +379,9 @@ class Himmel {
     }
     this.cv.width = Math.round(this.W * d); this.cv.height = Math.round(this.H * d);
     const s = this.cv.style;
-    s.left = this.left + 'px'; s.top = this.top + 'px'; s.width = this.W + 'px'; s.height = this.H + 'px';
+    // Lage per transform statt left/top: Ein verschobenes Canvas zählte sonst bei jedem Mitwandern als Layout-Verschiebung
+    // (CLS bis 1,0 je Scrollstrecke bei echten Besuchern; Lighthouse scrollt nicht und sah es nie)
+    s.left = '0'; s.top = '0'; s.transform = 'translate(' + this.left + 'px, ' + this.top + 'px)'; s.width = this.W + 'px'; s.height = this.H + 'px';
     this.dirty = null;
     return true;
   }
@@ -648,9 +670,9 @@ const packs: React = (slot, on) => {
 
 /** Texte am Himmel (Entwürfe, nicht mit FlyingStars abgestimmt). */
 const SKY = {
-  de: { label: 'Was soll am Himmel stehen?', ph: 'Name, Marke oder Datum eintippen', go: 'Damit anfragen', ex: ['JA', '25 JAHRE', 'KÖLN', 'DANKE'], start: 'EURE SHOW', days: (n: number) => `NOCH ${n} TAGE`, thanks: 'DANKE' },
-  en: { label: 'What should the sky say?', ph: 'Type a name, brand or date', go: 'Enquire with this', ex: ['YES', '25 YEARS', 'COLOGNE', 'THANK YOU'], start: 'YOUR SHOW', days: (n: number) => `${n} DAYS TO GO`, thanks: 'THANK YOU' },
-  nl: { label: 'Wat moet er in de lucht staan?', ph: 'Typ een naam, merk of datum', go: 'Hiermee aanvragen', ex: ['JA', '25 JAAR', 'KEULEN', 'BEDANKT'], start: 'JULLIE SHOW', days: (n: number) => `NOG ${n} DAGEN`, thanks: 'BEDANKT' },
+  de: { ex: ['JA', '25 JAHRE', 'KÖLN', 'DANKE'], start: 'EURE SHOW', days: (n: number) => `NOCH ${n} TAGE`, thanks: 'DANKE' },
+  en: { ex: ['YES', '25 YEARS', 'COLOGNE', 'THANK YOU'], start: 'YOUR SHOW', days: (n: number) => `${n} DAYS TO GO`, thanks: 'THANK YOU' },
+  nl: { ex: ['JA', '25 JAAR', 'KEULEN', 'BEDANKT'], start: 'JULLIE SHOW', days: (n: number) => `NOG ${n} DAGEN`, thanks: 'BEDANKT' },
 };
 const clean = (v: string, max = 24) => v.replace(/[^\p{L}\p{N} .&-]/gu, '').replace(/\s+/g, ' ').trim().slice(0, max);
 
@@ -692,12 +714,6 @@ const examples = (): Spec => {
   const pics: Spec[] = ['eheringe', 'sektflasche'].map((motif) => ({ motif, budget: big() }));
   return { seq: [t[0], pics[0], t[1], pics[1], ...t.slice(2)] };
 };
-function zeile(): HTMLElement {
-  const t = SKY[lang()], el = document.createElement('section');
-  el.className = 'hm-zeile'; el.setAttribute('aria-label', t.label);
-  el.innerHTML = `<div class="hm-own" aria-hidden="true"></div><form class="hm-zeile-row" action="#anfrage"><label class="hm-zeile-l" for="hm-zeile-in">${t.label}</label><input id="hm-zeile-in" type="text" maxlength="24" autocomplete="off" spellcheck="false" enterkeyhint="done" placeholder="${t.ph}"><a class="link" href="#anfrage">${t.go} <span aria-hidden="true">→</span></a></form>`;
-  return el;
-}
 const zeileReact: React = (slot, on) => {
   const input = slot.host.querySelector<HTMLInputElement>('input')!, formEl = slot.host.querySelector<HTMLFormElement>('form')!;
   let t = 0;
@@ -723,7 +739,8 @@ function plan(): SlotDef[] {
     { sel: '#anlaesse', place: 'head', deskOnly: true, spec: { motif: 'anstossen' }, react: anlaesse },
     // Show-Folge: Blüte, dann SPARK → HORIZON → ODYSSEY in Runden (folge.js); stehend (Pause, reduzierte Bewegung) der Stern
     { sel: '#warum-drohnen', place: 'head', folge: true, spec: { burst: true }, then: { motif: 'stern', budget: N } },
-    { sel: '#projekte', place: 'head', deskOnly: true, spec: { motif: 'galaxie' } },
+    // Referenzen: die Maske aus der Bokkenrijders-Show (erstes Referenzbild), statt der Galaxie (Marc, 18.11.: Spirale „zu lame“)
+    { sel: '#projekte', place: 'head', deskOnly: true, spec: { figure: 'bokkenrijders' } },
     { sel: '#preise', place: 'head', spec: priceSpec, react: packs, when: priceRoom },
     { sel: '#ueber', place: 'head', deskOnly: true, spec: { motif: 'smiley' } },
     FORM,

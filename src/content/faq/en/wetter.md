@@ -1,32 +1,24 @@
 ---
-question: What happens in bad weather?
-tags:
-  - startseite
-  - wetter-umwelt
-  - hochzeit
-order: 3
-translationSourceHash: 22ad347a684efecf4bdc1d16a2c9d03ada5e1ce58ec0869a77d5146c427d8437
+question: "Can the drone show take place in bad weather?"
+tags: [faq-planung]
+order: 5
 draft: false
 translationContractVersion: 2
+translationSourceHash: fe7ea778efff91e555555548921f6d3d42e1780d8ebd05a29bb55530e3572611
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 22ad347a684efecf4bdc1d16a2c9d03ada5e1ce58ec0869a77d5146c427d8437
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
+  sourceFingerprint: fe7ea778efff91e555555548921f6d3d42e1780d8ebd05a29bb55530e3572611
   fields:
     - address: /body
-      sourceFingerprint: be174db76e80c347eed51fc3036705bbba86c1cd060bcd0328ab6d12f304a902
-      targetFingerprint: f9169cc2a6b9731ba43aace9493e7ef4135a2e62249ce0c95ebe7c37c1c77f4e
+      sourceFingerprint: 885e7c57cbae96826e5bffb5bf7c7c73925eb24d413578a50b97a7f05016944b
+      targetFingerprint: f46403e4515e211514fadcff18c4f02166c276a30619e299ad90ceb53fa65893
       status: adopted-existing
     - address: /question
-      sourceFingerprint: aef210579bf534cd6996aadc8dc9c8574ef1dc9235d09b7d34a94840e70644ce
-      targetFingerprint: 9aee6baa1da3687c47b761a25988d4fc473b32aac6fd1498c09be364b42c6fc0
+      sourceFingerprint: b31b40f2d1cff4ff07d2a306394085c5f24c95bbcdf3d300fd2a20fb95833720
+      targetFingerprint: 961efa499e8f137e82f49928c59d25d77f2bd0fe6a8c6883e85cda23dbd0e8e3
       status: adopted-existing
 ---
 
-We fly up to wind force 5 and in light drizzle. In summer, cancellations are rare.
-
-If bad weather is forecast, we reschedule free of charge as long as we haven't started travelling. A 40% deposit is due on booking. If a show is cancelled altogether, our terms' cancellation scale applies: 40, 60, 80 or 95%, depending on timing.
+Yes. We fly with stable formations up to wind force 5 and also in light drizzle. That’s why we rarely have to postpone or cancel in summer. If bad weather is foreseeable, we postpone the show at no extra cost – we only charge for travel that has already taken place. If the show is cancelled completely, we keep at least the 40 % deposit, because the design and permits have already been completed by then. Depending on timing, a sliding scale from our [terms and conditions](https://flyingstars.art/agb/) applies (40 / 60 / 80 / 95 %).

@@ -1,0 +1,149 @@
+---
+// Asymmetrische Bildgalerie (Werbung #marketing, Über uns #nachhaltigkeit). Text links schmal, Galerie groß daneben,
+// Spalten gegeneinander versetzt (Vorbild Studio Freight), auf dem Handy ein dichtes Raster mit gemischten Formaten
+// (Vorbild Plain). Anordnung und Zuschnitte: ./layouts.mjs, Material und Belege: public/media/galerie/manifest.json.
+// Marke: Vorhang-Reveal beim Scrollen, Lichtpunkt-Hover mit der Maus und Lichtpunkt-Reveal auf Touch (dotimage.js, wie
+// Referenzen und Anlässe), dazu eine Zeile Kunde · Ort · Drohnen. Videoloops laufen stumm im Bild über den gemeinsamen
+// Video-Controller (globale Pause, reduzierte Bewegung, Sichtbarkeit), sonst bleibt das Poster stehen.
+import { getEntry } from 'astro:content';
+import manifest from '../../../public/media/galerie/manifest.json';
+import GalleryTile from './GalleryTile.astro';
+import { GALLERY_LAYOUTS, GALLERY_TEXT, DRONES } from './layouts.mjs';
+import { forPath } from '../../i18n/server';
+import { contentRoute } from '../../i18n/public-routes.mjs';
+interface Props { set: keyof typeof GALLERY_LAYOUTS; class?: string }
+const { set, class: cls } = Astro.props;
+const { locale, localHref, formatLocale } = forPath(Astro.url.pathname);
+const layout = GALLERY_LAYOUTS[set];
+if (!layout) throw new Error(`Unbekannte Galerie „${set}“`);
+type Entry = (typeof manifest.entries)[number];
+const bySlug = new Map(manifest.entries.map((e) => [e.slug, e as Entry]));
+const hasHead = Astro.slots.has('head');
+
+// Breiten wie im CSS: Inhalt ≈ 92vw (Gutter 4vw), höchstens 112rem; Spalten 4fr · 6fr · 3fr, schmal 3 Spalten
+const DESK = [28, 42, 21], DESK_MAX = [552, 827, 414], MOB = { 1: 31, 2: 62, 3: 92 } as const;
+const sizes = (col: number, span: 1 | 2 | 3) => `(min-width: 68.8125em) min(${DESK[col]}vw, ${DESK_MAX[col]}px), ${MOB[span]}vw`;
+
+async function tile(t: (typeof layout.lead)[number], col: number) {
+  const e = bySlug.get(t.slug);
+  if (!e) throw new Error(`Galerie „${set}“: ${t.slug} fehlt im Manifest`);
+  const text = GALLERY_TEXT[t.slug];
+  const video = e.kind === 'video';
+  const files = e.files.filter((f) => !f.file.endsWith('.mp4'));
+  // hochskalierte 1600er bringen keine Details, nur Bytes: dann bleibt es bei 800
+  const srcset = (format: string) => files.filter((f) => f.format === format && !(f.upscaled && f.width > 800)).map((f) => `/media/galerie/${f.file} ${f.width}w`).join(', ');
+  const base = files.find((f) => f.format === 'webp' && /-800\./.test(f.file))!;
+  const big = files.filter((f) => f.format === 'webp').sort((a, b) => b.width - a.width)[0];
+  const mp4 = e.files.find((f) => f.file.endsWith('.mp4'));
+  // Referenzseite nur, wenn das Projekt eine öffentliche Fallseite hat (showcase)
+  let href: string | undefined;
+  if (e.reference) {
+    const id = e.reference.replace(/^src\/content\/projects\/|\.md$/g, '');
+    const project = await getEntry('projects', id);
+    const route = project && contentRoute('projects', id, project.data);
+    if (route) href = localHref(route);
+  }
+  const name = text?.name?.[locale] ?? (e.client && e.client !== 'Privat' ? e.client : undefined);
+  const place = text?.place?.[locale];
+  const drones = e.drones ? `${e.drones.toLocaleString(formatLocale)} ${DRONES[locale as keyof typeof DRONES]}` : undefined;
+  const caption = [name, place, drones].filter(Boolean).join(' · ');
+  const alt = locale === 'de' ? e.alt : text?.alt?.[locale as 'en' | 'nl'] ?? e.alt;
+  return { ...t, col, video, href, caption, alt, mp4: mp4 && `/media/galerie/${mp4.file}`,
+    avif: srcset('avif'), webp: srcset('webp'), src: `/media/galerie/${base.file}`, width: big.width, height: big.height,
+    sizes: sizes(col, t.m.s) };
+}
+const lead = await Promise.all(layout.lead.map((t) => tile(t, 0)));
+const cols = await Promise.all(layout.cols.map((c, i) => Promise.all(c.map((t) => tile(t, i + 1)))));
+type T = Awaited<ReturnType<typeof tile>>;
+const style = (t: T) => `--ar:${t.ar};--pos:${t.pos ?? '50% 50%'};--mo:${t.m.o};--ms:${t.m.s};--mar:${t.m.ar ?? 'auto'};--i:${t.col}`;
+---
+<div class:list={['gal', `gal-${set}`, { 'has-head': hasHead, 'g-rise': layout.rise && hasHead }, cls]}>
+  {hasHead && <div class="g-head"><slot name="head" /></div>}
+  <div class="g-lead">
+    <div class="g-copy"><slot /></div>
+    {lead.map((t) => <GalleryTile {...t} stretch={!t.m.ar} style={style(t)} />)}
+  </div>
+  {cols.map((col, i) => <div class={`g-col g-col-${i + 1}`}>{col.map((t) => <GalleryTile {...t} stretch={!t.m.ar} style={style(t)} />)}</div>)}
+</div>
+
+<script>
+  import { createVideoController } from '../../scripts/video-controller';
+  document.querySelectorAll<HTMLElement>('.g-tile.g-video').forEach((host) => {
+    const video = host.querySelector('video');
+    if (!video) return;
+    createVideoController(video, {
+      host, trigger: 'ambient', visibilityThreshold: 0.3,
+      // einmal gestartet bleibt der Film sichtbar (Pause zeigt das stehende Bild statt zurück aufs Poster zu springen)
+      onState: (on) => { if (on) host.classList.add('playing'); },
+      onError: () => host.classList.remove('playing'),
+    });
+  });
+</script>
+
+<style is:global>
+  /* global, weil die Kacheln eine eigene Komponente sind; alles hängt an .gal */
+  .gal { --g-gap: clamp(0.5rem, 0.9vw, 1rem); --g-r: var(--radius-14); display: grid; gap: var(--g-gap); }
+  .gal .g-copy > :last-child { margin-bottom: 0; }
+
+  .gal .g-tile { position: relative; display: block; margin: 0; border-radius: var(--g-r); color: var(--text); text-decoration: none; isolation: isolate;
+    transition: transform var(--dur-control) var(--ease-default), box-shadow var(--dur-control) var(--ease-default); }
+  .gal .g-media { position: absolute; inset: 0; overflow: hidden; border-radius: var(--g-r); background: var(--media-ground); --curtain-r: var(--g-r); }
+  .gal .g-media picture { display: contents; }
+  .gal .g-media img, .gal .g-loop { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--pos); display: block; }
+  .gal .g-loop { z-index: 1; opacity: 0; transition: opacity var(--dur-reveal) var(--ease-default); }
+  .gal .g-tile.playing .g-loop { opacity: 1; }
+  /* Vorhang wie global ([data-curtain] > img), hier sitzt das Foto in <picture>; nur mit Maus, auf Touch zeichnen
+     die Lichtpunkte das Bild (global.css: kein Vorhang bei data-dot-img) */
+  @media (hover: hover) and (pointer: fine) {
+    .gal .g-media img { transition: transform var(--dur-slow-long) var(--ease-reveal); transition-delay: calc(var(--i, 0) * var(--dur-stagger)); }
+    .reveal .gal .g-media[data-curtain]:not(.is-in) img { transform: scale(1.28); }
+  }
+  .gal .g-media.dot-pending img { opacity: 0; }
+
+  /* Zeile Kunde · Ort · Drohnen: erscheint beim Hovern bzw. Tastaturfokus, wie die Zähler auf den Referenzkarten */
+  .gal .g-cap { position: absolute; z-index: 2; left: 0.625rem; bottom: 0.625rem; max-width: calc(100% - 1.25rem); padding: var(--space-1-5) var(--space-2-25);
+    border-radius: var(--radius-4); background: var(--overlay-media); -webkit-backdrop-filter: blur(0.5rem); backdrop-filter: blur(0.5rem);
+    line-height: 1.35; opacity: 0; transform: translateY(0.25rem); pointer-events: none;
+    transition: opacity var(--dur-control) var(--ease-default), transform var(--dur-control) var(--ease-default); }
+  @media (hover: hover) and (pointer: fine) {
+    .gal .g-tile:hover { transform: translateY(-0.25rem); box-shadow: 0 1.5rem 2.5rem -1.25rem var(--shadow-strong); z-index: 1; }
+    .gal .g-tile:hover .g-cap { opacity: 1; transform: none; }
+  }
+  .gal .g-tile:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .gal .g-tile:focus-visible .g-cap { opacity: 1; transform: none; }
+  @media (hover: none), (pointer: coarse) { .gal .g-cap { display: none; } }
+
+  /* Breit: Text | dominante Spalte | schmale, versetzte Spalte */
+  @media (--grid-expanded) {
+    .gal { grid-template-columns: minmax(0, 4fr) minmax(0, 6fr) minmax(0, 3fr); grid-template-areas: "lead b c"; align-items: start; }
+    .gal.has-head { grid-template-areas: "head head c" "lead b c"; grid-template-rows: auto 1fr; }
+    .gal .g-head { grid-area: head; }
+    .gal .g-head .section-head { margin-bottom: clamp(var(--space-6), 3vw, var(--space-10)); }
+    .gal .g-lead { grid-area: lead; align-self: stretch; display: flex; flex-direction: column; gap: var(--g-gap); }
+    .gal .g-copy { padding-bottom: clamp(var(--space-6), 3vw, var(--space-10)); }
+    .gal .g-col { align-self: stretch; display: flex; flex-direction: column; gap: var(--g-gap); }
+    .gal .g-col-1 { grid-area: b; }
+    .gal .g-col-2 { grid-area: c; }
+    /* ohne Kopf in der Galerie: rechte Spalte abgesetzt tiefer (Höhenversatz), mit Kopf steigt sie neben die Überschrift */
+    .gal:not(.g-rise) .g-col-2 { margin-top: clamp(4rem, 9vw, 10rem); }
+    .gal .g-tile { aspect-ratio: var(--ar); }
+    /* das letzte Bild jeder Spalte wächst bis zur gemeinsamen Unterkante: keine Lücke, wie lang der Text auch wird */
+    .gal .g-fill { flex: 1 0 auto; }
+  }
+
+  /* Schmal: dichtes Raster aus drei Spalten, Reihen aus breit + schmal im Wechsel; die schmale Kachel übernimmt die Höhe */
+  @media (--grid-stacked) {
+    .gal { --g-r: var(--radius-10); grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .gal .g-lead, .gal .g-col { display: contents; }
+    .gal .g-head, .gal .g-copy { grid-column: 1 / -1; }
+    .gal .g-head { order: -2; }
+    .gal .g-copy { order: -1; margin-bottom: var(--space-6); }
+    .gal .g-tile { order: var(--mo); grid-column: span var(--ms); aspect-ratio: var(--mar); }
+    .gal .g-stretch { min-height: 6rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gal .g-tile, .gal .g-cap, .gal .g-loop, .gal .g-media img { transition: none; }
+    .gal .g-tile:hover { transform: none; }
+  }
+</style>

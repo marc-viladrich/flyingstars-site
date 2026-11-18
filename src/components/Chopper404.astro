@@ -1,54 +1,30 @@
 ---
 import { forPath } from '../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
-// Chopper, der Bürohund, als Drohnenformation. Genutzt auf der 404-Seite und in der Designsprache-Probe.
-interface Props { headline?: string; level?: 'h1' | 'h2'; }
-// eigene Seite: h1; eingebettet (Designsprache-Probe): h2, damit die Seite nur eine h1 hat
-const { headline = t('chopper404.thisPageDoesnTExist'), level = 'h1' } = Astro.props;
+import Chopper from './Chopper.astro';
+// 404 nach Moritz (Runde 4, 18.11.2026): „Error 404“, Chopper hat sich verlaufen und ist traurig, ein Weg zurück.
+// Kicker und Schlagzeile bilden zusammen die h1 (Konvention aus SectionHead). Eingebettet (level h2) bleibt die Seite
+// bei einer h1.
+interface Props { level?: 'h1' | 'h2'; }
+const { level = 'h1' } = Astro.props;
 const H = level;
 ---
-{/* Der Seitenrahmen (Ränder, Abstand oben) gehört zur Komponente, damit DE und EN/NL nicht auseinanderlaufen (Runde 22: EN/NL-404 hatte keinen Rahmen) */}
+{/* Der Seitenrahmen gehört zur Komponente, damit DE und EN/NL nicht auseinanderlaufen (Runde 22) */}
 <div class="page-404">
-<div class="chopper" data-chopper>
-  <canvas class="chopper-stage" data-stage role="img" aria-label={t('chopper404.chopperTheOfficeDogFliesBackAndForthAsA')}></canvas>
-  <div class="chopper-copy">
-    <p class="code">404</p>
-    <H class="chopper-h">{headline}</H>
-    <p>{t('chopper404.chopperOurOfficeDogHasAlreadyFlownALapFor')}</p>
-    <nav class="chopper-ways" aria-label={t('chopper404.continueTo')}>
-      <a class="btn primary" href={localHref("/")}>{t('chopper404.backToTheHomepage')}</a>
-      <a class="btn" href={localHref("/referenzen/")}>{t('chopper404.viewOurWork')}</a>
-      <a class="btn" href={localHref("/drohnenshow-preise/")}>{t('chopper404.pricesAndPreview')}</a>
-      <a class="btn" href={localHref("/kontakt/")}>{t('chopper404.showRequest')}</a>
-    </nav>
+  <div class="chopper">
+    <div class="chopper-stage"><Chopper mood="sad" /></div>
+    <div class="chopper-copy">
+      <H class="chopper-h"><span class="kicker mono">{t('404.kicker')}</span> <span class="head-line">{t('404.headline')}</span></H>
+      <p>{t('404.text')}</p>
+      <a class="btn primary" href={localHref('/')}>{t('404.cta')}</a>
+    </div>
   </div>
 </div>
-</div>
 
-<script>
-  import { Swarm, formation } from '../scripts/effects/swarm.js';
-  import { CHOPPER_COUNT, chopperBehaviour, chopperColors, chopperParts } from '../scripts/effects/chopper.js';
-  for (const root of document.querySelectorAll<HTMLElement>('[data-chopper]')) {
-    const cv = root.querySelector<HTMLCanvasElement>('[data-stage]')!;
-    let started = false;
-    // erst rechnen, wenn die Bühne in die Nähe kommt
-    new IntersectionObserver(async (es, o) => {
-      if (!es[0].isIntersecting || started) return; started = true; o.disconnect();
-      const sw = new Swarm(cv, { count: CHOPPER_COUNT, scale: 0.46, dot: 1.9 });
-      let attention = false;
-      root.querySelectorAll('.chopper-ways a').forEach(a => {
-        a.addEventListener('pointerenter', () => { attention = true; });
-        a.addEventListener('pointerleave', () => { attention = false; });
-        a.addEventListener('focus', () => { attention = true; });
-        a.addEventListener('blur', () => { attention = false; });
-      });
-      const [pts, behaviour, parts] = await Promise.all([
-        formation({ kind: 'text', text: '404', font: '700 220px "Space Grotesk", sans-serif' }, CHOPPER_COUNT),
-        chopperBehaviour(() => attention), chopperParts(),
-      ]);
-      sw.set(pts, { mode: 'rise', dur: 1800 });
-      sw.wave = 0.45;
-      setTimeout(() => { sw.wave = 0; sw.follow(behaviour, { dur: 4200, colors: chopperColors(parts) }); }, 3600);
-    }, { rootMargin: '200px' }).observe(cv);
-  }
-</script>
+<style>
+  /* Kein Karton um Chopper: nur ein schwacher Lichtschein am Boden, der Hund ist das dominante Element */
+  .chopper-stage { aspect-ratio: auto; background: radial-gradient(48% 22% at 50% 78%, rgb(var(--rgb-logo-amber) / 0.07), transparent 70%); border-radius: 0; }
+  .chopper-h .kicker { display: block; margin: 0 0 var(--space-3-5); }
+  .chopper-h .head-line { display: block; }
+  .chopper-copy .btn { margin-top: var(--space-2); }
+</style>

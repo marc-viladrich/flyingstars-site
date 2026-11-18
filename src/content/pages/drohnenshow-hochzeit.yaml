@@ -50,14 +50,15 @@ sections:
     loop: hochzeit
     _key: k_52056666f5076b5e0423
 
-  # Kurzfassung der Nachhaltigkeits-Section: große Aussage, daneben Icon und Punktmuster statt des Stockfotos (Marc,
+  # Kurzfassung der Nachhaltigkeits-Section: große Aussage, daneben Chopper mit zwei Kindern als Leuchtpunkt-Szene (Runde 4,
+  # Marc 18.11.2026: „deutlich stärkeres Bild“ als die Icon-Kachel; vorher Icon statt Stockfoto, Marc,
   # 17.11.2026: kein Stockbild, solange es kein echtes FlyingStars-Showfoto mit Kindern und Hunden gibt)
   - type: sustainability
     id: familienfreundlich
     kicker: Familienfreundlich
     headline: Kinder und *Hunde* willkommen
     text: Im Gegensatz zum Feuerwerk gibt es beim Drohnenballett keinen lauten Knall, störenden Rauch oder Abfall mit Brandgefahr. Nur ein leises Surren – und das Staunen der Gäste.
-    icon: paw-print
+    scene: chopper-play
     _key: k_59a09168d2946ce16e34
 
   # Versprechen als Kacheln mit Verlaufs-Icons

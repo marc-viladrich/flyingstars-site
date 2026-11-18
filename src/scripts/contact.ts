@@ -3,6 +3,8 @@ import { logoInquiryForm } from './logo-inquiry-form';
 import {parseInquiry} from '../content/inquiry.mjs';
 import {contact as CONTACT} from '../content/contact.mjs';
 import { t } from '../i18n/ui.mjs';
+import { INQUIRY_REF_KEY, INQUIRY_SOURCE_KEY } from '../content/inquiry-source.mjs';
+import { localizedHref, localeFromPath } from '../i18n/routing.mjs';
 let selectPackage: ((name: string) => void) | undefined;
 export function pickPackage(name: string) { selectPackage?.(name); }
 const form = document.querySelector<HTMLFormElement>('#inquiry-form');
@@ -116,6 +118,10 @@ if (form) {
       await logoInquiryReady;
       started.value = String(Math.floor(performance.now() - opened));
       const data = new FormData(form); logoInquiry.append(data);
+      // Zufallswert als Bezug für die freiwillige Quellen-Frage auf der Danke-Seite (kein Tracking, nur diese Sitzung)
+      const ref = [...crypto.getRandomValues(new Uint8Array(6))].map((b) => b.toString(16).padStart(2, '0')).join('');
+      data.set('ref', ref);
+      const answeredSource = Boolean(String(data.get('quelle') ?? ''));
       const response = await fetch(form.action, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
       const result = await response.json();
       if (!response.ok || result.ok !== true) throw new Error(result.detail || t('contact.yourEnquiryCouldNotBeSent'));
@@ -127,6 +133,10 @@ if (form) {
         // Honeypots intentionally show success but never carry this confirmation.
         if (typeof result.requestId === 'string') window.dispatchEvent(new CustomEvent('flyingstars:lead-confirmed', { detail: { requestId: result.requestId } }));
         logoInquiry.clear(); form.reset(); restartTimer(); syncDate(); show(0, false);
+        // Weiter zur Danke-Seite (Moritz 18.11.2026). Kurz warten, damit Bestätigung, Himmel-Gruß und eine erlaubte
+        // Conversion-Meldung noch auf dieser Seite laufen.
+        try { sessionStorage.setItem(INQUIRY_REF_KEY, ref); sessionStorage.setItem(INQUIRY_SOURCE_KEY, answeredSource ? '1' : '0'); } catch { /* privat */ }
+        setTimeout(() => location.assign(localizedHref('/danke/', localeFromPath(location.pathname))), 2400);
       } else {
         throw new Error(t('contact.yourEnquiryCouldNotBeSent'));
       }

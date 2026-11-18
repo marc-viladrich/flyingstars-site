@@ -1,32 +1,24 @@
 ---
-question: Wat gebeurt er bij slecht weer?
-tags:
-  - startseite
-  - wetter-umwelt
-  - hochzeit
-order: 3
-translationSourceHash: 22ad347a684efecf4bdc1d16a2c9d03ada5e1ce58ec0869a77d5146c427d8437
+question: "Kan de droneshow bij slecht weer doorgaan?"
+tags: [faq-planung]
+order: 5
 draft: false
 translationContractVersion: 2
+translationSourceHash: fe7ea778efff91e555555548921f6d3d42e1780d8ebd05a29bb55530e3572611
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 22ad347a684efecf4bdc1d16a2c9d03ada5e1ce58ec0869a77d5146c427d8437
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
+  sourceFingerprint: fe7ea778efff91e555555548921f6d3d42e1780d8ebd05a29bb55530e3572611
   fields:
     - address: /body
-      sourceFingerprint: be174db76e80c347eed51fc3036705bbba86c1cd060bcd0328ab6d12f304a902
-      targetFingerprint: c42868590cfc527116fb8f69f4f346e3c970bd6ac130f7597c6c62b34ae253e9
+      sourceFingerprint: 885e7c57cbae96826e5bffb5bf7c7c73925eb24d413578a50b97a7f05016944b
+      targetFingerprint: 49de62efea1d68ddf58f1df7141d914cfec2bc02082ec678c9cf80f5d2307e47
       status: adopted-existing
     - address: /question
-      sourceFingerprint: aef210579bf534cd6996aadc8dc9c8574ef1dc9235d09b7d34a94840e70644ce
-      targetFingerprint: b6cc35aa9fa1ea7c3ae7d69aafef210409205313527435330c4c7a8ad3d6fb27
+      sourceFingerprint: b31b40f2d1cff4ff07d2a306394085c5f24c95bbcdf3d300fd2a20fb95833720
+      targetFingerprint: b6babc7b57cac8a85a66f3cb25acc0095894232796e75c08755dd6e04d2ec646
       status: adopted-existing
 ---
 
-We vliegen tot windkracht 5 en ook bij lichte motregen. In de zomer hoeven we zelden af te zeggen.
-
-Is slecht weer voorzien, dan verplaatsen we gratis zolang we nog niet onderweg zijn. Bij de boeking betalen jullie 40% aan. Gaat een show helemaal niet door, dan geldt de annuleringsregeling uit onze voorwaarden: 40, 60, 80 of 95%, afhankelijk van het moment.
+Ja. We vliegen vormvast tot windkracht 5 en ook bij lichte motregen. In de zomer hoeven we daarom zelden uit te stellen of af te zeggen. Is slecht weer te voorzien, dan verplaatsen we de show zonder meerprijs – alleen een al gemaakte reis rekenen we door. Gaat de show helemaal niet door, dan houden we minstens de aanbetaling van 40 % in, omdat ontwerp en vergunningen dan al geregeld zijn. Afhankelijk van het moment geldt een staffel uit de [algemene voorwaarden](https://flyingstars.art/agb/) (40 / 60 / 80 / 95 %).

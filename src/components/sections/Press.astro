@@ -1,0 +1,102 @@
+---
+// Presse (Runde 4, Moritz 18.11.2026). Kopf mit Einleitung und der Logoreihe als Sprungmarken, darunter die Beiträge als
+// Zeitleiste: links das Jahr (nur beim Wechsel) mit Leuchtpunkt auf der Linie, daneben großes Medienlogo, Datum, Thema,
+// Text und Link. Ein Beitrag kann hervorgehoben sein (größer, Punkt im Logoverlauf). Kein Kachelraster.
+// Links nur, wenn belegt (Liveseite oder Recherche); ohne Link entfällt der Knopf. Logos weiß wie im Laufband, Logos mit
+// ausgesparter Schrift (ZDF, ntv) grau, damit die Schrift lesbar bleibt.
+import { readFileSync, existsSync } from 'node:fs';
+import type { Section } from '../../content.config';
+import SectionHead from '../SectionHead.astro';
+import LocalImage from '../LocalImage.astro';
+import Accent from '../Accent.astro';
+import { forPath } from '../../i18n/server';
+type Props = Extract<Section, { type: 'press' }> & { index: number };
+const { kicker, headline, text, cta, items, index, id = 'presse' } = Astro.props;
+const { locale, localHref } = forPath(Astro.url.pathname);
+const H = index === 0 ? 'h1' : 'h2';
+const Item = index === 0 ? 'h2' : 'h3';
+const headingId = `${id}-h`;
+const file = (p: string) => new URL(`../../../public${p}`, import.meta.url);
+// optische Größe: breite Logos flacher, kompakte höher (gleiche Regel wie das Laufband)
+const ratio = (p?: string) => {
+  if (!p || !existsSync(file(p))) return 2.4;
+  const s = readFileSync(file(p), 'utf8'), vb = /viewBox="[\d.\s-]*?([\d.]+)\s+([\d.]+)"/.exec(s), w = /\swidth="([\d.]+)/.exec(s), h = /\sheight="([\d.]+)/.exec(s);
+  const [vw, vh] = vb ? [Number(vb[1]), Number(vb[2])] : [Number(w?.[1] ?? 240), Number(h?.[1] ?? 100)];
+  return vw / vh;
+};
+const height = (p: string | undefined, base: number) => Math.round(Math.min(base * 1.9, Math.max(base * 0.62, base * Math.sqrt(2.4 / ratio(p)))));
+const fmt = (d: string) => {
+  const [y, m, day] = d.split('-').map(Number);
+  const date = new Date(Date.UTC(y, m - 1, day || 1));
+  return new Intl.DateTimeFormat(locale === 'de' ? 'de-DE' : locale, day ? { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' } : { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(date);
+};
+const list = items.map((it, i) => ({ ...it, year: it.date.slice(0, 4), newYear: i === 0 || items[i - 1].date.slice(0, 4) !== it.date.slice(0, 4), show: it.cleared && it.logo && existsSync(file(it.logo)) }));
+---
+<section class="section press-page" id={id} aria-labelledby={headingId}>
+  <div class="press-head">
+    <SectionHead variant="embedded" kicker={kicker} headline={headline} text={text} textClass="lead" id={headingId} level={H}>
+      {cta && <a class="btn primary" href={localHref(cta.href)}>{cta.label}</a>}
+    </SectionHead>
+    <nav class="press-logos" aria-label={headline.replace(/\*/g, '')}>
+      <ul>{list.map((it) => <li><a href={`#${it.id}`}>{it.show ? <LocalImage class:list={{ knock: it.knock }} src={it.logo!} alt={it.name} style={`height:${height(it.logo, 26) / 16}rem`} loading="eager" decoding="async" /> : <b>{it.name}</b>}</a></li>)}</ul>
+    </nav>
+  </div>
+
+  <ol class="press-list">
+    {list.map((it) => <li class:list={['press-item', { featured: it.featured, 'new-year': it.newYear }]} id={it.id}>
+      <div class="press-when">{it.newYear && <span class="press-year">{it.year}</span>}<span class="press-dot" aria-hidden="true"></span></div>
+      <div class="press-logo">{it.show ? <LocalImage class:list={{ knock: it.knock }} src={it.logo!} alt="" style={`height:${height(it.logo, it.featured ? 54 : 40) / 16}rem`} loading="lazy" decoding="async" /> : <span class="press-wordmark" aria-hidden="true">{it.name}</span>}</div>
+      <div class="press-body">
+        <Item class="press-h"><span class="kicker mono">{it.name}</span> <span class="head-line"><Accent text={it.title} /></span></Item>
+        <p class="press-date mono"><time datetime={it.date}>{fmt(it.date)}</time></p>
+        <p class="press-text">{it.text}</p>
+        {it.href && it.linkLabel && <a class="link" href={it.href} rel="noopener" target="_blank">{it.linkLabel} <span aria-hidden="true">↗</span></a>}
+      </div>
+    </li>)}
+  </ol>
+</section>
+
+<style>
+  .press-head { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: clamp(var(--space-8), 5vw, var(--space-16)); align-items: end; padding-bottom: clamp(var(--space-10), 6vw, var(--space-20)); border-bottom: 1px solid var(--line); }
+  .press-head :global(.section-head) { display: grid; gap: var(--space-5); justify-items: start; max-width: 38rem; }
+  .press-head :global(.lead) { color: var(--muted); margin: 0; }
+  .press-logos ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-5) var(--space-8); justify-content: flex-start; }
+  .press-logos a { display: block; padding: var(--space-1) 0; }
+  .press-logos img, .press-logo img { display: block; width: auto; max-width: 100%; filter: brightness(0) invert(1); opacity: 0.72; transition: opacity var(--dur-control); }
+  .press-logos img.knock, .press-logo img.knock { filter: grayscale(1) brightness(0.85) contrast(1.15); opacity: 0.9; }
+  .press-logos a:hover img, .press-logos a:focus-visible img { opacity: 1; }
+  .press-logos b { font: 600 1.125rem/1 var(--display); color: var(--fg); }
+
+  /* Zeitleiste: Jahr | Linie mit Punkt | Logo | Text */
+  .press-list { list-style: none; margin: 0; padding: 0; }
+  /* durchgehende Haarlinie am rechten Rand der Jahresspalte, die Punkte sitzen darauf */
+  .press-list { position: relative; }
+  .press-list::before { content: ""; position: absolute; left: 6.5rem; top: 0; bottom: 0; width: 1px; background: linear-gradient(var(--line-strong), var(--line) 85%, transparent); }
+  .press-item { position: relative; display: grid; grid-template-columns: 7rem minmax(0, 13rem) minmax(0, 1fr); gap: 0 clamp(var(--space-6), 4vw, var(--space-14)); padding: clamp(var(--space-8), 4.5vw, var(--space-14)) 0; scroll-margin-top: 6rem; }
+  .press-item + .press-item { border-top: 1px solid var(--line); }
+  .press-item + .press-item::before { content: ""; position: absolute; top: -1px; left: 0; width: 6.5rem; height: 1px; background: var(--ground, #0e0c0b); }
+  .press-when { position: relative; align-self: stretch; }
+  .press-year { display: block; font: 600 clamp(1.5rem, 2.4vw, 2.25rem)/1 var(--display); color: var(--fg); letter-spacing: -0.02em; }
+  .press-dot { position: absolute; left: calc(6.5rem - 0.25rem); top: 0.55rem; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: rgb(var(--rgb-amber)); box-shadow: 0 0 0.75rem rgb(var(--rgb-amber) / 0.7); }
+  .press-logo { padding-top: 0.15rem; }
+  .press-wordmark { font: 600 1.75rem/1 var(--display); color: var(--fg); }
+  .press-body { display: grid; gap: var(--space-3); justify-items: start; max-width: 42rem; }
+  .press-h { margin: 0; font-size: clamp(1.5rem, 2.2vw, 2rem); line-height: 1.12; }
+  .press-h .kicker { display: block; margin: 0 0 var(--space-3); }
+  .press-h .head-line { display: block; }
+  .press-date { margin: 0; color: var(--muted); font-size: 0.8125rem; letter-spacing: 0.06em; text-transform: uppercase; }
+  .press-text { margin: 0; color: var(--muted); font-size: var(--text-lead); }
+  .press-body .link { margin-top: var(--space-2); }
+  /* hervorgehoben: größerer Titel, Punkt im Logoverlauf */
+  .press-item.featured .press-h { font-size: clamp(2rem, 3.6vw, 3.25rem); }
+  .press-item.featured .press-text { color: var(--fg); }
+  .press-item.featured .press-dot { width: 0.75rem; height: 0.75rem; top: 0.45rem; left: calc(6.5rem - 0.375rem); background: var(--grad); box-shadow: 0 0 1.25rem rgb(var(--rgb-logo-amber, var(--rgb-amber)) / 0.8); }
+  @media (--grid-stacked) {
+    .press-head { grid-template-columns: 1fr; align-items: start; }
+    .press-item { grid-template-columns: 1fr; gap: var(--space-4); }
+    .press-list::before, .press-item + .press-item::before { display: none; }
+    .press-when { display: flex; align-items: center; gap: var(--space-3); }
+    .press-when:not(:has(.press-year)) { display: none; }
+    .press-dot { position: static; }
+  }
+</style>

@@ -1,7 +1,7 @@
 ---
-question: Geht eine Show auch in der Stadt oder in Flughafennähe?
-tags: [ort]
-order: 21
+question: "Sind Flüge auch über Städten, Flughäfen oder Häfen möglich?"
+tags: [faq-sicherheit]
+order: 6
 ---
 
-Ja, mit mehr Planung. In Kontrollzonen von Flughäfen und in dicht bebauten Gebieten brauchen wir zusätzliche Genehmigungen der Deutschen Flugsicherung und der Behörden vor Ort, an Bundeswasserstraßen ebenfalls. Rechnet dafür eher mit drei Monaten Vorlauf.
+Ja! Aber sie erfordern einen höheren Planungsaufwand. Shows in Kontrollzonen wie Flughäfen oder in dicht besiedelten Gebieten benötigen spezielle Genehmigungen von der Flugsicherung und den lokalen Behörden. Dank unserer Erfahrung können wir aber auch solch komplexe Projekte sicher und erfolgreich umsetzen.

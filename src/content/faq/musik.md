@@ -1,9 +1,7 @@
 ---
-question: Wie kommt die Musik zur Show?
-tags: [planung, hochzeit]
-order: 14
+question: "Wie koordiniert die Choreografie mit Musik?"
+tags: [faq-drohnenshows]
+order: 4
 ---
 
-Zuerst entsteht eine Rohfassung der Animation von Start bis Landung. Daran schneiden wir die Musik, GEMA-frei oder eure Wunschmusik. Der Musikschnitt ist im Preis enthalten. Zum Schluss programmieren wir Farben und Lichteffekte auf die Akzente der Musik.
-
-Die Beschallung vor Ort stellt ihr oder eure Veranstaltungstechnik. Wir schicken die Musikdatei vorab und geben am Abend einen Countdown durch, nach dem jemand auf „Play“ drückt.
+Wir planen unsere Choreografie entlang eurer Wunsch-Playlist. Der Musikschnitt ist dabei im Paket enthalten (GEMA-frei oder Wunschmusik). Die Beschallung vor Ort stellt meistens der oder die Veranstalter:in. Für einen synchronen Flug sprechen wir uns dann mit dem DJ oder der DJane vor Ort ab.

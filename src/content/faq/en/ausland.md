@@ -1,30 +1,24 @@
 ---
-question: Do you fly abroad too?
-tags:
-  - ort
-order: 22
-translationSourceHash: b09f1cd998023d387068b48d79c7b66a7abec57236c6c9d7b303036a80b45d40
+question: "Which countries do you fly in?"
+tags: [faq-sicherheit]
+order: 5
 draft: false
 translationContractVersion: 2
+translationSourceHash: c086d6a34a79115a0d60f513c1f62fce235b0d77fe33a8018fccb2a1d99bf8dc
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: b09f1cd998023d387068b48d79c7b66a7abec57236c6c9d7b303036a80b45d40
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
+  sourceFingerprint: c086d6a34a79115a0d60f513c1f62fce235b0d77fe33a8018fccb2a1d99bf8dc
   fields:
     - address: /body
-      sourceFingerprint: c643f48ec962ce6dac4d475a392e9554286d92f1406ea5d440cb950947a63cc3
-      targetFingerprint: 780b0106ec2069678e816aa5beb608f92e01f18b2232d9b870d9a1292b3edca1
+      sourceFingerprint: 98b490813414b3b15feb9d17218bbf868103ae2e599aae1ca84df81ca6a1441a
+      targetFingerprint: ea9e213ed7d5b400f55bb881769e3b4d9cad6a16507dececf37a0b81f1f7b0b9
       status: adopted-existing
     - address: /question
-      sourceFingerprint: 4e443ae362c0130ec401b65320e2c7077cad9e8b6328ab9397d74ac266d660df
-      targetFingerprint: c7e18eff2a289a6a360838d21cd33bd2c2492c8786222f7da566b430e929068d
+      sourceFingerprint: 6e5a3793d43a001b499c4060eb7204ac609fbdf5f4031bfb15b3efc2ee30625a
+      targetFingerprint: adb468c701e9acfc8d34cb68e1735ddbdceb4fd9af3b104a85c9867b7a0e652b
       status: adopted-existing
 ---
 
-Yes, throughout Europe, including Austria, the Netherlands, Belgium and Sweden. Our authorisation is valid across the EU. We apply for confirmation in each other EU country in advance. This takes 4 to 8 weeks, or around three months in Italy.
-
-Switzerland is outside the EU. Applications to FOCA and customs clearance are needed there, for an additional €1,900 excluding VAT.
+We can offer drone shows anywhere in the world. We fly most often in Germany, Austria and Switzerland. We hold a generic permit for the entire EU, so we may offer our choreographies everywhere. In some countries we still have to apply additionally, which takes a few weeks. In non-EU countries we also take care of the permits. On top of that come costs for transporting the drones and for customs.

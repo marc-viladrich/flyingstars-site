@@ -1,0 +1,1100 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "set": "logos",
+      "slug": "puma-1",
+      "kind": "image",
+      "client": "PUMA",
+      "show": "PUMA",
+      "location": "Borussia-Park, Mönchengladbach",
+      "year": 2022,
+      "drones": 100,
+      "alt": "Rot-blaues PUMA-Logo aus Drohnen über dem beleuchteten Stadion.",
+      "source": {
+        "repoPath": "public/media/video-lab/original-v1.mp4",
+        "timestampSeconds": 12
+      },
+      "reference": "src/content/projects/puma-bundesliga.md",
+      "rightsNote": "Urheberangabe und Freigabe für die neue Galerie anhand der Originalquelle bestätigen.",
+      "files": [
+        {
+          "file": "logos/puma-1-800.webp",
+          "width": 800,
+          "height": 450,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "logos/puma-1-800.avif",
+          "width": 800,
+          "height": 450,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "logos/puma-1-1600.webp",
+          "width": 1600,
+          "height": 901,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "logos/puma-1-1600.avif",
+          "width": 1600,
+          "height": 901,
+          "format": "avif",
+          "upscaled": false
+        }
+      ],
+      "sourceWidth": 1918,
+      "sourceHeight": 1080
+    },
+    {
+      "set": "logos",
+      "slug": "ford-1",
+      "kind": "image",
+      "client": "Ford · Agentur Envy Create",
+      "show": "Ford Explorer",
+      "location": "Ford Electric Vehicle Center, Köln",
+      "year": 2024,
+      "drones": 350,
+      "alt": "Blauer Ford-Schriftzug aus Drohnen über dem beleuchteten Werksgelände.",
+      "source": {
+        "repoPath": "public/media/video-lab/original-v1.mp4",
+        "timestampSeconds": 20.5
+      },
+      "reference": "src/content/projects/exploring-reinvented-der-neue-ford-explorer.md",
+      "rightsNote": "Urheberangabe und Freigabe für die neue Galerie anhand der Originalquelle bestätigen.",
+      "files": [
+        {
+          "file": "logos/ford-1-800.webp",
+          "width": 800,
+          "height": 450,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "logos/ford-1-800.avif",
+          "width": 800,
+          "height": 450,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "logos/ford-1-1600.webp",
+          "width": 1600,
+          "height": 901,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "logos/ford-1-1600.avif",
+          "width": 1600,
+          "height": 901,
+          "format": "avif",
+          "upscaled": false
+        }
+      ],
+      "sourceWidth": 1918,
+      "sourceHeight": 1080
+    },
+    {
+      "set": "logos",
+      "slug": "nfl-1",
+      "kind": "image",
+      "client": "Indianapolis Colts",
+      "show": "NFL Berlin Game",
+      "location": "Olympiastadion Berlin",
+      "year": 2025,
+      "drones": 300,
+      "alt": "Rotes NFL-Kürzel in einem blau umrandeten Schild aus Drohnen.",
+      "source": {
+        "url": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl.jpg"
+      },
+      "reference": "src/content/projects/nfl-berlin-game.md",
+      "rightsNote": "Urheberangabe und Freigabe für die neue Galerie anhand der Originalquelle bestätigen.",
+      "files": [
+        {
+          "file": "logos/nfl-1-800.webp",
+          "width": 800,
+          "height": 800,
+          "format": "webp",
+          "upscaled": true
+        },
+        {
+          "file": "logos/nfl-1-800.avif",
+          "width": 800,
+          "height": 800,
+          "format": "avif",
+          "upscaled": true
+        },
+        {
+          "file": "logos/nfl-1-1600.webp",
+          "width": 1600,
+          "height": 1600,
+          "format": "webp",
+          "upscaled": true
+        },
+        {
+          "file": "logos/nfl-1-1600.avif",
+          "width": 1600,
+          "height": 1600,
+          "format": "avif",
+          "upscaled": true
+        }
+      ],
+      "sourceWidth": 1280,
+      "sourceHeight": 720,
+      "crop": "square-center"
+    },
+    {
+      "set": "logos",
+      "slug": "nfl-2",
+      "kind": "image",
+      "client": "Indianapolis Colts",
+      "show": "NFL Berlin Game",
+      "location": "Olympiastadion Berlin",
+      "year": 2025,
+      "drones": 300,
+      "alt": "Das Hufeisen der Indianapolis Colts aus Drohnen über dem Berliner Olympiastadion.",
+      "source": {
+        "url": "https://flyingstars-relaunch.vercel.app/media/projekte/nfl/01.jpg"
+      },
+      "reference": "src/content/projects/nfl-berlin-game.md",
+      "rightsNote": "Urheberangabe und Freigabe für die neue Galerie anhand der Originalquelle bestätigen.",
+      "files": [
+        {
+          "file": "logos/nfl-2-800.webp",
+          "width": 640,
+          "height": 800,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "logos/nfl-2-800.avif",
+          "width": 640,
+          "height": 800,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "logos/nfl-2-1600.webp",
+          "width": 1280,
+          "height": 1600,
+          "format": "webp",
+          "upscaled": true
+        },
+        {
+          "file": "logos/nfl-2-1600.avif",
+          "width": 1280,
+          "height": 1600,
+          "format": "avif",
+          "upscaled": true
+        }
+      ],
+      "sourceWidth": 864,
+      "sourceHeight": 1080
+    },
+    {
+      "set": "logos",
+      "slug": "bokkenrijders-1",
+      "kind": "image",
+      "client": "Toneelgroep Maastricht",
+      "show": "Bokkenrijders",
+      "location": "Stadion De Geusselt, Maastricht",
+      "year": 2025,
+      "drones": 600,
+      "alt": "Der Schriftzug Bokkenrijders aus Drohnen über einer blau beleuchteten Freilichtbühne.",
+      "source": {
+        "url": "https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijders.jpg"
+      },
+      "reference": "src/content/projects/musikalischer-teaser-bokkenrijders.md",
+      "rightsNote": "Urheberangabe und Freigabe für die neue Galerie anhand der Originalquelle bestätigen.",
+      "files": [
+        {
+          "file": "logos/bokkenrijders-1-800.webp",
+          "width": 800,
+          "height": 450,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "logos/bokkenrijders-1-800.avif",
+          "width": 800,
+          "height": 450,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "logos/bokkenrijders-1-1600.webp",
+          "width": 1600,
+          "height": 900,
+          "format": "webp",
+          "upscaled": true
+        },
+        {
+          "file": "logos/bokkenrijders-1-1600.avif",
+          "width": 1600,
+          "height": 900,
+          "format": "avif",
+          "upscaled": true
+        }
+      ],
+      "sourceWidth": 1280,
+      "sourceHeight": 720
+    },
+    {
+      "set": "logos",
+      "slug": "bokkenrijders-2",
+      "kind": "image",
+      "client": "Toneelgroep Maastricht",
+      "show": "Bokkenrijders",
+      "location": "Stadion De Geusselt, Maastricht",
+      "year": 2025,
+      "drones": 600,
+      "alt": "Rotes Gesicht mit Hörnern aus Drohnen als Motiv des Musicals Bokkenrijders.",
+      "source": {
+        "url": "https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijders/03.jpg"
+      },
+      "reference": "src/content/projects/musikalischer-teaser-bokkenrijders.md",
+      "rightsNote": "Urheberangabe und Freigabe für die neue Galerie anhand der Originalquelle bestätigen.",
+      "files": [
+        {
+          "file": "logos/bokkenrijders-2-800.webp",
+          "width": 800,
+          "height": 450,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "logos/bokkenrijders-2-800.avif",
+          "width": 800,
+          "height": 450,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "logos/bokkenrijders-2-1600.webp",
+          "width": 1600,
+          "height": 900,
+          "format": "webp",
+          "upscaled": true
+        },
+        {
+          "file": "logos/bokkenrijders-2-1600.avif",
+          "width": 1600,
+          "height": 900,
+          "format": "avif",
+          "upscaled": true
+        }
+      ],
+      "sourceWidth": 1280,
+      "sourceHeight": 720
+    },
+    {
+      "set": "logos",
+      "slug": "prada-1",
+      "kind": "image",
+      "client": "L’Oréal Deutschland / Prada",
+      "show": "L’Oréal × Prada am Rheinturm",
+      "location": "Rheinturm, Düsseldorf",
+      "year": 2023,
+      "drones": 350,
+      "alt": "Drohnen zeichnen einen gekippten Parfumflakon über der Düsseldorfer Skyline.",
+      "source": {
+        "url": "https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg"
+      },
+      "reference": "src/content/projects/loreal-prada-rheinturm.md",
+      "rightsNote": "Urheberangabe und Freigabe für die neue Galerie anhand der Originalquelle bestätigen.",
+      "files": [
+        {
+          "file": "logos/prada-1-800.webp",
+          "width": 800,
+          "height": 410,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "logos/prada-1-800.avif",
+          "width": 800,
+          "height": 410,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "logos/prada-1-1600.webp",
+          "width": 1600,
+          "height": 821,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "logos/prada-1-1600.avif",
+          "width": 1600,
+          "height": 821,
+          "format": "avif",
+          "upscaled": false
+        }
+      ],
+      "sourceWidth": 1920,
+      "sourceHeight": 985
+    },
+    {
+      "set": "logos",
+      "slug": "spotify-1",
+      "kind": "image",
+      "client": "Spotify",
+      "show": "Spotify: Luciano × Apache 207",
+      "location": "Prenzlauer Berg, Berlin",
+      "year": 2025,
+      "drones": 350,
+      "alt": "Blaue Drohnen schreiben „Jetzt auf Spotify“ in den Nachthimmel.",
+      "source": {
+        "url": "https://flyingstars.art/wp-content/uploads/2025/07/Spotify-Header.jpg"
+      },
+      "reference": "src/content/projects/spotify-luciano-apache.md",
+      "rightsNote": "Urheberangabe und Freigabe für die neue Galerie anhand der Originalquelle bestätigen.",
+      "files": [
+        {
+          "file": "logos/spotify-1-800.webp",
+          "width": 800,
+          "height": 433,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "logos/spotify-1-800.avif",
+          "width": 800,
+          "height": 433,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "logos/spotify-1-1600.webp",
+          "width": 1600,
+          "height": 867,
+          "format": "webp",
+          "upscaled": true
+        },
+        {
+          "file": "logos/spotify-1-1600.avif",
+          "width": 1600,
+          "height": 867,
+          "format": "avif",
+          "upscaled": true
+        }
+      ],
+      "sourceWidth": 1126,
+      "sourceHeight": 610
+    },
+    {
+      "set": "logos",
+      "slug": "vw-1",
+      "kind": "image",
+      "client": "Scalaria",
+      "show": "50 Jahre VW Golf",
+      "location": "Wolfgangsee (Österreich)",
+      "year": 2024,
+      "drones": null,
+      "alt": "Das VW-Zeichen aus Drohnen über einer beleuchteten Bühne und Publikum.",
+      "source": {
+        "url": "https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg"
+      },
+      "reference": "src/content/projects/vw-50-golf.md",
+      "rightsNote": "Urheberangabe und Freigabe für die neue Galerie anhand der Originalquelle bestätigen.",
+      "files": [
+        {
+          "file": "logos/vw-1-800.webp",
+          "width": 800,
+          "height": 534,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "logos/vw-1-800.avif",
+          "width": 800,
+          "height": 534,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "logos/vw-1-1600.webp",
+          "width": 1600,
+          "height": 1068,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "logos/vw-1-1600.avif",
+          "width": 1600,
+          "height": 1068,
+          "format": "avif",
+          "upscaled": false
+        }
+      ],
+      "sourceWidth": 1920,
+      "sourceHeight": 1281
+    },
+    {
+      "set": "logos",
+      "slug": "siemens-1",
+      "kind": "image",
+      "client": "Siemens Mobility",
+      "show": "Siemens Mobility",
+      "location": "Wannsee-Terrassen, Berlin",
+      "year": 2024,
+      "drones": 200,
+      "alt": "Vor den Zuschauenden bilden violette Drohnen die Silhouette eines Zuges.",
+      "source": {
+        "url": "https://flyingstars.art/wp-content/uploads/2024/12/Siemens_cover.jpg"
+      },
+      "reference": "src/content/projects/siemens-mobility.md",
+      "rightsNote": "Urheberangabe und Freigabe für die neue Galerie anhand der Originalquelle bestätigen.",
+      "files": [
+        {
+          "file": "logos/siemens-1-800.webp",
+          "width": 800,
+          "height": 343,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "logos/siemens-1-800.avif",
+          "width": 800,
+          "height": 343,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "logos/siemens-1-1600.webp",
+          "width": 1600,
+          "height": 687,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "logos/siemens-1-1600.avif",
+          "width": 1600,
+          "height": 687,
+          "format": "avif",
+          "upscaled": false
+        }
+      ],
+      "sourceWidth": 1910,
+      "sourceHeight": 820
+    },
+    {
+      "set": "logos",
+      "slug": "rewe-fc-1",
+      "kind": "image",
+      "client": "REWE × 1. FC Köln",
+      "show": "Drohnenshow vor dem Heimspiel gegen Bayern München",
+      "location": "Westkampfbahn, Köln",
+      "year": 2026,
+      "drones": 320,
+      "alt": "Leuchtende Buchstaben und Fußbälle aus Drohnen über der nebligen Westkampfbahn.",
+      "source": {
+        "url": "https://mediacenter.rewe.de/_default_upload_bucket/4809/image-thumb__4809__16x9_image/rewe-drohnenshow-stadion@2x.56a242c5.jpg",
+        "referenceUrl": "https://mediacenter.rewe.de/pressemitteilungen/rewe-fc-koeln-drohnenshow"
+      },
+      "reference": null,
+      "rightsNote": "Bild aus dem REWE-Pressecenter. Bildnachweis und Nutzung für die FlyingStars-Website klären.",
+      "files": [
+        {
+          "file": "logos/rewe-fc-1-800.webp",
+          "width": 800,
+          "height": 451,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "logos/rewe-fc-1-800.avif",
+          "width": 800,
+          "height": 451,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "logos/rewe-fc-1-1600.webp",
+          "width": 1600,
+          "height": 901,
+          "format": "webp",
+          "upscaled": true
+        },
+        {
+          "file": "logos/rewe-fc-1-1600.avif",
+          "width": 1600,
+          "height": 901,
+          "format": "avif",
+          "upscaled": true
+        }
+      ],
+      "sourceWidth": 1140,
+      "sourceHeight": 642
+    },
+    {
+      "set": "willkommen",
+      "slug": "boellerciao-1",
+      "kind": "image",
+      "client": "Deutsche Umwelthilfe",
+      "show": "#Böllerciao mit der Deutschen Umwelthilfe",
+      "location": "Cantianstadion, Berlin",
+      "year": 2023,
+      "drones": 150,
+      "alt": "Drei Menschen schauen auf einen Kreis aus gelben und roten Drohnen am Nachthimmel.",
+      "source": {
+        "url": "https://flyingstars.art/wp-content/uploads/2024/07/D_Umwelthilfe_cover_img.png"
+      },
+      "reference": "src/content/projects/boellerciao.md",
+      "rightsNote": "Urheberangabe und Freigabe für die neue Galerie anhand der Originalquelle bestätigen.",
+      "files": [
+        {
+          "file": "willkommen/boellerciao-1-800.webp",
+          "width": 800,
+          "height": 411,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/boellerciao-1-800.avif",
+          "width": 800,
+          "height": 411,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/boellerciao-1-1600.webp",
+          "width": 1600,
+          "height": 823,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/boellerciao-1-1600.avif",
+          "width": 1600,
+          "height": 823,
+          "format": "avif",
+          "upscaled": false
+        }
+      ],
+      "sourceWidth": 1920,
+      "sourceHeight": 987
+    },
+    {
+      "set": "willkommen",
+      "slug": "extraschicht-1",
+      "kind": "image",
+      "client": "Duisburg Kontor",
+      "show": "Extraschicht Duisburg",
+      "location": "Innenhafen Duisburg",
+      "year": 2025,
+      "drones": 250,
+      "alt": "Publikum am Innenhafen blickt auf eine blaue Kugel aus Drohnen über dem Wasser.",
+      "source": {
+        "url": "https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg"
+      },
+      "reference": "src/content/projects/extraschicht-duisburg.md",
+      "rightsNote": "Urheberangabe und Freigabe für die neue Galerie anhand der Originalquelle bestätigen.",
+      "files": [
+        {
+          "file": "willkommen/extraschicht-1-800.webp",
+          "width": 800,
+          "height": 469,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/extraschicht-1-800.avif",
+          "width": 800,
+          "height": 469,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/extraschicht-1-1600.webp",
+          "width": 1600,
+          "height": 939,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/extraschicht-1-1600.avif",
+          "width": 1600,
+          "height": 939,
+          "format": "avif",
+          "upscaled": false
+        }
+      ],
+      "sourceWidth": 2544,
+      "sourceHeight": 1493
+    },
+    {
+      "set": "willkommen",
+      "slug": "herz-1",
+      "kind": "image",
+      "client": null,
+      "show": "Drohnenshow in Nieheim",
+      "location": "Nieheim",
+      "year": 2023,
+      "drones": 70,
+      "alt": "Ein rotes Herz aus Drohnen umschließt ein kleineres blaues Herz über einer dunklen Wiese.",
+      "source": {
+        "driveId": "1VgjG974Mh0dgrp9Ujfj3d5lHqQZOQ5uS"
+      },
+      "reference": null,
+      "rightsNote": "Urheberangabe und Freigabe für die neue Galerie anhand der Originalquelle bestätigen.",
+      "files": [
+        {
+          "file": "willkommen/herz-1-800.webp",
+          "width": 800,
+          "height": 450,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/herz-1-800.avif",
+          "width": 800,
+          "height": 450,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/herz-1-1600.webp",
+          "width": 1600,
+          "height": 900,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/herz-1-1600.avif",
+          "width": 1600,
+          "height": 900,
+          "format": "avif",
+          "upscaled": false
+        }
+      ],
+      "sourceWidth": 4032,
+      "sourceHeight": 2268
+    },
+    {
+      "set": "willkommen",
+      "slug": "frieden-1",
+      "kind": "image",
+      "client": null,
+      "show": "Drohnenshow in Nieheim",
+      "location": "Nieheim",
+      "year": 2023,
+      "drones": 70,
+      "alt": "Ein blaues Peace-Zeichen aus Drohnen leuchtet über einer dunklen Wiese.",
+      "source": {
+        "driveId": "1UtDNEiZrf4UkfdCLZhdlU42DogMl1drk"
+      },
+      "reference": null,
+      "rightsNote": "Urheberangabe und Freigabe für die neue Galerie anhand der Originalquelle bestätigen.",
+      "files": [
+        {
+          "file": "willkommen/frieden-1-800.webp",
+          "width": 800,
+          "height": 450,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/frieden-1-800.avif",
+          "width": 800,
+          "height": 450,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/frieden-1-1600.webp",
+          "width": 1600,
+          "height": 900,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/frieden-1-1600.avif",
+          "width": 1600,
+          "height": 900,
+          "format": "avif",
+          "upscaled": false
+        }
+      ],
+      "sourceWidth": 4032,
+      "sourceHeight": 2268
+    },
+    {
+      "set": "willkommen",
+      "slug": "abendhimmel-1",
+      "kind": "image",
+      "client": "Privat",
+      "show": "Heiratsantrag auf Schloss Hugenpoet",
+      "location": "Schloss Hugenpoet, Essen",
+      "year": 2024,
+      "drones": 220,
+      "alt": "Bäume rahmen mehrere zartblaue Drohnenfiguren am Abendhimmel ein.",
+      "source": {
+        "url": "https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg"
+      },
+      "reference": "src/content/projects/heiratsantrag-hugenpoet.md",
+      "rightsNote": "Urheberangabe und Freigabe für die neue Galerie anhand der Originalquelle bestätigen.",
+      "files": [
+        {
+          "file": "willkommen/abendhimmel-1-800.webp",
+          "width": 800,
+          "height": 505,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/abendhimmel-1-800.avif",
+          "width": 800,
+          "height": 505,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/abendhimmel-1-1600.webp",
+          "width": 1600,
+          "height": 1011,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/abendhimmel-1-1600.avif",
+          "width": 1600,
+          "height": 1011,
+          "format": "avif",
+          "upscaled": false
+        }
+      ],
+      "sourceWidth": 2063,
+      "sourceHeight": 1303
+    },
+    {
+      "set": "willkommen",
+      "slug": "hochzeit-1",
+      "kind": "image",
+      "client": "Privat",
+      "show": "Hochzeitsüberraschung",
+      "location": "Recklinghausen",
+      "year": 2024,
+      "drones": 150,
+      "alt": "Violette Blüten aus Drohnen leuchten über Baumkronen am Abend.",
+      "source": {
+        "url": "https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg"
+      },
+      "reference": "src/content/projects/hochzeit-recklinghausen.md",
+      "rightsNote": "Urheberangabe und Freigabe für die neue Galerie anhand der Originalquelle bestätigen.",
+      "files": [
+        {
+          "file": "willkommen/hochzeit-1-800.webp",
+          "width": 800,
+          "height": 450,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/hochzeit-1-800.avif",
+          "width": 800,
+          "height": 450,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/hochzeit-1-1600.webp",
+          "width": 1600,
+          "height": 900,
+          "format": "webp",
+          "upscaled": true
+        },
+        {
+          "file": "willkommen/hochzeit-1-1600.avif",
+          "width": 1600,
+          "height": 900,
+          "format": "avif",
+          "upscaled": true
+        }
+      ],
+      "sourceWidth": 1518,
+      "sourceHeight": 854
+    },
+    {
+      "set": "logos",
+      "slug": "bokkenrijders-loop-1",
+      "kind": "video",
+      "client": "Toneelgroep Maastricht",
+      "show": "Bokkenrijders",
+      "location": "Stadion De Geusselt, Maastricht",
+      "year": 2025,
+      "drones": 600,
+      "alt": "Über der Freilichtbühne wechseln sich der Bokkenrijders-Schriftzug und ein leuchtender Totenkopf ab.",
+      "source": {
+        "repoPath": "public/media/video/bokkenrijders-preview-v1.mp4",
+        "startSeconds": 0,
+        "durationSeconds": 4,
+        "posterTimestampSeconds": 0.4
+      },
+      "reference": "src/content/projects/musikalischer-teaser-bokkenrijders.md",
+      "rightsNote": "Urheberangabe und Freigabe für die neue Galerie anhand der Originalquelle bestätigen.",
+      "files": [
+        {
+          "file": "logos/bokkenrijders-loop-1.mp4",
+          "width": 720,
+          "height": 406,
+          "duration": 4,
+          "bytes": 256455,
+          "format": "mp4"
+        },
+        {
+          "file": "logos/bokkenrijders-loop-1-poster-800.webp",
+          "width": 800,
+          "height": 450,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "logos/bokkenrijders-loop-1-poster-800.avif",
+          "width": 800,
+          "height": 450,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "logos/bokkenrijders-loop-1-poster-1600.webp",
+          "width": 1600,
+          "height": 900,
+          "format": "webp",
+          "upscaled": true
+        },
+        {
+          "file": "logos/bokkenrijders-loop-1-poster-1600.avif",
+          "width": 1600,
+          "height": 900,
+          "format": "avif",
+          "upscaled": true
+        }
+      ],
+      "sourceWidth": 960,
+      "sourceHeight": 540
+    },
+    {
+      "set": "logos",
+      "slug": "nfl-loop-1",
+      "kind": "video",
+      "client": "Indianapolis Colts",
+      "show": "NFL Berlin Game",
+      "location": "Olympiastadion Berlin",
+      "year": 2025,
+      "drones": 300,
+      "alt": "Über dem Stadion erscheinen das Colts-Hufeisen, der Schriftzug Berlin Game und das NFL-Kürzel.",
+      "source": {
+        "repoPath": "public/media/video/nfl-preview-v1.mp4",
+        "startSeconds": 3.1,
+        "durationSeconds": 3.7,
+        "posterTimestampSeconds": 3.2
+      },
+      "reference": "src/content/projects/nfl-berlin-game.md",
+      "rightsNote": "Urheberangabe und Freigabe für die neue Galerie anhand der Originalquelle bestätigen.",
+      "files": [
+        {
+          "file": "logos/nfl-loop-1.mp4",
+          "width": 720,
+          "height": 406,
+          "duration": 3.68,
+          "bytes": 142301,
+          "format": "mp4"
+        },
+        {
+          "file": "logos/nfl-loop-1-poster-800.webp",
+          "width": 800,
+          "height": 450,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "logos/nfl-loop-1-poster-800.avif",
+          "width": 800,
+          "height": 450,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "logos/nfl-loop-1-poster-1600.webp",
+          "width": 1600,
+          "height": 900,
+          "format": "webp",
+          "upscaled": true
+        },
+        {
+          "file": "logos/nfl-loop-1-poster-1600.avif",
+          "width": 1600,
+          "height": 900,
+          "format": "avif",
+          "upscaled": true
+        }
+      ],
+      "sourceWidth": 960,
+      "sourceHeight": 540
+    },
+    {
+      "set": "logos",
+      "slug": "ford-loop-1",
+      "kind": "video",
+      "client": "Ford · Agentur Envy Create",
+      "show": "Ford Explorer",
+      "location": "Ford Electric Vehicle Center, Köln",
+      "year": 2024,
+      "drones": 350,
+      "alt": "Blaue Lichtpunkte ziehen über das Werksgelände und formen den Ford-Schriftzug.",
+      "source": {
+        "repoPath": "public/media/video/ford-preview-v1.mp4",
+        "startSeconds": 1.1,
+        "durationSeconds": 3.8,
+        "posterTimestampSeconds": 4.1
+      },
+      "reference": "src/content/projects/exploring-reinvented-der-neue-ford-explorer.md",
+      "rightsNote": "Urheberangabe und Freigabe für die neue Galerie anhand der Originalquelle bestätigen.",
+      "files": [
+        {
+          "file": "logos/ford-loop-1.mp4",
+          "width": 720,
+          "height": 406,
+          "duration": 3.76,
+          "bytes": 587124,
+          "format": "mp4"
+        },
+        {
+          "file": "logos/ford-loop-1-poster-800.webp",
+          "width": 800,
+          "height": 450,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "logos/ford-loop-1-poster-800.avif",
+          "width": 800,
+          "height": 450,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "logos/ford-loop-1-poster-1600.webp",
+          "width": 1600,
+          "height": 900,
+          "format": "webp",
+          "upscaled": true
+        },
+        {
+          "file": "logos/ford-loop-1-poster-1600.avif",
+          "width": 1600,
+          "height": 900,
+          "format": "avif",
+          "upscaled": true
+        }
+      ],
+      "sourceWidth": 960,
+      "sourceHeight": 540
+    },
+    {
+      "set": "willkommen",
+      "slug": "publikum-1",
+      "kind": "image",
+      "client": null,
+      "show": "Drohnenshow aus dem Drive-Ordner Audience",
+      "location": null,
+      "year": null,
+      "drones": null,
+      "alt": "Zuschauende blicken am Abend zu zwei Herzen aus Drohnen über den Bäumen.",
+      "reference": null,
+      "rightsNote": "Nutzungsfreigabe, Bildnachweis und Kontext der Aufnahme klären.",
+      "source": {
+        "driveId": "11etF40TT85ELPEV3EpEiSnwNd5xr5bDs",
+        "timestampSeconds": 11
+      },
+      "sourceWidth": 1920,
+      "sourceHeight": 1080,
+      "files": [
+        {
+          "file": "willkommen/publikum-1-800.webp",
+          "width": 800,
+          "height": 450,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/publikum-1-800.avif",
+          "width": 800,
+          "height": 450,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/publikum-1-1600.webp",
+          "width": 1600,
+          "height": 900,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/publikum-1-1600.avif",
+          "width": 1600,
+          "height": 900,
+          "format": "avif",
+          "upscaled": false
+        }
+      ]
+    },
+    {
+      "set": "willkommen",
+      "slug": "sea-you-1",
+      "kind": "image",
+      "client": null,
+      "show": "Sea You",
+      "location": null,
+      "year": null,
+      "drones": null,
+      "alt": "Über dem Festivalpublikum steht in blauen Drohnenlichtern „SEA YOU“.",
+      "reference": null,
+      "rightsNote": "Nutzungsfreigabe, Bildnachweis und Kontext der Aufnahme klären.",
+      "source": {
+        "repoPath": "public/media/video-lab/original-v1.mp4",
+        "timestampSeconds": 6.5
+      },
+      "sourceWidth": 1918,
+      "sourceHeight": 1080,
+      "files": [
+        {
+          "file": "willkommen/sea-you-1-800.webp",
+          "width": 800,
+          "height": 450,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/sea-you-1-800.avif",
+          "width": 800,
+          "height": 450,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/sea-you-1-1600.webp",
+          "width": 1600,
+          "height": 901,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/sea-you-1-1600.avif",
+          "width": 1600,
+          "height": 901,
+          "format": "avif",
+          "upscaled": false
+        }
+      ]
+    }
+  ]
+}

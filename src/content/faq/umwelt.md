@@ -1,13 +1,7 @@
 ---
-question: Was bedeutet eine Drohnenshow für die Umwelt?
-tags: [wetter-umwelt]
-order: 32
+question: "Wie nachhaltig ist eine Drohnenshow?"
+tags: [faq-drohnenshows]
+order: 6
 ---
 
-- Vor Ort entstehen kein Feinstaub, kein Müll und kein Knall. Lautstärke kommt nur von der Musik.
-- Unsere Akkus laden wir mit 100 % Ökostrom von naturstrom.
-- Die Drohnen wiegen rund 300 Gramm und werden in der EU gebaut, bei Drotek SAS in Frankreich.
-- Sie laufen mit zwei handelsüblichen AA-Akkus. Akkus, Motoren und Rotoren lassen sich einzeln tauschen.
-- Zu den Shows fahren wir mit einem elektrischen Ford E-Transit.
-
-Den Schallschutz unserer Shows hat der TÜV Nord in einem Gutachten untersucht.
+An einer Drohnenshow können alle teilnehmen – auch die, die sonst Angst vor Feuerwerken haben, weil sie zu laut sind, eine Brandgefahr darstellen oder Emissionen vor Ort ausstoßen. Drohnenshows sind dagegen lokal rauchfrei: kein Feinstaub vor Ort. Sie sind wiederverwendbar und produzieren keinen Müll. Wir laden unsere Drohnen mit 100 % Ökostrom auf. Sie surren außerdem nur leise, statt zu knallen. Der TÜV NORD bestätigt uns den Schallschutz. [Mehr zu den Umweltauswirkungen findet ihr hier](/nachhaltigkeit/).

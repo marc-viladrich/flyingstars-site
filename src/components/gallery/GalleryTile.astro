@@ -1,0 +1,22 @@
+---
+// Eine Kachel der Galerie (Gallery.astro): Link zur Referenzseite oder figure. Videos ohne Lichtpunkte, die Leinwand
+// läge unter dem laufenden Film. Stile stehen in Gallery.astro (global unter .gal), damit beide Layouts sie steuern.
+interface Props {
+  href?: string; alt: string; caption: string; src: string; width: number; height: number; avif: string; webp: string; sizes: string;
+  mp4?: string; video: boolean; fill?: boolean; stretch: boolean; style: string;
+}
+const { href, alt, caption, src, width, height, avif, webp, sizes, mp4, video, fill, stretch, style } = Astro.props;
+const Tag = href ? 'a' : 'figure';
+const Cap = href ? 'span' : 'figcaption';
+---
+<Tag class:list={['g-tile', { 'g-fill': fill, 'g-stretch': stretch, 'g-video': video }]} href={href} style={style} data-dot-host={video ? undefined : ''}>
+  <div class="g-media" data-curtain data-dot-img={video ? undefined : ''}>
+    <picture>
+      <source type="image/avif" srcset={avif} sizes={sizes} />
+      <source type="image/webp" srcset={webp} sizes={sizes} />
+      <img src={src} alt={alt} width={width} height={height} loading="lazy" decoding="async" />
+    </picture>
+    {video && mp4 && <video class="g-loop" data-src={mp4} muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>}
+  </div>
+  {caption && <Cap class="g-cap mono">{caption}</Cap>}
+</Tag>

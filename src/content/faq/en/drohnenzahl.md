@@ -1,24 +1,19 @@
 ---
-question: How many drones do we need?
-tags:
-  - planung
-  - werbung
-order: 12
-translationSourceHash: 5c58a4307d3df7d7990d9cc20b998ccd182f38e4e1027a837c2ac5e3c7542a00
+question: "How many drones do we need?"
+tags: [faq-drohnenshows]
+order: 3
 draft: false
 translationContractVersion: 2
+translationSourceHash: ba0653318f598671aa8551618aa64f1cf8c7d3ee3cc790b1f6996ec6c559380d
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 5c58a4307d3df7d7990d9cc20b998ccd182f38e4e1027a837c2ac5e3c7542a00
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
+  sourceFingerprint: ba0653318f598671aa8551618aa64f1cf8c7d3ee3cc790b1f6996ec6c559380d
   fields:
     - address: /body
-      sourceFingerprint: 644b9d4592a9c9c1ac6e7cc4847e2169b346b39ac90a7e99f98affbbd1f94750
-      targetFingerprint: 9ce3185c4debf64051ce90a2fc75bc7c8763eb8e0909c4789a2878811ff0150f
+      sourceFingerprint: f5ba2a721c4a53847a306fa87db87a0628baca2c3f58e94ddd8b300944841a94
+      targetFingerprint: 29049f9e31c9e19b15ea75bf28fdea733e8d42647a50e03eb4e08bd3feb6b93f
       status: adopted-existing
     - address: /question
       sourceFingerprint: e6ce675e38c4440ec4ad1eeb139d4660837b5a2f13053584e649e762d24c7a57
@@ -26,4 +21,4 @@ translationEvidence:
       status: adopted-existing
 ---
 
-Each drone is a point of light. A letter needs around 10 to 13 drones; a detailed logo needs considerably more. Our shows start at 100 drones. We help you choose the right number for your motifs.
+How many drones you need depends on what you want to show! Each drone is a point of light. A single letter takes about 10 to 13 of these pixels, a detailed logo more like 100 to 200. For complex visuals and storytelling we recommend 300 drones or more. Our [configurator](/en/drohnenshow-preise/#konfigurator) gives you a feel for which number suits you.

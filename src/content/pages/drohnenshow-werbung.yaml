@@ -58,8 +58,8 @@ sections:
       - { name: WAZ, logo: /brand/logos/presse-waz.svg, cleared: true, note: Ruhrorter Hafenfest, href: "https://www.waz.de/lokales/duisburg/article409722481/ruhrorter-hafenfest-die-geheimnisse-hinter-dem-neuen-highlight.html", "_key": "k_af6d26f3bd912a26bb0f" }
     _key: k_4f396c969776c1714c2c
 
-  # Kopf über voller Breite (rechts daneben fliegt der Himmel), darunter Moritz' Text neben der Ford-Formation aus der
-  # früheren Bildkachel „Ein Logo, das man erkennt“.
+  # Kopf über Text und Galerie, Moritz' Text links, daneben Logo-Shows großer Marken (Galerie „logos“, Runde 4: statt
+  # des einzelnen dunklen Ford-Bilds); die schmale Galeriespalte steigt neben die Überschrift.
   - type: textMedia
     id: marketing
     kicker: Werbung und Marketing mit Drohnen
@@ -71,11 +71,7 @@ sections:
       Gemeinsam bauen wir eine individuelle Choreografie, die die Geschichte eurer Marke erzählt. Mehr als nur euer Logo, ein Claim oder euer Firmenname – sondern emotionales Storytelling, das verzaubert.
 
       Unsere Drohnenshows sind eine Alternative zum Feuerwerk, die noch kaum jemand kennt. Aufmerksamkeit garantiert, selbst aus Kilometern Entfernung.
-    image:
-      src: https://flyingstars.art/wp-content/uploads/2024/12/FORD_comp.png
-      alt: Ford-Schriftzug aus blauen Drohnen über dem Werksgelände in Köln
-      width: 1929
-      height: 1133
+    gallery: logos
     cta: { label: Show anfragen, href: "#anfrage" }
     _key: k_7abf894f6f4dfb7d5b8c
 

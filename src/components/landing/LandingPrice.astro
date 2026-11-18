@@ -15,8 +15,9 @@ import CtaBox from '../CtaBox.astro';
 import Icon from '../Icon.astro';
 import { SHOW_PACKAGES } from '../../content/show-packages';
 import { getPackageDetails } from '../../content/package-details';
+import { durationValues } from '../../content/show-duration.mjs';
 type Props = Extract<Section, { type: 'landingPrice' }> & { index: number };
-const { kicker, headline, text, package: pkg, offer, customPrice, unit, groups, bonus, closing, cta, id = 'preise', index } = Astro.props;
+const { kicker, headline, text, package: pkg, offer, customPrice, unit, groups, bonus, closing, cta, factors, download, id = 'preise', index } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
 const T = index === 0 ? 'h2' : 'h3';
 const p = pkg ? SHOW_PACKAGES[pkg] : undefined;
@@ -25,8 +26,55 @@ const sub = factText(unit,locale) ?? (p ? t('landingprice.excludingVatForValueDr
 // Staffel nur, wenn das Paket nach oben begrenzt ist (SPARK: bis 150 Drohnen, je 10 weitere +900 €)
 // Showzeit wie auf allen Paketkarten (package-details.ts)
 const showtime = pkg ? getPackageDetails(locale).showtimeLine(pkg) : undefined;
+// Indoor (18.11.2026): mit Faktoren zweigeteilte Karte nach Stripe Pricing; das Startraster der kleinsten Show (20 Drohnen,
+// 1-m-Raster wie in der Sicherheitszeichnung) steht als Lichtpunkte neben dem Preis, statt einer Paketfigur
+const factorMode = Boolean(factors?.length);
+// Punktfelder in den Faktor-Zellen (Punktsprache wie die Standortkarte): jeder Punkt ist eine Einheit des Werts, hell =
+// Einstieg, gedämpft = Spielraum. Fläche 10 × 10 m im Meterraster mit dem Startraster der kleinsten Show in der Mitte,
+// Drohnen min von max, Showdauer in Minuten. Keine Beschriftung, der Wert steht darunter.
+type Dot = { x: number; y: number; on: 0 | 1 | 2 };
+const indoor = SHOW_EXTRAS.indoor, dur = durationValues();
+const dotFields: Record<string, { w: number; h: number; dots: Dot[] }> = (() => {
+  const area: Dot[] = [], min = indoor.drones.min, cols = 5, rows = Math.ceil(min / cols), x0 = Math.floor((10 - cols) / 2), y0 = Math.floor((10 - rows) / 2);
+  for (let y = 0; y < 10; y++) for (let x = 0; x < 10; x++) { const inner = x >= x0 && x < x0 + cols && y >= y0 && y < y0 + rows; area.push({ x, y, on: inner ? 2 : 0 }); }
+  const drones: Dot[] = Array.from({ length: indoor.drones.max }, (_, i) => ({ x: i % 10, y: Math.floor(i / 10), on: i < indoor.drones.min ? 2 : 0 }));
+  const duration: Dot[] = Array.from({ length: dur.indoorMax }, (_, i) => ({ x: i, y: 0, on: i < dur.indoorMin ? 2 : 1 }));
+  return { area: { w: 10, h: 10, dots: area }, drones: { w: 10, h: Math.ceil(indoor.drones.max / 10), dots: drones }, duration: { w: dur.indoorMax, h: 1, dots: duration } };
+})();
 const scale = p && Number.isFinite(p.max) ? t('landingprice.upToValueDronesValuePerValueAdditionalDrones', { v0: p.max, v1: p.add.toLocaleString(formatLocale), v2: p.step }) : undefined;
 ---
+{factorMode ? (
+<section class="section alt lp lp-f" id={id} aria-labelledby={`${id}-h`}>
+  <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} class="lp-f-head" />
+  <div class="lp-sheet">
+    <div class="lp-buy">
+      <p class="lp-amount" {...(offer?field({collection:'showExtras',id:'configuration'},[offer,'price','amount'],{mode:'panel'}):{})}>{pre && <span class="lp-pre mono">{pre} </span>}{amount}</p>
+      {sub && <p class="lp-unit">{sub}</p>}
+      <div class="lp-buy-close">
+        <T class="lp-close-h">{closing.headline}</T>
+        <p>{closing.text}</p>
+        <div class="lp-actions">
+          <a class="btn primary" href={localHref(closing.button.href)}>{closing.button.label}</a>
+          {download && <a class="link lp-sheet-dl" href={localHref(download.href)} download><Icon name="file-text" size={18} />{download.label}</a>}
+        </div>
+      </div>
+    </div>
+    <ul class="lp-factors" role="list" data-n={factors!.length}>
+      {factors!.map((f) => <li class="lp-factor">
+        <span class="lp-factor-h"><Icon name={f.icon} size={22} class="g" />{f.title}</span>
+        {f.dots && (() => { const d = dotFields[f.dots]; return <svg class:list={['lp-dots', `lp-dots-${f.dots}`]} viewBox={`0 0 ${d.w * 10} ${d.h * 10}`} aria-hidden="true">{d.dots.map((p) => <circle class={`d${p.on}`} cx={p.x * 10 + 5} cy={p.y * 10 + 5} r={p.on === 2 ? 2.1 : 1.6} />)}</svg>; })()}
+        <b class="lp-factor-v">{factText(f.value, locale)}</b>
+        <span class="lp-factor-t">{factText(f.text, locale)}</span>
+      </li>)}
+    </ul>
+    {groups.slice(0, 1).map((g) => <div class="lp-incl">
+      <T class="lp-incl-h">{g.title}</T>
+      <ul role="list">{g.items.map((it) => <li><Icon name="check" size={18} class="g" /><span>{it.label}</span>{it.value && <b>{factText(it.value,locale)}</b>}</li>)}</ul>
+    </div>)}
+  </div>
+  {cta && <p class="lp-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
+</section>
+) : (
 <section class="section alt lp" id={id} aria-labelledby={`${id}-h`}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
   <div class="lp-card">
@@ -53,6 +101,7 @@ const scale = p && Number.isFinite(p.max) ? t('landingprice.upToValueDronesValue
   {cta && <p class="lp-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
   <CtaBox {...closing} level={T} class="lp-close" />
 </section>
+)}
 
 <style>
   .lp-more { margin: clamp(var(--space-5), 2.6vw, var(--space-8)) 0 0; }
@@ -92,5 +141,59 @@ const scale = p && Number.isFinite(p.max) ? t('landingprice.upToValueDronesValue
     .lp-group { border-left: 0; border-top: 1px solid var(--line); }
     .lp-groups > :first-child { border-top: 0; }
     .lp-bonus { display: grid; }
+  }
+  /* Indoor-Variante: zweigeteilte Karte. Links Preis und Anfrage auf eigener Fläche, rechts gleich große Faktor-Zellen,
+     darunter über die ganze Breite „immer enthalten“. Kopf zweispaltig, damit über der Karte keine leere Hälfte bleibt. */
+  .lp-f :global(.lp-f-head) { max-width: none; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-4) clamp(var(--space-8), 6vw, var(--space-20)); align-items: end; }
+  .lp-f :global(.lp-f-head > p) { margin: 0; max-width: 48ch; }
+  .lp-sheet { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 8fr); border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--ground); overflow: hidden; }
+  .lp-buy { display: grid; align-content: start; gap: var(--space-2-5); padding: clamp(var(--space-7), 3.4vw, var(--space-12)); background: var(--surface); border-right: 1px solid var(--line); }
+  .lp-f .lp-amount { font-size: clamp(3rem, 5vw, 5.75rem); }
+  .lp-f .lp-unit { max-width: none; }
+  .lp-buy-close { display: grid; gap: var(--space-2); margin-top: clamp(var(--space-6), 3vw, var(--space-10)); padding-top: clamp(var(--space-5), 2.4vw, var(--space-8)); border-top: 1px solid var(--line); }
+  .lp-buy-close .lp-close-h { margin: 0; font: 500 clamp(1.25rem, 1.6vw, 1.5rem)/1.2 var(--display); letter-spacing: -0.01em; color: var(--head); }
+  .lp-buy-close p { margin: 0; color: var(--muted); max-width: 40ch; text-wrap: pretty; }
+  .lp-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4) var(--space-6); margin-top: var(--space-4); }
+  .lp-actions .link { align-self: center; }
+  .lp-sheet-dl :global(.ico) { flex: none; }
+  .lp-factors { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr)); }
+  .lp-factors[data-n='2'] { --n: 2; }
+  .lp-factors[data-n='4'] { --n: 2; }
+  .lp-factor { display: grid; grid-template-rows: auto 1fr auto auto; align-content: start; gap: var(--space-3); padding: clamp(var(--space-7), 3.4vw, var(--space-12)) clamp(var(--space-5), 2.2vw, var(--space-9)); border-left: 1px solid var(--line); }
+  .lp-factor:first-child { border-left: 0; }
+  .lp-factor-h { display: inline-flex; align-items: center; gap: var(--space-2-5); font: 400 var(--text-xs)/1.5 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+  /* Punktfelder: gemeinsame Grundlinie über dem Wert, gleiche Punktgröße in allen Zellen (Breite nach Spaltenzahl) */
+  .lp-dots { align-self: end; justify-self: start; display: block; height: auto; margin: clamp(var(--space-5), 2.4vw, var(--space-9)) 0 var(--space-2); overflow: visible; }
+  .lp-dots { --pitch: clamp(0.75rem, 0.95vw, 1.0625rem); }
+  .lp-dots-area, .lp-dots-drones { width: min(100%, calc(var(--pitch) * 10)); }
+  .lp-dots-duration { width: min(100%, calc(var(--pitch) * 8)); }
+  .lp-dots .d0 { fill: rgb(var(--rgb-text) / 0.22); }
+  .lp-dots .d1 { fill: rgb(var(--rgb-amber) / 0.45); }
+  .lp-dots .d2 { fill: var(--amber); filter: drop-shadow(0 0 0.1875rem rgb(var(--rgb-amber) / 0.85)); }
+  .lp-factor-v { margin-top: var(--space-2); font: 600 clamp(1.75rem, 2.6vw, 2.75rem)/1 var(--display); letter-spacing: -0.035em; color: var(--head); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .lp-factor-t { color: var(--muted); font-size: var(--text-copy); line-height: 1.5; text-wrap: pretty; }
+  .lp-incl { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) clamp(var(--space-6), 3vw, var(--space-10)); padding: clamp(var(--space-5), 2vw, var(--space-7)) clamp(var(--space-7), 3.4vw, var(--space-12)); border-top: 1px solid var(--line); }
+  .lp-incl .lp-incl-h { margin: 0; font: 400 var(--text-xs)/1.5 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+  .lp-incl ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2-5) clamp(var(--space-5), 2.4vw, var(--space-9)); }
+  .lp-incl li { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--text); font-size: var(--text-copy); }
+  .lp-incl li :global(.ico) { flex: none; }
+  .lp-incl li b { font-weight: 500; color: var(--head); }
+  @media (--grid-stacked) {
+    .lp-f :global(.lp-f-head) { grid-template-columns: 1fr; align-items: start; }
+    .lp-sheet { grid-template-columns: 1fr; }
+    .lp-buy { border-right: 0; border-bottom: 1px solid var(--line); }
+  }
+  /* schmal: Faktoren als Zeilen, Wert rechts neben Titel und Satz, damit die Karte dicht bleibt */
+  @media (max-width: 47.5em) {
+    .lp-factors, .lp-factors[data-n] { grid-template-columns: 1fr; }
+    .lp-factor { grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto; column-gap: var(--space-4); row-gap: var(--space-1-5); border-left: 0; border-top: 1px solid var(--line); padding: var(--space-5) var(--space-5-5); }
+    .lp-factor:first-child { border-top: 0; }
+    .lp-factor-h { grid-column: 1; grid-row: 1; }
+    .lp-dots { display: none; }
+    .lp-factor-v { grid-column: 2; grid-row: 1 / span 2; align-self: center; margin: 0; font-size: 1.625rem; }
+    .lp-factor-t { grid-column: 1; grid-row: 2; font-size: var(--text-sm); }
+    .lp-incl { display: grid; padding: var(--space-5) var(--space-5-5); }
+    .lp-incl ul { display: grid; gap: var(--space-2-5); }
+    .lp-buy { padding: var(--space-6) var(--space-5-5); }
   }
 </style>

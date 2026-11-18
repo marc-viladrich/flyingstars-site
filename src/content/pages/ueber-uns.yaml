@@ -27,14 +27,14 @@ sections:
     todo: "FlyingStars muss ein freigegebenes Teamfoto liefern (Moritz' Platzhalter #Teamfoto); bis dahin läuft hier das Showreel."
     _key: k_b7135e5f4ccf1ef0e1c1
 
-  # Große Überschrift der Nachhaltigkeit mit Foto einer Feier daneben; die Scrollstory mit Knall, Müll, Rauch steht auf
+  # Große Überschrift der Nachhaltigkeit, darunter die Einleitung neben einer Galerie von Festen (Galerie „willkommen“, Runde 4); die Scrollstory mit Knall, Müll, Rauch steht auf
   # /nachhaltigkeit/, hier führt der Link dorthin.
   - type: sustainability
     id: nachhaltigkeit
     kicker: Nachhaltigkeit
     headline: Feste feiern, bei denen alle *willkommen* sind
     text: "Hunde, Kinder, die Natur: Große Teile unserer Gesellschaft bleiben einem Feuerwerk lieber fern. Wir feiern lieber Feste, die uns alle begeistern. Mit Drohnenshows bieten wir deshalb eine Alternative zu Knall, Müll und Rauch des Feuerwerks. Und setzen regelmäßig Zeichen für Demokratie und Umweltschutz in den Himmel."
-    image: { src: "https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg", alt: Zwei Blüten aus Drohnen am Abendhimmel über einer Hochzeitsfeier, width: 1518, height: 854 }
+    gallery: willkommen
     cta: { label: Zur Nachhaltigkeit, href: /nachhaltigkeit/ }
     _key: k_0fa41045b869c8273b40
 
@@ -107,10 +107,12 @@ sections:
     id: standort
     kicker: Standort
     headline: Zu Hause in *NRW*
-    text: Besucht ihr uns mal auf einen Kaffee? Dann laden wir euch gerne in unser Büro in der Katernberger Straße 107, 45327 Essen, ein. Hier sitzen wir im Triple Z, dem Gründungszentrum Zeche Zollverein, umgeben von innovativem Start-up-Spirit und nordrhein-westfälischer Industrietradition. Über Post freuen wir uns an unserem Hauptsitz in der Bulmker Straße 107, 45888 Gelsenkirchen.
+    # Marc, 18.11.2026: Anschriften als eigene Blöcke unter dem Text (aus den Kontaktdaten), Moritz' Einladung und der
+    # Satz zum Triple Z bleiben wörtlich; der Post-Satz steckt jetzt im Block „Hauptsitz“
+    text: Besucht ihr uns mal auf einen Kaffee? Dann laden wir euch gerne in unser Büro ein. Hier sitzen wir im Triple Z, dem Gründungszentrum Zeche Zollverein, umgeben von innovativem Start-up-Spirit und nordrhein-westfälischer Industrietradition.
     places:
-      - { label: "Büro · Triple Z, Essen", lat: 51.492, lon: 7.041, "_key": "k_e306a90123055df8f90a" }
-      - { label: "Hauptsitz · Gelsenkirchen", lat: 51.508, lon: 7.104, "_key": "k_4f2fced46fdc7f3b8b94" }
+      - { label: Büro, role: Besuch auf einen Kaffee, address: visit, icon: coffee, lat: 51.492, lon: 7.041, "_key": "k_e306a90123055df8f90a" }
+      - { label: Hauptsitz, role: Post, address: post, icon: mailbox, lat: 51.508, lon: 7.104, "_key": "k_4f2fced46fdc7f3b8b94" }
     note: Basis 51.51° N · 7.10° E
     todo: FlyingStars muss ein Foto des Triple Z bzw. des Büros liefern, falls es statt der Karte stehen soll.
     _key: k_29290f927e580af77d9b

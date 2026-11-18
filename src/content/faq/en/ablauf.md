@@ -1,28 +1,24 @@
 ---
-question: How does booking work?
-tags:
-  - planung
-order: 10
-translationSourceHash: 2e3ad5e559941b742d0c04785f047d253b65f2f5d492ec0ea127474c230ccecd
+question: "What does the process look like?"
+tags: [faq-planung]
+order: 1
 draft: false
 translationContractVersion: 2
+translationSourceHash: eb9a46970830993df864278ae2afdee770649756c73a7f3e901ea49c885f6690
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 2e3ad5e559941b742d0c04785f047d253b65f2f5d492ec0ea127474c230ccecd
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
+  sourceFingerprint: eb9a46970830993df864278ae2afdee770649756c73a7f3e901ea49c885f6690
   fields:
     - address: /body
-      sourceFingerprint: 96eccb317a2190b6a842b57b0be7b94e485f9e344e0558ff48515463654c9aeb
-      targetFingerprint: 5f4e88d65c621740d995bf82460ebe0ed2e8d45d11ce9e4d55a443135a23a6f1
+      sourceFingerprint: 04024764288896999445816855c4f2f31204d5290d4f13180b3f5d9c740d49f0
+      targetFingerprint: 6470d2759a47ea899fa2f03e46e79e710cb015d91fbd3e0501b515e15e1bd92b
       status: adopted-existing
     - address: /question
-      sourceFingerprint: b81d78b160a55a28edf7cee1b485206666943cc22657c9454271be32a94d19d2
-      targetFingerprint: da9f2c8abd7f12033445b841d5f3d19f1d4a460d6012cf3f14e5d2337f4252f8
+      sourceFingerprint: f70facafe831632212cfc015f8adab11d0908f4f35de8c15a61a44fbefb2ec6b
+      targetFingerprint: cb248294af37bbceefab6cca1ae65b191a9b8dcf7c1d9dec2c06529bfc2a5527
       status: adopted-existing
 ---
 
-You send us an enquiry, we have a short conversation and send a quote. Then we plan the site, motifs and music together and arrange the permit. On show day, we secure the area, set up, fly and pack away. A site visit beforehand is rarely necessary.
+After your enquiry we talk together about your ideas. Then we send you our fixed quote. And that’s what it stays at – no surprises! A site visit is rarely necessary. Over the following weeks we plan the choreography, the motifs, the music and the organisation together. You are as involved as much or as little as you like. We take care of the permits. On the day of the show we start setting up around 3.5 hours before take-off. Shortly before, we set up the safety area. The drone ballet lasts 13 minutes on average, and then we pack up.

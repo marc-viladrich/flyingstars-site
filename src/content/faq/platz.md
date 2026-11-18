@@ -1,11 +1,7 @@
 ---
-question: Wie viel Platz braucht eine Drohnenshow?
-tags: [startseite, ort]
-order: 2
+question: "Wie viel Platz braucht eine Drohnenshow?"
+tags: [faq-planung]
+order: 4
 ---
 
-- Einen Sicherheitsbereich von rund 100 × 100 Metern, in dem sich während der Show keine Unbeteiligten aufhalten.
-- Eine freie Start- und Landefläche. Wie groß sie sein muss, hängt von der Drohnenzahl ab. Sie ist ab unserer Ankunft gesperrt, etwa drei Stunden vor der Show.
-- Die Zustimmung der Eigentümer:innen der Grundstücke, die wir überfliegen.
-
-Die genaue Größe hängt von Drohnenzahl und Flughöhe ab. Schickt uns euren Ort, wir prüfen ihn und schlagen notfalls eine Alternative vor. Maße und Aufbau im Überblick: [Technik-Datenblatt (PDF)](/media/downloads/FlyingStars-Technik-Datenblatt.pdf).
+Faustregel: Wir planen einen Showbereich von 100 x 100 Metern, in dem sich während der Aufführung keine unbeteiligten Personen aufhalten. Darin befindet sich auch ein Start- und Landebereich von rund 25 x 25 Metern, in dem wir ab circa 3,5 Stunden vor dem Event die Drohnen aufbauen und der für das Publikum nicht zugänglich ist. Die genaue Größe hängt von Drohnenanzahl und Flughöhe ab. Unsicher? Schickt uns den Ort. Wir prüfen ihn und finden notfalls eine Alternative.

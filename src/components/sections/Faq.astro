@@ -10,8 +10,10 @@ const locale = localeFromPath(Astro.url.pathname);
 import FaqAnswer from '../FaqAnswer.astro';
 import type { Section } from '../../content.config';
 import Accent from '../Accent.astro';
+import { plain } from '../accent';
 import CtaBox from '../CtaBox.astro';
 import { optimizedImage } from '../../lib/media';
+import { factText } from '../../content/show-extras.mjs';
 type Props = Extract<Section, { type: 'faq' }> & { index: number };
 const { headline = t('faq.frequentlyAskedQuestions'), text, cta, tags, limit, openFirst, groups, closing, id = `s${Astro.props.index}`, index, kicker } = Astro.props;
 const headingId = `${id}-h`;
@@ -20,23 +22,43 @@ const G = index === 0 ? 'h2' : 'h3';
 const all = (await localizedCollection('faq', locale, e => !e.data.draft)).sort((a,b) => a.data.order-b.data.order);
 const pick = (want?: string[]) => want?.length ? all.filter(e => e.data.tags.some(tag => want.includes(tag))) : all;
 const withContent = (list: typeof all) => list.map(entry => ({ entry }));
+// Gruppen-Sprungmarken heißen wie die Gruppe (/faq/#planung), Runde 4
 const blocks = groups?.length
-  ? await Promise.all(groups.map(async (g, gi) => ({ id: g.id ? `${id}-${g.id}` : `${id}-g${gi + 1}`, headline: g.headline, items: await withContent(pick(g.tags)) })))
+  ? await Promise.all(groups.map(async (g, gi) => ({ id: g.id ?? `${id}-g${gi + 1}`, headline: g.headline, items: await withContent(pick(g.tags)) })))
   : [{ id: undefined, headline: undefined, items: await withContent(limit ? pick(tags).slice(0, limit) : pick(tags)) }];
 const external = cta?.href.startsWith('https://');
 const photo = closing?.image ? await optimizedImage(closing.image.src, 640) : undefined;
+// FAQ-Seite (mit Gruppen): Fragen als Überschriften (Moritz: H2 Gruppe, H3 Frage) und strukturierte Daten (FAQPage)
+const Q = groups?.length ? (index === 0 ? 'h3' : 'h4') : undefined;
+const plainText = (md: string) => factText(md, locale, { markdown: true }).replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/[*_`#>]/g, '').replace(/\s+/g, ' ').trim();
+const ld = groups?.length ? JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: blocks.flatMap((b) => b.items.map(({ entry }) => ({ '@type': 'Question', name: entry.data.question, acceptedAnswer: { '@type': 'Answer', text: plainText(entry.body ?? '') } }))) }).replace(/</g, '\\u003c') : undefined;
 ---
 <section class:list={['section', { 'faq-grouped': groups?.length }]} id={id} aria-labelledby={headingId}>
   {/* Mit Gruppen (FAQ-Seite): Kopf oben, je Gruppe links die Kategorie, die beim Scrollen mitläuft (sticky), rechts die
        Fragen. So ist klar, was Kategorie und was Frage ist (Marc, 31.10.2026). */}
   <div class="faq-grid">
-    <SectionHead variant="embedded" class="intro" kicker={kicker} headline={headline} text={text} id={headingId} level={H}>{cta && <a class="link" href={localHref(cta.href)} rel={external ? 'noopener' : undefined} target={external ? '_blank' : undefined}>{cta.label} <span aria-hidden="true">→</span></a>}</SectionHead>
+    <SectionHead variant="embedded" class="intro" kicker={kicker} headline={headline} text={text} id={headingId} level={H}>{cta && <a class="link" href={localHref(cta.href)} rel={external ? 'noopener' : undefined} target={external ? '_blank' : undefined}>{cta.label} <span aria-hidden="true">→</span></a>}
+      {groups?.length && <nav class="faq-jump" aria-label={plain(headline)}><ul>{blocks.map((b) => <li><a href={`#${b.id}`}><span>{b.headline}</span><span class="mono" aria-hidden="true">{b.items.length}</span></a></li>)}</ul></nav>}
+    </SectionHead>
     <div class="faq-body">
       {blocks.map((block, bi) => <div class="faq-group" id={block.id} aria-labelledby={block.headline ? `${block.id}-h` : undefined} role={block.headline ? 'group' : undefined}>
         {block.headline && <G class="faq-group-h" id={`${block.id}-h`}>{block.headline}</G>}
-        <div class="faq">{block.items.map(({ entry }, i) => <details open={openFirst && bi === 0 && i === 0}><summary>{entry.data.question}</summary><div class="answer"><FaqAnswer entry={entry} /></div></details>)}</div>
+        <div class="faq">{block.items.map(({ entry }, i) => <details open={openFirst && bi === 0 && i === 0}><summary>{Q ? <Q class="faq-q">{entry.data.question}</Q> : entry.data.question}</summary><div class="answer"><FaqAnswer entry={entry} /></div></details>)}</div>
       </div>)}
       {closing && <CtaBox headline={closing.headline} text={closing.text} button={{ label: t('chopper404.requestAShow'), href: '/kontakt/' }} level={G} class="faq-cta" />}
     </div>
   </div>
+  {ld && <script type="application/ld+json" set:html={ld} />}
 </section>
+
+<style>
+  /* Sprungmarken zu den Gruppen (FAQ-Seite): eine Zeile großer Links mit Anzahl der Fragen */
+  .faq-jump { margin-top: var(--space-4); }
+  .faq-jump ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2-5) var(--space-3); }
+  .faq-jump a { display: inline-flex; align-items: baseline; gap: var(--space-2); padding: var(--space-2-5) var(--space-4); border: 1px solid var(--line-strong); border-radius: 999px; color: var(--text); font: 500 1rem/1.2 var(--display); transition: border-color var(--dur-control), background-color var(--dur-control); }
+  .faq-jump a:hover, .faq-jump a:focus-visible { border-color: var(--accent); background: rgb(var(--rgb-amber) / 0.08); }
+  .faq-jump .mono { font-size: var(--text-xs); color: var(--accent); }
+  /* Frage als Überschrift im summary: sieht aus wie bisher */
+  .faq-q { font: inherit; letter-spacing: inherit; margin: 0; color: inherit; }
+  .faq-grouped :global(.faq-group) { scroll-margin-top: 5.5rem; }
+</style>

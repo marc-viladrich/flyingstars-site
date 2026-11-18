@@ -1,28 +1,24 @@
 ---
-question: Kan een show ook in een stad of bij een luchthaven?
-tags:
-  - ort
-order: 21
-translationSourceHash: 7d0d8308be472b56b3527d5d3a94982c9a9fb1f03beb5a438fca6a1fb6324646
+question: "Zijn vluchten boven steden, luchthavens of havens mogelijk?"
+tags: [faq-sicherheit]
+order: 6
 draft: false
 translationContractVersion: 2
+translationSourceHash: 48a851750aea217a75bc4ffbc665e0ebd4259253b19e82754c2a61b6a989d754
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 7d0d8308be472b56b3527d5d3a94982c9a9fb1f03beb5a438fca6a1fb6324646
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
+  sourceFingerprint: 48a851750aea217a75bc4ffbc665e0ebd4259253b19e82754c2a61b6a989d754
   fields:
     - address: /body
-      sourceFingerprint: e2ef8dc69014c67038ec5accc93b63d971d9fd992a4dec30520b0b444eae5a47
-      targetFingerprint: 0e95cb14fbb1195c2c95dfae8470859a7f9884004d07404efd2764d70dd58fbe
+      sourceFingerprint: 128eb9df024f62d28051a3c48dbfa49004d2bb1b8cef4c2b23e4a6301a170a79
+      targetFingerprint: 30f4c64302fa8d9c7dc8d985c5c4e5203db93a6919971ed8b261480b13d54748
       status: adopted-existing
     - address: /question
-      sourceFingerprint: cff592011940d4de3a06f2bca441c0a5ebb838317ccfe6399037bd46e48c3b09
-      targetFingerprint: 6eaa77aa26c890ffd4aed8552b923aef56fce73bdd76acdd85be124418130185
+      sourceFingerprint: 6f93f5ad3e1192c96025c399326f115267447eeef8f9b445407c805ed5c27db3
+      targetFingerprint: 4fbcb33215b39036c07239e52e7aeaf57b7d9ec429ece81d7c92ba9f8a792131
       status: adopted-existing
 ---
 
-Ja, met meer planning. In controlezones van luchthavens, dichtbebouwde gebieden en bij federale waterwegen hebben we extra vergunningen van de Duitse luchtverkeersleiding en lokale instanties nodig. Reken daarvoor op circa drie maanden voorbereiding.
+Ja! Maar ze vragen meer planning. Shows in controlezones zoals luchthavens of in dichtbevolkte gebieden hebben speciale vergunningen nodig van de luchtverkeersleiding en de lokale autoriteiten. Dankzij onze ervaring kunnen we ook zulke complexe projecten veilig en succesvol uitvoeren.

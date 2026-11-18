@@ -1334,3 +1334,5 @@ a.pack { grid-template-rows: auto auto 1fr; align-items: start; row-gap: var(--s
 .native-select option { background: var(--surface); color: var(--text); font-family: var(--body); }
 input:is([type="radio"], [type="checkbox"]) { accent-color: var(--orchid); }
 .eco-head > .kicker { margin-bottom: calc(-1 * var(--space-0-5)); }
+/* Chopper hat kein Porträtfoto: seine Karte zeigt ihn als Leuchtpunkt-Figur (Runde 4) */
+.portrait .portrait-chopper { position: absolute; inset: 0; margin: auto; width: 100%; height: auto; }

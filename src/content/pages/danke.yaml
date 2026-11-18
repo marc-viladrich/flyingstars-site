@@ -1,12 +1,24 @@
-title: Status eurer Anfrage
-description: "Rückmeldung zum Kontaktformular von FlyingStars. Solange der Versand nicht eingerichtet ist, erreicht ihr das Team direkt per E-Mail."
+# Danke-Seite nach Moritz' Webtext (18.11.2026, „Danke-Seite“), Ansprache „ihr“. Nach dem Absenden der Anfrage leitet
+# das Formular hierher weiter. Die Frage nach der Quelle ist freiwillig und geht als zweite kleine Meldung über
+# /api/contact (src/content/inquiry-source.mjs). Ohne eingerichteten Versand zeigt die Seite das ehrlich an.
+title: Danke für eure Anfrage
+description: "Danke für eure Anfrage bei FlyingStars. Wir melden uns innerhalb von maximal 48 Stunden bei euch zurück."
 noindex: true
 sections:
-  - type: textMedia
-    headline: Status eurer Anfrage
-    body: |
-      In dieser Vorschau ist der Versand noch nicht eingerichtet. Es wurde nichts gesendet und nichts gespeichert.
-
-      Schreibt uns bitte direkt an [{{contact.email}}](mailto:{{contact.email}}) oder ruft an unter [{{contact.phone.label}}]({{contact.phone.href}}).
-    todo: FlyingStars muss den tatsächlichen Versandstatus mit dem Betrieb klären; Moritz muss die reine Vorschau-Meldung bei aktivem Versand durch eine passende Rückmeldung in DE/EN/NL ersetzen.
+  - type: thanks
+    kicker: Danke für eure Anfrage
+    headline: Chopper freut sich darauf, euch *kennenzulernen*!
+    text: Wir haben eure Anfrage erhalten. Innerhalb von maximal 48 Stunden melden wir uns bei euch zurück.
+    question: Würdet ihr uns verraten, wo ihr das erste Mal von uns gehört habt? Das hilft uns unglaublich!
+    options:
+      - { value: suchmaschine, label: "Suchmaschine (Google, Ecosia, …)", "_key": "k_c599859e1fe8b3caf7ac" }
+      - { value: google-werbung, label: Werbung auf Google, "_key": "k_1f914a8020695a5b06e9" }
+      - { value: ki, label: "KI-System (ChatGPT, Claude, Gemini, …)", "_key": "k_39a589ab9088c25d030a" }
+      - { value: linkedin, label: LinkedIn, "_key": "k_235b800a0df0756b48c0" }
+      - { value: instagram, label: Instagram, "_key": "k_39e956a2c98736c65151" }
+      - { value: empfehlung, label: Persönliche Empfehlung, "_key": "k_e5dce0f558850edee675" }
+      - { value: andere, label: Andere, "_key": "k_c6c2f862b7de2fe8b56f" }
+    otherLabel: Wo genau?
+    sendLabel: Antwort senden
+    doneText: Danke, das hilft uns sehr!
     _key: k_7f812f5f0bc5bd9032db

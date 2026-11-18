@@ -1,25 +1,19 @@
 ---
-question: Hoe lang duurt een droneshow?
-tags:
-  - planung
-  - hochzeit
-  - werbung
-order: 13
-translationSourceHash: 1b799a4626cf651e521a3884fe61891d8e1f404198678272c772e87b4f105e97
+question: "Hoe lang duurt een droneshow?"
+tags: [faq-drohnenshows]
+order: 5
 draft: false
 translationContractVersion: 2
+translationSourceHash: fd5d8689853effb404e17c43bb0441a91307fd8c848036cda5c0b13692583c37
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 1b799a4626cf651e521a3884fe61891d8e1f404198678272c772e87b4f105e97
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
+  sourceFingerprint: fd5d8689853effb404e17c43bb0441a91307fd8c848036cda5c0b13692583c37
   fields:
     - address: /body
-      sourceFingerprint: 4e4cef01bdeda7ed38b16f858e934c9c608ccd5630ab3c44bf6a9e652c62a5a1
-      targetFingerprint: 9a1b9f55abae48d563792b13d8b2f7ccdf2989669365a8272a8502d42e6f8af5
+      sourceFingerprint: bbceff6e291808251bc148f78be4ad779b3a016991eb20ab5606870b6fe85876
+      targetFingerprint: d53ea71ab8726bbdcd47a600c443c73c52509350de2ba2dc65e5a9ce313e1080
       status: adopted-existing
     - address: /question
       sourceFingerprint: 5f34823be35749cb92205c4c7f3e77da31c6ea573a68d6e2cefe8ab6ef8c3694
@@ -27,4 +21,4 @@ translationEvidence:
       status: adopted-existing
 ---
 
-Meestal circa {{duration.outdoor.typical}} minuten. Tot {{duration.outdoor.max}} minuten is mogelijk. Een indoor-show duurt {{duration.indoor.min}} tot {{duration.indoor.max}} minuten.
+Een droneshow buiten duurt tot 25 minuten. Gemiddeld duurt de vlucht zo’n 13 minuten. Binnen zijn vijf tot acht minuten mogelijk.

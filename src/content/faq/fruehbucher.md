@@ -1,7 +1,7 @@
 ---
-question: Gibt es einen Frühbucherrabatt?
-tags: [preise]
-order: 41
+question: "Gibt es einen Frühbuchungsrabatt?"
+tags: [faq-kosten]
+order: 3
 ---
 
-Ja. Bucht ihr bis zum Jahresende eine Show für das Folgejahr, bekommt ihr 10 % Rabatt. Das ist besonders für Städte und Festivals interessant, die ihre Saison früh planen.
+Ja! Der Frühbuchungsrabatt beträgt 10 % bei Buchung im Vorjahr.

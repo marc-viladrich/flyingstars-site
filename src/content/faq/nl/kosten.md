@@ -1,32 +1,24 @@
 ---
-question: Wat kost een droneshow?
-tags:
-  - startseite
-  - preise
-  - werbung
-order: 4
-translationSourceHash: d03570436eda868b164fbf34f6a69a8ca58584a3e4a98b7cc55e5534b72faf62
+question: "Wat kosten droneshows?"
+tags: [faq-kosten]
+order: 1
 draft: false
 translationContractVersion: 2
+translationSourceHash: 8fb23813167794ea1f1e96789996197a7d24326c73866417256e3e09d83617fa
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: d03570436eda868b164fbf34f6a69a8ca58584a3e4a98b7cc55e5534b72faf62
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
+  sourceFingerprint: 8fb23813167794ea1f1e96789996197a7d24326c73866417256e3e09d83617fa
   fields:
     - address: /body
-      sourceFingerprint: 2ce8c4bdd53ed2c206289e48ecab6929a86d9d189acf1c526a56fca3aac409a3
-      targetFingerprint: 6ecd944f41e3b1425e659b0425d47068c958ccc42234eb61e020331a0c7e53f7
+      sourceFingerprint: 989872c4fd4e63343b17215aed0a418a5574ff39a4f0e2392cac0a74a17c5566
+      targetFingerprint: db7375f02861f2163d39e282243922260ebd5b4658c37f6f1c052f23171144a8
       status: adopted-existing
     - address: /question
-      sourceFingerprint: 2deb2adf453d38df30838489582fbc6e3a6c1a00647a9a8190f153a40f9764b2
-      targetFingerprint: aee65a3ab61bd39d54976ab949825f9c662fc1f0a68ff2474706ff65e75b48a8
+      sourceFingerprint: cfb2a6fe38a33c505f1fa51d93d2acf5ceeafb4bb7111335bdc05ee5665f4602
+      targetFingerprint: 1c076090f6d2ab336e6a93d0ece2e66799d8a98697e53b659c700ff2a5a81c5e
       status: adopted-existing
 ---
 
-Dat hangt vooral af van het aantal drones, het ontwerp en de locatie. Er zijn drie pakketten als uitgangspunt: SPARK met 100 drones vanaf € 7.900, HORIZON met 200 drones vanaf € 15.900 en ODYSSEY met 300 of meer drones vanaf € 34.900. Alle prijzen zijn exclusief btw en reiskosten.
-
-Vergunning, muziekmontage en aansprakelijkheidsverzekering zijn in elk pakket inbegrepen. Alle details staan op de [prijspagina](/nl/drohnenshow-preise/). In de [showconfigurator](/nl/drohnenshow-preise/#konfigurator) stellen jullie de show zelf samen en zien jullie de prijs.
+Onze droneshows kosten vanaf 7900 euro (netto) plus reiskosten. Waar de prijs voor jullie event ligt, hangt vooral af van drie factoren: hoeveel drones jullie nodig hebben, waar het evenement plaatsvindt en welke extra diensten jullie nodig hebben. In onze [configurator](/nl/drohnenshow-preise/#konfigurator) stellen jullie zelf jullie pakket samen.

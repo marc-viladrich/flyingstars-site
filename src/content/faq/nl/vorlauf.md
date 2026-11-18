@@ -1,25 +1,19 @@
 ---
-question: Hoeveel voorbereidingstijd hebben jullie nodig?
-tags:
-  - startseite
-  - planung
-  - hochzeit
-order: 1
-translationSourceHash: cbd0f64e4856a331b13bda9e3dc0464e3e2bdbf51dbdee282ec0313a9f65f27b
+question: "Hoeveel voorbereidingstijd hebben jullie nodig?"
+tags: [faq-planung]
+order: 2
 draft: false
 translationContractVersion: 2
+translationSourceHash: d1c6e54ac3c071b2368d2ef9dcd5062c8e12d0418a4f0ddb25058af7608c0fd9
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: cbd0f64e4856a331b13bda9e3dc0464e3e2bdbf51dbdee282ec0313a9f65f27b
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
+  sourceFingerprint: d1c6e54ac3c071b2368d2ef9dcd5062c8e12d0418a4f0ddb25058af7608c0fd9
   fields:
     - address: /body
-      sourceFingerprint: ec899e9d3f56d89263cc08ba84ae32157bad4111d25a91b93b2f20b21b16037b
-      targetFingerprint: b83c9920c607065d7ab99917aa2d8fa215b6ec89c039fe5e0c75a4fe9a8e9acd
+      sourceFingerprint: 01efa175b7cf0dc5140d16cd0e935440189eae530be31cd241a25bd432a56f55
+      targetFingerprint: d55edff76ae5a0ee9b151b491b4940abcf6a0f4be280be2025ba389c3499f543
       status: adopted-existing
     - address: /question
       sourceFingerprint: 90f610ee0798dccb0834e9abf951f45d1b8482ac44b4c9bbf44f9b8a2f89e7fc
@@ -27,6 +21,4 @@ translationEvidence:
       status: adopted-existing
 ---
 
-Eén tot twee maanden is ideaal, in het hoogseizoen liever meer. Plan minimaal drie weken voor ontwerp en jullie feedback. Voor complexe vergunningen, bijvoorbeeld bij luchthavens, eerder drie maanden.
-
-Alles onder 14 dagen is bij ons express. Er is geen vaste ondergrens, we proberen het mogelijk te maken. De toeslag hangt af van de werkzaamheden.
+Vraag gerust zo vroeg mogelijk aan. Twee of drie maanden voorbereidingstijd is ideaal, vooral bij ingewikkelde vergunningen. Denk eraan: er is zelfs een vroegboekkorting van 10 % voor boekingen in het jaar ervoor! Als het haast heeft, kunnen we jullie show tegen een expresstoeslag ook binnen een of twee weken plannen.

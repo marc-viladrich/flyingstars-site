@@ -1,30 +1,24 @@
 ---
-question: Vliegen jullie ook in het buitenland?
-tags:
-  - ort
-order: 22
-translationSourceHash: b09f1cd998023d387068b48d79c7b66a7abec57236c6c9d7b303036a80b45d40
+question: "In welke landen vliegen jullie?"
+tags: [faq-sicherheit]
+order: 5
 draft: false
 translationContractVersion: 2
+translationSourceHash: c086d6a34a79115a0d60f513c1f62fce235b0d77fe33a8018fccb2a1d99bf8dc
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: b09f1cd998023d387068b48d79c7b66a7abec57236c6c9d7b303036a80b45d40
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
+  sourceFingerprint: c086d6a34a79115a0d60f513c1f62fce235b0d77fe33a8018fccb2a1d99bf8dc
   fields:
     - address: /body
-      sourceFingerprint: c643f48ec962ce6dac4d475a392e9554286d92f1406ea5d440cb950947a63cc3
-      targetFingerprint: efbbfce030edea40229bce5395623d1ab2e11925f48e4cfbe421f8d115644603
+      sourceFingerprint: 98b490813414b3b15feb9d17218bbf868103ae2e599aae1ca84df81ca6a1441a
+      targetFingerprint: 5f8289f31bcec803241348e35990a1bb46e61cf81f70dc3db84b4d8c3e39263b
       status: adopted-existing
     - address: /question
-      sourceFingerprint: 4e443ae362c0130ec401b65320e2c7077cad9e8b6328ab9397d74ac266d660df
-      targetFingerprint: bda2169a5350a703d196cd8f0aa0b458e2c2b40d1a8f2029c7f8a9bef4e2a110
+      sourceFingerprint: 6e5a3793d43a001b499c4060eb7204ac609fbdf5f4031bfb15b3efc2ee30625a
+      targetFingerprint: ecbc383a641d6003932f9c9546fa5476722ba14efc95ee981dad3a08b845d679
       status: adopted-existing
 ---
 
-Ja, in heel Europa, bijvoorbeeld Oostenrijk, Nederland, België en Zweden. Onze vergunning geldt in de hele EU. Voor elk ander EU-land vragen we vooraf een bevestiging aan. Dat duurt 4 tot 8 weken, in Italië circa drie maanden.
-
-Zwitserland is geen EU-land. Daar zijn aanvragen bij het BAZL en douaneafhandeling nodig. Daarvoor rekenen we € 1.900 exclusief btw extra.
+We kunnen overal ter wereld droneshows aanbieden. Het vaakst vliegen we in Duitsland, Oostenrijk en Zwitserland. Voor de hele EU hebben we een generieke vergunning, dus we mogen onze choreografieën overal aanbieden. In sommige landen moeten we dat toch extra aanvragen, wat een paar weken duurt. Ook in niet-EU-landen zorgen we voor de vergunningen. Daar komen kosten voor het transport van de drones en de douane bij.

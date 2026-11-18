@@ -157,11 +157,7 @@ sections:
       Together we build a bespoke choreography that tells your brand's story. More than just your logo, a claim or your company name – emotional storytelling that enchants.
 
       Our drone shows are an alternative to fireworks that hardly anyone knows yet. Attention guaranteed, even from miles away.
-    image:
-      src: https://flyingstars.art/wp-content/uploads/2024/12/FORD_comp.png
-      alt: Ford lettering made of blue drones above the factory site in Cologne
-      width: 1929
-      height: 1133
+    gallery: logos
     mediaSide: right
     headAbove: true
     cta:
@@ -396,12 +392,12 @@ sections:
       - werbung-moritz
     _key: k_92cbd2df611f3954dfc2
 translationContractVersion: 2
-translationSourceHash: a7f3786b888933ce22302bcbb3c7192dc8a54759f0f1fda501816f5da8e6cdd6
+translationSourceHash: 02d4fec8039c0a4045aa7a6b8a3fd0748f310a5b9867e4a932f329bc730ac5a0
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: a7f3786b888933ce22302bcbb3c7192dc8a54759f0f1fda501816f5da8e6cdd6
+  sourceFingerprint: 02d4fec8039c0a4045aa7a6b8a3fd0748f310a5b9867e4a932f329bc730ac5a0
   fields:
     - address: /description
       sourceFingerprint: c341f72341f426757a971f0fda0534cc4c1eaceb9c66c800d71aec868389401a
@@ -987,9 +983,9 @@ translationEvidence:
       sourceFingerprint: 84f60d1ef7c7f68da038b0700c109f73605cdb025d804a49d1e9370c863a3363
       targetFingerprint: e6db434e648e7dda53c1768db2a7ac6cf72044d70bad8e46b2d32133a0c7fb83
       status: adopted-existing
-    - address: /sections/@k_7abf894f6f4dfb7d5b8c/image/alt
-      sourceFingerprint: ccc71317d75369950e7245409fca7d634060d2b75a6d33548c023b2f843f3390
-      targetFingerprint: f8bd733a9de8d99cb604737748523eda7ca727bb02222509092370157d5d7bbc
+    - address: /sections/@k_7abf894f6f4dfb7d5b8c/image
+      sourceFingerprint: 0f1346cb82638963f6076673743d97dd2b82c393a9aa9c018624f6aa57df5fb0
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_7abf894f6f4dfb7d5b8c/kicker
       sourceFingerprint: 663acdec7506bf8f732ab4f860fd2bcd5db4f7922adf6bb29a42c84678dc338a

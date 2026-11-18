@@ -34,6 +34,18 @@ interface Props {
 }
 const { id = 'konfigurator', headingLevel = 2, heading = t('showconfigurator.whatShouldHappenInTheSky'), kicker } = Astro.props;
 const Heading = headingLevel === 1 ? 'h1' : 'h2';
+// Preisseite (Marc, 18.11.2026: „open with the configurator“): Seitenkopf als Teil der Section. Die Seite liefert die
+// Überschrift (mit id="cfg-h") im Slot head, Eckdaten im Slot facts und den Einleitungstext im Slot intro; die
+// Anordnung je Breite steht in PricingPage.astro. Ohne Slot bleibt alles wie bisher (Überschrift im Bedienfeld).
+const hasHead = Astro.slots.has('head');
+// Erstes Standbild (18.11.2026): Bis die Engine nach dem Laden ihr erstes Bild zeichnet, steht auf der Bühne eine ruhige
+// Lichtwolke aus dem Server-HTML statt einer schwarzen Fläche; das Skript blendet sie aus, sobald die Leinwand Punkte
+// trägt (is-live). Deterministisch, ohne Zufall pro Build.
+const poster = Array.from({ length: 150 }, (_, i) => {
+  const h = (k: number) => { const x = Math.sin(i * 12.9898 + k * 78.233) * 43758.5453; return x - Math.floor(x); };
+  const a = h(1) * Math.PI * 2, r = Math.sqrt(h(2)) * (0.55 + 0.45 * h(3));
+  return { x: 80 + Math.cos(a) * r * 40, y: 45 + Math.sin(a) * r * 36, o: 0.18 + 0.5 * (1 - r) * h(4) + 0.12, s: 0.34 + 0.22 * h(5) };
+});
 
 // Runde 11: Anlässe in der Ordnung der Startseiten-Karten, Saison vorn (bySeason). Der Build kennt nur seinen eigenen
 // Monat; das Skript ordnet beim Laden mit dem Monat des Besuchs neu und wählt den ersten Anlass (show-configurator.js)
@@ -61,8 +73,12 @@ const ticks = [DRONES_MIN, 300, 500, DRONES_MAX];
 {/* Explicit URL: the catch-all route imports the pricing template on every page.
      Keep its namespaced styles on pages that actually render the configurator. */}
 <link rel="stylesheet" href={configuratorStyles} />
-<section class="cfg is-individual" id={id} aria-labelledby="cfg-h">
+<section class:list={['cfg is-individual', { 'has-head': hasHead }]} id={id} aria-labelledby="cfg-h">
+    {hasHead && <div class="cfg-head"><slot name="head" /></div>}
+    {hasHead && Astro.slots.has('facts') && <div class="cfg-facts"><slot name="facts" /></div>}
+    {hasHead && Astro.slots.has('intro') && <div class="cfg-intro"><slot name="intro" /></div>}
     <div class="cfg-stage" aria-label={t('showconfigurator.showPreview')} aria-describedby="cfg-scene" data-bleed>
+      <svg class="cfg-poster" viewBox="0 0 160 90" preserveAspectRatio="xMidYMid meet" aria-hidden="true">{poster.map((p) => <circle cx={p.x.toFixed(2)} cy={p.y.toFixed(2)} r={p.s.toFixed(2)} fill-opacity={p.o.toFixed(2)} />)}</svg>
       <canvas id="cfg-field" aria-hidden="true"></canvas>
       {/* vierzehnte Fassung: ein Klick irgendwo auf die Bühne hält die Vorführung an oder lässt sie weiterlaufen (wie bei
            YouTube); als echter Knopf erreichbar, Leertaste und Eingabe schalten um */}
@@ -110,7 +126,7 @@ const ticks = [DRONES_MIN, 300, 500, DRONES_MAX];
     </div>
 
     <form class="cfg-panel" id="cfg">
-      <SectionHead variant="contents" headline={heading} kicker={kicker} id="cfg-h" level={Heading} titleClass="cfg-h" kickerClass="cfg-kicker" />
+      {!hasHead && <SectionHead variant="contents" headline={heading} kicker={kicker} id="cfg-h" level={Heading} titleClass="cfg-h" kickerClass="cfg-kicker" />}
 
       {/* Runde 22 (Marc, 04.11.2026, für die Demo: „mit einem Klick weniger durchklicken“): Anlass wieder als Pills, eine
            Radio-Gruppe mit der gemeinsamen .chips-Komponente. Nicht gewählte Anlässe gedämpft, beim Zeigen voll
@@ -216,8 +232,31 @@ const ticks = [DRONES_MIN, 300, 500, DRONES_MAX];
 <script>
   import { whenNear } from '../../scripts/when-near.mjs';
   const root = document.querySelector<HTMLElement>('.cfg');
+  // Standbild ausblenden, sobald die Leinwand etwas zeigt: einmal je Bild eine 16×9-Verkleinerung prüfen, höchstens 6 s
+  const live = () => {
+    const field = root?.querySelector<HTMLCanvasElement>('#cfg-field'), probe = document.createElement('canvas');
+    probe.width = 16; probe.height = 9;
+    const ctx = probe.getContext('2d', { willReadFrequently: true }), until = performance.now() + 6000;
+    const check = () => {
+      if (!root || !field || !ctx) return;
+      if (field.width && field.height) {
+        ctx.clearRect(0, 0, 16, 9); ctx.drawImage(field, 0, 0, 16, 9);
+        const px = ctx.getImageData(0, 0, 16, 9).data;
+        for (let i = 3; i < px.length; i += 4) if (px[i] > 0) { root.classList.add('is-live'); return; }
+      }
+      if (performance.now() < until) requestAnimationFrame(check); else root.classList.add('is-live');
+    };
+    requestAnimationFrame(check);
+  };
   if (root) {
-    const load = whenNear(root, () => import('../../scripts/show-configurator.js'));
+    const load = whenNear(root, () => import('../../scripts/show-configurator.js').then((m) => { live(); return m; }));
     if (location.hash || root.contains(document.activeElement)) void load().catch((error: unknown) => console.warn('Configurator could not load', error));
   }
 </script>
+
+<style>
+  /* erstes Standbild der Bühne: ruhige Lichtwolke über der Steuerleiste, weicht dem ersten Bild der Engine (is-live) */
+  .cfg-poster { position: absolute; left: 0; top: 0; width: 100%; height: calc(100% - 4rem); fill: rgb(var(--rgb-text)); pointer-events: none; transition: opacity 0.6s var(--ease-default); }
+  :global(.cfg.is-live) .cfg-poster { opacity: 0; }
+  @media (prefers-reduced-motion: reduce) { .cfg-poster { transition: none; } }
+</style>

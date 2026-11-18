@@ -157,11 +157,7 @@ sections:
       Samen bouwen we een choreografie op maat die het verhaal van jullie merk vertelt. Meer dan alleen jullie logo, een claim of jullie bedrijfsnaam – emotionele storytelling die betovert.
 
       Onze droneshows zijn een alternatief voor vuurwerk dat nog bijna niemand kent. Aandacht gegarandeerd, zelfs van kilometers afstand.
-    image:
-      src: https://flyingstars.art/wp-content/uploads/2024/12/FORD_comp.png
-      alt: Ford-tekst van blauwe drones boven het fabrieksterrein in Keulen
-      width: 1929
-      height: 1133
+    gallery: logos
     mediaSide: right
     headAbove: true
     cta:
@@ -396,12 +392,12 @@ sections:
       - werbung-moritz
     _key: k_92cbd2df611f3954dfc2
 translationContractVersion: 2
-translationSourceHash: a7f3786b888933ce22302bcbb3c7192dc8a54759f0f1fda501816f5da8e6cdd6
+translationSourceHash: 02d4fec8039c0a4045aa7a6b8a3fd0748f310a5b9867e4a932f329bc730ac5a0
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: a7f3786b888933ce22302bcbb3c7192dc8a54759f0f1fda501816f5da8e6cdd6
+  sourceFingerprint: 02d4fec8039c0a4045aa7a6b8a3fd0748f310a5b9867e4a932f329bc730ac5a0
   fields:
     - address: /description
       sourceFingerprint: c341f72341f426757a971f0fda0534cc4c1eaceb9c66c800d71aec868389401a
@@ -987,9 +983,9 @@ translationEvidence:
       sourceFingerprint: 84f60d1ef7c7f68da038b0700c109f73605cdb025d804a49d1e9370c863a3363
       targetFingerprint: 0357fca2ade2010c52bcc5d62f7473863162b746027cf0950927352e15bf66d2
       status: adopted-existing
-    - address: /sections/@k_7abf894f6f4dfb7d5b8c/image/alt
-      sourceFingerprint: ccc71317d75369950e7245409fca7d634060d2b75a6d33548c023b2f843f3390
-      targetFingerprint: eda9bcad47ae4b026cba0011b8a42aad3c2921b1304e34ef923353ec38262799
+    - address: /sections/@k_7abf894f6f4dfb7d5b8c/image
+      sourceFingerprint: 0f1346cb82638963f6076673743d97dd2b82c393a9aa9c018624f6aa57df5fb0
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_7abf894f6f4dfb7d5b8c/kicker
       sourceFingerprint: 663acdec7506bf8f732ab4f860fd2bcd5db4f7922adf6bb29a42c84678dc338a

@@ -1,0 +1,43 @@
+---
+// Chopper, der Bürohund, als Drohnenformation mit Stimmung (Runde 4): happy (Danke), sad (404), play (Hochzeit, mit zwei
+// Kindern und Ball). Leichtgewichtig: ein Canvas, das Modul lädt erst kurz bevor die Bühne ins Bild kommt, bei
+// reduzierter Bewegung steht ein ruhiges Standbild. Aussehen und Teile: src/scripts/effects/chopper.js, Stimmungen:
+// chopper-moods.js. Rahmen und Fläche gibt die einbettende Seite vor; die Komponente hat keinen eigenen Karton.
+import { forPath } from '../i18n/server';
+const { t } = forPath(Astro.url.pathname);
+interface Props { mood: 'happy' | 'sad' | 'play'; label?: string; class?: string }
+const { mood, label, class: cls } = Astro.props;
+const fallback = { happy: t('chopper.happyLabel'), sad: t('chopper.sadLabel'), play: t('chopper.playLabel') }[mood];
+---
+<canvas class:list={['chopper-mood', `is-${mood}`, cls]} data-chopper-mood={mood} role="img" aria-label={label ?? fallback}></canvas>
+
+<script>
+  // Startet bei Sichtbarkeit (mit Vorlauf, damit niemand vor einer leeren Fläche wartet)
+  const stages = document.querySelectorAll<HTMLCanvasElement>('[data-chopper-mood]');
+  if (stages.length && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        io.unobserve(e.target);
+        const cv = e.target as HTMLCanvasElement, mood = cv.dataset.chopperMood as 'happy' | 'sad' | 'play';
+        void (async () => {
+          const [{ Swarm }, { chopperMood, MOOD_COUNT, PLAY_SCALE }] = await Promise.all([import('../scripts/effects/swarm.js'), import('../scripts/effects/chopper-moods.js')]);
+          const play = mood === 'play';
+          const sw = new Swarm(cv, { count: MOOD_COUNT[mood], scale: play ? PLAY_SCALE : 0.46, dot: play ? 1.7 : 1.9 });
+          const { colors, behaviour } = await chopperMood(mood);
+          sw.follow(behaviour, { dur: 2200, colors });
+          // Standbild (reduzierte Bewegung): der Schwarm zeichnet nur einen Frame; liegt dessen Zeitstempel vor dem
+          // Start der Formation, bliebe die Bühne leer. Ein zweiter Frame kurz danach zeichnet das Standbild sicher.
+          if (matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('motion-paused')) setTimeout(() => sw.kick(), 80);
+        })().catch((error: unknown) => console.warn('Chopper could not start', error));
+      }
+    }, { rootMargin: '300px' });
+    stages.forEach((cv) => io.observe(cv));
+  }
+</script>
+
+<style>
+  .chopper-mood { display: block; width: 100%; aspect-ratio: 4 / 3; }
+  .chopper-mood.is-play { aspect-ratio: 16 / 9; }
+  @media (max-width: 40em) { .chopper-mood.is-play { aspect-ratio: 4 / 3; } }
+</style>

@@ -3,6 +3,7 @@ import {INQUIRY_PACKAGES,INQUIRY_LIMITS} from '../../src/content/inquiry.mjs';
 import {FORM_OCCASION_IDS} from '../../src/content/occasions.mjs';
 import { createTranslator } from '../../src/i18n/ui.mjs';
 import { LOCALES, localizedHref, localeFromPath } from '../../src/i18n/routing.mjs';
+import { SOURCE_IDS, SOURCE_OTHER, SOURCE_TEXT_MAX, INQUIRY_REF } from '../../src/content/inquiry-source.mjs';
 
 // Cloudflare Pages Function. Nur Web-Standard-APIs für einen späteren EU-Umzug.
 // Keine eigene dauerhafte Ablage und keine Anwendungslogs. Hosting, Brevo und
@@ -17,7 +18,7 @@ interface Env {
 
 const MAX_BODY = LOGO_BODY_LIMIT; // Auch ohne oder mit falschem Content-Length durchsetzen.
 const MAX = INQUIRY_LIMITS;
-const EXTRA_FIELDS = ['anlass', 'datum', 'datum-offen', 'ort', 'paket', 'drohnen', 'telefon', 'firma', 'quelle'];
+const EXTRA_FIELDS = ['anlass', 'datum', 'datum-offen', 'ort', 'paket', 'drohnen', 'telefon', 'firma', 'quelle', 'ref'];
 const CONTROL = /[\u0000-\u001f\u007f]/;
 
 export const onRequestPost = async ({ request, env }: { request: Request; env: Env }): Promise<Response> => {
@@ -71,6 +72,9 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
   const get = (key: string) => String(form.get(key) ?? '').trim();
   // Honeypot: bewusst Erfolg vortäuschen, ohne Versand.
   if (get('website')) return ok(request, 'sent', locale);
+  // Zweite kleine Meldung von der Danke-Seite: woher die Anfrage kam. Keine Personendaten, nur Auswahl, optionaler
+  // Kurztext und der Zufallswert der Anfrage (src/content/inquiry-source.mjs).
+  if (get('kind') === 'quelle') return source(request, env, form, locale, t);
   // Ergänzende, umgehbare Zeitfalle. Kein Tracking, keine Sperre für No-JS.
   const duration = get('form-duration');
   if (duration && (!/^\d{1,12}$/.test(duration) || Number(duration) < 2000)) {
@@ -85,6 +89,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
   if (Object.values(extra).some((value) => value.length > INQUIRY_LIMITS.extra || CONTROL.test(value))) return problem(400, t('contactAPI.additional'));
   if (extra.anlass && !FORM_OCCASION_IDS.includes(extra.anlass)) return problem(400, t('contactAPI.occasion'));
   if (extra.paket && !INQUIRY_PACKAGES.includes(extra.paket)) return problem(400, t('contactAPI.package'));
+  if (extra.ref && !INQUIRY_REF.test(extra.ref)) return problem(400, t('contactAPI.additional'));
   if (extra['datum-offen'] && extra['datum-offen'] !== 'ja') return problem(400, t('contactAPI.openDate'));
   if (extra.datum && (!/^\d{4}-\d{2}-\d{2}$/.test(extra.datum) || !Number.isFinite(Date.parse(extra.datum)) || new Date(extra.datum).toISOString().slice(0, 10) !== extra.datum)) return problem(400, t('contactAPI.date'));
   if (extra.drohnen && (!/^\d+$/.test(extra.drohnen) || Number(extra.drohnen) < INQUIRY_LIMITS.dronesMin || Number(extra.drohnen) > INQUIRY_LIMITS.dronesMax)) return problem(400, t('contactAPI.drones'));
@@ -135,6 +140,36 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
   // Generated only after Brevo accepted the message. Never for honeypot/preview/error.
   return ok(request, 'sent', locale, crypto.randomUUID());
 };
+
+async function source(request: Request, env: Env, form: FormData, locale: string, t: (key: string) => string): Promise<Response> {
+  const get = (key: string) => String(form.get(key) ?? '').trim();
+  if ([...form.keys()].some((key) => !['kind', 'locale', 'ref', 'quelle', 'quelle-text', 'website'].includes(key))) return problem(400, t('contactAPI.invalidForm'));
+  if (get('website')) return sourceOk(request, 'sent', locale);
+  const value = get('quelle'), text = get('quelle-text'), ref = get('ref');
+  if (!SOURCE_IDS.includes(value)) return problem(400, t('contactAPI.invalidForm'));
+  if (text.length > SOURCE_TEXT_MAX || CONTROL.test(text) || (text && value !== SOURCE_OTHER)) return problem(400, t('contactAPI.additional'));
+  if (ref && !INQUIRY_REF.test(ref)) return problem(400, t('contactAPI.additional'));
+  if (!env.BREVO_API_KEY || !env.CONTACT_TO || !env.CONTACT_FROM) return sourceOk(request, 'not-configured', locale);
+  const site = (env.SITE_NAME ?? 'Website').replace(/[\u0000-\u001f\u007f]/g, '').slice(0, 120);
+  try {
+    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST', signal: AbortSignal.timeout(10_000),
+      headers: { 'api-key': env.BREVO_API_KEY, 'content-type': 'application/json', accept: 'application/json' },
+      body: JSON.stringify({
+        sender: { email: env.CONTACT_FROM, name: site }, to: [{ email: env.CONTACT_TO }],
+        subject: `Quelle zur Anfrage über ${site}${ref ? ` (${ref})` : ''}`,
+        textContent: `Wo habt ihr das erste Mal von uns gehört?\nquelle: ${value}${text ? `\nfreitext: ${text}` : ''}\nref: ${ref || 'ohne Bezug (ohne JavaScript oder neue Sitzung)'}\n`,
+      }),
+    });
+    if (!response.ok) return problem(502, t('contactAPI.delivery'));
+  } catch { return problem(503, t('contactAPI.unconfirmed')); }
+  return sourceOk(request, 'sent', locale);
+}
+function sourceOk(request: Request, state: string, locale: string): Response {
+  if ((request.headers.get('accept') ?? '').includes('application/json')) return json({ ok: true, state });
+  const url = new URL(request.url); url.pathname = localizedHref('/danke/', locale); url.hash = ''; url.search = '?quelle=' + state;
+  return new Response(null, { status: 303, headers: { location: url.toString(), 'cache-control': 'no-store', 'referrer-policy': 'no-referrer' } });
+}
 
 export const onRequestGet = (): Response => problem(405, createTranslator('de')('contactAPI.post'));
 
