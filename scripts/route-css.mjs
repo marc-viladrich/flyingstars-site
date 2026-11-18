@@ -93,7 +93,8 @@ export async function splitRouteCss(dist) {
     if (next !== html) await writeFile(file, next);
   }
   // Ausgangsdateien, auf die keine Seite und kein Skript mehr verweist, nicht mit ausliefern
-  const scripts = (await readdir(path.join(dist, '_astro'))).filter((name) => name.endsWith('.js'));
+  const scripts = (await readdir(path.join(dist, '_astro')).catch(() => []))
+    .filter((name) => name.endsWith('.js'));
   const scriptText = (await Promise.all(scripts.map((name) => readFile(path.join(dist, '_astro', name), 'utf8')))).join('\n');
   for (const href of variants.keys()) {
     if (!used.has(href) && !scriptText.includes(path.basename(href))) await rm(path.join(dist, href));

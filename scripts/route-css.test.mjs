@@ -62,3 +62,10 @@ test('dist: Varianten je Komponentenmenge, gemeinsame Datei bleibt, verwaiste Qu
   assert.equal(await readFile(path.join(dist, href(home)), 'utf8'), '.s[data-astro-cid-one]{color:red}');
   assert.match(home, /href="\/_astro\/base\.css"/);
 });
+
+test('dist ohne _astro (Minimalseite ohne CSS und Skript) bricht den Zuschnitt nicht ab', async () => {
+  const dist = await mkdtemp(path.join(tmpdir(), 'route-css-leer-'));
+  await writeFile(path.join(dist, 'index.html'), '<!doctype html><html><body><img src="/a.png" alt=""></body></html>');
+  await splitRouteCss(dist);
+  assert.equal(await readFile(path.join(dist, 'index.html'), 'utf8'), '<!doctype html><html><body><img src="/a.png" alt=""></body></html>');
+});
