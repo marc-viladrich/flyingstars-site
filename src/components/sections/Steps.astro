@@ -32,6 +32,11 @@ const founders = new Intl.ListFormat(locale, { type: 'conjunction' }).format(FOU
   {cta && !ctaInGrid && <p class="steps-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
 </section>
 
+<script>
+  import { initGridGlide } from '../../scripts/grid-glide';
+  initGridGlide();
+</script>
+
 <style is:global>
   /* Titel tragen ihre Nummer selbst („#1 Anfrage“) oder sind keine Abfolge („Komplett“, „Schnell“) */
   .steps.own-n li::before { content: none; }

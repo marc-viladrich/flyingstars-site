@@ -5,10 +5,14 @@
 //  2. Vor dem LCP startet kein Request für Schwarm, Show-Folge oder (außer auf der Preisseite) Katalog-Formationen.
 //  3. Durchscrollen der Startseite erzeugt höchstens 0,1 CLS (das mitwandernde Canvas erzeugte vorher 5–8).
 //  4. An keiner Section-Grenze der Startseite ruckelt es (Frames, Long Tasks; siehe unten und tools/himmel/grenzen.mjs).
+//  5. Punktübergänge an jeder Farbgrenze, ohne Trennlinie (tools/himmel/uebergaenge-pruefen.mjs).
 // Zeiten unter Last schwanken; geprüft wird die Struktur. Die Lighthouse-Werte stehen in docs/himmel.md.
 import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
 import { measure, serveDist, table } from './grenzen.mjs';
+import { check as checkTransitions } from './uebergaenge-pruefen.mjs';
+
+const UEBERGANG_SEITEN = ['/', '/drohnenshow-preise/', '/faq/', '/ueber-uns/', '/nfl-berlin-game/', '/drohnenshow-indoor/'];
 
 const PAGES = ['/', '/drohnenshow-werbung/', '/drohnenshow-preise/'];
 // Was erst nach dem ersten Bild laden darf. Die Preisseite lädt ihren Konfigurator (eigene Szenen und Katalogdaten) bewusst
@@ -63,11 +67,20 @@ try {
 //    33,4 ms = genau ein Frame zu spät), p95 im Takt, keine Long Tasks > 50 ms. WebKit (Safari) lässt sich nicht drosseln und
 //    schwankt mit der Last der Maschine; dessen Messung steht in docs/himmel.md (node tools/himmel/grenzen.mjs --engines webkit).
 try {
-  const rows = (await measure(base, { engines: ['chromium'], widths: [1440], runs: 1, cpu: 4 })).filter((r) => r.kind === 'Grenze');
+  // drei Läufe, je Grenze der Median: Ein einzelner Ausreißer durch andere Prozesse auf der Maschine ist kein Ruckeln der Seite
+  const rows = (await measure(base, { engines: ['chromium'], widths: [1440], runs: 3, cpu: 4 })).filter((r) => r.kind === 'Grenze');
   console.log('\n' + table(rows));
   for (const r of rows) {
     if (r.max > 34 || r.p95 > 17.5) fail.push(`Grenze ${r.key}: Frames p95 ${r.p95} / max ${r.max} ms (Budget p95 17,5 / max 34 ms)`);
     if (r.lt) fail.push(`Grenze ${r.key}: ${r.lt} Long Tasks > 50 ms (längster ${Math.round(r.ltMax)} ms)`);
   }
+  // 5. Punktübergänge (Runde 6): jede Farbgrenze mit Punkten, ohne Trennlinie, Band über keinem Inhalt. Hier sechs typische
+  //    Seiten bei 390 und 1440 px; alle Seiten: npm run check:uebergaenge
+  for (const width of [390, 1440]) for (const g of await checkTransitions(base, UEBERGANG_SEITEN, { width })) {
+    if (g.missing) fail.push(`${g.path} ${width} px: ${g.a} → ${g.b} ohne Punktübergang`);
+    if (g.lined) fail.push(`${g.path} ${width} px: ${g.a} → ${g.b} mit Trennlinie (${g.line})`);
+    if (g.hides) fail.push(`${g.path} ${width} px: Band ${g.a} → ${g.b} überdeckt ${g.covered.join(', ')}`);
+  }
+  console.log(`Punktübergänge: ${UEBERGANG_SEITEN.length} Seiten bei 390 und 1440 px geprüft`);
 } finally { server?.close(); }
 if (fail.length) { console.error('\n' + fail.join('\n')); process.exitCode = 1; } else console.log('\nLadeprüfung bestanden.');

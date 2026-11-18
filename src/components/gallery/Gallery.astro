@@ -1,64 +1,38 @@
 ---
-// Luftige Bildgalerie (Werbung #marketing, Über uns #nachhaltigkeit, Nachhaltigkeit und Indoor #referenzen).
-// Runde 5 nach Marcs Referenzen: gleich breite, kleine Spalten mit großzügigen Fugen, unten bündig, oben treppenartig
-// versetzt; der Text steht frei links oben, kleine Leuchtpunkt-Akzente in den Lücken. Mobil zwei (ab 44em drei)
-// versetzte Spalten als Mauerwerk: die Plätze werden beim Build gerechnet (feines Zeilenraster, Spaltenbreite / 24).
+// Luftige Bildgalerie (Werbung #marketing, Über uns #nachhaltigkeit, Indoor #referenzen).
+// Gleich breite, kleine Spalten, unten bündig, oben treppenartig versetzt; der Text steht frei links oben, die Bilder
+// direkt daneben. Runde 6: Spalten sitzen auf einem Halbspalten-Raster (at), einzelne also genau zwischen zwei Spalten;
+// hinter den Bildern liegt die Leuchtpunkt-Unterlage (DotField). Mobil zwei (ab 44em drei) versetzte Spalten als
+// Mauerwerk, die Plätze werden beim Build gerechnet (feines Zeilenraster, Spaltenbreite / 24).
 // Anordnung und Zuschnitte: ./layouts.mjs, Material und Belege: public/media/galerie/manifest.json.
-// Hover (nur Maus): Kachel hebt sich, Foto hellt auf, Zeile Kunde · Ort · Drohnen blendet ein, alles weich und auch
-// beim Verlassen; nur transform, opacity und filter. Erscheinen mit dem Vorhang-Reveal der Seite. Kein Video.
-import { getEntry } from 'astro:content';
-import manifest from '../../../public/media/galerie/manifest.json';
+// Hover (nur Maus): Kachel hebt sich, Foto hellt auf, Zeile Kunde · Ort · Drohnen blendet ein, weich in beide
+// Richtungen; nur transform, opacity und filter. Erscheinen mit dem Vorhang-Reveal der Seite.
 import GalleryTile from './GalleryTile.astro';
-import { GALLERY_LAYOUTS, GALLERY_TEXT, DRONES } from './layouts.mjs';
-import { forPath } from '../../i18n/server';
-import { contentRoute } from '../../i18n/public-routes.mjs';
+import DotField from '../DotField.astro';
+import { GALLERY_LAYOUTS } from './layouts.mjs';
+import { manifestPhoto, ratio } from './manifest-photo';
 interface Props { set: keyof typeof GALLERY_LAYOUTS; class?: string }
 const { set, class: cls } = Astro.props;
-const { locale, localHref, formatLocale } = forPath(Astro.url.pathname);
 const layout = GALLERY_LAYOUTS[set];
 if (!layout) throw new Error(`Unbekannte Galerie „${set}“`);
-type Entry = (typeof manifest.entries)[number];
-const bySlug = new Map(manifest.entries.map((e) => [e.slug, e as Entry]));
 const hasHead = Astro.slots.has('head');
-const ratio = (ar: string) => { const [a, b = '1'] = ar.split('/').map((x) => parseFloat(x)); return a / Number(b); };
-
-
-async function photo(t: { slug: string; ar: string; pos?: string }) {
-  const e = bySlug.get(t.slug);
-  if (!e) throw new Error(`Galerie „${set}“: ${t.slug} fehlt im Manifest`);
-  if (e.kind !== 'image') throw new Error(`Galerie „${set}“: ${t.slug} ist kein Standbild`);
-  const text = GALLERY_TEXT[t.slug];
-  // hochskalierte 1600er bringen keine Details, nur Bytes: dann bleibt es bei 800
-  const srcset = (format: string) => e.files.filter((f) => f.format === format && !(f.upscaled && f.width > 800)).map((f) => `/media/galerie/${f.file} ${f.width}w`).join(', ');
-  const base = e.files.find((f) => f.format === 'webp' && /-800\./.test(f.file))!;
-  const big = e.files.filter((f) => f.format === 'webp').sort((a, b) => b.width - a.width)[0];
-  // Referenzseite nur, wenn das Projekt eine öffentliche Fallseite hat (showcase)
-  let href: string | undefined;
-  if (e.reference) {
-    const id = e.reference.replace(/^src\/content\/projects\/|\.md$/g, '');
-    const project = await getEntry('projects', id);
-    const route = project && contentRoute('projects', id, project.data);
-    if (route) href = localHref(route);
-  }
-  const name = text?.name?.[locale] ?? (e.client && e.client !== 'Privat' ? e.client : undefined);
-  const place = text?.place?.[locale];
-  const drones = e.drones ? `${e.drones.toLocaleString(formatLocale)} ${DRONES[locale as keyof typeof DRONES]}` : undefined;
-  const caption = [name, place, drones].filter(Boolean).join(' · ');
-  const alt = locale === 'de' ? e.alt : text?.alt?.[locale as 'en' | 'nl'] ?? e.alt;
-  return { kind: 'photo' as const, slug: t.slug, ar: t.ar, pos: t.pos ?? '50% 50%', r: ratio(t.ar), href, caption, alt,
-    avif: srcset('avif'), webp: srcset('webp'), src: `/media/galerie/${base.file}`, width: big.width, height: big.height };
-}
-const columns = await Promise.all(layout.columns.map((col, c) => Promise.all(col.map(async (item, i) =>
-  'slug' in item ? { ...(await photo(item)), c, i } : { kind: 'accent' as const, accent: item.accent, side: item.side ?? 'start', c, i }))));
-if (columns.length !== layout.cols) throw new Error(`Galerie „${set}“: ${columns.length} Spalten statt ${layout.cols}`);
-type Photo = Extract<(typeof columns)[number][number], { kind: 'photo' }>;
+const photo = async (t: { slug: string; ar: string; pos?: string }) => ({ ...(await manifestPhoto(t.slug, Astro.url.pathname)), ar: t.ar, pos: t.pos ?? '50% 50%', r: ratio(t.ar) });
+// Halbspalten-Raster: 2 × cols Spuren; at = erste Spur einer Spalte (1, 3, 5 … auf dem Raster, 2, 4 … dazwischen)
+const tracks = layout.cols * 2, textTracks = layout.text * 2, headTracks = (layout.cols - (layout.top ?? 0)) * 2;
+const columns = await Promise.all(layout.columns.map(async (col, c) => {
+  const at = col.at ?? 2 * c + 1;
+  if (at < textTracks && at + 1 > textTracks) throw new Error(`Galerie „${set}“: Spalte ${c + 1} läge halb unter dem Text`);
+  const items = await Promise.all(col.items.map(async (item) => ({ ...(await photo(item)), c })));
+  return { at, items, rise: at > textTracks, top: hasHead && at > headTracks };
+}));
+type Photo = (typeof columns)[number]['items'][number];
 
 // Mobil: Mauerwerk in feinen Zeilen (24 je Spaltenbreite), drei Zeilen Fuge, die zweite (und dritte) Spalte beginnt
 // tiefer. Reihenfolge: rechte Galeriespalte zuerst (dort stehen die stärksten Motive), jeweils in die kürzere Spalte.
-const UNITS = 24, GAP = 4;
+const UNITS = 24, GAP = 3;
 function masonry(n: number, offsets: number[]) {
   const top = offsets.slice(0, n), place = new Map<string, string>();
-  const photos = [...columns].reverse().flat().filter((x): x is Photo => x.kind === 'photo');
+  const photos = [...columns].reverse().flatMap((col) => col.items);
   for (const p of photos) {
     const c = top.indexOf(Math.min(...top)), span = Math.round(UNITS / p.r);
     place.set(p.slug, `--m${n}c:${c + 1};--m${n}r:${top[c] + 1};--m${n}s:${span}`);
@@ -66,23 +40,19 @@ function masonry(n: number, offsets: number[]) {
   }
   return place;
 }
-const m2 = masonry(2, [0, 14]), m3 = masonry(3, [8, 0, 16]);
+const m2 = masonry(2, [0, 10]), m3 = masonry(3, [6, 0, 12]);
 const style = (p: Photo) => `--ar:${p.ar};--pos:${p.pos};--i:${p.c};${m2.get(p.slug)};${m3.get(p.slug)}`;
-const textCols = layout.text;
-const headCols = layout.cols - (layout.top ?? 0);
 ---
 <div class:list={['gal-wrap', cls]}>
-  <div class:list={['gal', `gal-${set}`, { 'has-head': hasHead }]} style={`--cols:${layout.cols};--text:${textCols};--head:${headCols}`}>
+  <div class:list={['gal', 'df-host', `gal-${set}`, { 'has-head': hasHead }]} style={`--tracks:${tracks};--text:${textTracks};--head:${headTracks}`}>
     {/* Kopf im Raster: überspannt alle Spalten außer den obersten (top), die neben ihm aufsteigen */}
     {hasHead && <div class="g-head"><slot name="head" /></div>}
     <div class="g-copy"><slot /></div>
     <div class="g-cols">
-      {/* mobil: kleines Punktraster in der Lücke über der versetzten Spalte */}
-      <span class="g-accent g-grid g-maccent" aria-hidden="true"></span>
-      {columns.map((col, c) => <div class:list={['g-col', { 'g-rise': c >= textCols, 'g-top': hasHead && c >= layout.cols - (layout.top ?? 0) }]} style={`--c:${c + 1}`}>
-        {col.map((x) => x.kind === 'photo'
-          ? <GalleryTile {...x} style={style(x)} />
-          : <span class:list={['g-accent', x.accent === 'grid' ? 'g-grid' : 'g-dot', `g-${x.side}`]} aria-hidden="true"></span>)}
+      {/* breit liegt die Unterlage auf der Galerie (g-cols ist dort display: contents), schmal auf dem Mauerwerk */}
+      {layout.fields.map((f) => <DotField inset={f.inset} insetM={f.m} focus="50% 50%" />)}
+      {columns.map((col) => <div class:list={['g-col', { 'g-rise': col.rise, 'g-top': col.top }]} style={`--at:${col.at}`}>
+        {col.items.map((p) => <GalleryTile {...p} style={style(p)} />)}
       </div>)}
     </div>
   </div>
@@ -91,7 +61,9 @@ const headCols = layout.cols - (layout.top ?? 0);
 <style is:global>
   /* global, weil die Kacheln eine eigene Komponente sind; alles hängt an .gal */
   .gal-wrap { container-type: inline-size; }
-  .gal { --g-gap: clamp(1.25rem, 2.3vw, 2.75rem); --g-r: var(--radius-14); --g-ease: cubic-bezier(0.33, 1, 0.68, 1); --g-dur: 0.6s; }
+  /* Fugen zwischen Runde 4 (0,5–1rem) und Runde 5 (1,25–2,75rem), näher an Runde 4 (Marc, Runde 6) */
+  .gal { --g-gap: clamp(0.875rem, 1.4vw, 1.5rem); --g-r: var(--radius-14); --g-ease: cubic-bezier(0.33, 1, 0.68, 1); --g-dur: 0.6s; }
+  /* Kopf → Collage: die gemeinsame Rolle --head-gap-content (global.css), im Raster abzüglich der Fuge */
   .gal .g-head .section-head { margin-bottom: 0; }
   .gal .g-copy > :last-child { margin-bottom: 0; }
 
@@ -121,47 +93,35 @@ const headCols = layout.cols - (layout.top ?? 0);
   .gal .g-tile:focus-visible .g-cap { opacity: 1; transform: none; }
   @media (hover: none), (pointer: coarse) { .gal .g-cap { display: none; } }
 
-  /* Leuchtpunkt-Akzente im Logoverlauf: ein Punkt oder ein kleines Raster, ohne Glühen */
-  .gal .g-accent { display: block; flex: none; pointer-events: none; }
-  .gal .g-dot { width: 0.5rem; height: 0.5rem; border-radius: var(--radius-round); background: var(--grad); }
-  .gal .g-grid { width: 4.375rem; height: 2.875rem; background: var(--grad-soft);
-    -webkit-mask: radial-gradient(circle, #000 0.17rem, transparent 0.2rem) 0 0 / 0.875rem 0.875rem;
-    mask: radial-gradient(circle, #000 0.17rem, transparent 0.2rem) 0 0 / 0.875rem 0.875rem; opacity: 0.85; }
-  .gal .g-start { align-self: flex-start; }
-  .gal .g-end { align-self: flex-end; }
-
-  /* Breit: gleich breite Spalten, Text links oben, die Spalten darunter kurz, die daneben steigen nach rechts an */
+  /* Breit: Halbspalten-Raster (2 Spuren je Spalte), Text links oben, darunter kurze Spalten, daneben steigen sie an.
+     Spalten unter dem Text beginnen direkt unter ihm, die aufsteigenden enden unten bündig. */
   @media (--grid-expanded) {
-    .gal { display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); grid-template-rows: auto 1fr; gap: var(--g-gap); }
+    .gal { display: grid; grid-template-columns: repeat(var(--tracks), minmax(0, 1fr)); grid-template-rows: auto 1fr; column-gap: var(--g-gap); row-gap: var(--g-gap); }
     .gal .g-cols { display: contents; }
-    .gal .g-copy { grid-column: 1 / span var(--text); grid-row: 1; max-width: 42rem; padding-bottom: clamp(var(--space-4), 2vw, var(--space-8)); }
-    .gal .g-col { grid-column: var(--c); grid-row: 2; align-self: end; display: flex; flex-direction: column; gap: var(--g-gap); }
-    .gal .g-col.g-rise { grid-row: 1 / 3; }
+    .gal .g-copy { grid-column: 1 / span var(--text); grid-row: 1; max-width: 42rem; padding-right: var(--g-gap); }
+    .gal .g-col { grid-column: var(--at) / span 2; grid-row: 2; align-self: start; display: flex; flex-direction: column; gap: var(--g-gap); }
+    .gal .g-col.g-rise { grid-row: 1 / 3; align-self: end; }
     /* mit Kopf: Zeile 1 Kopf, 2 Text, 3 kurze Spalten; die oberste Spalte reicht bis neben den Kopf */
     .gal.has-head { grid-template-rows: auto auto 1fr; }
-    .gal.has-head .g-head { grid-column: 1 / span var(--head); grid-row: 1; padding-bottom: clamp(var(--space-2), 1vw, var(--space-4)); }
+    .gal.has-head .g-head { grid-column: 1 / span var(--head); grid-row: 1; padding-bottom: calc(var(--head-gap-content) - var(--g-gap)); }
     .gal.has-head .g-copy { grid-row: 2; }
     .gal.has-head .g-col { grid-row: 3; }
     .gal.has-head .g-col.g-rise { grid-row: 2 / 4; }
     .gal.has-head .g-col.g-top { grid-row: 1 / 4; }
-    .gal .g-maccent { display: none; }
   }
 
   /* Schmal: Mauerwerk aus zwei (ab 44em drei) Spalten; Platz und Höhe jeder Kachel kommen aus dem Build */
   @media (--grid-stacked) {
-    .gal .g-head { margin-bottom: clamp(var(--space-6), 6vw, var(--space-9)); }
-    .gal .g-copy { margin-bottom: clamp(var(--space-8), 8vw, var(--space-12)); }
-    .gal .g-cols { --n: 2; --mg: clamp(1rem, 4.5vw, 1.75rem); display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); column-gap: var(--mg); row-gap: 0;
+    .gal .g-head { margin-bottom: var(--head-gap-content); }
+    .gal .g-copy { margin-bottom: clamp(var(--space-6), 6vw, var(--space-9)); }
+    .gal .g-cols { --n: 2; --mg: clamp(0.875rem, 3.5vw, 1.25rem); position: relative; isolation: isolate; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); column-gap: var(--mg); row-gap: 0;
       grid-auto-rows: calc((100cqi - (var(--n) - 1) * var(--mg)) / var(--n) / 24); }
     .gal .g-col { display: contents; }
-    .gal .g-col .g-accent { display: none; }
     .gal .g-tile { aspect-ratio: auto; grid-column: var(--m2c); grid-row: var(--m2r) / span var(--m2s); }
-    .gal .g-maccent { grid-column: 2; grid-row: 4 / span 6; align-self: start; justify-self: start; width: 3.5rem; height: 2rem; }
   }
   @media (min-width: 44em) and (--grid-stacked) {
     .gal .g-cols { --n: 3; }
     .gal .g-tile { grid-column: var(--m3c); grid-row: var(--m3r) / span var(--m3s); }
-    .gal .g-maccent { grid-column: 3; grid-row: 4 / span 6; }
   }
 
   @media (prefers-reduced-motion: reduce) {

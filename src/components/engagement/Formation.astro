@@ -1,0 +1,26 @@
+---
+// Kampagnen-Schriftzug als Drohnenformation (vorberechnet mit dem Text-Werkzeug des Konfigurators, tools/engagement-
+// formations.mjs → formations.json). Statisches SVG im Logoverlauf; beim Erscheinen gehen die Lichter einmal von links
+// nach rechts an (Lichtlauf über den Reveal der Seite: data-reveal-group, .is-in). Ohne JS, bei reduzierter Bewegung
+// oder globaler Pause stehen sie sofort. Rein schmückend: der Name steht als Überschrift im Text daneben.
+import formations from './formations.json';
+interface Props { name: string; class?: string }
+const { name, class: cls } = Astro.props;
+const f = (formations as Record<string, { drones: number; ratio: number; pts: number[][] }>)[name.toUpperCase()];
+const W = 1000, pad = 18;
+const H = f ? Math.round(f.ratio * W) : 0;
+const id = `fg-${name.replace(/[^a-z0-9]/gi, '').toLowerCase()}`;
+---
+{f && <svg class:list={['formation', cls]} viewBox={`${-pad} ${-pad} ${W + 2 * pad} ${H + 2 * pad}`} aria-hidden="true" focusable="false" data-reveal-group>
+  <defs><linearGradient id={id} x1="0" y1="0" x2={W} y2="0" gradientUnits="userSpaceOnUse">
+    <stop offset="0" style="stop-color: var(--logo-amber)" /><stop offset="0.5" style="stop-color: var(--logo-orchid)" /><stop offset="1" style="stop-color: var(--cyan)" />
+  </linearGradient></defs>
+  <g fill={`url(#${id})`}>{f.pts.map(([x, y]) => <circle cx={(x * W).toFixed(1)} cy={(y * W).toFixed(1)} r="4.2" style={`--d:${Math.round(x * 1400)}ms`} />)}</g>
+</svg>}
+
+<style>
+  .formation { display: block; width: 100%; height: auto; overflow: visible; }
+  .formation circle { transition: opacity 0.7s var(--ease-default) var(--d); }
+  :global(.reveal) .formation:not(:global(.is-in)) circle { opacity: 0; }
+  @media (prefers-reduced-motion: reduce) { .formation circle { transition: none; } }
+</style>

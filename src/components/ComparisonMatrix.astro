@@ -6,8 +6,8 @@ import { comparisonTone, type ComparisonValue } from '../lib/comparison';
 import { forPath } from '../i18n/server';
 interface Column { label: string; color?: string; featured?: boolean; price?: string; orb?: { shape: string; color: string; count: number }; panelLabel?: string }
 interface Row { id?: string; label: string; cells: ComparisonValue[]; all?: string }
-interface Props { id: string; label: string; regionLabel: string; rowHeader: string; columns: Column[]; rows: Row[]; tabLabel: string; initial?: number }
-const { id, label, regionLabel, rowHeader, columns, rows, tabLabel, initial = 0 } = Astro.props;
+interface Props { id: string; label: string; regionLabel: string; rowHeader: string; columns: Column[]; rows: Row[]; tabLabel: string; initial?: number; mobileTabs?: boolean }
+const { id, label, regionLabel, rowHeader, columns, rows, tabLabel, initial = 0, mobileTabs = true } = Astro.props;
 const { locale } = forPath(Astro.url.pathname);
 ---
 <div class="table-wrap mtab-hide" role="region" aria-label={regionLabel} tabindex="0">
@@ -22,9 +22,9 @@ const { locale } = forPath(Astro.url.pathname);
     </tr>)}</tbody>
   </table>
 </div>
-<div class="mtab-only" data-mtabs>
+{mobileTabs && <div class="mtab-only" data-mtabs>
   <MobileTabs name={`${id}-tab`} label={tabLabel} initial={initial} tabs={columns} />
   {columns.map((column, i) => <dl class="cmp-panel" data-mtab={i} aria-label={column.panelLabel ?? column.label} style={column.color && `--c:${column.color}`}>
     {rows.map((row) => <div data-service={row.id}><dt>{row.label}</dt><dd><ComparisonCell value={row.all ?? row.cells[i]} mobile /></dd></div>)}
   </dl>)}
-</div>
+</div>}

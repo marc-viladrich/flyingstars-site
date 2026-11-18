@@ -40,19 +40,26 @@
   .hm-own-form { height: 8.75rem; }
 }
 
-/* ---------- Übergänge zwischen zwei Sectionfarben: Punktauflösung statt Haarlinie ----------
-   Maske aus tools/himmel/uebergang.mjs (576 × 128 px, Kante bei 84 px). Oben lösen sich Punkte der Fläche auf,
-   unten tauchen Punkte des Grundtons ein. Folgen zwei gleichfarbige Sections aufeinander, bleibt dort die Linie. */
-.section.alt { position: relative; border-color: transparent; }
-.section.alt::before, .section.alt::after {
-  content: ''; position: absolute; left: 0; right: 0; height: 8rem; pointer-events: none;
-  background: linear-gradient(to bottom, var(--surface) 65.625%, var(--ground) 65.625%);
-  -webkit-mask: url(/media/uebergang.svg) repeat-x 0 0 / 36rem 8rem; mask: url(/media/uebergang.svg) repeat-x 0 0 / 36rem 8rem;
+/* ---------- Punktübergänge: jede Fläche mit eigener Farbe läuft in Punkten über ihre Kanten aus ----------
+   Masken aus tools/himmel/uebergang.mjs (Kante unten, Punkte wie beim Lichtpunkt-Hover; schmale Kachel fürs Handy). Die Punkte tragen die Farbe der Fläche
+   selbst (background-color: inherit), darum braucht der Übergang die Farbe des Nachbarn nicht und ist zwischen gleichfarbigen
+   Flächen unsichtbar. Oben reicht die Fläche nach oben, unten (gespiegelt, versetzt) nach unten; liegt darunter eine andere
+   Farbfläche, deckt deren Fläche das untere Band, und ihr oberes übernimmt. An solchen Kanten keine Trennlinie (Marc, 18.11.).
+   Jede neue Fläche mit eigener Hintergrundfarbe gehört in diese Liste; tools/himmel/uebergaenge-pruefen.mjs wacht darüber. */
+:is(.section.alt, .c-setlist, .team-sec) { --ueb-h: clamp(2rem, calc(var(--section) * 0.5), 4.5rem); --ueb-maske: url(/media/uebergang.svg); position: relative; }
+@media (--mobile) { :is(.section.alt, .c-setlist, .team-sec) { --ueb-h: 2rem; --ueb-maske: url(/media/uebergang-schmal.svg); } }
+:is(.section.alt, .c-setlist, .team-sec)::before, :is(.section.alt, .c-setlist, .team-sec)::after {
+  content: ''; position: absolute; left: 0; right: 0; height: var(--ueb-h); pointer-events: none; background-color: inherit;
+  -webkit-mask: var(--ueb-maske) repeat-x 0 0 / auto 100%; mask: var(--ueb-maske) repeat-x 0 0 / auto 100%;
 }
-.section.alt::before { top: -5.25rem; }
-.section.alt::after { bottom: -5.25rem; transform: scaleY(-1); -webkit-mask-position: 13rem 0; mask-position: 13rem 0; }
-.section.alt + .section.alt { border-top-color: var(--line); }
+:is(.section.alt, .c-setlist, .team-sec)::before { bottom: 100%; }
+:is(.section.alt, .c-setlist, .team-sec)::after { top: 100%; transform: scaleY(-1); -webkit-mask-position: 23rem 0; mask-position: 23rem 0; }
+:is(.section.alt, .c-setlist, .team-sec):nth-of-type(2n)::before { -webkit-mask-position: 37rem 0; mask-position: 37rem 0; }
+.section.alt + .section.alt { border-top: 1px solid var(--line); }
 .section.alt + .section.alt::before, .section.alt:has(+ .section.alt)::after { content: none; }
+/* letzte Fläche vor dem Footer: keine Linie, und ihr Band bleibt im oberen Innenabstand des Footers */
+main:has(> section:last-of-type:is(.section.alt, .c-setlist, .team-sec), > div > section:last-of-type:is(.section.alt, .c-setlist, .team-sec)) + .footer { border-top-color: transparent; }
+:is(main, main > div) > section:last-of-type:is(.section.alt, .c-setlist, .team-sec)::after { height: min(var(--ueb-h), calc(var(--footer-top) * 0.85)); }
 
 /* ---------- Lichtlauf der H1 ----------
    Einmal beim Laden: zusätzliches Licht läuft Buchstabe für Buchstabe durch die Überschrift. Die Schrift steht von Anfang an

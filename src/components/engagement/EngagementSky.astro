@@ -1,0 +1,64 @@
+---
+// Partnerschaften als ein Himmel (Nachhaltigkeit #referenzen, Variante B, Runde 6): ein breiter Nachthimmel, in dem die
+// Kampagnennamen als Drohnenformationen stehen, das Showfoto als Einschub an der Kante; darunter je Partnerschaft
+// Jahreszahl, Moritz' Text und Kennzahl wie Bildunterschriften, unter der Formation, zu der sie gehören.
+import DotField from '../DotField.astro';
+import ShowPhoto from '../gallery/ShowPhoto.astro';
+import Formation from './Formation.astro';
+import { PARTNER_VISUALS, splitSince } from './partners.mjs';
+interface Entry { kicker: string; title: string; text?: string }
+interface Props { entries: Entry[]; facts: { value: unknown; label: string }[]; level: 'h2' | 'h3' }
+const { entries, facts, level: T } = Astro.props;
+const visuals = entries.map((e) => PARTNER_VISUALS[e.title.toUpperCase()] ?? {});
+const photo = visuals.find((v) => v.photo)?.photo;
+---
+<div class="eng-sky-wrap">
+  <div class="eng-sky df-host">
+    <DotField inset="-8% -2% 40% 58%" insetM="-5% 0% 55% 40%" focus="50% 50%" />
+    <div class="eng-sky-field">
+      {visuals.map((v, i) => v.formation && <div class:list={['eng-sky-f', `eng-sky-f${i + 1}`]}><Formation name={v.formation} /></div>)}
+    </div>
+    {photo && <div class="eng-sky-inset"><ShowPhoto slug={photo.slug} ar="4 / 3" pos={photo.pos} sizes="(min-width: 68.8125em) 24vw, 60vw" caption={false} /></div>}
+  </div>
+  <ol class="eng-sky-notes">
+    {entries.map((e, i) => {
+      const since = splitSince(facts[i]?.value);
+      return <li>
+        {since && <p class="eng-sky-since mono">{since.prefix} <span>{since.year}</span></p>}
+        <span class="kicker mono">{e.kicker}</span>
+        <T>{e.title}</T>
+        {e.text && <p>{e.text}</p>}
+      </li>;
+    })}
+  </ol>
+</div>
+
+<style>
+  .eng-sky-wrap { display: grid; gap: clamp(var(--space-7), 4vw, var(--space-12)); }
+  .eng-sky { border-radius: var(--radius); }
+  .eng-sky-field { position: relative; aspect-ratio: 21 / 9; border-radius: var(--radius); overflow: hidden;
+    background: radial-gradient(60% 70% at 30% 35%, rgb(var(--rgb-logo-orchid) / 0.1), transparent 70%), radial-gradient(50% 60% at 78% 72%, rgb(var(--rgb-logo-amber) / 0.08), transparent 70%), var(--media-ground); }
+  .eng-sky-f { position: absolute; }
+  .eng-sky-f1 { left: 7%; top: 13%; width: 48%; }
+  .eng-sky-f2 { right: 7%; bottom: 17%; width: 38%; }
+  .eng-sky-inset { position: absolute; right: clamp(var(--space-5), 4vw, var(--space-12)); top: calc(-1 * clamp(var(--space-8), 5vw, var(--space-14))); width: clamp(10rem, 22%, 19rem); }
+  .eng-sky-inset :global(.show-photo-media) { box-shadow: 0 1.5rem 3rem -1.5rem var(--shadow-strong); }
+  .eng-sky-notes { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(var(--space-6), 3vw, var(--space-10)); }
+  .eng-sky-notes li { display: grid; gap: var(--space-3); align-content: start; }
+  .eng-sky-notes .kicker { margin: 0; }
+  .eng-sky-notes :is(h2, h3) { font-size: var(--text-2xl); line-height: 1.1; margin: 0; }
+  .eng-sky-notes p { margin: 0; color: var(--muted); max-width: 40ch; }
+  .eng-sky-since { color: var(--accent); }
+  .eng-sky-since span { font: 500 var(--text-2xl)/1 var(--display); letter-spacing: -0.02em; color: var(--head); margin-left: var(--space-1-5); }
+  @media (--grid-expanded) {
+    .eng-sky-notes { grid-template-columns: repeat(2, minmax(0, 1fr)); padding-inline: 7%; }
+    .eng-sky-notes li:nth-child(2) { justify-self: end; }
+  }
+  @media (--grid-stacked) {
+    .eng-sky-field { aspect-ratio: 4 / 5; }
+    .eng-sky-f1 { left: 8%; top: 10%; width: 84%; }
+    .eng-sky-f2 { left: 8%; right: auto; top: 50%; bottom: auto; width: 84%; }
+    /* das Foto ragt nur über den leeren unteren Rand des Himmels */
+    .eng-sky-inset { position: relative; right: auto; top: auto; width: 64%; margin: calc(-1 * clamp(var(--space-12), 22vw, var(--space-20))) var(--space-5) 0 auto; }
+  }
+</style>

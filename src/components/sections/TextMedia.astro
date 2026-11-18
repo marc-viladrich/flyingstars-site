@@ -2,6 +2,7 @@
 import {field,editorBuild} from 'astro-frontend-editor/markers';
 import Picture from '../Picture.astro';
 import Gallery from '../gallery/Gallery.astro';
+import DotField from '../DotField.astro';
 import SectionHead from '../SectionHead.astro';
 import {contactText} from '../../content/contact.mjs';
 import { marked } from 'marked';
@@ -34,16 +35,21 @@ const html = await marked.parse(contactText(body));
     {editorBuild() && (Astro.props as any).__afe?.body ? <div {...field((Astro.props as any).__afe.body,editorFieldOptions)} set:html={html} /> : <Fragment set:html={html} />}
     {cta && <p class="tm-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
   </div>
-  {image && <figure class="tm-media" data-curtain><Picture {...image} /></figure>}
+  {/* Einzelbild mit Leuchtpunkt-Unterlage (Runde 6), die rechts unten hervorschaut */}
+  {image && <div class="tm-media-host df-host"><DotField /><figure class="tm-media" data-curtain><Picture {...image} /></figure></div>}
 </section>}
 
 <style>
   /* wie .more unter Raster und Listen */
-  .tm-more { margin-top: clamp(var(--space-6), 3vw, var(--space-9)); }
+  .tm-more { margin-top: var(--head-gap-cta); }
   .text-media.head-above.has-media { align-items: center; }
+  .text-media.head-above { row-gap: var(--head-gap-content); }
   .text-media.head-above :global(.tm-head) { grid-column: 1 / -1; margin-bottom: 0; }
+  /* Kopf im Fließtext: zum ersten Absatz derselbe Abstand wie Überschrift → Text in jedem Kopf */
+  .text-media .prose > :global(.section-head) + :global(*) { margin-top: var(--head-gap-text); }
   .text-media .prose :global(p) { max-width: 60ch; }
   .text-media.has-gallery { display: block; }
+  .text-media.media-left .tm-media-host { order: -1; }
   /* Hervorhebung im Fließtext (Startseite #warum-drohnen: spektakulärer, emotionaler, einzigartiger): Display-Schnitt,
      Farbe aus .prose strong in global.css (Marken-Orange, kein Verlauf im Fließtext) */
   .text-media .prose :global(strong) { font: 600 1.18em/1 var(--display); letter-spacing: -0.01em; }

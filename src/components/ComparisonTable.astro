@@ -1,0 +1,45 @@
+---
+// Vergleichstabelle Drohnenshow/Feuerwerk/Laser, eine Komponente für den eigenen Abschnitt (sections/Comparison.astro,
+// Indoor) und die Einbettung unter dem Kopf einer Scrollstory (Sustainability.astro, Nachhaltigkeit). Statuszellen
+// einheitlich: Einordnung als Plakette oben, Erläuterung darunter. Bis 700 px keine Tabs (dort sah man immer nur eine
+// Technik und damit keinen Vergleich), sondern je Kriterium drei schmale Spalten unter einer gemeinsamen Kopfzeile.
+import { forPath } from '../i18n/server';
+import ComparisonMatrix from './ComparisonMatrix.astro';
+import ComparisonCell from './ComparisonCell.astro';
+import { comparisonTone, type ComparisonValue } from '../lib/comparison';
+interface Row { label: string; cells?: { label: string; text?: string; tone: 'y' | 'n' | 'p' }[]; values: { value: string }[] }
+interface Props { id: string; label: string; rowHeader?: string; columns: { value: string }[]; rows: Row[]; class?: string }
+const { t } = forPath(Astro.url.pathname);
+const { id, label, rowHeader = t('comparison.criterion'), columns, rows, class: cls } = Astro.props;
+const cols = columns.map((c, i) => ({ label: c.value, featured: i === 0 }));
+const body = rows.map((row) => ({ label: row.label, cells: (row.cells ?? row.values.map((item) => item.value)) as ComparisonValue[] }));
+---
+<div class:list={['cmp-table', cls]}>
+  <ComparisonMatrix id={id} label={label} regionLabel={t('comparison.table', { label })} rowHeader={rowHeader}
+    tabLabel={t('comparison.valueChooseATechnology', { v0: label })} columns={cols} rows={body} mobileTabs={false} />
+  <div class="cmp-m" role="table" aria-label={label}>
+    <div class="cmp-m-head" role="row"><span class="sr-only" role="columnheader">{rowHeader}</span>{cols.map((c) => <span role="columnheader" class:list={{ us: c.featured }}>{c.label}</span>)}</div>
+    {body.map((row) => <div class="cmp-m-row" role="row">
+      <span class="cmp-m-label" role="rowheader">{row.label}</span>
+      {row.cells.map((cell, i) => <span role="cell" class:list={['cmp-m-cell', comparisonTone(cell), { us: cols[i].featured }]}><ComparisonCell value={cell} mobile /></span>)}
+    </div>)}
+  </div>
+</div>
+<style>
+  .cmp-table :global(td .m) { display: block; width: fit-content; margin: 0 0 var(--space-2); }
+  .cmp-table :global(td) { font-size: var(--text-sm); line-height: 1.45; padding-block: var(--space-5); }
+  .cmp-table :global(tbody th) { padding-top: var(--space-5); font-size: var(--text-copy); }
+  .cmp-m { display: none; }
+  @media (--mobile) {
+    .cmp-m { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line-strong); }
+    .cmp-m-head, .cmp-m-row { display: contents; }
+    .cmp-m-head > [role='columnheader']:not(.sr-only) { padding: var(--space-3) var(--space-2-5); font: 500 var(--text-xs)/1.3 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); border-bottom: 1px solid var(--line-strong); }
+    .cmp-m-head > .us { color: var(--text); background: var(--fill-soft); position: relative; }
+    .cmp-m-head > .us::after { content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 2px; background: var(--grad); }
+    .cmp-m-label { grid-column: 1 / -1; padding: var(--space-4) 0 var(--space-2); color: var(--head); font-weight: 500; }
+    .cmp-m-cell { display: grid; align-content: start; justify-items: start; gap: var(--space-1-5); padding: var(--space-1) var(--space-2-5) var(--space-4); border-bottom: 1px solid var(--line); color: var(--muted); font-size: var(--text-label); line-height: 1.35; overflow-wrap: anywhere; }
+    .cmp-m-cell.us { background: var(--fill-soft); }
+    .cmp-m-cell :global(.m) { margin: 0; padding: var(--space-1) var(--space-1-5); font-size: var(--text-xs); letter-spacing: 0.06em; }
+    .cmp-m-cell :global(.t) { display: block; }
+  }
+</style>

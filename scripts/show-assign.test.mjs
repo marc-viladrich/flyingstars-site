@@ -39,3 +39,19 @@ test('optimal wie ohne Start: zufällige Punkte, Formen, Raster mit Gleichständ
     assert.ok(Math.abs(cost(from, to, a) - cost(from, to, b)) <= 1e-9 * Math.max(1, cost(from, to, b)), `nicht optimal bei ${n} Drohnen`);
   }
 });
+
+// Runde 6: über 128 Drohnen Blockzuordnung in Hilbert-Reihenfolge (show-field.js, assignScalable), damit ein Bildwechsel mit
+// 1000 Drohnen nicht den Hauptthread für Sekunden anhält. Gültige Zuordnung, nah am Optimum, schnell.
+test('Blockzuordnung über 128 Drohnen: jede Drohne ein eigener Platz, nah am Optimum, in Millisekunden', async () => {
+  globalThis.window ??= globalThis; globalThis.matchMedia ??= () => ({ matches: false, addEventListener() {} });
+  const { assignScalable } = await import('../src/scripts/show-field.js');
+  const ring = (n, r, o) => Float64Array.from({ length: n * 3 }, (_, q) => { const i = Math.floor(q / 3), a = (i / n) * 6.283 + o; return q % 3 === 0 ? Math.cos(a) * r : q % 3 === 1 ? Math.sin(a) * r * 0.7 : 0.05 * Math.sin(7 * a); });
+  for (const [n, m] of [[1000, 1000], [600, 1000], [450, 450], [200, 200], [129, 130]]) {
+    const from = ring(n, 1, 0.2), to = ring(m, 0.8, 0.9);
+    const t = performance.now(), a = assignScalable(from, to), ms = performance.now() - t;
+    assert.equal(new Set(a).size, n, `${n}→${m}: doppelt belegte Plätze`);
+    assert.ok([...a].every((j) => j >= 0 && j < m));
+    if (n <= 450) { const opt = cost(from, to, reference(from, to)); assert.ok(cost(from, to, a) <= opt * 1.35, `${n}→${m}: ${cost(from, to, a)} gegen optimal ${opt}`); }
+    assert.ok(ms < 200, `${n}→${m}: ${ms.toFixed(0)} ms`);
+  }
+});

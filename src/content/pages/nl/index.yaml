@@ -470,6 +470,11 @@ sections:
         unit: "%"
         text: Opgeladen met 100% groene stroom.
         _key: k_f24c1ffbe1647069ab03
+        logo:
+          src: https://flyingstars.art/wp-content/uploads/2024/10/NATURSTROM-Logo_weiss.png
+          alt: naturstrom
+          width: 301
+          height: 71
     pillarsRef: sustainability-pillars
     cta:
       label: Over duurzaamheid
@@ -564,12 +569,12 @@ sections:
     limit: 4
     _key: k_4e0f713fd6a63fd1a144
 translationContractVersion: 2
-translationSourceHash: 75028320798beda1c89dda5c0eb1c7a6163811f8e81e0055f21fb4a7a115fe02
+translationSourceHash: d0c13d93e08ded6e41463fb611f9e388994f7e96b498a90da94e692965672f40
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 75028320798beda1c89dda5c0eb1c7a6163811f8e81e0055f21fb4a7a115fe02
+  sourceFingerprint: d0c13d93e08ded6e41463fb611f9e388994f7e96b498a90da94e692965672f40
   fields:
     - address: /description
       sourceFingerprint: a389c0c303d14cc754897a8a3f1e3b646c7e67901735ba8af090f8f691b10cd4
@@ -583,6 +588,10 @@ translationEvidence:
       sourceFingerprint: 3abd64d330423f1e681075df655f66bd52ece88113e334334cd70c710bc696e6
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
+    - address: /sections/@k_001c02ae39915e989410/comparison
+      sourceFingerprint: 78a740072d09cfccf27b262523c0aa6e4aabe1bc3d8a7daef5b20de2e63b229b
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
     - address: /sections/@k_001c02ae39915e989410/cta/label
       sourceFingerprint: 4b3a7a606386b12a23b0bcd9c3af1ec039119cb428dc4ddefb16324a8989583d
       targetFingerprint: 8e1e929e4a329a2d84038d66050bb0d2a8ca1740f5ee16a89e5b826ebd4e18eb
@@ -590,6 +599,10 @@ translationEvidence:
     - address: /sections/@k_001c02ae39915e989410/facts/@k_20d9386f213523952598/label
       sourceFingerprint: 9003871743d03334d5d2836b939b8ca8a88f8a859d0d6ccfdc1a4b8531c3f594
       targetFingerprint: 10f3d06b979026d2542780ead1aaf6f8f06512dd028485d3314fd764bd9a6196
+      status: adopted-existing
+    - address: /sections/@k_001c02ae39915e989410/facts/@k_20d9386f213523952598/logo
+      sourceFingerprint: 0617717169462deab8e5b42a75bc46dff18acf0bd1f22b35e32923a265967097
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_001c02ae39915e989410/facts/@k_20d9386f213523952598/text
       sourceFingerprint: cfcd7b4eadfa20379e065e07b1a4778e8640ff8280cd344f91440d3ceb85720f
@@ -611,6 +624,10 @@ translationEvidence:
       sourceFingerprint: 91b5e9e568e0148e1bb49a4d9364c1224be2ef9fdbb8d144c25a013dd219a44d
       targetFingerprint: fa640a196be6e4dc709e50790f5c7b6e1933c5cc130f96ad96d47b20844997d6
       status: adopted-existing
+    - address: /sections/@k_001c02ae39915e989410/facts/@k_2f6c2a2e8d48eea5522d/logo
+      sourceFingerprint: 28f52eaf9dccafa18eb2874354ed579cf12303a957a78f3f01c2734c07b11f1d
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
     - address: /sections/@k_001c02ae39915e989410/facts/@k_2f6c2a2e8d48eea5522d/text
       sourceFingerprint: ba9daa4fb5a35702f69e75e0e2bc93db9b12cdbdd2ca9510bd587b28db39b7d5
       targetFingerprint: 6804cf652245c7a96f018fab284c2bccbf87228a62f486927ab0a9f0e4697937
@@ -631,6 +648,10 @@ translationEvidence:
       sourceFingerprint: ed0d0c3c4a1ed199d3121e34298e208cafddefbf15d280b8ec29be2a1407cfd7
       targetFingerprint: ee19e65b4d0e0e0aabe1e0908e9a991a7a2f79e9ec20de93b2ab78918dc1f094
       status: adopted-existing
+    - address: /sections/@k_001c02ae39915e989410/facts/@k_a69ce4ddf7966109fb50/logo
+      sourceFingerprint: 06debd024eaa46c04eeb67080d6f253274787c39c10a39ba736c64a3b51fef4e
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
     - address: /sections/@k_001c02ae39915e989410/facts/@k_a69ce4ddf7966109fb50/text
       sourceFingerprint: 181382e059c0e478880dc659347e463a9fa9f1562eb63fe79ca4592d4860eb55
       targetFingerprint: 19d4fe2d9118211d63cf6cd63784358e777eaa7a2704e4d8656fc1025502edb4
@@ -650,6 +671,10 @@ translationEvidence:
     - address: /sections/@k_001c02ae39915e989410/facts/@k_f24c1ffbe1647069ab03/label
       sourceFingerprint: 5e1a0d326024997cc9b9459c0628c4b386ca5d357a0787cea1342503ec9f4626
       targetFingerprint: 53ad565bb789feaf1977bf7b638fc0c85d7196eb36b30c254a8ad18ba3006153
+      status: adopted-existing
+    - address: /sections/@k_001c02ae39915e989410/facts/@k_f24c1ffbe1647069ab03/logo/alt
+      sourceFingerprint: fb6f669dd4fa624eb80a2bb5ab2176b18173323c1776bdaa32ca09bb67cbe95a
+      targetFingerprint: acb72b45cd1286a435183da7abacfeeac266e7139c402b22c07b6953779e34ee
       status: adopted-existing
     - address: /sections/@k_001c02ae39915e989410/facts/@k_f24c1ffbe1647069ab03/text
       sourceFingerprint: 4982d43d12e53506cdceae2abee9241ce1ccc444891908034c9eb5cfddf6d34d

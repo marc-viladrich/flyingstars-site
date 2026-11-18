@@ -995,3 +995,38 @@ dem Loslassen liegt wie vorher bei rund 300 ms.
 Tests: tests/show-configurator.spec.ts neu geschnitten (Tests der Paketknöpfe, des Bereichswechsels, der Paketfarben und
 des Paketrahmens entfernt, sieben Tests für den neuen Ablauf), logo-show-budget.spec.ts auf „2D-Show, Regler auf 100“
 umgestellt.
+
+## Runde 6: Aufbau wie vor Runde 5, Show-Art als Pills, Verdichtung bis 200, Leistung (18.11.2026)
+
+**Aufbau.** Marc: „Keep the main logic and the main structure … exactly the same as it was before.“ Die Ergebnis-Spalte aus
+Runde 5 ist zurückgenommen: Vorschau rechts (klebend), links das Bedienfeld mit der Paket-/Preis-Box wie vor Runde 5.
+Geblieben sind nur: „Immer dabei“ unter der Paket-/Preis-Box, Upgrades eingeklappt, der größere Abstand Seitenkopf →
+Konfigurator (ab Desktop `clamp(var(--space-14), 6.5vw, var(--space-24))`, bei 1440 ≈ 94 px; die einzige bewusste Abweichung
+von `--head-gap-content`, eingetragen in docs/DESIGN.md). Die Bühne passt mit Steuerleiste auch in 1280 × 720.
+
+**Art der Show** als dieselben Pills wie der Anlass (`.chips-quiet`), „2D · 3D · 3D+“. Darunter je Art drei Häkchen aus
+Moritz' Paketbeschreibungen (`preise.artItem.*`); die drei Listen liegen in derselben Rasterzelle und blenden per `opacity`
+über (CSS über `:has`, keine Höhenänderung). Preislogik und Mindestzahlen wie in Runde 5.
+
+**Upgrades:** Beschriftung wie die übrigen Felder (Label, Zähler, Pfeil), keine Linien; Aufklappen über
+`grid-template-rows`.
+
+**Katalogmotive:** verdichtet nur bis 200 Drohnen (`DENSE_MAX` in scenes/catalog-resample.js); darüber behält das Motiv
+seine 200er-Gestalt, weitere Drohnen bleiben dunkel in Reserve.
+
+**Leistung** (Preisseite bedienen, 1440 × 900, Pixeldichte 2, Median aus 3; vorher = 25d5f80, abwechselnd gemessen):
+- Regler auf 1000: die optimale Zuordnung lief über alle 1000 Drohnen (kubisch), 2,2 s am Stück bei 4×. Jetzt bis 128 Drohnen
+  optimal, darüber Blöcke von 48 in Hilbert-Reihenfolge (show-field.js, `assignScalable`; Wege 0–7 % länger als optimal,
+  scripts/show-assign.test.mjs).
+- 3D+ (Silvester): die Jahreszahl setzte der Textplaner am Stück (513 ms bei 4×). Jetzt im Worker
+  (`textFormationAsync`, text-worker.js) für Jahreszahl, „125“, Jubiläumszahl, eigenen Text und Schriftzüge.
+- Nach jedem Wechsel der Drohnenzahl wandert die Lichtgröße in Viertelpixel-Schritten; jeder Schritt legte für alle Farben
+  neue Sprite-Canvases an (in WebKit Bilder von 75–99 ms). Jetzt ein Sprite je Farbe in Referenzgröße, beim Zeichnen
+  skaliert.
+- Modulketten von Konfigurator und Teaser werden in Stufen ausgewertet (`importInStages`, when-near.mjs). Der Teaser rechnet die
+  Lichtlauf-Reihenfolge aller Bilder im Leerlauf vor, zeigt erst, wenn die Bühne auf 300 px herankommt, und das erste Bild
+  fliegt durch die lebendige Wolke ein (ohne optimale Zuordnung). `perf:start` damit grün, auch `nachhaltigkeit → ablauf`
+  (vorher 53 ms Long Task) und `ablauf → preise`.
+- Ergebnis Chromium 4× (vorher → nachher): Regler auf 1000 Long Task 2296 → keiner, Regler auf 200 469 → keiner, 3D+ 253 →
+  keiner; übrig ein Task von 51 ms (vorher ebenso) nach dem Loslassen des Reglers, fast ganz native Canvas-Arbeit. WebKit max:
+  Regler auf 1000 251 → 37 ms, Ziehen 60 → 26, 3D+ 93 → 20, Scrollen 40 → 28 ms.

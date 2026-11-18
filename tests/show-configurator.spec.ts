@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 
 // Runde 5 (18.11.2026): seit Moritz' Preistext gibt es keine Paketknöpfe mehr. Der Konfigurator startet als „Individuelles
-// Paket“; Drohnenzahl und Art der Show (2D · 3D · 3D mit Storytelling) bestimmen Vorschau und Preis, die drei Pakete sind
+// Paket“; Drohnenzahl und Art der Show (2D · 3D · 3D+, Runde 6 als Pills mit Häkchen) bestimmen Vorschau und Preis, die drei Pakete sind
 // feste Startpunkte („SPARK anpassen“). Die Tests der alten Paketwahl (Paketknöpfe, Bereichswechsel am Regler, Paketfarben,
 // gleitender Paketrahmen) sind entfernt und durch die Tests am Ende dieser Datei ersetzt.
 
@@ -117,7 +117,8 @@ test('Große Bildschirme: Bedienung links, Bühne rechts; mobil gestapelt', asyn
       expect(panel.x + panel.width, `${w}: Bedienung links neben der Bühne`).toBeLessThanOrEqual(stage.x);
       expect(stage.width, `${w}: die Bühne nimmt den größeren Teil`).toBeGreaterThan(panel.width * 1.5);
       await expect(page.locator('#cfg-drones')).toBeInViewport();
-      await expect(page.locator('#cfg-price')).toBeInViewport();
+      // Runde 6 (Marc: Aufbau wie vor Runde 5): die Paket-Box steht links unter der Bedienung, bei 1440 × 900 unter dem
+      // ersten Bildschirm wie damals; die mobile Preisleiste bzw. das Scrollen bringt sie ins Bild
     } else expect(stage.y + stage.height, 'Bühne über der Bedienung').toBeLessThanOrEqual(panel.y + 1);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
     expect(overflow, `${w}: kein seitliches Scrollen`).toBeLessThanOrEqual(0);
@@ -302,7 +303,8 @@ test('Runde 5: Start als individuelles 3D-Paket; Drohnenzahl und Art der Show be
   await expect(page.locator('#cfg-arts input[value="3d"]')).toBeChecked();
   await expect(droneCount(page)).toHaveText('200');
   await expect(price(page)).toHaveText('ab 15.900 €');
-  await expect(page.locator('#cfg-meta')).toContainText('3D-Show · 200 Drohnen');
+  await expect(page.locator('.cfg-check-list[data-art="3d"]')).toBeVisible();
+  await expect(page.locator('.cfg-check-list[data-art="3d"] li')).toHaveText(['Präzise Logos', 'Komplexe Schriftzüge', 'Synchron zu eurer Wunschmusik']);
   // 2D: dieselbe Zahl, derselbe Preis (HORIZON = Preis je Drohnenzahl); erst mit 100 Drohnen 7.900 €
   await art(page, '2d');
   await expect(price(page)).toHaveText('ab 15.900 €');
@@ -314,7 +316,10 @@ test('Runde 5: Start als individuelles 3D-Paket; Drohnenzahl und Art der Show be
   await expect(droneCount(page)).toHaveText('300');
   await expect(price(page)).toHaveText('ab 34.900 €');
   await expect(page.locator('#cfg-floor-note')).toHaveText('3D-Show mit Storytelling ab 300 Drohnen');
-  await expect(page.locator('#cfg-art-desc')).toContainText('dramaturgischer Kurve');
+  // Runde 6: die Häkchen der gewählten Art blenden ein, die anderen sind unsichtbar (auch für Screenreader)
+  await expect(page.locator('.cfg-check-list[data-art="story"]')).toBeVisible();
+  await expect(page.locator('.cfg-check-list[data-art="story"] li').first()).toHaveText('Mit Storytelling');
+  await expect(page.locator('.cfg-check-list[data-art="3d"]')).toBeHidden();
   // der Regler bleibt an der Mindestzahl stehen
   await page.locator('#cfg-drones').focus(); await page.keyboard.press('Home');
   await expect(droneCount(page)).toHaveText('300');
@@ -387,20 +392,23 @@ test('Runde 5: Upgrades eingeklappt mit Zähler, klappen weich auf, rechnen in d
   await expect(page.locator('#cfg-up-count')).toHaveText('2 gewählt');
 });
 
-test('Runde 5: erster Bildschirm bei 1440 × 900 zeigt Vorschau und Preis, „Immer dabei“ steht unter der Preis-Box', async ({ page }, info) => {
+test('Runde 6: Aufbau wie vor Runde 5 – Bedienung mit Paket-Box links, Vorschau rechts; Immer dabei unter der Box; Kopfabstand', async ({ page }, info) => {
   test.skip(Boolean(info.project.use.isMobile), 'Desktop-Anordnung');
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(CFG);
   await expect(page.locator('.cfg-stage')).toBeInViewport({ ratio: 0.95 });
-  await expect(price(page)).toBeInViewport();
-  await expect(page.locator('#cfg-cta')).toBeInViewport();
+  await expect(page.locator('#cfg-drones')).toBeInViewport();
   const box = async (sel: string) => (await page.locator(sel).boundingBox())!;
-  const sum = await box('.cfg-sum'), always = await box('.cfg-always'), stage = await box('.cfg-stage');
-  expect(always.y).toBeGreaterThan(sum.y + sum.height - 1);
-  expect(sum.y).toBeGreaterThan(stage.y + stage.height - 1);
-  // deutlich mehr Abstand zwischen Seitenkopf und Werkzeug als zwischen den Eingabegruppen
-  const h1 = await box('.cfg-head h1'), panel = await box('.cfg-panel');
-  expect(panel.y - (h1.y + h1.height)).toBeGreaterThanOrEqual(64);
+  const panel = await box('#cfg'), stage = await box('.cfg-stage'), sum = await box('.cfg-sum'), always = await box('.cfg-always'), up = await box('.cfg-upgrades');
+  expect(panel.x + panel.width, 'Bedienung links neben der Bühne').toBeLessThanOrEqual(stage.x);
+  for (const b of [sum, always]) expect(b.x + b.width, 'Paket-Box und Immer dabei in der Bedienung').toBeLessThanOrEqual(stage.x);
+  expect(sum.y, 'Paket-Box unter den Upgrades').toBeGreaterThan(up.y + up.height - 1);
+  expect(always.y, 'Immer dabei unter der Paket-Box').toBeGreaterThan(sum.y + sum.height - 1);
+  const h1 = await box('.cfg-head h1');
+  expect(panel.y - (h1.y + h1.height), 'mehr Abstand Kopf → Werkzeug').toBeGreaterThanOrEqual(64);
+  // Upgrades: eine Beschriftung wie die übrigen Felder, ohne Linien
+  const toggle = page.locator('#cfg-up-toggle');
+  for (const side of ['top', 'bottom']) expect(await toggle.evaluate((el, s) => getComputedStyle(el).getPropertyValue(`border-${s}-width`), side)).toBe('0px');
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(1440);
 });
 
@@ -418,13 +426,14 @@ test('Runde 5: die Anfrage nimmt Art der Show, Drohnenzahl und Paket mit', async
   expect(fixed).toContain('Art der Show: 2D-Show');
 });
 
-test('Runde 5: Katalogmotive zeichnen mit mehr Drohnen dichter (alle Drohnen leuchten in der Form)', async ({ page }) => {
-  for (const n of [200, 600]) {
+test('Runde 5/6: Katalogmotive zeichnen bis 200 Drohnen dichter, darüber bleibt die 200er-Gestalt', async ({ page }) => {
+  for (const [n, lit] of [[150, 150], [600, 200]]) {
     await page.goto(`${CFG}?anlass=silvester&motiv=lebkuchen&drohnen=${n}&art=2d#konfigurator`);
     await expect(scene(page)).toContainText('Lebkuchen');
     await expect(field(page)).toHaveAttribute('data-points', String(n));
-    // vorher leuchteten immer die 99 Katalogpunkte, der Rest wartete dunkel
-    await expect.poll(async () => Number(await field(page).getAttribute('data-lit')), { timeout: 15_000 }).toBeGreaterThan(n * 0.9);
+    // vorher leuchteten immer die 99 Katalogpunkte; Runde 6 (Marc): verdichtet nur bis 200, weitere Drohnen bleiben dunkel
+    await expect.poll(async () => Number(await field(page).getAttribute('data-lit')), { timeout: 15_000 }).toBeGreaterThan(lit * 0.9);
+    expect(Number(await field(page).getAttribute('data-lit'))).toBeLessThanOrEqual(lit * 1.05);
   }
 });
 

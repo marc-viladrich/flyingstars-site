@@ -64,7 +64,7 @@ const cls = { steps: 'steps', milestones: 'ms', flow: 'lf-steps', metro: 'ruler'
     .ms-item:not(.ms-repeat):not(:first-child) .ms-body { margin-top: 0; }
   }
 
-  .lf-grid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(var(--space-8), 6vw, var(--space-28)); align-items: start; }
+  .lf-grid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: var(--head-gap-content) clamp(var(--space-8), 6vw, var(--space-28)); align-items: start; }
   .lf-head { position: sticky; top: 6.875rem; }
   .lf-head .sec-head { margin-bottom: 0; }
   .lf-steps { list-style: none; margin: 0; padding: 0 0 0 var(--space-11); position: relative; display: grid; gap: clamp(var(--space-3-5), 2vw, var(--space-5-5)); }

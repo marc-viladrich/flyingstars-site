@@ -220,7 +220,7 @@ sections:
       - { label: Kein Knall, value: leise, text: "Der TÜV NORD bestätigt den Schallschutz unserer Technik.", "_key": "k_20d9386f213523952598" }
       - { label: Kein Müll, value: "0", unit: kg, text: "Wiederverwendbare Drohnen.", "_key": "k_a69ce4ddf7966109fb50" }
       - { label: Kein Rauch, value: "0", unit: g, text: "Vor Ort entstehen keine schädlichen Emissionen.", "_key": "k_2f6c2a2e8d48eea5522d" }
-      - { label: Ökostrom, value: { fact: renewablePercent }, unit: "%", text: "Geladen mit 100 % Ökostrom.", "_key": "k_f24c1ffbe1647069ab03" }
+      - { label: Ökostrom, value: { fact: renewablePercent }, unit: "%", text: "Geladen mit 100 % Ökostrom.", logo: { src: "https://flyingstars.art/wp-content/uploads/2024/10/NATURSTROM-Logo_weiss.png", alt: naturstrom, width: 301, height: 71 }, "_key": "k_f24c1ffbe1647069ab03" }
     pillarsRef: sustainability-pillars
     todo: Moritz und FlyingStars müssen die Umweltformulierungen vor Veröffentlichung prüfen und die Belege für Ökostrom und das TÜV-Nord-Schallschutzgutachten bereithalten.
     _key: k_001c02ae39915e989410

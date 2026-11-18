@@ -6,9 +6,7 @@
      scroll-padding-top: 88px (global.css); die Section bringt den Platz für die Navigation aber schon selbst mit
      (--cfg-top). Ohne Ausgleich landet sie 88 px zu tief, und bei 1280 × 720 rutschen Spur und Anfrage aus dem Bild */
   .cfg-noscript { padding: 0 var(--gutter, var(--pad)) var(--section); color: var(--muted); }
-  /* Runde 5: rechts die Ergebnis-Spalte (Vorschau, Preis-Box, Immer dabei) als ein klebender Block; links die Eingaben */
-  .cfg-out { order: 2; position: sticky; top: 5.25rem; display: grid; gap: var(--space-3); align-self: start; min-width: 0; }
-  .cfg-stage { position: relative; height: calc(100svh - 14rem); min-height: 22rem; border-radius: var(--radius); background: radial-gradient(ellipse at 50% 120%, var(--fill-cyan), transparent 60%), var(--media-ground); border: 1px solid var(--line); overflow: hidden; }
+  .cfg-stage { order: 2; position: sticky; top: 5.25rem; height: calc(100svh - 6.75rem); min-height: 28.75rem; border-radius: var(--radius); background: radial-gradient(ellipse at 50% 120%, var(--fill-cyan), transparent 60%), var(--media-ground); border: 1px solid var(--line); overflow: hidden; }
   .cfg-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
   .cfg-caption { position: absolute; left: 1.25rem; top: 1.125rem; right: 1.25rem; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2-5); font-size: var(--text-sm); color: var(--muted); }
   .cfg-caption em { font: 500 var(--text-xs)/1 var(--mono); font-style: normal; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ground); background: var(--pkg, var(--amber)); padding: var(--space-1-25) var(--space-2); border-radius: var(--radius-4); }
@@ -187,12 +185,7 @@
   .cfg-styles { --chips-gap: 0.375rem; --chip-height: 2.25rem; --chip-padding: 0 0.875rem; --chip-font-size: var(--text-sm); --chip-border: var(--line); --chip-selected-bg: transparent; --chip-selected-color: var(--text); }
   .cfg-styles[hidden] { display: none; }
   /* Paket, Preis, Dauer und Anfrage als eigene Fläche (Runde 11), im Stil der Karten der Site (--surface, --line) */
-  .cfg-sum { display: grid; gap: var(--space-4-5); padding: clamp(var(--space-5), 1.8vw, var(--space-7)); border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
-  /* unter der Vorschau eine ruhige Zeile: Name und Preis links, Anfrage rechts */
-  @media (--nav-expanded) {
-    .cfg-sum { grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: var(--space-6); padding: var(--space-4) var(--space-5) var(--space-4) var(--space-6); }
-    .cfg-sum > .btn { grid-column: 2; grid-row: 1; }
-  }
+  .cfg-sum { display: grid; gap: var(--space-4-5); margin-top: clamp(var(--space-1-5), 1vw, var(--space-4)); padding: clamp(var(--space-5), 1.8vw, var(--space-7)); border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
   .cfg-result { display: grid; gap: var(--space-2); }
   .cfg-price { display: flex; align-items: baseline; gap: var(--space-3-5); flex-wrap: wrap; }
   /* Paketname in seiner Paketfarbe wie überall (Marc, 02.11.2026); --pkg setzt das Skript bei jedem Wechsel */
@@ -201,7 +194,7 @@
   .cfg-price span { font: 500 clamp(1.5rem, 2.2vw, 1.875rem)/1 var(--display); color: var(--text); }
   .cfg-meta { margin: 0; font-size: var(--text-xs); letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; }
   .cfg-cta { justify-self: start; }
-  .cfg-note { grid-column: 1 / -1; margin: var(--space-1) 0 0; font-size: var(--text-label); color: var(--faint); line-height: 1.5; text-wrap: pretty; }
+  .cfg-note { margin: 0; font-size: var(--text-label); color: var(--faint); line-height: 1.5; text-wrap: pretty; }
   .cfg-bar { display: none; }
   /* niedrige Desktop-Fenster (1280 × 720): Text und Logo stehen seit der vierzehnten Fassung bei den Auswahlen; damit
      Preis und Anfrage weiter im ersten Blick bleiben, rückt die Bedienung enger zusammen */
@@ -211,16 +204,13 @@
     .cfg-text, .cfg-upload { min-height: 2.375rem; }
     .cfg-block > label, .cfg-block legend { margin-bottom: var(--space-0-5); }
     .cfg-pkgs label > span { min-height: 2.875rem; padding: var(--space-1-5); }
-    .cfg-sum { padding: var(--space-3) var(--space-4-5); gap: var(--space-3); }
+    .cfg-sum { margin-top: var(--space-0-5); padding: var(--space-4) var(--space-4-5); gap: var(--space-3); }
   }
   @media (--nav-collapsed) {
     /* Runde 25 (Marc: „ein Ticken weniger Padding nach oben“): der Sprung auf #konfigurator scrollt nach unten, die Kopfzeile
        weicht aus (nav-away); die Bühne steht beim Sprung direkt unter der Kopfzeile statt unter weiteren 4 rem Leerraum (5,5 rem = scroll-padding-top in global.css) */
     .cfg { grid-template-columns: 1fr; padding-top: var(--space-3); scroll-margin-top: calc(var(--nav-h) - var(--space-3) - 5.5rem); gap: var(--space-5-5); padding-bottom: 7.5rem; }
-    .cfg-out { display: contents; }
-    .cfg-sum { order: 2; }
-    .cfg-always { order: 3; }
-    .cfg-stage { order: 0; position: sticky; top: 4rem; z-index: 5; height: 42svh; min-height: 17.5rem; margin: 0 calc(var(--cfg-gutter) * -1); border-radius: 0; border-left: 0; border-right: 0; transition: top var(--dur-standard) var(--ease-default); }
+    .cfg-stage { order: 0; top: 4rem; z-index: 5; height: 42svh; min-height: 17.5rem; margin: 0 calc(var(--cfg-gutter) * -1); border-radius: 0; border-left: 0; border-right: 0; transition: top var(--dur-standard) var(--ease-default); }
     /* Runde 25: ist die Kopfzeile ausgewichen (nav-away), klebt die Bühne ganz oben; die Preisleiste weicht mit nach unten aus */
     :root.nav-away .cfg-stage { top: 0; }
     :root.nav-away .cfg.is-near .cfg-bar { transform: translateY(105%); }
@@ -333,7 +323,7 @@ fieldset.cfg-tool { margin: 0; padding: 0; border: 0; min-width: 0; }
 .cfg-up { --chips-gap: var(--space-1-5); }
 .cfg-up span small { color: var(--faint); font-size: var(--text-xs); letter-spacing: 0.02em; }
 /* Immer dabei: ruhige Liste mit Icons, zwei Spalten; kein Bedienelement */
-.cfg-always { display: grid; gap: var(--space-2-5); padding: var(--space-2) var(--space-1) 0; }
+.cfg-always { gap: var(--space-2-5); }
 .cfg-always-h { margin: 0; font-size: var(--text-control); color: var(--text); }
 .cfg-always-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2) var(--space-4); font-size: var(--text-sm); line-height: 1.3; color: var(--muted); }
 .cfg-always-list li { display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
@@ -341,31 +331,19 @@ fieldset.cfg-tool { margin: 0; padding: 0; border: 0; min-width: 0; }
 /* lange Wörter (NL „Aansprakelijkheidsverzekering“) trennen statt die Spalte zu sprengen */
 .cfg-always-list li > span { min-width: 0; overflow-wrap: anywhere; -webkit-hyphens: auto; hyphens: auto; }
 .cfg.is-logomode .cfg-upgrades, .cfg.is-logomode .cfg-always, .cfg.is-logomode .cfg-art { display: none; }
-/* Runde 5: unter der breiten Vorschau in vier Spalten (zwei Zeilen), auf dem Handy zwei */
-@media (--nav-expanded) { .cfg-always-list { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
 /* ---------- Runde 5 (Marc, 18.11.2026) ---------- */
-/* Art der Show: drei Stufen als Segmente mit gleitendem Rahmen (wie früher die Paketknöpfe, Runde 11), ohne Paketfarben;
-   die gewählte Stufe im Orange der Seite. --i: gewählte Stufe, --h: Stufe unter der Maus (ohne Maus = --i) */
-.cfg-arts { --i: 1; position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-1); padding: var(--space-1); border: 1px solid var(--line); border-radius: var(--radius-12); }
-.cfg-arts:has(input[value="2d"]:checked) { --i: 0; }
-.cfg-arts:has(input[value="3d"]:checked) { --i: 1; }
-.cfg-arts:has(input[value="story"]:checked) { --i: 2; }
-.cfg-arts label { position: relative; z-index: 1; cursor: pointer; min-width: 0; }
-.cfg-arts input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
-.cfg-arts label > span { display: grid; gap: var(--space-1); justify-items: center; align-content: center; text-align: center; min-height: 3.25rem; padding: var(--space-2) var(--space-1-5); border-radius: var(--radius-9); color: var(--muted); transition: color var(--dur-standard) var(--ease-default); }
-.cfg-arts b { font: 500 var(--text-control)/1.15 var(--display); letter-spacing: 0; color: inherit; }
-.cfg-arts small { font-size: var(--text-xs); letter-spacing: 0.04em; color: var(--faint); transition: color var(--dur-standard) var(--ease-default); }
-.cfg-arts input:checked + span { color: var(--text); }
-.cfg-arts input:checked + span small { color: var(--accent); }
-.cfg-arts input:focus-visible + span { outline: 0.1875rem solid var(--cyan); outline-offset: 0.125rem; }
-/* der Rahmen gleitet (nur transform): je Stufe eine Spaltenbreite plus Spaltenabstand */
-.cfg-arts-ind { position: absolute; z-index: 0; top: 0.25rem; bottom: 0.25rem; left: 0.25rem; width: calc((100% - 1rem) / 3); box-sizing: border-box; border-radius: var(--radius-9); border: 1px solid var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); transform: translateX(calc(var(--i) * (100% + 0.25rem))); transition: transform var(--dur-enter) var(--ease-glide); pointer-events: none; }
-@media (prefers-reduced-motion: reduce) { .cfg-arts-ind, .cfg-arts label > span { transition: none; } }
-@media (hover: hover) { .cfg-arts label:hover span { color: var(--text); } }
-.cfg-art-desc { margin: var(--space-1) 0 0; min-height: 2.6em; font-size: var(--text-label); line-height: 1.45; color: var(--muted); text-wrap: pretty; transition: opacity var(--dur-quick) var(--ease-default), filter var(--dur-quick) var(--ease-default); }
-.cfg-art-desc.is-swap { opacity: 0; filter: blur(0.125rem); }
-@media (prefers-reduced-motion: reduce) { .cfg-art-desc { transition: opacity var(--dur-quick) linear; } .cfg-art-desc.is-swap { filter: none; } }
+/* Art der Show (Runde 6): dieselben Pills wie der Anlass (.chips-quiet); darunter je Art drei Häkchen. Die drei Listen
+   liegen in derselben Rasterzelle (Höhe der längsten), die gewählte blendet weich ein; visibility nimmt die anderen aus
+   dem Barrierefreiheitsbaum */
+.cfg-art-lists { display: grid; margin-top: var(--space-2); }
+.cfg-check-list { grid-area: 1 / 1; list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); align-content: start; font-size: var(--text-sm); line-height: 1.3; color: var(--muted); opacity: 0; visibility: hidden; transform: translateY(0.25rem); transition: opacity var(--dur-standard) var(--ease-default), transform var(--dur-standard) var(--ease-default), visibility 0s var(--dur-standard); }
+.cfg-check-list li { display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
+.cfg-check-list .ico { flex: none; }
+.cfg-art:has(input[value="2d"]:checked) .cfg-check-list[data-art="2d"],
+.cfg-art:has(input[value="3d"]:checked) .cfg-check-list[data-art="3d"],
+.cfg-art:has(input[value="story"]:checked) .cfg-check-list[data-art="story"] { opacity: 1; visibility: visible; transform: none; transition: opacity var(--dur-standard) var(--ease-default), transform var(--dur-standard) var(--ease-default), visibility 0s; }
+@media (prefers-reduced-motion: reduce) { .cfg-check-list { transform: none; } }
 
 /* Drohnenregler: unter der Mindestzahl der Show-Art ist die Spur gedämpft (dort bleibt der Griff nicht stehen) */
 .cfg-range-fill { --track: linear-gradient(90deg, rgb(var(--rgb-text) / 0.28) 0 var(--floor, 0%), var(--text) var(--floor, 0%) var(--fill, 0%), transparent var(--fill, 0%)); }
@@ -376,13 +354,13 @@ fieldset.cfg-tool { margin: 0; padding: 0; border: 0; min-width: 0; }
 .cfg-ticks-row.is-note .cfg-floor-note { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) { .cfg-floor-note { transform: none; } }
 
-/* Upgrades eingeklappt (Marc: „erstmal eingeklappt lassen“): eine Zeile mit der Zahl der gewählten Upgrades; der Inhalt
-   klappt weich auf (grid-template-rows 0fr → 1fr, Chrome ab 107, Safari ab 16), geschlossen ist er inert */
+/* Upgrades eingeklappt (Marc, Runde 5/6): eine Beschriftung wie die übrigen Felder mit Zahl der gewählten Upgrades und
+   Pfeil, ohne Linien; der Inhalt klappt weich auf (grid-template-rows 0fr → 1fr, Safari ab 16), geschlossen ist er inert */
 .cfg-upgrades { gap: 0; }
-.cfg-up-toggle { display: flex; align-items: center; gap: var(--space-2); width: 100%; min-height: 2.75rem; padding: 0 var(--space-1) 0 0; border: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: transparent; color: var(--text); font: inherit; font-size: var(--text-control); text-align: left; cursor: pointer; }
-.cfg-up-count { margin-left: auto; color: var(--faint); font-size: var(--text-label); transition: color var(--dur-standard) var(--ease-default); }
+.cfg-up-toggle { display: inline-flex; align-items: baseline; gap: var(--space-1-5); justify-self: start; margin: 0 0 var(--space-1-5); padding: 0; border: 0; background: transparent; color: var(--text); font: inherit; font-size: var(--text-control); cursor: pointer; }
+.cfg-up-count { color: var(--faint); font-size: var(--text-label); transition: color var(--dur-standard) var(--ease-default); }
 .cfg-up-count.is-set { color: var(--accent); }
-.cfg-up-chev { flex: none; width: 1rem; height: 1rem; fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; transition: transform var(--dur-standard) var(--ease-default); }
+.cfg-up-chev { flex: none; align-self: center; width: 1rem; height: 1rem; fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; transition: transform var(--dur-standard) var(--ease-default), stroke var(--dur-standard) var(--ease-default); }
 .cfg-up-toggle[aria-expanded="true"] .cfg-up-chev { transform: rotate(180deg); }
 .cfg-up-toggle:hover .cfg-up-chev { stroke: var(--text); }
 .cfg-up-toggle:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offset: 0.125rem; border-radius: var(--radius-6); }
@@ -390,5 +368,5 @@ fieldset.cfg-tool { margin: 0; padding: 0; border: 0; min-width: 0; }
 .cfg-up-toggle[aria-expanded="true"] + .cfg-up-body { grid-template-rows: 1fr; }
 .cfg-up-inner { min-height: 0; overflow: hidden; opacity: 0; transition: opacity var(--dur-standard) var(--ease-default); }
 .cfg-up-toggle[aria-expanded="true"] + .cfg-up-body .cfg-up-inner { opacity: 1; }
-.cfg-up-set { margin: 0; padding: var(--space-3) 0 var(--space-1); border: 0; min-width: 0; }
+.cfg-up-set { margin: 0; padding: var(--space-1) 0 0; border: 0; min-width: 0; }
 @media (prefers-reduced-motion: reduce) { .cfg-up-body, .cfg-up-inner, .cfg-up-chev { transition: none; } }

@@ -32,6 +32,7 @@ import { t as message } from '../i18n/ui.mjs';
 import { getConfiguratorContent } from "../content/show-configurator.js";
 import { SHOW_PACKAGES, DRONES_MIN, DRONES_MAX, configuratorPrice, packageForDrones } from "../content/show-packages.ts";
 import { createField } from "./show-field.js";
+import { rankOf } from "./show-tempo.js";
 import { buildSequence } from "./show-scenes.js";
 import { liftColor } from "./formation/index.js";
 import logoDots from "../data/logo-dots.json";
@@ -160,6 +161,9 @@ export async function buildReel(reel = REEL) {
       pick.forEach((b, i) => beats.push({ ...b, segment, zoom: ZOOM, cloud: r.cloud !== false && step === 0 && i === 0, drones: n, reel: { ...r, pkg, n } }));
     }
   }
+  // Runde 6: die Lichtlauf-Reihenfolge (rankOf, je Bild O(n²)) schon hier im Leerlauf rechnen; sonst entsteht sie beim ersten
+  // Zeigen eines Bildes mitten in der Show (ein Bild von 30–50 ms bei 4× Drossel)
+  for (const [k, b] of beats.entries()) { if (k % 4 === 0) await idle(); rankOf(b); }
   return { beats, loopTo: 0 };
 }
 
@@ -204,8 +208,14 @@ export function initTeaser(root) {
     const still = scene.beats.findLastIndex((b) => b.segment === REELS[reel].still);
     // bei reduzierter Bewegung steht ein starkes Motiv in Ruhe; sonst fliegt das erste Bild ein (eine sofort stehende
     // erste Ansicht zeigte das Ende eines Motivs, beim Logo also gleich 600 Drohnen statt der Steigerung ab 100)
-    field.show(scene, 300, 1, reduce ? { instant: true, at: still } : { at: 0 });
-    root.dataset.cftLoaded = "true";
+    // Runde 6: zeigen erst, wenn die Bühne auf 300 px herankommt. Weiter weg sieht sie niemand, und der erste show() (Ausschnitte
+    // aller Bilder, Zuordnung, erstes Bild) traf beim Scrollen sonst mit dem Scroll-Handler des Himmels in ein Bild. Das erste
+    // Bild kommt durch die lebendige Wolke (es ist ohnehin ein Wolken-Bild): einfliegende Drohnen brauchen keine optimale
+    // Zuordnung, die Hilbert-Reihenfolge der Wolke kostet nur einen Bruchteil
+    const start = () => { if (done || root.dataset.cftLoaded) return; field.show(scene, 300, 1, reduce ? { instant: true, at: still } : { at: 0, cloud: true }); root.dataset.cftLoaded = "true"; };
+    if (!("IntersectionObserver" in window)) { start(); return; }
+    const near = new IntersectionObserver((entries) => { if (entries.some((e) => e.isIntersecting)) { near.disconnect(); start(); } }, { rootMargin: "300px 0px" });
+    near.observe(root);
   }).catch(() => { q("error").hidden = false; });
   return () => { done = true; };
 }

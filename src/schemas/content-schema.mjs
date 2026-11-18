@@ -60,6 +60,24 @@ const qualityItem = z.object({
   secondary: fieldPolicy(z.boolean().default(false).describe('Nachrangig: klein als Textzeile unter den Logos (Marc 31.10.: TÜV-Gutachten, Haftpflicht)'), 'shared'),
 });
 
+// Vergleichstabelle (ComparisonTable.astro): als eigener Abschnitt (comparison) oder eingebettet unter dem Kopf einer
+// Scrollstory (sustainability.comparison, Nachhaltigkeit „Die Alternative zum Feuerwerk“). Eine Definition für beide.
+const comparisonTableFields = {
+  rowHeader: fieldPolicy(z.string().optional().describe('Beschriftung der ersten Spalte'), 'translatable'),
+  columns: z.array(keyedText(fieldPolicy(z.string().min(1), 'translatable'))).min(2),
+  rows: z.array(z.object({
+    label: fieldPolicy(z.string().min(1), 'translatable'),
+    cells: z.array(z.object({ label: fieldPolicy(z.string(), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'), tone: fieldPolicy(z.enum(['y','n','p']), 'shared') })).optional(),
+    values: z.array(keyedText(fieldPolicy(z.string(), 'translatable'))).describe('Genau ein Wert je Spalte, in derselben Reihenfolge'),
+  })).min(1),
+};
+const checkComparisonRows = (s, ctx) => {
+  s.rows.forEach((row, i) => {
+    if (row.values.length !== s.columns.length || (row.cells && row.cells.length !== s.columns.length)) {
+      ctx.addIssue({ code: 'custom', path: ['rows', i, 'values'], message: `Zeile "${row.label}" hat ${row.values.length} Werte, erwartet sind ${s.columns.length} (eine je Spalte).` });
+    }
+  });
+};
 const rawSectionSchema = z.discriminatedUnion('type', [
   z.object({
     type: fieldPolicy(z.literal('showreelHero'), 'shared'), ...todo,
@@ -86,12 +104,14 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     // Nachhaltigkeit in 2D (keine Scrollstory): Kopf, optional bis zu vier Kennzahlen, optional Sätze, optional Beleg.
     headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
     facts: z.array(z.object({ label: fieldPolicy(z.string(), 'translatable'), value: businessValueSchema, unit: fieldPolicy(z.string().optional(), 'translatable'),
-      text: fieldPolicy(z.string(), 'translatable'), tone: legacy.describe('Veraltet (Kontur/Verlauf), wird ignoriert') })).max(4).optional(),
+      text: fieldPolicy(z.string(), 'translatable'), tone: legacy.describe('Veraltet (Kontur/Verlauf), wird ignoriert'),
+      logo: image.optional().describe('Beleg-Logo in der Folie, z. B. naturstrom an der Ökostrom-Zahl') })).max(4).optional(),
     points: z.array(keyedText(fieldPolicy(z.string().min(1), 'translatable'))).optional().describe('Kurze, belegbare Sätze, je einer pro Punkt'),
     pillarsRef: fieldPolicy(z.literal('sustainability-pillars').optional().describe('Gemeinsame Nachhaltigkeitspunkte'), 'shared'),
     proofImage: image.optional(), proofText: fieldPolicy(z.string().optional(), 'translatable'), campaign: fieldPolicy(z.string().optional(), 'translatable'),
+    comparison: z.object(comparisonTableFields).superRefine(checkComparisonRows).optional().describe('Vergleichstabelle direkt unter dem Kopf, vor der Scrollstory'),
     image: image.optional().describe('Foto neben der Einleitung (z. B. #Böllerciao), mit Vorhang-Reveal'),
-    gallery: fieldPolicy(z.enum(['logos', 'willkommen', 'engagement', 'indoor']).optional().describe('Bildgalerie statt Foto neben der Einleitung (Sätze in public/media/galerie)'), 'shared'),
+    gallery: fieldPolicy(z.enum(['logos', 'willkommen', 'indoor']).optional().describe('Bildgalerie statt Foto neben der Einleitung (Sätze in public/media/galerie)'), 'shared'),
     cta: link.optional().describe('Weiterführender Link unter der Einleitung'),
     icon: fieldPolicy(z.string().min(1).optional().describe('Lucide-Name: Kachel mit Icon und Punktmuster statt Foto neben der Einleitung'), 'shared'),
     show: fieldPolicy(z.enum(['indoor']).optional().describe('Drohnen-Animation neben der Einleitung statt Foto oder Icon-Kachel (Indoor-Reihe, scripts/himmel/folge.js)'), 'shared'),
@@ -111,7 +131,7 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     headline: fieldPolicy(z.string().min(1), 'translatable'),
     body: fieldPolicy(z.string().min(1).describe('Markdown erlaubt').meta({'x-afe': {format: 'markdown'}}), 'translatable'),
     image: image.optional(),
-    gallery: fieldPolicy(z.enum(['logos', 'willkommen', 'engagement', 'indoor']).optional().describe('Bildgalerie statt Bild: Text links schmal, Galerie groß daneben (Sätze in public/media/galerie)'), 'shared'),
+    gallery: fieldPolicy(z.enum(['logos', 'willkommen', 'indoor']).optional().describe('Bildgalerie statt Bild: Text links schmal, Galerie groß daneben (Sätze in public/media/galerie)'), 'shared'),
     mediaSide: fieldPolicy(z.enum(['left', 'right']).default('right'), 'shared'),
     headAbove: fieldPolicy(z.boolean().optional().describe('Kopf über voller Breite, darunter Text und Bild nebeneinander'), 'shared'),
     cta: link.optional().describe('Weiterführender Link unter dem Text'),
@@ -187,26 +207,10 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     type: fieldPolicy(z.literal('comparison'), 'shared'), ...sectionHeading,
     headline: fieldPolicy(z.string().min(1), 'translatable'),
     text: fieldPolicy(z.string().optional(), 'translatable'),
-    rowHeader: fieldPolicy(z.string().optional().describe('Beschriftung der ersten Spalte'), 'translatable'),
-    columns: z.array(keyedText(fieldPolicy(z.string().min(1), 'translatable'))).min(2),
-    rows: z.array(z.object({
-      label: fieldPolicy(z.string().min(1), 'translatable'),
-      cells: z.array(z.object({ label: fieldPolicy(z.string(), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'), tone: fieldPolicy(z.enum(['y','n','p']), 'shared') })).optional(),
-      values: z.array(keyedText(fieldPolicy(z.string(), 'translatable'))).describe('Genau ein Wert je Spalte, in derselben Reihenfolge'),
-    })).min(1),
+    ...comparisonTableFields,
     note: fieldPolicy(z.string().optional(), 'translatable'),
     cta: link.optional().describe('Weiterführender Link unter der Tabelle'),
-  }).superRefine((s, ctx) => {
-    s.rows.forEach((row, i) => {
-      if (row.values.length !== s.columns.length || (row.cells && row.cells.length !== s.columns.length)) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['rows', i, 'values'],
-          message: `Zeile "${row.label}" hat ${row.values.length} Werte, erwartet sind ${s.columns.length} (eine je Spalte).`,
-        });
-      }
-    });
-  }),
+  }).superRefine(checkComparisonRows),
   z.object({
     type: fieldPolicy(z.literal('team'), 'shared'), ...sectionHeading,
     note: fieldPolicy(z.string().optional(), 'translatable'), cta: link.optional(), secondary: link.optional().describe('Zweiter Link neben cta'),
@@ -434,7 +438,8 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     entries: z.array(z.object({ kicker: fieldPolicy(z.string().min(1), 'translatable'), title: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable') })).default([]),
     facts: z.array(z.object({ value: businessValueSchema, label: fieldPolicy(z.string().min(1), 'translatable') })).max(4).default([]),
     cta: link.optional().describe('Weiterführender Link unter den Einträgen'),
-    gallery: fieldPolicy(z.enum(['logos', 'willkommen', 'engagement', 'indoor']).optional().describe('Bildgalerie statt des Bildes: Einträge links oben, Bilder treppenartig daneben (Sätze in public/media/galerie)'), 'shared'),
+    gallery: fieldPolicy(z.enum(['logos', 'willkommen', 'indoor']).optional().describe('Bildgalerie statt des Bildes: Einträge links oben, Bilder treppenartig daneben (Sätze in public/media/galerie)'), 'shared'),
+    look: fieldPolicy(z.enum(['stages', 'sky']).optional().describe('Partnerschaften als Bühnen je Eintrag oder als ein Himmel mit den Kampagnen als Drohnenformation (statt Bild und Galerie)'), 'shared'),
   }),
   z.object({
     // Abschluss mit Handlung und den Gesichtern der drei Geschäftsführer:innen.

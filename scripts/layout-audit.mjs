@@ -7,6 +7,7 @@
 //   empty-h   Überschrift ohne Text (z. B. Daten aus einem veralteten Zwischenspeicher)
 //   overflow  Seite scrollt seitlich
 //   cta       Abschluss-Kasten (.promise) ohne Gesichter, Überschrift oder Text (Marc, 02.11.2026: „empty-looking CTAs“)
+//   head-gap  Section-Kopf weicht von den Abstandsrollen --head-gap-kicker/-text/-cta/-content ab (global.css, Runde 6)
 //   hero-top  erste Zeile (Kicker oder h1) einer Seite mit .page-top nicht auf --hero-top (Marc, 02.11.2026: „Die Hero
 //             section sollte überall auf der gleichen Höhe anfangen“). Ausnahme: Seiten, deren Kopf mit einem Bild beginnt (.page-404)
 // Aufruf: node scripts/layout-audit.mjs [basis-url] [--start=/en/] [--widths=390,1440,1920] [--only=orphan,contain] [--browser=webkit]
@@ -132,8 +133,33 @@ for (const width of widths) {
           r.push({ k: 'contain', what: `${name(top)} ${Math.round(b.left)}–${Math.round(b.right)} (Inhalt ${Math.round(gutter)}–${Math.round(vw - gutter)})` });
         }
       }
+      // head-gap: Abstände jedes Section-Kopfs gegen die Rollen --head-gap-* (global.css, Runde 6, Marc: „einheitliche gaps
+      // between headings and body copy … a centrally defined system“). Gemessen werden nur Paare, die untereinander stehen.
+      if (checks.includes('head-gap')) {
+        const tok = (n) => { const probe = document.createElement('div'); probe.style.cssText = `position:absolute;margin-top:var(--head-gap-${n})`; document.body.append(probe); const v = parseFloat(getComputedStyle(probe).marginTop); probe.remove(); return v; };
+        const T = { kicker: tok('kicker'), text: tok('text'), cta: tok('cta'), content: tok('content') };
+        const box = (e) => e.getBoundingClientRect();
+        const shown = (e) => box(e).height > 0 && getComputedStyle(e).visibility !== 'hidden';
+        const isCta = (e) => e.matches('.actions, a.link, a.btn') || (e.matches('p, div') && e.querySelector(':scope > :is(a.link, a.btn)') && ![...e.children].some((c) => !c.matches('a, br')));
+        const check = (role, a, b, head) => { if (!a || !b) return; const gap = box(b).top - box(a).bottom;
+          if (box(b).top >= box(a).bottom - 1 && Math.abs(gap - T[role]) > 2) r.push({ k: 'head-gap', what: `${name(head)} ${role}: ${Math.round(gap)} px statt ${Math.round(T[role])}` }); };
+        for (const head of document.querySelectorAll('main .section-head[data-section-head]:not([data-section-head="contents"])')) {
+          if (!shown(head)) continue;
+          const H = head.querySelector(':scope > :is(h1, h2, h3)'); if (!H) continue;
+          const k = H.querySelector(':scope > .kicker'), line = H.querySelector(':scope > .head-line');
+          check('kicker', k, line, head);
+          const kids = [...head.children].filter((c) => shown(c) && !c.matches('script, style'));
+          for (let i = 1; i < kids.length; i++) {
+            const prev = kids[i - 1], cur = kids[i];
+            if (isCta(cur) && (prev === H || prev.matches('p'))) check('cta', prev, cur, head);
+            else if (cur.matches('p') && (prev === H || prev.matches('p'))) check('text', prev, cur, head);
+          }
+          // Kopf → Inhalt: nur für .sec-head mit Inhalt direkt darunter im selben Abschnitt
+          if (head.matches('.sec-head')) { let next = head.nextElementSibling; while (next && (!shown(next) || next.matches('script, style'))) next = next.nextElementSibling; if (next) check('content', head, next, head); }
+        }
+      }
       return r;
-    }, { checks: ['orphan', 'contain', 'empty-h', 'overflow', 'cta', 'hero-top'].filter(want) });
+    }, { checks: ['orphan', 'contain', 'empty-h', 'overflow', 'cta', 'hero-top', 'head-gap'].filter(want) });
     for (const f of out) findings.push({ width, path, ...f });
   }
 }

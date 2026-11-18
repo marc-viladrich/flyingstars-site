@@ -538,8 +538,7 @@ if (form) {
     const amount = preset ? money(price, locale) : eur(price);
     for (const [sel, txt] of [["#cfg-pkg", name], ["#cfg-bar-pkg", name], ["#cfg-price", amount], ["#cfg-bar-price", amount], ["#cfg-dronecount", String(displayedDrones)]]) $(sel).textContent = txt;
     if (!logoMode) { const label = $("#cfg-pkg-label"); label.hidden = !preset; label.textContent = preset ? message("preise.fixedPrice") : ""; }
-    // Runde 5: Art und Drohnenzahl stehen in der Preis-Box, seit sie unter der Vorschau steht (der Regler ist links)
-    $("#cfg-meta").textContent = `${message('preise.artLine', { art: message(`preise.artName.${art}`), n: pricedDrones() })} · ${message('showConfigurator.valueExcludingVatAndTravel', { v0: message('packageDetails.showtimeLine',durationValues()) })}`;
+    $("#cfg-meta").textContent = message('showConfigurator.valueExcludingVatAndTravel', { v0: message('packageDetails.showtimeLine',durationValues()) }); // Drohnenzahl und Art stehen an ihren Reglern (Runde 9, Runde 6)
     const up = chosenUpgrades();
     const summary = [
       message('showConfigurator.occasionValue', { v0: occasion.label }),
@@ -608,20 +607,11 @@ if (form) {
     update(true, logo && !fresh.length ? LOGO_SEGMENT : undefined, { delay });
   }
 
-  // ---------- Runde 5: Art der Show, Hinweis an der Mindestzahl, Upgrades eingeklappt ----------
-  const artDesc = $("#cfg-art-desc"), floorEl = $("#cfg-floor-note"), upToggle = $("#cfg-up-toggle"), upInner = $(".cfg-up-inner"), upCount = $("#cfg-up-count");
-  /** Auswahl und Beschreibung der Show-Art zeigen, was gilt (auch nach einem Paket-Startpunkt oder Direktlink). */
+  // ---------- Runde 5/6: Art der Show, Hinweis an der Mindestzahl, Upgrades eingeklappt ----------
+  const floorEl = $("#cfg-floor-note"), upToggle = $("#cfg-up-toggle"), upInner = $(".cfg-up-inner"), upCount = $("#cfg-up-count");
+  /** Die gewählte Art zeigen (auch nach einem Paket-Startpunkt oder Direktlink); die Häkchen folgen per CSS dem Radio. */
   function drawArt() {
     for (const r of artRadios) if (r.checked !== (r.value === art)) r.checked = r.value === art;
-    const text = message(`preise.artDesc.${art}`);
-    if (artDesc.dataset.art === art) return;
-    const first = !artDesc.dataset.art;
-    artDesc.dataset.art = art;
-    if (first) { artDesc.textContent = text; return; }
-    // weich überblenden statt hart umschalten (Marc, Runde 5): ausblenden, Text tauschen, einblenden
-    artDesc.classList.add("is-swap");
-    clearTimeout(artDesc._t);
-    artDesc._t = setTimeout(() => { artDesc.textContent = text; artDesc.classList.remove("is-swap"); }, 160);
   }
   let floorTimer = 0;
   /** Kurzer Hinweis, warum der Regler nicht tiefer geht (z. B. „3D-Show ab 200 Drohnen“). */

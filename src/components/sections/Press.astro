@@ -57,9 +57,9 @@ const list = items.map((it, i) => ({ ...it, year: it.date.slice(0, 4), newYear: 
 </section>
 
 <style>
-  .press-head { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: clamp(var(--space-8), 5vw, var(--space-16)); align-items: end; padding-bottom: clamp(var(--space-10), 6vw, var(--space-20)); border-bottom: 1px solid var(--line); }
-  .press-head :global(.section-head) { display: grid; gap: var(--space-5); justify-items: start; max-width: 38rem; }
-  .press-head :global(.lead) { color: var(--muted); margin: 0; }
+  .press-head { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: var(--head-gap-content) clamp(var(--space-8), 5vw, var(--space-16)); align-items: end; padding-bottom: clamp(var(--space-10), 6vw, var(--space-20)); border-bottom: 1px solid var(--line); }
+  .press-head :global(.section-head) { justify-items: start; max-width: 38rem; }
+  .press-head :global(.lead) { color: var(--muted); }
   .press-logos ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-5) var(--space-8); justify-content: flex-start; }
   .press-logos a { display: block; padding: var(--space-1) 0; }
   .press-logos img, .press-logo img { display: block; width: auto; max-width: 100%; filter: brightness(0) invert(1); opacity: 0.72; transition: opacity var(--dur-control); }

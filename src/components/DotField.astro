@@ -1,0 +1,24 @@
+---
+// Leuchtpunkt-Unterlage (Runde 6, Marc: „these gradient dots … a bit more subtle, they would work very well as an
+// underlay, both for individual images and for the collage images“): ein ruhiges Punktraster im Logoverlauf, das hinter
+// einem Bild oder einer Collage hervorschaut und zu den Rändern hin ausläuft. Statisch, keine Bewegung, keine Glows.
+// Der Wirt braucht position: relative und isolation: isolate (Klasse .df-host), die Unterlage liegt mit z-index -1
+// dahinter. inset bestimmt Lage und Größe relativ zum Wirt (negative Werte ragen heraus), inset-m gilt bis --grid-stacked,
+// focus ist der dichteste Punkt, von dem aus die Punkte auslaufen.
+interface Props { inset?: string; insetM?: string; focus?: string; class?: string }
+// Standard: rechts unten hervorschauend, am dichtesten an der freien Ecke (focus); schmal nur so weit, wie der Seitenrand
+// (--pad, mindestens 1,25rem) trägt
+const { inset = '24% -6% -14% 34%', insetM = '20% -1rem -1.25rem 30%', focus = '72% 74%', class: cls } = Astro.props;
+---
+<span class:list={['dot-field', cls]} style={`--df-inset:${inset};--df-inset-m:${insetM};--df-at:${focus}`} aria-hidden="true"></span>
+
+<style is:global>
+  .df-host { position: relative; isolation: isolate; }
+  .dot-field { --df-r: 0.125rem; --df-p: 1.125rem; position: absolute; inset: var(--df-inset); z-index: -1; pointer-events: none;
+    background: var(--grad-soft); opacity: 0.42;
+    -webkit-mask: radial-gradient(circle, #000 var(--df-r), transparent calc(var(--df-r) + 0.05rem)) 0 0 / var(--df-p) var(--df-p), radial-gradient(farthest-side at var(--df-at, 50% 50%), #000 30%, transparent);
+    -webkit-mask-composite: source-in;
+    mask: radial-gradient(circle, #000 var(--df-r), transparent calc(var(--df-r) + 0.05rem)) 0 0 / var(--df-p) var(--df-p), radial-gradient(farthest-side at var(--df-at, 50% 50%), #000 30%, transparent);
+    mask-composite: intersect; }
+  @media (--grid-stacked) { .dot-field { inset: var(--df-inset-m, var(--df-inset)); } }
+</style>

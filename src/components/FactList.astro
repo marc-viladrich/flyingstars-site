@@ -5,7 +5,7 @@ import {forPath} from '../i18n/server';
 const {locale}=forPath(Astro.url.pathname);
 import {factText} from '../content/show-extras.mjs';
 import { factColumns } from '../lib/lists';
-interface Fact { factRef?: unknown; label: string; value?: string | number | import('../content/business-facts.mjs').BusinessRef | {project:string;field:string;display?:string}; unit?: string; text?: string; count?: number }
+interface Fact { logo?: { src: string; width: number; height: number; alt: string }; factRef?: unknown; label: string; value?: string | number | import('../content/business-facts.mjs').BusinessRef | {project:string;field:string;display?:string}; unit?: string; text?: string; count?: number }
 interface Props { items: Fact[]; variant?: 'metrics' | 'tempo' | 'numbers' | 'credits' | 'hero' | 'story' | 'spotlight' | 'eco' | 'spec'; label?: string }
 const marker=(value:unknown)=>value&&typeof value==='object'&&'project'in value&&'field'in value?field({collection:'projectFacts',id:'configuration'},projectFactPath(value),{mode:'panel'}):{};
 const { items, variant = 'metrics', label } = Astro.props;
@@ -19,6 +19,6 @@ const labelClass = variant === 'metrics' ? 'k mono' : variant === 'eco' ? 'fk mo
     {item.value !== undefined && item.value !== '' && <dd {...marker(item.factRef??item.value)} class:list={['fact-value', { v: variant === 'metrics' || variant === 'tempo', fn: variant === 'eco', g: variant === 'eco' && item.unit === '%', o: variant === 'eco' && i === 1 && items.length > 2 }]} data-count={item.count}>
       {variant === 'spec' ? <b>{factText(item.value,locale)}</b> : variant === 'eco' && item.unit === '%' ? <span data-to={factText(item.value,locale)}>{factText(item.value,locale)}</span> : factText(item.value,locale)}{item.unit && <small>{item.unit}</small>}
     </dd>}
-    {item.text && <dd class:list={['fact-text', { ft: variant === 'eco', t: variant === 'tempo' }]}><p>{item.text}</p></dd>}
+    {item.text && <dd class:list={['fact-text', { ft: variant === 'eco', t: variant === 'tempo' }]}><p>{item.text}</p>{item.logo && <img class="fact-logo" src={item.logo.src} width={item.logo.width} height={item.logo.height} alt={item.logo.alt} loading="lazy" decoding="async" />}</dd>}
   </div>)}
 </dl>

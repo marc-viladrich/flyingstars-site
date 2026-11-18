@@ -61,10 +61,13 @@ const itemOf = Object.fromEntries(items.map((item, i) => [item.zone, { ...item, 
                   const shapes = g.items.map((it) => it.t === 'circle' ? <circle class={it.cls} cx={it.cx} cy={it.cy} r={it.r} /> : <path class={it.cls} d={it.d} />);
                   return g.zone ? <g class="zone" data-zone={g.zone} data-pick={g.zone} style={`--zc: ${zoneColor[g.zone]}`}>{shapes}</g> : <g>{shapes}</g>;
                 })}
+                {layer.key === scene.crowd.layer && <g class="zone crowd" data-zone="guests" data-pick="guests" data-crowd-group data-hop={scene.crowd.hop} style={`--zc: ${zoneColor.guests}`}>
+                  {scene.crowd.people.map((q) => <g class="pp" style={`--sx: ${q.s[0]}px; --sy: ${q.s[1]}px; --hx: ${q.h[0]}px; --hy: ${q.h[1]}px; --k: ${q.k}`}><g class="pp-b">{q.items.map((it) => it.t === 'circle' ? <circle class={it.cls} cx={it.cx} cy={it.cy} r={it.r} /> : <path class={it.cls} d={it.d} />)}</g></g>)}
+                </g>}
               </g>)}
         </svg>
         {scene.labels.map((l) => <span class:list={['st-lbl', { 'st-lbl-turn': l.turn }]} data-zone={l.zone} aria-hidden="true" style={`--x: ${l.x}%; --y: ${l.y}%; --zc: ${zoneColor[l.zone]}`}>{l.text}</span>)}
-        {hotspots.map((h) => <button type="button" class="st-hot" data-zone={h.zone} data-hot={h.zone} style={`--x: ${h.x}%; --y: ${h.y}%; --zc: ${zoneColor[h.zone]}; --n: ${numbers[h.zone]}`} aria-expanded="false" aria-controls={`${id}-z${h.zone}`}><span class="st-num" aria-hidden="true">{numbers[h.zone]}</span><span class="sr-only">{itemOf[h.zone].n}. {itemOf[h.zone].title}</span></button>)}
+        {hotspots.map((h) => <button type="button" class="st-hot" data-zone={h.zone} data-hot={h.zone} data-aside={h.aside ? '' : undefined} style={`--x: ${h.x}%; --y: ${h.y}%; --zc: ${zoneColor[h.zone]}; --n: ${numbers[h.zone]}`} aria-expanded="false" aria-controls={`${id}-z${h.zone}`}><span class="st-num" aria-hidden="true">{numbers[h.zone]}</span><span class="sr-only">{itemOf[h.zone].n}. {itemOf[h.zone].title}</span></button>)}
         </div>
         <ol {...sharedField("items")} class="st-tips">
           {items.map((item, i) => <li id={`${id}-z${item.zone}`} data-tip={item.zone} style={`--zc: ${zoneColor[item.zone]}`}>
@@ -108,17 +111,64 @@ const itemOf = Object.fromEntries(items.map((item, i) => [item.zone, { ...item, 
     let running = false;
     let timers: number[] = [];
     const phase = (p: string) => { map.dataset.phase = p; };
-    const settle = () => { timers.forEach(clearTimeout); timers = []; running = false; map.classList.remove('is-pre'); map.classList.add('is-ready'); };
+    // Publikum (Runde 6, Marc: „the dots start moving in an excited manner and gather around in the Publikumsbereich …
+    // when you hover over them, they jump up very slightly, like an excited crowd would“). Laufen: CSS-Transition der
+    // Position (data-crowd). Hüpfen: Web Animations am inneren Element; ein Hüpfer endet immer am Boden, auch beim Abbruch
+    // nach Zeigen (die laufende Runde wird zu Ende gespielt). Ruhiges Leben danach: ab und zu ein einzelner Hüpfer, nur
+    // solange die Karte im Bild ist. Bei reduzierter Bewegung steht das Publikum sofort an seinem Platz.
+    const crowd = map.querySelector<SVGGElement>('[data-crowd-group]');
+    const folks = crowd ? [...crowd.querySelectorAll<SVGGElement>('.pp-b')] : [];
+    const hop = Number(crowd?.dataset.hop ?? 2);
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Tokens einmal lesen: ein getComputedStyle nach einem Klassenwechsel erzwingt sonst je Hüpfer eine Stilberechnung
+    const css = getComputedStyle(map);
+    const [easeUp, easeFall] = ['--ease-out', '--ease-fall'].map((n) => css.getPropertyValue(n).trim());
+    // Dauer in ms, egal ob der Token als s (Quelltext) oder ms (Build-Minifizierung) ankommt
+    const time = (n: string) => { const v = css.getPropertyValue(n).trim(); return parseFloat(v) * (v.endsWith('ms') ? 1 : 1000); };
+    const [enter, fade, stagger, reel, ruler] = ['--dur-enter', '--dur-fade', '--dur-stagger', '--dur-reel', '--dur-ruler'].map(time);
+    const ranks = new Map(folks.map((el) => [el, Number((el.parentElement as HTMLElement).style.getPropertyValue('--k'))]));
+    const rank = (el: Element) => ranks.get(el) ?? 0;
+    const jumps = new Map<Element, Animation>();
+    const jump = (el: SVGGElement, height: number, duration: number, iterations: number, delay = 0) => {
+      const a = el.animate([
+        { transform: 'translateY(0)', easing: easeUp },
+        { transform: `translateY(${-height}px)`, offset: 0.42, easing: easeFall },
+        { transform: 'translateY(0)' },
+      ], { duration, iterations, delay });
+      jumps.set(el, a);
+      const done = () => { if (jumps.get(el) === a) jumps.delete(el); };
+      a.addEventListener('finish', done); a.addEventListener('cancel', done);
+    };
+    const gather = () => { map.dataset.crowd = 'here'; folks.forEach((el) => jump(el, hop * 0.8, enter, 3, rank(el) * stagger)); };
+    const cheer = (on: boolean) => {
+      if (on) folks.forEach((el) => { const a = jumps.get(el), k = rank(el); if (a?.playState === 'running') a.effect?.updateTiming({ iterations: Infinity }); else jump(el, hop, enter + (k % 5) * stagger, Infinity, (k % 8) * stagger); });
+      else jumps.forEach((a) => { const t = a.effect?.getComputedTiming(); if (t?.currentIteration == null) a.cancel(); else a.effect?.updateTiming({ iterations: t.currentIteration + 1 }); });
+    };
+    let visible = false, idle = 0;
+    const live = () => {
+      clearTimeout(idle);
+      if (!visible || still) return;
+      idle = window.setTimeout(() => {
+        const el = folks[Math.floor(Math.random() * folks.length)];
+        if (el && !jumps.has(el) && current !== 'guests' && map.classList.contains('is-ready')) jump(el, hop * 0.6, fade, Math.random() < 0.35 ? 2 : 1);
+        live();
+      }, reel + Math.random() * ruler);
+    };
+    const settle = () => { timers.forEach(clearTimeout); timers = []; running = false; map.classList.remove('is-pre'); map.classList.add('is-ready'); if (map.dataset.crowd === 'away') map.dataset.crowd = 'here'; };
     const place = (zone: string) => {
       const hot = hots.find((b) => b.dataset.hot === zone), tip = tips.find((el) => el.dataset.tip === zone);
       if (!hot || !tip || getComputedStyle(tip).position !== 'absolute') return;
       const m = map.getBoundingClientRect(), b = hot.getBoundingClientRect(), gap = 2;
-      const w = tip.offsetWidth, h = tip.offsetHeight;
-      const cx = b.left + b.width / 2 - m.left;
-      const left = Math.max(0, Math.min(m.width - w, cx - w / 2));
-      const below = b.bottom - m.top + gap, above = b.top - m.top - h - gap;
-      const top = below + h <= m.height || above < 0 ? below : above;
       const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+      // Publikum: links neben der Nummer (das hüpfende Publikum bleibt sichtbar), bei knappem Platz schmaler bis 13rem;
+      // reicht auch das nicht, steht es wie alle anderen über oder unter der Nummer
+      const room = b.left - m.left - gap, aside = hot.hasAttribute('data-aside') && room >= 13 * rem;
+      tip.style.width = aside ? `${(Math.min(17.5 * rem, room) / rem).toFixed(3)}rem` : '';
+      const w = tip.offsetWidth, h = tip.offsetHeight;
+      const cx = b.left + b.width / 2 - m.left, cy = b.top + b.height / 2 - m.top;
+      const below = b.bottom - m.top + gap, above = b.top - m.top - h - gap;
+      const left = aside ? room - w : Math.max(0, Math.min(m.width - w, cx - w / 2));
+      const top = aside ? Math.max(0, Math.min(m.height - h, cy - h / 2)) : below + h <= m.height || above < 0 ? below : above;
       tip.style.left = `${(left / rem).toFixed(3)}rem`; tip.style.top = `${(top / rem).toFixed(3)}rem`;
     };
     const show = (zone: string) => {
@@ -128,6 +178,7 @@ const itemOf = Object.fromEntries(items.map((item, i) => [item.zone, { ...item, 
       // Start- und Landefläche gewählt: die Drohnen stehen wieder im Startraster, sonst zeigen sie das Motiv
       phase(zone && zone === gridZone ? 'grid' : 'motif');
       map.querySelectorAll<SVGElement | HTMLElement>('[data-zone], [data-tip]').forEach((el) => el.classList.toggle('on', (el.dataset.zone ?? el.dataset.tip) === zone));
+      if (!still) cheer(zone === 'guests');
       hots.forEach((b) => b.setAttribute('aria-expanded', String(b.dataset.hot === zone)));
       if (zone) place(zone);
     };
@@ -155,12 +206,13 @@ const itemOf = Object.fromEntries(items.map((item, i) => [item.zone, { ...item, 
     running = true;
     map.classList.add('is-pre');
     phase('grid');
+    map.dataset.crowd = 'away';
     const play = () => {
       armed = false;
       requestAnimationFrame(() => requestAnimationFrame(() => {
         if (!running) return;
         map.classList.remove('is-pre');
-        timers.push(window.setTimeout(() => phase('lift'), 1250));
+        timers.push(window.setTimeout(() => { phase('lift'); gather(); }, 1250));
         timers.push(window.setTimeout(() => phase('motif'), 1950));
         timers.push(window.setTimeout(() => { running = false; map.classList.add('is-ready'); }, 2800));
       }));
@@ -168,6 +220,8 @@ const itemOf = Object.fromEntries(items.map((item, i) => [item.zone, { ...item, 
     const reset = () => {
       if (current) show('');
       timers.forEach(clearTimeout); timers = [];
+      jumps.forEach((a) => a.cancel());
+      map.dataset.crowd = 'away';
       map.classList.add('is-reset');
       map.classList.remove('is-ready');
       map.classList.add('is-pre');
@@ -178,14 +232,14 @@ const itemOf = Object.fromEntries(items.map((item, i) => [item.zone, { ...item, 
     };
     // Eintritt beim halben rem im Bild (wie alle Reveals), Zurücksetzen erst, wenn die Karte ganz draußen ist
     new IntersectionObserver((entries) => { if (armed && entries[entries.length - 1].isIntersecting) play(); }, { rootMargin: REVEAL_MARGIN }).observe(map);
-    new IntersectionObserver((entries) => { if (!armed && !entries[entries.length - 1].isIntersecting) reset(); }).observe(map);
+    new IntersectionObserver((entries) => { visible = entries[entries.length - 1].isIntersecting; live(); if (!armed && !visible) reset(); }).observe(map);
   });
 </script>
 
 <style>
   /* Text links, Zeichnung rechts. Die Zeichnung wächst mit der Breite bis 50rem (Marc, 18.11.2026) und endet an der
      rechten Content-Kante; die Textspalte behält ihre Lesebreite, der Abstand dazwischen bleibt klein. */
-  .st { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, min(50rem, 54%)); gap: clamp(var(--space-6), 3.5vw, var(--space-12)); align-items: center; }
+  .st { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, min(50rem, 54%)); gap: var(--head-gap-content) clamp(var(--space-6), 3.5vw, var(--space-12)); align-items: center; }
   .st :global(.st-copy) { margin: 0; }
   .st-fig { margin: 0; min-width: 0; }
   .st-map, .st-stage { position: relative; width: 100%; }
@@ -236,6 +290,9 @@ const itemOf = Object.fromEntries(items.map((item, i) => [item.zone, { ...item, 
   .zplate { fill: color-mix(in srgb, var(--zc) 16%, var(--ground)); stroke: color-mix(in srgb, var(--zc) 75%, transparent); stroke-width: 1.2; }
   .zplate-edge { fill: color-mix(in srgb, var(--zc) 34%, var(--ground)); }
   .guest-dot { fill: var(--zc); }
+  /* Publikum: Position als Transition (verstreut → Publikumsbereich, gestaffelt), das Hüpfen am inneren Element per Skript */
+  .pp { transform: translate(var(--hx), var(--hy)); transition: transform var(--dur-reel) var(--ease-enter) calc(var(--k) * var(--dur-stagger)); }
+  [data-crowd="away"] .pp { transform: translate(var(--sx), var(--sy)); }
   .view { fill: none; stroke: var(--zc); stroke-width: 1; stroke-dasharray: 3 4; opacity: 0.8; }
 
   /* Drohnen: Startraster → Abheben als Raster → Motiv im Logo-Verlauf */
@@ -296,17 +353,17 @@ const itemOf = Object.fromEntries(items.map((item, i) => [item.zone, { ...item, 
     .is-live .st-tips li.on { display: grid; }
   }
   .ls-site p { line-height: 1.65; }
-  .st-points { list-style: none; margin: clamp(var(--space-5), 2.4vw, var(--space-7)) 0 0; padding: 0; display: grid; gap: var(--space-3); max-width: 46rem; }
+  .st-points { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); max-width: 46rem; }
   .st-points li { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); gap: var(--space-3); align-items: start; color: var(--head); font-size: var(--text-copy); }
   .st-points li :global(.ico) { margin-top: var(--space-0-5); }
-  .st-more { margin-top: clamp(var(--space-5), 2.6vw, var(--space-8)); display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-7); }
+  .st-more { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-7); }
   .st-download { display: inline-flex; align-items: center; gap: var(--space-2-5); }
   .st-download :global(.ico) { width: 1.125rem; height: 1.125rem; flex: 0 0 auto; }
   /* Zulassungen als ruhige Logo-Reihe unter Text und Karte */
   .st-proof { margin-top: clamp(var(--space-9), 4.5vw, var(--space-14)); padding-top: clamp(var(--space-6), 3vw, var(--space-9)); border-top: 1px solid var(--line); }
   .st-proof :global(.quality ul) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .st-safeguards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-8); margin-top: clamp(var(--space-10), 5vw, var(--space-18)); padding-block: var(--space-8); border-block: 1px solid var(--line); }
-  @media (prefers-reduced-motion: reduce) { .ly, .ly-drones, .dr, .dr *, .zone, .zone *, .st-num, .st-lbl, .st-tips li { transition: none !important; animation: none !important; } }
+  @media (prefers-reduced-motion: reduce) { .ly, .ly-drones, .dr, .dr *, .pp, .zone, .zone *, .st-num, .st-lbl, .st-tips li { transition: none !important; animation: none !important; } }
   @media (max-width: 60em) {
     .st { grid-template-columns: 1fr; }
     .st-safeguards { grid-template-columns: repeat(2, minmax(0, 1fr)); }

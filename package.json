@@ -18,7 +18,8 @@
     "test:unit": "node scripts/run-unit.mjs",
     "test:effects": "node --test 'src/scripts/effects/*.test.mjs'",
     "audit:layout": "node scripts/layout-audit.mjs",
-    "perf:start": "node tools/himmel/perf-start.mjs"
+    "perf:start": "node tools/himmel/perf-start.mjs",
+    "check:uebergaenge": "node tools/himmel/uebergaenge-pruefen.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

@@ -181,12 +181,12 @@ sections:
       - ueber-uns-moritz
     _key: k_89bce7cd130ab4ebbd41
 translationContractVersion: 2
-translationSourceHash: bace669ee28fb0905b33b33369ebac469fbfe12082d8e24cc07b2f73d7b5f094
+translationSourceHash: 90946482284518f999c7c45718881ee02da6ce52ac8a7a29d74be02a3a276091
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: bace669ee28fb0905b33b33369ebac469fbfe12082d8e24cc07b2f73d7b5f094
+  sourceFingerprint: 90946482284518f999c7c45718881ee02da6ce52ac8a7a29d74be02a3a276091
   fields:
     - address: /description
       sourceFingerprint: c42b328abd1be1e5bda1f0f0944e7f99b67c47cda9aa59693a409de9378e1549
@@ -198,6 +198,10 @@ translationEvidence:
       status: adopted-existing
     - address: /sections/@k_0fa41045b869c8273b40/campaign
       sourceFingerprint: c73ea954da7bbd34ef34e7cd4022580e2f329c0a74ac13325063da8de14924cc
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
+    - address: /sections/@k_0fa41045b869c8273b40/comparison
+      sourceFingerprint: 5183fd931835b57266d042571aeb78cee9238449cc295e9783b9a61788a6408a
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_0fa41045b869c8273b40/cta/label

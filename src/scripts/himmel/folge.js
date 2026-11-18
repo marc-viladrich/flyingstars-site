@@ -67,24 +67,28 @@ const PIECES = {
   musik: { kind: "story", tags: ["musik"], steps: [O("harpStory")] }, // Harfe, Saiten klingen, die Noten fliegen
   taenzerin: { kind: "story", tags: ["gesicht", "musik"], steps: [O("dancerStory")] }, // Tänzerin dreht sich, der Rock wird zur Blüte
   kugel: { kind: "raum", tags: ["rund"], steps: [{ build: "sphere3d", pkg: "HORIZON", n: N, swing: 0 }] }, // Kugel aus Breiten- und Längenkreisen, dreht sich selbst
-  baum: { kind: "esc", tags: ["hoch"], steps: [S("snow2d"), H("tree3d")] }, // Schneeflocke → Lichterbaum als Spirale
+  // Schneeflocke → Runde 6: dieselbe Flocke wird räumlich (scenes/schnee.js, drei Ebenen falten sich auf) → Lichterbaum
+  baum: { kind: "esc", tags: ["hoch"], steps: [S("snow2d"), H("snow3d", 200, { swing: 0, rate: 1.6, hold: 2.2 }), H("tree3d")] },
   // Feuerwerk aus Drohnen: Leuchtspur, Sterne blühen, Finale; Runde 5 (Marc: „da fehlt dieser Feuerregen“): die ganze
   // Geschichte bis zum Goldregen (whole), der Regen steht 3 s und läuft langsamer, damit man ihn fallen sieht
   feuerwerk: { kind: "story", tags: ["feuer"], steps: [O("fireworkStory", { whole: true, rate: 1.5, hold: 3.0 })] },
 };
-/** Erster Besuch: unser Feuerwerk (Finale), dann sofort groß. Danach die Wunschliste in dieser Reihenfolge, später gemischt. */
+/** Erster Besuch: unser Feuerwerk (Finale), dann sofort groß. Danach die Wunschliste in dieser Reihenfolge, später gemischt.
+ *  Runde 6 (Marc): der QR-Code direkt nach dem Logo (typischer Einsatz: Logo, dann „Scan me“). */
 const OPENING = { kind: "story", tags: ["feuer"], steps: [O("fireworkFinale", { story: 2.0, rate: 1.5, hold: 2.6 })] }; // Finale, dann Goldregen
-const FIRST = ["maske", "logo", "kugel", "delfine", "turm", "qr", "wappen", "musik", "kolibri", "buch", "baum", "taenzerin", "riesenrad", "feuerwerk"];
+const FIRST = ["maske", "logo", "qr", "kugel", "delfine", "turm", "wappen", "musik", "kolibri", "buch", "baum", "taenzerin", "riesenrad", "feuerwerk"];
 
 /** Indoor-Reihe (scenes/indoor.js): 50 Drohnen, einfache Motive, je 2 s, in fester Runde. */
 const NI = 50;
-const I = (key) => ({ build: `indoor:${key}`, pkg: "SPARK", n: NI, hold: 2.0, rate: 1 });
-const INDOOR = Object.fromEntries(["herz", "welle", "initialen", "stern", "ring", "noten"].map((k) => [k, { kind: "indoor", tags: [], steps: [I(k)] }]));
+// Runde 6 (Marc: „die Wechsel bzw. die Anzahl und Art der Formen sollten schneller rotieren“): zehn Motive, flach und
+// räumlich im Wechsel, je 1,4 s Standzeit (vorher sechs à 2 s).
+const I = (key) => ({ build: `indoor:${key}`, pkg: "SPARK", n: NI, hold: 1.4, rate: 1 });
+const INDOOR = Object.fromEntries(["herz", "diamant", "welle", "smiley", "initialen", "spirale", "stern", "krone", "ring", "noten"].map((k) => [k, { kind: "indoor", tags: [], steps: [I(k)] }]));
 
 /** Varianten: Startseite (Übergabe vom Himmel-Schwarm) und Indoor-Seite (eigene Bühne in #unterschied). */
 const VARIANTS = {
   himmel: { n: N, pieces: PIECES, first: FIRST, opening: OPENING, mixed: true, fill: 0.9, light: 1, cloud: { cloudTime: 0.45, cloudSpread: 0.55 } },
-  indoor: { n: NI, pieces: INDOOR, first: Object.keys(INDOOR), opening: null, mixed: false, fill: 0.74, light: 1.6, cloud: { cloudTime: 0.4, cloudSpread: 0.45 } },
+  indoor: { n: NI, pieces: INDOOR, first: Object.keys(INDOOR), opening: null, mixed: false, fill: 0.9, light: 1.6, cloud: { cloudTime: 0.4, cloudSpread: 0.45 } },
 };
 
 /** Die „125“ des Wappens (show-scenes.js, shield3d bei 300 Drohnen: share(300, [3, 1])[1] Punkte), vorberechnet mit
@@ -209,19 +213,21 @@ export function createFolge(canvas, { burst = [], rnd = Math.random, variant = "
   function prepare() {
     if (building || ready.length >= (playing ? 2 : 1)) return building;
     building = (async () => {
-      for (let tries = 0; tries < 4; tries++) {
+      let built = false;
+      for (let tries = 0; tries < 4 && !built; tries++) {
         let id = null;
         try {
           const piece = opened ? PIECE[(id = nextPiece())] : V.opening;
-          const built = await buildPiece(piece, id ?? "auftakt");
+          const piece2 = await buildPiece(piece, id ?? "auftakt");
           if (id) history.push(id);
           opened = true;
-          ready.push(built);
-          break;
+          ready.push(piece2);
+          built = true;
         } catch (e) { console.warn("Show-Folge:", id ?? "Auftakt", e); opened = true; }
       }
       building = null;
-      if (ready.length < (playing ? 2 : 1)) prepare();
+      // nach vier Fehlschlägen (Netz weg, Fehler im Motiv) nicht sofort weiter versuchen, sonst läuft das endlos
+      if (built && ready.length < (playing ? 2 : 1)) prepare();
     })();
     return building;
   }
@@ -268,8 +274,9 @@ export function createFolge(canvas, { burst = [], rnd = Math.random, variant = "
   function place(b) {
     box = b;
     if (variant === "indoor") {
-      const w = canvas.offsetWidth, h = canvas.offsetHeight;
-      frame = { x: Math.round((box.w - w) / 2), y: Math.round((box.h - h) / 2), w, h };
+      // Bühnenkoordinaten; Lage und Größe des Canvas stehen im CSS der Komponente (--stage-bleed ringsum symmetrisch, die
+      // Feldmitte ist die Canvas- und damit die Bühnenmitte)
+      frame = { x: canvas.offsetLeft, y: canvas.offsetTop, w: canvas.offsetWidth, h: canvas.offsetHeight };
     } else {
       const vw = document.documentElement.clientWidth;
       const mx = Math.max(0, Math.min(80, box.x, vw - box.x - box.w)), my = Math.round(Math.min(240, box.h * 0.6));
@@ -336,6 +343,7 @@ export function mountFolge(stage) {
   const boxOf = () => ({ x: 0, y: 0, w: stage.clientWidth, h: stage.clientHeight });
   let started = false;
   f.ready.then(() => {
+    f.place(boxOf()); // Canvas schon vor dem Start in seiner Größe, damit das erste Bild nicht im alten Maßstab steht
     const io = new IntersectionObserver((entries) => {
       if (started || !entries.some((e) => e.isIntersecting)) return;
       started = f.start(boxOf());
@@ -343,5 +351,5 @@ export function mountFolge(stage) {
     }, { threshold: 0.33 });
     io.observe(stage);
   }).catch((e) => console.warn("Indoor-Reihe nicht verfügbar:", e));
-  if ("ResizeObserver" in window) new ResizeObserver(() => { if (started) f.place(boxOf()); }).observe(stage);
+  if ("ResizeObserver" in window) new ResizeObserver(() => f.place(boxOf())).observe(stage);
 }

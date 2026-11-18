@@ -15,9 +15,10 @@ import type { Section } from '../../content.config';
 import { optimizedLogo } from '../../lib/media';
 import Icon from '../Icon.astro';
 import Chopper from '../Chopper.astro';
+import ComparisonTable from '../ComparisonTable.astro';
 const PICON = { eu: 'eu', repair: 'wrench', ev: 'e-car', campaign: 'megaphone', leaf: 'leaf' } as const;
 type Props = Extract<Section, { type: 'sustainability' }> & { index: number };
-const { headline, text, id = 'nachhaltigkeit', facts = [], points = [], pillarsRef, proofImage, proofText, campaign, index, kicker, image, cta, icon, scene, show, gallery } = Astro.props;
+const { headline, text, id = 'nachhaltigkeit', facts = [], points = [], pillarsRef, proofImage, proofText, campaign, index, kicker, image, cta, icon, scene, show, gallery, comparison } = Astro.props;
 import Picture from '../Picture.astro';
 import Gallery from '../gallery/Gallery.astro';
 import { accentParts, plain } from '../accent';
@@ -42,15 +43,24 @@ const figs = facts.map((fact, i) => fact.unit ? FIG[fact.unit.trim()] ?? i : 0).
 // Mit Foto oder Icon-Kachel: Einleitung links, Bild rechts. Sonst wie im Prototyp: Einleitung schmal unter dem Titel,
 // der Link direkt darunter.
 const lead = Boolean(image || icon || scene || show || gallery);
+// Bühne statt Bild (Indoor-Reihe, Chopper-Szene): Kopf, Text und Bühne in einem Grid, die Bühne spannt Kopf- und Textzeile
+const staged = Boolean(scene || show);
 const parts = (point: string) => point.split(/(\S+-\S+)/).filter(Boolean);
 const proof = proofImage ? await optimizedLogo(proofImage.src, 60) : undefined;
+// Beleg-Logos gehören in ihre Folie (Marc, Runde 6: naturstrom an der Ökostrom-Zahl statt einer eigenen Box darunter);
+// doppelte Pixeldichte, angezeigt in halber Größe
+const factItems = await Promise.all(facts.map(async (fact) => {
+  if (!fact.logo) return fact;
+  const img = await optimizedLogo(fact.logo.src, 64);
+  return { ...fact, logo: { src: img.src, width: img.width / 2, height: img.height / 2, alt: fact.logo.alt } };
+}));
 ---
 <section class="eco-sec" id={id} aria-labelledby={headingId}>
   {/* Runde 5 (Marc, 18.11.2026): Das Riesenformat bleibt der Scrollstory vorbehalten (Startseite, Nachhaltigkeit). Mit
        Bild, Bühne, Szene oder Galerie („Feste feiern …“, „Faszinierend wie Feuerwerk …“, „Kinder und Hunde willkommen“)
        steht die normale Section-Überschrift mit Verlaufswort, enger an ihrem Bild. Ohne Bild ab breitem Desktop
        zweispaltig: Schlagzeile links, Einleitung und Link rechts unten bündig („weniger Whitespace, weniger Scrolling“). */}
-  {lead
+  {staged ? null : lead
     ? <SectionHead class="eco-head-std" kicker={kicker} headline={headline} id={headingId} level={H} />
     : <SectionHead variant="display" class:list={['eco-head', { 'eco-split': Boolean(text) && lines.length > 1 }]} titleClass="eco-title" revealTitle kicker={kicker} headline={plain(headline)} text={text} id={headingId} level={H}>
         <Fragment slot="title">{lines.map((line, i) => <span data-reveal style={`--i:${i}`} class:list={lineClass(line, i)}>{whole(line) ? plain(line) : accentParts(line).map((p) => p.g ? <span class="grad">{p.t}</span> : p.t)} </span>)}</Fragment>
@@ -61,16 +71,26 @@ const proof = proofImage ? await optimizedLogo(proofImage.src, 60) : undefined;
     {text && text.split(/\n\s*\n/).map((para) => <p>{para.trim()}</p>)}
     {cta && <p class="eco-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
   </div></Gallery>}
-  {lead && !gallery && <div class:list={['eco-lead has-img', { 'has-scene': scene, 'has-show': show }]}>
+  {staged && <div class="eco-staged">
+    <SectionHead class="eco-head-std eco-staged-head" kicker={kicker} headline={headline} id={headingId} level={H} />
     <div class="eco-lead-copy">
       {text && text.split(/\n\s*\n/).map((para) => <p>{para.trim()}</p>)}
       {cta && <p class="eco-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
     </div>
-    {show ? <div class="eco-show" data-folge={show} aria-hidden="true"><canvas></canvas></div> : scene ? <div class="eco-scene"><Chopper mood="play" /></div> : image ? <figure class="eco-photo" data-curtain><Picture {...image} /></figure> : <div class="eco-photo eco-dots" aria-hidden="true"><Icon name={icon!} size={56} class="g" /></div>}
+    {show ? <div class="eco-stage eco-show" data-folge={show} aria-hidden="true"><canvas></canvas></div> : <div class="eco-stage"><Chopper mood="play" /></div>}
   </div>}
+  {lead && !gallery && !staged && <div class="eco-lead has-img">
+    <div class="eco-lead-copy">
+      {text && text.split(/\n\s*\n/).map((para) => <p>{para.trim()}</p>)}
+      {cta && <p class="eco-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
+    </div>
+    {image ? <figure class="eco-photo" data-curtain><Picture {...image} /></figure> : <div class="eco-photo eco-dots" aria-hidden="true"><Icon name={icon!} size={56} class="g" /></div>}
+  </div>}
+  {/* Vergleich direkt an der Aussage (Nachhaltigkeit, Runde 6): Kopf, Tabelle, dann die Scrollstory mit den Einzelheiten */}
+  {comparison && <ComparisonTable id={`${id}-vergleich`} label={plain(headline)} rowHeader={comparison.rowHeader} columns={comparison.columns} rows={comparison.rows} class="eco-compare" />}
   {facts.length > 0 && <div class="eco-scrolly" data-scrolly data-figs={figs}><div class="eco-pin">
     <canvas class="eco-canvas" aria-hidden="true"></canvas>
-    <FactList items={facts} variant="eco" />
+    <FactList items={factItems} variant="eco" />
     <ol class="eco-steps mono" aria-hidden="true">{facts.map((fact, i) => <li style={`--k:${i}`}>{fact.label}</li>)}</ol>
   </div></div>}
   {pillars.length > 0 && <ul {...field({collection:"sustainabilityPillars",id:"configuration"},[locale,"pillars"],{mode:"panel"})} class="eco-pillars">{pillars.map((p) => <IconFeature as="li" icon={PICON[p.icon]} title={p.title} text={p.text} />)}</ul>}
@@ -111,22 +131,24 @@ const proof = proofImage ? await optimizedLogo(proofImage.src, 60) : undefined;
   :global(.eco-title [data-reveal] > .grad) { display: inline; }
   .eco-lead { display: grid; gap: clamp(var(--space-7), 4vw, var(--space-14)); margin: 0 0 clamp(var(--space-10), 6vw, var(--space-20)); }
   /* normale Section-Überschrift über Bild/Bühne/Galerie: näher am Bild als der Standardabstand der .sec-head */
-  .eco-sec :global(.eco-head-std) { margin-bottom: clamp(var(--space-6), 3vw, var(--space-10)); }
   /* Scrollstory-Einstieg ab 1100 px zweispaltig: Schlagzeile links über alle Zeilen, Einleitung und Link rechts unten bündig */
   @media (--grid-expanded) {
     .eco-sec :global(.eco-split) { grid-template-columns: max-content minmax(0, 1fr); grid-template-rows: 1fr; grid-auto-rows: auto; column-gap: clamp(var(--space-12), 7vw, var(--space-28)); row-gap: 0; }
     .eco-sec :global(.eco-split > :is(h1, h2)) { grid-column: 1; grid-row: 1 / span 5; align-self: end; }
-    .eco-sec :global(.eco-split > p) { grid-column: 2; justify-self: start; max-width: 40ch; margin: var(--space-4) 0 0; }
+    .eco-sec :global(.eco-split > p) { grid-column: 2; justify-self: start; max-width: 40ch; margin-top: var(--head-gap-text); }
     /* jede Zeile der rechten Spalte in eine eigene Reihe unter der leeren ersten, so steht der Block unten bündig */
     .eco-sec :global(.eco-split > :nth-child(2)) { grid-row: 2; margin-top: 0; }
     .eco-sec :global(.eco-split > :nth-child(3)) { grid-row: 3; }
     .eco-sec :global(.eco-split > :nth-child(4)) { grid-row: 4; }
     .eco-sec :global(.eco-split > :nth-child(5)) { grid-row: 5; }
-    .eco-sec :global(.eco-split > .eco-more) { margin-top: clamp(var(--space-5), 2vw, var(--space-7)); }
+    .eco-sec :global(.eco-split > .eco-more) { margin-top: var(--head-gap-cta); }
   }
   .eco-lead.has-img { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: center; }
-  .eco-lead-copy p { color: var(--muted); max-width: 44ch; margin: 0 0 var(--space-4); font-size: var(--text-lead); }
-  .eco-lead-copy .eco-more { margin-top: clamp(var(--space-5), 2.6vw, var(--space-8)); }
+  .eco-sec :global(.eco-compare) { margin-bottom: var(--section); }
+  /* Beleg-Logo in der Folie, gedämpft wie die Logoleisten */
+  .eco-scrolly :global(.fact-logo) { display: block; height: 2rem; width: auto; margin-top: var(--space-5); opacity: 0.8; }
+  .eco-lead-copy p { color: var(--muted); max-width: 44ch; margin: 0 0 var(--head-gap-text); font-size: var(--text-lead); }
+  .eco-lead-copy .eco-more { margin-top: var(--head-gap-cta); }
   .eco-photo { margin: 0; border-radius: var(--radius); overflow: hidden; aspect-ratio: 16 / 9; --curtain-r: var(--radius); }
   .eco-photo :global(img) { width: 100%; height: 100%; object-fit: cover; display: block; }
   /* Ohne echtes Showfoto: Kachel mit Icon und Punktmuster wie die Aussage-Kachel (LandingBento, Werbung #agenturen) */
@@ -134,19 +156,21 @@ const proof = proofImage ? await optimizedLogo(proofImage.src, 60) : undefined;
   .eco-dots::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(circle, rgb(var(--rgb-amber) / 0.5) 0.0625rem, transparent 0.1rem); background-size: 1.375rem 1.375rem; -webkit-mask-image: radial-gradient(120% 90% at 100% 0%, #000, transparent 62%); mask-image: radial-gradient(120% 90% at 100% 0%, #000, transparent 62%); opacity: 0.55; pointer-events: none; }
   .eco-dots :global(.ico) { position: relative; width: 3.5rem; height: 3.5rem; }
   /* Link unter der schmalen Einleitung (ohne Foto) */
-  :global(.eco-head) > .eco-more { margin: var(--space-2) 0 0; }
-  /* Leuchtpunkt-Szene (Hochzeit, Runde 4): kein Karton, die Szene ist das dominante Element und bekommt die breitere Spalte */
-  .eco-lead.has-scene { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); }
-  .eco-scene { margin: 0; }
-  /* Die Szene hat oben Spielraum (der Hund springt); ab breitem Desktop rückt sie neben die nun normale Überschrift hoch,
-     statt eine Lücke zwischen Kopf und Bild zu lassen. Die Figuren beginnen rechts neben dem Kopf, sie berühren ihn nicht. */
-  @media (--grid-expanded) { .eco-lead.has-scene .eco-scene { margin-top: calc(-1 * clamp(6rem, 11vw, 11rem)); } .eco-lead.has-scene .eco-lead-copy { align-self: center; margin-top: calc(-1 * clamp(3rem, 5.5vw, 5.5rem)); } }
-  /* Indoor-Reihe (show: indoor, Runde 4): kein Karton, die Animation ist das dominante Element. Das Canvas reicht oben und
-     unten über die Bühne hinaus (Licht und aufsteigende Drohnen werden nicht abgeschnitten, die Feldmitte bleibt die
-     Bühnenmitte); ohne JavaScript bleibt die Bühne weg und der Text steht allein. */
-  .eco-lead.has-show { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
-  .eco-show { position: relative; display: none; min-height: clamp(18rem, 30vw, 28rem); }
-  :global(html:is(.reveal, .motion-paused)) .eco-show { display: block; }
-  .eco-show canvas { position: absolute; left: 0; width: 100%; top: max(-15rem, -60%); height: calc(100% + 2 * min(15rem, 60%)); pointer-events: none; }
-  @media (--grid-stacked) { .eco-lead.has-img, .eco-lead.has-scene { grid-template-columns: 1fr; } .eco-show { min-height: clamp(15rem, 70vw, 22rem); } }
+  /* Bühne statt Bild (Indoor-Reihe, Chopper-Szene): kein Karton, die Bewegung ist das dominante Element. Ab breitem Desktop
+     stehen Kopf und Text links, die Bühne spannt rechts beide Zeilen bis zur Content-Kante; schmal untereinander. Die Bühne
+     braucht JavaScript, ohne es steht der Text allein. --stage-min: Mindesthöhe der Bühne, --stage-bleed: so weit reicht
+     das Canvas der Indoor-Reihe über die Bühne hinaus (Licht, aufsteigende Drohnen; die Feldmitte bleibt die Bühnenmitte). */
+  .eco-staged { --stage-min: clamp(20rem, 32vw, 34rem); --stage-bleed: min(15rem, 60%); display: grid; grid-template-areas: "head" "copy" "stage"; column-gap: clamp(var(--space-7), 4vw, var(--space-14)); margin-bottom: clamp(var(--space-10), 6vw, var(--space-20)); }
+  .eco-staged:last-child { margin-bottom: 0; }
+  .eco-staged > :global(.eco-staged-head) { grid-area: head; }
+  .eco-staged > .eco-lead-copy { grid-area: copy; }
+  .eco-stage { grid-area: stage; position: relative; display: none; margin: 0; }
+  :global(html:is(.reveal, .motion-paused)) .eco-stage { display: block; }
+  .eco-show { min-height: var(--stage-min); }
+  .eco-show canvas { position: absolute; left: 0; width: 100%; top: calc(-1 * var(--stage-bleed)); height: calc(100% + 2 * var(--stage-bleed)); pointer-events: none; }
+  @media (--grid-expanded) {
+    :global(html:is(.reveal, .motion-paused)) .eco-staged { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-rows: auto 1fr; grid-template-areas: "head stage" "copy stage"; }
+    .eco-stage { align-self: center; }
+  }
+  @media (--grid-stacked) { .eco-lead.has-img { grid-template-columns: 1fr; } .eco-staged { --stage-min: clamp(15rem, 70vw, 22rem); } }
 </style>

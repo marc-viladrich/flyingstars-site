@@ -1,71 +1,64 @@
 // Kuratierte Anordnung der Bildgalerien (Gallery.astro). Material, Maße, Alt-Texte und Belege (Kunde, Ort, Drohnenzahl)
 // stehen in public/media/galerie/manifest.json; hier steht nur, welches Bild wo sitzt und wie es zugeschnitten wird.
 //
-// Runde 5 (Marc, 18.11.2026: „viel zu eng … viel zu wenig Platz zum restlichen Content“, Referenzen „NOIR“ und die
-// gestreute Schwarz-Galerie): gleich breite, kleine Spalten (rund ein Sechstel der Seite), großzügige Fugen, jede Spalte
-// endet unten bündig und beginnt auf anderer Höhe, so entsteht eine Treppe nach rechts oben. Der Text steht frei im
-// Weißraum links oben (text = Spalten, die er überspannt), die Spalten darunter sind kurz, die rechts daneben steigen auf.
-// Kleine Leuchtpunkt-Akzente (accent) sitzen wie die Farbquadrate der zweiten Referenz in Lücken, sparsam.
-// ar = Seitenverhältnis der Kachel, pos = object-position (Fokus aufs Motiv). Jeder Zuschnitt ist an den echten Bildern
-// geprüft: Logo und Formation liegen vollständig im Rahmen. Höhen der Spalten in Spaltenbreiten (w) stehen als Kommentar.
+// Raster (Runde 5/6, nach Marcs Referenzen „NOIR“ und der gestreuten Schwarz-Galerie): gleich breite, kleine Spalten,
+// unten bündig, oben treppenartig versetzt, der Text frei links oben über `text` Spalten, die Bilder direkt daneben.
+// at = erste Spur einer Spalte auf dem Halbspalten-Raster (Spalte n liegt regulär auf 2n − 1; eine gerade Zahl setzt sie
+// genau zwischen zwei Spalten, Marc Runde 6). fields = Leuchtpunkt-Unterlagen (DotField) als inset relativ zur Galerie,
+// m = Lage auf dem Handy; ihr Schwerpunkt liegt in der freien Treppenfläche, damit sie dort als Fläche hinter den Bildern
+// hervorschaut und nicht als Punktlinie in den Fugen. ar = Seitenverhältnis der Kachel, pos = object-position (Fokus aufs Motiv); jeder Zuschnitt ist
+// an den echten Bildern geprüft, Logo und Formation liegen vollständig im Rahmen.
 //
 // Nicht verwendet (Sichtung 18.11.2026): nfl-loop-1 und ford-loop-1 (zu dunkel), rewe-fc-1 (neblig, Logo kaum zu
 // erkennen, Bildrechte offen), publikum-1 (angeschnitten, unbelegt), nfl-2 (Hufeisen fast nur Schwarz),
 // bokkenrijders-loop-1 (Marc, Runde 5: kein Video in dieser Section; dasselbe Motiv steht als bokkenrijders-1 drin).
 
 /** @typedef {{ slug: string, ar: string, pos?: string }} Photo */
-/** @typedef {{ accent: 'grid' | 'dot', size?: 's' | 'm', side?: 'start' | 'end' }} Accent */
-/** @typedef {{ cols: number, text: number, top?: number, columns: (Photo | Accent)[][] }} Layout */
+/** @typedef {{ at?: number, items: Photo[] }} Column */
+/** @typedef {{ inset: string, m?: string }} Field */
+/** @typedef {{ cols: number, text: number, top?: number, columns: Column[], fields: Field[] }} Layout */
 
 /** @type {Record<string, Layout>} */
 export const GALLERY_LAYOUTS = {
-  // Werbung #marketing: Logo-Shows großer Marken. Fünf Spalten, der Kopf überspannt vier, der Text zwei; die rechte
-  // Spalte steigt neben der Überschrift bis ganz nach oben (dort flog vorher das Auto des Schwarms, schwarm.ts lässt es
-  // aus, sobald die Fläche belegt ist). Höhen in Spaltenbreiten: 0,4 · 0,6 | 1,4 · 2,1 | 3,5.
+  // Werbung #marketing: Logo-Shows großer Marken. Kopf über vier Spalten, Text über zwei; die rechte Spalte steigt neben
+  // der Überschrift bis ganz nach oben (dort flog vorher das Auto des Schwarms, schwarm.ts lässt es aus, sobald die
+  // Fläche belegt ist). Unter dem Text eine Spalte genau zwischen den beiden Textspalten.
   logos: {
     cols: 5, text: 2, top: 1,
     columns: [
-      [{ accent: 'dot', side: 'end' }, { slug: 'siemens-1', ar: '800 / 343' }],
-      [{ slug: 'ford-1', ar: '16 / 9', pos: '50% 45%' }],
-      [{ accent: 'grid', side: 'start' }, { slug: 'prada-1', ar: '4 / 3', pos: '45% 60%' }, { slug: 'spotify-1', ar: '800 / 433' }],
-      [{ slug: 'bokkenrijders-1', ar: '4 / 3', pos: '45% 40%' }, { slug: 'vw-1', ar: '4 / 5', pos: '60% 40%' }],
-      [{ slug: 'puma-1', ar: '4 / 5', pos: '44% 30%' }, { slug: 'nfl-1', ar: '1 / 1' }, { slug: 'bokkenrijders-2', ar: '1 / 1', pos: '41% 50%' }],
+      { at: 2, items: [{ slug: 'ford-1', ar: '16 / 9', pos: '50% 45%' }] },
+      { at: 5, items: [{ slug: 'prada-1', ar: '4 / 3', pos: '45% 60%' }, { slug: 'spotify-1', ar: '800 / 433' }, { slug: 'siemens-1', ar: '800 / 343' }] },
+      { at: 7, items: [{ slug: 'bokkenrijders-1', ar: '4 / 3', pos: '45% 40%' }, { slug: 'vw-1', ar: '4 / 5', pos: '60% 40%' }] },
+      { at: 9, items: [{ slug: 'puma-1', ar: '4 / 5', pos: '44% 30%' }, { slug: 'nfl-1', ar: '1 / 1' }, { slug: 'bokkenrijders-2', ar: '1 / 1', pos: '41% 50%' }] },
     ],
+    fields: [{ inset: '20% 19% 48% 40%', m: '-5% -3% 72% 30%' }],
   },
-  // Über uns #nachhaltigkeit: Feste für alle. Höhen 0,6 · 0,8 | 1,2 · 1,9 · 2,4.
+  // Über uns #nachhaltigkeit: Feste für alle.
   willkommen: {
     cols: 5, text: 2,
     columns: [
-      [{ slug: 'hochzeit-1', ar: '16 / 9', pos: '50% 35%' }],
-      [{ accent: 'dot', side: 'start' }, { slug: 'frieden-1', ar: '4 / 3', pos: '47% 30%' }],
-      [{ accent: 'grid', side: 'end' }, { slug: 'herz-1', ar: '1 / 1', pos: '48% 15%' }],
-      [{ slug: 'extraschicht-1', ar: '4 / 3', pos: '50% 55%' }, { slug: 'abendhimmel-1', ar: '1 / 1', pos: '55% 50%' }],
-      [{ slug: 'sea-you-1', ar: '4 / 5', pos: '50% 30%' }, { slug: 'boellerciao-1', ar: '1 / 1', pos: '50% 40%' }],
+      { at: 2, items: [{ slug: 'frieden-1', ar: '4 / 3', pos: '47% 30%' }] },
+      { at: 5, items: [{ slug: 'hochzeit-1', ar: '16 / 9', pos: '50% 35%' }, { slug: 'herz-1', ar: '1 / 1', pos: '48% 15%' }] },
+      { at: 7, items: [{ slug: 'extraschicht-1', ar: '4 / 3', pos: '50% 55%' }, { slug: 'abendhimmel-1', ar: '1 / 1', pos: '55% 50%' }] },
+      { at: 9, items: [{ slug: 'sea-you-1', ar: '4 / 5', pos: '50% 30%' }, { slug: 'boellerciao-1', ar: '1 / 1', pos: '50% 40%' }] },
     ],
+    fields: [{ inset: '-14% 20% 58% 40%', m: '-5% -3% 72% 30%' }],
   },
-  // Nachhaltigkeit #referenzen „Wir fliegen mit Engagement“: Zeichen für Demokratie und Umweltschutz. Dieselben fünf
-  // Spalten wie oben (gleiche Bildgröße auf allen Seiten), die Einträge überspannen drei. Für Kein Bock auf Nazis gibt es (Stand 18.11.2026) kein Showfoto im Bestand;
-  // sobald eins kommt, gehört es hier rechts oben hin.
-  engagement: {
-    cols: 5, text: 3,
-    columns: [
-      [], [], [],
-      [{ accent: 'grid', side: 'end' }, { slug: 'herz-1', ar: '4 / 3', pos: '48% 30%' }],
-      [{ slug: 'boellerciao-1', ar: '4 / 5', pos: '50% 40%' }, { slug: 'frieden-1', ar: '4 / 3', pos: '47% 30%' }],
-    ],
-  },
-  // Indoor #referenzen: Standbilder aus dem Siemens-Video der Hannover Messe 2025 (echte FlyingStars-Show).
+  // Indoor #referenzen: Standbilder aus dem Siemens-Video der Hannover Messe 2025 (echte FlyingStars-Show). Marc, Runde 6:
+  // mehr Bilder, näher am Text, die Unterlage groß und dezent quer hinter den Bildern.
   indoor: {
-    cols: 5, text: 3,
+    cols: 5, text: 2,
     columns: [
-      [], [], [],
-      [{ accent: 'grid', side: 'start' }, { slug: 'siemens-indoor-1', ar: '4 / 3', pos: '50% 60%' }],
-      [{ slug: 'siemens-indoor-2', ar: '4 / 5', pos: '50% 35%' }, { slug: 'siemens-indoor-3', ar: '16 / 10', pos: '50% 40%' }],
+      { at: 2, items: [{ slug: 'siemens-indoor-8', ar: '16 / 9', pos: '50% 40%' }] },
+      { at: 5, items: [{ slug: 'siemens-indoor-4', ar: '4 / 3', pos: '40% 45%' }, { slug: 'siemens-indoor-1', ar: '4 / 3', pos: '50% 60%' }] },
+      { at: 7, items: [{ slug: 'siemens-indoor-5', ar: '4 / 5', pos: '50% 40%' }, { slug: 'siemens-indoor-7', ar: '1 / 1', pos: '50% 40%' }] },
+      { at: 9, items: [{ slug: 'siemens-indoor-2', ar: '4 / 5', pos: '50% 35%' }, { slug: 'siemens-indoor-6', ar: '1 / 1', pos: '70% 40%' }, { slug: 'siemens-indoor-3', ar: '16 / 10', pos: '50% 40%' }] },
     ],
+    fields: [{ inset: '-6% 18% 38% 38%', m: '-5% -3% 72% 30%' }],
   },
 };
 
-export const GALLERY_SETS = /** @type {const} */ (['logos', 'willkommen', 'engagement', 'indoor']);
+export const GALLERY_SETS = /** @type {const} */ (['logos', 'willkommen', 'indoor']);
 
 // Hover-Zeile „Kunde · Ort · Drohnenzahl“: nur Werte aus dem Manifest. name ersetzt den Kunden, wo das Manifest einen
 // Agentur- oder Privatnamen führt; place kürzt den Ort auf die Stadt (Übersetzung wie im übrigen Site-Text).
@@ -111,6 +104,16 @@ export const GALLERY_TEXT = {
     alt: { en: 'Drones frame the Siemens Xcelerator symbol on the LED wall above the presenter.', nl: 'Drones omlijsten het Siemens Xcelerator-symbool op de ledwand boven de presentator.' } },
   'siemens-indoor-3': { name: { de: 'Siemens', en: 'Siemens', nl: 'Siemens' }, place: { de: 'Hannover Messe', en: 'Hannover Messe', nl: 'Hannover Messe' },
     alt: { en: 'Drones fly in front of an LED wall showing the drawing of an aircraft, the presenter on stage in front.', nl: 'Drones vliegen voor een ledwand met de tekening van een vliegtuig, met de presentator op het podium ervoor.' } },
+  'siemens-indoor-4': { name: { de: 'Siemens', en: 'Siemens', nl: 'Siemens' }, place: { de: 'Hannover Messe', en: 'Hannover Messe', nl: 'Hannover Messe' },
+    alt: { en: 'Drones hover beside a double arrow on the LED wall above the stage of the Siemens trade-fair show.', nl: 'Drones zweven naast een dubbele pijl op de ledwand boven het podium van de Siemens-beursshow.' } },
+  'siemens-indoor-5': { name: { de: 'Siemens', en: 'Siemens', nl: 'Siemens' }, place: { de: 'Hannover Messe', en: 'Hannover Messe', nl: 'Hannover Messe' },
+    alt: { en: 'Drones sit at the corners of a grid of coloured squares on the LED wall, the presenter in front.', nl: 'Drones staan op de hoeken van een raster van gekleurde vierkanten op de ledwand, met de presentator ervoor.' } },
+  'siemens-indoor-6': { name: { de: 'Siemens', en: 'Siemens', nl: 'Siemens' }, place: { de: 'Hannover Messe', en: 'Hannover Messe', nl: 'Hannover Messe' },
+    alt: { en: 'Drones mark the corners of a glowing cube on the LED wall above the presenter.', nl: 'Drones markeren de hoeken van een lichtgevende kubus op de ledwand boven de presentator.' } },
+  'siemens-indoor-7': { name: { de: 'Siemens', en: 'Siemens', nl: 'Siemens' }, place: { de: 'Hannover Messe', en: 'Hannover Messe', nl: 'Hannover Messe' },
+    alt: { en: 'A circle of drones surrounds a glowing ring on the LED wall, the presenter below.', nl: 'Een cirkel van drones omringt een lichtgevende ring op de ledwand, met de presentator eronder.' } },
+  'siemens-indoor-8': { name: { de: 'Siemens', en: 'Siemens', nl: 'Siemens' }, place: { de: 'Hannover Messe', en: 'Hannover Messe', nl: 'Hannover Messe' },
+    alt: { en: 'Drones fly through a tunnel of light lines on the LED wall above the stage.', nl: 'Drones vliegen door een tunnel van lichtlijnen op de ledwand boven het podium.' } },
 };
 
 export const DRONES = { de: 'Drohnen', en: 'drones', nl: 'drones' };

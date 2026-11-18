@@ -29,17 +29,24 @@ const showtime = pkg ? getPackageDetails(locale).showtimeLine(pkg) : undefined;
 // Indoor (18.11.2026): mit Faktoren zweigeteilte Karte nach Stripe Pricing; das Startraster der kleinsten Show (20 Drohnen,
 // 1-m-Raster wie in der Sicherheitszeichnung) steht als Lichtpunkte neben dem Preis, statt einer Paketfigur
 const factorMode = Boolean(factors?.length);
-// Punktfelder in den Faktor-Zellen (Punktsprache wie die Standortkarte): jeder Punkt ist eine Einheit des Werts, hell =
-// Einstieg, gedämpft = Spielraum. Fläche 10 × 10 m im Meterraster mit dem Startraster der kleinsten Show in der Mitte,
-// Drohnen min von max, Showdauer in Minuten. Keine Beschriftung, der Wert steht darunter.
-type Dot = { x: number; y: number; on: 0 | 1 | 2 };
+// Punktfelder in den Faktor-Zellen (Punktsprache wie die Standortkarte): jeder Punkt ist eine Einheit des Werts. Fläche
+// 10 × 10 m im Meterraster mit dem Startraster der kleinsten Show (5 × 4 = 20 Drohnen) darin, Drohnen min von max (nach
+// Spalten gefüllt), Showdauer in Minuten. Keine Beschriftung, der Wert steht darunter.
+// Runde 6 (Marc: „that the highlighted dots follow the mouse … CSS-only would be amazing“): unsichtbare Zeigezellen je
+// Spalte/Zeile setzen per :has(:hover) --cx/--cy am Feld; jeder Leuchtpunkt rechnet daraus seine Deckkraft (nur opacity,
+// weich). Fläche: der Startblock wandert mit der Maus. Drohnen/Showdauer: hell bis zur Maus, mindestens der Einstieg.
+type Cell = { x: number; y: number; half?: boolean };
+type Field = { w: number; h: number; mode: 'block' | 'range'; cells: Cell[]; vars: string };
 const indoor = SHOW_EXTRAS.indoor, dur = durationValues();
-const dotFields: Record<string, { w: number; h: number; dots: Dot[] }> = (() => {
-  const area: Dot[] = [], min = indoor.drones.min, cols = 5, rows = Math.ceil(min / cols), x0 = Math.floor((10 - cols) / 2), y0 = Math.floor((10 - rows) / 2);
-  for (let y = 0; y < 10; y++) for (let x = 0; x < 10; x++) { const inner = x >= x0 && x < x0 + cols && y >= y0 && y < y0 + rows; area.push({ x, y, on: inner ? 2 : 0 }); }
-  const drones: Dot[] = Array.from({ length: indoor.drones.max }, (_, i) => ({ x: i % 10, y: Math.floor(i / 10), on: i < indoor.drones.min ? 2 : 0 }));
-  const duration: Dot[] = Array.from({ length: dur.indoorMax }, (_, i) => ({ x: i, y: 0, on: i < dur.indoorMin ? 2 : 1 }));
-  return { area: { w: 10, h: 10, dots: area }, drones: { w: 10, h: Math.ceil(indoor.drones.max / 10), dots: drones }, duration: { w: dur.indoorMax, h: 1, dots: duration } };
+const grid = (w: number, h: number, half?: (c: Cell) => boolean) => Array.from({ length: w * h }, (_, i) => { const c = { x: Math.floor(i / h), y: i % h }; return { ...c, half: half?.(c) }; });
+const dotFields: Record<string, Field> = (() => {
+  const bw = 5, bh = Math.ceil(indoor.drones.min / bw), hx = (bw - 1) / 2, hy = (bh - 1) / 2, oy = bh % 2 ? 0 : 0.5;
+  const minCol = Math.ceil(indoor.drones.min / 5) - 1, minMinute = dur.indoorMin - 1;
+  return {
+    area: { w: 10, h: 10, mode: 'block', cells: grid(10, 10), vars: `--cx0:${Math.floor((10 - bw) / 2) + hx};--cy0:${Math.floor((10 - bh) / 2) + hy + oy};--hx:${hx};--hy:${hy};--oy:${oy};--W:10;--H:10` },
+    drones: { w: Math.ceil(indoor.drones.max / 5), h: 5, mode: 'range', cells: grid(Math.ceil(indoor.drones.max / 5), 5), vars: `--cx0:${minCol};--min:${minCol}` },
+    duration: { w: dur.indoorMax, h: 1, mode: 'range', cells: grid(dur.indoorMax, 1, (c) => c.x > minMinute), vars: `--cx0:${minMinute};--min:${minMinute}` },
+  };
 })();
 const scale = p && Number.isFinite(p.max) ? t('landingprice.upToValueDronesValuePerValueAdditionalDrones', { v0: p.max, v1: p.add.toLocaleString(formatLocale), v2: p.step }) : undefined;
 ---
@@ -62,7 +69,11 @@ const scale = p && Number.isFinite(p.max) ? t('landingprice.upToValueDronesValue
     <ul class="lp-factors" role="list" data-n={factors!.length}>
       {factors!.map((f) => <li class="lp-factor">
         <span class="lp-factor-h"><Icon name={f.icon} size={22} class="g" />{f.title}</span>
-        {f.dots && (() => { const d = dotFields[f.dots]; return <svg class:list={['lp-dots', `lp-dots-${f.dots}`]} viewBox={`0 0 ${d.w * 10} ${d.h * 10}`} aria-hidden="true">{d.dots.map((p) => <circle class={`d${p.on}`} cx={p.x * 10 + 5} cy={p.y * 10 + 5} r={p.on === 2 ? 2.1 : 1.6} />)}</svg>; })()}
+        {f.dots && (() => { const d = dotFields[f.dots]; return <svg class:list={['lp-dots', `lp-dots-${f.dots}`, `is-${d.mode}`]} style={d.vars} viewBox={`0 0 ${d.w * 10} ${d.h * 10}`} aria-hidden="true">
+          <g class="lp-base">{d.cells.map((c) => <circle class:list={{ half: c.half }} cx={c.x * 10 + 5} cy={c.y * 10 + 5} r="1.6" />)}</g>
+          <g class="lp-lit">{d.cells.map((c) => <circle style={`--x:${c.x};--y:${c.y}`} cx={c.x * 10 + 5} cy={c.y * 10 + 5} r="2.1" />)}</g>
+          <g class="lp-hit">{d.mode === 'block' ? d.cells.map((c) => <rect class={`zc${c.x} zr${c.y}`} x={c.x * 10} y={c.y * 10} width="10" height="10" />) : Array.from({ length: d.w }, (_, x) => <rect class={`zc${x}`} x={x * 10} y="0" width="10" height={d.h * 10} />)}</g>
+        </svg>; })()}
         <b class="lp-factor-v">{factText(f.value, locale)}</b>
         <span class="lp-factor-t">{factText(f.text, locale)}</span>
       </li>)}
@@ -144,7 +155,7 @@ const scale = p && Number.isFinite(p.max) ? t('landingprice.upToValueDronesValue
   }
   /* Indoor-Variante: zweigeteilte Karte. Links Preis und Anfrage auf eigener Fläche, rechts gleich große Faktor-Zellen,
      darunter über die ganze Breite „immer enthalten“. Kopf zweispaltig, damit über der Karte keine leere Hälfte bleibt. */
-  .lp-f :global(.lp-f-head) { max-width: none; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-4) clamp(var(--space-8), 6vw, var(--space-20)); align-items: end; }
+  .lp-f :global(.lp-f-head) { max-width: none; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--head-gap-text) clamp(var(--space-8), 6vw, var(--space-20)); align-items: end; }
   .lp-f :global(.lp-f-head > p) { margin: 0; max-width: 48ch; }
   .lp-sheet { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 8fr); border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--ground); overflow: hidden; }
   .lp-buy { display: grid; align-content: start; gap: var(--space-2-5); padding: clamp(var(--space-7), 3.4vw, var(--space-12)); background: var(--surface); border-right: 1px solid var(--line); }
@@ -167,9 +178,21 @@ const scale = p && Number.isFinite(p.max) ? t('landingprice.upToValueDronesValue
   .lp-dots { --pitch: clamp(0.75rem, 0.95vw, 1.0625rem); }
   .lp-dots-area, .lp-dots-drones { width: min(100%, calc(var(--pitch) * 10)); }
   .lp-dots-duration { width: min(100%, calc(var(--pitch) * 8)); }
-  .lp-dots .d0 { fill: rgb(var(--rgb-text) / 0.22); }
-  .lp-dots .d1 { fill: rgb(var(--rgb-amber) / 0.45); }
-  .lp-dots .d2 { fill: var(--amber); filter: drop-shadow(0 0 0.1875rem rgb(var(--rgb-amber) / 0.85)); }
+  .lp-dots { --cx: var(--cx0); --cy: var(--cy0); }
+  .lp-base circle { fill: rgb(var(--rgb-text) / 0.22); }
+  .lp-base circle.half { fill: rgb(var(--rgb-amber) / 0.45); }
+  .lp-lit { fill: var(--amber); filter: drop-shadow(0 0 0.1875rem rgb(var(--rgb-amber) / 0.85)); }
+  .lp-lit circle { transition: opacity var(--dur-underline) var(--ease-default); }
+  .lp-hit rect { fill: transparent; }
+  /* Fläche: Block (5 × 4) um die gezeigte Zelle, am Rand eingeklemmt; Bereich: hell bis zur gezeigten Spalte, mindestens --min */
+  .is-block { --ccx: clamp(var(--hx), var(--cx), var(--W) - 1 - var(--hx)); --ccy: clamp(var(--hy), var(--cy) - var(--oy), var(--H) - 1 - var(--hy)); }
+  .is-block .lp-lit circle { opacity: calc(clamp(0, (var(--hx) + 0.5 - max(var(--x) - var(--ccx), var(--ccx) - var(--x))) * 4, 1) * clamp(0, (var(--hy) + 0.5 - max(var(--y) - var(--ccy), var(--ccy) - var(--y))) * 4, 1)); }
+  .is-range .lp-lit circle { opacity: clamp(0, (max(var(--min), var(--cx)) - var(--x) + 1) * 4, 1); }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .lp-hit { cursor: crosshair; }
+    .lp-dots:has(.zc0:hover) { --cx: 0; } .lp-dots:has(.zc1:hover) { --cx: 1; } .lp-dots:has(.zc2:hover) { --cx: 2; } .lp-dots:has(.zc3:hover) { --cx: 3; } .lp-dots:has(.zc4:hover) { --cx: 4; } .lp-dots:has(.zc5:hover) { --cx: 5; } .lp-dots:has(.zc6:hover) { --cx: 6; } .lp-dots:has(.zc7:hover) { --cx: 7; } .lp-dots:has(.zc8:hover) { --cx: 8; } .lp-dots:has(.zc9:hover) { --cx: 9; }
+    .lp-dots:has(.zr0:hover) { --cy: 0; } .lp-dots:has(.zr1:hover) { --cy: 1; } .lp-dots:has(.zr2:hover) { --cy: 2; } .lp-dots:has(.zr3:hover) { --cy: 3; } .lp-dots:has(.zr4:hover) { --cy: 4; } .lp-dots:has(.zr5:hover) { --cy: 5; } .lp-dots:has(.zr6:hover) { --cy: 6; } .lp-dots:has(.zr7:hover) { --cy: 7; } .lp-dots:has(.zr8:hover) { --cy: 8; } .lp-dots:has(.zr9:hover) { --cy: 9; }
+  }
   .lp-factor-v { margin-top: var(--space-2); font: 600 clamp(1.75rem, 2.6vw, 2.75rem)/1 var(--display); letter-spacing: -0.035em; color: var(--head); white-space: nowrap; font-variant-numeric: tabular-nums; }
   .lp-factor-t { color: var(--muted); font-size: var(--text-copy); line-height: 1.5; text-wrap: pretty; }
   .lp-incl { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3) clamp(var(--space-6), 3vw, var(--space-10)); padding: clamp(var(--space-5), 2vw, var(--space-7)) clamp(var(--space-7), 3.4vw, var(--space-12)); border-top: 1px solid var(--line); }

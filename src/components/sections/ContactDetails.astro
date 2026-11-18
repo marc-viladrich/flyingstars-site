@@ -43,8 +43,8 @@ const crew = image ? [] : await Promise.all(FOUNDERS.map(async (p) => ({ ...p, i
 </section>
 <style>
   .contact-details { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: clamp(var(--space-10), 6vw, var(--space-28)); align-items: center; }
-  .cd-main :global(.cd-lead) { margin: var(--space-4) 0 0; color: var(--muted); }
-  .cd-grid { list-style: none; margin: var(--space-11) 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-9) var(--space-10); }
+  .cd-main :global(.cd-lead) { color: var(--muted); }
+  .cd-grid { list-style: none; margin: var(--head-gap-content) 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-9) var(--space-10); }
   .cd-grid :global(.icon-feature) { gap: var(--space-2); }
   .cd-grid :global(.icon-feature > .ico) { width: 1.75rem; height: 1.75rem; margin-bottom: var(--space-1); }
   .cd-grid :global(.ic-h) { font: 500 var(--text-xs)/1.2 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }

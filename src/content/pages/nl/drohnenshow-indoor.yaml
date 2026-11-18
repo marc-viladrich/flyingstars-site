@@ -581,12 +581,12 @@ sections:
       - indoor-moritz
     _key: k_b9b4c25755db13474604
 translationContractVersion: 2
-translationSourceHash: e9c6996d80cb525c10226afc5f302b97e35ed466b64eda7981b49b05c3774b8a
+translationSourceHash: 0dce721e7539080dc42742d7b495b0046910fe89a8a582c226b5b5e70e559253
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: e9c6996d80cb525c10226afc5f302b97e35ed466b64eda7981b49b05c3774b8a
+  sourceFingerprint: 0dce721e7539080dc42742d7b495b0046910fe89a8a582c226b5b5e70e559253
   fields:
     - address: /description
       sourceFingerprint: 5d7a47a66e130654aaf32af5051cbe4cd04ae04b11e51948b197e3b71a375cf0
@@ -1570,6 +1570,10 @@ translationEvidence:
       status: adopted-existing
     - address: /sections/@k_c030e32b9a3f99dac46e/campaign
       sourceFingerprint: 35f048dac74d8af5d136ab5ca0836270eb207b10cad33d5f21afc84ce97f25d7
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
+      status: adopted-existing
+    - address: /sections/@k_c030e32b9a3f99dac46e/comparison
+      sourceFingerprint: c5aad507770b15fc8d5ceabe727ffac4cceb8ff82e3e105d0b6199789492b46f
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_c030e32b9a3f99dac46e/cta/label

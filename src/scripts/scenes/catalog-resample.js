@@ -14,6 +14,10 @@
 // catalog-actions.js beziehen sich darauf); die neuen Drohnen folgen ihren Eltern-Punkten (derive()).
 // Rechenzeit: ein Motiv mit 300 Punkten auf 1000 Drohnen < 5 ms (scripts/catalog-resample.test.mjs misst es).
 
+// Runde 6 (Marc, 18.11.2026: „Only up until 200 drones I really like what you're doing, but beyond that it keeps getting
+// worse“): verdichtet wird nur bis 200 Drohnen. Darüber behält das Motiv seine 200er-Gestalt; die weiteren Drohnen bleiben
+// dunkel in Reserve (scenes/catalog.js).
+export const DENSE_MAX = 200;
 const INNER = 0.72; // Binnenlinien relativ zur Außenkontur
 const LINE_CAP = 3; // flache Motive mit großer Innenfläche: ab dreifacher Liniendichte kommt die Füllung dazu
 const FILL_LIGHT = 0.5; // Helligkeit der Füllung
@@ -90,7 +94,7 @@ export function analyse(pts, { flat = true } = {}) {
  * größer; auf der Bühne steht es gleich groß, mit kleineren Lichtern und dichteren Linien.
  */
 export function resample(pts, n, { flat = true, analysis = analyse(pts, { flat }) } = {}) {
-  const { m, s0, edges, grid } = analysis, budget = n - m;
+  const { m, s0, edges, grid } = analysis, budget = Math.min(n, DENSE_MAX) - m;
   if (budget <= 0 || m < 2 || !edges.length) return [];
   const out = [];
   let fill = [], lineBudget = budget;

@@ -36,8 +36,8 @@ const list: Item[] = items ?? INCLUDED;
 </section>
 
 <style>
-  .inc { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(var(--space-8), 5vw, var(--space-16)); align-items: start; }
-  .inc :global(.inc-head) { position: sticky; top: calc(var(--nav-h) + var(--space-8)); }
+  .inc { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--head-gap-content) clamp(var(--space-8), 5vw, var(--space-16)); align-items: start; }
+  .inc :global(.inc-head) { position: sticky; top: calc(var(--nav-h) + var(--space-8)); margin-bottom: 0; }
   .inc-grid { --ig-cols: 2; list-style: none; margin: 0; padding: 0; }
   /* Zelle „Das macht ihr“: Struktur wie die Leistungen, Cyan statt Orange, feine Fläche mit Cyan-Haarlinie oben */
   .inc-grid > :global(.inc-note) { position: relative; background: linear-gradient(180deg, rgb(var(--rgb-cyan) / 0.07), rgb(var(--rgb-cyan) / 0.02)); }

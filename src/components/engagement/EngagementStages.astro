@@ -1,0 +1,54 @@
+---
+// Partnerschaften als Bühnen (Nachhaltigkeit #referenzen, Variante A, Runde 6): je Partnerschaft eine Zeile aus
+// Jahreszahl als Konturtitel („seit 2025“), Moritz' Text und dem Motiv der Kampagne: das Showfoto, wo es eins gibt, sonst
+// der Kampagnenname als Drohnenformation auf Nachthimmel. Hinter jedem Motiv die Leuchtpunkt-Unterlage.
+import DotField from '../DotField.astro';
+import ShowPhoto from '../gallery/ShowPhoto.astro';
+import Formation from './Formation.astro';
+import { PARTNER_VISUALS, splitSince } from './partners.mjs';
+interface Entry { kicker: string; title: string; text?: string }
+interface Props { entries: Entry[]; facts: { value: unknown; label: string }[]; level: 'h2' | 'h3' }
+const { entries, facts, level: T } = Astro.props;
+---
+<ol class="eng-stages">
+  {entries.map((e, i) => {
+    const v = PARTNER_VISUALS[e.title.toUpperCase()] ?? {};
+    const since = splitSince(facts[i]?.value);
+    return <li class="eng-stage">
+      {since && <p class="eng-year" aria-hidden="true"><span class="mono">{since.prefix}</span><span class="eng-num">{since.year}</span></p>}
+      <div class="eng-copy">
+        <span class="kicker mono">{e.kicker}</span>
+        <T>{e.title}</T>
+        {e.text && <p>{e.text}</p>}
+        {since && <p class="sr-only">{since.prefix} {since.year}</p>}
+      </div>
+      <div class="eng-visual df-host">
+        <DotField inset={i % 2 ? '-12% 18% 22% -6%' : '20% -5% -14% 26%'} insetM="18% -1rem -1.25rem 24%" />
+        {v.photo ? <ShowPhoto slug={v.photo.slug} ar="16 / 9" pos={v.photo.pos} sizes="(min-width: 68.8125em) 40vw, 92vw" />
+          : v.formation && <div class="eng-night"><Formation name={v.formation} /></div>}
+      </div>
+    </li>;
+  })}
+</ol>
+
+<style>
+  .eng-stages { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(var(--space-12), 7vw, var(--space-24)); }
+  .eng-stage { display: grid; gap: clamp(var(--space-6), 3vw, var(--space-10)); padding-top: clamp(var(--space-6), 3vw, var(--space-10)); border-top: 1px solid var(--line); align-items: center; }
+  .eng-year { margin: 0; display: grid; gap: var(--space-2); align-self: start; }
+  .eng-year .mono { color: var(--accent); }
+  .eng-num { font: 500 clamp(4.5rem, 9vw, 9rem)/0.86 var(--display); letter-spacing: -0.04em; color: transparent; -webkit-text-stroke: 1.5px var(--line-strong); }
+  .eng-copy { display: grid; gap: var(--space-3); align-content: start; align-self: start; }
+  .eng-copy .kicker { margin: 0; }
+  .eng-copy :is(h2, h3) { font-size: var(--text-2xl); line-height: 1.1; margin: 0; }
+  .eng-copy p { margin: 0; color: var(--muted); max-width: 40ch; }
+  .eng-night { aspect-ratio: 16 / 9; border-radius: var(--radius-14); display: grid; place-items: center; padding: 9% 10%;
+    background: radial-gradient(80% 70% at 50% 45%, rgb(var(--rgb-logo-orchid) / 0.1), transparent 70%), var(--media-ground); }
+  @media (--grid-expanded) {
+    .eng-stage { grid-template-columns: minmax(0, 3fr) minmax(0, 4fr) minmax(0, 5fr); }
+  }
+  @media (--grid-stacked) {
+    .eng-stage { grid-template-columns: auto minmax(0, 1fr); }
+    .eng-visual { grid-column: 1 / -1; }
+    .eng-num { font-size: clamp(3.5rem, 16vw, 5rem); }
+  }
+</style>

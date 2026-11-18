@@ -111,6 +111,7 @@
   --ease-panel: cubic-bezier(0.2, 0.9, 0.3, 1);
   --ease-default: ease;
   --ease-ambient: ease-in-out;
+  --ease-fall: cubic-bezier(0.55, 0, 0.8, 0.35);
   --ease-out: ease-out;
   --ease-linear: linear;
 
@@ -226,6 +227,15 @@
   --accent: var(--amber);
   --accent-line: rgb(var(--rgb-amber) / 0.4);
   --section: clamp(4.5rem, 10vw, 8.75rem);
+  /* Abstandsrollen der Section-Köpfe (Runde 6, Marc: „einheitliche gaps between headings and body copy … a centrally
+     defined system“). SectionHead.astro setzt sie für jeden Kopf; einbettende Layouts verweisen nur auf diese Rollen.
+     kicker: Kicker → Überschrift · text: Überschrift → Text und Text → Text · cta: Text → Link/Knopf des Kopfs ·
+     content: Kopf → Inhalt darunter (auch wenn Kopf und Inhalt auf schmalen Bildschirmen untereinander rutschen) */
+  --head-gap-kicker: var(--space-3-5);
+  --head-gap-text: var(--space-4);
+  --head-gap-cta: var(--space-6);
+  --head-gap-content: clamp(var(--space-9), 5vw, var(--space-14));
+  --footer-top: clamp(var(--space-12), 6vw, var(--space-20));
   --radius: 1.25rem;
   --reveal-offset: 0.4em;
   --reveal-member-offset: 1.5rem;
@@ -352,10 +362,9 @@ html.motion-paused { scroll-behavior: auto !important; }
 
 /* sections */
 .section { padding: var(--section) var(--gutter); }
-.section.alt { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.section.alt { background: var(--surface); }
 /* Section-Kopf: nur die Headline, einspaltig; ein Satz darunter nur, wenn er eine Information trägt (DESIGN.md) */
-.sec-head { display: grid; gap: var(--space-4); justify-items: start; max-width: 52rem; margin-bottom: clamp(var(--space-9), 5vw, var(--space-14)); }
-.sec-head > .kicker { margin-bottom: calc(-1 * var(--space-0-5)); }
+.sec-head { justify-items: start; max-width: 52rem; margin-bottom: var(--head-gap-content); }
 .sec-head h1, .sec-head h2 { max-width: 20ch; }
 .sec-head > p { color: var(--muted); font-size: var(--text-lead); max-width: 52ch; }
 
@@ -408,8 +417,8 @@ td.us { color: var(--text); background: var(--fill-soft); }
 .pack-note { margin-top: var(--space-5); color: var(--faint); display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-3); }
 
 /* faq */
-.faq-grid { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(var(--space-7), 5vw, var(--space-20)); align-items: start; }
-.faq-grid .intro { display: grid; gap: var(--space-4-5); position: sticky; top: 6.875rem; }
+.faq-grid { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: var(--head-gap-content) clamp(var(--space-7), 5vw, var(--space-20)); align-items: start; }
+.faq-grid .intro { position: sticky; top: 6.875rem; }
 .faq-grid .intro p { color: var(--muted); max-width: 40ch; }
 .faq { border-top: 1px solid var(--line-strong); }
 .faq details { border-bottom: 1px solid var(--line); }
@@ -564,7 +573,7 @@ html.motion-paused .faq details::details-content { transition: none; }
 .c-track figcaption { display: flex; gap: var(--space-3); color: var(--muted); }
 .c-track figcaption b { color: var(--accent); font-weight: 500; }
 
-.c-setlist { padding: var(--section) var(--gutter); background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.c-setlist { padding: var(--section) var(--gutter); background: var(--surface); }
 .c-setlist .groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 26.25rem), 1fr)); gap: clamp(var(--space-7), 5vw, var(--space-18)); margin-top: clamp(var(--space-8), 5vw, var(--space-14)); }
 .c-setlist h3 { font: 400 var(--text-xs)/1.5 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); margin-bottom: var(--space-2); }
 .c-setlist ol { list-style: none; margin: 0; padding: 0; counter-reset: s; border-top: 1px solid var(--line-strong); }
@@ -638,7 +647,7 @@ html.motion-paused .faq details::details-content { transition: none; }
 
 .eco-sec { position: relative; padding: var(--section) var(--gutter); background: radial-gradient(120% 70% at 50% 0%, #17120f 0%, var(--ground) 62%); border-top: 1px solid var(--line); }
 /* Scrollstory aus dem Prototyp (fix/minimal-fonts), Abstände auf --gutter umgestellt */
-.eco-head { display: grid; grid-template-columns: 1fr; gap: var(--space-4); align-items: end; margin-bottom: clamp(var(--space-8), 5vw, var(--space-14)); }
+.eco-head { grid-template-columns: 1fr; align-items: end; margin-bottom: var(--head-gap-content); }
 .eco-title { font: 700 clamp(3rem, 8.2vw, 8.5rem)/0.92 var(--display); letter-spacing: -0.045em; display: grid; max-width: none; }
 .eco-title span { display: block; width: fit-content; }
 .eco-head p { color: var(--muted); max-width: 40ch; justify-self: start; }
@@ -677,7 +686,8 @@ html.motion-paused .faq details::details-content { transition: none; }
 }
 
 /* homepage: team – colour portraits that rise in one after another and open like a curtain */
-.team-sec { padding: var(--section) var(--gutter); background: radial-gradient(70% 45% at 50% 0%, rgb(var(--rgb-logo-orchid) / 0.07), transparent 70%), var(--media-ground); border-bottom: 1px solid var(--line); }
+/* Der Lichtschein setzt erst unter der Kante ein: Oben steht die reine Fläche, aus der der Punktübergang ausläuft (himmel.css) */
+.team-sec { padding: var(--section) var(--gutter); background: linear-gradient(var(--media-ground), transparent var(--section)), radial-gradient(70% 45% at 50% 0%, rgb(var(--rgb-logo-orchid) / 0.07), transparent 70%), var(--media-ground); }
 .crew { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--cols, 5), minmax(0, 1fr)); gap: clamp(var(--space-3), 1.6vw, var(--space-5-5)); }
 /* Team-Auftritt (Marc, 03.11.2026, Video: „greift viel zu spät“): Die Karte selbst wird beobachtet und darf deshalb
    nicht verschoben sein. Vorher lag sie im Startzustand 5 rem tiefer; der Observer maß die verschobene Box und löste
@@ -712,7 +722,7 @@ html.motion-paused .faq details::details-content { transition: none; }
 }
 
 /* footer */
-.footer { border-top: 1px solid var(--line); padding: clamp(var(--space-12), 6vw, var(--space-20)) var(--gutter) calc(var(--space-7) + env(safe-area-inset-bottom, 0rem)); display: grid; gap: var(--space-10); }
+.footer { border-top: 1px solid var(--line); padding: var(--footer-top) var(--gutter) calc(var(--space-7) + env(safe-area-inset-bottom, 0rem)); display: grid; gap: var(--space-10); }
 .footer .cols { display: grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; gap: var(--space-8); }
 .footer h4 { margin: 0 0 var(--space-3-5); font: 400 var(--text-xs)/1.4 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
 .footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); color: var(--muted); font-size: var(--text-control); }
@@ -868,8 +878,8 @@ html.motion-paused .faq details::details-content { transition: none; }
 .btn.primary .ico { stroke: var(--ground); }
 
 /* Anfrage (Studie 8): Kopf links oben bündig mit dem Formular, Gesichter, Kontaktwege mit Verlaufs-Icons */
-.inquiry { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: clamp(var(--space-6), 4vw, var(--space-14)); }
-.inquiry .intro { display: grid; gap: var(--space-4-5); align-content: start; }
+.inquiry { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: var(--head-gap-content) clamp(var(--space-6), 4vw, var(--space-14)); }
+.inquiry .intro { align-content: start; }
 .inquiry .intro h1, .inquiry .intro h2 { font-size: var(--text-3xl); line-height: 1.04; max-width: 16ch; }
 .inquiry .intro .lead { max-width: 40ch; }
 .faces { list-style: none; margin: 0; padding: 0 0 0 0; display: flex; }
@@ -1092,7 +1102,6 @@ html.motion-paused .rec::before { animation: none; }
 .promise .faces { justify-content: center; margin: 0; }
 
 .cfg-kicker { margin-bottom: calc(-1 * var(--space-1-5)); }
-.cfg-h { --kicker-gap: 1.625rem; } /* Kicker im h2 (SectionHead): derselbe Abstand wie vorher außerhalb */
 
 /* Netzplan-Zeitstrahl (MetroLine.astro): Hauptlinie mit Stationen (.ruler oben), Abzweigung als durchgezogene orange
    Linie mit runden Ecken von der ersten zur letzten Station, Schild mittig darauf. --n: Zahl der Stationen. */
@@ -1164,12 +1173,11 @@ a.pack:hover, a.pack:focus-visible { border-color: color-mix(in srgb, var(--c) 7
 .prose > .kicker { margin-bottom: var(--space-3-5); }
 .prose > .kicker + :is(h1, h2, h3) { margin-top: 0; }
 .page-hero-copy > .kicker { margin-bottom: calc(-1 * var(--space-2)); }
-:is(.inquiry .intro, .faq-grid .intro) > .kicker { margin-bottom: calc(-1 * var(--space-1)); }
 .hero-copy > .kicker { margin-bottom: calc(-1 * var(--space-2)); }
 
 /* FAQ mit Kategorien: Kopf über die volle Breite, je Kategorie eine Zeile mit mitlaufendem Kategorietitel links */
 .faq-grouped .faq-grid { grid-template-columns: 1fr; }
-.faq-grouped .faq-grid { row-gap: clamp(var(--space-6), 3vw, var(--space-9)); }
+.faq-grouped .faq-grid { row-gap: var(--head-gap-content); }
 .faq-grouped .faq-grid .intro { position: static; max-width: none; margin-bottom: 0; }
 .faq-grouped .faq-grid .intro > p { max-width: 52ch; }
 .faq-grouped .faq-body { gap: 0; }
@@ -1307,8 +1315,9 @@ a.pack { grid-template-rows: auto auto 1fr; align-items: start; row-gap: var(--s
 /* Icon-Raster (Marc, 01./02.11.2026): offenes Raster ohne Kartenfläche, feine Linien nur ZWISCHEN den Zellen. Jede Zelle:
    großes Icon in Orange, echte Überschrift, Text. Genutzt von den Extras (auswählbar, pricing/Extras.astro) und „Immer
    inklusive“ (pricing/Included.astro); die Kacheln der Anlass-Seiten (LandingBento) nehmen dieselben Maße.
-   Linien: jede Zelle zieht oben und links eine Linie, die äußeren schneidet overflow am Raster ab (margin -1px). */
-.ig { --ig-cols: 3; display: grid; grid-template-columns: repeat(var(--ig-cols), minmax(0, 1fr)); overflow: hidden; }
+   Linien: jede Zelle zieht oben und links eine Linie, die äußeren schneidet overflow: clip am Raster ab (margin -1px; clip statt
+   hidden, damit das Raster kein eigener Scroll-Container ist). */
+.ig { --ig-cols: 3; display: grid; grid-template-columns: repeat(var(--ig-cols), minmax(0, 1fr)); overflow: clip; }
 .ig.cols-4 { --ig-cols: 4; }
 .ig > .ic { margin: calc(-1 * var(--space-0-25)) 0 0 calc(-1 * var(--space-0-25)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
 .ic { position: relative; display: grid; gap: var(--space-2-5); align-content: start; justify-items: start; padding: clamp(var(--space-6-5), 2.6vw, var(--space-9-5)) clamp(var(--space-5-5), 2.4vw, var(--space-8-5)) clamp(var(--space-7), 2.8vw, var(--space-10)); }
@@ -1317,31 +1326,16 @@ a.pack { grid-template-rows: auto auto 1fr; align-items: start; row-gap: var(--s
 .ic > p { margin: 0; color: var(--muted); font-size: var(--text-control); max-width: 40ch; }
 @media (--grid-stacked) { .ig, .ig.cols-4 { --ig-cols: 2; } }
 @media (--compact) { .ig, .ig.cols-4 { --ig-cols: 1; } }
-/* Hover im Icon-Raster (Marc, 18.11.2026: „performanter, CSS-only Card-Snapping-Hover mit Background-Glow“): EINE weiche
-   Fläche mit warmem Schein vom Icon her springt von Zelle zu Zelle und rastet ein. Gleiche Mechanik und Kurven wie die
-   gleitende Box der Navigation (.glide-mark oben): mit Anchor Positioning ist die gezeigte oder per Tastatur fokussierte
-   Zelle Anker von .ig::before; ohne Zeiger merkt sich die Fläche ihre Stelle (Übergang mit --dur-hold) und blendet nur aus.
-   Ersatz ohne Anchor Positioning (Safari 18): jede Zelle trägt dieselbe Fläche selbst und blendet sie weich ein. */
-.ig { position: relative; --glide: var(--ease-glide); --move: var(--dur-glide); --ig-gap: var(--space-1-5);
-  --ig-mark: radial-gradient(85% 75% at 0% 0%, rgb(var(--rgb-logo-amber) / 0.12), rgb(var(--rgb-logo-coral) / 0.035) 45%, transparent 75%), radial-gradient(70% 60% at 100% 100%, rgb(var(--rgb-logo-orchid) / 0.035), transparent 70%), var(--fill-quiet);
-  --ig-mark-edge: inset 0 1px 0 rgb(var(--rgb-logo-amber) / 0.16), inset 0 0 0 1px var(--line-soft), 0 1rem 2.5rem -1.75rem rgb(var(--rgb-logo-amber) / 0.14); }
-.ig > .ic { isolation: isolate; }
-.ig::before, .ig > .ic::before { content: ""; position: absolute; z-index: -1; border-radius: var(--radius-12); background: var(--ig-mark); box-shadow: var(--ig-mark-edge); opacity: 0; pointer-events: none; }
-.ig::before { display: none; }
-@supports (anchor-name: --a) {
-  .ig { anchor-scope: --ig-mark; }
-  .ig > .ic::before { display: none; }
-  .ig::before { display: block; z-index: 0; position-anchor: --ig-mark; top: calc(anchor(top) + var(--ig-gap)); bottom: calc(anchor(bottom) + var(--ig-gap)); left: calc(anchor(left) + var(--ig-gap)); right: calc(anchor(right) + var(--ig-gap)); transition: top var(--move) var(--glide), bottom var(--move) var(--glide), left var(--move) var(--glide), right var(--move) var(--glide), opacity var(--dur-standard) var(--ease-default); }
-  /* Zeiger vor Tastatur; ohne beides bleibt die erste Zelle Anker, die Fläche aber an ihrer letzten Stelle */
-  .ig > .ic:hover, .ig:not(:has(> .ic:hover)) > .ic:has(:focus-visible), .ig:not(:has(> .ic:hover, > .ic :focus-visible)) > .ic:first-child { anchor-name: --ig-mark; }
-  .ig:has(> .ic:hover, > .ic :focus-visible)::before { opacity: 1; }
-  .ig:not(:has(> .ic:hover, > .ic :focus-visible))::before { transition: top 0s var(--dur-hold), bottom 0s var(--dur-hold), left 0s var(--dur-hold), right 0s var(--dur-hold), opacity var(--dur-standard) var(--ease-default); }
-}
-@supports not (anchor-name: --a) {
-  .ig > .ic::before { inset: var(--ig-gap); transition: opacity var(--dur-standard) var(--ease-default); }
-  .ig > .ic:hover::before, .ig > .ic:has(:focus-visible)::before { opacity: 1; }
-}
-@media (prefers-reduced-motion: reduce) { .ig::before { transition: opacity var(--dur-standard) var(--ease-default) !important; } }
+/* Hover im Icon-Raster (Marc, 18.11.2026): EINE dezente Fläche gleitet von Zelle zu Zelle und rastet ein, mit Kurve und
+   Dauer der gleitenden Box der Navigation. Lage und Größe setzt src/scripts/grid-glide.ts als --ig-x/--ig-y/--ig-sx/--ig-sy
+   (Basismaß --ig-w0/--ig-h0); animiert werden nur transform und opacity. Der transparente Rand ist der Abstand zur Zellkante. */
+.ig { position: relative; --ig-gap: var(--space-1-5);
+  --ig-mark: radial-gradient(85% 75% at 0% 0%, rgb(var(--rgb-logo-amber) / 0.06), transparent 70%), var(--fill-quiet);
+  --ig-mark-edge: inset 0 1px 0 rgb(var(--rgb-logo-amber) / 0.08), inset 0 0 0 1px var(--line-soft); }
+.ig::before { content: ""; position: absolute; top: 0; left: 0; width: var(--ig-w0, 0px); height: var(--ig-h0, 0px); box-sizing: border-box; border: var(--ig-gap) solid transparent; border-radius: calc(var(--radius-12) + var(--ig-gap)); background: var(--ig-mark); background-clip: padding-box; box-shadow: var(--ig-mark-edge); transform-origin: 0 0; transform: translate(var(--ig-x, 0px), var(--ig-y, 0px)) scale(var(--ig-sx, 1), var(--ig-sy, 1)); opacity: 0; pointer-events: none; transition: transform var(--dur-glide) var(--ease-glide), opacity var(--dur-standard) var(--ease-default); }
+.ig.ig-on::before { opacity: 1; }
+.ig.ig-snap::before { transition: opacity var(--dur-standard) var(--ease-default); }
+@media (prefers-reduced-motion: reduce) { .ig::before { transition: opacity var(--dur-standard) var(--ease-default); } }
 
 /* Redaktionelle Hinweise im lokalen Dev-Server (SectionRenderer): gestrichelt in Orange, in der Content-Breite */
 .todo-note { position: relative; z-index: 6; display: flex; gap: var(--space-3); align-items: flex-start; margin: var(--space-6) var(--gutter) calc(-1 * var(--space-2)); padding: var(--space-3) var(--space-4); border: 1px dashed rgb(var(--rgb-amber) / 0.7); border-radius: var(--radius-10); background: rgb(var(--rgb-amber) / 0.08); color: var(--text); font-size: var(--text-sm); line-height: 1.5; }
@@ -1371,6 +1365,5 @@ a.pack { grid-template-rows: auto auto 1fr; align-items: start; row-gap: var(--s
 .native-select { appearance: none; -webkit-appearance: none; color-scheme: dark; cursor: pointer; background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%); background-position: calc(100% - 1.25rem) 50%, calc(100% - 0.9375rem) 50%; background-size: 0.3125rem 0.3125rem; background-repeat: no-repeat; }
 .native-select option { background: var(--surface); color: var(--text); font-family: var(--body); }
 input:is([type="radio"], [type="checkbox"]) { accent-color: var(--orchid); }
-.eco-head > .kicker { margin-bottom: calc(-1 * var(--space-0-5)); }
 /* Chopper hat kein Porträtfoto: seine Karte zeigt ihn als Leuchtpunkt-Figur (Runde 4) */
 .portrait .portrait-chopper { position: absolute; inset: 0; margin: auto; width: 100%; height: auto; }

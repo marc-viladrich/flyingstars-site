@@ -345,9 +345,9 @@
     "nl": "Kies wat jullie willen toevoegen. Het komt direct in jullie aanvraag, de prijs staat in onze offerte."
   },
   "steps.foundersReply": {
-    "de": "{names} antworten euch innerhalb von 48 Stunden.",
-    "en": "{names} will reply within 48 hours.",
-    "nl": "{names} antwoorden jullie binnen 48 uur."
+    "de": "Wir ({names}) antworten euch innerhalb von 48 Stunden.",
+    "en": "We ({names}) will reply within 48 hours.",
+    "nl": "Wij ({names}) antwoorden jullie binnen 48 uur."
   },
   "extras.addedToEnquiry": {
     "de": "In der Anfrage",
@@ -3920,9 +3920,9 @@
     "nl": "3D"
   },
   "preise.art.story": {
-    "de": "3D mit Storytelling",
-    "en": "3D with storytelling",
-    "nl": "3D met storytelling"
+    "de": "3D+",
+    "en": "3D+",
+    "nl": "3D+"
   },
   "preise.artFrom": {
     "de": "ab {n}",
@@ -3944,30 +3944,55 @@
     "en": "3D show with storytelling",
     "nl": "3D-show met storytelling"
   },
-  "preise.artDesc.2d": {
-    "de": "Initialen, Logos oder Stadtwappen mit Formationen wie Herzen, Ringen und Sektgläsern. GEMA-freie oder bei Anmeldung lizenzierte Musik.",
-    "en": "Initials, logos or city crests with formations such as hearts, rings and champagne glasses. Royalty-free music, or licensed music if registered.",
-    "nl": "Initialen, logo's of stadswapens met formaties zoals harten, ringen en champagneglazen. Rechtenvrije muziek, of gelicentieerde muziek bij aanmelding."
+  "preise.artItem.2d.1": {
+    "de": "Initialen, Logos oder Stadtwappen",
+    "en": "Initials, logos or coats of arms",
+    "nl": "Initialen, logo's of stadswapens"
   },
-  "preise.artDesc.3d": {
-    "de": "Präzise Logos, komplexe Schriftzüge und einfache 3D-Elemente, synchron zu eurer Wunschmusik.",
-    "en": "Precise logos, complex lettering and simple 3D elements, in sync with the music of your choice.",
-    "nl": "Precieze logo's, complexe teksten en eenvoudige 3D-elementen, synchroon met jullie muziek naar keuze."
+  "preise.artItem.2d.2": {
+    "de": "Formationen wie Herzen und Ringe",
+    "en": "Formations such as hearts and rings",
+    "nl": "Formaties zoals harten en ringen"
   },
-  "preise.artDesc.story": {
-    "de": "Komplexe 3D-Storyline mit dramaturgischer Kurve und volumetrischen Effekten, synchron zu eurer Wunschmusik.",
-    "en": "A complex 3D storyline with a dramatic arc and volumetric effects, in sync with the music of your choice.",
-    "nl": "Een complexe 3D-verhaallijn met dramatische opbouw en volumetrische effecten, synchroon met jullie muziek naar keuze."
+  "preise.artItem.2d.3": {
+    "de": "GEMA-freie oder bei Anmeldung lizenzierte Musik",
+    "en": "Royalty-free music or music licensed on registration",
+    "nl": "GEMA-vrije muziek of bij aanmelding gelicentieerde muziek"
+  },
+  "preise.artItem.3d.1": {
+    "de": "Präzise Logos",
+    "en": "Precise logos",
+    "nl": "Precieze logo's"
+  },
+  "preise.artItem.3d.2": {
+    "de": "Komplexe Schriftzüge",
+    "en": "Complex lettering",
+    "nl": "Complexe teksten"
+  },
+  "preise.artItem.3d.3": {
+    "de": "Synchron zu eurer Wunschmusik",
+    "en": "Synchronised to your chosen music",
+    "nl": "Synchroon met jullie gewenste muziek"
+  },
+  "preise.artItem.story.1": {
+    "de": "Mit Storytelling",
+    "en": "With storytelling",
+    "nl": "Met storytelling"
+  },
+  "preise.artItem.story.2": {
+    "de": "Dramaturgische Kurve und volumetrische Effekte",
+    "en": "A dramatic arc and volumetric effects",
+    "nl": "Een dramatische boog en volumetrische effecten"
+  },
+  "preise.artItem.story.3": {
+    "de": "Synchron zu eurer Wunschmusik",
+    "en": "Synchronised to your chosen music",
+    "nl": "Synchroon met jullie gewenste muziek"
   },
   "preise.artFloor": {
     "de": "{art} ab {n} Drohnen",
     "en": "{art} from {n} drones",
     "nl": "{art} vanaf {n} drones"
-  },
-  "preise.artLine": {
-    "de": "{art} · {n} Drohnen",
-    "en": "{art} · {n} drones",
-    "nl": "{art} · {n} drones"
   },
   "preise.summaryArt": {
     "de": "Art der Show: {art}",
@@ -4165,9 +4190,9 @@
     "nl": "Gemiddeld circa {typical} minuten, tot {max} minuten mogelijk."
   },
   "preise.incNoteTitle": {
-    "de": "Das macht ihr",
-    "en": "Your part",
-    "nl": "Dit doen jullie"
+    "de": "Eure einzige Aufgabe",
+    "en": "Your only task",
+    "nl": "Jullie enige taak"
   },
   "preise.incNote": {
     "de": "Ihr stellt nur das Einverständnis der Grundstückseigentümer:innen, die Freigabe der Motive und die musikalische Beschallung vor Ort. Den Rest erledigen wir.",
@@ -4363,5 +4388,15 @@
     "de": "Presse",
     "en": "Press",
     "nl": "Pers"
+  },
+  "thanks.stepSent": {
+    "de": "1 Anfrage gesendet",
+    "en": "1 Enquiry sent",
+    "nl": "1 Aanvraag verstuurd"
+  },
+  "thanks.stepLast": {
+    "de": "2 Eine letzte Frage",
+    "en": "2 One last question",
+    "nl": "2 Nog één vraag"
   }
 }

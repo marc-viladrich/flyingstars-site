@@ -3,11 +3,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { analyse, resample, placeDerived } from '../src/scripts/scenes/catalog-resample.js';
+import { analyse, resample, placeDerived, DENSE_MAX } from '../src/scripts/scenes/catalog-resample.js';
 
 const catalog = JSON.parse(readFileSync(new URL('../src/content/catalog-motifs.json', import.meta.url), 'utf8'));
 const variants = Object.entries(catalog.motifs).flatMap(([key, m]) => m.variants.map((v) => ({ key, flat: m.dimension !== '3D', v, pts: JSON.parse(readFileSync(new URL(`../public/media/katalog/${v.id}.json`, import.meta.url), 'utf8')).points })));
-const COUNTS = [200, 300, 500, 1000];
+const COUNTS = [150, 200, 300, 500, 1000];
+/** Leuchtende Drohnen eines Motivs bei n Drohnen: verdichtet bis 200 (Runde 6), mindestens die Katalogvariante. */
+const lit = (points, n) => Math.max(points, Math.min(n, DENSE_MAX));
 
 test('jede neue Drohne gehört zur Form: genau n Drohnen, nichts doppelt, nichts außerhalb', () => {
   for (const { key, flat, v, pts } of variants) {
@@ -18,7 +20,7 @@ test('jede neue Drohne gehört zur Form: genau n Drohnen, nichts doppelt, nichts
     const pad = a.s0;
     for (const n of COUNTS.filter((c) => c > v.points)) {
       const d = resample(pts, n, { flat, analysis: a }), all = [...pts, ...placeDerived(pts, d)];
-      assert.equal(all.length, n, `${key}@${n}: alle Drohnen in der Form`);
+      assert.equal(all.length, lit(v.points, n), `${key}@${n}: bis 200 Drohnen in der Form, darüber Reserve`);
       for (const q of all.slice(pts.length)) assert.ok(q[0] >= x0 - pad && q[0] <= x1 + pad && q[1] >= y0 - pad && q[1] <= y1 + pad, `${key}@${n}: Punkt außerhalb der Form`);
       // keine doppelt belegten Punkte: kein neuer Punkt fällt auf einen anderen (Raster-Nachbarschaft, Abstand > 1 % von s0)
       const cell = a.s0 / 4, grid = new Map(), min = a.s0 * 0.01;
@@ -56,16 +58,14 @@ test('Vorrang an einer Testfigur: Quadrat mit Binnenkreuz, die Außenkontur wird
   assert.ok(onOuter / 8 > onInner / 2.3, `außen ${onOuter}, innen ${onInner}`);
 });
 
-test('mehr Drohnen ändern das Bild sichtbar: die Liniendichte wächst mit der Zahl', () => {
+test('mehr Drohnen ändern das Bild bis 200 sichtbar, darüber bleibt die 200er-Gestalt (Runde 6)', () => {
   for (const { key, flat, v, pts } of variants) {
     const a = analyse(pts, { flat });
-    if (!a.edges.length) continue;
-    let previous = 0;
-    for (const n of COUNTS.filter((c) => c > v.points)) {
-      const lit = resample(pts, n, { flat, analysis: a }).length;
-      assert.ok(lit > previous, `${key}@${n}: ${lit} neue Drohnen nach ${previous}`);
-      previous = lit;
-    }
+    if (!a.edges.length || v.points >= DENSE_MAX) continue;
+    const at = (n) => resample(pts, n, { flat, analysis: a });
+    if (v.points < 150) assert.ok(at(200).length > at(150).length, `${key}: 200 Drohnen nicht dichter als 150`);
+    const shape = JSON.stringify(placeDerived(pts, at(200)));
+    for (const n of [300, 500, 1000]) assert.equal(JSON.stringify(placeDerived(pts, at(n))), shape, `${key}@${n}: nicht die 200er-Gestalt`);
   }
 });
 

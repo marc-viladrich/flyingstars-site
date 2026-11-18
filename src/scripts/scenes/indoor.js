@@ -2,7 +2,7 @@
 // variant: "indoor"). Indoor fliegen real 20–50 Drohnen in einem Raum; darum wenige Punkte, einfache Linien, die mit
 // 50 Lichtern eindeutig bleiben, und ruhige Eigenbewegung (Licht, ein kurzer Schwenk, eine laufende Welle). Jedes Bild
 // hat genau n Drohnen. Bewegung startet bei t = 0 aus der Ruhelage (keine Finte); folge.js legt die Show-Uhr darüber.
-import { TAU, WARM, GOLD, PINK, VIOLET, CYAN, BLUE, mix, paint, yaw, roll, glint, chase, wander, lightRank } from "../show-motion.js";
+import { TAU, WARM, GOLD, PINK, VIOLET, CYAN, BLUE, DIAMOND, mix, paint, yaw, roll, glint, chase, wander, lightRank } from "../show-motion.js";
 import { sampleOutline, heartOutline, star } from "../show-geometry.js";
 import { sample3d, share } from "../show-shapes.js";
 
@@ -60,7 +60,45 @@ function noten(n) {
   return { pts, live: (b, j, t, o) => { roll(o, 0.12 * Math.sin(t * 2.4) * Math.min(1, t / 0.5), 0, -0.4); o[3] = j < nh ? 1 + 0.4 * Math.max(0, Math.sin(t * 4.8 + (b[0] > 0 ? 1.6 : 0))) : 1; } };
 }
 
-const MAKERS = { herz, welle, initialen, stern, ring, noten };
+// Runde 6 (Marc, 18.11.2026: „die Anzahl und Art der Formen sollten schneller rotieren“): vier weitere Motive, abwechselnd
+// flach und räumlich.
+
+/** Diamant: die klassische Edelstein-Kontur (Krone, Rundiste, Spitze, zwei Facettenlinien), schwenkt leicht im Raum,
+ *  Licht blitzt über die Facetten. Ein echter Brillantschliff las sich mit 50 Punkten nur als Punktwolke. */
+function diamant(n) {
+  const rim = { pts: [[-0.55, 0.62], [0.55, 0.62], [1, 0.18], [0, -0.95], [-1, 0.18]] };
+  const facets = [line([-1, 0.18], [1, 0.18]), line([-0.25, 0.62], [-0.42, 0.18], [0, -0.95]), line([0.25, 0.62], [0.42, 0.18], [0, -0.95])];
+  const [nr, nf] = share(n, [3.4, 1.6]);
+  const pts = [...paint(sampleOutline([rim], nr).map(([x, y]) => [x, y, 0]), (p) => mix(DIAMOND, CYAN, (0.6 - p[1]) / 1.6)), ...paint(sampleOutline(facets, nf).map(([x, y]) => [x, y, 0]), mix(DIAMOND, WARM, 0.4))];
+  return { pts, live: (b, j, t, o) => { yaw(o, -0.45 + 0.9 * settle(t / 1.6), 0, 0); o[3] = 1 + 0.7 * Math.max(0, Math.sin(t * 2.6 - b[0] * 2 + b[1])) ** 8; } };
+}
+
+/** Doppelspirale: zwei Stränge um eine Achse, die sich dreht; Licht läuft nach oben. */
+function spirale(n) {
+  const [na, nb] = share(n, [1, 1]), strand = (k, phase) => Array.from({ length: k }, (_, i) => { const u = i / (k - 1), a = u * TAU * 1.6 + phase; return [Math.cos(a) * 0.42, -0.95 + 1.9 * u, Math.sin(a) * 0.42]; });
+  const pts = [...paint(strand(na, 0), CYAN), ...paint(strand(nb, Math.PI), VIOLET)];
+  return { pts, live: (b, j, t, o) => { yaw(o, 0.9 * t, 0, 0); o[3] = chase(b[1], t, 0.55, 0.9, 0.9, 1.45); } };
+}
+
+/** Krone: fünf Zacken mit Kugeln an den Spitzen, ein Glanz läuft darüber. */
+function krone(n) {
+  const outline = { pts: [[-0.9, -0.5], [-0.9, 0.2], [-0.62, 0.62], [-0.42, 0.1], [0, 0.72], [0.42, 0.1], [0.62, 0.62], [0.9, 0.2], [0.9, -0.5]] };
+  const [nb, nt] = share(n, [5, 1]), tips = [[-0.62, 0.62], [0, 0.72], [0.62, 0.62]];
+  const jewels = Array.from({ length: nt }, (_, i) => { const [x, y] = tips[i % 3], k = Math.floor(i / 3), a = (k / Math.ceil(nt / 3)) * TAU; return [x + Math.cos(a) * 0.07, y + 0.12 + Math.sin(a) * 0.07, 0]; });
+  const pts = [...paint(sampleOutline([outline], nb).map(([x, y]) => [x, y, 0]), GOLD), ...paint(jewels, PINK)];
+  return { pts, live: (b, j, t, o) => { o[3] = glint(b[0] + b[1] * 0.3, t, 1.8, 0.55); } };
+}
+
+/** Lachendes Gesicht: Kreis, zwei Augen, ein Lächeln; zwinkert einmal. */
+function smiley(n) {
+  const [nc, ne, nm] = share(n, [5.2, 0.8, 2]), circle = { pts: Array.from({ length: 48 }, (_, i) => { const a = (i / 48) * TAU; return [Math.cos(a), Math.sin(a)]; }) };
+  const mouth = line(...Array.from({ length: 17 }, (_, i) => { const a = Math.PI * (1.15 + 0.7 * (i / 16)); return [Math.cos(a) * 0.58, 0.02 + Math.sin(a) * 0.58]; }));
+  const eyes = Array.from({ length: ne }, (_, i) => { const side = i % 2 ? 1 : -1, k = Math.floor(i / 2); return [side * 0.34, 0.32 + (k - (ne / 4 - 0.5)) * 0.07, 0]; });
+  const pts = [...paint(sampleOutline([circle], nc).map(([x, y]) => [x, y, 0]), GOLD), ...paint(eyes, WARM), ...paint(sampleOutline([mouth], nm).map(([x, y]) => [x, y, 0]), WARM)];
+  return { pts, live: (b, j, t, o) => { if (j >= nc && j < nc + ne && b[0] > 0) { const w = Math.exp(-((((t % 2.4) - 1.2) / 0.09) ** 2)); o[1] = 0.32 + (b[1] - 0.32) * (1 - 0.85 * w); } } };
+}
+
+const MAKERS = { herz, welle, initialen, stern, ring, noten, diamant, spirale, krone, smiley };
 
 /** Szene eines Indoor-Motivs mit n Drohnen: { beats: [{ pts, live }] }. */
 export function indoorScene(key, n) {

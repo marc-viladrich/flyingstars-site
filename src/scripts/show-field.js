@@ -34,14 +34,28 @@ import { assign, flightTime, along, ease, LIMITS } from "./show-flight.js";
 import { TEMPO, lift, runLight, rankOf, hilbertOrder } from "./show-tempo.js";
 
 const INITIAL_CAPACITY = 1000;
-// Preserve optimal matching for ordinary shows; large logos use the existing O(n log n) Hilbert ordering.
-function assignScalable(from, to) {
-  if (Math.max(from.length, to.length) <= INITIAL_CAPACITY * 3) return assign(from, to);
+// Runde 6 (18.11.2026, Marc: „very bad performance problems for the configurator“): die optimale Zuordnung kostet kubisch;
+// mit 1000 Drohnen hielt ein Bildwechsel den Hauptthread bei 4× Drossel 2,2 s an (Blöcke von 150: noch 210 ms, von 64: 83 ms; exakt bis 200 kostete der Einflug von 200 Drohnen im Teaser noch 30 ms). Bis OPTIMAL_MAX Drohnen bleibt sie optimal.
+// Darüber werden Drohnen und Plätze in Hilbert-Reihenfolge in gleich viele Blöcke von höchstens BLOCK geteilt und je Block
+// optimal zugeordnet: benachbarte Drohnen fliegen zu benachbarten Plätzen, innerhalb des Blocks ohne Kreuzungen. Jeder Block
+// bekommt mindestens so viele Plätze wie Drohnen. (Vorher galt ab 1000 eine reine Hilbert-Zuordnung ohne Optimierung.)
+const OPTIMAL_MAX = 128, BLOCK = 48;
+const SPRITE_RAD = 8; // Referenzgröße der Licht-Sprites in Gerätepixeln (sprite())
+export function assignScalable(from, to) {
   const n = from.length / 3, m = to.length / 3;
+  if (Math.max(n, m) <= OPTIMAL_MAX) return assign(from, to);
   const rows = hilbertOrder(n, (i) => from[i * 3], (i) => from[i * 3 + 1]);
   const cols = hilbertOrder(m, (i) => to[i * 3], (i) => to[i * 3 + 1]);
-  const result = new Int32Array(n);
-  rows.forEach((i, r) => { result[i] = cols[Math.floor(r * m / n)]; });
+  const result = new Int32Array(n), blocks = Math.ceil(n / BLOCK);
+  for (let b = 0; b < blocks; b++) {
+    const r0 = Math.floor((b * n) / blocks), r1 = Math.floor(((b + 1) * n) / blocks);
+    const c0 = r0 + Math.floor((b * (m - n)) / blocks), c1 = r1 + Math.floor(((b + 1) * (m - n)) / blocks);
+    const f = new Float64Array((r1 - r0) * 3), t = new Float64Array((c1 - c0) * 3);
+    for (let k = r0; k < r1; k++) f.set(from.subarray(rows[k] * 3, rows[k] * 3 + 3), (k - r0) * 3);
+    for (let k = c0; k < c1; k++) t.set(to.subarray(cols[k] * 3, cols[k] * 3 + 3), (k - c0) * 3);
+    const a = assign(f, t);
+    for (let k = r0; k < r1; k++) result[rows[k]] = cols[c0 + a[k - r0]];
+  }
   return result;
 }
 const TILT = 0.14, TILT_C = Math.cos(TILT), TILT_S = Math.sin(TILT); // Kippung der Bühne (render), auch für die Wolkenbahnen
@@ -121,8 +135,13 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
   // Canvas-Elemente je Sekunde, in WebKit 500–900 MB statt 250–300 MB. Jetzt 16 Stufen je Kanal (Abweichung höchstens
   // 8/255, auf einem leuchtenden Punkt unsichtbar), das Sprite in der Mitte seiner Stufe, und bei vollem Speicher fallen
   // nur die ältesten Einträge heraus.
+  // Runde 6 (18.11.2026): Sprites in einer festen Referenzgröße (SPRITE_RAD Gerätepixel), beim Zeichnen auf die Lichtgröße
+  // skaliert (spriteScale). Vorher entstand je Farbe und Viertelpixel-Größe ein eigenes Canvas; nach einem Wechsel der
+  // Drohnenzahl wandert die Lichtgröße in Viertelpixel-Schritten, und jeder Schritt legte für alle Farben neue Canvases an
+  // (je Schritt ein Bild von 60 ms bei 4× Drossel, in WebKit 75–99 ms). Verkleinert sieht der weiche Verlauf gleich aus.
   function sprite(r, g, b, rad, hot, halo = 3.4) {
-    const qr = r >> 4, qg = g >> 4, qb = b >> 4, key = ((((qr * 16 + qg) * 16 + qb) * 2 + (hot ? 1 : 0)) * 1e4) + Math.round(rad * 40) * 10 + Math.round(halo * 2);
+    rad = SPRITE_RAD;
+    const qr = r >> 4, qg = g >> 4, qb = b >> 4, key = ((((qr * 16 + qg) * 16 + qb) * 2 + (hot ? 1 : 0)) * 1e4) + Math.round(halo * 2);
     let s = glow.get(key); if (s) return s;
     r = Math.min(255, qr * 16 + 8); g = Math.min(255, qg * 16 + 8); b = Math.min(255, qb * 16 + 8);
     const R = Math.ceil(rad * (hot ? halo * 1.47 : halo)), c = document.createElement("canvas");
@@ -450,9 +469,9 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
     const rad = radNow;
     ctx.globalCompositeOperation = "lighter";
     for (const [px, py, , pr, a, r, g, b] of list) {
-      const sp = sprite(r, g, b, rad, false, halo), R = sp.R * pr;
+      const k = rad / SPRITE_RAD, sp = sprite(r, g, b, rad, false, halo), R = sp.R * k * pr;
       ctx.globalAlpha = Math.min(1, a); ctx.drawImage(sp.c, px - R, py - R, R * 2, R * 2);
-      if (a > 1.02) { const hot = sprite(r, g, b, rad, true, halo), Q = hot.R * pr; ctx.globalAlpha = Math.min(1, a - 1); ctx.drawImage(hot.c, px - Q, py - Q, Q * 2, Q * 2); }
+      if (a > 1.02) { const hot = sprite(r, g, b, rad, true, halo), Q = hot.R * k * pr; ctx.globalAlpha = Math.min(1, a - 1); ctx.drawImage(hot.c, px - Q, py - Q, Q * 2, Q * 2); }
     }
     ctx.globalCompositeOperation = "source-over"; ctx.globalAlpha = 1;
   }

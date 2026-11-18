@@ -59,7 +59,6 @@ const { kicker = t('preise.upKicker'), headline = t('preise.upHeadline'), text =
   .xc-box { appearance: none; -webkit-appearance: none; position: absolute; z-index: 2; top: clamp(1.375rem, 2.4vw, 2rem); right: clamp(1.25rem, 2.2vw, 1.875rem); width: 1.5rem; height: 1.5rem; margin: 0; border-radius: 0.4375rem; border: 1.5px solid var(--line-strong); background: transparent no-repeat center / 0.875rem 0.875rem; cursor: pointer; opacity: 0; transform: scale(0.85); transition: opacity var(--dur-control) var(--ease-default), transform var(--dur-color) var(--ease-spring), background-color var(--dur-control) var(--ease-default), border-color var(--dur-control) var(--ease-default), box-shadow var(--dur-standard) var(--ease-default); }
   .xc-box:checked { opacity: 1; transform: none; background-color: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 0.25rem rgb(var(--rgb-amber) / 0.14), 0 0 1.125rem rgb(var(--rgb-amber) / 0.45); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%230f0d0c' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 10.5l3.6 3.6 7.4-8.2'/%3E%3C/svg%3E"); }
   .xc-box:focus-visible { opacity: 1; transform: none; outline: 2px solid var(--accent); outline-offset: 0.1875rem; }
-  /* die Hover-Fläche kommt aus dem gemeinsamen Icon-Raster (.ig::before in global.css), gleitet von Zelle zu Zelle */
   .xc:hover .xc-box { opacity: 1; transform: none; }
   .xc:hover .xc-box:not(:checked) { border-color: var(--ink-half); }
   .xc:hover :global(.xc-ico) { transform: translateY(-0.125rem); }
@@ -83,7 +82,9 @@ const { kicker = t('preise.upKicker'), headline = t('preise.upHeadline'), text =
 </style>
 
 <script>
+  import { initGridGlide } from '../../scripts/grid-glide';
   import {inquiryHref} from '../../content/inquiry.mjs';
+  initGridGlide();
   import { t } from '../../i18n/ui.mjs';
   import { localeFromPath } from '../../i18n/routing.mjs';
   const grid = document.querySelector<HTMLElement>('[data-extras]');

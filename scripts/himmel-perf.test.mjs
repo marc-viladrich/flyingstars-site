@@ -50,7 +50,7 @@ test('Runde 5: Zeichenflächen werden nur bei neuer Pixelgröße angelegt, Flug 
 
 test('Runde 5: Zeiger verdrängt (Feder wie Scrollstory), kein Aufleuchten; Himmelszeile entfernt', () => {
   const src = read('src/scripts/himmel/schwarm.ts');
-  assert.match(src, /const f = \(1 - md \/ reach\) \*\* 2 \* push \* dt/);
+  assert.match(src, /const f = \(1 - md \/ reach\) \*\* 2 \* push \*/);
   assert.doesNotMatch(src, /near \* Math\.exp/, 'Glow-Hover ist ersetzt');
   for (const f of ['src/scripts/himmel/index.ts', 'src/scripts/himmel/schwarm.ts', 'src/styles/himmel.css']) assert.doesNotMatch(read(f), /hm-zeile|zeileVorab|from '\.\/zeile'/, `${f}: Reste der Himmelszeile`);
 });
@@ -60,4 +60,24 @@ test('Schwarm bestellt Bilder erst nahe ihrer Bühne', () => {
   const ctor = src.slice(src.indexOf('constructor(defs: SlotDef[])'), src.indexOf('loadFolge(slot: Slot)'));
   assert.match(ctor, /new IntersectionObserver/);
   assert.doesNotMatch(ctor.split('def.react?.')[0], /this\.want\(/, 'want() direkt im Konstruktor lädt alle Motive beim Start');
+});
+
+test('Runde 6: Punktübergänge an jeder Farbfläche, ohne Trennlinien, Masken vorhanden', () => {
+  // Browserprüfung über alle Seiten: npm run check:uebergaenge (in npm run perf:start für sechs Seiten)
+  const css = read('src/styles/himmel.css'), global = read('src/styles/global.css');
+  const list = css.match(/:is\(\.section\.alt, \.c-setlist, \.team-sec\)::before, :is\(\.section\.alt, \.c-setlist, \.team-sec\)::after \{[^}]*\}/)?.[0] ?? '';
+  assert.match(list, /background-color: inherit/, 'Punkte tragen die Farbe der eigenen Fläche');
+  assert.match(list, /mask: var\(--ueb-maske\)/);
+  for (const sel of ['.section.alt', '.c-setlist', '.team-sec']) {
+    const rule = global.split('\n').find((l) => l.startsWith(`${sel} {`)) ?? '';
+    assert.ok(rule, `${sel} fehlt in global.css`);
+    assert.doesNotMatch(rule, /border-(top|bottom)/, `${sel}: Trennlinie an einer Farbkante bricht den Punktübergang`);
+  }
+  for (const f of ['public/media/uebergang.svg', 'public/media/uebergang-schmal.svg']) assert.ok(statSync(new URL(`../${f}`, import.meta.url)).size > 1000, f);
+});
+
+test('Runde 6: Verdrängung sanft (kleiner Radius, Ausschlag rund ein Viertel, weich gesättigt, kritisch gedämpft)', () => {
+  const src = read('src/scripts/himmel/schwarm.ts');
+  assert.match(src, /const K = 5, C = 2 \* Math\.sqrt\(K\), reach = clamp\(Math\.min\(slot\.box\.w, slot\.box\.h\) \* 0\.32, 44, 84\), most = reach \* 0\.3,/);
+  assert.match(src, /push \* Math\.max\(0, 1 - Math\.hypot\(this\.ox\[i\], this\.oy\[i\]\) \/ most\)/, 'Stoß sättigt weich am Höchstausschlag');
 });

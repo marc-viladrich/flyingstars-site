@@ -8,7 +8,7 @@ import { t as message } from '../../i18n/ui.mjs';
 //           and the whole lettering floats a little (sink and return, like the sled in the Leipzig shows)
 //   ODYSSEY the living cloud → written by light → the letters swing as a wave in 3D inside a turning ring of light → the text
 //           becomes the other script or its initials, framed
-import { loadTextEngine, textFormation, hasTextFormation } from "../text-formation.js";
+import { textFormationAsync } from "../text-formation.js";
 import { scriptFormation, initials } from "../script-formation.js";
 import { sampleOutline, circle, heartOutline } from "../show-geometry.js";
 import { WARM, GOLD, PINK, CYAN, VIOLET, TAU, paint, mix, hash, smooth, frac, part, act, sparkle, breathe, yaw, pitch, share, reveal, wander, lightRank } from "../show-motion.js";
@@ -29,9 +29,8 @@ export const brandText = (value) => String(value).replace(/flying\s*stars/gi, "F
 
 /** Print lettering from FlyingStars' planner, centred, k points (planner spare drones join the lettering's line). */
 async function print(value, k, halfWidth = WIDTH) {
-  // vorberechnete Formationen (primeTextFormation, z. B. der Teaser-Schriftzug) brauchen den Planer nicht
-  if (!hasTextFormation(brandText(value), k)) await loadTextEngine();
-  const r = textFormation(brandText(value), k);
+  // vorberechnete Formationen (primeTextFormation, z. B. der Teaser-Schriftzug) sofort, sonst im Worker (Runde 6)
+  const r = await textFormationAsync(brandText(value), k);
   if (!r) return null;
   const pts = r.pts.slice(0, k), xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
   const s = (halfWidth * 2) / Math.max(1e-6, Math.max(...xs) - Math.min(...xs)), mx = (Math.max(...xs) + Math.min(...xs)) / 2, my = (Math.max(...ys) + Math.min(...ys)) / 2;

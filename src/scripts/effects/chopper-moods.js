@@ -1,61 +1,65 @@
-// Chopper in Stimmungen (Runde 4, 18.11.2026): derselbe Hund wie in chopper.js (gleiche Silhouette, Ohr, Schwanz,
-// Propellermütze), hier nicht fliegend, sondern mit Gefühl:
-//   happy  – Danke-Seite: wedelt, Propeller dreht, alle paar Sekunden ein Rückwärtssalto
-//   play   – Hochzeit: zwei Kinder aus Lichtpunkten werfen ihm einen Ball zu, er springt und fängt ihn
-// Alles in denselben normierten Koordinaten wie chopper.js (400 × 300 Rahmen). Bei reduzierter Bewegung ruft der
-// Schwarm die Formation mit T = 0 auf; jede Stimmung zeigt dann ein ruhiges Standbild (POSTER).
-import { formation, gradientAt } from './swarm.js';
+// Chopper in Stimmungen: derselbe Hund wie in chopper.js (Silhouette, Ohr, Schwanz, Propellermütze), hier mit Gefühl.
+//   happy – Danke-Seite und Team-Kachel: wedelt, Propeller dreht, einmal je Schleife ein Rückwärtssalto
+//   play  – Hochzeit: ein Mädchen wirft einen Ball, ein Junge eine Frisbee; Chopper springt, fängt, wendet sich zum
+//           anderen Kind wie auf der 404 (lebendige Wolke)
+// Nahtlose Schleifen (Runde 6, Marc): jede Bewegung ist eine ganzzahlige Wiederholung der Schleifenlänge, Start- und
+// Endbild sind identisch. Die Ohren schwingen bei Salto und Sprung nach, statt starr mitzudrehen.
+// Koordinaten wie chopper.js (400 × 300 Rahmen). Bei reduzierter Bewegung (T = 0) zeigt jede Stimmung ein Standbild.
+import { formation, gradientAt, hash } from './swarm.js';
 import { chopperParts, CHOPPER_COUNT } from './chopper.js';
 
 const S = (420 - 6) / 400, RW = Math.round(400 * S) + 6, RH = Math.round(300 * S) + 6;
 const toN = (X, Y) => [(3 + X * S - RW / 2) * 2 / RW, (3 + Y * S - RH / 2) * 2 / RW];
 const fromN = (x, y) => [((x * RW) / 2 + RW / 2 - 3) / S, ((y * RW) / 2 + RH / 2 - 3) / S];
 const BLADE = 17;
+const TAU = Math.PI * 2;
 
-// Kinder im selben Rahmen und Maßstab wie der Hund (Füße auf derselben Grundlinie y ≈ 252). Große Köpfe, kurze Beine:
-// so liest man sie ohne Beschriftung als Kinder. Arme sind eigene Teile, damit sie werfen und jubeln können.
+// Kinder als Konturfiguren gleichen Stils (Runde 6, Marc: „stick figures, but more human-looking“): Kopf, Haare,
+// Kleid bzw. Shirt und Shorts, Beine mit Schuhen; Arme mit Händen sind eigene Teile, damit sie werfen und jubeln.
+// Gleicher Rahmen und Maßstab wie der Hund, Füße auf derselben Grundlinie.
 const VB = 'viewBox="0 0 400 300" width="400" height="300"';
-const svg = (inner) => `<svg xmlns="http://www.w3.org/2000/svg" ${VB}><g fill="#fff">${inner}</g></svg>`;
-// Kind 1: Mädchen mit Zopf und Kleid, wirft mit dem rechten Arm
-const GIRL = svg(`<circle cx="200" cy="58" r="31"/>
-  <path d="M172 40 C156 44 150 62 156 84 C160 98 170 104 176 100 C168 88 166 70 178 52 Z"/><circle cx="160" cy="44" r="9"/>
-  <rect x="193" y="86" width="14" height="12" rx="4"/>
-  <path d="M184 96 L216 96 C224 98 228 106 230 116 L246 184 L154 184 L170 116 C172 106 176 98 184 96 Z"/>
-  <rect x="181" y="182" width="13" height="62" rx="6"/><rect x="206" y="182" width="13" height="62" rx="6"/>
-  <ellipse cx="184" cy="248" rx="13" ry="7"/><ellipse cx="216" cy="248" rx="13" ry="7"/>`);
-const GIRL_ARM_L = svg('<rect x="168" y="100" width="12" height="66" rx="6" transform="rotate(16 174 104)"/><circle cx="164" cy="166" r="8"/>');
-const GIRL_ARM_R = svg('<rect x="220" y="100" width="12" height="66" rx="6" transform="rotate(-130 226 104)"/><circle cx="267" cy="66" r="8"/>');
-// Kind 2: Junge mit kurzen Haaren, T-Shirt und Hose, jubelt mit beiden Armen
-const BOY = svg(`<circle cx="200" cy="62" r="30"/>
-  <path d="M170 56 C170 30 230 28 231 56 C222 46 206 42 196 46 C188 42 178 46 170 56 Z"/>
-  <rect x="193" y="90" width="14" height="10" rx="4"/>
-  <path d="M180 98 L220 98 C228 100 232 108 232 118 L230 166 L170 166 L168 118 C168 108 172 100 180 98 Z"/>
-  <path d="M172 164 L228 164 L226 182 L174 182 Z"/>
-  <rect x="176" y="178" width="20" height="66" rx="8"/><rect x="204" y="178" width="20" height="66" rx="8"/>
-  <ellipse cx="184" cy="248" rx="14" ry="7"/><ellipse cx="216" cy="248" rx="14" ry="7"/>`);
-const BOY_ARM_L = svg('<rect x="166" y="102" width="12" height="62" rx="6" transform="rotate(150 172 106)"/><circle cx="141" cy="52" r="8"/>');
-const BOY_ARM_R = svg('<rect x="222" y="102" width="12" height="62" rx="6" transform="rotate(-150 228 106)"/><circle cx="259" cy="52" r="8"/>');
-const KID = { body: 150, arm: 22 };
-const BALL = 13;
+const svg = (inner) => `<svg xmlns="http://www.w3.org/2000/svg" ${VB}><g fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">${inner}</g></svg>`;
+const SHOULDER = { girlThrow: [211, 106], girlFree: [189, 106], boyThrow: [187, 106], boyFree: [213, 106] };
+const ARM = 58, SPREAD = 13; // Arme leicht abgespreizt, damit sie nicht auf der Rumpfkontur liegen
+const arm = ([sx, sy], dx) => svg(`<path d="M${sx} ${sy} L${sx + dx} ${sy + ARM}"/><circle cx="${sx + dx}" cy="${sy + ARM + 6}" r="5"/>`);
+const GIRL = svg(`<circle cx="200" cy="64" r="24"/>
+  <path d="M180 56 Q198 38 222 54"/><path d="M178 52 C162 58 158 78 166 96"/><circle cx="170" cy="50" r="5"/>
+  <path d="M200 88 L200 100"/>
+  <path d="M190 102 L210 102 L214 130 L234 184 L166 184 L186 130 Z"/>
+  <path d="M190 186 L188 240"/><path d="M210 186 L212 240"/><path d="M188 244 L177 245"/><path d="M212 244 L223 245"/>`);
+const BOY = svg(`<circle cx="200" cy="64" r="24"/>
+  <path d="M176 58 L180 42 L189 48 L196 36 L204 46 L212 38 L218 48 L224 56"/>
+  <path d="M200 88 L200 100"/>
+  <path d="M186 102 L214 102 L220 160 L180 160 Z"/>
+  <path d="M180 160 L220 160 L222 186 L204 186 L200 174 L196 186 L178 186 Z"/>
+  <path d="M188 188 L188 240"/><path d="M212 188 L212 240"/><path d="M188 244 L177 245"/><path d="M212 244 L223 245"/>`);
+const KID = { body: 132, arm: 24 };
+const BALL = 13, DISC = 16;
 
 let kidCache = null;
 async function kids() {
   if (kidCache) return kidCache;
   const f = (markup, n) => formation({ kind: 'svg', markup, noCrop: true }, n);
-  const [girl, girlL, girlR, boy, boyL, boyR] = await Promise.all([
-    f(GIRL, KID.body), f(GIRL_ARM_L, KID.arm), f(GIRL_ARM_R, KID.arm), f(BOY, KID.body), f(BOY_ARM_L, KID.arm), f(BOY_ARM_R, KID.arm)]);
-  kidCache = { girl, girlL, girlR, boy, boyL, boyR };
+  const [girl, girlThrow, girlFree, boy, boyThrow, boyFree] = await Promise.all([
+    f(GIRL, KID.body), f(arm(SHOULDER.girlThrow, SPREAD), KID.arm), f(arm(SHOULDER.girlFree, -SPREAD), KID.arm),
+    f(BOY, KID.body), f(arm(SHOULDER.boyThrow, -SPREAD), KID.arm), f(arm(SHOULDER.boyFree, SPREAD), KID.arm)]);
+  kidCache = { girl, girlThrow, girlFree, boy, boyThrow, boyFree };
   return kidCache;
 }
 
 export const PLAY_SCALE = 0.56;
-export const MOOD_COUNT = { happy: CHOPPER_COUNT, play: CHOPPER_COUNT + 2 * (KID.body + 2 * KID.arm) + BALL };
+const DOG = CHOPPER_COUNT;
+export const MOOD_COUNT = { happy: DOG, play: DOG + 2 * (KID.body + 2 * KID.arm) + BALL + DISC };
 
 const rot = (x, y, cx, cy, a) => { const c = Math.cos(a), s = Math.sin(a), dx = x - cx, dy = y - cy; return [cx + dx * c - dy * s, cy + dx * s + dy * c]; };
 const ease = (k) => k * k * (3 - 2 * k);
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
+/** Fortschritt 0..1 im Fenster [a, b] */
+const span = (u, a, b) => clamp01((u - a) / (b - a));
+/** weicher Hügel 0 → 1 → 0 im Fenster [a, b] mit Rampen der Länge r */
+const hill = (u, a, b, r) => ease(span(u, a, a + r)) * (1 - ease(span(u, b - r, b)));
 
-/** Kopf-Drohnen des Hundes (Kopf, Schnauze, Mütze), damit er ihn hängen lassen kann. */
+/** Kopf-Drohnen des Hundes (Kopf, Schnauze, Mütze), damit er ihn neigen kann. */
 function headMask(body) {
   return body.map((q) => { const [X, Y] = fromN(q.x, q.y); return (X > 250 && Y < 146) || (X > 238 && Y < 96); });
 }
@@ -65,37 +69,49 @@ function headMask(body) {
  * Schwanz-, Ohr- und Propellerwinkel. Gibt den nächsten freien Index und die Lage der Schnauze zurück.
  */
 function putDog(p, mask, tx, ty, i, pose) {
-  const { x = 0, y = 0, size = 0.78, face = 1, spin = 0, head = 0, headDrop = 0, tail = 0, ear = 0, blade = 0, bladeLen = 1, lie = 0 } = pose;
+  const { x = 0, y = 0, size = 0.78, face = 1, spin = 0, head = 0, tail = 0, ear = 0, blade = 0 } = pose;
   const [cx, cy] = toN(230, 160), [nx, ny] = toN(258, 132), [tbx, tby] = toN(116, 161), [ebx, eby] = toN(266, 78);
   const [pcx, pcy] = toN(294, 27), half = toN(352, 0)[0] - toN(294, 0)[0];
   const put = (qx, qy) => {
     const [rx, ry] = rot(qx, qy, cx, cy, spin);
     tx[i] = x + (rx - cx) * size * face; ty[i] = y + (ry - cy) * size; i++;
   };
-  const headRot = (qx, qy) => { const [hx, hy] = rot(qx, qy, nx, ny, head); return [hx, hy + headDrop]; };
-  // liegen: Beine unterhalb der Bauchlinie zusammenschieben (lie = 0 steht, 1 liegt)
-  const belly = toN(0, 200)[1];
-  const fold = (qx, qy) => [qx, qy > belly ? belly + (qy - belly) * (1 - 0.72 * lie) : qy];
-  p.body.forEach((q, k) => mask[k] ? put(...headRot(q.x, q.y)) : put(...fold(q.x, q.y)));
+  const headRot = (qx, qy) => rot(qx, qy, nx, ny, head);
+  p.body.forEach((q, k) => mask[k] ? put(...headRot(q.x, q.y)) : put(q.x, q.y));
   for (const q of p.ear) put(...headRot(...rot(q.x, q.y, ebx, eby, ear)));
   for (const q of p.tail) put(...rot(q.x, q.y, tbx, tby, tail));
-  const [hx, hy] = headRot(pcx, pcy);
   for (let b = 0; b < 2; b++) {
     const ang = blade + b * Math.PI;
-    for (let k = 1; k <= BLADE; k++) { const u = (k / BLADE) * bladeLen; put(...headRot(pcx + Math.cos(ang) * half * u, pcy + Math.sin(ang) * half * u * 0.12)); }
-    void hx; void hy;
+    for (let k = 1; k <= BLADE; k++) { const u = k / BLADE; put(...headRot(pcx + Math.cos(ang) * half * u, pcy + Math.sin(ang) * half * u * 0.12)); }
   }
-  // Schnauze (für den Ball): gleiche Transformation wie die Punkte
   const [mx0, my0] = headRot(...toN(376, 132));
   const [mx, my] = rot(mx0, my0, cx, cy, spin);
   return { i, mouth: [x + (mx - cx) * size * face, y + (my - cy) * size] };
 }
 
-/** Farben je Drohne in derselben Reihenfolge wie putDog/putKid. */
-function dogColors(p, out, i, tone) {
-  for (const q of [...p.body, ...p.ear, ...p.tail]) out.set(tone((q.x + 0.9) / 1.8), 3 * i++);
+/** Farben je Drohne in derselben Reihenfolge wie putDog. */
+function dogColors(p, out, i) {
+  for (const q of [...p.body, ...p.ear, ...p.tail]) out.set(gradientAt((q.x + 0.9) / 1.8), 3 * i++);
   for (let k = 0; k < BLADE * 2; k++) out.set([150, 245, 250], 3 * i++);
   return i;
+}
+
+// ---------- happy: eine Schleife von 5 s mit einem Salto ----------
+const HAPPY = 5;
+function happyPose(t) {
+  const w = TAU / HAPPY, u = ((t % HAPPY) + HAPPY) % HAPPY;
+  const s = span(u, 1.2, 2.5), inFlip = s > 0 && s < 1;
+  const flip = -TAU * ease(s);
+  const lift = Math.sin(Math.PI * s) ** 2;                 // Absprung und Landung ohne Ruck
+  const crouch = hill(u, 0.85, 1.35, 0.25) + hill(u, 2.4, 2.9, 0.2);
+  const vel = 6 * s * (1 - s);                             // Drehgeschwindigkeit des Saltos
+  const after = span(u, 2.5, 3.6);                          // Nachschwingen nach der Landung
+  const ear = 0.16 * Math.sin(4 * w * u) + 0.55 * vel + (after > 0 && after < 1 ? 0.3 * Math.sin(TAU * 2 * after) * (1 - after) ** 2 : 0);
+  return {
+    x: 0, y: 0.04 + 0.022 * Math.sin(2 * w * u) - 0.34 * lift + 0.03 * crouch, size: 0.8, spin: flip,
+    head: 0.06 * Math.sin(2 * w * u) - 0.12 * crouch, tail: 0.55 * Math.sin(13 * w * u), ear,
+    blade: (14 * Math.PI / HAPPY) * u + 4 * Math.PI * ease(s), inFlip,
+  };
 }
 
 /**
@@ -107,99 +123,101 @@ export async function chopperMood(mood) {
   const mask = headMask(p.body);
   const count = MOOD_COUNT[mood];
   const colors = new Uint8Array(count * 3);
-  // traurig: nur der kühle Teil des Verlaufs (Violett bis Cyan), sonst der volle FlyingStars-Verlauf
-  const tone = gradientAt;
-  let ci = dogColors(p, colors, 0, tone);
-  let k = null;
-  if (mood === 'play') {
-    k = await kids();
-    // Kinder warm (links Orange, rechts Cyan), der Ball hell wie ein Lichtlauf
-    for (const q of [...k.girl, ...k.girlL, ...k.girlR]) { colors.set(gradientAt(0.05 + (q.y + 0.6) * 0.12), 3 * ci++); }
-    for (const q of [...k.boy, ...k.boyL, ...k.boyR]) { colors.set(gradientAt(0.88 + (q.y + 0.6) * 0.1), 3 * ci++); }
-    for (let b = 0; b < BALL; b++) colors.set([255, 236, 190], 3 * ci++);
+  let ci = dogColors(p, colors, 0);
+  if (mood === 'happy') {
+    let t0 = null;
+    const behaviour = (T, tx, ty) => {
+      if (t0 === null && T) t0 = T;
+      putDog(p, mask, tx, ty, 0, happyPose(T ? T - t0 : 0));
+    };
+    return { count, colors, behaviour };
   }
+
+  const k = await kids();
+  for (const q of [...k.girl, ...k.girlThrow, ...k.girlFree]) colors.set(gradientAt(0.04 + (q.y + 0.6) * 0.1), 3 * ci++);
+  for (const q of [...k.boy, ...k.boyThrow, ...k.boyFree]) colors.set(gradientAt(0.9 + (q.y + 0.6) * 0.08), 3 * ci++);
+  for (let b = 0; b < BALL + DISC; b++) colors.set([255, 236, 190], 3 * ci++);
+  const sA = new Float32Array(DOG), sB = new Float32Array(DOG), sC = new Float32Array(DOG), sD = new Float32Array(DOG);
+  const delay = Float32Array.from({ length: DOG }, (_, d) => hash(d, 5) * 0.35);
+  const offX = Float32Array.from({ length: DOG }, (_, d) => hash(d, 11) - 0.5), offY = Float32Array.from({ length: DOG }, (_, d) => hash(d, 13) - 0.65);
+
+  // ---------- play: 12,4 s, erst wirft das Mädchen (Ball), dann der Junge (Frisbee) ----------
+  const P = 12.4, H = P / 2, w = TAU / P;
+  const size = 0.8, dogSize = 0.5, floor = 0.6;
+  const kidY = floor - toN(0, 246)[1] * size, dogY = floor - (toN(0, 254)[1] - toN(0, 160)[1]) * dogSize;
+  // Wurfarm: ausholen, nach vorn schwingen (Abwurf bei 0,85 s), zurück; Winkel für den Wurf nach rechts
+  const throwAngle = (v) => v < 0.6 ? 0.9 * ease(v / 0.6) : v < 0.85 ? 0.9 - 3 * ease((v - 0.6) / 0.25) : v < 1.6 ? -2.1 * (1 - ease((v - 0.85) / 0.75)) : 0;
+  const RELEASE = 0.85, CATCH = 2.15, DROP = 3.4, HOME = 4.6, PICK = 5.2;
+  const hand = (sh, dx, ang, ox, oy) => { const [hx, hy] = rot(...toN(sh[0] + dx, sh[1] + ARM + 6), ...toN(...sh), ang); return [ox + hx * size, oy + hy * size]; };
 
   let t0 = null;
   const behaviour = (T, tx, ty, sw) => {
     if (t0 === null && T) t0 = T;
-    const POSTER = { happy: 0.6, play: 2.15 }[mood];
-    const t = T ? T - t0 : POSTER;
-    if (mood === 'happy') {
-      // alle 5 s ein Salto (1,3 s), dazwischen fröhliches Schweben
-      const P = 5, u = (t + 3.4) % P, sal = u < 1.3 ? u / 1.3 : -1;
-      const flip = sal >= 0 ? -2 * Math.PI * ease(sal) : 0;
-      const jump = sal >= 0 ? -Math.sin(Math.PI * sal) * 0.34 : 0;
-      putDog(p, mask, tx, ty, 0, {
-        x: 0, y: 0.04 + Math.sin(t * 2.2) * 0.025 + jump, size: 0.8, spin: flip,
-        head: Math.sin(t * 2.2) * 0.06, tail: Math.sin(t * 13) * 0.55, ear: Math.sin(t * 5) * 0.22 - (sal >= 0 ? 0.3 : 0),
-        blade: t * (sal >= 0 ? 16 : 9),
-      });
-      return;
-    }
-    // play: Wurf, Flug, Sprung, Fang, Ball rollt zurück, Mädchen hebt ihn auf (6 s)
-    const P = 6.2, u = t % P;
-    // Kinder größer als der Hund (sein Kopf reicht ihnen etwa bis zur Brust), alle Füße auf einer Grundlinie
-    const size = 0.8, dogSize = 0.5, floor = 0.6, ground = floor - 0.511 * size;
-    // Abstand der Kinder folgt der Bühnenbreite (Handy 4:3, sonst 16:9), damit niemand angeschnitten wird
+    const t = T ? T - t0 : CATCH, u = ((t % P) + P) % P;
     const visX = sw?.w && sw?.h ? (sw.w / sw.h) / (2 * PLAY_SCALE) : 1.6;
-    const spread = Math.min(1.2, visX - 0.3), girlX = -spread, dogX = 0.02, boyX = spread;
-    // Hund schaut zum Mädchen (nach links)
-    const jumpK = clamp01((u - 1.55) / 1.1), jump = -Math.sin(Math.PI * jumpK) * 0.3;
-    const caught = u > 2.15 && u < 3.5;
-    const excite = u > 2.1 && u < 4 ? 1 : 0;
-    let i = 0;
-    const dog = putDog(p, mask, tx, ty, i, {
-      x: dogX, y: floor - 0.463 * dogSize + jump, size: dogSize, face: -1,
-      spin: jumpK > 0 && jumpK < 1 ? -0.35 * Math.sin(Math.PI * jumpK) : 0,
-      head: jumpK > 0 && jumpK < 1 ? -0.25 * Math.sin(Math.PI * jumpK) : Math.sin(t * 2) * 0.04,
-      tail: Math.sin(t * (excite ? 15 : 8)) * 0.55, ear: Math.sin(t * 4) * 0.2, blade: t * 10,
+    const spread = Math.min(1.2, visX - 0.3), girlX = -spread, boyX = spread;
+    const half = u < H ? 0 : 1, v = u - half * H;               // Zeit innerhalb der Hälfte
+    const face = half === 0 ? -1 : 1;                           // Chopper schaut zum werfenden Kind
+    // Sprung zum Fang, Ohren schwingen mit der Sprunggeschwindigkeit
+    const jk = span(v, 1.55, 2.65), jump = -0.3 * Math.sin(Math.PI * jk) ** 2;
+    const excite = hill(v, 2.0, 4.0, 0.3);
+    const dogPose = (f) => ({
+      x: 0.02, y: dogY + jump, size: dogSize, face: f,
+      spin: -0.32 * Math.sin(Math.PI * jk) ** 2, head: -0.22 * Math.sin(Math.PI * jk) ** 2 + 0.04 * Math.sin(4 * w * u),
+      tail: (0.4 + 0.18 * excite) * Math.sin(24 * w * u), ear: 0.18 * Math.sin(6 * w * u) - 0.45 * Math.sin(TAU * jk) * (jk > 0 && jk < 1 ? 1 : 0),
+      blade: (40 * Math.PI / P) * u,
     });
-    i = dog.i;
-    // Kinder: Teile im eigenen Rahmen, dann verschoben und skaliert
-    const placeKid = (pts, ox, oy, pivot, ang) => {
-      const [pvx, pvy] = pivot ? toN(...pivot) : [0, 0];
-      for (const q of pts) {
-        const [qx, qy] = pivot ? rot(q.x, q.y, pvx, pvy, ang) : [q.x, q.y];
-        tx[i] = ox + qx * size; ty[i] = oy + qy * size; i++;
+    // Wende zum anderen Kind am Ende jeder Hälfte als lebendige Wolke (wie die 404)
+    const tk = span(v, HOME, H);
+    let mouth;
+    if (tk <= 0) mouth = putDog(p, mask, tx, ty, 0, dogPose(face)).mouth;
+    else {
+      putDog(p, mask, sA, sB, 0, dogPose(face));
+      mouth = putDog(p, mask, sC, sD, 0, dogPose(-face)).mouth;
+      for (let d = 0; d < DOG; d++) {
+        const e = ease(clamp01((tk - delay[d]) / 0.65)), a = (1 - e) * (1 - e), b = 2 * (1 - e) * e, c = e * e;
+        const mx = (sA[d] + sC[d]) / 2 + offX[d] * 0.5, my = (sB[d] + sD[d]) / 2 + offY[d] * 0.35;
+        tx[d] = a * sA[d] + b * mx + c * sC[d]; ty[d] = a * sB[d] + b * my + c * sD[d];
       }
+    }
+    let i = DOG;
+    const placeKid = (pts, ox, oy, pivot, ang = 0) => {
+      const [pvx, pvy] = toN(...pivot);
+      for (const q of pts) { const [qx, qy] = ang ? rot(q.x, q.y, pvx, pvy, ang) : [q.x, q.y]; tx[i] = ox + qx * size; ty[i] = oy + qy * size; i++; }
     };
-    // Wurfarm: ausholen (nach hinten), werfen (nach vorn), zurück in die Ausgangslage
-    const throwA = u < 0.55 ? -0.7 * ease(u / 0.55) : u < 0.8 ? -0.7 + 1.5 * ease((u - 0.55) / 0.25) : u < 1.6 ? 0.8 * (1 - ease((u - 0.8) / 0.8)) : 0;
-    const girlBob = excite ? -Math.abs(Math.sin(t * 6)) * 0.03 : 0;
-    const gy = ground + girlBob;
-    placeKid(k.girl, girlX, gy);
-    placeKid(k.girlL, girlX, gy);
-    placeKid(k.girlR, girlX, gy, [226, 104], throwA);
-    // Junge: jubelt beim Fang mit hüpfenden Armen, sonst winkt er leicht
-    const boyHop = excite ? -Math.abs(Math.sin(t * 7)) * 0.07 : 0;
-    const wave = excite ? Math.sin(t * 12) * 0.25 : Math.sin(t * 2.4) * 0.12;
-    placeKid(k.boy, boyX, ground + boyHop);
-    placeKid(k.boyL, boyX, ground + boyHop, [172, 106], wave);
-    placeKid(k.boyR, boyX, ground + boyHop, [228, 106], -wave);
-    // Ball
-    const [hx0, hy0] = rot(...toN(267, 66), ...toN(226, 104), throwA);
-    const hand = [girlX + hx0 * size, gy + hy0 * size];
-    const feet = [girlX + 0.24, floor - 0.035];
-    let bx, by;
-    if (u < 0.8) [bx, by] = hand;
-    else if (u < 2.15) {
-      // Flugbahn bis zur Schnauze (die sich mit dem Sprung bewegt): Parabel mit Scheitel über dem Hund
-      const f = ease((u - 0.8) / 1.35), [mx, my] = dog.mouth;
-      bx = hand[0] + (mx - hand[0]) * f; by = hand[1] + (my - hand[1]) * f - Math.sin(Math.PI * f) * 0.55;
-    } else if (u < 3.5) [bx, by] = dog.mouth;
-    else if (u < 4.9) {
-      // fallen lassen, zweimal aufspringen, zum Mädchen rollen
-      const f = (u - 3.5) / 1.4, [mx, my] = dog.mouth;
-      bx = mx + (feet[0] - mx) * ease(f);
-      const g = feet[1], drop = f < 0.25 ? my + (g - my) * (f / 0.25) ** 2 : g - Math.abs(Math.sin((f - 0.25) / 0.75 * Math.PI * 2)) * 0.08 * (1 - f);
-      by = drop;
-    } else if (u < 5.6) { const f = ease((u - 4.9) / 0.7); bx = feet[0] + (hand[0] - feet[0]) * f; by = feet[1] + (hand[1] - feet[1]) * f; }
-    else [bx, by] = hand;
+    // Werfendes Kind dieser Hälfte, das andere jubelt beim Fang
+    const throwA = throwAngle(v), cheerOther = hill(v, 2.0, 3.8, 0.35);
+    const girlThrowA = half === 0 ? throwA : 0, boyThrowA = half === 1 ? -throwA : 0;
+    const girlCheer = half === 1 ? cheerOther : 0, boyCheer = half === 0 ? cheerOther : 0;
+    const gy = kidY - 0.05 * girlCheer * Math.abs(Math.sin(10 * w * u)), by = kidY - 0.05 * boyCheer * Math.abs(Math.sin(10 * w * u));
+    placeKid(k.girl, girlX, gy, [200, 150]);
+    placeKid(k.girlThrow, girlX, gy, SHOULDER.girlThrow, girlThrowA);
+    placeKid(k.girlFree, girlX, gy, SHOULDER.girlFree, girlCheer * (2.4 + 0.25 * Math.sin(12 * w * u)) + 0.08 * Math.sin(2 * w * u));
+    placeKid(k.boy, boyX, by, [200, 150]);
+    placeKid(k.boyThrow, boyX, by, SHOULDER.boyThrow, boyThrowA);
+    placeKid(k.boyFree, boyX, by, SHOULDER.boyFree, -boyCheer * (2.4 + 0.25 * Math.sin(12 * w * u)) - 0.08 * Math.sin(2 * w * u));
+    const girlHand = hand(SHOULDER.girlThrow, SPREAD, girlThrowA, girlX, gy), boyHand = hand(SHOULDER.boyThrow, -SPREAD, boyThrowA, boyX, by);
+    // Wurfobjekt: Ball (Mädchen) bzw. Frisbee (Junge); das jeweils andere liegt in der Hand seines Kindes
+    const flight = (from, feetX, arc) => {
+      if (v < RELEASE) return from;
+      if (v < CATCH) { const f = ease((v - RELEASE) / (CATCH - RELEASE)); return [from[0] + (mouth[0] - from[0]) * f, from[1] + (mouth[1] - from[1]) * f - Math.sin(Math.PI * f) * arc]; }
+      if (v < DROP) return mouth;
+      const ground = floor - 0.035;
+      if (v < HOME) { const f = (v - DROP) / (HOME - DROP); const x = mouth[0] + (feetX - mouth[0]) * ease(f); const yy = f < 0.25 ? mouth[1] + (ground - mouth[1]) * (f / 0.25) ** 2 : ground - Math.abs(Math.sin((f - 0.25) / 0.75 * TAU)) * 0.06 * (1 - f) * arc / 0.5; return [x, yy]; }
+      if (v < PICK) { const f = ease((v - HOME) / (PICK - HOME)); return [feetX + (from[0] - feetX) * f, ground + (from[1] - ground) * f]; }
+      return from;
+    };
+    const ball = half === 0 ? flight(girlHand, girlX + 0.24, 0.55) : girlHand;
+    const disc = half === 1 ? flight(boyHand, boyX - 0.24, 0.28) : boyHand;
     const r = 0.034;
     for (let b = 0; b < BALL; b++) {
-      if (b < 9) { const a = (b / 9) * Math.PI * 2 + t * 3; tx[i] = bx + Math.cos(a) * r; ty[i] = by + Math.sin(a) * r; }
-      else { const a = b * 2.1; tx[i] = bx + Math.cos(a) * r * 0.35; ty[i] = by + Math.sin(a) * r * 0.35; }
-      i++;
+      const a = b < 9 ? (b / 9) * TAU + 6 * w * u : b * 2.1, rr = b < 9 ? r : r * 0.35;
+      tx[i] = ball[0] + Math.cos(a) * rr; ty[i] = ball[1] + Math.sin(a) * rr; i++;
+    }
+    const discFlying = half === 1 && v > RELEASE && v < CATCH, tilt = discFlying ? -0.25 * Math.sin(Math.PI * (v - RELEASE) / (CATCH - RELEASE)) : 0;
+    for (let b = 0; b < DISC; b++) {
+      const a = (b / DISC) * TAU, ex = Math.cos(a) * 0.075, ey = Math.sin(a) * 0.022;
+      tx[i] = disc[0] + ex * Math.cos(tilt) - ey * Math.sin(tilt); ty[i] = disc[1] + ex * Math.sin(tilt) + ey * Math.cos(tilt); i++;
     }
   };
   return { count, colors, behaviour };

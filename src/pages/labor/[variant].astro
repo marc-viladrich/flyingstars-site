@@ -1,0 +1,15 @@
+---
+// Labor (nur im Dev-Server, nie im Build): Varianten der Section „Wir fliegen mit Engagement“ (/nachhaltigkeit/,
+// #referenzen) zum Vergleich. Im Build liefert getStaticPaths nichts.
+import { getEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import LandingSpotlight from '../../components/landing/LandingSpotlight.astro';
+export function getStaticPaths() {
+  if (!import.meta.env.DEV) return [];
+  return [{ params: { variant: 'engagement-a' }, props: { look: 'stages' } }, { params: { variant: 'engagement-b' }, props: { look: 'sky' } }];
+}
+const { look } = Astro.props as { look: 'stages' | 'sky' };
+const page = await getEntry('pages', 'nachhaltigkeit');
+const section = page!.data.sections.find((s) => s.type === 'landingSpotlight' && s.id === 'referenzen') as any;
+---
+<Base title={`Labor: Engagement ${look}`} description="Labor" noindex><LandingSpotlight {...section} look={look} index={1} /></Base>

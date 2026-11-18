@@ -1,0 +1,27 @@
+---
+// Ein einzelnes Showfoto aus dem Galerie-Manifest (gleiche Quellen, Alt-Texte und Zeile wie in der Galerie), mit
+// Vorhang-Reveal. Für Bühnen außerhalb der Galerie, z. B. die Partnerschaften auf /nachhaltigkeit/.
+import { manifestPhoto } from './manifest-photo';
+interface Props { slug: string; ar: string; pos?: string; sizes: string; caption?: boolean; class?: string }
+const { slug, ar, pos = '50% 50%', sizes, caption = true, class: cls } = Astro.props;
+const p = await manifestPhoto(slug, Astro.url.pathname);
+---
+<figure class:list={['show-photo', cls]} style={`--ar:${ar};--pos:${pos}`}>
+  <div class="show-photo-media" data-curtain>
+    <picture>
+      <source type="image/avif" srcset={p.avif} sizes={sizes} />
+      <source type="image/webp" srcset={p.webp} sizes={sizes} />
+      <img src={p.src} alt={p.alt} width={p.width} height={p.height} loading="lazy" decoding="async" />
+    </picture>
+  </div>
+  {caption && p.caption && <figcaption class="mono">{p.caption}</figcaption>}
+</figure>
+
+<style>
+  .show-photo { margin: 0; display: grid; gap: var(--space-3); }
+  .show-photo-media { position: relative; aspect-ratio: var(--ar); overflow: hidden; border-radius: var(--radius-14); background: var(--media-ground); --curtain-r: var(--radius-14); }
+  .show-photo-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--pos); display: block; transition: transform var(--dur-slow-long) var(--ease-reveal); }
+  :global(.reveal) .show-photo-media:not(:global(.is-in)) img { transform: scale(1.28); }
+  .show-photo figcaption { color: var(--muted); }
+  @media (prefers-reduced-motion: reduce) { .show-photo-media img { transition: none; } }
+</style>

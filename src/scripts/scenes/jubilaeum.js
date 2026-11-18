@@ -4,7 +4,7 @@ import { t as message } from '../../i18n/ui.mjs';
 // that drifts up, a diver over rows of water with a light running through them), as own figures: the footballer is a
 // rig whose leg really swings (smooth, slow, within the drone limits), the diver a rigid body that turns along its arc.
 import { sampleOutline, circle } from "../show-geometry.js";
-import { loadTextEngine, textFormation, hasTextFormation } from "../text-formation.js";
+import { textFormationAsync } from "../text-formation.js";
 import { TAU, WARM, GOLD, CYAN, BLUE, mix, paint, smooth, hash, roll, sway, breathe, glint, sparkle, chase, burstLight, rig, share, part, act, drift } from "../show-motion.js";
 
 const line = (...pts) => ({ pts, closed: false });
@@ -29,8 +29,7 @@ function capsule(a, b, w) {
 }
 /** The number of the jubilee in FlyingStars' own lettering, centred on (cx, cy); unused drones underline it. */
 async function number(value, k, halfWidth, cx, cy, z = 0) {
-  if (!hasTextFormation(value, k)) await loadTextEngine(); // vorberechnete Zahl (Show-Folge, primeTextFormation): ohne Planer
-  const r = textFormation(value, k);
+  const r = await textFormationAsync(value, k); // vorberechnet sofort, sonst im Worker (Runde 6)
   const pts = r ? r.pts.slice(0, k) : [];
   if (!pts.length) return sample([circle(cx, cy, halfWidth * 0.7, 80)], k).map(([x, y]) => [x, y, z]);
   const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]), s = (halfWidth * 2) / (Math.max(...xs) - Math.min(...xs)), my = (Math.max(...ys) + Math.min(...ys)) / 2, mx = (Math.max(...xs) + Math.min(...xs)) / 2;

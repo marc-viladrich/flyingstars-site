@@ -80,9 +80,6 @@ const ticks = [DRONES_MIN, 300, 500, DRONES_MAX];
     {hasHead && <div class="cfg-head"><slot name="head" /></div>}
     {hasHead && Astro.slots.has('facts') && <div class="cfg-facts"><slot name="facts" /></div>}
     {hasHead && Astro.slots.has('intro') && <div class="cfg-intro"><slot name="intro" /></div>}
-    {/* Runde 5 (Marc: „zu voll“): rechts das Ergebnis – Vorschau, darunter Preis-Box und „Immer dabei“; links nur die
-         Eingaben. So stehen bei 1440 × 900 Vorschau und Preis im ersten Bildschirm, ohne die Bedienung zu stauchen. */}
-    <div class="cfg-out">
     <div class="cfg-stage" aria-label={t('showconfigurator.showPreview')} aria-describedby="cfg-scene" data-bleed>
       <svg class="cfg-poster" viewBox="0 0 160 90" preserveAspectRatio="xMidYMid meet" aria-hidden="true">{poster.map((p) => <circle cx={p.x.toFixed(2)} cy={p.y.toFixed(2)} r={p.s.toFixed(2)} fill-opacity={p.o.toFixed(2)} />)}</svg>
       <canvas id="cfg-field" aria-hidden="true"></canvas>
@@ -131,28 +128,6 @@ const ticks = [DRONES_MIN, 300, 500, DRONES_MAX];
       </div>
     </div>
 
-      {/* Paket, Preis, Dauer und Anfrage als eigene, geschlossene Fläche (Runde 11), seit Runde 5 unter der Vorschau.
-           PLATZHALTER, bewusst nicht sichtbar: Drohnenbereiche und Aufpreise (content/show-packages.ts). */}
-      <div class="cfg-sum">
-        <div class="cfg-result" aria-live="polite">
-          <p class="cfg-pkg-label" id="cfg-pkg-label" hidden></p>
-          <div class="cfg-price"><b id="cfg-pkg">{t('preise.individual')}</b><span id="cfg-price">{money(startPrice)}</span></div>
-          <p class="cfg-meta mono" id="cfg-meta" {...field({collection:'showDuration',id:'configuration'},['outdoor','min'],{mode:'panel'})}>{t('preise.artLine', { art: t(`preise.artName.${startArt}`), n: first.base })} · {t('packageDetails.showtimeLine',durationValues())} {t('showconfigurator.excludingVatAndTravel')}</p>
-        </div>
-        <a class="btn primary cfg-cta" id="cfg-cta" href={localHref("/drohnenshow-preise/#anfrage")}>{t('showconfigurator.enquireAboutThisShow')}</a>
-        <button type="button" class="btn primary cfg-use-logo" id="cfg-use-logo" hidden>{t('logoMode.useLogo')}</button>
-      </div>
-
-      {/* Immer dabei (Marc, Runde 5: „unter die Paket-/Preis-Box“): ruhige Liste, kein Bedienelement */}
-      <div class="cfg-always">
-        <p class="cfg-always-h" id="cfg-always-h">{t('preise.alwaysIncluded')}</p>
-        <ul class="cfg-always-list" aria-labelledby="cfg-always-h">
-          {always.map(([id, icon]) => <li><Icon name={icon} size={16} class="g" /><span>{t(`preise.inc.${id}`, durations())}</span></li>)}
-        </ul>
-        <p class="cfg-note" id="cfg-note">{t('showconfigurator.allMotifsShownHereAreExamplesWeCreateOriginalDesigns')}</p>
-      </div>
-    </div>
-
     <form class="cfg-panel" id="cfg">
       {!hasHead && <SectionHead variant="contents" headline={heading} kicker={kicker} id="cfg-h" level={Heading} titleClass="cfg-h" kickerClass="cfg-kicker" />}
 
@@ -171,16 +146,18 @@ const ticks = [DRONES_MIN, 300, 500, DRONES_MAX];
       </fieldset>
 
       {/* Paketwahl entfällt (Moritz, 17.11.2026: „Paket: Rausnehmen“). Ein Startpunkt kommt nur noch aus den Paketkarten.
-           Runde 5 (Marc, 18.11.2026): stattdessen die Art der Show ohne Paketnamen. Sie bestimmt die Fassung der Motive in
-           der Vorschau (2D flach, 3D räumlich mit Schwenk, Storytelling als Folge mit Verwandlungen), die Mindestzahl an
-           Drohnen und den Preis (showArtPrice in content/show-packages.ts). Gleitender Rahmen wie früher an den Paketknöpfen. */}
+           Art der Show (Runde 5, Marc): bestimmt Fassung der Motive, Mindestzahl an Drohnen und Preis (showArtPrice).
+           Runde 6 (Marc: „einfach reguläre Pills wie beim Anlass“, 2D · 3D · 3D+): dieselbe Pill-Gruppe wie der Anlass; darunter
+           je Art drei Häkchen aus Moritz' Paketbeschreibungen. Alle drei Listen liegen übereinander (gleiche Höhe), die gewählte
+           blendet weich ein (CSS über :has, show-configurator.css). */}
       <fieldset class="cfg-block cfg-art">
         <legend>{t('preise.art')}</legend>
-        <div class="cfg-arts" id="cfg-arts">
-          {SHOW_ARTS.map((a) => <label data-art={a}><input type="radio" name="art" value={a} checked={a === startArt} /><span><b>{t(`preise.art.${a}`)}</b><small class="mono">{t('preise.artFrom', { n: artMin(a) })}</small></span></label>)}
-          <span class="cfg-arts-ind" aria-hidden="true"></span>
+        <div class="chips chips-quiet cfg-arts" id="cfg-arts">
+          {SHOW_ARTS.map((a) => <label data-art={a}><input type="radio" name="art" value={a} checked={a === startArt} /><span>{t(`preise.art.${a}`)}</span></label>)}
         </div>
-        <p class="cfg-art-desc" id="cfg-art-desc" aria-live="polite">{t(`preise.artDesc.${startArt}`)}</p>
+        <div class="cfg-art-lists">
+          {SHOW_ARTS.map((a) => <ul class="cfg-check-list" data-art={a} role="list">{[1, 2, 3].map((k) => <li><Icon name="check" size={16} class="g" /><span>{t(`preise.artItem.${a}.${k}`)}</span></li>)}</ul>)}
+        </div>
       </fieldset>
 
       <div class="cfg-block cfg-drones">
@@ -254,6 +231,27 @@ const ticks = [DRONES_MIN, 300, 500, DRONES_MAX];
           </div>
         </div>
       </div>
+
+      {/* Paket, Preis, Dauer und Anfrage als eigene, geschlossene Fläche (Runde 11). PLATZHALTER, bewusst nicht sichtbar:
+           Drohnenbereiche und Aufpreise (content/show-packages.ts). */}
+      <div class="cfg-sum">
+        <div class="cfg-result" aria-live="polite">
+          <p class="cfg-pkg-label" id="cfg-pkg-label" hidden></p>
+          <div class="cfg-price"><b id="cfg-pkg">{t('preise.individual')}</b><span id="cfg-price">{money(startPrice)}</span></div>
+          <p class="cfg-meta mono" id="cfg-meta" {...field({collection:'showDuration',id:'configuration'},['outdoor','min'],{mode:'panel'})}>{t('packageDetails.showtimeLine',durationValues())} {t('showconfigurator.excludingVatAndTravel')}</p>
+        </div>
+        <a class="btn primary cfg-cta" id="cfg-cta" href={localHref("/drohnenshow-preise/#anfrage")}>{t('showconfigurator.enquireAboutThisShow')}</a>
+        <button type="button" class="btn primary cfg-use-logo" id="cfg-use-logo" hidden>{t('logoMode.useLogo')}</button>
+        <p class="cfg-note" id="cfg-note">{t('showconfigurator.allMotifsShownHereAreExamplesWeCreateOriginalDesigns')}</p>
+      </div>
+
+      {/* Immer dabei (Marc, Runde 5/6: unter der Paket-/Preis-Box) */}
+      <div class="cfg-block cfg-always">
+        <p class="cfg-always-h" id="cfg-always-h">{t('preise.alwaysIncluded')}</p>
+        <ul class="cfg-always-list" aria-labelledby="cfg-always-h">
+          {always.map(([id, icon]) => <li><Icon name={icon} size={16} class="g" /><span>{t(`preise.inc.${id}`, durations())}</span></li>)}
+        </ul>
+      </div>
     </form>
 
     <div class="cfg-bar" aria-hidden="true"><span><b id="cfg-bar-pkg">{t('preise.individual')}</b> <span id="cfg-bar-price">{money(startPrice)}</span></span><a class="btn small primary" href={localHref("/drohnenshow-preise/#anfrage")} id="cfg-bar-cta" tabindex="-1">{t('showconfigurator.sendAnEnquiry')}</a></div>
@@ -262,7 +260,7 @@ const ticks = [DRONES_MIN, 300, 500, DRONES_MAX];
 <noscript><p class="cfg-noscript">{t('showconfigurator.theShowConfiguratorRequiresJavascriptFindOurPackagesAndPrices')} <a href={localHref("/drohnenshow-preise/#pakete")}>{t('showconfigurator.packages')}</a>.</p></noscript>
 
 <script>
-  import { whenNear } from '../../scripts/when-near.mjs';
+  import { whenNear, importInStages } from '../../scripts/when-near.mjs';
   const root = document.querySelector<HTMLElement>('.cfg');
   // Standbild ausblenden, sobald die Leinwand etwas zeigt. 18.11.2026: ohne Rücklesen der Leinwand (drawImage +
   // getImageData je Bild kostete bei Pixeldichte 2 und 4× Drossel spürbar Zeit im Start); die Engine schreibt die Zahl der
@@ -279,24 +277,21 @@ const ticks = [DRONES_MIN, 300, 500, DRONES_MAX];
   if (root) {
     // 18.11.2026 (Long Task beim Start, 4× Drossel): den Modulgraphen in Stufen auswerten, je Stufe ein eigener Task. Am
     // Stück kostete das Auswerten (Szenen, Inhalte, Bedienung) zusammen mit dem ersten Layout über 60 ms.
-    const nextTask = () => new Promise((resolve) => setTimeout(resolve, 0));
-    const load = whenNear(root, async () => {
+    const load = whenNear(root, () => importInStages(
       // die erste Zahlformatierung lädt die Sprachdaten von Intl (bei 4× Drossel rund 15 ms): vorab in einem eigenen Task
-      (7900).toLocaleString({ en: 'en-GB', nl: 'nl-NL' }[document.documentElement.lang] ?? 'de-DE'); await nextTask();
-      await import('../../scripts/show-field.js'); await nextTask();
-      await import('../../scripts/show-scenes.js'); await nextTask();
-      await import('../../content/show-configurator.js'); await nextTask();
-      const m = await import('../../scripts/show-configurator.js');
-      live();
-      return m;
-    });
+      () => (7900).toLocaleString({ en: 'en-GB', nl: 'nl-NL' }[document.documentElement.lang] ?? 'de-DE'),
+      () => import('../../scripts/show-field.js'),
+      () => import('../../scripts/show-scenes.js'),
+      () => import('../../content/show-configurator.js'),
+      () => import('../../scripts/show-configurator.js'),
+    ).then((m) => { live(); return m; }));
     if (location.hash || root.contains(document.activeElement)) void load().catch((error: unknown) => console.warn('Configurator could not load', error));
   }
 </script>
 
 <style>
   /* erstes Standbild der Bühne: ruhige Lichtwolke über der Steuerleiste, weicht dem ersten Bild der Engine (is-live) */
-  .cfg-poster { position: absolute; left: 0; top: 0; width: 100%; height: calc(100% - 4rem); fill: rgb(var(--rgb-text)); pointer-events: none; transition: opacity 0.6s var(--ease-default); }
+  .cfg-poster { position: absolute; left: 0; top: 0; width: 100%; height: calc(100% - 4rem); fill: rgb(var(--rgb-text)); pointer-events: none; transition: opacity var(--dur-reveal) var(--ease-default); }
   :global(.cfg.is-live) .cfg-poster { opacity: 0; }
   @media (prefers-reduced-motion: reduce) { .cfg-poster { transition: none; } }
 </style>

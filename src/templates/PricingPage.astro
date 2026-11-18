@@ -115,7 +115,8 @@ const promises = [['lock', t('preise.promise1')], ['scale', t('preise.promise2')
   /* 18.11.2026 (Long Task beim Start, 4× Drossel): Das erste Layout der ganzen Seite kostete am Stück rund 60 ms. Die Sections
      unter dem Konfigurator legt der Browser erst aus, wenn sie in die Nähe kommen (Safari ab 18, Chrome ab 85); die
      gemerkte Größe (auto) hält die Bildlaufleiste ruhig. Sprungziele (#anfrage, #pakete) funktionieren weiter. */
-  :global(main > section.section:not(.cfg)) { content-visibility: auto; contain-intrinsic-size: auto 56rem; }
+  /* Farbflächen (.alt) ausgenommen: content-visibility schneidet ihre Punktübergänge über die Kante ab (docs/himmel.md) */
+  :global(main > section.section:not(.cfg, .alt)) { content-visibility: auto; contain-intrinsic-size: auto 56rem; }
   /* Garantie direkt unter dem Konfigurator (Marc, Runde 5: „oben und unten etwas weniger Abstand, aktuell floatet es sehr
      im Nichts“): eigene Abstände knapp, und die Section rückt in den Bodenabstand des Konfigurators hinein */
   .promise-sec { padding-block: clamp(var(--space-8), 3.5vw, var(--space-14)); margin-top: calc(-1 * clamp(var(--space-10), 5vw, var(--space-20))); }
@@ -124,28 +125,25 @@ const promises = [['lock', t('preise.promise1')], ['scale', t('preise.promise2')
   .pv-list li { display: flex; align-items: flex-start; gap: var(--space-3); color: var(--text); font-size: var(--text-md); line-height: 1.4; }
   .pv-list :global(.ico) { flex: none; margin-top: var(--space-0-25); }
   /* Kopf im Konfigurator (has-head, ShowConfigurator.astro). Desktop: H1 über der Bedienung, Einleitung und Eckdaten über
-     der Ergebnis-Spalte, beide unten bündig; Handy: H1, Eckdaten, Vorschau, Regler, Preis, Immer dabei, Einleitung zuletzt.
-     Runde 5 (Marc: „mehr Abstand von Section-Header zu Konfigurator selbst“): deutlich mehr Luft zwischen Kopf und Werkzeug,
-     dafür etwas weniger über dem Kopf (die Navigation braucht nur ihre eigene Höhe) */
-  :global(.cfg.has-head) { --cfg-top: clamp(6.5rem, 8vw, 8.5rem); --cfg-head-gap: clamp(3.5rem, 5.5vw, 6.5rem); grid-template-areas: "head intro" "head facts" "panel out"; row-gap: var(--space-5); }
-  /* Die Vorschau lässt unter sich Platz für die Preis-Box: bei 1440 × 900 und 1920 × 1080 stehen Vorschau und Preis im
-     ersten Bildschirm. Kopf und Abstand wachsen mit der Breite (≈ 24 rem bei 1440, ≈ 28 rem bei 1920), die Preis-Box
-     braucht ≈ 6 rem, daher der Abzug in vw plus rem */
-  @media (--nav-expanded) { :global(.cfg.has-head .cfg-stage) { height: clamp(22rem, calc(100svh - 12.9vw - 20.75rem), 46rem); } }
+     der Vorschau, beide unten bündig; Handy: H1, Eckdaten, Vorschau, Regler, Einleitung zuletzt. Innerhalb des Kopfs die
+     Kopf-Rolle --head-gap-text (global.css). Seitenkopf → Konfigurator ab Desktop bewusst größer als --head-gap-content
+     (Marc, Runde 5/6: „mehr Abstand von Section-Header zu Konfigurator selbst“, bei 1440 ≈ 94 px), auf dem Handy die Rolle.
+     Das Raster setzt den Text-Abstand schon zwischen die Zeilen, darum der Rest als Rand */
+  :global(.cfg.has-head) { --cfg-top: clamp(6.5rem, 8vw, 8.5rem); --cfg-head-content: clamp(var(--space-14), 6.5vw, var(--space-24)); --cfg-head-rest: calc(var(--cfg-head-content) - var(--head-gap-text)); grid-template-areas: "head intro" "head facts" "panel stage"; row-gap: var(--head-gap-text); }
+  /* Die Bühne passt mit Steuerleiste in den ersten Bildschirm (Kopf ≈ 19 rem plus Kopfabstand), auch in niedrigen
+     Fenstern wie 1280 × 720; beim Scrollen klebt sie in derselben Höhe neben der Bedienung */
+  @media (--nav-expanded) { :global(.cfg.has-head > .cfg-stage) { height: clamp(18rem, calc(100svh - 22rem - var(--cfg-head-content)), 48rem); min-height: 0; } }
   :global(.cfg.has-head > .cfg-head) { grid-area: head; align-self: end; }
   :global(.cfg.has-head > .cfg-intro) { grid-area: intro; align-self: end; }
   :global(.cfg.has-head > .cfg-facts) { grid-area: facts; align-self: end; }
-  :global(.cfg.has-head > .cfg-panel) { grid-area: panel; margin-top: var(--cfg-head-gap); }
-  :global(.cfg.has-head > .cfg-out) { grid-area: out; margin-top: var(--cfg-head-gap); }
+  :global(.cfg.has-head > .cfg-panel) { grid-area: panel; margin-top: var(--cfg-head-rest); }
+  :global(.cfg.has-head > .cfg-stage) { grid-area: stage; margin-top: var(--cfg-head-rest); }
   :global(.cfg-head .pp-h1) { margin: 0; font-size: clamp(2.125rem, 3vw, 3.25rem); line-height: 1.02; letter-spacing: -0.035em; text-wrap: balance; }
   .pp-intro { margin: 0; max-width: 64ch; color: var(--muted); font-size: var(--text-copy); line-height: 1.6; text-wrap: pretty; }
   :global(.cfg-facts .lh-facts) { margin: 0; max-width: none; }
   @media (--nav-collapsed) {
-    :global(.cfg.has-head) { grid-template-areas: "head" "facts" "stage" "panel" "sum" "always" "intro"; padding-top: calc(var(--nav-h, 4rem) + var(--space-5)); row-gap: var(--space-5-5); }
-    :global(.cfg.has-head > .cfg-panel), :global(.cfg.has-head > .cfg-out) { margin-top: 0; }
-    :global(.cfg.has-head .cfg-stage) { grid-area: stage; }
-    :global(.cfg.has-head .cfg-sum) { grid-area: sum; }
-    :global(.cfg.has-head .cfg-always) { grid-area: always; }
+    :global(.cfg.has-head) { --cfg-head-content: var(--head-gap-content); grid-template-areas: "head" "facts" "stage" "panel" "intro"; padding-top: calc(var(--nav-h, 4rem) + var(--space-5)); row-gap: var(--head-gap-text); }
+    :global(.cfg.has-head > .cfg-panel) { margin-top: var(--head-gap-text); }
     :global(.cfg-head .pp-h1) { font-size: clamp(1.875rem, 7.4vw, 2.5rem); }
     :global(.cfg.has-head > .cfg-intro) { margin-top: var(--space-4); }
   }

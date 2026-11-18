@@ -13,9 +13,13 @@ export type Item =
 export type ZoneGroup = { zone: string | null; items: Item[] };
 export type Layer = { key: string; from: number; groups: ZoneGroup[] };
 export type Drone = { g: P2; l: P2; m: P2; c: string; k: number };
-export type Spot = { zone: string; x: number; y: number };
+/** aside: Popover links neben der Nummer, damit es die eigene Zone nicht verdeckt (Publikum hüpft rechts davon) */
+export type Spot = { zone: string; x: number; y: number; aside?: boolean };
 export type Label = { text: string; x: number; y: number; zone: string; turn?: boolean };
-export type Scene = { vb: [number, number, number, number]; layers: Layer[]; drones: Drone[]; spots: Spot[]; labels: Label[]; gridZone: string };
+/** Publikum (Runde 6): je Person Streuposition s und Platz im Publikumsbereich h, Form relativ zum eigenen Fußpunkt */
+export type Person = { s: P2; h: P2; items: Item[]; k: number };
+export type Crowd = { layer: string; hop: number; people: Person[] };
+export type Scene = { vb: [number, number, number, number]; layers: Layer[]; drones: Drone[]; spots: Spot[]; labels: Label[]; gridZone: string; crowd: Crowd };
 
 const r1 = (n: number) => Math.round(n * 10) / 10;
 const sub = (a: V3, b: V3): V3 => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
@@ -70,9 +74,24 @@ function pair(start: V3[], motif: V3[]) {
   return s.map(({ p }, k) => ({ start: p, motif: m[k] }));
 }
 
+/** Wiederholbarer Zufall, damit Build und Screenshots stabil bleiben */
+function random(seed: number) { return () => { seed = (seed + 0x6d2b79f5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+const inside = (p: P2, poly2: P2[]) => { let c = false; for (let i = 0, j = poly2.length - 1; i < poly2.length; j = i++) { const [xi, yi] = poly2[i], [xj, yj] = poly2[j]; if ((yi > p[1]) !== (yj > p[1]) && p[0] < (xj - xi) * (p[1] - yi) / (yj - yi) + xi) c = !c; } return c; };
+/** Streupositionen: Kandidaten im Gelände, die weder auf Sperrflächen liegen noch im Bild von höheren Ebenen verdeckt sind */
+function scatter(n: number, seed: number, area: { x0: number; x1: number; y0: number; y1: number }, blocked: (q: V3) => boolean, toScreen: (q: V3) => P2, covered: P2[][]) {
+  const rnd = random(seed), out: P2[] = [];
+  for (let tries = 0; out.length < n && tries < 4000; tries++) {
+    const q: V3 = [area.x0 + rnd() * (area.x1 - area.x0), area.y0 + rnd() * (area.y1 - area.y0), 0];
+    const sp = toScreen(q);
+    if (blocked(q) || covered.some((c) => inside(sp, c)) || out.some((o) => Math.hypot(o[0] - sp[0], o[1] - sp[1]) < 7)) continue;
+    out.push([r1(sp[0]), r1(sp[1])]);
+  }
+  return out;
+}
+
 const pct = (p: P2, vb: number[]) => [r1((p[0] - vb[0]) / vb[2] * 1000) / 10, r1((p[1] - vb[1]) / vb[3] * 1000) / 10] as const;
 
-function finish(layers: Layer[], drones: Drone[], spots: { zone: string; p: P2 }[], labels: { text: string; p: P2; zone: string; turn?: boolean }[], extra: P2[], gridZone: string): Scene {
+function finish(layers: Layer[], drones: Drone[], spots: { zone: string; p: P2 }[], labels: { text: string; p: P2; zone: string; turn?: boolean }[], extra: P2[], gridZone: string, crowd: Crowd): Scene {
   // Bildausschnitt aus allen Punkten (inklusive Drohnen in allen Phasen), knapp gerahmt: so endet die Zeichnung an der
   // rechten Kante der Spalte und damit an der Content-Kante.
   const pts: P2[] = [...extra];
@@ -83,12 +102,13 @@ function finish(layers: Layer[], drones: Drone[], spots: { zone: string; p: P2 }
     for (let i = 0; i + 1 < nums.length; i += 2) pts.push([nums[i], nums[i + 1]]);
   })));
   drones.forEach((d) => pts.push(d.g, d.l, d.m));
+  crowd.people.forEach((q) => pts.push(q.s, q.h));
   const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
   const pad = 6, x0 = Math.min(...xs) - pad, y0 = Math.min(...ys) - pad;
   const vb = [r1(x0), r1(y0), r1(Math.max(...xs) + pad - x0), r1(Math.max(...ys) + pad - y0)] as [number, number, number, number];
   return {
-    vb, layers, drones, gridZone,
-    spots: spots.map((s) => { const [x, y] = pct(s.p, vb); return { zone: s.zone, x, y }; }),
+    vb, layers, drones, gridZone, crowd,
+    spots: spots.map((s) => { const [x, y] = pct(s.p, vb); return { zone: s.zone, x, y, aside: s.zone === 'guests' }; }),
     labels: labels.map((l) => { const [x, y] = pct(l.p, vb); return { text: l.text, zone: l.zone, x, y, turn: l.turn }; }),
   };
 }
@@ -125,16 +145,21 @@ export function indoorScene(o: { colors: string[]; vertical: string; horizontal:
     { t: 'path', d: line([[bx, by], [tx, ty]]), cls: 'mast' }, { t: 'circle', cx: r1(tx), cy: r1(ty), r: 5, cls: 'mast-glow' }, { t: 'circle', cx: r1(tx), cy: r1(ty), r: 2.2, cls: 'mast-tip' }]; };
   const kitBack: ZoneGroup = { zone: 'kit', items: corners.slice(0, 2).flatMap(antenna) };
   const kitFront: ZoneGroup = { zone: 'kit', items: corners.slice(2).flatMap(antenna) };
-  // Publikum vorn, hinter einer gestrichelten Abstandslinie
-  const people: Item[] = [];
-  for (const [row, y] of [[0, -6.3], [1, -7.7]] as const) for (let i = 0; i < 8; i++) {
-    const x = -4.2 + i * 1.2 + (row ? 0.6 : 0);
+  // Publikum vorn, hinter einer gestrichelten Abstandslinie. Die Figuren stehen zuerst verstreut im Raum und laufen beim
+  // Abheben der Drohnen zu ihren Plätzen; Form relativ zum Fußpunkt, damit eine Verschiebung die ganze Figur bewegt.
+  const homes: { x: number; y: number }[] = [];
+  for (const [row, y] of [[1, -7.7], [0, -6.3]] as const) for (let i = 0; i < 8; i++) homes.push({ x: -4.2 + i * 1.2 + (row ? 0.6 : 0), y });
+  const figure = (x: number, y: number): { h: P2; items: Item[] } => {
     const [bx, by] = P([x, y, 0], F), [, ty] = P([x, y, 1.25], F), [hx, hy] = P([x, y, 1.6], F);
-    const w = Math.hypot(...(([a, b]) => [a - bx, b - by])(P([x + 0.5, y, 0], F)));
-    people.push({ t: 'path', d: `M${r1(bx - w / 2)} ${r1(by)}V${r1(ty + w / 2)}A${r1(w / 2)} ${r1(w / 2)} 0 0 1 ${r1(bx + w / 2)} ${r1(ty + w / 2)}V${r1(by)}Z`, cls: 'person' });
-    people.push({ t: 'circle', cx: r1(hx), cy: r1(hy), r: r1(w * 0.36), cls: 'person-head' });
-  }
-  const guests: ZoneGroup = { zone: 'guests', items: [edge([fl.x0 - 0.5, -5, 0], [fl.x1 + 0.5, -5, 0], F, 'keepout'), ...people] };
+    const w = Math.hypot(...(([a, b]) => [a - bx, b - by])(P([x + 0.5, y, 0], F))), top = ty - by + w / 2;
+    return { h: [r1(bx), r1(by)], items: [
+      { t: 'path', d: `M${r1(-w / 2)} 0V${r1(top)}A${r1(w / 2)} ${r1(w / 2)} 0 0 1 ${r1(w / 2)} ${r1(top)}V0Z`, cls: 'person' },
+      { t: 'circle', cx: r1(hx - bx), cy: r1(hy - by), r: r1(w * 0.36), cls: 'person-head' }] };
+  };
+  const strewn = scatter(homes.length, 7, { x0: room.x0 + 0.6, x1: room.x1 - 0.6, y0: room.y0 + 0.5, y1: room.y1 - 0.8 },
+    ([x, y]) => (x > fl.x0 - 0.8 && x < fl.x1 + 0.8 && y > fl.y0 - 0.8) || y > fl.y1 - 1, (q) => P(q, F), []);
+  const crowd: Crowd = { layer: 'floor', hop: 3, people: homes.map(({ x, y }, i) => ({ ...figure(x, y), s: strewn[i], k: (i * 7) % homes.length })) };
+  const guests: ZoneGroup = { zone: 'guests', items: [edge([fl.x0 - 0.5, -5, 0], [fl.x1 + 0.5, -5, 0], F, 'keepout')] };
 
   // Flugvolumen: hintere Flächen und Kanten gedämpft, vordere als Glas
   const box = (x0: number, y0: number, x1: number, y1: number, z0: number, z1: number) => ({
@@ -186,14 +211,14 @@ export function indoorScene(o: { colors: string[]; vertical: string; horizontal:
     { zone: 'drones', p: P([fl.x1, fl.y0, H], 0) },
     { zone: 'floor', p: P([pad.x1 + 0.3, pad.y0, 0], F) },
     { zone: 'kit', p: P([fl.x1, fl.y0, 1.9], F) },
-    { zone: 'guests', p: P([5.6, -7.4, 1.7], F) },
+    { zone: 'guests', p: P([-6.2, -6.6, 1.7], F) },
   ].map((s) => ({ zone: s.zone, p: [s.p[0], s.p[1]] as P2 }));
   const mid = (a: P2, b: P2): P2 => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
   const labels = [
     { text: o.vertical, zone: 'ceiling', p: mid(dimA, dimB), turn: true },
     { text: o.horizontal, zone: 'floor', p: (([x, y]) => [x, y + 12] as P2)(mid(P([pad.x0, pad.y0, 0], F), P([pad.x1, pad.y0, 0], F))) },
   ];
-  return finish(layers, drones, spots, labels, [], 'floor');
+  return finish(layers, drones, spots, labels, [], 'floor', crowd);
 }
 
 /** Draußen: Lageplan als Grund (Häuser, Park, Straße), darüber die Zonen als gestaffelte Platten, Drohnenlinie am Himmel. */
@@ -238,9 +263,19 @@ export function outdoorScene(o: { colors: string[]; horizontal: string; detail: 
   const frontHouses: ZoneGroup = { zone: null, items: houses.filter((b) => b[1] <= -80 * g).flatMap(blockItems) };
   // Publikum vor dem äußeren Bereich, Blickpfeil zur Show
   const gq = { x0: -32, x1: 35, y0: -81, y1: -68 };
-  const people: Item[] = Array.from({ length: 20 }, (_, i) => { const [cx, cy] = P([gq.x0 + 4 + (i % 10) * 6.6, gq.y0 + 4 + Math.floor(i / 10) * 5.5, 1.5]); return { t: 'circle', cx: r1(cx), cy: r1(cy), r: 1.6, cls: 'guest-dot' }; });
-  const guests: ZoneGroup = { zone: 'guests', items: [...plate([[gq.x0, gq.y0], [gq.x1, gq.y0], [gq.x1, gq.y1], [gq.x0, gq.y1]], 3, 0, 'zplate', 3), ...people, edge([2, -66, 0], [2, -56, 0], 0, 'view')] };
+  const guests: ZoneGroup = { zone: 'guests', items: [...plate([[gq.x0, gq.y0], [gq.x1, gq.y0], [gq.x1, gq.y1], [gq.x0, gq.y1]], 3, 0, 'zplate', 3), edge([2, -66, 0], [2, -56, 0], 0, 'view')] };
   const safety: ZoneGroup = { zone: 'safety', items: plate(outer, 15, S[1], 'zplate', 4) };
+  // Publikum: Punkte stehen zuerst verstreut in der Stadt (nicht auf Häusern, nicht unter den höheren Platten) und sammeln
+  // sich beim Abheben der Drohnen auf der Publikumsfläche; Plätze leicht versetzt wie eine echte Menge.
+  const rnd = random(11), cols = 12, rows = 2;
+  const homesOut: P2[] = Array.from({ length: cols * rows }, (_, i) => { const c = i % cols, r = Math.floor(i / cols); const p = P([gq.x0 + 4 + c * (gq.x1 - gq.x0 - 8) / (cols - 1) + (rnd() - 0.5) * 2.4, gq.y0 + 3.6 + r * 5.4 + (rnd() - 0.5) * 2, 1.5]); return [r1(p[0]), r1(p[1])]; });
+  const projected = (pts: number[][], rad: number, dy: number) => roundedZ(pts, rad, 0).map((q) => P(q, dy));
+  const coverOut = [projected(outer, 15, S[1]), projected(operative, 12, S[2]), projected(flight, 9, S[3]),
+    ...blocks.filter((b) => b[1] <= -80 * g).map(([x0, y0, x1, y1, h]) => [P([x0, y0, 0]), P([x1, y0, 0]), P([x1, y0, h]), P([x1, y1, h]), P([x0, y1, h]), P([x0, y0, h])])];
+  const onHouse = ([x, y]: V3) => blocks.some(([x0, y0, x1, y1]) => x > x0 - 2 && x < x1 + 2 && y > y0 - 2 && y < y1 + 2);
+  const onGuests = ([x, y]: V3) => x > gq.x0 - 4 && x < gq.x1 + 4 && y > gq.y0 - 4 && y < gq.y1 + 4;
+  const strewnOut = scatter(homesOut.length, 5, { x0: ground.x0 + 4, x1: ground.x1 - 4, y0: ground.y0 + 4, y1: ground.y1 - 4 }, (q) => onHouse(q) || onGuests(q), (q) => P([q[0], q[1], 1.5]), coverOut);
+  const crowd: Crowd = { layer: 'ground', hop: 2.2, people: homesOut.map((h, i) => ({ h, s: strewnOut[i], k: (i * 7) % homesOut.length, items: [{ t: 'circle', cx: 0, cy: 0, r: 1.5, cls: 'guest-dot' }] })) };
   const oper: ZoneGroup = { zone: 'operative', items: plate(operative, 12, S[2], 'zplate', 4) };
   const fly: ZoneGroup = { zone: 'drones', items: plate(flight, 9, S[3], 'zplate', 4) };
   // Startfläche auf der Flugplatte; Drohnenlinie quer zur Blickrichtung am Himmel
@@ -271,11 +306,11 @@ export function outdoorScene(o: { colors: string[]; horizontal: string; detail: 
     { zone: 'operative', p: at(operative, 4, S[2]) },
     { zone: 'drones', p: (([x, y]) => [x + 12, y] as P2)(P([30, 2, 22], S[3])) },
     { zone: 'start', p: P([sp.x1 + 3, sp.y0, 0], S[3]) },
-    { zone: 'guests', p: P([gq.x1 + 5, gq.y0, 0], 0) },
+    { zone: 'guests', p: P([gq.x0 - 11, gq.y1, 0], 0) },
   ];
   const labels = [
     { text: o.horizontal, zone: 'safety', p: (([x, y]) => [x - 8, y + 12] as P2)(P([(outer[6][0] + outer[7][0]) / 2, (outer[6][1] + outer[7][1]) / 2, 0], S[1])) },
     { text: o.detail, zone: 'drones', p: (([x, y]) => [x, y - 16] as P2)(P([0, 2, 29], S[3])) },
   ];
-  return finish(layers, drones, spots, labels, [], 'start');
+  return finish(layers, drones, spots, labels, [], 'start', crowd);
 }

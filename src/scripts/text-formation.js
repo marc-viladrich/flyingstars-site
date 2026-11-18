@@ -45,6 +45,26 @@ export function primeTextFormation(value, count, pts, style = "Umriss") {
   if (cache.size > 60) cache.clear();
   cache.set(keyOf(value, count), { n: count, used: pts.length, lines: wrap(value), style, perChar: count / Math.max(1, chars(value)), unknown: [], d: 2, size: [w, hgt, 0], pts: pts.map((q) => [q[0], q[1], 0]), spare: [] });
 }
+// Runde 6 (18.11.2026, additiv): dieselbe Formation, im Worker gerechnet (text-worker.js), damit der Hauptthread frei bleibt.
+// Ohne Worker (Node-Tests, alte Browser) rechnet der Hauptthread wie bisher. Das Ergebnis landet im selben Zwischenspeicher,
+// danach liefert textFormation() es sofort.
+let worker = null, seq = 0;
+const waiting = new Map();
+export async function textFormationAsync(value, count) {
+  const key = keyOf(value, count);
+  if (cache.has(key)) return cache.get(key);
+  if (worker === null) {
+    try {
+      worker = typeof Worker === "function" ? new Worker(new URL("./text-worker.js", import.meta.url), { type: "module" }) : false;
+      if (worker) worker.onmessage = ({ data }) => { const w = waiting.get(data.id); waiting.delete(data.id); w?.(data); };
+    } catch { worker = false; }
+  }
+  if (!worker) { await loadTextEngine(); return textFormation(value, count); }
+  const data = await new Promise((resolve) => { const id = ++seq; waiting.set(id, resolve); worker.postMessage({ id, value, count }); });
+  if (data.error) { await loadTextEngine(); return textFormation(value, count); }
+  if (data.result) { if (cache.size > 60) cache.clear(); cache.set(key, data.result); }
+  return data.result;
+}
 export function textFormation(value, count) { // engine must be loaded (loadTextEngine)
   const lines = wrap(value), perChar = count / Math.max(1, chars(value)), key = lines.join("/") + "|" + count;
   if (cache.has(key)) return cache.get(key);

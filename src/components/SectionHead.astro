@@ -13,8 +13,13 @@ const { kicker, headline, text, id, level: H = 'h2', class: cls, variant = 'defa
   <slot />
 </div>
 <style is:global>
-  .section-head[data-section-head] > :is(h1, h2, h3) { margin-top: 0; }
+  /* Abstände im Kopf kommen nur aus den Rollen --head-gap-* (global.css), für jede Variante und jede Einbettung gleich:
+     Kicker → Überschrift, Überschrift/Text → Text, Text → Link oder Knöpfe. Den Abstand zum Inhalt setzt .sec-head bzw.
+     das einbettende Layout mit --head-gap-content. */
+  .section-head[data-section-head]:not([data-section-head="contents"]) { display: grid; row-gap: var(--head-gap-text); align-content: start; }
+  .section-head[data-section-head] > :is(h1, h2, h3, p) { margin-block: 0; }
+  .section-head[data-section-head] > :is(.actions, a.link, a.btn, :is(p, div):has(> :is(a.link, a.btn)):not(:has(> :not(a, br)))) { margin-top: calc(var(--head-gap-cta) - var(--head-gap-text)); }
   .section-head[data-section-head="contents"] { display: contents; }
-  .section-head :is(h1, h2, h3) > .kicker { margin: 0 0 var(--kicker-gap, var(--space-3-5)); }
+  .section-head :is(h1, h2, h3) > .kicker { margin: 0 0 var(--head-gap-kicker); }
   .section-head :is(h1, h2, h3) > .head-line { display: block; }
 </style>

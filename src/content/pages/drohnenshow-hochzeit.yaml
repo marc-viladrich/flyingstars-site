@@ -25,10 +25,19 @@ sections:
       - { value: inklusive, label: Genehmigung, "_key": "k_23f7c52d3dd38daa58dc" }
     _key: k_683af193db254741d0d4
 
-  # Moritz: „Du kennst uns aus: ZDF, WDR, NTV, WAZ + ‚Featured on Hochzeitsportal24‘“, ohne Kund:innen-Logos
+  # Moritz: „Du kennst uns aus: ZDF, WDR, NTV, WAZ + ‚Featured on Hochzeitsportal24‘“. Runde 6 (Marc): dazu sechs
+  # Kund:innen-Logos als ruhige Reihe; Hochzeitsportal24 mit der Wortmarke von hochzeitsportal24.de statt als Text.
   - type: logoBar
     id: presse
     headline: Bekannt aus
+    label: Geflogen für
+    logos:
+      - { name: Bulgari, file: /brand/logos/kunde-bulgari-weiss.svg, "_key": "k_836b51e7d3d32cad742e" }
+      - { name: Prada, file: /brand/logos/kunde-prada-weiss.svg, "_key": "k_135f6b274f5ff8f93c25" }
+      - { name: L’Oréal, file: /brand/logos/kunde-loreal-weiss.svg, "_key": "k_029386fb557c94733691" }
+      - { name: Spotify, file: /brand/logos/kunde-spotify-weiss.svg, "_key": "k_e9c10d6391d8d7fcd449" }
+      - { name: Volkswagen, file: /brand/logos/kunde-volkswagen-weiss.svg, "_key": "k_241fa1a44078fdf4ba7d" }
+      - { name: REWE, file: /brand/logos/kunde-rewe-weiss.svg, "_key": "k_1a399e3ba47608b2a429" }
     pressLabel: Ihr kennt uns aus
     pressItems:
       - { name: ZDF, logo: /brand/logos/presse-zdf.svg, cleared: true, knock: true, note: "1, 2 oder 3", "_key": "k_4791d0a73285012bba9c" }
@@ -38,8 +47,8 @@ sections:
       - { name: heise online, logo: /brand/logos/presse-heise.svg, cleared: true, note: "Technische Innovation", "_key": "k_5e1f0a7c3b9d24e8a611" }
       - { name: NDR, logo: /brand/logos/presse-ndr.svg, cleared: true, note: "Hallo Niedersachsen", "_key": "k_8c2d4f6a1e3b5d7f9a02" }
       - { name: Tagesspiegel, logo: /brand/logos/presse-tagesspiegel.svg, cleared: true, note: "#BÖLLERCIAO", href: "https://www.tagesspiegel.de/berlin/drohnen-statt-boller-deutsche-umwelthilfe-zeigt-alternative-zum-berliner-silvester-feuerwerk-10846906.html", "_key": "k_3a7e9c1b5d2f4a6c8e13" }
-      - { name: Featured on Hochzeitsportal24, "_key": "k_bbafa3e80787a8a9454a" }
-    todo: Für Hochzeitsportal24 fehlen Logo, Freigabe und Link auf den Beitrag.
+      - { name: Hochzeitsportal24, logo: /brand/logos/presse-hochzeitsportal24.png, cleared: true, note: "Featured on Hochzeitsportal24", "_key": "k_bbafa3e80787a8a9454a" }
+    todo: Für Hochzeitsportal24 fehlen Freigabe und Link auf den Beitrag.
     _key: k_fa0160e7a8afe4f1a3f7
 
   # Choreografie mit dem Konfigurator-Teaser (Herzen, Ringe, Initialen) wie „Motive“ im Prototyp

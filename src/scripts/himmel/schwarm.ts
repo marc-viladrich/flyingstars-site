@@ -195,6 +195,9 @@ function measure(slot: Slot): void {
 /** Bühne der Show-Folge (#warum-drohnen). Breit: rechts neben dem Text, das dominante Element der Section (bei 1440 px gut
  *  480 px, bei 1920 px bis 690 px breit), 64 px vom Text, mit der free()-Prüfung. Schmal: die Fläche, die himmel.css unter
  *  dem Text reserviert (::after, Höhe steht von Anfang an fest, nichts springt). */
+/** Maße der Show-Folge-Bühne in CSS-Pixeln: Luft zum Text (Anteil der Fensterbreite, mindestens/höchstens), Abstand zu den
+ *  Section-Kanten, kleinste sinnvolle Breite. */
+const FOLGE = { gapVw: 0.05, gapMin: 64, gapMax: 112, edge: 24, minWidth: 340 } as const;
 function folgeBox(host: HTMLElement, wide: boolean): Box {
   const hostBox = page(host), cs = getComputedStyle(host), right = hostBox.x + hostBox.w - num(cs.paddingRight);
   if (!wide) {
@@ -208,9 +211,9 @@ function folgeBox(host: HTMLElement, wide: boolean): Box {
   // Runde 5 (Marc, 18.11.2026: „insbesondere on a big screen … noch um einiges größer, wir haben mehr Platz“): die ganze
   // Fläche rechts vom Text bis zur Content-Kante und über die Höhe der Section (bis 24 px an ihre Kanten), nicht mehr
   // höchstens 720 × 500 px. Abstand zum Text 64–112 px; free() prüft weiter, dass nichts berührt wird.
-  const gap = clamp(innerWidth * 0.05, 64, 112), left = used + gap, w = right - left;
-  if (w < 340) return NONE;
-  const y0 = hostBox.y + 24, y1 = hostBox.y + hostBox.h - 24, h = Math.min(y1 - y0, Math.max(bottom - top + 80, w * 1.1));
+  const gap = clamp(innerWidth * FOLGE.gapVw, FOLGE.gapMin, FOLGE.gapMax), left = used + gap, w = right - left;
+  if (w < FOLGE.minWidth) return NONE;
+  const y0 = hostBox.y + FOLGE.edge, y1 = hostBox.y + hostBox.h - FOLGE.edge, h = Math.min(y1 - y0, Math.max(bottom - top + 80, w * 1.1));
   const mid = Math.min(y1 - h / 2, Math.max(y0 + h / 2, (top + bottom) / 2));
   const box = { x: left, y: mid - h / 2, w, h };
   return free(host, box, null) ? box : NONE;
@@ -518,8 +521,10 @@ class Himmel {
     // Verdrängung nur am stehenden Bild; im Flug ruht sie (der Abflug startet dort, wo jede Drohne gerade ist)
     const P = !flying && this.ptr ? { x: this.ptr.x + scrollX, y: this.ptr.y + scrollY } : null;
     let busy = flying, stir = 0;
-    // Wirkradius nach Bühnengröße: im flachen Schriftzug über dem Formular rund 56 px, an großen Bildern 110 px wie in der Scrollstory
-    const reach = clamp(Math.min(slot.box.w, slot.box.h) * 0.4, 56, 110), push = 2600 * (reach / 110), lim = reach * 0.55;
+    // Wirkradius nach Bühnengröße (Formular-Schriftzug rund 44 px, große Bilder bis 84 px). Runde 6 (Marc: „a bit too strong“):
+    // Der Stoß ist schnell wie in der Scrollstory, sättigt aber weich, je näher eine Drohne ihrem Höchstausschlag kommt (gut ein
+    // Viertel des Radius, am Schriftzug rund 13 px); zurück federt sie kritisch gedämpft, ohne Nachschwingen
+    const K = 5, C = 2 * Math.sqrt(K), reach = clamp(Math.min(slot.box.w, slot.box.h) * 0.32, 44, 84), most = reach * 0.3, push = 1600 * (reach / 84), lim = most * 1.2;
     for (let i = 0; i < N; i++) {
       const lit = i < sc.n ? 0.86 + 0.14 * (this.tz[i] + 1) / 2 : 0;
       let bright = lit;
@@ -541,9 +546,9 @@ class Himmel {
         }
       } else {
         if (i < sc.n && dt) {
-          const K = 7, C = 2 * Math.sqrt(K) * 0.8; // Feder zurück an den Platz, leicht unterkritisch gedämpft
+          // Feder zurück an den Platz, kritisch gedämpft: weich, ohne Nachschwingen
           let vx = this.ovx[i] + (-K * this.ox[i] - C * this.ovx[i]) * dt, vy = this.ovy[i] + (-K * this.oy[i] - C * this.ovy[i]) * dt;
-          if (P) { const mx = this.tx[i] + this.ox[i] - P.x, my = this.ty[i] + this.oy[i] - P.y, md = Math.hypot(mx, my); if (md < reach && md > 0.1) { const f = (1 - md / reach) ** 2 * push * dt; vx += (mx / md) * f; vy += (my / md) * f; } }
+          if (P) { const mx = this.tx[i] + this.ox[i] - P.x, my = this.ty[i] + this.oy[i] - P.y, md = Math.hypot(mx, my); if (md < reach && md > 0.1) { const f = (1 - md / reach) ** 2 * push * Math.max(0, 1 - Math.hypot(this.ox[i], this.oy[i]) / most) * dt; vx += (mx / md) * f; vy += (my / md) * f; } }
           this.ovx[i] = vx; this.ovy[i] = vy; this.ox[i] = clamp(this.ox[i] + vx * dt, -lim, lim); this.oy[i] = clamp(this.oy[i] + vy * dt, -lim, lim);
           stir = Math.max(stir, Math.abs(this.ox[i]) + Math.abs(this.oy[i]) + Math.abs(vx) + Math.abs(vy));
         }

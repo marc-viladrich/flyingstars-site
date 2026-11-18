@@ -8,8 +8,9 @@ Git-Historie, Commit `b31d7c9`). Verbindliche Regeln: `docs/DESIGN.md` → „Hi
 - **Schwarm:** ein Schwarm aus 300 Drohnen begleitet den Besuch von Bühne zu Bühne. Bilder stehen, Wechsel sind dunkel.
 - **Zeiger:** Wer mit der Maus über ein stehendes Bild fährt, verdrängt die Drohnen im Raum, eine Feder holt sie weich zurück
   (dieselbe Mechanik wie die Punktwolke der Nachhaltigkeits-Scrollstory, `effects/eco-scrolly.js`). Bis Runde 4 leuchteten sie
-  stattdessen auf; Marc, 18.11.: „zu cheap-looking“. Wirkradius nach Bühnengröße (Formular-Schriftzug 56 px, große Bilder 110 px).
-- **Punktübergänge** zwischen `.section.alt` und dem Grundton.
+  stattdessen auf; Marc, 18.11.: „zu cheap-looking“. Runde 6 (Marc: „a bit too strong“): Wirkradius 44–84 px nach Bühnengröße,
+  der schnelle Stoß sättigt weich bei gut einem Viertel des Radius (Schriftzug rund 13 px), zurück kritisch gedämpft ohne Nachschwingen.
+- **Punktübergänge** an jeder Grenze zweier Sections mit unterschiedlicher Hintergrundfarbe, auf allen Seiten (siehe unten).
 - **Lichtlauf der H1**, einmal beim Laden, nur über Helligkeit.
 
 ## Bühnenplan
@@ -54,7 +55,8 @@ Funkwellen am Fernsehturm, Kolibri mit Blüte, QR schneller, Feuerregen zurück,
   - *esc* – erst flach (SPARK, ~100 Drohnen, 1 s), dann fliegen dieselben Drohnen in den Körper (HORIZON), der anschwenkt;
     die hinzukommenden steigen dunkel von unten auf und leuchten erst an ihrem Platz: Logo (`logo` → `logo3d`), Fernsehturm
     (`tower` → `towerStory` Akt 1–2: der Turm sendet, die Funkwellen laufen nacheinander nach außen; ohne Brandenburger Tor),
-    Schneeflocke → Lichterbaum, Wappen mit Stern → Wappen „125“ mit wehender Fahne (`shield` → `shield3d`, 300),
+    Schneeflocke → räumliche Schneeflocke (Runde 6, `snow3d` in `scenes/schnee.js`: drei Flocken-Ebenen um die gemeinsame
+    Hochachse falten sich aus der flachen Flocke auf und drehen sich) → Lichterbaum, Wappen mit Stern → Wappen „125“ mit wehender Fahne (`shield` → `shield3d`, 300),
     Riesenrad (`wheel2d` 150 → `wheel3d` 300, dreht sich um die Nabe, kein Schwenk)
   - *story* – eine Geschichte in Akten (ODYSSEY, 300), gerafft auf etwa 1,3 s je Akt: QR-Code (`qrStory`, Runde 5 auf 3 s Show-Zeit
     gestrafft, real gut 4 s), Delfine (`dolphinStory` ab dem Sprung), Buch (`bookStory`), Musik (`harpStory`: Harfe, Noten),
@@ -65,7 +67,7 @@ Funkwellen am Fernsehturm, Kolibri mit Blüte, QR schneller, Feuerregen zurück,
   Es kommt bei −20° an und schwenkt in seiner Standzeit in einer Richtung nach +20° (`SWING`), langsam an und aus, keine Finte.
   Standzeit 1,5 s plus Anlauf und Bremsen (vorher 2,6 s mit einer ganzen Umdrehung). Das Riesenrad nutzt die Drehung aus
   `festival.js` (`turnWheel`, Gondeln bleiben hängend) mit 2,6-fachem Tempo und steht dafür 3,4 s.
-- **Reihenfolge:** beim ersten Besuch fest, danach gemischt ohne Zurücklegen: nie dieselbe Art hintereinander und keine
+- **Reihenfolge:** beim ersten Besuch fest (Runde 6: QR-Code direkt nach dem Logo, Marc: typischer Einsatz), danach gemischt ohne Zurücklegen: nie dieselbe Art hintereinander und keine
   Formfamilie (rund, hoch, Tier, Gesicht …) aus den beiden Stücken davor. Gemessen (18.11., Dev-Server, Chromium 1440 × 900,
   Sekunden ab dem Scrollen zur Section, Rechner stark ausgelastet, eher etwas langsamer als real): Blüte 1,4 · Feuerwerk-Finale
   3,2 · Maske 6,7 · Logo 9,2 (Körper 10,8) · Kugel 13,3 · Delfine 15,9 · Fernsehturm 24,2 · QR 28,4 · Wappen 34,8 („125“ 36,5) ·
@@ -107,7 +109,8 @@ Funkwellen am Fernsehturm, Kolibri mit Blüte, QR schneller, Feuerregen zurück,
   Chromium 1440 × 900, CPU 4× gedrosselt, 300 s, je 30 s): vorher Frame-Zeit p50 16,7 → 83 ms, p95 16,8 → 117 ms, Long Tasks
   0 → 300 je 30 s, rAF-Aufrufe je Frame 3,5 → 50, Heap 19 → 46 MB; nachher in allen zehn Abschnitten p50 16,7 / p95 16,8 ms,
   0–6 Long Tasks je 30 s, ein rAF-Aufruf je Frame, Heap 19–30 MB ohne Trend. Außerhalb des Bildes: 0 Frames. Werkzeug:
-  `/private/tmp/claude-501/fs-r5/show/tools/longrun.mjs` (nicht im Repo). Die Zeiten der Runde-4-Zeitleiste waren durch den
+  `/private/tmp/claude-501/fs-r5/show/tools/longrun.mjs` (nicht im Repo). Runde 6: Misslingt ein Stück viermal (Fehler im Motiv,
+  Netz), versucht `prepare()` es nicht mehr sofort erneut (vorher eine endlose Wiederholung). Die Zeiten der Runde-4-Zeitleiste waren durch den
   Fehler zu kurz; neu gemessen (1920 × 1080, ohne Drosselung): Feuerwerk-Finale mit Goldregen 2,3 · Maske 8,4 · Logo 10,9 ·
   Kugel 15,0 · Delfine 17,5 · Fernsehturm 25,9 · QR 32,9 · Wappen 37,5 · Musik 41,6 · Kolibri 50,0 · Buch 58,3 ·
   Lichterbaum 66,8 · Tänzerin 70,9 · Riesenrad 79,2 · Feuerwerk 85,1 · ab 97 gemischt.
@@ -122,11 +125,18 @@ Funkwellen am Fernsehturm, Kolibri mit Blüte, QR schneller, Feuerregen zurück,
 Marc zur leeren Icon-Karte neben „Faszinierend wie Feuerwerk, sicher wie Laser“: „Hier würde eigentlich auch eine Animations-Reihe
 wie auf der Startseite sehr gut passen.“ Dieselbe Technik, `createFolge(canvas, { variant: "indoor" })`, kein zweites System.
 
-- **Motive** (`scenes/indoor.js`, 50 Drohnen wie eine echte Indoor-Show): Herz (Herzschlag aus Licht), Welle (läuft durch die
-  Linie), Initialen „L ♥ M“ (Lichtlauf schreibt nach), Stern (dreht sich in der Bildebene), Ring mit Stein (schwenkt, zeigt die
-  Tiefe), zwei Achtelnoten (wiegen sich). Feste Runde, je etwa 2 s Standzeit, Wechsel durch die lebendige Wolke in etwa 0,5 s.
+- **Motive** (`scenes/indoor.js`, 50 Drohnen wie eine echte Indoor-Show): Herz (Herzschlag aus Licht), Diamant (Edelstein-Kontur,
+  schwenkt), Welle (läuft durch die Linie), lachendes Gesicht (zwinkert), Initialen „L ♥ M“ (Lichtlauf schreibt nach),
+  Doppelspirale (dreht sich), Stern (dreht sich in der Bildebene), Krone, Ring mit Stein (schwenkt, zeigt die Tiefe), zwei
+  Achtelnoten (wiegen sich). Feste Runde, je 1,4 s Standzeit (Runde 6, vorher sechs Motive à 2 s), Wechsel durch die lebendige
+  Wolke in etwa 0,5 s; eine Runde dauert gut 26 s. Ein Brillantschliff im Raum las sich mit 50 Punkten nur als Punktwolke.
   Das FlyingStars-Zeichen las sich mit 50 Punkten nicht und ist darum nicht dabei.
-- **Bühne:** `show: indoor` am Abschnitt (`Sustainability.astro`), rechts neben dem Text, ohne Rahmen und Punktmuster. Das Canvas
+- **Bühne:** `show: indoor` am Abschnitt (`Sustainability.astro`), ohne Rahmen und Punktmuster. Runde 6: Indoor-Reihe und
+  Chopper-Szene (Hochzeit, `scene: chopper-play`) teilen einen Mechanismus, das Grid `.eco-staged` mit den Bereichen `head`,
+  `copy`, `stage`: ab breitem Desktop stehen Kopf und Text links (5fr), die Bühne spannt rechts (7fr) beide Zeilen bis zur
+  Content-Kante; schmal untereinander. Keine Minus-Ränder, kein Messskript. Benannte Größen an der Komponente: `--stage-min`
+  (Mindesthöhe, 20–34 rem, schmal 15–22 rem) und `--stage-bleed` (so weit reicht das Canvas der Reihe über die Bühne hinaus).
+  Die Motive füllen die Bühne zu 90 % (vorher 74 %). Ohne JavaScript bleibt die Bühne weg, der Text steht einspaltig. Das Canvas
   reicht oben und unten über die Bühne hinaus (CSS), Lichter 1,6-mal so groß wie auf der Startseite (`lightScale`). Weil das
   Canvas bis neben die Überschrift reicht, findet der Schwarm dort keinen freien Platz mehr (`free()`); die frühere Diskokugel bei
   `#unterschied` entfällt damit, es gibt nur ein bewegtes Element in der Section.
@@ -148,7 +158,7 @@ wie auf der Startseite sehr gut passen.“ Dieselbe Technik, `createFolge(canvas
   Bewegung: jede Bühne zeigt ihr Bild, nichts fliegt; die Umschaltung greift ohne Neuladen.
 - Seitenwechsel: Lage und Farbe der Drohnen bleiben für einige Sekunden in `sessionStorage` (`flyingstars:himmel`), damit der
   Schwarm auf der nächsten Seite von dort weiterfliegt. Sonst wird kein Zustand gespeichert.
-- Skriptzeit messen: `node tools/himmel/perf.mjs <url> <selector>`. Übergangsmaske neu erzeugen: `node tools/himmel/uebergang.mjs [seed]`.
+- Skriptzeit messen: `node tools/himmel/perf.mjs <url> <selector>`. Übergangsmasken neu erzeugen: `node tools/himmel/uebergang.mjs [seed]`.
 
 ## Performance (Runde 4, 18.11.2026)
 
@@ -242,6 +252,36 @@ Marc: „Wenn ich wechsle von diesem Input-Field zu der Anlass-Section … ist d
 - **Offen:** Bildwechsel des laufenden Teasers zwischen sehr verschiedenen Formen (QR, Rakete, Logo mit Schriftzug, bis 600 Drohnen)
   kosten die optimale Zuordnung auch ungedrosselt 15–90 ms; in Chromium 4× bleibt in `(preise)` ein Long Task von rund 60 ms (vorher
   62 ms), WebKit max 28–36 ms. Abhilfe wäre, die Zuordnung des nächsten Bildes während des Haltens im Leerlauf vorzurechnen.
+
+## Punktübergänge (Runde 6, 18.11.2026)
+
+Marc: „Not well crafted, I can see very clearly a straight line“, „not being applied consistently“, Trennlinien „really break the
+effect“, Punkte zu klein (sollen wie beim Lichtpunkt-Hover auf Bildern sein), Muster in der Breite zu regelmäßig („factory built“).
+
+- **Prinzip:** Jede Fläche mit eigener Hintergrundfarbe (`.section.alt`, `.c-setlist`, `.team-sec`; Liste in `himmel.css`) läuft
+  mit `::before` nach oben und `::after` (gespiegelt, versetzt) nach unten in Punkten über ihre Kante aus. Die Punkte tragen die
+  Farbe der Fläche selbst (`background-color: inherit`); der Übergang braucht die Farbe des Nachbarn nicht und ist zwischen
+  gleichfarbigen Flächen unsichtbar. Liegt unter einer Farbfläche eine andere Farbfläche, deckt diese das untere Band ab und ihr
+  oberes übernimmt. Zwischen zwei `.section.alt` bleibt die Haarlinie (gleiche Farbe, kein Übergang).
+- **Muster** (`tools/himmel/uebergang.mjs` → `public/media/uebergang.svg` 960 × 72 px, `uebergang-schmal.svg` 480 × 32 px fürs
+  Handy): An der Kante überlappen sich große Punkte (Deckung gut 90 %), die Fläche endet in einer Kontur aus Punkten statt einer
+  Linie; nach oben lichter und kleiner. Radius 1,4–4,6 px wie beim Lichtpunkt-Hover (`effects/dotimage.js`, Raster 8 px, 1,3–4 px).
+  Reichweite und Dichte schwanken entlang der Breite (weiche periodische Verläufe), die Punkte liegen als Blue Noise; nahtlos in der
+  Breite (Punkte am Kachelrand werden gegenüber wiederholt; die alte Maske schnitt sie ab, sichtbare Naht). Statisch: keine
+  Laufzeitkosten außer der Maske.
+- **Höhe:** `clamp(2rem, 50 % von --section, 4.5rem)`, auf dem Handy 2 rem mit der schmalen Kachel (gleiche Punktgröße, kürzere
+  Reichweite; abgeschnitten entstünde wieder eine gerade Kante). Vor dem Footer höchstens 85 % seines oberen Innenabstands
+  (`--footer-top`).
+- **Keine Trennlinien an Farbwechseln:** Borders von `.section.alt`, `.c-setlist`, `.team-sec` entfernt (`global.css`), die
+  Footer-Linie fällt weg, wenn die letzte Section eine Farbfläche ist. Der Lichtschein der Team-Section setzt erst unter der Kante ein
+  (sonst eigene gerade Kante).
+- **Fallstrick:** `content-visibility: auto` (Preisseite) bedeutet Paint-Containment und schneidet die Bänder ab;
+  Farbflächen sind dort ausgenommen (`PricingPage.astro`).
+- **Wächter:** `npm run check:uebergaenge` (`tools/himmel/uebergaenge-pruefen.mjs`) prüft alle Seiten aus `dist/`: jede Grenze
+  benachbarter Sections mit unterschiedlichem berechnetem Hintergrund braucht den Übergang (sichtbar: nicht abgeschnitten, nicht
+  verdeckt), keine Trennlinie, kein Band über Inhalt des Nachbarn. `npm run perf:start` prüft sechs typische Seiten bei 390 und
+  1440 px, `scripts/himmel-perf.test.mjs` die Quelltext-Regeln. Stand 18.11.: 77 Seiten, 368 Grenzen, 171 Farbwechsel, bei 390,
+  1440 und 1920 px ohne Befund (vorher: 33 Farbwechsel ohne Übergang, 45 mit Trennlinie, Preisseite 5 abgeschnitten).
 
 ## Offen
 
