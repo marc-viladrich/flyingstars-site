@@ -31,12 +31,16 @@ interface Props {
   heading?: string;
   /** Kicker in Orange über der Überschrift (docs/DESIGN.md, Section-Köpfe) */
   kicker?: string;
+  /** Abschluss nach unten: section (Standard, --section) oder tight (--section-tight), wenn ein eng zugehöriger Abschnitt
+   *  folgt, z. B. das Preisversprechen. Der folgende Abschnitt setzt nur seinen eigenen Innenabstand, keinen negativen Rand */
+  end?: 'section' | 'tight';
 }
-const { id = 'konfigurator', headingLevel = 2, heading = t('showconfigurator.whatShouldHappenInTheSky'), kicker } = Astro.props;
+const { id = 'konfigurator', headingLevel = 2, heading = t('showconfigurator.whatShouldHappenInTheSky'), kicker, end = 'section' } = Astro.props;
 const Heading = headingLevel === 1 ? 'h1' : 'h2';
 // Preisseite (Marc, 18.11.2026: „open with the configurator“): Seitenkopf als Teil der Section. Die Seite liefert die
 // Überschrift (mit id="cfg-h") im Slot head, Eckdaten im Slot facts und den Einleitungstext im Slot intro; die
-// Anordnung je Breite steht in PricingPage.astro. Ohne Slot bleibt alles wie bisher (Überschrift im Bedienfeld).
+// Anordnung je Breite ist die Variante has-head (show-configurator.css). Ohne Slot bleibt alles wie bisher (Überschrift im
+// Bedienfeld).
 const hasHead = Astro.slots.has('head');
 // Erstes Standbild (18.11.2026): Bis die Engine nach dem Laden ihr erstes Bild zeichnet, steht auf der Bühne eine ruhige
 // Lichtwolke aus dem Server-HTML statt einer schwarzen Fläche; das Skript blendet sie aus, sobald die Leinwand Punkte
@@ -73,14 +77,15 @@ const startPrice = showArtPrice(startArt, first.base);
 const at = (n: number) => ((n - DRONES_MIN) / (DRONES_MAX - DRONES_MIN)) * 100;
 const ticks = [DRONES_MIN, 300, 500, DRONES_MAX];
 ---
-{/* Explicit URL: the catch-all route imports the pricing template on every page.
-     Keep its namespaced styles on pages that actually render the configurator. */}
-<style is:inline set:html={configuratorStyles}></style>
-<section class:list={['cfg is-individual', { 'has-head': hasHead }]} id={id} aria-labelledby="cfg-h">
+<section class:list={['cfg is-individual', { 'has-head': hasHead, 'cfg-end-tight': end === 'tight' }]} id={id} aria-labelledby="cfg-h">
+    {/* Die Catch-all-Route importiert das Preis-Template auf jeder Seite; die Stile kommen deshalb nur mit dem gerenderten
+         Konfigurator. In der Section statt davor, damit die Section als erstes Kind der Seite den gemeinsamen Seitenanfang
+         bekommt (.page-top, --hero-top). */}
+    <style is:inline set:html={configuratorStyles}></style>
     {hasHead && <div class="cfg-head"><slot name="head" /></div>}
     {hasHead && Astro.slots.has('facts') && <div class="cfg-facts"><slot name="facts" /></div>}
     {hasHead && Astro.slots.has('intro') && <div class="cfg-intro"><slot name="intro" /></div>}
-    <div class="cfg-stage" aria-label={t('showconfigurator.showPreview')} aria-describedby="cfg-scene" data-bleed>
+    <div class="cfg-stage" role="group" aria-label={t('showconfigurator.showPreview')} aria-describedby="cfg-scene" data-bleed>
       <svg class="cfg-poster" viewBox="0 0 160 90" preserveAspectRatio="xMidYMid meet" aria-hidden="true">{poster.map((p) => <circle cx={p.x.toFixed(2)} cy={p.y.toFixed(2)} r={p.s.toFixed(2)} fill-opacity={p.o.toFixed(2)} />)}</svg>
       <canvas id="cfg-field" aria-hidden="true"></canvas>
       {/* vierzehnte Fassung: ein Klick irgendwo auf die Bühne hält die Vorführung an oder lässt sie weiterlaufen (wie bei

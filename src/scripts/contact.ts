@@ -5,6 +5,7 @@ import {contact as CONTACT} from '../content/contact.mjs';
 import { t } from '../i18n/ui.mjs';
 import { INQUIRY_REF_KEY } from '../content/inquiry-source.mjs';
 import { localizedHref, localeFromPath } from '../i18n/routing.mjs';
+import { sendForm, SendError, setFieldError, clearErrorsOnInput } from './form-contract';
 let selectPackage: ((name: string) => void) | undefined;
 export function pickPackage(name: string) { selectPackage?.(name); }
 const form = document.querySelector<HTMLFormElement>('#inquiry-form');
@@ -43,9 +44,7 @@ if (form) {
     let first: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | undefined;
     fields.forEach((field) => {
       const valid = field.checkValidity();
-      const error = form.querySelector<HTMLElement>(`[data-err-for="${field.name}"]`);
-      field.setAttribute('aria-invalid', String(!valid));
-      if (error) error.textContent = valid ? '' : field.type === 'radio' ? t('contact.pleaseChooseAnOccasion') : field.validity.tooLong ? t('contact.shortenInput') : field.type === 'email' && field.value ? t('contact.pleaseEnterAValidEmailAddress') : field.dataset.msg || t('contact.pleaseFillInThisField');
+      setFieldError(form, field.name, valid ? '' : field.type === 'radio' ? t('contact.pleaseChooseAnOccasion') : field.validity.tooLong ? t('contact.shortenInput') : field.type === 'email' && field.value ? t('contact.pleaseEnterAValidEmailAddress') : field.dataset.msg || t('contact.pleaseFillInThisField'));
       if (!valid) first ||= field;
     });
     first?.focus();
@@ -56,11 +55,7 @@ if (form) {
   form.querySelector<HTMLElement>('[data-next]')?.removeAttribute('hidden');
   form.querySelector('[data-next]')?.addEventListener('click', () => { if (validate(steps[step])) show(1); });
   form.querySelector('[data-back]')?.addEventListener('click', () => show(0));
-  form.querySelectorAll<HTMLInputElement>('input,select,textarea').forEach((field) => field.addEventListener('input', () => {
-    field.removeAttribute('aria-invalid');
-    const error = form.querySelector<HTMLElement>(`[data-err-for="${field.name}"]`);
-    if (error) error.textContent = '';
-  }));
+  clearErrorsOnInput(form);
   const params = new URLSearchParams(location.search);
   const prefill=parseInquiry(params);
   const selected = prefill.paket;
@@ -121,12 +116,10 @@ if (form) {
       // Zufallswert als Bezug für die freiwillige Quellen-Frage auf der Danke-Seite (kein Tracking, nur diese Sitzung)
       const ref = [...crypto.getRandomValues(new Uint8Array(6))].map((b) => b.toString(16).padStart(2, '0')).join('');
       data.set('ref', ref);
-      const response = await fetch(form.action, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
-      const result = await response.json();
-      if (!response.ok || result.ok !== true) throw new Error(result.detail || t('contact.yourEnquiryCouldNotBeSent'));
+      const result = await sendForm(form.action, data);
       if (result.state === 'not-configured') {
         status.textContent = t('contact.formDeliveryHasNotBeenSetUpYetNothingWas', {email:CONTACT.email});
-      } else if (result.state === 'sent') {
+      } else {
         status.textContent = t('contact.yourEnquiryHasBeenSentWeLlGetBackTo');
         // Only the provider-confirmed response carries an opaque request UUID.
         // Honeypots intentionally show success but never carry this confirmation.
@@ -136,10 +129,12 @@ if (form) {
         // Conversion-Meldung noch auf dieser Seite laufen.
         try { sessionStorage.setItem(INQUIRY_REF_KEY, ref); } catch { /* privat */ }
         setTimeout(() => location.assign(localizedHref('/danke/', localeFromPath(location.pathname))), 2400);
-      } else {
-        throw new Error(t('contact.yourEnquiryCouldNotBeSent'));
       }
-    } catch (error) { status.textContent = t('contact.valuePleaseTryAgainLaterOrEmailTeamFlyingstarsArt', { email:CONTACT.email, v0: error instanceof Error ? error.message : t('contact.deliveryFailed') }); }
+    } catch (error) {
+      // Servermeldungen (Validierung, Provider) wörtlich; Netz- und Formatfehler als lokalisierter Ersatztext.
+      const detail = error instanceof SendError ? error.detail : undefined;
+      status.textContent = t('contact.valuePleaseTryAgainLaterOrEmailTeamFlyingstarsArt', { email:CONTACT.email, v0: detail ?? t('contact.deliveryFailed') });
+    }
     finally { form.querySelectorAll<HTMLButtonElement>('[data-logo-inquiry] button').forEach(b => b.disabled = false); button.disabled = false; button.textContent = logoInquiry.buttonText(); status.focus(); }
   });
   // Optionale Angaben (Marc, 02.11.2026: „aus dem Weg räumen“): ein Knopf je Feld blendet es ein; Felder mit Inhalt

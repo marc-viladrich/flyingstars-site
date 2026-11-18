@@ -4,16 +4,16 @@ tags: [faq-kosten]
 order: 2
 draft: false
 translationContractVersion: 2
-translationSourceHash: 9e1da9797d7a9fa864eb5994138acc8ec30dfb6e94b8a9dad1486a49bcb26152
+translationSourceHash: cb78e84db292b9ba18ca97514605bfb11454ac38b68146ac5c6bf08de470acc6
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 9e1da9797d7a9fa864eb5994138acc8ec30dfb6e94b8a9dad1486a49bcb26152
+  sourceFingerprint: cb78e84db292b9ba18ca97514605bfb11454ac38b68146ac5c6bf08de470acc6
   fields:
     - address: /body
-      sourceFingerprint: 9e35f7cb28047712a10ba869403c83e5f828981b650eea1d5cd2ba09965e1b2f
-      targetFingerprint: 9967393cdc193c525ceb66f14874dab890fb1b9b77fe7e803ed8c25969d9fcd6
+      sourceFingerprint: 4b3f84cc959b9026491aead9ad910aa5d5d2cd849e4996046fb171ce43198f2f
+      targetFingerprint: e7942cd338da0936748faec20f9cbf463825e9ab8ed167f4e83514bc6ce22e23
       status: adopted-existing
     - address: /question
       sourceFingerprint: 556d5c154a314898548a0a923f04ea143a2038c88b4861334e33e87c0c78df76
@@ -21,4 +21,4 @@ translationEvidence:
       status: adopted-existing
 ---
 
-Shows binnen zijn wat bewerkelijker, vooral wat het veiligheidsconcept betreft. Daarom beginnen onze evenementen binnen bij 15.000 euro (netto) plus reiskosten.
+Shows binnen zijn wat bewerkelijker, vooral wat het veiligheidsconcept betreft. Daarom beginnen onze evenementen binnen bij {{offer.indoor.priceAmount}} (netto) plus reiskosten.

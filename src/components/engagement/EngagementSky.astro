@@ -5,11 +5,11 @@
 import DotField from '../DotField.astro';
 import ShowPhoto from '../gallery/ShowPhoto.astro';
 import Formation from './Formation.astro';
-import { PARTNER_VISUALS, splitSince } from './partners.mjs';
+import { partnerVisual, splitSince } from './partners.mjs';
 interface Entry { kicker: string; title: string; text?: string }
 interface Props { entries: Entry[]; facts: { value: unknown; label: string }[]; level: 'h2' | 'h3' }
 const { entries, facts, level: T } = Astro.props;
-const visuals = entries.map((e) => PARTNER_VISUALS[e.title.toUpperCase()] ?? {});
+const visuals = entries.map((e) => partnerVisual(e.title));
 const photo = visuals.find((v) => v.photo)?.photo;
 ---
 <div class="eng-sky-wrap">

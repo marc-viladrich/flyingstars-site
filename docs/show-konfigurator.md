@@ -1,8 +1,83 @@
-# Show-Konfigurator (Prototyp)
+# Show-Konfigurator
 
-Stand: 5. November 2026, Runde 24 (Abschnitt ganz unten: Motive aus dem FlyingStars-Katalog, Drohnenbedarf des Textes). Davor sechzehnte Fassung. Frühere Stände sind als Tags erhalten: `konfigurator-v6`, `konfigurator-v8`, `konfigurator-v9`, `konfigurator-v10`. Seit der sechzehnten Fassung ist der Konfigurator eine Komponente (`src/components/configurator/ShowConfigurator.astro`) direkt auf der Preisseite, Anker `#konfigurator`; `/show-konfigurator/` leitet dorthin weiter. Für die Startseite gibt es einen Teaser als sich selbst abspielendes Showreel (`ConfiguratorTeaser.astro`, Abschnitt „Startseiten-Teaser als Showreel“). Der Konfigurator ist ein Vorschlag an FlyingStars.
+Gültiger Stand: 18.11.2026 (Runde 6). Dieser Abschnitt beschreibt den aktuellen Vertrag. Der Anhang „Verlauf“ darunter
+protokolliert alle Fassungen seit Oktober in zeitlicher Reihenfolge; dort beschriebene Modelle (Paketwahl, Ergebnis-Spalte,
+Leistungsvergleich) gelten nur, wenn dieser Abschnitt sie nennt.
 
-## Das Modell: zwei Entscheidungen, die sich nicht gegenseitig verändern
+## Wo er steht
+
+- Komponente `src/components/configurator/ShowConfigurator.astro`, einziger Einsatz auf der Preisseite
+  (`src/templates/PricingPage.astro`, Anker `#konfigurator`). Die Seite beginnt mit ihm: H1, Einleitung und Eckdaten der
+  Preisseite sind sein Kopf (Slots `head`, `intro`, `facts`). `/show-konfigurator/` leitet dorthin weiter.
+- Logik `src/scripts/show-configurator.js`, Bühne `src/scripts/show-field.js` mit Motiven aus `src/scripts/scenes/` und
+  `show-scenes.js`, Flugbahnen `show-flight.js`. Stile `src/styles/show-configurator.css`, nur auf Seiten mit Konfigurator
+  eingebettet.
+- Startseiten-Teaser `ConfiguratorTeaser.astro` (`show-teaser.js`, `configurator-teaser.css`): selbstlaufendes Showreel
+  mit reduziertem Wireframe, ohne Paketknöpfe, Regler neutral; er verlinkt in den Konfigurator.
+
+## Aufbau
+
+Ab Desktop links das Bedienfeld, rechts die klebende Vorschau; auf dem Handy Vorschau (klebt), Eingaben, Paket-/Preis-Box,
+„Immer dabei“, Einleitung, unten die Preisleiste. Abstand Seitenkopf → Konfigurator ist die freigegebene Ausnahme von
+`--head-gap-content` (docs/DESIGN.md).
+
+Eingaben in dieser Reihenfolge:
+1. **Anlass** (Pills `.chips-quiet`): Winter & Silvester, Marketing (ID `launch`), Jubiläum, Stadtfest, Hochzeit, Kultur,
+   Logo. Bestimmt, was am Himmel steht; ändert weder Paket noch Preis.
+2. **Art der Show** (dieselben Pills): 2D, 3D, 3D+ (`SHOW_ARTS` = `2d`, `3d`, `story`). Darunter je Art drei Häkchen aus
+   Moritz' Paketbeschreibungen, per `opacity` übergeblendet. Mindest-Drohnenzahl je Art (`artMin`): 100, 200, 300.
+3. **Drohnen**: Regler 100–1000, neutral (keine Paketfarben), Marken 100/300/500/1000; unter der Mindestzahl der Art hält
+   er an, ein Hinweis ersetzt kurz die Skala.
+4. **Text oder Logo**: eigener Text (Textplaner im Worker) bzw. im Anlass „Logo“ der Logo-Modus (Logo-Konverter v10,
+   Abschnitt „Runde 27“ im Verlauf).
+5. **Upgrades**: eingeklappte Zeile mit Zähler, dieselben sechs Extras wie im Raster „Upgrades“ der Preisseite.
+
+Darunter die Paket-/Preis-Box mit Anfrage-Knopf und „Immer dabei“ (ruhige Liste).
+
+## Zustände und Preis
+
+- **Individuelles Paket** (Standard): Preis aus `showArtPrice(art, drones)` (`src/content/show-packages.ts`) mit „ab“;
+  2D = `individualPrice` je Drohnenzahl, 3D derselbe Preis ab 200, 3D+ = ODYSSEY-Preis (`priceFor('ODYSSEY')`). Show
+  warmweiß, keine Paketnamen.
+- **Startpunkt aus einer Paketkarte** (`?paket=SPARK|HORIZON|ODYSSEY#konfigurator`, auf der Preisseite ohne Neuladen):
+  Drohnenzahl und Art des Pakets, Name und Festpreis ohne „ab“, Show in der Paketfarbe. Jede Änderung an Art,
+  Drohnenzahl, Upgrades oder Logo macht daraus „Individuelles Paket“ und entfernt `?paket=` aus der Adresse. Anlass,
+  eigener Text (solange er keine Drohnen nachfordert) und Wiedergabe ändern das Paket nicht.
+- Festes Paket und dieselbe Art mit derselben Drohnenzahl im individuellen Paket kosten gleich viel
+  (Wächter `scripts/individual-price.test.mjs`). Offene Preisfragen an Moritz: Verlauf, Runde 5.
+- Direktlinks: `?anlass=…&paket=…&drohnen=…&art=2d|3d|story&motiv=…`.
+
+## Vorschau
+
+- Fassung der Motive nach Art (2D flach, 3D als Körper mit Schwenk, 3D+ in Akten) und Drohnenzahl (`unlockAt`); ein
+  Wechsel der Art startet die Folge von vorn.
+- FlyingStars-Katalogmotive werden auf die Drohnenzahl abgetastet (`scenes/catalog-resample.js`), verdichtet bis 200
+  Drohnen (`DENSE_MAX`); darüber bleiben weitere Drohnen dunkel in Reserve.
+- Bewegung folgt der globalen Bewegungspolitik (Pause, reduzierte Bewegung: stehendes Bild); außerhalb des Bildes
+  hält die Bühne an.
+
+## Anfrage
+
+Der Anfrage-Knopf führt zum Formular auf derselben Seite (`/drohnenshow-preise/#anfrage`) und übergibt Paket (nur beim
+Startpunkt), Drohnenzahl, Anlass, Upgrades (`extras`) und eine Zusammenfassung mit „Art der Show“.
+
+## Prüfen
+
+- Unit: `scripts/individual-price.test.mjs`, `scripts/show-assign.test.mjs`, `scripts/catalog-resample.test.mjs`,
+  `src/scripts/show-field.test.mjs`.
+- Browser: `tests/show-configurator.spec.ts`, `tests/pricing.spec.ts`, `tests/logo-show-budget.spec.ts`,
+  `tests/show-teaser.spec.ts`.
+- Leistung: `npm run build && npm run perf:start` (LCP der Preisseite, Long Tasks), Zahlen aus Runde 6 im Verlauf.
+
+---
+
+## Anhang: Verlauf (Oktober bis 18.11.2026)
+
+Protokoll der Fassungen, älteste zuerst. Die Beschreibungen geben den damaligen Stand wieder.
+
+Damaliger Stand am 5. November 2026, Runde 24 (Abschnitt „Runde 24“: Motive aus dem FlyingStars-Katalog, Drohnenbedarf des Textes). Davor sechzehnte Fassung. Frühere Stände sind als Tags erhalten: `konfigurator-v6`, `konfigurator-v8`, `konfigurator-v9`, `konfigurator-v10`. Seit der sechzehnten Fassung ist der Konfigurator eine Komponente (`src/components/configurator/ShowConfigurator.astro`) direkt auf der Preisseite, Anker `#konfigurator`; `/show-konfigurator/` leitet dorthin weiter. Für die Startseite gibt es einen Teaser als sich selbst abspielendes Showreel (`ConfiguratorTeaser.astro`, Abschnitt „Startseiten-Teaser als Showreel“). Der Konfigurator ist ein Vorschlag an FlyingStars.
+
+### Das Modell: zwei Entscheidungen, die sich nicht gegenseitig verändern
 
 - **Anlass** (Hochzeit, Jubiläum, Launch, Kultur, Winter & Silvester, Stadtfest) bestimmt, **was** am Himmel steht: vier oder fünf Motive, die als kleine Show nacheinander laufen, und den Anlass in der Anfrage. Er verändert weder Paket noch Preis.
 - **Wie aufwendig?** hat drei Knöpfe, einen je Paket, in der Paketfarbe. Er bestimmt, **wie**: Paket, Drohnenzahl, Art der Bewegung und damit den Preis. Der Preis ändert sich genau dann, wenn ein anderer Knopf gewählt wird.
@@ -15,7 +90,7 @@ Stand: 5. November 2026, Runde 24 (Abschnitt ganz unten: Motive aus dem FlyingSt
 
 Die Preise kommen aus `priceFor()` in `src/content/show-packages.ts`; seit der zwölften Fassung bestimmt zusätzlich die Drohnenzahl den Preis (siehe unten). Publikum, Musik, Storytelling, Film und eigener Text sind bewusst nicht enthalten. Sie kommen später als sichtbare, eigene Preistreiber zurück, zum Beispiel hinter einem Aufklapper.
 
-## Warum so (Marcs Rückmeldungen)
+### Warum so (Marcs Rückmeldungen)
 
 1. **Erste Fassung, acht Bedienblöcke:** viel zu komplex. Daraus wurden zwei Entscheidungen plus Preis.
 2. **Zweite Fassung:** Anlässe setzten unsichtbar Preistreiber. Dieselbe 3D-Maske kostete 34.900 € oder 64.600 €. Daraus folgte: kein verborgener Zustand, eine Stufe je Paket.
@@ -34,7 +109,7 @@ Die Preise kommen aus `priceFor()` in `src/content/show-packages.ts`; seit der z
    - Masken-Geschichte neu: Komödie, dann tritt die Tragödie dazu, beide verbinden sich zum Theaterzeichen, daraus wird der Bokkenrijders-Teufel.
    - Die Funkwellen des Fernsehturms bewegen sich langsam nach außen und zurück, unabhängig vom Warnlicht.
 
-## Die Vorschau: drei Motive je Anlass, drei Ausbaustufen
+### Die Vorschau: drei Motive je Anlass, drei Ausbaustufen
 
 Jeder Anlass spielt drei Motive nacheinander, danach beginnt die Folge von vorn. ‹ › schalten Bild für Bild vor und zurück, im Kreis, ↻ beginnt die Show von vorn. Ein Paketwechsel verwandelt das Motiv auf der Bühne in seine Fassung für das neue Paket und spielt von dort weiter. Pausiert oder bei reduzierter Bewegung steht das aktuelle Motiv in Ruhe.
 
@@ -62,7 +137,7 @@ Jedes Motiv hat einen eigenen Maßstab, sodass es die Bühne füllt. Innerhalb e
 | | Feuerwerk | Feuerwerksstern dreht sich | drei 3D-Kugeln öffnen sich nacheinander | Feuerwerk → Silvesterkugel → sie sinkt → Ring → Knoten |
 | | Kleeblatt | Glücksklee dreht sich | Glücksklee in 3D | drei Blätter → ein viertes kommt dazu → Klee in 3D, umringt von Funken |
 
-### Objektpermanenz und fließende Übergänge (siebte Fassung)
+#### Objektpermanenz und fließende Übergänge (siebte Fassung)
 
 Marcs wichtigster Punkt zur sechsten Fassung: Objekte müssen erhalten bleiben, Übergänge müssen fließen. Innerhalb einer ODYSSEY-Geschichte ist die Drohnenzahl gleich, die Verwandlung soll also genauso organisch wirken wie ein Anlasswechsel bei SPARK.
 
@@ -77,7 +152,7 @@ Marcs wichtigster Punkt zur sechsten Fassung: Objekte müssen erhalten bleiben, 
 - **Logo:** Die Geschichte läuft als Schleife: Funkenwirbel → Logo → Wirbel → Ring aus Licht in 3D → …
 - **Silvester:** Die alte Feuerwerksgeschichte ist ersetzt durch eine volumetrische: Die Silvesterkugel sinkt, öffnet sich um Mitternacht zum Ring und verschlingt sich zum Knoten aus Licht.
 
-### Achte Fassung (Marcs Rückmeldung zur siebten)
+#### Achte Fassung (Marcs Rückmeldung zur siebten)
 
 - **Tempo:** Paketwechsel so schnell wie ein Anlasswechsel. Die Flugzeit liegt jetzt bei 1,1 bis 3,2 Sekunden (vorher bis 5), die Planungsgrenzen bei 1,8 Einheiten/s und 3 Einheiten/s². Der Physiktest prüft mit Reserve gegen 2,6 und 5,5. Neue Drohnen kommen von einem näheren Ring außerhalb des Bildes.
 - **Heller:** Lichteffekte hellen nur noch auf (Schimmer, Funkeln, Lichtlauf zwischen 0,8 und etwa 1,4). Über 1 vergrößert sich der Leuchthof und der Kern wird weißer. Die Tiefenabdunklung ist schwächer (hinten 78 % statt deutlich dunkler).
@@ -88,7 +163,7 @@ Marcs wichtigster Punkt zur sechsten Fassung: Objekte müssen erhalten bleiben, 
 - **Wappen:** eigener Entwurf im Stil eines Vereinswappens (erhöhte Mitte, Fluss, Fahne, Stern), bewusst kein bestehendes Vereinswappen.
 - **Rakete im Sonnensystem:** Aus der Ferne braucht sie weniger Drohnen; die übrigen fliegen zur Sonne. Umlaufbahnen laufen über 2,5 Sekunden sanft an (sonst Beschleunigungsspitze bei der Ankunft).
 
-### Zehnte Fassung: Körper als Skelett, Geschichten in Bildausschnitten (8. Oktober)
+#### Zehnte Fassung: Körper als Skelett, Geschichten in Bildausschnitten (8. Oktober)
 
 Marcs Rückmeldung zur neunten: Rakete und Verlobungsring in 3D wirken billig. Als Anker wurden 17 FlyingStars-Shows vom YouTube-Kanal katalogisiert (intern: `freelance/clients/flyingstars/06-show-animationen-2026-10/`, nicht im Repo). Befund: Echte Shows zeichnen 3D als Skelett (Würfelkanten, gestapelte Reifen, ein Globus aus Umriss und Meridianen), nie als Punktkugel; Übergänge sind lose Wolken, in denen das neue Bild schon als Vorform steht; ein kleines Teil darf als Objekt fliegen (der Korken), während der Rest steht.
 
@@ -98,7 +173,7 @@ Marcs Rückmeldung zur neunten: Rakete und Verlobungsring in 3D wirken billig. A
 - **Engine:** Ein Teil kann `offstage` sein (es verlässt das Bild, zählt nicht für den Ausschnitt; `fitPts` am Beat). Geschichten dürfen mehrere Ausschnitte haben (`frame`): Start und Zündung teilen einen, Orbit und Landung den zweiten. So bleibt die Rakete auf der Rampe groß.
 - **Drohnenbudget je Akt (300):** Rakete 120, Spur 60, Welt (Rampe/Planet/Mond) 85, Sterne 35. Ring-Geschichte: Ringe 260 + Sterne 40, auf der Hand: Ring 84, Hand 176, Sterne 40.
 
-### Elfte Fassung: mehr Motive, eigener Text, Animation nach echten Shows (10. Oktober)
+#### Elfte Fassung: mehr Motive, eigener Text, Animation nach echten Shows (10. Oktober)
 
 Marcs Auftrag: Motive sammeln, die inhaltlich passen, und vor allem die Art der Animation aus echten Shows übernehmen. Gemeint sind subtile, natürlich wirkende 2D-Bewegungen, Übergänge zwischen Formen und Text und Feuerwerk über Licht. Dazu kommt der eigene Text als Wow-Effekt aus dem Vercel-Prototyp, aber nicht statisch. Grundlage sind elf Videoanalysen, Codex' Auswertung von 20 Referenzclips und zwei Web-Bibliotheken. Alles liegt intern unter `freelance/clients/flyingstars/06-show-animationen-2026-10/anker-runde-2/`, nicht im Repo. Die Referenzen dienen als Denkanstoß; kein Motiv ist nachgebaut.
 
@@ -181,7 +256,7 @@ Regel (`transitions()` in `src/scripts/scenes/interludes.js`):
 - Der QR-Code kodiert `HTTPS://FLYINGSTARS.ART`. Für 198 statt 208 dunkle Module ist das Füllbyte nach dem Terminator gewählt; Lesegeräte werten es nicht aus. OpenCV liest den Code aus Bühnen-Screenshots, wenn die Punkte etwas größer gerendert werden. Mit einem echten Handy ist das noch nicht geprüft.
 - Alle Bildunterschriften sind akomo-Entwürfe.
 
-### Nur, was echte Drohnen können
+#### Nur, was echte Drohnen können
 
 Marcs Rückmeldung zur fünften Fassung: Ein Herz kann nicht im Takt pulsieren, ein Logo kann sich nicht verbiegen, Drohnen können nicht aus dem Nichts aufleuchten und mit Abgas- oder Funkentempo davonschießen. Deshalb gilt jetzt:
 
@@ -193,7 +268,7 @@ Marcs Rückmeldung zur fünften Fassung: Ein Herz kann nicht im Takt pulsieren, 
 - **Grenzen:** Die Flugdauer ergibt sich aus Geschwindigkeits- und Beschleunigungsgrenzen (`LIMITS` in `show-flight.js`, etwa 8 m/s und 5 m/s² bei einem 300-Drohnen-Bild).
 - **Test:** `tests/show-physics.spec.ts` spielt alle 30 Fassungen mit simulierter Zeit ab und misst jede Drohne in jedem Frame. Der alte pulsierende Herzschlag fällt damit nachweislich durch (0,9 statt höchstens 0,5).
 
-### Wie die Drohnen fliegen (`src/scripts/show-flight.js`)
+#### Wie die Drohnen fliegen (`src/scripts/show-flight.js`)
 
 Echte Shows fliegen anders als eine Animation, bei der jeder Punkt irgendwohin springt:
 
@@ -210,7 +285,7 @@ Kalibriert ist das an FlyingStars-Videos (Heiratsantrag, Hochzeitsüberraschung,
 - Volumen als Gitterkörper
 - ruhige Übergänge
 
-### Leistung
+#### Leistung
 
 Gemessen auf den drei aufwendigsten Geschichten mit 300 Drohnen in Bewegung, 2× Pixeldichte:
 
@@ -225,18 +300,18 @@ Gemessen auf den drei aufwendigsten Geschichten mit 300 Drohnen in Bewegung, 2×
 - Seit der achten Fassung bewegt sich auch SPARK sanft weiter und zeichnet darum laufend (100 Drohnen).
 - Pausiert oder bei reduzierter Bewegung erscheint direkt der letzte Akt in Ruhe. „Nochmal ansehen“ spielt eine Geschichte erneut ab.
 
-## Die Anfrage
+### Die Anfrage
 
 Der Anfrageknopf übergibt Paket, Drohnenzahl und Anlass sowie eine Zusammenfassung als bearbeitbaren Nachrichtenentwurf: Anlass, Stufe mit Paket und Einstiegspreis, Beispielmotive. Mobil stehen Paket, Preis und „Anfragen“ in einer festen Leiste.
 
-## Offene Fragen an FlyingStars
+### Offene Fragen an FlyingStars
 
 1. Passt die Zuordnung „2D-Vorlage = SPARK, ein 3D-Objekt = HORIZON, mehrere 3D-Objekte oder 3D-Animation = ODYSSEY“ zur Praxis?
 2. Können die Beispielmotive als Vorschau stehen, insbesondere die Formation aus der Bokkenrijders-Show?
 3. Welche Publikumsgrößen, Musik- und Storytelling-Optionen sollen als sichtbare Preistreiber dazukommen?
 4. Welche Katalogmotive gibt es wirklich? Passt das Fördergerüst von Zollverein als Wahrzeichen-Beispiel, oder ein anderes?
 
-## Prüfen
+### Prüfen
 
 - `tests/show-physics.spec.ts` spielt jede Show in allen drei Paketen ganz durch (bis zurück zum ersten Motiv) und prüft Geschwindigkeit und Beschleunigung jeder Drohne.
 - `scripts/show-flight.test.mjs` prüft:
@@ -260,7 +335,7 @@ Der Anfrageknopf übergibt Paket, Drohnenzahl und Anlass sowie eine Zusammenfass
 Offen: Die optimale Zuordnung für 300 Drohnen kostet beim Umschalten einmalig etwa 70 ms auf einem schnellen Rechner (vor dem Flug, kein Ruckeln währenddessen). Auf schwachen Geräten wäre ein Web Worker der nächste Schritt.
 
 
-## Typografie und ruhige Vorschau, 12.10.2026
+### Typografie und ruhige Vorschau, 12.10.2026
 
 Die gesamte Site verwendet nur die lokale variable Space Grotesk, 300–700. Body-, Display- und bisherige Mono-Rollen zeigen auf dieselbe Familie; Inter, JetBrains Mono und Montserrat einschließlich unbenutzter Dateien entfallen. Die im Canvas gezeichnete Schreibschrift ist lokale Geometriedaten und keine zusätzliche Webschrift. Die echte Fontdatei enthält die Gewichtsachse 300–700 und deutsche Umlaute/ß.
 
@@ -269,12 +344,12 @@ Die Vorschau zeigt nur das Paketbadge. Die redundante Drohnenzahl oben rechts en
 `tests/network-allowlist.spec.ts` prüft alle tatsächlich gebauten Routen auf genau eine lokale Fontdatei. Der Konfigurator-Test prüft alle Anlässe auf ausgeblendete Beschreibungen, erhaltene Textalternative und entfernten Zähler. Überprüfung: `npm run gates`.
 
 
-## Fließtextschrift wiederhergestellt, 12.10.2026
+### Fließtextschrift wiederhergestellt, 12.10.2026
 
 Nach Ansicht der Ein-Schrift-Fassung bevorzugt Marc Inter für die ursprünglichen Body-Rollen. Deshalb zeigt `--body` wieder auf die vorhandene lokale variable Inter. Überschriften und bisherige Mono-Rollen bleiben Space Grotesk; das Logo verwendet wie ursprünglich den Body-Token. JetBrains Mono und Montserrat bleiben entfernt. Die Fontprüfung erwartet genau die beiden lokalen Dateien auf allen gebauten Routen. Sichtbare Motivbeschreibungen und Preview-Zähler bleiben entfernt. Eine separate kuratierte Fontstudie entscheidet nicht ungefragt über die finale Designsprache.
 
 
-## Zwölfte Fassung: lebendige Wolke, Show-Uhr, Drohnenzahl, zwei Spalten (30.10.2026)
+### Zwölfte Fassung: lebendige Wolke, Show-Uhr, Drohnenzahl, zwei Spalten (30.10.2026)
 
 Grundlage sind Marcs Entscheidungen vom 30.10.2026 nach der Designsprache-Probe (Studie 2, `/poc/designsprache/`) und Codex' Codeanalyse (intern: `freelance/clients/flyingstars/17-designsprache-poc-2026-10-30/codex-befunde/konfigurator-codeanalyse.md`).
 
@@ -356,7 +431,7 @@ Grundlage sind Marcs Entscheidungen vom 30.10.2026 nach der Designsprache-Probe 
 
 **Nicht in dieser Runde:** Logo-Upload im Konfigurator. Die Preisseite `/drohnenshow-preise/` hat in diesem Branch weiter den alten Rechner (`Calculator.astro`, `pricing.js`, eigener Regler 100–1.000). Die neue Logik gilt nur in `/show-konfigurator/`.
 
-### Wie prüfen
+#### Wie prüfen
 
 - Schnell, ohne Browser: `node --test scripts/show-price.test.mjs scripts/show-counts.test.mjs scripts/show-geometry.test.mjs scripts/show-flight.test.mjs`.
   - `show-price.test.mjs` prüft:
@@ -378,7 +453,7 @@ Grundlage sind Marcs Entscheidungen vom 30.10.2026 nach der Designsprache-Probe 
 - Bei der Bühne: Eine Wolke sieht man, wenn man im Ablauf ein Motiv vor dem zweiten oder vierten ansteuert und wartet. Beispiel: `?anlass=festival&paket=ODYSSEY&motiv=kolibri`, dann auf der Spur ← drücken; nach dem Kompass zerfällt das Bild in die Wolke, und Kolibri und Blüte setzen sich zusammen.
 
 
-## Dreizehnte Fassung: nur noch die lebendige Wolke, lückenloser Regler, Motive nach Drohnenzahl (30.10.2026)
+### Dreizehnte Fassung: nur noch die lebendige Wolke, lückenloser Regler, Motive nach Drohnenzahl (30.10.2026)
 
 Grundlage ist Marcs Rückmeldung zur zwölften Fassung vom selben Tag. Fortschrittsleiste, Weiter/Zurück und Tempo bleiben unverändert („gerne so beibehalten“).
 
@@ -455,7 +530,7 @@ Grundlage ist Marcs Rückmeldung zur zwölften Fassung vom selben Tag. Fortschri
 
 **Nicht in dieser Runde:** Logo-Upload im Konfigurator, die Preisseite `/drohnenshow-preise/`, der Akt-für-Akt-Durchgang der ODYSSEY-Haltezeiten aus der zwölften Fassung.
 
-### Wie prüfen (dreizehnte Fassung)
+#### Wie prüfen (dreizehnte Fassung)
 
 - Schnell: `node --test scripts/show-clouds.test.mjs scripts/show-price.test.mjs scripts/show-counts.test.mjs scripts/show-geometry.test.mjs scripts/show-flight.test.mjs` (etwa 30 s, der Wolken-Wächter braucht die meiste Zeit).
 - Browser: `tests/show-configurator.spec.ts` („Kein Hin und Her …“, „Mehr Drohnen schalten ein Motiv frei …“), `tests/show-physics.spec.ts` (600 Drohnen jetzt für alle Anlässe, weil die freigeschalteten Motive und ihre Teil-Umbauten erst dort laufen).
@@ -463,7 +538,7 @@ Grundlage ist Marcs Rückmeldung zur zwölften Fassung vom selben Tag. Fortschri
 - Ergebnisse am 30.10.2026 (eigener Build, nicht der Dev-Server): schnelle Tests 27/27; `tests/show-configurator.spec.ts` in Chromium, WebKit und mobil grün (54 bestanden, 3 nur für Desktop übersprungen); `tests/show-physics.spec.ts` alle 12 Läufe grün (alle Anlässe in allen Paketen, dazu alle Anlässe mit 600 Drohnen); `astro check` 0 Fehler. Bildraten während einer Wolke mit 600 Drohnen: Chromium mit 4-fach gedrosselter CPU 47–51 fps (Median 16,7 ms, schlechtestes Bild 33 ms, auch das Startbild der Wolke), WebKit 75 fps.
 
 
-## Vierzehnte Fassung (A): Bedienung (30.10.2026, abends)
+### Vierzehnte Fassung (A): Bedienung (30.10.2026, abends)
 
 Grundlage ist Marcs Rückmeldung zur dreizehnten Fassung vom selben Abend. Teil B (Motive, Text-Beats, Freischalt-Schwellen) steht in einem eigenen Abschnitt. Fortschrittsleiste, Weiter/Zurück und Tempo bleiben.
 
@@ -541,7 +616,7 @@ Grundlage ist Marcs Rückmeldung zur dreizehnten Fassung vom selben Abend. Teil 
 - Pause friert das genaue Bild ein, weiter läuft es von dort.
 - Alle neuen Übergänge (Anlass, Rücksprung, Logo, Freischalten) starten aus den aktuellen Positionen und Geschwindigkeiten der Drohnen.
 
-### Wie prüfen (vierzehnte Fassung, A)
+#### Wie prüfen (vierzehnte Fassung, A)
 
 - Schnell: `node --test scripts/show-price.test.mjs`. Neu darin:
   - Freischalten beim Paketwechsel
@@ -565,7 +640,7 @@ Grundlage ist Marcs Rückmeldung zur dreizehnten Fassung vom selben Abend. Teil 
   - `astro check` 0 Fehler
 
 
-## Fünfzehnte Fassung: Feinschliff nach Marcs Rückmeldung (30.10.2026, 22 Uhr)
+### Fünfzehnte Fassung: Feinschliff nach Marcs Rückmeldung (30.10.2026, 22 Uhr)
 
 Grundregeln bleiben: kein Einrasten, keine Finten (`scripts/show-finte.test.mjs` grün), keine ruhenden Wolken (`scripts/show-clouds.test.mjs` grün), Lichtlauf über `lightOrder`.
 
@@ -637,7 +712,7 @@ Grundregeln bleiben: kein Einrasten, keine Finten (`scripts/show-finte.test.mjs`
 
 **9. Preissprünge.** Nichts geändert. Die Frage, wann der Preis springen soll, steht mit der Tabelle aller gleichen Preise in `docs/show-motive-inventar.md` („Was wir von FlyingStars brauchen“, Punkt 5).
 
-### Wie prüfen (fünfzehnte Fassung)
+#### Wie prüfen (fünfzehnte Fassung)
 
 - Schnell: `node --test scripts/show-price.test.mjs scripts/show-flight.test.mjs scripts/show-finte.test.mjs scripts/show-clouds.test.mjs scripts/show-counts.test.mjs scripts/show-geometry.test.mjs scripts/show-motive15.test.mjs`. Neu:
   - `show-motive15.test.mjs`: Schriftzug mit „Λ“, Flamme an der Düse und in Flammenform (Start und Landung), Scanlinie in ODYSSEY, Hand aus dem Foto mit Armband und Ring auf dem Ringfinger. Gegenprobe: Auf dem Stand vor dieser Runde scheitern alle vier.
@@ -658,7 +733,7 @@ Grundregeln bleiben: kein Einrasten, keine Finten (`scripts/show-finte.test.mjs`
   - Konsole ohne Fehler (Chromium und WebKit)
 
 
-## Sechzehnte Fassung: Freischalt-Leiter, größere Lichter, Komponente und Teaser (31.10.2026)
+### Sechzehnte Fassung: Freischalt-Leiter, größere Lichter, Komponente und Teaser (31.10.2026)
 
 Grundregeln bleiben: kein Einrasten, keine Finten (`scripts/show-finte.test.mjs`), keine ruhenden Wolken (`scripts/show-clouds.test.mjs`).
 
@@ -691,12 +766,12 @@ Grundregeln bleiben: kein Einrasten, keine Finten (`scripts/show-finte.test.mjs`
 - Leistung: Engine und Motive laden erst, wenn der Block auf 300 px an den Viewport herankommt (IntersectionObserver, dynamischer Import). Außerhalb des Viewports, bei `html.motion-paused` und bei reduzierter Bewegung zeichnet die Engine nicht und zeigt das Motiv in Ruhe (`createField`).
 - Prüfseite `/poc/konfigurator-teaser/`: am 04.11.2026 gelöscht (Marc); der Teaser-Test läuft auf der Startseite, die Abläufe „marke“/„hochzeit“ auf Werbung und Hochzeit.
 
-### Wie prüfen (sechzehnte Fassung)
+#### Wie prüfen (sechzehnte Fassung)
 
 - Schnell: `node --test scripts/show-unlock.test.mjs scripts/show-price.test.mjs scripts/show-geometry.test.mjs scripts/show-counts.test.mjs scripts/show-motive15.test.mjs scripts/show-flight.test.mjs`, dazu einzeln `scripts/show-clouds.test.mjs` (etwa 30 s) und `scripts/show-finte.test.mjs` (etwa 2 min).
 - Browser: `tests/show-configurator.spec.ts` (neu: gesperrte Lichtpunkte), `tests/show-teaser.spec.ts` (Laden in der Nähe des Viewports, Freischalten, Übergabe, Pause außerhalb und bei reduzierter Bewegung), `tests/show-physics.spec.ts` (neu: SPARK 190 und HORIZON 290). Die Specs laufen standardmäßig gegen `/drohnenshow-preise/`; `CFG_PATH=/poc/konfigurator-teaser/` bzw. `TEASER_PATH=/` stellen eine andere Seite ein.
 
-## Startseiten-Teaser als Showreel (31.10.2026, abends)
+### Startseiten-Teaser als Showreel (31.10.2026, abends)
 
 Marc zur ersten Teaser-Fassung: Interaktiv ist für die Startseite zu komplex. Stattdessen ein vorprogrammierter Ablauf „wie so ein Quick-Showreel“ in schnellerem Tempo durch die „Greatest Hits“ von SPARK bis ODYSSEY, dazwischen lebendige Wolken mit „Quick Morphing Action“, ein Beispiel-Logo („das könnte dein Logo sein“) und ein reduziertes, vor-animiertes Wireframe des Konfigurators.
 
@@ -709,7 +784,7 @@ Marc zur ersten Teaser-Fassung: Interaktiv ist für die Startseite zu komplex. S
 - **Props:** `id`, `href` (Standard `/drohnenshow-preise/#konfigurator`), `cta`. `occasion` und `drones` werden noch angenommen, haben aber keine Wirkung mehr.
 - **Prüfen:** `tests/show-teaser.spec.ts` (Laden in Viewport-Nähe; keine Formularelemente, ein Link, Textalternative; das Showreel läuft durch SPARK, HORIZON, ODYSSEY, zeigt das Logo und beginnt von vorn durch die Wolke; Pause außerhalb, Standbild bei reduzierter Bewegung), 12/12 in Chromium, WebKit und Pixel 7. Frame-Folge über einen Durchlauf: `/tmp/fs-r7-k/r1-sheet.png`.
 
-### Runde 8: reduziertes Wireframe, Schärfe-Effekt, Leistung (31.10.2026, abends)
+#### Runde 8: reduziertes Wireframe, Schärfe-Effekt, Leistung (31.10.2026, abends)
 
 Marcs Rückmeldung zum Showreel.
 
@@ -740,7 +815,7 @@ Marcs Rückmeldung zum Showreel.
 - Hero-Video und Teaser zusammen lasten die CPU nicht dauerhaft aus (Chromium ≈ 21 %); der Teaser zeichnet nur, solange er sichtbar ist.
 - Nicht gefunden: keine doppelten rAF-Schleifen, keine wachsenden Arrays oder Listener (konstant 163), keine langen Tasks.
 
-### Runde 9: drei Abläufe, Logo mit Schriftzug, Kolibri, weniger Text im Konfigurator (31.10.2026, nachts)
+#### Runde 9: drei Abläufe, Logo mit Schriftzug, Kolibri, weniger Text im Konfigurator (31.10.2026, nachts)
 
 **Teaser** (`ConfiguratorTeaser.astro`, `show-teaser.js`):
 - Anlass-Pills ersatzlos raus (unbeschriftet verstand sie niemand). Über den Paketknöpfen steht „Paket“, auch auf dem Handy.
@@ -767,7 +842,7 @@ Marcs Rückmeldung zum Showreel.
 
 **Prüfen:** `tests/show-teaser.spec.ts` (neu: keine Pills, „Paket“, acht Euro-Stufen, Logo zuerst und Kolibri über die Pakete, jede Drohnenzahl mit eigener Stufe, Schleier beim Zeigen und bei Fokus auf dem Knopf, Abläufe `marke` und `hochzeit` auf der Prüfseite), `tests/show-configurator.spec.ts` (neu: „Runde 9: weniger Text …“). Beide grün in Chromium, WebKit und Pixel 7 gegen einen eigenen Build (der Dev-Server lädt neu, sobald im Checkout gespeichert wird).
 
-### Runde 10: Herz über die Pakete, Rakete ohne Orbit, QR-Geschichte, gedämpfte Paketfarben (31.10.2026, nachts)
+#### Runde 10: Herz über die Pakete, Rakete ohne Orbit, QR-Geschichte, gedämpfte Paketfarben (31.10.2026, nachts)
 
 **Teaser:**
 - FLYINGSTΛRS bei 600 Drohnen deutlich größer als bei 450 (halbe Breite 1,7 statt 0,8; die Schrift trägt die zusätzlichen Drohnen). Die Logo-Stufen sind jetzt 100 / 300 / 450 / 600.
@@ -796,7 +871,7 @@ Marcs Rückmeldung zum Showreel.
 Im Konfigurator wird beim Zeigen auf einen Paketknopf der Name voll farbig. Beide Specs prüfen, dass die nicht gewählten Paketnamen farbig (nicht grau) sind und mindestens 4,5 : 1 erreichen.
 
 
-## Runde 11: Anlass als Dropdown, gleitender Paketrahmen, mehr Luft (1.11.2026)
+### Runde 11: Anlass als Dropdown, gleitender Paketrahmen, mehr Luft (1.11.2026)
 
 Marcs Rückmeldung zum Konfigurator auf der Preisseite und zum Teaser.
 
@@ -810,7 +885,7 @@ Marcs Rückmeldung zum Konfigurator auf der Preisseite und zum Teaser.
 - **Anker:** Seit der Konfigurator unter den Paketen steht, kommt man über `#konfigurator` hin. `html` hat `scroll-padding-top: 88px`, die Section bringt den Platz für die Navigation aber selbst mit (`--cfg-top`). Ohne Ausgleich landete sie 88 px zu tief, und bei 1280 × 720 lagen Spur und Anfrage-Knopf unter dem Rand. Jetzt gilt `.cfg { scroll-margin-top: -88px }`.
 - **Teaser:** Der Standard-Knopf heißt „Zum Show-Konfigurator“. Eigene Beschriftungen übergeben `drohnenshow-hochzeit.yaml` („Motive im Konfigurator ansehen“) und `drohnenshow-werbung.yaml` („Logo im Konfigurator ausprobieren“).
 
-### Wie prüfen (Runde 11)
+#### Wie prüfen (Runde 11)
 
 - `tests/show-configurator.spec.ts`: Die Specs öffnen den Konfigurator jetzt über `#konfigurator` wie jeder Link der Site. Neu sind fünf Tests:
   - Dropdown, Ordnung, Vorauswahl und `?anlass`
@@ -827,7 +902,7 @@ Marcs Rückmeldung zum Konfigurator auf der Preisseite und zum Teaser.
 - Offen: `tests/show-physics.spec.ts` wählt den Anlass noch über `label:has([name=occasion][value=…])` und muss auf `page.locator('#cfg-occasion').selectOption(…)` umgestellt werden.
 - Screenshots in Chromium und WebKit (1440 und 390 px, Zwischenframes beim Gleiten): `/tmp/fs-r11-cfg/`.
 
-## Runde 24: Motive aus dem FlyingStars-Katalog, Drohnenbedarf des Textes (5.11.2026)
+### Runde 24: Motive aus dem FlyingStars-Katalog, Drohnenbedarf des Textes (5.11.2026)
 
 Anlass: FlyingStars hat im Meeting am 5.11. den internen Motivkatalog gezeigt. Laut Marcs Gesprächsbericht liegen die meisten geflogenen Shows zwischen 100 und 150 Drohnen. SPARK braucht deshalb die größte Auswahl. Die Einzelheiten stehen in [show-katalog-motive.md](show-katalog-motive.md).
 
@@ -838,7 +913,7 @@ Anlass: FlyingStars hat im Meeting am 5.11. den internen Motivkatalog gezeigt. L
 - Eigener Text: zehn Drohnen je Zeichen ohne Leerzeichen (Regel des Katalogs). Unter dem Feld steht „8 von 10 Zeichen bei 100 Drohnen“. Braucht der Text mehr, steigen Drohnenzahl, Paket und Preis sichtbar mit. Ein Absenken darunter hält der Regler und sagt warum. Höchstens 24 Zeichen, also 240 Drohnen.
 - Wächter: `scripts/catalog-motifs.test.mjs` (Daten, Mindestzahlen, Varianten wachsen mit), dazu die bestehenden `show-unlock`, `show-counts`, `show-finte`, `show-clouds`.
 
-## Runde 27: Logo-Modus mit dem Logo-Konverter v10 (12.11.2026)
+### Runde 27: Logo-Modus mit dem Logo-Konverter v10 (12.11.2026)
 
 Marc (12.11.): eigener Logo-Modus im echten Konfigurator; die Logo-Regler erscheinen nur, wenn jemand ein Logo hochlädt
 oder in den Modus wechselt; im Modus laufen Kundenlogos als Formation durch; „Paket“ statt „Wie aufwendig?“; Hinweis bei
@@ -910,7 +985,7 @@ Budget-Flexibilität als ein Regler (Zonen wie die Paketfarben am Drohnenregler)
   gelegentlich drei lose Haufen. Der Logo-Modus läuft auch, wenn die Show vorher pausiert war (`setMotionIndependent`).
   Beim Entfernen eines Teils tauchen im entfernten Bereich keine neuen Punkte mehr auf (`removed-mask.mjs`).
 
-## Preisseite nach Moritz' Preistext: keine Paketwahl, „Individuelles Paket“ (17.11.2026)
+### Preisseite nach Moritz' Preistext: keine Paketwahl, „Individuelles Paket“ (17.11.2026)
 
 Moritz' Konzept, mit Marc abgestimmt: Der Konfigurator ist der Hauptabschnitt direkt nach dem Kopf der Preisseite. Die
 drei Pakete sind feste Beispiele mit Festpreis darunter (Paketkarten, je „X anfragen“ und „X anpassen“).
@@ -941,7 +1016,7 @@ drei Pakete sind feste Beispiele mit Festpreis darunter (Paketkarten, je „X an
 - Offen: Die Playwright-Specs `tests/show-configurator.spec.ts`, `logo-show-budget.spec.ts`, `show-physics.spec.ts` und
   `i18n.spec.ts` prüfen noch die alte Paketwahl bzw. den Leistungsvergleich und müssen nachgezogen werden.
 
-## Runde 5: Art der Show, ruhiger Einstieg, Katalogmotive mit der Drohnenzahl (18.11.2026)
+### Runde 5: Art der Show, ruhiger Einstieg, Katalogmotive mit der Drohnenzahl (18.11.2026)
 
 Marcs Rückmeldung zur Preisseite: Einstieg zu voll; neben der Drohnenzahl soll die Art der Show (2D, 3D, 3D mit
 Storytelling) die zweite Hauptgröße sein; die FlyingStars-Katalogmotive reagierten nicht auf die Drohnenzahl.
@@ -996,7 +1071,7 @@ Tests: tests/show-configurator.spec.ts neu geschnitten (Tests der Paketknöpfe, 
 des Paketrahmens entfernt, sieben Tests für den neuen Ablauf), logo-show-budget.spec.ts auf „2D-Show, Regler auf 100“
 umgestellt.
 
-## Runde 6: Aufbau wie vor Runde 5, Show-Art als Pills, Verdichtung bis 200, Leistung (18.11.2026)
+### Runde 6: Aufbau wie vor Runde 5, Show-Art als Pills, Verdichtung bis 200, Leistung (18.11.2026)
 
 **Aufbau.** Marc: „Keep the main logic and the main structure … exactly the same as it was before.“ Die Ergebnis-Spalte aus
 Runde 5 ist zurückgenommen: Vorschau rechts (klebend), links das Bedienfeld mit der Paket-/Preis-Box wie vor Runde 5.

@@ -6,7 +6,8 @@
 //             [data-bleed] (z. B. das Showreel rechts im Seitenkopf) und alles, was als Fläche hinter dem Inhalt liegt
 //   empty-h   Überschrift ohne Text (z. B. Daten aus einem veralteten Zwischenspeicher)
 //   overflow  Seite scrollt seitlich
-//   cta       Abschluss-Kasten (.promise) ohne Gesichter, Überschrift oder Text (Marc, 02.11.2026: „empty-looking CTAs“)
+//   cta       Abschluss-Kasten (.promise, CtaBox.astro) ohne Gesichter, Überschrift oder Inhalt (Text oder Liste), mit mehr
+//             als einer Inhaltsform oder nicht genau einem Anfragelink (Marc, 02.11.2026: „empty-looking CTAs“)
 //   head-gap  Section-Kopf weicht von den Abstandsrollen --head-gap-kicker/-text/-cta/-content ab (global.css, Runde 6)
 //   hero-top  erste Zeile (Kicker oder h1) einer Seite mit .page-top nicht auf --hero-top (Marc, 02.11.2026: „Die Hero
 //             section sollte überall auf der gleichen Höhe anfangen“). Ausnahme: Seiten, deren Kopf mit einem Bild beginnt (.page-404)
@@ -66,8 +67,14 @@ for (const width of widths) {
       };
       if (checks.includes('overflow') && document.documentElement.scrollWidth > vw + 1) r.push({ k: 'overflow', what: `scrollWidth ${document.documentElement.scrollWidth} > ${vw}` });
       if (checks.includes('cta')) for (const box of document.querySelectorAll('main .promise')) {
-        const missing = [['.faces', 'Gesichter'], [':is(h1,h2,h3)', 'Überschrift'], ['p', 'Text']].filter(([sel]) => !box.querySelector(sel)?.textContent?.trim() && !box.querySelector(sel)?.querySelector?.('img')).map(([, n]) => n);
+        const missing = [['.faces', 'Gesichter'], [':is(h1,h2,h3)', 'Überschrift']].filter(([sel]) => !box.querySelector(sel)?.textContent?.trim() && !box.querySelector(sel)?.querySelector?.('img')).map(([, n]) => n);
+        // Inhalt: ein Absatz unter der Überschrift oder eine Liste (Listenvariante), jeweils mit Text
+        const content = [...box.querySelectorAll('p, ul, ol')].filter((e) => !e.closest('.faces, .actions') && !e.parentElement.closest('p, ul, ol') && e.textContent.trim());
+        if (!content.length) missing.push('Text oder Liste');
         if (missing.length) r.push({ k: 'cta', what: `${name(box)} ohne ${missing.join(', ')}` });
+        if (content.length > 1) r.push({ k: 'cta', what: `${name(box)} mit ${content.length} Inhaltsformen statt einer` });
+        const links = box.querySelectorAll('a[href]').length;
+        if (links !== 1) r.push({ k: 'cta', what: `${name(box)} mit ${links} Links statt genau einem Anfragelink` });
       }
       if (checks.includes('hero-top')) { const main = document.querySelector('main.page-top'); const first = main?.querySelector('.kicker, h1');
         if (first && !main.querySelector('.page-404')) { const probe = document.createElement('div'); probe.style.height = 'var(--hero-top)'; document.body.append(probe); const want = probe.offsetHeight; probe.remove();
@@ -134,28 +141,46 @@ for (const width of widths) {
         }
       }
       // head-gap: Abstände jedes Section-Kopfs gegen die Rollen --head-gap-* (global.css, Runde 6, Marc: „einheitliche gaps
-      // between headings and body copy … a centrally defined system“). Gemessen werden nur Paare, die untereinander stehen.
+      // between headings and body copy … a centrally defined system“). Gebunden an das Markup von SectionHead.astro, nicht an
+      // Klassennamen: jeder [data-section-head] (auch „contents“, dessen Kinder im Layout der Eltern stehen) und sein
+      // Textblock .head-body. Kopf → folgender Block nach dem Vertrag data-head-next (Rolle des Abstands). Gemessen werden
+      // Paare, die untereinander stehen; überlappt der folgende Block den Kopf, ist das ein Befund und wird nicht übersprungen.
       if (checks.includes('head-gap')) {
         const tok = (n) => { const probe = document.createElement('div'); probe.style.cssText = `position:absolute;margin-top:var(--head-gap-${n})`; document.body.append(probe); const v = parseFloat(getComputedStyle(probe).marginTop); probe.remove(); return v; };
-        const T = { kicker: tok('kicker'), text: tok('text'), cta: tok('cta'), content: tok('content') };
         const box = (e) => e.getBoundingClientRect();
-        const shown = (e) => box(e).height > 0 && getComputedStyle(e).visibility !== 'hidden';
+        const shown = (e) => box(e).height > 0 && getComputedStyle(e).visibility !== 'hidden' && !e.matches('script, style, .sr-only');
         const isCta = (e) => e.matches('.actions, a.link, a.btn') || (e.matches('p, div') && e.querySelector(':scope > :is(a.link, a.btn)') && ![...e.children].some((c) => !c.matches('a, br')));
-        const check = (role, a, b, head) => { if (!a || !b) return; const gap = box(b).top - box(a).bottom;
-          if (box(b).top >= box(a).bottom - 1 && Math.abs(gap - T[role]) > 2) r.push({ k: 'head-gap', what: `${name(head)} ${role}: ${Math.round(gap)} px statt ${Math.round(T[role])}` }); };
-        for (const head of document.querySelectorAll('main .section-head[data-section-head]:not([data-section-head="contents"])')) {
-          if (!shown(head)) continue;
-          const H = head.querySelector(':scope > :is(h1, h2, h3)'); if (!H) continue;
+        const sideBySide = (a, b) => { const x = box(a), y = box(b); return x.right <= y.left + 1 || y.right <= x.left + 1; };
+        const check = (role, a, b, head) => { if (!a || !b || sideBySide(a, b)) return; const T = tok(role), gap = box(b).top - box(a).bottom;
+          if (Math.abs(gap - T) > 2) r.push({ k: 'head-gap', what: `${name(head)} ${role}: ${Math.round(gap)} px statt ${Math.round(T)}${gap < -1 ? ' (überlappt)' : ''}` }); };
+        // Kinder in Lesereihenfolge: der Textblock .head-body zählt mit seinen Kindern
+        const flow = (head) => [...head.children].flatMap((c) => c.matches('.head-body') ? [...c.children] : [c]).filter(shown);
+        for (const head of document.querySelectorAll('main [data-section-head]')) {
+          const kids = flow(head); if (!kids.length) continue;
+          const H = kids.find((c) => c.matches('h1, h2, h3')); if (!H) continue;
           const k = H.querySelector(':scope > .kicker'), line = H.querySelector(':scope > .head-line');
-          check('kicker', k, line, head);
-          const kids = [...head.children].filter((c) => shown(c) && !c.matches('script, style'));
+          if (k && line && shown(k)) check('kicker', k, line, head);
           for (let i = 1; i < kids.length; i++) {
             const prev = kids[i - 1], cur = kids[i];
             if (isCta(cur) && (prev === H || prev.matches('p'))) check('cta', prev, cur, head);
             else if (cur.matches('p') && (prev === H || prev.matches('p'))) check('text', prev, cur, head);
           }
-          // Kopf → Inhalt: nur für .sec-head mit Inhalt direkt darunter im selben Abschnitt
-          if (head.matches('.sec-head')) { let next = head.nextElementSibling; while (next && (!shown(next) || next.matches('script, style'))) next = next.nextElementSibling; if (next) check('content', head, next, head); }
+          // Kopf → folgender Block: erstes sichtbares Element nach dem Kopf (bei „contents“ nach seinem letzten Kind), notfalls
+          // nach einem Vorfahren innerhalb der Section; Rolle aus dem Vertrag data-head-next
+          const role = head.dataset.headNext; if (!role) continue;
+          const last = head.matches('[data-section-head="contents"]') ? head.lastElementChild : head;
+          let next = null;
+          for (let from = last; from && !next && !from.matches('section, main'); from = from.parentElement) {
+            for (let n = from.nextElementSibling; n; n = n.nextElementSibling) if (shown(n)) { next = n; break; }
+          }
+          if (next) check(role, head.matches('[data-section-head="contents"]') ? kids.at(-1) : head, next, head);
+        }
+        // Seitenkopf im Konfigurator (Preisseite, Variante has-head): unterstes Kopfteil (Überschrift, Einleitung, Eckdaten)
+        // → oberstes Werkzeug darunter, Rolle --head-gap-tool
+        for (const cfg of document.querySelectorAll('main .cfg.has-head')) {
+          const tool = [...cfg.querySelectorAll(':scope > :is(.cfg-panel, .cfg-stage)')].filter(shown).sort((x, y) => box(x).top - box(y).top)[0];
+          const parts = tool ? [...cfg.querySelectorAll(':scope > :is(.cfg-head, .cfg-intro, .cfg-facts)')].filter((e) => shown(e) && box(e).bottom <= box(tool).top + 1) : [];
+          if (parts.length) check('tool', parts.sort((x, y) => box(y).bottom - box(x).bottom)[0], tool, cfg);
         }
       }
       return r;

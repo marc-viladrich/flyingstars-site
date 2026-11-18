@@ -41,7 +41,7 @@ const list: Item[] = items ?? INCLUDED;
   .inc-grid { --ig-cols: 2; list-style: none; margin: 0; padding: 0; }
   /* Zelle „Das macht ihr“: Struktur wie die Leistungen, Cyan statt Orange, feine Fläche mit Cyan-Haarlinie oben */
   .inc-grid > :global(.inc-note) { position: relative; background: linear-gradient(180deg, rgb(var(--rgb-cyan) / 0.07), rgb(var(--rgb-cyan) / 0.02)); }
-  .inc-grid > :global(.inc-note)::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: rgb(var(--rgb-cyan) / 0.55); }
+  .inc-grid > :global(.inc-note)::before { content: ""; position: absolute; left: 0; right: 0; top: 0; border-top: 1px solid rgb(var(--rgb-cyan) / 0.55); }
   .inc-grid :global(.inc-note .ico.inc-note-ico) { stroke: var(--cyan); }
   .inc-grid :global(.inc-note > p) { max-width: 40ch; }
   @media (--grid-stacked) {

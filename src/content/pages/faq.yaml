@@ -2,7 +2,7 @@
 # den Tags faq-*. Jede Frage erscheint genau einmal; die Seite liefert dazu strukturierte Daten (FAQPage). Am Ende Moritz'
 # Abschluss „Weitere Fragen?“ mit Formular, Telefon und WhatsApp. Gruppen-Sprungmarken: /faq/#drohnenshows usw.
 title: Häufige Fragen (FAQ)
-description: "Was macht FlyingStars? ✓ Wie laufen Drohnenshows ab? ✓ Was kosten sie? ✓ Sind sie sicher? ☎︎ +49 209 88306562"
+description: "Was macht FlyingStars? ✓ Wie laufen Drohnenshows ab? ✓ Was kosten sie? ✓ Sind sie sicher? ☎︎ {{contact.phone.international}}"
 sections:
   - type: faq
     id: fragen

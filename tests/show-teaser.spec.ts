@@ -1,8 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 
 // Teaser des Show-Konfigurators (ConfiguratorTeaser.astro, src/scripts/show-teaser.js), Runde 9: ein Showreel, das sich
-// selbst abspielt, in drei Abläufen (Prop `reel`: start, marke, hochzeit). Daneben ein reduziertes Wireframe (Paket,
-// Regler mit „N Drohnen“, acht Euro-Stufen). Das Logo bzw. die Initialen stehen am Anfang und werden mit mehr Drohnen
+// selbst abspielt, in drei Abläufen (start, marke, hochzeit). Daneben ein Regler mit „N Drohnen“ und acht Euro-Stufen. Das Logo bzw. die Initialen stehen am Anfang und werden mit mehr Drohnen
 // schärfer; die Bühne ist ein Link ohne eigenen Tab-Stopp, der Knopf bleibt der Weg per Tastatur. Keine
 // Formularelemente. Lädt erst in der Nähe des Viewports, zeichnet außerhalb nicht, steht bei reduzierter Bewegung.
 // TEASER_PATH stellt die Seite ein (Standard: Startseite). Die Prüfseite /poc/konfigurator-teaser/ ist seit Runde 20
@@ -11,10 +10,6 @@ const PAGE = process.env.TEASER_PATH ?? '/';
 const root = (page: Page, sel = '[data-cft-root]') => page.locator(sel).first();
 const field = (page: Page, sel?: string) => root(page, sel).locator('[data-cft=field]');
 const reach = async (page: Page, sel?: string) => { await root(page, sel).scrollIntoViewIfNeeded(); await expect(root(page, sel)).toHaveAttribute('data-cft-loaded', 'true', { timeout: 20_000 }); };
-/** WCAG-Kontrast zweier Farben (sRGB 0–255). */
-const contrast = (a: number[], b: number[]) => { const L = (c: number[]) => { const [r, g, bl] = c.map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * bl; }; const [x, y] = [L(a), L(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
-const on = (page: Page, id: string, sel?: string) => root(page, sel).locator(`[data-cft=pkg][data-id=${id}]`);
-
 test('Der Teaser lädt erst in der Nähe des Viewports', async ({ page }) => {
   await page.goto(PAGE);
   const far = await root(page).evaluate((el) => el.getBoundingClientRect().top - innerHeight);
@@ -24,16 +19,18 @@ test('Der Teaser lädt erst in der Nähe des Viewports', async ({ page }) => {
   await reach(page);
 });
 
-test('Das Mockup ist Dekoration: keine Formularelemente, nur der Knopf als Tab-Stopp, die Bühne als Link ohne eigenen Tab-Stopp', async ({ page }) => {
+test('Dekorative Regler und genau ein erreichbarer Link zu Show planen', async ({ page }) => {
   await page.goto(PAGE);
   const r = root(page);
   await expect(r.locator('input, button, select, textarea')).toHaveCount(0);
   await expect(r.locator('.cft-pill')).toHaveCount(0); // Runde 9: Anlass-Pills ersatzlos raus
-  await expect(r.locator('.cft-label')).toHaveText('Paket');
-  await expect(r.locator('[data-cft=euro]')).toHaveCount(8);
+  await expect(r.locator('[data-cft=pkg]').filter({ visible: true })).toHaveCount(0);
+  await expect(r.locator('[data-cft=thumb]')).toBeVisible();
+  const price = r.locator('.cft-price');
+  if (await price.isVisible()) await expect(price.locator('[data-cft=euro]').filter({ visible: true })).toHaveCount(8);
   await expect(r.locator('.cft-count')).toContainText('Drohnen');
   await expect(r.locator('a:not([tabindex="-1"])')).toHaveCount(1);
-  await expect(r.locator('a.cft-cta')).toHaveText('Zum Show-Konfigurator'); // Runde 11
+  await expect(r.locator('a.cft-cta')).toHaveText('Show planen');
   await expect(r.locator('a.cft-cta')).toHaveAttribute('href', '/drohnenshow-preise/#konfigurator');
   await expect(r.locator('a.cft-hit')).toHaveAttribute('href', '/drohnenshow-preise/#konfigurator');
   await expect(r.locator('a.cft-hit')).toHaveAttribute('aria-hidden', 'true');
@@ -41,33 +38,29 @@ test('Das Mockup ist Dekoration: keine Formularelemente, nur der Knopf als Tab-S
   await expect(r.locator('[role=img]')).toHaveAttribute('aria-label', /Drohnenshow/);
 });
 
-test('Start: erst das Logo mit wachsender Drohnenzahl, dann das Herz über die drei Pakete; jede Drohnenzahl hat ihre Euro-Stufe', async ({ page }) => {
+test('Logo und Herz wechseln die sichtbare Drohnenzahl und Preisindikation', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'Die Euro-Skala gehört zum Desktop-Wireframe.');
   test.setTimeout(90_000);
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto(PAGE);
   await reach(page);
   const r = root(page), count = r.locator('[data-cft=count]'), note = r.locator('[data-cft=note]');
+  await expect(count).toBeVisible();
+  await expect(r.locator('.cft-price')).toBeVisible();
   // Stufen mitschreiben: Drohnenzahl → Euro-Zeichen
   await page.evaluate(() => {
     const el = document.querySelector('[data-cft-root]')!, c = el.querySelector('[data-cft=count]')!, w = window as unknown as { __steps: [string, number][] };
-    const take = () => w.__steps.push([c.textContent ?? '', el.querySelectorAll('[data-cft=euro].is-on').length]);
+    const take = () => w.__steps.push([c.textContent ?? '', Array.from(el.querySelectorAll('[data-cft=euro].is-on')).filter(e => e.getClientRects().length > 0).length]);
     w.__steps = []; take(); new MutationObserver(take).observe(el, { subtree: true, attributes: true, attributeFilter: ['class'] });
   });
-  await expect(note).toHaveClass(/is-on/);
+  await expect(note).toHaveCSS('opacity', '1');
   await expect(note).toHaveText('Platz für euer Logo');
   await expect(count).toHaveText('300', { timeout: 15_000 });
   await expect(count).toHaveText('600', { timeout: 15_000 });
-  await expect(on(page, 'SPARK')).toHaveClass(/is-on/, { timeout: 15_000 }); // das Herz in 2D
-  await expect(note).not.toHaveClass(/is-on/);
+  await expect(note).toHaveCSS('opacity', '0', { timeout: 15_000 }); // Logo wechselt zur Herzensfolge
   await expect(count).toHaveText('200', { timeout: 10_000 }); // der Herztunnel
-  await expect(on(page, 'HORIZON')).toHaveClass(/is-on/);
-  await expect(count).toHaveText('300', { timeout: 10_000 }); // Amors Pfeil in 3D, dann der QR-Code
-  await expect(on(page, 'ODYSSEY')).toHaveClass(/is-on/);
-  // Runde 11: der Rahmen ist zum gewählten Paket geglitten, in dessen Farbe
-  const ind = r.locator('.cft-ind');
-  await expect.poll(async () => Math.abs((await ind.boundingBox())!.x - (await on(page, 'ODYSSEY').boundingBox())!.x)).toBeLessThan(1.5);
-  await expect(ind).toHaveCSS('border-top-color', 'rgb(51, 237, 242)');
+  await expect(count).toHaveText('300', { timeout: 10_000 }); // Amors Pfeil und QR-Code
   await expect(count).toHaveText('450', { timeout: 20_000 }); // Rakete und Mondlandung
   await expect(count).toHaveText('600', { timeout: 20_000 }); // Bokkenrijders
   const steps = await page.evaluate(() => (window as unknown as { __steps: [string, number][] }).__steps);
@@ -78,17 +71,6 @@ test('Start: erst das Logo mit wachsender Drohnenzahl, dann das Herz über die d
   for (let i = 1; i < euro.length; i++) expect(euro[i], `${sorted[i]} Drohnen`).toBeGreaterThan(euro[i - 1]);
   expect(euro.at(-1)).toBe(8);
   expect(errors).toEqual([]);
-});
-
-test('Nicht gewählte Pakete behalten ihre Farbe, gedämpft und mit mindestens 4,5:1 Kontrast', async ({ page }) => {
-  await page.goto(PAGE);
-  const colours = await root(page).locator('[data-cft=pkg]:not(.is-on)').evaluateAll((els) => els.map((el) => getComputedStyle(el).color));
-  expect(colours).toHaveLength(2);
-  for (const c of colours) {
-    const [r, g, b] = (c.match(/[\d.]+/g) ?? []).map(Number).slice(0, 3).map((v) => (c.startsWith('color(') ? v * 255 : v)); // color-mix kommt als color(srgb 0–1)
-    expect(Math.max(r, g, b) - Math.min(r, g, b), `${c} ist farbig, nicht grau`).toBeGreaterThan(30);
-    expect(contrast([r, g, b], [19, 17, 16]), `${c} auf der Karte`).toBeGreaterThanOrEqual(4.5);
-  }
 });
 
 test('Beim Zeigen auf die Bühne erscheint „Eigene Show zusammenstellen“, ein Klick führt in den Konfigurator; auch der Fokus auf dem Knopf zeigt es', async ({ page }, info) => {
@@ -114,10 +96,24 @@ test('Abläufe für die Landingpages: „marke“ beginnt mit dem Logo, „hochz
     await page.goto(path);
     const sel = `[data-cft-root][data-reel=${reel}]`;
     await reach(page, sel);
-    await expect(root(page, sel).locator('[data-cft=note]')).toContainText(note);
+    const annotation = root(page, sel).locator('[data-cft=note]');
+    await expect(annotation).toHaveCSS('opacity', '1');
+    await expect(annotation).toContainText(note);
     await expect(root(page, sel).locator('[data-cft=count]')).toHaveText('300', { timeout: 15_000 });
-    await expect(on(page, 'ODYSSEY', sel)).toHaveClass(/is-on/);
   }
+});
+
+test('Die globale Pause hält die sichtbare Bühne an und lässt sie wieder starten', async ({ page }) => {
+  await page.goto(PAGE);
+  await reach(page);
+  await expect(field(page)).toHaveAttribute('data-running', 'true');
+  await page.getByRole('button', {name: 'Bewegung pausieren'}).click();
+  await reach(page);
+  await expect(field(page)).toBeVisible();
+  await expect(field(page)).toHaveAttribute('data-running', 'false');
+  await page.getByRole('button', {name: 'Bewegung fortsetzen'}).click();
+  await reach(page);
+  await expect(field(page)).toHaveAttribute('data-running', 'true');
 });
 
 test('Außerhalb des Viewports zeichnet die Engine nicht, bei reduzierter Bewegung steht die Bokkenrijders-Maske in Ruhe', async ({ page }) => {
@@ -129,29 +125,35 @@ test('Außerhalb des Viewports zeichnet die Engine nicht, bei reduzierter Bewegu
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.reload();
   await reach(page);
-  await page.waitForTimeout(500);
   await expect(field(page)).toHaveAttribute('data-running', 'false');
-  await expect(on(page, 'ODYSSEY')).toHaveClass(/is-on/);
   expect(Number(await field(page).getAttribute('data-points'))).toBe(600);
 });
 
-test('Runde 11: der Paketrahmen gleitet beim Wechsel über Zwischenwerte, bei reduzierter Bewegung nicht', async ({ page }) => {
-  test.setTimeout(60_000);
+test('Der sichtbare Regler gleitet beim Wechsel und steht bei reduzierter Bewegung', async ({ page }) => {
   await page.goto(PAGE);
   await reach(page);
-  const r = root(page);
-  // Zwischenwerte des Rahmens mitschreiben, bis HORIZON gewählt ist (Herztunnel)
-  await page.evaluate(() => {
-    const el = document.querySelector('[data-cft-root] .cft-ind')!, w = window as unknown as { __xs: number[] };
-    w.__xs = []; const tick = () => { w.__xs.push(new DOMMatrixReadOnly(getComputedStyle(el).transform).m41); requestAnimationFrame(tick); }; tick();
+  const thumb = root(page).locator('[data-cft=thumb]');
+  await expect(thumb).toBeVisible();
+  const movement = await thumb.evaluate(async el => {
+    const sample = () => parseFloat(getComputedStyle(el).left);
+    const start = sample();
+    const samples = [start];
+    const deadline = performance.now() + 8000;
+    while (performance.now() < deadline) {
+      await new Promise(requestAnimationFrame);
+      samples.push(sample());
+      const last = samples.length - 1;
+      if (last > 3 && Math.abs(samples[last] - start) > 20 &&
+          samples[last] === samples[last - 1] && samples[last] === samples[last - 2]) break;
+    }
+    return { start, end: samples.at(-1)!, samples };
   });
-  await expect(on(page, 'HORIZON')).toHaveClass(/is-on/, { timeout: 30_000 });
-  await page.waitForTimeout(800);
-  const end = await r.locator('.cft-ind').evaluate((el) => new DOMMatrixReadOnly(getComputedStyle(el).transform).m41);
-  const xs = await page.evaluate(() => (window as unknown as { __xs: number[] }).__xs);
-  expect(end).toBeGreaterThan(20);
-  expect(xs.some((x) => x > 2 && x < end - 2), 'mindestens ein Bild mitten im Gleiten').toBe(true);
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await expect.poll(() => r.locator('.cft-ind').evaluate((el) => Math.max(...getComputedStyle(el).transitionDuration.split(',').map(parseFloat)))).toBeLessThan(0.001); // global 0,01 ms
-});
+  expect(Math.abs(movement.end - movement.start)).toBeGreaterThan(20);
+  const [low, high] = [movement.start, movement.end].sort((a, b) => a - b);
+  expect(movement.samples.some(x => x > low + 2 && x < high - 2)).toBe(true);
 
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect.poll(() => thumb.evaluate(el =>
+    Math.max(...getComputedStyle(el).transitionDuration.split(',').map(parseFloat)))).toBeLessThan(0.001);
+  await expect(field(page)).toHaveAttribute('data-running', 'false');
+});

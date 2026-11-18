@@ -1,16 +1,17 @@
 ---
 // Danke-Seite (Runde 4, Moritz 18.11.2026; Aufbau Runde 6 wie die Anfrage, Marc: „this is the last step“): links Kopf,
 // Text und darunter Chopper, der sich als Drohnenformation freut; rechts die freiwillige Frage nach der Quelle in der
-// Formular-Box der Anfrage (.inquiry/.ask aus ContactForm), mit Schrittanzeige als letztem Schritt. Die Antwort geht als zweite kleine Meldung über denselben Weg wie die Anfrage
-// (/api/contact, kind=quelle) und trägt den Zufallswert der Anfrage aus sessionStorage. Ohne JavaScript sendet das
-// Formular normal; ohne Bezug, aber auch ohne erneute Dateneingabe.
+// Formular-Box der Anfrage (.inquiry/.ask aus ContactForm), mit Schrittanzeige als letztem Schritt.
+// Erreichbar nur nach bestätigtem Versand (Antwortvertrag in functions/api/contact.ts). Die Antwort geht als zweite
+// kleine Meldung über denselben Weg (kind=quelle) und trägt den Zufallswert der Anfrage aus sessionStorage. Erfolg
+// zeigt nur ein bestätigtes `sent`: mit JavaScript per Skript, ohne JavaScript per Weiterleitung auf das Sprungziel
+// SOURCE_DONE_ID (CSS :target). Fehler beantwortet der Endpoint ohne JavaScript mit einer eigenen lesbaren Seite.
 import type { Section } from '../../content.config';
 import SectionHead from '../SectionHead.astro';
 import Chopper from '../Chopper.astro';
 import { site } from '../../site.config';
 import { forPath } from '../../i18n/server';
-import { SOURCE_OTHER, SOURCE_TEXT_MAX } from '../../content/inquiry-source.mjs';
-import { CONTACT } from '../people';
+import { SOURCE_OTHER, SOURCE_TEXT_MAX, SOURCE_DONE_ID } from '../../content/inquiry-source.mjs';
 type Props = Extract<Section, { type: 'thanks' }> & { index: number };
 const { kicker, headline, text, question, options, otherLabel, sendLabel, doneText, cta, index, id = 'danke' } = Astro.props;
 const { t, locale, localHref } = forPath(Astro.url.pathname);
@@ -20,18 +21,20 @@ const headingId = `${id}-h`;
 <section class="section alt thanks" id={id} aria-labelledby={headingId}>
   <div class="inquiry">
     <SectionHead variant="embedded" class="intro" kicker={kicker} headline={headline} text={text} textClass="lead" id={headingId} level={H}>
-      <p class="thanks-note" data-thanks-preview hidden>{t('contact.formDeliveryHasNotBeenSetUpYetNothingWas', { email: CONTACT.email })}</p>
       <Chopper mood="happy" class="thanks-chopper" />
     </SectionHead>
-    <form class="ask is-2" action={site.formEndpoint} method="post" data-source-form data-done={doneText} aria-labelledby="thanks-q">
+    <form class="ask is-2" action={site.formEndpoint} method="post" data-source-form aria-labelledby="thanks-q">
       <div class="ask-steps" aria-hidden="true"><span>{t('thanks.stepSent')}</span><span class="on">{t('thanks.stepLast')}</span><i></i></div>
       <input type="hidden" name="kind" value="quelle" />
       <input type="hidden" name="locale" value={locale} />
       <input type="hidden" name="ref" value="" data-source-ref />
-      <fieldset class="step">
+      <fieldset class="step" aria-describedby="quelle-err">
         <legend class="thanks-q" id="thanks-q">{question}</legend>
-        <div class="chips">
-          {options.map((o) => <label><input type="radio" name="quelle" value={o.value} data-other={o.value === SOURCE_OTHER ? '' : undefined} /><span>{o.label}</span></label>)}
+        <div class="field">
+          <div class="chips">
+            {options.map((o, i) => <label><input type="radio" name="quelle" value={o.value} required={i === 0} data-other={o.value === SOURCE_OTHER ? '' : undefined} /><span>{o.label}</span></label>)}
+          </div>
+          <span class="err" id="quelle-err" data-err-for="quelle" role="alert"></span>
         </div>
         <div class="field" data-source-other>
           <label class="lbl" for="f-quelle-text">{otherLabel} <em>{t('contactform.optional')}</em></label>
@@ -40,6 +43,7 @@ const headingId = `${id}-h`;
         <div class="actions"><button class="btn primary" type="submit">{sendLabel}</button>{cta && <a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a>}</div>
       </fieldset>
       <div aria-hidden="true" class="honeypot"><label>Website<input autocomplete="off" name="website" tabindex="-1" /></label></div>
+      <p class="form-status thanks-done" id={SOURCE_DONE_ID} tabindex="-1">{doneText}</p>
       <p class="form-status" data-source-status role="status" tabindex="-1"></p>
     </form>
   </div>
@@ -47,40 +51,45 @@ const headingId = `${id}-h`;
 
 <script>
   import { INQUIRY_REF_KEY } from '../../content/inquiry-source.mjs';
+  import { sendForm, SendError, setFieldError, clearErrorsOnInput } from '../../scripts/form-contract';
+  import { t } from '../../i18n/ui.mjs';
   const form = document.querySelector<HTMLFormElement>('[data-source-form]');
   if (form) {
     const read = (key: string) => { try { return sessionStorage.getItem(key); } catch { return null; } };
     const status = form.querySelector<HTMLElement>('[data-source-status]')!;
+    const done = form.querySelector<HTMLElement>('.thanks-done')!;
     const other = form.querySelector<HTMLElement>('[data-source-other]')!;
-    const params = new URLSearchParams(location.search);
-    // Ohne eingerichteten Versand (nur ohne JavaScript erreichbar): ehrlich sagen, dass nichts angekommen ist
-    if (params.get('state') === 'not-configured') {
-      document.querySelector<HTMLElement>('[data-thanks-preview]')!.hidden = false;
-      form.hidden = true;
-    }
-    // Ohne JavaScript gesendet: Rückmeldung nach dem Neuladen
-    if (params.get('quelle') === 'sent') { form.querySelector('fieldset')!.hidden = true; form.querySelector<HTMLElement>('[data-source-status]')!.textContent = form.dataset.done ?? ''; }
+    const button = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
     form.querySelector<HTMLInputElement>('[data-source-ref]')!.value = read(INQUIRY_REF_KEY) ?? '';
+    form.noValidate = true;
     other.hidden = true;
+    clearErrorsOnInput(form);
     form.addEventListener('change', () => {
       const pick = form.querySelector<HTMLInputElement>('[name=quelle]:checked');
       other.hidden = !pick?.hasAttribute('data-other');
     });
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
-      if (!form.querySelector('[name=quelle]:checked')) { form.querySelector<HTMLInputElement>('[name=quelle]')?.focus(); return; }
-      const button = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
-      button.disabled = true;
-      try {
-        const response = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
-        const result = await response.json();
-        if (!response.ok || result.ok !== true) throw new Error(result.detail || '');
-        form.querySelector('fieldset')!.hidden = true;
-        status.textContent = form.dataset.done ?? '';
-      } catch (error) {
-        status.textContent = error instanceof Error && error.message ? error.message : '…';
-        button.disabled = false;
+      // Ohne Auswahl gibt es nichts zu senden: Meldung an der Gruppe, Fokus auf die erste Antwort
+      if (!form.querySelector('[name=quelle]:checked')) {
+        setFieldError(form, 'quelle', t('thanks.pleaseChooseAnAnswer'));
+        form.querySelector<HTMLInputElement>('[name=quelle]')?.focus();
+        return;
       }
+      button.disabled = true; status.textContent = '';
+      try {
+        const result = await sendForm(form.action, new FormData(form));
+        if (result.state === 'sent') {
+          form.classList.add('is-done');
+          done.focus();
+          return;
+        }
+        status.textContent = `${t('thanks.answerNotSent')} ${t('thanks.answerNotConfigured')}`;
+      } catch (error) {
+        const detail = error instanceof SendError ? error.detail : undefined;
+        status.textContent = `${t('thanks.answerNotSent')} ${detail ?? t('thanks.tryAgainLater')}`;
+      }
+      button.disabled = false;
       status.focus();
     });
   }
@@ -91,8 +100,12 @@ const headingId = `${id}-h`;
   .thanks :global(.thanks-chopper) { max-width: 24rem; margin-top: calc(-1 * var(--space-4)); }
   .thanks-q { padding: 0; margin: 0 0 var(--space-4); font: 500 var(--text-lead)/1.4 var(--display); color: var(--text); text-wrap: balance; }
   .thanks .field[hidden] { display: none; }
-  .thanks-note { color: var(--muted); border-left: 2px solid var(--accent); padding-left: var(--space-4); }
   .thanks .form-status:empty { display: none; }
   .thanks .form-status { margin: 0; font-size: var(--text-lead); color: var(--text); }
+  /* Erfolgszustand: per Skript (.is-done) oder ohne JavaScript als Sprungziel der Weiterleitung */
+  .thanks-done { display: none; }
+  .ask:is(.is-done, :has(.thanks-done:target)) .thanks-done { display: block; animation: opt-in var(--dur-enter) var(--ease-enter); }
+  :global(html.motion-paused) .ask:is(.is-done, :has(.thanks-done:target)) .thanks-done { animation: none; }
+  .ask:is(.is-done, :has(.thanks-done:target)) :is(.step, [data-source-status]) { display: none; }
   @media (--grid-stacked) { .thanks :global(.thanks-chopper) { margin-inline: auto; } }
 </style>

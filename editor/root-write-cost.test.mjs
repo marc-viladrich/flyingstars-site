@@ -35,7 +35,7 @@ test('Successful contract cache invalidates for changed text, evidence and depen
  const hooks=localeTransactions(process.cwd(),site.sourceFor);
  hooks.validateTransaction({nextRecords:records});hooks.validateTransaction({nextRecords:structuredClone(records)});
  for(const mutate of [
-  rows=>{rows.find(r=>r.id==='site/contact').data.phone='01234 987654';},
+  rows=>{rows.find(r=>r.id==='site/show-duration').data.indoor.min+=1;},
   rows=>{rows.find(r=>r.id==='page/index').data.title+=' stale';},
   rows=>{rows.find(r=>r.id==='page/en/index').data.translationEvidence.fields[0].status='unreviewed';},
  ]){

@@ -1,5 +1,7 @@
 # FlyingStars Video-Lab
 
+> Stand 18.11.2026: Die Labor-Encodes liegen in `archive/video-lab/files/` und werden nicht mehr veröffentlicht. Öffentlich sind nur die acht freigegebenen Renditions aus `src/data/hero-video.json` (siehe `archive/video-lab/README.md`). Die Pfadangaben unten beschreiben den damaligen Stand.
+
 Aktueller Arbeitsstand: Branch `claude/showreel-seamless-loop-2026-11-03`, Basis `feat/designsprache-poc`. Der 15,00s-Schnitt zeigt einen kurzen Bodenflug, QR/Scan Me, Kolibri, Puma, Riders-Motiv, NFL-Catch und eine NFL-Logo-Einstellung sowie die späteren Ford-Übergänge und FlyingStars. Der QR-Zoom beginnt ohne Cube-Frames. Am Loopende fliegt die Kamera durch das weiterhin bewegte FlyingStars-Logo in den laufenden Bodenflug, mit radialen Lichtspuren wie in den Zoom-Übergängen des Originals; [Runde 9](round-9/README.md) erklärt, warum die Zoom-Brücke aus [Runde 8](round-8/README.md) künstlich wirkte. Die spätere Logo-Einstellung und erste Ford-Einstellung entfallen. Adaptive Desktopgrößen 960/1280/1440 und Mobil 640 bleiben wie in [Runde 4](round-4/README.md). AV1 bleibt an positive Decoder-/Effizienzauskunft gebunden; alle Größen haben H.264-Rückfall.
 
 Die bisherigen Runden und Dateien bleiben historische Experimente. Maßgeblich für aktuelle Automatik und große Vergleichsansicht sind die `loop16-…-v9.mp4`-Dateien und die `loop-*`-Gruppen.
@@ -16,7 +18,7 @@ Die Prüfseiten sind noindex. Sie aktivieren keine Google-Tags, auch wenn im Pre
 
 ## Dateien und Qualität
 
-`src/data/video-lab.json` enthält pro Datei Codec, tatsächliche Auflösung, Laufzeit, Bytezahl, SHA-256, MIME und Vergleichsausschnitt. Dateimetadaten wurden mit ffprobe gelesen. Originalquelle ist die registrierte FlyingStars-Showreel-Datei mit SHA-256 `3ac827bd54aa2febfe1d422f230ff2d5463b871772e3da48da704a3a3339214d`, H.264, 1918 × 1080, 25 fps, 25,88 s und ohne Audio. Die unveränderte Referenz liegt im Lab selbst.
+`archive/video-lab/catalog.json` (bis 18.11.2026 `src/data/video-lab.json`) enthält pro Datei Codec, tatsächliche Auflösung, Laufzeit, Bytezahl, SHA-256, MIME und Vergleichsausschnitt. Dateimetadaten wurden mit ffprobe gelesen. Originalquelle ist die registrierte FlyingStars-Showreel-Datei mit SHA-256 `3ac827bd54aa2febfe1d422f230ff2d5463b871772e3da48da704a3a3339214d`, H.264, 1918 × 1080, 25 fps, 25,88 s und ohne Audio. Die unveränderte Referenz liegt im Lab selbst.
 
 Zu den neun früheren lokalen Transcodes kommen 1600/1440px H.264 und 480/640px H.264 mit voller sowie kurzer Laufzeit. Die vorhandene 960px-Mobilvorschau ist ebenfalls enthalten. Neue FFmpeg-Befehle stehen in `encodes.json`; die ursprüngliche vollständige Versuchsreihe ist im Geschäftshub unter `notes/flying-stars/optimierung-2026-11-03/video/` gesichert.
 

@@ -2,16 +2,13 @@ import {reviewedRequest} from './test/requests.mjs';
 import {contentData} from '../src/i18n/transaction.mjs';
 import {codecs} from 'astro-frontend-editor/runtime/extensions';
 import test from 'node:test';import assert from 'node:assert/strict';
-import {mkdtemp,symlink,rm,readFile,mkdir,writeFile} from 'node:fs/promises';
-import path from 'node:path';import os from 'node:os';import {randomUUID} from 'node:crypto';import {fileURLToPath} from 'node:url';
-import {NativeStore,NativeBuilder,git} from 'astro-frontend-editor/runtime';
-import {createSite} from './flyingstars-adapter.mjs';import {resolveRuntimeOptions} from './server.mjs';
-const root=fileURLToPath(new URL('../',import.meta.url));
+import {readFile,mkdir,writeFile} from 'node:fs/promises';
+import path from 'node:path';
+import {i18nFixture} from './i18n-test-fixture.mjs';
+import {NativeBuilder} from 'astro-frontend-editor/runtime';
 test('Ein natives AFE-Speichern von Person und Projektfakten erreicht die echten DE/EN/NL-Ausgaben und ihre Besitzer',async t=>{
- const dir=await mkdtemp(path.join(os.tmpdir(),'fs-facts-proof-'));
- await git(root,['clone','--quiet','--no-hardlinks',root,dir]);await git(dir,['checkout','-B','content/draft']);await symlink(path.join(root,'node_modules'),path.join(dir,'node_modules'));
- const site=await createSite(dir),runtime=resolveRuntimeOptions({env:{},values:{siteRoot:dir,stateDir:path.join(dir,'state')}}),store=await new NativeStore(dir,{remote:false,site,runtime}).init();
- t.after(async()=>{store.sync.close();await rm(dir,{recursive:true,force:true});});
+ const {source:dir,store}=await i18nFixture(t);
+ t.after(()=>store.sync.close());
  const state=await store.state(),person=state.records.find(r=>r.id==='person/florian-becker'),facts=state.records.find(r=>r.id==='site/project-facts');
  assert.ok(person);assert.ok(facts);
  const before={};for(const locale of ['','en/','nl/'])for(const name of ['index','ueber-uns']){const f=`src/content/pages/${locale}${name}.yaml`;before[f]=await readFile(path.join(dir,f),'utf8');}

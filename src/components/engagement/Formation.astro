@@ -20,7 +20,7 @@ const id = `fg-${name.replace(/[^a-z0-9]/gi, '').toLowerCase()}`;
 
 <style>
   .formation { display: block; width: 100%; height: auto; overflow: visible; }
-  .formation circle { transition: opacity 0.7s var(--ease-default) var(--d); }
+  .formation circle { transition: opacity var(--dur-reveal-move) var(--ease-default) var(--d); }
   :global(.reveal) .formation:not(:global(.is-in)) circle { opacity: 0; }
   @media (prefers-reduced-motion: reduce) { .formation circle { transition: none; } }
 </style>

@@ -1,0 +1,11 @@
+---
+// 404 der übrigen Sprachen (/en/404/, /nl/404/); die deutsche liegt in 404.astro, beide mit demselben Inhalt
+import { forPath } from '../i18n/server';
+import Base from '../layouts/Base.astro';
+import Chopper404 from '../components/Chopper404.astro';
+import { staticPathsFor } from '../i18n/static-paths';
+
+export const getStaticPaths = () => staticPathsFor('404', 'notfound');
+const { t } = forPath(Astro.url.pathname);
+---
+<Base title={t('404.pageNotFound')} description={t('404.thisPageDoesnTExistChopperWillHelpYouFind')} noindex><Chopper404 /></Base>

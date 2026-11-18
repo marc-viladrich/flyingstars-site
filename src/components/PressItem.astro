@@ -1,0 +1,13 @@
+---
+// Ein Presse-Eintrag (LogoBar): Logo nur mit schriftlicher Freigabe (show), sonst der Name; verlinkt auf den Beitrag oder als
+// Text, die Quellen-Notiz steht im title. Eine Komponente für die Pressezeile unter dem Kundenlaufband und das Presseraster
+// im Belegblock; die Darstellung setzt die jeweilige Liste (.band-press bzw. .proof .press).
+import LocalImage from './LocalImage.astro';
+import { forPath } from '../i18n/server';
+interface Props { name: string; logo?: string; show: boolean; knock?: boolean; height: number; href?: string; note?: string }
+const { name, logo, show, knock, height, href, note } = Astro.props;
+const { localHref } = forPath(Astro.url.pathname);
+const Tag = href ? 'a' : 'span';
+const attrs = href ? { href: localHref(href), rel: 'noopener', target: '_blank', title: note ? `${name}: ${note}` : undefined } : { class: 'noref', title: note };
+---
+<li><Tag {...attrs}>{show && logo ? <LocalImage class:list={{ knock }} src={logo} alt={name} style={`height:${height / 16}rem`} loading="lazy" decoding="async" /> : <b>{name}</b>}</Tag></li>

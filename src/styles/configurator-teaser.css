@@ -36,7 +36,8 @@
   .cft-drones { display: grid; gap: var(--space-3); }
   .cft-count { margin: 0; font: 400 var(--text-base)/1 var(--display); color: var(--muted); }
   .cft-count b { font: 600 1.625rem/1 var(--display); color: var(--text); font-variant-numeric: tabular-nums; margin-right: var(--space-1); }
-  .cft-slider { position: relative; height: 1.375rem; }
+  /* Regler neutral (Preisseite nach Moritz, 17.11.2026: keine Paketfarben mehr), der Griff trägt das Orange */
+  .cft-slider { --track: linear-gradient(90deg, var(--text), var(--text)); position: relative; height: 1.375rem; }
   .cft-slider::before { content: ""; position: absolute; left: 0; right: 0; top: 0.5625rem; height: 0.25rem; border-radius: var(--radius-2); background: var(--track); opacity: 0.25; }
   .cft-fill { position: absolute; left: 0; top: 0.5625rem; height: 0.25rem; width: calc(var(--at) * 100%); border-radius: var(--radius-2); background: var(--track); background-size: calc(100% / max(var(--at), 0.001)) 100%; transition: width var(--dur-reveal-move) var(--ease-scene); }
   .cft-thumb { position: absolute; top: 0; left: calc(var(--at) * (100% - 1.375rem)); width: 1.375rem; height: 1.375rem; border-radius: var(--radius-round); background: var(--text); border: 0.3125rem solid var(--pkg, var(--amber)); box-shadow: 0 0 0 0.25rem var(--overlay-heavy), 0 0 1rem 2px color-mix(in srgb, var(--pkg, var(--amber)) 45%, transparent); transition: left var(--dur-reveal-move) var(--ease-scene), border-color var(--dur-underline) var(--ease-default), box-shadow var(--dur-underline) var(--ease-default); }
@@ -65,8 +66,7 @@
     .cft-pkg { min-height: 2.75rem; font-size: var(--text-xs); }
     .cft-count b { font-size: 1.375rem; }
   }
-/* Preisseite nach Moritz (17.11.2026): der Konfigurator hat keine Paketwahl mehr und der Regler keine Paketfarben. Das
-   Wireframe folgt ihm: keine Paketknöpfe, Regler neutral mit orangem Griff. Ablauf und Bühne bleiben (show-teaser.js). */
+/* Preisseite nach Moritz (17.11.2026): der Konfigurator hat keine Paketwahl mehr. Das Wireframe folgt ihm: keine
+   Paketknöpfe, Griff in Orange. Ablauf und Bühne bleiben (show-teaser.js). */
 .cft .cft-group:first-child { display: none; }
-.cft .cft-slider { --track: linear-gradient(90deg, var(--text), var(--text)) !important; }
 .cft .cft-thumb { border-color: var(--accent); box-shadow: 0 0 0 0.25rem var(--overlay-heavy), 0 0 1rem 2px rgb(var(--rgb-amber) / 0.45); }

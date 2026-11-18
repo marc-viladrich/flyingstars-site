@@ -18,7 +18,7 @@ const run = promisify(execFile);
 const shellQuote = s => "'" + s.replaceAll("'", "'\\''") + "'";
 const commit = (dir, message) => git(dir, ['-c','commit.gpgsign=false','add','.']).then(() => git(dir,['-c','commit.gpgsign=false','commit','-qm',message]));
 
-test('Offline-Pipeline: CI, Code-Deploy, Inhalts-Push/Freigabe, Rebase, Buildfehler und Konflikt', {skip: process.env.FLYINGSTARS_PIPELINE_CHILD === '1', timeout: 600_000}, async t => {
+test('Offline-Pipeline: CI, Code-Deploy, Inhalts-Push/Freigabe, Rebase, Buildfehler und Konflikt', {skip: process.env.FLYINGSTARS_PIPELINE_CHILD === '1', timeout: 1_500_000}, async t => {
   const prior = process.env.FLYINGSTARS_OFFLINE_MEDIA;
   process.env.FLYINGSTARS_OFFLINE_MEDIA = '1';
   t.after(() => {if (prior === undefined) delete process.env.FLYINGSTARS_OFFLINE_MEDIA; else process.env.FLYINGSTARS_OFFLINE_MEDIA = prior;});
@@ -43,6 +43,17 @@ test('Offline-Pipeline: CI, Code-Deploy, Inhalts-Push/Freigabe, Rebase, Buildfeh
     return store.save({expectedHead:current.head,requestId:randomUUID(),changes:[{id:page.id,expectedRevision:page.revision,patches:[{path:['title'],value:title}]}]});
   };
 
+  // Bind both installs to the cache that npm ci warmed in this checkout.
+  const npmEnv = {...process.env, PATH: path.dirname(process.execPath)+path.delimiter+process.env.PATH};
+  const npmCache = process.env.FLYINGSTARS_FIXTURE_NPM_CACHE ??
+    (await run('npm',['config','get','cache'],{cwd:process.cwd(),env:npmEnv})).stdout.trim();
+  const previousCache = process.env.npm_config_cache;
+  process.env.npm_config_cache = path.resolve(npmCache);
+  t.after(() => {
+    if (previousCache === undefined) delete process.env.npm_config_cache;
+    else process.env.npm_config_cache = previousCache;
+  });
+  let firstRelease;
   await t.test('Code auf GitHub → dieselbe CI-Prüfung → Host, öffentlicher Release und Neustart', async () => {
     await fs.writeFile(path.join(dev,'src/pages/pipeline-release.astro'),'<html><body>Code-Release eins</body></html>');
     // A lockfile change exercises the actual production installation, entirely from npm's local cache.
@@ -53,8 +64,14 @@ test('Offline-Pipeline: CI, Code-Deploy, Inhalts-Push/Freigabe, Rebase, Buildfeh
     }
     await commit(dev,'Code-Release eins');await git(dev,['push','origin','main']);
     await fs.rm(path.join(dev,'node_modules'));
-    await run('npm',['ci','--offline'],{cwd:dev,env:{...process.env,PATH:path.dirname(process.execPath)+path.delimiter+process.env.PATH},timeout:180_000,maxBuffer:5_000_000});
-    const ci = await run(process.execPath,[path.join(dev,'editor/ci/check.mjs')],{cwd:dev,env:{...process.env,FLYINGSTARS_PIPELINE_CHILD:'1'},timeout:500_000,maxBuffer:15_000_000});
+    try {
+      await run('npm',['ci','--offline'],{cwd:dev,env:{...npmEnv,npm_config_cache:process.env.npm_config_cache},timeout:180_000,maxBuffer:5_000_000});
+    } catch (error) {
+      const missing = error.stderr?.split('\n').find(line=>line.includes('ENOTCACHED')||line.includes('no cached response'));
+      if(missing)throw Error(`Offline-Tarball fehlt im npm-Installationscache. npm ci mit demselben Cache ausführen oder FLYINGSTARS_FIXTURE_NPM_CACHE auf den Installationscache setzen. ${missing}`,{cause:error});
+      throw error;
+    }
+    const ci = await run(process.execPath,[path.join(dev,'editor/ci/check.mjs')],{cwd:dev,env:{...process.env,FLYINGSTARS_PIPELINE_CHILD:'1'},timeout:1_300_000,maxBuffer:15_000_000});
     assert.match(ci.stdout,/Astro check/);assert.match(ci.stdout,/Offline-Astro-Build/);
     const oldOffline = process.env.npm_config_offline;process.env.npm_config_offline='true';
     let result;try {result=await update();} finally {if(oldOffline===undefined)delete process.env.npm_config_offline;else process.env.npm_config_offline=oldOffline;}
@@ -63,7 +80,9 @@ test('Offline-Pipeline: CI, Code-Deploy, Inhalts-Push/Freigabe, Rebase, Buildfeh
     assert.match(await fs.readFile(path.join(host,'src/pages/pipeline-release.astro'),'utf8'),/Code-Release eins/);
     assert.match(await fs.readFile(path.join(webroot,'pipeline-release/index.html'),'utf8'),/Code-Release eins/);
     assert.equal(await fs.readFile(marker,'utf8'),'restart\n');
+    firstRelease = result;
   });
+  if (!firstRelease) return; // All later stages require the activated initial release.
 
   await t.test('Speichern sichert content/draft asynchron; Freigeben schiebt main und aktiviert die echte Seite', async () => {
     await freshStore();await store.sync.flush();

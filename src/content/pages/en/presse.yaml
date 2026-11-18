@@ -1,6 +1,6 @@
 title: FlyingStars in the press (ZDF, WDR, ntv and more)
 navLabel: Press
-description: "You might know us from here: we often talk about sustainability & innovation in drone shows ☎︎ +49 209 88306562"
+description: "You might know us from here: we often talk about sustainability & innovation in drone shows ☎︎ {{contact.phone.international}}"
 sections:
   - type: press
     id: presse
@@ -23,16 +23,16 @@ sections:
     _key: k_499edb9f3b385f242d3a
 noindex: false
 translationContractVersion: 2
-translationSourceHash: 58e68cfab3e6708c8260cf6f0a204b1fa42bd89ae96261a7ac5f747ac0775a07
+translationSourceHash: b026dfbb7e900112ac8a48817e8d0719bc6a28c8b2edc83b3940cc0d98c76e9b
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 58e68cfab3e6708c8260cf6f0a204b1fa42bd89ae96261a7ac5f747ac0775a07
+  sourceFingerprint: b026dfbb7e900112ac8a48817e8d0719bc6a28c8b2edc83b3940cc0d98c76e9b
   fields:
     - address: /description
-      sourceFingerprint: 9db84d02117307e82f6133f92be2e980ef640161f37fa8cda272e9752f41ed93
-      targetFingerprint: 6c6fdb1c7c38626e02eeae767877654554ffbd26ccfff2b0f8c47a4905107958
+      sourceFingerprint: 90e12f7a0d23ff25b500e7e6379374e0a725b546a254269f7cf37d55e043099b
+      targetFingerprint: 22593f0cddb5be74c6feefb1832bc84ea7c7b0bf348a3c3d179386bfad206114
       status: adopted-existing
     - address: /navLabel
       sourceFingerprint: 6d684ed527162288c2a58442a0491b93bf72c507f18514280978410a72966eca

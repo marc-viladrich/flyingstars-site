@@ -12,7 +12,7 @@
       "drones": 100,
       "alt": "Rot-blaues PUMA-Logo aus Drohnen über dem beleuchteten Stadion.",
       "source": {
-        "repoPath": "public/media/video-lab/original-v1.mp4",
+        "repoPath": "archive/video-lab/files/original-v1.mp4",
         "timestampSeconds": 12
       },
       "reference": "src/content/projects/puma-bundesliga.md",
@@ -61,7 +61,7 @@
       "drones": 350,
       "alt": "Blauer Ford-Schriftzug aus Drohnen über dem beleuchteten Werksgelände.",
       "source": {
-        "repoPath": "public/media/video-lab/original-v1.mp4",
+        "repoPath": "archive/video-lab/files/original-v1.mp4",
         "timestampSeconds": 20.5
       },
       "reference": "src/content/projects/exploring-reinvented-der-neue-ford-explorer.md",
@@ -1060,7 +1060,7 @@
       "reference": null,
       "rightsNote": "Nutzungsfreigabe, Bildnachweis und Kontext der Aufnahme klären.",
       "source": {
-        "repoPath": "public/media/video-lab/original-v1.mp4",
+        "repoPath": "archive/video-lab/files/original-v1.mp4",
         "timestampSeconds": 6.5
       },
       "sourceWidth": 1918,

@@ -6,11 +6,30 @@
 //  3. Durchscrollen der Startseite erzeugt höchstens 0,1 CLS (das mitwandernde Canvas erzeugte vorher 5–8).
 //  4. An keiner Section-Grenze der Startseite ruckelt es (Frames, Long Tasks; siehe unten und tools/himmel/grenzen.mjs).
 //  5. Punktübergänge an jeder Farbgrenze, ohne Trennlinie (tools/himmel/uebergaenge-pruefen.mjs).
+//  6. Gemeinsames mobiles Budget für Start- und Preisseite (Audit P3, 18.11.2026): LCP im Profil oben und das
+//     blockierende CSS (Stylesheets im Kopf plus alle eingebetteten Styles), roh und Brotli-komprimiert wie beim Hosting.
 // Zeiten unter Last schwanken; geprüft wird die Struktur. Die Lighthouse-Werte stehen in docs/himmel.md.
 import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
 import { measure, serveDist, table } from './grenzen.mjs';
 import { check as checkTransitions } from './uebergaenge-pruefen.mjs';
+import { brotliCompressSync, constants as zlib } from 'node:zlib';
+
+// 6. Budget, gemessen am 18.11.2026 (Brotli Stufe 5 je Datei): vor dem CSS-Zuschnitt je Route Start 209 kB roh / 39,6 kB
+//    Brotli, Preise 234 / 44,1; danach Start 156 / 31,4, Preise 147 / 29,7. Gleiches Budget für beide Routen mit rund
+//    5 % Luft; wer es reißen muss, begründet das hier. LCP-Budget = „gut“ nach Core Web Vitals.
+const BUDGET = { routes: ['/', '/drohnenshow-preise/'], lcpMs: 2500, cssRaw: 165_000, cssBrotli: 33_000 };
+const brotli = (text) => brotliCompressSync(Buffer.from(text), { params: { [zlib.BROTLI_PARAM_QUALITY]: 5 } }).length;
+/** Render-blockierendes CSS einer Seite: verlinkte Stylesheets im Kopf ohne media=print und alle eingebetteten <style>. */
+async function blockingCss(base, path) {
+  const html = await (await fetch(base + path)).text();
+  const head = html.slice(0, html.indexOf('</head>'));
+  const hrefs = [...head.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*>/g)].map((m) => m[0]).filter((tag) => !/media="print"/.test(tag)).map((tag) => tag.match(/href="([^"]+)"/)[1]);
+  const sheets = await Promise.all(hrefs.map(async (href) => (await fetch(new URL(href, base + path))).text()));
+  const inline = [...html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/g)].map((m) => m[1]);
+  const all = [...sheets, ...inline];
+  return { files: hrefs.length, raw: all.reduce((n, css) => n + Buffer.byteLength(css), 0), br: all.reduce((n, css) => n + brotli(css), 0) };
+}
 
 const UEBERGANG_SEITEN = ['/', '/drohnenshow-preise/', '/faq/', '/ueber-uns/', '/nfl-berlin-game/', '/drohnenshow-indoor/'];
 
@@ -43,6 +62,7 @@ try {
     const last = lcp.at(-1);
     const tags = lcp.map((e) => e.tag).join(' → ');
     if (!last) fail.push(`${path}: kein LCP-Eintrag`);
+    else if (BUDGET.routes.includes(path) && last.t > BUDGET.lcpMs) fail.push(`${path}: LCP ${Math.round(last.t)} ms (Budget ${BUDGET.lcpMs} ms)`);
     else {
       if (lcp.some((e) => e.tag === 'VIDEO')) fail.push(`${path}: Hero-Video wird LCP-Element (${tags})`);
       const early = late.filter((r) => r.t < last.t);
@@ -58,6 +78,12 @@ try {
     }
     console.log(`${path.padEnd(22)} LCP ${last ? Math.round(last.t) + ' ms ' + last.tag : '–'} (${tags})  später geladen: ${late.length}${path === '/' ? `  CLS Scroll ${cls.toFixed(3)}` : ''}`);
     await ctx.close();
+  }
+  for (const path of BUDGET.routes) {
+    const css = await blockingCss(base, path);
+    console.log(`${path.padEnd(22)} blockierendes CSS ${css.files} Dateien, ${(css.raw / 1000).toFixed(1)} kB roh / ${(css.br / 1000).toFixed(1)} kB Brotli`);
+    if (css.raw > BUDGET.cssRaw) fail.push(`${path}: blockierendes CSS ${css.raw} B roh (Budget ${BUDGET.cssRaw})`);
+    if (css.br > BUDGET.cssBrotli) fail.push(`${path}: blockierendes CSS ${css.br} B Brotli (Budget ${BUDGET.cssBrotli})`);
   }
 } finally {
   await browser.close();

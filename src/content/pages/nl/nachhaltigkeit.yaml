@@ -1,5 +1,5 @@
 title: "Duurzaamheid: droneshows van FlyingStars (vs. vuurwerk)"
-description: Geen knal. Geen afval. Geen rook. ✓ Droneshows voor sociaal en ecologisch engagement. ☎︎ +49 209 88306562
+description: Geen knal. Geen afval. Geen rook. ✓ Droneshows voor sociaal en ecologisch engagement. ☎︎ {{contact.phone.international}}
 noindex: false
 image: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
 sections:
@@ -195,16 +195,16 @@ sections:
       - nachhaltigkeit-moritz
     _key: k_f58d716d01838151fc17
 translationContractVersion: 2
-translationSourceHash: e3f0f8d2d44a99123535c4d3d859de88de77b299cc8150dd4fa4204072fc0b4c
+translationSourceHash: a13eaec6208d5feb85a682e76524db1bc8eec1f4b4656e78c6db35d2ab8ade9e
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: e3f0f8d2d44a99123535c4d3d859de88de77b299cc8150dd4fa4204072fc0b4c
+  sourceFingerprint: a13eaec6208d5feb85a682e76524db1bc8eec1f4b4656e78c6db35d2ab8ade9e
   fields:
     - address: /description
-      sourceFingerprint: 617f97e4bb779fa6c17b9691243258ab9cdd60859ff2b097758190a215c29e7e
-      targetFingerprint: a188d77e56e772078b2525b5cd4b3f29a3c34c1474360a99bb0692fa6a900836
+      sourceFingerprint: cf4c0afdd114a9e000ee105745e2d9b110c7f1765fd33ded04e809dc372678bc
+      targetFingerprint: bb73fcc91ea10c782c674c6d364b39d2af5c57e65774260974bc7095f2e2b8cd
       status: adopted-existing
     - address: /navLabel
       sourceFingerprint: a3d150a7014916268d68efb0f7e43a0fcbfe7d89bc7f94f352f81c04ed9c84a3

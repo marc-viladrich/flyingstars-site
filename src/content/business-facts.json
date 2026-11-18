@@ -42,9 +42,17 @@
   "droneWeightGrams": {
     "value": 300,
     "unit": "grams",
-    "scope": "Rundwert der bisherigen Drotek-Showdrohnen",
+    "scope": "Rundwert der bisherigen Drotek-Showdrohnen für Outdoor-Shows (docs/sicherheitskonzept-quellen.md: als Outdoor-Angabe benannt); gilt nicht für Indoor",
     "asOf": "2026-10-21",
     "source": "FlyingStars-Fragebogen 21.10.2026; bestehende FAQ und Sicherheits-/Umwelttexte",
+    "status": "existing-claim"
+  },
+  "indoorDroneWeightMaxGrams": {
+    "value": 200,
+    "unit": "grams",
+    "scope": "Obergrenze je Drohne bei Indoor-Shows (Moritz: „wiegen unter 200 Gramm“); Modell im Bestand nicht benannt, von FlyingStars zu bestätigen",
+    "asOf": "2026-11-12",
+    "source": "Moritz, Webtext Indoor FlyingStars (12.11.2026)",
     "status": "existing-claim"
   },
   "maxAltitudeMetres": {

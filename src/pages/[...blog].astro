@@ -1,0 +1,8 @@
+---
+// Blog-Übersicht je Sprache (eigene Routendatei = eigenes CSS-Bündel, src/i18n/static-paths.ts)
+import BlogIndex from '../templates/BlogIndex.astro';
+import { staticPathsFor } from '../i18n/static-paths';
+
+export const getStaticPaths = () => staticPathsFor('blog', 'blog');
+---
+<BlogIndex />

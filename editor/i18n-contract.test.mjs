@@ -113,6 +113,18 @@ test('structured references resolve their real owner file; semantic owner change
   assert.ok(initial.fields.find(field => field.address === '/copy').dependencies.some(dependency => dependency.meaning.file.startsWith('src/content/people/')));
 });
 
+test('Project references retain the same proof after the editor serializes a date', () => {
+  const projectId = s(z.string().meta({'x-afe': {reference: {collection:'projects', encoding:'id'}}}));
+  const model = z.object({copy:t(z.string()), related:projectId});
+  const source = {copy:'Projekt im September', related:'fixture'};
+  const target = {...source, copy:'Project in September'};
+  const withDate = date => ({projects:{fixture:{file:'src/content/projects/fixture.md', data:{date}}}});
+  const projectAt = date => project(model, source, target, 'en', withDate(date));
+  const saved = adoptionEvidence(projectAt(new Date('2026-09-15')));
+  assert.deepEqual(reviewRequired(projectAt('2026-09-15'), saved), []);
+  assert.deepEqual(reviewRequired(projectAt('2026-09-16'), saved), ['/copy']);
+});
+
 test('local date formatting can differ while referencing the same source fact', () => {
   const source = {...de, label: '{{project.puma-bundesliga.date.numeric}}'};
   const target = {...en, label: '{{project.puma-bundesliga.date.long}}'};

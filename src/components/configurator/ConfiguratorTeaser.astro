@@ -18,7 +18,7 @@ const { t, localHref } = forPath(Astro.url.pathname);
 // solange die Bühne sichtbar ist; bei globaler Pause oder reduzierter Bewegung steht ein Motiv in Ruhe.
 // Runde 11 (Marc): Knopf „Zum Show-Konfigurator“; der Paketrahmen gleitet wie im Konfigurator zum neuen Paket
 // (.cft-ind, reines CSS über .is-on, das show-teaser.js setzt).
-import { SHOW_PACKAGES, DRONE_RANGES, DRONES_MIN, DRONES_MAX } from '../../content/show-packages';
+import { SHOW_PACKAGES, DRONES_MIN, DRONES_MAX } from '../../content/show-packages';
 
 interface Props {
   /** Präfix für die IDs */
@@ -38,7 +38,6 @@ const { id = 'cft', reel = 'start', href = '/drohnenshow-preise/#konfigurator', 
 type Pkg = keyof typeof SHOW_PACKAGES;
 const rgb = (k: Pkg) => `rgb(${SHOW_PACKAGES[k].color.join(',')})`;
 const at = (n: number) => ((n - DRONES_MIN) / (DRONES_MAX - DRONES_MIN)) * 100;
-const rangeTrack = `linear-gradient(90deg, ${(Object.keys(DRONE_RANGES) as Pkg[]).map((k) => `${rgb(k)} ${at(DRONE_RANGES[k].min)}%, ${rgb(k)} ${at(DRONE_RANGES[k].max)}%`).join(', ')})`;
 // Startzustand wie das erste Bild des Showreels (SPARK, 100 Drohnen, Hochzeit), damit vor dem Laden nichts springt
 const start = { pkg: 'SPARK' as Pkg, drones: 100 };
 // Textalternative je Ablauf (dieselbe Beschreibung wie REELS[…].label in show-teaser.js)
@@ -75,7 +74,7 @@ const labels = {
       </div>
       <div class="cft-drones">
         <p class="cft-count"><b data-cft="count">{start.drones}</b> {t('configuratorteaser.drones')}</p>
-        <div class="cft-slider" style={`--track: ${rangeTrack}`}>
+        <div class="cft-slider">
           <span class="cft-fill" data-cft="fill" style={`--at: ${at(start.drones) / 100}`}></span>
           <span class="cft-thumb" data-cft="thumb" style={`--at: ${at(start.drones) / 100}`}></span>
         </div>

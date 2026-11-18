@@ -1,18 +1,20 @@
 import {reviewedRequest} from './test/requests.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,symlink,rm,readFile,readdir} from 'node:fs/promises';
+import {mkdtemp,rm,readFile,readdir} from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 import {randomUUID} from 'node:crypto';
-import {fileURLToPath} from 'node:url';
-import {NativeStore,NativeBuilder,git} from 'astro-frontend-editor/runtime';
+import {i18nFixture} from './i18n-test-fixture.mjs';
+import {NativeBuilder,git} from 'astro-frontend-editor/runtime';
 import {createBrowserExtensionRegistry} from 'astro-frontend-editor/web/extensions.mjs';
-import {createSite} from './flyingstars-adapter.mjs';
 import browser from './design/browser-site.mjs';
 import {resolveRuntimeOptions,runEditor} from './server.mjs';
-const root=fileURLToPath(new URL('../',import.meta.url));
-async function fixture(t){const dir=await mkdtemp(path.join(os.tmpdir(),'fs-design-editor-'));await git(root,['clone','--quiet','--no-hardlinks',root,dir]);await git(dir,['checkout','-B','content/draft']);await symlink(path.join(root,'node_modules'),path.join(dir,'node_modules'));const site=await createSite(dir),store=await new NativeStore(dir,{remote:false,site,runtime:resolveRuntimeOptions({env:{},values:{siteRoot:dir,stateDir:dir+'-state'}})}).init();t.after(async()=>{store.sync.close();await rm(dir,{recursive:true,force:true});});return store;}
+async function fixture(t){
+ const {store}=await i18nFixture(t);
+ t.after(()=>store.sync.close());
+ return store;
+}
 const request=(state,values)=>({expectedHead:state.head,requestId:randomUUID(),changes:values.map(([id,path,value])=>({id,expectedRevision:state.records.find(r=>r.id===id).revision,patches:[{path,value}]}))});
 
 test('the real source schema supplies every new section, all current file owners, and no obsolete records',async t=>{

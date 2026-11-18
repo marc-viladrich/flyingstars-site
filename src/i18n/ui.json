@@ -3710,9 +3710,9 @@
     "nl": "Wat kost een droneshow? (Prijzen 2027)"
   },
   "preise.metaDescription": {
-    "de": "Baut eure Traum-Drohnenshow selbst zusammen ✓ Transparente Kosten ✓ 10 % Rabatt sichern ☎︎ +49 209 88306562",
-    "en": "Build your dream drone show yourself ✓ Transparent costs ✓ Get 10% off ☎︎ +49 209 88306562",
-    "nl": "Stel jullie droomdroneshow zelf samen ✓ Transparante kosten ✓ 10% korting ☎︎ +49 209 88306562"
+    "de": "Baut eure Traum-Drohnenshow selbst zusammen ✓ Transparente Kosten ✓ 10 % Rabatt sichern ☎︎ {{contact.phone.international}}",
+    "en": "Build your dream drone show yourself ✓ Transparent costs ✓ Get 10% off ☎︎ {{contact.phone.international}}",
+    "nl": "Stel jullie droomdroneshow zelf samen ✓ Transparante kosten ✓ 10% korting ☎︎ {{contact.phone.international}}"
   },
   "preise.heroKicker": {
     "de": "Kosten für Drohnenshows",
@@ -4398,5 +4398,40 @@
     "de": "2 Eine letzte Frage",
     "en": "2 One last question",
     "nl": "2 Nog één vraag"
+  },
+  "thanks.pleaseChooseAnAnswer": {
+    "de": "Bitte wählt eine Antwort aus.",
+    "en": "Please choose an answer.",
+    "nl": "Kies een antwoord."
+  },
+  "thanks.answerNotSent": {
+    "de": "Eure Antwort wurde nicht gesendet.",
+    "en": "Your answer was not sent.",
+    "nl": "Jullie antwoord is niet verstuurd."
+  },
+  "thanks.answerNotConfigured": {
+    "de": "Der Formularversand ist noch nicht eingerichtet. Es wurde nichts gesendet.",
+    "en": "Form delivery has not been set up yet. Nothing was sent.",
+    "nl": "Het verzenden van formulieren is nog niet ingericht. Er is niets verstuurd."
+  },
+  "thanks.tryAgainLater": {
+    "de": "Bitte versucht es später noch einmal.",
+    "en": "Please try again later.",
+    "nl": "Probeer het later nog eens."
+  },
+  "contactAPI.keepEntries": {
+    "de": "Über die Zurück-Taste eures Browsers bleiben eure Eingaben in der Regel erhalten.",
+    "en": "Your browser's back button usually keeps what you entered.",
+    "nl": "Met de terugknop van jullie browser blijven jullie gegevens meestal bewaard."
+  },
+  "contactAPI.backToForm": {
+    "de": "Zurück zum Formular",
+    "en": "Back to the form",
+    "nl": "Terug naar het formulier"
+  },
+  "contactAPI.otherWays": {
+    "de": "Ihr erreicht uns auch direkt:",
+    "en": "You can also reach us directly:",
+    "nl": "Jullie kunnen ons ook rechtstreeks bereiken:"
   }
 }

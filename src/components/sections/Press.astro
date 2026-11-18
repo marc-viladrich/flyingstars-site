@@ -71,10 +71,10 @@ const list = items.map((it, i) => ({ ...it, year: it.date.slice(0, 4), newYear: 
   .press-list { list-style: none; margin: 0; padding: 0; }
   /* durchgehende Haarlinie am rechten Rand der Jahresspalte, die Punkte sitzen darauf */
   .press-list { position: relative; }
-  .press-list::before { content: ""; position: absolute; left: 6.5rem; top: 0; bottom: 0; width: 1px; background: linear-gradient(var(--line-strong), var(--line) 85%, transparent); }
+  .press-list::before { content: ""; position: absolute; left: 6.5rem; top: 0; bottom: 0; border-left: 1px solid; border-image: linear-gradient(var(--line-strong), var(--line) 85%, transparent) 1; }
   .press-item { position: relative; display: grid; grid-template-columns: 7rem minmax(0, 13rem) minmax(0, 1fr); gap: 0 clamp(var(--space-6), 4vw, var(--space-14)); padding: clamp(var(--space-8), 4.5vw, var(--space-14)) 0; scroll-margin-top: 6rem; }
   .press-item + .press-item { border-top: 1px solid var(--line); }
-  .press-item + .press-item::before { content: ""; position: absolute; top: -1px; left: 0; width: 6.5rem; height: 1px; background: var(--ground, #0e0c0b); }
+  .press-item + .press-item::before { content: ""; position: absolute; bottom: 100%; left: 0; width: 6.5rem; border-top: 1px solid var(--ground); }
   .press-when { position: relative; align-self: stretch; }
   .press-year { display: block; font: 600 clamp(1.5rem, 2.4vw, 2.25rem)/1 var(--display); color: var(--fg); letter-spacing: -0.02em; }
   .press-dot { position: absolute; left: calc(6.5rem - 0.25rem); top: 0.55rem; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: rgb(var(--rgb-amber)); box-shadow: 0 0 0.75rem rgb(var(--rgb-amber) / 0.7); }

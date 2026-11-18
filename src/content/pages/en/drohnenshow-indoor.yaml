@@ -1,5 +1,5 @@
 title: Book a magical indoor drone show (20+ drones)
-description: Indoor drone shows for trade fairs, concerts & more ✓ Projects incl. for Siemens ✓ From €15,000 ☎︎ +49 209 88306562
+description: Indoor drone shows for trade fairs, concerts & more ✓ Projects incl. for Siemens ✓ From {{offer.indoor.priceAmount}} ☎︎ {{contact.phone.international}}
 noindex: false
 image: https://flyingstars.art/wp-content/uploads/2025/04/IMG_0201.jpg
 navLabel: Indoor
@@ -13,8 +13,8 @@ sections:
       label: Request a show
       href: "#anfrage"
     secondary:
-      label: ☎︎ +49 209 88306562
-      href: tel:+4920988306562
+      label: ☎︎ {{contact.phone.international}}
+      href: "{{contact.phone.href}}"
     video: siemensIndoor
     videoLabel: Siemens · Hannover Messe
     poster:
@@ -239,7 +239,7 @@ sections:
     text: |-
       We bring the sparkle, the glamour and the amazed guests of fireworks under your roof. Without debris or smoke, and with nothing but a soft hum.
   
-      Your indoor drone show is a five- to eight-minute choreography that captivates every visitor. After all, hardly any guest has ever seen one of these magical dances – let alone indoors.
+      Your indoor drone show is a {{duration.indoor.min}}- to {{duration.indoor.max}}-minute choreography that captivates every visitor. After all, hardly any guest has ever seen one of these magical dances – let alone indoors.
   
       That is why we design fascinating motifs, set to music, that tell your story. From 50 drones, also with bespoke figures such as your logo or your initials.
     cta:
@@ -451,7 +451,7 @@ sections:
     id: preise
     kicker: Prices
     headline: Full *control* over your show
-    text: Our indoor drone shows start at €15,000 (net) plus travel. We are happy to put together a bespoke package for you, and that is the price that stands – no surprises.
+    text: Our indoor drone shows start at {{offer.indoor.priceAmount}} (net) plus travel. We are happy to put together a bespoke package for you, and that is the price that stands – no surprises.
     offer: indoor
     unit: excluding VAT, plus travel, for {{offer.indoor.drones.min}} drones
     groups:
@@ -510,7 +510,7 @@ sections:
         _key: k_1a7a9d6124366c37cbbf
       - value: 3.5 h
         label: "#3 Show day"
-        text: While you look after your guests, we set up (three and a half hours), perform the show (five to eight minutes) and quietly dismantle again.
+        text: While you look after your guests, we set up (three and a half hours), perform the show ({{duration.indoor.min}} to {{duration.indoor.max}} minutes) and quietly dismantle again.
         _key: k_2a47818390caa6ae1614
       - value: "{{duration.indoor.min}}–{{duration.indoor.max}} min"
         label: Show
@@ -581,16 +581,16 @@ sections:
       - indoor-moritz
     _key: k_b9b4c25755db13474604
 translationContractVersion: 2
-translationSourceHash: 0dce721e7539080dc42742d7b495b0046910fe89a8a582c226b5b5e70e559253
+translationSourceHash: 3d24ee209d23b412b713378ad6eaca8cb7ab2435a066920ab46354791387453f
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 0dce721e7539080dc42742d7b495b0046910fe89a8a582c226b5b5e70e559253
+  sourceFingerprint: 3d24ee209d23b412b713378ad6eaca8cb7ab2435a066920ab46354791387453f
   fields:
     - address: /description
-      sourceFingerprint: 5d7a47a66e130654aaf32af5051cbe4cd04ae04b11e51948b197e3b71a375cf0
-      targetFingerprint: f6600d34ca95364b487074d0aff03fffd605134a28def41beaa06ca5caed3da2
+      sourceFingerprint: 4d5051e328cee118ca9b76923a1c52a5429d4b38d4a1ecbf0e55d4228e214194
+      targetFingerprint: e118f0b1d4fdb74b282059e60264dd2821855c636fb5059c2b72a65f0cf8b9ee
       status: adopted-existing
     - address: /navLabel
       sourceFingerprint: c997969bf3cf570e7f05502d9974614a394b0d1298209961c5e95d391015dc21
@@ -969,8 +969,8 @@ translationEvidence:
       targetFingerprint: 213c99d17f7b5c4d8db32c159ee7138eac56beedd7d5af69aae98a59b6cd9101
       status: adopted-existing
     - address: /sections/@k_2957e41a82a467bac50c/text
-      sourceFingerprint: 33c1ffc7e4d40177ab30955179f3f843dd976687d4f61233784cc37533fec120
-      targetFingerprint: fe5ec54339b8e484878786bbb86b20702c2e63578becb512701b7cb04e138ccb
+      sourceFingerprint: 1429b5b91bf9eb18cd72009a96cb80cfe6f0f0d61c20e6976551bda130536c97
+      targetFingerprint: a363f1ed39b00cf22ed97a6893331445ae9ec3d0fb45f469b982f674bf2ee65a
       status: adopted-existing
     - address: /sections/@k_2957e41a82a467bac50c/unit
       sourceFingerprint: b877447dc1b6a362a1135f574ab7af78744bdfcdd35042e62511f7a16fbc89d1
@@ -1521,8 +1521,8 @@ translationEvidence:
       targetFingerprint: 0d59a3e13f1649b7112a9c8a2b8af89217df149958a5c4d62072995d5d464126
       status: adopted-existing
     - address: /sections/@k_9ad4a65122a9edecb81a/secondary/label
-      sourceFingerprint: 4963f9b78727cf01fcab90e201dfcac6ec8514299701839c18048b489c808529
-      targetFingerprint: 2636ce5d6d7b0a633d4729aa854ca97b021ab06cac940b80ae3df4d205e9dcd1
+      sourceFingerprint: deead65576887d99f2474b0f5fca3894b3749fe1cf21a7509707884f09ed1d65
+      targetFingerprint: d565d5bf27bfc6003a71f0677e9449fbefea929baa8c3ade457cd15c9fdedc66
       status: adopted-existing
     - address: /sections/@k_9ad4a65122a9edecb81a/text
       sourceFingerprint: a531c5ffda82825347d518bfef0fdbe7d5dac318af96101e45e1bd16d1918927
@@ -1613,8 +1613,8 @@ translationEvidence:
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_c030e32b9a3f99dac46e/text
-      sourceFingerprint: 07ba531379a04e34b43be81d68daa6b62e652d87f971fb18dff7523aece00f92
-      targetFingerprint: e7f49beb2b1391541f7a467c3d7c944d0c9fed233a586d64d22a0769ca51d01a
+      sourceFingerprint: 327fbe311dd3d7c7a78df947f198ad9045865f3b038bc929709516748d9012c3
+      targetFingerprint: aeedd6d31532746207f68e670dc21a7d149a448d1280b58080c338643fc04927
       status: adopted-existing
     - address: /sections/@k_cca8a7702a948ca38dce/headline
       sourceFingerprint: df8306072cede9786f42e55bb5abe826fd6188fcdde6af1e0764d5c8ca4e78e6
@@ -1641,8 +1641,8 @@ translationEvidence:
       targetFingerprint: 228177dff4a1ddf556d2dd7893b9946b55bc76f625577d812bdbf099b52203e6
       status: adopted-existing
     - address: /sections/@k_cca8a7702a948ca38dce/marks/@k_2a47818390caa6ae1614/text
-      sourceFingerprint: 848b52072e1bdae2c289f2ee0342e1594d2d0088d0a57251046cef21933f6e37
-      targetFingerprint: 3ffb179fa65e13785bbe774f3a0aed234d40f31e057eca7e6431d2c0b3812d52
+      sourceFingerprint: 8cfaaead4b12699e946980b40bba3e1f58c7bbb91a1f69740cc7b3034c17c792
+      targetFingerprint: 91bb7141f1109afbb667d9e572159f0fb9ada182909251d34e74a49e6ff66f36
       status: adopted-existing
     - address: /sections/@k_cca8a7702a948ca38dce/marks/@k_2a47818390caa6ae1614/value
       sourceFingerprint: ac85e01d3ad58e9d3c2493754bc5ffb2f558bc7feca259a96a2cb110143c5dbd

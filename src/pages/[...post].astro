@@ -1,0 +1,11 @@
+---
+// Blogartikel (eigene Routendatei = eigenes CSS-Bündel, src/i18n/static-paths.ts)
+import type { CollectionEntry } from 'astro:content';
+import BlogPost from '../templates/BlogPost.astro';
+import { staticPathsFor } from '../i18n/static-paths';
+
+export const getStaticPaths = () => staticPathsFor('post', 'post');
+interface Props { post: CollectionEntry<'posts'>; }
+const { post } = Astro.props;
+---
+<BlogPost post={post} />

@@ -25,6 +25,12 @@
     "location": "Eisenhüttenstadt",
     "drones": 250
   },
+  "eon-hamburg": {
+    "date": "2026-09-15",
+    "client": "E.ON",
+    "location": "Hamburg",
+    "drones": 500
+  },
   "exploring-reinvented-der-neue-ford-explorer": {
     "date": "2024-06-03",
     "client": {

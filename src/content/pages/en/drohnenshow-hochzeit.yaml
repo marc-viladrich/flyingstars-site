@@ -1,5 +1,5 @@
 title: "Book a drone show for your wedding: magical moments"
-description: Paint your love story across the sky ✓ 150+ shows ✓ Family-friendly & little effort ☎︎ +49 209 88306562
+description: Paint your love story across the sky ✓ 150+ shows ✓ Family-friendly & little effort ☎︎ {{contact.phone.international}}
 noindex: false
 image: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg
 navLabel: Wedding
@@ -12,8 +12,8 @@ sections:
       label: Request a show
       href: "#anfrage"
     secondary:
-      label: ☎︎ +49 209 88306562
-      href: tel:+4920988306562
+      label: ☎︎ {{contact.phone.international}}
+      href: "{{contact.phone.href}}"
     video: showreel
     videoLabel: Showreel
     poster:
@@ -315,16 +315,16 @@ sections:
       - hochzeit-moritz
     _key: k_9db54091e8c639b6fa66
 translationContractVersion: 2
-translationSourceHash: a5bfda669fc72427f370d9afe462a37be333697edbb8fc8fb67cc96496853d82
+translationSourceHash: 9af75a87d73b020b275cdfe2af1058ada063729ab33a5e9f2a3d8e90d73822f9
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: a5bfda669fc72427f370d9afe462a37be333697edbb8fc8fb67cc96496853d82
+  sourceFingerprint: 9af75a87d73b020b275cdfe2af1058ada063729ab33a5e9f2a3d8e90d73822f9
   fields:
     - address: /description
-      sourceFingerprint: 04103f48ef87f505f7497b4af8b550b944307b9353ee75c963d52ec01cc9946a
-      targetFingerprint: 45ef82551180dd169131783873ad9e2ebf62430fd32e56e2dd500b23fa81b4a7
+      sourceFingerprint: 4733405fe5e0d5b46e7f29ad6818082582d82bdbdf1157d8086a665cbacacf6b
+      targetFingerprint: ba6d8103fdc7f2dcbc35928d269d773ac229cda57d6cfa7abb0e5827ae9a092a
       status: adopted-existing
     - address: /navLabel
       sourceFingerprint: 751396d87d0f085711b458d2d133083b8fbd68794ba02c16b9ddbbd634748cee
@@ -635,8 +635,8 @@ translationEvidence:
       targetFingerprint: 59d67832e2fe132b43ec5863a3ff0beeca4e5841a30433c1c1d3af3100894907
       status: adopted-existing
     - address: /sections/@k_683af193db254741d0d4/secondary/label
-      sourceFingerprint: 4447edcf29299b8baf2b4485c1a62bb578c80c0c67dfdb48748f89e0d3446047
-      targetFingerprint: 2636ce5d6d7b0a633d4729aa854ca97b021ab06cac940b80ae3df4d205e9dcd1
+      sourceFingerprint: 7721254c1cc40cc46e556ce4560cbfde5c51f930848916ed3f612e7b2d68888c
+      targetFingerprint: d565d5bf27bfc6003a71f0677e9449fbefea929baa8c3ade457cd15c9fdedc66
       status: adopted-existing
     - address: /sections/@k_683af193db254741d0d4/text
       sourceFingerprint: d3c5369a7d7f0b5e79d19d32526eca1d6379170f3ac2965a20f02e71a24a5e46

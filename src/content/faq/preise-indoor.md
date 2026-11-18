@@ -4,4 +4,4 @@ tags: [preise-moritz]
 order: 5
 ---
 
-Unsere Indoor-Events beginnen bei 15.000 Euro (netto). Gerne erstellen wir euch auf Anfrage ein individuelles Angebot.
+Unsere Indoor-Events beginnen bei {{offer.indoor.priceAmount}} (netto). Gerne erstellen wir euch auf Anfrage ein individuelles Angebot.

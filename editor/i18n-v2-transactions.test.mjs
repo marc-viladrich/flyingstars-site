@@ -13,6 +13,10 @@ test.before(async()=>{fixture=await i18nFixture();store=fixture.store;});
 test.after(async()=>{store?.sync.close();await import('node:fs/promises').then(fs=>fs.rm(fixture.root,{recursive:true,force:true}));});
 const draftFor=state=>{const draft=new NativeDraft();draft.reset(state.records);return draft;};
 const savedFile=(locale='')=>path.join(store.root,'src/content/pages',locale,'index.yaml');
+test('AFE state has the same 194 verified translations as the full-file CLI',async()=>{
+ const state=await store.state();
+ assert.equal(auditContracts(store.site,state.records).length,194);
+});
 test('AFE: changing one shared URL produces both projections and writes no review status',async()=>{
  const state=await store.state(),d=draftFor(state),evidence=['en','nl'].map(l=>d.get(`page/${l}/index`).data.translationEvidence);
  d.set('page/index',['sections',0,'cta','href'],'/kontakt/?proof=shared');const proposals=localeProposals(d);assert.ok(proposals.every(p=>p.needed.length===0));applyLocaleProposals(d,proposals);

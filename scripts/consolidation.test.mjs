@@ -37,20 +37,50 @@ test('Paketansichten haben genau einen Kartenbesitzer; ungenutzter Altbestand bl
   assert.doesNotMatch(read('src/components/PackageCard.astro'), /sky\s*=\s*PACKAGE_DETAILS/, 'Optionale Seitenprosa darf nicht als neuer Karteninhalt erscheinen');
 });
 
-test('Alle Vergleiche delegieren Tabelle, Tafeln und Statuszeichen an dieselben Besitzer', () => {
-  // Die Preisseite zeigt seit Moritz' Preistext (17.11.2026) keinen Leistungsvergleich mehr; baut sie wieder einen, dann
-  // nur über ComparisonMatrix, nie als eigene Tabelle
-  for (const path of ['src/components/sections/Comparison.astro', 'src/templates/PricingPage.astro']) {
+test('Alle Vergleiche delegieren Tabelle, Handyfassung und Statuszeichen an dieselben Besitzer', () => {
+  // Ein Besitzer (ComparisonMatrix) für Desktop-Tabelle und Handyfassung; Aufrufer sind der eigene Abschnitt und die
+  // Einbettung in die Nachhaltigkeits-Scrollstory. Die Preisseite zeigt seit Moritz' Preistext (17.11.2026) keinen
+  // Leistungsvergleich mehr; baut sie wieder einen, dann nur über ComparisonMatrix, nie als eigene Tabelle.
+  for (const path of ['src/components/sections/Comparison.astro', 'src/components/sections/Sustainability.astro', 'src/templates/PricingPage.astro']) {
     const source = read(path);
     if (path.includes('sections/')) assert.match(source, /<ComparisonMatrix /);
-    assert.doesNotMatch(source, /<table|<td|class="cmp-panel"/);
+    assert.doesNotMatch(source, /<table|<td|role="(?:table|row|cell)"|class="cmp-panel"/);
   }
+  assert.ok(!existsSync(new URL('../src/components/ComparisonTable.astro', import.meta.url)), 'kein zweiter Vergleichsrenderer');
   const matrix = read('src/components/ComparisonMatrix.astro');
-  assert.equal((matrix.match(/<ComparisonCell /g) ?? []).length, 3, 'Spannzelle, Einzelzelle und mobile Zelle');
-  assert.match(matrix, /<MobileTabs /);
+  assert.equal((matrix.match(/<ComparisonCell /g) ?? []).length, 2, 'Tabellenzelle und Zelle der Handyfassung');
+  // Handyfassung: ein Renderpfad, Spaltenzahl aus den Daten statt fester drei Spalten, keine Reiter-Tafeln mehr
+  assert.doesNotMatch(matrix, /<MobileTabs |cmp-panel|data-mtab/);
+  assert.match(matrix, /--cmp-cols:\$\{cols\.length\}/);
+  assert.match(matrix, /repeat\(var\(--cmp-cols\), minmax\(0, 1fr\)\)/);
+  assert.doesNotMatch(matrix, /repeat\(3,/);
+  assert.doesNotMatch(read('src/styles/global.css'), /\.cmp-panel|\.mtab-(?:only|hide)\b/);
+  // Paketkarten behalten ihre aktiven Reiter
+  assert.match(read('src/components/sections/Packages.astro'), /<MobileTabs /);
   // LandingSite zeigt seit Runde 3 (17.11.2026) keine Zuständigkeitstabelle mehr, nur die Zeichnung mit Popovern
   assert.doesNotMatch(read('src/components/landing/LandingSite.astro'), /<table|<td/);
   assert.doesNotMatch(read('src/components/ComparisonCell.astro'), /<svg|<path/);
+});
+
+test('Einzelbild-Rahmen, Presse-Einträge und CSS-Dauerschleifen haben je einen Besitzer', () => {
+  // Einzelbild mit Leuchtpunkt-Unterlage: Seitenkopf und Text mit Bild setzen nur Bildmaß, Ladepriorität und Layoutklasse
+  for (const file of ['sections/Hero', 'sections/TextMedia']) {
+    const s = read(`src/components/${file}.astro`);
+    assert.match(s, /<ImageFrame /);
+    assert.doesNotMatch(s, /<DotField|<figure|data-curtain|<Picture /);
+  }
+  assert.match(read('src/components/ImageFrame.astro'), /<DotField \/><figure data-curtain><Picture /);
+  assert.doesNotMatch(read('src/styles/global.css'), /\.(?:page-hero-media|tm-media)\b/);
+  // Presse: Pressezeile und Presseraster rendern denselben Eintrag
+  const bar = read('src/components/sections/LogoBar.astro');
+  assert.equal((bar.match(/<PressItem /g) ?? []).length, 2);
+  assert.doesNotMatch(bar, /<LocalImage |rel="noopener"/);
+  // Dauerschleifen hängen am gemeinsamen Sichtbarkeits-/Bewegungsschalter
+  assert.match(bar, /class="logo-marquee" data-loop/);
+  assert.match(read('src/components/sections/FlightHero.astro'), /class="rec mono" data-loop/);
+  for (const [name, file] of [['logo-slide', 'src/components/sections/LogoBar.astro'], ['rec', 'src/styles/global.css']]) assert.match(read(file), new RegExp(`animation: ${name} [^;]*infinite; animation-play-state: var\\(--loop-play, running\\);`));
+  // Laufband- und Presseregeln gehören der LogoBar, nicht dem globalen Stylesheet
+  assert.doesNotMatch(read('src/styles/global.css'), /\.logo-marquee|\.proof \.press|\.proof-h/);
 });
 
 test('Alle aktiven Reels verwenden den gemeinsamen Video-Controller', () => {

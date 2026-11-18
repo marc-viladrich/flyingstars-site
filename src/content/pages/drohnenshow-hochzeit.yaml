@@ -2,7 +2,7 @@
 # Texte wortgetreu (schon in Ihr-Form). Route bleibt /drohnenshow-hochzeit/ (Moritz: /drohnenshow/hochzeit/, Umstellung offen).
 title: "Drohnenshow für eure Hochzeit buchen: magische Momente"
 navLabel: "Hochzeit"
-description: "Malt eure Liebesgeschichte in den Himmel ✓ 150+ Shows ✓ Familienfreundlich & wenig Aufwand ☎︎ +49 209 88306562"
+description: "Malt eure Liebesgeschichte in den Himmel ✓ 150+ Shows ✓ Familienfreundlich & wenig Aufwand ☎︎ {{contact.phone.international}}"
 image: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg
 sections:
   - type: landingHero
@@ -10,7 +10,7 @@ sections:
     headline: Malt eure *Liebesgeschichte* in den Himmel
     text: Dürfen wir euch zum Tanz auffordern? Auf eurer Hochzeit erweckt unsere Drohnenshow euer Märchen zum Leben. Für Tränenmomente und einen Höhepunkt im Hochzeitsvideo.
     cta: { label: Show anfragen, href: "#anfrage" }
-    secondary: { label: "☎︎ +49 209 88306562", href: "tel:+4920988306562" }
+    secondary: { label: "☎︎ {{contact.phone.international}}", href: "{{contact.phone.href}}" }
     video: showreel
     videoLabel: Showreel
     poster:

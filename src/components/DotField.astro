@@ -16,9 +16,13 @@ const { inset = '24% -6% -14% 34%', insetM = '20% -1rem -1.25rem 30%', focus = '
   .df-host { position: relative; isolation: isolate; }
   .dot-field { --df-r: 0.125rem; --df-p: 1.125rem; position: absolute; inset: var(--df-inset); z-index: -1; pointer-events: none;
     background: var(--grad-soft); opacity: 0.42;
-    -webkit-mask: radial-gradient(circle, #000 var(--df-r), transparent calc(var(--df-r) + 0.05rem)) 0 0 / var(--df-p) var(--df-p), radial-gradient(farthest-side at var(--df-at, 50% 50%), #000 30%, transparent);
-    -webkit-mask-composite: source-in;
-    mask: radial-gradient(circle, #000 var(--df-r), transparent calc(var(--df-r) + 0.05rem)) 0 0 / var(--df-p) var(--df-p), radial-gradient(farthest-side at var(--df-at, 50% 50%), #000 30%, transparent);
-    mask-composite: intersect; }
+    /* Zwei Ebenen: Punktraster (Kachel --df-p) geschnitten mit dem Auslauf um --df-at. Langschreibweisen, weil eine
+       -webkit-mask-Kurzschreibweise mit var() in WebKit das mask-composite zurücksetzt (css-tokens.test.mjs). */
+    -webkit-mask-image: radial-gradient(circle, #000 var(--df-r), transparent calc(var(--df-r) + 0.05rem)), radial-gradient(farthest-side at var(--df-at, 50% 50%), #000 30%, transparent);
+    mask-image: radial-gradient(circle, #000 var(--df-r), transparent calc(var(--df-r) + 0.05rem)), radial-gradient(farthest-side at var(--df-at, 50% 50%), #000 30%, transparent);
+    -webkit-mask-size: var(--df-p) var(--df-p), 100% 100%; mask-size: var(--df-p) var(--df-p), 100% 100%;
+    -webkit-mask-position: 0 0; mask-position: 0 0;
+    -webkit-mask-repeat: repeat, no-repeat; mask-repeat: repeat, no-repeat;
+    -webkit-mask-composite: source-in; mask-composite: intersect; }
   @media (--grid-stacked) { .dot-field { inset: var(--df-inset-m, var(--df-inset)); } }
 </style>

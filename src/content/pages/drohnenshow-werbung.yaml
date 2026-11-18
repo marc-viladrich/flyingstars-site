@@ -3,7 +3,7 @@
 # Umstellung offen). #agenturen = Vorteile (NDA, „Wir fliegen, ihr glänzt“), Ziel der Agentur-Links in Navigation und Startseite.
 title: Drohnenshow für Werbung & Marketing (150+ Shows)
 navLabel: "Marken & Werbung"
-description: "Euer Logo, Produkt & Claim auf der größten Bühne der Welt ✓ u. a. Spotify, L’Oréal, E.ON ☎︎ +49 209 88306562"
+description: "Euer Logo, Produkt & Claim auf der größten Bühne der Welt ✓ u. a. Spotify, L’Oréal, E.ON ☎︎ {{contact.phone.international}}"
 image: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
 sections:
   - type: landingHero
@@ -12,7 +12,7 @@ sections:
     headline: "Macht den *Himmel* zu eurem Produkt­botschafter"
     text: "An eurem Logo kommt niemand vorbei: Mit der Erfahrung von über 100 Drohnenshows für Start-ups, KMUs und Weltkonzerne bauen wir Choreografien, die Herzen und Konto füllen."
     cta: { label: Show anfragen, href: "#anfrage" }
-    secondary: { label: "☎︎ +49 209 88306562", href: "tel:+4920988306562" }
+    secondary: { label: "☎︎ {{contact.phone.international}}", href: "{{contact.phone.href}}" }
     video: ford
     videoLabel: Ford Explorer · Köln
     poster:

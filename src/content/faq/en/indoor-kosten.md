@@ -4,16 +4,16 @@ tags: [faq-kosten]
 order: 2
 draft: false
 translationContractVersion: 2
-translationSourceHash: 9e1da9797d7a9fa864eb5994138acc8ec30dfb6e94b8a9dad1486a49bcb26152
+translationSourceHash: cb78e84db292b9ba18ca97514605bfb11454ac38b68146ac5c6bf08de470acc6
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 9e1da9797d7a9fa864eb5994138acc8ec30dfb6e94b8a9dad1486a49bcb26152
+  sourceFingerprint: cb78e84db292b9ba18ca97514605bfb11454ac38b68146ac5c6bf08de470acc6
   fields:
     - address: /body
-      sourceFingerprint: 9e35f7cb28047712a10ba869403c83e5f828981b650eea1d5cd2ba09965e1b2f
-      targetFingerprint: 7bd735c105921c94aba26ed7f65431c6143f22ee188033f0eaefc1796fb97936
+      sourceFingerprint: 4b3f84cc959b9026491aead9ad910aa5d5d2cd849e4996046fb171ce43198f2f
+      targetFingerprint: 5da4b4c75b663b72fd6c8a8d512998e5014c079f1bf2570477985c0e48664452
       status: adopted-existing
     - address: /question
       sourceFingerprint: 556d5c154a314898548a0a923f04ea143a2038c88b4861334e33e87c0c78df76
@@ -21,4 +21,4 @@ translationEvidence:
       status: adopted-existing
 ---
 
-Indoor shows are somewhat more complex, especially when it comes to the safety concept. That’s why our indoor events start at 15,000 euros (net) plus travel.
+Indoor shows are somewhat more complex, especially when it comes to the safety concept. That’s why our indoor events start at {{offer.indoor.priceAmount}} (net) plus travel.

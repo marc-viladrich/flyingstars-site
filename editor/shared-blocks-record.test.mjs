@@ -3,19 +3,16 @@ import {contentData} from '../src/i18n/transaction.mjs';
 import {codecs} from 'astro-frontend-editor/runtime/extensions';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,symlink,rm,readFile,mkdir,writeFile} from 'node:fs/promises';
-import path from 'node:path';import os from 'node:os';import {randomUUID} from 'node:crypto';import {fileURLToPath} from 'node:url';
-import {NativeStore,NativeBuilder,git} from 'astro-frontend-editor/runtime';
-import {createSite} from './flyingstars-adapter.mjs';import {resolveRuntimeOptions} from './server.mjs';
-const root=fileURLToPath(new URL('../',import.meta.url));
-test('T02: natives AFE-Speichern von Bio/Rolle und beiden Bausteinen erreicht alle DE/EN/NL-Verbraucher und Besitzer-Marker',async t=>{
- const dir=await mkdtemp(path.join(os.tmpdir(),'fs-t02-proof-'));
- await git(root,['clone','--quiet','--no-hardlinks',root,dir]);await git(dir,['checkout','-B','content/draft']);await symlink(path.join(root,'node_modules'),path.join(dir,'node_modules'));
- const site=await createSite(dir),runtime=resolveRuntimeOptions({env:{},values:{siteRoot:dir,stateDir:path.join(dir,'state')}}),store=await new NativeStore(dir,{remote:false,site,runtime}).init();
- t.after(async()=>{store.sync.close();await rm(dir,{recursive:true,force:true});});
+import {readFile,mkdir,writeFile} from 'node:fs/promises';
+import path from 'node:path';
+import {i18nFixture} from './i18n-test-fixture.mjs';
+import {NativeBuilder} from 'astro-frontend-editor/runtime';
+test('T02: AFE-Speichern erreicht die DE/EN/NL-Verbraucher und erhält die seitenlokalen Teamtexte',async t=>{
+ const {source:dir,store}=await i18nFixture(t);
+ t.after(()=>store.sync.close());
  const state=await store.state(),ids=['person/florian-becker','site/safety-concept','site/sustainability-pillars'];
  const before={};for(const l of ['','en/','nl/'])for(const n of ['index','ueber-uns','drohnenshow-hochzeit','drohnenshow-werbung']){const file=`src/content/pages/${l}${n}.yaml`;before[file]=await readFile(path.join(dir,file),'utf8');}
- const changes=ids.map(id=>{const record=state.records.find(r=>r.id===id);assert.ok(record,id);return {id,expectedRevision:record.revision,patches:['de','en','nl'].flatMap(locale=>id.startsWith('person/')?[{path:['bio',locale],value:'Beweisbiografie '+locale},{path:['role',locale],value:'Beweisrolle '+locale}]:id==='site/safety-concept'?[{path:[locale,'items',0,'text'],value:'Beweissicherheit '+locale},{path:[locale,'responsibilities',0,'task'],value:'Beweisaufgabe '+locale}]:[{path:[locale,'pillars',0,'text'],value:'Beweisnachhaltigkeit '+locale}])};});
+ const changes=ids.map(id=>{const record=state.records.find(r=>r.id===id);assert.ok(record,id);return {id,expectedRevision:record.revision,patches:['de','en','nl'].flatMap(locale=>id.startsWith('person/')?[{path:['bio',locale],value:'Beweisbiografie '+locale},{path:['role',locale],value:'Beweisrolle '+locale}]:id==='site/safety-concept'?[{path:[locale,'items',0,'text'],value:'Beweissicherheit '+locale},{path:[locale,'diagram','description'],value:'Beweisdiagramm '+locale}]:[{path:[locale,'pillars',0,'text'],value:'Beweisnachhaltigkeit '+locale}])};});
  const saved=await store.save(reviewedRequest(state,changes.flatMap(change=>change.patches.map(patch=>[change.id,patch.path,patch.value]))));
  for(const [file,raw]of Object.entries(before))assert.deepEqual(contentData(codecs.yaml.parse(await readFile(path.join(dir,file),'utf8'))),contentData(codecs.yaml.parse(raw)),'Seiten bleiben Referenzen; nur betroffene Nachweise werden bestätigt');
  const persisted=JSON.parse(await readFile(path.join(dir,'src/content/people/florian-becker.json'),'utf8'));assert.equal(persisted.bio.de,'Beweisbiografie de');
@@ -24,8 +21,27 @@ test('T02: natives AFE-Speichern von Bio/Rolle und beiden Bausteinen erreicht al
  const evidence=path.join(process.env.AFE_STATE_DIR??dir,'t02-proof');await mkdir(evidence,{recursive:true});
  for(const locale of ['de','en','nl'])for(const name of ['index','ueber-uns','drohnenshow-hochzeit','drohnenshow-werbung']){
   const html=await readFile(path.join(artifact.site,locale==='de'?'':locale,name==='index'?'index.html':`${name}/index.html`),'utf8');await writeFile(path.join(evidence,`${locale}-${name}.html`),html);
-  const actual=markers(html),visible=html.replaceAll('&nbsp;',' ').replaceAll('\u00a0',' '),has=(collection,p)=>actual.some(m=>m.address?.owner?.collection===collection&&JSON.stringify(m.address.path)===JSON.stringify(p));
-  if(['index','ueber-uns'].includes(name)){assert.ok(visible.includes('Beweisbiografie '+locale));assert.ok(visible.includes('Beweisrolle '+locale));assert.ok(visible.includes('Beweisnachhaltigkeit '+locale));assert.ok(has('people',['bio',locale]));assert.ok(has('people',['role',locale]));assert.ok(has('sustainabilityPillars',[locale,'pillars']));}
-  if(name!=='index'){assert.ok(visible.includes('Beweissicherheit '+locale));assert.ok(visible.includes('Beweisaufgabe '+locale));assert.ok(has('safetyConcept',[locale,'items']));assert.ok(has('safetyConcept',[locale,'responsibilities']));}
+  const actual=markers(html),visible=html.replaceAll('&nbsp;',' ').replaceAll('\u00a0',' ');
+  const has=(collection,id,p)=>actual.some(m=>m.address?.owner?.collection===collection&&m.address.owner.id===id&&JSON.stringify(m.address.path)===JSON.stringify(p));
+  const where=`${locale}/${name}`;
+  if(name==='ueber-uns'){
+   const prefix=locale==='de'?'':locale+'/';
+   const page=codecs.yaml.parse(before[`src/content/pages/${prefix}${name}.yaml`]);
+   const member=page.sections.find(section=>section.type==='team').memberTexts.find(entry=>entry.personId==='florian-becker');
+   assert.ok(visible.includes(member.bio),`${where}: seitenlokale Bio`);
+   assert.ok(visible.includes(member.role),`${where}: seitenlokale Rolle`);
+   for(const field of ['bio','role'])assert.ok(!has('people','florian-becker',[field,locale]),`${where}: seitenlokales Feld ${field}`);
+  }else{
+   assert.ok(visible.includes('Beweisbiografie '+locale),`${where}: Bio`);
+   assert.ok(visible.includes('Beweisrolle '+locale),`${where}: Rolle`);
+   for(const field of ['bio','role'])assert.ok(has('people','florian-becker',[field,locale]),`${where}: Personendatensatz ${field}`);
+   assert.ok(visible.includes('Beweissicherheit '+locale),`${where}: Kartenlegende`);
+   assert.ok(visible.includes('Beweisdiagramm '+locale),`${where}: Kartenbeschreibung`);
+   for(const field of ['items','diagram'])assert.ok(has('safetyConcept','configuration',[locale,field]),`${where}: Sicherheitsdatensatz ${field}`);
+  }
+  if(name==='index'){
+   assert.ok(visible.includes('Beweisnachhaltigkeit '+locale),`${where}: Nachhaltigkeitspfeiler`);
+   assert.ok(has('sustainabilityPillars','configuration',[locale,'pillars']),`${where}: Nachhaltigkeitsdatensatz`);
+  }
  }
 });

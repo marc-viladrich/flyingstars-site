@@ -2,7 +2,7 @@
 # Impressum erscheint nirgends. Texte nach Moritz' Webtext (18.11.2026, „Kontakt“), Ansprache „ihr“: Kopf, Formular, Telefon und
 # WhatsApp. Der frühere Ablauf in vier Schritten steht nicht in Moritz' Text und ist entfallen.
 title: Kontakt
-description: "Show planen, Angebot anfordern, Fragen stellen ✓ Erreichbar per Mail, Telefon und WhatsApp ☎︎ +49 209 88306562"
+description: "Show planen, Angebot anfordern, Fragen stellen ✓ Erreichbar per Mail, Telefon und WhatsApp ☎︎ {{contact.phone.international}}"
 sections:
   - type: contactForm
     kicker: Kontakt

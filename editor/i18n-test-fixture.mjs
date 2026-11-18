@@ -1,7 +1,7 @@
 import {createFlyingStarsAdapter} from './flyingstars-adapter.mjs';
 import {resolveRuntimeOptions} from './server.mjs';
 // Isolated, fully offline Astro fixture. Never changes source media or production image behavior.
-import {promises as fs} from 'node:fs';
+import {constants, promises as fs} from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import {fileURLToPath} from 'node:url';
@@ -11,11 +11,26 @@ const here=path.dirname(fileURLToPath(import.meta.url));
 export async function i18nFixture(t,{sourceRoot=path.join(here,'..'),forCI=false,offlineMedia=true}={}) {
   const root=await fs.mkdtemp(path.join(os.tmpdir(),'flyingstars-i18n-')),source=path.join(root,'source');
   if(t)t.after(()=>fs.rm(root,{recursive:true,force:true}));
-  await fs.cp(sourceRoot,source,{recursive:true,filter:file=>!['.git','node_modules','.astro','dist'].includes(path.basename(file))&&!path.basename(file).startsWith('.env')});
+  if(forCI){
+    // Nested CI also exercises tests pinned to historical revisions.
+    await git(root,['clone','--quiet','--shared','--no-checkout',sourceRoot,source]);
+    await git(source,['update-ref','refs/heads/content/draft','HEAD']);
+    await git(source,['symbolic-ref','HEAD','refs/heads/content/draft']);
+    await git(source,['remote','remove','origin']);
+  }
+  await fs.cp(sourceRoot,source,{recursive:true,mode:constants.COPYFILE_FICLONE,filter:file=>!['.git','node_modules','.astro','dist'].includes(path.basename(file))&&!path.basename(file).startsWith('.env')});
   await fs.symlink(await fs.realpath(path.join(here,'../node_modules')),path.join(source,'node_modules'));
   let config=await fs.readFile(path.join(source,'astro.config.mjs'),'utf8');
-  config=config.replace(/vite:\s*\{/,"vite: {envDir:'/tmp/flyingstars-no-env',");
-  if(!config.includes("envDir:'/tmp/flyingstars-no-env'"))throw Error('Die Fixture konnte das Laden von .env nicht abschalten.');
+  const envDir = JSON.stringify(path.join(root,'unused-env'));
+  config=config.replace(/vite:\s*\{(?:envDir:"(?:[^"\\]|\\.)*",)?/,`vite: {envDir:${envDir},`);
+  assert.ok(config.includes(`envDir:${envDir}`),'Die Fixture konnte das Laden von .env nicht abschalten.');
+  if(offlineMedia){
+    // Some real CLI candidate builders intentionally pass only PATH to Astro.
+    const offlineSwitch = "process.env.FLYINGSTARS_OFFLINE_MEDIA === '1'";
+    const fixtureSwitch = 'true /* fixture image service */';
+    assert.ok(config.includes(offlineSwitch)||config.includes(fixtureSwitch),'Der Offline-Bilddienst fehlt in der Astro-Konfiguration.');
+    config=config.replace(offlineSwitch,fixtureSwitch);
+  }
   await fs.writeFile(path.join(source,'astro.config.mjs'),config);
   // Explicit offline fixture images. The public site's media resolver is never changed by this test.
   if(offlineMedia)await fs.writeFile(path.join(source,'src/lib/media.ts'),`
@@ -31,7 +46,7 @@ optimizedImage.afeBindings=([source]:unknown[])=>({src:source});optimizedLogo.af
 `);
   if(forCI){
     const installedRoot=fileURLToPath(new URL('./',import.meta.resolve('astro-frontend-editor/package.json'))),packageRoot=path.join(root,'private-product');
-    // Unique temporary package path avoids npm reusing a cached unreleased 0.2.4 folder package.
+    // Unique temporary package path avoids npm reusing a cached folder package.
     // Only the declared package files are copied, outside the fixture's Git repository.
     const product=JSON.parse(await fs.readFile(path.join(installedRoot,'package.json'),'utf8'));await fs.mkdir(packageRoot);
     for(const file of ['package.json',...product.files])await fs.cp(path.join(installedRoot,file),path.join(packageRoot,file),{recursive:true});
@@ -48,10 +63,10 @@ optimizedImage.afeBindings=([source]:unknown[])=>({src:source});optimizedLogo.af
     await fs.writeFile(path.join(source,'package.json'),JSON.stringify(manifest,null,2)+'\n');
     await fs.writeFile(path.join(source,'package-lock.json'),JSON.stringify(lock,null,2)+'\n');
   }
-  await git(source,['init','--quiet','--initial-branch=content/draft']);
+  if(!forCI)await git(source,['init','--quiet','--initial-branch=content/draft']);
   await git(source,['add','.']);
   await git(source,['rm','--cached','--ignore-unmatch','node_modules']);
   await git(source,['-c','user.name=Fixture','-c','user.email=test@example.invalid','-c','commit.gpgsign=false','commit','-qm','Isolierte Offline-Fixture']);
-  await git(source,['branch','main']);
+  await git(source,['branch','-f','main']);
   return {root,source,store:await new NativeStore(source,{remote:false,site:await createFlyingStarsAdapter(source),runtime:resolveRuntimeOptions({values:{siteRoot:source,stateDir:path.join(root,'state')}})}).init()};
 }

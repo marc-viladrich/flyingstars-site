@@ -1,5 +1,7 @@
 .fact-list { margin: 0; }
 .fact-list dd { margin: 0; }
+/* Werte sind kurz (Zahl, Ort, Name): umbrechende Werte gleichmäßig verteilen statt ein Wort allein in die letzte Zeile */
+.fact-list .fact-value { text-wrap: balance; }
 
 .spec { position: absolute; z-index: 3; margin: 0; right: calc(var(--gutter) + 0.875rem); bottom: calc(var(--fr-b) + var(--fr-arm) - var(--fr-lh) / 2); display: grid; grid-template-columns: auto auto; gap: var(--space-1) var(--space-4-5); line-height: var(--fr-lh); color: rgb(var(--rgb-text) / 0.66); }
 .spec dd { margin: 0; }
@@ -111,10 +113,12 @@
   .lh-facts { display: flex; flex-wrap: wrap; gap: 0; margin: var(--space-2-5) 0 0; padding-top: var(--space-5-5); border-top: 1px solid var(--line); width: 100%; max-width: 40rem; }
   .lh-facts > div { display: grid; gap: var(--space-1); padding-right: clamp(var(--space-4-5), 2.4vw, var(--space-8)); margin-right: clamp(var(--space-4-5), 2.4vw, var(--space-8)); border-right: 1px solid var(--line); }
   .lh-facts > div:last-child { border-right: 0; margin-right: 0; padding-right: 0; }
-  .lh-facts dt { color: var(--faint); order: 2; }
+  /* Lange Einzelwörter (NL „vroegboekkorting“, „aansprakelijkheid“) trennen nach Sprache (html lang), notfalls brechen */
+  .lh-facts dt { color: var(--faint); order: 2; hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; }
   .lh-facts dd { margin: 0; font: 500 clamp(1.25rem, 1.8vw, 1.625rem)/1.1 var(--display); letter-spacing: -0.02em; color: var(--head); white-space: nowrap; }
+  /* Schmal: eine Spalte je Eckdatum, Breite nach Platzbedarf (lange Labels bekommen mehr als kurze Zahlen) */
   @media (--small-facts) {
-    .lh-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); }
+    .lh-facts { display: grid; grid-template-columns: repeat(var(--fact-columns), auto); }
   }
   @media (--small-facts) {
     .lh-facts > div { padding-right: var(--space-2-5); margin-right: var(--space-2-5); }

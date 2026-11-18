@@ -1,5 +1,5 @@
 title: Contact
-description: "Plan a show, request a quote, ask questions ✓ Reachable by email, phone and WhatsApp ☎︎ +49 209 88306562"
+description: "Plan a show, request a quote, ask questions ✓ Reachable by email, phone and WhatsApp ☎︎ {{contact.phone.international}}"
 sections:
   - type: contactForm
     kicker: Contact
@@ -16,16 +16,16 @@ sections:
     _key: k_b12e1279f01fbae7cfb2
 noindex: false
 translationContractVersion: 2
-translationSourceHash: 4c24b3243dd38b4e84d17ae284980da82e574d32b6ab50c724856069b751db1c
+translationSourceHash: 389582ac07e8ceb01e0a8b48b880f48d3cee2f5cdbcaf75b6f2f687fd8339916
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 4c24b3243dd38b4e84d17ae284980da82e574d32b6ab50c724856069b751db1c
+  sourceFingerprint: 389582ac07e8ceb01e0a8b48b880f48d3cee2f5cdbcaf75b6f2f687fd8339916
   fields:
     - address: /description
-      sourceFingerprint: b6cd98cb640b6f1fa4b6637c582e2dca0c9292b6ef736f5f4c5baf3911814d7e
-      targetFingerprint: a57b5a347e61e7986ab5639263f2c7fb40f0a463bb85fe6363bf212a16ae642b
+      sourceFingerprint: 41df039b3257cd410500ba5b201578cae8754d65b5c85cffa479146cd770eafc
+      targetFingerprint: fb6c98caee67ddf72eb5e93bf7a313668a5f54b66a236da89a7a295db2156631
       status: adopted-existing
     - address: /navLabel
       sourceFingerprint: 5eca75dc86b64b90cc8087b960962b56c2d45c5ec25bbc19554dc8cc41f814fc

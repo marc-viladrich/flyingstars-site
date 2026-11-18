@@ -1,9 +1,9 @@
 # Landingpage Indoor nach Moritz' Webtext (15.11.2026, „Webtext Indoor FlyingStars“): Abschnittsfolge, Überschriften und Texte
 # wortgetreu, Ansprache „ihr“. Route bleibt /drohnenshow-indoor/ (Moritz: /drohnenshow/indoor/, Umstellung offen).
-# Zahlen nach Moritz (ab 15.000 €, ab 20 Drohnen, 10 x 10 m, mind. 3 m Deckenhöhe), Klartext statt Faktenplatzhalter.
+# Zahlen nach Moritz; Preis, Drohnenzahl, Deckenhöhe und Showdauer als Faktenplatzhalter (show-extras.json, show-duration.json).
 title: Magische Indoor-Drohnenshow buchen (20+ Drohnen)
 navLabel: "Indoor"
-description: "Indoor-Drohnenshows für Messen, Konzerte & Co. ✓ Projekte u.a. für Siemens ✓ Ab 15.000 € ☎︎ +49 209 88306562"
+description: "Indoor-Drohnenshows für Messen, Konzerte & Co. ✓ Projekte u.a. für Siemens ✓ Ab {{offer.indoor.priceAmount}} ☎︎ {{contact.phone.international}}"
 image: https://flyingstars.art/wp-content/uploads/2025/04/IMG_0201.jpg
 sections:
   - type: landingHero
@@ -11,7 +11,7 @@ sections:
     headline: Holt den *Himmel* rein
     text: Tiefschwarze Dunkelheit, knisternde Stimmung – dann fliegt unser Leuchtschwarm los und reißt die komplette Halle mit. Profitiert von der Erfahrung aus 150+ Drohnenshows, jetzt auch indoor.
     cta: { label: Show anfragen, href: "#anfrage" }
-    secondary: { label: "☎︎ +49 209 88306562", href: "tel:+4920988306562" }
+    secondary: { label: "☎︎ {{contact.phone.international}}", href: "{{contact.phone.href}}" }
     video: siemensIndoor
     videoLabel: Siemens · Hannover Messe
     poster:
@@ -19,7 +19,7 @@ sections:
       alt: Dutzende leuchtende Drohnen in Reihen über dem Boden einer abgedunkelten Sporthalle
       width: 2560
       height: 1440
-    # Eckdaten wie im Prototyp, Werte aus den Faktenbesitzern (deckungsgleich mit Moritz: ab 20 Drohnen, fünf bis acht Minuten, mindestens drei Meter)
+    # Eckdaten wie im Prototyp, Werte aus den Faktenbesitzern (deckungsgleich mit Moritz)
     facts:
       - { value: "ab {{offer.indoor.drones.min}}", label: Drohnen, "_key": "k_9c43046412c4f98a6eaa" }
       - { value: "{{duration.indoor.min}}–{{duration.indoor.max}} Min", label: Showdauer, "_key": "k_f28af46100a885028278" }
@@ -105,7 +105,7 @@ sections:
     text: |-
       Wir holen das Funkeln, den Glanz und die staunenden Gäste des Feuerwerks unter euer Dach. Ohne Abfall, Rauch und nur mit einem leisen Surren.
 
-      Eure Indoor-Drohnenshow ist eine fünf- bis achtminütige Choreografie, die die Aufmerksamkeit aller Besucher:innen fesselt. Denn kaum ein Gast hat bereits einen der magischen Tänze gesehen – geschweige denn im Innenraum.
+      Eure Indoor-Drohnenshow ist eine {{duration.indoor.min}}- bis {{duration.indoor.max}}-minütige Choreografie, die die Aufmerksamkeit aller Besucher:innen fesselt. Denn kaum ein Gast hat bereits einen der magischen Tänze gesehen – geschweige denn im Innenraum.
 
       Deshalb gestalten wir faszinierende Motive unterlegt mit Musik, die eure Geschichte erzählen. Ab 50 Drohnen auch mit individuellen Figuren wie eurem Logo oder euren Initialen.
     show: indoor
@@ -226,7 +226,7 @@ sections:
     id: preise
     kicker: Preise
     headline: Volle *Kontrolle* über eure Show
-    text: Unsere Indoor-Drohnenshows beginnen bei 15.000 Euro (netto) zuzüglich Anfahrt. Gerne stellen wir euch ein individuelles Paket zusammen, bei dem es bleibt – keine Überraschungen.
+    text: Unsere Indoor-Drohnenshows beginnen bei {{offer.indoor.priceAmount}} (netto) zuzüglich Anfahrt. Gerne stellen wir euch ein individuelles Paket zusammen, bei dem es bleibt – keine Überraschungen.
     offer: indoor
     unit: "netto zzgl. Anfahrt, für {{offer.indoor.drones.min}} Drohnen"
     # Marc, 18.11.2026 („mega leer“): zweigeteilte Karte. Faktoren und „immer enthalten“ nur aus Moritz' Indoor-Text
@@ -259,7 +259,7 @@ sections:
     marks:
       - { value: 48 h, label: "#1 Anfrage", text: "Teilt ihr uns das Datum, den Ort und den Anlass mit, melden wir uns innerhalb von 48 Stunden mit Ideen zurück. Ein Erstgespräch ist der nächste Schritt, ein Vor-Ort-Termin selten nötig.", "_key": "k_bcd783da285c16316e38" }
       - { value: < 2 Wochen, label: "#2 Planung", text: "Wir bauen Storyline und Motive. Gerne könnt ihr Wünsche einbringen. Wir kümmern uns zudem um alle Genehmigungen, ihr liefert nur die Zustimmung der Grundstückseigentümer:innen.", "_key": "k_1a7a9d6124366c37cbbf" }
-      - { value: "3,5 h", label: "#3 Showtag", text: "Während ihr eure Gäste betreut, bauen wir auf (dreieinhalb Stunden), führen die Show durch (fünf bis acht Minuten) und bauen geräuschlos wieder ab.", "_key": "k_2a47818390caa6ae1614" }
+      - { value: "3,5 h", label: "#3 Showtag", text: "Während ihr eure Gäste betreut, bauen wir auf (dreieinhalb Stunden), führen die Show durch ({{duration.indoor.min}} bis {{duration.indoor.max}} Minuten) und bauen geräuschlos wieder ab.", "_key": "k_2a47818390caa6ae1614" }
       - { value: "{{duration.indoor.min}}–{{duration.indoor.max}} Min", label: Show, "_key": "k_46482fb214bdc46258be" }
     _key: k_cca8a7702a948ca38dce
 

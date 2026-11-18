@@ -1,5 +1,5 @@
 title: Veelgestelde vragen (FAQ)
-description: "Wat doet FlyingStars? ✓ Hoe verlopen droneshows? ✓ Wat kosten ze? ✓ Zijn ze veilig? ☎︎ +49 209 88306562"
+description: "Wat doet FlyingStars? ✓ Hoe verlopen droneshows? ✓ Wat kosten ze? ✓ Zijn ze veilig? ☎︎ {{contact.phone.international}}"
 sections:
   - type: faq
     id: fragen
@@ -22,16 +22,16 @@ sections:
     _key: k_7c50c933d69ebe56c4ac
 noindex: false
 translationContractVersion: 2
-translationSourceHash: 85c09fbab0f2bcdd49f5ba02c95978d57d2a7e32d64fd2e0fb23e52ac267838e
+translationSourceHash: 29fff12b26fd22b39c9032eaa17a21a4898a5d63891ca3f97d93158bfd455265
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 85c09fbab0f2bcdd49f5ba02c95978d57d2a7e32d64fd2e0fb23e52ac267838e
+  sourceFingerprint: 29fff12b26fd22b39c9032eaa17a21a4898a5d63891ca3f97d93158bfd455265
   fields:
     - address: /description
-      sourceFingerprint: 7693802c4652642b1f9be678b0e98a72e408cc96418119b8120ae7437add37a5
-      targetFingerprint: 6b7c22d707e53c79fc0dfee51dfc24ac46d6f4e59ca493abb48d4e381887c099
+      sourceFingerprint: 25f9f9a78a0a22ae0b24e2f8d92c440e11fc847f5d8f42b17dde2c12df034e8a
+      targetFingerprint: 5a576fa3625a862d985e61da12350db75da69e1674e784cc7068450a239949af
       status: adopted-existing
     - address: /navLabel
       sourceFingerprint: 5eca75dc86b64b90cc8087b960962b56c2d45c5ec25bbc19554dc8cc41f814fc

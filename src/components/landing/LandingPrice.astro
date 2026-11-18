@@ -52,7 +52,7 @@ const scale = p && Number.isFinite(p.max) ? t('landingprice.upToValueDronesValue
 ---
 {factorMode ? (
 <section class="section alt lp lp-f" id={id} aria-labelledby={`${id}-h`}>
-  <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} class="lp-f-head" />
+  <SectionHead kicker={kicker} headline={headline} text={factText(text,locale)} id={`${id}-h`} level={H} class="lp-f-head" />
   <div class="lp-sheet">
     <div class="lp-buy">
       <p class="lp-amount" {...(offer?field({collection:'showExtras',id:'configuration'},[offer,'price','amount'],{mode:'panel'}):{})}>{pre && <span class="lp-pre mono">{pre} </span>}{amount}</p>
@@ -87,7 +87,7 @@ const scale = p && Number.isFinite(p.max) ? t('landingprice.upToValueDronesValue
 </section>
 ) : (
 <section class="section alt lp" id={id} aria-labelledby={`${id}-h`}>
-  <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
+  <SectionHead kicker={kicker} headline={headline} text={factText(text,locale)} id={`${id}-h`} level={H} />
   <div class="lp-card">
     <div class="lp-price">
       {pkg && p && <div class="lp-pkg"><canvas data-orb={p.orb} data-color={p.color.join(',')} data-n={p.base} aria-hidden="true"></canvas><span class="lp-name">{pkg}</span></div>}

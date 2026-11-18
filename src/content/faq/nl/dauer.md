@@ -4,16 +4,16 @@ tags: [faq-drohnenshows]
 order: 5
 draft: false
 translationContractVersion: 2
-translationSourceHash: fd5d8689853effb404e17c43bb0441a91307fd8c848036cda5c0b13692583c37
+translationSourceHash: 077f6eb1298bfb93434c0a889c637a0f806798762f751f6044aed908a416164e
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: fd5d8689853effb404e17c43bb0441a91307fd8c848036cda5c0b13692583c37
+  sourceFingerprint: 077f6eb1298bfb93434c0a889c637a0f806798762f751f6044aed908a416164e
   fields:
     - address: /body
-      sourceFingerprint: bbceff6e291808251bc148f78be4ad779b3a016991eb20ab5606870b6fe85876
-      targetFingerprint: d53ea71ab8726bbdcd47a600c443c73c52509350de2ba2dc65e5a9ce313e1080
+      sourceFingerprint: 8a8d82cd1aa6f3b444557b60910d7e8da9ef18da1a22529bbefc40ef8fc1b41e
+      targetFingerprint: 0dbd182c38262295066f48f1564239661ac6918c14df8cd8f1dc5fc5f1a75533
       status: adopted-existing
     - address: /question
       sourceFingerprint: 5f34823be35749cb92205c4c7f3e77da31c6ea573a68d6e2cefe8ab6ef8c3694
@@ -21,4 +21,4 @@ translationEvidence:
       status: adopted-existing
 ---
 
-Een droneshow buiten duurt tot 25 minuten. Gemiddeld duurt de vlucht zo’n 13 minuten. Binnen zijn vijf tot acht minuten mogelijk.
+Een droneshow buiten duurt tot {{duration.outdoor.max}} minuten. Gemiddeld duurt de vlucht zo’n {{duration.outdoor.typical}} minuten. Binnen zijn {{duration.indoor.min}} tot {{duration.indoor.max}} minuten mogelijk.

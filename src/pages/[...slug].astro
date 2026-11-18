@@ -1,28 +1,13 @@
 ---
-import { forPath } from '../i18n/server';
-const { t } = forPath(Astro.url.pathname);
-import { getCollection, type CollectionEntry } from 'astro:content';
+// Inhaltsseiten (Sammlung pages, Sections). Preis-, Blog-, Fallstudien- und 404-Routen haben eigene Dateien daneben,
+// damit jede Routenart nur ihr eigenes CSS lädt (src/i18n/static-paths.ts).
+import type { CollectionEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import SectionRenderer from '../components/SectionRenderer.astro';
-import PricingPage from '../templates/PricingPage.astro';
-import BlogIndex from '../templates/BlogIndex.astro';
-import BlogPost from '../templates/BlogPost.astro';
-import CasePage from '../templates/CasePage.astro';
-import Chopper404 from '../components/Chopper404.astro';
-import {publicRouteEntries} from '../i18n/public-routes.mjs';
-import { checkContentCoverage } from '../i18n/content';
+import { staticPathsFor } from '../i18n/static-paths';
 
-export async function getStaticPaths() {
-  await checkContentCoverage();
-  const [pages, projects, posts] = await Promise.all([getCollection('pages'), getCollection('projects'), getCollection('posts')]);
-  return publicRouteEntries({pages,projects,posts}).map(({path,...props})=>({params:{slug:path.replace(/^\/|\/$/g,'')||undefined},props}));
-}
-interface Props { kind: string; page?: CollectionEntry<'pages'>; project?: CollectionEntry<'projects'>; post?: CollectionEntry<'posts'>; }
-const { kind, page, project, post } = Astro.props;
+export const getStaticPaths = () => staticPathsFor('page', 'slug');
+interface Props { page: CollectionEntry<'pages'>; }
+const { page } = Astro.props;
 ---
-{kind === 'page' && page && <Base title={page.data.title} description={page.data.description} noindex={page.data.noindex} image={page.data.image}><SectionRenderer sections={page.data.sections} /></Base>}
-{kind === 'pricing' && <PricingPage />}
-{kind === 'blog' && <BlogIndex />}
-{kind === 'post' && post && <BlogPost post={post} />}
-{kind === 'case' && project && <CasePage project={project} />}
-{kind === '404' && <Base title={t('404.pageNotFound')} description={t('404.thisPageDoesnTExistChopperWillHelpYouFind')} noindex><Chopper404 /></Base>}
+<Base title={page.data.title} description={page.data.description} noindex={page.data.noindex} image={page.data.image}><SectionRenderer sections={page.data.sections} /></Base>

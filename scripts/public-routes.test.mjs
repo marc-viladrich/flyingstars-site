@@ -10,7 +10,14 @@ import {splitLocale,localizedPath} from '../editor/extensions/flyingstars/web/ro
 test('Alle tatsächlichen öffentlichen Inhaltsrouten und AFE-Ziele stammen aus derselben Ableitung',async()=>{
  const records=await readEditorialRecords(process.cwd()),site=await createSite(process.cwd());
  const entries=collection=>records.filter(r=>site.sourceFor(r.id).address.collection===collection).map(r=>({id:site.sourceFor(r.id).address.id,data:r.data}));
- const routes=publicRouteEntries({pages:entries('pages'),projects:entries('projects'),posts:entries('posts')});assert.equal(routes.length,71);
+ const routes=publicRouteEntries({pages:entries('pages'),projects:entries('projects'),posts:entries('posts')});
+ const systemPaths=LOCALES.flatMap(locale=>['/drohnenshow-preise/','/blog/'].map(route=>localizedHref(route,locale)));
+ const editorialPaths=records.filter(record=>{
+  const {collection}=site.sourceFor(record.id).address;
+  return collection==='pages'||(['posts','projects'].includes(collection)&&!record.data.draft);
+ }).map(record=>site.recordRoute(record)).filter(Boolean);
+ const expected=[...editorialPaths,...systemPaths,'/en/404/','/nl/404/'];
+ assert.deepEqual(routes.map(route=>route.path).sort(),expected.sort());
  for(const record of records){const source=site.sourceFor(record.id);assert.equal(site.recordRoute(record),contentRoute(source.address.collection,source.address.id,record.data));}
  for(const route of routes)for(const locale of LOCALES){const localized=localizedHref(route.path,locale);assert.equal(localizedPath(splitLocale(localized).path,locale),localized);}
  assert.equal(Object.keys(astroRedirects()).length,24);

@@ -20,10 +20,18 @@ test('Parser begrenzt nur am Eingangsrand und lässt unbekannte IDs nicht ins Fo
  for(const n of [100,1000])assert.equal(parseInquiry(`drohnen=${n}`).drohnen,n);
  assert.deepEqual(INQUIRY_PACKAGES,['SPARK','HORIZON','ODYSSEY','offen']);
 });
-test('No-JS Formulardaten erreichen den unveränderten API-Sicherheitsrand und sprachgleichen 303-Rückweg',async()=>{
+test('No-JS Formulardaten erreichen den unveränderten API-Sicherheitsrand und einen sprachgleichen Rückweg',async()=>{
  for(const locale of ['de','en','nl']){
   const href=inquiryHref({paket:'ODYSSEY',drohnen:600,anlass:'firma',extras:['express','film'],text:'Ä & +',show:'Entwurf'},locale),selection=parseInquiry(new URL(href,'https://example.test').search);
   const form=new URLSearchParams({name:'Müller & Söhne',email:'test@example.test',ort:'Köln',locale,paket:selection.paket,drohnen:String(selection.drohnen),anlass:selection.anlass,message:selection.text+'\n'+selection.show});for(const id of selection.extras)form.append('extras',id);
-  const response=await onRequestPost({request:new Request('https://example.test/api/contact',{method:'POST',headers:{accept:'text/html'},body:form}),env:{}});assert.equal(response.status,303);const back=new URL(response.headers.get('location'));assert.equal(back.pathname,locale==='de'?'/danke/':`/${locale}/danke/`);assert.equal(back.searchParams.get('state'),'not-configured');assert.equal(response.headers.get('cache-control'),'no-store');
+  // Ohne Versandkonfiguration: lesbare Seite in der Formularsprache mit Weg zurück zum Formular, keine Danke-Weiterleitung
+  const response=await onRequestPost({request:new Request('https://example.test/api/contact',{method:'POST',headers:{accept:'text/html'},body:form}),env:{}});assert.equal(response.status,503);assert.equal(response.headers.get('location'),null);assert.equal(response.headers.get('cache-control'),'no-store');
+  const html=await response.text();assert.ok(html.startsWith(`<!doctype html><html lang="${locale}">`));assert.ok(html.includes(`href="${locale==='de'?'':'/'+locale}/kontakt/#anfrage"`));
+  // Bestätigter Versand: 303 auf die Danke-Seite derselben Sprache
+  const original=globalThis.fetch;globalThis.fetch=async()=>new Response('{}',{status:201});
+  try{
+   const sent=await onRequestPost({request:new Request('https://example.test/api/contact',{method:'POST',headers:{accept:'text/html'},body:new URLSearchParams(form)}),env:{BREVO_API_KEY:'k',CONTACT_TO:'to@example.test',CONTACT_FROM:'from@example.test'}});
+   assert.equal(sent.status,303);const back=new URL(sent.headers.get('location'));assert.equal(back.pathname,locale==='de'?'/danke/':`/${locale}/danke/`);assert.equal(back.search,'');assert.equal(sent.headers.get('cache-control'),'no-store');
+  }finally{globalThis.fetch=original;}
  }
 });

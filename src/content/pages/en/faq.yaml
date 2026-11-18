@@ -1,5 +1,5 @@
 title: Frequently asked questions (FAQ)
-description: "What does FlyingStars do? ✓ How do drone shows work? ✓ What do they cost? ✓ Are they safe? ☎︎ +49 209 88306562"
+description: "What does FlyingStars do? ✓ How do drone shows work? ✓ What do they cost? ✓ Are they safe? ☎︎ {{contact.phone.international}}"
 sections:
   - type: faq
     id: fragen
@@ -22,16 +22,16 @@ sections:
     _key: k_7c50c933d69ebe56c4ac
 noindex: false
 translationContractVersion: 2
-translationSourceHash: 85c09fbab0f2bcdd49f5ba02c95978d57d2a7e32d64fd2e0fb23e52ac267838e
+translationSourceHash: 29fff12b26fd22b39c9032eaa17a21a4898a5d63891ca3f97d93158bfd455265
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 85c09fbab0f2bcdd49f5ba02c95978d57d2a7e32d64fd2e0fb23e52ac267838e
+  sourceFingerprint: 29fff12b26fd22b39c9032eaa17a21a4898a5d63891ca3f97d93158bfd455265
   fields:
     - address: /description
-      sourceFingerprint: 7693802c4652642b1f9be678b0e98a72e408cc96418119b8120ae7437add37a5
-      targetFingerprint: f52bf950199ea60204b1c037a3ebdc32373239d84473bd06bd94ed3d16052ad2
+      sourceFingerprint: 25f9f9a78a0a22ae0b24e2f8d92c440e11fc847f5d8f42b17dde2c12df034e8a
+      targetFingerprint: b0af2bf19e14270bc935fb446ea4e71d183d3896a7757ab4f6a98ab82c5b3809
       status: adopted-existing
     - address: /navLabel
       sourceFingerprint: 5eca75dc86b64b90cc8087b960962b56c2d45c5ec25bbc19554dc8cc41f814fc

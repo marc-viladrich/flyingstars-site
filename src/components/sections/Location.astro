@@ -47,17 +47,21 @@ const withAddress = pins.some((pin) => pin.lines);
     <div class="loc-copy">
       <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} variant="embedded" />
       {withAddress && <ul class="loc-places" role="list" {...record(CONTACT_OWNER)}>
-        {pins.map((pin, i) => <li class:list={['loc-place', pin.tone]} data-pin={i}>
-          <span class="loc-ico" aria-hidden="true"><Icon name={pin.icon ?? 'map-pin'} size={20} /></span>
-          <div class="loc-body">
-            <Item class="loc-name"><span class="loc-label mono">{pin.label}</span>{pin.role && <span class="loc-role">{pin.role}</span>}</Item>
-            {pin.lines && <address>{pin.lines.map((line, n) => <span {...field(CONTACT_OWNER, [pin.address!, n], { mode: 'panel' })}>{line}</span>)}</address>}
-            <p class="loc-links">
-              <a class="hover-line" href={pin.route} target="_blank" rel="noopener" aria-label={t('location.routeLabel', { v0: pin.lines?.slice(-2).join(', ') ?? pin.label })}><Icon name="route" size={16} />{t('location.route')}</a>
-              {pin.reach && <a class="hover-line" href={localHref(pin.reach.href)} {...field(CONTACT_OWNER, [...pin.reach.path], { mode: 'panel' })}><Icon name={pin.reach.icon} size={16} />{pin.reach.label}</a>}
-            </p>
-          </div>
-        </li>)}
+        {pins.map((pin, i) => {
+          // The projected contact values have explicit markers from CONTACT_OWNER.
+          const { lines, reach: contactWay } = pin;
+          return <li class:list={['loc-place', pin.tone]} data-pin={i}>
+            <span class="loc-ico" aria-hidden="true"><Icon name={pin.icon ?? 'map-pin'} size={20} /></span>
+            <div class="loc-body">
+              <Item class="loc-name"><span class="loc-label mono">{pin.label}</span>{pin.role && <span class="loc-role">{pin.role}</span>}</Item>
+              {lines && <address>{lines.map((line, n) => <span {...field(CONTACT_OWNER, [pin.address!, n], { mode: 'panel' })}>{line}</span>)}</address>}
+              <p class="loc-links">
+                <a class="hover-line" href={pin.route} target="_blank" rel="noopener" aria-label={t('location.routeLabel', { v0: lines?.slice(-2).join(', ') ?? pin.label })}><Icon name="route" size={16} />{t('location.route')}</a>
+                {contactWay && <a class="hover-line" href={localHref(contactWay.href)} {...field(CONTACT_OWNER, [...contactWay.path], { mode: 'panel' })}><Icon name={contactWay.icon} size={16} />{contactWay.label}</a>}
+              </p>
+            </div>
+          </li>;
+        })}
       </ul>}
       {cta && <p class="loc-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
     </div>
@@ -121,7 +125,7 @@ const withAddress = pins.some((pin) => pin.lines);
   .loc-places { list-style: none; margin: var(--head-gap-content) 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14.5rem), 1fr)); gap: var(--space-8) clamp(var(--space-6), 3vw, var(--space-10)); }
   .loc-place { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-4); align-items: start; padding-top: var(--space-5); border-top: 1px solid var(--line); }
   /* Haarlinie in Punktfarbe: kurz im Ruhezustand, beim Zeigen läuft sie über die ganze Breite (scaleX statt width) */
-  .loc-place::before { content: ""; position: absolute; left: 0; top: -1px; width: 100%; height: 1px; background: var(--pin); transform: scaleX(0.16); transform-origin: left; transition: transform var(--dur-reveal) var(--ease-default); }
+  .loc-place::before { content: ""; position: absolute; left: 0; bottom: 100%; width: 100%; border-top: 1px solid var(--pin); transform: scaleX(0.16); transform-origin: left; transition: transform var(--dur-reveal) var(--ease-default); }
   .loc-place.is-hot::before { transform: scaleX(1); }
   .loc-ico { position: relative; display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: var(--radius-round); color: var(--pin); background: rgb(var(--pin-rgb) / 0.1); box-shadow: inset 0 0 0 1px rgb(var(--pin-rgb) / 0.35); }
   .loc-ico::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgb(var(--pin-rgb) / 0.75); opacity: 0; transition: opacity var(--dur-standard) var(--ease-default); }

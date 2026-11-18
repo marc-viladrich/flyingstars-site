@@ -6,7 +6,7 @@ import {PROJECT_FACTS,projectValue,projectValues,projectText} from '../src/conte
 import {projectFactsSchema,projectFactRefSchema} from '../src/schemas/project-facts.mjs';
 import {contentSchemas} from '../src/schemas/content-schema.mjs';
 import {createSite} from '../editor/flyingstars-adapter.mjs';
-test('Alle 19 Projekte besitzen ausschließlich explizite Faktenverweise; Stand und Sprachen folgen dem Besitzer',()=>{
+test('Alle 20 Projekte besitzen ausschließlich explizite Faktenverweise; Stand und Sprachen folgen dem Besitzer',()=>{
  projectFactsSchema.parse(PROJECT_FACTS);let count=0;
  for(const file of readdirSync('src/content/projects',{recursive:true}).filter(n=>n.endsWith('.md'))){
   const data=contentSchemas.projects.parse(parse(readFileSync('src/content/projects/'+file,'utf8').split('---')[1]));
@@ -14,7 +14,7 @@ test('Alle 19 Projekte besitzen ausschließlich explizite Faktenverweise; Stand 
   if(data.showcase){projectFactRefSchema.parse(data.showcase.drones);assert.ok(data.showcase.credits.some(c=>c.value?.field==='location'));}
   count++;
  }
- assert.equal(count,57);
+ assert.equal(count,60); // 20 Projekte je DE/EN/NL, seit 15.11.2026 mit E.ON Hamburg (Moritz' Startseitentext)
  const changed=structuredClone(PROJECT_FACTS);changed['puma-bundesliga'].drones=101;changed['puma-bundesliga'].date='2023-12-12';changed['puma-bundesliga'].location={de:'Testort',en:'Test place',nl:'Testplaats'};changed['puma-bundesliga'].client='Testkunde';
  for(const locale of ['de','en','nl']){const ref=field=>({project:'puma-bundesliga',field});assert.equal(projectValue(ref('drones'),locale,changed),101);assert.equal(projectValue(ref('client'),locale,changed),'Testkunde');assert.equal(projectValue(ref('location'),locale,changed),changed['puma-bundesliga'].location[locale]);assert.equal(projectValue({...ref('date'),display:'year'},locale,changed),'2023');assert.equal(projectValue({...ref('date'),display:'numeric'},locale,changed),'12.12.2023');assert.equal(projectText('{{project.puma-bundesliga.drones}}',locale,changed),'101');}
  assert.equal(projectValue({project:'bokkenrijders-musical-2026',field:'totalDrones'}),12000);

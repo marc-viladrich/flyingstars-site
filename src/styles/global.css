@@ -78,6 +78,7 @@
   --dur-color: 0.25s;
   --dur-control-long: 0.28s;
   --dur-standard: 0.3s;
+  --dur-disclose: 0.42s;
   --dur-glide: 0.35s;
   --dur-delay-dismiss: 0.37s;
   --dur-underline: 0.4s;
@@ -109,6 +110,7 @@
   --ease-scene: cubic-bezier(0.45, 0, 0.2, 1);
   --ease-spring: cubic-bezier(0.3, 1.6, 0.5, 1);
   --ease-panel: cubic-bezier(0.2, 0.9, 0.3, 1);
+  --ease-lift: cubic-bezier(0.33, 1, 0.68, 1);
   --ease-default: ease;
   --ease-ambient: ease-in-out;
   --ease-fall: cubic-bezier(0.55, 0, 0.8, 0.35);
@@ -235,11 +237,18 @@
   --head-gap-text: var(--space-4);
   --head-gap-cta: var(--space-6);
   --head-gap-content: clamp(var(--space-9), 5vw, var(--space-14));
+  /* tool: Seitenkopf → Werkzeug darunter (Preisseite: Kopf → Konfigurator). Marc, Runde 5/6: dort mehr Luft als content;
+     auf schmalen Bildschirmen gilt content (unten) */
+  --head-gap-tool: clamp(var(--space-14), 6.5vw, var(--space-24));
+  /* halber Section-Abstand: Ende eines Blocks, auf den ein eng zugehöriger Abschnitt folgt (Konfigurator →
+     Preisversprechen); so hoch wie ein Punktband (--ueb-h, himmel.css), damit der Übergang keinen Inhalt überdeckt */
+  --section-tight: calc(var(--section) / 2);
   --footer-top: clamp(var(--space-12), 6vw, var(--space-20));
   --radius: 1.25rem;
   --reveal-offset: 0.4em;
   --reveal-member-offset: 1.5rem;
 }
+@media (--nav-collapsed) { :root { --head-gap-tool: var(--head-gap-content); } }
 @supports (background: linear-gradient(in oklab, red, blue)) {
   :root { --grad-soft: linear-gradient(135deg in oklab, var(--logo-amber) 6%, var(--logo-orchid) 50%, var(--cyan) 94%); }
 }
@@ -289,6 +298,9 @@ p { margin: 0; }
 .link span { transition: transform var(--dur-control); }
 .link:hover span { transform: translateX(0.1875rem); }
 
+/* Kaskadenverträge, die einzigen !important-Regeln dieses Stylesheets: [hidden] verbirgt immer, auch gegen das display
+   einer Komponente; die Bewegungsregeln darunter beenden jede Komponentenbewegung. */
+[hidden] { display: none !important; }
 /* Bewegung: EIN Schalter für die ganze Seite (Runde 20c, Marc 04.11.2026). html.motion-paused setzt der Pause-Knopf im Kopf;
    der Startwert kommt aus prefers-reduced-motion (Kopfskript in Base.astro, vor dem ersten Bild). Dann enden alle
    CSS-Übergänge und -Animationen sofort: Hover-Zustände (Unterstrich, Box, Farbe) bleiben sichtbar, aber nichts bewegt sich.
@@ -296,6 +308,9 @@ p { margin: 0; }
    damit transitionend/animationend weiter feuern. */
 html.motion-paused *, html.motion-paused *::before, html.motion-paused *::after { animation-duration: 0.01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; transition-delay: 0s !important; }
 html.motion-paused { scroll-behavior: auto !important; }
+.motion-paused * { animation-play-state: paused !important; }
+/* Dauerschleifen ([data-loop], scripts/css-loop.ts) halten außerhalb des Bildes an; ihre Animation liest --loop-play */
+[data-loop][data-running="false"] { --loop-play: paused; }
 /* wie motion-policy.ts (reduced || paused): die Systemeinstellung hält Bewegung auch an, wenn der Knopf nicht gedrückt ist */
 @media (prefers-reduced-motion: reduce) {
   html *, html *::before, html *::after { animation-duration: 0.01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; transition-delay: 0s !important; }
@@ -354,11 +369,6 @@ html.motion-paused { scroll-behavior: auto !important; }
 /* proof band */
 .band { border-bottom: 1px solid var(--line); padding: var(--space-7-5) var(--gutter); overflow: hidden; }
 /* Laufband: zwei gleiche Spuren nebeneinander, jede läuft um ihre eigene Breite; keine Hover-Effekte */
-.logo-marquee { display: flex; overflow: hidden; padding: var(--space-1-5) 0; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
-.logo-marquee .track { list-style: none; margin: 0; padding: 0 clamp(var(--space-11), 5vw, var(--space-19)) 0 0; display: flex; align-items: center; gap: clamp(var(--space-11), 5vw, var(--space-19)); flex: none; animation: logo-slide var(--dur-marquee) var(--ease-linear) infinite; }
-.logo-marquee img { display: block; width: auto; max-width: none; filter: brightness(0) invert(1); opacity: 0.66; }
-.logo-marquee img.detail { filter: grayscale(1) brightness(1.15); mix-blend-mode: screen; opacity: 0.8; } /* dunkle Innendetails (Bentley) bleiben sichtbar */
-@keyframes logo-slide { to { transform: translateX(-100%); } }
 
 /* sections */
 .section { padding: var(--section) var(--gutter); }
@@ -415,32 +425,6 @@ td.us { color: var(--text); background: var(--fill-soft); }
 .chip { border: 1px solid var(--line-orchid); color: var(--orchid); }
 .pack .meta { color: var(--faint); }
 .pack-note { margin-top: var(--space-5); color: var(--faint); display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-3); }
-
-/* faq */
-.faq-grid { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: var(--head-gap-content) clamp(var(--space-7), 5vw, var(--space-20)); align-items: start; }
-.faq-grid .intro { position: sticky; top: 6.875rem; }
-.faq-grid .intro p { color: var(--muted); max-width: 40ch; }
-.faq { border-top: 1px solid var(--line-strong); }
-.faq details { border-bottom: 1px solid var(--line); }
-.faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: var(--space-5); padding: var(--space-5-5) 0; font: 500 clamp(1.125rem, 1.5vw, 1.3125rem)/1.3 var(--display); letter-spacing: -0.01em; }
-.faq summary::-webkit-details-marker { display: none; }
-/* Akkordeon-Icon: Lucide „plus“ (Icon.astro), dreht beim Öffnen weich zum X (Runde 5) */
-.faq-ico { flex: 0 0 auto; color: var(--text); transition: transform 0.38s var(--ease-glide), color var(--dur-control); }
-.faq summary:hover .faq-ico { color: var(--accent); }
-.faq details[open] > summary .faq-ico { transform: rotate(45deg); }
-/* Öffnen und Schließen weich über die Höhe. Moderner Weg: ::details-content + interpolate-size (Chromium). Browser ohne
-   interpolate-size (Safari 18, Firefox) übernimmt ein kleines Skript in Faq.astro (Web Animations auf .answer). */
-@supports (interpolate-size: allow-keywords) {
-  .faq details { interpolate-size: allow-keywords; }
-  .faq details::details-content { block-size: 0; overflow-y: clip; opacity: 0; transition: block-size 0.42s var(--ease-glide), opacity 0.3s ease, content-visibility 0.42s allow-discrete; }
-  .faq details[open]::details-content { block-size: auto; opacity: 1; }
-}
-@media (prefers-reduced-motion: reduce) { .faq details::details-content, .faq-ico { transition: none; } }
-html.motion-paused .faq details::details-content { transition: none; }
-.faq .answer { padding: 0 0 var(--space-6); color: var(--muted); display: grid; gap: var(--space-2-5); max-width: 64ch; }
-.faq .answer ul { margin: 0; padding-left: var(--space-4-5); display: grid; gap: var(--space-1-5); }
-.faq .answer a { color: var(--text); border-bottom: 1px solid var(--line-strong); transition: border-color var(--dur-control); }
-.faq .answer a:hover { border-color: var(--text); }
 
 /* inquiry */
 .inquiry { display: grid; align-items: start; }
@@ -552,7 +536,7 @@ html.motion-paused .faq details::details-content { transition: none; }
 
 .c-play { position: relative; height: min(88vh, 56.25rem); min-height: 35rem; margin: 0 var(--gutter); background: radial-gradient(90% 70% at 50% 40%, #13100e 0%, var(--night) 70%); border: 1px solid var(--line); border-radius: var(--radius-18); overflow: hidden; }
 .c-play canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: pan-y; }
-.c-play-copy { position: absolute; left: clamp(1.25rem, 3vw, 2.5rem); bottom: clamp(1.5rem, 5vh, 3rem); z-index: 2; display: grid; gap: var(--space-3); max-width: 28.75rem; pointer-events: none; }
+.c-play-copy { position: absolute; left: clamp(1.25rem, 3vw, 2.5rem); bottom: clamp(1.5rem, 5vh, 3rem); z-index: 2; display: grid; gap: var(--head-gap-text); max-width: 28.75rem; pointer-events: none; }
 .c-play-copy > * { pointer-events: auto; }
 .c-play-copy h2 { font-size: clamp(1.75rem, 3vw, 2.75rem); }
 .c-play-copy p { color: var(--muted); }
@@ -750,9 +734,8 @@ html.motion-paused .faq details::details-content { transition: none; }
   .menu-btn { display: grid; }
   .rec { display: none; }
   .hero-copy { left: var(--pad); }
-  .sec-head, .faq-grid { grid-template-columns: 1fr; }
+  .sec-head { grid-template-columns: 1fr; }
   .sec-head > p { justify-self: start; }
-  .faq-grid .intro { position: static; }
 }
 @media (--compact) {
   .logo span { display: none; }
@@ -762,16 +745,9 @@ html.motion-paused .faq details::details-content { transition: none; }
   .pack { grid-template-columns: 4.5rem minmax(0, 1fr); }
   .pack canvas { width: 4.5rem; height: 4.5rem; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .logo-marquee { -webkit-mask-image: none; mask-image: none; }
-  .logo-marquee .track { animation: none; flex-wrap: wrap; flex: 1 1 auto; justify-content: center; padding: 0; row-gap: var(--space-6); }
-  .logo-marquee .track + .track { display: none; }
-  *, *::before, *::after { transition-duration: 0.01ms !important; }
-}
 
 /* Astro adaptation: shared shell, explicit media controls and existing content routes. */
 :root { --font-sans:var(--body); --color-bg:var(--ground); --color-surface:var(--surface); --color-text:var(--text); --color-muted:var(--muted); --color-accent:var(--amber); --measure:42rem; --space-inner:clamp(1.25rem,3vw,2rem); --space-section:var(--section); }
-[hidden] { display:none !important; }
 .nav-sentinel { position:absolute;top:0;width:1px;height:1.875rem;pointer-events:none; }
 .mobile-menu { width:100%;height:100%;height:100dvh;max-width:none;max-height:none;margin:0;border:0;color:var(--text); }
 .mobile-menu:not([open]) { display:none; }
@@ -830,7 +806,6 @@ html.motion-paused .faq details::details-content { transition: none; }
   :root.nav-away .nav { transform: translateY(-100%); }
   :root.nav-away .mtabs { top: 0.5rem; }
 }
-.motion-paused * { animation-play-state:paused !important; }
 /* Keyboard focus must remain visible over light gradient buttons. */
 .btn:focus-visible { outline:0.1875rem solid var(--cyan);outline-offset:0.25rem; }
 
@@ -847,17 +822,12 @@ html.motion-paused .faq details::details-content { transition: none; }
 .page-hero-copy { display: grid; gap: var(--space-5-5); justify-items: start; align-self: start; } /* erste Zeile auf --hero-top, auch neben einem höheren Bild (Runde 18) */
 .page-hero h1 { font-size: var(--text-page); line-height: 1; letter-spacing: -0.035em; max-width: 16ch; }
 .page-hero .lead { max-width: 52ch; }
-.page-hero-media { margin: 0; border-radius: var(--radius); overflow: hidden; --curtain-r: var(--radius); background: var(--media-ground); }
-.page-hero-media img { width: 100%; height: auto; }
 /* Text mit Bild */
 .text-media { display: grid; gap: clamp(var(--space-7), 5vw, var(--space-18)); align-items: start; }
 .text-media.has-media { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-.text-media.media-left .tm-media { order: -1; }
 .text-media .prose h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.02; letter-spacing: -0.035em; margin-bottom: 0.6em; }
 .text-media .prose p, .text-media .prose li { color: var(--muted); }
 .text-media .prose a { color: var(--text); border-bottom: 1px solid var(--line-strong); }
-.tm-media { margin: 0; border-radius: var(--radius); overflow: hidden; --curtain-r: var(--radius); }
-.tm-media img { width: 100%; height: auto; }
 /* Abschluss-Karte (cta) */
 .promise-copy { display: grid; }
 .promise .actions { flex: 0 1 auto; }
@@ -872,9 +842,6 @@ html.motion-paused .faq details::details-content { transition: none; }
 
 /* Meilensteine: ruhige Liste, Jahreszahl links */
 
-/* FAQ: Gruppen und Abschluss */
-.faq-body { display: grid; gap: clamp(var(--space-9), 5vw, var(--space-14)); min-width: 0; }
-.faq-group-h { font-size: clamp(1.3125rem, 1.8vw, 1.625rem); letter-spacing: -0.02em; margin-bottom: var(--space-3-5); }
 .btn.primary .ico { stroke: var(--ground); }
 
 /* Anfrage (Studie 8): Kopf links oben bündig mit dem Formular, Gesichter, Kontaktwege mit Verlaufs-Icons */
@@ -923,6 +890,8 @@ html.motion-paused .faq details::details-content { transition: none; }
 .ask.has-opt .opt:not(.open) { display: none; }
 .ask.has-opt .opt.open { animation: opt-in var(--dur-enter) var(--ease-enter); }
 @keyframes opt-in { from { opacity: 0; transform: translateY(-0.5rem); clip-path: inset(0 0 100% 0); } to { opacity: 1; transform: none; clip-path: inset(0); } }
+/* Eingangsanimationen beginnen unsichtbar: angehaltene Bewegung (Pause-Knopf oder Systemeinstellung) zeigt das Ziel sofort */
+html.motion-paused .ask.has-opt .opt.open { animation: none; }
 @media (prefers-reduced-motion: reduce) { .ask.has-opt .opt.open { animation: none; } }
 .ask .actions { display: flex; gap: var(--space-2-5); }
 /* Runde 28: übernommenes Logo als Angabe im ersten Schritt (Kacheln wie Anhänge, je einzeln entfernbar) */
@@ -943,11 +912,6 @@ html.motion-paused .faq details::details-content { transition: none; }
 
 /* Presse und „Qualität und Sicherheit“ (Studie 6) */
 .proof { display: grid; }
-.proof-h { font-size: clamp(1.5rem, 2.4vw, 2rem); letter-spacing: -0.02em; margin-bottom: var(--space-5-5); }
-.proof .press ul { list-style: none; padding: 0; margin: 0; display: grid; }
-.proof .press a, .proof .press .noref { place-items: center start; transition: background var(--dur-control); }
-.proof .press img { height: 1.625rem; } /* ausgesparte Schrift (ZDF, ntv) */
-.proof .press b { font: 600 1.375rem/1.1 var(--display); letter-spacing: -0.02em; color: var(--head); }
 .proof .quality ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-6); }
 .proof .quality .q-logo { width: auto; object-fit: contain; object-position: left; filter: brightness(0) invert(1); opacity: 0.85; }
 
@@ -1049,7 +1013,7 @@ html.motion-paused .faq details::details-content { transition: none; }
 .hero.reel-on .reel { opacity: 1; }
 .hero .shade, .hero .frame, .hero .rec { z-index: 2; }
 .hero:has(.video-active) .reel, .hero:has(.video-active) .rec { opacity: 0; }
-.rec::before { content: ""; width: 0.4375rem; height: 0.4375rem; border-radius: var(--radius-round); background: var(--bad); box-shadow: 0 0 0.625rem var(--bad); animation: rec var(--dur-record) var(--ease-ambient) infinite; }
+.rec::before { content: ""; width: 0.4375rem; height: 0.4375rem; border-radius: var(--radius-round); background: var(--bad); box-shadow: 0 0 0.625rem var(--bad); animation: rec var(--dur-record) var(--ease-ambient) infinite; animation-play-state: var(--loop-play, running); }
 @media (prefers-reduced-motion: reduce) { .rec::before { animation: none; } }
 @keyframes rec { 50% { opacity: 0.3; } }
 .hero:not(.reel-on) .rec { display: none; }
@@ -1063,7 +1027,7 @@ html.motion-paused .rec::before { animation: none; }
 .proof { gap: clamp(var(--space-10), 5vw, var(--space-16)); }
 .proof .quality ul:not(.q-minor) { grid-template-columns: repeat(auto-fit, minmax(min(12.5rem, 100%), 1fr)); }
 .proof .quality .q-logo { height: 3.25rem; max-width: 11.25rem; margin-bottom: var(--space-3-5); }
-.proof .quality .q-minor { list-style: none; margin: var(--space-7-5) 0 0; padding: var(--space-4-5) 0 0; border-top: 1px solid var(--line); display: flex !important; flex-wrap: wrap; gap: var(--space-2-5) var(--space-8); }
+.proof .quality .q-minor { list-style: none; margin: var(--space-7-5) 0 0; padding: var(--space-4-5) 0 0; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: var(--space-2-5) var(--space-8); }
 .proof .q-minor li { display: flex; align-items: center; gap: var(--space-2-5); color: var(--faint); font-size: var(--text-sm); }
 .proof .q-minor .ico { width: 1.125rem; height: 1.125rem; }
 
@@ -1100,8 +1064,6 @@ html.motion-paused .rec::before { animation: none; }
 .promise .kicker { margin-bottom: var(--space-3); }
 .promise .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); }
 .promise .faces { justify-content: center; margin: 0; }
-
-.cfg-kicker { margin-bottom: calc(-1 * var(--space-1-5)); }
 
 /* Netzplan-Zeitstrahl (MetroLine.astro): Hauptlinie mit Stationen (.ruler oben), Abzweigung als durchgezogene orange
    Linie mit runden Ecken von der ersten zur letzten Station, Schild mittig darauf. --n: Zahl der Stationen. */
@@ -1141,16 +1103,6 @@ a.metro-sign:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offse
 }
 @media (prefers-reduced-motion: reduce) { .metro-branch, .metro-sign { transition: none; } }
 
-/* Presse im Raster wie Qualität und Sicherheit: Logo, darunter leise der Anlass. Keine Kästen. */
-.proof .press ul { grid-template-columns: repeat(auto-fit, minmax(min(9.375rem, 100%), 1fr)); gap: var(--space-7) var(--space-6); }
-.proof .press a, .proof .press .noref { display: grid; gap: var(--space-3); align-content: start; justify-items: start; padding: 0; background: none; min-height: 0; border-radius: 0; height: auto; }
-.proof .press a:hover { background: none; }
-.proof .press a:hover img { opacity: 1; }
-.proof .press img { width: auto; max-width: 9.375rem; object-fit: contain; object-position: left bottom; filter: brightness(0) invert(1); opacity: 0.82; transition: opacity var(--dur-control); }
-.proof .press img.knock { filter: grayscale(1) brightness(0.85) contrast(1.15); opacity: 1; } /* farbige Fläche mit weißer Schrift (ZDF, ntv): Fläche grau, Schrift bleibt weiß */
-.proof .press .note { color: var(--faint); font-size: var(--text-sm); line-height: 1.4; }
-.proof .press a .note { color: var(--muted); }
-.proof .press :is(a, .noref) { min-height: 3rem; align-content: center; }
 
 /* Nachhaltigkeit: Konturschrift für „Kein Rauch.“ wie im Prototyp, auch bei der Rauch-Zahl in der Scrollstory */
 .eco-title span.o { color: transparent; -webkit-text-stroke: 1.5px var(--ink-bright); }
@@ -1168,29 +1120,12 @@ a.pack:hover, a.pack:focus-visible { border-color: color-mix(in srgb, var(--c) 7
 .promise-copy { justify-items: center; gap: 0; }
 .footer .eco img { height: 1.5rem; filter: brightness(0) invert(1); opacity: 0.75; }
 
-/* Kicker überall 14 px über der Headline (gemessen auf allen Seiten, Marc 31.10.: „viel zu weit weg“). In Grid-Containern
-   addiert sich die Lücke des Containers, in Fließtext der obere Abstand der Headline; beides wird hier ausgeglichen. */
+/* Kicker überall 14 px über der Headline (Marc 31.10.: „viel zu weit weg“). Im Fließtext entfällt dafür der obere Abstand
+   der Headline; in Köpfen steht der Kicker in der Überschrift selbst (SectionHead, Seitenkopf, Showreel-Kopf). */
 .prose > .kicker { margin-bottom: var(--space-3-5); }
 .prose > .kicker + :is(h1, h2, h3) { margin-top: 0; }
-.page-hero-copy > .kicker { margin-bottom: calc(-1 * var(--space-2)); }
-.hero-copy > .kicker { margin-bottom: calc(-1 * var(--space-2)); }
-
-/* FAQ mit Kategorien: Kopf über die volle Breite, je Kategorie eine Zeile mit mitlaufendem Kategorietitel links */
-.faq-grouped .faq-grid { grid-template-columns: 1fr; }
-.faq-grouped .faq-grid { row-gap: var(--head-gap-content); }
-.faq-grouped .faq-grid .intro { position: static; max-width: none; margin-bottom: 0; }
-.faq-grouped .faq-grid .intro > p { max-width: 52ch; }
-.faq-grouped .faq-body { gap: 0; }
-.faq-grouped .faq-group { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(var(--space-7), 5vw, var(--space-20)); align-items: start; padding: clamp(var(--space-7), 4vw, var(--space-12)) 0; border-top: 1px solid var(--line-strong); }
-.faq-grouped .faq-group-h { position: sticky; top: 6.5rem; margin: 0; padding-top: var(--space-4-5); font: 500 clamp(1.625rem, 2.6vw, 2.375rem)/1.08 var(--display); letter-spacing: -0.025em; color: var(--head); }
-.faq-grouped .faq-group-h::before { content: counter(faqgroup, decimal-leading-zero); counter-increment: faqgroup; display: block; margin-bottom: var(--space-3); font: 400 var(--text-xs)/1.5 var(--mono); letter-spacing: 0.1em; color: var(--accent); }
-.faq-grouped .faq-body { counter-reset: faqgroup; }
-.faq-grouped .faq { border-top: 0; }
-@media (--nav-collapsed) {
-  .faq-grouped .faq-group { grid-template-columns: 1fr; gap: var(--space-1-5); }
-  .faq-grouped .faq-group-h { top: 3.625rem; z-index: 2; padding: var(--space-3-5) 0 var(--space-3); background: color-mix(in srgb, var(--ground) 92%, transparent); backdrop-filter: blur(0.625rem); -webkit-backdrop-filter: blur(0.625rem); font-size: 1.5rem; }
-  .faq-grouped .faq-group-h::before { display: inline; margin: 0 var(--space-2-5) 0 0; }
-}
+/* Kicker in der h1 des Seitenkopfs: Abstand aus der Kopfrolle */
+.page-hero h1 > .kicker { margin: 0 0 var(--head-gap-kicker); }
 
 /* Leistungsvergleich (Preisseite): Spaltenköpfe mit Paketfigur und Paketfarbe wie auf den Karten, Häkchen statt Fußnote */
 #leistungen thead th.pk { text-align: left; vertical-align: bottom; }
@@ -1204,12 +1139,10 @@ a.pack:hover, a.pack:focus-visible { border-color: color-mix(in srgb, var(--c) 7
 /* Vergleich Drohne/Feuerwerk/Laser: Kriterienspalte schmaler mit Silbentrennung */
 .section.alt table th[scope="row"] { width: 26%; hyphens: auto; -webkit-hyphens: auto; }
 
-/* Reiter auf dem Handy (MobileTabs.astro): [data-mtabs] enthält die Reiter (.mtabs) als direktes Kind und die Tafeln
-   [data-mtab]. Bis 700 px: nur die gewählte Tafel; Tabellen mit Handy-Fassung (.mtab-only) ersetzen dort die Tabelle. */
-.mtabs, .mtab-only { display: none; }
+/* Reiter auf dem Handy (MobileTabs.astro, Paketkarten): [data-mtabs] enthält die Reiter (.mtabs) als direktes Kind und die
+   Tafeln [data-mtab]. Bis 700 px: nur die gewählte Tafel. */
+.mtabs { display: none; }
 @media (--mobile) {
-  .mtab-hide { display: none; }
-  .mtab-only { display: grid; gap: var(--space-4-5); }
   /* Reiter bleiben beim Scrollen unter dem Header stehen, solange ihre Tabelle im Bild ist (Marc, 02.11.2026: „bei ALLEN Tabellen
      der tab header immer sticky“). --nav-h = Höhe des eingerollten Headers. */
   .mtabs { display: grid; grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr)); gap: var(--space-1-5); padding: var(--space-1-25); margin-bottom: var(--space-4-5); border: 1px solid var(--line-strong); border-radius: var(--radius-12); position: sticky; top: calc(var(--nav-h) + 0.5rem); z-index: 6; background: var(--strip, var(--ground)); box-shadow: 0 0 0 100vmax var(--strip, var(--ground)); clip-path: inset(-0.5625rem -100vmax -0.75rem -100vmax); }
@@ -1224,14 +1157,6 @@ a.pack:hover, a.pack:focus-visible { border-color: color-mix(in srgb, var(--c) 7
   .mtabs label.us:not([style*="--c"]) input:checked + span { box-shadow: inset 0 -2px 0 var(--logo-orchid); }
   .mtabs input:focus-visible + span { outline: 2px solid var(--cyan); outline-offset: 0.125rem; }
   [data-mtabs]:has(> .mtabs label:nth-child(1) input:checked) [data-mtab]:not([data-mtab="0"]), [data-mtabs]:has(> .mtabs label:nth-child(2) input:checked) [data-mtab]:not([data-mtab="1"]), [data-mtabs]:has(> .mtabs label:nth-child(3) input:checked) [data-mtab]:not([data-mtab="2"]), [data-mtabs]:has(> .mtabs label:nth-child(4) input:checked) [data-mtab]:not([data-mtab="3"]) { display: none; }
-  /* Vergleichstafel: Kriterium, darunter Wertung und Erklärung */
-  .cmp-panel { margin: 0; }
-  .cmp-panel > div { padding: var(--space-3-5) 0; border-bottom: 1px solid var(--line); display: grid; gap: var(--space-2); }
-  .cmp-panel dt { color: var(--head); font-weight: 500; }
-  .cmp-panel dd { margin: 0; display: grid; justify-items: start; gap: var(--space-1-5); color: var(--muted); font-size: var(--text-sm); }
-  .cmp-panel .no { color: var(--faint); }
-  .cmp-panel .yes { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--text); }
-  .cmp-panel .yes svg { width: 1.125rem; height: 1.125rem; fill: none; stroke: var(--c, var(--accent)); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
   /* Paketkarten: eine Karte, volle Breite */
   .tiers-grid { grid-template-columns: 1fr; }
 }
@@ -1310,7 +1235,6 @@ a.pack { grid-template-rows: auto auto 1fr; align-items: start; row-gap: var(--s
 .pack-points li { display: grid; grid-template-columns: 0.875rem minmax(0, 1fr); gap: var(--space-2-5); align-items: baseline; }
 .pack-points li::before { content: ""; width: 0.375rem; height: 0.375rem; border-radius: var(--radius-round); background: var(--c); transform: translateY(-0.125rem); }
 .packs { align-items: stretch; }
-.faq-cta { margin-top: clamp(var(--space-10), 5vw, var(--space-18)); width: 100%; }
 
 /* Icon-Raster (Marc, 01./02.11.2026): offenes Raster ohne Kartenfläche, feine Linien nur ZWISCHEN den Zellen. Jede Zelle:
    großes Icon in Orange, echte Überschrift, Text. Genutzt von den Extras (auswählbar, pricing/Extras.astro) und „Immer
@@ -1331,8 +1255,8 @@ a.pack { grid-template-rows: auto auto 1fr; align-items: start; row-gap: var(--s
    (Basismaß --ig-w0/--ig-h0); animiert werden nur transform und opacity. Der transparente Rand ist der Abstand zur Zellkante. */
 .ig { position: relative; --ig-gap: var(--space-1-5);
   --ig-mark: radial-gradient(85% 75% at 0% 0%, rgb(var(--rgb-logo-amber) / 0.06), transparent 70%), var(--fill-quiet);
-  --ig-mark-edge: inset 0 1px 0 rgb(var(--rgb-logo-amber) / 0.08), inset 0 0 0 1px var(--line-soft); }
-.ig::before { content: ""; position: absolute; top: 0; left: 0; width: var(--ig-w0, 0px); height: var(--ig-h0, 0px); box-sizing: border-box; border: var(--ig-gap) solid transparent; border-radius: calc(var(--radius-12) + var(--ig-gap)); background: var(--ig-mark); background-clip: padding-box; box-shadow: var(--ig-mark-edge); transform-origin: 0 0; transform: translate(var(--ig-x, 0px), var(--ig-y, 0px)) scale(var(--ig-sx, 1), var(--ig-sy, 1)); opacity: 0; pointer-events: none; transition: transform var(--dur-glide) var(--ease-glide), opacity var(--dur-standard) var(--ease-default); }
+  --ig-mark-shadow: inset 0 1px 0 rgb(var(--rgb-logo-amber) / 0.08), inset 0 0 0 1px var(--line-soft); }
+.ig::before { content: ""; position: absolute; top: 0; left: 0; width: var(--ig-w0, 0); height: var(--ig-h0, 0); box-sizing: border-box; border: var(--ig-gap) solid transparent; border-radius: calc(var(--radius-12) + var(--ig-gap)); background: var(--ig-mark); background-clip: padding-box; box-shadow: var(--ig-mark-shadow); transform-origin: 0 0; transform: translate(var(--ig-x, 0), var(--ig-y, 0)) scale(var(--ig-sx, 1), var(--ig-sy, 1)); opacity: 0; pointer-events: none; transition: transform var(--dur-glide) var(--ease-glide), opacity var(--dur-standard) var(--ease-default); }
 .ig.ig-on::before { opacity: 1; }
 .ig.ig-snap::before { transition: opacity var(--dur-standard) var(--ease-default); }
 @media (prefers-reduced-motion: reduce) { .ig::before { transition: opacity var(--dur-standard) var(--ease-default); } }

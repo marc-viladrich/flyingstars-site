@@ -1,6 +1,6 @@
 title: FlyingStars in de pers (ZDF, WDR, ntv en meer)
 navLabel: Pers
-description: "Misschien kennen jullie ons hiervan: we praten vaak over duurzaamheid & innovatie van droneshows ☎︎ +49 209 88306562"
+description: "Misschien kennen jullie ons hiervan: we praten vaak over duurzaamheid & innovatie van droneshows ☎︎ {{contact.phone.international}}"
 sections:
   - type: press
     id: presse
@@ -23,16 +23,16 @@ sections:
     _key: k_499edb9f3b385f242d3a
 noindex: false
 translationContractVersion: 2
-translationSourceHash: 58e68cfab3e6708c8260cf6f0a204b1fa42bd89ae96261a7ac5f747ac0775a07
+translationSourceHash: b026dfbb7e900112ac8a48817e8d0719bc6a28c8b2edc83b3940cc0d98c76e9b
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 58e68cfab3e6708c8260cf6f0a204b1fa42bd89ae96261a7ac5f747ac0775a07
+  sourceFingerprint: b026dfbb7e900112ac8a48817e8d0719bc6a28c8b2edc83b3940cc0d98c76e9b
   fields:
     - address: /description
-      sourceFingerprint: 9db84d02117307e82f6133f92be2e980ef640161f37fa8cda272e9752f41ed93
-      targetFingerprint: c83c44f23396b06ec921eb3f24eae31ff46cd04d611befacd2ddd5830a10dbdb
+      sourceFingerprint: 90e12f7a0d23ff25b500e7e6379374e0a725b546a254269f7cf37d55e043099b
+      targetFingerprint: ed533774bd6a56f148181d1b53dbc50d78b84c2e884f844c5583c4ae820fdaed
       status: adopted-existing
     - address: /navLabel
       sourceFingerprint: 6d684ed527162288c2a58442a0491b93bf72c507f18514280978410a72966eca

@@ -3,7 +3,7 @@
 # Vertrag mit dem Himmel-Agenten (kundinnen, anlaesse, warum-drohnen, projekte, darum, sicherheit, nachhaltigkeit, ablauf,
 # preise, ueber, anfrage, faq). Zahlen nach Moritz (seit 2021, 150+ Shows, ab 7.900 €), nicht aus business-facts.json.
 title: Drohnenshow buchen vom Anbieter mit 150+ Shows
-description: "Für Firmen, Städte & privat in DACH & weltweit ✓ u.a. VW, NFL & Umwelthilfe ✓ Ab 7900 € ☎︎ +49 209 88306562"
+description: "Für Firmen, Städte & privat in DACH & weltweit ✓ u.a. VW, NFL & Umwelthilfe ✓ Ab 7900 € ☎︎ {{contact.phone.international}}"
 image: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
 sections:
   - type: showreelHero
@@ -12,7 +12,7 @@ sections:
     headline: Gestaltet *euer* Stück Himmel
     text: Mit der Erfahrung aus über 150 Drohnenshows in Deutschland und weltweit malen wir eure Geschichte für alle sichtbar ans Firmament.
     cta: { label: Show anfragen, href: "#anfrage" }
-    secondary: { label: "☎︎ +49 209 88306562", href: "tel:+4920988306562" }
+    secondary: { label: "☎︎ {{contact.phone.international}}", href: "{{contact.phone.href}}" }
     poster:
       src: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
       alt: Drohnenformation über der Skyline von Düsseldorf mit Rheinturm
@@ -120,7 +120,7 @@ sections:
         title: Holt den Himmel rein
         text: Wir hüllen eure Halle für ein paar Minuten in pure Magie. Für Messen, überdachte Konzerte oder ganz besondere Jubiläen.
         image: { src: "https://flyingstars.art/wp-content/uploads/2025/04/drohnenshow-indoor-2.jpg", alt: Leuchtende Drohnen in Formation vor der Bühne eines voll besetzten Saals, width: 1200, height: 764 }
-        facts: [ {"_key":"k_25df9662ccdb280b6523","value":"Die Alternative zur Lichtshow"}, {"_key":"k_ac44ab461441e0d3a01e","value":"Wir erfüllen strenge Sicherheitsauflagen"}, {"_key":"k_4b852be218db38f099c0","value":"Schon ab 3 Metern Deckenhöhe"} ]
+        facts: [ {"_key":"k_25df9662ccdb280b6523","value":"Die Alternative zur Lichtshow"}, {"_key":"k_ac44ab461441e0d3a01e","value":"Wir erfüllen strenge Sicherheitsauflagen"}, {"_key":"k_4b852be218db38f099c0","value":"Schon ab {{offer.indoor.ceilingMin}} Metern Deckenhöhe"} ]
         cta: { label: Indoor-Drohnenshows, href: /drohnenshow-indoor/ }
         _key: k_b52ddd7e74db16f54f73
     _key: k_a953dd6748c619e1514d
@@ -226,8 +226,8 @@ sections:
     _key: k_001c02ae39915e989410
 
   # Ablauf in Zahlen wie im Prototyp (Netzplan-Zeitstrahl): Moritz' drei Schritte als Stationen, die Zahlen aus seinen
-  # Texten (48 Stunden, ein bis zwei Wochen aus „Schnell“, dreieinhalb Stunden), am Ende die Showdauer (bis zu 25 Minuten,
-  # Moritz), danach der Applaus: das Label sagt beides (Marc, 17.11.2026: „25 Min Applaus“ war missverständlich).
+  # Texten (48 Stunden, ein bis zwei Wochen aus „Schnell“, dreieinhalb Stunden), am Ende die Showdauer (Höchstdauer aus
+  # show-duration.json), danach der Applaus: das Label sagt beides (Marc, 17.11.2026: Dauer plus „Applaus“ war missverständlich).
   - type: tempo
     id: ablauf
     kicker: Ablauf
@@ -235,8 +235,8 @@ sections:
     marks:
       - { value: 48 h, label: "#1 Anfrage", text: "Sagt uns Datum, Ort und Anlass. In spätestens 48 Stunden geben wir euch eine Einschätzung. Nach dem Erstgespräch erhaltet ihr das Angebot, eine Begehung ist selten notwendig.", "_key": "k_07593dae179ab85954fb" }
       - { value: 1–2 Wochen, label: "#2 Planung", text: "Gemeinsam entwickeln wir Storyline, Motive und Musik. Ihr seid so viel eingebunden, wie ihr möchtet. Mit Zustimmung der Grundstückseigentümer:innen holen wir alle Genehmigungen ein.", "_key": "k_8712fd69e4210fc7f3f1" }
-      - { value: "3,5 h", label: "#3 Showtag", text: "Wir organisieren Sicherheit, Aufbau und Abbau ab rund dreieinhalb Stunden vor der Show. Das Spektakel dauert bis zu 25 Minuten. Ihr genießt mit euren Gästen.", "_key": "k_002bb2a1e4204dd1d7d4" }
-      - { value: bis 25 Min, label: "Show, dann Applaus", "_key": "k_3c30dd0af9bfae6075dc" }
+      - { value: "3,5 h", label: "#3 Showtag", text: "Wir organisieren Sicherheit, Aufbau und Abbau ab rund dreieinhalb Stunden vor der Show. Das Spektakel dauert bis zu {{duration.outdoor.max}} Minuten. Ihr genießt mit euren Gästen.", "_key": "k_002bb2a1e4204dd1d7d4" }
+      - { value: "bis {{duration.outdoor.max}} Min", label: "Show, dann Applaus", "_key": "k_3c30dd0af9bfae6075dc" }
     # Zahlenreihe darunter wie auf main („Ablauf in Zahlen“), nur mit Moritz' Zahlen (Referenzen, „Warum Drohnen“)
     facts:
       - { value: 150+ Shows, label: Erfahrung, text: "Seit 2021, jährlich über 30", "_key": "k_b579ad8ba169056a0009" }

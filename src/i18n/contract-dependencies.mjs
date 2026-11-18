@@ -42,6 +42,9 @@ export function tokenDependency(token, dependencies, locale) {
       const ui = own(dependencies, 'ui');
       meaning = {renderer: 'priceLine-v1', price: priceMeaning,
         copy: Object.fromEntries(['price.from', 'price.fromApprox', 'price.fromApproxGuide'].map(key => [key, own(ui, key)]))};
+    } else if (parts.length === 2 && parts[1] === 'priceAmount') {
+      // Only the formatted amount, no UI copy: the amount stays parametric, the currency is a review dependency.
+      meaning = {renderer: 'money-v1', currency: own(own(source[parts[0]], 'price'), 'currency')};
     } else if (parts.join('.') === 'indoor.ceilingWords') {
       const ceilingMin = source.indoor.ceilingMin;
       // Match offerTextCore: only integer values 0–12 read a number word.
@@ -58,7 +61,12 @@ export function tokenDependency(token, dependencies, locale) {
 export function referenceDependency(reference, value, dependencies) {
   const source = own(dependencies, reference.collection);
   const id = reference.encoding === 'astro-reference' ? value?.id : value;
-  return {owner: reference.collection, id, meaning: own(source, id)};
+  const record = own(source, id);
+  // AFE sends date fields as YYYY-MM-DD. File reads produce a Date from the same project schema.
+  const meaning = reference.collection === 'projects' && typeof record.data.date === 'string'
+    ? {...record, data: {...record.data, date: new Date(record.data.date)}}
+    : record;
+  return {owner: reference.collection, id, meaning};
 }
 
 export function structuredFactDependency(value, dependencies, locale) {

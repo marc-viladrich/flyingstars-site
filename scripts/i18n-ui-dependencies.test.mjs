@@ -18,22 +18,28 @@ test('an unused UI key leaves every content and field fingerprint unchanged', ()
   });
 });
 
-for (const key of [`quantity.number${dependencies.showExtras.indoor.ceilingMin}`, 'price.from']) {
-  test(`used UI key ${key} invalidates exactly its dependent content`, () => {
-    const deps = structuredClone(dependencies);
-    deps.ui[key].en += ' changed';
-    let affected = 0;
-    pairs.forEach((pair, i) => {
-      const baseline = baselines[i];
-      const usesKey = baseline.fields.some(field => field.dependencies.some(dep =>
-        dep.token?.startsWith('offer.') &&
-        (key.startsWith('quantity.') ? dep.token === 'offer.indoor.ceilingWords' : /\.(price|priceSuffix|priceLine|priceGuide)$/.test(dep.token))));
-      assert.equal(run(pair, deps).sourceFingerprint !== baseline.sourceFingerprint, usesKey, pair.id);
-      if (usesKey) affected++;
-    });
-    assert.ok(affected > 0, 'must exercise real token-bearing content');
+test('Editing a used price label invalidates exactly the dependent content', () => {
+  const deps = structuredClone(dependencies);
+  deps.ui['price.from'].en += ' changed';
+  let affected = 0;
+  pairs.forEach((pair, i) => {
+    const baseline = baselines[i];
+    const usesPrice = baseline.fields.some(field => field.dependencies.some(dep =>
+      dep.token?.startsWith('offer.') && /\.(price|priceSuffix|priceLine|priceGuide)$/.test(dep.token)));
+    assert.equal(run(pair, deps).sourceFingerprint !== baseline.sourceFingerprint, usesPrice, pair.id);
+    if (usesPrice) affected++;
   });
-}
+  assert.ok(affected > 0, 'must exercise real token-bearing content');
+});
+
+test('The numeric indoor ceiling is independent of number-word UI copy', () => {
+  const key = `quantity.number${dependencies.showExtras.indoor.ceilingMin}`;
+  const deps = structuredClone(dependencies);
+  deps.ui[key].en += ' changed';
+  assert.ok(baselines.some(result => result.fields.some(field =>
+    field.dependencies.some(dep => dep.token === 'offer.indoor.ceilingMin'))));
+  pairs.forEach((pair, i) => assert.equal(run(pair, deps).sourceFingerprint, baselines[i].sourceFingerprint, pair.id));
+});
 
 test('ceilingWords follows the renderer number-word range and ignores other number words', () => {
   const token = 'offer.indoor.ceilingWords';

@@ -6,6 +6,8 @@ const contractSite=await createSite(process.cwd());
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
+import {execFileSync} from 'node:child_process';
+import {parse} from 'yaml';
 import messages from '../src/i18n/ui.json' with { type: 'json' };
 import { createTranslator } from '../src/i18n/ui.mjs';
 import { LOCALES, localizedHref, localeFromPath, localeOfId, sourceId, entryPath } from '../src/i18n/routing.mjs';
@@ -89,7 +91,7 @@ test('Localized configurators and pricing preserve every motif, package, price a
   }
 });
 
-test('Contact endpoint returns localized errors and locale-safe no-JS redirects', async () => {
+test('Contact endpoint returns localized errors and locale-safe no-JS responses', async () => {
   const make = (locale, email, accept) => {
     const body = new FormData();
     for (const [key, value] of Object.entries({ locale, name: 'Test', email, anlass: 'firma', paket: 'HORIZON', ort: 'Osnabrück' })) body.set(key, value);
@@ -99,13 +101,18 @@ test('Contact endpoint returns localized errors and locale-safe no-JS redirects'
     const invalid = await onRequestPost({ request: make(locale, 'invalid', 'application/json'), env: {} });
     assert.equal(invalid.status, 400);
     assert.equal((await invalid.json()).detail, createTranslator(locale)('contactAPI.email'));
-    const redirect = await onRequestPost({ request: make(locale, 'test@example.test', 'text/html'), env: {} });
-    assert.equal(redirect.status, 303);
-    assert.equal(new URL(redirect.headers.get('location')).pathname, `/${locale}/danke/`);
-    assert.equal(new URL(redirect.headers.get('location')).searchParams.get('state'), 'not-configured');
+    // Ohne JavaScript und ohne Versandkonfiguration: keine Danke-Weiterleitung, sondern eine lokalisierte Seite.
+    const native = await onRequestPost({ request: make(locale, 'test@example.test', 'text/html'), env: {} });
+    assert.equal(native.status, 503);
+    assert.equal(native.headers.get('location'), null);
+    const html = await native.text();
+    assert.ok(html.startsWith(`<!doctype html><html lang="${locale}">`));
+    assert.ok(html.includes(`<h1>${createTranslator(locale)('contact.yourEnquiryCouldNotBeSent')}</h1>`));
   }
   const untrusted = await onRequestPost({ request: make('//external.test', 'test@example.test', 'text/html'), env: {} });
-  assert.equal(new URL(untrusted.headers.get('location')).pathname, '/danke/');
+  const fallback = await untrusted.text();
+  assert.ok(fallback.startsWith('<!doctype html><html lang="de">'));
+  assert.ok(!fallback.includes('external.test'));
 });
 
 // Content schemas validate every language; visible defaults belong to locale-aware renderers.
@@ -125,24 +132,36 @@ test('Round 13: localized offen inquiries keep the hardened endpoint contract', 
     const invalid = new URLSearchParams(form); invalid.set('paket', 'untrusted');
     const rejected = await onRequestPost({ request: new Request('https://example.test/api/contact', { method: 'POST', body: invalid }), env: {} });
     assert.equal(rejected.status, 400);
-    assert.equal((await rejected.json()).detail, createTranslator(locale)('contactAPI.package'));
+    // Ohne Accept: JSON (natives Formular) dieselbe Meldung als lesbare Seite
+    assert.ok((await rejected.text()).includes(createTranslator(locale)('contactAPI.package')));
   }
 });
 
-test('Translation provenance keeps structured, traceable records for R13 drafts', () => {
+test('Round-13 translation provenance resolves against its original content and UI revision', () => {
+  // First revision recording round-13 field paths. Numeric section indices are historical.
+  const revision = 'f8c2bad684cc964d158749d4e927c90ca0b78265';
+  const historical = file => execFileSync('git', ['show', `${revision}:${file}`], {encoding: 'utf8'});
+  const sourceFiles = new Map();
+  const ui = JSON.parse(historical('src/i18n/ui.json'));
   for (const kind of ['content', 'ui']) {
-    const records = JSON.parse(readFileSync(new URL(`../docs/i18n/${kind}-provenance.json`, import.meta.url), 'utf8'));
+    const records = JSON.parse(historical(`docs/i18n/${kind}-provenance.json`));
     assert.ok(records.some(record => record?.revision === 'round-13'));
     for (const record of records) {
       assert.ok(record && typeof record === 'object', `${kind}: invalid provenance record`);
       assert.ok(['en', 'nl'].includes(record.locale));
       assert.ok(['editor-carried', 'editor-revised', 'machine-new'].includes(record.origin));
-      if (kind === 'content') {
-        assert.ok(Array.isArray(record.path));
-        const source = readEntry(record.source);
-        const entry = { ...source.data, ...(source.body !== undefined ? { body: source.body } : {}) };
-        const historical=record.path.reduce((value, key) => value?.[key], entry);assert.equal(typeof (historical?.value ?? historical), 'string', `${record.source}: ${record.path}`);
-      } else assert.ok(messages[record.key]);
+      if (kind === 'ui') {
+        assert.ok(ui[record.key], record.key);
+        continue;
+      }
+      assert.ok(Array.isArray(record.path));
+      if (!sourceFiles.has(record.source)) {
+        const raw = historical(record.source);
+        const markdown = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/.exec(raw);
+        sourceFiles.set(record.source, {...parse(markdown ? markdown[1] : raw), ...(markdown && {body: markdown[2]})});
+      }
+      const value = record.path.reduce((entry, key) => entry?.[key], sourceFiles.get(record.source));
+      assert.equal(typeof (value?.value ?? value), 'string', `${record.source}: ${record.path}`);
     }
   }
 });

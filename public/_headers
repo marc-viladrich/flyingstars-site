@@ -31,31 +31,11 @@ https://flyingstars-site.pages.dev/*
   Content-Length: 36220
   Cache-Control: public, max-age=31536000, immutable
 
-# Versioned review media; historical files use native MIME and length.
+# Freigegebene Hero-Renditions (src/data/hero-video.json), versioniert und unveränderlich.
 /media/video-lab/*
   Cache-Control: public, max-age=31536000, immutable, no-transform
 
-# Explicit metadata for the current hero and comparison encodes only.
-/media/video-lab/loop16-reference-v9.mp4
-  Content-Type: video/mp4
-  Content-Length: 14302038
-
-/media/video-lab/loop16-h264-1918-v9.mp4
-  Content-Type: video/mp4
-  Content-Length: 4318027
-
-/media/video-lab/loop16-av1-1918-v9.mp4
-  Content-Type: video/mp4
-  Content-Length: 2387351
-
-/media/video-lab/loop16-h264-1600-v9.mp4
-  Content-Type: video/mp4
-  Content-Length: 3364178
-
-/media/video-lab/loop16-av1-1600-v9.mp4
-  Content-Type: video/mp4
-  Content-Length: 2138539
-
+# Explizite Länge und MIME je Rendition (WebKit braucht bekannte Response-Längen).
 /media/video-lab/loop16-h264-1440-v9.mp4
   Content-Type: video/mp4
   Content-Length: 2842185
@@ -88,6 +68,3 @@ https://flyingstars-site.pages.dev/*
   Content-Type: video/mp4
   Content-Length: 736685
 
-/media/video-lab/loop16-h264-1440-v8.mp4
-  Content-Type: video/mp4
-  Content-Length: 2917485

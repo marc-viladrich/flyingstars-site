@@ -1,0 +1,15 @@
+---
+// Einzelbild mit Leuchtpunkt-Unterlage (Runde 6, Marc: die Punkte „would work very well as an underlay, both for individual
+// images and for the collage images“): EIN Rahmen für Seitenkopf (Hero) und Text mit Bild (TextMedia). Die Aufrufer
+// unterscheiden sich nur in Bildmaß (sizes), Ladepriorität und ihrer Layoutklasse, nicht im Aufbau. Die Collage (Gallery)
+// legt ihre Unterlage selbst um alle Kacheln.
+import Picture from './Picture.astro';
+import DotField from './DotField.astro';
+interface Props { image: { src: string; alt: string; width: number; height: number }; class?: string; loading?: 'lazy' | 'eager'; sizes?: string }
+const { image, class: cls, loading, sizes } = Astro.props;
+---
+<div class:list={['image-frame', 'df-host', cls]}><DotField /><figure data-curtain><Picture {...image} loading={loading} sizes={sizes} /></figure></div>
+<style>
+  figure { margin: 0; border-radius: var(--radius); overflow: hidden; --curtain-r: var(--radius); background: var(--media-ground); }
+  figure :global(img) { width: 100%; height: auto; }
+</style>

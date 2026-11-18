@@ -3,22 +3,12 @@
 import './test/register-browser-site.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { promises as fs } from 'node:fs';
-import path from 'node:path';
-import os from 'node:os';
-import { fileURLToPath } from 'node:url';
-import { createFlyingStarsAdapter } from './flyingstars-adapter.mjs';
-import { resolveRuntimeOptions } from './server.mjs';
-import { NativeStore, git } from 'astro-frontend-editor/runtime';
 import { itemSummary } from 'astro-frontend-editor/web/view-state.mjs';
-const root = path.dirname(fileURLToPath(import.meta.url));
+import { i18nFixture } from './i18n-test-fixture.mjs';
+
 test('every image list item in every collection has a name and a thumbnail', async (t) => {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'flyingstars-summary-'));
-  t.after(() => fs.rm(dir, { recursive: true, force: true }));
-  await git(root, ['clone', '--quiet', '--no-hardlinks', path.join(root, '..'), dir]);
-  await git(dir, ['checkout', '-B', 'content/draft']);
-  await fs.symlink(await fs.realpath(path.join(root, '../node_modules')), path.join(dir, 'node_modules'));
-  const store = await new NativeStore(dir, { remote: false, site: await createFlyingStarsAdapter(dir), runtime: resolveRuntimeOptions({ values: { siteRoot: dir } }) }).init();
+  const {store}=await i18nFixture(t);
+  t.after(()=>store.sync.close());
   const { records } = await store.state();
   const lists = [];
   const walk = (id, value, at) => {

@@ -7,7 +7,8 @@ import { processEntries } from '../lib/lists';
 interface Item { title?: string; text?: string; duration?: string; when?: string; value?: string | import('../content/business-facts.mjs').BusinessRef; label?: string; gate?: boolean }
 interface Props { items: Item[]; variant: 'steps' | 'milestones' | 'flow' | 'metro'; level?: 'h2' | 'h3'; class?: string }
 const { items, variant, level: T = 'h3', class: extra } = Astro.props;
-const entries = processEntries(items);
+// Texte und Werte dürfen freigegebene Faktenplatzhalter tragen (Dauer, Angebot, Kontakt): eine Projektion für alle Varianten
+const entries = processEntries(items.map((item) => ({ ...item, text: factText(item.text, locale) })));
 const cls = { steps: 'steps', milestones: 'ms', flow: 'lf-steps', metro: 'ruler' }[variant];
 ---
 <ol class:list={['process-list', cls, extra]} data-tl={variant === 'milestones' ? '' : undefined} data-reveal-group={['flow', 'metro'].includes(variant) ? '' : undefined} style={`--n:${items.length}`}>

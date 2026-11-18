@@ -7,7 +7,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import {heroVideoSources} from '../lib/hero-video-sources.ts';
-import videos from '../data/video-lab.json' with { type:'json' };
+import videos from '../data/hero-video.json' with { type:'json' };
+import catalog from '../../archive/video-lab/catalog.json' with { type:'json' };
 import messages from '../i18n/ui.json' with { type:'json' };
 import { messagesForLocale } from '../i18n/ui.mjs';
 const root=new URL('../../',import.meta.url);
@@ -22,7 +23,21 @@ test('Each browser dictionary is an exact single-language projection of the cano
 test('Review labels, hashes and current explicit response lengths refer to real video bytes',()=>{
  const headers=fs.readFileSync(new URL('public/_headers',root),'utf8');
  const activeEdit=heroVideoSources().mobile.fallback.edit;
- for(const video of videos){const bytes=fs.readFileSync(new URL(`public${video.src}`,root));assert.equal(bytes.length,video.bytes,video.id);assert.equal(createHash('sha256').update(bytes).digest('hex'),video.sha256,video.id);if(video.edit===activeEdit)assert.ok(headers.includes(`${video.src}\n  Content-Type: ${video.codec==='vp9'?'video/webm':'video/mp4'}\n  Content-Length: ${bytes.length}`),video.id);}
+ for(const video of videos){const bytes=fs.readFileSync(new URL(`public${video.src}`,root));assert.equal(video.edit,activeEdit,video.id);assert.equal(bytes.length,video.bytes,video.id);assert.equal(createHash('sha256').update(bytes).digest('hex'),video.sha256,video.id);assert.ok(headers.includes(`${video.src}\n  Content-Type: video/mp4\n  Content-Length: ${bytes.length}`),video.id);}
+});
+
+// Audit W2 (18.11.2026): Der Build kopierte alle 116 Labor-Encodes (352 MB) nach dist/. Öffentlich liegen nur die
+// freigegebenen Hero-Renditions aus hero-video.json; der Laborkatalog und seine Dateien liegen in archive/video-lab/.
+test('Public video folder holds exactly the approved hero renditions; lab encodes stay in the archive with their hashes',()=>{
+ const published=fs.readdirSync(new URL('public/media/video-lab/',root)).sort();
+ assert.deepEqual(published,videos.map(v=>path.basename(v.src)).sort());
+ const headers=fs.readFileSync(new URL('public/_headers',root),'utf8');
+ for(const [,src] of headers.matchAll(/^(\/media\/video-lab\/[^\s*]+)$/gm))assert.ok(videos.some(v=>v.src===src),`_headers nennt nicht veröffentlichtes Video ${src}`);
+ for(const video of videos)assert.deepEqual(catalog.find(c=>c.id===video.id),video,video.id);
+ for(const entry of catalog.filter(c=>!videos.some(v=>v.id===c.id))){
+  const bytes=fs.readFileSync(new URL(`archive/video-lab/files/${path.basename(entry.src)}`,root));
+  assert.equal(bytes.length,entry.bytes,entry.id);assert.equal(createHash('sha256').update(bytes).digest('hex'),entry.sha256,entry.id);
+ }
 });
 
 test('Node consumers with DOM mocks keep canonical dictionaries and geometry instead of browser endpoints',()=>{

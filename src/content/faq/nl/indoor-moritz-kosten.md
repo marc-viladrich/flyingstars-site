@@ -5,16 +5,16 @@ tags:
 order: 4
 draft: false
 translationContractVersion: 2
-translationSourceHash: b3817aa62b8db290f10b4b30b08eddd3d1141dc36994bd86572ee33f404a50fc
+translationSourceHash: 63b7b9993f7b4ca4a8ac97dc204d791ad5c53fb03fe07a64e4e07565b82db927
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: b3817aa62b8db290f10b4b30b08eddd3d1141dc36994bd86572ee33f404a50fc
+  sourceFingerprint: 63b7b9993f7b4ca4a8ac97dc204d791ad5c53fb03fe07a64e4e07565b82db927
   fields:
     - address: /body
-      sourceFingerprint: f8ee201ff4558b6232380023072f46e4464e14da134809c89c61a6e6b043c275
-      targetFingerprint: 725f25765d71a9da173a4292c6ba1aef0166455a4e6c89afa41e91b05089f709
+      sourceFingerprint: 95c1fcc74f65f030b32dd42452608d16708a2b21d8c428ae27a73d034a705608
+      targetFingerprint: 84ea85b1bae5a50b91f3043aed6dff9d3ffabaa8f06dc6cf1233144686ad003a
       status: adopted-existing
     - address: /question
       sourceFingerprint: e5c533ebfccb6a58f227417481c15d48e6de1ee408242e9c427f166043e30d1e
@@ -22,4 +22,4 @@ translationEvidence:
       status: adopted-existing
 ---
 
-Onze indoor-droneshows beginnen bij € 15.000 (excl. btw) plus reiskosten. Met meer drones en extra opties maken jullie het spektakel persoonlijk.
+Onze indoor-droneshows beginnen bij {{offer.indoor.priceAmount}} (excl. btw) plus reiskosten. Met meer drones en extra opties maken jullie het spektakel persoonlijk.

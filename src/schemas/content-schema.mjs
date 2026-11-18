@@ -60,7 +60,7 @@ const qualityItem = z.object({
   secondary: fieldPolicy(z.boolean().default(false).describe('Nachrangig: klein als Textzeile unter den Logos (Marc 31.10.: TÜV-Gutachten, Haftpflicht)'), 'shared'),
 });
 
-// Vergleichstabelle (ComparisonTable.astro): als eigener Abschnitt (comparison) oder eingebettet unter dem Kopf einer
+// Vergleichstabelle (ComparisonMatrix.astro): als eigener Abschnitt (comparison) oder eingebettet unter dem Kopf einer
 // Scrollstory (sustainability.comparison, Nachhaltigkeit „Die Alternative zum Feuerwerk“). Eine Definition für beide.
 const comparisonTableFields = {
   rowHeader: fieldPolicy(z.string().optional().describe('Beschriftung der ersten Spalte'), 'translatable'),
@@ -294,7 +294,7 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     note: fieldPolicy(z.string().optional().describe('Kleingedrucktes unter den Karten'), 'translatable'),
     cta: link.optional(),
     compact: fieldPolicy(z.boolean().default(false).describe('Kurzfassung (Startseite): Name, Preis, Drohnen, eine Zeile'), 'shared'),
-    items: z.array(packageItem).default(PACKAGE_NAMES.map(name=>({name,highlight:false}))),
+    items: z.array(packageItem).default(PACKAGE_NAMES.map(name=>({_key:`package-${name.toLowerCase()}`,name,highlight:false}))),
   }),
   z.object({
     // Konfigurator-Teaser (Startseite): Anlass-Chips und Drohnen-Regler, Übergabe an den Konfigurator auf der Preisseite.

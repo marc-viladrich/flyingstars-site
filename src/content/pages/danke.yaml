@@ -1,6 +1,6 @@
 # Danke-Seite nach Moritz' Webtext (18.11.2026, „Danke-Seite“), Ansprache „ihr“. Nach dem Absenden der Anfrage leitet
 # das Formular hierher weiter. Die Frage nach der Quelle ist freiwillig und geht als zweite kleine Meldung über
-# /api/contact (src/content/inquiry-source.mjs). Ohne eingerichteten Versand zeigt die Seite das ehrlich an.
+# /api/contact (src/content/inquiry-source.mjs). Erreichbar nur nach bestätigtem Versand (functions/api/contact.ts).
 title: Danke für eure Anfrage
 description: "Danke für eure Anfrage bei FlyingStars. Wir melden uns innerhalb von maximal 48 Stunden bei euch zurück."
 noindex: true

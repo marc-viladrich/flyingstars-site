@@ -5,14 +5,14 @@
 import DotField from '../DotField.astro';
 import ShowPhoto from '../gallery/ShowPhoto.astro';
 import Formation from './Formation.astro';
-import { PARTNER_VISUALS, splitSince } from './partners.mjs';
+import { partnerVisual, splitSince } from './partners.mjs';
 interface Entry { kicker: string; title: string; text?: string }
 interface Props { entries: Entry[]; facts: { value: unknown; label: string }[]; level: 'h2' | 'h3' }
 const { entries, facts, level: T } = Astro.props;
 ---
 <ol class="eng-stages">
   {entries.map((e, i) => {
-    const v = PARTNER_VISUALS[e.title.toUpperCase()] ?? {};
+    const v = partnerVisual(e.title);
     const since = splitSince(facts[i]?.value);
     return <li class="eng-stage">
       {since && <p class="eng-year" aria-hidden="true"><span class="mono">{since.prefix}</span><span class="eng-num">{since.year}</span></p>}

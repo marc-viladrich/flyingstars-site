@@ -16,7 +16,15 @@ test('Repeated section types with reorder plus text change retain keyed target a
  const d=draft(),source=d.get('page/index'),sections=structuredClone(source.data.sections),chosen=sections[0];sections.splice(0,1);sections.push(chosen);chosen.headline+=' Neu';d.set('page/index',['sections'],sections);const p=localeProposals(d);for(const item of p){assert.equal(item.data.sections.at(-1)._key,chosen._key);assert.equal(item.data.sections.at(-1).headline,record(item.id).data.sections[0].headline);assert.ok(item.needed.includes('/sections/@'+chosen._key+'/headline'));}
 });
 test('Source-only internal notes and structural IDs never request text review',()=>{const d=draft();d.set('page/index',['sections',0,'todo'],'Interne Notiz');assert.ok(localeProposals(d).every(p=>p.needed.length===0));});
-test('List insertion/duplication renews identities recursively through the real site hook',()=>{const d=draft(),p=['sections',0,'words'],list=structuredClone(d.get('page/index').data.sections[0].words),key=list[0]._key;list.push(structuredClone(list[0]));assert.equal(keyedListChange('page/index',p,list,{draft:d}),true);assert.equal(d.get('page/index').data.sections[0].words[0]._key,key);assert.notEqual(d.get('page/index').data.sections[0].words.at(-1)._key,key);});
+test('List duplication preserves an existing key and renews the duplicate',()=>{
+ const d=draft(),p=['sections',0,'stats'],list=structuredClone(d.get('page/index').data.sections[0].stats);
+ const keys=list.map(item=>item._key);
+ list.push(structuredClone(list[0]));
+ assert.equal(keyedListChange('page/index',p,list,{draft:d}),true);
+ const next=d.get('page/index').data.sections[0].stats.map(item=>item._key);
+ assert.deepEqual(next.slice(0,-1),keys);
+ assert.equal(new Set(next).size,keys.length+1);
+});
 test('EN/NL shared controls are derived from field policy including nested media',()=>{const source=record('page/en/index'),paths=sharedPaths(source.schema,source.data).map(p=>p.join('.'));assert.ok(paths.includes('sections.0.cta.href'));assert.ok(paths.includes('sections.0.poster.src'));assert.ok(!paths.includes('sections.0.headline'));assert.ok(!paths.includes('sections.0.poster.alt'));});
 
 test('Enabling an optional object renews keys in every newly created descendant list',()=>{

@@ -4,16 +4,16 @@ tags: [faq-drohnenshows]
 order: 5
 draft: false
 translationContractVersion: 2
-translationSourceHash: fd5d8689853effb404e17c43bb0441a91307fd8c848036cda5c0b13692583c37
+translationSourceHash: 077f6eb1298bfb93434c0a889c637a0f806798762f751f6044aed908a416164e
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: fd5d8689853effb404e17c43bb0441a91307fd8c848036cda5c0b13692583c37
+  sourceFingerprint: 077f6eb1298bfb93434c0a889c637a0f806798762f751f6044aed908a416164e
   fields:
     - address: /body
-      sourceFingerprint: bbceff6e291808251bc148f78be4ad779b3a016991eb20ab5606870b6fe85876
-      targetFingerprint: eb2ab67b3f90e2b9a447c783fdd93a3c57a306babd3b8f485ae1969a3587b4b8
+      sourceFingerprint: 8a8d82cd1aa6f3b444557b60910d7e8da9ef18da1a22529bbefc40ef8fc1b41e
+      targetFingerprint: 650853f7efa97ac6c2c732efd7164e0a05cc73234dd17bd7365f1661d3895508
       status: adopted-existing
     - address: /question
       sourceFingerprint: 5f34823be35749cb92205c4c7f3e77da31c6ea573a68d6e2cefe8ab6ef8c3694
@@ -21,4 +21,4 @@ translationEvidence:
       status: adopted-existing
 ---
 
-An outdoor drone show lasts up to 25 minutes. On average the flight takes around 13 minutes. Indoors, five to eight minutes are possible.
+An outdoor drone show lasts up to {{duration.outdoor.max}} minutes. On average the flight takes around {{duration.outdoor.typical}} minutes. Indoors, {{duration.indoor.min}} to {{duration.indoor.max}} minutes are possible.

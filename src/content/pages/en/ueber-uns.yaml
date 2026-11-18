@@ -1,5 +1,5 @@
 title: "About FlyingStars: team, mission and milestones"
-description: Get to know our vision and the people behind it ✓ 150+ drone shows around the world ☎︎ +49 209 88306562
+description: Get to know our vision and the people behind it ✓ 150+ drone shows around the world ☎︎ {{contact.phone.international}}
 noindex: false
 image: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
 sections:
@@ -181,16 +181,16 @@ sections:
       - ueber-uns-moritz
     _key: k_89bce7cd130ab4ebbd41
 translationContractVersion: 2
-translationSourceHash: 90946482284518f999c7c45718881ee02da6ce52ac8a7a29d74be02a3a276091
+translationSourceHash: 51650fc759b47afc9a10eab3f1f83d723c85aa28d917d2d09fa7f90f736671ce
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 90946482284518f999c7c45718881ee02da6ce52ac8a7a29d74be02a3a276091
+  sourceFingerprint: 51650fc759b47afc9a10eab3f1f83d723c85aa28d917d2d09fa7f90f736671ce
   fields:
     - address: /description
-      sourceFingerprint: c42b328abd1be1e5bda1f0f0944e7f99b67c47cda9aa59693a409de9378e1549
-      targetFingerprint: 6cef023cdac2e78030f03ce69d98c7e60234743ab38378dcbc0001794fd56b17
+      sourceFingerprint: 170376af780860559d405e4e8cb119c166697240e6d83e3c845b4ebcc291be93
+      targetFingerprint: 641a3973d251010d72711eeef08b109567470e40144278992fe2a2e0a8619194
       status: adopted-existing
     - address: /navLabel
       sourceFingerprint: 0719121eb0c61750e250cde4e8c7be616c0e5630d6786f630b3edac48984caf3

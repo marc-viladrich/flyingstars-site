@@ -1,0 +1,8 @@
+---
+// Preisseite je Sprache (eigene Routendatei = eigenes CSS-Bündel, src/i18n/static-paths.ts)
+import PricingPage from '../templates/PricingPage.astro';
+import { staticPathsFor } from '../i18n/static-paths';
+
+export const getStaticPaths = () => staticPathsFor('pricing', 'pricing');
+---
+<PricingPage />

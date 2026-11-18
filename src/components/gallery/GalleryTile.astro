@@ -5,7 +5,7 @@ interface Props { href?: string; alt: string; caption: string; src: string; widt
 const { href, alt, caption, src, width, height, avif, webp, style } = Astro.props;
 const Tag = href ? 'a' : 'figure';
 const Cap = href ? 'span' : 'figcaption';
-const sizes = '(min-width: 68.8125em) min(17vw, 336px), (min-width: 44em) 30vw, 45vw';
+const sizes = '(min-width: 68.8125em) min(17vw, 21rem), (min-width: 44em) 30vw, 45vw';
 ---
 <Tag class="g-tile" href={href} style={style}>
   <div class="g-media" data-curtain>

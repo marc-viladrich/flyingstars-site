@@ -1,10 +1,10 @@
 ---
-// Vergleich als eigener Abschnitt (Indoor). Die Tabelle selbst ist ComparisonTable.astro, dieselbe wie unter dem Kopf der
+// Vergleich als eigener Abschnitt (Indoor). Die Tabelle selbst ist ComparisonMatrix.astro, dieselbe wie unter dem Kopf der
 // Nachhaltigkeits-Scrollstory.
 import { forPath } from '../../i18n/server';
 import type { Section } from '../../content.config';
 import SectionHead from '../SectionHead.astro';
-import ComparisonTable from '../ComparisonTable.astro';
+import ComparisonMatrix from '../ComparisonMatrix.astro';
 import { plain } from '../accent';
 type Props = Extract<Section, { type: 'comparison' }> & { index: number };
 const { headline, text, rowHeader, columns, rows, note, cta, id = `s${Astro.props.index}`, index, kicker } = Astro.props;
@@ -14,7 +14,7 @@ const H = index === 0 ? 'h1' : 'h2';
 ---
 <section class="section alt" id={id} aria-labelledby={headingId}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
-  <ComparisonTable id={id} label={plain(headline)} rowHeader={rowHeader} columns={columns} rows={rows} />
+  <ComparisonMatrix label={plain(headline)} rowHeader={rowHeader} columns={columns} rows={rows} />
   {note && <p class="fine mono">{note}</p>}
   {cta && <p class="cmp-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
 </section>

@@ -123,8 +123,40 @@ test('Mobile und Navigation behalten bei Root 16/20/32 ihre ursprünglichen Gren
   }
 });
 
-test('Masken enthalten keine Variablen (WebKit verliert sonst mask-composite und damit die Verlaufsrahmen)', () => {
+// WebKit-Regressionsschutz (Claude, 04.11.2026): Eine -webkit-mask-/mask-Kurzschreibweise mit var() setzt in WebKit das
+// mask-composite derselben Regel zurück, die Verlaufsrahmen (CtaBox, empfohlenes Paket, Gates) und die Punktunterlage
+// verlieren dann ihren Schnitt. Betroffen ist nur diese Kombination; Langschreibweisen (mask-image, mask-size …) mit var()
+// und Kurzschreibweisen ohne mask-composite (Punktübergänge in himmel.css) bleiben erlaubt.
+const MASK_SHORTHAND = /^(?:-webkit-)?mask$/, MASK_COMPOSITE = /^(?:-webkit-)?mask-composite$/;
+function maskCompositeConflicts(sources) {
+  const bad = [];
+  for (const {file, css} of sources) {
+    const rules = new Map();
+    postcss.parse(css, {from: file}).walkDecls(d => {
+      if (d.parent.type !== 'rule') return;
+      const parents = []; for (let n = d.parent.parent; n && n.type !== 'root'; n = n.parent) parents.unshift(`@${n.name} ${n.params}`);
+      for (const selector of postcss.list.comma(d.parent.selector)) {
+        const key = [...parents, selector.replace(/\s+/g, ' ').trim()].join(' | ');
+        const entry = rules.get(key) ?? {shorthand: [], composite: false}; rules.set(key, entry);
+        if (MASK_SHORTHAND.test(d.prop) && /var\(/.test(d.value)) entry.shorthand.push(d.prop);
+        if (MASK_COMPOSITE.test(d.prop)) entry.composite = true;
+      }
+    });
+    for (const [key, entry] of rules) if (entry.composite) for (const prop of entry.shorthand) bad.push(`${file}: ${key} { ${prop} }`);
+  }
+  return bad;
+}
+test('Masken-Kurzschreibweisen mit var() stehen nie neben mask-composite (WebKit verliert sonst den Schnitt)', () => {
   const sources = files('src').flatMap(file => regions(read(file), file).map(css => ({file, css})));
-  const bad = declarations(sources).filter(d => MASK.test(d.prop) && /var\(/.test(d.value)).map(d => d.file + ': ' + d.prop);
-  assert.deepEqual(bad, []);
+  assert.deepEqual(maskCompositeConflicts(sources), []);
+});
+test('Maskenwächter unterscheidet die WebKit-Kombination von erlaubten Masken', () => {
+  const check = css => maskCompositeConflicts([{file: 'src/future.css', css}]).length;
+  assert.equal(check('.a{-webkit-mask:linear-gradient(#000 0 0) var(--x);-webkit-mask-composite:source-in}'), 1);
+  assert.equal(check('.a{mask:radial-gradient(var(--r),#000) 0 0/1rem 1rem;mask-composite:intersect}'), 1);
+  assert.equal(check('.a,.b{-webkit-mask:var(--m)}.b{-webkit-mask-composite:xor}'), 1, 'gleicher Selektor über zwei Regeln');
+  assert.equal(check('.a{-webkit-mask-image:radial-gradient(#000 var(--r),transparent);-webkit-mask-size:var(--p);-webkit-mask-composite:source-in}'), 0);
+  assert.equal(check('.a{-webkit-mask:var(--maske) repeat-x 0 0/auto 100%;mask:var(--maske) repeat-x 0 0/auto 100%}'), 0);
+  assert.equal(check('.a{-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor}'), 0);
+  assert.equal(check('@media (x){.a{-webkit-mask:var(--m)}}.a{-webkit-mask-composite:xor}'), 0, 'anderer Kontext');
 });

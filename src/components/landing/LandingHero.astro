@@ -2,7 +2,7 @@
 import MediaFrame from '../MediaFrame.astro';
 import FactList from '../FactList.astro';
 import { forPath } from '../../i18n/server';
-const { t, localHref } = forPath(Astro.url.pathname);
+const { t, localHref, fact } = forPath(Astro.url.pathname);
 // Seitenkopf der Anlass-Landingpages (Marc, 31.10.2026: „in der Hero Section … so ein kleines Showreel, gerne in einer
 // kleineren Variante, so ähnlich wie wir jetzt ein Hero-Bild haben“). Links Kicker, Headline, Satz, Aktionen und bis zu
 // vier Eckdaten; rechts ein Bildrahmen mit stummem Loop. Startet erst, wenn der Rahmen im Bild ist: oberhalb der mobilen em-Grenze von selbst,
@@ -22,7 +22,7 @@ const src = videoPath(videos[video], 'preview');
   <div class="lh-copy">
     <h1 id="hero-h">{kicker && <><span class="kicker mono">{kicker}</span>{' '}</>}<Accent text={headline} /></h1>
     <p class="lead">{text}</p>
-    <div class="actions"><a class="btn primary" href={localHref(cta.href)}>{cta.label}</a>{secondary && <a class="btn" href={localHref(secondary.href)}>{secondary.label}</a>}</div>
+    <div class="actions"><a class="btn primary" href={localHref(cta.href)}>{fact(cta.label)}</a>{secondary && <a class="btn" href={localHref(secondary.href)}>{fact(secondary.label)}</a>}</div>
     {facts.length > 0 && <FactList items={facts} variant="hero" />}
   </div>
   <MediaFrame class="lh-media" corners="inset" data-lh-reel>

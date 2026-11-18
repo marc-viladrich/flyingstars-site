@@ -1,8 +1,7 @@
 ---
 import {field,editorBuild} from 'astro-frontend-editor/markers';
-import Picture from '../Picture.astro';
+import ImageFrame from '../ImageFrame.astro';
 import Gallery from '../gallery/Gallery.astro';
-import DotField from '../DotField.astro';
 import SectionHead from '../SectionHead.astro';
 import {contactText} from '../../content/contact.mjs';
 import { marked } from 'marked';
@@ -22,7 +21,7 @@ const html = await marked.parse(contactText(body));
   <Gallery set={gallery}>
     {headAbove && <SectionHead slot="head" kicker={kicker} headline={headline} id={id} level={H} class="tm-head" />}
     <div class="prose">
-      {!headAbove && <SectionHead variant="embedded" kicker={kicker} headline={headline} id={id} level={H} />}
+      {!headAbove && <SectionHead variant="embedded" next="text" kicker={kicker} headline={headline} id={id} level={H} />}
       {editorBuild() && (Astro.props as any).__afe?.body ? <div {...field((Astro.props as any).__afe.body,editorFieldOptions)} set:html={html} /> : <Fragment set:html={html} />}
       {cta && <p class="tm-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
     </div>
@@ -31,12 +30,11 @@ const html = await marked.parse(contactText(body));
   {/* Kopf über beiden Spalten (Werbung #marketing): rechts neben dem Kopf bleibt Luft, darunter Text und Bild im Split */}
   {headAbove && <SectionHead kicker={kicker} headline={headline} id={id} level={H} class="tm-head" />}
   <div class="prose">
-    {!headAbove && <SectionHead variant="embedded" kicker={kicker} headline={headline} id={id} level={H} />}
+    {!headAbove && <SectionHead variant="embedded" next="text" kicker={kicker} headline={headline} id={id} level={H} />}
     {editorBuild() && (Astro.props as any).__afe?.body ? <div {...field((Astro.props as any).__afe.body,editorFieldOptions)} set:html={html} /> : <Fragment set:html={html} />}
     {cta && <p class="tm-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
   </div>
-  {/* Einzelbild mit Leuchtpunkt-Unterlage (Runde 6), die rechts unten hervorschaut */}
-  {image && <div class="tm-media-host df-host"><DotField /><figure class="tm-media" data-curtain><Picture {...image} /></figure></div>}
+  {image && <ImageFrame class="tm-media" image={image} />}
 </section>}
 
 <style>
@@ -49,7 +47,7 @@ const html = await marked.parse(contactText(body));
   .text-media .prose > :global(.section-head) + :global(*) { margin-top: var(--head-gap-text); }
   .text-media .prose :global(p) { max-width: 60ch; }
   .text-media.has-gallery { display: block; }
-  .text-media.media-left .tm-media-host { order: -1; }
+  .text-media.media-left :global(.tm-media) { order: -1; }
   /* Hervorhebung im Fließtext (Startseite #warum-drohnen: spektakulärer, emotionaler, einzigartiger): Display-Schnitt,
      Farbe aus .prose strong in global.css (Marken-Orange, kein Verlauf im Fließtext) */
   .text-media .prose :global(strong) { font: 600 1.18em/1 var(--display); letter-spacing: -0.01em; }

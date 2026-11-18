@@ -3,14 +3,16 @@ export const CONTACT_OWNER={collection:'contact',id:'configuration'};
 const international=number=>'+49'+number.replaceAll(' ','').slice(1);
 /** @param {typeof data} source */
 export function projectContact(source){
+ // Anzeige national wie gespeichert und international wie in Moritz' Texten („+49 Vorwahl Rufnummer“): Vorwahl ohne
+ // führende 0, Rufnummer zusammengeschrieben. Beide aus derselben gespeicherten Nummer.
  /** @param {string} label */
- const phone=label=>({label,href:`tel:${international(label)}`});
+ const phone=label=>{const [area,...rest]=label.split(' ');return {label,href:`tel:${international(label)}`,international:`+49 ${area.slice(1)} ${rest.join('')}`};};
  return {...source,phone:phone(source.phone),mobile:phone(source.mobile),whatsapp:{label:'WhatsApp',href:`https://wa.me/${international(source.mobile).slice(1)}`}};
 }
 export const contact=projectContact(data);
 // Explicit tokens only. No replacement of arbitrary prose or legal documents.
 export function contactText(text,source=contact){
- const values={email:source.email,'phone.label':source.phone.label,'phone.href':source.phone.href};
+ const values={email:source.email,'phone.label':source.phone.label,'phone.international':source.phone.international,'phone.href':source.phone.href};
  return text.replace(/\{\{contact\.([\w.]+)\}\}/g,(_,key)=>{
   if(!Object.hasOwn(values,key))throw Error(`Unbekannter Kontaktplatzhalter: ${key}`);
   return values[key];

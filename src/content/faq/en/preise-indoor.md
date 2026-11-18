@@ -4,16 +4,16 @@ tags: [preise-moritz]
 order: 5
 draft: false
 translationContractVersion: 2
-translationSourceHash: 17f10a4ee51724bf76149d502a4fb7377b3e1e4d69421ccc2193d91acd3555c6
+translationSourceHash: 721f9256b541ccf172cc272747cedc577c1099ef42768dc98a21e5e185a21e50
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 17f10a4ee51724bf76149d502a4fb7377b3e1e4d69421ccc2193d91acd3555c6
+  sourceFingerprint: 721f9256b541ccf172cc272747cedc577c1099ef42768dc98a21e5e185a21e50
   fields:
     - address: /body
-      sourceFingerprint: f60da1fdff7748a4621d60c585f4a412fae13e7f95c6972c88a083a7bdc9c5f1
-      targetFingerprint: 108caba74544ace3a16dd71997d68f1ec9005bbe9773332d2df916772856a351
+      sourceFingerprint: 570ac31b101fbfa00ceb8704c25f27524b05a281de5ffdf7a18da87628c655fa
+      targetFingerprint: 533e206baf914ceca349aff2f895a83f1d9356ec39a1d206c28865f6cb402265
       status: adopted-existing
     - address: /question
       sourceFingerprint: 556d5c154a314898548a0a923f04ea143a2038c88b4861334e33e87c0c78df76
@@ -21,4 +21,4 @@ translationEvidence:
       status: adopted-existing
 ---
 
-Our indoor events start at 15,000 euros (excluding VAT). We are happy to prepare an individual quote for you on request.
+Our indoor events start at {{offer.indoor.priceAmount}} (excluding VAT). We are happy to prepare an individual quote for you on request.

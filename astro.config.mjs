@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import {cssMedia} from './scripts/css-media.mjs';
+import {routeCss} from './scripts/route-css.mjs';
 const markerIntegration='astro-frontend-editor/astro/markers';
 const editorIntegrations=process.env.AFE_MODE==='editor'?[(await import(markerIntegration)).default()]:[];
 import {astroRedirects} from './src/i18n/public-routes.mjs';
@@ -19,7 +20,7 @@ export default defineConfig({
   trailingSlash: 'always',
   cacheDir: process.env.FLYINGSTARS_IMAGE_CACHE_DIR ?? './.astro/cache',
   i18n: { defaultLocale: 'de', locales: [...LOCALES], routing: { prefixDefaultLocale: false } },
-  integrations: [...editorIntegrations, sitemap({ i18n: { defaultLocale: 'de', locales: { de: 'de', en: 'en', nl: 'nl' } } })],
+  integrations: [...editorIntegrations, routeCss(), sitemap({ i18n: { defaultLocale: 'de', locales: { de: 'de', en: 'en', nl: 'nl' } } })],
   image: {
     ...(process.env.FLYINGSTARS_OFFLINE_MEDIA === '1' ? { service: { entrypoint: 'astro/assets/services/noop' } } : {}),
     // Nur der zentrale Medienspeicher darf als Remote-Bildquelle dienen.

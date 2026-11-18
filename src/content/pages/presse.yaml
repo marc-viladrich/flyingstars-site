@@ -5,7 +5,7 @@
 # Marke), wie die übrigen Presselogos; schriftliche Freigaben der Medien stehen für alle Logos aus.
 title: FlyingStars in der Presse (ZDF, WDR, ntv und Co.)
 navLabel: Presse
-description: "Evtl. kennt ihr uns von hier: Wir reden oft über Nachhaltigkeit & Innovation von Drohnenshows ☎︎ +49 209 88306562"
+description: "Evtl. kennt ihr uns von hier: Wir reden oft über Nachhaltigkeit & Innovation von Drohnenshows ☎︎ {{contact.phone.international}}"
 sections:
   - type: press
     id: presse

@@ -5,7 +5,7 @@
 # mit Foto, Werte als Icon-Raster, Porträts, farbiger Zeitstrahl, Punktkarte NRW statt #FotoDesGebäudes, Anfrage, FAQ.
 # Flächen wechseln: Werte hell, Team dunkel, Meilensteine hell, Standort dunkel, Anfrage hell, FAQ dunkel.
 title: "Über FlyingStars: Team, Mission und Meilensteine"
-description: "Lernt unsere Vision und die Menschen dahinter kennen ✓ 150+ Drohnenshows in aller Welt ☎︎ +49 209 88306562"
+description: "Lernt unsere Vision und die Menschen dahinter kennen ✓ 150+ Drohnenshows in aller Welt ☎︎ {{contact.phone.international}}"
 image: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
 sections:
   # Eckdaten aus Moritz' Text (seit 2021, über 150 Shows) und aus seinen Meilensteinen (600 Drohnen, 2026).

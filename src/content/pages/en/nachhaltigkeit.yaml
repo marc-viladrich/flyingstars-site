@@ -1,5 +1,5 @@
 title: "Sustainability: drone shows by FlyingStars (vs. fireworks)"
-description: No bang. No litter. No smoke. ✓ Drone shows for social and environmental engagement. ☎︎ +49 209 88306562
+description: No bang. No litter. No smoke. ✓ Drone shows for social and environmental engagement. ☎︎ {{contact.phone.international}}
 noindex: false
 image: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
 sections:
@@ -195,16 +195,16 @@ sections:
       - nachhaltigkeit-moritz
     _key: k_f58d716d01838151fc17
 translationContractVersion: 2
-translationSourceHash: e3f0f8d2d44a99123535c4d3d859de88de77b299cc8150dd4fa4204072fc0b4c
+translationSourceHash: a13eaec6208d5feb85a682e76524db1bc8eec1f4b4656e78c6db35d2ab8ade9e
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: e3f0f8d2d44a99123535c4d3d859de88de77b299cc8150dd4fa4204072fc0b4c
+  sourceFingerprint: a13eaec6208d5feb85a682e76524db1bc8eec1f4b4656e78c6db35d2ab8ade9e
   fields:
     - address: /description
-      sourceFingerprint: 617f97e4bb779fa6c17b9691243258ab9cdd60859ff2b097758190a215c29e7e
-      targetFingerprint: 636113c3e11b503654168afc4598390bf7dca6e3995790efe2ef865e8f1d7939
+      sourceFingerprint: cf4c0afdd114a9e000ee105745e2d9b110c7f1765fd33ded04e809dc372678bc
+      targetFingerprint: 5d9682977ae692e7ef52fa595197ea7b8f375460c602f130b4e32ead98a8ff0f
       status: adopted-existing
     - address: /navLabel
       sourceFingerprint: a3d150a7014916268d68efb0f7e43a0fcbfe7d89bc7f94f352f81c04ed9c84a3

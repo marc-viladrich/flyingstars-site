@@ -1,4 +1,5 @@
-import variants from '../data/video-lab.json' with { type: 'json' };
+// Freigegebene Hero-Renditions (öffentlich unter /media/video-lab/). Der Laborkatalog aller Encodes liegt in archive/video-lab/.
+import variants from '../data/hero-video.json' with { type: 'json' };
 export function heroVideoSources() {
   const find = (id: string) => {
     const item = variants.find(v => v.id === id);

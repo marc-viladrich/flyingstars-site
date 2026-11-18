@@ -1,30 +1,57 @@
 ---
-import {field} from 'astro-frontend-editor/markers';
-import MobileTabs from './MobileTabs.astro';
+// Vergleichstabelle Drohnenshow/Feuerwerk/Laser: EIN Besitzer für Tabelle und Handyfassung. Aufrufer sind der eigene
+// Abschnitt (sections/Comparison.astro, Indoor) und die Einbettung unter dem Kopf einer Scrollstory (Sustainability.astro,
+// Nachhaltigkeit). Beide geben die Felder aus content-schema.mjs (comparisonTableFields) unverändert weiter.
+// Statuszellen einheitlich (ComparisonCell): Einordnung als Plakette oben, Erläuterung darunter. Bis 700 px keine Reiter
+// (dort sähe man immer nur eine Technik und damit keinen Vergleich), sondern je Kriterium eine Zeile mit einer schmalen
+// Spalte je Technik unter einer gemeinsamen Kopfzeile; die Spaltenzahl kommt aus den Daten.
 import ComparisonCell from './ComparisonCell.astro';
 import { comparisonTone, type ComparisonValue } from '../lib/comparison';
 import { forPath } from '../i18n/server';
-interface Column { label: string; color?: string; featured?: boolean; price?: string; orb?: { shape: string; color: string; count: number }; panelLabel?: string }
-interface Row { id?: string; label: string; cells: ComparisonValue[]; all?: string }
-interface Props { id: string; label: string; regionLabel: string; rowHeader: string; columns: Column[]; rows: Row[]; tabLabel: string; initial?: number; mobileTabs?: boolean }
-const { id, label, regionLabel, rowHeader, columns, rows, tabLabel, initial = 0, mobileTabs = true } = Astro.props;
-const { locale } = forPath(Astro.url.pathname);
+interface Row { label: string; cells?: { label: string; text?: string; tone: 'y' | 'n' | 'p' }[]; values: { value: string }[] }
+interface Props { label: string; rowHeader?: string; columns: { value: string }[]; rows: Row[]; class?: string }
+const { t, locale } = forPath(Astro.url.pathname);
+const { label, rowHeader = t('comparison.criterion'), columns, rows, class: cls } = Astro.props;
+// Die erste Spalte ist die eigene Technik (Drohnenshow) und trägt die Hervorhebung
+const cols = columns.map((c, i) => ({ label: c.value, featured: i === 0 }));
+const body = rows.map((row) => ({ label: row.label, cells: (row.cells ?? row.values.map((item) => item.value)) as ComparisonValue[] }));
 ---
-<div class="table-wrap mtab-hide" role="region" aria-label={regionLabel} tabindex="0">
-  <table lang={locale} style="position:relative">
-    <caption class="sr-only">{label}</caption>
-    <thead><tr><th scope="col">{rowHeader}</th>{columns.map((column) => <th scope="col" class:list={{ us: column.featured, pk: column.orb }} style={column.color && `--c:${column.color}`}>
-      {column.orb && <canvas data-orb={column.orb.shape} data-color={column.orb.color} data-n={column.orb.count} aria-hidden="true"></canvas>}
-      <span class:list={{ 'pk-name': column.orb }}>{column.label}</span>{column.price && <span class="mono">{column.price}</span>}
-    </th>)}</tr></thead>
-    <tbody>{rows.map((row) => <tr data-service={row.id}><th scope="row">{row.label}</th>
-      {row.all ? <td colspan={columns.length}><ComparisonCell value={row.all} /></td> : row.cells.map((cell, i) => <td {...(row.id==='footage'?field({collection:'showExtras',id:'configuration'},['film','price','amount'],{mode:'panel'}):{})} class:list={[comparisonTone(cell), { us: columns[i].featured }]} style={columns[i].color && `--c:${columns[i].color}`}><ComparisonCell value={cell} /></td>)}
-    </tr>)}</tbody>
-  </table>
+<div class:list={['cmp', cls]} style={`--cmp-cols:${cols.length}`}>
+  <div class="table-wrap cmp-wide" role="region" aria-label={t('comparison.table', { label })} tabindex="0">
+    <table lang={locale}>
+      <caption class="sr-only">{label}</caption>
+      <thead><tr><th scope="col">{rowHeader}</th>{cols.map((c) => <th scope="col" class:list={{ us: c.featured }}>{c.label}</th>)}</tr></thead>
+      <tbody>{body.map((row) => <tr><th scope="row">{row.label}</th>
+        {row.cells.map((cell, i) => <td class:list={[comparisonTone(cell), { us: cols[i].featured }]}><ComparisonCell value={cell} /></td>)}
+      </tr>)}</tbody>
+    </table>
+  </div>
+  <div class="cmp-narrow" role="table" aria-label={label}>
+    <div class="cmp-narrow-head" role="row"><span class="sr-only" role="columnheader">{rowHeader}</span>{cols.map((c) => <span role="columnheader" class:list={{ us: c.featured }}>{c.label}</span>)}</div>
+    {body.map((row) => <div class="cmp-narrow-row" role="row">
+      <span class="cmp-narrow-label" role="rowheader">{row.label}</span>
+      {row.cells.map((cell, i) => <span role="cell" class:list={['cmp-narrow-cell', comparisonTone(cell), { us: cols[i].featured }]}><ComparisonCell value={cell} mobile /></span>)}
+    </div>)}
+  </div>
 </div>
-{mobileTabs && <div class="mtab-only" data-mtabs>
-  <MobileTabs name={`${id}-tab`} label={tabLabel} initial={initial} tabs={columns} />
-  {columns.map((column, i) => <dl class="cmp-panel" data-mtab={i} aria-label={column.panelLabel ?? column.label} style={column.color && `--c:${column.color}`}>
-    {rows.map((row) => <div data-service={row.id}><dt>{row.label}</dt><dd><ComparisonCell value={row.all ?? row.cells[i]} mobile /></dd></div>)}
-  </dl>)}
-</div>}
+<style>
+  .cmp table { position: relative; }
+  .cmp :global(td .m) { display: block; width: fit-content; margin: 0 0 var(--space-2); }
+  .cmp td { font-size: var(--text-sm); line-height: 1.45; padding-block: var(--space-5); }
+  .cmp tbody th { padding-top: var(--space-5); font-size: var(--text-copy); }
+  .cmp-narrow { display: none; }
+  @media (--mobile) {
+    .cmp-wide { display: none; }
+    .cmp-narrow { display: grid; grid-template-columns: repeat(var(--cmp-cols), minmax(0, 1fr)); border-top: 1px solid var(--line-strong); }
+    .cmp-narrow-head, .cmp-narrow-row { display: contents; }
+    .cmp-narrow-head > [role='columnheader']:not(.sr-only) { padding: var(--space-3) var(--space-2-5); font: 500 var(--text-xs)/1.3 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); border-bottom: 1px solid var(--line-strong); }
+    /* Hervorhebung wie die Tabellenspalte (thead th.us in global.css): Fläche und Verlaufskante über der Trennlinie */
+    .cmp-narrow-head > .us { color: var(--text); background: var(--fill-soft); position: relative; }
+    .cmp-narrow-head > .us::after { content: ""; position: absolute; left: 0; right: 0; top: 0; transform: translateY(-50%); border-top: 2px solid; border-image: var(--grad) 1; }
+    .cmp-narrow-label { grid-column: 1 / -1; padding: var(--space-4) 0 var(--space-2); color: var(--head); font-weight: 500; }
+    .cmp-narrow-cell { display: grid; align-content: start; justify-items: start; gap: var(--space-1-5); padding: var(--space-1) var(--space-2-5) var(--space-4); border-bottom: 1px solid var(--line); color: var(--muted); font-size: var(--text-label); line-height: 1.35; overflow-wrap: anywhere; }
+    .cmp-narrow-cell.us { background: var(--fill-soft); }
+    .cmp-narrow-cell :global(.m) { margin: 0; padding: var(--space-1) var(--space-1-5); font-size: var(--text-xs); letter-spacing: 0.06em; }
+    .cmp-narrow-cell :global(.t) { display: block; }
+  }
+</style>

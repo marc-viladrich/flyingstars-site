@@ -1,25 +1,16 @@
 import {reviewedRequest} from './test/requests.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,symlink,rm,readFile} from 'node:fs/promises';
+import {readFile} from 'node:fs/promises';
 import path from 'node:path';
-import os from 'node:os';
-import {randomUUID} from 'node:crypto';
-import {fileURLToPath} from 'node:url';
-import {NativeStore,NativeBuilder,git} from 'astro-frontend-editor/runtime';
-import {createSite} from './flyingstars-adapter.mjs';
-import {resolveRuntimeOptions} from './server.mjs';
+import {i18nFixture} from './i18n-test-fixture.mjs';
+import {NativeBuilder} from 'astro-frontend-editor/runtime';
 import {legalDocuments} from '../scripts/check-contact-drift.mjs';
 import {projectContact,legalContactDrift} from '../src/content/contact.mjs';
-const root=fileURLToPath(new URL('../',import.meta.url));
 test('Kontakt: tatsächliches Editor-Speichern ändert Footer, Section, ContactWays, Danke und Marker; Rechtsfassungen bleiben eigenständig',async t=>{
- const dir=await mkdtemp(path.join(os.tmpdir(),'fs-contact-proof-'));
- await git(root,['clone','--quiet','--no-hardlinks',root,dir]);
- await git(dir,['checkout','-B','content/draft']);
- await symlink(path.join(root,'node_modules'),path.join(dir,'node_modules'));
- const site=await createSite(dir),runtime=resolveRuntimeOptions({env:{},values:{siteRoot:dir,stateDir:path.join(dir,'state')}});
- const store=await new NativeStore(dir,{remote:false,site,runtime}).init();
- t.after(async()=>{store.sync.close();await rm(dir,{recursive:true,force:true});});
+ const {source:dir,store}=await i18nFixture(t);
+ t.after(()=>store.sync.close());
+ const site=store.site;
  const state=await store.state(),record=state.records.find(r=>r.id==='site/contact');
  assert.equal(record.title,'Kontakt');
  assert.deepEqual(site.sourcesFromFiles(['src/content/contact.json']).map(s=>s.id),['site/contact']);
@@ -39,10 +30,13 @@ test('Kontakt: tatsächliches Editor-Speichern ändert Footer, Section, ContactW
   for(const value of [changed.phone,changed.mobile,changed.email,'Testweg 8','Teststraße 7'])assert.ok(section?.includes(value),`Section ${locale}: ${value}`);
   const ways=html.split('class="ways"')[1]?.split('</ul>')[0];
   assert.ok(ways?.includes(changed.phone));assert.ok(ways?.includes(changed.email));
+  // Danke trägt seit Moritz' Text (18.11.2026) keinen eigenen Kontaktabsatz mehr; Kontakt steht dort im Footer.
   const thanks=await readFile(path.join(artifact.site,locale,'danke/index.html'),'utf8');
-  assert.ok(thanks.includes(changed.phone));assert.ok(thanks.includes(changed.email));assert.ok(!thanks.includes('{{contact.'));
-  const thanksMarkers=[...thanks.matchAll(/data-afe="([^"]+)"/g)].map(match=>JSON.parse(match[1].replaceAll('&quot;','"').replaceAll('&amp;','&'))).flatMap(value=>value.markers??[value]);
-  assert.ok(thanksMarkers.some(marker=>marker.kind==='field'&&marker.mode==='panel'&&marker.address.path.at(-1)==='body'),'Danke bearbeitet die Vorlage im Panel statt aufgelöste Werte zurückzuschreiben');
+  const thanksFooter=thanks.split('<footer')[1];
+  assert.ok(thanksFooter.includes(changed.phone));assert.ok(thanksFooter.includes(changed.email));assert.ok(!thanks.includes('{{contact.'));
+  // Telefonknopf und Beschreibung der Startseite folgen derselben Nummer ({{contact.phone.international}}/href)
+  const home=await readFile(path.join(artifact.site,locale,'index.html'),'utf8');
+  assert.ok(home.includes('href="tel:+492099991234"'));assert.ok(home.includes('☎︎ +49 209 9991234'));assert.ok(!home.includes('88306562'));assert.ok(!home.includes('{{contact.'));
   for(const [name,markup]of [['Footer',footer],['ContactWays',ways],['Kontakt-Section',section]]){
    const markers=[...markup.matchAll(/data-afe="([^"]+)"/g)].map(match=>JSON.parse(match[1].replaceAll('&quot;','"').replaceAll('&amp;','&'))).flatMap(value=>value.markers??[value]);
    assert.ok(markers.some(marker=>marker.kind==='field'&&marker.mode==='panel'&&marker.address.owner.collection==='contact'&&marker.address.path.length>0),`Konkreter Kontakt-Feldmarker ${locale} ${name}`);

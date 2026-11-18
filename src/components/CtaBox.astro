@@ -1,13 +1,18 @@
 ---
 // Der eine Abschluss-Kasten der Seite (Marc, 02.11.2026: „solche empty-looking CTAs darf es niemals geben. Immer ein
-// Heading und ein Text dazu“). Gesichter der drei Geschäftsführer:innen, Überschrift, Text, genau ein Knopf, zentriert im
-// Kasten mit Verlaufsrand (.promise in global.css). Genutzt von Cta, LandingCta, LandingPrice, LandingBento, FAQ,
+// Heading und ein Text dazu“). Gesichter der drei Geschäftsführer:innen, Überschrift, genau eine Inhaltsform, genau ein
+// Knopf, zentriert im Kasten mit Verlaufsrand (.promise in global.css). Inhalt: Text (ein Absatz) oder Liste (Zeilen mit
+// Icon, z. B. die drei Zusagen des Preisversprechens). Genutzt von Cta, LandingCta, LandingPrice, LandingBento, FAQ,
 // Fallstudie und Preisseite; das Schema (closingBox in content.config.ts) verlangt Überschrift und Text.
 import { forPath } from '../i18n/server';
 import Accent from './Accent.astro';
 import Faces from './Faces.astro';
-interface Props { headline: string; text: string; button: { label: string; href: string }; id?: string; level?: 'h1' | 'h2' | 'h3'; class?: string; faces?: boolean }
-const { headline, text, button, id, level = 'h2', class: cls, faces = true } = Astro.props;
+import Icon from './Icon.astro';
+type Item = { icon: string; text: string };
+type Content = { text: string; items?: never } | { items: readonly Item[]; text?: never };
+type Props = Content & { headline: string; button: { label: string; href: string }; id?: string; level?: 'h1' | 'h2' | 'h3'; class?: string; faces?: boolean };
+const { headline, text, items, button, id, level = 'h2', class: cls, faces = true } = Astro.props;
+if ((text === undefined) === (items === undefined) || (items && !items.length)) throw new Error('CtaBox: genau eine Inhaltsform, Text oder Liste');
 const { localHref } = forPath(Astro.url.pathname);
 const H = level;
 ---
@@ -15,7 +20,15 @@ const H = level;
   {faces && <Faces />}
   <div class="promise-copy">
     <H id={id}><Accent text={headline} /></H>
-    <p>{text}</p>
+    {text !== undefined && <p>{text}</p>}
   </div>
+  {items && <ul class="promise-list" role="list">{items.map((item) => <li><Icon name={item.icon} size={22} class="g" /><span>{item.text}</span></li>)}</ul>}
   <div class="actions"><a class="btn primary" href={localHref(button.href)}>{button.label}</a></div>
 </div>
+<style>
+  /* Liste: ruhige Zeilen, links bündig in einer zentrierten Spalte; Abstand zu Überschrift und Knopf trägt das Raster des
+     Kastens (.promise gap) */
+  .promise-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); justify-items: start; text-align: left; }
+  .promise-list li { display: flex; align-items: flex-start; gap: var(--space-3); color: var(--text); font-size: var(--text-md); line-height: 1.4; }
+  .promise-list :global(.ico) { flex: none; margin-top: var(--space-0-25); }
+</style>

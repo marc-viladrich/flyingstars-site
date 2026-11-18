@@ -62,7 +62,7 @@ const style = (p: Photo) => `--ar:${p.ar};--pos:${p.pos};--i:${p.c};${m2.get(p.s
   /* global, weil die Kacheln eine eigene Komponente sind; alles hängt an .gal */
   .gal-wrap { container-type: inline-size; }
   /* Fugen zwischen Runde 4 (0,5–1rem) und Runde 5 (1,25–2,75rem), näher an Runde 4 (Marc, Runde 6) */
-  .gal { --g-gap: clamp(0.875rem, 1.4vw, 1.5rem); --g-r: var(--radius-14); --g-ease: cubic-bezier(0.33, 1, 0.68, 1); --g-dur: 0.6s; }
+  .gal { --g-gap: clamp(0.875rem, 1.4vw, 1.5rem); --g-r: var(--radius-14); --g-ease: var(--ease-lift); --g-dur: var(--dur-reveal); }
   /* Kopf → Collage: die gemeinsame Rolle --head-gap-content (global.css), im Raster abzüglich der Fuge */
   .gal .g-head .section-head { margin-bottom: 0; }
   .gal .g-copy > :last-child { margin-bottom: 0; }
@@ -87,9 +87,8 @@ const style = (p: Photo) => `--ar:${p.ar};--pos:${p.pos};--i:${p.c};${m2.get(p.s
     .gal .g-tile:hover { transform: translateY(-0.375rem); }
     .gal .g-tile:hover::after { opacity: 1; }
     .gal .g-tile:hover img { filter: brightness(1.08); }
-    .gal .g-tile:hover .g-cap { opacity: 1; transform: none; transition-delay: 0.06s; }
+    .gal .g-tile:hover .g-cap { opacity: 1; transform: none; transition-delay: var(--dur-stagger-reveal); }
   }
-  .gal .g-tile:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   .gal .g-tile:focus-visible .g-cap { opacity: 1; transform: none; }
   @media (hover: none), (pointer: coarse) { .gal .g-cap { display: none; } }
 

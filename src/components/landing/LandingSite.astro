@@ -126,7 +126,7 @@ const itemOf = Object.fromEntries(items.map((item, i) => [item.zone, { ...item, 
     // Dauer in ms, egal ob der Token als s (Quelltext) oder ms (Build-Minifizierung) ankommt
     const time = (n: string) => { const v = css.getPropertyValue(n).trim(); return parseFloat(v) * (v.endsWith('ms') ? 1 : 1000); };
     const [enter, fade, stagger, reel, ruler] = ['--dur-enter', '--dur-fade', '--dur-stagger', '--dur-reel', '--dur-ruler'].map(time);
-    const ranks = new Map(folks.map((el) => [el, Number((el.parentElement as HTMLElement).style.getPropertyValue('--k'))]));
+    const ranks = new Map<Element, number>(folks.map((el) => [el, Number((el.parentElement as HTMLElement).style.getPropertyValue('--k'))]));
     const rank = (el: Element) => ranks.get(el) ?? 0;
     const jumps = new Map<Element, Animation>();
     const jump = (el: SVGGElement, height: number, duration: number, iterations: number, delay = 0) => {
@@ -323,7 +323,7 @@ const itemOf = Object.fromEntries(items.map((item, i) => [item.zone, { ...item, 
   .st-hot:hover .st-num { transform: scale(1.08); }
   .st-hot[aria-expanded="true"] .st-num { background: var(--zc); color: var(--ground); }
   .st-hot:focus-visible { outline: none; }
-  .st-hot:focus-visible .st-num { outline: 2px solid var(--zc); outline-offset: 3px; }
+  .st-hot:focus-visible .st-num { outline: 2px solid var(--zc); outline-offset: 0.1875rem; }
   .is-live .st-map:not(.is-ready) :is(.st-hot, .st-lbl) { opacity: 0; pointer-events: none; }
   /* Nach dem Eintritt pulsen die Nummern einmal sanft: hier kann man tippen */
   .is-ready .st-num { animation: st-pulse var(--dur-record) var(--ease-out) calc(var(--n) * var(--dur-stagger-reveal)) 1 backwards; }

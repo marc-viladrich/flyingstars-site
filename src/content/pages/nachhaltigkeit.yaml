@@ -2,7 +2,7 @@
 # Überschriften und Texte wortgetreu, Ansprache „ihr“. Im Sitemap-Entwurf unter „Über“ (Ebene 3), deshalb im Menü unter
 # „Über uns“. Kein Vergleich Drohne/Feuerwerk/Laser (Moritz). Nur Aussagen über die Show vor Ort (EmpCo).
 title: "Nachhaltigkeit: Drohnenshows von FlyingStars (vs. Feuerwerk)"
-description: "Kein Knall. Kein Müll. Kein Rauch. ✓ Drohnenshows für soziales und ökologisches Engagement. ☎︎ +49 209 88306562"
+description: "Kein Knall. Kein Müll. Kein Rauch. ✓ Drohnenshows für soziales und ökologisches Engagement. ☎︎ {{contact.phone.international}}"
 image: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
 sections:
   # „Kein Müll.“ im Logoverlauf wie auf der Startseite (DESIGN); Weltkugel aus Drohnen bei der Extraschicht als Bild.

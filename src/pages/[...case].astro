@@ -1,0 +1,11 @@
+---
+// Fallstudien (eigene Routendatei = eigenes CSS-Bündel, src/i18n/static-paths.ts)
+import type { CollectionEntry } from 'astro:content';
+import CasePage from '../templates/CasePage.astro';
+import { staticPathsFor } from '../i18n/static-paths';
+
+export const getStaticPaths = () => staticPathsFor('case', 'case');
+interface Props { project: CollectionEntry<'projects'>; }
+const { project } = Astro.props;
+---
+<CasePage project={project} />

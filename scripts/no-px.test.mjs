@@ -112,6 +112,10 @@ export function boundaryReason(file, context) {
  if(file==='src/scripts/effects/shapes.js'&&/moin:.*font: '700 180px /.test(context))return 'Canvas-Formationsschrift in festen Rasterkoordinaten.';
  if(file==='src/scripts/formation/index.js'&&/const font = source\.font|g\.letterSpacing\s*=/.test(context))return 'Canvas-Font/-Sperrung, bestehender Parser erwartet px.';
  if(file==='src/scripts/show-configurator.js'&&/\.style\.setProperty\("--(?:x|tip-left|tip-arrow|tip-top)"/.test(context))return 'DOMRect-/Zeigerkoordinaten sind CSS-px; numerische Geometrie nicht durch 16 teilen.';
+ // Gemessene Layout-Geometrie (offset*/scrollHeight/DOMRect) ist CSS-px; ein Teilen durch 16 wäre bei größerer Grundschrift falsch
+ if(file==='src/scripts/grid-glide.ts'&&/^set\('--ig-(?:w0|x)', `\$\{(?:base\.w|cell\.offsetLeft)\}px`\); set\('--ig-(?:h0|y)', `\$\{(?:base\.h|cell\.offsetTop)\}px`\);$/.test(context))return 'offsetLeft/offsetTop/offsetWidth der Rasterzelle sind CSS-px.';
+ if(file==='src/components/sections/Faq.astro'&&/^running = answer\.animate\(\[\{ height: `\$\{from\}px`, opacity: [^}]*\}, \{ height: (?:`\$\{answer\.scrollHeight\}px`|'0'), opacity: [01] \}\], timing\(\)\);$/.test(context))return 'Höhe aus getBoundingClientRect/scrollHeight der Antwort ist CSS-px (Web-Animations-Ersatz für interpolate-size).';
+ if(file==='src/components/landing/LandingSite.astro'&&context==='{ transform: `translateY(${-height}px)`, offset: 0.42, easing: easeFall },')return 'Sprung eines SVG-<g> in Benutzerkoordinaten des viewBox.';
  return null;
 }
 export function commentRanges(source, lineComments=true) {
@@ -134,11 +138,21 @@ function geometryAttribute(source,index){
  const prefix=source.slice(open,index);
  return /\b(?:x|y|x1|x2|y1|y2|cx|cy|r|rx|ry|width|height|stroke-width|font-size)=["'][^"']*$/.test(prefix);
 }
+// Custom Properties im style-Attribut eines SVG-Formelements tragen viewBox-Koordinaten (wie x/y-Attribute), keine CSS-Länge
+function svgCoordinateAt(source,region,index){
+ if(!region.kind.startsWith('inline')||index<region.start||index>=region.end)return false;
+ const open=source.lastIndexOf('<',region.start);
+ if(!/^<(?:g|circle|ellipse|line|polyline|polygon|path|rect|use)\b/.test(source.slice(open,region.start)))return false;
+ const before=source.slice(region.start,index), decl=before.slice(before.lastIndexOf(';')+1);
+ return /^\s*--[\w-]+\s*:/.test(decl);
+}
+function svgCoordinateProperty(source,region,d){ return d.prop.startsWith('--')&&svgCoordinateAt(source,region,d.start); }
 export function violations(source,file){
  const out=[],covered=[];
  for(const r of cssRegions(source,file))for(const d of [...declarations(source.slice(r.start,r.end),r.start,r.kind),...queryRegions(source.slice(r.start,r.end),r.start)]){
   covered.push([d.start,d.end]);
   if(svgTextRule(file,d,source))continue;
+  if(svgCoordinateProperty(source,r,d))continue;
   for(const m of maskComments(d.value).matchAll(PX)){
    if(disposition(d,m[0],source).action==='keep')continue;
    out.push(file+':'+lineAt(source,d.start+m.index)+' '+d.prop+': '+m[0]);
@@ -149,7 +163,7 @@ export function violations(source,file){
  for(const m of source.matchAll(/(?<![\w.])[-+]?(?:\d*\.\d+|\d+)px\b|\}px\b/g)){
   if(covered.some(([a,b])=>m.index>=a&&m.index<b)||comments.some(([a,b])=>m.index>=a&&m.index<b))continue;
   const line=lineAt(source,m.index),context=source.split('\n')[line-1].trim();
-  if(boundaryReason(file,context)||geometryAttribute(source,m.index))continue;
+  if(boundaryReason(file,context)||geometryAttribute(source,m.index)||cssRegions(source,file).some(r=>svgCoordinateAt(source,r,m.index)))continue;
   out.push(file+':'+line+' unbekannter px-Kontext: '+m[0]);
  }
  return [...new Set(out)];
@@ -175,6 +189,9 @@ test('API-px erlauben keine neuen CSS-px im selben Modul',()=>{
  assert.ok(violations('.a{font-size:16px}','src/scripts/effects/shapes.css').length);
 });
 test('SVG-Benutzerkoordinaten bleiben erlaubt; HTML-Typografie bleibt geschützt',()=>{
+ assert.deepEqual(violations('<svg><g class="dr" style={`--gx: ${x}px; --gy: 4px`}></g></svg>','src/test.astro'),[]);
+ assert.ok(violations('<div style={`--gx: ${x}px`}></div>','src/test.astro').length,'HTML-Element ist keine SVG-Geometrie');
+ assert.ok(violations('<svg><g style={`margin: ${x}px`}></g></svg>','src/test.astro').length,'nur Custom Properties');
  assert.deepEqual(violations('<svg viewBox="0 0 24 24"><text x="2px" font-size="12px">A</text></svg>','src/test.astro'),[]);
  assert.ok(violations('<svg><text style="font-size:12px">A</text></svg>','src/test.astro').length);
 });

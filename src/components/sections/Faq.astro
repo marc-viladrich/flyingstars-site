@@ -57,7 +57,14 @@ const ld = groups?.length ? JSON.stringify({ '@context': 'https://schema.org', '
   // Animiert die Höhe der Antwort mit Web Animations; bei reduzierter Bewegung oder pausierter Bewegung sofort.
   if (!CSS.supports('interpolate-size', 'allow-keywords')) {
     const still = () => matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('motion-paused');
-    const opts = { duration: 420, easing: 'cubic-bezier(0.3, 0.7, 0.2, 1)' };
+    // Dauer und Kurve aus denselben Tokens wie der CSS-Weg (global.css: --dur-disclose, --ease-glide), gelesen beim ersten
+    // Klick: beim Ausführen des Moduls kann WebKit das Stylesheet noch nicht angewendet haben (dann wären beide leer)
+    let opts: KeyframeAnimationOptions | undefined;
+    const timing = () => {
+      if (opts) return opts;
+      const root = getComputedStyle(document.documentElement), dur = root.getPropertyValue('--dur-disclose').trim();
+      return (opts = { duration: parseFloat(dur) * (dur.endsWith('ms') ? 1 : 1000), easing: root.getPropertyValue('--ease-glide').trim() });
+    };
     for (const details of document.querySelectorAll<HTMLDetailsElement>('.faq details')) {
       const summary = details.querySelector('summary'), answer = details.querySelector<HTMLElement>('.answer');
       if (!summary || !answer) continue;
@@ -70,11 +77,11 @@ const ld = groups?.length ? JSON.stringify({ '@context': 'https://schema.org', '
         answer.style.overflow = 'clip';
         if (!details.open || answer.dataset.closing) {
           delete answer.dataset.closing; details.open = true;
-          running = answer.animate([{ height: `${from}px`, opacity: from ? 1 : 0 }, { height: `${answer.scrollHeight}px`, opacity: 1 }], opts);
+          running = answer.animate([{ height: `${from}px`, opacity: from ? 1 : 0 }, { height: `${answer.scrollHeight}px`, opacity: 1 }], timing());
           running.onfinish = () => { running = null; answer.style.overflow = ''; };
         } else {
           answer.dataset.closing = '1';
-          running = answer.animate([{ height: `${from}px`, opacity: 1 }, { height: '0px', opacity: 0 }], opts);
+          running = answer.animate([{ height: `${from}px`, opacity: 1 }, { height: '0', opacity: 0 }], timing());
           running.onfinish = () => { running = null; delete answer.dataset.closing; details.open = false; answer.style.overflow = ''; };
         }
       });
@@ -88,10 +95,66 @@ const ld = groups?.length ? JSON.stringify({ '@context': 'https://schema.org', '
   .faq-jump ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2-5) var(--space-3); }
   /* Desktop: alle Gruppen in einer Reihe (Marc, Runde 5) */
   @media (min-width: 64em) { .faq-jump ul { flex-wrap: nowrap; } .faq-jump a { white-space: nowrap; } }
-  .faq-jump a { display: inline-flex; align-items: baseline; gap: var(--space-2); padding: var(--space-2-5) var(--space-4); border: 1px solid var(--line-strong); border-radius: 999px; color: var(--text); font: 500 1rem/1.2 var(--display); transition: border-color var(--dur-control), background-color var(--dur-control); }
+  .faq-jump a { display: inline-flex; align-items: baseline; gap: var(--space-2); padding: var(--space-2-5) var(--space-4); border: 1px solid var(--line-strong); border-radius: var(--radius-pill); color: var(--text); font: 500 1rem/1.2 var(--display); transition: border-color var(--dur-control), background-color var(--dur-control); }
   .faq-jump a:hover, .faq-jump a:focus-visible { border-color: var(--accent); background: rgb(var(--rgb-amber) / 0.08); }
   .faq-jump .mono { font-size: var(--text-xs); color: var(--accent); }
   /* Frage als Überschrift im summary: sieht aus wie bisher */
   .faq-q { font: inherit; letter-spacing: inherit; margin: 0; color: inherit; }
   .faq-grouped :global(.faq-group) { scroll-margin-top: 5.5rem; }
+</style>
+
+<style is:global>
+  /* FAQ-Raster, Akkordeon und Gruppen (aus global.css hierher, Audit 18.11.2026 C2): global, weil Antworten (FaqAnswer)
+     und Abschluss (CtaBox) eigene Komponenten sind; alles hängt an .faq-grid, .faq bzw. .faq-grouped */
+  .faq-grid { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: var(--head-gap-content) clamp(var(--space-7), 5vw, var(--space-20)); align-items: start; }
+  .faq-grid .intro { position: sticky; top: 6.875rem; }
+  .faq-grid .intro p { color: var(--muted); max-width: 40ch; }
+  .faq { border-top: 1px solid var(--line-strong); }
+  .faq details { border-bottom: 1px solid var(--line); }
+  .faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: var(--space-5); padding: var(--space-5-5) 0; font: 500 clamp(1.125rem, 1.5vw, 1.3125rem)/1.3 var(--display); letter-spacing: -0.01em; }
+  .faq summary::-webkit-details-marker { display: none; }
+  /* Akkordeon-Icon: Lucide „plus“ (Icon.astro), dreht beim Öffnen weich zum X (Runde 5) */
+  .faq-ico { flex: 0 0 auto; color: var(--text); transition: transform var(--dur-disclose) var(--ease-glide), color var(--dur-control); }
+  .faq summary:hover .faq-ico { color: var(--accent); }
+  .faq details[open] > summary .faq-ico { transform: rotate(45deg); }
+  /* Öffnen und Schließen weich über die Höhe. Moderner Weg: ::details-content + interpolate-size (Chromium). Browser ohne
+     interpolate-size (Safari 18, Firefox) übernimmt ein kleines Skript in Faq.astro (Web Animations auf .answer) mit
+     derselben Dauer und Kurve (--dur-disclose, --ease-glide). */
+  @supports (interpolate-size: allow-keywords) {
+    .faq details { interpolate-size: allow-keywords; }
+    .faq details::details-content { block-size: 0; overflow-y: clip; opacity: 0; transition: block-size var(--dur-disclose) var(--ease-glide), opacity var(--dur-standard) var(--ease-default), content-visibility var(--dur-disclose) allow-discrete; }
+    .faq details[open]::details-content { block-size: auto; opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) { .faq details::details-content, .faq-ico { transition: none; } }
+  html.motion-paused .faq details::details-content { transition: none; }
+  .faq .answer { padding: 0 0 var(--space-6); color: var(--muted); display: grid; gap: var(--space-2-5); max-width: 64ch; }
+  .faq .answer ul { margin: 0; padding-left: var(--space-4-5); display: grid; gap: var(--space-1-5); }
+  .faq .answer a { color: var(--text); border-bottom: 1px solid var(--line-strong); transition: border-color var(--dur-control); }
+  .faq .answer a:hover { border-color: var(--text); }
+  @media (--nav-collapsed) {
+    .faq-grid { grid-template-columns: 1fr; }
+    .faq-grid .intro { position: static; }
+  }
+
+  /* FAQ: Gruppen und Abschluss */
+  .faq-body { display: grid; gap: clamp(var(--space-9), 5vw, var(--space-14)); min-width: 0; }
+  .faq-group-h { font-size: clamp(1.3125rem, 1.8vw, 1.625rem); letter-spacing: -0.02em; margin-bottom: var(--space-3-5); }
+
+  /* FAQ mit Kategorien: Kopf über die volle Breite, je Kategorie eine Zeile mit mitlaufendem Kategorietitel links */
+  .faq-grouped .faq-grid { grid-template-columns: 1fr; row-gap: var(--head-gap-content); }
+  .faq-grouped .faq-grid .intro { position: static; max-width: none; margin-bottom: 0; }
+  .faq-grouped .faq-grid .intro > p { max-width: 52ch; }
+  .faq-grouped .faq-body { gap: 0; }
+  .faq-grouped .faq-group { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(var(--space-7), 5vw, var(--space-20)); align-items: start; padding: clamp(var(--space-7), 4vw, var(--space-12)) 0; border-top: 1px solid var(--line-strong); }
+  .faq-grouped .faq-group-h { position: sticky; top: 6.5rem; margin: 0; padding-top: var(--space-4-5); font: 500 clamp(1.625rem, 2.6vw, 2.375rem)/1.08 var(--display); letter-spacing: -0.025em; color: var(--head); }
+  .faq-grouped .faq-group-h::before { content: counter(faqgroup, decimal-leading-zero); counter-increment: faqgroup; display: block; margin-bottom: var(--space-3); font: 400 var(--text-xs)/1.5 var(--mono); letter-spacing: 0.1em; color: var(--accent); }
+  .faq-grouped .faq-body { counter-reset: faqgroup; }
+  .faq-grouped .faq { border-top: 0; }
+  @media (--nav-collapsed) {
+    .faq-grouped .faq-group { grid-template-columns: 1fr; gap: var(--space-1-5); }
+    .faq-grouped .faq-group-h { top: 3.625rem; z-index: 2; padding: var(--space-3-5) 0 var(--space-3); background: color-mix(in srgb, var(--ground) 92%, transparent); backdrop-filter: blur(0.625rem); -webkit-backdrop-filter: blur(0.625rem); font-size: 1.5rem; }
+    .faq-grouped .faq-group-h::before { display: inline; margin: 0 var(--space-2-5) 0 0; }
+  }
+
+  .faq-cta { margin-top: clamp(var(--space-10), 5vw, var(--space-18)); width: 100%; }
 </style>

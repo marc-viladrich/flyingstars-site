@@ -11,6 +11,9 @@ test('Eine Nummer besitzt Anzeige, Telefonlink und WhatsApp; Mail-Platzhalter un
  assert.equal(changed.phone.href,'tel:+492099991234');
  assert.equal(changed.whatsapp.href,'https://wa.me/4915799991234');
  assert.equal(contactText('{{contact.email}} {{contact.phone.label}} {{contact.phone.href}}',changed),'probe@example.org 0209 999 12 34 tel:+492099991234');
+ // Internationale Anzeige (Seitenbeschreibungen, Telefonknöpfe) folgt derselben Nummer
+ assert.equal(contactText('{{contact.phone.international}}'),'+49 209 88306562');
+ assert.equal(contactText('{{contact.phone.international}}',changed),'+49 209 9991234');
  const drift=legalContactDrift(legalDocuments(),changed);
  assert.equal(drift.filter(f=>f.fact==='email').length,6);
  assert.equal(drift.filter(f=>f.fact==='post.1').length,6);

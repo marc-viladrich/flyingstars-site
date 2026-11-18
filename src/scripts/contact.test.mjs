@@ -31,9 +31,62 @@ test('Honeypot, Vorschau und No-JS senden ohne Konfiguration keine Mail', async 
   t.mock.method(globalThis, 'fetch', () => { throw new Error('Kein Netzwerk erwartet'); });
   assert.equal((await (await post(request({ website: 'spam' }))).json()).ok, true);
   assert.equal((await (await post(request(), {})).json()).state, 'not-configured');
-  const response = await post(request({}, { accept: 'text/html' }), {});
-  assert.equal(response.status, 303);
-  assert.equal(response.headers.get('location'), 'https://site.example.test/danke/?state=not-configured');
+  // Ohne JavaScript: keine Weiterleitung auf „Wir haben eure Anfrage erhalten“, sondern eine lesbare Seite am Formularziel.
+  const response = await post(request({}, { accept: 'text/html', referer: 'https://site.example.test/en/kontakt/?text=privat' }), {});
+  assert.equal(response.status, 503);
+  assert.equal(response.headers.get('location'), null);
+  assert.match(response.headers.get('content-type'), /^text\/html/);
+  const html = await response.text();
+  assert.match(html, /<html lang="de">/); // Sprache folgt dem gesendeten Formularfeld, nicht dem Referrer
+  assert.match(html, /Es wurde nichts gesendet/);
+  assert.doesNotMatch(html, /Anfrage erhalten/);
+  assert.match(html, /href="\/en\/kontakt\/#anfrage"/); // zurück zum Formular, ohne privaten Query-Entwurf
+  assert.match(html, /href="mailto:team@flyingstars\.art"/);
+});
+
+test('Ohne JavaScript erscheinen Fehler als lesbare Seite mit Statuscode statt als JSON', async t => {
+  t.mock.method(globalThis, 'fetch', async () => new Response('vertraulich', { status: 500 }));
+  const invalid = await post(request({ email: 'ungültig', locale: 'nl' }, { accept: 'text/html' }));
+  assert.equal(invalid.status, 400);
+  const html = await invalid.text();
+  assert.match(html, /<html lang="nl">/);
+  assert.match(html, /Ongeldig e-mailadres\./);
+  assert.match(html, /<h1>De aanvraag kon niet worden verstuurd\.<\/h1>/);
+  const failed = await post(request({}, { accept: 'text/html' }));
+  assert.equal(failed.status, 502);
+  const text = await failed.text();
+  assert.ok(!text.includes('vertraulich'));
+  assert.ok(!text.includes('<script'));
+  assert.equal((await post(request({}, { accept: 'text/html' }))).headers.get('content-security-policy')?.startsWith("default-src 'none'"), true);
+});
+
+test('Erfolg ohne JavaScript: Anfrage auf die Danke-Seite, Herkunftsantwort auf deren Erfolgszustand', async t => {
+  t.mock.method(globalThis, 'fetch', async () => new Response('{}', { status: 201 }));
+  const inquiry = await post(request({ locale: 'en' }, { accept: 'text/html' }));
+  assert.equal(inquiry.status, 303);
+  assert.equal(inquiry.headers.get('location'), 'https://site.example.test/en/danke/');
+  const answer = (values, headers = {}) => new Request('https://site.example.test/api/contact', { method: 'POST', body: new URLSearchParams({ kind: 'quelle', locale: 'de', ref: '', ...values }), headers: { accept: 'text/html', ...headers } });
+  const sent = await post(answer({ quelle: 'linkedin' }));
+  assert.equal(sent.status, 303);
+  assert.equal(sent.headers.get('location'), 'https://site.example.test/danke/#danke-antwort');
+});
+
+test('Herkunftsfrage: Auswahl ist Pflicht, Erfolg nur nach bestätigtem Versand', async t => {
+  let calls = 0;
+  t.mock.method(globalThis, 'fetch', async () => { calls++; return new Response('{}', { status: 201 }); });
+  const answer = (values, headers = { accept: 'application/json' }) => new Request('https://site.example.test/api/contact', { method: 'POST', body: new URLSearchParams({ kind: 'quelle', locale: 'de', ref: 'a1b2c3d4e5f6', ...values }), headers });
+  const missing = await post(answer({}));
+  assert.equal(missing.status, 400);
+  assert.deepEqual(await missing.json(), { ok: false, detail: 'Bitte wählt eine Antwort aus.' });
+  assert.deepEqual(await (await post(answer({ quelle: 'ki' }), {})).json(), { ok: true, state: 'not-configured' });
+  assert.equal(calls, 0);
+  assert.deepEqual(await (await post(answer({ quelle: 'ki' }))).json(), { ok: true, state: 'sent' });
+  assert.equal(calls, 1);
+  const unconfigured = await post(answer({ quelle: 'ki' }, { accept: 'text/html' }), {});
+  assert.equal(unconfigured.status, 503);
+  const html = await unconfigured.text();
+  assert.match(html, /<h1>Eure Antwort wurde nicht gesendet\.<\/h1>/);
+  assert.match(html, /href="\/danke\/#danke"/);
 });
 
 test('Zeitfalle, Pflichtwerte, Länge, Headerzeichen und Auswahlwerte werden geprüft', async t => {

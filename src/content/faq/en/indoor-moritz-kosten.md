@@ -5,16 +5,16 @@ tags:
 order: 4
 draft: false
 translationContractVersion: 2
-translationSourceHash: b3817aa62b8db290f10b4b30b08eddd3d1141dc36994bd86572ee33f404a50fc
+translationSourceHash: 63b7b9993f7b4ca4a8ac97dc204d791ad5c53fb03fe07a64e4e07565b82db927
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: b3817aa62b8db290f10b4b30b08eddd3d1141dc36994bd86572ee33f404a50fc
+  sourceFingerprint: 63b7b9993f7b4ca4a8ac97dc204d791ad5c53fb03fe07a64e4e07565b82db927
   fields:
     - address: /body
-      sourceFingerprint: f8ee201ff4558b6232380023072f46e4464e14da134809c89c61a6e6b043c275
-      targetFingerprint: 981ac3435f8fe6a1d44b72840144e95d051895038570a70567c33eb197511783
+      sourceFingerprint: 95c1fcc74f65f030b32dd42452608d16708a2b21d8c428ae27a73d034a705608
+      targetFingerprint: c364aef805ceca83e8e3c3890223b98355fee2f799dae1cfda29fd707c9ee178
       status: adopted-existing
     - address: /question
       sourceFingerprint: e5c533ebfccb6a58f227417481c15d48e6de1ee408242e9c427f166043e30d1e
@@ -22,4 +22,4 @@ translationEvidence:
       status: adopted-existing
 ---
 
-Our indoor drone shows start at €15,000 (net) plus travel. With more drones and further extras, you can personalise your spectacle.
+Our indoor drone shows start at {{offer.indoor.priceAmount}} (net) plus travel. With more drones and further extras, you can personalise your spectacle.

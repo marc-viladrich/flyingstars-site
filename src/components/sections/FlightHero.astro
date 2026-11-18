@@ -2,7 +2,7 @@
 import MediaFrame from '../MediaFrame.astro';
 import FactList from '../FactList.astro';
 import { forPath } from '../../i18n/server';
-const { t, localHref } = forPath(Astro.url.pathname);
+const { t, localHref, fact } = forPath(Astro.url.pathname);
 import type { Section } from '../../content.config';
 import Accent from '../Accent.astro';
 import { videoPath, videos } from '../../lib/videos';
@@ -25,13 +25,13 @@ const sources = video === videos.showreel ? heroVideoSources() : undefined;
   <div class="video-player hero-media" aria-hidden="true"><img src={still.src} srcset={`${small.src} ${small.width}w, ${still.src} ${still.width}w`} sizes="(max-width: 43.75em) calc(100vw - 2.5rem), 64vw" width={still.width} height={still.height} alt="" loading="eager" fetchpriority="high" /></div>
   <video class="reel" data-reel data-reel-sources={sources ? JSON.stringify(sources) : undefined} data-src={videoPath(video)} data-src-small={videoPath(video, 'preview')} muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
   <div class="shade" aria-hidden="true"></div>
-  <div class="rec mono" aria-hidden="true">Showreel</div>
+  <div class="rec mono" data-loop aria-hidden="true">Showreel</div>
   <MediaFrame corners="content" as="div" aria-hidden="true" />
   <div class="hero-copy">
     {/* Keyword-Zeile (Moritz, 15.11.2026: „H1: Drohnenshow buchen / Gestalte dein Stück Himmel“) gehört zur h1 */}
     <h1 id="hero-h">{eyebrow && <><span class="kicker mono">{eyebrow}</span>{' '}</>}<Accent text={headline} />{words && words.length > 0 && <> <span class="word" data-rotate={words.map(word => word.value).join('|')}>{words[0].value}</span></>}</h1>
     <p class="lead">{text}</p>
-    <div class="actions"><a class="btn primary" href={localHref(cta.href)}>{cta.label}</a>{secondary && <a class="btn" href={localHref(secondary.href)}>{secondary.label}</a>}</div>
+    <div class="actions"><a class="btn primary" href={localHref(cta.href)}>{fact(cta.label)}</a>{secondary && <a class="btn" href={localHref(secondary.href)}>{fact(secondary.label)}</a>}</div>
   </div>
   {stats && stats.length > 0 && <FactList items={stats} variant="spec" label={t('flighthero.keyFacts')} />}
 </section>
@@ -41,7 +41,7 @@ const sources = video === videos.showreel ? heroVideoSources() : undefined;
   if (new URLSearchParams(location.search).get('hero') === 'voll') document.querySelector('.hero.side')?.classList.remove('side');
 </script>
 <style>
-  .hero h1 > .kicker { margin: 0 0 var(--space-3-5); }
+  .hero h1 > .kicker { margin: 0 0 var(--head-gap-kicker); }
   /* Handy: Das Standbild ist das erste Bild der Seite (LCP). Das Video blendet darüber ein und bleibt um 1 px kleiner, damit
      sein erstes Einzelbild (dasselbe Motiv) nicht als neues, späteres LCP-Element zählt. Der Ring bleibt dunkel wie der Grund
      (das Standbild blendet wie bisher aus). Ohne das maß Lighthouse mobil das Laden der ganzen Videodatei als LCP (3,7 statt
@@ -50,4 +50,4 @@ const sources = video === videos.showreel ? heroVideoSources() : undefined;
     .hero > .reel { clip-path: inset(var(--space-0-25) round var(--radius-14)); }
   }
 </style>
-<script>import '../../scripts/hero-reel';</script>
+<script>import '../../scripts/hero-reel'; import '../../scripts/css-loop';</script>

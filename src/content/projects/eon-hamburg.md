@@ -1,14 +1,26 @@
 ---
 {
   "title": "E.ON: The Future is Now",
-  "client": "E.ON",
-  "date": "2026-09-15",
-  "location": "Hamburg",
+  "client": {
+    "project": "eon-hamburg",
+    "field": "client"
+  },
+  "date": {
+    "project": "eon-hamburg",
+    "field": "date"
+  },
+  "location": {
+    "project": "eon-hamburg",
+    "field": "location"
+  },
   "occasion": "firma",
-  "summary": "Mit 500 Drohnen machten wir den Hamburger Hafen zur größten Bühne der E.ON New Energy Experience 2026.",
+  "summary": "Mit {{project.eon-hamburg.drones}} Drohnen machten wir den Hamburger Hafen zur größten Bühne der E.ON New Energy Experience 2026.",
   "featured": false,
   "draft": false,
-  "drones": 500
+  "drones": {
+    "project": "eon-hamburg",
+    "field": "drones"
+  }
 }
 ---
 

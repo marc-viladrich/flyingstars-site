@@ -3,22 +3,30 @@
 // Kicker und Schlagzeile bilden gemeinsam die Überschrift (Moritz' Texte, 15.11.2026: „H2: Kicker / Headline“, die
 // erste Zeile ist die SEO-Zeile). Der Kicker steht deshalb als Block im h2; der Abstand bleibt wie vorher (--kicker-gap).
 import Accent from './Accent.astro';
-interface Props { kicker?: string; headline: string; text?: string; id: string; level?: 'h1' | 'h2' | 'h3'; class?: string; variant?: 'default' | 'embedded' | 'contents' | 'display'; titleClass?: string; textClass?: string; kickerClass?: string; revealTitle?: boolean }
-const { kicker, headline, text, id, level: H = 'h2', class: cls, variant = 'default', titleClass, textClass, kickerClass, revealTitle } = Astro.props;
+// grouped: Text und Link/Knöpfe stehen als EIN Block (.head-body) nach der Überschrift, damit ein Layout Überschrift und
+// Text nebeneinanderstellen kann (Nachhaltigkeit breit), ohne die Kopfrollen selbst nachzubauen.
+// next: Rolle (--head-gap-<next>) des Abstands zum Block, der dem Kopf im Dokument folgt und unter ihm steht.
+// Standardköpfe haben „content“ (.sec-head setzt ihn); Einbettungen nennen ihre Rolle, wenn ihr Layout einen Block darunter
+// stellt (TextMedia: „text“, Preisseite: „tool“). Die Browserprüfung (layout-audit.mjs, head-gap) misst genau diesen Vertrag.
+interface Props { kicker?: string; headline: string; text?: string; id: string; level?: 'h1' | 'h2' | 'h3'; class?: string; variant?: 'default' | 'embedded' | 'contents' | 'display'; titleClass?: string; textClass?: string; kickerClass?: string; revealTitle?: boolean; grouped?: boolean; next?: 'content' | 'text' | 'tool' }
+const { kicker, headline, text, id, level: H = 'h2', class: cls, variant = 'default', titleClass, textClass, kickerClass, revealTitle, grouped = false } = Astro.props;
+const next = Astro.props.next ?? (variant === 'default' ? 'content' : undefined);
+const paragraphs = text ? text.split(/\n\s*\n/).map((para) => para.trim()) : [];
 ---
-<div class:list={['section-head', { 'sec-head': variant === 'default' }, cls]} data-section-head={variant}>
+<div class:list={['section-head', { 'sec-head': variant === 'default' }, cls]} data-section-head={variant} data-head-next={next}>
   <H id={id} class={titleClass} data-reveal-group={revealTitle ? '' : undefined}>{kicker && <><span class:list={['kicker mono', kickerClass]}>{kicker}</span>{' '}</>}<span class="head-line"><slot name="title"><Accent text={headline} /></slot></span></H>
   {/* Mehrere Absätze (Leerzeile im YAML) werden mehrere p, z. B. Moritz' dreiteilige Einleitungen */}
-  {text && text.split(/\n\s*\n/).map((para) => <p class={textClass}>{para.trim()}</p>)}
-  <slot />
+  {grouped && (paragraphs.length > 0 || Astro.slots.has('default'))
+    ? <div class="head-body">{paragraphs.map((para) => <p class={textClass}>{para}</p>)}<slot /></div>
+    : <>{paragraphs.map((para) => <p class={textClass}>{para}</p>)}<slot /></>}
 </div>
 <style is:global>
   /* Abstände im Kopf kommen nur aus den Rollen --head-gap-* (global.css), für jede Variante und jede Einbettung gleich:
      Kicker → Überschrift, Überschrift/Text → Text, Text → Link oder Knöpfe. Den Abstand zum Inhalt setzt .sec-head bzw.
      das einbettende Layout mit --head-gap-content. */
-  .section-head[data-section-head]:not([data-section-head="contents"]) { display: grid; row-gap: var(--head-gap-text); align-content: start; }
-  .section-head[data-section-head] > :is(h1, h2, h3, p) { margin-block: 0; }
-  .section-head[data-section-head] > :is(.actions, a.link, a.btn, :is(p, div):has(> :is(a.link, a.btn)):not(:has(> :not(a, br)))) { margin-top: calc(var(--head-gap-cta) - var(--head-gap-text)); }
+  .section-head[data-section-head]:not([data-section-head="contents"]), .section-head > .head-body { display: grid; row-gap: var(--head-gap-text); align-content: start; }
+  :is(.section-head[data-section-head], .section-head > .head-body) > :is(h1, h2, h3, p) { margin-block: 0; }
+  :is(.section-head[data-section-head], .section-head > .head-body) > :is(.actions, a.link, a.btn, :is(p, div):has(> :is(a.link, a.btn)):not(:has(> :not(a, br)))) { margin-top: calc(var(--head-gap-cta) - var(--head-gap-text)); }
   .section-head[data-section-head="contents"] { display: contents; }
   .section-head :is(h1, h2, h3) > .kicker { margin: 0 0 var(--head-gap-kicker); }
   .section-head :is(h1, h2, h3) > .head-line { display: block; }
