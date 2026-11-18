@@ -2,7 +2,7 @@
 import {startingPrice} from '../../lib/price.mjs';
 import {record,field} from 'astro-frontend-editor/markers';
 import {durationValues} from '../../content/show-duration.mjs';
-import configuratorStyles from '../../styles/show-configurator.css?url';
+import configuratorStyles from '../../styles/show-configurator.css?inline';
 import SectionHead from '../SectionHead.astro';
 import { forPath } from '../../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
@@ -72,7 +72,7 @@ const ticks = [DRONES_MIN, 300, 500, DRONES_MAX];
 ---
 {/* Explicit URL: the catch-all route imports the pricing template on every page.
      Keep its namespaced styles on pages that actually render the configurator. */}
-<link rel="stylesheet" href={configuratorStyles} />
+<style is:inline set:html={configuratorStyles}></style>
 <section class:list={['cfg is-individual', { 'has-head': hasHead }]} id={id} aria-labelledby="cfg-h">
     {hasHead && <div class="cfg-head"><slot name="head" /></div>}
     {hasHead && Astro.slots.has('facts') && <div class="cfg-facts"><slot name="facts" /></div>}
