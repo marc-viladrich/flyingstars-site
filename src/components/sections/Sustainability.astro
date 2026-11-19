@@ -3,6 +3,10 @@ import {field} from 'astro-frontend-editor/markers';
 import {SUSTAINABILITY_PILLARS,localizedBlock} from '../../content/shared-blocks.mjs';
 import {forPath} from '../../i18n/server';
 const {locale,fact}=forPath(Astro.url.pathname);
+// Startseite: die Scrollstory behält ihr Riesenformat (Marc, Runde 5: „Das Riesenformat bleibt der Scrollstory vorbehalten“);
+// überall sonst steht ihr Kopf in der Hero-Stufe (Runde 9, Nachhaltigkeitsseite). Benannte Ausnahme im Wächter
+// layout-audit.mjs head-size (.eco-head-xl).
+const home = /^\/(?:en\/|nl\/)?$/.test(Astro.url.pathname);
 import IconFeature from '../IconFeature.astro';
 import SectionHead from '../SectionHead.astro';
 import FactList from '../FactList.astro';
@@ -64,14 +68,16 @@ const factItems = await Promise.all(facts.map(async (fact) => {
        Bild, Bühne, Szene oder Galerie („Feste feiern …“, „Faszinierend wie Feuerwerk …“, „Kinder und Hunde willkommen“)
        steht die normale Section-Überschrift mit Verlaufswort, enger an ihrem Bild. Ohne Bild ab breitem Desktop
        zweispaltig: Schlagzeile links, Einleitung und Link rechts unten bündig („weniger Whitespace, weniger Scrolling“). */}
-  {staged ? null : lead
+  {staged || gallery ? null : lead
     ? <SectionHead class="eco-head-std" next="text" kicker={kicker} headline={headline} id={headingId} level={H} />
-    : <SectionHead variant="display" class:list={['eco-head', { 'eco-split': split }]} titleClass="eco-title" revealTitle grouped={split} kicker={kicker} headline={plain(headline)} text={text} id={headingId} level={H}>
+    : <SectionHead variant="display" class:list={['eco-head', { 'eco-split': split, 'eco-head-xl': home }]} titleClass="eco-title" revealTitle grouped={split} kicker={kicker} headline={plain(headline)} text={text} id={headingId} level={H}>
         <Fragment slot="title">{lines.map((line, i) => <span data-reveal style={`--i:${i}`} class:list={lineClass(line, i)}>{whole(line) ? plain(line) : accentParts(line).map((p) => p.g ? <span class="grad">{p.t}</span> : p.t)} </span>)}</Fragment>
         {cta && <p class="eco-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
       </SectionHead>}
   {/* Galerie (Über uns): Einleitung links schmal, Bilder von Festen groß daneben */}
-  {gallery && <Gallery set={gallery} class="eco-gallery" after="text"><div class="eco-lead-copy">
+  {/* Kopf im Kopf-Platz der Galerie (Runde 9): bei zwei Leitern steigen die Bilder neben ihn, sonst steht er darüber;
+       Kopf → Text und Kopf → Bilder setzt die Galerie mit den Kopfrollen */}
+  {gallery && <Gallery set={gallery} class="eco-gallery"><SectionHead slot="head" next="text" kicker={kicker} headline={headline} id={headingId} level={H} /><div class="eco-lead-copy">
     {text && text.split(/\n\s*\n/).map((para) => <p>{para.trim()}</p>)}
     {cta && <p class="eco-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
   </div></Gallery>}
@@ -172,5 +178,9 @@ const factItems = await Promise.all(facts.map(async (fact) => {
     :global(html:is(.reveal, .motion-paused)) .eco-staged { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-rows: auto 1fr; grid-template-areas: "head stage" "copy stage"; }
     .eco-stage { align-self: center; }
   }
-  @media (--grid-stacked) { .eco-lead.has-img { grid-template-columns: 1fr; } .eco-staged { --stage-min: clamp(15rem, 70vw, 22rem); } }
+  /* Gestapelt: die Show-Bühne nimmt ihre Höhe aus der Spaltenbreite (3 : 2, 15–32rem) statt einer festen Höhe bis 22rem
+     (Marc, Runde 9: Bilder auf Tablet „viel zu klein“); dieselbe Regel wie die Show-Folge der Startseite (himmel.css).
+     Die Spalte ist auf die Containerbreite begrenzt (minmax(0, 1fr)): Mindesthöhe und Seitenverhältnis ergeben sonst eine
+     Mindestbreite (390 px: 360 statt 350 px, der Text ragte 10 px über die Kante; layout-audit contain) */
+  @media (--grid-stacked) { .eco-lead.has-img { grid-template-columns: 1fr; } .eco-staged { --stage-min: 15rem; grid-template-columns: minmax(0, 1fr); } .eco-show { aspect-ratio: 3 / 2; max-height: 32rem; } }
 </style>

@@ -41,6 +41,8 @@ const pins = places.map((place, i) => ({
   reach: place.address ? reach[place.address] : undefined,
 }));
 const withAddress = pins.some((pin) => pin.lines);
+// Zeigezellen des Lichtkegels: HIT × HIT über der Karte (die Regeln dazu stehen unten, je Spalte und Zeile eine)
+const HIT = 12;
 ---
 <section class:list={['section loc', { alt: surface === 'alt' }]} id={id} aria-labelledby={`${id}-h`} data-loc>
   <div class="loc-grid">
@@ -68,6 +70,12 @@ const withAddress = pins.some((pin) => pin.lines);
     <figure class="loc-map">
       <div class="loc-stage">
         <img src="/media/standort-nrw.svg" width={NRW_MAP.width} height={NRW_MAP.height} alt="" loading="lazy" decoding="async" />
+        {/* Wandernder Lichtkegel (Runde 9, Marc: „ähnlicher Moving-Spotlight-Effekt wie bei der Indoor-Show“): dieselbe Mechanik
+             wie die Punktfelder der Indoor-Preiskarte (LandingPrice.astro), unsichtbare Zeigezellen setzen per :has(:hover) die
+             Lage, nur CSS. Statt jeden der 1062 Punkte einzeln zu färben, liegt EINE Lichtebene darüber: die Punktkarte als Maske,
+             geschnitten mit einem Kreis an --sx/--sy. Nur mit Maus, nicht bei reduzierter Bewegung oder Pause. */}
+        <span class="loc-lit" aria-hidden="true"></span>
+        <span class="loc-hit" aria-hidden="true">{Array.from({ length: HIT * HIT }, (_, i) => <i class={`hc${i % HIT} hr${Math.floor(i / HIT)}`}></i>)}</span>
         {pins.map((pin, i) => <span class:list={['loc-pin', pin.tone]} data-pin={i} style={`left:${pin.x.toFixed(2)}%;top:${pin.y.toFixed(2)}%`} aria-hidden="true"></span>)}
       </div>
       <figcaption>
@@ -139,5 +147,23 @@ const withAddress = pins.some((pin) => pin.lines);
   .loc-links a { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--text); }
   .loc-links a :global(.ico) { flex: none; color: var(--pin); }
   @media (prefers-reduced-motion: reduce) { .loc-pin::before, .loc-pin::after, .loc-place::before, .loc-ico::after { transition: none; } }
+
+  /* Lichtkegel: Lage gleitet (registrierte Eigenschaften; ohne @property springt sie von Zelle zu Zelle, das Licht bleibt).
+     Maske wie DotField: Langschreibweisen, sonst setzt WebKit das mask-composite zurück. */
+  @property --sx { syntax: '<percentage>'; inherits: true; initial-value: 50%; }
+  @property --sy { syntax: '<percentage>'; inherits: true; initial-value: 50%; }
+  .loc-lit, .loc-hit { display: none; }
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    :global(html:not(.motion-paused)) .loc-lit { display: block; position: absolute; inset: 0; pointer-events: none; opacity: 0; background: var(--amber);
+      -webkit-mask-image: url(/media/standort-nrw-maske.svg), radial-gradient(circle 8.5rem at var(--sx) var(--sy), #000 30%, transparent);
+      mask-image: url(/media/standort-nrw-maske.svg), radial-gradient(circle 8.5rem at var(--sx) var(--sy), #000 30%, transparent);
+      -webkit-mask-size: 100% 100%, 100% 100%; mask-size: 100% 100%, 100% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+      -webkit-mask-composite: source-in; mask-composite: intersect;
+      transition: opacity var(--dur-standard) var(--ease-default), --sx var(--dur-slow) var(--ease-default), --sy var(--dur-slow) var(--ease-default); }
+    :global(html:not(.motion-paused)) .loc-hit { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); position: absolute; inset: 0; }
+    .loc-stage:has(.loc-hit i:hover) .loc-lit { opacity: 0.85; }
+    .loc-stage:has(.hc0:hover) { --sx: 4.17%; } .loc-stage:has(.hc1:hover) { --sx: 12.50%; } .loc-stage:has(.hc2:hover) { --sx: 20.83%; } .loc-stage:has(.hc3:hover) { --sx: 29.17%; } .loc-stage:has(.hc4:hover) { --sx: 37.50%; } .loc-stage:has(.hc5:hover) { --sx: 45.83%; } .loc-stage:has(.hc6:hover) { --sx: 54.17%; } .loc-stage:has(.hc7:hover) { --sx: 62.50%; } .loc-stage:has(.hc8:hover) { --sx: 70.83%; } .loc-stage:has(.hc9:hover) { --sx: 79.17%; } .loc-stage:has(.hc10:hover) { --sx: 87.50%; } .loc-stage:has(.hc11:hover) { --sx: 95.83%; }
+    .loc-stage:has(.hr0:hover) { --sy: 4.17%; } .loc-stage:has(.hr1:hover) { --sy: 12.50%; } .loc-stage:has(.hr2:hover) { --sy: 20.83%; } .loc-stage:has(.hr3:hover) { --sy: 29.17%; } .loc-stage:has(.hr4:hover) { --sy: 37.50%; } .loc-stage:has(.hr5:hover) { --sy: 45.83%; } .loc-stage:has(.hr6:hover) { --sy: 54.17%; } .loc-stage:has(.hr7:hover) { --sy: 62.50%; } .loc-stage:has(.hr8:hover) { --sy: 70.83%; } .loc-stage:has(.hr9:hover) { --sy: 79.17%; } .loc-stage:has(.hr10:hover) { --sy: 87.50%; } .loc-stage:has(.hr11:hover) { --sy: 95.83%; }
+  }
   @media (--grid-stacked) { .loc-grid { grid-template-columns: 1fr; } .loc-map { justify-self: start; } }
 </style>

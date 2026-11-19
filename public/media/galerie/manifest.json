@@ -1487,6 +1487,251 @@
       ],
       "sourceWidth": 1726,
       "sourceHeight": 1080
+    },
+    {
+      "set": "willkommen",
+      "slug": "lueneburg-1",
+      "kind": "image",
+      "client": "Deutsche Umwelthilfe und Hansestadt Lüneburg",
+      "show": "Böllerfreies Silvester in Lüneburg",
+      "location": "Rathaus, Lüneburg",
+      "year": 2025,
+      "drones": null,
+      "alt": "Neben dem beleuchteten Lüneburger Rathaus zeigen Drohnen einen durchgestrichenen Böller.",
+      "source": {
+        "url": "https://drive.google.com/file/d/1fu_6zhM28HZ37lz2JCNfMJUHlvjOXDvR/view",
+        "timestampSeconds": 389
+      },
+      "reference": null,
+      "rightsNote": "Standbild aus dem FlyingStars-Fundus (Drive, Auswahl Runde 9, /tmp/fs-r9/g/kandidaten.md); Urheberangabe und Freigabe für die Galerie bestätigen.",
+      "files": [
+        {
+          "file": "willkommen/lueneburg-1-800.webp",
+          "width": 800,
+          "height": 450,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/lueneburg-1-800.avif",
+          "width": 800,
+          "height": 450,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/lueneburg-1-1600.webp",
+          "width": 1600,
+          "height": 900,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/lueneburg-1-1600.avif",
+          "width": 1600,
+          "height": 900,
+          "format": "avif",
+          "upscaled": false
+        }
+      ],
+      "sourceWidth": 1600,
+      "sourceHeight": 900
+    },
+    {
+      "set": "willkommen",
+      "slug": "fuer-natur-1",
+      "kind": "image",
+      "client": "Deutsche Umwelthilfe",
+      "show": "#Böllerciao mit der Deutschen Umwelthilfe",
+      "location": "Berlin",
+      "year": 2023,
+      "drones": null,
+      "alt": "Über den Dächern von Berlin schreiben Drohnen „Für Natur“ in Violett und Grün, im Vordergrund schauen Menschen zu.",
+      "source": {
+        "url": "https://drive.google.com/file/d/1jEdYjHFp0u-RaIaZi7T0DC6PqC6IozNQ/view",
+        "timestampSeconds": 13.5
+      },
+      "reference": "src/content/projects/boellerciao.md",
+      "rightsNote": "Standbild aus dem FlyingStars-Fundus (Drive, Auswahl Runde 9, /tmp/fs-r9/g/kandidaten.md); Urheberangabe und Freigabe für die Galerie bestätigen.",
+      "files": [
+        {
+          "file": "willkommen/fuer-natur-1-800.webp",
+          "width": 800,
+          "height": 450,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/fuer-natur-1-800.avif",
+          "width": 800,
+          "height": 450,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/fuer-natur-1-1600.webp",
+          "width": 1600,
+          "height": 900,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/fuer-natur-1-1600.avif",
+          "width": 1600,
+          "height": 900,
+          "format": "avif",
+          "upscaled": false
+        }
+      ],
+      "sourceWidth": 1600,
+      "sourceHeight": 900
+    },
+    {
+      "set": "willkommen",
+      "slug": "open-flair-1",
+      "kind": "image",
+      "client": "Kein Bock auf Nazis",
+      "show": "Protestshow auf dem Open Flair",
+      "location": "Eschwege",
+      "year": 2025,
+      "drones": null,
+      "alt": "Über dem nächtlichen Festivalgelände schreiben Drohnen „Gegen den Rechtsruck“.",
+      "source": {
+        "url": "https://drive.google.com/file/d/1m5oqhfJl0WzzMivajrS0w9V1-a4pl-K9/view",
+        "timestampSeconds": 35.6
+      },
+      "reference": null,
+      "rightsNote": "Standbild aus dem FlyingStars-Fundus (Drive, Auswahl Runde 9, /tmp/fs-r9/g/kandidaten.md); Urheberangabe und Freigabe für die Galerie bestätigen.",
+      "files": [
+        {
+          "file": "willkommen/open-flair-1-800.webp",
+          "width": 800,
+          "height": 889,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/open-flair-1-800.avif",
+          "width": 800,
+          "height": 889,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/open-flair-1-1440.webp",
+          "width": 1440,
+          "height": 1600,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/open-flair-1-1440.avif",
+          "width": 1440,
+          "height": 1600,
+          "format": "avif",
+          "upscaled": false
+        }
+      ],
+      "sourceWidth": 1440,
+      "sourceHeight": 1600
+    },
+    {
+      "set": "willkommen",
+      "slug": "open-flair-2",
+      "kind": "image",
+      "client": "Kein Bock auf Nazis",
+      "show": "Protestshow auf dem Open Flair",
+      "location": "Eschwege",
+      "year": 2025,
+      "drones": null,
+      "alt": "Ein Regenbogen aus Drohnen steht über dem beleuchteten Festivalgelände.",
+      "source": {
+        "url": "https://drive.google.com/file/d/1m5oqhfJl0WzzMivajrS0w9V1-a4pl-K9/view",
+        "timestampSeconds": 16.52
+      },
+      "reference": null,
+      "rightsNote": "Standbild aus dem FlyingStars-Fundus (Drive, Auswahl Runde 9, /tmp/fs-r9/g/kandidaten.md); Urheberangabe und Freigabe für die Galerie bestätigen.",
+      "files": [
+        {
+          "file": "willkommen/open-flair-2-800.webp",
+          "width": 800,
+          "height": 889,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/open-flair-2-800.avif",
+          "width": 800,
+          "height": 889,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/open-flair-2-1440.webp",
+          "width": 1440,
+          "height": 1600,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/open-flair-2-1440.avif",
+          "width": 1440,
+          "height": 1600,
+          "format": "avif",
+          "upscaled": false
+        }
+      ],
+      "sourceWidth": 1440,
+      "sourceHeight": 1600
+    },
+    {
+      "set": "willkommen",
+      "slug": "grossarl-1",
+      "kind": "image",
+      "client": null,
+      "show": "Silvester 2022/23 in Großarl",
+      "location": "Großarl",
+      "year": 2022,
+      "drones": null,
+      "alt": "Gäste in Winterjacken schauen in der Silvesternacht auf ein doppeltes Herz aus Drohnen.",
+      "source": {
+        "url": "https://drive.google.com/file/d/1Ke9nAU0d971DSxiHdL5CmN19Iz2LXK2O/view",
+        "timestampSeconds": 2.6
+      },
+      "reference": null,
+      "rightsNote": "Standbild aus dem FlyingStars-Fundus (Drive, Auswahl Runde 9, /tmp/fs-r9/g/kandidaten.md); Urheberangabe und Freigabe für die Galerie bestätigen.",
+      "files": [
+        {
+          "file": "willkommen/grossarl-1-800.webp",
+          "width": 800,
+          "height": 450,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/grossarl-1-800.avif",
+          "width": 800,
+          "height": 450,
+          "format": "avif",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/grossarl-1-1600.webp",
+          "width": 1600,
+          "height": 900,
+          "format": "webp",
+          "upscaled": false
+        },
+        {
+          "file": "willkommen/grossarl-1-1600.avif",
+          "width": 1600,
+          "height": 900,
+          "format": "avif",
+          "upscaled": false
+        }
+      ],
+      "sourceWidth": 1600,
+      "sourceHeight": 900
     }
   ]
 }

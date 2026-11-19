@@ -528,7 +528,11 @@ td.us { color: var(--text); background: var(--fill-soft); }
 }
 /* Scrollstory aus dem Prototyp (fix/minimal-fonts), Abstände auf --gutter umgestellt */
 .eco-head { grid-template-columns: 1fr; align-items: end; margin-bottom: var(--head-gap-content); }
-.eco-title { font: 700 clamp(3rem, 8.2vw, 8.5rem)/0.92 var(--display); letter-spacing: -0.045em; display: grid; max-width: none; }
+/* Scrollstory-Kopf in der Hero-Stufe (--text-page) wie jeder Seitenkopf; vorher bis 8,5rem (Marc, Runde 9: „unverhältnismäßig
+   groß … sonst keine andere Headline, die so krass groß ist“). Wächter: layout-audit.mjs head-size */
+.eco-title { font: 700 var(--text-page)/1 var(--display); letter-spacing: -0.035em; display: grid; max-width: none; }
+/* Ausnahme Startseite (Sustainability.astro setzt .eco-head-xl): das Riesenformat der Scrollstory aus Runde 5 */
+.eco-head-xl .eco-title { font-size: clamp(3rem, 8.2vw, 8.5rem); line-height: 0.92; letter-spacing: -0.045em; }
 .eco-title span { display: block; width: fit-content; }
 .eco-head p { color: var(--muted); max-width: 40ch; justify-self: start; }
 .eco-scrolly { margin: 0 calc(var(--gutter) * -1); border-block: 1px solid var(--line); }

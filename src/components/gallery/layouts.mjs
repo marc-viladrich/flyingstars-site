@@ -34,10 +34,19 @@ export const GALLERY_LAYOUTS = {
     ],
     field: { inset: '-10% 30% 26% 0%', m: '-12% 28% 30% -4%', focus: '60% 62%' },
   },
-  // Über uns #nachhaltigkeit: Feste für alle, Zeichen für Demokratie, Publikum unter dem Himmel.
+  // Über uns #nachhaltigkeit: Feste ohne Böller, Zeichen für Umwelt und Demokratie.
   willkommen: {
     ar: '1 / 1',
-    items: [{ slug: 'hochzeit-1', pos: '50% 50%' }, { slug: 'frieden-1', pos: '41% 50%' }, { slug: 'boellerciao-1', pos: '50% 50%' }],
+    // Runde 9 (Marc: „noch mehr Bilder“ zum Thema): zwei Leitern wie Werbung, nur Shows mit Bezug zu Umwelt und Haltung
+    // (Auswahl /tmp/fs-r9/g/kandidaten.md, Quellen im Manifest). Schrift- und Bildmotive wechseln sich ab. Obere Zeile
+    // Großarl (Silvester ohne Böller), „Für Natur“ (#Böllerciao), Lüneburg (durchgestrichener Böller); untere „Gegen den
+    // Rechtsruck“ (Open Flair), #Böllerciao (Kreis über dem Publikum), Regenbogen (Open Flair). Der Hund (#Böllerciao) und
+    // der Schriftzug #Böllerciao sind breiter als das Quadrat und deshalb nicht dabei; hochzeit-1 und frieden-1 haben hier
+    // keinen Themenbezug und bleiben im Manifest.
+    items: [
+      { slug: 'grossarl-1', pos: '50% 50%' }, { slug: 'fuer-natur-1', pos: '58% 50%' }, { slug: 'lueneburg-1', pos: '45% 50%' },
+      { slug: 'open-flair-1', pos: '50% 50%' }, { slug: 'boellerciao-1', pos: '50% 50%' }, { slug: 'open-flair-2', pos: '50% 50%' },
+    ],
     field: { inset: '-10% 30% 26% 0%', m: '-12% 28% 30% -4%', focus: '60% 62%' },
   },
   // Indoor #referenzen: Standbilder aus dem Siemens-Video der Hannover Messe 2025 (echte FlyingStars-Show).
@@ -78,6 +87,16 @@ export const GALLERY_TEXT = {
     alt: { en: 'Three people look up at a circle of yellow and red drones in the night sky.', nl: 'Drie mensen kijken naar een cirkel van gele en rode drones aan de nachtlucht.' } },
   'extraschicht-1': { name: { de: 'Extraschicht', en: 'Extraschicht', nl: 'Extraschicht' }, place: { de: 'Duisburg', en: 'Duisburg', nl: 'Duisburg' },
     alt: { en: 'The audience at the inner harbour looks at a blue sphere of drones above the water.', nl: 'Publiek aan de binnenhaven kijkt naar een blauwe bol van drones boven het water.' } },
+  'lueneburg-1': { name: { de: 'Böllerfreies Silvester', en: 'Firework-free New Year’s Eve', nl: 'Vuurwerkvrije jaarwisseling' }, place: { de: 'Lüneburg', en: 'Lüneburg', nl: 'Lüneburg' },
+    alt: { en: 'Next to the illuminated Lüneburg town hall, drones show a crossed-out firecracker.', nl: 'Naast het verlichte stadhuis van Lüneburg tonen drones een doorgestreept rotje.' } },
+  'fuer-natur-1': { name: { de: '#Böllerciao', en: '#Böllerciao', nl: '#Böllerciao' }, place: { de: 'Berlin', en: 'Berlin', nl: 'Berlijn' },
+    alt: { en: 'Above the rooftops of Berlin, drones write “Für Natur” (for nature) in purple and green while people watch in the foreground.', nl: 'Boven de daken van Berlijn schrijven drones „Für Natur” (voor de natuur) in paars en groen, op de voorgrond kijken mensen toe.' } },
+  'open-flair-1': { name: { de: 'Open Flair', en: 'Open Flair', nl: 'Open Flair' }, place: { de: 'Eschwege', en: 'Eschwege', nl: 'Eschwege' },
+    alt: { en: 'Above the festival grounds at night, drones write “Gegen den Rechtsruck” (against the shift to the right).', nl: 'Boven het festivalterrein schrijven drones ’s nachts „Gegen den Rechtsruck” (tegen de ruk naar rechts).' } },
+  'open-flair-2': { name: { de: 'Open Flair', en: 'Open Flair', nl: 'Open Flair' }, place: { de: 'Eschwege', en: 'Eschwege', nl: 'Eschwege' },
+    alt: { en: 'A rainbow of drones above the illuminated festival grounds.', nl: 'Een regenboog van drones boven het verlichte festivalterrein.' } },
+  'grossarl-1': { name: { de: 'Silvester', en: 'New Year’s Eve', nl: 'Oudejaarsavond' }, place: { de: 'Großarl', en: 'Großarl', nl: 'Großarl' },
+    alt: { en: 'Guests in winter jackets watch a double heart of drones on New Year’s Eve.', nl: 'Gasten in winterjassen kijken op oudejaarsavond naar een dubbel hart van drones.' } },
   'herz-1': { place: { de: 'Nieheim', en: 'Nieheim', nl: 'Nieheim' },
     alt: { en: 'A red heart made of drones encloses a smaller blue heart above a dark meadow.', nl: 'Een rood hart van drones omsluit een kleiner blauw hart boven een donkere weide.' } },
   'frieden-1': { place: { de: 'Nieheim', en: 'Nieheim', nl: 'Nieheim' },

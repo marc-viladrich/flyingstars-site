@@ -12,6 +12,8 @@
 //             folgt dem Kopf Fließtext, gilt immer --head-gap-text (Runde 7)
 //   hero-top  erste Zeile (Kicker oder h1) einer Seite mit .page-top nicht auf --hero-top (Marc, 02.11.2026: „Die Hero
 //             section sollte überall auf der gleichen Höhe anfangen“). Ausnahme: Seiten, deren Kopf mit einem Bild beginnt (.page-404)
+//   head-size Section-Überschrift größer als die Hero-Stufe (--text-page) bzw. die h1 der Seite (Marc, Runde 9: „Die Alternative
+//             zum Feuerwerk“ war mit 8,5rem größer als jeder Seitenkopf)
 //   rail      Zeitstrahl (.ruler Netzplan, .lf-steps Ablauf, .ms Meilensteine): jeder Punkt liegt mit seinem Mittelpunkt auf
 //             der Linie, die Linie reicht vom ersten bis zum letzten Punkt und nicht darüber hinaus (Marc, 18.11.2026, iPhone:
 //             erster und letzter Punkt saßen auf der Zahl statt auf der Linie, die Linie endete vor dem letzten Eintrag)
@@ -22,7 +24,7 @@
 import { pathToFileURL } from 'node:url';
 import { chromium, webkit } from 'playwright';
 
-const categories = ['orphan', 'contain', 'empty-h', 'overflow', 'cta', 'hero-top', 'head-gap', 'rail', 'deco', 'text-overlap'];
+const categories = ['orphan', 'contain', 'empty-h', 'overflow', 'cta', 'hero-top', 'head-gap', 'head-size', 'rail', 'deco', 'text-overlap'];
 
 // Self-contained so Playwright can run the same inspection in the crawl and in fixtures.
 export function inspectLayout({ checks }) {
@@ -209,6 +211,22 @@ export function inspectLayout({ checks }) {
         const gap = block.top - nearest.rect.bottom;
         if (Math.abs(gap - T) > 2) r.push({ k: 'head-gap', what: `${name(group)} ${role}: ${Math.round(gap)} px statt ${Math.round(T)}${gap < -1 ? ' (überlappt)' : ''}` });
       }
+    }
+  }
+  // head-size: keine Überschrift in einem Section-Kopf über der Hero-Stufe; Maßstab ist --text-page oder, falls größer, die h1
+  // der Seite (Startseite: Showreel-Kopf). Gemessen an der Zeile .head-line, sonst an der Überschrift selbst.
+  if (checks.includes('head-size')) {
+    const probe = document.createElement('div'); probe.style.cssText = 'position:absolute;font-size:var(--text-page)'; document.body.append(probe);
+    const step = parseFloat(getComputedStyle(probe).fontSize); probe.remove();
+    const size = (h) => parseFloat(getComputedStyle(h.querySelector(':scope > .head-line') ?? h).fontSize);
+    const h1 = [...document.querySelectorAll('main h1')].map(size), limit = Math.max(step, ...h1) + 1;
+    // Benannte Ausnahme: die Scrollstory der Startseite (.eco-head-xl) behält ihr Riesenformat, das Marc in Runde 5 bestellt
+    // hat („Das Riesenformat bleibt der Scrollstory vorbehalten“); Runde 9 galt nur der Nachhaltigkeitsseite. Weitere
+    // Ausnahmen nur mit eigenem Eintrag hier, nie pauschal.
+    const EXEMPT = '.eco-head-xl';
+    for (const h of document.querySelectorAll('main [data-section-head] :is(h2, h3)')) {
+      if (!h.getBoundingClientRect().height || h.closest(EXEMPT)) continue;
+      const fs = size(h); if (fs > limit) r.push({ k: 'head-size', what: `${name(h)} ${Math.round(fs)} px über der Hero-Stufe ${Math.round(limit - 1)} px` });
     }
   }
   // rail: Punkte und Linie eines Zeitstrahls. Linienabschnitte sind Pseudo-Elemente (Liste oder Eintrag, ::before/::after)

@@ -61,6 +61,17 @@ export const layoutCases = [
     assert.deepEqual(await inspect(), [], 'Karten bleiben Inhalt, Kopf über Fließtext mit Textabstand besteht');
   }],
 
+  ['Section-Überschrift über der Hero-Stufe wird gemeldet', async (page) => {
+    await page.setContent(`<style>:root { --text-page: 80px; } body { margin: 0; }</style>
+      <main><section id="hero"><h1 style="font-size: 80px">Seitenkopf</h1></section>
+      <section id="eco"><div data-section-head="display"><h2 style="font-size: 136px"><span class="head-line">Die Alternative</span></h2></div></section>
+      <section id="ok"><div data-section-head="default"><h2 style="font-size: 64px">Normal</h2></div></section>
+      <section id="start"><div class="eco-head-xl" data-section-head="display"><h2 style="font-size: 136px">Kein Knall.</h2></div></section></main>`);
+    assert.deepEqual(await page.evaluate(inspectLayout, { checks: ['head-size'] }), [
+      { k: 'head-size', what: '#eco h2 136 px über der Hero-Stufe 80 px' },
+    ]);
+  }],
+
   ['Team: zweite Karte angeschnitten, beide Enden erreichbar', async (page) => {
     await page.setViewportSize({ width: 390, height: 844 });
     const inspect = (...checks) => page.evaluate(inspectLayout, { checks });
