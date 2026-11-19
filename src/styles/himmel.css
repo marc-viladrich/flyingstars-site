@@ -48,8 +48,9 @@
    Flächen unsichtbar. Oben reicht die Fläche nach oben, unten (gespiegelt, versetzt) nach unten; liegt darunter eine andere
    Farbfläche, deckt deren Fläche das untere Band, und ihr oberes übernimmt. An solchen Kanten keine Trennlinie (Marc, 18.11.).
    Jede neue Fläche mit eigener Hintergrundfarbe gehört in diese Liste; tools/himmel/uebergaenge-pruefen.mjs wacht darüber. */
-:is(.section.alt, .c-setlist, .team-sec, .footer) { --ueb-h: clamp(2rem, calc(var(--section) * 0.5), 4.5rem); --ueb-maske: url(/media/uebergang.svg); position: relative; }
-@media (--mobile) { :is(.section.alt, .c-setlist, .team-sec, .footer) { --ueb-h: 2rem; --ueb-maske: url(/media/uebergang-schmal.svg); } }
+:root { --ueb-h: 11rem; --ueb-maske: url(/media/uebergang.svg); }
+@media (--mobile) { :root { --ueb-h: 4.875rem; --ueb-maske: url(/media/uebergang-schmal.svg); } }
+:is(.section.alt, .c-setlist, .team-sec, .footer) { position: relative; }
 :is(.section.alt, .c-setlist, .team-sec, .footer)::before, :is(.section.alt, .c-setlist, .team-sec)::after {
   content: ''; position: absolute; left: 0; right: 0; height: var(--ueb-h); pointer-events: none; background-color: inherit;
   -webkit-mask: var(--ueb-maske) repeat-x 0 0 / auto 100%; mask: var(--ueb-maske) repeat-x 0 0 / auto 100%;
@@ -59,6 +60,23 @@
 :is(.section.alt, .c-setlist, .team-sec):nth-of-type(2n)::before { -webkit-mask-position: 37rem 0; mask-position: 37rem 0; }
 .section.alt + .section.alt { border-top: 1px solid var(--line); }
 .section.alt + .section.alt::before, .section.alt:has(+ .section.alt)::after { content: none; }
+/* Das Band liegt in der Nachbarfläche. Dort auf der betroffenen Seite die volle Bandhöhe freihalten. */
+:is(main, main > div) > section:has(
+  + :is(.section.alt, .c-setlist, .team-sec),
+  + :is(script, noscript) + :is(.section.alt, .c-setlist, .team-sec),
+  + noscript + script + :is(.section.alt, .c-setlist, .team-sec)
+):not(.section.alt:has(+ .section.alt)),
+main:has(+ .footer) > section:last-of-type,
+main:has(+ .footer) > div:last-of-type > section:last-of-type {
+  padding-bottom: max(var(--section), calc(var(--ueb-h) + var(--ueb-inhaltsversatz, 0rem)));
+}
+:is(main, main > div) > :is(.section.alt, .c-setlist, .team-sec) + section:not(:is(.section.alt, .c-setlist, .team-sec)),
+:is(main, main > div) > :is(.section.alt, .c-setlist, .team-sec) + script + section:not(:is(.section.alt, .c-setlist, .team-sec)) {
+  padding-top: max(var(--section), var(--ueb-h));
+}
+/* Einblendende Inhalte dürfen auch während ihres vertikalen Versatzes nicht in das Band ragen. */
+.reveal .tempo { --ueb-inhaltsversatz: var(--reveal-offset); }
+.reveal .team-sec { --ueb-inhaltsversatz: var(--reveal-member-offset); }
 /* Footer (Runde 7, Marc 19.11.2026: „keine Divider-Line, sondern unsere Dot-Divider“): eigene, dunklere Fläche (--night)
    mit demselben Übergang nach oben. Dunkler als die Seite und als die Alt-Flächen, darum ist die Kante über jeder letzten
    Section eindeutig, und die Punktwolke steht auf Nachthimmel. Der Footer ist positioniert und malt seine Fläche, deckt also
