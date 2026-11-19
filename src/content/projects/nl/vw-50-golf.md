@@ -13,7 +13,7 @@
     "project": "vw-50-golf",
     "field": "location"
   },
-  "occasion": "firma",
+  "occasion": "unternehmen",
   "summary": "Voor het 50-jarig jubileum van de VW Golf verzorgde FlyingStars een droneshow bij Scalaria aan de Wolfgangsee.",
   "featured": false,
   "draft": false,

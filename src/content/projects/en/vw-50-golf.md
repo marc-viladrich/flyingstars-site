@@ -13,7 +13,7 @@
     "project": "vw-50-golf",
     "field": "location"
   },
-  "occasion": "firma",
+  "occasion": "unternehmen",
   "summary": "FlyingStars performed a drone show at Scalaria on Lake Wolfgangsee for the VW Golf's 50th anniversary.",
   "featured": false,
   "draft": false,

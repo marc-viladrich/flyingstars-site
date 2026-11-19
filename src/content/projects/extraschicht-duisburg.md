@@ -13,7 +13,8 @@
     "project": "extraschicht-duisburg",
     "field": "location"
   },
-  "occasion": "stadt",
+  "occasion": "gemeinden",
+  "moreOccasions": ["konzerte-festivals"],
   "summary": "{{project.extraschicht-duisburg.drones}} Drohnen inszenierten zur Extraschicht eine rund 15-minütige Show über dem Duisburger Innenhafen.",
   "featured": false,
   "draft": false,

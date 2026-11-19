@@ -11,6 +11,7 @@ const locale = localeFromPath(Astro.url.pathname);
 import type { CollectionEntry } from 'astro:content';
 import { videoPath } from '../../lib/videos';
 import CtaBox from '../CtaBox.astro';
+import { inquiryPath } from '../../content/occasions.mjs';
 import { optimizedImage } from '../../lib/media';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -111,7 +112,8 @@ if (single && runIn) single.label = lead.slice(single.value.length + 1);
     <img class="next-poster" src={nextImage.src} {...nextImage.attributes} width={nextImage.width} height={nextImage.height} alt="" loading="lazy" decoding="async" />
     <div class="shade" aria-hidden="true"></div><div class="in"><span class="k mono">{t('casestudy.nextProject')} {count(nextData.order)} / {count(available.length)} · {nextData.drones} {t('configuratorteaser.drones')}</span><b style={`--chars:${Math.max(...nextData.name.split(/\s+/).map((word) => word.length))}`}>{nextData.name} <i aria-hidden="true">→</i></b></div>
   </a>}
-  <section class="section" aria-labelledby="cta-h"><CtaBox headline={data.cta.title} text={data.cta.text} button={{ label: t('chopper404.requestAShow'), href: '/#anfrage' }} id="cta-h" /></section>
+  {/* Anfrage mit dem Hauptanlass dieser Show vorausgewählt (Marc, 19.11.2026), z. B. /?anlass=konzerte-festivals#anfrage */}
+  <section class="section" aria-labelledby="cta-h"><CtaBox headline={data.cta.title} text={data.cta.text} button={{ label: t('chopper404.requestAShow'), href: inquiryPath(project.data.occasion, '/#anfrage') }} id="cta-h" /></section>
 </div>
 {/* Fallstudien-Stile (src/styles/case.css) laden nur die Fallstudien-Routen, nicht das Basis-CSS der übrigen Seiten.
      Bewusst als globaler Style-Block und nicht als Skript-Import: ein Import verschiebt Vites Bündelreihenfolge vor global.css,

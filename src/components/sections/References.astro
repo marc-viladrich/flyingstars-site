@@ -1,5 +1,6 @@
 ---
 import {factText} from '../../content/show-extras.mjs';
+import {occasionLabel} from '../../content/occasions.mjs';
 import { localizedCollection } from '../../i18n/content';
 import { forPath } from '../../i18n/server';
 const { t } = forPath(Astro.url.pathname);
@@ -15,7 +16,7 @@ import type { Section } from '../../content.config';
 import SectionHead from '../SectionHead.astro';
 import ProjectCard from '../projects/ProjectCard.astro';
 import MediaCard from '../MediaCard.astro';
-import { OCCASIONS, DRONE_BANDS, type Occasion, yearOf, bandOf, dronesOf, kickOf, hasVideo, sortReferences } from '../projects/refs';
+import { OCCASION_IDS, occasionsOf, DRONE_BANDS, yearOf, bandOf, dronesOf, kickOf, hasVideo, sortReferences } from '../projects/refs';
 type Props = Extract<Section, { type: 'references' }> & { index: number };
 type Project = CollectionEntry<'projects'>;
 const { headline, text, filters, id = 'referenzen', index, kicker } = Astro.props;
@@ -25,7 +26,8 @@ const projects = sortReferences(await localizedCollection('projects', locale, p 
 const featured = projects.filter(hasVideo);
 const rest = projects.filter((p) => !hasVideo(p));
 const count = (fn: (p: Project) => unknown, v: unknown) => projects.filter((p) => fn(p) === v).length;
-const occasions = (Object.keys(OCCASIONS) as Occasion[]).map((k) => ({ v: k, l: t(OCCASIONS[k]), n: count((p) => p.data.occasion, k) })).filter((o) => o.n);
+// Pills aus der zentralen Anlass-Liste; ein Anlass ohne Referenz erscheint nicht (z. B. Indoor, Stand 19.11.2026)
+const occasions = OCCASION_IDS.map((k) => ({ v: k, l: occasionLabel(k, locale), n: projects.filter((p) => occasionsOf(p).includes(k)).length })).filter((o) => o.n);
 const years = [...new Set(projects.map(yearOf))].sort((a, b) => b - a).map((y) => ({ v: String(y), l: String(y), n: count(yearOf, y) }));
 const bands = DRONE_BANDS.map((b) => ({ v: b.id, l: t('projectcard.valueDrones', { v0: t(b.labelKey) }), n: count(bandOf, b.id) })).filter((o) => o.n);
 const selects = [
@@ -33,7 +35,7 @@ const selects = [
   filters.includes('drones') && bands.length > 1 && { param: 'drohnen', label: t('configuratorteaser.drones'), all: t('references.allSizes'), values: bands },
 ].filter(Boolean) as { param: string; label: string; all: string; values: { v: string; l: string; n: number }[] }[];
 const showPills = filters.includes('occasion') && occasions.length > 1;
-const data = (p: Project) => ({ 'data-anlass': p.data.occasion ?? '', 'data-jahr': String(yearOf(p)), 'data-drohnen': bandOf(p) ?? '' });
+const data = (p: Project) => ({ 'data-anlass': occasionsOf(p).join(' '), 'data-jahr': String(yearOf(p)), 'data-drohnen': bandOf(p) ?? '' });
 
 // Formationskarte für Referenzen ohne Foto: ein Stern aus Lichtpunkten über einem ruhigen Himmel, deterministisch je
 // Referenz. Etwa jeder zehnte Punkt funkelt (docs/DESIGN.md, lebendige Wolke), bei reduzierter Bewegung steht alles still.
@@ -157,7 +159,8 @@ const formation = (seed: string) => {
     const apply = (fromUser: boolean) => {
       const want = read();
       let n = 0;
-      for (const item of items) { const ok = want.every(([k, v]) => !v || item.dataset[k] === v); item.hidden = !ok; if (ok) n++; }
+      // Anlass: Liste (Haupt- und weitere Anlässe), Jahr und Drohnen: ein Wert
+      for (const item of items) { const ok = want.every(([k, v]) => !v || (k === 'anlass' ? item.dataset[k]!.split(' ').includes(v) : item.dataset[k] === v)); item.hidden = !ok; if (ok) n++; }
       lists.forEach((l) => { l.hidden = !l.querySelector('.ref-item:not([hidden])'); });
       const active = want.some(([, v]) => v);
       status.querySelector('[data-n]')!.textContent = String(n);

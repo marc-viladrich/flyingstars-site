@@ -13,7 +13,7 @@
     "project": "fruehlingsfest-essen",
     "field": "location"
   },
-  "occasion": "stadt",
+  "occasion": "gemeinden",
   "summary": "FlyingStars created a custom drone show as part of the spring festival programme.",
   "featured": false,
   "draft": false,

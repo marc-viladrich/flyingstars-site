@@ -13,7 +13,7 @@
     "project": "puma-bundesliga",
     "field": "location"
   },
-  "occasion": "firma",
+  "occasion": "unternehmen",
   "drones": {
     "project": "puma-bundesliga",
     "field": "drones"

@@ -93,8 +93,10 @@ if (form) {
     form.querySelector<HTMLElement>('[data-extras-field]')!.hidden = false;
   }
   const occasion = prefill.anlass;
+  // Ein Anlass aus der Adresse ist ausdrückliche Absicht (Fallstudie, Startseiten-Karte, Konfigurator) und schlägt die
+  // Vorauswahl der Anlass-Seite; ändern kann man ihn danach frei.
   const occasionInput = occasion ? [...form.querySelectorAll<HTMLInputElement>('[name=anlass]')].find((input) => input.value === occasion) : undefined;
-  if (occasionInput && !form.querySelector('[name=anlass]:checked')) occasionInput.checked = true;
+  if (occasionInput) occasionInput.checked = true;
   // Freitext gehört nicht dauerhaft in die URL. Der erste HTTP-Aufruf ist zu diesem
   // Zeitpunkt bereits beim Hoster angekommen; das ersetzt keine Log-Minimierung.
   if (params.has('text') || params.has('show')) {

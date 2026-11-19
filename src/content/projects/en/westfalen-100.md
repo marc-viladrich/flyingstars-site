@@ -13,7 +13,7 @@
     "project": "westfalen-100",
     "field": "location"
   },
-  "occasion": "firma",
+  "occasion": "unternehmen",
   "summary": "A custom show with {{project.westfalen-100.drones}} drones in Münster celebrated Westfalen AG's 100th anniversary.",
   "featured": false,
   "draft": false,

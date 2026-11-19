@@ -4,9 +4,10 @@ import type { CollectionEntry } from 'astro:content';
 import { videos } from '../../lib/videos';
 type Project = CollectionEntry<'projects'>;
 
-export {REFERENCE_OCCASIONS as OCCASIONS} from '../../content/occasions.mjs';
-import {REFERENCE_OCCASIONS} from '../../content/occasions.mjs';
-export type Occasion = keyof typeof REFERENCE_OCCASIONS;
+import {OCCASION_IDS,projectOccasions} from '../../content/occasions.mjs';
+export {OCCASION_IDS};
+/** Haupt- und weitere Anlässe (Referenzfilter: eine Show erscheint unter jedem ihrer Anlässe). */
+export const occasionsOf = (p: Project): string[] => projectOccasions(p.data);
 // Drohnenzahl in drei Stufen, angelehnt an die Pakete (SPARK bis 150, darüber HORIZON, ab 300+ ODYSSEY-Größe)
 export const DRONE_BANDS = [
   { id: 'bis-150', labelKey: 'references.upTo', test: (n: number) => n <= 150 },

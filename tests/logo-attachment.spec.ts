@@ -34,7 +34,7 @@ test('upload → use → visible removable attachments → real multipart on fin
  await form.locator('[data-logo-item=drones] button').click();
  await expect(form.locator('[data-logo-item=drones]')).toHaveCount(0);
  expect(posts).toHaveLength(0);
- await form.locator('label:has([name=anlass][value=firma])').click();
+ await form.locator('label:has([name=anlass][value=unternehmen])').click();
  await form.locator('[name=ort]').fill('Osnabrück');await form.locator('[data-date-open]').check();
  await form.locator('[data-next]').click();await form.locator('[name=name]').fill('Logo Test');await form.locator('[name=email]').fill('test@example.test');
  await form.locator('button[type=submit]').click();

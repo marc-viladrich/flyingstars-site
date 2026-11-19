@@ -13,7 +13,7 @@
     "project": "siemens-mobility",
     "field": "location"
   },
-  "occasion": "firma",
+  "occasion": "unternehmen",
   "summary": "{{project.siemens-mobility.drones}} drones verbeeldden de toespraak van de CEO bij een Siemens Mobility-evenement op de Wannsee-Terrassen.",
   "featured": false,
   "draft": false,

@@ -13,7 +13,8 @@
     "project": "nfl-muenchen",
     "field": "location"
   },
-  "occasion": "firma",
+  "occasion": "unternehmen",
+  "moreOccasions": ["agenturen"],
   "summary": "Eine Show mit {{project.nfl-muenchen.drones}} Drohnen im Münchner Olympiapark kündigte die Carolina Panthers als Heimteam des NFL International Game an.",
   "featured": false,
   "draft": false,

@@ -13,7 +13,8 @@
     "project": "nfl-muenchen",
     "field": "location"
   },
-  "occasion": "firma",
+  "occasion": "unternehmen",
+  "moreOccasions": ["agenturen"],
   "summary": "A {{project.nfl-muenchen.drones}}-drone show at Munich's Olympiapark announced the Carolina Panthers as the home team for the NFL International Game.",
   "featured": false,
   "draft": false,

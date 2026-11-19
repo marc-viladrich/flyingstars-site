@@ -13,7 +13,7 @@
     "project": "sonnemondsterne",
     "field": "location"
   },
-  "occasion": "stadt",
+  "occasion": "konzerte-festivals",
   "summary": "FlyingStars vloog bij het SonneMondSterne-festival een show met {{project.sonnemondsterne.drones}} drones voor meer dan 30.000 bezoekers.",
   "featured": false,
   "draft": false,

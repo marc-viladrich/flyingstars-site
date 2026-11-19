@@ -1,5 +1,6 @@
 ---
 import {factText} from '../../content/show-extras.mjs';
+import {occasionLabel,occasionHref} from '../../content/occasions.mjs';
 import MediaCard from '../MediaCard.astro';
 import { forPath } from '../../i18n/server';
 const { t, localHref, locale } = forPath(Astro.url.pathname);
@@ -14,15 +15,16 @@ const headingId = `${id}-h`;
 // Mehr als vier Karten: Slider, die vier wichtigsten sichtbar, der Rest läuft rechts aus dem Bild (Marc, 31.10.2026)
 const slider = cards.length > 4;
 const H = index === 0 ? 'h1' : 'h2';
-const items = await Promise.all(cards.map(async card => ({ ...card, media: await optimizedImage(card.image.src, 640, 480), small: await optimizedImage(card.image.src, 320, 240) })));
+// Kicker und Ziel einer Karte mit Anlass kommen aus der zentralen Anlass-Liste (src/content/occasions.json)
+const items = await Promise.all(cards.map(async card => ({ ...card, kicker: card.occasion ? occasionLabel(card.occasion, locale) : card.category, href: card.cta.href ?? occasionHref(card.occasion!), media: await optimizedImage(card.image.src, 640, 480), small: await optimizedImage(card.image.src, 320, 240) })));
 ---
 <section class="section" id={id} aria-labelledby={headingId}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
   <div class:list={['occasions', { 'occ-slider': slider }]} data-count={items.length} role={slider ? 'region' : undefined} aria-label={slider ? t('occasions.occasionsScrollHorizontally') : undefined} tabindex={slider ? 0 : undefined}>
-    {items.map((card, i) => <MediaCard variant="occasion" title={card.title} summary={factText(card.text,locale)} kicker={card.category} season={card.season?.join(',')} i={i}>
+    {items.map((card, i) => <MediaCard variant="occasion" title={card.title} summary={factText(card.text,locale)} kicker={card.kicker} data-anlass={card.occasion} season={card.season?.join(',')} i={i}>
       <img slot="media" src={card.media.src} srcset={`${card.small.src} 320w, ${card.media.src} 640w`} sizes="(max-width: 40em) calc(100vw - 3rem), (max-width: 68.75em) 45vw, 23vw" width={card.media.width} height={card.media.height} alt={card.image.alt} loading="lazy" decoding="async" />
       <Fragment slot="facts">{card.facts && card.facts.length > 0 && <ul class="facts">{card.facts.map(fact => <li>{factText(fact.value,locale)}</li>)}</ul>}</Fragment>
-      <Fragment slot="actions"><a class="link" href={localHref(card.cta.href)}>{card.cta.label} <span aria-hidden="true">→</span></a>{card.download && <a class="dl mono" href={localHref(card.download.href)} type="application/pdf" target="_blank" rel="noopener">{card.download.label} <span aria-hidden="true">↓</span></a>}</Fragment>
+      <Fragment slot="actions"><a class="link" href={localHref(card.href)}>{card.cta.label} <span aria-hidden="true">→</span></a>{card.download && <a class="dl mono" href={localHref(card.download.href)} type="application/pdf" target="_blank" rel="noopener">{card.download.label} <span aria-hidden="true">↓</span></a>}</Fragment>
     </MediaCard>)}
   </div>
   {slider && <SliderNav />}

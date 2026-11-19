@@ -13,7 +13,7 @@
     "project": "fruehlingsfest-essen",
     "field": "location"
   },
-  "occasion": "stadt",
+  "occasion": "gemeinden",
   "summary": "FlyingStars verzorgde een eigen droneshow als onderdeel van het programma van het voorjaarsfeest.",
   "featured": false,
   "draft": false,

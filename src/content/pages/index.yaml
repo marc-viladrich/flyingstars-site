@@ -81,47 +81,47 @@ sections:
     kicker: Veranstaltungen
     headline: Für jeden Anlass das passende *Spektakel*
     cards:
-      - category: Unternehmen
+      - occasion: unternehmen
         title: An eurem Logo kommt niemand vorbei
         text: Eure Claims, Produkte und Story, aus Kilometern zu sehen. Für strahlende Marketing-KPIs oder als Gesprächsthema bei der Firmenfeier.
         image: { src: "https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg", alt: "Volkswagen-Logo aus Drohnen über dem Wolfgangsee, Gäste auf einer Terrasse", width: 1920, height: 1281 }
         facts: [ {"_key":"k_fa5696e53d86593fb5c4","value":"Erfahrung aus 150+ Shows mit tausenden Zuschauer:innen"}, {"_key":"k_ef4d20e6e23698f677f1","value":"Ihr segnet alle Motive markensicher ab"}, {"_key":"k_c86071087a2b56eaf89f","value":"Wir übernehmen alle Genehmigungen"} ]
-        cta: { label: Für Unternehmen, href: /drohnenshow-werbung/ }
+        cta: { label: Für Unternehmen }
         _key: k_b81c8aa30611eb91692a
-      - category: Agenturen
+      - occasion: agenturen
         title: Wir fliegen, ihr glänzt
         text: Stecht bei eurem Pitch mit einer Werbemaßnahme hervor, die bisher kaum eine Agentur bieten kann – und fast garantiert in der Presse landet.
         image: { src: "https://flyingstars-relaunch.vercel.app/media/projekte/ford.jpg", alt: Ford-Schriftzug aus Drohnen über dem Werksgelände in Köln, width: 1600, height: 900 }
         facts: [ {"_key":"k_dbe87518b0de611daea8","value":"20+ Referenzen als Anbieter im Hintergrund"}, {"_key":"k_1ed7d18fd84211270b81","value":"Großer Spielraum für Provisionen"}, {"_key":"k_472e026516f5c4ec5417","value":"NDA auf Wunsch möglich"} ]
-        cta: { label: Für Agenturen, href: "/drohnenshow-werbung/#agenturen" }
+        cta: { label: Für Agenturen }
         _key: k_a03e52c907d2cd5b020d
-      - category: Gemeinden
+      - occasion: gemeinden
         title: Ein Fest, bei dem alle mitfeiern
         text: "Ob beim Volksfest, zu Weihnachten oder zu Silvester und Neujahr: Eure Wahrzeichen am Himmel verbinden die ganze Gemeinde."
         image: { src: "https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg", alt: Weltkugel aus Drohnen über dem Rhein bei der Extraschicht in Duisburg, width: 2544, height: 1493 }
         facts: [ {"_key":"k_8ffd61ed67fcb00c916c","value":"Familienfreundlich ohne Knall und ohne Müll"}, {"_key":"k_3dc515322cc15f410b0b","value":"Stabiles Sicherheitskonzept für Großveranstaltungen"}, {"_key":"k_4b32252c8291bfb523a4","value":"10 % Rabatt für frühe Buchungen im Vorjahr"} ]
-        cta: { label: Für Gemeinden, href: "/kontakt/?anlass=stadt" }
+        cta: { label: Für Gemeinden }
         _key: k_1304e6d833f230e8e89e
-      - category: Konzerte & Festivals
+      - occasion: konzerte-festivals
         title: Die Aufführung eures Lebens
         text: Perfekt abgestimmt auf die Musik entsteht ein spektakuläres Gesamtkunstwerk, das eure Besucher:innen mitreißt.
         image: { src: "https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijders.jpg", alt: "Schriftzug Bokkenrijders aus Drohnen über der Freilichtbühne in Maastricht, Publikum im Vordergrund", width: 1600, height: 900 }
         facts: [ {"_key":"k_1fae717b431538abda93","value":"Erfahrung aus 25+ Musicals, Konzerten und Festivals"}, {"_key":"k_56527763d1e0988969c3","value":"Kurzfristige Vorbereitung in unter zwei Wochen möglich"}, {"_key":"k_8c5fc6d6807dba5a897d","value":"Koordination mit Bühnentechnik und Musiker:innen"} ]
-        cta: { label: "Für Konzerte & Festivals", href: /musikalischer-teaser-bokkenrijders/ }
+        cta: { label: "Für Konzerte & Festivals" }
         _key: k_d47a8ce2e40175c20824
-      - category: Privat
+      - occasion: privat
         title: Der Hingucker im Familienalbum
         text: Überrascht eure Liebsten mit einem Highlight, das bisher kaum eine Hochzeit, ein Heiratsantrag oder ein Geburtstag bietet.
         image: { src: "https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg", alt: Zwei Blüten aus Drohnen am Abendhimmel über einer Hochzeitsfeier, width: 1518, height: 854 }
         facts: [ {"_key":"k_95e416914f8f765c759a","value":"Eure Initialen, Geburtsdaten oder Liebesschwüre"}, {"_key":"k_1bbac5ff279bd896dfc8","value":"Kaum Aufwand für euch – wir organisieren alles"}, {"_key":"k_e0268d8514ab1904ccb2","value":"Kleine Pakete passend zu eurem Budget"} ]
-        cta: { label: Für Privatpersonen, href: /drohnenshow-hochzeit/ }
+        cta: { label: Für Privatpersonen }
         _key: k_e784a3482a7296d6e2a3
-      - category: Indoor
+      - occasion: indoor
         title: Holt den Himmel rein
         text: Wir hüllen eure Halle für ein paar Minuten in pure Magie. Für Messen, überdachte Konzerte oder ganz besondere Jubiläen.
         image: { src: "https://flyingstars.art/wp-content/uploads/2025/04/drohnenshow-indoor-2.jpg", alt: Leuchtende Drohnen in Formation vor der Bühne eines voll besetzten Saals, width: 1200, height: 764 }
         facts: [ {"_key":"k_25df9662ccdb280b6523","value":"Die Alternative zur Lichtshow"}, {"_key":"k_ac44ab461441e0d3a01e","value":"Wir erfüllen strenge Sicherheitsauflagen"}, {"_key":"k_4b852be218db38f099c0","value":"Schon ab {{offer.indoor.ceilingMin}} Metern Deckenhöhe"} ]
-        cta: { label: Indoor-Drohnenshows, href: /drohnenshow-indoor/ }
+        cta: { label: Indoor-Drohnenshows }
         _key: k_b52ddd7e74db16f54f73
     _key: k_a953dd6748c619e1514d
 

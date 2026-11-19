@@ -13,7 +13,7 @@
     "project": "nfl-berlin-game",
     "field": "location"
   },
-  "occasion": "firma",
+  "occasion": "unternehmen",
   "drones": {
     "project": "nfl-berlin-game",
     "field": "drones"

@@ -85,7 +85,7 @@ for (const locale of ['de', 'en', 'nl'] as const) {
    await expect(page).toHaveURL(url => url.pathname === pricing && url.searchParams.get('paket') === 'SPARK' && url.hash === '#anfrage');
 
    const form = page.locator('#inquiry-form');
-   for (const selector of ['[name=anlass][value=firma]', '[name=paket][value=SPARK]', '[name=datum-offen]']) {
+   for (const selector of ['[name=anlass][value=unternehmen]', '[name=paket][value=SPARK]', '[name=datum-offen]']) {
     const option = form.locator(selector);
     await option.press('Space');
     await expect(option).toBeChecked();

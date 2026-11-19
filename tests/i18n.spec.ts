@@ -130,7 +130,7 @@ for (const locale of ['en', 'nl'] as const) {
     await page.goto(`/${locale}/kontakt/?paket=offen&extras=express&text=Hello&show=Custom#anfrage`);
     await expect(page.locator('input[name=paket][value=offen]')).toBeChecked();
     await expect(page).not.toHaveURL(/[?&](text|show)=/);
-    await page.locator('label').filter({ has: page.locator('input[name=anlass][value=firma]') }).click();
+    await page.locator('label').filter({ has: page.locator('input[name=anlass][value=unternehmen]') }).click();
     await page.locator('#f-ort').fill('Osnabrück');
     await page.locator('[data-date-open]').check();
     await page.locator('[data-next]').click();

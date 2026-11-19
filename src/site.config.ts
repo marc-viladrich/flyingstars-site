@@ -1,6 +1,7 @@
 import navigationData from './content/navigation.json' with {type:'json'};
 import messages from './i18n/ui.json' with {type:'json'};
 import { createTranslator } from './i18n/ui.mjs';
+import { menuOccasions, OCCASIONS } from './content/occasions.mjs';
 // Navigation nach Moritz' Sitemap-Entwurf (31.10.2026, noch nicht von FlyingStars abgenommen): Anlässe, Preise,
 // Referenzen, Über uns, FAQ, Blog; Kontakt über den Button „Show anfragen“. „Anlässe“ ist nur ein Menüpunkt ohne eigene
 // Seite. „Unternehmen“ führt auf die Startseite (Moritz' Option b: die Startseite ist auf „Drohnenshow“ optimiert, eine
@@ -16,6 +17,11 @@ const localized=(value:unknown,path:(string|number)[]=[]):any=>{
  return value;
 };
 const navigation=localized(navigationData) as {nav:{label:string;href:string;children?:{label:string;href:string}[]}[];cta:{label:string;href:string};footer:{legal:{label:string;href:string}[]}};
+// „Anlässe“ führt keine eigene Liste: Unterpunkte sind die Anlässe mit menu: true aus src/content/occasions.json, in
+// deren Reihenfolge und mit deren Bezeichnung (Marc, 19.11.2026). Der Editor bearbeitet sie dort (Sammlung occasions).
+for(const item of navigation.nav as {occasions?:boolean;children?:{label:string;href:string}[]}[])if(item.occasions){
+ item.children=menuOccasions(locale).map(o=>{const value={label:o.label,href:o.href},index=OCCASIONS.findIndex(x=>x.id===o.id);Object.defineProperty(value,Symbol.for('afe.source'),{value:{owner:{collection:'occasions',id:'configuration'},part:'data',path:['occasions',index],strict:true,fields:{label:{owner:{collection:'occasions',id:'configuration'},part:'data',path:['occasions',index,'label',locale]},href:{owner:{collection:'occasions',id:'configuration'},part:'data',path:['occasions',index,'href']}}}});return value;});
+}
 const result = {
   name: 'FlyingStars', locale,
   description: t('site.droneShowsForBusinessesCitiesFestivalsAndWeddingsDesignPermits'),

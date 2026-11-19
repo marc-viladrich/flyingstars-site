@@ -13,7 +13,7 @@
     "project": "eon-hamburg",
     "field": "location"
   },
-  "occasion": "firma",
+  "occasion": "unternehmen",
   "summary": "Mit {{project.eon-hamburg.drones}} Drohnen machten wir den Hamburger Hafen zur größten Bühne der E.ON New Energy Experience 2026.",
   "featured": false,
   "draft": false,

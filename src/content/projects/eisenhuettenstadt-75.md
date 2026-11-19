@@ -13,7 +13,7 @@
     "project": "eisenhuettenstadt-75",
     "field": "location"
   },
-  "occasion": "stadt",
+  "occasion": "gemeinden",
   "summary": "Zwei Shows mit jeweils {{project.eisenhuettenstadt-75.drones}} Drohnen erzählten beim 75. Stadtjubiläum die Geschichte Eisenhüttenstadts.",
   "featured": false,
   "draft": false,

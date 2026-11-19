@@ -13,7 +13,7 @@
     "project": "eisenhuettenstadt-75",
     "field": "location"
   },
-  "occasion": "stadt",
+  "occasion": "gemeinden",
   "summary": "Two shows with {{project.eisenhuettenstadt-75.drones}} drones each told Eisenhüttenstadt's story at its 75th anniversary celebrations.",
   "featured": false,
   "draft": false,

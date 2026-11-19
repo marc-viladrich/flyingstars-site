@@ -13,7 +13,8 @@
     "project": "extraschicht-duisburg",
     "field": "location"
   },
-  "occasion": "stadt",
+  "occasion": "gemeinden",
+  "moreOccasions": ["konzerte-festivals"],
   "summary": "{{project.extraschicht-duisburg.drones}} drones vlogen bij de Extraschicht een show van circa 15 minuten boven de binnenhaven van Duisburg.",
   "featured": false,
   "draft": false,

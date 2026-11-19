@@ -1,7 +1,7 @@
 ---
 import {INQUIRY_LIMITS} from '../../content/inquiry.mjs';
 import InquiryFormStyles from '../InquiryFormStyles.astro';
-import {formOccasions} from '../../content/occasions.mjs';
+import {formOccasions,occasionForPath} from '../../content/occasions.mjs';
 import {PACKAGE_NAMES,packageLabel} from '../../content/package-identity.mjs';
 import {CONTACT} from '../people';
 import SectionHead from '../SectionHead.astro';
@@ -20,7 +20,10 @@ import type { Section } from '../../content.config';
 type Props = Extract<Section, { type: 'contactForm' }> & { index?: number };
 const { headline, text, people, index = 0, kicker } = Astro.props;
 const H = index === 0 ? 'h1' : 'h2';
-const occasions = formOccasions(t);
+const occasions = formOccasions(forPath(Astro.url.pathname).locale);
+// Auf einer Anlass-Seite (Ziel in src/content/occasions.json) ist ihr Anlass schon im HTML gewählt, also auch ohne JS.
+// Ein ?anlass=… in der Adresse (Fallstudie, Startseiten-Karte, Konfigurator) gewinnt, das setzt src/scripts/contact.ts.
+const pageOccasion = occasionForPath(Astro.url.pathname, forPath(Astro.url.pathname).locale);
 const packs: [string,string,string][] = [...PACKAGE_NAMES.map(name=>[name,name,packageLabel(name,t,{form:true})] as [string,string,string]),['offen',t('contactform.notSureYet'),'']];
 // „Wie habt ihr von uns erfahren?“ steht nicht mehr im Formular (Runde 5: Moritz' Texte sehen es nicht vor), sondern nur auf der Danke-Seite.
 ---
@@ -40,7 +43,7 @@ const packs: [string,string,string][] = [...PACKAGE_NAMES.map(name=>[name,name,p
         <div class="field">
           <span class="lbl" id="occasion-label">{t('contactform.whatSTheOccasion')}</span>
           <div aria-labelledby="occasion-label" class="chips" role="radiogroup">
-            {occasions.map(([value, label], i) => <label><input name="anlass" required={i === 0} type="radio" value={value} /><span>{label}</span></label>)}
+            {occasions.map(([value, label], i) => <label><input name="anlass" required={i === 0} type="radio" value={value} checked={value === pageOccasion} /><span>{label}</span></label>)}
           </div>
           <span class="err" data-err-for="anlass" role="alert"></span>
         </div>

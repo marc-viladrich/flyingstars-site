@@ -1,0 +1,43 @@
+{
+  "occasions": [
+    {
+      "id": "unternehmen",
+      "label": { "de": "Unternehmen", "en": "Businesses", "nl": "Bedrijven" },
+      "href": "/drohnenshow-werbung/",
+      "menu": true
+    },
+    {
+      "id": "agenturen",
+      "label": { "de": "Agenturen", "en": "Agencies", "nl": "Bureaus" },
+      "href": "/drohnenshow-werbung/#agenturen",
+      "menu": true
+    },
+    {
+      "id": "gemeinden",
+      "label": { "de": "Gemeinden", "en": "Municipalities", "nl": "Gemeenten" },
+      "menu": false
+    },
+    {
+      "id": "konzerte-festivals",
+      "label": { "de": "Konzerte & Festivals", "en": "Concerts & festivals", "nl": "Concerten & festivals" },
+      "href": "/musikalischer-teaser-bokkenrijders/",
+      "menu": false
+    },
+    {
+      "id": "privat",
+      "label": { "de": "Privat", "en": "Private", "nl": "Privé" },
+      "href": "/drohnenshow-hochzeit/",
+      "menu": true
+    },
+    {
+      "id": "indoor",
+      "label": { "de": "Indoor", "en": "Indoor", "nl": "Indoor" },
+      "href": "/drohnenshow-indoor/",
+      "menu": true
+    }
+  ],
+  "fallback": {
+    "id": "sonstiges",
+    "label": { "de": "Sonstiges", "en": "Other", "nl": "Anders" }
+  }
+}

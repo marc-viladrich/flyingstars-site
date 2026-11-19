@@ -13,7 +13,7 @@
     "project": "airpower24",
     "field": "location"
   },
-  "occasion": "stadt",
+  "occasion": "konzerte-festivals",
   "summary": "FlyingStars vloog bij AIRPOWER24 in Oostenrijk op twee avonden shows met {{project.airpower24.drones}} drones.",
   "featured": false,
   "draft": false,

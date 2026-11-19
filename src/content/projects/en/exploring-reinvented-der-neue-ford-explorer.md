@@ -13,7 +13,8 @@
     "project": "exploring-reinvented-der-neue-ford-explorer",
     "field": "location"
   },
-  "occasion": "firma",
+  "occasion": "unternehmen",
+  "moreOccasions": ["agenturen"],
   "drones": {
     "project": "exploring-reinvented-der-neue-ford-explorer",
     "field": "drones"

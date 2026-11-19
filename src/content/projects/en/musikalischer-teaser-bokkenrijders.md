@@ -13,7 +13,7 @@
     "project": "musikalischer-teaser-bokkenrijders",
     "field": "location"
   },
-  "occasion": "kultur",
+  "occasion": "konzerte-festivals",
   "drones": {
     "project": "musikalischer-teaser-bokkenrijders",
     "field": "drones"

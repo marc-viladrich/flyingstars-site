@@ -3,7 +3,7 @@ import {inquiryHref,parseInquiry,INQUIRY_LIMITS,EXTRA_IDS,INQUIRY_PACKAGES} from
 import {getPackageDetails} from '../src/content/package-details.ts';
 import {onRequestPost,onRequestGet} from '../functions/api/contact.ts';
 test('Anfrage-Codec erhält Sonderzeichen, Extras, Locale und Fragment durch einen echten URL-Roundtrip',()=>{
- const input={paket:'HORIZON',drohnen:250,anlass:'agentur',extras:['express','film'],text:'Müller & Söhne + 50% <3 #? é',show:'Eigene Show\nKöln & Düsseldorf: "Ja!"'};
+ const input={paket:'HORIZON',drohnen:250,anlass:'agenturen',extras:['express','film'],text:'Müller & Söhne + 50% <3 #? é',show:'Eigene Show\nKöln & Düsseldorf: "Ja!"'};
  for(const locale of ['de','en','nl']){
   const href=inquiryHref(input,locale,'/?quelle=Empfehlung#anfrage'),url=new URL(href,'https://example.test');
   assert.equal(url.pathname,locale==='de'?'/':`/${locale}/`);assert.equal(url.hash,'#anfrage');assert.equal(url.searchParams.get('quelle'),'Empfehlung');assert.deepEqual(parseInquiry(url.searchParams),input);
@@ -22,7 +22,7 @@ test('Parser begrenzt nur am Eingangsrand und lässt unbekannte IDs nicht ins Fo
 });
 test('No-JS Formulardaten erreichen den unveränderten API-Sicherheitsrand und einen sprachgleichen Rückweg',async()=>{
  for(const locale of ['de','en','nl']){
-  const href=inquiryHref({paket:'ODYSSEY',drohnen:600,anlass:'firma',extras:['express','film'],text:'Ä & +',show:'Entwurf'},locale),selection=parseInquiry(new URL(href,'https://example.test').search);
+  const href=inquiryHref({paket:'ODYSSEY',drohnen:600,anlass:'unternehmen',extras:['express','film'],text:'Ä & +',show:'Entwurf'},locale),selection=parseInquiry(new URL(href,'https://example.test').search);
   const form=new URLSearchParams({name:'Müller & Söhne',email:'test@example.test',ort:'Köln',locale,paket:selection.paket,drohnen:String(selection.drohnen),anlass:selection.anlass,message:selection.text+'\n'+selection.show});for(const id of selection.extras)form.append('extras',id);
   // Ohne Versandkonfiguration: lesbare Seite in der Formularsprache mit Weg zurück zum Formular, keine Danke-Weiterleitung
   const response=await onRequestPost({request:new Request('https://example.test/api/contact',{method:'POST',headers:{accept:'text/html'},body:form}),env:{}});assert.equal(response.status,503);assert.equal(response.headers.get('location'),null);assert.equal(response.headers.get('cache-control'),'no-store');

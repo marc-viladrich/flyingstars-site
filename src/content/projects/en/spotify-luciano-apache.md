@@ -13,7 +13,8 @@
     "project": "spotify-luciano-apache",
     "field": "location"
   },
-  "occasion": "firma",
+  "occasion": "unternehmen",
+  "moreOccasions": ["konzerte-festivals"],
   "summary": "{{project.spotify-luciano-apache.drones}} drones presented the collaboration between Luciano and Apache 207 for Spotify in Berlin.",
   "featured": false,
   "draft": false,

@@ -13,7 +13,7 @@
     "project": "loreal-prada-rheinturm",
     "field": "location"
   },
-  "occasion": "firma",
+  "occasion": "unternehmen",
   "summary": "Een show voor L’Oréal bracht Prada Paradoxe aan de hemel bij een influencerevenement in Düsseldorf.",
   "featured": false,
   "draft": false,

@@ -13,7 +13,7 @@
     "project": "sonnemondsterne",
     "field": "location"
   },
-  "occasion": "stadt",
+  "occasion": "konzerte-festivals",
   "summary": "FlyingStars zeigte beim Sonnemondsterne-Festival vor über 30.000 Besuchern eine Show mit {{project.sonnemondsterne.drones}} Drohnen.",
   "featured": false,
   "draft": false,

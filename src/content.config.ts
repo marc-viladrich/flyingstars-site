@@ -23,13 +23,16 @@ contactSchema.parse(contactData);
 import navigationData from './content/navigation.json' with {type:'json'};
 import {navigationSchema} from './schemas/navigation.mjs';
 navigationSchema.parse(navigationData);
+import occasionsData from './content/occasions.json' with {type:'json'};
+import {occasionsSchema} from './schemas/occasions.mjs';
+occasionsSchema.parse(occasionsData);
 import {assertPreviewPricing} from './content/show-packages.ts';
 import packageData from './content/show-packages.json' with {type:'json'};
 import {showPackagesSchema} from './schemas/show-packages.mjs';
 showPackagesSchema.parse(packageData);
 assertPreviewPricing();
 // Reject unknown editorial tokens even in a central record that has no current visible consumer.
-for(const config of [projectFacts,businessFacts,extrasData,previewPolicy,durationData,contactData,navigationData,packageData,PEOPLE,SAFETY_CONCEPT,SUSTAINABILITY_PILLARS])for(const locale of LOCALES)factText(JSON.stringify(config),locale);
+for(const config of [projectFacts,businessFacts,extrasData,previewPolicy,durationData,contactData,navigationData,occasionsData,packageData,PEOPLE,SAFETY_CONCEPT,SUSTAINABILITY_PILLARS])for(const locale of LOCALES)factText(JSON.stringify(config),locale);
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import type { z } from 'astro/zod';

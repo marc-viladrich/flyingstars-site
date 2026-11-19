@@ -13,7 +13,7 @@
     "project": "vw-50-golf",
     "field": "location"
   },
-  "occasion": "firma",
+  "occasion": "unternehmen",
   "summary": "Zum 50. Geburtstag des VW Golf zeigte FlyingStars eine Drohnenshow an der Scalaria am Wolfgangsee.",
   "featured": false,
   "draft": false,

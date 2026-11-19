@@ -13,7 +13,7 @@
     "project": "eisenhuettenstadt-75",
     "field": "location"
   },
-  "occasion": "stadt",
+  "occasion": "gemeinden",
   "summary": "Twee shows met elk {{project.eisenhuettenstadt-75.drones}} drones vertelden het verhaal van Eisenhüttenstadt tijdens het 75-jarig stadsjubileum.",
   "featured": false,
   "draft": false,

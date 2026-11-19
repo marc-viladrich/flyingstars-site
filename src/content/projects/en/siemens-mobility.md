@@ -13,7 +13,7 @@
     "project": "siemens-mobility",
     "field": "location"
   },
-  "occasion": "firma",
+  "occasion": "unternehmen",
   "summary": "{{project.siemens-mobility.drones}} drones visualised the CEO's speech at a Siemens Mobility event on the Wannsee-Terrassen.",
   "featured": false,
   "draft": false,

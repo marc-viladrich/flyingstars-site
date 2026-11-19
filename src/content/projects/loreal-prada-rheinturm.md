@@ -13,7 +13,7 @@
     "project": "loreal-prada-rheinturm",
     "field": "location"
   },
-  "occasion": "firma",
+  "occasion": "unternehmen",
   "summary": "Eine Show für L’Oréal inszenierte Prada Paradoxe bei einem Influencer-Event in Düsseldorf.",
   "featured": false,
   "draft": false,

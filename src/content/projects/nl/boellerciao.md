@@ -13,7 +13,7 @@
     "project": "boellerciao",
     "field": "location"
   },
-  "occasion": "sonstiges",
+  "occasion": "unternehmen",
   "summary": "{{project.boellerciao.drones}} drones ondersteunden de campagne #Böllerciao van Deutsche Umwelthilfe in het Cantianstadion in Berlijn.",
   "featured": false,
   "draft": false,

@@ -1,7 +1,7 @@
 import {keyedSchema,keyedText} from '../i18n/list-keys.mjs';
 import {responsibilitySchema,siteDiagramSchema,siteItemsSchema,siteDownloadSchema} from './shared-blocks.mjs';
 import {fieldPolicy} from '../i18n/field-policy.mjs';
-import {REFERENCE_OCCASION_IDS} from '../content/occasions.mjs';
+import {OCCASION_IDS,occasionLabel} from '../content/occasions.mjs';
 import {projectFactRefSchema} from './project-facts.mjs';
 import {PERSON_IDS} from '../content/people.mjs';
 import {businessValueSchema} from './business-facts.mjs';
@@ -17,6 +17,7 @@ import { projectShowcaseSchema } from './project-showcase.mjs';
 // Jede Section hat genau einen Typ, typisierte Props und eine Komponente in
 // src/components/sections/. Der Agent darf Seiten nur aus diesen Typen bauen.
 // ---------------------------------------------------------------------------
+const occasionEnum = z.enum(OCCASION_IDS).meta({'x-afe':{choices:Object.fromEntries(OCCASION_IDS.map(id=>[id,{label:occasionLabel(id)}]))}});
 const link = z.object({ label: fieldPolicy(z.string().min(1), 'translatable'), href: fieldPolicy(z.string().min(1), 'shared') });
 // Abschluss-Kasten (CtaBox.astro): immer Überschrift, Text und genau ein Knopf, dazu die Gesichter (Marc, 02.11.2026:
 // „solche empty-looking CTAs darf es niemals geben. Immer ein Heading und ein Text dazu“)
@@ -89,9 +90,9 @@ const rawSectionSchema = z.discriminatedUnion('type', [
   z.object({
     type: fieldPolicy(z.literal('occasions'), 'shared'), ...sectionHeading,
     headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().optional(), 'translatable'),
-    cards: z.array(z.object({ category: fieldPolicy(z.string().optional(), 'translatable'), title: fieldPolicy(z.string(), 'translatable'), text: fieldPolicy(z.string(), 'translatable'), image,
-      facts: z.array(keyedText(fieldPolicy(z.string(), 'translatable'))).optional(), cta: link, download: link.optional(),
-      season: z.array(fieldPolicy(z.number().int().min(1).max(12), 'shared')).optional().describe('Monate, in denen die Karte nach vorn rückt (z. B. [11, 12] für Silvester)') })).min(1),
+    cards: z.array(z.object({ occasion: fieldPolicy(occasionEnum.optional().describe('Anlass: Kicker und Ziel der Karte kommen aus der zentralen Anlass-Liste'), 'shared'), category: fieldPolicy(z.string().optional().describe('Nur ohne Anlass: freier Kicker'), 'translatable'), title: fieldPolicy(z.string(), 'translatable'), text: fieldPolicy(z.string(), 'translatable'), image,
+      facts: z.array(keyedText(fieldPolicy(z.string(), 'translatable'))).optional(), cta: z.object({ label: link.shape.label, href: fieldPolicy(z.string().min(1).optional().describe('Leer: Ziel des Anlasses'), 'shared') }), download: link.optional(),
+      season: z.array(fieldPolicy(z.number().int().min(1).max(12), 'shared')).optional().describe('Monate, in denen die Karte nach vorn rückt (z. B. [11, 12] für Silvester)') })).min(1), // Regeln „Anlass oder eigenes Ziel“, „Anlass ersetzt den Kicker“: scripts/occasions.test.mjs
   }),
   z.object({
     type: fieldPolicy(z.literal('metrics'), 'shared'), ...sectionHeading,
@@ -545,8 +546,9 @@ export const projectSchema = keyedSchema(z.object({
     date: z.union([projectFactRefSchema,fieldPolicy(z.coerce.date(), 'shared')]),
     location: z.union([fieldPolicy(z.string(), 'translatable'),projectFactRefSchema]).optional().meta({'x-afe':{group:'Showdaten'}}),
     // Für den Referenzen-Filter; an jeder Referenz, nicht nur an Fallstudien. Unbekannt: weglassen.
-    occasion: fieldPolicy(z.enum(REFERENCE_OCCASION_IDS).optional()
-      .describe('firma = Marken & Unternehmen, stadt = Städte & Festivals, kultur = Kultur & Bühne, privat = Hochzeit & Privat'), 'shared'),
+    // Hauptanlass aus src/content/occasions.json: Referenzfilter, Fallstudien-CTA (Vorauswahl im Formular). Pflicht an jeder Referenz.
+    occasion: fieldPolicy(occasionEnum.describe('Hauptanlass (Kategorie)'), 'shared'),
+    moreOccasions: z.array(fieldPolicy(occasionEnum, 'shared')).optional().describe('Weitere Anlässe, unter denen die Show im Referenzfilter auch erscheint'),
     drones: z.union([fieldPolicy(z.number().int().positive(), 'shared'),projectFactRefSchema]).optional().describe('Drohnen in der Show'),
     summary: fieldPolicy(z.string().min(30).max(200).meta({'x-afe':{group:'Projektkarte'}}), 'translatable'),
     cover: image.optional(),

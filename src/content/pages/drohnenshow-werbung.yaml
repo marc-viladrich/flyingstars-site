@@ -113,7 +113,7 @@ sections:
     closing:
       headline: Ein Projekt für eure Kund:innen?
       text: Erzählt uns davon. Wir melden uns innerhalb von 48 Stunden und stimmen alles Weitere vertraulich mit euch ab.
-      button: { label: Als Agentur anfragen, href: "/kontakt/?anlass=agentur" }
+      button: { label: Als Agentur anfragen, href: "/kontakt/?anlass=agenturen" }
     _key: k_35809e7974828f33e234
 
   # Moritz' drei Referenzen plus Ford, NFL und PUMA mit Showvideo (Marc, 17.11.2026: bewegte Case Studies wie im

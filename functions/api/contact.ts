@@ -1,6 +1,6 @@
 import { LOGO_BODY_LIMIT, brevoAttachments } from '../../src/content/logo-attachments.mjs';
 import {INQUIRY_PACKAGES,INQUIRY_LIMITS} from '../../src/content/inquiry.mjs';
-import {FORM_OCCASION_IDS} from '../../src/content/occasions.mjs';
+import {FORM_OCCASION_IDS,occasionLabel} from '../../src/content/occasions.mjs';
 import { createTranslator } from '../../src/i18n/ui.mjs';
 import { LOCALES, localizedHref, localeFromPath } from '../../src/i18n/routing.mjs';
 import { SOURCE_IDS, SOURCE_OTHER, SOURCE_TEXT_MAX, INQUIRY_REF } from '../../src/content/inquiry-source.mjs';
@@ -115,6 +115,8 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
   if (CONTROL.test(name) || CONTROL.test(email) || /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(message)) return fail(400, 'contactAPI.characters');
   if (extra['datum-offen']) extra.datum = ''; // Nicht zugleich offenes und festes Datum versenden.
   if (extras.length) extra.extras = [...new Set(extras)].join(', ');
+  // Im Postfach lesbar: deutsche Bezeichnung aus der zentralen Anlass-Liste, Schlüssel in Klammern für Filter/Regeln.
+  if (extra.anlass) extra.anlass = `${occasionLabel(extra.anlass, 'de')} (${extra.anlass})`;
 
   let attachment;
   try { attachment = await brevoAttachments(form); }

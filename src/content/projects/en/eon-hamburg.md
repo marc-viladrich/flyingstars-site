@@ -9,7 +9,7 @@ date:
 location:
   project: eon-hamburg
   field: location
-occasion: firma
+occasion: unternehmen
 drones:
   project: eon-hamburg
   field: drones

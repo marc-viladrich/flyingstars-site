@@ -94,7 +94,7 @@ test('Localized configurators and pricing preserve every motif, package, price a
 test('Contact endpoint returns localized errors and locale-safe no-JS responses', async () => {
   const make = (locale, email, accept) => {
     const body = new FormData();
-    for (const [key, value] of Object.entries({ locale, name: 'Test', email, anlass: 'firma', paket: 'HORIZON', ort: 'Osnabrück' })) body.set(key, value);
+    for (const [key, value] of Object.entries({ locale, name: 'Test', email, anlass: 'unternehmen', paket: 'HORIZON', ort: 'Osnabrück' })) body.set(key, value);
     return new Request('https://example.test/api/contact', { method: 'POST', body, headers: { Accept: accept } });
   };
   for (const locale of ['en', 'nl']) {
@@ -124,7 +124,7 @@ test('Content schemas do not inject language-specific default text into translat
 
 test('Round 13: localized offen inquiries keep the hardened endpoint contract', async () => {
   for (const locale of LOCALES) {
-    const form = new URLSearchParams({ locale, name: 'Test', email: 'test@example.test', anlass: 'firma', paket: 'offen', 'datum-offen': 'ja', 'form-duration': '2500' });
+    const form = new URLSearchParams({ locale, name: 'Test', email: 'test@example.test', anlass: 'unternehmen', paket: 'offen', 'datum-offen': 'ja', 'form-duration': '2500' });
     const response = await onRequestPost({ request: new Request('https://example.test/api/contact', { method: 'POST', body: form, headers: { accept: 'application/json' } }), env: {} });
     assert.equal(response.status, 200);
     assert.equal((await response.json()).state, 'not-configured');

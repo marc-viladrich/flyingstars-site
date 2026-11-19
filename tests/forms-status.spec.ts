@@ -6,6 +6,7 @@
 // keinen. Der Freitext geht nur mit „Andere“ mit (N2).
 import { test, expect, type Page, type Route } from '@playwright/test';
 import { createTranslator } from '../src/i18n/ui.mjs';
+import { occasionLabel } from '../src/content/occasions.mjs';
 import { onRequestPost } from '../functions/api/contact';
 import { SOURCE_DONE_ID, INQUIRY_REF_KEY } from '../src/content/inquiry-source.mjs';
 
@@ -60,7 +61,7 @@ async function afterInquiry(page: Page, path = '/danke/') {
 
 async function fillInquiry(page: Page) {
   const form = page.locator('#inquiry-form');
-  await form.getByText(t('contactform.corporateEvent'), { exact: true }).click();
+  await form.getByText(occasionLabel('unternehmen', 'de'), { exact: true }).click();
   await form.getByLabel(t('contactform.whereWillItTakePlace')).fill('Essen');
   await form.getByText(t('contactform.notDecidedYet')).click();
   await form.getByRole('button', { name: t('contactform.next'), exact: true }).click();
@@ -260,7 +261,7 @@ test.describe('ohne JavaScript', () => {
   async function fillNative(page: Page) {
     await page.goto('/kontakt/');
     const form = page.locator('#inquiry-form');
-    await form.locator('[name=anlass][value=firma]').check({ force: true });
+    await form.locator('[name=anlass][value=unternehmen]').check({ force: true });
     await form.locator('[name=datum-offen]').check({ force: true });
     await form.locator('[name=ort]').fill('Essen');
     await form.locator('[name=name]').fill('Testperson');
@@ -296,7 +297,7 @@ test.describe('ohne JavaScript', () => {
     await page.route(API, endpoint(mails));
     await page.goto('/en/kontakt/');
     const form = page.locator('#inquiry-form');
-    await form.locator('[name=anlass][value=firma]').check({ force: true });
+    await form.locator('[name=anlass][value=unternehmen]').check({ force: true });
     await form.locator('[name=datum-offen]').check({ force: true });
     await form.locator('[name=ort]').fill('Essen');
     await form.locator('[name=name]').fill('Testperson');

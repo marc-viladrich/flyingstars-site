@@ -13,7 +13,8 @@
     "project": "nfl-muenchen",
     "field": "location"
   },
-  "occasion": "firma",
+  "occasion": "unternehmen",
+  "moreOccasions": ["agenturen"],
   "summary": "Een show met {{project.nfl-muenchen.drones}} drones in het Olympiapark in München kondigde de Carolina Panthers aan als thuisploeg van de NFL International Game.",
   "featured": false,
   "draft": false,

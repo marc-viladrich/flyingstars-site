@@ -1,8 +1,8 @@
 ---
 import {factText} from '../content/show-extras.mjs';
+import { menuOccasions } from '../content/occasions.mjs';
 import {record,field} from 'astro-frontend-editor/markers';
 import {CONTACT_OWNER} from '../content/contact.mjs';
-import { localizedCollection } from '../i18n/content';
 import { forPath } from '../i18n/server';
 const { t, localHref } = forPath(Astro.url.pathname);
 import '../styles/fonts.css';
@@ -14,7 +14,7 @@ const site = getSite(forPath(Astro.url.pathname).locale);
 import Logo from '../components/Logo.astro';
 import Icon from '../components/Icon.astro';
 import { optimizedImage } from '../lib/media';
-import { LOCALES, localeFromPath, sourcePath, sourceId, localizedHref } from '../i18n/routing.mjs';
+import { LOCALES, localeFromPath, sourcePath, localizedHref } from '../i18n/routing.mjs';
 import LanguageSwitch from '../components/LanguageSwitch.astro';
 import { CONTACT } from '../components/people';
 const SOCIAL = [
@@ -36,7 +36,6 @@ const noindex = pageNoindex || process.env.AFE_MODE === 'editor';
 const canonical = new URL(canonicalPath ?? Astro.url.pathname, Astro.site);
 const locale = localeFromPath(Astro.url.pathname);
 const current = sourcePath(Astro.url.pathname);
-const href = (path: string) => localizedHref(path, locale);
 // Case pages and project details belong to the "Projekte" area of the main navigation.
 // Fallstudien übergeben navSection="/referenzen/" und gehören damit zum Bereich „Referenzen“.
 const section = navSection;
@@ -46,10 +45,8 @@ const social = image ? await optimizedImage(image, 960, undefined, 'jpg') : unde
 const fullBleed = bleed || ['/', '/drohnenshow-preise/'].includes(current) || (navSection === '/referenzen/' && current !== '/referenzen/');
 // Bildkopf ab Oberkante (Startseite, Fallstudien, Prüfseiten); alle anderen Seiten beginnen auf derselben Höhe (--hero-top)
 const flushTop = bleed || current === '/' || (navSection === '/referenzen/' && current !== '/referenzen/');
-// Anlass-Seiten (drohnenshow-*) für den Footer, Name aus navLabel bzw. Titel der Seite
-const occasionPages = (await localizedCollection('pages', locale, p => sourceId(p.id).startsWith('drohnenshow-') && !p.data.noindex))
-  .map((p) => ({ label: p.data.navLabel ?? p.data.title, href: href(`/${sourceId(p.id)}/`) }))
-  .sort((a, b) => a.label.localeCompare(b.label, locale));
+// Footer „Anlässe“: dieselben Anlässe wie im Menü, aus src/content/occasions.json (Marc, 19.11.2026: überall dieselben Kategorien)
+const occasionPages = menuOccasions(locale);
 const inNav = (href: string) => site.nav.some((item) => item.href === href);
 ---
 <!doctype html>

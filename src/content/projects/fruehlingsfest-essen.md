@@ -13,7 +13,7 @@
     "project": "fruehlingsfest-essen",
     "field": "location"
   },
-  "occasion": "stadt",
+  "occasion": "gemeinden",
   "summary": "Beim Frühlingsfest inszenierte FlyingStars eine individuelle Drohnenshow als Veranstaltungsprogramm.",
   "featured": false,
   "draft": false,

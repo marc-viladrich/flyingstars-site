@@ -24,7 +24,7 @@ const accept = async (page: Page) => {
 const openSettings = async (page: Page) => { await page.locator('[data-consent-open]').click(); await expect(settings(page)).toBeVisible(); };
 
 async function fillInquiry(page: Page) {
-  await page.locator('label').filter({ has: page.locator('input[name=anlass][value=firma]') }).click();
+  await page.locator('label').filter({ has: page.locator('input[name=anlass][value=unternehmen]') }).click();
   await page.locator('#f-ort').fill('Osnabrück');
   await page.locator('[data-date-open]').check();
   await page.locator('[data-next]').click();

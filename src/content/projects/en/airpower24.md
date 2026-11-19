@@ -13,7 +13,7 @@
     "project": "airpower24",
     "field": "location"
   },
-  "occasion": "stadt",
+  "occasion": "konzerte-festivals",
   "summary": "FlyingStars performed shows with {{project.airpower24.drones}} drones on two evenings at AIRPOWER24 in Austria.",
   "featured": false,
   "draft": false,

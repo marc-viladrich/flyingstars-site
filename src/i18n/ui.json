@@ -474,31 +474,6 @@
     "en": "{v0}: choose a technology",
     "nl": "{v0}: kies een techniek"
   },
-  "contactform.corporateEvent": {
-    "de": "Firmenevent",
-    "en": "Corporate event",
-    "nl": "Bedrijfsevenement"
-  },
-  "contactform.cityFestival": {
-    "de": "Stadt & Festival",
-    "en": "City & festival",
-    "nl": "Stad & festival"
-  },
-  "contactform.agency": {
-    "de": "Agentur",
-    "en": "Agency",
-    "nl": "Bureau"
-  },
-  "contactform.weddingPrivate": {
-    "de": "Hochzeit & Privat",
-    "en": "Wedding & private",
-    "nl": "Bruiloft & privé"
-  },
-  "contactform.other": {
-    "de": "Sonstiges",
-    "en": "Other",
-    "nl": "Anders"
-  },
   "contactform.3dInMotion": {
     "de": "3D in Bewegung",
     "en": "3D in motion",
@@ -1053,16 +1028,6 @@
     "de": "Unternehmen",
     "en": "Businesses",
     "nl": "Bedrijven"
-  },
-  "site.brandsAdvertising": {
-    "de": "Marken & Werbung",
-    "en": "Brands & advertising",
-    "nl": "Merken & reclame"
-  },
-  "site.agencies": {
-    "de": "Agenturen",
-    "en": "Agencies",
-    "nl": "Bureaus"
   },
   "site.wedding": {
     "de": "Hochzeit",
@@ -3054,21 +3019,6 @@
     "en": "{count} drones",
     "nl": "{count} drones"
   },
-  "references.brands": {
-    "de": "Marken & Unternehmen",
-    "en": "Brands & businesses",
-    "nl": "Merken & bedrijven"
-  },
-  "references.cities": {
-    "de": "Städte & Festivals",
-    "en": "Cities & festivals",
-    "nl": "Steden & festivals"
-  },
-  "references.culture": {
-    "de": "Kultur & Bühne",
-    "en": "Culture & stage",
-    "nl": "Cultuur & podium"
-  },
   "references.upTo": {
     "de": "bis 150",
     "en": "up to 150",
@@ -3218,11 +3168,6 @@
     "de": "von {count} Shows",
     "en": "of {count} shows",
     "nl": "van {count} shows"
-  },
-  "references.indoor": {
-    "de": "Indoor",
-    "en": "Indoor",
-    "nl": "Indoor"
   },
   "logoBar.pressHeadline": {
     "de": "Unsere Shows waren zu sehen in",

@@ -14,7 +14,7 @@ test('Anfrage behält Paketauswahl, alle Showdetails und ehrlichen Versandstatus
   await expect.poll(() => page.locator('#anfrage-h').evaluate(node => node.getBoundingClientRect().top)).toBeGreaterThan(70);
   await page.getByRole('button',{name:t('contactform.next'),exact:true}).click();
   await expect(page.getByText(t('contact.pleaseChooseAnOccasion'))).toBeVisible();
-  await page.getByText('Firmenevent',{exact:true}).click();
+  await page.getByText('Unternehmen',{exact:true}).click();
   await page.getByLabel(t('contactform.whenShouldItFly')).fill('2026-12-01');
   await page.getByLabel(t('contactform.whereWillItTakePlace')).fill('Osnabrück');
   await page.getByRole('button',{name:t('contactform.next'),exact:true}).click();
@@ -57,7 +57,7 @@ test('Neue Paketauswahl entfernt eine zuvor berechnete Drohnenanzahl', async ({p
   });
   await page.goto('/?paket=ODYSSEY&drohnen=1000#anfrage');
   await page.locator('#inquiry-form').getByText('SPARK',{exact:true}).click();
-  await page.getByText('Firmenevent',{exact:true}).click();
+  await page.getByText('Unternehmen',{exact:true}).click();
   await page.getByLabel(t('contactform.whereWillItTakePlace')).fill('Essen');
   await page.getByText('Noch nicht festgelegt').click();
   await page.getByRole('button',{name:t('contactform.next'),exact:true}).click();
@@ -104,7 +104,7 @@ test('Porträtlogos behalten ihr Seitenverhältnis nach der Bildoptimierung', as
 
 test('Optionale Angaben stehen hinter kleinen Knöpfen, vorbelegte Felder sind offen', async ({ page }) => {
   await page.goto('/kontakt/?show=Anlass%3A%20Launch#anfrage');
-  await page.getByText('Firmenevent', { exact: true }).click();
+  await page.getByText('Unternehmen', { exact: true }).click();
   await page.getByLabel(t('contactform.whereWillItTakePlace')).fill('Essen');
   await page.getByText('Noch nicht festgelegt').click();
   await page.getByRole('button', { name: t('contactform.next'), exact: true }).click();

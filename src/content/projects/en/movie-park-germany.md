@@ -13,7 +13,7 @@
     "project": "movie-park-germany",
     "field": "location"
   },
-  "occasion": "firma",
+  "occasion": "unternehmen",
   "summary": "{{project.movie-park-germany.drones}} drones formed the finale of the Hollywood Christmas programme at Movie Park Germany in Bottrop.",
   "featured": false,
   "draft": false,
