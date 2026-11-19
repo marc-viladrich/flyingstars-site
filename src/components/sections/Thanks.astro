@@ -2,34 +2,41 @@
 // Danke-Seite (Runde 4, Moritz 18.11.2026; Aufbau Runde 6 wie die Anfrage, Marc: „this is the last step“): links Kopf,
 // Text und darunter Chopper, der sich als Drohnenformation freut; rechts die freiwillige Frage nach der Quelle in der
 // Formular-Box der Anfrage (.inquiry/.ask aus ContactForm), mit Schrittanzeige als letztem Schritt.
-// Die Seite ist frei aufrufbar (Lesezeichen, neuer Tab, alte Fehler-URL). Ohne bestätigten Versand zeigt sie deshalb den
-// neutralen Text und keine Schrittanzeige; den Eingang („Wir haben eure Anfrage erhalten“, YAML `text`) bestätigt sie
-// nur, wenn das Anfrageformular nach einem bestätigten `sent` den Bezug in sessionStorage abgelegt hat. Das entscheidet
-// ein kleines Inline-Skript vor dem ersten Bild, damit nichts springt. Die Antwort geht als zweite kleine Meldung über
-// denselben Weg (kind=quelle) mit dem Zufallswert der Anfrage. Ihren Dank zeigt nur ein bestätigtes `sent`: mit
-// JavaScript hier, ohne JavaScript als Seite des Endpoints (functions/api/contact.ts), nie über ein Sprungziel.
+// Die Seite ist frei aufrufbar (Lesezeichen, neuer Tab, Neuladen). Direkt aufgerufen zeigt sie den neutralen Satz und
+// rechts den Weg zur Anfrage. Dank, Eingang (YAML `text`) und Herkunftsfrage zeigt sie nur im Übergang nach einem
+// bestätigten Versand (data-sent): mit JavaScript, wenn das Anfrageformular das Einmal-Merkmal INQUIRY_SENT_KEY gesetzt
+// hat (ein Inline-Skript vor dem ersten Bild verbraucht es, damit nichts springt); ohne JavaScript liefert der Endpoint
+// diese Seite nach dem Versand selbst mit data-sent aus (functions/api/contact.ts, signierter Link). Die Antwort geht als
+// zweite kleine Meldung über denselben Weg (kind=quelle) mit dem getrennt gespeicherten Bezug der Anfrage. Ihren Dank
+// zeigt nur ein bestätigtes `sent`: mit JavaScript hier, ohne JavaScript als Seite des Endpoints.
 import type { Section } from '../../content.config';
 import SectionHead from '../SectionHead.astro';
 import InquiryFormStyles from '../InquiryFormStyles.astro';
 import Chopper from '../Chopper.astro';
 import { site } from '../../site.config';
 import { forPath } from '../../i18n/server';
-import { SOURCE_OTHER, SOURCE_TEXT_MAX, SOURCE_DONE_ID, INQUIRY_REF_KEY } from '../../content/inquiry-source.mjs';
+import { SOURCE_OTHER, SOURCE_TEXT_MAX, SOURCE_DONE_ID, INQUIRY_SENT_KEY, INQUIRY_SENT_TTL, THANKS_STATE_ATTR } from '../../content/inquiry-source.mjs';
+import { CONTACT } from '../people';
 type Props = Extract<Section, { type: 'thanks' }> & { index: number };
 const { kicker, headline, text, question, options, otherLabel, sendLabel, doneText, cta, index, id = 'danke' } = Astro.props;
 const { t, locale, localHref } = forPath(Astro.url.pathname);
 const H = index === 0 ? 'h1' : 'h2';
 const headingId = `${id}-h`;
 ---
-<section class="section alt thanks" id={id} aria-labelledby={headingId}>
+<section class="section alt thanks" id={id} aria-labelledby={headingId} {...{ [THANKS_STATE_ATTR]: '' }}>
   <InquiryFormStyles />
-  <script is:inline define:vars={{ key: INQUIRY_REF_KEY }}>try{if(sessionStorage.getItem(key))document.currentScript.closest('.thanks').dataset.sent=''}catch(e){}</script>
+  <script is:inline define:vars={{ key: INQUIRY_SENT_KEY, ttl: INQUIRY_SENT_TTL }}>try{var at=sessionStorage.getItem(key);if(at!==null){sessionStorage.removeItem(key);if(Date.now()-Number(at)<ttl)document.currentScript.closest('.thanks').dataset.sent=''}}catch(e){}</script>
   <div class="inquiry">
     <SectionHead variant="embedded" class="intro" kicker={kicker} headline={headline} id={headingId} level={H}>
       {/* Beide Fassungen liegen übereinander (gleiche Höhe), sichtbar ist nur die zum Zustand passende */}
       <p class="lead thanks-lead"><span class="is-neutral">{t('thanks.leadNeutral')}</span>{text && <span class="is-sent">{text}</span>}</p>
       <Chopper mood="happy" class="thanks-chopper" />
     </SectionHead>
+    {/* Direkter Aufruf: statt der Herkunftsfrage der Weg zur Anfrage, in derselben Box */}
+    <div class="ask thanks-direct">
+      <p class="thanks-q">{t('thanks.directInvite')}</p>
+      <div class="actions"><a class="btn primary" href={localHref(site.cta.href)}>{site.cta.label}</a><a class="link" href={CONTACT.phone.href}>{CONTACT.phone.label}</a></div>
+    </div>
     <form class="ask is-2" action={site.formEndpoint} method="post" data-source-form aria-labelledby="thanks-q">
       <div class="ask-steps" aria-hidden="true"><span>{t('thanks.stepSent')}</span><span class="on">{t('thanks.stepLast')}</span><i></i></div>
       <input type="hidden" name="kind" value="quelle" />
@@ -69,7 +76,8 @@ const headingId = `${id}-h`;
     const done = form.querySelector<HTMLElement>('.thanks-done')!;
     const otherText = form.querySelector<HTMLInputElement>('[name=quelle-text]')!;
     const button = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
-    form.querySelector<HTMLInputElement>('[data-source-ref]')!.value = read(INQUIRY_REF_KEY) ?? '';
+    // Bezug nur im Übergang nach dem Versand, sonst ist die Frage gar nicht sichtbar
+    if (form.closest<HTMLElement>('.thanks')?.hasAttribute('data-sent')) form.querySelector<HTMLInputElement>('[data-source-ref]')!.value = read(INQUIRY_REF_KEY) ?? '';
     form.noValidate = true;
     clearErrorsOnInput(form);
     // Ein deaktiviertes Feld gehört nicht zu FormData: der Freitext geht nur mit „Andere“ mit und bleibt beim
@@ -112,7 +120,9 @@ const headingId = `${id}-h`;
   .thanks-lead { display: grid; }
   .thanks-lead > span { grid-area: 1 / 1; }
   .thanks[data-sent] .thanks-lead:has(.is-sent) .is-neutral, .thanks:not([data-sent]) .is-sent { visibility: hidden; }
-  .thanks:not([data-sent]) .ask-steps { display: none; }
+  /* Rechte Box: nach dem Versand die Herkunftsfrage, direkt aufgerufen der Weg zur Anfrage */
+  .thanks:not([data-sent]) [data-source-form], .thanks[data-sent] .thanks-direct { display: none; }
+  .thanks-direct .thanks-q { margin: 0; }
   .thanks .step:not(:has([data-other]:checked)) [data-source-other] { display: none; }
   .thanks [data-source-other] { animation: opt-in var(--dur-enter) var(--ease-enter); }
   .thanks .form-status:empty { display: none; }

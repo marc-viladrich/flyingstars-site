@@ -28,6 +28,16 @@ const images = new Map(await Promise.all(uniqueImages.map(async (src) => [src, a
 const nextImage = next?.data.cover ? await optimizedImage(next.data.cover.src) : undefined;
 const still = project.data.cover ? await optimizedImage(project.data.cover.src, 960) : undefined;
 const count = (n: number) => String(n).padStart(2, '0');
+// Längste Kennzahl der Reihe: bindet die Zahlgröße an die Zellbreite (facts.css, .c-num dd)
+const numChars = Math.max(1, ...data.numbers.map((n) => n.value.toLocaleString(formatLocale).length));
+const figures = data.numbers.map((n, i) => ({ label: n.label, value: n.value.toLocaleString(formatLocale), count: n.value, factRef: Astro.props.project.data.showcase!.numbers[i].value }));
+// Eine einzelne Kennzahl steht nicht allein in der Breite: daneben steht der Satz der Fallstudie (meta.description, sonst nur
+// im <head>). Beginnt der Satz mit genau dieser Zahl und ihrem Label („220 Drohnen begleiteten …“), wird sein Rest zum Label,
+// damit „220 Drohnen“ nicht zweimal nebeneinander steht. Kein neuer Text, nur vorhandene Falldaten.
+const single = figures.length === 1 ? figures[0] : undefined;
+const lead = single ? data.meta.description.trim() : '';
+const runIn = Boolean(single && lead.startsWith(`${single.value} `) && lead.slice(single.value.length + 1).toLowerCase().startsWith(single.label.toLowerCase()));
+if (single && runIn) single.label = lead.slice(single.value.length + 1);
 ---
 <div class="case" style={`--accent:${data.accent}`}>
   {/* Kopf wie auf der Startseite (Marc, 01.11.2026): Showvideo rechts, stumm im Loop, nach links ins Schwarz ausgeblendet;
@@ -47,7 +57,10 @@ const count = (n: number) => String(n).padStart(2, '0');
     <FactList items={Astro.props.project.data.showcase!.credits} variant="credits" />
   </section>
 
-  <section aria-label={t('casestudy.inNumbers')}><FactList variant="numbers" items={data.numbers.map((n,i) => ({ label: n.label, value: n.value.toLocaleString(formatLocale), count: n.value, factRef:Astro.props.project.data.showcase!.numbers[i].value }))} /></section>
+  <section class="c-figures" data-figures={figures.length} data-run-in={runIn ? '' : undefined} aria-label={t('casestudy.inNumbers')} style={`--num-chars:${numChars}`}>
+    <FactList variant="numbers" items={figures} />
+    {single && !runIn && lead && <p class="c-figures-lead">{lead}</p>}
+  </section>
 
   <section class="c-story" aria-label={t('casestudy.theStory')}>
     <div class="c-media" aria-hidden="true">

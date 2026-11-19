@@ -64,8 +64,9 @@ for (const project of cases) {
 
 test('Startseite trägt Titel, Beschreibung und Vorschaubild der Referenz', async ({ page }) => {
   await page.goto('/');
-  await expect(page).toHaveTitle('Drohnenshows buchen – über 150 Shows seit 2022 | FlyingStars');
-  await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /über 150 Shows seit 2022, eigene Flotte/);
+  // Titel und Beschreibung nach Moritz' Webtext Startseite (15.11.2026), siehe src/content/pages/index.yaml
+  await expect(page).toHaveTitle(/^Drohnenshow buchen vom Anbieter mit 150\+ Shows/);
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /u\.a\. VW, NFL & Umwelthilfe/);
   await expectSocialImage(page);
 });
 
@@ -77,12 +78,13 @@ test('Text am Himmel wandert mit der Anfrage ins Formular', async ({ page }) => 
 });
 
 test('Scrollstory hebt auf breiten Bildschirmen nur den aktiven Abschnitt hervor', async ({ page }, info) => {
-  test.skip(info.project.name !== 'desktop', 'Mobil stehen alle Abschnitte untereinander mit eigenem Bild.');
+  test.skip(!['desktop', 'webkit'].includes(info.project.name), 'Mobil stehen alle Abschnitte untereinander mit eigenem Bild.');
   await page.goto('/musikalischer-teaser-bokkenrijders/');
   const steps = page.locator('.c-step');
   await steps.nth(1).scrollIntoViewIfNeeded();
   await expect(steps.nth(1)).toHaveClass(/\bon\b/);
-  const opacity = (index: number) => steps.nth(index).locator('h2').evaluate((node) => Number(getComputedStyle(node).opacity));
+  // gedimmt wird die Schlagzeile in der h2 (global.css, nur zweispaltig), nicht die h2 selbst
+  const opacity = (index: number) => steps.nth(index).locator('h2 .head-line').evaluate((node) => Number(getComputedStyle(node).opacity));
   await expect.poll(() => opacity(1)).toBe(1);
   await expect.poll(() => opacity(0)).toBeLessThan(1);
 });

@@ -6,7 +6,7 @@ navLabel: Brands & advertising
 sections:
   - type: landingHero
     kicker: Drone shows for advertising and marketing
-    headline: Make the *sky* your product ambassador
+    headline: Make the *sky* an ambassador for your product
     text: "Nobody can miss your logo: with the experience of more than 100 drone shows for start-ups, SMEs and global corporations, we build choreographies that fill hearts and accounts."
     cta:
       label: Request a show
@@ -31,7 +31,7 @@ sections:
         label: planning possible
         _key: k_63b5beb0dea54789e039
       - value: 1,3 Mio. €
-        label: liability insurance
+        label: liability cover
         _key: k_483deeb0d6c7d2d900aa
     _key: k_cabb99b46c806fc432fa
   - type: logoBar
@@ -1208,8 +1208,8 @@ translationEvidence:
       status: adopted-existing
     - address: /sections/@k_cabb99b46c806fc432fa/facts/@k_483deeb0d6c7d2d900aa/label
       sourceFingerprint: 421aa39910ce9031062cb6074ffd2e50982fc4da736f95f1842be66c33c09d30
-      targetFingerprint: 27f08547855b7cdf45e4db2719fa3d639bc61b454f573a1881dd29b57b1986e0
-      status: adopted-existing
+      targetFingerprint: a2a10b4dc53cbdfd11897d4af274fe6d9280c7301cefd41321f9867c128fea3b
+      status: reviewed
     - address: /sections/@k_cabb99b46c806fc432fa/facts/@k_483deeb0d6c7d2d900aa/value
       sourceFingerprint: 6746bc87bc20d3a81de9c44add39c4dda02d729e7d941dbe20cf77bcd1db1516
       targetFingerprint: 21b4d03b700ef88f6f0b562f68aa3a42cc9de279a96d0e042310abca07ad60eb
@@ -1228,8 +1228,8 @@ translationEvidence:
       status: adopted-existing
     - address: /sections/@k_cabb99b46c806fc432fa/headline
       sourceFingerprint: a15a9ae960f0434453b17955dafd589d546686ab4f614029679acc6245cf1d1f
-      targetFingerprint: 027b304640b0a83ab42ea18dabc660e7567fb0df5c80903369b5b42d4ed5e0e4
-      status: adopted-existing
+      targetFingerprint: bd3f531954355496419f788ffe48b46404aee52b6c6a0254f9b99230d2d8c667
+      status: reviewed
     - address: /sections/@k_cabb99b46c806fc432fa/kicker
       sourceFingerprint: 240817bb57a2684f959103af4becfee30bacd321db8a7ce8f7f8f72431e71853
       targetFingerprint: 6d15c0af79dee16537e2fa08a205a9ef340f28afe372948996ae825cd612f035

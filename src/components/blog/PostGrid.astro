@@ -11,4 +11,18 @@ const { posts, level = 'h2' } = Astro.props;
   .post-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(var(--space-8), 3vw, var(--space-12)) var(--card-grid-gap); }
   @media (--grid-stacked) { .post-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 45em) { .post-grid { grid-template-columns: minmax(0, 1fr); } }
+  /* Bleibt in der letzten Reihe eine Karte allein, nimmt sie die ganze Zeile: Bild in Kartenbreite links, Text daneben
+     mittig, statt einer leeren Kartenbreite rechts (Audit 3, V10). Benannte Flächen, damit nur die Fläche je Rasterbreite
+     wechselt; die Spalten kommen per subgrid aus dem Raster */
+  .post-grid > :global(.post-card) { grid-template-areas: 'img' 'kick' 'title' 'text'; }
+  .post-grid > :global(.post-card) > :global(.img) { grid-area: img; }
+  .post-grid > :global(.post-card) :global(.media-card-body > .kick) { grid-area: kick; }
+  .post-grid > :global(.post-card) :global(.media-card-body > :is(h2, h3)) { grid-area: title; }
+  .post-grid > :global(.post-card) :global(.media-card-body > p) { grid-area: text; max-width: 60ch; }
+  @media (min-width: 45.0625em) and (--grid-stacked) {
+    .post-grid > :global(.post-card:last-child:nth-child(odd)) { grid-column: 1 / -1; grid-template-columns: subgrid; grid-template-rows: 1fr auto auto auto 1fr; grid-template-areas: 'img .' 'img kick' 'img title' 'img text' 'img .'; column-gap: var(--card-grid-gap); }
+  }
+  @media (--grid-expanded) {
+    .post-grid > :global(.post-card:last-child:nth-child(3n + 1)) { grid-column: 1 / -1; grid-template-columns: subgrid; grid-template-rows: 1fr auto auto auto 1fr; grid-template-areas: 'img . .' 'img kick kick' 'img title title' 'img text text' 'img . .'; column-gap: var(--card-grid-gap); }
+  }
 </style>

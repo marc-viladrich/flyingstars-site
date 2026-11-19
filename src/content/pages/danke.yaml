@@ -1,15 +1,15 @@
 # Danke-Seite nach Moritz' Webtext (18.11.2026, „Danke-Seite“), Ansprache „ihr“. Nach dem Absenden der Anfrage leitet
-# das Formular hierher weiter. Die Frage nach der Quelle ist freiwillig und geht als zweite kleine Meldung über
-# /api/contact (src/content/inquiry-source.mjs). Die Seite ist frei aufrufbar: `text` (Eingangsbestätigung) erscheint nur
-# nach bestätigtem Versand, sonst der neutrale Satz thanks.leadNeutral (src/components/sections/Thanks.astro).
-title: Danke für eure Anfrage
-description: "Danke für eure Anfrage bei FlyingStars. Wir melden uns innerhalb von maximal 48 Stunden bei euch zurück."
+# das Formular hierher weiter. Die Seite ist frei aufrufbar; Titel, Beschreibung und Kicker sind deshalb neutral.
+# `text` (Dank und Eingangsbestätigung) und die freiwillige Frage nach der Quelle erscheinen nur direkt nach einem
+# bestätigten Versand, sonst der neutrale Satz thanks.leadNeutral und der Weg zur Anfrage (Thanks.astro).
+title: Eure Anfrage
+description: "Nach eurer Anfrage bei FlyingStars bestätigen wir hier den Eingang. Wir melden uns innerhalb von maximal 48 Stunden bei euch zurück."
 noindex: true
 sections:
   - type: thanks
-    kicker: Danke für eure Anfrage
+    kicker: Eure Anfrage
     headline: Chopper freut sich darauf, euch *kennenzulernen*!
-    text: Wir haben eure Anfrage erhalten. Innerhalb von maximal 48 Stunden melden wir uns bei euch zurück.
+    text: Danke für eure Anfrage! Wir haben sie erhalten und melden uns innerhalb von maximal 48 Stunden bei euch zurück.
     question: Würdet ihr uns verraten, wo ihr das erste Mal von uns gehört habt? Das hilft uns unglaublich!
     options:
       - { value: suchmaschine, label: "Suchmaschine (Google, Ecosia, …)", "_key": "k_c599859e1fe8b3caf7ac" }

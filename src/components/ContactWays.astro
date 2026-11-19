@@ -20,4 +20,10 @@ import Icon from './Icon.astro';
   .ways a { display: flex; gap: var(--space-3-5); align-items: center; padding: var(--space-3-5) 0; border-bottom: 1px solid var(--line); color: var(--text); transition: color var(--dur-control); }
   .ways li:first-child a { border-top: 1px solid var(--line); }
   .ways a:hover { color: var(--amber); }
+  /* Gestapelte Anfrage auf Tabletbreite: zwei Spalten statt vier Zeilen über die volle Fläche (Audit 3, V8);
+     auf dem Handy bleibt die Liste einspaltig */
+  @media (--nav-collapsed) and (min-width: 40.0625em) {
+    .ways { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--card-grid-gap); }
+    .ways li:nth-child(2) a { border-top: 1px solid var(--line); }
+  }
 </style>

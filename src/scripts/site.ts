@@ -61,41 +61,40 @@ import { whenNear } from './when-near.mjs';
     menu.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => menu.close()));
     menu.addEventListener("close", () => { document.body.style.overflow = ""; opener.setAttribute("aria-expanded", "false"); menu.querySelectorAll("details[open]").forEach((d) => { d.open = false; }); opener.focus(); });
   }
-  // Untermenüs der Kopfzeile (Anlässe, Über uns) öffnen mit Maus beim Zeigen, per Tastatur mit dem Fokus (global.css).
-  // Touch (iPad quer, Leiste sichtbar): der erste Tipp öffnet, der zweite folgt dem Link, ein Tipp daneben oder Esc schließt.
-  // Erkannt am vorausgehenden Touch-pointerdown; der click selbst meldet in WebKit pointerType „mouse“.
-  const drops = document.querySelectorAll(".nav .nav-drop");
+  // Untermenüs der Kopfzeile (Anlässe, Über uns): Übersichtslink + Schalter (Disclosure). Die Maus öffnet beim Zeigen
+  // (global.css), Tipp und Tastatur über den Schalter. aria-expanded und inert folgen dem sichtbaren Zustand; Esc schließt
+  // und gibt den Fokus an den Schalter zurück, ein Tipp daneben oder Fokus außerhalb schließt. .is-dismissed hält eine per
+  // Zeigen offene Liste zu, bis die Maus sie verlässt (auf Touch bleibt :hover nach dem Tipp kleben).
+  const drops = [...document.querySelectorAll<HTMLElement>(".nav .nav-drop")].map((drop) => ({
+    drop, toggle: drop.querySelector<HTMLButtonElement>(".nav-drop-toggle"), list: drop.querySelector<HTMLElement>(":scope > ul"), hover: false,
+  })).filter((d) => d.toggle && d.list);
   if (drops.length) {
-    let touchAt = -Infinity;
-    const touched = (e) => { if (e.pointerType === "mouse") touchAt = -Infinity; else touchAt = performance.now(); };
-    addEventListener("pointerdown", touched, { capture: true, passive: true });
-    addEventListener("touchstart", () => { touchAt = performance.now(); }, { capture: true, passive: true });
-    drops.forEach((drop) => {
-      const trigger = drop.querySelector(":scope > a");
-      trigger.addEventListener("click", (e) => {
-        const touch = e.detail > 0 && performance.now() - touchAt < 1000;
-        if (!touch || drop.classList.contains("is-open")) return;
-        e.preventDefault();
-        drops.forEach((other) => other.classList.remove("is-open"));
-        drop.classList.remove("is-dismissed"); drop.classList.add("is-open");
+    const visible = (d) => d.drop.classList.contains("is-open") || (d.hover && !d.drop.classList.contains("is-dismissed"));
+    const sync = (d) => { const open = visible(d); d.toggle.setAttribute("aria-expanded", String(open)); d.list.inert = !open; };
+    const close = (d, dismiss = false) => { d.drop.classList.remove("is-open"); d.drop.classList.toggle("is-dismissed", dismiss); sync(d); };
+    drops.forEach((d) => {
+      d.drop.classList.add("is-ready"); sync(d);
+      d.toggle.addEventListener("click", () => {
+        if (visible(d)) { close(d, true); return; }
+        drops.forEach((other) => other !== d && close(other));
+        d.drop.classList.remove("is-dismissed"); d.drop.classList.add("is-open"); sync(d);
       });
-      // Esc schließt auch eine per Zeigen oder Fokus offene Liste, bis Zeiger oder Fokus sie verlassen
-      drop.addEventListener("pointerleave", () => drop.classList.remove("is-dismissed"));
-      drop.addEventListener("focusin", (e) => { if (e.target !== trigger) drop.classList.remove("is-dismissed"); });
-      drop.addEventListener("focusout", (e) => { if (!drop.contains(e.relatedTarget)) drop.classList.remove("is-dismissed"); });
-      drop.__trigger = trigger;
+      d.drop.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") { d.hover = true; sync(d); } });
+      d.drop.addEventListener("pointerleave", (e) => { if (e.pointerType !== "mouse") return; d.hover = false; d.drop.classList.remove("is-dismissed"); sync(d); });
+      d.drop.addEventListener("focusout", (e) => { if (e.relatedTarget && !d.drop.contains(e.relatedTarget)) close(d); });
     });
-    document.addEventListener("pointerdown", (e) => drops.forEach((drop) => { if (!drop.contains(e.target)) drop.classList.remove("is-open"); }));
+    document.addEventListener("pointerdown", (e) => drops.forEach((d) => { if (!d.drop.contains(e.target)) close(d); }));
     document.addEventListener("keydown", (e) => {
       if (e.key !== "Escape") return;
-      drops.forEach((drop) => {
-        if (!drop.classList.contains("is-open") && !drop.matches(":hover, :focus-within")) return;
-        drop.classList.remove("is-open"); drop.classList.add("is-dismissed");
-        if (drop.contains(document.activeElement)) drop.__trigger.focus();
+      drops.forEach((d) => {
+        if (!visible(d)) return;
+        const inside = d.drop.contains(document.activeElement);
+        close(d, true);
+        if (inside) d.toggle.focus();
       });
     });
     // Zurück aus dem Verlauf (bfcache): kein offen gebliebenes Untermenü
-    addEventListener("pageshow", () => drops.forEach((drop) => drop.classList.remove("is-open", "is-dismissed")));
+    addEventListener("pageshow", () => drops.forEach((d) => { d.hover = false; close(d); }));
   }
   // Team auf dem Handy als wischbare Reihe (global.css, --compact): dann per Tastatur erreichbar, sonst kein leerer Tab-Halt
   const crewRow = matchMedia("(max-width: 40em)");

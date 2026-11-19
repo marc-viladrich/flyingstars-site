@@ -51,6 +51,12 @@ const cls = { steps: 'steps', milestones: 'ms', flow: 'lf-steps', metro: 'ruler'
     .ruler::before, .ruler::after { display: none; }
     .ruler li { padding: 0; }
     .ruler li:not(:last-child)::before { content: ""; position: absolute; left: calc(var(--dot-x) - var(--rail) / 2); width: var(--rail); top: var(--rail-y); bottom: calc(-1 * (var(--ruler-gap) + var(--rail-y))); border-radius: var(--radius-2); background: linear-gradient(var(--c, var(--accent)), var(--c2, var(--accent))); }
+    /* Senkrecht erscheint jede Station beim eigenen Eintritt (.is-on, Skript unten) mit ihrem Abschnitt der Linie. Die
+       waagerechte Staffel von 0,48 s je Station hielt die vierte beim zügigen Scrollen 1,4 s dunkel (Audit 3, V1) */
+    .ruler [data-reveal] { transition-delay: 0s; }
+    .ruler .dot { transition-delay: var(--dur-standard); }
+    .reveal .ruler li:not(.is-on) { opacity: 0; transform: translateY(var(--reveal-offset)); }
+    .reveal .ruler li:not(.is-on) .dot { background: var(--ground); border-color: var(--line-strong); box-shadow: none; }
     /* Tablet (ab 36 rem Breite): Zahl und Schild links, Text rechts daneben, statt einer schmalen Spalte mit leerer
        rechter Hälfte */
     .ruler { container-type: inline-size; }
@@ -154,5 +160,15 @@ const cls = { steps: 'steps', milestones: 'ms', flow: 'lf-steps', metro: 'ruler'
       if (!timer) step();
     }, { rootMargin: REVEAL_MARGIN }); // derselbe Auslösepunkt wie alle Reveals (vorher 12 % der Bildhöhe)
     items.forEach((el) => io.observe(el));
+  }
+  // Zeitstrahl (.ruler): jede Station meldet ihren eigenen Eintritt; nur die senkrechte Form wertet das aus (CSS oben),
+  // waagerecht bleibt die Gruppenstaffel der ganzen Linie
+  for (const list of document.querySelectorAll<HTMLElement>('.ruler')) {
+    const rows = [...list.children] as HTMLElement[];
+    if (!root.classList.contains('reveal') || !('IntersectionObserver' in window)) { rows.forEach((el) => el.classList.add('is-on')); continue; }
+    const io = new IntersectionObserver((es) => es.forEach((e) => {
+      if (e.isIntersecting) { e.target.classList.add('is-on'); io.unobserve(e.target); }
+    }), { rootMargin: REVEAL_MARGIN });
+    rows.forEach((el) => io.observe(el));
   }
 </script>

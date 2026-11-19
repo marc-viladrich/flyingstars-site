@@ -9,7 +9,9 @@ import { join } from 'node:path';
 test('Hover im Kopf: Unterstrich je Link, gleitende Box als echtes Element (WebKit-Falle)', () => {
   const css = read('src/styles/global.css');
   // Unterstrich je Hauptpunkt (Marc 04.11.: „in sich geschlossen“) über den zentralen Unterstrich-Effekt, kein gemeinsamer Marker
-  assert.match(css, /:where\(\.hover-line, \.link, \.nav nav > a, \.nav-drop > a,/);
+  // Untermenü-Kopf (Link + Schalter, Audit 3 V3): der Unterstrich läuft wie vorher unter Wort und Chevron
+  assert.match(css, /:where\(\.hover-line, \.link, \.nav nav > a, \.nav-drop-head,/);
+  assert.match(css, /\.nav-drop:is\(:hover, :focus-within, \.is-open\):not\(\.is-dismissed\) > \.nav-drop-head, \.nav-drop:has\(a\[aria-current\]\) > \.nav-drop-head \{ background-size: 100% 0\.125rem;/);
   assert.doesNotMatch(css, /\.nav nav::after/);
   // Box in Auswahllisten: echtes Element, kein Pseudo-Element; WebKit bricht Übergänge an Pseudo-Elementen ab, sobald
   // eine :has()-Regel sie neu berechnet
@@ -36,7 +38,12 @@ test('Gleitende Box: Anchor Positioning als Standard, Index-Ersatz für Browser 
   const css = read('src/styles/global.css');
   assert.match(css, /@supports \(anchor-name: --a\) \{\s*\.glide-list \{ anchor-scope/);
   assert.match(css, /\.glide-mark \{[^}]*transform: translateY\(calc\(var\(--gi\) \* 100%\)\)/);
-  for (const [file, re] of [['src/layouts/Base.astro', /class="glide-list" style=\{`--n: /], ['src/components/LanguageSwitch.astro', /class="glide-list" style=\{`--n: /]]) assert.match(read(file), re, file);
+  for (const [file, re] of [['src/layouts/Base.astro', /class="glide-list" id=\{`nav-sub-\$\{i\}`\} style=\{`--n-items: \$\{item\.children\.length\}`\}/], ['src/components/LanguageSwitch.astro', /class="glide-list" style=\{`--n: /]]) assert.match(read(file), re, file);
+  // Kopfzeile: --n = sichtbare Einträge (mit Maus ohne, auf Touch mit Übersichtseintrag); im Index-Ersatz gleicht die
+  // Box mit Maus den ausgeblendeten Übersichtseintrag um eine Zeile aus
+  assert.match(css, /\.nav-drop > ul \{ --n: var\(--n-items\); \}/);
+  assert.match(css, /@media \(hover: none\), \(pointer: coarse\) \{[^@]*\.nav-drop > ul:has\(> \.nav-drop-all\) \{ --n: calc\(var\(--n-items\) \+ 1\); \}/);
+  assert.match(css, /@supports not \(anchor-name: --a\) \{\s*@media \(hover: hover\) and \(pointer: fine\) \{ \.nav-drop > ul:has\(> \.nav-drop-all\) > \.glide-mark \{ transform: translateY\(calc\(\(var\(--gi\) - 1\) \* 100%\)\); \} \}/);
 });
 
 test('Ein Unterstrich-Effekt für alle eigenständigen Textlinks, Grundregel ohne Spezifität', () => {

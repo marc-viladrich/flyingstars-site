@@ -240,6 +240,15 @@
     .cfg-stage { height: 36svh; min-height: 14rem; }
     .cfg-panel { gap: var(--space-4); }
   }
+  /* Handy quer (844 × 390): über der Bedienung bliebe zwischen klebender Bühne und Preisleiste kein Platz. Bedienung und
+     Bühne stehen nebeneinander wie am Desktop; die Bühne klebt rechts zwischen Kopfzeile und Preisleiste, die Bedienung
+     links hat die volle Höhe. --cfg-bar-h = Höhe der Preisleiste (Knopf small + Innenabstand) */
+  @media (--nav-collapsed) and (max-height: 32em) and (orientation: landscape) {
+    .cfg { --cfg-bar-h: calc(2.5rem + 2 * var(--space-3) + env(safe-area-inset-bottom, 0rem)); grid-template-columns: clamp(17.5rem, 42vw, 21.25rem) minmax(0, 1fr); }
+    .cfg-stage { order: 2; top: calc(var(--nav-h) + var(--space-2)); height: calc(100svh - var(--nav-h) - var(--cfg-bar-h) - 2 * var(--space-2)); min-height: 12.5rem; margin: 0; border-radius: var(--radius); border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
+    :root.nav-away .cfg-stage { top: var(--space-2); }
+    .cfg-panel :is(input, select, button, .cfg-upload) { scroll-margin: calc(var(--nav-h) + var(--space-3)) 0 calc(var(--cfg-bar-h) + var(--space-3)); }
+  }
 
 /* Runde 27: Anlass „Euer Logo“ (Marc 12.11., zweite Runde). Im Anlass treten Anlass- und Paketwahl, Abspielleiste und
    Motiv-Hinweise zurück; Formen werden direkt auf der Bühne gewählt (.cfg-pick über dem Feld) */
@@ -396,4 +405,9 @@ fieldset.cfg-tool { margin: 0; padding: 0; border: 0; min-width: 0; }
   .cfg.has-head { grid-template-areas: "head" "facts" "stage" "panel" "intro"; grid-template-rows: none; }
   .cfg.has-head > .cfg-panel, .cfg.has-head > .cfg-intro { margin-top: var(--space-8); }
   .cfg-head :is(h1, h2) { font-size: clamp(1.875rem, 7.4vw, 2.5rem); }
+}
+/* Handy quer mit Seitenkopf: H1 und Eckdaten über beiden Spalten, Bedienung und Bühne oben bündig, Einleitung zuletzt */
+@media (--nav-collapsed) and (max-height: 32em) and (orientation: landscape) {
+  .cfg.has-head { grid-template-areas: "head head" "facts facts" "panel stage" "intro intro"; }
+  .cfg.has-head > :is(.cfg-panel, .cfg-stage) { margin-top: var(--space-8); }
 }

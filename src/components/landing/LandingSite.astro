@@ -162,13 +162,28 @@ const itemOf = Object.fromEntries(items.map((item, i) => [item.zone, { ...item, 
       const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
       // Publikum: links neben der Nummer (das hüpfende Publikum bleibt sichtbar), bei knappem Platz schmaler bis 13rem;
       // reicht auch das nicht, steht es wie alle anderen über oder unter der Nummer
-      const room = b.left - m.left - gap, aside = hot.hasAttribute('data-aside') && room >= 13 * rem;
-      tip.style.width = aside ? `${(Math.min(17.5 * rem, room) / rem).toFixed(3)}rem` : '';
-      const w = tip.offsetWidth, h = tip.offsetHeight;
+      const room = b.left - m.left - gap, roomRight = m.right - b.right - gap;
+      // sichtbarer Streifen zwischen Kopfzeile und unterem Bildschirmrand in Koordinaten der Grafik (Handy quer: kaum höher
+      // als die Erklärung). Ist die übliche Seite dort nicht ganz zu sehen, gilt die andere, sonst neben der Nummer
+      const navBottom = Math.max(0, document.querySelector('.nav')?.getBoundingClientRect().bottom ?? 0);
+      const seenTop = Math.max(0, navBottom - m.top + gap), seenBottom = (visualViewport?.height ?? innerHeight) - m.top - gap;
+      const seen = (top: number, h: number) => top >= seenTop && top + h <= seenBottom;
+      const measure = (side: '' | 'left' | 'right') => {
+        tip.style.width = side ? `${(Math.min(17.5 * rem, side === 'left' ? room : roomRight) / rem).toFixed(3)}rem` : '';
+        return { w: tip.offsetWidth, h: tip.offsetHeight };
+      };
+      let side: '' | 'left' | 'right' = hot.hasAttribute('data-aside') && room >= 13 * rem ? 'left' : '';
+      let { w, h } = measure(side);
       const cx = b.left + b.width / 2 - m.left, cy = b.top + b.height / 2 - m.top;
       const below = b.bottom - m.top + gap, above = b.top - m.top - h - gap;
-      const left = aside ? room - w : Math.max(0, Math.min(m.width - w, cx - w / 2));
-      const top = aside ? Math.max(0, Math.min(m.height - h, cy - h / 2)) : below + h <= m.height || above < 0 ? below : above;
+      const usual = below + h <= m.height || above < 0 ? below : above, other = usual === below ? above : below;
+      const flip = !side && !seen(usual, h) && other >= 0 && seen(other, h);
+      if (!side && !flip && !seen(usual, h) && Math.max(room, roomRight) >= 13 * rem) {
+        side = room >= roomRight ? 'left' : 'right';
+        ({ w, h } = measure(side));
+      }
+      const left = side === 'left' ? room - w : side === 'right' ? b.right - m.left + gap : Math.max(0, Math.min(m.width - w, cx - w / 2));
+      const top = side ? Math.max(0, seenTop, Math.min(m.height - h, seenBottom - h, cy - h / 2)) : flip ? other : usual;
       tip.style.left = `${(left / rem).toFixed(3)}rem`; tip.style.top = `${(top / rem).toFixed(3)}rem`;
     };
     const show = (zone: string) => {

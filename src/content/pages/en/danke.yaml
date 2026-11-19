@@ -1,11 +1,11 @@
-title: Thank you for your enquiry
-description: "Thank you for your enquiry to FlyingStars. We'll get back to you within 48 hours at the latest."
+title: Your enquiry
+description: "After your enquiry to FlyingStars, we confirm its receipt here. We'll get back to you within 48 hours at the latest."
 noindex: true
 sections:
   - type: thanks
-    kicker: Thank you for your enquiry
+    kicker: Your enquiry
     headline: Chopper is looking forward to *meeting you*!
-    text: We've received your enquiry. We'll get back to you within 48 hours at the latest.
+    text: Thank you for your enquiry! We've received it and will get back to you within 48 hours at the latest.
     question: Would you tell us where you first heard about us? It helps us enormously!
     options:
       - { value: suchmaschine, label: "Search engine (Google, Ecosia, …)", "_key": "k_c599859e1fe8b3caf7ac" }
@@ -20,16 +20,16 @@ sections:
     doneText: Thank you, that helps us a lot!
     _key: k_7f812f5f0bc5bd9032db
 translationContractVersion: 2
-translationSourceHash: 08d591c9a794aa305cb6ec8bfe85e94e866d1383b78f04f1c44c4916f6f79dc7
+translationSourceHash: 68fa1dd70676d8f86fc807a3ea92d87672ab06878e4b76376505633430886cd9
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 08d591c9a794aa305cb6ec8bfe85e94e866d1383b78f04f1c44c4916f6f79dc7
+  sourceFingerprint: 68fa1dd70676d8f86fc807a3ea92d87672ab06878e4b76376505633430886cd9
   fields:
     - address: /description
-      sourceFingerprint: 966ab826f738c1201dd001252464da01e58aa8ffc22e71fa9a598634233fa99a
-      targetFingerprint: def905130f4f5c001250cb01a436f5b59d8007ba84e15732b8b3c1734ba66771
+      sourceFingerprint: 6bfa13cb779240ee991ca29d5276177274d0f5c2ba6603d4a6936a18f93fc510
+      targetFingerprint: c0d274bd9311164733554f0b2222ffdca8cc8f1e31d5e91b9d8a4cba95d9ef36
       status: adopted-existing
     - address: /navLabel
       sourceFingerprint: 5eca75dc86b64b90cc8087b960962b56c2d45c5ec25bbc19554dc8cc41f814fc
@@ -48,8 +48,8 @@ translationEvidence:
       targetFingerprint: 8cfaab15cec0f15d73e5bde5b9f08f417c92b102eb162535157c464cebc91778
       status: adopted-existing
     - address: /sections/@k_7f812f5f0bc5bd9032db/kicker
-      sourceFingerprint: 7315191439e23e16af0c2c7e4ad1a13a9affd4a9cf2cc08a41777161ceb05a10
-      targetFingerprint: efb9087fb059ef66dbbc0e66dd52729ae00e80dbbdbd63c778e39f01357ed2e8
+      sourceFingerprint: b02714b275906160ffff745e061a44eb7015c09fdd52f47139506f5ee7960a07
+      targetFingerprint: 7ab1c046c59e781d3892ddf95daa9532bc9d300635fe8086fa41987e364c452e
       status: adopted-existing
     - address: /sections/@k_7f812f5f0bc5bd9032db/options/@k_1f914a8020695a5b06e9/label
       sourceFingerprint: 266d1cac238a46fd5a8775c545e9c60a6bfbeceeff90eefd2959233cfcd1f7ec
@@ -92,10 +92,10 @@ translationEvidence:
       targetFingerprint: 8974d127c61d0a060cf6847bc621534456af2fe2206adb06553563bdb1df8c12
       status: adopted-existing
     - address: /sections/@k_7f812f5f0bc5bd9032db/text
-      sourceFingerprint: 54f4f74d72c88755d5eeb2fc435263895012d3dd1f0f2ccdb10b0f1be4e55713
-      targetFingerprint: f33c73f84a4d14d761bd57c7bc1fb99bd90e40f03b237d705a845aa36698fa8d
+      sourceFingerprint: d263147fb79d254ed7f86f33f04274d381268a6530aa0543a610d85cc84fae8f
+      targetFingerprint: 34752de38d32b3d21f670f66c698d3a3e5d5bef089067f75b5c401e1c4ff3a86
       status: adopted-existing
     - address: /title
-      sourceFingerprint: 4fc2264664b7514f97dcdbc956f6e221cd4fd1f6e230a6e1a1e71cbee107a323
-      targetFingerprint: efb9087fb059ef66dbbc0e66dd52729ae00e80dbbdbd63c778e39f01357ed2e8
+      sourceFingerprint: c428f4b0f1ee1df3f62b02ba50a397d3d404295e73f3d60c3f82de53adf6d01b
+      targetFingerprint: 7ab1c046c59e781d3892ddf95daa9532bc9d300635fe8086fa41987e364c452e
       status: adopted-existing

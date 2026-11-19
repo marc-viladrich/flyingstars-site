@@ -8,17 +8,33 @@ import { t } from '../../i18n/ui.mjs';
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const onView = (el, fn, opts = { threshold: 0.35 }) => { const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { fn(); io.disconnect(); } }), opts); io.observe(el); };
 
-  // big numbers count up once they come into view
+  // Big numbers count up as they come into view. The final value stays the element's text (screen readers, copying,
+  // printing, full-page captures); the running number is decoration laid over it (aria-hidden, facts.css .count-run).
+  // Reduced motion or the page's global pause: the final value, at once, also mid-count.
+  const still = () => matchMedia("(prefers-reduced-motion: reduce)").matches || document.documentElement.classList.contains("motion-paused");
+  const counters = new Set();
   document.querySelectorAll("[data-count]").forEach((el) => {
     const to = +el.dataset.count, fmt = (v) => Math.round(v).toLocaleString(formatLocale);
-    if (reduce) { el.textContent = fmt(to); return; }
-    el.textContent = "0";
+    if (!(to > 0)) return;
+    let run = null, frame = 0;
+    const finish = () => { cancelAnimationFrame(frame); run?.remove(); run = null; el.classList.remove("is-counting"); counters.delete(finish); };
     onView(el, () => {
+      if (still()) return;
+      let final = el.querySelector(":scope > .count-final");
+      if (!final) { final = document.createElement("span"); final.className = "count-final"; final.append(...el.childNodes); el.append(final); }
+      run = document.createElement("span"); run.className = "count-run"; run.setAttribute("aria-hidden", "true"); run.textContent = fmt(0);
+      el.append(run); el.classList.add("is-counting"); counters.add(finish);
       const t0 = performance.now(), dur = 1400 + Math.min(1200, to);
-      const tick = (now) => { const u = Math.min(1, (now - t0) / dur); el.textContent = fmt(to * (1 - (1 - u) ** 3)); if (u < 1) requestAnimationFrame(tick); };
-      requestAnimationFrame(tick);
-    });
+      const tick = (now) => {
+        const u = Math.min(1, (now - t0) / dur);
+        if (u >= 1 || still()) { finish(); return; }
+        run.textContent = fmt(to * (1 - (1 - u) ** 3));
+        frame = requestAnimationFrame(tick);
+      };
+      frame = requestAnimationFrame(tick);
+    }, { threshold: 0 });
   });
+  document.addEventListener("flyingstars:motion-change", () => { if (still()) [...counters].forEach((finish) => finish()); });
 
   // scrollytelling: the step in the middle of the screen picks the picture on the left
   const steps = [...document.querySelectorAll(".c-story [data-story-step]")], scenes = [...document.querySelectorAll(".c-story [data-scene]")], progress = document.querySelector(".c-story [data-progress]");

@@ -905,7 +905,9 @@ if (form) {
     if (innerWidth > 1000) return;
     // after the browser's own focus scroll (WebKit scrolls a little later than the focus event)
     setTimeout(() => {
-      const r = e.target.getBoundingClientRect(), top = stage.getBoundingClientRect().bottom + 12, bottom = (bar?.getBoundingClientRect().top ?? innerHeight) - 12;
+      // quer stehen Bühne und Bedienung nebeneinander: dann begrenzt nur die Kopfzeile nach oben (scroll-margin-top im CSS)
+      const r = e.target.getBoundingClientRect(), s = stage.getBoundingClientRect(), above = s.left < r.right && s.right > r.left;
+      const top = above ? s.bottom + 12 : parseFloat(getComputedStyle(e.target).scrollMarginTop) || 0, bottom = (bar?.getBoundingClientRect().top ?? innerHeight) - 12;
       if (r.bottom > bottom) scrollBy({ top: r.bottom - bottom }); else if (r.top < top) scrollBy({ top: r.top - top });
     }, 120);
   });

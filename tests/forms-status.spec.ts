@@ -1,26 +1,40 @@
 // Versandzustände beider Formulare (Anfrage und Herkunftsfrage auf der Danke-Seite) gegen den Antwortvertrag von
 // functions/api/contact.ts: Erfolg nur nach bestätigtem `sent`; fehlende Konfiguration, Netz- und Formatfehler bleiben
 // ehrlich und lokalisiert; ohne JavaScript erscheint nie „erhalten“, wenn nichts angekommen ist (Audit A1/A2). Die
-// Danke-Seite ist frei aufrufbar und bestätigt deshalb nur nach einem bestätigten Versand (Audit 2, N1); der Freitext
-// der Herkunftsfrage geht nur mit „Andere“ mit (N2).
+// Danke-Seite ist frei aufrufbar: direkt aufgerufen neutral (Kicker, Titel, Absatz, Weg zur Anfrage), Eingang und
+// Herkunftsfrage nur im Übergang nach einem bestätigten Versand (Audit 2 N1, Audit 3 V4); mit JavaScript über ein
+// Einmal-Merkmal, ohne JavaScript über den signierten Link des Endpoints. Der Freitext geht nur mit „Andere“ mit (N2).
 import { test, expect, type Page, type Route } from '@playwright/test';
 import { createTranslator } from '../src/i18n/ui.mjs';
-import { onRequestPost } from '../functions/api/contact';
-import { SOURCE_DONE_ID } from '../src/content/inquiry-source.mjs';
+import { onRequestPost, onRequestGet } from '../functions/api/contact';
+import { SOURCE_DONE_ID, INQUIRY_SENT_KEY, INQUIRY_REF_KEY, INQUIRY_SENT_TTL } from '../src/content/inquiry-source.mjs';
 
 const t = createTranslator('de');
 const json = (route: Route, body: object, status = 200) => route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) });
-const RECEIVED = 'Wir haben eure Anfrage erhalten';
+const RECEIVED = 'Danke für eure Anfrage! Wir haben sie erhalten';
+const CONFIGURED = { BREVO_API_KEY: 'test', CONTACT_TO: 'inbox@example.test', CONTACT_FROM: 'form@example.test' };
+/** Der Endpoint unter /api/contact, auch mit Query (signierter Danke-Link) */
+const API = (url: URL) => url.pathname === '/api/contact';
+/** Statische Seiten für den signierten Danke-Link, wie env.ASSETS in Cloudflare Pages: aus dem Vorschau-Server */
+const ASSETS = { fetch: (input: URL | Request | string) => fetch(input instanceof Request ? input.url : String(input)) };
 /** Der echte Endpoint beantwortet die Anfrage (gleicher Ursprung, echte Header). Mit `mails` ist der Versand
  * eingerichtet: Brevo wird nur für diesen Aufruf im Testprozess ersetzt und der Mailtext gesammelt, nichts verlässt
  * den Rechner. Ohne `mails` fehlt die Versandkonfiguration. Eine Weiterleitung des Endpoints kann Playwright in WebKit
  * nicht als 303 ausliefern: Status und Ziel landen in `redirects`, der Browser folgt demselben Ziel per GET
- * (Meta-Refresh, ohne JavaScript). */
+ * (Meta-Refresh, ohne JavaScript). Den GET auf den signierten Danke-Link beantwortet onRequestGet mit demselben
+ * Versandgeheimnis. */
 const endpoint = (mails?: string[], redirects: { status: number; location: string }[] = []) => async (route: Route) => {
   const request = route.request();
+  const env = mails ? { ...CONFIGURED, ASSETS } : { ASSETS };
+  if (request.method() === 'GET') {
+    const response = await onRequestGet({ request: new Request(request.url()), env: { ...CONFIGURED, ASSETS } });
+    const location = response.headers.get('location');
+    if (location) { redirects.push({ status: response.status, location }); return route.fulfill({ status: 200, contentType: 'text/html', body: `<!doctype html><meta http-equiv="refresh" content="0; url=${location}">` }); }
+    return route.fulfill({ status: response.status, headers: Object.fromEntries(response.headers), body: Buffer.from(await response.arrayBuffer()) });
+  }
   const call = async () => onRequestPost({
     request: new Request(request.url(), { method: 'POST', headers: await request.allHeaders(), body: request.postDataBuffer() ? new Uint8Array(request.postDataBuffer()!) : null }),
-    env: mails ? { BREVO_API_KEY: 'test', CONTACT_TO: 'inbox@example.test', CONTACT_FROM: 'form@example.test' } : {},
+    env,
   });
   let response: Response;
   if (!mails) response = await call();
@@ -36,19 +50,41 @@ const endpoint = (mails?: string[], redirects: { status: number; location: strin
   }
   await route.fulfill({ status: response.status, headers: Object.fromEntries(response.headers), body: Buffer.from(await response.arrayBuffer()) });
 };
-/** Neutraler Zustand der frei aufrufbaren Danke-Seite: kein Eingang behauptet, keine Schrittanzeige „gesendet“. */
-async function expectNeutral(page: Page, locale = 'de') {
+const KICKER = { de: 'Eure Anfrage', en: 'Your enquiry', nl: 'Jullie aanvraag' } as const;
+/** Neutraler Zustand der frei aufrufbaren Danke-Seite: kein Dank und kein Eingang behauptet, keine Herkunftsfrage,
+ * neutraler Kicker und Titel, rechts der Weg zur Anfrage. */
+async function expectNeutral(page: Page, locale: keyof typeof KICKER = 'de') {
+  const t = createTranslator(locale);
   const section = page.locator('section.thanks');
+  await expect(page).toHaveTitle(new RegExp(`^${KICKER[locale]} \\|`));
+  await expect(section.locator('.kicker')).toHaveText(KICKER[locale]);
   await expect(section.locator('.thanks-lead .is-neutral')).toBeVisible();
-  await expect(section.locator('.thanks-lead .is-neutral')).toHaveText(createTranslator(locale)('thanks.leadNeutral'));
+  await expect(section.locator('.thanks-lead .is-neutral')).toHaveText(t('thanks.leadNeutral'));
   await expect(section.locator('.thanks-lead .is-sent')).toBeHidden();
-  await expect(section.locator('.ask-steps')).toBeHidden();
-  await expect(section.locator('fieldset')).toBeVisible();
-  await expect(section.locator(`#${SOURCE_DONE_ID}`)).toBeHidden();
+  await expect(section.locator('[data-source-form]')).toBeHidden();
+  await expect(section.locator('.thanks-direct')).toBeVisible();
+  await expect(section.locator('.thanks-direct')).toContainText(t('thanks.directInvite'));
+  await expect(section.locator('.thanks-direct a.btn')).toHaveAttribute('href', locale === 'de' ? '/kontakt/' : `/${locale}/kontakt/`);
   // Der Eingangssatz der Sprache (YAML `text`) steht im Dokument, aber nicht im sichtbaren Text
   const received = (await section.locator('.thanks-lead .is-sent').textContent())!;
   expect(received.length).toBeGreaterThan(20);
   expect(await page.locator('main').evaluate((main: HTMLElement) => main.innerText)).not.toContain(received);
+}
+/** Übergang nach bestätigtem Versand: Dank und Eingang, Schrittanzeige und Herkunftsfrage, kein Weg zur Anfrage. */
+async function expectSent(page: Page) {
+  const section = page.locator('section.thanks');
+  await expect(section.locator('.thanks-lead .is-sent')).toBeVisible();
+  await expect(section.locator('.thanks-lead .is-sent')).toContainText(RECEIVED);
+  await expect(section.locator('.thanks-lead .is-neutral')).toBeHidden();
+  await expect(section.locator('.ask-steps')).toBeVisible();
+  await expect(section.locator('[data-source-form] fieldset')).toBeVisible();
+  await expect(section.locator('.thanks-direct')).toBeHidden();
+}
+/** Danke-Seite wie direkt nach einer bestätigten Anfrage mit JavaScript (Einmal-Merkmal + Bezug, wie contact.ts) */
+async function afterInquiry(page: Page, path = '/danke/') {
+  await page.goto(path);
+  await page.evaluate(([sent, ref]) => { sessionStorage.setItem(sent, String(Date.now())); sessionStorage.setItem(ref, '0123456789ab'); }, [INQUIRY_SENT_KEY, INQUIRY_REF_KEY]);
+  await page.goto(path);
 }
 
 async function fillInquiry(page: Page) {
@@ -70,12 +106,12 @@ test.describe('Anfrage mit JavaScript', () => {
     await form.getByRole('button', { name: t('contactform.sendEnquiry'), exact: true }).click();
     await expect(form.getByRole('status')).toHaveText(t('contact.yourEnquiryHasBeenSentWeLlGetBackTo'));
     await expect(page).toHaveURL(/\/danke\/$/);
-    // Erst nach dem bestätigten Versand bestätigt die Danke-Seite den Eingang, samt Schrittanzeige
-    const section = page.locator('section.thanks');
-    await expect(section.locator('.thanks-lead .is-sent')).toBeVisible();
-    await expect(section.locator('.thanks-lead .is-sent')).toContainText(RECEIVED);
-    await expect(section.locator('.thanks-lead .is-neutral')).toBeHidden();
-    await expect(section.locator('.ask-steps')).toBeVisible();
+    // Erst nach dem bestätigten Versand bestätigt die Danke-Seite den Eingang, samt Schrittanzeige und Herkunftsfrage
+    await expectSent(page);
+    // Das Merkmal ist beim Anzeigen verbraucht: Neuladen im selben Tab ist wieder neutral
+    expect(await page.evaluate((key) => sessionStorage.getItem(key), INQUIRY_SENT_KEY)).toBeNull();
+    await page.reload();
+    await expectNeutral(page);
   });
 
   test('ohne Versandkonfiguration bleibt die Seite stehen und sagt, dass nichts gesendet wurde', async ({ page }) => {
@@ -114,9 +150,24 @@ test.describe('Anfrage mit JavaScript', () => {
 });
 
 test.describe('Direkter Aufruf der Danke-Seite mit JavaScript', () => {
-  for (const path of ['/danke/', `/danke/#${SOURCE_DONE_ID}`, '/en/danke/']) test(`${path}: neutral, ohne Versandbehauptung`, async ({ page }) => {
+  for (const path of ['/danke/', `/danke/#${SOURCE_DONE_ID}`, '/en/danke/', '/nl/danke/']) test(`${path}: neutral, ohne Versandbehauptung`, async ({ page }) => {
     await page.goto(path);
-    await expectNeutral(page, path.startsWith('/en/') ? 'en' : 'de');
+    await expectNeutral(page, path.startsWith('/en/') ? 'en' : path.startsWith('/nl/') ? 'nl' : 'de');
+  });
+
+  test('ein Bezug allein (spätere Aufrufe nach einer Anfrage) bestätigt nichts', async ({ page }) => {
+    await page.goto('/danke/');
+    await page.evaluate((key) => sessionStorage.setItem(key, '0123456789ab'), INQUIRY_REF_KEY);
+    await page.goto('/danke/');
+    await expectNeutral(page);
+  });
+
+  test('ein liegen gebliebenes Merkmal (älter als die Weiterleitung) bestätigt nichts und wird verbraucht', async ({ page }) => {
+    await page.goto('/danke/');
+    await page.evaluate(([key, age]) => sessionStorage.setItem(key, String(Date.now() - age - 1000)), [INQUIRY_SENT_KEY, INQUIRY_SENT_TTL] as const);
+    await page.goto('/danke/');
+    await expectNeutral(page);
+    expect(await page.evaluate((key) => sessionStorage.getItem(key), INQUIRY_SENT_KEY)).toBeNull();
   });
 });
 
@@ -126,7 +177,7 @@ test.describe('Herkunftsfrage mit JavaScript', () => {
   test('Freitext nur bei „Andere“: Wechsel zu einer festen Auswahl sendet ihn nicht mit', async ({ page }) => {
     const mails: string[] = [], bodies: string[] = [];
     await page.route('**/api/contact', (route) => { bodies.push(route.request().postDataBuffer()?.toString('utf8') ?? ''); return endpoint(mails)(route); });
-    await page.goto('/danke/');
+    await afterInquiry(page);
     const form = answer(page);
     const text = form.getByLabel('Wo genau?');
     await expect(text).toBeHidden();
@@ -142,12 +193,13 @@ test.describe('Herkunftsfrage mit JavaScript', () => {
     expect(mails).toHaveLength(1);
     expect(mails[0]).toContain('quelle: linkedin');
     expect(mails[0]).not.toContain('freitext');
+    expect(mails[0]).toContain('ref: 0123456789ab'); // Bezug zur Anfrage, getrennt vom verbrauchten Merkmal
   });
 
   test('Freitext bei „Andere“ geht mit und bleibt beim Hin- und Zurückwechseln erhalten', async ({ page }) => {
     const mails: string[] = [];
     await page.route('**/api/contact', endpoint(mails));
-    await page.goto('/danke/');
+    await afterInquiry(page);
     const form = answer(page);
     await form.getByText('Andere', { exact: true }).click();
     await form.getByLabel('Wo genau?').fill('Messe in Köln');
@@ -162,7 +214,7 @@ test.describe('Herkunftsfrage mit JavaScript', () => {
   test('ohne Auswahl: Meldung an der Gruppe, Fokus auf der ersten Antwort, Eingabe nimmt den Fehler zurück', async ({ page }) => {
     let sent = 0;
     await page.route('**/api/contact', (route) => { sent++; return json(route, { ok: true, state: 'sent' }); });
-    await page.goto('/danke/');
+    await afterInquiry(page);
     const form = answer(page);
     await form.getByRole('button', { name: 'Antwort senden' }).click();
     const error = form.locator('#quelle-err');
@@ -179,7 +231,7 @@ test.describe('Herkunftsfrage mit JavaScript', () => {
 
   test('nur ein bestätigter Versand zeigt den Dank', async ({ page }) => {
     await page.route('**/api/contact', (route) => json(route, { ok: true, state: 'sent' }));
-    await page.goto('/danke/');
+    await afterInquiry(page);
     const form = answer(page);
     await form.getByText('LinkedIn', { exact: true }).click();
     await form.getByRole('button', { name: 'Antwort senden' }).click();
@@ -190,7 +242,7 @@ test.describe('Herkunftsfrage mit JavaScript', () => {
 
   test('ohne Versandkonfiguration: kein Dank, Auswahl bleibt, ehrliche Meldung', async ({ page }) => {
     await page.route('**/api/contact', (route) => json(route, { ok: true, state: 'not-configured' }));
-    await page.goto('/danke/');
+    await afterInquiry(page);
     const form = answer(page);
     await form.getByText('LinkedIn', { exact: true }).click();
     await form.getByRole('button', { name: 'Antwort senden' }).click();
@@ -202,7 +254,7 @@ test.describe('Herkunftsfrage mit JavaScript', () => {
 
   test('Netzfehler: kein Dank, lokalisierte Meldung, erneut sendbar', async ({ page }) => {
     await page.route('**/api/contact', (route) => route.abort('failed'));
-    await page.goto('/danke/');
+    await afterInquiry(page);
     const form = answer(page);
     await form.getByText('LinkedIn', { exact: true }).click();
     await form.getByRole('button', { name: 'Antwort senden' }).click();
@@ -218,7 +270,7 @@ test.describe('angehaltene Bewegung (Systemeinstellung oder Pause-Knopf)', () =>
 
   test('Dank der Herkunftsfrage erscheint sofort und voll deckend', async ({ page }) => {
     await page.route('**/api/contact', (route) => json(route, { ok: true, state: 'sent' }));
-    await page.goto('/danke/');
+    await afterInquiry(page);
     const form = page.locator('[data-source-form]');
     await form.getByText('LinkedIn', { exact: true }).click();
     await form.getByRole('button', { name: 'Antwort senden' }).click();
@@ -254,15 +306,59 @@ test.describe('ohne JavaScript', () => {
     await expectNeutral(page);
   });
 
-  test('bestätigte Anfrage über POST: Weiterleitung auf die Danke-Seite, die nichts behauptet', async ({ page }) => {
-    const mails: string[] = [], redirects: { status: number; location: string }[] = [];
-    await page.route('**/api/contact', endpoint(mails, redirects));
+  /** Anfrage ohne JavaScript mit eingerichtetem Versand absenden; die Herkunftsantwort beantwortet `source` */
+  async function nativeInquiry(page: Page, mails: string[], redirects: { status: number; location: string }[] = [], source?: (route: Route) => Promise<void>) {
+    await page.route(API, (route) => (source && /(^|&)kind=quelle(&|$)/.test(route.request().postData() ?? '') ? source(route) : endpoint(mails, redirects)(route)));
     const form = await fillNative(page);
     await form.locator('[type=submit]').click();
-    await expect(page).toHaveURL(/\/danke\/$/);
-    expect(redirects).toEqual([{ status: 303, location: new URL('/danke/', page.url()).href }]);
+    await expect(page).toHaveURL((url) => API(url) && url.searchParams.has('danke'));
+  }
+
+  test('bestätigte Anfrage über POST: signierter Link zeigt Dank, Eingang und Herkunftsfrage; gefälscht oder abgelaufen neutral', async ({ page }) => {
+    const mails: string[] = [], redirects: { status: number; location: string }[] = [];
+    await nativeInquiry(page, mails, redirects);
     expect(mails).toHaveLength(1);
-    await expectNeutral(page);
+    expect(redirects).toHaveLength(1);
+    expect(redirects[0].status).toBe(303);
+    const link = new URL(redirects[0].location);
+    expect(link.pathname).toBe('/api/contact');
+    expect(link.searchParams.get('danke')).toMatch(/^\d+\.[a-f0-9]{32}$/);
+    await expectSent(page);
+    // Der Link ist nicht von Hand herzustellen und nur kurz gültig: sonst die neutrale Seite
+    const get = (url: URL) => onRequestGet({ request: new Request(url), env: { ...CONFIGURED, ASSETS } });
+    const neutral = new URL('/danke/', link).href;
+    const forged = new URL(link); forged.searchParams.set('danke', link.searchParams.get('danke')!.replace(/.$/, (c) => (c === '0' ? '1' : '0')));
+    const otherLocale = new URL(link); otherLocale.searchParams.set('sprache', 'en');
+    for (const url of [forged, otherLocale]) {
+      const response = await get(url);
+      expect(response.status).toBe(303);
+      expect(response.headers.get('location')).toBe(url === otherLocale ? new URL('/en/danke/', link).href : neutral);
+    }
+    const now = Date.now;
+    Date.now = () => now() + 11 * 60_000;
+    try { expect((await get(link)).headers.get('location')).toBe(neutral); } finally { Date.now = now; }
+    expect((await onRequestGet({ request: new Request(link), env: { ASSETS } })).headers.get('location')).toBe(neutral); // ohne Versandgeheimnis
+    const valid = await get(link);
+    expect(valid.status).toBe(200);
+    expect(valid.headers.get('cache-control')).toBe('no-store');
+    expect(await valid.text()).toMatch(/<section\b[^>]*data-thanks[^>]*data-sent/);
+  });
+
+  test('bestätigte Anfrage über POST auf Englisch: Danke-Seite in der Sprache der Anfrage', async ({ page }) => {
+    const mails: string[] = [];
+    await page.route(API, endpoint(mails));
+    await page.goto('/en/kontakt/');
+    const form = page.locator('#inquiry-form');
+    await form.locator('[name=anlass][value=firma]').check({ force: true });
+    await form.locator('[name=datum-offen]').check({ force: true });
+    await form.locator('[name=ort]').fill('Essen');
+    await form.locator('[name=name]').fill('Testperson');
+    await form.locator('[name=email]').fill('test@example.test');
+    await form.locator('[type=submit]').click();
+    await expect(page).toHaveURL((url) => API(url) && url.searchParams.get('sprache') === 'en');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await expect(page.locator('section.thanks .thanks-lead .is-sent')).toContainText('Thank you for your enquiry!');
+    await expect(page.locator('section.thanks [data-source-form] fieldset')).toBeVisible();
   });
 
   test('Anfrage ohne Versandkonfiguration: lesbare Seite statt „erhalten“', async ({ page }) => {
@@ -279,28 +375,28 @@ test.describe('ohne JavaScript', () => {
 
   test('Herkunftsfrage: Auswahl ist Pflicht, Antwort ohne Versandkonfiguration wird nicht als Dank gemeldet', async ({ page }) => {
     let sent = 0;
-    await page.route('**/api/contact', (route) => { sent++; return endpoint()(route); });
-    await page.goto('/danke/');
+    await nativeInquiry(page, [], [], (route) => { sent++; return endpoint()(route); });
     const form = page.locator('[data-source-form]');
     await expect(form.locator('[name=quelle]').first()).toHaveAttribute('required', '');
     await form.getByRole('button', { name: 'Antwort senden' }).click();
     expect(await form.evaluate((node: HTMLFormElement) => node.checkValidity())).toBe(false);
     expect(sent).toBe(0);
-    // Frische Seite: WebKits nativer Validierungshinweis hält sonst in Playwright den Knopf „instabil“
+    // Frische Seite (derselbe signierte Link): WebKits nativer Validierungshinweis hält sonst den Knopf „instabil“
     await page.reload();
+    await expectSent(page);
     await form.locator('[name=quelle][value=linkedin]').check({ force: true });
-    const response = page.waitForResponse((r) => new URL(r.url()).pathname === '/api/contact');
+    const response = page.waitForResponse((r) => API(new URL(r.url())) && r.request().method() === 'POST');
     await form.getByRole('button', { name: 'Antwort senden' }).click();
     expect((await response).status()).toBe(503);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(t('thanks.answerNotSent'));
     await expect(page.getByRole('main')).not.toContainText('Danke, das hilft uns sehr!');
-    await expect(page.getByRole('link', { name: t('contactAPI.backToForm') })).toHaveAttribute('href', '/danke/#danke');
+    // Zurück zum Formular = zurück auf den signierten Link, dort steht die Frage
+    await expect(page.getByRole('link', { name: t('contactAPI.backToForm') })).toHaveAttribute('href', /^\/api\/contact\?danke=\d+\.[a-f0-9]{32}&sprache=de#danke$/);
   });
 
   test('Herkunftsfrage über POST: Freitext nur bei „Andere“ sichtbar, ein Rest aus der vorherigen Wahl wird verworfen, Dank als Antwort des Endpoints', async ({ page }) => {
     const mails: string[] = [];
-    await page.route('**/api/contact', endpoint(mails));
-    await page.goto('/danke/');
+    await nativeInquiry(page, mails);
     const form = page.locator('[data-source-form]');
     const text = form.getByLabel('Wo genau?');
     await expect(text).toBeHidden();
@@ -309,14 +405,14 @@ test.describe('ohne JavaScript', () => {
     await text.fill('Messe in Köln');
     await form.locator('[name=quelle][value=linkedin]').check({ force: true });
     await expect(text).toBeHidden();
-    const response = page.waitForResponse((r) => new URL(r.url()).pathname === '/api/contact');
+    const response = page.waitForResponse((r) => API(new URL(r.url())) && r.request().method() === 'POST');
     await form.getByRole('button', { name: 'Antwort senden' }).click();
     expect((await response).status()).toBe(200);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(t('thanks.answerReceived'));
     await expect(page.getByRole('main')).toContainText(t('thanks.answerThanks'));
     await expect(page.getByRole('link', { name: t('contactAPI.toHome') })).toHaveAttribute('href', '/');
-    expect(mails).toHaveLength(1);
-    expect(mails[0]).toContain('quelle: linkedin');
-    expect(mails[0]).not.toContain('Messe');
+    expect(mails).toHaveLength(2); // Anfrage + Herkunftsantwort
+    expect(mails[1]).toContain('quelle: linkedin');
+    expect(mails[1]).not.toContain('Messe');
   });
 });

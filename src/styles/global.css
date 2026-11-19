@@ -325,8 +325,8 @@ html.motion-paused { scroll-behavior: auto !important; }
    auf derselben Höhe, ohne Versatz und ohne Einblenden. Klasse .hover-line oder einer der Selektoren unten; --line-y hebt
    die Linie an (Navigation). Grundregel in :where() (Spezifität 0), sonst schlägt sie den Auslöser „Karte gehovert“. Links mitten im Fließtext behalten ihre feste Unterstreichung (sonst im Text nicht als Link
    erkennbar). */
-:where(.hover-line, .link, .nav nav > a, .nav-drop > a, .footer ul a:not(:has(.hover-line)), .footer address a, .footer .base nav a, .crumbs a, .member h3) { background-image: var(--grad); background-repeat: no-repeat; background-size: 0% 0.125rem; background-position: right 0 bottom var(--line-y, 0rem); -webkit-box-decoration-break: clone; box-decoration-break: clone; transition: background-size var(--dur-underline) var(--ease-glide), color var(--dur-color) var(--ease-default); }
-:is(.hover-line, .link, .nav nav > a, .footer ul a:not(:has(.hover-line)), .footer address a, .footer .base nav a, .crumbs a):is(:hover, :focus-visible), .nav nav > a[aria-current], a:is(:hover, :focus-visible) .hover-line, .member:is(:hover, :focus-within) h3, .nav-drop:is(:hover, :focus-within, .is-open):not(.is-dismissed) > a, .nav-drop:has(a[aria-current]) > a { background-size: 100% 0.125rem; background-position-x: left; }
+:where(.hover-line, .link, .nav nav > a, .nav-drop-head, .footer ul a:not(:has(.hover-line)), .footer address a, .footer .base nav a, .crumbs a, .member h3) { background-image: var(--grad); background-repeat: no-repeat; background-size: 0% 0.125rem; background-position: right 0 bottom var(--line-y, 0rem); -webkit-box-decoration-break: clone; box-decoration-break: clone; transition: background-size var(--dur-underline) var(--ease-glide), color var(--dur-color) var(--ease-default); }
+:is(.hover-line, .link, .nav nav > a, .footer ul a:not(:has(.hover-line)), .footer address a, .footer .base nav a, .crumbs a):is(:hover, :focus-visible), .nav nav > a[aria-current], a:is(:hover, :focus-visible) .hover-line, .member:is(:hover, :focus-within) h3, .nav-drop:is(:hover, :focus-within, .is-open):not(.is-dismissed) > .nav-drop-head, .nav-drop:has(a[aria-current]) > .nav-drop-head { background-size: 100% 0.125rem; background-position-x: left; }
 
 /* header */
 .nav { position: fixed; z-index: 20; inset: 0 0 auto 0; display: flex; align-items: center; gap: clamp(var(--space-4), 2vw, var(--space-7-5)); padding: calc(var(--space-4-5) + env(safe-area-inset-top, 0rem)) var(--gutter) var(--space-4-5); transition: background var(--dur-standard), border-color var(--dur-standard), padding var(--dur-standard); border-bottom: 1px solid transparent; }
@@ -528,11 +528,14 @@ td.us { color: var(--text); background: var(--fill-soft); }
 .c-steps { display: grid; }
 .c-step { min-height: 78vh; display: grid; align-content: center; gap: var(--space-4); }
 /* Inactive story steps recede like in the reference, but every line keeps WCAG AA contrast:
-   large headings >= 3:1, body text and the small accent label >= 4.5:1 on --ground. */
-.c-step .section-head > h2 > :is(.k, .head-line), .c-step .section-head > p { transition: opacity var(--dur-fade); }
-.c-step:not(.on) .section-head > h2 > .k { opacity: 0.88; }
-.c-step:not(.on) .section-head > h2 > .head-line { opacity: 0.42; }
-.c-step:not(.on) .section-head > p { opacity: 0.8; } /* --muted ist seit 30.10. eine Stufe dunkler */
+   large headings >= 3:1, body text and the small accent label >= 4.5:1 on --ground.
+   Nur im Zweispalten-Scrollytelling: einspaltig stehen alle Abschnitte untereinander und gleich stark. */
+@media (--nav-expanded) {
+  .c-step .section-head > h2 > :is(.k, .head-line), .c-step .section-head > p { transition: opacity var(--dur-fade); }
+  .c-step:not(.on) .section-head > h2 > .k { opacity: 0.88; }
+  .c-step:not(.on) .section-head > h2 > .head-line { opacity: 0.42; }
+  .c-step:not(.on) .section-head > p { opacity: 0.8; } /* --muted ist seit 30.10. eine Stufe dunkler */
+}
 .c-step .k { color: var(--accent); margin-bottom: 0; }
 .c-step h2 { font-size: clamp(2rem, 3.6vw, 3.375rem); line-height: 1.04; }
 .c-step p { color: var(--muted); font-size: clamp(1.0625rem, 1.3vw, 1.1875rem); max-width: 44ch; }
@@ -588,7 +591,6 @@ td.us { color: var(--text); background: var(--fill-soft); }
   .c-story { grid-template-columns: 1fr; }
   .c-media { display: none; }
   .c-step { min-height: 0; padding: var(--space-5) 0 var(--space-9); }
-  .c-step:not(.on) .section-head > .k, .c-step:not(.on) .section-head > h2, .c-step:not(.on) .section-head > p { opacity: 1; }
   .c-step figure { display: block; border-radius: var(--radius-14); overflow: hidden; aspect-ratio: 16 / 10; }
   .c-step figure.tall { aspect-ratio: 4 / 5; max-width: 26.25rem; }
   .c-step figure img { width: 100%; height: 100%; object-fit: cover; }
@@ -602,7 +604,7 @@ td.us { color: var(--text); background: var(--fill-soft); }
   .c-name span:nth-child(2) { -webkit-text-stroke-width: 1px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .c-media figure, .c-step > * { transition: none; }
+  .c-media figure, .c-step .section-head > h2 > :is(.k, .head-line), .c-step .section-head > p { transition: none; }
 }
 
 /* Reveal beim Scrollen. Ohne JS, bei reduzierter Bewegung oder globaler Pause ist alles sofort sichtbar:
@@ -872,18 +874,38 @@ td.us { color: var(--text); background: var(--fill-soft); }
 .nav { --glide: var(--ease-glide); --move: var(--dur-underline); }
 .nav nav { align-items: center; }
 /* Leiste ab 1001 px: Abstände wachsen mit der Breite, Einträge brechen nie um (1024 px: „Über uns“ stand zweizeilig) */
-.nav nav > a, .nav-drop > a { display: inline-flex; align-items: center; min-height: 2.5rem; --line-y: 0.3125rem; white-space: nowrap; }
-.nav nav > a:hover, .nav nav > a[aria-current], .nav-drop:is(:hover, :focus-within, .is-open) > a, .nav-drop:has(a[aria-current]) > a { color: var(--text); }
+.nav nav > a, .nav-drop-head, .nav-drop-head > a { display: inline-flex; align-items: center; min-height: 2.5rem; --line-y: 0.3125rem; white-space: nowrap; }
+.nav nav > a:hover, .nav nav > a[aria-current], .nav-drop:is(:hover, :focus-within, .is-open) > .nav-drop-head, .nav-drop:has(a[aria-current]) > .nav-drop-head { color: var(--text); }
 
-/* „Anlässe“ öffnet beim Zeigen, per Tastatur (focus-within) oder per Tipp (.is-open, site.ts); Esc setzt .is-dismissed. Schließen mit kurzer Verzögerung, damit ein schräger
-   Mausweg zur Liste sie nicht zuklappt. clip-path statt visibility: die Einträge bleiben für Screenreader erreichbar. */
+/* Untermenüs („Anlässe“, „Über uns“): Kopf = Übersichtslink + Schalter (Chevron) mit aria-expanded. Mit der Maus öffnet das
+   Zeigen, per Tipp und Tastatur der Schalter (.is-open, site.ts); Esc setzt .is-dismissed. Schließen mit kurzer Verzögerung,
+   damit ein schräger Mausweg zur Liste sie nicht zuklappt. Geschlossen ist die Liste inert (site.ts); ohne Skript öffnet sie
+   mit dem Fokus (:not(.is-ready)). Der Schalter nimmt optisch nur die Breite des Chevrons ein, die Trefferfläche ist größer. */
 .nav-drop { position: relative; }
-.nav-drop > a { gap: var(--space-1-5); }
+.nav-drop-head { gap: var(--space-1-5); }
+/* Der Schalter beginnt am Wortende (Abstand als Innenabstand), damit er das Wort nicht anschneidet: 24 px breit */
+.nav-drop-toggle { position: relative; display: grid; place-items: center; min-height: 2.5rem; margin-inline: calc(-1 * var(--space-1-5)) calc(0.5625rem - 1.5rem + var(--space-1-5)); padding: 0 calc(1.5rem - 0.5625rem - var(--space-1-5)) 0 var(--space-1-5); border: 0; background: none; color: inherit; cursor: pointer; }
+/* Touch (Marc, iPad quer: ein Tipp aufs Wort darf nicht wegführen): der Schalter deckt den ganzen Kopf ab (Trefferfläche
+   2,75rem hoch), die Übersicht steht als erster Eintrag in der Liste. Mit Maus bleibt der Kopf Link + Zeigen. --n zählt
+   die sichtbaren Einträge für die gleitende Box; im Ersatzweg ohne Anchor Positioning verschiebt der mit der Maus
+   ausgeblendete Übersichtseintrag die Zeilen um eins. */
+.nav-drop > ul { --n: var(--n-items); }
+.nav-drop-all { display: none; }
+@media (hover: none), (pointer: coarse) {
+  .nav-drop-head { position: relative; }
+  .nav-drop-toggle { position: static; }
+  .nav-drop-toggle::before { content: ""; position: absolute; top: calc(50% - 1.375rem); height: 2.75rem; left: calc(-1 * var(--space-2)); right: calc(-1 * var(--space-2)); }
+  .nav-drop-all { display: block; }
+  .nav-drop > ul:has(> .nav-drop-all) { --n: calc(var(--n-items) + 1); }
+}
+@supports not (anchor-name: --a) {
+  @media (hover: hover) and (pointer: fine) { .nav-drop > ul:has(> .nav-drop-all) > .glide-mark { transform: translateY(calc((var(--gi) - 1) * 100%)); } }
+}
 .nav-drop .caret { width: 0.5625rem; height: 0.375rem; fill: none; stroke: currentColor; stroke-width: 1.4; transition: transform var(--dur-standard) var(--glide); }
 .nav-drop > ul { position: absolute; left: -1rem; top: calc(100% + 0.375rem); min-width: 13.125rem; list-style: none; margin: 0; padding: var(--space-2); --glide-pad: 0.5rem; display: grid; background: var(--surface-popover); backdrop-filter: blur(0.875rem); -webkit-backdrop-filter: blur(0.875rem); border: 1px solid var(--line); border-radius: var(--radius-12); box-shadow: var(--shadow-popover); opacity: 0; transform: translateY(-0.375rem) scale(0.98); transform-origin: 1.5rem 0; pointer-events: none; clip-path: inset(0 0 100% 0); transition: opacity var(--dur-control) var(--ease-default) var(--dur-delay-popover), transform var(--dur-color) var(--glide) var(--dur-delay-popover), clip-path 0s var(--dur-delay-dismiss); }
 .nav-drop > ul::before { content: ""; position: absolute; inset: -0.75rem 0 auto; height: 0.75rem; }
-.nav-drop:is(:hover, :focus-within, .is-open):not(.is-dismissed) > ul { opacity: 1; transform: none; pointer-events: auto; clip-path: inset(-1.25rem -1.25rem -3.75rem -1.25rem); transition: opacity var(--dur-control) var(--ease-default), transform var(--dur-standard) var(--glide); }
-.nav-drop:is(:hover, :focus-within, .is-open):not(.is-dismissed) .caret { transform: rotate(180deg); }
+.nav-drop:is(:hover, .is-open):not(.is-dismissed) > ul, .nav-drop:not(.is-ready):focus-within > ul { opacity: 1; transform: none; pointer-events: auto; clip-path: inset(-1.25rem -1.25rem -3.75rem -1.25rem); transition: opacity var(--dur-control) var(--ease-default), transform var(--dur-standard) var(--glide); }
+.nav-drop:is(:hover, .is-open):not(.is-dismissed) .caret, .nav-drop:not(.is-ready):focus-within .caret { transform: rotate(180deg); }
 .nav-drop li a { display: block; padding: var(--space-2-25) var(--space-3); border-radius: var(--radius-8); white-space: nowrap; }
 
 /* Gleitende Box in Auswahllisten (Anlässe, Sprache). Zwei Wege, ein Element (li.glide-mark, aria-hidden; kein ::after,
@@ -1116,11 +1138,6 @@ a.pack { grid-template-rows: auto auto 1fr; align-items: start; row-gap: var(--s
 .ig.ig-snap::before { transition: opacity var(--dur-standard) var(--ease-default); }
 @media (prefers-reduced-motion: reduce) { .ig::before { transition: opacity var(--dur-standard) var(--ease-default); } }
 
-/* Redaktionelle Hinweise im lokalen Dev-Server (SectionRenderer): gestrichelt in Orange, in der Content-Breite */
-.todo-note { position: relative; z-index: 6; display: flex; gap: var(--space-3); align-items: flex-start; margin: var(--space-6) var(--gutter) calc(-1 * var(--space-2)); padding: var(--space-3) var(--space-4); border: 1px dashed rgb(var(--rgb-amber) / 0.7); border-radius: var(--radius-10); background: rgb(var(--rgb-amber) / 0.08); color: var(--text); font-size: var(--text-sm); line-height: 1.5; }
-.todo-note b { color: var(--accent); font-weight: 500; margin-right: var(--space-1); }
-.todo-note .ico { flex: 0 0 auto; margin-top: var(--space-0-5); }
-
 /* Handy (Marc, 02.11.2026): das Showreel steht als gerahmtes Bild im Seitenfluss über der Überschrift, nicht als Hintergrund
    hinter dem Text. Startseiten-Hero (.hero) und Referenz-Kopf (.c-hero); Video: kleine Fassung (hero-reel.ts). */
 @media (--mobile) {
@@ -1133,6 +1150,11 @@ a.pack { grid-template-rows: auto auto 1fr; align-items: start; row-gap: var(--s
   .hero > .frame { width: auto; margin: var(--space-2-5); z-index: 3; }
   .hero.reel-on > .rec { display: flex; width: auto; align-self: start; justify-self: end; margin: calc(var(--space-2-5) + var(--fr-arm) - var(--space-2-25)) var(--space-6) 0 0; z-index: 3; }
   .hero > .hero-copy { grid-area: copy; position: relative; left: auto; right: auto; bottom: auto; padding-top: var(--space-7); max-width: none; }
+}
+/* Referenz-Kopf im gerahmten Medienrahmen auch auf Hochformat-Tablets (iPad 768×1024, 820×1180, 1024×1366): eine
+   hochformatige Bühne schneidet die breiten Showbilder sonst seitlich an (Audit 3, V7). Maßgeblich ist das Seitenverhältnis,
+   nicht nur die Breite. Eckdaten folgen in facts.css derselben Bedingung. */
+@media (--mobile), (orientation: portrait) and (--grid-stacked) {
   .c-hero { min-height: 0; grid-template-rows: auto auto auto auto; padding-bottom: 0; }
   .c-hero > .hero-media, .c-hero > .reel { grid-row: 2; grid-column: 1; position: relative; inset: auto; width: 100%; height: auto; aspect-ratio: 16 / 10; margin-top: var(--space-4-5); border-radius: var(--radius-14); overflow: hidden; -webkit-mask-image: none; mask-image: none; }
   .c-hero > .shade { display: none; }

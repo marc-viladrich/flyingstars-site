@@ -7,10 +7,18 @@ export const SOURCE_OTHER = 'andere';
 export const SOURCE_TEXT_MAX = 120;
 /** Bezug zur Anfrage: 12 Hex-Zeichen, im Browser erzeugt, steht in beiden Meldungen */
 export const INQUIRY_REF = /^[a-f0-9]{12}$/;
-/** sessionStorage-Schlüssel des Bezugs. Das Anfrageformular schreibt ihn erst nach einem vom Endpoint bestätigten
- * `sent`; nur dann bestätigt die Danke-Seite den Eingang. Ein direkter Aufruf (neuer Tab, Lesezeichen, ohne JavaScript)
- * zeigt den neutralen Text. */
+/** sessionStorage-Schlüssel des Bezugs (nur Korrelation der Herkunftsantwort). Das Anfrageformular schreibt ihn erst
+ * nach einem vom Endpoint bestätigten `sent`. */
 export const INQUIRY_REF_KEY = 'fs-anfrage-ref';
+/** Einmal-Merkmal für den Übergang Anfrage → Danke-Seite (Zeitstempel, ms), getrennt vom Bezug: das Anfrageformular
+ * setzt es nach bestätigtem `sent`, die Danke-Seite verbraucht es beim Anzeigen. Nur dann zeigt sie Eingang und
+ * Herkunftsfrage; ein späterer oder direkter Aufruf (neuer Tab, Lesezeichen, Neuladen) ist neutral. */
+export const INQUIRY_SENT_KEY = 'fs-anfrage-gesendet';
+/** So lange nach dem bestätigten Versand gilt das Merkmal (die Weiterleitung folgt nach 2,4 s) */
+export const INQUIRY_SENT_TTL = 120_000;
+/** Merkmal der Danke-Section im ausgelieferten HTML. Ohne JavaScript setzt /api/contact daneben `data-sent`, wenn es
+ * die Seite nach bestätigtem Versand selbst ausliefert. */
+export const THANKS_STATE_ATTR = 'data-thanks';
 /** Rückmeldung nach bestätigter Herkunftsantwort, nur per Skript. Ohne JavaScript antwortet /api/contact selbst mit
  * einer Bestätigungsseite; ein frei aufrufbares Sprungziel zeigt nie einen Versand an. */
 export const SOURCE_DONE_ID = 'danke-antwort';

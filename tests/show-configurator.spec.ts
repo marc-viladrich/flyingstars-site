@@ -210,23 +210,7 @@ test('Ein Klick auf die Bühne beendet die Einladung und hält die Show an', asy
 test('Logo, Text-Durchlauf, Anlasswechsel und Rücksprung bleiben fliegbar (Grenzen wie tests/show-physics.spec.ts)', async ({ page }, info) => {
   test.skip(info.project.name !== 'desktop', 'Die Bewegung ist auf allen Geräten dieselbe.');
   test.setTimeout(600_000);
-  const LIMITS = { speed: 2.6, accel: 5.5 };
-  const measure = () => page.evaluate(() => {
-    const trace = (window as unknown as { __showTrace: [number, number[]][] }).__showTrace;
-    let speed = 0, accel = 0;
-    for (let f = 2; f < trace.length; f++) {
-      const [t0, p0] = trace[f - 2], [t1, p1] = trace[f - 1], [t2, p2] = trace[f];
-      const d1 = t1 - t0, d2 = t2 - t1;
-      if (d1 < 0.012 || d2 < 0.012 || Math.abs(d1 - d2) > 0.002) continue;
-      for (let k = 0; k < Math.min(p0.length, p1.length, p2.length); k += 3) {
-        const v1 = [0, 1, 2].map((q) => (p1[k + q] - p0[k + q]) / d1), v2 = [0, 1, 2].map((q) => (p2[k + q] - p1[k + q]) / d2);
-        speed = Math.max(speed, Math.hypot(...v2));
-        accel = Math.max(accel, Math.hypot(v2[0] - v1[0], v2[1] - v1[1], v2[2] - v1[2]) / ((d1 + d2) / 2));
-      }
-    }
-    (window as unknown as { __showTrace: unknown[] }).__showTrace = [];
-    return { speed, accel };
-  });
+  const { expectFlyable, measure } = await import('./helpers/physics');
   await page.clock.install();
   await page.goto(`${CFG}?anlass=hochzeit&paket=ODYSSEY&drohnen=600#konfigurator`);
   await page.clock.runFor(1000);
@@ -235,14 +219,18 @@ test('Logo, Text-Durchlauf, Anlasswechsel und Rücksprung bleiben fliegbar (Gren
   await page.clock.runFor(2000);
   await expect(scene(page)).toHaveText('Euer Logo');
   await page.locator('#cfg-use-logo').click();
+  await expect(chosenOccasion(page)).toHaveValue('hochzeit');
+  // Applying a logo sets the show to the recommended fleet rather than the URL's starting count.
+  const showDrones = Number(await droneCount(page).textContent());
+  expect(showDrones).toBeGreaterThanOrEqual(300);
   await page.locator('#cfg-text').fill('Anna & Ben');
   await page.locator('#cfg-text').press('Enter');
   await page.clock.runFor(90_000); // the run-through, the logo, motifs
+  expectFlyable(await measure(page), 'Logo und Text-Durchlauf', 600, 92);
   await occasion(page, 'kultur'); // through the cloud
+  await expect(chosenOccasion(page)).toHaveValue('kultur');
   await page.clock.runFor(150_000); // a whole round and the loop back to the logo
-  const { speed, accel } = await measure();
-  expect.soft(speed, 'speed').toBeLessThanOrEqual(LIMITS.speed);
-  expect.soft(accel, 'acceleration').toBeLessThanOrEqual(LIMITS.accel);
+  expectFlyable(await measure(page), 'Anlasswechsel und Rücksprung', showDrones, 150);
 });
 
 const transitionX = (page: Page) => page.evaluate(() => (window as unknown as { __transitionX: number | null }).__transitionX);

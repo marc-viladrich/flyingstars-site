@@ -36,9 +36,15 @@ interface Props { sections: Section[] }
 // Redaktionelle Hinweise (todo) rendert kein Build und keine Preview (Marc, 02.11.2026). Auch im lokalen Dev-Server
 // sind sie aus (Marc, 13.11.2026: „die nerven mich“); wer sie sehen will, startet ihn mit FS_HINWEISE=1.
 const annotate = import.meta.env.DEV && process.env.FS_HINWEISE === '1';
+// Stile der Hinweise nur mit eingeschalteten Hinweisen ausgeben, nie im Build (Learned Rule 28/31; hält das Basis-CSS klein)
+const TODO_CSS = `.todo-note { position: relative; z-index: 6; display: flex; gap: var(--space-3); align-items: flex-start; margin: var(--space-6) var(--gutter) calc(-1 * var(--space-2)); padding: var(--space-3) var(--space-4); border: thin dashed rgb(var(--rgb-amber) / 0.7); border-radius: var(--radius-10); background: rgb(var(--rgb-amber) / 0.08); color: var(--text); font-size: var(--text-sm); line-height: 1.5; }
+.todo-note b { color: var(--accent); font-weight: 500; margin-right: var(--space-1); }
+.todo-note .ico { flex: 0 0 auto; margin-top: var(--space-0-5); }
+`;
 const { sections } = Astro.props;
 const map = { showreelHero: FlightHero, occasions: Occasions, metrics: Metrics, sustainability: Sustainability, hero: Hero, textMedia: TextMedia, faq: Faq, cta: Cta, postList: PostList, projectGrid: ProjectGrid, contactForm: ContactForm, contactDetails: ContactDetails, pricing: Pricing, steps: Steps, comparison: Comparison, team: Team, logoBar: LogoBar, timeline: Timeline, packages: Packages, references: References, tempo: Tempo, configuratorTeaser: ConfiguratorTeaserSection, landingHero: LandingHero, landingStories: LandingStories, landingRefs: LandingRefs, landingTeaser: LandingTeaser, landingPrice: LandingPrice, landingSite: LandingSite, landingFlow: LandingFlow, landingBento: LandingBento, landingSpotlight: LandingSpotlight, landingCta: LandingCta, location: Location, thanks: Thanks, press: Press } as const;
 ---
 <div style="display:contents" {...((Astro.props as any).__afe?.sections ? blocks((Astro.props as any).__afe?.sections) : {})}>
 {sections.map((s, i) => { const C = map[s.type]; return <>{annotate && s.todo && <aside class="todo-note" role="note"><Icon name="pencil-line" size={18} class="g" /><span><b>Fehlt noch</b> {s.todo}</span></aside>}<C {...(s as any)} index={i} /></>; })}
+{annotate && <style is:inline set:html={TODO_CSS} />}
 </div>
