@@ -86,14 +86,14 @@ test('Freischalten: auch ein Paketwechsel meldet alle neuen Motive, in der Reihe
       assert.deepEqual(freshMotifs(o.motifs, b, a).filter((m) => fresh.includes(m)), [], 'zurück: nichts davon ist neu');
     }
   }
-  // Hochzeit mit Motivkatalog: Die Katalogmotive haben eigene Freischaltgrenzen.
-  // Der Schmetterling spielt ab 200, Lotusblüten weiterhin ab 250 und der Antrag ab 450.
+  // Hochzeit nach der Einstufung 3D/3D+ (Runde 9, Marc): 3D zeigt nur einfache 3D-Fassungen, 3D+ die komplexen samt
+  // eigener Szene vor ihrer Geschichte. Der Wechsel 3D → 3D+ schaltet deshalb neue Motive frei; der Antrag ab 450.
   const wedding = OCCASIONS.find((o) => o.id === 'hochzeit').motifs, ids = (list) => list.map((m) => m.id);
   assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'SPARK', drones: 140 }, { pkg: 'SPARK', drones: 150 })), ['amor', 'lotusblume']);
-  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'SPARK', drones: 100 }, { pkg: 'HORIZON', drones: 200 })), ['torte', 'amor', 'blueten', 'blume', 'lotusblume', 'unendlich', 'falter']);
-  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 240 }, { pkg: 'HORIZON', drones: 250 })), ['lotus']);
-  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 290 }, { pkg: 'ODYSSEY', drones: 300 })), []);
-  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 200 }, { pkg: 'ODYSSEY', drones: 600 })), ['lotus', 'antrag']);
+  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'SPARK', drones: 100 }, { pkg: 'HORIZON', drones: 200 })), ['torte', 'unendlich']);
+  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 240 }, { pkg: 'HORIZON', drones: 250 })), []);
+  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 290 }, { pkg: 'ODYSSEY', drones: 300 })), ['herz-szene', 'herz', 'taube', 'lotusblume', 'falter-szene', 'falter', 'lotus-szene', 'lotus']);
+  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 200 }, { pkg: 'ODYSSEY', drones: 600 })), ['herz-szene', 'herz', 'taube', 'lotusblume', 'falter-szene', 'falter', 'lotus-szene', 'lotus', 'antrag']);
   assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'ODYSSEY', drones: 440 }, { pkg: 'ODYSSEY', drones: 450 })), ['antrag']);
   assert.equal(unlockNote([{ label: 'Ring' }]), 'Neues Motiv freigeschaltet: Ring');
   assert.equal(unlockNote([{ label: 'Ring' }, { label: 'Lotusblüten' }, { label: 'Herz' }]), '3 neue Motive: Ring, Lotusblüten, Herz');
