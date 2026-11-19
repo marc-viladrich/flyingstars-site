@@ -123,6 +123,8 @@ Angewendet wird die Stufe im Konfigurator (`src/content/show-configurator.js`): 
 
 Paarbogen (3D 0° | 3D +30° | 3D+ 0° | 3D+ +30° | 3D+ Bewegung): `node scripts/catalog-3d-sheet.mjs aus.json 200 400 --paare stufe:3D`.
 
+**Marcs Entscheidungen zur Einstufung (20.11.2026).** Lotusblume, Lotus-Szene, Herz-Tunnel und Riesenrad bleiben 3D+. Anstoßende Gläser: „zu nitpicky, Anstoßen kann ruhig in 3D rein“. Die 3D-Fassung stößt jetzt an (schlichte Gläser, kein Wein, kein Lichtblitz), 3D+ bleibt aufwendiger (Wein, Perlen, mehr Profillinien, Licht an der Berührstelle). Dabei behoben: Seit Runde 7 neigten sich die Gläser beim „Anstoßen“ voneinander weg (Vorzeichen der Drehung). Jetzt stehen sie in der Ruhelage mit etwas Luft und treffen sich auf dem Höhepunkt (engster Abstand 0,25 → 0,08).
+
 **Galaxie neu.** Vorher liefen die Arme bei Radius fast null zu einem Knäuel zusammen, der Kern war ein Ellipsoid mit Querlinie (las sich als „e“), Staubarme liefen dicht neben den Hauptarmen (Doppellinien), und das Licht flackerte (`wander`). Jetzt: zwei logarithmische Spiralen mit festem Steigungswinkel ab Radius 0,15, ein kleiner Kugelumriss als Kern, starre langsame Drehung, Licht innen heller und ein einzelner Schimmer nach außen. Verworfen: Nebenarme genau zwischen den Hauptarmen (außen trotzdem zu nah), Sternhaufen auf den Armen (wirken wie Knoten).
 
 **Neu (9):** Flugzeug, Lastwagen, Feuerwehrauto (3D+, Fahrzeuge; Kastenkörper und Radpaare aus `technik.js`), Batterie, Doppelherz, Unendlich-Zeichen, Peace-Zeichen, Anker, Hochzeitstorte (3D, `einfach.js`). Die einfachen füllen den 3D-Modus, der durch die Umstufung kleiner wird: je Anlass bleiben dort 7 bis 13 Motive.

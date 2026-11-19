@@ -4,6 +4,8 @@
 // (snow2d), faltet die zweite und dritte Ebene auf 60° und 120° auf und dreht sich dann um die Hochachse.
 import { TAU, DIAMOND, CYAN, WARM, mix, paint, yaw, pitch, smooth, frac, hash } from "../show-motion.js";
 import { share } from "../show-shapes.js";
+import { t as message } from "../../i18n/ui.mjs";
+import { builders as winter } from "./winter.js";
 
 export const builders = {};
 
@@ -42,3 +44,26 @@ builders.snow3d = (n, caption) => {
     o[3] = m.tip ? 0.95 + 0.7 * Math.exp(-(((frac(t / 2.2 - m.arm / 6 - m.plane / 3) - 0.5) / 0.09) ** 2)) * (0.7 + 0.3 * hash(j)) : 1;
   } }] };
 };
+
+// Runde 9 (Marc: „bei der Schneeflocke, wenn wir in die 3D-Version gehen, … die gleiche 3D-Eskalierung … wie auf der
+// Startseite …, dass man sieht, wie aus einer 2D-Shape eine 3D-Shape wird“): die Mechanik des Stücks „baum“ der Startseite
+// (himmel/folge.js) als Motiv des Konfigurators. snow3d beginnt flach und faltet die zweite und dritte Ebene auf 60° und
+// 120° auf; davor steht die Flocke kurz flach, danach wird sie zum Baum. Wiederverwendet, nicht nachgebaut: snow3d von
+// oben, tree3d und treeStory aus winter.js.
+// Anders als auf der Startseite steht vorn nicht snow2d, sondern snow3d in seiner flachen Ruhelage: snow2d hat eine andere
+// Punktlage, und im Tempo des Konfigurators sah man den Flug dazwischen als Knäuel (Bildfolge 19.11.2026). Mit derselben
+// Punktlage gibt es keinen Flug, die flache Flocke faltet sich direkt auf.
+// Im Konfigurator laufen die Bilder auf seiner ruhigen Uhr (steady() in show-scenes.js): Das Auffalten beginnt, wenn die
+// Flocke steht.
+//   3D:  flach → räumlich → (Wolke) → Lichterbaum dreht sich (snowTree3d)
+//   3D+: flach → räumlich → Licht zeichnet den Baum, ein Stern geht auf, die Lichter wechseln die Farbe (snowTreeStory)
+const FLAT_HOLD = 0.9, UNFOLD_HOLD = 2.6;
+function escalation(n) {
+  const unfold = builders.snow3d(n, message("winter.itUnfoldsIntoSpace")).beats[0];
+  // flach: dieselben Punkte, nur das Licht funkelt an den Spitzen (die cyanfarbenen Drohnen), keine Bewegung
+  const flat = { pts: unfold.pts, caption: message("winter.aSnowflake"), hold: FLAT_HOLD, live: (b, j, t, o) => { o[3] = b[3] < 100 ? 0.95 + 0.6 * Math.exp(-(((frac(t / 1.6 - Math.atan2(b[1], b[0]) / TAU) - 0.5) / 0.1) ** 2)) : 0.92 + 0.08 * Math.sin(t * 1.4 + j); } };
+  return [flat, { ...unfold, hold: UNFOLD_HOLD }];
+}
+// zum Baum über die lebendige Wolke (wie in 3D+): der direkte Flug von der räumlichen Flocke zur Spirale lief als Knäuel
+builders.snowTree3d = (n, caption) => ({ beats: [...escalation(n), ...winter.tree3d(n, caption).beats.map((b) => ({ ...b, cloud: true }))] });
+builders.snowTreeStory = (n, caption) => ({ beats: [...escalation(n), ...winter.treeStory(n, caption).beats.slice(1)] });
