@@ -93,6 +93,13 @@ test('Keine zweite Liste: alte Kategorie-Schlüssel und Labels kommen im Code ni
  for(const key of Object.keys(ui))assert.doesNotMatch(key,/^(contactform\.(corporateEvent|cityFestival|agency|weddingPrivate|other)|references\.(brands|cities|culture|indoor)|site\.(brandsAdvertising|agencies))$/,key);
 });
 
+test('Tests, Specs und Tools senden keine alten Anlass-Schlüssel mehr (19.11.2026: logo-attachments bekam 400)',()=>{
+ const files=['src','scripts','tests','editor','tools'].flatMap(dir=>walk(dir)).filter(f=>/\.(test\.mjs|spec\.ts|mjs|ts)$/.test(f)&&!f.includes('node_modules')&&!f.endsWith('scripts/occasions.test.mjs'));
+ const old=/anlass['"]?\s*[:=,]\s*['"](?:firma|stadt|agentur)['"]|\[value=(?:firma|stadt|agentur)\]|[?&]anlass=(?:firma|stadt|agentur)\b/;
+ const hits=files.filter(f=>old.test(read(f)));
+ assert.deepEqual(hits,[],'alte Anlass-Schlüssel: '+hits.join(', '));
+});
+
 test('Jeder ?anlass=… in Inhalten ist ein gültiger Schlüssel (Konfigurator-Links: Konfigurator-Abfolge)',()=>{
  const configurator=Object.keys(CONFIGURATOR_FORM_MAP);
  const files=[...walk('src/content/pages'),...walk('src/content/projects'),...walk('src/content/posts'),'src/content/navigation.json'].filter(f=>/\.(ya?ml|md|json)$/.test(f));

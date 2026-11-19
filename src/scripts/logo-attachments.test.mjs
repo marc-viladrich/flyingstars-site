@@ -21,7 +21,7 @@ test('adapter sends exact original bytes in valid uncompressed ZIP with safe gen
 });
 test('multipart reaches Brevo as real attachment; duplicates/unknown files/oversize fail before provider', async t => {
  const calls=[]; t.mock.method(globalThis,'fetch',async (url,init) => { calls.push(JSON.parse(init.body)); return new Response('{}',{status:201}); });
- const data=()=>{const f=new FormData();for(const [k,v] of Object.entries({name:'Test',email:'test@example.test',anlass:'firma'}))f.set(k,v);f.set('logo-original',file(svg));return f;};
+ const data=()=>{const f=new FormData();for(const [k,v] of Object.entries({name:'Test',email:'test@example.test',anlass:'unternehmen'}))f.set(k,v);f.set('logo-original',file(svg));return f;};
  const send=f=>onRequestPost({request:new Request('https://site.test/api/contact',{method:'POST',body:f,headers:{accept:'application/json'}}),env:{BREVO_API_KEY:'fake',CONTACT_TO:'in@example.test',CONTACT_FROM:'out@example.test'}});
  assert.equal((await send(data())).status,200);assert.equal(calls[0].attachment.length,1);
  for(const kind of ['duplicate','unknown','fake','large']) { const f=data();if(kind==='duplicate')f.append('logo-original',file(svg));if(kind==='unknown')f.set('unknown',file(svg));if(kind==='fake')f.set('logo-original',new File(['fake'],'x.png',{type:'image/png'}));if(kind==='large')f.set('logo-original',new File([new Uint8Array(LOGO_BODY_LIMIT)],'x.png',{type:'image/png'}));assert.ok((await send(f)).status>=400); }

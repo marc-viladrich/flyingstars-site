@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { onRequestPost, onRequestGet } from '../../functions/api/contact.ts';
 
 const env = { BREVO_API_KEY: 'test-key', CONTACT_FROM: 'form@example.test', CONTACT_TO: 'inbox@example.test', SITE_NAME: 'FlyingStars' };
-const fields = { name: 'Testperson', email: 'test@example.test', anlass: 'firma', ort: 'Essen', 'datum-offen': 'ja', message: 'Nur eine Testnachricht.' };
+const fields = { name: 'Testperson', email: 'test@example.test', anlass: 'unternehmen', ort: 'Essen', 'datum-offen': 'ja', message: 'Nur eine Testnachricht.' };
 const request = (values = {}, headers = {}) => new Request('https://site.example.test/api/contact', {
   method: 'POST', body: new URLSearchParams({ ...fields, ...values }), headers: { accept: 'application/json', ...headers },
 });
