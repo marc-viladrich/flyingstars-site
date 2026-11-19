@@ -148,7 +148,10 @@ export async function buildReel(reel = REEL) {
       let pick;
       if (r.kind === "logo") pick = [await logoBeat(n)];
       else {
-        const version = r.kind === "text" ? { build: `text${pkg}`, caption: message('showTeaser.yourInitials'), value: r.value, style: r.style, occasion: r.occasion } : r.build ? { build: r.build, caption: r.label } : motif?.tiers[pkg];
+        // Runde 9 (Einstufung 3D/3D+, Konfigurator-Agent): ein 3D+-Motiv hat keine HORIZON-Fassung mehr; seine einzelne 3D-Szene
+        // steht als eigenes Motiv davor (of: Motiv-ID), z. B. der Herztunnel
+        const own = !motif?.tiers[pkg] && occasion?.motifs.find((m) => m.of === r.motif)?.tiers.ODYSSEY;
+        const version = r.kind === "text" ? { build: `text${pkg}`, caption: message('showTeaser.yourInitials'), value: r.value, style: r.style, occasion: r.occasion } : r.build ? { build: r.build, caption: r.label } : motif?.tiers[pkg] ?? own;
         if (!version) throw new Error(`Showreel: ${r.occasion}/${r.motif} hat keine ${pkg}-Fassung`);
         const seq = await buildSequence([{ id: r.motif ?? r.kind, label: r.label ?? motif?.label ?? "Text", tiers: { [pkg]: { ...version, minDrones: 0 } } }], pkg, n, SHOW_PACKAGES[pkg].color, r.occasion);
         const all = seq.beats.filter((b) => !b.interlude);

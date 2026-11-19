@@ -1,6 +1,6 @@
 # Show-Konfigurator
 
-Gültiger Stand: 18.11.2026 (Runde 6). Dieser Abschnitt beschreibt den aktuellen Vertrag. Der Anhang „Verlauf“ darunter
+Gültiger Stand: 20.11.2026 (Runde 9). Dieser Abschnitt beschreibt den aktuellen Vertrag. Der Anhang „Verlauf“ darunter
 protokolliert alle Fassungen seit Oktober in zeitlicher Reihenfolge; dort beschriebene Modelle (Paketwahl, Ergebnis-Spalte,
 Leistungsvergleich) gelten nur, wenn dieser Abschnitt sie nennt.
 
@@ -25,9 +25,12 @@ Eingaben in dieser Reihenfolge:
 1. **Anlass** (Pills `.chips-quiet`): Winter & Silvester, Marketing (ID `launch`), Jubiläum, Stadtfest, Hochzeit, Kultur,
    Logo. Bestimmt, was am Himmel steht; ändert weder Paket noch Preis.
 2. **Art der Show** (dieselben Pills): 2D, 3D, 3D+ (`SHOW_ARTS` = `2d`, `3d`, `story`). Darunter je Art drei Häkchen aus
-   Moritz' Paketbeschreibungen, per `opacity` übergeblendet. Mindest-Drohnenzahl je Art (`artMin`): 100, 200, 300.
+   Moritz' Paketbeschreibungen, per `opacity` übergeblendet. Mindest-Drohnenzahl je Art (`artMin`): 100, 200, 300. Ein
+   Wechsel zu einer kleineren Art setzt deren Einstiegszahl (2D 100, 3D 200), nie unter den Bedarf von Text oder Logo.
+   Motive je Art nach `scenes/catalog-3d/stufen.js`: 3D nur Stufe 3D, 3D+ alle eingestuften, ohne 3D-Fassung nur 2D.
 3. **Drohnen**: Regler 100–1000, neutral (keine Paketfarben), Marken 100/300/500/1000; unter der Mindestzahl der Art hält
-   er an, ein Hinweis ersetzt kurz die Skala.
+   er an, ein Hinweis ersetzt kurz die Skala. Einstellbar sind nur Preisstufen (`droneStops(art)`, show-packages.ts): 2D bis
+   190 je 10, ab 200 je 50; 3D je 50; 3D+ je 100. Werte von außen runden auf (`stopAtLeast`, gleicher Preis).
 4. **Text oder Logo**: eigener Text (Textplaner im Worker) bzw. im Anlass „Logo“ der Logo-Modus (Logo-Konverter v10,
    Abschnitt „Runde 27“ im Verlauf).
 5. **Upgrades**: eingeklappte Zeile mit Zähler, dieselben sechs Extras wie im Raster „Upgrades“ der Preisseite.
@@ -36,12 +39,13 @@ Darunter die Paket-/Preis-Box mit Anfrage-Knopf und „Immer dabei“ (ruhige Li
 
 ## Zustände und Preis
 
-- **Individuelles Paket** (Standard): Preis aus `showArtPrice(art, drones)` (`src/content/show-packages.ts`) mit „ab“;
+- **Eure Show** (Standard; „Eure 2D-Show“, „Eure 3D-Show · ab 200 Drohnen“, „Eure 3D+-Show · ab 300 Drohnen“, in der
+  Handy-Leiste ohne Zusatz; in der Anfrage „Unsere Show: …“): Preis aus `showArtPrice(art, drones)` (`src/content/show-packages.ts`) mit „ab“;
   2D = `individualPrice` je Drohnenzahl, 3D derselbe Preis ab 200, 3D+ = ODYSSEY-Preis (`priceFor('ODYSSEY')`). Show
   warmweiß, keine Paketnamen.
 - **Startpunkt aus einer Paketkarte** (`?paket=SPARK|HORIZON|ODYSSEY#konfigurator`, auf der Preisseite ohne Neuladen):
   Drohnenzahl und Art des Pakets, Name und Festpreis ohne „ab“, Show in der Paketfarbe. Jede Änderung an Art,
-  Drohnenzahl, Upgrades oder Logo macht daraus „Individuelles Paket“ und entfernt `?paket=` aus der Adresse. Anlass,
+  Drohnenzahl, Upgrades oder Logo macht daraus „Eure Show“ und entfernt `?paket=` aus der Adresse. Anlass,
   eigener Text (solange er keine Drohnen nachfordert) und Wiedergabe ändern das Paket nicht.
 - Festes Paket und dieselbe Art mit derselben Drohnenzahl im individuellen Paket kosten gleich viel
   (Wächter `scripts/individual-price.test.mjs`). Offene Preisfragen an Moritz: Verlauf, Runde 5.
@@ -51,6 +55,8 @@ Darunter die Paket-/Preis-Box mit Anfrage-Knopf und „Immer dabei“ (ruhige Li
 
 - Fassung der Motive nach Art (2D flach, 3D als Körper mit Schwenk, 3D+ in Akten) und Drohnenzahl (`unlockAt`); ein
   Wechsel der Art startet die Folge von vorn.
+- Erste Ansicht: lebendige Wolke, das erste Motiv formiert sich 1,8 s nachdem die Bühne sichtbar wurde (reduzierte
+  Bewegung 0,5 s); jede Eingabe vorher beendet den Einstieg. Startmotive: Lichterbaum, Rakete, Wappen, Ballons, Ring, Harfe.
 - FlyingStars-Katalogmotive werden auf die Drohnenzahl abgetastet (`scenes/catalog-resample.js`), verdichtet bis 200
   Drohnen (`DENSE_MAX`); darüber bleiben weitere Drohnen dunkel in Reserve.
 - Bewegung folgt der globalen Bewegungspolitik (Pause, reduzierte Bewegung: stehendes Bild); außerhalb des Bildes
@@ -64,7 +70,8 @@ Startpunkt), Drohnenzahl, Anlass, Upgrades (`extras`) und eine Zusammenfassung m
 ## Prüfen
 
 - Unit: `scripts/individual-price.test.mjs`, `scripts/show-assign.test.mjs`, `scripts/catalog-resample.test.mjs`,
-  `src/scripts/show-field.test.mjs`.
+  `src/scripts/show-field.test.mjs`; Runde 9: `src/scripts/drone-stops.test.mjs`, `show-art-motifs.test.mjs`,
+  `spelling-3d-plus.test.mjs`, `logo-density.test.mjs`, `logo-rows.test.mjs`, `logo-stage.test.mjs`.
 - Browser: `tests/show-configurator.spec.ts`, `tests/pricing.spec.ts`, `tests/logo-show-budget.spec.ts`,
   `tests/show-teaser.spec.ts`.
 - Leistung: `npm run build && npm run perf:start` (LCP der Preisseite, Long Tasks), Zahlen aus Runde 6 im Verlauf.
@@ -1105,3 +1112,46 @@ seine 200er-Gestalt, weitere Drohnen bleiben dunkel in Reserve.
 - Ergebnis Chromium 4× (vorher → nachher): Regler auf 1000 Long Task 2296 → keiner, Regler auf 200 469 → keiner, 3D+ 253 →
   keiner; übrig ein Task von 51 ms (vorher ebenso) nach dem Loslassen des Reglers, fast ganz native Canvas-Arbeit. WebKit max:
   Regler auf 1000 251 → 37 ms, Ziehen 60 → 26, 3D+ 93 → 20, Scrollen 40 → 28 ms.
+
+### Runde 9: Liniendichte, Logo-Parität, Preisstufen, Show-Art-Stufen, Einstieg (20.11.2026)
+
+- **Liniendichte im Automatikzustand** (Marc: „bleibt dann immer in der Mitte … von 114 auf 233“). Ursache: der Griff stand
+  auf `meta.density` der Automatik (fast immer 0,6 = Stufe 8); eine Reglerstufe ist aber eine feste Liniendichte des
+  Konverters, eine andere Skala (Cupra bei 100: automatisch 114 Drohnen, Stufe 8 = 259, Stufe 3 = 101). Jetzt steht der Griff
+  auf der gemessenen Stufe mit der Drohnenzahl der Automatik, deren untere Nachbarin höchstens so viele braucht
+  (`src/scripts/logo-density.mjs`). Beispiele: vorberechnet in `beispiele/<id>.json` unter `density[n]` mit
+  `23-logo-drohnen-konverter/tools/v10/configurator-density.mjs` (nach `configurator-examples.mjs` laufen lassen, ca. 20 min);
+  eigene Logos und geänderte Beispiele: im Hintergrund gemessen (`effectiveDensity`, 5–7 Umrechnungen, gemessen 6–7 s), der
+  Griff ist so lange blass (`aria-busy`). Die rote Zone und „kann unleserlich werden“ gelten auch im Automatikzustand.
+- **Energizer** ist aus den Beispielen entfernt, **Target** (Zielscheibe ohne Schrift, schon vorberechnet) dazu.
+- **Glättung quer zur Linie** (Spotify-Schallwellen, `src/scripts/logo-rows.mjs`): der Konverter setzt Konturpunkte auf die
+  Pixeltreppe; geglättet wird nur senkrecht zur Linie bei Punkten mit zwei Nachbarn in einer Flucht (höchstens 0,3
+  Punktabstände). Spotify p90 0,093 → 0,009 Punktabstände; gilt für vorberechnete, live gerechnete und Kundenlogos.
+- **Logo-Modus und Show zeigen dieselbe Formation** (Shell): die Punkte waren gleich, aber der Logo-Modus zoomte das Logo unter
+  die Hinweiskarte. `src/scripts/logo-stage.mjs` legt es in die freie Fläche über Karte und Minimap; „Dieses Logo in der
+  Show verwenden“ rundet auf die nächste Preisstufe auf, nie unter den Bedarf.
+- **Show-Art**: Wechsel auf eine kleinere Art setzt deren Einstiegszahl (2D 100, 3D 200) mit Hinweis „2D-Show ab 100
+  Drohnen“. Einstufung 3D/3D+ aus `stufen.js` (`byStufe` in content/show-configurator.js): je Anlass 2D/3D/3D+ (gesamt):
+  Silvester 17/13/19, Marketing 16/13/18, Jubiläum 24/10/17, Stadtfest 24/7/15, Hochzeit 18/7/13, Kultur 16/12/16.
+  `scripts/show-unlock.test.mjs` prüft noch das Modell vor Runde 5 (ODYSSEY ⊇ HORIZON ⊇ SPARK, Pakete nach Drohnenzahl) und
+  muss auf die Show-Art umgestellt werden.
+- **Nachtrag Einstufung**: Fußball und Kopfsprung (Stufe 3D+, Szenen aus `scenes/catalog-3d/sport.js`) spielen ihre einzelne
+  3D-Szene in 3D+ als eigenes Motiv „Torschuss“/„Sprung“ direkt vor der Geschichte (`EIGENE_3DPLUS_SZENE`). Direktlinks auf
+  ein Motiv, das in der verlinkten Art nicht spielt, wechseln auf die nächste Art, in der es spielt (erst größer, dann
+  kleiner; `artForMotif`), mit Hinweis „Fußball gibt es als 3D+-Show“; ohne `?anlass` öffnet der Anlass des Motivs.
+  `scripts/show-counts.test.mjs`: der Golfcaddy-Test ist geteilt in Räder (2D, 100–350) und Reserve (Atom, 3D+, 600–1000).
+  Lichterbaum: in 3D und 3D+ faltet sich die Flocke räumlich auf und wird zum Baum (`snowTree3d`, `snowTreeStory`,
+  scenes/schnee.js). `scripts/show-geometry.test.mjs` prüft die Fassungen je Stufe statt „jedes Motiv hat ODYSSEY“.
+  Alle zwölf 3D+-Motive mit eigener 3D-Szene stehen in 3D+ als eigenes Motiv vor ihrer Geschichte (Namen sind
+  akomo-Entwürfe: Kolibri im Flug, Delfinsprung, Drachenflug, Falterflug, Blütentanz, Gondelrunde, Pirouette, Herztunnel,
+  Vorhang auf, Lichtsterne). Stadtfest: Drache vor Delfin, sonst zwei Wolken direkt hintereinander. Schlösser und der
+  Hinweis an der Spur nennen die Schwelle als Preisstufe (3D+: 450 → 500). `scripts/show-unlock.test.mjs` prüft je Art;
+  offen an Marc: in 3D schaltet bei Jubiläum, Stadtfest, Hochzeit und Kultur mehr Drohnen nichts mehr frei (alle späteren
+  Motive sind 3D+). Der Startseiten-Teaser nimmt für Herz bei 200 Drohnen die 3D-Szene (`of`), show-teaser.js.
+- **„Eure Show“ statt „Individuelles Paket“**, einheitlich „3D+“ (`preise.artName.story` = „3D+-Show“).
+- **Preisstufen am Regler** (Marc: „warum ein Jump von 200 auf 210“): siehe Aufbau, Punkt 3. Pfeil-/Bild-Tasten gehen eine bzw.
+  drei Stufen, Ziehen nimmt die nächste Stufe, Motivschwellen und Bedarf runden auf.
+- **Einstieg**: siehe Vorschau.
+- Geprüft (Playwright, echte Maus/Tastatur/Dateiwahl): Chromium und WebKit bei 390 und 1440 px; Messungen und Bilder unter
+  `/tmp/fs-r9/k/`.
+

@@ -11,6 +11,8 @@ import { logoFormations } from "./logo-v10/logo-formation.js";
 import { colourRuns, targetKey, selectedPoints, widenSelection, selectElement, selectionForAction } from "./logo-v10/groups.mjs";
 import { nearestHit, rectUnits } from "./logo-v10/pick.mjs";
 import { bindRubberBand } from "./logo-v10/rubber-band.mjs";
+import { smoothRows } from "./logo-rows.mjs";
+import { DENSITIES, searchDensityIndex } from "./logo-density.mjs";
 
 let examples = null;
 /** Die Kundenlogos für n Drohnen: [{ name, pts: [[x, y], …] (y nach unten, lange Seite in [-1, 1]), n }]. */
@@ -29,8 +31,9 @@ export async function customerLogos(n) {
     out.push(...more.sort((x, y) => x.k - y.k).slice(0, 4 - out.length));
   }
   return out.map(({ logo, k, fits }) => {
-    const s = logo.steps[k], pts = []; for (let i = 0; i < s.p.length; i += 2) pts.push([s.p[i] / 1000, s.p[i + 1] / 1000]);
-    return { id: logo.id, name: logo.name, pts, n: s.n, fits };
+    const s = logo.steps[k], raw = []; for (let i = 0; i < s.p.length; i += 2) raw.push({ x: s.p[i] / 1000, y: s.p[i + 1] / 1000 });
+    // dieselbe Glättung quer zur Linie wie bei Beispielen und eigenen Logos (logo-rows.mjs)
+    return { id: logo.id, name: logo.name, pts: smoothRows(raw).map((p) => [p.x, p.y]), n: s.n, fits };
   });
 }
 
@@ -48,7 +51,8 @@ export function logoSession(file, init = {}) {
   const removals = () => ({ exclude: [...(base.exclude || []), ...removed.filter((r) => !r.erase).flatMap((r) => r.anchors)], erase: [...(base.erase || []), ...removed.filter((r) => r.erase).flatMap((r) => r.anchors)] });
   const fresh = () => { inst?.dispose(); inst = logoFormations(file, { opts: { ...base, ...opts }, raster }); inst.setRemovals(removals()); };
   return {
-    formation: async (n, o) => { base = await defaults(); if (disposed) throw new Error("disposed"); if (!inst) fresh(); return inst.formation(n, o); },
+    // Runde 9: jede Formation geglättet quer zur Linie (logo-rows.mjs), wie die vorberechneten Beispiele
+    formation: async (n, o) => { base = await defaults(); if (disposed) throw new Error("disposed"); if (!inst) fresh(); return smoothRows(await inst.formation(n, o)); },
     setOptions(next) { const o = { ...opts, ...next }; if (o.density == null) delete o.density; if (JSON.stringify(o) === JSON.stringify(opts)) return false; opts = o; inst?.dispose(); inst = null; return true; },
     get options() { return { ...opts }; },
     get removed() { return removed; },
@@ -184,5 +188,24 @@ export async function exampleFormation(id, n, showBudget) {
   const p = decodePoints(step.p), pts = [];
   for (let i=0;i<p.length;i+=5) pts.push({ x:p[i]/1000, y:p[i+1]/1000, c:data.palette[p[i+2]], e:p[i+3], cg:p[i+4], wt:1 });
   pts.meta = { frame:step.frame, elements:step.elements, colourGroups:step.colourGroups, spacing:step.spacing, density:step.density, part:step.part, auto:step.auto, n:showBudget ?? n, over:pts.length>(showBudget ?? n) };
-  return pts;
+  return smoothRows(pts);
+}
+
+/** Runde 9: die gemessene Reglerstufe des automatischen Beispielbilds bei n Drohnen (tools/v10/configurator-density.mjs
+ * im Ordner 23 misst sie mit effectiveDensity, gespeichert in beispiele/<id>.json unter density[n]). */
+export async function preparedDensity(id, n) {
+  const data = await loadExample(id);
+  return data.density?.[n]?.index ?? null;
+}
+
+/**
+ * Runde 9: Reglerstufe, deren Bild so viele Drohnen braucht wie das automatische (auto) bei n Drohnen, gemessen mit
+ * denselben Umrechnungen, die eine Stufe von Hand auslöst (logoSession mit density). removed: die Entfernungen der Sitzung.
+ * Für eigene Logos und geänderte Beispiele; rechnet im Hintergrund, eine Umrechnung zur Zeit.
+ */
+export async function effectiveDensity(file, n, auto, { removed = [], stopped = () => false, counts = {} } = {}) {
+  return searchDensityIndex(async (i) => {
+    const s = logoSession(file, { flex: "auto", part: "auto", density: DENSITIES[i] });
+    try { s.setRemoved(removed); return (await s.formation(n)).length; } finally { s.dispose(); }
+  }, auto, { stopped, counts });
 }

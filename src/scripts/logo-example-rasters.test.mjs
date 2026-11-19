@@ -5,7 +5,7 @@ import {createHash} from 'node:crypto';
 const dir=new URL('../../public/media/logo-modus/beispiele/',import.meta.url);
 test('canonical example rasters match their source hashes and RGBA dimensions',()=>{
  const index=JSON.parse(fs.readFileSync(new URL('rasters-index.json',dir)));
- assert.equal(Object.keys(index).length,16);
+ assert.equal(Object.keys(index).length,15);
  for(const [hash,id] of Object.entries(index)){
   assert.equal(createHash('sha256').update(fs.readFileSync(new URL(id+'.svg',dir))).digest('hex'),hash);
   const rasters=JSON.parse(fs.readFileSync(new URL(id+'.raster.json',dir)));assert.ok(rasters[512]);

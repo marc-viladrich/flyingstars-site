@@ -18,7 +18,11 @@ const choose = async (page: Page, id: string) => {
   await expect(page.locator('#cfg')).toHaveAttribute('data-logo-state', 'ready', {timeout:90000});
   await expect(page.locator('#cfg-logo-count')).toBeVisible();
   await expect(page.locator('#cfg-scene')).toHaveText('Euer Logo', { timeout: 90000 });
-  await expect(page.locator('#cfg-detail')).toHaveAttribute('data-used-density', /[\d.]+/);
+  // Runde 9 (Punkt 1): der Griff steht auf der gemessenen Stufe des automatischen Bilds (beispiele/<id>.json, density[n])
+  await expect(page.locator('#cfg-detail')).not.toHaveAttribute('aria-busy', 'true');
+  const wanted = Number(await page.locator('#cfg-drones').inputValue());
+  const stored = await page.evaluate(async ([x, n]) => (await (await fetch(`/media/logo-modus/beispiele/${x}.json`)).json()).density[n].index, [id, wanted] as const);
+  await expect(page.locator('#cfg-detail')).toHaveValue(String(stored));
   page.off('worker', watch);
   expect(workers.filter(url => url.includes('logo-worker'))).toEqual([]);
   return Number(await page.locator('#cfg-logo-n').textContent());
@@ -37,15 +41,13 @@ test('Logo-Empfehlung bleibt beim Wechsel stabil, Adidas ist unabhängig vom vor
   await open(page);
   expect(await choose(page, 'adidas')).toBe(adidas);
 });
-test('HORIZON-Logo wird in SPARK vereinfacht; Automatisch zeigt die genutzte Dichte', async ({ page }) => {
+test('HORIZON-Logo wird in SPARK vereinfacht; Automatisch zeigt die wirksame Stufe', async ({ page }) => {
   test.setTimeout(240000);
   await open(page);
-  const recommendation = await choose(page, 'lamborghini');
+  const recommendation = await choose(page, 'lamborghini'); // (choose prüft die gemessene Stufe des Griffs)
   expect(recommendation).toBeGreaterThan(100);
-  const density = await page.locator('#cfg-detail').evaluate((el: HTMLInputElement) => ({ value: +el.value, used: +el.dataset.usedDensity! }));
-  const levels = [0.07,0.1,0.12,0.15,0.24,0.33,0.42,0.51,0.6,0.69,0.78,0.87,0.96,1.05,1.3,1.6,2,2.5,3];
-  expect(density.value).toBe(levels.reduce((best,d,i) => Math.abs(d-density.used)<Math.abs(levels[best]-density.used)?i:best,0));
   await page.locator('#cfg-use-logo').click();
+  // 360 Drohnen: Preisstufe 400, ab 400 ist die Show 3D; Home geht bei automatischem 3D wieder bis 100
   await page.locator('#cfg-drones').focus(); await page.keyboard.press('Home'); // 2D-Show mit 100 Drohnen
   await expect(page.locator('#cfg-scene')).toHaveText('Euer Logo, vereinfacht für 100 Drohnen', { timeout: 90000 });
   await expect(page.locator('#cfg-field')).toHaveAttribute('data-points', '100');
@@ -64,7 +66,7 @@ test('Cupra mit niedriger Dichte wird als 2D-Show mit 100 Drohnen übernommen', 
   await expect(page.locator('#cfg-scene')).toHaveText('Euer Logo', { timeout: 90000 });
   await expect.poll(async () => Number(await page.locator('#cfg-logo-n').textContent()), {timeout:90000}).toBeLessThan(200);
   await page.locator('#cfg-use-logo').click();
-  await expect(page.locator('#cfg-pkg')).toHaveText('Individuelles Paket');
+  await expect(page.locator('#cfg-pkg')).toHaveText('Eure 2D-Show');
   await expect(page.locator('#cfg-dronecount')).toHaveText('100');
   await expect(page.locator('#cfg-scene')).toHaveText('Euer Logo', {timeout:90000});
   await expect(page.locator('#cfg-field')).toHaveAttribute('data-points', '100');

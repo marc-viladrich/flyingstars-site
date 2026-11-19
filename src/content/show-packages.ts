@@ -65,7 +65,7 @@ export function configuratorPrice(drones: number): number {
 }
 
 /**
- * Preis einer freien Konfiguration („Individuelles Paket“, Moritz' Preistext 17.11.2026). Der Konfigurator kennt keine
+ * Preis einer freien Konfiguration („Eure Show“, bis Runde 9 „Individuelles Paket“, Moritz' Preistext 17.11.2026). Der Konfigurator kennt keine
  * Paketwahl mehr; die Pakete sind feste Beispiele mit Festpreis (SHOW_PACKAGES[name].price). Frei gerechnet wird bis 190
  * Drohnen wie bisher (SPARK-Aufpreis, ab 150 die Vorschau-Erweiterung), ab 200 Drohnen mit dem HORIZON-Aufpreis ohne
  * Obergrenze. Das trifft Moritz' Zahlen: 100 = 7.900, 200 = 15.900, 300 = 25.700, 500 = 45.300, 1000 = 94.300 € („hoher
@@ -128,4 +128,38 @@ export function showArtPrice(art: ShowArt, drones: number): number {
   const n = Math.max(snapDrones(drones), artMin(art));
   if (art === 'story') return priceFor('ODYSSEY', n) as number;
   return individualPrice(n);
+}
+
+/**
+ * Runde 9 (Marc 20.11.2026: „warum ein Jump von 200 auf 210 Drohnen so einen großen Unterschied macht … dass wir dann
+ * auch nur genau diese Schritte ermöglichen“): die einstellbaren Drohnenzahlen je Art der Show sind genau die Preisstufen
+ * von showArtPrice. Eine Stufe ist die größte Drohnenzahl eines Preises: 210 bis 250 Drohnen kosten dasselbe, also gilt
+ * 250. Damit ergibt sich (Stand der Preislogik oben): 2D bis 190 alle 10 Drohnen (SPARK-Aufpreis), ab 200 je 50
+ * (HORIZON-Aufpreis); 3D ab 200 je 50; 3D+ ab 300 je 100 (ODYSSEY-Aufpreis). Ändert sich die Preislogik, folgen die
+ * Stufen von selbst. Wächter: src/scripts/drone-stops.test.mjs.
+ */
+const stopsOf = new Map<ShowArt, number[]>();
+export function droneStops(art: ShowArt): number[] {
+  if (!stopsOf.has(art)) {
+    const out: number[] = [];
+    for (let n = artMin(art); n <= DRONES_MAX; n += DRONE_STEP) if (n + DRONE_STEP > DRONES_MAX || showArtPrice(art, n + DRONE_STEP) !== showArtPrice(art, n)) out.push(n);
+    stopsOf.set(art, out);
+  }
+  return stopsOf.get(art)!;
+}
+/** Kleinste Stufe ab n (Bedarf von Logo oder Text, Werte von außen): kostet dasselbe wie n, die Zahl fällt nie unter n. */
+export const stopAtLeast = (art: ShowArt, n: number): number => droneStops(art).find((s) => s >= n) ?? droneStops(art).at(-1)!;
+/** Nächste Stufe zu n (Ziehen am Regler); bei Gleichstand die obere. */
+export function stopNearest(art: ShowArt, n: number): number {
+  let best = droneStops(art)[0];
+  for (const s of droneStops(art)) if (Math.abs(s - n) <= Math.abs(best - n)) best = s;
+  return best;
+}
+/** Nachbarstufe in Richtung dir (+1 / −1) für Pfeiltasten und Bild-Tasten; am Rand bleibt die Zahl. */
+export function stopStep(art: ShowArt, n: number, dir: number, steps = 1): number {
+  const list = droneStops(art);
+  let i = dir > 0 ? list.findIndex((s) => s > n) : list.findLastIndex((s) => s < n);
+  if (i < 0) return dir > 0 ? list.at(-1)! : list[0];
+  i = Math.max(0, Math.min(list.length - 1, i + (steps - 1) * Math.sign(dir)));
+  return list[i];
 }

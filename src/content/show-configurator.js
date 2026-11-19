@@ -11,8 +11,9 @@ import { createTranslator } from '../i18n/ui.mjs';
  */
 
 import {PACKAGE_NAMES,packageLabel} from './package-identity.mjs';
-import { DRONE_RANGES, DRONE_STEP } from './show-packages.ts';
+import { DRONE_RANGES, DRONE_STEP, SHOW_ARTS, ART_TIER } from './show-packages.ts';
 import catalog from './catalog-motifs.json' with { type: 'json' };
+import { stufeKatalog, STUFE_EIGEN, STUFE_FORMATION } from '../scripts/scenes/catalog-3d/stufen.js';
 
 export const PACKAGE_ORDER = PACKAGE_NAMES;
 // The browser receives only its page dictionary; eager exports must use that same locale.
@@ -130,6 +131,8 @@ return  [
   // Runde 24: Katalogmotive (catalogMotif) spielen ab ihrer gezählten Punktzahl; withCatalogSpark ersetzt nur die SPARK-Fassung.
   // Moritz' Preistext (17.11.2026): Winter & Silvester zuerst, „Launch“ heißt „Marketing“ (die ID bleibt für bestehende Links)
   { id: 'silvester', label: t('showConfigurator.winterAndNewYear'), season: [11, 12], motifs: [
+    // Runde 9 (Marc 20.11.: „unspektakulär, wenn die erste Form die Uhr ist“): der Lichterbaum eröffnet, die Uhr folgt später
+    motif('schnee', t('showConfigurator.lightTree'), v('snow2d', t('showConfigurator.aSnowflakeTurns')), v('snowTree3d', t('showConfigurator.aLightTreeAsASpiralLightAscends')), v('snowTreeStory', t('showConfigurator.aSnowflakeBecomesATreeOfLightsAStarAppears'))), // Runde 9: die Flocke faltet sich räumlich auf und wird zum Lichterbaum (scenes/schnee.js)
     motif('uhr', t('showConfigurator.clock'), v('clock', t('showConfigurator.theHandsRunToTwelve')), v('clock3d', t('showConfigurator.3dWatchTheHandsAreRunning')), v('clockStory', t('showConfigurator.midnightSparksSwirlOutAndWriteTheNewYear'))),
     catalogMotif('sektflasche', 'silvester', t, locale),
     catalogMotif('stern', 'silvester', t, locale),
@@ -140,7 +143,6 @@ return  [
     catalogMotif('atom', 'silvester', t, locale),
     catalogMotif('glocke', 'silvester', t, locale),
     catalogMotif('schneemann', 'silvester', t, locale),
-    motif('schnee', t('showConfigurator.lightTree'), v('snow2d', t('showConfigurator.aSnowflakeTurns')), v('tree3d', t('showConfigurator.aLightTreeAsASpiralLightAscends')), v('treeStory', t('showConfigurator.aSnowflakeBecomesATreeOfLightsAStarAppears'))),
     catalogMotif('lebkuchen', 'silvester', t, locale),
     catalogMotif('zuckerstange', 'silvester', t, locale),
     catalogMotif('anstossen', 'silvester', t, locale),
@@ -199,6 +201,8 @@ return  [
     motif('medaille', t('showConfigurator.medal'), null, null, v('medalStory', t('showConfigurator.theRipplesBecomeYourNumberOnAMedalRibbon')), O1),
   ] },
   { id: 'festival', label: t('showConfigurator.cityFestival'), motifs: [
+    // Runde 9: die bunten Ballons eröffnen das Stadtfest; Kompass und Papierflieger bleiben direkt hintereinander
+    catalogMotif('ballons', 'festival', t, locale),
     motif('reise', t('showConfigurator.travel'), v('compass2d', t('showConfigurator.aCompassTheNeedleSeeksTheNorth')), v('compass3d', t('showConfigurator.theCompassIn3dTheNeedleSwingsIn')), v('travelStory', t('showConfigurator.theCityBecomesAMapPinsLightUpAndA'))),
     // der Papierflieger setzt die Reise fort (dieselbe Karte): direkt dahinter, ab ODYSSEY 450 ist es wieder eine Geschichte
     motif('flieger', t('showConfigurator.paperPlane'), null, null, v('planeStory', t('showConfigurator.aPaperPlaneFollowsTheRouteAndCirclesTheCompass')), O1),
@@ -206,7 +210,6 @@ return  [
     catalogMotif('palme', 'festival', t, locale),
     catalogMotif('strandliege', 'festival', t, locale),
     catalogMotif('cocktail', 'festival', t, locale),
-    catalogMotif('ballons', 'festival', t, locale),
     catalogMotif('kind', 'festival', t, locale),
     catalogMotif('autoscooter', 'festival', t, locale),
     catalogMotif('stern', 'festival', t, locale),
@@ -224,8 +227,10 @@ return  [
     catalogMotif('anker', 'festival', t, locale),
     catalogMotif('leuchtturm', 'festival', t, locale),
     catalogMotif('foerderturm', 'festival', t, locale),
-    motif('delfin', t('showConfigurator.dolphin'), v('dolphin2d', t('showConfigurator.aDolphinOverAWave')), v('dolphin3d', t('showConfigurator.aDolphinJumpsOutOfTheWaterIn3d')), v('dolphinStory', t('showConfigurator.wavesOneDolphinJumpsDivesInTwoDolphinsJumpIn'))),
+    // Runde 9: Drache vor Delfin. Beide Geschichten beginnen mit einer Wolke; mit den 3D+-Szenen davor lägen sonst sechs Bilder
+    // zwischen ihnen, und der Wolkenplan bräuchte zwei Wolken direkt hintereinander (scripts/show-clouds.test.mjs)
     motif('drache', t('showConfigurator.dragon'), null, v('dragon3d', t('showConfigurator.aDragonIn3dThatBeatsWings')), v('dragonStory', t('showConfigurator.aDragonRisesCirclesAndBreathesFireworks')), H1),
+    motif('delfin', t('showConfigurator.dolphin'), v('dolphin2d', t('showConfigurator.aDolphinOverAWave')), v('dolphin3d', t('showConfigurator.aDolphinJumpsOutOfTheWaterIn3d')), v('dolphinStory', t('showConfigurator.wavesOneDolphinJumpsDivesInTwoDolphinsJumpIn'))),
   ] },
   { id: 'hochzeit', label: t('site.wedding'), motifs: [
     motif('ring', t('showConfigurator.rings'), v('weddingRings2d', t('showConfigurator.twoWeddingRingsTheStoneSparkles')), v('rings3d', t('showConfigurator.aSolitaireIn3dRingAndBrilliantSpin')), v('ringsLink', t('showConfigurator.twoWeddingRingsIntertwineIn3dAndBecomeASolitaire'))),
@@ -250,6 +255,8 @@ return  [
     motif('antrag', t('showConfigurator.proposal'), null, null, v('ringStory', t('showConfigurator.aRingBoxOpensTheRingFindsTheRingFinger')), O1),
   ] },
   { id: 'kultur', label: t('showConfigurator.culture'), motifs: [
+    // Runde 9: die Harfe (Licht zupft die Saiten) eröffnet Kultur, das Buch folgt
+    motif('noten', t('packageDetails.music'), v('notes2d', t('showConfigurator.twoNotesWeighInTime')), v('harpHorizon', t('showConfigurator.aHarpLightPlucksTheStringsNotesRise')), v('harpStory', t('showConfigurator.theStringsSoundNTheNotesFlyNOfThem'))),
     motif('buch', t('showConfigurator.book'), v('book2d', t('showConfigurator.anOpenBookLightFlipsThePages')), v('book3d', t('showConfigurator.theBookOpensIn3dOnePageTurns')), v('bookStory', t('showConfigurator.theBookOpensAPenWritesTheLinesRise'))),
     motif('vorhang', t('showConfigurator.curtain'), v('curtain', t('showConfigurator.theCurtainMovesInTheAirDraft')), v('curtainStar', t('showConfigurator.curtainOnA3dStarIsReleased')), v('curtainStory', t('showConfigurator.curtainOnGoldRainFallsAStarRises'))),
     catalogMotif('taube', 'kultur', t, locale),
@@ -263,7 +270,6 @@ return  [
     catalogMotif('fledermaeuse', 'kultur', t, locale),
     catalogMotif('hexenkessel', 'kultur', t, locale),
     motif('maske', t('showConfigurator.masks'), v('masks', t('showConfigurator.theatreMasksComedyAndTragedyWeighThemselves')), v('masks3d', t('showConfigurator.theMasksIn3d')), v('maskStory', t('showConfigurator.comedyAndTragedyJoinToFormTheTheatreSymbol')), S1),
-    motif('noten', t('packageDetails.music'), v('notes2d', t('showConfigurator.twoNotesWeighInTime')), v('harpHorizon', t('showConfigurator.aHarpLightPlucksTheStringsNotesRise')), v('harpStory', t('showConfigurator.theStringsSoundNTheNotesFlyNOfThem'))),
     catalogMotif('welle', 'kultur', t, locale),
     catalogMotif('kugel', 'kultur', t, locale),
     catalogMotif('pyramide', 'kultur', t, locale),
@@ -271,8 +277,62 @@ return  [
     motif('tanz', t('showConfigurator.dance'), v('dancer2d', t('showConfigurator.aDancerHerRockSwings')), v('dancer3d', t('showConfigurator.theDancerTurnsIn3dTheRockFlies')), v('dancerStory', t('showConfigurator.theDancerTurnsTheSkirtBecomesTheFlowerTheFlower')), H1),
     motif('teufel', 'Bokkenrijders', null, null, v('devilStory', t('showConfigurator.theDevilFromOurBokkenrijdersShowAnActual3dFormation')), O1),
   ] },
-].map(occasion=>({...occasion,anlass:formOccasionFor(occasion.id)}));
+].map(occasion=>({...occasion,motifs:occasion.motifs.flatMap((m) => byStufe(m, t)),anlass:formOccasionFor(occasion.id)}));
 }
+
+/**
+ * Runde 9 (Marc 20.11.2026: „bei 3D … wirklich einfache Elemente, und dann die komplexen 3D-Elemente eher bei 3D Plus“):
+ * Stufe jeder 3D-Fassung aus scenes/catalog-3d/stufen.js (Formklasse → '3D' | '3D+', Einstufung des 3D-Agenten).
+ * - Stufe 3D+: keine HORIZON-Fassung, das Motiv spielt nur in 3D+ (ODYSSEY).
+ * - Katalogmotiv ohne echte 3D-Fassung (weder im Register noch als räumliche Katalogformation): nur in 2D, keine flache
+ *   Ersatzfassung in 3D oder 3D+.
+ * - eigene Motive: Stufe aus STUFE_EIGEN; reine Geschichten (nur ODYSSEY, z. B. Mondlandung) bleiben, wie sie sind.
+ * Wächter: src/scripts/show-art-motifs.test.mjs.
+ */
+export function stufeOf(m) {
+  if ('flat' in m) return stufeKatalog(m.catalog) ?? STUFE_FORMATION[m.catalog];
+  return STUFE_EIGEN[m.of ?? m.id]?.[0];
+}
+/**
+ * Runde 9 (b): 3D+-Motive, deren einzelne 3D-Szene sonst nirgends mehr liefe, weil in 3D+ nur die Geschichte spielt. Sie
+ * stehen in 3D+ als eigenes Motiv direkt vor der Geschichte (nicht in 3D), mit eigenem Namen (akomo-Entwürfe). Fußball und
+ * Kopfsprung: neu gebaut in scenes/catalog-3d/sport.js. Jedes neue 3D+-Motiv mit eigener 3D-Szene gehört hier hinein
+ * (Wächter: src/scripts/show-art-motifs.test.mjs).
+ */
+const EIGENE_3DPLUS_SZENE = {
+  fussball: 'showConfigurator.motif.shot', sprung: 'showConfigurator.motif.jump',
+  kolibri: 'showConfigurator.motif.kolibriScene', delfin: 'showConfigurator.motif.delfinScene', drache: 'showConfigurator.motif.dracheScene',
+  falter: 'showConfigurator.motif.falterScene', lotus: 'showConfigurator.motif.lotusScene', riesenrad: 'showConfigurator.motif.riesenradScene',
+  tanz: 'showConfigurator.motif.tanzScene', herz: 'showConfigurator.motif.herzScene', vorhang: 'showConfigurator.motif.vorhangScene',
+  feuerwerk: 'showConfigurator.motif.feuerwerkScene',
+};
+function byStufe(m, t) {
+  const stufe = stufeOf(m), tiers = { ...m.tiers };
+  if (stufe === '3D+') delete tiers.HORIZON;
+  else if (!stufe && 'flat' in m) { delete tiers.HORIZON; delete tiers.ODYSSEY; }
+  const left = PACKAGE_ORDER.filter((p) => tiers[p]);
+  if (!left.length) return [];
+  const scene = stufe === '3D+' && EIGENE_3DPLUS_SZENE[m.id] && m.tiers.HORIZON && tiers.ODYSSEY
+    ? [{ id: `${m.id}-szene`, of: m.id, label: t(EIGENE_3DPLUS_SZENE[m.id]), stufe, tiers: { ODYSSEY: { ...m.tiers.HORIZON, minDrones: tiers.ODYSSEY.minDrones } }, minDrones: tiers.ODYSSEY.minDrones }]
+    : [];
+  // (flat ordnete flache Katalogformationen in 3D hinter die Körper, buildSequence; ohne 3D-Fassung spielen sie dort jetzt
+  // gar nicht mehr, alle übrigen sind echte Körper und laufen in der Reihenfolge der Liste)
+  const flat = 'flat' in m ? { flat: !stufe } : {};
+  return [...scene, { ...m, ...flat, tiers, stufe: stufe ?? null, minDrones: Math.min(...left.map((p) => tiers[p].minDrones ?? 0)) }];
+}
+
+/**
+ * Runde 9 (c): Art der Show für einen Direktlink auf ein Motiv (?motiv=…&art=…). Spielt das Motiv in der verlinkten Art
+ * nicht, gilt die nächste Art, in der es spielt, zuerst die größeren (3D → 3D+), dann die kleineren (3D → 2D); null, wenn
+ * es in keiner spielt. Der Konfigurator sagt den Wechsel mit dem kurzen Hinweis unter dem Regler.
+ */
+export function artForMotif(m, art) {
+  if (m.tiers[ART_TIER[art]]) return art;
+  const i = SHOW_ARTS.indexOf(art), order = [...SHOW_ARTS.slice(i + 1), ...SHOW_ARTS.slice(0, i).reverse()];
+  return order.find((a) => m.tiers[ART_TIER[a]]) ?? null;
+}
+/** Anlass eines Motivs für einen Direktlink ohne ?anlass: der erste Anlass, der es führt. */
+export const occasionOfMotif = (occasions, id) => occasions.find((o) => o.motifs.some((m) => m.id === id)) ?? null;
 export const OCCASIONS = occasionsFor(defaultLocale);
 export const getConfiguratorContent = (locale = defaultLocale) => ({ STEPS: stepsFor(locale), OCCASIONS: occasionsFor(locale) });
 

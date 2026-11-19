@@ -1789,6 +1789,71 @@
     "en": "Dive",
     "nl": "Duik"
   },
+  "showConfigurator.motif.shot": {
+    "de": "Torschuss",
+    "en": "Shot on goal",
+    "nl": "Schot op doel"
+  },
+  "showConfigurator.motif.jump": {
+    "de": "Sprung",
+    "en": "Jump",
+    "nl": "Sprong"
+  },
+  "showConfigurator.motif.kolibriScene": {
+    "de": "Kolibri im Flug",
+    "en": "Hummingbird in flight",
+    "nl": "Kolibrie in vlucht"
+  },
+  "showConfigurator.motif.delfinScene": {
+    "de": "Delfinsprung",
+    "en": "Dolphin leap",
+    "nl": "Dolfijnsprong"
+  },
+  "showConfigurator.motif.dracheScene": {
+    "de": "Drachenflug",
+    "en": "Dragon flight",
+    "nl": "Drakenvlucht"
+  },
+  "showConfigurator.motif.falterScene": {
+    "de": "Falterflug",
+    "en": "Butterfly flight",
+    "nl": "Vlindervlucht"
+  },
+  "showConfigurator.motif.lotusScene": {
+    "de": "Blütentanz",
+    "en": "Blossom dance",
+    "nl": "Bloesemdans"
+  },
+  "showConfigurator.motif.riesenradScene": {
+    "de": "Gondelrunde",
+    "en": "Gondola ride",
+    "nl": "Gondelrit"
+  },
+  "showConfigurator.motif.tanzScene": {
+    "de": "Pirouette",
+    "en": "Pirouette",
+    "nl": "Pirouette"
+  },
+  "showConfigurator.motif.herzScene": {
+    "de": "Herztunnel",
+    "en": "Heart tunnel",
+    "nl": "Hartentunnel"
+  },
+  "showConfigurator.motif.vorhangScene": {
+    "de": "Vorhang auf",
+    "en": "Curtain up",
+    "nl": "Doek op"
+  },
+  "showConfigurator.motif.feuerwerkScene": {
+    "de": "Lichtsterne",
+    "en": "Stars of light",
+    "nl": "Lichtsterren"
+  },
+  "preise.artForMotif": {
+    "de": "{motif} gibt es als {art}",
+    "en": "{motif} comes as a {art}",
+    "nl": "{motif} bestaat als {art}"
+  },
   "showConfigurator.theJumperDipsInTheWaterMovesInRings": {
     "de": "Der Springer taucht ein, das Wasser bewegt sich in Ringen",
     "en": "The diver enters the water, ripples spread",
@@ -2959,6 +3024,11 @@
     "en": "A snowflake",
     "nl": "Een sneeuwvlok"
   },
+  "winter.itUnfoldsIntoSpace": {
+    "de": "…sie faltet sich auf und wird räumlich",
+    "en": "…it unfolds and becomes three-dimensional",
+    "nl": "…ze vouwt zich open en wordt ruimtelijk"
+  },
   "winter.itBecomesATreeLightDrawsItFromTheBottom": {
     "de": "aus ihr wird ein Baum, Licht zeichnet ihn von unten nach oben",
     "en": "it becomes a tree, light draws it from the bottom up",
@@ -3734,10 +3804,25 @@
     "en": "Build your show *yourself*",
     "nl": "Stel jullie show *zelf* samen"
   },
-  "preise.individual": {
-    "de": "Individuelles Paket",
-    "en": "Custom package",
-    "nl": "Individueel pakket"
+  "preise.yourShow.2d": {
+    "de": "Eure 2D-Show",
+    "en": "Your 2D show",
+    "nl": "Jullie 2D-show"
+  },
+  "preise.yourShow.3d": {
+    "de": "Eure 3D-Show",
+    "en": "Your 3D show",
+    "nl": "Jullie 3D-show"
+  },
+  "preise.yourShow.story": {
+    "de": "Eure 3D+-Show",
+    "en": "Your 3D+ show",
+    "nl": "Jullie 3D+-show"
+  },
+  "preise.yourShowFrom": {
+    "de": "{name} · ab {n} Drohnen",
+    "en": "{name} · from {n} drones",
+    "nl": "{name} · vanaf {n} drones"
   },
   "preise.fixedPrice": {
     "de": "Festes Paket · Festpreis",
@@ -3865,9 +3950,9 @@
     "nl": "op aanvraag"
   },
   "preise.summaryIndividual": {
-    "de": "Individuelles Paket: {drones} Drohnen, {price} netto (Preis laut Konfigurator)",
-    "en": "Custom package: {drones} drones, {price} excluding VAT (configurator price)",
-    "nl": "Individueel pakket: {drones} drones, {price} exclusief btw (prijs volgens configurator)"
+    "de": "Unsere Show: {drones} Drohnen, {price} netto (Preis laut Konfigurator)",
+    "en": "Our show: {drones} drones, {price} excluding VAT (configurator price)",
+    "nl": "Onze show: {drones} drones, {price} exclusief btw (prijs volgens configurator)"
   },
   "preise.summaryPackage": {
     "de": "Paket {name}: {drones} Drohnen, {price} netto (Festpreis)",
@@ -3915,9 +4000,9 @@
     "nl": "3D-show"
   },
   "preise.artName.story": {
-    "de": "3D-Show mit Storytelling",
-    "en": "3D show with storytelling",
-    "nl": "3D-show met storytelling"
+    "de": "3D+-Show",
+    "en": "3D+ show",
+    "nl": "3D+-show"
   },
   "preise.artItem.2d.1": {
     "de": "Initialen, Logos oder Stadtwappen",

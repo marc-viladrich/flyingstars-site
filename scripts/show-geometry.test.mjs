@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { sampleOutline, circle, heartOutline, rings, clock, star, extrude, torusPair, burstSphere, evenSubset } from '../src/scripts/show-geometry.js';
-import { OCCASIONS, STEPS, PACKAGE_ORDER } from '../src/content/show-configurator.js';
+import { OCCASIONS, STEPS, PACKAGE_ORDER, stufeOf } from '../src/content/show-configurator.js';
 import * as shapes from '../src/scripts/show-shapes.js';
 
 // The drone count of a package must be the drone count in the picture.
@@ -47,7 +47,7 @@ test('Motivformen haben genau die verlangte Punktzahl', () => {
   }
 });
 
-test('Jeder Anlass hat vier bis dreißig Motive (Runde 24: Katalog- und Showmotive), SPARK mindestens drei, ODYSSEY alle; jede Fassung hat ihre Mindestzahl', () => {
+test('Jeder Anlass hat vier bis dreißig Motive (Runde 24: Katalog- und Showmotive), SPARK mindestens drei; Fassungen je Stufe; jede Fassung hat ihre Mindestzahl', () => {
   assert.deepEqual(STEPS.map((s) => s.pkg), PACKAGE_ORDER);
   for (const occasion of OCCASIONS) {
     assert.ok(occasion.motifs.length >= 4 && occasion.motifs.length <= 30, `${occasion.id}: ${occasion.motifs.length} Motive`);
@@ -56,9 +56,15 @@ test('Jeder Anlass hat vier bis dreißig Motive (Runde 24: Katalog- und Showmoti
       // SPARK may leave out a motif that its drones cannot draw; every motif has an ODYSSEY version, a package that has
       // the motif keeps it in every larger package (sechzehnte Fassung: Freischalt-Leiter, minDrones je Fassung)
       const builds = PACKAGE_ORDER.map((pkg) => motif.tiers[pkg]?.build).filter(Boolean);
-      assert.ok(motif.tiers.ODYSSEY?.build, `${occasion.id}/${motif.id} misses ODYSSEY`);
-      const first = PACKAGE_ORDER.findIndex((pkg) => motif.tiers[pkg]);
-      PACKAGE_ORDER.slice(first).forEach((pkg) => assert.ok(motif.tiers[pkg], `${occasion.id}/${motif.id}: ${pkg} fehlt nach ${PACKAGE_ORDER[first]}`));
+      // Runde 9 (Einstufung 3D/3D+, scenes/catalog-3d/stufen.js): Stufe 3D spielt lückenlos ab dem ersten Paket bis ODYSSEY;
+      // Stufe 3D+ hat keine HORIZON-Fassung; ein Katalogmotiv ohne 3D-Fassung nur SPARK; eigene Geschichten ohne Stufe nur
+      // ODYSSEY. Ausgeblendet heißt: die Fassung fehlt ganz, nie eine flache Ersatzfassung in 3D.
+      const stufe = stufeOf(motif), first = PACKAGE_ORDER.findIndex((pkg) => motif.tiers[pkg]), id = `${occasion.id}/${motif.id}`;
+      assert.ok(first >= 0, `${id}: keine Fassung`);
+      if (stufe === '3D') PACKAGE_ORDER.slice(first).forEach((pkg) => assert.ok(motif.tiers[pkg], `${id}: ${pkg} fehlt nach ${PACKAGE_ORDER[first]}`));
+      else if (stufe === '3D+') assert.ok(!motif.tiers.HORIZON && motif.tiers.ODYSSEY?.build, `${id}: 3D+ gehört nur nach ODYSSEY`);
+      else if ('flat' in motif) assert.deepEqual(Object.keys(motif.tiers), ['SPARK'], `${id}: ohne 3D-Fassung nur SPARK`);
+      else assert.deepEqual(Object.keys(motif.tiers), ['ODYSSEY'], `${id}: eigene Geschichte ohne Stufe nur ODYSSEY`);
       for (const pkg of PACKAGE_ORDER) if (motif.tiers[pkg]) assert.ok(Number.isFinite(motif.tiers[pkg].minDrones), `${occasion.id}/${motif.id} ${pkg}: minDrones`);
       assert.equal(new Set(builds).size, builds.length, `${occasion.id}/${motif.id}: every package needs its own version`);
     }

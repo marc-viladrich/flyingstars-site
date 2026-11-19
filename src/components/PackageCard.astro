@@ -28,7 +28,7 @@ const key = packageId.toLowerCase();
 <article class:list={['tier', { 'is-rec': highlight }]} data-mtab={tabIndex} style={`--dot:rgb(${p.color.join(',')})`} aria-labelledby={headingId}>
       {/* Preisseite nach Moritz (17.11.2026): feste Beispielpakete mit Festpreis. Zwei Wege je Karte: anfragen (Formular auf
            derselben Seite, Paket vorbelegt) oder anpassen (Konfigurator startet mit diesem Paket, nach der ersten Änderung
-           „Individuelles Paket“). Texte aus preise.<paket>.* im UI-Wörterbuch. */}
+           „Eure Show“). Texte aus preise.<paket>.* im UI-Wörterbuch. */}
       <canvas data-orb={p.shape} data-color={p.color.join(',')} data-n={p.base} aria-hidden="true"></canvas>
       <div class="head"><C id={headingId}>{p.name}</C><span class="badge">{badge ?? PACKAGE_FEATURES[p.name].badge}</span></div>
       <p class="tag">{t(`preise.${key}.tag`)}</p>

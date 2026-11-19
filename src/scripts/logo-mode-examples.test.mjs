@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import {gzipSync} from 'node:zlib';
 const root=new URL('../../',import.meta.url);
 const policy=JSON.parse(fs.readFileSync(new URL('src/content/preview-policy.json',root)));
-const ids=['mastercard','ikea','dhl','firefox','spotify','nike','apple','mcdonalds','adidas','puma','cupra','duolingo','energizer','lamborghini','shell','target'];
+const ids=['mastercard','ikea','dhl','firefox','spotify','nike','apple','mcdonalds','adidas','puma','cupra','duolingo','lamborghini','shell','target'];
 for(const id of ids) test(`prepared logo ${id}: all slider steps, bounded payload, valid editable points`,()=>{
  const text=fs.readFileSync(new URL(`public/media/logo-modus/beispiele/${id}.json`,root),'utf8'),data=JSON.parse(text);
  assert.equal(data.version,3);

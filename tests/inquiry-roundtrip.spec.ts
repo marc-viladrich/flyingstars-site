@@ -5,9 +5,9 @@ import { money } from '../src/lib/price-core.mjs';
 test.use({reducedMotion:'reduce'});
 
 const labels = {
- de: {individual:'Individuelles Paket', from:'ab', art:'Art der Show:'},
- en: {individual:'Custom package', from:'from', art:'Type of show:'},
- nl: {individual:'Individueel pakket', from:'vanaf', art:'Soort show:'},
+ de: {individual:'Eure 3D+-Show · ab 300 Drohnen', from:'ab', art:'Art der Show:'},
+ en: {individual:'Your 3D+ show · from 300 drones', from:'from', art:'Type of show:'},
+ nl: {individual:'Jullie 3D+-show · vanaf 300 drones', from:'vanaf', art:'Soort show:'},
 } as const;
 for (const locale of ['de', 'en', 'nl'] as const) {
  const prefix = locale === 'de' ? '' : `/${locale}`;
@@ -20,7 +20,7 @@ for (const locale of ['de', 'en', 'nl'] as const) {
   await expect(page.locator('#cfg-pkg')).toHaveText('SPARK');
   await expect(page.locator('#cfg-price')).toHaveText(money(7900, locale));
 
-  for (const [art, drones, amount] of [['3d', 200, 15900], ['story', 300, 34900], ['2d', 300, 25700], ['story', 300, 34900]] as const) {
+  for (const [art, drones, amount] of [['3d', 200, 15900], ['story', 300, 34900], ['2d', 100, 7900], ['story', 300, 34900]] as const) {
    await page.locator(`#cfg-arts label[data-art="${art}"]`).click();
    await expect(page.locator('#cfg-arts input:checked')).toHaveValue(art);
    await expect(page.locator('#cfg-drones')).toHaveValue(String(drones));
