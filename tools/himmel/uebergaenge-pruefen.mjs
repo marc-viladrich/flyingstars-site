@@ -1,5 +1,5 @@
-// Punktübergänge prüfen (docs/himmel.md → Punktübergänge): Jede Grenze zweier benachbarter Sections mit unterschiedlichem
-// berechnetem Hintergrund braucht den Punktübergang und darf keine Trennlinie tragen.
+// Punktübergänge prüfen (docs/himmel.md → Punktübergänge): Unterschiedliche Flächen brauchen einen Punktübergang.
+// Aneinanderstoßende Sections dürfen keine Trennlinie tragen.
 //   node tools/himmel/uebergaenge-pruefen.mjs [dist-ordner] [--width 1440] [--pages /,/faq/] [--all]
 // Ohne --pages: alle Seiten aus dist/ (deutsch, englisch, niederländisch). --all listet auch die Grenzen ohne Befund.
 import { readdirSync, existsSync, statSync } from 'node:fs';
@@ -42,7 +42,15 @@ export function pairBlocks(rects) {
 /** Im Browser: Grenzen zwischen benachbarten Sections mit Farbe, Übergang und Linie. pair = pairBlocks (als Argument,
  *  weil page.evaluate nur die Funktion selbst überträgt). */
 function inspect(pair) {
-  const bg = (el) => { for (let e = el; e; e = e.parentElement) { const c = getComputedStyle(e).backgroundColor; if (c && !/rgba\(.*,\s*0\)$|transparent/.test(c)) return c; } return 'rgb(0, 0, 0)'; };
+  const bg = (el) => {
+    for (let e = el; e; e = e.parentElement) {
+      const { backgroundColor, backgroundImage } = getComputedStyle(e);
+      if (!/rgba\(.*,\s*0\)$|transparent/.test(backgroundColor)) return backgroundColor;
+      // Ein Gradient ohne Grundfarbe ist trotzdem eine eigene Fläche.
+      if (backgroundImage !== 'none') return backgroundImage;
+    }
+    return 'rgb(0, 0, 0)';
+  };
   // Band vorhanden und nicht abgeschnitten: content-visibility/contain: paint der eigenen Section schneiden alles über ihren Rand ab
   const clips = (el) => { const s = getComputedStyle(el); return s.contentVisibility === 'auto' || s.contentVisibility === 'hidden' || /paint|strict|content/.test(s.contain) || s.overflowY !== 'visible'; };
   const mask = (el, pseudo) => { const s = getComputedStyle(el, pseudo); return s.content !== 'none' && /uebergang/.test(s.maskImage || s.webkitMaskImage || '') && !clips(el); };
@@ -85,7 +93,7 @@ export async function check(base, paths, { width = 1440 } = {}) {
       await page.goto(base + path, { waitUntil: 'load' });
       // einmal durchscrollen: Sections mit content-visibility werden erst in der Nähe ausgelegt, vorher stimmen ihre Maße nicht
       await page.evaluate(async () => { for (let y = 0; y < document.documentElement.scrollHeight; y += innerHeight * 0.8) { scrollTo({ top: y, behavior: 'instant' }); await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))); } scrollTo({ top: 0, behavior: 'instant' }); });
-      for (const g of await page.evaluate(`(${inspect})(${pairBlocks})`)) result.push({ path, ...g, missing: g.differ && !g.dots, lined: g.differ && !!g.line, hides: g.differ && g.covered.length > 0 });
+      for (const g of await page.evaluate(`(${inspect})(${pairBlocks})`)) result.push({ path, ...g, missing: g.differ && !g.dots, lined: !!g.line, hides: g.differ && g.covered.length > 0 });
     }
   } finally { await browser.close(); }
   return result;

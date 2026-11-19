@@ -259,18 +259,19 @@ Marc: „Wenn ich wechsle von diesem Input-Field zu der Anlass-Section … ist d
 Marc: „Not well crafted, I can see very clearly a straight line“, „not being applied consistently“, Trennlinien „really break the
 effect“, Punkte zu klein (sollen wie beim Lichtpunkt-Hover auf Bildern sein), Muster in der Breite zu regelmäßig („factory built“).
 
-- **Prinzip:** Jede Fläche mit eigener Hintergrundfarbe (`.section.alt`, `.c-setlist`, `.team-sec`; Liste in `himmel.css`) läuft
+- **Prinzip.** Jede Fläche mit eigener Hintergrundfarbe (`.section.alt`, `.c-setlist`, `.team-sec`) läuft
   mit `::before` nach oben und `::after` (gespiegelt, versetzt) nach unten in Punkten über ihre Kante aus. Die Punkte tragen die
   Farbe der Fläche selbst (`background-color: inherit`); der Übergang braucht die Farbe des Nachbarn nicht und ist zwischen
   gleichfarbigen Flächen unsichtbar. Liegt unter einer Farbfläche eine andere Farbfläche, deckt diese das untere Band ab und ihr
-  oberes übernimmt. Zwischen zwei `.section.alt` bleibt die Haarlinie (gleiche Farbe, kein Übergang).
-- **Muster (Runde 8):** `node tools/himmel/uebergang.mjs` erzeugt die breite Maske mit 960 × 79 und die schmale mit
-  480 × 35 Kachelpixeln. Die finalen Werte sind Radius 3,8, Größenvarianz 32 %, Abstand 1,1, Kantenwelle 3 und 1,
-  Wellenunruhe 100 %, Punktraster mit Chaos 0 % und Seed 11. Die periodische Kante ist auch in ihrer Steigung nahtlos.
+  oberes übernimmt. Gleichfarbige Flächen gehen ohne Linie ineinander über. Die Nachhaltigkeitskomponente nutzt
+  `.section.alt` auf allen Seiten. Ihr warmer Verlauf setzt unter der Oberkante ein.
+- **Muster.** `node tools/himmel/uebergang.mjs` erzeugt die breite Maske mit 960 × 125 und die schmale mit
+  480 × 55 Kachelpixeln. Die finalen Werte sind Radius 5,8, Größenvarianz 32 %, Abstand 1,1, Kantenwelle 12 und 5,
+  Wellenunruhe 59 %, Punktraster mit Chaos 0 % und Seed 11. Die periodische Kante ist auch in ihrer Steigung nahtlos.
 - **Deckkraft:** Der quadratische Verlauf mit neun Stützstellen maskiert die gesamte fertige Punktfläche im SVG.
   Bei 100 % Verlauf und 100 % Ansatz reicht er von transparent an der Spitze bis voll deckend am Ansatz. Beide Werte
   kommen aus demselben Generator wie die Dashboard-Kurve. Die Maske bleibt statisch.
-- **Höhe:** Das CSS zeigt 4,75 rem breit und 2,125 rem schmal. Die intrinsische SVG-Höhe enthält zusätzlich die Welle.
+- **Höhe.** Das CSS zeigt 7,0625 rem breit und 3,125 rem schmal. Die intrinsische SVG-Höhe enthält zusätzlich die Welle.
   Beide Masken werden proportional auf die jeweilige Anzeigehöhe skaliert, auch in der Dashboard-Vorschau.
 - **Footer** (Runde 7, 19.11.2026; Marc: „keine Divider-Line, sondern unsere Dot-Divider“): eigene Fläche `--night`, dunkler als
   Seite und Alt-Flächen, darum ist die Kante über jeder letzten Section eindeutig. Er steht in der Liste in `himmel.css` und läuft
@@ -281,9 +282,9 @@ effect“, Punkte zu klein (sollen wie beim Lichtpunkt-Hover auf Bildern sein), 
   (sonst eigene gerade Kante).
 - **Fallstrick:** `content-visibility: auto` (Preisseite) bedeutet Paint-Containment und schneidet die Bänder ab;
   Farbflächen sind dort ausgenommen (`PricingPage.astro`).
-- **Wächter:** `npm run check:uebergaenge` (`tools/himmel/uebergaenge-pruefen.mjs`) prüft alle Seiten aus `dist/`: jede Grenze
-  benachbarter Sections mit unterschiedlichem berechnetem Hintergrund braucht den Übergang (sichtbar: nicht abgeschnitten, nicht
-  verdeckt), keine Trennlinie, kein Band über Inhalt des Nachbarn. `npm run perf:start` prüft sechs typische Seiten bei 390 und
+- **Wächter.** `npm run check:uebergaenge` (`tools/himmel/uebergaenge-pruefen.mjs`) prüft alle Seiten aus `dist/`. Ein Farbwechsel,
+  auch bei einem reinen Verlauf, braucht sichtbare Punkte. Trennlinien an Section-Grenzen und Punkte über Inhalten gelten
+  als Befund. `npm run perf:start` prüft sechs typische Seiten bei 390 und
   1440 px, `scripts/himmel-perf.test.mjs` die Quelltext-Regeln. Stand 18.11.: 77 Seiten, 368 Grenzen, 171 Farbwechsel, bei 390,
   1440 und 1920 px ohne Befund (vorher: 33 Farbwechsel ohne Übergang, 45 mit Trennlinie, Preisseite 5 abgeschnitten).
 

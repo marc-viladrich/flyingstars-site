@@ -1,14 +1,14 @@
 // Gemeinsamer Kern für Website-Masken und Dashboard. Kantenhöhe und Punktgrößen in Kachelpixeln.
 export const DEFAULTS = Object.freeze({
-  punktradiusKantePx: 3.8,
+  punktradiusKantePx: 5.8,
   groessenvarianzProzent: 32,
   mindestabstandFaktor: 1.1,
-  kantenwelleBreitPx: 3,
-  wellenunruheProzent: 100,
+  kantenwelleBreitPx: 12,
+  wellenunruheProzent: 59,
   chaosProzent: 0,
   deckkraftVerlaufProzent: 100,
   deckkraftAnsatzProzent: 100,
-  bandhoeheBreitPx: 76,
+  bandhoeheBreitPx: 113,
   animation: 'keine',
   animationsstaerkePx: 4,
 });

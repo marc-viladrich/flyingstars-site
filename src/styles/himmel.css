@@ -48,8 +48,8 @@
    Flächen unsichtbar. Oben reicht die Fläche nach oben, unten (gespiegelt, versetzt) nach unten; liegt darunter eine andere
    Farbfläche, deckt deren Fläche das untere Band, und ihr oberes übernimmt. An solchen Kanten keine Trennlinie (Marc, 18.11.).
    Jede neue Fläche mit eigener Hintergrundfarbe gehört in diese Liste; tools/himmel/uebergaenge-pruefen.mjs wacht darüber. */
-:root { --ueb-h: 4.75rem; --ueb-maske: url(/media/uebergang.svg); }
-@media (--mobile) { :root { --ueb-h: 2.125rem; --ueb-maske: url(/media/uebergang-schmal.svg); } }
+:root { --ueb-h: 7.0625rem; --ueb-maske: url(/media/uebergang.svg); }
+@media (--mobile) { :root { --ueb-h: 3.125rem; --ueb-maske: url(/media/uebergang-schmal.svg); } }
 :is(.section.alt, .c-setlist, .team-sec, .footer) { position: relative; }
 :is(.section.alt, .c-setlist, .team-sec, .footer)::before, :is(.section.alt, .c-setlist, .team-sec)::after {
   content: ''; position: absolute; left: 0; right: 0; height: var(--ueb-h); pointer-events: none; background-color: inherit;
@@ -58,20 +58,21 @@
 :is(.section.alt, .c-setlist, .team-sec, .footer)::before { bottom: 100%; }
 :is(.section.alt, .c-setlist, .team-sec)::after { top: 100%; transform: scaleY(-1); -webkit-mask-position: 23rem 0; mask-position: 23rem 0; }
 :is(.section.alt, .c-setlist, .team-sec):nth-of-type(2n)::before { -webkit-mask-position: 37rem 0; mask-position: 37rem 0; }
-.section.alt + .section.alt { border-top: 1px solid var(--line); }
-.section.alt + .section.alt::before, .section.alt:has(+ .section.alt)::after { content: none; }
+/* .section.alt und .c-setlist teilen dieselbe Grundfarbe. */
+:is(.section.alt, .c-setlist) + :is(.section.alt, .c-setlist)::before,
+:is(.section.alt, .c-setlist):has(+ :is(.section.alt, .c-setlist))::after { content: none; }
 /* Das Band liegt in der Nachbarfläche. Dort auf der betroffenen Seite die volle Bandhöhe freihalten. */
-:is(main, main > div) > section:has(
+:is(main, main > div) > :is(section, .band):has(
   + :is(.section.alt, .c-setlist, .team-sec),
   + :is(script, noscript) + :is(.section.alt, .c-setlist, .team-sec),
   + noscript + script + :is(.section.alt, .c-setlist, .team-sec)
-):not(.section.alt:has(+ .section.alt)),
+):not(:is(.section.alt, .c-setlist):has(+ :is(.section.alt, .c-setlist))),
 main:has(+ .footer) > section:last-of-type,
 main:has(+ .footer) > div:last-of-type > section:last-of-type {
   padding-bottom: max(var(--section), calc(var(--ueb-h) + var(--ueb-inhaltsversatz, 0rem)));
 }
-:is(main, main > div) > :is(.section.alt, .c-setlist, .team-sec) + section:not(:is(.section.alt, .c-setlist, .team-sec)),
-:is(main, main > div) > :is(.section.alt, .c-setlist, .team-sec) + script + section:not(:is(.section.alt, .c-setlist, .team-sec)) {
+:is(main, main > div) > :is(.section.alt, .c-setlist, .team-sec) + :is(section, .band):not(:is(.section.alt, .c-setlist, .team-sec)),
+:is(main, main > div) > :is(.section.alt, .c-setlist, .team-sec) + script + :is(section, .band):not(:is(.section.alt, .c-setlist, .team-sec)) {
   padding-top: max(var(--section), var(--ueb-h));
 }
 /* Einblendende Inhalte dürfen auch während ihres vertikalen Versatzes nicht in das Band ragen. */

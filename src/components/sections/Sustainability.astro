@@ -59,7 +59,7 @@ const factItems = await Promise.all(facts.map(async (fact) => {
   return { ...fact, logo: { src: img.src, width: img.width / 2, height: img.height / 2, alt: fact.logo.alt } };
 }));
 ---
-<section class="eco-sec" id={id} aria-labelledby={headingId}>
+<section class="section alt eco-sec" id={id} aria-labelledby={headingId}>
   {/* Runde 5 (Marc, 18.11.2026): Das Riesenformat bleibt der Scrollstory vorbehalten (Startseite, Nachhaltigkeit). Mit
        Bild, Bühne, Szene oder Galerie („Feste feiern …“, „Faszinierend wie Feuerwerk …“, „Kinder und Hunde willkommen“)
        steht die normale Section-Überschrift mit Verlaufswort, enger an ihrem Bild. Ohne Bild ab breitem Desktop
