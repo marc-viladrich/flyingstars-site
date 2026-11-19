@@ -250,6 +250,8 @@
   --radius: 1.25rem;
   --reveal-offset: 0.4em;
   --reveal-member-offset: 1.5rem;
+  /* Konturschrift-Platzhalter ohne Bild (Referenzkarte .ref-ph, Team-Initialen in Team.astro): derselbe Grund */
+  --outline-ground: radial-gradient(90% 70% at 50% 30%, rgb(var(--rgb-logo-orchid) / 0.14), transparent 70%), radial-gradient(80% 60% at 50% 100%, rgb(var(--rgb-logo-amber) / 0.1), transparent 70%);
 }
 @media (--nav-collapsed) { :root { --head-gap-tool: var(--head-gap-content); } }
 @supports (background: linear-gradient(in oklab, red, blue)) {
@@ -493,120 +495,6 @@ td.us { color: var(--text); background: var(--fill-soft); }
   .tiers-grid { grid-template-columns: 1fr; }
 }
 
-/* project pages: cinematic case studies, one accent colour per project (--accent on main.case) */
-.case { --accent: var(--amber); }
-.case .acc { color: var(--accent); }
-.c-hero { position: relative; min-height: max(41.25rem, 100svh); display: grid; grid-template-rows: auto 1fr auto; overflow: hidden; background: var(--ground); padding: calc(var(--space-24) + env(safe-area-inset-top, 0rem)) var(--gutter) 0; }
-/* Titelbild und stummes Showvideo wie im Startseiten-Hero: das Video blendet über dem Bild ein, sobald es läuft */
-.c-hero .hero-media { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-.c-hero .reel { position: absolute; inset: 0; pointer-events: none; }
-.c-hero .hero-media { z-index: 0; }
-.c-hero .hero-media img, .c-hero .reel { width: 100%; height: 100%; object-fit: cover; }
-.c-hero .hero-media img { transition: opacity var(--dur-reel) var(--ease-default); }
-.c-hero .reel { z-index: 1; opacity: 0; transition: opacity var(--dur-reel) var(--ease-default); }
-.c-hero.reel-on .reel { opacity: 1; }
-.c-hero.reel-on .hero-media img { opacity: 0; }
-.c-hero .shade { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: linear-gradient(rgb(var(--rgb-night) / 0.05) 32%, var(--night-shade) 66%, rgb(var(--rgb-night) / 0.96) 100%), radial-gradient(120% 90% at 0 100%, rgb(var(--rgb-night) / 0.7), rgb(var(--rgb-night) / 0) 60%); }
-.c-top { position: relative; z-index: 3; display: flex; justify-content: space-between; gap: var(--space-4); color: rgb(var(--rgb-text) / 0.62); }
-.c-top a:hover { color: var(--text); }
-.c-top .crumbs { display: flex; gap: var(--space-2); flex-wrap: wrap; }
-.c-title { position: relative; z-index: 3; align-self: end; display: grid; gap: clamp(var(--space-3-5), 2vw, var(--space-6)); padding-bottom: clamp(var(--space-7), 5vh, var(--space-13)); }
-.c-kick { color: var(--accent); }
-.c-h1 { display: grid; gap: clamp(var(--space-3-5), 2vw, var(--space-6)); margin: 0; }
-/* Titel kleiner (Marc, 01.11.2026: „etwas überbordend“): passt neben das Video in die linke Hälfte */
-.c-name { margin: 0; font: 700 min(max(7rem, 6.4vw), calc(76vw / var(--chars))) / 0.86 var(--display); letter-spacing: -0.045em; text-transform: uppercase; display: grid; }
-.c-name span:nth-child(2) { color: transparent; -webkit-text-stroke: 1.5px rgb(var(--rgb-text) / 0.9); padding-left: 0.04em; }
-.c-tag { font: 500 clamp(1.1875rem, 1.8vw, 1.625rem)/1.25 var(--display); letter-spacing: -0.02em; max-width: 30ch; }
-
-.c-story { position: relative; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(var(--space-7), 5vw, var(--space-20)); padding: 0 var(--gutter) var(--section); }
-.c-media { position: sticky; top: 12vh; height: 76vh; border-radius: var(--radius-18); overflow: hidden; background: var(--media-ground); }
-.c-media figure { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity var(--dur-slow) var(--ease-default), transform var(--dur-ambient) var(--ease-default); transform: scale(1.04); }
-.c-media figure.on { opacity: 1; transform: none; }
-.c-media img { width: 100%; height: 100%; object-fit: cover; }
-.c-media .meta { position: absolute; left: 1rem; right: 1rem; bottom: 0.875rem; display: flex; justify-content: space-between; color: var(--ink-secondary); z-index: 2; }
-.c-media::after { content: ""; position: absolute; inset: auto 0 0 0; height: 30%; background: linear-gradient(transparent, rgb(var(--rgb-night) / 0.8)); pointer-events: none; }
-.c-steps { display: grid; }
-.c-step { min-height: 78vh; display: grid; align-content: center; gap: var(--space-4); }
-/* Inactive story steps recede like in the reference, but every line keeps WCAG AA contrast:
-   large headings >= 3:1, body text and the small accent label >= 4.5:1 on --ground.
-   Nur im Zweispalten-Scrollytelling: einspaltig stehen alle Abschnitte untereinander und gleich stark. */
-@media (--nav-expanded) {
-  .c-step .section-head > h2 > :is(.k, .head-line), .c-step .section-head > p { transition: opacity var(--dur-fade); }
-  .c-step:not(.on) .section-head > h2 > .k { opacity: 0.88; }
-  .c-step:not(.on) .section-head > h2 > .head-line { opacity: 0.42; }
-  .c-step:not(.on) .section-head > p { opacity: 0.8; } /* --muted ist seit 30.10. eine Stufe dunkler */
-}
-.c-step .k { color: var(--accent); margin-bottom: 0; }
-.c-step h2 { font-size: clamp(2rem, 3.6vw, 3.375rem); line-height: 1.04; }
-.c-step p { color: var(--muted); font-size: clamp(1.0625rem, 1.3vw, 1.1875rem); max-width: 44ch; }
-.c-step figure { display: none; margin: 0; }
-
-.c-play { position: relative; height: min(88vh, 56.25rem); min-height: 35rem; margin: 0 var(--gutter); background: radial-gradient(90% 70% at 50% 40%, #13100e 0%, var(--night) 70%); border: 1px solid var(--line); border-radius: var(--radius-18); overflow: hidden; }
-.c-play canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: pan-y; }
-.c-play-copy { position: absolute; left: clamp(1.25rem, 3vw, 2.5rem); bottom: clamp(1.5rem, 5vh, 3rem); z-index: 2; display: grid; gap: var(--head-gap-text); max-width: 28.75rem; pointer-events: none; }
-.c-play-copy > * { pointer-events: auto; }
-.c-play-copy h2 { font-size: clamp(1.75rem, 3vw, 2.75rem); }
-.c-play-copy p { color: var(--muted); }
-.c-play-copy .row { display: flex; gap: var(--space-3-5); align-items: center; flex-wrap: wrap; }
-.c-play-copy .tally { color: var(--accent); }
-
-.c-reel { padding: var(--section) 0; }
-.c-reel-head { display: flex; justify-content: space-between; align-items: end; gap: var(--space-5); padding: 0 var(--gutter); margin-bottom: var(--space-7); }
-.c-track { display: flex; gap: clamp(var(--space-3), 1.6vw, var(--space-5-5)); overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 var(--gutter); padding: 0 0 var(--space-2); border-radius: var(--radius-16); -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 5.625rem), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 5.625rem), transparent); scrollbar-width: none; cursor: grab; }
-.c-track::-webkit-scrollbar { display: none; }
-.c-track.at-end { -webkit-mask-image: none; mask-image: none; }
-.c-track.drag { cursor: grabbing; scroll-snap-type: none; }
-.c-track figure { flex: 0 0 min(64vw, 61.25rem); scroll-snap-align: start; margin: 0; display: grid; gap: var(--space-3); }
-.c-track.tall figure { flex-basis: min(30vw, 27.5rem); }
-.c-track .img { aspect-ratio: 16 / 9; border-radius: var(--radius-16); overflow: hidden; background: var(--media-ground); }
-.c-track.tall .img { aspect-ratio: 4 / 5; }
-.c-track img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; user-select: none; }
-.c-track figcaption { display: flex; gap: var(--space-3); color: var(--muted); }
-.c-track figcaption b { color: var(--accent); font-weight: 500; }
-
-.c-setlist { padding: var(--section) var(--gutter); background: var(--surface); }
-.c-setlist .groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 26.25rem), 1fr)); gap: clamp(var(--space-7), 5vw, var(--space-18)); margin-top: clamp(var(--space-8), 5vw, var(--space-14)); }
-.c-setlist h3 { font: 400 var(--text-xs)/1.5 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); margin-bottom: var(--space-2); }
-.c-setlist ol { list-style: none; margin: 0; padding: 0; counter-reset: s; border-top: 1px solid var(--line-strong); }
-.c-setlist li { counter-increment: s; display: grid; grid-template-columns: 3.5rem minmax(0, 1fr); align-items: baseline; padding: var(--space-3-5) 0; border-bottom: 1px solid var(--line); font: 500 clamp(1.3125rem, 2.1vw, 1.875rem)/1.2 var(--display); letter-spacing: -0.02em; }
-.c-setlist li::before { content: counter(s, decimal-leading-zero); font: 500 var(--text-xs)/1 var(--mono); letter-spacing: 0.1em; color: var(--accent); }
-
-.c-press { padding: var(--section) var(--gutter); display: grid; place-items: center; }
-.clip { background: #f3eee4; color: var(--paper-ink); width: min(100%, 45rem); padding: clamp(var(--space-6), 4vw, var(--space-11)); transform: rotate(-1.6deg); box-shadow: 0 1.875rem 5rem var(--shadow-ink); display: grid; gap: var(--space-3-5); position: relative; }
-.clip::before { content: ""; position: absolute; top: -0.875rem; left: 50%; width: 7.5rem; height: 1.75rem; transform: translateX(-50%) rotate(2deg); background: var(--ink-subtle); }
-.clip .mast { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--paper-ink); padding-bottom: var(--space-2-5); font: 700 clamp(1.375rem, 2.6vw, 2.125rem)/1 var(--display); letter-spacing: -0.02em; }
-.clip .mast span { font: 500 var(--text-xs)/1.3 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: #6d6259; }
-.clip b { font: 700 clamp(1.5rem, 3.2vw, 2.625rem)/1.08 var(--display); letter-spacing: -0.025em; }
-.clip p { color: #4a403a; font-size: 1.03125rem; }
-
-.c-next { position: relative; display: grid; align-content: end; min-height: 72vh; margin: var(--section) var(--gutter); padding: clamp(var(--space-6), 4vw, var(--space-14)); border-radius: var(--radius-18); overflow: hidden; background: var(--video-ground); }
-.c-next .shade { position: absolute; inset: 0; z-index: 1; background: linear-gradient(rgb(var(--rgb-night) / 0.1) 40%, var(--night-panel)); }
-.c-next .in { position: relative; z-index: 2; display: grid; gap: var(--space-2-5); }
-.c-next b { font: 700 min(clamp(3rem, 9vw, 9.375rem), calc(128vw / var(--chars, 8)))/0.9 var(--display); letter-spacing: -0.045em; text-transform: uppercase; display: flex; align-items: center; gap: 0.2em; flex-wrap: wrap; }
-.c-next b i { font-style: normal; font-weight: 500; transition: transform var(--dur-standard); }
-.c-next:hover b i { transform: translateX(0.12em); }
-.c-next .k { color: rgb(var(--rgb-text) / 0.7); }
-
-@media (--nav-collapsed) {
-  .c-story { grid-template-columns: 1fr; }
-  .c-media { display: none; }
-  .c-step { min-height: 0; padding: var(--space-5) 0 var(--space-9); }
-  .c-step figure { display: block; border-radius: var(--radius-14); overflow: hidden; aspect-ratio: 16 / 10; }
-  .c-step figure.tall { aspect-ratio: 4 / 5; max-width: 26.25rem; }
-  .c-step figure img { width: 100%; height: 100%; object-fit: cover; }
-  .c-track figure { flex-basis: 84vw; }
-  .c-track.tall figure { flex-basis: 64vw; }
-  .c-play { height: 76vh; min-height: 32.5rem; }
-  .c-play-copy { right: clamp(1.25rem, 3vw, 2.5rem); }
-}
-@media (--compact) {
-  .c-top .idx { display: none; }
-  .c-name span:nth-child(2) { -webkit-text-stroke-width: 1px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .c-media figure, .c-step .section-head > h2 > :is(.k, .head-line), .c-step .section-head > p { transition: none; }
-}
-
 /* Reveal beim Scrollen. Ohne JS, bei reduzierter Bewegung oder globaler Pause ist alles sofort sichtbar:
    Den Startzustand setzt ein Inline-Skript im <head> (html.reveal), also vor dem ersten Bild, ohne Layout zu lesen.
    site.ts setzt .is-in, sobald der Rahmen in Sicht kommt. */
@@ -626,7 +514,6 @@ td.us { color: var(--text); background: var(--fill-soft); }
    Lichtpunkten der Lichtpunkt-Reveal (dotimage.js), dort gibt es keinen Vorhang. */
 @media (hover: none), (pointer: coarse) {
   .reveal [data-curtain][data-dot-img], .reveal [data-curtain][data-dot-img] > img { animation: none; transition: none; clip-path: none; transform: none; }
-  .reveal .member .portrait[data-dot-img], .reveal .member .portrait[data-dot-img] img { clip-path: none; transform: none; transition: none; }
 }
 /* Lichtpunkt-Reveal (Touch): bis die Lichtpunkte das Bild gezeichnet haben, bleibt das Foto verborgen */
 .dot-pending > img { opacity: 0; }
@@ -675,56 +562,26 @@ td.us { color: var(--text); background: var(--fill-soft); }
   .eco-steps li { font-size: 0.625rem; letter-spacing: 0.06em; }
 }
 
-/* homepage: team – colour portraits that rise in one after another and open like a curtain */
-/* Der Lichtschein setzt erst unter der Kante ein: Oben steht die reine Fläche, aus der der Punktübergang ausläuft (himmel.css) */
-.team-sec { padding: var(--section) var(--gutter); background: linear-gradient(var(--media-ground), transparent var(--section)), radial-gradient(70% 45% at 50% 0%, rgb(var(--rgb-logo-orchid) / 0.07), transparent 70%), var(--media-ground); }
-.crew { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--cols, 5), minmax(0, 1fr)); gap: clamp(var(--space-3), 1.6vw, var(--space-5-5)); }
-/* Team-Auftritt (Marc, 03.11.2026, Video: „greift viel zu spät“): Die Karte selbst wird beobachtet und darf deshalb
-   nicht verschoben sein. Vorher lag sie im Startzustand 5 rem tiefer; der Observer maß die verschobene Box und löste
-   erst 5,5 rem später aus. Jetzt bewegen sich nur die Kinder, die Karte bleibt an ihrem Platz. */
-.member { display: grid; gap: var(--space-2-5); align-content: start; transition: opacity var(--dur-fade) var(--ease-default); transition-delay: calc(var(--i, 0) * var(--dur-stagger)); }
-.member > * { transition: transform var(--dur-reveal) var(--ease-curtain); transition-delay: calc(var(--i, 0) * var(--dur-stagger)); }
-.reveal .member:not(.is-in) { opacity: 0; }
-.reveal .member:not(.is-in) > * { transform: translateY(var(--reveal-member-offset)); }
+/* Porträtrahmen, geteilt von Team (Team.astro, dort Auftritt, Reihe und Karten) und Kontakt (ContactDetails.astro) */
 .portrait { position: relative; aspect-ratio: 4 / 5; border-radius: var(--radius-16); overflow: hidden; background: #16120f; margin-bottom: var(--space-1-5); clip-path: inset(0 0 0 0 round 1rem); transition: clip-path var(--dur-reveal) var(--ease-curtain), transform var(--dur-reveal) var(--ease-curtain); transition-delay: calc(var(--i, 0) * var(--dur-stagger)); }
-.reveal .member:not(.is-in) .portrait { clip-path: inset(100% 0 0 0 round 1rem); }
 .portrait img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform var(--dur-image) var(--ease-reveal); transition-delay: calc(var(--i, 0) * var(--dur-stagger)); }
-.reveal .member:not(.is-in) .portrait img { transform: scale(1.28); }
-/* nach dem Auftritt reagieren Hover ohne Verzögerung; kein Foto-Zoom, die Lichtpunkte übernehmen */
-.member.shown, .member.shown > *, .member.shown .portrait img { transition-delay: 0s; }
-.portrait .ini { position: absolute; inset: 0; display: grid; place-items: center; font: 700 clamp(5.25rem, 9.5vw, 10rem)/1 var(--display); letter-spacing: -0.05em; color: transparent; -webkit-text-stroke: 1.5px var(--ink-subtle); background: radial-gradient(90% 70% at 50% 30%, rgb(var(--rgb-logo-orchid) / 0.14), transparent 70%), radial-gradient(80% 60% at 50% 100%, rgb(var(--rgb-logo-amber) / 0.1), transparent 70%); }
 /* Referenz ohne Showbild: Kundenname als Konturschrift, gleiche Sprache wie das Porträt ohne Foto */
-.ref-ph { position: absolute; inset: 0; display: grid; place-items: center; font: 700 clamp(3.5rem, 7vw, 7rem)/1 var(--display); letter-spacing: -0.04em; color: transparent; -webkit-text-stroke: 1.5px var(--ink-subtle); background: radial-gradient(90% 70% at 50% 30%, rgb(var(--rgb-logo-orchid) / 0.14), transparent 70%), radial-gradient(80% 60% at 50% 100%, rgb(var(--rgb-logo-amber) / 0.1), transparent 70%); }
-.portrait .soon { position: absolute; left: 0.75rem; bottom: 0.75rem; z-index: 2; color: rgb(var(--rgb-text) / 0.65); }
-.member .role { color: var(--amber); }
-.member h3 { font-size: var(--text-lg); width: fit-content; padding-bottom: var(--space-0-5); }
-.member p { color: var(--muted); font-size: var(--text-sm); }
-.crew-note { margin-top: clamp(var(--space-6-5), 4vw, var(--space-10)); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3-5) var(--space-7); padding-top: var(--space-5-5); border-top: 1px solid var(--line); color: var(--muted); }
-.crew-note b { color: var(--text); font-weight: 500; }
-@media (--grid-stacked) {
-  /* drei Spalten; fünf Personen ließen rechts unten ein Loch. Eine unvollständige letzte Reihe steht mittig (sechs halbe
-     Spalten, jede Karte belegt zwei) */
-  .crew { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-  .crew .member { grid-column: span 2; }
-  .crew .member:nth-child(3n + 1):nth-last-child(2) { grid-column: 2 / span 2; }
-  .crew .member:nth-child(3n + 1):last-child { grid-column: 3 / span 2; }
-}
-/* Handy (Marc, 19.11.2026: keine endlosen Scrollstrecken): eine wischbare Reihe statt untereinander gestapelter Karten.
-   Die Reihe läuft bis an die Bildschirmkanten, die erste Karte steht an der Content-Kante, die nächste ist angeschnitten. */
-@media (--compact) {
-  .crew { display: flex; gap: var(--space-3); margin-inline: calc(-1 * var(--pad)); padding-inline: var(--pad); scroll-padding-inline: var(--pad); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; }
-  .crew::-webkit-scrollbar { display: none; }
-  .crew:focus-visible { outline: var(--focus-width, 2px) solid var(--cyan); outline-offset: -0.125rem; }
-  .crew .member { flex: 0 0 min(15.5rem, 72%); scroll-snap-align: start; }
-}
+.ref-ph { position: absolute; inset: 0; display: grid; place-items: center; font: 700 clamp(3.5rem, 7vw, 7rem)/1 var(--display); letter-spacing: -0.04em; color: transparent; -webkit-text-stroke: 1.5px var(--ink-subtle); background: var(--outline-ground); }
 @media (prefers-reduced-motion: reduce) {
-  [data-reveal], .member, .portrait, .portrait img, [data-curtain], [data-curtain] > img { transition: none; }
+  [data-reveal], .portrait, .portrait img, [data-curtain], [data-curtain] > img { transition: none; }
 }
+/* Ein einzelnes langes Kompositum vor einem kurzen Schlusswort darf trennen (src/lib/no-orphans.ts, Audit 4, E6) */
+.hy { -webkit-hyphens: auto; hyphens: auto; }
 
 /* footer */
 .footer { border-top: 1px solid var(--line); padding: var(--footer-top) var(--gutter) calc(var(--space-7) + env(safe-area-inset-bottom, 0rem)); display: grid; gap: var(--space-10); }
-.footer .cols { display: grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; gap: var(--space-8); }
-.footer h4 { margin: 0 0 var(--space-3-5); font: 400 var(--text-xs)/1.4 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+/* Benannte Flächen: Anlässe steht als eigener Block auf dem Desktop unter den Seiten, auf Tabletbreite unter „Folgen“
+   (Audit 4, E2). Zeilenabstände über die Blöcke selbst, damit Desktop und Handy unverändert bleiben */
+.footer .cols { display: grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; grid-template-areas: 'brand contact pages social' 'brand contact occ social'; grid-template-rows: auto 1fr; gap: 0 var(--space-8); }
+.footer-contact { grid-area: contact; }
+.footer-pages { grid-area: pages; }
+.footer-occ { grid-area: occ; }
+.footer-social { grid-area: social; }
 .footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); color: var(--muted); font-size: var(--text-control); }
 .footer ul a:hover { color: var(--text); }
 /* Social-Links im Footer: Logo vor dem Namen, Unterstrich nur unter dem Namen */
@@ -733,8 +590,7 @@ td.us { color: var(--text); background: var(--fill-soft); }
 .footer address { font-style: normal; color: var(--muted); font-size: var(--text-control); display: grid; gap: var(--space-3-5); }
 .footer .base { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-3); padding-top: var(--space-6); border-top: 1px solid var(--line); color: var(--faint); }
 .footer .base nav { display: flex; flex-wrap: wrap; gap: var(--space-4-5); }
-.eco { display: flex; align-items: center; gap: var(--space-3); color: var(--muted); font-size: var(--text-sm); }
-.eco img { height: 1.625rem; width: auto; opacity: 0.8; }
+.footer .eco { margin: 0; display: flex; align-items: center; gap: var(--space-3); color: var(--muted); font-size: var(--text-sm); }
 
 /* responsive */
 @media (--grid-stacked) {
@@ -743,7 +599,8 @@ td.us { color: var(--text); background: var(--fill-soft); }
   .steps li + li { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); }
   .steps li { padding: var(--space-5) 0; }
   .packs { grid-template-columns: 1fr; }
-  .footer .cols { grid-template-columns: 1fr 1fr; }
+  .footer .cols { grid-template-columns: 1fr 1fr; grid-template-areas: 'brand contact' 'pages social' 'pages occ'; grid-template-rows: auto auto 1fr; }
+  .footer-pages, .footer-social { margin-top: var(--space-8); }
 }
 @media (--nav-collapsed) {
   .nav nav, .nav > .btn { display: none; }
@@ -757,7 +614,8 @@ td.us { color: var(--text); background: var(--fill-soft); }
   .logo span { display: none; }
   .occasions, .projects { grid-template-columns: 1fr; }
   .fields { grid-template-columns: 1fr; }
-  .footer .cols { grid-template-columns: 1fr; }
+  .footer .cols { grid-template-columns: 1fr; grid-template-areas: 'brand' 'contact' 'pages' 'occ' 'social'; grid-template-rows: none; }
+  .footer-contact { margin-top: var(--space-8); }
   .pack { grid-template-columns: 4.5rem minmax(0, 1fr); }
   .pack canvas { width: 4.5rem; height: 4.5rem; }
 }
@@ -768,7 +626,7 @@ td.us { color: var(--text); background: var(--fill-soft); }
 .mobile-menu { width:100%;height:100%;height:100dvh;max-width:none;max-height:none;margin:0;border:0;color:var(--text); }
 .mobile-menu:not([open]) { display:none; }
 .menu-close { display:grid; }
-.footer-brand { display:grid;gap:var(--space-4-5);align-content:start; }
+.footer-brand { grid-area:brand;display:grid;gap:var(--space-4-5);align-content:start; }
 .footer-brand>p { color:var(--muted);max-width:32ch; }
 .footer-heading { font:500 var(--text-label)/1.4 var(--mono);color:var(--faint);text-transform:uppercase;letter-spacing:.08em;margin:0 0 var(--space-5); }
 .content-page { min-height:60svh; }
@@ -829,8 +687,6 @@ td.us { color: var(--text); background: var(--fill-soft); }
    Designsprache 30.10.2026 (docs/DESIGN.md): neue und angepasste Komponenten im Stil des ersten Prototyps
    --------------------------------------------------------------------------------------------------------------- */
 .more { margin-top: var(--space-9); }
-.footer .eco { margin: 0; }
-.footer .eco .ico { width: 1.375rem; height: 1.375rem; }
 
 /* Abschluss-Karte (cta) */
 .promise-copy { display: grid; }
@@ -1001,7 +857,7 @@ html.motion-paused .rec::before { animation: none; }
 a.pack { color: inherit; cursor: pointer; transition: border-color var(--dur-color), transform var(--dur-color) var(--ease-default), background var(--dur-color), box-shadow var(--dur-color); position: relative; }
 a.pack:hover, a.pack:focus-visible { border-color: color-mix(in srgb, var(--c) 70%, transparent); transform: translateY(-0.25rem); box-shadow: 0 1.125rem 2.5rem -1.5rem color-mix(in srgb, var(--c) 60%, transparent); }
 .promise-copy { justify-items: center; gap: 0; }
-.footer .eco img { height: 1.5rem; filter: var(--logo-mono); opacity: 0.75; }
+.footer .eco img { height: 1.5rem; width: auto; filter: var(--logo-mono); opacity: 0.75; }
 
 /* Kicker überall 14 px über der Headline (Marc 31.10.: „viel zu weit weg“). Im Fließtext entfällt dafür der obere Abstand
    der Headline; in Köpfen steht der Kicker in der Überschrift selbst (SectionHead, Seitenkopf, Showreel-Kopf). */
@@ -1049,15 +905,11 @@ a.pack:hover, a.pack:focus-visible { border-color: color-mix(in srgb, var(--c) 7
   .hero.side .hero-media, .hero.side .reel { left: auto; right: 0; width: 64%; -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.55) 18%, #000 42%); mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.55) 18%, #000 42%); }
   .hero.side .hero-media { position: absolute; top: 0; bottom: 0; }
   .hero.side .shade { background: linear-gradient(0deg, rgb(var(--rgb-ground) / 0.85) 0%, rgb(var(--rgb-ground) / 0) 30%), linear-gradient(90deg, var(--ground) 30%, rgb(var(--rgb-ground) / 0) 52%); }
-  /* Referenzen: derselbe Schnitt (Marc, 01.11.2026) */
-  .c-hero .hero-media, .c-hero .reel { left: auto; right: 0; width: 64%; -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.55) 18%, #000 42%); mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.55) 18%, #000 42%); }
-  .c-hero .shade { background: linear-gradient(0deg, var(--overlay-heavy) 0%, rgb(var(--rgb-ground) / 0) 34%), linear-gradient(90deg, var(--ground) 30%, rgb(var(--rgb-ground) / 0) 52%); }
 }
-@media (--timeline-stacked) { .c-name { font-size: min(6rem, calc(124vw / var(--chars))); } }
 /* Hero-Überschriften über Video: weicher dunkler Schatten, damit sie auch vor hellen Stellen lesbar bleiben (Marc,
    01.11.2026). drop-shadow statt text-shadow, weil text-shadow über Verlaufs- und Konturschrift (background-clip: text,
    transparente Füllung) liegen und sie abdunkeln würde. */
-.hero h1, .c-h1 { filter: drop-shadow(0 2px 1.125rem var(--night-shade)) drop-shadow(0 1px 0.1875rem rgb(var(--rgb-night) / 0.45)); }
+.hero h1 { filter: drop-shadow(0 2px 1.125rem var(--night-shade)) drop-shadow(0 1px 0.1875rem rgb(var(--rgb-night) / 0.45)); }
 /* Showreel mit Ton als Overlay */
 .reel-dialog { width: min(80rem, 94vw); max-width: none; max-height: 92vh; padding: 0; border: 0; border-radius: var(--radius-14); background: var(--black); overflow: visible; }
 .reel-dialog::backdrop { background: rgb(var(--rgb-night) / 0.86); backdrop-filter: blur(0.375rem); }
@@ -1089,7 +941,6 @@ a.pack:hover, a.pack:focus-visible { border-color: color-mix(in srgb, var(--c) 7
 /* Slider-Pfeile unter dem Slider, auf allen Breiten (SliderNav.astro) */
 .slider-nav { display: flex; justify-content: flex-end; gap: var(--space-2-5); margin-top: var(--space-5); }
 .slider-nav[hidden] { display: none; }
-.c-reel-nav { padding-inline: var(--gutter); }
 .slider-btn { padding: 0; background: transparent; transition: border-color var(--dur-control), opacity var(--dur-control); }
 .slider-btn:hover:not(:disabled) { border-color: var(--text); }
 .slider-btn:disabled { opacity: 0.35; cursor: default; }
@@ -1139,7 +990,8 @@ a.pack { grid-template-rows: auto auto 1fr; align-items: start; row-gap: var(--s
 @media (prefers-reduced-motion: reduce) { .ig::before { transition: opacity var(--dur-standard) var(--ease-default); } }
 
 /* Handy (Marc, 02.11.2026): das Showreel steht als gerahmtes Bild im Seitenfluss über der Überschrift, nicht als Hintergrund
-   hinter dem Text. Startseiten-Hero (.hero) und Referenz-Kopf (.c-hero); Video: kleine Fassung (hero-reel.ts). */
+   hinter dem Text. Startseiten-Hero (.hero); der Referenz-Kopf (.c-hero) hat seine Fassung in case.css. Video: kleine Fassung
+   (hero-reel.ts). */
 @media (--mobile) {
   .hero { height: auto; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "media" "copy"; padding: calc(var(--space-19) + env(safe-area-inset-top, 0rem)) var(--pad) var(--space-11); background: var(--ground); --fr-arm: 1rem; }
   .hero > .hero-media, .hero > .reel, .hero > .rec { grid-area: media; position: relative; inset: auto; left: auto; right: auto; top: auto; bottom: auto; width: 100%; }
@@ -1151,20 +1003,9 @@ a.pack { grid-template-rows: auto auto 1fr; align-items: start; row-gap: var(--s
   .hero.reel-on > .rec { display: flex; width: auto; align-self: start; justify-self: end; margin: calc(var(--space-2-5) + var(--fr-arm) - var(--space-2-25)) var(--space-6) 0 0; z-index: 3; }
   .hero > .hero-copy { grid-area: copy; position: relative; left: auto; right: auto; bottom: auto; padding-top: var(--space-7); max-width: none; }
 }
-/* Referenz-Kopf im gerahmten Medienrahmen auch auf Hochformat-Tablets (iPad 768×1024, 820×1180, 1024×1366): eine
-   hochformatige Bühne schneidet die breiten Showbilder sonst seitlich an (Audit 3, V7). Maßgeblich ist das Seitenverhältnis,
-   nicht nur die Breite. Eckdaten folgen in facts.css derselben Bedingung. */
-@media (--mobile), (orientation: portrait) and (--grid-stacked) {
-  .c-hero { min-height: 0; grid-template-rows: auto auto auto auto; padding-bottom: 0; }
-  .c-hero > .hero-media, .c-hero > .reel { grid-row: 2; grid-column: 1; position: relative; inset: auto; width: 100%; height: auto; aspect-ratio: 16 / 10; margin-top: var(--space-4-5); border-radius: var(--radius-14); overflow: hidden; -webkit-mask-image: none; mask-image: none; }
-  .c-hero > .shade { display: none; }
-  .c-hero > .c-title { grid-row: 3; padding-top: var(--space-6); }
-}
 
 /* Native Auswahl: derselbe Pfeil, dunkle Optionsliste und Fokusvertrag in Anfrage, Referenzfilter und Konfigurator.
    Layout, Typografie und Größe gehören weiterhin zum jeweiligen Formular. Radio-/Checkbox-Geometrie bleibt nativ. */
 .native-select { appearance: none; -webkit-appearance: none; color-scheme: dark; cursor: pointer; background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%); background-position: calc(100% - 1.25rem) 50%, calc(100% - 0.9375rem) 50%; background-size: 0.3125rem 0.3125rem; background-repeat: no-repeat; }
 .native-select option { background: var(--surface); color: var(--text); font-family: var(--body); }
 input:is([type="radio"], [type="checkbox"]) { accent-color: var(--orchid); }
-/* Chopper hat kein Porträtfoto: seine Karte zeigt ihn als Leuchtpunkt-Figur (Runde 4) */
-.portrait .portrait-chopper { position: absolute; inset: 0; margin: auto; width: 100%; height: auto; }

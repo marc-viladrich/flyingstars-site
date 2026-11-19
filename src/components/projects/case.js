@@ -9,7 +9,8 @@ import { t } from '../../i18n/ui.mjs';
   const onView = (el, fn, opts = { threshold: 0.35 }) => { const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { fn(); io.disconnect(); } }), opts); io.observe(el); };
 
   // Big numbers count up as they come into view. The final value stays the element's text (screen readers, copying,
-  // printing, full-page captures); the running number is decoration laid over it (aria-hidden, facts.css .count-run).
+  // printing, full-page captures); the running number is decoration laid over it (aria-hidden, case.css .count-run). It is
+  // drawn as generated content (::before from data-value), so a text selection only ever contains the final value.
   // Reduced motion or the page's global pause: the final value, at once, also mid-count.
   const still = () => matchMedia("(prefers-reduced-motion: reduce)").matches || document.documentElement.classList.contains("motion-paused");
   const counters = new Set();
@@ -22,13 +23,13 @@ import { t } from '../../i18n/ui.mjs';
       if (still()) return;
       let final = el.querySelector(":scope > .count-final");
       if (!final) { final = document.createElement("span"); final.className = "count-final"; final.append(...el.childNodes); el.append(final); }
-      run = document.createElement("span"); run.className = "count-run"; run.setAttribute("aria-hidden", "true"); run.textContent = fmt(0);
+      run = document.createElement("span"); run.className = "count-run"; run.setAttribute("aria-hidden", "true"); run.dataset.value = fmt(0);
       el.append(run); el.classList.add("is-counting"); counters.add(finish);
       const t0 = performance.now(), dur = 1400 + Math.min(1200, to);
       const tick = (now) => {
         const u = Math.min(1, (now - t0) / dur);
         if (u >= 1 || still()) { finish(); return; }
-        run.textContent = fmt(to * (1 - (1 - u) ** 3));
+        run.dataset.value = fmt(to * (1 - (1 - u) ** 3));
         frame = requestAnimationFrame(tick);
       };
       frame = requestAnimationFrame(tick);
@@ -67,7 +68,7 @@ import { t } from '../../i18n/ui.mjs';
   const cv = document.querySelector("canvas[data-formation]");
   if (cv) {
     const ctx = cv.getContext("2d"), tally = document.querySelector("[data-tally]"), replay = document.querySelector("[data-replay]");
-    let D = [], W = 0, H = 0, DPR = 1, mouse = null, visible = false, started = false, tilt = 0, nod = 0, deep = false, paused = false;
+    let D = [], W = 0, H = 0, DPR = 1, mouse = null, visible = false, started = false, tilt = 0, nod = 0, deep = false, paused = false, frame = 0, last = 0;
     const pause = document.querySelector("[data-formation-pause]");
     if (reduce && pause) pause.hidden = true;
     const sprites = new Map();
@@ -101,15 +102,25 @@ import { t } from '../../i18n/ui.mjs';
         xs.push(X * k); ys.push(Y * k);
       }
       const bw = Math.max(...xs) - Math.min(...xs), bh = Math.max(...ys) - Math.min(...ys);
-      const wide = W > 900, room = wide ? [W * 0.62, H * 0.78] : [W * 0.86, H * 0.56];
-      fit = { hx: (wide ? W * 0.6 : W * 0.5) * DPR, hy: (wide ? H * 0.46 : H * 0.36) * DPR, s: Math.min(room[0] / bw, room[1] / bh) * DPR, cx: (wide ? W * 0.6 : W * 0.5) * DPR - ((Math.max(...xs) + Math.min(...xs)) / 2) * Math.min(room[0] / bw, room[1] / bh) * DPR, cy: (wide ? H * 0.46 : H * 0.36) * DPR + ((Math.max(...ys) + Math.min(...ys)) / 2) * Math.min(room[0] / bw, room[1] / bh) * DPR };
+      // Wide: the text sits left of the formation. Narrow: the text has its own area below the canvas (case.css), so the
+      // formation is centred on the whole stage instead of being pushed into the upper half.
+      // Wide, the formation keeps clear of the text block's column, so no drone lights up behind the heading or the paragraph
+      // (Audit 4, E7, also at 1024 px).
+      const wide = W > 900 && getComputedStyle(cv).position === "absolute", copy = cv.parentElement.querySelector(".c-play-copy");
+      const clear = wide && copy ? copy.getBoundingClientRect().right - r.left + W * 0.04 : 0;
+      const room = wide ? [Math.min(W * 0.62, W - clear - W * 0.04), H * 0.78] : [W * 0.86, H * 0.8];
+      const s = Math.min(room[0] / bw, room[1] / bh);
+      const ax = wide ? Math.max(W * 0.6, clear + (bw * s) / 2) : W * 0.5, ay = wide ? H * 0.46 : H * 0.5;
+      fit = { hx: ax * DPR, hy: ay * DPR, s: s * DPR, cx: ax * DPR - ((Math.max(...xs) + Math.min(...xs)) / 2) * s * DPR, cy: ay * DPR + ((Math.max(...ys) + Math.min(...ys)) / 2) * s * DPR };
     };
     const held = () => paused || document.documentElement.classList.contains("motion-paused");
     // Shows the finished formation, e.g. when it appears while motion is paused.
     const settle = () => { D.forEach((d) => { d.x = d.tx; d.y = d.ty; d.z = d.tz; d.vx = d.vy = 0; d.delay = 0; }); started = true; draw(0, 0); };
     const launch = () => { // all drones start on the ground and take off in waves, like at a real show
       started = true;
-      D.forEach((d, i) => { d.x = (Math.random() - 0.5) * 2.4; d.y = -1.25 - Math.random() * 0.15; d.z = 0; d.vx = d.vy = 0; d.delay = (i / D.length) * 1.2 + Math.random() * 0.4; });
+      // the ground row is as wide as the formation, so no drone takes off behind the text block
+      const xs = D.map((d) => d.tx), x0 = Math.min(...xs), x1 = Math.max(...xs);
+      D.forEach((d, i) => { d.x = x0 + Math.random() * (x1 - x0); d.y = -1.25 - Math.random() * 0.15; d.z = 0; d.vx = d.vy = 0; d.delay = (i / D.length) * 1.2 + Math.random() * 0.4; });
     };
     onView(cv, () => {
     fetch(cv.dataset.formation).then((r) => {
@@ -127,14 +138,25 @@ import { t } from '../../i18n/ui.mjs';
       if (reduce) D.forEach((d) => { d.z = d.tz; });
       if (reduce) { started = true; draw(0, 0); }
       else { launch(); if (held()) settle(); }
+      run();
     }).catch(() => { if (tally) tally.textContent = t('case.theFormationCouldNotBeLoaded'); });
     }, { rootMargin: "100px", threshold: 0 });
-    replay?.addEventListener("click", () => { if (!reduce && D.length) { paused = false; pause?.setAttribute("aria-pressed", "false"); if (pause) pause.textContent = t('casestudy.pauseAnimation'); launch(); } });
-    pause?.addEventListener("click", () => { paused = !paused; pause.setAttribute("aria-pressed", String(paused)); pause.textContent = paused ? t('case.resumeAnimation') : t('casestudy.pauseAnimation'); });
+    replay?.addEventListener("click", () => { if (!reduce && D.length) { paused = false; pause?.setAttribute("aria-pressed", "false"); if (pause) pause.textContent = t('casestudy.pauseAnimation'); launch(); run(); } });
+    pause?.addEventListener("click", () => { paused = !paused; pause.setAttribute("aria-pressed", String(paused)); pause.textContent = paused ? t('case.resumeAnimation') : t('casestudy.pauseAnimation'); run(); });
     const host = cv.parentElement;
-    host.addEventListener("pointermove", (e) => { if (e.pointerType === "touch") return; const r = cv.getBoundingClientRect(); mouse = [(e.clientX - r.left) * DPR, (e.clientY - r.top) * DPR]; });
-    host.addEventListener("pointerleave", () => { mouse = null; });
-    new IntersectionObserver((es) => { visible = es[0].isIntersecting; }).observe(cv);
+    const aim = (e) => { const r = cv.getBoundingClientRect(); mouse = [(e.clientX - r.left) * DPR, (e.clientY - r.top) * DPR]; };
+    host.addEventListener("pointermove", (e) => { if (e.pointerType !== "touch") aim(e); });
+    host.addEventListener("pointerleave", (e) => { if (e.pointerType !== "touch") mouse = null; });
+    // A finger on the formation acts like the pointer: tap or drag sideways; vertical swipes keep scrolling (touch-action:
+    // pan-y). After lifting it, the drones (or the head) stay with the last point for a moment.
+    let release = 0;
+    cv.addEventListener("pointerdown", (e) => { if (e.pointerType === "touch") { clearTimeout(release); aim(e); } });
+    cv.addEventListener("pointermove", (e) => { if (e.pointerType === "touch") aim(e); });
+    const lift = (e) => { if (e.pointerType === "touch") { clearTimeout(release); release = setTimeout(() => { mouse = null; }, 1200); } };
+    cv.addEventListener("pointerup", lift); cv.addEventListener("pointercancel", lift);
+    new IntersectionObserver((es) => { visible = es[es.length - 1].isIntersecting; run(); }).observe(cv);
+    document.addEventListener("flyingstars:motion-change", () => run());
+    document.addEventListener("visibilitychange", () => run());
     if ("ResizeObserver" in window) new ResizeObserver(() => { resize(); if ((reduce || held()) && started) draw(0, 0); }).observe(cv);
 
     const draw = (dt, t) => {
@@ -175,10 +197,18 @@ import { t } from '../../i18n/ui.mjs';
       ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
       for (const [sx, sy, , pr, a, r, g, b] of list) { if (!a) continue; ctx.fillStyle = `rgba(${Math.min(255, r + 25)},${Math.min(255, g + 25)},${Math.min(255, b + 25)},${a.toFixed(3)})`; ctx.beginPath(); ctx.arc(sx, sy, core * pr, 0, 7); ctx.fill(); }
     };
-    if (!reduce) {
-      let last = 0;
-      const loop = (now) => { const t = now / 1000, dt = Math.min(0.05, last ? t - last : 0.016); last = t; if (visible && !paused && !document.documentElement.classList.contains("motion-paused") && !document.hidden) draw(dt, t); requestAnimationFrame(loop); };
-      requestAnimationFrame(loop);
+    // The frame loop exists only while the formation can move: in view, not paused (own button or the page's global pause),
+    // tab visible. Otherwise it stops completely and run() starts it again on the next change of any of these.
+    function run() {
+      if (reduce || frame || !started || !visible || held() || document.hidden) return;
+      last = 0; frame = requestAnimationFrame(loop);
+    }
+    function loop(now) {
+      frame = 0;
+      if (!visible || held() || document.hidden) return;
+      const t = now / 1000, dt = Math.min(0.05, last ? t - last : 0.016); last = t;
+      draw(dt, t);
+      frame = requestAnimationFrame(loop);
     }
   }
 })();

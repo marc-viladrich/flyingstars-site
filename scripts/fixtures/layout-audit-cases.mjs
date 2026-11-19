@@ -7,6 +7,41 @@ const font = await readFile(new URL('../../public/fonts/space-grotesk-0.woff2', 
 
 /** @type {Array<[string, (page: import("playwright").Page) => Promise<void>]>} */
 export const layoutCases = [
+  ['Kopfgruppe: Bühne mit identischer Oberkante löst Kopfabstandsfehler aus', async (page) => {
+    await page.setContent(`
+      <style>
+        :root { --head-gap-tool: 32px; }
+        body { margin: 0; }
+        section {
+          margin-top: 140px;
+          display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px;
+          align-items: start;
+        }
+        header { grid-column: 1 / -1; height: 80px; }
+        article { height: 100px; }
+        aside { height: 72px; }
+        footer { grid-column: 1 / -1; height: 40px; }
+      </style>
+      <main><section id="preis" data-head-group="tool">
+        <header data-head-part>Titelblock</header>
+        <aside>Bedienung</aside><article>Bühne</article>
+        <footer>Weiterer Block</footer>
+      </section></main>`);
+    const inspect = () => page.evaluate(inspectLayout, { checks: ['head-gap'] });
+    assert.deepEqual(await inspect(), [], 'Gleichstand ohne Kopfteil und Block nach der Bedienung sind zulässig');
+
+    const stage = page.locator('article');
+    await stage.evaluate((el) => {
+      const head = el.parentElement.querySelector('[data-head-part]');
+      el.style.transform = `translateY(${head.getBoundingClientRect().top - el.getBoundingClientRect().top}px)`;
+    });
+    const head = page.locator('[data-head-part]');
+    assert.equal((await stage.boundingBox()).y, (await head.boundingBox()).y);
+    assert.deepEqual(await inspect(), [
+      { k: 'head-gap', what: '#preis section tool: -80 px statt 32 (überlappt)' },
+    ]);
+  }],
+
   ['Team: zweite Karte angeschnitten, beide Enden erreichbar', async (page) => {
     await page.setViewportSize({ width: 390, height: 844 });
     const inspect = (...checks) => page.evaluate(inspectLayout, { checks });

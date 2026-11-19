@@ -449,6 +449,26 @@
     "en": "Resume animation",
     "nl": "Animatie hervatten"
   },
+  "case.hintMouse": {
+    "de": "Fahrt mit der Maus hindurch.",
+    "en": "Move your mouse through them.",
+    "nl": "Beweeg de muis erdoorheen."
+  },
+  "case.hintTouch": {
+    "de": "Fahrt mit dem Finger hindurch.",
+    "en": "Run a finger through them.",
+    "nl": "Beweeg een vinger erdoorheen."
+  },
+  "case.hintHeadMouse": {
+    "de": "Bewegt die Maus, er schaut euch hinterher.",
+    "en": "Move your mouse and he'll follow you with his eyes.",
+    "nl": "Beweeg de muis, hij kijkt jullie na."
+  },
+  "case.hintHeadTouch": {
+    "de": "Tippt auf die Formation, er schaut euch hinterher.",
+    "en": "Tap the formation and he'll follow you with his eyes.",
+    "nl": "Tik op de formatie, hij kijkt jullie na."
+  },
   "comparison.valueChooseATechnology": {
     "de": "{v0}: Technik wählen",
     "en": "{v0}: choose a technology",

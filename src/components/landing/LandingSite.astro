@@ -164,12 +164,14 @@ const itemOf = Object.fromEntries(items.map((item, i) => [item.zone, { ...item, 
       // reicht auch das nicht, steht es wie alle anderen über oder unter der Nummer
       const room = b.left - m.left - gap, roomRight = m.right - b.right - gap;
       // sichtbarer Streifen zwischen Kopfzeile und unterem Bildschirmrand in Koordinaten der Grafik (Handy quer: kaum höher
-      // als die Erklärung). Ist die übliche Seite dort nicht ganz zu sehen, gilt die andere, sonst neben der Nummer
+      // als die Erklärung). Ist die übliche Seite dort nicht ganz zu sehen, gilt die andere, sonst neben der Nummer; das
+      // Sichtfenster geht dabei vor den Rand der Grafik. Ist es niedriger als die Erklärung, scrollt sie in sich
       const navBottom = Math.max(0, document.querySelector('.nav')?.getBoundingClientRect().bottom ?? 0);
-      const seenTop = Math.max(0, navBottom - m.top + gap), seenBottom = (visualViewport?.height ?? innerHeight) - m.top - gap;
+      const seenTop = navBottom - m.top + gap, seenBottom = (visualViewport?.height ?? innerHeight) - m.top - gap;
       const seen = (top: number, h: number) => top >= seenTop && top + h <= seenBottom;
       const measure = (side: '' | 'left' | 'right') => {
         tip.style.width = side ? `${(Math.min(17.5 * rem, side === 'left' ? room : roomRight) / rem).toFixed(3)}rem` : '';
+        tip.style.maxHeight = ''; tip.style.overflowY = ''; tip.style.pointerEvents = '';
         return { w: tip.offsetWidth, h: tip.offsetHeight };
       };
       let side: '' | 'left' | 'right' = hot.hasAttribute('data-aside') && room >= 13 * rem ? 'left' : '';
@@ -177,15 +179,38 @@ const itemOf = Object.fromEntries(items.map((item, i) => [item.zone, { ...item, 
       const cx = b.left + b.width / 2 - m.left, cy = b.top + b.height / 2 - m.top;
       const below = b.bottom - m.top + gap, above = b.top - m.top - h - gap;
       const usual = below + h <= m.height || above < 0 ? below : above, other = usual === below ? above : below;
-      const flip = !side && !seen(usual, h) && other >= 0 && seen(other, h);
+      const flip = !side && !seen(usual, h) && seen(other, h);
       if (!side && !flip && !seen(usual, h) && Math.max(room, roomRight) >= 13 * rem) {
         side = room >= roomRight ? 'left' : 'right';
         ({ w, h } = measure(side));
       }
+      const band = seenBottom - seenTop;
+      if (h > band) { tip.style.maxHeight = `${(band / rem).toFixed(3)}rem`; tip.style.overflowY = 'auto'; tip.style.pointerEvents = 'auto'; h = band; }
+      // seitlich: auf Höhe der Nummer, möglichst innerhalb der Grafik, in jedem Fall ganz im Sichtfenster
+      const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
+      const inMap = clamp(cy - h / 2, 0, m.height - h);
       const left = side === 'left' ? room - w : side === 'right' ? b.right - m.left + gap : Math.max(0, Math.min(m.width - w, cx - w / 2));
-      const top = side ? Math.max(0, seenTop, Math.min(m.height - h, seenBottom - h, cy - h / 2)) : flip ? other : usual;
+      // passt nichts davon (schmale Grafik, kein Platz daneben), wird die übliche Lage ins Sichtfenster geschoben
+      const top = side ? clamp(inMap, seenTop, seenBottom - h) : flip ? other : seen(usual, h) ? usual : clamp(usual, seenTop, seenBottom - h);
       tip.style.left = `${(left / rem).toFixed(3)}rem`; tip.style.top = `${(top / rem).toFixed(3)}rem`;
     };
+    // Tippen während des Schwungscrollens: die Lage gilt erst, wenn die Seite steht. Ist die Erklärung dann angeschnitten
+    // und die Nummer zu sehen, sucht sie ihren Platz neu und blendet dort weich ein
+    let settleScroll = 0;
+    const clipped = (el: Element) => {
+      const r = el.getBoundingClientRect(), top = Math.max(0, document.querySelector('.nav')?.getBoundingClientRect().bottom ?? 0);
+      return r.top < top - 1 || r.bottom > (visualViewport?.height ?? innerHeight) + 1;
+    };
+    addEventListener('scroll', () => {
+      if (!current) return;
+      clearTimeout(settleScroll);
+      settleScroll = window.setTimeout(() => {
+        const hot = hots.find((b) => b.dataset.hot === current), tip = tips.find((el) => el.dataset.tip === current);
+        if (!hot || !tip || clipped(hot) || !clipped(tip)) return;
+        place(current);
+        if (!still) tip.animate([{ opacity: 0 }, { opacity: 1 }], { duration: time('--dur-control'), easing: css.getPropertyValue('--ease-default').trim() });
+      }, 140);
+    }, { passive: true });
     const show = (zone: string) => {
       if (running) settle();
       current = zone;
@@ -197,21 +222,26 @@ const itemOf = Object.fromEntries(items.map((item, i) => [item.zone, { ...item, 
       hots.forEach((b) => b.setAttribute('aria-expanded', String(b.dataset.hot === zone)));
       if (zone) place(zone);
     };
-    // Zeigen wählt nur bei echter Mausbewegung, nicht wenn sich der Inhalt unter dem stehenden Zeiger verschiebt
-    let last = { x: -1, y: -1 };
-    map.addEventListener('pointermove', (e) => { last = { x: e.clientX, y: e.clientY }; });
+    // Zeigen wählt nur bei echter Mausbewegung, nicht wenn sich der Inhalt unter dem stehenden Zeiger verschiebt. Die Lage
+    // des Zeigers gilt seitenweit, auch die eines Taps (dort bleibt bei manchen Geräten ein Mauszeiger stehen). Was per
+    // Touch geöffnet wurde, schließt nicht durch ein Maus-Verlassen beim Scrollen, sondern durch Tippen daneben
+    let last = { x: -1, y: -1 }, touched = false;
+    const track = (e: PointerEvent) => { last = { x: e.clientX, y: e.clientY }; };
+    document.addEventListener('pointermove', track, { passive: true });
+    document.addEventListener('pointerdown', track, { passive: true });
+    map.addEventListener('pointerdown', (e) => { touched = e.pointerType !== 'mouse'; });
     map.querySelectorAll<HTMLElement | SVGElement>('[data-pick], [data-hot]').forEach((el) => {
       const zone = (el as HTMLElement).dataset.pick ?? (el as HTMLElement).dataset.hot!;
       el.addEventListener('pointerenter', (e) => {
         const p = e as PointerEvent;
-        if (p.pointerType === 'mouse' && (p.clientX !== last.x || p.clientY !== last.y)) show(zone);
+        if (p.pointerType === 'mouse' && (p.clientX !== last.x || p.clientY !== last.y)) { touched = false; show(zone); }
       });
       el.addEventListener('click', (e) => { e.stopPropagation(); show(zone); });
     });
     let restoring = false; // Esc gibt den Fokus an die Nummer zurück, ohne das Popover wieder zu öffnen
     hots.forEach((b) => b.addEventListener('focus', () => { if (!restoring) show(b.dataset.hot!); }));
     map.addEventListener('focusout', (e) => { if (!map.contains(e.relatedTarget as Node)) show(''); });
-    map.addEventListener('pointerleave', (e) => { if ((e as PointerEvent).pointerType === 'mouse' && !map.contains(document.activeElement)) show(''); });
+    map.addEventListener('pointerleave', (e) => { if ((e as PointerEvent).pointerType === 'mouse' && !touched && !map.contains(document.activeElement)) show(''); });
     map.addEventListener('keydown', (e) => { if (e.key === 'Escape' && current) { const hot = hots.find((b) => b.dataset.hot === current); show(''); restoring = true; hot?.focus({ preventScroll: true }); restoring = false; } });
     document.addEventListener('click', (e) => { if (current && !map.contains(e.target as Node)) show(''); });
     addEventListener('resize', () => { if (current) place(current); }, { passive: true });

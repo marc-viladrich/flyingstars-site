@@ -179,18 +179,19 @@ export function inspectLayout({ checks }) {
       }
       if (next) check(role, head.matches('[data-section-head="contents"]') ? kids.at(-1) : head, next, head);
     }
-    // Kopfgruppen (data-head-group, Preisseite: Konfigurator mit Seitenkopf): Kopfteile tragen data-head-part. Ein
-    // anderer sichtbarer Block der Gruppe, dessen nächster darüber liegender Nachbar (größte Unterkante aller Blöcke, die
-    // oberhalb beginnen, über alle Spalten: die Zeile davor) ein Kopfteil ist, beginnt im Abstand der Rolle darunter.
-    // Liegt ein anderer Block dazwischen (Handy: Bedienung unter der Vorschau), gilt die Rolle nicht. Überlappt das
-    // Kopfteil den Block, ist das ein Befund (negativer Abstand) und wird nicht vorher aussortiert.
+    // Kopfgruppen: Ein Block mit derselben Oberkante wie ein Kopfteil gehört direkt zur Abstandsprüfung.
+    // Sonst entscheidet die größte Unterkante der oberhalb beginnenden Blöcke, ob ein Kopfteil direkt vorausgeht.
+    // Ein anderer Block dazwischen (Handy: Bedienung unter der Vorschau) beendet die Abstandsrolle des Kopfes.
     for (const group of document.querySelectorAll('main [data-head-group]')) {
       const role = group.dataset.headGroup, T = tok(role);
-      const kids = [...group.children].filter((e) => shown(e) && !e.matches('style, script'));
-      for (const block of kids.filter((e) => !e.matches('[data-head-part]'))) {
-        const nearest = kids.filter((e) => e !== block && box(e).top < box(block).top - 1).sort((x, y) => box(y).bottom - box(x).bottom)[0];
-        if (!nearest?.matches('[data-head-part]')) continue;
-        const gap = box(block).top - box(nearest).bottom;
+      const items = [...group.children].filter((e) => shown(e) && !e.matches('style, script'))
+        .map((e) => ({ rect: box(e), head: e.matches('[data-head-part]') }))
+        .sort((a, b) => b.rect.bottom - a.rect.bottom);
+      for (const { rect: block } of items.filter(({ head }) => !head)) {
+        const nearest = items.find(({ head, rect }) => head && Math.abs(rect.top - block.top) <= 1)
+          ?? items.find(({ rect }) => rect.top < block.top - 1);
+        if (!nearest?.head) continue;
+        const gap = block.top - nearest.rect.bottom;
         if (Math.abs(gap - T) > 2) r.push({ k: 'head-gap', what: `${name(group)} ${role}: ${Math.round(gap)} px statt ${Math.round(T)}${gap < -1 ? ' (überlappt)' : ''}` });
       }
     }

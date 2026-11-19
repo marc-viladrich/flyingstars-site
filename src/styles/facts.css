@@ -13,65 +13,6 @@
 .cell .k { color: var(--faint); display: flex; justify-content: space-between; }
 .cell .v { font: 500 clamp(1.625rem, 2.4vw, 2.125rem)/1.1 var(--display); letter-spacing: -0.02em; }
 .cell p { color: var(--muted); font-size: var(--text-control); max-width: 36ch; }
-.c-credits { position: relative; z-index: 3; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line-bright); margin: 0; padding: 0; background: var(--night-half); /* Eckdaten in der Content-Breite wie alles andere (Marc, 02.11.2026) */ backdrop-filter: blur(0.5rem); -webkit-backdrop-filter: blur(0.5rem); }
-.c-credits div { padding: var(--space-4) var(--space-4) var(--space-5) 0; display: grid; gap: var(--space-1); }
-.c-credits div + div { padding-left: var(--space-4); border-left: 1px solid var(--line-medium); }
-.c-credits dt { color: var(--ink-half); }
-.c-credits dd { margin: 0; font-size: var(--text-control); }
-
-.c-numbers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; }
-/* Kennzahlen-Band einer Fallstudie (CaseStudy.astro). Drei Zahlen teilen sich die Breite in Drittel, zwei in Hälften mit
-   größeren Zahlen; eine Zahl steht groß neben dem Satz der Fallstudie, statt allein links in einer leeren Reihe. */
-.c-figures { --num-min: 4.5rem; --num-fluid: 10vw; --num-max: 10.5rem; padding: var(--section) var(--gutter); }
-.c-figures[data-figures="2"] { --num-fluid: 15vw; --num-max: 15rem; }
-.c-figures[data-figures="1"] { --num-min: 6rem; --num-fluid: 17vw; --num-max: 17rem; --figure-cols: minmax(0, 5fr) minmax(0, 7fr); }
-/* Zwei Zahlen: das Label steht als Schlagzeile neben seiner Zahl („4 | Monate vor der Hochzeit angefragt“) und füllt die
-   Zeile; erst auf dem Handy wieder darunter */
-.c-figures[data-figures="2"] .c-num { grid-template-columns: max-content minmax(0, 1fr); column-gap: clamp(var(--space-5), 2.4vw, var(--space-8)); align-items: end; }
-.c-figures[data-figures="2"] .c-num dt { grid-column: 2; grid-row: 1; max-width: 20ch; font: 500 var(--text-2xl)/1.15 var(--display); letter-spacing: -0.02em; color: var(--head); text-wrap: balance; }
-@media (--compact) {
-  .c-figures[data-figures="2"] .c-num { grid-template-columns: minmax(0, 1fr); }
-  .c-figures[data-figures="2"] .c-num dt { grid-column: 1; grid-row: 2; max-width: 26ch; font: inherit; font-size: var(--text-base); color: var(--muted); }
-}
-.c-figures[data-figures="1"]:not([data-run-in]) { display: grid; grid-template-columns: var(--figure-cols); column-gap: clamp(var(--space-7), 5vw, var(--space-20)); align-items: end; }
-.c-figures[data-run-in] .c-num { grid-template-columns: var(--figure-cols); column-gap: clamp(var(--space-7), 5vw, var(--space-20)); align-items: end; padding-right: 0; }
-.c-figures[data-run-in] .c-num dt { grid-column: 2; grid-row: 1; }
-.c-figures[data-run-in] .c-num dt, .c-figures-lead { margin: 0; max-width: 20ch; font: 500 var(--text-3xl)/1.12 var(--display); letter-spacing: -0.02em; color: var(--head); text-wrap: balance; }
-@media (--mobile) {
-  .c-figures[data-figures="1"]:not([data-run-in]), .c-figures[data-run-in] .c-num { grid-template-columns: minmax(0, 1fr); row-gap: var(--space-6); }
-  .c-figures[data-run-in] .c-num dt { grid-column: 1; grid-row: 2; }
-  .c-figures[data-run-in] .c-num dt, .c-figures-lead { font-size: var(--text-2xl); }
-}
-.c-num { display: grid; gap: var(--space-2-5); align-content: start; padding-right: var(--space-6); container-type: inline-size; }
-.c-num + .c-num { padding-left: clamp(var(--space-4-5), 3vw, var(--space-10)); border-left: 1px solid var(--line); }
-/* Größe folgt der Zelle, nicht dem Viewport: --num-chars ist die längste Zahl der Reihe (CaseStudy.astro), eine Ziffer ist
-   samt Laufweite höchstens 0,6 em breit. So bleibt „12.000“ in seiner Spalte, und alle Zahlen einer Reihe sind gleich groß. */
-.c-num dd { position: relative; font: 700 min(clamp(var(--num-min), var(--num-fluid), var(--num-max)), 100cqi / (var(--num-chars, 4) * 0.6))/0.9 var(--display); letter-spacing: -0.05em; color: var(--accent); font-variant-numeric: tabular-nums; }
-/* Hochzählen ist Zierde: der Endwert bleibt der Text, die laufende Zahl liegt aria-hidden darüber (case.js) */
-.c-num .count-run { position: absolute; inset: 0 auto auto 0; white-space: nowrap; }
-.c-num dd.is-counting .count-final { opacity: 0; }
-@media print { .c-num .count-run { display: none; } .c-num dd.is-counting .count-final { opacity: 1; } }
-.c-num dt { color: var(--muted); max-width: 26ch; font-size: var(--text-base); }
-
-@media (--nav-collapsed) {
-  .c-credits { grid-template-columns: 1fr 1fr; }
-}
-
-@media (--nav-collapsed) {
-  .c-credits div:nth-child(3) { padding-left: 0; border-left: 0; }
-}
-
-@media (--nav-collapsed) {
-  .c-credits div:nth-child(n + 3) { border-top: 1px solid var(--line-medium); }
-}
-
-@media (--nav-collapsed) {
-  .c-numbers { grid-template-columns: 1fr; gap: var(--space-8); }
-}
-
-@media (--nav-collapsed) {
-  .c-num + .c-num { padding-left: 0; border-left: 0; padding-top: var(--space-7); border-top: 1px solid var(--line); }
-}
 .eco-facts { margin: 0; }
 .fact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-2-5) var(--space-8); align-items: end; padding: clamp(var(--space-6), 4vw, var(--space-11)) 0; }
 .fact + .fact { border-top: 1px solid var(--line); }
@@ -135,9 +76,6 @@
 .fn.o { color: transparent; -webkit-text-stroke: 1.5px var(--ink-bright); }
 .is-scrolly .fn.o { -webkit-text-stroke-width: 0.15625rem; }
 @media (--nav-collapsed) { .is-scrolly .fn.o { -webkit-text-stroke-width: 2px; } }
-@media (--mobile), (orientation: portrait) and (--grid-stacked) {
-  .c-hero > .c-credits { grid-row: 4; }
-}
   .lh-facts { display: flex; flex-wrap: wrap; gap: 0; margin: var(--space-2-5) 0 0; padding-top: var(--space-5-5); border-top: 1px solid var(--line); width: 100%; max-width: 40rem; }
   .lh-facts > div { display: grid; gap: var(--space-1); padding-right: clamp(var(--space-4-5), 2.4vw, var(--space-8)); margin-right: clamp(var(--space-4-5), 2.4vw, var(--space-8)); border-right: 1px solid var(--line); }
   .lh-facts > div:last-child { border-right: 0; margin-right: 0; padding-right: 0; }
@@ -172,5 +110,3 @@
 @media (--grid-expanded) { .sheet[data-columns="4"] .cell + .cell { padding-left: var(--space-6); border-left: 1px solid var(--line); } }
 
 .spec > div { display: contents; }
-.c-num dt { order: 2; }
-@media (--nav-expanded) { .c-numbers { grid-template-columns: repeat(var(--fact-columns), minmax(0, 1fr)); } }

@@ -64,13 +64,14 @@ test('Schwarm bestellt Bilder erst nahe ihrer Bühne', () => {
 
 test('Runde 6: Punktübergänge an jeder Farbfläche, ohne Trennlinien, Masken vorhanden', () => {
   // Browserprüfung über alle Seiten: npm run check:uebergaenge (in npm run perf:start für sechs Seiten)
-  const css = read('src/styles/himmel.css'), global = read('src/styles/global.css');
+  // .c-setlist gehört seit Audit 4 (C2) der Fallstudien-Datei case.css, .team-sec der Komponente Team.astro
+  const css = read('src/styles/himmel.css'), global = [read('src/styles/global.css'), read('src/styles/case.css'), read('src/components/sections/Team.astro')].join('\n');
   const list = css.match(/:is\(\.section\.alt, \.c-setlist, \.team-sec\)::before, :is\(\.section\.alt, \.c-setlist, \.team-sec\)::after \{[^}]*\}/)?.[0] ?? '';
   assert.match(list, /background-color: inherit/, 'Punkte tragen die Farbe der eigenen Fläche');
   assert.match(list, /mask: var\(--ueb-maske\)/);
   for (const sel of ['.section.alt', '.c-setlist', '.team-sec']) {
-    const rule = global.split('\n').find((l) => l.startsWith(`${sel} {`)) ?? '';
-    assert.ok(rule, `${sel} fehlt in global.css`);
+    const rule = global.split('\n').map((l) => l.trim()).find((l) => l.startsWith(`${sel} {`)) ?? '';
+    assert.ok(rule, `${sel} fehlt in global.css/case.css/Team.astro`);
     assert.doesNotMatch(rule, /border-(top|bottom)/, `${sel}: Trennlinie an einer Farbkante bricht den Punktübergang`);
   }
   for (const f of ['public/media/uebergang.svg', 'public/media/uebergang-schmal.svg']) assert.ok(statSync(new URL(`../${f}`, import.meta.url)).size > 1000, f);

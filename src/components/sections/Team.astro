@@ -33,5 +33,48 @@ const crew = await Promise.all(members.map(async item => {const member=teamMembe
 </section>
 
 <style>
+  /* Team: Porträts steigen nacheinander auf und öffnen sich wie ein Vorhang. Der Porträtrahmen selbst (.portrait) ist
+     geteilt und liegt in global.css; hier Abschnitt, Reihe, Karten und ihr Auftritt (aus global.css hierher, Audit 4, C2).
+     Der Lichtschein setzt erst unter der Kante ein: oben steht die reine Fläche, aus der der Punktübergang ausläuft (himmel.css) */
+  .team-sec { padding: var(--section) var(--gutter); background: linear-gradient(var(--media-ground), transparent var(--section)), radial-gradient(70% 45% at 50% 0%, rgb(var(--rgb-logo-orchid) / 0.07), transparent 70%), var(--media-ground); }
+  .crew { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--cols, 5), minmax(0, 1fr)); gap: clamp(var(--space-3), 1.6vw, var(--space-5-5)); }
+  /* Touch: Lichtpunkt-Reveal statt Vorhang (dotimage.js); steht vor dem Vorhang, die Reihenfolge entspricht dem Stand vor dem Umzug */
+  @media (hover: none), (pointer: coarse) {
+    :global(.reveal) .member .portrait[data-dot-img], :global(.reveal) .member .portrait[data-dot-img] img { clip-path: none; transform: none; transition: none; }
+  }
+  /* Die Karte selbst wird beobachtet und darf deshalb nicht verschoben sein (Marc, 03.11.2026: „greift viel zu spät“);
+     nur die Kinder bewegen sich */
+  .member { display: grid; gap: var(--space-2-5); align-content: start; transition: opacity var(--dur-fade) var(--ease-default); transition-delay: calc(var(--i, 0) * var(--dur-stagger)); }
+  .member > * { transition: transform var(--dur-reveal) var(--ease-curtain); transition-delay: calc(var(--i, 0) * var(--dur-stagger)); }
+  :global(.reveal) .member:not(.is-in) { opacity: 0; }
+  :global(.reveal) .member:not(.is-in) > * { transform: translateY(var(--reveal-member-offset)); }
+  :global(.reveal) .member:not(.is-in) .portrait { clip-path: inset(100% 0 0 0 round 1rem); }
+  :global(.reveal) .member:not(.is-in) .portrait img { transform: scale(1.28); }
+  /* nach dem Auftritt reagieren Hover ohne Verzögerung; kein Foto-Zoom, die Lichtpunkte übernehmen */
+  .member.shown, .member.shown > *, .member.shown .portrait img { transition-delay: 0s; }
+  .portrait .ini { position: absolute; inset: 0; display: grid; place-items: center; font: 700 clamp(5.25rem, 9.5vw, 10rem)/1 var(--display); letter-spacing: -0.05em; color: transparent; -webkit-text-stroke: 1.5px var(--ink-subtle); background: var(--outline-ground); }
+  /* Chopper hat kein Porträtfoto: seine Karte zeigt ihn als Leuchtpunkt-Figur (Runde 4) */
+  .portrait :global(.portrait-chopper) { position: absolute; inset: 0; margin: auto; width: 100%; height: auto; }
+  .member .role { color: var(--amber); }
+  .member h3 { font-size: var(--text-lg); width: fit-content; padding-bottom: var(--space-0-5); }
+  .member p { color: var(--muted); font-size: var(--text-sm); }
+  .crew-note { margin-top: clamp(var(--space-6-5), 4vw, var(--space-10)); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3-5) var(--space-7); padding-top: var(--space-5-5); border-top: 1px solid var(--line); color: var(--muted); }
   .crew-links { display: flex; flex-wrap: wrap; gap: var(--space-3-5) var(--space-7); }
+  @media (--grid-stacked) {
+    /* drei Spalten; fünf Personen ließen rechts unten ein Loch. Eine unvollständige letzte Reihe steht mittig (sechs halbe
+       Spalten, jede Karte belegt zwei) */
+    .crew { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .crew .member { grid-column: span 2; }
+    .crew .member:nth-child(3n + 1):nth-last-child(2) { grid-column: 2 / span 2; }
+    .crew .member:nth-child(3n + 1):last-child { grid-column: 3 / span 2; }
+  }
+  /* Handy (Marc, 19.11.2026: keine endlosen Scrollstrecken): eine wischbare Reihe statt untereinander gestapelter Karten.
+     Die Reihe läuft bis an die Bildschirmkanten, die erste Karte steht an der Content-Kante, die nächste ist angeschnitten. */
+  @media (--compact) {
+    .crew { display: flex; gap: var(--space-3); margin-inline: calc(-1 * var(--pad)); padding-inline: var(--pad); scroll-padding-inline: var(--pad); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; }
+    .crew::-webkit-scrollbar { display: none; }
+    .crew:focus-visible { outline: var(--focus-width, 2px) solid var(--cyan); outline-offset: -0.125rem; }
+    .crew .member { flex: 0 0 min(15.5rem, 72%); scroll-snap-align: start; }
+  }
+  @media (prefers-reduced-motion: reduce) { .member { transition: none; } }
 </style>

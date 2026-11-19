@@ -44,7 +44,8 @@ test('Mobiles Menü hält den Fokus und gibt ihn beim Schließen zurück', async
   await opener.click();
   await page.getByRole('dialog').getByRole('link',{name:'Blog',exact:true}).click();
   await expect(page).toHaveURL(/\/blog\/$/);
-  await expect(page.getByRole('heading',{level:1})).toHaveText('Wie Drohnenshows entstehen.');
+  // Kicker und Schlagzeile bilden gemeinsam die Überschrift (SectionHead, Runde 6)
+  await expect(page.getByRole('heading',{level:1})).toHaveText(/^Blog\s*Wie Drohnenshows entstehen\.$/);
 });
 
 

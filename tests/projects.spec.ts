@@ -122,10 +122,14 @@ test('Alle Hochzeits- und Werbekarten verlinken sprachgleiche Fallstudien', asyn
     for (const slug of ['drohnenshow-hochzeit', 'drohnenshow-werbung']) {
       await page.goto(localizedHref(`/${slug}/`, locale));
       const cards = page.locator('#referenzen .proj');
-      await expect(cards).toHaveCount(slug.endsWith('hochzeit') ? 2 : 4);
-      for (const card of await cards.all()) {
+      // Werbung nach Moritz' Webtext: sechs Referenzen (drohnenshow-werbung.yaml, projects), Hochzeit zwei
+      await expect(cards).toHaveCount(slug.endsWith('hochzeit') ? 2 : 6);
+      // Nur Projekte mit eigener Fallstudie sind Links (Werbung: Ford, L’Oréal x Prada, NFL, PUMA); Spotify und E.ON
+      // stehen ohne Fallstudie als Karte da und dürfen nicht ins Leere verlinken.
+      const linked = page.locator('#referenzen a.proj[href]');
+      await expect(linked).toHaveCount(slug.endsWith('hochzeit') ? 2 : 4);
+      for (const card of await linked.all()) {
         const href = await card.getAttribute('href');
-        expect(href).toBeTruthy();
         expect(href).toMatch(locale === 'de' ? /^\/(?!en\/|nl\/)/ : new RegExp(`^/${locale}/`));
       }
     }

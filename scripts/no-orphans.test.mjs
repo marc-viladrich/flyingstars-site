@@ -57,3 +57,13 @@ test('Fließtext: lange Schlusswörter bleiben mit dem Vorgänger zusammen, kurz
   const long = 'Dafür braucht es eine eigene, frühzeitig beantragte Aufstiegsgenehmigung Sicherheitsprotokolle.';
   assert.equal(joinLastWords(long), long);
 });
+test('Bindestrich im vorletzten Wort bleibt Umbruchstelle, gezählt wird nur der Rest (Audit 4, E6)', () => {
+  const prose = 'Unser Standort verbindet Gründergeist mit Bergbau und nordrhein-westfälischer Industrietradition.';
+  assert.equal(joinLastWords(prose), prose.replace(' Industrietradition.', '&nbsp;Industrietradition.'));
+});
+test('Langes Kompositum vor kurzem Schlusswort: verbunden und trennbar statt Überlauf (Audit 4, E6)', () => {
+  const prose = 'Weil Drohnenshows keine Pyrotechnik sind, dürfen wir viele Genehmigungsprozesse überspringen.';
+  assert.equal(joinLastWords(prose), prose.replace('Genehmigungsprozesse überspringen.', '<span class="hy">Genehmigungsprozesse</span>&nbsp;überspringen.'));
+  // kurze Blöcke (Karten, Listen) und lange Schlusswörter bleiben trennbar wie bisher
+  assert.equal(joinLastWords('Genehmigungsprozesse überspringen.'), 'Genehmigungsprozesse überspringen.');
+});

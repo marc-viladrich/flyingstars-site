@@ -71,7 +71,9 @@ const src = videoPath(videos[video], 'preview');
   .lh-copy { position: relative; display: grid; gap: var(--space-5-5); justify-items: start; align-self: start; }
   /* Kicker in der h1 (Moritz' Keyword-Zeile), Abstand wie vorher außerhalb */
   .lh-copy h1 > .kicker { margin: 0 0 var(--space-3); }
-  .lh h1 { font-size: var(--text-page); line-height: 1; letter-spacing: -0.035em; max-width: 16ch; }
+  /* Unter 400 px folgt die Größe der Zeilenbreite (10vw), sonst setzt die Mindestgröße lange Komposita einzeln
+     („Produkt-“ | „botschafter“, Audit 4, V2); ab 400 px gilt --text-page unverändert */
+  .lh h1 { font-size: min(var(--text-page), 10vw); line-height: 1; letter-spacing: -0.035em; max-width: 16ch; }
   .lh .lead { max-width: 48ch; }
   .actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
   /* Rahmen wie im Startseiten-Hero (Vercel-Prototyp): Label und Knopf rasten innen in den Ecken ein, mittig auf Höhe des

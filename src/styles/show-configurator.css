@@ -406,8 +406,9 @@ fieldset.cfg-tool { margin: 0; padding: 0; border: 0; min-width: 0; }
   .cfg.has-head > .cfg-panel, .cfg.has-head > .cfg-intro { margin-top: var(--space-8); }
   .cfg-head :is(h1, h2) { font-size: clamp(1.875rem, 7.4vw, 2.5rem); }
 }
-/* Handy quer mit Seitenkopf: H1 und Eckdaten über beiden Spalten, Bedienung und Bühne oben bündig, Einleitung zuletzt */
+/* Handy quer mit Seitenkopf: H1 und Eckdaten über beiden Spalten, Bedienung und Bühne oben bündig im Abstand der
+   Werkzeug-Rolle (--head-gap-tool, wie die Bühne im Hochformat), Einleitung zuletzt */
 @media (--nav-collapsed) and (max-height: 32em) and (orientation: landscape) {
   .cfg.has-head { grid-template-areas: "head head" "facts facts" "panel stage" "intro intro"; }
-  .cfg.has-head > :is(.cfg-panel, .cfg-stage) { margin-top: var(--space-8); }
+  .cfg.has-head > :is(.cfg-panel, .cfg-stage) { margin-top: var(--head-gap-tool); }
 }

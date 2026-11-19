@@ -92,7 +92,7 @@ test('Alle aktiven Reels verwenden den gemeinsamen Video-Controller', () => {
 test('Globales CSS hat keine mehrfachen Eigenschaftsbesitzer im selben Kontext', async () => {
   const { default: postcss } = await import('postcss');
   const seen = new Map(), duplicates = [];
-  for (const sheet of ['global.css', 'facts.css', 'media-card.css']) postcss.parse(read(`src/styles/${sheet}`)).walkRules(rule => {
+  for (const sheet of ['global.css', 'facts.css', 'case.css', 'media-card.css']) postcss.parse(read(`src/styles/${sheet}`)).walkRules(rule => {
     const parents=[];for(let n=rule.parent;n.type!=='root';n=n.parent)parents.unshift(`@${n.name} ${n.params.replace(/\s+/g,'')}`);
     const local = new Set();
     for (const declaration of rule.nodes.filter(n=>n.type==='decl')) {

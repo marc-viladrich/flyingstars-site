@@ -8,8 +8,12 @@ const { t } = forPath(Astro.url.pathname);
 interface Props { mood: 'happy' | 'play'; label?: string; class?: string }
 const { mood, label, class: cls } = Astro.props;
 const fallback = { happy: t('chopper.happyLabel'), play: t('chopper.playLabel') }[mood];
+// Ohne JavaScript bleibt das Canvas leer: dann steht dasselbe Standbild wie bei reduzierter Bewegung, aus dem Renderer
+// aufgenommen (public/media/chopper/, transparent). Mit JavaScript lädt der Browser den noscript-Inhalt nicht.
+const still = { happy: { src: '/media/chopper/happy.webp', width: 720, height: 540 }, play: { src: '/media/chopper/play.webp', width: 1200, height: 675 } }[mood];
 ---
 <canvas class:list={['chopper-mood', `is-${mood}`, cls]} data-chopper-mood={mood} role="img" aria-label={label ?? fallback}></canvas>
+<noscript><img class:list={['chopper-mood', 'is-still', `is-${mood}`, cls]} src={still.src} width={still.width} height={still.height} alt={label ?? fallback} decoding="async" /></noscript>
 
 <script>
   // Startet bei Sichtbarkeit (mit Vorlauf, damit niemand vor einer leeren Fläche wartet)
@@ -38,6 +42,8 @@ const fallback = { happy: t('chopper.happyLabel'), play: t('chopper.playLabel') 
 
 <style>
   .chopper-mood { display: block; width: 100%; aspect-ratio: 4 / 3; }
+  .chopper-mood.is-still { height: auto; object-fit: contain; }
+  @media (scripting: none) { canvas.chopper-mood { display: none; } }
   .chopper-mood.is-play { aspect-ratio: 16 / 9; }
   @media (max-width: 40em) { .chopper-mood.is-play { aspect-ratio: 4 / 3; } }
 </style>

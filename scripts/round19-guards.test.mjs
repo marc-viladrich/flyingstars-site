@@ -78,7 +78,7 @@ test('Cookie-Entscheidung in einer kleinen Karte mit Schaltern, kein zweiter Dia
 });
 
 test('Beobachtete Reveal-Elemente sind im Startzustand nicht verschoben (sonst misst der Observer die verschobene Box)', () => {
-  const css = ['src/styles/global.css', 'src/styles/facts.css', 'src/styles/media-card.css'].map(read).join('\n');
+  const css = ['src/styles/global.css', 'src/styles/facts.css', 'src/styles/case.css', 'src/styles/media-card.css'].map(read).join('\n');
   // Regeln, die das Element selbst im Zustand „noch nicht drin“ treffen (kein Kind, kein Pseudo-Element danach)
   for (const [, selector, body] of css.matchAll(/([^{}]*:not\(\.is-in\))\s*\{([^}]*)\}/g)) {
     assert.doesNotMatch(body, /transform|translate/, `${selector.trim()} verschiebt das beobachtete Element`);
@@ -92,7 +92,7 @@ test('404: Text ohne ch-Begrenzung, Schriftgrößen in rem', () => {
 });
 
 test('Auto-Raster erzwingen keine Mindestspalte breiter als der Platz (Reflow bei 320 px und großer Schrift)', () => {
-  const files = ['src/styles/global.css', 'src/styles/facts.css', 'src/styles/media-card.css',
+  const files = ['src/styles/global.css', 'src/styles/facts.css', 'src/styles/case.css', 'src/styles/media-card.css',
     ...readdirSync(new URL('../src/components/', import.meta.url), { recursive: true }).filter((f) => f.endsWith('.astro')).map((f) => `src/components/${f}`)];
   for (const f of files) {
     const bad = read(f).match(/repeat\((auto-fit|auto-fill), minmax\((?!min\()[0-9.]+(rem|px|em)/g);

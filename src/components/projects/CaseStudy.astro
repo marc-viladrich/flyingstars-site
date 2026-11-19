@@ -1,5 +1,5 @@
 ---
-import {projectView} from '../../content/project-facts.mjs';
+import {projectView, readableDate} from '../../content/project-facts.mjs';
 import SliderNav from '../SliderNav.astro';
 import SectionHead from '../SectionHead.astro';
 import FactList from '../FactList.astro';
@@ -12,6 +12,8 @@ import type { CollectionEntry } from 'astro:content';
 import { videoPath } from '../../lib/videos';
 import CtaBox from '../CtaBox.astro';
 import { optimizedImage } from '../../lib/media';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 interface Props { project: CollectionEntry<'projects'> }
 const project=projectView(Astro.props.project);
@@ -28,6 +30,15 @@ const images = new Map(await Promise.all(uniqueImages.map(async (src) => [src, a
 const nextImage = next?.data.cover ? await optimizedImage(next.data.cover.src) : undefined;
 const still = project.data.cover ? await optimizedImage(project.data.cover.src, 960) : undefined;
 const count = (n: number) => String(n).padStart(2, '0');
+// Formation: die Aufforderung zum Mitmachen hängt am Eingabegerät und am Renderer (case.js: flache Formation weicht dem
+// Zeiger aus, ein 3D-Kopf aus der Showdatei schaut ihm nach), nicht am redaktionellen Text. Sie kommt daher aus den
+// UI-Texten, je Gerät eine Fassung (case.css). Steht die alte Maus-Aufforderung noch am Ende des Textes, wird sie dort entfernt.
+const formationText = data.formation?.text.trim() ?? '';
+const formationDeep = data.formation ? (JSON.parse(readFileSync(join(process.cwd(), 'public', data.formation.src), 'utf8')) as { dots: number[][] }).dots.some((dot) => dot[6] !== undefined) : false;
+const formationHint = formationDeep ? [t('case.hintHeadMouse'), t('case.hintHeadTouch')] : [t('case.hintMouse'), t('case.hintTouch')];
+const formationBody = [t('case.hintMouse'), t('case.hintHeadMouse')].reduce((text, mouse) => text.endsWith(mouse) ? text.slice(0, -mouse.length).trimEnd() : text, formationText);
+// Eckdaten: Datum immer ausgeschrieben und lokalisiert, nie ISO oder Ziffern (Audit 4, E3); factRef hält die Editor-Zuordnung
+const credits = Astro.props.project.data.showcase!.credits.map((item) => ({ ...item, value: readableDate(item.value), factRef: item.value }));
 // Längste Kennzahl der Reihe: bindet die Zahlgröße an die Zellbreite (facts.css, .c-num dd)
 const numChars = Math.max(1, ...data.numbers.map((n) => n.value.toLocaleString(formatLocale).length));
 const figures = data.numbers.map((n, i) => ({ label: n.label, value: n.value.toLocaleString(formatLocale), count: n.value, factRef: Astro.props.project.data.showcase!.numbers[i].value }));
@@ -54,7 +65,7 @@ if (single && runIn) single.label = lead.slice(single.value.length + 1);
       {data.kicker && <span class="c-kick mono">{data.kicker}</span>}
       <h1 id="case-h" class="c-h1"><span class="sr-only">{data.name}: </span><span class="c-name" style={`--chars:${data.titleChars}`} aria-hidden="true">{data.titleLines.map((line) => <span>{line.value}</span>)}</span><span class="c-tag">{data.tagline}</span></h1>
     </div>
-    <FactList items={Astro.props.project.data.showcase!.credits} variant="credits" />
+    <FactList items={credits} variant="credits" />
   </section>
 
   <section class="c-figures" data-figures={figures.length} data-run-in={runIn ? '' : undefined} aria-label={t('casestudy.inNumbers')} style={`--num-chars:${numChars}`}>
@@ -79,7 +90,8 @@ if (single && runIn) single.label = lead.slice(single.value.length + 1);
   {data.formation && <section class="c-play" aria-labelledby="play-h">
     <canvas data-formation={data.formation.src} aria-hidden="true"></canvas>
     <div class="c-play-copy">
-      <SectionHead variant="contents" headline={data.formation.title} text={data.formation.text} id="play-h" />
+      <SectionHead variant="contents" headline={data.formation.title} id="play-h" />
+      <p>{formationBody}{' '}<span class="c-play-hint" data-input="mouse">{formationHint[0]}</span><span class="c-play-hint" data-input="touch">{formationHint[1]}</span></p>
       <div class="row"><button class="btn small" type="button" data-replay disabled>{t('casestudy.startAgain')}</button><button class="btn small" type="button" data-formation-pause aria-pressed="false">{t('casestudy.pauseAnimation')}</button><span class="tally mono" data-tally role="status"></span></div>
     </div>
   </section>}
@@ -101,6 +113,12 @@ if (single && runIn) single.label = lead.slice(single.value.length + 1);
   </a>}
   <section class="section" aria-labelledby="cta-h"><CtaBox headline={data.cta.title} text={data.cta.text} button={{ label: t('chopper404.requestAShow'), href: '/#anfrage' }} id="cta-h" /></section>
 </div>
+{/* Fallstudien-Stile (src/styles/case.css) laden nur die Fallstudien-Routen, nicht das Basis-CSS der übrigen Seiten.
+     Bewusst als globaler Style-Block und nicht als Skript-Import: ein Import verschiebt Vites Bündelreihenfolge vor global.css,
+     und scripts/route-css.mjs bricht den Build ab (wie bei InquiryFormStyles.astro). */}
+<style is:global>
+  @import '../../styles/case.css';
+</style>
 <script>import './case.js';</script>
 <script>import '../../scripts/hero-reel';</script>
 <style>

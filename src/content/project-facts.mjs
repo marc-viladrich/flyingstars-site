@@ -28,6 +28,19 @@ export function projectText(text,locale='de',source=data,{markdown=false}={}){
   return markdown?value.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replace(/[\\`*_[\]{}()!#+|>-]/g,'\\$&'):value;
  });
 }
+/** Eckdaten zeigen ein Datum für Menschen: tagesgenaue Daten ausgeschrieben und lokalisiert (long: „29. Juni 2024“,
+ * „29 June 2024“, „29 juni 2024“), nur monatsgenaue als Monat. ISO- und Zifferndaten (iso, numeric, text) werden umgesetzt,
+ * bewusst gewählte Formate (long, monthYear, year …) bleiben. Gilt für Faktenreferenzen und für {{project.…date…}} in Text. */
+export function readableDate(value,source=data){
+ const pick=(project,display)=>{
+  if(display&&!['iso','numeric','text'].includes(display))return display;
+  const date=source[project]?.date;
+  return typeof date==='string'&&date.length===10?'long':'monthYear';
+ };
+ if(value&&typeof value==='object'&&'project'in value)return value.field==='date'?{...value,display:pick(value.project,value.display)}:value;
+ if(typeof value==='string')return value.replace(/\{\{project\.([a-z0-9-]+)\.date(?:\.([a-zA-Z]+))?\}\}/g,(_,project,display)=>`{{project.${project}.date.${pick(project,display)}}}`);
+ return value;
+}
 /** Resolve only explicit references. Story text, roles and unrelated historical measurements stay independent. */
 export function projectValues(value,locale='de',source=data){
  if(typeof value==='string')return projectText(value,locale,source);

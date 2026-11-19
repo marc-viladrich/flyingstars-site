@@ -1,11 +1,11 @@
 ---
-// Raster für Blogkarten: drei Spalten ab 1100 px, darunter zwei, auf dem Handy eine.
+// Raster für Blogkarten: drei Spalten ab 1100 px, darunter zwei, auf dem Handy eine. Zwei Karten teilen sich die Breite.
 import type { CollectionEntry } from 'astro:content';
 import PostCard from './PostCard.astro';
 interface Props { posts: CollectionEntry<'posts'>[]; level?: 'h2' | 'h3' }
 const { posts, level = 'h2' } = Astro.props;
 ---
-<div class="post-grid">{posts.map((post, i) => <PostCard post={post} i={i} level={level} />)}</div>
+<div class="post-grid" data-count={posts.length}>{posts.map((post, i) => <PostCard post={post} i={i} level={level} />)}</div>
 
 <style>
   .post-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(var(--space-8), 3vw, var(--space-12)) var(--card-grid-gap); }
@@ -23,6 +23,9 @@ const { posts, level = 'h2' } = Astro.props;
     .post-grid > :global(.post-card:last-child:nth-child(odd)) { grid-column: 1 / -1; grid-template-columns: subgrid; grid-template-rows: 1fr auto auto auto 1fr; grid-template-areas: 'img .' 'img kick' 'img title' 'img text' 'img .'; column-gap: var(--card-grid-gap); }
   }
   @media (--grid-expanded) {
+    /* Genau zwei Karten (z. B. „Mehr aus dem Blog“): zwei Hälften statt zwei von drei Spalten (Audit 4, E4). Bild neben
+       Text war bei 1180 px zu eng für die Titel */
+    .post-grid[data-count="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .post-grid > :global(.post-card:last-child:nth-child(3n + 1)) { grid-column: 1 / -1; grid-template-columns: subgrid; grid-template-rows: 1fr auto auto auto 1fr; grid-template-areas: 'img . .' 'img kick kick' 'img title title' 'img text text' 'img . .'; column-gap: var(--card-grid-gap); }
   }
 </style>

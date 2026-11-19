@@ -76,28 +76,44 @@ for (const [width, height] of SIZES) {
       expect(await text.evaluate((el) => { const r = el.getBoundingClientRect(), hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return hit === el; })).toBe(true);
     });
 
-    test('die Erklärungen der Sicherheitszeichnung stehen ganz im Bild', async ({ page }) => {
+    // Audit 4 (V14-Rest): die Lage muss in jeder erreichbaren Scrollposition gelten. Jede Nummer wird oben (unter der
+    // Kopfzeile), mittig und unten im Bild angetippt; danach scrollt die Seite noch ein Stück weiter (wie beim Tippen im
+    // Schwungscrollen), und die Erklärung muss nach dem Stillstand wieder ganz zu sehen sein
+    test('die Erklärungen der Sicherheitszeichnung stehen in jeder Scrollposition ganz im Bild', async ({ page }) => {
       await page.goto('/');
       const map = page.locator('[data-st-map]').first();
       await map.scrollIntoViewIfNeeded();
       await expect(map.locator('.st-hot').first()).toBeVisible();
-      for (const zone of await map.locator('.st-hot[data-hot]').evaluateAll((els) => els.map((e) => (e as HTMLElement).dataset.hot!))) {
-        const hot = map.locator(`.st-hot[data-hot="${zone}"]`);
-        await hot.scrollIntoViewIfNeeded();
-        await hot.tap();
+      const zones = await map.locator('.st-hot[data-hot]').evaluateAll((els) => els.map((e) => (e as HTMLElement).dataset.hot!));
+      expect(zones.length).toBeGreaterThanOrEqual(5);
+      const inView = async (zone: string, where: string) => {
         const tip = map.locator(`.st-tips li[data-tip="${zone}"]`);
-        await expect(tip).toBeVisible();
+        await expect(tip, where).toBeVisible();
         const box = await tip.evaluate((el) => {
           const t = el.getBoundingClientRect(), nav = document.querySelector('.nav')!.getBoundingClientRect();
           const h = document.querySelector(`[data-hot="${(el as HTMLElement).dataset.tip}"]`)!.getBoundingClientRect();
           return { top: t.top, bottom: t.bottom, left: t.left, right: t.right, nav: Math.max(0, nav.bottom), vh: innerHeight, vw: innerWidth,
             coversNumber: t.left < h.right && t.right > h.left && t.top < h.bottom && t.bottom > h.top };
         });
-        expect(box.top, zone).toBeGreaterThanOrEqual(box.nav - 1);
-        expect(box.bottom, zone).toBeLessThanOrEqual(box.vh);
-        expect(box.left, zone).toBeGreaterThanOrEqual(0);
-        expect(box.right, zone).toBeLessThanOrEqual(box.vw);
-        expect(box.coversNumber, zone).toBe(false);
+        expect(box.top, where).toBeGreaterThanOrEqual(box.nav - 1);
+        expect(box.bottom, where).toBeLessThanOrEqual(box.vh + 1);
+        expect(box.left, where).toBeGreaterThanOrEqual(0);
+        expect(box.right, where).toBeLessThanOrEqual(box.vw);
+        expect(box.coversNumber, where).toBe(false);
+      };
+      for (const zone of zones) for (const block of ['start', 'center', 'end'] as const) {
+        const hot = map.locator(`.st-hot[data-hot="${zone}"]`);
+        await hot.evaluate((el, block) => el.scrollIntoView({ block, behavior: 'instant' }), block);
+        await hot.tap();
+        await inView(zone, `${zone} ${block}`);
+        // weiterscrollen, solange die Nummer im Bild bleibt; die Erklärung bleibt offen (der nach dem Tap stehende
+        // Mauszeiger öffnet oder schließt nichts) und sucht nach dem Stillstand ihren Platz neu
+        const shift = { start: -120, center: 100, end: 120 }[block];
+        await page.evaluate((y) => scrollBy({ top: y, behavior: 'instant' }), shift);
+        await expect.poll(() => hot.evaluate((el) => { const r = el.getBoundingClientRect(), nav = Math.max(0, document.querySelector('.nav')!.getBoundingClientRect().bottom); return r.top >= nav && r.bottom <= innerHeight; })).toBe(true);
+        await page.waitForTimeout(300);
+        await expect(map.locator('.st-tips li.on')).toHaveAttribute('data-tip', zone);
+        await inView(zone, `${zone} ${block}, ${shift} px weiter`);
       }
     });
   });

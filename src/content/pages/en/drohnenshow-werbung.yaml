@@ -17,10 +17,10 @@ sections:
     video: ford
     videoLabel: Ford Explorer · Cologne
     poster:
-      src: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
-      alt: Volkswagen logo made of drones above Lake Wolfgang, guests filming from a terrace
-      width: 1920
-      height: 1281
+      src: https://flyingstars-relaunch.vercel.app/media/projekte/ford/03.jpg
+      alt: Blue drones rising above the Ford factory grounds in Cologne
+      width: 1280
+      height: 720
     facts:
       - value:
           fact: responseHours
@@ -411,12 +411,12 @@ sections:
       - werbung-moritz
     _key: k_92cbd2df611f3954dfc2
 translationContractVersion: 2
-translationSourceHash: 1cff51281a04d1618427b84872a64f165e658170938fbbee99124d81c29b50ec
+translationSourceHash: 59e9fa493a630b6187e5372ce02ee1bb583bc253b87f18b76d3fab6c2a71a213
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 1cff51281a04d1618427b84872a64f165e658170938fbbee99124d81c29b50ec
+  sourceFingerprint: 59e9fa493a630b6187e5372ce02ee1bb583bc253b87f18b76d3fab6c2a71a213
   fields:
     - address: /description
       sourceFingerprint: 1ff05e14135a0c5e4a6c3827cb27d2d4058551583503ce3da79f034836b6304d
@@ -1235,9 +1235,9 @@ translationEvidence:
       targetFingerprint: 6d15c0af79dee16537e2fa08a205a9ef340f28afe372948996ae825cd612f035
       status: adopted-existing
     - address: /sections/@k_cabb99b46c806fc432fa/poster/alt
-      sourceFingerprint: a221b70b23b4d2c50bfca3e40c877d06c397b5201e49e9b48af32e2c69a6fb90
-      targetFingerprint: 5da364902078ad3ce6213a5fe11084804384b0d92d7483131c25b36709ce190a
-      status: adopted-existing
+      sourceFingerprint: e291a3a48c99aeb5df8ee35ecb1b44929fd58a61c9a3c64c7b843b95c503287c
+      targetFingerprint: 848904ff2143612c1a930a4297c5e9d9bf25d0037cb3deb8d8bf5eb8fe8ddd71
+      status: reviewed
     - address: /sections/@k_cabb99b46c806fc432fa/secondary/label
       sourceFingerprint: 4d6660a30a01bc2d77a197f2bb58d48c26592e04db9f76832438bbbf94dc0d71
       targetFingerprint: d565d5bf27bfc6003a71f0677e9449fbefea929baa8c3ade457cd15c9fdedc66

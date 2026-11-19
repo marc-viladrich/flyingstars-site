@@ -15,11 +15,12 @@ sections:
     secondary: { label: "☎︎ {{contact.phone.international}}", href: "{{contact.phone.href}}" }
     video: ford
     videoLabel: Ford Explorer · Köln
+    # Standbild aus dem Ford-Video (Bild 03 der Fallstudie: aufsteigende Drohnen), damit Rahmenbeschriftung und Bild dasselbe Projekt zeigen
     poster:
-      src: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
-      alt: Volkswagen-Logo aus Drohnen über dem Wolfgangsee, Gäste filmen von einer Terrasse
-      width: 1920
-      height: 1281
+      src: https://flyingstars-relaunch.vercel.app/media/projekte/ford/03.jpg
+      alt: Blaue Drohnen steigen über dem Ford-Werksgelände in Köln auf
+      width: 1280
+      height: 720
     # Eckdaten wie im Prototyp; Werte aus Moritz' Texten (48 Stunden, unter zwei Wochen, 1,3 Mio. Euro)
     facts:
       - { value: { fact: responseHours, display: hours }, label: bis zur Antwort, "_key": "k_ea8a5bf5b47c7af483ff" }

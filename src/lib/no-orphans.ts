@@ -16,12 +16,18 @@ const MAX_LAST = 22; // „Sicherheitsprotokoll.“ (21) passt mit seinem Vorgä
  *  länger sein, damit ein langes Schlusswort nicht allein bleibt („emotionale 3D-Visualisierungen.“, 30 Zeichen; Audit 2, N7). */
 const MAX_PAIR_PROSE = 32;
 const PROSE_WORDS = 8;
+/** Langes Kompositum vor kurzem Schlusswort („Genehmigungsprozesse überspringen.“, 34 Zeichen, 275 px; Karte bei 360 px
+ *  274 px breit): das Paar wird trotzdem verbunden, das Kompositum aber für die Silbentrennung freigegeben (class="hy"), so
+ *  bleibt es an einer Silbengrenze trennbar und nichts läuft über. Nur in Fließtext und nur bis HY_PAIR Zeichen (Audit 4, E6). */
+const HY_PREV = 14;
+const HY_LAST = 14;
+const HY_PAIR = 36;
 
 /** Verbindet im inneren HTML eines Blocks die letzten zwei Wörter. Tags bleiben unangetastet. */
 export function joinLastWords(inner: string): string {
   // Text- und Tag-Stücke; nur in Textstücken wird gesucht
   const parts = inner.split(/(<[^>]*>)/);
-  let seenWord = false, wordLen = 0, prevLen = 0, target = -1, targetPart = -1;
+  let seenWord = false, wordLen = 0, prevLen = 0, target = -1, targetPart = -1, prevStart = -1, prevPart = -1, prevCut = false;
   // von hinten: erst das letzte Wort überspringen, dann das Leerzeichen davor finden
   outer: for (let i = parts.length - 1; i >= 0; i--) {
     const part = parts[i];
@@ -36,19 +42,28 @@ export function joinLastWords(inner: string): string {
         target = j; targetPart = i;
         continue;
       }
-      // Länge des vorletzten Worts bis zum nächsten Leerzeichen
+      // Länge des vorletzten Worts bis zum nächsten Leerzeichen; ein Bindestrich darin bleibt Umbruchstelle
+      // („nordrhein-westfälischer Industrietradition.“ bindet nur „westfälischer“, Audit 4, E6)
       if (space) { if (prevLen > 0) break outer; continue; }
-      prevLen++;
+      if (ch === '-' && prevLen > 0) { prevCut = true; break outer; }
+      prevLen++; prevStart = j; prevPart = i;
     }
   }
   const words = parts.filter((p) => !p.startsWith('<')).join(' ').split(/\s+/).filter(Boolean).length;
   const maxPair = words >= PROSE_WORDS ? MAX_PAIR_PROSE : MAX_PAIR;
-  if (target < 0 || wordLen > MAX_LAST || wordLen + prevLen > maxPair || prevLen === 0) return inner;
+  if (target < 0 || wordLen > MAX_LAST || prevLen === 0) return inner;
+  const pair = wordLen + prevLen;
+  // Nur dieser Rettungsfall bekommt die Trennfreigabe: hyphens: auto trennt gierig, sobald die Einheit nicht in den
+  // Zeilenrest passt, also auch dort, wo genug Platz für einen ganzen Umbruch wäre (Kartentitel bei 1920 px)
+  const hyphenate = pair > maxPair && maxPair === MAX_PAIR_PROSE && !prevCut && prevLen >= HY_PREV && wordLen <= HY_LAST && pair <= HY_PAIR && prevPart === targetPart;
+  if (pair > maxPair && !hyphenate) return inner;
   // nur ein einzelnes normales Leerzeichen ersetzen, Zeilenumbrüche im Quelltext ebenso
   const part = parts[targetPart];
   let start = target;
   while (start > 0 && /\s/.test(part[start - 1])) start--;
-  parts[targetPart] = part.slice(0, start) + '&nbsp;' + part.slice(target + 1);
+  parts[targetPart] = hyphenate
+    ? part.slice(0, prevStart) + '<span class="hy">' + part.slice(prevStart, start) + '</span>&nbsp;' + part.slice(target + 1)
+    : part.slice(0, start) + '&nbsp;' + part.slice(target + 1);
   // Bindestrich im letzten Wort („E-Transit.“) ist sonst eine Umbruchstelle: Wortverbinder (U+2060) dahinter
   for (let i = targetPart; i < parts.length; i++) {
     if (parts[i].startsWith('<')) continue;

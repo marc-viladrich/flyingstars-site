@@ -54,7 +54,7 @@ test('Kopfklassen kommen aus den SectionHead-Aufrufen', () => {
 
 test('Kein Kopf bekommt eigene Abstandswerte', () => {
   const found = [];
-  for (const file of [...files('src/components'), ...files('src/templates'), 'src/styles/global.css', 'src/styles/show-configurator.css']) {
+  for (const file of [...files('src/components'), ...files('src/templates'), 'src/styles/global.css', 'src/styles/case.css', 'src/styles/show-configurator.css']) {
     for (const css of styles(file)) postcss.parse(css.replace(/:global\(([^()]*(?:\([^()]*\))*[^()]*)\)/g, '$1'), {from: file}).walkDecls((d) => {
       if (!SPACING.test(d.prop) || !HEAD.test(d.parent.selector ?? '')) return;
       // Ausrichtung im Raster (Spalten) und das Ausblenden des Randes sind keine Kopfabstände
